@@ -1,39 +1,22 @@
-/****************************************************************************
-**
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: Qt Software Information (qt-info@nokia.com)
-**
-** This file is part of the demonstration applications of the Qt Toolkit.
-**
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
-**
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
-**
-** If you are unsure which license is appropriate for your use, please
-** contact the sales department at qt-sales@nokia.com.
-**
-****************************************************************************/
+/* ============================================================
+ *
+ * This file is a part of the reKonq project
+ *
+ * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
+ *
+ *
+ * This program is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU General
+ * Public License as published by the Free Software Foundation;
+ * either version 2, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * ============================================================ */
+
 
 #include "browserapplication.h"
 
@@ -46,51 +29,43 @@
 #include "tabwidget.h"
 #include "webview.h"
 
-#include <QtCore/QBuffer>
-#include <QtCore/QDir>
-#include <QtCore/QLibraryInfo>
-#include <QtCore/QSettings>
-#include <QtCore/QTextStream>
-#include <QtCore/QTranslator>
+#include <KCmdLineArgs>
+#include <KAboutData>
 
-#include <QtGui/QDesktopServices>
-#include <QtGui/QFileOpenEvent>
+#include <QBuffer>
+#include <QDir>
+#include <QLibraryInfo>
+#include <QSettings>
+#include <QTextStream>
+#include <QTranslator>
+#include <QDesktopServices>
+#include <QFileOpenEvent>
+#include <QLocalServer>
+#include <QLocalSocket>
+#include <QNetworkProxy>
+#include <QWebSettings>
+#include <QDebug>
 
-#include <QtNetwork/QLocalServer>
-#include <QtNetwork/QLocalSocket>
-#include <QtNetwork/QNetworkProxy>
 
-#include <QtWebKit/QWebSettings>
-
-#include <QtCore/QDebug>
 
 DownloadManager *BrowserApplication::s_downloadManager = 0;
 HistoryManager *BrowserApplication::s_historyManager = 0;
 NetworkAccessManager *BrowserApplication::s_networkAccessManager = 0;
 BookmarksManager *BrowserApplication::s_bookmarksManager = 0;
 
-BrowserApplication::BrowserApplication(int &argc, char **argv)
-    : QApplication(argc, argv)
+
+
+BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &serverName)
+    : KApplication()
     , m_localServer(0)
 {
-    QCoreApplication::setOrganizationName(QLatin1String("Trolltech"));
-    QCoreApplication::setApplicationName(QLatin1String("demobrowser"));
-    QCoreApplication::setApplicationVersion(QLatin1String("0.1"));
-#ifdef Q_WS_QWS
-    // Use a different server name for QWS so we can run an X11
-    // browser and a QWS browser in parallel on the same machine for
-    // debugging
-    QString serverName = QCoreApplication::applicationName() + QLatin1String("_qws");
-#else
-    QString serverName = QCoreApplication::applicationName();
-#endif
     QLocalSocket socket;
     socket.connectToServer(serverName);
     if (socket.waitForConnected(500)) {
         QTextStream stream(&socket);
-        QStringList args = QCoreApplication::arguments();
-        if (args.count() > 1)
-            stream << args.last();
+        int n = args->count();
+        if (n > 1)
+            stream << args->arg(n-1);
         else
             stream << QString();
         stream.flush();
@@ -99,9 +74,9 @@ BrowserApplication::BrowserApplication(int &argc, char **argv)
     }
 
 #if defined(Q_WS_MAC)
-    QApplication::setQuitOnLastWindowClosed(false);
+    KApplication::setQuitOnLastWindowClosed(false);
 #else
-    QApplication::setQuitOnLastWindowClosed(true);
+    KApplication::setQuitOnLastWindowClosed(true);
 #endif
 
     m_localServer = new QLocalServer(this);
@@ -133,6 +108,9 @@ BrowserApplication::BrowserApplication(int &argc, char **argv)
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
+
+
+
 BrowserApplication::~BrowserApplication()
 {
     delete s_downloadManager;
@@ -140,6 +118,8 @@ BrowserApplication::~BrowserApplication()
     delete s_networkAccessManager;
     delete s_bookmarksManager;
 }
+
+
 
 #if defined(Q_WS_MAC)
 void BrowserApplication::lastWindowClosed()
@@ -151,10 +131,14 @@ void BrowserApplication::lastWindowClosed()
 }
 #endif
 
+
+
 BrowserApplication *BrowserApplication::instance()
 {
     return (static_cast<BrowserApplication *>(QCoreApplication::instance()));
 }
+
+
 
 #if defined(Q_WS_MAC)
 #include <QtGui/QMessageBox>
@@ -180,6 +164,9 @@ void BrowserApplication::quitBrowser()
 }
 #endif
 
+
+
+
 /*!
     Any actions that can be delayed until the window is visible
  */
@@ -196,14 +183,17 @@ void BrowserApplication::postLaunch()
 
     // newMainWindow() needs to be called in main() for this to happen
     if (m_mainWindows.count() > 0) {
-        QStringList args = QCoreApplication::arguments();
-        if (args.count() > 1)
-            mainWindow()->loadPage(args.last());
+        KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+        int n = args->count();
+        if (n > 1)
+            mainWindow()->loadPage(args->arg(n-1));
         else
             mainWindow()->slotHome();
     }
     BrowserApplication::historyManager();
 }
+
+
 
 void BrowserApplication::loadSettings()
 {
@@ -234,6 +224,9 @@ void BrowserApplication::loadSettings()
     settings.endGroup();
 }
 
+
+
+
 QList<BrowserMainWindow*> BrowserApplication::mainWindows()
 {
     clean();
@@ -243,6 +236,9 @@ QList<BrowserMainWindow*> BrowserApplication::mainWindows()
     return list;
 }
 
+
+
+
 void BrowserApplication::clean()
 {
     // cleanup any deleted main windows first
@@ -250,6 +246,9 @@ void BrowserApplication::clean()
         if (m_mainWindows.at(i).isNull())
             m_mainWindows.removeAt(i);
 }
+
+
+
 
 void BrowserApplication::saveSession()
 {
@@ -274,10 +273,16 @@ void BrowserApplication::saveSession()
     settings.endGroup();
 }
 
+
+
+
 bool BrowserApplication::canRestoreSession() const
 {
     return !m_lastSession.isEmpty();
 }
+
+
+
 
 void BrowserApplication::restoreLastSession()
 {
@@ -305,16 +310,20 @@ void BrowserApplication::restoreLastSession()
     }
 }
 
+
+
 bool BrowserApplication::isTheOnlyBrowser() const
 {
     return (m_localServer != 0);
 }
 
+
+
 void BrowserApplication::installTranslator(const QString &name)
 {
     QTranslator *translator = new QTranslator(this);
     translator->load(name, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    QApplication::installTranslator(translator);
+    KApplication::installTranslator(translator);
 }
 
 #if defined(Q_WS_MAC)
@@ -339,14 +348,18 @@ bool BrowserApplication::event(QEvent* event)
     default:
         break;
     }
-    return QApplication::event(event);
+    return KApplication::event(event);
 }
 #endif
+
+
 
 void BrowserApplication::openUrl(const QUrl &url)
 {
     mainWindow()->loadPage(url.toString());
 }
+
+
 
 BrowserMainWindow *BrowserApplication::newMainWindow()
 {
@@ -356,6 +369,9 @@ BrowserMainWindow *BrowserApplication::newMainWindow()
     return browser;
 }
 
+
+
+
 BrowserMainWindow *BrowserApplication::mainWindow()
 {
     clean();
@@ -363,6 +379,9 @@ BrowserMainWindow *BrowserApplication::mainWindow()
         newMainWindow();
     return m_mainWindows[0];
 }
+
+
+
 
 void BrowserApplication::newLocalSocketConnection()
 {
@@ -389,10 +408,15 @@ void BrowserApplication::newLocalSocketConnection()
     mainWindow()->activateWindow();
 }
 
+
+
 CookieJar *BrowserApplication::cookieJar()
 {
     return (CookieJar*)networkAccessManager()->cookieJar();
 }
+
+
+
 
 DownloadManager *BrowserApplication::downloadManager()
 {
@@ -401,6 +425,8 @@ DownloadManager *BrowserApplication::downloadManager()
     }
     return s_downloadManager;
 }
+
+
 
 NetworkAccessManager *BrowserApplication::networkAccessManager()
 {
@@ -411,6 +437,8 @@ NetworkAccessManager *BrowserApplication::networkAccessManager()
     return s_networkAccessManager;
 }
 
+
+
 HistoryManager *BrowserApplication::historyManager()
 {
     if (!s_historyManager) {
@@ -420,6 +448,9 @@ HistoryManager *BrowserApplication::historyManager()
     return s_historyManager;
 }
 
+
+
+
 BookmarksManager *BrowserApplication::bookmarksManager()
 {
     if (!s_bookmarksManager) {
@@ -427,6 +458,8 @@ BookmarksManager *BrowserApplication::bookmarksManager()
     }
     return s_bookmarksManager;
 }
+
+
 
 QIcon BrowserApplication::icon(const QUrl &url) const
 {

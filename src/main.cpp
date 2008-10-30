@@ -18,11 +18,13 @@
  * ============================================================ */
 
 
+#include "browserapplication.h"
+
 #include <KAboutData>
 #include <KCmdLineArgs>
 
-#include "browserapplication.h"
 
+// really simple writing main files today..
 int main(int argc, char **argv)
 {
     KAboutData aboutData(
@@ -42,13 +44,14 @@ int main(int argc, char **argv)
     aboutData.setProgramIconName("application-internet");
 
     KCmdLineArgs::init( argc, argv, &aboutData );
+    
     KCmdLineOptions options;
-
-    //TODO make this work
     options.add("+URL", ki18n("Location to open"));
     KCmdLineArgs::addCmdLineOptions( options );
 
-    BrowserApplication app(argc, argv);
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+
+    BrowserApplication app(args, "reKonq");
     if (!app.isTheOnlyBrowser())
         return 0;
     app.newMainWindow();
