@@ -1,59 +1,41 @@
-/****************************************************************************
-**
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: Qt Software Information (qt-info@nokia.com)
-**
-** This file is part of the demonstration applications of the Qt Toolkit.
-**
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
-**
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
-**
-** If you are unsure which license is appropriate for your use, please
-** contact the sales department at qt-sales@nokia.com.
-**
-****************************************************************************/
+/* ============================================================
+ *
+ * This file is a part of the reKonq project
+ *
+ * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
+ *
+ *
+ * This program is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU General
+ * Public License as published by the Free Software Foundation;
+ * either version 2, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * ============================================================ */
 
+
+// Local includes
 #include "downloadmanager.h"
-
 #include "autosaver.h"
 #include "browserapplication.h"
 #include "networkaccessmanager.h"
 
+// generic includes
 #include <math.h>
 
-#include <QtCore/QMetaEnum>
-#include <QtCore/QSettings>
-
-#include <QtGui/QDesktopServices>
-#include <QtGui/QFileDialog>
-#include <QtGui/QHeaderView>
-#include <QtGui/QFileIconProvider>
-
-#include <QtCore/QDebug>
-
-#include <QtWebKit/QWebSettings>
+// Qt Includes
+#include <QMetaEnum>
+#include <QSettings>
+#include <QDesktopServices>
+#include <QFileDialog>
+#include <QHeaderView>
+#include <QFileIconProvider>
+#include <QDebug>
+#include <QWebSettings>
 
 /*!
     DownloadItem is a widget that is displayed in the download manager list.
@@ -88,14 +70,10 @@ void DownloadItem::init()
     m_url = m_reply->url();
     m_reply->setParent(this);
     connect(m_reply, SIGNAL(readyRead()), this, SLOT(downloadReadyRead()));
-    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(error(QNetworkReply::NetworkError)));
-    connect(m_reply, SIGNAL(downloadProgress(qint64, qint64)),
-            this, SLOT(downloadProgress(qint64, qint64)));
-    connect(m_reply, SIGNAL(metaDataChanged()),
-            this, SLOT(metaDataChanged()));
-    connect(m_reply, SIGNAL(finished()),
-            this, SLOT(finished()));
+    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
+    connect(m_reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(downloadProgress(qint64, qint64)));
+    connect(m_reply, SIGNAL(metaDataChanged()), this, SLOT(metaDataChanged()));
+    connect(m_reply, SIGNAL(finished()), this, SLOT(finished()));
 
     // reset info
     downloadInfoLabel->clear();
@@ -123,10 +101,10 @@ void DownloadItem::getFileName()
     QString defaultFileName = saveFileName(downloadDirectory);
     QString fileName = defaultFileName;
     if (m_requestFileName) {
-        fileName = QFileDialog::getSaveFileName(this, tr("Save File"), defaultFileName);
+        fileName = QFileDialog::getSaveFileName(this, i18n("Save File"), defaultFileName);
         if (fileName.isEmpty()) {
             m_reply->close();
-            fileNameLabel->setText(tr("Download canceled: %1").arg(QFileInfo(defaultFileName).fileName()));
+            fileNameLabel->setText( i18n("Download canceled: ") + QFileInfo(defaultFileName).fileName());
             return;
         }
     }
@@ -208,8 +186,7 @@ void DownloadItem::downloadReadyRead()
         if (!m_requestFileName)
             getFileName();
         if (!m_output.open(QIODevice::WriteOnly)) {
-            downloadInfoLabel->setText(tr("Error opening save file: %1")
-                    .arg(m_output.errorString()));
+            downloadInfoLabel->setText( i18n("Error opening save file: ") +  m_output.errorString() );
             stopButton->click();
             emit statusChanged();
             return;
@@ -217,8 +194,7 @@ void DownloadItem::downloadReadyRead()
         emit statusChanged();
     }
     if (-1 == m_output.write(m_reply->readAll())) {
-        downloadInfoLabel->setText(tr("Error saving: %1")
-                .arg(m_output.errorString()));
+        downloadInfoLabel->setText( i18n("Error saving: ") + m_output.errorString() );
         stopButton->click();
     }
 }
@@ -226,7 +202,7 @@ void DownloadItem::downloadReadyRead()
 void DownloadItem::error(QNetworkReply::NetworkError)
 {
     qDebug() << "DownloadItem::error" << m_reply->errorString() << m_url;
-    downloadInfoLabel->setText(tr("Network Error: %1").arg(m_reply->errorString()));
+    downloadInfoLabel->setText( i18n("Network Error: ") + m_reply->errorString() );
     tryAgainButton->setEnabled(true);
     tryAgainButton->setVisible(true);
 }
@@ -260,10 +236,10 @@ void DownloadItem::updateInfoLabel()
     // update info label
     double speed = m_bytesReceived * 1000.0 / m_downloadTime.elapsed();
     double timeRemaining = ((double)(bytesTotal - m_bytesReceived)) / speed;
-    QString timeRemainingString = tr("seconds");
+    QString timeRemainingString = i18n("seconds");
     if (timeRemaining > 60) {
         timeRemaining = timeRemaining / 60;
-        timeRemainingString = tr("minutes");
+        timeRemainingString = i18n("minutes");
     }
     timeRemaining = floor(timeRemaining);
 
@@ -275,21 +251,13 @@ void DownloadItem::updateInfoLabel()
     if (running) {
         QString remaining;
         if (bytesTotal != 0)
-            remaining = tr("- %4 %5 remaining")
-            .arg(timeRemaining)
-            .arg(timeRemainingString);
-        info = QString(tr("%1 of %2 (%3/sec) %4"))
-            .arg(dataString(m_bytesReceived))
-            .arg(bytesTotal == 0 ? tr("?") : dataString(bytesTotal))
-            .arg(dataString((int)speed))
-            .arg(remaining);
+            remaining = i18n("- %1 %2 remaining", timeRemaining, timeRemainingString );
+            info = dataString(m_bytesReceived) + i18n("of") + bytesTotal == 0 ? "?" : dataString(bytesTotal) + "(" + dataString((int)speed) + "/sec)" + QString(remaining);
     } else {
         if (m_bytesReceived == bytesTotal)
             info = dataString(m_output.size());
         else
-            info = tr("%1 of %2 - Stopped")
-                .arg(dataString(m_bytesReceived))
-                .arg(dataString(bytesTotal));
+            info = dataString(m_bytesReceived) + i18n("of") + dataString(bytesTotal) + i18n(" - Stopped");
     }
     downloadInfoLabel->setText(info);
 }
@@ -298,13 +266,13 @@ QString DownloadItem::dataString(int size) const
 {
     QString unit;
     if (size < 1024) {
-        unit = tr("bytes");
+        unit = i18n("bytes");
     } else if (size < 1024*1024) {
         size /= 1024;
-        unit = tr("kB");
+        unit = i18n("kB");
     } else {
         size /= 1024*1024;
-        unit = tr("MB");
+        unit = i18n("MB");
     }
     return QString(QLatin1String("%1 %2")).arg(size).arg(unit);
 }
@@ -531,7 +499,7 @@ void DownloadManager::cleanup()
 void DownloadManager::updateItemCount()
 {
     int count = m_downloads.count();
-    itemCount->setText(count == 1 ? tr("1 Download") : tr("%1 Downloads").arg(count));
+    itemCount->setText(count == 1 ? i18n("1 Download") : QString(count) + i18n(" Downloads") );
 }
 
 DownloadModel::DownloadModel(DownloadManager *downloadManager, QObject *parent)

@@ -152,8 +152,7 @@ void BrowserApplication::quitBrowser()
 
     if (tabCount > 1) {
         int ret = QMessageBox::warning(mainWindow(), QString(),
-                           tr("There are %1 windows and %2 tabs open\n"
-                              "Do you want to quit anyway?").arg(m_mainWindows.count()).arg(tabCount),
+                           i18n("There are ") + QString( m_mainWindows.count() ) + i18n(" windows and ") + QString(tabCount) + i18n("tabs open\n"),
                            QMessageBox::Yes | QMessageBox::No,
                            QMessageBox::No);
         if (ret == QMessageBox::No)
@@ -461,12 +460,13 @@ BookmarksManager *BrowserApplication::bookmarksManager()
 
 
 
-QIcon BrowserApplication::icon(const QUrl &url) const
+KIcon BrowserApplication::icon(const QUrl &url) const
 {
-    QIcon icon = QWebSettings::iconForUrl(url);
+    KIcon icon = KIcon( QWebSettings::iconForUrl(url) );
     if (!icon.isNull())
-        return icon.pixmap(16, 16);
+        return icon;
     if (m_defaultIcon.isNull())
-        m_defaultIcon = QIcon(QLatin1String(":defaulticon.png"));
-    return m_defaultIcon.pixmap(16, 16);
+        m_defaultIcon = KIcon("rekonq");
+    return m_defaultIcon;
 }
+

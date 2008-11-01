@@ -1,62 +1,44 @@
-/****************************************************************************
-**
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: Qt Software Information (qt-info@nokia.com)
-**
-** This file is part of the demonstration applications of the Qt Toolkit.
-**
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
-**
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
-**
-** If you are unsure which license is appropriate for your use, please
-** contact the sales department at qt-sales@nokia.com.
-**
-****************************************************************************/
+/* ============================================================
+ *
+ * This file is a part of the reKonq project
+ *
+ * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
+ *
+ *
+ * This program is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU General
+ * Public License as published by the Free Software Foundation;
+ * either version 2, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * ============================================================ */
 
+
+// Local Includes
 #include "bookmarks.h"
-
 #include "autosaver.h"
 #include "browserapplication.h"
 #include "history.h"
 #include "xbel.h"
 
-#include <QtCore/QBuffer>
-#include <QtCore/QFile>
-#include <QtCore/QMimeData>
+// Qt Includes
+#include <QBuffer>
+#include <QFile>
+#include <QMimeData>
+#include <QDesktopServices>
+#include <QDragEnterEvent>
+#include <QFileDialog>
+#include <QHeaderView>
+#include <QIcon>
+#include <QMessageBox>
+#include <QToolButton>
+#include <QWebSettings>
+#include <QDebug>
 
-#include <QtGui/QDesktopServices>
-#include <QtGui/QDragEnterEvent>
-#include <QtGui/QFileDialog>
-#include <QtGui/QHeaderView>
-#include <QtGui/QIcon>
-#include <QtGui/QMessageBox>
-#include <QtGui/QToolButton>
-
-#include <QtWebKit/QWebSettings>
-
-#include <QtCore/QDebug>
 
 #define BOOKMARKBAR "Bookmarks Bar"
 #define BOOKMARKMENU "Bookmarks Menu"
@@ -101,8 +83,13 @@ void BookmarksManager::load()
     m_bookmarkRootNode = reader.read(bookmarkFile);
     if (reader.error() != QXmlStreamReader::NoError) {
         QMessageBox::warning(0, QLatin1String("Loading Bookmark"),
-            tr("Error when loading bookmarks on line %1, column %2:\n"
-               "%3").arg(reader.lineNumber()).arg(reader.columnNumber()).arg(reader.errorString()));
+            i18n("Error when loading bookmarks on line ") + 
+            QString( (int) reader.lineNumber() ) + 
+            i18n(", column ") + 
+            QString( (int) reader.columnNumber() ) +  
+            ":\n" + 
+            reader.errorString()
+         ) ;
     }
 
     BookmarkNode *toolbar = 0;
@@ -112,18 +99,18 @@ void BookmarksManager::load()
         BookmarkNode *node = m_bookmarkRootNode->children().at(i);
         if (node->type() == BookmarkNode::Folder) {
             // Automatically convert
-            if (node->title == tr("Toolbar Bookmarks") && !toolbar) {
-                node->title = tr(BOOKMARKBAR);
+            if (node->title == i18n("Toolbar Bookmarks") && !toolbar) {
+                node->title = i18n(BOOKMARKBAR);
             }
-            if (node->title == tr(BOOKMARKBAR) && !toolbar) {
+            if (node->title == i18n(BOOKMARKBAR) && !toolbar) {
                 toolbar = node;
             }
 
             // Automatically convert
-            if (node->title == tr("Menu") && !menu) {
-                node->title = tr(BOOKMARKMENU);
+            if (node->title == i18n("Menu") && !menu) {
+                node->title = i18n(BOOKMARKMENU);
             }
-            if (node->title == tr(BOOKMARKMENU) && !menu) {
+            if (node->title == i18n(BOOKMARKMENU) && !menu) {
                 menu = node;
             }
         } else {
@@ -134,14 +121,14 @@ void BookmarksManager::load()
     Q_ASSERT(m_bookmarkRootNode->children().count() == 0);
     if (!toolbar) {
         toolbar = new BookmarkNode(BookmarkNode::Folder, m_bookmarkRootNode);
-        toolbar->title = tr(BOOKMARKBAR);
+        toolbar->title = i18n(BOOKMARKBAR);
     } else {
         m_bookmarkRootNode->add(toolbar);
     }
 
     if (!menu) {
         menu = new BookmarkNode(BookmarkNode::Folder, m_bookmarkRootNode);
-        menu->title = tr(BOOKMARKMENU);
+        menu->title = i18n(BOOKMARKMENU);
     } else {
         m_bookmarkRootNode->add(menu);
     }
@@ -217,7 +204,7 @@ BookmarkNode *BookmarksManager::menu()
 
     for (int i = m_bookmarkRootNode->children().count() - 1; i >= 0; --i) {
         BookmarkNode *node = m_bookmarkRootNode->children().at(i);
-        if (node->title == tr(BOOKMARKMENU))
+        if (node->title == i18n(BOOKMARKMENU))
             return node;
     }
     Q_ASSERT(false);
@@ -231,7 +218,7 @@ BookmarkNode *BookmarksManager::toolbar()
 
     for (int i = m_bookmarkRootNode->children().count() - 1; i >= 0; --i) {
         BookmarkNode *node = m_bookmarkRootNode->children().at(i);
-        if (node->title == tr(BOOKMARKBAR))
+        if (node->title == i18n(BOOKMARKBAR))
             return node;
     }
     Q_ASSERT(false);
@@ -247,9 +234,9 @@ BookmarksModel *BookmarksManager::bookmarksModel()
 
 void BookmarksManager::importBookmarks()
 {
-    QString fileName = QFileDialog::getOpenFileName(0, tr("Open File"),
+    QString fileName = QFileDialog::getOpenFileName(0, i18n("Open File"),
                                                      QString(),
-                                                     tr("XBEL (*.xbel *.xml)"));
+                                                     i18n("XBEL (*.xbel *.xml)"));
     if (fileName.isEmpty())
         return;
 
@@ -257,30 +244,30 @@ void BookmarksManager::importBookmarks()
     BookmarkNode *importRootNode = reader.read(fileName);
     if (reader.error() != QXmlStreamReader::NoError) {
         QMessageBox::warning(0, QLatin1String("Loading Bookmark"),
-            tr("Error when loading bookmarks on line %1, column %2:\n"
-               "%3").arg(reader.lineNumber()).arg(reader.columnNumber()).arg(reader.errorString()));
+            i18n("Error when loading bookmarks on line %1, column %2:\n %3", reader.lineNumber(), reader.columnNumber(), reader.errorString() ) 
+        );
     }
 
     importRootNode->setType(BookmarkNode::Folder);
-    importRootNode->title = (tr("Imported %1").arg(QDate::currentDate().toString(Qt::SystemLocaleShortDate)));
+    importRootNode->title = ( i18n("Imported ") + QDate::currentDate().toString(Qt::SystemLocaleShortDate) );
     addBookmark(menu(), importRootNode);
 }
 
 void BookmarksManager::exportBookmarks()
 {
-    QString fileName = QFileDialog::getSaveFileName(0, tr("Save File"),
-                                tr("%1 Bookmarks.xbel").arg(QCoreApplication::applicationName()),
-                                tr("XBEL (*.xbel *.xml)"));
+    QString fileName = QFileDialog::getSaveFileName(0, i18n("Save File"),
+                                QCoreApplication::applicationName() + i18n(" Bookmarks.xbel"),
+                                i18n("XBEL (*.xbel *.xml)"));
     if (fileName.isEmpty())
         return;
 
     XbelWriter writer;
     if (!writer.write(fileName, m_bookmarkRootNode))
-        QMessageBox::critical(0, tr("Export error"), tr("error saving bookmarks"));
+        QMessageBox::critical(0, i18n("Export error"), i18n("error saving bookmarks"));
 }
 
 RemoveBookmarksCommand::RemoveBookmarksCommand(BookmarksManager *m_bookmarkManagaer, BookmarkNode *parent, int row)
-    : QUndoCommand(BookmarksManager::tr("Remove Bookmark"))
+    : QUndoCommand( i18n("Remove Bookmark") )
     , m_row(row)
     , m_bookmarkManagaer(m_bookmarkManagaer)
     , m_node(parent->children().value(row))
@@ -314,7 +301,7 @@ InsertBookmarksCommand::InsertBookmarksCommand(BookmarksManager *m_bookmarkManag
                 BookmarkNode *parent, BookmarkNode *node, int row)
     : RemoveBookmarksCommand(m_bookmarkManagaer, parent, row)
 {
-    setText(BookmarksManager::tr("Insert Bookmark"));
+    setText( i18n("Insert Bookmark") );
     m_node = node;
 }
 
@@ -328,10 +315,10 @@ ChangeBookmarkCommand::ChangeBookmarkCommand(BookmarksManager *m_bookmarkManagae
 {
     if (m_title) {
         m_oldValue = m_node->title;
-        setText(BookmarksManager::tr("Name Change"));
+        setText( i18n("Name Change") );
     } else {
         m_oldValue = m_node->url;
-        setText(BookmarksManager::tr("Address Change"));
+        setText( i18n("Address Change") );
     }
 }
 
@@ -358,12 +345,9 @@ BookmarksModel::BookmarksModel(BookmarksManager *bookmarkManager, QObject *paren
     , m_endMacro(false)
     , m_bookmarksManager(bookmarkManager)
 {
-    connect(bookmarkManager, SIGNAL(entryAdded(BookmarkNode *)),
-            this, SLOT(entryAdded(BookmarkNode *)));
-    connect(bookmarkManager, SIGNAL(entryRemoved(BookmarkNode *, int, BookmarkNode *)),
-            this, SLOT(entryRemoved(BookmarkNode *, int, BookmarkNode *)));
-    connect(bookmarkManager, SIGNAL(entryChanged(BookmarkNode *)),
-            this, SLOT(entryChanged(BookmarkNode *)));
+    connect(bookmarkManager, SIGNAL(entryAdded(BookmarkNode *)), this, SLOT(entryAdded(BookmarkNode *)));
+    connect(bookmarkManager, SIGNAL(entryRemoved(BookmarkNode *, int, BookmarkNode *)), this, SLOT(entryRemoved(BookmarkNode *, int, BookmarkNode *)));
+    connect(bookmarkManager, SIGNAL(entryChanged(BookmarkNode *)), this, SLOT(entryChanged(BookmarkNode *)));
 }
 
 QModelIndex BookmarksModel::index(BookmarkNode *node) const
@@ -426,8 +410,8 @@ QVariant BookmarksModel::headerData(int section, Qt::Orientation orientation, in
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch (section) {
-            case 0: return tr("Title");
-            case 1: return tr("Address");
+            case 0: return i18n("Title");
+            case 1: return i18n("Address");
         }
     }
     return QAbstractItemModel::headerData(section, orientation, role);
@@ -843,10 +827,10 @@ void BookmarksDialog::customContextMenuRequested(const QPoint &pos)
     QModelIndex index = tree->indexAt(pos);
     index = index.sibling(index.row(), 0);
     if (index.isValid() && !tree->model()->hasChildren(index)) {
-        menu.addAction(tr("Open"), this, SLOT(open()));
+        menu.addAction( i18n("Open"), this, SLOT(open()));
         menu.addSeparator();
     }
-    menu.addAction(tr("Delete"), tree, SLOT(removeOne()));
+    menu.addAction( i18n("Delete"), tree, SLOT(removeOne()));
     menu.exec(QCursor::pos());
 }
 
@@ -869,12 +853,12 @@ void BookmarksDialog::newFolder()
     idx = m_proxyModel->mapToSource(idx);
     BookmarkNode *parent = m_bookmarksManager->bookmarksModel()->node(idx);
     BookmarkNode *node = new BookmarkNode(BookmarkNode::Folder);
-    node->title = tr("New Folder");
+    node->title = i18n("New Folder");
     m_bookmarksManager->addBookmark(parent, node, currentIndex.row() + 1);
 }
 
 BookmarksToolBar::BookmarksToolBar(BookmarksModel *model, QWidget *parent)
-    : QToolBar(tr("Bookmark"), parent)
+    : QToolBar( i18n("Bookmark"), parent)
     , m_bookmarksModel(model)
 {
     connect(this, SIGNAL(actionTriggered(QAction*)), this, SLOT(triggered(QAction*)));

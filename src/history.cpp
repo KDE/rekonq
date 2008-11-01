@@ -1,64 +1,47 @@
-/****************************************************************************
-**
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: Qt Software Information (qt-info@nokia.com)
-**
-** This file is part of the demonstration applications of the Qt Toolkit.
-**
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
-**
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
-**
-** If you are unsure which license is appropriate for your use, please
-** contact the sales department at qt-sales@nokia.com.
-**
-****************************************************************************/
+/* ============================================================
+ *
+ * This file is a part of the reKonq project
+ *
+ * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
+ *
+ *
+ * This program is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU General
+ * Public License as published by the Free Software Foundation;
+ * either version 2, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * ============================================================ */
+
 
 #include "history.h"
 
 #include "autosaver.h"
 #include "browserapplication.h"
 
-#include <QtCore/QBuffer>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
-#include <QtCore/QSettings>
-#include <QtCore/QTemporaryFile>
-#include <QtCore/QTextStream>
+#include <QBuffer>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QSettings>
+#include <QTemporaryFile>
+#include <QTextStream>
 
-#include <QtCore/QtAlgorithms>
+#include <QtAlgorithms>
 
-#include <QtGui/QClipboard>
-#include <QtGui/QDesktopServices>
-#include <QtGui/QHeaderView>
-#include <QtGui/QStyle>
+#include <QClipboard>
+#include <QDesktopServices>
+#include <QHeaderView>
+#include <QStyle>
 
-#include <QtWebKit/QWebHistoryInterface>
-#include <QtWebKit/QWebSettings>
+#include <QWebHistoryInterface>
+#include <QWebSettings>
 
-#include <QtCore/QDebug>
+#include <QDebug>
 
 static const unsigned int HISTORY_VERSION = 23;
 
@@ -71,12 +54,9 @@ HistoryManager::HistoryManager(QObject *parent)
     , m_historyTreeModel(0)
 {
     m_expiredTimer.setSingleShot(true);
-    connect(&m_expiredTimer, SIGNAL(timeout()),
-            this, SLOT(checkForExpired()));
-    connect(this, SIGNAL(entryAdded(const HistoryItem &)),
-            m_saveTimer, SLOT(changeOccurred()));
-    connect(this, SIGNAL(entryRemoved(const HistoryItem &)),
-            m_saveTimer, SLOT(changeOccurred()));
+    connect(&m_expiredTimer, SIGNAL(timeout()), this, SLOT(checkForExpired()));
+    connect(this, SIGNAL(entryAdded(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
+    connect(this, SIGNAL(entryRemoved(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
     load();
 
     m_historyModel = new HistoryModel(this, this);
@@ -363,15 +343,10 @@ HistoryModel::HistoryModel(HistoryManager *history, QObject *parent)
     , m_history(history)
 {
     Q_ASSERT(m_history);
-    connect(m_history, SIGNAL(historyReset()),
-            this, SLOT(historyReset()));
-    connect(m_history, SIGNAL(entryRemoved(const HistoryItem &)),
-            this, SLOT(historyReset()));
-
-    connect(m_history, SIGNAL(entryAdded(const HistoryItem &)),
-            this, SLOT(entryAdded()));
-    connect(m_history, SIGNAL(entryUpdated(int)),
-            this, SLOT(entryUpdated(int)));
+    connect(m_history, SIGNAL(historyReset()), this, SLOT(historyReset()));
+    connect(m_history, SIGNAL(entryRemoved(const HistoryItem &)), this, SLOT(historyReset()));
+    connect(m_history, SIGNAL(entryAdded(const HistoryItem &)), this, SLOT(entryAdded()));
+    connect(m_history, SIGNAL(entryUpdated(int)), this, SLOT(entryUpdated(int)));
 }
 
 void HistoryModel::historyReset()
@@ -396,8 +371,8 @@ QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int 
     if (orientation == Qt::Horizontal
         && role == Qt::DisplayRole) {
         switch (section) {
-            case 0: return tr("Title");
-            case 1: return tr("Address");
+            case 0: return i18n("Title");
+            case 1: return i18n("Address");
         }
     }
     return QAbstractTableModel::headerData(section, orientation, role);
@@ -623,11 +598,11 @@ void HistoryMenu::postPopulated()
     if (m_history->history().count() > 0)
         addSeparator();
 
-    QAction *showAllAction = new QAction(tr("Show All History"), this);
+    QAction *showAllAction = new QAction( i18n("Show All History"), this);
     connect(showAllAction, SIGNAL(triggered()), this, SLOT(showHistoryDialog()));
     addAction(showAllAction);
 
-    QAction *clearAction = new QAction(tr("Clear History"), this);
+    QAction *clearAction = new QAction( i18n("Clear History"), this);
     connect(clearAction, SIGNAL(triggered()), m_history, SLOT(clear()));
     addAction(clearAction);
 }
@@ -696,11 +671,11 @@ void HistoryDialog::customContextMenuRequested(const QPoint &pos)
     QModelIndex index = tree->indexAt(pos);
     index = index.sibling(index.row(), 0);
     if (index.isValid() && !tree->model()->hasChildren(index)) {
-        menu.addAction(tr("Open"), this, SLOT(open()));
+        menu.addAction( i18n("Open"), this, SLOT(open()));
         menu.addSeparator();
-        menu.addAction(tr("Copy"), this, SLOT(copy()));
+        menu.addAction( i18n("Copy"), this, SLOT(copy()));
     }
-    menu.addAction(tr("Delete"), tree, SLOT(removeOne()));
+    menu.addAction( i18n("Delete"), tree, SLOT(removeOne()));
     menu.exec(QCursor::pos());
 }
 
@@ -1029,16 +1004,16 @@ QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
                 QModelIndex idx = sourceModel()->index(offset, 0);
                 QDate date = idx.data(HistoryModel::DateRole).toDate();
                 if (date == QDate::currentDate())
-                    return tr("Earlier Today");
+                    return i18n("Earlier Today");
                 return date.toString(QLatin1String("dddd, MMMM d, yyyy"));
             }
             if (index.column() == 1) {
-                return tr("%1 items").arg(rowCount(index.sibling(index.row(), 0)));
+                return QString(rowCount(index.sibling(index.row(), 0))) + i18n(" items") ;
             }
         }
     }
     if (role == Qt::DecorationRole && index.column() == 0 && !index.parent().isValid())
-        return QIcon(QLatin1String(":history.png"));
+        return KIcon("view-history");
     if (role == HistoryModel::DateRole && index.column() == 0 && index.internalId() == 0) {
         int offset = sourceDateRow(index.row());
         QModelIndex idx = sourceModel()->index(offset, 0);

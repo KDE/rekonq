@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     );
 
     aboutData.addAuthor(ki18n("Andrea Diamantini"), ki18n("reKonq author"), "adjam7@gmail.com");
-    aboutData.setProgramIconName("application-internet");
+    aboutData.setProgramIconName("applications-internet");
 
     KCmdLineArgs::init( argc, argv, &aboutData );
     

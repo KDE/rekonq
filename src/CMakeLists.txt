@@ -3,7 +3,6 @@ SET( rekonq_SRCS
     bookmarks.cpp
     browserapplication.cpp 
     browsermainwindow.cpp 
-    chasewidget.cpp 
     cookiejar.cpp 
     downloadmanager.cpp 
     edittableview.cpp 
@@ -12,6 +11,7 @@ SET( rekonq_SRCS
     modelmenu.cpp 
     networkaccessmanager.cpp
     searchlineedit.cpp 
+#    searchbar.cpp
     settings.cpp 
     squeezelabel.cpp 
     tabwidget.cpp 

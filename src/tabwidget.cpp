@@ -1,39 +1,23 @@
-/****************************************************************************
-**
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: Qt Software Information (qt-info@nokia.com)
-**
-** This file is part of the demonstration applications of the Qt Toolkit.
-**
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
-**
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
-**
-** If you are unsure which license is appropriate for your use, please
-** contact the sales department at qt-sales@nokia.com.
-**
-****************************************************************************/
+/* ============================================================
+ *
+ * This file is a part of the reKonq project
+ *
+ * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
+ *
+ *
+ * This program is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU General
+ * Public License as published by the Free Software Foundation;
+ * either version 2, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * ============================================================ */
+
+
 
 #include "tabwidget.h"
 
@@ -43,15 +27,15 @@
 #include "urllineedit.h"
 #include "webview.h"
 
-#include <QtGui/QClipboard>
-#include <QtGui/QCompleter>
-#include <QtGui/QListView>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QStackedWidget>
-#include <QtGui/QStyle>
-#include <QtGui/QToolButton>
+#include <QClipboard>
+#include <QCompleter>
+#include <QListView>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QStackedWidget>
+#include <QStyle>
+#include <QToolButton>
 
 #include <QtCore/QDebug>
 
@@ -87,32 +71,32 @@ void TabBar::selectTabAction()
 void TabBar::contextMenuRequested(const QPoint &position)
 {
     QMenu menu;
-    menu.addAction(tr("New &Tab"), this, SIGNAL(newTab()), QKeySequence::AddTab);
+    menu.addAction(i18n("New &Tab"), this, SIGNAL(newTab()), QKeySequence::AddTab);
     int index = tabAt(position);
     if (-1 != index) {
-        QAction *action = menu.addAction(tr("Clone Tab"),
+        QAction *action = menu.addAction(i18n("Clone Tab"),
                 this, SLOT(cloneTab()));
         action->setData(index);
 
         menu.addSeparator();
 
-        action = menu.addAction(tr("&Close Tab"),
+        action = menu.addAction(i18n("&Close Tab"),
                 this, SLOT(closeTab()), QKeySequence::Close);
         action->setData(index);
 
-        action = menu.addAction(tr("Close &Other Tabs"),
+        action = menu.addAction(i18n("Close &Other Tabs"),
                 this, SLOT(closeOtherTabs()));
         action->setData(index);
 
         menu.addSeparator();
 
-        action = menu.addAction(tr("Reload Tab"),
+        action = menu.addAction(i18n("Reload Tab"),
                 this, SLOT(reloadTab()), QKeySequence::Refresh);
         action->setData(index);
     } else {
         menu.addSeparator();
     }
-    menu.addAction(tr("Reload All Tabs"), this, SIGNAL(reloadAllTabs()));
+    menu.addAction(i18n("Reload All Tabs"), this, SIGNAL(reloadAllTabs()));
     menu.exec(QCursor::pos());
 }
 
@@ -233,17 +217,17 @@ TabWidget::TabWidget(QWidget *parent)
     setTabBar(m_tabBar);
 
     // Actions
-    m_newTabAction = new QAction(QIcon(QLatin1String(":addtab.png")), tr("New &Tab"), this);
+    m_newTabAction = new QAction(KIcon("tab-new"), i18n("New &Tab"), this);
     m_newTabAction->setShortcuts(QKeySequence::AddTab);
     m_newTabAction->setIconVisibleInMenu(false);
     connect(m_newTabAction, SIGNAL(triggered()), this, SLOT(newTab()));
 
-    m_closeTabAction = new QAction(QIcon(QLatin1String(":closetab.png")), tr("&Close Tab"), this);
+    m_closeTabAction = new QAction(KIcon("tab-close"), i18n("&Close Tab"), this);
     m_closeTabAction->setShortcuts(QKeySequence::Close);
     m_closeTabAction->setIconVisibleInMenu(false);
     connect(m_closeTabAction, SIGNAL(triggered()), this, SLOT(closeTab()));
 
-    m_nextTabAction = new QAction(tr("Show Next Tab"), this);
+    m_nextTabAction = new QAction(i18n("Show Next Tab"), this);
     QList<QKeySequence> shortcuts;
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_BraceRight));
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_PageDown));
@@ -252,7 +236,7 @@ TabWidget::TabWidget(QWidget *parent)
     m_nextTabAction->setShortcuts(shortcuts);
     connect(m_nextTabAction, SIGNAL(triggered()), this, SLOT(nextTab()));
 
-    m_previousTabAction = new QAction(tr("Show Previous Tab"), this);
+    m_previousTabAction = new QAction(i18n("Show Previous Tab"), this);
     shortcuts.clear();
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_BraceLeft));
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_PageUp));
@@ -266,7 +250,7 @@ TabWidget::TabWidget(QWidget *parent)
             this, SLOT(aboutToShowRecentTabsMenu()));
     connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)),
             this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
-    m_recentlyClosedTabsAction = new QAction(tr("Recently Closed Tabs"), this);
+    m_recentlyClosedTabsAction = new QAction(i18n("Recently Closed Tabs"), this);
     m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
     m_recentlyClosedTabsAction->setEnabled(false);
 
@@ -465,7 +449,7 @@ WebView *TabWidget::newTab(bool makeCurrent)
         emptyWidget->setAutoFillBackground(true);
         disconnect(this, SIGNAL(currentChanged(int)),
             this, SLOT(currentChanged(int)));
-        addTab(emptyWidget, tr("(Untitled)"));
+        addTab(emptyWidget, i18n("(Untitled)"));
         connect(this, SIGNAL(currentChanged(int)),
             this, SLOT(currentChanged(int)));
         return 0;
@@ -496,7 +480,7 @@ WebView *TabWidget::newTab(bool makeCurrent)
             this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
     connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)),
             this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
-    addTab(webView, tr("(Untitled)"));
+    addTab(webView, i18n("(Untitled)"));
     if (makeCurrent)
         setCurrentWidget(webView);
 
@@ -578,8 +562,8 @@ void TabWidget::closeTab(int index)
         if (tab->isModified()) {
             QMessageBox closeConfirmation(tab);
             closeConfirmation.setWindowFlags(Qt::Sheet);
-            closeConfirmation.setWindowTitle(tr("Do you really want to close this page?"));
-            closeConfirmation.setInformativeText(tr("You have modified this page and when closing it you would lose the modification.\n"
+            closeConfirmation.setWindowTitle(i18n("Do you really want to close this page?"));
+            closeConfirmation.setInformativeText(i18n("You have modified this page and when closing it you would lose the modification.\n"
                                                      "Do you really want to close this page?\n"));
             closeConfirmation.setIcon(QMessageBox::Question);
             closeConfirmation.addButton(QMessageBox::Yes);

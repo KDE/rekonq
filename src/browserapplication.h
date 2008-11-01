@@ -23,10 +23,10 @@
 
 #include <KApplication>
 #include <KCmdLineArgs>
+#include <KIcon>
 
 #include <QUrl>
 #include <QPointer>
-#include <QIcon>
 
 QT_BEGIN_NAMESPACE
 class QLocalServer;
@@ -52,7 +52,7 @@ public:
     bool isTheOnlyBrowser() const;
     BrowserMainWindow *mainWindow();
     QList<BrowserMainWindow*> mainWindows();
-    QIcon icon(const QUrl &url) const;
+    KIcon icon(const QUrl &url) const;
 
     void saveSession();
     bool canRestoreSession() const;
@@ -92,7 +92,7 @@ private:
     QList<QPointer<BrowserMainWindow> > m_mainWindows;
     QLocalServer *m_localServer;
     QByteArray m_lastSession;
-    mutable QIcon m_defaultIcon;
+    mutable KIcon m_defaultIcon;
 };
 
 #endif // BROWSERAPPLICATION_H

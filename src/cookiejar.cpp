@@ -1,62 +1,43 @@
-/****************************************************************************
-**
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: Qt Software Information (qt-info@nokia.com)
-**
-** This file is part of the demonstration applications of the Qt Toolkit.
-**
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
-**
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
-**
-** If you are unsure which license is appropriate for your use, please
-** contact the sales department at qt-sales@nokia.com.
-**
-****************************************************************************/
+/* ============================================================
+ *
+ * This file is a part of the reKonq project
+ *
+ * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
+ *
+ *
+ * This program is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU General
+ * Public License as published by the Free Software Foundation;
+ * either version 2, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * ============================================================ */
 
+
+// Local Includes
 #include "cookiejar.h"
-
 #include "autosaver.h"
 
-#include <QtCore/QDateTime>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QMetaEnum>
-#include <QtCore/QSettings>
-#include <QtCore/QUrl>
-
-#include <QtGui/QCompleter>
-#include <QtGui/QDesktopServices>
-#include <QtGui/QFont>
-#include <QtGui/QFontMetrics>
-#include <QtGui/QHeaderView>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QSortFilterProxyModel>
-
-#include <QtWebKit/QWebSettings>
-
-#include <QtCore/QDebug>
+// Qt Includes
+#include <QDateTime>
+#include <QDir>
+#include <QFile>
+#include <QMetaEnum>
+#include <QSettings>
+#include <QUrl>
+#include <QCompleter>
+#include <QDesktopServices>
+#include <QFont>
+#include <QFontMetrics>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QSortFilterProxyModel>
+#include <QWebSettings>
+#include <QDebug>
 
 static const unsigned int JAR_VERSION = 23;
 
@@ -392,17 +373,17 @@ QVariant CookieModel::headerData(int section, Qt::Orientation orientation, int r
 
         switch (section) {
             case 0:
-                return tr("Website");
+                return i18n("Website");
             case 1:
-                return tr("Name");
+                return i18n("Name");
             case 2:
-                return tr("Path");
+                return i18n("Path");
             case 3:
-                return tr("Secure");
+                return i18n("Secure");
             case 4:
-                return tr("Expires");
+                return i18n("Expires");
             case 5:
-                return tr("Contents");
+                return i18n("Contents");
             default:
                 return QVariant();
         }
@@ -547,9 +528,9 @@ QVariant CookieExceptionsModel::headerData(int section, Qt::Orientation orientat
         && role == Qt::DisplayRole) {
         switch (section) {
             case 0:
-                return tr("Website");
+                return i18n("Website");
             case 1:
-                return tr("Status");
+                return i18n("Status");
         }
     }
     return QAbstractTableModel::headerData(section, orientation, role);
@@ -569,7 +550,7 @@ QVariant CookieExceptionsModel::data(const QModelIndex &index, int role) const
                 case 0:
                     return m_allowedCookies.at(row);
                 case 1:
-                    return tr("Allow");
+                    return i18n("Allow");
             }
         }
         row = row - m_allowedCookies.count();
@@ -578,7 +559,7 @@ QVariant CookieExceptionsModel::data(const QModelIndex &index, int role) const
                 case 0:
                     return m_blockedCookies.at(row);
                 case 1:
-                    return tr("Block");
+                    return i18n("Block");
             }
         }
         row = row - m_blockedCookies.count();
@@ -587,7 +568,7 @@ QVariant CookieExceptionsModel::data(const QModelIndex &index, int role) const
                 case 0:
                     return m_sessionCookies.at(row);
                 case 1:
-                    return tr("Allow For Session");
+                    return i18n("Allow For Session");
             }
         }
         }
