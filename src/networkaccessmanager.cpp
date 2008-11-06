@@ -2,6 +2,7 @@
  *
  * This file is a part of the reKonq project
  *
+ * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *

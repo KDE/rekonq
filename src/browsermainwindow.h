@@ -2,6 +2,7 @@
  *
  * This file is a part of the reKonq project
  *
+ * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
@@ -30,7 +31,6 @@
 #include <QUrl>
 
 class AutoSaver;
-// class ChaseWidget;
 class QWebFrame;
 class TabWidget;
 class ToolbarSearch;
@@ -114,24 +114,24 @@ private:
     void updateStatusbarActionText(bool visible);
 
 private:
-    QToolBar *m_navigationBar;
+    KToolBar *m_navigationBar;
     ToolbarSearch *m_toolbarSearch;
     TabWidget *m_tabWidget;
     AutoSaver *m_autoSaver;
 
-    QAction *m_historyBack;
-    QMenu *m_historyBackMenu;
-    QAction *m_historyForward;
-    QMenu *m_historyForwardMenu;
-    QMenu *m_windowMenu;
+    KAction *m_historyBack;
+    KMenu *m_historyBackMenu;
+    KAction *m_historyForward;
+    KMenu *m_historyForwardMenu;
+    KMenu *m_windowMenu;
 
-    QAction *m_stop;
-    QAction *m_reload;
-    QAction *m_stopReload;
-    QAction *m_goHome;
-    QAction *m_viewStatusbar;
-    QAction *m_restoreLastSession;
-    QAction *m_addBookmark;
+    KAction *m_stop;
+    KAction *m_reload;
+    KAction *m_stopReload;
+    KAction *m_goHome;
+    KAction *m_viewStatusbar;
+    KAction *m_restoreLastSession;
+    KAction *m_addBookmark;
 
     KIcon m_reloadIcon;
     KIcon m_stopIcon;

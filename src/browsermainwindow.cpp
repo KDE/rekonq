@@ -2,6 +2,7 @@
  *
  * This file is a part of the reKonq project
  *
+ * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
@@ -217,12 +218,12 @@ bool BrowserMainWindow::restoreState(const QByteArray &state)
 
 void BrowserMainWindow::setupMenu()
 {
-    new QShortcut(QKeySequence(Qt::Key_F6), this, SLOT(slotSwapFocus()));
-
+//     new QShortcut(QKeySequence(Qt::Key_F6), this, SLOT(slotSwapFocus()));
+// 
     //  ------------------------------------------------------------- FILE --------------------------------------------------------------------------------------------------
-    QMenu *fileMenu = menuBar()->addMenu( i18n("&File"));
+    KMenu *fileMenu = menuBar()->addMenu( i18n("&File") );
 
-    fileMenu->addAction(i18n("&New Window"), this, SLOT(slotFileNew()), QKeySequence::New);
+    fileMenu->addAction( i18n("&New Window"), this, SLOT(slotFileNew()), QKeySequence::New);
     fileMenu->addAction(m_tabWidget->newTabAction());
     fileMenu->addAction(i18n("&Open File..."), this, SLOT(slotFileOpen()), QKeySequence::Open);
     fileMenu->addAction(i18n("Open &Location..."), this, SLOT(slotSelectLineEdit()), QKeySequence(Qt::ControlModifier + Qt::Key_L));
@@ -242,164 +243,160 @@ void BrowserMainWindow::setupMenu()
     action->setCheckable(true);
     fileMenu->addSeparator();
 
-#if defined(Q_WS_MAC)
-    fileMenu->addAction( i18n("&Quit"), BrowserApplication::instance(), SLOT(quitBrowser()), QKeySequence(Qt::CTRL | Qt::Key_Q));
-#else
     fileMenu->addAction( i18n("&Quit"), this, SLOT(close()), QKeySequence(Qt::CTRL | Qt::Key_Q));
-#endif
 
-    //  ------------------------------------------------------------- EDIT --------------------------------------------------------------------------------------------------
-    QMenu *editMenu = menuBar()->addMenu(i18n("&Edit"));
-
-    QAction *m_undo = editMenu->addAction(i18n("&Undo"));
-    m_undo->setShortcuts(QKeySequence::Undo);
-    m_tabWidget->addWebAction(m_undo, QWebPage::Undo);
-
-    QAction *m_redo = editMenu->addAction(i18n("&Redo"));
-    m_redo->setShortcuts(QKeySequence::Redo);
-    m_tabWidget->addWebAction(m_redo, QWebPage::Redo);
-
-    editMenu->addSeparator();
-
-    QAction *m_cut = editMenu->addAction(i18n("Cu&t"));
-    m_cut->setShortcuts(QKeySequence::Cut);
-    m_tabWidget->addWebAction(m_cut, QWebPage::Cut);
-
-    QAction *m_copy = editMenu->addAction(i18n("&Copy"));
-    m_copy->setShortcuts(QKeySequence::Copy);
-    m_tabWidget->addWebAction(m_copy, QWebPage::Copy);
-
-    QAction *m_paste = editMenu->addAction(i18n("&Paste"));
-    m_paste->setShortcuts(QKeySequence::Paste);
-    m_tabWidget->addWebAction(m_paste, QWebPage::Paste);
-
-    editMenu->addSeparator();
-
-    QAction *m_find = editMenu->addAction(i18n("&Find"));
-    m_find->setShortcuts(QKeySequence::Find);
-    connect(m_find, SIGNAL(triggered()), this, SLOT(slotEditFind()));
-    new QShortcut(QKeySequence(Qt::Key_Slash), this, SLOT(slotEditFind()));
-
-    QAction *m_findNext = editMenu->addAction( i18n("&Find Next"));
-    m_findNext->setShortcuts(QKeySequence::FindNext);
-    connect(m_findNext, SIGNAL(triggered()), this, SLOT(slotEditFindNext()));
-
-    QAction *m_findPrevious = editMenu->addAction( i18n("&Find Previous"));
-    m_findPrevious->setShortcuts(QKeySequence::FindPrevious);
-    connect(m_findPrevious, SIGNAL(triggered()), this, SLOT(slotEditFindPrevious()));
-
-    editMenu->addSeparator();
-    editMenu->addAction( i18n("&Preferences"), this, SLOT(slotPreferences()), i18n("Ctrl+,"));
-
-
-    //  ------------------------------------------------------------- VIEW -------------------------------------------------------------------------------------------------
-    QMenu *viewMenu = menuBar()->addMenu( i18n("&View") );
-
-    m_viewStatusbar = new KAction(this);
-    updateStatusbarActionText(true);
-    m_viewStatusbar->setShortcut( i18n("Ctrl+/") );
-    connect(m_viewStatusbar, SIGNAL(triggered()), this, SLOT(slotViewStatusbar()));
-    viewMenu->addAction(m_viewStatusbar);
-
-    viewMenu->addSeparator();
-
-    m_stop = viewMenu->addAction( i18n("&Stop") );
-    QList<QKeySequence> shortcuts;
-    shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_Period));
-    shortcuts.append(Qt::Key_Escape);
-    m_stop->setShortcuts(shortcuts);
-    m_tabWidget->addWebAction(m_stop, QWebPage::Stop);
-
-    m_reload = viewMenu->addAction( i18n("Reload Page") );
-    m_reload->setShortcuts(QKeySequence::Refresh);
-    m_tabWidget->addWebAction(m_reload, QWebPage::Reload);
-
-    viewMenu->addAction( i18n("&Make Text Bigger"), this, SLOT(slotViewTextBigger()), QKeySequence(Qt::CTRL | Qt::Key_Plus));
-    viewMenu->addAction( i18n("&Make Text Normal"), this, SLOT(slotViewTextNormal()), QKeySequence(Qt::CTRL | Qt::Key_0));
-    viewMenu->addAction( i18n("&Make Text Smaller"), this, SLOT(slotViewTextSmaller()), QKeySequence(Qt::CTRL | Qt::Key_Minus));
-
-    viewMenu->addSeparator();
-    viewMenu->addAction( i18n("Page S&ource"), this, SLOT(slotViewPageSource()), i18n("Ctrl+Alt+U"));
-    QAction *a = viewMenu->addAction( i18n("&Full Screen"), this, SLOT(slotViewFullScreen(bool)),  Qt::Key_F11);
-    a->setCheckable(true);
-
-
-    //  ------------------------------------------------------------- HISTORY --------------------------------------------------------------------------------------------------
-    HistoryMenu *historyMenu = new HistoryMenu(this);
-    connect(historyMenu, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
-    connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
-    historyMenu->setTitle( i18n("Hi&story") );
-    menuBar()->addMenu(historyMenu);
-    QList<QAction*> historyActions;
-
-    m_historyBack = new QAction( i18n("Back"), this);
-    m_tabWidget->addWebAction(m_historyBack, QWebPage::Back);
-    m_historyBack->setShortcuts(QKeySequence::Back);
-    m_historyBack->setIconVisibleInMenu(false);
-
-    m_historyForward = new QAction( i18n("Forward"), this);
-    m_tabWidget->addWebAction(m_historyForward, QWebPage::Forward);
-    m_historyForward->setShortcuts(QKeySequence::Forward);
-    m_historyForward->setIconVisibleInMenu(false);
-
-    QAction *m_historyHome = new QAction( i18n("Home"), this);
-    connect(m_historyHome, SIGNAL(triggered()), this, SLOT(slotHome()));
-    m_historyHome->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_H));
-
-    m_restoreLastSession = new QAction( i18n("Restore Last Session"), this);
-    connect(m_restoreLastSession, SIGNAL(triggered()), BrowserApplication::instance(), SLOT(restoreLastSession()));
-    m_restoreLastSession->setEnabled(BrowserApplication::instance()->canRestoreSession());
-
-    historyActions.append(m_historyBack);
-    historyActions.append(m_historyForward);
-    historyActions.append(m_historyHome);
-    historyActions.append(m_tabWidget->recentlyClosedTabsAction());
-    historyActions.append(m_restoreLastSession);
-    historyMenu->setInitialActions(historyActions);
-
-    //  ------------------------------------------------------------- BOOKMARKS --------------------------------------------------------------------------------------------------
-    BookmarksMenu *bookmarksMenu = new BookmarksMenu(this);
-    connect(bookmarksMenu, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
-    connect(bookmarksMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
-    bookmarksMenu->setTitle(i18n("&Bookmarks"));
-    menuBar()->addMenu(bookmarksMenu);
-
-    // FIXME
-//     BookmarksManager *bookmarksManager = BrowserApplication::bookmarksManager();
-//     bookmarksMenu->addAction(i18n("&Import Bookmarks..."), bookmarksManager, SLOT(importBookmarks()));
-//     bookmarksMenu->addAction(i18n("&Export Bookmarks..."), bookmarksManager, SLOT(exportBookmarks()));
-//     bookmarksMenu->addSeparator();
-
-    QList<QAction*> bookmarksActions;
-
-    QAction *showAllBookmarksAction = new QAction(i18n("Show All Bookmarks"), this);
-    connect(showAllBookmarksAction, SIGNAL(triggered()), this, SLOT(slotShowBookmarksDialog()));
-    m_addBookmark = new QAction( KIcon("bookmark-new"), i18n("Add Bookmark..."), this);
-    m_addBookmark->setIconVisibleInMenu(false);
-
-    connect(m_addBookmark, SIGNAL(triggered()), this, SLOT(slotAddBookmark()));
-    m_addBookmark->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));
-
-    bookmarksActions.append(showAllBookmarksAction);
-    bookmarksActions.append(m_addBookmark);
-    bookmarksMenu->setInitialActions(bookmarksActions);
-
-    //  ------------------------------------------------------------- WINDOW --------------------------------------------------------------------------------------------------
-    m_windowMenu = menuBar()->addMenu( i18n("&Window"));
-    connect(m_windowMenu, SIGNAL(aboutToShow()),
-            this, SLOT(slotAboutToShowWindowMenu()));
-    slotAboutToShowWindowMenu();
-
-    QMenu *toolsMenu = menuBar()->addMenu( i18n("&Tools"));
-    toolsMenu->addAction( i18n("Web &Search"), this, SLOT(slotWebSearch()), QKeySequence( tr("Ctrl+K", "Web Search")));
-#ifndef Q_CC_MINGW
-    a = toolsMenu->addAction( i18n("Enable Web &Inspector"), this, SLOT(slotToggleInspector(bool)));
-    a->setCheckable(true);
-#endif
-
-    QMenu *helpMenu = menuBar()->addMenu( i18n("&Help"));
-    helpMenu->addAction( i18n("About &Qt"), qApp, SLOT(aboutQt()));
-    helpMenu->addAction( i18n("About &reKonq"), this, SLOT(slotAboutApplication()));
+//     //  ------------------------------------------------------------- EDIT --------------------------------------------------------------------------------------------------
+//     QMenu *editMenu = menuBar()->addMenu(i18n("&Edit"));
+// 
+//     QAction *m_undo = editMenu->addAction(i18n("&Undo"));
+//     m_undo->setShortcuts(QKeySequence::Undo);
+//     m_tabWidget->addWebAction(m_undo, QWebPage::Undo);
+// 
+//     QAction *m_redo = editMenu->addAction(i18n("&Redo"));
+//     m_redo->setShortcuts(QKeySequence::Redo);
+//     m_tabWidget->addWebAction(m_redo, QWebPage::Redo);
+// 
+//     editMenu->addSeparator();
+// 
+//     QAction *m_cut = editMenu->addAction(i18n("Cu&t"));
+//     m_cut->setShortcuts(QKeySequence::Cut);
+//     m_tabWidget->addWebAction(m_cut, QWebPage::Cut);
+// 
+//     QAction *m_copy = editMenu->addAction(i18n("&Copy"));
+//     m_copy->setShortcuts(QKeySequence::Copy);
+//     m_tabWidget->addWebAction(m_copy, QWebPage::Copy);
+// 
+//     QAction *m_paste = editMenu->addAction(i18n("&Paste"));
+//     m_paste->setShortcuts(QKeySequence::Paste);
+//     m_tabWidget->addWebAction(m_paste, QWebPage::Paste);
+// 
+//     editMenu->addSeparator();
+// 
+//     QAction *m_find = editMenu->addAction(i18n("&Find"));
+//     m_find->setShortcuts(QKeySequence::Find);
+//     connect(m_find, SIGNAL(triggered()), this, SLOT(slotEditFind()));
+//     new QShortcut(QKeySequence(Qt::Key_Slash), this, SLOT(slotEditFind()));
+// 
+//     QAction *m_findNext = editMenu->addAction( i18n("&Find Next"));
+//     m_findNext->setShortcuts(QKeySequence::FindNext);
+//     connect(m_findNext, SIGNAL(triggered()), this, SLOT(slotEditFindNext()));
+// 
+//     QAction *m_findPrevious = editMenu->addAction( i18n("&Find Previous"));
+//     m_findPrevious->setShortcuts(QKeySequence::FindPrevious);
+//     connect(m_findPrevious, SIGNAL(triggered()), this, SLOT(slotEditFindPrevious()));
+// 
+//     editMenu->addSeparator();
+//     editMenu->addAction( i18n("&Preferences"), this, SLOT(slotPreferences()), i18n("Ctrl+,"));
+// 
+// 
+//     //  ------------------------------------------------------------- VIEW -------------------------------------------------------------------------------------------------
+//     QMenu *viewMenu = menuBar()->addMenu( i18n("&View") );
+// 
+//     m_viewStatusbar = new KAction(this);
+//     updateStatusbarActionText(true);
+//     m_viewStatusbar->setShortcut( i18n("Ctrl+/") );
+//     connect(m_viewStatusbar, SIGNAL(triggered()), this, SLOT(slotViewStatusbar()));
+//     viewMenu->addAction(m_viewStatusbar);
+// 
+//     viewMenu->addSeparator();
+// 
+//     m_stop = viewMenu->addAction( i18n("&Stop") );
+//     QList<QKeySequence> shortcuts;
+//     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_Period));
+//     shortcuts.append(Qt::Key_Escape);
+//     m_stop->setShortcuts(shortcuts);
+//     m_tabWidget->addWebAction(m_stop, QWebPage::Stop);
+// 
+//     m_reload = viewMenu->addAction( i18n("Reload Page") );
+//     m_reload->setShortcuts(QKeySequence::Refresh);
+//     m_tabWidget->addWebAction(m_reload, QWebPage::Reload);
+// 
+//     viewMenu->addAction( i18n("&Make Text Bigger"), this, SLOT(slotViewTextBigger()), QKeySequence(Qt::CTRL | Qt::Key_Plus));
+//     viewMenu->addAction( i18n("&Make Text Normal"), this, SLOT(slotViewTextNormal()), QKeySequence(Qt::CTRL | Qt::Key_0));
+//     viewMenu->addAction( i18n("&Make Text Smaller"), this, SLOT(slotViewTextSmaller()), QKeySequence(Qt::CTRL | Qt::Key_Minus));
+// 
+//     viewMenu->addSeparator();
+//     viewMenu->addAction( i18n("Page S&ource"), this, SLOT(slotViewPageSource()), i18n("Ctrl+Alt+U"));
+//     QAction *a = viewMenu->addAction( i18n("&Full Screen"), this, SLOT(slotViewFullScreen(bool)),  Qt::Key_F11);
+//     a->setCheckable(true);
+// 
+// 
+//     //  ------------------------------------------------------------- HISTORY --------------------------------------------------------------------------------------------------
+//     HistoryMenu *historyMenu = new HistoryMenu(this);
+//     connect(historyMenu, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
+//     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
+//     historyMenu->setTitle( i18n("Hi&story") );
+//     menuBar()->addMenu(historyMenu);
+//     QList<QAction*> historyActions;
+// 
+//     m_historyBack = new QAction( i18n("Back"), this);
+//     m_tabWidget->addWebAction(m_historyBack, QWebPage::Back);
+//     m_historyBack->setShortcuts(QKeySequence::Back);
+//     m_historyBack->setIconVisibleInMenu(false);
+// 
+//     m_historyForward = new QAction( i18n("Forward"), this);
+//     m_tabWidget->addWebAction(m_historyForward, QWebPage::Forward);
+//     m_historyForward->setShortcuts(QKeySequence::Forward);
+//     m_historyForward->setIconVisibleInMenu(false);
+// 
+//     QAction *m_historyHome = new QAction( i18n("Home"), this);
+//     connect(m_historyHome, SIGNAL(triggered()), this, SLOT(slotHome()));
+//     m_historyHome->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_H));
+// 
+//     m_restoreLastSession = new QAction( i18n("Restore Last Session"), this);
+//     connect(m_restoreLastSession, SIGNAL(triggered()), BrowserApplication::instance(), SLOT(restoreLastSession()));
+//     m_restoreLastSession->setEnabled(BrowserApplication::instance()->canRestoreSession());
+// 
+//     historyActions.append(m_historyBack);
+//     historyActions.append(m_historyForward);
+//     historyActions.append(m_historyHome);
+//     historyActions.append(m_tabWidget->recentlyClosedTabsAction());
+//     historyActions.append(m_restoreLastSession);
+//     historyMenu->setInitialActions(historyActions);
+// 
+//     //  ------------------------------------------------------------- BOOKMARKS --------------------------------------------------------------------------------------------------
+//     BookmarksMenu *bookmarksMenu = new BookmarksMenu(this);
+//     connect(bookmarksMenu, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
+//     connect(bookmarksMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
+//     bookmarksMenu->setTitle(i18n("&Bookmarks"));
+//     menuBar()->addMenu(bookmarksMenu);
+// 
+//     // FIXME
+// //     BookmarksManager *bookmarksManager = BrowserApplication::bookmarksManager();
+// //     bookmarksMenu->addAction(i18n("&Import Bookmarks..."), bookmarksManager, SLOT(importBookmarks()));
+// //     bookmarksMenu->addAction(i18n("&Export Bookmarks..."), bookmarksManager, SLOT(exportBookmarks()));
+// //     bookmarksMenu->addSeparator();
+// 
+//     QList<QAction*> bookmarksActions;
+// 
+//     QAction *showAllBookmarksAction = new QAction(i18n("Show All Bookmarks"), this);
+//     connect(showAllBookmarksAction, SIGNAL(triggered()), this, SLOT(slotShowBookmarksDialog()));
+//     m_addBookmark = new QAction( KIcon("bookmark-new"), i18n("Add Bookmark..."), this);
+//     m_addBookmark->setIconVisibleInMenu(false);
+// 
+//     connect(m_addBookmark, SIGNAL(triggered()), this, SLOT(slotAddBookmark()));
+//     m_addBookmark->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));
+// 
+//     bookmarksActions.append(showAllBookmarksAction);
+//     bookmarksActions.append(m_addBookmark);
+//     bookmarksMenu->setInitialActions(bookmarksActions);
+// 
+//     //  ------------------------------------------------------------- WINDOW --------------------------------------------------------------------------------------------------
+//     m_windowMenu = menuBar()->addMenu( i18n("&Window"));
+//     connect(m_windowMenu, SIGNAL(aboutToShow()),
+//             this, SLOT(slotAboutToShowWindowMenu()));
+//     slotAboutToShowWindowMenu();
+// 
+//     QMenu *toolsMenu = menuBar()->addMenu( i18n("&Tools"));
+//     toolsMenu->addAction( i18n("Web &Search"), this, SLOT(slotWebSearch()), QKeySequence( tr("Ctrl+K", "Web Search")));
+// #ifndef Q_CC_MINGW
+//     a = toolsMenu->addAction( i18n("Enable Web &Inspector"), this, SLOT(slotToggleInspector(bool)));
+//     a->setCheckable(true);
+// #endif
+// 
+//     QMenu *helpMenu = menuBar()->addMenu( i18n("&Help"));
+//     helpMenu->addAction( i18n("About &Qt"), qApp, SLOT(aboutQt()));
+//     helpMenu->addAction( i18n("About &reKonq"), this, SLOT(slotAboutApplication()));
 }
 
 
@@ -408,44 +405,44 @@ void BrowserMainWindow::setupMenu()
 
 void BrowserMainWindow::setupToolBar()
 {
-    setUnifiedTitleAndToolBarOnMac(true);
-
-    m_navigationBar = addToolBar(i18n("Navigation"));
-    connect(m_navigationBar->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(updateToolbarActionText(bool)));
-
-    m_historyBack->setIcon( KIcon("go-previous") );
-    m_historyBackMenu = new QMenu(this);
-    m_historyBack->setMenu(m_historyBackMenu);
-    connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
-    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
-    m_navigationBar->addAction(m_historyBack);
-
-    m_historyForward->setIcon( KIcon("go-next") );
-    m_historyForwardMenu = new QMenu(this); 
-    connect(m_historyForwardMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowForwardMenu()));
-    connect(m_historyForwardMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
-    m_historyForward->setMenu(m_historyForwardMenu);
-    m_navigationBar->addAction(m_historyForward);
-
-    m_stopReload = new QAction(this);
-    m_reloadIcon = KIcon( "view-refresh" );
-    m_stopReload->setIcon(m_reloadIcon);
-    m_navigationBar->addAction(m_stopReload);
-
-    m_goHome = new QAction(this);
-    m_goHome->setIcon( KIcon( "go-home" ) );
-    m_navigationBar->addAction(m_goHome);
-    connect(m_goHome, SIGNAL(triggered()), this, SLOT(slotHome()));
-
-    m_navigationBar->addWidget(m_tabWidget->lineEditStack());
-
-    m_toolbarSearch = new ToolbarSearch(m_navigationBar);
-    m_navigationBar->addWidget(m_toolbarSearch);
-
-    // fixing toolbar movements
-    m_navigationBar->setFloatable( false );
-
-    connect(m_toolbarSearch, SIGNAL(search(const QUrl&)), SLOT(loadUrl(const QUrl&)));
+//     setUnifiedTitleAndToolBarOnMac(true);
+// 
+//     m_navigationBar = addToolBar(i18n("Navigation"));
+//     connect(m_navigationBar->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(updateToolbarActionText(bool)));
+// 
+//     m_historyBack->setIcon( KIcon("go-previous") );
+//     m_historyBackMenu = new QMenu(this);
+//     m_historyBack->setMenu(m_historyBackMenu);
+//     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
+//     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
+//     m_navigationBar->addAction(m_historyBack);
+// 
+//     m_historyForward->setIcon( KIcon("go-next") );
+//     m_historyForwardMenu = new QMenu(this); 
+//     connect(m_historyForwardMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowForwardMenu()));
+//     connect(m_historyForwardMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
+//     m_historyForward->setMenu(m_historyForwardMenu);
+//     m_navigationBar->addAction(m_historyForward);
+// 
+//     m_stopReload = new QAction(this);
+//     m_reloadIcon = KIcon( "view-refresh" );
+//     m_stopReload->setIcon(m_reloadIcon);
+//     m_navigationBar->addAction(m_stopReload);
+// 
+//     m_goHome = new QAction(this);
+//     m_goHome->setIcon( KIcon( "go-home" ) );
+//     m_navigationBar->addAction(m_goHome);
+//     connect(m_goHome, SIGNAL(triggered()), this, SLOT(slotHome()));
+// 
+//     m_navigationBar->addWidget(m_tabWidget->lineEditStack());
+// 
+//     m_toolbarSearch = new ToolbarSearch(m_navigationBar);
+//     m_navigationBar->addWidget(m_toolbarSearch);
+// 
+//     // fixing toolbar movements
+//     m_navigationBar->setFloatable( false );
+// 
+//     connect(m_toolbarSearch, SIGNAL(search(const QUrl&)), SLOT(loadUrl(const QUrl&)));
 }
 
 
