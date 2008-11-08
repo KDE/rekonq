@@ -74,18 +74,15 @@ BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &server
         return;
     }
 
-#if defined(Q_WS_MAC)
-    KApplication::setQuitOnLastWindowClosed(false);
-#else
     KApplication::setQuitOnLastWindowClosed(true);
-#endif
 
     m_localServer = new QLocalServer(this);
-    connect(m_localServer, SIGNAL(newConnection()),
-            this, SLOT(newLocalSocketConnection()));
-    if (!m_localServer->listen(serverName)) {
+    connect(m_localServer, SIGNAL(newConnection()), this, SLOT(newLocalSocketConnection()));
+    if (!m_localServer->listen(serverName)) 
+    {
         if (m_localServer->serverError() == QAbstractSocket::AddressInUseError
-            && QFile::exists(m_localServer->serverName())) {
+            && QFile::exists(m_localServer->serverName()))
+        {
             QFile::remove(m_localServer->serverName());
             m_localServer->listen(serverName);
         }
@@ -100,11 +97,6 @@ BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &server
     settings.beginGroup(QLatin1String("sessions"));
     m_lastSession = settings.value(QLatin1String("lastSession")).toByteArray();
     settings.endGroup();
-
-#if defined(Q_WS_MAC)
-    connect(this, SIGNAL(lastWindowClosed()),
-            this, SLOT(lastWindowClosed()));
-#endif
 
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
@@ -138,31 +130,6 @@ BrowserApplication *BrowserApplication::instance()
 {
     return (static_cast<BrowserApplication *>(QCoreApplication::instance()));
 }
-
-
-
-#if defined(Q_WS_MAC)
-#include <QtGui/QMessageBox>
-void BrowserApplication::quitBrowser()
-{
-    clean();
-    int tabCount = 0;
-    for (int i = 0; i < m_mainWindows.count(); ++i) {
-        tabCount =+ m_mainWindows.at(i)->tabWidget()->count();
-    }
-
-    if (tabCount > 1) {
-        int ret = QMessageBox::warning(mainWindow(), QString(),
-                           i18n("There are ") + QString( m_mainWindows.count() ) + i18n(" windows and ") + QString(tabCount) + i18n("tabs open\n"),
-                           QMessageBox::Yes | QMessageBox::No,
-                           QMessageBox::No);
-        if (ret == QMessageBox::No)
-            return;
-    }
-
-    exit(0);
-}
-#endif
 
 
 
@@ -325,32 +292,6 @@ void BrowserApplication::installTranslator(const QString &name)
     translator->load(name, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     KApplication::installTranslator(translator);
 }
-
-#if defined(Q_WS_MAC)
-bool BrowserApplication::event(QEvent* event)
-{
-    switch (event->type()) {
-    case QEvent::ApplicationActivate: {
-        clean();
-        if (!m_mainWindows.isEmpty()) {
-            BrowserMainWindow *mw = mainWindow();
-            if (mw && !mw->isMinimized()) {
-                mainWindow()->show();
-            }
-            return true;
-        }
-    }
-    case QEvent::FileOpen:
-        if (!m_mainWindows.isEmpty()) {
-            mainWindow()->loadPage(static_cast<QFileOpenEvent *>(event)->file());
-            return true;
-        }
-    default:
-        break;
-    }
-    return KApplication::event(event);
-}
-#endif
 
 
 

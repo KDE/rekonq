@@ -114,6 +114,7 @@ private:
     void updateStatusbarActionText(bool visible);
 
 private:
+
     KToolBar *m_navigationBar;
     ToolbarSearch *m_toolbarSearch;
     TabWidget *m_tabWidget;
@@ -125,8 +126,8 @@ private:
     KMenu *m_historyForwardMenu;
     KMenu *m_windowMenu;
 
-    KAction *m_stop;
-    KAction *m_reload;
+    QAction *m_stop;
+    QAction *m_reload;
     KAction *m_stopReload;
     KAction *m_goHome;
     KAction *m_viewStatusbar;

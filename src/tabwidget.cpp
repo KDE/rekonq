@@ -385,7 +385,7 @@ QLineEdit *TabWidget::currentLineEdit() const
 
 WebView *TabWidget::currentWebView() const
 {
-    return webView(currentIndex());
+//     return webView(currentIndex()); // FIXME
 }
 
 QLineEdit *TabWidget::lineEdit(int index) const
@@ -406,7 +406,7 @@ WebView *TabWidget::webView(int index) const
         if (count() == 1) {
             TabWidget *that = const_cast<TabWidget*>(this);
             that->setUpdatesEnabled(false);
-            that->newTab();
+//             that->newTab(); FIXME
             that->closeTab(0);
             that->setUpdatesEnabled(true);
             return currentWebView();

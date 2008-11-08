@@ -64,17 +64,9 @@ public:
     static NetworkAccessManager *networkAccessManager();
     static BookmarksManager *bookmarksManager();
 
-#if defined(Q_WS_MAC)
-    bool event(QEvent *event);
-#endif
-
 public slots:
     BrowserMainWindow *newMainWindow();
     void restoreLastSession();
-#if defined(Q_WS_MAC)
-    void lastWindowClosed();
-    void quitBrowser();
-#endif
 
 private slots:
     void postLaunch();
