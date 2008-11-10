@@ -29,9 +29,6 @@
 #include <QString>
 #include <QMenu>
 
-class KHTMLPart;
-
-
 class SearchBarCombo : public KHistoryComboBox
 {
     Q_OBJECT

@@ -19,7 +19,7 @@
  * ============================================================ */
 
 
-
+// Local Includes
 #include "tabwidget.h"
 
 #include "browserapplication.h"
@@ -28,6 +28,7 @@
 #include "urllineedit.h"
 #include "webview.h"
 
+// Qt Includes
 #include <QClipboard>
 #include <QCompleter>
 #include <QListView>
@@ -37,19 +38,19 @@
 #include <QStackedWidget>
 #include <QStyle>
 #include <QToolButton>
+#include <QDebug>
 
-#include <QtCore/QDebug>
 
 TabBar::TabBar(QWidget *parent)
-    : QTabBar(parent)
+    : KTabBar(parent)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
     setAcceptDrops(true);
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
-            this, SLOT(contextMenuRequested(const QPoint &)));
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenuRequested(const QPoint &)));
 
     QString alt = QLatin1String("Alt+%1");
-    for (int i = 1; i <= 10; ++i) {
+    for (int i = 1; i <= 10; ++i)
+    {
         int key = i;
         if (key == 10)
             key = 0;
@@ -61,7 +62,8 @@ TabBar::TabBar(QWidget *parent)
 
 void TabBar::selectTabAction()
 {
-    if (QShortcut *shortCut = qobject_cast<QShortcut*>(sender())) {
+    if (QShortcut *shortCut = qobject_cast<QShortcut*>(sender()))
+    {
         int index = m_tabShortcuts.indexOf(shortCut);
         if (index == 0)
             index = 10;
@@ -74,27 +76,26 @@ void TabBar::contextMenuRequested(const QPoint &position)
     QMenu menu;
     menu.addAction(i18n("New &Tab"), this, SIGNAL(newTab()), QKeySequence::AddTab);
     int index = tabAt(position);
-    if (-1 != index) {
-        QAction *action = menu.addAction(i18n("Clone Tab"),
-                this, SLOT(cloneTab()));
+    if (-1 != index)
+    {
+        QAction *action = menu.addAction(i18n("Clone Tab"), this, SLOT(cloneTab()));
         action->setData(index);
 
         menu.addSeparator();
 
-        action = menu.addAction(i18n("&Close Tab"),
-                this, SLOT(closeTab()), QKeySequence::Close);
+        action = menu.addAction(i18n("&Close Tab"), this, SLOT(closeTab()), QKeySequence::Close);
         action->setData(index);
 
-        action = menu.addAction(i18n("Close &Other Tabs"),
-                this, SLOT(closeOtherTabs()));
+        action = menu.addAction(i18n("Close &Other Tabs"), this, SLOT(closeOtherTabs()));
         action->setData(index);
 
         menu.addSeparator();
 
-        action = menu.addAction(i18n("Reload Tab"),
-                this, SLOT(reloadTab()), QKeySequence::Refresh);
+        action = menu.addAction(i18n("Reload Tab"), this, SLOT(reloadTab()), QKeySequence::Refresh);
         action->setData(index);
-    } else {
+    } 
+    else 
+    {
         menu.addSeparator();
     }
     menu.addAction(i18n("Reload All Tabs"), this, SIGNAL(reloadAllTabs()));
@@ -111,7 +112,8 @@ void TabBar::cloneTab()
 
 void TabBar::closeTab()
 {
-    if (QAction *action = qobject_cast<QAction*>(sender())) {
+    if (QAction *action = qobject_cast<QAction*>(sender())) 
+    {
         int index = action->data().toInt();
         emit closeTab(index);
     }
@@ -119,7 +121,8 @@ void TabBar::closeTab()
 
 void TabBar::closeOtherTabs()
 {
-    if (QAction *action = qobject_cast<QAction*>(sender())) {
+    if (QAction *action = qobject_cast<QAction*>(sender()))
+    {
         int index = action->data().toInt();
         emit closeOtherTabs(index);
     }
@@ -134,8 +137,8 @@ void TabBar::mousePressEvent(QMouseEvent *event)
 
 void TabBar::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->buttons() == Qt::LeftButton
-        && (event->pos() - m_dragStartPos).manhattanLength() > QApplication::startDragDistance()) {
+    if (event->buttons() == Qt::LeftButton && (event->pos() - m_dragStartPos).manhattanLength() > QApplication::startDragDistance())
+    {
         QDrag *drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData;
         QList<QUrl> urls;
@@ -155,8 +158,9 @@ void TabBar::dragEnterEvent(QDragEnterEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
     QStringList formats = mimeData->formats();
-    if (formats.contains(QLatin1String("action"))
-        && (mimeData->data(QLatin1String("action")) == "tab-reordering")) {
+
+    if (formats.contains(QLatin1String("action")) && (mimeData->data(QLatin1String("action")) == "tab-reordering"))
+    {
         event->acceptProposedAction();
     }
     QTabBar::dragEnterEvent(event);
@@ -166,7 +170,8 @@ void TabBar::dropEvent(QDropEvent *event)
 {
     int fromIndex = tabAt(m_dragStartPos);
     int toIndex = tabAt(event->pos());
-    if (fromIndex != toIndex) {
+    if (fromIndex != toIndex)
+    {
         emit tabMoveRequested(fromIndex, toIndex);
         event->acceptProposedAction();
     }
@@ -193,6 +198,8 @@ void TabBar::reloadTab()
         emit reloadTab(index);
     }
 }
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 TabWidget::TabWidget(QWidget *parent)
     : QTabWidget(parent)
@@ -268,8 +275,7 @@ TabWidget::TabWidget(QWidget *parent)
     closeTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     setCornerWidget(closeTabButton, Qt::TopRightCorner);
 
-    connect(this, SIGNAL(currentChanged(int)),
-            this, SLOT(currentChanged(int)));
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
 
     m_lineEdits = new QStackedWidget(this);
 }
@@ -385,7 +391,7 @@ QLineEdit *TabWidget::currentLineEdit() const
 
 WebView *TabWidget::currentWebView() const
 {
-//     return webView(currentIndex()); // FIXME
+    return webView(currentIndex());
 }
 
 QLineEdit *TabWidget::lineEdit(int index) const
@@ -406,7 +412,7 @@ WebView *TabWidget::webView(int index) const
         if (count() == 1) {
             TabWidget *that = const_cast<TabWidget*>(this);
             that->setUpdatesEnabled(false);
-//             that->newTab(); FIXME
+            that->newTab();
             that->closeTab(0);
             that->setUpdatesEnabled(true);
             return currentWebView();

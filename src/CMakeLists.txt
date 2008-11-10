@@ -12,6 +12,7 @@ SET( rekonq_SRCS
     networkaccessmanager.cpp
     searchlineedit.cpp 
 #    searchbar.cpp
+    findwidget.cpp
     settings.cpp 
     squeezelabel.cpp 
     tabwidget.cpp 

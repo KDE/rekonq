@@ -19,8 +19,8 @@
  * ============================================================ */
 
 
+// Local Includes
 #include "browsermainwindow.h"
-
 #include "autosaver.h"
 #include "bookmarks.h"
 #include "browserapplication.h"
@@ -29,9 +29,12 @@
 #include "settings.h"
 #include "tabwidget.h"
 #include "toolbarsearch.h"
-#include "ui_passworddialog.h"
 #include "webview.h"
 
+// UI Includes
+#include "ui_passworddialog.h"
+
+// KDE Includes
 #include <KStatusBar>
 #include <KMenuBar>
 #include <KShortcut>
@@ -39,7 +42,7 @@
 #include <KAction>
 #include <KActionCollection>
 
-
+// Qt Includes
 #include <QSettings>
 #include <QDesktopWidget>
 #include <QFileDialog>
@@ -50,10 +53,8 @@
 #include <QMessageBox>
 #include <QToolBar>
 #include <QInputDialog>
-
 #include <QWebFrame>
 #include <QWebHistory>
-
 #include <QDebug>
 
 
@@ -78,6 +79,12 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
     layout->setMargin(0);
     addToolBarBreak();
     layout->addWidget(m_tabWidget);
+
+    // Find Widget
+    m_findWidg = new FindWidget(centralWidget);
+    layout->addWidget(m_findWidg);
+//     m_findWidg->setVisible(false);
+
     centralWidget->setLayout(layout);
 	setCentralWidget(centralWidget);
 
@@ -91,15 +98,12 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(m_tabWidget, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
     connect(m_tabWidget, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
     connect(m_tabWidget, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
-//     connect(m_tabWidget, SIGNAL(toolBarVisibilityChangeRequested(bool)), m_navigationBar, SLOT(setVisible(bool)));
+    connect(m_tabWidget, SIGNAL(toolBarVisibilityChangeRequested(bool)), m_navigationBar, SLOT(setVisible(bool)));
     connect(m_tabWidget, SIGNAL(lastTabClosed()), m_tabWidget, SLOT(newTab()));
 
     slotUpdateWindowTitle();
     loadDefaultState();
     m_tabWidget->newTab();
-
-    int size = m_tabWidget->lineEditStack()->sizeHint().height();
-//     m_navigationBar->setIconSize(QSize(size, size)); // FIXME re-enable me
 }
 
 
@@ -114,11 +118,11 @@ BrowserMainWindow::~BrowserMainWindow()
 
 void BrowserMainWindow::loadDefaultState()
 {
-//     QSettings settings;
-//     settings.beginGroup(QLatin1String("BrowserMainWindow"));
-//     QByteArray data = settings.value(QLatin1String("defaultState")).toByteArray();
-// //    restoreState(data); // FIXME re-enable me!
-//     settings.endGroup();
+    QSettings settings;
+    settings.beginGroup(QLatin1String("BrowserMainWindow"));
+    QByteArray data = settings.value(QLatin1String("defaultState")).toByteArray();
+//    restoreState(data); // FIXME re-enable me!
+    settings.endGroup();
 }
 
 
@@ -265,19 +269,9 @@ void BrowserMainWindow::setupMenu()
 
     editMenu->addSeparator();
 
-    // FIXME port FIND system to KDE
-    QAction *m_find = editMenu->addAction(i18n("&Find"));
-    m_find->setShortcuts(QKeySequence::Find);
-    connect(m_find, SIGNAL(triggered()), this, SLOT(slotEditFind()));
-    new QShortcut(QKeySequence(Qt::Key_Slash), this, SLOT(slotEditFind()));
-
-    QAction *m_findNext = editMenu->addAction( i18n("&Find Next"));
-    m_findNext->setShortcuts(QKeySequence::FindNext);
-    connect(m_findNext, SIGNAL(triggered()), this, SLOT(slotEditFindNext()));
-
-    QAction *m_findPrevious = editMenu->addAction( i18n("&Find Previous"));
-    m_findPrevious->setShortcuts(QKeySequence::FindPrevious);
-    connect(m_findPrevious, SIGNAL(triggered()), this, SLOT(slotEditFindPrevious()));
+    editMenu->addAction( KStandardAction::find(this, SLOT( slotViewtFindWidget() ) , this ) );
+    editMenu->addAction( KStandardAction::findNext(this, SLOT( slotEditFindNext() ) , this ) );
+    editMenu->addAction( KStandardAction::findPrev(this, SLOT( slotEditFindPrevious() ) , this ) );
 
     editMenu->addSeparator();
 
@@ -295,14 +289,14 @@ void BrowserMainWindow::setupMenu()
 
     viewMenu->addSeparator();
 
-    m_stop = viewMenu->addAction( i18n("&Stop") );
+    m_stop = (KAction *) viewMenu->addAction( KIcon( "process-stop" ), i18n("&Stop") );
     QList<QKeySequence> shortcuts;
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_Period));
     shortcuts.append(Qt::Key_Escape);
     m_stop->setShortcuts(shortcuts);
     m_tabWidget->addWebAction(m_stop, QWebPage::Stop);
 
-    m_reload = viewMenu->addAction( i18n("Reload Page") );
+    m_reload = (KAction *) viewMenu->addAction( KIcon("view-refresh"), i18n("Reload Page") );
     m_reload->setShortcuts(QKeySequence::Refresh);
     m_tabWidget->addWebAction(m_reload, QWebPage::Reload);
 
@@ -402,42 +396,36 @@ void BrowserMainWindow::setupMenu()
 
 void BrowserMainWindow::setupToolBar()
 {
-//     m_navigationBar = (KToolBar *) addToolBar(i18n("Navigation"));
-//     connect(m_navigationBar->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(updateToolbarActionText(bool)));
-// 
-//     m_historyBack->setIcon( (QIcon) KIcon("go-previous") );
-//     m_historyBackMenu = new KMenu(this);
-//     m_historyBack->setMenu(m_historyBackMenu);
-//     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
-//     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
-//     m_navigationBar->addAction(m_historyBack);
-// 
-//     m_historyForward->setIcon( (QIcon) KIcon("go-next") );
-//     m_historyForwardMenu = new KMenu(this); 
-//     connect(m_historyForwardMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowForwardMenu()));
-//     connect(m_historyForwardMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
-//     m_historyForward->setMenu(m_historyForwardMenu);
-//     m_navigationBar->addAction(m_historyForward);
-// 
-//     m_stopReload = new KAction(this);
-//     m_reloadIcon = KIcon( "view-refresh" );
-//     m_stopReload->setIcon(m_reloadIcon);
-//     m_navigationBar->addAction(m_stopReload);
-// 
-//     m_goHome = new KAction(this);
-//     m_goHome->setIcon( KIcon( "go-home" ) );
-//     m_navigationBar->addAction(m_goHome);
-//     connect(m_goHome, SIGNAL(triggered()), this, SLOT(slotHome()));
-// 
-//     m_navigationBar->addWidget(m_tabWidget->lineEditStack());
-// 
-//     m_toolbarSearch = new ToolbarSearch(m_navigationBar);
-//     m_navigationBar->addWidget(m_toolbarSearch);
-// 
-//     // fixing toolbar movements
-//     m_navigationBar->setFloatable( false );
-// 
-//     connect(m_toolbarSearch, SIGNAL(search(const QUrl&)), SLOT(loadUrl(const QUrl&)));
+    m_navigationBar = (KToolBar *) addToolBar(i18n("Navigation"));
+    connect(m_navigationBar->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(updateToolbarActionText(bool)));
+
+    m_historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
+    m_historyBackMenu = new KMenu(this);
+    m_historyBack->setMenu(m_historyBackMenu);
+    connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
+    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
+    m_navigationBar->addAction(m_historyBack);
+
+    m_historyForward = new KAction( KIcon("go-next"), i18n("Forward"), this );
+    m_historyForwardMenu = new KMenu(this); 
+    connect(m_historyForwardMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowForwardMenu()));
+    connect(m_historyForwardMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
+    m_historyForward->setMenu(m_historyForwardMenu);
+    m_navigationBar->addAction(m_historyForward);
+
+    m_stopReload = new KAction( KIcon("view-refresh"), i18n("Reload"), this);
+    m_navigationBar->addAction(m_stopReload);
+
+    m_goHome = new KAction( KIcon( "go-home" ), i18n("Home"),this);
+    m_navigationBar->addAction(m_goHome);
+    connect(m_goHome, SIGNAL(triggered()), this, SLOT(slotHome()));
+
+    m_navigationBar->addWidget(m_tabWidget->lineEditStack());
+
+    m_toolbarSearch = new ToolbarSearch(m_navigationBar);
+    m_navigationBar->addWidget(m_toolbarSearch);
+
+    connect(m_toolbarSearch, SIGNAL(search(const QUrl&)), SLOT(loadUrl(const QUrl&)));
 }
 
 
@@ -588,19 +576,6 @@ void BrowserMainWindow::slotUpdateWindowTitle(const QString &title)
 
 
 
-
-void BrowserMainWindow::slotAboutApplication()
-{
-    QMessageBox::about(this, i18n("About"), 
-                        i18n(
-        "<p>reKonq is a simple KDE dedicated browser"
-        "<p>webkit and Qt Demo Browser based."                  // FIXME go new line..
-        "<p>QtWebKit is based on the Open Source WebKit Project developed at <a href=\"http://webkit.org/\">http://webkit.org/</a>."
-        ));
-}
-
-
-
 void BrowserMainWindow::slotFileNew()
 {
     BrowserApplication::instance()->newMainWindow();
@@ -711,21 +686,34 @@ void BrowserMainWindow::closeEvent(QCloseEvent *event)
 }
 
 
+void BrowserMainWindow::slotViewFindWidget()
+{
+    if ( m_findWidg->isVisible() )
+        m_findWidg->setVisible( false );
+    else
+        m_findWidg->setVisible( true );
+}
 
 
+// FIXME: reimplement me A-LA KATE search bar
 void BrowserMainWindow::slotEditFind()
 {
-    if (!currentTab())
-        return;
-    bool ok;
-    QString search = QInputDialog::getText(this, i18n("Find"),
-                                          i18n("Text:"), QLineEdit::Normal,
-                                          m_lastSearch, &ok);
-    if (ok && !search.isEmpty()) {
-        m_lastSearch = search;
-        if (!currentTab()->findText(m_lastSearch))
-            slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
-    }
+//     if (!currentTab())
+//         return;
+//     bool ok;
+//     QString search = QInputDialog::getText(this, i18n("Find"),
+//                                           i18n("Text:"), QLineEdit::Normal,
+//                                           m_lastSearch, &ok);
+//     if (ok && !search.isEmpty()) {
+//         m_lastSearch = search;
+//         if (!currentTab()->findText(m_lastSearch))
+//             slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
+//     }
+// m_findWidg->setVisible( true );
+/*if ( !currentTab() )
+    return;
+bool ok;
+m_lastSearch = findWidg->*/
 }
 
 
@@ -809,10 +797,10 @@ void BrowserMainWindow::slotViewPageSource()
 
 void BrowserMainWindow::slotHome()
 {
-/*    QSettings settings;
+    QSettings settings;
     settings.beginGroup(QLatin1String("MainWindow"));
     QString home = settings.value(QLatin1String("home"), QLatin1String("http://www.kde.org/")).toString();
-    loadPage(home);*/
+    loadPage(home);
 }
 
 

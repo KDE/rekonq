@@ -22,13 +22,19 @@
 #ifndef BROWSERMAINWINDOW_H
 #define BROWSERMAINWINDOW_H
 
+// Local Includes
+#include "findwidget.h"
+
+// KDE Includes
 #include <KMainWindow>
 #include <KIcon>
 #include <KToolBar>
 #include <KAction>
 #include <KMenu>
 
+// Qt Includes
 #include <QUrl>
+
 
 class AutoSaver;
 class QWebFrame;
@@ -93,7 +99,6 @@ private slots:
 
     void slotWebSearch();
     void slotToggleInspector(bool enable);
-    void slotAboutApplication();
     void slotDownloadManager();
     void slotSelectLineEdit();
 
@@ -103,6 +108,7 @@ private slots:
     void slotOpenActionUrl(QAction *action);
     void slotShowWindow();
     void slotSwapFocus();
+    void slotViewFindWidget();
 
     void printRequested(QWebFrame *frame);
     void geometryChangeRequested(const QRect &geometry);
@@ -126,7 +132,7 @@ private:
     KMenu *m_historyForwardMenu;
     KMenu *m_windowMenu;
 
-    QAction *m_stop;
+    KAction *m_stop;
     QAction *m_reload;
     KAction *m_stopReload;
     KAction *m_goHome;
@@ -137,6 +143,7 @@ private:
     KIcon m_reloadIcon;
     KIcon m_stopIcon;
 
+    FindWidget *m_findWidg;
     QString m_lastSearch;
 };
 

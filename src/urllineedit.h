@@ -21,9 +21,10 @@
 #ifndef URLLINEEDIT_H
 #define URLLINEEDIT_H
 
-#include <QtCore/QUrl>
-#include <QtGui/QWidget>
-#include <QtGui/QStyleOptionFrame>
+// Qt Includes
+#include <QUrl>
+#include <QWidget>
+#include <QStyleOptionFrame>
 
 QT_BEGIN_NAMESPACE
 class QLineEdit;
