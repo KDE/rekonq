@@ -1,6 +1,5 @@
 SET( rekonq_SRCS
     autosaver.cpp 
-    bookmarks.cpp
     browserapplication.cpp 
     browsermainwindow.cpp 
     cookiejar.cpp 
@@ -19,13 +18,10 @@ SET( rekonq_SRCS
     toolbarsearch.cpp 
     urllineedit.cpp 
     webview.cpp 
-    xbel.cpp 
     main.cpp
 )
 
 KDE4_ADD_UI_FILES( rekonq_SRCS
-    addbookmarkdialog.ui
-    bookmarks.ui
     cookies.ui
     cookiesexceptions.ui
     downloaditem.ui
@@ -47,6 +43,7 @@ TARGET_LINK_LIBRARIES( rekonq
     ${QT_QTNETWORK_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY} 
 	${KDE4_KDEUI_LIBS}
+    ${KDE4_KIO_LIBS}
     ${QT_QTUITOOLS_LIBRARY}
 )
 

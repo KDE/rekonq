@@ -33,7 +33,6 @@ QT_BEGIN_NAMESPACE
 class QLocalServer;
 QT_END_NAMESPACE
 
-class BookmarksManager;
 class BrowserMainWindow;
 class CookieJar;
 class DownloadManager;
@@ -62,7 +61,6 @@ public:
     static CookieJar *cookieJar();
     static DownloadManager *downloadManager();
     static NetworkAccessManager *networkAccessManager();
-    static BookmarksManager *bookmarksManager();
 
 public slots:
     BrowserMainWindow *newMainWindow();
@@ -80,7 +78,6 @@ private:
     static HistoryManager *s_historyManager;
     static DownloadManager *s_downloadManager;
     static NetworkAccessManager *s_networkAccessManager;
-    static BookmarksManager *s_bookmarksManager;
 
     QList<QPointer<BrowserMainWindow> > m_mainWindows;
     QLocalServer *m_localServer;

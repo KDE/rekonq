@@ -22,7 +22,6 @@
 // Local Includes
 #include "browsermainwindow.h"
 #include "autosaver.h"
-#include "bookmarks.h"
 #include "browserapplication.h"
 #include "downloadmanager.h"
 #include "history.h"
@@ -41,6 +40,8 @@
 #include <KStandardAction>
 #include <KAction>
 #include <KActionCollection>
+#include <KBookmarkManager>
+#include <KBookmarkOwner>
 
 // Qt Includes
 #include <QSettings>
@@ -66,6 +67,7 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
     , m_historyForward(0)
     , m_stop(0)
     , m_reload(0)
+    , m_bookmarkMenu(0)
 {
     setAttribute(Qt::WA_DeleteOnClose, true);
     statusBar()->setSizeGripEnabled(true);
@@ -191,13 +193,11 @@ bool BrowserMainWindow::restoreState(const QByteArray &state)
 
     QSize size;
     bool showToolbar;
-    bool showBookmarksBar;
     bool showStatusbar;
     QByteArray tabState;
 
     stream >> size;
     stream >> showToolbar;
-    stream >> showBookmarksBar;
     stream >> showStatusbar;
     stream >> tabState;
 
@@ -341,32 +341,14 @@ void BrowserMainWindow::setupMenu()
 
 
     //  ------------------------------------------------------------- BOOKMARKS --------------------------------------------------------------------------------------------------
-//     BookmarksMenu *bookmarksMenu = new BookmarksMenu(this);
-//     connect(bookmarksMenu, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
-//     connect(bookmarksMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
-//     bookmarksMenu->setTitle(i18n("&Bookmarks"));
-//     menuBar()->addMenu(bookmarksMenu);
-// 
-//     // FIXME
-//     BookmarksManager *bookmarksManager = BrowserApplication::bookmarksManager();
-//     bookmarksMenu->addAction(i18n("&Import Bookmarks..."), bookmarksManager, SLOT(importBookmarks()));
-//     bookmarksMenu->addAction(i18n("&Export Bookmarks..."), bookmarksManager, SLOT(exportBookmarks()));
-//     bookmarksMenu->addSeparator();
-// 
-//     QList<QAction*> bookmarksActions;
-// 
-//     QAction *showAllBookmarksAction = new QAction(i18n("Show All Bookmarks"), this);
-//     connect(showAllBookmarksAction, SIGNAL(triggered()), this, SLOT(slotShowBookmarksDialog()));
-//     m_addBookmark = new QAction( KIcon("bookmark-new"), i18n("Add Bookmark..."), this);
-//     m_addBookmark->setIconVisibleInMenu(false);
-// 
-//     connect(m_addBookmark, SIGNAL(triggered()), this, SLOT(slotAddBookmark()));
-//     m_addBookmark->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));
-// 
-//     bookmarksActions.append(showAllBookmarksAction);
-//     bookmarksActions.append(m_addBookmark);
-//     bookmarksMenu->setInitialActions(bookmarksActions);
 
+    KMenu* bookmarksMenu = new KMenu( i18n("&Bookmarks"), this );
+
+    menuBar()->addMenu( bookmarksMenu );
+
+    KBookmarkManager *mgr = KBookmarkManager::managerForFile( "~/.kde/share/apps/konqueror/bookmarks.xml" , "konqueror" );
+    KActionCollection * ac = new KActionCollection( this );
+    m_bookmarkMenu = new KBookmarkMenu( mgr , 0 , bookmarksMenu , ac );
 
     //  ------------------------------------------------------------- WINDOW --------------------------------------------------------------------------------------------------
     m_windowMenu = (KMenu *) menuBar()->addMenu( i18n("&Window") );
@@ -393,7 +375,7 @@ void BrowserMainWindow::setupMenu()
 void BrowserMainWindow::setupToolBar()
 {
     m_navigationBar = (KToolBar *) addToolBar(i18n("Navigation"));
-    connect(m_navigationBar->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(updateToolbarActionText(bool)));
+//     connect(m_navigationBar->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(updateToolbarActionText(bool)));
 
     m_historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
@@ -427,24 +409,24 @@ void BrowserMainWindow::setupToolBar()
 
 
 
-void BrowserMainWindow::slotShowBookmarksDialog()
-{
-    BookmarksDialog *dialog = new BookmarksDialog(this);
-    connect(dialog, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
-    dialog->show();
-}
+// void BrowserMainWindow::slotShowBookmarksDialog()
+// {
+//     BookmarksDialog *dialog = new BookmarksDialog(this);
+//     connect(dialog, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
+//     dialog->show();
+// }
 
 
 
 
-void BrowserMainWindow::slotAddBookmark()
-{
-    WebView *webView = currentTab();
-    QString url = webView->url().toString();
-    QString title = webView->title();
-    AddBookmarkDialog dialog(url, title);
-    dialog.exec();
-}
+// void BrowserMainWindow::slotAddBookmark()
+// {
+//     WebView *webView = currentTab();
+//     QString url = webView->url().toString();
+//     QString title = webView->title();
+//     AddBookmarkDialog dialog(url, title);
+//     dialog.exec();
+// }
 
 
 void BrowserMainWindow::updateStatusbarActionText(bool visible)

@@ -31,6 +31,7 @@
 #include <KToolBar>
 #include <KAction>
 #include <KMenu>
+#include <KBookmarkMenu>
 
 // Qt Includes
 #include <QUrl>
@@ -88,8 +89,8 @@ private slots:
     void slotEditFind();
     void slotEditFindNext();
     void slotEditFindPrevious();
-    void slotShowBookmarksDialog();
-    void slotAddBookmark();
+/*    void slotShowBookmarksDialog();
+    void slotAddBookmark();*/
     void slotViewTextBigger();
     void slotViewTextNormal();
     void slotViewTextSmaller();
@@ -145,6 +146,8 @@ private:
 
     FindWidget *m_findWidg;
     QString m_lastSearch;
+
+    KBookmarkMenu* m_bookmarkMenu;
 };
 
 #endif // BROWSERMAINWINDOW_H
