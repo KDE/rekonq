@@ -2,6 +2,7 @@
  *
  * This file is a part of the reKonq project
  *
+ * Copyright 2008 Benjamin C. Meyer <ben@meyerhome.net>
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
@@ -20,82 +21,38 @@
 #ifndef SEARCHBAR_H
 #define SEARCHBAR_H
 
-#include <KHistoryComboBox>
-#include <KProcess>
-#include <KAction>
-#include <KDialog>
+#include <KLineEdit>
 
-#include <QPixmap>
-#include <QString>
-#include <QMenu>
+#include <QWidget>
 
-class SearchBarCombo : public KHistoryComboBox
+class SearchBar : public QWidget
 {
     Q_OBJECT
 
 public:
-    SearchBarCombo(QWidget *parent);
-    ~SearchBarCombo();
-    const QPixmap &icon() const;
-    void setIcon(const QPixmap &icon);
-    int findHistoryItem(const QString &text);
+    SearchBar(QWidget *parent = 0);
+    ~SearchBar();
+    void setSearchBar(QObject *);
+    QObject *getSearchBar() const;
 
 public slots:
-    virtual void show();
-
-signals:
-    void iconClicked();
+    void clear();
+    void showFind();
+    void slotFindNext();
+    void slotFindPrevious();
 
 protected:
-    virtual void mousePressEvent(QMouseEvent *e);
+    void resizeEvent(QResizeEvent *event);
 
 private slots:
-    void historyCleared();
+    void frameChanged(int frame);
 
 private:
-    QPixmap m_icon;
-};
+    void initializeSearchWidget();
+    QObject *m_object;
+    QWidget *m_widget;
 
-
-class SearchBar : public KDialog
-{
-    Q_OBJECT
-
-public:
-    enum SearchModes { FindInThisPage = 0, UseSearchProvider };
-
-    SearchBar();
-    virtual ~SearchBar();
-
-private slots:
-    void startSearch(const QString &search);
-    void setIcon();
-    void showSelectionMenu();
-
-    void useFindInThisPage();
-    void useSearchProvider(QAction *);
-    void selectSearchEngines();
-    void searchEnginesSelected(int, QProcess::ExitStatus);
-    void configurationChanged();
-
-    void updateComboVisibility();
-
-    void focusSearchbar();
-private:
-    void nextSearchEntry();
-    void previousSearchEntry();
-
-
-    SearchBarCombo        *m_searchCombo;
-    KAction               *m_searchComboAction;
-    QMenu                 *m_popupMenu;
-    QPixmap                m_searchIcon;
-    SearchModes            m_searchMode;
-    QString                m_providerName;
-    bool                   m_urlEnterLock;
-    QString                m_currentEngine;
-    QStringList            m_searchEngines;
-    KProcess              *m_process;
+    KLineEdit *m_lineEdit;
 };
 
 #endif

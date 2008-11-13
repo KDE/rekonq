@@ -82,10 +82,9 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
     addToolBarBreak();
     layout->addWidget(m_tabWidget);
 
-    // Find Widget
-/*    m_findWidg = new FindWidget(centralWidget);
-    layout->addWidget(m_findWidg);*/
-//     m_findWidg->setVisible(false);
+    // Search Bar
+    m_searchBar = new SearchBar(centralWidget);
+    layout->addWidget(m_searchBar);
 
     centralWidget->setLayout(layout);
 	setCentralWidget(centralWidget);
@@ -269,7 +268,7 @@ void BrowserMainWindow::setupMenu()
 
     editMenu->addSeparator();
 
-    editMenu->addAction( KStandardAction::find(this, SLOT( slotViewtFindWidget() ) , this ) );
+    editMenu->addAction( KStandardAction::find(this, SLOT( slotViewSearchBar() ) , this ) );
     editMenu->addAction( KStandardAction::findNext(this, SLOT( slotEditFindNext() ) , this ) );
     editMenu->addAction( KStandardAction::findPrev(this, SLOT( slotEditFindPrevious() ) , this ) );
 
@@ -649,15 +648,6 @@ void BrowserMainWindow::closeEvent(QCloseEvent *event)
 }
 
 
-void BrowserMainWindow::slotViewFindWidget()
-{
-    if ( m_findWidg->isVisible() )
-        m_findWidg->setVisible( false );
-    else
-        m_findWidg->setVisible( true );
-}
-
-
 // FIXME: reimplement me A-LA KATE search bar
 void BrowserMainWindow::slotEditFind()
 {
@@ -679,7 +669,10 @@ bool ok;
 m_lastSearch = findWidg->*/
 }
 
-
+void BrowserMainWindow::slotViewSearchBar()
+{
+    m_searchBar->show();
+}
 
 void BrowserMainWindow::slotEditFindNext()
 {

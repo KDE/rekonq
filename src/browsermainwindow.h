@@ -23,7 +23,7 @@
 #define BROWSERMAINWINDOW_H
 
 // Local Includes
-#include "findwidget.h"
+#include "searchbar.h"
 
 // KDE Includes
 #include <KMainWindow>
@@ -89,7 +89,6 @@ private slots:
     void slotEditFind();
     void slotEditFindNext();
     void slotEditFindPrevious();
-//     void slotShowBookmarksDialog();
     void slotAddBookmark();
     void slotViewTextBigger();
     void slotViewTextNormal();
@@ -97,6 +96,7 @@ private slots:
     void slotViewStatusbar();
     void slotViewPageSource();
     void slotViewFullScreen(bool enable);
+    void slotViewSearchBar();
 
     void slotWebSearch();
     void slotToggleInspector(bool enable);
@@ -104,12 +104,10 @@ private slots:
     void slotSelectLineEdit();
 
     void slotAboutToShowBackMenu();
-//     void slotAboutToShowForwardMenu();
     void slotAboutToShowWindowMenu();
     void slotOpenActionUrl(QAction *action);
     void slotShowWindow();
     void slotSwapFocus();
-    void slotViewFindWidget();
 
     void printRequested(QWebFrame *frame);
     void geometryChangeRequested(const QRect &geometry);
@@ -144,7 +142,7 @@ private:
     KIcon m_reloadIcon;
     KIcon m_stopIcon;
 
-    FindWidget *m_findWidg;
+    SearchBar *m_searchBar;
     QString m_lastSearch;
 
     KBookmarkMenu* m_bookmarkMenu;
