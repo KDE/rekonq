@@ -105,7 +105,12 @@ private slots:
 
     void slotAboutToShowBackMenu();
     void slotAboutToShowWindowMenu();
+
+    // history related
     void slotOpenActionUrl(QAction *action);
+    void slotOpenPrevious();
+    void slotOpenNext();
+
     void slotShowWindow();
     void slotSwapFocus();
 
@@ -132,7 +137,7 @@ private:
     KMenu *m_windowMenu;
 
     KAction *m_stop;
-    QAction *m_reload;
+    KAction *m_reload;
     KAction *m_stopReload;
     KAction *m_goHome;
     KAction *m_viewStatusbar;

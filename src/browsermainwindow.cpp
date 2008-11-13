@@ -289,14 +289,14 @@ void BrowserMainWindow::setupMenu()
     viewMenu->addSeparator();
 
     m_stop = (KAction *) viewMenu->addAction( KIcon( "process-stop" ), i18n("&Stop") );
-    QList<QKeySequence> shortcuts;
-    shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_Period));
-    shortcuts.append(Qt::Key_Escape);
-    m_stop->setShortcuts(shortcuts);
+//     QList<QKeySequence> shortcuts;
+//     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_Period));
+//     shortcuts.append(Qt::Key_Escape);
+    m_stop->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Period) );
     m_tabWidget->addWebAction(m_stop, QWebPage::Stop);
 
     m_reload = (KAction *) viewMenu->addAction( KIcon("view-refresh"), i18n("Reload Page") );
-    m_reload->setShortcuts(QKeySequence::Refresh);
+    m_reload->setShortcut(QKeySequence::Refresh);
     m_tabWidget->addWebAction(m_reload, QWebPage::Reload);
 
     viewMenu->addAction( i18n("&Make Text Bigger"), this, SLOT(slotViewTextBigger()), QKeySequence(Qt::CTRL | Qt::Key_Plus));
@@ -379,11 +379,13 @@ void BrowserMainWindow::setupToolBar()
     m_historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
     m_historyBack->setMenu(m_historyBackMenu);
+    connect(m_historyBack, SIGNAL( triggered() ), this, SLOT( slotOpenPrevious() ) );
     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
     m_navigationBar->addAction(m_historyBack);
 
     m_historyForward = new KAction( KIcon("go-next"), i18n("Forward"), this );
+    connect(m_historyForward, SIGNAL( triggered() ), this, SLOT( slotOpenNext() ) );
     m_navigationBar->addAction(m_historyForward);
 
     m_stopReload = new KAction( KIcon("view-refresh"), i18n("Reload"), this);
@@ -918,7 +920,20 @@ void BrowserMainWindow::slotOpenActionUrl(QAction *action)
  }
 
 
+void BrowserMainWindow::slotOpenPrevious()
+{
+    QWebHistory *history = currentTab()->history();
+    if ( history->canGoBack() )
+        history->goToItem( history->backItem() );
+}
 
+
+void BrowserMainWindow::slotOpenNext()
+{
+    QWebHistory *history = currentTab()->history();
+    if ( history->canGoForward() )
+        history->goToItem( history->forwardItem() );
+}
 
 void BrowserMainWindow::geometryChangeRequested(const QRect &geometry)
 {
