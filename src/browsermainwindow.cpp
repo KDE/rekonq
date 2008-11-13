@@ -310,38 +310,34 @@ void BrowserMainWindow::setupMenu()
     action->setCheckable(true);
 
     //  ------------------------------------------------------------- HISTORY --------------------------------------------------------------------------------------------------
-//     HistoryMenu *historyMenu = new HistoryMenu(this);
-//     connect(historyMenu, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
-//     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
-//     historyMenu->setTitle( i18n("Hi&story") );
-//     menuBar()->addMenu(historyMenu);
-//     QList<QAction*> historyActions;
-// 
-//     m_historyBack = new QAction( i18n("Back"), this);
-//     m_tabWidget->addWebAction(m_historyBack, QWebPage::Back);
-//     m_historyBack->setShortcuts(QKeySequence::Back);
-//     m_historyBack->setIconVisibleInMenu(false);
-// 
-//     m_historyForward = new QAction( i18n("Forward"), this);
-//     m_tabWidget->addWebAction(m_historyForward, QWebPage::Forward);
-//     m_historyForward->setShortcuts(QKeySequence::Forward);
-//     m_historyForward->setIconVisibleInMenu(false);
-// 
-//     QAction *m_historyHome = new QAction( i18n("Home"), this);
-//     connect(m_historyHome, SIGNAL(triggered()), this, SLOT(slotHome()));
-//     m_historyHome->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_H));
-// 
-//     m_restoreLastSession = new QAction( i18n("Restore Last Session"), this);
-//     connect(m_restoreLastSession, SIGNAL(triggered()), BrowserApplication::instance(), SLOT(restoreLastSession()));
-//     m_restoreLastSession->setEnabled(BrowserApplication::instance()->canRestoreSession());
-// 
-//     historyActions.append(m_historyBack);
-//     historyActions.append(m_historyForward);
-//     historyActions.append(m_historyHome);
-//     historyActions.append(m_tabWidget->recentlyClosedTabsAction());
-//     historyActions.append(m_restoreLastSession);
-//     historyMenu->setInitialActions(historyActions);
-// 
+    HistoryMenu *historyMenu = new HistoryMenu(this);
+    connect(historyMenu, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
+    connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
+    historyMenu->setTitle( i18n("Hi&story") );
+    menuBar()->addMenu(historyMenu);
+    QList<QAction*> historyActions;
+
+    m_historyBack = new QAction( i18n("Back"), this);
+    m_tabWidget->addWebAction(m_historyBack, QWebPage::Back);
+    m_historyBack->setShortcuts(QKeySequence::Back);
+    m_historyBack->setIconVisibleInMenu(false);
+
+    m_historyForward = new QAction( i18n("Forward"), this);
+    m_tabWidget->addWebAction(m_historyForward, QWebPage::Forward);
+    m_historyForward->setShortcuts(QKeySequence::Forward);
+    m_historyForward->setIconVisibleInMenu(false);
+
+    m_restoreLastSession = new QAction( i18n("Restore Last Session"), this);
+    connect(m_restoreLastSession, SIGNAL(triggered()), BrowserApplication::instance(), SLOT(restoreLastSession()));
+    m_restoreLastSession->setEnabled(BrowserApplication::instance()->canRestoreSession());
+
+    historyActions.append(m_historyBack);
+    historyActions.append(m_historyForward);
+    historyActions.append( KStandardAction::home(this, SLOT( slotHome() ) , this ) );
+    historyActions.append(m_tabWidget->recentlyClosedTabsAction());
+    historyActions.append(m_restoreLastSession);
+    historyMenu->setInitialActions(historyActions);
+
 
 
     //  ------------------------------------------------------------- BOOKMARKS --------------------------------------------------------------------------------------------------
@@ -352,10 +348,10 @@ void BrowserMainWindow::setupMenu()
 //     menuBar()->addMenu(bookmarksMenu);
 // 
 //     // FIXME
-// //     BookmarksManager *bookmarksManager = BrowserApplication::bookmarksManager();
-// //     bookmarksMenu->addAction(i18n("&Import Bookmarks..."), bookmarksManager, SLOT(importBookmarks()));
-// //     bookmarksMenu->addAction(i18n("&Export Bookmarks..."), bookmarksManager, SLOT(exportBookmarks()));
-// //     bookmarksMenu->addSeparator();
+//     BookmarksManager *bookmarksManager = BrowserApplication::bookmarksManager();
+//     bookmarksMenu->addAction(i18n("&Import Bookmarks..."), bookmarksManager, SLOT(importBookmarks()));
+//     bookmarksMenu->addAction(i18n("&Export Bookmarks..."), bookmarksManager, SLOT(exportBookmarks()));
+//     bookmarksMenu->addSeparator();
 // 
 //     QList<QAction*> bookmarksActions;
 // 
@@ -370,7 +366,7 @@ void BrowserMainWindow::setupMenu()
 //     bookmarksActions.append(showAllBookmarksAction);
 //     bookmarksActions.append(m_addBookmark);
 //     bookmarksMenu->setInitialActions(bookmarksActions);
-// 
+
 
     //  ------------------------------------------------------------- WINDOW --------------------------------------------------------------------------------------------------
     m_windowMenu = (KMenu *) menuBar()->addMenu( i18n("&Window") );

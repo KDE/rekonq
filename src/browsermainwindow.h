@@ -126,9 +126,9 @@ private:
     TabWidget *m_tabWidget;
     AutoSaver *m_autoSaver;
 
-    KAction *m_historyBack;
+    QAction *m_historyBack;
     KMenu *m_historyBackMenu;
-    KAction *m_historyForward;
+    QAction *m_historyForward;
     KMenu *m_historyForwardMenu;
     KMenu *m_windowMenu;
 
@@ -137,7 +137,7 @@ private:
     KAction *m_stopReload;
     KAction *m_goHome;
     KAction *m_viewStatusbar;
-    KAction *m_restoreLastSession;
+    QAction *m_restoreLastSession;
     KAction *m_addBookmark;
 
     KIcon m_reloadIcon;
