@@ -89,8 +89,8 @@ private slots:
     void slotEditFind();
     void slotEditFindNext();
     void slotEditFindPrevious();
-/*    void slotShowBookmarksDialog();
-    void slotAddBookmark();*/
+//     void slotShowBookmarksDialog();
+    void slotAddBookmark();
     void slotViewTextBigger();
     void slotViewTextNormal();
     void slotViewTextSmaller();
@@ -104,7 +104,7 @@ private slots:
     void slotSelectLineEdit();
 
     void slotAboutToShowBackMenu();
-    void slotAboutToShowForwardMenu();
+//     void slotAboutToShowForwardMenu();
     void slotAboutToShowWindowMenu();
     void slotOpenActionUrl(QAction *action);
     void slotShowWindow();
@@ -130,7 +130,7 @@ private:
     QAction *m_historyBack;
     KMenu *m_historyBackMenu;
     QAction *m_historyForward;
-    KMenu *m_historyForwardMenu;
+//     KMenu *m_historyForwardMenu;
     KMenu *m_windowMenu;
 
     KAction *m_stop;

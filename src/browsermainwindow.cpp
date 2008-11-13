@@ -83,8 +83,8 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
     layout->addWidget(m_tabWidget);
 
     // Find Widget
-    m_findWidg = new FindWidget(centralWidget);
-    layout->addWidget(m_findWidg);
+/*    m_findWidg = new FindWidget(centralWidget);
+    layout->addWidget(m_findWidg);*/
 //     m_findWidg->setVisible(false);
 
     centralWidget->setLayout(layout);
@@ -245,26 +245,26 @@ void BrowserMainWindow::setupMenu()
     //  ------------------------------------------------------------- EDIT --------------------------------------------------------------------------------------------------
     KMenu *editMenu = (KMenu *) menuBar()->addMenu( i18n("&Edit") );
 
-    QAction *m_undo = editMenu->addAction(i18n("&Undo"));
-    m_undo->setShortcuts(QKeySequence::Undo);
+    KAction *m_undo = KStandardAction::undo( this , 0 , this );
+    editMenu->addAction( m_undo );
     m_tabWidget->addWebAction(m_undo, QWebPage::Undo);
 
-    QAction *m_redo = editMenu->addAction(i18n("&Redo"));
-    m_redo->setShortcuts(QKeySequence::Redo);
+    KAction *m_redo = KStandardAction::redo( this , 0 , this );
+    editMenu->addAction( m_redo );
     m_tabWidget->addWebAction(m_redo, QWebPage::Redo);
 
     editMenu->addSeparator();
 
-    QAction *m_cut = editMenu->addAction(i18n("Cu&t"));
-    m_cut->setShortcuts(QKeySequence::Cut);
+    KAction *m_cut = KStandardAction::cut( this , 0 , this );
+    editMenu->addAction( m_cut );
     m_tabWidget->addWebAction(m_cut, QWebPage::Cut);
 
-    QAction *m_copy = editMenu->addAction(i18n("&Copy"));
-    m_copy->setShortcuts(QKeySequence::Copy);
+    KAction *m_copy = KStandardAction::copy( this , 0 , this );
+    editMenu->addAction( m_copy );
     m_tabWidget->addWebAction(m_copy, QWebPage::Copy);
 
-    QAction *m_paste = editMenu->addAction(i18n("&Paste"));
-    m_paste->setShortcuts(QKeySequence::Paste);
+    KAction *m_paste = KStandardAction::paste( this , 0 , this );
+    editMenu->addAction( m_paste );
     m_tabWidget->addWebAction(m_paste, QWebPage::Paste);
 
     editMenu->addSeparator();
@@ -348,6 +348,7 @@ void BrowserMainWindow::setupMenu()
 
     KBookmarkManager *mgr = KBookmarkManager::managerForFile( "~/.kde/share/apps/konqueror/bookmarks.xml" , "konqueror" );
     KActionCollection * ac = new KActionCollection( this );
+    ac->addAction( "Add Bookmark" , KStandardAction::addBookmark( this, SLOT( slotAddBookmark() ) , this ) );
     m_bookmarkMenu = new KBookmarkMenu( mgr , 0 , bookmarksMenu , ac );
 
     //  ------------------------------------------------------------- WINDOW --------------------------------------------------------------------------------------------------
@@ -375,7 +376,6 @@ void BrowserMainWindow::setupMenu()
 void BrowserMainWindow::setupToolBar()
 {
     m_navigationBar = (KToolBar *) addToolBar(i18n("Navigation"));
-//     connect(m_navigationBar->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(updateToolbarActionText(bool)));
 
     m_historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
@@ -385,10 +385,6 @@ void BrowserMainWindow::setupToolBar()
     m_navigationBar->addAction(m_historyBack);
 
     m_historyForward = new KAction( KIcon("go-next"), i18n("Forward"), this );
-    m_historyForwardMenu = new KMenu(this); 
-    connect(m_historyForwardMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowForwardMenu()));
-    connect(m_historyForwardMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
-    m_historyForward->setMenu(m_historyForwardMenu);
     m_navigationBar->addAction(m_historyForward);
 
     m_stopReload = new KAction( KIcon("view-refresh"), i18n("Reload"), this);
@@ -408,25 +404,14 @@ void BrowserMainWindow::setupToolBar()
 
 
 
-
-// void BrowserMainWindow::slotShowBookmarksDialog()
-// {
-//     BookmarksDialog *dialog = new BookmarksDialog(this);
-//     connect(dialog, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
-//     dialog->show();
-// }
-
-
-
-
-// void BrowserMainWindow::slotAddBookmark()
-// {
+void BrowserMainWindow::slotAddBookmark()
+{
 //     WebView *webView = currentTab();
 //     QString url = webView->url().toString();
 //     QString title = webView->title();
 //     AddBookmarkDialog dialog(url, title);
 //     dialog.exec();
-// }
+}
 
 
 void BrowserMainWindow::updateStatusbarActionText(bool visible)
@@ -849,16 +834,19 @@ WebView *BrowserMainWindow::currentTab() const
 
 void BrowserMainWindow::slotLoadProgress(int progress)
 {
-    if (progress < 100 && progress > 0) {
+    if (progress < 100 && progress > 0) 
+    {
         disconnect(m_stopReload, SIGNAL(triggered()), m_reload, SLOT(trigger()));
         if (m_stopIcon.isNull())
-            m_stopIcon = KIcon( style()->standardIcon(QStyle::SP_BrowserStop) );
+            m_stopIcon = KIcon( "process-stop" );
         m_stopReload->setIcon(m_stopIcon);
         connect(m_stopReload, SIGNAL(triggered()), m_stop, SLOT(trigger()));
         m_stopReload->setToolTip( i18n("Stop loading the current page") );
-    } else {
+    } 
+    else 
+    {
         disconnect(m_stopReload, SIGNAL(triggered()), m_stop, SLOT(trigger()));
-        m_stopReload->setIcon(m_reloadIcon);
+        m_stopReload->setIcon( KIcon("view-refresh") );
         connect(m_stopReload, SIGNAL(triggered()), m_reload, SLOT(trigger()));
         m_stopReload->setToolTip( i18n("Reload the current page") );
     }
@@ -884,28 +872,6 @@ void BrowserMainWindow::slotAboutToShowBackMenu()
         m_historyBackMenu->addAction(action);
     }
 }
-
-
-
-
-void BrowserMainWindow::slotAboutToShowForwardMenu()
-{
-    m_historyForwardMenu->clear();
-    if (!currentTab())
-        return;
-    QWebHistory *history = currentTab()->history();
-    int historyCount = history->count();
-    for (int i = 0; i < history->forwardItems(history->count()).count(); ++i) {
-        QWebHistoryItem item = history->forwardItems(historyCount).at(i);
-        QAction *action = new QAction(this);
-        action->setData(historyCount-i);
-        QIcon icon = BrowserApplication::instance()->icon(item.url());
-        action->setIcon(icon);
-        action->setText(item.title());
-        m_historyForwardMenu->addAction(action);
-    }
-}
-
 
 
 
