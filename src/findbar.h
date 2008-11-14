@@ -2,7 +2,6 @@
  *
  * This file is a part of the reKonq project
  *
- * Copyright 2008 Benjamin C. Meyer <ben@meyerhome.net>
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
@@ -18,22 +17,20 @@
  *
  * ============================================================ */
 
-#ifndef SEARCHBAR_H
-#define SEARCHBAR_H
+#ifndef FINDBAR_H
+#define FINDBAR_H
 
 #include <KLineEdit>
 
 #include <QWidget>
 
-class SearchBar : public QWidget
+class FindBar : public QWidget
 {
     Q_OBJECT
 
 public:
-    SearchBar(QWidget *parent = 0);
-    ~SearchBar();
-    void setSearchBar(QObject *);
-    QObject *getSearchBar() const;
+    FindBar(QWidget *parent = 0);
+    ~FindBar();
 
 public slots:
     void clear();
@@ -48,9 +45,7 @@ private slots:
     void frameChanged(int frame);
 
 private:
-    void initializeSearchWidget();
-    QObject *m_object;
-    QWidget *m_widget;
+    void initializeFindWidget();
 
     KLineEdit *m_lineEdit;
 };

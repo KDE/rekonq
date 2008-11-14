@@ -23,7 +23,7 @@
 #define BROWSERMAINWINDOW_H
 
 // Local Includes
-#include "searchbar.h"
+#include "findbar.h"
 
 // KDE Includes
 #include <KMainWindow>
@@ -96,7 +96,7 @@ private slots:
     void slotViewStatusbar();
     void slotViewPageSource();
     void slotViewFullScreen(bool enable);
-    void slotViewSearchBar();
+    void slotViewFindBar();
 
     void slotWebSearch();
     void slotToggleInspector(bool enable);
@@ -133,7 +133,6 @@ private:
     QAction *m_historyBack;
     KMenu *m_historyBackMenu;
     QAction *m_historyForward;
-//     KMenu *m_historyForwardMenu;
     KMenu *m_windowMenu;
 
     KAction *m_stop;
@@ -147,7 +146,7 @@ private:
     KIcon m_reloadIcon;
     KIcon m_stopIcon;
 
-    SearchBar *m_searchBar;
+    FindBar *m_findBar;
     QString m_lastSearch;
 
     KBookmarkMenu* m_bookmarkMenu;

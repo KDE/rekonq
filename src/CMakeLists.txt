@@ -10,7 +10,7 @@ SET( rekonq_SRCS
     modelmenu.cpp 
     networkaccessmanager.cpp
     searchlineedit.cpp 
-    searchbar.cpp
+    findbar.cpp
     findwidget.cpp
     settings.cpp 
     squeezelabel.cpp 

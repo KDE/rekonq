@@ -82,9 +82,9 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
     addToolBarBreak();
     layout->addWidget(m_tabWidget);
 
-    // Search Bar
-    m_searchBar = new SearchBar(centralWidget);
-    layout->addWidget(m_searchBar);
+    // Find Bar
+    m_findBar = new FindBar(centralWidget);
+    layout->addWidget(m_findBar);
 
     centralWidget->setLayout(layout);
 	setCentralWidget(centralWidget);
@@ -268,7 +268,7 @@ void BrowserMainWindow::setupMenu()
 
     editMenu->addSeparator();
 
-    editMenu->addAction( KStandardAction::find(this, SLOT( slotViewSearchBar() ) , this ) );
+    editMenu->addAction( KStandardAction::find(this, SLOT( slotViewFindBar() ) , this ) );
     editMenu->addAction( KStandardAction::findNext(this, SLOT( slotEditFindNext() ) , this ) );
     editMenu->addAction( KStandardAction::findPrev(this, SLOT( slotEditFindPrevious() ) , this ) );
 
@@ -671,9 +671,9 @@ bool ok;
 m_lastSearch = findWidg->*/
 }
 
-void BrowserMainWindow::slotViewSearchBar()
+void BrowserMainWindow::slotViewFindBar()
 {
-    m_searchBar->show();
+    m_findBar->show();
 }
 
 void BrowserMainWindow::slotEditFindNext()

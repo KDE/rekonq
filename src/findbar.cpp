@@ -2,7 +2,6 @@
  *
  * This file is a part of the reKonq project
  *
- * Copyright 2008 Benjamin C. Meyer <ben@meyerhome.net>
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
@@ -18,8 +17,8 @@
  *
  * ============================================================ */
 
-#include "searchbar.h"
-#include "moc_searchbar.cpp"
+#include "findbar.h"
+#include "moc_findbar.cpp"
 
 #include <KLineEdit>
 #include <KAction>
@@ -34,13 +33,11 @@
 #include <QShortcut>
 #include <QResizeEvent>
 
-SearchBar::SearchBar(QWidget *parent)
+FindBar::FindBar(QWidget *parent)
     : QWidget(parent)
-    , m_object(0)
-    , m_widget(0)
     , m_lineEdit(0)
 {
-    initializeSearchWidget();
+    initializeFindWidget();
 
     // we start off hidden
     setMaximumHeight(0);
@@ -50,15 +47,13 @@ SearchBar::SearchBar(QWidget *parent)
     new QShortcut(QKeySequence(Qt::Key_Escape), this, SLOT(hide()));
 }
 
-SearchBar::~SearchBar()
+FindBar::~FindBar()
 {
-    delete m_object;
-    delete m_widget;
     delete m_lineEdit;
 }
 
 
-void SearchBar::initializeSearchWidget()
+void FindBar::initializeFindWidget()
 {
     QHBoxLayout *layout = new QHBoxLayout();
 
@@ -85,25 +80,14 @@ void SearchBar::initializeSearchWidget()
 }
 
 
-void SearchBar::setSearchBar(QObject *object)
-{
-    m_object = object;
-}
 
-
-QObject *SearchBar::getSearchBar() const
-{
-    return m_object;
-}
-
-
-void SearchBar::clear()
+void FindBar::clear()
 {
     m_lineEdit->setText(QString());
 }
 
 
-void SearchBar::showFind()
+void FindBar::showFind()
 {
     if (!isVisible()) 
     {
@@ -114,7 +98,7 @@ void SearchBar::showFind()
 }
 
 
-void SearchBar::resizeEvent(QResizeEvent *event)
+void FindBar::resizeEvent(QResizeEvent *event)
 {
 /*    if (event->size().width() != m_widget->width())
         m_widget->resize(event->size().width(), m_widget->height());
@@ -122,20 +106,20 @@ void SearchBar::resizeEvent(QResizeEvent *event)
 }
 
 
-void SearchBar::frameChanged(int frame)
+void FindBar::frameChanged(int frame)
 {
-    if (!m_widget)
+/*    if (!m_widget)
         return;
     m_widget->move(0, frame);
     int height = qMax(0, m_widget->y() + m_widget->height());
     setMinimumHeight(height);
-    setMaximumHeight(height);
+    setMaximumHeight(height);*/
 }
 
 
-void SearchBar::slotFindNext()
+void FindBar::slotFindNext()
 {}
 
-void SearchBar::slotFindPrevious()
+void FindBar::slotFindPrevious()
 {}
 
