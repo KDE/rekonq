@@ -24,6 +24,7 @@
 
 // Local Includes
 #include "findbar.h"
+#include "searchbar.h"
 
 // KDE Includes
 #include <KMainWindow>
@@ -40,7 +41,7 @@
 class AutoSaver;
 class QWebFrame;
 class TabWidget;
-class ToolbarSearch;
+// class ToolbarSearch;
 class WebView;
 
 /*!
@@ -126,7 +127,8 @@ private:
 private:
 
     KToolBar *m_navigationBar;
-    ToolbarSearch *m_toolbarSearch;
+//     ToolbarSearch *m_toolbarSearch;
+    SearchBar *m_searchBar;
     TabWidget *m_tabWidget;
     AutoSaver *m_autoSaver;
 

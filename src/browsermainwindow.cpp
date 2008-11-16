@@ -27,7 +27,7 @@
 #include "history.h"
 #include "settings.h"
 #include "tabwidget.h"
-#include "toolbarsearch.h"
+// #include "toolbarsearch.h"
 #include "webview.h"
 
 // UI Includes
@@ -289,9 +289,6 @@ void BrowserMainWindow::setupMenu()
     viewMenu->addSeparator();
 
     m_stop = (KAction *) viewMenu->addAction( KIcon( "process-stop" ), i18n("&Stop") );
-//     QList<QKeySequence> shortcuts;
-//     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_Period));
-//     shortcuts.append(Qt::Key_Escape);
     m_stop->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Period) );
     m_tabWidget->addWebAction(m_stop, QWebPage::Stop);
 
@@ -397,10 +394,12 @@ void BrowserMainWindow::setupToolBar()
 
     m_navigationBar->addWidget(m_tabWidget->lineEditStack());
 
-    m_toolbarSearch = new ToolbarSearch(m_navigationBar);
-    m_navigationBar->addWidget(m_toolbarSearch);
-
-    connect(m_toolbarSearch, SIGNAL(search(const QUrl&)), SLOT(loadUrl(const QUrl&)));
+    m_searchBar = new SearchBar(m_navigationBar);
+    m_navigationBar->addWidget(m_searchBar);
+    connect(m_searchBar, SIGNAL(search(const QUrl&)), this, SLOT(loadUrl(const QUrl&)));
+//     m_toolbarSearch = new ToolbarSearch(m_navigationBar);
+//     m_navigationBar->addWidget(m_toolbarSearch);
+//     connect(m_toolbarSearch, SIGNAL(search(const QUrl&)), SLOT(loadUrl(const QUrl&)));
 }
 
 
@@ -766,8 +765,8 @@ void BrowserMainWindow::slotHome()
 
 void BrowserMainWindow::slotWebSearch()
 {
-    m_toolbarSearch->lineEdit()->selectAll();
-    m_toolbarSearch->lineEdit()->setFocus();
+//     m_toolbarSearch->lineEdit()->selectAll();
+//     m_toolbarSearch->lineEdit()->setFocus();
 }
 
 

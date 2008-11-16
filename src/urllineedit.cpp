@@ -64,10 +64,8 @@ ExLineEdit::ExLineEdit(QWidget *parent)
 
     // clearButton
     m_clearButton = new ClearButton(this);
-    connect(m_clearButton, SIGNAL(clicked()),
-            m_lineEdit, SLOT(clear()));
-    connect(m_lineEdit, SIGNAL(textChanged(const QString&)),
-            m_clearButton, SLOT(textChanged(const QString&)));
+    connect(m_clearButton, SIGNAL(clicked()), m_lineEdit, SLOT(clear()));
+    connect(m_lineEdit, SIGNAL(textChanged(const QString&)), m_clearButton, SLOT(textChanged(const QString&)));
 }
 
 void ExLineEdit::setLeftWidget(QWidget *widget)
