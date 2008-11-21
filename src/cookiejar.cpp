@@ -349,6 +349,12 @@ void CookieJar::setAllowForSessionCookies(const QStringList &list)
     m_saveTimer->changeOccurred();
 }
 
+
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 CookieModel::CookieModel(CookieJar *cookieJar, QObject *parent)
     : QAbstractTableModel(parent)
     , m_cookieJar(cookieJar)
@@ -459,7 +465,14 @@ void CookieModel::cookiesChanged()
     reset();
 }
 
-CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent) : QDialog(parent)
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent) 
+    : QDialog(parent)
 {
     setupUi(this);
     setWindowFlags(Qt::Sheet);
@@ -502,6 +515,10 @@ CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent) : QDialog(pa
     }
     cookiesTable->horizontalHeader()->setStretchLastSection(true);
 }
+
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -621,6 +638,12 @@ bool CookieExceptionsModel::removeRows(int row, int count, const QModelIndex &pa
     endRemoveRows();
     return true;
 }
+
+
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 
 CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent)
     : QDialog(parent)

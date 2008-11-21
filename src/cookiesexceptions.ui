@@ -29,7 +29,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="domainLineEdit" />
+         <widget class="KLineEdit" name="domainLineEdit" />
         </item>
        </layout>
       </item>
@@ -103,7 +103,7 @@
        </spacer>
       </item>
       <item row="0" column="3" >
-       <widget class="SearchLineEdit" name="search" />
+       <widget class="KLineEdit" name="search" />
       </item>
       <item row="1" column="0" colspan="4" >
        <widget class="EditTableView" name="exceptionTable" />
@@ -151,11 +151,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>SearchLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>searchlineedit.h</header>
-  </customwidget>
   <customwidget>
    <class>EditTableView</class>
    <extends>QTableView</extends>

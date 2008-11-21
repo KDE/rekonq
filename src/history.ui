@@ -27,7 +27,7 @@
     </spacer>
    </item>
    <item row="0" column="1" >
-    <widget class="SearchLineEdit" name="search" />
+    <widget class="KLineEdit" name="search" />
    </item>
    <item row="1" column="0" colspan="2" >
     <widget class="EditTreeView" name="tree" />
@@ -73,11 +73,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>SearchLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>searchlineedit.h</header>
-  </customwidget>
   <customwidget>
    <class>EditTreeView</class>
    <extends>QTreeView</extends>

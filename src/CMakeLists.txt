@@ -9,13 +9,13 @@ SET( rekonq_SRCS
     history.cpp 
     modelmenu.cpp 
     networkaccessmanager.cpp
-    searchlineedit.cpp 
+    searchlineedit.cpp  # ready to be removed..
     findbar.cpp
     searchbar.cpp
     settings.cpp 
     squeezelabel.cpp 
     tabwidget.cpp
-    urllineedit.cpp 
+    urllineedit.cpp   # ready to be removed..
     webview.cpp 
     main.cpp
 )

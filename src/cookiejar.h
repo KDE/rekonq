@@ -21,13 +21,16 @@
 #ifndef COOKIEJAR_H
 #define COOKIEJAR_H
 
-#include <QtNetwork/QNetworkCookieJar>
 
-#include <QtCore/QAbstractItemModel>
-#include <QtCore/QStringList>
+// KDE Includes
+#include <QDialog>
 
-#include <QtGui/QDialog>
-#include <QtGui/QTableView>
+
+// Qt Includes
+#include <QNetworkCookieJar>
+#include <QAbstractItemModel>
+#include <QStringList>
+#include <QTableView>
 
 QT_BEGIN_NAMESPACE
 class QSortFilterProxyModel;
@@ -105,6 +108,12 @@ private:
     QStringList m_exceptions_allowForSession;
 };
 
+
+
+ // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 class CookieModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -124,8 +133,13 @@ private:
     CookieJar *m_cookieJar;
 };
 
+
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 #include "ui_cookies.h"
-#include "ui_cookiesexceptions.h"
 
 class CookiesDialog : public QDialog, public Ui_CookiesDialog
 {
@@ -159,6 +173,15 @@ private:
     QStringList m_blockedCookies;
     QStringList m_sessionCookies;
 };
+
+
+
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+#include "ui_cookiesexceptions.h"
 
 class CookiesExceptionsDialog : public QDialog, public Ui_CookiesExceptionsDialog
 {
