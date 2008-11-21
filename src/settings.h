@@ -21,16 +21,21 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <QtGui/QDialog>
+// Local Includes
 #include "ui_settings.h"
 
-class SettingsDialog : public QDialog, public Ui_Settings
+// KDE Includes
+#include <KDialog>
+
+// Qt Includes
+#include <QWidget>
+
+class SettingsDialog : public KDialog, private Ui::Settings
 {
     Q_OBJECT
 
 public:
     SettingsDialog(QWidget *parent = 0);
-    void accept();
 
 private slots:
     void loadDefaults();
@@ -44,9 +49,13 @@ private slots:
     void chooseFont();
     void chooseFixedFont();
 
+    void slotOk();
+    void slotApply();
+
 private:
     QFont standardFont;
     QFont fixedFont;
+    QWidget *widget;
 };
 
 #endif // SETTINGS_H

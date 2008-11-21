@@ -1,42 +1,24 @@
 <ui version="4.0" >
  <class>Settings</class>
- <widget class="QDialog" name="Settings" >
+ <widget class="QWidget" name="Settings" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>657</width>
-    <height>322</height>
+    <width>570</width>
+    <height>248</height>
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Settings</string>
+   <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="2" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
+  <layout class="QVBoxLayout" name="verticalLayout_4" >
+   <item>
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
       <number>0</number>
      </property>
      <widget class="QWidget" name="tab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>627</width>
-        <height>243</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>General</string>
       </attribute>
@@ -52,7 +34,7 @@
         </widget>
        </item>
        <item row="0" column="1" colspan="2" >
-        <widget class="QLineEdit" name="homeLineEdit" />
+        <widget class="KLineEdit" name="homeLineEdit" />
        </item>
        <item row="1" column="1" >
         <widget class="QPushButton" name="setHomeToCurrentPageButton" >
@@ -129,7 +111,7 @@
         </widget>
        </item>
        <item row="3" column="1" colspan="2" >
-        <widget class="QLineEdit" name="downloadsLocation" />
+        <widget class="KLineEdit" name="downloadsLocation" />
        </item>
        <item row="4" column="0" >
         <widget class="QLabel" name="label_8" >
@@ -171,14 +153,6 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab_3" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>627</width>
-        <height>243</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>Appearance</string>
       </attribute>
@@ -265,14 +239,6 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab_2" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>627</width>
-        <height>243</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>Privacy</string>
       </attribute>
@@ -311,7 +277,7 @@
          <property name="title" >
           <string>Cookies</string>
          </property>
-         <layout class="QGridLayout" >
+         <layout class="QGridLayout" name="_2" >
           <item row="0" column="0" >
            <widget class="QLabel" name="label_2" >
             <property name="text" >
@@ -403,14 +369,6 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab_4" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>627</width>
-        <height>243</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>Proxy</string>
       </attribute>
@@ -459,7 +417,7 @@
            </widget>
           </item>
           <item row="1" column="1" colspan="2" >
-           <widget class="QLineEdit" name="proxyHostName" />
+           <widget class="KLineEdit" name="proxyHostName" />
           </item>
           <item row="2" column="0" >
            <widget class="QLabel" name="label_11" >
@@ -505,7 +463,7 @@
            </widget>
           </item>
           <item row="3" column="1" colspan="2" >
-           <widget class="QLineEdit" name="proxyUserName" />
+           <widget class="KLineEdit" name="proxyUserName" />
           </item>
           <item row="4" column="0" >
            <widget class="QLabel" name="label_13" >
@@ -518,10 +476,7 @@
            </widget>
           </item>
           <item row="4" column="1" colspan="2" >
-           <widget class="QLineEdit" name="proxyPassword" >
-            <property name="echoMode" >
-             <enum>QLineEdit::Password</enum>
-            </property>
+           <widget class="KLineEdit" name="proxyPassword" >
            </widget>
           </item>
           <item row="5" column="0" >
@@ -542,73 +497,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_5" >
-      <attribute name="title" >
-       <string>Advanced</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_2" >
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label_14" >
-         <property name="text" >
-          <string>Style Sheet:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" >
-        <widget class="QLineEdit" name="userStyleSheet" />
-       </item>
-       <item row="1" column="1" >
-        <spacer name="verticalSpacer_3" >
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0" >
-          <size>
-           <width>20</width>
-           <height>176</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>Settings</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>Settings</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
