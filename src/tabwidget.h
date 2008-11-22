@@ -109,9 +109,10 @@ private:
 #include <QUrl>
 #include <QTabWidget>
 
+#include <KLineEdit>
+
 QT_BEGIN_NAMESPACE
 class QCompleter;
-class QLineEdit;
 class QMenu;
 class QStackedWidget;
 QT_END_NAMESPACE
@@ -154,10 +155,10 @@ public:
     QAction *previousTabAction() const;
 
     QWidget *lineEditStack() const;
-    QLineEdit *currentLineEdit() const;
+    KLineEdit *currentLineEdit() const;
     WebView *currentWebView() const;
     WebView *webView(int index) const;
-    QLineEdit *lineEdit(int index) const;
+    KLineEdit *lineEdit(int index) const;
     int webViewIndex(WebView *webView) const;
 
     QByteArray saveState() const;

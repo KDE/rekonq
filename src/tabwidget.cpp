@@ -25,7 +25,8 @@
 #include "browserapplication.h"
 #include "browsermainwindow.h"
 #include "history.h"
-#include "urllineedit.h"
+// #include "urllineedit.h"
+#include "urlbar.h"
 #include "webview.h"
 
 // Qt Includes
@@ -286,7 +287,7 @@ void TabWidget::clear()
     m_recentlyClosedTabs.clear();
     // clear the line edit history
     for (int i = 0; i < m_lineEdits->count(); ++i) {
-        QLineEdit *qLineEdit = lineEdit(i);
+        KLineEdit *qLineEdit = lineEdit(i);
         qLineEdit->setText(qLineEdit->text());
     }
 }
@@ -384,7 +385,7 @@ QWidget *TabWidget::lineEditStack() const
     return m_lineEdits;
 }
 
-QLineEdit *TabWidget::currentLineEdit() const
+KLineEdit *TabWidget::currentLineEdit() const
 {
     return lineEdit(m_lineEdits->currentIndex());
 }
@@ -394,9 +395,9 @@ WebView *TabWidget::currentWebView() const
     return webView(currentIndex());
 }
 
-QLineEdit *TabWidget::lineEdit(int index) const
+KLineEdit *TabWidget::lineEdit(int index) const
 {
-    UrlLineEdit *urlLineEdit = qobject_cast<UrlLineEdit*>(m_lineEdits->widget(index));
+    UrlBar *urlLineEdit = qobject_cast<UrlBar*>(m_lineEdits->widget(index));
     if (urlLineEdit)
         return urlLineEdit->lineEdit();
     return 0;
@@ -430,9 +431,10 @@ int TabWidget::webViewIndex(WebView *webView) const
 WebView *TabWidget::newTab(bool makeCurrent)
 {
     // line edit
-    UrlLineEdit *urlLineEdit = new UrlLineEdit;
-    QLineEdit *lineEdit = urlLineEdit->lineEdit();
-    if (!m_lineEditCompleter && count() > 0) {
+    UrlBar *urlLineEdit = new UrlBar;
+    KLineEdit *lineEdit = urlLineEdit->lineEdit();
+    if (!m_lineEditCompleter && count() > 0) 
+    {
         HistoryCompletionModel *completionModel = new HistoryCompletionModel(this);
         completionModel->setSourceModel(BrowserApplication::historyManager()->historyFilterModel());
         m_lineEditCompleter = new QCompleter(completionModel, this);
@@ -448,7 +450,8 @@ WebView *TabWidget::newTab(bool makeCurrent)
     m_lineEdits->setSizePolicy(lineEdit->sizePolicy());
 
     // optimization to delay creating the more expensive WebView, history, etc
-    if (count() == 0) {
+    if (count() == 0) 
+    {
         QWidget *emptyWidget = new QWidget;
         QPalette p = emptyWidget->palette();
         p.setColor(QPalette::Window, palette().color(QPalette::Base));
@@ -515,7 +518,8 @@ void TabWidget::reloadAllTabs()
 
 void TabWidget::lineEditReturnPressed()
 {
-    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(sender())) {
+    if (KLineEdit *lineEdit = qobject_cast<KLineEdit*>(sender())) 
+    {
         emit loadPage(lineEdit->text());
         if (m_lineEdits->currentWidget() == lineEdit)
             currentWebView()->setFocus();

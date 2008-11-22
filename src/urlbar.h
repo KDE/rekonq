@@ -20,9 +20,45 @@
 #ifndef URLBAR_H
 #define URLBAR_H
 
+// Local Includes
+#include "webview.h"
+
+// KDE Includes
+#include <KLineEdit>
+
+// Qt Includes
+#include <QWidget>
+#include <QLabel>
 
 
+class UrlBar : public QWidget
+{
+Q_OBJECT
 
+public:
+    UrlBar(QWidget *parent = 0);
+    ~UrlBar();
 
+    KLineEdit *lineEdit();
+
+    void setWebView(WebView *webView);
+
+protected:
+    void paintEvent(QPaintEvent *event);
+    void focusOutEvent(QFocusEvent *event);
+
+private slots:
+    void webViewUrlChanged(const QUrl &url);
+    void webViewIconChanged();
+
+private:
+    QLinearGradient generateGradient(const QColor &color) const;
+
+    WebView *m_webView;
+
+    QLabel *m_iconLabel;
+    KLineEdit *m_lineEdit;
+    QColor m_defaultBaseColor;
+};
 
 #endif
