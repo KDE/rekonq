@@ -81,18 +81,18 @@ void UrlBar::setWebView(WebView *webView)
 void UrlBar::paintEvent(QPaintEvent *event)
 {
     QPainter p(this);
-    QStyleOptionFrameV2 *optionPanel;
+    QStyleOptionFrameV2 optionPanel;
 
-    optionPanel->initFrom(this);
-    optionPanel->rect = contentsRect();
-    optionPanel->lineWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth, optionPanel, this);
-    optionPanel->midLineWidth = 0;
-    optionPanel->state |= QStyle::State_Sunken;
+    optionPanel.initFrom(this);
+    optionPanel.rect = contentsRect();
+    optionPanel.lineWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &optionPanel, this);
+    optionPanel.midLineWidth = 0;
+    optionPanel.state |= QStyle::State_Sunken;
     if (m_lineEdit->isReadOnly())
-        optionPanel->state |= QStyle::State_ReadOnly;
-    optionPanel->features = QStyleOptionFrameV2::None;
+        optionPanel.state |= QStyle::State_ReadOnly;
+    optionPanel.features = QStyleOptionFrameV2::None;
 
-    style()->drawPrimitive(QStyle::PE_PanelLineEdit, optionPanel, &p, (QWidget *) this);
+    style()->drawPrimitive(QStyle::PE_PanelLineEdit, &optionPanel, &p, (QWidget *) this);
 }
 
 void UrlBar::focusOutEvent(QFocusEvent *event)

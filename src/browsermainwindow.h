@@ -132,9 +132,9 @@ private:
     TabWidget *m_tabWidget;
     AutoSaver *m_autoSaver;
 
-    QAction *m_historyBack;
+    KAction *m_historyBack;
     KMenu *m_historyBackMenu;
-    QAction *m_historyForward;
+    KAction *m_historyForward;
     KMenu *m_windowMenu;
 
     KAction *m_stop;

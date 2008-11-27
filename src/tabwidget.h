@@ -24,6 +24,8 @@
 #define TABWIDGET_H
 
 #include <KTabBar>
+#include <KAction>
+
 #include <QShortcut>
 /*
     Tab bar with a few more features such as a context menu and shortcuts
@@ -70,9 +72,6 @@ private:
 
 #include <QWebPage>
 
-QT_BEGIN_NAMESPACE
-class QAction;
-QT_END_NAMESPACE
 class WebView;
 /*!
     A proxy object that connects a single browser action
@@ -86,9 +85,9 @@ class WebActionMapper : public QObject
     Q_OBJECT
 
 public:
-    WebActionMapper(QAction *root, QWebPage::WebAction webAction, QObject *parent);
+    WebActionMapper(KAction *root, QWebPage::WebAction webAction, QObject *parent);
     QWebPage::WebAction webAction() const;
-    void addChild(QAction *action);
+    void addChild(KAction *action);
     void updateCurrent(QWebPage *currentParent);
 
 private slots:
@@ -99,7 +98,7 @@ private slots:
 
 private:
     QWebPage *m_currentParent;
-    QAction *m_root;
+    KAction *m_root;
     QWebPage::WebAction m_webAction;
 };
 
@@ -146,13 +145,13 @@ signals:
 public:
     TabWidget(QWidget *parent = 0);
     void clear();
-    void addWebAction(QAction *action, QWebPage::WebAction webAction);
+    void addWebAction(KAction *action, QWebPage::WebAction webAction);
 
-    QAction *newTabAction() const;
-    QAction *closeTabAction() const;
-    QAction *recentlyClosedTabsAction() const;
-    QAction *nextTabAction() const;
-    QAction *previousTabAction() const;
+    KAction *newTabAction() const;
+    KAction *closeTabAction() const;
+    KAction *recentlyClosedTabsAction() const;
+    KAction *nextTabAction() const;
+    KAction *previousTabAction() const;
 
     QWidget *lineEditStack() const;
     KLineEdit *currentLineEdit() const;
@@ -183,7 +182,7 @@ public slots:
 private slots:
     void currentChanged(int index);
     void aboutToShowRecentTabsMenu();
-    void aboutToShowRecentTriggeredAction(QAction *action);
+    void aboutToShowRecentTriggeredAction(KAction *action);
     void webViewLoadStarted();
     void webViewIconChanged();
     void webViewTitleChanged(const QString &title);
@@ -193,11 +192,11 @@ private slots:
     void moveTab(int fromIndex, int toIndex);
 
 private:
-    QAction *m_recentlyClosedTabsAction;
-    QAction *m_newTabAction;
-    QAction *m_closeTabAction;
-    QAction *m_nextTabAction;
-    QAction *m_previousTabAction;
+    KAction *m_recentlyClosedTabsAction;
+    KAction *m_newTabAction;
+    KAction *m_closeTabAction;
+    KAction *m_nextTabAction;
+    KAction *m_previousTabAction;
 
     QMenu *m_recentlyClosedTabsMenu;
     static const int m_recentlyClosedTabsSize = 10;

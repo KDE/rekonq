@@ -179,18 +179,6 @@ void TabBar::dropEvent(QDropEvent *event)
     QTabBar::dropEvent(event);
 }
 
-// When index is -1 index chooses the current tab
-void TabWidget::reloadTab(int index)
-{
-    if (index < 0)
-        index = currentIndex();
-    if (index < 0 || index >= count())
-        return;
-
-    QWidget *widget = this->widget(index);
-    if (WebView *tab = qobject_cast<WebView*>(widget))
-        tab->reload();
-}
 
 void TabBar::reloadTab()
 {
@@ -226,17 +214,17 @@ TabWidget::TabWidget(QWidget *parent)
     setTabBar(m_tabBar);
 
     // Actions
-    m_newTabAction = new QAction(KIcon("tab-new"), i18n("New &Tab"), this);
-    m_newTabAction->setShortcuts(QKeySequence::AddTab);
+    m_newTabAction = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
+//     m_newTabAction->setShortcuts(QKeySequence::AddTab); FIXME
     m_newTabAction->setIconVisibleInMenu(false);
     connect(m_newTabAction, SIGNAL(triggered()), this, SLOT(newTab()));
 
-    m_closeTabAction = new QAction(KIcon("tab-close"), i18n("&Close Tab"), this);
-    m_closeTabAction->setShortcuts(QKeySequence::Close);
+    m_closeTabAction = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
+//     m_closeTabAction->setShortcuts(QKeySequence::Close); FIXME
     m_closeTabAction->setIconVisibleInMenu(false);
     connect(m_closeTabAction, SIGNAL(triggered()), this, SLOT(closeTab()));
 
-    m_nextTabAction = new QAction(i18n("Show Next Tab"), this);
+    m_nextTabAction = new KAction(i18n("Show Next Tab"), this);
     QList<QKeySequence> shortcuts;
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_BraceRight));
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_PageDown));
@@ -245,7 +233,7 @@ TabWidget::TabWidget(QWidget *parent)
     m_nextTabAction->setShortcuts(shortcuts);
     connect(m_nextTabAction, SIGNAL(triggered()), this, SLOT(nextTab()));
 
-    m_previousTabAction = new QAction(i18n("Show Previous Tab"), this);
+    m_previousTabAction = new KAction(i18n("Show Previous Tab"), this);
     shortcuts.clear();
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_BraceLeft));
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_PageUp));
@@ -255,11 +243,9 @@ TabWidget::TabWidget(QWidget *parent)
     connect(m_previousTabAction, SIGNAL(triggered()), this, SLOT(previousTab()));
 
     m_recentlyClosedTabsMenu = new QMenu(this);
-    connect(m_recentlyClosedTabsMenu, SIGNAL(aboutToShow()),
-            this, SLOT(aboutToShowRecentTabsMenu()));
-    connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)),
-            this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
-    m_recentlyClosedTabsAction = new QAction(i18n("Recently Closed Tabs"), this);
+    connect(m_recentlyClosedTabsMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowRecentTabsMenu()));
+    connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)), this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
+    m_recentlyClosedTabsAction = new KAction(i18n("Recently Closed Tabs"), this);
     m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
     m_recentlyClosedTabsAction->setEnabled(false);
 
@@ -304,12 +290,25 @@ void TabWidget::moveTab(int fromIndex, int toIndex)
     removeTab(fromIndex);
     insertTab(toIndex, tabWidget, icon, text);
     m_tabBar->setTabData(toIndex, data);
-    connect(this, SIGNAL(currentChanged(int)),
-        this, SLOT(currentChanged(int)));
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
     setCurrentIndex(toIndex);
 }
 
-void TabWidget::addWebAction(QAction *action, QWebPage::WebAction webAction)
+// When index is -1 index chooses the current tab
+void TabWidget::reloadTab(int index)
+{
+    if (index < 0)
+        index = currentIndex();
+    if (index < 0 || index >= count())
+        return;
+
+    QWidget *widget = this->widget(index);
+    if (WebView *tab = qobject_cast<WebView*>(widget))
+        tab->reload();
+}
+
+
+void TabWidget::addWebAction(KAction *action, QWebPage::WebAction webAction)
 {
     if (!action)
         return;
@@ -325,7 +324,8 @@ void TabWidget::currentChanged(int index)
     Q_ASSERT(m_lineEdits->count() == count());
 
     WebView *oldWebView = this->webView(m_lineEdits->currentIndex());
-    if (oldWebView) {
+    if (oldWebView) 
+    {
         disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)),
                 this, SIGNAL(showStatusBarMessage(const QString&)));
         disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
@@ -341,7 +341,8 @@ void TabWidget::currentChanged(int index)
     connect(webView, SIGNAL(loadProgress(int)),
             this, SIGNAL(loadProgress(int)));
 
-    for (int i = 0; i < m_actions.count(); ++i) {
+    for (int i = 0; i < m_actions.count(); ++i) 
+    {
         WebActionMapper *mapper = m_actions[i];
         mapper->updateCurrent(webView->page());
     }
@@ -355,27 +356,27 @@ void TabWidget::currentChanged(int index)
         webView->setFocus();
 }
 
-QAction *TabWidget::newTabAction() const
+KAction *TabWidget::newTabAction() const
 {
     return m_newTabAction;
 }
 
-QAction *TabWidget::closeTabAction() const
+KAction *TabWidget::closeTabAction() const
 {
     return m_closeTabAction;
 }
 
-QAction *TabWidget::recentlyClosedTabsAction() const
+KAction *TabWidget::recentlyClosedTabsAction() const
 {
     return m_recentlyClosedTabsAction;
 }
 
-QAction *TabWidget::nextTabAction() const
+KAction *TabWidget::nextTabAction() const
 {
     return m_nextTabAction;
 }
 
-QAction *TabWidget::previousTabAction() const
+KAction *TabWidget::previousTabAction() const
 {
     return m_previousTabAction;
 }
@@ -406,11 +407,15 @@ KLineEdit *TabWidget::lineEdit(int index) const
 WebView *TabWidget::webView(int index) const
 {
     QWidget *widget = this->widget(index);
-    if (WebView *webView = qobject_cast<WebView*>(widget)) {
+    if (WebView *webView = qobject_cast<WebView*>(widget)) 
+    {
         return webView;
-    } else {
+    } 
+    else 
+    {
         // optimization to delay creating the first webview
-        if (count() == 1) {
+        if (count() == 1) 
+        {
             TabWidget *that = const_cast<TabWidget*>(this);
             that->setUpdatesEnabled(false);
             that->newTab();
@@ -457,47 +462,36 @@ WebView *TabWidget::newTab(bool makeCurrent)
         p.setColor(QPalette::Window, palette().color(QPalette::Base));
         emptyWidget->setPalette(p);
         emptyWidget->setAutoFillBackground(true);
-        disconnect(this, SIGNAL(currentChanged(int)),
-            this, SLOT(currentChanged(int)));
+        disconnect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
         addTab(emptyWidget, i18n("(Untitled)"));
-        connect(this, SIGNAL(currentChanged(int)),
-            this, SLOT(currentChanged(int)));
+        connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
         return 0;
     }
 
     // webview
     WebView *webView = new WebView;
     urlLineEdit->setWebView(webView);
-    connect(webView, SIGNAL(loadStarted()),
-            this, SLOT(webViewLoadStarted()));
-    connect(webView, SIGNAL(loadFinished(bool)),
-            this, SLOT(webViewIconChanged()));
-    connect(webView, SIGNAL(iconChanged()),
-            this, SLOT(webViewIconChanged()));
-    connect(webView, SIGNAL(titleChanged(const QString &)),
-            this, SLOT(webViewTitleChanged(const QString &)));
-    connect(webView, SIGNAL(urlChanged(const QUrl &)),
-            this, SLOT(webViewUrlChanged(const QUrl &)));
-    connect(webView->page(), SIGNAL(windowCloseRequested()),
-            this, SLOT(windowCloseRequested()));
-    connect(webView->page(), SIGNAL(geometryChangeRequested(const QRect &)),
-            this, SIGNAL(geometryChangeRequested(const QRect &)));
-    connect(webView->page(), SIGNAL(printRequested(QWebFrame *)),
-            this, SIGNAL(printRequested(QWebFrame *)));
-    connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)),
-            this, SIGNAL(menuBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)),
-            this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)),
-            this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
+
+    connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
+    connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewIconChanged()));
+    connect(webView, SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
+    connect(webView, SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
+    connect(webView, SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
+    connect(webView->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
+    connect(webView->page(), SIGNAL(geometryChangeRequested(const QRect &)), this, SIGNAL(geometryChangeRequested(const QRect &)));
+    connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
+    connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)), this, SIGNAL(menuBarVisibilityChangeRequested(bool)));
+    connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)), this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
+    connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)), this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
     addTab(webView, i18n("(Untitled)"));
     if (makeCurrent)
         setCurrentWidget(webView);
 
     // webview actions
-    for (int i = 0; i < m_actions.count(); ++i) {
+    for (int i = 0; i < m_actions.count(); ++i) 
+    {
         WebActionMapper *mapper = m_actions[i];
-        mapper->addChild(webView->page()->action(mapper->webAction()));
+        mapper->addChild( new KAction( webView->page()->action( mapper->webAction() ) )  );
     }
 
     if (count() == 1)
@@ -508,9 +502,11 @@ WebView *TabWidget::newTab(bool makeCurrent)
 
 void TabWidget::reloadAllTabs()
 {
-    for (int i = 0; i < count(); ++i) {
+    for (int i = 0; i < count(); ++i) 
+    {
         QWidget *tabWidget = widget(i);
-        if (WebView *tab = qobject_cast<WebView*>(tabWidget)) {
+        if (WebView *tab = qobject_cast<WebView*>(tabWidget)) 
+        {
             tab->reload();
         }
     }
@@ -531,7 +527,8 @@ void TabWidget::windowCloseRequested()
     WebPage *webPage = qobject_cast<WebPage*>(sender());
     WebView *webView = qobject_cast<WebView*>(webPage->view());
     int index = webViewIndex(webView);
-    if (index >= 0) {
+    if (index >= 0) 
+    {
         if (count() == 1)
             webView->webPage()->mainWindow()->close();
         else
@@ -608,7 +605,7 @@ void TabWidget::webViewLoadStarted()
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
     if (-1 != index) {
-        QIcon icon(QLatin1String(":loading.gif"));
+        QIcon icon(QLatin1String(":loading.gif"));  // FIXME
         setTabIcon(index, icon);
     }
 }
@@ -617,7 +614,8 @@ void TabWidget::webViewIconChanged()
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
-    if (-1 != index) {
+    if (-1 != index) 
+    {
         QIcon icon = BrowserApplication::instance()->icon(webView->url());
         setTabIcon(index, icon);
     }
@@ -648,8 +646,9 @@ void TabWidget::webViewUrlChanged(const QUrl &url)
 void TabWidget::aboutToShowRecentTabsMenu()
 {
     m_recentlyClosedTabsMenu->clear();
-    for (int i = 0; i < m_recentlyClosedTabs.count(); ++i) {
-        QAction *action = new QAction(m_recentlyClosedTabsMenu);
+    for (int i = 0; i < m_recentlyClosedTabs.count(); ++i) 
+    {
+        KAction *action = new KAction(m_recentlyClosedTabsMenu);
         action->setData(m_recentlyClosedTabs.at(i));
         QIcon icon = BrowserApplication::instance()->icon(m_recentlyClosedTabs.at(i));
         action->setIcon(icon);
@@ -658,7 +657,7 @@ void TabWidget::aboutToShowRecentTabsMenu()
     }
 }
 
-void TabWidget::aboutToShowRecentTriggeredAction(QAction *action)
+void TabWidget::aboutToShowRecentTriggeredAction(KAction *action)
 {
     QUrl url = action->data().toUrl();
     loadUrlInCurrentTab(url);
@@ -688,9 +687,11 @@ void TabWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton && !childAt(event->pos())
             // Remove the line below when QTabWidget does not have a one pixel frame
-            && event->pos().y() < (tabBar()->y() + tabBar()->height())) {
+            && event->pos().y() < (tabBar()->y() + tabBar()->height())) 
+    {
         QUrl url(QApplication::clipboard()->text(QClipboard::Selection));
-        if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty()) {
+        if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty()) 
+        {
             WebView *webView = newTab();
             webView->setUrl(url);
         }
@@ -700,7 +701,8 @@ void TabWidget::mouseReleaseEvent(QMouseEvent *event)
 void TabWidget::loadUrlInCurrentTab(const QUrl &url)
 {
     WebView *webView = currentWebView();
-    if (webView) {
+    if (webView)
+    {
         webView->loadUrl(url);
         webView->setFocus();
     }
@@ -734,10 +736,14 @@ QByteArray TabWidget::saveState() const
     stream << qint32(version);
 
     QStringList tabs;
-    for (int i = 0; i < count(); ++i) {
-        if (WebView *tab = qobject_cast<WebView*>(widget(i))) {
+    for (int i = 0; i < count(); ++i)
+    {
+        if (WebView *tab = qobject_cast<WebView*>(widget(i))) 
+        {
             tabs.append(tab->url().toString());
-        } else {
+        } 
+        else 
+        {
             tabs.append(QString::null);
         }
     }
@@ -764,7 +770,8 @@ bool TabWidget::restoreState(const QByteArray &state)
     QStringList openTabs;
     stream >> openTabs;
 
-    for (int i = 0; i < openTabs.count(); ++i) {
+    for (int i = 0; i < openTabs.count(); ++i) 
+    {
         if (i != 0)
             newTab();
         loadPage(openTabs.at(i));
@@ -777,7 +784,7 @@ bool TabWidget::restoreState(const QByteArray &state)
     return true;
 }
 
-WebActionMapper::WebActionMapper(QAction *root, QWebPage::WebAction webAction, QObject *parent)
+WebActionMapper::WebActionMapper(KAction *root, QWebPage::WebAction webAction, QObject *parent)
     : QObject(parent)
     , m_currentParent(0)
     , m_root(root)
@@ -800,7 +807,7 @@ void WebActionMapper::currentDestroyed()
     updateCurrent(0);
 }
 
-void WebActionMapper::addChild(QAction *action)
+void WebActionMapper::addChild(KAction *action)
 {
     if (!action)
         return;
@@ -814,18 +821,21 @@ QWebPage::WebAction WebActionMapper::webAction() const
 
 void WebActionMapper::rootTriggered()
 {
-    if (m_currentParent) {
-        QAction *gotoAction = m_currentParent->action(m_webAction);
+    if (m_currentParent) 
+    {
+        KAction *gotoAction = new KAction( m_currentParent->action(m_webAction) );
         gotoAction->trigger();
     }
 }
 
 void WebActionMapper::childChanged()
 {
-    if (QAction *source = qobject_cast<QAction*>(sender())) {
+    if (KAction *source = qobject_cast<KAction*>(sender())) 
+    {
         if (m_root
             && m_currentParent
-            && source->parent() == m_currentParent) {
+            && source->parent() == m_currentParent) 
+        {
             m_root->setChecked(source->isChecked());
             m_root->setEnabled(source->isEnabled());
         }
@@ -846,9 +856,8 @@ void WebActionMapper::updateCurrent(QWebPage *currentParent)
         m_root->setChecked(false);
         return;
     }
-    QAction *source = m_currentParent->action(m_webAction);
+    KAction *source = new KAction( m_currentParent->action(m_webAction) );
     m_root->setChecked(source->isChecked());
     m_root->setEnabled(source->isEnabled());
-    connect(m_currentParent, SIGNAL(destroyed(QObject *)),
-            this, SLOT(currentDestroyed()));
+    connect(m_currentParent, SIGNAL(destroyed(QObject *)), this, SLOT(currentDestroyed()));
 }

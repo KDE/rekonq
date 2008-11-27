@@ -225,6 +225,7 @@ void BrowserMainWindow::setupMenu()
     fileMenu->addAction( i18n("Open Location"), this, SLOT( slotSelectLineEdit() ) );
     fileMenu->addSeparator();
 
+    fileMenu->addAction( m_tabWidget->newTabAction() );
     fileMenu->addAction( m_tabWidget->closeTabAction() );
     fileMenu->addSeparator();
 
@@ -239,7 +240,7 @@ void BrowserMainWindow::setupMenu()
     action->setCheckable(true);
     fileMenu->addSeparator();
 
-    fileMenu->addAction( KStandardAction::close( this , SLOT( close() ), this ) ); 
+    fileMenu->addAction( KStandardAction::quit( this , SLOT( close() ), this ) ); 
 
     //  ------------------------------------------------------------- EDIT --------------------------------------------------------------------------------------------------
     KMenu *editMenu = (KMenu *) menuBar()->addMenu( i18n("&Edit") );
@@ -313,14 +314,14 @@ void BrowserMainWindow::setupMenu()
     menuBar()->addMenu(historyMenu);
     QList<QAction*> historyActions;
 
-    m_historyBack = new QAction( i18n("Back"), this);
+    m_historyBack = new KAction( i18n("Back"), this);
     m_tabWidget->addWebAction(m_historyBack, QWebPage::Back);
-    m_historyBack->setShortcuts(QKeySequence::Back);
+//     m_historyBack->setShortcuts(QKeySequence::Back); FIXME
     m_historyBack->setIconVisibleInMenu(false);
 
-    m_historyForward = new QAction( i18n("Forward"), this);
+    m_historyForward = new KAction( i18n("Forward"), this);
     m_tabWidget->addWebAction(m_historyForward, QWebPage::Forward);
-    m_historyForward->setShortcuts(QKeySequence::Forward);
+//     m_historyForward->setShortcuts(QKeySequence::Forward); FIXME
     m_historyForward->setIconVisibleInMenu(false);
 
     m_restoreLastSession = new QAction( i18n("Restore Last Session"), this);
