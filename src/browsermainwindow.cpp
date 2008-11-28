@@ -89,18 +89,18 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
     centralWidget->setLayout(layout);
 	setCentralWidget(centralWidget);
 
-    connect(m_tabWidget, SIGNAL(loadPage(const QString &)), this, SLOT(loadPage(const QString &)));
-    connect(m_tabWidget, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
-    connect(m_tabWidget, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
-    connect(m_tabWidget, SIGNAL(linkHovered(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
-    connect(m_tabWidget, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
-    connect(m_tabWidget, SIGNAL(tabsChanged()), m_autoSaver, SLOT(changeOccurred()));
-    connect(m_tabWidget, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));
-    connect(m_tabWidget, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
-    connect(m_tabWidget, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
-    connect(m_tabWidget, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
-    connect(m_tabWidget, SIGNAL(toolBarVisibilityChangeRequested(bool)), m_navigationBar, SLOT(setVisible(bool)));
-    connect(m_tabWidget, SIGNAL(lastTabClosed()), m_tabWidget, SLOT(newTab()));
+    connect(m_tabWidget, SIGNAL( loadPage(const QString &) ), this, SLOT( loadPage(const QString &) ) );
+    connect(m_tabWidget, SIGNAL( setCurrentTitle(const QString &)), this, SLOT( slotUpdateWindowTitle(const QString &) ) );
+    connect(m_tabWidget, SIGNAL( showStatusBarMessage(const QString&)), statusBar(), SLOT( showMessage(const QString&) ) );
+    connect(m_tabWidget, SIGNAL( linkHovered(const QString&)), statusBar(), SLOT( showMessage(const QString&) ) );
+    connect(m_tabWidget, SIGNAL( loadProgress(int)), this, SLOT( slotLoadProgress(int) ) );
+    connect(m_tabWidget, SIGNAL( tabsChanged()), m_autoSaver, SLOT( changeOccurred() ) );
+    connect(m_tabWidget, SIGNAL( geometryChangeRequested(const QRect &)), this, SLOT( geometryChangeRequested(const QRect &) ) );
+    connect(m_tabWidget, SIGNAL( printRequested(QWebFrame *)), this, SLOT( printRequested(QWebFrame *) ) );
+    connect(m_tabWidget, SIGNAL( menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT( setVisible(bool) ) );
+    connect(m_tabWidget, SIGNAL( statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT( setVisible(bool) ) );
+    connect(m_tabWidget, SIGNAL( toolBarVisibilityChangeRequested(bool) ), m_navigationBar, SLOT( setVisible(bool) ) );
+    connect(m_tabWidget, SIGNAL( lastTabClosed() ), m_tabWidget, SLOT(newTab() ) );
 
     slotUpdateWindowTitle();
     loadDefaultState();
@@ -236,7 +236,7 @@ void BrowserMainWindow::setupMenu()
     fileMenu->addAction( KStandardAction::print( this, SLOT(slotFilePrint()), this) );
     fileMenu->addSeparator();
 
-    QAction *action = fileMenu->addAction( i18n("Private &Browsing..."), this, SLOT( slotPrivateBrowsing() ) );
+    KAction *action = (KAction *) fileMenu->addAction( i18n("Private &Browsing..."), this, SLOT( slotPrivateBrowsing() ) );
     action->setCheckable(true);
     fileMenu->addSeparator();
 
@@ -303,7 +303,7 @@ void BrowserMainWindow::setupMenu()
 
     viewMenu->addSeparator();
     viewMenu->addAction( i18n("Page S&ource"), this, SLOT(slotViewPageSource()), i18n("Ctrl+Alt+U"));
-    action = viewMenu->addAction( i18n("&Full Screen"), this, SLOT(slotViewFullScreen(bool)),  Qt::Key_F11);
+    action = (KAction *) viewMenu->addAction( i18n("&Full Screen"), this, SLOT(slotViewFullScreen(bool)),  Qt::Key_F11);
     action->setCheckable(true);
 
     //  ------------------------------------------------------------- HISTORY --------------------------------------------------------------------------------------------------
@@ -358,7 +358,7 @@ void BrowserMainWindow::setupMenu()
     KMenu* toolsMenu = (KMenu *) menuBar()->addMenu( i18n("&Tools") );
 
     toolsMenu->addAction( i18n("Web &Search"), this, SLOT(slotWebSearch()), QKeySequence( tr("Ctrl+K", "Web Search")));
-    action = toolsMenu->addAction( i18n("Enable Web &Inspector"), this, SLOT(slotToggleInspector(bool)));
+    action = (KAction *) toolsMenu->addAction( i18n("Enable Web &Inspector"), this, SLOT(slotToggleInspector(bool)));
     action->setCheckable(true);
 
 
