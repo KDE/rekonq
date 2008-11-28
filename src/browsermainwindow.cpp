@@ -398,9 +398,6 @@ void BrowserMainWindow::setupToolBar()
     m_searchBar = new SearchBar(m_navigationBar);
     m_navigationBar->addWidget(m_searchBar);
     connect(m_searchBar, SIGNAL(search(const QUrl&)), this, SLOT(loadUrl(const QUrl&)));
-//     m_toolbarSearch = new ToolbarSearch(m_navigationBar);
-//     m_navigationBar->addWidget(m_toolbarSearch);
-//     connect(m_toolbarSearch, SIGNAL(search(const QUrl&)), SLOT(loadUrl(const QUrl&)));
 }
 
 

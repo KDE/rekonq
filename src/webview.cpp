@@ -108,16 +108,16 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     return mainWindow->currentTab()->page();
 }
 
-#if !defined(QT_NO_UITOOLS)
-QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
-{
-    Q_UNUSED(url);
-    Q_UNUSED(paramNames);
-    Q_UNUSED(paramValues);
-    QUiLoader loader;
-    return loader.createWidget(classId, view());
-}
-#endif // !defined(QT_NO_UITOOLS)
+// #if !defined(QT_NO_UITOOLS)
+// QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
+// {
+//     Q_UNUSED(url);
+//     Q_UNUSED(paramNames);
+//     Q_UNUSED(paramValues);
+//     QUiLoader loader;
+//     return loader.createWidget(classId, view());
+// }
+// #endif // !defined(QT_NO_UITOOLS)
 
 void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {

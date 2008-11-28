@@ -24,13 +24,13 @@
 #include "browserapplication.h"
 
 // Qt Includes
-#include <QVBoxLayout>
-#include <QCompleter>
-#include <QFocusEvent>
-#include <QPainter>
-#include <QStyle>
-#include <QStyleOptionFrameV2>
-
+// #include <QVBoxLayout>
+// #include <QCompleter>
+// #include <QFocusEvent>
+// #include <QPainter>
+// #include <QStyle>
+// #include <QStyleOptionFrameV2>
+#include <QtGui>
 
 
 UrlBar::UrlBar(QWidget *parent)

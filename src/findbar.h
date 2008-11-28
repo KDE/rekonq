@@ -40,9 +40,6 @@ public slots:
     void slotFindNext();
     void slotFindPrevious();
 
-private slots:
-    void frameChanged(int frame);
-
 private:
     void initializeFindWidget();
 

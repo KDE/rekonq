@@ -25,20 +25,11 @@
 #include "browserapplication.h"
 #include "browsermainwindow.h"
 #include "history.h"
-// #include "urllineedit.h"
 #include "urlbar.h"
 #include "webview.h"
 
 // Qt Includes
-#include <QClipboard>
-#include <QCompleter>
-#include <QListView>
-#include <QMenu>
-#include <QMessageBox>
-#include <QMouseEvent>
-#include <QStackedWidget>
-#include <QStyle>
-#include <QToolButton>
+#include <QtGui>
 #include <QDebug>
 
 

@@ -90,15 +90,15 @@ void FindBar::showFind()
 
 
 
-void FindBar::frameChanged(int frame)
-{
-/*    if (!m_widget)
-        return;
-    m_widget->move(0, frame);
-    int height = qMax(0, m_widget->y() + m_widget->height());
-    setMinimumHeight(height);
-    setMaximumHeight(height);*/
-}
+// void FindBar::frameChanged(int frame)
+// {
+// /*    if (!m_widget)
+//         return;
+//     m_widget->move(0, frame);
+//     int height = qMax(0, m_widget->y() + m_widget->height());
+//     setMinimumHeight(height);
+//     setMaximumHeight(height);*/
+// }
 
 
 void FindBar::slotFindNext()
