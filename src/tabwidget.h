@@ -109,6 +109,7 @@ private:
 #include <QTabWidget>
 
 #include <KLineEdit>
+#include <KMenu>
 
 QT_BEGIN_NAMESPACE
 class QCompleter;
@@ -182,7 +183,7 @@ public slots:
 private slots:
     void currentChanged(int index);
     void aboutToShowRecentTabsMenu();
-    void aboutToShowRecentTriggeredAction(KAction *action);
+    void aboutToShowRecentTriggeredAction(QAction *action); // need QAction!
     void webViewLoadStarted();
     void webViewIconChanged();
     void webViewTitleChanged(const QString &title);
@@ -198,7 +199,7 @@ private:
     KAction *m_nextTabAction;
     KAction *m_previousTabAction;
 
-    QMenu *m_recentlyClosedTabsMenu;
+    KMenu *m_recentlyClosedTabsMenu;
     static const int m_recentlyClosedTabsSize = 10;
     QList<QUrl> m_recentlyClosedTabs;
     QList<WebActionMapper*> m_actions;

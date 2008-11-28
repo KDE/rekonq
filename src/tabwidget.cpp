@@ -215,12 +215,12 @@ TabWidget::TabWidget(QWidget *parent)
 
     // Actions
     m_newTabAction = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
-//     m_newTabAction->setShortcuts(QKeySequence::AddTab); FIXME
+    m_newTabAction->setShortcuts(KShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_N, Qt::CTRL+Qt::Key_T));
     m_newTabAction->setIconVisibleInMenu(false);
     connect(m_newTabAction, SIGNAL(triggered()), this, SLOT(newTab()));
 
     m_closeTabAction = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
-//     m_closeTabAction->setShortcuts(QKeySequence::Close); FIXME
+    m_closeTabAction->setShortcut(Qt::CTRL+Qt::Key_W);
     m_closeTabAction->setIconVisibleInMenu(false);
     connect(m_closeTabAction, SIGNAL(triggered()), this, SLOT(closeTab()));
 
@@ -242,7 +242,7 @@ TabWidget::TabWidget(QWidget *parent)
     m_previousTabAction->setShortcuts(shortcuts);
     connect(m_previousTabAction, SIGNAL(triggered()), this, SLOT(previousTab()));
 
-    m_recentlyClosedTabsMenu = new QMenu(this);
+    m_recentlyClosedTabsMenu = new KMenu(this);
     connect(m_recentlyClosedTabsMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowRecentTabsMenu()));
     connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)), this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
     m_recentlyClosedTabsAction = new KAction(i18n("Recently Closed Tabs"), this);
@@ -657,7 +657,7 @@ void TabWidget::aboutToShowRecentTabsMenu()
     }
 }
 
-void TabWidget::aboutToShowRecentTriggeredAction(KAction *action)
+void TabWidget::aboutToShowRecentTriggeredAction(QAction *action)
 {
     QUrl url = action->data().toUrl();
     loadUrlInCurrentTab(url);
@@ -665,9 +665,10 @@ void TabWidget::aboutToShowRecentTriggeredAction(KAction *action)
 
 void TabWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if (!childAt(event->pos())
-            // Remove the line below when QTabWidget does not have a one pixel frame
-            && event->pos().y() < (tabBar()->y() + tabBar()->height())) {
+    if ( !childAt(event->pos())
+                // Remove the line below when QTabWidget does not have a one pixel frame
+                && event->pos().y() < (tabBar()->y() + tabBar()->height())) 
+    {
         newTab();
         return;
     }
