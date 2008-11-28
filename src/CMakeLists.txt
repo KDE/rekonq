@@ -10,13 +10,11 @@ SET( rekonq_SRCS
     modelmenu.cpp 
     networkaccessmanager.cpp
     urlbar.cpp
-#     searchlineedit.cpp  # ready to be removed..
     findbar.cpp
     searchbar.cpp
     settings.cpp 
     squeezelabel.cpp 
     tabwidget.cpp
-#     urllineedit.cpp   # ready to be removed..
     webview.cpp 
     main.cpp
 )
