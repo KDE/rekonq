@@ -21,25 +21,24 @@
 #define FINDBAR_H
 
 #include <KLineEdit>
+#include <KToolBar>
 
 #include <QWidget>
 
-class FindBar : public QWidget
+class FindBar : public KToolBar
 {
     Q_OBJECT
 
 public:
     FindBar(QWidget *parent = 0);
     ~FindBar();
+    KLineEdit *lineEdit();
 
 public slots:
     void clear();
     void showFind();
     void slotFindNext();
     void slotFindPrevious();
-
-protected:
-    void resizeEvent(QResizeEvent *event);
 
 private slots:
     void frameChanged(int frame);
@@ -48,6 +47,7 @@ private:
     void initializeFindWidget();
 
     KLineEdit *m_lineEdit;
+    QWidget *m_centralWidget;
 };
 
 #endif
