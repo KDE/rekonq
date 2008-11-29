@@ -69,8 +69,9 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
     , m_reload(0)
     , m_bookmarkMenu(0)
 {
+    // delete widget accepting close event
     setAttribute(Qt::WA_DeleteOnClose, true);
-    statusBar()->setSizeGripEnabled(true);
+
     setupMenu();
     setupToolBar();
 
@@ -372,7 +373,7 @@ void BrowserMainWindow::setupMenu()
 
 void BrowserMainWindow::setupToolBar()
 {
-    m_navigationBar = (KToolBar *) addToolBar(i18n("Navigation"));
+    m_navigationBar = new KToolBar( i18n("Navigation") , this, Qt::TopToolBarArea, true, false, false); 
 
     m_historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
@@ -398,6 +399,11 @@ void BrowserMainWindow::setupToolBar()
     m_searchBar = new SearchBar(m_navigationBar);
     m_navigationBar->addWidget(m_searchBar);
     connect(m_searchBar, SIGNAL(search(const QUrl&)), this, SLOT(loadUrl(const QUrl&)));
+
+    // UI settings
+    m_navigationBar->setIconDimensions(16);
+    m_navigationBar->setContextMenuPolicy( Qt::NoContextMenu );
+    KToolBar::setToolBarsLocked( true ); 
 }
 
 

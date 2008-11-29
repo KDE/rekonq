@@ -60,7 +60,8 @@ BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &server
 {
     QLocalSocket socket;
     socket.connectToServer(serverName);
-    if (socket.waitForConnected(500)) {
+    if (socket.waitForConnected(500)) 
+    {
         QTextStream stream(&socket);
         int n = args->count();
         if (n > 1)
@@ -96,7 +97,7 @@ BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &server
     m_lastSession = settings.value(QLatin1String("lastSession")).toByteArray();
     settings.endGroup();
 
-    QTimer::singleShot(0, this, SLOT(postLaunch()));
+    QTimer::singleShot(0, this, SLOT( postLaunch() ) );
 }
 
 
@@ -111,15 +112,15 @@ BrowserApplication::~BrowserApplication()
 
 
 
-#if defined(Q_WS_MAC)
-void BrowserApplication::lastWindowClosed()
-{
-    clean();
-    BrowserMainWindow *mw = new BrowserMainWindow;
-    mw->slotHome();
-    m_mainWindows.prepend(mw);
-}
-#endif
+// #if defined(Q_WS_MAC)
+// void BrowserApplication::lastWindowClosed()
+// {
+//     clean();
+//     BrowserMainWindow *mw = new BrowserMainWindow;
+//     mw->slotHome();
+//     m_mainWindows.prepend(mw);
+// }
+// #endif
 
 
 
@@ -137,16 +138,18 @@ BrowserApplication *BrowserApplication::instance()
 void BrowserApplication::postLaunch()
 {
     QString directory = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-    if (directory.isEmpty())
+    if ( directory.isEmpty() )
+    {
         directory = QDir::homePath() + QLatin1String("/.") + QCoreApplication::applicationName();
+    }
     QWebSettings::setIconDatabasePath(directory);
 
-//     setWindowIcon(QIcon(QLatin1String(":browser.svg")));  // FIXME setICON
-
+    setWindowIcon( KIcon("rekonq") );
     loadSettings();
 
     // newMainWindow() needs to be called in main() for this to happen
-    if (m_mainWindows.count() > 0) {
+    if (m_mainWindows.count() > 0) 
+    {
         KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
         int n = args->count();
         if (n > 1)
@@ -395,7 +398,7 @@ KIcon BrowserApplication::icon(const QUrl &url) const
     if (!icon.isNull())
         return icon;
     if (m_defaultIcon.isNull())
-        m_defaultIcon = KIcon("rekonq");
+        m_defaultIcon = KIcon("kde");
     return m_defaultIcon;
 }
 

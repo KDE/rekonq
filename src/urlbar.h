@@ -40,12 +40,11 @@ public:
     ~UrlBar();
 
     KLineEdit *lineEdit();
-
     void setWebView(WebView *webView);
 
-protected:
-    void paintEvent(QPaintEvent *event);
-    void focusOutEvent(QFocusEvent *event);
+// FIXME needed to color urlbar while loading urls
+// protected:
+//     void paintEvent(QPaintEvent *event);
 
 private slots:
     void webViewUrlChanged(const QUrl &url);

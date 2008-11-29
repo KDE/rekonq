@@ -2,7 +2,7 @@ TODO = -
 DONE = +
 
 - fully ported to KDE4
-- Kconfig support (obviously..)
++ Kconfig support (obviously..)
 - threadweaver support
 - kwallet support
 - dbus support

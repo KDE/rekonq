@@ -24,12 +24,6 @@
 #include "browserapplication.h"
 
 // Qt Includes
-// #include <QVBoxLayout>
-// #include <QCompleter>
-// #include <QFocusEvent>
-// #include <QPainter>
-// #include <QStyle>
-// #include <QStyleOptionFrameV2>
 #include <QtGui>
 
 
@@ -45,15 +39,18 @@ UrlBar::UrlBar(QWidget *parent)
 
     m_lineEdit = new KLineEdit;
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(m_iconLabel);
     layout->addWidget(m_lineEdit);
     setLayout(layout);
 
     m_defaultBaseColor = palette().color(QPalette::Base);
+    setPalette( QPalette(Qt::white) );
+    setAutoFillBackground( true );
 
     webViewIconChanged();
 }
+
 
 UrlBar::~UrlBar()
 {
@@ -62,10 +59,12 @@ UrlBar::~UrlBar()
     delete m_lineEdit;
 }
 
+
 KLineEdit *UrlBar::lineEdit()
 {
     return m_lineEdit;
 }
+
 
 void UrlBar::setWebView(WebView *webView)
 {
@@ -78,45 +77,13 @@ void UrlBar::setWebView(WebView *webView)
     connect(webView, SIGNAL(loadProgress(int)), this, SLOT(update()));
 }
 
-void UrlBar::paintEvent(QPaintEvent *event)
-{
-    QPainter p(this);
-    QStyleOptionFrameV2 optionPanel;
-
-    optionPanel.initFrom(this);
-    optionPanel.rect = contentsRect();
-    optionPanel.lineWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &optionPanel, this);
-    optionPanel.midLineWidth = 0;
-    optionPanel.state |= QStyle::State_Sunken;
-    if (m_lineEdit->isReadOnly())
-        optionPanel.state |= QStyle::State_ReadOnly;
-    optionPanel.features = QStyleOptionFrameV2::None;
-
-    style()->drawPrimitive(QStyle::PE_PanelLineEdit, &optionPanel, &p, (QWidget *) this);
-}
-
-void UrlBar::focusOutEvent(QFocusEvent *event)
-{
-    if (m_lineEdit->text().isEmpty() && m_webView)
-    {
-        m_lineEdit->setText(m_webView->url().toString());
-    }
-    
-//     m_lineEdit->event(event); // FIXME
-
-    if (m_lineEdit->completer()) 
-    {
-        connect(m_lineEdit->completer(), SIGNAL(activated(QString)), m_lineEdit, SLOT(setText(QString)));
-        connect(m_lineEdit->completer(), SIGNAL(highlighted(QString)), m_lineEdit, SLOT(_q_completionHighlighted(QString)));
-    }
-    QWidget::focusOutEvent(event);
-}
 
 void UrlBar::webViewUrlChanged(const QUrl &url)
 {
     m_lineEdit->setText(url.toString());
     m_lineEdit->setCursorPosition(0);
 }
+
 
 void UrlBar::webViewIconChanged()
 {
@@ -125,6 +92,7 @@ void UrlBar::webViewIconChanged()
     QPixmap pixmap(icon.pixmap(16, 16));
     m_iconLabel->setPixmap(pixmap);
 }
+
 
 QLinearGradient UrlBar::generateGradient(const QColor &color) const
 {
@@ -136,4 +104,32 @@ QLinearGradient UrlBar::generateGradient(const QColor &color) const
     gradient.setColorAt(1, m_defaultBaseColor);
     return gradient;
 }
+
+// FIXME
+// void UrlBar::paintEvent(QPaintEvent *event)
+// {
+//     QPalette p = palette();
+//     if (m_webView && m_webView->url().scheme() == QLatin1String("https")) {
+//         QColor lightYellow(248, 248, 210);
+//         p.setBrush(QPalette::Base, generateGradient(lightYellow));
+//     } else {
+//         p.setBrush(QPalette::Base, m_defaultBaseColor);
+//     }
+//     setPalette(p);
+// 
+//     QPainter painter(this);
+//     QStyleOptionFrameV2 panel;
+// //     initStyleOption(&panel);
+//     QRect backgroundRect = style()->subElementRect(QStyle::SE_LineEditContents, &panel, this);
+//     if (m_webView && !hasFocus()) 
+//     {
+//         int progress = m_webView->progress();
+//         QColor loadingColor = QColor(116, 192, 250);
+//         painter.setBrush(generateGradient(loadingColor));
+//         painter.setPen(Qt::transparent);
+//         int mid = backgroundRect.width() / 100 * progress;
+//         QRect progressRect(backgroundRect.x(), backgroundRect.y(), mid, backgroundRect.height());
+//         painter.drawRect(progressRect);
+//     }
+// }
 
