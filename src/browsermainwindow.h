@@ -67,6 +67,9 @@ public:
 public slots:
     void loadPage(const QString &url);
     void slotHome();
+    void slotFind(const QString &);
+    void slotFindNext();
+    void slotFindPrevious();
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -87,9 +90,7 @@ private slots:
     void slotFilePrint();
     void slotPrivateBrowsing();
     void slotFileSaveAs();
-    void slotEditFind();
-    void slotEditFindNext();
-    void slotEditFindPrevious();
+
     void slotAddBookmark();
     void slotViewTextBigger();
     void slotViewTextNormal();
@@ -141,7 +142,7 @@ private:
     KAction *m_stopReload;
     KAction *m_goHome;
     KAction *m_viewStatusbar;
-    QAction *m_restoreLastSession;
+    KAction *m_restoreLastSession;
     KAction *m_addBookmark;
 
     KIcon m_reloadIcon;

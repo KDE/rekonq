@@ -45,8 +45,8 @@ UrlBar::UrlBar(QWidget *parent)
     setLayout(layout);
 
     m_defaultBaseColor = palette().color(QPalette::Base);
-    setPalette( QPalette(Qt::white) );
-    setAutoFillBackground( true );
+//     setPalette( QPalette(Qt::white) );
+    setAutoFillBackground( false );
 
     webViewIconChanged();
 }

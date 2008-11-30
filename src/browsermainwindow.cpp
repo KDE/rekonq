@@ -84,8 +84,8 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
     layout->addWidget(m_tabWidget);
 
     // Find Bar
-    m_findBar = new FindBar(centralWidget);
-    layout->addWidget(m_findBar);
+    m_findBar = new FindBar(this);
+    connect( m_findBar, SIGNAL( searchString(const QString &) ), this, SLOT( slotFind(const QString &) ) ); 
 
     centralWidget->setLayout(layout);
 	setCentralWidget(centralWidget);
@@ -271,8 +271,8 @@ void BrowserMainWindow::setupMenu()
     editMenu->addSeparator();
 
     editMenu->addAction( KStandardAction::find(this, SLOT( slotViewFindBar() ) , this ) );
-    editMenu->addAction( KStandardAction::findNext(this, SLOT( slotEditFindNext() ) , this ) );
-    editMenu->addAction( KStandardAction::findPrev(this, SLOT( slotEditFindPrevious() ) , this ) );
+    editMenu->addAction( KStandardAction::findNext(this, SLOT( slotFindNext() ) , this ) );
+    editMenu->addAction( KStandardAction::findPrev(this, SLOT( slotFindPrevious() ) , this ) );
 
     editMenu->addSeparator();
 
@@ -313,7 +313,7 @@ void BrowserMainWindow::setupMenu()
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle( i18n("Hi&story") );
     menuBar()->addMenu(historyMenu);
-    QList<QAction*> historyActions;
+    QList<KAction*> historyActions;
 
     m_historyBack = new KAction( i18n("Back"), this);
     m_tabWidget->addWebAction(m_historyBack, QWebPage::Back);
@@ -325,7 +325,7 @@ void BrowserMainWindow::setupMenu()
 //     m_historyForward->setShortcuts(QKeySequence::Forward); FIXME
     m_historyForward->setIconVisibleInMenu(false);
 
-    m_restoreLastSession = new QAction( i18n("Restore Last Session"), this);
+    m_restoreLastSession = new KAction( i18n("Restore Last Session"), this);
     connect(m_restoreLastSession, SIGNAL(triggered()), BrowserApplication::instance(), SLOT(restoreLastSession()));
     m_restoreLastSession->setEnabled(BrowserApplication::instance()->canRestoreSession());
 
@@ -653,33 +653,26 @@ void BrowserMainWindow::closeEvent(QCloseEvent *event)
 }
 
 
-// FIXME: reimplement me A-LA KATE search bar
-void BrowserMainWindow::slotEditFind()
+void BrowserMainWindow::slotFind(const QString & search)
 {
-//     if (!currentTab())
-//         return;
-//     bool ok;
-//     QString search = QInputDialog::getText(this, i18n("Find"),
-//                                           i18n("Text:"), QLineEdit::Normal,
-//                                           m_lastSearch, &ok);
-//     if (ok && !search.isEmpty()) {
-//         m_lastSearch = search;
-//         if (!currentTab()->findText(m_lastSearch))
-//             slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
-//     }
-// m_findWidg->setVisible( true );
-/*if ( !currentTab() )
-    return;
-bool ok;
-m_lastSearch = findWidg->*/
+    if (!currentTab())
+        return;
+    if (!search.isEmpty()) 
+    {
+        m_lastSearch = search;
+        if (!currentTab()->findText(m_lastSearch))
+            slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
+    }
 }
+
 
 void BrowserMainWindow::slotViewFindBar()
 {
-    m_findBar->show();
+    m_findBar->showFindBar();
 }
 
-void BrowserMainWindow::slotEditFindNext()
+
+void BrowserMainWindow::slotFindNext()
 {
     if (!currentTab() && !m_lastSearch.isEmpty())
         return;
@@ -687,8 +680,7 @@ void BrowserMainWindow::slotEditFindNext()
 }
 
 
-
-void BrowserMainWindow::slotEditFindPrevious()
+void BrowserMainWindow::slotFindPrevious()
 {
     if (!currentTab() && !m_lastSearch.isEmpty())
         return;

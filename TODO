@@ -1,0 +1,20 @@
+Road to 0.0.1 (first release)
++ ESC event findbar
++ let findbar work
+- bookmarks (share konqueror's)
+- some porting
+
+NEXT..
+- better FULL SCREEN
+- simplify history
+- QUrl --> KUrl
+- KDE download  = Kjob && Kget
+- adjust toolbar(s)
+    -search bar
+    - url bar 
+- KDEize menubar (settings)
+- configure dialog (A-LA amarok, konqueror) 
+- dbus support (?!)
+- KWallet support
+
+- Kpart ??

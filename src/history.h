@@ -34,6 +34,10 @@
 #include <QSortFilterProxyModel>
 #include <QWebHistoryInterface>
 
+// KDE Includes
+#include <KAction>
+
+
 class HistoryItem
 {
 public:
@@ -55,10 +59,15 @@ public:
     QDateTime dateTime;
 };
 
+
+
+
 class AutoSaver;
 class HistoryModel;
 class HistoryFilterModel;
 class HistoryTreeModel;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 class HistoryManager : public QWebHistoryInterface
 {
     Q_OBJECT
@@ -115,6 +124,8 @@ private:
     HistoryTreeModel *m_historyTreeModel;
 };
 
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 class HistoryModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -143,6 +154,8 @@ private:
     HistoryManager *m_history;
 };
 
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 /*!
     Proxy model that will remove any duplicate entries.
     Both m_sourceRow and m_historyHash store their offsets not from
@@ -184,6 +197,8 @@ private:
     mutable bool m_loaded;
 };
 
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 /*
     The history menu
     - Removes the first twenty entries and puts them as children of the top level.
@@ -211,6 +226,8 @@ private:
     HistoryTreeModel *m_treeModel;
 };
 
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Menu that is dynamically populated from the history
 class HistoryMenu : public ModelMenu
 {
@@ -221,7 +238,7 @@ signals:
 
 public:
      HistoryMenu(QWidget *parent = 0);
-     void setInitialActions(QList<QAction*> actions);
+     void setInitialActions(QList<KAction*> actions);
 
 protected:
     bool prePopulated();
@@ -234,9 +251,11 @@ private slots:
 private:
     HistoryManager *m_history;
     HistoryMenuModel *m_historyMenuModel;
-    QList<QAction*> m_initialActions;
+    QList<KAction*> m_initialActions;
 };
 
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // proxy model for the history model that
 // exposes each url http://www.foo.com and it url starting at the host www.foo.com
 class HistoryCompletionModel : public QAbstractProxyModel

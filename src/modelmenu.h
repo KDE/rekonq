@@ -22,8 +22,13 @@
 #ifndef MODELMENU_H
 #define MODELMENU_H
 
-#include <QtGui/QMenu>
-#include <QtCore/QAbstractItemModel>
+// Qt Includes
+#include <QtGui>
+#include <QtCore>
+
+// KDE Includes
+#include <KIcon>
+#include <KAction>
 
 // A QMenu that is dynamically populated from a QAbstractItemModel
 class ModelMenu : public QMenu
@@ -55,7 +60,7 @@ public:
     void setSeparatorRole(int role);
     int separatorRole() const;
 
-    QAction *makeAction(const QIcon &icon, const QString &text, QObject *parent);
+    KAction *makeAction(const KIcon &icon, const QString &text, QObject *parent);
 
 protected:
     // add any actions before the tree, return true if any actions are added.
@@ -71,7 +76,7 @@ private slots:
     void hovered(QAction *action);
 
 private:
-    QAction *makeAction(const QModelIndex &index);
+    KAction *makeAction(const QModelIndex &index);
     int m_maxRows;
     int m_firstSeparator;
     int m_maxWidth;

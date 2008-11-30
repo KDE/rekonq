@@ -25,14 +25,31 @@
 #include <KIconLoader>
 #include <KToolBar>
 #include <KStandardAction>
+#include <KDialog>
 
 #include <QtGui>
 
-FindBar::FindBar(QWidget *parent)
-    : KToolBar(parent)
+FindBar::FindBar(QMainWindow *parent)
+    : KToolBar( "FindBar" , parent, Qt::BottomToolBarArea, true, false, false)
     , m_lineEdit(0)
 {
-    initializeFindWidget();
+    KAction *close = new KAction(KIcon("dialog-close") , "close" , this);
+    connect( close , SIGNAL( triggered() ), this, SLOT( hide() ) );
+    addAction( close );
+
+    QLabel *label = new QLabel("Find: ");
+    addWidget( label );
+
+    m_lineEdit = new KLineEdit();
+    connect( m_lineEdit, SIGNAL( returnPressed() ), parent, SLOT( slotFindNext() ) );
+    connect( m_lineEdit, SIGNAL( textEdited(const QString &) ), parent, SLOT( slotFindNext() ) );
+    addWidget( m_lineEdit );
+
+    addAction( KStandardAction::findNext(parent, SLOT( slotFindNext() ) , this ) );
+    addAction( KStandardAction::findPrev(parent, SLOT( slotFindPrevious() ) , this ) );
+
+    QLabel *spaceLabel = new QLabel("                                                                         "); // FIXME
+    addWidget( spaceLabel );
 
     // we start off hidden
     hide();
@@ -51,34 +68,13 @@ KLineEdit *FindBar::lineEdit()
 }
 
 
-void FindBar::initializeFindWidget()
-{
-    addAction( KIcon("dialog-close") , "close" , this, SLOT( hide() ) );
-
-    QLabel *label = new QLabel("Find: ");
-    addWidget( label );
-
-    m_lineEdit = new KLineEdit();
-    connect( m_lineEdit, SIGNAL( returnPressed() ), this, SLOT( slotFindNext() ) );
-    connect( m_lineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( slotFindNext() ) );
-    addWidget( m_lineEdit );
-
-    addAction( KStandardAction::findNext(this, SLOT( slotFindNext() ) , this ) );
-    addAction( KStandardAction::findPrev(this, SLOT( slotFindPrevious() ) , this ) );
-
-    QLabel *spaceLabel = new QLabel("                                                                         "); // FIXME
-    addWidget( spaceLabel );
-}
-
-
-
 void FindBar::clear()
 {
     m_lineEdit->setText(QString());
 }
 
 
-void FindBar::showFind()
+void FindBar::showFindBar()
 {
     if (!isVisible()) 
     {
@@ -89,21 +85,17 @@ void FindBar::showFind()
 }
 
 
-
-// void FindBar::frameChanged(int frame)
-// {
-// /*    if (!m_widget)
-//         return;
-//     m_widget->move(0, frame);
-//     int height = qMax(0, m_widget->y() + m_widget->height());
-//     setMinimumHeight(height);
-//     setMaximumHeight(height);*/
-// }
-
-
-void FindBar::slotFindNext()
-{}
-
-void FindBar::slotFindPrevious()
-{}
-
+void FindBar::keyPressEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key_Escape)
+    {
+        hide();
+        return;
+    }
+    if(event->key() == Qt::Key_Return && ! ( m_lineEdit->text().isEmpty() ) )
+    {
+        emit searchString( m_lineEdit->text() );
+        return;
+    }
+    QWidget::keyPressEvent(event);
+}

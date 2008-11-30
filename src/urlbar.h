@@ -25,6 +25,7 @@
 
 // KDE Includes
 #include <KLineEdit>
+#include <KComboBox>
 
 // Qt Includes
 #include <QWidget>

@@ -20,8 +20,6 @@
 
 #include "modelmenu.h"
 
-#include <QtCore/QAbstractItemModel>
-#include <qdebug.h>
 
 ModelMenu::ModelMenu(QWidget * parent)
     : QMenu(parent)
@@ -35,81 +33,98 @@ ModelMenu::ModelMenu(QWidget * parent)
     connect(this, SIGNAL(aboutToShow()), this, SLOT(aboutToShow()));
 }
 
+
 bool ModelMenu::prePopulated()
 {
     return false;
 }
 
+
 void ModelMenu::postPopulated()
 {
 }
+
 
 void ModelMenu::setModel(QAbstractItemModel *model)
 {
     m_model = model;
 }
 
+
 QAbstractItemModel *ModelMenu::model() const
 {
     return m_model;
 }
+
 
 void ModelMenu::setMaxRows(int max)
 {
     m_maxRows = max;
 }
 
+
 int ModelMenu::maxRows() const
 {
     return m_maxRows;
 }
+
 
 void ModelMenu::setFirstSeparator(int offset)
 {
     m_firstSeparator = offset;
 }
 
+
 int ModelMenu::firstSeparator() const
 {
     return m_firstSeparator;
 }
+
 
 void ModelMenu::setRootIndex(const QModelIndex &index)
 {
     m_root = index;
 }
 
+
 QModelIndex ModelMenu::rootIndex() const
 {
     return m_root;
 }
+
 
 void ModelMenu::setHoverRole(int role)
 {
     m_hoverRole = role;
 }
 
+
 int ModelMenu::hoverRole() const
 {
     return m_hoverRole;
 }
+
 
 void ModelMenu::setSeparatorRole(int role)
 {
     m_separatorRole = role;
 }
 
+
 int ModelMenu::separatorRole() const
 {
     return m_separatorRole;
 }
 
+
 Q_DECLARE_METATYPE(QModelIndex)
 void ModelMenu::aboutToShow()
 {
-    if (QMenu *menu = qobject_cast<QMenu*>(sender())) {
+    if (QMenu *menu = qobject_cast<QMenu*>(sender())) 
+    {
         QVariant v = menu->menuAction()->data();
-        if (v.canConvert<QModelIndex>()) {
+        if (v.canConvert<QModelIndex>()) 
+        {
             QModelIndex idx = qvariant_cast<QModelIndex>(v);
             createMenu(idx, -1, menu, menu);
             disconnect(menu, SIGNAL(aboutToShow()), this, SLOT(aboutToShow()));
@@ -129,7 +144,8 @@ void ModelMenu::aboutToShow()
 
 void ModelMenu::createMenu(const QModelIndex &parent, int max, QMenu *parentMenu, QMenu *menu)
 {
-    if (!menu) {
+    if (!menu) 
+    {
         QString title = parent.data().toString();
         menu = new QMenu(title, this);
         QIcon icon = qvariant_cast<QIcon>(parent.data(Qt::DecorationRole));
@@ -146,8 +162,8 @@ void ModelMenu::createMenu(const QModelIndex &parent, int max, QMenu *parentMenu
     if (max != -1)
         end = qMin(max, end);
 
-    connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(triggered(QAction*)));
-    connect(menu, SIGNAL(hovered(QAction*)), this, SLOT(hovered(QAction*)));
+    connect(menu, SIGNAL( triggered(QAction*) ), this, SLOT( triggered(QAction*) ) );
+    connect(menu, SIGNAL( hovered(QAction*) ), this, SLOT( hovered(QAction*) ) );
 
     for (int i = 0; i < end; ++i) {
         QModelIndex idx = m_model->index(i, 0, parent);
@@ -165,29 +181,30 @@ void ModelMenu::createMenu(const QModelIndex &parent, int max, QMenu *parentMenu
     }
 }
 
-QAction *ModelMenu::makeAction(const QModelIndex &index)
+KAction *ModelMenu::makeAction(const QModelIndex &index)
 {
-    QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
-    QAction *action = makeAction(icon, index.data().toString(), this);
+    QIcon icon = qvariant_cast<QIcon>( index.data(Qt::DecorationRole) );
+    KAction *action = (KAction *) makeAction(KIcon(icon), index.data().toString(), this);
     QVariant v;
     v.setValue(index);
     action->setData(v);
     return action;
 }
 
-QAction *ModelMenu::makeAction(const QIcon &icon, const QString &text, QObject *parent)
+KAction *ModelMenu::makeAction(const KIcon &icon, const QString &text, QObject *parent)
 {
     QFontMetrics fm(font());
     if (-1 == m_maxWidth)
         m_maxWidth = fm.width(QLatin1Char('m')) * 30;
     QString smallText = fm.elidedText(text, Qt::ElideMiddle, m_maxWidth);
-    return new QAction(icon, smallText, parent);
+    return new KAction(icon, smallText, parent);
 }
 
 void ModelMenu::triggered(QAction *action)
 {
     QVariant v = action->data();
-    if (v.canConvert<QModelIndex>()) {
+    if (v.canConvert<QModelIndex>()) 
+    {
         QModelIndex idx = qvariant_cast<QModelIndex>(v);
         emit activated(idx);
     }
@@ -196,7 +213,8 @@ void ModelMenu::triggered(QAction *action)
 void ModelMenu::hovered(QAction *action)
 {
     QVariant v = action->data();
-    if (v.canConvert<QModelIndex>()) {
+    if (v.canConvert<QModelIndex>()) 
+    {
         QModelIndex idx = qvariant_cast<QModelIndex>(v);
         QString hoveredString = idx.data(m_hoverRole).toString();
         if (!hoveredString.isEmpty())
