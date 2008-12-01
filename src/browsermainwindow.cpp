@@ -342,12 +342,13 @@ void BrowserMainWindow::setupMenu()
 
     KMenu* bookmarksMenu = new KMenu( i18n("&Bookmarks"), this );
 
-    menuBar()->addMenu( bookmarksMenu );
-
-    KBookmarkManager *mgr = KBookmarkManager::managerForFile( "~/.kde/share/apps/konqueror/bookmarks.xml" , "konqueror" );
+    KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );
+    KBookmarkManager *mgr = KBookmarkManager::managerForExternalFile( bookfile.path() ); //FIXME hardcoded path
     KActionCollection * ac = new KActionCollection( this );
     ac->addAction( "Add Bookmark" , KStandardAction::addBookmark( this, SLOT( slotAddBookmark() ) , this ) );
     m_bookmarkMenu = new KBookmarkMenu( mgr , 0 , bookmarksMenu , ac );
+
+    menuBar()->addMenu( bookmarksMenu );
 
     //  ------------------------------------------------------------- WINDOW --------------------------------------------------------------------------------------------------
     m_windowMenu = (KMenu *) menuBar()->addMenu( i18n("&Window") );
