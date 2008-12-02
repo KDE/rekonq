@@ -32,7 +32,9 @@ class QSslError;
 QT_END_NAMESPACE
 
 class BrowserMainWindow;
-class WebPage : public QWebPage {
+
+class WebPage : public QWebPage 
+{
     Q_OBJECT
 
 signals:
@@ -45,9 +47,6 @@ public:
 protected:
     bool acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type);
     QWebPage *createWindow(QWebPage::WebWindowType type);
-// #if !defined(QT_NO_UITOOLS)
-//     QObject *createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues);
-// #endif
 
 private slots:
     void handleUnsupportedContent(QNetworkReply *reply);
@@ -62,7 +61,8 @@ private:
     QUrl m_loadingUrl;
 };
 
-class WebView : public QWebView {
+class WebView : public QWebView 
+{
     Q_OBJECT
 
 public:

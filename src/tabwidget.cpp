@@ -179,7 +179,9 @@ void TabBar::reloadTab()
     }
 }
 
+
 // --------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 TabWidget::TabWidget(QWidget *parent)
     : QTabWidget(parent)
@@ -258,6 +260,7 @@ TabWidget::TabWidget(QWidget *parent)
     m_lineEdits = new QStackedWidget(this);
 }
 
+
 void TabWidget::clear()
 {
     // clear the recently closed tabs
@@ -268,6 +271,7 @@ void TabWidget::clear()
         qLineEdit->setText(qLineEdit->text());
     }
 }
+
 
 void TabWidget::moveTab(int fromIndex, int toIndex)
 {
@@ -285,6 +289,7 @@ void TabWidget::moveTab(int fromIndex, int toIndex)
     setCurrentIndex(toIndex);
 }
 
+
 // When index is -1 index chooses the current tab
 void TabWidget::reloadTab(int index)
 {
@@ -299,12 +304,14 @@ void TabWidget::reloadTab(int index)
 }
 
 
+
 void TabWidget::addWebAction(KAction *action, QWebPage::WebAction webAction)
 {
     if (!action)
         return;
     m_actions.append(new WebActionMapper(action, webAction, this));
 }
+
 
 void TabWidget::currentChanged(int index)
 {
@@ -347,45 +354,54 @@ void TabWidget::currentChanged(int index)
         webView->setFocus();
 }
 
+
 KAction *TabWidget::newTabAction() const
 {
     return m_newTabAction;
 }
+
 
 KAction *TabWidget::closeTabAction() const
 {
     return m_closeTabAction;
 }
 
+
 KAction *TabWidget::recentlyClosedTabsAction() const
 {
     return m_recentlyClosedTabsAction;
 }
+
 
 KAction *TabWidget::nextTabAction() const
 {
     return m_nextTabAction;
 }
 
+
 KAction *TabWidget::previousTabAction() const
 {
     return m_previousTabAction;
 }
+
 
 QWidget *TabWidget::lineEditStack() const
 {
     return m_lineEdits;
 }
 
+
 KLineEdit *TabWidget::currentLineEdit() const
 {
     return lineEdit(m_lineEdits->currentIndex());
 }
 
+
 WebView *TabWidget::currentWebView() const
 {
     return webView(currentIndex());
 }
+
 
 KLineEdit *TabWidget::lineEdit(int index) const
 {
@@ -394,6 +410,7 @@ KLineEdit *TabWidget::lineEdit(int index) const
         return urlLineEdit->lineEdit();
     return 0;
 }
+
 
 WebView *TabWidget::webView(int index) const
 {
@@ -418,11 +435,13 @@ WebView *TabWidget::webView(int index) const
     return 0;
 }
 
+
 int TabWidget::webViewIndex(WebView *webView) const
 {
     int index = indexOf(webView);
     return index;
 }
+
 
 WebView *TabWidget::newTab(bool makeCurrent)
 {
@@ -491,6 +510,7 @@ WebView *TabWidget::newTab(bool makeCurrent)
     return webView;
 }
 
+
 void TabWidget::reloadAllTabs()
 {
     for (int i = 0; i < count(); ++i) 
@@ -503,6 +523,7 @@ void TabWidget::reloadAllTabs()
     }
 }
 
+
 void TabWidget::lineEditReturnPressed()
 {
     if (KLineEdit *lineEdit = qobject_cast<KLineEdit*>(sender())) 
@@ -512,6 +533,7 @@ void TabWidget::lineEditReturnPressed()
             currentWebView()->setFocus();
     }
 }
+
 
 void TabWidget::windowCloseRequested()
 {
@@ -527,6 +549,7 @@ void TabWidget::windowCloseRequested()
     }
 }
 
+
 void TabWidget::closeOtherTabs(int index)
 {
     if (-1 == index)
@@ -536,6 +559,7 @@ void TabWidget::closeOtherTabs(int index)
     for (int i = index - 1; i >= 0; --i)
         closeTab(i);
 }
+
 
 // When index is -1 index chooses the current tab
 void TabWidget::cloneTab(int index)
@@ -547,6 +571,7 @@ void TabWidget::cloneTab(int index)
     WebView *tab = newTab(false);
     tab->setUrl(webView(index)->url());
 }
+
 
 // When index is -1 index chooses the current tab
 void TabWidget::closeTab(int index)
@@ -591,6 +616,7 @@ void TabWidget::closeTab(int index)
         emit lastTabClosed();
 }
 
+
 void TabWidget::webViewLoadStarted()
 {
     WebView *webView = qobject_cast<WebView*>(sender());
@@ -600,6 +626,7 @@ void TabWidget::webViewLoadStarted()
         setTabIcon(index, icon);
     }
 }
+
 
 void TabWidget::webViewIconChanged()
 {
@@ -611,6 +638,7 @@ void TabWidget::webViewIconChanged()
         setTabIcon(index, icon);
     }
 }
+
 
 void TabWidget::webViewTitleChanged(const QString &title)
 {
@@ -624,6 +652,7 @@ void TabWidget::webViewTitleChanged(const QString &title)
     BrowserApplication::historyManager()->updateHistoryItem(webView->url(), title);
 }
 
+
 void TabWidget::webViewUrlChanged(const QUrl &url)
 {
     WebView *webView = qobject_cast<WebView*>(sender());
@@ -633,6 +662,7 @@ void TabWidget::webViewUrlChanged(const QUrl &url)
     }
     emit tabsChanged();
 }
+
 
 void TabWidget::aboutToShowRecentTabsMenu()
 {
@@ -648,11 +678,13 @@ void TabWidget::aboutToShowRecentTabsMenu()
     }
 }
 
+
 void TabWidget::aboutToShowRecentTriggeredAction(QAction *action)
 {
     QUrl url = action->data().toUrl();
     loadUrlInCurrentTab(url);
 }
+
 
 void TabWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
@@ -666,6 +698,7 @@ void TabWidget::mouseDoubleClickEvent(QMouseEvent *event)
     QTabWidget::mouseDoubleClickEvent(event);
 }
 
+
 void TabWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     if (!childAt(event->pos())) {
@@ -674,6 +707,7 @@ void TabWidget::contextMenuEvent(QContextMenuEvent *event)
     }
     QTabWidget::contextMenuEvent(event);
 }
+
 
 void TabWidget::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -690,6 +724,7 @@ void TabWidget::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+
 void TabWidget::loadUrlInCurrentTab(const QUrl &url)
 {
     WebView *webView = currentWebView();
@@ -700,6 +735,7 @@ void TabWidget::loadUrlInCurrentTab(const QUrl &url)
     }
 }
 
+
 void TabWidget::nextTab()
 {
     int next = currentIndex() + 1;
@@ -707,6 +743,7 @@ void TabWidget::nextTab()
         next = 0;
     setCurrentIndex(next);
 }
+
 
 void TabWidget::previousTab()
 {
@@ -716,7 +753,9 @@ void TabWidget::previousTab()
     setCurrentIndex(next);
 }
 
+
 static const qint32 TabWidgetMagic = 0xaa;
+
 
 QByteArray TabWidget::saveState() const
 {
@@ -743,6 +782,7 @@ QByteArray TabWidget::saveState() const
     stream << currentIndex();
     return data;
 }
+
 
 bool TabWidget::restoreState(const QByteArray &state)
 {
@@ -776,6 +816,10 @@ bool TabWidget::restoreState(const QByteArray &state)
     return true;
 }
 
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 WebActionMapper::WebActionMapper(KAction *root, QWebPage::WebAction webAction, QObject *parent)
     : QObject(parent)
     , m_currentParent(0)
@@ -789,15 +833,18 @@ WebActionMapper::WebActionMapper(KAction *root, QWebPage::WebAction webAction, Q
     root->setEnabled(false);
 }
 
+
 void WebActionMapper::rootDestroyed()
 {
     m_root = 0;
 }
 
+
 void WebActionMapper::currentDestroyed()
 {
     updateCurrent(0);
 }
+
 
 void WebActionMapper::addChild(KAction *action)
 {
@@ -811,6 +858,7 @@ QWebPage::WebAction WebActionMapper::webAction() const
     return m_webAction;
 }
 
+
 void WebActionMapper::rootTriggered()
 {
     if (m_currentParent) 
@@ -819,6 +867,7 @@ void WebActionMapper::rootTriggered()
         gotoAction->trigger();
     }
 }
+
 
 void WebActionMapper::childChanged()
 {
@@ -833,6 +882,7 @@ void WebActionMapper::childChanged()
         }
     }
 }
+
 
 void WebActionMapper::updateCurrent(QWebPage *currentParent)
 {

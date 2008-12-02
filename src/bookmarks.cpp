@@ -17,42 +17,55 @@
  *
  * ============================================================ */
 
+// Local Includes
 #include "bookmarks.h"
 #include "bookmarks.moc"
 
+#include "browsermainwindow.h"
+#include "webview.h"
+
+// KDE Includes
+#include <KMimeType>
 
 OwnBookMarks::OwnBookMarks(KMainWindow *parent)
+    : QObject(parent)
+    , KBookmarkOwner()
 {
-
+    m_parent = qobject_cast<BrowserMainWindow*>( parent );
+    connect( this, SIGNAL( openUrl( const QUrl &) ) , parent , SLOT( loadUrl( const QUrl & ) ) );
 }
 
 
-virtual void OwnBookMarks::openBookmark (const KBookmark & , Qt::MouseButtons , Qt::KeyboardModifiers )
+void OwnBookMarks::openBookmark (const KBookmark & b, Qt::MouseButtons , Qt::KeyboardModifiers )
 {
+    emit openUrl( (QUrl)b.url() );
+}
+
+QString OwnBookMarks::currentUrl() const
+{
+    QUrl url = m_parent->currentTab()->url();
+    return url.path();
+}
+
+
+QString OwnBookMarks::currentTitle() const
+{
+    QString title = m_parent->windowTitle();
+    return title.remove( " - reKonq" );
 }
 
 
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-BookmarkMenu::BookmarkMenu(KMainWindow *parent)
+BookmarksMenu::BookmarksMenu(KMainWindow *parent)
     : KMenu(parent)
+    , m_owner( new OwnBookMarks( parent ) )
 {
-    m_parent = parent;
-
     KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );    // share konqueror bookmarks
     m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
 
-    m_owner = new OwnBookMarks(parent);
-
     m_ac = new KActionCollection( this );
-    setActions();
 
-    m_menu = m_bookmarkMenu = new KBookmarkMenu( m_manager , m_owner, this, m_ac );
-}
-
-
- void BookmarkMenu::setActions()
-{
-    m_ac->addAction( KStandardAction::addBookmark( m_parent, SLOT( slotAddBookmark() ) , this ) );
+    m_menu = new KBookmarkMenu( m_manager , m_owner, this, m_ac );
 }

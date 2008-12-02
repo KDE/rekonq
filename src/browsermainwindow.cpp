@@ -27,7 +27,7 @@
 #include "history.h"
 #include "settings.h"
 #include "tabwidget.h"
-// #include "toolbarsearch.h"
+#include "bookmarks.h"
 #include "webview.h"
 
 // UI Includes
@@ -67,7 +67,6 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
     , m_historyForward(0)
     , m_stop(0)
     , m_reload(0)
-    , m_bookmarkMenu(0)
 {
     // delete widget accepting close event
     setAttribute(Qt::WA_DeleteOnClose, true);
@@ -340,13 +339,15 @@ void BrowserMainWindow::setupMenu()
 
     //  ------------------------------------------------------------- BOOKMARKS --------------------------------------------------------------------------------------------------
 
-    KMenu* bookmarksMenu = new KMenu( i18n("&Bookmarks"), this );
-
-    KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );
-    KBookmarkManager *mgr = KBookmarkManager::managerForExternalFile( bookfile.path() ); //FIXME hardcoded path
-    KActionCollection * ac = new KActionCollection( this );
-    ac->addAction( "Add Bookmark" , KStandardAction::addBookmark( this, SLOT( slotAddBookmark() ) , this ) );
-    m_bookmarkMenu = new KBookmarkMenu( mgr , 0 , bookmarksMenu , ac );
+    BookmarksMenu *bookmarksMenu = new BookmarksMenu( this );
+    bookmarksMenu->setTitle( i18n("&Bookmarks") );
+//     m_bookmarksMenu = new KMenu( i18n("&Bookmarks"), this );
+// 
+//     KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );
+//     KBookmarkManager *mgr = KBookmarkManager::managerForExternalFile( bookfile.path() ); //FIXME hardcoded path
+//     KActionCollection * ac = new KActionCollection( this );
+//     ac->addAction( "Add Bookmark" , KStandardAction::addBookmark( this, SLOT( slotAddBookmark() ) , this ) );
+//     m_bookmarkMenu = new KBookmarkMenu( mgr , 0 , bookmarksMenu , ac );
 
     menuBar()->addMenu( bookmarksMenu );
 

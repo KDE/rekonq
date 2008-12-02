@@ -7,6 +7,7 @@ SET( rekonq_SRCS
     edittableview.cpp 
     edittreeview.cpp 
     history.cpp 
+    bookmarks.cpp
     modelmenu.cpp 
     networkaccessmanager.cpp
     urlbar.cpp

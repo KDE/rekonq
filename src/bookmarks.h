@@ -20,36 +20,48 @@
 #ifndef BOOKMARKS_H
 #define BOOKMARKS_H
 
+// KDE Includes
 #include <KBookmarkOwner>
 #include <KBookmarkManager>
 #include <KBookmarkMenu>
 
+#include <KActionCollection>
+#include <KMainWindow>
 
-class OwnBookMarks : public KBookMarkOwner
+class BrowserMainWindow;
+
+class OwnBookMarks : public QObject , public KBookmarkOwner
 {
 Q_OBJECT
 public:
-    OwnBookMarks(KMainWindow *parent);
+    OwnBookMarks(KMainWindow * );
 
     virtual void openBookmark (const KBookmark & , Qt::MouseButtons , Qt::KeyboardModifiers );
+
+    // KBookmarkOwner interface:
+    virtual QString currentUrl() const;
+    virtual QString currentTitle() const;
+
+signals:
+    void openUrl(const QUrl &); // FIXME pass all to KUrl!!
+
+private:
+    BrowserMainWindow *m_parent;
 };
 
 
-class BookmarkMenu : public KMenu
+class BookmarksMenu : public KMenu
 {
 Q_OBJECT
 public:
-    BookmarkMenu(KMainWindow *parent);
+    BookmarksMenu(KMainWindow * parent);
 
 private:
-    void setActions();
-
     KBookmarkManager *m_manager;
     OwnBookMarks *m_owner;
     KActionCollection *m_ac;
     KBookmarkMenu *m_menu;
-    KMainWindow *m_parent;
 };
 
-#endif
 
+#endif

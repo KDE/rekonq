@@ -32,7 +32,6 @@
 #include <KToolBar>
 #include <KAction>
 #include <KMenu>
-#include <KBookmarkMenu>
 
 // Qt Includes
 #include <QUrl>
@@ -41,7 +40,6 @@
 class AutoSaver;
 class QWebFrame;
 class TabWidget;
-// class ToolbarSearch;
 class WebView;
 
 /*!
@@ -49,7 +47,8 @@ class WebView;
 
     Handles the tab widget and all the actions
  */
-class BrowserMainWindow : public KMainWindow {
+class BrowserMainWindow : public KMainWindow 
+{
     Q_OBJECT
 
 public:
@@ -150,8 +149,6 @@ private:
 
     FindBar *m_findBar;
     QString m_lastSearch;
-
-    KBookmarkMenu* m_bookmarkMenu;
 };
 
 #endif // BROWSERMAINWINDOW_H
