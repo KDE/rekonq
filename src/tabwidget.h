@@ -108,11 +108,13 @@ private:
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#include <QUrl>
-#include <QTabWidget>
-
+// KDE Includes
+#include <KUrl>
 #include <KLineEdit>
 #include <KMenu>
+
+// Qt Includes
+#include <QTabWidget>
 
 QT_BEGIN_NAMESPACE
 class QCompleter;
@@ -173,7 +175,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
 public slots:
-    void loadUrlInCurrentTab(const QUrl &url);
+    void loadUrlInCurrentTab(const KUrl &url);
     WebView *newTab(bool makeCurrent = true);
     void cloneTab(int index = -1);
     void closeTab(int index = -1);
@@ -204,7 +206,7 @@ private:
 
     KMenu *m_recentlyClosedTabsMenu;
     static const int m_recentlyClosedTabsSize = 10;
-    QList<QUrl> m_recentlyClosedTabs;
+    QList<KUrl> m_recentlyClosedTabs;
     QList<WebActionMapper*> m_actions;
 
     QCompleter *m_lineEditCompleter;

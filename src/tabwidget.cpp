@@ -52,6 +52,7 @@ TabBar::TabBar(QWidget *parent)
     }
 }
 
+
 void TabBar::selectTabAction()
 {
     if (QShortcut *shortCut = qobject_cast<QShortcut*>(sender()))
@@ -62,6 +63,7 @@ void TabBar::selectTabAction()
         setCurrentIndex(index);
     }
 }
+
 
 void TabBar::contextMenuRequested(const QPoint &position)
 {
@@ -94,13 +96,16 @@ void TabBar::contextMenuRequested(const QPoint &position)
     menu.exec(QCursor::pos());
 }
 
+
 void TabBar::cloneTab()
 {
-    if (QAction *action = qobject_cast<QAction*>(sender())) {
+    if (QAction *action = qobject_cast<QAction*>(sender())) 
+    {
         int index = action->data().toInt();
         emit cloneTab(index);
     }
 }
+
 
 void TabBar::closeTab()
 {
@@ -111,6 +116,7 @@ void TabBar::closeTab()
     }
 }
 
+
 void TabBar::closeOtherTabs()
 {
     if (QAction *action = qobject_cast<QAction*>(sender()))
@@ -120,12 +126,14 @@ void TabBar::closeOtherTabs()
     }
 }
 
+
 void TabBar::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
         m_dragStartPos = event->pos();
     QTabBar::mousePressEvent(event);
 }
+
 
 void TabBar::mouseMoveEvent(QMouseEvent *event)
 {
@@ -146,6 +154,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
     QTabBar::mouseMoveEvent(event);
 }
 
+
 void TabBar::dragEnterEvent(QDragEnterEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
@@ -157,6 +166,7 @@ void TabBar::dragEnterEvent(QDragEnterEvent *event)
     }
     QTabBar::dragEnterEvent(event);
 }
+
 
 void TabBar::dropEvent(QDropEvent *event)
 {
@@ -319,7 +329,7 @@ void TabWidget::currentChanged(int index)
     if (!webView)
         return;
 
-    Q_ASSERT(m_lineEdits->count() == count());
+    Q_ASSERT( m_lineEdits->count() == count() );
 
     WebView *oldWebView = this->webView(m_lineEdits->currentIndex());
     if (oldWebView) 
@@ -493,7 +503,7 @@ WebView *TabWidget::newTab(bool makeCurrent)
     connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)), this, SIGNAL(menuBarVisibilityChangeRequested(bool)));
     connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)), this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
     connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)), this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
-    addTab(webView, i18n("(Untitled)"));
+    addTab(webView, i18n("(Untitled)") );
     if (makeCurrent)
         setCurrentWidget(webView);
 
@@ -569,7 +579,7 @@ void TabWidget::cloneTab(int index)
     if (index < 0 || index >= count())
         return;
     WebView *tab = newTab(false);
-    tab->setUrl(webView(index)->url());
+    tab->setUrl( webView(index)->url() );
 }
 
 
@@ -673,7 +683,7 @@ void TabWidget::aboutToShowRecentTabsMenu()
         action->setData(m_recentlyClosedTabs.at(i));
         QIcon icon = BrowserApplication::instance()->icon(m_recentlyClosedTabs.at(i));
         action->setIcon(icon);
-        action->setText(m_recentlyClosedTabs.at(i).toString());
+        action->setText( m_recentlyClosedTabs.at(i).prettyUrl() );
         m_recentlyClosedTabsMenu->addAction(action);
     }
 }
@@ -681,7 +691,7 @@ void TabWidget::aboutToShowRecentTabsMenu()
 
 void TabWidget::aboutToShowRecentTriggeredAction(QAction *action)
 {
-    QUrl url = action->data().toUrl();
+    KUrl url = action->data().toUrl();
     loadUrlInCurrentTab(url);
 }
 
@@ -715,7 +725,7 @@ void TabWidget::mouseReleaseEvent(QMouseEvent *event)
             // Remove the line below when QTabWidget does not have a one pixel frame
             && event->pos().y() < (tabBar()->y() + tabBar()->height())) 
     {
-        QUrl url(QApplication::clipboard()->text(QClipboard::Selection));
+        KUrl url( QApplication::clipboard()->text(QClipboard::Selection) );
         if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty()) 
         {
             WebView *webView = newTab();
@@ -725,7 +735,7 @@ void TabWidget::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
-void TabWidget::loadUrlInCurrentTab(const QUrl &url)
+void TabWidget::loadUrlInCurrentTab(const KUrl &url)
 {
     WebView *webView = currentWebView();
     if (webView)
@@ -771,7 +781,7 @@ QByteArray TabWidget::saveState() const
     {
         if (WebView *tab = qobject_cast<WebView*>(widget(i))) 
         {
-            tabs.append(tab->url().toString());
+            tabs.append(tab->url().prettyUrl());
         } 
         else 
         {

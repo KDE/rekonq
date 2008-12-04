@@ -27,14 +27,15 @@
 #include "searchbar.h"
 
 // KDE Includes
+#include <KUrl>
 #include <KMainWindow>
 #include <KIcon>
 #include <KToolBar>
 #include <KAction>
 #include <KMenu>
 
-// Qt Includes
-#include <QUrl>
+// // Qt Includes
+// #include <QUrl>
 
 
 class AutoSaver;
@@ -57,7 +58,7 @@ public:
     QSize sizeHint() const;
 
 public:
-    static QUrl guessUrlFromString(const QString &url);
+    static KUrl guessUrlFromString(const QString &url);
     TabWidget *tabWidget() const;
     WebView *currentTab() const;
     QByteArray saveState(bool withTabs = true) const;
@@ -80,7 +81,7 @@ private slots:
     void slotUpdateStatusbar(const QString &string);
     void slotUpdateWindowTitle(const QString &title = QString());
 
-    void loadUrl(const QUrl &url);
+    void loadUrl(const KUrl &url);
     void slotPreferences();
 
     void slotFileNew();

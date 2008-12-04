@@ -308,7 +308,7 @@ void BrowserMainWindow::setupMenu()
 
     //  ------------------------------------------------------------- HISTORY --------------------------------------------------------------------------------------------------
     HistoryMenu *historyMenu = new HistoryMenu(this);
-    connect(historyMenu, SIGNAL(openUrl(const QUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const QUrl&)));
+    connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle( i18n("Hi&story") );
     menuBar()->addMenu(historyMenu);
@@ -400,7 +400,7 @@ void BrowserMainWindow::setupToolBar()
 
     m_searchBar = new SearchBar(m_navigationBar);
     m_navigationBar->addWidget(m_searchBar);
-    connect(m_searchBar, SIGNAL(search(const QUrl&)), this, SLOT(loadUrl(const QUrl&)));
+    connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
 
     // UI settings
     m_navigationBar->setIconDimensions(16);
@@ -443,52 +443,66 @@ void BrowserMainWindow::slotViewStatusbar()
 
 
 
-QUrl BrowserMainWindow::guessUrlFromString(const QString &string)
+KUrl BrowserMainWindow::guessUrlFromString(const QString &string)
 {
     QString urlStr = string.trimmed();
     QRegExp test(QLatin1String("^[a-zA-Z]+\\:.*"));
 
     // Check if it looks like a qualified URL. Try parsing it and see.
     bool hasSchema = test.exactMatch(urlStr);
-    if (hasSchema) {
-        QUrl url(urlStr, QUrl::TolerantMode);
-        if (url.isValid())
+    if (hasSchema) 
+    {
+        QUrl qurl(urlStr, QUrl::TolerantMode);
+        KUrl url(qurl);
+        if ( url.isValid() )
+        {
             return url;
+        }
     }
 
     // Might be a file.
-    if (QFile::exists(urlStr)) {
+    if (QFile::exists(urlStr)) 
+    {
         QFileInfo info(urlStr);
-        return QUrl::fromLocalFile(info.absoluteFilePath());
+        return KUrl::fromPath( info.absoluteFilePath() );
     }
 
     // Might be a shorturl - try to detect the schema.
-    if (!hasSchema) {
+    if (!hasSchema) 
+    {
         int dotIndex = urlStr.indexOf(QLatin1Char('.'));
-        if (dotIndex != -1) {
+        if (dotIndex != -1) 
+        {
             QString prefix = urlStr.left(dotIndex).toLower();
             QString schema = (prefix == QLatin1String("ftp")) ? prefix : QLatin1String("http");
-            QUrl url(schema + QLatin1String("://") + urlStr, QUrl::TolerantMode);
-            if (url.isValid())
+            QUrl qurl(schema + QLatin1String("://") + urlStr, QUrl::TolerantMode);
+            KUrl url(qurl);
+            if ( url.isValid() )
+            {
                 return url;
+            }
         }
     }
 
     // Fall back to QUrl's own tolerant parser.
-    QUrl url = QUrl(string, QUrl::TolerantMode);
+    QUrl qurl = QUrl(string, QUrl::TolerantMode);
+    KUrl url(qurl);
 
     // finally for cases where the user just types in a hostname add http
-    if (url.scheme().isEmpty())
-        url = QUrl(QLatin1String("http://") + string, QUrl::TolerantMode);
+    if ( qurl.scheme().isEmpty() )
+    {
+        qurl = QUrl(QLatin1String("http://") + string, QUrl::TolerantMode);
+        url = KUrl(qurl);
+    }
     return url;
 }
 
 
 
 
-void BrowserMainWindow::loadUrl(const QUrl &url)
+void BrowserMainWindow::loadUrl(const KUrl &url)
 {
-    loadPage(url.toString());
+    loadPage( url.url() );
 }
 
 
@@ -574,8 +588,7 @@ void BrowserMainWindow::slotFilePrintPreview()
     if (!currentTab())
         return;
     QPrintPreviewDialog *dialog = new QPrintPreviewDialog(this);
-    connect(dialog, SIGNAL(paintRequested(QPrinter *)),
-            currentTab(), SLOT(print(QPrinter *)));
+    connect(dialog, SIGNAL(paintRequested(QPrinter *)), currentTab(), SLOT(print(QPrinter *)));
     dialog->exec();
 }
 
@@ -595,7 +608,7 @@ void BrowserMainWindow::printRequested(QWebFrame *frame)
     QPrinter printer;
     QPrintDialog *dialog = new QPrintDialog(&printer, this);
     dialog->setWindowTitle( i18n("Print Document") );
-    if (dialog->exec() != QDialog::Accepted)
+    if (dialog->exec() != QDialog::Accepted )
         return;
     frame->print(&printer);
 }
@@ -606,7 +619,8 @@ void BrowserMainWindow::slotPrivateBrowsing()
 {
     QWebSettings *settings = QWebSettings::globalSettings();
     bool pb = settings->testAttribute(QWebSettings::PrivateBrowsingEnabled);
-    if (!pb) {
+    if (!pb) 
+    {
         QString title = i18n("Are you sure you want to turn on private browsing?");
         QString text = "<b>" + title + i18n("</b><br><br>When private browsing in turned on,"
             " webpages are not added to the history,"
@@ -620,14 +634,18 @@ void BrowserMainWindow::slotPrivateBrowsing()
         QMessageBox::StandardButton button = QMessageBox::question(this, QString(), text,
                                QMessageBox::Ok | QMessageBox::Cancel,
                                QMessageBox::Ok);
-        if (button == QMessageBox::Ok) {
+        if (button == QMessageBox::Ok) 
+        {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
         }
-    } else {
+    } 
+    else 
+    {
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
 
         QList<BrowserMainWindow*> windows = BrowserApplication::instance()->mainWindows();
-        for (int i = 0; i < windows.count(); ++i) {
+        for (int i = 0; i < windows.count(); ++i) 
+        {
             BrowserMainWindow *window = windows.at(i);
             window->m_lastSearch = QString::null;
             window->tabWidget()->clear();
@@ -639,13 +657,15 @@ void BrowserMainWindow::slotPrivateBrowsing()
 
 void BrowserMainWindow::closeEvent(QCloseEvent *event)
 {
-    if (m_tabWidget->count() > 1) {
+    if (m_tabWidget->count() > 1) 
+    {
         int ret = QMessageBox::warning(this, QString(),
                            i18n("Are you sure you want to close the window?"
                               "  There are %1 tab open" , m_tabWidget->count() ) ,
                            QMessageBox::Yes | QMessageBox::No,
                            QMessageBox::No);
-        if (ret == QMessageBox::No) {
+        if (ret == QMessageBox::No) 
+        {
             event->ignore();
             return;
         }
@@ -721,14 +741,27 @@ void BrowserMainWindow::slotViewTextSmaller()
 
 void BrowserMainWindow::slotViewFullScreen(bool makeFullScreen)
 {
-    if (makeFullScreen) {
+    if (makeFullScreen) 
+    {
         showFullScreen();
-    } else {
-        if (isMinimized())
+    } 
+    else 
+    {
+        if ( isMinimized() )
+        {
             showMinimized();
-        else if (isMaximized())
-            showMaximized();
-        else showNormal();
+        }
+        else 
+        {
+            if (isMaximized())
+            {
+                showMaximized();
+            }
+            else 
+            {
+                showNormal();
+            }
+        }
     }
 }
 
@@ -773,12 +806,14 @@ void BrowserMainWindow::slotWebSearch()
 void BrowserMainWindow::slotToggleInspector(bool enable)
 {
     QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, enable);
-    if (enable) {
+    if (enable) 
+    {
         int result = QMessageBox::question(this, i18n("Web Inspector"),
                                            i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
                                            "Do you want to reload all pages?"),
                                            QMessageBox::Yes | QMessageBox::No);
-        if (result == QMessageBox::Yes) {
+        if (result == QMessageBox::Yes) 
+        {
             m_tabWidget->reloadAllTabs();
         }
     }
@@ -854,7 +889,8 @@ void BrowserMainWindow::slotAboutToShowBackMenu()
         return;
     QWebHistory *history = currentTab()->history();
     int historyCount = history->count();
-    for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i) {
+    for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i) 
+    {
         QWebHistoryItem item = history->backItems(history->count()).at(i);
         KAction *action = new KAction(this);
         action->setData(-1*(historyCount-i-1));
@@ -877,7 +913,8 @@ void BrowserMainWindow::slotAboutToShowWindowMenu()
 
     m_windowMenu->addSeparator();
     QList<BrowserMainWindow*> windows = BrowserApplication::instance()->mainWindows();
-    for (int i = 0; i < windows.count(); ++i) {
+    for (int i = 0; i < windows.count(); ++i) 
+    {
         BrowserMainWindow *window = windows.at(i);
         QAction *action = m_windowMenu->addAction(window->windowTitle(), this, SLOT(slotShowWindow()));
         action->setData(i);
@@ -892,9 +929,11 @@ void BrowserMainWindow::slotAboutToShowWindowMenu()
 
 void BrowserMainWindow::slotShowWindow()
 {
-    if (KAction *action = qobject_cast<KAction*>(sender())) {
+    if (KAction *action = qobject_cast<KAction*>(sender())) 
+    {
         QVariant v = action->data();
-        if (v.canConvert<int>()) {
+        if (v.canConvert<int>()) 
+        {
             int offset = qvariant_cast<int>(v);
             QList<BrowserMainWindow*> windows = BrowserApplication::instance()->mainWindows();
             windows.at(offset)->activateWindow();
@@ -911,10 +950,17 @@ void BrowserMainWindow::slotOpenActionUrl(QAction *action)
     int offset = action->data().toInt();
     QWebHistory *history = currentTab()->history();
     if (offset < 0)
+    {
         history->goToItem(history->backItems(-1*offset).first()); // back
-    else if (offset > 0)
-        history->goToItem(history->forwardItems(history->count() - offset + 1).back()); // forward
- }
+    }
+    else 
+    {
+        if (offset > 0)
+        {
+            history->goToItem(history->forwardItems(history->count() - offset + 1).back()); // forward
+        }
+    }
+}
 
 
 void BrowserMainWindow::slotOpenPrevious()

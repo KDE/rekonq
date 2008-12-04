@@ -22,11 +22,13 @@
 #ifndef BROWSERAPPLICATION_H
 #define BROWSERAPPLICATION_H
 
+// KDE Includes
 #include <KApplication>
 #include <KCmdLineArgs>
 #include <KIcon>
+#include <KUrl>
 
-#include <QUrl>
+// Qt Includes
 #include <QPointer>
 
 QT_BEGIN_NAMESPACE
@@ -52,7 +54,7 @@ public:
     bool isTheOnlyBrowser() const;
     BrowserMainWindow *mainWindow();
     QList<BrowserMainWindow*> mainWindows();
-    KIcon icon(const QUrl &url) const;
+    KIcon icon(const KUrl &url) const;
 
     void saveSession();
     bool canRestoreSession() const;
@@ -68,7 +70,7 @@ public slots:
 
 private slots:
     void postLaunch();
-    void openUrl(const QUrl &url);
+    void openUrl(const KUrl &url);
     void newLocalSocketConnection();
 
 private:

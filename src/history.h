@@ -25,17 +25,17 @@
 // Local Includes
 #include "modelmenu.h"
 
+// KDE Includes
+#include <KAction>
+#include <KUrl>
+
 // Qt Includes
 #include <QDateTime>
 #include <QHash>
 #include <QObject>
 #include <QTimer>
-#include <QUrl>
 #include <QSortFilterProxyModel>
 #include <QWebHistoryInterface>
-
-// KDE Includes
-#include <KAction>
 
 
 class HistoryItem
@@ -61,13 +61,15 @@ public:
 
 
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 class AutoSaver;
 class HistoryModel;
 class HistoryFilterModel;
 class HistoryTreeModel;
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 class HistoryManager : public QWebHistoryInterface
 {
     Q_OBJECT
@@ -86,7 +88,7 @@ public:
     bool historyContains(const QString &url) const;
     void addHistoryEntry(const QString &url);
 
-    void updateHistoryItem(const QUrl &url, const QString &title);
+    void updateHistoryItem(const KUrl &url, const QString &title);
 
     int historyLimit() const;
     void setHistoryLimit(int limit);
@@ -126,6 +128,8 @@ private:
 
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 class HistoryModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -234,7 +238,7 @@ class HistoryMenu : public ModelMenu
     Q_OBJECT
 
 signals:
-    void openUrl(const QUrl &url);
+    void openUrl(const KUrl &url);
 
 public:
      HistoryMenu(QWidget *parent = 0);
@@ -278,6 +282,8 @@ private slots:
 
 };
 
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // proxy model for the history model that converts the list
 // into a tree, one top level node per day.
 // Used in the HistoryDialog.
@@ -312,6 +318,8 @@ private:
 
 };
 
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // A modified QSortFilterProxyModel that always accepts the root nodes in the tree
 // so filtering is only done on the children.
 // Used in the HistoryDialog
@@ -326,6 +334,9 @@ protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
 };
 
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 #include "ui_history.h"
 
 class HistoryDialog : public QDialog, public Ui_HistoryDialog
@@ -333,7 +344,7 @@ class HistoryDialog : public QDialog, public Ui_HistoryDialog
     Q_OBJECT
 
 signals:
-    void openUrl(const QUrl &url);
+    void openUrl(const KUrl &url);
 
 public:
     HistoryDialog(QWidget *parent = 0, HistoryManager *history = 0);

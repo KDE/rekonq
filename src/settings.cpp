@@ -23,8 +23,6 @@
 #include "settings.h"
 #include "settings.moc"
 
-// #include "ui_settings.h"
-
 #include "browserapplication.h"
 #include "browsermainwindow.h"
 #include "cookiejar.h"
@@ -68,6 +66,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     loadFromSettings();
 }
 
+
 void SettingsDialog::loadDefaults()
 {
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
@@ -86,6 +85,7 @@ void SettingsDialog::loadDefaults()
     enableJavascript->setChecked(defaultSettings->testAttribute(QWebSettings::JavascriptEnabled));
     enablePlugins->setChecked(defaultSettings->testAttribute(QWebSettings::PluginsEnabled));
 }
+
 
 void SettingsDialog::loadFromSettings()
 {
@@ -136,7 +136,8 @@ void SettingsDialog::loadFromSettings()
     CookieJar::AcceptPolicy acceptCookies = acceptPolicyEnum.keyToValue( value.toLocal8Bit() ) == -1 ?
                         CookieJar::AcceptOnlyFromSitesNavigatedTo :
                         static_cast<CookieJar::AcceptPolicy>(acceptPolicyEnum.keyToValue( value.toLocal8Bit() ) );
-    switch(acceptCookies) {
+    switch(acceptCookies) 
+    {
     case CookieJar::AcceptAlways:
         acceptCombo->setCurrentIndex(0);
         break;
@@ -177,6 +178,7 @@ void SettingsDialog::loadFromSettings()
 
 }
 
+
 void SettingsDialog::saveToSettings()
 {
     KConfig config("rekonqrc");
@@ -188,7 +190,8 @@ void SettingsDialog::saveToSettings()
 
     int historyExpire = expireHistory->currentIndex();
     int idx = -1;
-    switch (historyExpire) {
+    switch (historyExpire) 
+    {
     case 0: idx = 1; break;
     case 1: idx = 7; break;
     case 2: idx = 14; break;
@@ -207,7 +210,8 @@ void SettingsDialog::saveToSettings()
     group3.writeEntry(QString("enablePlugins"), enablePlugins->isChecked() );
 
     CookieJar::KeepPolicy keepCookies;
-    switch(acceptCombo->currentIndex()) {
+    switch(acceptCombo->currentIndex()) 
+    {
     default:
     case 0:
         keepCookies = CookieJar::KeepUntilExpire;
@@ -224,7 +228,8 @@ void SettingsDialog::saveToSettings()
     group3.writeEntry(QString("acceptCookies"), QString(acceptPolicyEnum.valueToKey(keepCookies) ) );
 
     CookieJar::KeepPolicy keepPolicy;
-    switch(keepUntilCombo->currentIndex()) {
+    switch(keepUntilCombo->currentIndex()) 
+    {
         default:
     case 0:
         keepPolicy = CookieJar::KeepUntilExpire;
@@ -265,11 +270,13 @@ void SettingsDialog::showCookies()
     dialog->exec();
 }
 
+
 void SettingsDialog::showExceptions()
 {
     CookiesExceptionsDialog *dialog = new CookiesExceptionsDialog(BrowserApplication::cookieJar(), this);
     dialog->exec();
 }
+
 
 void SettingsDialog::chooseFont()
 {
@@ -281,6 +288,7 @@ void SettingsDialog::chooseFont()
         standardLabel->setText(QString(QLatin1String("%1 %2")).arg(standardFont.family()).arg(standardFont.pointSize()));
     }
 }
+
 
 void SettingsDialog::chooseFixedFont()
 {
@@ -294,12 +302,15 @@ void SettingsDialog::chooseFixedFont()
     }
 }
 
+
 void SettingsDialog::setHomeToCurrentPage()
 {
     BrowserMainWindow *mw = static_cast<BrowserMainWindow*>(parent());
     WebView *webView = mw->currentTab();
     if (webView)
-        homeLineEdit->setText(webView->url().toString());
+    {
+        homeLineEdit->setText( webView->url().prettyUrl() );
+    }
 }
 
 

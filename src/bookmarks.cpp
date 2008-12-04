@@ -32,13 +32,13 @@ OwnBookMarks::OwnBookMarks(KMainWindow *parent)
     , KBookmarkOwner()
 {
     m_parent = qobject_cast<BrowserMainWindow*>( parent );
-    connect( this, SIGNAL( openUrl( const QUrl &) ) , parent , SLOT( loadUrl( const QUrl & ) ) );
+    connect( this, SIGNAL( openUrl( const KUrl &) ) , parent , SLOT( loadUrl( const KUrl & ) ) );
 }
 
 
 void OwnBookMarks::openBookmark (const KBookmark & b, Qt::MouseButtons , Qt::KeyboardModifiers )
 {
-    emit openUrl( (QUrl)b.url() );
+    emit openUrl( b.url() );
 }
 
 QString OwnBookMarks::currentUrl() const

@@ -46,7 +46,7 @@ void SearchBar::searchNow()
 {
     QString searchText = m_lineEdit->text();
 
-    QUrl url(QLatin1String("http://www.google.com/search"));
+    KUrl url(QLatin1String("http://www.google.com/search"));
     url.addQueryItem(QLatin1String("q"), searchText);
     url.addQueryItem(QLatin1String("ie"), QLatin1String("UTF-8"));
     url.addQueryItem(QLatin1String("oe"), QLatin1String("UTF-8"));

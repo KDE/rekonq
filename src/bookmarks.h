@@ -25,6 +25,7 @@
 #include <KBookmarkManager>
 #include <KBookmarkMenu>
 
+#include <KUrl>
 #include <KActionCollection>
 #include <KMainWindow>
 
@@ -43,7 +44,7 @@ public:
     virtual QString currentTitle() const;
 
 signals:
-    void openUrl(const QUrl &); // FIXME pass all to KUrl!!
+    void openUrl(const KUrl &);
 
 private:
     BrowserMainWindow *m_parent;

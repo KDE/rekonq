@@ -23,10 +23,10 @@
 
 // KDE Includes
 #include <KLineEdit>
+#include <KUrl>
 
 // Qt Includes
 #include <QWidget>
-#include <QUrl>
 
 class SearchBar : public QWidget
 {
@@ -45,7 +45,7 @@ private:
     KLineEdit *m_lineEdit;
 
 signals:
-    void search(const QUrl &url);
+    void search(const KUrl &url);
 
 };
 

@@ -181,10 +181,12 @@ void HistoryManager::addHistoryItem(const HistoryItem &item)
 
 
 
-void HistoryManager::updateHistoryItem(const QUrl &url, const QString &title)
+void HistoryManager::updateHistoryItem(const KUrl &url, const QString &title)
 {
-    for (int i = 0; i < m_history.count(); ++i) {
-        if (url == m_history.at(i).url) {
+    for (int i = 0; i < m_history.count(); ++i) 
+    {
+        if (url == m_history.at(i).url) 
+        {
             m_history[i].title = title;
             m_saveTimer->changeOccurred();
             if (m_lastSavedUrl.isEmpty())
@@ -654,7 +656,7 @@ void HistoryMenu::postPopulated()
 void HistoryMenu::showHistoryDialog()
 {
     HistoryDialog *dialog = new HistoryDialog(this);
-    connect(dialog, SIGNAL(openUrl(const QUrl&)), this, SIGNAL(openUrl(const QUrl&)));
+    connect(dialog, SIGNAL(openUrl(const KUrl&)), this, SIGNAL(openUrl(const KUrl&)));
     dialog->show();
 }
 

@@ -21,6 +21,8 @@
 #ifndef WEBVIEW_H
 #define WEBVIEW_H
 
+#include <KUrl>
+
 #include <QWebView>
 
 QT_BEGIN_NAMESPACE
@@ -33,12 +35,13 @@ QT_END_NAMESPACE
 
 class BrowserMainWindow;
 
+
 class WebPage : public QWebPage 
 {
     Q_OBJECT
 
 signals:
-    void loadingUrl(const QUrl &url);
+    void loadingUrl(const QUrl &url);   // WARNING has to be QUrl!!
 
 public:
     WebPage(QObject *parent = 0);
@@ -58,8 +61,11 @@ private:
     Qt::KeyboardModifiers m_keyboardModifiers;
     Qt::MouseButtons m_pressedButtons;
     bool m_openInNewTab;
-    QUrl m_loadingUrl;
+    KUrl m_loadingUrl;
 };
+
+
+// ---------------------------------------------------------------------------------------------------------------------------------------
 
 class WebView : public QWebView 
 {
@@ -69,8 +75,8 @@ public:
     WebView(QWidget *parent = 0);
     WebPage *webPage() const { return m_page; }
 
-    void loadUrl(const QUrl &url);
-    QUrl url() const;
+    void loadUrl(const KUrl &url);
+    KUrl url() const;
 
     QString lastStatusBarText() const;
     inline int progress() const { return m_progress; }
@@ -90,7 +96,7 @@ private slots:
 
 private:
     QString m_statusBarText;
-    QUrl m_initialUrl;
+    KUrl m_initialUrl;
     int m_progress;
     WebPage *m_page;
 };

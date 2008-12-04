@@ -54,7 +54,7 @@ UrlBar::UrlBar(QWidget *parent)
 
 UrlBar::~UrlBar()
 {
-//     delete m_webView;
+    delete m_webView;
     delete m_iconLabel;
     delete m_lineEdit;
 }
@@ -87,7 +87,7 @@ void UrlBar::webViewUrlChanged(const QUrl &url)
 
 void UrlBar::webViewIconChanged()
 {
-    QUrl url = (m_webView)  ? m_webView->url() : QUrl();
+    KUrl url = (m_webView)  ? m_webView->url() : KUrl();
     QIcon icon = BrowserApplication::instance()->icon(url);
     QPixmap pixmap(icon.pixmap(16, 16));
     m_iconLabel->setPixmap(pixmap);
@@ -104,32 +104,3 @@ QLinearGradient UrlBar::generateGradient(const QColor &color) const
     gradient.setColorAt(1, m_defaultBaseColor);
     return gradient;
 }
-
-// FIXME
-// void UrlBar::paintEvent(QPaintEvent *event)
-// {
-//     QPalette p = palette();
-//     if (m_webView && m_webView->url().scheme() == QLatin1String("https")) {
-//         QColor lightYellow(248, 248, 210);
-//         p.setBrush(QPalette::Base, generateGradient(lightYellow));
-//     } else {
-//         p.setBrush(QPalette::Base, m_defaultBaseColor);
-//     }
-//     setPalette(p);
-// 
-//     QPainter painter(this);
-//     QStyleOptionFrameV2 panel;
-// //     initStyleOption(&panel);
-//     QRect backgroundRect = style()->subElementRect(QStyle::SE_LineEditContents, &panel, this);
-//     if (m_webView && !hasFocus()) 
-//     {
-//         int progress = m_webView->progress();
-//         QColor loadingColor = QColor(116, 192, 250);
-//         painter.setBrush(generateGradient(loadingColor));
-//         painter.setPen(Qt::transparent);
-//         int mid = backgroundRect.width() / 100 * progress;
-//         QRect progressRect(backgroundRect.x(), backgroundRect.y(), mid, backgroundRect.height());
-//         painter.drawRect(progressRect);
-//     }
-// }
-

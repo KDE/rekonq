@@ -19,6 +19,7 @@
  * ============================================================ */
 
 
+// Local Includes
 #include "browserapplication.h"
 
 #include "browsermainwindow.h"
@@ -29,9 +30,12 @@
 #include "tabwidget.h"
 #include "webview.h"
 
+// KDE Includes
 #include <KCmdLineArgs>
 #include <KAboutData>
+#include <KConfig>
 
+// Qt Includes
 #include <QBuffer>
 #include <QDir>
 #include <QLibraryInfo>
@@ -259,18 +263,23 @@ void BrowserApplication::restoreLastSession()
     buffer.open(QIODevice::ReadOnly);
     int windowCount;
     stream >> windowCount;
-    for (int i = 0; i < windowCount; ++i) {
+    for (int i = 0; i < windowCount; ++i) 
+    {
         QByteArray windowState;
         stream >> windowState;
         windows.append(windowState);
     }
-    for (int i = 0; i < windows.count(); ++i) {
+    for (int i = 0; i < windows.count(); ++i) 
+    {
         BrowserMainWindow *newWindow = 0;
         if (m_mainWindows.count() == 1
             && mainWindow()->tabWidget()->count() == 1
-            && mainWindow()->currentTab()->url() == QUrl()) {
+            && mainWindow()->currentTab()->url() == QUrl()) 
+        {
             newWindow = mainWindow();
-        } else {
+        } 
+        else 
+        {
             newWindow = newMainWindow();
         }
         newWindow->restoreState(windows.at(i));
@@ -295,9 +304,9 @@ void BrowserApplication::installTranslator(const QString &name)
 
 
 
-void BrowserApplication::openUrl(const QUrl &url)
+void BrowserApplication::openUrl(const KUrl &url)
 {
-    mainWindow()->loadPage(url.toString());
+    mainWindow()->loadPage( url.url() );
 }
 
 
@@ -311,8 +320,6 @@ BrowserMainWindow *BrowserApplication::newMainWindow()
 }
 
 
-
-
 BrowserMainWindow *BrowserApplication::mainWindow()
 {
     clean();
@@ -320,8 +327,6 @@ BrowserMainWindow *BrowserApplication::mainWindow()
         newMainWindow();
     return m_mainWindows[0];
 }
-
-
 
 
 void BrowserApplication::newLocalSocketConnection()
@@ -392,7 +397,7 @@ HistoryManager *BrowserApplication::historyManager()
 
 
 
-KIcon BrowserApplication::icon(const QUrl &url) const
+KIcon BrowserApplication::icon(const KUrl &url) const
 {
     KIcon icon = KIcon( QWebSettings::iconForUrl(url) );
     if (!icon.isNull())
