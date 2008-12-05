@@ -18,31 +18,22 @@
  *
  * ============================================================ */
 
-
+// Local Includes
 #include "history.h"
 
 #include "autosaver.h"
 #include "browserapplication.h"
 
-#include <QBuffer>
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QSettings>
-#include <QTemporaryFile>
-#include <QTextStream>
+// Qt Includes
+#include <QtCore>
+#include <QtGui>
+#include <QtWebKit>
 
 #include <QtAlgorithms>
-
-#include <QClipboard>
-#include <QDesktopServices>
-#include <QHeaderView>
-#include <QStyle>
-
-#include <QWebHistoryInterface>
-#include <QWebSettings>
-
 #include <QDebug>
+
+// KDE Includes
+#include <KConfig>
 
 
 static const unsigned int HISTORY_VERSION = 23;
@@ -227,9 +218,9 @@ void HistoryManager::clear()
 void HistoryManager::loadSettings()
 {
     // load settings
-    QSettings settings;
-    settings.beginGroup(QLatin1String("history"));
-    m_historyLimit = settings.value(QLatin1String("historyLimit"), 30).toInt();
+    KConfig config("rekonqrc");
+    KConfigGroup group = config.group("history");
+    m_historyLimit = group.readEntry( QString("historyLimit"), 30 );
 }
 
 
@@ -242,7 +233,8 @@ void HistoryManager::load()
         + QLatin1String("/history"));
     if (!historyFile.exists())
         return;
-    if (!historyFile.open(QFile::ReadOnly)) {
+    if (!historyFile.open(QFile::ReadOnly)) 
+    {
         qWarning() << "Unable to open history file" << historyFile.fileName();
         return;
     }
@@ -256,7 +248,8 @@ void HistoryManager::load()
     QDataStream stream;
     QBuffer buffer;
     stream.setDevice(&buffer);
-    while (!historyFile.atEnd()) {
+    while ( !historyFile.atEnd() ) 
+    {
         in >> data;
         buffer.close();
         buffer.setBuffer(&data);
@@ -273,25 +266,27 @@ void HistoryManager::load()
         if (!item.dateTime.isValid())
             continue;
 
-        if (item == lastInsertedItem) {
+        if ( item == lastInsertedItem ) 
+        {
             if (lastInsertedItem.title.isEmpty() && !list.isEmpty())
                 list[0].title = item.title;
             continue;
         }
 
-        if (!needToSort && !list.isEmpty() && lastInsertedItem < item)
+        if ( !needToSort && !list.isEmpty() && lastInsertedItem < item )
             needToSort = true;
 
         list.prepend(item);
         lastInsertedItem = item;
     }
     if (needToSort)
-        qSort(list.begin(), list.end());
+        qSort( list.begin(), list.end() );
 
     setHistory(list, true);
 
     // If we had to sort re-write the whole history sorted
-    if (needToSort) {
+    if (needToSort) 
+    {
         m_lastSavedUrl = QString();
         m_saveTimer->changeOccurred();
     }
@@ -300,16 +295,19 @@ void HistoryManager::load()
 
 void HistoryManager::save()
 {
-    QSettings settings;
-    settings.beginGroup(QLatin1String("history"));
-    settings.setValue(QLatin1String("historyLimit"), m_historyLimit);
+    KConfig config("rekonqrc");
+    KConfigGroup group = config.group("history");
+    group.writeEntry( QString("historyLimit"), m_historyLimit );
 
     bool saveAll = m_lastSavedUrl.isEmpty();
     int first = m_history.count() - 1;
-    if (!saveAll) {
+    if (!saveAll) 
+    {
         // find the first one to save
-        for (int i = 0; i < m_history.count(); ++i) {
-            if (m_history.at(i).url == m_lastSavedUrl) {
+        for (int i = 0; i < m_history.count(); ++i) 
+        {
+            if (m_history.at(i).url == m_lastSavedUrl) 
+            {
                 first = i - 1;
                 break;
             }
@@ -331,20 +329,25 @@ void HistoryManager::save()
     QTemporaryFile tempFile;
     tempFile.setAutoRemove(false);
     bool open = false;
-    if (saveAll) {
+    if (saveAll) 
+    {
         open = tempFile.open();
-    } else {
+    }
+    else 
+    {
         open = historyFile.open(QFile::Append);
     }
 
-    if (!open) {
+    if (!open) 
+    {
         qWarning() << "Unable to open history file for saving"
                    << (saveAll ? tempFile.fileName() : historyFile.fileName());
         return;
     }
 
     QDataStream out(saveAll ? &tempFile : &historyFile);
-    for (int i = first; i >= 0; --i) {
+    for (int i = first; i >= 0; --i) 
+    {
         QByteArray data;
         QDataStream stream(&data, QIODevice::WriteOnly);
         HistoryItem item = m_history.at(i);
@@ -353,7 +356,8 @@ void HistoryManager::save()
     }
     tempFile.close();
 
-    if (saveAll) {
+    if (saveAll) 
+    {
         if (historyFile.exists() && !historyFile.remove())
             qWarning() << "History: error removing old history." << historyFile.errorString();
         if (!tempFile.rename(historyFile.fileName()))
@@ -363,8 +367,8 @@ void HistoryManager::save()
 }
 
 
-
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 HistoryModel::HistoryModel(HistoryManager *history, QObject *parent)
     : QAbstractTableModel(parent)
@@ -401,8 +405,10 @@ void HistoryModel::entryUpdated(int offset)
 QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal
-        && role == Qt::DisplayRole) {
-        switch (section) {
+        && role == Qt::DisplayRole) 
+    {
+        switch (section) 
+        {
             case 0: return i18n("Title");
             case 1: return i18n("Address");
         }
@@ -418,7 +424,8 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     const HistoryItem &item = lst.at(index.row());
-    switch (role) {
+    switch (role) 
+    {
     case DateTimeRole:
         return item.dateTime;
     case DateRole:

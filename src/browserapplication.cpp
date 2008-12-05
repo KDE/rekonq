@@ -38,8 +38,6 @@
 // Qt Includes
 #include <QBuffer>
 #include <QDir>
-#include <QLibraryInfo>
-#include <QSettings>
 #include <QTextStream>
 #include <QDesktopServices>
 #include <QFileOpenEvent>
