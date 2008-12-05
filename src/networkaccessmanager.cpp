@@ -26,8 +26,10 @@
 #include "ui_passworddialog.h"
 #include "ui_proxy.h"
 
+// KDE Includes
+#include <KConfig>
+
 // Qt Includes
-#include <QSettings>
 #include <QDialog>
 #include <QMessageBox>
 #include <QStyle>
@@ -52,23 +54,32 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
     loadSettings();
 }
 
+
 void NetworkAccessManager::loadSettings()
 {
-    QSettings settings;
-    settings.beginGroup(QLatin1String("proxy"));
+    KConfig config("rekonqrc");
+    KConfigGroup group = config.group("proxy");
+
     QNetworkProxy proxy;
-    if (settings.value(QLatin1String("enabled"), false).toBool()) {
-        if (settings.value(QLatin1String("type"), 0).toInt() == 0)
+    if ( group.readEntry( QString("enabled"), false) ) 
+    {
+        if ( group.readEntry( QString("type"), 0) == 0 )
+        {
             proxy.setType(QNetworkProxy::Socks5Proxy);
+        }
         else
+        {
             proxy.setType(QNetworkProxy::HttpProxy);
-        proxy.setHostName(settings.value(QLatin1String("hostName")).toString());
-        proxy.setPort(settings.value(QLatin1String("port"), 1080).toInt());
-        proxy.setUser(settings.value(QLatin1String("userName")).toString());
-        proxy.setPassword(settings.value(QLatin1String("password")).toString());
+        }
+        proxy.setHostName( group.readEntry( QString("hostName"), QString() ) );
+        proxy.setPort( group.readEntry( QString("port"), 1080 ) );
+        proxy.setUser( group.readEntry( QString("userName"), QString() ) );
+        proxy.setPassword( group.readEntry( QString("password"), QString() ) );
     }
     setProxy(proxy);
 }
+
+
 
 void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *auth)
 {
@@ -87,7 +98,8 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
     passwordDialog.introLabel->setText(introMessage);
     passwordDialog.introLabel->setWordWrap(true);
 
-    if (dialog.exec() == QDialog::Accepted) {
+    if (dialog.exec() == QDialog::Accepted) 
+    {
         auth->setUser(passwordDialog.userNameLineEdit->text());
         auth->setPassword(passwordDialog.passwordLineEdit->text());
     }
@@ -110,7 +122,8 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
     proxyDialog.introLabel->setText(introMessage);
     proxyDialog.introLabel->setWordWrap(true);
 
-    if (dialog.exec() == QDialog::Accepted) {
+    if (dialog.exec() == QDialog::Accepted) 
+    {
         auth->setUser(proxyDialog.userNameLineEdit->text());
         auth->setPassword(proxyDialog.passwordLineEdit->text());
     }
