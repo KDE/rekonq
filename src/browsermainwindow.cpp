@@ -44,7 +44,6 @@
 #include <KBookmarkOwner>
 
 // Qt Includes
-#include <QSettings>
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QPlainTextEdit>
@@ -119,11 +118,10 @@ BrowserMainWindow::~BrowserMainWindow()
 
 void BrowserMainWindow::loadDefaultState()
 {
-    QSettings settings;
-    settings.beginGroup(QLatin1String("BrowserMainWindow"));
-    QByteArray data = settings.value(QLatin1String("defaultState")).toByteArray();
-//    restoreState(data); // FIXME re-enable me!
-    settings.endGroup();
+    KConfig config("rekonqrc");
+    KConfigGroup group1 = config.group("BrowserMainWindow");   
+    QByteArray data = group1.readEntry(QString("defaultState"), QByteArray() );
+    restoreState(data); 
 }
 
 
@@ -141,11 +139,10 @@ void BrowserMainWindow::save()
 {
     BrowserApplication::instance()->saveSession();
 
-    QSettings settings;
-    settings.beginGroup(QLatin1String("BrowserMainWindow"));
+    KConfig config("rekonqrc");
+    KConfigGroup group1 = config.group("BrowserMainWindow");   
     QByteArray data = saveState(false);
-    settings.setValue(QLatin1String("defaultState"), data);
-    settings.endGroup();
+    group1.writeEntry( QString("defaultState"), data );
 }
 
 
@@ -164,8 +161,7 @@ QByteArray BrowserMainWindow::saveState(bool withTabs) const
     stream << qint32(version);
 
     stream << size();
-    stream << !m_navigationBar->isHidden();
-//     stream << !statusBar()->isHidden();  // FIXME strange error ????
+//     stream << !( statusBar()->isHidden() ); FIXME 
     if (withTabs)
         stream << tabWidget()->saveState();
     else
@@ -180,36 +176,36 @@ bool BrowserMainWindow::restoreState(const QByteArray &state)
     int version = 2;
     QByteArray sd = state;
     QDataStream stream(&sd, QIODevice::ReadOnly);
-    if (stream.atEnd())
+    if ( stream.atEnd() )
+    {
         return false;
+    }
 
     qint32 marker;
     qint32 v;
     stream >> marker;
     stream >> v;
     if (marker != BrowserMainWindowMagic || v != version)
+    {
         return false;
+    }
 
     QSize size;
-    bool showToolbar;
-    bool showStatusbar;
+    bool showStatusbar = true;
     QByteArray tabState;
 
     stream >> size;
-    stream >> showToolbar;
-    stream >> showStatusbar;
+//     stream >> showStatusbar; FIXME see 30 lines over..
     stream >> tabState;
 
     resize(size);
-
-    m_navigationBar->setVisible(showToolbar);
-
     statusBar()->setVisible(showStatusbar);
     updateStatusbarActionText(showStatusbar);
 
-    if (!tabWidget()->restoreState(tabState))
+    if ( !tabWidget()->restoreState(tabState) )
+    {
         return false;
-
+    }
     return true;
 }
 
@@ -785,9 +781,9 @@ void BrowserMainWindow::slotViewPageSource()
 
 void BrowserMainWindow::slotHome()
 {
-    QSettings settings;
-    settings.beginGroup(QLatin1String("MainWindow"));
-    QString home = settings.value(QLatin1String("home"), QLatin1String("http://www.kde.org/")).toString();
+    KConfig config("rekonqrc");
+    KConfigGroup group = config.group("Global Settings");   
+    QString home = group.readEntry( QString("home"), QString("http://www.kde.org/") );
     loadPage(home);
 }
 
@@ -856,7 +852,6 @@ WebView *BrowserMainWindow::currentTab() const
 {
     return m_tabWidget->currentWebView();
 }
-
 
 
 void BrowserMainWindow::slotLoadProgress(int progress)

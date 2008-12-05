@@ -34,9 +34,6 @@
 #include <KAction>
 #include <KMenu>
 
-// // Qt Includes
-// #include <QUrl>
-
 
 class AutoSaver;
 class QWebFrame;
@@ -47,7 +44,7 @@ class WebView;
     The MainWindow of the Browser Application.
 
     Handles the tab widget and all the actions
- */
+*/
 class BrowserMainWindow : public KMainWindow 
 {
     Q_OBJECT

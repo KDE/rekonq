@@ -41,7 +41,6 @@
 #include <QLibraryInfo>
 #include <QSettings>
 #include <QTextStream>
-#include <QTranslator>
 #include <QDesktopServices>
 #include <QFileOpenEvent>
 #include <QLocalServer>
@@ -94,17 +93,12 @@ BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &server
     QDesktopServices::setUrlHandler(QLatin1String("http"), this, "openUrl");
     QString localSysName = QLocale::system().name();
 
-    installTranslator(QLatin1String("qt_") + localSysName);
-
-    QSettings settings;
-    settings.beginGroup(QLatin1String("sessions"));
-    m_lastSession = settings.value(QLatin1String("lastSession")).toByteArray();
-    settings.endGroup();
+    KConfig config("rekonqrc");
+    KConfigGroup group = config.group("sessions");
+    m_lastSession = group.readEntry( QString("lastSession"), QByteArray() );
 
     QTimer::singleShot(0, this, SLOT( postLaunch() ) );
 }
-
-
 
 
 BrowserApplication::~BrowserApplication()
@@ -115,25 +109,10 @@ BrowserApplication::~BrowserApplication()
 }
 
 
-
-// #if defined(Q_WS_MAC)
-// void BrowserApplication::lastWindowClosed()
-// {
-//     clean();
-//     BrowserMainWindow *mw = new BrowserMainWindow;
-//     mw->slotHome();
-//     m_mainWindows.prepend(mw);
-// }
-// #endif
-
-
-
 BrowserApplication *BrowserApplication::instance()
 {
     return (static_cast<BrowserApplication *>(QCoreApplication::instance()));
 }
-
-
 
 
 /*!
@@ -168,31 +147,28 @@ void BrowserApplication::postLaunch()
 
 void BrowserApplication::loadSettings()
 {
-    QSettings settings;
-    settings.beginGroup(QLatin1String("websettings"));
-
+    KConfig config("rekonqrc");
+    KConfigGroup group = config.group("Appearance Settings");
+    
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
     QString standardFontFamily = defaultSettings->fontFamily(QWebSettings::StandardFont);
     int standardFontSize = defaultSettings->fontSize(QWebSettings::DefaultFontSize);
     QFont standardFont = QFont(standardFontFamily, standardFontSize);
-    standardFont = qVariantValue<QFont>(settings.value(QLatin1String("standardFont"), standardFont));
+    standardFont = qVariantValue<QFont>( group.readEntry( QString("standardFont"), standardFont ) );
+
     defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFontSize, standardFont.pointSize());
 
     QString fixedFontFamily = defaultSettings->fontFamily(QWebSettings::FixedFont);
     int fixedFontSize = defaultSettings->fontSize(QWebSettings::DefaultFixedFontSize);
     QFont fixedFont = QFont(fixedFontFamily, fixedFontSize);
-    fixedFont = qVariantValue<QFont>(settings.value(QLatin1String("fixedFont"), fixedFont));
+    fixedFont = qVariantValue<QFont>(group.readEntry( QString("fixedFont"), fixedFont ) );
+
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fixedFont.pointSize());
 
-    defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, settings.value(QLatin1String("enableJavascript"), true).toBool());
-    defaultSettings->setAttribute(QWebSettings::PluginsEnabled, settings.value(QLatin1String("enablePlugins"), true).toBool());
-
-    QUrl url = settings.value(QLatin1String("userStyleSheet")).toUrl();
-    defaultSettings->setUserStyleSheetUrl(url);
-
-    settings.endGroup();
+    defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, group.readEntry( QString("enableJavascript"), true ) );
+    defaultSettings->setAttribute(QWebSettings::PluginsEnabled, group.readEntry( QString("enablePlugins"), true ) );
 }
 
 
@@ -203,7 +179,9 @@ QList<BrowserMainWindow*> BrowserApplication::mainWindows()
     clean();
     QList<BrowserMainWindow*> list;
     for (int i = 0; i < m_mainWindows.count(); ++i)
+    {
         list.append(m_mainWindows.at(i));
+    }
     return list;
 }
 
@@ -214,11 +192,13 @@ void BrowserApplication::clean()
 {
     // cleanup any deleted main windows first
     for (int i = m_mainWindows.count() - 1; i >= 0; --i)
+    {
         if (m_mainWindows.at(i).isNull())
+        {
             m_mainWindows.removeAt(i);
+        }
+    }
 }
-
-
 
 
 void BrowserApplication::saveSession()
@@ -229,9 +209,8 @@ void BrowserApplication::saveSession()
 
     clean();
 
-    QSettings settings;
-    settings.beginGroup(QLatin1String("sessions"));
-
+    KConfig config("rekonqrc");
+    KConfigGroup group = config.group("sessions");
     QByteArray data;
     QBuffer buffer(&data);
     QDataStream stream(&buffer);
@@ -239,20 +218,18 @@ void BrowserApplication::saveSession()
 
     stream << m_mainWindows.count();
     for (int i = 0; i < m_mainWindows.count(); ++i)
+    {
         stream << m_mainWindows.at(i)->saveState();
-    settings.setValue(QLatin1String("lastSession"), data);
-    settings.endGroup();
+    }
+    
+    group.writeEntry( QString("lastSession"), data );
 }
-
-
 
 
 bool BrowserApplication::canRestoreSession() const
 {
     return !m_lastSession.isEmpty();
 }
-
-
 
 
 void BrowserApplication::restoreLastSession()
@@ -294,16 +271,6 @@ bool BrowserApplication::isTheOnlyBrowser() const
 }
 
 
-
-void BrowserApplication::installTranslator(const QString &name)
-{
-    QTranslator *translator = new QTranslator(this);
-    translator->load(name, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    KApplication::installTranslator(translator);
-}
-
-
-
 void BrowserApplication::openUrl(const KUrl &url)
 {
     mainWindow()->loadPage( url.url() );
@@ -338,15 +305,19 @@ void BrowserApplication::newLocalSocketConnection()
     QTextStream stream(socket);
     QString url;
     stream >> url;
-    if (!url.isEmpty()) {
-        QSettings settings;
-        settings.beginGroup(QLatin1String("general"));
-        int openLinksIn = settings.value(QLatin1String("openLinksIn"), 0).toInt();
-        settings.endGroup();
+    if (!url.isEmpty()) 
+    {
+        KConfig config("rekonqrc");
+        KConfigGroup group = config.group("Global Settings");
+        int openLinksIn = group.readEntry( QString("openLinksIn"), QString().toInt() );
         if (openLinksIn == 1)
+        {
             newMainWindow();
+        }
         else
+        {
             mainWindow()->tabWidget()->newTab();
+        }
         openUrl(url);
     }
     delete socket;
@@ -362,11 +333,10 @@ CookieJar *BrowserApplication::cookieJar()
 }
 
 
-
-
 DownloadManager *BrowserApplication::downloadManager()
 {
-    if (!s_downloadManager) {
+    if (!s_downloadManager) 
+    {
         s_downloadManager = new DownloadManager();
     }
     return s_downloadManager;
@@ -376,7 +346,8 @@ DownloadManager *BrowserApplication::downloadManager()
 
 NetworkAccessManager *BrowserApplication::networkAccessManager()
 {
-    if (!s_networkAccessManager) {
+    if (!s_networkAccessManager) 
+    {
         s_networkAccessManager = new NetworkAccessManager();
         s_networkAccessManager->setCookieJar(new CookieJar);
     }
@@ -387,7 +358,8 @@ NetworkAccessManager *BrowserApplication::networkAccessManager()
 
 HistoryManager *BrowserApplication::historyManager()
 {
-    if (!s_historyManager) {
+    if (!s_historyManager) 
+    {
         s_historyManager = new HistoryManager();
         QWebHistoryInterface::setDefaultInterface(s_historyManager);
     }
