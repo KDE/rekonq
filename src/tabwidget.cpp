@@ -30,6 +30,7 @@
 
 // KDE Includes
 #include <KShortcut>
+#include <KStandardShortcut>
 
 // Qt Includes
 #include <QtGui>
@@ -232,11 +233,11 @@ TabWidget::TabWidget(QWidget *parent)
     connect(m_closeTabAction, SIGNAL(triggered()), this, SLOT(closeTab()));
 
     m_nextTabAction = new KAction(i18n("Show Next Tab"), this);
-    m_nextTabAction->setShortcut( KShortcut( Qt::CTRL | Qt::Key_Tab ) );
+    m_nextTabAction->setShortcuts( QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext() );
     connect(m_nextTabAction, SIGNAL(triggered()), this, SLOT(nextTab()));
 
     m_previousTabAction = new KAction(i18n("Show Previous Tab"), this);
-    m_previousTabAction->setShortcut( KShortcut( Qt::CTRL | Qt::SHIFT | Qt::Key_Tab ) );
+    m_previousTabAction->setShortcuts( QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev() );
     connect(m_previousTabAction, SIGNAL(triggered()), this, SLOT(previousTab()));
 
     m_recentlyClosedTabsMenu = new KMenu(this);
