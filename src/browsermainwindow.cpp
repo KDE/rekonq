@@ -41,6 +41,7 @@
 #include <KAction>
 #include <KToggleFullScreenAction>
 #include <KActionCollection>
+#include <KMessageBox>
 
 // Qt Includes
 #include <QDesktopWidget>
@@ -49,7 +50,6 @@
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <QPrinter>
-#include <QMessageBox>
 #include <QToolBar>
 #include <QInputDialog>
 #include <QWebFrame>
@@ -593,10 +593,8 @@ void BrowserMainWindow::slotPrivateBrowsing()
             "  Until you close the window, you can still click the Back and Forward buttons" \
             " to return to the webpages you have opened.");
 
-        QMessageBox::StandardButton button = QMessageBox::question(this, QString(), text,
-                               QMessageBox::Ok | QMessageBox::Cancel,
-                               QMessageBox::Ok);
-        if (button == QMessageBox::Ok) 
+        int  button = KMessageBox::questionYesNo( this, text, title );
+        if (button == KMessageBox::Ok) 
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
         }
@@ -620,12 +618,10 @@ void BrowserMainWindow::closeEvent(QCloseEvent *event)
 {
     if (m_tabWidget->count() > 1) 
     {
-        int ret = QMessageBox::warning(this, QString(),
-                           i18n("Are you sure you want to close the window?"
-                              "  There are %1 tab open" , m_tabWidget->count() ) ,
-                           QMessageBox::Yes | QMessageBox::No,
-                           QMessageBox::No);
-        if (ret == QMessageBox::No) 
+        int ret = KMessageBox::warningYesNo(this, 
+                                                         i18n("Are you sure you want to close the window?" "  There are %1 tab open" , m_tabWidget->count() ) ,
+                                                        QString() );
+        if (ret == KMessageBox::No) 
         {
             event->ignore();
             return;
@@ -730,11 +726,11 @@ void BrowserMainWindow::slotToggleInspector(bool enable)
     QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, enable);
     if (enable) 
     {
-        int result = QMessageBox::question(this, i18n("Web Inspector"),
+        int result = KMessageBox::questionYesNo(this, 
                                            i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
                                            "Do you want to reload all pages?"),
-                                           QMessageBox::Yes | QMessageBox::No);
-        if (result == QMessageBox::Yes) 
+                                            i18n("Web Inspector") );
+        if (result == KMessageBox::Yes) 
         {
             m_tabWidget->reloadAllTabs();
         }

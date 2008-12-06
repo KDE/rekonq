@@ -31,6 +31,7 @@
 // KDE Includes
 #include <KShortcut>
 #include <KStandardShortcut>
+#include <KMessageBox>
 
 // Qt Includes
 #include <QtGui>
@@ -334,6 +335,7 @@ void TabWidget::currentChanged(int index)
     if (!webView)
         return;
 
+// FIXME
     Q_ASSERT( m_lineEdits->count() == count() );
 
     WebView *oldWebView = this->webView(m_lineEdits->currentIndex());
@@ -601,16 +603,12 @@ void TabWidget::closeTab(int index)
     {
         if (tab->isModified()) 
         {
-            QMessageBox closeConfirmation(tab);
-            closeConfirmation.setWindowFlags(Qt::Sheet);
-            closeConfirmation.setWindowTitle(i18n("Do you really want to close this page?"));
-            closeConfirmation.setInformativeText(i18n("You have modified this page and when closing it you would lose the modification.\n"
-                                                     "Do you really want to close this page?\n"));
-            closeConfirmation.setIcon(QMessageBox::Question);
-            closeConfirmation.addButton(QMessageBox::Yes);
-            closeConfirmation.addButton(QMessageBox::No);
-            closeConfirmation.setEscapeButton(QMessageBox::No);
-            if (closeConfirmation.exec() == QMessageBox::No)
+            int risp = KMessageBox::questionYesNo( this , 
+                                                                            i18n("You have modified this page and when closing it you would lose the modification.\n"
+                                                                            "Do you really want to close this page?\n"),
+                                                                            i18n("Do you really want to close this page?"),
+                                                                            KStandardGuiItem::no() );
+            if( risp == KMessageBox::No )
                 return;
         }
         hasFocus = tab->hasFocus();

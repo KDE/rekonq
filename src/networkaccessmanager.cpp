@@ -23,15 +23,16 @@
 #include "networkaccessmanager.h"
 #include "browserapplication.h"
 #include "browsermainwindow.h"
+
 #include "ui_passworddialog.h"
 #include "ui_proxy.h"
 
 // KDE Includes
 #include <KConfig>
+#include <KMessageBox>
 
 // Qt Includes
 #include <QDialog>
-#include <QMessageBox>
 #include <QStyle>
 #include <QTextDocument>
 #include <QAuthenticator>
@@ -138,11 +139,9 @@ void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError
     for (int i = 0; i < error.count(); ++i)
         errorStrings += error.at(i).errorString();
     QString errors = errorStrings.join(QLatin1String("\n"));
-    int ret = QMessageBox::warning(mainWindow, QCoreApplication::applicationName(),
-                           i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n",
-                           QMessageBox::Yes | QMessageBox::No,
-                           QMessageBox::No);
-    if (ret == QMessageBox::Yes)
+    int ret = KMessageBox::warningYesNo( mainWindow,
+                                                                i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n");
+    if (ret == KMessageBox::Yes)
         reply->ignoreSslErrors();
 }
 #endif

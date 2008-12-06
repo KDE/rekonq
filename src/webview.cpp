@@ -32,10 +32,8 @@
 
 #include <QClipboard>
 #include <QMenu>
-#include <QMessageBox>
 #include <QMouseEvent>
 #include <QWebHitTestResult>
-//#include <QUiLoader>
 #include <QBuffer>
 
 
@@ -53,7 +51,8 @@ WebPage::WebPage(QObject *parent)
 BrowserMainWindow *WebPage::mainWindow()
 {
     QObject *w = this->parent();
-    while (w) {
+    while (w) 
+    {
         if (BrowserMainWindow *mw = qobject_cast<BrowserMainWindow*>(w))
             return mw;
         w = w->parent();
