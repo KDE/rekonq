@@ -265,14 +265,15 @@ void BrowserMainWindow::setupMenu()
 
     editMenu->addSeparator();
 
-    editMenu->addAction( KStandardAction::find(this, SLOT( slotViewFindBar() ) , this ) );
-    editMenu->addAction( KStandardAction::findNext(this, SLOT( slotFindNext() ) , this ) );
-    editMenu->addAction( KStandardAction::findPrev(this, SLOT( slotFindPrevious() ) , this ) );
+    KAction *m_selectall = KStandardAction::selectAll( this , 0 , this );
+    editMenu->addAction( m_selectall );
+    m_tabWidget->addWebAction(m_selectall, QWebPage::SelectEndOfDocument );
 
     editMenu->addSeparator();
 
-    editMenu->addAction( i18n("&Preferences"), this, SLOT(slotPreferences()), i18n("Ctrl+,"));
-
+    editMenu->addAction( KStandardAction::find(this, SLOT( slotViewFindBar() ) , this ) );
+    editMenu->addAction( KStandardAction::findNext(this, SLOT( slotFindNext() ) , this ) );
+    editMenu->addAction( KStandardAction::findPrev(this, SLOT( slotFindPrevious() ) , this ) );
 
     //  ------------------------------------------------------------- VIEW -------------------------------------------------------------------------------------------------
     KMenu *viewMenu = (KMenu *) menuBar()->addMenu( i18n("&View") );
@@ -293,12 +294,20 @@ void BrowserMainWindow::setupMenu()
     m_reload->setShortcut(QKeySequence::Refresh);
     m_tabWidget->addWebAction(m_reload, QWebPage::Reload);
 
-    viewMenu->addAction( i18n("&Make Text Bigger"), this, SLOT(slotViewTextBigger()), QKeySequence(Qt::CTRL | Qt::Key_Plus));
-    viewMenu->addAction( i18n("&Make Text Normal"), this, SLOT(slotViewTextNormal()), QKeySequence(Qt::CTRL | Qt::Key_0));
-    viewMenu->addAction( i18n("&Make Text Smaller"), this, SLOT(slotViewTextSmaller()), QKeySequence(Qt::CTRL | Qt::Key_Minus));
+    viewMenu->addSeparator();
+
+    KMenu *fontMenu = new KMenu( i18n("Make Text..."), this );
+    fontMenu->addAction( i18n("&Bigger"), this, SLOT(slotViewTextBigger()), QKeySequence(Qt::CTRL | Qt::Key_Plus));
+    fontMenu->addAction( i18n("&Normal"), this, SLOT(slotViewTextNormal()), QKeySequence(Qt::CTRL | Qt::Key_0));
+    fontMenu->addAction( i18n("&Smaller"), this, SLOT(slotViewTextSmaller()), QKeySequence(Qt::CTRL | Qt::Key_Minus));
+
+    viewMenu->addMenu( fontMenu );
 
     viewMenu->addSeparator();
-    viewMenu->addAction( i18n("Page S&ource"), this, SLOT(slotViewPageSource()), i18n("Ctrl+Alt+U"));
+
+    // TODO set encoding
+
+    viewMenu->addAction( i18n("Page S&ource"), this, SLOT( slotViewPageSource() ), i18n("Ctrl+Alt+U"));
     action = (KAction *) viewMenu->addAction( i18n("&Full Screen"), this, SLOT(slotViewFullScreen(bool)),  Qt::Key_F11);
     action->setCheckable(true);
 
@@ -337,29 +346,21 @@ void BrowserMainWindow::setupMenu()
 
     BookmarksMenu *bookmarksMenu = new BookmarksMenu( this );
     bookmarksMenu->setTitle( i18n("&Bookmarks") );
-//     m_bookmarksMenu = new KMenu( i18n("&Bookmarks"), this );
-// 
-//     KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );
-//     KBookmarkManager *mgr = KBookmarkManager::managerForExternalFile( bookfile.path() ); //FIXME hardcoded path
-//     KActionCollection * ac = new KActionCollection( this );
-//     ac->addAction( "Add Bookmark" , KStandardAction::addBookmark( this, SLOT( slotAddBookmark() ) , this ) );
-//     m_bookmarkMenu = new KBookmarkMenu( mgr , 0 , bookmarksMenu , ac );
-
     menuBar()->addMenu( bookmarksMenu );
-
-    //  ------------------------------------------------------------- WINDOW --------------------------------------------------------------------------------------------------
-    m_windowMenu = (KMenu *) menuBar()->addMenu( i18n("&Window") );
-
-    connect(m_windowMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowWindowMenu()));
-    slotAboutToShowWindowMenu();
 
     //  ------------------------------------------------------------- TOOLS ------------------------------------------------------------------------------------------------------
     KMenu* toolsMenu = (KMenu *) menuBar()->addMenu( i18n("&Tools") );
 
+    toolsMenu->addAction( i18n("Downloads"), this, SLOT( slotDownloadManager() ), i18n("Alt+Ctrl+D") );
     toolsMenu->addAction( i18n("Web &Search"), this, SLOT(slotWebSearch()), QKeySequence( tr("Ctrl+K", "Web Search")));
     action = (KAction *) toolsMenu->addAction( i18n("Enable Web &Inspector"), this, SLOT(slotToggleInspector(bool)));
     action->setCheckable(true);
 
+    //  ------------------------------------------------------------- SETTINGS ------------------------------------------------------------------------------------------------------
+    KMenu *settingsMenu = (KMenu *) menuBar()->addMenu( i18n("&Settings") );
+
+//   TODO  settingsMenu->addAction( KStandardAction::configureToolbars(this, SLOT(  ) , this ) );
+    settingsMenu->addAction( KStandardAction::preferences(this, SLOT( slotPreferences() ) , this ) );
 
     //  ------------------------------------------------------------- HELP  --------------------------------------------------------------------------------------------------
    menuBar()->addMenu( helpMenu() );
@@ -895,30 +896,6 @@ void BrowserMainWindow::slotAboutToShowBackMenu()
         m_historyBackMenu->addAction(action);
     }
 }
-
-
-
-void BrowserMainWindow::slotAboutToShowWindowMenu()
-{
-    m_windowMenu->clear();
-    m_windowMenu->addAction(m_tabWidget->nextTabAction());
-    m_windowMenu->addAction(m_tabWidget->previousTabAction());
-    m_windowMenu->addSeparator();
-    m_windowMenu->addAction( i18n("Downloads"), this, SLOT(slotDownloadManager()), QKeySequence( tr("Alt+Ctrl+L", "Download Manager")));
-
-    m_windowMenu->addSeparator();
-    QList<BrowserMainWindow*> windows = BrowserApplication::instance()->mainWindows();
-    for (int i = 0; i < windows.count(); ++i) 
-    {
-        BrowserMainWindow *window = windows.at(i);
-        QAction *action = m_windowMenu->addAction(window->windowTitle(), this, SLOT(slotShowWindow()));
-        action->setData(i);
-        action->setCheckable(true);
-        if (window == this)
-            action->setChecked(true);
-    }
-}
-
 
 
 

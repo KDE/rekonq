@@ -5,14 +5,15 @@ Road to 0.0.1 (first release)
 + some porting
 
 NEXT..
+- system SELECT ALL
 - better FULL SCREEN
 - simplify history
-- QUrl --> KUrl
++ QUrl --> KUrl
 - KDE download  = Kjob && Kget
 - adjust toolbar(s)
     -search bar
     - url bar 
-- KDEize menubar (settings)
++ KDEize menubar (settings)
 - configure dialog (A-LA amarok, konqueror) 
 - dbus support (?!)
 - KWallet support

@@ -190,7 +190,7 @@ void TabBar::reloadTab()
 }
 
 
-// --------------------------------------------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------
 
 
 TabWidget::TabWidget(QWidget *parent)
@@ -276,7 +276,8 @@ void TabWidget::clear()
     // clear the recently closed tabs
     m_recentlyClosedTabs.clear();
     // clear the line edit history
-    for (int i = 0; i < m_lineEdits->count(); ++i) {
+    for (int i = 0; i < m_lineEdits->count(); ++i) 
+    {
         KLineEdit *qLineEdit = lineEdit(i);
         qLineEdit->setText(qLineEdit->text());
     }
@@ -827,7 +828,7 @@ bool TabWidget::restoreState(const QByteArray &state)
 }
 
 
-// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------------
 
 
 WebActionMapper::WebActionMapper(KAction *root, QWebPage::WebAction webAction, QObject *parent)

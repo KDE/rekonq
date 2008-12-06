@@ -103,7 +103,6 @@ private slots:
     void slotSelectLineEdit();
 
     void slotAboutToShowBackMenu();
-    void slotAboutToShowWindowMenu();
 
     // history related
     void slotOpenActionUrl(QAction *action);

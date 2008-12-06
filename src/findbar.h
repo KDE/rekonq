@@ -23,14 +23,14 @@
 #include <KLineEdit>
 #include <KToolBar>
 
-#include <QMainWindow>
+#include <KMainWindow>
 
 class FindBar : public KToolBar
 {
     Q_OBJECT
 
 public:
-    FindBar(QMainWindow *parent);
+    FindBar(KMainWindow *parent);
     ~FindBar();
     KLineEdit *lineEdit();
 

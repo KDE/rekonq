@@ -1,0 +1,494 @@
+!_TAG_FILE_FORMAT	2	/supported features/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted/
+!_TAG_PROGRAM_AUTHOR	Steve Kirkendall	/kirkenda@cs.pdx.edu/
+!_TAG_PROGRAM_NAME	Elvis Ctags	//
+!_TAG_PROGRAM_URL	ftp://ftp.cs.pdx.edu/pub/elvis/README.html	/official site/
+!_TAG_PROGRAM_VERSION	2.2.0	//
+AUTOSAVER_H	autosaver.h	22;"	d	ln:22
+AUTOSAVE_IN	autosaver.cpp	28;"	d	ln:28	file:
+AutoSaver	autosaver.h	/^class AutoSaver : public QObject {$/;"	c	ln:33
+AutoSaver	browsermainwindow.h	/^class AutoSaver;$/;"	v	ln:38
+AutoSaver	cookiejar.h	/^class AutoSaver;$/;"	v	ln:40
+AutoSaver	downloadmanager.h	/^class AutoSaver;$/;"	v	ln:74
+AutoSaver	history.h	/^class AutoSaver;$/;"	v	ln:67
+AutoSaver	autosaver.cpp	/^AutoSaver::AutoSaver(QObject *parent) : QObject(parent)$/;"	f	ln:31	class:AutoSaver
+AutoSaver	autosaver.cpp	/^AutoSaver::~AutoSaver()$/;"	f	ln:36	class:AutoSaver
+BOOKMARKS_H	bookmarks.h	21;"	d	ln:21
+BROWSERAPPLICATION_H	browserapplication.h	23;"	d	ln:23
+BROWSERMAINWINDOW_H	browsermainwindow.h	23;"	d	ln:23
+BookmarksMenu	bookmarks.h	/^class BookmarksMenu : public KMenu$/;"	c	ln:54
+BookmarksMenu	bookmarks.cpp	/^BookmarksMenu::BookmarksMenu(KMainWindow *parent)$/;"	f	ln:61	class:BookmarksMenu
+BrowserApplication	browserapplication.h	/^class BrowserApplication : public KApplication$/;"	c	ln:44
+BrowserApplication	browserapplication.cpp	/^BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &serverName)$/;"	f	ln:58	class:BrowserApplication
+BrowserApplication	browserapplication.cpp	/^BrowserApplication::~BrowserApplication()$/;"	f	ln:102	class:BrowserApplication
+BrowserMainWindow	bookmarks.h	/^class BrowserMainWindow;$/;"	v	ln:32
+BrowserMainWindow	browserapplication.h	/^class BrowserMainWindow;$/;"	v	ln:38
+BrowserMainWindow	browsermainwindow.h	/^class BrowserMainWindow : public KMainWindow $/;"	c	ln:48
+BrowserMainWindow	webview.h	/^class BrowserMainWindow;$/;"	v	ln:36
+BrowserMainWindow	browsermainwindow.cpp	/^BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)$/;"	f	ln:61	class:BrowserMainWindow
+BrowserMainWindow	browsermainwindow.cpp	/^BrowserMainWindow::~BrowserMainWindow()$/;"	f	ln:111	class:BrowserMainWindow
+BrowserMainWindowMagic	browsermainwindow.cpp	/^static const qint32 BrowserMainWindowMagic = 0xba;$/;"	v	ln:150	file:
+COOKIEJAR_H	cookiejar.h	22;"	d	ln:22
+CookieExceptionsModel	cookiejar.h	/^class CookieExceptionsModel : public QAbstractTableModel$/;"	c	ln:155
+CookieExceptionsModel	cookiejar.cpp	/^CookieExceptionsModel::CookieExceptionsModel(CookieJar *cookiejar, QObject *parent)$/;"	f	ln:574	class:CookieExceptionsModel
+CookieJar	browserapplication.h	/^class CookieJar;$/;"	v	ln:39
+CookieJar	cookiejar.h	/^class CookieJar : public QNetworkCookieJar$/;"	c	ln:42
+CookieJar	cookiejar.cpp	/^CookieJar::CookieJar(QObject *parent)$/;"	f	ln:79	class:CookieJar
+CookieJar	cookiejar.cpp	/^CookieJar::~CookieJar()$/;"	f	ln:87	class:CookieJar
+CookieModel	cookiejar.h	/^class CookieModel : public QAbstractTableModel$/;"	c	ln:117
+CookieModel	cookiejar.cpp	/^CookieModel::CookieModel(CookieJar *cookieJar, QObject *parent)$/;"	f	ln:407	class:CookieModel
+CookiesDialog	cookiejar.h	/^class CookiesDialog : public QDialog, public Ui_CookiesDialog$/;"	v	ln:144
+CookiesDialog	cookiejar.cpp	/^CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent) $/;"	f	ln:523	class:CookiesDialog
+CookiesExceptionsDialog	cookiejar.h	/^class CookiesExceptionsDialog : public QDialog, public Ui_CookiesExceptionsDialog$/;"	v	ln:186
+CookiesExceptionsDialog	cookiejar.cpp	/^CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent)$/;"	f	ln:697	class:CookiesExceptionsDialog
+DOWNLOADMANAGER_H	downloadmanager.h	23;"	d	ln:23
+DownloadItem	downloadmanager.h	/^class DownloadItem : public QWidget, public Ui_DownloadItem$/;"	v	ln:33
+DownloadItem	downloadmanager.cpp	/^DownloadItem::DownloadItem(QNetworkReply *reply, bool requestFileName, QWidget *parent)$/;"	f	ln:46	class:DownloadItem
+DownloadManager	browserapplication.h	/^class DownloadManager;$/;"	v	ln:40
+DownloadManager	downloadmanager.h	/^class DownloadManager : public QDialog, public Ui_DownloadDialog$/;"	v	ln:80
+DownloadManager	downloadmanager.cpp	/^DownloadManager::DownloadManager(QWidget *parent)$/;"	f	ln:307	class:DownloadManager
+DownloadManager	downloadmanager.cpp	/^DownloadManager::~DownloadManager()$/;"	f	ln:326	class:DownloadManager
+DownloadModel	downloadmanager.h	/^class DownloadModel;$/;"	v	ln:75
+DownloadModel	downloadmanager.h	/^class DownloadModel : public QAbstractListModel$/;"	c	ln:125
+DownloadModel	downloadmanager.cpp	/^DownloadModel::DownloadModel(DownloadManager *downloadManager, QObject *parent)$/;"	f	ln:506	class:DownloadModel
+EDITTABLEVIEW_H	edittableview.h	22;"	d	ln:22
+EDITTREEVIEW_H	edittreeview.h	22;"	d	ln:22
+EditTableView	edittableview.h	/^class EditTableView : public QTableView$/;"	c	ln:26
+EditTableView	edittableview.cpp	/^EditTableView::EditTableView(QWidget *parent)$/;"	f	ln:24	class:EditTableView
+EditTreeView	edittreeview.h	/^class EditTreeView : public QTreeView$/;"	c	ln:26
+EditTreeView	edittreeview.cpp	/^EditTreeView::EditTreeView(QWidget *parent)$/;"	f	ln:25	class:EditTreeView
+FINDBAR_H	findbar.h	21;"	d	ln:21
+FindBar	findbar.h	/^class FindBar : public KToolBar$/;"	c	ln:28
+FindBar	findbar.cpp	/^FindBar::FindBar(KMainWindow *parent)$/;"	f	ln:32	class:FindBar
+FindBar	findbar.cpp	/^FindBar::~FindBar()$/;"	f	ln:59	class:FindBar
+HISTORY_H	history.h	23;"	d	ln:23
+HISTORY_VERSION	history.cpp	/^static const unsigned int HISTORY_VERSION = 23;$/;"	v	ln:39	file:
+HistoryCompletionModel	history.h	/^class HistoryCompletionModel : public QAbstractProxyModel$/;"	c	ln:265
+HistoryCompletionModel	history.cpp	/^HistoryCompletionModel::HistoryCompletionModel(QObject *parent)$/;"	f	ln:981	class:HistoryCompletionModel
+HistoryDialog	history.h	/^class HistoryDialog : public QDialog, public Ui_HistoryDialog$/;"	v	ln:342
+HistoryDialog	history.cpp	/^HistoryDialog::HistoryDialog(QWidget *parent, HistoryManager *setHistory) : QDialog(parent)$/;"	f	ln:698	class:HistoryDialog
+HistoryFilterModel	history.h	/^class HistoryFilterModel;$/;"	v	ln:69
+HistoryFilterModel	history.h	/^class HistoryFilterModel : public QAbstractProxyModel$/;"	c	ln:168
+HistoryFilterModel	history.cpp	/^HistoryFilterModel::HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent)$/;"	f	ln:767	class:HistoryFilterModel
+HistoryItem	history.h	/^class HistoryItem$/;"	c	ln:41
+HistoryManager	browserapplication.h	/^class HistoryManager;$/;"	v	ln:41
+HistoryManager	history.h	/^class HistoryManager : public QWebHistoryInterface$/;"	c	ln:73
+HistoryManager	history.cpp	/^HistoryManager::HistoryManager(QObject *parent)$/;"	f	ln:42	class:HistoryManager
+HistoryManager	history.cpp	/^HistoryManager::~HistoryManager()$/;"	f	ln:65	class:HistoryManager
+HistoryMenu	history.h	/^class HistoryMenu : public ModelMenu$/;"	c	ln:236
+HistoryMenu	history.cpp	/^HistoryMenu::HistoryMenu(QWidget *parent)$/;"	f	ln:614	class:HistoryMenu
+HistoryMenuModel	history.h	/^class HistoryMenuModel : public QAbstractProxyModel$/;"	c	ln:214
+HistoryMenuModel	history.cpp	/^HistoryMenuModel::HistoryMenuModel(HistoryTreeModel *sourceModel, QObject *parent)$/;"	f	ln:499	class:HistoryMenuModel
+HistoryModel	history.h	/^class HistoryModel;$/;"	v	ln:68
+HistoryModel	history.h	/^class HistoryModel : public QAbstractTableModel$/;"	c	ln:133
+HistoryModel	history.cpp	/^HistoryModel::HistoryModel(HistoryManager *history, QObject *parent)$/;"	f	ln:373	class:HistoryModel
+HistoryTreeModel	history.h	/^class HistoryTreeModel;$/;"	v	ln:70
+HistoryTreeModel	history.h	/^class HistoryTreeModel : public QAbstractProxyModel$/;"	c	ln:290
+HistoryTreeModel	history.cpp	/^HistoryTreeModel::HistoryTreeModel(QAbstractItemModel *sourceModel, QObject *parent)$/;"	f	ln:1084	class:HistoryTreeModel
+JAR_VERSION	cookiejar.cpp	/^static const unsigned int JAR_VERSION = 23;$/;"	v	ln:37	file:
+KBookmarkOwner	bookmarks.h	/^class OwnBookMarks : public QObject , public KBookmarkOwner$/;"	c	ln:34
+MAXWAIT	autosaver.cpp	29;"	d	ln:29	file:
+MODELMENU_H	modelmenu.h	23;"	d	ln:23
+MOVEDROWS	history.cpp	494;"	d	ln:494	class:HistoryModel	file:
+ModelMenu	modelmenu.h	/^class ModelMenu : public QMenu$/;"	c	ln:34
+ModelMenu	modelmenu.cpp	/^ModelMenu::ModelMenu(QWidget * parent)$/;"	f	ln:24	class:ModelMenu
+NETWORKACCESSMANAGER_H	networkaccessmanager.h	22;"	d	ln:22
+NetworkAccessManager	browserapplication.h	/^class NetworkAccessManager;$/;"	v	ln:42
+NetworkAccessManager	networkaccessmanager.h	/^class NetworkAccessManager : public QNetworkAccessManager$/;"	c	ln:26
+NetworkAccessManager	networkaccessmanager.cpp	/^NetworkAccessManager::NetworkAccessManager(QObject *parent)$/;"	f	ln:43	class:NetworkAccessManager
+OwnBookMarks	bookmarks.h	/^class OwnBookMarks : public QObject , public KBookmarkOwner$/;"	v	ln:34
+OwnBookMarks	bookmarks.cpp	/^OwnBookMarks::OwnBookMarks(KMainWindow *parent)$/;"	f	ln:30	class:OwnBookMarks
+QAuthenticator	webview.h	/^class QAuthenticator;$/;"	v	ln:29
+QCompleter	tabwidget.h	/^class QCompleter;$/;"	v	ln:120
+QFileIconProvider	downloadmanager.h	/^class QFileIconProvider;$/;"	v	ln:77
+QKeyEvent	cookiejar.h	/^class QKeyEvent;$/;"	v	ln:37
+QLocalServer	browserapplication.h	/^class QLocalServer;$/;"	v	ln:35
+QMenu	tabwidget.h	/^class QMenu;$/;"	v	ln:121
+QMouseEvent	webview.h	/^class QMouseEvent;$/;"	v	ln:30
+QNetworkProxy	webview.h	/^class QNetworkProxy;$/;"	v	ln:31
+QNetworkReply	webview.h	/^class QNetworkReply;$/;"	v	ln:32
+QSortFilterProxyModel	cookiejar.h	/^class QSortFilterProxyModel;$/;"	v	ln:36
+QSslError	webview.h	/^class QSslError;$/;"	v	ln:33
+QStackedWidget	tabwidget.h	/^class QStackedWidget;$/;"	v	ln:122
+QWebFrame	browsermainwindow.h	/^class QWebFrame;$/;"	v	ln:39
+Q_DECLARE_METATYPE	modelmenu.cpp	/^Q_DECLARE_METATYPE(QModelIndex)$/;"	f	ln:120
+SEARCHBAR_H	searchbar.h	22;"	d	ln:22
+SETTINGS_H	settings.h	22;"	d	ln:22
+SQUEEZELABEL_H	squeezelabel.h	22;"	d	ln:22
+SearchBar	searchbar.h	/^class SearchBar : public QWidget$/;"	c	ln:31
+SearchBar	searchbar.cpp	/^SearchBar::SearchBar(QWidget *parent) : $/;"	f	ln:27	class:SearchBar
+SearchBar	searchbar.cpp	/^SearchBar::~SearchBar()$/;"	f	ln:41	class:SearchBar
+Settings	settings.h	/^class SettingsDialog : public KDialog, private Ui::Settings$/;"	c	ln:33	class:Ui
+SettingsDialog	settings.h	/^class SettingsDialog : public KDialog, private Ui::Settings$/;"	v	ln:33
+SettingsDialog	settings.cpp	/^SettingsDialog::SettingsDialog(QWidget *parent)$/;"	f	ln:41	class:SettingsDialog
+SqueezeLabel	squeezelabel.h	/^class SqueezeLabel : public QLabel$/;"	c	ln:26
+SqueezeLabel	squeezelabel.cpp	/^SqueezeLabel::SqueezeLabel(QWidget *parent) : QLabel(parent)$/;"	f	ln:23	class:SqueezeLabel
+TABWIDGET_H	tabwidget.h	24;"	d	ln:24
+TabBar	tabwidget.h	/^class TabBar : public KTabBar$/;"	c	ln:33
+TabBar	tabwidget.cpp	/^TabBar::TabBar(QWidget *parent)$/;"	f	ln:36	class:TabBar
+TabWidget	browsermainwindow.h	/^class TabWidget;$/;"	v	ln:40
+TabWidget	tabwidget.h	/^class TabWidget : public QTabWidget$/;"	c	ln:130
+TabWidget	tabwidget.cpp	/^TabWidget::TabWidget(QWidget *parent)$/;"	f	ln:196	class:TabWidget
+TabWidgetMagic	tabwidget.cpp	/^static const qint32 TabWidgetMagic = 0xaa;$/;"	v	ln:768	file:
+TreeProxyModel	history.h	/^class TreeProxyModel : public QSortFilterProxyModel$/;"	c	ln:326
+TreeProxyModel	history.cpp	/^TreeProxyModel::TreeProxyModel(QObject *parent) : QSortFilterProxyModel(parent)$/;"	f	ln:681	class:TreeProxyModel
+URLBAR_H	urlbar.h	21;"	d	ln:21
+Ui_CookiesDialog	cookiejar.h	/^class CookiesDialog : public QDialog, public Ui_CookiesDialog$/;"	c	ln:144
+Ui_CookiesExceptionsDialog	cookiejar.h	/^class CookiesExceptionsDialog : public QDialog, public Ui_CookiesExceptionsDialog$/;"	c	ln:186
+Ui_DownloadDialog	downloadmanager.h	/^class DownloadManager : public QDialog, public Ui_DownloadDialog$/;"	c	ln:80
+Ui_DownloadItem	downloadmanager.h	/^class DownloadItem : public QWidget, public Ui_DownloadItem$/;"	c	ln:33
+Ui_HistoryDialog	history.h	/^class HistoryDialog : public QDialog, public Ui_HistoryDialog$/;"	c	ln:342
+UrlBar	urlbar.h	/^class UrlBar : public QWidget$/;"	c	ln:35
+UrlBar	urlbar.cpp	/^UrlBar::UrlBar(QWidget *parent)$/;"	f	ln:30	class:UrlBar
+UrlBar	urlbar.cpp	/^UrlBar::~UrlBar()$/;"	f	ln:55	class:UrlBar
+WEBVIEW_H	webview.h	22;"	d	ln:22
+WebActionMapper	tabwidget.h	/^class WebActionMapper : public QObject$/;"	c	ln:86
+WebActionMapper	tabwidget.cpp	/^WebActionMapper::WebActionMapper(KAction *root, QWebPage::WebAction webAction, QObject *parent)$/;"	f	ln:834	class:WebActionMapper
+WebPage	webview.h	/^class WebPage : public QWebPage $/;"	c	ln:39
+WebPage	webview.cpp	/^WebPage::WebPage(QObject *parent)$/;"	f	ln:42	class:WebPage
+WebView	browsermainwindow.h	/^class WebView;$/;"	v	ln:41
+WebView	tabwidget.h	/^class WebView;$/;"	v	ln:78
+WebView	webview.h	/^class WebView : public QWebView $/;"	c	ln:70
+WebView	webview.cpp	/^WebView::WebView(QWidget* parent)$/;"	f	ln:171	class:WebView
+aboutToShowRecentTabsMenu	tabwidget.cpp	/^void TabWidget::aboutToShowRecentTabsMenu()$/;"	f	ln:678	class:TabWidget
+aboutToShowRecentTriggeredAction	tabwidget.cpp	/^void TabWidget::aboutToShowRecentTriggeredAction(QAction *action)$/;"	f	ln:693	class:TabWidget
+acceptNavigationRequest	webview.cpp	/^bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)$/;"	f	ln:65	class:WebPage
+acceptPolicy	cookiejar.cpp	/^CookieJar::AcceptPolicy CookieJar::acceptPolicy() const$/;"	f	ln:301	class:CookieJar
+activated	history.cpp	/^void HistoryMenu::activated(const QModelIndex &index)$/;"	f	ln:623	class:HistoryMenu
+activeDownloads	downloadmanager.cpp	/^int DownloadManager::activeDownloads() const$/;"	f	ln:334	class:DownloadManager
+addChild	tabwidget.cpp	/^void WebActionMapper::addChild(KAction *action)$/;"	f	ln:860	class:WebActionMapper
+addHistoryEntry	history.cpp	/^void HistoryManager::addHistoryEntry(const QString &url)$/;"	f	ln:83	class:HistoryManager
+addHistoryItem	history.cpp	/^void HistoryManager::addHistoryItem(const HistoryItem &item)$/;"	f	ln:161	class:HistoryManager
+addItem	downloadmanager.cpp	/^void DownloadManager::addItem(DownloadItem *item)$/;"	f	ln:366	class:DownloadManager
+addWebAction	tabwidget.cpp	/^void TabWidget::addWebAction(KAction *action, QWebPage::WebAction webAction)$/;"	f	ln:319	class:TabWidget
+allow	cookiejar.cpp	/^void CookiesExceptionsDialog::allow()$/;"	f	ln:766	class:CookiesExceptionsDialog
+allowForSession	cookiejar.cpp	/^void CookiesExceptionsDialog::allowForSession()$/;"	f	ln:775	class:CookiesExceptionsDialog
+allowForSessionCookies	cookiejar.cpp	/^QStringList CookieJar::allowForSessionCookies() const$/;"	f	ln:361	class:CookieJar
+allowedCookies	cookiejar.cpp	/^QStringList CookieJar::allowedCookies() const$/;"	f	ln:352	class:CookieJar
+authenticationRequired	networkaccessmanager.cpp	/^void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *auth)$/;"	f	ln:84	class:NetworkAccessManager
+block	cookiejar.cpp	/^void CookiesExceptionsDialog::block()$/;"	f	ln:757	class:CookiesExceptionsDialog
+blockedCookies	cookiejar.cpp	/^QStringList CookieJar::blockedCookies() const$/;"	f	ln:343	class:CookieJar
+bumpedRows	history.cpp	/^int HistoryMenuModel::bumpedRows() const$/;"	f	ln:506	class:HistoryMenuModel
+canRestoreSession	browserapplication.cpp	/^bool BrowserApplication::canRestoreSession() const$/;"	f	ln:227	class:BrowserApplication
+changeOccurred	autosaver.cpp	/^void AutoSaver::changeOccurred()$/;"	f	ln:42	class:AutoSaver
+checkForExpired	history.cpp	/^void HistoryManager::checkForExpired()$/;"	f	ln:131	class:HistoryManager
+childChanged	tabwidget.cpp	/^void WebActionMapper::childChanged()$/;"	f	ln:883	class:WebActionMapper
+chooseFixedFont	settings.cpp	/^void SettingsDialog::chooseFixedFont()$/;"	f	ln:293	class:SettingsDialog
+chooseFont	settings.cpp	/^void SettingsDialog::chooseFont()$/;"	f	ln:281	class:SettingsDialog
+clean	browserapplication.cpp	/^void BrowserApplication::clean()$/;"	f	ln:189	class:BrowserApplication
+cleanup	downloadmanager.cpp	/^void DownloadManager::cleanup()$/;"	f	ln:487	class:DownloadManager
+clear	cookiejar.cpp	/^void CookieJar::clear()$/;"	f	ln:94	class:CookieJar
+clear	findbar.cpp	/^void FindBar::clear()$/;"	f	ln:71	class:FindBar
+clear	history.cpp	/^void HistoryManager::clear()$/;"	f	ln:208	class:HistoryManager
+clear	tabwidget.cpp	/^void TabWidget::clear()$/;"	f	ln:274	class:TabWidget
+cloneTab	tabwidget.cpp	/^void TabBar::cloneTab()$/;"	f	ln:100	class:TabBar
+cloneTab	tabwidget.cpp	/^void TabWidget::cloneTab(int index)$/;"	f	ln:576	class:TabWidget
+closeEvent	browsermainwindow.cpp	/^void BrowserMainWindow::closeEvent(QCloseEvent *event)$/;"	f	ln:655	class:BrowserMainWindow
+closeOtherTabs	tabwidget.cpp	/^void TabBar::closeOtherTabs()$/;"	f	ln:120	class:TabBar
+closeOtherTabs	tabwidget.cpp	/^void TabWidget::closeOtherTabs(int index)$/;"	f	ln:564	class:TabWidget
+closeTab	tabwidget.cpp	/^void TabBar::closeTab()$/;"	f	ln:110	class:TabBar
+closeTab	tabwidget.cpp	/^void TabWidget::closeTab(int index)$/;"	f	ln:588	class:TabWidget
+closeTabAction	tabwidget.cpp	/^KAction *TabWidget::closeTabAction() const$/;"	f	ln:375	class:TabWidget
+columnCount	cookiejar.cpp	/^int CookieModel::columnCount(const QModelIndex &parent) const$/;"	f	ln:487	class:CookieModel
+columnCount	cookiejar.cpp	/^int CookieExceptionsModel::columnCount(const QModelIndex &parent) const$/;"	f	ln:651	class:CookieExceptionsModel
+columnCount	history.cpp	/^int HistoryModel::columnCount(const QModelIndex &parent) const$/;"	f	ln:462	class:HistoryModel
+columnCount	history.cpp	/^int HistoryMenuModel::columnCount(const QModelIndex &parent) const$/;"	f	ln:514	class:HistoryMenuModel
+columnCount	history.cpp	/^int HistoryFilterModel::columnCount(const QModelIndex &parent) const$/;"	f	ln:845	class:HistoryFilterModel
+columnCount	history.cpp	/^int HistoryCompletionModel::columnCount(const QModelIndex &parent) const$/;"	f	ln:1014	class:HistoryCompletionModel
+columnCount	history.cpp	/^int HistoryTreeModel::columnCount(const QModelIndex &parent) const$/;"	f	ln:1127	class:HistoryTreeModel
+contextMenuEvent	tabwidget.cpp	/^void TabWidget::contextMenuEvent(QContextMenuEvent *event)$/;"	f	ln:713	class:TabWidget
+contextMenuEvent	webview.cpp	/^void WebView::contextMenuEvent(QContextMenuEvent *event)$/;"	f	ln:187	class:WebView
+contextMenuRequested	tabwidget.cpp	/^void TabBar::contextMenuRequested(const QPoint &position)$/;"	f	ln:68	class:TabBar
+cookieJar	browserapplication.cpp	/^CookieJar *BrowserApplication::cookieJar()$/;"	f	ln:328	class:BrowserApplication
+cookiesChanged	cookiejar.cpp	/^void CookieModel::cookiesChanged()$/;"	f	ln:512	class:CookieModel
+cookiesForUrl	cookiejar.cpp	/^QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl &url) const$/;"	f	ln:221	class:CookieJar
+copy	history.cpp	/^void HistoryDialog::copy()$/;"	f	ln:753	class:HistoryDialog
+createMenu	modelmenu.cpp	/^void ModelMenu::createMenu(const QModelIndex &parent, int max, QMenu *parentMenu, QMenu *menu)$/;"	f	ln:145	class:ModelMenu
+createWindow	webview.cpp	/^QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)$/;"	f	ln:103	class:WebPage
+currentChanged	tabwidget.cpp	/^void TabWidget::currentChanged(int index)$/;"	f	ln:327	class:TabWidget
+currentDestroyed	tabwidget.cpp	/^void WebActionMapper::currentDestroyed()$/;"	f	ln:854	class:WebActionMapper
+currentLineEdit	tabwidget.cpp	/^KLineEdit *TabWidget::currentLineEdit() const$/;"	f	ln:405	class:TabWidget
+currentTab	browsermainwindow.cpp	/^WebView *BrowserMainWindow::currentTab() const$/;"	f	ln:852	class:BrowserMainWindow
+currentTitle	bookmarks.cpp	/^QString OwnBookMarks::currentTitle() const$/;"	f	ln:51	class:OwnBookMarks
+currentUrl	bookmarks.cpp	/^QString OwnBookMarks::currentUrl() const$/;"	f	ln:44	class:OwnBookMarks
+currentWebView	tabwidget.cpp	/^WebView *TabWidget::currentWebView() const$/;"	f	ln:411	class:TabWidget
+customContextMenuRequested	history.cpp	/^void HistoryDialog::customContextMenuRequested(const QPoint &pos)$/;"	f	ln:729	class:HistoryDialog
+data	cookiejar.cpp	/^QVariant CookieModel::data(const QModelIndex &index, int role) const$/;"	f	ln:450	class:CookieModel
+data	cookiejar.cpp	/^QVariant CookieExceptionsModel::data(const QModelIndex &index, int role) const$/;"	f	ln:606	class:CookieExceptionsModel
+data	downloadmanager.cpp	/^QVariant DownloadModel::data(const QModelIndex &index, int role) const$/;"	f	ln:512	class:DownloadModel
+data	history.cpp	/^QVariant HistoryModel::data(const QModelIndex &index, int role) const$/;"	f	ln:420	class:HistoryModel
+data	history.cpp	/^QVariant HistoryFilterModel::data(const QModelIndex &index, int role) const$/;"	f	ln:784	class:HistoryFilterModel
+data	history.cpp	/^QVariant HistoryCompletionModel::data(const QModelIndex &index, int role) const$/;"	f	ln:987	class:HistoryCompletionModel
+data	history.cpp	/^QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const$/;"	f	ln:1097	class:HistoryTreeModel
+dataString	downloadmanager.cpp	/^QString DownloadItem::dataString(int size) const$/;"	f	ln:266	class:DownloadItem
+download	downloadmanager.cpp	/^void DownloadManager::download(const QNetworkRequest &request, bool requestFileName)$/;"	f	ln:344	class:DownloadManager
+downloadManager	browserapplication.cpp	/^DownloadManager *BrowserApplication::downloadManager()$/;"	f	ln:334	class:BrowserApplication
+downloadProgress	downloadmanager.cpp	/^void DownloadItem::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)$/;"	f	ln:216	class:DownloadItem
+downloadReadyRead	downloadmanager.cpp	/^void DownloadItem::downloadReadyRead()$/;"	f	ln:181	class:DownloadItem
+downloadRequested	webview.cpp	/^void WebView::downloadRequested(const QNetworkRequest &request)$/;"	f	ln:299	class:WebView
+downloadedSuccessfully	downloadmanager.cpp	/^bool DownloadItem::downloadedSuccessfully() const$/;"	f	ln:286	class:DownloadItem
+downloading	downloadmanager.cpp	/^bool DownloadItem::downloading() const$/;"	f	ln:281	class:DownloadItem
+dragEnterEvent	tabwidget.cpp	/^void TabBar::dragEnterEvent(QDragEnterEvent *event)$/;"	f	ln:158	class:TabBar
+dropEvent	tabwidget.cpp	/^void TabBar::dropEvent(QDropEvent *event)$/;"	f	ln:171	class:TabBar
+entryAdded	history.cpp	/^void HistoryModel::entryAdded()$/;"	f	ln:391	class:HistoryModel
+entryUpdated	history.cpp	/^void HistoryModel::entryUpdated(int offset)$/;"	f	ln:398	class:HistoryModel
+error	downloadmanager.cpp	/^void DownloadItem::error(QNetworkReply::NetworkError)$/;"	f	ln:203	class:DownloadItem
+filterAcceptsRow	history.cpp	/^bool TreeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const$/;"	f	ln:688	class:TreeProxyModel
+finished	downloadmanager.cpp	/^void DownloadItem::finished()$/;"	f	ln:291	class:DownloadItem
+firstSeparator	modelmenu.cpp	/^int ModelMenu::firstSeparator() const$/;"	f	ln:78	class:ModelMenu
+flags	history.cpp	/^Qt::ItemFlags HistoryTreeModel::flags(const QModelIndex &index) const$/;"	f	ln:1226	class:HistoryTreeModel
+generateGradient	urlbar.cpp	/^QLinearGradient UrlBar::generateGradient(const QColor &color) const$/;"	f	ln:97	class:UrlBar
+geometryChangeRequested	browsermainwindow.cpp	/^void BrowserMainWindow::geometryChangeRequested(const QRect &geometry)$/;"	f	ln:977	class:BrowserMainWindow
+getFileName	downloadmanager.cpp	/^void DownloadItem::getFileName()$/;"	f	ln:93	class:DownloadItem
+guessUrlFromString	browsermainwindow.cpp	/^KUrl BrowserMainWindow::guessUrlFromString(const QString &string)$/;"	f	ln:443	class:BrowserMainWindow
+handleUnsupportedContent	downloadmanager.cpp	/^void DownloadManager::handleUnsupportedContent(QNetworkReply *reply, bool requestFileName)$/;"	f	ln:351	class:DownloadManager
+handleUnsupportedContent	webview.cpp	/^void WebPage::handleUnsupportedContent(QNetworkReply *reply)$/;"	f	ln:119	class:WebPage
+hasChildren	history.cpp	/^bool HistoryTreeModel::hasChildren(const QModelIndex &parent) const$/;"	f	ln:1217	class:HistoryTreeModel
+headerData	cookiejar.cpp	/^QVariant CookieModel::headerData(int section, Qt::Orientation orientation, int role) const$/;"	f	ln:415	class:CookieModel
+headerData	cookiejar.cpp	/^QVariant CookieExceptionsModel::headerData(int section, Qt::Orientation orientation, int role) const$/;"	f	ln:583	class:CookieExceptionsModel
+headerData	history.cpp	/^QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int role) const$/;"	f	ln:405	class:HistoryModel
+headerData	history.cpp	/^QVariant HistoryFilterModel::headerData(int section, Qt::Orientation orientation, int role) const$/;"	f	ln:823	class:HistoryFilterModel
+headerData	history.cpp	/^QVariant HistoryTreeModel::headerData(int section, Qt::Orientation orientation, int role) const$/;"	f	ln:1091	class:HistoryTreeModel
+history	history.cpp	/^QList<HistoryItem> HistoryManager::history() const$/;"	f	ln:71	class:HistoryManager
+historyContains	history.cpp	/^bool HistoryManager::historyContains(const QString &url) const$/;"	f	ln:77	class:HistoryManager
+historyFilterModel	history.cpp	/^HistoryFilterModel *HistoryManager::historyFilterModel() const$/;"	f	ln:119	class:HistoryManager
+historyLimit	history.cpp	/^int HistoryManager::historyLimit() const$/;"	f	ln:192	class:HistoryManager
+historyLocation	history.cpp	/^int HistoryFilterModel::historyLocation(const QString &url) const$/;"	f	ln:775	class:HistoryFilterModel
+historyManager	browserapplication.cpp	/^HistoryManager *BrowserApplication::historyManager()$/;"	f	ln:357	class:BrowserApplication
+historyModel	history.cpp	/^HistoryModel *HistoryManager::historyModel() const$/;"	f	ln:113	class:HistoryManager
+historyReset	history.cpp	/^void HistoryModel::historyReset()$/;"	f	ln:385	class:HistoryModel
+historyTreeModel	history.cpp	/^HistoryTreeModel *HistoryManager::historyTreeModel() const$/;"	f	ln:125	class:HistoryManager
+hoverRole	modelmenu.cpp	/^int ModelMenu::hoverRole() const$/;"	f	ln:102	class:ModelMenu
+hovered	modelmenu.cpp	/^void ModelMenu::hovered(QAction *action)$/;"	f	ln:213	class:ModelMenu
+icon	browserapplication.cpp	/^KIcon BrowserApplication::icon(const KUrl &url) const$/;"	f	ln:370	class:BrowserApplication
+index	history.cpp	/^QModelIndex HistoryMenuModel::index(int row, int column, const QModelIndex &parent) const$/;"	f	ln:572	class:HistoryMenuModel
+index	history.cpp	/^QModelIndex HistoryFilterModel::index(int row, int column, const QModelIndex &parent) const$/;"	f	ln:886	class:HistoryFilterModel
+index	history.cpp	/^QModelIndex HistoryCompletionModel::index(int row, int column, const QModelIndex &parent) const$/;"	f	ln:1036	class:HistoryCompletionModel
+index	history.cpp	/^QModelIndex HistoryTreeModel::index(int row, int column, const QModelIndex &parent) const$/;"	f	ln:1195	class:HistoryTreeModel
+init	downloadmanager.cpp	/^void DownloadItem::init()$/;"	f	ln:65	class:DownloadItem
+instance	browserapplication.cpp	/^BrowserApplication *BrowserApplication::instance()$/;"	f	ln:110	class:BrowserApplication
+isTheOnlyBrowser	browserapplication.cpp	/^bool BrowserApplication::isTheOnlyBrowser() const$/;"	f	ln:266	class:BrowserApplication
+keepPolicy	cookiejar.cpp	/^CookieJar::KeepPolicy CookieJar::keepPolicy() const$/;"	f	ln:322	class:CookieJar
+keyPressEvent	edittableview.cpp	/^void EditTableView::keyPressEvent(QKeyEvent *event)$/;"	f	ln:29	class:EditTableView
+keyPressEvent	edittreeview.cpp	/^void EditTreeView::keyPressEvent(QKeyEvent *event)$/;"	f	ln:30	class:EditTreeView
+keyPressEvent	findbar.cpp	/^void FindBar::keyPressEvent(QKeyEvent* event)$/;"	f	ln:88	class:FindBar
+lastStatusBarText	webview.cpp	/^QString WebView::lastStatusBarText() const$/;"	f	ln:254	class:WebView
+lineEdit	findbar.cpp	/^KLineEdit *FindBar::lineEdit()$/;"	f	ln:65	class:FindBar
+lineEdit	searchbar.cpp	/^KLineEdit *SearchBar::lineEdit()$/;"	f	ln:58	class:SearchBar
+lineEdit	tabwidget.cpp	/^KLineEdit *TabWidget::lineEdit(int index) const$/;"	f	ln:417	class:TabWidget
+lineEdit	urlbar.cpp	/^KLineEdit *UrlBar::lineEdit()$/;"	f	ln:63	class:UrlBar
+lineEditReturnPressed	tabwidget.cpp	/^void TabWidget::lineEditReturnPressed()$/;"	f	ln:538	class:TabWidget
+lineEditStack	tabwidget.cpp	/^QWidget *TabWidget::lineEditStack() const$/;"	f	ln:399	class:TabWidget
+load	cookiejar.cpp	/^void CookieJar::load()$/;"	f	ln:101	class:CookieJar
+load	downloadmanager.cpp	/^void DownloadManager::load()$/;"	f	ln:451	class:DownloadManager
+load	history.cpp	/^void HistoryManager::load()$/;"	f	ln:228	class:HistoryManager
+load	history.cpp	/^void HistoryFilterModel::load() const$/;"	f	ln:903	class:HistoryFilterModel
+loadDefaultState	browsermainwindow.cpp	/^void BrowserMainWindow::loadDefaultState()$/;"	f	ln:119	class:BrowserMainWindow
+loadDefaults	settings.cpp	/^void SettingsDialog::loadDefaults()$/;"	f	ln:70	class:SettingsDialog
+loadFinished	webview.cpp	/^void WebView::loadFinished()$/;"	f	ln:236	class:WebView
+loadFromSettings	settings.cpp	/^void SettingsDialog::loadFromSettings()$/;"	f	ln:90	class:SettingsDialog
+loadPage	browsermainwindow.cpp	/^void BrowserMainWindow::loadPage(const QString &page)$/;"	f	ln:832	class:BrowserMainWindow
+loadSettings	browserapplication.cpp	/^void BrowserApplication::loadSettings()$/;"	f	ln:146	class:BrowserApplication
+loadSettings	cookiejar.cpp	/^void CookieJar::loadSettings()$/;"	f	ln:133	class:CookieJar
+loadSettings	history.cpp	/^void HistoryManager::loadSettings()$/;"	f	ln:218	class:HistoryManager
+loadSettings	networkaccessmanager.cpp	/^void NetworkAccessManager::loadSettings()$/;"	f	ln:58	class:NetworkAccessManager
+loadUrl	browsermainwindow.cpp	/^void BrowserMainWindow::loadUrl(const KUrl &url)$/;"	f	ln:500	class:BrowserMainWindow
+loadUrl	webview.cpp	/^void WebView::loadUrl(const KUrl &url)$/;"	f	ln:247	class:WebView
+loadUrlInCurrentTab	tabwidget.cpp	/^void TabWidget::loadUrlInCurrentTab(const KUrl &url)$/;"	f	ln:739	class:TabWidget
+main	main.cpp	/^int main(int argc, char **argv)$/;"	f	ln:29
+mainWindow	browserapplication.cpp	/^BrowserMainWindow *BrowserApplication::mainWindow()$/;"	f	ln:288	class:BrowserApplication
+mainWindow	webview.cpp	/^BrowserMainWindow *WebPage::mainWindow()$/;"	f	ln:53	class:WebPage
+mainWindows	browserapplication.cpp	/^QList<BrowserMainWindow*> BrowserApplication::mainWindows()$/;"	f	ln:175	class:BrowserApplication
+makeAction	modelmenu.cpp	/^KAction *ModelMenu::makeAction(const QModelIndex &index)$/;"	f	ln:184	class:ModelMenu
+makeAction	modelmenu.cpp	/^KAction *ModelMenu::makeAction(const KIcon &icon, const QString &text, QObject *parent)$/;"	f	ln:194	class:ModelMenu
+mapFromSource	history.cpp	/^QModelIndex HistoryMenuModel::mapFromSource(const QModelIndex &sourceIndex) const$/;"	f	ln:545	class:HistoryMenuModel
+mapFromSource	history.cpp	/^QModelIndex HistoryFilterModel::mapFromSource(const QModelIndex &sourceIndex) const$/;"	f	ln:859	class:HistoryFilterModel
+mapFromSource	history.cpp	/^QModelIndex HistoryCompletionModel::mapFromSource(const QModelIndex &sourceIndex) const$/;"	f	ln:1020	class:HistoryCompletionModel
+mapFromSource	history.cpp	/^QModelIndex HistoryTreeModel::mapFromSource(const QModelIndex &sourceIndex) const$/;"	f	ln:1312	class:HistoryTreeModel
+mapToSource	history.cpp	/^QModelIndex HistoryMenuModel::mapToSource(const QModelIndex &proxyIndex) const$/;"	f	ln:553	class:HistoryMenuModel
+mapToSource	history.cpp	/^QModelIndex HistoryFilterModel::mapToSource(const QModelIndex &proxyIndex) const$/;"	f	ln:851	class:HistoryFilterModel
+mapToSource	history.cpp	/^QModelIndex HistoryCompletionModel::mapToSource(const QModelIndex &proxyIndex) const$/;"	f	ln:1027	class:HistoryCompletionModel
+mapToSource	history.cpp	/^QModelIndex HistoryTreeModel::mapToSource(const QModelIndex &proxyIndex) const$/;"	f	ln:1185	class:HistoryTreeModel
+maxRows	modelmenu.cpp	/^int ModelMenu::maxRows() const$/;"	f	ln:66	class:ModelMenu
+metaDataChanged	downloadmanager.cpp	/^void DownloadItem::metaDataChanged()$/;"	f	ln:211	class:DownloadItem
+model	modelmenu.cpp	/^QAbstractItemModel *ModelMenu::model() const$/;"	f	ln:54	class:ModelMenu
+mouseDoubleClickEvent	tabwidget.cpp	/^void TabWidget::mouseDoubleClickEvent(QMouseEvent *event)$/;"	f	ln:700	class:TabWidget
+mouseMoveEvent	tabwidget.cpp	/^void TabBar::mouseMoveEvent(QMouseEvent *event)$/;"	f	ln:138	class:TabBar
+mousePressEvent	tabwidget.cpp	/^void TabBar::mousePressEvent(QMouseEvent *event)$/;"	f	ln:130	class:TabBar
+mousePressEvent	webview.cpp	/^void WebView::mousePressEvent(QMouseEvent *event)$/;"	f	ln:271	class:WebView
+mouseReleaseEvent	tabwidget.cpp	/^void TabWidget::mouseReleaseEvent(QMouseEvent *event)$/;"	f	ln:723	class:TabWidget
+mouseReleaseEvent	webview.cpp	/^void WebView::mouseReleaseEvent(QMouseEvent *event)$/;"	f	ln:279	class:WebView
+moveTab	tabwidget.cpp	/^void TabWidget::moveTab(int fromIndex, int toIndex)$/;"	f	ln:287	class:TabWidget
+networkAccessManager	browserapplication.cpp	/^NetworkAccessManager *BrowserApplication::networkAccessManager()$/;"	f	ln:345	class:BrowserApplication
+newLocalSocketConnection	browserapplication.cpp	/^void BrowserApplication::newLocalSocketConnection()$/;"	f	ln:297	class:BrowserApplication
+newMainWindow	browserapplication.cpp	/^BrowserMainWindow *BrowserApplication::newMainWindow()$/;"	f	ln:279	class:BrowserApplication
+newTab	tabwidget.cpp	/^WebView *TabWidget::newTab(bool makeCurrent)$/;"	f	ln:457	class:TabWidget
+newTabAction	tabwidget.cpp	/^KAction *TabWidget::newTabAction() const$/;"	f	ln:369	class:TabWidget
+nextTab	tabwidget.cpp	/^void TabWidget::nextTab()$/;"	f	ln:750	class:TabWidget
+nextTabAction	tabwidget.cpp	/^KAction *TabWidget::nextTabAction() const$/;"	f	ln:387	class:TabWidget
+open	downloadmanager.cpp	/^void DownloadItem::open()$/;"	f	ln:153	class:DownloadItem
+open	history.cpp	/^void HistoryDialog::open()$/;"	f	ln:744	class:HistoryDialog
+openBookmark	bookmarks.cpp	/^void OwnBookMarks::openBookmark (const KBookmark & b, Qt::MouseButtons , Qt::KeyboardModifiers )$/;"	f	ln:39	class:OwnBookMarks
+openLinkInNewTab	webview.cpp	/^void WebView::openLinkInNewTab()$/;"	f	ln:223	class:WebView
+openUrl	browserapplication.cpp	/^void BrowserApplication::openUrl(const KUrl &url)$/;"	f	ln:272	class:BrowserApplication
+operator<<	cookiejar.cpp	/^QDataStream &operator<<(QDataStream &stream, const QList<QNetworkCookie> &list)$/;"	f	ln:40
+operator>>	cookiejar.cpp	/^QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list)$/;"	f	ln:49
+paintEvent	squeezelabel.cpp	/^void SqueezeLabel::paintEvent(QPaintEvent *event)$/;"	f	ln:27	class:SqueezeLabel
+parent	history.cpp	/^QModelIndex HistoryMenuModel::parent(const QModelIndex &index) const$/;"	f	ln:594	class:HistoryMenuModel
+parent	history.cpp	/^QModelIndex HistoryFilterModel::parent(const QModelIndex &) const$/;"	f	ln:897	class:HistoryFilterModel
+parent	history.cpp	/^QModelIndex HistoryCompletionModel::parent(const QModelIndex &) const$/;"	f	ln:1045	class:HistoryCompletionModel
+parent	history.cpp	/^QModelIndex HistoryTreeModel::parent(const QModelIndex &index) const$/;"	f	ln:1208	class:HistoryTreeModel
+postLaunch	browserapplication.cpp	/^void BrowserApplication::postLaunch()$/;"	f	ln:119	class:BrowserApplication
+postPopulated	history.cpp	/^void HistoryMenu::postPopulated()$/;"	f	ln:648	class:HistoryMenu
+postPopulated	modelmenu.cpp	/^void ModelMenu::postPopulated()$/;"	f	ln:43	class:ModelMenu
+prePopulated	history.cpp	/^bool HistoryMenu::prePopulated()$/;"	f	ln:629	class:HistoryMenu
+prePopulated	modelmenu.cpp	/^bool ModelMenu::prePopulated()$/;"	f	ln:37	class:ModelMenu
+previousTab	tabwidget.cpp	/^void TabWidget::previousTab()$/;"	f	ln:759	class:TabWidget
+previousTabAction	tabwidget.cpp	/^KAction *TabWidget::previousTabAction() const$/;"	f	ln:393	class:TabWidget
+printRequested	browsermainwindow.cpp	/^void BrowserMainWindow::printRequested(QWebFrame *frame)$/;"	f	ln:603	class:BrowserMainWindow
+proxyAuthenticationRequired	networkaccessmanager.cpp	/^void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth)$/;"	f	ln:108	class:NetworkAccessManager
+purgeOldCookies	cookiejar.cpp	/^void CookieJar::purgeOldCookies()$/;"	f	ln:203	class:CookieJar
+recentlyClosedTabsAction	tabwidget.cpp	/^KAction *TabWidget::recentlyClosedTabsAction() const$/;"	f	ln:381	class:TabWidget
+reloadAllTabs	tabwidget.cpp	/^void TabWidget::reloadAllTabs()$/;"	f	ln:525	class:TabWidget
+reloadTab	tabwidget.cpp	/^void TabBar::reloadTab()$/;"	f	ln:184	class:TabBar
+reloadTab	tabwidget.cpp	/^void TabWidget::reloadTab(int index)$/;"	f	ln:305	class:TabWidget
+removeAll	edittableview.cpp	/^void EditTableView::removeAll()$/;"	f	ln:52	class:EditTableView
+removeAll	edittreeview.cpp	/^void EditTreeView::removeAll()$/;"	f	ln:50	class:EditTreeView
+removeOne	edittableview.cpp	/^void EditTableView::removeOne()$/;"	f	ln:40	class:EditTableView
+removeOne	edittreeview.cpp	/^void EditTreeView::removeOne()$/;"	f	ln:41	class:EditTreeView
+removePolicy	downloadmanager.cpp	/^DownloadManager::RemovePolicy DownloadManager::removePolicy() const$/;"	f	ln:412	class:DownloadManager
+removeRows	cookiejar.cpp	/^bool CookieModel::removeRows(int row, int count, const QModelIndex &parent)$/;"	f	ln:497	class:CookieModel
+removeRows	cookiejar.cpp	/^bool CookieExceptionsModel::removeRows(int row, int count, const QModelIndex &parent)$/;"	f	ln:661	class:CookieExceptionsModel
+removeRows	downloadmanager.cpp	/^bool DownloadModel::removeRows(int row, int count, const QModelIndex &parent)$/;"	f	ln:527	class:DownloadModel
+removeRows	history.cpp	/^bool HistoryModel::removeRows(int row, int count, const QModelIndex &parent)$/;"	f	ln:474	class:HistoryModel
+removeRows	history.cpp	/^bool HistoryFilterModel::removeRows(int row, int count, const QModelIndex &parent)$/;"	f	ln:959	class:HistoryFilterModel
+removeRows	history.cpp	/^bool HistoryTreeModel::removeRows(int row, int count, const QModelIndex &parent)$/;"	f	ln:1234	class:HistoryTreeModel
+restoreLastSession	browserapplication.cpp	/^void BrowserApplication::restoreLastSession()$/;"	f	ln:233	class:BrowserApplication
+restoreState	browsermainwindow.cpp	/^bool BrowserMainWindow::restoreState(const QByteArray &state)$/;"	f	ln:174	class:BrowserMainWindow
+restoreState	tabwidget.cpp	/^bool TabWidget::restoreState(const QByteArray &state)$/;"	f	ln:798	class:TabWidget
+rootDestroyed	tabwidget.cpp	/^void WebActionMapper::rootDestroyed()$/;"	f	ln:848	class:WebActionMapper
+rootIndex	modelmenu.cpp	/^QModelIndex ModelMenu::rootIndex() const$/;"	f	ln:90	class:ModelMenu
+rootTriggered	tabwidget.cpp	/^void WebActionMapper::rootTriggered()$/;"	f	ln:873	class:WebActionMapper
+rowCount	cookiejar.cpp	/^int CookieModel::rowCount(const QModelIndex &parent) const$/;"	f	ln:492	class:CookieModel
+rowCount	cookiejar.cpp	/^int CookieExceptionsModel::rowCount(const QModelIndex &parent) const$/;"	f	ln:656	class:CookieExceptionsModel
+rowCount	downloadmanager.cpp	/^int DownloadModel::rowCount(const QModelIndex &parent) const$/;"	f	ln:522	class:DownloadModel
+rowCount	history.cpp	/^int HistoryModel::rowCount(const QModelIndex &parent) const$/;"	f	ln:468	class:HistoryModel
+rowCount	history.cpp	/^int HistoryMenuModel::rowCount(const QModelIndex &parent) const$/;"	f	ln:519	class:HistoryMenuModel
+rowCount	history.cpp	/^int HistoryFilterModel::rowCount(const QModelIndex &parent) const$/;"	f	ln:836	class:HistoryFilterModel
+rowCount	history.cpp	/^int HistoryCompletionModel::rowCount(const QModelIndex &parent) const$/;"	f	ln:1008	class:HistoryCompletionModel
+rowCount	history.cpp	/^int HistoryTreeModel::rowCount(const QModelIndex &parent) const$/;"	f	ln:1133	class:HistoryTreeModel
+s_downloadManager	browserapplication.cpp	/^DownloadManager *BrowserApplication::s_downloadManager = 0;$/;"	v	ln:52	class:BrowserApplication
+s_historyManager	browserapplication.cpp	/^HistoryManager *BrowserApplication::s_historyManager = 0;$/;"	v	ln:53	class:BrowserApplication
+s_networkAccessManager	browserapplication.cpp	/^NetworkAccessManager *BrowserApplication::s_networkAccessManager = 0;$/;"	v	ln:54	class:BrowserApplication
+save	browsermainwindow.cpp	/^void BrowserMainWindow::save()$/;"	f	ln:138	class:BrowserMainWindow
+save	cookiejar.cpp	/^void CookieJar::save()$/;"	f	ln:156	class:CookieJar
+save	downloadmanager.cpp	/^void DownloadManager::save() const$/;"	f	ln:425	class:DownloadManager
+save	history.cpp	/^void HistoryManager::save()$/;"	f	ln:296	class:HistoryManager
+saveFileName	downloadmanager.cpp	/^QString DownloadItem::saveFileName(const QString &directory) const$/;"	f	ln:118	class:DownloadItem
+saveIfNeccessary	autosaver.cpp	/^void AutoSaver::saveIfNeccessary()$/;"	f	ln:63	class:AutoSaver
+saveSession	browserapplication.cpp	/^void BrowserApplication::saveSession()$/;"	f	ln:202	class:BrowserApplication
+saveState	browsermainwindow.cpp	/^QByteArray BrowserMainWindow::saveState(bool withTabs) const$/;"	f	ln:154	class:BrowserMainWindow
+saveState	tabwidget.cpp	/^QByteArray TabWidget::saveState() const$/;"	f	ln:771	class:TabWidget
+saveToSettings	settings.cpp	/^void SettingsDialog::saveToSettings()$/;"	f	ln:182	class:SettingsDialog
+searchNow	searchbar.cpp	/^void SearchBar::searchNow()$/;"	f	ln:45	class:SearchBar
+selectTabAction	tabwidget.cpp	/^void TabBar::selectTabAction()$/;"	f	ln:56	class:TabBar
+separatorRole	modelmenu.cpp	/^int ModelMenu::separatorRole() const$/;"	f	ln:114	class:ModelMenu
+setAcceptPolicy	cookiejar.cpp	/^void CookieJar::setAcceptPolicy(AcceptPolicy policy)$/;"	f	ln:310	class:CookieJar
+setAllowForSessionCookies	cookiejar.cpp	/^void CookieJar::setAllowForSessionCookies(const QStringList &list)$/;"	f	ln:392	class:CookieJar
+setAllowedCookies	cookiejar.cpp	/^void CookieJar::setAllowedCookies(const QStringList &list)$/;"	f	ln:381	class:CookieJar
+setBlockedCookies	cookiejar.cpp	/^void CookieJar::setBlockedCookies(const QStringList &list)$/;"	f	ln:370	class:CookieJar
+setCookiesFromUrl	cookiejar.cpp	/^bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl &url)$/;"	f	ln:237	class:CookieJar
+setFirstSeparator	modelmenu.cpp	/^void ModelMenu::setFirstSeparator(int offset)$/;"	f	ln:72	class:ModelMenu
+setHistory	history.cpp	/^void HistoryManager::setHistory(const QList<HistoryItem> &history, bool loadedAndSorted)$/;"	f	ln:93	class:HistoryManager
+setHistoryLimit	history.cpp	/^void HistoryManager::setHistoryLimit(int limit)$/;"	f	ln:198	class:HistoryManager
+setHomeToCurrentPage	settings.cpp	/^void SettingsDialog::setHomeToCurrentPage()$/;"	f	ln:306	class:SettingsDialog
+setHoverRole	modelmenu.cpp	/^void ModelMenu::setHoverRole(int role)$/;"	f	ln:96	class:ModelMenu
+setInitialActions	history.cpp	/^void HistoryMenu::setInitialActions(QList<KAction*> actions)$/;"	f	ln:671	class:HistoryMenu
+setKeepPolicy	cookiejar.cpp	/^void CookieJar::setKeepPolicy(KeepPolicy policy)$/;"	f	ln:331	class:CookieJar
+setMaxRows	modelmenu.cpp	/^void ModelMenu::setMaxRows(int max)$/;"	f	ln:60	class:ModelMenu
+setModel	modelmenu.cpp	/^void ModelMenu::setModel(QAbstractItemModel *model)$/;"	f	ln:48	class:ModelMenu
+setProgress	webview.cpp	/^void WebView::setProgress(int progress)$/;"	f	ln:230	class:WebView
+setRemovePolicy	downloadmanager.cpp	/^void DownloadManager::setRemovePolicy(RemovePolicy policy)$/;"	f	ln:417	class:DownloadManager
+setRootIndex	modelmenu.cpp	/^void ModelMenu::setRootIndex(const QModelIndex &index)$/;"	f	ln:84	class:ModelMenu
+setSeparatorRole	modelmenu.cpp	/^void ModelMenu::setSeparatorRole(int role)$/;"	f	ln:108	class:ModelMenu
+setSourceModel	history.cpp	/^void HistoryFilterModel::setSourceModel(QAbstractItemModel *newSourceModel)$/;"	f	ln:790	class:HistoryFilterModel
+setSourceModel	history.cpp	/^void HistoryCompletionModel::setSourceModel(QAbstractItemModel *newSourceModel)$/;"	f	ln:1051	class:HistoryCompletionModel
+setSourceModel	history.cpp	/^void HistoryTreeModel::setSourceModel(QAbstractItemModel *newSourceModel)$/;"	f	ln:1256	class:HistoryTreeModel
+setStatusBarText	webview.cpp	/^void WebView::setStatusBarText(const QString &string)$/;"	f	ln:293	class:WebView
+setWebView	urlbar.cpp	/^void UrlBar::setWebView(WebView *webView)$/;"	f	ln:69	class:UrlBar
+setupMenu	browsermainwindow.cpp	/^void BrowserMainWindow::setupMenu()$/;"	f	ln:214	class:BrowserMainWindow
+setupToolBar	browsermainwindow.cpp	/^void BrowserMainWindow::setupToolBar()$/;"	f	ln:373	class:BrowserMainWindow
+showCookies	settings.cpp	/^void SettingsDialog::showCookies()$/;"	f	ln:267	class:SettingsDialog
+showExceptions	settings.cpp	/^void SettingsDialog::showExceptions()$/;"	f	ln:274	class:SettingsDialog
+showFindBar	findbar.cpp	/^void FindBar::showFindBar()$/;"	f	ln:77	class:FindBar
+showHistoryDialog	history.cpp	/^void HistoryMenu::showHistoryDialog()$/;"	f	ln:663	class:HistoryMenu
+sizeHint	browsermainwindow.cpp	/^QSize BrowserMainWindow::sizeHint() const$/;"	f	ln:129	class:BrowserMainWindow
+slotAboutToShowBackMenu	browsermainwindow.cpp	/^void BrowserMainWindow::slotAboutToShowBackMenu()$/;"	f	ln:881	class:BrowserMainWindow
+slotAboutToShowWindowMenu	browsermainwindow.cpp	/^void BrowserMainWindow::slotAboutToShowWindowMenu()$/;"	f	ln:902	class:BrowserMainWindow
+slotAddBookmark	browsermainwindow.cpp	/^void BrowserMainWindow::slotAddBookmark()$/;"	f	ln:410	class:BrowserMainWindow
+slotApply	settings.cpp	/^void SettingsDialog::slotApply()$/;"	f	ln:323	class:SettingsDialog
+slotDownloadManager	browsermainwindow.cpp	/^void BrowserMainWindow::slotDownloadManager()$/;"	f	ln:508	class:BrowserMainWindow
+slotFileNew	browsermainwindow.cpp	/^void BrowserMainWindow::slotFileNew()$/;"	f	ln:559	class:BrowserMainWindow
+slotFileOpen	browsermainwindow.cpp	/^void BrowserMainWindow::slotFileOpen()$/;"	f	ln:569	class:BrowserMainWindow
+slotFilePrint	browsermainwindow.cpp	/^void BrowserMainWindow::slotFilePrint()$/;"	f	ln:594	class:BrowserMainWindow
+slotFilePrintPreview	browsermainwindow.cpp	/^void BrowserMainWindow::slotFilePrintPreview()$/;"	f	ln:583	class:BrowserMainWindow
+slotFileSaveAs	browsermainwindow.cpp	/^void BrowserMainWindow::slotFileSaveAs()$/;"	f	ln:523	class:BrowserMainWindow
+slotFind	browsermainwindow.cpp	/^void BrowserMainWindow::slotFind(const QString & search)$/;"	f	ln:675	class:BrowserMainWindow
+slotFindNext	browsermainwindow.cpp	/^void BrowserMainWindow::slotFindNext()$/;"	f	ln:694	class:BrowserMainWindow
+slotFindPrevious	browsermainwindow.cpp	/^void BrowserMainWindow::slotFindPrevious()$/;"	f	ln:702	class:BrowserMainWindow
+slotHome	browsermainwindow.cpp	/^void BrowserMainWindow::slotHome()$/;"	f	ln:783	class:BrowserMainWindow
+slotLoadProgress	browsermainwindow.cpp	/^void BrowserMainWindow::slotLoadProgress(int progress)$/;"	f	ln:858	class:BrowserMainWindow
+slotOk	settings.cpp	/^void SettingsDialog::slotOk()$/;"	f	ln:317	class:SettingsDialog
+slotOpenActionUrl	browsermainwindow.cpp	/^void BrowserMainWindow::slotOpenActionUrl(QAction *action)$/;"	f	ln:944	class:BrowserMainWindow
+slotOpenNext	browsermainwindow.cpp	/^void BrowserMainWindow::slotOpenNext()$/;"	f	ln:970	class:BrowserMainWindow
+slotOpenPrevious	browsermainwindow.cpp	/^void BrowserMainWindow::slotOpenPrevious()$/;"	f	ln:962	class:BrowserMainWindow
+slotPreferences	browsermainwindow.cpp	/^void BrowserMainWindow::slotPreferences()$/;"	f	ln:531	class:BrowserMainWindow
+slotPrivateBrowsing	browsermainwindow.cpp	/^void BrowserMainWindow::slotPrivateBrowsing()$/;"	f	ln:615	class:BrowserMainWindow
+slotSelectLineEdit	browsermainwindow.cpp	/^void BrowserMainWindow::slotSelectLineEdit()$/;"	f	ln:515	class:BrowserMainWindow
+slotShowWindow	browsermainwindow.cpp	/^void BrowserMainWindow::slotShowWindow()$/;"	f	ln:926	class:BrowserMainWindow
+slotSwapFocus	browsermainwindow.cpp	/^void BrowserMainWindow::slotSwapFocus()$/;"	f	ln:822	class:BrowserMainWindow
+slotToggleInspector	browsermainwindow.cpp	/^void BrowserMainWindow::slotToggleInspector(bool enable)$/;"	f	ln:803	class:BrowserMainWindow
+slotUpdateStatusbar	browsermainwindow.cpp	/^void BrowserMainWindow::slotUpdateStatusbar(const QString &string)$/;"	f	ln:540	class:BrowserMainWindow
+slotUpdateWindowTitle	browsermainwindow.cpp	/^void BrowserMainWindow::slotUpdateWindowTitle(const QString &title)$/;"	f	ln:548	class:BrowserMainWindow
+slotViewFindBar	browsermainwindow.cpp	/^void BrowserMainWindow::slotViewFindBar()$/;"	f	ln:688	class:BrowserMainWindow
+slotViewFullScreen	browsermainwindow.cpp	/^void BrowserMainWindow::slotViewFullScreen(bool makeFullScreen)$/;"	f	ln:739	class:BrowserMainWindow
+slotViewPageSource	browsermainwindow.cpp	/^void BrowserMainWindow::slotViewPageSource()$/;"	f	ln:768	class:BrowserMainWindow
+slotViewStatusbar	browsermainwindow.cpp	/^void BrowserMainWindow::slotViewStatusbar()$/;"	f	ln:428	class:BrowserMainWindow
+slotViewTextBigger	browsermainwindow.cpp	/^void BrowserMainWindow::slotViewTextBigger()$/;"	f	ln:711	class:BrowserMainWindow
+slotViewTextNormal	browsermainwindow.cpp	/^void BrowserMainWindow::slotViewTextNormal()$/;"	f	ln:720	class:BrowserMainWindow
+slotViewTextSmaller	browsermainwindow.cpp	/^void BrowserMainWindow::slotViewTextSmaller()$/;"	f	ln:729	class:BrowserMainWindow
+slotWebSearch	browsermainwindow.cpp	/^void BrowserMainWindow::slotWebSearch()$/;"	f	ln:794	class:BrowserMainWindow
+sourceDataChanged	history.cpp	/^void HistoryFilterModel::sourceDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)$/;"	f	ln:817	class:HistoryFilterModel
+sourceDateRow	history.cpp	/^int HistoryTreeModel::sourceDateRow(int row) const$/;"	f	ln:1168	class:HistoryTreeModel
+sourceReset	history.cpp	/^void HistoryFilterModel::sourceReset()$/;"	f	ln:829	class:HistoryFilterModel
+sourceReset	history.cpp	/^void HistoryCompletionModel::sourceReset()$/;"	f	ln:1075	class:HistoryCompletionModel
+sourceReset	history.cpp	/^void HistoryTreeModel::sourceReset()$/;"	f	ln:1282	class:HistoryTreeModel
+sourceRowsInserted	history.cpp	/^void HistoryFilterModel::sourceRowsInserted(const QModelIndex &parent, int start, int end)$/;"	f	ln:922	class:HistoryFilterModel
+sourceRowsInserted	history.cpp	/^void HistoryTreeModel::sourceRowsInserted(const QModelIndex &parent, int start, int end)$/;"	f	ln:1289	class:HistoryTreeModel
+sourceRowsRemoved	history.cpp	/^void HistoryFilterModel::sourceRowsRemoved(const QModelIndex &, int start, int end)$/;"	f	ln:945	class:HistoryFilterModel
+sourceRowsRemoved	history.cpp	/^void HistoryTreeModel::sourceRowsRemoved(const QModelIndex &parent, int start, int end)$/;"	f	ln:1330	class:HistoryTreeModel
+sslErrors	networkaccessmanager.cpp	/^void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError> &error)$/;"	f	ln:133	class:NetworkAccessManager
+stop	downloadmanager.cpp	/^void DownloadItem::stop()$/;"	f	ln:142	class:DownloadItem
+tabWidget	browsermainwindow.cpp	/^TabWidget *BrowserMainWindow::tabWidget() const$/;"	f	ln:845	class:BrowserMainWindow
+textChanged	cookiejar.cpp	/^void CookiesExceptionsDialog::textChanged(const QString &text)$/;"	f	ln:749	class:CookiesExceptionsDialog
+timerEvent	autosaver.cpp	/^void AutoSaver::timerEvent(QTimerEvent *event)$/;"	f	ln:54	class:AutoSaver
+triggered	modelmenu.cpp	/^void ModelMenu::triggered(QAction *action)$/;"	f	ln:203	class:ModelMenu
+tryAgain	downloadmanager.cpp	/^void DownloadItem::tryAgain()$/;"	f	ln:160	class:DownloadItem
+updateCurrent	tabwidget.cpp	/^void WebActionMapper::updateCurrent(QWebPage *currentParent)$/;"	f	ln:898	class:WebActionMapper
+updateHistoryItem	history.cpp	/^void HistoryManager::updateHistoryItem(const KUrl &url, const QString &title)$/;"	f	ln:175	class:HistoryManager
+updateInfoLabel	downloadmanager.cpp	/^void DownloadItem::updateInfoLabel()$/;"	f	ln:229	class:DownloadItem
+updateItemCount	downloadmanager.cpp	/^void DownloadManager::updateItemCount()$/;"	f	ln:500	class:DownloadManager
+updateRow	downloadmanager.cpp	/^void DownloadManager::updateRow()$/;"	f	ln:382	class:DownloadManager
+updateStatusbarActionText	browsermainwindow.cpp	/^void BrowserMainWindow::updateStatusbarActionText(bool visible)$/;"	f	ln:420	class:BrowserMainWindow
+url	webview.cpp	/^KUrl WebView::url() const$/;"	f	ln:260	class:WebView
+webAction	tabwidget.cpp	/^QWebPage::WebAction WebActionMapper::webAction() const$/;"	f	ln:867	class:WebActionMapper
+webView	tabwidget.cpp	/^WebView *TabWidget::webView(int index) const$/;"	f	ln:426	class:TabWidget
+webViewIconChanged	tabwidget.cpp	/^void TabWidget::webViewIconChanged()$/;"	f	ln:642	class:TabWidget
+webViewIconChanged	urlbar.cpp	/^void UrlBar::webViewIconChanged()$/;"	f	ln:88	class:UrlBar
+webViewIndex	tabwidget.cpp	/^int TabWidget::webViewIndex(WebView *webView) const$/;"	f	ln:450	class:TabWidget
+webViewLoadStarted	tabwidget.cpp	/^void TabWidget::webViewLoadStarted()$/;"	f	ln:631	class:TabWidget
+webViewTitleChanged	tabwidget.cpp	/^void TabWidget::webViewTitleChanged(const QString &title)$/;"	f	ln:654	class:TabWidget
+webViewUrlChanged	tabwidget.cpp	/^void TabWidget::webViewUrlChanged(const QUrl &url)$/;"	f	ln:667	class:TabWidget
+webViewUrlChanged	urlbar.cpp	/^void UrlBar::webViewUrlChanged(const QUrl &url)$/;"	f	ln:81	class:UrlBar
+wheelEvent	webview.cpp	/^void WebView::wheelEvent(QWheelEvent *event)$/;"	f	ln:209	class:WebView
+windowCloseRequested	tabwidget.cpp	/^void TabWidget::windowCloseRequested()$/;"	f	ln:549	class:TabWidget

@@ -29,7 +29,7 @@
 
 #include <QtGui>
 
-FindBar::FindBar(QMainWindow *parent)
+FindBar::FindBar(KMainWindow *parent)
     : KToolBar( "FindBar" , parent, Qt::BottomToolBarArea, true, false, false)
     , m_lineEdit(0)
 {
