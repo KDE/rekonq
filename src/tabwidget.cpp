@@ -28,6 +28,9 @@
 #include "urlbar.h"
 #include "webview.h"
 
+// KDE Includes
+#include <KShortcut>
+
 // Qt Includes
 #include <QtGui>
 #include <QDebug>
@@ -183,7 +186,8 @@ void TabBar::dropEvent(QDropEvent *event)
 
 void TabBar::reloadTab()
 {
-    if (KAction *action = qobject_cast<KAction*>(sender())) {
+    if (KAction *action = qobject_cast<KAction*>(sender())) 
+    {
         int index = action->data().toInt();
         emit reloadTab(index);
     }
@@ -218,29 +222,21 @@ TabWidget::TabWidget(QWidget *parent)
 
     // Actions
     m_newTabAction = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
-    m_newTabAction->setShortcuts(KShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_N, Qt::CTRL+Qt::Key_T));
+    m_newTabAction->setShortcut( KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_N, Qt::CTRL + Qt::Key_T) );
     m_newTabAction->setIconVisibleInMenu(false);
     connect(m_newTabAction, SIGNAL(triggered()), this, SLOT(newTab()));
 
     m_closeTabAction = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
-    m_closeTabAction->setShortcut(Qt::CTRL+Qt::Key_W);
+    m_closeTabAction->setShortcut( KShortcut( Qt::CTRL + Qt::Key_W ) );
     m_closeTabAction->setIconVisibleInMenu(false);
     connect(m_closeTabAction, SIGNAL(triggered()), this, SLOT(closeTab()));
 
     m_nextTabAction = new KAction(i18n("Show Next Tab"), this);
-    QList<QKeySequence> shortcuts;
-    shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_BraceRight));
-    shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_PageDown));
-    shortcuts.append(QKeySequence(Qt::CTRL + Qt::Key_Tab));
-    m_nextTabAction->setShortcuts(shortcuts);
+    m_nextTabAction->setShortcut( KShortcut( Qt::CTRL | Qt::Key_Tab ) );
     connect(m_nextTabAction, SIGNAL(triggered()), this, SLOT(nextTab()));
 
     m_previousTabAction = new KAction(i18n("Show Previous Tab"), this);
-    shortcuts.clear();
-    shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_BraceLeft));
-    shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_PageUp));
-    shortcuts.append( QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab) );;
-    m_previousTabAction->setShortcuts(shortcuts);
+    m_previousTabAction->setShortcut( KShortcut( Qt::CTRL | Qt::SHIFT | Qt::Key_Tab ) );
     connect(m_previousTabAction, SIGNAL(triggered()), this, SLOT(previousTab()));
 
     m_recentlyClosedTabsMenu = new KMenu(this);

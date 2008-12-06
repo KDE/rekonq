@@ -32,6 +32,7 @@
 #include <KIcon>
 #include <KToolBar>
 #include <KAction>
+#include <KToggleAction>
 #include <KMenu>
 
 
@@ -88,7 +89,6 @@ private slots:
     void slotPrivateBrowsing();
     void slotFileSaveAs();
 
-    void slotAddBookmark();
     void slotViewTextBigger();
     void slotViewTextNormal();
     void slotViewTextSmaller();
@@ -97,7 +97,6 @@ private slots:
     void slotViewFullScreen(bool enable);
     void slotViewFindBar();
 
-    void slotWebSearch();
     void slotToggleInspector(bool enable);
     void slotDownloadManager();
     void slotSelectLineEdit();
@@ -137,9 +136,8 @@ private:
     KAction *m_reload;
     KAction *m_stopReload;
     KAction *m_goHome;
-    KAction *m_viewStatusbar;
+    KToggleAction *m_viewStatusbar;
     KAction *m_restoreLastSession;
-    KAction *m_addBookmark;
 
     KIcon m_reloadIcon;
     KIcon m_stopIcon;

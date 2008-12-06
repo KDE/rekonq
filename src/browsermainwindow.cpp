@@ -278,10 +278,10 @@ void BrowserMainWindow::setupMenu()
     //  ------------------------------------------------------------- VIEW -------------------------------------------------------------------------------------------------
     KMenu *viewMenu = (KMenu *) menuBar()->addMenu( i18n("&View") );
 
-    m_viewStatusbar = new KAction(this);
-    updateStatusbarActionText(true);
+    m_viewStatusbar = KStandardAction::showStatusbar( this, SLOT(slotViewStatusbar() ), this);
+/*    updateStatusbarActionText(true);
     m_viewStatusbar->setShortcut( i18n("Ctrl+/") );
-    connect(m_viewStatusbar, SIGNAL(triggered()), this, SLOT(slotViewStatusbar()));
+    connect(m_viewStatusbar, SIGNAL(triggered()), this, SLOT(slotViewStatusbar()));*/
     viewMenu->addAction(m_viewStatusbar);
 
     viewMenu->addSeparator();
@@ -355,7 +355,6 @@ void BrowserMainWindow::setupMenu()
 
     toolsMenu->addSeparator();
 
-    toolsMenu->addAction( i18n("Web &Search"), this, SLOT(slotWebSearch()), QKeySequence( tr("Ctrl+K", "Web Search")));
     action = (KAction *) toolsMenu->addAction( i18n("Enable Web &Inspector"), this, SLOT(slotToggleInspector(bool)));
     action->setCheckable(true);
 
@@ -368,9 +367,6 @@ void BrowserMainWindow::setupMenu()
     //  ------------------------------------------------------------- HELP  --------------------------------------------------------------------------------------------------
    menuBar()->addMenu( helpMenu() );
 }
-
-
-
 
 
 void BrowserMainWindow::setupToolBar()
@@ -409,38 +405,26 @@ void BrowserMainWindow::setupToolBar()
 }
 
 
-
-void BrowserMainWindow::slotAddBookmark()
-{
-//     WebView *webView = currentTab();
-//     QString url = webView->url().toString();
-//     QString title = webView->title();
-//     AddBookmarkDialog dialog(url, title);
-//     dialog.exec();
-}
-
-
 void BrowserMainWindow::updateStatusbarActionText(bool visible)
 {
     m_viewStatusbar->setText(!visible ? i18n("Show Status Bar") : i18n("Hide Status Bar"));
 }
 
 
-
-
 void BrowserMainWindow::slotViewStatusbar()
 {
-    if (statusBar()->isVisible()) {
+    if (statusBar()->isVisible()) 
+    {
         updateStatusbarActionText(false);
         statusBar()->close();
-    } else {
+    } 
+    else 
+    {
         updateStatusbarActionText(true);
         statusBar()->show();
     }
     m_autoSaver->changeOccurred();
 }
-
-
 
 
 KUrl BrowserMainWindow::guessUrlFromString(const QString &string)
@@ -498,21 +482,16 @@ KUrl BrowserMainWindow::guessUrlFromString(const QString &string)
 }
 
 
-
-
 void BrowserMainWindow::loadUrl(const KUrl &url)
 {
     loadPage( url.url() );
 }
 
 
-
-
 void BrowserMainWindow::slotDownloadManager()
 {
     BrowserApplication::downloadManager()->show();
 }
-
 
 
 void BrowserMainWindow::slotSelectLineEdit()
@@ -522,13 +501,10 @@ void BrowserMainWindow::slotSelectLineEdit()
 }
 
 
-
 void BrowserMainWindow::slotFileSaveAs()
 {
     BrowserApplication::downloadManager()->download(currentTab()->url(), true);
 }
-
-
 
 
 void BrowserMainWindow::slotPreferences()
@@ -538,14 +514,10 @@ void BrowserMainWindow::slotPreferences()
 }
 
 
-
-
 void BrowserMainWindow::slotUpdateStatusbar(const QString &string)
 {
     statusBar()->showMessage(string, 2000);
 }
-
-
 
 
 void BrowserMainWindow::slotUpdateWindowTitle(const QString &title)
@@ -558,15 +530,12 @@ void BrowserMainWindow::slotUpdateWindowTitle(const QString &title)
 }
 
 
-
 void BrowserMainWindow::slotFileNew()
 {
     BrowserApplication::instance()->newMainWindow();
     BrowserMainWindow *mw = BrowserApplication::instance()->mainWindow();
     mw->slotHome();
 }
-
-
 
 
 void BrowserMainWindow::slotFileOpen()
@@ -581,8 +550,6 @@ void BrowserMainWindow::slotFileOpen()
 }
 
 
-
-
 void BrowserMainWindow::slotFilePrintPreview()
 {
     if (!currentTab())
@@ -593,14 +560,12 @@ void BrowserMainWindow::slotFilePrintPreview()
 }
 
 
-
 void BrowserMainWindow::slotFilePrint()
 {
     if (!currentTab())
         return;
     printRequested(currentTab()->page()->mainFrame());
 }
-
 
 
 void BrowserMainWindow::printRequested(QWebFrame *frame)
@@ -612,7 +577,6 @@ void BrowserMainWindow::printRequested(QWebFrame *frame)
         return;
     frame->print(&printer);
 }
-
 
 
 void BrowserMainWindow::slotPrivateBrowsing()
@@ -652,7 +616,6 @@ void BrowserMainWindow::slotPrivateBrowsing()
         }
     }
 }
-
 
 
 void BrowserMainWindow::closeEvent(QCloseEvent *event)
@@ -710,14 +673,12 @@ void BrowserMainWindow::slotFindPrevious()
 }
 
 
-
 void BrowserMainWindow::slotViewTextBigger()
 {
     if (!currentTab())
         return;
     currentTab()->setTextSizeMultiplier(currentTab()->textSizeMultiplier() + 0.1);
 }
-
 
 
 void BrowserMainWindow::slotViewTextNormal()
@@ -728,15 +689,12 @@ void BrowserMainWindow::slotViewTextNormal()
 }
 
 
-
 void BrowserMainWindow::slotViewTextSmaller()
 {
     if (!currentTab())
         return;
     currentTab()->setTextSizeMultiplier(currentTab()->textSizeMultiplier() - 0.1);
 }
-
-
 
 
 void BrowserMainWindow::slotViewFullScreen(bool makeFullScreen)
@@ -766,8 +724,6 @@ void BrowserMainWindow::slotViewFullScreen(bool makeFullScreen)
 }
 
 
-
-
 void BrowserMainWindow::slotViewPageSource()
 {
     if (!currentTab())
@@ -782,7 +738,6 @@ void BrowserMainWindow::slotViewPageSource()
 }
 
 
-
 void BrowserMainWindow::slotHome()
 {
     KConfig config("rekonqrc");
@@ -790,17 +745,6 @@ void BrowserMainWindow::slotHome()
     QString home = group.readEntry( QString("home"), QString("http://www.kde.org/") );
     loadPage(home);
 }
-
-
-
-
-void BrowserMainWindow::slotWebSearch()
-{
-//     m_toolbarSearch->lineEdit()->selectAll();
-//     m_toolbarSearch->lineEdit()->setFocus();
-}
-
-
 
 
 void BrowserMainWindow::slotToggleInspector(bool enable)
@@ -820,8 +764,6 @@ void BrowserMainWindow::slotToggleInspector(bool enable)
 }
 
 
-
-
 void BrowserMainWindow::slotSwapFocus()
 {
     if (currentTab()->hasFocus())
@@ -831,18 +773,15 @@ void BrowserMainWindow::slotSwapFocus()
 }
 
 
-
 void BrowserMainWindow::loadPage(const QString &page)
 {
     if (!currentTab() || page.isEmpty())
         return;
 
-    QUrl url = guessUrlFromString(page);
-    m_tabWidget->currentLineEdit()->setText(url.toString());
+    KUrl url = guessUrlFromString(page);
+    m_tabWidget->currentLineEdit()->setText( url.prettyUrl() );
     m_tabWidget->loadUrlInCurrentTab(url);
 }
-
-
 
 
 TabWidget *BrowserMainWindow::tabWidget() const
@@ -879,8 +818,6 @@ void BrowserMainWindow::slotLoadProgress(int progress)
 }
 
 
-
-
 void BrowserMainWindow::slotAboutToShowBackMenu()
 {
     m_historyBackMenu->clear();
@@ -901,7 +838,6 @@ void BrowserMainWindow::slotAboutToShowBackMenu()
 }
 
 
-
 void BrowserMainWindow::slotShowWindow()
 {
     if (KAction *action = qobject_cast<KAction*>(sender())) 
@@ -916,8 +852,6 @@ void BrowserMainWindow::slotShowWindow()
         }
     }
 }
-
-
 
 
 void BrowserMainWindow::slotOpenActionUrl(QAction *action)
@@ -952,6 +886,7 @@ void BrowserMainWindow::slotOpenNext()
     if ( history->canGoForward() )
         history->goToItem( history->forwardItem() );
 }
+
 
 void BrowserMainWindow::geometryChangeRequested(const QRect &geometry)
 {
