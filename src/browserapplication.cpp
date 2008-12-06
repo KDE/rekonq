@@ -203,7 +203,7 @@ void BrowserApplication::clean()
 void BrowserApplication::saveSession()
 {
     QWebSettings *globalSettings = QWebSettings::globalSettings();
-    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if ( globalSettings->testAttribute( QWebSettings::PrivateBrowsingEnabled ) )
         return;
 
     clean();
@@ -250,7 +250,7 @@ void BrowserApplication::restoreLastSession()
         BrowserMainWindow *newWindow = 0;
         if (m_mainWindows.count() == 1
             && mainWindow()->tabWidget()->count() == 1
-            && mainWindow()->currentTab()->url() == QUrl()) 
+            && mainWindow()->currentTab()->url() == KUrl()) 
         {
             newWindow = mainWindow();
         } 

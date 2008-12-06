@@ -162,7 +162,8 @@ QByteArray BrowserMainWindow::saveState(bool withTabs) const
     stream << size();
 //     stream << !( statusBar()->isHidden() ); FIXME 
     if (withTabs)
-        stream << tabWidget()->saveState();
+//         stream << tabWidget()->saveState();
+    ;
     else
         stream << QByteArray();
     return data;

@@ -5,6 +5,7 @@ Road to 0.0.1 (first release)
 + some porting
 
 NEXT..
+- Fixing QByteArray save/load state!!
 - system SELECT ALL
 - better FULL SCREEN
 - simplify history
