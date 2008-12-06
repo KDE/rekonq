@@ -57,6 +57,11 @@ TabBar::TabBar(QWidget *parent)
 }
 
 
+TabBar::~TabBar()
+{
+}
+
+
 void TabBar::selectTabAction()
 {
     if (QShortcut *shortCut = qobject_cast<QShortcut*>(sender()))
@@ -199,7 +204,7 @@ void TabBar::reloadTab()
 
 
 TabWidget::TabWidget(QWidget *parent)
-    : QTabWidget(parent)
+    : KTabWidget(parent)
     , m_recentlyClosedTabsAction(0)
     , m_newTabAction(0)
     , m_closeTabAction(0)
@@ -266,6 +271,11 @@ TabWidget::TabWidget(QWidget *parent)
 }
 
 
+TabWidget::~TabWidget()
+{
+}
+
+
 void TabWidget::clear()
 {
     // clear the recently closed tabs
@@ -308,7 +318,6 @@ void TabWidget::reloadTab(int index)
     if (WebView *tab = qobject_cast<WebView*>(widget))
         tab->reload();
 }
-
 
 
 void TabWidget::addWebAction(KAction *action, QWebPage::WebAction webAction)
@@ -588,8 +597,10 @@ void TabWidget::closeTab(int index)
         return;
 
     bool hasFocus = false;
-    if (WebView *tab = webView(index)) {
-        if (tab->isModified()) {
+    if (WebView *tab = webView(index)) 
+    {
+        if (tab->isModified()) 
+        {
             QMessageBox closeConfirmation(tab);
             closeConfirmation.setWindowFlags(Qt::Sheet);
             closeConfirmation.setWindowTitle(i18n("Do you really want to close this page?"));
@@ -627,9 +638,10 @@ void TabWidget::webViewLoadStarted()
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
-    if (-1 != index) {
-        QIcon icon(QLatin1String(":loading.gif"));  // FIXME
-        setTabIcon(index, icon);
+    if (-1 != index) 
+    {
+//         QIcon icon(QLatin1String(":loading.gif"));
+        setTabIcon(index, KIcon("rekonq") );
     }
 }
 
@@ -694,7 +706,7 @@ void TabWidget::aboutToShowRecentTriggeredAction(QAction *action)
 
 void TabWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if ( !childAt(event->pos())
+    if ( !childAt(event->pos() )
                 // Remove the line below when QTabWidget does not have a one pixel frame
                 && event->pos().y() < (tabBar()->y() + tabBar()->height())) 
     {

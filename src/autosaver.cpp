@@ -20,24 +20,25 @@
 
 #include "autosaver.h"
 
-#include <QtCore/QDir>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QMetaObject>
+#include <QtCore>
 #include <QtDebug>
 
 #define AUTOSAVE_IN  1000 * 3  // seconds
 #define MAXWAIT      1000 * 15 // seconds
+
 
 AutoSaver::AutoSaver(QObject *parent) : QObject(parent)
 {
     Q_ASSERT(parent);
 }
 
+
 AutoSaver::~AutoSaver()
 {
     if (m_timer.isActive())
         qWarning() << "AutoSaver: still active when destroyed, changes not saved.";
 }
+
 
 void AutoSaver::changeOccurred()
 {
@@ -51,6 +52,7 @@ void AutoSaver::changeOccurred()
     }
 }
 
+
 void AutoSaver::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == m_timer.timerId()) {
@@ -59,6 +61,7 @@ void AutoSaver::timerEvent(QTimerEvent *event)
         QObject::timerEvent(event);
     }
 }
+
 
 void AutoSaver::saveIfNeccessary()
 {

@@ -45,6 +45,7 @@ signals:
 
 public:
     TabBar(QWidget *parent = 0);
+    ~TabBar();
 
 protected:
     void mousePressEvent(QMouseEvent* event);
@@ -70,7 +71,6 @@ private:
 
 
 // ----------------------------------------------------------------------------------------------------------------------------
-
 
 
 #include <QWebPage>
@@ -112,9 +112,7 @@ private:
 #include <KUrl>
 #include <KLineEdit>
 #include <KMenu>
-
-// Qt Includes
-#include <QTabWidget>
+#include <KTabWidget>
 
 QT_BEGIN_NAMESPACE
 class QCompleter;
@@ -127,7 +125,7 @@ QT_END_NAMESPACE
     Connects up the current tab's signals to this class's signal and uses WebActionMapper
     to proxy the actions.
  */
-class TabWidget : public QTabWidget
+class TabWidget : public KTabWidget
 {
     Q_OBJECT
 
@@ -150,6 +148,8 @@ signals:
 
 public:
     TabWidget(QWidget *parent = 0);
+    ~TabWidget();
+
     void clear();
     void addWebAction(KAction *action, QWebPage::WebAction webAction);
 
