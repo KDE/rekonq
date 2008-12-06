@@ -39,9 +39,8 @@
 #include <KShortcut>
 #include <KStandardAction>
 #include <KAction>
+#include <KToggleFullScreenAction>
 #include <KActionCollection>
-#include <KBookmarkManager>
-#include <KBookmarkOwner>
 
 // Qt Includes
 #include <QDesktopWidget>
@@ -279,9 +278,6 @@ void BrowserMainWindow::setupMenu()
     KMenu *viewMenu = (KMenu *) menuBar()->addMenu( i18n("&View") );
 
     m_viewStatusbar = KStandardAction::showStatusbar( this, SLOT(slotViewStatusbar() ), this);
-/*    updateStatusbarActionText(true);
-    m_viewStatusbar->setShortcut( i18n("Ctrl+/") );
-    connect(m_viewStatusbar, SIGNAL(triggered()), this, SLOT(slotViewStatusbar()));*/
     viewMenu->addAction(m_viewStatusbar);
 
     viewMenu->addSeparator();
@@ -308,8 +304,9 @@ void BrowserMainWindow::setupMenu()
     // TODO set encoding
 
     viewMenu->addAction( i18n("Page S&ource"), this, SLOT( slotViewPageSource() ), i18n("Ctrl+Alt+U"));
-    action = (KAction *) viewMenu->addAction( i18n("&Full Screen"), this, SLOT(slotViewFullScreen(bool)),  Qt::Key_F11);
-    action->setCheckable(true);
+
+    KToggleFullScreenAction *tfsa = KStandardAction::fullScreen( this, SLOT( slotViewFullScreen(bool) ), this, this);
+    viewMenu->addAction( tfsa );
 
     //  ------------------------------------------------------------- HISTORY --------------------------------------------------------------------------------------------------
     HistoryMenu *historyMenu = new HistoryMenu(this);
@@ -320,13 +317,13 @@ void BrowserMainWindow::setupMenu()
     QList<KAction*> historyActions;
 
     m_historyBack = new KAction( i18n("Back"), this);
+    m_historyBack->setShortcut( KShortcut( QKeySequence::Back ) ); 
     m_tabWidget->addWebAction(m_historyBack, QWebPage::Back);
-//     m_historyBack->setShortcuts(QKeySequence::Back); FIXME
     m_historyBack->setIconVisibleInMenu(false);
 
     m_historyForward = new KAction( i18n("Forward"), this);
+    m_historyForward->setShortcut( KShortcut( QKeySequence::Forward ) );
     m_tabWidget->addWebAction(m_historyForward, QWebPage::Forward);
-//     m_historyForward->setShortcuts(QKeySequence::Forward); FIXME
     m_historyForward->setIconVisibleInMenu(false);
 
     m_restoreLastSession = new KAction( i18n("Restore Last Session"), this);
@@ -697,30 +694,10 @@ void BrowserMainWindow::slotViewTextSmaller()
 }
 
 
+// TODO improve this
 void BrowserMainWindow::slotViewFullScreen(bool makeFullScreen)
 {
-    if (makeFullScreen) 
-    {
-        showFullScreen();
-    } 
-    else 
-    {
-        if ( isMinimized() )
-        {
-            showMinimized();
-        }
-        else 
-        {
-            if (isMaximized())
-            {
-                showMaximized();
-            }
-            else 
-            {
-                showNormal();
-            }
-        }
-    }
+    KToggleFullScreenAction::setFullScreen( this, makeFullScreen );
 }
 
 
