@@ -352,6 +352,9 @@ void BrowserMainWindow::setupMenu()
     KMenu* toolsMenu = (KMenu *) menuBar()->addMenu( i18n("&Tools") );
 
     toolsMenu->addAction( i18n("Downloads"), this, SLOT( slotDownloadManager() ), i18n("Alt+Ctrl+D") );
+
+    toolsMenu->addSeparator();
+
     toolsMenu->addAction( i18n("Web &Search"), this, SLOT(slotWebSearch()), QKeySequence( tr("Ctrl+K", "Web Search")));
     action = (KAction *) toolsMenu->addAction( i18n("Enable Web &Inspector"), this, SLOT(slotToggleInspector(bool)));
     action->setCheckable(true);

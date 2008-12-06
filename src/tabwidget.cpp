@@ -67,25 +67,25 @@ void TabBar::selectTabAction()
 
 void TabBar::contextMenuRequested(const QPoint &position)
 {
-    QMenu menu;
-    menu.addAction(i18n("New &Tab"), this, SIGNAL(newTab()), QKeySequence::AddTab);
+    KMenu menu;
+    menu.addAction(i18n("New &Tab"), this, SIGNAL( newTab() ), QKeySequence::AddTab);
     int index = tabAt(position);
     if (-1 != index)
     {
-        QAction *action = menu.addAction(i18n("Clone Tab"), this, SLOT(cloneTab()));
+        KAction *action = (KAction * ) menu.addAction(i18n("Clone Tab"), this, SLOT(cloneTab()));
         action->setData(index);
 
         menu.addSeparator();
 
-        action = menu.addAction(i18n("&Close Tab"), this, SLOT(closeTab()), QKeySequence::Close);
+        action = (KAction * ) menu.addAction(i18n("&Close Tab"), this, SLOT(closeTab()), QKeySequence::Close);
         action->setData(index);
 
-        action = menu.addAction(i18n("Close &Other Tabs"), this, SLOT(closeOtherTabs()));
+        action = (KAction * ) menu.addAction(i18n("Close &Other Tabs"), this, SLOT(closeOtherTabs()));
         action->setData(index);
 
         menu.addSeparator();
 
-        action = menu.addAction(i18n("Reload Tab"), this, SLOT(reloadTab()), QKeySequence::Refresh);
+        action = (KAction * ) menu.addAction(i18n("Reload Tab"), this, SLOT(reloadTab()), QKeySequence::Refresh);
         action->setData(index);
     } 
     else 
@@ -99,7 +99,7 @@ void TabBar::contextMenuRequested(const QPoint &position)
 
 void TabBar::cloneTab()
 {
-    if (QAction *action = qobject_cast<QAction*>(sender())) 
+    if (KAction *action = qobject_cast<KAction*>(sender())) 
     {
         int index = action->data().toInt();
         emit cloneTab(index);
@@ -109,7 +109,7 @@ void TabBar::cloneTab()
 
 void TabBar::closeTab()
 {
-    if (QAction *action = qobject_cast<QAction*>(sender())) 
+    if (KAction *action = qobject_cast<KAction*>(sender())) 
     {
         int index = action->data().toInt();
         emit closeTab(index);
@@ -119,7 +119,7 @@ void TabBar::closeTab()
 
 void TabBar::closeOtherTabs()
 {
-    if (QAction *action = qobject_cast<QAction*>(sender()))
+    if (KAction *action = qobject_cast<KAction*>(sender()))
     {
         int index = action->data().toInt();
         emit closeOtherTabs(index);
@@ -183,7 +183,7 @@ void TabBar::dropEvent(QDropEvent *event)
 
 void TabBar::reloadTab()
 {
-    if (QAction *action = qobject_cast<QAction*>(sender())) {
+    if (KAction *action = qobject_cast<KAction*>(sender())) {
         int index = action->data().toInt();
         emit reloadTab(index);
     }
@@ -231,8 +231,7 @@ TabWidget::TabWidget(QWidget *parent)
     QList<QKeySequence> shortcuts;
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_BraceRight));
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_PageDown));
-    shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_BracketRight));
-    shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_Less));
+    shortcuts.append(QKeySequence(Qt::CTRL + Qt::Key_Tab));
     m_nextTabAction->setShortcuts(shortcuts);
     connect(m_nextTabAction, SIGNAL(triggered()), this, SLOT(nextTab()));
 
@@ -240,8 +239,7 @@ TabWidget::TabWidget(QWidget *parent)
     shortcuts.clear();
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_BraceLeft));
     shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_PageUp));
-    shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_BracketLeft));
-    shortcuts.append(QKeySequence(Qt::CTRL | Qt::Key_Greater));
+    shortcuts.append( QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab) );;
     m_previousTabAction->setShortcuts(shortcuts);
     connect(m_previousTabAction, SIGNAL(triggered()), this, SLOT(previousTab()));
 
