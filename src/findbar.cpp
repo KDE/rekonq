@@ -22,7 +22,7 @@
 
 #include <KLineEdit>
 #include <KAction>
-#include <KIconLoader>
+#include <KIcon>
 #include <KToolBar>
 #include <KStandardAction>
 #include <KDialog>

@@ -95,6 +95,8 @@ BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &server
     KConfigGroup group = config.group("sessions");
     m_lastSession = group.readEntry( QString("lastSession"), QByteArray() );
 
+    setWindowIcon( KIcon("rekonq") );
+
     QTimer::singleShot(0, this, SLOT( postLaunch() ) );
 }
 
@@ -125,7 +127,6 @@ void BrowserApplication::postLaunch()
     }
     QWebSettings::setIconDatabasePath(directory);
 
-    setWindowIcon( KIcon("rekonq") );
     loadSettings();
 
     // newMainWindow() needs to be called in main() for this to happen
