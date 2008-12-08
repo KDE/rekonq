@@ -54,9 +54,6 @@ UrlBar::UrlBar(QWidget *parent)
 
 UrlBar::~UrlBar()
 {
-    delete m_webView;
-    delete m_iconLabel;
-    delete m_lineEdit;
 }
 
 

@@ -111,6 +111,7 @@ BrowserMainWindow::~BrowserMainWindow()
 {
     m_autoSaver->changeOccurred();
     m_autoSaver->saveIfNeccessary();
+    delete m_navigationBar;
 }
 
 
@@ -390,7 +391,7 @@ void BrowserMainWindow::setupToolBar()
     m_navigationBar->addAction(m_goHome);
     connect(m_goHome, SIGNAL(triggered()), this, SLOT(slotHome()));
 
-    m_navigationBar->addWidget(m_tabWidget->lineEditStack());
+    m_navigationBar->addWidget( m_tabWidget->lineEditStack() );
 
     m_searchBar = new SearchBar(m_navigationBar);
     m_navigationBar->addWidget(m_searchBar);

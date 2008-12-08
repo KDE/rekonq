@@ -274,7 +274,9 @@ TabWidget::TabWidget(QWidget *parent)
 
 TabWidget::~TabWidget()
 {
-}
+    delete m_lineEditCompleter;
+    delete m_recentlyClosedTabsMenu;
+} 
 
 
 void TabWidget::clear()
@@ -335,7 +337,6 @@ void TabWidget::currentChanged(int index)
     if (!webView)
         return;
 
-// FIXME
     Q_ASSERT( m_lineEdits->count() == count() );
 
     WebView *oldWebView = this->webView(m_lineEdits->currentIndex());
