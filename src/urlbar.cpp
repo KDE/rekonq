@@ -23,30 +23,14 @@
 
 #include "browserapplication.h"
 
-// Qt Includes
-#include <QtGui>
 
-
-UrlBar::UrlBar(QWidget *parent)
-    : QWidget(parent)
+UrlBar::UrlBar(KHistoryComboBox *parent)
+    : KHistoryComboBox(parent)
     , m_webView(0)
-    , m_iconLabel(0)
     , m_lineEdit(0)
 {
-    // icon
-    m_iconLabel = new QLabel;
-    m_iconLabel->resize(16, 16);
-
-    m_lineEdit = new KLineEdit;
-
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(m_iconLabel);
-    layout->addWidget(m_lineEdit);
-    setLayout(layout);
-
-    m_defaultBaseColor = palette().color(QPalette::Base);
-//     setPalette( QPalette(Qt::white) );
-    setAutoFillBackground( false );
+    m_lineEdit = new QLineEdit;
+    setLineEdit( m_lineEdit );
 
     webViewIconChanged();
 }
@@ -57,7 +41,7 @@ UrlBar::~UrlBar()
 }
 
 
-KLineEdit *UrlBar::lineEdit()
+QLineEdit *UrlBar::lineEdit()
 {
     return m_lineEdit;
 }
@@ -67,7 +51,6 @@ void UrlBar::setWebView(WebView *webView)
 {
     Q_ASSERT(!m_webView);
     m_webView = webView;
-//     m_iconLabel->m_webView = webView;
     connect(webView, SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
     connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewIconChanged()));
     connect(webView, SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
@@ -87,7 +70,11 @@ void UrlBar::webViewIconChanged()
     KUrl url = (m_webView)  ? m_webView->url() : KUrl();
     QIcon icon = BrowserApplication::instance()->icon(url);
     QPixmap pixmap(icon.pixmap(16, 16));
-    m_iconLabel->setPixmap(pixmap);
+    QIcon urlIcon = QIcon(pixmap);
+    
+    // FIXME simple hack to show Icon in the urlbar, as calling changeUrl() doesn't affect it
+    removeItem( 0 );
+    insertUrl( 0 , urlIcon , url );
 }
 
 

@@ -110,9 +110,11 @@ private:
 
 // KDE Includes
 #include <KUrl>
-#include <KLineEdit>
 #include <KMenu>
 #include <KTabWidget>
+
+// Qt Includes
+#include <QLineEdit>
 
 QT_BEGIN_NAMESPACE
 class QCompleter;
@@ -160,10 +162,10 @@ public:
     KAction *previousTabAction() const;
 
     QWidget *lineEditStack() const;
-    KLineEdit *currentLineEdit() const;
+    QLineEdit *currentLineEdit() const;
     WebView *currentWebView() const;
     WebView *webView(int index) const;
-    KLineEdit *lineEdit(int index) const;
+    QLineEdit *lineEdit(int index) const;
     int webViewIndex(WebView *webView) const;
 
     QByteArray saveState() const;
