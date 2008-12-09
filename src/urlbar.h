@@ -45,8 +45,6 @@ private slots:
     void webViewUrlChanged(const QUrl &url);
     void webViewIconChanged();
 
-    void prova();
-
 private:
     QLinearGradient generateGradient(const QColor &color) const;
 
