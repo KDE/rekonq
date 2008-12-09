@@ -286,7 +286,7 @@ void TabWidget::clear()
     // clear the line edit history
     for (int i = 0; i < m_lineEdits->count(); ++i) 
     {
-        KLineEdit *qLineEdit = lineEdit(i);
+        QLineEdit *qLineEdit = lineEdit(i);
         qLineEdit->setText(qLineEdit->text());
     }
 }
@@ -409,7 +409,7 @@ QWidget *TabWidget::lineEditStack() const
 }
 
 
-KLineEdit *TabWidget::currentLineEdit() const
+QLineEdit *TabWidget::currentLineEdit() const
 {
     return lineEdit(m_lineEdits->currentIndex());
 }
@@ -421,7 +421,7 @@ WebView *TabWidget::currentWebView() const
 }
 
 
-KLineEdit *TabWidget::lineEdit(int index) const
+QLineEdit *TabWidget::lineEdit(int index) const
 {
     UrlBar *urlLineEdit = qobject_cast<UrlBar*>(m_lineEdits->widget(index));
     if (urlLineEdit)
@@ -465,7 +465,7 @@ WebView *TabWidget::newTab(bool makeCurrent)
 {
     // line edit
     UrlBar *urlLineEdit = new UrlBar;
-    KLineEdit *lineEdit = urlLineEdit->lineEdit();
+    QLineEdit *lineEdit = urlLineEdit->lineEdit();
     if (!m_lineEditCompleter && count() > 0) 
     {
         HistoryCompletionModel *completionModel = new HistoryCompletionModel(this);
@@ -544,7 +544,7 @@ void TabWidget::reloadAllTabs()
 
 void TabWidget::lineEditReturnPressed()
 {
-    if (KLineEdit *lineEdit = qobject_cast<KLineEdit*>(sender())) 
+    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(sender())) 
     {
         emit loadPage(lineEdit->text());
         if (m_lineEdits->currentWidget() == lineEdit)

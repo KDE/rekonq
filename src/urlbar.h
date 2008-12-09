@@ -24,36 +24,35 @@
 #include "webview.h"
 
 // KDE Includes
-#include <KLineEdit>
-#include <KComboBox>
+#include <KHistoryComboBox>
 
 // Qt Includes
-#include <QWidget>
-#include <QLabel>
+#include <QtGui>
 
 
-class UrlBar : public QWidget
+class UrlBar : public KHistoryComboBox
 {
 Q_OBJECT
 
 public:
-    UrlBar(QWidget *parent = 0);
+    UrlBar(KHistoryComboBox *parent = 0);
     ~UrlBar();
 
-    KLineEdit *lineEdit();
+    QLineEdit *lineEdit();
     void setWebView(WebView *webView);
 
 private slots:
     void webViewUrlChanged(const QUrl &url);
     void webViewIconChanged();
 
+    void prova();
+
 private:
     QLinearGradient generateGradient(const QColor &color) const;
 
     WebView *m_webView;
 
-    QLabel *m_iconLabel;
-    KLineEdit *m_lineEdit;
+    QLineEdit *m_lineEdit;
     QColor m_defaultBaseColor;
 };
 
