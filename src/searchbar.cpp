@@ -52,7 +52,6 @@ void SearchBar::searchNow()
     url.addQueryItem(QLatin1String("oe"), QLatin1String("UTF-8"));
     url.addQueryItem(QLatin1String("client"), QLatin1String("reKonq"));
     emit search(url);
-
 }
 
 KLineEdit *SearchBar::lineEdit()

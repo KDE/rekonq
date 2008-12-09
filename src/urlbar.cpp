@@ -25,13 +25,17 @@
 
 
 UrlBar::UrlBar(KHistoryComboBox *parent)
-    : KHistoryComboBox(parent)
+    : KHistoryComboBox(true, parent)
     , m_webView(0)
     , m_lineEdit(0)
 {
     m_lineEdit = new QLineEdit;
     setLineEdit( m_lineEdit );
-
+    
+    // add every item to history
+    connect( this, SIGNAL( activated( const QString& )), this, SLOT( addToHistory( const QString& )));
+    
+    connect( this, SIGNAL( activated(int) ), this, SLOT( prova() ) );
     webViewIconChanged();
 }
 
@@ -88,3 +92,10 @@ QLinearGradient UrlBar::generateGradient(const QColor &color) const
     gradient.setColorAt(1, m_defaultBaseColor);
     return gradient;
 }
+
+
+void UrlBar::prova()
+{
+    m_lineEdit->selectAll();
+}
+
