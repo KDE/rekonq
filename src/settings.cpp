@@ -48,7 +48,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     setMainWidget(widget);
 
-    setWindowTitle( i18n("Setting reKonq..") );
+    setWindowTitle( i18n("Setting rekonq..") );
     setButtons( KDialog::Ok | KDialog::Close | KDialog::Apply );
     setModal(true);
 

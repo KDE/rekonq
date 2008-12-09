@@ -23,6 +23,7 @@
 
 // Qt Includes
 #include <QVBoxLayout>
+#include <QPalette>
 
 SearchBar::SearchBar(QWidget *parent) : 
     QWidget(parent),
@@ -30,6 +31,11 @@ SearchBar::SearchBar(QWidget *parent) :
 {
     m_lineEdit = new KLineEdit(this);
     m_lineEdit->setClearButtonShown( true );
+
+    QPalette palette;
+    palette.setColor( QPalette::Text, Qt::gray );
+    m_lineEdit->setPalette( palette );
+    m_lineEdit->setText( "Search.." );
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(m_lineEdit);
@@ -50,7 +56,7 @@ void SearchBar::searchNow()
     url.addQueryItem(QLatin1String("q"), searchText);
     url.addQueryItem(QLatin1String("ie"), QLatin1String("UTF-8"));
     url.addQueryItem(QLatin1String("oe"), QLatin1String("UTF-8"));
-    url.addQueryItem(QLatin1String("client"), QLatin1String("reKonq"));
+    url.addQueryItem(QLatin1String("client"), QLatin1String("rekonq"));
     emit search(url);
 
 }
