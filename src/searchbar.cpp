@@ -44,9 +44,11 @@ SearchBar::SearchBar(QWidget *parent) :
     connect( lineEdit() , SIGNAL( returnPressed() ) , this , SLOT( searchNow() ) );
 }
 
+
 SearchBar::~SearchBar()
 {
 }
+
 
 void SearchBar::searchNow()
 {
@@ -58,8 +60,8 @@ void SearchBar::searchNow()
     url.addQueryItem(QLatin1String("oe"), QLatin1String("UTF-8"));
     url.addQueryItem(QLatin1String("client"), QLatin1String("rekonq"));
     emit search(url);
-
 }
+
 
 KLineEdit *SearchBar::lineEdit()
 {
