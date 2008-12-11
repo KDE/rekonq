@@ -176,6 +176,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 
+
 public slots:
     void loadUrlInCurrentTab(const KUrl &url);
     WebView *newTab(bool makeCurrent = true);

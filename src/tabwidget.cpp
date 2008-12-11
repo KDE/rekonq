@@ -511,6 +511,10 @@ WebView *TabWidget::newTab(bool makeCurrent)
     connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)), this, SIGNAL(menuBarVisibilityChangeRequested(bool)));
     connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)), this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
     connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)), this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
+
+    connect(webView, SIGNAL( ctrlTabPressed() ), this, SLOT( nextTab() ) );
+    connect(webView, SIGNAL( shiftCtrlTabPressed() ), this, SLOT( previousTab() ) );
+
     addTab(webView, i18n("(Untitled)") );
     if (makeCurrent)
         setCurrentWidget(webView);

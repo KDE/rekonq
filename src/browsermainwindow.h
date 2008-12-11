@@ -53,9 +53,8 @@ class BrowserMainWindow : public KMainWindow
 public:
     BrowserMainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
     ~BrowserMainWindow();
-    QSize sizeHint() const;
 
-public:
+    QSize sizeHint() const;
     static KUrl guessUrlFromString(const QString &url);
     TabWidget *tabWidget() const;
     WebView *currentTab() const;

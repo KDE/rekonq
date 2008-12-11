@@ -620,7 +620,7 @@ void BrowserMainWindow::closeEvent(QCloseEvent *event)
     {
         int ret = KMessageBox::warningYesNo(this, 
                                                          i18n("Are you sure you want to close the window?" "  There are %1 tab open" , m_tabWidget->count() ) ,
-                                                        QString() );
+                                                        i18n("Closing") );
         if (ret == KMessageBox::No) 
         {
             event->ignore();

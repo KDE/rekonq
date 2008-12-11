@@ -177,7 +177,6 @@ WebView::WebView(QWidget* parent)
     connect(page(), SIGNAL(loadingUrl(const QUrl&)),  this, SIGNAL(urlChanged(const QUrl &)));
     connect(page(), SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequested(const QNetworkRequest &)));
     page()->setForwardUnsupportedContent(true);
-
 }
 
 
@@ -297,3 +296,22 @@ void WebView::downloadRequested(const QNetworkRequest &request)
 {
     BrowserApplication::downloadManager()->download(request);
 }
+
+
+void WebView::keyPressEvent(QKeyEvent *event)
+{
+    if ( (event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Tab) )
+    {
+        emit ctrlTabPressed();
+        return;
+    }
+
+    if( (event->modifiers() == Qt::ControlModifier + Qt::ShiftModifier) && (event->key() == Qt::Key_Backtab) )
+    {
+        emit shiftCtrlTabPressed();
+        return;
+    }
+
+    QWebView::keyPressEvent( event );
+}
+
