@@ -42,16 +42,13 @@
 #include <KToggleFullScreenAction>
 #include <KActionCollection>
 #include <KMessageBox>
+#include <KFileDialog>
 
 // Qt Includes
-#include <QDesktopWidget>
-#include <QFileDialog>
 #include <QPlainTextEdit>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <QPrinter>
-#include <QToolBar>
-#include <QInputDialog>
 #include <QWebFrame>
 #include <QWebHistory>
 #include <QDebug>
@@ -539,8 +536,10 @@ void BrowserMainWindow::slotFileNew()
 
 void BrowserMainWindow::slotFileOpen()
 {
-    QString file = QFileDialog::getOpenFileName(this, i18n("Open Web Resource"), QString(),
-            i18n("Web Resources (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"));
+    QString file = KFileDialog::getOpenFileName( KUrl(),
+                                                                            i18n("Web Resources (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"),
+                                                                            this, 
+                                                                            i18n("Open Web Resource") );
 
     if (file.isEmpty())
         return;
