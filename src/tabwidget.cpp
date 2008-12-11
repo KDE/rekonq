@@ -639,7 +639,6 @@ void TabWidget::webViewLoadStarted()
     int index = webViewIndex(webView);
     if (-1 != index) 
     {
-//         QIcon icon(QLatin1String(":loading.gif"));
         setTabIcon(index, KIcon("rekonq") );
     }
 }

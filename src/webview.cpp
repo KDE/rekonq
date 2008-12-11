@@ -63,8 +63,7 @@ BrowserMainWindow *WebPage::mainWindow()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
-    // ctrl open in new tab
-    // ctrl-shift open in new tab and select
+    // ctrl open in new tab and select
     // ctrl-alt open in new window
     if ( type == QWebPage::NavigationTypeLinkClicked && (m_keyboardModifiers & Qt::ControlModifier
             || m_pressedButtons == Qt::MidButton) ) 
@@ -82,8 +81,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         } 
         else 
         {
-            bool selectNewTab = (m_keyboardModifiers & Qt::ShiftModifier);
-            webView = mainWindow()->tabWidget()->newTab(selectNewTab);
+            webView = mainWindow()->tabWidget()->newTab( true );
         }
         webView->load(request);
         m_keyboardModifiers = Qt::NoModifier;
