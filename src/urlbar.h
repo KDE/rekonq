@@ -45,6 +45,9 @@ private slots:
     void webViewUrlChanged(const QUrl &url);
     void webViewIconChanged();
 
+protected:
+    void paintEvent( QPaintEvent * );
+
 private:
     QLinearGradient generateGradient(const QColor &color) const;
 

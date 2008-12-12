@@ -22,6 +22,7 @@
 #include "urlbar.moc"
 
 #include "browserapplication.h"
+#include "browsermainwindow.h"
 
 
 UrlBar::UrlBar(KHistoryComboBox *parent)
@@ -31,12 +32,15 @@ UrlBar::UrlBar(KHistoryComboBox *parent)
 {
     m_lineEdit = new QLineEdit;
     setLineEdit( m_lineEdit );
-    
+
+    m_defaultBaseColor = palette().color( QPalette::Base );
+
     // add every item to history
-    connect( this, SIGNAL( activated( const QString& )), this, SLOT( addToHistory( const QString& )));
+    connect( this, SIGNAL( activated( const QString& ) ), this, SLOT( addToHistory( const QString& ) ) );
 
     webViewIconChanged();
 }
+
 
 
 UrlBar::~UrlBar()
@@ -44,10 +48,12 @@ UrlBar::~UrlBar()
 }
 
 
+
 QLineEdit *UrlBar::lineEdit()
 {
     return m_lineEdit;
 }
+
 
 
 void UrlBar::setWebView(WebView *webView)
@@ -61,11 +67,13 @@ void UrlBar::setWebView(WebView *webView)
 }
 
 
+
 void UrlBar::webViewUrlChanged(const QUrl &url)
 {
     m_lineEdit->setText(url.toString());
     m_lineEdit->setCursorPosition(0);
 }
+
 
 
 void UrlBar::webViewIconChanged()
@@ -91,3 +99,34 @@ QLinearGradient UrlBar::generateGradient(const QColor &color) const
     gradient.setColorAt(1, m_defaultBaseColor);
     return gradient;
 }
+
+
+void UrlBar::paintEvent( QPaintEvent *event )
+{
+    QPalette p = palette();
+    if (m_webView && m_webView->url().scheme() == QLatin1String("https")) 
+    {
+        QColor lightYellow(248, 248, 210);
+        p.setBrush(QPalette::Base, generateGradient(lightYellow));
+    } 
+    else 
+    {
+        p.setBrush(QPalette::Base, m_defaultBaseColor);
+    }
+    setPalette(p);
+    KHistoryComboBox::paintEvent(event);
+
+    QPainter painter( this );
+    QRect backgroundRect = m_lineEdit->frameGeometry(); // contentsRect();
+    if ( m_webView && !hasFocus() ) 
+    {
+        int progress = m_webView->progress();
+        QColor loadingColor = QColor(116, 192, 250);
+        painter.setBrush( generateGradient(loadingColor) );
+        painter.setPen(Qt::transparent);
+        int mid = backgroundRect.width() / 100 * progress;
+        QRect progressRect(backgroundRect.x(), backgroundRect.y(), mid, backgroundRect.height());
+        painter.drawRect(progressRect);
+    }
+}
+
