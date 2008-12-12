@@ -26,7 +26,7 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QWidget>
+#include <QtGui>
 
 class SearchBar : public QWidget
 {
@@ -40,6 +40,9 @@ public:
 
 public slots:
     void searchNow();
+
+protected:
+    void resizeEvent( QResizeEvent *);
 
 private:
     KLineEdit *m_lineEdit;

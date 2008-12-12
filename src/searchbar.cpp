@@ -21,9 +21,9 @@
 #include "searchbar.h"
 #include "searchbar.moc"
 
-// Qt Includes
-#include <QVBoxLayout>
-#include <QPalette>
+#include "browserapplication.h"
+#include "browsermainwindow.h"
+
 
 SearchBar::SearchBar(QWidget *parent) : 
     QWidget(parent),
@@ -47,6 +47,24 @@ SearchBar::SearchBar(QWidget *parent) :
 
 SearchBar::~SearchBar()
 {
+}
+
+
+void SearchBar::resizeEvent( QResizeEvent * event )
+{
+    QRect rect = m_lineEdit->contentsRect();
+
+    int width = rect.width();
+
+    int lineEditWidth = BrowserApplication::instance()->mainWindow()->size().width() / 5 ;  // FIXME ( OR not?)
+
+    m_lineEdit->setGeometry( rect.x() + ( width - lineEditWidth + 8 ),
+                                            rect.y() + 4,
+                                            lineEditWidth,
+                                            m_lineEdit->height()
+                                            );
+
+    QWidget::resizeEvent( event );
 }
 
 
