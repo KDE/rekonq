@@ -1,6 +1,6 @@
 /* ============================================================
  *
- * This file is a part of the reKonq project
+ * This file is a part of the rekonq project
  *
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
@@ -38,11 +38,14 @@ public:
 
     KLineEdit *lineEdit();
 
+    friend class KLineEdit;
+
 public slots:
     void searchNow();
 
 protected:
-    void resizeEvent( QResizeEvent *);
+//     void resizeEvent(QResizeEvent *);
+//     void focusInEvent(QFocusEvent *);
 
 private:
     KLineEdit *m_lineEdit;

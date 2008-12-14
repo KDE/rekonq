@@ -1,6 +1,6 @@
 /* ============================================================
  *
- * This file is a part of the reKonq project
+ * This file is a part of the rekonq project
  *
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *

@@ -1,6 +1,6 @@
 /* ============================================================
  *
- * This file is a part of the reKonq project
+ * This file is a part of the rekonq project
  *
  * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
@@ -29,9 +29,9 @@
 int main(int argc, char **argv)
 {
     KAboutData aboutData(
-        "reKonq",
+        "rekonq",
         0, 
-        ki18n("reKonq"), 
+        ki18n("rekonq"), 
         "0.0.1", 
         ki18n("A KDE browser webkit based"),
         KAboutData::License_GPL,
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
         "adjam7@gmail.com"  // bug report mail
     );
 
-    aboutData.addAuthor(ki18n("Andrea Diamantini"), ki18n("reKonq author"), "adjam7@gmail.com");
+    aboutData.addAuthor(ki18n("Andrea Diamantini"), ki18n("rekonq author"), "adjam7@gmail.com");
     aboutData.setProgramIconName("applications-internet");
 
     KCmdLineArgs::init( argc, argv, &aboutData );
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-    BrowserApplication app(args, "reKonq");
+    BrowserApplication app(args, "rekonq");
     if (!app.isTheOnlyBrowser())
         return 0;
     app.newMainWindow();

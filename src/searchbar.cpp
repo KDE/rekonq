@@ -1,6 +1,6 @@
 /* ============================================================
  *
- * This file is a part of the reKonq project
+ * This file is a part of the rekonq project
  *
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
@@ -27,10 +27,16 @@
 
 SearchBar::SearchBar(QWidget *parent) : 
     QWidget(parent),
-    m_lineEdit(0)
+    m_lineEdit(new KLineEdit)
 {
-    m_lineEdit = new KLineEdit(this);
     m_lineEdit->setClearButtonShown( true );
+
+    m_lineEdit->setFocusProxy( this );
+    setFocusPolicy( Qt::WheelFocus );
+    setMouseTracking( true );
+
+    QSizePolicy policy = sizePolicy();
+    setSizePolicy(QSizePolicy::Preferred, policy.verticalPolicy());
 
     QPalette palette;
     palette.setColor( QPalette::Text, Qt::gray );
@@ -41,7 +47,7 @@ SearchBar::SearchBar(QWidget *parent) :
     layout->addWidget(m_lineEdit);
     setLayout(layout);
 
-    connect( lineEdit() , SIGNAL( returnPressed() ) , this , SLOT( searchNow() ) );
+    connect( m_lineEdit , SIGNAL( returnPressed() ) , this , SLOT( searchNow() ) );
 }
 
 
@@ -50,22 +56,22 @@ SearchBar::~SearchBar()
 }
 
 
-void SearchBar::resizeEvent( QResizeEvent * event )
-{
-    QRect rect = m_lineEdit->contentsRect();
-
-    int width = rect.width();
-
-    int lineEditWidth = BrowserApplication::instance()->mainWindow()->size().width() / 5 ;  // FIXME ( OR not?)
-
-    m_lineEdit->setGeometry( rect.x() + ( width - lineEditWidth + 8 ),
-                                            rect.y() + 4,
-                                            lineEditWidth,
-                                            m_lineEdit->height()
-                                            );
-
-    QWidget::resizeEvent( event );
-}
+// void SearchBar::resizeEvent( QResizeEvent * event )
+// {
+//     QRect rect = m_lineEdit->contentsRect();
+// 
+//     int width = rect.width();
+// 
+//     int lineEditWidth = BrowserApplication::instance()->mainWindow()->size().width() / 5 ;  // FIXME ( OR not?)
+// 
+//     m_lineEdit->setGeometry( rect.x() + ( width - lineEditWidth + 8 ),
+//                                             rect.y() + 4,
+//                                             lineEditWidth,
+//                                             m_lineEdit->height()
+//                                             );
+// 
+//     QWidget::resizeEvent( event );
+// }
 
 
 void SearchBar::searchNow()

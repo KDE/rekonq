@@ -506,9 +506,9 @@ void BrowserMainWindow::slotUpdateStatusbar(const QString &string)
 void BrowserMainWindow::slotUpdateWindowTitle(const QString &title)
 {
     if (title.isEmpty()) {
-        setWindowTitle("reKonq");
+        setWindowTitle("rekonq");
     } else {
-        setWindowTitle(title + " - reKonq");
+        setWindowTitle(title + " - rekonq");
     }
 }
 

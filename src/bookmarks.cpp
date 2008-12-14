@@ -1,6 +1,6 @@
 /* ============================================================
  *
- * This file is a part of the reKonq project
+ * This file is a part of the rekonq project
  *
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
@@ -51,7 +51,7 @@ QString OwnBookMarks::currentUrl() const
 QString OwnBookMarks::currentTitle() const
 {
     QString title = m_parent->windowTitle();
-    return title.remove( " - reKonq" );
+    return title.remove( " - rekonq" );
 }
 
 
