@@ -1,6 +1,6 @@
 /* ============================================================
  *
- * This file is a part of the reKonq project
+ * This file is a part of the rekonq project
  *
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
@@ -30,12 +30,12 @@
 #include <QtGui>
 
 
-class UrlBar : public KHistoryComboBox
+class UrlBar : public QWidget
 {
 Q_OBJECT
 
 public:
-    UrlBar(KHistoryComboBox *parent = 0);
+    UrlBar(QWidget *parent = 0);
     ~UrlBar();
 
     QLineEdit *lineEdit();
@@ -46,15 +46,16 @@ private slots:
     void webViewIconChanged();
 
 protected:
-    void paintEvent( QPaintEvent * );
+//     void paintEvent( QPaintEvent * );
+//     void resizeEvent( QResizeEvent * );
 
 private:
     QLinearGradient generateGradient(const QColor &color) const;
 
-    WebView *m_webView;
-
-    QLineEdit *m_lineEdit;
-    QColor m_defaultBaseColor;
+    KHistoryComboBox* m_historyComboBox;
+    WebView*   m_webView;
+    QLineEdit*  m_lineEdit;
+    QColor       m_defaultBaseColor;
 };
 
 #endif

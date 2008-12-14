@@ -1,6 +1,6 @@
 /* ============================================================
  *
- * This file is a part of the reKonq project
+ * This file is a part of the rekonq project
  *
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
@@ -25,18 +25,25 @@
 #include "browsermainwindow.h"
 
 
-UrlBar::UrlBar(KHistoryComboBox *parent)
-    : KHistoryComboBox(true, parent)
+UrlBar::UrlBar(QWidget *parent)
+    : QWidget(parent)
+    , m_historyComboBox( new KHistoryComboBox( true, parent ) )
     , m_webView(0)
-    , m_lineEdit(0)
+    , m_lineEdit(new QLineEdit)
 {
-    m_lineEdit = new QLineEdit;
-    setLineEdit( m_lineEdit );
+    m_historyComboBox->setLineEdit( m_lineEdit );
+
+    QSizePolicy policy = sizePolicy();
+    setSizePolicy(QSizePolicy::Preferred, policy.verticalPolicy());
+
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget( m_historyComboBox );
+    setLayout(layout);
 
     m_defaultBaseColor = palette().color( QPalette::Base );
 
     // add every item to history
-    connect( this, SIGNAL( activated( const QString& ) ), this, SLOT( addToHistory( const QString& ) ) );
+    connect( m_historyComboBox, SIGNAL( activated( const QString& ) ), m_historyComboBox, SLOT( addToHistory( const QString& ) ) );
 
     webViewIconChanged();
 }
@@ -84,8 +91,8 @@ void UrlBar::webViewIconChanged()
     QIcon urlIcon = QIcon(pixmap);
     
     // FIXME simple hack to show Icon in the urlbar, as calling changeUrl() doesn't affect it
-    removeItem( 0 );
-    insertUrl( 0 , urlIcon , url );
+    m_historyComboBox->removeItem( 0 );
+    m_historyComboBox->insertUrl( 0 , urlIcon , url );
 }
 
 
@@ -101,32 +108,47 @@ QLinearGradient UrlBar::generateGradient(const QColor &color) const
 }
 
 
-void UrlBar::paintEvent( QPaintEvent *event )
-{
-    QPalette p = palette();
-    if (m_webView && m_webView->url().scheme() == QLatin1String("https")) 
-    {
-        QColor lightYellow(248, 248, 210);
-        p.setBrush(QPalette::Base, generateGradient(lightYellow));
-    } 
-    else 
-    {
-        p.setBrush(QPalette::Base, m_defaultBaseColor);
-    }
-    setPalette(p);
-    KHistoryComboBox::paintEvent(event);
+// void UrlBar::paintEvent( QPaintEvent *event )
+// {
+//     QPalette p = palette();
+//     if (m_webView && m_webView->url().scheme() == QLatin1String("https")) 
+//     {
+//         QColor lightYellow(248, 248, 210);
+//         p.setBrush(QPalette::Base, generateGradient(lightYellow));
+//     } 
+//     else 
+//     {
+//         p.setBrush(QPalette::Base, m_defaultBaseColor);
+//     }
+//     setPalette(p);
+//     KHistoryComboBox::paintEvent(event);
+// 
+//     QPainter painter( this );
+//     QRect backgroundRect = m_lineEdit->frameGeometry(); // contentsRect(); // FIXME perhaps better working with contentsRect
+//     if ( m_webView && !hasFocus() )                                                               // and modifying colours..
+//     {
+//         int progress = m_webView->progress();
+//         QColor loadingColor = QColor(116, 192, 250);
+//         painter.setBrush( generateGradient(loadingColor) );
+//         painter.setPen(Qt::transparent);
+//         int mid = backgroundRect.width() / 100 * progress;
+//         QRect progressRect(backgroundRect.x(), backgroundRect.y(), mid, backgroundRect.height());
+//         painter.drawRect(progressRect);
+//     }
+// }
 
-    QPainter painter( this );
-    QRect backgroundRect = m_lineEdit->frameGeometry(); // contentsRect();
-    if ( m_webView && !hasFocus() ) 
-    {
-        int progress = m_webView->progress();
-        QColor loadingColor = QColor(116, 192, 250);
-        painter.setBrush( generateGradient(loadingColor) );
-        painter.setPen(Qt::transparent);
-        int mid = backgroundRect.width() / 100 * progress;
-        QRect progressRect(backgroundRect.x(), backgroundRect.y(), mid, backgroundRect.height());
-        painter.drawRect(progressRect);
-    }
-}
 
+//  void UrlBar::resizeEvent( QResizeEvent *event )
+// {
+//     QRect rect = m_historyComboBox->frameGeometry();
+// 
+//     int newWidth = BrowserApplication::instance()->mainWindow()->size().width() * 3 / 5  ;  // FIXME ( OR not?)
+// 
+//     m_historyComboBox->setGeometry( rect.x(),
+//                                                             rect.y(),
+//                                                             newWidth,
+//                                                             m_historyComboBox->height()
+//                                                             );
+// 
+//     QWidget::resizeEvent( event );
+// }

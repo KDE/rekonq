@@ -1,6 +1,6 @@
 /* ============================================================
  *
- * This file is a part of the reKonq project
+ * This file is a part of the rekonq project
  *
  * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
@@ -54,7 +54,6 @@ public:
     BrowserMainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
     ~BrowserMainWindow();
 
-    QSize sizeHint() const;
     static KUrl guessUrlFromString(const QString &url);
     TabWidget *tabWidget() const;
     WebView *currentTab() const;

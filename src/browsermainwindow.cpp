@@ -1,6 +1,6 @@
 /* ============================================================
  *
- * This file is a part of the reKonq project
+ * This file is a part of the rekonq project
  *
  * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
@@ -103,14 +103,12 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
 }
 
 
-
 BrowserMainWindow::~BrowserMainWindow()
 {
     m_autoSaver->changeOccurred();
     m_autoSaver->saveIfNeccessary();
     delete m_navigationBar;
 }
-
 
 
 void BrowserMainWindow::loadDefaultState()
@@ -120,16 +118,6 @@ void BrowserMainWindow::loadDefaultState()
     QByteArray data = group1.readEntry(QString("defaultState"), QByteArray() );
     restoreState(data); 
 }
-
-
-
-QSize BrowserMainWindow::sizeHint() const
-{
-    QRect desktopRect = QApplication::desktop()->screenGeometry();
-    QSize size = desktopRect.size() * 0.9;
-    return size;
-}
-
 
 
 void BrowserMainWindow::save()
@@ -143,9 +131,7 @@ void BrowserMainWindow::save()
 }
 
 
-
 static const qint32 BrowserMainWindowMagic = 0xba;
-
 
 
 QByteArray BrowserMainWindow::saveState(bool withTabs) const
@@ -206,7 +192,6 @@ bool BrowserMainWindow::restoreState(const QByteArray &state)
     }
     return true;
 }
-
 
 
 void BrowserMainWindow::setupMenu()
@@ -367,7 +352,11 @@ void BrowserMainWindow::setupMenu()
 
 void BrowserMainWindow::setupToolBar()
 {
-    m_navigationBar = new KToolBar( i18n("Navigation") , this, Qt::TopToolBarArea, true, false, false); 
+    m_navigationBar = new KToolBar( i18n("Navigation") , this, Qt::TopToolBarArea, false, false, false); 
+
+    // UI settings
+    m_navigationBar->setContextMenuPolicy( Qt::NoContextMenu );
+    m_navigationBar->setIconDimensions(22);
 
     m_historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
@@ -390,14 +379,12 @@ void BrowserMainWindow::setupToolBar()
 
     m_navigationBar->addWidget( m_tabWidget->lineEditStack() );
 
-    m_searchBar = new SearchBar(m_navigationBar);
-    m_navigationBar->addWidget(m_searchBar);
+    m_searchBar = new SearchBar( this );
     connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
+    m_navigationBar->addWidget(m_searchBar);
 
-    // UI settings
-    m_navigationBar->setIconDimensions(16);
-    m_navigationBar->setContextMenuPolicy( Qt::NoContextMenu );
-    KToolBar::setToolBarsLocked( true ); 
+//     KToolBar::setToolBarsEditable( false ); 
+//     KToolBar::setToolBarsLocked( true ); 
 }
 
 
