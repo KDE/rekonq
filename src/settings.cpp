@@ -39,10 +39,9 @@
 #include <QtWebKit>
 
 SettingsDialog::SettingsDialog(QWidget *parent)
-    : KDialog(parent),
-    widget(0)
+    : KDialog(parent)
 {
-    widget = new QWidget;
+    QWidget *widget = new QWidget;
 
     setupUi(widget);
 
@@ -72,13 +71,13 @@ void SettingsDialog::loadDefaults()
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
     QString standardFontFamily = defaultSettings->fontFamily(QWebSettings::StandardFont);
     int standardFontSize = defaultSettings->fontSize(QWebSettings::DefaultFontSize);
-    standardFont = QFont(standardFontFamily, standardFontSize);
-    standardLabel->setText(QString(QLatin1String("%1 %2")).arg(standardFont.family()).arg(standardFont.pointSize()));
+    m_standardFont = QFont(standardFontFamily, standardFontSize);
+    standardLabel->setText(QString(QLatin1String("%1 %2")).arg( m_standardFont.family() ).arg( m_standardFont.pointSize() ));
 
     QString fixedFontFamily = defaultSettings->fontFamily(QWebSettings::FixedFont);
     int fixedFontSize = defaultSettings->fontSize(QWebSettings::DefaultFixedFontSize);
-    fixedFont = QFont(fixedFontFamily, fixedFontSize);
-    fixedLabel->setText(QString(QLatin1String("%1 %2")).arg(fixedFont.family()).arg(fixedFont.pointSize()));
+    m_fixedFont = QFont(fixedFontFamily, fixedFontSize);
+    fixedLabel->setText(QString(QLatin1String("%1 %2")).arg( m_fixedFont.family() ).arg( m_fixedFont.pointSize() ));
 
     downloadsLocation->setText(QDesktopServices::storageLocation(QDesktopServices::DesktopLocation));
 
@@ -118,11 +117,11 @@ void SettingsDialog::loadFromSettings()
     // Appearance
     KConfigGroup group2 = config.group("Appearance Settings");
 
-    fixedFont = group2.readEntry( QString("fixedFont"), fixedFont );
-    standardFont = group2.readEntry( QString("standardFont"), standardFont );
+    m_fixedFont = group2.readEntry( QString("fixedFont"), m_fixedFont );
+    m_standardFont = group2.readEntry( QString("standardFont"), m_standardFont );
 
-    standardLabel->setText(QString(QLatin1String("%1 %2")).arg(standardFont.family()).arg(standardFont.pointSize()));
-    fixedLabel->setText(QString(QLatin1String("%1 %2")).arg(fixedFont.family()).arg(fixedFont.pointSize()));
+    standardLabel->setText(QString(QLatin1String("%1 %2")).arg( m_standardFont.family() ).arg( m_standardFont.pointSize() ) );
+    fixedLabel->setText(QString(QLatin1String("%1 %2")).arg( m_fixedFont.family() ).arg( m_fixedFont.pointSize() ) );
 
     enableJavascript->setChecked( group2.readEntry( QString("enableJavascript"), enableJavascript->isChecked() ) );
     enablePlugins->setChecked( group2.readEntry( QString("enablePlugins"), enablePlugins->isChecked() ) );
@@ -202,8 +201,8 @@ void SettingsDialog::saveToSettings()
     group1.writeEntry(QString("historyExpire"), idx );
 
     KConfigGroup group2 = config.group("Appearance Settings");
-    group2.writeEntry(QString("fixedFont"),fixedFont);
-    group2.writeEntry(QString("standardFont"), standardFont);
+    group2.writeEntry(QString("fixedFont"), m_fixedFont);
+    group2.writeEntry(QString("standardFont"), m_standardFont);
 
     KConfigGroup group3 = config.group("Privacy Settings");
     group3.writeEntry(QString("enableJavascript"), enableJavascript->isChecked() );
@@ -280,12 +279,12 @@ void SettingsDialog::showExceptions()
 
 void SettingsDialog::chooseFont()
 {
-    QFont myFont;
+    QFont myFont( m_standardFont );
     int result = KFontDialog::getFont( myFont );
     if ( result == KFontDialog::Accepted  ) 
     {
-        standardFont = myFont;
-        standardLabel->setText(QString(QLatin1String("%1 %2")).arg(standardFont.family()).arg(standardFont.pointSize()));
+        m_standardFont = myFont;
+        standardLabel->setText(QString(QLatin1String("%1 %2")).arg( m_standardFont.family() ).arg( m_standardFont.pointSize() ) );
     }
 }
 
@@ -293,12 +292,12 @@ void SettingsDialog::chooseFont()
 void SettingsDialog::chooseFixedFont()
 {
    
-    QFont myFont;
+    QFont myFont( m_fixedFont );
     int result = KFontDialog::getFont( myFont , KFontChooser::FixedFontsOnly );
     if ( result == KFontDialog::Accepted  ) 
     {
-        fixedFont = myFont;
-        fixedLabel->setText(QString(QLatin1String("%1 %2")).arg(fixedFont.family()).arg(fixedFont.pointSize()));
+        m_fixedFont = myFont;
+        fixedLabel->setText(QString(QLatin1String("%1 %2")).arg( m_fixedFont.family() ).arg( m_fixedFont.pointSize() ) );
     }
 }
 

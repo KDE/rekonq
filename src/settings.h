@@ -53,9 +53,8 @@ private slots:
     void slotApply();
 
 private:
-    QFont standardFont;
-    QFont fixedFont;
-    QWidget *widget;
+    QFont m_standardFont;
+    QFont m_fixedFont;
 };
 
 #endif // SETTINGS_H
