@@ -4,19 +4,29 @@ Road to 0.0.1 (first release)
 + bookmarks (share konqueror's)
 + some porting
 
+0.0.2
++ QUrl --> KUrl
++ KDEize menubar (settings)
++ new urlbar & searchbar (for now just Google search bar..)
+
+
 NEXT..
 - Fixing QByteArray save/load state!!
 - system SELECT ALL
 - better FULL SCREEN
 - simplify history
-+ QUrl --> KUrl
 - KDE download  = Kjob && Kget
-- adjust toolbar(s)
-    -search bar
-    - url bar 
-+ KDEize menubar (settings)
 - configure dialog (A-LA amarok, konqueror) 
 - dbus support (?!)
 - KWallet support
 
 - Kpart ??
+
++------------------------
+
+- Kconfig::gloabl : investigate.
+- contextMenu in searchbar to set different search engines
+- save toolbars settings
+- NEW save/load setting functions in KMainWIndow
+- improve CMakeLists.txt 4.4 required, 4.5 better..
+- browse code to search TODO and FIXME
