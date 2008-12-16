@@ -132,20 +132,3 @@ QLinearGradient UrlBar::generateGradient(const QColor &color) const
 //     }
 // }
 
-
-// FIXME : seems working. Need to re-enable it when searchbar resizing will work , too..
-//  void UrlBar::resizeEvent( QResizeEvent * event )
-// {
-//     QRect rect = geometry();
-// 
-//     int windowWidth = BrowserApplication::instance()->mainWindow()->size().width() ;  // FIXME ( OR not?)
-//     int newWidth = windowWidth * 4 / 6;
-//     
-//     setGeometry( rect.x() + 1,
-//                           rect.y() + 1,
-//                           newWidth,
-//                           height()
-//                         );
-// 
-//     KHistoryComboBox::resizeEvent( event ); 
-// }

@@ -342,7 +342,6 @@ void BrowserMainWindow::setupMenu()
     //  ------------------------------------------------------------- SETTINGS ------------------------------------------------------------------------------------------------------
     KMenu *settingsMenu = (KMenu *) menuBar()->addMenu( i18n("&Settings") );
 
-//   TODO  settingsMenu->addAction( KStandardAction::configureToolbars(this, SLOT(  ) , this ) );
     settingsMenu->addAction( KStandardAction::preferences(this, SLOT( slotPreferences() ) , this ) );
 
     //  ------------------------------------------------------------- HELP  --------------------------------------------------------------------------------------------------

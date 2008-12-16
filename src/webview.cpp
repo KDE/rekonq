@@ -180,21 +180,25 @@ WebView::WebView(QWidget* parent)
 }
 
 
+// TODO : improve and KDE-ize this menu
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult r = page()->mainFrame()->hitTestContent(event->pos());
     if (!r.linkUrl().isEmpty()) 
     {
-        QMenu menu(this);
-        menu.addAction(pageAction(QWebPage::OpenLinkInNewWindow));
-        menu.addAction(i18n("Open in New Tab"), this, SLOT(openLinkInNewTab()));
+        KMenu menu(this);
+        KAction *a = new KAction( KIcon("tab-new"), i18n("Open in New Tab"), this);
+        connect( a, SIGNAL( triggered() ), this , SLOT( openLinkInNewTab() ) );
+        menu.addAction( a );
         menu.addSeparator();
         menu.addAction(pageAction(QWebPage::DownloadLinkToDisk));
         // Add link to bookmarks...
         menu.addSeparator();
         menu.addAction(pageAction(QWebPage::CopyLinkToClipboard));
-        if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
+        if ( page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled) )
+        {
             menu.addAction(pageAction(QWebPage::InspectElement));
+        }
         menu.exec(mapToGlobal(event->pos()));
         return;
     }

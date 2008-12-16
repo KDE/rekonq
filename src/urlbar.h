@@ -47,7 +47,7 @@ private slots:
 
 protected:
 //     void paintEvent( QPaintEvent * );
-//     void resizeEvent( QResizeEvent * );
+
 
 private:
     QLinearGradient generateGradient(const QColor &color) const;
