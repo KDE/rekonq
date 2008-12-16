@@ -41,6 +41,7 @@
 TabBar::TabBar(QWidget *parent)
     : KTabBar(parent)
 {
+    setElideMode(Qt::ElideRight);
     setContextMenuPolicy(Qt::CustomContextMenu);
     setAcceptDrops(true);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenuRequested(const QPoint &)));
@@ -495,7 +496,7 @@ WebView *TabWidget::newTab(bool makeCurrent)
         connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
         return 0;
     }
-
+    
     // webview
     WebView *webView = new WebView;
     urlLineEdit->setWebView(webView);

@@ -26,28 +26,24 @@
 
 
 SearchBar::SearchBar(QWidget *parent) : 
-    QWidget(parent),
-    m_lineEdit(new KLineEdit)
+    KLineEdit(parent)
 {
-    m_lineEdit->setClearButtonShown( true );
-
-    m_lineEdit->setFocusProxy( this );
+    setMinimumWidth(180);
     setFocusPolicy( Qt::WheelFocus );
     setMouseTracking( true );
+    setAcceptDrops(true);
 
     QSizePolicy policy = sizePolicy();
     setSizePolicy(QSizePolicy::Preferred, policy.verticalPolicy());
 
-    QPalette palette;
-    palette.setColor( QPalette::Text, Qt::gray );
-    m_lineEdit->setPalette( palette );
-    m_lineEdit->setText( "Search.." );
+    setClearButtonShown( true );
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(m_lineEdit);
-    setLayout(layout);
+    QPalette p;
+    p.setColor( QPalette::Text , Qt::lightGray );
+    setPalette( p );
+    setText( i18n("Search..") );
 
-    connect( m_lineEdit , SIGNAL( returnPressed() ) , this , SLOT( searchNow() ) );
+    connect( this, SIGNAL( returnPressed() ) , this , SLOT( searchNow() ) );
 }
 
 
@@ -56,27 +52,9 @@ SearchBar::~SearchBar()
 }
 
 
-// void SearchBar::resizeEvent( QResizeEvent * event )
-// {
-//     QRect rect = m_lineEdit->contentsRect();
-// 
-//     int width = rect.width();
-// 
-//     int lineEditWidth = BrowserApplication::instance()->mainWindow()->size().width() / 5 ;  // FIXME ( OR not?)
-// 
-//     m_lineEdit->setGeometry( rect.x() + ( width - lineEditWidth + 8 ),
-//                                             rect.y() + 4,
-//                                             lineEditWidth,
-//                                             m_lineEdit->height()
-//                                             );
-// 
-//     QWidget::resizeEvent( event );
-// }
-
-
 void SearchBar::searchNow()
 {
-    QString searchText = m_lineEdit->text();
+    QString searchText = text();
 
     KUrl url(QLatin1String("http://www.google.com/search"));
     url.addQueryItem(QLatin1String("q"), searchText);
@@ -87,8 +65,13 @@ void SearchBar::searchNow()
 }
 
 
-KLineEdit *SearchBar::lineEdit()
+void SearchBar::focusInEvent(QFocusEvent *event)
 {
-    return m_lineEdit;
+    KLineEdit::focusInEvent(event);
+
+    QPalette p;
+    p.setColor( QPalette::Text , Qt::black );
+    setPalette( p );
+    clear();
 }
 

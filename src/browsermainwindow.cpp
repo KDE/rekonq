@@ -354,10 +354,6 @@ void BrowserMainWindow::setupToolBar()
 {
     m_navigationBar = new KToolBar( i18n("Navigation") , this, Qt::TopToolBarArea, false, false, false); 
 
-    // UI settings
-    m_navigationBar->setContextMenuPolicy( Qt::NoContextMenu );
-    m_navigationBar->setIconDimensions(22);
-
     m_historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
     m_historyBack->setMenu(m_historyBackMenu);
@@ -379,12 +375,16 @@ void BrowserMainWindow::setupToolBar()
 
     m_navigationBar->addWidget( m_tabWidget->lineEditStack() );
 
-    m_searchBar = new SearchBar( this );
+    m_searchBar = new SearchBar( m_navigationBar );
     connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     m_navigationBar->addWidget(m_searchBar);
 
-//     KToolBar::setToolBarsEditable( false ); 
-//     KToolBar::setToolBarsLocked( true ); 
+    // UI settings
+    setContextMenuPolicy( Qt::PreventContextMenu );
+    m_navigationBar->setIconDimensions(22);
+
+    KToolBar::setToolBarsEditable( false ); 
+    KToolBar::setToolBarsLocked( true ); 
 }
 
 

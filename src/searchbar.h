@@ -28,27 +28,19 @@
 // Qt Includes
 #include <QtGui>
 
-class SearchBar : public QWidget
+class SearchBar : public KLineEdit
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     SearchBar(QWidget *parent = 0);
     ~SearchBar();
 
-    KLineEdit *lineEdit();
-
-    friend class KLineEdit;
-
 public slots:
     void searchNow();
 
 protected:
-//     void resizeEvent(QResizeEvent *);
-//     void focusInEvent(QFocusEvent *);
-
-private:
-    KLineEdit *m_lineEdit;
+    void focusInEvent(QFocusEvent * );
 
 signals:
     void search(const KUrl &url);

@@ -30,7 +30,7 @@
 #include <QtGui>
 
 
-class UrlBar : public QWidget
+class UrlBar : public KHistoryComboBox
 {
 Q_OBJECT
 
@@ -52,7 +52,6 @@ protected:
 private:
     QLinearGradient generateGradient(const QColor &color) const;
 
-    KHistoryComboBox* m_historyComboBox;
     WebView*   m_webView;
     QLineEdit*  m_lineEdit;
     QColor       m_defaultBaseColor;

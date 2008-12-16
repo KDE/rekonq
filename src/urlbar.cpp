@@ -26,24 +26,19 @@
 
 
 UrlBar::UrlBar(QWidget *parent)
-    : QWidget(parent)
-    , m_historyComboBox( new KHistoryComboBox( true, parent ) )
+    : KHistoryComboBox( true, parent )
     , m_webView(0)
     , m_lineEdit(new QLineEdit)
 {
-    m_historyComboBox->setLineEdit( m_lineEdit );
+    setLineEdit( m_lineEdit );
 
     QSizePolicy policy = sizePolicy();
     setSizePolicy(QSizePolicy::Preferred, policy.verticalPolicy());
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget( m_historyComboBox );
-    setLayout(layout);
-
     m_defaultBaseColor = palette().color( QPalette::Base );
 
     // add every item to history
-    connect( m_historyComboBox, SIGNAL( activated( const QString& ) ), m_historyComboBox, SLOT( addToHistory( const QString& ) ) );
+    connect( this, SIGNAL( activated( const QString& ) ), this, SLOT( addToHistory( const QString& ) ) );
 
     webViewIconChanged();
 }
@@ -91,8 +86,8 @@ void UrlBar::webViewIconChanged()
     QIcon urlIcon = QIcon(pixmap);
     
     // FIXME simple hack to show Icon in the urlbar, as calling changeUrl() doesn't affect it
-    m_historyComboBox->removeItem( 0 );
-    m_historyComboBox->insertUrl( 0 , urlIcon , url );
+    removeItem( 0 );
+    insertUrl( 0 , urlIcon , url );
 }
 
 
@@ -138,17 +133,19 @@ QLinearGradient UrlBar::generateGradient(const QColor &color) const
 // }
 
 
-//  void UrlBar::resizeEvent( QResizeEvent *event )
+// FIXME : seems working. Need to re-enable it when searchbar resizing will work , too..
+//  void UrlBar::resizeEvent( QResizeEvent * event )
 // {
-//     QRect rect = m_historyComboBox->frameGeometry();
+//     QRect rect = geometry();
 // 
-//     int newWidth = BrowserApplication::instance()->mainWindow()->size().width() * 3 / 5  ;  // FIXME ( OR not?)
+//     int windowWidth = BrowserApplication::instance()->mainWindow()->size().width() ;  // FIXME ( OR not?)
+//     int newWidth = windowWidth * 4 / 6;
+//     
+//     setGeometry( rect.x() + 1,
+//                           rect.y() + 1,
+//                           newWidth,
+//                           height()
+//                         );
 // 
-//     m_historyComboBox->setGeometry( rect.x(),
-//                                                             rect.y(),
-//                                                             newWidth,
-//                                                             m_historyComboBox->height()
-//                                                             );
-// 
-//     QWidget::resizeEvent( event );
+//     KHistoryComboBox::resizeEvent( event ); 
 // }
