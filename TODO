@@ -30,3 +30,6 @@ NEXT..
 - NEW save/load setting functions in KMainWIndow
 - improve CMakeLists.txt 4.4 required, 4.5 better..
 - browse code to search TODO and FIXME
+- qDebug --> kWarning() / kDebug()!
+- dbus support
+
