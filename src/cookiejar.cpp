@@ -26,13 +26,13 @@
 // KDE Includes
 #include <KConfig>
 #include <KStandardDirs>
+#include <KDebug>
 
 // Qt Includes
 #include <QtCore>
 #include <QtGui>
 #include <QtWebKit>
 
-#include <QDebug>
 
 static const unsigned int JAR_VERSION = 23;
 
@@ -65,7 +65,7 @@ QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list)
         QList<QNetworkCookie> newCookies = QNetworkCookie::parseCookies(value);
         if (newCookies.count() == 0 && value.length() != 0) 
         {
-            qWarning() << "CookieJar: Unable to parse saved cookie:" << value;
+            kWarning() << "CookieJar: Unable to parse saved cookie:" << value;
         }
         for (int j = 0; j < newCookies.count(); ++j)
             list.append(newCookies.at(j));
@@ -282,7 +282,7 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const
                 }
 #if 0
                 else
-                    qWarning() << "setCookiesFromUrl failed" << url << cookieList.value(0).toRawForm();
+                    kWarning() << "setCookiesFromUrl failed" << url << cookieList.value(0).toRawForm();
 #endif
             }
         }

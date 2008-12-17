@@ -237,7 +237,7 @@ void WebView::loadFinished()
 {
     if (m_progress != 100) 
     {
-        qWarning() << "Recieved finished signal while progress is still:" << progress()
+        kWarning() << "Recieved finished signal while progress is still:" << progress()
                    << "Url:" << url();
     }
     m_progress = 0;

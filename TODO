@@ -24,7 +24,6 @@ NEXT..
 
 +------------------------
 
-- Kconfig::gloabl : investigate.
 - contextMenu in searchbar to set different search engines
 - save toolbars settings
 - NEW save/load setting functions in KMainWIndow

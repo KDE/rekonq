@@ -18,10 +18,15 @@
  *
  * ============================================================ */
 
+// Local Includes
 #include "autosaver.h"
 
+// KDE Includes
+#include <KDebug>
+
+// Qt Includes
 #include <QtCore>
-#include <QtDebug>
+
 
 #define AUTOSAVE_IN  1000 * 3  // seconds
 #define MAXWAIT      1000 * 15 // seconds
@@ -36,7 +41,7 @@ AutoSaver::AutoSaver(QObject *parent) : QObject(parent)
 AutoSaver::~AutoSaver()
 {
     if (m_timer.isActive())
-        qWarning() << "AutoSaver: still active when destroyed, changes not saved.";
+        kWarning() << "AutoSaver: still active when destroyed, changes not saved.";
 }
 
 
@@ -69,8 +74,9 @@ void AutoSaver::saveIfNeccessary()
         return;
     m_timer.stop();
     m_firstChange = QTime();
-    if (!QMetaObject::invokeMethod(parent(), "save", Qt::DirectConnection)) {
-        qWarning() << "AutoSaver: error invoking slot save() on parent";
+    if (!QMetaObject::invokeMethod(parent(), "save", Qt::DirectConnection)) 
+    {
+        kWarning() << "AutoSaver: error invoking slot save() on parent";
     }
 }
 

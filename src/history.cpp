@@ -24,16 +24,16 @@
 #include "autosaver.h"
 #include "browserapplication.h"
 
+// KDE Includes
+#include <KConfig>
+#include <KDebug>
+
 // Qt Includes
 #include <QtCore>
 #include <QtGui>
 #include <QtWebKit>
 
 #include <QtAlgorithms>
-#include <QDebug>
-
-// KDE Includes
-#include <KConfig>
 
 
 static const unsigned int HISTORY_VERSION = 23;
@@ -235,7 +235,7 @@ void HistoryManager::load()
         return;
     if (!historyFile.open(QFile::ReadOnly)) 
     {
-        qWarning() << "Unable to open history file" << historyFile.fileName();
+        kWarning() << "Unable to open history file" << historyFile.fileName();
         return;
     }
 
@@ -340,7 +340,7 @@ void HistoryManager::save()
 
     if (!open) 
     {
-        qWarning() << "Unable to open history file for saving"
+        kWarning() << "Unable to open history file for saving"
                    << (saveAll ? tempFile.fileName() : historyFile.fileName());
         return;
     }
@@ -359,9 +359,9 @@ void HistoryManager::save()
     if (saveAll) 
     {
         if (historyFile.exists() && !historyFile.remove())
-            qWarning() << "History: error removing old history." << historyFile.errorString();
+            kWarning() << "History: error removing old history." << historyFile.errorString();
         if (!tempFile.rename(historyFile.fileName()))
-            qWarning() << "History: error moving new history over old." << tempFile.errorString() << historyFile.fileName();
+            kWarning() << "History: error moving new history over old." << tempFile.errorString() << historyFile.fileName();
     }
     m_lastSavedUrl = m_history.value(0).url;
 }
