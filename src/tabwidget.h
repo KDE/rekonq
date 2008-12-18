@@ -168,8 +168,8 @@ public:
     QLineEdit *lineEdit(int index) const;
     int webViewIndex(WebView *webView) const;
 
-    QByteArray saveState() const;
-    bool restoreState(const QByteArray &state);
+//     QByteArray saveState() const;
+//     bool restoreState(const QByteArray &state);
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event);

@@ -126,15 +126,18 @@ void BrowserMainWindow::save()
 
     KConfig config("rekonqrc");
     KConfigGroup group1 = config.group("BrowserMainWindow");   
-    QByteArray data = saveState(false);
+    QByteArray data = saveState();
     group1.writeEntry( QString("defaultState"), data );
+
+    KConfigGroup group2 = config.group("navigation toobar");
+    m_navigationBar->saveSettings( group2 );
 }
 
 
 static const qint32 BrowserMainWindowMagic = 0xba;
 
 
-QByteArray BrowserMainWindow::saveState(bool withTabs) const
+QByteArray BrowserMainWindow::saveState() const
 {
     int version = 2;
     QByteArray data;
@@ -144,25 +147,28 @@ QByteArray BrowserMainWindow::saveState(bool withTabs) const
     stream << qint32(version);
 
     stream << size();
-//     stream << !( statusBar()->isHidden() ); FIXME 
-    if (withTabs)
-//         stream << tabWidget()->saveState();
-    ;
-    else
+
+    stream << KToolBar::toolBarsLocked();
+    bool b = true; // statusBar()->isVisible() ;    FIXME
+    stream << b;
+//     if (withTabs)
+// //         stream << tabWidget()->saveState();
+//     ;
+//     else
         stream << QByteArray();
     return data;
 }
 
 
 
-bool BrowserMainWindow::restoreState(const QByteArray &state)
+void BrowserMainWindow::restoreState(const QByteArray &state)
 {
     int version = 2;
     QByteArray sd = state;
     QDataStream stream(&sd, QIODevice::ReadOnly);
     if ( stream.atEnd() )
     {
-        return false;
+        return;
     }
 
     qint32 marker;
@@ -171,26 +177,29 @@ bool BrowserMainWindow::restoreState(const QByteArray &state)
     stream >> v;
     if (marker != BrowserMainWindowMagic || v != version)
     {
-        return false;
+        return;
     }
 
     QSize size;
-    bool showStatusbar = true;
+    bool showStatusbar;
+    bool toolbarsLocked;
     QByteArray tabState;
 
     stream >> size;
-//     stream >> showStatusbar; FIXME see 30 lines over..
-    stream >> tabState;
+    stream >> toolbarsLocked;
+    stream >> showStatusbar; 
+//     stream >> tabState;
 
     resize(size);
     statusBar()->setVisible(showStatusbar);
     updateStatusbarActionText(showStatusbar);
 
-    if ( !tabWidget()->restoreState(tabState) )
-    {
-        return false;
-    }
-    return true;
+    KToolBar::setToolBarsLocked ( toolbarsLocked );
+//     if ( !tabWidget()->restoreState(tabState) )
+//     {
+//         return false;
+//     }
+    return;
 }
 
 
@@ -302,23 +311,19 @@ void BrowserMainWindow::setupMenu()
 
     m_historyBack = new KAction( i18n("Back"), this);
     m_historyBack->setShortcut( KShortcut( QKeySequence::Back ) ); 
-    m_tabWidget->addWebAction(m_historyBack, QWebPage::Back);
+    m_tabWidget->addWebAction( m_historyBack, QWebPage::Back );
     m_historyBack->setIconVisibleInMenu(false);
 
     m_historyForward = new KAction( i18n("Forward"), this);
     m_historyForward->setShortcut( KShortcut( QKeySequence::Forward ) );
-    m_tabWidget->addWebAction(m_historyForward, QWebPage::Forward);
+    m_tabWidget->addWebAction( m_historyForward, QWebPage::Forward );
     m_historyForward->setIconVisibleInMenu(false);
 
-    m_restoreLastSession = new KAction( i18n("Restore Last Session"), this);
-    connect(m_restoreLastSession, SIGNAL(triggered()), BrowserApplication::instance(), SLOT(restoreLastSession()));
-    m_restoreLastSession->setEnabled(BrowserApplication::instance()->canRestoreSession());
-
-    historyActions.append(m_historyBack);
-    historyActions.append(m_historyForward);
+    historyActions.append( m_historyBack );
+    historyActions.append( m_historyForward );
     historyActions.append( KStandardAction::home(this, SLOT( slotHome() ) , this ) );
-    historyActions.append(m_tabWidget->recentlyClosedTabsAction());
-    historyActions.append(m_restoreLastSession);
+    historyActions.append( m_tabWidget->recentlyClosedTabsAction() );
+
     historyMenu->setInitialActions(historyActions);
 
 
@@ -380,10 +385,16 @@ void BrowserMainWindow::setupToolBar()
 
     // UI settings
     setContextMenuPolicy( Qt::PreventContextMenu );
-    m_navigationBar->setIconDimensions(22);
 
-    KToolBar::setToolBarsEditable( false ); 
-    KToolBar::setToolBarsLocked( true ); 
+//     m_navigationBar->setIconDimensions(22);
+//     m_navigationBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+//     KToolBar::setToolBarsEditable( false ); 
+//     KToolBar::setToolBarsLocked( true ); 
+
+    KConfig config("rekonqrc");
+    KConfigGroup group = config.group("navigation toobar");
+    m_navigationBar->applySettings( group );
+
 }
 
 
@@ -504,9 +515,12 @@ void BrowserMainWindow::slotUpdateStatusbar(const QString &string)
 
 void BrowserMainWindow::slotUpdateWindowTitle(const QString &title)
 {
-    if (title.isEmpty()) {
+    if (title.isEmpty()) 
+    {
         setWindowTitle("rekonq");
-    } else {
+    } 
+    else 
+    {
         setWindowTitle(title + " - rekonq");
     }
 }

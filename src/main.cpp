@@ -41,13 +41,18 @@ int main(int argc, char **argv)
         "adjam7@gmail.com"  // bug report mail
     );
 
-    aboutData.addAuthor(ki18n("Andrea Diamantini"), ki18n("rekonq author"), "adjam7@gmail.com");
+    aboutData.addAuthor(
+        ki18n("Andrea Diamantini"), 
+        ki18n("rekonq author"), 
+        "adjam7@gmail.com"
+    );
+    
     aboutData.setProgramIconName("applications-internet");
 
     KCmdLineArgs::init( argc, argv, &aboutData );
     
     KCmdLineOptions options;
-    options.add("+URL", ki18n("Location to open"));
+    options.add( "+URL" , ki18n("Location to open") );
     KCmdLineArgs::addCmdLineOptions( options );
 
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();

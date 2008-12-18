@@ -774,7 +774,7 @@ void TabWidget::previousTab()
     setCurrentIndex(next);
 }
 
-
+/*
 static const qint32 TabWidgetMagic = 0xaa;
 
 
@@ -835,7 +835,7 @@ bool TabWidget::restoreState(const QByteArray &state)
     setCurrentIndex(currentTab);
 
     return true;
-}
+}*/
 
 
 // ----------------------------------------------------------------------------------------------------------------------------

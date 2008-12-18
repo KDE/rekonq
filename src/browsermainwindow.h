@@ -41,9 +41,8 @@ class QWebFrame;
 class TabWidget;
 class WebView;
 
-/*!
+/**
     The MainWindow of the Browser Application.
-
     Handles the tab widget and all the actions
 */
 class BrowserMainWindow : public KMainWindow 
@@ -57,8 +56,10 @@ public:
     static KUrl guessUrlFromString(const QString &url);
     TabWidget *tabWidget() const;
     WebView *currentTab() const;
-    QByteArray saveState(bool withTabs = true) const;
-    bool restoreState(const QByteArray &state);
+
+
+    QByteArray saveState() const;
+    void restoreState(const QByteArray &state);
 
 public slots:
     void loadPage(const QString &url);
