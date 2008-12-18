@@ -33,6 +33,7 @@
 // KDE Includes
 #include <KConfig>
 #include <KFontDialog>
+#include <KUrl>
 
 // Qt Includes
 #include <QtGui>
@@ -49,6 +50,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     setWindowTitle( i18n("Setting rekonq..") );
     setButtons( KDialog::Ok | KDialog::Close | KDialog::Apply );
+    kurlrequester->setMode( KFile::Directory );
     setModal(true);
 
     connect(this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
@@ -79,7 +81,7 @@ void SettingsDialog::loadDefaults()
     m_fixedFont = QFont(fixedFontFamily, fixedFontSize);
     fixedLabel->setText(QString(QLatin1String("%1 %2")).arg( m_fixedFont.family() ).arg( m_fixedFont.pointSize() ));
 
-    downloadsLocation->setText(QDesktopServices::storageLocation(QDesktopServices::DesktopLocation));
+    kurlrequester->setUrl( KUrl( "~" ) ); // QDesktopServices::storageLocation(QDesktopServices::DesktopLocation) );
 
     enableJavascript->setChecked(defaultSettings->testAttribute(QWebSettings::JavascriptEnabled));
     enablePlugins->setChecked(defaultSettings->testAttribute(QWebSettings::PluginsEnabled));
@@ -109,7 +111,7 @@ void SettingsDialog::loadFromSettings()
     expireHistory->setCurrentIndex(idx);
 
     QString downloadDirectory = group1.readEntry( QString("downloadDirectory") , QString() );
-    downloadsLocation->setText(downloadDirectory);
+    kurlrequester->setUrl( KUrl(downloadDirectory) );
 
     openLinksIn->setCurrentIndex( group1.readEntry( QString("openLinksIn"), openLinksIn->currentIndex() ) );
 
@@ -185,7 +187,7 @@ void SettingsDialog::saveToSettings()
     
     group1.writeEntry(QString("home"), homeLineEdit->text() );
     group1.writeEntry(QString("openLinksIn"), openLinksIn->currentIndex() );
-    group1.writeEntry(QString("downloadDirectory"), downloadsLocation->text() );
+    group1.writeEntry(QString("downloadDirectory"), kurlrequester->url().path() );
 
     int historyExpire = expireHistory->currentIndex();
     int idx = -1;
