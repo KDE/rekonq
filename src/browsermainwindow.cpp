@@ -356,7 +356,7 @@ void BrowserMainWindow::setupMenu()
 
 void BrowserMainWindow::setupToolBar()
 {
-    m_navigationBar = new KToolBar( i18n("Navigation") , this, Qt::TopToolBarArea, false, false, false); 
+    m_navigationBar = new KToolBar( i18n("Navigation") , this, Qt::TopToolBarArea, false, false, true); 
 
     m_historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
@@ -386,15 +386,16 @@ void BrowserMainWindow::setupToolBar()
     // UI settings
     setContextMenuPolicy( Qt::PreventContextMenu );
 
-//     m_navigationBar->setIconDimensions(22);
-//     m_navigationBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-//     KToolBar::setToolBarsEditable( false ); 
-//     KToolBar::setToolBarsLocked( true ); 
+    // setting initial style (if user hasn't decided something else)
+    m_navigationBar->setIconDimensions(22);
+    m_navigationBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
     KConfig config("rekonqrc");
     KConfigGroup group = config.group("navigation toobar");
-    m_navigationBar->applySettings( group );
-
+    if ( group.exists() )
+    {
+        m_navigationBar->applySettings( group );
+    }
 }
 
 
