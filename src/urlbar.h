@@ -46,8 +46,7 @@ private slots:
     void webViewIconChanged();
 
 protected:
-//     void paintEvent( QPaintEvent * );
-
+//      void paintEvent( QPaintEvent * );
 
 private:
     QLinearGradient generateGradient(const QColor &color) const;

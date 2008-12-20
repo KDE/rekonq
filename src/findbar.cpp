@@ -41,15 +41,14 @@ FindBar::FindBar(KMainWindow *parent)
     addWidget( label );
 
     m_lineEdit = new KLineEdit();
+    m_lineEdit->setMaximumWidth( 200 );
+
     connect( m_lineEdit, SIGNAL( returnPressed() ), parent, SLOT( slotFindNext() ) );
     connect( m_lineEdit, SIGNAL( textEdited(const QString &) ), parent, SLOT( slotFindNext() ) );
     addWidget( m_lineEdit );
 
     addAction( KStandardAction::findNext(parent, SLOT( slotFindNext() ) , this ) );
     addAction( KStandardAction::findPrev(parent, SLOT( slotFindPrevious() ) , this ) );
-
-    QLabel *spaceLabel = new QLabel("                                                                         "); // FIXME
-    addWidget( spaceLabel );
 
     // we start off hidden
     hide();

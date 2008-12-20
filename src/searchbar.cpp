@@ -24,6 +24,7 @@
 #include "browserapplication.h"
 #include "browsermainwindow.h"
 
+#include <KDebug>
 
 SearchBar::SearchBar(QWidget *parent) : 
     KLineEdit(parent)
