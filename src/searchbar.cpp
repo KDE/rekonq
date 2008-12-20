@@ -29,6 +29,8 @@ SearchBar::SearchBar(QWidget *parent) :
     KLineEdit(parent)
 {
     setMinimumWidth(180);
+    kWarning() << "setting fixed minimum width.." ;
+
     setFocusPolicy( Qt::WheelFocus );
     setMouseTracking( true );
     setAcceptDrops(true);

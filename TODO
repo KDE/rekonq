@@ -11,21 +11,17 @@ Road to 0.0.1 (first release)
 
 
 NEXT..
-- Fixing QByteArray save/load state!!
++ Fixing QByteArray save/load state!!
 - system SELECT ALL
 - better FULL SCREEN
 - simplify history
-- KDE download  = Kjob && Kget
-- configure dialog (A-LA amarok, konqueror) 
-- dbus support (?!)
-- KWallet support
 
 - Kpart ??
 
 +------------------------
 
 - contextMenu in searchbar to set different search engines
-- save toolbars settings
++ save toolbars settings
 - NEW save/load setting functions in KMainWIndow
 + improve CMakeLists.txt 4.4 required, 4.5 better..
 - browse code to search TODO and FIXME
