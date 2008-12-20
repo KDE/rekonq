@@ -27,8 +27,11 @@ NEXT..
 - contextMenu in searchbar to set different search engines
 - save toolbars settings
 - NEW save/load setting functions in KMainWIndow
-- improve CMakeLists.txt 4.4 required, 4.5 better..
++ improve CMakeLists.txt 4.4 required, 4.5 better..
 - browse code to search TODO and FIXME
-- qDebug --> kWarning() / kDebug()!
-- dbus support
++ qDebug --> kWarning() / kDebug()!
 
+- dbus support
+    - kget support
+    - kwallet support
+    - kwrite support ( optional, to view HTML code )
