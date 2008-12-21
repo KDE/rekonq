@@ -774,69 +774,6 @@ void TabWidget::previousTab()
     setCurrentIndex(next);
 }
 
-/*
-static const qint32 TabWidgetMagic = 0xaa;
-
-
-QByteArray TabWidget::saveState() const
-{
-    int version = 1;
-    QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
-
-    stream << qint32(TabWidgetMagic);
-    stream << qint32(version);
-
-    QStringList tabs;
-    for (int i = 0; i < count(); ++i)
-    {
-        if (WebView *tab = qobject_cast<WebView*>(widget(i))) 
-        {
-            tabs.append(tab->url().prettyUrl());
-        } 
-        else 
-        {
-            tabs.append(QString::null);
-        }
-    }
-    stream << tabs;
-    stream << currentIndex();
-    return data;
-}
-
-
-bool TabWidget::restoreState(const QByteArray &state)
-{
-    int version = 1;
-    QByteArray sd = state;
-    QDataStream stream(&sd, QIODevice::ReadOnly);
-    if (stream.atEnd())
-        return false;
-
-    qint32 marker;
-    qint32 v;
-    stream >> marker;
-    stream >> v;
-    if (marker != TabWidgetMagic || v != version)
-        return false;
-
-    QStringList openTabs;
-    stream >> openTabs;
-
-    for (int i = 0; i < openTabs.count(); ++i) 
-    {
-        if (i != 0)
-            newTab();
-        loadPage(openTabs.at(i));
-    }
-
-    int currentTab;
-    stream >> currentTab;
-    setCurrentIndex(currentTab);
-
-    return true;
-}*/
-
 
 // ----------------------------------------------------------------------------------------------------------------------------
 
@@ -847,10 +784,13 @@ WebActionMapper::WebActionMapper(KAction *root, QWebPage::WebAction webAction, Q
     , m_root(root)
     , m_webAction(webAction)
 {
-    if (!m_root)
+    if ( !m_root )
+    {
         return;
-    connect(m_root, SIGNAL(triggered()), this, SLOT(rootTriggered()));
-    connect(root, SIGNAL(destroyed(QObject *)), this, SLOT(rootDestroyed()));
+    }
+    connect(m_root, SIGNAL( triggered() ), this, SLOT( rootTriggered() ) );
+    connect(root, SIGNAL( destroyed(QObject *) ), this, SLOT( rootDestroyed() ) );
+    
     root->setEnabled(false);
 }
 
@@ -869,9 +809,11 @@ void WebActionMapper::currentDestroyed()
 
 void WebActionMapper::addChild(KAction *action)
 {
-    if (!action)
+    if ( !action )
+    {
         return;
-    connect(action, SIGNAL(changed()), this, SLOT(childChanged()));
+    }
+    connect(action, SIGNAL( changed() ), this, SLOT( childChanged() ) );
 }
 
 QWebPage::WebAction WebActionMapper::webAction() const
@@ -913,8 +855,11 @@ void WebActionMapper::updateCurrent(QWebPage *currentParent)
 
     m_currentParent = currentParent;
     if (!m_root)
+    {
         return;
-    if (!m_currentParent) {
+    }
+    if (!m_currentParent) 
+    {
         m_root->setEnabled(false);
         m_root->setChecked(false);
         return;
@@ -922,5 +867,5 @@ void WebActionMapper::updateCurrent(QWebPage *currentParent)
     KAction *source = new KAction( m_currentParent->action(m_webAction) );
     m_root->setChecked(source->isChecked());
     m_root->setEnabled(source->isEnabled());
-    connect(m_currentParent, SIGNAL(destroyed(QObject *)), this, SLOT(currentDestroyed()));
+    connect(m_currentParent, SIGNAL( destroyed(QObject *) ), this, SLOT( currentDestroyed() ) );
 }

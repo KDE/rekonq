@@ -151,11 +151,7 @@ QByteArray BrowserMainWindow::saveState() const
     stream << KToolBar::toolBarsLocked();
     bool b = true; // statusBar()->isVisible() ;    FIXME
     stream << b;
-//     if (withTabs)
-// //         stream << tabWidget()->saveState();
-//     ;
-//     else
-        stream << QByteArray();
+    stream << QByteArray();
     return data;
 }
 
@@ -188,17 +184,12 @@ void BrowserMainWindow::restoreState(const QByteArray &state)
     stream >> size;
     stream >> toolbarsLocked;
     stream >> showStatusbar; 
-//     stream >> tabState;
 
     resize(size);
     statusBar()->setVisible(showStatusbar);
     updateStatusbarActionText(showStatusbar);
 
     KToolBar::setToolBarsLocked ( toolbarsLocked );
-//     if ( !tabWidget()->restoreState(tabState) )
-//     {
-//         return false;
-//     }
     return;
 }
 
