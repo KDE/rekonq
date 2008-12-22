@@ -103,7 +103,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     setButtons(KDialog::Ok | KDialog::Cancel | KDialog::Apply);
     showButtonSeparator(true);
 
-    setWindowTitle( i18n("Setting rekonq..") );
+    setWindowTitle( i18n("rekonfig..") );
     setModal(true);
 
     connect(this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );

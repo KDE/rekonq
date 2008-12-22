@@ -4,6 +4,13 @@ Road to 0.0.1 (first release)
 + bookmarks (share konqueror's)
 + some porting
 
+ROAD to 0.0.2 (second release)
++ setting rekonq with KConfigDialog ("rekonfig")
+- configure shortcuts
+- better find toolbar
+- fixed search bar width
+
++ --------------------------------
 0.0.2
 + QUrl --> KUrl
 + KDEize menubar (settings)
@@ -18,6 +25,7 @@ NEXT..
 - kMainWindow save/read settings
 - color progress
 - contextMenu in searchbar to set different search engines
+- KDE proxy support
 
 - QWebPluginFactory subclass to load KParts into QtWebKit.
 
@@ -28,6 +36,6 @@ NEXT..
 
 - Kpart ??
 
-+------------------------
++ ------------------------
 
 
