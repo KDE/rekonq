@@ -338,6 +338,7 @@ void BrowserMainWindow::setupMenu()
     //  ------------------------------------------------------------- SETTINGS ------------------------------------------------------------------------------------------------------
     KMenu *settingsMenu = (KMenu *) menuBar()->addMenu( i18n("&Settings") );
 
+    settingsMenu->addAction( KStandardAction::keyBindings( this, SLOT( configureShortcuts() ), this ) );    //FIXME need new slot and actionCollection !!
     settingsMenu->addAction( KStandardAction::preferences(this, SLOT( slotPreferences() ) , this ) );
 
     //  ------------------------------------------------------------- HELP  --------------------------------------------------------------------------------------------------
