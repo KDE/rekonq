@@ -1,0 +1,130 @@
+<ui version="4.0" >
+ <class>privacy</class>
+ <widget class="QWidget" name="privacy" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>461</width>
+    <height>212</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Privacy</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Web Content</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2" >
+      <item>
+       <widget class="QCheckBox" name="enablePlugins" >
+        <property name="text" >
+         <string>Enable Plugins</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="enableJavascript" >
+        <property name="text" >
+         <string>Enable Javascript</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="cookiesGroupBox" >
+     <property name="title" >
+      <string>Cookies</string>
+     </property>
+     <layout class="QGridLayout" name="_2" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>Accept Cookies:</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QComboBox" name="acceptCombo" >
+        <item>
+         <property name="text" >
+          <string>Always</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Never</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Only from sites you navigate to</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QPushButton" name="exceptionsButton" >
+        <property name="text" >
+         <string>Exceptions...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Keep until:</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QComboBox" name="keepUntilCombo" >
+        <item>
+         <property name="text" >
+          <string>They expire</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>I exit the application</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>At most 90 days</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QPushButton" name="cookiesButton" >
+        <property name="text" >
+         <string>Cookies...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

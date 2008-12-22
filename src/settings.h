@@ -25,18 +25,24 @@
 #include "ui_settings.h"
 
 // KDE Includes
-#include <KDialog>
+#include <KConfigDialog>
 
 // Qt Includes
 #include <QWidget>
 
-class SettingsDialog : public KDialog, private Ui::Settings
+class Private;
+
+class SettingsDialog : public KConfigDialog
 {
     Q_OBJECT
 
 public:
     SettingsDialog(QWidget *parent = 0);
+    ~SettingsDialog();
 
+private:
+    Private* const d;
+    
 private slots:
     void loadDefaults();
     void loadFromSettings();

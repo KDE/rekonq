@@ -30,8 +30,16 @@
 #include "networkaccessmanager.h"
 #include "webview.h"
 
+//Ui Includes
+#include "ui_settings_general.h"
+#include "ui_settings_appearance.h"
+#include "ui_settings_privacy.h"
+#include "ui_settings_proxy.h"
+
 // KDE Includes
 #include <KConfig>
+#include <KConfigSkeleton>
+#include <KPageWidgetItem>
 #include <KFontDialog>
 #include <KUrl>
 
@@ -39,32 +47,83 @@
 #include <QtGui>
 #include <QtWebKit>
 
-SettingsDialog::SettingsDialog(QWidget *parent)
-    : KDialog(parent)
+
+class Private
 {
-    QWidget *widget = new QWidget;
+private:
+    Ui::general generalUi;
+    Ui::appearance appearanceUi;
+    Ui::privacy privacyUi;
+    Ui::proxy proxyUi;
 
-    setupUi(widget);
+    Private(SettingsDialog *parent);
 
-    setMainWidget(widget);
+friend class SettingsDialog;
+};
+
+
+Private::Private(SettingsDialog *parent)
+{
+    QWidget *widget;
+    KPageWidgetItem *pageItem;
+
+    widget = new QWidget;
+    generalUi.setupUi( widget );
+    widget->layout()->setMargin(0);
+    pageItem = parent->addPage( widget , i18n("General") );
+    pageItem->setIcon( KIcon("rekonq") );
+    generalUi.kurlrequester->setMode( KFile::Directory );
+
+    widget = new QWidget;
+    appearanceUi.setupUi( widget );
+    widget->layout()->setMargin(0);
+    pageItem = parent->addPage( widget , i18n("Appearance") );
+    pageItem->setIcon( KIcon("kfontview") );
+
+    widget = new QWidget;
+    privacyUi.setupUi( widget );
+    widget->layout()->setMargin(0);
+    pageItem = parent->addPage( widget , i18n("Privacy") );
+    pageItem->setIcon( KIcon("preferences-desktop-personal") );
+
+    widget = new QWidget;
+    proxyUi.setupUi( widget );
+    widget->layout()->setMargin(0);
+    pageItem = parent->addPage( widget , i18n("Proxy") );
+    pageItem->setIcon( KIcon("preferences-system-network") );
+}
+
+// -----------------------------------------------------------------------------------------------------
+
+SettingsDialog::SettingsDialog(QWidget *parent)
+    : KConfigDialog(parent, "Settings", new KConfigSkeleton("rekonqrc") )
+    , d(new Private(this) ) 
+{
+    setFaceType(KPageDialog::List);
+    setButtons(KDialog::Ok | KDialog::Cancel | KDialog::Apply);
+    showButtonSeparator(true);
 
     setWindowTitle( i18n("Setting rekonq..") );
-    setButtons( KDialog::Ok | KDialog::Close | KDialog::Apply );
-    kurlrequester->setMode( KFile::Directory );
     setModal(true);
 
     connect(this, SIGNAL( okClicked() ), this, SLOT( slotOk() ) );
     connect(this, SIGNAL( closeClicked() ), this, SLOT( close() ) );
     connect(this, SIGNAL( applyClicked() ), this, SLOT( slotApply() ) );
 
-    connect(exceptionsButton, SIGNAL(clicked()), this, SLOT( showExceptions() ) );
-    connect(setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT( setHomeToCurrentPage() ) );
-    connect(cookiesButton, SIGNAL(clicked()), this, SLOT( showCookies() ) );
-    connect(standardFontButton, SIGNAL(clicked()), this, SLOT( chooseFont() ) );
-    connect(fixedFontButton, SIGNAL(clicked()), this, SLOT( chooseFixedFont() ) );
+    connect( d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT( setHomeToCurrentPage() ) );
+    connect( d->privacyUi.exceptionsButton, SIGNAL(clicked()), this, SLOT( showExceptions() ) );
+    connect( d->privacyUi.cookiesButton, SIGNAL(clicked()), this, SLOT( showCookies() ) );
+    connect( d->appearanceUi.standardFontButton, SIGNAL(clicked()), this, SLOT( chooseFont() ) );
+    connect( d->appearanceUi.fixedFontButton, SIGNAL(clicked()), this, SLOT( chooseFixedFont() ) );
 
     loadDefaults();
     loadFromSettings();
+}
+
+
+SettingsDialog::~SettingsDialog()
+{
+    delete d;
 }
 
 
@@ -74,17 +133,17 @@ void SettingsDialog::loadDefaults()
     QString standardFontFamily = defaultSettings->fontFamily(QWebSettings::StandardFont);
     int standardFontSize = defaultSettings->fontSize(QWebSettings::DefaultFontSize);
     m_standardFont = QFont(standardFontFamily, standardFontSize);
-    standardLabel->setText(QString(QLatin1String("%1 %2")).arg( m_standardFont.family() ).arg( m_standardFont.pointSize() ));
+    d->appearanceUi.standardLabel->setText(QString(QLatin1String("%1 %2")).arg( m_standardFont.family() ).arg( m_standardFont.pointSize() ));
 
     QString fixedFontFamily = defaultSettings->fontFamily(QWebSettings::FixedFont);
     int fixedFontSize = defaultSettings->fontSize(QWebSettings::DefaultFixedFontSize);
     m_fixedFont = QFont(fixedFontFamily, fixedFontSize);
-    fixedLabel->setText(QString(QLatin1String("%1 %2")).arg( m_fixedFont.family() ).arg( m_fixedFont.pointSize() ));
+    d->appearanceUi.fixedLabel->setText(QString(QLatin1String("%1 %2")).arg( m_fixedFont.family() ).arg( m_fixedFont.pointSize() ));
 
-    kurlrequester->setUrl( KUrl( "~" ) ); // QDesktopServices::storageLocation(QDesktopServices::DesktopLocation) );
+    d->generalUi.kurlrequester->setUrl( KUrl( "~" ) ); // QDesktopServices::storageLocation(QDesktopServices::DesktopLocation) );
 
-    enableJavascript->setChecked(defaultSettings->testAttribute(QWebSettings::JavascriptEnabled));
-    enablePlugins->setChecked(defaultSettings->testAttribute(QWebSettings::PluginsEnabled));
+    d->privacyUi.enableJavascript->setChecked(defaultSettings->testAttribute(QWebSettings::JavascriptEnabled));
+    d->privacyUi.enablePlugins->setChecked(defaultSettings->testAttribute(QWebSettings::PluginsEnabled));
 }
 
 
@@ -94,7 +153,7 @@ void SettingsDialog::loadFromSettings()
     KConfigGroup group1 = config.group("Global Settings");
     
     QString defaultHome = QString("http://www.kde.org");
-    homeLineEdit->setText( group1.readEntry(QString("home"), defaultHome) );
+    d->generalUi.homeLineEdit->setText( group1.readEntry(QString("home"), defaultHome) );
 
     int historyExpire = group1.readEntry( QString("historyExpire"), QString().toInt() );
     int idx = 0;    
@@ -108,12 +167,12 @@ void SettingsDialog::loadFromSettings()
         case -1: idx = 5; break;
         default: idx = 5;
     }
-    expireHistory->setCurrentIndex(idx);
+    d->generalUi.expireHistory->setCurrentIndex(idx);
 
     QString downloadDirectory = group1.readEntry( QString("downloadDirectory") , QString() );
-    kurlrequester->setUrl( KUrl(downloadDirectory) );
+    d->generalUi.kurlrequester->setUrl( KUrl(downloadDirectory) );
 
-    openLinksIn->setCurrentIndex( group1.readEntry( QString("openLinksIn"), openLinksIn->currentIndex() ) );
+    d->generalUi.openLinksIn->setCurrentIndex( group1.readEntry( QString("openLinksIn"), d->generalUi.openLinksIn->currentIndex() ) );
 
 
     // Appearance
@@ -122,14 +181,14 @@ void SettingsDialog::loadFromSettings()
     m_fixedFont = group2.readEntry( QString("fixedFont"), m_fixedFont );
     m_standardFont = group2.readEntry( QString("standardFont"), m_standardFont );
 
-    standardLabel->setText(QString(QLatin1String("%1 %2")).arg( m_standardFont.family() ).arg( m_standardFont.pointSize() ) );
-    fixedLabel->setText(QString(QLatin1String("%1 %2")).arg( m_fixedFont.family() ).arg( m_fixedFont.pointSize() ) );
-
-    enableJavascript->setChecked( group2.readEntry( QString("enableJavascript"), enableJavascript->isChecked() ) );
-    enablePlugins->setChecked( group2.readEntry( QString("enablePlugins"), enablePlugins->isChecked() ) );
+    d->appearanceUi.standardLabel->setText(QString(QLatin1String("%1 %2")).arg( m_standardFont.family() ).arg( m_standardFont.pointSize() ) );
+    d->appearanceUi.fixedLabel->setText(QString(QLatin1String("%1 %2")).arg( m_fixedFont.family() ).arg( m_fixedFont.pointSize() ) );
 
     // Privacy
     KConfigGroup group3 = config.group("Privacy Settings");
+
+    d->privacyUi.enableJavascript->setChecked( group3.readEntry( QString("enableJavascript"), d->privacyUi.enableJavascript->isChecked() ) );
+    d->privacyUi.enablePlugins->setChecked( group3.readEntry( QString("enablePlugins"), d->privacyUi.enablePlugins->isChecked() ) );
 
     CookieJar *jar = BrowserApplication::cookieJar();
     QString value = group3.readEntry( QString("acceptCookies"), QString("AcceptOnlyFromSitesNavigatedTo") ) ;
@@ -140,13 +199,13 @@ void SettingsDialog::loadFromSettings()
     switch(acceptCookies) 
     {
     case CookieJar::AcceptAlways:
-        acceptCombo->setCurrentIndex(0);
+        d->privacyUi.acceptCombo->setCurrentIndex(0);
         break;
     case CookieJar::AcceptNever:
-        acceptCombo->setCurrentIndex(1);
+        d->privacyUi.acceptCombo->setCurrentIndex(1);
         break;
     case CookieJar::AcceptOnlyFromSitesNavigatedTo:
-        acceptCombo->setCurrentIndex(2);
+        d->privacyUi.acceptCombo->setCurrentIndex(2);
         break;
     }
 
@@ -155,27 +214,28 @@ void SettingsDialog::loadFromSettings()
     CookieJar::KeepPolicy keepCookies = keepPolicyEnum.keyToValue( value.toLocal8Bit() ) == -1 ?
                         CookieJar::KeepUntilExpire :
                         static_cast<CookieJar::KeepPolicy>(keepPolicyEnum.keyToValue( value.toLocal8Bit() ) );
-    switch(keepCookies) {
+    switch(keepCookies) 
+    {
     case CookieJar::KeepUntilExpire:
-        keepUntilCombo->setCurrentIndex(0);
+        d->privacyUi.keepUntilCombo->setCurrentIndex(0);
         break;
     case CookieJar::KeepUntilExit:
-        keepUntilCombo->setCurrentIndex(1);
+        d->privacyUi.keepUntilCombo->setCurrentIndex(1);
         break;
     case CookieJar::KeepUntilTimeLimit:
-        keepUntilCombo->setCurrentIndex(2);
+        d->privacyUi.keepUntilCombo->setCurrentIndex(2);
         break;
     }
 
     // Proxy
     KConfigGroup group4 = config.group("Proxy Settings");
 
-    proxySupport->setChecked( group4.readEntry( QString("enabled"), false ) );
-    proxyType->setCurrentIndex( group4.readEntry( QString("type"), 0) );
-    proxyHostName->setText( group4.readEntry( QString("hostName"), QString() ) );
-    proxyPort->setValue( group4.readEntry( QString("port"), QString().toInt() ) );
-    proxyUserName->setText( group4.readEntry( QString("userName") , QString() ) );
-    proxyPassword->setText( group4.readEntry( QString("password") , QString() ) );
+    d->proxyUi.proxySupport->setChecked( group4.readEntry( QString("enabled"), false ) );
+    d->proxyUi.proxyType->setCurrentIndex( group4.readEntry( QString("type"), 0) );
+    d->proxyUi.proxyHostName->setText( group4.readEntry( QString("hostName"), QString() ) );
+    d->proxyUi.proxyPort->setValue( group4.readEntry( QString("port"), QString().toInt() ) );
+    d->proxyUi.proxyUserName->setText( group4.readEntry( QString("userName") , QString() ) );
+    d->proxyUi.proxyPassword->setText( group4.readEntry( QString("password") , QString() ) );
 
 }
 
@@ -185,11 +245,11 @@ void SettingsDialog::saveToSettings()
     KConfig config("rekonqrc");
     KConfigGroup group1 = config.group("Global Settings");
     
-    group1.writeEntry(QString("home"), homeLineEdit->text() );
-    group1.writeEntry(QString("openLinksIn"), openLinksIn->currentIndex() );
-    group1.writeEntry(QString("downloadDirectory"), kurlrequester->url().path() );
+    group1.writeEntry(QString("home"), d->generalUi.homeLineEdit->text() );
+    group1.writeEntry(QString("openLinksIn"), d->generalUi.openLinksIn->currentIndex() );
+    group1.writeEntry(QString("downloadDirectory"), d->generalUi.kurlrequester->url().path() );
 
-    int historyExpire = expireHistory->currentIndex();
+    int historyExpire = d->generalUi.expireHistory->currentIndex();
     int idx = -1;
     switch (historyExpire) 
     {
@@ -207,11 +267,11 @@ void SettingsDialog::saveToSettings()
     group2.writeEntry(QString("standardFont"), m_standardFont);
 
     KConfigGroup group3 = config.group("Privacy Settings");
-    group3.writeEntry(QString("enableJavascript"), enableJavascript->isChecked() );
-    group3.writeEntry(QString("enablePlugins"), enablePlugins->isChecked() );
+    group3.writeEntry(QString("enableJavascript"), d->privacyUi.enableJavascript->isChecked() );
+    group3.writeEntry(QString("enablePlugins"), d->privacyUi.enablePlugins->isChecked() );
 
     CookieJar::KeepPolicy keepCookies;
-    switch(acceptCombo->currentIndex()) 
+    switch( d->privacyUi.acceptCombo->currentIndex() ) 
     {
     default:
     case 0:
@@ -229,7 +289,7 @@ void SettingsDialog::saveToSettings()
     group3.writeEntry(QString("acceptCookies"), QString(acceptPolicyEnum.valueToKey(keepCookies) ) );
 
     CookieJar::KeepPolicy keepPolicy;
-    switch(keepUntilCombo->currentIndex()) 
+    switch( d->privacyUi.keepUntilCombo->currentIndex() ) 
     {
         default:
     case 0:
@@ -248,12 +308,12 @@ void SettingsDialog::saveToSettings()
 
     
     KConfigGroup group4 = config.group("Proxy Settings");
-    group4.writeEntry(QString("enabled"), proxySupport->isChecked() );
-    group4.writeEntry(QString("type"), proxyType->currentIndex() );
-    group4.writeEntry(QString("hostName"), proxyHostName->text() );
-    group4.writeEntry(QString("port"), proxyPort->text() );
-    group4.writeEntry(QString("userName"), proxyUserName->text() );
-    group4.writeEntry(QString("password"), proxyPassword->text() );
+    group4.writeEntry(QString("enabled"), d->proxyUi.proxySupport->isChecked() );
+    group4.writeEntry(QString("type"), d->proxyUi.proxyType->currentIndex() );
+    group4.writeEntry(QString("hostName"), d->proxyUi.proxyHostName->text() );
+    group4.writeEntry(QString("port"), d->proxyUi.proxyPort->text() );
+    group4.writeEntry(QString("userName"), d->proxyUi.proxyUserName->text() );
+    group4.writeEntry(QString("password"), d->proxyUi.proxyPassword->text() );
 
     config.sync();
 
@@ -286,7 +346,7 @@ void SettingsDialog::chooseFont()
     if ( result == KFontDialog::Accepted  ) 
     {
         m_standardFont = myFont;
-        standardLabel->setText(QString(QLatin1String("%1 %2")).arg( m_standardFont.family() ).arg( m_standardFont.pointSize() ) );
+        d->appearanceUi.standardLabel->setText(QString(QLatin1String("%1 %2")).arg( m_standardFont.family() ).arg( m_standardFont.pointSize() ) );
     }
 }
 
@@ -299,7 +359,7 @@ void SettingsDialog::chooseFixedFont()
     if ( result == KFontDialog::Accepted  ) 
     {
         m_fixedFont = myFont;
-        fixedLabel->setText(QString(QLatin1String("%1 %2")).arg( m_fixedFont.family() ).arg( m_fixedFont.pointSize() ) );
+        d->appearanceUi.fixedLabel->setText(QString(QLatin1String("%1 %2")).arg( m_fixedFont.family() ).arg( m_fixedFont.pointSize() ) );
     }
 }
 
@@ -310,7 +370,7 @@ void SettingsDialog::setHomeToCurrentPage()
     WebView *webView = mw->currentTab();
     if (webView)
     {
-        homeLineEdit->setText( webView->url().prettyUrl() );
+        d->generalUi.homeLineEdit->setText( webView->url().prettyUrl() );
     }
 }
 

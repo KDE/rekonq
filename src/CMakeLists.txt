@@ -28,7 +28,10 @@ KDE4_ADD_UI_FILES( rekonq_SRCS
     history.ui
     passworddialog.ui
     proxy.ui
-    settings.ui
+    settings_general.ui
+    settings_appearance.ui
+    settings_privacy.ui
+    settings_proxy.ui
  )
 
 # include(${QT_USE_FILE})
