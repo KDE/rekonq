@@ -23,7 +23,7 @@
 #include "tabwidget.h"
 
 #include "browserapplication.h"
-#include "browsermainwindow.h"
+#include "mainwindow.h"
 #include "history.h"
 #include "urlbar.h"
 #include "webview.h"

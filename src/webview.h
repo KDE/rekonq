@@ -33,7 +33,7 @@ class QNetworkReply;
 class QSslError;
 QT_END_NAMESPACE
 
-class BrowserMainWindow;
+class MainWindow;
 
 
 class WebPage : public QWebPage 
@@ -45,7 +45,7 @@ signals:
 
 public:
     WebPage(QObject *parent = 0);
-    BrowserMainWindow *mainWindow();
+    MainWindow *mainWindow();
 
 protected:
     bool acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type);

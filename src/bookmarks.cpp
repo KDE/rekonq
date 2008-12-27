@@ -21,7 +21,7 @@
 #include "bookmarks.h"
 #include "bookmarks.moc"
 
-#include "browsermainwindow.h"
+#include "mainwindow.h"
 #include "webview.h"
 
 // KDE Includes
@@ -31,7 +31,7 @@ OwnBookMarks::OwnBookMarks(KMainWindow *parent)
     : QObject(parent)
     , KBookmarkOwner()
 {
-    m_parent = qobject_cast<BrowserMainWindow*>( parent );
+    m_parent = qobject_cast<MainWindow*>( parent );
     connect( this, SIGNAL( openUrl( const KUrl &) ) , parent , SLOT( loadUrl( const KUrl & ) ) );
 }
 

@@ -20,7 +20,7 @@
 
 
 // Local Includes
-#include "browsermainwindow.h"
+#include "mainwindow.h"
 #include "autosaver.h"
 #include "browserapplication.h"
 #include "downloadmanager.h"
@@ -54,7 +54,7 @@
 #include <QDebug>
 
 
-BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
+MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : KMainWindow(parent, flags)
     , m_tabWidget(new TabWidget(this))
     , m_autoSaver(new AutoSaver(this))
@@ -103,7 +103,7 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
 }
 
 
-BrowserMainWindow::~BrowserMainWindow()
+MainWindow::~MainWindow()
 {
     m_autoSaver->changeOccurred();
     m_autoSaver->saveIfNeccessary();
@@ -111,21 +111,21 @@ BrowserMainWindow::~BrowserMainWindow()
 }
 
 
-void BrowserMainWindow::loadDefaultState()
+void MainWindow::loadDefaultState()
 {
     KConfig config("rekonqrc");
-    KConfigGroup group1 = config.group("BrowserMainWindow");   
+    KConfigGroup group1 = config.group("MainWindow");   
     QByteArray data = group1.readEntry(QString("defaultState"), QByteArray() );
     restoreState(data); 
 }
 
 
-void BrowserMainWindow::save()
+void MainWindow::save()
 {
     BrowserApplication::instance()->saveSession();
 
     KConfig config("rekonqrc");
-    KConfigGroup group1 = config.group("BrowserMainWindow");   
+    KConfigGroup group1 = config.group("MainWindow");   
     QByteArray data = saveState();
     group1.writeEntry( QString("defaultState"), data );
 
@@ -134,16 +134,16 @@ void BrowserMainWindow::save()
 }
 
 
-static const qint32 BrowserMainWindowMagic = 0xba;
+static const qint32 MainWindowMagic = 0xba;
 
 
-QByteArray BrowserMainWindow::saveState() const
+QByteArray MainWindow::saveState() const
 {
     int version = 2;
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
 
-    stream << qint32(BrowserMainWindowMagic);
+    stream << qint32(MainWindowMagic);
     stream << qint32(version);
 
     stream << size();
@@ -157,7 +157,7 @@ QByteArray BrowserMainWindow::saveState() const
 
 
 
-void BrowserMainWindow::restoreState(const QByteArray &state)
+void MainWindow::restoreState(const QByteArray &state)
 {
     int version = 2;
     QByteArray sd = state;
@@ -171,7 +171,7 @@ void BrowserMainWindow::restoreState(const QByteArray &state)
     qint32 v;
     stream >> marker;
     stream >> v;
-    if (marker != BrowserMainWindowMagic || v != version)
+    if (marker != MainWindowMagic || v != version)
     {
         return;
     }
@@ -194,7 +194,7 @@ void BrowserMainWindow::restoreState(const QByteArray &state)
 }
 
 
-void BrowserMainWindow::setupMenu()
+void MainWindow::setupMenu()
 {
     //  ------------------------------------------------------------- FILE --------------------------------------------------------------------------------------------------
     KMenu *fileMenu = (KMenu *) menuBar()->addMenu( i18n("&File") );
@@ -346,7 +346,7 @@ void BrowserMainWindow::setupMenu()
 }
 
 
-void BrowserMainWindow::setupToolBar()
+void MainWindow::setupToolBar()
 {
     m_navigationBar = new KToolBar( i18n("Navigation") , this, Qt::TopToolBarArea, false, false, true); 
 
@@ -391,13 +391,13 @@ void BrowserMainWindow::setupToolBar()
 }
 
 
-void BrowserMainWindow::updateStatusbarActionText(bool visible)
+void MainWindow::updateStatusbarActionText(bool visible)
 {
     m_viewStatusbar->setText(!visible ? i18n("Show Status Bar") : i18n("Hide Status Bar"));
 }
 
 
-void BrowserMainWindow::slotViewStatusbar()
+void MainWindow::slotViewStatusbar()
 {
     if (statusBar()->isVisible()) 
     {
@@ -413,7 +413,7 @@ void BrowserMainWindow::slotViewStatusbar()
 }
 
 
-KUrl BrowserMainWindow::guessUrlFromString(const QString &string)
+KUrl MainWindow::guessUrlFromString(const QString &string)
 {
     QString urlStr = string.trimmed();
     QRegExp test(QLatin1String("^[a-zA-Z]+\\:.*"));
@@ -468,45 +468,45 @@ KUrl BrowserMainWindow::guessUrlFromString(const QString &string)
 }
 
 
-void BrowserMainWindow::loadUrl(const KUrl &url)
+void MainWindow::loadUrl(const KUrl &url)
 {
     loadPage( url.url() );
 }
 
 
-void BrowserMainWindow::slotDownloadManager()
+void MainWindow::slotDownloadManager()
 {
     BrowserApplication::downloadManager()->show();
 }
 
 
-void BrowserMainWindow::slotSelectLineEdit()
+void MainWindow::slotSelectLineEdit()
 {
     m_tabWidget->currentLineEdit()->selectAll();
     m_tabWidget->currentLineEdit()->setFocus();
 }
 
 
-void BrowserMainWindow::slotFileSaveAs()
+void MainWindow::slotFileSaveAs()
 {
     BrowserApplication::downloadManager()->download(currentTab()->url(), true);
 }
 
 
-void BrowserMainWindow::slotPreferences()
+void MainWindow::slotPreferences()
 {
     SettingsDialog *s = new SettingsDialog(this);
     s->show();
 }
 
 
-void BrowserMainWindow::slotUpdateStatusbar(const QString &string)
+void MainWindow::slotUpdateStatusbar(const QString &string)
 {
     statusBar()->showMessage(string, 2000);
 }
 
 
-void BrowserMainWindow::slotUpdateWindowTitle(const QString &title)
+void MainWindow::slotUpdateWindowTitle(const QString &title)
 {
     if (title.isEmpty()) 
     {
@@ -519,15 +519,15 @@ void BrowserMainWindow::slotUpdateWindowTitle(const QString &title)
 }
 
 
-void BrowserMainWindow::slotFileNew()
+void MainWindow::slotFileNew()
 {
     BrowserApplication::instance()->newMainWindow();
-    BrowserMainWindow *mw = BrowserApplication::instance()->mainWindow();
+    MainWindow *mw = BrowserApplication::instance()->mainWindow();
     mw->slotHome();
 }
 
 
-void BrowserMainWindow::slotFileOpen()
+void MainWindow::slotFileOpen()
 {
     QString file = KFileDialog::getOpenFileName( KUrl(),
                                                                             i18n("Web Resources (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"),
@@ -541,7 +541,7 @@ void BrowserMainWindow::slotFileOpen()
 }
 
 
-void BrowserMainWindow::slotFilePrintPreview()
+void MainWindow::slotFilePrintPreview()
 {
     if (!currentTab())
         return;
@@ -551,7 +551,7 @@ void BrowserMainWindow::slotFilePrintPreview()
 }
 
 
-void BrowserMainWindow::slotFilePrint()
+void MainWindow::slotFilePrint()
 {
     if (!currentTab())
         return;
@@ -559,7 +559,7 @@ void BrowserMainWindow::slotFilePrint()
 }
 
 
-void BrowserMainWindow::printRequested(QWebFrame *frame)
+void MainWindow::printRequested(QWebFrame *frame)
 {
     QPrinter printer;
     QPrintDialog *dialog = new QPrintDialog(&printer, this);
@@ -570,7 +570,7 @@ void BrowserMainWindow::printRequested(QWebFrame *frame)
 }
 
 
-void BrowserMainWindow::slotPrivateBrowsing()
+void MainWindow::slotPrivateBrowsing()
 {
     QWebSettings *settings = QWebSettings::globalSettings();
     bool pb = settings->testAttribute(QWebSettings::PrivateBrowsingEnabled);
@@ -596,10 +596,10 @@ void BrowserMainWindow::slotPrivateBrowsing()
     {
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
 
-        QList<BrowserMainWindow*> windows = BrowserApplication::instance()->mainWindows();
+        QList<MainWindow*> windows = BrowserApplication::instance()->mainWindows();
         for (int i = 0; i < windows.count(); ++i) 
         {
-            BrowserMainWindow *window = windows.at(i);
+            MainWindow *window = windows.at(i);
             window->m_lastSearch = QString::null;
             window->tabWidget()->clear();
         }
@@ -607,7 +607,7 @@ void BrowserMainWindow::slotPrivateBrowsing()
 }
 
 
-void BrowserMainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (m_tabWidget->count() > 1) 
     {
@@ -625,7 +625,7 @@ void BrowserMainWindow::closeEvent(QCloseEvent *event)
 }
 
 
-void BrowserMainWindow::slotFind(const QString & search)
+void MainWindow::slotFind(const QString & search)
 {
     if (!currentTab())
         return;
@@ -638,13 +638,13 @@ void BrowserMainWindow::slotFind(const QString & search)
 }
 
 
-void BrowserMainWindow::slotViewFindBar()
+void MainWindow::slotViewFindBar()
 {
     m_findBar->showFindBar();
 }
 
 
-void BrowserMainWindow::slotFindNext()
+void MainWindow::slotFindNext()
 {
     if (!currentTab() && !m_lastSearch.isEmpty())
         return;
@@ -652,7 +652,7 @@ void BrowserMainWindow::slotFindNext()
 }
 
 
-void BrowserMainWindow::slotFindPrevious()
+void MainWindow::slotFindPrevious()
 {
     if (!currentTab() && !m_lastSearch.isEmpty())
         return;
@@ -660,7 +660,7 @@ void BrowserMainWindow::slotFindPrevious()
 }
 
 
-void BrowserMainWindow::slotViewTextBigger()
+void MainWindow::slotViewTextBigger()
 {
     if (!currentTab())
         return;
@@ -668,7 +668,7 @@ void BrowserMainWindow::slotViewTextBigger()
 }
 
 
-void BrowserMainWindow::slotViewTextNormal()
+void MainWindow::slotViewTextNormal()
 {
     if (!currentTab())
         return;
@@ -676,7 +676,7 @@ void BrowserMainWindow::slotViewTextNormal()
 }
 
 
-void BrowserMainWindow::slotViewTextSmaller()
+void MainWindow::slotViewTextSmaller()
 {
     if (!currentTab())
         return;
@@ -685,13 +685,13 @@ void BrowserMainWindow::slotViewTextSmaller()
 
 
 // TODO improve this
-void BrowserMainWindow::slotViewFullScreen(bool makeFullScreen)
+void MainWindow::slotViewFullScreen(bool makeFullScreen)
 {
     KToggleFullScreenAction::setFullScreen( this, makeFullScreen );
 }
 
 
-void BrowserMainWindow::slotViewPageSource()
+void MainWindow::slotViewPageSource()
 {
     if (!currentTab())
         return;
@@ -705,7 +705,7 @@ void BrowserMainWindow::slotViewPageSource()
 }
 
 
-void BrowserMainWindow::slotHome()
+void MainWindow::slotHome()
 {
     KConfig config("rekonqrc");
     KConfigGroup group = config.group("Global Settings");   
@@ -714,7 +714,7 @@ void BrowserMainWindow::slotHome()
 }
 
 
-void BrowserMainWindow::slotToggleInspector(bool enable)
+void MainWindow::slotToggleInspector(bool enable)
 {
     QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, enable);
     if (enable) 
@@ -731,7 +731,7 @@ void BrowserMainWindow::slotToggleInspector(bool enable)
 }
 
 
-void BrowserMainWindow::slotSwapFocus()
+void MainWindow::slotSwapFocus()
 {
     if (currentTab()->hasFocus())
         m_tabWidget->currentLineEdit()->setFocus();
@@ -740,7 +740,7 @@ void BrowserMainWindow::slotSwapFocus()
 }
 
 
-void BrowserMainWindow::loadPage(const QString &page)
+void MainWindow::loadPage(const QString &page)
 {
     if (!currentTab() || page.isEmpty())
         return;
@@ -751,20 +751,20 @@ void BrowserMainWindow::loadPage(const QString &page)
 }
 
 
-TabWidget *BrowserMainWindow::tabWidget() const
+TabWidget *MainWindow::tabWidget() const
 {
     return m_tabWidget;
 }
 
 
 
-WebView *BrowserMainWindow::currentTab() const
+WebView *MainWindow::currentTab() const
 {
     return m_tabWidget->currentWebView();
 }
 
 
-void BrowserMainWindow::slotLoadProgress(int progress)
+void MainWindow::slotLoadProgress(int progress)
 {
     if (progress < 100 && progress > 0) 
     {
@@ -785,7 +785,7 @@ void BrowserMainWindow::slotLoadProgress(int progress)
 }
 
 
-void BrowserMainWindow::slotAboutToShowBackMenu()
+void MainWindow::slotAboutToShowBackMenu()
 {
     m_historyBackMenu->clear();
     if (!currentTab())
@@ -805,7 +805,7 @@ void BrowserMainWindow::slotAboutToShowBackMenu()
 }
 
 
-void BrowserMainWindow::slotShowWindow()
+void MainWindow::slotShowWindow()
 {
     if (KAction *action = qobject_cast<KAction*>(sender())) 
     {
@@ -813,7 +813,7 @@ void BrowserMainWindow::slotShowWindow()
         if (v.canConvert<int>()) 
         {
             int offset = qvariant_cast<int>(v);
-            QList<BrowserMainWindow*> windows = BrowserApplication::instance()->mainWindows();
+            QList<MainWindow*> windows = BrowserApplication::instance()->mainWindows();
             windows.at(offset)->activateWindow();
             windows.at(offset)->currentTab()->setFocus();
         }
@@ -821,7 +821,7 @@ void BrowserMainWindow::slotShowWindow()
 }
 
 
-void BrowserMainWindow::slotOpenActionUrl(QAction *action)
+void MainWindow::slotOpenActionUrl(QAction *action)
 {
     int offset = action->data().toInt();
     QWebHistory *history = currentTab()->history();
@@ -839,7 +839,7 @@ void BrowserMainWindow::slotOpenActionUrl(QAction *action)
 }
 
 
-void BrowserMainWindow::slotOpenPrevious()
+void MainWindow::slotOpenPrevious()
 {
     QWebHistory *history = currentTab()->history();
     if ( history->canGoBack() )
@@ -847,7 +847,7 @@ void BrowserMainWindow::slotOpenPrevious()
 }
 
 
-void BrowserMainWindow::slotOpenNext()
+void MainWindow::slotOpenNext()
 {
     QWebHistory *history = currentTab()->history();
     if ( history->canGoForward() )
@@ -855,7 +855,7 @@ void BrowserMainWindow::slotOpenNext()
 }
 
 
-void BrowserMainWindow::geometryChangeRequested(const QRect &geometry)
+void MainWindow::geometryChangeRequested(const QRect &geometry)
 {
     setGeometry(geometry);
 }

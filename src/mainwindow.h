@@ -19,8 +19,8 @@
  * ============================================================ */
 
 
-#ifndef BROWSERMAINWINDOW_H
-#define BROWSERMAINWINDOW_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 // Local Includes
 #include "findbar.h"
@@ -45,13 +45,13 @@ class WebView;
     The MainWindow of the Browser Application.
     Handles the tab widget and all the actions
 */
-class BrowserMainWindow : public KMainWindow 
+class MainWindow : public KMainWindow 
 {
     Q_OBJECT
 
 public:
-    BrowserMainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~BrowserMainWindow();
+    MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    ~MainWindow();
 
     static KUrl guessUrlFromString(const QString &url);
     TabWidget *tabWidget() const;
@@ -145,5 +145,5 @@ private:
     QString m_lastSearch;
 };
 
-#endif // BROWSERMAINWINDOW_H
+#endif // MAINWINDOW_H
 

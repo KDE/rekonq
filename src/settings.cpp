@@ -24,7 +24,7 @@
 #include "settings.moc"
 
 #include "browserapplication.h"
-#include "browsermainwindow.h"
+#include "mainwindow.h"
 #include "cookiejar.h"
 #include "history.h"
 #include "networkaccessmanager.h"
@@ -366,7 +366,7 @@ void SettingsDialog::chooseFixedFont()
 
 void SettingsDialog::setHomeToCurrentPage()
 {
-    BrowserMainWindow *mw = static_cast<BrowserMainWindow*>(parent());
+    MainWindow *mw = static_cast<MainWindow*>(parent());
     WebView *webView = mw->currentTab();
     if (webView)
     {

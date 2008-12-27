@@ -1,7 +1,7 @@
 SET( rekonq_SRCS
     autosaver.cpp 
     browserapplication.cpp 
-    browsermainwindow.cpp 
+    mainwindow.cpp 
     cookiejar.cpp 
     downloadmanager.cpp 
     edittableview.cpp 

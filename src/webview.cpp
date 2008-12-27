@@ -20,7 +20,7 @@
 
 
 #include "browserapplication.h"
-#include "browsermainwindow.h"
+#include "mainwindow.h"
 #include "cookiejar.h"
 #include "downloadmanager.h"
 #include "networkaccessmanager.h"
@@ -48,12 +48,12 @@ WebPage::WebPage(QObject *parent)
 }
 
 
-BrowserMainWindow *WebPage::mainWindow()
+MainWindow *WebPage::mainWindow()
 {
     QObject *w = this->parent();
     while (w) 
     {
-        if (BrowserMainWindow *mw = qobject_cast<BrowserMainWindow*>(w))
+        if (MainWindow *mw = qobject_cast<MainWindow*>(w))
             return mw;
         w = w->parent();
     }
@@ -73,7 +73,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         if (newWindow) 
         {
             BrowserApplication::instance()->newMainWindow();
-            BrowserMainWindow *newMainWindow = BrowserApplication::instance()->mainWindow();
+            MainWindow *newMainWindow = BrowserApplication::instance()->mainWindow();
             webView = newMainWindow->currentTab();
             newMainWindow->raise();
             newMainWindow->activateWindow();
@@ -108,7 +108,7 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
         return mainWindow()->tabWidget()->newTab()->page();
     }
     BrowserApplication::instance()->newMainWindow();
-    BrowserMainWindow *mainWindow = BrowserApplication::instance()->mainWindow();
+    MainWindow *mainWindow = BrowserApplication::instance()->mainWindow();
     return mainWindow->currentTab()->page();
 }
 
