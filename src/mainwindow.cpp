@@ -137,6 +137,7 @@ void MainWindow::setupActions()
     KStandardAction::findPrev(this, SLOT( slotFindPrevious() ) , actionCollection() );
     KStandardAction::fullScreen( this, SLOT( slotViewFullScreen(bool) ), this, actionCollection() );
     KStandardAction::home( this, SLOT( slotHome() ), actionCollection() );
+    KStandardAction::preferences( this, SLOT( slotPreferences() ), actionCollection() );
 
     a = KStandardAction::redisplay( this, 0, actionCollection() );
     m_tabWidget->addWebAction( a, QWebPage::Reload );
@@ -229,7 +230,7 @@ void MainWindow::setupActions()
 
     KAction *historyForward = new KAction( KIcon("go-next"), i18n("Forward"), this );
     connect(historyForward, SIGNAL( triggered( bool ) ), this, SLOT( slotOpenNext() ) );
-    actionCollection()->addAction( QLatin1String("history forward"), m_historyForward );
+    actionCollection()->addAction( QLatin1String("history forward"), historyForward );
 }
 
 
@@ -240,7 +241,7 @@ void MainWindow::setupCustomMenu()
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle( i18n("Hi&story") );
-    menuBar()->addMenu(historyMenu);
+    menuBar()->insertMenu( actionCollection()->action("downloads"), historyMenu);
     QList<QAction*> historyActions;
 
     historyActions.append( actionCollection()->action("Back") );
@@ -254,7 +255,7 @@ void MainWindow::setupCustomMenu()
     // --------------------------------------------- BOOKMARKS  MENU -----------------------------------------------------------------------------------------------------
     BookmarksMenu *bookmarksMenu = new BookmarksMenu( this );
     bookmarksMenu->setTitle( i18n("&Bookmarks") );
-    menuBar()->addMenu(bookmarksMenu );
+    menuBar()->insertMenu( actionCollection()->action("downloads"), bookmarksMenu );
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }
 
@@ -616,26 +617,21 @@ WebView *MainWindow::currentTab() const
 // FIXME: this actually doesn't work properly..
 void MainWindow::slotLoadProgress(int progress)
 {
+    QAction *stop = actionCollection()->action( "stop" );
+    QAction *reload = actionCollection()->action(" redisplay" );
     if (progress < 100 && progress > 0) 
     {
-//         disconnect(m_stopReload, SIGNAL( triggered( bool ) ), m_reload, SLOT( trigger() ) );
-//         m_stopReload->setIcon( KIcon( "process-stop" ) );
-//         connect(m_stopReload, SIGNAL( triggered( bool ) ), m_stop, SLOT( trigger() ) );
-
-        disconnect( m_stopReload, SIGNAL( triggered( bool ) ), actionCollection()->action( "redisplay" ) , SIGNAL( triggered() ) );
-         m_stopReload->setIcon( KIcon( "process-stop" ) );
-        connect(m_stopReload, SIGNAL( triggered(bool ) ), actionCollection()->action( "stop" ), SLOT( triggered() ) );
+        disconnect( m_stopReload, SIGNAL( triggered( bool ) ), reload , SIGNAL( triggered(bool) ) );
+        m_stopReload->setIcon( KIcon( "process-stop" ) );
+        connect(m_stopReload, SIGNAL( triggered(bool ) ), stop, SIGNAL( triggered(bool) ) );
         m_stopReload->setToolTip( i18n("Stop loading the current page") );
     } 
     else 
     {
-//         disconnect(m_stopReload, SIGNAL( triggered( bool ) ), m_stop, SLOT( trigger() ) );
-//         m_stopReload->setIcon( KIcon("view-refresh") );
-//         connect(m_stopReload, SIGNAL( triggered( bool ) ), m_reload, SLOT( trigger() ) );
-        disconnect( m_stopReload, SIGNAL( triggered( bool ) ), actionCollection()->action( "stop" ) , SIGNAL( triggered( ) ) );
-         m_stopReload->setIcon( KIcon( "view-refresh" ) );
-        connect(m_stopReload, SIGNAL( triggered( bool ) ), actionCollection()->action( "redisplay" ), SLOT( triggered() ) );
-         m_stopReload->setToolTip( i18n("Reload the current page") );
+        disconnect( m_stopReload, SIGNAL( triggered( bool ) ), stop , SIGNAL( triggered(bool ) ) );
+        m_stopReload->setIcon( KIcon( "view-refresh" ) );
+        connect(m_stopReload, SIGNAL( triggered( bool ) ), reload, SIGNAL( triggered(bool) ) );
+        m_stopReload->setToolTip( i18n("Reload the current page") );
     }
 }
 

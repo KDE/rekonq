@@ -48,20 +48,22 @@
     <Action name="page source" />
     <Action name="fullscreen" />
   </Menu>
+<!--  ============ GO menu =========== -->
+    <Menu name="go" deleted="true">
+    </Menu>
 <!--  ============ TOOLS menu =========== -->
     <Menu name="tools">
     <Action name="downloads" />
     <Action name="web inspector" />
 </Menu>
 <!--  ============ SETTINGS menu =========== -->
-<Menu name="settings" noMerge="1">
-        <text>&amp;Settings</text>
+<Menu name="settings" noMerge="1"><text>&amp;Settings</text>
         <Action name="options_show_statusbar"/>
         <Separator/>
         <Action name="options_configure_keybinding"/>
         <Action name="options_configure_toolbars"/>
         <Action name="options_configure"/>
-    </Menu>
+</Menu>
 </MenuBar>
 
 <!--  ============ Main ToolBar =========== -->

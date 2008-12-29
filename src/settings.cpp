@@ -77,8 +77,8 @@ Private::Private(SettingsDialog *parent)
     widget = new QWidget;
     appearanceUi.setupUi( widget );
     widget->layout()->setMargin(0);
-    pageItem = parent->addPage( widget , i18n("Appearance") );
-    pageItem->setIcon( KIcon("kfontview") );
+    pageItem = parent->addPage( widget , i18n("Fonts") );
+    pageItem->setIcon( KIcon("preferences-desktop-font") );
 
     widget = new QWidget;
     privacyUi.setupUi( widget );
@@ -176,7 +176,7 @@ void SettingsDialog::loadFromSettings()
 
 
     // Appearance
-    KConfigGroup group2 = config.group("Appearance Settings");
+    KConfigGroup group2 = config.group("Fonts Settings");
 
     m_fixedFont = group2.readEntry( QString("fixedFont"), m_fixedFont );
     m_standardFont = group2.readEntry( QString("standardFont"), m_standardFont );
@@ -262,7 +262,7 @@ void SettingsDialog::saveToSettings()
     }
     group1.writeEntry(QString("historyExpire"), idx );
 
-    KConfigGroup group2 = config.group("Appearance Settings");
+    KConfigGroup group2 = config.group("Fonts Settings");
     group2.writeEntry(QString("fixedFont"), m_fixedFont);
     group2.writeEntry(QString("standardFont"), m_standardFont);
 
