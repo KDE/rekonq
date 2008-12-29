@@ -29,9 +29,10 @@
 // KDE Includes
 #include <KIcon>
 #include <KAction>
+#include <KMenu>
 
 // A QMenu that is dynamically populated from a QAbstractItemModel
-class ModelMenu : public QMenu
+class ModelMenu : public KMenu
 {
     Q_OBJECT
 

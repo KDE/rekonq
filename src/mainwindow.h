@@ -28,7 +28,7 @@
 
 // KDE Includes
 #include <KUrl>
-#include <KMainWindow>
+#include <KXmlGuiWindow>
 #include <KIcon>
 #include <KToolBar>
 #include <KAction>
@@ -36,7 +36,6 @@
 #include <KMenu>
 
 
-class AutoSaver;
 class QWebFrame;
 class TabWidget;
 class WebView;
@@ -45,21 +44,21 @@ class WebView;
     The MainWindow of the Browser Application.
     Handles the tab widget and all the actions
 */
-class MainWindow : public KMainWindow 
+class MainWindow : public KXmlGuiWindow 
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    MainWindow();
     ~MainWindow();
 
     static KUrl guessUrlFromString(const QString &url);
     TabWidget *tabWidget() const;
     WebView *currentTab() const;
 
-
-    QByteArray saveState() const;
-    void restoreState(const QByteArray &state);
+private:
+    void setupActions();
+    void setupCustomMenu();
 
 public slots:
     void loadPage(const QString &url);
@@ -68,12 +67,7 @@ public slots:
     void slotFindNext();
     void slotFindPrevious();
 
-protected:
-    void closeEvent(QCloseEvent *event);
-
 private slots:
-    void save();
-
     void slotLoadProgress(int);
     void slotUpdateStatusbar(const QString &string);
     void slotUpdateWindowTitle(const QString &title = QString());
@@ -91,14 +85,13 @@ private slots:
     void slotViewTextBigger();
     void slotViewTextNormal();
     void slotViewTextSmaller();
-    void slotViewStatusbar();
     void slotViewPageSource();
     void slotViewFullScreen(bool enable);
     void slotViewFindBar();
 
     void slotToggleInspector(bool enable);
     void slotDownloadManager();
-    void slotSelectLineEdit();
+    void slotOpenLocation();
 
     void slotAboutToShowBackMenu();
 
@@ -113,36 +106,19 @@ private slots:
     void printRequested(QWebFrame *frame);
     void geometryChangeRequested(const QRect &geometry);
 
-private:
-    void loadDefaultState();
-    void setupMenu();
-    void setupToolBar();
-    void updateStatusbarActionText(bool visible);
 
 private:
-
-    KToolBar *m_navigationBar;
     SearchBar *m_searchBar;
-    TabWidget *m_tabWidget;
-    AutoSaver *m_autoSaver;
+    FindBar *m_findBar;
 
-    KAction *m_historyBack;
     KMenu *m_historyBackMenu;
-    KAction *m_historyForward;
     KMenu *m_windowMenu;
 
-    KAction *m_stop;
-    KAction *m_reload;
-    KAction *m_stopReload;
-    KAction *m_goHome;
-    KToggleAction *m_viewStatusbar;
-    KAction *m_restoreLastSession;
+    QAction *m_stopReload;
 
-    KIcon m_reloadIcon;
-    KIcon m_stopIcon;
-
-    FindBar *m_findBar;
     QString m_lastSearch;
+
+    TabWidget *m_tabWidget;
 };
 
 #endif // MAINWINDOW_H

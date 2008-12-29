@@ -3,6 +3,8 @@ Name=rekonq
 GenericName=Webkit KDE Browser
 Icon=rekonq
 Type=Application
-Exec=rekonq %u
-X-DocPath=rekonq/index.html
+Exec=rekonq %i
+DocPath=rekonq/index.html
 Categories=Qt;KDE;Network;
+Terminal=0
+

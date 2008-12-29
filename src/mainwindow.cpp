@@ -19,9 +19,10 @@
  * ============================================================ */
 
 
-// Local Includes
+// Self Includes
 #include "mainwindow.h"
-#include "autosaver.h"
+
+// Local Includes
 #include "browserapplication.h"
 #include "downloadmanager.h"
 #include "history.h"
@@ -54,364 +55,208 @@
 #include <QDebug>
 
 
-MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
-    : KMainWindow(parent, flags)
-    , m_tabWidget(new TabWidget(this))
-    , m_autoSaver(new AutoSaver(this))
-    , m_historyBack(0)
-    , m_historyForward(0)
-    , m_stop(0)
-    , m_reload(0)
+MainWindow::MainWindow()
+    : KXmlGuiWindow()
+    , m_tabWidget( new TabWidget(this) )
 {
-    // delete widget accepting close event
-    setAttribute(Qt::WA_DeleteOnClose, true);
+    // accept dnd
+    setAcceptDrops(true);
 
-    setupMenu();
-    setupToolBar();
+    m_tabWidget->newTab();
 
-    QWidget *centralWidget = new QWidget(this);
-
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->setSpacing(0);
-    layout->setMargin(0);
-    addToolBarBreak();
-    layout->addWidget(m_tabWidget);
+    // tell the KXmlGuiWindow that this is indeed the main widget
+    setCentralWidget(m_tabWidget);
 
     // Find Bar
     m_findBar = new FindBar(this);
     connect( m_findBar, SIGNAL( searchString(const QString &) ), this, SLOT( slotFind(const QString &) ) ); 
-
-    centralWidget->setLayout(layout);
-	setCentralWidget(centralWidget);
 
     connect(m_tabWidget, SIGNAL( loadPage(const QString &) ), this, SLOT( loadPage(const QString &) ) );
     connect(m_tabWidget, SIGNAL( setCurrentTitle(const QString &)), this, SLOT( slotUpdateWindowTitle(const QString &) ) );
     connect(m_tabWidget, SIGNAL( showStatusBarMessage(const QString&)), statusBar(), SLOT( showMessage(const QString&) ) );
     connect(m_tabWidget, SIGNAL( linkHovered(const QString&)), statusBar(), SLOT( showMessage(const QString&) ) );
     connect(m_tabWidget, SIGNAL( loadProgress(int)), this, SLOT( slotLoadProgress(int) ) );
-    connect(m_tabWidget, SIGNAL( tabsChanged()), m_autoSaver, SLOT( changeOccurred() ) );
+//     connect(m_tabWidget, SIGNAL( tabsChanged()), m_autoSaver, SLOT( changeOccurred() ) );
     connect(m_tabWidget, SIGNAL( geometryChangeRequested(const QRect &)), this, SLOT( geometryChangeRequested(const QRect &) ) );
     connect(m_tabWidget, SIGNAL( printRequested(QWebFrame *)), this, SLOT( printRequested(QWebFrame *) ) );
     connect(m_tabWidget, SIGNAL( menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT( setVisible(bool) ) );
     connect(m_tabWidget, SIGNAL( statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT( setVisible(bool) ) );
-    connect(m_tabWidget, SIGNAL( toolBarVisibilityChangeRequested(bool) ), m_navigationBar, SLOT( setVisible(bool) ) );
+//     connect(m_tabWidget, SIGNAL( toolBarVisibilityChangeRequested(bool) ), m_navigationBar, SLOT( setVisible(bool) ) );
     connect(m_tabWidget, SIGNAL( lastTabClosed() ), m_tabWidget, SLOT(newTab() ) );
 
     slotUpdateWindowTitle();
-    loadDefaultState();
-    m_tabWidget->newTab();
+// --------------------------------------------------------------------------------------------------------------------------------
+
+
+    // then, setup our actions
+    setupActions();
+
+    // add a status bar
+    statusBar()->show();
+
+    // a call to KXmlGuiWindow::setupGUI() populates the GUI
+    // with actions, using KXMLGUI.
+    // It also applies the saved mainwindow settings, if any, and ask the
+    // mainwindow to automatically save settings if changed: window size,
+    // toolbar position, icon size, etc.
+    setupGUI();
+
+    // setup history & bookmarks menus
+    setupCustomMenu();
+
+    // setting up custom widgets..
+    KToolBar *navigationBar = toolBar( "mainToolBar" );
+    navigationBar->addWidget( m_tabWidget->lineEditStack() );
+
+    m_searchBar = new SearchBar( this );
+    connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
+    navigationBar->addWidget(m_searchBar);
+
+
 }
 
 
 MainWindow::~MainWindow()
 {
-    m_autoSaver->changeOccurred();
-    m_autoSaver->saveIfNeccessary();
-    delete m_navigationBar;
 }
 
 
-void MainWindow::loadDefaultState()
+void MainWindow::setupActions()
 {
-    KConfig config("rekonqrc");
-    KConfigGroup group1 = config.group("MainWindow");   
-    QByteArray data = group1.readEntry(QString("defaultState"), QByteArray() );
-    restoreState(data); 
+    KAction *a;
+
+    // Standard Actions
+    KStandardAction::openNew(this, SLOT( slotFileNew() ) , actionCollection() );
+    KStandardAction::open( this, SLOT( slotFileOpen() ), actionCollection() );
+    KStandardAction::saveAs( this, SLOT( slotFileSaveAs() ), actionCollection() );
+    KStandardAction::printPreview( this, SLOT( slotFilePrintPreview() ), actionCollection() );
+    KStandardAction::print( this, SLOT( slotFilePrint() ), actionCollection() );
+    KStandardAction::quit( this , SLOT( close() ), actionCollection() ); 
+    KStandardAction::find(this, SLOT( slotViewFindBar() ) , actionCollection() );
+    KStandardAction::findNext(this, SLOT( slotFindNext() ) , actionCollection() );
+    KStandardAction::findPrev(this, SLOT( slotFindPrevious() ) , actionCollection() );
+    KStandardAction::fullScreen( this, SLOT( slotViewFullScreen(bool) ), this, actionCollection() );
+    KStandardAction::home( this, SLOT( slotHome() ), actionCollection() );
+
+    a = KStandardAction::redisplay( this, 0, actionCollection() );
+    m_tabWidget->addWebAction( a, QWebPage::Reload );
+
+    a = KStandardAction::back( this, 0, actionCollection() );
+    m_tabWidget->addWebAction( a, QWebPage::Back );
+
+    a = KStandardAction::forward( this, 0, actionCollection() );
+    m_tabWidget->addWebAction( a, QWebPage::Forward );
+
+    a = KStandardAction::undo( this , 0 , actionCollection() );
+    m_tabWidget->addWebAction( a , QWebPage::Undo );
+
+    a = KStandardAction::redo( this , 0 , actionCollection() );
+    m_tabWidget->addWebAction( a, QWebPage::Redo );
+
+    a = KStandardAction::cut( this , 0 , actionCollection() );
+    m_tabWidget->addWebAction( a, QWebPage::Cut );
+
+    a = KStandardAction::copy( this , 0 , actionCollection() );
+    m_tabWidget->addWebAction( a, QWebPage::Copy );
+
+    a = KStandardAction::paste( this , 0 , actionCollection() );
+    m_tabWidget->addWebAction( a, QWebPage::Paste );
+
+    a = KStandardAction::selectAll( this , 0 , actionCollection() );
+    m_tabWidget->addWebAction( a, QWebPage::SelectEndOfDocument );
+
+    // stop reload Action 
+    m_stopReload = new KAction( KIcon("view-refresh"), i18n("reload"), this );
+    actionCollection()->addAction( QLatin1String("stop reload") , m_stopReload );
+
+    // Custom Actions
+    a = new KAction ( KIcon( "process-stop" ), i18n("&Stop"), this );
+    a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Period) );
+    actionCollection()->addAction( QLatin1String("stop"), a );
+    m_tabWidget->addWebAction( a, QWebPage::Stop);
+    
+    a = new KAction( KIcon(), i18n("Open Location"), this); 
+    actionCollection()->addAction( QLatin1String("open location"), a );
+    connect( a, SIGNAL( triggered(bool) ) , this, SLOT( slotOpenLocation() ) );
+
+    actionCollection()->addAction( QLatin1String("new tab"), m_tabWidget->newTabAction() );
+    actionCollection()->addAction( QLatin1String("close tab"), m_tabWidget->closeTabAction() );
+
+    a = new KAction( i18n("Private &Browsing..."), this );
+    a->setCheckable(true);
+    actionCollection()->addAction( i18n("private browsing"), a );
+    connect( a, SIGNAL( triggered(bool) ) , this, SLOT( slotPrivateBrowsing() ) );
+
+    a = new KAction( i18n("&Bigger"), this );
+    a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Plus) );
+    actionCollection()->addAction( QLatin1String("bigger font"), a );
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextBigger() ) );
+
+    a = new KAction( i18n("&Normal"), this );
+    a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_0) );
+    actionCollection()->addAction( QLatin1String("normal font"), a );
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextNormal() ) );
+
+    a = new KAction( i18n("&Smaller"), this );
+    a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Minus) );
+    actionCollection()->addAction( QLatin1String("smaller font"), a );
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextSmaller() ) );
+
+    a = new KAction( i18n("Page S&ource"), this );
+    actionCollection()->addAction( QLatin1String("page source"), a );
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewPageSource() ) );
+
+    a = new KAction( KIcon( "kget" ), i18n("Downloads"), this );
+    actionCollection()->addAction( QLatin1String("downloads"), a);
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotDownloadManager() ) );
+
+    a = new KAction( KIcon("page-zoom"), i18n("Enable Web &Inspector"), this );
+    a->setCheckable(true);
+    actionCollection()->addAction( QLatin1String("web inspector"), a );
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotToggleInspector(bool) ) );
+
+    // ===================================================================================================================
+    // ===================================================================================================================
+    // FIXME
+
+    KAction *historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
+    m_historyBackMenu = new KMenu(this);
+    historyBack->setMenu(m_historyBackMenu);
+    connect(historyBack, SIGNAL( triggered( bool ) ), this, SLOT( slotOpenPrevious() ) );
+    connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
+    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
+    actionCollection()->addAction( QLatin1String("history back"), historyBack);
+
+    KAction *historyForward = new KAction( KIcon("go-next"), i18n("Forward"), this );
+    connect(historyForward, SIGNAL( triggered( bool ) ), this, SLOT( slotOpenNext() ) );
+    actionCollection()->addAction( QLatin1String("history forward"), m_historyForward );
 }
 
 
-void MainWindow::save()
+void MainWindow::setupCustomMenu()
 {
-    BrowserApplication::instance()->saveSession();
-
-    KConfig config("rekonqrc");
-    KConfigGroup group1 = config.group("MainWindow");   
-    QByteArray data = saveState();
-    group1.writeEntry( QString("defaultState"), data );
-
-    KConfigGroup group2 = config.group("navigation toobar");
-    m_navigationBar->saveSettings( group2 );
-}
-
-
-static const qint32 MainWindowMagic = 0xba;
-
-
-QByteArray MainWindow::saveState() const
-{
-    int version = 2;
-    QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
-
-    stream << qint32(MainWindowMagic);
-    stream << qint32(version);
-
-    stream << size();
-
-    stream << KToolBar::toolBarsLocked();
-    bool b = true; // statusBar()->isVisible() ;    FIXME
-    stream << b;
-    stream << QByteArray();
-    return data;
-}
-
-
-
-void MainWindow::restoreState(const QByteArray &state)
-{
-    int version = 2;
-    QByteArray sd = state;
-    QDataStream stream(&sd, QIODevice::ReadOnly);
-    if ( stream.atEnd() )
-    {
-        return;
-    }
-
-    qint32 marker;
-    qint32 v;
-    stream >> marker;
-    stream >> v;
-    if (marker != MainWindowMagic || v != version)
-    {
-        return;
-    }
-
-    QSize size;
-    bool showStatusbar;
-    bool toolbarsLocked;
-    QByteArray tabState;
-
-    stream >> size;
-    stream >> toolbarsLocked;
-    stream >> showStatusbar; 
-
-    resize(size);
-    statusBar()->setVisible(showStatusbar);
-    updateStatusbarActionText(showStatusbar);
-
-    KToolBar::setToolBarsLocked ( toolbarsLocked );
-    return;
-}
-
-
-void MainWindow::setupMenu()
-{
-    //  ------------------------------------------------------------- FILE --------------------------------------------------------------------------------------------------
-    KMenu *fileMenu = (KMenu *) menuBar()->addMenu( i18n("&File") );
-
-    fileMenu->addAction( KStandardAction::openNew(this, SLOT( slotFileNew() ) , this ) );
-    fileMenu->addAction( KStandardAction::open( this, SLOT( slotFileOpen() ), this ) );
-    fileMenu->addAction( i18n("Open Location"), this, SLOT( slotSelectLineEdit() ) );
-    fileMenu->addSeparator();
-
-    fileMenu->addAction( m_tabWidget->newTabAction() );
-    fileMenu->addAction( m_tabWidget->closeTabAction() );
-    fileMenu->addSeparator();
-
-    fileMenu->addAction( KStandardAction::saveAs( this, SLOT( slotFileSaveAs() ), this ) );
-    fileMenu->addSeparator();
-
-    fileMenu->addAction( KStandardAction::printPreview( this, SLOT( slotFilePrintPreview() ), this ) );
-    fileMenu->addAction( KStandardAction::print( this, SLOT(slotFilePrint()), this) );
-    fileMenu->addSeparator();
-
-    KAction *action = (KAction *) fileMenu->addAction( i18n("Private &Browsing..."), this, SLOT( slotPrivateBrowsing() ) );
-    action->setCheckable(true);
-    fileMenu->addSeparator();
-
-    fileMenu->addAction( KStandardAction::quit( this , SLOT( close() ), this ) ); 
-
-    //  ------------------------------------------------------------- EDIT --------------------------------------------------------------------------------------------------
-    KMenu *editMenu = (KMenu *) menuBar()->addMenu( i18n("&Edit") );
-
-    KAction *m_undo = KStandardAction::undo( this , 0 , this );
-    editMenu->addAction( m_undo );
-    m_tabWidget->addWebAction(m_undo, QWebPage::Undo);
-
-    KAction *m_redo = KStandardAction::redo( this , 0 , this );
-    editMenu->addAction( m_redo );
-    m_tabWidget->addWebAction(m_redo, QWebPage::Redo);
-
-    editMenu->addSeparator();
-
-    KAction *m_cut = KStandardAction::cut( this , 0 , this );
-    editMenu->addAction( m_cut );
-    m_tabWidget->addWebAction(m_cut, QWebPage::Cut);
-
-    KAction *m_copy = KStandardAction::copy( this , 0 , this );
-    editMenu->addAction( m_copy );
-    m_tabWidget->addWebAction(m_copy, QWebPage::Copy);
-
-    KAction *m_paste = KStandardAction::paste( this , 0 , this );
-    editMenu->addAction( m_paste );
-    m_tabWidget->addWebAction(m_paste, QWebPage::Paste);
-
-    editMenu->addSeparator();
-
-    KAction *m_selectall = KStandardAction::selectAll( this , 0 , this );
-    editMenu->addAction( m_selectall );
-    m_tabWidget->addWebAction(m_selectall, QWebPage::SelectEndOfDocument );
-
-    editMenu->addSeparator();
-
-    editMenu->addAction( KStandardAction::find(this, SLOT( slotViewFindBar() ) , this ) );
-    editMenu->addAction( KStandardAction::findNext(this, SLOT( slotFindNext() ) , this ) );
-    editMenu->addAction( KStandardAction::findPrev(this, SLOT( slotFindPrevious() ) , this ) );
-
-    //  ------------------------------------------------------------- VIEW -------------------------------------------------------------------------------------------------
-    KMenu *viewMenu = (KMenu *) menuBar()->addMenu( i18n("&View") );
-
-    m_viewStatusbar = KStandardAction::showStatusbar( this, SLOT(slotViewStatusbar() ), this);
-    viewMenu->addAction(m_viewStatusbar);
-
-    viewMenu->addSeparator();
-
-    m_stop = (KAction *) viewMenu->addAction( KIcon( "process-stop" ), i18n("&Stop") );
-    m_stop->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Period) );
-    m_tabWidget->addWebAction(m_stop, QWebPage::Stop);
-
-    m_reload = (KAction *) viewMenu->addAction( KIcon("view-refresh"), i18n("Reload Page") );
-    m_reload->setShortcut(QKeySequence::Refresh);
-    m_tabWidget->addWebAction(m_reload, QWebPage::Reload);
-
-    viewMenu->addSeparator();
-
-    KMenu *fontMenu = new KMenu( i18n("Make Text..."), this );
-    fontMenu->addAction( i18n("&Bigger"), this, SLOT(slotViewTextBigger()), QKeySequence(Qt::CTRL | Qt::Key_Plus));
-    fontMenu->addAction( i18n("&Normal"), this, SLOT(slotViewTextNormal()), QKeySequence(Qt::CTRL | Qt::Key_0));
-    fontMenu->addAction( i18n("&Smaller"), this, SLOT(slotViewTextSmaller()), QKeySequence(Qt::CTRL | Qt::Key_Minus));
-
-    viewMenu->addMenu( fontMenu );
-
-    viewMenu->addSeparator();
-
-    // TODO set encoding
-
-    viewMenu->addAction( i18n("Page S&ource"), this, SLOT( slotViewPageSource() ), i18n("Ctrl+Alt+U"));
-
-    KToggleFullScreenAction *tfsa = KStandardAction::fullScreen( this, SLOT( slotViewFullScreen(bool) ), this, this);
-    viewMenu->addAction( tfsa );
-
-    //  ------------------------------------------------------------- HISTORY --------------------------------------------------------------------------------------------------
+    //  ------------------------------------------------------------- HISTORY MENU--------------------------------------------------------------------------------------------------
     HistoryMenu *historyMenu = new HistoryMenu(this);
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle( i18n("Hi&story") );
     menuBar()->addMenu(historyMenu);
-    QList<KAction*> historyActions;
+    QList<QAction*> historyActions;
 
-    m_historyBack = new KAction( i18n("Back"), this);
-    m_historyBack->setShortcut( KShortcut( QKeySequence::Back ) ); 
-    m_tabWidget->addWebAction( m_historyBack, QWebPage::Back );
-    m_historyBack->setIconVisibleInMenu(false);
-
-    m_historyForward = new KAction( i18n("Forward"), this);
-    m_historyForward->setShortcut( KShortcut( QKeySequence::Forward ) );
-    m_tabWidget->addWebAction( m_historyForward, QWebPage::Forward );
-    m_historyForward->setIconVisibleInMenu(false);
-
-    historyActions.append( m_historyBack );
-    historyActions.append( m_historyForward );
-    historyActions.append( KStandardAction::home(this, SLOT( slotHome() ) , this ) );
+    historyActions.append( actionCollection()->action("Back") );
+    historyActions.append( actionCollection()->action("Forward") );
+    historyActions.append( actionCollection()->action("Home") );
     historyActions.append( m_tabWidget->recentlyClosedTabsAction() );
 
     historyMenu->setInitialActions(historyActions);
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-    //  ------------------------------------------------------------- BOOKMARKS --------------------------------------------------------------------------------------------------
-
+    // --------------------------------------------- BOOKMARKS  MENU -----------------------------------------------------------------------------------------------------
     BookmarksMenu *bookmarksMenu = new BookmarksMenu( this );
     bookmarksMenu->setTitle( i18n("&Bookmarks") );
-    menuBar()->addMenu( bookmarksMenu );
-
-    //  ------------------------------------------------------------- TOOLS ------------------------------------------------------------------------------------------------------
-    KMenu* toolsMenu = (KMenu *) menuBar()->addMenu( i18n("&Tools") );
-
-    toolsMenu->addAction( i18n("Downloads"), this, SLOT( slotDownloadManager() ), i18n("Alt+Ctrl+D") );
-
-    toolsMenu->addSeparator();
-
-    action = (KAction *) toolsMenu->addAction( i18n("Enable Web &Inspector"), this, SLOT(slotToggleInspector(bool)));
-    action->setCheckable(true);
-
-    //  ------------------------------------------------------------- SETTINGS ------------------------------------------------------------------------------------------------------
-    KMenu *settingsMenu = (KMenu *) menuBar()->addMenu( i18n("&Settings") );
-
-    settingsMenu->addAction( KStandardAction::keyBindings( this, SLOT( configureShortcuts() ), this ) );    //FIXME need new slot and actionCollection !!
-    settingsMenu->addAction( KStandardAction::preferences(this, SLOT( slotPreferences() ) , this ) );
-
-    //  ------------------------------------------------------------- HELP  --------------------------------------------------------------------------------------------------
-   menuBar()->addMenu( helpMenu() );
+    menuBar()->addMenu(bookmarksMenu );
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }
-
-
-void MainWindow::setupToolBar()
-{
-    m_navigationBar = new KToolBar( i18n("Navigation") , this, Qt::TopToolBarArea, false, false, true); 
-
-    m_historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
-    m_historyBackMenu = new KMenu(this);
-    m_historyBack->setMenu(m_historyBackMenu);
-    connect(m_historyBack, SIGNAL( triggered() ), this, SLOT( slotOpenPrevious() ) );
-    connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
-    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
-    m_navigationBar->addAction(m_historyBack);
-
-    m_historyForward = new KAction( KIcon("go-next"), i18n("Forward"), this );
-    connect(m_historyForward, SIGNAL( triggered() ), this, SLOT( slotOpenNext() ) );
-    m_navigationBar->addAction(m_historyForward);
-
-    m_stopReload = new KAction( KIcon("view-refresh"), i18n("Reload"), this);
-    m_navigationBar->addAction(m_stopReload);
-
-    m_goHome = new KAction( KIcon( "go-home" ), i18n("Home"),this);
-    m_navigationBar->addAction(m_goHome);
-    connect(m_goHome, SIGNAL(triggered()), this, SLOT(slotHome()));
-
-    m_navigationBar->addWidget( m_tabWidget->lineEditStack() );
-
-    m_searchBar = new SearchBar( m_navigationBar );
-    connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
-    m_navigationBar->addWidget(m_searchBar);
-
-    // UI settings
-    setContextMenuPolicy( Qt::PreventContextMenu );
-
-    // setting initial style (if user hasn't decided something else)
-    m_navigationBar->setIconDimensions(22);
-    m_navigationBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-
-    KConfig config("rekonqrc");
-    KConfigGroup group = config.group("navigation toobar");
-    if ( group.exists() )
-    {
-        m_navigationBar->applySettings( group );
-    }
-}
-
-
-void MainWindow::updateStatusbarActionText(bool visible)
-{
-    m_viewStatusbar->setText(!visible ? i18n("Show Status Bar") : i18n("Hide Status Bar"));
-}
-
-
-void MainWindow::slotViewStatusbar()
-{
-    if (statusBar()->isVisible()) 
-    {
-        updateStatusbarActionText(false);
-        statusBar()->close();
-    } 
-    else 
-    {
-        updateStatusbarActionText(true);
-        statusBar()->show();
-    }
-    m_autoSaver->changeOccurred();
-}
-
 
 KUrl MainWindow::guessUrlFromString(const QString &string)
 {
@@ -480,7 +325,7 @@ void MainWindow::slotDownloadManager()
 }
 
 
-void MainWindow::slotSelectLineEdit()
+void MainWindow::slotOpenLocation()
 {
     m_tabWidget->currentLineEdit()->selectAll();
     m_tabWidget->currentLineEdit()->setFocus();
@@ -607,22 +452,22 @@ void MainWindow::slotPrivateBrowsing()
 }
 
 
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    if (m_tabWidget->count() > 1) 
-    {
-        int ret = KMessageBox::warningYesNo(this, 
-                                                         i18n("Are you sure you want to close the window?" "  There are %1 tab open" , m_tabWidget->count() ) ,
-                                                        i18n("Closing") );
-        if (ret == KMessageBox::No) 
-        {
-            event->ignore();
-            return;
-        }
-    }
-    event->accept();
-    deleteLater();
-}
+// void MainWindow::closeEvent(QCloseEvent *event)
+// {
+//     if (m_tabWidget->count() > 1) 
+//     {
+//         int ret = KMessageBox::warningYesNo(this, 
+//                                                          i18n("Are you sure you want to close the window?" "  There are %1 tab open" , m_tabWidget->count() ) ,
+//                                                         i18n("Closing") );
+//         if (ret == KMessageBox::No) 
+//         {
+//             event->ignore();
+//             return;
+//         }
+//     }
+//     event->accept();
+//     deleteLater();
+// }
 
 
 void MainWindow::slotFind(const QString & search)
@@ -685,7 +530,7 @@ void MainWindow::slotViewTextSmaller()
 
 
 // TODO improve this
-void MainWindow::slotViewFullScreen(bool makeFullScreen)
+void MainWindow::slotViewFullScreen( bool makeFullScreen )
 {
     KToggleFullScreenAction::setFullScreen( this, makeFullScreen );
 }
@@ -733,10 +578,14 @@ void MainWindow::slotToggleInspector(bool enable)
 
 void MainWindow::slotSwapFocus()
 {
-    if (currentTab()->hasFocus())
+    if ( currentTab()->hasFocus() )
+    {
         m_tabWidget->currentLineEdit()->setFocus();
+    }
     else
+    {
         currentTab()->setFocus();
+    }
 }
 
 
@@ -764,23 +613,29 @@ WebView *MainWindow::currentTab() const
 }
 
 
+// FIXME: this actually doesn't work properly..
 void MainWindow::slotLoadProgress(int progress)
 {
     if (progress < 100 && progress > 0) 
     {
-        disconnect(m_stopReload, SIGNAL(triggered()), m_reload, SLOT(trigger()));
-        if (m_stopIcon.isNull())
-            m_stopIcon = KIcon( "process-stop" );
-        m_stopReload->setIcon(m_stopIcon);
-        connect(m_stopReload, SIGNAL(triggered()), m_stop, SLOT(trigger()));
+//         disconnect(m_stopReload, SIGNAL( triggered( bool ) ), m_reload, SLOT( trigger() ) );
+//         m_stopReload->setIcon( KIcon( "process-stop" ) );
+//         connect(m_stopReload, SIGNAL( triggered( bool ) ), m_stop, SLOT( trigger() ) );
+
+        disconnect( m_stopReload, SIGNAL( triggered( bool ) ), actionCollection()->action( "redisplay" ) , SIGNAL( triggered() ) );
+         m_stopReload->setIcon( KIcon( "process-stop" ) );
+        connect(m_stopReload, SIGNAL( triggered(bool ) ), actionCollection()->action( "stop" ), SLOT( triggered() ) );
         m_stopReload->setToolTip( i18n("Stop loading the current page") );
     } 
     else 
     {
-        disconnect(m_stopReload, SIGNAL(triggered()), m_stop, SLOT(trigger()));
-        m_stopReload->setIcon( KIcon("view-refresh") );
-        connect(m_stopReload, SIGNAL(triggered()), m_reload, SLOT(trigger()));
-        m_stopReload->setToolTip( i18n("Reload the current page") );
+//         disconnect(m_stopReload, SIGNAL( triggered( bool ) ), m_stop, SLOT( trigger() ) );
+//         m_stopReload->setIcon( KIcon("view-refresh") );
+//         connect(m_stopReload, SIGNAL( triggered( bool ) ), m_reload, SLOT( trigger() ) );
+        disconnect( m_stopReload, SIGNAL( triggered( bool ) ), actionCollection()->action( "stop" ) , SIGNAL( triggered( ) ) );
+         m_stopReload->setIcon( KIcon( "view-refresh" ) );
+        connect(m_stopReload, SIGNAL( triggered( bool ) ), actionCollection()->action( "redisplay" ), SLOT( triggered() ) );
+         m_stopReload->setToolTip( i18n("Reload the current page") );
     }
 }
 

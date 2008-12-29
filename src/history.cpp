@@ -668,7 +668,7 @@ void HistoryMenu::showHistoryDialog()
 }
 
 
-void HistoryMenu::setInitialActions(QList<KAction*> actions)
+void HistoryMenu::setInitialActions(QList<QAction*> actions)
 {
     m_initialActions = actions;
     for (int i = 0; i < m_initialActions.count(); ++i)
