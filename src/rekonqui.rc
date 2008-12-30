@@ -2,7 +2,7 @@
 <kpartgui name="rekonq" version="1">
 <MenuBar>
 <!--  ============ FILE menu =========== -->
-  <Menu name="file" noMerge="1"><text>&amp;File</text>
+<Menu name="file" noMerge="1"><text>&amp;File</text>
     <Action name="file_new" />
     <Action name="file_open" />
     <Action name="open location" />
@@ -18,9 +18,9 @@
     <Action name="private browsing" />
     <Separator/>
     <Action name="file_quit" />
-  </Menu>
-  <!--  ============ EDIT menu =========== -->
-  <Menu name="edit" noMerge="1"><text>&amp;Edit</text>
+</Menu>
+<!--  ============ EDIT menu =========== -->
+<Menu name="edit" noMerge="1"><text>&amp;Edit</text>
     <Action name="edit_undo" />
     <Action name="edit_redo" />
     <Separator/>
@@ -33,45 +33,42 @@
     <Action name="edit_find" />
     <Action name="edit_find_next" />
     <Action name="edit_find_prev" />
-  </Menu>
-  <!--  ============ VIEW menu =========== -->
-  <Menu name="view" noMerge="1"><text>&amp;View</text>
+</Menu>
+<!--  ============ VIEW menu =========== -->
+<Menu name="view" noMerge="1"><text>&amp;View</text>
     <Action name="view_redisplay" />
     <Separator/>
-<!--         <Menu name="fontmenu"> -->
-<!--          <text>make text..</text> -->
-        <Action name="bigger font" />
-        <Action name="normal font" />
-        <Action name="smaller font" />
-<!--         </Menu> -->
+    <Action name="bigger font" />
+    <Action name="normal font" />
+    <Action name="smaller font" />
     <Separator/>
     <Action name="page source" />
     <Action name="fullscreen" />
-  </Menu>
+</Menu>
 <!--  ============ GO menu =========== -->
-    <Menu name="go" deleted="true">
-    </Menu>
+<Menu name="go" deleted="true">
+</Menu>
 <!--  ============ BOOKMARKS menu =========== -->
 <Action name="bookmarks" />
 <!--  ============ TOOLS menu =========== -->
-    <Menu name="tools">
+<Menu name="tools">
     <Action name="downloads" />
     <Action name="web inspector" />
 </Menu>
 <!--  ============ SETTINGS menu =========== -->
 <Menu name="settings" noMerge="1"><text>&amp;Settings</text>
-        <Action name="options_show_statusbar" />
-        <Separator/>
-        <Action name="options_configure_keybinding"/>
-        <Action name="options_configure_toolbars"/>
-        <Action name="options_configure"/>
+    <Action name="options_show_statusbar" />
+    <Separator/>
+    <Action name="options_configure_keybinding"/>
+    <Action name="options_configure_toolbars"/>
+    <Action name="options_configure"/>
 </Menu>
+
 </MenuBar>
 
 <!--  ============ Main ToolBar =========== -->
 
-<ToolBar name="mainToolBar" fullWidth="true" iconText="iconOnly" position="top" noMerge="1">
-    <text>Main Toolbar</text>
+<ToolBar name="mainToolBar" fullWidth="true" iconText="iconOnly" position="top" noMerge="1"><text>Main Toolbar</text>
     <Action name="history back" />
     <Action name="history forward" />
     <Action name="stop reload" />

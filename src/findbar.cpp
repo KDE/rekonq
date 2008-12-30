@@ -30,7 +30,7 @@
 #include <QtGui>
 
 FindBar::FindBar(KXmlGuiWindow *parent)
-    : KToolBar( "FindBar" , parent, Qt::BottomToolBarArea, true, false, false)
+    : KToolBar( "Find Bar" , parent, Qt::BottomToolBarArea, true, false, false)
     , m_lineEdit(0)
 {
     KAction *close = new KAction(KIcon("dialog-close") , "close" , this);

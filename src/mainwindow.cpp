@@ -109,7 +109,7 @@ MainWindow::MainWindow()
     navigationBar->addWidget(m_searchBar);
 
     // Find Bar
-    m_findBar = new FindBar(this);
+    m_findBar = new FindBar( this );
     connect( m_findBar, SIGNAL( searchString(const QString &) ), this, SLOT( slotFind(const QString &) ) ); 
 
 }
