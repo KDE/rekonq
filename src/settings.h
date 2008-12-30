@@ -21,9 +21,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-// Local Includes
-#include "ui_settings.h"
-
 // KDE Includes
 #include <KConfigDialog>
 
