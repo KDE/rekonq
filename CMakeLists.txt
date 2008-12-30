@@ -9,7 +9,7 @@ PROJECT( rekonq )
 # rekonq version
 SET(REKONQ_MAJOR_VERSION "0")
 SET(REKONQ_MINOR_VERSION "0")
-SET(REKONQ_PATCH_VERSION "1")
+SET(REKONQ_PATCH_VERSION "2")
 
 SET(REKONQ_VERSION_STRING
     "${REKONQ_MAJOR_VERSION}.${REKONQ_MINOR_VERSION}.${REKONQ_PATCH_VERSION}"
@@ -23,7 +23,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
 # =================================================================================================
 
 
-SET( QT_MIN_VERSION 4.4.0)
+SET(QT_MIN_VERSION 4.4.0)
 FIND_PACKAGE(KDE4 REQUIRED)
 
 INCLUDE(MacroOptionalFindPackage)
@@ -60,7 +60,7 @@ IF(QT_FOUND)
     MESSAGE(STATUS " rekonq will be compiled....... YES")
     SET(REKONQ_CAN_BE_COMPILED true)
 ELSE(QT_FOUND)
-    MESSAGE(FATAL_ERROR " rekonq will not be compiled!")
+    MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
     SET(REKONQ_CAN_BE_COMPILED false)
 ENDIF(QT_FOUND)
 
@@ -83,6 +83,7 @@ IF(REKONQ_CAN_BE_COMPILED)
     ADD_SUBDIRECTORY( icons )
     ADD_SUBDIRECTORY( data )
     ADD_SUBDIRECTORY( htmls )
+    ADD_SUBDIRECTORY( doc )
 
 ENDIF(REKONQ_CAN_BE_COMPILED)
 
