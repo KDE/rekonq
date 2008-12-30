@@ -1,7 +1,8 @@
 SET( rekonq_SRCS
     autosaver.cpp 
     browserapplication.cpp 
-    browsermainwindow.cpp 
+    mainwindow.cpp 
+#     rekonqview.cpp
     cookiejar.cpp 
     downloadmanager.cpp 
     edittableview.cpp 
@@ -46,8 +47,12 @@ TARGET_LINK_LIBRARIES( rekonq
     ${QT_QTWEBKIT_LIBRARY} 
 	${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
-    ${QT_QTUITOOLS_LIBRARY}
+#     ${QT_QTUITOOLS_LIBRARY}
 )
 
 INSTALL( TARGETS rekonq ${INSTALL_TARGETS_DEFAULT_ARGS} )
-# install(FILES kekonq.rc DESTINATION ${DATA_INSTALL_DIR}/rekonq)
+
+########### install files ###############
+
+#INSTALL( FILES rekonq.kcfg  DESTINATION  ${KCFG_INSTALL_DIR} )
+INSTALL( FILES rekonqui.rc  DESTINATION  ${DATA_INSTALL_DIR}/rekonq )

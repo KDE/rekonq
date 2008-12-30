@@ -22,7 +22,7 @@
 // Local Includes
 #include "browserapplication.h"
 
-#include "browsermainwindow.h"
+#include "mainwindow.h"
 #include "cookiejar.h"
 #include "downloadmanager.h"
 #include "history.h"
@@ -173,10 +173,10 @@ void BrowserApplication::loadSettings()
 
 
 
-QList<BrowserMainWindow*> BrowserApplication::mainWindows()
+QList<MainWindow*> BrowserApplication::mainWindows()
 {
     clean();
-    QList<BrowserMainWindow*> list;
+    QList<MainWindow*> list;
     for (int i = 0; i < m_mainWindows.count(); ++i)
     {
         list.append(m_mainWindows.at(i));
@@ -247,7 +247,7 @@ void BrowserApplication::restoreLastSession()
     }
     for (int i = 0; i < windows.count(); ++i) 
     {
-        BrowserMainWindow *newWindow = 0;
+        MainWindow *newWindow = 0;
         if (m_mainWindows.count() == 1
             && mainWindow()->tabWidget()->count() == 1
             && mainWindow()->currentTab()->url() == KUrl()) 
@@ -277,16 +277,16 @@ void BrowserApplication::openUrl(const KUrl &url)
 
 
 
-BrowserMainWindow *BrowserApplication::newMainWindow()
+MainWindow *BrowserApplication::newMainWindow()
 {
-    BrowserMainWindow *browser = new BrowserMainWindow();
+    MainWindow *browser = new MainWindow();
     m_mainWindows.prepend(browser);
     browser->show();
     return browser;
 }
 
 
-BrowserMainWindow *BrowserApplication::mainWindow()
+MainWindow *BrowserApplication::mainWindow()
 {
     clean();
     if (m_mainWindows.isEmpty())

@@ -22,7 +22,7 @@
 #include "searchbar.moc"
 
 #include "browserapplication.h"
-#include "browsermainwindow.h"
+#include "mainwindow.h"
 
 #include <KDebug>
 

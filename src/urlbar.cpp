@@ -22,7 +22,7 @@
 #include "urlbar.moc"
 
 #include "browserapplication.h"
-#include "browsermainwindow.h"
+#include "mainwindow.h"
 
 
 UrlBar::UrlBar(QWidget *parent)

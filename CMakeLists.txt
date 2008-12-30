@@ -42,9 +42,9 @@ MESSAGE(STATUS "")
 # Require shared libraries results.
 
 IF(QT_FOUND)
-    MESSAGE(STATUS " qt library found............... YES")
+    MESSAGE(STATUS " Qt library found............... YES")
 ELSE(QT_FOUND)
-    MESSAGE(STATUS " qt library found............... NO")
+    MESSAGE(STATUS " Qt library found............... NO")
     MESSAGE(STATUS "")
     MESSAGE(SEND_ERROR " rekonq needs at least Qt 4.4.0. Please install it and try compiling again.")
     MESSAGE(STATUS " Qt website is at http://www.trolltech.com")

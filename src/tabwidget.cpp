@@ -23,7 +23,7 @@
 #include "tabwidget.h"
 
 #include "browserapplication.h"
-#include "browsermainwindow.h"
+#include "mainwindow.h"
 #include "history.h"
 #include "urlbar.h"
 #include "webview.h"
@@ -229,7 +229,7 @@ TabWidget::TabWidget(QWidget *parent)
     setTabBar(m_tabBar);
 
     // Actions
-    m_newTabAction = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
+    m_newTabAction = new KAction( KIcon("tab-new"), i18n("New &Tab"), this);
     m_newTabAction->setShortcut( KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_N, Qt::CTRL + Qt::Key_T) );
     m_newTabAction->setIconVisibleInMenu(false);
     connect(m_newTabAction, SIGNAL(triggered()), this, SLOT(newTab()));

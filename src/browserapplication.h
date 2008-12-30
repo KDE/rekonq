@@ -35,7 +35,7 @@ QT_BEGIN_NAMESPACE
 class QLocalServer;
 QT_END_NAMESPACE
 
-class BrowserMainWindow;
+class MainWindow;
 class CookieJar;
 class DownloadManager;
 class HistoryManager;
@@ -52,8 +52,8 @@ public:
     void loadSettings();
 
     bool isTheOnlyBrowser() const;
-    BrowserMainWindow *mainWindow();
-    QList<BrowserMainWindow*> mainWindows();
+    MainWindow *mainWindow();
+    QList<MainWindow*> mainWindows();
     KIcon icon(const KUrl &url) const;
 
     void saveSession();
@@ -65,7 +65,7 @@ public:
     static NetworkAccessManager *networkAccessManager();
 
 public slots:
-    BrowserMainWindow *newMainWindow();
+    MainWindow *newMainWindow();
     void restoreLastSession();
 
 private slots:
@@ -80,7 +80,7 @@ private:
     static DownloadManager *s_downloadManager;
     static NetworkAccessManager *s_networkAccessManager;
 
-    QList<QPointer<BrowserMainWindow> > m_mainWindows;
+    QList<QPointer<MainWindow> > m_mainWindows;
     QLocalServer *m_localServer;
     QByteArray m_lastSession;
     mutable KIcon m_defaultIcon;

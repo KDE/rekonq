@@ -38,6 +38,9 @@
 #include <QWebHistoryInterface>
 
 
+/**
+  * Elements in this class represent an history item
+  */
 class HistoryItem
 {
 public:
@@ -242,7 +245,7 @@ signals:
 
 public:
      HistoryMenu(QWidget *parent = 0);
-     void setInitialActions(QList<KAction*> actions);
+     void setInitialActions(QList<QAction*> actions);
 
 protected:
     bool prePopulated();
@@ -255,7 +258,7 @@ private slots:
 private:
     HistoryManager *m_history;
     HistoryMenuModel *m_historyMenuModel;
-    QList<KAction*> m_initialActions;
+    QList<QAction*> m_initialActions;
 };
 
 

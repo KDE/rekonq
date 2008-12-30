@@ -29,7 +29,7 @@
 #include <KActionCollection>
 #include <KMainWindow>
 
-class BrowserMainWindow;
+class MainWindow;
 
 class OwnBookMarks : public QObject , public KBookmarkOwner
 {
@@ -47,7 +47,7 @@ signals:
     void openUrl(const KUrl &);
 
 private:
-    BrowserMainWindow *m_parent;
+    MainWindow *m_parent;
 };
 
 

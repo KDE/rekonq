@@ -24,33 +24,32 @@
 #include <KAboutData>
 #include <KCmdLineArgs>
 
+static const char description[] =
+    I18N_NOOP("KDE Browser Webkit Based");
 
-// really simple writing main files today..
+static const char version[] = "0.0.2";
+
 int main(int argc, char **argv)
 {
-    KAboutData aboutData(
-        "rekonq",
-        0, 
-        ki18n("rekonq"), 
-        "0.0.1", 
-        ki18n("A KDE browser webkit based"),
-        KAboutData::License_GPL,
-        ki18n("Copyright (c) 2008 Andrea Diamantini"),
-        KLocalizedString(),
-        "http://www.adjam.org",
-        "adjam7@gmail.com"  // bug report mail
-    );
+    KAboutData about(   "rekonq", 
+                        0, 
+                        ki18n("rekonq"), 
+                        version, 
+                        ki18n(description),
+                        KAboutData::License_GPL, 
+                        ki18n("(C) 2008 Andrea Diamantini"), 
+                        KLocalizedString(), 
+                        "http://www.adjam.org",
+                        "adjam7@gmail.com"
+                    );
 
-    aboutData.addAuthor(
-        ki18n("Andrea Diamantini"), 
-        ki18n("rekonq author"), 
-        "adjam7@gmail.com"
-    );
-    
-    aboutData.setProgramIconName("applications-internet");
+    about.addAuthor(    ki18n("Andrea Diamantini"), 
+                        KLocalizedString(), 
+                        "adjam7@gmail.com" 
+                   );
 
-    KCmdLineArgs::init( argc, argv, &aboutData );
-    
+    KCmdLineArgs::init(argc, argv, &about);
+
     KCmdLineOptions options;
     options.add( "+URL" , ki18n("Location to open") );
     KCmdLineArgs::addCmdLineOptions( options );

@@ -22,7 +22,7 @@
 
 
 ModelMenu::ModelMenu(QWidget * parent)
-    : QMenu(parent)
+    : KMenu(parent)
     , m_maxRows(7)
     , m_firstSeparator(-1)
     , m_maxWidth(-1)

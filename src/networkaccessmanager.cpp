@@ -22,7 +22,7 @@
 // Local Includes
 #include "networkaccessmanager.h"
 #include "browserapplication.h"
-#include "browsermainwindow.h"
+#include "mainwindow.h"
 
 #include "ui_passworddialog.h"
 #include "ui_proxy.h"
@@ -84,7 +84,7 @@ void NetworkAccessManager::loadSettings()
 
 void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *auth)
 {
-    BrowserMainWindow *mainWindow = BrowserApplication::instance()->mainWindow();
+    MainWindow *mainWindow = BrowserApplication::instance()->mainWindow();
 
     QDialog dialog(mainWindow);
     dialog.setWindowFlags(Qt::Sheet);
@@ -108,7 +108,7 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
 
 void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth)
 {
-    BrowserMainWindow *mainWindow = BrowserApplication::instance()->mainWindow();
+    MainWindow *mainWindow = BrowserApplication::instance()->mainWindow();
 
     QDialog dialog(mainWindow);
     dialog.setWindowFlags(Qt::Sheet);
@@ -133,7 +133,7 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
 #ifndef QT_NO_OPENSSL
 void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError> &error)
 {
-    BrowserMainWindow *mainWindow = BrowserApplication::instance()->mainWindow();
+    MainWindow *mainWindow = BrowserApplication::instance()->mainWindow();
 
     QStringList errorStrings;
     for (int i = 0; i < error.count(); ++i)
