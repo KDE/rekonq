@@ -38,12 +38,12 @@
   <Menu name="view" noMerge="1"><text>&amp;View</text>
     <Action name="view_redisplay" />
     <Separator/>
-        <Menu name="fontmenu">
-         <text>make text..</text>
+<!--         <Menu name="fontmenu"> -->
+<!--          <text>make text..</text> -->
         <Action name="bigger font" />
         <Action name="normal font" />
         <Action name="smaller font" />
-        </Menu>
+<!--         </Menu> -->
     <Separator/>
     <Action name="page source" />
     <Action name="fullscreen" />
@@ -51,6 +51,8 @@
 <!--  ============ GO menu =========== -->
     <Menu name="go" deleted="true">
     </Menu>
+<!--  ============ BOOKMARKS menu =========== -->
+<Action name="bookmarks" />
 <!--  ============ TOOLS menu =========== -->
     <Menu name="tools">
     <Action name="downloads" />
@@ -58,7 +60,7 @@
 </Menu>
 <!--  ============ SETTINGS menu =========== -->
 <Menu name="settings" noMerge="1"><text>&amp;Settings</text>
-        <Action name="options_show_statusbar"/>
+        <Action name="options_show_statusbar" />
         <Separator/>
         <Action name="options_configure_keybinding"/>
         <Action name="options_configure_toolbars"/>

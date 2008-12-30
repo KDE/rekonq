@@ -188,17 +188,17 @@ void MainWindow::setupActions()
     actionCollection()->addAction( i18n("private browsing"), a );
     connect( a, SIGNAL( triggered(bool) ) , this, SLOT( slotPrivateBrowsing() ) );
 
-    a = new KAction( i18n("&Bigger"), this );
+    a = new KAction( KIcon("zoom-in"), i18n("&Enlarge font"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Plus) );
     actionCollection()->addAction( QLatin1String("bigger font"), a );
     connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextBigger() ) );
 
-    a = new KAction( i18n("&Normal"), this );
+    a = new KAction( KIcon("zoom-original"),  i18n("&Normal font"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_0) );
     actionCollection()->addAction( QLatin1String("normal font"), a );
     connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextNormal() ) );
 
-    a = new KAction( i18n("&Smaller"), this );
+    a = new KAction( KIcon("zoom-out"),  i18n("&Shrink font"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Minus) );
     actionCollection()->addAction( QLatin1String("smaller font"), a );
     connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextSmaller() ) );
@@ -215,6 +215,11 @@ void MainWindow::setupActions()
     a->setCheckable(true);
     actionCollection()->addAction( QLatin1String("web inspector"), a );
     connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotToggleInspector(bool) ) );
+
+    a = new KActionMenu( i18n("B&ookmarks"), this );
+    actionCollection()->addAction( QLatin1String("bookmarks"), a );
+    BookmarksMenu *bookmarksMenu = new BookmarksMenu( this );
+    a->setMenu( bookmarksMenu );
 
     // ===================================================================================================================
     // ===================================================================================================================
@@ -241,7 +246,7 @@ void MainWindow::setupCustomMenu()
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle( i18n("Hi&story") );
-    menuBar()->insertMenu( actionCollection()->action("downloads"), historyMenu);
+    menuBar()->insertMenu( actionCollection()->action("bookmarks"), historyMenu);
     QList<QAction*> historyActions;
 
     historyActions.append( actionCollection()->action("Back") );
@@ -253,9 +258,8 @@ void MainWindow::setupCustomMenu()
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // --------------------------------------------- BOOKMARKS  MENU -----------------------------------------------------------------------------------------------------
-    BookmarksMenu *bookmarksMenu = new BookmarksMenu( this );
-    bookmarksMenu->setTitle( i18n("&Bookmarks") );
-    menuBar()->insertMenu( actionCollection()->action("downloads"), bookmarksMenu );
+
+        
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 }
 
