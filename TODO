@@ -20,9 +20,6 @@ ROAD to 0.0.2 (second release)
 NEXT..
 - system SELECT ALL
 - better FULL SCREEN
-- simplify history
-- KDE autosave
-- kMainWindow save/read settings
 - color progress
 - contextMenu in searchbar to set different search engines
 - KDE proxy support

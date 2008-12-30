@@ -1,7 +1,11 @@
 0.0.2
-- QUrl --> KUrl
-- more KDE-like toolbars
+- 70% ported to KDE4
+- new urlbar
+- new searchbar (just Google, for now)
+- new findbar (A-LA kate)
+- Slackware Slackbuild available
 
 
 0.0.1
-
+- initial porting to KDE4
+- share konqueror bookmarks
