@@ -67,10 +67,6 @@ MainWindow::MainWindow()
     // tell the KXmlGuiWindow that this is indeed the main widget
     setCentralWidget(m_tabWidget);
 
-    // Find Bar
-    m_findBar = new FindBar(this);
-    connect( m_findBar, SIGNAL( searchString(const QString &) ), this, SLOT( slotFind(const QString &) ) ); 
-
     connect(m_tabWidget, SIGNAL( loadPage(const QString &) ), this, SLOT( loadPage(const QString &) ) );
     connect(m_tabWidget, SIGNAL( setCurrentTitle(const QString &)), this, SLOT( slotUpdateWindowTitle(const QString &) ) );
     connect(m_tabWidget, SIGNAL( showStatusBarMessage(const QString&)), statusBar(), SLOT( showMessage(const QString&) ) );
@@ -112,6 +108,9 @@ MainWindow::MainWindow()
     connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     navigationBar->addWidget(m_searchBar);
 
+    // Find Bar
+    m_findBar = new FindBar(this);
+    connect( m_findBar, SIGNAL( searchString(const QString &) ), this, SLOT( slotFind(const QString &) ) ); 
 
 }
 

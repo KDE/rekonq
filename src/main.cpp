@@ -32,21 +32,21 @@ static const char version[] = "0.0.2";
 int main(int argc, char **argv)
 {
     KAboutData about(   "rekonq", 
-                                    0, 
-                                    ki18n("rekonq"), 
-                                    version, 
-                                    ki18n(description),
-                                    KAboutData::License_GPL, 
-                                    ki18n("(C) 2008 Andrea Diamantini"), 
-                                    KLocalizedString(), 
-                                    "http://www.adjam.org",
-                                    "adjam7@gmail.com"
-                                );
+                        0, 
+                        ki18n("rekonq"), 
+                        version, 
+                        ki18n(description),
+                        KAboutData::License_GPL, 
+                        ki18n("(C) 2008 Andrea Diamantini"), 
+                        KLocalizedString(), 
+                        "http://www.adjam.org",
+                        "adjam7@gmail.com"
+                    );
 
-    about.addAuthor(       ki18n("Andrea Diamantini"), 
-                                    KLocalizedString(), 
-                                    "adjam7@gmail.com" 
-                            );
+    about.addAuthor(    ki18n("Andrea Diamantini"), 
+                        KLocalizedString(), 
+                        "adjam7@gmail.com" 
+                   );
 
     KCmdLineArgs::init(argc, argv, &about);
 

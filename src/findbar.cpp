@@ -24,12 +24,12 @@
 #include <KAction>
 #include <KIcon>
 #include <KToolBar>
-#include <KStandardAction>
 #include <KDialog>
+#include <KPushButton>
 
 #include <QtGui>
 
-FindBar::FindBar(KMainWindow *parent)
+FindBar::FindBar(KXmlGuiWindow *parent)
     : KToolBar( "FindBar" , parent, Qt::BottomToolBarArea, true, false, false)
     , m_lineEdit(0)
 {
@@ -47,8 +47,15 @@ FindBar::FindBar(KMainWindow *parent)
     connect( m_lineEdit, SIGNAL( textEdited(const QString &) ), parent, SLOT( slotFindNext() ) );
     addWidget( m_lineEdit );
 
-    addAction( KStandardAction::findNext(parent, SLOT( slotFindNext() ) , this ) );
-    addAction( KStandardAction::findPrev(parent, SLOT( slotFindPrevious() ) , this ) );
+    KPushButton *findNext = new KPushButton( KIcon("go-down"), "&Next", this );
+    KPushButton *findPrev = new KPushButton( KIcon("go-up"), "&Previous", this );
+    // perhaps we don't need working on style..
+//     findNext->setStyle();
+//     findPrev->setStyle();
+    connect( findNext, SIGNAL( clicked() ), parent, SLOT( slotFindNext() ) );
+    connect( findPrev, SIGNAL( clicked() ), parent, SLOT( slotFindPrevious() ) );
+    addWidget( findNext );
+    addWidget( findPrev );
 
     // we start off hidden
     hide();
