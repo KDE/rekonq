@@ -138,32 +138,15 @@ void MainWindow::setupActions()
     KStandardAction::home( this, SLOT( slotHome() ), actionCollection() );
     KStandardAction::preferences( this, SLOT( slotPreferences() ), actionCollection() );
 
-    a = KStandardAction::redisplay( this, 0, actionCollection() );
-    m_tabWidget->addWebAction( a, QWebPage::Reload );
-
-    a = KStandardAction::back( this, 0, actionCollection() );
-    m_tabWidget->addWebAction( a, QWebPage::Back );
-
-    a = KStandardAction::forward( this, 0, actionCollection() );
-    m_tabWidget->addWebAction( a, QWebPage::Forward );
-
-    a = KStandardAction::undo( this , 0 , actionCollection() );
-    m_tabWidget->addWebAction( a , QWebPage::Undo );
-
-    a = KStandardAction::redo( this , 0 , actionCollection() );
-    m_tabWidget->addWebAction( a, QWebPage::Redo );
-
-    a = KStandardAction::cut( this , 0 , actionCollection() );
-    m_tabWidget->addWebAction( a, QWebPage::Cut );
-
-    a = KStandardAction::copy( this , 0 , actionCollection() );
-    m_tabWidget->addWebAction( a, QWebPage::Copy );
-
-    a = KStandardAction::paste( this , 0 , actionCollection() );
-    m_tabWidget->addWebAction( a, QWebPage::Paste );
-
-    a = KStandardAction::selectAll( this , 0 , actionCollection() );
-    m_tabWidget->addWebAction( a, QWebPage::SelectEndOfDocument );
+    m_tabWidget->addWebAction( KStandardAction::redisplay( this, 0, actionCollection() )    , QWebPage::Reload );
+    m_tabWidget->addWebAction( KStandardAction::back( this, 0, actionCollection() )         , QWebPage::Back );
+    m_tabWidget->addWebAction( KStandardAction::forward( this, 0, actionCollection() )      , QWebPage::Forward );
+    m_tabWidget->addWebAction( KStandardAction::undo( this , 0 , actionCollection() )       , QWebPage::Undo );
+    m_tabWidget->addWebAction( KStandardAction::redo( this , 0 , actionCollection() )       , QWebPage::Redo );
+    m_tabWidget->addWebAction( KStandardAction::cut( this , 0 , actionCollection() )        , QWebPage::Cut );
+    m_tabWidget->addWebAction( KStandardAction::copy( this , 0 , actionCollection() )       , QWebPage::Copy );
+    m_tabWidget->addWebAction( KStandardAction::paste( this , 0 , actionCollection() )      , QWebPage::Paste );
+    m_tabWidget->addWebAction( KStandardAction::selectAll( this , 0 , actionCollection() )  , QWebPage::SelectEndOfDocument );
 
     // stop reload Action 
     m_stopReload = new KAction( KIcon("view-refresh"), i18n("reload"), this );

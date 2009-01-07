@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<kpartgui name="rekonq" version="1">
+<kpartgui name="rekonq" version="8">
 <MenuBar>
 <!--  ============ FILE menu =========== -->
 <Menu name="file" noMerge="1"><text>&amp;File</text>
@@ -63,7 +63,6 @@
     <Action name="options_configure_toolbars"/>
     <Action name="options_configure"/>
 </Menu>
-
 </MenuBar>
 
 <!--  ============ Main ToolBar =========== -->

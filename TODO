@@ -10,6 +10,13 @@ ROAD to 0.0.2 (second release)
 - better find toolbar
 - fixed search bar width
 
+ROAD to 0.0.3 (third release)
+- mainview
+- autosave-- && downloadSystem--
+- dbus, kjob, kget support
+- new application class!!
+
+
 + --------------------------------
 0.0.2
 + QUrl --> KUrl

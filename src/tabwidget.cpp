@@ -295,8 +295,7 @@ void TabWidget::clear()
 
 void TabWidget::moveTab(int fromIndex, int toIndex)
 {
-    disconnect(this, SIGNAL(currentChanged(int)),
-        this, SLOT(currentChanged(int)));
+    disconnect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
 
     QWidget *tabWidget = widget(fromIndex);
     QIcon icon = tabIcon(fromIndex);
@@ -343,20 +342,14 @@ void TabWidget::currentChanged(int index)
     WebView *oldWebView = this->webView(m_lineEdits->currentIndex());
     if (oldWebView) 
     {
-        disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)),
-                this, SIGNAL(showStatusBarMessage(const QString&)));
-        disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
-                this, SIGNAL(linkHovered(const QString&)));
-        disconnect(oldWebView, SIGNAL(loadProgress(int)),
-                this, SIGNAL(loadProgress(int)));
+        disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
+        disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), this, SIGNAL(linkHovered(const QString&)));
+        disconnect(oldWebView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
     }
 
-    connect(webView, SIGNAL(statusBarMessage(const QString&)),
-            this, SIGNAL(showStatusBarMessage(const QString&)));
-    connect(webView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
-            this, SIGNAL(linkHovered(const QString&)));
-    connect(webView, SIGNAL(loadProgress(int)),
-            this, SIGNAL(loadProgress(int)));
+    connect(webView, SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
+    connect(webView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), this, SIGNAL(linkHovered(const QString&)));
+    connect(webView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
 
     for (int i = 0; i < m_actions.count(); ++i) 
     {
@@ -367,10 +360,9 @@ void TabWidget::currentChanged(int index)
     m_lineEdits->setCurrentIndex(index);
     emit loadProgress(webView->progress());
     emit showStatusBarMessage(webView->lastStatusBarText());
-    if (webView->url().isEmpty())
-        m_lineEdits->currentWidget()->setFocus();
-    else
-        webView->setFocus();
+
+    // set focus to the current webview
+    webView->setFocus();
 }
 
 
