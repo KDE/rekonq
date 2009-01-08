@@ -20,9 +20,9 @@
 #ifndef FINDBAR_H
 #define FINDBAR_H
 
+// KDE Includes
 #include <KLineEdit>
 #include <KToolBar>
-
 #include <KXmlGuiWindow>
 
 class FindBar : public KToolBar

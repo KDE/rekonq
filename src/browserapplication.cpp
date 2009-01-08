@@ -27,7 +27,7 @@
 #include "downloadmanager.h"
 #include "history.h"
 #include "networkaccessmanager.h"
-#include "tabwidget.h"
+#include "mainview.h"
 #include "webview.h"
 
 // KDE Includes

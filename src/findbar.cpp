@@ -17,9 +17,11 @@
  *
  * ============================================================ */
 
+// Self Includes
 #include "findbar.h"
-#include "moc_findbar.cpp"
+#include "findbar.moc"
 
+// KDE Includes
 #include <KLineEdit>
 #include <KAction>
 #include <KIcon>
@@ -27,7 +29,9 @@
 #include <KDialog>
 #include <KPushButton>
 
+// Qt Includes
 #include <QtGui>
+
 
 FindBar::FindBar(KXmlGuiWindow *parent)
     : KToolBar( "Find Bar" , parent, Qt::BottomToolBarArea, true, false, false)

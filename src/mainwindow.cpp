@@ -21,13 +21,13 @@
 
 // Self Includes
 #include "mainwindow.h"
+#include "mainwindow.moc"
 
 // Local Includes
 #include "browserapplication.h"
 #include "downloadmanager.h"
 #include "history.h"
 #include "settings.h"
-#include "tabwidget.h"
 #include "bookmarks.h"
 #include "webview.h"
 
@@ -57,7 +57,7 @@
 
 MainWindow::MainWindow()
     : KXmlGuiWindow()
-    , m_tabWidget( new TabWidget(this) )
+    , m_tabWidget( new MainView(this) )
 {
     // accept dnd
     setAcceptDrops(true);
@@ -587,7 +587,7 @@ void MainWindow::loadPage(const QString &page)
 }
 
 
-TabWidget *MainWindow::tabWidget() const
+MainView *MainWindow::tabWidget() const
 {
     return m_tabWidget;
 }

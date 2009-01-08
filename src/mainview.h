@@ -23,65 +23,19 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
-#include <KTabBar>
+// KDE Includes
 #include <KAction>
 
-#include <QShortcut>
-/*
-    Tab bar with a few more features such as a context menu and shortcuts
- */
-class TabBar : public KTabBar
-{
-    Q_OBJECT
-
-signals:
-    void newTab();
-    void cloneTab(int index);
-    void closeTab(int index);
-    void closeOtherTabs(int index);
-    void reloadTab(int index);
-    void reloadAllTabs();
-    void tabMoveRequested(int fromIndex, int toIndex);
-
-public:
-    TabBar(QWidget *parent = 0);
-    ~TabBar();
-
-protected:
-    void mousePressEvent(QMouseEvent* event);
-    void mouseMoveEvent(QMouseEvent* event);
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
-
-private slots:
-    void selectTabAction();
-    void cloneTab();
-    void closeTab();
-    void closeOtherTabs();
-    void reloadTab();
-    void contextMenuRequested(const QPoint &position);
-
-private:
-    QList<QShortcut*> m_tabShortcuts;
-    friend class TabWidget;
-
-    QPoint m_dragStartPos;
-    int m_dragCurrentIndex;
-};
-
-
-// ----------------------------------------------------------------------------------------------------------------------------
-
-
+// Qt Includes
 #include <QWebPage>
 
 class WebView;
-/*!
-    A proxy object that connects a single browser action
-    to one child webpage action at a time.
-
-    Example usage: used to keep the main window stop action in sync with
-    the current tabs webview's stop action.
+/**
+ *   A proxy object that connects a single browser action
+ *   to one child webpage action at a time.
+ *
+ *   Example usage: used to keep the main window stop action in sync with
+ *   the current tabs webview's stop action.
  */
 class WebActionMapper : public QObject
 {
@@ -108,6 +62,9 @@ private:
 
 // ----------------------------------------------------------------------------------------------------------------------------
 
+// Local Includes
+#include "tabbar.h"
+
 // KDE Includes
 #include <KUrl>
 #include <KMenu>
@@ -121,15 +78,21 @@ class QCompleter;
 class QMenu;
 class QStackedWidget;
 QT_END_NAMESPACE
-/*!
-    TabWidget that contains WebViews and a stack widget of associated line edits.
 
-    Connects up the current tab's signals to this class's signal and uses WebActionMapper
-    to proxy the actions.
+/**
+ *   TabWidget that contains WebViews and a stack widget of associated line edits.
+ *
+ *   Connects up the current tab's signals to this class's signal and uses WebActionMapper
+ *   to proxy the actions.
  */
-class TabWidget : public KTabWidget
+class MainView : public KTabWidget
 {
     Q_OBJECT
+
+public:
+    MainView(QWidget *parent = 0);
+    ~MainView();
+
 
 signals:
     // tab widget signals
@@ -149,9 +112,6 @@ signals:
     void printRequested(QWebFrame *frame);
 
 public:
-    TabWidget(QWidget *parent = 0);
-    ~TabWidget();
-
     void clear();
     void addWebAction(KAction *action, QWebPage::WebAction webAction);
 
@@ -207,7 +167,7 @@ private:
     KMenu *m_recentlyClosedTabsMenu;
     static const int m_recentlyClosedTabsSize = 10;
     QList<KUrl> m_recentlyClosedTabs;
-    QList<WebActionMapper*> m_actions;
+    QList<WebActionMapper*> m_webActionList;
 
     QCompleter *m_lineEditCompleter;
     QStackedWidget *m_lineEdits;

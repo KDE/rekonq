@@ -2,7 +2,8 @@ SET( rekonq_SRCS
     autosaver.cpp 
     browserapplication.cpp 
     mainwindow.cpp 
-#     rekonqview.cpp
+    mainview.cpp
+    tabbar.cpp
     cookiejar.cpp 
     downloadmanager.cpp 
     edittableview.cpp 
@@ -16,7 +17,6 @@ SET( rekonq_SRCS
     searchbar.cpp
     settings.cpp 
     squeezelabel.cpp 
-    tabwidget.cpp
     webview.cpp 
     main.cpp
 )

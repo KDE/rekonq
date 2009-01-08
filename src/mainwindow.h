@@ -25,6 +25,7 @@
 // Local Includes
 #include "findbar.h"
 #include "searchbar.h"
+#include "mainview.h"
 
 // KDE Includes
 #include <KUrl>
@@ -37,7 +38,6 @@
 
 
 class QWebFrame;
-class TabWidget;
 class WebView;
 
 /**
@@ -53,7 +53,7 @@ public:
     ~MainWindow();
 
     static KUrl guessUrlFromString(const QString &url);
-    TabWidget *tabWidget() const;
+    MainView *tabWidget() const;
     WebView *currentTab() const;
 
 private:
@@ -118,7 +118,7 @@ private:
 
     QString m_lastSearch;
 
-    TabWidget *m_tabWidget;
+    MainView *m_tabWidget;
 };
 
 #endif // MAINWINDOW_H

@@ -21,10 +21,10 @@
 
 #include "browserapplication.h"
 #include "mainwindow.h"
+#include "mainview.h"
 #include "cookiejar.h"
 #include "downloadmanager.h"
 #include "networkaccessmanager.h"
-#include "tabwidget.h"
 #include "webview.h"
 
 #include <KStandardDirs>
