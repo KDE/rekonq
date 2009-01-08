@@ -77,7 +77,6 @@ MainWindow::MainWindow()
     connect(m_tabWidget, SIGNAL( printRequested(QWebFrame *)), this, SLOT( printRequested(QWebFrame *) ) );
     connect(m_tabWidget, SIGNAL( menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT( setVisible(bool) ) );
     connect(m_tabWidget, SIGNAL( statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT( setVisible(bool) ) );
-//     connect(m_tabWidget, SIGNAL( toolBarVisibilityChangeRequested(bool) ), m_navigationBar, SLOT( setVisible(bool) ) );
     connect(m_tabWidget, SIGNAL( lastTabClosed() ), m_tabWidget, SLOT(newTab() ) );
 
     slotUpdateWindowTitle();
@@ -223,7 +222,7 @@ void MainWindow::setupActions()
 
 void MainWindow::setupCustomMenu()
 {
-    //  ------------------------------------------------------------- HISTORY MENU--------------------------------------------------------------------------------------------------
+    //  -------------------------------- HISTORY MENU -----------------------------------------------------------------------
     HistoryMenu *historyMenu = new HistoryMenu(this);
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_tabWidget, SLOT(loadUrlInCurrentTab(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
@@ -237,12 +236,12 @@ void MainWindow::setupCustomMenu()
     historyActions.append( m_tabWidget->recentlyClosedTabsAction() );
 
     historyMenu->setInitialActions(historyActions);
-    // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------------------
 
-    // --------------------------------------------- BOOKMARKS  MENU -----------------------------------------------------------------------------------------------------
+    // ------------------------------ BOOKMARKS  MENU --------------------------------------------------------------
 
         
-    // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------------------------
 }
 
 KUrl MainWindow::guessUrlFromString(const QString &string)
@@ -444,8 +443,9 @@ void MainWindow::slotPrivateBrowsing()
 //     if (m_tabWidget->count() > 1) 
 //     {
 //         int ret = KMessageBox::warningYesNo(this, 
-//                                                          i18n("Are you sure you want to close the window?" "  There are %1 tab open" , m_tabWidget->count() ) ,
-//                                                         i18n("Closing") );
+//                                             i18n("Are you sure you want to close the window?" "  There are %1 tab open" , m_tabWidget->count() ),
+//                                             i18n("Closing") 
+//                                            );
 //         if (ret == KMessageBox::No) 
 //         {
 //             event->ignore();
