@@ -40,10 +40,16 @@
 class QWebFrame;
 class WebView;
 
+
 /**
-    The MainWindow of the Browser Application.
-    Handles the tab widget and all the actions
-*/
+ * This class serves as the main window for rekonq.  
+ * It handles the menus, toolbars, and status bars.
+ *
+ * @short Main window class
+ * @author Andrea Diamantini adjam7_AT_gmail_DOT_com
+ *
+ */
+
 class MainWindow : public KXmlGuiWindow 
 {
     Q_OBJECT
@@ -60,39 +66,15 @@ private:
     void setupActions();
     void setupCustomMenu();
 
-public slots:
+private slots:
+
     void loadPage(const QString &url);
     void slotHome();
-    void slotFind(const QString &);
-    void slotFindNext();
-    void slotFindPrevious();
-
-private slots:
+    void loadUrl(const KUrl &url);
     void slotLoadProgress(int);
     void slotUpdateStatusbar(const QString &string);
     void slotUpdateWindowTitle(const QString &title = QString());
-
-    void loadUrl(const KUrl &url);
-    void slotPreferences();
-
-    void slotFileNew();
-    void slotFileOpen();
-    void slotFilePrintPreview();
-    void slotFilePrint();
-    void slotPrivateBrowsing();
-    void slotFileSaveAs();
-
-    void slotViewTextBigger();
-    void slotViewTextNormal();
-    void slotViewTextSmaller();
-    void slotViewPageSource();
-    void slotViewFullScreen(bool enable);
-    void slotViewFindBar();
-
-    void slotToggleInspector(bool enable);
-    void slotDownloadManager();
     void slotOpenLocation();
-
     void slotAboutToShowBackMenu();
 
     // history related
@@ -102,10 +84,37 @@ private slots:
 
     void slotShowWindow();
     void slotSwapFocus();
-
-    void printRequested(QWebFrame *frame);
     void geometryChangeRequested(const QRect &geometry);
 
+
+    // File Menu slots
+    void slotFileNew();
+    void slotFileOpen();
+    void slotFilePrintPreview();
+    void slotFilePrint();
+    void slotPrivateBrowsing();
+    void slotFileSaveAs();
+    void printRequested(QWebFrame *frame);
+
+    // Edit Menu slots
+    void slotFind(const QString &);
+    void slotFindNext();
+    void slotFindPrevious();
+
+    // View Menu slots
+    void slotViewTextBigger();
+    void slotViewTextNormal();
+    void slotViewTextSmaller();
+    void slotViewPageSource();
+    void slotViewFullScreen(bool enable);
+    void slotViewFindBar();
+
+    // Tools Menu slots
+    void slotToggleInspector(bool enable);
+    void slotDownloadManager();
+
+    // Settings Menu slots
+    void slotPreferences();
 
 private:
     SearchBar *m_searchBar;

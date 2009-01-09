@@ -169,17 +169,17 @@ void MainWindow::setupActions()
     actionCollection()->addAction( i18n("private browsing"), a );
     connect( a, SIGNAL( triggered(bool) ) , this, SLOT( slotPrivateBrowsing() ) );
 
-    a = new KAction( KIcon("zoom-in"), i18n("&Enlarge font"), this );
+    a = new KAction( KIcon("zoom-in"), i18n("&Enlarge Font"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Plus) );
     actionCollection()->addAction( QLatin1String("bigger font"), a );
     connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextBigger() ) );
 
-    a = new KAction( KIcon("zoom-original"),  i18n("&Normal font"), this );
+    a = new KAction( KIcon("zoom-original"),  i18n("&Normal Font"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_0) );
     actionCollection()->addAction( QLatin1String("normal font"), a );
     connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextNormal() ) );
 
-    a = new KAction( KIcon("zoom-out"),  i18n("&Shrink font"), this );
+    a = new KAction( KIcon("zoom-out"),  i18n("&Shrink Font"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Minus) );
     actionCollection()->addAction( QLatin1String("smaller font"), a );
     connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextSmaller() ) );
