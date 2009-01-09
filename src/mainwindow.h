@@ -62,6 +62,7 @@ public:
 private:
     void setupActions();
     void setupCustomMenu();
+    void setupTabBar();
 
 public slots:
     void slotHome();

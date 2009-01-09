@@ -99,6 +99,9 @@ MainWindow::MainWindow()
     // setup history & bookmarks menus
     setupCustomMenu();
 
+    // setup Tab Bar
+    setupTabBar();
+
     // setting up custom widgets..
     KToolBar *navigationBar = toolBar( "mainToolBar" );
     navigationBar->addWidget( m_tabWidget->lineEditStack() );
@@ -152,7 +155,7 @@ void MainWindow::setupActions()
     m_stopReload = new KAction( KIcon("view-refresh"), i18n("reload"), this );
     actionCollection()->addAction( QLatin1String("stop reload") , m_stopReload );
 
-    // Custom Actions
+    // ============== Custom Actions
     a = new KAction ( KIcon( "process-stop" ), i18n("&Stop"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Period) );
     actionCollection()->addAction( QLatin1String("stop"), a );
@@ -161,9 +164,6 @@ void MainWindow::setupActions()
     a = new KAction( KIcon(), i18n("Open Location"), this); 
     actionCollection()->addAction( QLatin1String("open location"), a );
     connect( a, SIGNAL( triggered(bool) ) , this, SLOT( slotOpenLocation() ) );
-
-    actionCollection()->addAction( QLatin1String("new tab"), m_tabWidget->newTabAction() );
-    actionCollection()->addAction( QLatin1String("close tab"), m_tabWidget->closeTabAction() );
 
     a = new KAction( i18n("Private &Browsing..."), this );
     a->setCheckable(true);
@@ -198,13 +198,13 @@ void MainWindow::setupActions()
     actionCollection()->addAction( QLatin1String("web inspector"), a );
     connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotToggleInspector(bool) ) );
 
-    // BOOKMARKS MENU
+    // ================== BOOKMARKS MENU
     a = new KActionMenu( i18n("B&ookmarks"), this );
     actionCollection()->addAction( QLatin1String("bookmarks"), a );
     BookmarksMenu *bookmarksMenu = new BookmarksMenu( this );
     a->setMenu( bookmarksMenu );
 
-    // history related actions
+    // ================ history related actions
     KAction *historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
     historyBack->setMenu(m_historyBackMenu);
@@ -217,9 +217,44 @@ void MainWindow::setupActions()
     connect(historyForward, SIGNAL( triggered( bool ) ), this, SLOT( slotOpenNext() ) );
     actionCollection()->addAction( QLatin1String("history forward"), historyForward );
 
-    // ===================================================================================================================
+    // =================== Tab Actions
+    a = new KAction( KIcon("tab-new"), i18n("New &Tab"), this);
+    a->setShortcut( KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_N, Qt::CTRL + Qt::Key_T) );
+    actionCollection()->addAction( QLatin1String("new tab"), a);
+    connect(a, SIGNAL(triggered()), m_tabWidget, SLOT(newTab()));
+
+    a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
+    a->setShortcut( KShortcut( Qt::CTRL + Qt::Key_W ) );
+    actionCollection()->addAction( QLatin1String("close tab"), a);
+    connect(a, SIGNAL(triggered()), m_tabWidget, SLOT(closeTab()));
+
+    a = new KAction(i18n("Show Next Tab"), this);
+    a->setShortcuts( QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext() );
+    actionCollection()->addAction( QLatin1String("show next tab"), a);
+    connect(a, SIGNAL(triggered()), m_tabWidget, SLOT(nextTab()));
+
+    a = new KAction(i18n("Show Previous Tab"), this);
+    a->setShortcuts( QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev() );
+    actionCollection()->addAction( QLatin1String("show prev tab"), a);
+    connect(a, SIGNAL(triggered()), m_tabWidget, SLOT(previousTab()));
+}
 
 
+void MainWindow::setupTabBar()
+{
+    // Left corner button
+    QToolButton *addTabButton = new QToolButton(this);
+    addTabButton->setDefaultAction( actionCollection()->action("new tab") );
+    addTabButton->setAutoRaise(true);
+    addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    m_tabWidget->setCornerWidget(addTabButton, Qt::TopLeftCorner);
+
+    // right corner button
+    QToolButton *closeTabButton = new QToolButton(this);
+    closeTabButton->setDefaultAction( actionCollection()->action("close tab") );
+    closeTabButton->setAutoRaise(true);
+    closeTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    m_tabWidget->setCornerWidget(closeTabButton, Qt::TopRightCorner);
 }
 
 

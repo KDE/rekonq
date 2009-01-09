@@ -35,6 +35,7 @@
 #include <KShortcut>
 #include <KStandardShortcut>
 #include <KMessageBox>
+#include <KActionCollection>
 
 // Qt Includes
 #include <QtGui>
@@ -45,10 +46,6 @@
 MainView::MainView(QWidget *parent)
     : KTabWidget(parent)
     , m_recentlyClosedTabsAction(0)
-    , m_newTabAction(0)
-    , m_closeTabAction(0)
-    , m_nextTabAction(0)
-    , m_previousTabAction(0)
     , m_recentlyClosedTabsMenu(0)
     , m_lineEditCompleter(0)
     , m_lineEdits(0)
@@ -65,25 +62,7 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(tabMoveRequested(int, int)), this, SLOT(moveTab(int, int)));
     setTabBar(m_tabBar);
 
-    // Actions
-    m_newTabAction = new KAction( KIcon("tab-new"), i18n("New &Tab"), this);
-    m_newTabAction->setShortcut( KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_N, Qt::CTRL + Qt::Key_T) );
-    m_newTabAction->setIconVisibleInMenu(false);
-    connect(m_newTabAction, SIGNAL(triggered()), this, SLOT(newTab()));
-
-    m_closeTabAction = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
-    m_closeTabAction->setShortcut( KShortcut( Qt::CTRL + Qt::Key_W ) );
-    m_closeTabAction->setIconVisibleInMenu(false);
-    connect(m_closeTabAction, SIGNAL(triggered()), this, SLOT(closeTab()));
-
-    m_nextTabAction = new KAction(i18n("Show Next Tab"), this);
-    m_nextTabAction->setShortcuts( QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext() );
-    connect(m_nextTabAction, SIGNAL(triggered()), this, SLOT(nextTab()));
-
-    m_previousTabAction = new KAction(i18n("Show Previous Tab"), this);
-    m_previousTabAction->setShortcuts( QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev() );
-    connect(m_previousTabAction, SIGNAL(triggered()), this, SLOT(previousTab()));
-
+    // Recently Closed Tab Action
     m_recentlyClosedTabsMenu = new KMenu(this);
     connect(m_recentlyClosedTabsMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowRecentTabsMenu()));
     connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)), this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
@@ -91,19 +70,7 @@ MainView::MainView(QWidget *parent)
     m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
     m_recentlyClosedTabsAction->setEnabled(false);
 
-    // corner buttons
-    QToolButton *addTabButton = new QToolButton(this);
-    addTabButton->setDefaultAction(m_newTabAction);
-    addTabButton->setAutoRaise(true);
-    addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    setCornerWidget(addTabButton, Qt::TopLeftCorner);
-
-    QToolButton *closeTabButton = new QToolButton(this);
-    closeTabButton->setDefaultAction(m_closeTabAction);
-    closeTabButton->setAutoRaise(true);
-    closeTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    setCornerWidget(closeTabButton, Qt::TopRightCorner);
-
+    // --
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
 
     m_lineEdits = new QStackedWidget(this);
@@ -117,85 +84,90 @@ MainView::~MainView()
 } 
 
 
-// ========================================================================================================
-    KAction *MainView::newTabAction() const {return m_newTabAction; }
-    KAction *MainView::closeTabAction() const {return m_closeTabAction; }
-    KAction *MainView::recentlyClosedTabsAction() const {return m_recentlyClosedTabsAction;}
-    KAction *MainView::nextTabAction() const{}
-    KAction *MainView::previousTabAction() const{}
+KAction *MainView::recentlyClosedTabsAction() const
+{
+    return m_recentlyClosedTabsAction;
+}
 
-    void MainView::slotWebReload()
-    {
-        WebView *webView = currentWebView();
-        QWebPage *currentParent = webView->webPage();
-        QAction *action = currentParent->action(QWebPage::Reload);
-        action->trigger();
-    }
 
-    void MainView::slotWebBack()
-    {
-        WebView *webView = currentWebView();
-        QWebPage *currentParent = webView->webPage();
-        QAction *action = currentParent->action(QWebPage::Back);
-        action->trigger();
-    }
+void MainView::slotWebReload()
+{
+    WebView *webView = currentWebView();
+    QWebPage *currentParent = webView->webPage();
+    QAction *action = currentParent->action(QWebPage::Reload);
+    action->trigger();
+}
 
-    void MainView::slotWebForward()
-    {
-        WebView *webView = currentWebView();
-        QWebPage *currentParent = webView->webPage();
-        QAction *action = currentParent->action(QWebPage::Forward);
-        action->trigger();
-    }
 
-    void MainView::slotWebUndo()
-    {
-        WebView *webView = currentWebView();
-        QWebPage *currentParent = webView->webPage();
-        QAction *action = currentParent->action(QWebPage::Undo);
-        action->trigger();
-    }
+void MainView::slotWebBack()
+{
+    WebView *webView = currentWebView();
+    QWebPage *currentParent = webView->webPage();
+    QAction *action = currentParent->action(QWebPage::Back);
+    action->trigger();
+}
 
-    void MainView::slotWebRedo()
-    {
-        WebView *webView = currentWebView();
-        QWebPage *currentParent = webView->webPage();
-        QAction *action = currentParent->action(QWebPage::Redo);
-        action->trigger();
-    }
 
-    void MainView::slotWebCut()
-    {
-        WebView *webView = currentWebView();
-        QWebPage *currentParent = webView->webPage();
-        QAction *action = currentParent->action(QWebPage::Cut);
-        action->trigger();
-    }
+void MainView::slotWebForward()
+{
+    WebView *webView = currentWebView();
+    QWebPage *currentParent = webView->webPage();
+    QAction *action = currentParent->action(QWebPage::Forward);
+    action->trigger();
+}
 
-    void MainView::slotWebCopy()
-    {
-        WebView *webView = currentWebView();
-        QWebPage *currentParent = webView->webPage();
-        QAction *action = currentParent->action(QWebPage::Copy);
-        action->trigger();
-    }
 
-    void MainView::slotWebPaste()
-    {
-        WebView *webView = currentWebView();
-        QWebPage *currentParent = webView->webPage();
-        QAction *action = currentParent->action(QWebPage::Paste);
-        action->trigger();
-    }
+void MainView::slotWebUndo()
+{
+    WebView *webView = currentWebView();
+    QWebPage *currentParent = webView->webPage();
+    QAction *action = currentParent->action(QWebPage::Undo);
+    action->trigger();
+}
 
-    void MainView::slotWebSelectAll()
-    {
-        WebView *webView = currentWebView();
-        QWebPage *currentParent = webView->webPage();
-        // FIXME
-    }
 
-// ========================================================================================================
+void MainView::slotWebRedo()
+{
+    WebView *webView = currentWebView();
+    QWebPage *currentParent = webView->webPage();
+    QAction *action = currentParent->action(QWebPage::Redo);
+    action->trigger();
+}
+
+
+void MainView::slotWebCut()
+{
+    WebView *webView = currentWebView();
+    QWebPage *currentParent = webView->webPage();
+    QAction *action = currentParent->action(QWebPage::Cut);
+    action->trigger();
+}
+
+
+void MainView::slotWebCopy()
+{
+    WebView *webView = currentWebView();
+    QWebPage *currentParent = webView->webPage();
+    QAction *action = currentParent->action(QWebPage::Copy);
+    action->trigger();
+}
+
+
+void MainView::slotWebPaste()
+{
+    WebView *webView = currentWebView();
+    QWebPage *currentParent = webView->webPage();
+    QAction *action = currentParent->action(QWebPage::Paste);
+    action->trigger();
+}
+
+
+void MainView::slotWebSelectAll()
+{
+    WebView *webView = currentWebView();
+    QWebPage *currentParent = webView->webPage();
+    // FIXME
+}
 
 
 void MainView::clear()

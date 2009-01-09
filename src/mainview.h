@@ -76,11 +76,7 @@ signals:
 public:
     void clear();
 
-    KAction *newTabAction() const;
-    KAction *closeTabAction() const;
     KAction *recentlyClosedTabsAction() const;
-    KAction *nextTabAction() const;
-    KAction *previousTabAction() const;
 
     QWidget *lineEditStack() const;
     QLineEdit *currentLineEdit() const;
@@ -131,10 +127,6 @@ private slots:
 
 private:
     KAction *m_recentlyClosedTabsAction;
-    KAction *m_newTabAction;
-    KAction *m_closeTabAction;
-    KAction *m_nextTabAction;
-    KAction *m_previousTabAction;
 
     KMenu *m_recentlyClosedTabsMenu;
     static const int m_recentlyClosedTabsSize = 10;
