@@ -67,7 +67,7 @@ MainWindow::MainWindow()
     // tell the KXmlGuiWindow that this is indeed the main widget
     setCentralWidget(m_tabWidget);
 
-    connect(m_tabWidget, SIGNAL( loadPage(const QString &) ), this, SLOT( loadPage(const QString &) ) );
+    connect(m_tabWidget, SIGNAL( loadUrlPage(const KUrl &) ), this, SLOT( loadUrl(const KUrl &) ) );
     connect(m_tabWidget, SIGNAL( setCurrentTitle(const QString &)), this, SLOT( slotUpdateWindowTitle(const QString &) ) );
     connect(m_tabWidget, SIGNAL( showStatusBarMessage(const QString&)), statusBar(), SLOT( showMessage(const QString&) ) );
     connect(m_tabWidget, SIGNAL( linkHovered(const QString&)), statusBar(), SLOT( showMessage(const QString&) ) );
@@ -236,13 +236,8 @@ void MainWindow::setupCustomMenu()
     historyActions.append( m_tabWidget->recentlyClosedTabsAction() );
 
     historyMenu->setInitialActions(historyActions);
-    //--------------------------------------------------------------------------------------------------------------
-
-    // ------------------------------ BOOKMARKS  MENU --------------------------------------------------------------
-
-        
-    // -------------------------------------------------------------------------------------------------------------
 }
+
 
 KUrl MainWindow::guessUrlFromString(const QString &string)
 {
@@ -301,7 +296,11 @@ KUrl MainWindow::guessUrlFromString(const QString &string)
 
 void MainWindow::loadUrl(const KUrl &url)
 {
-    loadPage( url.url() );
+    if (!currentTab() || url.isEmpty())
+        return;
+
+    m_tabWidget->currentLineEdit()->setText( url.prettyUrl() );
+    m_tabWidget->loadUrlInCurrentTab(url);
 }
 
 
@@ -360,15 +359,16 @@ void MainWindow::slotFileNew()
 
 void MainWindow::slotFileOpen()
 {
-    QString file = KFileDialog::getOpenFileName( KUrl(),
-                                                                            i18n("Web Resources (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"),
-                                                                            this, 
-                                                                            i18n("Open Web Resource") );
+    QString filePath = KFileDialog::getOpenFileName( KUrl(),
+                                                     i18n("Web Resources (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"),
+                                                     this, 
+                                                     i18n("Open Web Resource") 
+                                                   );
 
-    if (file.isEmpty())
+    if (filePath.isEmpty())
         return;
 
-    loadPage(file);
+    loadUrl( guessUrlFromString(filePath) );
 }
 
 
@@ -542,7 +542,7 @@ void MainWindow::slotHome()
     KConfig config("rekonqrc");
     KConfigGroup group = config.group("Global Settings");   
     QString home = group.readEntry( QString("home"), QString("http://www.kde.org/") );
-    loadPage(home);
+    loadUrl( KUrl(home) );
 }
 
 
@@ -573,17 +573,6 @@ void MainWindow::slotSwapFocus()
     {
         currentTab()->setFocus();
     }
-}
-
-
-void MainWindow::loadPage(const QString &page)
-{
-    if (!currentTab() || page.isEmpty())
-        return;
-
-    KUrl url = guessUrlFromString(page);
-    m_tabWidget->currentLineEdit()->setText( url.prettyUrl() );
-    m_tabWidget->loadUrlInCurrentTab(url);
 }
 
 

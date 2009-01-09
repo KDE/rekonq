@@ -135,9 +135,14 @@ void BrowserApplication::postLaunch()
         KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
         int n = args->count();
         if (n > 1)
-            mainWindow()->loadPage(args->arg(n-1));
+        {
+            KUrl url = MainWindow::guessUrlFromString( args->arg(n-1) );
+            mainWindow()->loadUrl( url );
+        }
         else
+        {
             mainWindow()->slotHome();
+        }
     }
     BrowserApplication::historyManager();
 }
@@ -272,7 +277,7 @@ bool BrowserApplication::isTheOnlyBrowser() const
 
 void BrowserApplication::openUrl(const KUrl &url)
 {
-    mainWindow()->loadPage( url.url() );
+    mainWindow()->loadUrl( url );
 }
 
 

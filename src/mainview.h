@@ -96,7 +96,7 @@ public:
 
 signals:
     // tab widget signals
-    void loadPage(const QString &url);
+    void loadUrlPage(const KUrl &url);
     void tabsChanged();
     void lastTabClosed();
 

@@ -45,9 +45,6 @@ class WebView;
  * This class serves as the main window for rekonq.  
  * It handles the menus, toolbars, and status bars.
  *
- * @short Main window class
- * @author Andrea Diamantini adjam7_AT_gmail_DOT_com
- *
  */
 
 class MainWindow : public KXmlGuiWindow 
@@ -66,11 +63,11 @@ private:
     void setupActions();
     void setupCustomMenu();
 
-private slots:
-
-    void loadPage(const QString &url);
+public slots:
     void slotHome();
     void loadUrl(const KUrl &url);
+
+private slots:
     void slotLoadProgress(int);
     void slotUpdateStatusbar(const QString &string);
     void slotUpdateWindowTitle(const QString &title = QString());

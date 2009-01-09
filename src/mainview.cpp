@@ -477,9 +477,11 @@ void MainView::lineEditReturnPressed()
 {
     if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(sender())) 
     {
-        emit loadPage(lineEdit->text());
+        emit loadUrlPage( KUrl( lineEdit->text() ) );
         if (m_lineEdits->currentWidget() == lineEdit)
+        {
             currentWebView()->setFocus();
+        }
     }
 }
 
