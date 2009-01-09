@@ -137,15 +137,26 @@ void MainWindow::setupActions()
     KStandardAction::home( this, SLOT( slotHome() ), actionCollection() );
     KStandardAction::preferences( this, SLOT( slotPreferences() ), actionCollection() );
 
-    m_tabWidget->addWebAction( KStandardAction::redisplay( this, 0, actionCollection() )    , QWebPage::Reload );
-    m_tabWidget->addWebAction( KStandardAction::back( this, 0, actionCollection() )         , QWebPage::Back );
-    m_tabWidget->addWebAction( KStandardAction::forward( this, 0, actionCollection() )      , QWebPage::Forward );
-    m_tabWidget->addWebAction( KStandardAction::undo( this , 0 , actionCollection() )       , QWebPage::Undo );
-    m_tabWidget->addWebAction( KStandardAction::redo( this , 0 , actionCollection() )       , QWebPage::Redo );
-    m_tabWidget->addWebAction( KStandardAction::cut( this , 0 , actionCollection() )        , QWebPage::Cut );
-    m_tabWidget->addWebAction( KStandardAction::copy( this , 0 , actionCollection() )       , QWebPage::Copy );
-    m_tabWidget->addWebAction( KStandardAction::paste( this , 0 , actionCollection() )      , QWebPage::Paste );
-    m_tabWidget->addWebAction( KStandardAction::selectAll( this , 0 , actionCollection() )  , QWebPage::SelectEndOfDocument );
+    // WEB Actions (NO KStandardActions..)
+    KStandardAction::redisplay( m_tabWidget, SLOT( slotWebReload() ), actionCollection() );
+    KStandardAction::back( m_tabWidget, SLOT( slotWebBack() ), actionCollection() );
+    KStandardAction::forward( m_tabWidget, SLOT( slotWebForward() ), actionCollection() );
+    KStandardAction::undo( m_tabWidget, SLOT( slotWebUndo() ), actionCollection() );
+    KStandardAction::redo( m_tabWidget, SLOT( slotWebRedo() ), actionCollection() );
+    KStandardAction::cut( m_tabWidget, SLOT( slotWebCut() ), actionCollection() );
+    KStandardAction::copy( m_tabWidget, SLOT( slotWebCopy() ), actionCollection() );
+    KStandardAction::paste( m_tabWidget, SLOT( slotWebPaste() ), actionCollection() );
+    KStandardAction::selectAll( m_tabWidget, SLOT( slotWebSelectAll() ), actionCollection() );
+
+//     m_tabWidget->addWebAction( KStandardAction::redisplay( this, 0, actionCollection() )    , QWebPage::Reload );
+//     m_tabWidget->addWebAction( KStandardAction::back( this, 0, actionCollection() )         , QWebPage::Back );
+//     m_tabWidget->addWebAction( KStandardAction::forward( this, 0, actionCollection() )      , QWebPage::Forward );
+//     m_tabWidget->addWebAction( KStandardAction::undo( this , 0 , actionCollection() )       , QWebPage::Undo );
+//     m_tabWidget->addWebAction( KStandardAction::redo( this , 0 , actionCollection() )       , QWebPage::Redo );
+//     m_tabWidget->addWebAction( KStandardAction::cut( this , 0 , actionCollection() )        , QWebPage::Cut );
+//     m_tabWidget->addWebAction( KStandardAction::copy( this , 0 , actionCollection() )       , QWebPage::Copy );
+//     m_tabWidget->addWebAction( KStandardAction::paste( this , 0 , actionCollection() )      , QWebPage::Paste );
+//     m_tabWidget->addWebAction( KStandardAction::selectAll( this , 0 , actionCollection() )  , QWebPage::SelectEndOfDocument );
 
     // stop reload Action 
     m_stopReload = new KAction( KIcon("view-refresh"), i18n("reload"), this );
@@ -197,15 +208,13 @@ void MainWindow::setupActions()
     actionCollection()->addAction( QLatin1String("web inspector"), a );
     connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotToggleInspector(bool) ) );
 
+    // BOOKMARKS MENU
     a = new KActionMenu( i18n("B&ookmarks"), this );
     actionCollection()->addAction( QLatin1String("bookmarks"), a );
     BookmarksMenu *bookmarksMenu = new BookmarksMenu( this );
     a->setMenu( bookmarksMenu );
 
-    // ===================================================================================================================
-    // ===================================================================================================================
-    // FIXME
-
+    // history related actions
     KAction *historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
     historyBack->setMenu(m_historyBackMenu);
@@ -217,6 +226,10 @@ void MainWindow::setupActions()
     KAction *historyForward = new KAction( KIcon("go-next"), i18n("Forward"), this );
     connect(historyForward, SIGNAL( triggered( bool ) ), this, SLOT( slotOpenNext() ) );
     actionCollection()->addAction( QLatin1String("history forward"), historyForward );
+
+    // ===================================================================================================================
+
+
 }
 
 
@@ -230,9 +243,8 @@ void MainWindow::setupCustomMenu()
     menuBar()->insertMenu( actionCollection()->action("bookmarks"), historyMenu);
     QList<QAction*> historyActions;
 
-    historyActions.append( actionCollection()->action("Back") );
-    historyActions.append( actionCollection()->action("Forward") );
-    historyActions.append( actionCollection()->action("Home") );
+    historyActions.append( actionCollection()->action("history back") );
+    historyActions.append( actionCollection()->action("history forward") );
     historyActions.append( m_tabWidget->recentlyClosedTabsAction() );
 
     historyMenu->setInitialActions(historyActions);
@@ -593,20 +605,23 @@ WebView *MainWindow::currentTab() const
 void MainWindow::slotLoadProgress(int progress)
 {
     QAction *stop = actionCollection()->action( "stop" );
-    QAction *reload = actionCollection()->action(" redisplay" );
+    QAction *reload = actionCollection()->action( "view_redisplay" );
     if (progress < 100 && progress > 0) 
     {
         disconnect( m_stopReload, SIGNAL( triggered( bool ) ), reload , SIGNAL( triggered(bool) ) );
         m_stopReload->setIcon( KIcon( "process-stop" ) );
-        connect(m_stopReload, SIGNAL( triggered(bool ) ), stop, SIGNAL( triggered(bool) ) );
         m_stopReload->setToolTip( i18n("Stop loading the current page") );
+        m_stopReload->setText( i18n("Stop") );
+        connect(m_stopReload, SIGNAL( triggered(bool ) ), stop, SIGNAL( triggered(bool) ) );
     } 
     else 
     {
         disconnect( m_stopReload, SIGNAL( triggered( bool ) ), stop , SIGNAL( triggered(bool ) ) );
         m_stopReload->setIcon( KIcon( "view-refresh" ) );
-        connect(m_stopReload, SIGNAL( triggered( bool ) ), reload, SIGNAL( triggered(bool) ) );
         m_stopReload->setToolTip( i18n("Reload the current page") );
+        m_stopReload->setText( i18n("Reload") );
+        connect(m_stopReload, SIGNAL( triggered( bool ) ), reload, SIGNAL( triggered(bool) ) );
+
     }
 }
 

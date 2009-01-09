@@ -23,11 +23,10 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
-// KDE Includes
-#include <KAction>
-
 // Qt Includes
 #include <QWebPage>
+// KDE Includes
+#include <KAction>
 
 class WebView;
 /**
@@ -75,7 +74,6 @@ private:
 
 QT_BEGIN_NAMESPACE
 class QCompleter;
-class QMenu;
 class QStackedWidget;
 QT_END_NAMESPACE
 
@@ -144,6 +142,17 @@ public slots:
     void reloadAllTabs();
     void nextTab();
     void previousTab();
+
+    // WEB slot actions
+    void slotWebReload();
+    void slotWebBack();
+    void slotWebForward();
+    void slotWebUndo();
+    void slotWebRedo();
+    void slotWebCut();
+    void slotWebCopy();
+    void slotWebPaste();
+    void slotWebSelectAll();
 
 private slots:
     void currentChanged(int index);

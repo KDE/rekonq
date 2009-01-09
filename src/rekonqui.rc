@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<kpartgui name="rekonq" version="9">
+<kpartgui name="rekonq" version="12">
 <MenuBar>
 <!--  ============ FILE menu =========== -->
 <Menu name="file" noMerge="1"><text>&amp;File</text>
@@ -37,6 +37,7 @@
 <!--  ============ VIEW menu =========== -->
 <Menu name="view" noMerge="1"><text>&amp;View</text>
     <Action name="stop reload" />
+    <Action name="go_home" />
     <Separator/>
     <Action name="bigger font" />
     <Action name="normal font" />

@@ -19,9 +19,11 @@
  * ============================================================ */
 
 
-// Local Includes
+// Self Includes
 #include "mainview.h"
+#include "mainview.moc"
 
+// Local Includes
 #include "tabbar.h"
 #include "browserapplication.h"
 #include "mainwindow.h"
@@ -212,6 +214,87 @@ MainView::~MainView()
 } 
 
 
+// ========================================================================================================
+    KAction *MainView::newTabAction() const {return m_newTabAction; }
+    KAction *MainView::closeTabAction() const {return m_closeTabAction; }
+    KAction *MainView::recentlyClosedTabsAction() const {return m_recentlyClosedTabsAction;}
+    KAction *MainView::nextTabAction() const{}
+    KAction *MainView::previousTabAction() const{}
+
+    void MainView::slotWebReload()
+    {
+        WebView *webView = currentWebView();
+        QWebPage *currentParent = webView->webPage();
+        QAction *action = currentParent->action(QWebPage::Reload);
+        action->trigger();
+    }
+
+    void MainView::slotWebBack()
+    {
+        WebView *webView = currentWebView();
+        QWebPage *currentParent = webView->webPage();
+        QAction *action = currentParent->action(QWebPage::Back);
+        action->trigger();
+    }
+
+    void MainView::slotWebForward()
+    {
+        WebView *webView = currentWebView();
+        QWebPage *currentParent = webView->webPage();
+        QAction *action = currentParent->action(QWebPage::Forward);
+        action->trigger();
+    }
+
+    void MainView::slotWebUndo()
+    {
+        WebView *webView = currentWebView();
+        QWebPage *currentParent = webView->webPage();
+        QAction *action = currentParent->action(QWebPage::Undo);
+        action->trigger();
+    }
+
+    void MainView::slotWebRedo()
+    {
+        WebView *webView = currentWebView();
+        QWebPage *currentParent = webView->webPage();
+        QAction *action = currentParent->action(QWebPage::Redo);
+        action->trigger();
+    }
+
+    void MainView::slotWebCut()
+    {
+        WebView *webView = currentWebView();
+        QWebPage *currentParent = webView->webPage();
+        QAction *action = currentParent->action(QWebPage::Cut);
+        action->trigger();
+    }
+
+    void MainView::slotWebCopy()
+    {
+        WebView *webView = currentWebView();
+        QWebPage *currentParent = webView->webPage();
+        QAction *action = currentParent->action(QWebPage::Copy);
+        action->trigger();
+    }
+
+    void MainView::slotWebPaste()
+    {
+        WebView *webView = currentWebView();
+        QWebPage *currentParent = webView->webPage();
+        QAction *action = currentParent->action(QWebPage::Paste);
+        action->trigger();
+    }
+
+    void MainView::slotWebSelectAll()
+    {
+        WebView *webView = currentWebView();
+        QWebPage *currentParent = webView->webPage();
+        // FIXME
+    }
+
+// ========================================================================================================
+
+
 void MainView::clear()
 {
     // clear the recently closed tabs
@@ -295,36 +378,6 @@ void MainView::currentChanged(int index)
 
     // set focus to the current webview
     webView->setFocus();
-}
-
-
-KAction *MainView::newTabAction() const
-{
-    return m_newTabAction;
-}
-
-
-KAction *MainView::closeTabAction() const
-{
-    return m_closeTabAction;
-}
-
-
-KAction *MainView::recentlyClosedTabsAction() const
-{
-    return m_recentlyClosedTabsAction;
-}
-
-
-KAction *MainView::nextTabAction() const
-{
-    return m_nextTabAction;
-}
-
-
-KAction *MainView::previousTabAction() const
-{
-    return m_previousTabAction;
 }
 
 
