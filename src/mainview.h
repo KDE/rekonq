@@ -2,7 +2,6 @@
  *
  * This file is a part of the rekonq project
  *
- * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
@@ -23,54 +22,19 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
-// Qt Includes
-#include <QWebPage>
-// KDE Includes
-#include <KAction>
-
-class WebView;
-/**
- *   A proxy object that connects a single browser action
- *   to one child webpage action at a time.
- *
- *   Example usage: used to keep the main window stop action in sync with
- *   the current tabs webview's stop action.
- */
-class WebActionMapper : public QObject
-{
-    Q_OBJECT
-
-public:
-    WebActionMapper(KAction *root, QWebPage::WebAction webAction, QObject *parent);
-    QWebPage::WebAction webAction() const;
-    void addChild(KAction *action);
-    void updateCurrent(QWebPage *currentParent);
-
-private slots:
-    void rootTriggered();
-    void childChanged();
-    void rootDestroyed();
-    void currentDestroyed();
-
-private:
-    QWebPage *m_currentParent;
-    KAction *m_root;
-    QWebPage::WebAction m_webAction;
-};
-
-
-// ----------------------------------------------------------------------------------------------------------------------------
-
 // Local Includes
 #include "tabbar.h"
+#include "webview.h"
 
 // KDE Includes
 #include <KUrl>
 #include <KMenu>
 #include <KTabWidget>
+#include <KAction>
 
 // Qt Includes
 #include <QLineEdit>
+#include <QWebPage>
 
 QT_BEGIN_NAMESPACE
 class QCompleter;
@@ -111,7 +75,6 @@ signals:
 
 public:
     void clear();
-    void addWebAction(KAction *action, QWebPage::WebAction webAction);
 
     KAction *newTabAction() const;
     KAction *closeTabAction() const;
@@ -176,7 +139,6 @@ private:
     KMenu *m_recentlyClosedTabsMenu;
     static const int m_recentlyClosedTabsSize = 10;
     QList<KUrl> m_recentlyClosedTabs;
-    QList<WebActionMapper*> m_webActionList;
 
     QCompleter *m_lineEditCompleter;
     QStackedWidget *m_lineEdits;

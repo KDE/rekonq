@@ -148,16 +148,6 @@ void MainWindow::setupActions()
     KStandardAction::paste( m_tabWidget, SLOT( slotWebPaste() ), actionCollection() );
     KStandardAction::selectAll( m_tabWidget, SLOT( slotWebSelectAll() ), actionCollection() );
 
-//     m_tabWidget->addWebAction( KStandardAction::redisplay( this, 0, actionCollection() )    , QWebPage::Reload );
-//     m_tabWidget->addWebAction( KStandardAction::back( this, 0, actionCollection() )         , QWebPage::Back );
-//     m_tabWidget->addWebAction( KStandardAction::forward( this, 0, actionCollection() )      , QWebPage::Forward );
-//     m_tabWidget->addWebAction( KStandardAction::undo( this , 0 , actionCollection() )       , QWebPage::Undo );
-//     m_tabWidget->addWebAction( KStandardAction::redo( this , 0 , actionCollection() )       , QWebPage::Redo );
-//     m_tabWidget->addWebAction( KStandardAction::cut( this , 0 , actionCollection() )        , QWebPage::Cut );
-//     m_tabWidget->addWebAction( KStandardAction::copy( this , 0 , actionCollection() )       , QWebPage::Copy );
-//     m_tabWidget->addWebAction( KStandardAction::paste( this , 0 , actionCollection() )      , QWebPage::Paste );
-//     m_tabWidget->addWebAction( KStandardAction::selectAll( this , 0 , actionCollection() )  , QWebPage::SelectEndOfDocument );
-
     // stop reload Action 
     m_stopReload = new KAction( KIcon("view-refresh"), i18n("reload"), this );
     actionCollection()->addAction( QLatin1String("stop reload") , m_stopReload );
@@ -166,7 +156,7 @@ void MainWindow::setupActions()
     a = new KAction ( KIcon( "process-stop" ), i18n("&Stop"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Period) );
     actionCollection()->addAction( QLatin1String("stop"), a );
-    m_tabWidget->addWebAction( a, QWebPage::Stop);
+// FIXME     m_tabWidget->addWebAction( a, QWebPage::Stop);
     
     a = new KAction( KIcon(), i18n("Open Location"), this); 
     actionCollection()->addAction( QLatin1String("open location"), a );

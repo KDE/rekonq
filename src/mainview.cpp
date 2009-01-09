@@ -42,103 +42,6 @@
 
 
 
-
-WebActionMapper::WebActionMapper(KAction *root, QWebPage::WebAction webAction, QObject *parent)
-    : QObject(parent)
-    , m_currentParent(0)
-    , m_root(root)
-    , m_webAction(webAction)
-{
-    if ( !m_root )
-    {
-        return;
-    }
-    connect(m_root, SIGNAL( triggered() ), this, SLOT( rootTriggered() ) );
-    connect(root, SIGNAL( destroyed(QObject *) ), this, SLOT( rootDestroyed() ) );
-    
-    root->setEnabled(false);
-}
-
-
-void WebActionMapper::rootDestroyed()
-{
-    m_root = 0;
-}
-
-
-void WebActionMapper::currentDestroyed()
-{
-    updateCurrent(0);
-}
-
-
-void WebActionMapper::addChild(KAction *action)
-{
-    if ( !action )
-    {
-        return;
-    }
-    connect(action, SIGNAL( changed() ), this, SLOT( childChanged() ) );
-}
-
-QWebPage::WebAction WebActionMapper::webAction() const
-{
-    return m_webAction;
-}
-
-
-void WebActionMapper::rootTriggered()
-{
-    if (m_currentParent) 
-    {
-        KAction *gotoAction = new KAction( m_currentParent->action(m_webAction) );
-        gotoAction->trigger();
-    }
-}
-
-
-void WebActionMapper::childChanged()
-{
-    if (KAction *source = qobject_cast<KAction*>(sender())) 
-    {
-        if (m_root
-            && m_currentParent
-            && source->parent() == m_currentParent) 
-        {
-            m_root->setChecked(source->isChecked());
-            m_root->setEnabled(source->isEnabled());
-        }
-    }
-}
-
-
-void WebActionMapper::updateCurrent(QWebPage *currentParent)
-{
-    if (m_currentParent)
-        disconnect(m_currentParent, SIGNAL(destroyed(QObject *)),
-                   this, SLOT(currentDestroyed()));
-
-    m_currentParent = currentParent;
-    if (!m_root)
-    {
-        return;
-    }
-    if (!m_currentParent) 
-    {
-        m_root->setEnabled(false);
-        m_root->setChecked(false);
-        return;
-    }
-    KAction *source = new KAction( m_currentParent->action(m_webAction) );
-    m_root->setChecked(source->isChecked());
-    m_root->setEnabled(source->isEnabled());
-    connect(m_currentParent, SIGNAL( destroyed(QObject *) ), this, SLOT( currentDestroyed() ) );
-}
-
-
-// ----------------------------------------------------------------------------------------------------------
-
-
 MainView::MainView(QWidget *parent)
     : KTabWidget(parent)
     , m_recentlyClosedTabsAction(0)
@@ -338,14 +241,6 @@ void MainView::reloadTab(int index)
 }
 
 
-void MainView::addWebAction(KAction *action, QWebPage::WebAction webAction)
-{
-    if (!action)
-        return;
-    m_webActionList.append(new WebActionMapper(action, webAction, this));
-}
-
-
 void MainView::currentChanged(int index)
 {
     WebView *webView = this->webView(index);
@@ -366,11 +261,6 @@ void MainView::currentChanged(int index)
     connect(webView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), this, SIGNAL(linkHovered(const QString&)));
     connect(webView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
 
-    for (int i = 0; i < m_webActionList.count(); ++i) 
-    {
-        WebActionMapper *mapper = m_webActionList[i];
-        mapper->updateCurrent(webView->page());
-    }
     emit setCurrentTitle(webView->title());
     m_lineEdits->setCurrentIndex(index);
     emit loadProgress(webView->progress());
@@ -499,13 +389,6 @@ WebView *MainView::newTab(bool makeCurrent)
     if (makeCurrent)
         setCurrentWidget(webView);
 
-    // webview actions
-    for (int i = 0; i < m_webActionList.count(); ++i) 
-    {
-        WebActionMapper *mapper = m_webActionList[i];
-        mapper->addChild( new KAction( webView->page()->action( mapper->webAction() ) )  );
-    }
-
     if (count() == 1)
         currentChanged(currentIndex());
     emit tabsChanged();
@@ -591,10 +474,10 @@ void MainView::closeTab(int index)
         if (tab->isModified()) 
         {
             int risp = KMessageBox::questionYesNo( this , 
-                                                                            i18n("You have modified this page and when closing it you would lose the modification.\n"
-                                                                            "Do you really want to close this page?\n"),
-                                                                            i18n("Do you really want to close this page?"),
-                                                                            KStandardGuiItem::no() );
+                                                   i18n("You have modified this page and when closing it you would lose the modification.\n"
+                                                   "Do you really want to close this page?\n"),
+                                                   i18n("Do you really want to close this page?"),
+                                                   KStandardGuiItem::no() );
             if( risp == KMessageBox::No )
                 return;
         }
