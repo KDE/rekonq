@@ -99,6 +99,15 @@ void MainView::slotWebReload()
 }
 
 
+void MainView::slotWebStop()
+{
+    WebView *webView = currentWebView();
+    QWebPage *currentParent = webView->webPage();
+    QAction *action = currentParent->action(QWebPage::Stop);
+    action->trigger();
+}
+
+
 void MainView::slotWebBack()
 {
     WebView *webView = currentWebView();

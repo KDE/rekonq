@@ -151,16 +151,16 @@ void MainWindow::setupActions()
     KStandardAction::paste( m_tabWidget, SLOT( slotWebPaste() ), actionCollection() );
     KStandardAction::selectAll( m_tabWidget, SLOT( slotWebSelectAll() ), actionCollection() );
 
+    a = new KAction ( KIcon( "process-stop" ), i18n("&Stop"), this );
+    a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Period) );
+    actionCollection()->addAction( QLatin1String("stop"), a );
+    connect( a, SIGNAL( triggered(bool) ), m_tabWidget, SLOT( slotWebStop() ) );
+
     // stop reload Action 
     m_stopReload = new KAction( KIcon("view-refresh"), i18n("reload"), this );
     actionCollection()->addAction( QLatin1String("stop reload") , m_stopReload );
 
-    // ============== Custom Actions
-    a = new KAction ( KIcon( "process-stop" ), i18n("&Stop"), this );
-    a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Period) );
-    actionCollection()->addAction( QLatin1String("stop"), a );
-// FIXME     m_tabWidget->addWebAction( a, QWebPage::Stop);
-    
+    // ============== Custom Actions   
     a = new KAction( KIcon(), i18n("Open Location"), this); 
     actionCollection()->addAction( QLatin1String("open location"), a );
     connect( a, SIGNAL( triggered(bool) ) , this, SLOT( slotOpenLocation() ) );
@@ -173,30 +173,30 @@ void MainWindow::setupActions()
     a = new KAction( KIcon("zoom-in"), i18n("&Enlarge Font"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Plus) );
     actionCollection()->addAction( QLatin1String("bigger font"), a );
-    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextBigger() ) );
+    connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotViewTextBigger() ) );
 
     a = new KAction( KIcon("zoom-original"),  i18n("&Normal Font"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_0) );
     actionCollection()->addAction( QLatin1String("normal font"), a );
-    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextNormal() ) );
+    connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotViewTextNormal() ) );
 
     a = new KAction( KIcon("zoom-out"),  i18n("&Shrink Font"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Minus) );
     actionCollection()->addAction( QLatin1String("smaller font"), a );
-    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewTextSmaller() ) );
+    connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotViewTextSmaller() ) );
 
     a = new KAction( i18n("Page S&ource"), this );
     actionCollection()->addAction( QLatin1String("page source"), a );
-    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotViewPageSource() ) );
+    connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotViewPageSource() ) );
 
     a = new KAction( KIcon( "kget" ), i18n("Downloads"), this );
     actionCollection()->addAction( QLatin1String("downloads"), a);
-    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotDownloadManager() ) );
+    connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotDownloadManager() ) );
 
     a = new KAction( KIcon("page-zoom"), i18n("Enable Web &Inspector"), this );
     a->setCheckable(true);
     actionCollection()->addAction( QLatin1String("web inspector"), a );
-    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( slotToggleInspector(bool) ) );
+    connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotToggleInspector(bool) ) );
 
     // ================== BOOKMARKS MENU
     a = new KActionMenu( i18n("B&ookmarks"), this );
@@ -208,35 +208,35 @@ void MainWindow::setupActions()
     KAction *historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
     historyBack->setMenu(m_historyBackMenu);
-    connect(historyBack, SIGNAL( triggered( bool ) ), this, SLOT( slotOpenPrevious() ) );
+    connect(historyBack, SIGNAL( triggered(bool) ), this, SLOT( slotOpenPrevious() ) );
     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
     actionCollection()->addAction( QLatin1String("history back"), historyBack);
 
     KAction *historyForward = new KAction( KIcon("go-next"), i18n("Forward"), this );
-    connect(historyForward, SIGNAL( triggered( bool ) ), this, SLOT( slotOpenNext() ) );
+    connect(historyForward, SIGNAL( triggered(bool) ), this, SLOT( slotOpenNext() ) );
     actionCollection()->addAction( QLatin1String("history forward"), historyForward );
 
     // =================== Tab Actions
     a = new KAction( KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut( KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_N, Qt::CTRL + Qt::Key_T) );
     actionCollection()->addAction( QLatin1String("new tab"), a);
-    connect(a, SIGNAL(triggered()), m_tabWidget, SLOT(newTab()));
+    connect(a, SIGNAL( triggered(bool) ), m_tabWidget, SLOT(newTab()));
 
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
     a->setShortcut( KShortcut( Qt::CTRL + Qt::Key_W ) );
     actionCollection()->addAction( QLatin1String("close tab"), a);
-    connect(a, SIGNAL(triggered()), m_tabWidget, SLOT(closeTab()));
+    connect(a, SIGNAL( triggered(bool) ), m_tabWidget, SLOT(closeTab()));
 
     a = new KAction(i18n("Show Next Tab"), this);
     a->setShortcuts( QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext() );
     actionCollection()->addAction( QLatin1String("show next tab"), a);
-    connect(a, SIGNAL(triggered()), m_tabWidget, SLOT(nextTab()));
+    connect(a, SIGNAL( triggered(bool) ), m_tabWidget, SLOT(nextTab()));
 
     a = new KAction(i18n("Show Previous Tab"), this);
     a->setShortcuts( QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev() );
     actionCollection()->addAction( QLatin1String("show prev tab"), a);
-    connect(a, SIGNAL(triggered()), m_tabWidget, SLOT(previousTab()));
+    connect(a, SIGNAL( triggered(bool) ), m_tabWidget, SLOT(previousTab()));
 }
 
 

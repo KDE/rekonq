@@ -104,6 +104,7 @@ public slots:
 
     // WEB slot actions
     void slotWebReload();
+    void slotWebStop();
     void slotWebBack();
     void slotWebForward();
     void slotWebUndo();
