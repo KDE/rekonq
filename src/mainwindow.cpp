@@ -193,7 +193,7 @@ void MainWindow::setupActions()
     actionCollection()->addAction( QLatin1String("downloads"), a);
     connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotDownloadManager() ) );
 
-    a = new KAction( KIcon("page-zoom"), i18n("Enable Web &Inspector"), this );
+    a = new KAction( KIcon("tools-report-bug"), i18n("Enable Web &Inspector"), this );
     a->setCheckable(true);
     actionCollection()->addAction( QLatin1String("web inspector"), a );
     connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotToggleInspector(bool) ) );
