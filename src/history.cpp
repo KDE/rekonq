@@ -18,9 +18,11 @@
  *
  * ============================================================ */
 
-// Local Includes
+// Self Includes
 #include "history.h"
+#include "history.moc"
 
+// Local Includes
 #include "autosaver.h"
 #include "browserapplication.h"
 

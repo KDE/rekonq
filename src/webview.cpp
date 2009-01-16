@@ -29,6 +29,7 @@
 
 #include <KStandardDirs>
 #include <KDebug>
+#include <kio/netaccess.h>
 
 #include <QClipboard>
 #include <QMenu>
@@ -189,12 +190,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         KMenu menu(this);
         KAction *a = new KAction( KIcon("tab-new"), i18n("Open in New Tab"), this);
         connect( a, SIGNAL( triggered() ), this , SLOT( openLinkInNewTab() ) );
-        menu.addAction( a );
+        menu.addAction(a);
         menu.addSeparator();
-        menu.addAction(pageAction(QWebPage::DownloadLinkToDisk));
+        menu.addAction( pageAction(QWebPage::DownloadLinkToDisk) );
         // Add link to bookmarks...
         menu.addSeparator();
-        menu.addAction(pageAction(QWebPage::CopyLinkToClipboard));
+        menu.addAction( pageAction(QWebPage::CopyLinkToClipboard) );
         if ( page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled) )
         {
             menu.addAction(pageAction(QWebPage::InspectElement));
@@ -298,7 +299,16 @@ void WebView::setStatusBarText(const QString &string)
 
 void WebView::downloadRequested(const QNetworkRequest &request)
 {
-    BrowserApplication::downloadManager()->download(request);
+//     BrowserApplication::downloadManager()->download(request);
+
+    // FIXME --- FIXME --- FIXME --- FIXME --- FIXME
+    const KUrl url = KUrl( request.url() );
+
+    KConfig config("rekonqrc");
+    KConfigGroup group1 = config.group("Global Settings");
+    QString path = group1.readEntry(QString("downloadDirectory")) + QString("/") + url.fileName();
+
+    KIO::NetAccess::download( url , path , this );
 }
 
 

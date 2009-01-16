@@ -18,10 +18,11 @@
  *
  * ============================================================ */
 
+//Self Includes
+#include "tabbar.h"
+#include "tabbar.moc"
 
 // Local Includes
-#include "tabbar.h"
-
 #include "browserapplication.h"
 #include "mainwindow.h"
 #include "history.h"
