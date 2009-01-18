@@ -65,6 +65,8 @@ private:
     void setupTabBar();
 
 public slots:
+    void updateConfiguration();
+
     void slotHome();
     void loadUrl(const KUrl &url);
 
@@ -126,6 +128,8 @@ private:
     QString m_lastSearch;
 
     MainView *m_tabWidget;
+
+    QString m_homePage;
 };
 
 #endif // MAINWINDOW_H

@@ -127,8 +127,6 @@ void BrowserApplication::postLaunch()
     }
     QWebSettings::setIconDatabasePath(directory);
 
-    loadSettings();
-
     // newMainWindow() needs to be called in main() for this to happen
     if (m_mainWindows.count() > 0) 
     {
@@ -148,36 +146,6 @@ void BrowserApplication::postLaunch()
 }
 
 
-
-void BrowserApplication::loadSettings()
-{
-    KConfig config("rekonqrc");
-    KConfigGroup group = config.group("Appearance Settings");
-    
-    QWebSettings *defaultSettings = QWebSettings::globalSettings();
-    QString standardFontFamily = defaultSettings->fontFamily(QWebSettings::StandardFont);
-    int standardFontSize = defaultSettings->fontSize(QWebSettings::DefaultFontSize);
-    QFont standardFont = QFont(standardFontFamily, standardFontSize);
-    standardFont = qVariantValue<QFont>( group.readEntry( QString("standardFont"), standardFont ) );
-
-    defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, standardFont.pointSize());
-
-    QString fixedFontFamily = defaultSettings->fontFamily(QWebSettings::FixedFont);
-    int fixedFontSize = defaultSettings->fontSize(QWebSettings::DefaultFixedFontSize);
-    QFont fixedFont = QFont(fixedFontFamily, fixedFontSize);
-    fixedFont = qVariantValue<QFont>(group.readEntry( QString("fixedFont"), fixedFont ) );
-
-    defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fixedFont.pointSize());
-
-    defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, group.readEntry( QString("enableJavascript"), true ) );
-    defaultSettings->setAttribute(QWebSettings::PluginsEnabled, group.readEntry( QString("enablePlugins"), true ) );
-}
-
-
-
-
 QList<MainWindow*> BrowserApplication::mainWindows()
 {
     clean();
@@ -188,8 +156,6 @@ QList<MainWindow*> BrowserApplication::mainWindows()
     }
     return list;
 }
-
-
 
 
 void BrowserApplication::clean()
@@ -311,17 +277,7 @@ void BrowserApplication::newLocalSocketConnection()
     stream >> url;
     if (!url.isEmpty()) 
     {
-        KConfig config("rekonqrc");
-        KConfigGroup group = config.group("Global Settings");
-        int openLinksIn = group.readEntry( QString("openLinksIn"), QString().toInt() );
-        if (openLinksIn == 1)
-        {
-            newMainWindow();
-        }
-        else
-        {
-            mainWindow()->tabWidget()->newTab();
-        }
+        mainWindow()->tabWidget()->newTab();
         openUrl(url);
     }
     delete socket;

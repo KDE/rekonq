@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>575</width>
+    <width>500</width>
     <height>209</height>
    </rect>
   </property>
@@ -24,7 +24,14 @@
     </widget>
    </item>
    <item row="0" column="1" colspan="2" >
-    <widget class="KLineEdit" name="homeLineEdit" />
+    <widget class="KLineEdit" name="kcfg_homePage" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="1" column="1" >
     <widget class="QPushButton" name="setHomeToCurrentPageButton" >
@@ -57,7 +64,7 @@
     </widget>
    </item>
    <item row="2" column="1" colspan="2" >
-    <widget class="QComboBox" name="expireHistory" >
+    <widget class="QComboBox" name="kcfg_expireHistory" >
      <item>
       <property name="text" >
        <string>After one day</string>
@@ -101,33 +108,9 @@
     </widget>
    </item>
    <item row="3" column="1" colspan="2" >
-    <widget class="KUrlRequester" name="kurlrequester" />
-   </item>
-   <item row="4" column="0" >
-    <widget class="QLabel" name="label_8" >
-     <property name="text" >
-      <string>Open links from applications:</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
+    <widget class="KUrlRequester" name="kcfg_downloadDir" />
    </item>
    <item row="4" column="1" colspan="2" >
-    <widget class="QComboBox" name="openLinksIn" >
-     <item>
-      <property name="text" >
-       <string>In a tab in the current window</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>In a new window</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2" >
     <spacer name="spacer" >
      <property name="orientation" >
       <enum>Qt::Vertical</enum>

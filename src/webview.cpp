@@ -305,8 +305,8 @@ void WebView::downloadRequested(const QNetworkRequest &request)
     const KUrl url = KUrl( request.url() );
 
     KConfig config("rekonqrc");
-    KConfigGroup group1 = config.group("Global Settings");
-    QString path = group1.readEntry(QString("downloadDirectory")) + QString("/") + url.fileName();
+    KConfigGroup group = config.group("General");
+    QString path = group.readEntry(QString("downloadDir")) + QString("/") + url.fileName();
 
     KIO::NetAccess::download( url , path , this );
 }

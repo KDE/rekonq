@@ -30,12 +30,14 @@ KDE4_ADD_UI_FILES( rekonq_SRCS
     passworddialog.ui
     proxy.ui
     settings_general.ui
-    settings_appearance.ui
+    settings_fonts.ui
     settings_privacy.ui
     settings_proxy.ui
  )
 
-# include(${QT_USE_FILE})
+KDE4_ADD_KCFG_FILES( rekonq_SRCS rekonq.kcfgc )
+
+### ------------------------------------------
 
 ADD_DEFINITIONS( ${KDE4_DEFINITIONS} )
 
@@ -47,12 +49,11 @@ TARGET_LINK_LIBRARIES( rekonq
     ${QT_QTWEBKIT_LIBRARY} 
 	${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
-#     ${QT_QTUITOOLS_LIBRARY}
 )
 
 INSTALL( TARGETS rekonq ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 ########### install files ###############
 
-#INSTALL( FILES rekonq.kcfg  DESTINATION  ${KCFG_INSTALL_DIR} )
+INSTALL( FILES rekonq.kcfg  DESTINATION  ${KCFG_INSTALL_DIR} )
 INSTALL( FILES rekonqui.rc  DESTINATION  ${DATA_INSTALL_DIR}/rekonq )

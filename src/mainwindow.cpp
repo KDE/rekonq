@@ -23,11 +23,14 @@
 #include "mainwindow.h"
 #include "mainwindow.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "browserapplication.h"
 #include "downloadmanager.h"
-#include "history.h"
 #include "settings.h"
+#include "history.h"
 #include "bookmarks.h"
 #include "webview.h"
 
@@ -62,17 +65,21 @@ MainWindow::MainWindow()
     // accept dnd
     setAcceptDrops(true);
 
+    // updating rekonq configuration
+    updateConfiguration();
+
+    // creating a new tab
     m_tabWidget->newTab();
 
     // tell the KXmlGuiWindow that this is indeed the main widget
     setCentralWidget(m_tabWidget);
 
+    // connect signals and slots
     connect(m_tabWidget, SIGNAL( loadUrlPage(const KUrl &) ), this, SLOT( loadUrl(const KUrl &) ) );
     connect(m_tabWidget, SIGNAL( setCurrentTitle(const QString &)), this, SLOT( slotUpdateWindowTitle(const QString &) ) );
     connect(m_tabWidget, SIGNAL( showStatusBarMessage(const QString&)), statusBar(), SLOT( showMessage(const QString&) ) );
     connect(m_tabWidget, SIGNAL( linkHovered(const QString&)), statusBar(), SLOT( showMessage(const QString&) ) );
     connect(m_tabWidget, SIGNAL( loadProgress(int)), this, SLOT( slotLoadProgress(int) ) );
-//     connect(m_tabWidget, SIGNAL( tabsChanged()), m_autoSaver, SLOT( changeOccurred() ) );
     connect(m_tabWidget, SIGNAL( geometryChangeRequested(const QRect &)), this, SLOT( geometryChangeRequested(const QRect &) ) );
     connect(m_tabWidget, SIGNAL( printRequested(QWebFrame *)), this, SLOT( printRequested(QWebFrame *) ) );
     connect(m_tabWidget, SIGNAL( menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT( setVisible(bool) ) );
@@ -80,8 +87,6 @@ MainWindow::MainWindow()
     connect(m_tabWidget, SIGNAL( lastTabClosed() ), m_tabWidget, SLOT(newTab() ) );
 
     slotUpdateWindowTitle();
-// --------------------------------------------------------------------------------------------------------------------------------
-
 
     // then, setup our actions
     setupActions();
@@ -273,6 +278,93 @@ void MainWindow::setupCustomMenu()
     historyActions.append( m_tabWidget->recentlyClosedTabsAction() );
 
     historyMenu->setInitialActions(historyActions);
+}
+
+
+// TODO FIXME
+void MainWindow::updateConfiguration()
+{
+    // ============== General ==================    
+    m_homePage = ReKonfig::homePage();
+
+//     int historyExpire = ReKonfig::expireHistory();
+//     int days;    
+//     switch (historyExpire) 
+//     {
+//         case 0: days = 1; break;
+//         case 1: days = 7; break;
+//         case 2: days = 14; break;
+//         case 3: days = 30; break;
+//         case 4: days = 365; break;
+//         case 5: days = -1; break;
+//         default: days = -1;
+//     }
+//     m_historyExpire = days;
+// 
+//     m_downloadDir = ReKonfig::downloadDir();
+
+
+    // =========== Fonts ==============
+    QFont standardFont = ReKonfig::standardFont();
+    QFont fixedFont = ReKonfig::fixedFont();
+
+    QWebSettings *defaultSettings = QWebSettings::globalSettings();
+    defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
+    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, standardFont.pointSize());
+    defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
+    defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fixedFont.pointSize());
+
+
+    // =========== Privacy ==============
+
+    bool arePluginsEnabled = ReKonfig::enablePlugins();
+    bool isJavascriptEnabled = ReKonfig::enableJavascript();
+
+    defaultSettings->setAttribute(QWebSettings::PluginsEnabled, arePluginsEnabled);
+    defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, isJavascriptEnabled);
+
+//     int canAcceptCookies = ReKonfig::acceptCookies();
+//     int canKeepCookiesUntil = ReKonfig::keepCookiesUntil();
+// 
+//     CookieJar::KeepPolicy keepCookies;
+//     switch(canAcceptCookies) 
+//     {
+//     default:
+//     case 0:
+//         keepCookies = CookieJar::KeepUntilExpire;
+//         break;
+//     case 1:
+//         keepCookies = CookieJar::KeepUntilExit;
+//         break;
+//     case 2:
+//         keepCookies = CookieJar::KeepUntilTimeLimit;
+//         break;
+//     }
+//     CookieJar *jar = BrowserApplication::cookieJar();
+//     QMetaEnum acceptPolicyEnum = jar->staticMetaObject.enumerator(jar->staticMetaObject.indexOfEnumerator("AcceptPolicy"));
+// 
+//     CookieJar::KeepPolicy keepPolicy;
+//     switch(canKeepCookiesUntil) 
+//     {
+//         default:
+//     case 0:
+//         keepPolicy = CookieJar::KeepUntilExpire;
+//         break;
+//     case 1:
+//         keepPolicy = CookieJar::KeepUntilExit;
+//         break;
+//     case 2:
+//         keepPolicy = CookieJar::KeepUntilTimeLimit;
+//         break;
+//     }
+// 
+//     QMetaEnum keepPolicyEnum = jar->staticMetaObject.enumerator(jar->staticMetaObject.indexOfEnumerator("KeepPolicy"));
+//     // ---
+//     BrowserApplication::instance()->loadSettings();
+//     BrowserApplication::networkAccessManager()->loadSettings();
+//     BrowserApplication::cookieJar()->loadSettings();
+//     BrowserApplication::historyManager()->loadSettings();
+
 }
 
 
@@ -576,10 +668,7 @@ void MainWindow::slotViewPageSource()
 
 void MainWindow::slotHome()
 {
-    KConfig config("rekonqrc");
-    KConfigGroup group = config.group("Global Settings");   
-    QString home = group.readEntry( QString("home"), QString("http://www.kde.org/") );
-    loadUrl( KUrl(home) );
+    loadUrl( KUrl(m_homePage) );
 }
 
 

@@ -41,23 +41,17 @@ private:
     Private* const d;
     
 private slots:
-    void loadDefaults();
-    void loadFromSettings();
-    void saveToSettings();
-
+//     void loadFromSettings();
     void setHomeToCurrentPage();
     void showCookies();
     void showExceptions();
-
-    void chooseFont();
+/*
+    void chooseStandardFont();
     void chooseFixedFont();
-
-    void slotOk();
-    void slotApply();
 
 private:
     QFont m_standardFont;
-    QFont m_fixedFont;
+    QFont m_fixedFont;*/
 };
 
 #endif // SETTINGS_H

@@ -49,7 +49,7 @@ public:
     BrowserApplication(KCmdLineArgs*, const QString &);
     ~BrowserApplication();
     static BrowserApplication *instance();
-    void loadSettings();
+//     void loadSettings();
 
     bool isTheOnlyBrowser() const;
     MainWindow *mainWindow();

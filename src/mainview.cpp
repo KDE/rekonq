@@ -175,7 +175,7 @@ void MainView::slotWebSelectAll()
 {
     WebView *webView = currentWebView();
     QWebPage *currentParent = webView->webPage();
-    // FIXME
+    // TODO
 }
 
 
@@ -618,6 +618,3 @@ void MainView::previousTab()
         next = count() - 1;
     setCurrentIndex(next);
 }
-
-
-// ----------------------------------------------------------------------------------------------------------------------------

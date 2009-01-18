@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+  <kcfgfile name="rekonqrc"/>
+
+<!-- Includes -->
+<include>QtWebKit</include>
+<include>KUrl</include>
+
+<!-- General Settings -->
+  <group name="General">
+    <entry name="homePage" type="Path">
+        <default>http://www.kde.org/</default>
+    </entry>
+    <entry name="downloadDir" type="Path">
+        <default>$HOME</default>
+    </entry>
+    <entry name="expireHistory" type="Int">
+        <default>1</default>
+    </entry>
+  </group>
+
+<!-- Fonts Settings -->
+  <group name="Fonts">
+    <entry name="standardFont" type="Font">
+        <default code="true">QFont( QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont) )</default>
+    </entry>
+    <entry name="fixedFont" type="Font">
+        <default code="true">QFont( QWebSettings::globalSettings()->fontFamily(QWebSettings::FixedFont) )</default>
+    </entry>
+  </group>
+
+<!-- Privacy Settings -->
+    <group name="Privacy">
+        <entry name="enablePlugins" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="enableJavascript" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="acceptCookies" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="keepCookiesUntil" type="Int">
+            <default>0</default>
+        </entry>
+    </group>
+
+<!-- Proxy Settings -->
+  <group name="Proxy">
+    <entry name="enableProxy" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="proxyType" type="String">
+        <default>Socks5</default>
+    </entry>
+    <entry name="proxyHostName" type="String">
+        <default></default>
+    </entry>
+    <entry name="proxyPort" type="Int">
+        <default>1080</default>
+    </entry>
+    <entry name="proxyUserName" type="String">
+        <default></default>
+    </entry>
+    <entry name="proxyPassword" type="Password">
+        <default></default>
+    </entry>
+  </group>
+
+</kcfg>
