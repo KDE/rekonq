@@ -127,7 +127,7 @@ private:
 
     QString m_lastSearch;
 
-    MainView *m_tabWidget;
+    MainView *m_view;
 
     QString m_homePage;
 };
