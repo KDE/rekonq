@@ -18,17 +18,22 @@
  *
  * ============================================================ */
 
+// Self Includes
+#include "networkaccessmanager.h"
+#include "networkaccessmanager.moc"
 
 // Local Includes
-#include "networkaccessmanager.h"
 #include "browserapplication.h"
 #include "mainwindow.h"
 
+// Auto Includes
+#include "rekonq.h"
+
+// Ui Includes
 #include "ui_passworddialog.h"
 #include "ui_proxy.h"
 
 // KDE Includes
-#include <KConfig>
 #include <KMessageBox>
 
 // Qt Includes
@@ -58,13 +63,10 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
 void NetworkAccessManager::loadSettings()
 {
-    KConfig config("rekonqrc");
-    KConfigGroup group = config.group("proxy");
-
     QNetworkProxy proxy;
-    if ( group.readEntry( QString("enabled"), false) ) 
+    if ( ReKonfig::enableProxy() ) 
     {
-        if ( group.readEntry( QString("type"), 0) == 0 )
+        if ( ReKonfig::proxyType() == 0 )
         {
             proxy.setType(QNetworkProxy::Socks5Proxy);
         }
@@ -72,10 +74,10 @@ void NetworkAccessManager::loadSettings()
         {
             proxy.setType(QNetworkProxy::HttpProxy);
         }
-        proxy.setHostName( group.readEntry( QString("hostName"), QString() ) );
-        proxy.setPort( group.readEntry( QString("port"), 1080 ) );
-        proxy.setUser( group.readEntry( QString("userName"), QString() ) );
-        proxy.setPassword( group.readEntry( QString("password"), QString() ) );
+        proxy.setHostName( ReKonfig::proxyHostName() );
+        proxy.setPort( ReKonfig::proxyPort() );
+        proxy.setUser( ReKonfig::proxyUserName() );
+        proxy.setPassword( ReKonfig::proxyPassword() );
     }
     setProxy(proxy);
 }
@@ -95,7 +97,8 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
     passwordDialog.iconLabel->setText(QString());
     passwordDialog.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
 
-    QString introMessage = i18n("<qt>Enter username and password for ") + Qt::escape(reply->url().toString()) + i18n(" at ") + Qt::escape(reply->url().toString()) + "</qt>";
+    QString introMessage = i18n("<qt>Enter username and password for ") + 
+                            Qt::escape(reply->url().toString()) + i18n(" at ") + Qt::escape(reply->url().toString()) + "</qt>";
     passwordDialog.introLabel->setText(introMessage);
     passwordDialog.introLabel->setWordWrap(true);
 
@@ -139,8 +142,7 @@ void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError
     for (int i = 0; i < error.count(); ++i)
         errorStrings += error.at(i).errorString();
     QString errors = errorStrings.join(QLatin1String("\n"));
-    int ret = KMessageBox::warningYesNo( mainWindow,
-                                                                i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n");
+    int ret = KMessageBox::warningYesNo( mainWindow, i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n");
     if (ret == KMessageBox::Yes)
         reply->ignoreSslErrors();
 }

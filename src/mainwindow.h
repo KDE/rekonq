@@ -65,12 +65,11 @@ private:
     void setupTabBar();
 
 public slots:
-    void updateConfiguration();
-
     void slotHome();
     void loadUrl(const KUrl &url);
 
 private slots:
+    void slotUpdateConf();
     void slotLoadProgress(int);
     void slotUpdateStatusbar(const QString &string);
     void slotUpdateWindowTitle(const QString &title = QString());

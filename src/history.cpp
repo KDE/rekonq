@@ -22,12 +22,14 @@
 #include "history.h"
 #include "history.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "autosaver.h"
 #include "browserapplication.h"
 
 // KDE Includes
-#include <KConfig>
 #include <KDebug>
 
 // Qt Includes
@@ -219,10 +221,19 @@ void HistoryManager::clear()
 
 void HistoryManager::loadSettings()
 {
-    // load settings
-    KConfig config("rekonqrc");
-    KConfigGroup group = config.group("history");
-    m_historyLimit = group.readEntry( QString("historyLimit"), 30 );
+    int historyExpire = ReKonfig::expireHistory();
+    int days;    
+    switch (historyExpire) 
+    {
+        case 0: days = 1; break;
+        case 1: days = 7; break;
+        case 2: days = 14; break;
+        case 3: days = 30; break;
+        case 4: days = 365; break;
+        case 5: days = -1; break;
+        default: days = -1;
+    }
+    m_historyLimit = days;
 }
 
 
@@ -297,9 +308,9 @@ void HistoryManager::load()
 
 void HistoryManager::save()
 {
-    KConfig config("rekonqrc");
-    KConfigGroup group = config.group("history");
-    group.writeEntry( QString("historyLimit"), m_historyLimit );
+//     KConfig config("rekonqrc");
+//     KConfigGroup group = config.group("history");
+//     group.writeEntry( QString("historyLimit"), m_historyLimit );
 
     bool saveAll = m_lastSavedUrl.isEmpty();
     int first = m_history.count() - 1;
@@ -369,7 +380,7 @@ void HistoryManager::save()
 }
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------------
 
 
 HistoryModel::HistoryModel(HistoryManager *history, QObject *parent)

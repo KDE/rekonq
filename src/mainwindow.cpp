@@ -66,7 +66,8 @@ MainWindow::MainWindow()
     setAcceptDrops(true);
 
     // updating rekonq configuration
-    updateConfiguration();
+    slotUpdateConf();
+//     QTimer::singleShot(0, this, SLOT( postLaunch() ) );
 
     // creating a new tab
     m_view->newTab();
@@ -118,7 +119,6 @@ MainWindow::MainWindow()
     // Find Bar
     m_findBar = new FindBar( this );
     connect( m_findBar, SIGNAL( searchString(const QString &) ), this, SLOT( slotFind(const QString &) ) ); 
-
 }
 
 
@@ -282,27 +282,10 @@ void MainWindow::setupCustomMenu()
 
 
 // TODO FIXME
-void MainWindow::updateConfiguration()
+void MainWindow::slotUpdateConf()
 {
     // ============== General ==================    
     m_homePage = ReKonfig::homePage();
-
-//     int historyExpire = ReKonfig::expireHistory();
-//     int days;    
-//     switch (historyExpire) 
-//     {
-//         case 0: days = 1; break;
-//         case 1: days = 7; break;
-//         case 2: days = 14; break;
-//         case 3: days = 30; break;
-//         case 4: days = 365; break;
-//         case 5: days = -1; break;
-//         default: days = -1;
-//     }
-//     m_historyExpire = days;
-// 
-//     m_downloadDir = ReKonfig::downloadDir();
-
 
     // =========== Fonts ==============
     QFont standardFont = ReKonfig::standardFont();
@@ -454,7 +437,17 @@ void MainWindow::slotFileSaveAs()
 
 void MainWindow::slotPreferences()
 {
+    // an instance the dialog could be already created and could be cached,
+    // in which case you want to display the cached dialog
+    if ( SettingsDialog::showDialog( "settings" ) )
+        return;
+
+    // we didn't find an instance of this dialog, so lets create it
     SettingsDialog *s = new SettingsDialog(this);
+
+    // keep us informed when the user changes settings
+    connect( s, SIGNAL(settingsChanged(const QString&)), this, SLOT(slotUpdateConf()) );
+
     s->show();
 }
 

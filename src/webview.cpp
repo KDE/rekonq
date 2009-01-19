@@ -18,19 +18,27 @@
  *
  * ============================================================ */
 
+// Local Includes
+#include "webview.h"
+#include "webview.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
+// Local Includes
 #include "browserapplication.h"
 #include "mainwindow.h"
 #include "mainview.h"
 #include "cookiejar.h"
 #include "downloadmanager.h"
 #include "networkaccessmanager.h"
-#include "webview.h"
 
+// KDE Includes
 #include <KStandardDirs>
 #include <KDebug>
 #include <kio/netaccess.h>
 
+// Qt Includes
 #include <QClipboard>
 #include <QMenu>
 #include <QMouseEvent>
@@ -297,17 +305,11 @@ void WebView::setStatusBarText(const QString &string)
 }
 
 
+// FIXME: use KIO transfer job instead!!
 void WebView::downloadRequested(const QNetworkRequest &request)
 {
-//     BrowserApplication::downloadManager()->download(request);
-
-    // FIXME --- FIXME --- FIXME --- FIXME --- FIXME
     const KUrl url = KUrl( request.url() );
-
-    KConfig config("rekonqrc");
-    KConfigGroup group = config.group("General");
-    QString path = group.readEntry(QString("downloadDir")) + QString("/") + url.fileName();
-
+    QString path = ReKonfig::downloadDir() + QString("/") + url.fileName();
     KIO::NetAccess::download( url , path , this );
 }
 
