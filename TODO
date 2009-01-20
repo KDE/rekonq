@@ -11,18 +11,16 @@ ROAD to 0.0.2 (second release)
 - fixed search bar width
 
 ROAD to 0.0.3 (third release)
-- mainview
-- autosave-- && downloadSystem--
++ mainview
++ KConfigXT
+- documentation
+- improve slackbuild
+- autosave-- 
+- downloadSystem--
 - dbus, kjob, kget support
 - new application class!!
 
-
-+ --------------------------------
-0.0.2
-+ QUrl --> KUrl
-+ KDEize menubar (settings)
-+ new urlbar & searchbar (for now just Google search bar..)
-
++ ----------------------------------------------------
 
 NEXT..
 - system SELECT ALL
@@ -30,6 +28,7 @@ NEXT..
 - color progress
 - contextMenu in searchbar to set different search engines
 - KDE proxy support
+- KcookieJar
 
 - QWebPluginFactory subclass to load KParts into QtWebKit.
 

@@ -5,7 +5,6 @@ SET( rekonq_SRCS
     mainview.cpp
     tabbar.cpp
     cookiejar.cpp 
-    downloadmanager.cpp 
     edittableview.cpp 
     edittreeview.cpp 
     history.cpp 
@@ -24,8 +23,6 @@ SET( rekonq_SRCS
 KDE4_ADD_UI_FILES( rekonq_SRCS
     cookies.ui
     cookiesexceptions.ui
-    downloaditem.ui
-    downloads.ui
     history.ui
     passworddialog.ui
     proxy.ui
