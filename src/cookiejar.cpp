@@ -143,23 +143,39 @@ void CookieJar::load()
 
 void CookieJar::loadSettings()
 {
-    KConfig config("rekonqrc");
-    KConfigGroup group = config.group("cookies");
-    QByteArray value = group.readEntry( QString("acceptCookies"), QByteArray("AcceptOnlyFromSitesNavigatedTo") );
-    QMetaEnum acceptPolicyEnum = staticMetaObject.enumerator(staticMetaObject.indexOfEnumerator("AcceptPolicy"));
-    m_acceptCookies = acceptPolicyEnum.keyToValue(value) == -1 ?
-                        AcceptOnlyFromSitesNavigatedTo :
-                        static_cast<AcceptPolicy>(acceptPolicyEnum.keyToValue(value));
+    int canAcceptCookies = ReKonfig::acceptCookies();
 
-    value = group.readEntry( QString("keepCookiesUntil"), QByteArray("KeepUntilExpire") );
-    QMetaEnum keepPolicyEnum = staticMetaObject.enumerator(staticMetaObject.indexOfEnumerator("KeepPolicy"));
-    m_keepCookies = keepPolicyEnum.keyToValue(value) == -1 ?
-                        KeepUntilExpire :
-                        static_cast<KeepPolicy>(keepPolicyEnum.keyToValue(value));
+    switch(canAcceptCookies) 
+    {
+    case 0:
+        m_acceptCookies = AcceptAlways;
+        break;
+    case 1:
+        m_acceptCookies = AcceptNever;
+        break;
+    case 2:
+    default:
+        m_acceptCookies = AcceptOnlyFromSitesNavigatedTo;
+        break;
+    }
 
-    if (m_keepCookies == KeepUntilExit)
+    int canKeepCookiesUntil = ReKonfig::keepCookiesUntil();
+
+    switch(canKeepCookiesUntil) 
+    {
+    default:
+    case 0:
+        m_keepCookies = KeepUntilExpire;
+        break;
+    case 1:
+        m_keepCookies = KeepUntilExit;
         setAllCookies(QList<QNetworkCookie>());
-
+        break;
+    case 2:
+        m_keepCookies = KeepUntilTimeLimit;
+        break;
+    }
+   
     m_loaded = true;
     emit cookiesChanged();
 }
@@ -203,13 +219,37 @@ void CookieJar::save()
     inigroup2.writeEntry( QString("allowForSession"), m_exceptions_allowForSession );
 
     // save cookie settings
-    KConfig config("rekonqrc");
-    KConfigGroup group = config.group("cookies");
-    QMetaEnum acceptPolicyEnum = staticMetaObject.enumerator( staticMetaObject.indexOfEnumerator("AcceptPolicy") );
-    group.writeEntry( QString("acceptCookies"), QString( acceptPolicyEnum.valueToKey(m_acceptCookies) ) );
+    int n;
+    switch(m_acceptCookies) 
+    {
+    case AcceptAlways:
+        n = 0;
+        break;
+    case AcceptNever:
+        n = 1;
+        break;
+    case AcceptOnlyFromSitesNavigatedTo:
+    default:
+        n = 2;
+        break;
+    }
+    ReKonfig::setAcceptCookies(n);
 
-    QMetaEnum keepPolicyEnum = staticMetaObject.enumerator(staticMetaObject.indexOfEnumerator("KeepPolicy"));
-    group.writeEntry( QString("keepCookiesUntil"), QString( keepPolicyEnum.valueToKey(m_keepCookies) ) );
+
+    switch(m_keepCookies) 
+    {
+    default:
+    case KeepUntilExpire:
+        n = 0;
+        break;
+    case KeepUntilExit:
+        n = 1;
+        break;
+    case KeepUntilTimeLimit:
+        n = 2;
+        break;
+    }
+    ReKonfig::setKeepCookiesUntil(n);
 }
 
 
