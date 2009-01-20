@@ -22,9 +22,10 @@
 // Local Includes
 #include "browserapplication.h"
 
+#include "rekonq.h"
+
 #include "mainwindow.h"
 #include "cookiejar.h"
-#include "downloadmanager.h"
 #include "history.h"
 #include "networkaccessmanager.h"
 #include "mainview.h"
@@ -34,6 +35,8 @@
 #include <KCmdLineArgs>
 #include <KAboutData>
 #include <KConfig>
+#include <kio/job.h>
+#include <kio/jobclasses.h>
 
 // Qt Includes
 #include <QBuffer>
@@ -49,7 +52,6 @@
 
 
 
-DownloadManager *BrowserApplication::s_downloadManager = 0;
 HistoryManager *BrowserApplication::s_historyManager = 0;
 NetworkAccessManager *BrowserApplication::s_networkAccessManager = 0;
 
@@ -103,7 +105,6 @@ BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &server
 
 BrowserApplication::~BrowserApplication()
 {
-    delete s_downloadManager;
     qDeleteAll(m_mainWindows);
     delete s_networkAccessManager;
 }
@@ -144,6 +145,41 @@ void BrowserApplication::postLaunch()
     }
     BrowserApplication::historyManager();
 }
+
+
+void BrowserApplication::downloadUrl(const KUrl &url)
+{
+//     QString path = ReKonfig::downloadDir() + QString("/") + url.fileName();
+//     KIO::NetAccess::download( url , path , mainWindow() );
+    m_downloadUrl = url;
+    KIO::TransferJob * job = KIO::get( m_downloadUrl, KIO::NoReload);
+    connect(job, SIGNAL( result(KJob*) ), this, SLOT( slotResult(KJob*) ) );
+    connect(job, SIGNAL(data(KIO::Job*,const QByteArray &)), this, SLOT(slotData(KIO::Job*, const QByteArray&)));
+}
+
+
+void BrowserApplication::slotResult(KJob* job)
+{
+    if ( job->error() )
+    {
+        kDebug() << job->errorString();
+    }
+    else
+    {
+        QString path = ReKonfig::downloadDir() + QString("/") + m_downloadUrl.fileName();
+        QFile destFile( path );
+        destFile.write(m_downloadData);
+        destFile.close();
+        m_downloadData = 0;
+    }
+}
+
+
+void BrowserApplication::slotData(KIO::Job*, const QByteArray& data)
+{
+    m_downloadData.append(data);
+}
+
 
 
 QList<MainWindow*> BrowserApplication::mainWindows()
@@ -243,7 +279,7 @@ bool BrowserApplication::isTheOnlyBrowser() const
 
 void BrowserApplication::openUrl(const KUrl &url)
 {
-    mainWindow()->loadUrl( url );
+    mainWindow()->loadUrl(url);
 }
 
 
@@ -291,17 +327,6 @@ CookieJar *BrowserApplication::cookieJar()
 {
     return (CookieJar*)networkAccessManager()->cookieJar();
 }
-
-
-DownloadManager *BrowserApplication::downloadManager()
-{
-    if (!s_downloadManager) 
-    {
-        s_downloadManager = new DownloadManager();
-    }
-    return s_downloadManager;
-}
-
 
 
 NetworkAccessManager *BrowserApplication::networkAccessManager()

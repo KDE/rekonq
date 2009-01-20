@@ -27,6 +27,9 @@
 #include <KCmdLineArgs>
 #include <KIcon>
 #include <KUrl>
+#include <KJob>
+#include <kio/job.h>
+#include <kio/jobclasses.h>
 
 // Qt Includes
 #include <QPointer>
@@ -37,7 +40,6 @@ QT_END_NAMESPACE
 
 class MainWindow;
 class CookieJar;
-class DownloadManager;
 class HistoryManager;
 class NetworkAccessManager;
 
@@ -49,19 +51,18 @@ public:
     BrowserApplication(KCmdLineArgs*, const QString &);
     ~BrowserApplication();
     static BrowserApplication *instance();
-//     void loadSettings();
 
     bool isTheOnlyBrowser() const;
     MainWindow *mainWindow();
     QList<MainWindow*> mainWindows();
     KIcon icon(const KUrl &url) const;
+    void downloadUrl(const KUrl &url);
 
     void saveSession();
     bool canRestoreSession() const;
 
     static HistoryManager *historyManager();
     static CookieJar *cookieJar();
-    static DownloadManager *downloadManager();
     static NetworkAccessManager *networkAccessManager();
 
 public slots:
@@ -72,18 +73,23 @@ private slots:
     void postLaunch();
     void openUrl(const KUrl &url);
     void newLocalSocketConnection();
+    void slotResult(KJob*);
+    void slotData(KIO::Job*, const QByteArray&);
 
 private:
     void clean();
 
     static HistoryManager *s_historyManager;
-    static DownloadManager *s_downloadManager;
     static NetworkAccessManager *s_networkAccessManager;
 
     QList<QPointer<MainWindow> > m_mainWindows;
     QLocalServer *m_localServer;
     QByteArray m_lastSession;
     mutable KIcon m_defaultIcon;
+
+    // about download
+    KUrl m_downloadUrl;
+    QByteArray m_downloadData;
 };
 
 #endif // BROWSERAPPLICATION_H

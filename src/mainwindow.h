@@ -110,7 +110,6 @@ private slots:
 
     // Tools Menu slots
     void slotToggleInspector(bool enable);
-    void slotDownloadManager();
 
     // Settings Menu slots
     void slotPreferences();

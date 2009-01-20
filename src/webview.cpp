@@ -30,13 +30,11 @@
 #include "mainwindow.h"
 #include "mainview.h"
 #include "cookiejar.h"
-#include "downloadmanager.h"
 #include "networkaccessmanager.h"
 
 // KDE Includes
 #include <KStandardDirs>
 #include <KDebug>
-#include <kio/netaccess.h>
 
 // Qt Includes
 #include <QClipboard>
@@ -126,7 +124,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError) 
     {
-        BrowserApplication::downloadManager()->handleUnsupportedContent(reply);
+        BrowserApplication::instance()->downloadUrl( reply->url() );
         return;
     }
 
@@ -305,12 +303,9 @@ void WebView::setStatusBarText(const QString &string)
 }
 
 
-// FIXME: use KIO transfer job instead!!
 void WebView::downloadRequested(const QNetworkRequest &request)
 {
-    const KUrl url = KUrl( request.url() );
-    QString path = ReKonfig::downloadDir() + QString("/") + url.fileName();
-    KIO::NetAccess::download( url , path , this );
+    BrowserApplication::instance()->downloadUrl( request.url() );
 }
 
 

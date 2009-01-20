@@ -28,9 +28,10 @@
 
 // Local Includes
 #include "browserapplication.h"
-#include "downloadmanager.h"
 #include "settings.h"
 #include "history.h"
+#include "cookiejar.h"
+#include "networkaccessmanager.h"
 #include "bookmarks.h"
 #include "webview.h"
 
@@ -194,10 +195,6 @@ void MainWindow::setupActions()
     actionCollection()->addAction( QLatin1String("page source"), a );
     connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotViewPageSource() ) );
 
-    a = new KAction( KIcon( "kget" ), i18n("Downloads"), this );
-    actionCollection()->addAction( QLatin1String("downloads"), a);
-    connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotDownloadManager() ) );
-
     a = new KAction( KIcon("tools-report-bug"), i18n("Enable Web &Inspector"), this );
     a->setCheckable(true);
     actionCollection()->addAction( QLatin1String("web inspector"), a );
@@ -306,48 +303,10 @@ void MainWindow::slotUpdateConf()
     defaultSettings->setAttribute(QWebSettings::PluginsEnabled, arePluginsEnabled);
     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, isJavascriptEnabled);
 
-//     int canAcceptCookies = ReKonfig::acceptCookies();
-//     int canKeepCookiesUntil = ReKonfig::keepCookiesUntil();
-// 
-//     CookieJar::KeepPolicy keepCookies;
-//     switch(canAcceptCookies) 
-//     {
-//     default:
-//     case 0:
-//         keepCookies = CookieJar::KeepUntilExpire;
-//         break;
-//     case 1:
-//         keepCookies = CookieJar::KeepUntilExit;
-//         break;
-//     case 2:
-//         keepCookies = CookieJar::KeepUntilTimeLimit;
-//         break;
-//     }
-//     CookieJar *jar = BrowserApplication::cookieJar();
-//     QMetaEnum acceptPolicyEnum = jar->staticMetaObject.enumerator(jar->staticMetaObject.indexOfEnumerator("AcceptPolicy"));
-// 
-//     CookieJar::KeepPolicy keepPolicy;
-//     switch(canKeepCookiesUntil) 
-//     {
-//         default:
-//     case 0:
-//         keepPolicy = CookieJar::KeepUntilExpire;
-//         break;
-//     case 1:
-//         keepPolicy = CookieJar::KeepUntilExit;
-//         break;
-//     case 2:
-//         keepPolicy = CookieJar::KeepUntilTimeLimit;
-//         break;
-//     }
-// 
-//     QMetaEnum keepPolicyEnum = jar->staticMetaObject.enumerator(jar->staticMetaObject.indexOfEnumerator("KeepPolicy"));
-//     // ---
-//     BrowserApplication::instance()->loadSettings();
-//     BrowserApplication::networkAccessManager()->loadSettings();
-//     BrowserApplication::cookieJar()->loadSettings();
-//     BrowserApplication::historyManager()->loadSettings();
-
+    // load Settings on main classes
+    BrowserApplication::networkAccessManager()->loadSettings();
+    BrowserApplication::cookieJar()->loadSettings();
+    BrowserApplication::historyManager()->loadSettings();
 }
 
 
@@ -416,12 +375,6 @@ void MainWindow::loadUrl(const KUrl &url)
 }
 
 
-void MainWindow::slotDownloadManager()
-{
-    BrowserApplication::downloadManager()->show();
-}
-
-
 void MainWindow::slotOpenLocation()
 {
     m_view->currentLineEdit()->selectAll();
@@ -431,7 +384,7 @@ void MainWindow::slotOpenLocation()
 
 void MainWindow::slotFileSaveAs()
 {
-    BrowserApplication::downloadManager()->download(currentTab()->url(), true);
+    BrowserApplication::instance()->downloadUrl( currentTab()->url() );
 }
 
 
