@@ -124,7 +124,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError) 
     {
-        BrowserApplication::instance()->downloadUrl( reply->url() );
+        KUrl srcUrl = reply->url();
+        QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
+        KUrl destUrl = KUrl(path);
+        BrowserApplication::instance()->downloadUrl( srcUrl, destUrl );
         return;
     }
 
@@ -305,7 +308,10 @@ void WebView::setStatusBarText(const QString &string)
 
 void WebView::downloadRequested(const QNetworkRequest &request)
 {
-    BrowserApplication::instance()->downloadUrl( request.url() );
+    KUrl srcUrl = request.url();
+    QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
+    KUrl destUrl = KUrl(path);
+    BrowserApplication::instance()->downloadUrl( srcUrl, destUrl );
 }
 
 

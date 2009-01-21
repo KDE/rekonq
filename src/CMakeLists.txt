@@ -7,7 +7,8 @@ SET( rekonq_SRCS
     cookiejar.cpp 
     edittableview.cpp 
     edittreeview.cpp 
-    history.cpp 
+    history.cpp
+    download.cpp
     bookmarks.cpp
     modelmenu.cpp 
     networkaccessmanager.cpp

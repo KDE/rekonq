@@ -56,7 +56,7 @@ public:
     MainWindow *mainWindow();
     QList<MainWindow*> mainWindows();
     KIcon icon(const KUrl &url) const;
-    void downloadUrl(const KUrl &url);
+    void downloadUrl(const KUrl &srcUrl, const KUrl &destUrl);
 
     void saveSession();
     bool canRestoreSession() const;
@@ -73,8 +73,6 @@ private slots:
     void postLaunch();
     void openUrl(const KUrl &url);
     void newLocalSocketConnection();
-    void slotResult(KJob*);
-    void slotData(KIO::Job*, const QByteArray&);
 
 private:
     void clean();
@@ -86,10 +84,6 @@ private:
     QLocalServer *m_localServer;
     QByteArray m_lastSession;
     mutable KIcon m_defaultIcon;
-
-    // about download
-    KUrl m_downloadUrl;
-    QByteArray m_downloadData;
 };
 
 #endif // BROWSERAPPLICATION_H

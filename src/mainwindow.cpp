@@ -384,7 +384,10 @@ void MainWindow::slotOpenLocation()
 
 void MainWindow::slotFileSaveAs()
 {
-    BrowserApplication::instance()->downloadUrl( currentTab()->url() );
+    KUrl srcUrl = currentTab()->url();
+    QString destPath = KFileDialog::getSaveFileName();
+    KUrl destUrl = KUrl(destPath);
+    BrowserApplication::instance()->downloadUrl( srcUrl, destUrl );
 }
 
 

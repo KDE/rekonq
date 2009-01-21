@@ -30,6 +30,7 @@
 #include "networkaccessmanager.h"
 #include "mainview.h"
 #include "webview.h"
+#include "download.h"
 
 // KDE Includes
 #include <KCmdLineArgs>
@@ -147,39 +148,10 @@ void BrowserApplication::postLaunch()
 }
 
 
-void BrowserApplication::downloadUrl(const KUrl &url)
+void BrowserApplication::downloadUrl(const KUrl &srcUrl, const KUrl &destUrl)
 {
-//     QString path = ReKonfig::downloadDir() + QString("/") + url.fileName();
-//     KIO::NetAccess::download( url , path , mainWindow() );
-    m_downloadUrl = url;
-    KIO::TransferJob * job = KIO::get( m_downloadUrl, KIO::NoReload);
-    connect(job, SIGNAL( result(KJob*) ), this, SLOT( slotResult(KJob*) ) );
-    connect(job, SIGNAL(data(KIO::Job*,const QByteArray &)), this, SLOT(slotData(KIO::Job*, const QByteArray&)));
+    new Download( srcUrl, destUrl );
 }
-
-
-void BrowserApplication::slotResult(KJob* job)
-{
-    if ( job->error() )
-    {
-        kDebug() << job->errorString();
-    }
-    else
-    {
-        QString path = ReKonfig::downloadDir() + QString("/") + m_downloadUrl.fileName();
-        QFile destFile( path );
-        destFile.write(m_downloadData);
-        destFile.close();
-        m_downloadData = 0;
-    }
-}
-
-
-void BrowserApplication::slotData(KIO::Job*, const QByteArray& data)
-{
-    m_downloadData.append(data);
-}
-
 
 
 QList<MainWindow*> BrowserApplication::mainWindows()
