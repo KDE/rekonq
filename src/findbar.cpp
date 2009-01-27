@@ -33,33 +33,47 @@
 #include <QtGui>
 
 
-FindBar::FindBar(KXmlGuiWindow *parent)
-    : KToolBar( "findBar" , parent, Qt::BottomToolBarArea, true, false, false)
+FindBar::FindBar(KXmlGuiWindow *mainwindow)
+    : QWidget()
     , m_lineEdit(0)
 {
-    KAction *close = new KAction(KIcon("dialog-close") , "close" , this);
-    connect( close , SIGNAL( triggered() ), this, SLOT( hide() ) );
-    addAction( close );
+    QHBoxLayout *layout = new QHBoxLayout;
 
+    // cosmetic
+    layout->setMargin(2);
+
+    // hide button
+    QToolButton *hideButton = new QToolButton(this);
+    hideButton->setAutoRaise(true);
+    hideButton->setIcon(KIcon("dialog-close"));
+    connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
+    layout->addWidget(hideButton);
+    layout->setAlignment( hideButton, Qt::AlignLeft|Qt::AlignTop );
+
+    // label
     QLabel *label = new QLabel("Find: ");
-    addWidget( label );
+    layout->addWidget(label);
 
-    m_lineEdit = new KLineEdit();
-    m_lineEdit->setMaximumWidth( 200 );
+    // lineEdit, focusProxy
+    m_lineEdit = new KLineEdit(this);
+    setFocusProxy(m_lineEdit);
+    m_lineEdit->setMaximumWidth( 250 );
+    connect( m_lineEdit, SIGNAL( returnPressed() ), mainwindow, SLOT( slotFindNext() ) );
+    connect( m_lineEdit, SIGNAL( textEdited(const QString &) ), mainwindow, SLOT( slotFindNext() ) );
+    layout->addWidget( m_lineEdit );
 
-    connect( m_lineEdit, SIGNAL( returnPressed() ), parent, SLOT( slotFindNext() ) );
-    connect( m_lineEdit, SIGNAL( textEdited(const QString &) ), parent, SLOT( slotFindNext() ) );
-    addWidget( m_lineEdit );
-
+    // buttons
     KPushButton *findNext = new KPushButton( KIcon("go-down"), "&Next", this );
     KPushButton *findPrev = new KPushButton( KIcon("go-up"), "&Previous", this );
-    // perhaps we don't need working on style..
-//     findNext->setStyle();
-//     findPrev->setStyle();
-    connect( findNext, SIGNAL( clicked() ), parent, SLOT( slotFindNext() ) );
-    connect( findPrev, SIGNAL( clicked() ), parent, SLOT( slotFindPrevious() ) );
-    addWidget( findNext );
-    addWidget( findPrev );
+    connect( findNext, SIGNAL( clicked() ), mainwindow, SLOT( slotFindNext() ) );
+    connect( findPrev, SIGNAL( clicked() ), mainwindow, SLOT( slotFindPrevious() ) );
+    layout->addWidget( findNext );
+    layout->addWidget( findPrev );
+    
+    // stretching widget on the left
+    layout->addStretch();
+
+    setLayout(layout);
 
     // we start off hidden
     hide();
@@ -102,7 +116,7 @@ void FindBar::keyPressEvent(QKeyEvent* event)
         hide();
         return;
     }
-    if(event->key() == Qt::Key_Return && ! ( m_lineEdit->text().isEmpty() ) )
+    if(event->key() == Qt::Key_Return && !m_lineEdit->text().isEmpty() )
     {
         emit searchString( m_lineEdit->text() );
         return;

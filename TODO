@@ -20,6 +20,8 @@ ROAD to 0.0.3 (third release)
 - dbus, kjob, kget support
 - new application class!!
 
+---- REMOVE ALL FOCUS TO QStackedWidget in mainview!!
+
 + ----------------------------------------------------
 
 NEXT..

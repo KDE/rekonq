@@ -57,6 +57,7 @@
 #include <QWebFrame>
 #include <QWebHistory>
 #include <QDebug>
+#include <QVBoxLayout>
 
 
 MainWindow::MainWindow()
@@ -73,8 +74,18 @@ MainWindow::MainWindow()
     // creating a new tab
     m_view->newTab();
 
-    // tell the KXmlGuiWindow that this is indeed the main widget
-    setCentralWidget(m_view);
+    // creating a centralWidget containing m_view and the hidden findbar
+    QWidget *centralWidget = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(m_view);
+
+    // Find Bar
+    m_findBar = new FindBar(this);
+    connect( m_findBar, SIGNAL( searchString(const QString &) ), this, SLOT( slotFind(const QString &) ) );
+    layout->addWidget(m_findBar);
+
+    centralWidget->setLayout(layout);
+    setCentralWidget(centralWidget);
 
     // connect signals and slots
     connect(m_view, SIGNAL( loadUrlPage(const KUrl &) ), this, SLOT( loadUrl(const KUrl &) ) );
@@ -116,10 +127,6 @@ MainWindow::MainWindow()
     m_searchBar = new SearchBar( this );
     connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     navigationBar->addWidget(m_searchBar);
-
-    // Find Bar
-    m_findBar = new FindBar( this );
-    connect( m_findBar, SIGNAL( searchString(const QString &) ), this, SLOT( slotFind(const QString &) ) ); 
 }
 
 
@@ -543,7 +550,9 @@ void MainWindow::slotFind(const QString & search)
     {
         m_lastSearch = search;
         if (!currentTab()->findText(m_lastSearch))
+        {
             slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
+        }
     }
 }
 
@@ -556,7 +565,7 @@ void MainWindow::slotViewFindBar()
 
 void MainWindow::slotFindNext()
 {
-    if (!currentTab() && !m_lastSearch.isEmpty())
+    if (!currentTab() && m_lastSearch.isEmpty())
         return;
     currentTab()->findText(m_lastSearch);
 }
@@ -564,7 +573,7 @@ void MainWindow::slotFindNext()
 
 void MainWindow::slotFindPrevious()
 {
-    if (!currentTab() && !m_lastSearch.isEmpty())
+    if (!currentTab() && m_lastSearch.isEmpty())
         return;
     currentTab()->findText(m_lastSearch, QWebPage::FindBackward);
 }
