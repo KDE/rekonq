@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<kpartgui name="rekonq" version="13">
+<kpartgui name="rekonq" version="16">
 <MenuBar>
 <!--  ============ FILE menu =========== -->
 <Menu name="file" noMerge="1"><text>&amp;File</text>
@@ -71,12 +71,15 @@
 </MenuBar>
 
 <!--  ============ Main ToolBar =========== -->
-
 <ToolBar name="mainToolBar" fullWidth="true" iconText="iconOnly" position="top" noMerge="1"><text>Main Toolbar</text>
     <Action name="history back" />
     <Action name="history forward" />
     <Action name="stop reload" />
     <Action name="go_home" />
+</ToolBar>
+
+<!--  ============ Bookmarks ToolBar =========== -->
+<ToolBar name="bookmarksToolBar" fullWidth="true" iconText="iconOnly" position="top" noMerge="1"><text>Bookmarks Toolbar</text>
 </ToolBar>
 
 </kpartgui>

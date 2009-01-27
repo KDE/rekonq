@@ -69,3 +69,11 @@ BookmarksMenu::BookmarksMenu(KMainWindow *parent)
 
     m_menu = new KBookmarkMenu( m_manager , m_owner, this, m_ac );
 }
+
+
+//---------------------------------------------------------------------------------------------------------------------
+
+
+BookmarksLine::BookmarksLine(QObject *parent, KToolBar *toolbar)
+{
+}

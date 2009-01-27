@@ -50,6 +50,7 @@ private:
     MainWindow *m_parent;
 };
 
+// ------------------------------------------------------------------------------
 
 class BookmarksMenu : public KMenu
 {
@@ -64,5 +65,14 @@ private:
     KBookmarkMenu *m_menu;
 };
 
+// ------------------------------------------------------------------------------
+
+class BookmarksLine : public QObject
+{
+Q_OBJECT
+public:
+    BookmarksLine(QObject *parent, KToolBar *toolbar);
+
+};
 
 #endif
