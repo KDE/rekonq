@@ -58,22 +58,22 @@ QString OwnBookMarks::currentTitle() const
 //---------------------------------------------------------------------------------------------------------------------
 
 
-BookmarksMenu::BookmarksMenu(KMainWindow *parent)
+BookmarksMenu::BookmarksMenu(KMainWindow *parent, KBookmarkManager *manager)
     : KMenu(parent)
-    , m_owner( new OwnBookMarks( parent ) )
+    , m_owner( new OwnBookMarks(parent) )
 {
-    KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );    // share konqueror bookmarks
-    m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
+//     KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );    // share konqueror bookmarks
+//     m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
 
     m_ac = new KActionCollection( this );
 
-    m_menu = new KBookmarkMenu( m_manager , m_owner, this, m_ac );
+    m_menu = new KBookmarkMenu( manager , m_owner, this, m_ac );
 }
 
 
 //---------------------------------------------------------------------------------------------------------------------
 
 
-BookmarksLine::BookmarksLine(QObject *parent, KToolBar *toolbar)
+BookmarksLine::BookmarksLine(KBookmarkManager *manager, KToolBar *toolbar)
 {
 }

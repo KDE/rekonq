@@ -26,6 +26,7 @@
 #include "findbar.h"
 #include "searchbar.h"
 #include "mainview.h"
+#include "bookmarks.h"
 
 // KDE Includes
 #include <KUrl>
@@ -61,7 +62,7 @@ public:
 
 private:
     void setupActions();
-    void setupCustomMenu();
+    void setupHistoryMenu();
     void setupTabBar();
 
 public slots:
@@ -120,6 +121,8 @@ private:
 
     KMenu *m_historyBackMenu;
     KMenu *m_windowMenu;
+
+    KBookmarkManager *m_manager;
 
     QAction *m_stopReload;
 

@@ -63,6 +63,7 @@
 MainWindow::MainWindow()
     : KXmlGuiWindow()
     , m_view( new MainView(this) )
+    , m_manager(0)
 {
     // accept dnd
     setAcceptDrops(true);
@@ -107,6 +108,16 @@ MainWindow::MainWindow()
     // add a status bar
     statusBar()->show();
 
+    // ----- BOOKMARKS MENU: this has to be done BEFORE setupGUI!!
+    KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );    // share konqueror bookmarks
+    m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
+
+    KAction *a = new KActionMenu( i18n("B&ookmarks"), this );
+    actionCollection()->addAction( QLatin1String("bookmarks"), a );
+    BookmarksMenu *bookmarksMenu = new BookmarksMenu( this, m_manager );
+    a->setMenu( bookmarksMenu );
+
+
     // a call to KXmlGuiWindow::setupGUI() populates the GUI
     // with actions, using KXMLGUI.
     // It also applies the saved mainwindow settings, if any, and ask the
@@ -114,8 +125,8 @@ MainWindow::MainWindow()
     // toolbar position, icon size, etc.
     setupGUI();
 
-    // setup history & bookmarks menus
-    setupCustomMenu();
+    // setup history menu
+    setupHistoryMenu();
 
     // setup Tab Bar
     setupTabBar();
@@ -207,12 +218,6 @@ void MainWindow::setupActions()
     actionCollection()->addAction( QLatin1String("web inspector"), a );
     connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotToggleInspector(bool) ) );
 
-    // ================== BOOKMARKS MENU
-    a = new KActionMenu( i18n("B&ookmarks"), this );
-    actionCollection()->addAction( QLatin1String("bookmarks"), a );
-    BookmarksMenu *bookmarksMenu = new BookmarksMenu( this );
-    a->setMenu( bookmarksMenu );
-
     // ================ history related actions
     KAction *historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
@@ -267,9 +272,8 @@ void MainWindow::setupTabBar()
 }
 
 
-void MainWindow::setupCustomMenu()
+void MainWindow::setupHistoryMenu()
 {
-    //  -------------------------------- HISTORY MENU -----------------------------------------------------------------------
     HistoryMenu *historyMenu = new HistoryMenu(this);
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_view, SLOT(loadUrlInCurrentTab(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));

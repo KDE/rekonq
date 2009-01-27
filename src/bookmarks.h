@@ -56,10 +56,9 @@ class BookmarksMenu : public KMenu
 {
 Q_OBJECT
 public:
-    BookmarksMenu(KMainWindow * parent);
+    BookmarksMenu(KMainWindow*, KBookmarkManager *);
 
 private:
-    KBookmarkManager *m_manager;
     OwnBookMarks *m_owner;
     KActionCollection *m_ac;
     KBookmarkMenu *m_menu;
@@ -71,8 +70,11 @@ class BookmarksLine : public QObject
 {
 Q_OBJECT
 public:
-    BookmarksLine(QObject *parent, KToolBar *toolbar);
+    BookmarksLine(KBookmarkManager *, KToolBar *toolbar);
 
+private:
+    OwnBookMarks *m_owner;
+    KActionCollection *m_ac;
 };
 
 #endif
