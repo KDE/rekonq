@@ -34,6 +34,8 @@
 #include "networkaccessmanager.h"
 #include "bookmarks.h"
 #include "webview.h"
+#include "mainview.h"
+#include "bookmarks.h"
 
 // UI Includes
 #include "ui_passworddialog.h"
@@ -173,7 +175,6 @@ void MainWindow::setupActions()
     KStandardAction::cut( m_view, SLOT( slotWebCut() ), actionCollection() );
     KStandardAction::copy( m_view, SLOT( slotWebCopy() ), actionCollection() );
     KStandardAction::paste( m_view, SLOT( slotWebPaste() ), actionCollection() );
-    KStandardAction::selectAll( m_view, SLOT( slotWebSelectAll() ), actionCollection() );
 
     a = new KAction ( KIcon( "process-stop" ), i18n("&Stop"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Period) );

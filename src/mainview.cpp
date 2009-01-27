@@ -171,14 +171,6 @@ void MainView::slotWebPaste()
 }
 
 
-void MainView::slotWebSelectAll()
-{
-    WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    // TODO
-}
-
-
 void MainView::clear()
 {
     // clear the recently closed tabs

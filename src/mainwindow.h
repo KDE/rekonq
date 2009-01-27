@@ -25,8 +25,6 @@
 // Local Includes
 #include "findbar.h"
 #include "searchbar.h"
-#include "mainview.h"
-#include "bookmarks.h"
 
 // KDE Includes
 #include <KUrl>
@@ -37,7 +35,8 @@
 #include <KToggleAction>
 #include <KMenu>
 
-
+class KBookmarkManager;
+class MainView;
 class QWebFrame;
 class WebView;
 
