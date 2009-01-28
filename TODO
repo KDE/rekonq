@@ -13,19 +13,20 @@ ROAD to 0.0.2 (second release)
 ROAD to 0.0.3 (third release)
 + mainview
 + KConfigXT
-- documentation
-- improve slackbuild
++ downloadSystem--
+- documentation++
 - autosave-- 
-- downloadSystem--
-- dbus, kjob, kget support
+- dbus support
 - new application class!!
 
----- REMOVE ALL FOCUS TO QStackedWidget in mainview!!
+--- REMOVE ALL FOCUS TO QStackedWidget in mainview!!
+--- improve searchbar features
+--- bookmarks line
 
 + ----------------------------------------------------
 
 NEXT..
-- system SELECT ALL
++ system SELECT ALL
 - better FULL SCREEN
 - color progress
 - contextMenu in searchbar to set different search engines
