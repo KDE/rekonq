@@ -50,6 +50,7 @@
 #include <KActionCollection>
 #include <KMessageBox>
 #include <KFileDialog>
+#include <KMenu>
 
 // Qt Includes
 #include <QPlainTextEdit>
@@ -65,7 +66,7 @@
 MainWindow::MainWindow()
     : KXmlGuiWindow()
     , m_view( new MainView(this) )
-    , m_manager(0)
+    , m_bookmarksProvider( new BookmarksProvider(this) )
 {
     // accept dnd
     setAcceptDrops(true);
@@ -111,14 +112,10 @@ MainWindow::MainWindow()
     statusBar()->show();
 
     // ----- BOOKMARKS MENU: this has to be done BEFORE setupGUI!!
-    KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );    // share konqueror bookmarks
-    m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
-
     KAction *a = new KActionMenu( i18n("B&ookmarks"), this );
     actionCollection()->addAction( QLatin1String("bookmarks"), a );
-    BookmarksMenu *bookmarksMenu = new BookmarksMenu( this, m_manager );
-    a->setMenu( bookmarksMenu );
-
+    KMenu *bmMenu = m_bookmarksProvider->bookmarksMenu();
+    a->setMenu( bmMenu );
 
     // a call to KXmlGuiWindow::setupGUI() populates the GUI
     // with actions, using KXMLGUI.
@@ -136,6 +133,9 @@ MainWindow::MainWindow()
     // setting up custom widgets..
     KToolBar *navigationBar = toolBar( "mainToolBar" );
     navigationBar->addWidget( m_view->lineEditStack() );
+
+    KToolBar *bmToolbar = toolBar("bookmarksToolBar");
+    m_bookmarksProvider->provideBmToolbar( bmToolbar );
 
     m_searchBar = new SearchBar( this );
     connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));

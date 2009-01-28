@@ -26,6 +26,7 @@
 
 // KDE Includes
 #include <KMimeType>
+#include <KMenu>
 
 OwnBookMarks::OwnBookMarks(KMainWindow *parent)
     : QObject(parent)
@@ -55,28 +56,52 @@ QString OwnBookMarks::currentTitle() const
 }
 
 
-//---------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
 
 
-BookmarksMenu::BookmarksMenu(KMainWindow *parent, KBookmarkManager *manager)
-    : KMenu(parent)
-    , m_owner( new OwnBookMarks(parent) )
+BookmarksProvider::BookmarksProvider(KMainWindow* parent)
+    : m_parent(parent)
+    , m_owner(new OwnBookMarks(parent)) 
 {
+    KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );    // share konqueror bookmarks
+    m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
     m_ac = new KActionCollection( this );
-    m_menu = new KBookmarkMenu( manager , m_owner, this, m_ac );
 }
 
 
-//---------------------------------------------------------------------------------------------------------------------
-
-
-BookmarksLine::BookmarksLine(KBookmarkManager *manager, KToolBar *toolbar)
+void BookmarksProvider::provideBmToolbar(KToolBar* toolbar)
 {
-    KBookmarkGroup toolbarGroup = manager->toolbar();
+    toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    KBookmarkGroup toolbarGroup = m_manager->toolbar();
     KBookmark bm = toolbarGroup.first();
     while(!bm.isNull())
     {
-        // TODO append bm to toolbar
+        if(bm.isGroup())
+        {
+            // do nothing!
+        }
+        else
+        {
+            if(bm.isSeparator())
+            {
+                toolbar->addSeparator();
+            }
+            else
+            {
+                KAction *a = new KBookmarkAction(bm, m_owner, m_ac);
+                toolbar->addAction(a);
+            }
+        }
+        // go ahead!
         bm = toolbarGroup.next(bm);
     }
 }
+
+
+KMenu *BookmarksProvider::bookmarksMenu()
+{
+    KMenu *bmMenu = new KMenu(m_parent);
+    new KBookmarkMenu( m_manager, m_owner, bmMenu, m_ac );
+    return bmMenu;
+}
+

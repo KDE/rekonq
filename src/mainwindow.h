@@ -35,7 +35,7 @@
 #include <KToggleAction>
 #include <KMenu>
 
-class KBookmarkManager;
+class BookmarksProvider;
 class MainView;
 class QWebFrame;
 class WebView;
@@ -121,7 +121,7 @@ private:
     KMenu *m_historyBackMenu;
     KMenu *m_windowMenu;
 
-    KBookmarkManager *m_manager;
+    BookmarksProvider *m_bookmarksProvider;
 
     QAction *m_stopReload;
 
