@@ -62,11 +62,7 @@ BookmarksMenu::BookmarksMenu(KMainWindow *parent, KBookmarkManager *manager)
     : KMenu(parent)
     , m_owner( new OwnBookMarks(parent) )
 {
-//     KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );    // share konqueror bookmarks
-//     m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
-
     m_ac = new KActionCollection( this );
-
     m_menu = new KBookmarkMenu( manager , m_owner, this, m_ac );
 }
 
@@ -76,4 +72,11 @@ BookmarksMenu::BookmarksMenu(KMainWindow *parent, KBookmarkManager *manager)
 
 BookmarksLine::BookmarksLine(KBookmarkManager *manager, KToolBar *toolbar)
 {
+    KBookmarkGroup toolbarGroup = manager->toolbar();
+    KBookmark bm = toolbarGroup.first();
+    while(!bm.isNull())
+    {
+        // TODO append bm to toolbar
+        bm = toolbarGroup.next(bm);
+    }
 }
