@@ -3,7 +3,7 @@
   <!-- Define an entity for your application if it is not part of KDE
        CVS -->
   <!ENTITY kmyapplication "<application>rekonq</application>">
-  <!ENTITY kappname "&kmyapplication;"><!-- replace kmyapplication here
+  <!ENTITY kappname "&rekonq;"><!-- replace kmyapplication here
                                             do *not* replace kappname-->
   <!ENTITY package "kde-module"><!-- kdebase, kdeadmin, etc.  Leave
                                      this unchanged if your
@@ -52,7 +52,7 @@ thanks ;-).
 as Authors, publish date, the abstract, and Keywords -->
 
 <bookinfo>
-<title>The &kmyapplication; Handbook</title>
+<title>The &rekonq; Handbook</title>
 
 <authorgroup>
 <author>
@@ -63,11 +63,10 @@ as Authors, publish date, the abstract, and Keywords -->
 and use `&George.N.Ugnacious; &George.N.Ugnacious.mail;' in the author element.
  -->
 <personname>
-<firstname>George</firstname>
-<othername>N.</othername>
-<surname>Ugnacious</surname>
+<firstname>Andrea</firstname>
+<surname>Diamantini</surname>
 </personname>
-<email>gnu@kde.org</email>
+<email>adjam7@gmail.com</email>
 </author>
 </authorgroup>
 
@@ -75,7 +74,7 @@ and use `&George.N.Ugnacious; &George.N.Ugnacious.mail;' in the author element.
 
 <copyright>
 <year>2008</year>
-<holder>George N. Ugnacious</holder>
+<holder>Andrea Diamantini</holder>
 </copyright>
 <!-- Translators: put here the copyright notice of the translation -->
 <!-- Put here the FDL notice.  Read the explanation in fdl-notice.docbook
@@ -89,14 +88,14 @@ Please respect the format of the date (YYYY-MM-DD) and of the version
 (V.MM.LL), it could be used by automation scripts.
 Do NOT change these in the translation. -->
 
-<date>2008-01-10</date>
-<releaseinfo>1.01.00</releaseinfo>
+<date>2008-12-01</date>
+<releaseinfo>0.00.03</releaseinfo>
 
 <!-- Abstract about this handbook -->
 
 <abstract>
 <para>
-&kmyapplication; is an application specially designed to do nothing you would
+&rekonq; is an application specially designed to do nothing you would
 ever want.
 </para>
 </abstract>
@@ -107,10 +106,10 @@ Please at least include KDE, the KDE package it is in, the name
 
 <keywordset>
 <keyword>KDE</keyword>
-<keyword>kdeutils</keyword>
-<keyword>Kapp</keyword>
-<keyword>nothing</keyword>
-<keyword>nothing else</keyword>
+<keyword>kdenetwork</keyword>
+<keyword>rekonq</keyword>
+<keyword>webkit</keyword>
+<keyword>browser</keyword>
 </keywordset>
 
 </bookinfo>
@@ -133,13 +132,13 @@ problems. Basically a long version of the abstract.  Don't include a
 revision history. (see installation appendix comment) -->
 
 <para>
-&kmyapplication; is a program that lets you do absolutely nothing. Please report
+&rekonq; is a program that lets you do absolutely nothing. Please report
 any problems or feature requests to the &kde; mailing lists.
 </para>
 </chapter>
 
 <chapter id="using-kapp">
-<title>Using &kmyapplication;</title>
+<title>Using &rekonq;</title>
 
 <!-- This chapter should tell the user how to use your app. You should use as
 many sections (Chapter, Sect1, Sect3, etc...) as is necessary to fully document
@@ -151,7 +150,7 @@ your application. -->
 patent issues. -->
 
 <screenshot>
-<screeninfo>Here's a screenshot of &kmyapplication;</screeninfo>
+<screeninfo>Here's a screenshot of &rekonq;</screeninfo>
 	<mediaobject>
 	  <imageobject>
 	    <imagedata fileref="screenshot.png" format="PNG"/>
@@ -168,7 +167,7 @@ patent issues. -->
 
 
 <sect1 id="kapp-features">
-<title>More &kmyapplication; features</title>
+<title>More &rekonq; features</title>
 
 <para>It slices! It dices! and it comes with a free toaster!</para>
 <para>
@@ -183,7 +182,7 @@ The Squiggle Tool <guiicon><inlinemediaobject>
 	    <phrase>Squiggle</phrase>
 	  </textobject>
 </inlinemediaobject></guiicon> is used to draw squiggly lines all over
-the &kmyapplication; main window. It's not a bug, it's a feature!
+the &rekonq; main window. It's not a bug, it's a feature!
 </para>
 
 </sect1>
@@ -199,7 +198,7 @@ menus or toolbars. This may not be necessary for small apps or apps with no tool
 or menu bars. -->
 
 <sect1 id="kapp-mainwindow">
-<title>The main &kmyapplication; window</title>
+<title>The main &rekonq; window</title>
 
 <sect2>
 <title>The File Menu</title>
@@ -233,7 +232,7 @@ or menu bars. -->
 <guimenu>File</guimenu>
 <guimenuitem>Quit</guimenuitem>
 </menuchoice></term>
-<listitem><para><action>Quits</action> &kmyapplication;</para></listitem>
+<listitem><para><action>Quits</action> &rekonq;</para></listitem>
 </varlistentry>
 </variablelist>
 </para>
@@ -244,7 +243,7 @@ or menu bars. -->
 <title>The <guimenu>Help</guimenu> Menu</title>
 
 <!-- Assuming you have a standard help menu (help, what's this, about -->
-<!-- &kmyapplication;, about KDE) then the documentation is already written. -->
+<!-- &rekonq;, about KDE) then the documentation is already written. -->
 <!-- The following entity is valid anywhere that a variablelist is -->
 <!-- valid.  -->
 
@@ -256,14 +255,14 @@ or menu bars. -->
 </chapter>
 
 <chapter id="developers">
-<title>Developer's Guide to &kmyapplication;</title>
+<title>Developer's Guide to &rekonq;</title>
 
 <!-- (OPTIONAL) A Programming/Scripting reference chapter should be
 used for apps that use plugins or that provide their own scripting hooks
 and/or development libraries. -->
 
 <para>
-Programming &kmyapplication; plugins is a joy to behold. Just read through the next
+Programming &rekonq; plugins is a joy to behold. Just read through the next
 66 pages of API's to learn how!
 </para>
 
@@ -418,7 +417,7 @@ application work. -->
 <qandaset id="faqlist">
 <qandaentry>
 <question>
-<para>My Mouse doesn't work. How do I quit &kmyapplication;?</para>
+<para>My Mouse doesn't work. How do I quit &rekonq;?</para>
 </question>
 <answer>
 <para>You silly goose! Check out the <link linkend="commands">Commands
@@ -447,7 +446,7 @@ distribution. -->
 <title>Credits and License</title>
 
 <para>
-&kmyapplication;
+&rekonq;
 </para>
 <para>
 Program copyright 2008 John Q. Hacker <email>jqh@kde.org</email>
@@ -487,7 +486,7 @@ Documentation Copyright &copy; 2008 George N. Ugnacious <email>gnu@kde.org</emai
 <title>Installation</title>
 
 <sect1 id="getting-kapp">
-<title>How to obtain &kmyapplication;</title>
+<title>How to obtain &rekonq;</title>
 
 <!-- This first entity contains boiler plate for applications that are
 part of KDE CVS.  You should remove it if you are releasing your
@@ -512,15 +511,15 @@ information here.
 -->
 
 <para>
-In order to successfully use &kmyapplication;, you need &kde; 1.1. Foobar.lib is
-required in order to support the advanced &kmyapplication; features. &kmyapplication; uses
+In order to successfully use &rekonq;, you need &kde; 1.1. Foobar.lib is
+required in order to support the advanced &rekonq; features. &rekonq; uses
 about 5 megs of memory to run, but this may vary depending on your
 platform and configuration.
 </para>
 
 <para>
-All required libraries as well as &kmyapplication; itself can be found
-on <ulink url="ftp://ftp.kapp.org">The &kmyapplication; home page</ulink>.
+All required libraries as well as &rekonq; itself can be found
+on <ulink url="ftp://ftp.kapp.org">The &rekonq; home page</ulink>.
 </para>
 
 <!-- For a list of updates, you may refer to the application web site
@@ -546,7 +545,7 @@ url="http://apps.kde.org/kapp">http://apps.kde.org/kapp</ulink>.
 <title>Configuration</title>
 
 <para>Don't forget to tell your system to start the <filename>dtd</filename>
-dicer-toaster daemon first, or &kmyapplication; won't work !</para>
+dicer-toaster daemon first, or &rekonq; won't work !</para>
 
 </sect1>
 
