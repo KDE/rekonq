@@ -652,17 +652,17 @@ void MainWindow::slotToggleInspector(bool enable)
 }
 
 
-void MainWindow::slotSwapFocus()
-{
-    if ( currentTab()->hasFocus() )
-    {
-        m_view->currentLineEdit()->setFocus();
-    }
-    else
-    {
-        currentTab()->setFocus();
-    }
-}
+// void MainWindow::slotSwapFocus()
+// {
+//     if ( currentTab()->hasFocus() )
+//     {
+//         m_view->currentLineEdit()->setFocus();
+//     }
+//     else
+//     {
+//         currentTab()->setFocus();
+//     }
+// }
 
 
 MainView *MainWindow::tabWidget() const
@@ -723,20 +723,20 @@ void MainWindow::slotAboutToShowBackMenu()
 }
 
 
-void MainWindow::slotShowWindow()
-{
-    if (KAction *action = qobject_cast<KAction*>(sender())) 
-    {
-        QVariant v = action->data();
-        if (v.canConvert<int>()) 
-        {
-            int offset = qvariant_cast<int>(v);
-            QList<MainWindow*> windows = BrowserApplication::instance()->mainWindows();
-            windows.at(offset)->activateWindow();
-            windows.at(offset)->currentTab()->setFocus();
-        }
-    }
-}
+// void MainWindow::slotShowWindow()
+// {
+//     if (KAction *action = qobject_cast<KAction*>(sender())) 
+//     {
+//         QVariant v = action->data();
+//         if (v.canConvert<int>()) 
+//         {
+//             int offset = qvariant_cast<int>(v);
+//             QList<MainWindow*> windows = BrowserApplication::instance()->mainWindows();
+//             windows.at(offset)->activateWindow();
+//             windows.at(offset)->currentTab()->setFocus();
+//         }
+//     }
+// }
 
 
 void MainWindow::slotOpenActionUrl(QAction *action)

@@ -191,6 +191,8 @@ WebView::WebView(QWidget* parent)
 
 
 // TODO : improve and KDE-ize this menu
+// 1. Add link to bookmarks
+// 2. Add "save link as" action
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult r = page()->mainFrame()->hitTestContent(event->pos());

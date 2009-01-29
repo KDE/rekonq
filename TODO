@@ -19,11 +19,11 @@ ROAD to 0.0.3 (third release)
 - dbus support
 - new application class!!
 
---- REMOVE ALL FOCUS TO QStackedWidget in mainview!!
---- improve searchbar features
+++- REMOVE ALL FOCUS TO QStackedWidget in mainview!!
+++- improve searchbar features
 ++- bookmarks line
 --- fix sessions && ui dimension
---- fix KConfigXT use
+--- fix KConfigXT use (proxy, fonts and so on..)
 
 + ----------------------------------------------------
 

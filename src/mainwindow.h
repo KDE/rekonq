@@ -75,15 +75,16 @@ private slots:
     void slotUpdateWindowTitle(const QString &title = QString());
     void slotOpenLocation();
     void slotAboutToShowBackMenu();
+    void geometryChangeRequested(const QRect &geometry);
 
     // history related
     void slotOpenActionUrl(QAction *action);
     void slotOpenPrevious();
     void slotOpenNext();
 
-    void slotShowWindow();
-    void slotSwapFocus();
-    void geometryChangeRequested(const QRect &geometry);
+/*    void slotShowWindow();
+    void slotSwapFocus();*/
+
 
 
     // File Menu slots

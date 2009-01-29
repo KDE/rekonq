@@ -58,7 +58,6 @@ FindBar::FindBar(KXmlGuiWindow *mainwindow)
     m_lineEdit = new KLineEdit(this);
     setFocusProxy(m_lineEdit);
     m_lineEdit->setMaximumWidth( 250 );
-//     connect( m_lineEdit, SIGNAL( returnPressed() ), mainwindow, SLOT( slotFind() ) );
     connect( m_lineEdit, SIGNAL( textChanged(const QString &) ), mainwindow, SLOT( slotFind(const QString &) ) );
     layout->addWidget( m_lineEdit );
 
