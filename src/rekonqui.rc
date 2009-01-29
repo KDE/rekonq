@@ -67,7 +67,7 @@
 </ToolBar>
 
 <!--  ============ Bookmarks ToolBar =========== -->
-<ToolBar name="bookmarksToolBar" fullWidth="true" iconSize="16" newline="true" position="top"><text>Bookmarks Toolbar</text>
+<ToolBar name="bookmarksToolBar" fullWidth="true" iconSize="8" newline="true" position="top"><text>Bookmarks Toolbar</text>
 </ToolBar>
 
 </kpartgui>

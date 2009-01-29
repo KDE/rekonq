@@ -551,14 +551,8 @@ void MainWindow::slotFind(const QString & search)
 {
     if (!currentTab())
         return;
-    if (!search.isEmpty()) 
-    {
-        m_lastSearch = search;
-        if (!currentTab()->findText(m_lastSearch))
-        {
-            slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
-        }
-    }
+    m_lastSearch = search;
+    slotFindNext();
 }
 
 
@@ -572,7 +566,10 @@ void MainWindow::slotFindNext()
 {
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
-    currentTab()->findText(m_lastSearch);
+    if (!currentTab()->findText(m_lastSearch, QWebPage::FindWrapsAroundDocument))
+    {
+        slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
+    }
 }
 
 
@@ -580,7 +577,10 @@ void MainWindow::slotFindPrevious()
 {
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
-    currentTab()->findText(m_lastSearch, QWebPage::FindBackward);
+    if (!currentTab()->findText(m_lastSearch, QWebPage::FindBackward))
+    {
+        slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
+    }
 }
 
 
