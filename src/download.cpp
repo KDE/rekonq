@@ -58,6 +58,13 @@ void Download::slotResult(KJob * job)
         {
             kDebug(5001) << "Downloading successfully finished: " << m_destUrl.url();
             QFile destFile(m_destUrl.path());
+            int n = 1;
+            while( destFile.exists() )
+            {
+                QString fn = QFile(m_destUrl.path()).fileName();
+                destFile.setFileName( fn + "." + QString::number(n) );
+                n++;
+            }
             if ( destFile.open(QIODevice::WriteOnly | QIODevice::Text) )
             {
                 destFile.write(m_data);
@@ -69,7 +76,6 @@ void Download::slotResult(KJob * job)
         case KIO::ERR_FILE_ALREADY_EXIST:
         {
             kDebug(5001) << "ERROR - File already exists";
-            // QFile file(m_destUrl.path());
             m_data = 0;
             break;
         }
