@@ -131,10 +131,17 @@ void SettingsDialog::readConfig()
     connect(d->generalUi.downloadDirUrlRequester, SIGNAL(textChanged(QString)),this, SLOT(saveSettings()));
 
     // ======= Fonts
-    d->fontsUi.standardFontChooser->setFont(ReKonfig::standardFont(), false);
+    QFont stdFont = ReKonfig::standardFont();
+    d->fontsUi.standardFontChooser->setFont(stdFont, false);
     connect(d->fontsUi.standardFontChooser, SIGNAL(fontSelected(QFont)),this, SLOT(saveSettings()));
-    d->fontsUi.fixedFontChooser->setFont(ReKonfig::fixedFont(), true);
+    QFont fxFont = ReKonfig::fixedFont();
+    d->fontsUi.fixedFontChooser->setFont(fxFont, true);
     connect(d->fontsUi.fixedFontChooser, SIGNAL(fontSelected(QFont)),this, SLOT(saveSettings()));
+
+    // ======= Proxy
+    bool proxyEnabled = ReKonfig::isProxyEnabled();
+    d->proxyUi.groupBox->setEnabled(proxyEnabled);
+    connect(d->proxyUi.kcfg_isProxyEnabled, SIGNAL(clicked(bool)), d->proxyUi.groupBox, SLOT(setEnabled(bool)));
 }
 
 

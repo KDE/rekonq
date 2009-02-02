@@ -126,6 +126,11 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     {
         KUrl srcUrl = reply->url();
         QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
+        QFile file(path);
+        if (file.exists())
+        {
+            path = KFileDialog::getOpenFileName();
+        }
         KUrl destUrl = KUrl(path);
         BrowserApplication::instance()->downloadUrl( srcUrl, destUrl );
         return;
@@ -312,6 +317,11 @@ void WebView::downloadRequested(const QNetworkRequest &request)
 {
     KUrl srcUrl = request.url();
     QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
+    QFile file(path);
+    if (file.exists())
+    {
+        path = KFileDialog::getOpenFileName();
+    }
     KUrl destUrl = KUrl(path);
     BrowserApplication::instance()->downloadUrl( srcUrl, destUrl );
 }

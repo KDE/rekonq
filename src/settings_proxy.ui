@@ -5,21 +5,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
-    <height>221</height>
+    <width>440</width>
+    <height>223</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Proxy</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
-    <widget class="QGroupBox" name="kcfg_enableProxy" >
+    <widget class="QCheckBox" name="kcfg_isProxyEnabled" >
+     <property name="text" >
+      <string>enable proxy</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
-      <string>Enable proxy</string>
+      <string>Proxy Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_6" >
-      <item row="0" column="0" >
+      <item row="1" column="0" >
        <widget class="QLabel" name="label_9" >
         <property name="text" >
          <string>Type:</string>
@@ -29,7 +36,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2" >
+      <item row="1" column="1" colspan="2" >
        <widget class="QComboBox" name="kcfg_proxyType" >
         <item>
          <property name="text" >
@@ -43,7 +50,7 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="0" >
+      <item row="2" column="0" >
        <widget class="QLabel" name="label_10" >
         <property name="text" >
          <string>Host:</string>
@@ -53,10 +60,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2" >
+      <item row="2" column="1" colspan="2" >
        <widget class="KLineEdit" name="kcfg_proxyHostName" />
       </item>
-      <item row="2" column="0" >
+      <item row="3" column="0" >
        <widget class="QLabel" name="label_11" >
         <property name="text" >
          <string>Port:</string>
@@ -66,7 +73,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
+      <item row="3" column="1" >
        <widget class="QSpinBox" name="kcfg_proxyPort" >
         <property name="maximum" >
          <number>10000</number>
@@ -76,7 +83,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2" >
+      <item row="3" column="2" >
        <spacer name="horizontalSpacer_2" >
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
@@ -89,7 +96,7 @@
         </property>
        </spacer>
       </item>
-      <item row="3" column="0" >
+      <item row="4" column="0" >
        <widget class="QLabel" name="label_12" >
         <property name="text" >
          <string>User Name:</string>
@@ -99,10 +106,10 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1" colspan="2" >
+      <item row="4" column="1" colspan="2" >
        <widget class="KLineEdit" name="kcfg_proxyUserName" />
       </item>
-      <item row="4" column="0" >
+      <item row="5" column="0" >
        <widget class="QLabel" name="label_13" >
         <property name="text" >
          <string>Password:</string>
@@ -112,10 +119,10 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1" colspan="2" >
+      <item row="5" column="1" colspan="2" >
        <widget class="KLineEdit" name="kcfg_proxyPassword" />
       </item>
-      <item row="5" column="0" >
+      <item row="6" column="0" >
        <spacer name="verticalSpacer_2" >
         <property name="orientation" >
          <enum>Qt::Vertical</enum>

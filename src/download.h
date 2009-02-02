@@ -37,10 +37,6 @@ class Download : public QObject
         Download(const KUrl &srcUrl, const KUrl &destUrl);
         ~Download();
 
-    Q_SIGNALS:
-        void finishedSuccessfully(KUrl dest, QByteArray data);
-        void finishedWithError();
-
     private slots:
         void slotResult(KJob * job);
         void slotData(KIO::Job *job, const QByteArray& data);

@@ -33,7 +33,7 @@ Download::Download(const KUrl &srcUrl, const KUrl &destUrl)
   : m_srcUrl(srcUrl),
     m_destUrl(destUrl)
 {
-    kDebug(5001) << "DownloadFile: " << m_srcUrl.url() << " to dest: " << m_destUrl.url();
+    kWarning() << "DownloadFile: " << m_srcUrl.url() << " to dest: " << m_destUrl.url();
     m_copyJob = KIO::get(m_srcUrl);
     connect(m_copyJob, SIGNAL(data(KIO::Job*,const QByteArray &)), SLOT(slotData(KIO::Job*, const QByteArray&)));
     connect(m_copyJob, SIGNAL(result(KJob *)), SLOT(slotResult(KJob *)));
@@ -56,27 +56,26 @@ void Download::slotResult(KJob * job)
     {
         case 0://The download has finished
         {
-            kDebug(5001) << "Downloading successfully finished" << m_destUrl.url();
-            QFile torrentFile(m_destUrl.path());
-            if (!torrentFile.open(QIODevice::WriteOnly | QIODevice::Text)) {}
-            torrentFile.write(m_data);
-            torrentFile.close();
-            emit finishedSuccessfully(m_destUrl, m_data);
+            kDebug(5001) << "Downloading successfully finished: " << m_destUrl.url();
+            QFile destFile(m_destUrl.path());
+            if ( destFile.open(QIODevice::WriteOnly | QIODevice::Text) )
+            {
+                destFile.write(m_data);
+                destFile.close();
+            }
             m_data = 0;
             break;
         }
         case KIO::ERR_FILE_ALREADY_EXIST:
         {
             kDebug(5001) << "ERROR - File already exists";
-            QFile file(m_destUrl.path());
-            emit finishedSuccessfully(m_destUrl, file.readAll());
+            // QFile file(m_destUrl.path());
             m_data = 0;
             break;
         }
         default:
             kDebug(5001) << "We are sorry to say you, that there were errors while downloading :(";
             m_data = 0;
-            emit finishedWithError();
             break;
     }
 }
