@@ -51,7 +51,6 @@ void Download::slotData(KIO::Job *job, const QByteArray& data)
 
 void Download::slotResult(KJob * job)
 {
-    kDebug(5001);
     switch (job->error())
     {
         case 0://The download has finished
@@ -59,9 +58,9 @@ void Download::slotResult(KJob * job)
             kDebug(5001) << "Downloading successfully finished: " << m_destUrl.url();
             QFile destFile(m_destUrl.path());
             int n = 1;
+            QString fn = destFile.fileName();
             while( destFile.exists() )
             {
-                QString fn = QFile(m_destUrl.path()).fileName();
                 destFile.setFileName( fn + "." + QString::number(n) );
                 n++;
             }
@@ -75,12 +74,12 @@ void Download::slotResult(KJob * job)
         }
         case KIO::ERR_FILE_ALREADY_EXIST:
         {
-            kDebug(5001) << "ERROR - File already exists";
+            kWarning() << "ERROR - File already exists";
             m_data = 0;
             break;
         }
         default:
-            kDebug(5001) << "We are sorry to say you, that there were errors while downloading :(";
+            kWarning() << "We are sorry to say you, that there were errors while downloading :(";
             m_data = 0;
             break;
     }
