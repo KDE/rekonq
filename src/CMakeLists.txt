@@ -15,8 +15,7 @@ SET( rekonq_SRCS
     urlbar.cpp
     findbar.cpp
     searchbar.cpp
-    settings.cpp 
-    squeezelabel.cpp 
+    settings.cpp
     webview.cpp 
     main.cpp
 )
