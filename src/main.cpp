@@ -27,7 +27,7 @@
 static const char description[] =
     I18N_NOOP("KDE Browser Webkit Based");
 
-static const char version[] = "0.0.2";
+static const char version[] = "0.0.3";
 
 int main(int argc, char **argv)
 {
