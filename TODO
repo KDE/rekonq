@@ -1,49 +1,15 @@
-Road to 0.0.1 (first release)
-+ ESC event findbar
-+ let findbar work
-+ bookmarks (share konqueror's)
-+ some porting
-
-ROAD to 0.0.2 (second release)
-+ setting rekonq with KConfigDialog ("rekonfig")
-- configure shortcuts
-- better find toolbar
-- fixed search bar width
-
-ROAD to 0.0.3 (third release)
-+ mainview
-+ KConfigXT
-+ downloadSystem--
-- documentation++
+To 0.0.4
+- improve DOCUMENTATION
+- fix docs
 - autosave-- 
 - dbus support
 - new application class!!
-
-+ REMOVE ALL FOCUS TO QStackedWidget in mainview!!
-+ improve searchbar features
-+ bookmarks line
---- fix sessions && ui dimension
---- fix KConfigXT use (proxy, fonts and so on..)
-
-+ ----------------------------------------------------
-
-NEXT..
-+ system SELECT ALL
-- better FULL SCREEN
-- color progress
+- improve bookmarks toolbar
+- fix KConfigXT (fonts)
+- color url_line_edit progress
 - contextMenu in searchbar to set different search engines
 - KDE proxy support
-- KcookieJar
-
 - QWebPluginFactory subclass to load KParts into QtWebKit.
-
-- dbus support
-    - kget support
-    - kwallet support
-    - kwrite support ( optional, to view HTML code )
-
-- Kpart ??
-
 + ------------------------
 
 
