@@ -73,8 +73,7 @@ MainWindow::MainWindow()
 
     // updating rekonq configuration
     slotUpdateConf();
-//     QTimer::singleShot(0, this, SLOT( postLaunch() ) );
-
+    
     // creating a new tab
     m_view->newTab();
 
@@ -137,6 +136,10 @@ MainWindow::MainWindow()
     KToolBar *bmToolbar = toolBar("bookmarksToolBar");
     m_bookmarksProvider->provideBmToolbar( bmToolbar );
 
+    // setting up toolbars to NOT have context menu enabled
+    setContextMenuPolicy( Qt::ActionsContextMenu );
+
+    // search bar
     m_searchBar = new SearchBar( this );
     connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     navigationBar->addWidget(m_searchBar);

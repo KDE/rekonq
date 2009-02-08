@@ -133,9 +133,11 @@ void SettingsDialog::readConfig()
     // ======= Fonts
     QFont stdFont = ReKonfig::standardFont();
     d->fontsUi.standardFontChooser->setFont(stdFont, false);
+    d->fontsUi.standardFontChooser->setSampleText( stdFont.family() + " " + QString::number(stdFont.pointSize()) );
     connect(d->fontsUi.standardFontChooser, SIGNAL(fontSelected(QFont)),this, SLOT(saveSettings()));
     QFont fxFont = ReKonfig::fixedFont();
     d->fontsUi.fixedFontChooser->setFont(fxFont, true);
+    d->fontsUi.fixedFontChooser->setSampleText( fxFont.family() + " " + QString::number(fxFont.pointSize()) );
     connect(d->fontsUi.fixedFontChooser, SIGNAL(fontSelected(QFont)),this, SLOT(saveSettings()));
 
     // ======= Proxy
