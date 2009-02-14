@@ -42,7 +42,8 @@
 #include <QMouseEvent>
 #include <QWebHitTestResult>
 #include <QBuffer>
-
+// ---
+#include <QUiLoader>
 
 WebPage::WebPage(QObject *parent)
     : QWebPage(parent)
@@ -117,6 +118,16 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     BrowserApplication::instance()->newMainWindow();
     MainWindow *mainWindow = BrowserApplication::instance()->mainWindow();
     return mainWindow->currentTab()->page();
+}
+
+
+QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
+{
+    Q_UNUSED(url);
+    Q_UNUSED(paramNames);
+    Q_UNUSED(paramValues);
+    QUiLoader loader;
+    return loader.createWidget(classId, view());
 }
 
 
