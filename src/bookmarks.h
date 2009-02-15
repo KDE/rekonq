@@ -26,6 +26,7 @@
 #include <KBookmarkMenu>
 
 #include <KUrl>
+#include <KMenu>
 #include <KActionCollection>
 #include <KMainWindow>
 
@@ -35,7 +36,7 @@ class OwnBookMarks : public QObject , public KBookmarkOwner
 {
 Q_OBJECT
 public:
-    OwnBookMarks(KMainWindow * );
+    OwnBookMarks(KMainWindow *);
 
     virtual void openBookmark (const KBookmark & , Qt::MouseButtons , Qt::KeyboardModifiers );
 
@@ -50,19 +51,21 @@ private:
     MainWindow *m_parent;
 };
 
+// ------------------------------------------------------------------------------
 
-class BookmarksMenu : public KMenu
+class BookmarksProvider : public QObject
 {
 Q_OBJECT
 public:
-    BookmarksMenu(KMainWindow * parent);
+    BookmarksProvider(KMainWindow*);
+
+    void provideBmToolbar(KToolBar*);
+    KMenu *bookmarksMenu();
 
 private:
-    KBookmarkManager *m_manager;
+    KMainWindow *m_parent;
     OwnBookMarks *m_owner;
+    KBookmarkManager *m_manager;
     KActionCollection *m_ac;
-    KBookmarkMenu *m_menu;
 };
-
-
 #endif

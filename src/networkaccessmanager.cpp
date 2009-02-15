@@ -64,7 +64,7 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 void NetworkAccessManager::loadSettings()
 {
     QNetworkProxy proxy;
-    if ( ReKonfig::enableProxy() ) 
+    if ( ReKonfig::isProxyEnabled() ) 
     {
         if ( ReKonfig::proxyType() == 0 )
         {

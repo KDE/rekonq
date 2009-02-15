@@ -1,3 +1,11 @@
+0.0.3
+- ~80% ported to KDE4
+- use KConfigXT
+- improved text search bar
+- fixed all "web actions"
+- KDE download system
+- new bookmark toolbar (1st implementation)
+
 0.0.2
 - 70% ported to KDE4
 - new urlbar

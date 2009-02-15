@@ -42,7 +42,8 @@
 #include <QMouseEvent>
 #include <QWebHitTestResult>
 #include <QBuffer>
-
+// ---
+#include <QUiLoader>
 
 WebPage::WebPage(QObject *parent)
     : QWebPage(parent)
@@ -120,6 +121,16 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 }
 
 
+QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
+{
+    Q_UNUSED(url);
+    Q_UNUSED(paramNames);
+    Q_UNUSED(paramValues);
+    QUiLoader loader;
+    return loader.createWidget(classId, view());
+}
+
+
 void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError) 
@@ -191,6 +202,8 @@ WebView::WebView(QWidget* parent)
 
 
 // TODO : improve and KDE-ize this menu
+// 1. Add link to bookmarks
+// 2. Add "save link as" action
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult r = page()->mainFrame()->hitTestContent(event->pos());

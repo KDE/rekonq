@@ -50,7 +50,7 @@
 
 <!-- Proxy Settings -->
   <group name="Proxy">
-    <entry name="enableProxy" type="Bool">
+    <entry name="isProxyEnabled" type="Bool">
         <default>false</default>
     </entry>
     <entry name="proxyType" type="Int">

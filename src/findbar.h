@@ -25,12 +25,12 @@
 #include <KToolBar>
 #include <KXmlGuiWindow>
 
-class FindBar : public KToolBar
+class FindBar : public QWidget  // KateViewHelpers.h
 {
     Q_OBJECT
 
 public:
-    FindBar(KXmlGuiWindow *parent);
+    FindBar(KXmlGuiWindow *mainwindow);
     ~FindBar();
     KLineEdit *lineEdit();
 
@@ -46,7 +46,6 @@ signals:
 
 private:
     KLineEdit *m_lineEdit;
-    QWidget *m_centralWidget;
 };
 
 #endif

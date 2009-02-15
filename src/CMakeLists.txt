@@ -15,8 +15,7 @@ SET( rekonq_SRCS
     urlbar.cpp
     findbar.cpp
     searchbar.cpp
-    settings.cpp 
-    squeezelabel.cpp 
+    settings.cpp
     webview.cpp 
     main.cpp
 )
@@ -45,6 +44,7 @@ TARGET_LINK_LIBRARIES( rekonq
     ${QT_LIBRARIES} 
     ${QT_QTNETWORK_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY} 
+    ${QT_QTUITOOLS_LIBRARY}
 	${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
 )

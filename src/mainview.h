@@ -112,7 +112,6 @@ public slots:
     void slotWebCut();
     void slotWebCopy();
     void slotWebPaste();
-    void slotWebSelectAll();
 
 private slots:
     void currentChanged(int index);

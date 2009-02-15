@@ -34,6 +34,8 @@
 #include "networkaccessmanager.h"
 #include "bookmarks.h"
 #include "webview.h"
+#include "mainview.h"
+#include "bookmarks.h"
 
 // UI Includes
 #include "ui_passworddialog.h"
@@ -48,6 +50,7 @@
 #include <KActionCollection>
 #include <KMessageBox>
 #include <KFileDialog>
+#include <KMenu>
 
 // Qt Includes
 #include <QPlainTextEdit>
@@ -57,24 +60,35 @@
 #include <QWebFrame>
 #include <QWebHistory>
 #include <QDebug>
+#include <QVBoxLayout>
 
 
 MainWindow::MainWindow()
     : KXmlGuiWindow()
     , m_view( new MainView(this) )
+    , m_bookmarksProvider( new BookmarksProvider(this) )
 {
     // accept dnd
     setAcceptDrops(true);
 
     // updating rekonq configuration
     slotUpdateConf();
-//     QTimer::singleShot(0, this, SLOT( postLaunch() ) );
-
+    
     // creating a new tab
     m_view->newTab();
 
-    // tell the KXmlGuiWindow that this is indeed the main widget
-    setCentralWidget(m_view);
+    // creating a centralWidget containing m_view and the hidden findbar
+    QWidget *centralWidget = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(m_view);
+
+    // Find Bar
+    m_findBar = new FindBar(this);
+    connect( m_findBar, SIGNAL( searchString(const QString &) ), this, SLOT( slotFind(const QString &) ) );
+    layout->addWidget(m_findBar);
+
+    centralWidget->setLayout(layout);
+    setCentralWidget(centralWidget);
 
     // connect signals and slots
     connect(m_view, SIGNAL( loadUrlPage(const KUrl &) ), this, SLOT( loadUrl(const KUrl &) ) );
@@ -96,6 +110,12 @@ MainWindow::MainWindow()
     // add a status bar
     statusBar()->show();
 
+    // ----- BOOKMARKS MENU: this has to be done BEFORE setupGUI!!
+    KAction *a = new KActionMenu( i18n("B&ookmarks"), this );
+    actionCollection()->addAction( QLatin1String("bookmarks"), a );
+    KMenu *bmMenu = m_bookmarksProvider->bookmarksMenu();
+    a->setMenu( bmMenu );
+
     // a call to KXmlGuiWindow::setupGUI() populates the GUI
     // with actions, using KXMLGUI.
     // It also applies the saved mainwindow settings, if any, and ask the
@@ -103,8 +123,8 @@ MainWindow::MainWindow()
     // toolbar position, icon size, etc.
     setupGUI();
 
-    // setup history & bookmarks menus
-    setupCustomMenu();
+    // setup history menu
+    setupHistoryMenu();
 
     // setup Tab Bar
     setupTabBar();
@@ -113,13 +133,16 @@ MainWindow::MainWindow()
     KToolBar *navigationBar = toolBar( "mainToolBar" );
     navigationBar->addWidget( m_view->lineEditStack() );
 
+    KToolBar *bmToolbar = toolBar("bookmarksToolBar");
+    m_bookmarksProvider->provideBmToolbar( bmToolbar );
+
+    // setting up toolbars to NOT have context menu enabled
+    setContextMenuPolicy( Qt::ActionsContextMenu );
+
+    // search bar
     m_searchBar = new SearchBar( this );
     connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     navigationBar->addWidget(m_searchBar);
-
-    // Find Bar
-    m_findBar = new FindBar( this );
-    connect( m_findBar, SIGNAL( searchString(const QString &) ), this, SLOT( slotFind(const QString &) ) ); 
 }
 
 
@@ -155,7 +178,6 @@ void MainWindow::setupActions()
     KStandardAction::cut( m_view, SLOT( slotWebCut() ), actionCollection() );
     KStandardAction::copy( m_view, SLOT( slotWebCopy() ), actionCollection() );
     KStandardAction::paste( m_view, SLOT( slotWebPaste() ), actionCollection() );
-    KStandardAction::selectAll( m_view, SLOT( slotWebSelectAll() ), actionCollection() );
 
     a = new KAction ( KIcon( "process-stop" ), i18n("&Stop"), this );
     a->setShortcut( QKeySequence(Qt::CTRL | Qt::Key_Period) );
@@ -199,12 +221,6 @@ void MainWindow::setupActions()
     a->setCheckable(true);
     actionCollection()->addAction( QLatin1String("web inspector"), a );
     connect( a, SIGNAL( triggered(bool) ), this, SLOT( slotToggleInspector(bool) ) );
-
-    // ================== BOOKMARKS MENU
-    a = new KActionMenu( i18n("B&ookmarks"), this );
-    actionCollection()->addAction( QLatin1String("bookmarks"), a );
-    BookmarksMenu *bookmarksMenu = new BookmarksMenu( this );
-    a->setMenu( bookmarksMenu );
 
     // ================ history related actions
     KAction *historyBack = new KAction( KIcon("go-previous"), i18n("Back"), this);
@@ -260,9 +276,8 @@ void MainWindow::setupTabBar()
 }
 
 
-void MainWindow::setupCustomMenu()
+void MainWindow::setupHistoryMenu()
 {
-    //  -------------------------------- HISTORY MENU -----------------------------------------------------------------------
     HistoryMenu *historyMenu = new HistoryMenu(this);
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_view, SLOT(loadUrlInCurrentTab(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
@@ -539,12 +554,8 @@ void MainWindow::slotFind(const QString & search)
 {
     if (!currentTab())
         return;
-    if (!search.isEmpty()) 
-    {
-        m_lastSearch = search;
-        if (!currentTab()->findText(m_lastSearch))
-            slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
-    }
+    m_lastSearch = search;
+    slotFindNext();
 }
 
 
@@ -556,17 +567,23 @@ void MainWindow::slotViewFindBar()
 
 void MainWindow::slotFindNext()
 {
-    if (!currentTab() && !m_lastSearch.isEmpty())
+    if (!currentTab() && m_lastSearch.isEmpty())
         return;
-    currentTab()->findText(m_lastSearch);
+    if (!currentTab()->findText(m_lastSearch, QWebPage::FindWrapsAroundDocument))
+    {
+        slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
+    }
 }
 
 
 void MainWindow::slotFindPrevious()
 {
-    if (!currentTab() && !m_lastSearch.isEmpty())
+    if (!currentTab() && m_lastSearch.isEmpty())
         return;
-    currentTab()->findText(m_lastSearch, QWebPage::FindBackward);
+    if (!currentTab()->findText(m_lastSearch, QWebPage::FindBackward))
+    {
+        slotUpdateStatusbar( QString(m_lastSearch) + i18n(" not found.") );
+    }
 }
 
 
@@ -638,17 +655,17 @@ void MainWindow::slotToggleInspector(bool enable)
 }
 
 
-void MainWindow::slotSwapFocus()
-{
-    if ( currentTab()->hasFocus() )
-    {
-        m_view->currentLineEdit()->setFocus();
-    }
-    else
-    {
-        currentTab()->setFocus();
-    }
-}
+// void MainWindow::slotSwapFocus()
+// {
+//     if ( currentTab()->hasFocus() )
+//     {
+//         m_view->currentLineEdit()->setFocus();
+//     }
+//     else
+//     {
+//         currentTab()->setFocus();
+//     }
+// }
 
 
 MainView *MainWindow::tabWidget() const
@@ -709,20 +726,20 @@ void MainWindow::slotAboutToShowBackMenu()
 }
 
 
-void MainWindow::slotShowWindow()
-{
-    if (KAction *action = qobject_cast<KAction*>(sender())) 
-    {
-        QVariant v = action->data();
-        if (v.canConvert<int>()) 
-        {
-            int offset = qvariant_cast<int>(v);
-            QList<MainWindow*> windows = BrowserApplication::instance()->mainWindows();
-            windows.at(offset)->activateWindow();
-            windows.at(offset)->currentTab()->setFocus();
-        }
-    }
-}
+// void MainWindow::slotShowWindow()
+// {
+//     if (KAction *action = qobject_cast<KAction*>(sender())) 
+//     {
+//         QVariant v = action->data();
+//         if (v.canConvert<int>()) 
+//         {
+//             int offset = qvariant_cast<int>(v);
+//             QList<MainWindow*> windows = BrowserApplication::instance()->mainWindows();
+//             windows.at(offset)->activateWindow();
+//             windows.at(offset)->currentTab()->setFocus();
+//         }
+//     }
+// }
 
 
 void MainWindow::slotOpenActionUrl(QAction *action)
