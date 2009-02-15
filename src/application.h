@@ -42,6 +42,9 @@ class CookieJar;
 class HistoryManager;
 class NetworkAccessManager;
 
+/*
+ *
+ */
 class Application : public KApplication
 {
     Q_OBJECT

@@ -29,7 +29,11 @@
 #include <QObject>
 #include <QByteArray>
 
-
+/*
+ * This class lets rekonq to download an object from the network.
+ * Creating a new object, you can continue downloading a file also 
+ * when rekonq is closed.
+ */ 
 class Download : public QObject
 {
     Q_OBJECT

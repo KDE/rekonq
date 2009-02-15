@@ -24,7 +24,6 @@
 #include <KBookmarkOwner>
 #include <KBookmarkManager>
 #include <KBookmarkMenu>
-
 #include <KUrl>
 #include <KMenu>
 #include <KActionCollection>
@@ -32,6 +31,9 @@
 
 class MainWindow;
 
+/*
+ *
+ */
 class OwnBookMarks : public QObject , public KBookmarkOwner
 {
 Q_OBJECT
@@ -53,6 +55,9 @@ private:
 
 // ------------------------------------------------------------------------------
 
+/*
+ *
+ */
 class BookmarksProvider : public QObject
 {
 Q_OBJECT

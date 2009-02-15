@@ -28,6 +28,9 @@
 // Qt Includes
 #include <QtGui>
 
+/*
+ * This class defines an internet search bar. 
+ */
 class SearchBar : public KLineEdit
 {
     Q_OBJECT
@@ -37,6 +40,9 @@ public:
     ~SearchBar();
 
 public slots:
+    /*
+     * Use this slot to perform one search in one search engine
+     */
     void searchNow();
 
 protected:
