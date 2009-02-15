@@ -23,11 +23,12 @@
 
 #include <KAboutData>
 #include <KCmdLineArgs>
+#include <KDebug>
 
 static const char description[] =
     I18N_NOOP("KDE Browser Webkit Based");
 
-static const char version[] = "0.0.3";
+static const char version[] = "0.0.4";
 
 int main(int argc, char **argv)
 {
@@ -53,13 +54,14 @@ int main(int argc, char **argv)
     KCmdLineOptions options;
     options.add( "+URL" , ki18n("Location to open") );
     KCmdLineArgs::addCmdLineOptions( options );
+    Application::addCmdLineOptions();
 
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-
-    Application app(args, "rekonq");
-    if (!app.isTheOnlyBrowser())
-        return 0;
-    app.newMainWindow();
+    if (!Application::start()) 
+    {
+       kWarning() << "rekonq is already running!";
+       return 0;
+    }
+    Application app;
     return app.exec();
 }
 

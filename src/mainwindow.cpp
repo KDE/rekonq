@@ -74,9 +74,6 @@ MainWindow::MainWindow()
     // updating rekonq configuration
     slotUpdateConf();
     
-    // creating a new tab
-    m_view->newTab();
-
     // creating a centralWidget containing m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
@@ -444,9 +441,8 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 
 void MainWindow::slotFileNew()
 {
-    Application::instance()->newMainWindow();
-    MainWindow *mw = Application::instance()->mainWindow();
-    mw->slotHome();
+    Application::instance()->newTab();
+    slotHome();
 }
 
 
@@ -520,13 +516,9 @@ void MainWindow::slotPrivateBrowsing()
     {
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
 
-        QList<MainWindow*> windows = Application::instance()->mainWindows();
-        for (int i = 0; i < windows.count(); ++i) 
-        {
-            MainWindow *window = windows.at(i);
-            window->m_lastSearch = QString::null;
-            window->tabWidget()->clear();
-        }
+        MainWindow* win = Application::instance()->mainWindow();
+        win->m_lastSearch = QString::null;
+        win->tabWidget()->clear();
     }
 }
 
@@ -724,22 +716,6 @@ void MainWindow::slotAboutToShowBackMenu()
         m_historyBackMenu->addAction(action);
     }
 }
-
-
-// void MainWindow::slotShowWindow()
-// {
-//     if (KAction *action = qobject_cast<KAction*>(sender())) 
-//     {
-//         QVariant v = action->data();
-//         if (v.canConvert<int>()) 
-//         {
-//             int offset = qvariant_cast<int>(v);
-//             QList<MainWindow*> windows = Application::instance()->mainWindows();
-//             windows.at(offset)->activateWindow();
-//             windows.at(offset)->currentTab()->setFocus();
-//         }
-//     }
-// }
 
 
 void MainWindow::slotOpenActionUrl(QAction *action)

@@ -22,7 +22,7 @@
 #define REKONQ_APPLICATION_H
 
 // KDE Includes
-#include <KApplication>
+#include <KUniqueApplication>
 #include <KCmdLineArgs>
 #include <KIcon>
 #include <KUrl>
@@ -38,53 +38,53 @@ class QLocalServer;
 QT_END_NAMESPACE
 
 class MainWindow;
+class WebView;
 class CookieJar;
 class HistoryManager;
 class NetworkAccessManager;
 
-/*
- *
- */
-class Application : public KApplication
+/**
+  * 
+  */
+class Application : public KUniqueApplication
 {
     Q_OBJECT
 
 public:
-    Application(KCmdLineArgs*, const QString &);
+    Application();
     ~Application();
+    int newInstance();
     static Application *instance();
 
-    bool isTheOnlyBrowser() const;
     MainWindow *mainWindow();
-    QList<MainWindow*> mainWindows();
-    KIcon icon(const KUrl &url) const;
-    void downloadUrl(const KUrl &srcUrl, const KUrl &destUrl);
+    WebView* newTab();
 
-    void saveSession();
-    bool canRestoreSession() const;
+    KIcon icon(const KUrl &url) const;
+
+    /**
+     * This method lets you to download a file from a source remote url
+     * to a local destination url.
+     */
+    void downloadUrl(const KUrl &srcUrl, const KUrl &destUrl);
 
     static HistoryManager *historyManager();
     static CookieJar *cookieJar();
     static NetworkAccessManager *networkAccessManager();
 
-public slots:
-    MainWindow *newMainWindow();
-    void restoreLastSession();
-
 private slots:
+
+    /**
+     * Any actions that can be delayed until the window is visible
+     */
     void postLaunch();
     void openUrl(const KUrl &url);
-    void newLocalSocketConnection();
+//     void newLocalSocketConnection();
 
 private:
-    void clean();
-
     static HistoryManager *s_historyManager;
     static NetworkAccessManager *s_networkAccessManager;
 
-    QList<QPointer<MainWindow> > m_mainWindows;
-    QLocalServer *m_localServer;
-    QByteArray m_lastSession;
+    MainWindow* m_mainWindow;
     mutable KIcon m_defaultIcon;
 };
 

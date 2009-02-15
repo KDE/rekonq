@@ -7,4 +7,4 @@ Exec=rekonq %i
 DocPath=rekonq/index.html
 Categories=Qt;KDE;Network;
 Terminal=0
-
+X-DBUS-StartupType=Unique
