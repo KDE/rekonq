@@ -17,13 +17,15 @@
  *
  * ============================================================ */
 
-// Local Includes
+// Self Includes
 #include "searchbar.h"
 #include "searchbar.moc"
 
-#include "browserapplication.h"
+// Local Includes
+#include "application.h"
 #include "mainwindow.h"
 
+// KDE Includes
 #include <KDebug>
 
 SearchBar::SearchBar(QWidget *parent) : 

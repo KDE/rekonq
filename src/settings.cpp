@@ -27,7 +27,7 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "browserapplication.h"
+#include "application.h"
 #include "mainwindow.h"
 #include "cookiejar.h"
 #include "history.h"
@@ -164,14 +164,14 @@ void SettingsDialog::saveSettings()
 
 void SettingsDialog::showCookies()
 {
-    CookiesDialog *dialog = new CookiesDialog(BrowserApplication::cookieJar(), this);
+    CookiesDialog *dialog = new CookiesDialog(Application::cookieJar(), this);
     dialog->exec();
 }
 
 
 void SettingsDialog::showExceptions()
 {
-    CookiesExceptionsDialog *dialog = new CookiesExceptionsDialog(BrowserApplication::cookieJar(), this);
+    CookiesExceptionsDialog *dialog = new CookiesExceptionsDialog(Application::cookieJar(), this);
     dialog->exec();
 }
 

@@ -27,7 +27,7 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "browserapplication.h"
+#include "application.h"
 #include "settings.h"
 #include "history.h"
 #include "cookiejar.h"
@@ -319,9 +319,9 @@ void MainWindow::slotUpdateConf()
     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, isJavascriptEnabled);
 
     // load Settings on main classes
-    BrowserApplication::networkAccessManager()->loadSettings();
-    BrowserApplication::cookieJar()->loadSettings();
-    BrowserApplication::historyManager()->loadSettings();
+    Application::networkAccessManager()->loadSettings();
+    Application::cookieJar()->loadSettings();
+    Application::historyManager()->loadSettings();
 }
 
 
@@ -402,7 +402,7 @@ void MainWindow::slotFileSaveAs()
     KUrl srcUrl = currentTab()->url();
     QString destPath = KFileDialog::getSaveFileName();
     KUrl destUrl = KUrl(destPath);
-    BrowserApplication::instance()->downloadUrl( srcUrl, destUrl );
+    Application::instance()->downloadUrl( srcUrl, destUrl );
 }
 
 
@@ -444,8 +444,8 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 
 void MainWindow::slotFileNew()
 {
-    BrowserApplication::instance()->newMainWindow();
-    MainWindow *mw = BrowserApplication::instance()->mainWindow();
+    Application::instance()->newMainWindow();
+    MainWindow *mw = Application::instance()->mainWindow();
     mw->slotHome();
 }
 
@@ -520,7 +520,7 @@ void MainWindow::slotPrivateBrowsing()
     {
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
 
-        QList<MainWindow*> windows = BrowserApplication::instance()->mainWindows();
+        QList<MainWindow*> windows = Application::instance()->mainWindows();
         for (int i = 0; i < windows.count(); ++i) 
         {
             MainWindow *window = windows.at(i);
@@ -718,7 +718,7 @@ void MainWindow::slotAboutToShowBackMenu()
         QWebHistoryItem item = history->backItems(history->count()).at(i);
         KAction *action = new KAction(this);
         action->setData(-1*(historyCount-i-1));
-        QIcon icon = BrowserApplication::instance()->icon(item.url());
+        QIcon icon = Application::instance()->icon(item.url());
         action->setIcon(icon);
         action->setText(item.title());
         m_historyBackMenu->addAction(action);
@@ -734,7 +734,7 @@ void MainWindow::slotAboutToShowBackMenu()
 //         if (v.canConvert<int>()) 
 //         {
 //             int offset = qvariant_cast<int>(v);
-//             QList<MainWindow*> windows = BrowserApplication::instance()->mainWindows();
+//             QList<MainWindow*> windows = Application::instance()->mainWindows();
 //             windows.at(offset)->activateWindow();
 //             windows.at(offset)->currentTab()->setFocus();
 //         }

@@ -26,7 +26,7 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "browserapplication.h"
+#include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
 #include "cookiejar.h"
@@ -51,7 +51,7 @@ WebPage::WebPage(QObject *parent)
     , m_pressedButtons(Qt::NoButton)
     , m_openInNewTab(false)
 {
-    setNetworkAccessManager( BrowserApplication::networkAccessManager() );
+    setNetworkAccessManager( Application::networkAccessManager() );
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
 }
 
@@ -65,7 +65,7 @@ MainWindow *WebPage::mainWindow()
             return mw;
         w = w->parent();
     }
-    return BrowserApplication::instance()->mainWindow();
+    return Application::instance()->mainWindow();
 }
 
 
@@ -80,8 +80,8 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         WebView *webView;
         if (newWindow) 
         {
-            BrowserApplication::instance()->newMainWindow();
-            MainWindow *newMainWindow = BrowserApplication::instance()->mainWindow();
+            Application::instance()->newMainWindow();
+            MainWindow *newMainWindow = Application::instance()->mainWindow();
             webView = newMainWindow->currentTab();
             newMainWindow->raise();
             newMainWindow->activateWindow();
@@ -115,8 +115,8 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
         m_openInNewTab = false;
         return mainWindow()->tabWidget()->newTab()->page();
     }
-    BrowserApplication::instance()->newMainWindow();
-    MainWindow *mainWindow = BrowserApplication::instance()->mainWindow();
+    Application::instance()->newMainWindow();
+    MainWindow *mainWindow = Application::instance()->mainWindow();
     return mainWindow->currentTab()->page();
 }
 
@@ -138,7 +138,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         KUrl srcUrl = reply->url();
         QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
         KUrl destUrl = KUrl(path);
-        BrowserApplication::instance()->downloadUrl( srcUrl, destUrl );
+        Application::instance()->downloadUrl( srcUrl, destUrl );
         return;
     }
 
@@ -324,7 +324,7 @@ void WebView::downloadRequested(const QNetworkRequest &request)
     KUrl srcUrl = request.url();
     QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
     KUrl destUrl = KUrl(path);
-    BrowserApplication::instance()->downloadUrl( srcUrl, destUrl );
+    Application::instance()->downloadUrl( srcUrl, destUrl );
 }
 
 

@@ -21,7 +21,7 @@
 #include "urlbar.h"
 #include "urlbar.moc"
 
-#include "browserapplication.h"
+#include "application.h"
 #include "mainwindow.h"
 
 
@@ -81,7 +81,7 @@ void UrlBar::webViewUrlChanged(const QUrl &url)
 void UrlBar::webViewIconChanged()
 {
     KUrl url = (m_webView)  ? m_webView->url() : KUrl();
-    QIcon icon = BrowserApplication::instance()->icon(url);
+    QIcon icon = Application::instance()->icon(url);
     QPixmap pixmap(icon.pixmap(16, 16));
     QIcon urlIcon = QIcon(pixmap);
     

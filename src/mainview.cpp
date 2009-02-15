@@ -25,7 +25,7 @@
 
 // Local Includes
 #include "tabbar.h"
-#include "browserapplication.h"
+#include "application.h"
 #include "mainwindow.h"
 #include "history.h"
 #include "urlbar.h"
@@ -310,7 +310,7 @@ WebView *MainView::newTab(bool makeCurrent)
     if (!m_lineEditCompleter && count() > 0) 
     {
         HistoryCompletionModel *completionModel = new HistoryCompletionModel(this);
-        completionModel->setSourceModel(BrowserApplication::historyManager()->historyFilterModel());
+        completionModel->setSourceModel(Application::historyManager()->historyFilterModel());
         m_lineEditCompleter = new QCompleter(completionModel, this);
         // Should this be in Qt by default?
         QAbstractItemView *popup = m_lineEditCompleter->popup();
@@ -492,7 +492,7 @@ void MainView::webViewIconChanged()
     int index = webViewIndex(webView);
     if (-1 != index) 
     {
-        QIcon icon = BrowserApplication::instance()->icon(webView->url());
+        QIcon icon = Application::instance()->icon(webView->url());
         setTabIcon(index, icon);
     }
 }
@@ -507,7 +507,7 @@ void MainView::webViewTitleChanged(const QString &title)
     }
     if (currentIndex() == index)
         emit setCurrentTitle(title);
-    BrowserApplication::historyManager()->updateHistoryItem(webView->url(), title);
+    Application::historyManager()->updateHistoryItem(webView->url(), title);
 }
 
 
@@ -529,7 +529,7 @@ void MainView::aboutToShowRecentTabsMenu()
     {
         KAction *action = new KAction(m_recentlyClosedTabsMenu);
         action->setData(m_recentlyClosedTabs.at(i));
-        QIcon icon = BrowserApplication::instance()->icon(m_recentlyClosedTabs.at(i));
+        QIcon icon = Application::instance()->icon(m_recentlyClosedTabs.at(i));
         action->setIcon(icon);
         action->setText( m_recentlyClosedTabs.at(i).prettyUrl() );
         m_recentlyClosedTabsMenu->addAction(action);

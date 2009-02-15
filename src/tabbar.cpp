@@ -23,7 +23,7 @@
 #include "tabbar.moc"
 
 // Local Includes
-#include "browserapplication.h"
+#include "application.h"
 #include "mainwindow.h"
 #include "history.h"
 #include "urlbar.h"
