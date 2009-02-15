@@ -2,7 +2,6 @@
  *
  * This file is a part of the rekonq project
  *
- * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
@@ -19,8 +18,8 @@
  * ============================================================ */
 
 
-#ifndef BROWSERAPPLICATION_H
-#define BROWSERAPPLICATION_H
+#ifndef REKONQ_APPLICATION_H
+#define REKONQ_APPLICATION_H
 
 // KDE Includes
 #include <KApplication>
@@ -43,14 +42,14 @@ class CookieJar;
 class HistoryManager;
 class NetworkAccessManager;
 
-class BrowserApplication : public KApplication
+class Application : public KApplication
 {
     Q_OBJECT
 
 public:
-    BrowserApplication(KCmdLineArgs*, const QString &);
-    ~BrowserApplication();
-    static BrowserApplication *instance();
+    Application(KCmdLineArgs*, const QString &);
+    ~Application();
+    static Application *instance();
 
     bool isTheOnlyBrowser() const;
     MainWindow *mainWindow();
@@ -86,5 +85,5 @@ private:
     mutable KIcon m_defaultIcon;
 };
 
-#endif // BROWSERAPPLICATION_H
+#endif // REKONQ_APPLICATION_H
 

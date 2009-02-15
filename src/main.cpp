@@ -19,7 +19,7 @@
  * ============================================================ */
 
 
-#include "browserapplication.h"
+#include "application.h"
 
 #include <KAboutData>
 #include <KCmdLineArgs>
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-    BrowserApplication app(args, "rekonq");
+    Application app(args, "rekonq");
     if (!app.isTheOnlyBrowser())
         return 0;
     app.newMainWindow();

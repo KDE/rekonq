@@ -2,7 +2,6 @@
  *
  * This file is a part of the rekonq project
  *
- * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
  * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
@@ -20,7 +19,7 @@
 
 
 // Local Includes
-#include "browserapplication.h"
+#include "application.h"
 
 #include "rekonq.h"
 
@@ -53,12 +52,12 @@
 
 
 
-HistoryManager *BrowserApplication::s_historyManager = 0;
-NetworkAccessManager *BrowserApplication::s_networkAccessManager = 0;
+HistoryManager *Application::s_historyManager = 0;
+NetworkAccessManager *Application::s_networkAccessManager = 0;
 
 
 
-BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &serverName)
+Application::Application(KCmdLineArgs *args, const QString &serverName)
     : KApplication()
     , m_localServer(0)
 {
@@ -104,23 +103,23 @@ BrowserApplication::BrowserApplication(KCmdLineArgs *args, const QString &server
 }
 
 
-BrowserApplication::~BrowserApplication()
+Application::~Application()
 {
     qDeleteAll(m_mainWindows);
     delete s_networkAccessManager;
 }
 
 
-BrowserApplication *BrowserApplication::instance()
+Application *Application::instance()
 {
-    return (static_cast<BrowserApplication *>(QCoreApplication::instance()));
+    return (static_cast<Application *>(QCoreApplication::instance()));
 }
 
 
 /*!
     Any actions that can be delayed until the window is visible
  */
-void BrowserApplication::postLaunch()
+void Application::postLaunch()
 {
     QString directory = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
     if ( directory.isEmpty() )
@@ -144,17 +143,17 @@ void BrowserApplication::postLaunch()
             mainWindow()->slotHome();
         }
     }
-    BrowserApplication::historyManager();
+    Application::historyManager();
 }
 
 
-void BrowserApplication::downloadUrl(const KUrl &srcUrl, const KUrl &destUrl)
+void Application::downloadUrl(const KUrl &srcUrl, const KUrl &destUrl)
 {
     new Download( srcUrl, destUrl );
 }
 
 
-QList<MainWindow*> BrowserApplication::mainWindows()
+QList<MainWindow*> Application::mainWindows()
 {
     clean();
     QList<MainWindow*> list;
@@ -166,7 +165,7 @@ QList<MainWindow*> BrowserApplication::mainWindows()
 }
 
 
-void BrowserApplication::clean()
+void Application::clean()
 {
     // cleanup any deleted main windows first
     for (int i = m_mainWindows.count() - 1; i >= 0; --i)
@@ -179,7 +178,7 @@ void BrowserApplication::clean()
 }
 
 
-void BrowserApplication::saveSession()
+void Application::saveSession()
 {
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if ( globalSettings->testAttribute( QWebSettings::PrivateBrowsingEnabled ) )
@@ -204,13 +203,13 @@ void BrowserApplication::saveSession()
 }
 
 
-bool BrowserApplication::canRestoreSession() const
+bool Application::canRestoreSession() const
 {
     return !m_lastSession.isEmpty();
 }
 
 
-void BrowserApplication::restoreLastSession()
+void Application::restoreLastSession()
 {
     QList<QByteArray> windows;
     QBuffer buffer(&m_lastSession);
@@ -243,20 +242,20 @@ void BrowserApplication::restoreLastSession()
 
 
 
-bool BrowserApplication::isTheOnlyBrowser() const
+bool Application::isTheOnlyBrowser() const
 {
     return (m_localServer != 0);
 }
 
 
-void BrowserApplication::openUrl(const KUrl &url)
+void Application::openUrl(const KUrl &url)
 {
     mainWindow()->loadUrl(url);
 }
 
 
 
-MainWindow *BrowserApplication::newMainWindow()
+MainWindow *Application::newMainWindow()
 {
     MainWindow *browser = new MainWindow();
     m_mainWindows.prepend(browser);
@@ -265,7 +264,7 @@ MainWindow *BrowserApplication::newMainWindow()
 }
 
 
-MainWindow *BrowserApplication::mainWindow()
+MainWindow *Application::mainWindow()
 {
     clean();
     if (m_mainWindows.isEmpty())
@@ -274,7 +273,7 @@ MainWindow *BrowserApplication::mainWindow()
 }
 
 
-void BrowserApplication::newLocalSocketConnection()
+void Application::newLocalSocketConnection()
 {
     QLocalSocket *socket = m_localServer->nextPendingConnection();
     if (!socket)
@@ -295,13 +294,13 @@ void BrowserApplication::newLocalSocketConnection()
 
 
 
-CookieJar *BrowserApplication::cookieJar()
+CookieJar *Application::cookieJar()
 {
     return (CookieJar*)networkAccessManager()->cookieJar();
 }
 
 
-NetworkAccessManager *BrowserApplication::networkAccessManager()
+NetworkAccessManager *Application::networkAccessManager()
 {
     if (!s_networkAccessManager) 
     {
@@ -313,7 +312,7 @@ NetworkAccessManager *BrowserApplication::networkAccessManager()
 
 
 
-HistoryManager *BrowserApplication::historyManager()
+HistoryManager *Application::historyManager()
 {
     if (!s_historyManager) 
     {
@@ -326,7 +325,7 @@ HistoryManager *BrowserApplication::historyManager()
 
 
 
-KIcon BrowserApplication::icon(const KUrl &url) const
+KIcon Application::icon(const KUrl &url) const
 {
     KIcon icon = KIcon( QWebSettings::iconForUrl(url) );
     if (!icon.isNull())

@@ -27,7 +27,7 @@
 
 // Local Includes
 #include "autosaver.h"
-#include "browserapplication.h"
+#include "application.h"
 
 // KDE Includes
 #include <KDebug>
@@ -465,7 +465,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
         }
     case Qt::DecorationRole:
         if (index.column() == 0) {
-            return BrowserApplication::instance()->icon(item.url);
+            return Application::instance()->icon(item.url);
         }
     }
     return QVariant();
@@ -643,7 +643,7 @@ bool HistoryMenu::prePopulated()
 {
     if (!m_history) 
     {
-        m_history = BrowserApplication::historyManager();
+        m_history = Application::historyManager();
         m_historyMenuModel = new HistoryMenuModel(m_history->historyTreeModel(), this);
         setModel(m_historyMenuModel);
     }
@@ -712,7 +712,7 @@ HistoryDialog::HistoryDialog(QWidget *parent, HistoryManager *setHistory) : QDia
 {
     HistoryManager *history = setHistory;
     if (!history)
-        history = BrowserApplication::historyManager();
+        history = Application::historyManager();
     setupUi(this);
     tree->setUniformRowHeights(true);
     tree->setSelectionBehavior(QAbstractItemView::SelectRows);

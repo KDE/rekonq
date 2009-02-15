@@ -1,6 +1,6 @@
 SET( rekonq_SRCS
     autosaver.cpp 
-    browserapplication.cpp 
+    application.cpp 
     mainwindow.cpp 
     mainview.cpp
     tabbar.cpp
