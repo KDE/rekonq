@@ -50,7 +50,7 @@ public:
 protected:
     bool acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type);
     QWebPage *createWindow(QWebPage::WebWindowType type);
-    QObject *createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues);
+//     QObject *createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues);
 
 private slots:
     void handleUnsupportedContent(QNetworkReply *reply);

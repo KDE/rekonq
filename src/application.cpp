@@ -61,48 +61,10 @@ NetworkAccessManager *Application::s_networkAccessManager = 0;
 
 Application::Application()
     : KUniqueApplication()
-//     , m_localServer(0)
 {
     m_mainWindow = new MainWindow();
-    m_mainWindow->show();
-
-//     QLocalSocket socket;
-//     socket.connectToServer(serverName);
-//     if (socket.waitForConnected(500)) 
-//     {
-//         QTextStream stream(&socket);
-//         int n = args->count();
-//         if (n > 1)
-//             stream << args->arg(n-1);
-//         else
-//             stream << QString();
-//         stream.flush();
-//         socket.waitForBytesWritten();
-//         return;
-//     }
-// 
-//     KApplication::setQuitOnLastWindowClosed(true);
-// 
-//     m_localServer = new QLocalServer(this);
-//     connect(m_localServer, SIGNAL(newConnection()), this, SLOT(newLocalSocketConnection()));
-//     if (!m_localServer->listen(serverName)) 
-//     {
-//         if (m_localServer->serverError() == QAbstractSocket::AddressInUseError
-//             && QFile::exists(m_localServer->serverName()))
-//         {
-//             QFile::remove(m_localServer->serverName());
-//             m_localServer->listen(serverName);
-//         }
-//     }
-// 
-//     QDesktopServices::setUrlHandler(QLatin1String("http"), this, "openUrl");
-//     QString localSysName = QLocale::system().name();
-// 
-//     KConfig config("rekonqrc");
-//     KConfigGroup group = config.group("sessions");
-//     m_lastSession = group.readEntry( QString("lastSession"), QByteArray() );
-
     setWindowIcon( KIcon("rekonq") );
+    m_mainWindow->show();
 
     QTimer::singleShot(0, this, SLOT( postLaunch() ) );
 }

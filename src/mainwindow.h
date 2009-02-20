@@ -117,18 +117,12 @@ private slots:
 private:
     SearchBar *m_searchBar;
     FindBar *m_findBar;
-
     KMenu *m_historyBackMenu;
     KMenu *m_windowMenu;
-
     BookmarksProvider *m_bookmarksProvider;
-
     QAction *m_stopReload;
-
     QString m_lastSearch;
-
     MainView *m_view;
-
     QString m_homePage;
 };
 

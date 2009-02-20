@@ -48,7 +48,7 @@ MainView::MainView(QWidget *parent)
     , m_recentlyClosedTabsAction(0)
     , m_recentlyClosedTabsMenu(0)
     , m_lineEditCompleter(0)
-    , m_lineEdits(0)
+    , m_lineEdits(new QStackedWidget(this))
     , m_tabBar(new TabBar(this))
 {
     setElideMode(Qt::ElideRight);
@@ -72,8 +72,6 @@ MainView::MainView(QWidget *parent)
 
     // --
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
-
-    m_lineEdits = new QStackedWidget(this);
 }
 
 

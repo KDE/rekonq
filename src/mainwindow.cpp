@@ -65,9 +65,12 @@
 
 MainWindow::MainWindow()
     : KXmlGuiWindow()
-    , m_view( new MainView(this) )
-    , m_bookmarksProvider( new BookmarksProvider(this) )
+    , m_view(0)
+    , m_bookmarksProvider(0)
 {
+    m_view =  new MainView(this);
+    m_bookmarksProvider =  new BookmarksProvider(this);
+
     // accept dnd
     setAcceptDrops(true);
 
