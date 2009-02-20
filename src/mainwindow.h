@@ -86,7 +86,6 @@ private slots:
     void slotSwapFocus();*/
 
 
-
     // File Menu slots
     void slotFileNew();
     void slotFileOpen();

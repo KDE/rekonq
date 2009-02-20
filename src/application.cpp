@@ -110,6 +110,7 @@ Application::Application()
 
 Application::~Application()
 {
+    delete m_mainWindow;
     delete s_networkAccessManager;
 }
 

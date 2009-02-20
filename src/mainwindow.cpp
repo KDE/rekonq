@@ -145,6 +145,8 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+    delete m_view;
+    delete m_bookmarksProvider;
 }
 
 
