@@ -84,7 +84,6 @@ private:
     static NetworkAccessManager *s_networkAccessManager;
 
     MainWindow* m_mainWindow;
-    mutable KIcon m_defaultIcon;
 };
 
 #endif // REKONQ_APPLICATION_H

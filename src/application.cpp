@@ -172,27 +172,6 @@ WebView *Application::newTab()
 }
 
 
-// void Application::newLocalSocketConnection()
-// {
-//     QLocalSocket *socket = m_localServer->nextPendingConnection();
-//     if (!socket)
-//         return;
-//     socket->waitForReadyRead(1000);
-//     QTextStream stream(socket);
-//     QString url;
-//     stream >> url;
-//     if (!url.isEmpty()) 
-//     {
-//         mainWindow()->tabWidget()->newTab();
-//         openUrl(url);
-//     }
-//     delete socket;
-//     mainWindow()->raise();
-//     mainWindow()->activateWindow();
-// }
-
-
-
 CookieJar *Application::cookieJar()
 {
     return (CookieJar*)networkAccessManager()->cookieJar();
@@ -225,10 +204,10 @@ HistoryManager *Application::historyManager()
 KIcon Application::icon(const KUrl &url) const
 {
     KIcon icon = KIcon( QWebSettings::iconForUrl(url) );
-    if (!icon.isNull())
-        return icon;
-    if (m_defaultIcon.isNull())
-        m_defaultIcon = KIcon("kde");
-    return m_defaultIcon;
+    if (icon.isNull())
+    {
+        icon = KIcon("kde");
+    }
+    return icon;
 }
 
