@@ -29,13 +29,6 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
-// Qt Includes
-#include <QPointer>
-
-QT_BEGIN_NAMESPACE
-class QLocalServer;
-QT_END_NAMESPACE
-
 class MainWindow;
 class WebView;
 class CookieJar;
@@ -77,7 +70,6 @@ private slots:
      */
     void postLaunch();
     void openUrl(const KUrl &url);
-//     void newLocalSocketConnection();
 
 private:
     static HistoryManager *s_historyManager;

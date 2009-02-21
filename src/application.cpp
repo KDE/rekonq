@@ -63,6 +63,7 @@ Application::Application()
     : KUniqueApplication()
 {
     m_mainWindow = new MainWindow();
+    m_mainWindow->setObjectName("MainWindow");
     setWindowIcon( KIcon("rekonq") );
     m_mainWindow->show();
 
@@ -72,8 +73,9 @@ Application::Application()
 
 Application::~Application()
 {
-    delete m_mainWindow;
     delete s_networkAccessManager;
+    delete s_historyManager;
+    delete m_mainWindow;
 }
 
 
@@ -129,29 +131,6 @@ void Application::downloadUrl(const KUrl &srcUrl, const KUrl &destUrl)
 {
     new Download( srcUrl, destUrl );
 }
-
-
-// void Application::saveSession()
-// {
-//     QWebSettings *globalSettings = QWebSettings::globalSettings();
-//     if ( globalSettings->testAttribute( QWebSettings::PrivateBrowsingEnabled ) )
-//         return;
-// 
-//     KConfig config("rekonqrc");
-//     KConfigGroup group = config.group("sessions");
-//     QByteArray data;
-//     QBuffer buffer(&data);
-//     QDataStream stream(&buffer);
-//     buffer.open(QIODevice::ReadWrite);
-// 
-//     stream << m_mainWindows.count();
-//     for (int i = 0; i < m_mainWindows.count(); ++i)
-//     {
-//         stream << m_mainWindows.at(i)->saveState();
-//     }
-//     
-//     group.writeEntry( QString("lastSession"), data );
-// }
 
 
 void Application::openUrl(const KUrl &url)
