@@ -65,6 +65,9 @@ Application::Application()
     m_mainWindow = new MainWindow();
     m_mainWindow->setObjectName("MainWindow");
     setWindowIcon( KIcon("rekonq") );
+    newTab();
+    mainWindow()->slotHome();
+
     m_mainWindow->show();
 
     QTimer::singleShot(0, this, SLOT( postLaunch() ) );
@@ -75,7 +78,6 @@ Application::~Application()
 {
     delete s_networkAccessManager;
     delete s_historyManager;
-    delete m_mainWindow;
 }
 
 
@@ -83,7 +85,7 @@ int Application::newInstance()
 {
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    static bool first = true;
+
     if (args->count() > 0) 
     {
         for (int i = 0; i < args->count(); ++i) 
@@ -92,17 +94,9 @@ int Application::newInstance()
             newTab();
             mainWindow()->loadUrl( url );
         }
+        args->clear();
     } 
-    else 
-    {
-        if( !first || !isSessionRestored()) 
-        {
-            newTab();
-            mainWindow()->slotHome();
-        }
-    }
-    first = false;
-    args->clear();
+
     return 0;
 }
 

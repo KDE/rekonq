@@ -37,8 +37,10 @@ OwnBookMarks::OwnBookMarks(KMainWindow *parent)
 }
 
 
-void OwnBookMarks::openBookmark (const KBookmark & b, Qt::MouseButtons , Qt::KeyboardModifiers )
+void OwnBookMarks::openBookmark (const KBookmark & b, Qt::MouseButtons mb, Qt::KeyboardModifiers km)
 {
+    Q_UNUSED(mb);
+    Q_UNUSED(km);
     emit openUrl( b.url() );
 }
 
