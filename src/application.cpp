@@ -37,6 +37,7 @@
 // KDE Includes
 #include <KCmdLineArgs>
 #include <KAboutData>
+#include <KStandardDirs>
 #include <KConfig>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -45,13 +46,11 @@
 #include <QBuffer>
 #include <QDir>
 #include <QTextStream>
-#include <QDesktopServices>
 #include <QFileOpenEvent>
-#include <QLocalServer>
-#include <QLocalSocket>
 #include <QNetworkProxy>
 #include <QWebSettings>
 #include <QDebug>
+#include <QMessageBox>
 
 
 
@@ -110,7 +109,7 @@ Application *Application::instance()
 void Application::postLaunch()
 {
     // set Icon Database Path to store "favicons" associated with web sites 
-    QString directory = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    QString directory = KStandardDirs::locateLocal( "cache" , "" , true );
     if ( directory.isEmpty() )
     {
         directory = QDir::homePath() + QLatin1String("/.") + QCoreApplication::applicationName();
