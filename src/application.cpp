@@ -50,7 +50,6 @@
 #include <QNetworkProxy>
 #include <QWebSettings>
 #include <QDebug>
-#include <QMessageBox>
 
 
 
