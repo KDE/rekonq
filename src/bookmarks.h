@@ -99,6 +99,26 @@ private:
 
 // ------------------------------------------------------------------------------
 
+/** 
+ * This class represent the rekonq bookmarks menu.
+ * It's just a simple class inherited from KBookmarkMenu
+ *
+ * @author Andrea Diamantini <adjam7@gmail.com>
+ * @since 4.x
+ *
+ */
+class BookmarksMenu : public KBookmarkMenu
+{
+Q_OBJECT
+
+public:
+    BookmarksMenu( KBookmarkManager* manager, KBookmarkOwner* owner, KMenu* menu, KActionCollection* ac);
+
+    KMenu *viewContextMenu(QAction* action);
+};
+
+// ------------------------------------------------------------------------------
+
 
 /** 
  * This class represent the interface to rekonq bookmarks system.
@@ -139,10 +159,16 @@ public:
      */
     KMenu *bookmarksMenu();
 
+public slots:
+    void contextMenu(const QPoint & point);
+
 private:
     KMainWindow *m_parent;
     OwnBookMarks *m_owner;
     KBookmarkManager *m_manager;
     KActionCollection *m_ac;
+    BookmarksMenu *m_bmMenu;
+    KToolBar *m_bmToolbar;
 };
+
 #endif

@@ -61,9 +61,25 @@ QString OwnBookMarks::currentTitle() const
 // ------------------------------------------------------------------------------------------------------
 
 
+BookmarksMenu::BookmarksMenu( KBookmarkManager* manager, KBookmarkOwner* owner, KMenu* menu, KActionCollection* ac )
+    : KBookmarkMenu(manager, owner, menu, ac)
+{    
+}
+
+KMenu* BookmarksMenu::viewContextMenu(QAction* action)
+{
+    return contextMenu( action );
+}
+
+
+// ------------------------------------------------------------------------------------------------------
+
+
 BookmarksProvider::BookmarksProvider(KMainWindow* parent)
     : m_parent(parent)
-    , m_owner(new OwnBookMarks(parent)) 
+    , m_owner(new OwnBookMarks(parent))
+    , m_bmMenu(0)
+    , m_bmToolbar(0)
 {
     KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );    // share konqueror bookmarks
     m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
@@ -73,7 +89,12 @@ BookmarksProvider::BookmarksProvider(KMainWindow* parent)
 
 void BookmarksProvider::provideBmToolbar(KToolBar* toolbar)
 {
+    m_bmToolbar = toolbar;
     toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+
+    toolbar->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( toolbar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)) );
+
     KBookmarkGroup toolbarGroup = m_manager->toolbar();
     KBookmark bm = toolbarGroup.first();
     while(!bm.isNull())
@@ -102,8 +123,20 @@ void BookmarksProvider::provideBmToolbar(KToolBar* toolbar)
 
 KMenu *BookmarksProvider::bookmarksMenu()
 {
-    KMenu *bmMenu = new KMenu(m_parent);
-    new KBookmarkMenu( m_manager, m_owner, bmMenu, m_ac );
-    return bmMenu;
+    KMenu *menu = new KMenu(m_parent);
+    m_bmMenu = new BookmarksMenu( m_manager, m_owner, menu, m_ac );
+    return menu;
 }
+
+
+void BookmarksProvider::contextMenu(const QPoint & point)
+{
+    KAction* action = dynamic_cast<KAction*>( m_bmToolbar->actionAt( point ) );
+    if(!action)
+        return;
+    KMenu *menu = m_bmMenu->viewContextMenu(action);
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu->popup( m_bmToolbar->mapToGlobal( point ));
+}
+
 
