@@ -9,9 +9,9 @@ PROJECT( rekonq )
 # rekonq version
 SET(REKONQ_MAJOR_VERSION "0")
 SET(REKONQ_MINOR_VERSION "0")
-SET(REKONQ_PATCH_VERSION "3")
+SET(REKONQ_PATCH_VERSION "4")
 
-SET(REKONQ_VERSION_STRING
+SET(REKONQ_VERSION_STR
     "${REKONQ_MAJOR_VERSION}.${REKONQ_MINOR_VERSION}.${REKONQ_PATCH_VERSION}"
    )
 
@@ -37,18 +37,23 @@ INCLUDE(MacroLibrary)
 
 MESSAGE(STATUS "")
 MESSAGE(STATUS "----------------------------------------------------------------------------------")
-MESSAGE(STATUS " rekonq ${REKONQ_VERSION_STRING} dependencies results  <http://rekonq.adjam.org>")
+MESSAGE(STATUS " rekonq ${REKONQ_VERSION_STR} dependencies results  <http://rekonq.adjam.org>")
 MESSAGE(STATUS "")
 
 # Require shared libraries results.
 
+SET(QT_VERS_STR
+    "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
+   )
+
 IF(QT_FOUND)
     MESSAGE(STATUS " Qt library found............... YES")
+    MESSAGE(STATUS " Qt version ${QT_VERS_STR} found! ")
 ELSE(QT_FOUND)
     MESSAGE(STATUS " Qt library found............... NO")
     MESSAGE(STATUS "")
-    MESSAGE(SEND_ERROR " rekonq needs at least Qt 4.4.0. Please install it and try compiling again.")
-    MESSAGE(STATUS " Qt website is at http://www.trolltech.com")
+    MESSAGE(SEND_ERROR " rekonq needs at least Qt ${QT_MIN_VERSION}. Please install it and try compiling again.")
+    MESSAGE(STATUS " Qt website is at http://www.qtsoftware.com")
     MESSAGE(STATUS "")
 ENDIF(QT_FOUND)
 
