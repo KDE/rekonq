@@ -51,6 +51,8 @@
 #include <KMessageBox>
 #include <KFileDialog>
 #include <KMenu>
+#include <KGlobalSettings>
+
 
 // Qt Includes
 #include <QPlainTextEdit>
@@ -302,12 +304,28 @@ void MainWindow::slotUpdateConf()
     m_homePage = ReKonfig::homePage();
 
     // =========== Fonts ==============
-    QFont standardFont = ReKonfig::standardFont();
-    QFont fixedFont = ReKonfig::fixedFont();
-
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
+
+    QFont standardFont = ReKonfig::standardFont();
+    if( !standardFont.exactMatch() )
+    {
+        kWarning() << "Webkit Standard Font doesn't match! Setting to KDE general font..";
+        standardFont = KGlobalSettings::generalFont();
+        ReKonfig::setStandardFont( standardFont );
+        ReKonfig::self()->writeConfig();
+    }
     defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFontSize, standardFont.pointSize());
+
+
+    QFont fixedFont = ReKonfig::fixedFont();
+    if( !fixedFont.exactMatch() )
+    {
+        kWarning() << "Webkit Fixed Font doesn't match! Setting to KDE fixed font..";
+        fixedFont = KGlobalSettings::fixedFont();
+        ReKonfig::setFixedFont( fixedFont );
+        ReKonfig::self()->writeConfig();
+    }
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fixedFont.pointSize());
 

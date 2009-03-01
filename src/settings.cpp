@@ -156,6 +156,9 @@ void SettingsDialog::saveSettings()
     // Fonts
     ReKonfig::setStandardFont( d->fontsUi.standardFontChooser->font() );
     ReKonfig::setFixedFont( d->fontsUi.standardFontChooser->font() );
+
+    // Save
+    ReKonfig::self()->writeConfig();
 }
 
 

@@ -40,9 +40,9 @@
 #include <QClipboard>
 #include <QMenu>
 #include <QMouseEvent>
-#include <QWebHitTestResult>
 #include <QBuffer>
 // ---
+#include <QtWebKit>
 #include <QUiLoader>
 
 WebPage::WebPage(QObject *parent)

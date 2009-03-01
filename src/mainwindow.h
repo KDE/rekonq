@@ -46,7 +46,6 @@ class WebView;
  * It handles the menus, toolbars, and status bars.
  *
  */
-
 class MainWindow : public KXmlGuiWindow 
 {
     Q_OBJECT
@@ -81,10 +80,6 @@ private slots:
     void slotOpenActionUrl(QAction *action);
     void slotOpenPrevious();
     void slotOpenNext();
-
-/*    void slotShowWindow();
-    void slotSwapFocus();*/
-
 
     // File Menu slots
     void slotFileNew();
