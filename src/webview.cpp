@@ -111,19 +111,19 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 }
 
 
-// QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
-// {
-//     kWarning() << "creating PLUGIN for rekonq ";
-//     kWarning() << "classId = " << classId;
-//     kWarning() << "url = " << url;
-//     kWarning() << "Param Names = " << paramNames;
-//     kWarning() << "Param Values = " << paramValues;
+QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
+{
+    kWarning() << "creating PLUGIN for rekonq ";
+    kWarning() << "classId = " << classId;
+    kWarning() << "url = " << url;
+    kWarning() << "Param Names = " << paramNames;
+    kWarning() << "Param Values = " << paramValues;
 //     Q_UNUSED(url);
 //     Q_UNUSED(paramNames);
 //     Q_UNUSED(paramValues);
-//     QUiLoader loader;
-//     return loader.createWidget(classId, view());
-// }
+    QUiLoader loader;
+    return loader.createWidget(classId, view());
+}
 
 
 void WebPage::handleUnsupportedContent(QNetworkReply *reply)
