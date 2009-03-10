@@ -32,14 +32,18 @@
 #include "webview.h"
 
 // KDE Includes
+#include <KUrl>
+#include <KMenu>
+#include <KAction>
 #include <KShortcut>
 #include <KStandardShortcut>
 #include <KMessageBox>
 #include <KActionCollection>
 
 // Qt Includes
+#include <QtCore>
 #include <QtGui>
-#include <QDebug>
+#include <QtWebKit>
 
 
 

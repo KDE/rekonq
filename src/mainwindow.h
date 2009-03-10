@@ -25,18 +25,18 @@
 // Local Includes
 #include "findbar.h"
 #include "searchbar.h"
+#include "bookmarks.h"
+#include "mainview.h"
 
 // KDE Includes
-#include <KUrl>
 #include <KXmlGuiWindow>
 #include <KIcon>
-#include <KToolBar>
 #include <KAction>
-#include <KToggleAction>
+#include <KToolBar>
 #include <KMenu>
 
-class BookmarksProvider;
-class MainView;
+// Forward Declarations
+class KUrl;
 class QWebFrame;
 class WebView;
 
@@ -114,11 +114,12 @@ private:
     FindBar *m_findBar;
     KMenu *m_historyBackMenu;
     KMenu *m_windowMenu;
-    BookmarksProvider *m_bookmarksProvider;
     QAction *m_stopReload;
     QString m_lastSearch;
-    MainView *m_view;
     QString m_homePage;
+
+    MainView *m_view;
+    BookmarksProvider *m_bookmarksProvider;
 };
 
 #endif // MAINWINDOW_H

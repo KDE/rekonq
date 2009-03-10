@@ -20,14 +20,18 @@
 #ifndef URLBAR_H
 #define URLBAR_H
 
-// Local Includes
-#include "webview.h"
 
 // KDE Includes
 #include <KHistoryComboBox>
 
-// Qt Includes
-#include <QtGui>
+// Forward Declarations
+class WebView;
+
+class QWidget;
+class QLineEdit;
+class QUrl;
+class QLinearGradient;
+class QColor;
 
 
 class UrlBar : public KHistoryComboBox
@@ -51,9 +55,9 @@ protected:
 private:
     QLinearGradient generateGradient(const QColor &color) const;
 
-    WebView*   m_webView;
-    QLineEdit*  m_lineEdit;
-    QColor       m_defaultBaseColor;
+    WebView* m_webView;
+    QLineEdit* m_lineEdit;
+    QColor m_defaultBaseColor;
 };
 
 #endif

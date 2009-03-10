@@ -29,6 +29,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
+// Forward Declarations
 class MainWindow;
 class WebView;
 class CookieJar;

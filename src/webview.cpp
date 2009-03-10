@@ -18,7 +18,7 @@
  *
  * ============================================================ */
 
-// Local Includes
+// Self Includes
 #include "webview.h"
 #include "webview.moc"
 
@@ -34,16 +34,15 @@
 
 // KDE Includes
 #include <KStandardDirs>
+#include <KUrl>
 #include <KDebug>
 
 // Qt Includes
-#include <QClipboard>
-#include <QMenu>
-#include <QMouseEvent>
-#include <QBuffer>
-// ---
+#include <QtCore>
+#include <QtGui>
 #include <QtWebKit>
 #include <QUiLoader>
+
 
 WebPage::WebPage(QObject *parent)
     : QWebPage(parent)

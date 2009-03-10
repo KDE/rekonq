@@ -17,12 +17,18 @@
  *
  * ============================================================ */
 
-// Local Includes
+// Self Includes
 #include "urlbar.h"
 #include "urlbar.moc"
 
+// Local Includes
 #include "application.h"
 #include "mainwindow.h"
+#include "webview.h"
+
+// Qt Includes
+#include <QtCore>
+#include <QtGui>
 
 
 UrlBar::UrlBar(QWidget *parent)

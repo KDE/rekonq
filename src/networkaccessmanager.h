@@ -21,7 +21,9 @@
 #ifndef NETWORKACCESSMANAGER_H
 #define NETWORKACCESSMANAGER_H
 
-#include <QtNetwork/QNetworkAccessManager>
+
+#include <QNetworkAccessManager>
+
 
 class NetworkAccessManager : public QNetworkAccessManager
 {

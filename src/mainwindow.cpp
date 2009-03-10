@@ -41,6 +41,7 @@
 #include "ui_passworddialog.h"
 
 // KDE Includes
+#include <KUrl>
 #include <KStatusBar>
 #include <KMenuBar>
 #include <KShortcut>
@@ -55,14 +56,9 @@
 
 
 // Qt Includes
-#include <QPlainTextEdit>
-#include <QPrintDialog>
-#include <QPrintPreviewDialog>
-#include <QPrinter>
-#include <QWebFrame>
-#include <QWebHistory>
-#include <QDebug>
-#include <QVBoxLayout>
+#include <QtGui>
+#include <QtCore>
+#include <QtWebKit>
 
 
 MainWindow::MainWindow()

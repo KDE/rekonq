@@ -22,24 +22,24 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
-// Local Includes
-#include "tabbar.h"
-#include "webview.h"
 
 // KDE Includes
-#include <KUrl>
-#include <KMenu>
 #include <KTabWidget>
-#include <KAction>
 
-// Qt Includes
-#include <QLineEdit>
-#include <QWebPage>
 
-QT_BEGIN_NAMESPACE
+// Forward Declarations
+class WebView;
+class TabBar;
+
+class KUrl;
+class KAction;
+class KMenu;
+
+class QWebFrame;
 class QCompleter;
 class QStackedWidget;
-QT_END_NAMESPACE
+class QLineEdit;
+class QUrl;
 
 /**
  *   TabWidget that contains WebViews and a stack widget of associated line edits.

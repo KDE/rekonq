@@ -21,19 +21,21 @@
 #ifndef WEBVIEW_H
 #define WEBVIEW_H
 
+// KDE Includes
 #include <KUrl>
 
-#include <QWebView>
+// Qt Includes
+#include <QWebPage>
 
-QT_BEGIN_NAMESPACE
+// Forward Declarations
+class MainWindow;
+
+class QWebFrame;
 class QAuthenticator;
 class QMouseEvent;
 class QNetworkProxy;
 class QNetworkReply;
 class QSslError;
-QT_END_NAMESPACE
-
-class MainWindow;
 
 
 class WebPage : public QWebPage 
@@ -67,6 +69,9 @@ private:
 
 
 // ---------------------------------------------------------------------------------------------------------------------------------------
+
+// Qt Includes
+#include <QWebView>
 
 
 class WebView : public QWebView 

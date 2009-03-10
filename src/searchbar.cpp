@@ -26,7 +26,13 @@
 #include "mainwindow.h"
 
 // KDE Includes
+#include <KUrl>
 #include <KDebug>
+
+// Qt Includes
+#include <QtCore>
+#include <QtGui>
+
 
 SearchBar::SearchBar(QWidget *parent) : 
     KLineEdit(parent)

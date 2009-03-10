@@ -24,8 +24,8 @@
 // KDE Includes
 #include <KConfigDialog>
 
-// Qt Includes
-#include <QWidget>
+// Forward Declarations
+class QWidget;
 
 class Private;
 

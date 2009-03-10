@@ -23,12 +23,13 @@
 
 // KDE Includes
 #include <KLineEdit>
-#include <KUrl>
 
-// Qt Includes
-#include <QtGui>
+// Forward Declarations
+class KUrl;
+class QFocusEvent;
 
-/*
+
+/**
  * This class defines an internet search bar. 
  */
 class SearchBar : public KLineEdit
