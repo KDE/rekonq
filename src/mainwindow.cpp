@@ -67,18 +67,15 @@
 
 MainWindow::MainWindow()
     : KXmlGuiWindow()
-    , m_view(0)
-    , m_bookmarksProvider(0)
+    , m_view( new MainView(this) )
+    , m_bookmarksProvider( new BookmarksProvider(this) )
 {
-    m_view =  new MainView(this);
-    m_bookmarksProvider =  new BookmarksProvider(this);
-
     // accept dnd
     setAcceptDrops(true);
 
     // updating rekonq configuration
     slotUpdateConf();
-    
+
     // creating a centralWidget containing m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
@@ -91,6 +88,13 @@ MainWindow::MainWindow()
 
     centralWidget->setLayout(layout);
     setCentralWidget(centralWidget);
+
+    // setting size policies
+    QRect desktopRect = QApplication::desktop()->screenGeometry();
+    QSize size = desktopRect.size() * 0.8;
+    setMinimumSize( size );
+
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     // connect signals and slots
     connect(m_view, SIGNAL( loadUrlPage(const KUrl &) ), this, SLOT( loadUrl(const KUrl &) ) );
@@ -139,7 +143,7 @@ MainWindow::MainWindow()
     m_bookmarksProvider->provideBmToolbar( bmToolbar );
 
     // setting up toolbars to NOT have context menu enabled
-    setContextMenuPolicy( Qt::ActionsContextMenu );
+    setContextMenuPolicy( Qt::DefaultContextMenu );
 
     // search bar
     m_searchBar = new SearchBar( this );
@@ -296,7 +300,6 @@ void MainWindow::setupHistoryMenu()
 }
 
 
-// TODO FIXME
 void MainWindow::slotUpdateConf()
 {
     // ============== General ==================    
