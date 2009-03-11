@@ -15,11 +15,11 @@ To 0.0.4
 
 1. check the lines above...
 2. Improve docs
-3. Let rekonq be a Singleton app. (And work well..)
+DONE. Let rekonq be a Singleton app. (And work well..)
 4. fix bookmarks toolbar POSITION
 5. fix bookmarks action menu (in toolbar)
-6. fix load at startup
-7. fix FONTS problems between webkit && KDE settings (at least, here..)
-8. enable flash support !!
+DONE. fix load at startup
+DONE. fix FONTS problems between webkit && KDE settings (at least, here..)
+DONE. enable flash support !!
 
 + ------------------------
