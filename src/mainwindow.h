@@ -57,6 +57,7 @@ public:
     static KUrl guessUrlFromString(const QString &url);
     MainView *tabWidget() const;
     WebView *currentTab() const;
+    virtual QSize sizeHint() const;
 
 private:
     void setupActions();

@@ -86,10 +86,6 @@ MainWindow::MainWindow()
     setCentralWidget(centralWidget);
 
     // setting size policies
-    QRect desktopRect = QApplication::desktop()->screenGeometry();
-    QSize size = desktopRect.size() * 0.8;
-    setMinimumSize( size );
-
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     // connect signals and slots
@@ -151,6 +147,14 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
     delete m_view;
+}
+
+
+QSize MainWindow::sizeHint() const
+{
+    QRect desktopRect = QApplication::desktop()->screenGeometry();
+    QSize size = desktopRect.size() * 0.8;
+    return size;
 }
 
 
