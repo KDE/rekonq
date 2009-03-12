@@ -47,6 +47,8 @@ signals:
 
 public:
     WebPage(QObject *parent = 0);
+    ~WebPage();
+
     MainWindow *mainWindow();
 
 protected:
@@ -100,7 +102,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
 
     /** 
-    * FIlters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
+    * Filters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
     * to make switch tab 
     */
     void keyPressEvent(QKeyEvent *event);

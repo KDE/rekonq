@@ -55,6 +55,12 @@ WebPage::WebPage(QObject *parent)
 }
 
 
+WebPage::~WebPage()
+{
+
+}
+
+
 MainWindow *WebPage::mainWindow()
 {
     QObject *w = this->parent();
@@ -70,6 +76,8 @@ MainWindow *WebPage::mainWindow()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
+    kWarning() << "Accepting Navigation Request..";
+
     // ctrl open in new tab and select
     // ctrl-alt open in new window
     if ( type == QWebPage::NavigationTypeLinkClicked && (m_keyboardModifiers & Qt::ControlModifier
@@ -86,6 +94,11 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     {
         m_loadingUrl = request.url();
         emit loadingUrl(m_loadingUrl);
+    }
+    else
+    {
+        kWarning() << "NO Main Frame..";
+        kWarning() << "Frame : " << frame->frameName();
     }
     return QWebPage::acceptNavigationRequest(frame, request, type);
 }
@@ -177,7 +190,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 }
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
 
 WebView::WebView(QWidget* parent)
