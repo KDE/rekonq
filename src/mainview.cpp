@@ -39,6 +39,7 @@
 #include <KStandardShortcut>
 #include <KMessageBox>
 #include <KActionCollection>
+#include <KDebug>
 
 // Qt Includes
 #include <QtCore>
@@ -55,7 +56,7 @@ MainView::MainView(QWidget *parent)
     , m_lineEdits(new QStackedWidget(this))
     , m_tabBar(new TabBar(this))
 {
-    setElideMode(Qt::ElideRight);
+    setTabBar(m_tabBar);
 
     connect(m_tabBar, SIGNAL(newTab()), this, SLOT(newTab()));
     connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(closeTab(int)));
@@ -64,7 +65,6 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(reloadTab(int)));
     connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(reloadAllTabs()));
     connect(m_tabBar, SIGNAL(tabMoveRequested(int, int)), this, SLOT(moveTab(int, int)));
-    setTabBar(m_tabBar);
 
     // Recently Closed Tab Action
     m_recentlyClosedTabsMenu = new KMenu(this);

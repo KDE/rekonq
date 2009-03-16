@@ -4,7 +4,7 @@
 # Written by Andrea Diamantini - adjam7_AT_gmail_DOT_com
 
 NAME=rekonq
-VERSION=0.0.3
+VERSION=0.0.4
 ARCH=${ARCH:-i486}
 BUILD=1ad
 

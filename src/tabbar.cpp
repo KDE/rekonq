@@ -34,6 +34,7 @@
 #include <KStandardShortcut>
 #include <KMessageBox>
 #include <KAction>
+#include <KDebug>
 
 // Qt Includes
 #include <QtGui>
@@ -48,18 +49,19 @@ TabBar::TabBar(QWidget *parent)
     setAcceptDrops(true);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenuRequested(const QPoint &)));
 
-    QString alt = QLatin1String("Alt+%1");
-    for (int i = 1; i <= 10; ++i)
-    {
-        int key = i;
-        if (key == 10)
-        {
-            key = 0;
-        }
-        QShortcut *shortCut = new QShortcut(alt.arg(key), this);
-        m_tabShortcuts.append(shortCut);
-        connect(shortCut, SIGNAL(activated()), this, SLOT(selectTabAction()));
-    }
+// FIXME: not sure we need this..
+//     QString alt = QLatin1String("Alt+%1");
+//     for (int i = 1; i <= 10; ++i)
+//     {
+//         int key = i;
+//         if (key == 10)
+//         {
+//             key = 0;
+//         }
+//         QShortcut *shortCut = new QShortcut(alt.arg(key), this);
+//         m_tabShortcuts.append(shortCut);
+//         connect(shortCut, SIGNAL(activated()), this, SLOT(selectTabAction()));
+//     }
 }
 
 
@@ -88,21 +90,14 @@ void TabBar::contextMenuRequested(const QPoint &position)
     int index = tabAt(position);
     if (-1 != index)
     {
+        m_actualIndex = index;
+
         KAction *action = (KAction * ) menu.addAction(i18n("Clone Tab"), this, SLOT(cloneTab()));
-        action->setData(index);
-
         menu.addSeparator();
-
         action = (KAction * ) menu.addAction(i18n("&Close Tab"), this, SLOT(closeTab()), QKeySequence::Close);
-        action->setData(index);
-
         action = (KAction * ) menu.addAction(i18n("Close &Other Tabs"), this, SLOT(closeOtherTabs()));
-        action->setData(index);
-
         menu.addSeparator();
-
         action = (KAction * ) menu.addAction(i18n("Reload Tab"), this, SLOT(reloadTab()), QKeySequence::Refresh);
-        action->setData(index);
     } 
     else 
     {
@@ -115,31 +110,19 @@ void TabBar::contextMenuRequested(const QPoint &position)
 
 void TabBar::cloneTab()
 {
-    if (KAction *action = qobject_cast<KAction*>(sender())) 
-    {
-        int index = action->data().toInt();
-        emit cloneTab(index);
-    }
+    emit cloneTab(m_actualIndex);
 }
 
 
 void TabBar::closeTab()
 {
-    if (KAction *action = qobject_cast<KAction*>(sender())) 
-    {
-        int index = action->data().toInt();
-        emit closeTab(index);
-    }
+    emit closeTab(m_actualIndex);
 }
 
 
 void TabBar::closeOtherTabs()
 {
-    if (KAction *action = qobject_cast<KAction*>(sender()))
-    {
-        int index = action->data().toInt();
-        emit closeOtherTabs(index);
-    }
+    emit closeOtherTabs(m_actualIndex);
 }
 
 
@@ -199,10 +182,6 @@ void TabBar::dropEvent(QDropEvent *event)
 
 void TabBar::reloadTab()
 {
-    if (KAction *action = qobject_cast<KAction*>(sender())) 
-    {
-        int index = action->data().toInt();
-        emit reloadTab(index);
-    }
+    emit reloadTab(m_actualIndex);
 }
 

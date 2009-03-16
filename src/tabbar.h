@@ -36,6 +36,11 @@ class TabBar : public KTabBar
 {
     Q_OBJECT
 
+
+public:
+    TabBar(QWidget *parent = 0);
+    ~TabBar();
+
 signals:
     void newTab();
     void cloneTab(int index);
@@ -44,10 +49,6 @@ signals:
     void reloadTab(int index);
     void reloadAllTabs();
     void tabMoveRequested(int fromIndex, int toIndex);
-
-public:
-    TabBar(QWidget *parent = 0);
-    ~TabBar();
 
 protected:
     void mousePressEvent(QMouseEvent* event);
@@ -69,6 +70,7 @@ private:
 
     QPoint m_dragStartPos;
     int m_dragCurrentIndex;
+    int m_actualIndex;  // the index in which we are seeing a Context menu
 };
 
 #endif

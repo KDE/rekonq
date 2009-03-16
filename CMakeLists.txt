@@ -6,7 +6,7 @@ PROJECT( rekonq )
 # ===============================================================================================
 # Informations to update before to release this package.
 
-# rekonq version
+# rekonq info
 SET(REKONQ_MAJOR_VERSION "0")
 SET(REKONQ_MINOR_VERSION "0")
 SET(REKONQ_PATCH_VERSION "4")
@@ -14,6 +14,8 @@ SET(REKONQ_PATCH_VERSION "4")
 SET(REKONQ_VERSION_STR
     "${REKONQ_MAJOR_VERSION}.${REKONQ_MINOR_VERSION}.${REKONQ_PATCH_VERSION}"
    )
+
+SET(REKONQ_SITE "http://rekonq.sourceforge.net")
 
 # =================================================================================================
 # minimum cmake required
@@ -37,8 +39,7 @@ INCLUDE(MacroLibrary)
 
 MESSAGE(STATUS "")
 MESSAGE(STATUS "----------------------------------------------------------------------------------")
-MESSAGE(STATUS " rekonq ${REKONQ_VERSION_STR} dependencies results  <http://rekonq.adjam.org>")
-MESSAGE(STATUS "")
+MESSAGE(STATUS " rekonq ${REKONQ_VERSION_STR} dependencies results  <${REKONQ_SITE}>")
 
 # Require shared libraries results.
 
