@@ -274,10 +274,22 @@ void WebView::loadFinished()
 }
 
 
+// FIXME: load http by default!!
 void WebView::loadUrl(const KUrl &url)
 {
     m_initialUrl = url;
-    load(url);
+
+    if( m_initialUrl.isRelative() )
+    {
+        kWarning() << "1: " << m_initialUrl.url();
+        QString fn = m_initialUrl.url( KUrl::RemoveTrailingSlash );
+        kWarning() << "2: " << fn;
+        m_initialUrl.setUrl( "//" + fn );
+        m_initialUrl.setScheme("http");
+        kWarning() << "3: " << m_initialUrl.url();
+    }
+
+    load(m_initialUrl);
 }
 
 
