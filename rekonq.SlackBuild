@@ -62,8 +62,7 @@ cat $CWD/$NAME.SlackBuild > $PKG/usr/doc/$NAME-$VERSION/$NAME.SlackBuild
 
 # Copy the slack-desc (and a custom doinst.sh if necessary) into ./install
 mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-cat $CWD/doinst.sh > $PKG/install/doinst.sh 
+cat $CWD/data/slack-desc > $PKG/install/slack-desc
 
 # Make the package; 
 # If package symlinks need to be created during install *before*
