@@ -40,7 +40,7 @@ int main(int argc, char **argv)
                         KAboutData::License_GPL, 
                         ki18n("(C) 2008 Andrea Diamantini"), 
                         KLocalizedString(), 
-                        "http://rekonq.soourceforge.net",
+                        "http://rekonq.sourceforge.net",
                         "adjam7@gmail.com"
                     );
 
