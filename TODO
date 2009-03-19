@@ -1,3 +1,13 @@
+To 0.0.5
+- definitely fix fonts!
+- fix crash on example sites..
+- tabbar: fixed dimension
+- tabbar: hide if just one
+- bookmarks update
+- improve "save as"
+- load just ONE site at start
+- loading right sites as "external browser"
+
 To 0.0.4
 - improve DOCUMENTATION
 - fix docs
