@@ -186,14 +186,6 @@ void CookieJar::save()
     if (!m_loaded)
         return;
     purgeOldCookies();
-    QString directory = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-    if (directory.isEmpty())
-        directory = QDir::homePath() + QLatin1String("/.") + QCoreApplication::applicationName();
-    if (!QFile::exists(directory)) 
-    {
-        QDir dir;
-        dir.mkpath(directory);
-    }
     
     QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini");
     KConfig iniconfig( filepath );
