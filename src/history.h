@@ -39,8 +39,10 @@
 
 
 /**
-  * Elements in this class represent an history item
-  */
+ * Elements in this class represent an history item
+ *
+ */
+
 class HistoryItem
 {
 public:
@@ -130,7 +132,7 @@ private:
 };
 
 
-// ---------------------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------
 
 
 class HistoryModel : public QAbstractTableModel
@@ -162,12 +164,15 @@ private:
 };
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-/*!
-    Proxy model that will remove any duplicate entries.
-    Both m_sourceRow and m_historyHash store their offsets not from
-    the front of the list, but as offsets from the back.
-  */
+// ----------------------------------------------------------------------------------------------------
+
+/**
+ * Proxy model that will remove any duplicate entries.
+ * Both m_sourceRow and m_historyHash store their offsets not from
+ * the front of the list, but as offsets from the back.
+ *
+ */
+
 class HistoryFilterModel : public QAbstractProxyModel
 {
     Q_OBJECT
@@ -205,15 +210,18 @@ private:
 };
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-/*
-    The history menu
-    - Removes the first twenty entries and puts them as children of the top level.
-    - If there are less then twenty entries then the first folder is also removed.
+// ----------------------------------------------------------------------------------------------------------------------
 
-    The mapping is done by knowing that HistoryTreeModel is over a table
-    We store that row offset in our index's private data.
-*/
+/**
+ * The history menu
+ * - Removes the first twenty entries and puts them as children of the top level.
+ * - If there are less then twenty entries then the first folder is also removed.
+ *
+ * The mapping is done by knowing that HistoryTreeModel is over a table
+ * We store that row offset in our index's private data.
+ *
+ */
+
 class HistoryMenuModel : public QAbstractProxyModel
 {
     Q_OBJECT
@@ -234,8 +242,13 @@ private:
 };
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// Menu that is dynamically populated from the history
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Menu that is dynamically populated from the history
+ *
+ */
+
 class HistoryMenu : public ModelMenu
 {
     Q_OBJECT
@@ -262,9 +275,15 @@ private:
 };
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// proxy model for the history model that
-// exposes each url http://www.foo.com and it url starting at the host www.foo.com
+// ----------------------------------------------------------------------------------------
+
+/**
+ * Proxy model for the history model that
+ * exposes each url http://www.foo.com and 
+ * it url starting at the host www.foo.com
+ *
+ */
+
 class HistoryCompletionModel : public QAbstractProxyModel
 {
     Q_OBJECT
@@ -286,10 +305,15 @@ private slots:
 };
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// proxy model for the history model that converts the list
-// into a tree, one top level node per day.
-// Used in the HistoryDialog.
+// ---------------------------------------------------------------------------------------
+
+/**
+ * Proxy model for the history model that converts the list
+ * into a tree, one top level node per day.
+ * Used in the HistoryDialog.
+ *
+ */
+
 class HistoryTreeModel : public QAbstractProxyModel
 {
     Q_OBJECT
@@ -322,10 +346,16 @@ private:
 };
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// A modified QSortFilterProxyModel that always accepts the root nodes in the tree
-// so filtering is only done on the children.
-// Used in the HistoryDialog
+// -----------------------------------------------------------------------------------------------------------------
+
+/**
+ * A modified QSortFilterProxyModel that always accepts 
+ * the root nodes in the tree
+ * so filtering is only done on the children.
+ * Used in the HistoryDialog.
+ *
+ */
+
 class TreeProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
@@ -338,7 +368,7 @@ protected:
 };
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
 
 #include "ui_history.h"
 
