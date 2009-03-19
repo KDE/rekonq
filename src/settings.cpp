@@ -133,13 +133,14 @@ void SettingsDialog::readConfig()
 
     // ======= Fonts
     QFont stdFont = ReKonfig::standardFont();
-    d->fontsUi.standardFontChooser->setFont(stdFont, false);
-    d->fontsUi.standardFontChooser->setSampleText( stdFont.family() + " " + QString::number(stdFont.pointSize()) );
-    connect(d->fontsUi.standardFontChooser, SIGNAL(fontSelected(QFont)),this, SLOT(saveSettings()));
+    d->fontsUi.standardFont->setCurrentFont(stdFont);
+
     QFont fxFont = ReKonfig::fixedFont();
-    d->fontsUi.fixedFontChooser->setFont(fxFont, true);
-    d->fontsUi.fixedFontChooser->setSampleText( fxFont.family() + " " + QString::number(fxFont.pointSize()) );
-    connect(d->fontsUi.fixedFontChooser, SIGNAL(fontSelected(QFont)),this, SLOT(saveSettings()));
+    d->fontsUi.fixedFont->setOnlyFixed(true);
+    d->fontsUi.fixedFont->setCurrentFont(fxFont);
+
+    int fnSize = ReKonfig::fontSize();
+    d->fontsUi.fontSize->setValue( fnSize );
 
     // ======= Proxy
     bool proxyEnabled = ReKonfig::isProxyEnabled();
@@ -155,8 +156,9 @@ void SettingsDialog::saveSettings()
     ReKonfig::setDownloadDir( d->generalUi.downloadDirUrlRequester->url().prettyUrl() );
 
     // Fonts
-    ReKonfig::setStandardFont( d->fontsUi.standardFontChooser->font() );
-    ReKonfig::setFixedFont( d->fontsUi.standardFontChooser->font() );
+    ReKonfig::setStandardFont( d->fontsUi.standardFont->currentFont() );
+    ReKonfig::setFixedFont( d->fontsUi.fixedFont->currentFont() );
+    ReKonfig::setFontSize( d->fontsUi.fontSize->value() );
 
     // Save
     ReKonfig::self()->writeConfig();

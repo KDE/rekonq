@@ -28,10 +28,13 @@
 <!-- Fonts Settings -->
   <group name="Fonts">
     <entry name="standardFont" type="Font">
-        <default code="true">QFont( QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont) )</default>
+    <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont))</default>
     </entry>
     <entry name="fixedFont" type="Font">
-        <default code="true">QFont( QWebSettings::globalSettings()->fontFamily(QWebSettings::FixedFont) )</default>
+    <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::FixedFont))</default>
+    </entry>
+    <entry name="fontSize" type="Int">
+    <default>10</default>
     </entry>
   </group>
 

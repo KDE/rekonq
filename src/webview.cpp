@@ -107,7 +107,13 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
 QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
-    Q_UNUSED(type);
+    // added to manage web modal dialogs
+    if(type == QWebPage::WebModalDialog)
+    {
+        WebView *w = new WebView;
+        return w->page();
+    }
+
     if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
         m_openInNewTab = true;
