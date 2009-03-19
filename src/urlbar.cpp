@@ -92,8 +92,11 @@ void UrlBar::webViewIconChanged()
     QIcon urlIcon = QIcon(pixmap);
     
     // FIXME simple hack to show Icon in the urlbar, as calling changeUrl() doesn't affect it
-    removeItem( 0 );
-    insertUrl( 0 , urlIcon , url );
+    insertUrl(0,urlIcon,url);
+    if(count()>1)
+    {
+        removeItem(1);
+    }
 }
 
 
