@@ -35,38 +35,42 @@
 #include <KMessageBox>
 #include <KAction>
 #include <KDebug>
+#include <KGlobalSettings>
 
 // Qt Includes
 #include <QtGui>
-#include <QDebug>
 
 
 TabBar::TabBar(QWidget *parent)
     : KTabBar(parent)
+    , m_parent(parent)
 {
     setElideMode(Qt::ElideRight);
     setContextMenuPolicy(Qt::CustomContextMenu);
     setAcceptDrops(true);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenuRequested(const QPoint &)));
 
-// FIXME: not sure we need this..
-//     QString alt = QLatin1String("Alt+%1");
-//     for (int i = 1; i <= 10; ++i)
-//     {
-//         int key = i;
-//         if (key == 10)
-//         {
-//             key = 0;
-//         }
-//         QShortcut *shortCut = new QShortcut(alt.arg(key), this);
-//         m_tabShortcuts.append(shortCut);
-//         connect(shortCut, SIGNAL(activated()), this, SLOT(selectTabAction()));
-//     }
+    QFont standardFont = KGlobalSettings::generalFont();
+    QString fontFamily = standardFont.family();
+    int dim = standardFont.pointSize();
+    setFont( QFont(fontFamily, dim-2) );
 }
 
 
 TabBar::~TabBar()
 {
+}
+
+
+QSize TabBar::tabSizeHint (int index) const
+{
+    Q_UNUSED(index);
+    QSize s = m_parent->sizeHint();
+    int w = s.width() / 5;
+    int h = s.height() / 20;
+
+    QSize ts = QSize(w,h);    
+    return ts;
 }
 
 

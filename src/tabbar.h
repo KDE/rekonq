@@ -56,6 +56,8 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 
+    virtual QSize tabSizeHint (int index) const;
+
 private slots:
     void selectTabAction();
     void cloneTab();
@@ -68,6 +70,7 @@ private:
     QList<QShortcut*> m_tabShortcuts;
     friend class MainView;
 
+    QWidget *m_parent;
     QPoint m_dragStartPos;
     int m_dragCurrentIndex;
     int m_actualIndex;  // the index in which we are seeing a Context menu
