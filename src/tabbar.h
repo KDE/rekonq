@@ -30,8 +30,11 @@
 #include <QShortcut>
 
 /**
- * Tab bar with a few more features such as a context menu and shortcuts
+ * Tab bar with a few more features such as 
+ * a context menu and shortcuts
+ *
  */
+
 class TabBar : public KTabBar
 {
     Q_OBJECT
@@ -56,6 +59,10 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 
+    /**
+     * Added to fix tab dimension
+     *
+     */
     virtual QSize tabSizeHint (int index) const;
 
 private slots:
@@ -67,13 +74,18 @@ private slots:
     void contextMenuRequested(const QPoint &position);
 
 private:
+
     QList<QShortcut*> m_tabShortcuts;
     friend class MainView;
 
     QWidget *m_parent;
     QPoint m_dragStartPos;
     int m_dragCurrentIndex;
-    int m_actualIndex;  // the index in which we are seeing a Context menu
+
+    /**
+     * the index in which we are seeing a Context menu
+     */
+    int m_actualIndex;
 };
 
 #endif

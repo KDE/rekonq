@@ -23,6 +23,9 @@
 #include "mainview.h"
 #include "mainview.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "tabbar.h"
 #include "application.h"
@@ -84,6 +87,26 @@ MainView::~MainView()
     delete m_lineEditCompleter;
     delete m_recentlyClosedTabsMenu;
 } 
+
+
+void MainView::viewTabBar()
+{
+    bool always = ReKonfig::alwaysShowTabBar();
+    if(always == true)
+        return;
+
+    if( m_tabBar->count() == 1 )
+    {
+        m_tabBar->hide();
+    }
+    else
+    {
+        if( m_tabBar->isHidden() )
+        {
+            m_tabBar->show();
+        }
+    }
+}
 
 
 KAction *MainView::recentlyClosedTabsAction() const
@@ -367,6 +390,9 @@ WebView *MainView::newTab(bool makeCurrent)
     if (count() == 1)
         currentChanged(currentIndex());
     emit tabsChanged();
+
+    viewTabBar();
+
     return webView;
 }
 
@@ -420,6 +446,8 @@ void MainView::closeOtherTabs(int index)
         closeTab(i);
     for (int i = index - 1; i >= 0; --i)
         closeTab(i);
+
+    viewTabBar();
 }
 
 
@@ -432,6 +460,8 @@ void MainView::cloneTab(int index)
         return;
     WebView *tab = newTab(false);
     tab->setUrl( webView(index)->url() );
+
+    viewTabBar();
 }
 
 
@@ -474,6 +504,8 @@ void MainView::closeTab(int index)
         currentWebView()->setFocus();
     if (count() == 0)
         emit lastTabClosed();
+
+    viewTabBar();
 }
 
 

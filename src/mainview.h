@@ -22,10 +22,8 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
-
 // KDE Includes
 #include <KTabWidget>
-
 
 // Forward Declarations
 class WebView;
@@ -41,12 +39,15 @@ class QStackedWidget;
 class QLineEdit;
 class QUrl;
 
+
 /**
  *   TabWidget that contains WebViews and a stack widget of associated line edits.
  *
  *   Connects up the current tab's signals to this class's signal and uses WebActionMapper
  *   to proxy the actions.
+ *
  */
+
 class MainView : public KTabWidget
 {
     Q_OBJECT
@@ -126,6 +127,14 @@ private slots:
     void moveTab(int fromIndex, int toIndex);
 
 private:
+
+    /** 
+     * show and hide TabBar if user doesn't choose 
+     * "Always Show TabBar" option
+     *
+     */
+    void viewTabBar();
+
     KAction *m_recentlyClosedTabsAction;
 
     KMenu *m_recentlyClosedTabsMenu;
@@ -137,5 +146,5 @@ private:
     TabBar *m_tabBar;
 };
 
-#endif // TABWIDGET_H
+#endif
 
