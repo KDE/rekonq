@@ -300,10 +300,14 @@ void MainWindow::setupHistoryMenu()
 }
 
 
+// FIXME
+// check ALL variables: including alwaysShowTabbar..
+
 void MainWindow::slotUpdateConf()
 {
     // ============== General ==================    
     m_homePage = ReKonfig::homePage();
+
 
     // =========== Fonts ==============
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
