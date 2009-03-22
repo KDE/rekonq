@@ -1,7 +1,11 @@
 INSTALL( FILES
-    defaultbookmarks.xbel
     loading.gif
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
+)
+
+INSTALL( FILES
+    defaultbookmarks.xbel
+    DESTINATION ${DATA_INSTALL_DIR}/rekonq
 )
 
 INSTALL( FILES 

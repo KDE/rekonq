@@ -20,16 +20,22 @@
 
 
 
-// Local Includes
+// Self Includes
 #include "bookmarks.h"
 #include "bookmarks.moc"
 
+// Local Includes
 #include "mainwindow.h"
 #include "webview.h"
 
 // KDE Includes
 #include <KMimeType>
 #include <KMenu>
+#include <KStandardDirs>
+#include <KDebug>
+
+// Qt Includes
+#include <QFile>
 
 OwnBookMarks::OwnBookMarks(KMainWindow *parent)
     : QObject(parent)
@@ -85,6 +91,22 @@ BookmarksProvider::BookmarksProvider(KMainWindow* parent)
     , m_bmToolbar(0)
 {
     KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );    // share konqueror bookmarks
+
+    if (!QFile::exists( bookfile.path() ) )
+    {
+        bookfile = KUrl( "~/.kde4/share/apps/konqueror/bookmarks.xml" );
+        if (!QFile::exists( bookfile.path() ) )
+        {
+            QString bookmarksDefaultPath = KStandardDirs::locate("appdata" , "defaultbookmarks.xbel");
+            kWarning() << bookmarksDefaultPath;
+            QFile bkms(bookmarksDefaultPath);
+            QString bookmarksPath = KStandardDirs::locateLocal("appdata", "bookmarks.xml", true);
+            bookmarksPath.replace("rekonq", "konqueror");
+            bkms.copy(bookmarksPath);
+
+            bookfile = KUrl( bookmarksPath );
+        }
+    }
     m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
     m_ac = new KActionCollection( this );
 }
