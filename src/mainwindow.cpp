@@ -76,6 +76,7 @@ MainWindow::MainWindow()
     // creating a centralWidget containing m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
+    layout->setMargin(0);
     layout->addWidget(m_view);
 
     // Find Bar
