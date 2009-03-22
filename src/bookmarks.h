@@ -22,6 +22,7 @@
 #ifndef BOOKMARKS_H
 #define BOOKMARKS_H
 
+
 // KDE Includes
 #include <KBookmarkOwner>
 #include <KBookmarkManager>
@@ -31,7 +32,10 @@
 #include <KActionCollection>
 #include <KMainWindow>
 
+
+// Forward Declarations
 class MainWindow;
+
 
 /** 
  * Inherited from KBookmarkOwner, this class allows to manage 
@@ -101,6 +105,7 @@ private:
 
 // ------------------------------------------------------------------------------
 
+
 /** 
  * This class represent the rekonq bookmarks menu.
  * It's just a simple class inherited from KBookmarkMenu
@@ -118,6 +123,7 @@ public:
 
     KMenu *viewContextMenu(QAction* action);
 };
+
 
 // ------------------------------------------------------------------------------
 
