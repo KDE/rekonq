@@ -120,26 +120,13 @@ BookmarksProvider::BookmarksProvider(KMainWindow* parent)
 void BookmarksProvider::slotBookmarksChanged(const QString & group)
 {
     KBookmarkGroup toolbarGroup = m_manager->toolbar();
-//    KBookmarkGroup tb = getToolbar(); // heavy for non cached toolbar version
     kWarning() << "KBookmarkBar::slotBookmarksChanged( " << group << " )";
 
     if ( toolbarGroup.isNull() )
         return;
 
-/*    if ( KBookmark::commonParent(group, tb.address()) == group)  // Is group a parent of tb.address?
-    {
-        */m_bmToolbar->clear();
-        provideBmToolbar(m_bmToolbar);
-//     }
-//     else
-//     {
-//         // Iterate recursively into child menus
-//         for ( QList<KBookmarkMenu *>::ConstIterator smit = m_lstSubMenus.constBegin(), smend = m_lstSubMenus.constEnd();
-//               smit != smend; ++smit )
-//         {
-//             (*smit)->slotBookmarksChanged( group );
-//         }
-//     }
+    m_bmToolbar->clear();
+    provideBmToolbar(m_bmToolbar);
 }
 
 
