@@ -169,6 +169,7 @@ public:
 
 public slots:
     void contextMenu(const QPoint & point);
+    void slotBookmarksChanged(const QString &);
 
 private:
     KMainWindow *m_parent;

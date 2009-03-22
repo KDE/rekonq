@@ -112,6 +112,34 @@ BookmarksProvider::BookmarksProvider(KMainWindow* parent)
     }
     m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
     m_ac = new KActionCollection( this );
+
+    connect( m_manager, SIGNAL( changed(const QString &, const QString &) ), this, SLOT( slotBookmarksChanged(const QString &) ) );
+}
+
+
+void BookmarksProvider::slotBookmarksChanged(const QString & group)
+{
+    KBookmarkGroup toolbarGroup = m_manager->toolbar();
+//    KBookmarkGroup tb = getToolbar(); // heavy for non cached toolbar version
+    kWarning() << "KBookmarkBar::slotBookmarksChanged( " << group << " )";
+
+    if ( toolbarGroup.isNull() )
+        return;
+
+/*    if ( KBookmark::commonParent(group, tb.address()) == group)  // Is group a parent of tb.address?
+    {
+        */m_bmToolbar->clear();
+        provideBmToolbar(m_bmToolbar);
+//     }
+//     else
+//     {
+//         // Iterate recursively into child menus
+//         for ( QList<KBookmarkMenu *>::ConstIterator smit = m_lstSubMenus.constBegin(), smend = m_lstSubMenus.constEnd();
+//               smit != smend; ++smit )
+//         {
+//             (*smit)->slotBookmarksChanged( group );
+//         }
+//     }
 }
 
 
