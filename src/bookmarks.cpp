@@ -37,6 +37,7 @@
 // Qt Includes
 #include <QFile>
 
+
 OwnBookMarks::OwnBookMarks(KMainWindow *parent)
     : QObject(parent)
     , KBookmarkOwner()
@@ -52,6 +53,7 @@ void OwnBookMarks::openBookmark (const KBookmark & b, Qt::MouseButtons mb, Qt::K
     Q_UNUSED(km);
     emit openUrl( b.url() );
 }
+
 
 QString OwnBookMarks::currentUrl() const
 {
@@ -74,6 +76,7 @@ BookmarksMenu::BookmarksMenu( KBookmarkManager* manager, KBookmarkOwner* owner, 
     : KBookmarkMenu(manager, owner, menu, ac)
 {    
 }
+
 
 KMenu* BookmarksMenu::viewContextMenu(QAction* action)
 {
@@ -163,5 +166,4 @@ void BookmarksProvider::contextMenu(const QPoint & point)
     menu->setAttribute(Qt::WA_DeleteOnClose);
     menu->popup( m_bmToolbar->mapToGlobal( point ));
 }
-
 

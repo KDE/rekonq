@@ -4,9 +4,11 @@ To 0.0.5
 DONE tabbar: fixed dimension
 DONE tabbar: hide if just one
 - bookmarks update
+DONE loading right bookmark file
 - improve "save as"
 - load just ONE site at start
 - loading right sites as "external browser"
+
 
 To 0.0.4
 - improve DOCUMENTATION
@@ -21,7 +23,9 @@ To 0.0.4
 - KDE proxy support
 - QWebPluginFactory subclass to load KParts into QtWebKit.
 
+
 + ------------------------
+
 
 1. check the lines above...
 2. Improve docs
@@ -31,5 +35,6 @@ DONE. fix bookmarks toolbar POSITION
 DONE. fix load at startup
 DONE. fix FONTS problems between webkit && KDE settings (at least, here..)
 DONE. enable flash support !!
+
 
 + ------------------------
