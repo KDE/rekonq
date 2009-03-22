@@ -66,7 +66,15 @@ QSize TabBar::tabSizeHint (int index) const
 {
     Q_UNUSED(index);
     QSize s = m_parent->sizeHint();
-    int w = s.width() / 4;
+    int w;
+    if ( count() > 3 )
+    {
+        w = s.width() / 4;
+    }
+    else
+    {
+        w = s.width() / 3;
+    }
     int h = s.height() / 20;
 
     QSize ts = QSize(w,h);    
