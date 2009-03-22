@@ -3,7 +3,7 @@ To 0.0.5
 - fix crash on example sites..
 DONE tabbar: fixed dimension
 DONE tabbar: hide if just one
-- bookmarks update
+DONE bookmarks tabbar update
 DONE loading right bookmark file
 - improve "save as"
 - load just ONE site at start
