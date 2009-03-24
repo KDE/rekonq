@@ -43,7 +43,7 @@
 
 static const unsigned int JAR_VERSION = 23;
 
-QT_BEGIN_NAMESPACE
+
 QDataStream &operator<<(QDataStream &stream, const QList<QNetworkCookie> &list)
 {
     stream << JAR_VERSION;
@@ -82,7 +82,6 @@ QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list)
     }
     return stream;
 }
-QT_END_NAMESPACE
 
 
 CookieJar::CookieJar(QObject *parent)

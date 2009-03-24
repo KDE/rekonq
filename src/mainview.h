@@ -87,6 +87,13 @@ public:
     QLineEdit *lineEdit(int index) const;
     int webViewIndex(WebView *webView) const;
 
+    /** 
+     * show and hide TabBar if user doesn't choose 
+     * "Always Show TabBar" option
+     *
+     */
+    void showTabBar();
+
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
@@ -128,13 +135,6 @@ private slots:
     void moveTab(int fromIndex, int toIndex);
 
 private:
-
-    /** 
-     * show and hide TabBar if user doesn't choose 
-     * "Always Show TabBar" option
-     *
-     */
-    void viewTabBar();
 
     KAction *m_recentlyClosedTabsAction;
 

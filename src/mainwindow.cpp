@@ -309,7 +309,7 @@ void MainWindow::slotUpdateConf()
 {
     // ============== General ==================    
     m_homePage = ReKonfig::homePage();
-
+    mainView()->showTabBar();
 
     // =========== Fonts ==============
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
@@ -320,33 +320,29 @@ void MainWindow::slotUpdateConf()
     defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFontSize, fnSize);
 
-
     QFont fixedFont = ReKonfig::fixedFont();
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fnSize);
 
-
     // =========== Privacy ==============
-
     bool arePluginsEnabled = ReKonfig::enablePlugins();
     bool isJavascriptEnabled = ReKonfig::enableJavascript();
 
     defaultSettings->setAttribute(QWebSettings::PluginsEnabled, arePluginsEnabled);
     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, isJavascriptEnabled);
 
-    // load Settings on main classes
+    // ====== load Settings on main classes
     Application::networkAccessManager()->loadSettings();
     Application::cookieJar()->loadSettings();
     Application::historyManager()->loadSettings();
 
-    // ============ Proxy ================
 }
 
 
 void MainWindow::slotUpdateBrowser()
 {
     slotUpdateConf();
-    tabWidget()->reloadAllTabs();
+    mainView()->reloadAllTabs();
 }
 
 
@@ -435,7 +431,7 @@ void MainWindow::slotPreferences()
 {
     // an instance the dialog could be already created and could be cached,
     // in which case you want to display the cached dialog
-    if ( SettingsDialog::showDialog( "settings" ) )
+    if ( SettingsDialog::showDialog( "rekonfig" ) )
         return;
 
     // we didn't find an instance of this dialog, so lets create it
@@ -546,7 +542,7 @@ void MainWindow::slotPrivateBrowsing()
 
         MainWindow* win = Application::instance()->mainWindow();
         win->m_lastSearch = QString::null;
-        win->tabWidget()->clear();
+        win->mainView()->clear();
     }
 }
 
@@ -688,7 +684,7 @@ void MainWindow::slotToggleInspector(bool enable)
 // }
 
 
-MainView *MainWindow::tabWidget() const
+MainView *MainWindow::mainView() const
 {
     return m_view;
 }

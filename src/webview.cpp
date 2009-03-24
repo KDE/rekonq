@@ -122,7 +122,7 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     if (m_openInNewTab) 
     {
         m_openInNewTab = false;
-        return mainWindow()->tabWidget()->newTab()->page();
+        return mainWindow()->mainView()->newTab()->page();
     }
 
     MainWindow *mainWindow = Application::instance()->mainWindow();
@@ -137,9 +137,7 @@ QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QS
     kWarning() << "url = " << url;
     kWarning() << "Param Names = " << paramNames;
     kWarning() << "Param Values = " << paramValues;
-//     Q_UNUSED(url);
-//     Q_UNUSED(paramNames);
-//     Q_UNUSED(paramValues);
+
     QUiLoader loader;
     return loader.createWidget(classId, view());
 }

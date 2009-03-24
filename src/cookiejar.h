@@ -32,12 +32,11 @@
 #include <QStringList>
 #include <QTableView>
 
-QT_BEGIN_NAMESPACE
+// Forward Declarations
 class QSortFilterProxyModel;
 class QKeyEvent;
-QT_END_NAMESPACE
-
 class AutoSaver;
+
 
 class CookieJar : public QNetworkCookieJar
 {
@@ -55,13 +54,15 @@ signals:
     void cookiesChanged();
 
 public:
-    enum AcceptPolicy {
+    enum AcceptPolicy
+    {
         AcceptAlways,
         AcceptNever,
         AcceptOnlyFromSitesNavigatedTo
     };
 
-    enum KeepPolicy {
+    enum KeepPolicy
+    {
         KeepUntilExpire,
         KeepUntilExit,
         KeepUntilTimeLimit

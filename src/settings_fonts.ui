@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>363</width>
-    <height>241</height>
+    <width>414</width>
+    <height>298</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Appearance</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Fonts</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
@@ -37,16 +37,14 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="KFontComboBox" name="fixedFont"/>
+         <widget class="KFontComboBox" name="kcfg_fixedFont"/>
         </item>
         <item row="0" column="1">
-         <widget class="KFontComboBox" name="standardFont"/>
+         <widget class="KFontComboBox" name="kcfg_standardFont"/>
         </item>
        </layout>
       </item>
      </layout>
-     <zorder></zorder>
-     <zorder></zorder>
     </widget>
    </item>
    <item>
@@ -65,7 +63,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="fontSize"/>
+         <widget class="QSpinBox" name="kcfg_fontSize"/>
         </item>
        </layout>
       </item>

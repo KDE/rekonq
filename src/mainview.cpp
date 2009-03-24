@@ -89,11 +89,17 @@ MainView::~MainView()
 } 
 
 
-void MainView::viewTabBar()
+void MainView::showTabBar()
 {
     bool always = ReKonfig::alwaysShowTabBar();
     if(always == true)
+    {
+        if( m_tabBar->isHidden() )
+        {
+            m_tabBar->show();
+        }
         return;
+    }
 
     if( m_tabBar->count() == 1 )
     {
@@ -391,7 +397,7 @@ WebView *MainView::newTab(bool makeCurrent)
         currentChanged(currentIndex());
     emit tabsChanged();
 
-    viewTabBar();
+    showTabBar();
 
     return webView;
 }
@@ -447,7 +453,7 @@ void MainView::closeOtherTabs(int index)
     for (int i = index - 1; i >= 0; --i)
         closeTab(i);
 
-    viewTabBar();
+    showTabBar();
 }
 
 
@@ -461,7 +467,7 @@ void MainView::cloneTab(int index)
     WebView *tab = newTab(false);
     tab->setUrl( webView(index)->url() );
 
-    viewTabBar();
+    showTabBar();
 }
 
 
@@ -505,7 +511,7 @@ void MainView::closeTab(int index)
     if (count() == 0)
         emit lastTabClosed();
 
-    viewTabBar();
+    showTabBar();
 }
 
 

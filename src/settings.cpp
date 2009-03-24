@@ -100,8 +100,8 @@ Private::Private(SettingsDialog *parent)
 // -----------------------------------------------------------------------------------------------------
 
 SettingsDialog::SettingsDialog(QWidget *parent)
-    : KConfigDialog(parent, "settings", ReKonfig::self() )
-    , d(new Private(this) ) 
+    : KConfigDialog(parent, "rekonfig", ReKonfig::self())
+    , d(new Private(this)) 
 {
     setFaceType(KPageDialog::List);
     showButtonSeparator(true);
@@ -123,6 +123,7 @@ SettingsDialog::~SettingsDialog()
     delete d;
 }
 
+
 // we need this function to UPDATE the config widget data..
 void SettingsDialog::readConfig()
 {
@@ -132,15 +133,12 @@ void SettingsDialog::readConfig()
     connect(d->generalUi.downloadDirUrlRequester, SIGNAL(textChanged(QString)),this, SLOT(saveSettings()));
 
     // ======= Fonts
-    QFont stdFont = ReKonfig::standardFont();
-    d->fontsUi.standardFont->setCurrentFont(stdFont);
-
-    QFont fxFont = ReKonfig::fixedFont();
-    d->fontsUi.fixedFont->setOnlyFixed(true);
-    d->fontsUi.fixedFont->setCurrentFont(fxFont);
-
-    int fnSize = ReKonfig::fontSize();
-    d->fontsUi.fontSize->setValue( fnSize );
+//     QFont stdFont = ReKonfig::standardFont();
+//     d->fontsUi.standardFont->setCurrentFont(stdFont);
+// 
+//     QFont fxFont = ReKonfig::fixedFont();
+    d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
+//     d->fontsUi.fixedFont->setCurrentFont(fxFont);
 
     // ======= Proxy
     bool proxyEnabled = ReKonfig::isProxyEnabled();
@@ -156,9 +154,8 @@ void SettingsDialog::saveSettings()
     ReKonfig::setDownloadDir( d->generalUi.downloadDirUrlRequester->url().prettyUrl() );
 
     // Fonts
-    ReKonfig::setStandardFont( d->fontsUi.standardFont->currentFont() );
-    ReKonfig::setFixedFont( d->fontsUi.fixedFont->currentFont() );
-    ReKonfig::setFontSize( d->fontsUi.fontSize->value() );
+//     ReKonfig::setStandardFont( d->fontsUi.standardFont->currentFont() );
+//     ReKonfig::setFixedFont( d->fontsUi.fixedFont->currentFont() );
 
     // Save
     ReKonfig::self()->writeConfig();

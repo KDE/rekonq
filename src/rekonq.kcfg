@@ -17,10 +17,13 @@
     <entry name="downloadDir" type="Path">
         <default>$HOME</default>
     </entry>
-    <entry name="expireHistory" type="Int">
-        <default>1</default>
-    </entry>
     <entry name="alwaysShowTabBar" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="enablePlugins" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="enableJavascript" type="Bool">
         <default>true</default>
     </entry>
   </group>
@@ -40,12 +43,9 @@
 
 <!-- Privacy Settings -->
     <group name="Privacy">
-        <entry name="enablePlugins" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="enableJavascript" type="Bool">
-            <default>true</default>
-        </entry>
+        <entry name="expireHistory" type="Int">
+            <default>1</default>
+        </entry>    
         <entry name="acceptCookies" type="Int">
             <default>2</default>
         </entry>

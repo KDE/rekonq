@@ -309,10 +309,6 @@ void HistoryManager::load()
 
 void HistoryManager::save()
 {
-//     KConfig config("rekonqrc");
-//     KConfigGroup group = config.group("history");
-//     group.writeEntry( QString("historyLimit"), m_historyLimit );
-
     bool saveAll = m_lastSavedUrl.isEmpty();
     int first = m_history.count() - 1;
     if (!saveAll) 

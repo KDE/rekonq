@@ -15,29 +15,53 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Web Content</string>
+      <string>History</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QCheckBox" name="kcfg_enablePlugins">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Enable Plugins</string>
+         <string>Remove history items:</string>
         </property>
-        <property name="checked">
-         <bool>true</bool>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_enableJavascript">
-        <property name="text">
-         <string>Enable Javascript</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="kcfg_expireHistory">
+        <item>
+         <property name="text">
+          <string>After one day</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>After one week</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>After two weeks</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>After one month</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>After one year</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Manually</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>
@@ -132,7 +156,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>136</height>
       </size>
      </property>
     </spacer>

@@ -36,6 +36,7 @@
 
 // KDE Includes
 #include <KMessageBox>
+#include <KDebug>
 
 // Qt Includes
 #include <QDialog>
@@ -64,6 +65,7 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
 void NetworkAccessManager::loadSettings()
 {
+    kWarning() << "loading NetworkAccessManager settings..";
     QNetworkProxy proxy;
     if ( ReKonfig::isProxyEnabled() ) 
     {

@@ -10,7 +10,7 @@ DONE Added Google Suggestions
 - load just ONE site at start
 - loading right sites as "external browser"
 - provide translations
-
+DONE notfound.html shown if rekonq doesn't load connection
 
 To 0.0.4
 - improve DOCUMENTATION

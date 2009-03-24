@@ -140,7 +140,7 @@ MainWindow *Application::mainWindow()
 
 WebView *Application::newTab()
 {
-    return m_mainWindow->tabWidget()->newTab();
+    return m_mainWindow->mainView()->newTab();
 }
 
 
