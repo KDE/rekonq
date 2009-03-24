@@ -5,6 +5,7 @@ DONE tabbar: fixed dimension
 DONE tabbar: hide if just one
 DONE bookmarks tabbar update
 DONE loading right bookmark file
+DONE Added Google Suggestions
 - improve "save as"
 - load just ONE site at start
 - loading right sites as "external browser"
