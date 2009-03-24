@@ -34,7 +34,7 @@
     <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::FixedFont))</default>
     </entry>
     <entry name="fontSize" type="Int">
-    <default>10</default>
+    <default>12</default>
     </entry>
   </group>
 

@@ -317,25 +317,11 @@ void MainWindow::slotUpdateConf()
     int fnSize = ReKonfig::fontSize();
 
     QFont standardFont = ReKonfig::standardFont();
-//     if( !standardFont.exactMatch() )
-//     {
-//         kWarning() << "Webkit Standard Font doesn't match! Setting to KDE general font..";
-//         standardFont = KGlobalSettings::generalFont();
-//         ReKonfig::setStandardFont( standardFont );
-//         ReKonfig::self()->writeConfig();
-//     }
     defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFontSize, fnSize);
 
 
     QFont fixedFont = ReKonfig::fixedFont();
-//     if( !fixedFont.exactMatch() )
-//     {
-//         kWarning() << "Webkit Fixed Font doesn't match! Setting to KDE fixed font..";
-//         fixedFont = KGlobalSettings::fixedFont();
-//         ReKonfig::setFixedFont( fixedFont );
-//         ReKonfig::self()->writeConfig();
-//     }
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fnSize);
 
@@ -352,6 +338,15 @@ void MainWindow::slotUpdateConf()
     Application::networkAccessManager()->loadSettings();
     Application::cookieJar()->loadSettings();
     Application::historyManager()->loadSettings();
+
+    // ============ Proxy ================
+}
+
+
+void MainWindow::slotUpdateBrowser()
+{
+    slotUpdateConf();
+    tabWidget()->reloadAllTabs();
 }
 
 
@@ -447,9 +442,9 @@ void MainWindow::slotPreferences()
     SettingsDialog *s = new SettingsDialog(this);
 
     // keep us informed when the user changes settings
-    connect( s, SIGNAL(settingsChanged(const QString&)), this, SLOT(slotUpdateConf()) );
+    connect(s, SIGNAL(settingsChanged(const QString&)), this, SLOT(slotUpdateBrowser()));
 
-    s->show();
+    s->exec();
 }
 
 
