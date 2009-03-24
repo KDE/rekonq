@@ -160,21 +160,16 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     QFile file( myfilestr );
     bool isOpened = file.open(QIODevice::ReadOnly);
     Q_ASSERT(isOpened);
+
     QString title = i18n("Error loading page: ") + reply->url().toString();
+
+    QString imagePath = KIconLoader::global()->iconPath( "rekonq", KIconLoader::NoGroup, false);
+
     QString html = QString(QLatin1String(file.readAll()))
                         .arg(title)
+                        .arg("file://" + imagePath)
                         .arg(reply->errorString())
                         .arg(reply->url().toString());
-
-    QBuffer imageBuffer;
-    imageBuffer.open(QBuffer::ReadWrite);
-    QIcon icon = view()->style()->standardIcon(QStyle::SP_MessageBoxWarning, 0, view());
-    QPixmap pixmap = icon.pixmap(QSize(32,32));
-    if (pixmap.save(&imageBuffer, "PNG")) 
-    {
-        html.replace(QLatin1String("IMAGE_BINARY_DATA_HERE"),
-                     QString(QLatin1String(imageBuffer.buffer().toBase64())));
-    }
 
     QList<QWebFrame*> frames;
     frames.append(mainFrame());

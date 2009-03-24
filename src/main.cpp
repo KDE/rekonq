@@ -18,17 +18,19 @@
 * ============================================================ */
 
 
-
 #include "application.h"
 
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KDebug>
 
+
 static const char description[] =
     I18N_NOOP("KDE Browser Webkit Based");
 
+
 static const char version[] = "0.0.5";
+
 
 int main(int argc, char **argv)
 {
