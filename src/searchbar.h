@@ -28,7 +28,9 @@
 // Forward Declarations
 class KUrl;
 class QFocusEvent;
-
+class QTimer;
+class QNetworkAccessManager;
+class QNetworkReply;
 
 /**
  * This class defines an internet search bar. 
@@ -42,10 +44,13 @@ public:
     ~SearchBar();
 
 public slots:
-/**
- *  Use this slot to perform one search in one search engine
- *
- */
+    void autoSuggest();
+    void handleNetworkData(QNetworkReply *networkReply);
+    
+    /**
+    *  Use this slot to perform one search in one search engine
+    *
+    */
     void searchNow();
 
 protected:
@@ -54,6 +59,9 @@ protected:
 signals:
     void search(const KUrl &url);
 
+private:
+    QTimer *timer;
+    QNetworkAccessManager *netMan;
 };
 
 #endif

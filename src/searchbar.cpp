@@ -33,6 +33,7 @@
 // Qt Includes
 #include <QtCore>
 #include <QtGui>
+#include <QtNetwork>
 
 
 SearchBar::SearchBar(QWidget *parent) : 
@@ -50,12 +51,20 @@ SearchBar::SearchBar(QWidget *parent) :
 
     setClearButtonShown( true );
 
-    QPalette p;
-    p.setColor( QPalette::Text , Qt::lightGray );
-    setPalette( p );
-    setText( i18n("Search..") );
+    // better solution than using QPalette(s)..
+    setClickMessage( i18n("Search..") );
 
-    connect( this, SIGNAL( returnPressed() ) , this , SLOT( searchNow() ) );
+    // setting QNetworkAccessManager..
+    netMan = new QNetworkAccessManager(this);
+    connect(netMan, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleNetworkData(QNetworkReply*)));
+
+    timer = new QTimer(this);
+    timer->setSingleShot(true);
+    timer->setInterval(300);
+    connect(timer, SIGNAL(timeout()), SLOT(autoSuggest()));
+    connect(this, SIGNAL(textEdited(QString)), timer, SLOT(start()));
+
+    connect(this, SIGNAL( returnPressed() ) , this , SLOT( searchNow() ) );
 }
 
 
@@ -66,6 +75,7 @@ SearchBar::~SearchBar()
 
 void SearchBar::searchNow()
 {
+    timer->stop();
     QString searchText = text();
 
     KUrl url(QLatin1String("http://www.google.com/search"));
@@ -87,3 +97,37 @@ void SearchBar::focusInEvent(QFocusEvent *event)
     clear();
 }
 
+
+void SearchBar::autoSuggest()
+{
+    QString str = text();
+    QString url = QString("http://google.com/complete/search?output=toolbar&q=%1").arg(str);
+    netMan->get(QNetworkRequest(QString(url)));
+}
+
+
+void SearchBar::handleNetworkData(QNetworkReply *networkReply)
+{
+    QUrl url = networkReply->url();
+    if (!networkReply->error()) 
+    {
+        QStringList choices;
+
+        QString response(networkReply->readAll());
+        QXmlStreamReader xml(response);
+        while (!xml.atEnd())
+        {
+            xml.readNext();
+            if (xml.tokenType() == QXmlStreamReader::StartElement)
+                if (xml.name() == "suggestion")
+                {
+                    QStringRef str = xml.attributes().value("data");
+                    choices << str.toString();
+                }
+        }
+
+        setCompletedItems(choices, true);
+    }
+
+    networkReply->deleteLater();
+}
