@@ -12,3 +12,8 @@ INSTALL( FILES
     rekonq.desktop 
     DESTINATION ${XDG_APPS_INSTALL_DIR}
 )
+
+INSTALL( FILES
+    notfound.html
+    DESTINATION ${DATA_INSTALL_DIR}/rekonq/htmls
+)
