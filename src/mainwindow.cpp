@@ -290,7 +290,7 @@ void MainWindow::setupHistoryMenu()
     HistoryMenu *historyMenu = new HistoryMenu(this);
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_view, SLOT(loadUrlInCurrentTab(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
-    historyMenu->setTitle( i18n("Hi&story") );
+    historyMenu->setTitle( i18n("&History") );
     menuBar()->insertMenu( actionCollection()->action("bookmarks"), historyMenu);
     QList<QAction*> historyActions;
 
