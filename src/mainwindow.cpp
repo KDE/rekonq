@@ -630,6 +630,16 @@ void MainWindow::slotViewTextSmaller()
 // TODO improve this
 void MainWindow::slotViewFullScreen( bool makeFullScreen )
 {
+    if ( makeFullScreen == true )
+    {
+        menuBar()->hide();
+        toolBar("mainToolBar")->hide();
+    }
+    else
+    {
+        menuBar()->show();
+        toolBar("mainToolBar")->show();
+    }
     KToggleFullScreenAction::setFullScreen( this, makeFullScreen );
 }
 
