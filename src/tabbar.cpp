@@ -53,7 +53,7 @@ TabBar::TabBar(QWidget *parent)
     QFont standardFont = KGlobalSettings::generalFont();
     QString fontFamily = standardFont.family();
     int dim = standardFont.pointSize();
-    setFont( QFont(fontFamily, dim-2) );
+    setFont( QFont(fontFamily, dim-1) );
 }
 
 
@@ -75,7 +75,7 @@ QSize TabBar::tabSizeHint (int index) const
     {
         w = s.width() / 3;
     }
-    int h = s.height() / 20;
+    int h = KTabBar::tabSizeHint(index).height();
 
     QSize ts = QSize(w,h);    
     return ts;

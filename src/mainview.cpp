@@ -91,8 +91,9 @@ MainView::~MainView()
 
 void MainView::showTabBar()
 {
-    bool always = ReKonfig::alwaysShowTabBar();
-    if(always == true)
+    bool astb = ReKonfig::alwaysShowTabBar();
+
+    if(astb == true)
     {
         if( m_tabBar->isHidden() )
         {
@@ -593,7 +594,7 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event)
         newTab();
         return;
     }
-    QTabWidget::mouseDoubleClickEvent(event);
+    KTabWidget::mouseDoubleClickEvent(event);
 }
 
 
@@ -603,7 +604,7 @@ void MainView::contextMenuEvent(QContextMenuEvent *event)
         m_tabBar->contextMenuRequested(event->pos());
         return;
     }
-    QTabWidget::contextMenuEvent(event);
+    KTabWidget::contextMenuEvent(event);
 }
 
 
