@@ -7,13 +7,13 @@ DONE Added Google Suggestions
 DONE notfound.html shown if rekonq doesn't load connection
 DONE improve fullscreen
 DONE QNetworkDiskCache
+DONE loading right sites as "external browser" (rekonq %u)
+DONE provide translations structure
+DONE disable BACK button when history is NULL
 - QWebFrame
 DONE(?) definitely fix fonts!
 - fix crash on example sites..
 - load just ONE site at start
-- loading right sites as "external browser"
-- provide translations
-- disable BACK button when history is NULL
 - improve DOCUMENTATION
 
 
