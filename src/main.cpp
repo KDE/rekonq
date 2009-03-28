@@ -39,7 +39,7 @@ int main(int argc, char **argv)
                      ki18n("rekonq"),
                      version,
                      ki18n(description),
-                     KAboutData::License_GPL_V3,
+                     KAboutData::License_GPL,
                      ki18n("(C) 2008 Andrea Diamantini"),
                      KLocalizedString(),
                      "http://rekonq.sourceforge.net",

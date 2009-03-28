@@ -74,7 +74,6 @@ private slots:
     void slotUpdateConf();
     void slotLoadProgress(int);
     void slotUpdateStatusbar(const QString &string);
-    void slotUpdateActions();
     void slotUpdateWindowTitle(const QString &title = QString());
     void slotOpenLocation();
     void slotAboutToShowBackMenu();
@@ -118,11 +117,7 @@ private:
     FindBar *m_findBar;
     KMenu *m_historyBackMenu;
     KMenu *m_windowMenu;
-    KAction *m_stopReloadAction;
-    KAction *m_stopAction;
-    KAction *m_reloadAction;
-    KAction *m_historyBackAction;
-    KAction *m_historyForwardAction;
+    QAction *m_stopReload;
     QString m_lastSearch;
     QString m_homePage;
 

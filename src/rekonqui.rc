@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="32">
+<gui name="rekonq" version="31">
 
 <MenuBar>
 
@@ -8,17 +8,17 @@
 <Menu name="file" noMerge="1"><text>&amp;File</text>
     <Action name="file_new" />
     <Action name="file_open" />
-    <Action name="open_location" />
+    <Action name="open location" />
     <Separator/>
-    <Action name="new_tab" />
-    <Action name="close_tab" />
+    <Action name="new tab" />
+    <Action name="close tab" />
     <Separator/>
     <Action name="file_save_as" />
     <Separator/>
     <Action name="file_print_preview" />
     <Action name="file_print" />
     <Separator/>
-    <Action name="private_browsing" />
+    <Action name="private browsing" />
     <Separator/>
     <Action name="file_quit" />
 </Menu>
@@ -39,14 +39,14 @@
 
 <!--  ============ VIEW menu =========== -->
 <Menu name="view" noMerge="1"><text>&amp;View</text>
-    <Action name="stop_reload" />
+    <Action name="stop reload" />
     <Action name="go_home" />
     <Separator/>
-    <Action name="bigger_font" />
-    <Action name="normal_font" />
-    <Action name="smaller_font" />
+    <Action name="bigger font" />
+    <Action name="normal font" />
+    <Action name="smaller font" />
     <Separator/>
-    <Action name="page_source" />
+    <Action name="page source" />
 </Menu>
 
 <!--  ============ GO menu =========== -->
@@ -59,7 +59,7 @@
 <!--  ============ TOOLS menu =========== -->
 <Menu name="tools">
     <Action name="downloads" />
-    <Action name="web_inspector" />
+    <Action name="web inspector" />
 </Menu>
 
 <!--  ============ SETTINGS menu =========== -->
@@ -69,9 +69,9 @@
 
 <!--  ============ Main ToolBar =========== -->
 <ToolBar name="mainToolBar" fullWidth="true" position="top" iconText="iconOnly" newline="true" noMerge="1"><text>Main Toolbar</text>
-    <Action name="history_back" />
-    <Action name="history_forward" />
-    <Action name="stop_reload" />
+    <Action name="history back" />
+    <Action name="history forward" />
+    <Action name="stop reload" />
     <Action name="go_home" />
 </ToolBar>
 
