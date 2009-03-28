@@ -37,8 +37,8 @@
 class MainWindow;
 
 
-/** 
- * Inherited from KBookmarkOwner, this class allows to manage 
+/**
+ * Inherited from KBookmarkOwner, this class allows to manage
  * bookmarks as actions
  *
  * @author Andrea Diamantini <adjam7@gmail.com>
@@ -46,21 +46,21 @@ class MainWindow;
  */
 class OwnBookMarks : public QObject , public KBookmarkOwner
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
 
-    /**  
+    /**
      * The class ctor.
      *
      * @param parent the pointer to the browser mainwindow. We need it
-     *               to link bookmarks actions with the right window 
+     *               to link bookmarks actions with the right window
      *               where load url in
      */
     OwnBookMarks(KMainWindow *parent);
 
     /**
-     * This function is called when a bookmark is selected and belongs to 
+     * This function is called when a bookmark is selected and belongs to
      * the ancestor class.
      * This method actually emits signal to load bookmark's url without
      * considering mousebuttons or keyboard modifiers.
@@ -69,10 +69,10 @@ public:
      * @param mb the mouse buttons clicked to select the bookmark
      * @param km the keyboard modifiers pushed when the bookmark was selected
      */
-    virtual void openBookmark (const KBookmark &b , Qt::MouseButtons mb, Qt::KeyboardModifiers km);
+    virtual void openBookmark(const KBookmark &b , Qt::MouseButtons mb, Qt::KeyboardModifiers km);
 
-    
-    /** 
+
+    /**
      * this method, from KBookmarkOwner interface, allows to add the current page
      * to the bookmark list, returning the URL page as QString.
      *
@@ -80,7 +80,7 @@ public:
      */
     virtual QString currentUrl() const;
 
-    /** 
+    /**
      * this method, from KBookmarkOwner interface, allows to add the current page
      * to the bookmark list, returning the title's page as QString.
      *
@@ -90,7 +90,7 @@ public:
 
 signals:
     /**
-     * This signal is emitted when an url has to be loaded 
+     * This signal is emitted when an url has to be loaded
      *
      * @param url the URL to load
      *
@@ -106,7 +106,7 @@ private:
 // ------------------------------------------------------------------------------
 
 
-/** 
+/**
  * This class represent the rekonq bookmarks menu.
  * It's just a simple class inherited from KBookmarkMenu
  *
@@ -116,10 +116,10 @@ private:
  */
 class BookmarksMenu : public KBookmarkMenu
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    BookmarksMenu( KBookmarkManager* manager, KBookmarkOwner* owner, KMenu* menu, KActionCollection* ac);
+    BookmarksMenu(KBookmarkManager* manager, KBookmarkOwner* owner, KMenu* menu, KActionCollection* ac);
 
     KMenu *viewContextMenu(QAction* action);
 };
@@ -128,7 +128,7 @@ public:
 // ------------------------------------------------------------------------------
 
 
-/** 
+/**
  * This class represent the interface to rekonq bookmarks system.
  * All rekonq needs (Bookmarks Menu, Bookmarks Toolbar) is provided
  * from this class.
@@ -140,10 +140,10 @@ public:
  */
 class BookmarksProvider : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    /** 
+    /**
      * Class constructor. Connect BookmarksProvider with bookmarks source
      * (actually konqueror's bookmarks)
      *
@@ -152,14 +152,14 @@ public:
      */
     BookmarksProvider(KMainWindow* parent);
 
-    /** 
+    /**
      * Customize bookmarks toolbar
      *
      * @param toolbar the toolbar to customize
      */
     void provideBmToolbar(KToolBar* toolbar);
 
-    /** 
+    /**
      * Generate the Bookmarks Menu
      *
      * @return the Bookmarks Menu

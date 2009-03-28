@@ -66,12 +66,12 @@ QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list)
 
     quint32 count;
     stream >> count;
-    for(quint32 i = 0; i < count; ++i)
+    for (quint32 i = 0; i < count; ++i)
     {
         QByteArray value;
         stream >> value;
         QList<QNetworkCookie> newCookies = QNetworkCookie::parseCookies(value);
-        if (newCookies.count() == 0 && value.length() != 0) 
+        if (newCookies.count() == 0 && value.length() != 0)
         {
             kWarning() << "CookieJar: Unable to parse saved cookie:" << value;
         }
@@ -85,10 +85,10 @@ QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list)
 
 
 CookieJar::CookieJar(QObject *parent)
-    : QNetworkCookieJar(parent)
-    , m_loaded(false)
-    , m_saveTimer(new AutoSaver(this))
-    , m_acceptCookies(AcceptOnlyFromSitesNavigatedTo)
+        : QNetworkCookieJar(parent)
+        , m_loaded(false)
+        , m_saveTimer(new AutoSaver(this))
+        , m_acceptCookies(AcceptOnlyFromSitesNavigatedTo)
 {
 }
 
@@ -117,26 +117,26 @@ void CookieJar::load()
     qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
 
     QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini");
-    KConfig iniconfig( filepath );
+    KConfig iniconfig(filepath);
 
     KConfigGroup inigroup1 = iniconfig.group("general");
 
-    QStringList cookieStringList = inigroup1.readEntry( QString("cookies"), QStringList() );
+    QStringList cookieStringList = inigroup1.readEntry(QString("cookies"), QStringList());
     QList<QNetworkCookie> cookieNetworkList;
-    foreach( QString str, cookieStringList )
+    foreach(QString str, cookieStringList)
     {
-        cookieNetworkList << QNetworkCookie( str.toLocal8Bit() );
+        cookieNetworkList << QNetworkCookie(str.toLocal8Bit());
     }
-    setAllCookies( cookieNetworkList );
+    setAllCookies(cookieNetworkList);
 
     KConfigGroup inigroup2 = iniconfig.group("exceptions");
-    m_exceptions_block = inigroup2.readEntry( QString("block") , QStringList() );
-    m_exceptions_allow = inigroup2.readEntry( QString("allow"), QStringList() );
-    m_exceptions_allowForSession = inigroup2.readEntry( QString("allowForSession"), QStringList() );
+    m_exceptions_block = inigroup2.readEntry(QString("block") , QStringList());
+    m_exceptions_allow = inigroup2.readEntry(QString("allow"), QStringList());
+    m_exceptions_allowForSession = inigroup2.readEntry(QString("allowForSession"), QStringList());
 
-    qSort( m_exceptions_block.begin(), m_exceptions_block.end() );
-    qSort( m_exceptions_allow.begin(), m_exceptions_allow.end() );
-    qSort( m_exceptions_allowForSession.begin(), m_exceptions_allowForSession.end() );
+    qSort(m_exceptions_block.begin(), m_exceptions_block.end());
+    qSort(m_exceptions_allow.begin(), m_exceptions_allow.end());
+    qSort(m_exceptions_allowForSession.begin(), m_exceptions_allowForSession.end());
 
     loadSettings();
 }
@@ -146,7 +146,7 @@ void CookieJar::loadSettings()
 {
     int canAcceptCookies = ReKonfig::acceptCookies();
 
-    switch(canAcceptCookies) 
+    switch (canAcceptCookies)
     {
     case 0:
         m_acceptCookies = AcceptAlways;
@@ -162,7 +162,7 @@ void CookieJar::loadSettings()
 
     int canKeepCookiesUntil = ReKonfig::keepCookiesUntil();
 
-    switch(canKeepCookiesUntil) 
+    switch (canKeepCookiesUntil)
     {
     default:
     case 0:
@@ -176,7 +176,7 @@ void CookieJar::loadSettings()
         m_keepCookies = KeepUntilTimeLimit;
         break;
     }
-   
+
     m_loaded = true;
     emit cookiesChanged();
 }
@@ -187,33 +187,33 @@ void CookieJar::save()
     if (!m_loaded)
         return;
     purgeOldCookies();
-    
+
     QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini");
-    KConfig iniconfig( filepath );
+    KConfig iniconfig(filepath);
 
     KConfigGroup inigroup1 = iniconfig.group("general");
     QList<QNetworkCookie> cookies = allCookies();
-    for (int i = cookies.count() - 1; i >= 0; --i) 
+    for (int i = cookies.count() - 1; i >= 0; --i)
     {
         if (cookies.at(i).isSessionCookie())
             cookies.removeAt(i);
     }
 
     QStringList cookieStringList;
-    foreach( QNetworkCookie cook, cookies )
+    foreach(QNetworkCookie cook, cookies)
     {
-        cookieStringList << QString( cook.toRawForm() );
+        cookieStringList << QString(cook.toRawForm());
     }
-    inigroup1.writeEntry( QString("cookies"), cookieStringList );
-    
+    inigroup1.writeEntry(QString("cookies"), cookieStringList);
+
     KConfigGroup inigroup2 = iniconfig.group("exceptions");
-    inigroup2.writeEntry( QString("block"), m_exceptions_block );
-    inigroup2.writeEntry( QString("allow"), m_exceptions_allow );
-    inigroup2.writeEntry( QString("allowForSession"), m_exceptions_allowForSession );
+    inigroup2.writeEntry(QString("block"), m_exceptions_block);
+    inigroup2.writeEntry(QString("allow"), m_exceptions_allow);
+    inigroup2.writeEntry(QString("allowForSession"), m_exceptions_allowForSession);
 
     // save cookie settings
     int n;
-    switch(m_acceptCookies) 
+    switch (m_acceptCookies)
     {
     case AcceptAlways:
         n = 0;
@@ -229,7 +229,7 @@ void CookieJar::save()
     ReKonfig::setAcceptCookies(n);
 
 
-    switch(m_keepCookies) 
+    switch (m_keepCookies)
     {
     default:
     case KeepUntilExpire:
@@ -253,7 +253,7 @@ void CookieJar::purgeOldCookies()
         return;
     int oldCount = cookies.count();
     QDateTime now = QDateTime::currentDateTime();
-    for (int i = cookies.count() - 1; i >= 0; --i) 
+    for (int i = cookies.count() - 1; i >= 0; --i)
     {
         if (!cookies.at(i).isSessionCookie() && cookies.at(i).expirationDate() < now)
             cookies.removeAt(i);
@@ -299,29 +299,29 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const
     bool addedCookies = false;
     // pass exceptions
     bool acceptInitially = (m_acceptCookies != AcceptNever);
-    if ( (acceptInitially && !eBlock) || (!acceptInitially && (eAllow || eAllowSession) ) ) 
+    if ((acceptInitially && !eBlock) || (!acceptInitially && (eAllow || eAllowSession)))
     {
         // pass url domain == cookie domain
         QDateTime soon = QDateTime::currentDateTime();
         soon = soon.addDays(90);
-        foreach(QNetworkCookie cookie, cookieList) 
+        foreach(QNetworkCookie cookie, cookieList)
         {
             QList<QNetworkCookie> lst;
             if (m_keepCookies == KeepUntilTimeLimit
-                && !cookie.isSessionCookie()
-                && cookie.expirationDate() > soon) 
+                    && !cookie.isSessionCookie()
+                    && cookie.expirationDate() > soon)
             {
-                    cookie.setExpirationDate(soon);
+                cookie.setExpirationDate(soon);
             }
             lst += cookie;
             if (QNetworkCookieJar::setCookiesFromUrl(lst, url))
             {
                 addedCookies = true;
-            } 
-            else 
+            }
+            else
             {
                 // finally force it in if wanted
-                if (m_acceptCookies == AcceptAlways) 
+                if (m_acceptCookies == AcceptAlways)
                 {
                     QList<QNetworkCookie> cookies = allCookies();
                     cookies += cookie;
@@ -336,7 +336,7 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const
         }
     }
 
-    if (addedCookies) 
+    if (addedCookies)
     {
         m_saveTimer->changeOccurred();
         emit cookiesChanged();
@@ -441,8 +441,8 @@ void CookieJar::setAllowForSessionCookies(const QStringList &list)
 
 
 CookieModel::CookieModel(CookieJar *cookieJar, QObject *parent)
-    : QAbstractTableModel(parent)
-    , m_cookieJar(cookieJar)
+        : QAbstractTableModel(parent)
+        , m_cookieJar(cookieJar)
 {
     connect(m_cookieJar, SIGNAL(cookiesChanged()), this, SLOT(cookiesChanged()));
     m_cookieJar->load();
@@ -451,34 +451,37 @@ CookieModel::CookieModel(CookieJar *cookieJar, QObject *parent)
 
 QVariant CookieModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role == Qt::SizeHintRole) {
+    if (role == Qt::SizeHintRole)
+    {
         QFont font;
         font.setPointSize(10);
         QFontMetrics fm(font);
-        int height = fm.height() + fm.height()/3;
+        int height = fm.height() + fm.height() / 3;
         int width = fm.width(headerData(section, orientation, Qt::DisplayRole).toString());
         return QSize(width, height);
     }
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == Qt::Horizontal)
+    {
         if (role != Qt::DisplayRole)
             return QVariant();
 
-        switch (section) {
-            case 0:
-                return i18n("Website");
-            case 1:
-                return i18n("Name");
-            case 2:
-                return i18n("Path");
-            case 3:
-                return i18n("Secure");
-            case 4:
-                return i18n("Expires");
-            case 5:
-                return i18n("Contents");
-            default:
-                return QVariant();
+        switch (section)
+        {
+        case 0:
+            return i18n("Website");
+        case 1:
+            return i18n("Name");
+        case 2:
+            return i18n("Path");
+        case 3:
+            return i18n("Secure");
+        case 4:
+            return i18n("Expires");
+        case 5:
+            return i18n("Contents");
+        default:
+            return QVariant();
         }
     }
     return QAbstractTableModel::headerData(section, orientation, role);
@@ -493,30 +496,34 @@ QVariant CookieModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() >= lst.size())
         return QVariant();
 
-    switch (role) {
+    switch (role)
+    {
     case Qt::DisplayRole:
-    case Qt::EditRole: {
+    case Qt::EditRole:
+    {
         QNetworkCookie cookie = lst.at(index.row());
-        switch (index.column()) {
-            case 0:
-                return cookie.domain();
-            case 1:
-                return cookie.name();
-            case 2:
-                return cookie.path();
-            case 3:
-                return cookie.isSecure();
-            case 4:
-                return cookie.expirationDate();
-            case 5:
-                return cookie.value();
+        switch (index.column())
+        {
+        case 0:
+            return cookie.domain();
+        case 1:
+            return cookie.name();
+        case 2:
+            return cookie.path();
+        case 3:
+            return cookie.isSecure();
+        case 4:
+            return cookie.expirationDate();
+        case 5:
+            return cookie.value();
         }
-        }
-    case Qt::FontRole:{
+    }
+    case Qt::FontRole:
+    {
         QFont font;
         font.setPointSize(10);
         return font;
-        }
+    }
     }
 
     return QVariant();
@@ -542,7 +549,8 @@ bool CookieModel::removeRows(int row, int count, const QModelIndex &parent)
     int lastRow = row + count - 1;
     beginRemoveRows(parent, row, lastRow);
     QList<QNetworkCookie> lst = m_cookieJar->allCookies();
-    for (int i = lastRow; i >= row; --i) {
+    for (int i = lastRow; i >= row; --i)
+    {
         lst.removeAt(i);
     }
     m_cookieJar->setAllCookies(lst);
@@ -561,8 +569,8 @@ void CookieModel::cookiesChanged()
 // ------------------------------------------------------------------------------------------------
 
 
-CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent) 
-    : QDialog(parent)
+CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
+        : QDialog(parent)
 {
     setupUi(this);
     setWindowFlags(Qt::Sheet);
@@ -583,12 +591,14 @@ CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
     QFont f = font();
     f.setPointSize(10);
     QFontMetrics fm(f);
-    int height = fm.height() + fm.height()/3;
+    int height = fm.height() + fm.height() / 3;
     cookiesTable->verticalHeader()->setDefaultSectionSize(height);
     cookiesTable->verticalHeader()->setMinimumSectionSize(-1);
-    for (int i = 0; i < model->columnCount(); ++i){
+    for (int i = 0; i < model->columnCount(); ++i)
+    {
         int header = cookiesTable->horizontalHeader()->sectionSizeHint(i);
-        switch (i) {
+        switch (i)
+        {
         case 0:
             header = fm.width(QLatin1String("averagehost.domain.com"));
             break;
@@ -611,8 +621,8 @@ CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
 
 
 CookieExceptionsModel::CookieExceptionsModel(CookieJar *cookiejar, QObject *parent)
-    : QAbstractTableModel(parent)
-    , m_cookieJar(cookiejar)
+        : QAbstractTableModel(parent)
+        , m_cookieJar(cookiejar)
 {
     m_allowedCookies = m_cookieJar->allowedCookies();
     m_blockedCookies = m_cookieJar->blockedCookies();
@@ -622,22 +632,25 @@ CookieExceptionsModel::CookieExceptionsModel(CookieJar *cookiejar, QObject *pare
 
 QVariant CookieExceptionsModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role == Qt::SizeHintRole) {
+    if (role == Qt::SizeHintRole)
+    {
         QFont font;
         font.setPointSize(10);
         QFontMetrics fm(font);
-        int height = fm.height() + fm.height()/3;
+        int height = fm.height() + fm.height() / 3;
         int width = fm.width(headerData(section, orientation, Qt::DisplayRole).toString());
         return QSize(width, height);
     }
 
     if (orientation == Qt::Horizontal
-        && role == Qt::DisplayRole) {
-        switch (section) {
-            case 0:
-                return i18n("Website");
-            case 1:
-                return i18n("Status");
+            && role == Qt::DisplayRole)
+    {
+        switch (section)
+        {
+        case 0:
+            return i18n("Website");
+        case 1:
+            return i18n("Status");
         }
     }
     return QAbstractTableModel::headerData(section, orientation, role);
@@ -649,42 +662,51 @@ QVariant CookieExceptionsModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() >= rowCount())
         return QVariant();
 
-    switch (role) {
+    switch (role)
+    {
     case Qt::DisplayRole:
-    case Qt::EditRole: {
+    case Qt::EditRole:
+    {
         int row = index.row();
-        if (row < m_allowedCookies.count()) {
-            switch (index.column()) {
-                case 0:
-                    return m_allowedCookies.at(row);
-                case 1:
-                    return i18n("Allow");
+        if (row < m_allowedCookies.count())
+        {
+            switch (index.column())
+            {
+            case 0:
+                return m_allowedCookies.at(row);
+            case 1:
+                return i18n("Allow");
             }
         }
         row = row - m_allowedCookies.count();
-        if (row < m_blockedCookies.count()) {
-            switch (index.column()) {
-                case 0:
-                    return m_blockedCookies.at(row);
-                case 1:
-                    return i18n("Block");
+        if (row < m_blockedCookies.count())
+        {
+            switch (index.column())
+            {
+            case 0:
+                return m_blockedCookies.at(row);
+            case 1:
+                return i18n("Block");
             }
         }
         row = row - m_blockedCookies.count();
-        if (row < m_sessionCookies.count()) {
-            switch (index.column()) {
-                case 0:
-                    return m_sessionCookies.at(row);
-                case 1:
-                    return i18n("Allow For Session");
+        if (row < m_sessionCookies.count())
+        {
+            switch (index.column())
+            {
+            case 0:
+                return m_sessionCookies.at(row);
+            case 1:
+                return i18n("Allow For Session");
             }
         }
-        }
-    case Qt::FontRole:{
+    }
+    case Qt::FontRole:
+    {
         QFont font;
         font.setPointSize(10);
         return font;
-        }
+    }
     }
     return QVariant();
 }
@@ -709,18 +731,22 @@ bool CookieExceptionsModel::removeRows(int row, int count, const QModelIndex &pa
 
     int lastRow = row + count - 1;
     beginRemoveRows(parent, row, lastRow);
-    for (int i = lastRow; i >= row; --i) {
-        if (i < m_allowedCookies.count()) {
+    for (int i = lastRow; i >= row; --i)
+    {
+        if (i < m_allowedCookies.count())
+        {
             m_allowedCookies.removeAt(row);
             continue;
         }
         i = i - m_allowedCookies.count();
-        if (i < m_blockedCookies.count()) {
+        if (i < m_blockedCookies.count())
+        {
             m_blockedCookies.removeAt(row);
             continue;
         }
         i = i - m_blockedCookies.count();
-        if (i < m_sessionCookies.count()) {
+        if (i < m_sessionCookies.count())
+        {
             m_sessionCookies.removeAt(row);
             continue;
         }
@@ -737,8 +763,8 @@ bool CookieExceptionsModel::removeRows(int row, int count, const QModelIndex &pa
 
 
 CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent)
-    : QDialog(parent)
-    , m_cookieJar(cookieJar)
+        : QDialog(parent)
+        , m_cookieJar(cookieJar)
 {
     setupUi(this);
     setWindowFlags(Qt::Sheet);
@@ -769,12 +795,14 @@ CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *
     QFont f = font();
     f.setPointSize(10);
     QFontMetrics fm(f);
-    int height = fm.height() + fm.height()/3;
+    int height = fm.height() + fm.height() / 3;
     exceptionTable->verticalHeader()->setDefaultSectionSize(height);
     exceptionTable->verticalHeader()->setMinimumSectionSize(-1);
-    for (int i = 0; i < m_exceptionsModel->columnCount(); ++i){
+    for (int i = 0; i < m_exceptionsModel->columnCount(); ++i)
+    {
         int header = exceptionTable->horizontalHeader()->sectionSizeHint(i);
-        switch (i) {
+        switch (i)
+        {
         case 0:
             header = fm.width(QLatin1String("averagebiglonghost.domain.com"));
             break;

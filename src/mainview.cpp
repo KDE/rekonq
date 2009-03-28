@@ -52,12 +52,12 @@
 
 
 MainView::MainView(QWidget *parent)
-    : KTabWidget(parent)
-    , m_recentlyClosedTabsAction(0)
-    , m_recentlyClosedTabsMenu(0)
-    , m_lineEditCompleter(0)
-    , m_lineEdits(new QStackedWidget(this))
-    , m_tabBar(new TabBar(this))
+        : KTabWidget(parent)
+        , m_recentlyClosedTabsAction(0)
+        , m_recentlyClosedTabsMenu(0)
+        , m_lineEditCompleter(0)
+        , m_lineEdits(new QStackedWidget(this))
+        , m_tabBar(new TabBar(this))
 {
     setTabBar(m_tabBar);
 
@@ -86,29 +86,29 @@ MainView::~MainView()
 {
     delete m_lineEditCompleter;
     delete m_recentlyClosedTabsMenu;
-} 
+}
 
 
 void MainView::showTabBar()
 {
     bool astb = ReKonfig::alwaysShowTabBar();
 
-    if(astb == true)
+    if (astb == true)
     {
-        if( m_tabBar->isHidden() )
+        if (m_tabBar->isHidden())
         {
             m_tabBar->show();
         }
         return;
     }
 
-    if( m_tabBar->count() == 1 )
+    if (m_tabBar->count() == 1)
     {
         m_tabBar->hide();
     }
     else
     {
-        if( m_tabBar->isHidden() )
+        if (m_tabBar->isHidden())
         {
             m_tabBar->show();
         }
@@ -208,7 +208,7 @@ void MainView::clear()
     // clear the recently closed tabs
     m_recentlyClosedTabs.clear();
     // clear the line edit history
-    for (int i = 0; i < m_lineEdits->count(); ++i) 
+    for (int i = 0; i < m_lineEdits->count(); ++i)
     {
         QLineEdit *qLineEdit = lineEdit(i);
         qLineEdit->setText(qLineEdit->text());
@@ -252,10 +252,10 @@ void MainView::currentChanged(int index)
     if (!webView)
         return;
 
-    Q_ASSERT( m_lineEdits->count() == count() );
+    Q_ASSERT(m_lineEdits->count() == count());
 
     WebView *oldWebView = this->webView(m_lineEdits->currentIndex());
-    if (oldWebView) 
+    if (oldWebView)
     {
         disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
         disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), this, SIGNAL(linkHovered(const QString&)));
@@ -306,14 +306,14 @@ QLineEdit *MainView::lineEdit(int index) const
 WebView *MainView::webView(int index) const
 {
     QWidget *widget = this->widget(index);
-    if (WebView *webView = qobject_cast<WebView*>(widget)) 
+    if (WebView *webView = qobject_cast<WebView*>(widget))
     {
         return webView;
-    } 
-    else 
+    }
+    else
     {
         // optimization to delay creating the first webview
-        if (count() == 1) 
+        if (count() == 1)
         {
             MainView *that = const_cast<MainView*>(this);
             that->setUpdatesEnabled(false);
@@ -339,7 +339,7 @@ WebView *MainView::newTab(bool makeCurrent)
     // line edit
     UrlBar *urlLineEdit = new UrlBar;
     QLineEdit *lineEdit = urlLineEdit->lineEdit();
-    if (!m_lineEditCompleter && count() > 0) 
+    if (!m_lineEditCompleter && count() > 0)
     {
         HistoryCompletionModel *completionModel = new HistoryCompletionModel(this);
         completionModel->setSourceModel(Application::historyManager()->historyFilterModel());
@@ -358,7 +358,7 @@ WebView *MainView::newTab(bool makeCurrent)
     m_lineEdits->setSizePolicy(lineEdit->sizePolicy());
 
     // optimization to delay creating the more expensive WebView, history, etc
-    if (count() == 0) 
+    if (count() == 0)
     {
         QWidget *emptyWidget = new QWidget;
         QPalette p = emptyWidget->palette();
@@ -370,7 +370,7 @@ WebView *MainView::newTab(bool makeCurrent)
         connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
         return 0;
     }
-    
+
     // webview
     WebView *webView = new WebView;
     urlLineEdit->setWebView(webView);
@@ -387,10 +387,10 @@ WebView *MainView::newTab(bool makeCurrent)
     connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)), this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
     connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)), this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
 
-    connect(webView, SIGNAL( ctrlTabPressed() ), this, SLOT( nextTab() ) );
-    connect(webView, SIGNAL( shiftCtrlTabPressed() ), this, SLOT( previousTab() ) );
+    connect(webView, SIGNAL(ctrlTabPressed()), this, SLOT(nextTab()));
+    connect(webView, SIGNAL(shiftCtrlTabPressed()), this, SLOT(previousTab()));
 
-    addTab(webView, i18n("(Untitled)") );
+    addTab(webView, i18n("(Untitled)"));
     if (makeCurrent)
         setCurrentWidget(webView);
 
@@ -406,10 +406,10 @@ WebView *MainView::newTab(bool makeCurrent)
 
 void MainView::reloadAllTabs()
 {
-    for (int i = 0; i < count(); ++i) 
+    for (int i = 0; i < count(); ++i)
     {
         QWidget *tabWidget = widget(i);
-        if (WebView *tab = qobject_cast<WebView*>(tabWidget)) 
+        if (WebView *tab = qobject_cast<WebView*>(tabWidget))
         {
             tab->reload();
         }
@@ -419,9 +419,9 @@ void MainView::reloadAllTabs()
 
 void MainView::lineEditReturnPressed()
 {
-    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(sender())) 
+    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(sender()))
     {
-        emit loadUrlPage( KUrl( lineEdit->text() ) );
+        emit loadUrlPage(KUrl(lineEdit->text()));
         if (m_lineEdits->currentWidget() == lineEdit)
         {
             currentWebView()->setFocus();
@@ -435,7 +435,7 @@ void MainView::windowCloseRequested()
     WebPage *webPage = qobject_cast<WebPage*>(sender());
     WebView *webView = qobject_cast<WebView*>(webPage->view());
     int index = webViewIndex(webView);
-    if (index >= 0) 
+    if (index >= 0)
     {
         if (count() == 1)
             webView->webPage()->mainWindow()->close();
@@ -466,7 +466,7 @@ void MainView::cloneTab(int index)
     if (index < 0 || index >= count())
         return;
     WebView *tab = newTab(false);
-    tab->setUrl( webView(index)->url() );
+    tab->setUrl(webView(index)->url());
 
     showTabBar();
 }
@@ -481,16 +481,16 @@ void MainView::closeTab(int index)
         return;
 
     bool hasFocus = false;
-    if (WebView *tab = webView(index)) 
+    if (WebView *tab = webView(index))
     {
-        if (tab->isModified()) 
+        if (tab->isModified())
         {
-            int risp = KMessageBox::questionYesNo( this , 
-                                                   i18n("You have modified this page and when closing it you would lose the modification.\n"
-                                                   "Do you really want to close this page?\n"),
-                                                   i18n("Do you really want to close this page?"),
-                                                   KStandardGuiItem::no() );
-            if( risp == KMessageBox::No )
+            int risp = KMessageBox::questionYesNo(this ,
+                                                  i18n("You have modified this page and when closing it you would lose the modification.\n"
+                                                       "Do you really want to close this page?\n"),
+                                                  i18n("Do you really want to close this page?"),
+                                                  KStandardGuiItem::no());
+            if (risp == KMessageBox::No)
                 return;
         }
         hasFocus = tab->hasFocus();
@@ -520,9 +520,9 @@ void MainView::webViewLoadStarted()
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
-    if (-1 != index) 
+    if (-1 != index)
     {
-        setTabIcon(index, KIcon("rekonq") );
+        setTabIcon(index, KIcon("rekonq"));
     }
 }
 
@@ -531,7 +531,7 @@ void MainView::webViewIconChanged()
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
-    if (-1 != index) 
+    if (-1 != index)
     {
         QIcon icon = Application::instance()->icon(webView->url());
         setTabIcon(index, icon);
@@ -543,7 +543,8 @@ void MainView::webViewTitleChanged(const QString &title)
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
-    if (-1 != index) {
+    if (-1 != index)
+    {
         setTabText(index, title);
     }
     if (currentIndex() == index)
@@ -556,7 +557,8 @@ void MainView::webViewUrlChanged(const QUrl &url)
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
-    if (-1 != index) {
+    if (-1 != index)
+    {
         m_tabBar->setTabData(index, url);
     }
     emit tabsChanged();
@@ -566,13 +568,13 @@ void MainView::webViewUrlChanged(const QUrl &url)
 void MainView::aboutToShowRecentTabsMenu()
 {
     m_recentlyClosedTabsMenu->clear();
-    for (int i = 0; i < m_recentlyClosedTabs.count(); ++i) 
+    for (int i = 0; i < m_recentlyClosedTabs.count(); ++i)
     {
         KAction *action = new KAction(m_recentlyClosedTabsMenu);
         action->setData(m_recentlyClosedTabs.at(i));
         QIcon icon = Application::instance()->icon(m_recentlyClosedTabs.at(i));
         action->setIcon(icon);
-        action->setText( m_recentlyClosedTabs.at(i).prettyUrl() );
+        action->setText(m_recentlyClosedTabs.at(i).prettyUrl());
         m_recentlyClosedTabsMenu->addAction(action);
     }
 }
@@ -587,9 +589,9 @@ void MainView::aboutToShowRecentTriggeredAction(QAction *action)
 
 void MainView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if ( !childAt(event->pos() )
-                // Remove the line below when QTabWidget does not have a one pixel frame
-                && event->pos().y() < (tabBar()->y() + tabBar()->height())) 
+    if (!childAt(event->pos())
+            // Remove the line below when QTabWidget does not have a one pixel frame
+            && event->pos().y() < (tabBar()->y() + tabBar()->height()))
     {
         newTab();
         return;
@@ -600,7 +602,8 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event)
 
 void MainView::contextMenuEvent(QContextMenuEvent *event)
 {
-    if (!childAt(event->pos())) {
+    if (!childAt(event->pos()))
+    {
         m_tabBar->contextMenuRequested(event->pos());
         return;
     }
@@ -612,10 +615,10 @@ void MainView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton && !childAt(event->pos())
             // Remove the line below when QTabWidget does not have a one pixel frame
-            && event->pos().y() < (tabBar()->y() + tabBar()->height())) 
+            && event->pos().y() < (tabBar()->y() + tabBar()->height()))
     {
-        KUrl url( QApplication::clipboard()->text(QClipboard::Selection) );
-        if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty()) 
+        KUrl url(QApplication::clipboard()->text(QClipboard::Selection));
+        if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty())
         {
             WebView *webView = newTab();
             webView->setUrl(url);

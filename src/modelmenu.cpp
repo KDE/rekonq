@@ -23,13 +23,13 @@
 
 
 ModelMenu::ModelMenu(QWidget * parent)
-    : KMenu(parent)
-    , m_maxRows(7)
-    , m_firstSeparator(-1)
-    , m_maxWidth(-1)
-    , m_hoverRole(0)
-    , m_separatorRole(0)
-    , m_model(0)
+        : KMenu(parent)
+        , m_maxRows(7)
+        , m_firstSeparator(-1)
+        , m_maxWidth(-1)
+        , m_hoverRole(0)
+        , m_separatorRole(0)
+        , m_model(0)
 {
     connect(this, SIGNAL(aboutToShow()), this, SLOT(aboutToShow()));
 }
@@ -121,10 +121,10 @@ int ModelMenu::separatorRole() const
 Q_DECLARE_METATYPE(QModelIndex)
 void ModelMenu::aboutToShow()
 {
-    if (QMenu *menu = qobject_cast<QMenu*>(sender())) 
+    if (QMenu *menu = qobject_cast<QMenu*>(sender()))
     {
         QVariant v = menu->menuAction()->data();
-        if (v.canConvert<QModelIndex>()) 
+        if (v.canConvert<QModelIndex>())
         {
             QModelIndex idx = qvariant_cast<QModelIndex>(v);
             createMenu(idx, -1, menu, menu);
@@ -145,7 +145,7 @@ void ModelMenu::aboutToShow()
 
 void ModelMenu::createMenu(const QModelIndex &parent, int max, QMenu *parentMenu, QMenu *menu)
 {
-    if (!menu) 
+    if (!menu)
     {
         QString title = parent.data().toString();
         menu = new QMenu(title, this);
@@ -163,16 +163,20 @@ void ModelMenu::createMenu(const QModelIndex &parent, int max, QMenu *parentMenu
     if (max != -1)
         end = qMin(max, end);
 
-    connect(menu, SIGNAL( triggered(QAction*) ), this, SLOT( triggered(QAction*) ) );
-    connect(menu, SIGNAL( hovered(QAction*) ), this, SLOT( hovered(QAction*) ) );
+    connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(triggered(QAction*)));
+    connect(menu, SIGNAL(hovered(QAction*)), this, SLOT(hovered(QAction*)));
 
-    for (int i = 0; i < end; ++i) {
+    for (int i = 0; i < end; ++i)
+    {
         QModelIndex idx = m_model->index(i, 0, parent);
-        if (m_model->hasChildren(idx)) {
+        if (m_model->hasChildren(idx))
+        {
             createMenu(idx, -1, menu);
-        } else {
+        }
+        else
+        {
             if (m_separatorRole != 0
-                && idx.data(m_separatorRole).toBool())
+                    && idx.data(m_separatorRole).toBool())
                 addSeparator();
             else
                 menu->addAction(makeAction(idx));
@@ -184,7 +188,7 @@ void ModelMenu::createMenu(const QModelIndex &parent, int max, QMenu *parentMenu
 
 KAction *ModelMenu::makeAction(const QModelIndex &index)
 {
-    QIcon icon = qvariant_cast<QIcon>( index.data(Qt::DecorationRole) );
+    QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
     KAction *action = (KAction *) makeAction(KIcon(icon), index.data().toString(), this);
     QVariant v;
     v.setValue(index);
@@ -204,7 +208,7 @@ KAction *ModelMenu::makeAction(const KIcon &icon, const QString &text, QObject *
 void ModelMenu::triggered(QAction *action)
 {
     QVariant v = action->data();
-    if (v.canConvert<QModelIndex>()) 
+    if (v.canConvert<QModelIndex>())
     {
         QModelIndex idx = qvariant_cast<QModelIndex>(v);
         emit activated(idx);
@@ -214,7 +218,7 @@ void ModelMenu::triggered(QAction *action)
 void ModelMenu::hovered(QAction *action)
 {
     QVariant v = action->data();
-    if (v.canConvert<QModelIndex>()) 
+    if (v.canConvert<QModelIndex>())
     {
         QModelIndex idx = qvariant_cast<QModelIndex>(v);
         QString hoveredString = idx.data(m_hoverRole).toString();

@@ -37,7 +37,7 @@ class QColor;
 
 class UrlBar : public KHistoryComboBox
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     UrlBar(QWidget *parent = 0);

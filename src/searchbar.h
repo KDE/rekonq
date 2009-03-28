@@ -33,7 +33,7 @@ class QNetworkAccessManager;
 class QNetworkReply;
 
 /**
- * This class defines an internet search bar. 
+ * This class defines an internet search bar.
  */
 class SearchBar : public KLineEdit
 {
@@ -46,7 +46,7 @@ public:
 public slots:
     void autoSuggest();
     void handleNetworkData(QNetworkReply *networkReply);
-    
+
     /**
     *  Use this slot to perform one search in one search engine
     *
@@ -54,7 +54,7 @@ public slots:
     void searchNow();
 
 protected:
-    void focusInEvent(QFocusEvent * );
+    void focusInEvent(QFocusEvent *);
 
 signals:
     void search(const KUrl &url);

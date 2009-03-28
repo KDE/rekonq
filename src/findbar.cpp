@@ -35,8 +35,8 @@
 
 
 FindBar::FindBar(KXmlGuiWindow *mainwindow)
-    : QWidget()
-    , m_lineEdit(0)
+        : QWidget()
+        , m_lineEdit(0)
 {
     QHBoxLayout *layout = new QHBoxLayout;
 
@@ -49,7 +49,7 @@ FindBar::FindBar(KXmlGuiWindow *mainwindow)
     hideButton->setIcon(KIcon("dialog-close"));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
     layout->addWidget(hideButton);
-    layout->setAlignment( hideButton, Qt::AlignLeft|Qt::AlignTop );
+    layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
     // label
     QLabel *label = new QLabel("Find: ");
@@ -58,18 +58,18 @@ FindBar::FindBar(KXmlGuiWindow *mainwindow)
     // lineEdit, focusProxy
     m_lineEdit = new KLineEdit(this);
     setFocusProxy(m_lineEdit);
-    m_lineEdit->setMaximumWidth( 250 );
-    connect( m_lineEdit, SIGNAL( textChanged(const QString &) ), mainwindow, SLOT( slotFind(const QString &) ) );
-    layout->addWidget( m_lineEdit );
+    m_lineEdit->setMaximumWidth(250);
+    connect(m_lineEdit, SIGNAL(textChanged(const QString &)), mainwindow, SLOT(slotFind(const QString &)));
+    layout->addWidget(m_lineEdit);
 
     // buttons
-    KPushButton *findNext = new KPushButton( KIcon("go-down"), "&Next", this );
-    KPushButton *findPrev = new KPushButton( KIcon("go-up"), "&Previous", this );
-    connect( findNext, SIGNAL( clicked() ), mainwindow, SLOT( slotFindNext() ) );
-    connect( findPrev, SIGNAL( clicked() ), mainwindow, SLOT( slotFindPrevious() ) );
-    layout->addWidget( findNext );
-    layout->addWidget( findPrev );
-    
+    KPushButton *findNext = new KPushButton(KIcon("go-down"), "&Next", this);
+    KPushButton *findPrev = new KPushButton(KIcon("go-up"), "&Previous", this);
+    connect(findNext, SIGNAL(clicked()), mainwindow, SLOT(slotFindNext()));
+    connect(findPrev, SIGNAL(clicked()), mainwindow, SLOT(slotFindPrevious()));
+    layout->addWidget(findNext);
+    layout->addWidget(findPrev);
+
     // stretching widget on the left
     layout->addStretch();
 
@@ -100,7 +100,7 @@ void FindBar::clear()
 
 void FindBar::showFindBar()
 {
-    if (!isVisible()) 
+    if (!isVisible())
     {
         show();
     }
@@ -116,9 +116,9 @@ void FindBar::keyPressEvent(QKeyEvent* event)
         hide();
         return;
     }
-    if(event->key() == Qt::Key_Return && !m_lineEdit->text().isEmpty() )
+    if (event->key() == Qt::Key_Return && !m_lineEdit->text().isEmpty())
     {
-        emit searchString( m_lineEdit->text() );
+        emit searchString(m_lineEdit->text());
         return;
     }
     QWidget::keyPressEvent(event);

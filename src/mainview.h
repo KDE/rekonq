@@ -87,8 +87,8 @@ public:
     QLineEdit *lineEdit(int index) const;
     int webViewIndex(WebView *webView) const;
 
-    /** 
-     * show and hide TabBar if user doesn't choose 
+    /**
+     * show and hide TabBar if user doesn't choose
      * "Always Show TabBar" option
      *
      */

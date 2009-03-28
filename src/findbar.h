@@ -39,7 +39,7 @@ public:
 public slots:
     void clear();
     void showFindBar();
- 
+
 protected Q_SLOTS:
     void keyPressEvent(QKeyEvent* event);
 

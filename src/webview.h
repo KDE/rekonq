@@ -39,7 +39,7 @@ class QNetworkReply;
 class QSslError;
 
 
-class WebPage : public QWebPage 
+class WebPage : public QWebPage
 {
     Q_OBJECT
 
@@ -77,19 +77,25 @@ private:
 #include <QWebView>
 
 
-class WebView : public QWebView 
+class WebView : public QWebView
 {
     Q_OBJECT
 
 public:
     WebView(QWidget *parent = 0);
-    WebPage *webPage() const { return m_page; }
+    WebPage *webPage() const
+    {
+        return m_page;
+    }
 
     void loadUrl(const KUrl &url);
     KUrl url() const;
 
     QString lastStatusBarText() const;
-    inline int progress() const { return m_progress; }
+    inline int progress() const
+    {
+        return m_progress;
+    }
 
 signals:
     // switching tabs
@@ -102,9 +108,9 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void wheelEvent(QWheelEvent *event);
 
-    /** 
+    /**
     * Filters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
-    * to make switch tab 
+    * to make switch tab
     */
     void keyPressEvent(QKeyEvent *event);
 

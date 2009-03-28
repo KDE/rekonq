@@ -8,6 +8,9 @@
 # In rekonq we use some little different rules..
 
 {
+PWD=$(pwd)
+
+cd $PWD
 cd ..
 cd src
 

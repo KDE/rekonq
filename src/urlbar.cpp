@@ -33,19 +33,19 @@
 
 
 UrlBar::UrlBar(QWidget *parent)
-    : KHistoryComboBox( true, parent )
-    , m_webView(0)
-    , m_lineEdit(new QLineEdit)
+        : KHistoryComboBox(true, parent)
+        , m_webView(0)
+        , m_lineEdit(new QLineEdit)
 {
-    setLineEdit( m_lineEdit );
+    setLineEdit(m_lineEdit);
 
     QSizePolicy policy = sizePolicy();
     setSizePolicy(QSizePolicy::Preferred, policy.verticalPolicy());
 
-    m_defaultBaseColor = palette().color( QPalette::Base );
+    m_defaultBaseColor = palette().color(QPalette::Base);
 
     // add every item to history
-    connect( this, SIGNAL( activated( const QString& ) ), this, SLOT( addToHistory( const QString& ) ) );
+    connect(this, SIGNAL(activated(const QString&)), this, SLOT(addToHistory(const QString&)));
 
     webViewIconChanged();
 }
@@ -91,10 +91,10 @@ void UrlBar::webViewIconChanged()
     QIcon icon = Application::instance()->icon(url);
     QPixmap pixmap(icon.pixmap(16, 16));
     QIcon urlIcon = QIcon(pixmap);
-    
+
     // FIXME simple hack to show Icon in the urlbar, as calling changeUrl() doesn't affect it
-    insertUrl(0,urlIcon,url);
-    if(count()>1)
+    insertUrl(0, urlIcon, url);
+    if (count() > 1)
     {
         removeItem(1);
     }
@@ -116,18 +116,18 @@ QLinearGradient UrlBar::generateGradient(const QColor &color) const
 // void UrlBar::paintEvent( QPaintEvent *event )
 // {
 //     QPalette p = palette();
-//     if (m_webView && m_webView->url().scheme() == QLatin1String("https")) 
+//     if (m_webView && m_webView->url().scheme() == QLatin1String("https"))
 //     {
 //         QColor lightYellow(248, 248, 210);
 //         p.setBrush(QPalette::Base, generateGradient(lightYellow));
-//     } 
-//     else 
+//     }
+//     else
 //     {
 //         p.setBrush(QPalette::Base, m_defaultBaseColor);
 //     }
 //     setPalette(p);
 //     KHistoryComboBox::paintEvent(event);
-// 
+//
 //     QPainter painter( this );
 //     QRect backgroundRect = m_lineEdit->frameGeometry(); // contentsRect(); // FIXME perhaps better working with contentsRect
 //     if ( m_webView && !hasFocus() )                                                               // and modifying colours..

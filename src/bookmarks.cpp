@@ -39,19 +39,19 @@
 
 
 OwnBookMarks::OwnBookMarks(KMainWindow *parent)
-    : QObject(parent)
-    , KBookmarkOwner()
+        : QObject(parent)
+        , KBookmarkOwner()
 {
-    m_parent = qobject_cast<MainWindow*>( parent );
-    connect( this, SIGNAL( openUrl( const KUrl &) ) , parent , SLOT( loadUrl( const KUrl & ) ) );
+    m_parent = qobject_cast<MainWindow*>(parent);
+    connect(this, SIGNAL(openUrl(const KUrl &)) , parent , SLOT(loadUrl(const KUrl &)));
 }
 
 
-void OwnBookMarks::openBookmark (const KBookmark & b, Qt::MouseButtons mb, Qt::KeyboardModifiers km)
+void OwnBookMarks::openBookmark(const KBookmark & b, Qt::MouseButtons mb, Qt::KeyboardModifiers km)
 {
     Q_UNUSED(mb);
     Q_UNUSED(km);
-    emit openUrl( b.url() );
+    emit openUrl(b.url());
 }
 
 
@@ -65,22 +65,22 @@ QString OwnBookMarks::currentUrl() const
 QString OwnBookMarks::currentTitle() const
 {
     QString title = m_parent->windowTitle();
-    return title.remove( " - rekonq" );
+    return title.remove(" - rekonq");
 }
 
 
 // ------------------------------------------------------------------------------------------------------
 
 
-BookmarksMenu::BookmarksMenu( KBookmarkManager* manager, KBookmarkOwner* owner, KMenu* menu, KActionCollection* ac )
-    : KBookmarkMenu(manager, owner, menu, ac)
-{    
+BookmarksMenu::BookmarksMenu(KBookmarkManager* manager, KBookmarkOwner* owner, KMenu* menu, KActionCollection* ac)
+        : KBookmarkMenu(manager, owner, menu, ac)
+{
 }
 
 
 KMenu* BookmarksMenu::viewContextMenu(QAction* action)
 {
-    return contextMenu( action );
+    return contextMenu(action);
 }
 
 
@@ -88,17 +88,17 @@ KMenu* BookmarksMenu::viewContextMenu(QAction* action)
 
 
 BookmarksProvider::BookmarksProvider(KMainWindow* parent)
-    : m_parent(parent)
-    , m_owner(new OwnBookMarks(parent))
-    , m_bmMenu(0)
-    , m_bmToolbar(0)
+        : m_parent(parent)
+        , m_owner(new OwnBookMarks(parent))
+        , m_bmMenu(0)
+        , m_bmToolbar(0)
 {
-    KUrl bookfile = KUrl( "~/.kde/share/apps/konqueror/bookmarks.xml" );    // share konqueror bookmarks
+    KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");      // share konqueror bookmarks
 
-    if (!QFile::exists( bookfile.path() ) )
+    if (!QFile::exists(bookfile.path()))
     {
-        bookfile = KUrl( "~/.kde4/share/apps/konqueror/bookmarks.xml" );
-        if (!QFile::exists( bookfile.path() ) )
+        bookfile = KUrl("~/.kde4/share/apps/konqueror/bookmarks.xml");
+        if (!QFile::exists(bookfile.path()))
         {
             QString bookmarksDefaultPath = KStandardDirs::locate("appdata" , "defaultbookmarks.xbel");
             kWarning() << bookmarksDefaultPath;
@@ -107,13 +107,13 @@ BookmarksProvider::BookmarksProvider(KMainWindow* parent)
             bookmarksPath.replace("rekonq", "konqueror");
             bkms.copy(bookmarksPath);
 
-            bookfile = KUrl( bookmarksPath );
+            bookfile = KUrl(bookmarksPath);
         }
     }
-    m_manager = KBookmarkManager::managerForExternalFile( bookfile.path() );
-    m_ac = new KActionCollection( this );
+    m_manager = KBookmarkManager::managerForExternalFile(bookfile.path());
+    m_ac = new KActionCollection(this);
 
-    connect( m_manager, SIGNAL( changed(const QString &, const QString &) ), this, SLOT( slotBookmarksChanged(const QString &) ) );
+    connect(m_manager, SIGNAL(changed(const QString &, const QString &)), this, SLOT(slotBookmarksChanged(const QString &)));
 }
 
 
@@ -122,7 +122,7 @@ void BookmarksProvider::slotBookmarksChanged(const QString & group)
     KBookmarkGroup toolbarGroup = m_manager->toolbar();
     kWarning() << "KBookmarkBar::slotBookmarksChanged( " << group << " )";
 
-    if ( toolbarGroup.isNull() )
+    if (toolbarGroup.isNull())
         return;
 
     m_bmToolbar->clear();
@@ -133,22 +133,22 @@ void BookmarksProvider::slotBookmarksChanged(const QString & group)
 void BookmarksProvider::provideBmToolbar(KToolBar* toolbar)
 {
     m_bmToolbar = toolbar;
-    toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    toolbar->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect( toolbar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)) );
+    toolbar->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(toolbar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
 
     KBookmarkGroup toolbarGroup = m_manager->toolbar();
     KBookmark bm = toolbarGroup.first();
-    while(!bm.isNull())
+    while (!bm.isNull())
     {
-        if(bm.isGroup())
+        if (bm.isGroup())
         {
             // do nothing!
         }
         else
         {
-            if(bm.isSeparator())
+            if (bm.isSeparator())
             {
                 toolbar->addSeparator();
             }
@@ -167,18 +167,18 @@ void BookmarksProvider::provideBmToolbar(KToolBar* toolbar)
 KMenu *BookmarksProvider::bookmarksMenu()
 {
     KMenu *menu = new KMenu(m_parent);
-    m_bmMenu = new BookmarksMenu( m_manager, m_owner, menu, m_ac );
+    m_bmMenu = new BookmarksMenu(m_manager, m_owner, menu, m_ac);
     return menu;
 }
 
 
 void BookmarksProvider::contextMenu(const QPoint & point)
 {
-    KAction* action = dynamic_cast<KAction*>( m_bmToolbar->actionAt( point ) );
-    if(!action)
+    KAction* action = dynamic_cast<KAction*>(m_bmToolbar->actionAt(point));
+    if (!action)
         return;
     KMenu *menu = m_bmMenu->viewContextMenu(action);
     menu->setAttribute(Qt::WA_DeleteOnClose);
-    menu->popup( m_bmToolbar->mapToGlobal( point ));
+    menu->popup(m_bmToolbar->mapToGlobal(point));
 }
 

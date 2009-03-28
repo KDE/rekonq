@@ -49,10 +49,10 @@
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
-    : QNetworkAccessManager(parent)
+        : QNetworkAccessManager(parent)
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
-            SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
+            SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
     connect(this, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)),
             SLOT(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
 
@@ -66,11 +66,11 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 #if QT_VERSION >= 0x040500
 
     QNetworkDiskCache *diskCache = new QNetworkDiskCache(this);
-    QString location = KStandardDirs::locateLocal("cache","",true);
+    QString location = KStandardDirs::locateLocal("cache", "", true);
     diskCache->setCacheDirectory(location);
     setCache(diskCache);
 
-#endif    
+#endif
 
 }
 
@@ -79,9 +79,9 @@ void NetworkAccessManager::loadSettings()
 {
     kWarning() << "loading NetworkAccessManager settings..";
     QNetworkProxy proxy;
-    if ( ReKonfig::isProxyEnabled() ) 
+    if (ReKonfig::isProxyEnabled())
     {
-        if ( ReKonfig::proxyType() == 0 )
+        if (ReKonfig::proxyType() == 0)
         {
             proxy.setType(QNetworkProxy::Socks5Proxy);
         }
@@ -89,10 +89,10 @@ void NetworkAccessManager::loadSettings()
         {
             proxy.setType(QNetworkProxy::HttpProxy);
         }
-        proxy.setHostName( ReKonfig::proxyHostName() );
-        proxy.setPort( ReKonfig::proxyPort() );
-        proxy.setUser( ReKonfig::proxyUserName() );
-        proxy.setPassword( ReKonfig::proxyPassword() );
+        proxy.setHostName(ReKonfig::proxyHostName());
+        proxy.setPort(ReKonfig::proxyPort());
+        proxy.setUser(ReKonfig::proxyUserName());
+        proxy.setPassword(ReKonfig::proxyPassword());
     }
     setProxy(proxy);
 }
@@ -112,12 +112,12 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
     passwordDialog.iconLabel->setText(QString());
     passwordDialog.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
 
-    QString introMessage = i18n("<qt>Enter username and password for ") + 
-                            Qt::escape(reply->url().toString()) + i18n(" at ") + Qt::escape(reply->url().toString()) + "</qt>";
+    QString introMessage = i18n("<qt>Enter username and password for ") +
+                           Qt::escape(reply->url().toString()) + i18n(" at ") + Qt::escape(reply->url().toString()) + "</qt>";
     passwordDialog.introLabel->setText(introMessage);
     passwordDialog.introLabel->setWordWrap(true);
 
-    if (dialog.exec() == QDialog::Accepted) 
+    if (dialog.exec() == QDialog::Accepted)
     {
         auth->setUser(passwordDialog.userNameLineEdit->text());
         auth->setPassword(passwordDialog.passwordLineEdit->text());
@@ -141,7 +141,7 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
     proxyDialog.introLabel->setText(introMessage);
     proxyDialog.introLabel->setWordWrap(true);
 
-    if (dialog.exec() == QDialog::Accepted) 
+    if (dialog.exec() == QDialog::Accepted)
     {
         auth->setUser(proxyDialog.userNameLineEdit->text());
         auth->setPassword(proxyDialog.passwordLineEdit->text());
@@ -157,7 +157,7 @@ void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError
     for (int i = 0; i < error.count(); ++i)
         errorStrings += error.at(i).errorString();
     QString errors = errorStrings.join(QLatin1String("\n"));
-    int ret = KMessageBox::warningYesNo( mainWindow, i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n");
+    int ret = KMessageBox::warningYesNo(mainWindow, i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n");
     if (ret == KMessageBox::Yes)
         reply->ignoreSslErrors();
 }

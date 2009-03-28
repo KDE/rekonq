@@ -40,7 +40,7 @@ public:
 
 private:
     Private* const d;
-    
+
 private slots:
     void readConfig();
     void saveSettings();

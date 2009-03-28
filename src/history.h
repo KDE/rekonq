@@ -49,15 +49,19 @@ public:
     HistoryItem() {}
     HistoryItem(const QString &u,
                 const QDateTime &d = QDateTime(), const QString &t = QString())
-        : title(t), url(u), dateTime(d) {}
+            : title(t), url(u), dateTime(d) {}
 
     inline bool operator==(const HistoryItem &other) const
-        { return other.title == title
-          && other.url == url && other.dateTime == dateTime; }
+    {
+        return other.title == title
+               && other.url == url && other.dateTime == dateTime;
+    }
 
     // history is sorted in reverse
     inline bool operator <(const HistoryItem &other) const
-        { return dateTime > other.dateTime; }
+    {
+        return dateTime > other.dateTime;
+    }
 
     QString title;
     QString url;
@@ -145,7 +149,8 @@ public slots:
     void entryUpdated(int offset);
 
 public:
-    enum Roles {
+    enum Roles
+    {
         DateRole = Qt::UserRole + 1,
         DateTimeRole = Qt::UserRole + 2,
         UrlRole = Qt::UserRole + 3,
@@ -181,7 +186,9 @@ public:
     HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent = 0);
 
     inline bool historyContains(const QString &url) const
-        { load(); return m_historyHash.contains(url); }
+    {
+        load(); return m_historyHash.contains(url);
+    }
     int historyLocation(const QString &url) const;
 
     QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
@@ -191,7 +198,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QModelIndex index(int, int, const QModelIndex& = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex& index= QModelIndex()) const;
+    QModelIndex parent(const QModelIndex& index = QModelIndex()) const;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
@@ -257,8 +264,8 @@ signals:
     void openUrl(const KUrl &url);
 
 public:
-     HistoryMenu(QWidget *parent = 0);
-     void setInitialActions(QList<QAction*> actions);
+    HistoryMenu(QWidget *parent = 0);
+    void setInitialActions(QList<QAction*> actions);
 
 protected:
     bool prePopulated();
@@ -279,7 +286,7 @@ private:
 
 /**
  * Proxy model for the history model that
- * exposes each url http://www.foo.com and 
+ * exposes each url http://www.foo.com and
  * it url starting at the host www.foo.com
  *
  */
@@ -296,7 +303,7 @@ public:
     QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
     QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
     QModelIndex index(int, int, const QModelIndex& = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex& index= QModelIndex()) const;
+    QModelIndex parent(const QModelIndex& index = QModelIndex()) const;
     void setSourceModel(QAbstractItemModel *sourceModel);
 
 private slots:
@@ -326,7 +333,7 @@ public:
     QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
     QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &index= QModelIndex()) const;
+    QModelIndex parent(const QModelIndex &index = QModelIndex()) const;
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
@@ -349,7 +356,7 @@ private:
 // -----------------------------------------------------------------------------------------------------------------
 
 /**
- * A modified QSortFilterProxyModel that always accepts 
+ * A modified QSortFilterProxyModel that always accepts
  * the root nodes in the tree
  * so filtering is only done on the children.
  * Used in the HistoryDialog.

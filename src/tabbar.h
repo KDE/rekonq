@@ -31,7 +31,7 @@
 #include <QShortcut>
 
 /**
- * Tab bar with a few more features such as 
+ * Tab bar with a few more features such as
  * a context menu and shortcuts
  *
  */
@@ -64,7 +64,7 @@ protected:
      * Added to fix tab dimension
      *
      */
-    virtual QSize tabSizeHint (int index) const;
+    virtual QSize tabSizeHint(int index) const;
 
 private slots:
     void selectTabAction();

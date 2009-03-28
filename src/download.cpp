@@ -30,12 +30,12 @@
 #include <QFileInfo>
 
 Download::Download(const KUrl &srcUrl, const KUrl &destUrl)
-  : m_srcUrl(srcUrl),
-    m_destUrl(destUrl)
+        : m_srcUrl(srcUrl),
+        m_destUrl(destUrl)
 {
     kWarning() << "DownloadFile: " << m_srcUrl.url() << " to dest: " << m_destUrl.url();
     m_copyJob = KIO::get(m_srcUrl);
-    connect(m_copyJob, SIGNAL(data(KIO::Job*,const QByteArray &)), SLOT(slotData(KIO::Job*, const QByteArray&)));
+    connect(m_copyJob, SIGNAL(data(KIO::Job*, const QByteArray &)), SLOT(slotData(KIO::Job*, const QByteArray&)));
     connect(m_copyJob, SIGNAL(result(KJob *)), SLOT(slotResult(KJob *)));
 }
 
@@ -53,34 +53,34 @@ void Download::slotResult(KJob * job)
 {
     switch (job->error())
     {
-        case 0://The download has finished
+    case 0://The download has finished
+    {
+        kDebug(5001) << "Downloading successfully finished: " << m_destUrl.url();
+        QFile destFile(m_destUrl.path());
+        int n = 1;
+        QString fn = destFile.fileName();
+        while (destFile.exists())
         {
-            kDebug(5001) << "Downloading successfully finished: " << m_destUrl.url();
-            QFile destFile(m_destUrl.path());
-            int n = 1;
-            QString fn = destFile.fileName();
-            while( destFile.exists() )
-            {
-                destFile.setFileName( fn + "." + QString::number(n) );
-                n++;
-            }
-            if ( destFile.open(QIODevice::WriteOnly | QIODevice::Text) )
-            {
-                destFile.write(m_data);
-                destFile.close();
-            }
-            m_data = 0;
-            break;
+            destFile.setFileName(fn + "." + QString::number(n));
+            n++;
         }
-        case KIO::ERR_FILE_ALREADY_EXIST:
+        if (destFile.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            kWarning() << "ERROR - File already exists";
-            m_data = 0;
-            break;
+            destFile.write(m_data);
+            destFile.close();
         }
-        default:
-            kWarning() << "We are sorry to say you, that there were errors while downloading :(";
-            m_data = 0;
-            break;
+        m_data = 0;
+        break;
+    }
+    case KIO::ERR_FILE_ALREADY_EXIST:
+    {
+        kWarning() << "ERROR - File already exists";
+        m_data = 0;
+        break;
+    }
+    default:
+        kWarning() << "We are sorry to say you, that there were errors while downloading :(";
+        m_data = 0;
+        break;
     }
 }

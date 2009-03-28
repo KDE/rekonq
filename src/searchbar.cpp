@@ -36,23 +36,23 @@
 #include <QtNetwork>
 
 
-SearchBar::SearchBar(QWidget *parent) : 
-    KLineEdit(parent)
+SearchBar::SearchBar(QWidget *parent) :
+        KLineEdit(parent)
 {
     setMinimumWidth(180);
     kWarning() << "setting fixed minimum width.." ;
 
-    setFocusPolicy( Qt::WheelFocus );
-    setMouseTracking( true );
+    setFocusPolicy(Qt::WheelFocus);
+    setMouseTracking(true);
     setAcceptDrops(true);
 
     QSizePolicy policy = sizePolicy();
     setSizePolicy(QSizePolicy::Preferred, policy.verticalPolicy());
 
-    setClearButtonShown( true );
+    setClearButtonShown(true);
 
     // better solution than using QPalette(s)..
-    setClickMessage( i18n("Search..") );
+    setClickMessage(i18n("Search.."));
 
     // setting QNetworkAccessManager..
     netMan = new QNetworkAccessManager(this);
@@ -64,7 +64,7 @@ SearchBar::SearchBar(QWidget *parent) :
     connect(timer, SIGNAL(timeout()), SLOT(autoSuggest()));
     connect(this, SIGNAL(textEdited(QString)), timer, SLOT(start()));
 
-    connect(this, SIGNAL( returnPressed() ) , this , SLOT( searchNow() ) );
+    connect(this, SIGNAL(returnPressed()) , this , SLOT(searchNow()));
 }
 
 
@@ -92,8 +92,8 @@ void SearchBar::focusInEvent(QFocusEvent *event)
     KLineEdit::focusInEvent(event);
 
     QPalette p;
-    p.setColor( QPalette::Text , Qt::black );
-    setPalette( p );
+    p.setColor(QPalette::Text , Qt::black);
+    setPalette(p);
     clear();
 }
 
@@ -109,7 +109,7 @@ void SearchBar::autoSuggest()
 void SearchBar::handleNetworkData(QNetworkReply *networkReply)
 {
     QUrl url = networkReply->url();
-    if (!networkReply->error()) 
+    if (!networkReply->error())
     {
         QStringList choices;
 

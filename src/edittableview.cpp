@@ -24,17 +24,20 @@
 #include <QtGui/QKeyEvent>
 
 EditTableView::EditTableView(QWidget *parent)
-    : QTableView(parent)
+        : QTableView(parent)
 {
 }
 
 void EditTableView::keyPressEvent(QKeyEvent *event)
 {
     if ((event->key() == Qt::Key_Delete
-        || event->key() == Qt::Key_Backspace)
-        && model()) {
+            || event->key() == Qt::Key_Backspace)
+            && model())
+    {
         removeOne();
-    } else {
+    }
+    else
+    {
         QAbstractItemView::keyPressEvent(event);
     }
 }

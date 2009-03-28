@@ -63,7 +63,7 @@ private:
 
     Private(SettingsDialog *parent);
 
-friend class SettingsDialog;
+    friend class SettingsDialog;
 };
 
 
@@ -73,47 +73,47 @@ Private::Private(SettingsDialog *parent)
     KPageWidgetItem *pageItem;
 
     widget = new QWidget;
-    generalUi.setupUi( widget );
+    generalUi.setupUi(widget);
     widget->layout()->setMargin(0);
-    pageItem = parent->addPage( widget , i18n("General") );
-    pageItem->setIcon( KIcon("rekonq") );
+    pageItem = parent->addPage(widget , i18n("General"));
+    pageItem->setIcon(KIcon("rekonq"));
 
     widget = new QWidget;
-    fontsUi.setupUi( widget );
+    fontsUi.setupUi(widget);
     widget->layout()->setMargin(0);
-    pageItem = parent->addPage( widget , i18n("Fonts") );
-    pageItem->setIcon( KIcon("preferences-desktop-font") );
+    pageItem = parent->addPage(widget , i18n("Fonts"));
+    pageItem->setIcon(KIcon("preferences-desktop-font"));
 
     widget = new QWidget;
-    privacyUi.setupUi( widget );
+    privacyUi.setupUi(widget);
     widget->layout()->setMargin(0);
-    pageItem = parent->addPage( widget , i18n("Privacy") );
-    pageItem->setIcon( KIcon("preferences-desktop-personal") );
+    pageItem = parent->addPage(widget , i18n("Privacy"));
+    pageItem->setIcon(KIcon("preferences-desktop-personal"));
 
     widget = new QWidget;
-    proxyUi.setupUi( widget );
+    proxyUi.setupUi(widget);
     widget->layout()->setMargin(0);
-    pageItem = parent->addPage( widget , i18n("Proxy") );
-    pageItem->setIcon( KIcon("preferences-system-network") );
+    pageItem = parent->addPage(widget , i18n("Proxy"));
+    pageItem->setIcon(KIcon("preferences-system-network"));
 }
 
 // -----------------------------------------------------------------------------------------------------
 
 SettingsDialog::SettingsDialog(QWidget *parent)
-    : KConfigDialog(parent, "rekonfig", ReKonfig::self())
-    , d(new Private(this)) 
+        : KConfigDialog(parent, "rekonfig", ReKonfig::self())
+        , d(new Private(this))
 {
     setFaceType(KPageDialog::List);
     showButtonSeparator(true);
 
-    setWindowTitle( i18n("rekonfig..") );
+    setWindowTitle(i18n("rekonfig.."));
     setModal(true);
 
     readConfig();
 
-    connect( d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT( setHomeToCurrentPage() ) );
-    connect( d->privacyUi.exceptionsButton, SIGNAL(clicked()), this, SLOT( showExceptions() ) );
-    connect( d->privacyUi.cookiesButton, SIGNAL(clicked()), this, SLOT( showCookies() ) );
+    connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
+    connect(d->privacyUi.exceptionsButton, SIGNAL(clicked()), this, SLOT(showExceptions()));
+    connect(d->privacyUi.cookiesButton, SIGNAL(clicked()), this, SLOT(showCookies()));
 }
 
 
@@ -129,13 +129,13 @@ void SettingsDialog::readConfig()
 {
     // ======= General
     d->generalUi.downloadDirUrlRequester->setMode(KFile::Directory | KFile::ExistingOnly | KFile::LocalOnly);
-    d->generalUi.downloadDirUrlRequester->setUrl( ReKonfig::downloadDir() );
-    connect(d->generalUi.downloadDirUrlRequester, SIGNAL(textChanged(QString)),this, SLOT(saveSettings()));
+    d->generalUi.downloadDirUrlRequester->setUrl(ReKonfig::downloadDir());
+    connect(d->generalUi.downloadDirUrlRequester, SIGNAL(textChanged(QString)), this, SLOT(saveSettings()));
 
     // ======= Fonts
 //     QFont stdFont = ReKonfig::standardFont();
 //     d->fontsUi.standardFont->setCurrentFont(stdFont);
-// 
+//
 //     QFont fxFont = ReKonfig::fixedFont();
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
 //     d->fontsUi.fixedFont->setCurrentFont(fxFont);
@@ -151,7 +151,7 @@ void SettingsDialog::readConfig()
 void SettingsDialog::saveSettings()
 {
     // General
-    ReKonfig::setDownloadDir( d->generalUi.downloadDirUrlRequester->url().prettyUrl() );
+    ReKonfig::setDownloadDir(d->generalUi.downloadDirUrlRequester->url().prettyUrl());
 
     // Fonts
 //     ReKonfig::setStandardFont( d->fontsUi.standardFont->currentFont() );
@@ -185,6 +185,6 @@ void SettingsDialog::setHomeToCurrentPage()
     WebView *webView = mw->currentTab();
     if (webView)
     {
-        d->generalUi.kcfg_homePage->setText( webView->url().prettyUrl() );
+        d->generalUi.kcfg_homePage->setText(webView->url().prettyUrl());
     }
 }

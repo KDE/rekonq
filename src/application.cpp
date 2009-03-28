@@ -59,17 +59,17 @@ NetworkAccessManager *Application::s_networkAccessManager = 0;
 
 
 Application::Application()
-    : KUniqueApplication()
+        : KUniqueApplication()
 {
     m_mainWindow = new MainWindow();
     m_mainWindow->setObjectName("MainWindow");
-    setWindowIcon( KIcon("rekonq") );
+    setWindowIcon(KIcon("rekonq"));
     newTab();
     mainWindow()->slotHome();
 
     m_mainWindow->show();
 
-    QTimer::singleShot(0, this, SLOT( postLaunch() ) );
+    QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
 
@@ -85,16 +85,16 @@ int Application::newInstance()
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
-    if (args->count() > 0) 
+    if (args->count() > 0)
     {
-        for (int i = 0; i < args->count(); ++i) 
+        for (int i = 0; i < args->count(); ++i)
         {
-            KUrl url = MainWindow::guessUrlFromString( args->arg(i) );
+            KUrl url = MainWindow::guessUrlFromString(args->arg(i));
             newTab();
-            mainWindow()->loadUrl( url );
+            mainWindow()->loadUrl(url);
         }
         args->clear();
-    } 
+    }
 
     return 0;
 }
@@ -108,9 +108,9 @@ Application *Application::instance()
 
 void Application::postLaunch()
 {
-    // set Icon Database Path to store "favicons" associated with web sites 
-    QString directory = KStandardDirs::locateLocal( "cache" , "" , true );
-    if ( directory.isEmpty() )
+    // set Icon Database Path to store "favicons" associated with web sites
+    QString directory = KStandardDirs::locateLocal("cache" , "" , true);
+    if (directory.isEmpty())
     {
         directory = QDir::homePath() + QLatin1String("/.") + QCoreApplication::applicationName();
     }
@@ -122,7 +122,7 @@ void Application::postLaunch()
 
 void Application::downloadUrl(const KUrl &srcUrl, const KUrl &destUrl)
 {
-    new Download( srcUrl, destUrl );
+    new Download(srcUrl, destUrl);
 }
 
 
@@ -152,7 +152,7 @@ CookieJar *Application::cookieJar()
 
 NetworkAccessManager *Application::networkAccessManager()
 {
-    if (!s_networkAccessManager) 
+    if (!s_networkAccessManager)
     {
         s_networkAccessManager = new NetworkAccessManager();
         s_networkAccessManager->setCookieJar(new CookieJar);
@@ -164,7 +164,7 @@ NetworkAccessManager *Application::networkAccessManager()
 
 HistoryManager *Application::historyManager()
 {
-    if (!s_historyManager) 
+    if (!s_historyManager)
     {
         s_historyManager = new HistoryManager();
         QWebHistoryInterface::setDefaultInterface(s_historyManager);
@@ -175,7 +175,7 @@ HistoryManager *Application::historyManager()
 
 KIcon Application::icon(const KUrl &url) const
 {
-    KIcon icon = KIcon( QWebSettings::iconForUrl(url) );
+    KIcon icon = KIcon(QWebSettings::iconForUrl(url));
     if (icon.isNull())
     {
         icon = KIcon("kde");

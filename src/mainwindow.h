@@ -43,11 +43,11 @@ class WebView;
 
 
 /**
- * This class serves as the main window for rekonq.  
+ * This class serves as the main window for rekonq.
  * It handles the menus, toolbars, and status bars.
  *
  */
-class MainWindow : public KXmlGuiWindow 
+class MainWindow : public KXmlGuiWindow
 {
     Q_OBJECT
 

@@ -39,7 +39,7 @@ class HistoryManager;
 class NetworkAccessManager;
 
 /**
-  * 
+  *
   */
 class Application : public KUniqueApplication
 {

@@ -31,41 +31,41 @@
 
 /**
  * This class lets rekonq to download an object from the network.
- * Creating a new object, you can continue downloading a file also 
+ * Creating a new object, you can continue downloading a file also
  * when rekonq is closed.
  *
- */ 
+ */
 class Download : public QObject
 {
     Q_OBJECT
-    public:
-        /**
-         * Class constructor. This is the unique method we need to
-         * use this class. In fact Download class needs to know just
-         * "where" catch the file to download and where it has to put it
-         *
-         * @param srcUrl the source url
-         *
-         * @param destUrl the destination url
-         *
-         */
-        Download(const KUrl &srcUrl, const KUrl &destUrl);
+public:
+    /**
+     * Class constructor. This is the unique method we need to
+     * use this class. In fact Download class needs to know just
+     * "where" catch the file to download and where it has to put it
+     *
+     * @param srcUrl the source url
+     *
+     * @param destUrl the destination url
+     *
+     */
+    Download(const KUrl &srcUrl, const KUrl &destUrl);
 
-        /**
-         * class destructor
-         */
-        ~Download();
+    /**
+     * class destructor
+     */
+    ~Download();
 
-    private slots:
-        void slotResult(KJob * job);
-        void slotData(KIO::Job *job, const QByteArray& data);
+private slots:
+    void slotResult(KJob * job);
+    void slotData(KIO::Job *job, const QByteArray& data);
 
-    private:
-        KIO::TransferJob *m_copyJob;
-        KUrl m_srcUrl;
-        KUrl m_destUrl;
-        KUrl m_destFile;
-        QByteArray m_data;
+private:
+    KIO::TransferJob *m_copyJob;
+    KUrl m_srcUrl;
+    KUrl m_destUrl;
+    KUrl m_destFile;
+    QByteArray m_data;
 };
 
 #endif
