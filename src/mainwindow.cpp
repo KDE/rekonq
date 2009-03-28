@@ -75,7 +75,7 @@ MainWindow::MainWindow()
     // creating a centralWidget containing m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_view);
 
     // Find Bar
@@ -100,6 +100,9 @@ MainWindow::MainWindow()
     connect(m_view, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
     connect(m_view, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
     connect(m_view, SIGNAL(lastTabClosed()), m_view, SLOT(newTab()));
+
+    connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
+    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
 
     slotUpdateWindowTitle();
 
@@ -193,76 +196,76 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotWebStop()));
 
     // stop reload Action
-    m_stopReload = new KAction(KIcon("view-refresh"), i18n("reload"), this);
-    actionCollection()->addAction(QLatin1String("stop reload") , m_stopReload);
+    m_stopReloadAction = new KAction(KIcon("view-refresh"), i18n("reload"), this);
+    actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
+    m_stopReloadAction->setShortcutConfigurable(false);
 
     // ============== Custom Actions
     a = new KAction(KIcon(), i18n("Open Location"), this);
-    actionCollection()->addAction(QLatin1String("open location"), a);
+    actionCollection()->addAction(QLatin1String("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
 
     a = new KAction(i18n("Private &Browsing..."), this);
     a->setCheckable(true);
-    actionCollection()->addAction(i18n("private browsing"), a);
+    actionCollection()->addAction(i18n("private_browsing"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotPrivateBrowsing()));
 
     a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
     a->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Plus));
-    actionCollection()->addAction(QLatin1String("bigger font"), a);
+    actionCollection()->addAction(QLatin1String("bigger_font"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextBigger()));
 
     a = new KAction(KIcon("zoom-original"),  i18n("&Normal Font"), this);
     a->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_0));
-    actionCollection()->addAction(QLatin1String("normal font"), a);
+    actionCollection()->addAction(QLatin1String("normal_font"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextNormal()));
 
     a = new KAction(KIcon("zoom-out"),  i18n("&Shrink Font"), this);
     a->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Minus));
-    actionCollection()->addAction(QLatin1String("smaller font"), a);
+    actionCollection()->addAction(QLatin1String("smaller_font"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextSmaller()));
 
     a = new KAction(i18n("Page S&ource"), this);
-    actionCollection()->addAction(QLatin1String("page source"), a);
+    actionCollection()->addAction(QLatin1String("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewPageSource()));
 
     a = new KAction(KIcon("tools-report-bug"), i18n("Enable Web &Inspector"), this);
     a->setCheckable(true);
-    actionCollection()->addAction(QLatin1String("web inspector"), a);
+    actionCollection()->addAction(QLatin1String("web_inspector"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotToggleInspector(bool)));
 
     // ================ history related actions
-    KAction *historyBack = new KAction(KIcon("go-previous"), i18n("Back"), this);
+    m_historyBackAction = new KAction(KIcon("go-previous"), i18n("Back"), this);
     m_historyBackMenu = new KMenu(this);
-    historyBack->setMenu(m_historyBackMenu);
-    connect(historyBack, SIGNAL(triggered(bool)), this, SLOT(slotOpenPrevious()));
-// FIXME < --------------------------------------------------------------------------------------------------------------------------------------|
+    m_historyBackAction->setMenu(m_historyBackMenu);
+    connect(m_historyBackAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenPrevious()));
     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
-    actionCollection()->addAction(QLatin1String("history back"), historyBack);
+    actionCollection()->addAction(QLatin1String("history_back"), m_historyBackAction);
 
-    KAction *historyForward = new KAction(KIcon("go-next"), i18n("Forward"), this);
-    connect(historyForward, SIGNAL(triggered(bool)), this, SLOT(slotOpenNext()));
-    actionCollection()->addAction(QLatin1String("history forward"), historyForward);
+    m_historyForwardAction = new KAction(KIcon("go-next"), i18n("Forward"), this);
+    connect(m_historyForwardAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenNext()));
+    actionCollection()->addAction(QLatin1String("history_forward"), m_historyForwardAction);
 
     // =================== Tab Actions
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_N, Qt::CTRL + Qt::Key_T));
-    actionCollection()->addAction(QLatin1String("new tab"), a);
+    actionCollection()->addAction(QLatin1String("new_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(newTab()));
 
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_W));
-    actionCollection()->addAction(QLatin1String("close tab"), a);
+    actionCollection()->addAction(QLatin1String("close_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(closeTab()));
 
     a = new KAction(i18n("Show Next Tab"), this);
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext());
-    actionCollection()->addAction(QLatin1String("show next tab"), a);
+    actionCollection()->addAction(QLatin1String("show_next_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(nextTab()));
 
     a = new KAction(i18n("Show Previous Tab"), this);
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
-    actionCollection()->addAction(QLatin1String("show prev tab"), a);
+    actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
 }
 
@@ -271,14 +274,14 @@ void MainWindow::setupTabBar()
 {
     // Left corner button
     QToolButton *addTabButton = new QToolButton(this);
-    addTabButton->setDefaultAction(actionCollection()->action("new tab"));
+    addTabButton->setDefaultAction(actionCollection()->action("new_tab"));
     addTabButton->setAutoRaise(true);
     addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     m_view->setCornerWidget(addTabButton, Qt::TopLeftCorner);
 
     // right corner button
     QToolButton *closeTabButton = new QToolButton(this);
-    closeTabButton->setDefaultAction(actionCollection()->action("close tab"));
+    closeTabButton->setDefaultAction(actionCollection()->action("close_tab"));
     closeTabButton->setAutoRaise(true);
     closeTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     m_view->setCornerWidget(closeTabButton, Qt::TopRightCorner);
@@ -292,18 +295,8 @@ void MainWindow::setupHistoryMenu()
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle(i18n("&History"));
     menuBar()->insertMenu(actionCollection()->action("bookmarks"), historyMenu);
-    QList<QAction*> historyActions;
-
-    historyActions.append(actionCollection()->action("history back"));
-    historyActions.append(actionCollection()->action("history forward"));
-    historyActions.append(m_view->recentlyClosedTabsAction());
-
-    historyMenu->setInitialActions(historyActions);
 }
 
-
-// FIXME
-// check ALL variables: including alwaysShowTabbar..
 
 void MainWindow::slotUpdateConf()
 {
@@ -447,6 +440,13 @@ void MainWindow::slotPreferences()
 void MainWindow::slotUpdateStatusbar(const QString &string)
 {
     statusBar()->showMessage(string, 2000);
+}
+
+
+void MainWindow::slotUpdateActions()
+{
+    m_historyBackAction->setEnabled(currentTab()->history()->canGoBack());
+    m_historyForwardAction->setEnabled(currentTab()->history()->canGoForward());
 }
 
 
@@ -627,7 +627,6 @@ void MainWindow::slotViewTextSmaller()
 }
 
 
-// TODO improve this
 void MainWindow::slotViewFullScreen(bool makeFullScreen)
 {
     if (makeFullScreen == true)
@@ -707,26 +706,25 @@ WebView *MainWindow::currentTab() const
 }
 
 
-// FIXME: this actually doesn't work properly..
 void MainWindow::slotLoadProgress(int progress)
 {
     QAction *stop = actionCollection()->action("stop");
     QAction *reload = actionCollection()->action("view_redisplay");
     if (progress < 100 && progress > 0)
     {
-        disconnect(m_stopReload, SIGNAL(triggered(bool)), reload , SIGNAL(triggered(bool)));
-        m_stopReload->setIcon(KIcon("process-stop"));
-        m_stopReload->setToolTip(i18n("Stop loading the current page"));
-        m_stopReload->setText(i18n("Stop"));
-        connect(m_stopReload, SIGNAL(triggered(bool)), stop, SIGNAL(triggered(bool)));
+        disconnect(m_stopReloadAction, SIGNAL(triggered(bool)), reload , SIGNAL(triggered(bool)));
+        m_stopReloadAction->setIcon(KIcon("process-stop"));
+        m_stopReloadAction->setToolTip(i18n("Stop loading the current page"));
+        m_stopReloadAction->setText(i18n("Stop"));
+        connect(m_stopReloadAction, SIGNAL(triggered(bool)), stop, SIGNAL(triggered(bool)));
     }
     else
     {
-        disconnect(m_stopReload, SIGNAL(triggered(bool)), stop , SIGNAL(triggered(bool)));
-        m_stopReload->setIcon(KIcon("view-refresh"));
-        m_stopReload->setToolTip(i18n("Reload the current page"));
-        m_stopReload->setText(i18n("Reload"));
-        connect(m_stopReload, SIGNAL(triggered(bool)), reload, SIGNAL(triggered(bool)));
+        disconnect(m_stopReloadAction, SIGNAL(triggered(bool)), stop , SIGNAL(triggered(bool)));
+        m_stopReloadAction->setIcon(KIcon("view-refresh"));
+        m_stopReloadAction->setToolTip(i18n("Reload the current page"));
+        m_stopReloadAction->setText(i18n("Reload"));
+        connect(m_stopReloadAction, SIGNAL(triggered(bool)), reload, SIGNAL(triggered(bool)));
 
     }
 }

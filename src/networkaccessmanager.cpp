@@ -37,6 +37,7 @@
 // KDE Includes
 #include <KMessageBox>
 #include <KDebug>
+#include <KStandardDirs>
 
 // Qt Includes
 #include <QDialog>
