@@ -65,7 +65,6 @@ Application::Application()
     m_mainWindow->setObjectName("MainWindow");
     setWindowIcon(KIcon("rekonq"));
     newTab();
-    mainWindow()->slotHome();
 
     m_mainWindow->show();
 
@@ -87,13 +86,19 @@ int Application::newInstance()
 
     if (args->count() > 0)
     {
-        for (int i = 0; i < args->count(); ++i)
+        KUrl url = MainWindow::guessUrlFromString(args->arg(0));
+        mainWindow()->loadUrl(url);
+        for (int i = 1; i < args->count(); ++i)
         {
             KUrl url = MainWindow::guessUrlFromString(args->arg(i));
             newTab();
             mainWindow()->loadUrl(url);
         }
         args->clear();
+    }
+    else
+    {
+        mainWindow()->slotHome();
     }
 
     return 0;
@@ -159,7 +164,6 @@ NetworkAccessManager *Application::networkAccessManager()
     }
     return s_networkAccessManager;
 }
-
 
 
 HistoryManager *Application::historyManager()

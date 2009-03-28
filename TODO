@@ -10,10 +10,11 @@ DONE QNetworkDiskCache
 DONE loading right sites as "external browser" (rekonq %u)
 DONE provide translations structure
 DONE disable BACK button when history is NULL
+DONE load just ONE site at start
 - QWebFrame
 DONE(?) definitely fix fonts!
 - fix crash on example sites..
-- load just ONE site at start
+
 - improve DOCUMENTATION
 
 
