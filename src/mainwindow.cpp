@@ -236,6 +236,7 @@ void MainWindow::setupActions()
     m_historyBackMenu = new KMenu(this);
     historyBack->setMenu(m_historyBackMenu);
     connect(historyBack, SIGNAL( triggered(bool) ), this, SLOT( slotOpenPrevious() ) );
+// FIXME < --------------------------------------------------------------------------------------------------------------------------------------|
     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
     actionCollection()->addAction( QLatin1String("history back"), historyBack);

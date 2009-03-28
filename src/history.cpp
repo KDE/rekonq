@@ -177,7 +177,6 @@ void HistoryManager::addHistoryItem(const HistoryItem &item)
 }
 
 
-
 void HistoryManager::updateHistoryItem(const KUrl &url, const QString &title)
 {
     for (int i = 0; i < m_history.count(); ++i) 
@@ -493,9 +492,11 @@ bool HistoryModel::removeRows(int row, int count, const QModelIndex &parent)
 
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//  -----------------------------------------------------------------------------------------------
 
-#define MOVEDROWS 15
+
+#define MOVEDROWS 10
+
 
 /*
     Maps the first bunch of items of the source model to the root
@@ -507,6 +508,7 @@ HistoryMenuModel::HistoryMenuModel(HistoryTreeModel *sourceModel, QObject *paren
     setSourceModel(sourceModel);
 }
 
+
 int HistoryMenuModel::bumpedRows() const
 {
     QModelIndex first = m_treeModel->index(0, 0);
@@ -515,10 +517,12 @@ int HistoryMenuModel::bumpedRows() const
     return qMin(m_treeModel->rowCount(first), MOVEDROWS);
 }
 
+
 int HistoryMenuModel::columnCount(const QModelIndex &parent) const
 {
     return m_treeModel->columnCount(mapToSource(parent));
 }
+
 
 int HistoryMenuModel::rowCount(const QModelIndex &parent) const
 {
@@ -546,6 +550,7 @@ int HistoryMenuModel::rowCount(const QModelIndex &parent) const
     return defaultCount;
 }
 
+
 QModelIndex HistoryMenuModel::mapFromSource(const QModelIndex &sourceIndex) const
 {
     // currently not used or autotested
@@ -553,6 +558,7 @@ QModelIndex HistoryMenuModel::mapFromSource(const QModelIndex &sourceIndex) cons
     int sr = m_treeModel->mapToSource(sourceIndex).row();
     return createIndex(sourceIndex.row(), sourceIndex.column(), sr);
 }
+
 
 QModelIndex HistoryMenuModel::mapToSource(const QModelIndex &proxyIndex) const
 {
@@ -572,6 +578,7 @@ QModelIndex HistoryMenuModel::mapToSource(const QModelIndex &proxyIndex) const
     QModelIndex treeIndex = m_treeModel->mapFromSource(historyIndex);
     return treeIndex;
 }
+
 
 QModelIndex HistoryMenuModel::index(int row, int column, const QModelIndex &parent) const
 {
@@ -595,6 +602,7 @@ QModelIndex HistoryMenuModel::index(int row, int column, const QModelIndex &pare
     return createIndex(row, column, historyRow);
 }
 
+
 QModelIndex HistoryMenuModel::parent(const QModelIndex &index) const
 {
     int offset = index.internalId();
@@ -613,7 +621,8 @@ QModelIndex HistoryMenuModel::parent(const QModelIndex &index) const
 }
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------
+
 
 HistoryMenu::HistoryMenu(QWidget *parent)
     : ModelMenu(parent)
@@ -680,7 +689,8 @@ void HistoryMenu::setInitialActions(QList<QAction*> actions)
 }
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------
+
 
 TreeProxyModel::TreeProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
@@ -697,7 +707,8 @@ bool TreeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_
 }
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------
+
 
 HistoryDialog::HistoryDialog(QWidget *parent, HistoryManager *setHistory) : QDialog(parent)
 {
@@ -766,7 +777,7 @@ void HistoryDialog::copy()
 }
 
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 
 HistoryFilterModel::HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent)
     : QAbstractProxyModel(parent),
@@ -954,8 +965,6 @@ void HistoryFilterModel::sourceRowsRemoved(const QModelIndex &, int start, int e
 }
 
 
-
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 /*
     Removing a continuous block of rows will remove filtered rows too as this is
     the users intention.
@@ -980,6 +989,9 @@ bool HistoryFilterModel::removeRows(int row, int count, const QModelIndex &paren
         reset();
     return true;
 }
+
+
+// ------------------------------------------------------------------------------------------------------
 
 
 HistoryCompletionModel::HistoryCompletionModel(QObject *parent)
@@ -1082,8 +1094,8 @@ void HistoryCompletionModel::sourceReset()
 }
 
 
+// ------------------------------------------------------------------------------------------------------
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 HistoryTreeModel::HistoryTreeModel(QAbstractItemModel *sourceModel, QObject *parent)
     : QAbstractProxyModel(parent)

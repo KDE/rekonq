@@ -55,11 +55,23 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
             SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
     connect(this, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)),
             SLOT(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
+
 #ifndef QT_NO_OPENSSL
     connect(this, SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError>&)),
             SLOT(sslErrors(QNetworkReply*, const QList<QSslError>&)));
 #endif
+
     loadSettings();
+
+#if QT_VERSION >= 0x040500
+
+    QNetworkDiskCache *diskCache = new QNetworkDiskCache(this);
+    QString location = KStandardDirs::locateLocal("cache","",true);
+    diskCache->setCacheDirectory(location);
+    setCache(diskCache);
+
+#endif    
+
 }
 
 
