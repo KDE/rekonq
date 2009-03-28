@@ -19,7 +19,6 @@
 * ============================================================ */
 
 
-
 // Self Includes
 #include "mainwindow.h"
 #include "mainwindow.moc"
