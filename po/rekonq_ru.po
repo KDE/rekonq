@@ -1,8 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# This file is distributed under the same license as the rekonq package.
+# FIRST AUTHOR Domrachev Alexandr <alexnadr.domrachev@gmail.com>, 2009.
 #, fuzzy
 msgid ""
 msgstr ""
@@ -10,11 +9,12 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?\n"
 "POT-Creation-Date: 2009-03-28 23:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator:Domrachev Alexandr <alexnadr.domrachev@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Language: ru_RU\n"
 
 #: cookiejar.cpp:472 cookiejar.cpp:651
 msgid "Website"
@@ -76,19 +76,19 @@ msgstr ""
 
 #: history.cpp:684
 msgid "Clear History"
-msgstr ""
+msgstr "Очистить журнал"
 
 #: history.cpp:765
 msgid "Open"
-msgstr ""
+msgstr "Открыть"
 
 #: history.cpp:767
 msgid "Copy"
-msgstr ""
+msgstr "Копировать"
 
 #: history.cpp:769
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: history.cpp:1152
 msgid "Earlier Today"
@@ -120,7 +120,7 @@ msgstr ""
 
 #: mainview.cpp:77
 msgid "Recently Closed Tabs"
-msgstr ""
+msgstr "Недавно закрытые вкладки"
 
 #: mainview.cpp:370 mainview.cpp:395
 msgid "(Untitled)"
@@ -135,15 +135,16 @@ msgstr ""
 
 #: mainview.cpp:493
 msgid "Do you really want to close this page?"
-msgstr ""
+msgstr "Вы действительно хотите закрыть эту страницу?"
 
 #: mainwindow.cpp:113
 msgid "B&ookmarks"
-msgstr ""
+msgstr "&Закладки"
 
 #: mainwindow.cpp:190
+#, fuzzy
 msgid "&Stop"
-msgstr ""
+msgstr "&Стоп"
 
 #: mainwindow.cpp:196
 msgid "reload"
@@ -163,15 +164,15 @@ msgstr ""
 
 #: mainwindow.cpp:209
 msgid "&Enlarge Font"
-msgstr ""
+msgstr "У&величить шрифт"
 
 #: mainwindow.cpp:214
 msgid "&Normal Font"
-msgstr ""
+msgstr "&Нормальный шрифт"
 
 #: mainwindow.cpp:219
 msgid "&Shrink Font"
-msgstr ""
+msgstr "У&меньшить шрифт"
 
 #: mainwindow.cpp:224
 msgid "Page S&ource"
@@ -191,23 +192,24 @@ msgstr ""
 
 #: mainwindow.cpp:248 tabbar.cpp:101
 msgid "New &Tab"
-msgstr ""
+msgstr "Новая &вкладка"
 
 #: mainwindow.cpp:253 tabbar.cpp:109
 msgid "&Close Tab"
-msgstr ""
+msgstr "&Закрыть вкладку"
 
 #: mainwindow.cpp:258
 msgid "Show Next Tab"
-msgstr ""
+msgstr "Открыть следующую вкладку"
 
 #: mainwindow.cpp:263
 msgid "Show Previous Tab"
 msgstr ""
 
 #: mainwindow.cpp:293
+#, fuzzy
 msgid "&History"
-msgstr ""
+msgstr "Журнал"
 
 #: mainwindow.cpp:476
 msgid "Web Resources (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"
@@ -223,7 +225,7 @@ msgstr ""
 
 #: mainwindow.cpp:523
 msgid "Are you sure you want to turn on private browsing?"
-msgstr ""
+msgstr "Вы действительно хотите включить режим конфиденциальности?"
 
 #: mainwindow.cpp:524
 msgid ""
@@ -236,8 +238,9 @@ msgid ""
 msgstr ""
 
 #: mainwindow.cpp:590 mainwindow.cpp:601
+#, fuzzy
 msgid " not found."
-msgstr ""
+msgstr "не найдено."
 
 #: mainwindow.cpp:654
 msgid "Page Source of "
@@ -256,7 +259,7 @@ msgstr ""
 
 #: mainwindow.cpp:719
 msgid "Stop loading the current page"
-msgstr ""
+msgstr "Остановить загрузку страницы"
 
 #: mainwindow.cpp:720
 msgid "Stop"
@@ -264,15 +267,15 @@ msgstr ""
 
 #: mainwindow.cpp:727
 msgid "Reload the current page"
-msgstr ""
+msgstr "Обновить страницу"
 
 #: mainwindow.cpp:728
 msgid "Reload"
-msgstr ""
+msgstr "Обновить"
 
 #: networkaccessmanager.cpp:116
 msgid "<qt>Enter username and password for "
-msgstr ""
+msgstr "<qt>Введите имя пользователя и пароль для "
 
 #: networkaccessmanager.cpp:117
 msgid " at "
@@ -294,7 +297,7 @@ msgstr ""
 
 #: searchbar.cpp:55
 msgid "Search.."
-msgstr ""
+msgstr "Поиск..."
 
 #. i18n: file: settings_general.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, general)
@@ -306,7 +309,7 @@ msgstr ""
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: settings.cpp:86 rc.cpp:96
 msgid "Fonts"
-msgstr ""
+msgstr "Шрифты"
 
 #. i18n: file: settings_privacy.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, privacy)
@@ -322,7 +325,7 @@ msgstr ""
 
 #: settings.cpp:104
 msgid "Interface"
-msgstr ""
+msgstr "Интерфейс"
 
 #: settings.cpp:117
 msgid "rekonfig.."
@@ -338,11 +341,11 @@ msgstr ""
 
 #: tabbar.cpp:112
 msgid "Reload Tab"
-msgstr ""
+msgstr "Обновить вкладку"
 
 #: tabbar.cpp:118
 msgid "Reload All Tabs"
-msgstr ""
+msgstr "Обновить все вкладки"
 
 #: webview.cpp:163
 msgid "Error loading page: "
@@ -350,7 +353,7 @@ msgstr ""
 
 #: webview.cpp:221
 msgid "Open in New Tab"
-msgstr ""
+msgstr "Открыть в новой вкладке"
 
 #. i18n: file: cookiesexceptions.ui:13
 #. i18n: ectx: property (windowTitle), widget (QDialog, CookiesExceptionsDialog)
@@ -414,7 +417,7 @@ msgstr ""
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: rc.cpp:39 rc.cpp:138
 msgid "History"
-msgstr ""
+msgstr "Журнал"
 
 #. i18n: file: passworddialog.ui:13
 #. i18n: ectx: property (windowTitle), widget (QDialog, PasswordDialog)
@@ -474,31 +477,31 @@ msgstr ""
 #. i18n: ectx: Menu (file)
 #: rc.cpp:78
 msgid "&File"
-msgstr ""
+msgstr "&Файл"
 
 #. i18n: file: rekonqui.rc:27
 #. i18n: ectx: Menu (edit)
 #: rc.cpp:81
 msgid "&Edit"
-msgstr ""
+msgstr "&Правка"
 
 #. i18n: file: rekonqui.rc:41
 #. i18n: ectx: Menu (view)
 #: rc.cpp:84
 msgid "&View"
-msgstr ""
+msgstr "&Вид"
 
 #. i18n: file: rekonqui.rc:71
 #. i18n: ectx: ToolBar (mainToolBar)
 #: rc.cpp:87
 msgid "Main Toolbar"
-msgstr ""
+msgstr "Панель инструментов"
 
 #. i18n: file: rekonqui.rc:80
 #. i18n: ectx: ToolBar (bookmarksToolBar)
 #: rc.cpp:90
 msgid "Bookmark Toolbar"
-msgstr ""
+msgstr "Панель закладок"
 
 #. i18n: file: settings_fonts.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, fonts)
@@ -510,13 +513,13 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:99
 msgid "Standard Font"
-msgstr ""
+msgstr "Стандартный шрифт"
 
 #. i18n: file: settings_fonts.ui:35
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: rc.cpp:102
 msgid "Fixed Font"
-msgstr ""
+msgstr "Моноширинный шрифт"
 
 #. i18n: file: settings_fonts.ui:53
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
@@ -546,13 +549,13 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QPushButton, setHomeToCurrentPageButton)
 #: rc.cpp:120
 msgid "Set to current page"
-msgstr ""
+msgstr "Использовать текущую страницу"
 
 #. i18n: file: settings_general.ui:73
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: rc.cpp:123
 msgid "Save downloads to:"
-msgstr ""
+msgstr "Загружать файлы в:"
 
 #. i18n: file: settings_general.ui:86
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
@@ -564,13 +567,13 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_enablePlugins)
 #: rc.cpp:129
 msgid "Enable Plugins"
-msgstr ""
+msgstr "Включить плагины"
 
 #. i18n: file: settings_general.ui:102
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_enableJavascript)
 #: rc.cpp:132
 msgid "Enable Javascript"
-msgstr ""
+msgstr "Включить Javascript"
 
 #. i18n: file: settings_privacy.ui:26
 #. i18n: ectx: property (text), widget (QLabel, label_4)
@@ -684,7 +687,7 @@ msgstr ""
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:201
 msgid "Proxy Settings"
-msgstr ""
+msgstr "Нстройки proxy"
 
 #. i18n: file: settings_proxy.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label_9)
@@ -732,16 +735,16 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_enableLocationbarProgressIndicator)
 #: rc.cpp:228
 msgid "Enable location bar progress indication"
-msgstr ""
+msgstr "Показывать индикатор загрузки страницы в адресной строке"
 
 #. i18n: file: settings_ui.ui:34
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_closeWithLastTab)
 #: rc.cpp:231
 msgid "Exit rekonq if last tab closed"
-msgstr ""
+msgstr "Выходить из rekonq при закрытии последней вкладки"
 
 #. i18n: file: settings_ui.ui:41
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_alwaysShowTabBar)
 #: rc.cpp:234
 msgid "Always show TabBar"
-msgstr ""
+msgstr "Всегда показывать панель вкладок"
