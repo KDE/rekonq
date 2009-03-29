@@ -596,7 +596,7 @@ void MainWindow::slotFindPrevious()
 {
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
-    if (!currentTab()->findText(m_lastSearch, QWebPage::FindBackward))
+    if (!currentTab()->findText(m_lastSearch, QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument))
     {
         slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
     }
