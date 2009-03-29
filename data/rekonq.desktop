@@ -8,3 +8,4 @@ DocPath=rekonq/index.html
 Categories=Qt;KDE;Network;
 Terminal=0
 X-DBUS-StartupType=Unique
+X-DBUS-ServiceName=net.sourceforge.rekonq
