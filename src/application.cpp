@@ -64,7 +64,7 @@ Application::Application()
     m_mainWindow = new MainWindow();
     m_mainWindow->setObjectName("MainWindow");
     setWindowIcon(KIcon("rekonq"));
-    newTab();
+    newWebView();
 
     m_mainWindow->show();
 
@@ -91,7 +91,7 @@ int Application::newInstance()
         for (int i = 1; i < args->count(); ++i)
         {
             KUrl url = MainWindow::guessUrlFromString(args->arg(i));
-            newTab();
+            newWebView();
             mainWindow()->loadUrl(url);
         }
         args->clear();
@@ -143,9 +143,9 @@ MainWindow *Application::mainWindow()
 }
 
 
-WebView *Application::newTab()
+WebView *Application::newWebView()
 {
-    return m_mainWindow->mainView()->newTab();
+    return m_mainWindow->mainView()->newWebView();
 }
 
 

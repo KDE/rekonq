@@ -102,7 +102,7 @@ protected:
 
 public slots:
     void loadUrlInCurrentTab(const KUrl &url);
-    WebView *newTab(bool makeCurrent = true);
+    WebView *newWebView(bool makeCurrent = true);
     void cloneTab(int index = -1);
     void closeTab(int index = -1);
     void closeOtherTabs(int index);

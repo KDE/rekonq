@@ -99,7 +99,7 @@ MainWindow::MainWindow()
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
     connect(m_view, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
     connect(m_view, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
-    connect(m_view, SIGNAL(lastTabClosed()), m_view, SLOT(newTab()));
+    connect(m_view, SIGNAL(lastTabClosed()), m_view, SLOT(newWebView()));
 
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
@@ -251,7 +251,7 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_N, Qt::CTRL + Qt::Key_T));
     actionCollection()->addAction(QLatin1String("new_tab"), a);
-    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(newTab()));
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(newWebView()));
 
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_W));
@@ -465,7 +465,7 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 
 void MainWindow::slotFileNew()
 {
-    Application::instance()->newTab();
+    Application::instance()->newWebView();
     slotHome();
 }
 

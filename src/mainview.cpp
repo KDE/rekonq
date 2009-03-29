@@ -61,7 +61,7 @@ MainView::MainView(QWidget *parent)
 {
     setTabBar(m_tabBar);
 
-    connect(m_tabBar, SIGNAL(newTab()), this, SLOT(newTab()));
+    connect(m_tabBar, SIGNAL(newTab()), this, SLOT(newWebView()));
     connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(closeTab(int)));
     connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(cloneTab(int)));
     connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(closeOtherTabs(int)));
@@ -317,7 +317,7 @@ WebView *MainView::webView(int index) const
         {
             MainView *that = const_cast<MainView*>(this);
             that->setUpdatesEnabled(false);
-            that->newTab();
+            that->newWebView();
             that->closeTab(0);
             that->setUpdatesEnabled(true);
             return currentWebView();
@@ -334,7 +334,7 @@ int MainView::webViewIndex(WebView *webView) const
 }
 
 
-WebView *MainView::newTab(bool makeCurrent)
+WebView *MainView::newWebView(bool makeCurrent)
 {
     // line edit
     UrlBar *urlLineEdit = new UrlBar;
@@ -465,7 +465,7 @@ void MainView::cloneTab(int index)
         index = currentIndex();
     if (index < 0 || index >= count())
         return;
-    WebView *tab = newTab(false);
+    WebView *tab = newWebView(false);
     tab->setUrl(webView(index)->url());
 
     showTabBar();
@@ -593,7 +593,7 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event)
             // Remove the line below when QTabWidget does not have a one pixel frame
             && event->pos().y() < (tabBar()->y() + tabBar()->height()))
     {
-        newTab();
+        newWebView();
         return;
     }
     KTabWidget::mouseDoubleClickEvent(event);
@@ -620,7 +620,7 @@ void MainView::mouseReleaseEvent(QMouseEvent *event)
         KUrl url(QApplication::clipboard()->text(QClipboard::Selection));
         if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty())
         {
-            WebView *webView = newTab();
+            WebView *webView = newWebView();
             webView->setUrl(url);
         }
     }

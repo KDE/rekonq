@@ -84,7 +84,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     if (type == QWebPage::NavigationTypeLinkClicked && (m_keyboardModifiers & Qt::ControlModifier
             || m_pressedButtons == Qt::MidButton))
     {
-        WebView *webView = Application::instance()->newTab();
+        WebView *webView = Application::instance()->newWebView();
         webView->setFocus();
         webView->load(request);
         m_keyboardModifiers = Qt::NoModifier;
@@ -122,7 +122,7 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     if (m_openInNewTab)
     {
         m_openInNewTab = false;
-        return mainWindow()->mainView()->newTab()->page();
+        return mainWindow()->mainView()->newWebView()->page();
     }
 
     MainWindow *mainWindow = Application::instance()->mainWindow();

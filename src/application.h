@@ -52,7 +52,7 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
-    WebView* newTab();
+    WebView* newWebView();
 
     KIcon icon(const KUrl &url) const;
 
