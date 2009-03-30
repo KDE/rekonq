@@ -79,6 +79,13 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 {
     kWarning() << "Accepting Navigation Request..";
 
+    QString scheme = request.url().scheme();
+    if (scheme == QLatin1String("mailto") )
+    {
+        QDesktopServices::openUrl(request.url());
+        return false;
+    }
+
     // ctrl open in new tab and select
     if (type == QWebPage::NavigationTypeLinkClicked)
     {
