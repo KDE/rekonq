@@ -58,7 +58,6 @@ WebPage::WebPage(QObject *parent)
 
 WebPage::~WebPage()
 {
-
 }
 
 
@@ -75,22 +74,28 @@ MainWindow *WebPage::mainWindow()
 }
 
 
+// FIXME load links (target _blank) in new tabs!!
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
     kWarning() << "Accepting Navigation Request..";
 
     // ctrl open in new tab and select
-    // ctrl-alt open in new window
-    if (type == QWebPage::NavigationTypeLinkClicked && (m_keyboardModifiers & Qt::ControlModifier
-            || m_pressedButtons == Qt::MidButton))
+    if (type == QWebPage::NavigationTypeLinkClicked)
     {
-        WebView *webView = Application::instance()->newWebView();
-        webView->setFocus();
-        webView->load(request);
-        m_keyboardModifiers = Qt::NoModifier;
-        m_pressedButtons = Qt::NoButton;
-        return false;
+        kWarning() << "Navigation Type LINKCLICKED..";
+
+        if(m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
+        {
+            kWarning() << "ControlModifiers clicked..";
+            WebView *webView = Application::instance()->newWebView();
+            webView->setFocus();
+            webView->load(request);
+            m_keyboardModifiers = Qt::NoModifier;
+            m_pressedButtons = Qt::NoButton;
+            return false;
+        }
     }
+
     if (frame == mainFrame())
     {
         m_loadingUrl = request.url();
@@ -98,9 +103,18 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     }
     else
     {
-        kWarning() << "NO Main Frame..";
-        kWarning() << "Frame : " << frame->frameName();
+        kWarning() << "NO Main Frame, creating a new WebView..";
+        WebView *webView = Application::instance()->newWebView();
+        webView->setFocus();
+        webView->load(request);
+        return false;
     }
+
+    if(type == QWebPage::NavigationTypeOther)
+    {
+        kWarning() << "Navigation Type OTHER..";
+    }
+
     return QWebPage::acceptNavigationRequest(frame, request, type);
 }
 
@@ -110,7 +124,8 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
     {
-        WebView *w = new WebView;
+        kWarning() << "prova QWebView ------------------------------------------------------";
+        QWebView *w = new QWebView;
         return w->page();
     }
 
@@ -253,6 +268,7 @@ void WebView::wheelEvent(QWheelEvent *event)
 void WebView::openLinkInNewTab()
 {
     m_page->m_openInNewTab = true;
+    kWarning() << "NO panic...";
     pageAction(QWebPage::OpenLinkInNewWindow)->trigger();
 }
 
