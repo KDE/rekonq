@@ -74,7 +74,6 @@ MainWindow *WebPage::mainWindow()
 }
 
 
-// FIXME load links (target _blank) in new tabs!!
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
     kWarning() << "Accepting Navigation Request..";
