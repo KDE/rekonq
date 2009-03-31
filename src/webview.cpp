@@ -85,6 +85,8 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         return false;
     }
 
+    WebView *webView;
+
     switch(type)
     {
 
@@ -96,7 +98,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         if(m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
         {
             kWarning() << "ControlModifiers clicked..";
-            WebView *webView = Application::instance()->newWebView();
+            webView = Application::instance()->newWebView();
             webView->setFocus();
             webView->load(request);
             m_keyboardModifiers = Qt::NoModifier;
@@ -112,7 +114,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         else
         {
             kWarning() << "NO Main Frame, creating a new WebView..";
-            WebView *webView = Application::instance()->newWebView();
+            webView = Application::instance()->newWebView();
             webView->setFocus();
             webView->load(request);
             return false;
