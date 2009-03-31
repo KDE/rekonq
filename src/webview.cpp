@@ -86,9 +86,12 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         return false;
     }
 
-    // ctrl open in new tab and select
-    if (type == QWebPage::NavigationTypeLinkClicked)
+    switch(type)
     {
+
+    // user clicked on a link or pressed return on a focused link.
+    case QWebPage::NavigationTypeLinkClicked:
+
         kWarning() << "Navigation Type LINKCLICKED..";
 
         if(m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
@@ -101,25 +104,51 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             m_pressedButtons = Qt::NoButton;
             return false;
         }
-    }
 
-    if (frame == mainFrame())
-    {
-        m_loadingUrl = request.url();
-        emit loadingUrl(m_loadingUrl);
-    }
-    else
-    {
-        kWarning() << "NO Main Frame, creating a new WebView..";
-        WebView *webView = Application::instance()->newWebView();
-        webView->setFocus();
-        webView->load(request);
-        return false;
-    }
+        if (frame == mainFrame())
+        {
+            m_loadingUrl = request.url();
+            emit loadingUrl(m_loadingUrl);
+        }
+        else
+        {
+            kWarning() << "NO Main Frame, creating a new WebView..";
+            WebView *webView = Application::instance()->newWebView();
+            webView->setFocus();
+            webView->load(request);
+            return false;
+        }
+        break;
 
-    if(type == QWebPage::NavigationTypeOther)
-    {
+    // user activated a submit button for an HTML form.
+    case QWebPage::NavigationTypeFormSubmitted:
+        kWarning() << "Navigation Type Form Submitted..";
+        break;
+
+    // Navigation to a previously shown document in the back or forward history is requested.
+    case QWebPage::NavigationTypeBackOrForward:
+        kWarning() << "Navigation Type BackOrForward..";
+        break;
+
+    // user activated the reload action.
+    case QWebPage::NavigationTypeReload:
+        kWarning() << "Navigation Type Reload..";
+        break;
+
+    // An HTML form was submitted a second time.
+    case QWebPage::NavigationTypeFormResubmitted:
+        kWarning() << "Navigation Type Form Resubmitted..";
+        break;
+
+    // A navigation to another document using a method not listed above.
+    case QWebPage::NavigationTypeOther:
         kWarning() << "Navigation Type OTHER..";
+        break;
+
+    // should be nothing..
+    default:
+        kWarning() << "Default NON existant case..";
+        break;
     }
 
     return QWebPage::acceptNavigationRequest(frame, request, type);
