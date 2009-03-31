@@ -17,32 +17,10 @@ DONE(?) definitely fix fonts!
 
 - improve DOCUMENTATION
 
-
-To 0.0.4
-- improve DOCUMENTATION
-- fix docs
-- autosave-- 
-- dbus support
-- new application class!!
-- improve bookmarks toolbar
-- fix KConfigXT (fonts)
-- color url_line_edit progress
-- contextMenu in searchbar to set different search engines
-- KDE proxy support
-- QWebPluginFactory subclass to load KParts into QtWebKit.
-
-
 + ------------------------
 
-
-1. check the lines above...
-2. Improve docs
-DONE. Let rekonq be a Singleton app. (And work well..)
-DONE. fix bookmarks toolbar POSITION
-5. fix bookmarks action menu (in toolbar)
-DONE. fix load at startup
-DONE. fix FONTS problems between webkit && KDE settings (at least, here..)
-DONE. enable flash support !!
-
-
-+ ------------------------
+LONG TERM FIXES
+- Page source (to be decided)
+- cookies
+- history (io-slave)
+- 
