@@ -76,14 +76,14 @@
 </ToolBar>
 
 <!--  ============ Location ToolBar =========== -->
-<ToolBar noEdit="true" name="locationToolBar" iconText="iconOnly" newline="false">
+<ToolBar name="locationToolBar" iconText="iconOnly" newline="false" noEdit="true">
 <text>Location Toolbar</text>
     <Action name="url_bar" />
     <Action name="search_bar" />
 </ToolBar>
 
 <!--  ============ Bookmarks ToolBar =========== -->
-<ToolBar noEdit="true" iconText="icontextright" fullWidth="true" name="bookmarksToolBar" iconSize="16" newline="true" hidden="true">
+<ToolBar name="bookmarksToolBar" fullWidth="true" iconText="icontextright" iconSize="16" newline="true" hidden="true" noEdit="true">
 <text>Bookmark Toolbar</text>
 </ToolBar>
 

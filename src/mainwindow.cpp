@@ -132,6 +132,10 @@ MainWindow::MainWindow()
     // setup history menu: this has to be done AFTER setupGUI!!
     setupHistoryMenu();
 
+    // bookmarks bar: this has to be done AFTER setupGUI!!
+    KToolBar *bmToolbar = toolBar("bookmarksToolBar");
+    m_bookmarksProvider->provideBmToolbar(bmToolbar);
+
     // setup Tab Bar
     setupTabBar();
 
@@ -170,10 +174,6 @@ void MainWindow::setupToolBars()
     a->setDefaultWidget(m_searchBar);
     connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     actionCollection()->addAction(QLatin1String("search_bar"), a);
-
-    // bookmarks bar
-    KToolBar *bmToolbar = toolBar("bookmarksToolBar");
-    m_bookmarksProvider->provideBmToolbar(bmToolbar);
 }
 
 

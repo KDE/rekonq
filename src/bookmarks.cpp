@@ -2,7 +2,6 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
 * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
@@ -181,4 +180,3 @@ void BookmarksProvider::contextMenu(const QPoint & point)
     menu->setAttribute(Qt::WA_DeleteOnClose);
     menu->popup(m_bmToolbar->mapToGlobal(point));
 }
-
