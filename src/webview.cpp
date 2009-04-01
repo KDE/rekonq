@@ -97,7 +97,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
         if(m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
         {
-            kWarning() << "ControlModifiers clicked..";
             webView = Application::instance()->newWebView();
             webView->setFocus();
             webView->load(request);
@@ -113,11 +112,14 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         }
         else
         {
-            kWarning() << "NO Main Frame, creating a new WebView..";
-            webView = Application::instance()->newWebView();
-            webView->setFocus();
-            webView->load(request);
-            return false;
+            // if frame doesn't exists (perhaps) we are pointing to a blank target..
+            if(!frame)
+            {
+                webView = Application::instance()->newWebView();
+                webView->setFocus();
+                webView->load(request);
+                return false;
+            }
         }
         break;
 
