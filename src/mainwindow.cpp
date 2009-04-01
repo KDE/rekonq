@@ -648,11 +648,13 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
     {
         menuBar()->hide();
         toolBar("mainToolBar")->hide();
+        toolBar("locationToolBar")->hide();
     }
     else
     {
         menuBar()->show();
         toolBar("mainToolBar")->show();
+        toolBar("locationToolBar")->show();
     }
     KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
 }
