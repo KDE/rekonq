@@ -64,6 +64,7 @@ private:
     void setupActions();
     void setupHistoryMenu();
     void setupTabBar();
+    void setupToolBars();
 
 public slots:
     void slotHome();
@@ -71,7 +72,7 @@ public slots:
     void slotUpdateBrowser();
 
 private slots:
-    void slotUpdateConf();
+    void slotUpdateConfiguration();
     void slotLoadProgress(int);
     void slotUpdateStatusbar(const QString &string);
     void slotUpdateActions();
@@ -114,20 +115,22 @@ private slots:
     void slotPreferences();
 
 private:
-    SearchBar *m_searchBar;
-    FindBar *m_findBar;
     KMenu *m_historyBackMenu;
     KMenu *m_windowMenu;
+
     KAction *m_stopReloadAction;
     KAction *m_stopAction;
     KAction *m_reloadAction;
     KAction *m_historyBackAction;
     KAction *m_historyForwardAction;
+
     QString m_lastSearch;
     QString m_homePage;
 
     MainView *m_view;
     BookmarksProvider *m_bookmarksProvider;
+    FindBar *m_findBar;
+    SearchBar *m_searchBar;
 };
 
 #endif // MAINWINDOW_H

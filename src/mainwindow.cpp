@@ -65,12 +65,14 @@ MainWindow::MainWindow()
         : KXmlGuiWindow()
         , m_view(new MainView(this))
         , m_bookmarksProvider(new BookmarksProvider(this))
+        , m_findBar(new FindBar(this))
+        , m_searchBar(new SearchBar(this))
 {
     // accept dnd
     setAcceptDrops(true);
 
     // updating rekonq configuration
-    slotUpdateConf();
+    slotUpdateConfiguration();
 
     // creating a centralWidget containing m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
@@ -78,8 +80,7 @@ MainWindow::MainWindow()
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_view);
 
-    // Find Bar
-    m_findBar = new FindBar(this);
+    // Adding Find Bar
     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
     layout->addWidget(m_findBar);
 
@@ -112,6 +113,9 @@ MainWindow::MainWindow()
     // add a status bar
     statusBar()->show();
 
+    // setting up toolbars: this has to be done BEFORE setupGUI!!
+    setupToolBars();
+
     // ----- BOOKMARKS MENU: this has to be done BEFORE setupGUI!!
     KAction *a = new KActionMenu(i18n("B&ookmarks"), this);
     actionCollection()->addAction(QLatin1String("bookmarks"), a);
@@ -125,26 +129,14 @@ MainWindow::MainWindow()
     // toolbar position, icon size, etc.
     setupGUI();
 
-    // setup history menu
+    // setup history menu: this has to be done AFTER setupGUI!!
     setupHistoryMenu();
 
     // setup Tab Bar
     setupTabBar();
 
-    // setting up custom widgets..
-    KToolBar *navigationBar = toolBar("mainToolBar");
-    navigationBar->addWidget(m_view->lineEditStack());
-
-    KToolBar *bmToolbar = toolBar("bookmarksToolBar");
-    m_bookmarksProvider->provideBmToolbar(bmToolbar);
-
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
-
-    // search bar
-    m_searchBar = new SearchBar(this);
-    connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
-    navigationBar->addWidget(m_searchBar);
 }
 
 
@@ -159,6 +151,29 @@ QSize MainWindow::sizeHint() const
     QRect desktopRect = QApplication::desktop()->screenGeometry();
     QSize size = desktopRect.size() * 0.8;
     return size;
+}
+
+
+void MainWindow::setupToolBars()
+{
+    KAction *a;
+
+    // location bar
+    a = new KAction(i18n("Location Bar"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_L, Qt::Key_F6));
+    a->setDefaultWidget(m_view->lineEditStack());
+    actionCollection()->addAction(QLatin1String("url_bar"), a);
+
+    // search bar
+    a = new KAction(i18n("Search Bar"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_K));
+    a->setDefaultWidget(m_searchBar);
+    connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
+    actionCollection()->addAction(QLatin1String("search_bar"), a);
+
+    // bookmarks bar
+    KToolBar *bmToolbar = toolBar("bookmarksToolBar");
+    m_bookmarksProvider->provideBmToolbar(bmToolbar);
 }
 
 
@@ -298,7 +313,7 @@ void MainWindow::setupHistoryMenu()
 }
 
 
-void MainWindow::slotUpdateConf()
+void MainWindow::slotUpdateConfiguration()
 {
     // ============== General ==================
     m_homePage = ReKonfig::homePage();
@@ -334,7 +349,7 @@ void MainWindow::slotUpdateConf()
 
 void MainWindow::slotUpdateBrowser()
 {
-    slotUpdateConf();
+    slotUpdateConfiguration();
     mainView()->reloadAllTabs();
 }
 
