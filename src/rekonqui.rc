@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="35">
+<gui name="rekonq" version="36">
 
 <MenuBar>
 
@@ -58,7 +58,6 @@
 
 <!--  ============ TOOLS menu =========== -->
 <Menu name="tools">
-    <Action name="downloads" />
     <Action name="web_inspector" />
 </Menu>
 

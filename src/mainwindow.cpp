@@ -222,7 +222,7 @@ void MainWindow::setupActions()
 
     a = new KAction(i18n("Private &Browsing..."), this);
     a->setCheckable(true);
-    actionCollection()->addAction(i18n("private_browsing"), a);
+    actionCollection()->addAction(QLatin1String("private_browsing"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotPrivateBrowsing()));
 
     a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
