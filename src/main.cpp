@@ -51,11 +51,19 @@ int main(int argc, char **argv)
                     "adjam7@gmail.com"
                    );
 
+    // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
 
+    // Define the command line options using KCmdLineOptions
     KCmdLineOptions options;
-    options.add("+URL" , ki18n("Location to open"));
+
+    // adding URL option
+    options.add("+[URL]" , ki18n("Location to open"));
+
+    // Register the supported options
     KCmdLineArgs::addCmdLineOptions(options);
+
+    // Add options from Application class
     Application::addCmdLineOptions();
 
     if (!Application::start())
@@ -63,6 +71,7 @@ int main(int argc, char **argv)
         kWarning() << "rekonq is already running!";
         return 0;
     }
+
     Application app;
     return app.exec();
 }

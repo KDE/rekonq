@@ -64,7 +64,7 @@ Application::Application()
     m_mainWindow = new MainWindow();
     m_mainWindow->setObjectName("MainWindow");
     setWindowIcon(KIcon("rekonq"));
-    newWebView();
+//     newWebView();
 
     m_mainWindow->show();
 
@@ -86,9 +86,7 @@ int Application::newInstance()
 
     if (args->count() > 0)
     {
-        KUrl url = MainWindow::guessUrlFromString(args->arg(0));
-        mainWindow()->loadUrl(url);
-        for (int i = 1; i < args->count(); ++i)
+        for (int i = 0; i < args->count(); ++i)
         {
             KUrl url = MainWindow::guessUrlFromString(args->arg(i));
             newWebView();
@@ -98,6 +96,7 @@ int Application::newInstance()
     }
     else
     {
+        newWebView();
         mainWindow()->slotHome();
     }
 
