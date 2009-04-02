@@ -42,10 +42,8 @@ class QUrl;
 
 
 /**
- *   TabWidget that contains WebViews and a stack widget of associated line edits.
- *
- *   Connects up the current tab's signals to this class's signal and uses WebActionMapper
- *   to proxy the actions.
+ *  This class represent rekonq Main View. It contains all WebViews and a stack widget 
+ *  of associated line edits.
  *
  */
 
@@ -148,4 +146,3 @@ private:
 };
 
 #endif
-
