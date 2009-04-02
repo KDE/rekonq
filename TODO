@@ -13,9 +13,13 @@ DONE disable BACK button when history is NULL
 DONE load just ONE site at start
 - QWebFrame
 DONE(?) definitely fix fonts!
-- fix crash on example sites..
 
+
+- fix crash on example sites..
 - improve DOCUMENTATION
+- fix Action on tabbar (clone ads)
+- Type "FormSubmitted"
+- check statusbar slots
 
 + ------------------------
 
