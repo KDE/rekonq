@@ -207,7 +207,7 @@ void MainWindow::setupActions()
     KStandardAction::paste(m_view, SLOT(slotWebPaste()), actionCollection());
 
     a = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
-    a->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Period));
+    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Period));
     actionCollection()->addAction(QLatin1String("stop"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotWebStop()));
 
@@ -227,17 +227,17 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotPrivateBrowsing()));
 
     a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
-    a->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Plus));
+    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
     actionCollection()->addAction(QLatin1String("bigger_font"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextBigger()));
 
     a = new KAction(KIcon("zoom-original"),  i18n("&Normal Font"), this);
-    a->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_0));
+    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_0));
     actionCollection()->addAction(QLatin1String("normal_font"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextNormal()));
 
     a = new KAction(KIcon("zoom-out"),  i18n("&Shrink Font"), this);
-    a->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Minus));
+    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Minus));
     actionCollection()->addAction(QLatin1String("smaller_font"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextSmaller()));
 
