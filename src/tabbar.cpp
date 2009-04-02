@@ -50,6 +50,7 @@ TabBar::TabBar(QWidget *parent)
     setAcceptDrops(true);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenuRequested(const QPoint &)));
 
+
     // we count to 9 because Ctrl+0 is already taken by Normal Font
     for (int i = 1; i < 10; ++i)
     {
@@ -213,4 +214,3 @@ void TabBar::reloadTab()
 {
     emit reloadTab(m_actualIndex);
 }
-

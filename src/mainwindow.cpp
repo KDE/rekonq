@@ -217,7 +217,7 @@ void MainWindow::setupActions()
     m_stopReloadAction->setShortcutConfigurable(false);
 
     // ============== Custom Actions
-    a = new KAction(KIcon(), i18n("Open Location"), this);
+    a = new KAction(KIcon("document-open-remote"), i18n("Open Location"), this);
     actionCollection()->addAction(QLatin1String("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
 
