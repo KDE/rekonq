@@ -112,6 +112,7 @@ private slots:
     void slotToggleInspector(bool enable);
 
     // Settings Menu slots
+    void slotShowMenubar(bool enable);
     void slotPreferences();
 
 private:

@@ -194,6 +194,7 @@ void MainWindow::setupActions()
     KStandardAction::fullScreen(this, SLOT(slotViewFullScreen(bool)), this, actionCollection());
     KStandardAction::home(this, SLOT(slotHome()), actionCollection());
     KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
+    KStandardAction::showMenubar(this, SLOT(slotShowMenubar(bool)), actionCollection());
 
     // WEB Actions (NO KStandardActions..)
     KStandardAction::redisplay(m_view, SLOT(slotWebReload()), actionCollection());
@@ -806,3 +807,11 @@ void MainWindow::geometryChangeRequested(const QRect &geometry)
     setGeometry(geometry);
 }
 
+
+void MainWindow::slotShowMenubar(bool enable)
+{
+    if(enable)
+        menuBar()->show();
+    else
+        menuBar()->hide();
+}
