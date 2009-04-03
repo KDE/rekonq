@@ -44,14 +44,8 @@
 #include <kio/jobclasses.h>
 
 // Qt Includes
-#include <QBuffer>
-#include <QDir>
-#include <QTextStream>
-#include <QFileOpenEvent>
-#include <QNetworkProxy>
-#include <QWebSettings>
-#include <QDebug>
-
+#include <QtCore>
+#include <QtWebKit>
 
 
 HistoryManager *Application::s_historyManager = 0;
