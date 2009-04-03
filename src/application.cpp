@@ -64,7 +64,6 @@ Application::Application()
     m_mainWindow = new MainWindow();
     m_mainWindow->setObjectName("MainWindow");
     setWindowIcon(KIcon("rekonq"));
-//     newWebView();
 
     m_mainWindow->show();
 
