@@ -37,9 +37,6 @@
 #include "mainview.h"
 #include "bookmarks.h"
 
-// UI Includes
-#include "ui_passworddialog.h"
-
 // KDE Includes
 #include <KUrl>
 #include <KStatusBar>
