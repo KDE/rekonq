@@ -31,7 +31,7 @@
 #include "rekonq.h"
 
 // Ui Includes
-#include "ui_passworddialog.h"
+#include "ui_password.h"
 #include "ui_proxy.h"
 
 // KDE Includes
@@ -104,24 +104,25 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
 {
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
-    QDialog dialog(mainWindow);
-    dialog.setWindowFlags(Qt::Sheet);
+    KDialog dialog(mainWindow,Qt::Sheet);
 
-    Ui::PasswordDialog passwordDialog;
-    passwordDialog.setupUi(&dialog);
+    Ui::passwordWidget passwordWidget;
+    passwordWidget.setupUi(&dialog);
 
-    passwordDialog.iconLabel->setText(QString());
-    passwordDialog.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+
+    passwordWidget.iconLabel->setText(QString());
+    passwordWidget.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
 
     QString introMessage = i18n("<qt>Enter username and password for ") +
                            Qt::escape(reply->url().toString()) + i18n(" at ") + Qt::escape(reply->url().toString()) + "</qt>";
-    passwordDialog.introLabel->setText(introMessage);
-    passwordDialog.introLabel->setWordWrap(true);
+    passwordWidget.introLabel->setText(introMessage);
+    passwordWidget.introLabel->setWordWrap(true);
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        auth->setUser(passwordDialog.userNameLineEdit->text());
-        auth->setPassword(passwordDialog.passwordLineEdit->text());
+        auth->setUser(passwordWidget.userNameLineEdit->text());
+        auth->setPassword(passwordWidget.passwordLineEdit->text());
     }
 }
 
@@ -129,23 +130,24 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
 {
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
-    QDialog dialog(mainWindow);
-    dialog.setWindowFlags(Qt::Sheet);
+    KDialog dialog(mainWindow, Qt::Sheet);
 
-    Ui::ProxyDialog proxyDialog;
-    proxyDialog.setupUi(&dialog);
+    Ui::proxyWidget proxyWdg;
+    proxyWdg.setupUi(&dialog);
 
-    proxyDialog.iconLabel->setText(QString());
-    proxyDialog.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+
+    proxyWdg.iconLabel->setText(QString());
+    proxyWdg.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
 
     QString introMessage = i18n("<qt>Connect to proxy ") + Qt::escape(proxy.hostName()) + i18n(" using:</qt>");
-    proxyDialog.introLabel->setText(introMessage);
-    proxyDialog.introLabel->setWordWrap(true);
+    proxyWdg.introLabel->setText(introMessage);
+    proxyWdg.introLabel->setWordWrap(true);
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        auth->setUser(proxyDialog.userNameLineEdit->text());
-        auth->setPassword(proxyDialog.passwordLineEdit->text());
+        auth->setUser(proxyWdg.userNameLineEdit->text());
+        auth->setPassword(proxyWdg.passwordLineEdit->text());
     }
 }
 

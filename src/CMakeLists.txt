@@ -24,7 +24,7 @@ KDE4_ADD_UI_FILES( rekonq_SRCS
     cookies.ui
     cookiesexceptions.ui
     history.ui
-    passworddialog.ui
+    password.ui
     proxy.ui
     settings_general.ui
     settings_fonts.ui
