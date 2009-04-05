@@ -137,7 +137,7 @@ MainWindow::MainWindow()
     m_bookmarksProvider->provideBmToolbar(bmToolbar);
 
     // setup Tab Bar
-    setupTabBar();
+//     setupTabBar();
 
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -285,22 +285,22 @@ void MainWindow::setupActions()
 }
 
 
-void MainWindow::setupTabBar()
-{
-    // Left corner button
-    QToolButton *addTabButton = new QToolButton(this);
-    addTabButton->setDefaultAction(actionCollection()->action("new_tab"));
-    addTabButton->setAutoRaise(true);
-    addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    m_view->setCornerWidget(addTabButton, Qt::TopLeftCorner);
-
-    // right corner button
-    QToolButton *closeTabButton = new QToolButton(this);
-    closeTabButton->setDefaultAction(actionCollection()->action("close_tab"));
-    closeTabButton->setAutoRaise(true);
-    closeTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    m_view->setCornerWidget(closeTabButton, Qt::TopRightCorner);
-}
+// void MainWindow::setupTabBar()
+// {
+//     // Left corner button
+//     QToolButton *addTabButton = new QToolButton(this);
+//     addTabButton->setDefaultAction(actionCollection()->action("new_tab"));
+//     addTabButton->setAutoRaise(true);
+//     addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+//     m_view->setCornerWidget(addTabButton, Qt::TopLeftCorner);
+// 
+//     // right corner button
+//     QToolButton *closeTabButton = new QToolButton(this);
+//     closeTabButton->setDefaultAction(actionCollection()->action("close_tab"));
+//     closeTabButton->setAutoRaise(true);
+//     closeTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+//     m_view->setCornerWidget(closeTabButton, Qt::TopRightCorner);
+// }
 
 
 void MainWindow::setupHistoryMenu()
