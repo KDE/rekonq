@@ -182,7 +182,6 @@ void MainWindow::setupActions()
     KAction *a;
 
     // Standard Actions
-    KStandardAction::openNew(this, SLOT(slotFileNew()) , actionCollection());
     KStandardAction::open(this, SLOT(slotFileOpen()), actionCollection());
     KStandardAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
     KStandardAction::printPreview(this, SLOT(slotFilePrintPreview()), actionCollection());
@@ -479,11 +478,11 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 }
 
 
-void MainWindow::slotFileNew()
-{
-    Application::instance()->newWebView();
-    slotHome();
-}
+// void MainWindow::slotFileNew()
+// {
+//     Application::instance()->newWebView();
+//     slotHome();
+// }
 
 
 void MainWindow::slotFileOpen()
