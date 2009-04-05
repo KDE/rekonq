@@ -29,7 +29,6 @@
 // Forward Declarations
 class WebView;
 class TabBar;
-class MainWindow;
 
 class KUrl;
 class KAction;
@@ -53,7 +52,7 @@ class MainView : public KTabWidget
     Q_OBJECT
 
 public:
-    MainView(KMainWindow *parent);
+    MainView(QWidget *parent = 0);
     ~MainView();
 
 
@@ -146,9 +145,6 @@ private:
     TabBar *m_tabBar;
 
     QString loadingGitPath;
-
-    // the MainWindow pointer
-    MainWindow *m_parent;
 };
 
 #endif

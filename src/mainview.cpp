@@ -59,7 +59,6 @@ MainView::MainView(QWidget *parent)
         , m_lineEditCompleter(0)
         , m_lineEdits(new QStackedWidget(this))
         , m_tabBar(new TabBar(this))
-        , m_parent(parent)
 {
     setTabBar(m_tabBar);
 
@@ -81,19 +80,9 @@ MainView::MainView(QWidget *parent)
     m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
     m_recentlyClosedTabsAction->setEnabled(false);
 
-//     if (oneCloseButton)
-//     {
-//         QToolButton *closeTabButton = new QToolButton(this);
-//         closeTabButton->setDefaultAction(m_closeTabAction);
-//         closeTabButton->setAutoRaise(true);
-//         closeTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-//         setCornerWidget(closeTabButton, Qt::TopRightCorner);
-//     } 
-//     else
-//     {
-//         m_tabBar->setTabsClosable(true);
-//         connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
-//     }
+    // add close button to tab bar..
+    m_tabBar->setTabsClosable(true);
+    connect(m_tabBar, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
 
     // --
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
@@ -493,6 +482,10 @@ void MainView::cloneTab(int index)
 // When index is -1 index chooses the current tab
 void MainView::closeTab(int index)
 {
+    // do nothing if just one tab is opened
+    if( count() == 1 )
+        return;
+
     if (index < 0)
         index = currentIndex();
     if (index < 0 || index >= count())
