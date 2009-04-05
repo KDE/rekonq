@@ -43,6 +43,7 @@
 #include <KMessageBox>
 #include <KActionCollection>
 #include <KDebug>
+#include <KStandardDirs>
 
 // Qt Includes
 #include <QtCore>
@@ -60,6 +61,9 @@ MainView::MainView(QWidget *parent)
         , m_tabBar(new TabBar(this))
 {
     setTabBar(m_tabBar);
+
+    loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
+    kWarning() << loadingGitPath;
 
     connect(m_tabBar, SIGNAL(newTab()), this, SLOT(newWebView()));
     connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(closeTab(int)));
@@ -523,7 +527,8 @@ void MainView::webViewLoadStarted()
     int index = webViewIndex(webView);
     if (-1 != index)
     {
-        setTabIcon(index, KIcon("rekonq"));
+//         setTabIcon(index, KIcon("rekonq"));
+        setTabIcon(index, QIcon(loadingGitPath));
     }
 }
 

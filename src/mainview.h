@@ -143,6 +143,8 @@ private:
     QCompleter *m_lineEditCompleter;
     QStackedWidget *m_lineEdits;
     TabBar *m_tabBar;
+
+    QString loadingGitPath;
 };
 
 #endif
