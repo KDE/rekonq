@@ -488,8 +488,8 @@ void MainView::closeTab(int index)
             int risp = KMessageBox::questionYesNo(this ,
                                                   i18n("You have modified this page and when closing it you would lose the modification.\n"
                                                        "Do you really want to close this page?\n"),
-                                                  i18n("Do you really want to close this page?"),
-                                                  KStandardGuiItem::no());
+                                                  i18n("Do you really want to close this page?")
+                                                  );
             if (risp == KMessageBox::No)
                 return;
         }
@@ -516,6 +516,7 @@ void MainView::closeTab(int index)
 }
 
 
+// FIXME
 void MainView::webViewLoadStarted()
 {
     WebView *webView = qobject_cast<WebView*>(sender());
