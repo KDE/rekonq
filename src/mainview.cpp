@@ -59,11 +59,11 @@ MainView::MainView(QWidget *parent)
         , m_lineEditCompleter(0)
         , m_lineEdits(new QStackedWidget(this))
         , m_tabBar(new TabBar(this))
+        , m_parent(parent)
 {
     setTabBar(m_tabBar);
 
     loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
-    kWarning() << loadingGitPath;
 
     connect(m_tabBar, SIGNAL(newTab()), this, SLOT(newWebView()));
     connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(closeTab(int)));
@@ -80,6 +80,20 @@ MainView::MainView(QWidget *parent)
     m_recentlyClosedTabsAction = new KAction(i18n("Recently Closed Tabs"), this);
     m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
     m_recentlyClosedTabsAction->setEnabled(false);
+
+//     if (oneCloseButton)
+//     {
+//         QToolButton *closeTabButton = new QToolButton(this);
+//         closeTabButton->setDefaultAction(m_closeTabAction);
+//         closeTabButton->setAutoRaise(true);
+//         closeTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+//         setCornerWidget(closeTabButton, Qt::TopRightCorner);
+//     } 
+//     else
+//     {
+//         m_tabBar->setTabsClosable(true);
+//         connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+//     }
 
     // --
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));

@@ -64,15 +64,10 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
     loadSettings();
 
-#if QT_VERSION >= 0x040500
-
     QNetworkDiskCache *diskCache = new QNetworkDiskCache(this);
     QString location = KStandardDirs::locateLocal("cache", "", true);
     diskCache->setCacheDirectory(location);
     setCache(diskCache);
-
-#endif
-
 }
 
 
