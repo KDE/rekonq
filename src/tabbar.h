@@ -65,7 +65,7 @@ protected:
     virtual QSize tabSizeHint(int index) const;
 
 private slots:
-    void selectTabAction();
+//     void selectTabAction();
     void cloneTab();
     void closeTab();
     void closeOtherTabs();
