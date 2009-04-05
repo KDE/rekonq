@@ -25,7 +25,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 # =================================================================================================
 
 
-SET(QT_MIN_VERSION 4.4.0)
+SET(QT_MIN_VERSION 4.5.0)
 FIND_PACKAGE(Qt4 REQUIRED)
 FIND_PACKAGE(KDE4 REQUIRED)
 
