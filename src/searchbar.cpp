@@ -37,7 +37,9 @@
 
 
 SearchBar::SearchBar(QWidget *parent) :
-        KLineEdit(parent)
+    KLineEdit(parent)
+    , m_networkAccessManager(new QNetworkAccessManager(this))
+    , m_timer(new QTimer(this))
 {
     setMinimumWidth(180);
     kWarning() << "setting fixed minimum width.." ;
@@ -55,15 +57,15 @@ SearchBar::SearchBar(QWidget *parent) :
     setClickMessage(i18n("Search.."));
 
     // setting QNetworkAccessManager..
-    netMan = new QNetworkAccessManager(this);
-    connect(netMan, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleNetworkData(QNetworkReply*)));
+    connect(m_networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleNetworkData(QNetworkReply*)));
 
-    timer = new QTimer(this);
-    timer->setSingleShot(true);
-    timer->setInterval(300);
-    connect(timer, SIGNAL(timeout()), SLOT(autoSuggest()));
-    connect(this, SIGNAL(textEdited(QString)), timer, SLOT(start()));
+    // setting QTimer..
+    m_timer->setSingleShot(true);
+    m_timer->setInterval(300);
+    connect(m_timer, SIGNAL(timeout()), SLOT(autoSuggest()));
+    connect(this, SIGNAL(textEdited(QString)), m_timer, SLOT(start()));
 
+    // connect searchNow slot..
     connect(this, SIGNAL(returnPressed()) , this , SLOT(searchNow()));
 }
 
@@ -75,7 +77,7 @@ SearchBar::~SearchBar()
 
 void SearchBar::searchNow()
 {
-    timer->stop();
+    m_timer->stop();
     QString searchText = text();
 
     KUrl url(QLatin1String("http://www.google.com/search"));
@@ -91,9 +93,9 @@ void SearchBar::focusInEvent(QFocusEvent *event)
 {
     KLineEdit::focusInEvent(event);
 
-    QPalette p;
-    p.setColor(QPalette::Text , Qt::black);
-    setPalette(p);
+//     QPalette p;
+//     p.setColor(QPalette::Text , Qt::black);
+//     setPalette(p);
     clear();
 }
 
@@ -102,7 +104,7 @@ void SearchBar::autoSuggest()
 {
     QString str = text();
     QString url = QString("http://google.com/complete/search?output=toolbar&q=%1").arg(str);
-    netMan->get(QNetworkRequest(QString(url)));
+    m_networkAccessManager->get(QNetworkRequest(QString(url)));
 }
 
 

@@ -57,11 +57,11 @@ protected:
     void focusInEvent(QFocusEvent *);
 
 signals:
-    void search(const KUrl &url);
+    void search(const KUrl &);
 
 private:
-    QTimer *timer;
-    QNetworkAccessManager *netMan;
+    QNetworkAccessManager *m_networkAccessManager;
+    QTimer *m_timer;
 };
 
 #endif
