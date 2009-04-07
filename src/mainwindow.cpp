@@ -217,7 +217,7 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
 
-    a = new KAction(i18n("Private &Browsing..."), this);
+    a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QLatin1String("private_browsing"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotPrivateBrowsing()));
@@ -241,7 +241,7 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewPageSource()));
 
-    a = new KAction(KIcon("tools-report-bug"), i18n("Enable Web &Inspector"), this);
+    a = new KAction(KIcon("tools-report-bug"), i18n("Web &Inspector"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QLatin1String("web_inspector"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotToggleInspector(bool)));
