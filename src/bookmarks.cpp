@@ -87,11 +87,13 @@ KMenu* BookmarksMenu::viewContextMenu(QAction* action)
 
 
 BookmarksProvider::BookmarksProvider(KMainWindow* parent)
-        : m_parent(parent)
+        : QObject(parent)
         , m_owner(new OwnBookMarks(parent))
         , m_bmMenu(0)
         , m_bmToolbar(0)
 {
+    m_parent = parent;
+
     KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");      // share konqueror bookmarks
 
     if (!QFile::exists(bookfile.path()))
