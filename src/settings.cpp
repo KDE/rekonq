@@ -140,10 +140,8 @@ void SettingsDialog::setWebSettingsToolTips()
     d->webkitUi.kcfg_javascriptEnabled->setToolTip(i18n("Enables the running of JavaScript programs.") );
     d->webkitUi.kcfg_javaEnabled->setToolTip(i18n("Enables Java applets.") );
     d->webkitUi.kcfg_pluginsEnabled->setToolTip(i18n("Enables plugins in web pages.") );
-    d->webkitUi.kcfg_privateBrowsingEnabled->setToolTip(i18n("Prevents WebKit from recording visited pages in the history.") );
     d->webkitUi.kcfg_javascriptCanOpenWindows->setToolTip(i18n("Allows JavaScript programs to opening new windows.") );
     d->webkitUi.kcfg_javascriptCanAccessClipboard->setToolTip(i18n("Allows JavaScript programs to reading/writing to the clipboard.") );
-    d->webkitUi.kcfg_developerExtrasEnabled->setToolTip(i18n("Enables extra tools for Web developers") );
     d->webkitUi.kcfg_linksIncludedInFocusChain->setToolTip(i18n("Includes hyperlinks in the keyboard focus chain.") );
     d->webkitUi.kcfg_zoomTextOnly->setToolTip(i18n("Applies the zoom factor on a frame to only the text or all content.") );
     d->webkitUi.kcfg_printElementBackgrounds->setToolTip(i18n("Draws also background color and images when the page is printed.") );

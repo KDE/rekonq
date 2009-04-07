@@ -91,7 +91,7 @@ private slots:
     void slotFileOpen();
     void slotFilePrintPreview();
     void slotFilePrint();
-    void slotPrivateBrowsing();
+    void slotPrivateBrowsing(bool);
     void slotFileSaveAs();
     void printRequested(QWebFrame *frame);
 

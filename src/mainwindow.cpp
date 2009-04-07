@@ -217,11 +217,6 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
 
-    a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
-    a->setCheckable(true);
-    actionCollection()->addAction(QLatin1String("private_browsing"), a);
-    connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotPrivateBrowsing()));
-
     a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
     actionCollection()->addAction(QLatin1String("bigger_font"), a);
@@ -241,10 +236,16 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewPageSource()));
 
+    // ================ Tools (WebKit) Actions
     a = new KAction(KIcon("tools-report-bug"), i18n("Web &Inspector"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QLatin1String("web_inspector"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotToggleInspector(bool)));
+
+    a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
+    a->setCheckable(true);
+    actionCollection()->addAction(QLatin1String("private_browsing"), a);
+    connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotPrivateBrowsing(bool)));
 
     // ================ history related actions
     m_historyBackAction = new KAction(KIcon("go-previous"), i18n("Back"), this);
@@ -344,10 +345,8 @@ void MainWindow::slotUpdateConfiguration()
     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, ReKonfig::javascriptEnabled());
     defaultSettings->setAttribute(QWebSettings::JavaEnabled, ReKonfig::javaEnabled());
     defaultSettings->setAttribute(QWebSettings::PluginsEnabled, ReKonfig::pluginsEnabled());
-    defaultSettings->setAttribute(QWebSettings::PrivateBrowsingEnabled, ReKonfig::privateBrowsingEnabled());
     defaultSettings->setAttribute(QWebSettings::JavascriptCanOpenWindows, ReKonfig::javascriptCanOpenWindows());
     defaultSettings->setAttribute(QWebSettings::JavascriptCanAccessClipboard, ReKonfig::javascriptCanAccessClipboard());
-    defaultSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, ReKonfig::developerExtrasEnabled());
     defaultSettings->setAttribute(QWebSettings::LinksIncludedInFocusChain, ReKonfig::linksIncludedInFocusChain());
     defaultSettings->setAttribute(QWebSettings::ZoomTextOnly, ReKonfig::zoomTextOnly());
     defaultSettings->setAttribute(QWebSettings::PrintElementBackgrounds, ReKonfig::printElementBackgrounds());
@@ -359,7 +358,6 @@ void MainWindow::slotUpdateConfiguration()
     Application::networkAccessManager()->loadSettings();
     Application::cookieJar()->loadSettings();
     Application::historyManager()->loadSettings();
-
 }
 
 
@@ -545,16 +543,14 @@ void MainWindow::printRequested(QWebFrame *frame)
 }
 
 
-void MainWindow::slotPrivateBrowsing()
+void MainWindow::slotPrivateBrowsing(bool enable)
 {
     QWebSettings *settings = QWebSettings::globalSettings();
-    bool pb = settings->testAttribute(QWebSettings::PrivateBrowsingEnabled);
-    if (!pb)
+    if (enable)
     {
         QString title = i18n("Are you sure you want to turn on private browsing?");
         QString text = "<b>" + title + i18n("</b><br><br>When private browsing in turned on,"
                                             " webpages are not added to the history,"
-                                            " items are automatically removed from the Downloads window," \
                                             " new cookies are not stored, current cookies can't be accessed," \
                                             " site icons wont be stored, session wont be saved, " \
                                             " and searches are not addded to the pop-up menu in the Google search box." \
@@ -565,6 +561,10 @@ void MainWindow::slotPrivateBrowsing()
         if (button == KMessageBox::Ok)
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
+        }
+        else
+        {
+            actionCollection()->action("private_browsing")->setChecked(false);
         }
     }
     else
