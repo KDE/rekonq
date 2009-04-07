@@ -40,6 +40,8 @@ public:
 
 private:
     Private* const d;
+    
+    void setWebSettingsToolTips();
 
 private slots:
     void readConfig();

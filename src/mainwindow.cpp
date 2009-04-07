@@ -332,12 +332,28 @@ void MainWindow::slotUpdateConfiguration()
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fnSize);
 
-    // =========== Privacy ==============
-    bool arePluginsEnabled = ReKonfig::enablePlugins();
-    bool isJavascriptEnabled = ReKonfig::enableJavascript();
+//     // =========== Privacy ==============
+//     bool arePluginsEnabled = ReKonfig::enablePlugins();
+//     bool isJavascriptEnabled = ReKonfig::enableJavascript();
+// 
+//     defaultSettings->setAttribute(QWebSettings::PluginsEnabled, arePluginsEnabled);
+//     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, isJavascriptEnabled);
 
-    defaultSettings->setAttribute(QWebSettings::PluginsEnabled, arePluginsEnabled);
-    defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, isJavascriptEnabled);
+    // ================ WebKit ============================
+    defaultSettings->setAttribute(QWebSettings::AutoLoadImages, ReKonfig::autoLoadImages());
+    defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, ReKonfig::javascriptEnabled());
+    defaultSettings->setAttribute(QWebSettings::JavaEnabled, ReKonfig::javaEnabled());
+    defaultSettings->setAttribute(QWebSettings::PluginsEnabled, ReKonfig::pluginsEnabled());
+    defaultSettings->setAttribute(QWebSettings::PrivateBrowsingEnabled, ReKonfig::privateBrowsingEnabled());
+    defaultSettings->setAttribute(QWebSettings::JavascriptCanOpenWindows, ReKonfig::javascriptCanOpenWindows());
+    defaultSettings->setAttribute(QWebSettings::JavascriptCanAccessClipboard, ReKonfig::javascriptCanAccessClipboard());
+    defaultSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, ReKonfig::developerExtrasEnabled());
+    defaultSettings->setAttribute(QWebSettings::LinksIncludedInFocusChain, ReKonfig::linksIncludedInFocusChain());
+    defaultSettings->setAttribute(QWebSettings::ZoomTextOnly, ReKonfig::zoomTextOnly());
+    defaultSettings->setAttribute(QWebSettings::PrintElementBackgrounds, ReKonfig::printElementBackgrounds());
+    defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
+    defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
+    defaultSettings->setAttribute(QWebSettings::LocalStorageDatabaseEnabled, ReKonfig::localStorageDatabaseEnabled());
 
     // ====== load Settings on main classes
     Application::networkAccessManager()->loadSettings();

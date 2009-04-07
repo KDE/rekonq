@@ -20,12 +20,6 @@
     <entry name="alwaysShowTabBar" type="Bool">
         <default>true</default>
     </entry>
-    <entry name="enablePlugins" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="enableJavascript" type="Bool">
-        <default>true</default>
-    </entry>
   </group>
 
 <!-- Fonts Settings -->
@@ -72,5 +66,51 @@
     <entry name="proxyPassword" type="Password">
     </entry>
   </group>
+
+<!-- WebKit Settings -->
+    <group name="Webkit">
+        <entry name="autoLoadImages" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="javascriptEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="javaEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="pluginsEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="privateBrowsingEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="javascriptCanOpenWindows" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="javascriptCanAccessClipboard" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="developerExtrasEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="linksIncludedInFocusChain" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="zoomTextOnly" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printElementBackgrounds" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="offlineStorageDatabaseEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="offlineWebApplicationCacheEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="localStorageDatabaseEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+    </group>
 
 </kcfg>

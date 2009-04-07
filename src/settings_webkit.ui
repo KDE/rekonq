@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>webkit</class>
+ <widget class="QWidget" name="webkit">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>559</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>WebKit Settings</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="kcfg_autoLoadImages">
+        <property name="text">
+         <string>Auto Load Images</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" rowspan="7">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QCheckBox" name="kcfg_developerExtrasEnabled">
+        <property name="text">
+         <string>Developer Extras</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="kcfg_javascriptEnabled">
+        <property name="text">
+         <string>Javascript support</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="kcfg_linksIncludedInFocusChain">
+        <property name="text">
+         <string>Links included in focus chain</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="kcfg_javaEnabled">
+        <property name="text">
+         <string>Java support</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="kcfg_zoomTextOnly">
+        <property name="text">
+         <string>Zoom Text Only</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="kcfg_pluginsEnabled">
+        <property name="text">
+         <string>Plugins</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QCheckBox" name="kcfg_printElementBackgrounds">
+        <property name="text">
+         <string>Print element Backgrounds</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="kcfg_privateBrowsingEnabled">
+        <property name="text">
+         <string>Private Browsing</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QCheckBox" name="kcfg_offlineStorageDatabaseEnabled">
+        <property name="text">
+         <string>Offline storage Database</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QCheckBox" name="kcfg_javascriptCanOpenWindows">
+        <property name="text">
+         <string>Javascript can open windows</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QCheckBox" name="kcfg_offlineWebApplicationCacheEnabled">
+        <property name="text">
+         <string>Offline Web Application Cache </string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QCheckBox" name="kcfg_javascriptCanAccessClipboard">
+        <property name="text">
+         <string>Javascript can access clipboard</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QCheckBox" name="kcfg_localStorageDatabaseEnabled">
+        <property name="text">
+         <string>Local storage database</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>159</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

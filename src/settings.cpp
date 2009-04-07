@@ -40,6 +40,7 @@
 #include "ui_settings_fonts.h"
 #include "ui_settings_privacy.h"
 #include "ui_settings_proxy.h"
+#include "ui_settings_webkit.h"
 
 // KDE Includes
 #include <KConfig>
@@ -60,6 +61,7 @@ private:
     Ui::fonts fontsUi;
     Ui::privacy privacyUi;
     Ui::proxy proxyUi;
+    Ui::webkit webkitUi;
 
     Private(SettingsDialog *parent);
 
@@ -95,6 +97,12 @@ Private::Private(SettingsDialog *parent)
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("Proxy"));
     pageItem->setIcon(KIcon("preferences-system-network"));
+
+    widget = new QWidget;
+    webkitUi.setupUi(widget);
+    widget->layout()->setMargin(0);
+    pageItem = parent->addPage(widget , i18n("Webkit"));
+    pageItem->setIcon(KIcon("applications-internet"));
 }
 
 // -----------------------------------------------------------------------------------------------------
@@ -114,6 +122,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
     connect(d->privacyUi.exceptionsButton, SIGNAL(clicked()), this, SLOT(showExceptions()));
     connect(d->privacyUi.cookiesButton, SIGNAL(clicked()), this, SLOT(showCookies()));
+
+    setWebSettingsToolTips();
 }
 
 
@@ -121,6 +131,25 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 SettingsDialog::~SettingsDialog()
 {
     delete d;
+}
+
+
+void SettingsDialog::setWebSettingsToolTips()
+{
+    d->webkitUi.kcfg_autoLoadImages->setToolTip(i18n("Specifies whether images are automatically loaded in web pages") );
+    d->webkitUi.kcfg_javascriptEnabled->setToolTip(i18n("Enables the running of JavaScript programs.") );
+    d->webkitUi.kcfg_javaEnabled->setToolTip(i18n("Enables Java applets.") );
+    d->webkitUi.kcfg_pluginsEnabled->setToolTip(i18n("Enables plugins in web pages.") );
+    d->webkitUi.kcfg_privateBrowsingEnabled->setToolTip(i18n("Prevents WebKit from recording visited pages in the history.") );
+    d->webkitUi.kcfg_javascriptCanOpenWindows->setToolTip(i18n("Allows JavaScript programs to opening new windows.") );
+    d->webkitUi.kcfg_javascriptCanAccessClipboard->setToolTip(i18n("Allows JavaScript programs to reading/writing    to the clipboard.") );
+    d->webkitUi.kcfg_developerExtrasEnabled->setToolTip(i18n("Enables extra tools for Web developers") );
+    d->webkitUi.kcfg_linksIncludedInFocusChain->setToolTip(i18n("Includes hyperlinks in the keyboard focus chain.") );
+    d->webkitUi.kcfg_zoomTextOnly->setToolTip(i18n("Applies the zoom factor on a frame to only the text or all content.") );
+    d->webkitUi.kcfg_printElementBackgrounds->setToolTip(i18n("Draws also background color and images when the page is printed.") );
+    d->webkitUi.kcfg_offlineStorageDatabaseEnabled->setToolTip(i18n("Support for the HTML 5 offline storage feature.") );
+    d->webkitUi.kcfg_offlineWebApplicationCacheEnabled->setToolTip(i18n("Support for the HTML 5 web application cache feature.") );
+    d->webkitUi.kcfg_localStorageDatabaseEnabled->setToolTip(i18n("Support for the HTML 5 local storage feature.") );
 }
 
 
