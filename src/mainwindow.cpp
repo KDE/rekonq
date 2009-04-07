@@ -261,7 +261,10 @@ void MainWindow::setupActions()
 
     // =================== Tab Actions
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_N, Qt::CTRL + Qt::SHIFT + Qt::Key_N, Qt::CTRL + Qt::Key_T));
+    QList<QKeySequence> newTabShortcutList;
+    newTabShortcutList << QKeySequence(QKeySequence::New);
+    newTabShortcutList << QKeySequence(QKeySequence::AddTab);
+    a->setShortcut(KShortcut(newTabShortcutList));
     actionCollection()->addAction(QLatin1String("new_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(newWebView()));
 
