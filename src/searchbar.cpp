@@ -92,10 +92,6 @@ void SearchBar::searchNow()
 void SearchBar::focusInEvent(QFocusEvent *event)
 {
     KLineEdit::focusInEvent(event);
-
-//     QPalette p;
-//     p.setColor(QPalette::Text , Qt::black);
-//     setPalette(p);
     clear();
 }
 

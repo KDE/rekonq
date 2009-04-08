@@ -160,12 +160,7 @@ void SettingsDialog::readConfig()
     connect(d->generalUi.downloadDirUrlRequester, SIGNAL(textChanged(QString)), this, SLOT(saveSettings()));
 
     // ======= Fonts
-//     QFont stdFont = ReKonfig::standardFont();
-//     d->fontsUi.standardFont->setCurrentFont(stdFont);
-//
-//     QFont fxFont = ReKonfig::fixedFont();
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
-//     d->fontsUi.fixedFont->setCurrentFont(fxFont);
 
     // ======= Proxy
     bool proxyEnabled = ReKonfig::isProxyEnabled();
@@ -179,10 +174,6 @@ void SettingsDialog::saveSettings()
 {
     // General
     ReKonfig::setDownloadDir(d->generalUi.downloadDirUrlRequester->url().prettyUrl());
-
-    // Fonts
-//     ReKonfig::setStandardFont( d->fontsUi.standardFont->currentFont() );
-//     ReKonfig::setFixedFont( d->fontsUi.fixedFont->currentFont() );
 
     // Save
     ReKonfig::self()->writeConfig();

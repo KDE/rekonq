@@ -133,9 +133,6 @@ MainWindow::MainWindow()
     KToolBar *bmToolbar = toolBar("bookmarksToolBar");
     m_bookmarksProvider->provideBmToolbar(bmToolbar);
 
-    // setup Tab Bar
-//     setupTabBar();
-
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
 }
@@ -286,24 +283,6 @@ void MainWindow::setupActions()
 }
 
 
-// void MainWindow::setupTabBar()
-// {
-//     // Left corner button
-//     QToolButton *addTabButton = new QToolButton(this);
-//     addTabButton->setDefaultAction(actionCollection()->action("new_tab"));
-//     addTabButton->setAutoRaise(true);
-//     addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-//     m_view->setCornerWidget(addTabButton, Qt::TopLeftCorner);
-// 
-//     // right corner button
-//     QToolButton *closeTabButton = new QToolButton(this);
-//     closeTabButton->setDefaultAction(actionCollection()->action("close_tab"));
-//     closeTabButton->setAutoRaise(true);
-//     closeTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-//     m_view->setCornerWidget(closeTabButton, Qt::TopRightCorner);
-// }
-
-
 void MainWindow::setupHistoryMenu()
 {
     HistoryMenu *historyMenu = new HistoryMenu(this);
@@ -333,12 +312,7 @@ void MainWindow::slotUpdateConfiguration()
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fnSize);
 
-//     // =========== Privacy ==============
-//     bool arePluginsEnabled = ReKonfig::enablePlugins();
-//     bool isJavascriptEnabled = ReKonfig::enableJavascript();
-// 
-//     defaultSettings->setAttribute(QWebSettings::PluginsEnabled, arePluginsEnabled);
-//     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, isJavascriptEnabled);
+    // =========== Privacy ==============
 
     // ================ WebKit ============================
     defaultSettings->setAttribute(QWebSettings::AutoLoadImages, ReKonfig::autoLoadImages());
@@ -492,13 +466,6 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 }
 
 
-// void MainWindow::slotFileNew()
-// {
-//     Application::instance()->newWebView();
-//     slotHome();
-// }
-
-
 void MainWindow::slotFileOpen()
 {
     QString filePath = KFileDialog::getOpenFileName(KUrl(),
@@ -576,26 +543,6 @@ void MainWindow::slotPrivateBrowsing(bool enable)
         win->mainView()->clear();
     }
 }
-
-
-// void MainWindow::closeEvent(QCloseEvent *event)
-// {
-//     if (m_view->count() > 1)
-//     {
-//         int ret = KMessageBox::warningYesNo(this,
-//                                             i18n("Are you sure you want to close the window?" "  There are %1 tab open" , m_view->count() ),
-//                                             i18n("Closing")
-//                                            );
-//         if (ret == KMessageBox::No)
-//         {
-//             event->ignore();
-//             return;
-//         }
-//     }
-//     event->accept();
-//     deleteLater();
-// }
-
 
 void MainWindow::slotFind(const QString & search)
 {
@@ -711,19 +658,6 @@ void MainWindow::slotToggleInspector(bool enable)
         }
     }
 }
-
-
-// void MainWindow::slotSwapFocus()
-// {
-//     if ( currentTab()->hasFocus() )
-//     {
-//         m_view->currentLineEdit()->setFocus();
-//     }
-//     else
-//     {
-//         currentTab()->setFocus();
-//     }
-// }
 
 
 MainView *MainWindow::mainView() const

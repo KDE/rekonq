@@ -63,7 +63,6 @@ public:
 private:
     void setupActions();
     void setupHistoryMenu();
-//     void setupTabBar();
     void setupToolBars();
 
 public slots:
