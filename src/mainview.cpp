@@ -530,7 +530,7 @@ void MainView::closeTab(int index)
 }
 
 
-// FIXME
+// FIXME: provide movie for loading sites
 void MainView::webViewLoadStarted()
 {
     WebView *webView = qobject_cast<WebView*>(sender());
