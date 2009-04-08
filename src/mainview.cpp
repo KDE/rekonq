@@ -399,7 +399,10 @@ WebView *MainView::newWebView(bool makeCurrent)
 
     addTab(webView, i18n("(Untitled)"));
     if (makeCurrent)
+    {
         setCurrentWidget(webView);
+        currentLineEdit()->setFocus(Qt::ActiveWindowFocusReason);
+    }
 
     if (count() == 1)
         currentChanged(currentIndex());
@@ -534,7 +537,6 @@ void MainView::webViewLoadStarted()
     int index = webViewIndex(webView);
     if (-1 != index)
     {
-//         setTabIcon(index, KIcon("rekonq"));
         setTabIcon(index, QIcon(loadingGitPath));
     }
 }
