@@ -70,6 +70,9 @@ public slots:
     void loadUrl(const KUrl &url);
     void slotUpdateBrowser();
 
+protected:
+    bool queryClose();
+
 private slots:
     void slotUpdateConfiguration();
     void slotLoadProgress(int);

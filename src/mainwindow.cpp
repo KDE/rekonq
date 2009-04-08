@@ -764,3 +764,20 @@ void MainWindow::slotShowMenubar(bool enable)
     else
         menuBar()->hide();
 }
+
+
+bool MainWindow::queryClose()
+{
+    if (m_view->count() > 1)
+    {
+        int ret = KMessageBox::warningYesNo(this,
+                                            i18n("Are you sure you want to close the window?" "  There are %1 tab open" , m_view->count() ),
+                                            i18n("Closing")
+                                           );
+        if (ret == KMessageBox::No)
+        {
+            return false;
+        }
+    }
+    return true;
+}
