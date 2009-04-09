@@ -87,21 +87,24 @@ MainWindow::MainWindow()
     // setting size policies
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    // connect signals and slots
+    // --------- connect signals and slots
     connect(m_view, SIGNAL(loadUrlPage(const KUrl &)), this, SLOT(loadUrl(const KUrl &)));
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
-    connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
-    connect(m_view, SIGNAL(linkHovered(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
     connect(m_view, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
     connect(m_view, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
     connect(m_view, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
-    connect(m_view, SIGNAL(lastTabClosed()), m_view, SLOT(newWebView()));
 
+    // status bar message
+    connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
+    connect(m_view, SIGNAL(linkHovered(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
+
+    // update toolbar actions
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
-
+    // --------------------------------------
+    
     slotUpdateWindowTitle();
 
     // then, setup our actions

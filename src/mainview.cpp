@@ -523,8 +523,6 @@ void MainView::closeTab(int index)
     emit tabsChanged();
     if (hasFocus && count() > 0)
         currentWebView()->setFocus();
-    if (count() == 0)
-        emit lastTabClosed();
 
     showTabBar();
 }

@@ -60,7 +60,6 @@ signals:
     // tab widget signals
     void loadUrlPage(const KUrl &url);
     void tabsChanged();
-    void lastTabClosed();
 
     // current tab signals
     void setCurrentTitle(const QString &url);
