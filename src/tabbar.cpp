@@ -50,15 +50,6 @@ TabBar::TabBar(QWidget *parent)
     setAcceptDrops(true);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenuRequested(const QPoint &)));
 
-
-//     // we count to 9 because Ctrl+0 is already taken by Normal Font
-//     for (int i = 1; i < 10; ++i)
-//     {
-//         QShortcut *tabShortCut = new QShortcut(QString("Ctrl+%1").arg(i), this);
-//         connect(tabShortCut, SIGNAL(activated()), this, SLOT(selectTabAction()));
-//         m_tabShortcuts.append(tabShortCut);
-//     }
-
     QFont standardFont = KGlobalSettings::generalFont();
     QString fontFamily = standardFont.family();
     int dim = standardFont.pointSize();
@@ -98,19 +89,6 @@ QSize TabBar::tabSizeHint(int index) const
     QSize ts = QSize(w, h);
     return ts;
 }
-
-    
-// void TabBar::selectTabAction()
-// {
-//     if (QShortcut *shortCut = qobject_cast<QShortcut*>(sender()))
-//     {
-//         int index = m_tabShortcuts.indexOf(shortCut);
-//         if (index != 0)
-//         {
-//             setCurrentIndex(index);
-//         }
-//     }
-// }
 
 
 void TabBar::contextMenuRequested(const QPoint &position)
