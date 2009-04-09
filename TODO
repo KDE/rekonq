@@ -18,14 +18,15 @@ DONE(?) definitely fix fonts!
 - fix crash on example sites..
 - improve DOCUMENTATION
 - fix Action on tabbar (clone ads)
-- Type "FormSubmitted"
+- Type "FormSubmitted" (WordPress)
 - check statusbar slots
-(?) - redesign settings
 - fix fonts
+- webkit Icon
 
 
-- fix private browsing action
-- fix web inspector action
+DONE redesign settings
+DONE fix private browsing action
+DONE fix web inspector action
 
 DONE loading ONE site when calling rekonq..
 
