@@ -89,7 +89,6 @@ private slots:
     void slotOpenNext();
 
     // File Menu slots
-//     void slotFileNew();
     void slotFileOpen();
     void slotFilePrintPreview();
     void slotFilePrint();

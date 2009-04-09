@@ -26,22 +26,22 @@
 #include <KLineEdit>
 #include <KAction>
 #include <KIcon>
-#include <KToolBar>
-#include <KDialog>
 #include <KPushButton>
+#include <klocalizedstring.h>
 
 // Qt Includes
 #include <QtGui>
 
 
 FindBar::FindBar(KXmlGuiWindow *mainwindow)
-        : QWidget()
-        , m_lineEdit(0)
+        : QWidget(mainwindow)
+        , m_lineEdit(new KLineEdit(this))
+        , m_matchCase(new QCheckBox(i18n("&Match case"), this))
 {
     QHBoxLayout *layout = new QHBoxLayout;
 
     // cosmetic
-    layout->setMargin(2);
+    layout->setContentsMargins(2, 0, 2, 0);
 
     // hide button
     QToolButton *hideButton = new QToolButton(this);
@@ -52,23 +52,27 @@ FindBar::FindBar(KXmlGuiWindow *mainwindow)
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
     // label
-    QLabel *label = new QLabel("Find: ");
+    QLabel *label = new QLabel(i18n("Find: "));
     layout->addWidget(label);
 
     // lineEdit, focusProxy
-    m_lineEdit = new KLineEdit(this);
     setFocusProxy(m_lineEdit);
     m_lineEdit->setMaximumWidth(250);
     connect(m_lineEdit, SIGNAL(textChanged(const QString &)), mainwindow, SLOT(slotFind(const QString &)));
     layout->addWidget(m_lineEdit);
 
     // buttons
-    KPushButton *findNext = new KPushButton(KIcon("go-down"), "&Next", this);
-    KPushButton *findPrev = new KPushButton(KIcon("go-up"), "&Previous", this);
+    KPushButton *findNext = new KPushButton(KIcon("go-down"), i18n("&Next"), this);
+    KPushButton *findPrev = new KPushButton(KIcon("go-up"), i18n("&Previous"), this);
     connect(findNext, SIGNAL(clicked()), mainwindow, SLOT(slotFindNext()));
     connect(findPrev, SIGNAL(clicked()), mainwindow, SLOT(slotFindPrevious()));
     layout->addWidget(findNext);
     layout->addWidget(findPrev);
+
+    // Case sensitivity. Deliberately set so this is off by default.
+    m_matchCase->setCheckState(Qt::Unchecked);
+    m_matchCase->setTristate(false);
+    layout->addWidget(m_matchCase);
 
     // stretching widget on the left
     layout->addStretch();
@@ -82,13 +86,18 @@ FindBar::FindBar(KXmlGuiWindow *mainwindow)
 
 FindBar::~FindBar()
 {
-    delete m_lineEdit;
 }
 
 
-KLineEdit *FindBar::lineEdit()
+KLineEdit *FindBar::lineEdit() const
 {
     return m_lineEdit;
+}
+
+
+bool FindBar::matchCase() const
+{
+    return m_matchCase->isChecked();
 }
 
 
@@ -100,10 +109,12 @@ void FindBar::clear()
 
 void FindBar::showFindBar()
 {
+    // show findbar if not visible
     if (!isVisible())
     {
         show();
     }
+    // set focus to findbar if user select showFindBar shortcut 
     m_lineEdit->setFocus();
     m_lineEdit->selectAll();
 }
@@ -123,3 +134,4 @@ void FindBar::keyPressEvent(QKeyEvent* event)
     }
     QWidget::keyPressEvent(event);
 }
+

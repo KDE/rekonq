@@ -566,7 +566,18 @@ void MainWindow::slotFindNext()
 {
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
-    if (!currentTab()->findText(m_lastSearch, QWebPage::FindWrapsAroundDocument))
+
+    QWebPage::FindFlags options;
+    if(m_findBar->matchCase())
+    {
+        options = QWebPage::FindCaseSensitively | QWebPage::FindWrapsAroundDocument;
+    }
+    else
+    {
+        options = QWebPage::FindWrapsAroundDocument;
+    }
+
+    if (!currentTab()->findText(m_lastSearch, options))
     {
         slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
     }
@@ -577,7 +588,18 @@ void MainWindow::slotFindPrevious()
 {
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
-    if (!currentTab()->findText(m_lastSearch, QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument))
+
+    QWebPage::FindFlags options;
+    if(m_findBar->matchCase())
+    {
+        options = QWebPage::FindCaseSensitively | QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
+    }
+    else
+    {
+        options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
+    }
+
+    if (!currentTab()->findText(m_lastSearch, options))
     {
         slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
     }

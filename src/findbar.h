@@ -27,14 +27,20 @@
 #include <KToolBar>
 #include <KXmlGuiWindow>
 
-class FindBar : public QWidget  // KateViewHelpers.h
+// Qt Includes
+#include <QtCore>
+#include <QtGui>
+
+
+class FindBar : public QWidget
 {
     Q_OBJECT
 
 public:
     FindBar(KXmlGuiWindow *mainwindow);
     ~FindBar();
-    KLineEdit *lineEdit();
+    KLineEdit *lineEdit() const;
+    bool matchCase() const;
 
 public slots:
     void clear();
@@ -48,6 +54,8 @@ signals:
 
 private:
     KLineEdit *m_lineEdit;
+    QCheckBox *m_matchCase;
 };
+
 
 #endif
