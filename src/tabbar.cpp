@@ -47,9 +47,10 @@ TabBar::TabBar(QWidget *parent)
 {
     setElideMode(Qt::ElideRight);
     setContextMenuPolicy(Qt::CustomContextMenu);
-    setAcceptDrops(true);
+    setMovable(true);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenuRequested(const QPoint &)));
 
+    // tabbar font
     QFont standardFont = KGlobalSettings::generalFont();
     QString fontFamily = standardFont.family();
     int dim = standardFont.pointSize();
@@ -141,52 +142,6 @@ void TabBar::mousePressEvent(QMouseEvent *event)
         m_dragStartPos = event->pos();
     }
     KTabBar::mousePressEvent(event);
-}
-
-
-void TabBar::mouseMoveEvent(QMouseEvent *event)
-{
-    if (event->buttons() == Qt::LeftButton && (event->pos() - m_dragStartPos).manhattanLength() > QApplication::startDragDistance())
-    {
-        QDrag *drag = new QDrag(this);
-        QMimeData *mimeData = new QMimeData;
-        QList<QUrl> urls;
-        int index = tabAt(event->pos());
-        QUrl url = tabData(index).toUrl();
-        urls.append(url);
-        mimeData->setUrls(urls);
-        mimeData->setText(tabText(index));
-        mimeData->setData(QLatin1String("action"), "tab-reordering");
-        drag->setMimeData(mimeData);
-        drag->exec();
-    }
-    KTabBar::mouseMoveEvent(event);
-}
-
-
-void TabBar::dragEnterEvent(QDragEnterEvent *event)
-{
-    const QMimeData *mimeData = event->mimeData();
-    QStringList formats = mimeData->formats();
-
-    if (formats.contains(QLatin1String("action")) && (mimeData->data(QLatin1String("action")) == "tab-reordering"))
-    {
-        event->acceptProposedAction();
-    }
-    KTabBar::dragEnterEvent(event);
-}
-
-
-void TabBar::dropEvent(QDropEvent *event)
-{
-    int fromIndex = tabAt(m_dragStartPos);
-    int toIndex = tabAt(event->pos());
-    if (fromIndex != toIndex)
-    {
-        emit tabMoveRequested(fromIndex, toIndex);
-        event->acceptProposedAction();
-    }
-    KTabBar::dropEvent(event);
 }
 
 

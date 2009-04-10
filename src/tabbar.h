@@ -50,13 +50,9 @@ signals:
     void closeOtherTabs(int index);
     void reloadTab(int index);
     void reloadAllTabs();
-    void tabMoveRequested(int fromIndex, int toIndex);
 
 protected:
     void mousePressEvent(QMouseEvent* event);
-    void mouseMoveEvent(QMouseEvent* event);
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
 
     /**
      * Added to fix tab dimension

@@ -129,10 +129,9 @@ private slots:
     void webViewUrlChanged(const QUrl &url);
     void lineEditReturnPressed();
     void windowCloseRequested();
-    void slotMoveTab(int fromIndex, int toIndex);
+
 
 private:
-
     KAction *m_recentlyClosedTabsAction;
 
     KMenu *m_recentlyClosedTabsMenu;
