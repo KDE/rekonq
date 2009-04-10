@@ -315,8 +315,6 @@ void MainWindow::slotUpdateConfiguration()
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fnSize);
 
-    // =========== Privacy ==============
-
     // ================ WebKit ============================
     defaultSettings->setAttribute(QWebSettings::AutoLoadImages, ReKonfig::autoLoadImages());
     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, ReKonfig::javascriptEnabled());
@@ -796,7 +794,7 @@ bool MainWindow::queryClose()
     if (m_view->count() > 1)
     {
         int ret = KMessageBox::warningYesNo(this,
-                                            i18n("Are you sure you want to close the window?" "  There are %1 tab open" , m_view->count() ),
+                                            i18n("Are you sure you want to close the window?\nThere are %1 tab open" , m_view->count() ),
                                             i18n("Closing")
                                            );
         if (ret == KMessageBox::No)
