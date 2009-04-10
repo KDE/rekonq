@@ -73,7 +73,6 @@ private slots:
 
 private:
 
-    QList<QShortcut*> m_tabShortcuts;
     friend class MainView;
 
     QWidget *m_parent;
