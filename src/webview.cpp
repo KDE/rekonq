@@ -87,14 +87,14 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
     WebView *webView;
 
-    kWarning() << "HttpStatusCodeAttribute " << request.attribute(QNetworkRequest::HttpStatusCodeAttribute, QVariant(QVariant::Int));
-    kWarning() << "HttpReasonPhraseAttribute " << request.attribute(QNetworkRequest::HttpReasonPhraseAttribute, QVariant(QVariant::ByteArray));
-    kWarning() << "RedirectionTargetAttribute " << request.attribute(QNetworkRequest::RedirectionTargetAttribute, QVariant(QVariant::Url));
-    kWarning() << "ConnectionEncryptedAttribute " << request.attribute(QNetworkRequest::ConnectionEncryptedAttribute, QVariant(QVariant::Bool));
-    kWarning() << "CacheLoadControlAttribute " << request.attribute(QNetworkRequest::CacheLoadControlAttribute, QVariant(QVariant::Int));
-    kWarning() << "CacheSaveControlAttribute " << request.attribute(QNetworkRequest::CacheSaveControlAttribute, QVariant(QVariant::Bool));
-    kWarning() << "SourceIsFromCacheAttribute " << request.attribute(QNetworkRequest::SourceIsFromCacheAttribute, QVariant(QVariant::Bool));
-    kWarning() << "------------------------------------------------------------------";
+//     kWarning() << "HttpStatusCodeAttribute " << request.attribute(QNetworkRequest::HttpStatusCodeAttribute, QVariant(QVariant::Int));
+//     kWarning() << "HttpReasonPhraseAttribute " << request.attribute(QNetworkRequest::HttpReasonPhraseAttribute, QVariant(QVariant::ByteArray));
+//     kWarning() << "RedirectionTargetAttribute " << request.attribute(QNetworkRequest::RedirectionTargetAttribute, QVariant(QVariant::Url));
+//     kWarning() << "ConnectionEncryptedAttribute " << request.attribute(QNetworkRequest::ConnectionEncryptedAttribute, QVariant(QVariant::Bool));
+//     kWarning() << "CacheLoadControlAttribute " << request.attribute(QNetworkRequest::CacheLoadControlAttribute, QVariant(QVariant::Int));
+//     kWarning() << "CacheSaveControlAttribute " << request.attribute(QNetworkRequest::CacheSaveControlAttribute, QVariant(QVariant::Bool));
+//     kWarning() << "SourceIsFromCacheAttribute " << request.attribute(QNetworkRequest::SourceIsFromCacheAttribute, QVariant(QVariant::Bool));
+//     kWarning() << "------------------------------------------------------------------";
 
     switch(type)
     {

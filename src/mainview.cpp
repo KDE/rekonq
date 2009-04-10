@@ -373,9 +373,9 @@ WebView *MainView::newWebView()
         p.setColor(QPalette::Window, palette().color(QPalette::Base));
         emptyWidget->setPalette(p);
         emptyWidget->setAutoFillBackground(true);
-        disconnect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
+        disconnect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
         addTab(emptyWidget, i18n("(Untitled)"));
-        connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
+        connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
         return 0;
     }
 
@@ -401,12 +401,15 @@ WebView *MainView::newWebView()
     addTab(webView, i18n("(Untitled)"));
     setCurrentWidget(webView);
 
-    // FIXME: focus on currentLineEdit just for empty pages
-    currentLineEdit()->setFocus(Qt::ActiveWindowFocusReason);
+    // focus on currentLineEdit just for empty pages
+    if(webView->url().isEmpty())
+    {
+        currentLineEdit()->setFocus(Qt::ActiveWindowFocusReason);
+    }
 
     if (count() == 1)
     {
-        currentChanged(currentIndex());
+        slotCurrentChanged(currentIndex());
     }
     emit tabsChanged();
 
