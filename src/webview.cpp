@@ -316,7 +316,6 @@ void WebView::wheelEvent(QWheelEvent *event)
 void WebView::openLinkInNewTab()
 {
     m_page->m_openInNewTab = true;
-    kWarning() << "NO panic...";
     pageAction(QWebPage::OpenLinkInNewWindow)->trigger();
 }
 

@@ -23,6 +23,8 @@ DONE(?) definitely fix fonts!
 - fix fonts
 - webkit Icon
 
+- tab-reordering
+- focus on new tab just if no site loaded
 
 DONE redesign settings
 DONE fix private browsing action

@@ -100,11 +100,11 @@ protected:
 public slots:
     void loadUrlInCurrentTab(const KUrl &url);
     WebView *newWebView(bool makeCurrent = true);
-    void cloneTab(int index = -1);
-    void closeTab(int index = -1);
-    void closeOtherTabs(int index);
-    void reloadTab(int index = -1);
-    void reloadAllTabs();
+    void slotCloneTab(int index = -1);
+    void slotCloseTab(int index = -1);
+    void slotCloseOtherTabs(int index);
+    void slotReloadTab(int index = -1);
+    void slotReloadAllTabs();
     void nextTab();
     void previousTab();
 
@@ -120,7 +120,7 @@ public slots:
     void slotWebPaste();
 
 private slots:
-    void currentChanged(int index);
+    void slotCurrentChanged(int index);
     void aboutToShowRecentTabsMenu();
     void aboutToShowRecentTriggeredAction(QAction *action); // need QAction!
     void webViewLoadStarted();
@@ -129,7 +129,7 @@ private slots:
     void webViewUrlChanged(const QUrl &url);
     void lineEditReturnPressed();
     void windowCloseRequested();
-    void moveTab(int fromIndex, int toIndex);
+    void slotMoveTab(int fromIndex, int toIndex);
 
 private:
 

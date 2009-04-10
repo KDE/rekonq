@@ -272,7 +272,7 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_W));
     actionCollection()->addAction(QLatin1String("close_tab"), a);
-    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(closeTab()));
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotCloseTab()));
 
     a = new KAction(i18n("Show Next Tab"), this);
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext());
@@ -341,7 +341,7 @@ void MainWindow::slotUpdateConfiguration()
 void MainWindow::slotUpdateBrowser()
 {
     slotUpdateConfiguration();
-    mainView()->reloadAllTabs();
+    mainView()->slotReloadAllTabs();
 }
 
 
@@ -679,7 +679,7 @@ void MainWindow::slotToggleInspector(bool enable)
                                                 i18n("Web Inspector"));
         if (result == KMessageBox::Yes)
         {
-            m_view->reloadAllTabs();
+            m_view->slotReloadAllTabs();
         }
     }
 }

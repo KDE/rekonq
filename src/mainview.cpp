@@ -65,12 +65,12 @@ MainView::MainView(QWidget *parent)
     loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
 
     connect(m_tabBar, SIGNAL(newTab()), this, SLOT(newWebView()));
-    connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(closeTab(int)));
-    connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(cloneTab(int)));
-    connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(closeOtherTabs(int)));
-    connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(reloadTab(int)));
-    connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(reloadAllTabs()));
-    connect(m_tabBar, SIGNAL(tabMoveRequested(int, int)), this, SLOT(moveTab(int, int)));
+    connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(slotCloseTab(int)));
+    connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(slotCloneTab(int)));
+    connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(slotCloseOtherTabs(int)));
+    connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(slotReloadTab(int)));
+    connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(slotReloadAllTabs()));
+    connect(m_tabBar, SIGNAL(tabMoveRequested(int, int)), this, SLOT(slotMoveTab(int, int)));
 
     // Recently Closed Tab Action
     m_recentlyClosedTabsMenu = new KMenu(this);
@@ -82,10 +82,10 @@ MainView::MainView(QWidget *parent)
 
     // add close button to tab bar..
     m_tabBar->setTabsClosable(true);
-    connect(m_tabBar, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
+    connect(m_tabBar, SIGNAL(tabCloseRequested(int)),this, SLOT(slotCloseTab(int)));
 
     // --
-    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
 }
 
 
@@ -223,9 +223,9 @@ void MainView::clear()
 }
 
 
-void MainView::moveTab(int fromIndex, int toIndex)
+void MainView::slotMoveTab(int fromIndex, int toIndex)
 {
-    disconnect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
+    disconnect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
 
     QWidget *tabWidget = widget(fromIndex);
     QIcon icon = tabIcon(fromIndex);
@@ -234,13 +234,13 @@ void MainView::moveTab(int fromIndex, int toIndex)
     removeTab(fromIndex);
     insertTab(toIndex, tabWidget, icon, text);
     m_tabBar->setTabData(toIndex, data);
-    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
     setCurrentIndex(toIndex);
 }
 
 
 // When index is -1 index chooses the current tab
-void MainView::reloadTab(int index)
+void MainView::slotReloadTab(int index)
 {
     if (index < 0)
         index = currentIndex();
@@ -253,7 +253,7 @@ void MainView::reloadTab(int index)
 }
 
 
-void MainView::currentChanged(int index)
+void MainView::slotCurrentChanged(int index)
 {
     WebView *webView = this->webView(index);
     if (!webView)
@@ -265,7 +265,8 @@ void MainView::currentChanged(int index)
     if (oldWebView)
     {
         disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
-        disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), this, SIGNAL(linkHovered(const QString&)));
+        disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
+                    this, SIGNAL(linkHovered(const QString&)));
         disconnect(oldWebView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
     }
 
@@ -325,7 +326,7 @@ WebView *MainView::webView(int index) const
             MainView *that = const_cast<MainView*>(this);
             that->setUpdatesEnabled(false);
             that->newWebView();
-            that->closeTab(0);
+            that->slotCloseTab(0);
             that->setUpdatesEnabled(true);
             return currentWebView();
         }
@@ -414,7 +415,7 @@ WebView *MainView::newWebView(bool makeCurrent)
 }
 
 
-void MainView::reloadAllTabs()
+void MainView::slotReloadAllTabs()
 {
     for (int i = 0; i < count(); ++i)
     {
@@ -448,28 +449,38 @@ void MainView::windowCloseRequested()
     if (index >= 0)
     {
         if (count() == 1)
+        {
             webView->webPage()->mainWindow()->close();
+        }
         else
-            closeTab(index);
+        {
+            slotCloseTab(index);
+        }
     }
 }
 
 
-void MainView::closeOtherTabs(int index)
+void MainView::slotCloseOtherTabs(int index)
 {
     if (-1 == index)
         return;
+
     for (int i = count() - 1; i > index; --i)
-        closeTab(i);
+    {
+        slotCloseTab(i);
+    }
+
     for (int i = index - 1; i >= 0; --i)
-        closeTab(i);
+    {
+        slotCloseTab(i);
+    }
 
     showTabBar();
 }
 
 
 // When index is -1 index chooses the current tab
-void MainView::cloneTab(int index)
+void MainView::slotCloneTab(int index)
 {
     if (index < 0)
         index = currentIndex();
@@ -483,7 +494,7 @@ void MainView::cloneTab(int index)
 
 
 // When index is -1 index chooses the current tab
-void MainView::closeTab(int index)
+void MainView::slotCloseTab(int index)
 {
     // do nothing if just one tab is opened
     if( count() == 1 )
