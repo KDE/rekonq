@@ -137,8 +137,10 @@ void TabBar::closeOtherTabs()
 void TabBar::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
+    {
         m_dragStartPos = event->pos();
-    QTabBar::mousePressEvent(event);
+    }
+    KTabBar::mousePressEvent(event);
 }
 
 
@@ -158,7 +160,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         drag->setMimeData(mimeData);
         drag->exec();
     }
-    QTabBar::mouseMoveEvent(event);
+    KTabBar::mouseMoveEvent(event);
 }
 
 
@@ -171,7 +173,7 @@ void TabBar::dragEnterEvent(QDragEnterEvent *event)
     {
         event->acceptProposedAction();
     }
-    QTabBar::dragEnterEvent(event);
+    KTabBar::dragEnterEvent(event);
 }
 
 
@@ -184,7 +186,7 @@ void TabBar::dropEvent(QDropEvent *event)
         emit tabMoveRequested(fromIndex, toIndex);
         event->acceptProposedAction();
     }
-    QTabBar::dropEvent(event);
+    KTabBar::dropEvent(event);
 }
 
 
