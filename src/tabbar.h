@@ -60,7 +60,6 @@ protected:
 
     /**
      * Added to fix tab dimension
-     *
      */
     virtual QSize tabSizeHint(int index) const;
 
