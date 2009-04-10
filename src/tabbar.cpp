@@ -94,7 +94,7 @@ QSize TabBar::tabSizeHint(int index) const
 void TabBar::contextMenuRequested(const QPoint &position)
 {
     KMenu menu;
-    menu.addAction(i18n("New &Tab"), this, SIGNAL(newTab()), QKeySequence::AddTab);
+    menu.addAction(i18n("New &Tab"), this, SIGNAL(newTab()));
     int index = tabAt(position);
     if (-1 != index)
     {
@@ -102,10 +102,10 @@ void TabBar::contextMenuRequested(const QPoint &position)
 
         KAction *action = (KAction *) menu.addAction(i18n("Clone Tab"), this, SLOT(cloneTab()));
         menu.addSeparator();
-        action = (KAction *) menu.addAction(i18n("&Close Tab"), this, SLOT(closeTab()), QKeySequence::Close);
+        action = (KAction *) menu.addAction(i18n("&Close Tab"), this, SLOT(closeTab()));
         action = (KAction *) menu.addAction(i18n("Close &Other Tabs"), this, SLOT(closeOtherTabs()));
         menu.addSeparator();
-        action = (KAction *) menu.addAction(i18n("Reload Tab"), this, SLOT(reloadTab()), QKeySequence::Refresh);
+        action = (KAction *) menu.addAction(i18n("Reload Tab"), this, SLOT(reloadTab()));
     }
     else
     {
