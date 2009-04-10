@@ -99,7 +99,7 @@ protected:
 
 public slots:
     void loadUrlInCurrentTab(const KUrl &url);
-    WebView *newWebView(bool makeCurrent = true);
+    WebView *newWebView();
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);
     void slotCloseOtherTabs(int index);

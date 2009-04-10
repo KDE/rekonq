@@ -342,7 +342,7 @@ int MainView::webViewIndex(WebView *webView) const
 }
 
 
-WebView *MainView::newWebView(bool makeCurrent)
+WebView *MainView::newWebView()
 {
     // line edit
     UrlBar *urlLineEdit = new UrlBar;
@@ -399,14 +399,15 @@ WebView *MainView::newWebView(bool makeCurrent)
     connect(webView, SIGNAL(shiftCtrlTabPressed()), this, SLOT(previousTab()));
 
     addTab(webView, i18n("(Untitled)"));
-    if (makeCurrent)
-    {
-        setCurrentWidget(webView);
-        currentLineEdit()->setFocus(Qt::ActiveWindowFocusReason);
-    }
+    setCurrentWidget(webView);
+
+    // FIXME: focus on currentLineEdit just for empty pages
+    currentLineEdit()->setFocus(Qt::ActiveWindowFocusReason);
 
     if (count() == 1)
+    {
         currentChanged(currentIndex());
+    }
     emit tabsChanged();
 
     showTabBar();
@@ -486,7 +487,7 @@ void MainView::slotCloneTab(int index)
         index = currentIndex();
     if (index < 0 || index >= count())
         return;
-    WebView *tab = newWebView(false);
+    WebView *tab = newWebView();
     tab->setUrl(webView(index)->url());
 
     showTabBar();
