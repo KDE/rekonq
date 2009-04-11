@@ -39,6 +39,7 @@ class QCompleter;
 class QStackedWidget;
 class QLineEdit;
 class QUrl;
+class QLabel;
 
 
 /**
@@ -141,6 +142,16 @@ private:
      */
     void moveTab(int fromIndex, int toIndex);
 
+    /**
+     * This function creates (if not exists) and returns a QLabel 
+     * with a loading QMovie.
+     *
+     * @param index the tab index where inserting the animated label
+     *
+     * @return animated label's pointer
+     */
+    QLabel *animatedLoading(int index);
+
     KAction *m_recentlyClosedTabsAction;
 
     KMenu *m_recentlyClosedTabsMenu;
@@ -151,7 +162,7 @@ private:
     QStackedWidget *m_lineEdits;
     TabBar *m_tabBar;
 
-    QString loadingGitPath;
+    QString m_loadingGitPath;
 };
 
 #endif

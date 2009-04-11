@@ -62,7 +62,7 @@ MainView::MainView(QWidget *parent)
 {
     setTabBar(m_tabBar);
 
-    loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
+    m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
 
     connect(m_tabBar, SIGNAL(newTab()), this, SLOT(newWebView()));
     connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(slotCloseTab(int)));
@@ -527,14 +527,17 @@ void MainView::slotCloseTab(int index)
 }
 
 
-// FIXME: provide movie for loading sites
 void MainView::webViewLoadStarted()
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
     if (-1 != index)
     {
-        setTabIcon(index, QIcon(loadingGitPath));
+        QLabel *label = animatedLoading(index);
+        if (label->movie())
+        {
+            label->movie()->start();
+        }
     }
 }
 
@@ -546,7 +549,11 @@ void MainView::webViewIconChanged()
     if (-1 != index)
     {
         QIcon icon = Application::instance()->icon(webView->url());
-        setTabIcon(index, icon);
+        QLabel *label = animatedLoading(index);
+        QMovie *movie = label->movie();
+        delete movie;
+        label->setMovie(0);
+        label->setPixmap(icon.pixmap(16, 16));
     }
 }
 
@@ -675,3 +682,25 @@ void MainView::moveTab(int fromIndex, int toIndex)
     m_lineEdits->insertWidget(toIndex, lineEdit);
 }
 
+
+QLabel *MainView::animatedLoading(int index)
+{
+    if (index == -1)
+        return 0;
+
+    QLabel *label = qobject_cast<QLabel*>(m_tabBar->tabButton(index, QTabBar::LeftSide));
+    if (!label) 
+    {
+        label = new QLabel(this);
+        if (!label->movie())
+        {
+            QMovie *movie = new QMovie(m_loadingGitPath, QByteArray(), label);
+            movie->setSpeed(50);
+            label->setMovie(movie);
+            movie->start();
+        }
+        m_tabBar->setTabButton(index, QTabBar::LeftSide, 0);
+        m_tabBar->setTabButton(index, QTabBar::LeftSide, label);
+    }
+    return label;
+}
