@@ -85,22 +85,11 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
     WebView *webView;
 
-//     kWarning() << "HttpStatusCodeAttribute " << request.attribute(QNetworkRequest::HttpStatusCodeAttribute, QVariant(QVariant::Int));
-//     kWarning() << "HttpReasonPhraseAttribute " << request.attribute(QNetworkRequest::HttpReasonPhraseAttribute, QVariant(QVariant::ByteArray));
-//     kWarning() << "RedirectionTargetAttribute " << request.attribute(QNetworkRequest::RedirectionTargetAttribute, QVariant(QVariant::Url));
-//     kWarning() << "ConnectionEncryptedAttribute " << request.attribute(QNetworkRequest::ConnectionEncryptedAttribute, QVariant(QVariant::Bool));
-//     kWarning() << "CacheLoadControlAttribute " << request.attribute(QNetworkRequest::CacheLoadControlAttribute, QVariant(QVariant::Int));
-//     kWarning() << "CacheSaveControlAttribute " << request.attribute(QNetworkRequest::CacheSaveControlAttribute, QVariant(QVariant::Bool));
-//     kWarning() << "SourceIsFromCacheAttribute " << request.attribute(QNetworkRequest::SourceIsFromCacheAttribute, QVariant(QVariant::Bool));
-//     kWarning() << "------------------------------------------------------------------";
-
     switch(type)
     {
 
     // user clicked on a link or pressed return on a focused link.
     case QWebPage::NavigationTypeLinkClicked:
-
-//         kWarning() << "Navigation Type LINKCLICKED..";
 
         if(m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
         {
@@ -132,32 +121,26 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
     // user activated a submit button for an HTML form.
     case QWebPage::NavigationTypeFormSubmitted:
-//         kWarning() << "Navigation Type Form Submitted..";
         break;
 
     // Navigation to a previously shown document in the back or forward history is requested.
     case QWebPage::NavigationTypeBackOrForward:
-//         kWarning() << "Navigation Type BackOrForward..";
         break;
 
     // user activated the reload action.
     case QWebPage::NavigationTypeReload:
-//         kWarning() << "Navigation Type Reload..";
         break;
 
     // An HTML form was submitted a second time.
     case QWebPage::NavigationTypeFormResubmitted:
-//         kWarning() << "Navigation Type Form Resubmitted..";
         break;
 
     // A navigation to another document using a method not listed above.
     case QWebPage::NavigationTypeOther:
-//         kWarning() << "Navigation Type OTHER..";
         break;
 
     // should be nothing..
     default:
-//         kWarning() << "Default NON existant case..";
         break;
     }
 
@@ -170,7 +153,7 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
     {
-        kWarning() << "prova QWebView ------------------------------------------------------";
+        kWarning() << "trying QWebView here ---------------------------------------";
         QWebView *w = new QWebView;
         return w->page();
     }
@@ -424,4 +407,3 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
     QWebView::keyPressEvent(event);
 }
-
