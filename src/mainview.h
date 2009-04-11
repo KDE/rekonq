@@ -145,6 +145,7 @@ private:
     /**
      * This function creates (if not exists) and returns a QLabel 
      * with a loading QMovie.
+     * Inspired from Arora's code. 
      *
      * @param index the tab index where inserting the animated label
      *
