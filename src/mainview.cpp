@@ -70,6 +70,7 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(slotCloseOtherTabs(int)));
     connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(slotReloadTab(int)));
     connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(slotReloadAllTabs()));
+    connect(m_tabBar, SIGNAL(tabMoved(int,int)), this, SLOT(moveTab(int,int)));
 
     // Recently Closed Tab Action
     m_recentlyClosedTabsMenu = new KMenu(this);
@@ -665,3 +666,12 @@ void MainView::previousTab()
         next = count() - 1;
     setCurrentIndex(next);
 }
+
+
+void MainView::moveTab(int fromIndex, int toIndex)
+{
+    QWidget *lineEdit = m_lineEdits->widget(fromIndex);
+    m_lineEdits->removeWidget(lineEdit);
+    m_lineEdits->insertWidget(toIndex, lineEdit);
+}
+

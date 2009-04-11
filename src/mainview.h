@@ -132,6 +132,8 @@ private slots:
 
 
 private:
+    void moveTab(int fromIndex, int toIndex);
+
     KAction *m_recentlyClosedTabsAction;
 
     KMenu *m_recentlyClosedTabsMenu;
