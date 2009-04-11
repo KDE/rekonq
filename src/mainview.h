@@ -92,11 +92,6 @@ public:
      */
     void showTabBar();
 
-protected:
-    void mouseDoubleClickEvent(QMouseEvent *event);
-    void contextMenuEvent(QContextMenuEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-
 
 public slots:
     /**
