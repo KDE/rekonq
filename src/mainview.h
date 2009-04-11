@@ -98,8 +98,12 @@ protected:
 
 
 public slots:
-    void loadUrlInCurrentTab(const KUrl &url);
+    /**
+     * Core browser slot. This create a new tab with a WebView inside
+     * for browsing.
+     */
     WebView *newWebView();
+    void loadUrlInCurrentTab(const KUrl &url);
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);
     void slotCloseOtherTabs(int index);
@@ -132,6 +136,9 @@ private slots:
 
 
 private:
+    /**
+     * this functions move tab informations "from index to index" 
+     */
     void moveTab(int fromIndex, int toIndex);
 
     KAction *m_recentlyClosedTabsAction;
