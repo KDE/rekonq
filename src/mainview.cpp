@@ -599,46 +599,6 @@ void MainView::aboutToShowRecentTriggeredAction(QAction *action)
 }
 
 
-void MainView::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    if (!childAt(event->pos())
-            // Remove the line below when QTabWidget does not have a one pixel frame
-            && event->pos().y() < (tabBar()->y() + tabBar()->height()))
-    {
-        newWebView();
-        return;
-    }
-    KTabWidget::mouseDoubleClickEvent(event);
-}
-
-
-void MainView::contextMenuEvent(QContextMenuEvent *event)
-{
-    if (!childAt(event->pos()))
-    {
-        m_tabBar->contextMenuRequested(event->pos());
-        return;
-    }
-    KTabWidget::contextMenuEvent(event);
-}
-
-
-void MainView::mouseReleaseEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::MidButton && !childAt(event->pos())
-            // Remove the line below when QTabWidget does not have a one pixel frame
-            && event->pos().y() < (tabBar()->y() + tabBar()->height()))
-    {
-        KUrl url(QApplication::clipboard()->text(QClipboard::Selection));
-        if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty())
-        {
-            WebView *webView = newWebView();
-            webView->setUrl(url);
-        }
-    }
-}
-
-
 void MainView::loadUrlInCurrentTab(const KUrl &url)
 {
     WebView *webView = currentWebView();
