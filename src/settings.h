@@ -27,8 +27,8 @@
 
 // Forward Declarations
 class QWidget;
-
 class Private;
+
 
 class SettingsDialog : public KConfigDialog
 {

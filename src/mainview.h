@@ -97,6 +97,8 @@ public slots:
     /**
      * Core browser slot. This create a new tab with a WebView inside
      * for browsing.
+     *
+     * @return a pointer to the new WebView
      */
     WebView *newWebView();
     void loadUrlInCurrentTab(const KUrl &url);
