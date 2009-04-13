@@ -50,6 +50,7 @@
 #include <KFileDialog>
 #include <KMenu>
 #include <KGlobalSettings>
+#include <KPushButton>
 
 
 // Qt Includes
@@ -791,16 +792,52 @@ void MainWindow::slotShowMenubar(bool enable)
 
 bool MainWindow::queryClose()
 {
+    KConfig config("rekonqrc");
+    KConfigGroup group = config.group("Hand Settings");
+    bool doNotAskAgainResult = group.readEntry("ExitConfirmationDialog", false);
+
+    if(doNotAskAgainResult)
+        return true;
+
     if (m_view->count() > 1)
     {
-        int ret = KMessageBox::warningYesNo(this,
-                                            i18n("Are you sure you want to close the window?\nThere are %1 tab open" , m_view->count() ),
-                                            i18n("Closing")
-                                           );
-        if (ret == KMessageBox::No)
+        KDialog *dialog = new KDialog(this, Qt::Dialog);
+        dialog->setCaption( i18n("Closing") );
+        dialog->setButtons(KDialog::Yes | KDialog::No | KDialog::Cancel );
+        dialog->setModal(true);
+        dialog->showButtonSeparator(true);
+        dialog->setButtonGuiItem(KDialog::Yes, KStandardGuiItem::quit());
+        dialog->setButtonGuiItem(KDialog::No, KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")));
+        dialog->setButtonGuiItem(KDialog::Cancel, KStandardGuiItem::cancel());
+        dialog->setDefaultButton(KDialog::Yes);
+
+        int ret = KMessageBox::createKMessageBox( dialog,
+                                                  QMessageBox::Warning,
+                                                  i18n("Are you sure you want to close the window?\nThere are %1 tab open" , m_view->count() ),
+                                                  QStringList(),
+                                                  i18n("Do not ask again"),
+                                                  &doNotAskAgainResult,
+                                                  KMessageBox::Notify
+                                                );                                 
+
+        if (doNotAskAgainResult) 
         {
-            return false;
+            group.writeEntry("ExitConfirmationDialog", true);
+        }
+
+        switch (ret) 
+        {
+            case KDialog::Yes:
+                // Quit
+                return true;
+                break;
+            case KDialog::No:
+                // Close only the current tab
+                m_view->slotCloseTab();
+            default:
+                return false;
         }
     }
+
     return true;
-}
+}    
