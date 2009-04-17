@@ -1,21 +1,21 @@
-# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the rekonq package.
-# FIRST AUTHOR Domrachev Alexandr <alexnadr.domrachev@gmail.com>, 2009.
-#, fuzzy
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Andrea Diamantini <adjam7@gmail.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?"
-"group_id=252277&atid=1126949\n"
+"Project-Id-Version: rekonq\n"
+"Report-Msgid-Bugs-To: http://sourceforge."
+"net/tracker/?group_id=252277&atid=1126949\n"
 "POT-Creation-Date: 2009-04-13 18:54+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator:Domrachev Alexandr <alexnadr.domrachev@gmail.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2009-04-13 19:04+0200\n"
+"Last-Translator: Andrea Diamantini <adjam7@gmail.com>\n"
+"Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Language: ru_RU\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: cookiejar.cpp:472 cookiejar.cpp:651
 msgid "Website"
@@ -93,19 +93,19 @@ msgstr ""
 
 #: history.cpp:684
 msgid "Clear History"
-msgstr "Очистить журнал"
+msgstr ""
 
 #: history.cpp:765
 msgid "Open"
-msgstr "Открыть"
+msgstr ""
 
 #: history.cpp:767
 msgid "Copy"
-msgstr "Копировать"
+msgstr ""
 
 #: history.cpp:769
 msgid "Delete"
-msgstr "Удалить"
+msgstr ""
 
 #: history.cpp:1152
 msgid "Earlier Today"
@@ -137,11 +137,11 @@ msgstr ""
 
 #: mainview.cpp:79
 msgid "Recently Closed Tabs"
-msgstr "Недавно закрытые вкладки"
+msgstr ""
 
 #: mainview.cpp:361 mainview.cpp:385
 msgid "(Untitled)"
-msgstr ""
+msgstr "(senza titolo)"
 
 #: mainview.cpp:502
 msgid ""
@@ -149,32 +149,33 @@ msgid ""
 "modification.\n"
 "Do you really want to close this page?\n"
 msgstr ""
+"Hai modificato questa pagina e chiudendola, potresti perdere queste "
+"modifiche.\n"
+"Vuoi davvero chiudere questa pagina?\n"
 
 #: mainview.cpp:504
 msgid "Do you really want to close this page?"
-msgstr "Вы действительно хотите закрыть эту страницу?"
+msgstr "Vuoi davvero chiudere questa pagina?"
 
 #: mainwindow.cpp:121
 msgid "B&ookmarks"
-msgstr "&Закладки"
+msgstr "B&ookmarks"
 
 #: mainwindow.cpp:164
 msgid "Location Bar"
 msgstr ""
 
 #: mainwindow.cpp:170
-#, fuzzy
 msgid "Search Bar"
-msgstr "Поиск..."
+msgstr "Barra di ricerca"
 
 #: mainwindow.cpp:206
-#, fuzzy
 msgid "&Stop"
-msgstr "&Стоп"
+msgstr "&Stop"
 
 #: mainwindow.cpp:212
 msgid "reload"
-msgstr ""
+msgstr "ricarica"
 
 #: mainwindow.cpp:217
 msgid "Open Location"
@@ -182,19 +183,19 @@ msgstr ""
 
 #: mainwindow.cpp:221
 msgid "&Enlarge Font"
-msgstr "У&величить шрифт"
+msgstr "Allarga Caratt&ere"
 
 #: mainwindow.cpp:226
 msgid "&Normal Font"
-msgstr "&Нормальный шрифт"
+msgstr "Carattere &Normale"
 
 #: mainwindow.cpp:231
 msgid "&Shrink Font"
-msgstr "У&меньшить шрифт"
+msgstr "&Stringi Carattere"
 
 #: mainwindow.cpp:236
 msgid "Page S&ource"
-msgstr ""
+msgstr "S&orgente della pagina"
 
 #: mainwindow.cpp:241
 msgid "Web &Inspector"
@@ -202,52 +203,52 @@ msgstr ""
 
 #: mainwindow.cpp:246
 msgid "Private &Browsing"
-msgstr ""
+msgstr "Navigazione Privata"
 
 #: mainwindow.cpp:252
 msgid "Back"
-msgstr ""
+msgstr "Indietro"
 
 #: mainwindow.cpp:260
 msgid "Forward"
-msgstr ""
+msgstr "Avanti"
 
 #: mainwindow.cpp:265 tabbar.cpp:98
 msgid "New &Tab"
-msgstr "Новая &вкладка"
+msgstr "Nuova &Tab"
 
 #: mainwindow.cpp:273 tabbar.cpp:106
 msgid "&Close Tab"
-msgstr "&Закрыть вкладку"
+msgstr "&Chiudi Tab"
 
 #: mainwindow.cpp:278
 msgid "Show Next Tab"
-msgstr "Открыть следующую вкладку"
+msgstr "Mostra la prossima Tab"
 
 #: mainwindow.cpp:283
 msgid "Show Previous Tab"
-msgstr ""
+msgstr "Mostra la Tab precedente"
 
 #: mainwindow.cpp:295
-#, fuzzy
 msgid "&History"
-msgstr "Журнал"
+msgstr "Cronologia"
 
 #: mainwindow.cpp:474
 msgid "Web Resources (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"
 msgstr ""
+"Risorse Web (*.html *.htm *.svg *.png *.gif *.svgz);;Tutti i files (*.*)"
 
 #: mainwindow.cpp:476
 msgid "Open Web Resource"
-msgstr ""
+msgstr "Apri Risorsa Web"
 
 #: mainwindow.cpp:508
 msgid "Print Document"
-msgstr ""
+msgstr "Stampa Documento"
 
 #: mainwindow.cpp:520
 msgid "Are you sure you want to turn on private browsing?"
-msgstr "Вы действительно хотите включить режим конфиденциальности?"
+msgstr ""
 
 #: mainwindow.cpp:521
 msgid ""
@@ -260,9 +261,8 @@ msgid ""
 msgstr ""
 
 #: mainwindow.cpp:581 mainwindow.cpp:603
-#, fuzzy
 msgid " not found."
-msgstr "не найдено."
+msgstr ""
 
 #: mainwindow.cpp:657
 msgid "Page Source of "
@@ -281,7 +281,7 @@ msgstr ""
 
 #: mainwindow.cpp:708
 msgid "Stop loading the current page"
-msgstr "Остановить загрузку страницы"
+msgstr ""
 
 #: mainwindow.cpp:709
 msgid "Stop"
@@ -289,27 +289,25 @@ msgstr ""
 
 #: mainwindow.cpp:716
 msgid "Reload the current page"
-msgstr "Обновить страницу"
+msgstr ""
 
 #: mainwindow.cpp:717
 msgid "Reload"
-msgstr "Обновить"
+msgstr ""
 
 #: mainwindow.cpp:805
 msgid "Closing"
 msgstr ""
 
 #: mainwindow.cpp:810
-#, fuzzy
 msgid "C&lose Current Tab"
-msgstr "&Закрыть вкладку"
+msgstr ""
 
 #: mainwindow.cpp:816
-#, fuzzy
 msgid ""
 "Are you sure you want to close the window?\n"
 "There are %1 tab open"
-msgstr "Вы действительно хотите включить режим конфиденциальности?"
+msgstr ""
 
 #: mainwindow.cpp:818
 msgid "Do not ask again"
@@ -317,7 +315,7 @@ msgstr ""
 
 #: networkaccessmanager.cpp:112
 msgid "<qt>Enter username and password for "
-msgstr "<qt>Введите имя пользователя и пароль для "
+msgstr ""
 
 #: networkaccessmanager.cpp:113
 msgid " at "
@@ -339,7 +337,7 @@ msgstr ""
 
 #: searchbar.cpp:57
 msgid "Search.."
-msgstr "Поиск..."
+msgstr ""
 
 #. i18n: file: settings_general.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, general)
@@ -351,7 +349,7 @@ msgstr ""
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: settings.cpp:86 rc.cpp:105
 msgid "Fonts"
-msgstr "Шрифты"
+msgstr ""
 
 #. i18n: file: settings_privacy.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, privacy)
@@ -382,14 +380,12 @@ msgid "Enables the running of JavaScript programs."
 msgstr ""
 
 #: settings.cpp:141
-#, fuzzy
 msgid "Enables Java applets."
-msgstr "Включить Javascript"
+msgstr ""
 
 #: settings.cpp:142
-#, fuzzy
 msgid "Enables plugins in web pages."
-msgstr "Включить плагины"
+msgstr ""
 
 #: settings.cpp:143
 msgid "Allows JavaScript programs to opening new windows."
@@ -433,11 +429,11 @@ msgstr ""
 
 #: tabbar.cpp:109
 msgid "Reload Tab"
-msgstr "Обновить вкладку"
+msgstr ""
 
 #: tabbar.cpp:115
 msgid "Reload All Tabs"
-msgstr "Обновить все вкладки"
+msgstr ""
 
 #: webview.cpp:206
 msgid "Error loading page: "
@@ -445,7 +441,7 @@ msgstr ""
 
 #: webview.cpp:264
 msgid "Open in New Tab"
-msgstr "Открыть в новой вкладке"
+msgstr ""
 
 #. i18n: file: cookies.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, CookiesDialog)
@@ -509,7 +505,7 @@ msgstr ""
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: rc.cpp:39 rc.cpp:144
 msgid "History"
-msgstr "Журнал"
+msgstr ""
 
 #. i18n: file: password.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, passwordWidget)
@@ -567,19 +563,19 @@ msgstr ""
 #. i18n: ectx: Menu (file)
 #: rc.cpp:78
 msgid "&File"
-msgstr "&Файл"
+msgstr ""
 
 #. i18n: file: rekonqui.rc:24
 #. i18n: ectx: Menu (edit)
 #: rc.cpp:81
 msgid "&Edit"
-msgstr "&Правка"
+msgstr ""
 
 #. i18n: file: rekonqui.rc:38
 #. i18n: ectx: Menu (view)
 #: rc.cpp:84
 msgid "&View"
-msgstr "&Вид"
+msgstr ""
 
 #. i18n: file: rekonqui.rc:57
 #. i18n: ectx: Menu (tools)
@@ -590,28 +586,26 @@ msgstr ""
 #. i18n: file: rekonqui.rc:63
 #. i18n: ectx: Menu (settings)
 #: rc.cpp:90
-#, fuzzy
 msgid "&Settings"
-msgstr "Нстройки proxy"
+msgstr ""
 
 #. i18n: file: rekonqui.rc:79
 #. i18n: ectx: ToolBar (mainToolBar)
 #: rc.cpp:93
 msgid "Main Toolbar"
-msgstr "Панель инструментов"
+msgstr ""
 
 #. i18n: file: rekonqui.rc:89
 #. i18n: ectx: ToolBar (locationToolBar)
 #: rc.cpp:96
-#, fuzzy
 msgid "Location Toolbar"
-msgstr "Панель инструментов"
+msgstr ""
 
 #. i18n: file: rekonqui.rc:96
 #. i18n: ectx: ToolBar (bookmarksToolBar)
 #: rc.cpp:99
 msgid "Bookmark Toolbar"
-msgstr "Панель закладок"
+msgstr ""
 
 #. i18n: file: settings_fonts.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, fonts)
@@ -625,13 +619,13 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:108
 msgid "Standard Font"
-msgstr "Стандартный шрифт"
+msgstr ""
 
 #. i18n: file: settings_fonts.ui:35
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: rc.cpp:111
 msgid "Fixed Font"
-msgstr "Моноширинный шрифт"
+msgstr ""
 
 #. i18n: file: settings_fonts.ui:53
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
@@ -661,19 +655,19 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QPushButton, setHomeToCurrentPageButton)
 #: rc.cpp:129
 msgid "Set to current page"
-msgstr "Использовать текущую страницу"
+msgstr ""
 
 #. i18n: file: settings_general.ui:73
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: rc.cpp:132
 msgid "Save downloads to:"
-msgstr "Загружать файлы в:"
+msgstr ""
 
 #. i18n: file: settings_general.ui:92
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_alwaysShowTabBar)
 #: rc.cpp:138
 msgid "Always show TabBar"
-msgstr "Всегда показывать панель вкладок"
+msgstr ""
 
 #. i18n: file: settings_privacy.ui:26
 #. i18n: ectx: property (text), widget (QLabel, label_4)
@@ -787,7 +781,7 @@ msgstr ""
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:207
 msgid "Proxy Settings"
-msgstr "Нстройки proxy"
+msgstr ""
 
 #. i18n: file: settings_proxy.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label_9)
@@ -828,9 +822,8 @@ msgstr ""
 #. i18n: file: settings_webkit.ui:20
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:234
-#, fuzzy
 msgid "WebKit Settings"
-msgstr "Нстройки proxy"
+msgstr ""
 
 #. i18n: file: settings_webkit.ui:26
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_autoLoadImages)
@@ -871,9 +864,8 @@ msgstr ""
 #. i18n: file: settings_webkit.ui:75
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_pluginsEnabled)
 #: rc.cpp:255
-#, fuzzy
 msgid "Plugins"
-msgstr "Включить плагины"
+msgstr ""
 
 #. i18n: file: settings_webkit.ui:82
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_offlineStorageDatabaseEnabled)
@@ -905,11 +897,3 @@ msgstr ""
 msgid "Local storage database"
 msgstr ""
 
-#~ msgid "Interface"
-#~ msgstr "Интерфейс"
-
-#~ msgid "Enable location bar progress indication"
-#~ msgstr "Показывать индикатор загрузки страницы в адресной строке"
-
-#~ msgid "Exit rekonq if last tab closed"
-#~ msgstr "Выходить из rekonq при закрытии последней вкладки"
