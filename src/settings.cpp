@@ -44,6 +44,7 @@
 
 // KDE Includes
 #include <KConfig>
+#include <KStandardDirs>
 #include <KConfigSkeleton>
 #include <KPageWidgetItem>
 #include <KFontDialog>
@@ -102,7 +103,10 @@ Private::Private(SettingsDialog *parent)
     webkitUi.setupUi(widget);
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("Webkit"));
-    pageItem->setIcon(KIcon("applications-internet"));
+    QString webkitIconPath = KStandardDirs::locate("appdata", "pics/webkit-icon.png"); 
+    kWarning() << webkitIconPath;
+    KIcon webkitIcon = KIcon( QIcon(webkitIconPath) );
+    pageItem->setIcon(webkitIcon);
 }
 
 // -----------------------------------------------------------------------------------------------------
