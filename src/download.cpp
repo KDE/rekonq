@@ -29,9 +29,11 @@
 #include <QFile>
 #include <QFileInfo>
 
+
 Download::Download(const KUrl &srcUrl, const KUrl &destUrl)
-        : m_srcUrl(srcUrl),
-        m_destUrl(destUrl)
+        : QObject()
+        , m_srcUrl(srcUrl)
+        , m_destUrl(destUrl)
 {
     kWarning() << "DownloadFile: " << m_srcUrl.url() << " to dest: " << m_destUrl.url();
     m_copyJob = KIO::get(m_srcUrl);
@@ -39,15 +41,18 @@ Download::Download(const KUrl &srcUrl, const KUrl &destUrl)
     connect(m_copyJob, SIGNAL(result(KJob *)), SLOT(slotResult(KJob *)));
 }
 
+
 Download::~Download()
 {
 }
+
 
 void Download::slotData(KIO::Job *job, const QByteArray& data)
 {
     Q_UNUSED(job);
     m_data.append(data);
 }
+
 
 void Download::slotResult(KJob * job)
 {
