@@ -560,15 +560,22 @@ void MainView::webViewIconChanged()
 
 void MainView::webViewTitleChanged(const QString &title)
 {
+    QString tabTitle = title;
+    if(title.isEmpty())
+    {
+        tabTitle = i18n("(Untitled)");
+    }
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
     if (-1 != index)
     {
-        setTabText(index, title);
+        setTabText(index, tabTitle);
     }
     if (currentIndex() == index)
-        emit setCurrentTitle(title);
-    Application::historyManager()->updateHistoryItem(webView->url(), title);
+    {
+        emit setCurrentTitle(tabTitle);
+    }
+    Application::historyManager()->updateHistoryItem(webView->url(), tabTitle);
 }
 
 

@@ -840,4 +840,5 @@ bool MainWindow::queryClose()
     }
 
     return true;
-}    
+}
+    
