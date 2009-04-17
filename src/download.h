@@ -34,6 +34,9 @@
  * Creating a new object, you can continue downloading a file also
  * when rekonq is closed.
  *
+ * @author Lukas Appelhans <l.appelhans@gmx.de>
+ * @author Andrea Diamantini <adjam7@gmail.com>
+ *
  */
 class Download : public QObject
 {
@@ -57,7 +60,7 @@ public:
     ~Download();
 
 private slots:
-    void slotResult(KJob * job);
+    void slotResult(KJob *job);
     void slotData(KIO::Job *job, const QByteArray& data);
 
 private:
