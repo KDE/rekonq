@@ -135,7 +135,11 @@ private slots:
 
 private:
     /**
-     * this functions move tab informations "from index to index" 
+     * This functions move tab informations "from index to index" 
+     *
+     * @param fromIndex the index from which we move
+     *
+     * @param toIndex the index to wchich we move
      */
     void moveTab(int fromIndex, int toIndex);
 
