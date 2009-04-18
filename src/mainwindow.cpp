@@ -162,7 +162,7 @@ void MainWindow::setupToolBars()
 
     // location bar
     a = new KAction(i18n("Location Bar"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_L, Qt::Key_F6));
+    a->setShortcut(KShortcut(Qt::Key_F6));
     a->setDefaultWidget(m_view->lineEditStack());
     actionCollection()->addAction(QLatin1String("url_bar"), a);
 
@@ -284,6 +284,15 @@ void MainWindow::setupActions()
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
+
+    // clear Location Bar action (Henry de Valance WISH)
+    a = new KAction(KIcon("edit-clear-locationbar-rtl"), i18n("Clear Location Bar"), this);
+    a->setShortcut(Qt::CTRL+Qt::Key_L);
+    actionCollection()->addAction(QLatin1String("clear_location"),a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotClearLocationBar()));
+    a->setWhatsThis(i18n( "<html>Clear Location bar<br /><br />"
+                           "Clears the contents of the location bar.</html>" ));
+
 }
 
 
@@ -841,4 +850,12 @@ bool MainWindow::queryClose()
 
     return true;
 }
-    
+
+
+void MainWindow::slotClearLocationBar()
+{
+    QLineEdit *lineEdit = m_view->currentLineEdit();
+    lineEdit->clear();
+    lineEdit->setFocus();
+}
+
