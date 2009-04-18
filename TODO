@@ -25,7 +25,7 @@ DONE(?) definitely fix fonts!
 
 DONE tab-reordering
 - focus on new tab just if no site loaded
-- provide konqueror-like
+DONE provide konqueror-like
     - confirmation exit dialog
     - 
 DONE import arora loading label
@@ -36,6 +36,7 @@ DONE fix web inspector action
 
 DONE loading ONE site when calling rekonq..
 
+
 + ------------------------
 
 LONG TERM FIXES
@@ -45,3 +46,4 @@ LONG TERM FIXES
 - file protocol view
 
 - new bookmarks system
+- check mainview signals
