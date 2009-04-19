@@ -97,7 +97,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Only from sites you navigate to</string>
+          <string>Only from sites you visit</string>
          </property>
         </item>
        </widget>

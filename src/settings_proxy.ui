@@ -16,7 +16,7 @@
    <item>
     <widget class="QCheckBox" name="kcfg_isProxyEnabled" >
      <property name="text" >
-      <string>enable proxy</string>
+      <string>Enable proxy</string>
      </property>
     </widget>
    </item>
@@ -40,12 +40,12 @@
        <widget class="QComboBox" name="kcfg_proxyType" >
         <item>
          <property name="text" >
-          <string>Socks5</string>
+          <string>SOCKS 5</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>Http</string>
+          <string>HTTP</string>
          </property>
         </item>
        </widget>
@@ -99,7 +99,7 @@
       <item row="4" column="0" >
        <widget class="QLabel" name="label_12" >
         <property name="text" >
-         <string>User Name:</string>
+         <string>Username:</string>
         </property>
         <property name="alignment" >
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
