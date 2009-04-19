@@ -661,12 +661,29 @@ void MainWindow::slotViewPageSource()
     if (!currentTab())
         return;
 
-    QString markup = currentTab()->page()->mainFrame()->toHtml();
-    QPlainTextEdit *view = new QPlainTextEdit(markup);
-    view->setWindowTitle(i18n("Page Source of ") + currentTab()->title());
-    view->setMinimumWidth(640);
-    view->setAttribute(Qt::WA_DeleteOnClose);
-    view->show();
+    KUrl url(currentTab()->url());
+    bool isTempFile = false;
+    if (!url.isLocalFile())
+    {
+        KTemporaryFile sourceFile;
+
+        /// TODO: autochoose tempfile suffix
+        sourceFile.setSuffix(QString(".html"));
+        sourceFile.setAutoRemove(false);
+        
+        if (sourceFile.open())
+        {
+            QDataStream stream(&sourceFile);
+            stream << currentTab()->page()->mainFrame()->toHtml().toUtf8();
+            
+            url = KUrl();
+            url.setPath(sourceFile.fileName());
+            isTempFile = true;
+        }
+    }
+    KRun::runUrl(url, QLatin1String("text/plain"), this, isTempFile);
+}
+
 }
 
 
