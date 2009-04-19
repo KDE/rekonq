@@ -699,9 +699,11 @@ void MainWindow::slotToggleInspector(bool enable)
     if (enable)
     {
         int result = KMessageBox::questionYesNo(this,
-                                                i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
-                                                     "Do you want to reload all pages?"),
-                                                i18n("Web Inspector"));
+                        i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
+                                "Do you want to reload all pages?"),
+                        i18n("Web Inspector")
+                     );
+
         if (result == KMessageBox::Yes)
         {
             m_view->slotReloadAllTabs();
@@ -818,46 +820,26 @@ void MainWindow::slotShowMenubar(bool enable)
 
 bool MainWindow::queryClose()
 {
-    KConfig config("rekonqrc");
-    KConfigGroup group = config.group("Hand Settings");
-    bool doNotAskAgainResult = group.readEntry("ExitConfirmationDialog", false);
-
-    if(doNotAskAgainResult)
-        return true;
-
     if (m_view->count() > 1)
     {
-        KDialog *dialog = new KDialog(this, Qt::Dialog);
-        dialog->setCaption( i18n("Closing") );
-        dialog->setButtons(KDialog::Yes | KDialog::No | KDialog::Cancel );
-        dialog->setModal(true);
-        dialog->showButtonSeparator(true);
-        dialog->setButtonGuiItem(KDialog::Yes, KStandardGuiItem::quit());
-        dialog->setButtonGuiItem(KDialog::No, KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")));
-        dialog->setButtonGuiItem(KDialog::Cancel, KStandardGuiItem::cancel());
-        dialog->setDefaultButton(KDialog::Yes);
 
-        int ret = KMessageBox::createKMessageBox( dialog,
-                                                  QMessageBox::Warning,
-                                                  i18n("Are you sure you want to close the window?\nThere are %1 tab open" , m_view->count() ),
-                                                  QStringList(),
-                                                  i18n("Do not ask again"),
-                                                  &doNotAskAgainResult,
-                                                  KMessageBox::Notify
-                                                );                                 
+        int answer = KMessageBox::questionYesNoCancel( 
+                        this,
+                        i18n("Are you sure you want to close the window?\n" "You have %1 tab(s) open" , m_view->count()),
+                        i18n("Are you sure you want to close the window?"),
+                        KStandardGuiItem::quit(),
+                        KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
+                        KStandardGuiItem::cancel(),
+                        "confirmClosingMultipleTabs"
+                     );
 
-        if (doNotAskAgainResult) 
+        switch (answer) 
         {
-            group.writeEntry("ExitConfirmationDialog", true);
-        }
-
-        switch (ret) 
-        {
-            case KDialog::Yes:
+            case KMessageBox::Yes:
                 // Quit
                 return true;
                 break;
-            case KDialog::No:
+            case KMessageBox::No:
                 // Close only the current tab
                 m_view->slotCloseTab();
             default:
