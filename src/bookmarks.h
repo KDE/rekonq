@@ -22,54 +22,55 @@
 #ifndef BOOKMARKS_H
 #define BOOKMARKS_H
 
+// Qt Includes
+#include <QWidget>
 
 // KDE Includes
 #include <KBookmarkOwner>
-#include <KBookmarkManager>
-#include <KBookmarkMenu>
-#include <KUrl>
-#include <KMenu>
-#include <KActionCollection>
-#include <KMainWindow>
-
 
 // Forward Declarations
-class MainWindow;
+class BookmarkProvider;
+
+class KAction;
+class KActionCollection;
+class KActionMenu;
+class KUrl;
+class KToolBar;
+class KBookmarkManager;
 
 
 /**
- * Inherited from KBookmarkOwner, this class allows to manage
+ * Reimplementation of KBookmarkOwner, this class allows to manage
  * bookmarks as actions
  *
- * @author Andrea Diamantini <adjam7@gmail.com>
- * @since 4.x
  */
-class OwnBookMarks : public QObject , public KBookmarkOwner
+class BookmarkOwner : public QObject , public KBookmarkOwner
 {
     Q_OBJECT
 
 public:
 
     /**
-     * The class ctor.
+     * @short The class constructor.
      *
-     * @param parent the pointer to the browser mainwindow. We need it
-     *               to link bookmarks actions with the right window
-     *               where load url in
+     * @param parent the pointer parent Bookmark provider. We need it
+     *               to get pointer to MainWindow
      */
-    OwnBookMarks(KMainWindow *parent);
+    BookmarkOwner(QObject *parent=0);
+    virtual ~BookmarkOwner() {}
 
     /**
      * This function is called when a bookmark is selected and belongs to
      * the ancestor class.
-     * This method actually emits signal to load bookmark's url without
-     * considering mousebuttons or keyboard modifiers.
+     * This method actually emits signal to load bookmark's url.
      *
-     * @param b  the bookmark to open
-     * @param mb the mouse buttons clicked to select the bookmark
-     * @param km the keyboard modifiers pushed when the bookmark was selected
+     * @param bookmark          the bookmark to open
+     * @param mouseButtons      the mouse buttons clicked to select the bookmark
+     * @param keyboardModifiers the keyboard modifiers pushed when the bookmark was selected
      */
-    virtual void openBookmark(const KBookmark &b , Qt::MouseButtons mb, Qt::KeyboardModifiers km);
+    virtual void openBookmark(const KBookmark &bookmark, 
+                              Qt::MouseButtons mouseButtons, 
+                              Qt::KeyboardModifiers keyboardModifiers);
 
 
     /**
@@ -88,6 +89,11 @@ public:
      */
     virtual QString currentTitle() const;
 
+    /**
+    * This function returns whether the owner supports tabs.
+    */
+    virtual bool supportsTabs() const { return true; }
+
 signals:
     /**
      * This signal is emitted when an url has to be loaded
@@ -98,30 +104,36 @@ signals:
     void openUrl(const KUrl &);
 
 private:
-    // the MainWindow pointer
-    MainWindow *m_parent;
+
 };
 
-
 // ------------------------------------------------------------------------------
+
+
+#include <KBookmarkMenu>
 
 
 /**
  * This class represent the rekonq bookmarks menu.
  * It's just a simple class inherited from KBookmarkMenu
  *
- * @author Andrea Diamantini <adjam7@gmail.com>
- * @since 4.x
- *
  */
-class BookmarksMenu : public KBookmarkMenu
+class BookmarkMenu : public KBookmarkMenu
 {
     Q_OBJECT
 
 public:
-    BookmarksMenu(KBookmarkManager* manager, KBookmarkOwner* owner, KMenu* menu, KActionCollection* ac);
-
-    KMenu *viewContextMenu(QAction* action);
+    BookmarkMenu(KBookmarkManager* manager, 
+                 KBookmarkOwner* owner, 
+                 KMenu* menu, 
+                 KActionCollection* actionCollection);
+    ~BookmarkMenu();
+    
+    virtual KMenu *viewContextMenu(QAction* action);
+    
+protected slots:
+    void slotAddBookmark();
+        
 };
 
 
@@ -134,50 +146,82 @@ public:
  * from this class.
  * So it implements code to have each one
  *
- * @author Andrea Diamantini <adjam7@gmail.com>
- * @since 4.x
  *
  */
-class BookmarksProvider : public QObject
+class BookmarkProvider : public QWidget
 {
     Q_OBJECT
 
 public:
     /**
-     * Class constructor. Connect BookmarksProvider with bookmarks source
-     * (actually konqueror's bookmarks)
-     *
-     * @param parent The MainWindow to provide bookmarks objects
-     *
-     */
-    BookmarksProvider(KMainWindow* parent);
-
+    * @short Class constructor.
+    * Connect BookmarksProvider with bookmarks source
+    * (actually konqueror's bookmarks)
+    * @param parent The MainWindow to provide bookmarks objects
+    *
+    */
+    BookmarkProvider(QWidget* parent=0);
+    ~BookmarkProvider();
+    
     /**
-     * Customize bookmarks toolbar
-     *
-     * @param toolbar the toolbar to customize
-     */
-    void provideBmToolbar(KToolBar* toolbar);
-
-    /**
-     * Generate the Bookmarks Menu
-     *
+     * @short Get the Bookmarks Menu Action
      * @return the Bookmarks Menu
-     *
      */
-    KMenu *bookmarksMenu();
+    KActionMenu *bookmarkActionMenu();
+
+
+    /**
+    * @short Get the Bookmarks Toolbar Action
+    * @return the Bookmarks Toolbar Action
+    */
+    KAction *bookmarkToolBarAction();
+
+
+    /**
+     * @short Get action by name
+     * This method returns poiner bookmark action of given name.
+     * @pre m_actionCollection != NULL
+     * @param name Name of action you want to get
+     * @return It returns actions if one exists or empty object
+     */
+    QAction *actionByName(const QString &name);
+
+signals:
+    /**
+    * @short This signal is emitted when an url has to be loaded
+    *
+    * @param url the URL to load
+    */
+    void openUrl(const KUrl &url);
+
 
 public slots:
-    void contextMenu(const QPoint & point);
-    void slotBookmarksChanged(const QString &);
+    /**
+     * @short Opens the context menu on given position
+     * @param point Point on whitch you want to open this menu
+     */
+    void contextMenu(const QPoint &point);
+    
+    /**
+     * @short Waits for signal that the group with the address has been modified by the caller.
+     * Waits for signal that the group (or any of its children) with the address
+     * @p groupAddress (e.g. "/4/5") has been modified by the caller @p caller.
+     * 
+     * @param group bookmark group adress
+     * @param caller caller that modified the bookmarks
+     * @see  KBookmarkManager::changed
+     */
+    void slotBookmarksChanged(const QString &group, const QString &caller);
 
 private:
-    KMainWindow *m_parent;
-    OwnBookMarks *m_owner;
+    void setupToolBar();
+
     KBookmarkManager *m_manager;
-    KActionCollection *m_ac;
-    BookmarksMenu *m_bmMenu;
-    KToolBar *m_bmToolbar;
+    BookmarkOwner *m_owner;
+    KMenu *m_menu;
+    KActionCollection *m_actionCollection;
+    BookmarkMenu *m_bookmarkMenu;
+    KToolBar *m_bookmarkToolBar;
 };
 
 #endif
