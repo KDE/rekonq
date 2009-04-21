@@ -119,22 +119,16 @@ MainWindow::MainWindow()
     // then, setup our actions
     setupActions();
 
-    // add a status bar
-    statusBar()->show();
-
     // setting up toolbars: this has to be done BEFORE setupGUI!!
     setupToolBars();
 
-    // ----- BOOKMARKS MENU: this has to be done BEFORE setupGUI!!
-//     KAction *a = new KActionMenu(i18n("B&ookmarks"), this);
-//     actionCollection()->addAction(QLatin1String("bookmarks"), a);
-//     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
-//     a->setMenu(bmMenu);
-
+    // Bookmark Menu
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
     actionCollection()->addAction(QLatin1String("bookmarks"), bmMenu);
 
+    // Side Panel: this has to be done BEFORE setupGUI!!
     setupSidePanel();
+
     // a call to KXmlGuiWindow::setupGUI() populates the GUI
     // with actions, using KXMLGUI.
     // It also applies the saved mainwindow settings, if any, and ask the
@@ -145,14 +139,11 @@ MainWindow::MainWindow()
     // setup history menu: this has to be done AFTER setupGUI!!
     setupHistoryMenu();
 
-    // bookmarks bar: this has to be done AFTER setupGUI!!
-//     KToolBar *bmToolbar = toolBar("bookmarksToolBar");
-//     m_bookmarkProvider->provideBmToolbar(bmToolbar);
+    // add a status bar
+    statusBar()->show();
 
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
-
-
 }
 
 

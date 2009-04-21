@@ -49,6 +49,3 @@ SidePanel::~SidePanel()
     
     delete m_panelHistory;
 }
-
-
-

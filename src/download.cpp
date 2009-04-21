@@ -220,4 +220,3 @@ void Download::slotResult(KJob *job)
     // inform the world
     emit downloadFinished(job->error());
 }
-

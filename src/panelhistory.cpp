@@ -91,4 +91,3 @@ void PanelHistory::open()
         return;
     emit openUrl(index.data(HistoryModel::UrlRole).toUrl());
 }
-

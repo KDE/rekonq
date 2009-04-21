@@ -53,4 +53,3 @@ private slots:
 };
 
 #endif // SETTINGS_H
-

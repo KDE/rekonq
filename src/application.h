@@ -97,4 +97,3 @@ private:
 };
 
 #endif // APPLICATION_H
-

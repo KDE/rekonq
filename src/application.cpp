@@ -57,7 +57,6 @@ QPointer<BookmarkProvider> Application::s_bookmarkProvider;
 
 Application::Application()
     : KUniqueApplication()
-    , m_mainWindow(0)
 {
 }
 
@@ -210,4 +209,3 @@ KIcon Application::icon(const KUrl &url) const
     }
     return icon;
 }
-
