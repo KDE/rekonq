@@ -36,6 +36,7 @@
 #include "webview.h"
 #include "mainview.h"
 #include "bookmarks.h"
+#include "download.h"
 
 // KDE Includes
 #include <KUrl>
@@ -51,6 +52,7 @@
 #include <KMenu>
 #include <KGlobalSettings>
 #include <KPushButton>
+#include <KTemporaryFile>
 
 
 // Qt Includes
@@ -428,9 +430,7 @@ void MainWindow::slotOpenLocation()
 void MainWindow::slotFileSaveAs()
 {
     KUrl srcUrl = currentTab()->url();
-    QString destPath = KFileDialog::getSaveFileName();
-    KUrl destUrl = KUrl(destPath);
-    Application::instance()->downloadUrl(srcUrl, destUrl);
+    Application::downloadManager()->newDownload(srcUrl);
 }
 
 
@@ -492,6 +492,7 @@ void MainWindow::slotFileOpen()
 }
 
 
+// TODO: Port to KDE
 void MainWindow::slotFilePrintPreview()
 {
     if (!currentTab())
@@ -510,6 +511,7 @@ void MainWindow::slotFilePrint()
 }
 
 
+// TODO: Port to KDE
 void MainWindow::printRequested(QWebFrame *frame)
 {
     QPrinter printer;
@@ -682,8 +684,6 @@ void MainWindow::slotViewPageSource()
         }
     }
     KRun::runUrl(url, QLatin1String("text/plain"), this, isTempFile);
-}
-
 }
 
 

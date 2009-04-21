@@ -18,57 +18,113 @@
 *
 * ============================================================ */
 
+
 #ifndef DOWNLOAD_H
 #define DOWNLOAD_H
 
+// Auto Includes
+#include "rekonq.h"
+
 // KDE Includes
-#include <KUrl>
-#include <kio/job.h>
+#include <KIO/FileCopyJob>
 
 // Qt Includes
 #include <QObject>
-#include <QByteArray>
+
+// Forward Declarations
+class KJob;
+
+namespace KIO
+{
+    class Job;
+}
+
 
 /**
  * This class lets rekonq to download an object from the network.
  * Creating a new object, you can continue downloading a file also
  * when rekonq is closed.
  *
- * @author Lukas Appelhans <l.appelhans@gmx.de>
- * @author Andrea Diamantini <adjam7@gmail.com>
- *
  */
 class Download : public QObject
 {
     Q_OBJECT
+    
 public:
+    enum DownloadType { Save, Open };
+    
     /**
      * Class constructor. This is the unique method we need to
      * use this class. In fact Download class needs to know just
      * "where" catch the file to download and where it has to put it
      *
      * @param srcUrl the source url
-     *
      * @param destUrl the destination url
      *
      */
-    Download(const KUrl &srcUrl, const KUrl &destUrl);
+    Download(const KUrl &srcUrl, const KUrl &destUrl, DownloadType type);
 
     /**
      * class destructor
      */
     ~Download();
 
+    KUrl srcUrl() const { return m_srcUrl; }
+    KUrl destUrl() const { return m_destUrl; }
+    DownloadType type() const { return m_type; }
+    void cancel();
+
+signals:
+    void downloadFinished(int errorCode);
+
 private slots:
     void slotResult(KJob *job);
-    void slotData(KIO::Job *job, const QByteArray& data);
 
 private:
-    KIO::TransferJob *m_copyJob;
+    KIO::FileCopyJob *m_copyJob;
     KUrl m_srcUrl;
     KUrl m_destUrl;
     KUrl m_destFile;
     QByteArray m_data;
+    DownloadType m_type;
 };
+
+
+// ----------------------
+
+
+class DownloadManager : public QObject
+{
+    Q_OBJECT
+    
+public:
+    DownloadManager();
+    ~DownloadManager();
+    
+    /**
+    * @short Creates new download job.
+    * This method lets you to download a file from a remote source url
+    * to a local destination url.
+    *
+    * @param srcUrl the source url
+    * @param destUrl the destination url (default value is your default download destination setting)
+    *
+    */
+    void newDownload(const KUrl &srcUrl, const KUrl &destUrl = KUrl());
+
+    const QList<Download *> &downloads() const;
+    
+public slots:
+    void slotDownloadFinished(int errorCode);
+
+private:
+    KUrl downloadDestination(const QString &filename);
+    
+    QList<Download *> m_downloads;
+};
+
+
+//--
+
 
 #endif

@@ -194,7 +194,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         KUrl srcUrl = reply->url();
         QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
         KUrl destUrl = KUrl(path);
-        Application::instance()->downloadUrl(srcUrl, destUrl);
+        Application::downloadManager()->newDownload(srcUrl);
         return;
     }
 
@@ -387,7 +387,7 @@ void WebView::downloadRequested(const QNetworkRequest &request)
     KUrl srcUrl = request.url();
     QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
     KUrl destUrl = KUrl(path);
-    Application::instance()->downloadUrl(srcUrl, destUrl);
+    Application::downloadManager()->newDownload(srcUrl);
 }
 
 

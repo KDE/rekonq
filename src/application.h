@@ -19,8 +19,12 @@
 
 
 
-#ifndef REKONQ_APPLICATION_H
-#define REKONQ_APPLICATION_H
+#ifndef APPLICATION_H
+#define APPLICATION_H
+
+
+// Local Includes
+#include "download.h"
 
 // KDE Includes
 #include <KUniqueApplication>
@@ -31,12 +35,14 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
+
 // Forward Declarations
 class MainWindow;
 class WebView;
-class CookieJar;
 class HistoryManager;
+class CookieJar;
 class NetworkAccessManager;
+class DownloadManager;
 
 /**
   *
@@ -56,15 +62,10 @@ public:
 
     KIcon icon(const KUrl &url) const;
 
-    /**
-     * This method lets you to download a file from a source remote url
-     * to a local destination url.
-     */
-    void downloadUrl(const KUrl &srcUrl, const KUrl &destUrl);
-
     static HistoryManager *historyManager();
     static CookieJar *cookieJar();
     static NetworkAccessManager *networkAccessManager();
+    static DownloadManager *downloadManager();
 
 private slots:
 
@@ -77,9 +78,10 @@ private slots:
 private:
     static HistoryManager *s_historyManager;
     static NetworkAccessManager *s_networkAccessManager;
+    static DownloadManager *s_downloadManager;
 
     MainWindow* m_mainWindow;
 };
 
-#endif // REKONQ_APPLICATION_H
+#endif // APPLICATION_H
 

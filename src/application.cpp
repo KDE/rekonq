@@ -50,7 +50,7 @@
 
 HistoryManager *Application::s_historyManager = 0;
 NetworkAccessManager *Application::s_networkAccessManager = 0;
-
+DownloadManager *Application::s_downloadManager = 0;
 
 Application::Application()
         : KUniqueApplication()
@@ -67,6 +67,7 @@ Application::Application()
 
 Application::~Application()
 {
+    delete s_downloadManager;
     delete s_networkAccessManager;
     delete s_historyManager;
 }
@@ -117,12 +118,6 @@ void Application::postLaunch()
 }
 
 
-void Application::downloadUrl(const KUrl &srcUrl, const KUrl &destUrl)
-{
-    new Download(srcUrl, destUrl);
-}
-
-
 void Application::openUrl(const KUrl &url)
 {
     mainWindow()->loadUrl(url);
@@ -166,6 +161,16 @@ HistoryManager *Application::historyManager()
         QWebHistoryInterface::setDefaultInterface(s_historyManager);
     }
     return s_historyManager;
+}
+
+
+DownloadManager *Application::downloadManager()
+{
+    if (!s_downloadManager) 
+    {
+        s_downloadManager = new DownloadManager();
+    }
+    return s_downloadManager;
 }
 
 

@@ -17,6 +17,9 @@
     <entry name="downloadDir" type="Path">
         <default>$HOME</default>
     </entry>
+    <entry name="downloadToDefaultDir" type="Bool">
+        <default>false</default>
+    </entry>
     <entry name="alwaysShowTabBar" type="Bool">
         <default>true</default>
     </entry>
