@@ -438,7 +438,7 @@ void MainView::windowCloseRequested()
     {
         if (count() == 1)
         {
-            webView->webPage()->mainWindow()->close();
+            Application::instance()->mainWindow()->close();
         }
         else
         {
@@ -575,7 +575,7 @@ void MainView::webViewTitleChanged(const QString &title)
     {
         emit setCurrentTitle(tabTitle);
     }
-    Application::historyManager()->updateHistoryItem(webView->url(), tabTitle);
+    Application::historyManager()->updateHistoryEntry(webView->url(), tabTitle);
 }
 
 
