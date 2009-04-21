@@ -22,6 +22,8 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+// Qt Includes
+#include <QPointer>
 
 // KDE Includes
 #include <KUniqueApplication>
@@ -69,6 +71,14 @@ public:
     static DownloadManager *downloadManager();
     static BookmarkProvider *bookmarkProvider();
 
+public slots:
+    /**
+     * Save application's configuration
+     * @see ReKonfig::self()->writeConfig();
+     */
+    void slotSaveConfiguration() const;
+    
+
 private slots:
 
     /**
@@ -78,12 +88,12 @@ private slots:
     void openUrl(const KUrl &url);
 
 private:
-    static HistoryManager *s_historyManager;
-    static NetworkAccessManager *s_networkAccessManager;
-    static DownloadManager *s_downloadManager;
-    static BookmarkProvider *s_bookmarkProvider;
+    static QPointer<HistoryManager> s_historyManager;
+    static QPointer<NetworkAccessManager> s_networkAccessManager;
+    static QPointer<DownloadManager> s_downloadManager;
+    static QPointer<BookmarkProvider> s_bookmarkProvider;
 
-    MainWindow* m_mainWindow;
+    QPointer<MainWindow> m_mainWindow;
 };
 
 #endif // APPLICATION_H

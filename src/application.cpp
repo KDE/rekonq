@@ -48,28 +48,24 @@
 #include <QtWebKit>
 
 
-HistoryManager *Application::s_historyManager = 0;
-NetworkAccessManager *Application::s_networkAccessManager = 0;
-DownloadManager *Application::s_downloadManager = 0;
-BookmarkProvider *Application::s_bookmarkProvider = 0;
+QPointer<HistoryManager> Application::s_historyManager;
+QPointer<NetworkAccessManager> Application::s_networkAccessManager;
+QPointer<DownloadManager> Application::s_downloadManager;
+QPointer<BookmarkProvider> Application::s_bookmarkProvider;
+
 
 
 Application::Application()
-        : KUniqueApplication()
+    : KUniqueApplication()
+    , m_mainWindow(0)
 {
-    m_mainWindow = new MainWindow();
-    m_mainWindow->setObjectName("MainWindow");
-    setWindowIcon(KIcon("rekonq"));
-
-    m_mainWindow->show();
-
-    QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
 
 Application::~Application()
 {
-    delete s_downloadManager;
+    delete m_mainWindow;
+    delete s_bookmarkProvider;
     delete s_networkAccessManager;
     delete s_historyManager;
 }
@@ -79,6 +75,18 @@ int Application::newInstance()
 {
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+
+    if (!m_mainWindow)
+    {
+        m_mainWindow = new MainWindow();
+        
+        m_mainWindow->setObjectName("MainWindow");
+        setWindowIcon(KIcon("rekonq"));
+        
+        m_mainWindow->show();
+        
+        QTimer::singleShot(0, this, SLOT(postLaunch()));
+    }
 
     if (args->count() > 0)
     {
@@ -117,6 +125,13 @@ void Application::postLaunch()
     QWebSettings::setIconDatabasePath(directory);
 
     Application::historyManager();
+}
+
+
+
+void Application::slotSaveConfiguration() const
+{
+    ReKonfig::self()->writeConfig();
 }
 
 

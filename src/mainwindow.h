@@ -24,21 +24,27 @@
 #define MAINWINDOW_H
 
 // Local Includes
-#include "findbar.h"
 #include "searchbar.h"
 #include "bookmarks.h"
 #include "mainview.h"
+#include "webview.h"
 
 // KDE Includes
 #include <KXmlGuiWindow>
-#include <KIcon>
-#include <KAction>
 #include <KToolBar>
-#include <KMenu>
 
 // Forward Declarations
-class KUrl;
 class QWebFrame;
+
+class KUrl;
+class KAction;
+class KActionMenu;
+class KIcon;
+class KMenu;
+
+class FindBar;
+class HistoryMenu;
+class SidePanel;
 class WebView;
 
 
@@ -65,6 +71,8 @@ private:
     void setupActions();
     void setupHistoryMenu();
     void setupToolBars();
+    void setupSidePanel();
+    SidePanel *sidePanel() { return m_sidePanel; }
 
 public slots:
     void slotHome();
@@ -134,6 +142,7 @@ private:
     MainView *m_view;
     FindBar *m_findBar;
     SearchBar *m_searchBar;
+    SidePanel *m_sidePanel;
 };
 
 #endif // MAINWINDOW_H

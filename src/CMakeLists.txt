@@ -18,6 +18,8 @@ SET( rekonq_SRCS
     settings.cpp
     webview.cpp 
     main.cpp
+    sidepanel.cpp
+    panelhistory.cpp
 )
 
 KDE4_ADD_UI_FILES( rekonq_SRCS

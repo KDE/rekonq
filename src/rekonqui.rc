@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="37">
+<gui name="rekonq" version="38">
 
 <MenuBar>
 
@@ -63,6 +63,10 @@
 <!--  ============ SETTINGS menu =========== -->
 <Menu name="settings" noMerge="1"><text>&amp;Settings</text>
     <Action name="options_show_menubar" />
+    <Merge/>
+    <Menu name="side_panels"><text>Side &amp;Panels</text>
+        <Action name="show_history_panel" />
+    </Menu>
     <Action name="options_show_statusbar" />
     <Merge name="StandardToolBarMenuHandler" />
     <Separator/>

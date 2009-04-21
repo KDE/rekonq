@@ -100,6 +100,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_showSideBar">
+        <property name="text">
+         <string>Show side panel</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

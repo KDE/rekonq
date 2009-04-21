@@ -37,6 +37,8 @@
 #include "mainview.h"
 #include "bookmarks.h"
 #include "download.h"
+#include "findbar.h"
+#include "sidepanel.h"
 
 // KDE Includes
 #include <KUrl>
@@ -66,6 +68,7 @@ MainWindow::MainWindow()
         , m_view(new MainView(this))
         , m_findBar(new FindBar(this))
         , m_searchBar(new SearchBar(this))
+        , m_sidePanel(0)
 {
     // accept dnd
     setAcceptDrops(true);
@@ -73,18 +76,22 @@ MainWindow::MainWindow()
     // updating rekonq configuration
     slotUpdateConfiguration();
 
-    // creating a centralWidget containing m_view and the hidden findbar
+    // creating a centralWidget containing panel, m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
+    centralWidget->setContentsMargins(0, 0, 0, 0);
+
+    // setting layout
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_view);
+    layout->addWidget(m_findBar);
+    centralWidget->setLayout(layout);
+
+    // central widget
+    setCentralWidget(centralWidget);
 
     // Adding Find Bar
     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
-    layout->addWidget(m_findBar);
-
-    centralWidget->setLayout(layout);
-    setCentralWidget(centralWidget);
 
     // setting size policies
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -127,6 +134,7 @@ MainWindow::MainWindow()
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
     actionCollection()->addAction(QLatin1String("bookmarks"), bmMenu);
 
+    setupSidePanel();
     // a call to KXmlGuiWindow::setupGUI() populates the GUI
     // with actions, using KXMLGUI.
     // It also applies the saved mainwindow settings, if any, and ask the
@@ -143,6 +151,8 @@ MainWindow::MainWindow()
 
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
+
+
 }
 
 
@@ -301,6 +311,28 @@ void MainWindow::setupActions()
     a->setWhatsThis(i18n( "<html>Clear Location bar<br /><br />"
                            "Clears the contents of the location bar.</html>" ));
 
+}
+
+
+void MainWindow::setupSidePanel()
+{
+    // Setup history side panel
+    m_sidePanel = new SidePanel(i18n("History"), this);
+    connect(m_sidePanel, SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
+    connect(m_sidePanel, SIGNAL(destroyed()), Application::instance(), SLOT(slotSaveConfiguration()));
+    
+    addDockWidget(Qt::LeftDockWidgetArea, m_sidePanel);
+    
+    // setup side panel actions
+    KAction* a = new KAction(this);
+    a->setText(i18n("History"));
+    a->setCheckable(true);
+    a->setChecked(ReKonfig::showSideBar());
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
+    actionCollection()->addAction(QLatin1String("show_history_panel"), a);
+    
+    // connect to toogle action
+    connect(a, SIGNAL(triggered(bool)), m_sidePanel->toggleViewAction(), SLOT(trigger()));
 }
 
 

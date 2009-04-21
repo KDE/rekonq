@@ -87,20 +87,6 @@ QString BookmarkOwner::currentTitle() const
 }
 
 
-// QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
-// {
-//     QList< QPair<QString, QString> > list;
-//     QList<WebView *> tabs = Application::instance()->mainWindow()->mainView()->tabs();
-//     foreach(WebView *tab, tabs)
-//     {
-//         QString url = tab->url().url();
-//         QString title = tab->title();
-//         list.append(QPair<QString, QString>(url, title));
-//     }
-//     return list;
-// }
-
-
 // ------------------------------------------------------------------------------------------------------
 
 
@@ -149,12 +135,12 @@ void BookmarkMenu::slotAddBookmark()
 
 BookmarkProvider::BookmarkProvider(QWidget *parent)
         : QWidget(parent)
-        , m_manager(NULL)
-        , m_owner(NULL)
+        , m_manager(0)
+        , m_owner(0)
         , m_menu(new KMenu(this))
         , m_actionCollection(new KActionCollection(this))
-        , m_bookmarkMenu(NULL)
-        , m_bookmarkToolBar(NULL)
+        , m_bookmarkMenu(0)
+        , m_bookmarkToolBar(0)
 {
     KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");  // share konqueror bookmarks
 
@@ -184,8 +170,8 @@ BookmarkProvider::BookmarkProvider(QWidget *parent)
 
     // setup toolbar
     setupToolBar();
-
 }
+
 
 BookmarkProvider::~BookmarkProvider()
 {
