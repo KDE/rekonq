@@ -41,16 +41,17 @@ int main(int argc, char **argv)
                      version,
                      ki18n(description),
                      KAboutData::License_GPL_V3,
-                     ki18n("(C) 2008 Andrea Diamantini"),
+                     ki18n("(C) 2009 rekonq team"),
                      KLocalizedString(),
                      "http://rekonq.sourceforge.net",
-                     "adjam7@gmail.com"
+                     "rekonq@kde.org"
                     );
 
-    about.addAuthor(ki18n("Andrea Diamantini"),
-                    KLocalizedString(),
-                    "adjam7@gmail.com"
-                   );
+    // about authors
+    about.addAuthor(ki18n("Andrea Diamantini"), 
+                    ki18n("Project Lead, Developer, Italian translations"), 
+                    "adjam7@gmail.com", 
+                    "http://www.adjam.org");
 
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
