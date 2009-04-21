@@ -58,6 +58,7 @@ public:
     static KUrl guessUrlFromString(const QString &url);
     MainView *mainView() const;
     WebView *currentTab() const;
+    QAction *actionByName(const QString name);
     virtual QSize sizeHint() const;
 
 private:
@@ -131,7 +132,6 @@ private:
     QString m_homePage;
 
     MainView *m_view;
-    BookmarksProvider *m_bookmarksProvider;
     FindBar *m_findBar;
     SearchBar *m_searchBar;
 };

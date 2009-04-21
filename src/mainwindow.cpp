@@ -64,7 +64,6 @@
 MainWindow::MainWindow()
         : KXmlGuiWindow()
         , m_view(new MainView(this))
-        , m_bookmarksProvider(new BookmarksProvider(this))
         , m_findBar(new FindBar(this))
         , m_searchBar(new SearchBar(this))
 {
@@ -120,10 +119,13 @@ MainWindow::MainWindow()
     setupToolBars();
 
     // ----- BOOKMARKS MENU: this has to be done BEFORE setupGUI!!
-    KAction *a = new KActionMenu(i18n("B&ookmarks"), this);
-    actionCollection()->addAction(QLatin1String("bookmarks"), a);
-    KMenu *bmMenu = m_bookmarksProvider->bookmarksMenu();
-    a->setMenu(bmMenu);
+//     KAction *a = new KActionMenu(i18n("B&ookmarks"), this);
+//     actionCollection()->addAction(QLatin1String("bookmarks"), a);
+//     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
+//     a->setMenu(bmMenu);
+
+    KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
+    actionCollection()->addAction(QLatin1String("bookmarks"), bmMenu);
 
     // a call to KXmlGuiWindow::setupGUI() populates the GUI
     // with actions, using KXMLGUI.
@@ -136,8 +138,8 @@ MainWindow::MainWindow()
     setupHistoryMenu();
 
     // bookmarks bar: this has to be done AFTER setupGUI!!
-    KToolBar *bmToolbar = toolBar("bookmarksToolBar");
-    m_bookmarksProvider->provideBmToolbar(bmToolbar);
+//     KToolBar *bmToolbar = toolBar("bookmarksToolBar");
+//     m_bookmarkProvider->provideBmToolbar(bmToolbar);
 
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -174,6 +176,10 @@ void MainWindow::setupToolBars()
     a->setDefaultWidget(m_searchBar);
     connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     actionCollection()->addAction(QLatin1String("search_bar"), a);
+
+    // bookmarks bar
+    KAction *bookmarkBarAction = Application::bookmarkProvider()->bookmarkToolBarAction();
+    a = actionCollection()->addAction(QLatin1String("bookmarks_bar"), bookmarkBarAction);
 }
 
 
@@ -304,7 +310,16 @@ void MainWindow::setupHistoryMenu()
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_view, SLOT(loadUrlInCurrentTab(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle(i18n("&History"));
+
+    // setting history menu position
     menuBar()->insertMenu(actionCollection()->action("bookmarks"), historyMenu);
+
+    // setting initial actions
+    QList<QAction*> historyActions;
+    historyActions.append(actionCollection()->action("history_back"));
+    historyActions.append(actionCollection()->action("history_forward"));
+    historyActions.append(m_view->recentlyClosedTabsAction());
+    historyMenu->setInitialActions(historyActions);
 }
 
 
@@ -856,5 +871,19 @@ void MainWindow::slotClearLocationBar()
     QLineEdit *lineEdit = m_view->currentLineEdit();
     lineEdit->clear();
     lineEdit->setFocus();
+}
+
+
+QAction *MainWindow::actionByName(const QString name)
+{
+    QAction *ret = actionCollection()->action(name);
+
+    if (ret)
+        return ret;
+
+    /* else */
+    kWarning() << "Action named: " << name << " not found, returning empty action.";
+
+    return new QAction(this);  // return empty object instead of NULL pointer
 }
 
