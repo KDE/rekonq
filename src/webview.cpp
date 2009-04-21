@@ -32,10 +32,14 @@
 #include "mainview.h"
 #include "cookiejar.h"
 #include "networkaccessmanager.h"
+#include "download.h"
+#include "history.h"
+
 
 // KDE Includes
 #include <KStandardDirs>
 #include <KUrl>
+#include <KActionCollection>
 #include <KDebug>
 
 // Qt Includes
@@ -58,19 +62,6 @@ WebPage::WebPage(QObject *parent)
 
 WebPage::~WebPage()
 {
-}
-
-
-MainWindow *WebPage::mainWindow()
-{
-    QObject *w = this->parent();
-    while (w)
-    {
-        if (MainWindow *mw = qobject_cast<MainWindow*>(w))
-            return mw;
-        w = w->parent();
-    }
-    return Application::instance()->mainWindow();
 }
 
 
@@ -153,8 +144,9 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
     {
+        // FIXME
         kWarning() << "trying QWebView here ---------------------------------------";
-        QWebView *w = new QWebView;
+        QWebView *w = new QWebView();
         return w->page();
     }
 
@@ -166,7 +158,7 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     if (m_openInNewTab)
     {
         m_openInNewTab = false;
-        return mainWindow()->mainView()->newWebView()->page();
+        return Application::instance()->mainWindow()->mainView()->newWebView()->page();
     }
 
     MainWindow *mainWindow = Application::instance()->mainWindow();
@@ -198,11 +190,15 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         return;
     }
 
-    QString myfilestr =  KStandardDirs::locate("data", "rekonq/htmls/notfound.html");
-    QFile file(myfilestr);
+    // display "not found" page
+    QString notfoundFilePath =  KStandardDirs::locate("data", "rekonq/htmls/notfound.html");
+    QFile file(notfoundFilePath);
     bool isOpened = file.open(QIODevice::ReadOnly);
-    Q_ASSERT(isOpened);
-
+    if (!isOpened)
+    {
+        kWarning() << "Couldn't open the notfound.html file";
+        return;
+    }
     QString title = i18n("Error loading page: ") + reply->url().toString();
 
     QString imagePath = KIconLoader::global()->iconPath("rekonq", KIconLoader::NoGroup, false);
@@ -217,19 +213,21 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     frames.append(mainFrame());
     while (!frames.isEmpty())
     {
-        QWebFrame *frame = frames.takeFirst();
-        if (frame->url() == reply->url())
+        QWebFrame *firstFrame = frames.takeFirst();
+        if (firstFrame->url() == reply->url())
         {
-            frame->setHtml(html, reply->url());
+            firstFrame->setHtml(html, reply->url());
             return;
         }
-        QList<QWebFrame *> children = frame->childFrames();
+        QList<QWebFrame *> children = firstFrame->childFrames();
         foreach(QWebFrame *frame, children)
         frames.append(frame);
     }
     if (m_loadingUrl == reply->url())
     {
         mainFrame()->setHtml(html, reply->url());
+        // Don't put error pages to the history.
+        Application::historyManager()->removeHistoryEntry(reply->url(), mainFrame()->title());
     }
 }
 
@@ -239,8 +237,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
 WebView::WebView(QWidget* parent)
         : QWebView(parent)
-        , m_progress(0)
+        , m_webActionCollection(new KActionCollection(this))
         , m_page(new WebPage(this))
+        , m_progress(0)
 {
     setPage(m_page);
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
@@ -249,34 +248,116 @@ WebView::WebView(QWidget* parent)
     connect(page(), SIGNAL(loadingUrl(const QUrl&)),  this, SIGNAL(urlChanged(const QUrl &)));
     connect(page(), SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequested(const QNetworkRequest &)));
     page()->setForwardUnsupportedContent(true);
+
+    fillWebActions();
 }
 
 
-// TODO : improve and KDE-ize this menu
-// 1. Add link to bookmarks
-// 2. Add "save link as" action
+void WebView::fillWebActions()
+{
+
+    QAction *a;
+
+    a = new KAction(KIcon("tab-new"), i18n("Open Link in New &Tab"), this);
+    connect(a, SIGNAL(triggered()), this, SLOT(openLinkInNewTab()) );
+    m_webActionCollection->addAction( QLatin1String("open_link_in_new_tab"), a);
+    
+    a = pageAction(QWebPage::Cut);
+    a->setIcon(KIcon("edit-cut"));
+    a->setText(i18n("Cu&t"));
+    m_webActionCollection->addAction( QLatin1String("edit_cut"), a);
+    
+    a = pageAction(QWebPage::Copy);
+    a->setIcon(KIcon("edit-copy"));
+    a->setText(i18n("&Copy"));
+    m_webActionCollection->addAction( QLatin1String("edit_copy"), a );
+    
+    a = pageAction(QWebPage::Paste);
+    a->setIcon(KIcon("edit-paste"));
+    a->setText(i18n("&Paste"));
+    m_webActionCollection->addAction( QLatin1String("edit_paste"), a );
+    
+    a = pageAction(QWebPage::DownloadImageToDisk);
+    a->setIcon(KIcon("folder-image"));
+    a->setText(i18n("&Save Image As..."));
+    m_webActionCollection->addAction( QLatin1String("save_image_as"), a );
+    
+    a = pageAction(QWebPage::CopyImageToClipboard);
+    a->setIcon(KIcon("insert-image"));
+    a->setText(i18n("&Copy This Image"));
+    m_webActionCollection->addAction( QLatin1String("copy_this_image"), a);
+
+    a = pageAction(QWebPage::DownloadLinkToDisk);
+    a->setIcon(KIcon("folder-downloads"));
+    a->setText(i18n("&Save Link As..."));
+    m_webActionCollection->addAction( QLatin1String("save_link_as"), a);
+    
+    a = pageAction(QWebPage::CopyLinkToClipboard);
+    a->setIcon(KIcon("insert-link"));
+    a->setText(i18n("&Copy Link Location"));
+    m_webActionCollection->addAction( QLatin1String("copy_link_location"), a);
+}
+
+
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
-    QWebHitTestResult r = page()->mainFrame()->hitTestContent(event->pos());
-    if (!r.linkUrl().isEmpty())
+    QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
+    MainWindow *mainwindow = Application::instance()->mainWindow();
+    
+    QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("add_bookmark_payload");
+    addBookmarkAction->setText(i18n("Bookmark This Page"));
+    addBookmarkAction->setData(QVariant());
+    KMenu menu(this);
+    
+    bool linkIsEmpty = result.linkUrl().isEmpty();
+    if (!linkIsEmpty)
     {
-        KMenu menu(this);
-        KAction *a = new KAction(KIcon("tab-new"), i18n("Open in New Tab"), this);
-        connect(a, SIGNAL(triggered()), this , SLOT(openLinkInNewTab()));
-        menu.addAction(a);
-        menu.addSeparator();
-        menu.addAction(pageAction(QWebPage::DownloadLinkToDisk));
-        // Add link to bookmarks...
-        menu.addSeparator();
-        menu.addAction(pageAction(QWebPage::CopyLinkToClipboard));
-        if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
-        {
-            menu.addAction(pageAction(QWebPage::InspectElement));
-        }
-        menu.exec(mapToGlobal(event->pos()));
-        return;
+        menu.addAction( m_webActionCollection->action("open_link_in_new_tab") );
     }
-    QWebView::contextMenuEvent(event);
+    else
+    {
+        menu.addAction(mainwindow->actionByName("new_tab"));
+    }
+
+    menu.addAction(mainwindow->actionByName("view_redisplay"));
+    menu.addSeparator();
+    menu.addAction(mainwindow->actionByName("history_back"));
+    menu.addAction(mainwindow->actionByName("history_forward"));
+    menu.addSeparator();
+
+    if (result.isContentSelected() && result.isContentEditable())
+    {
+        menu.addAction( m_webActionCollection->action("edit_cut") );
+    }
+
+    if (result.isContentSelected())
+    {
+        menu.addAction( m_webActionCollection->action("edit_copy") );
+    }
+
+    if (result.isContentEditable())
+    {
+        menu.addAction( m_webActionCollection->action("edit_paste") );
+    }
+
+    if (!linkIsEmpty)
+    {
+        menu.addSeparator();
+        if (!result.pixmap().isNull())
+        {
+            // TODO Add "View Image"
+            menu.addAction( m_webActionCollection->action("save_image_as") );
+            menu.addAction( m_webActionCollection->action("copy_this_image") );
+        }
+        menu.addAction( m_webActionCollection->action("save_link_as") );
+        menu.addAction( m_webActionCollection->action("copy_link_location") );
+        addBookmarkAction->setData(result.linkUrl());
+        addBookmarkAction->setText(i18n("&Bookmark This Link"));
+    }
+    menu.addSeparator();
+    
+    menu.addAction(addBookmarkAction);
+    menu.exec(mapToGlobal(event->pos()));
 }
 
 
@@ -298,12 +379,6 @@ void WebView::openLinkInNewTab()
 {
     m_page->m_openInNewTab = true;
     pageAction(QWebPage::OpenLinkInNewWindow)->trigger();
-}
-
-
-void WebView::setProgress(int progress)
-{
-    m_progress = progress;
 }
 
 
@@ -337,12 +412,6 @@ void WebView::loadUrl(const KUrl &url)
 }
 
 
-QString WebView::lastStatusBarText() const
-{
-    return m_statusBarText;
-}
-
-
 KUrl WebView::url() const
 {
     KUrl url = QWebView::url();
@@ -373,12 +442,6 @@ void WebView::mouseReleaseEvent(QMouseEvent *event)
             setUrl(url);
         }
     }
-}
-
-
-void WebView::setStatusBarText(const QString &string)
-{
-    m_statusBarText = string;
 }
 
 

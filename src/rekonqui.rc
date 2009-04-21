@@ -51,7 +51,8 @@
 </Menu>
 
 <!--  ============ BOOKMARKS menu =========== -->
-<Action name="bookmarks" />
+<Action name="bookmarks" ><text>&amp;Bookmarks</text>
+</Action>
 
 <!--  ============ TOOLS menu =========== -->
 <Menu name="tools" noMerge="1"><text>&amp;Tools</text>

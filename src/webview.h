@@ -30,6 +30,9 @@
 
 // Forward Declarations
 class MainWindow;
+class Application;
+
+class KActionCollection;
 
 class QWebFrame;
 class QAuthenticator;
@@ -50,12 +53,16 @@ public:
     WebPage(QObject *parent = 0);
     ~WebPage();
 
-    MainWindow *mainWindow();
-
 protected:
-    bool acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type);
+    bool acceptNavigationRequest(QWebFrame *frame, 
+                                 const QNetworkRequest &request, 
+                                 NavigationType type);
+                                 
     QWebPage *createWindow(QWebPage::WebWindowType type);
-    QObject *createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues);
+    QObject *createPlugin(const QString &classId, 
+                          const QUrl &url, 
+                          const QStringList &paramNames, 
+                          const QStringList &paramValues);
 
 private slots:
     void handleUnsupportedContent(QNetworkReply *reply);
@@ -71,7 +78,7 @@ private:
 };
 
 
-// ---------------------------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
 
 // Qt Includes
 #include <QWebView>
@@ -83,19 +90,15 @@ class WebView : public QWebView
 
 public:
     WebView(QWidget *parent = 0);
-    WebPage *webPage() const
-    {
-        return m_page;
-    }
-
+    WebPage *webPage() const { return m_page; }
+    
+    KActionCollection* actionCollection() const { return m_webActionCollection; }
+ 
     void loadUrl(const KUrl &url);
     KUrl url() const;
 
-    QString lastStatusBarText() const;
-    inline int progress() const
-    {
-        return m_progress;
-    }
+    QString lastStatusBarText() const { return m_statusBarText; }
+    int progress() const { return m_progress; }
 
 signals:
     // switching tabs
@@ -115,17 +118,21 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
-    void setProgress(int progress);
+    void setProgress(int progress) { m_progress = progress; }
     void loadFinished();
-    void setStatusBarText(const QString &string);
+    void setStatusBarText(const QString &string) { m_statusBarText = string; }
     void downloadRequested(const QNetworkRequest &request);
     void openLinkInNewTab();
 
 private:
+    KActionCollection *m_webActionCollection;
+    void fillWebActions();
+        
+    WebPage *m_page;
+    
+    int m_progress;
     QString m_statusBarText;
     KUrl m_initialUrl;
-    int m_progress;
-    WebPage *m_page;
 };
 
 #endif
