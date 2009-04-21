@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
+* Copyright (C) 2009 rekonq team. Please, see AUTHORS file for details
 *
 *
 * This program is free software; you can redistribute it
