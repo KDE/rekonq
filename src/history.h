@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
+* Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
 * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
@@ -96,8 +97,8 @@ public:
 
     bool historyContains(const QString &url) const;
     void addHistoryEntry(const QString &url);
-
-    void updateHistoryItem(const KUrl &url, const QString &title);
+    void updateHistoryEntry(const KUrl &url, const QString &title);
+    void removeHistoryEntry(const KUrl &url, const QString &title = QString());
 
     int historyLimit() const;
     void setHistoryLimit(int limit);
@@ -119,7 +120,8 @@ private slots:
     void checkForExpired();
 
 protected:
-    void addHistoryItem(const HistoryItem &item);
+    void addHistoryEntry(const HistoryItem &item);
+    void removeHistoryEntry(const HistoryItem &item);
 
 private:
     void load();

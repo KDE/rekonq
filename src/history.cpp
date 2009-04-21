@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
+* Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
 * Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
@@ -92,7 +93,7 @@ void HistoryManager::addHistoryEntry(const QString &url)
     cleanUrl.setPassword(QString());
     cleanUrl.setHost(cleanUrl.host().toLower());
     HistoryItem item(cleanUrl.toString(), QDateTime::currentDateTime());
-    addHistoryItem(item);
+    addHistoryEntry(item);
 }
 
 
@@ -171,7 +172,7 @@ void HistoryManager::checkForExpired()
 }
 
 
-void HistoryManager::addHistoryItem(const HistoryItem &item)
+void HistoryManager::addHistoryEntry(const HistoryItem &item)
 {
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
@@ -184,7 +185,7 @@ void HistoryManager::addHistoryItem(const HistoryItem &item)
 }
 
 
-void HistoryManager::updateHistoryItem(const KUrl &url, const QString &title)
+void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
 {
     for (int i = 0; i < m_history.count(); ++i)
     {
@@ -195,6 +196,28 @@ void HistoryManager::updateHistoryItem(const KUrl &url, const QString &title)
             if (m_lastSavedUrl.isEmpty())
                 m_lastSavedUrl = m_history.at(i).url;
             emit entryUpdated(i);
+            break;
+        }
+    }
+}
+
+
+void HistoryManager::removeHistoryEntry(const HistoryItem &item)
+{
+    m_lastSavedUrl.clear();
+    m_history.removeOne(item);
+    emit entryRemoved(item);
+}
+
+
+void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
+{
+    for (int i = 0; i < m_history.count(); ++i) 
+    {
+        if (url == m_history.at(i).url
+            && (title.isEmpty() || title == m_history.at(i).title)) 
+        {
+            removeHistoryEntry(m_history.at(i));
             break;
         }
     }
@@ -1154,7 +1177,7 @@ QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
             }
             if (index.column() == 1)
             {
-                return QString(rowCount(index.sibling(index.row(), 0))) + i18n(" items") ;
+                return QString::number(rowCount(index.sibling(index.row(), 0))) + i18n(" items") ;
             }
         }
     }
@@ -1382,7 +1405,11 @@ QModelIndex HistoryTreeModel::mapFromSource(const QModelIndex &sourceIndex) cons
     it = qLowerBound(m_sourceRowCache.begin(), m_sourceRowCache.end(), sourceIndex.row());
     if (*it != sourceIndex.row())
         --it;
+
     int dateRow = qMax(0, it - m_sourceRowCache.begin());
+    // FIXME fix crach on history submenu open. BUG:'ASSERT failure in QList<T>::at: "index out of range"'
+    //       it crashes when dateRow == 1
+    // kDebug() << m_sourceRowCache << dateRow;
     int row = sourceIndex.row() - m_sourceRowCache.at(dateRow);
     return createIndex(row, sourceIndex.column(), dateRow + 1);
 }
