@@ -51,6 +51,8 @@
 HistoryManager *Application::s_historyManager = 0;
 NetworkAccessManager *Application::s_networkAccessManager = 0;
 DownloadManager *Application::s_downloadManager = 0;
+BookmarkProvider *Application::s_bookmarkProvider = 0;
+
 
 Application::Application()
         : KUniqueApplication()
@@ -171,6 +173,16 @@ DownloadManager *Application::downloadManager()
         s_downloadManager = new DownloadManager();
     }
     return s_downloadManager;
+}
+
+
+BookmarkProvider *Application::bookmarkProvider()
+{
+    if (!s_bookmarkProvider)
+    {
+        s_bookmarkProvider = new BookmarkProvider();
+    }
+    return s_bookmarkProvider;
 }
 
 

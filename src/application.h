@@ -23,9 +23,6 @@
 #define APPLICATION_H
 
 
-// Local Includes
-#include "download.h"
-
 // KDE Includes
 #include <KUniqueApplication>
 #include <KCmdLineArgs>
@@ -37,12 +34,16 @@
 
 
 // Forward Declarations
-class MainWindow;
-class WebView;
-class HistoryManager;
+class KIcon;
+class KUrl;
+class BookmarkProvider;
 class CookieJar;
-class NetworkAccessManager;
 class DownloadManager;
+class HistoryManager;
+class MainWindow;
+class NetworkAccessManager;
+class WebView;
+
 
 /**
   *
@@ -66,6 +67,7 @@ public:
     static CookieJar *cookieJar();
     static NetworkAccessManager *networkAccessManager();
     static DownloadManager *downloadManager();
+    static BookmarkProvider *bookmarkProvider();
 
 private slots:
 
@@ -79,6 +81,7 @@ private:
     static HistoryManager *s_historyManager;
     static NetworkAccessManager *s_networkAccessManager;
     static DownloadManager *s_downloadManager;
+    static BookmarkProvider *s_bookmarkProvider;
 
     MainWindow* m_mainWindow;
 };
