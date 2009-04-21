@@ -36,7 +36,6 @@
 
 // KDE Includes
 #include <KMessageBox>
-#include <KDebug>
 #include <KStandardDirs>
 
 // Qt Includes
@@ -73,7 +72,6 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
 void NetworkAccessManager::loadSettings()
 {
-    kWarning() << "loading NetworkAccessManager settings..";
     QNetworkProxy proxy;
     if (ReKonfig::isProxyEnabled())
     {
@@ -160,3 +158,4 @@ void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError
         reply->ignoreSslErrors();
 }
 #endif
+
