@@ -53,6 +53,11 @@ int main(int argc, char **argv)
                     "adjam7@gmail.com", 
                     "http://www.adjam.org");
 
+//     about.addAuthor(ki18n("your name"), 
+//                     ki18n("your role"), 
+//                     "your mail", 
+//                     "your site");
+
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
 
