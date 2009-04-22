@@ -219,7 +219,7 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotWebStop()));
 
     // stop reload Action
-    m_stopReloadAction = new KAction(KIcon("view-refresh"), i18n("reload"), this);
+    m_stopReloadAction = new KAction(KIcon("view-refresh"), i18n("Reload"), this);
     actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
 
@@ -519,7 +519,7 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 void MainWindow::slotFileOpen()
 {
     QString filePath = KFileDialog::getOpenFileName(KUrl(),
-                       i18n("Web Resources (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"),
+                       i18n("Web Resources (*.html *.htm *.svg *.png *.gif *.svgz); All files (*.*)"),
                        this,
                        i18n("Open Web Resource")
                                                    );
@@ -570,8 +570,8 @@ void MainWindow::slotPrivateBrowsing(bool enable)
         QString title = i18n("Are you sure you want to turn on private browsing?");
         QString text = "<b>" + title + i18n("</b><br><br>When private browsing in turned on,"
                                             " webpages are not added to the history,"
-                                            " new cookies are not stored, current cookies can't be accessed," \
-                                            " site icons wont be stored, session wont be saved, " \
+                                            " new cookies are not stored, current cookies cannot be accessed," \
+                                            " site icons will not be stored, session will not be saved, " \
                                             " and searches are not addded to the pop-up menu in the Google search box." \
                                             "  Until you close the window, you can still click the Back and Forward buttons" \
                                             " to return to the webpages you have opened.");
