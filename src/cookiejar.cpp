@@ -3,8 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 rekonq team. Please, see AUTHORS file for details
+* Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it
@@ -117,31 +116,20 @@ void CookieJar::load()
         return;
 
     // load cookies and exceptions
-    qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
-
     QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini");
-    KConfig iniconfig(filepath);
-
-    KConfigGroup inigroup1 = iniconfig.group("general");
-
-    QVariantList cookieList = inigroup1.readEntry(QString("cookies"), QVariantList());
-    QList<QNetworkCookie> cookieNetworkList;
-    foreach(QVariant str, cookieList)
-    {
-        cookieNetworkList << QNetworkCookie(str.toByteArray());
-    }
-    setAllCookies(cookieNetworkList);
-
-    KConfigGroup inigroup2 = iniconfig.group("exceptions");
-    m_exceptions_block = inigroup2.readEntry(QString("block") , QStringList());
-    m_exceptions_allow = inigroup2.readEntry(QString("allow"), QStringList());
-    m_exceptions_allowForSession = inigroup2.readEntry(QString("allowForSession"), QStringList());
-
+    qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
+    QSettings cookieSettings(filepath, QSettings::IniFormat);
+    setAllCookies(qvariant_cast<QList<QNetworkCookie> >(cookieSettings.value(QLatin1String("cookies"))));
+    cookieSettings.beginGroup(QLatin1String("Exceptions"));
+    m_exceptions_block = cookieSettings.value(QLatin1String("block")).toStringList();
+    m_exceptions_allow = cookieSettings.value(QLatin1String("allow")).toStringList();
+    m_exceptions_allowForSession = cookieSettings.value(QLatin1String("allowForSession")).toStringList();
     qSort(m_exceptions_block.begin(), m_exceptions_block.end());
     qSort(m_exceptions_allow.begin(), m_exceptions_allow.end());
     qSort(m_exceptions_allowForSession.begin(), m_exceptions_allowForSession.end());
 
     loadSettings();
+
     save();
 }
 
@@ -193,27 +181,18 @@ void CookieJar::save()
     purgeOldCookies();
 
     QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini");
-    KConfig iniconfig(filepath);
-
-    KConfigGroup inigroup1 = iniconfig.group("general");
+    QSettings cookieSettings(filepath, QSettings::IniFormat);
     QList<QNetworkCookie> cookies = allCookies();
-    for (int i = cookies.count() - 1; i >= 0; --i)
-    {
+    for (int i = cookies.count() - 1; i >= 0; --i) {
         if (cookies.at(i).isSessionCookie())
             cookies.removeAt(i);
     }
 
-    QVariantList cookieList;
-    foreach(QNetworkCookie cook, cookies)
-    {
-        cookieList << cook.toRawForm();
-    }
-    inigroup1.writeEntry(QString("cookies"), cookieList);
-
-    KConfigGroup inigroup2 = iniconfig.group("exceptions");
-    inigroup2.writeEntry(QString("block"), m_exceptions_block);
-    inigroup2.writeEntry(QString("allow"), m_exceptions_allow);
-    inigroup2.writeEntry(QString("allowForSession"), m_exceptions_allowForSession);
+    cookieSettings.setValue(QLatin1String("cookies"), qVariantFromValue<QList<QNetworkCookie> >(cookies));
+    cookieSettings.beginGroup(QLatin1String("Exceptions"));
+    cookieSettings.setValue(QLatin1String("block"), m_exceptions_block);
+    cookieSettings.setValue(QLatin1String("allow"), m_exceptions_allow);
+    cookieSettings.setValue(QLatin1String("allowForSession"), m_exceptions_allowForSession);
 
     // save cookie settings
     int n;
