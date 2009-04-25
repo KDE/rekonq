@@ -83,7 +83,7 @@ MainView::MainView(QWidget *parent)
     #if KDE_IS_VERSION(4,2,60)
         setTabsClosable(true);  // this causes #23 on KDE 4.2
     #else
-        setCloseButtonEnabled(oneCloseButton);  // this is deprecated, remove
+        setCloseButtonEnabled(true);  // this is deprecated, remove
     #endif
 
     connect(m_tabBar, SIGNAL(tabCloseRequested(int)),this, SLOT(slotCloseTab(int)));
