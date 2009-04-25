@@ -93,7 +93,7 @@ public:
     WebView(QWidget *parent = 0);
     WebPage *webPage() const { return m_page; }
     
-    KActionCollection* actionCollection() const { return m_webActionCollection; }
+    KActionCollection* webActions();
  
     void loadUrl(const KUrl &url);
     KUrl url() const;
@@ -126,8 +126,7 @@ private slots:
     void openLinkInNewTab();
 
 private:
-    KActionCollection *m_webActionCollection;
-    void fillWebActions();
+    static KActionCollection* s_webActionCollection;
         
     WebPage *m_page;
     

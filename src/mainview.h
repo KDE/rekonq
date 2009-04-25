@@ -24,23 +24,27 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
+// Local Includes
+#include "webview.h"
+
 // KDE Includes
 #include <KTabWidget>
 
 // Forward Declarations
-class WebView;
-class TabBar;
-
-class KUrl;
-class KAction;
-class KMenu;
-
-class QWebFrame;
-class QCompleter;
-class QStackedWidget;
 class QLineEdit;
 class QUrl;
+class QWebFrame;
 class QLabel;
+
+class KAction;
+class KCompletion;
+class KMenu;
+class KUrl;
+
+class HistoryCompletionModel;
+class StackedUrlBar;
+class TabBar;
+class UrlBar;
 
 
 /**
@@ -62,12 +66,14 @@ signals:
     // tab widget signals
     void loadUrlPage(const KUrl &url);
     void tabsChanged();
+    void lastTabClosed();
 
     // current tab signals
     void setCurrentTitle(const QString &url);
     void showStatusBarMessage(const QString &message);
     void linkHovered(const QString &link);
     void loadProgress(int progress);
+    
     void geometryChangeRequested(const QRect &geometry);
     void menuBarVisibilityChangeRequested(bool visible);
     void statusBarVisibilityChangeRequested(bool visible);
@@ -75,24 +81,27 @@ signals:
     void printRequested(QWebFrame *frame);
 
 public:
-    void clear();
-
-    KAction *recentlyClosedTabsAction() const;
-
-    QWidget *lineEditStack() const;
-    QLineEdit *currentLineEdit() const;
-    WebView *currentWebView() const;
+//     void setupTabButtons();
+    
+    UrlBar *urlBar(int index) const;
+    UrlBar *currentUrlBar() const { return urlBar(-1); }
     WebView *webView(int index) const;
-    QLineEdit *lineEdit(int index) const;
-    int webViewIndex(WebView *webView) const;
-
+    QList<WebView *> tabs();    // ?
+    
+    // inlines
+    TabBar *tabBar() const { return m_tabBar; }
+    StackedUrlBar *urlBarStack() const { return m_urlBars; }
+    WebView *currentWebView() const { return webView(currentIndex()); }
+    int webViewIndex(WebView *webView) const { return indexOf(webView); }
+    KAction *recentlyClosedTabsAction() const { return m_recentlyClosedTabsAction; }
+    
     /**
      * show and hide TabBar if user doesn't choose
      * "Always Show TabBar" option
      *
      */
     void showTabBar();
-
+    void clear();
 
 public slots:
     /**
@@ -101,8 +110,8 @@ public slots:
      *
      * @return a pointer to the new WebView
      */
-    WebView *newWebView();
-    void loadUrlInCurrentTab(const KUrl &url);
+    WebView *newWebView(bool makeCurrent = true);
+    void loadUrlInCurrentTab(const KUrl &url); // DEPRECATED
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);
     void slotCloseOtherTabs(int index);
@@ -126,43 +135,46 @@ private slots:
     void slotCurrentChanged(int index);
     void aboutToShowRecentTabsMenu();
     void aboutToShowRecentTriggeredAction(QAction *action); // need QAction!
+
     void webViewLoadStarted();
+    void webViewLoadProgress(int progress);
+    void webViewLoadFinished(bool ok);
     void webViewIconChanged();
     void webViewTitleChanged(const QString &title);
     void webViewUrlChanged(const QUrl &url);
-    void lineEditReturnPressed();
+
     void windowCloseRequested();
 
-
-private:
     /**
      * This functions move tab informations "from index to index" 
      *
      * @param fromIndex the index from which we move
      *
-     * @param toIndex the index to wchich we move
+     * @param toIndex the index to which we move
      */
     void moveTab(int fromIndex, int toIndex);
+
+private:
 
     /**
      * This function creates (if not exists) and returns a QLabel 
      * with a loading QMovie.
-     * Inspired from Arora's code. 
+     * Imported from Arora's code. 
      *
      * @param index the tab index where inserting the animated label
+     * @param addMovie creates or not a loading movie 
      *
      * @return animated label's pointer
      */
-    QLabel *animatedLoading(int index);
+    QLabel *animatedLoading(int index, bool addMovie);
 
+    static const int m_recentlyClosedTabsSize = 10;
     KAction *m_recentlyClosedTabsAction;
 
     KMenu *m_recentlyClosedTabsMenu;
-    static const int m_recentlyClosedTabsSize = 10;
     QList<KUrl> m_recentlyClosedTabs;
 
-    QCompleter *m_lineEditCompleter;
-    QStackedWidget *m_lineEdits;
+    StackedUrlBar *m_urlBars;
     TabBar *m_tabBar;
 
     QString m_loadingGitPath;

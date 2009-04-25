@@ -40,6 +40,8 @@
 #include "download.h"
 #include "findbar.h"
 #include "sidepanel.h"
+#include "urlbar.h"
+#include "stackedurlbar.h"
 
 // KDE Includes
 #include <KUrl>
@@ -169,7 +171,7 @@ void MainWindow::setupToolBars()
     // location bar
     a = new KAction(i18n("Location Bar"), this);
     a->setShortcut(KShortcut(Qt::Key_F6));
-    a->setDefaultWidget(m_view->lineEditStack());
+    a->setDefaultWidget(m_view->urlBarStack());
     actionCollection()->addAction(QLatin1String("url_bar"), a);
 
     // search bar
@@ -204,7 +206,8 @@ void MainWindow::setupActions()
     KStandardAction::showMenubar(this, SLOT(slotShowMenubar(bool)), actionCollection());
 
     // WEB Actions (NO KStandardActions..)
-    KStandardAction::redisplay(m_view, SLOT(slotWebReload()), actionCollection());
+    a = KStandardAction::redisplay(m_view, SLOT(slotWebReload()), actionCollection());
+    a->setText( i18n("Reload") );
     KStandardAction::back(m_view, SLOT(slotWebBack()), actionCollection());
     KStandardAction::forward(m_view, SLOT(slotWebForward()), actionCollection());
     KStandardAction::undo(m_view, SLOT(slotWebUndo()), actionCollection());
@@ -225,6 +228,7 @@ void MainWindow::setupActions()
 
     // ============== Custom Actions
     a = new KAction(KIcon("document-open-remote"), i18n("Open Location"), this);
+    a->setShortcut(Qt::CTRL+Qt::Key_L);
     actionCollection()->addAction(QLatin1String("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
 
@@ -294,15 +298,6 @@ void MainWindow::setupActions()
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
-
-    // clear Location Bar action (Henry de Valance WISH)
-    a = new KAction(KIcon("edit-clear-locationbar-rtl"), i18n("Clear Location Bar"), this);
-    a->setShortcut(Qt::CTRL+Qt::Key_L);
-    actionCollection()->addAction(QLatin1String("clear_location"),a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotClearLocationBar()));
-    a->setWhatsThis(i18n( "<html>Clear Location bar<br /><br />"
-                           "Clears the contents of the location bar.</html>" ));
-
 }
 
 
@@ -454,15 +449,15 @@ void MainWindow::loadUrl(const KUrl &url)
     if (!currentTab() || url.isEmpty())
         return;
 
-    m_view->currentLineEdit()->setText(url.prettyUrl());
+    m_view->currentUrlBar()->setUrl(url.prettyUrl());
     m_view->loadUrlInCurrentTab(url);
 }
 
 
 void MainWindow::slotOpenLocation()
 {
-    m_view->currentLineEdit()->selectAll();
-    m_view->currentLineEdit()->setFocus();
+    m_view->currentUrlBar()->selectAll();
+    m_view->currentUrlBar()->setFocus();
 }
 
 
@@ -681,18 +676,47 @@ void MainWindow::slotViewTextSmaller()
 
 void MainWindow::slotViewFullScreen(bool makeFullScreen)
 {
+    // state flags
+    static bool menubarFlag;
+    static bool mainToolBarFlag;
+    static bool locationBarFlag;
+    static bool bookmarksToolBarFlag;
+    static bool statusBarFlag;
+    static bool sidePanelFlag;
+    
     if (makeFullScreen == true)
     {
+        // save current state
+        menubarFlag = menuBar()->isHidden();
+        mainToolBarFlag = toolBar("mainToolBar")->isHidden();
+        locationBarFlag = toolBar("locationToolBar")->isHidden();
+        bookmarksToolBarFlag = toolBar("bookmarksToolBar")->isHidden();
+        statusBarFlag = statusBar()->isHidden();
+        sidePanelFlag = sidePanel()->isHidden();
+        
         menuBar()->hide();
         toolBar("mainToolBar")->hide();
         toolBar("locationToolBar")->hide();
+        toolBar("bookmarksToolBar")->hide();
+        statusBar()->hide();
+        sidePanel()->hide();
     }
     else
     {
-        menuBar()->show();
-        toolBar("mainToolBar")->show();
-        toolBar("locationToolBar")->show();
+        if (!menubarFlag)
+            menuBar()->show();
+        if (!mainToolBarFlag)
+            toolBar("mainToolBar")->show();
+        if (!locationBarFlag)
+            toolBar("locationToolBar")->show();
+        if (!bookmarksToolBarFlag)
+            toolBar("bookmarksToolBar")->show();
+        if (!statusBarFlag)
+            statusBar()->show();
+        if (!sidePanelFlag)
+            sidePanel()->show();
     }
+
     KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
 }
 
@@ -887,14 +911,6 @@ bool MainWindow::queryClose()
     }
 
     return true;
-}
-
-
-void MainWindow::slotClearLocationBar()
-{
-    QLineEdit *lineEdit = m_view->currentLineEdit();
-    lineEdit->clear();
-    lineEdit->setFocus();
 }
 
 

@@ -57,6 +57,8 @@ WebPage::WebPage(QObject *parent)
         , m_openInNewTab(false)
 {
     setNetworkAccessManager(Application::networkAccessManager());
+
+    setForwardUnsupportedContent(true);
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
 }
 
@@ -121,6 +123,22 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
     // user activated the reload action.
     case QWebPage::NavigationTypeReload:
+
+        #if QT_VERSION <= 040500
+            // HACK Ported from Arora
+            // A short term hack until QtWebKit can get a reload without cache QAction
+            // *FYI* currently type is never NavigationTypeReload
+            // See: https://bugs.webkit.org/show_bug.cgi?id=24283
+            if (qApp->keyboardModifiers() & Qt::ShiftModifier) 
+            {
+                QNetworkRequest newRequest(request);
+                newRequest.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
+                                        QNetworkRequest::AlwaysNetwork);
+                mainFrame()->load(request);
+                return false;
+            }
+        #endif
+
         break;
 
     // An HTML form was submitted a second time.
@@ -182,12 +200,33 @@ QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QS
 
 void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
+    // create convenience fake api:// protocol for KDE apidox search and Qt docs
+    if (reply->url().scheme() == "api")
+    {
+        QString path;
+        QString className = reply->url().host().toLower();
+        if (className[0] == 'k')
+        {
+            path = QString("http://api.kde.org/new.classmapper.php?class=%1").arg(className);
+        }
+        else if (className[0] == 'q')
+        {
+            path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
+        }
+        QUrl url(path);
+
+        Application::instance()->mainWindow()->loadUrl(url);
+        return;
+    }
+
     if (reply->error() == QNetworkReply::NoError)
     {
-        KUrl srcUrl = reply->url();
-        QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
-        KUrl destUrl = KUrl(path);
-        Application::downloadManager()->newDownload(srcUrl);
+        // st iframe unwanted download fix
+        if (reply->header(QNetworkRequest::ContentTypeHeader).isValid())
+        {
+            KUrl srcUrl = reply->url();
+            Application::downloadManager()->newDownload(srcUrl);
+        }
         return;
     }
 
@@ -222,7 +261,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         }
         QList<QWebFrame *> children = firstFrame->childFrames();
         foreach(QWebFrame *frame, children)
-        frames.append(frame);
+        {
+            frames.append(frame);
+        }
     }
     if (m_loadingUrl == reply->url())
     {
@@ -236,9 +277,11 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 // -----------------------------------------------------------------------------------------------------------------
 
 
+KActionCollection* WebView::s_webActionCollection;
+
+
 WebView::WebView(QWidget* parent)
         : QWebView(parent)
-        , m_webActionCollection(new KActionCollection(this))
         , m_page(new WebPage(this))
         , m_progress(0)
 {
@@ -249,54 +292,63 @@ WebView::WebView(QWidget* parent)
     connect(page(), SIGNAL(loadingUrl(const QUrl&)),  this, SIGNAL(urlChanged(const QUrl &)));
     connect(page(), SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequested(const QNetworkRequest &)));
     page()->setForwardUnsupportedContent(true);
-
-    fillWebActions();
 }
 
 
-void WebView::fillWebActions()
+KActionCollection* WebView::webActions()
 {
+    if(!s_webActionCollection)
+    {
+        s_webActionCollection = new KActionCollection(this);
 
-    QAction *a;
+        QAction *a;
 
-    a = new KAction(KIcon("tab-new"), i18n("Open Link in New &Tab"), this);
-    connect(a, SIGNAL(triggered()), this, SLOT(openLinkInNewTab()) );
-    m_webActionCollection->addAction( QLatin1String("open_link_in_new_tab"), a);
-    
-    a = pageAction(QWebPage::Cut);
-    a->setIcon(KIcon("edit-cut"));
-    a->setText(i18n("Cu&t"));
-    m_webActionCollection->addAction( QLatin1String("edit_cut"), a);
-    
-    a = pageAction(QWebPage::Copy);
-    a->setIcon(KIcon("edit-copy"));
-    a->setText(i18n("&Copy"));
-    m_webActionCollection->addAction( QLatin1String("edit_copy"), a );
-    
-    a = pageAction(QWebPage::Paste);
-    a->setIcon(KIcon("edit-paste"));
-    a->setText(i18n("&Paste"));
-    m_webActionCollection->addAction( QLatin1String("edit_paste"), a );
-    
-    a = pageAction(QWebPage::DownloadImageToDisk);
-    a->setIcon(KIcon("folder-image"));
-    a->setText(i18n("&Save Image As..."));
-    m_webActionCollection->addAction( QLatin1String("save_image_as"), a );
-    
-    a = pageAction(QWebPage::CopyImageToClipboard);
-    a->setIcon(KIcon("insert-image"));
-    a->setText(i18n("&Copy This Image"));
-    m_webActionCollection->addAction( QLatin1String("copy_this_image"), a);
+        a = new KAction(KIcon("tab-new"), i18n("Open Link in New &Tab"), this);
+        connect(a, SIGNAL(triggered()), this, SLOT(openLinkInNewTab()) );
+        s_webActionCollection->addAction( QLatin1String("open_link_in_new_tab"), a);
+        
+        a = pageAction(QWebPage::Cut);
+        a->setIcon(KIcon("edit-cut"));
+        a->setText(i18n("Cu&t"));
+        s_webActionCollection->addAction( QLatin1String("edit_cut"), a);
+        
+        a = pageAction(QWebPage::Copy);
+        a->setIcon(KIcon("edit-copy"));
+        a->setText(i18n("&Copy"));
+        s_webActionCollection->addAction( QLatin1String("edit_copy"), a );
+        
+        a = pageAction(QWebPage::Paste);
+        a->setIcon(KIcon("edit-paste"));
+        a->setText(i18n("&Paste"));
+        s_webActionCollection->addAction( QLatin1String("edit_paste"), a );
+        
+        a = pageAction(QWebPage::DownloadImageToDisk);
+        a->setIcon(KIcon("folder-image"));
+        a->setText(i18n("&Save Image As..."));
+        s_webActionCollection->addAction( QLatin1String("save_image_as"), a );
+        
+        a = pageAction(QWebPage::CopyImageToClipboard);
+        a->setIcon(KIcon("insert-image"));
+        a->setText(i18n("&Copy This Image"));
+        s_webActionCollection->addAction( QLatin1String("copy_this_image"), a);
 
-    a = pageAction(QWebPage::DownloadLinkToDisk);
-    a->setIcon(KIcon("folder-downloads"));
-    a->setText(i18n("&Save Link As..."));
-    m_webActionCollection->addAction( QLatin1String("save_link_as"), a);
-    
-    a = pageAction(QWebPage::CopyLinkToClipboard);
-    a->setIcon(KIcon("insert-link"));
-    a->setText(i18n("&Copy Link Location"));
-    m_webActionCollection->addAction( QLatin1String("copy_link_location"), a);
+        a = pageAction(QWebPage::DownloadLinkToDisk);
+        a->setIcon(KIcon("folder-downloads"));
+        a->setText(i18n("&Save Link As..."));
+        s_webActionCollection->addAction( QLatin1String("save_link_as"), a);
+        
+        a = pageAction(QWebPage::CopyLinkToClipboard);
+        a->setIcon(KIcon("insert-link"));
+        a->setText(i18n("&Copy Link Location"));
+        s_webActionCollection->addAction( QLatin1String("copy_link_location"), a);
+
+        a = pageAction(QWebPage::InspectElement);
+        a->setIcon(KIcon("tools-report-bug"));
+        a->setText(i18n("&Inspect Element"));
+        s_webActionCollection->addAction( QLatin1String("inspect_element"), a);
+    }
+
+    return s_webActionCollection;
 }
 
 
@@ -313,32 +365,38 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     bool linkIsEmpty = result.linkUrl().isEmpty();
     if (!linkIsEmpty)
     {
-        menu.addAction( m_webActionCollection->action("open_link_in_new_tab") );
+        menu.addAction( webActions()->action("open_link_in_new_tab") );
     }
     else
     {
         menu.addAction(mainwindow->actionByName("new_tab"));
     }
-
     menu.addAction(mainwindow->actionByName("view_redisplay"));
     menu.addSeparator();
+
+    if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
+    {
+        menu.addAction( webActions()->action("inspect_element") );
+        menu.addSeparator();
+    }
+
     menu.addAction(mainwindow->actionByName("history_back"));
     menu.addAction(mainwindow->actionByName("history_forward"));
     menu.addSeparator();
 
     if (result.isContentSelected() && result.isContentEditable())
     {
-        menu.addAction( m_webActionCollection->action("edit_cut") );
+        menu.addAction( webActions()->action("edit_cut") );
     }
 
     if (result.isContentSelected())
     {
-        menu.addAction( m_webActionCollection->action("edit_copy") );
+        menu.addAction( webActions()->action("edit_copy") );
     }
 
     if (result.isContentEditable())
     {
-        menu.addAction( m_webActionCollection->action("edit_paste") );
+        menu.addAction( webActions()->action("edit_paste") );
     }
 
     if (!linkIsEmpty)
@@ -347,11 +405,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         if (!result.pixmap().isNull())
         {
             // TODO Add "View Image"
-            menu.addAction( m_webActionCollection->action("save_image_as") );
-            menu.addAction( m_webActionCollection->action("copy_this_image") );
+            menu.addAction( webActions()->action("save_image_as") );
+            menu.addAction( webActions()->action("copy_this_image") );
         }
-        menu.addAction( m_webActionCollection->action("save_link_as") );
-        menu.addAction( m_webActionCollection->action("copy_link_location") );
+        menu.addAction( webActions()->action("save_link_as") );
+        menu.addAction( webActions()->action("copy_link_location") );
         addBookmarkAction->setData(result.linkUrl());
         addBookmarkAction->setText(i18n("&Bookmark This Link"));
     }
@@ -394,19 +452,15 @@ void WebView::loadFinished()
 }
 
 
-// FIXME: load http by default!!
 void WebView::loadUrl(const KUrl &url)
 {
     m_initialUrl = url;
 
     if (m_initialUrl.isRelative())
     {
-        kWarning() << "1: " << m_initialUrl.url();
         QString fn = m_initialUrl.url(KUrl::RemoveTrailingSlash);
-        kWarning() << "2: " << fn;
         m_initialUrl.setUrl("//" + fn);
         m_initialUrl.setScheme("http");
-        kWarning() << "3: " << m_initialUrl.url();
     }
 
     load(m_initialUrl);

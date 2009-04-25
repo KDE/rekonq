@@ -92,7 +92,6 @@ private slots:
     void slotOpenLocation();
     void slotAboutToShowBackMenu();
     void geometryChangeRequested(const QRect &geometry);
-    void slotClearLocationBar();
 
     // history related
     void slotOpenActionUrl(QAction *action);

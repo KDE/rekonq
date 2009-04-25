@@ -13,16 +13,6 @@ DONE disable BACK button when history is NULL
 DONE load just ONE site at start
 - QWebFrame
 DONE(?) definitely fix fonts!
-
-
-- fix crash on example sites..
-- improve DOCUMENTATION
-- fix Action on tabbar (clone ads)
-- Type "FormSubmitted" (WordPress)
-- check statusbar slots
-- fix fonts
-- webkit Icon
-
 DONE tab-reordering
 - focus on new tab just if no site loaded
 DONE provide konqueror-like
@@ -36,14 +26,31 @@ DONE fix web inspector action
 
 DONE loading ONE site when calling rekonq..
 
+- fix crash on example sites..
+- improve DOCUMENTATION
+- fix Action on tabbar (clone ads)
+- Type "FormSubmitted" (WordPress)
+- check statusbar slots
+- fix fonts
+
 
 + ------------------------
 
 LONG TERM FIXES
-- Page source (to be decided)
 - cookies
 - history (io-slave)
 - file protocol view
 
 - new bookmarks system
 - check mainview signals
+
+- to 0.1alpha
+    - checking focus question
+    - bookmarks panel
+    - copyright question
+    - loading urlbar
+    - fullscreen action impr
+    - mailto KDE loading
+    - unit tests
+    - webview Arora tmp fix
+    - ?

@@ -32,6 +32,7 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "history.h"
+#include "stackedurlbar.h"
 #include "urlbar.h"
 #include "webview.h"
 
@@ -56,9 +57,8 @@
 MainView::MainView(QWidget *parent)
         : KTabWidget(parent)
         , m_recentlyClosedTabsAction(0)
-        , m_recentlyClosedTabsMenu(0)
-        , m_lineEditCompleter(0)
-        , m_lineEdits(new QStackedWidget(this))
+        , m_recentlyClosedTabsMenu(new KMenu(this))
+        , m_urlBars(new StackedUrlBar(this))
         , m_tabBar(new TabBar(this))
 {
     setTabBar(m_tabBar);
@@ -74,16 +74,23 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(tabMoved(int,int)), this, SLOT(moveTab(int,int)));
 
     // Recently Closed Tab Action
-    m_recentlyClosedTabsMenu = new KMenu(this);
     connect(m_recentlyClosedTabsMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowRecentTabsMenu()));
     connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)), this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
     m_recentlyClosedTabsAction = new KAction(i18n("Recently Closed Tabs"), this);
     m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
     m_recentlyClosedTabsAction->setEnabled(false);
 
-    // add close button to tab bar..
-    m_tabBar->setTabsClosable(true);
+    #if KDE_IS_VERSION(4,2,60)
+        setTabsClosable(true);  // this causes #23 on KDE 4.2
+    #else
+        setCloseButtonEnabled(oneCloseButton);  // this is deprecated, remove
+    #endif
+
     connect(m_tabBar, SIGNAL(tabCloseRequested(int)),this, SLOT(slotCloseTab(int)));
+
+    // --
+    connect(this, SIGNAL(loadUrlPage(const KUrl &)), 
+        this, SLOT(loadUrlInCurrentTab(const KUrl &)));
 
     // --
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
@@ -92,16 +99,12 @@ MainView::MainView(QWidget *parent)
 
 MainView::~MainView()
 {
-    delete m_lineEditCompleter;
-    delete m_recentlyClosedTabsMenu;
 }
 
 
 void MainView::showTabBar()
 {
-    bool astb = ReKonfig::alwaysShowTabBar();
-
-    if (astb == true)
+    if ( ReKonfig::alwaysShowTabBar() )
     {
         if (m_tabBar->isHidden())
         {
@@ -121,12 +124,6 @@ void MainView::showTabBar()
             m_tabBar->show();
         }
     }
-}
-
-
-KAction *MainView::recentlyClosedTabsAction() const
-{
-    return m_recentlyClosedTabsAction;
 }
 
 
@@ -216,10 +213,11 @@ void MainView::clear()
     // clear the recently closed tabs
     m_recentlyClosedTabs.clear();
     // clear the line edit history
-    for (int i = 0; i < m_lineEdits->count(); ++i)
+    for (int i = 0; i < m_urlBars->count(); ++i)
     {
-        QLineEdit *qLineEdit = lineEdit(i);
-        qLineEdit->setText(qLineEdit->text());
+        /// TODO What exacly do we need to clear here?
+        urlBar(i)->clearHistory();
+        urlBar(i)->clear();
     }
 }
 
@@ -244,15 +242,17 @@ void MainView::slotCurrentChanged(int index)
     if (!webView)
         return;
 
-    Q_ASSERT(m_lineEdits->count() == count());
+    Q_ASSERT(m_urlBars->count() == count());
 
-    WebView *oldWebView = this->webView(m_lineEdits->currentIndex());
+    WebView *oldWebView = this->webView(m_urlBars->currentIndex());
     if (oldWebView)
     {
-        disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
+        disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)), 
+                    this, SIGNAL(showStatusBarMessage(const QString&)));
         disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
                     this, SIGNAL(linkHovered(const QString&)));
-        disconnect(oldWebView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
+        disconnect(oldWebView, SIGNAL(loadProgress(int)), 
+                    this, SIGNAL(loadProgress(int)));
     }
 
     connect(webView, SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
@@ -260,7 +260,7 @@ void MainView::slotCurrentChanged(int index)
     connect(webView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
 
     emit setCurrentTitle(webView->title());
-    m_lineEdits->setCurrentIndex(index);
+    m_urlBars->setCurrentIndex(index);
     emit loadProgress(webView->progress());
     emit showStatusBarMessage(webView->lastStatusBarText());
 
@@ -269,30 +269,19 @@ void MainView::slotCurrentChanged(int index)
 }
 
 
-QWidget *MainView::lineEditStack() const
+UrlBar *MainView::urlBar(int index) const
 {
-    return m_lineEdits;
-}
-
-
-QLineEdit *MainView::currentLineEdit() const
-{
-    return lineEdit(m_lineEdits->currentIndex());
-}
-
-
-WebView *MainView::currentWebView() const
-{
-    return webView(currentIndex());
-}
-
-
-QLineEdit *MainView::lineEdit(int index) const
-{
-    UrlBar *urlLineEdit = qobject_cast<UrlBar*>(m_lineEdits->widget(index));
-    if (urlLineEdit)
-        return urlLineEdit->lineEdit();
-    return 0;
+    if (index == -1)
+    {
+        index = m_urlBars->currentIndex();
+    }
+    UrlBar *urlBar = m_urlBars->urlBar(index);
+    if (urlBar)
+    {
+        return urlBar;
+    }
+    kWarning() << "URL bar with index" << index << "not found. Returning NULL. (line:" << __LINE__ << ")";
+    return NULL;
 }
 
 
@@ -303,99 +292,59 @@ WebView *MainView::webView(int index) const
     {
         return webView;
     }
-    else
-    {
-        // optimization to delay creating the first webview
-        if (count() == 1)
-        {
-            MainView *that = const_cast<MainView*>(this);
-            that->setUpdatesEnabled(false);
-            that->newWebView();
-            that->slotCloseTab(0);
-            that->setUpdatesEnabled(true);
-            return currentWebView();
-        }
-    }
+
+    kWarning() << "WebView with index " << index << "not found. Returning NULL." ;
     return 0;
 }
 
 
-int MainView::webViewIndex(WebView *webView) const
-{
-    int index = indexOf(webView);
-    return index;
-}
-
-
-WebView *MainView::newWebView()
+WebView *MainView::newWebView(bool makeCurrent)
 {
     // line edit
-    UrlBar *urlLineEdit = new UrlBar;
-    QLineEdit *lineEdit = urlLineEdit->lineEdit();
-    if (!m_lineEditCompleter && count() > 0)
-    {
-        HistoryCompletionModel *completionModel = new HistoryCompletionModel(this);
-        completionModel->setSourceModel(Application::historyManager()->historyFilterModel());
-        m_lineEditCompleter = new QCompleter(completionModel, this);
-        // Should this be in Qt by default?
-        QAbstractItemView *popup = m_lineEditCompleter->popup();
-        QListView *listView = qobject_cast<QListView*>(popup);
-        if (listView)
-        {
-            listView->setUniformItemSizes(true);
-        }
-    }
-    lineEdit->setCompleter(m_lineEditCompleter);
-    connect(lineEdit, SIGNAL(returnPressed()), this, SLOT(lineEditReturnPressed()));
-    m_lineEdits->addWidget(urlLineEdit);
-    m_lineEdits->setSizePolicy(lineEdit->sizePolicy());
+    UrlBar *urlBar = new UrlBar;  // Ownership of widget is passed on to the QStackedWidget (addWidget method).
+    connect(urlBar, SIGNAL(activated(const KUrl&)), this, SLOT(loadUrlInCurrentTab(const KUrl&)));
+    m_urlBars->addUrlBar(urlBar);
 
-    // optimization to delay creating the more expensive WebView, history, etc
-    if (count() == 0)
-    {
-        QWidget *emptyWidget = new QWidget;
-        QPalette p = emptyWidget->palette();
-        p.setColor(QPalette::Window, palette().color(QPalette::Base));
-        emptyWidget->setPalette(p);
-        emptyWidget->setAutoFillBackground(true);
-        disconnect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
-        addTab(emptyWidget, i18n("(Untitled)"));
-        connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
-        return 0;
-    }
-
-    // webview
-    WebView *webView = new WebView;
-    urlLineEdit->setWebView(webView);
-
+    WebView *webView = new WebView;  // should be deleted on tab close
+    
+    // connecting webview with urlbar
+    connect(webView, SIGNAL(loadProgress(int)), urlBar, SLOT(slotUpdateProgress(int)));
+    connect(webView, SIGNAL(loadFinished(bool)), urlBar, SLOT(slotLoadFinished(bool)));
+    connect(webView, SIGNAL(urlChanged(const QUrl &)), urlBar, SLOT(setUrl(const QUrl &)));
+    connect(webView, SIGNAL(iconChanged()), urlBar, SLOT(slotUpdateUrl()));
+    
+    // connecting webview with mainview
     connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
-    connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewIconChanged()));
+    connect(webView, SIGNAL(loadProgress(int)), this, SLOT(webViewLoadProgress(int)));
+    connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
     connect(webView, SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
     connect(webView, SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
     connect(webView, SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
-    connect(webView->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
-    connect(webView->page(), SIGNAL(geometryChangeRequested(const QRect &)), this, SIGNAL(geometryChangeRequested(const QRect &)));
-    connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
-    connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)), this, SIGNAL(menuBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)), this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)), this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
 
     connect(webView, SIGNAL(ctrlTabPressed()), this, SLOT(nextTab()));
     connect(webView, SIGNAL(shiftCtrlTabPressed()), this, SLOT(previousTab()));
 
+    // connecting webPage signals with mainview
+    connect(webView->page(), SIGNAL(windowCloseRequested()), 
+            this, SLOT(windowCloseRequested()));
+    connect(webView->page(), SIGNAL(geometryChangeRequested(const QRect &)), 
+            this, SIGNAL(geometryChangeRequested(const QRect &)));
+    connect(webView->page(), SIGNAL(printRequested(QWebFrame *)),
+            this, SIGNAL(printRequested(QWebFrame *)));
+    connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)), 
+            this, SIGNAL(menuBarVisibilityChangeRequested(bool)));
+    connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)), 
+            this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
+    connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)), 
+            this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
+
     addTab(webView, i18n("(Untitled)"));
-    setCurrentWidget(webView);
 
-    // focus on currentLineEdit just for empty pages
-    if(webView->url().isEmpty())
+    if (makeCurrent)
     {
-        currentLineEdit()->setFocus(Qt::ActiveWindowFocusReason);
+        setCurrentWidget(webView);  // this method does NOT take owneship of webView
     }
 
-    if (count() == 1)
-    {
-        slotCurrentChanged(currentIndex());
-    }
     emit tabsChanged();
 
     showTabBar();
@@ -412,19 +361,6 @@ void MainView::slotReloadAllTabs()
         if (WebView *tab = qobject_cast<WebView*>(tabWidget))
         {
             tab->reload();
-        }
-    }
-}
-
-
-void MainView::lineEditReturnPressed()
-{
-    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(sender()))
-    {
-        emit loadUrlPage(KUrl(lineEdit->text()));
-        if (m_lineEdits->currentWidget() == lineEdit)
-        {
-            currentWebView()->setFocus();
         }
     }
 }
@@ -500,10 +436,10 @@ void MainView::slotCloseTab(int index)
         if (tab->isModified())
         {
             int risp = KMessageBox::questionYesNo(this ,
-                                                  i18n("You have modified this page and when closing it you would lose the modification.\n"
-                                                       "Do you really want to close this page?\n"),
-                                                  i18n("Do you really want to close this page?")
-                                                  );
+                       i18n("You have modified this page and when closing it you would lose the modification.\n"
+                       "Do you really want to close this page?\n"),
+                       i18n("Do you really want to close this page?")
+                       );
             if (risp == KMessageBox::No)
                 return;
         }
@@ -511,18 +447,33 @@ void MainView::slotCloseTab(int index)
 
         m_recentlyClosedTabsAction->setEnabled(true);
         m_recentlyClosedTabs.prepend(tab->url());
+
+        // don't add empty urls
+        if (tab->url().isValid())
+        {
+            m_recentlyClosedTabs.prepend(tab->url());
+        }
+
         if (m_recentlyClosedTabs.size() >= MainView::m_recentlyClosedTabsSize)
+        {
             m_recentlyClosedTabs.removeLast();
+        }
     }
-    QWidget *lineEdit = m_lineEdits->widget(index);
-    m_lineEdits->removeWidget(lineEdit);
-    lineEdit->deleteLater();
+
+    QWidget *urlBar = m_urlBars->urlBar(index);
+    m_urlBars->removeWidget(urlBar);
+    urlBar->deleteLater();   // urlBar is scheduled for deletion.
+
     QWidget *webView = widget(index);
     removeTab(index);
-    webView->deleteLater();
+    webView->deleteLater();  // webView is scheduled for deletion.
+
     emit tabsChanged();
+
     if (hasFocus && count() > 0)
+    {
         currentWebView()->setFocus();
+    }
 
     showTabBar();
 }
@@ -532,14 +483,64 @@ void MainView::webViewLoadStarted()
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
+    kWarning() << "Here.. index = " << index;
     if (-1 != index)
     {
-        QLabel *label = animatedLoading(index);
+        QLabel *label = animatedLoading(index, true);
         if (label->movie())
         {
             label->movie()->start();
         }
     }
+
+    if (index != currentIndex())
+            return;
+
+    emit showStatusBarMessage(i18n("Loading..."));
+}
+
+
+void MainView::webViewLoadProgress(int progress)
+{
+    WebView *webView = qobject_cast<WebView*>(sender());
+    int index = webViewIndex(webView);
+    if (index != currentIndex() || index < 0)
+    {
+        return;
+    }
+    
+    double totalBytes = static_cast<double>(webView->webPage()->totalBytes() / 1024);
+    
+    QString message = i18n("Loading %1% (%2 %3)...", progress, totalBytes, QLatin1String("kB") );
+    emit showStatusBarMessage(message);
+}
+
+
+void MainView::webViewLoadFinished(bool ok)
+{
+    WebView *webView = qobject_cast<WebView*>(sender());
+    int index = webViewIndex(webView);
+    
+   if (-1 != index)
+    {
+        QLabel *label = animatedLoading(index, true);
+        QMovie *movie = label->movie();
+        if(movie)
+            movie->stop();
+    }
+    
+    webViewIconChanged();
+
+    // don't display messages for background tabs
+    if (index != currentIndex())
+    {
+        return;
+    }
+    
+    if (ok)
+        emit showStatusBarMessage(i18n("Done"));
+    else
+        emit showStatusBarMessage(i18n("Failed to load"));
 }
 
 
@@ -550,7 +551,7 @@ void MainView::webViewIconChanged()
     if (-1 != index)
     {
         QIcon icon = Application::instance()->icon(webView->url());
-        QLabel *label = animatedLoading(index);
+        QLabel *label = animatedLoading(index, false);
         QMovie *movie = label->movie();
         delete movie;
         label->setMovie(0);
@@ -645,13 +646,13 @@ void MainView::previousTab()
 
 void MainView::moveTab(int fromIndex, int toIndex)
 {
-    QWidget *lineEdit = m_lineEdits->widget(fromIndex);
-    m_lineEdits->removeWidget(lineEdit);
-    m_lineEdits->insertWidget(toIndex, lineEdit);
+    QWidget *lineEdit = m_urlBars->widget(fromIndex);
+    m_urlBars->removeWidget(lineEdit);
+    m_urlBars->insertWidget(toIndex, lineEdit);
 }
 
 
-QLabel *MainView::animatedLoading(int index)
+QLabel *MainView::animatedLoading(int index, bool addMovie)
 {
     if (index == -1)
         return 0;
@@ -660,15 +661,16 @@ QLabel *MainView::animatedLoading(int index)
     if (!label) 
     {
         label = new QLabel(this);
-        if (!label->movie())
-        {
-            QMovie *movie = new QMovie(m_loadingGitPath, QByteArray(), label);
-            movie->setSpeed(50);
-            label->setMovie(movie);
-            movie->start();
-        }
-        m_tabBar->setTabButton(index, QTabBar::LeftSide, 0);
-        m_tabBar->setTabButton(index, QTabBar::LeftSide, label);
     }
+    if (addMovie && !label->movie())
+    {
+        QMovie *movie = new QMovie(m_loadingGitPath, QByteArray(), label);
+        movie->setSpeed(50);
+        label->setMovie(movie);
+        movie->start();
+    }
+    m_tabBar->setTabButton(index, QTabBar::LeftSide, 0);
+    m_tabBar->setTabButton(index, QTabBar::LeftSide, label);
     return label;
 }
+
