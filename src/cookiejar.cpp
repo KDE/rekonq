@@ -91,6 +91,7 @@ CookieJar::CookieJar(QObject *parent)
         , m_saveTimer(new AutoSaver(this))
         , m_acceptCookies(AcceptOnlyFromSitesNavigatedTo)
 {
+    load();
 }
 
 
@@ -114,6 +115,7 @@ void CookieJar::load()
 {
     if (m_loaded)
         return;
+
     // load cookies and exceptions
     qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
 
@@ -122,11 +124,11 @@ void CookieJar::load()
 
     KConfigGroup inigroup1 = iniconfig.group("general");
 
-    QStringList cookieStringList = inigroup1.readEntry(QString("cookies"), QStringList());
+    QVariantList cookieList = inigroup1.readEntry(QString("cookies"), QVariantList());
     QList<QNetworkCookie> cookieNetworkList;
-    foreach(QString str, cookieStringList)
+    foreach(QVariant str, cookieList)
     {
-        cookieNetworkList << QNetworkCookie(str.toLocal8Bit());
+        cookieNetworkList << QNetworkCookie(str.toByteArray());
     }
     setAllCookies(cookieNetworkList);
 
@@ -140,6 +142,7 @@ void CookieJar::load()
     qSort(m_exceptions_allowForSession.begin(), m_exceptions_allowForSession.end());
 
     loadSettings();
+    save();
 }
 
 
@@ -200,12 +203,12 @@ void CookieJar::save()
             cookies.removeAt(i);
     }
 
-    QStringList cookieStringList;
+    QVariantList cookieList;
     foreach(QNetworkCookie cook, cookies)
     {
-        cookieStringList << QString(cook.toRawForm());
+        cookieList << cook.toRawForm();
     }
-    inigroup1.writeEntry(QString("cookies"), cookieStringList);
+    inigroup1.writeEntry(QString("cookies"), cookieList);
 
     KConfigGroup inigroup2 = iniconfig.group("exceptions");
     inigroup2.writeEntry(QString("block"), m_exceptions_block);
