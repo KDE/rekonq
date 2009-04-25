@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?"
 "group_id=252277&atid=1126949\n"
-"POT-Creation-Date: 2009-04-23 01:05+0200\n"
+"POT-Creation-Date: 2009-04-26 01:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,59 +27,59 @@ msgstr ""
 msgid "Bookmarks Bar"
 msgstr ""
 
-#: cookiejar.cpp:473 cookiejar.cpp:652
+#: cookiejar.cpp:456 cookiejar.cpp:635
 msgid "Website"
 msgstr ""
 
-#: cookiejar.cpp:475
+#: cookiejar.cpp:458
 msgid "Name"
 msgstr ""
 
-#: cookiejar.cpp:477
+#: cookiejar.cpp:460
 msgid "Path"
 msgstr ""
 
-#: cookiejar.cpp:479
+#: cookiejar.cpp:462
 msgid "Secure"
 msgstr ""
 
-#: cookiejar.cpp:481
+#: cookiejar.cpp:464
 msgid "Expires"
 msgstr ""
 
-#: cookiejar.cpp:483
+#: cookiejar.cpp:466
 msgid "Contents"
 msgstr ""
 
-#: cookiejar.cpp:654
+#: cookiejar.cpp:637
 msgid "Status"
 msgstr ""
 
 #. i18n: file: cookiesexceptions.ui:77
 #. i18n: ectx: property (text), widget (QPushButton, allowButton)
-#: cookiejar.cpp:679 rc.cpp:27
+#: cookiejar.cpp:662 rc.cpp:27
 msgid "Allow"
 msgstr ""
 
 #. i18n: file: cookiesexceptions.ui:57
 #. i18n: ectx: property (text), widget (QPushButton, blockButton)
-#: cookiejar.cpp:690 rc.cpp:21
+#: cookiejar.cpp:673 rc.cpp:21
 msgid "Block"
 msgstr ""
 
 #. i18n: file: cookiesexceptions.ui:67
 #. i18n: ectx: property (text), widget (QPushButton, allowForSessionButton)
-#: cookiejar.cpp:701 rc.cpp:24
+#: cookiejar.cpp:684 rc.cpp:24
 msgid "Allow For Session"
 msgstr ""
 
-#: download.cpp:72
+#: download.cpp:73
 msgid ""
 "Download '%1'?\n"
 "Type: %2"
 msgstr ""
 
-#: download.cpp:73
+#: download.cpp:74
 msgid "Download '%1'..."
 msgstr ""
 
@@ -99,243 +99,245 @@ msgstr ""
 msgid "&Previous"
 msgstr ""
 
-#: history.cpp:446
+#: history.cpp:445
 msgid "Title"
 msgstr ""
 
-#: history.cpp:447
+#: history.cpp:446
 msgid "Address"
 msgstr ""
 
-#: history.cpp:704
+#: history.cpp:703
 msgid "Show All History"
 msgstr ""
 
-#: history.cpp:708
+#: history.cpp:707
 msgid "Clear History"
 msgstr ""
 
-#: history.cpp:789
+#: history.cpp:788
 msgid "Open"
 msgstr ""
 
-#: history.cpp:791
+#: history.cpp:790
 msgid "Copy"
 msgstr ""
 
-#: history.cpp:793
+#: history.cpp:792
 msgid "Delete"
 msgstr ""
 
-#: history.cpp:1176
+#: history.cpp:1175
 msgid "Earlier Today"
 msgstr ""
 
-#: history.cpp:1181
+#: history.cpp:1180
 msgid " items"
 msgstr ""
 
-#: main.cpp:30
+#: main.cpp:29
 msgid "KDE Browser Webkit Based"
 msgstr ""
 
-#: main.cpp:40
+#: main.cpp:39
 msgid "rekonq"
 msgstr ""
 
-#: main.cpp:44
+#: main.cpp:43
 msgid "(C) 2009 rekonq team"
 msgstr ""
 
-#: main.cpp:51
+#: main.cpp:50
 msgid "Andrea Diamantini"
 msgstr ""
 
-#: main.cpp:52
+#: main.cpp:51
 msgid "Project Lead, Developer, Italian translations"
 msgstr ""
 
-#: main.cpp:68
+#: main.cpp:67
 msgid "Location to open"
 msgstr ""
 
-#: mainview.cpp:80
+#: mainview.cpp:79
 msgid "Recently Closed Tabs"
 msgstr ""
 
-#: mainview.cpp:362 mainview.cpp:386 mainview.cpp:567
+#: mainview.cpp:341 mainview.cpp:568
 msgid "(Untitled)"
 msgstr ""
 
-#: mainview.cpp:503
+#: mainview.cpp:439
 msgid ""
 "You have modified this page and when closing it you would lose the "
 "modification.\n"
 "Do you really want to close this page?\n"
 msgstr ""
 
-#: mainview.cpp:505
+#: mainview.cpp:441
 msgid "Do you really want to close this page?"
 msgstr ""
 
-#: mainwindow.cpp:170
+#: mainview.cpp:499
+msgid "Loading..."
+msgstr ""
+
+#: mainview.cpp:514
+msgid "Loading %1% (%2 %3)..."
+msgstr ""
+
+#: mainview.cpp:541
+msgid "Done"
+msgstr ""
+
+#: mainview.cpp:543
+msgid "Failed to load"
+msgstr ""
+
+#: mainwindow.cpp:172
 msgid "Location Bar"
 msgstr ""
 
-#: mainwindow.cpp:176
+#: mainwindow.cpp:178
 msgid "Search Bar"
 msgstr ""
 
-#: mainwindow.cpp:216
+#: mainwindow.cpp:210 mainwindow.cpp:225 mainwindow.cpp:808
+msgid "Reload"
+msgstr ""
+
+#: mainwindow.cpp:219
 msgid "&Stop"
 msgstr ""
 
-#: mainwindow.cpp:222
-msgid "reload"
-msgstr ""
-
-#: mainwindow.cpp:227
+#: mainwindow.cpp:230
 msgid "Open Location"
 msgstr ""
 
-#: mainwindow.cpp:231
+#: mainwindow.cpp:235
 msgid "&Enlarge Font"
 msgstr ""
 
-#: mainwindow.cpp:236
+#: mainwindow.cpp:240
 msgid "&Normal Font"
 msgstr ""
 
-#: mainwindow.cpp:241
+#: mainwindow.cpp:245
 msgid "&Shrink Font"
 msgstr ""
 
-#: mainwindow.cpp:246
+#: mainwindow.cpp:250
 msgid "Page S&ource"
 msgstr ""
 
-#: mainwindow.cpp:251
+#: mainwindow.cpp:255
 msgid "Web &Inspector"
 msgstr ""
 
-#: mainwindow.cpp:256
+#: mainwindow.cpp:260
 msgid "Private &Browsing"
 msgstr ""
 
-#: mainwindow.cpp:262
+#: mainwindow.cpp:266
 msgid "Back"
 msgstr ""
 
-#: mainwindow.cpp:270
+#: mainwindow.cpp:274
 msgid "Forward"
 msgstr ""
 
-#: mainwindow.cpp:275 tabbar.cpp:99
+#: mainwindow.cpp:279 tabbar.cpp:99
 msgid "New &Tab"
 msgstr ""
 
-#: mainwindow.cpp:283 tabbar.cpp:107
+#: mainwindow.cpp:287 tabbar.cpp:107
 msgid "&Close Tab"
 msgstr ""
 
-#: mainwindow.cpp:288
+#: mainwindow.cpp:292
 msgid "Show Next Tab"
 msgstr ""
 
-#: mainwindow.cpp:293
+#: mainwindow.cpp:297
 msgid "Show Previous Tab"
-msgstr ""
-
-#: mainwindow.cpp:299
-msgid "Clear Location Bar"
-msgstr ""
-
-#: mainwindow.cpp:303
-msgid ""
-"<html>Clear Location bar<br /><br />Clears the contents of the location bar."
-"</html>"
 msgstr ""
 
 #. i18n: file: history.ui:13
 #. i18n: ectx: property (windowTitle), widget (QDialog, HistoryDialog)
 #. i18n: file: settings_privacy.ui:20
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: mainwindow.cpp:312 mainwindow.cpp:320 rc.cpp:39 rc.cpp:156
+#: mainwindow.cpp:307 mainwindow.cpp:315 rc.cpp:39 rc.cpp:156
 msgid "History"
 msgstr ""
 
-#: mainwindow.cpp:336
+#: mainwindow.cpp:331
 msgid "&History"
 msgstr ""
 
-#: mainwindow.cpp:522
-msgid "Web Resources (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"
+#: mainwindow.cpp:517
+msgid "Web Resources (*.html *.htm *.svg *.png *.gif *.svgz); All files (*.*)"
 msgstr ""
 
-#: mainwindow.cpp:524
+#: mainwindow.cpp:519
 msgid "Open Web Resource"
 msgstr ""
 
-#: mainwindow.cpp:558
+#: mainwindow.cpp:553
 msgid "Print Document"
 msgstr ""
 
-#: mainwindow.cpp:570
+#: mainwindow.cpp:565
 msgid "Are you sure you want to turn on private browsing?"
 msgstr ""
 
-#: mainwindow.cpp:571
+#: mainwindow.cpp:566
 msgid ""
 "</b><br><br>When private browsing in turned on, webpages are not added to "
-"the history, new cookies are not stored, current cookies can't be accessed, "
-"site icons wont be stored, session wont be saved,  and searches are not "
-"addded to the pop-up menu in the Google search box.  Until you close the "
+"the history, new cookies are not stored, current cookies cannot be accessed, "
+"site icons will not be stored, session will not be saved,  and searches are "
+"not addded to the pop-up menu in the Google search box.  Until you close the "
 "window, you can still click the Back and Forward buttons to return to the "
 "webpages you have opened."
 msgstr ""
 
-#: mainwindow.cpp:631 mainwindow.cpp:653
+#: mainwindow.cpp:626 mainwindow.cpp:648
 msgid " not found."
 msgstr ""
 
-#: mainwindow.cpp:741
+#: mainwindow.cpp:765
 msgid ""
 "The web inspector will only work correctly for pages that were loaded after "
 "enabling.\n"
 "Do you want to reload all pages?"
 msgstr ""
 
-#: mainwindow.cpp:743
+#: mainwindow.cpp:767
 msgid "Web Inspector"
 msgstr ""
 
-#: mainwindow.cpp:775
+#: mainwindow.cpp:799
 msgid "Stop loading the current page"
 msgstr ""
 
-#: mainwindow.cpp:776
+#: mainwindow.cpp:800
 msgid "Stop"
 msgstr ""
 
-#: mainwindow.cpp:783
+#: mainwindow.cpp:807
 msgid "Reload the current page"
 msgstr ""
 
-#: mainwindow.cpp:784
-msgid "Reload"
-msgstr ""
-
-#: mainwindow.cpp:867
+#: mainwindow.cpp:891
 msgid ""
 "Are you sure you want to close the window?\n"
 "You have %1 tab(s) open"
 msgstr ""
 
-#: mainwindow.cpp:868
+#: mainwindow.cpp:892
 msgid "Are you sure you want to close the window?"
 msgstr ""
 
-#: mainwindow.cpp:870
+#: mainwindow.cpp:894
 msgid "C&lose Current Tab"
 msgstr ""
 
@@ -365,87 +367,87 @@ msgstr ""
 msgid "Search: "
 msgstr ""
 
-#: searchbar.cpp:58
+#: searchbar.cpp:57
 msgid "Search.."
 msgstr ""
 
 #. i18n: file: settings_general.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, general)
-#: settings.cpp:82 rc.cpp:126
+#: settings.cpp:81 rc.cpp:126
 msgid "General"
 msgstr ""
 
 #. i18n: file: settings_fonts.ui:20
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: settings.cpp:88 rc.cpp:111
+#: settings.cpp:87 rc.cpp:111
 msgid "Fonts"
 msgstr ""
 
 #. i18n: file: settings_privacy.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, privacy)
-#: settings.cpp:94 rc.cpp:153
+#: settings.cpp:93 rc.cpp:153
 msgid "Privacy"
 msgstr ""
 
 #. i18n: file: settings_proxy.ui:13
 #. i18n: ectx: property (windowTitle), widget (QWidget, proxy)
-#: settings.cpp:100 rc.cpp:213
+#: settings.cpp:99 rc.cpp:213
 msgid "Proxy"
 msgstr ""
 
-#: settings.cpp:106
+#: settings.cpp:105
 msgid "Webkit"
 msgstr ""
 
-#: settings.cpp:122
+#: settings.cpp:121
 msgid "rekonfig.."
 msgstr ""
 
-#: settings.cpp:144
+#: settings.cpp:143
 msgid "Specifies whether images are automatically loaded in web pages"
 msgstr ""
 
-#: settings.cpp:145
+#: settings.cpp:144
 msgid "Enables the running of JavaScript programs."
 msgstr ""
 
-#: settings.cpp:146
+#: settings.cpp:145
 msgid "Enables Java applets."
 msgstr ""
 
-#: settings.cpp:147
+#: settings.cpp:146
 msgid "Enables plugins in web pages."
 msgstr ""
 
-#: settings.cpp:148
+#: settings.cpp:147
 msgid "Allows JavaScript programs to opening new windows."
 msgstr ""
 
-#: settings.cpp:149
+#: settings.cpp:148
 msgid "Allows JavaScript programs to reading/writing to the clipboard."
 msgstr ""
 
-#: settings.cpp:150
+#: settings.cpp:149
 msgid "Includes hyperlinks in the keyboard focus chain."
 msgstr ""
 
-#: settings.cpp:151
+#: settings.cpp:150
 msgid "Applies the zoom factor on a frame to only the text or all content."
 msgstr ""
 
-#: settings.cpp:152
+#: settings.cpp:151
 msgid "Draws also background color and images when the page is printed."
 msgstr ""
 
-#: settings.cpp:153
+#: settings.cpp:152
 msgid "Support for the HTML 5 offline storage feature."
 msgstr ""
 
-#: settings.cpp:154
+#: settings.cpp:153
 msgid "Support for the HTML 5 web application cache feature."
 msgstr ""
 
-#: settings.cpp:155
+#: settings.cpp:154
 msgid "Support for the HTML 5 local storage feature."
 msgstr ""
 
@@ -465,47 +467,51 @@ msgstr ""
 msgid "Reload All Tabs"
 msgstr ""
 
-#: webview.cpp:203
+#: webview.cpp:243
 msgid "Error loading page: "
 msgstr ""
 
-#: webview.cpp:262
+#: webview.cpp:307
 msgid "Open Link in New &Tab"
 msgstr ""
 
-#: webview.cpp:268
+#: webview.cpp:313
 msgid "Cu&t"
 msgstr ""
 
-#: webview.cpp:273
+#: webview.cpp:318
 msgid "&Copy"
 msgstr ""
 
-#: webview.cpp:278
+#: webview.cpp:323
 msgid "&Paste"
 msgstr ""
 
-#: webview.cpp:283
+#: webview.cpp:328
 msgid "&Save Image As..."
 msgstr ""
 
-#: webview.cpp:288
+#: webview.cpp:333
 msgid "&Copy This Image"
 msgstr ""
 
-#: webview.cpp:293
+#: webview.cpp:338
 msgid "&Save Link As..."
 msgstr ""
 
-#: webview.cpp:298
+#: webview.cpp:343
 msgid "&Copy Link Location"
 msgstr ""
 
-#: webview.cpp:309
+#: webview.cpp:348
+msgid "&Inspect Element"
+msgstr ""
+
+#: webview.cpp:362
 msgid "Bookmark This Page"
 msgstr ""
 
-#: webview.cpp:356
+#: webview.cpp:415
 msgid "&Bookmark This Link"
 msgstr ""
 
