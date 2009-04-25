@@ -5,7 +5,6 @@
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
 * Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
 * Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 rekonq team. Please, see AUTHORS file for details
 *
 *
 * This program is free software; you can redistribute it
