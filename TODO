@@ -28,9 +28,9 @@ DONE loading ONE site when calling rekonq..
 
 - fix crash on example sites..
 - improve DOCUMENTATION
-- fix Action on tabbar (clone ads)
+DONE fix Action on tabbar (clone ads)
 - Type "FormSubmitted" (WordPress)
-- check statusbar slots
+DONE check statusbar slots
 - fix fonts
 
 
@@ -47,10 +47,10 @@ LONG TERM FIXES
 - to 0.1alpha
     - checking focus question
     - bookmarks panel
-    - copyright question
-    - loading urlbar
-    - fullscreen action impr
+    - copyright question (ALMOST DONE)
+    - loading urlbar (DONE)
+    - fullscreen action impr (DONE)
     - mailto KDE loading
     - unit tests
-    - webview Arora tmp fix
+    - webview Arora tmp fix (DONE)
     - ?
