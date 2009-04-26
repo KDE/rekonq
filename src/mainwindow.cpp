@@ -59,6 +59,9 @@
 #include <KPushButton>
 #include <KTemporaryFile>
 
+#include <kdeprintdialog.h>
+#include <kprintpreview.h>
+
 
 // Qt Includes
 #include <QtGui>
@@ -533,14 +536,15 @@ void MainWindow::slotFileOpen()
 }
 
 
-// TODO: Port to KDE
 void MainWindow::slotFilePrintPreview()
 {
     if (!currentTab())
         return;
-    QPrintPreviewDialog *dialog = new QPrintPreviewDialog(this);
-    connect(dialog, SIGNAL(paintRequested(QPrinter *)), currentTab(), SLOT(print(QPrinter *)));
-    dialog->exec();
+
+    QPrinter printer;
+    KPrintPreview previewdlg( &printer, this );
+    currentTab()->print(&printer);
+    previewdlg.exec();
 }
 
 
@@ -552,12 +556,11 @@ void MainWindow::slotFilePrint()
 }
 
 
-// TODO: Port to KDE
 void MainWindow::printRequested(QWebFrame *frame)
 {
     QPrinter printer;
-    QPrintDialog *dialog = new QPrintDialog(&printer, this);
-    dialog->setWindowTitle(i18n("Print Document"));
+
+    QPrintDialog *dialog = KdePrint::createPrintDialog( &printer, this );
     if (dialog->exec() != QDialog::Accepted)
         return;
     frame->print(&printer);
