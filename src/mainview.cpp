@@ -80,19 +80,17 @@ MainView::MainView(QWidget *parent)
     m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
     m_recentlyClosedTabsAction->setEnabled(false);
 
+    #if QT_VERSION >= 0x040500
+        connect(m_tabBar, SIGNAL(closeRequest(int)), this, SLOT(closeTab(int)));
     #if KDE_IS_VERSION(4,2,60)
         setTabsClosable(true);  // this causes #23 on KDE 4.2
     #else
-        setCloseButtonEnabled(true);  // this is deprecated, remove
+        setCloseButtonEnabled(true);  // this is deprecated, remove for KDE >=4.3
+    #endif
     #endif
 
-    connect(m_tabBar, SIGNAL(tabCloseRequested(int)),this, SLOT(slotCloseTab(int)));
-
     // --
-    connect(this, SIGNAL(loadUrlPage(const KUrl &)), 
-        this, SLOT(loadUrlInCurrentTab(const KUrl &)));
-
-    // --
+    connect(this, SIGNAL(loadUrlPage(const KUrl &)), this, SLOT(loadUrlInCurrentTab(const KUrl &)));
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
 }
 
