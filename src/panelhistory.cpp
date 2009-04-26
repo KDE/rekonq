@@ -20,6 +20,7 @@
 
 // Self Includes
 #include "panelhistory.h"
+#include "panelhistory.moc"
 
 // QT Includes
 #include <QLabel>
@@ -91,3 +92,4 @@ void PanelHistory::open()
         return;
     emit openUrl(index.data(HistoryModel::UrlRole).toUrl());
 }
+

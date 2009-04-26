@@ -34,6 +34,8 @@ class QKeyEvent;
 
 class LineEdit : public KLineEdit
 {
+Q_OBJECT
+
 public:
     explicit LineEdit(QWidget *parent = 0);
     virtual ~LineEdit();

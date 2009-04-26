@@ -20,7 +20,6 @@
 #ifndef SIDEPANEL_H
 #define SIDEPANEL_H
 
-
 // Qt Includes
 #include <QDockWidget>
 

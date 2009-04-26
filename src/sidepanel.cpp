@@ -19,6 +19,7 @@
 
 // Self Includes
 #include "sidepanel.h"
+#include "sidepanel.moc"
 
 // Auto Includes
 #include "rekonq.h"
@@ -49,3 +50,4 @@ SidePanel::~SidePanel()
     
     delete m_panelHistory;
 }
+

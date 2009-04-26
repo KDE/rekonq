@@ -19,6 +19,7 @@
 
 // Self Includes
 #include "lineedit.h"
+#include "lineedit.moc"
 
 // Qt Includes
 #include <QContextMenuEvent>

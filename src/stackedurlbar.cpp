@@ -20,6 +20,7 @@
 
 // Self Includes
 #include "stackedurlbar.h"
+#include "stackedurlbar.moc"
 
 // KDE Includes
 #include "kdebug.h"
