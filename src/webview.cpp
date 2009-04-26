@@ -43,6 +43,7 @@
 #include <KUrl>
 #include <KActionCollection>
 #include <KDebug>
+#include <KToolInvocation>
 
 // Qt Includes
 #include <QtCore>
@@ -74,7 +75,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     QString scheme = request.url().scheme();
     if (scheme == QLatin1String("mailto") )
     {
-        QDesktopServices::openUrl(request.url());
+        KToolInvocation::invokeMailer(request.url());
         return false;
     }
 
