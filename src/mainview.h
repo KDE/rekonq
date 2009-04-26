@@ -111,7 +111,7 @@ public slots:
      * @return a pointer to the new WebView
      */
     WebView *newWebView(bool makeCurrent = true);
-    void loadUrlInCurrentTab(const KUrl &url); // DEPRECATED
+    void loadUrlInCurrentTab(const KUrl &url);
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);
     void slotCloseOtherTabs(int index);

@@ -80,18 +80,12 @@ MainView::MainView(QWidget *parent)
     m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
     m_recentlyClosedTabsAction->setEnabled(false);
 
-    #if QT_VERSION >= 0x040500
-        connect(m_tabBar, SIGNAL(closeRequest(int)), this, SLOT(closeTab(int)));
-    #if KDE_IS_VERSION(4,2,60)
-        setTabsClosable(true);  // this causes #23 on KDE 4.2
-    #else
-        setCloseButtonEnabled(true);  // this is deprecated, remove for KDE >=4.3
-    #endif
-    #endif
-
     // --
     connect(this, SIGNAL(loadUrlPage(const KUrl &)), this, SLOT(loadUrlInCurrentTab(const KUrl &)));
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
+
+    setTabsClosable(true);
+    connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
 }
 
 
@@ -366,9 +360,11 @@ void MainView::slotReloadAllTabs()
 
 void MainView::windowCloseRequested()
 {
+
     WebPage *webPage = qobject_cast<WebPage*>(sender());
     WebView *webView = qobject_cast<WebView*>(webPage->view());
     int index = webViewIndex(webView);
+
     if (index >= 0)
     {
         if (count() == 1)
@@ -379,6 +375,10 @@ void MainView::windowCloseRequested()
         {
             slotCloseTab(index);
         }
+    }
+    else
+    {
+        kWarning() << "Invalid tab index" << "line:" << __LINE__;
     }
 }
 
@@ -419,6 +419,7 @@ void MainView::slotCloneTab(int index)
 // When index is -1 index chooses the current tab
 void MainView::slotCloseTab(int index)
 {
+    kWarning() << "Index: " << index;
     // do nothing if just one tab is opened
     if( count() == 1 )
         return;
