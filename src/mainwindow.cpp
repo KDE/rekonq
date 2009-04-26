@@ -115,8 +115,11 @@ MainWindow::MainWindow()
     // update toolbar actions
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
-    // --------------------------------------
     
+    // bookmarks loading
+    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
+
+
     slotUpdateWindowTitle();
 
     // then, setup our actions
@@ -396,10 +399,12 @@ KUrl MainWindow::guessUrlFromString(const QString &string)
 
     // Check if it looks like a qualified URL. Try parsing it and see.
     bool hasSchema = test.exactMatch(urlStr);
+
     if (hasSchema)
     {
         QUrl qurl(urlStr, QUrl::TolerantMode);
         KUrl url(qurl);
+
         if (url.isValid())
         {
             return url;
@@ -417,12 +422,14 @@ KUrl MainWindow::guessUrlFromString(const QString &string)
     if (!hasSchema)
     {
         int dotIndex = urlStr.indexOf(QLatin1Char('.'));
+
         if (dotIndex != -1)
         {
             QString prefix = urlStr.left(dotIndex).toLower();
             QString schema = (prefix == QLatin1String("ftp")) ? prefix : QLatin1String("http");
             QUrl qurl(schema + QLatin1String("://") + urlStr, QUrl::TolerantMode);
             KUrl url(qurl);
+
             if (url.isValid())
             {
                 return url;

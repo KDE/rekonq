@@ -62,16 +62,6 @@ void BookmarkOwner::openBookmark(const KBookmark & bookmark,
     Q_UNUSED(mouseButtons) 
     Q_UNUSED(keyboardModifiers)
 
-    // FIXME this is workaround for double call issue
-    // When middle mouse button is clicked this method is called twice
-    static bool isDouble = false;
-    if (isDouble)
-    {
-        isDouble = false;
-        return;
-    }
-    //--
-
     emit openUrl(bookmark.url());
 }
 

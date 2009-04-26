@@ -98,7 +98,8 @@
 
 <!--  ============ Bookmarks ToolBar =========== -->
 <ToolBar name="bookmarksToolBar" fullWidth="true" iconText="icontextright" iconSize="16" newline="true" hidden="true" noEdit="true">
-<text>Bookmark Toolbar</text>
+    <text>Bookmark Toolbar</text>
+    <Action noEdit="true" name="bookmarks_bar" />
 </ToolBar>
 
 </gui>
