@@ -1,3 +1,11 @@
 qtdemobrowser
 releases
 src/.ctagsdb
+*.*~
+*.kdev4
+.directory
+*.tmp
+build/
+qtcreator-build/
+CMakeLists.txt.user
+CMakeCache.txt
