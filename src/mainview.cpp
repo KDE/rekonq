@@ -65,7 +65,6 @@ MainView::MainView(QWidget *parent)
 
     m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
 
-    connect(m_tabBar, SIGNAL(newTab()), this, SLOT(newWebView()));
     connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(slotCloseTab(int)));
     connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(slotCloneTab(int)));
     connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(slotCloseOtherTabs(int)));
