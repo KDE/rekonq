@@ -98,11 +98,13 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
     KDialog dialog(mainWindow,Qt::Sheet);
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
 
     Ui::passwordWidget passwordWidget;
-    passwordWidget.setupUi(&dialog);
+    QWidget widget;
+    passwordWidget.setupUi(&widget);
 
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    dialog.setMainWidget(&widget);
 
     passwordWidget.iconLabel->setText(QString());
     passwordWidget.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
@@ -124,11 +126,13 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
     KDialog dialog(mainWindow, Qt::Sheet);
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
 
     Ui::proxyWidget proxyWdg;
-    proxyWdg.setupUi(&dialog);
-
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QWidget widget;
+    proxyWdg.setupUi(&widget);
+    
+    dialog.setMainWidget(&widget);
 
     proxyWdg.iconLabel->setText(QString());
     proxyWdg.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
