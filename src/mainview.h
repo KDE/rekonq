@@ -105,6 +105,7 @@ public:
 
 protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
+    virtual void contextMenuEvent(QContextMenuEvent *event);
 
 public slots:
     /**

@@ -49,7 +49,8 @@ TabBar::TabBar(QWidget *parent)
     setElideMode(Qt::ElideRight);
     setContextMenuPolicy(Qt::CustomContextMenu);
     setMovable(true);
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenuRequested(const QPoint &)));
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this,
+            SLOT(contextMenuRequested(const QPoint &)));
 
     // tabbar font
     QFont standardFont = KGlobalSettings::generalFont();

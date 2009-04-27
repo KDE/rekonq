@@ -231,6 +231,16 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event)
 }
 
 
+void MainView::contextMenuEvent(QContextMenuEvent *event)
+{
+    if (!childAt(event->pos()))
+    {
+        m_tabBar->contextMenuRequested(event->pos());
+        return;
+    }
+    KTabWidget::contextMenuEvent(event);
+}
+
 // When index is -1 index chooses the current tab
 void MainView::slotReloadTab(int index)
 {
