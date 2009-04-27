@@ -218,6 +218,19 @@ void MainView::clear()
 }
 
 
+void MainView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (!childAt(event->pos())
+            // Remove the line below when QTabWidget does not have a one pixel frame
+            && event->pos().y() < (tabBar()->y() + tabBar()->height()))
+    {
+        newWebView(true);
+        return;
+    }
+    KTabWidget::mouseDoubleClickEvent(event);
+}
+
+
 // When index is -1 index chooses the current tab
 void MainView::slotReloadTab(int index)
 {

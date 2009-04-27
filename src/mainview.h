@@ -103,6 +103,9 @@ public:
     void showTabBar();
     void clear();
 
+protected:
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
+
 public slots:
     /**
      * Core browser slot. This create a new tab with a WebView inside
