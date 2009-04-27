@@ -79,12 +79,12 @@ int Application::newInstance()
     if (!m_mainWindow)
     {
         m_mainWindow = new MainWindow();
-        
+
         m_mainWindow->setObjectName("MainWindow");
         setWindowIcon(KIcon("rekonq"));
-        
+
         m_mainWindow->show();
-        
+
         QTimer::singleShot(0, this, SLOT(postLaunch()));
     }
 
@@ -94,7 +94,7 @@ int Application::newInstance()
         {
             KUrl url = MainWindow::guessUrlFromString(args->arg(i));
             newWebView();
-            mainWindow()->loadUrl(url);
+            emit openUrl(url);
         }
         args->clear();
     }
@@ -135,21 +135,15 @@ void Application::slotSaveConfiguration() const
 }
 
 
-void Application::openUrl(const KUrl &url)
-{
-    mainWindow()->loadUrl(url);
-}
-
-
 MainWindow *Application::mainWindow()
 {
     return m_mainWindow;
 }
 
 
-WebView *Application::newWebView()
+WebView *Application::newWebView(bool makeCurrent)
 {
-    return m_mainWindow->mainView()->newWebView();
+    return m_mainWindow->mainView()->newWebView(makeCurrent);
 }
 
 
@@ -183,7 +177,7 @@ HistoryManager *Application::historyManager()
 
 DownloadManager *Application::downloadManager()
 {
-    if (!s_downloadManager) 
+    if (!s_downloadManager)
     {
         s_downloadManager = new DownloadManager();
     }

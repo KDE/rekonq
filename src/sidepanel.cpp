@@ -36,9 +36,10 @@ SidePanel::SidePanel(const QString &title, QWidget *parent, Qt::WindowFlags flag
     setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     setShown(ReKonfig::showSideBar());
-    
-    connect(m_panelHistory, SIGNAL(openUrl(const KUrl&)), this, SIGNAL(openUrl(const KUrl&)));
-    
+
+    connect(m_panelHistory, SIGNAL(openUrl(const KUrl &, Rekonq::OpenType)),
+            this, SIGNAL(openUrl(const KUrl &, Rekonq::OpenType)));
+
     setWidget(m_panelHistory);
 }
 
@@ -47,7 +48,7 @@ SidePanel::~SidePanel()
 {
     // Save side panel's state
     ReKonfig::setShowSideBar(!isHidden());
-    
+
     delete m_panelHistory;
 }
 
