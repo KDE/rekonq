@@ -92,13 +92,12 @@ class WebView : public QWebView
 
 public:
     WebView(QWidget *parent = 0);
-    WebPage *webPage() const { return m_page; }
     
     KActionCollection* webActions();
- 
-    void loadUrl(const KUrl &url);
-    KUrl url() const;
 
+    // inline
+    WebPage *webPage() const { return m_page; } 
+    KUrl url() const { return KUrl(QWebView::url()); }
     QString lastStatusBarText() const { return m_statusBarText; }
     int progress() const { return m_progress; }
 
@@ -133,7 +132,6 @@ private:
     
     int m_progress;
     QString m_statusBarText;
-    KUrl m_initialUrl;
 };
 
 #endif

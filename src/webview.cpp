@@ -454,32 +454,6 @@ void WebView::loadFinished()
 }
 
 
-void WebView::loadUrl(const KUrl &url)
-{
-    m_initialUrl = url;
-
-    if (m_initialUrl.isRelative())
-    {
-        QString fn = m_initialUrl.url(KUrl::RemoveTrailingSlash);
-        m_initialUrl.setUrl("//" + fn);
-        m_initialUrl.setScheme("http");
-    }
-
-    load(m_initialUrl);
-}
-
-
-KUrl WebView::url() const
-{
-    KUrl url = QWebView::url();
-    if (!url.isEmpty())
-    {
-        return url;
-    }
-    return m_initialUrl;
-}
-
-
 void WebView::mousePressEvent(QMouseEvent *event)
 {
     m_page->m_pressedButtons = event->buttons();
