@@ -61,10 +61,13 @@ MainView::MainView(QWidget *parent)
         , m_urlBars(new StackedUrlBar(this))
         , m_tabBar(new TabBar(this))
 {
+    // setting tabbar
     setTabBar(m_tabBar);
-
+    
+    // loading pixmap path
     m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
 
+    // connecting tabbar signals
     connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(slotCloseTab(int)));
     connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(slotCloneTab(int)));
     connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(slotCloseOtherTabs(int)));
@@ -72,19 +75,14 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(slotReloadAllTabs()));
     connect(m_tabBar, SIGNAL(tabMoved(int,int)), this, SLOT(moveTab(int,int)));
 
-    // Recently Closed Tab Action
-    connect(m_recentlyClosedTabsMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowRecentTabsMenu()));
-    connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)), this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
-    m_recentlyClosedTabsAction = new KAction(i18n("Recently Closed Tabs"), this);
-    m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
-    m_recentlyClosedTabsAction->setEnabled(false);
-
     // --
     connect(this, SIGNAL(loadUrlPage(const KUrl &)), this, SLOT(loadUrlInCurrentTab(const KUrl &)));
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
 
     setTabsClosable(true);
     connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
+
+    QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
 
@@ -92,6 +90,16 @@ MainView::~MainView()
 {
 }
 
+
+void MainView::postLaunch()
+{
+    // Recently Closed Tab Action
+    connect(m_recentlyClosedTabsMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowRecentTabsMenu()));
+    connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)), this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
+    m_recentlyClosedTabsAction = new KAction(i18n("Recently Closed Tabs"), this);
+    m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
+    m_recentlyClosedTabsAction->setEnabled(false);
+}
 
 void MainView::showTabBar()
 {

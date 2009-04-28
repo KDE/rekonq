@@ -158,6 +158,8 @@ private slots:
      */
     void moveTab(int fromIndex, int toIndex);
 
+    void postLaunch();
+
 private:
 
     /**
