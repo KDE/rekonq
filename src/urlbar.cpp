@@ -175,14 +175,9 @@ inline void UrlBar::slotUpdateProgress(int progress)
 
 void UrlBar::paintEvent(QPaintEvent *event)
 {
-    QColor baseColor = s_defaultBaseColor;
-    if (m_currentUrl.scheme() == QLatin1String("https"))
-    {
-        baseColor = QColor(248, 248, 100);
-    }
     // set background color of UrlBar
     QPalette p = palette();
-    p.setColor(QPalette::Base, baseColor);
+    p.setColor(QPalette::Base, s_defaultBaseColor);
     setPalette(p);
     
     KHistoryComboBox::paintEvent(event);
@@ -190,9 +185,16 @@ void UrlBar::paintEvent(QPaintEvent *event)
     if (!hasFocus())
     {
         QPainter painter(this);
-        
-        QColor loadingColor = QColor(116, 192, 250);
 
+        QColor loadingColor;
+        if (m_currentUrl.scheme() == QLatin1String("https"))
+        {
+            loadingColor = QColor(248, 248, 100);
+        }
+        else
+        {
+            loadingColor = QColor(116, 192, 250);
+        }
         painter.setBrush(generateGradient(loadingColor, height()));
         painter.setPen(Qt::transparent);
         
