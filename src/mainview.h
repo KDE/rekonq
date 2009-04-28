@@ -103,9 +103,6 @@ public:
     void showTabBar();
     void clear();
 
-protected:
-    virtual void mouseDoubleClickEvent(QMouseEvent *event);
-    virtual void contextMenuEvent(QContextMenuEvent *event);
 
 public slots:
     /**
