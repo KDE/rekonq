@@ -45,7 +45,6 @@ public:
     ~TabBar();
 
 signals:
-    void newTab();
     void cloneTab(int index);
     void closeTab(int index);
     void closeOtherTabs(int index);
@@ -53,8 +52,6 @@ signals:
     void reloadAllTabs();
 
 protected:
-    void mousePressEvent(QMouseEvent* event);
-
     /**
      * Added to fix tab dimension
      */
@@ -68,12 +65,9 @@ private slots:
     void contextMenuRequested(const QPoint &position);
 
 private:
-
     friend class MainView;
 
     QWidget *m_parent;
-    QPoint m_dragStartPos;
-    int m_dragCurrentIndex;
 
     /**
      * the index in which we are seeing a Context menu

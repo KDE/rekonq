@@ -34,17 +34,17 @@ class SidePanel : public QDockWidget
 {
     Q_OBJECT
     Q_DISABLE_COPY(SidePanel)
-    
+
 public:
     explicit SidePanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
     ~SidePanel();
-    
+
 signals:
-    void openUrl(const KUrl&);
-    
+    void openUrl(const KUrl&, Rekonq::OpenType type=Rekonq::Current);
+
 private:
     PanelHistory *m_panelHistory;
-    
+
 };
 
 #endif // SIDEPANEL_H

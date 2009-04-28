@@ -47,6 +47,18 @@ class MainWindow;
 class NetworkAccessManager;
 class WebView;
 
+namespace Rekonq {
+    /**
+     * @short Open link options
+     * Defferent modes of opening new tab
+     */
+    enum OpenType {
+        Default,    ///< open url according to users settings
+        Current,    ///< open url in current tab
+        New,        ///< open url in new tab and make it current
+        Background  ///< open url in new tab in background
+    };
+}
 
 /**
   *
@@ -62,7 +74,7 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
-    WebView* newWebView();
+    WebView* newWebView(bool makeCurrent = true);
 
     KIcon icon(const KUrl &url) const;
 
@@ -72,13 +84,16 @@ public:
     static DownloadManager *downloadManager();
     static BookmarkProvider *bookmarkProvider();
 
+signals:
+    void openUrl(const KUrl &url, Rekonq::OpenType type=Rekonq::Current);
+
 public slots:
     /**
      * Save application's configuration
      * @see ReKonfig::self()->writeConfig();
      */
     void slotSaveConfiguration() const;
-    
+
 
 private slots:
 
@@ -86,7 +101,6 @@ private slots:
      * Any actions that can be delayed until the window is visible
      */
     void postLaunch();
-    void openUrl(const KUrl &url);
 
 private:
     static QPointer<HistoryManager> s_historyManager;

@@ -41,7 +41,7 @@ public:
     virtual ~PanelHistory();
 
 signals:
-    void openUrl(const KUrl&);
+    void openUrl(const KUrl &url, Rekonq::OpenType type=Rekonq::Current);
 
 private slots:
     void open();
@@ -49,7 +49,7 @@ private slots:
 private:
     QTreeView *m_historyTreeView;
     TreeProxyModel *m_treeProxyModel;
-    
+
 };
 
 #endif // PANELHISTORY_H

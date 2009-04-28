@@ -49,7 +49,8 @@ TabBar::TabBar(QWidget *parent)
     setElideMode(Qt::ElideRight);
     setContextMenuPolicy(Qt::CustomContextMenu);
     setMovable(true);
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenuRequested(const QPoint &)));
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this,
+            SLOT(contextMenuRequested(const QPoint &)));
 
     // tabbar font
     QFont standardFont = KGlobalSettings::generalFont();
@@ -96,18 +97,20 @@ QSize TabBar::tabSizeHint(int index) const
 void TabBar::contextMenuRequested(const QPoint &position)
 {
     KMenu menu;
-    menu.addAction(i18n("New &Tab"), this, SIGNAL(newTab()));
+    MainWindow *mainWindow = Application::instance()->mainWindow();
+
+    menu.addAction(mainWindow->actionByName(QLatin1String("new_tab")));
     int index = tabAt(position);
     if (-1 != index)
     {
         m_actualIndex = index;
 
-        KAction *action = (KAction *) menu.addAction(i18n("Clone Tab"), this, SLOT(cloneTab()));
+        menu.addAction(KIcon("tab-duplicate"), i18n("Clone Tab"), this, SLOT(cloneTab()));
         menu.addSeparator();
-        action = (KAction *) menu.addAction(i18n("&Close Tab"), this, SLOT(closeTab()));
-        action = (KAction *) menu.addAction(i18n("Close &Other Tabs"), this, SLOT(closeOtherTabs()));
+        menu.addAction(KIcon("tab-close"), i18n("&Close Tab"), this, SLOT(closeTab()));
+        menu.addAction(KIcon("tab-close-other"), i18n("Close &Other Tabs"), this, SLOT(closeOtherTabs()));
         menu.addSeparator();
-        action = (KAction *) menu.addAction(i18n("Reload Tab"), this, SLOT(reloadTab()));
+        menu.addAction(KIcon("view-refresh"), i18n("Reload Tab"), this, SLOT(reloadTab()));
     }
     else
     {
@@ -133,16 +136,6 @@ void TabBar::closeTab()
 void TabBar::closeOtherTabs()
 {
     emit closeOtherTabs(m_actualIndex);
-}
-
-
-void TabBar::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-    {
-        m_dragStartPos = event->pos();
-    }
-    KTabBar::mousePressEvent(event);
 }
 
 

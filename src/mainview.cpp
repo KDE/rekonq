@@ -65,7 +65,6 @@ MainView::MainView(QWidget *parent)
 
     m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
 
-    connect(m_tabBar, SIGNAL(newTab()), this, SLOT(newWebView()));
     connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(slotCloseTab(int)));
     connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(slotCloneTab(int)));
     connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(slotCloseOtherTabs(int)));
@@ -81,8 +80,13 @@ MainView::MainView(QWidget *parent)
     m_recentlyClosedTabsAction->setEnabled(false);
 
     // --
-    connect(this, SIGNAL(loadUrlPage(const KUrl &)), this, SLOT(loadUrlInCurrentTab(const KUrl &)));
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
+
+    connect(Application::instance(), SIGNAL(openUrl(const KUrl &, Rekonq::OpenType)),
+            this, SLOT(openUrl(const KUrl &, Rekonq::OpenType)));
+    // bookmarks loading
+    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl &, Rekonq::OpenType)),
+            this, SLOT(openUrl(const KUrl &, Rekonq::OpenType)));
 
     setTabsClosable(true);
     connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
@@ -214,6 +218,29 @@ void MainView::clear()
 }
 
 
+void MainView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (!childAt(event->pos())
+            // Remove the line below when QTabWidget does not have a one pixel frame
+            && event->pos().y() < (tabBar()->y() + tabBar()->height()))
+    {
+        newWebView(true);
+        return;
+    }
+    KTabWidget::mouseDoubleClickEvent(event);
+}
+
+
+void MainView::contextMenuEvent(QContextMenuEvent *event)
+{
+    if (!childAt(event->pos()))
+    {
+        m_tabBar->contextMenuRequested(event->pos());
+        return;
+    }
+    KTabWidget::contextMenuEvent(event);
+}
+
 // When index is -1 index chooses the current tab
 void MainView::slotReloadTab(int index)
 {
@@ -239,16 +266,18 @@ void MainView::slotCurrentChanged(int index)
     WebView *oldWebView = this->webView(m_urlBars->currentIndex());
     if (oldWebView)
     {
-        disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)), 
+        disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)),
                     this, SIGNAL(showStatusBarMessage(const QString&)));
-        disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
+        disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
                     this, SIGNAL(linkHovered(const QString&)));
-        disconnect(oldWebView, SIGNAL(loadProgress(int)), 
+        disconnect(oldWebView, SIGNAL(loadProgress(int)),
                     this, SIGNAL(loadProgress(int)));
     }
 
-    connect(webView, SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
-    connect(webView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), this, SIGNAL(linkHovered(const QString&)));
+    connect(webView, SIGNAL(statusBarMessage(const QString &)),
+            this, SIGNAL(showStatusBarMessage(const QString &)));
+    connect(webView->page(), SIGNAL(linkHovered(const QString &, const QString &, const QString &)),
+            this, SIGNAL(linkHovered(const QString &)));
     connect(webView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
 
     emit setCurrentTitle(webView->title());
@@ -294,17 +323,17 @@ WebView *MainView::newWebView(bool makeCurrent)
 {
     // line edit
     UrlBar *urlBar = new UrlBar;  // Ownership of widget is passed on to the QStackedWidget (addWidget method).
-    connect(urlBar, SIGNAL(activated(const KUrl&)), this, SLOT(loadUrlInCurrentTab(const KUrl&)));
+    connect(urlBar, SIGNAL(activated(const KUrl &)), this, SLOT(openUrl(const KUrl &)));
     m_urlBars->addUrlBar(urlBar);
 
     WebView *webView = new WebView;  // should be deleted on tab close
-    
+
     // connecting webview with urlbar
     connect(webView, SIGNAL(loadProgress(int)), urlBar, SLOT(slotUpdateProgress(int)));
     connect(webView, SIGNAL(loadFinished(bool)), urlBar, SLOT(slotLoadFinished(bool)));
     connect(webView, SIGNAL(urlChanged(const QUrl &)), urlBar, SLOT(setUrl(const QUrl &)));
     connect(webView, SIGNAL(iconChanged()), urlBar, SLOT(slotUpdateUrl()));
-    
+
     // connecting webview with mainview
     connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
     connect(webView, SIGNAL(loadProgress(int)), this, SLOT(webViewLoadProgress(int)));
@@ -317,17 +346,17 @@ WebView *MainView::newWebView(bool makeCurrent)
     connect(webView, SIGNAL(shiftCtrlTabPressed()), this, SLOT(previousTab()));
 
     // connecting webPage signals with mainview
-    connect(webView->page(), SIGNAL(windowCloseRequested()), 
+    connect(webView->page(), SIGNAL(windowCloseRequested()),
             this, SLOT(windowCloseRequested()));
-    connect(webView->page(), SIGNAL(geometryChangeRequested(const QRect &)), 
+    connect(webView->page(), SIGNAL(geometryChangeRequested(const QRect &)),
             this, SIGNAL(geometryChangeRequested(const QRect &)));
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)),
             this, SIGNAL(printRequested(QWebFrame *)));
-    connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)), 
+    connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)),
             this, SIGNAL(menuBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)), 
+    connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)),
             this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)), 
+    connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)),
             this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
 
     addTab(webView, i18n("(Untitled)"));
@@ -507,9 +536,9 @@ void MainView::webViewLoadProgress(int progress)
     {
         return;
     }
-    
+
     double totalBytes = static_cast<double>(webView->webPage()->totalBytes() / 1024);
-    
+
     QString message = i18n("Loading %1% (%2 %3)...", progress, totalBytes, QLatin1String("kB") );
     emit showStatusBarMessage(message);
 }
@@ -519,7 +548,7 @@ void MainView::webViewLoadFinished(bool ok)
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
-    
+
    if (-1 != index)
     {
         QLabel *label = animatedLoading(index, true);
@@ -527,7 +556,7 @@ void MainView::webViewLoadFinished(bool ok)
         if(movie)
             movie->stop();
     }
-    
+
     webViewIconChanged();
 
     // don't display messages for background tabs
@@ -535,7 +564,7 @@ void MainView::webViewLoadFinished(bool ok)
     {
         return;
     }
-    
+
     if (ok)
         emit showStatusBarMessage(i18n("Done"));
     else
@@ -610,20 +639,44 @@ void MainView::aboutToShowRecentTabsMenu()
 void MainView::aboutToShowRecentTriggeredAction(QAction *action)
 {
     KUrl url = action->data().toUrl();
-    loadUrlInCurrentTab(url);
+    openUrl(url, Rekonq::Current);
+}
+
+
+void MainView::openUrl(const KUrl& url, Rekonq::OpenType type)
+{
+    kDebug() << "sender:" << sender() << "  line:" << __LINE__;
+
+    if (url.isEmpty())
+    {
+        kWarning() << "Can't load an empty url; sender:" << sender() << "line: " << __LINE__;
+        return;
+    }
+
+    WebView *webView = NULL;
+    if (type == Rekonq::New)
+        webView = newWebView(true);
+    else if (type == Rekonq::Background)
+        webView = newWebView(false);
+    else
+        webView = currentWebView();
+
+    if (!webView)
+    {
+        kWarning() << "Can't find the view" << "line:" << __LINE__;
+        return;
+    }
+    webView->loadUrl(url);
+    webView->setFocus();
+
+    currentUrlBar()->setUrl(url.prettyUrl());
 }
 
 
 void MainView::loadUrlInCurrentTab(const KUrl &url)
 {
-    WebView *webView = currentWebView();
-    if (webView)
-    {
-        webView->loadUrl(url);
-        webView->setFocus();
-    }
+    openUrl(url);
 }
-
 
 void MainView::nextTab()
 {
@@ -657,7 +710,7 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
         return 0;
 
     QLabel *label = qobject_cast<QLabel*>(m_tabBar->tabButton(index, QTabBar::LeftSide));
-    if (!label) 
+    if (!label)
     {
         label = new QLabel(this);
     }

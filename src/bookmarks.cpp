@@ -27,7 +27,6 @@
 // Local Includes
 #include "mainwindow.h"
 #include "webview.h"
-#include "application.h"
 
 // KDE Includes
 #include <KActionCollection>
@@ -55,14 +54,14 @@ BookmarkOwner::BookmarkOwner(QObject *parent)
 }
 
 
-void BookmarkOwner::openBookmark(const KBookmark & bookmark, 
-                                 Qt::MouseButtons mouseButtons, 
+void BookmarkOwner::openBookmark(const KBookmark &bookmark,
+                                 Qt::MouseButtons mouseButtons,
                                  Qt::KeyboardModifiers keyboardModifiers)
 {
-    Q_UNUSED(mouseButtons) 
+    Q_UNUSED(mouseButtons)
     Q_UNUSED(keyboardModifiers)
 
-    emit openUrl(bookmark.url());
+    emit openUrl(bookmark.url(), Rekonq::Current);
 }
 
 
@@ -78,6 +77,15 @@ QString BookmarkOwner::currentTitle() const
 }
 
 
+void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bm)
+{
+    QList<KUrl> urlList = bm.groupUrlList();
+    //kDebug() << urlList;
+    QList<KUrl>::iterator url;
+    for(url = urlList.begin(); url != urlList.end(); ++url)
+        emit openUrl(*url, Rekonq::Background);
+}
+
 // ------------------------------------------------------------------------------------------------------
 
 
@@ -85,11 +93,10 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
                            KBookmarkOwner *owner,
                            KMenu *menu,
                            KActionCollection* actionCollection)
-        : KBookmarkMenu(manager, owner, menu, actionCollection) 
-        
+        : KBookmarkMenu(manager, owner, menu, actionCollection)
 {
     actionCollection->addAction(KStandardAction::AddBookmark,
-                                QLatin1String("add_bookmark_payload"), 
+                                QLatin1String("add_bookmark_payload"),
                                 this, SLOT(slotAddBookmark()));
 
 }
@@ -98,7 +105,7 @@ BookmarkMenu::~BookmarkMenu()
 {
 }
 
-        
+
 KMenu *BookmarkMenu::viewContextMenu(QAction *action)
 {
     return contextMenu(action);
@@ -116,7 +123,7 @@ void BookmarkMenu::slotAddBookmark()
         manager()->emitChanged();
         return;
     }
-    
+
     KBookmarkMenu::slotAddBookmark();
 }
 
@@ -151,12 +158,13 @@ BookmarkProvider::BookmarkProvider(QWidget *parent)
         }
     }
     m_manager = KBookmarkManager::managerForExternalFile(bookfile.path());
-    connect(m_manager, SIGNAL(changed(const QString &, const QString &)), 
+    connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
             this, SLOT(slotBookmarksChanged(const QString &, const QString &)));
 
     // setup menu
     m_owner = new BookmarkOwner(this);
-    connect(m_owner, SIGNAL(openUrl(const KUrl& )), this, SIGNAL(openUrl(const KUrl& )));
+    connect(m_owner, SIGNAL(openUrl(const KUrl &, Rekonq::OpenType)),
+            this, SIGNAL(openUrl(const KUrl &, Rekonq::OpenType)));
     m_bookmarkMenu = new BookmarkMenu(m_manager, m_owner, m_menu, m_actionCollection);
 
     // setup toolbar
@@ -184,9 +192,9 @@ void BookmarkProvider::setupToolBar()
     m_bookmarkToolBar->setContentsMargins(0, 0, 0, 0);
     m_bookmarkToolBar->setMinimumHeight(16);
     m_bookmarkToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(m_bookmarkToolBar, SIGNAL(customContextMenuRequested(const QPoint &)), 
+    connect(m_bookmarkToolBar, SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(contextMenu(const QPoint &)));
-             
+
     slotBookmarksChanged("", "");
 }
 
@@ -201,13 +209,13 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
         kWarning() << "There is no bookmark toolbar";
         return;
     }
-    
+
     KActionCollection bookmarkCollection(this);
-    
+
     KBookmarkGroup toolBarGroup = m_manager->toolbar();
     if (toolBarGroup.isNull())
         return;
-    
+
     KBookmark bookmark = toolBarGroup.first();
     while (!bookmark.isNull()) {
         if (!bookmark.isGroup())
@@ -224,7 +232,7 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
 
 
 QAction *BookmarkProvider::actionByName(const QString &name)
-{   
+{
     QAction *action = m_actionCollection->action(name);
     if (action)
         return action;

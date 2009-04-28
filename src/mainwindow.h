@@ -77,7 +77,6 @@ private:
 
 public slots:
     void slotHome();
-    void loadUrl(const KUrl &url);
     void slotUpdateBrowser();
 
 protected:
