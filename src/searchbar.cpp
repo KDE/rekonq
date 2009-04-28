@@ -28,7 +28,6 @@
 
 // KDE Includes
 #include <KUrl>
-#include <KDebug>
 
 // Qt Includes
 #include <QtCore>
@@ -42,7 +41,6 @@ SearchBar::SearchBar(QWidget *parent) :
     , m_timer(new QTimer(this))
 {
     setMinimumWidth(180);
-    kWarning() << "setting fixed minimum width.." ;
 
     setFocusPolicy(Qt::WheelFocus);
     setMouseTracking(true);
@@ -61,7 +59,7 @@ SearchBar::SearchBar(QWidget *parent) :
 
     // setting QTimer..
     m_timer->setSingleShot(true);
-    m_timer->setInterval(300);
+    m_timer->setInterval(200);
     connect(m_timer, SIGNAL(timeout()), SLOT(autoSuggest()));
     connect(this, SIGNAL(textEdited(QString)), m_timer, SLOT(start()));
 
