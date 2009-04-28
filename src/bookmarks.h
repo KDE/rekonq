@@ -23,9 +23,6 @@
 #ifndef BOOKMARKS_H
 #define BOOKMARKS_H
 
-// Local includes
-#include "application.h"
-
 // Qt Includes
 #include <QWidget>
 
@@ -72,8 +69,8 @@ public:
      * @param mouseButtons      the mouse buttons clicked to select the bookmark
      * @param keyboardModifiers the keyboard modifiers pushed when the bookmark was selected
      */
-    virtual void openBookmark(const KBookmark &bookmark,
-                              Qt::MouseButtons mouseButtons,
+    virtual void openBookmark(const KBookmark &bookmark, 
+                              Qt::MouseButtons mouseButtons, 
                               Qt::KeyboardModifiers keyboardModifiers);
 
 
@@ -98,23 +95,14 @@ public:
     */
     virtual bool supportsTabs() const { return true; }
 
-    /**
-    * Called if the user wants to open every bookmark in this folder in a new tab.
-    * The default implementation does nothing.
-    * This is only called if supportsTabs() returns true
-    */
-    virtual void openFolderinTabs(const KBookmarkGroup &bm);
-
 signals:
     /**
      * This signal is emitted when an url has to be loaded
      *
      * @param url the URL to load
-     * @param type type of load
-     * @see Application::OpenType
      *
      */
-    void openUrl(const KUrl &url, Rekonq::OpenType type);
+    void openUrl(const KUrl &);
 
 private:
 
@@ -136,17 +124,17 @@ class BookmarkMenu : public KBookmarkMenu
     Q_OBJECT
 
 public:
-    BookmarkMenu(KBookmarkManager* manager,
-                 KBookmarkOwner* owner,
-                 KMenu* menu,
+    BookmarkMenu(KBookmarkManager* manager, 
+                 KBookmarkOwner* owner, 
+                 KMenu* menu, 
                  KActionCollection* actionCollection);
     ~BookmarkMenu();
-
+    
     virtual KMenu *viewContextMenu(QAction* action);
-
+    
 protected slots:
     void slotAddBookmark();
-
+        
 };
 
 
@@ -175,7 +163,7 @@ public:
     */
     BookmarkProvider(QWidget* parent=0);
     ~BookmarkProvider();
-
+    
     /**
      * @short Get the Bookmarks Menu Action
      * @return the Bookmarks Menu
@@ -201,14 +189,11 @@ public:
 
 signals:
     /**
-     * This signal is emitted when an url has to be loaded
-     *
-     * @param url the URL to load
-     * @param type type of load
-     * @see Application::OpenType
-     *
-     */
-    void openUrl(const KUrl &url, Rekonq::OpenType type);
+    * @short This signal is emitted when an url has to be loaded
+    *
+    * @param url the URL to load
+    */
+    void openUrl(const KUrl &url);
 
 
 public slots:
@@ -217,12 +202,12 @@ public slots:
      * @param point Point on whitch you want to open this menu
      */
     void contextMenu(const QPoint &point);
-
+    
     /**
      * @short Waits for signal that the group with the address has been modified by the caller.
      * Waits for signal that the group (or any of its children) with the address
      * @p groupAddress (e.g. "/4/5") has been modified by the caller @p caller.
-     *
+     * 
      * @param group bookmark group adress
      * @param caller caller that modified the bookmarks
      * @see  KBookmarkManager::changed

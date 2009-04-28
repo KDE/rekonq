@@ -89,7 +89,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
         if(m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
         {
-            webView = Application::instance()->newWebView(false);
+            webView = Application::instance()->newWebView();
             webView->setFocus();
             webView->load(request);
             m_keyboardModifiers = Qt::NoModifier;
@@ -131,7 +131,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             // A short term hack until QtWebKit can get a reload without cache QAction
             // *FYI* currently type is never NavigationTypeReload
             // See: https://bugs.webkit.org/show_bug.cgi?id=24283
-            if (qApp->keyboardModifiers() & Qt::ShiftModifier)
+            if (qApp->keyboardModifiers() & Qt::ShiftModifier) 
             {
                 QNetworkRequest newRequest(request);
                 newRequest.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
@@ -217,7 +217,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         }
         QUrl url(path);
 
-        Application::instance()->mainWindow()->mainView()->openUrl(url);
+        Application::instance()->mainWindow()->loadUrl(url);
         return;
     }
 
@@ -308,27 +308,27 @@ KActionCollection* WebView::webActions()
         a = new KAction(KIcon("tab-new"), i18n("Open Link in New &Tab"), this);
         connect(a, SIGNAL(triggered()), this, SLOT(openLinkInNewTab()) );
         s_webActionCollection->addAction( QLatin1String("open_link_in_new_tab"), a);
-
+        
         a = pageAction(QWebPage::Cut);
         a->setIcon(KIcon("edit-cut"));
         a->setText(i18n("Cu&t"));
         s_webActionCollection->addAction( QLatin1String("edit_cut"), a);
-
+        
         a = pageAction(QWebPage::Copy);
         a->setIcon(KIcon("edit-copy"));
         a->setText(i18n("&Copy"));
         s_webActionCollection->addAction( QLatin1String("edit_copy"), a );
-
+        
         a = pageAction(QWebPage::Paste);
         a->setIcon(KIcon("edit-paste"));
         a->setText(i18n("&Paste"));
         s_webActionCollection->addAction( QLatin1String("edit_paste"), a );
-
+        
         a = pageAction(QWebPage::DownloadImageToDisk);
         a->setIcon(KIcon("folder-image"));
         a->setText(i18n("&Save Image As..."));
         s_webActionCollection->addAction( QLatin1String("save_image_as"), a );
-
+        
         a = pageAction(QWebPage::CopyImageToClipboard);
         a->setIcon(KIcon("insert-image"));
         a->setText(i18n("&Copy This Image"));
@@ -338,7 +338,7 @@ KActionCollection* WebView::webActions()
         a->setIcon(KIcon("folder-downloads"));
         a->setText(i18n("&Save Link As..."));
         s_webActionCollection->addAction( QLatin1String("save_link_as"), a);
-
+        
         a = pageAction(QWebPage::CopyLinkToClipboard);
         a->setIcon(KIcon("insert-link"));
         a->setText(i18n("&Copy Link Location"));
@@ -358,12 +358,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
     MainWindow *mainwindow = Application::instance()->mainWindow();
-
+    
     QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("add_bookmark_payload");
     addBookmarkAction->setText(i18n("Bookmark This Page"));
     addBookmarkAction->setData(QVariant());
     KMenu menu(this);
-
+    
     bool linkIsEmpty = result.linkUrl().isEmpty();
     if (!linkIsEmpty)
     {
@@ -416,7 +416,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         addBookmarkAction->setText(i18n("&Bookmark This Link"));
     }
     menu.addSeparator();
-
+    
     menu.addAction(addBookmarkAction);
     menu.exec(mapToGlobal(event->pos()));
 }

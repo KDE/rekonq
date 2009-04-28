@@ -103,6 +103,7 @@ MainWindow::MainWindow()
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // --------- connect signals and slots
+    connect(m_view, SIGNAL(loadUrlPage(const KUrl &)), this, SLOT(loadUrl(const KUrl &)));
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
     connect(m_view, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));
@@ -117,6 +118,9 @@ MainWindow::MainWindow()
     // update toolbar actions
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
+    
+    // bookmarks loading
+    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
 
 
     slotUpdateWindowTitle();
@@ -180,7 +184,7 @@ void MainWindow::setupToolBars()
     a = new KAction(i18n("Search Bar"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_K));
     a->setDefaultWidget(m_searchBar);
-    connect(m_searchBar, SIGNAL(search(const KUrl&)), m_view, SLOT(openUrl(const KUrl &)));
+    connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     actionCollection()->addAction(QLatin1String("search_bar"), a);
 
     // bookmarks bar
@@ -307,12 +311,11 @@ void MainWindow::setupSidePanel()
 {
     // Setup history side panel
     m_sidePanel = new SidePanel(i18n("History"), this);
-    connect(m_sidePanel, SIGNAL(openUrl(const KUrl &, Rekonq::OpenType)),
-            m_view, SLOT(openUrl(const KUrl &, Rekonq::OpenType)));
+    connect(m_sidePanel, SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     connect(m_sidePanel, SIGNAL(destroyed()), Application::instance(), SLOT(slotSaveConfiguration()));
-
+    
     addDockWidget(Qt::LeftDockWidgetArea, m_sidePanel);
-
+    
     // setup side panel actions
     KAction* a = new KAction(this);
     a->setText(i18n("History"));
@@ -320,7 +323,7 @@ void MainWindow::setupSidePanel()
     a->setChecked(ReKonfig::showSideBar());
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
-
+    
     // connect to toogle action
     connect(a, SIGNAL(triggered(bool)), m_sidePanel->toggleViewAction(), SLOT(trigger()));
 }
@@ -329,7 +332,7 @@ void MainWindow::setupSidePanel()
 void MainWindow::setupHistoryMenu()
 {
     HistoryMenu *historyMenu = new HistoryMenu(this);
-    connect(historyMenu, SIGNAL(openUrl(const KUrl &)), m_view, SLOT(openUrl(const KUrl &)));
+    connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_view, SLOT(loadUrlInCurrentTab(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle(i18n("&History"));
 
@@ -451,6 +454,16 @@ KUrl MainWindow::guessUrlFromString(const QString &string)
 }
 
 
+void MainWindow::loadUrl(const KUrl &url)
+{
+    if (!currentTab() || url.isEmpty())
+        return;
+
+    m_view->currentUrlBar()->setUrl(url.prettyUrl());
+    m_view->loadUrlInCurrentTab(url);
+}
+
+
 void MainWindow::slotOpenLocation()
 {
     m_view->currentUrlBar()->selectAll();
@@ -519,7 +532,7 @@ void MainWindow::slotFileOpen()
     if (filePath.isEmpty())
         return;
 
-    mainView()->openUrl(guessUrlFromString(filePath));
+    loadUrl(guessUrlFromString(filePath));
 }
 
 
@@ -680,7 +693,7 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
     static bool bookmarksToolBarFlag;
     static bool statusBarFlag;
     static bool sidePanelFlag;
-
+    
     if (makeFullScreen == true)
     {
         // save current state
@@ -690,7 +703,7 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
         bookmarksToolBarFlag = toolBar("bookmarksToolBar")->isHidden();
         statusBarFlag = statusBar()->isHidden();
         sidePanelFlag = sidePanel()->isHidden();
-
+        
         menuBar()->hide();
         toolBar("mainToolBar")->hide();
         toolBar("locationToolBar")->hide();
@@ -732,12 +745,12 @@ void MainWindow::slotViewPageSource()
         /// TODO: autochoose tempfile suffix
         sourceFile.setSuffix(QString(".html"));
         sourceFile.setAutoRemove(false);
-
+        
         if (sourceFile.open())
         {
             QDataStream stream(&sourceFile);
             stream << currentTab()->page()->mainFrame()->toHtml().toUtf8();
-
+            
             url = KUrl();
             url.setPath(sourceFile.fileName());
             isTempFile = true;
@@ -749,7 +762,7 @@ void MainWindow::slotViewPageSource()
 
 void MainWindow::slotHome()
 {
-    mainView()->openUrl(KUrl(m_homePage));
+    loadUrl(KUrl(m_homePage));
 }
 
 
@@ -883,7 +896,7 @@ bool MainWindow::queryClose()
     if (m_view->count() > 1)
     {
 
-        int answer = KMessageBox::questionYesNoCancel(
+        int answer = KMessageBox::questionYesNoCancel( 
                         this,
                         i18n("Are you sure you want to close the window?\n" "You have %1 tab(s) open" , m_view->count()),
                         i18n("Are you sure you want to close the window?"),
@@ -893,7 +906,7 @@ bool MainWindow::queryClose()
                         "confirmClosingMultipleTabs"
                      );
 
-        switch (answer)
+        switch (answer) 
         {
             case KMessageBox::Yes:
                 // Quit

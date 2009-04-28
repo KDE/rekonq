@@ -47,18 +47,14 @@ int main(int argc, char **argv)
                     );
 
     // about authors
-    about.addAuthor(ki18n("Andrea Diamantini"),
-                    ki18n("Project Lead, Developer, Italian translations"),
-                    "adjam7@gmail.com",
+    about.addAuthor(ki18n("Andrea Diamantini"), 
+                    ki18n("Project Lead, Developer, Italian translations"), 
+                    "adjam7@gmail.com", 
                     "http://www.adjam.org");
-    about.addAuthor(ki18n("Domrachev Alexandr"),
-                    ki18n("Developer, Russian translations"),
-                    "alexandr.domrachev@gmail.com",
-                    "");
 
-//     about.addAuthor(ki18n("your name"),
-//                     ki18n("your role"),
-//                     "your mail",
+//     about.addAuthor(ki18n("your name"), 
+//                     ki18n("your role"), 
+//                     "your mail", 
 //                     "your site");
 
     // Initialize command line args
