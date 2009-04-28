@@ -64,7 +64,6 @@ public:
 
 signals:
     // tab widget signals
-    void loadUrlPage(const KUrl &url);
     void tabsChanged();
     void lastTabClosed();
 

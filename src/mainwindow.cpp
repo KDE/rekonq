@@ -103,7 +103,6 @@ MainWindow::MainWindow()
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // --------- connect signals and slots
-    connect(m_view, SIGNAL(loadUrlPage(const KUrl &)), this, SLOT(loadUrl(const KUrl &)));
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
     connect(m_view, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));

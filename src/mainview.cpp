@@ -75,8 +75,7 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(slotReloadAllTabs()));
     connect(m_tabBar, SIGNAL(tabMoved(int,int)), this, SLOT(moveTab(int,int)));
 
-    // --
-    connect(this, SIGNAL(loadUrlPage(const KUrl &)), this, SLOT(loadUrlInCurrentTab(const KUrl &)));
+    // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
 
     setTabsClosable(true);
