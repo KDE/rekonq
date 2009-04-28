@@ -135,12 +135,6 @@ void Application::slotSaveConfiguration() const
 }
 
 
-void Application::openUrl(const KUrl &url)
-{
-    mainWindow()->loadUrl(url);
-}
-
-
 MainWindow *Application::mainWindow()
 {
     return m_mainWindow;

@@ -86,7 +86,7 @@ private slots:
      * Any actions that can be delayed until the window is visible
      */
     void postLaunch();
-    void openUrl(const KUrl &url);
+
 
 private:
     static QPointer<HistoryManager> s_historyManager;
