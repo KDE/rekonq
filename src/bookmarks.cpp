@@ -82,9 +82,11 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bm)
 {
     QList<KUrl> urlList = bm.groupUrlList();
     QList<KUrl>::iterator url;
+    Application* app = Application::instance();
     for(url = urlList.begin(); url != urlList.end(); ++url)
     {
-        Application::instance()->newWebView()->loadUrl(*url);
+        app->newWebView();
+        app->mainWindow()->mainView()->loadUrlInCurrentTab(*url);
     }
 }
 
@@ -220,7 +222,8 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
         return;
     
     KBookmark bookmark = toolBarGroup.first();
-    while (!bookmark.isNull()) {
+    while (!bookmark.isNull())
+    {
         if (!bookmark.isGroup())
         {
             KAction *action = new KBookmarkAction(bookmark, m_owner, this);
