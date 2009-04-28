@@ -331,7 +331,7 @@ void MainWindow::setupSidePanel()
 void MainWindow::setupHistoryMenu()
 {
     HistoryMenu *historyMenu = new HistoryMenu(this);
-    connect(historyMenu, SIGNAL(openUrl(const KUrl&)), m_view, SLOT(loadUrlInCurrentTab(const KUrl&)));
+    connect(historyMenu, SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle(i18n("&History"));
 
@@ -455,11 +455,7 @@ KUrl MainWindow::guessUrlFromString(const QString &string)
 
 void MainWindow::loadUrl(const KUrl &url)
 {
-    if (!currentTab() || url.isEmpty())
-        return;
-
-    m_view->currentUrlBar()->setUrl(url.prettyUrl());
-    m_view->loadUrlInCurrentTab(url);
+    m_view->loadUrl(url);
 }
 
 

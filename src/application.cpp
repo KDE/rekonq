@@ -94,7 +94,7 @@ int Application::newInstance()
         {
             KUrl url = MainWindow::guessUrlFromString(args->arg(i));
             newWebView();
-            mainWindow()->mainView()->loadUrlInCurrentTab(url);
+            mainWindow()->loadUrl(url);
         }
         args->clear();
     }

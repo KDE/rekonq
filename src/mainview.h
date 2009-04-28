@@ -111,7 +111,13 @@ public slots:
      * @return a pointer to the new WebView
      */
     WebView *newWebView(bool makeCurrent = true);
-    void loadUrlInCurrentTab(const KUrl &url);
+
+    /**
+     * Core browser slot. Load an url in a webview 
+     * 
+     * @param url The url to load
+     */
+    void loadUrl(const KUrl &url);
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);
     void slotCloseOtherTabs(int index);

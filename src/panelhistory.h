@@ -41,7 +41,7 @@ public:
     virtual ~PanelHistory();
 
 signals:
-    void openUrl(const KUrl&);
+    void openUrl(const KUrl &);
 
 private slots:
     void open();

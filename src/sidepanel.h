@@ -40,7 +40,7 @@ public:
     ~SidePanel();
     
 signals:
-    void openUrl(const KUrl&);
+    void openUrl(const KUrl &);
     
 private:
     PanelHistory *m_panelHistory;

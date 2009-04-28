@@ -300,7 +300,7 @@ WebView *MainView::newWebView(bool makeCurrent)
 {
     // line edit
     UrlBar *urlBar = new UrlBar;  // Ownership of widget is passed on to the QStackedWidget (addWidget method).
-    connect(urlBar, SIGNAL(activated(const KUrl&)), this, SLOT(loadUrlInCurrentTab(const KUrl&)));
+    connect(urlBar, SIGNAL(activated(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     m_urlBars->addUrlBar(urlBar);
 
     WebView *webView = new WebView;  // should be deleted on tab close
@@ -616,12 +616,17 @@ void MainView::aboutToShowRecentTabsMenu()
 void MainView::aboutToShowRecentTriggeredAction(QAction *action)
 {
     KUrl url = action->data().toUrl();
-    loadUrlInCurrentTab(url);
+    loadUrl(url);
 }
 
 
-void MainView::loadUrlInCurrentTab(const KUrl &url)
+void MainView::loadUrl(const KUrl &url)
 {
+   if (url.isEmpty())
+        return;
+
+    currentUrlBar()->setUrl(url.prettyUrl());
+
     WebView *webView = currentWebView();
 
     KUrl loadingUrl(url);

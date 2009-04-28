@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
 *
 *
@@ -86,7 +86,7 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bm)
     for(url = urlList.begin(); url != urlList.end(); ++url)
     {
         app->newWebView();
-        app->mainWindow()->mainView()->loadUrlInCurrentTab(*url);
+        app->mainWindow()->loadUrl(*url);
     }
 }
 
