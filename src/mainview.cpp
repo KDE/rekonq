@@ -623,9 +623,19 @@ void MainView::aboutToShowRecentTriggeredAction(QAction *action)
 void MainView::loadUrlInCurrentTab(const KUrl &url)
 {
     WebView *webView = currentWebView();
+
+    KUrl loadingUrl(url);
+
+    if (loadingUrl.isRelative())
+    {
+        QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
+        loadingUrl.setUrl("//" + fn);
+        loadingUrl.setScheme("http");
+    }
+
     if (webView)
     {
-        webView->loadUrl(url);
+        webView->load(loadingUrl);
         webView->setFocus();
     }
 }
