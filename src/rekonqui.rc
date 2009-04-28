@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="39">
+<gui name="rekonq" version="40">
 
 <MenuBar>
 
@@ -50,6 +50,10 @@
 <Menu name="go" deleted="true">
 </Menu>
 
+<!--  ============ HISTORY menu =========== -->
+<Action name="history" ><text>Hi&amp;story</text>
+</Action>
+
 <!--  ============ BOOKMARKS menu =========== -->
 <Action name="bookmarks" ><text>&amp;Bookmarks</text>
 </Action>
@@ -87,11 +91,6 @@
     <Action name="stop_reload" />
     <Action name="go_home" />
     <Action name="new_tab" />
-</ToolBar>
-
-<!--  ============ Location ToolBar =========== -->
-<ToolBar name="locationToolBar" iconText="iconOnly" newline="false" noEdit="true">
-<text>Location Toolbar</text>
     <Action name="url_bar" />
     <Action name="search_bar" />
 </ToolBar>

@@ -76,7 +76,7 @@ MainWindow::MainWindow()
         , m_searchBar(new SearchBar(this))
         , m_sidePanel(0)
 {
-    // accept dnd
+    // accept d'n'd
     setAcceptDrops(true);
 
     // updating rekonq configuration
