@@ -95,6 +95,13 @@ public:
     */
     virtual bool supportsTabs() const { return true; }
 
+    /**
+    * Called if the user wants to open every bookmark in this folder in a new tab.
+    * The default implementation does nothing.
+    * This is only called if supportsTabs() returns true
+    */
+    virtual void openFolderinTabs(const KBookmarkGroup &bm);
+
 signals:
     /**
      * This signal is emitted when an url has to be loaded

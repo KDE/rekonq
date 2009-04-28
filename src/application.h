@@ -62,7 +62,7 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
-    WebView* newWebView();
+    WebView* newWebView(bool makeCurrent = true);
 
     KIcon icon(const KUrl &url) const;
 

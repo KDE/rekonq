@@ -147,9 +147,9 @@ MainWindow *Application::mainWindow()
 }
 
 
-WebView *Application::newWebView()
+WebView *Application::newWebView(bool makeCurrent)
 {
-    return m_mainWindow->mainView()->newWebView();
+    return m_mainWindow->mainView()->newWebView(makeCurrent);
 }
 
 

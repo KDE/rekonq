@@ -78,6 +78,17 @@ QString BookmarkOwner::currentTitle() const
 }
 
 
+void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bm)
+{
+    QList<KUrl> urlList = bm.groupUrlList();
+    QList<KUrl>::iterator url;
+    for(url = urlList.begin(); url != urlList.end(); ++url)
+    {
+        Application::instance()->newWebView()->loadUrl(*url);
+    }
+}
+
+
 // ------------------------------------------------------------------------------------------------------
 
 
