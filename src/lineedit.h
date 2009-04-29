@@ -34,17 +34,17 @@ class QKeyEvent;
 
 class LineEdit : public KLineEdit
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     explicit LineEdit(QWidget *parent = 0);
     virtual ~LineEdit();
 
 protected:
-  virtual void keyPressEvent (QKeyEvent*);
-  virtual void contextMenuEvent (QContextMenuEvent*);
-  virtual void focusInEvent (QFocusEvent*);
-  virtual void focusOutEvent (QFocusEvent*);
+    virtual void keyPressEvent(QKeyEvent*);
+    virtual void contextMenuEvent(QContextMenuEvent*);
+    virtual void focusInEvent(QFocusEvent*);
+    virtual void focusOutEvent(QFocusEvent*);
 };
 
 #endif // LINEEDIT_H

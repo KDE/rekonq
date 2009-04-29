@@ -97,8 +97,8 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
 {
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
-    KDialog dialog(mainWindow,Qt::Sheet);
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    KDialog dialog(mainWindow, Qt::Sheet);
+    dialog.setButtons(KDialog::Ok | KDialog::Cancel);
 
     Ui::passwordWidget passwordWidget;
     QWidget widget;
@@ -126,12 +126,12 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
     KDialog dialog(mainWindow, Qt::Sheet);
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    dialog.setButtons(KDialog::Ok | KDialog::Cancel);
 
     Ui::proxyWidget proxyWdg;
     QWidget widget;
     proxyWdg.setupUi(&widget);
-    
+
     dialog.setMainWidget(&widget);
 
     proxyWdg.iconLabel->setText(QString());

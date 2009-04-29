@@ -53,7 +53,7 @@ void LineEdit::keyPressEvent(QKeyEvent *event)
         clearFocus();
         event->accept();
     }
-    
+
     KLineEdit::keyPressEvent(event);
 }
 
@@ -67,7 +67,7 @@ void LineEdit::contextMenuEvent(QContextMenuEvent *event)
 void LineEdit::focusInEvent(QFocusEvent *event)
 {
     selectAll();
-    
+
     KLineEdit::focusInEvent(event);
 }
 
@@ -75,7 +75,7 @@ void LineEdit::focusInEvent(QFocusEvent *event)
 void LineEdit::focusOutEvent(QFocusEvent *event)
 {
     KLineEdit::focusOutEvent(event);
-    
+
     // reset cursor state and deselect
     setCursorPosition(0);
     deselect();

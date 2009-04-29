@@ -95,7 +95,7 @@ MainWindow::MainWindow()
 
     // setting size policies
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
+
     // then, setup our actions
     setupActions();
 
@@ -212,7 +212,7 @@ void MainWindow::setupActions()
 
     // WEB Actions (NO KStandardActions..)
     a = KStandardAction::redisplay(m_view, SLOT(slotWebReload()), actionCollection());
-    a->setText( i18n("Reload") );
+    a->setText(i18n("Reload"));
     KStandardAction::back(m_view, SLOT(slotWebBack()), actionCollection());
     KStandardAction::forward(m_view, SLOT(slotWebForward()), actionCollection());
     KStandardAction::undo(m_view, SLOT(slotWebUndo()), actionCollection());
@@ -233,7 +233,7 @@ void MainWindow::setupActions()
 
     // ============== Custom Actions
     a = new KAction(KIcon("document-open-remote"), i18n("Open Location"), this);
-    a->setShortcut(Qt::CTRL+Qt::Key_L);
+    a->setShortcut(Qt::CTRL + Qt::Key_L);
     actionCollection()->addAction(QLatin1String("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
 
@@ -312,9 +312,9 @@ void MainWindow::setupSidePanel()
     m_sidePanel = new SidePanel(i18n("History"), this);
     connect(m_sidePanel, SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
     connect(m_sidePanel, SIGNAL(destroyed()), Application::instance(), SLOT(slotSaveConfiguration()));
-    
+
     addDockWidget(Qt::LeftDockWidgetArea, m_sidePanel);
-    
+
     // setup side panel actions
     KAction* a = new KAction(this);
     a->setText(i18n("History"));
@@ -322,7 +322,7 @@ void MainWindow::setupSidePanel()
     a->setChecked(ReKonfig::showSideBar());
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
-    
+
     // connect to toogle action
     connect(a, SIGNAL(triggered(bool)), m_sidePanel->toggleViewAction(), SLOT(trigger()));
 }
@@ -537,7 +537,7 @@ void MainWindow::slotFilePrintPreview()
         return;
 
     QPrinter printer;
-    KPrintPreview previewdlg( &printer, this );
+    KPrintPreview previewdlg(&printer, this);
     currentTab()->print(&printer);
     previewdlg.exec();
 }
@@ -555,7 +555,7 @@ void MainWindow::printRequested(QWebFrame *frame)
 {
     QPrinter printer;
 
-    QPrintDialog *dialog = KdePrint::createPrintDialog( &printer, this );
+    QPrintDialog *dialog = KdePrint::createPrintDialog(&printer, this);
     if (dialog->exec() != QDialog::Accepted)
         return;
     frame->print(&printer);
@@ -617,7 +617,7 @@ void MainWindow::slotFindNext()
         return;
 
     QWebPage::FindFlags options;
-    if(m_findBar->matchCase())
+    if (m_findBar->matchCase())
     {
         options = QWebPage::FindCaseSensitively | QWebPage::FindWrapsAroundDocument;
     }
@@ -639,7 +639,7 @@ void MainWindow::slotFindPrevious()
         return;
 
     QWebPage::FindFlags options;
-    if(m_findBar->matchCase())
+    if (m_findBar->matchCase())
     {
         options = QWebPage::FindCaseSensitively | QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
     }
@@ -684,24 +684,21 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
     // state flags
     static bool menubarFlag;
     static bool mainToolBarFlag;
-    static bool locationBarFlag;
     static bool bookmarksToolBarFlag;
     static bool statusBarFlag;
     static bool sidePanelFlag;
-    
+
     if (makeFullScreen == true)
     {
         // save current state
         menubarFlag = menuBar()->isHidden();
         mainToolBarFlag = toolBar("mainToolBar")->isHidden();
-        locationBarFlag = toolBar("locationToolBar")->isHidden();
         bookmarksToolBarFlag = toolBar("bookmarksToolBar")->isHidden();
         statusBarFlag = statusBar()->isHidden();
         sidePanelFlag = sidePanel()->isHidden();
-        
+
         menuBar()->hide();
         toolBar("mainToolBar")->hide();
-        toolBar("locationToolBar")->hide();
         toolBar("bookmarksToolBar")->hide();
         statusBar()->hide();
         sidePanel()->hide();
@@ -712,8 +709,6 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
             menuBar()->show();
         if (!mainToolBarFlag)
             toolBar("mainToolBar")->show();
-        if (!locationBarFlag)
-            toolBar("locationToolBar")->show();
         if (!bookmarksToolBarFlag)
             toolBar("bookmarksToolBar")->show();
         if (!statusBarFlag)
@@ -740,12 +735,12 @@ void MainWindow::slotViewPageSource()
         /// TODO: autochoose tempfile suffix
         sourceFile.setSuffix(QString(".html"));
         sourceFile.setAutoRemove(false);
-        
+
         if (sourceFile.open())
         {
             QDataStream stream(&sourceFile);
             stream << currentTab()->page()->mainFrame()->toHtml().toUtf8();
-            
+
             url = KUrl();
             url.setPath(sourceFile.fileName());
             isTempFile = true;
@@ -767,10 +762,10 @@ void MainWindow::slotToggleInspector(bool enable)
     if (enable)
     {
         int result = KMessageBox::questionYesNo(this,
-                        i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
-                                "Do you want to reload all pages?"),
-                        i18n("Web Inspector")
-                     );
+                                                i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
+                                                     "Do you want to reload all pages?"),
+                                                i18n("Web Inspector")
+                                               );
 
         if (result == KMessageBox::Yes)
         {
@@ -879,7 +874,7 @@ void MainWindow::geometryChangeRequested(const QRect &geometry)
 
 void MainWindow::slotShowMenubar(bool enable)
 {
-    if(enable)
+    if (enable)
         menuBar()->show();
     else
         menuBar()->hide();
@@ -891,27 +886,27 @@ bool MainWindow::queryClose()
     if (m_view->count() > 1)
     {
 
-        int answer = KMessageBox::questionYesNoCancel( 
-                        this,
-                        i18n("Are you sure you want to close the window?\n" "You have %1 tab(s) open" , m_view->count()),
-                        i18n("Are you sure you want to close the window?"),
-                        KStandardGuiItem::quit(),
-                        KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
-                        KStandardGuiItem::cancel(),
-                        "confirmClosingMultipleTabs"
+        int answer = KMessageBox::questionYesNoCancel(
+                         this,
+                         i18n("Are you sure you want to close the window?\n" "You have %1 tab(s) open" , m_view->count()),
+                         i18n("Are you sure you want to close the window?"),
+                         KStandardGuiItem::quit(),
+                         KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
+                         KStandardGuiItem::cancel(),
+                         "confirmClosingMultipleTabs"
                      );
 
-        switch (answer) 
+        switch (answer)
         {
-            case KMessageBox::Yes:
-                // Quit
-                return true;
-                break;
-            case KMessageBox::No:
-                // Close only the current tab
-                m_view->slotCloseTab();
-            default:
-                return false;
+        case KMessageBox::Yes:
+            // Quit
+            return true;
+            break;
+        case KMessageBox::No:
+            // Close only the current tab
+            m_view->slotCloseTab();
+        default:
+            return false;
         }
     }
 

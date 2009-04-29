@@ -42,8 +42,8 @@
 #include "mainwindow.h"
 
 
-DownloadManager::DownloadManager() 
-    : QObject()
+DownloadManager::DownloadManager()
+        : QObject()
 {
 }
 
@@ -68,17 +68,17 @@ void DownloadManager::newDownload(const KUrl &srcUrl, const KUrl &destUrl)
 
     QString typeText = KMimeType::extractKnownExtension(srcUrl.fileName());
     typeText += " (" + mimeType->name() + ")";
-    
-    int answer = KMessageBox::questionYesNoCancel( NULL,
-                                                   i18n("Download '%1'?\n""Type: %2", srcUrl.prettyUrl(), typeText ),
-                                                   i18n("Download '%1'...", srcUrl.fileName() ),
-                                                   KStandardGuiItem::save(),
-                                                   KStandardGuiItem::open(),                                       
-                                                   KStandardGuiItem::cancel(),
-                                                   "showOpenSaveDownloadDialog"
+
+    int answer = KMessageBox::questionYesNoCancel(NULL,
+                 i18n("Download '%1'?\n""Type: %2", srcUrl.prettyUrl(), typeText),
+                 i18n("Download '%1'...", srcUrl.fileName()),
+                 KStandardGuiItem::save(),
+                 KStandardGuiItem::open(),
+                 KStandardGuiItem::cancel(),
+                 "showOpenSaveDownloadDialog"
                                                  );
 
-    switch(answer)
+    switch (answer)
     {
     case KMessageBox::Cancel:
         return;
@@ -108,7 +108,7 @@ void DownloadManager::newDownload(const KUrl &srcUrl, const KUrl &destUrl)
     // if user canceled download than abort
     if (destination.isEmpty())
         return;
-    
+
     Download *download = new Download(srcUrl, destination, type);
     connect(download, SIGNAL(downloadFinished(int)), this, SLOT(slotDownloadFinished(int)));
     m_downloads.append(download);
@@ -127,7 +127,7 @@ KUrl DownloadManager::downloadDestination(const QString &filename)
     if (destination.isEmpty())
         destination = KGlobalSettings::downloadPath();
     destination.addPath(filename);
-    
+
     if (!ReKonfig::downloadToDefaultDir())
     {
         destination = KFileDialog::getSaveUrl(destination);
@@ -177,7 +177,7 @@ Download::Download(const KUrl &srcUrl, const KUrl &destUrl, DownloadType type)
     Q_ASSERT(!m_srcUrl.isEmpty());
     Q_ASSERT(!m_destUrl.isEmpty());
     kDebug() << "DownloadFile: " << m_srcUrl.url() << " to dest: " << m_destUrl.url();
-    
+
     m_copyJob = KIO::file_copy(m_srcUrl, m_destUrl);
     connect(m_copyJob, SIGNAL(result(KJob *)), SLOT(slotResult(KJob *)));
 }

@@ -73,7 +73,10 @@ private:
     void setupHistoryMenu();
     void setupToolBars();
     void setupSidePanel();
-    SidePanel *sidePanel() { return m_sidePanel; }
+    SidePanel *sidePanel()
+    {
+        return m_sidePanel;
+    }
 
 public slots:
     void slotHome();

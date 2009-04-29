@@ -114,7 +114,7 @@ void FindBar::showFindBar()
     {
         show();
     }
-    // set focus to findbar if user select showFindBar shortcut 
+    // set focus to findbar if user select showFindBar shortcut
     m_lineEdit->setFocus();
     m_lineEdit->selectAll();
 }

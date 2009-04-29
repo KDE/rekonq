@@ -184,7 +184,8 @@ void CookieJar::save()
     QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini");
     QSettings cookieSettings(filepath, QSettings::IniFormat);
     QList<QNetworkCookie> cookies = allCookies();
-    for (int i = cookies.count() - 1; i >= 0; --i) {
+    for (int i = cookies.count() - 1; i >= 0; --i)
+    {
         if (cookies.at(i).isSessionCookie())
             cookies.removeAt(i);
     }

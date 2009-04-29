@@ -212,10 +212,10 @@ void HistoryManager::removeHistoryEntry(const HistoryItem &item)
 
 void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
 {
-    for (int i = 0; i < m_history.count(); ++i) 
+    for (int i = 0; i < m_history.count(); ++i)
     {
         if (url == m_history.at(i).url
-            && (title.isEmpty() || title == m_history.at(i).title)) 
+                && (title.isEmpty() || title == m_history.at(i).title))
         {
             removeHistoryEntry(m_history.at(i));
             break;

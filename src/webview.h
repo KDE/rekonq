@@ -56,14 +56,14 @@ public:
     ~WebPage();
 
 protected:
-    bool acceptNavigationRequest(QWebFrame *frame, 
-                                 const QNetworkRequest &request, 
+    bool acceptNavigationRequest(QWebFrame *frame,
+                                 const QNetworkRequest &request,
                                  NavigationType type);
-                                 
+
     QWebPage *createWindow(QWebPage::WebWindowType type);
-    QObject *createPlugin(const QString &classId, 
-                          const QUrl &url, 
-                          const QStringList &paramNames, 
+    QObject *createPlugin(const QString &classId,
+                          const QUrl &url,
+                          const QStringList &paramNames,
                           const QStringList &paramValues);
 
 private slots:
@@ -92,14 +92,26 @@ class WebView : public QWebView
 
 public:
     WebView(QWidget *parent = 0);
-    
+
     KActionCollection* webActions();
 
     // inline
-    WebPage *webPage() const { return m_page; } 
-    KUrl url() const { return KUrl(QWebView::url()); }
-    QString lastStatusBarText() const { return m_statusBarText; }
-    int progress() const { return m_progress; }
+    WebPage *webPage() const
+    {
+        return m_page;
+    }
+    KUrl url() const
+    {
+        return KUrl(QWebView::url());
+    }
+    QString lastStatusBarText() const
+    {
+        return m_statusBarText;
+    }
+    int progress() const
+    {
+        return m_progress;
+    }
 
 signals:
     // switching tabs
@@ -119,17 +131,23 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
-    void setProgress(int progress) { m_progress = progress; }
+    void setProgress(int progress)
+    {
+        m_progress = progress;
+    }
     void loadFinished();
-    void setStatusBarText(const QString &string) { m_statusBarText = string; }
+    void setStatusBarText(const QString &string)
+    {
+        m_statusBarText = string;
+    }
     void downloadRequested(const QNetworkRequest &request);
     void openLinkInNewTab();
 
 private:
     static KActionCollection* s_webActionCollection;
-        
+
     WebPage *m_page;
-    
+
     int m_progress;
     QString m_statusBarText;
 };

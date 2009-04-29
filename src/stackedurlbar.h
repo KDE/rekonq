@@ -33,7 +33,7 @@ class UrlBar;
 class StackedUrlBar : public QStackedWidget
 {
     Q_OBJECT
-    
+
 public:
     StackedUrlBar(QWidget *parent = 0);
     ~StackedUrlBar();
@@ -52,10 +52,10 @@ public:
 
 public slots:
     void clear();
-    
+
 private:
     Q_DISABLE_COPY(StackedUrlBar)
-    
+
     KCompletion *m_completion;
     HistoryCompletionModel *m_completionModel;
 };

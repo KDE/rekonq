@@ -48,7 +48,7 @@ class UrlBar;
 
 
 /**
- *  This class represent rekonq Main View. It contains all WebViews and a stack widget 
+ *  This class represent rekonq Main View. It contains all WebViews and a stack widget
  *  of associated line edits.
  *
  */
@@ -72,7 +72,7 @@ signals:
     void showStatusBarMessage(const QString &message);
     void linkHovered(const QString &link);
     void loadProgress(int progress);
-    
+
     void geometryChangeRequested(const QRect &geometry);
     void menuBarVisibilityChangeRequested(bool visible);
     void statusBarVisibilityChangeRequested(bool visible);
@@ -81,19 +81,37 @@ signals:
 
 public:
 //     void setupTabButtons();
-    
+
     UrlBar *urlBar(int index) const;
-    UrlBar *currentUrlBar() const { return urlBar(-1); }
+    UrlBar *currentUrlBar() const
+    {
+        return urlBar(-1);
+    }
     WebView *webView(int index) const;
     QList<WebView *> tabs();    // ?
-    
+
     // inlines
-    TabBar *tabBar() const { return m_tabBar; }
-    StackedUrlBar *urlBarStack() const { return m_urlBars; }
-    WebView *currentWebView() const { return webView(currentIndex()); }
-    int webViewIndex(WebView *webView) const { return indexOf(webView); }
-    KAction *recentlyClosedTabsAction() const { return m_recentlyClosedTabsAction; }
-    
+    TabBar *tabBar() const
+    {
+        return m_tabBar;
+    }
+    StackedUrlBar *urlBarStack() const
+    {
+        return m_urlBars;
+    }
+    WebView *currentWebView() const
+    {
+        return webView(currentIndex());
+    }
+    int webViewIndex(WebView *webView) const
+    {
+        return indexOf(webView);
+    }
+    KAction *recentlyClosedTabsAction() const
+    {
+        return m_recentlyClosedTabsAction;
+    }
+
     /**
      * show and hide TabBar if user doesn't choose
      * "Always Show TabBar" option
@@ -113,8 +131,8 @@ public slots:
     WebView *newWebView(bool makeCurrent = true);
 
     /**
-     * Core browser slot. Load an url in a webview 
-     * 
+     * Core browser slot. Load an url in a webview
+     *
      * @param url The url to load
      */
     void loadUrl(const KUrl &url);
@@ -152,7 +170,7 @@ private slots:
     void windowCloseRequested();
 
     /**
-     * This functions move tab informations "from index to index" 
+     * This functions move tab informations "from index to index"
      *
      * @param fromIndex the index from which we move
      *
@@ -165,12 +183,12 @@ private slots:
 private:
 
     /**
-     * This function creates (if not exists) and returns a QLabel 
+     * This function creates (if not exists) and returns a QLabel
      * with a loading QMovie.
-     * Imported from Arora's code. 
+     * Imported from Arora's code.
      *
      * @param index the tab index where inserting the animated label
-     * @param addMovie creates or not a loading movie 
+     * @param addMovie creates or not a loading movie
      *
      * @return animated label's pointer
      */

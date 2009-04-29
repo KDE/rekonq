@@ -46,11 +46,17 @@ class UrlBar : public KHistoryComboBox
     Q_OBJECT
 
 public:
-    UrlBar(QWidget *parent=0);
+    UrlBar(QWidget *parent = 0);
     ~UrlBar();
 
-    void selectAll() const { lineEdit()->selectAll(); }
-    KUrl url() const { return m_currentUrl; }
+    void selectAll() const
+    {
+        lineEdit()->selectAll();
+    }
+    KUrl url() const
+    {
+        return m_currentUrl;
+    }
 
     QSize sizeHint() const;
 
@@ -66,22 +72,25 @@ private slots:
     void slotLoadFinished(bool);
     void slotCleared();
     void slotUpdateUrl();
-    
+
 protected:
     virtual void paintEvent(QPaintEvent *event);
     virtual void focusOutEvent(QFocusEvent *event);
 
 private:
     void setupLineEdit();
-    
-    KLineEdit *lineEdit() const { return m_lineEdit; }
-    
+
+    KLineEdit *lineEdit() const
+    {
+        return m_lineEdit;
+    }
+
     static QLinearGradient generateGradient(const QColor &color, int height);
-    
+
     static QColor s_defaultBaseColor;
 
     LineEdit *m_lineEdit;
-    
+
     QIcon m_currentIcon;
     KUrl m_currentUrl;
     int m_progress;

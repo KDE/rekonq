@@ -63,7 +63,7 @@ MainView::MainView(QWidget *parent)
 {
     // setting tabbar
     setTabBar(m_tabBar);
-    
+
     // loading pixmap path
     m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
 
@@ -73,7 +73,7 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(slotCloseOtherTabs(int)));
     connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(slotReloadTab(int)));
     connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(slotReloadAllTabs()));
-    connect(m_tabBar, SIGNAL(tabMoved(int,int)), this, SLOT(moveTab(int,int)));
+    connect(m_tabBar, SIGNAL(tabMoved(int, int)), this, SLOT(moveTab(int, int)));
 
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
@@ -102,7 +102,7 @@ void MainView::postLaunch()
 
 void MainView::showTabBar()
 {
-    if ( ReKonfig::alwaysShowTabBar() )
+    if (ReKonfig::alwaysShowTabBar())
     {
         if (m_tabBar->isHidden())
         {
@@ -245,12 +245,12 @@ void MainView::slotCurrentChanged(int index)
     WebView *oldWebView = this->webView(m_urlBars->currentIndex());
     if (oldWebView)
     {
-        disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)), 
-                    this, SIGNAL(showStatusBarMessage(const QString&)));
-        disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
-                    this, SIGNAL(linkHovered(const QString&)));
-        disconnect(oldWebView, SIGNAL(loadProgress(int)), 
-                    this, SIGNAL(loadProgress(int)));
+        disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)),
+                   this, SIGNAL(showStatusBarMessage(const QString&)));
+        disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
+                   this, SIGNAL(linkHovered(const QString&)));
+        disconnect(oldWebView, SIGNAL(loadProgress(int)),
+                   this, SIGNAL(loadProgress(int)));
     }
 
     connect(webView, SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
@@ -304,13 +304,13 @@ WebView *MainView::newWebView(bool makeCurrent)
     m_urlBars->addUrlBar(urlBar);
 
     WebView *webView = new WebView;  // should be deleted on tab close
-    
+
     // connecting webview with urlbar
     connect(webView, SIGNAL(loadProgress(int)), urlBar, SLOT(slotUpdateProgress(int)));
     connect(webView, SIGNAL(loadFinished(bool)), urlBar, SLOT(slotLoadFinished(bool)));
     connect(webView, SIGNAL(urlChanged(const QUrl &)), urlBar, SLOT(setUrl(const QUrl &)));
     connect(webView, SIGNAL(iconChanged()), urlBar, SLOT(slotUpdateUrl()));
-    
+
     // connecting webview with mainview
     connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
     connect(webView, SIGNAL(loadProgress(int)), this, SLOT(webViewLoadProgress(int)));
@@ -323,17 +323,17 @@ WebView *MainView::newWebView(bool makeCurrent)
     connect(webView, SIGNAL(shiftCtrlTabPressed()), this, SLOT(previousTab()));
 
     // connecting webPage signals with mainview
-    connect(webView->page(), SIGNAL(windowCloseRequested()), 
+    connect(webView->page(), SIGNAL(windowCloseRequested()),
             this, SLOT(windowCloseRequested()));
-    connect(webView->page(), SIGNAL(geometryChangeRequested(const QRect &)), 
+    connect(webView->page(), SIGNAL(geometryChangeRequested(const QRect &)),
             this, SIGNAL(geometryChangeRequested(const QRect &)));
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)),
             this, SIGNAL(printRequested(QWebFrame *)));
-    connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)), 
+    connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)),
             this, SIGNAL(menuBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)), 
+    connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)),
             this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)), 
+    connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)),
             this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
 
     addTab(webView, i18n("(Untitled)"));
@@ -427,7 +427,7 @@ void MainView::slotCloseTab(int index)
 {
     kWarning() << "Index: " << index;
     // do nothing if just one tab is opened
-    if( count() == 1 )
+    if (count() == 1)
         return;
 
     if (index < 0)
@@ -441,10 +441,10 @@ void MainView::slotCloseTab(int index)
         if (tab->isModified())
         {
             int risp = KMessageBox::questionYesNo(this ,
-                       i18n("You have modified this page and when closing it you would lose the modification.\n"
-                       "Do you really want to close this page?\n"),
-                       i18n("Do you really want to close this page?")
-                       );
+                                                  i18n("You have modified this page and when closing it you would lose the modification.\n"
+                                                       "Do you really want to close this page?\n"),
+                                                  i18n("Do you really want to close this page?")
+                                                 );
             if (risp == KMessageBox::No)
                 return;
         }
@@ -499,7 +499,7 @@ void MainView::webViewLoadStarted()
     }
 
     if (index != currentIndex())
-            return;
+        return;
 
     emit showStatusBarMessage(i18n("Loading..."));
 }
@@ -513,10 +513,10 @@ void MainView::webViewLoadProgress(int progress)
     {
         return;
     }
-    
+
     double totalBytes = static_cast<double>(webView->webPage()->totalBytes() / 1024);
-    
-    QString message = i18n("Loading %1% (%2 %3)...", progress, totalBytes, QLatin1String("kB") );
+
+    QString message = i18n("Loading %1% (%2 %3)...", progress, totalBytes, QLatin1String("kB"));
     emit showStatusBarMessage(message);
 }
 
@@ -525,15 +525,15 @@ void MainView::webViewLoadFinished(bool ok)
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
-    
-   if (-1 != index)
+
+    if (-1 != index)
     {
         QLabel *label = animatedLoading(index, true);
         QMovie *movie = label->movie();
-        if(movie)
+        if (movie)
             movie->stop();
     }
-    
+
     webViewIconChanged();
 
     // don't display messages for background tabs
@@ -541,7 +541,7 @@ void MainView::webViewLoadFinished(bool ok)
     {
         return;
     }
-    
+
     if (ok)
         emit showStatusBarMessage(i18n("Done"));
     else
@@ -568,7 +568,7 @@ void MainView::webViewIconChanged()
 void MainView::webViewTitleChanged(const QString &title)
 {
     QString tabTitle = title;
-    if(title.isEmpty())
+    if (title.isEmpty())
     {
         tabTitle = i18n("(Untitled)");
     }
@@ -622,7 +622,7 @@ void MainView::aboutToShowRecentTriggeredAction(QAction *action)
 
 void MainView::loadUrl(const KUrl &url)
 {
-   if (url.isEmpty())
+    if (url.isEmpty())
         return;
 
     currentUrlBar()->setUrl(url.prettyUrl());
@@ -678,7 +678,7 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
         return 0;
 
     QLabel *label = qobject_cast<QLabel*>(m_tabBar->tabButton(index, QTabBar::LeftSide));
-    if (!label) 
+    if (!label)
     {
         label = new QLabel(this);
     }

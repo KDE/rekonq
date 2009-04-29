@@ -67,7 +67,7 @@ UrlBar *StackedUrlBar::urlBar(int index)
 void StackedUrlBar::addUrlBar(UrlBar* urlBar)
 {
     QStackedWidget::addWidget(urlBar);
-    
+
     // setup completion objects
     urlBar->setCompletionObject(completion());
 }
@@ -88,7 +88,7 @@ void StackedUrlBar::removeUrlBar(UrlBar* urlBar)
 void StackedUrlBar::clear()
 {
     currentUrlBar()->clearHistory();
-    
+
     for (int i = 0; i < count(); ++i)
     {
         urlBar(i)->clear();
@@ -124,19 +124,19 @@ KCompletion *StackedUrlBar::completion()
         int count = model->rowCount();
 
         kDebug() << "...initialize history items" << count;
-        
+
         // change order to insertion to avoid confusion of the addItem method
         // in weighted it expects format string:number and it thinks http it the whole string
         m_completion->setOrder(KCompletion::Insertion);
-        for(int i = 0; i < count; ++i)
+        for (int i = 0; i < count; ++i)
         {
-            QString item = model->data(model->index(i,0)).toString();
+            QString item = model->data(model->index(i, 0)).toString();
             item.remove(QRegExp("^http://|/$"));
             m_completion->addItem(item);
         }
         m_completion->setOrder(KCompletion::Weighted);
     }
-    
+
     return m_completion;
 }
 

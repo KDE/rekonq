@@ -73,7 +73,7 @@ WebPage::~WebPage()
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
     QString scheme = request.url().scheme();
-    if (scheme == QLatin1String("mailto") )
+    if (scheme == QLatin1String("mailto"))
     {
         KToolInvocation::invokeMailer(request.url());
         return false;
@@ -81,13 +81,13 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
     WebView *webView;
 
-    switch(type)
+    switch (type)
     {
 
-    // user clicked on a link or pressed return on a focused link.
+        // user clicked on a link or pressed return on a focused link.
     case QWebPage::NavigationTypeLinkClicked:
 
-        if(m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
+        if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
         {
             webView = Application::instance()->newWebView();
             webView->setFocus();
@@ -105,7 +105,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         else
         {
             // if frame doesn't exists (perhaps) we are pointing to a blank target..
-            if(!frame)
+            if (!frame)
             {
                 webView = Application::instance()->newWebView();
                 webView->setFocus();
@@ -115,43 +115,43 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         }
         break;
 
-    // user activated a submit button for an HTML form.
+        // user activated a submit button for an HTML form.
     case QWebPage::NavigationTypeFormSubmitted:
         break;
 
-    // Navigation to a previously shown document in the back or forward history is requested.
+        // Navigation to a previously shown document in the back or forward history is requested.
     case QWebPage::NavigationTypeBackOrForward:
         break;
 
-    // user activated the reload action.
+        // user activated the reload action.
     case QWebPage::NavigationTypeReload:
 
-        #if QT_VERSION <= 040500
-            // HACK Ported from Arora
-            // A short term hack until QtWebKit can get a reload without cache QAction
-            // *FYI* currently type is never NavigationTypeReload
-            // See: https://bugs.webkit.org/show_bug.cgi?id=24283
-            if (qApp->keyboardModifiers() & Qt::ShiftModifier) 
-            {
-                QNetworkRequest newRequest(request);
-                newRequest.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
-                                        QNetworkRequest::AlwaysNetwork);
-                mainFrame()->load(request);
-                return false;
-            }
-        #endif
+#if QT_VERSION <= 040500
+        // HACK Ported from Arora
+        // A short term hack until QtWebKit can get a reload without cache QAction
+        // *FYI* currently type is never NavigationTypeReload
+        // See: https://bugs.webkit.org/show_bug.cgi?id=24283
+        if (qApp->keyboardModifiers() & Qt::ShiftModifier)
+        {
+            QNetworkRequest newRequest(request);
+            newRequest.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
+                                    QNetworkRequest::AlwaysNetwork);
+            mainFrame()->load(request);
+            return false;
+        }
+#endif
 
         break;
 
-    // An HTML form was submitted a second time.
+        // An HTML form was submitted a second time.
     case QWebPage::NavigationTypeFormResubmitted:
         break;
 
-    // A navigation to another document using a method not listed above.
+        // A navigation to another document using a method not listed above.
     case QWebPage::NavigationTypeOther:
         break;
 
-    // should be nothing..
+        // should be nothing..
     default:
         break;
     }
@@ -300,55 +300,55 @@ WebView::WebView(QWidget* parent)
 
 KActionCollection* WebView::webActions()
 {
-    if(!s_webActionCollection)
+    if (!s_webActionCollection)
     {
         s_webActionCollection = new KActionCollection(this);
 
         QAction *a;
 
         a = new KAction(KIcon("tab-new"), i18n("Open Link in New &Tab"), this);
-        connect(a, SIGNAL(triggered()), this, SLOT(openLinkInNewTab()) );
-        s_webActionCollection->addAction( QLatin1String("open_link_in_new_tab"), a);
-        
+        connect(a, SIGNAL(triggered()), this, SLOT(openLinkInNewTab()));
+        s_webActionCollection->addAction(QLatin1String("open_link_in_new_tab"), a);
+
         a = pageAction(QWebPage::Cut);
         a->setIcon(KIcon("edit-cut"));
         a->setText(i18n("Cu&t"));
-        s_webActionCollection->addAction( QLatin1String("edit_cut"), a);
-        
+        s_webActionCollection->addAction(QLatin1String("edit_cut"), a);
+
         a = pageAction(QWebPage::Copy);
         a->setIcon(KIcon("edit-copy"));
         a->setText(i18n("&Copy"));
-        s_webActionCollection->addAction( QLatin1String("edit_copy"), a );
-        
+        s_webActionCollection->addAction(QLatin1String("edit_copy"), a);
+
         a = pageAction(QWebPage::Paste);
         a->setIcon(KIcon("edit-paste"));
         a->setText(i18n("&Paste"));
-        s_webActionCollection->addAction( QLatin1String("edit_paste"), a );
-        
+        s_webActionCollection->addAction(QLatin1String("edit_paste"), a);
+
         a = pageAction(QWebPage::DownloadImageToDisk);
         a->setIcon(KIcon("folder-image"));
         a->setText(i18n("&Save Image As..."));
-        s_webActionCollection->addAction( QLatin1String("save_image_as"), a );
-        
+        s_webActionCollection->addAction(QLatin1String("save_image_as"), a);
+
         a = pageAction(QWebPage::CopyImageToClipboard);
         a->setIcon(KIcon("insert-image"));
         a->setText(i18n("&Copy This Image"));
-        s_webActionCollection->addAction( QLatin1String("copy_this_image"), a);
+        s_webActionCollection->addAction(QLatin1String("copy_this_image"), a);
 
         a = pageAction(QWebPage::DownloadLinkToDisk);
         a->setIcon(KIcon("folder-downloads"));
         a->setText(i18n("&Save Link As..."));
-        s_webActionCollection->addAction( QLatin1String("save_link_as"), a);
-        
+        s_webActionCollection->addAction(QLatin1String("save_link_as"), a);
+
         a = pageAction(QWebPage::CopyLinkToClipboard);
         a->setIcon(KIcon("insert-link"));
         a->setText(i18n("&Copy Link Location"));
-        s_webActionCollection->addAction( QLatin1String("copy_link_location"), a);
+        s_webActionCollection->addAction(QLatin1String("copy_link_location"), a);
 
         a = pageAction(QWebPage::InspectElement);
         a->setIcon(KIcon("tools-report-bug"));
         a->setText(i18n("&Inspect Element"));
-        s_webActionCollection->addAction( QLatin1String("inspect_element"), a);
+        s_webActionCollection->addAction(QLatin1String("inspect_element"), a);
     }
 
     return s_webActionCollection;
@@ -359,16 +359,16 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
     MainWindow *mainwindow = Application::instance()->mainWindow();
-    
+
     QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("add_bookmark_payload");
     addBookmarkAction->setText(i18n("Bookmark This Page"));
     addBookmarkAction->setData(QVariant());
     KMenu menu(this);
-    
+
     bool linkIsEmpty = result.linkUrl().isEmpty();
     if (!linkIsEmpty)
     {
-        menu.addAction( webActions()->action("open_link_in_new_tab") );
+        menu.addAction(webActions()->action("open_link_in_new_tab"));
     }
     else
     {
@@ -379,7 +379,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
     {
-        menu.addAction( webActions()->action("inspect_element") );
+        menu.addAction(webActions()->action("inspect_element"));
         menu.addSeparator();
     }
 
@@ -389,17 +389,17 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     if (result.isContentSelected() && result.isContentEditable())
     {
-        menu.addAction( webActions()->action("edit_cut") );
+        menu.addAction(webActions()->action("edit_cut"));
     }
 
     if (result.isContentSelected())
     {
-        menu.addAction( webActions()->action("edit_copy") );
+        menu.addAction(webActions()->action("edit_copy"));
     }
 
     if (result.isContentEditable())
     {
-        menu.addAction( webActions()->action("edit_paste") );
+        menu.addAction(webActions()->action("edit_paste"));
     }
 
     if (!linkIsEmpty)
@@ -408,16 +408,16 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         if (!result.pixmap().isNull())
         {
             // TODO Add "View Image"
-            menu.addAction( webActions()->action("save_image_as") );
-            menu.addAction( webActions()->action("copy_this_image") );
+            menu.addAction(webActions()->action("save_image_as"));
+            menu.addAction(webActions()->action("copy_this_image"));
         }
-        menu.addAction( webActions()->action("save_link_as") );
-        menu.addAction( webActions()->action("copy_link_location") );
+        menu.addAction(webActions()->action("save_link_as"));
+        menu.addAction(webActions()->action("copy_link_location"));
         addBookmarkAction->setData(result.linkUrl());
         addBookmarkAction->setText(i18n("&Bookmark This Link"));
     }
     menu.addSeparator();
-    
+
     menu.addAction(addBookmarkAction);
     menu.exec(mapToGlobal(event->pos()));
 }

@@ -35,9 +35,9 @@
 
 
 PanelHistory::PanelHistory(QWidget *parent)
-    : QWidget(parent)
-    , m_historyTreeView(new QTreeView)
-    , m_treeProxyModel(new TreeProxyModel(this))
+        : QWidget(parent)
+        , m_historyTreeView(new QTreeView)
+        , m_treeProxyModel(new TreeProxyModel(this))
 {
     m_historyTreeView->setUniformRowHeights(true);
     m_historyTreeView->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -64,7 +64,7 @@ PanelHistory::PanelHistory(QWidget *parent)
     //-
     HistoryManager *historyManager = Application::historyManager();
     QAbstractItemModel *model = historyManager->historyTreeModel();
-    
+
     m_treeProxyModel->setSourceModel(model);
     m_historyTreeView->setModel(m_treeProxyModel);
     m_historyTreeView->setExpanded(m_treeProxyModel->index(0, 0), true);
@@ -72,7 +72,7 @@ PanelHistory::PanelHistory(QWidget *parent)
     QFontMetrics fm(font());
     int header = fm.width(QLatin1Char('m')) * 40;
     m_historyTreeView->header()->resizeSection(0, header);
-    
+
     connect(search, SIGNAL(textChanged(QString)), m_treeProxyModel, SLOT(setFilterFixedString(QString)));
     connect(m_historyTreeView, SIGNAL(activated(const QModelIndex&)), this, SLOT(open()));
 }

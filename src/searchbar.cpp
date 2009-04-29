@@ -36,9 +36,9 @@
 
 
 SearchBar::SearchBar(QWidget *parent) :
-    KLineEdit(parent)
-    , m_networkAccessManager(new QNetworkAccessManager(this))
-    , m_timer(new QTimer(this))
+        KLineEdit(parent)
+        , m_networkAccessManager(new QNetworkAccessManager(this))
+        , m_timer(new QTimer(this))
 {
     setMinimumWidth(180);
 

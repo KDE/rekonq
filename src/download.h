@@ -38,7 +38,7 @@ class KJob;
 
 namespace KIO
 {
-    class Job;
+class Job;
 }
 
 
@@ -51,10 +51,10 @@ namespace KIO
 class Download : public QObject
 {
     Q_OBJECT
-    
+
 public:
     enum DownloadType { Save, Open };
-    
+
     /**
      * Class constructor. This is the unique method we need to
      * use this class. In fact Download class needs to know just
@@ -71,9 +71,18 @@ public:
      */
     ~Download();
 
-    KUrl srcUrl() const { return m_srcUrl; }
-    KUrl destUrl() const { return m_destUrl; }
-    DownloadType type() const { return m_type; }
+    KUrl srcUrl() const
+    {
+        return m_srcUrl;
+    }
+    KUrl destUrl() const
+    {
+        return m_destUrl;
+    }
+    DownloadType type() const
+    {
+        return m_type;
+    }
     void cancel();
 
 signals:
@@ -98,11 +107,11 @@ private:
 class DownloadManager : public QObject
 {
     Q_OBJECT
-    
+
 public:
     DownloadManager();
     ~DownloadManager();
-    
+
     /**
     * @short Creates new download job.
     * This method lets you to download a file from a remote source url
@@ -115,13 +124,13 @@ public:
     void newDownload(const KUrl &srcUrl, const KUrl &destUrl = KUrl());
 
     const QList<Download *> &downloads() const;
-    
+
 public slots:
     void slotDownloadFinished(int errorCode);
 
 private:
     KUrl downloadDestination(const QString &filename);
-    
+
     QList<Download *> m_downloads;
 };
 

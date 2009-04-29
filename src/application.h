@@ -78,7 +78,7 @@ public slots:
      * @see ReKonfig::self()->writeConfig();
      */
     void slotSaveConfiguration() const;
-    
+
 
 private slots:
 

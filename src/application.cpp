@@ -57,7 +57,7 @@ QPointer<BookmarkProvider> Application::s_bookmarkProvider;
 
 
 Application::Application()
-    : KUniqueApplication()
+        : KUniqueApplication()
 {
 }
 
@@ -79,12 +79,12 @@ int Application::newInstance()
     if (!m_mainWindow)
     {
         m_mainWindow = new MainWindow();
-        
+
         m_mainWindow->setObjectName("MainWindow");
         setWindowIcon(KIcon("rekonq"));
-        
+
         m_mainWindow->show();
-        
+
         QTimer::singleShot(0, this, SLOT(postLaunch()));
     }
 
@@ -177,7 +177,7 @@ HistoryManager *Application::historyManager()
 
 DownloadManager *Application::downloadManager()
 {
-    if (!s_downloadManager) 
+    if (!s_downloadManager)
     {
         s_downloadManager = new DownloadManager();
     }

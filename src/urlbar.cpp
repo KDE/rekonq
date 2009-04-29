@@ -51,20 +51,20 @@ UrlBar::UrlBar(QWidget *parent)
     setUrlDropsEnabled(true);
     setAutoDeleteCompletionObject(true);
     setMinimumWidth(180);
-     
+
     setTrapReturnKey(true);
-    
+
     setupLineEdit();
-    
+
     // add every item to history
     connect(this, SIGNAL(returnPressed(const QString&)), SLOT(slotActivated(const QString&)));
     connect(completionBox(), SIGNAL(activated(const QString&)), SLOT(slotActivated(const QString&)));
-    
+
     connect(this, SIGNAL(cleared()), SLOT(slotCleared()));
 
     // setup completion box
     completionBox()->setTabHandling(true);  // Konqueror bug #167135
-    
+
     // set dropdown list background
     QPalette p = view()->palette();
     p.setColor(QPalette::Base, palette().color(QPalette::Base));
@@ -86,19 +86,19 @@ void UrlBar::setupLineEdit()
     QPalette p = m_lineEdit->palette();
     p.setColor(QPalette::Base, Qt::transparent);
     m_lineEdit->setPalette(p);
-    
+
     if (!s_defaultBaseColor.isValid())
     {
         s_defaultBaseColor = palette().color(QPalette::Base);
     }
-    
+
     setLineEdit(m_lineEdit);
-    
+
     // Make the lineedit consume the Qt::Key_Enter event...
     lineEdit()->setTrapReturnKey(true);
-    
+
     lineEdit()->setHandleSignals(true);
-    
+
     // clear the URL bar
     lineEdit()->clear();
 }
@@ -108,7 +108,7 @@ void UrlBar::setUrl(const QUrl& url)
 {
     if (url.isEmpty())
         return;
-    
+
     m_currentUrl = url;
     slotUpdateUrl();
 }
@@ -141,7 +141,7 @@ inline void UrlBar::slotActivated(const QString& url)
 {
     if (url.isEmpty())
         return;
-    
+
     setUrl(url);
 
     Application::historyManager()->addHistoryEntry(url);
@@ -179,7 +179,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     QPalette p = palette();
     p.setColor(QPalette::Base, s_defaultBaseColor);
     setPalette(p);
-    
+
     KHistoryComboBox::paintEvent(event);
 
     if (!hasFocus())
@@ -197,7 +197,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
         }
         painter.setBrush(generateGradient(loadingColor, height()));
         painter.setPen(Qt::transparent);
-        
+
         QRect backgroundRect = lineEdit()->frameGeometry();
         int mid = backgroundRect.width() / 100 * m_progress;
         QRect progressRect(backgroundRect.x(), backgroundRect.y(), mid, backgroundRect.height());
@@ -211,7 +211,7 @@ void UrlBar::focusOutEvent(QFocusEvent *event)
 {
     // set back last loaded url in case user cleared it
     setUrl(m_currentUrl);
-    
+
     KHistoryComboBox::focusOutEvent(event);
 }
 

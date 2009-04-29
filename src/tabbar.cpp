@@ -72,7 +72,7 @@ QSize TabBar::tabSizeHint(int index) const
 
     int n = count();
 
-    if(n > 6)
+    if (n > 6)
     {
         w = s.width() / 5;
     }

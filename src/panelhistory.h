@@ -49,7 +49,7 @@ private slots:
 private:
     QTreeView *m_historyTreeView;
     TreeProxyModel *m_treeProxyModel;
-    
+
 };
 
 #endif // PANELHISTORY_H

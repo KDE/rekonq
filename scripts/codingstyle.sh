@@ -29,6 +29,7 @@ cd $PWD
 cd ..
 cd src
 
+echo "Applying astyle rules..."
 astyle \
 --indent=spaces=4 \
 --brackets=break \
@@ -39,4 +40,9 @@ astyle \
 --convert-tabs \
 --indent-preprocessor \
 `find -type f -name '*.cpp'` `find -type f -name '*.h'`
+
+echo "Removing .orig files..."
+rm *.orig
+
+echo "Done!"
 

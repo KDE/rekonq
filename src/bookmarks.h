@@ -57,7 +57,7 @@ public:
      * @param parent the pointer parent Bookmark provider. We need it
      *               to get pointer to MainWindow
      */
-    BookmarkOwner(QObject *parent=0);
+    BookmarkOwner(QObject *parent = 0);
     virtual ~BookmarkOwner() {}
 
     /**
@@ -69,8 +69,8 @@ public:
      * @param mouseButtons      the mouse buttons clicked to select the bookmark
      * @param keyboardModifiers the keyboard modifiers pushed when the bookmark was selected
      */
-    virtual void openBookmark(const KBookmark &bookmark, 
-                              Qt::MouseButtons mouseButtons, 
+    virtual void openBookmark(const KBookmark &bookmark,
+                              Qt::MouseButtons mouseButtons,
                               Qt::KeyboardModifiers keyboardModifiers);
 
 
@@ -93,7 +93,10 @@ public:
     /**
     * This function returns whether the owner supports tabs.
     */
-    virtual bool supportsTabs() const { return true; }
+    virtual bool supportsTabs() const
+    {
+        return true;
+    }
 
     /**
     * Called if the user wants to open every bookmark in this folder in a new tab.
@@ -131,17 +134,17 @@ class BookmarkMenu : public KBookmarkMenu
     Q_OBJECT
 
 public:
-    BookmarkMenu(KBookmarkManager* manager, 
-                 KBookmarkOwner* owner, 
-                 KMenu* menu, 
+    BookmarkMenu(KBookmarkManager* manager,
+                 KBookmarkOwner* owner,
+                 KMenu* menu,
                  KActionCollection* actionCollection);
     ~BookmarkMenu();
-    
+
     virtual KMenu *viewContextMenu(QAction* action);
-    
+
 protected slots:
     void slotAddBookmark();
-        
+
 };
 
 
@@ -168,9 +171,9 @@ public:
     * @param parent The MainWindow to provide bookmarks objects
     *
     */
-    BookmarkProvider(QWidget* parent=0);
+    BookmarkProvider(QWidget* parent = 0);
     ~BookmarkProvider();
-    
+
     /**
      * @short Get the Bookmarks Menu Action
      * @return the Bookmarks Menu
@@ -209,12 +212,12 @@ public slots:
      * @param point Point on whitch you want to open this menu
      */
     void contextMenu(const QPoint &point);
-    
+
     /**
      * @short Waits for signal that the group with the address has been modified by the caller.
      * Waits for signal that the group (or any of its children) with the address
      * @p groupAddress (e.g. "/4/5") has been modified by the caller @p caller.
-     * 
+     *
      * @param group bookmark group adress
      * @param caller caller that modified the bookmarks
      * @see  KBookmarkManager::changed
