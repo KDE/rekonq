@@ -84,6 +84,7 @@ protected:
     bool queryClose();
 
 private slots:
+    void postLaunch();
     void slotUpdateConfiguration();
     void slotLoadProgress(int);
     void slotUpdateStatusbar(const QString &string);
@@ -127,8 +128,14 @@ private slots:
     void slotPreferences();
 
 private:
+    MainView *m_view;
+    FindBar *m_findBar;
+    SearchBar *m_searchBar;
+    SidePanel *m_sidePanel;
+
     KMenu *m_historyBackMenu;
     KMenu *m_windowMenu;
+    KActionMenu *m_historyActionMenu;
 
     KAction *m_stopReloadAction;
     KAction *m_stopAction;
@@ -138,11 +145,6 @@ private:
 
     QString m_lastSearch;
     QString m_homePage;
-
-    MainView *m_view;
-    FindBar *m_findBar;
-    SearchBar *m_searchBar;
-    SidePanel *m_sidePanel;
 };
 
 #endif // MAINWINDOW_H

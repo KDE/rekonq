@@ -165,9 +165,10 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
     {
-        // FIXME
-        kWarning() << "trying QWebView here ---------------------------------------";
+        // FIXME : need a "real" implementation..
+        kWarning() << "Modal Dialog ---------------------------------------";
         QWebView *w = new QWebView();
+        w->show();
         return w->page();
     }
 
@@ -179,7 +180,7 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     if (m_openInNewTab)
     {
         m_openInNewTab = false;
-        return Application::instance()->mainWindow()->mainView()->newWebView()->page();
+        return Application::instance()->newWebView()->page();
     }
 
     MainWindow *mainWindow = Application::instance()->mainWindow();

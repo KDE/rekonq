@@ -152,12 +152,19 @@ MainWindow::MainWindow()
 
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
+
+    QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
 
 MainWindow::~MainWindow()
 {
     delete m_view;
+}
+
+
+void MainWindow::postLaunch()
+{
 }
 
 
