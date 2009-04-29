@@ -57,6 +57,16 @@ int main(int argc, char **argv)
                     "alexandr.domrachev@gmail.com",
                     "");
 
+    about.addAuthor(ki18n("Pawel Prazak"),
+                    ki18n("Developer"),
+                    "kojots350@gmail.com",
+                    "");
+
+    about.addAuthor(ki18n("Panagiotis Papadopoulos"),
+                    ki18n("German translations"),
+                    "pano_90@gmx.net",
+                    "");
+
 //     about.addAuthor(ki18n("your name"),
 //                     ki18n("your role"),
 //                     "your mail",
