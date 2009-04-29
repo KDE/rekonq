@@ -76,9 +76,6 @@ MainWindow::MainWindow()
         , m_searchBar(new SearchBar(this))
         , m_sidePanel(0)
 {
-    // accept d'n'd
-    setAcceptDrops(true);
-
     // updating rekonq configuration
     slotUpdateConfiguration();
 
@@ -96,34 +93,9 @@ MainWindow::MainWindow()
     // central widget
     setCentralWidget(centralWidget);
 
-    // Adding Find Bar
-    connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
-
     // setting size policies
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    // --------- connect signals and slots
-    connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
-    connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
-    connect(m_view, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));
-    connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
-    connect(m_view, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
-    connect(m_view, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
-
-    // status bar message
-    connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
-    connect(m_view, SIGNAL(linkHovered(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
-
-    // update toolbar actions
-    connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
-    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
     
-    // bookmarks loading
-    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
-
-
-    slotUpdateWindowTitle();
-
     // then, setup our actions
     setupActions();
 
@@ -147,12 +119,6 @@ MainWindow::MainWindow()
     // setup history menu: this has to be done AFTER setupGUI!!
     setupHistoryMenu();
 
-    // add a status bar
-    statusBar()->show();
-
-    // setting up toolbars to NOT have context menu enabled
-    setContextMenuPolicy(Qt::DefaultContextMenu);
-
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
@@ -165,6 +131,33 @@ MainWindow::~MainWindow()
 
 void MainWindow::postLaunch()
 {
+    // --------- connect signals and slots
+    connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
+    connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
+    connect(m_view, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));
+    connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
+    connect(m_view, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
+    connect(m_view, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
+
+    // status bar messages
+    connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
+    connect(m_view, SIGNAL(linkHovered(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
+
+    // update toolbar actions signals
+    connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
+    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
+
+    // Find Bar signal
+    connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
+
+    // bookmarks loading
+    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
+
+    // setting up toolbars to NOT have context menu enabled
+    setContextMenuPolicy(Qt::DefaultContextMenu);
+
+    // accept d'n'd
+    setAcceptDrops(true);
 }
 
 
