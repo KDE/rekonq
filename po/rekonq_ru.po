@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?"
 "group_id=252277&atid=1126949\n"
-"POT-Creation-Date: 2009-04-26 01:49+0200\n"
+"POT-Creation-Date: 2009-04-29 11:26+0200\n"
 "PO-Revision-Date: 2009-04-18 22:21+0400\n"
 "Last-Translator: Domrachev Alexandr <alexandr.domrachev@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -19,59 +19,59 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#. i18n: file: rekonqui.rc:54
+#. i18n: file: rekonqui.rc:58
 #. i18n: ectx: Menu (go)
-#: bookmarks.cpp:261 rc.cpp:87
+#: bookmarks.cpp:265 rc.cpp:90
 msgid "&Bookmarks"
 msgstr "&Закладки"
 
-#: bookmarks.cpp:270
+#: bookmarks.cpp:274
 msgid "Bookmarks Bar"
 msgstr "Панель закладок"
 
-#: cookiejar.cpp:456 cookiejar.cpp:635
+#: cookiejar.cpp:457 cookiejar.cpp:636
 msgid "Website"
 msgstr "Сайт"
 
-#: cookiejar.cpp:458
+#: cookiejar.cpp:459
 msgid "Name"
 msgstr "Имя"
 
-#: cookiejar.cpp:460
+#: cookiejar.cpp:461
 msgid "Path"
 msgstr "Путь"
 
-#: cookiejar.cpp:462
+#: cookiejar.cpp:463
 msgid "Secure"
 msgstr ""
 
-#: cookiejar.cpp:464
+#: cookiejar.cpp:465
 msgid "Expires"
 msgstr "Истекает"
 
-#: cookiejar.cpp:466
+#: cookiejar.cpp:467
 msgid "Contents"
 msgstr "Содержимое"
 
-#: cookiejar.cpp:637
+#: cookiejar.cpp:638
 msgid "Status"
 msgstr "Статус"
 
 #. i18n: file: cookiesexceptions.ui:77
 #. i18n: ectx: property (text), widget (QPushButton, allowButton)
-#: cookiejar.cpp:662 rc.cpp:27
+#: cookiejar.cpp:663 rc.cpp:27
 msgid "Allow"
 msgstr "Разрешить"
 
 #. i18n: file: cookiesexceptions.ui:57
 #. i18n: ectx: property (text), widget (QPushButton, blockButton)
-#: cookiejar.cpp:673 rc.cpp:21
+#: cookiejar.cpp:674 rc.cpp:21
 msgid "Block"
 msgstr "Блокировать"
 
 #. i18n: file: cookiesexceptions.ui:67
 #. i18n: ectx: property (text), widget (QPushButton, allowForSessionButton)
-#: cookiejar.cpp:684 rc.cpp:24
+#: cookiejar.cpp:685 rc.cpp:24
 msgid "Allow For Session"
 msgstr "Разрешить до конца сессии"
 
@@ -87,19 +87,19 @@ msgstr ""
 msgid "Download '%1'..."
 msgstr "Загрузка '%1'..."
 
-#: findbar.cpp:40
+#: findbar.cpp:39
 msgid "&Match case"
 msgstr "С учётом &регистра"
 
-#: findbar.cpp:56
+#: findbar.cpp:55
 msgid "Find: "
 msgstr "Поиск:"
 
-#: findbar.cpp:66
+#: findbar.cpp:65
 msgid "&Next"
 msgstr "&Вперед"
 
-#: findbar.cpp:67
+#: findbar.cpp:66
 msgid "&Previous"
 msgstr "&Назад"
 
@@ -159,19 +159,27 @@ msgstr ""
 msgid "Project Lead, Developer, Italian translations"
 msgstr ""
 
-#: main.cpp:67
+#: main.cpp:55
+msgid "Domrachev Alexandr"
+msgstr "Домрачев Александр"
+
+#: main.cpp:56
+msgid "Developer, Russian translations"
+msgstr ""
+
+#: main.cpp:72
 msgid "Location to open"
 msgstr ""
 
-#: mainview.cpp:79
+#: mainview.cpp:98
 msgid "Recently Closed Tabs"
 msgstr "Недавно закрытые вкладки"
 
-#: mainview.cpp:341 mainview.cpp:568
+#: mainview.cpp:339 mainview.cpp:573
 msgid "(Untitled)"
 msgstr "(Без заголовка)"
 
-#: mainview.cpp:439
+#: mainview.cpp:444
 msgid ""
 "You have modified this page and when closing it you would lose the "
 "modification.\n"
@@ -180,94 +188,94 @@ msgstr ""
 "Вы изменили данную страницу, при закрытии Вы потеряете все изменения.\n"
 "Вы действительно хотите закрыть эту страницу?\n"
 
-#: mainview.cpp:441
+#: mainview.cpp:446
 msgid "Do you really want to close this page?"
 msgstr "Вы действительно хотите закрыть эту страницу?"
 
-#: mainview.cpp:499
+#: mainview.cpp:504
 msgid "Loading..."
 msgstr "Загрузка..."
 
-#: mainview.cpp:514
+#: mainview.cpp:519
 msgid "Loading %1% (%2 %3)..."
 msgstr "Загрузка %1% (%2 %3)..."
 
-#: mainview.cpp:541
+#: mainview.cpp:546
 msgid "Done"
 msgstr ""
 
-#: mainview.cpp:543
+#: mainview.cpp:548
 msgid "Failed to load"
 msgstr "Ошибка загрузки"
 
-#: mainwindow.cpp:172
+#: mainwindow.cpp:177
 msgid "Location Bar"
 msgstr "Отрыть местоположение"
 
-#: mainwindow.cpp:178
+#: mainwindow.cpp:183
 msgid "Search Bar"
 msgstr "Поиск..."
 
-#: mainwindow.cpp:210 mainwindow.cpp:225 mainwindow.cpp:808
+#: mainwindow.cpp:215 mainwindow.cpp:230 mainwindow.cpp:808
 msgid "Reload"
 msgstr "Обновить"
 
-#: mainwindow.cpp:219
+#: mainwindow.cpp:224
 #, fuzzy
 msgid "&Stop"
 msgstr "&Стоп"
 
-#: mainwindow.cpp:230
+#: mainwindow.cpp:235
 msgid "Open Location"
 msgstr "Отрыть местоположение"
 
-#: mainwindow.cpp:235
+#: mainwindow.cpp:240
 msgid "&Enlarge Font"
 msgstr "У&величить шрифт"
 
-#: mainwindow.cpp:240
+#: mainwindow.cpp:245
 msgid "&Normal Font"
 msgstr "&Нормальный шрифт"
 
-#: mainwindow.cpp:245
+#: mainwindow.cpp:250
 msgid "&Shrink Font"
 msgstr "У&меньшить шрифт"
 
-#: mainwindow.cpp:250
+#: mainwindow.cpp:255
 msgid "Page S&ource"
 msgstr "Исходный &код"
 
-#: mainwindow.cpp:255
+#: mainwindow.cpp:260
 #, fuzzy
 msgid "Web &Inspector"
 msgstr "Включить Web &Inspector"
 
-#: mainwindow.cpp:260
+#: mainwindow.cpp:265
 #, fuzzy
 msgid "Private &Browsing"
 msgstr "Режим &конфиденциальности..."
 
-#: mainwindow.cpp:266
+#: mainwindow.cpp:271
 msgid "Back"
 msgstr "Назад"
 
-#: mainwindow.cpp:274
+#: mainwindow.cpp:279
 msgid "Forward"
 msgstr "Вперед"
 
-#: mainwindow.cpp:279 tabbar.cpp:99
+#: mainwindow.cpp:284
 msgid "New &Tab"
 msgstr "Новая &вкладка"
 
-#: mainwindow.cpp:287 tabbar.cpp:107
+#: mainwindow.cpp:292 tabbar.cpp:110
 msgid "&Close Tab"
 msgstr "&Закрыть вкладку"
 
-#: mainwindow.cpp:292
+#: mainwindow.cpp:297
 msgid "Show Next Tab"
 msgstr "Открыть следующую вкладку"
 
-#: mainwindow.cpp:297
+#: mainwindow.cpp:302
 msgid "Show Previous Tab"
 msgstr "Открыть предыдущую вкладку"
 
@@ -275,32 +283,28 @@ msgstr "Открыть предыдущую вкладку"
 #. i18n: ectx: property (windowTitle), widget (QDialog, HistoryDialog)
 #. i18n: file: settings_privacy.ui:20
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: mainwindow.cpp:307 mainwindow.cpp:315 rc.cpp:39 rc.cpp:156
+#: mainwindow.cpp:312 mainwindow.cpp:320 rc.cpp:39 rc.cpp:156
 msgid "History"
 msgstr "Журнал"
 
-#: mainwindow.cpp:331
+#: mainwindow.cpp:336
 msgid "&History"
 msgstr "&Журнал"
 
-#: mainwindow.cpp:517
+#: mainwindow.cpp:522
 #, fuzzy
 msgid "Web Resources (*.html *.htm *.svg *.png *.gif *.svgz); All files (*.*)"
 msgstr "Веб ресурсы (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"
 
-#: mainwindow.cpp:519
+#: mainwindow.cpp:524
 msgid "Open Web Resource"
 msgstr "Открыть..."
 
-#: mainwindow.cpp:553
-msgid "Print Document"
-msgstr "Печать"
-
-#: mainwindow.cpp:565
+#: mainwindow.cpp:570
 msgid "Are you sure you want to turn on private browsing?"
 msgstr "Вы действительно хотите включить режим конфиденциальности?"
 
-#: mainwindow.cpp:566
+#: mainwindow.cpp:571
 #, fuzzy
 msgid ""
 "</b><br><br>When private browsing in turned on, webpages are not added to "
@@ -317,7 +321,7 @@ msgstr ""
 "использовать кнопки \"Вперед\" и \"Назад\" для перемещения по уже посещенным "
 "сайтам."
 
-#: mainwindow.cpp:626 mainwindow.cpp:648
+#: mainwindow.cpp:631 mainwindow.cpp:653
 msgid " not found."
 msgstr "не найдено."
 
@@ -364,33 +368,33 @@ msgstr " Вы уверены, что хотите закрыть окно?"
 msgid "C&lose Current Tab"
 msgstr "&Закрыть вкладку"
 
-#: networkaccessmanager.cpp:111
+#: networkaccessmanager.cpp:112
 msgid "<qt>Enter username and password for "
 msgstr "<qt>Введите имя пользователя и пароль для "
 
-#: networkaccessmanager.cpp:112
+#: networkaccessmanager.cpp:113
 msgid " at "
 msgstr ""
 
-#: networkaccessmanager.cpp:137
+#: networkaccessmanager.cpp:140
 msgid "<qt>Connect to proxy "
 msgstr ""
 
-#: networkaccessmanager.cpp:137
+#: networkaccessmanager.cpp:140
 msgid " using:</qt>"
 msgstr ""
 
-#: networkaccessmanager.cpp:157
+#: networkaccessmanager.cpp:160
 msgid ""
 "SSL Errors:\n"
 "\n"
 msgstr ""
 
-#: panelhistory.cpp:49
+#: panelhistory.cpp:50
 msgid "Search: "
 msgstr "Поиск: "
 
-#: searchbar.cpp:57
+#: searchbar.cpp:55
 #, fuzzy
 msgid "Search.."
 msgstr "Поиск..."
@@ -476,67 +480,67 @@ msgstr ""
 msgid "Support for the HTML 5 local storage feature."
 msgstr ""
 
-#: tabbar.cpp:105
+#: tabbar.cpp:108
 msgid "Clone Tab"
 msgstr "Закрыть вкладку"
 
-#: tabbar.cpp:108
+#: tabbar.cpp:111
 msgid "Close &Other Tabs"
 msgstr "Закрыть все, &кроме активной"
 
-#: tabbar.cpp:110
+#: tabbar.cpp:113
 msgid "Reload Tab"
 msgstr "Обновить вкладку"
 
-#: tabbar.cpp:116
+#: tabbar.cpp:119
 msgid "Reload All Tabs"
 msgstr "Обновить все вкладки"
 
-#: webview.cpp:243
+#: webview.cpp:245
 msgid "Error loading page: "
 msgstr "Ошибка загрузки страницы: "
 
-#: webview.cpp:307
+#: webview.cpp:309
 msgid "Open Link in New &Tab"
 msgstr "Открыть ссылку в &новой вкладке"
 
-#: webview.cpp:313
+#: webview.cpp:315
 msgid "Cu&t"
 msgstr ""
 
-#: webview.cpp:318
+#: webview.cpp:320
 msgid "&Copy"
 msgstr ""
 
-#: webview.cpp:323
+#: webview.cpp:325
 msgid "&Paste"
 msgstr ""
 
-#: webview.cpp:328
+#: webview.cpp:330
 msgid "&Save Image As..."
 msgstr "&Сохранить изображение..."
 
-#: webview.cpp:333
+#: webview.cpp:335
 msgid "&Copy This Image"
 msgstr "&Копировать изображение в буфер обмена"
 
-#: webview.cpp:338
+#: webview.cpp:340
 msgid "&Save Link As..."
 msgstr "Сохранить по ссылке как..."
 
-#: webview.cpp:343
+#: webview.cpp:345
 msgid "&Copy Link Location"
 msgstr "&Отрыть местоположение"
 
-#: webview.cpp:348
+#: webview.cpp:350
 msgid "&Inspect Element"
 msgstr ""
 
-#: webview.cpp:362
+#: webview.cpp:364
 msgid "Bookmark This Page"
 msgstr "Создать закладку"
 
-#: webview.cpp:415
+#: webview.cpp:417
 msgid "&Bookmark This Link"
 msgstr "Создать &закладку ссылки"
 
@@ -668,37 +672,37 @@ msgstr "&Правка"
 msgid "&View"
 msgstr "&Вид"
 
-#. i18n: file: rekonqui.rc:58
+#. i18n: file: rekonqui.rc:54
+#. i18n: ectx: Menu (go)
+#: rc.cpp:87
+msgid "Hi&story"
+msgstr "&Журнал"
+
+#. i18n: file: rekonqui.rc:62
 #. i18n: ectx: Menu (tools)
-#: rc.cpp:90
+#: rc.cpp:93
 msgid "&Tools"
 msgstr ""
 
-#. i18n: file: rekonqui.rc:64
+#. i18n: file: rekonqui.rc:68
 #. i18n: ectx: Menu (settings)
-#: rc.cpp:93
+#: rc.cpp:96
 msgid "&Settings"
 msgstr "&Настройки"
 
-#. i18n: file: rekonqui.rc:67
+#. i18n: file: rekonqui.rc:73
 #. i18n: ectx: Menu (side_panels)
-#: rc.cpp:96
+#: rc.cpp:99
 msgid "Side &Panels"
 msgstr "Боковые &панели"
 
-#. i18n: file: rekonqui.rc:84
+#. i18n: file: rekonqui.rc:88
 #. i18n: ectx: ToolBar (mainToolBar)
-#: rc.cpp:99
+#: rc.cpp:102
 msgid "Main Toolbar"
 msgstr "Панель инструментов"
 
-#. i18n: file: rekonqui.rc:94
-#. i18n: ectx: ToolBar (locationToolBar)
-#: rc.cpp:102
-msgid "Location Toolbar"
-msgstr "Адресная строка"
-
-#. i18n: file: rekonqui.rc:101
+#. i18n: file: rekonqui.rc:100
 #. i18n: ectx: ToolBar (bookmarksToolBar)
 #: rc.cpp:105
 msgid "Bookmark Toolbar"
@@ -1009,6 +1013,12 @@ msgstr ""
 msgid "Local storage database"
 msgstr ""
 
+#~ msgid "Print Document"
+#~ msgstr "Печать"
+
+#~ msgid "Location Toolbar"
+#~ msgstr "Адресная строка"
+
 #, fuzzy
 #~ msgid "reload"
 #~ msgstr "Обновить"
@@ -1017,14 +1027,8 @@ msgstr ""
 #~ msgid "Clear Location Bar"
 #~ msgstr "Отрыть местоположение"
 
-#~ msgid "Domrachev Alexandr"
-#~ msgstr "Домрачев Александр"
-
 #~ msgid "Finished loading"
 #~ msgstr "Загрузка завершена"
-
-#~ msgid "Hi&story"
-#~ msgstr "&Журнал"
 
 #~ msgid "Bookmarks"
 #~ msgstr "Закладки"
