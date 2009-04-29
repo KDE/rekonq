@@ -116,9 +116,6 @@ MainWindow::MainWindow()
     // toolbar position, icon size, etc.
     setupGUI();
 
-    // setup history menu: this has to be done AFTER setupGUI!!
-    setupHistoryMenu();
-
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
@@ -131,6 +128,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::postLaunch()
 {
+    // setup history menu: this has to be done AFTER setupGUI!!
+    setupHistoryMenu();
+
     // --------- connect signals and slots
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
