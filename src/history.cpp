@@ -1177,7 +1177,7 @@ QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
             }
             if (index.column() == 1)
             {
-                return QString::number(rowCount(index.sibling(index.row(), 0))) + i18n(" items") ;
+                return i18np("1 item", "%1 items", rowCount(index.sibling(index.row(), 0)));
             }
         }
     }

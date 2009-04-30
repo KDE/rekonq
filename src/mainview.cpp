@@ -340,7 +340,7 @@ WebView *MainView::newWebView(bool makeCurrent)
 
     if (makeCurrent)
     {
-        setCurrentWidget(webView);  // this method does NOT take owneship of webView
+        setCurrentWidget(webView);  // this method does NOT take ownership of webView
     }
 
     emit tabsChanged();
