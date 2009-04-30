@@ -694,3 +694,13 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
     return label;
 }
 
+
+void MainView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (!childAt(event->pos()))
+    {
+        newWebView(true);
+        return;
+    }
+    KTabWidget::mouseDoubleClickEvent(event);
+}

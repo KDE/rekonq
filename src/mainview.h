@@ -61,6 +61,28 @@ public:
     MainView(QWidget *parent = 0);
     ~MainView();
 
+public:
+
+    UrlBar *urlBar(int index) const;
+    UrlBar *currentUrlBar() const { return urlBar(-1); }
+    WebView *webView(int index) const;
+    QList<WebView *> tabs();    // ?
+
+    // inlines
+    TabBar *tabBar() const { return m_tabBar; }
+    StackedUrlBar *urlBarStack() const { return m_urlBars; }
+    WebView *currentWebView() const { return webView(currentIndex()); }
+    int webViewIndex(WebView *webView) const { return indexOf(webView); }
+    KAction *recentlyClosedTabsAction() const { return m_recentlyClosedTabsAction; }
+
+    /**
+     * show and hide TabBar if user doesn't choose
+     * "Always Show TabBar" option
+     *
+     */
+    void showTabBar();
+    void clear();
+
 
 signals:
     // tab widget signals
@@ -78,48 +100,6 @@ signals:
     void statusBarVisibilityChangeRequested(bool visible);
     void toolBarVisibilityChangeRequested(bool visible);
     void printRequested(QWebFrame *frame);
-
-public:
-//     void setupTabButtons();
-
-    UrlBar *urlBar(int index) const;
-    UrlBar *currentUrlBar() const
-    {
-        return urlBar(-1);
-    }
-    WebView *webView(int index) const;
-    QList<WebView *> tabs();    // ?
-
-    // inlines
-    TabBar *tabBar() const
-    {
-        return m_tabBar;
-    }
-    StackedUrlBar *urlBarStack() const
-    {
-        return m_urlBars;
-    }
-    WebView *currentWebView() const
-    {
-        return webView(currentIndex());
-    }
-    int webViewIndex(WebView *webView) const
-    {
-        return indexOf(webView);
-    }
-    KAction *recentlyClosedTabsAction() const
-    {
-        return m_recentlyClosedTabsAction;
-    }
-
-    /**
-     * show and hide TabBar if user doesn't choose
-     * "Always Show TabBar" option
-     *
-     */
-    void showTabBar();
-    void clear();
-
 
 public slots:
     /**
@@ -179,6 +159,11 @@ private slots:
     void moveTab(int fromIndex, int toIndex);
 
     void postLaunch();
+
+protected:
+
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
+
 
 private:
 
