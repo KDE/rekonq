@@ -341,6 +341,7 @@ WebView *MainView::newWebView(bool makeCurrent)
     if (makeCurrent)
     {
         setCurrentWidget(webView);  // this method does NOT take ownership of webView
+        urlBar->setFocus();
     }
 
     emit tabsChanged();
@@ -425,7 +426,6 @@ void MainView::slotCloneTab(int index)
 // When index is -1 index chooses the current tab
 void MainView::slotCloseTab(int index)
 {
-    kWarning() << "Index: " << index;
     // do nothing if just one tab is opened
     if (count() == 1)
         return;
@@ -488,7 +488,6 @@ void MainView::webViewLoadStarted()
 {
     WebView *webView = qobject_cast<WebView*>(sender());
     int index = webViewIndex(webView);
-    kWarning() << "Here.. index = " << index;
     if (-1 != index)
     {
         QLabel *label = animatedLoading(index, true);
