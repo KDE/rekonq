@@ -90,7 +90,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
-      <string>Appearance</string>
+      <string>Tabbed Browsing</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -101,9 +101,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="kcfg_showSideBar">
+       <widget class="QCheckBox" name="kcfg_openTabsBack">
         <property name="text">
-         <string>Show side panel</string>
+         <string>Open tabs in the background</string>
         </property>
        </widget>
       </item>
