@@ -40,7 +40,7 @@ int main(int argc, char **argv)
                      version,
                      ki18n(description),
                      KAboutData::License_GPL_V3,
-                     ki18n("(C) 2009 rekonq team"),
+                     ki18n("(C) 2008-2009 Andrea Diamantini"),
                      KLocalizedString(),
                      "http://rekonq.sourceforge.net",
                      "rekonq@kde.org"
