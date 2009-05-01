@@ -296,7 +296,7 @@ WebView *MainView::webView(int index) const
 }
 
 
-WebView *MainView::newWebView(bool makeCurrent)
+WebView *MainView::newWebView(Rekonq::OpenType type)
 {
     // line edit
     UrlBar *urlBar = new UrlBar;  // Ownership of widget is passed on to the QStackedWidget (addWidget method).
@@ -338,11 +338,22 @@ WebView *MainView::newWebView(bool makeCurrent)
 
     addTab(webView, i18n("(Untitled)"));
 
-    if (makeCurrent)
+    switch(type)
     {
+    case Rekonq::Default:
+        if (makeTabCurrent)
+        {
+            setCurrentWidget(webView);  // this method does NOT take ownership of webView
+            urlBar->setFocus();
+        }
+        break;
+    case Rekonq::New:
         setCurrentWidget(webView);  // this method does NOT take ownership of webView
         urlBar->setFocus();
-    }
+        break;
+    case Rekonq::Background:
+        break;
+    };
 
     emit tabsChanged();
 
@@ -698,7 +709,7 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (!childAt(event->pos()))
     {
-        newWebView(true);
+        newWebView(Rekonq::New);
         return;
     }
     KTabWidget::mouseDoubleClickEvent(event);

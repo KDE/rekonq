@@ -26,6 +26,7 @@
 
 // Local Includes
 #include "webview.h"
+#include "application.h"
 
 // KDE Includes
 #include <KTabWidget>
@@ -109,7 +110,7 @@ public slots:
      *
      * @return a pointer to the new WebView
      */
-    WebView *newWebView(bool makeCurrent = true);
+    WebView *newWebView(Rekonq::OpenType type = Rekonq::Default);
 
     /**
      * Core browser slot. Load an url in a webview
