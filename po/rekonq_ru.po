@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?"
 "group_id=252277&atid=1126949\n"
-"POT-Creation-Date: 2009-04-29 11:26+0200\n"
+"POT-Creation-Date: 2009-05-02 02:35+0200\n"
 "PO-Revision-Date: 2009-04-18 22:21+0400\n"
 "Last-Translator: Domrachev Alexandr <alexandr.domrachev@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -136,8 +136,11 @@ msgid "Earlier Today"
 msgstr "Сегодня ранее"
 
 #: history.cpp:1180
-msgid " items"
-msgstr ""
+msgid "1 item"
+msgid_plural "%1 items"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: main.cpp:29
 msgid "KDE Browser Webkit Based"
@@ -148,7 +151,7 @@ msgid "rekonq"
 msgstr ""
 
 #: main.cpp:43
-msgid "(C) 2009 rekonq team"
+msgid "(C) 2008-2009 Andrea Diamantini"
 msgstr ""
 
 #: main.cpp:50
@@ -167,7 +170,23 @@ msgstr "Домрачев Александр"
 msgid "Developer, Russian translations"
 msgstr ""
 
-#: main.cpp:72
+#: main.cpp:60
+msgid "Pawel Prazak"
+msgstr ""
+
+#: main.cpp:61
+msgid "Developer"
+msgstr ""
+
+#: main.cpp:65
+msgid "Panagiotis Papadopoulos"
+msgstr ""
+
+#: main.cpp:66
+msgid "German translations"
+msgstr ""
+
+#: main.cpp:82
 msgid "Location to open"
 msgstr ""
 
@@ -175,11 +194,11 @@ msgstr ""
 msgid "Recently Closed Tabs"
 msgstr "Недавно закрытые вкладки"
 
-#: mainview.cpp:339 mainview.cpp:573
+#: mainview.cpp:339 mainview.cpp:583
 msgid "(Untitled)"
 msgstr "(Без заголовка)"
 
-#: mainview.cpp:444
+#: mainview.cpp:455
 msgid ""
 "You have modified this page and when closing it you would lose the "
 "modification.\n"
@@ -188,23 +207,23 @@ msgstr ""
 "Вы изменили данную страницу, при закрытии Вы потеряете все изменения.\n"
 "Вы действительно хотите закрыть эту страницу?\n"
 
-#: mainview.cpp:446
+#: mainview.cpp:457
 msgid "Do you really want to close this page?"
 msgstr "Вы действительно хотите закрыть эту страницу?"
 
-#: mainview.cpp:504
+#: mainview.cpp:514
 msgid "Loading..."
 msgstr "Загрузка..."
 
-#: mainview.cpp:519
+#: mainview.cpp:529
 msgid "Loading %1% (%2 %3)..."
 msgstr "Загрузка %1% (%2 %3)..."
 
-#: mainview.cpp:546
+#: mainview.cpp:556
 msgid "Done"
 msgstr ""
 
-#: mainview.cpp:548
+#: mainview.cpp:558
 msgid "Failed to load"
 msgstr "Ошибка загрузки"
 
@@ -216,7 +235,7 @@ msgstr "Отрыть местоположение"
 msgid "Search Bar"
 msgstr "Поиск..."
 
-#: mainwindow.cpp:215 mainwindow.cpp:230 mainwindow.cpp:808
+#: mainwindow.cpp:215 mainwindow.cpp:230 mainwindow.cpp:809
 msgid "Reload"
 msgstr "Обновить"
 
@@ -291,20 +310,20 @@ msgstr "Журнал"
 msgid "&History"
 msgstr "&Журнал"
 
-#: mainwindow.cpp:522
+#: mainwindow.cpp:523
 #, fuzzy
 msgid "Web Resources (*.html *.htm *.svg *.png *.gif *.svgz); All files (*.*)"
 msgstr "Веб ресурсы (*.html *.htm *.svg *.png *.gif *.svgz);;All files (*.*)"
 
-#: mainwindow.cpp:524
+#: mainwindow.cpp:525
 msgid "Open Web Resource"
 msgstr "Открыть..."
 
-#: mainwindow.cpp:570
+#: mainwindow.cpp:571
 msgid "Are you sure you want to turn on private browsing?"
 msgstr "Вы действительно хотите включить режим конфиденциальности?"
 
-#: mainwindow.cpp:571
+#: mainwindow.cpp:572
 #, fuzzy
 msgid ""
 "</b><br><br>When private browsing in turned on, webpages are not added to "
@@ -321,11 +340,11 @@ msgstr ""
 "использовать кнопки \"Вперед\" и \"Назад\" для перемещения по уже посещенным "
 "сайтам."
 
-#: mainwindow.cpp:631 mainwindow.cpp:653
+#: mainwindow.cpp:632 mainwindow.cpp:654
 msgid " not found."
 msgstr "не найдено."
 
-#: mainwindow.cpp:765
+#: mainwindow.cpp:766
 msgid ""
 "The web inspector will only work correctly for pages that were loaded after "
 "enabling.\n"
@@ -335,35 +354,45 @@ msgstr ""
 "его включения.\n"
 "Вы хотите обновить все вкладки?"
 
-#: mainwindow.cpp:767
+#: mainwindow.cpp:768
 msgid "Web Inspector"
 msgstr ""
 
-#: mainwindow.cpp:799
+#: mainwindow.cpp:800
 msgid "Stop loading the current page"
 msgstr "Остановить загрузку страницы"
 
-#: mainwindow.cpp:800
+#: mainwindow.cpp:801
 msgid "Stop"
 msgstr ""
 
-#: mainwindow.cpp:807
+#: mainwindow.cpp:808
 msgid "Reload the current page"
 msgstr "Обновить страницу"
 
-#: mainwindow.cpp:891
+#: mainwindow.cpp:892
+#, fuzzy
 msgid ""
 "Are you sure you want to close the window?\n"
-"You have %1 tab(s) open"
-msgstr ""
+"You have 1 tap open"
+msgid_plural ""
+"Are you sure you want to close the window?\n"
+"You have %1 tabs open"
+msgstr[0] ""
+"Вы действительно хотите закрыть окно?\n"
+"У Вас окрыто %1 вкладк(а,и,ок)"
+msgstr[1] ""
+"Вы действительно хотите закрыть окно?\n"
+"У Вас окрыто %1 вкладк(а,и,ок)"
+msgstr[2] ""
 "Вы действительно хотите закрыть окно?\n"
 "У Вас окрыто %1 вкладк(а,и,ок)"
 
-#: mainwindow.cpp:892
+#: mainwindow.cpp:893
 msgid "Are you sure you want to close the window?"
 msgstr " Вы уверены, что хотите закрыть окно?"
 
-#: mainwindow.cpp:894
+#: mainwindow.cpp:895
 #, fuzzy
 msgid "C&lose Current Tab"
 msgstr "&Закрыть вкладку"
@@ -710,9 +739,7 @@ msgstr "Панель закладок"
 
 #. i18n: file: settings_fonts.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, fonts)
-#. i18n: file: settings_general.ui:93
-#. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
-#: rc.cpp:108 rc.cpp:144
+#: rc.cpp:108
 msgid "Appearance"
 msgstr "Внешний вид"
 
@@ -772,6 +799,12 @@ msgstr "&Загружать файлы в:"
 msgid "ask where saving downloads"
 msgstr ""
 
+#. i18n: file: settings_general.ui:93
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
+#: rc.cpp:144
+msgid "Tabbed Browsing"
+msgstr "Вкладки"
+
 #. i18n: file: settings_general.ui:99
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_alwaysShowTabBar)
 #: rc.cpp:147
@@ -779,10 +812,10 @@ msgid "Always show tab bar"
 msgstr "Всегда показывать панель вкладок"
 
 #. i18n: file: settings_general.ui:106
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_showSideBar)
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_openTabsBack)
 #: rc.cpp:150
-msgid "Show side panel"
-msgstr "Боковая панель"
+msgid "Open tabs in the background"
+msgstr ""
 
 #. i18n: file: settings_privacy.ui:26
 #. i18n: ectx: property (text), widget (QLabel, label_4)
@@ -1013,6 +1046,9 @@ msgstr ""
 msgid "Local storage database"
 msgstr ""
 
+#~ msgid "Show side panel"
+#~ msgstr "Боковая панель"
+
 #~ msgid "Print Document"
 #~ msgstr "Печать"
 
@@ -1044,9 +1080,6 @@ msgstr ""
 
 #~ msgid "&Always show open/save dialog"
 #~ msgstr "&Всегда спрашивать сохранять файл или открывать"
-
-#~ msgid "Tabbed Browsing"
-#~ msgstr "Вкладки"
 
 #~ msgid "This option will work only with Qt 4.5 and higher"
 #~ msgstr "Эта опция будет работать с QT4.5 или новее."

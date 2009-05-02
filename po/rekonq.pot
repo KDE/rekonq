@@ -9,13 +9,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?"
 "group_id=252277&atid=1126949\n"
-"POT-Creation-Date: 2009-04-29 11:26+0200\n"
+"POT-Creation-Date: 2009-05-02 02:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. i18n: file: rekonqui.rc:58
 #. i18n: ectx: Menu (go)
@@ -132,8 +133,10 @@ msgid "Earlier Today"
 msgstr ""
 
 #: history.cpp:1180
-msgid " items"
-msgstr ""
+msgid "1 item"
+msgid_plural "%1 items"
+msgstr[0] ""
+msgstr[1] ""
 
 #: main.cpp:29
 msgid "KDE Browser Webkit Based"
@@ -144,7 +147,7 @@ msgid "rekonq"
 msgstr ""
 
 #: main.cpp:43
-msgid "(C) 2009 rekonq team"
+msgid "(C) 2008-2009 Andrea Diamantini"
 msgstr ""
 
 #: main.cpp:50
@@ -163,7 +166,23 @@ msgstr ""
 msgid "Developer, Russian translations"
 msgstr ""
 
-#: main.cpp:72
+#: main.cpp:60
+msgid "Pawel Prazak"
+msgstr ""
+
+#: main.cpp:61
+msgid "Developer"
+msgstr ""
+
+#: main.cpp:65
+msgid "Panagiotis Papadopoulos"
+msgstr ""
+
+#: main.cpp:66
+msgid "German translations"
+msgstr ""
+
+#: main.cpp:82
 msgid "Location to open"
 msgstr ""
 
@@ -171,34 +190,34 @@ msgstr ""
 msgid "Recently Closed Tabs"
 msgstr ""
 
-#: mainview.cpp:339 mainview.cpp:573
+#: mainview.cpp:339 mainview.cpp:583
 msgid "(Untitled)"
 msgstr ""
 
-#: mainview.cpp:444
+#: mainview.cpp:455
 msgid ""
 "You have modified this page and when closing it you would lose the "
 "modification.\n"
 "Do you really want to close this page?\n"
 msgstr ""
 
-#: mainview.cpp:446
+#: mainview.cpp:457
 msgid "Do you really want to close this page?"
 msgstr ""
 
-#: mainview.cpp:504
+#: mainview.cpp:514
 msgid "Loading..."
 msgstr ""
 
-#: mainview.cpp:519
+#: mainview.cpp:529
 msgid "Loading %1% (%2 %3)..."
 msgstr ""
 
-#: mainview.cpp:546
+#: mainview.cpp:556
 msgid "Done"
 msgstr ""
 
-#: mainview.cpp:548
+#: mainview.cpp:558
 msgid "Failed to load"
 msgstr ""
 
@@ -210,7 +229,7 @@ msgstr ""
 msgid "Search Bar"
 msgstr ""
 
-#: mainwindow.cpp:215 mainwindow.cpp:230 mainwindow.cpp:808
+#: mainwindow.cpp:215 mainwindow.cpp:230 mainwindow.cpp:809
 msgid "Reload"
 msgstr ""
 
@@ -282,19 +301,19 @@ msgstr ""
 msgid "&History"
 msgstr ""
 
-#: mainwindow.cpp:522
+#: mainwindow.cpp:523
 msgid "Web Resources (*.html *.htm *.svg *.png *.gif *.svgz); All files (*.*)"
 msgstr ""
 
-#: mainwindow.cpp:524
+#: mainwindow.cpp:525
 msgid "Open Web Resource"
 msgstr ""
 
-#: mainwindow.cpp:570
+#: mainwindow.cpp:571
 msgid "Are you sure you want to turn on private browsing?"
 msgstr ""
 
-#: mainwindow.cpp:571
+#: mainwindow.cpp:572
 msgid ""
 "</b><br><br>When private browsing in turned on, webpages are not added to "
 "the history, new cookies are not stored, current cookies cannot be accessed, "
@@ -304,44 +323,48 @@ msgid ""
 "webpages you have opened."
 msgstr ""
 
-#: mainwindow.cpp:631 mainwindow.cpp:653
+#: mainwindow.cpp:632 mainwindow.cpp:654
 msgid " not found."
 msgstr ""
 
-#: mainwindow.cpp:765
+#: mainwindow.cpp:766
 msgid ""
 "The web inspector will only work correctly for pages that were loaded after "
 "enabling.\n"
 "Do you want to reload all pages?"
 msgstr ""
 
-#: mainwindow.cpp:767
+#: mainwindow.cpp:768
 msgid "Web Inspector"
 msgstr ""
 
-#: mainwindow.cpp:799
+#: mainwindow.cpp:800
 msgid "Stop loading the current page"
 msgstr ""
 
-#: mainwindow.cpp:800
+#: mainwindow.cpp:801
 msgid "Stop"
 msgstr ""
 
-#: mainwindow.cpp:807
+#: mainwindow.cpp:808
 msgid "Reload the current page"
 msgstr ""
 
-#: mainwindow.cpp:891
+#: mainwindow.cpp:892
 msgid ""
 "Are you sure you want to close the window?\n"
-"You have %1 tab(s) open"
-msgstr ""
+"You have 1 tap open"
+msgid_plural ""
+"Are you sure you want to close the window?\n"
+"You have %1 tabs open"
+msgstr[0] ""
+msgstr[1] ""
 
-#: mainwindow.cpp:892
+#: mainwindow.cpp:893
 msgid "Are you sure you want to close the window?"
 msgstr ""
 
-#: mainwindow.cpp:894
+#: mainwindow.cpp:895
 msgid "C&lose Current Tab"
 msgstr ""
 
@@ -685,9 +708,7 @@ msgstr ""
 
 #. i18n: file: settings_fonts.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, fonts)
-#. i18n: file: settings_general.ui:93
-#. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
-#: rc.cpp:108 rc.cpp:144
+#: rc.cpp:108
 msgid "Appearance"
 msgstr ""
 
@@ -745,6 +766,12 @@ msgstr ""
 msgid "ask where saving downloads"
 msgstr ""
 
+#. i18n: file: settings_general.ui:93
+#. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
+#: rc.cpp:144
+msgid "Tabbed Browsing"
+msgstr ""
+
 #. i18n: file: settings_general.ui:99
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_alwaysShowTabBar)
 #: rc.cpp:147
@@ -752,9 +779,9 @@ msgid "Always show tab bar"
 msgstr ""
 
 #. i18n: file: settings_general.ui:106
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_showSideBar)
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_openTabsBack)
 #: rc.cpp:150
-msgid "Show side panel"
+msgid "Open tabs in the background"
 msgstr ""
 
 #. i18n: file: settings_privacy.ui:26
