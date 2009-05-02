@@ -352,7 +352,7 @@ void MainWindow::slotUpdateConfiguration()
     // ============== General ==================
     m_homePage = ReKonfig::homePage();
     mainView()->showTabBar();
-    mainView()->setMakeTabCurrent( ReKonfig::openTabsBack() );
+    mainView()->setMakeBackTab( ReKonfig::openTabsBack() );
 
     // =========== Fonts ==============
     QWebSettings *defaultSettings = QWebSettings::globalSettings();

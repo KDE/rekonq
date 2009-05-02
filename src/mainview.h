@@ -26,6 +26,7 @@
 
 // Local Includes
 #include "webview.h"
+#include "application.h"
 
 // KDE Includes
 #include <KTabWidget>
@@ -74,7 +75,7 @@ public:
     WebView *currentWebView() const { return webView(currentIndex()); }
     int webViewIndex(WebView *webView) const { return indexOf(webView); }
     KAction *recentlyClosedTabsAction() const { return m_recentlyClosedTabsAction; }
-    void setMakeTabCurrent( bool b) { makeTabCurrent = b; }
+    void setMakeBackTab(bool b) { m_makeBackTab = b; }
 
     /**
      * show and hide TabBar if user doesn't choose
@@ -109,7 +110,7 @@ public slots:
      *
      * @return a pointer to the new WebView
      */
-    WebView *newWebView(bool makeCurrent = true);
+    WebView *newWebView(Rekonq::OpenType type = Rekonq::Default);
 
     /**
      * Core browser slot. Load an url in a webview
@@ -191,7 +192,7 @@ private:
 
     QString m_loadingGitPath;
 
-    bool makeTabCurrent;
+    bool m_makeBackTab;
 };
 
 #endif

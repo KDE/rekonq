@@ -141,9 +141,9 @@ MainWindow *Application::mainWindow()
 }
 
 
-WebView *Application::newWebView(bool makeCurrent)
+WebView *Application::newWebView(Rekonq::OpenType type)
 {
-    return m_mainWindow->mainView()->newWebView(makeCurrent);
+    return m_mainWindow->mainView()->newWebView(type);
 }
 
 
