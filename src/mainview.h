@@ -75,7 +75,7 @@ public:
     WebView *currentWebView() const { return webView(currentIndex()); }
     int webViewIndex(WebView *webView) const { return indexOf(webView); }
     KAction *recentlyClosedTabsAction() const { return m_recentlyClosedTabsAction; }
-    void setMakeTabCurrent( bool b) { makeTabCurrent = b; }
+    void setMakeBackTab(bool b) { m_makeBackTab = b; }
 
     /**
      * show and hide TabBar if user doesn't choose
@@ -192,7 +192,7 @@ private:
 
     QString m_loadingGitPath;
 
-    bool makeTabCurrent;
+    bool m_makeBackTab;
 };
 
 #endif

@@ -341,7 +341,7 @@ WebView *MainView::newWebView(Rekonq::OpenType type)
     switch(type)
     {
     case Rekonq::Default:
-        if (makeTabCurrent)
+        if (!m_makeBackTab)
         {
             setCurrentWidget(webView);  // this method does NOT take ownership of webView
             urlBar->setFocus();
