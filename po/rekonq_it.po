@@ -4,12 +4,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: rekonq\n"
-"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?"
-"group_id=252277&atid=1126949\n"
+"Report-Msgid-Bugs-To: http://sourceforge."
+"net/tracker/?group_id=252277&atid=1126949\n"
 "POT-Creation-Date: 2009-05-02 02:35+0200\n"
-"PO-Revision-Date: 2009-04-23 01:30+0200\n"
+"PO-Revision-Date: 2009-05-02 02:48+0200\n"
 "Last-Translator: Andrea Diamantini <adjam7@gmail.com>\n"
-"Language-Team: Italian <kde-i18n-doc@kde.org>\n"
+"Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -45,7 +45,7 @@ msgstr ""
 
 #: cookiejar.cpp:465
 msgid "Expires"
-msgstr ""
+msgstr "Scade"
 
 #: cookiejar.cpp:467
 msgid "Contents"
@@ -53,7 +53,7 @@ msgstr ""
 
 #: cookiejar.cpp:638
 msgid "Status"
-msgstr ""
+msgstr "Stato"
 
 #. i18n: file: cookiesexceptions.ui:77
 #. i18n: ectx: property (text), widget (QPushButton, allowButton)
@@ -185,7 +185,7 @@ msgstr ""
 
 #: main.cpp:82
 msgid "Location to open"
-msgstr ""
+msgstr "Indirizzo da aprire"
 
 #: mainview.cpp:98
 msgid "Recently Closed Tabs"
@@ -211,19 +211,19 @@ msgstr "Vuoi davvero chiudere questa pagina?"
 
 #: mainview.cpp:514
 msgid "Loading..."
-msgstr ""
+msgstr "Sto caricando.. "
 
 #: mainview.cpp:529
 msgid "Loading %1% (%2 %3)..."
-msgstr ""
+msgstr "Sto caricando %1% (%2 %3)... "
 
 #: mainview.cpp:556
 msgid "Done"
-msgstr ""
+msgstr "Fatto"
 
 #: mainview.cpp:558
 msgid "Failed to load"
-msgstr ""
+msgstr "Caricamento fallito"
 
 #: mainwindow.cpp:177
 msgid "Location Bar"
@@ -235,7 +235,7 @@ msgstr "Barra di ricerca"
 
 #: mainwindow.cpp:215 mainwindow.cpp:230 mainwindow.cpp:809
 msgid "Reload"
-msgstr ""
+msgstr "Ricarica"
 
 #: mainwindow.cpp:224
 msgid "&Stop"
@@ -306,7 +306,6 @@ msgid "&History"
 msgstr "Cronologia"
 
 #: mainwindow.cpp:523
-#, fuzzy
 msgid "Web Resources (*.html *.htm *.svg *.png *.gif *.svgz); All files (*.*)"
 msgstr ""
 "Risorse Web (*.html *.htm *.svg *.png *.gif *.svgz);;Tutti i files (*.*)"
@@ -317,7 +316,7 @@ msgstr "Apri Risorsa Web"
 
 #: mainwindow.cpp:571
 msgid "Are you sure you want to turn on private browsing?"
-msgstr ""
+msgstr "Sei sicuro di voler utilizzare la navigazione anonima?"
 
 #: mainwindow.cpp:572
 msgid ""
@@ -331,7 +330,7 @@ msgstr ""
 
 #: mainwindow.cpp:632 mainwindow.cpp:654
 msgid " not found."
-msgstr ""
+msgstr "non trovato"
 
 #: mainwindow.cpp:766
 msgid ""
@@ -339,6 +338,9 @@ msgid ""
 "enabling.\n"
 "Do you want to reload all pages?"
 msgstr ""
+"Lo web inspector funziona correttamente solo per quelle pagine caricate dopo "
+"averlo abilitato.\n"
+"Vuoi ricaricare tutte le pagine?"
 
 #: mainwindow.cpp:768
 msgid "Web Inspector"
@@ -346,7 +348,7 @@ msgstr ""
 
 #: mainwindow.cpp:800
 msgid "Stop loading the current page"
-msgstr ""
+msgstr "Ferma il caricamento della pagina corrente"
 
 #: mainwindow.cpp:801
 msgid "Stop"
@@ -354,43 +356,41 @@ msgstr ""
 
 #: mainwindow.cpp:808
 msgid "Reload the current page"
-msgstr ""
+msgstr "Ricarica la pagina corrente"
 
 #: mainwindow.cpp:892
-#, fuzzy
 msgid ""
 "Are you sure you want to close the window?\n"
 "You have 1 tap open"
 msgid_plural ""
 "Are you sure you want to close the window?\n"
 "You have %1 tabs open"
-msgstr[0] "Vuoi davvero chiudere questa pagina?"
+msgstr[0] "Vuoi davvero chiudere questa pagina?\n C'è 1 tab aperta"
 msgstr[1] "Vuoi davvero chiudere questa pagina?"
 
 #: mainwindow.cpp:893
-#, fuzzy
 msgid "Are you sure you want to close the window?"
 msgstr "Vuoi davvero chiudere questa pagina?"
 
 #: mainwindow.cpp:895
 msgid "C&lose Current Tab"
-msgstr ""
+msgstr "&Chiudi la tab corrente"
 
 #: networkaccessmanager.cpp:112
 msgid "<qt>Enter username and password for "
-msgstr ""
+msgstr "<qt> Inserisci username e password per"
 
 #: networkaccessmanager.cpp:113
 msgid " at "
-msgstr ""
+msgstr "a"
 
 #: networkaccessmanager.cpp:140
 msgid "<qt>Connect to proxy "
-msgstr ""
+msgstr "<qt> Connessione al proxy"
 
 #: networkaccessmanager.cpp:140
 msgid " using:</qt>"
-msgstr ""
+msgstr "utilizzando: </qt> "
 
 #: networkaccessmanager.cpp:160
 msgid ""
@@ -399,9 +399,8 @@ msgid ""
 msgstr ""
 
 #: panelhistory.cpp:50
-#, fuzzy
 msgid "Search: "
-msgstr "Barra di ricerca"
+msgstr "Cerca:"
 
 #: searchbar.cpp:55
 msgid "Search.."
@@ -411,13 +410,13 @@ msgstr "Cerca.."
 #. i18n: ectx: property (windowTitle), widget (QWidget, general)
 #: settings.cpp:81 rc.cpp:126
 msgid "General"
-msgstr ""
+msgstr "Generale"
 
 #. i18n: file: settings_fonts.ui:20
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: settings.cpp:87 rc.cpp:111
 msgid "Fonts"
-msgstr ""
+msgstr "Caratteri"
 
 #. i18n: file: settings_privacy.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, privacy)
@@ -466,7 +465,7 @@ msgstr "Permetti a javascript to leggere/scrivere nella clipboard"
 
 #: settings.cpp:149
 msgid "Includes hyperlinks in the keyboard focus chain."
-msgstr ""
+msgstr "Includi link nella sequenza di tab della tastiera"
 
 #: settings.cpp:150
 msgid "Applies the zoom factor on a frame to only the text or all content."
@@ -545,17 +544,15 @@ msgstr "Copia link"
 
 #: webview.cpp:350
 msgid "&Inspect Element"
-msgstr ""
+msgstr "&Ispeziona elemento"
 
 #: webview.cpp:364
-#, fuzzy
 msgid "Bookmark This Page"
-msgstr "B&ookmarks"
+msgstr "Inserisci pagina nei bookmarks"
 
 #: webview.cpp:417
-#, fuzzy
 msgid "&Bookmark This Link"
-msgstr "B&ookmarks"
+msgstr "Inserisci link nei Bookmarks"
 
 #. i18n: file: cookies.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, CookiesDialog)
@@ -671,44 +668,43 @@ msgstr "Connetti al proxy"
 #. i18n: ectx: Menu (file)
 #: rc.cpp:78
 msgid "&File"
-msgstr "File"
+msgstr "&File"
 
 #. i18n: file: rekonqui.rc:24
 #. i18n: ectx: Menu (edit)
 #: rc.cpp:81
 msgid "&Edit"
-msgstr "Modifica"
+msgstr "&Modifica"
 
 #. i18n: file: rekonqui.rc:38
 #. i18n: ectx: Menu (view)
 #: rc.cpp:84
 msgid "&View"
-msgstr "Vedi"
+msgstr "&Vedi"
 
 #. i18n: file: rekonqui.rc:54
 #. i18n: ectx: Menu (go)
 #: rc.cpp:87
-#, fuzzy
 msgid "Hi&story"
-msgstr "Cronologia"
+msgstr "&Cronologia"
 
 #. i18n: file: rekonqui.rc:62
 #. i18n: ectx: Menu (tools)
 #: rc.cpp:93
 msgid "&Tools"
-msgstr "Strumenti"
+msgstr "&Strumenti"
 
 #. i18n: file: rekonqui.rc:68
 #. i18n: ectx: Menu (settings)
 #: rc.cpp:96
 msgid "&Settings"
-msgstr "Impostazioni"
+msgstr "&Impostazioni"
 
 #. i18n: file: rekonqui.rc:73
 #. i18n: ectx: Menu (side_panels)
 #: rc.cpp:99
 msgid "Side &Panels"
-msgstr "Pannelli laterali"
+msgstr "&Pannelli laterali"
 
 #. i18n: file: rekonqui.rc:88
 #. i18n: ectx: ToolBar (mainToolBar)
@@ -726,19 +722,19 @@ msgstr ""
 #. i18n: ectx: property (windowTitle), widget (QWidget, fonts)
 #: rc.cpp:108
 msgid "Appearance"
-msgstr ""
+msgstr "Aspetto"
 
 #. i18n: file: settings_fonts.ui:28
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:114
 msgid "Standard Font"
-msgstr ""
+msgstr "Carattere standard"
 
 #. i18n: file: settings_fonts.ui:35
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: rc.cpp:117
 msgid "Fixed Font"
-msgstr ""
+msgstr "Carattere fisso"
 
 #. i18n: file: settings_fonts.ui:53
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
@@ -750,13 +746,13 @@ msgstr "Dimensione"
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: rc.cpp:123
 msgid "Font Size"
-msgstr "Dimensione font"
+msgstr "Dimensione carattere"
 
 #. i18n: file: settings_general.ui:20
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:129
 msgid "Places"
-msgstr ""
+msgstr "Come si traduce \"places\"?"
 
 #. i18n: file: settings_general.ui:26
 #. i18n: ectx: property (text), widget (QLabel, label_3)
@@ -785,9 +781,8 @@ msgstr "Chiedi dove salvare i downloads"
 #. i18n: file: settings_general.ui:93
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
 #: rc.cpp:144
-#, fuzzy
 msgid "Tabbed Browsing"
-msgstr "Navigazione Privata"
+msgstr "Navigazione Anonima"
 
 #. i18n: file: settings_general.ui:99
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_alwaysShowTabBar)
@@ -799,7 +794,7 @@ msgstr "Mostra sempre la tab bar"
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_openTabsBack)
 #: rc.cpp:150
 msgid "Open tabs in the background"
-msgstr ""
+msgstr "Apri le nuove tab in background"
 
 #. i18n: file: settings_privacy.ui:26
 #. i18n: ectx: property (text), widget (QLabel, label_4)
@@ -961,7 +956,7 @@ msgstr "Carica automaticamente immagini"
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_linksIncludedInFocusChain)
 #: rc.cpp:252
 msgid "Links included in focus chain"
-msgstr ""
+msgstr "link inclusi nella sequenza di focus"
 
 #. i18n: file: settings_webkit.ui:47
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_javascriptEnabled)
