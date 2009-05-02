@@ -48,12 +48,12 @@ int main(int argc, char **argv)
 
     // about authors
     about.addAuthor(ki18n("Andrea Diamantini"),
-                    ki18n("Project Lead, Developer, Italian translations"),
+                    ki18n("Project Lead, Developer, Italian translation"),
                     "adjam7@gmail.com",
                     "http://www.adjam.org");
 
     about.addAuthor(ki18n("Domrachev Alexandr"),
-                    ki18n("Developer, Russian translations"),
+                    ki18n("Developer, Russian translation"),
                     "alexandr.domrachev@gmail.com",
                     "");
 
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
                     "");
 
     about.addAuthor(ki18n("Panagiotis Papadopoulos"),
-                    ki18n("German translations"),
+                    ki18n("German translation"),
                     "pano_90@gmx.net",
                     "");
 
