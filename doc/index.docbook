@@ -1,0 +1,327 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN"
+"dtd/kdex.dtd" [
+  <!ENTITY rekonq "Rekonq">
+  <!ENTITY Andrea.Diamantini "<personname>
+                              <firstname>Andrea</firstname>
+                              <surname>Diamantini</surname>
+                              </personname>
+                              ">
+  <!ENTITY Andrea.Diamantini.mail "<email>adjam7@gmail.com</email>">
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % English "INCLUDE"> 
+]>
+
+<book lang="&language;">
+
+<bookinfo>
+<title>The &rekonq; Handbook</title>
+
+<authorgroup>
+<author>&Andrea.Diamantini; &Andrea.Diamantini.mail;</author>
+</authorgroup>
+
+<copyright>
+<year>2008</year>
+<year>2009</year>
+<holder>&Andrea.Diamantini;</holder>
+</copyright>
+
+<legalnotice>&FDLNotice;</legalnotice>
+
+<date>2008-11-16</date>
+<releaseinfo>0.0.4</releaseinfo>
+
+<abstract>
+<para>
+&rekonq; is a lightweight KDE browser based on WebKit.
+</para>
+</abstract>
+
+<keywordset>
+<keyword>KDE</keyword>
+<keyword>browser</keyword>
+<keyword>rekonq</keyword>
+<keyword>webkit</keyword>
+</keywordset>
+
+</bookinfo>
+
+<!-- ================== CHAPTER ==================  -->
+
+<chapter id="introduction">
+
+<title>Introduction</title>
+
+<para>
+&rekonq; is a lightweight KDE browser based on WebKit.
+</para>
+
+<sect1 id="starting">
+
+<title>Launching &rekonq;</title>
+
+<para>
+The Find Files tool is a useful method of searching for specific files on your
+computer, or for searching for files that match a pattern. An example of
+this could include searching for files of a particular type or with certain
+letters in the filename.
+
+You can load this utility by clicking on <guimenuitem>Find Files</guimenuitem>. This will
+launch &rekonq;.
+</para>
+
+</sect1>
+
+</chapter>
+
+<!-- ================== CHAPTER ==================  -->
+
+<chapter id="kfind">
+<title>Finding Files</title>
+
+<sect1 id="name-tab">
+<title>The Name/Location Tab</title>
+
+<para>
+When starting &rekonq;, you will see a quite simple window. Type in the
+name of the file you are searching in the text box labeled
+<guilabel>Named:</guilabel>. Choose a folder where you want to search
+by typing it in the field <guilabel>Look in:</guilabel>
+or by clicking <guibutton>Browse...</guibutton> and press
+<keycap>Enter</keycap> or click <guibutton>Find</guibutton>. If
+<guilabel>Include subfolders</guilabel> is checked all
+subfolders starting from your chosen folder will be searched
+too. The results will be displayed in the box below.
+</para>
+
+<para>
+You can use the following wildcards:
+</para>
+
+<variablelist>
+<varlistentry>
+<term>The Asterisk <quote><keycap>*</keycap></quote></term>
+<listitem>
+<para>
+The asterisk stands for any number of missing characters (even zero),
+that means &eg; searching for <userinput>marc*</userinput> may find the
+files <filename>marc</filename>, <filename>marc.png</filename> and
+<filename> marc_must_not_read_this.kwd</filename>. 
+<userinput>mar*.kwd</userinput> may find
+<filename>marketplace.kwd</filename> and
+<filename>marc_must_not_read_this.kwd</filename>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>The Question Mark <quote><keycap>?</keycap></quote></term>
+<listitem>
+<para>
+In contrast to the asterisk, the question mark stands for exactly one
+character, so <userinput>mar?</userinput> will find
+<filename>marc</filename>, but <userinput>marc?</userinput> will not find
+anything, as our files are called <filename>marc</filename> and
+<filename>marc.png</filename>. You can put as many question marks in the
+term as you want, it will find exactly that number of characters.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+<para>
+Of course you can combine those two wildcard symbols in a search term.
+</para>
+
+</sect1>
+
+<sect1 id="kfind-date-range">
+<title>The Contents Tab</title>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>File type</guilabel></term>
+<listitem>
+<para>
+Here you can specify the type of file you are searching for.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Containing text</guilabel></term>
+<listitem>
+<para>
+Type in the word or phrase the files you are searching for must
+contain. Note: If you do this in a large folder or checked
+<guilabel>Include subfolders</guilabel> in the
+<guilabel>Name/Location</guilabel> tab, this may take a long time.
+</para>
+
+<note>
+<para>This option will <emphasis>not</emphasis> work for all files listed 
+under <guilabel>File type</guilabel>. Only the following file types
+are supported:
+
+<itemizedlist>
+<listitem><para>Text files, &eg; source code and <filename>README</filename> files</para></listitem>
+<listitem><para>&kword; &gt;= 1.2</para></listitem>
+<listitem><para>&kpresenter; &gt;= 1.2</para></listitem>
+<listitem><para>&kspread; &gt;= 1.2</para></listitem>
+<listitem><para>OpenOffice.org Writer</para></listitem>
+<listitem><para>OpenOffice.org Impress</para></listitem>
+<listitem><para>OpenOffice.org Calc</para></listitem>
+</itemizedlist>
+
+</para>
+</note>
+
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Case sensitive</guilabel></term>
+<listitem>
+<para>
+If you enable this option, &rekonq; will
+only find files with the exact case matching, &eg;
+<userinput>MARC</userinput> will only match
+<quote>MARC</quote>, not <quote>Marc</quote>.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Regular expression</guilabel></term>
+<listitem><para>If you have installed the &kregexpeditor; tool from
+the kdeutils package, you will have this additional option.  Enabling
+it will allow you to search for a <firstterm>regexp</firstterm> or
+regular expression.  A regexp is a way to specify conditions for your
+search, and they can be very complex, and equally they can be very
+powerful.  If you are unfamiliar with regular expressions, you can
+choose <guilabel>Edit Regular Expression</guilabel> to open
+&kregexpeditor;.  This tool allows you to construct your set of
+conditions graphically, and then generates the expression for
+you.</para>
+
+<para>&kregexpeditor; is a very useful tool, and can be used from within
+many &kde; applications other than &rekonq;.  You can find more
+information from within its own help file.</para>
+</listitem>
+</varlistentry>
+
+<!-- TODO: "Search metainfo sections" -->
+
+</variablelist>
+
+</sect1>
+
+<sect1 id="kfind-advanced">
+<title>The Properties Tab</title>
+
+<para>
+Here you can refine your search. These are the special refinements 
+you can choose:
+</para>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Find all files created or modified</guilabel></term>
+<listitem>
+<para>
+Here you can either enter two dates, between which the
+files were created or modified, or specify a time period.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>File size is</guilabel></term>
+<listitem>
+<para>Here you can specify if the file has to be at least or as most as
+big as the size you entered in the following box.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Files owned by user, Files owned by group</guilabel></term>
+<listitem>
+<para>Here you can specify user and group names.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect1>
+
+</chapter>
+
+<!-- ================== CHAPTER ==================  -->
+
+<chapter id="credits">
+
+<title>Credits and License</title>
+
+<para>
+&rekonq; 
+</para>
+
+<para>
+Program copyright:
+</para>
+
+<itemizedlist>
+<title>Developers</title>
+<listitem>
+<para>&Andrea.Diamantini; &Andrea.Diamantini.mail;</para>
+</listitem>
+
+</itemizedlist>
+
+<para>
+Documentation copyright 2008 &Andrea.Diamantini; &Andrea.Diamantini.mail;
+</para> 
+
+<!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+
+&underFDL;               <!-- FDL: do not remove -->
+&underBSDLicense;        <!-- BSD License -->
+
+</chapter>
+
+<appendix id="installation">
+<title>Installation</title>
+
+<sect1 id="getting-kfind">
+<title>How to obtain &rekonq;</title>
+
+&install.intro.documentation;
+
+</sect1>
+
+<sect1 id="requirements">
+<title>Requirements</title>
+
+<para>
+In order to successfully use &rekonq;, you need at least Qt 4.4.x and &kde; 4.1.x.
+</para>
+
+</sect1>
+
+<sect1 id="compilation">
+<title>Compilation and Installation</title>
+
+&install.compile.documentation;
+
+</sect1>
+
+</appendix>
+
+&documentation.index;
+
+</book>

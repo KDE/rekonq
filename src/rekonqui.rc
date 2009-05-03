@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE gui SYSTEM "kpartgui.dtd">
+<gui name="rekonq" version="40">
+
+<MenuBar>
+
+<!--  ============ FILE menu =========== -->
+<Menu name="file" noMerge="1"><text>&amp;File</text>
+    <Action name="file_open" />
+    <Action name="open_location" />
+    <Separator/>
+    <Action name="new_tab" />
+    <Action name="close_tab" />
+    <Separator/>
+    <Action name="file_save_as" />
+    <Separator/>
+    <Action name="file_print_preview" />
+    <Action name="file_print" />
+    <Separator/>
+    <Action name="file_quit" />
+</Menu>
+
+<!--  ============ EDIT menu =========== -->
+<Menu name="edit" noMerge="1"><text>&amp;Edit</text>
+    <Action name="edit_undo" />
+    <Action name="edit_redo" />
+    <Separator/>
+    <Action name="edit_cut" />
+    <Action name="edit_copy" />
+    <Action name="edit_paste" />
+    <Separator/>
+    <Action name="edit_find" />
+    <Action name="edit_find_next" />
+    <Action name="edit_find_prev" />
+</Menu>
+
+<!--  ============ VIEW menu =========== -->
+<Menu name="view" noMerge="1"><text>&amp;View</text>
+    <Action name="stop_reload" />
+    <Action name="go_home" />
+    <Separator/>
+    <Action name="bigger_font" />
+    <Action name="normal_font" />
+    <Action name="smaller_font" />
+    <Separator/>
+    <Action name="page_source" />
+</Menu>
+
+<!--  ============ GO menu =========== -->
+<Menu name="go" deleted="true">
+</Menu>
+
+<!--  ============ HISTORY menu =========== -->
+<Action name="history" ><text>Hi&amp;story</text>
+</Action>
+
+<!--  ============ BOOKMARKS menu =========== -->
+<Action name="bookmarks" ><text>&amp;Bookmarks</text>
+</Action>
+
+<!--  ============ TOOLS menu =========== -->
+<Menu name="tools" noMerge="1"><text>&amp;Tools</text>
+    <Action name="web_inspector" />
+    <Action name="private_browsing" />
+</Menu>
+
+<!--  ============ SETTINGS menu =========== -->
+<Menu name="settings" noMerge="1"><text>&amp;Settings</text>
+    <Action name="options_show_menubar" />
+    <Action name="options_show_statusbar" />
+    <Merge name="StandardToolBarMenuHandler" />
+    <Merge/>
+    <Menu name="side_panels"><text>Side &amp;Panels</text>
+        <Action name="show_history_panel" />
+    </Menu>
+    <Separator/>
+    <Action name="fullscreen" />
+    <Separator/>
+    <Action name="options_configure_keybinding" />
+    <Action name="options_configure_toolbars" />
+    <Action name="options_configure" />
+</Menu>
+
+</MenuBar>
+
+<!--  ============ Main ToolBar =========== -->
+<ToolBar name="mainToolBar" position="top" iconText="iconOnly" newline="true" noMerge="1">
+<text>Main Toolbar</text>
+    <Action name="history_back" />
+    <Action name="history_forward" />
+    <Action name="stop_reload" />
+    <Action name="go_home" />
+    <Action name="new_tab" />
+    <Action name="url_bar" />
+    <Action name="search_bar" />
+</ToolBar>
+
+<!--  ============ Bookmarks ToolBar =========== -->
+<ToolBar name="bookmarksToolBar" fullWidth="true" iconText="icontextright" iconSize="16" newline="true" hidden="true" noEdit="true">
+    <text>Bookmark Toolbar</text>
+    <Action noEdit="true" name="bookmarks_bar" />
+</ToolBar>
+
+</gui>

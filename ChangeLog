@@ -1,0 +1,26 @@
+0.0.4
+- Rekonq Singleton app
+- With Qt 4.5, preliminary flash support
+- Fixed tabbar actions
+- Fixed System Font Loading
+- improved bookmarks system
+
+0.0.3
+- ~80% ported to KDE4
+- use KConfigXT
+- improved text search bar
+- fixed all "web actions"
+- KDE download system
+- new bookmark toolbar (1st implementation)
+
+0.0.2
+- 70% ported to KDE4
+- new urlbar
+- new searchbar (just Google, for now)
+- new findbar (A-LA kate)
+- Slackware Slackbuild available
+
+
+0.0.1
+- initial porting to KDE4
+- share konqueror bookmarks

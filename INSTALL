@@ -1,0 +1,27 @@
+===== Building rekonq from sources =====
+
+=== Prerequisites ===
+
+Qt4.4.x:
+
+  Qt should be prepackaged for all mayor linux distributions. Please see
+  http://www.trolltech.com/products/qt for more information and installation
+  instructions.
+
+KDE 4 
+
+  KDE 4.1 (or better) should be prepackaged for all mayor linux distributions. Please see
+  http://techbase.kde.org/Getting_Started/Build/stable_Version
+  for instructions on how to build and setup a KDE4 environment to work in.
+
+
+=== Building rekonq ===
+
+ To build it do the following after switching into the source directory:
+
+    mkdir build && cd build
+    cmake ..
+    make && make install
+
+Enjoy.
+adjam

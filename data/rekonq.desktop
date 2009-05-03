@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=rekonq
+GenericName=Webkit KDE Browser
+Icon=rekonq
+Type=Application
+Exec=rekonq %u
+X-DocPath=rekonq/index.html
+Categories=Qt;KDE;Network;
+Terminal=0
+MimeType=text/html;application/xhtml+xml;application/xml;
+X-DBUS-StartupType=Unique
+X-DBUS-ServiceName=net.sourceforge.rekonq

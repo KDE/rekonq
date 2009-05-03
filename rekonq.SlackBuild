@@ -1,0 +1,79 @@
+#!/bin/sh
+# Slackware build script for $NAME
+# Heavily based on the Slackware 12.2 SlackBuild
+# Written by Andrea Diamantini - adjam7_AT_gmail_DOT_com
+
+NAME=rekonq
+VERSION=0.0.4
+ARCH=${ARCH:-i486}
+BUILD=1ad
+
+# working dirs
+CWD=$(pwd)
+TMP=$CWD/tmp
+BUILDIR=$TMP/build
+PKG=$TMP/package-$NAME
+
+KDEPREFIX=$(kde4-config --prefix)
+
+JOBS=${JOBS:-2}		# Might not be wanted or needed in some cases
+
+if [ "$ARCH" = "i486" ]; then
+  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O3 -march=i686 -pipe -fomit-frame-pointer"
+elif [ "$ARCH" = "athlon64" ]; then
+  SLKCFLAGS="-O2 -march=athlon64 -pipe"
+elif [ "$ARCH" = "athlonxp" ]; then
+  SLKCFLAGS="-O3 -march=athlon-xp -pipe -fomit-frame-pointer"
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2"
+fi
+
+rm -rf $TMP
+mkdir -p $TMP $PKG $BUILDIR
+
+cd $BUILDIR
+
+# configure option for $NAME
+cmake \
+-DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+-DCMAKE_INSTALL_PREFIX=$KDEPREFIX \
+-DCMAKE_BUILD_TYPE=release \
+$CWD
+
+# Compile the application and install it into the $PKG directory
+nice make -j $JOBS || exit 1
+make install DESTDIR=$PKG || exit 1
+
+# Strip binaries and libraries 
+( cd $PKG
+  find . | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+  find . | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+
+# Copy program documentation into the package
+# Also, include the SlackBuild script in the documentation directory
+mkdir -p $PKG/usr/doc/$NAME-$VERSION
+cp -a AUTHORS COPYING ChangeLog INSTALL NEWS README \
+$PKG/usr/doc/$NAME-$VERSION
+cat $CWD/$NAME.SlackBuild > $PKG/usr/doc/$NAME-$VERSION/$NAME.SlackBuild
+
+# Copy the slack-desc (and a custom doinst.sh if necessary) into ./install
+mkdir -p $PKG/install
+cat $CWD/data/slack-desc > $PKG/install/slack-desc
+
+# Make the package; 
+# If package symlinks need to be created during install *before*
+# your custom contents of doinst.sh runs, then add the -p switch to
+# the makepkg command below -- see makepkg(8) for details
+cd $PKG
+/sbin/makepkg -l y -c n $CWD/$NAME-$VERSION-$ARCH-$BUILD.tgz
+
+# remove unnecessary tmp dir..
+rm -rf $TMP
+
+# echo "done"
+echo "done! Yuppy!!"
+
