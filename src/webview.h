@@ -75,7 +75,6 @@ private:
     // set the webview mousepressedevent
     Qt::KeyboardModifiers m_keyboardModifiers;
     Qt::MouseButtons m_pressedButtons;
-    bool m_openInNewTab;
     KUrl m_loadingUrl;
 };
 

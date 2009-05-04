@@ -56,7 +56,6 @@ WebPage::WebPage(QObject *parent)
         : QWebPage(parent)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
-        , m_openInNewTab(false)
 {
     setNetworkAccessManager(Application::networkAccessManager());
 
@@ -84,8 +83,14 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     switch (type)
     {
 
-        // user clicked on a link or pressed return on a focused link.
+        // A navigation to another document using a method not listed above.
+    case QWebPage::NavigationTypeOther:
+        kDebug() << "NavigationTypeOther";
+
+    // user clicked on a link or pressed return on a focused link.
     case QWebPage::NavigationTypeLinkClicked:
+
+        kDebug() << "NavigationTypeLinkClicked";
 
         if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
         {
@@ -117,14 +122,17 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
         // user activated a submit button for an HTML form.
     case QWebPage::NavigationTypeFormSubmitted:
+        kDebug() << "NavigationTypeFormSubmitted";
         break;
 
         // Navigation to a previously shown document in the back or forward history is requested.
     case QWebPage::NavigationTypeBackOrForward:
+        kDebug() << "NavigationTypeBackOrForward";
         break;
 
         // user activated the reload action.
     case QWebPage::NavigationTypeReload:
+        kDebug() << "NavigationTypeReload";
 
 #if QT_VERSION <= 040500
         // HACK Ported from Arora
@@ -133,6 +141,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         // See: https://bugs.webkit.org/show_bug.cgi?id=24283
         if (qApp->keyboardModifiers() & Qt::ShiftModifier)
         {
+            kDebug() << "Arora hack";
             QNetworkRequest newRequest(request);
             newRequest.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
                                     QNetworkRequest::AlwaysNetwork);
@@ -145,10 +154,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
         // An HTML form was submitted a second time.
     case QWebPage::NavigationTypeFormResubmitted:
-        break;
-
-        // A navigation to another document using a method not listed above.
-    case QWebPage::NavigationTypeOther:
+        kDebug() << "NavigationTypeFormResubmitted";
         break;
 
         // should be nothing..
@@ -162,29 +168,17 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
 QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
+    kDebug() << "creating window as new tabs.. ";
+
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
     {
         // FIXME : need a "real" implementation..
-        kWarning() << "Modal Dialog ---------------------------------------";
-        QWebView *w = new QWebView();
-        w->show();
-        return w->page();
+        kDebug() << "Modal Dialog ---------------------------------------";
     }
 
-    if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
-    {
-        m_openInNewTab = true;
-    }
-
-    if (m_openInNewTab)
-    {
-        m_openInNewTab = false;
-        return Application::instance()->newWebView()->page();
-    }
-
-    MainWindow *mainWindow = Application::instance()->mainWindow();
-    return mainWindow->currentTab()->page();
+    WebView *w = Application::instance()->newWebView();
+    return w->page();
 }
 
 
@@ -229,6 +223,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         {
             KUrl srcUrl = reply->url();
             Application::downloadManager()->newDownload(srcUrl);
+        }
+        else
+        {
+             kDebug() << "invalid content type header";
         }
         return;
     }
@@ -439,7 +437,6 @@ void WebView::wheelEvent(QWheelEvent *event)
 
 void WebView::openLinkInNewTab()
 {
-    m_page->m_openInNewTab = true;
     pageAction(QWebPage::OpenLinkInNewWindow)->trigger();
 }
 
