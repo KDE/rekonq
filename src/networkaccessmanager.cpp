@@ -109,8 +109,9 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
     passwordWidget.iconLabel->setText(QString());
     passwordWidget.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
 
-    QString introMessage = i18n("<qt>Enter username and password for ") +
-                           Qt::escape(reply->url().toString()) + i18n(" at ") + Qt::escape(reply->url().toString()) + "</qt>";
+    QString introMessage = i18n("<qt>Enter username and password for %1 at %2</qt>",
+                                  Qt::escape(reply->url().toString()),
+                                  Qt::escape(reply->url().toString())  );
     passwordWidget.introLabel->setText(introMessage);
     passwordWidget.introLabel->setWordWrap(true);
 
@@ -137,7 +138,7 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
     proxyWdg.iconLabel->setText(QString());
     proxyWdg.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
 
-    QString introMessage = i18n("<qt>Connect to proxy ") + Qt::escape(proxy.hostName()) + i18n(" using:</qt>");
+    QString introMessage = i18n("<qt>Connect to proxy %1 using:</qt>", Qt::escape(proxy.hostName()) );
     proxyWdg.introLabel->setText(introMessage);
     proxyWdg.introLabel->setWordWrap(true);
 
