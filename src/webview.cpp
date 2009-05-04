@@ -123,6 +123,12 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         // user activated a submit button for an HTML form.
     case QWebPage::NavigationTypeFormSubmitted:
         kDebug() << "NavigationTypeFormSubmitted";
+        kDebug() << request.url();
+        break;
+
+        // An HTML form was submitted a second time.
+    case QWebPage::NavigationTypeFormResubmitted:
+        kDebug() << "NavigationTypeFormResubmitted";
         break;
 
         // Navigation to a previously shown document in the back or forward history is requested.
@@ -152,13 +158,9 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
         break;
 
-        // An HTML form was submitted a second time.
-    case QWebPage::NavigationTypeFormResubmitted:
-        kDebug() << "NavigationTypeFormResubmitted";
-        break;
-
         // should be nothing..
     default:
+        kDebug() << "Default NON existant case..";
         break;
     }
 
