@@ -134,10 +134,12 @@ void MainWindow::postLaunch()
     // --------- connect signals and slots
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
-    connect(m_view, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
-    connect(m_view, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
-    connect(m_view, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
+
+    // FIXME: these slots will be commented out until rekonq will have just ONE mainwindow
+//     connect(m_view, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));
+//     connect(m_view, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
+//     connect(m_view, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
 
     // status bar messages
     connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
@@ -867,9 +869,13 @@ void MainWindow::slotOpenNext()
 }
 
 
+// FIXME: this change will be there until rekonq'll have ONE mainwindow
+// (probably forever..)
 void MainWindow::geometryChangeRequested(const QRect &geometry)
 {
-    setGeometry(geometry);
+    Q_UNUSED(geometry)
+//     setGeometry(geometry);
+    kDebug() << "No geometry change allowed";
 }
 
 
