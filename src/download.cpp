@@ -118,7 +118,7 @@ void DownloadManager::newDownload(const KUrl &srcUrl, const KUrl &destUrl)
 const QList<Download *> &DownloadManager::downloads() const
 {
     return m_downloads;
-};
+}
 
 
 KUrl DownloadManager::downloadDestination(const QString &filename)
