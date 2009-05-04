@@ -35,7 +35,6 @@
 
 // Forward Declarations
 class QSortFilterProxyModel;
-class QKeyEvent;
 class AutoSaver;
 
 

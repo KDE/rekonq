@@ -40,7 +40,6 @@ class QWebFrame;
 class KUrl;
 class KAction;
 class KActionMenu;
-class KIcon;
 class KMenu;
 
 class FindBar;

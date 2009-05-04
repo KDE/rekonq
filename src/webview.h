@@ -31,17 +31,12 @@
 #include <QWebPage>
 
 // Forward Declarations
-class MainWindow;
-class Application;
 
 class KActionCollection;
 
 class QWebFrame;
-class QAuthenticator;
 class QMouseEvent;
-class QNetworkProxy;
 class QNetworkReply;
-class QSslError;
 
 
 class WebPage : public QWebPage
