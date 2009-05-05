@@ -1,6 +1,11 @@
 [Desktop Entry]
 Name=rekonq
+Name[sv]=Rekonq
 GenericName=Webkit KDE Browser
+GenericName[pt]=Navegador Web com WebKit
+GenericName[pt_BR]=Navegador Web com WebKit
+GenericName[sv]=Webkit webbläsare för KDE
+GenericName[uk]=Переглядач мережі на WebKit для KDE
 Icon=rekonq
 Type=Application
 Exec=rekonq %u
