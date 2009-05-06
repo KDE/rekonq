@@ -22,14 +22,20 @@
 #ifndef FINDBAR_H
 #define FINDBAR_H
 
+
 // KDE Includes
 #include <KLineEdit>
 #include <KToolBar>
-#include <KXmlGuiWindow>
 
 // Qt Includes
-#include <QtCore>
-#include <QtGui>
+#include <QtGui/QWidget>
+#include <QtGui/QCheckBox>
+#include <QtGui/QKeyEvent>
+
+// Forward Declarations
+class KXmlGuiWindow;
+class QKeyEvent;
+class QString;
 
 
 class FindBar : public QWidget

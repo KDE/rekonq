@@ -30,10 +30,12 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QtCore>
-#include <QtGui>
-#include <QtNetwork>
-
+#include <QtCore/QString>
+#include <QtGui/QSizePolicy>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
+#include <QtXml/QXmlStreamReader>
 
 SearchBar::SearchBar(QWidget *parent) :
         KLineEdit(parent)

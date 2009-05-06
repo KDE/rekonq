@@ -572,7 +572,7 @@ void MainWindow::slotPrivateBrowsing(bool enable)
                                             " webpages are not added to the history,"
                                             " new cookies are not stored, current cookies cannot be accessed," \
                                             " site icons will not be stored, session will not be saved, " \
-                                            " and searches are not addded to the pop-up menu in the Google search box." \
+                                            " and searches are not added to the pop-up menu in the Google search box." \
                                             "  Until you close the window, you can still click the Back and Forward buttons" \
                                             " to return to the webpages you have opened.");
 
@@ -591,7 +591,7 @@ void MainWindow::slotPrivateBrowsing(bool enable)
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
 
         MainWindow* win = Application::instance()->mainWindow();
-        win->m_lastSearch = QString::null;
+        win->m_lastSearch.clear();
         win->mainView()->clear();
     }
 }

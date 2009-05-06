@@ -48,8 +48,10 @@ class HistoryItem
 {
 public:
     HistoryItem() {}
-    HistoryItem(const QString &u,
-                const QDateTime &d = QDateTime(), const QString &t = QString())
+    explicit HistoryItem(const QString &u,
+                         const QDateTime &d = QDateTime(), 
+                         const QString &t = QString()
+                        )
             : title(t), url(u), dateTime(d) {}
 
     inline bool operator==(const HistoryItem &other) const
@@ -159,7 +161,7 @@ public:
         UrlStringRole = Qt::UserRole + 4
     };
 
-    HistoryModel(HistoryManager *history, QObject *parent = 0);
+    explicit HistoryModel(HistoryManager *history, QObject *parent = 0);
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -185,7 +187,7 @@ class HistoryFilterModel : public QAbstractProxyModel
     Q_OBJECT
 
 public:
-    HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent = 0);
+    explicit HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent = 0);
 
     inline bool historyContains(const QString &url) const
     {
@@ -236,7 +238,7 @@ class HistoryMenuModel : public QAbstractProxyModel
     Q_OBJECT
 
 public:
-    HistoryMenuModel(HistoryTreeModel *sourceModel, QObject *parent = 0);
+    explicit HistoryMenuModel(HistoryTreeModel *sourceModel, QObject *parent = 0);
     int columnCount(const QModelIndex &parent) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QModelIndex mapFromSource(const QModelIndex & sourceIndex) const;
@@ -328,7 +330,7 @@ class HistoryTreeModel : public QAbstractProxyModel
     Q_OBJECT
 
 public:
-    HistoryTreeModel(QAbstractItemModel *sourceModel, QObject *parent = 0);
+    explicit HistoryTreeModel(QAbstractItemModel *sourceModel, QObject *parent = 0);
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     int columnCount(const QModelIndex &parent) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;

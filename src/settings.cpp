@@ -51,8 +51,7 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QtGui>
-#include <QtWebKit>
+#include <QtGui/QWidget>
 
 
 class Private

@@ -45,8 +45,9 @@
 #include <kio/jobclasses.h>
 
 // Qt Includes
-#include <QtCore>
-#include <QtWebKit>
+#include <QtCore/QTimer>
+#include <QtWebKit/QWebSettings>
+#include <QtWebKit/QWebHistoryInterface>
 
 
 QPointer<HistoryManager> Application::s_historyManager;

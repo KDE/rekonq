@@ -119,7 +119,8 @@ class CookieModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    CookieModel(CookieJar *jar, QObject *parent = 0);
+    explicit CookieModel(CookieJar *jar, QObject *parent = 0);
+
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -144,11 +145,15 @@ class CookiesDialog : public QDialog, public Ui_CookiesDialog
     Q_OBJECT
 
 public:
-    CookiesDialog(CookieJar *cookieJar, QWidget *parent = 0);
+    explicit CookiesDialog(CookieJar *cookieJar, QWidget *parent = 0);
 
 private:
     QSortFilterProxyModel *m_proxyModel;
 };
+
+
+// ----------------------------------------------------------------------------------------------------------------------
+
 
 class CookieExceptionsModel : public QAbstractTableModel
 {
@@ -156,7 +161,8 @@ class CookieExceptionsModel : public QAbstractTableModel
     friend class CookiesExceptionsDialog;
 
 public:
-    CookieExceptionsModel(CookieJar *cookieJar, QObject *parent = 0);
+    explicit CookieExceptionsModel(CookieJar *cookieJar, QObject *parent = 0);
+
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -183,7 +189,7 @@ class CookiesExceptionsDialog : public QDialog, public Ui_CookiesExceptionsDialo
     Q_OBJECT
 
 public:
-    CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent = 0);
+    explicit CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent = 0);
 
 private slots:
     void block();

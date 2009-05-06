@@ -444,7 +444,7 @@ void WebView::loadFinished()
 {
     if (m_progress != 100)
     {
-        kWarning() << "Recieved finished signal while progress is still:" << progress()
+        kWarning() << "Received finished signal while progress is still:" << progress()
         << "Url:" << url();
     }
     m_progress = 0;

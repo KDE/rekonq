@@ -28,10 +28,15 @@
 #include <KIcon>
 #include <KPushButton>
 #include <klocalizedstring.h>
+#include <KXmlGuiWindow>
 
 // Qt Includes
-#include <QtGui>
-
+#include <QtGui/QWidget>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QToolButton>
+#include <QtGui/QLabel>
+#include <QtGui/QKeyEvent>
+#include <QtCore/QString>
 
 FindBar::FindBar(KXmlGuiWindow *mainwindow)
         : QWidget(mainwindow)

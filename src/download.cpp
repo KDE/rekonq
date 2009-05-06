@@ -67,7 +67,7 @@ void DownloadManager::newDownload(const KUrl &srcUrl, const KUrl &destUrl)
     KSharedPtr<KMimeType> mimeType = KMimeType::findByPath(srcUrl.prettyUrl());
 
     QString typeText = KMimeType::extractKnownExtension(srcUrl.fileName());
-    typeText += " (" + mimeType->name() + ")";
+    typeText += " (" + mimeType->name() + ')';
 
     int answer = KMessageBox::questionYesNoCancel(NULL,
                  i18n("Download '%1'?\n""Type: %2", srcUrl.prettyUrl(), typeText),
