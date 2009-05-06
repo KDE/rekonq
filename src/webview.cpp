@@ -82,56 +82,27 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
     switch (type)
     {
-
-        // A navigation to another document using a method not listed above.
-    case QWebPage::NavigationTypeOther:
-        kDebug() << "NavigationTypeOther";
-
-    // user clicked on a link or pressed return on a focused link.
-    case QWebPage::NavigationTypeLinkClicked:
-
-        kDebug() << "NavigationTypeLinkClicked";
-
-        if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
-        {
-            webView = Application::instance()->newWebView();
-            webView->setFocus();
-            webView->load(request);
-            m_keyboardModifiers = Qt::NoModifier;
-            m_pressedButtons = Qt::NoButton;
-            return false;
-        }
-
-        if (frame == mainFrame())
-        {
-            m_loadingUrl = request.url();
-            emit loadingUrl(m_loadingUrl);
-        }
-        else
-        {
-            // if frame doesn't exists (perhaps) we are pointing to a blank target..
-            if (!frame)
-            {
-                webView = Application::instance()->newWebView();
-                webView->setFocus();
-                webView->load(request);
-                return false;
-            }
-        }
-        break;
-
-        // user activated a submit button for an HTML form.
+    // user activated a submit button for an HTML form.
     case QWebPage::NavigationTypeFormSubmitted:
         kDebug() << "NavigationTypeFormSubmitted";
         kDebug() << request.url();
         break;
 
-        // An HTML form was submitted a second time.
+    // An HTML form was submitted a second time.
     case QWebPage::NavigationTypeFormResubmitted:
         kDebug() << "NavigationTypeFormResubmitted";
+
+
+    // A navigation to another document using a method not listed above.
+    case QWebPage::NavigationTypeOther:
+        kDebug() << "NavigationTypeOther";
+
+    // user clicked on a link or pressed return on a focused link.
+    case QWebPage::NavigationTypeLinkClicked:
+        kDebug() << "NavigationTypeLinkClicked";
         break;
 
-        // Navigation to a previously shown document in the back or forward history is requested.
+    // Navigation to a previously shown document in the back or forward history is requested.
     case QWebPage::NavigationTypeBackOrForward:
         kDebug() << "NavigationTypeBackOrForward";
         break;
@@ -155,7 +126,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             return false;
         }
 #endif
-
         break;
 
         // should be nothing..
@@ -164,13 +134,40 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         break;
     }
 
+    if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
+    {
+        webView = Application::instance()->newWebView();
+        webView->setFocus();
+        webView->load(request);
+        m_keyboardModifiers = Qt::NoModifier;
+        m_pressedButtons = Qt::NoButton;
+        return false;
+    }
+
+    if (frame == mainFrame())
+    {
+        m_loadingUrl = request.url();
+        emit loadingUrl(m_loadingUrl);
+    }
+    else
+    {
+        // if frame doesn't exists (perhaps) we are pointing to a blank target..
+        if (!frame)
+        {
+            webView = Application::instance()->newWebView();
+            webView->setFocus();
+            webView->load(request);
+            return false;
+        }
+    }
+
     return QWebPage::acceptNavigationRequest(frame, request, type);
 }
 
 
 QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
-    kDebug() << "creating window as new tabs.. ";
+    kDebug() << "creating window as new tab.. ";
 
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
@@ -186,11 +183,11 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 
 QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
 {
-    kWarning() << "creating PLUGIN for rekonq ";
-    kWarning() << "classId = " << classId;
-    kWarning() << "url = " << url;
-    kWarning() << "Param Names = " << paramNames;
-    kWarning() << "Param Values = " << paramValues;
+    kDebug() << "creating PLUGIN for rekonq ";
+    kDebug() << "classId = " << classId;
+    kDebug() << "url = " << url;
+    kDebug() << "Param Names = " << paramNames;
+    kDebug() << "Param Values = " << paramValues;
 
     QUiLoader loader;
     return loader.createWidget(classId, view());
