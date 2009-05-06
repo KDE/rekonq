@@ -67,10 +67,20 @@ int main(int argc, char **argv)
                     "pano_90@gmx.net",
                     "");
 
-//     about.addAuthor(ki18n("your name"),
-//                     ki18n("your role"),
-//                     "your mail",
-//                     "your site");
+    about.addAuthor(ki18n("Juan Pablo Scaletti"),
+                    ki18n("Spanish translation"),
+                    "juanpablo@jpscaletti.com",
+                    "");
+
+    about.addAuthor(ki18n("Eelko Berkenpies"),        
+                    ki18n("Dutch translation"),
+                    "kaboon@gmail.com",
+                    "");
+
+    about.addAuthor(ki18n("Alain Laporte"),
+                    ki18n("French translation"),
+                    "alain_laporte123@yahoo.fr",
+                    "");
 
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
