@@ -23,9 +23,6 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-// Qt Includes
-#include <QPointer>
-
 // KDE Includes
 #include <KUniqueApplication>
 #include <KCmdLineArgs>
@@ -35,6 +32,8 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
+// Qt Includes
+#include <QPointer>
 
 // Forward Declarations
 class KIcon;

@@ -30,7 +30,12 @@
 #include <klocalizedstring.h>
 
 // Qt Includes
-#include <QtGui>
+#include <QtGui/QWidget>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QToolButton>
+#include <QtGui/QLabel>
+#include <QtGui/QKeyEvent>
+#include <QtCore/QString>
 
 
 FindBar::FindBar(KXmlGuiWindow *mainwindow)

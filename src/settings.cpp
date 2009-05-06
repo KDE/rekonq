@@ -51,8 +51,7 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QtGui>
-#include <QtWebKit>
+#include <QtGui/QWidget>
 
 
 class Private
@@ -109,7 +108,9 @@ Private::Private(SettingsDialog *parent)
     pageItem->setIcon(webkitIcon);
 }
 
+
 // -----------------------------------------------------------------------------------------------------
+
 
 SettingsDialog::SettingsDialog(QWidget *parent)
         : KConfigDialog(parent, "rekonfig", ReKonfig::self())
@@ -210,3 +211,4 @@ void SettingsDialog::setHomeToCurrentPage()
         d->generalUi.kcfg_homePage->setText(webView->url().prettyUrl());
     }
 }
+

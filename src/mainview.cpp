@@ -213,7 +213,7 @@ void MainView::clear()
     // clear the line edit history
     for (int i = 0; i < m_urlBars->count(); ++i)
     {
-        /// TODO What exacly do we need to clear here?
+        /// TODO What exactly do we need to clear here?
         urlBar(i)->clearHistory();
         urlBar(i)->clear();
     }
@@ -713,4 +713,8 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event)
         return;
     }
     KTabWidget::mouseDoubleClickEvent(event);
+<<<<<<< HEAD:src/mainview.cpp
 }
+=======
+}
+>>>>>>> master:src/mainview.cpp

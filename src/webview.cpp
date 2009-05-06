@@ -56,7 +56,6 @@ WebPage::WebPage(QObject *parent)
         : QWebPage(parent)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
-        , m_openInNewTab(false)
 {
     setNetworkAccessManager(Application::networkAccessManager());
 
@@ -83,48 +82,34 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
     switch (type)
     {
-
-        // user clicked on a link or pressed return on a focused link.
-    case QWebPage::NavigationTypeLinkClicked:
-
-        if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
-        {
-            webView = Application::instance()->newWebView();
-            webView->setFocus();
-            webView->load(request);
-            m_keyboardModifiers = Qt::NoModifier;
-            m_pressedButtons = Qt::NoButton;
-            return false;
-        }
-
-        if (frame == mainFrame())
-        {
-            m_loadingUrl = request.url();
-            emit loadingUrl(m_loadingUrl);
-        }
-        else
-        {
-            // if frame doesn't exists (perhaps) we are pointing to a blank target..
-            if (!frame)
-            {
-                webView = Application::instance()->newWebView();
-                webView->setFocus();
-                webView->load(request);
-                return false;
-            }
-        }
-        break;
-
-        // user activated a submit button for an HTML form.
+    // user activated a submit button for an HTML form.
     case QWebPage::NavigationTypeFormSubmitted:
+        kDebug() << "NavigationTypeFormSubmitted";
+        kDebug() << request.url();
         break;
 
-        // Navigation to a previously shown document in the back or forward history is requested.
+    // An HTML form was submitted a second time.
+    case QWebPage::NavigationTypeFormResubmitted:
+        kDebug() << "NavigationTypeFormResubmitted";
+
+
+    // A navigation to another document using a method not listed above.
+    case QWebPage::NavigationTypeOther:
+        kDebug() << "NavigationTypeOther";
+
+    // user clicked on a link or pressed return on a focused link.
+    case QWebPage::NavigationTypeLinkClicked:
+        kDebug() << "NavigationTypeLinkClicked";
+        break;
+
+    // Navigation to a previously shown document in the back or forward history is requested.
     case QWebPage::NavigationTypeBackOrForward:
+        kDebug() << "NavigationTypeBackOrForward";
         break;
 
         // user activated the reload action.
     case QWebPage::NavigationTypeReload:
+        kDebug() << "NavigationTypeReload";
 
 #if QT_VERSION <= 040500
         // HACK Ported from Arora
@@ -133,6 +118,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         // See: https://bugs.webkit.org/show_bug.cgi?id=24283
         if (qApp->keyboardModifiers() & Qt::ShiftModifier)
         {
+            kDebug() << "Arora hack";
             QNetworkRequest newRequest(request);
             newRequest.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
                                     QNetworkRequest::AlwaysNetwork);
@@ -153,7 +139,35 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
         // should be nothing..
     default:
+        kDebug() << "Default NON existant case..";
         break;
+    }
+
+    if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
+    {
+        webView = Application::instance()->newWebView();
+        webView->setFocus();
+        webView->load(request);
+        m_keyboardModifiers = Qt::NoModifier;
+        m_pressedButtons = Qt::NoButton;
+        return false;
+    }
+
+    if (frame == mainFrame())
+    {
+        m_loadingUrl = request.url();
+        emit loadingUrl(m_loadingUrl);
+    }
+    else
+    {
+        // if frame doesn't exists (perhaps) we are pointing to a blank target..
+        if (!frame)
+        {
+            webView = Application::instance()->newWebView();
+            webView->setFocus();
+            webView->load(request);
+            return false;
+        }
     }
 
     return QWebPage::acceptNavigationRequest(frame, request, type);
@@ -162,39 +176,27 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
 QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
+    kDebug() << "creating window as new tab.. ";
+
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
     {
         // FIXME : need a "real" implementation..
-        kWarning() << "Modal Dialog ---------------------------------------";
-        QWebView *w = new QWebView();
-        w->show();
-        return w->page();
+        kDebug() << "Modal Dialog ---------------------------------------";
     }
 
-    if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
-    {
-        m_openInNewTab = true;
-    }
-
-    if (m_openInNewTab)
-    {
-        m_openInNewTab = false;
-        return Application::instance()->newWebView()->page();
-    }
-
-    MainWindow *mainWindow = Application::instance()->mainWindow();
-    return mainWindow->currentTab()->page();
+    WebView *w = Application::instance()->newWebView();
+    return w->page();
 }
 
 
 QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
 {
-    kWarning() << "creating PLUGIN for rekonq ";
-    kWarning() << "classId = " << classId;
-    kWarning() << "url = " << url;
-    kWarning() << "Param Names = " << paramNames;
-    kWarning() << "Param Values = " << paramValues;
+    kDebug() << "creating PLUGIN for rekonq ";
+    kDebug() << "classId = " << classId;
+    kDebug() << "url = " << url;
+    kDebug() << "Param Names = " << paramNames;
+    kDebug() << "Param Values = " << paramValues;
 
     QUiLoader loader;
     return loader.createWidget(classId, view());
@@ -229,6 +231,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         {
             KUrl srcUrl = reply->url();
             Application::downloadManager()->newDownload(srcUrl);
+        }
+        else
+        {
+             kDebug() << "invalid content type header";
         }
         return;
     }
@@ -439,7 +445,6 @@ void WebView::wheelEvent(QWheelEvent *event)
 
 void WebView::openLinkInNewTab()
 {
-    m_page->m_openInNewTab = true;
     pageAction(QWebPage::OpenLinkInNewWindow)->trigger();
 }
 
@@ -448,7 +453,7 @@ void WebView::loadFinished()
 {
     if (m_progress != 100)
     {
-        kWarning() << "Recieved finished signal while progress is still:" << progress()
+        kWarning() << "Received finished signal while progress is still:" << progress()
         << "Url:" << url();
     }
     m_progress = 0;
@@ -502,3 +507,4 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
     QWebView::keyPressEvent(event);
 }
+

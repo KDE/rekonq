@@ -209,7 +209,7 @@ signals:
 public slots:
     /**
      * @short Opens the context menu on given position
-     * @param point Point on whitch you want to open this menu
+     * @param point Point on which you want to open this menu
      */
     void contextMenu(const QPoint &point);
 
@@ -217,8 +217,7 @@ public slots:
      * @short Waits for signal that the group with the address has been modified by the caller.
      * Waits for signal that the group (or any of its children) with the address
      * @p groupAddress (e.g. "/4/5") has been modified by the caller @p caller.
-     *
-     * @param group bookmark group adress
+     * @param group bookmark group address
      * @param caller caller that modified the bookmarks
      * @see  KBookmarkManager::changed
      */
@@ -236,3 +235,4 @@ private:
 };
 
 #endif
+

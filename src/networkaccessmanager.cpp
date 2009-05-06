@@ -122,6 +122,7 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
     }
 }
 
+
 void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth)
 {
     MainWindow *mainWindow = Application::instance()->mainWindow();
@@ -148,6 +149,7 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
         auth->setPassword(proxyWdg.passwordLineEdit->text());
     }
 }
+
 
 #ifndef QT_NO_OPENSSL
 void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError> &error)

@@ -36,9 +36,17 @@
 #include <KStandardDirs>
 
 // Qt Includes
-#include <QtCore>
-#include <QtGui>
-#include <QtWebKit>
+#include <QtCore/QList>
+#include <QtCore/QUrl>
+#include <QtCore/QDate>
+#include <QtCore/QDateTime>
+#include <QtCore/QString>
+#include <QtCore/QFile>
+#include <QtCore/QDataStream>
+#include <QtCore/QBuffer>
+
+#include <QtWebKit/QWebHistoryInterface>
+#include <QtWebKit/QWebSettings>
 
 #include <QtAlgorithms>
 
@@ -1457,3 +1465,4 @@ void HistoryTreeModel::sourceRowsRemoved(const QModelIndex &parent, int start, i
         endRemoveRows();
     }
 }
+

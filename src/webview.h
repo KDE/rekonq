@@ -31,12 +31,17 @@
 #include <QWebPage>
 
 // Forward Declarations
+class MainWindow;
+class Application;
 
 class KActionCollection;
 
 class QWebFrame;
+class QAuthenticator;
 class QMouseEvent;
+class QNetworkProxy;
 class QNetworkReply;
+class QSslError;
 
 
 class WebPage : public QWebPage
@@ -70,7 +75,6 @@ private:
     // set the webview mousepressedevent
     Qt::KeyboardModifiers m_keyboardModifiers;
     Qt::MouseButtons m_pressedButtons;
-    bool m_openInNewTab;
     KUrl m_loadingUrl;
 };
 
@@ -91,22 +95,10 @@ public:
     KActionCollection* webActions();
 
     // inline
-    WebPage *webPage() const
-    {
-        return m_page;
-    }
-    KUrl url() const
-    {
-        return KUrl(QWebView::url());
-    }
-    QString lastStatusBarText() const
-    {
-        return m_statusBarText;
-    }
-    int progress() const
-    {
-        return m_progress;
-    }
+    WebPage *webPage() const { return m_page; }
+    KUrl url() const { return KUrl(QWebView::url()); }
+    QString lastStatusBarText() const { return m_statusBarText; }
+    int progress() const { return m_progress; }
 
 signals:
     // switching tabs
@@ -126,15 +118,9 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
-    void setProgress(int progress)
-    {
-        m_progress = progress;
-    }
+    void setProgress(int progress) { m_progress = progress; }
     void loadFinished();
-    void setStatusBarText(const QString &string)
-    {
-        m_statusBarText = string;
-    }
+    void setStatusBarText(const QString &string) { m_statusBarText = string; }
     void downloadRequested(const QNetworkRequest &request);
     void openLinkInNewTab();
 
@@ -148,3 +134,4 @@ private:
 };
 
 #endif
+

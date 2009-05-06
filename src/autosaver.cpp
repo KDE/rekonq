@@ -20,14 +20,15 @@
 
 
 
-// Local Includes
+// Self Includes
 #include "autosaver.h"
+#include "autosaver.moc"
 
 // KDE Includes
 #include <KDebug>
 
 // Qt Includes
-#include <QtCore>
+#include <QtCore/QMetaObject>
 
 
 #define AUTOSAVE_IN  1000 * 3  // seconds
