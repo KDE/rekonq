@@ -569,13 +569,13 @@ void MainWindow::slotPrivateBrowsing(bool enable)
     if (enable)
     {
         QString title = i18n("Are you sure you want to turn on private browsing?");
-        QString text = "<b>" + title + i18n("</b><br><br>When private browsing in turned on,"
-                                            " webpages are not added to the history,"
+        QString text = "<b>" + title + i18n("</b><br><br>When private browsing is turned on,"
+                                            " web pages are not added to the history,"
                                             " new cookies are not stored, current cookies cannot be accessed," \
-                                            " site icons will not be stored, session will not be saved, " \
-                                            " and searches are not addded to the pop-up menu in the Google search box." \
+                                            " site icons will not be stored, the session will not be saved, " \
+                                            " and searches are not added to the pop-up menu in the Google search box." \
                                             "  Until you close the window, you can still click the Back and Forward buttons" \
-                                            " to return to the webpages you have opened.");
+                                            " to return to the web pages you have opened.");
 
         int  button = KMessageBox::questionYesNo(this, text, title);
         if (button == KMessageBox::Ok)
