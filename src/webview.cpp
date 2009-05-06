@@ -91,11 +91,12 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     // An HTML form was submitted a second time.
     case QWebPage::NavigationTypeFormResubmitted:
         kDebug() << "NavigationTypeFormResubmitted";
-
+        break;
 
     // A navigation to another document using a method not listed above.
     case QWebPage::NavigationTypeOther:
         kDebug() << "NavigationTypeOther";
+        break;
 
     // user clicked on a link or pressed return on a focused link.
     case QWebPage::NavigationTypeLinkClicked:
@@ -127,14 +128,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         }
 #endif
 
-        break;
-
-        // An HTML form was submitted a second time.
-    case QWebPage::NavigationTypeFormResubmitted:
-        break;
-
-        // A navigation to another document using a method not listed above.
-    case QWebPage::NavigationTypeOther:
         break;
 
         // should be nothing..
