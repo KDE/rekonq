@@ -31,7 +31,7 @@
 #include <KIO/FileCopyJob>
 
 // Qt Includes
-#include <QObject>
+#include <QtCore/QObject>
 
 // Forward Declarations
 class KJob;

@@ -45,9 +45,12 @@
 #include <QtCore/QDataStream>
 #include <QtCore/QBuffer>
 
+#include <QtGui/QClipboard>
+
 #include <QtWebKit/QWebHistoryInterface>
 #include <QtWebKit/QWebSettings>
 
+// generic algorithms
 #include <QtAlgorithms>
 
 

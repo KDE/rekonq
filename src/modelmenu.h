@@ -23,14 +23,23 @@
 #ifndef MODELMENU_H
 #define MODELMENU_H
 
-// Qt Includes
-#include <QtGui>
-#include <QtCore>
 
 // KDE Includes
 #include <KIcon>
 #include <KAction>
 #include <KMenu>
+
+// Qt Includes
+#include <QtCore/QAbstractItemModel>
+#include <QtCore/QModelIndex>
+
+// Forward Declarations
+class QString;
+class QWidget;
+class QObject;
+class QPersistentModelIndex;
+
+class KIcon;
 
 // A QMenu that is dynamically populated from a QAbstractItemModel
 class ModelMenu : public KMenu

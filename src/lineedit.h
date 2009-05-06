@@ -21,16 +21,15 @@
 #ifndef LINEEDIT_H
 #define LINEEDIT_H
 
-// Qt Includes
 
 // KDE Includes
 #include <KLineEdit>
 
-// Local Includes
-
+// Forward Declarations
 class QContextMenuEvent;
 class QFocusEvent;
 class QKeyEvent;
+
 
 class LineEdit : public KLineEdit
 {

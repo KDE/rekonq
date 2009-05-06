@@ -37,7 +37,6 @@
 #include "download.h"
 #include "history.h"
 
-
 // KDE Includes
 #include <KStandardDirs>
 #include <KUrl>
