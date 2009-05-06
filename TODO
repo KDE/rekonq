@@ -1,56 +1,21 @@
-To 0.0.5
-DONE tabbar: fixed dimension
-DONE tabbar: hide if just one
-DONE bookmarks tabbar update
-DONE loading right bookmark file
-DONE Added Google Suggestions
-DONE notfound.html shown if rekonq doesn't load connection
-DONE improve fullscreen
-DONE QNetworkDiskCache
-DONE loading right sites as "external browser" (rekonq %u)
-DONE provide translations structure
-DONE disable BACK button when history is NULL
-DONE load just ONE site at start
-- QWebFrame
-DONE(?) definitely fix fonts!
-DONE tab-reordering
-- focus on new tab just if no site loaded
-DONE provide konqueror-like
-    - confirmation exit dialog
-    - 
-DONE import arora loading label
-
-DONE redesign settings
-DONE fix private browsing action
-DONE fix web inspector action
-
-DONE loading ONE site when calling rekonq..
-
-- fix crash on example sites..
+- QWebFrame management
+- Fix crash on example sites..
 - improve DOCUMENTATION
-DONE fix Action on tabbar (clone ads)
-- Type "FormSubmitted" (WordPress)
-DONE check statusbar slots
-- fix fonts
-
-
-+ ------------------------
-
-LONG TERM FIXES
+- Type "FormSubmitted" ("WordPress Bug")
 - cookies
+- unit tests
+
+LONG TERM GOALS
 - history (io-slave)
 - file protocol view
 
-- new bookmarks system
-- check mainview signals
+- new bookmarks system (What about??)
 
-- to 0.1alpha
-    - checking focus question
-    - bookmarks panel
-    - copyright question (ALMOST DONE)
-    - loading urlbar (DONE)
-    - fullscreen action impr (DONE)
-    - mailto KDE loading (DONE)
-    - unit tests
-    - webview Arora tmp fix (DONE)
-    - ?
+
+TO 0.2 release
+
+- unique url/search/history bar
+- WebkitKDE (ask about status)
+- bookmarks panel
+- MimeType Manager
+- BETTER KDE INTEGRATION (What else to be done??)
