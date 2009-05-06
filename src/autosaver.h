@@ -38,7 +38,6 @@
  *
  */
 
->>>>>>> master:src/autosaver.h
 class AutoSaver : public QObject
 {
     Q_OBJECT
@@ -61,4 +60,3 @@ private:
 };
 
 #endif // AUTOSAVER_H
-

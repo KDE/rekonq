@@ -28,6 +28,7 @@
 #include <KIcon>
 #include <KPushButton>
 #include <klocalizedstring.h>
+#include <KXmlGuiWindow>
 
 // Qt Includes
 #include <QtGui/QWidget>

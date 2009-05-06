@@ -48,15 +48,10 @@ class HistoryItem
 {
 public:
     HistoryItem() {}
-<<<<<<< HEAD:src/history.h
-    HistoryItem(const QString &u,
-                const QDateTime &d = QDateTime(), const QString &t = QString())
-=======
     explicit HistoryItem(const QString &u,
                          const QDateTime &d = QDateTime(), 
                          const QString &t = QString()
                         )
->>>>>>> master:src/history.h
             : title(t), url(u), dateTime(d) {}
 
     inline bool operator==(const HistoryItem &other) const
@@ -166,11 +161,8 @@ public:
         UrlStringRole = Qt::UserRole + 4
     };
 
-<<<<<<< HEAD:src/history.h
-    HistoryModel(HistoryManager *history, QObject *parent = 0);
-=======
     explicit HistoryModel(HistoryManager *history, QObject *parent = 0);
->>>>>>> master:src/history.h
+
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -196,11 +188,7 @@ class HistoryFilterModel : public QAbstractProxyModel
     Q_OBJECT
 
 public:
-<<<<<<< HEAD:src/history.h
-    HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent = 0);
-=======
     explicit HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent = 0);
->>>>>>> master:src/history.h
 
     inline bool historyContains(const QString &url) const
     {
@@ -251,11 +239,8 @@ class HistoryMenuModel : public QAbstractProxyModel
     Q_OBJECT
 
 public:
-<<<<<<< HEAD:src/history.h
-    HistoryMenuModel(HistoryTreeModel *sourceModel, QObject *parent = 0);
-=======
     explicit HistoryMenuModel(HistoryTreeModel *sourceModel, QObject *parent = 0);
->>>>>>> master:src/history.h
+
     int columnCount(const QModelIndex &parent) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QModelIndex mapFromSource(const QModelIndex & sourceIndex) const;
@@ -347,11 +332,8 @@ class HistoryTreeModel : public QAbstractProxyModel
     Q_OBJECT
 
 public:
-<<<<<<< HEAD:src/history.h
-    HistoryTreeModel(QAbstractItemModel *sourceModel, QObject *parent = 0);
-=======
     explicit HistoryTreeModel(QAbstractItemModel *sourceModel, QObject *parent = 0);
->>>>>>> master:src/history.h
+
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     int columnCount(const QModelIndex &parent) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -422,4 +404,3 @@ private slots:
 };
 
 #endif // HISTORY_H
-

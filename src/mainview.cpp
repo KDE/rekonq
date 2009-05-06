@@ -713,8 +713,4 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event)
         return;
     }
     KTabWidget::mouseDoubleClickEvent(event);
-<<<<<<< HEAD:src/mainview.cpp
 }
-=======
-}
->>>>>>> master:src/mainview.cpp
