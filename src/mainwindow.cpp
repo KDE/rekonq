@@ -64,9 +64,25 @@
 
 
 // Qt Includes
-#include <QtGui>
-#include <QtCore>
-#include <QtWebKit>
+#include <QtCore/QTimer>
+#include <QtCore/QRect>
+#include <QtCore/QSize>
+#include <QtCore/QList>
+
+#include <QtGui/QWidget>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QAction>
+#include <QtGui/QFont>
+#include <QtGui/QDesktopWidget>
+#include <QtGui/QPrinter>
+#include <QtGui/QPrintDialog>
+
+#include <QtWebKit/QWebFrame>
+#include <QtWebKit/QWebHistory>
+#include <QtWebKit/QWebHistoryItem>
+#include <QtWebKit/QWebPage>
+#include <QtWebKit/QWebSettings>
+
 
 
 MainWindow::MainWindow()

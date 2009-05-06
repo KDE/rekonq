@@ -21,15 +21,14 @@
 #include "lineedit.h"
 #include "lineedit.moc"
 
-// Qt Includes
-#include <QContextMenuEvent>
-#include <QFocusEvent>
-#include <QKeyEvent>
-
 // KDE Includes
 #include <KDebug>
 
-// Local Includes
+// Qt Includes
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QFocusEvent>
+#include <QtGui/QKeyEvent>
+
 
 LineEdit::LineEdit(QWidget* parent)
         : KLineEdit(parent)

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
 *
 *
@@ -48,10 +48,18 @@
 #include <KStandardDirs>
 
 // Qt Includes
-#include <QtCore>
-#include <QtGui>
-#include <QtWebKit>
+#include <QtCore/QTimer>
+#include <QtCore/QString>
 
+#include <QtGui/QAction>
+#include <QtGui/QIcon>
+#include <QtGui/QLabel>
+#include <QtGui/QMovie>
+#include <QtGui/QWidget>
+#include <QtGui/QMouseEvent>
+
+#include <QtWebKit/QWebPage>
+    
 
 
 MainView::MainView(QWidget *parent)
