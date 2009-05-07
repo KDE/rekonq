@@ -19,14 +19,18 @@
 * ============================================================ */
 
 
-
+// Self Includes
 #include "edittableview.h"
+
+// Qt Includes
 #include <QtGui/QKeyEvent>
+
 
 EditTableView::EditTableView(QWidget *parent)
         : QTableView(parent)
 {
 }
+
 
 void EditTableView::keyPressEvent(QKeyEvent *event)
 {
@@ -42,6 +46,7 @@ void EditTableView::keyPressEvent(QKeyEvent *event)
     }
 }
 
+
 void EditTableView::removeOne()
 {
     if (!model() || !selectionModel())
@@ -53,6 +58,7 @@ void EditTableView::removeOne()
         idx = model()->index(row - 1, 0, rootIndex());
     selectionModel()->select(idx, QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
 }
+
 
 void EditTableView::removeAll()
 {

@@ -37,9 +37,14 @@
 #include <KDebug>
 
 // Qt Includes
-#include <QtCore>
-#include <QtGui>
-#include <QtWebKit>
+#include <QtCore/QDataStream>
+#include <QtCore/QDateTime>
+#include <QtCore/QString>
+
+#include <QtGui/QSortFilterProxyModel>
+#include <QtGui/QCompleter>
+
+#include <QtWebKit/QWebSettings>
 
 
 static const unsigned int JAR_VERSION = 23;

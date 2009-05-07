@@ -23,7 +23,9 @@
 #ifndef EDITTABLEVIEW_H
 #define EDITTABLEVIEW_H
 
+// Qt Includes
 #include <QtGui/QTableView>
+
 
 class EditTableView : public QTableView
 {
@@ -39,4 +41,3 @@ public slots:
 };
 
 #endif // EDITTABLEVIEW_H
-

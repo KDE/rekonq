@@ -26,9 +26,11 @@
 // Qt Includes
 #include <QStackedWidget>
 
+// Forward Declarations
 class KCompletion;
 class HistoryCompletionModel;
 class UrlBar;
+
 
 class StackedUrlBar : public QStackedWidget
 {
@@ -61,4 +63,3 @@ private:
 };
 
 #endif // STACKEDURLBAR_H
-

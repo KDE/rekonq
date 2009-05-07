@@ -26,8 +26,8 @@
 // KDE Includes
 #include <KTabBar>
 
-// Qt Includes
-#include <QShortcut>
+// Forward Declarations
+class QPoint;
 
 /**
  * Tab bar with a few more features such as

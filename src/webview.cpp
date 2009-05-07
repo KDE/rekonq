@@ -45,10 +45,22 @@
 #include <KToolInvocation>
 
 // Qt Includes
-#include <QtCore>
-#include <QtGui>
-#include <QtWebKit>
-#include <QUiLoader>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QWheelEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QClipboard>
+#include <QtGui/QKeyEvent>
+
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+
+#include <QtWebKit/QWebFrame>
+#include <QtWebKit/QWebHitTestResult>
+#include <QtWebKit/QWebPage>
+#include <QtWebKit/QWebSettings>
+#include <QtWebKit/QWebView>
+
+#include <QtUiTools/QUiLoader>
 
 
 WebPage::WebPage(QObject *parent)
@@ -210,7 +222,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         {
             path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
         }
-        QUrl url(path);
+        KUrl url(path);
 
         Application::instance()->mainWindow()->loadUrl(url);
         return;

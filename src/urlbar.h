@@ -23,18 +23,18 @@
 #ifndef URLBAR_H
 #define URLBAR_H
 
-// Qt Includes
-#include <QIcon>
-#include <QPointer>
-#include <QUrl>
+
+// Local Includes
+#include "lineedit.h"
 
 // KDE Includes
 #include <KUrl>
 #include <KHistoryComboBox>
 
-// Local Includes
-#include "lineedit.h"
-
+// Qt Includes
+#include <QIcon>
+#include <QPointer>
+#include <QUrl>
 
 // Forward Declarations
 class QLinearGradient;
