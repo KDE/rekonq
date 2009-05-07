@@ -22,7 +22,9 @@
 #ifndef EDITTREEVIEW_H
 #define EDITTREEVIEW_H
 
+// Qt Includes
 #include <QtGui/QTreeView>
+
 
 class EditTreeView : public QTreeView
 {
@@ -38,4 +40,3 @@ public slots:
 };
 
 #endif // EDITTREEVIEW_H
-

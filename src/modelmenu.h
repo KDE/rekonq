@@ -41,7 +41,12 @@ class QPersistentModelIndex;
 
 class KIcon;
 
-// A QMenu that is dynamically populated from a QAbstractItemModel
+/** 
+ * A KMenu that is dynamically populated 
+ * from a QAbstractItemModel
+ *
+ */
+
 class ModelMenu : public KMenu
 {
     Q_OBJECT
@@ -98,4 +103,3 @@ private:
 };
 
 #endif // MODELMENU_H
-

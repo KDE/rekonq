@@ -165,4 +165,3 @@ void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError
         reply->ignoreSslErrors();
 }
 #endif
-

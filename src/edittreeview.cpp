@@ -19,15 +19,18 @@
 * ============================================================ */
 
 
-
+// Self Includes
 #include "edittreeview.h"
 
+// Qt includes
 #include <QtGui/QKeyEvent>
+
 
 EditTreeView::EditTreeView(QWidget *parent)
         : QTreeView(parent)
 {
 }
+
 
 void EditTreeView::keyPressEvent(QKeyEvent *event)
 {
@@ -43,6 +46,7 @@ void EditTreeView::keyPressEvent(QKeyEvent *event)
     }
 }
 
+
 void EditTreeView::removeOne()
 {
     if (!model())
@@ -52,10 +56,10 @@ void EditTreeView::removeOne()
     model()->removeRow(row, ci.parent());
 }
 
+
 void EditTreeView::removeAll()
 {
     if (!model())
         return;
     model()->removeRows(0, model()->rowCount(rootIndex()), rootIndex());
 }
-

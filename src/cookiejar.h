@@ -24,9 +24,6 @@
 #define COOKIEJAR_H
 
 
-// KDE Includes
-#include <QDialog>
-
 // Qt Includes
 #include <QNetworkCookieJar>
 #include <QAbstractItemModel>
@@ -37,6 +34,7 @@
 class QSortFilterProxyModel;
 class QKeyEvent;
 class AutoSaver;
+class QUrl;
 
 
 class CookieJar : public QNetworkCookieJar

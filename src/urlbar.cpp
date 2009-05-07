@@ -24,21 +24,22 @@
 #include "urlbar.h"
 #include "urlbar.moc"
 
-// Qt Includes
-#include <QtCore>
-#include <QtGui>
-
-// KDE Includes
-#include <KDebug>
-#include <KCompletionBox>
-#include <KUrl>
-
 // Local Includes
 #include "application.h"
 #include "history.h"
 #include "lineedit.h"
 #include "mainwindow.h"
 #include "webview.h"
+
+// KDE Includes
+#include <KDebug>
+#include <KCompletionBox>
+#include <KUrl>
+
+// Qt Includes
+#include <QtGui/QPainter>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QPalette>
 
 
 QColor UrlBar::s_defaultBaseColor;

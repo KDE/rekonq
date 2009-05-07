@@ -20,12 +20,13 @@
 #ifndef SIDEPANEL_H
 #define SIDEPANEL_H
 
-// Qt Includes
-#include <QDockWidget>
-
 // Local Includes
 #include "application.h"
 
+// Qt Includes
+#include <QDockWidget>
+
+// Forward Declarations
 class KUrl;
 class PanelHistory;
 

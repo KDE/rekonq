@@ -39,7 +39,9 @@
 #include <KGlobalSettings>
 
 // Qt Includes
-#include <QtGui>
+#include <QtCore/QString>
+
+#include <QtGui/QFont>
 
 
 TabBar::TabBar(QWidget *parent)

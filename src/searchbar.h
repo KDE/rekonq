@@ -34,6 +34,7 @@ class QNetworkReply;
 
 /**
  * This class defines an internet search bar.
+ *
  */
 class SearchBar : public KLineEdit
 {

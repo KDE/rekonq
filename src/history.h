@@ -76,6 +76,7 @@ public:
 // ---------------------------------------------------------------------------------------------------------------
 
 
+// Forward Declarations
 class AutoSaver;
 class HistoryModel;
 class HistoryFilterModel;
@@ -384,6 +385,8 @@ protected:
 
 // ------------------------------------------------------------------------------------------
 
+
+// Ui includes
 #include "ui_history.h"
 
 class HistoryDialog : public QDialog, public Ui_HistoryDialog

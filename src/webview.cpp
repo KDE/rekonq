@@ -45,10 +45,22 @@
 #include <KToolInvocation>
 
 // Qt Includes
-#include <QtCore>
-#include <QtGui>
-#include <QtWebKit>
-#include <QUiLoader>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QWheelEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QClipboard>
+#include <QtGui/QKeyEvent>
+
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+
+#include <QtWebKit/QWebFrame>
+#include <QtWebKit/QWebHitTestResult>
+#include <QtWebKit/QWebPage>
+#include <QtWebKit/QWebSettings>
+#include <QtWebKit/QWebView>
+
+#include <QtUiTools/QUiLoader>
 
 
 WebPage::WebPage(QObject *parent)
@@ -210,7 +222,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         {
             path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
         }
-        QUrl url(path);
+        KUrl url(path);
 
         Application::instance()->mainWindow()->loadUrl(url);
         return;
@@ -363,6 +375,35 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     addBookmarkAction->setData(QVariant());
     KMenu menu(this);
 
+
+    // cut - copy - paste Actions. 
+    // If someone selects text perhaps wanna work with it..
+    bool b = false;
+
+    if (result.isContentSelected() && result.isContentEditable())
+    {
+        menu.addAction(webActions()->action("edit_cut"));
+        b = true;
+    }
+
+    if (result.isContentSelected())
+    {
+        menu.addAction(webActions()->action("edit_copy"));
+        b = true;
+    }
+
+    if (result.isContentEditable())
+    {
+        menu.addAction(webActions()->action("edit_paste"));
+        b = true;
+    }
+
+    if(b)
+    {
+        menu.addSeparator();
+    }
+
+    // link actions
     bool linkIsEmpty = result.linkUrl().isEmpty();
     if (!linkIsEmpty)
     {
@@ -375,48 +416,42 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(mainwindow->actionByName("view_redisplay"));
     menu.addSeparator();
 
+    // Developer Extras actions
     if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
     {
         menu.addAction(webActions()->action("inspect_element"));
         menu.addSeparator();
     }
 
-    menu.addAction(mainwindow->actionByName("history_back"));
-    menu.addAction(mainwindow->actionByName("history_forward"));
-    menu.addSeparator();
-
-    if (result.isContentSelected() && result.isContentEditable())
-    {
-        menu.addAction(webActions()->action("edit_cut"));
-    }
-
-    if (result.isContentSelected())
-    {
-        menu.addAction(webActions()->action("edit_copy"));
-    }
-
-    if (result.isContentEditable())
-    {
-        menu.addAction(webActions()->action("edit_paste"));
-    }
-
+    // save/copy link actions
     if (!linkIsEmpty)
     {
+        menu.addAction(webActions()->action("save_link_as"));
+        menu.addAction(webActions()->action("copy_link_location"));
         menu.addSeparator();
+
         if (!result.pixmap().isNull())
         {
             // TODO Add "View Image"
             menu.addAction(webActions()->action("save_image_as"));
             menu.addAction(webActions()->action("copy_this_image"));
+            menu.addSeparator();
         }
-        menu.addAction(webActions()->action("save_link_as"));
-        menu.addAction(webActions()->action("copy_link_location"));
+    }
+
+    // history actions
+    menu.addAction(mainwindow->actionByName("history_back"));
+    menu.addAction(mainwindow->actionByName("history_forward"));
+
+    // bookmark link action
+    if (!linkIsEmpty)
+    {
+        menu.addSeparator();
         addBookmarkAction->setData(result.linkUrl());
         addBookmarkAction->setText(i18n("&Bookmark This Link"));
+        menu.addAction(addBookmarkAction);
     }
-    menu.addSeparator();
 
-    menu.addAction(addBookmarkAction);
     menu.exec(mapToGlobal(event->pos()));
 }
 

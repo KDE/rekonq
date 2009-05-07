@@ -20,12 +20,13 @@
 #ifndef PANELHISTORY_H
 #define PANELHISTORY_H
 
-// Qt Includes
-#include <QWidget>
-
 // Local Includes
 #include "application.h"
 
+// Qt Includes
+#include <QWidget>
+
+// Forward Declarations
 class QTreeView;
 class KUrl;
 class TreeProxyModel;
