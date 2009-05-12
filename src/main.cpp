@@ -26,10 +26,10 @@
 
 
 static const char description[] =
-    I18N_NOOP("KDE Browser Webkit Based");
+    I18N_NOOP("Webkit Based Browser for KDE");
 
 
-static const char version[] = "0.1alpha";
+static const char version[] = "0.1";
 
 
 int main(int argc, char **argv)
@@ -48,38 +48,18 @@ int main(int argc, char **argv)
 
     // about authors
     about.addAuthor(ki18n("Andrea Diamantini"),
-                    ki18n("Project Lead, Developer, Italian translation"),
+                    ki18n("Project Lead, Developer"),
                     "adjam7@gmail.com",
                     "http://www.adjam.org");
 
     about.addAuthor(ki18n("Domrachev Alexandr"),
-                    ki18n("Developer, Russian translation"),
+                    ki18n("Developer"),
                     "alexandr.domrachev@gmail.com",
                     "");
 
     about.addAuthor(ki18n("Pawel Prazak"),
                     ki18n("Developer"),
                     "kojots350@gmail.com",
-                    "");
-
-    about.addAuthor(ki18n("Panagiotis Papadopoulos"),
-                    ki18n("German translation"),
-                    "pano_90@gmx.net",
-                    "");
-
-    about.addAuthor(ki18n("Juan Pablo Scaletti"),
-                    ki18n("Spanish translation"),
-                    "juanpablo@jpscaletti.com",
-                    "");
-
-    about.addAuthor(ki18n("Eelko Berkenpies"),        
-                    ki18n("Dutch translation"),
-                    "kaboon@gmail.com",
-                    "");
-
-    about.addAuthor(ki18n("Alain Laporte"),
-                    ki18n("French translation"),
-                    "alain_laporte123@yahoo.fr",
                     "");
 
     // Initialize command line args
