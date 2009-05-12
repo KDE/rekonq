@@ -55,7 +55,7 @@ SearchBar::SearchBar(QWidget *parent) :
     setClearButtonShown(true);
 
     // better solution than using QPalette(s)..
-    setClickMessage(i18n("Search.."));
+    setClickMessage(i18n("Search..."));
 
     // setting QNetworkAccessManager..
     connect(m_networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleNetworkData(QNetworkReply*)));
