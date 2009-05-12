@@ -68,6 +68,7 @@
 #include <QtCore/QRect>
 #include <QtCore/QSize>
 #include <QtCore/QList>
+#include <QtCore/QPointer>
 
 #include <QtGui/QWidget>
 #include <QtGui/QVBoxLayout>
@@ -497,12 +498,13 @@ void MainWindow::slotPreferences()
         return;
 
     // we didn't find an instance of this dialog, so lets create it
-    SettingsDialog *s = new SettingsDialog(this);
+    QPointer<SettingsDialog> s = new SettingsDialog(this);
 
     // keep us informed when the user changes settings
     connect(s, SIGNAL(settingsChanged(const QString&)), this, SLOT(slotUpdateBrowser()));
 
     s->exec();
+    delete s;
 }
 
 
@@ -571,9 +573,13 @@ void MainWindow::printRequested(QWebFrame *frame)
 {
     QPrinter printer;
 
-    QPrintDialog *dialog = KdePrint::createPrintDialog(&printer, this);
+    QPointer<QPrintDialog> dialog = KdePrint::createPrintDialog(&printer, this);
     if (dialog->exec() != QDialog::Accepted)
+    {
+        delete dialog;
         return;
+    }
+    delete dialog;
     frame->print(&printer);
 }
 
@@ -946,4 +952,3 @@ QAction *MainWindow::actionByName(const QString name)
 
     return new QAction(this);  // return empty object instead of NULL pointer
 }
-

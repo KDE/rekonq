@@ -143,7 +143,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
         // should be nothing..
     default:
-        kDebug() << "Default NON existant case..";
+        kDebug() << "Default NON extant case..";
         break;
     }
 

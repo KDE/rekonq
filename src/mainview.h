@@ -152,7 +152,7 @@ private slots:
     void windowCloseRequested();
 
     /**
-     * This functions move tab informations "from index to index"
+     * This functions move tab info "from index to index"
      *
      * @param fromIndex the index from which we move
      *

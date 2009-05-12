@@ -397,7 +397,7 @@ signals:
     void openUrl(const KUrl &url);
 
 public:
-    HistoryDialog(QWidget *parent = 0, HistoryManager *history = 0);
+    explicit HistoryDialog(QWidget *parent = 0, HistoryManager *history = 0);
 
 private slots:
     void customContextMenuRequested(const QPoint &pos);

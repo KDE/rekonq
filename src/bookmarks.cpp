@@ -275,4 +275,3 @@ KAction* BookmarkProvider::bookmarkToolBarAction()
     bookmarkToolBarAction->setShortcutConfigurable(false);
     return bookmarkToolBarAction;
 }
-

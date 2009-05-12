@@ -39,13 +39,16 @@
 #include <KStandardDirs>
 
 // Qt Includes
-#include <QDialog>
-#include <QStyle>
-#include <QTextDocument>
-#include <QAuthenticator>
-#include <QNetworkProxy>
-#include <QNetworkReply>
-#include <QSslError>
+#include <QtCore/QPointer>
+
+#include <QtGui/QDialog>
+#include <QtGui/QStyle>
+#include <QtGui/QTextDocument>
+
+#include <QtNetwork/QAuthenticator>
+#include <QtNetwork/QNetworkProxy>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QSslError>
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
@@ -97,14 +100,14 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
 {
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
-    KDialog dialog(mainWindow, Qt::Sheet);
-    dialog.setButtons(KDialog::Ok | KDialog::Cancel);
+    QPointer<KDialog> dialog = new KDialog(mainWindow, Qt::Sheet);
+    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
 
     Ui::passwordWidget passwordWidget;
     QWidget widget;
     passwordWidget.setupUi(&widget);
 
-    dialog.setMainWidget(&widget);
+    dialog->setMainWidget(&widget);
 
     passwordWidget.iconLabel->setText(QString());
     passwordWidget.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
@@ -115,11 +118,12 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
     passwordWidget.introLabel->setText(introMessage);
     passwordWidget.introLabel->setWordWrap(true);
 
-    if (dialog.exec() == QDialog::Accepted)
+    if (dialog->exec() == QDialog::Accepted)
     {
         auth->setUser(passwordWidget.userNameLineEdit->text());
         auth->setPassword(passwordWidget.passwordLineEdit->text());
     }
+    delete dialog;
 }
 
 
@@ -127,14 +131,14 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
 {
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
-    KDialog dialog(mainWindow, Qt::Sheet);
-    dialog.setButtons(KDialog::Ok | KDialog::Cancel);
+    QPointer<KDialog> dialog = new KDialog(mainWindow, Qt::Sheet);
+    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
 
     Ui::proxyWidget proxyWdg;
     QWidget widget;
     proxyWdg.setupUi(&widget);
 
-    dialog.setMainWidget(&widget);
+    dialog->setMainWidget(&widget);
 
     proxyWdg.iconLabel->setText(QString());
     proxyWdg.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
@@ -143,11 +147,12 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
     proxyWdg.introLabel->setText(introMessage);
     proxyWdg.introLabel->setWordWrap(true);
 
-    if (dialog.exec() == QDialog::Accepted)
+    if (dialog->exec() == QDialog::Accepted)
     {
         auth->setUser(proxyWdg.userNameLineEdit->text());
         auth->setPassword(proxyWdg.passwordLineEdit->text());
     }
+    delete dialog;
 }
 
 

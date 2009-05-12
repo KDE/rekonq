@@ -51,6 +51,7 @@
 #include <KUrl>
 
 // Qt Includes
+#include <QtCore/QPointer>
 #include <QtGui/QWidget>
 
 
@@ -190,15 +191,17 @@ void SettingsDialog::saveSettings()
 
 void SettingsDialog::showCookies()
 {
-    CookiesDialog *dialog = new CookiesDialog(Application::cookieJar(), this);
+    QPointer<CookiesDialog> dialog = new CookiesDialog(Application::cookieJar(), this);
     dialog->exec();
+    delete dialog;
 }
 
 
 void SettingsDialog::showExceptions()
 {
-    CookiesExceptionsDialog *dialog = new CookiesExceptionsDialog(Application::cookieJar(), this);
+    QPointer<CookiesExceptionsDialog> dialog = new CookiesExceptionsDialog(Application::cookieJar(), this);
     dialog->exec();
+    delete dialog;
 }
 
 
