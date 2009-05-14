@@ -224,7 +224,11 @@ void MainWindow::setupActions()
     KStandardAction::find(this, SLOT(slotViewFindBar()) , actionCollection());
     KStandardAction::findNext(this, SLOT(slotFindNext()) , actionCollection());
     KStandardAction::findPrev(this, SLOT(slotFindPrevious()) , actionCollection());
-    KStandardAction::fullScreen(this, SLOT(slotViewFullScreen(bool)), this, actionCollection());
+
+    // we all like "short" shortcuts.. ;)
+    a = KStandardAction::fullScreen(this, SLOT(slotViewFullScreen(bool)), this, actionCollection());
+    a->setShortcut(KShortcut(Qt::Key_F11));
+
     KStandardAction::home(this, SLOT(slotHome()), actionCollection());
     KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
     KStandardAction::showMenubar(this, SLOT(slotShowMenubar(bool)), actionCollection());

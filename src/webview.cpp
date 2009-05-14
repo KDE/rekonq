@@ -422,6 +422,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(addBookmarkAction);
     }
 
+    if(mainwindow->isFullScreen())
+    {
+        menu.addAction(mainwindow->actionByName("fullscreen"));
+    }
+
     menu.exec(mapToGlobal(event->pos()));
 }
 
