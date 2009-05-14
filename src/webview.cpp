@@ -375,9 +375,27 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     addBookmarkAction->setData(QVariant());
     KMenu menu(this);
 
+    // link actions
+    bool linkIsEmpty = result.linkUrl().isEmpty();
+    if (!linkIsEmpty)
+    {
+        menu.addAction(webActions()->action("open_link_in_new_tab"));
+    }
+    else
+    {
+        menu.addAction(mainwindow->actionByName("new_tab"));
+    }
+    menu.addAction(mainwindow->actionByName("view_redisplay"));
+    menu.addSeparator();
+
+    // Developer Extras actions
+    if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
+    {
+        menu.addAction(webActions()->action("inspect_element"));
+        menu.addSeparator();
+    }
 
     // cut - copy - paste Actions. 
-    // If someone selects text perhaps wanna work with it..
     bool b = false;
 
     if (result.isContentSelected() && result.isContentEditable())
@@ -400,26 +418,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     if(b)
     {
-        menu.addSeparator();
-    }
-
-    // link actions
-    bool linkIsEmpty = result.linkUrl().isEmpty();
-    if (!linkIsEmpty)
-    {
-        menu.addAction(webActions()->action("open_link_in_new_tab"));
-    }
-    else
-    {
-        menu.addAction(mainwindow->actionByName("new_tab"));
-    }
-    menu.addAction(mainwindow->actionByName("view_redisplay"));
-    menu.addSeparator();
-
-    // Developer Extras actions
-    if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
-    {
-        menu.addAction(webActions()->action("inspect_element"));
         menu.addSeparator();
     }
 
