@@ -336,15 +336,9 @@ void MainWindow::setupSidePanel()
     addDockWidget(Qt::LeftDockWidgetArea, m_sidePanel);
 
     // setup side panel actions
-    KAction* a = new KAction(this);
-    a->setText(i18n("History"));
-    a->setCheckable(true);
-    a->setChecked(ReKonfig::showSideBar());
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
+    QAction* a = m_sidePanel->toggleViewAction();
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
-
-    // connect to toogle action
-    connect(a, SIGNAL(triggered(bool)), m_sidePanel->toggleViewAction(), SLOT(trigger()));
 }
 
 
