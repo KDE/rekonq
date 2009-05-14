@@ -22,8 +22,8 @@
 #ifndef SEARCHBAR_H
 #define SEARCHBAR_H
 
-// KDE Includes
-#include <KLineEdit>
+// Local Includes
+#include "lineedit.h"
 
 // Forward Declarations
 class KUrl;
@@ -36,7 +36,7 @@ class QNetworkReply;
  * This class defines an internet search bar.
  *
  */
-class SearchBar : public KLineEdit
+class SearchBar : public LineEdit
 {
     Q_OBJECT
 

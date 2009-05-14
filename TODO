@@ -19,3 +19,12 @@ TO 0.2 release
 - bookmarks panel
 - MimeType Manager
 - BETTER KDE INTEGRATION (What else to be done??)
+
+TO 0.1 release
+
+- fix cookies system
++ fix toggle actions
+    + history side panel
+    - status bar
+    - menu bar
++ fullscreen action in webView

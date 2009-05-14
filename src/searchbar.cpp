@@ -28,6 +28,7 @@
 
 // KDE Includes
 #include <KUrl>
+#include <KCompletionBox>
 
 // Qt Includes
 #include <QtCore/QString>
@@ -38,19 +39,16 @@
 #include <QtXml/QXmlStreamReader>
 
 
-SearchBar::SearchBar(QWidget *parent) :
-        KLineEdit(parent)
-        , m_networkAccessManager(new QNetworkAccessManager(this))
-        , m_timer(new QTimer(this))
+SearchBar::SearchBar(QWidget *parent)
+    : LineEdit(parent)
+    , m_networkAccessManager(new QNetworkAccessManager(this))
+    , m_timer(new QTimer(this))
 {
-    setMinimumWidth(180);
-
     setFocusPolicy(Qt::WheelFocus);
     setMouseTracking(true);
     setAcceptDrops(true);
 
-    QSizePolicy policy = sizePolicy();
-    setSizePolicy(QSizePolicy::Preferred, policy.verticalPolicy());
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     setClearButtonShown(true);
 
@@ -80,6 +78,7 @@ void SearchBar::searchNow()
 {
     m_timer->stop();
     QString searchText = text();
+    completionBox()->hide();
 
     KUrl url(QLatin1String("http://www.google.com/search"));
     url.addQueryItem(QLatin1String("q"), searchText);
@@ -92,8 +91,8 @@ void SearchBar::searchNow()
 
 void SearchBar::focusInEvent(QFocusEvent *event)
 {
-    KLineEdit::focusInEvent(event);
-    clear();
+    selectAll();
+    LineEdit::focusInEvent(event);
 }
 
 

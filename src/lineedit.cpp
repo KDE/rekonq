@@ -33,7 +33,7 @@
 LineEdit::LineEdit(QWidget* parent)
         : KLineEdit(parent)
 {
-    setMinimumWidth(180);
+    setMinimumWidth(200);
     setFocusPolicy(Qt::WheelFocus);
 
     setHandleSignals(true);
