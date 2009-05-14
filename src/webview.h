@@ -92,8 +92,6 @@ class WebView : public QWebView
 public:
     WebView(QWidget *parent = 0);
 
-    KActionCollection* webActions();
-
     // inline
     WebPage *webPage() const { return m_page; }
     KUrl url() const { return KUrl(QWebView::url()); }
@@ -125,8 +123,6 @@ private slots:
     void openLinkInNewTab();
 
 private:
-    static KActionCollection* s_webActionCollection;
-
     WebPage *m_page;
 
     int m_progress;

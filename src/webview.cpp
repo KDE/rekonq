@@ -290,9 +290,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 // -----------------------------------------------------------------------------------------------------------------
 
 
-KActionCollection* WebView::s_webActionCollection;
-
-
 WebView::WebView(QWidget* parent)
         : QWebView(parent)
         , m_page(new WebPage(this))
@@ -308,63 +305,6 @@ WebView::WebView(QWidget* parent)
 }
 
 
-KActionCollection* WebView::webActions()
-{
-    if (!s_webActionCollection)
-    {
-        s_webActionCollection = new KActionCollection(this);
-
-        QAction *a;
-
-        a = new KAction(KIcon("tab-new"), i18n("Open Link in New &Tab"), this);
-        connect(a, SIGNAL(triggered()), this, SLOT(openLinkInNewTab()));
-        s_webActionCollection->addAction(QLatin1String("open_link_in_new_tab"), a);
-
-        a = pageAction(QWebPage::Cut);
-        a->setIcon(KIcon("edit-cut"));
-        a->setText(i18n("Cu&t"));
-        s_webActionCollection->addAction(QLatin1String("edit_cut"), a);
-
-        a = pageAction(QWebPage::Copy);
-        a->setIcon(KIcon("edit-copy"));
-        a->setText(i18n("&Copy"));
-        s_webActionCollection->addAction(QLatin1String("edit_copy"), a);
-
-        a = pageAction(QWebPage::Paste);
-        a->setIcon(KIcon("edit-paste"));
-        a->setText(i18n("&Paste"));
-        s_webActionCollection->addAction(QLatin1String("edit_paste"), a);
-
-        a = pageAction(QWebPage::DownloadImageToDisk);
-        a->setIcon(KIcon("folder-image"));
-        a->setText(i18n("&Save Image As..."));
-        s_webActionCollection->addAction(QLatin1String("save_image_as"), a);
-
-        a = pageAction(QWebPage::CopyImageToClipboard);
-        a->setIcon(KIcon("insert-image"));
-        a->setText(i18n("&Copy This Image"));
-        s_webActionCollection->addAction(QLatin1String("copy_this_image"), a);
-
-        a = pageAction(QWebPage::DownloadLinkToDisk);
-        a->setIcon(KIcon("folder-downloads"));
-        a->setText(i18n("&Save Link As..."));
-        s_webActionCollection->addAction(QLatin1String("save_link_as"), a);
-
-        a = pageAction(QWebPage::CopyLinkToClipboard);
-        a->setIcon(KIcon("insert-link"));
-        a->setText(i18n("&Copy Link Location"));
-        s_webActionCollection->addAction(QLatin1String("copy_link_location"), a);
-
-        a = pageAction(QWebPage::InspectElement);
-        a->setIcon(KIcon("tools-report-bug"));
-        a->setText(i18n("&Inspect Element"));
-        s_webActionCollection->addAction(QLatin1String("inspect_element"), a);
-    }
-
-    return s_webActionCollection;
-}
-
-
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
@@ -373,13 +313,17 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("add_bookmark_payload");
     addBookmarkAction->setText(i18n("Bookmark This Page"));
     addBookmarkAction->setData(QVariant());
+
     KMenu menu(this);
+    QAction *a;
 
     // link actions
     bool linkIsEmpty = result.linkUrl().isEmpty();
     if (!linkIsEmpty)
     {
-        menu.addAction(webActions()->action("open_link_in_new_tab"));
+        a = new KAction(KIcon("tab-new"), i18n("Open Link in New &Tab"), this);
+        connect(a, SIGNAL(triggered()), this, SLOT(openLinkInNewTab()));
+        menu.addAction(a);
     }
     else
     {
@@ -391,7 +335,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // Developer Extras actions
     if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
     {
-        menu.addAction(webActions()->action("inspect_element"));
+        a = pageAction(QWebPage::InspectElement);
+        a->setIcon(KIcon("tools-report-bug"));
+        a->setText(i18n("&Inspect Element"));
+        menu.addAction(a);
         menu.addSeparator();
     }
 
@@ -400,19 +347,28 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     if (result.isContentSelected() && result.isContentEditable())
     {
-        menu.addAction(webActions()->action("edit_cut"));
+        a = pageAction(QWebPage::Cut);
+        a->setIcon(KIcon("edit-cut"));
+        a->setText(i18n("Cu&t"));
+        menu.addAction(a);
         b = true;
     }
 
     if (result.isContentSelected())
     {
-        menu.addAction(webActions()->action("edit_copy"));
+        a = pageAction(QWebPage::Copy);
+        a->setIcon(KIcon("edit-copy"));
+        a->setText(i18n("&Copy"));
+        menu.addAction(a);
         b = true;
     }
 
     if (result.isContentEditable())
     {
-        menu.addAction(webActions()->action("edit_paste"));
+        a = pageAction(QWebPage::Paste);
+        a->setIcon(KIcon("edit-paste"));
+        a->setText(i18n("&Paste"));
+        menu.addAction(a);
         b = true;
     }
 
@@ -424,15 +380,31 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // save/copy link actions
     if (!linkIsEmpty)
     {
-        menu.addAction(webActions()->action("save_link_as"));
-        menu.addAction(webActions()->action("copy_link_location"));
+        a = pageAction(QWebPage::DownloadLinkToDisk);
+        a->setIcon(KIcon("folder-downloads"));
+        a->setText(i18n("&Save Link As..."));
+        menu.addAction(a);
+
+        a = pageAction(QWebPage::CopyLinkToClipboard);
+        a->setIcon(KIcon("insert-link"));
+        a->setText(i18n("&Copy Link Location"));
+        menu.addAction(a);
+
         menu.addSeparator();
 
         if (!result.pixmap().isNull())
         {
-            // TODO Add "View Image"
-            menu.addAction(webActions()->action("save_image_as"));
-            menu.addAction(webActions()->action("copy_this_image"));
+            // TODO Add "View Image" && remove copy_this_image action
+            a = pageAction(QWebPage::DownloadImageToDisk);
+            a->setIcon(KIcon("folder-image"));
+            a->setText(i18n("&Save Image As..."));
+            menu.addAction(a);
+
+            a = pageAction(QWebPage::CopyImageToClipboard);
+            a->setIcon(KIcon("insert-image"));
+            a->setText(i18n("&Copy This Image"));
+            menu.addAction(a);
+
             menu.addSeparator();
         }
     }
@@ -532,4 +504,3 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
     QWebView::keyPressEvent(event);
 }
-
