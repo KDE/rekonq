@@ -23,8 +23,8 @@ TO 0.2 release
 TO 0.1 release
 
 - fix cookies system
-- fix toggle actions
-    - history side panel
++ fix toggle actions
+    + history side panel
     - status bar
     - menu bar
 + fullscreen action in webView
