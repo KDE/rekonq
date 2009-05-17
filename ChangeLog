@@ -1,3 +1,11 @@
+0.1
+- moved to KDE svn
+- Network Disk Cache
+- History Side Panel
+- Search Bar Google Suggestions
+- i18n support
+- webkit configuration settings
+
 0.0.4
 - Rekonq Singleton app
 - With Qt 4.5, preliminary flash support

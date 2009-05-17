@@ -1,8 +1,13 @@
 ===== Building rekonq from sources =====
 
+WARNING: 
+rekonq before 0.1 release depends on Qt4.4.x.
+From 0.1 release on, to build rekonq you need Qt4.5.x
+
+
 === Prerequisites ===
 
-Qt4.4.x:
+Qt4.x.y:
 
   Qt should be prepackaged for all mayor linux distributions. Please see
   http://www.trolltech.com/products/qt for more information and installation
