@@ -69,14 +69,14 @@ void DownloadManager::newDownload(const KUrl &srcUrl, const KUrl &destUrl)
     QString typeText = KMimeType::extractKnownExtension(srcUrl.fileName());
     typeText += " (" + mimeType->name() + ')';
 
-    int answer = KMessageBox::questionYesNoCancel(NULL,
-                 i18n("Download '%1'?\n""Type: %2", srcUrl.prettyUrl(), typeText),
-                 i18n("Download '%1'...", srcUrl.fileName()),
-                 KStandardGuiItem::save(),
-                 KStandardGuiItem::open(),
-                 KStandardGuiItem::cancel(),
-                 "showOpenSaveDownloadDialog"
-                                                 );
+    int answer = KMessageBox::questionYesNoCancel(
+                    NULL,
+                    i18n("Download '%1'?\n""Type: %2", srcUrl.prettyUrl(), typeText),
+                    i18n("Download '%1'...", srcUrl.fileName()),
+                    KStandardGuiItem::save(),
+                    KStandardGuiItem::open(),
+                    KStandardGuiItem::cancel()
+                );
 
     switch (answer)
     {
