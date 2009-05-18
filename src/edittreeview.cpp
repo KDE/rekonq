@@ -21,6 +21,7 @@
 
 // Self Includes
 #include "edittreeview.h"
+#include "edittreeview.moc"
 
 // Qt includes
 #include <QtGui/QKeyEvent>

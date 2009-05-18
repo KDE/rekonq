@@ -79,6 +79,3 @@ void LineEdit::focusOutEvent(QFocusEvent *event)
     setCursorPosition(0);
     deselect();
 }
-
-
-

@@ -18,13 +18,19 @@
 * ============================================================ */
 
 
-// Local Includes
+// Self Includes
 #include "cookiedialogs.h"
-#include "cookiejar.h"
+#include "cookiedialogs.moc"
 
+// Ui Includes
 #include "ui_cookies.h"
 
+// Local Includes
+#include "cookiejar.h"
+
+// Qt Includes
 #include <QCompleter>
+
 
 CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
         : KDialog(parent)

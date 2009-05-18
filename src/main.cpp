@@ -18,8 +18,10 @@
 * ============================================================ */
 
 
+// Local Includes
 #include "application.h"
 
+// KDE Includes
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KDebug>

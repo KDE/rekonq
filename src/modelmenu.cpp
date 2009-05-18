@@ -21,6 +21,7 @@
 
 // Self Includes
 #include "modelmenu.h"
+#include "modelmenu.moc"
 
 
 ModelMenu::ModelMenu(QWidget * parent)

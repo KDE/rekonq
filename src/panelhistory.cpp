@@ -32,9 +32,6 @@
 #include <KLineEdit>
 #include <KUrl>
 
-// Local Includes
-#include "history.h"
-
 
 PanelHistory::PanelHistory(QWidget *parent)
         : QWidget(parent)

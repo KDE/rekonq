@@ -129,4 +129,3 @@ void SearchBar::handleNetworkData(QNetworkReply *networkReply)
 
     networkReply->deleteLater();
 }
-
