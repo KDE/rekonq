@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>CookiesWidget</class>
- <widget class="QWidget" name="Cookies">
+ <widget class="QWidget" name="CookiesWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -46,7 +46,11 @@
       </widget>
      </item>
      <item>
-      <widget class="KLineEdit" name="search"/>
+      <widget class="KLineEdit" name="search">
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

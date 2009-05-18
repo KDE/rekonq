@@ -127,8 +127,8 @@ CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *
 
     m_exceptionsWidget->exceptionTable->setModel(m_proxyModel);
 
-    CookieModel *cookieModel = new CookieModel(cookieJar, this);
-    m_exceptionsWidget->domainLineEdit->setCompleter(new QCompleter(cookieModel, m_exceptionsWidget->domainLineEdit));
+//     CookieModel *cookieModel = new CookieModel(cookieJar, this);
+//     m_exceptionsWidget->domainLineEdit->setCompleter(new QCompleter(cookieModel, m_exceptionsWidget->domainLineEdit));
 
     connect(m_exceptionsWidget->domainLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(textChanged(const QString &)));
     connect(m_exceptionsWidget->blockButton, SIGNAL(clicked()), this, SLOT(block()));
