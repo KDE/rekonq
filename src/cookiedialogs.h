@@ -77,7 +77,7 @@ private:
     QSortFilterProxyModel *m_proxyModel;
     CookieJar *m_cookieJar;
 
-    Ui::CookiesExceptionsWidget *exceptionsWidget;
+    Ui::CookiesExceptionsWidget *m_exceptionsWidget;
 };
 
 
