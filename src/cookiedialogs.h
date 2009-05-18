@@ -23,17 +23,22 @@
 #define COOKIEDIALOGS_H
 
 
+// KDE Includes
 #include <KDialog>
 
 // Qt Includes
 #include <QtCore/QStringList>
 #include <QtCore/QAbstractItemModel>
+
 #include <QtGui/QTableView>
-#include <QtNetwork/QNetworkCookieJar>
 #include <QtGui/QSortFilterProxyModel>
 
+#include <QtNetwork/QNetworkCookieJar>
+
+// Forward Declarations
 class CookieJar;
 class CookieExceptionsModel;
+
 
 class CookiesDialog : public KDialog
 {
@@ -50,6 +55,7 @@ private:
 // -----------------------------------------------------------------------------------------------------------------
 
 
+// Ui Includes
 #include "ui_cookiesexceptions.h"
 
 
