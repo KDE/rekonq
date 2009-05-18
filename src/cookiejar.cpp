@@ -79,7 +79,7 @@ QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list)
         QList<QNetworkCookie> newCookies = QNetworkCookie::parseCookies(value);
         if (newCookies.count() == 0 && value.length() != 0)
         {
-            kWarning() << "CookieJar: Unable to parse saved cookie:" << value;
+            kDebug() << "CookieJar: Unable to parse saved cookie:" << value;
         }
         for (int j = 0; j < newCookies.count(); ++j)
             list.append(newCookies.at(j));
@@ -559,57 +559,6 @@ void CookieModel::cookiesChanged()
 // ------------------------------------------------------------------------------------------------
 
 
-CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
-        : QDialog(parent)
-{
-    setupUi(this);
-    setWindowFlags(Qt::Sheet);
-    CookieModel *model = new CookieModel(cookieJar, this);
-    m_proxyModel = new QSortFilterProxyModel(this);
-    connect(search, SIGNAL(textChanged(QString)),
-            m_proxyModel, SLOT(setFilterFixedString(QString)));
-    connect(removeButton, SIGNAL(clicked()), cookiesTable, SLOT(removeOne()));
-    connect(removeAllButton, SIGNAL(clicked()), cookiesTable, SLOT(removeAll()));
-    m_proxyModel->setSourceModel(model);
-    cookiesTable->verticalHeader()->hide();
-    cookiesTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    cookiesTable->setModel(m_proxyModel);
-    cookiesTable->setAlternatingRowColors(true);
-    cookiesTable->setTextElideMode(Qt::ElideMiddle);
-    cookiesTable->setShowGrid(false);
-    cookiesTable->setSortingEnabled(true);
-    QFont f = font();
-    f.setPointSize(10);
-    QFontMetrics fm(f);
-    int height = fm.height() + fm.height() / 3;
-    cookiesTable->verticalHeader()->setDefaultSectionSize(height);
-    cookiesTable->verticalHeader()->setMinimumSectionSize(-1);
-    for (int i = 0; i < model->columnCount(); ++i)
-    {
-        int header = cookiesTable->horizontalHeader()->sectionSizeHint(i);
-        switch (i)
-        {
-        case 0:
-            header = fm.width(QLatin1String("averagehost.domain.com"));
-            break;
-        case 1:
-            header = fm.width(QLatin1String("_session_id"));
-            break;
-        case 4:
-            header = fm.width(QDateTime::currentDateTime().toString(Qt::LocalDate));
-            break;
-        }
-        int buffer = fm.width(QLatin1String("xx"));
-        header += buffer;
-        cookiesTable->horizontalHeader()->resizeSection(i, header);
-    }
-    cookiesTable->horizontalHeader()->setStretchLastSection(true);
-}
-
-
-// ---------------------------------------------------------------------------------------------------
-
-
 CookieExceptionsModel::CookieExceptionsModel(CookieJar *cookiejar, QObject *parent)
         : QAbstractTableModel(parent)
         , m_cookieJar(cookiejar)
@@ -746,101 +695,4 @@ bool CookieExceptionsModel::removeRows(int row, int count, const QModelIndex &pa
     m_cookieJar->setAllowForSessionCookies(m_sessionCookies);
     endRemoveRows();
     return true;
-}
-
-
-// ----------------------------------------------------------------------------------------------------------------
-
-
-CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent)
-        : QDialog(parent)
-        , m_cookieJar(cookieJar)
-{
-    setupUi(this);
-    setWindowFlags(Qt::Sheet);
-    connect(removeButton, SIGNAL(clicked()), exceptionTable, SLOT(removeOne()));
-    connect(removeAllButton, SIGNAL(clicked()), exceptionTable, SLOT(removeAll()));
-    exceptionTable->verticalHeader()->hide();
-    exceptionTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    exceptionTable->setAlternatingRowColors(true);
-    exceptionTable->setTextElideMode(Qt::ElideMiddle);
-    exceptionTable->setShowGrid(false);
-    exceptionTable->setSortingEnabled(true);
-    m_exceptionsModel = new CookieExceptionsModel(cookieJar, this);
-    m_proxyModel = new QSortFilterProxyModel(this);
-    m_proxyModel->setSourceModel(m_exceptionsModel);
-    connect(search, SIGNAL(textChanged(QString)),
-            m_proxyModel, SLOT(setFilterFixedString(QString)));
-    exceptionTable->setModel(m_proxyModel);
-
-    CookieModel *cookieModel = new CookieModel(cookieJar, this);
-    domainLineEdit->setCompleter(new QCompleter(cookieModel, domainLineEdit));
-
-    connect(domainLineEdit, SIGNAL(textChanged(const QString &)),
-            this, SLOT(textChanged(const QString &)));
-    connect(blockButton, SIGNAL(clicked()), this, SLOT(block()));
-    connect(allowButton, SIGNAL(clicked()), this, SLOT(allow()));
-    connect(allowForSessionButton, SIGNAL(clicked()), this, SLOT(allowForSession()));
-
-    QFont f = font();
-    f.setPointSize(10);
-    QFontMetrics fm(f);
-    int height = fm.height() + fm.height() / 3;
-    exceptionTable->verticalHeader()->setDefaultSectionSize(height);
-    exceptionTable->verticalHeader()->setMinimumSectionSize(-1);
-    for (int i = 0; i < m_exceptionsModel->columnCount(); ++i)
-    {
-        int header = exceptionTable->horizontalHeader()->sectionSizeHint(i);
-        switch (i)
-        {
-        case 0:
-            header = fm.width(QLatin1String("averagebiglonghost.domain.com"));
-            break;
-        case 1:
-            header = fm.width(QLatin1String("Allow For Session"));
-            break;
-        }
-        int buffer = fm.width(QLatin1String("xx"));
-        header += buffer;
-        exceptionTable->horizontalHeader()->resizeSection(i, header);
-    }
-}
-
-
-void CookiesExceptionsDialog::textChanged(const QString &text)
-{
-    bool enabled = !text.isEmpty();
-    blockButton->setEnabled(enabled);
-    allowButton->setEnabled(enabled);
-    allowForSessionButton->setEnabled(enabled);
-}
-
-
-void CookiesExceptionsDialog::block()
-{
-    if (domainLineEdit->text().isEmpty())
-        return;
-    m_exceptionsModel->m_blockedCookies.append(domainLineEdit->text());
-    m_cookieJar->setBlockedCookies(m_exceptionsModel->m_blockedCookies);
-    m_exceptionsModel->reset();
-}
-
-
-void CookiesExceptionsDialog::allow()
-{
-    if (domainLineEdit->text().isEmpty())
-        return;
-    m_exceptionsModel->m_allowedCookies.append(domainLineEdit->text());
-    m_cookieJar->setAllowedCookies(m_exceptionsModel->m_allowedCookies);
-    m_exceptionsModel->reset();
-}
-
-
-void CookiesExceptionsDialog::allowForSession()
-{
-    if (domainLineEdit->text().isEmpty())
-        return;
-    m_exceptionsModel->m_sessionCookies.append(domainLineEdit->text());
-    m_cookieJar->setAllowForSessionCookies(m_exceptionsModel->m_sessionCookies);
-    m_exceptionsModel->reset();
 }

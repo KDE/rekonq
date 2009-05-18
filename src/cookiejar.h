@@ -24,11 +24,16 @@
 #define COOKIEJAR_H
 
 
+// Local Includes
+#include "cookiedialogs.h"
+
 // Qt Includes
-#include <QNetworkCookieJar>
-#include <QAbstractItemModel>
-#include <QStringList>
-#include <QTableView>
+#include <QtCore/QStringList>
+#include <QtCore/QAbstractItemModel>
+#include <QtGui/QTableView>
+#include <QtNetwork/QNetworkCookieJar>
+
+
 
 // Forward Declarations
 class QSortFilterProxyModel;
@@ -136,23 +141,6 @@ private:
 // ----------------------------------------------------------------------------------------------------------------------
 
 
-#include "ui_cookies.h"
-
-class CookiesDialog : public QDialog, public Ui_CookiesDialog
-{
-    Q_OBJECT
-
-public:
-    explicit CookiesDialog(CookieJar *cookieJar, QWidget *parent = 0);
-
-private:
-    QSortFilterProxyModel *m_proxyModel;
-};
-
-
-// ----------------------------------------------------------------------------------------------------------------------
-
-
 class CookieExceptionsModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -177,29 +165,4 @@ private:
 };
 
 
-// -----------------------------------------------------------------------------------------------------------------
-
-
-#include "ui_cookiesexceptions.h"
-
-class CookiesExceptionsDialog : public QDialog, public Ui_CookiesExceptionsDialog
-{
-    Q_OBJECT
-
-public:
-    explicit CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent = 0);
-
-private slots:
-    void block();
-    void allow();
-    void allowForSession();
-    void textChanged(const QString &text);
-
-private:
-    CookieExceptionsModel *m_exceptionsModel;
-    QSortFilterProxyModel *m_proxyModel;
-    CookieJar *m_cookieJar;
-};
-
 #endif // COOKIEJAR_H
-

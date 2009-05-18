@@ -24,6 +24,7 @@ SET( rekonq_SRCS
     lineedit.cpp
     stackedurlbar.cpp
     webpage.cpp
+    cookiedialogs.cpp
 )
 
 KDE4_ADD_UI_FILES( rekonq_SRCS

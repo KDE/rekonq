@@ -1,39 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CookiesDialog</class>
- <widget class="QDialog" name="CookiesDialog">
+ <class>CookiesWidget</class>
+ <widget class="QWidget" name="Cookies">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>370</height>
+    <width>499</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Cookies</string>
+   <string>Form</string>
   </property>
-  <layout class="QGridLayout">
-   <item row="0" column="0">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>252</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Minimum</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>252</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Search:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="KLineEdit" name="search"/>
+     </item>
+    </layout>
    </item>
-   <item row="0" column="1">
-    <widget class="KLineEdit" name="search"/>
-   </item>
-   <item row="1" column="0" colspan="2">
+   <item>
     <widget class="EditTableView" name="cookiesTable"/>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item>
     <layout class="QHBoxLayout">
      <item>
       <widget class="QPushButton" name="removeButton">
@@ -62,13 +82,6 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Ok</set>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>
@@ -86,22 +99,5 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>CookiesDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>472</x>
-     <y>329</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>461</x>
-     <y>356</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
