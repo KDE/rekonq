@@ -21,11 +21,14 @@
 #ifndef COOKIEEXCEPTIONDIALOG_H
 #define COOKIEEXCEPTIONDIALOG_H
 
+
+// Local Includes
+#include "cookiejar.h"
+
 // Qt Includes
-#include <QtGui/QAbstractTableModel>
+#include <QtCore/QAbstractTableModel>
 
 // Forward Declarations
-class CookieJar;
 class QString;
 class QStringList;
 class QModelIndex;

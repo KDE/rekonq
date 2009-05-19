@@ -24,6 +24,8 @@
 
 // Local Includes
 
+// Qt Includes
+#include <QtGui/QSortFilterProxyModel>
 
 
 CookieExceptionsModel::CookieExceptionsModel(CookieJar *cookiejar, QObject *parent)

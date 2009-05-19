@@ -22,10 +22,11 @@
 #ifndef COOKIEDIALOG_H
 #define COOKIEDIALOG_H
 
+// Local Includes
+#include "cookiejar.h"
 
 // KDE Includes
 #include <KDialog>
-
 
 // Qt Includes
 #include <QtCore/QStringList>
@@ -35,11 +36,6 @@
 #include <QtGui/QSortFilterProxyModel>
 
 #include <QtNetwork/QNetworkCookieJar>
-
-
-// Forward Declarations
-class CookieJar;
-class CookieExceptionsModel;
 
 
 class CookieModel : public QAbstractTableModel

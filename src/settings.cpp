@@ -30,7 +30,8 @@
 // Local Includes
 #include "application.h"
 #include "mainwindow.h"
-#include "cookiedialogs.h"
+#include "cookiedialog.h"
+#include "cookieexceptiondialog.h"
 #include "history.h"
 #include "networkaccessmanager.h"
 #include "webview.h"

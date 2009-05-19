@@ -25,6 +25,9 @@
 // Local Includes
 #include "cookiejar.h"
 
+// KDE Includes
+#include <KLocalizedString>
+
 
 CookieModel::CookieModel(CookieJar *cookieJar, QObject *parent)
         : QAbstractTableModel(parent)
