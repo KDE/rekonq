@@ -70,6 +70,8 @@ class CookiesDialog : public KDialog
 public:
     explicit CookiesDialog(CookieJar *cookieJar, QWidget *parent = 0);
 
+    QSize sizeHint() const;
+
 private:
     QSortFilterProxyModel *m_proxyModel;
 };

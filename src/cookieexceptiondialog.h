@@ -75,6 +75,8 @@ class CookiesExceptionsDialog : public KDialog
 public:
     explicit CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent = 0);
 
+    QSize sizeHint() const;
+
 private slots:
     void block();
     void allow();

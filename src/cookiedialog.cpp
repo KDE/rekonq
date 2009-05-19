@@ -160,6 +160,12 @@ void CookieModel::cookiesChanged()
 // Ui Includes
 #include "ui_cookies.h"
 
+// Qt Includes
+#include <QtCore/QRect>
+#include <QtCore/QSize>
+
+#include <QtGui/QDesktopWidget>
+
 
 CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
         : KDialog(parent)
@@ -183,6 +189,7 @@ CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
 
     m_proxyModel->setSourceModel(model);
 
+    cookieWidget->cookiesTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     cookieWidget->cookiesTable->verticalHeader()->hide();
     cookieWidget->cookiesTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     cookieWidget->cookiesTable->setModel(m_proxyModel);
@@ -191,31 +198,39 @@ CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
     cookieWidget->cookiesTable->setShowGrid(false);
     cookieWidget->cookiesTable->setSortingEnabled(true);
 
-    QFont f = font();
-    f.setPointSize(10);
-    QFontMetrics fm(f);
-    int height = fm.height() + fm.height() / 3;
-    cookieWidget->cookiesTable->verticalHeader()->setDefaultSectionSize(height);
-    cookieWidget->cookiesTable->verticalHeader()->setMinimumSectionSize(-1);
+//     QFont f = font();
+//     f.setPointSize(10);
+//     QFontMetrics fm(f);
+//     int height = fm.height() + fm.height() / 3;
+//     cookieWidget->cookiesTable->verticalHeader()->setDefaultSectionSize(height);
+//     cookieWidget->cookiesTable->verticalHeader()->setMinimumSectionSize(-1);
 
-    for (int i = 0; i < model->columnCount(); ++i)
-    {
-        int header = cookieWidget->cookiesTable->horizontalHeader()->sectionSizeHint(i);
-        switch (i)
-        {
-        case 0:
-            header = fm.width(QLatin1String("averagehost.domain.com"));
-            break;
-        case 1:
-            header = fm.width(QLatin1String("_session_id"));
-            break;
-        case 4:
-            header = fm.width(QDateTime::currentDateTime().toString(Qt::LocalDate));
-            break;
-        }
-        int buffer = fm.width(QLatin1String("xx"));
-        header += buffer;
-        cookieWidget->cookiesTable->horizontalHeader()->resizeSection(i, header);
-    }
-    cookieWidget->cookiesTable->horizontalHeader()->setStretchLastSection(true);
+//     for (int i = 0; i < model->columnCount(); ++i)
+//     {
+//         int header = cookieWidget->cookiesTable->horizontalHeader()->sectionSizeHint(i);
+//         switch (i)
+//         {
+//         case 0:
+//             header = fm.width(QLatin1String("averagehost.domain.com"));
+//             break;
+//         case 1:
+//             header = fm.width(QLatin1String("_session_id"));
+//             break;
+//         case 4:
+//             header = fm.width(QDateTime::currentDateTime().toString(Qt::LocalDate));
+//             break;
+//         }
+//         int buffer = fm.width(QLatin1String("xx"));
+//         header += buffer;
+//         cookieWidget->cookiesTable->horizontalHeader()->resizeSection(i, header);
+//     }
+//     cookieWidget->cookiesTable->horizontalHeader()->setStretchLastSection(true);
+}
+
+
+QSize CookiesDialog::sizeHint() const
+{
+    QRect desktopRect = QApplication::desktop()->screenGeometry();
+    QSize size = desktopRect.size() * 0.8;
+    return size;
 }

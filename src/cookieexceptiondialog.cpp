@@ -172,11 +172,19 @@ bool CookieExceptionsModel::removeRows(int row, int count, const QModelIndex &pa
 // ----------------------------------------------------------------------------------------------------------------
 
 
+// Qt Includes
+#include <QtCore/QRect>
+#include <QtCore/QSize>
+
+#include <QtGui/QDesktopWidget>
+
+
 CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent)
         : KDialog(parent)
         , m_cookieJar(cookieJar)
         , m_exceptionsWidget(new Ui::CookiesExceptionsWidget)
 {
+    setWindowFlags(Qt::Sheet);
     setCaption("Cookies Exceptions");
     setButtons( KDialog::Ok );
 
@@ -184,11 +192,10 @@ CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *
     m_exceptionsWidget->setupUi(widget);
     setMainWidget(widget);
 
-    setWindowFlags(Qt::Sheet);
-
     connect(m_exceptionsWidget->removeButton, SIGNAL(clicked()), m_exceptionsWidget->exceptionTable, SLOT(removeOne()));
     connect(m_exceptionsWidget->removeAllButton, SIGNAL(clicked()), m_exceptionsWidget->exceptionTable, SLOT(removeAll()));
 
+    m_exceptionsWidget->exceptionTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_exceptionsWidget->exceptionTable->verticalHeader()->hide();
     m_exceptionsWidget->exceptionTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_exceptionsWidget->exceptionTable->setAlternatingRowColors(true);
@@ -201,6 +208,7 @@ CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *
 
     connect(m_exceptionsWidget->search, SIGNAL(textChanged(QString)), m_proxyModel, SLOT(setFilterFixedString(QString)));
 
+    m_exceptionsWidget->exceptionTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_exceptionsWidget->exceptionTable->setModel(m_proxyModel);
 
     connect(m_exceptionsWidget->domainLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(textChanged(const QString &)));
@@ -208,28 +216,28 @@ CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *
     connect(m_exceptionsWidget->allowButton, SIGNAL(clicked()), this, SLOT(allow()));
     connect(m_exceptionsWidget->allowForSessionButton, SIGNAL(clicked()), this, SLOT(allowForSession()));
 
-    QFont f = font();
-    f.setPointSize(10);
-    QFontMetrics fm(f);
-    int height = fm.height() + fm.height() / 3;
-    m_exceptionsWidget->exceptionTable->verticalHeader()->setDefaultSectionSize(height);
-    m_exceptionsWidget->exceptionTable->verticalHeader()->setMinimumSectionSize(-1);
-    for (int i = 0; i < m_exceptionsModel->columnCount(); ++i)
-    {
-        int header = m_exceptionsWidget->exceptionTable->horizontalHeader()->sectionSizeHint(i);
-        switch (i)
-        {
-        case 0:
-            header = fm.width(QLatin1String("averagebiglonghost.domain.com"));
-            break;
-        case 1:
-            header = fm.width(QLatin1String("Allow For Session"));
-            break;
-        }
-        int buffer = fm.width(QLatin1String("xx"));
-        header += buffer;
-        m_exceptionsWidget->exceptionTable->horizontalHeader()->resizeSection(i, header);
-    }
+//     QFont f = font();
+//     f.setPointSize(10);
+//     QFontMetrics fm(f);
+//     int height = fm.height() + fm.height() / 3;
+//     m_exceptionsWidget->exceptionTable->verticalHeader()->setDefaultSectionSize(height);
+//     m_exceptionsWidget->exceptionTable->verticalHeader()->setMinimumSectionSize(-1);
+//     for (int i = 0; i < m_exceptionsModel->columnCount(); ++i)
+//     {
+//         int header = m_exceptionsWidget->exceptionTable->horizontalHeader()->sectionSizeHint(i);
+//         switch (i)
+//         {
+//         case 0:
+//             header = fm.width(QLatin1String("averagebiglonghost.domain.com"));
+//             break;
+//         case 1:
+//             header = fm.width(QLatin1String("Allow For Session"));
+//             break;
+//         }
+//         int buffer = fm.width(QLatin1String("xx"));
+//         header += buffer;
+//         m_exceptionsWidget->exceptionTable->horizontalHeader()->resizeSection(i, header);
+//     }
 }
 
 
@@ -269,5 +277,13 @@ void CookiesExceptionsDialog::allowForSession()
     m_exceptionsModel->m_sessionCookies.append(m_exceptionsWidget->domainLineEdit->text());
     m_cookieJar->setAllowForSessionCookies(m_exceptionsModel->m_sessionCookies);
     m_exceptionsModel->reset();
+}
+
+
+QSize CookiesExceptionsDialog::sizeHint() const
+{
+    QRect desktopRect = QApplication::desktop()->screenGeometry();
+    QSize size = desktopRect.size() * 0.6;
+    return size;
 }
 
