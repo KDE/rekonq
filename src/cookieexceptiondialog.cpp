@@ -177,6 +177,7 @@ bool CookieExceptionsModel::removeRows(int row, int count, const QModelIndex &pa
 #include <QtCore/QSize>
 
 #include <QtGui/QDesktopWidget>
+#include <QtGui/QHeaderView>
 
 
 CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent)
@@ -216,28 +217,9 @@ CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *
     connect(m_exceptionsWidget->allowButton, SIGNAL(clicked()), this, SLOT(allow()));
     connect(m_exceptionsWidget->allowForSessionButton, SIGNAL(clicked()), this, SLOT(allowForSession()));
 
-//     QFont f = font();
-//     f.setPointSize(10);
-//     QFontMetrics fm(f);
-//     int height = fm.height() + fm.height() / 3;
-//     m_exceptionsWidget->exceptionTable->verticalHeader()->setDefaultSectionSize(height);
-//     m_exceptionsWidget->exceptionTable->verticalHeader()->setMinimumSectionSize(-1);
-//     for (int i = 0; i < m_exceptionsModel->columnCount(); ++i)
-//     {
-//         int header = m_exceptionsWidget->exceptionTable->horizontalHeader()->sectionSizeHint(i);
-//         switch (i)
-//         {
-//         case 0:
-//             header = fm.width(QLatin1String("averagebiglonghost.domain.com"));
-//             break;
-//         case 1:
-//             header = fm.width(QLatin1String("Allow For Session"));
-//             break;
-//         }
-//         int buffer = fm.width(QLatin1String("xx"));
-//         header += buffer;
-//         m_exceptionsWidget->exceptionTable->horizontalHeader()->resizeSection(i, header);
-//     }
+    // Fixing header dimension
+    QHeaderView *headerView = m_exceptionsWidget->exceptionTable->horizontalHeader();
+    headerView->setResizeMode(QHeaderView::Stretch);
 }
 
 
