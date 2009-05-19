@@ -19,12 +19,13 @@
 
 
 
-#ifndef COOKIEDIALOGS_H
-#define COOKIEDIALOGS_H
+#ifndef COOKIEDIALOG_H
+#define COOKIEDIALOG_H
 
 
 // KDE Includes
 #include <KDialog>
+
 
 // Qt Includes
 #include <QtCore/QStringList>
@@ -35,9 +36,35 @@
 
 #include <QtNetwork/QNetworkCookieJar>
 
+
 // Forward Declarations
 class CookieJar;
 class CookieExceptionsModel;
+
+
+class CookieModel : public QAbstractTableModel
+{
+    Q_OBJECT
+
+public:
+    explicit CookieModel(CookieJar *jar, QObject *parent = 0);
+
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
+
+private slots:
+    void cookiesChanged();
+
+private:
+    CookieJar *m_cookieJar;
+};
+
+
+
+// -----------------------------------------------------------------------------------------------------------------
 
 
 class CookiesDialog : public KDialog
@@ -50,35 +77,5 @@ public:
 private:
     QSortFilterProxyModel *m_proxyModel;
 };
-
-
-// -----------------------------------------------------------------------------------------------------------------
-
-
-// Ui Includes
-#include "ui_cookiesexceptions.h"
-
-
-class CookiesExceptionsDialog : public KDialog
-{
-    Q_OBJECT
-
-public:
-    explicit CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *parent = 0);
-
-private slots:
-    void block();
-    void allow();
-    void allowForSession();
-    void textChanged(const QString &text);
-
-private:
-    CookieExceptionsModel *m_exceptionsModel;
-    QSortFilterProxyModel *m_proxyModel;
-    CookieJar *m_cookieJar;
-
-    Ui::CookiesExceptionsWidget *m_exceptionsWidget;
-};
-
 
 #endif

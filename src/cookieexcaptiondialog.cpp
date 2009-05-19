@@ -19,75 +19,152 @@
 
 
 // Self Includes
-#include "cookiedialogs.h"
-#include "cookiedialogs.moc"
-
-// Ui Includes
-#include "ui_cookies.h"
+#include "cookieexceptiondialog.h"
+#include "cookieexceptiondialog.moc"
 
 // Local Includes
-#include "cookiejar.h"
 
 
-CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
-        : KDialog(parent)
+
+CookieExceptionsModel::CookieExceptionsModel(CookieJar *cookiejar, QObject *parent)
+        : QAbstractTableModel(parent)
+        , m_cookieJar(cookiejar)
 {
-    setCaption("Cookies");
-    setButtons( KDialog::Ok );
+    m_allowedCookies = m_cookieJar->allowedCookies();
+    m_blockedCookies = m_cookieJar->blockedCookies();
+    m_sessionCookies = m_cookieJar->allowForSessionCookies();
+}
 
-    Ui::CookiesWidget *cookieWidget = new Ui::CookiesWidget;
-    QWidget *widget = new QWidget(this);
-    cookieWidget->setupUi(widget);
-    setMainWidget(widget);
 
-    setWindowFlags(Qt::Sheet);
-
-    CookieModel *model = new CookieModel(cookieJar, this);
-    m_proxyModel = new QSortFilterProxyModel(this);
-
-    // connecting signals and slots
-    connect(cookieWidget->search, SIGNAL(textChanged(QString)), m_proxyModel, SLOT(setFilterFixedString(QString)));
-    connect(cookieWidget->removeButton, SIGNAL(clicked()), cookieWidget->cookiesTable, SLOT(removeOne()));
-    connect(cookieWidget->removeAllButton, SIGNAL(clicked()), cookieWidget->cookiesTable, SLOT(removeAll()));
-
-    m_proxyModel->setSourceModel(model);
-
-    cookieWidget->cookiesTable->verticalHeader()->hide();
-    cookieWidget->cookiesTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    cookieWidget->cookiesTable->setModel(m_proxyModel);
-    cookieWidget->cookiesTable->setAlternatingRowColors(true);
-    cookieWidget->cookiesTable->setTextElideMode(Qt::ElideMiddle);
-    cookieWidget->cookiesTable->setShowGrid(false);
-    cookieWidget->cookiesTable->setSortingEnabled(true);
-
-    QFont f = font();
-    f.setPointSize(10);
-    QFontMetrics fm(f);
-    int height = fm.height() + fm.height() / 3;
-    cookieWidget->cookiesTable->verticalHeader()->setDefaultSectionSize(height);
-    cookieWidget->cookiesTable->verticalHeader()->setMinimumSectionSize(-1);
-
-    for (int i = 0; i < model->columnCount(); ++i)
+QVariant CookieExceptionsModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (role == Qt::SizeHintRole)
     {
-        int header = cookieWidget->cookiesTable->horizontalHeader()->sectionSizeHint(i);
-        switch (i)
+        QFont font;
+        font.setPointSize(10);
+        QFontMetrics fm(font);
+        int height = fm.height() + fm.height() / 3;
+        int width = fm.width(headerData(section, orientation, Qt::DisplayRole).toString());
+        return QSize(width, height);
+    }
+
+    if (orientation == Qt::Horizontal
+            && role == Qt::DisplayRole)
+    {
+        switch (section)
         {
         case 0:
-            header = fm.width(QLatin1String("averagehost.domain.com"));
-            break;
+            return i18n("Website");
         case 1:
-            header = fm.width(QLatin1String("_session_id"));
-            break;
-        case 4:
-            header = fm.width(QDateTime::currentDateTime().toString(Qt::LocalDate));
-            break;
+            return i18n("Status");
         }
-        int buffer = fm.width(QLatin1String("xx"));
-        header += buffer;
-        cookieWidget->cookiesTable->horizontalHeader()->resizeSection(i, header);
     }
-    cookieWidget->cookiesTable->horizontalHeader()->setStretchLastSection(true);
+    return QAbstractTableModel::headerData(section, orientation, role);
 }
+
+
+QVariant CookieExceptionsModel::data(const QModelIndex &index, int role) const
+{
+    if (index.row() < 0 || index.row() >= rowCount())
+        return QVariant();
+
+    switch (role)
+    {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+    {
+        int row = index.row();
+        if (row < m_allowedCookies.count())
+        {
+            switch (index.column())
+            {
+            case 0:
+                return m_allowedCookies.at(row);
+            case 1:
+                return i18n("Allow");
+            }
+        }
+        row = row - m_allowedCookies.count();
+        if (row < m_blockedCookies.count())
+        {
+            switch (index.column())
+            {
+            case 0:
+                return m_blockedCookies.at(row);
+            case 1:
+                return i18n("Block");
+            }
+        }
+        row = row - m_blockedCookies.count();
+        if (row < m_sessionCookies.count())
+        {
+            switch (index.column())
+            {
+            case 0:
+                return m_sessionCookies.at(row);
+            case 1:
+                return i18n("Allow For Session");
+            }
+        }
+    }
+    case Qt::FontRole:
+    {
+        QFont font;
+        font.setPointSize(10);
+        return font;
+    }
+    }
+    return QVariant();
+}
+
+
+int CookieExceptionsModel::columnCount(const QModelIndex &parent) const
+{
+    return (parent.isValid()) ? 0 : 2;
+}
+
+
+int CookieExceptionsModel::rowCount(const QModelIndex &parent) const
+{
+    return (parent.isValid() || !m_cookieJar) ? 0 : m_allowedCookies.count() + m_blockedCookies.count() + m_sessionCookies.count();
+}
+
+
+bool CookieExceptionsModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if (parent.isValid() || !m_cookieJar)
+        return false;
+
+    int lastRow = row + count - 1;
+    beginRemoveRows(parent, row, lastRow);
+    for (int i = lastRow; i >= row; --i)
+    {
+        if (i < m_allowedCookies.count())
+        {
+            m_allowedCookies.removeAt(row);
+            continue;
+        }
+        i = i - m_allowedCookies.count();
+        if (i < m_blockedCookies.count())
+        {
+            m_blockedCookies.removeAt(row);
+            continue;
+        }
+        i = i - m_blockedCookies.count();
+        if (i < m_sessionCookies.count())
+        {
+            m_sessionCookies.removeAt(row);
+            continue;
+        }
+    }
+    m_cookieJar->setAllowedCookies(m_allowedCookies);
+    m_cookieJar->setBlockedCookies(m_blockedCookies);
+    m_cookieJar->setAllowForSessionCookies(m_sessionCookies);
+    endRemoveRows();
+    return true;
+}
+
+
 
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -191,3 +268,4 @@ void CookiesExceptionsDialog::allowForSession()
     m_cookieJar->setAllowForSessionCookies(m_exceptionsModel->m_sessionCookies);
     m_exceptionsModel->reset();
 }
+
