@@ -200,7 +200,7 @@ CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
 
     // Fixing header dimension
     QHeaderView *headerView = cookieWidget->cookiesTable->horizontalHeader();
-    headerView->setResizeMode(QHeaderView::ResizeToContents);
+    headerView->setResizeMode(QHeaderView::Stretch);
 }
 
 
