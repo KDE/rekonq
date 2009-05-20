@@ -50,44 +50,44 @@
 static const unsigned int JAR_VERSION = 23;
 
 
-QDataStream &operator<<(QDataStream &stream, const QList<QNetworkCookie> &list)
-{
-    stream << JAR_VERSION;
-    stream << quint32(list.size());
-    for (int i = 0; i < list.size(); ++i)
-        stream << list.at(i).toRawForm();
-    return stream;
-}
-
-
-QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list)
-{
-    list.clear();
-
-    quint32 version;
-    stream >> version;
-
-    if (version != JAR_VERSION)
-        return stream;
-
-    quint32 count;
-    stream >> count;
-    for (quint32 i = 0; i < count; ++i)
-    {
-        QByteArray value;
-        stream >> value;
-        QList<QNetworkCookie> newCookies = QNetworkCookie::parseCookies(value);
-        if (newCookies.count() == 0 && value.length() != 0)
-        {
-            kDebug() << "CookieJar: Unable to parse saved cookie:" << value;
-        }
-        for (int j = 0; j < newCookies.count(); ++j)
-            list.append(newCookies.at(j));
-        if (stream.atEnd())
-            break;
-    }
-    return stream;
-}
+// QDataStream &operator<<(QDataStream &stream, const QList<QNetworkCookie> &list)
+// {
+//     stream << JAR_VERSION;
+//     stream << quint32(list.size());
+//     for (int i = 0; i < list.size(); ++i)
+//         stream << list.at(i).toRawForm();
+//     return stream;
+// }
+// 
+// 
+// QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list)
+// {
+//     list.clear();
+// 
+//     quint32 version;
+//     stream >> version;
+// 
+//     if (version != JAR_VERSION)
+//         return stream;
+// 
+//     quint32 count;
+//     stream >> count;
+//     for (quint32 i = 0; i < count; ++i)
+//     {
+//         QByteArray value;
+//         stream >> value;
+//         QList<QNetworkCookie> newCookies = QNetworkCookie::parseCookies(value);
+//         if (newCookies.count() == 0 && value.length() != 0)
+//         {
+//             kDebug() << "CookieJar: Unable to parse saved cookie:" << value;
+//         }
+//         for (int j = 0; j < newCookies.count(); ++j)
+//             list.append(newCookies.at(j));
+//         if (stream.atEnd())
+//             break;
+//     }
+//     return stream;
+// }
 
 
 CookieJar::CookieJar(QObject *parent)
@@ -122,17 +122,30 @@ void CookieJar::load()
         return;
 
     // load cookies and exceptions
-    QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini");
-    qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
-    QSettings cookieSettings(filepath, QSettings::IniFormat);
-    setAllCookies(qvariant_cast<QList<QNetworkCookie> >(cookieSettings.value(QLatin1String("cookies"))));
-    cookieSettings.beginGroup(QLatin1String("Exceptions"));
-    m_exceptions_block = cookieSettings.value(QLatin1String("block")).toStringList();
-    m_exceptions_allow = cookieSettings.value(QLatin1String("allow")).toStringList();
-    m_exceptions_allowForSession = cookieSettings.value(QLatin1String("allowForSession")).toStringList();
-    qSort(m_exceptions_block.begin(), m_exceptions_block.end());
-    qSort(m_exceptions_allow.begin(), m_exceptions_allow.end());
-    qSort(m_exceptions_allowForSession.begin(), m_exceptions_allowForSession.end());
+    QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini.NEW");
+    KConfig iniconfig(filepath);
+
+// commented out to try managing cookies my way..
+//     qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
+
+    KConfigGroup inigroup1 = iniconfig.group("general");
+
+    QStringList cookieStringList = inigroup1.readEntry( QString("cookies"), QStringList() );
+    QList<QNetworkCookie> cookieNetworkList;
+    foreach( QString str, cookieStringList )
+    {
+        cookieNetworkList << QNetworkCookie( str.toLocal8Bit() );
+    }
+    setAllCookies( cookieNetworkList );
+
+    KConfigGroup inigroup2 = iniconfig.group("exceptions");
+    m_exceptions_block = inigroup2.readEntry( QString("block") , QStringList() );
+    m_exceptions_allow = inigroup2.readEntry( QString("allow"), QStringList() );
+    m_exceptions_allowForSession = inigroup2.readEntry( QString("allowForSession"), QStringList() );
+
+    qSort( m_exceptions_block.begin(), m_exceptions_block.end() );
+    qSort( m_exceptions_allow.begin(), m_exceptions_allow.end() );
+    qSort( m_exceptions_allowForSession.begin(), m_exceptions_allowForSession.end() );
 
     loadSettings();
 
@@ -186,8 +199,10 @@ void CookieJar::save()
         return;
     purgeOldCookies();
 
-    QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini");
-    QSettings cookieSettings(filepath, QSettings::IniFormat);
+    QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini.NEW");
+    KConfig iniconfig( filepath );
+
+    KConfigGroup inigroup1 = iniconfig.group("general");
     QList<QNetworkCookie> cookies = allCookies();
     for (int i = cookies.count() - 1; i >= 0; --i)
     {
@@ -195,11 +210,17 @@ void CookieJar::save()
             cookies.removeAt(i);
     }
 
-    cookieSettings.setValue(QLatin1String("cookies"), qVariantFromValue<QList<QNetworkCookie> >(cookies));
-    cookieSettings.beginGroup(QLatin1String("Exceptions"));
-    cookieSettings.setValue(QLatin1String("block"), m_exceptions_block);
-    cookieSettings.setValue(QLatin1String("allow"), m_exceptions_allow);
-    cookieSettings.setValue(QLatin1String("allowForSession"), m_exceptions_allowForSession);
+    QStringList cookieStringList;
+    foreach( QNetworkCookie cook, cookies )
+    {
+        cookieStringList << QString( cook.toRawForm() );
+    }
+    inigroup1.writeEntry( QString("cookies"), cookieStringList );
+
+    KConfigGroup inigroup2 = iniconfig.group("exceptions");
+    inigroup2.writeEntry( QString("block"), m_exceptions_block );
+    inigroup2.writeEntry( QString("allow"), m_exceptions_allow );
+    inigroup2.writeEntry( QString("allowForSession"), m_exceptions_allowForSession );
 
     // save cookie settings
     int n;
