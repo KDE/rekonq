@@ -49,6 +49,7 @@
 
 static const unsigned int JAR_VERSION = 23;
 
+static const char cookieFileName[] = "cookies.ini.NEW";
 
 // QDataStream &operator<<(QDataStream &stream, const QList<QNetworkCookie> &list)
 // {
@@ -122,7 +123,7 @@ void CookieJar::load()
         return;
 
     // load cookies and exceptions
-    QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini.NEW");
+    QString filepath = KStandardDirs::locateLocal("appdata", cookieFileName);
     KConfig iniconfig(filepath);
 
 // commented out to try managing cookies my way..
@@ -199,7 +200,7 @@ void CookieJar::save()
         return;
     purgeOldCookies();
 
-    QString filepath = KStandardDirs::locateLocal("appdata", "cookies.ini.NEW");
+    QString filepath = KStandardDirs::locateLocal("appdata", cookieFileName);
     KConfig iniconfig( filepath );
 
     KConfigGroup inigroup1 = iniconfig.group("general");
