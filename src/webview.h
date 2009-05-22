@@ -64,6 +64,9 @@ public:
     QString lastStatusBarText() const { return m_statusBarText; }
     int progress() const { return m_progress; }
 
+public Q_SLOTS:
+    void load(const KUrl &url);
+
 signals:
     // switching tabs
     void ctrlTabPressed();

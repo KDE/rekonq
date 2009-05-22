@@ -147,7 +147,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     {
         webView = Application::instance()->newWebView();
         webView->setFocus();
-//         webView->load(request); FIXME NOW!!
+        webView->load(request.url());
         m_keyboardModifiers = Qt::NoModifier;
         m_pressedButtons = Qt::NoButton;
         return false;
@@ -165,7 +165,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         {
             webView = Application::instance()->newWebView();
             webView->setFocus();
-//             webView->load(request); FIXME NOW!!
+            webView->load(request.url());
             return false;
         }
     }

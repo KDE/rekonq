@@ -80,6 +80,12 @@ WebView::WebView(QWidget* parent)
 }
 
 
+void WebView::load(const KUrl &url)
+{
+    QWebView::load(url);
+}
+
+
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
