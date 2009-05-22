@@ -572,7 +572,7 @@ void MainWindow::printRequested(QWebFrame *frame)
     QPrinter printer;
 
     QPointer<QPrintDialog> dialog = KdePrint::createPrintDialog(&printer, this);
-    if (dialog->exec() == QDialog::Accepted)
+    if (dialog->exec() == KDialog::Ok)
     {
         frame->print(&printer);
     }

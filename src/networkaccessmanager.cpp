@@ -41,7 +41,6 @@
 // Qt Includes
 #include <QtCore/QPointer>
 
-#include <QtGui/QDialog>
 #include <QtGui/QStyle>
 #include <QtGui/QTextDocument>
 
@@ -118,7 +117,7 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
     passwordWidget.introLabel->setText(introMessage);
     passwordWidget.introLabel->setWordWrap(true);
 
-    if (dialog->exec() == QDialog::Accepted)
+    if (dialog->exec() == KDialog::Ok)
     {
         auth->setUser(passwordWidget.userNameLineEdit->text());
         auth->setPassword(passwordWidget.passwordLineEdit->text());
@@ -147,7 +146,7 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
     proxyWdg.introLabel->setText(introMessage);
     proxyWdg.introLabel->setWordWrap(true);
 
-    if (dialog->exec() == QDialog::Accepted)
+    if (dialog->exec() == KDialog::Ok)
     {
         auth->setUser(proxyWdg.userNameLineEdit->text());
         auth->setPassword(proxyWdg.passwordLineEdit->text());
