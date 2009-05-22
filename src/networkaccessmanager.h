@@ -22,19 +22,27 @@
 #ifndef NETWORKACCESSMANAGER_H
 #define NETWORKACCESSMANAGER_H
 
-// Qt Includes
-#include <QtNetwork/QNetworkAccessManager>
+// KDE Includes
+#include <KIO/AccessManager>
 
+class QNetworkRequest;
+class QIODevice;
 
-class NetworkAccessManager : public QNetworkAccessManager
+using namespace KIO;
+
+class NetworkAccessManager : public AccessManager
 {
     Q_OBJECT
 
 public:
     NetworkAccessManager(QObject *parent = 0);
+    ~NetworkAccessManager();
 
 public slots:
     void loadSettings();
+
+protected:
+    QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
 
 private slots:
     void authenticationRequired(QNetworkReply *reply, QAuthenticator *auth);

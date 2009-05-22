@@ -40,6 +40,7 @@
 
 // Qt Includes
 #include <QtCore/QPointer>
+#include <QtCore/QIODevice>
 
 #include <QtGui/QDialog>
 #include <QtGui/QStyle>
@@ -48,11 +49,12 @@
 #include <QtNetwork/QAuthenticator>
 #include <QtNetwork/QNetworkProxy>
 #include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QSslError>
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
-        : QNetworkAccessManager(parent)
+        : AccessManager(parent)
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
@@ -70,6 +72,19 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
     QString location = KStandardDirs::locateLocal("cache", "", true);
     diskCache->setCacheDirectory(location);
     setCache(diskCache);
+}
+
+
+NetworkAccessManager::~NetworkAccessManager()
+{
+// FIXME: implement me!!
+}
+
+
+QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
+{
+// FIXME: implement me!!
+    return put(req,outgoingData);
 }
 
 
