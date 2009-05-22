@@ -21,8 +21,8 @@
 * ============================================================ */
 
 
-#ifndef WEBVIEW_H
-#define WEBVIEW_H
+#ifndef WEBPAGE_H
+#define WEBPAGE_H
 
 // KDE Includes
 #include <KUrl>
@@ -45,54 +45,36 @@ class QMouseEvent;
 class QNetworkProxy;
 class QNetworkReply;
 class QSslError;
-class WebPage;
-
-// Qt Includes
-#include <QWebView>
 
 
-class WebView : public KWebView
+class WebPage : public KWebPage
 {
     Q_OBJECT
 
-public:
-    WebView(QWidget *parent = 0);
-
-    // inline
-    WebPage *webPage() const { return m_page; }
-    KUrl url() const { return KUrl(QWebView::url()); }
-    QString lastStatusBarText() const { return m_statusBarText; }
-    int progress() const { return m_progress; }
-
 signals:
-    // switching tabs
-    void ctrlTabPressed();
-    void shiftCtrlTabPressed();
+    void loadingUrl(const QUrl &url);   // WARNING has to be QUrl!!
+
+public:
+    WebPage(QObject *parent = 0);
+
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void contextMenuEvent(QContextMenuEvent *event);
-    void wheelEvent(QWheelEvent *event);
+    bool acceptNavigationRequest(QWebFrame *frame,
+                                 const QNetworkRequest &request,
+                                 NavigationType type);
 
-    /**
-    * Filters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
-    * to make switch tab
-    */
-    void keyPressEvent(QKeyEvent *event);
+    KWebPage *createWindow(QWebPage::WebWindowType type);
 
 private slots:
-    void setProgress(int progress) { m_progress = progress; }
-    void loadFinished();
-    void setStatusBarText(const QString &string) { m_statusBarText = string; }
-    void downloadRequested(const QNetworkRequest &request);
-    void openLinkInNewTab();
+    void handleUnsupportedContent(QNetworkReply *reply);
 
 private:
-    WebPage *m_page;
+    friend class WebView;
 
-    int m_progress;
-    QString m_statusBarText;
+    // set the webview mousepressedevent
+    Qt::KeyboardModifiers m_keyboardModifiers;
+    Qt::MouseButtons m_pressedButtons;
+    KUrl m_loadingUrl;
 };
 
 #endif

@@ -26,6 +26,7 @@
 
 // Local Includes
 #include "webview.h"
+#include "webpage.h"
 #include "application.h"
 
 // KDE Includes

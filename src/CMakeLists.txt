@@ -22,6 +22,7 @@ SET( rekonq_SRCS
     panelhistory.cpp
     lineedit.cpp
     stackedurlbar.cpp
+    webpage.cpp
 )
 
 KDE4_ADD_UI_FILES( rekonq_SRCS
