@@ -27,6 +27,9 @@
 // KDE Includes
 #include <KUrl>
 
+#include <kdewebkit/kwebpage.h>
+#include <kdewebkit/kwebview.h>
+
 // Qt Includes
 #include <QWebPage>
 
@@ -44,7 +47,7 @@ class QNetworkReply;
 class QSslError;
 
 
-class WebPage : public QWebPage
+class WebPage : public KWebPage
 {
     Q_OBJECT
 
@@ -60,7 +63,7 @@ protected:
                                  const QNetworkRequest &request,
                                  NavigationType type);
 
-    QWebPage *createWindow(QWebPage::WebWindowType type);
+    KWebPage *createWindow(QWebPage::WebWindowType type);
     QObject *createPlugin(const QString &classId,
                           const QUrl &url,
                           const QStringList &paramNames,
@@ -85,7 +88,7 @@ private:
 #include <QWebView>
 
 
-class WebView : public QWebView
+class WebView : public KWebView
 {
     Q_OBJECT
 
@@ -130,4 +133,3 @@ private:
 };
 
 #endif
-

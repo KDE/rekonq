@@ -44,6 +44,9 @@
 #include <KDebug>
 #include <KToolInvocation>
 
+#include <kdewebkit/kwebpage.h>
+#include <kdewebkit/kwebview.h>
+
 // Qt Includes
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QWheelEvent>
@@ -64,7 +67,7 @@
 
 
 WebPage::WebPage(QObject *parent)
-        : QWebPage(parent)
+        : KWebPage(parent)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
 {
@@ -151,7 +154,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     {
         webView = Application::instance()->newWebView();
         webView->setFocus();
-        webView->load(request);
+//         webView->load(request); FIXME NOW!!
         m_keyboardModifiers = Qt::NoModifier;
         m_pressedButtons = Qt::NoButton;
         return false;
@@ -169,7 +172,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         {
             webView = Application::instance()->newWebView();
             webView->setFocus();
-            webView->load(request);
+//             webView->load(request); FIXME NOW!!
             return false;
         }
     }
@@ -178,7 +181,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 }
 
 
-QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
+KWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
     kDebug() << "creating window as new tab.. ";
 
@@ -291,7 +294,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
 
 WebView::WebView(QWidget* parent)
-        : QWebView(parent)
+        : KWebView(parent)
         , m_page(new WebPage(this))
         , m_progress(0)
 {

@@ -658,7 +658,7 @@ void MainView::loadUrl(const KUrl &url)
 
     if (webView)
     {
-        webView->load(loadingUrl);
+//         webView->load(loadingUrl,0L,0L); FIXME NOW!!
         webView->setFocus();
     }
 }

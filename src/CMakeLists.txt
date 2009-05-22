@@ -41,6 +41,11 @@ KDE4_ADD_KCFG_FILES( rekonq_SRCS rekonq.kcfgc )
 
 ### ------------------------------------------
 
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${KDEWEBKIT_INCLUDE_DIR}
+    )
+
 ADD_DEFINITIONS( ${KDE4_DEFINITIONS} ${KDEWEBKIT_DEFINITIONS} )
 
 KDE4_ADD_EXECUTABLE( rekonq ${rekonq_SRCS} )
