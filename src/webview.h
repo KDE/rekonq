@@ -56,7 +56,7 @@ signals:
 
 public:
     WebPage(QObject *parent = 0);
-    ~WebPage();
+
 
 protected:
     bool acceptNavigationRequest(QWebFrame *frame,
@@ -64,10 +64,6 @@ protected:
                                  NavigationType type);
 
     KWebPage *createWindow(QWebPage::WebWindowType type);
-    QObject *createPlugin(const QString &classId,
-                          const QUrl &url,
-                          const QStringList &paramNames,
-                          const QStringList &paramValues);
 
 private slots:
     void handleUnsupportedContent(QNetworkReply *reply);

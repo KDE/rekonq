@@ -63,7 +63,7 @@
 #include <QtWebKit/QWebSettings>
 #include <QtWebKit/QWebView>
 
-#include <QtUiTools/QUiLoader>
+// #include <QtUiTools/QUiLoader>
 
 
 WebPage::WebPage(QObject *parent)
@@ -75,11 +75,6 @@ WebPage::WebPage(QObject *parent)
 
     setForwardUnsupportedContent(true);
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
-}
-
-
-WebPage::~WebPage()
-{
 }
 
 
@@ -194,19 +189,6 @@ KWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 
     WebView *w = Application::instance()->newWebView();
     return w->page();
-}
-
-
-QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
-{
-    kDebug() << "creating PLUGIN for rekonq ";
-    kDebug() << "classId = " << classId;
-    kDebug() << "url = " << url;
-    kDebug() << "Param Names = " << paramNames;
-    kDebug() << "Param Values = " << paramValues;
-
-    QUiLoader loader;
-    return loader.createWidget(classId, view());
 }
 
 

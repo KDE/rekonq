@@ -75,19 +75,6 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 }
 
 
-NetworkAccessManager::~NetworkAccessManager()
-{
-// FIXME: implement me!!
-}
-
-
-QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
-{
-// FIXME: implement me!!
-    return put(req,outgoingData);
-}
-
-
 void NetworkAccessManager::loadSettings()
 {
     QNetworkProxy proxy;
