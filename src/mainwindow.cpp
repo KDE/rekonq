@@ -153,7 +153,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
-    // FIXME: these slots will be commented out until rekonq will have just ONE mainwindow
+    // WARNING: these slots will be commented out until rekonq will have just ONE mainwindow
 //     connect(m_view, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));
 //     connect(m_view, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
 //     connect(m_view, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
@@ -227,7 +227,7 @@ void MainWindow::setupActions()
 
     // we all like "short" shortcuts.. ;)
     a = KStandardAction::fullScreen(this, SLOT(slotViewFullScreen(bool)), this, actionCollection());
-    a->setShortcut(KShortcut(Qt::Key_F11));
+    a->setShortcut(KShortcut(Qt::Key_F11, Qt::CTRL + Qt::SHIFT + Qt::Key_F));
 
     KStandardAction::home(this, SLOT(slotHome()), actionCollection());
     KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
@@ -884,7 +884,7 @@ void MainWindow::slotOpenNext()
 }
 
 
-// FIXME: this change will be there until rekonq'll have ONE mainwindow
+// WARNING: this change will be there until rekonq'll have ONE mainwindow
 // (probably forever..)
 void MainWindow::geometryChangeRequested(const QRect &geometry)
 {
