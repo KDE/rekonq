@@ -20,7 +20,7 @@
       <item row="0" column="0">
        <widget class="QCheckBox" name="kcfg_autoLoadImages">
         <property name="text">
-         <string>Autoload Images</string>
+         <string>Autoload images</string>
         </property>
        </widget>
       </item>
@@ -41,14 +41,14 @@
       <item row="1" column="0">
        <widget class="QCheckBox" name="kcfg_javascriptEnabled">
         <property name="text">
-         <string>Javascript support</string>
+         <string>JavaScript support</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2">
        <widget class="QCheckBox" name="kcfg_zoomTextOnly">
         <property name="text">
-         <string>Zoom Text Only</string>
+         <string>Zoom text only</string>
         </property>
        </widget>
       </item>
@@ -62,7 +62,7 @@
       <item row="2" column="2">
        <widget class="QCheckBox" name="kcfg_printElementBackgrounds">
         <property name="text">
-         <string>Print element Backgrounds</string>
+         <string>Print element backgrounds</string>
         </property>
        </widget>
       </item>
@@ -76,28 +76,28 @@
       <item row="3" column="2">
        <widget class="QCheckBox" name="kcfg_offlineStorageDatabaseEnabled">
         <property name="text">
-         <string>Offline storage Database</string>
+         <string>Offline storage database</string>
         </property>
        </widget>
       </item>
       <item row="4" column="0">
        <widget class="QCheckBox" name="kcfg_javascriptCanOpenWindows">
         <property name="text">
-         <string>Javascript can open windows</string>
+         <string>JavaScript can open windows</string>
         </property>
        </widget>
       </item>
       <item row="4" column="2">
        <widget class="QCheckBox" name="kcfg_offlineWebApplicationCacheEnabled">
         <property name="text">
-         <string>Offline Web Application Cache </string>
+         <string>Offline web application cache</string>
         </property>
        </widget>
       </item>
       <item row="5" column="0">
        <widget class="QCheckBox" name="kcfg_javascriptCanAccessClipboard">
         <property name="text">
-         <string>Javascript can access clipboard</string>
+         <string>JavaScript can access clipboard</string>
         </property>
        </widget>
       </item>
