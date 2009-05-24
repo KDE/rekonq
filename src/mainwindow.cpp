@@ -143,6 +143,12 @@ MainWindow::~MainWindow()
 }
 
 
+SidePanel *MainWindow::sidePanel()
+{
+    return m_sidePanel;
+}
+
+
 void MainWindow::postLaunch()
 {
     // setup history menu: this has to be done AFTER setupGUI!!

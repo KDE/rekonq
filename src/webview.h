@@ -58,11 +58,10 @@ class WebView : public KWebView
 public:
     WebView(QWidget *parent = 0);
 
-    // inline
-    WebPage *webPage() const { return m_page; }
-    KUrl url() const { return KUrl(QWebView::url()); }
-    QString lastStatusBarText() const { return m_statusBarText; }
-    int progress() const { return m_progress; }
+    WebPage *webPage() const;
+    KUrl url() const;
+    QString lastStatusBarText() const;
+    int progress() const;
 
 public Q_SLOTS:
     void load(const KUrl &url);
@@ -85,9 +84,9 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
-    void setProgress(int progress) { m_progress = progress; }
+    void setProgress(int progress);
     void loadFinished();
-    void setStatusBarText(const QString &string) { m_statusBarText = string; }
+    void setStatusBarText(const QString &string);
     void downloadRequested(const QNetworkRequest &request);
     void openLinkInNewTab();
 

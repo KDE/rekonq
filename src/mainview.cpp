@@ -108,6 +108,49 @@ void MainView::postLaunch()
     m_recentlyClosedTabsAction->setEnabled(false);
 }
 
+
+UrlBar *MainView::currentUrlBar() const 
+{ 
+    return urlBar(-1); 
+}
+
+
+TabBar *MainView::tabBar() const 
+{ 
+    return m_tabBar; 
+}
+
+
+StackedUrlBar *MainView::urlBarStack() const 
+{ 
+    return m_urlBars; 
+}
+
+
+WebView *MainView::currentWebView() const 
+{ 
+    return webView(currentIndex()); 
+}
+
+
+int MainView::webViewIndex(WebView *webView) const 
+{ 
+    return indexOf(webView); 
+}
+
+
+KAction *MainView::recentlyClosedTabsAction() const 
+{ 
+    return m_recentlyClosedTabsAction; 
+}
+
+
+void MainView::setMakeBackTab(bool b) 
+{ 
+    m_makeBackTab = b; 
+}
+
+
 void MainView::showTabBar()
 {
     if (ReKonfig::alwaysShowTabBar())

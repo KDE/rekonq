@@ -80,9 +80,45 @@ WebView::WebView(QWidget* parent)
 }
 
 
+WebPage *WebView::webPage() const
+{
+    return m_page; 
+}
+
+
+KUrl WebView::url() const 
+{ 
+    return KUrl(QWebView::url()); 
+}
+
+
+QString WebView::lastStatusBarText() const
+{ 
+    return m_statusBarText; 
+}
+
+
+int WebView::progress() const
+{ 
+    return m_progress; 
+}
+
+
 void WebView::load(const KUrl &url)
 {
     QWebView::load(url);
+}
+
+
+void WebView::setProgress(int progress) 
+{ 
+    m_progress = progress; 
+}
+
+
+void WebView::setStatusBarText(const QString &string) 
+{ 
+    m_statusBarText = string; 
 }
 
 
