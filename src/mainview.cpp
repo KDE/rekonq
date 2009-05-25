@@ -58,9 +58,6 @@
 #include <QtGui/QWidget>
 #include <QtGui/QMouseEvent>
 
-#include <QtWebKit/QWebPage>
-    
-
 
 MainView::MainView(QWidget *parent)
         : KTabWidget(parent)
@@ -179,8 +176,7 @@ void MainView::showTabBar()
 void MainView::slotWebReload()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Reload);
+    QAction *action = webView->page()->action(QWebPage::Reload);
     action->trigger();
 }
 
@@ -188,8 +184,7 @@ void MainView::slotWebReload()
 void MainView::slotWebStop()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Stop);
+    QAction *action = webView->page()->action(QWebPage::Stop);
     action->trigger();
 }
 
@@ -197,8 +192,7 @@ void MainView::slotWebStop()
 void MainView::slotWebBack()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Back);
+    QAction *action = webView->page()->action(QWebPage::Back);
     action->trigger();
 }
 
@@ -206,8 +200,7 @@ void MainView::slotWebBack()
 void MainView::slotWebForward()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Forward);
+    QAction *action = webView->page()->action(QWebPage::Forward);
     action->trigger();
 }
 
@@ -215,8 +208,7 @@ void MainView::slotWebForward()
 void MainView::slotWebUndo()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Undo);
+    QAction *action = webView->page()->action(QWebPage::Undo);
     action->trigger();
 }
 
@@ -224,8 +216,7 @@ void MainView::slotWebUndo()
 void MainView::slotWebRedo()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Redo);
+    QAction *action = webView->page()->action(QWebPage::Redo);
     action->trigger();
 }
 
@@ -233,8 +224,7 @@ void MainView::slotWebRedo()
 void MainView::slotWebCut()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Cut);
+    QAction *action = webView->page()->action(QWebPage::Cut);
     action->trigger();
 }
 
@@ -242,8 +232,7 @@ void MainView::slotWebCut()
 void MainView::slotWebCopy()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Copy);
+    QAction *action = webView->page()->action(QWebPage::Copy);
     action->trigger();
 }
 
@@ -251,8 +240,7 @@ void MainView::slotWebCopy()
 void MainView::slotWebPaste()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Paste);
+    QAction *action = webView->page()->action(QWebPage::Paste);
     action->trigger();
 }
 
@@ -575,7 +563,7 @@ void MainView::webViewLoadProgress(int progress)
         return;
     }
 
-    double totalBytes = static_cast<double>(webView->webPage()->totalBytes() / 1024);
+    double totalBytes = static_cast<double>(webView->page()->totalBytes() / 1024);
 
     QString message = i18n("Loading %1% (%2 %3)...", progress, totalBytes, QLatin1String("kB"));
     emit showStatusBarMessage(message);

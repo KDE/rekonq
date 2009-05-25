@@ -58,7 +58,6 @@ class WebView : public KWebView
 public:
     WebView(QWidget *parent = 0);
 
-    WebPage *webPage() const;
     KUrl url() const;
     QString lastStatusBarText() const;
     int progress() const;
@@ -82,6 +81,9 @@ protected:
     * to make switch tab
     */
     void keyPressEvent(QKeyEvent *event);
+
+    // to reimplement from KWebView
+    virtual void setNewPage();
 
 private slots:
     void setProgress(int progress);

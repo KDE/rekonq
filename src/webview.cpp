@@ -80,9 +80,9 @@ WebView::WebView(QWidget* parent)
 }
 
 
-WebPage *WebView::webPage() const
+void WebView::setNewPage()
 {
-    return m_page; 
+    setPage(new WebPage(this));
 }
 
 
