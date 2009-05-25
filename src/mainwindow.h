@@ -129,9 +129,9 @@ private slots:
 
 private:
     MainView *m_view;
-    FindBar *m_findBar;
     SearchBar *m_searchBar;
     SidePanel *m_sidePanel;
+    QWidget *m_prova;
 
     KMenu *m_historyBackMenu;
     KMenu *m_windowMenu;

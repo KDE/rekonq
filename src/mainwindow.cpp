@@ -89,9 +89,9 @@
 MainWindow::MainWindow()
         : KXmlGuiWindow()
         , m_view(new MainView(this))
-        , m_findBar(new FindBar(this))
         , m_searchBar(new SearchBar(this))
         , m_sidePanel(0)
+        , m_prova(0)
 {
     // updating rekonq configuration
     slotUpdateConfiguration();
@@ -104,7 +104,6 @@ MainWindow::MainWindow()
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_view);
-    layout->addWidget(m_findBar);
     centralWidget->setLayout(layout);
 
     // central widget
@@ -173,7 +172,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
 
     // Find Bar signal
-    connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
+//     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
 
     // bookmarks loading
     connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
@@ -631,51 +630,68 @@ void MainWindow::slotFind(const QString & search)
 
 void MainWindow::slotViewFindBar()
 {
-    m_findBar->showFindBar();
+//     // creating a centralWidget containing panel, m_view and the hidden findbar
+//     QWidget *centralWidget = new QWidget;
+//     centralWidget->setContentsMargins(0, 0, 0, 0);
+// 
+//     // setting layout
+//     QVBoxLayout *layout = new QVBoxLayout;
+//     layout->setContentsMargins(0, 0, 0, 0);
+//     layout->addWidget(m_view);
+//     centralWidget->setLayout(layout);
+// 
+// //     m_findBar->showFindBar();
+// //     m_findBar->show();
+    QWidget *w = centralWidget();
+    QLayout *l = w->layout();
+    QWidget *searchBarWidget = currentTab()->searchBar();
+    searchBarWidget->show();
+    l->addWidget(searchBarWidget);
+    w->setLayout(l);
 }
 
 
 void MainWindow::slotFindNext()
 {
-    if (!currentTab() && m_lastSearch.isEmpty())
-        return;
-
-    QWebPage::FindFlags options;
-    if (m_findBar->matchCase())
-    {
-        options = QWebPage::FindCaseSensitively | QWebPage::FindWrapsAroundDocument;
-    }
-    else
-    {
-        options = QWebPage::FindWrapsAroundDocument;
-    }
-
-    if (!currentTab()->findText(m_lastSearch, options))
-    {
-        slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
-    }
+//     if (!currentTab() && m_lastSearch.isEmpty())
+//         return;
+// 
+//     QWebPage::FindFlags options;
+//     if (m_findBar->matchCase())
+//     {
+//         options = QWebPage::FindCaseSensitively | QWebPage::FindWrapsAroundDocument;
+//     }
+//     else
+//     {
+//         options = QWebPage::FindWrapsAroundDocument;
+//     }
+// 
+//     if (!currentTab()->findText(m_lastSearch, options))
+//     {
+//         slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
+//     }
 }
 
 
 void MainWindow::slotFindPrevious()
 {
-    if (!currentTab() && m_lastSearch.isEmpty())
-        return;
-
-    QWebPage::FindFlags options;
-    if (m_findBar->matchCase())
-    {
-        options = QWebPage::FindCaseSensitively | QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
-    }
-    else
-    {
-        options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
-    }
-
-    if (!currentTab()->findText(m_lastSearch, options))
-    {
-        slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
-    }
+//     if (!currentTab() && m_lastSearch.isEmpty())
+//         return;
+// 
+//     QWebPage::FindFlags options;
+//     if (m_findBar->matchCase())
+//     {
+//         options = QWebPage::FindCaseSensitively | QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
+//     }
+//     else
+//     {
+//         options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
+//     }
+// 
+//     if (!currentTab()->findText(m_lastSearch, options))
+//     {
+//         slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
+//     }
 }
 
 
