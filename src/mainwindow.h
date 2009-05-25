@@ -43,7 +43,6 @@ class KActionMenu;
 class KIcon;
 class KMenu;
 
-class FindBar;
 class HistoryMenu;
 class SidePanel;
 class WebView;
@@ -131,7 +130,6 @@ private:
     MainView *m_view;
     SearchBar *m_searchBar;
     SidePanel *m_sidePanel;
-    QWidget *m_prova;
 
     KMenu *m_historyBackMenu;
     KMenu *m_windowMenu;

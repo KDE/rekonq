@@ -91,7 +91,6 @@ MainWindow::MainWindow()
         , m_view(new MainView(this))
         , m_searchBar(new SearchBar(this))
         , m_sidePanel(0)
-        , m_prova(0)
 {
     // updating rekonq configuration
     slotUpdateConfiguration();
