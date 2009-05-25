@@ -51,11 +51,8 @@ class WebPage : public KWebPage
 {
     Q_OBJECT
 
-signals:
-    void loadingUrl(const QUrl &url);   // WARNING has to be QUrl!!
-
 public:
-    WebPage(QObject *parent = 0);
+    explicit WebPage(QObject *parent = 0);
 
 
 protected:
@@ -65,15 +62,15 @@ protected:
 
     KWebPage *createWindow(QWebPage::WebWindowType type);
 
-private slots:
-    void handleUnsupportedContent(QNetworkReply *reply);
+protected Q_SLOTS:
+    virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
 
 private:
     friend class WebView;
 
     // set the webview mousepressedevent
-    Qt::KeyboardModifiers m_keyboardModifiers;
-    Qt::MouseButtons m_pressedButtons;
+//     Qt::KeyboardModifiers m_keyboardModifiers;
+//     Qt::MouseButtons m_pressedButtons;
     KUrl m_loadingUrl;
 };
 

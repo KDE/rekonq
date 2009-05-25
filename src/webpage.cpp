@@ -66,18 +66,16 @@
 
 WebPage::WebPage(QObject *parent)
         : KWebPage(parent)
-        , m_keyboardModifiers(Qt::NoModifier)
-        , m_pressedButtons(Qt::NoButton)
 {
-    setNetworkAccessManager(Application::networkAccessManager());
-
     setForwardUnsupportedContent(true);
-    connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
+    setNetworkAccessManager(Application::networkAccessManager());
 }
 
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
+
+    // TODO: implement ioslaves protocols
     QString scheme = request.url().scheme();
     if (scheme == QLatin1String("mailto"))
     {
@@ -85,7 +83,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         return false;
     }
 
-    WebView *webView;
 
     switch (type)
     {
@@ -118,56 +115,12 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         // user activated the reload action.
     case QWebPage::NavigationTypeReload:
         kDebug() << "NavigationTypeReload";
-
-#if QT_VERSION <= 040500
-        // HACK Ported from Arora
-        // A short term hack until QtWebKit can get a reload without cache QAction
-        // *FYI* currently type is never NavigationTypeReload
-        // See: https://bugs.webkit.org/show_bug.cgi?id=24283
-        if (qApp->keyboardModifiers() & Qt::ShiftModifier)
-        {
-            kDebug() << "Arora hack";
-            QNetworkRequest newRequest(request);
-            newRequest.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
-                                    QNetworkRequest::AlwaysNetwork);
-            mainFrame()->load(request);
-            return false;
-        }
-#endif
-
         break;
 
         // should be nothing..
     default:
         kDebug() << "Default NON extant case..";
         break;
-    }
-
-    if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
-    {
-        webView = Application::instance()->newWebView();
-        webView->setFocus();
-        webView->load(request.url());
-        m_keyboardModifiers = Qt::NoModifier;
-        m_pressedButtons = Qt::NoButton;
-        return false;
-    }
-
-    if (frame == mainFrame())
-    {
-        m_loadingUrl = request.url();
-        emit loadingUrl(m_loadingUrl);
-    }
-    else
-    {
-        // if frame doesn't exists (perhaps) we are pointing to a blank target..
-        if (!frame)
-        {
-            webView = Application::instance()->newWebView();
-            webView->setFocus();
-            webView->load(request.url());
-            return false;
-        }
     }
 
     return QWebPage::acceptNavigationRequest(frame, request, type);
@@ -190,7 +143,7 @@ KWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 }
 
 
-void WebPage::handleUnsupportedContent(QNetworkReply *reply)
+void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
 {
     // create convenience fake api:// protocol for KDE apidox search and Qt docs
     if (reply->url().scheme() == "api")
@@ -213,17 +166,18 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     if (reply->error() == QNetworkReply::NoError)
     {
-        // st iframe unwanted download fix
-        if (reply->header(QNetworkRequest::ContentTypeHeader).isValid())
-        {
-            KUrl srcUrl = reply->url();
-            Application::downloadManager()->newDownload(srcUrl);
-        }
-        else
-        {
-             kDebug() << "invalid content type header";
-        }
-        return;
+        return slotDownloadRequested(reply->request(), reply);
+//         // st iframe unwanted download fix
+//         if (reply->header(QNetworkRequest::ContentTypeHeader).isValid())
+//         {
+//             KUrl srcUrl = reply->url();
+//             Application::downloadManager()->newDownload(srcUrl);
+//         }
+//         else
+//         {
+//              kDebug() << "invalid content type header";
+//         }
+//         return;
     }
 
     // display "not found" page

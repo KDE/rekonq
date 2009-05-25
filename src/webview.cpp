@@ -74,9 +74,8 @@ WebView::WebView(QWidget* parent)
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(setProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
-    connect(page(), SIGNAL(loadingUrl(const QUrl&)),  this, SIGNAL(urlChanged(const QUrl &)));
-    connect(page(), SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequested(const QNetworkRequest &)));
-    page()->setForwardUnsupportedContent(true);
+
+    connect(this, SIGNAL(openUrlInNewTab(const KUrl &)), this, SLOT(load(const KUrl &)));
 }
 
 
@@ -132,14 +131,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     addBookmarkAction->setData(QVariant());
 
     KMenu menu(this);
-    QAction *a;
 
     // link actions
     bool linkIsEmpty = result.linkUrl().isEmpty();
     if (!linkIsEmpty)
     {
-        a = new KAction(KIcon("tab-new"), i18n("Open Link in New &Tab"), this);
-        connect(a, SIGNAL(triggered()), this, SLOT(openLinkInNewTab()));
+        QAction *a = pageAction(QWebPage::OpenLinkInNewWindow);
+        a->setText(i18n("Open Link in New &Tab"));
         menu.addAction(a);
     }
     else
@@ -152,10 +150,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // Developer Extras actions
     if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
     {
-        a = pageAction(QWebPage::InspectElement);
-        a->setIcon(KIcon("tools-report-bug"));
-        a->setText(i18n("&Inspect Element"));
-        menu.addAction(a);
+        menu.addAction(pageAction(QWebPage::InspectElement));
         menu.addSeparator();
     }
 
@@ -164,28 +159,19 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     if (result.isContentSelected() && result.isContentEditable())
     {
-        a = pageAction(QWebPage::Cut);
-        a->setIcon(KIcon("edit-cut"));
-        a->setText(i18n("Cu&t"));
-        menu.addAction(a);
+        menu.addAction(pageAction(QWebPage::Cut));
         b = true;
     }
 
     if (result.isContentSelected())
     {
-        a = pageAction(QWebPage::Copy);
-        a->setIcon(KIcon("edit-copy"));
-        a->setText(i18n("&Copy"));
-        menu.addAction(a);
+        menu.addAction(pageAction(QWebPage::Copy));
         b = true;
     }
 
     if (result.isContentEditable())
     {
-        a = pageAction(QWebPage::Paste);
-        a->setIcon(KIcon("edit-paste"));
-        a->setText(i18n("&Paste"));
-        menu.addAction(a);
+        menu.addAction(pageAction(QWebPage::Paste));
         b = true;
     }
 
@@ -197,31 +183,15 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // save/copy link actions
     if (!linkIsEmpty)
     {
-        a = pageAction(QWebPage::DownloadLinkToDisk);
-        a->setIcon(KIcon("folder-downloads"));
-        a->setText(i18n("&Save Link As..."));
-        menu.addAction(a);
-
-        a = pageAction(QWebPage::CopyLinkToClipboard);
-        a->setIcon(KIcon("insert-link"));
-        a->setText(i18n("&Copy Link Location"));
-        menu.addAction(a);
-
+        menu.addAction(pageAction(QWebPage::DownloadLinkToDisk));
+        menu.addAction(pageAction(QWebPage::CopyLinkToClipboard));
         menu.addSeparator();
 
         if (!result.pixmap().isNull())
         {
             // TODO Add "View Image" && remove copy_this_image action
-            a = pageAction(QWebPage::DownloadImageToDisk);
-            a->setIcon(KIcon("folder-image"));
-            a->setText(i18n("&Save Image As..."));
-            menu.addAction(a);
-
-            a = pageAction(QWebPage::CopyImageToClipboard);
-            a->setIcon(KIcon("insert-image"));
-            a->setText(i18n("&Copy This Image"));
-            menu.addAction(a);
-
+            menu.addAction(pageAction(QWebPage::DownloadImageToDisk));
+            menu.addAction(pageAction(QWebPage::CopyImageToClipboard));
             menu.addSeparator();
         }
     }
@@ -248,24 +218,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 }
 
 
-void WebView::wheelEvent(QWheelEvent *event)
-{
-    if (QApplication::keyboardModifiers() & Qt::ControlModifier)
-    {
-        int numDegrees = event->delta() / 8;
-        int numSteps = numDegrees / 15;
-        setTextSizeMultiplier(textSizeMultiplier() + numSteps * 0.1);
-        event->accept();
-        return;
-    }
-    QWebView::wheelEvent(event);
-}
-
-
-void WebView::openLinkInNewTab()
-{
-    pageAction(QWebPage::OpenLinkInNewWindow)->trigger();
-}
+// void WebView::openLinkInNewTab()
+// {
+//     pageAction(QWebPage::OpenLinkInNewWindow)->trigger();
+// }
 
 
 void WebView::loadFinished()
@@ -279,35 +235,35 @@ void WebView::loadFinished()
 }
 
 
-void WebView::mousePressEvent(QMouseEvent *event)
-{
-    m_page->m_pressedButtons = event->buttons();
-    m_page->m_keyboardModifiers = event->modifiers();
-    QWebView::mousePressEvent(event);
-}
+// void WebView::mousePressEvent(QMouseEvent *event)
+// {
+//     m_page->m_pressedButtons = event->buttons();
+//     m_page->m_keyboardModifiers = event->modifiers();
+//     QWebView::mousePressEvent(event);
+// }
+// 
+// 
+// void WebView::mouseReleaseEvent(QMouseEvent *event)
+// {
+//     QWebView::mouseReleaseEvent(event);
+//     if (!event->isAccepted() && (m_page->m_pressedButtons & Qt::MidButton))
+//     {
+//         KUrl url(QApplication::clipboard()->text(QClipboard::Selection));
+//         if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty())
+//         {
+//             setUrl(url);
+//         }
+//     }
+// }
 
 
-void WebView::mouseReleaseEvent(QMouseEvent *event)
-{
-    QWebView::mouseReleaseEvent(event);
-    if (!event->isAccepted() && (m_page->m_pressedButtons & Qt::MidButton))
-    {
-        KUrl url(QApplication::clipboard()->text(QClipboard::Selection));
-        if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty())
-        {
-            setUrl(url);
-        }
-    }
-}
-
-
-void WebView::downloadRequested(const QNetworkRequest &request)
-{
-    KUrl srcUrl = request.url();
-    QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
-    KUrl destUrl = KUrl(path);
-    Application::downloadManager()->newDownload(srcUrl);
-}
+// void WebView::downloadRequested(const QNetworkRequest &request)
+// {
+//     KUrl srcUrl = request.url();
+//     QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
+//     KUrl destUrl = KUrl(path);
+//     Application::downloadManager()->newDownload(srcUrl);
+// }
 
 
 void WebView::keyPressEvent(QKeyEvent *event)

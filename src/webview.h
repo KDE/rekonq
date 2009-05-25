@@ -32,6 +32,7 @@
 
 // Qt Includes
 #include <QWebPage>
+#include <QWebView>
 
 // Forward Declarations
 class MainWindow;
@@ -45,10 +46,6 @@ class QMouseEvent;
 class QNetworkProxy;
 class QNetworkReply;
 class QSslError;
-class WebPage;
-
-// Qt Includes
-#include <QWebView>
 
 
 class WebView : public KWebView
@@ -56,7 +53,7 @@ class WebView : public KWebView
     Q_OBJECT
 
 public:
-    WebView(QWidget *parent = 0);
+    explicit WebView(QWidget *parent = 0);
 
     KUrl url() const;
     QString lastStatusBarText() const;
@@ -71,10 +68,9 @@ signals:
     void shiftCtrlTabPressed();
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
+//     void mousePressEvent(QMouseEvent *event);
+//     void mouseReleaseEvent(QMouseEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
-    void wheelEvent(QWheelEvent *event);
 
     /**
     * Filters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
@@ -89,8 +85,9 @@ private slots:
     void setProgress(int progress);
     void loadFinished();
     void setStatusBarText(const QString &string);
-    void downloadRequested(const QNetworkRequest &request);
-    void openLinkInNewTab();
+
+//     void downloadRequested(const QNetworkRequest &request);
+//     void open   LinkInNewTab();
 
 private:
     WebPage *m_page;
