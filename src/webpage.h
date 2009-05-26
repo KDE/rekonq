@@ -55,6 +55,8 @@ class WebPage : public KWebPage
 public:
     explicit WebPage(QObject *parent = 0);
 
+public slots:
+    void manageNetworkErrors(QNetworkReply* reply);
 
 protected:
     bool acceptNavigationRequest(QWebFrame *frame,

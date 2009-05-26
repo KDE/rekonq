@@ -69,7 +69,107 @@ WebPage::WebPage(QObject *parent)
         : KWebPage(parent)
 {
     setForwardUnsupportedContent(true);
+
     setNetworkAccessManager(Application::networkAccessManager());
+    connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
+}
+
+
+void WebPage::manageNetworkErrors(QNetworkReply* reply)
+{
+    switch(reply->error())
+    {
+
+    case QNetworkReply::NoError:
+        kDebug() << "NoError";
+        return;
+    break;
+
+    case QNetworkReply::ConnectionRefusedError:
+        kDebug() << "ConnectionRefusedError";
+    break;
+
+    case QNetworkReply::RemoteHostClosedError:
+        kDebug() << "RemoteHostClosedError";
+    break;
+
+    case QNetworkReply::HostNotFoundError:
+        kDebug() << "HostNotFoundError";
+    break;
+
+    case QNetworkReply::TimeoutError:
+        kDebug() << "TimeoutError";
+    break;
+
+    case QNetworkReply::OperationCanceledError:
+        kDebug() << "OperationCanceledError";
+    break;
+
+    case QNetworkReply::SslHandshakeFailedError:
+        kDebug() << "SslHandshakeFailedError";
+    break;
+
+    case QNetworkReply::ProxyConnectionRefusedError:
+        kDebug() << "ProxyConnectionRefusedError";
+    break;
+
+    case QNetworkReply::ProxyConnectionClosedError:
+        kDebug() << "ProxyConnectionClosedError";
+    break;
+
+    case QNetworkReply::ProxyNotFoundError:
+        kDebug() << "ProxyNotFoundError";
+    break;
+
+    case QNetworkReply::ProxyTimeoutError:
+        kDebug() << "ProxyTimeoutError";
+    break;
+
+    case QNetworkReply::ProxyAuthenticationRequiredError:
+        kDebug() << "ProxyAuthenticationRequiredError";
+    break;
+
+    case QNetworkReply::ContentAccessDenied:
+        kDebug() << "ContentAccessDenied";
+    break;
+
+    case QNetworkReply::ContentOperationNotPermittedError:
+        kDebug() << "ContentOperationNotPermittedError";
+    break;
+
+    case QNetworkReply::ContentNotFoundError:
+        kDebug() << "ContentNotFoundError";
+    break;
+
+    case QNetworkReply::AuthenticationRequiredError:
+        kDebug() << "AuthenticationRequiredError";
+    break;
+
+    case QNetworkReply::ProtocolUnknownError:
+        kDebug() << "ProtocolUnknownError";
+    break;
+
+    case QNetworkReply::ProtocolInvalidOperationError:
+        kDebug() << "ProtocolInvalidOperationError";
+    break;
+
+    case QNetworkReply::UnknownNetworkError:
+        kDebug() << "UnknownNetworkError";
+    break;
+
+    case QNetworkReply::UnknownProxyError:
+        kDebug() << "UnknownProxyError";
+    break;
+
+    case QNetworkReply::UnknownContentError:
+        kDebug() << "UnknownContentError";
+    break;
+
+    case QNetworkReply::ProtocolFailure:
+        kDebug() << "ProtocolFailure";
+    break;
+
+    };
 }
 
 
