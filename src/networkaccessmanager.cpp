@@ -77,9 +77,9 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
 void NetworkAccessManager::loadSettings()
 {
-    QNetworkProxy proxy;
     if (ReKonfig::isProxyEnabled())
     {
+        QNetworkProxy proxy;
         if (ReKonfig::proxyType() == 0)
         {
             proxy.setType(QNetworkProxy::Socks5Proxy);
@@ -92,8 +92,9 @@ void NetworkAccessManager::loadSettings()
         proxy.setPort(ReKonfig::proxyPort());
         proxy.setUser(ReKonfig::proxyUserName());
         proxy.setPassword(ReKonfig::proxyPassword());
+ 
+       setProxy(proxy);
     }
-    setProxy(proxy);
 }
 
 
