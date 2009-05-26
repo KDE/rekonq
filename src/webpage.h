@@ -44,7 +44,8 @@ class QAuthenticator;
 class QMouseEvent;
 class QNetworkProxy;
 class QNetworkReply;
-class QSslError;
+
+class WebView;
 
 
 class WebPage : public KWebPage

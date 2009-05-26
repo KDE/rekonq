@@ -63,7 +63,7 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
 #ifndef QT_NO_OPENSSL
     connect(this, SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError>&)),
-            SLOT(sslErrors(QNetworkReply*, const QList<QSslError>&)));
+            SLOT(slotSSLErrors(QNetworkReply*, const QList<QSslError>&)));
 #endif
 
     loadSettings();
@@ -159,7 +159,7 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
 
 
 #ifndef QT_NO_OPENSSL
-void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError> &error)
+void NetworkAccessManager::slotSSLErrors(QNetworkReply *reply, const QList<QSslError> &error)
 {
     MainWindow *mainWindow = Application::instance()->mainWindow();
 

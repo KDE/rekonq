@@ -45,7 +45,7 @@ private slots:
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth);
 
 #ifndef QT_NO_OPENSSL
-    void sslErrors(QNetworkReply *reply, const QList<QSslError> &error);
+    void slotSSLErrors(QNetworkReply *reply, const QList<QSslError> &error);
 #endif
 
 };

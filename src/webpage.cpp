@@ -34,6 +34,7 @@
 #include "networkaccessmanager.h"
 #include "download.h"
 #include "history.h"
+#include "webview.h"
 
 // KDE Includes
 #include <KStandardDirs>
