@@ -3,6 +3,7 @@ Name=rekonq
 Name[sv]=Rekonq
 Name[tr]=Rekonq
 GenericName=Webkit KDE Browser
+GenericName[de]=Webkit-Browser für KDE
 GenericName[et]=KDE Webkiti veebibrauser
 GenericName[pt]=Navegador Web com WebKit
 GenericName[pt_BR]=Navegador Webkit do KDE
