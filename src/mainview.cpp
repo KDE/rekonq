@@ -364,16 +364,8 @@ WebView *MainView::newWebView(Rekonq::OpenType type)
     // connecting webPage signals with mainview
     connect(webView->page(), SIGNAL(windowCloseRequested()),
             this, SLOT(windowCloseRequested()));
-    connect(webView->page(), SIGNAL(geometryChangeRequested(const QRect &)),
-            this, SIGNAL(geometryChangeRequested(const QRect &)));
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)),
             this, SIGNAL(printRequested(QWebFrame *)));
-    connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)),
-            this, SIGNAL(menuBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)),
-            this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)),
-            this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
 
     addTab(webView, i18n("(Untitled)"));
 
@@ -491,10 +483,10 @@ void MainView::slotCloseTab(int index)
         if (tab->isModified())
         {
             int risp = KMessageBox::questionYesNo(this ,
-                                                  i18n("You have modified this page and when closing it you would lose the modification.\n"
-                                                       "Do you really want to close this page?\n"),
-                                                  i18n("Do you really want to close this page?")
-                                                 );
+                        i18n("You have modified this page and when closing it you would lose the modification.\n"
+                        "Do you really want to close this page?\n"),
+                        i18n("Do you really want to close this page?")
+                       );
             if (risp == KMessageBox::No)
                 return;
         }

@@ -19,8 +19,6 @@
 * ============================================================ */
 
 
-
-
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
@@ -68,7 +66,6 @@ public:
     UrlBar *urlBar(int index) const;
     UrlBar *currentUrlBar() const;
     WebView *webView(int index) const;
-    QList<WebView *> tabs();    // ?
 
     // inlines
     TabBar *tabBar() const;
@@ -98,10 +95,6 @@ signals:
     void linkHovered(const QString &link);
     void loadProgress(int progress);
 
-    void geometryChangeRequested(const QRect &geometry);
-    void menuBarVisibilityChangeRequested(bool visible);
-    void statusBarVisibilityChangeRequested(bool visible);
-    void toolBarVisibilityChangeRequested(bool visible);
     void printRequested(QWebFrame *frame);
 
 public slots:
