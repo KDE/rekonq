@@ -43,6 +43,7 @@ INCLUDE(MacroLibrary)
 MESSAGE(STATUS "")
 MESSAGE(STATUS "----------------------------------------------------------------------------------")
 MESSAGE(STATUS " rekonq ${REKONQ_VERSION_STR} dependencies results  <${REKONQ_SITE}>")
+MESSAGE(STATUS "")
 
 # Require shared libraries results.
 
@@ -52,23 +53,21 @@ SET(QT_VERS_STR
    )
 
 IF(QT_FOUND)
-    MESSAGE(STATUS " Qt library found............... YES")
+    MESSAGE(STATUS " Qt library found...................... YES")
     MESSAGE(STATUS " Qt version ${QT_VERS_STR} found! ")
 ELSE(QT_FOUND)
-    MESSAGE(STATUS " Qt library found............... NO")
+    MESSAGE(STATUS " Qt library found...................... NO")
     MESSAGE(STATUS "")
     MESSAGE(SEND_ERROR " rekonq needs at least Qt ${QT_MIN_VERSION}. Please install it and try compiling again.")
     MESSAGE(STATUS " Qt website is at http://www.qtsoftware.com")
     MESSAGE(STATUS "")
 ENDIF(QT_FOUND)
 
-MESSAGE(STATUS "----------------------------------------------------------------------------------")
-MESSAGE(STATUS "")
-
+MESSAGE(STATUS "") # -----------------------------------------------------------
 
 # -------------- KDE
 SET(KDE_VERS_STR
-    "${KDE_VERSION_MAJOR}.${KDE_VERSION_MINOR}.${KDE_VERSION_PATCH}"
+    "${KDE_VERSION_MAJOR}.${KDE_VERSION_MINOR}.${KDE_VERSION_RELEASE}"
    )
 
 IF(KDE4_FOUND)
@@ -82,21 +81,20 @@ ELSE(KDE4_FOUND)
     MESSAGE(STATUS "")
 ENDIF(KDE4_FOUND)
 
-MESSAGE(STATUS "----------------------------------------------------------------------------------")
-MESSAGE(STATUS "")
-
+MESSAGE(STATUS "") # ----------------------------------------------------------
 
 # ---------------- KdeWebkit
 IF(KDEWEBKIT_FOUND)
-    MESSAGE(STATUS " KDE Webkit library found............... YES")
+    MESSAGE(STATUS " KDE Webkit library found.............. YES")
 ELSE(KDEWEBKIT_FOUND)
-    MESSAGE(STATUS " KDE Webkit library found............... NO")
+    MESSAGE(STATUS " KDE Webkit library found.............. NO")
     MESSAGE(STATUS "")
     MESSAGE(SEND_ERROR " rekonq needs, from version 0.2, KDEWEBKIT to be compiled. Please install it and try compiling again.")
     MESSAGE(STATUS " You can actually retrieve it from playground/libs/webkitkde KDE svn")
     MESSAGE(STATUS "")
 ENDIF(KDEWEBKIT_FOUND)
 
+MESSAGE(STATUS "")
 MESSAGE(STATUS "----------------------------------------------------------------------------------")
 MESSAGE(STATUS "")
 
@@ -104,13 +102,14 @@ MESSAGE(STATUS "")
 ##### FINAL RESULTS #####
 
 IF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
-    MESSAGE(STATUS " rekonq will be compiled....... YES")
+    MESSAGE(STATUS " rekonq will be compiled............... YES")
     SET(REKONQ_CAN_BE_COMPILED true)
 ELSE(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
     MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
     SET(REKONQ_CAN_BE_COMPILED false)
 ENDIF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
 
+MESSAGE(STATUS "")
 MESSAGE(STATUS "----------------------------------------------------------------------------------")
 MESSAGE(STATUS "")
 
