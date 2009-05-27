@@ -62,8 +62,6 @@
 #include <QtWebKit/QWebSettings>
 #include <QtWebKit/QWebView>
 
-// #include <QtUiTools/QUiLoader>
-
 
 WebPage::WebPage(QObject *parent)
         : KWebPage(parent)
@@ -72,105 +70,6 @@ WebPage::WebPage(QObject *parent)
 
     setNetworkAccessManager(Application::networkAccessManager());
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
-}
-
-
-void WebPage::manageNetworkErrors(QNetworkReply* reply)
-{
-    switch(reply->error())
-    {
-
-    case QNetworkReply::NoError:
-        kDebug() << "NoError";
-        return;
-    break;
-
-    case QNetworkReply::ConnectionRefusedError:
-        kDebug() << "ConnectionRefusedError";
-    break;
-
-    case QNetworkReply::RemoteHostClosedError:
-        kDebug() << "RemoteHostClosedError";
-    break;
-
-    case QNetworkReply::HostNotFoundError:
-        kDebug() << "HostNotFoundError";
-    break;
-
-    case QNetworkReply::TimeoutError:
-        kDebug() << "TimeoutError";
-    break;
-
-    case QNetworkReply::OperationCanceledError:
-        kDebug() << "OperationCanceledError";
-    break;
-
-    case QNetworkReply::SslHandshakeFailedError:
-        kDebug() << "SslHandshakeFailedError";
-    break;
-
-    case QNetworkReply::ProxyConnectionRefusedError:
-        kDebug() << "ProxyConnectionRefusedError";
-    break;
-
-    case QNetworkReply::ProxyConnectionClosedError:
-        kDebug() << "ProxyConnectionClosedError";
-    break;
-
-    case QNetworkReply::ProxyNotFoundError:
-        kDebug() << "ProxyNotFoundError";
-    break;
-
-    case QNetworkReply::ProxyTimeoutError:
-        kDebug() << "ProxyTimeoutError";
-    break;
-
-    case QNetworkReply::ProxyAuthenticationRequiredError:
-        kDebug() << "ProxyAuthenticationRequiredError";
-    break;
-
-    case QNetworkReply::ContentAccessDenied:
-        kDebug() << "ContentAccessDenied";
-    break;
-
-    case QNetworkReply::ContentOperationNotPermittedError:
-        kDebug() << "ContentOperationNotPermittedError";
-    break;
-
-    case QNetworkReply::ContentNotFoundError:
-        kDebug() << "ContentNotFoundError";
-    break;
-
-    case QNetworkReply::AuthenticationRequiredError:
-        kDebug() << "AuthenticationRequiredError";
-    break;
-
-    case QNetworkReply::ProtocolUnknownError:
-        kDebug() << "ProtocolUnknownError";
-    break;
-
-    case QNetworkReply::ProtocolInvalidOperationError:
-        kDebug() << "ProtocolInvalidOperationError";
-    break;
-
-    case QNetworkReply::UnknownNetworkError:
-        kDebug() << "UnknownNetworkError";
-    break;
-
-    case QNetworkReply::UnknownProxyError:
-        kDebug() << "UnknownProxyError";
-    break;
-
-    case QNetworkReply::UnknownContentError:
-        kDebug() << "UnknownContentError";
-    break;
-
-    case QNetworkReply::ProtocolFailure:
-        kDebug() << "ProtocolFailure";
-    break;
-
-    };
-    viewErrorPage(reply);
 }
 
 
@@ -185,44 +84,23 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         return false;
     }
 
-
-    switch (type)
+    // create convenience fake api:// protocol for KDE apidox search and Qt docs
+    if (scheme == QLatin1String("api"))
     {
-    // user activated a submit button for an HTML form.
-    case QWebPage::NavigationTypeFormSubmitted:
-        kDebug() << "NavigationTypeFormSubmitted";
-        kDebug() << request.url();
-        break;
+        QString path;
+        QString className = request.url().host().toLower();
+        if (className[0] == 'k')
+        {
+            path = QString("http://api.kde.org/new.classmapper.php?class=%1").arg(className);
+        }
+        else if (className[0] == 'q')
+        {
+            path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
+        }
+        KUrl url(path);
 
-    // An HTML form was submitted a second time.
-    case QWebPage::NavigationTypeFormResubmitted:
-        kDebug() << "NavigationTypeFormResubmitted";
-        break;
-
-    // A navigation to another document using a method not listed above.
-    case QWebPage::NavigationTypeOther:
-        kDebug() << "NavigationTypeOther";
-        break;
-
-    // user clicked on a link or pressed return on a focused link.
-    case QWebPage::NavigationTypeLinkClicked:
-        kDebug() << "NavigationTypeLinkClicked";
-        break;
-
-    // Navigation to a previously shown document in the back or forward history is requested.
-    case QWebPage::NavigationTypeBackOrForward:
-        kDebug() << "NavigationTypeBackOrForward";
-        break;
-
-        // user activated the reload action.
-    case QWebPage::NavigationTypeReload:
-        kDebug() << "NavigationTypeReload";
-        break;
-
-        // should be nothing..
-    default:
-        kDebug() << "Default NON extant case..";
-        break;
+        Application::instance()->mainWindow()->loadUrl(url);
+        return false;
     }
 
     return QWebPage::acceptNavigationRequest(frame, request, type);
@@ -245,42 +123,24 @@ KWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 }
 
 
-void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
+// FIXME: implement here (perhaps) mimetype discerning && file loading (KToolInvocation??)
+// void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
+// {
+// 
+//     if (reply->error() == QNetworkReply::NoError)
+//     {
+//         return slotDownloadRequested(reply->request(), reply);
+//     }
+// 
+//     viewErrorPage(reply);
+// }
+
+
+void WebPage::manageNetworkErrors(QNetworkReply* reply)
 {
-    // create convenience fake api:// protocol for KDE apidox search and Qt docs
-    if (reply->url().scheme() == "api")
-    {
-        QString path;
-        QString className = reply->url().host().toLower();
-        if (className[0] == 'k')
-        {
-            path = QString("http://api.kde.org/new.classmapper.php?class=%1").arg(className);
-        }
-        else if (className[0] == 'q')
-        {
-            path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
-        }
-        KUrl url(path);
-
-        Application::instance()->mainWindow()->loadUrl(url);
+    if(reply->error() == QNetworkReply::NoError)
         return;
-    }
 
-    if (reply->error() == QNetworkReply::NoError)
-    {
-        return slotDownloadRequested(reply->request(), reply);
-//         // st iframe unwanted download fix
-//         if (reply->header(QNetworkRequest::ContentTypeHeader).isValid())
-//         {
-//             KUrl srcUrl = reply->url();
-//             Application::downloadManager()->newDownload(srcUrl);
-//         }
-//         else
-//         {
-//              kDebug() << "invalid content type header";
-//         }
-//         return;
-    }
     viewErrorPage(reply);
 }
 
@@ -306,26 +166,27 @@ void WebPage::viewErrorPage(QNetworkReply *reply)
                    .arg(reply->errorString())
                    .arg(reply->url().toString());
 
-//     QList<QWebFrame*> frames;
-//     frames.append(mainFrame());
-//     while (!frames.isEmpty())
-//     {
-//         QWebFrame *firstFrame = frames.takeFirst();
-//         if (firstFrame->url() == reply->url())
-//         {
-//             firstFrame->setHtml(html, reply->url());
-//             return;
-//         }
-//         QList<QWebFrame *> children = firstFrame->childFrames();
-//         foreach(QWebFrame *frame, children)
-//         {
-//             frames.append(frame);
-//         }
-//     }
-//     if (m_loadingUrl == reply->url())
-//     {
+    // test
+    QList<QWebFrame*> frames;
+    frames.append(mainFrame());
+    while (!frames.isEmpty())
+    {
+        QWebFrame *firstFrame = frames.takeFirst();
+        if (firstFrame->url() == reply->url())
+        {
+            firstFrame->setHtml(html, reply->url());
+            return;
+        }
+        QList<QWebFrame *> children = firstFrame->childFrames();
+        foreach(QWebFrame *frame, children)
+        {
+            frames.append(frame);
+        }
+    }
+    if (m_loadingUrl == reply->url())
+    {
         mainFrame()->setHtml(html, reply->url());
         // Don't put error pages to the history.
         Application::historyManager()->removeHistoryEntry(reply->url(), mainFrame()->title());
-//     }
+    }
 }

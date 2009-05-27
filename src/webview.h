@@ -68,8 +68,6 @@ signals:
     void shiftCtrlTabPressed();
 
 protected:
-//     void mousePressEvent(QMouseEvent *event);
-//     void mouseReleaseEvent(QMouseEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
 
     /**
@@ -86,8 +84,7 @@ private slots:
     void loadFinished();
     void setStatusBarText(const QString &string);
 
-//     void downloadRequested(const QNetworkRequest &request);
-//     void open   LinkInNewTab();
+    void openLinkInNewTab(const KUrl &);
 
 private:
     WebPage *m_page;

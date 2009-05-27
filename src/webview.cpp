@@ -75,7 +75,7 @@ WebView::WebView(QWidget* parent)
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(setProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
 
-    connect(this, SIGNAL(openUrlInNewTab(const KUrl &)), this, SLOT(load(const KUrl &)));
+    connect(this, SIGNAL(openUrlInNewTab(const KUrl &)), this, SLOT(openLinkInNewTab(const KUrl &)));
 }
 
 
@@ -218,10 +218,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 }
 
 
-// void WebView::openLinkInNewTab()
-// {
-//     pageAction(QWebPage::OpenLinkInNewWindow)->trigger();
-// }
+void WebView::openLinkInNewTab(const KUrl &url)
+{
+    Application::instance()->newWebView();
+    load(url);
+}
 
 
 void WebView::loadFinished()
@@ -233,37 +234,6 @@ void WebView::loadFinished()
     }
     m_progress = 0;
 }
-
-
-// void WebView::mousePressEvent(QMouseEvent *event)
-// {
-//     m_page->m_pressedButtons = event->buttons();
-//     m_page->m_keyboardModifiers = event->modifiers();
-//     QWebView::mousePressEvent(event);
-// }
-// 
-// 
-// void WebView::mouseReleaseEvent(QMouseEvent *event)
-// {
-//     QWebView::mouseReleaseEvent(event);
-//     if (!event->isAccepted() && (m_page->m_pressedButtons & Qt::MidButton))
-//     {
-//         KUrl url(QApplication::clipboard()->text(QClipboard::Selection));
-//         if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty())
-//         {
-//             setUrl(url);
-//         }
-//     }
-// }
-
-
-// void WebView::downloadRequested(const QNetworkRequest &request)
-// {
-//     KUrl srcUrl = request.url();
-//     QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
-//     KUrl destUrl = KUrl(path);
-//     Application::downloadManager()->newDownload(srcUrl);
-// }
 
 
 void WebView::keyPressEvent(QKeyEvent *event)

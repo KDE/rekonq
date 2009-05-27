@@ -65,17 +65,12 @@ protected:
 
     KWebPage *createWindow(QWebPage::WebWindowType type);
 
-protected Q_SLOTS:
-    virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
+// protected Q_SLOTS:
+//     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
 
 private:
     void viewErrorPage(QNetworkReply *);
 
-    friend class WebView;
-
-    // set the webview mousepressedevent
-//     Qt::KeyboardModifiers m_keyboardModifiers;
-//     Qt::MouseButtons m_pressedButtons;
     KUrl m_loadingUrl;
 };
 
