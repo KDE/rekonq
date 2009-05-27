@@ -170,6 +170,7 @@ void WebPage::manageNetworkErrors(QNetworkReply* reply)
     break;
 
     };
+    viewErrorPage(reply);
 }
 
 
@@ -280,7 +281,12 @@ void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
 //         }
 //         return;
     }
+    viewErrorPage(reply);
+}
 
+
+void WebPage::viewErrorPage(QNetworkReply *reply)
+{
     // display "not found" page
     QString notfoundFilePath =  KStandardDirs::locate("data", "rekonq/htmls/notfound.html");
     QFile file(notfoundFilePath);
@@ -300,26 +306,26 @@ void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
                    .arg(reply->errorString())
                    .arg(reply->url().toString());
 
-    QList<QWebFrame*> frames;
-    frames.append(mainFrame());
-    while (!frames.isEmpty())
-    {
-        QWebFrame *firstFrame = frames.takeFirst();
-        if (firstFrame->url() == reply->url())
-        {
-            firstFrame->setHtml(html, reply->url());
-            return;
-        }
-        QList<QWebFrame *> children = firstFrame->childFrames();
-        foreach(QWebFrame *frame, children)
-        {
-            frames.append(frame);
-        }
-    }
-    if (m_loadingUrl == reply->url())
-    {
+//     QList<QWebFrame*> frames;
+//     frames.append(mainFrame());
+//     while (!frames.isEmpty())
+//     {
+//         QWebFrame *firstFrame = frames.takeFirst();
+//         if (firstFrame->url() == reply->url())
+//         {
+//             firstFrame->setHtml(html, reply->url());
+//             return;
+//         }
+//         QList<QWebFrame *> children = firstFrame->childFrames();
+//         foreach(QWebFrame *frame, children)
+//         {
+//             frames.append(frame);
+//         }
+//     }
+//     if (m_loadingUrl == reply->url())
+//     {
         mainFrame()->setHtml(html, reply->url());
         // Don't put error pages to the history.
         Application::historyManager()->removeHistoryEntry(reply->url(), mainFrame()->title());
-    }
+//     }
 }
