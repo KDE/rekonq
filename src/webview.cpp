@@ -220,8 +220,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
 void WebView::openLinkInNewTab(const KUrl &url)
 {
-    Application::instance()->newWebView();
-    load(url);
+    WebView *that = Application::instance()->newWebView();
+    that->load(url);
 }
 
 
