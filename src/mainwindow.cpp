@@ -90,6 +90,7 @@ MainWindow::MainWindow()
         : KXmlGuiWindow()
         , m_view(new MainView(this))
         , m_searchBar(new SearchBar(this))
+        , m_findBar(new FindBar(this))
         , m_sidePanel(0)
 {
     // updating rekonq configuration
@@ -103,6 +104,7 @@ MainWindow::MainWindow()
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_view);
+    layout->addWidget(m_findBar);
     centralWidget->setLayout(layout);
 
     // central widget
@@ -157,11 +159,6 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
-    // FIXME: these slots will be commented out until rekonq will have just ONE mainwindow
-//     connect(m_view, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));
-//     connect(m_view, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
-//     connect(m_view, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
-
     // status bar messages
     connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
     connect(m_view, SIGNAL(linkHovered(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
@@ -171,7 +168,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
 
     // Find Bar signal
-//     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
+    connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
 
     // bookmarks loading
     connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
@@ -225,7 +222,7 @@ void MainWindow::setupActions()
     KStandardAction::printPreview(this, SLOT(slotFilePrintPreview()), actionCollection());
     KStandardAction::print(this, SLOT(slotFilePrint()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
-    KStandardAction::find(this, SLOT(slotViewFindBar()) , actionCollection());
+    KStandardAction::find(m_findBar, SLOT(show()) , actionCollection());
     KStandardAction::findNext(this, SLOT(slotFindNext()) , actionCollection());
     KStandardAction::findPrev(this, SLOT(slotFindPrevious()) , actionCollection());
 
@@ -618,6 +615,7 @@ void MainWindow::slotPrivateBrowsing(bool enable)
     }
 }
 
+
 void MainWindow::slotFind(const QString & search)
 {
     if (!currentTab())
@@ -627,70 +625,47 @@ void MainWindow::slotFind(const QString & search)
 }
 
 
-void MainWindow::slotViewFindBar()
-{
-//     // creating a centralWidget containing panel, m_view and the hidden findbar
-//     QWidget *centralWidget = new QWidget;
-//     centralWidget->setContentsMargins(0, 0, 0, 0);
-// 
-//     // setting layout
-//     QVBoxLayout *layout = new QVBoxLayout;
-//     layout->setContentsMargins(0, 0, 0, 0);
-//     layout->addWidget(m_view);
-//     centralWidget->setLayout(layout);
-// 
-// //     m_findBar->showFindBar();
-// //     m_findBar->show();
-    QWidget *w = centralWidget();
-    QLayout *l = w->layout();
-    QWidget *searchBarWidget = currentTab()->searchBar();
-    searchBarWidget->show();
-    l->addWidget(searchBarWidget);
-    w->setLayout(l);
-}
-
-
 void MainWindow::slotFindNext()
 {
-//     if (!currentTab() && m_lastSearch.isEmpty())
-//         return;
-// 
-//     QWebPage::FindFlags options;
-//     if (m_findBar->matchCase())
-//     {
-//         options = QWebPage::FindCaseSensitively | QWebPage::FindWrapsAroundDocument;
-//     }
-//     else
-//     {
-//         options = QWebPage::FindWrapsAroundDocument;
-//     }
-// 
-//     if (!currentTab()->findText(m_lastSearch, options))
-//     {
-//         slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
-//     }
+    if (!currentTab() && m_lastSearch.isEmpty())
+        return;
+
+    QWebPage::FindFlags options;
+    if (m_findBar->matchCase())
+    {
+        options = QWebPage::FindCaseSensitively | QWebPage::FindWrapsAroundDocument;
+    }
+    else
+    {
+        options = QWebPage::FindWrapsAroundDocument;
+    }
+
+    if (!currentTab()->findText(m_lastSearch, options))
+    {
+        slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
+    }
 }
 
 
 void MainWindow::slotFindPrevious()
 {
-//     if (!currentTab() && m_lastSearch.isEmpty())
-//         return;
-// 
-//     QWebPage::FindFlags options;
-//     if (m_findBar->matchCase())
-//     {
-//         options = QWebPage::FindCaseSensitively | QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
-//     }
-//     else
-//     {
-//         options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
-//     }
-// 
-//     if (!currentTab()->findText(m_lastSearch, options))
-//     {
-//         slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
-//     }
+    if (!currentTab() && m_lastSearch.isEmpty())
+        return;
+
+    QWebPage::FindFlags options;
+    if (m_findBar->matchCase())
+    {
+        options = QWebPage::FindCaseSensitively | QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
+    }
+    else
+    {
+        options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
+    }
+
+    if (!currentTab()->findText(m_lastSearch, options))
+    {
+        slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
+    }
 }
 
 
@@ -801,10 +776,10 @@ void MainWindow::slotToggleInspector(bool enable)
     if (enable)
     {
         int result = KMessageBox::questionYesNo(this,
-                                                i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
-                                                     "Do you want to reload all pages?"),
-                                                i18n("Web Inspector")
-                                               );
+                        i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
+                        "Do you want to reload all pages?"),
+                        i18n("Web Inspector")
+                     );
 
         if (result == KMessageBox::Yes)
         {
@@ -931,12 +906,16 @@ bool MainWindow::queryClose()
 
         int answer = KMessageBox::questionYesNoCancel(
                          this,
-                         i18np("Are you sure you want to close the window?\n" "You have 1 tab open","Are you sure you want to close the window?\n" "You have %1 tabs open" , m_view->count()),
-                         i18n("Are you sure you want to close the window?"),
-                         KStandardGuiItem::quit(),
-                         KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
-                         KStandardGuiItem::cancel(),
-                         "confirmClosingMultipleTabs"
+                         i18np( "Are you sure you want to close the window?\n" 
+                                "You have 1 tab open",
+                                "Are you sure you want to close the window?\n" 
+                                "You have %1 tabs open", 
+                                m_view->count()),
+                                i18n("Are you sure you want to close the window?"),
+                                KStandardGuiItem::quit(),
+                                KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
+                                KStandardGuiItem::cancel(),
+                                "confirmClosingMultipleTabs"
                      );
 
         switch (answer)

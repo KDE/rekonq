@@ -44,6 +44,7 @@ class KIcon;
 class KMenu;
 
 class HistoryMenu;
+class FindBar;
 class SidePanel;
 class WebView;
 
@@ -117,7 +118,6 @@ private slots:
     void slotViewTextSmaller();
     void slotViewPageSource();
     void slotViewFullScreen(bool enable);
-    void slotViewFindBar();
 
     // Tools Menu slots
     void slotToggleInspector(bool enable);
@@ -129,6 +129,7 @@ private slots:
 private:
     MainView *m_view;
     SearchBar *m_searchBar;
+    FindBar *m_findBar;
     SidePanel *m_sidePanel;
 
     KMenu *m_historyBackMenu;
