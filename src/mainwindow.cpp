@@ -228,7 +228,7 @@ void MainWindow::setupActions()
 
     // we all like "short" shortcuts.. ;)
     a = KStandardAction::fullScreen(this, SLOT(slotViewFullScreen(bool)), this, actionCollection());
-    a->setShortcut(KShortcut(Qt::Key_F11));
+    a->setShortcut(KShortcut(Qt::Key_F11, Qt::CTRL + Qt::SHIFT + Qt::Key_F));
 
     KStandardAction::home(this, SLOT(slotHome()), actionCollection());
     KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
@@ -573,7 +573,7 @@ void MainWindow::printRequested(QWebFrame *frame)
     QPrinter printer;
 
     QPointer<QPrintDialog> dialog = KdePrint::createPrintDialog(&printer, this);
-    if (dialog->exec() == QDialog::Accepted)
+    if (dialog->exec() == KDialog::Ok)
     {
         frame->print(&printer);
     }
@@ -880,7 +880,7 @@ void MainWindow::slotOpenNext()
 }
 
 
-// FIXME: this change will be there until rekonq'll have ONE mainwindow
+// WARNING: this change will be there until rekonq'll have ONE mainwindow
 // (probably forever..)
 void MainWindow::geometryChangeRequested(const QRect &geometry)
 {
