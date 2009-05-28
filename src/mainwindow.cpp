@@ -89,8 +89,8 @@
 MainWindow::MainWindow()
         : KXmlGuiWindow()
         , m_view(new MainView(this))
-        , m_findBar(new FindBar(this))
         , m_searchBar(new SearchBar(this))
+        , m_findBar(new FindBar(this))
         , m_sidePanel(0)
 {
     // updating rekonq configuration
@@ -143,6 +143,12 @@ MainWindow::~MainWindow()
 }
 
 
+SidePanel *MainWindow::sidePanel()
+{
+    return m_sidePanel;
+}
+
+
 void MainWindow::postLaunch()
 {
     // setup history menu: this has to be done AFTER setupGUI!!
@@ -152,11 +158,6 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
-
-    // WARNING: these slots will be commented out until rekonq will have just ONE mainwindow
-//     connect(m_view, SIGNAL(geometryChangeRequested(const QRect &)), this, SLOT(geometryChangeRequested(const QRect &)));
-//     connect(m_view, SIGNAL(menuBarVisibilityChangeRequested(bool)), menuBar(), SLOT(setVisible(bool)));
-//     connect(m_view, SIGNAL(statusBarVisibilityChangeRequested(bool)), statusBar(), SLOT(setVisible(bool)));
 
     // status bar messages
     connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
@@ -221,7 +222,7 @@ void MainWindow::setupActions()
     KStandardAction::printPreview(this, SLOT(slotFilePrintPreview()), actionCollection());
     KStandardAction::print(this, SLOT(slotFilePrint()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
-    KStandardAction::find(this, SLOT(slotViewFindBar()) , actionCollection());
+    KStandardAction::find(m_findBar, SLOT(show()) , actionCollection());
     KStandardAction::findNext(this, SLOT(slotFindNext()) , actionCollection());
     KStandardAction::findPrev(this, SLOT(slotFindPrevious()) , actionCollection());
 
@@ -614,18 +615,13 @@ void MainWindow::slotPrivateBrowsing(bool enable)
     }
 }
 
+
 void MainWindow::slotFind(const QString & search)
 {
     if (!currentTab())
         return;
     m_lastSearch = search;
     slotFindNext();
-}
-
-
-void MainWindow::slotViewFindBar()
-{
-    m_findBar->showFindBar();
 }
 
 
@@ -780,10 +776,10 @@ void MainWindow::slotToggleInspector(bool enable)
     if (enable)
     {
         int result = KMessageBox::questionYesNo(this,
-                                                i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
-                                                     "Do you want to reload all pages?"),
-                                                i18n("Web Inspector")
-                                               );
+                        i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
+                        "Do you want to reload all pages?"),
+                        i18n("Web Inspector")
+                     );
 
         if (result == KMessageBox::Yes)
         {
@@ -910,12 +906,16 @@ bool MainWindow::queryClose()
 
         int answer = KMessageBox::questionYesNoCancel(
                          this,
-                         i18np("Are you sure you want to close the window?\n" "You have 1 tab open","Are you sure you want to close the window?\n" "You have %1 tabs open" , m_view->count()),
-                         i18n("Are you sure you want to close the window?"),
-                         KStandardGuiItem::quit(),
-                         KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
-                         KStandardGuiItem::cancel(),
-                         "confirmClosingMultipleTabs"
+                         i18np( "Are you sure you want to close the window?\n" 
+                                "You have 1 tab open",
+                                "Are you sure you want to close the window?\n" 
+                                "You have %1 tabs open", 
+                                m_view->count()),
+                                i18n("Are you sure you want to close the window?"),
+                                KStandardGuiItem::quit(),
+                                KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
+                                KStandardGuiItem::cancel(),
+                                "confirmClosingMultipleTabs"
                      );
 
         switch (answer)

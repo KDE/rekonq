@@ -81,6 +81,24 @@ UrlBar::~UrlBar()
 }
 
 
+void UrlBar::selectAll() const
+{
+    lineEdit()->selectAll();
+}
+
+
+KUrl UrlBar::url() const
+{
+    return m_currentUrl;
+}
+
+
+KLineEdit *UrlBar::lineEdit() const
+{
+    return m_lineEdit;
+}
+
+
 void UrlBar::setupLineEdit()
 {
     // Make m_lineEdit background transparent

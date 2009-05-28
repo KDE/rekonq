@@ -22,11 +22,15 @@
 #ifndef NETWORKACCESSMANAGER_H
 #define NETWORKACCESSMANAGER_H
 
-// Qt Includes
-#include <QtNetwork/QNetworkAccessManager>
+// KDE Includes
+#include <KIO/AccessManager>
 
+class QNetworkRequest;
+class QIODevice;
 
-class NetworkAccessManager : public QNetworkAccessManager
+using namespace KIO;
+
+class NetworkAccessManager : public AccessManager
 {
     Q_OBJECT
 
@@ -39,9 +43,11 @@ public slots:
 private slots:
     void authenticationRequired(QNetworkReply *reply, QAuthenticator *auth);
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth);
+
 #ifndef QT_NO_OPENSSL
-    void sslErrors(QNetworkReply *reply, const QList<QSslError> &error);
+    void slotSSLErrors(QNetworkReply *reply, const QList<QSslError> &error);
 #endif
+
 };
 
 #endif // NETWORKACCESSMANAGER_H

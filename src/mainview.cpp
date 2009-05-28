@@ -58,9 +58,6 @@
 #include <QtGui/QWidget>
 #include <QtGui/QMouseEvent>
 
-#include <QtWebKit/QWebPage>
-    
-
 
 MainView::MainView(QWidget *parent)
         : KTabWidget(parent)
@@ -108,6 +105,49 @@ void MainView::postLaunch()
     m_recentlyClosedTabsAction->setEnabled(false);
 }
 
+
+UrlBar *MainView::currentUrlBar() const 
+{ 
+    return urlBar(-1); 
+}
+
+
+TabBar *MainView::tabBar() const 
+{ 
+    return m_tabBar; 
+}
+
+
+StackedUrlBar *MainView::urlBarStack() const 
+{ 
+    return m_urlBars; 
+}
+
+
+WebView *MainView::currentWebView() const 
+{ 
+    return webView(currentIndex()); 
+}
+
+
+int MainView::webViewIndex(WebView *webView) const 
+{ 
+    return indexOf(webView); 
+}
+
+
+KAction *MainView::recentlyClosedTabsAction() const 
+{ 
+    return m_recentlyClosedTabsAction; 
+}
+
+
+void MainView::setMakeBackTab(bool b) 
+{ 
+    m_makeBackTab = b; 
+}
+
+
 void MainView::showTabBar()
 {
     if (ReKonfig::alwaysShowTabBar())
@@ -136,8 +176,7 @@ void MainView::showTabBar()
 void MainView::slotWebReload()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Reload);
+    QAction *action = webView->page()->action(QWebPage::Reload);
     action->trigger();
 }
 
@@ -145,8 +184,7 @@ void MainView::slotWebReload()
 void MainView::slotWebStop()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Stop);
+    QAction *action = webView->page()->action(QWebPage::Stop);
     action->trigger();
 }
 
@@ -154,8 +192,7 @@ void MainView::slotWebStop()
 void MainView::slotWebBack()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Back);
+    QAction *action = webView->page()->action(QWebPage::Back);
     action->trigger();
 }
 
@@ -163,8 +200,7 @@ void MainView::slotWebBack()
 void MainView::slotWebForward()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Forward);
+    QAction *action = webView->page()->action(QWebPage::Forward);
     action->trigger();
 }
 
@@ -172,8 +208,7 @@ void MainView::slotWebForward()
 void MainView::slotWebUndo()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Undo);
+    QAction *action = webView->page()->action(QWebPage::Undo);
     action->trigger();
 }
 
@@ -181,8 +216,7 @@ void MainView::slotWebUndo()
 void MainView::slotWebRedo()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Redo);
+    QAction *action = webView->page()->action(QWebPage::Redo);
     action->trigger();
 }
 
@@ -190,8 +224,7 @@ void MainView::slotWebRedo()
 void MainView::slotWebCut()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Cut);
+    QAction *action = webView->page()->action(QWebPage::Cut);
     action->trigger();
 }
 
@@ -199,8 +232,7 @@ void MainView::slotWebCut()
 void MainView::slotWebCopy()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Copy);
+    QAction *action = webView->page()->action(QWebPage::Copy);
     action->trigger();
 }
 
@@ -208,8 +240,7 @@ void MainView::slotWebCopy()
 void MainView::slotWebPaste()
 {
     WebView *webView = currentWebView();
-    QWebPage *currentParent = webView->webPage();
-    QAction *action = currentParent->action(QWebPage::Paste);
+    QAction *action = webView->page()->action(QWebPage::Paste);
     action->trigger();
 }
 
@@ -333,16 +364,8 @@ WebView *MainView::newWebView(Rekonq::OpenType type)
     // connecting webPage signals with mainview
     connect(webView->page(), SIGNAL(windowCloseRequested()),
             this, SLOT(windowCloseRequested()));
-    connect(webView->page(), SIGNAL(geometryChangeRequested(const QRect &)),
-            this, SIGNAL(geometryChangeRequested(const QRect &)));
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)),
             this, SIGNAL(printRequested(QWebFrame *)));
-    connect(webView->page(), SIGNAL(menuBarVisibilityChangeRequested(bool)),
-            this, SIGNAL(menuBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(statusBarVisibilityChangeRequested(bool)),
-            this, SIGNAL(statusBarVisibilityChangeRequested(bool)));
-    connect(webView->page(), SIGNAL(toolBarVisibilityChangeRequested(bool)),
-            this, SIGNAL(toolBarVisibilityChangeRequested(bool)));
 
     addTab(webView, i18n("(Untitled)"));
 
@@ -460,10 +483,10 @@ void MainView::slotCloseTab(int index)
         if (tab->isModified())
         {
             int risp = KMessageBox::questionYesNo(this ,
-                                                  i18n("You have modified this page and when closing it you would lose the modification.\n"
-                                                       "Do you really want to close this page?\n"),
-                                                  i18n("Do you really want to close this page?")
-                                                 );
+                        i18n("You have modified this page and when closing it you would lose the modification.\n"
+                        "Do you really want to close this page?\n"),
+                        i18n("Do you really want to close this page?")
+                       );
             if (risp == KMessageBox::No)
                 return;
         }
@@ -532,7 +555,7 @@ void MainView::webViewLoadProgress(int progress)
         return;
     }
 
-    double totalBytes = static_cast<double>(webView->webPage()->totalBytes() / 1024);
+    double totalBytes = static_cast<double>(webView->page()->totalBytes() / 1024);
 
     QString message = i18n("Loading %1% (%2 %3)...", progress, totalBytes, QLatin1String("kB"));
     emit showStatusBarMessage(message);

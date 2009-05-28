@@ -66,6 +66,12 @@ void BookmarkOwner::openBookmark(const KBookmark & bookmark,
 }
 
 
+bool BookmarkOwner::supportsTabs() const
+{
+    return true;
+}
+
+
 QString BookmarkOwner::currentUrl() const
 {
     return Application::instance()->mainWindow()->currentTab()->url().url();
