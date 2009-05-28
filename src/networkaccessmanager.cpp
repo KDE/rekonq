@@ -168,7 +168,9 @@ void NetworkAccessManager::slotSSLErrors(QNetworkReply *reply, const QList<QSslE
     for (int i = 0; i < error.count(); ++i)
         errorStrings += error.at(i).errorString();
     QString errors = errorStrings.join(QLatin1String("\n"));
-    int ret = KMessageBox::warningContinueCancel(mainWindow, i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n");
+    int ret = KMessageBox::warningContinueCancel(mainWindow, 
+                    i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n");
+
     if (ret == KMessageBox::Yes)
         reply->ignoreSslErrors();
 }
