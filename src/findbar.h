@@ -50,7 +50,7 @@ public:
 
 public slots:
     void clear();
-    void showFindBar();
+    void show();
 
 protected Q_SLOTS:
     void keyPressEvent(QKeyEvent* event);

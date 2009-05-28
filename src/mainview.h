@@ -19,13 +19,12 @@
 * ============================================================ */
 
 
-
-
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
 // Local Includes
 #include "webview.h"
+#include "webpage.h"
 #include "application.h"
 
 // KDE Includes
@@ -65,17 +64,16 @@ public:
 public:
 
     UrlBar *urlBar(int index) const;
-    UrlBar *currentUrlBar() const { return urlBar(-1); }
+    UrlBar *currentUrlBar() const;
     WebView *webView(int index) const;
-    QList<WebView *> tabs();    // ?
 
     // inlines
-    TabBar *tabBar() const { return m_tabBar; }
-    StackedUrlBar *urlBarStack() const { return m_urlBars; }
-    WebView *currentWebView() const { return webView(currentIndex()); }
-    int webViewIndex(WebView *webView) const { return indexOf(webView); }
-    KAction *recentlyClosedTabsAction() const { return m_recentlyClosedTabsAction; }
-    void setMakeBackTab(bool b) { m_makeBackTab = b; }
+    TabBar *tabBar() const;
+    StackedUrlBar *urlBarStack() const;
+    WebView *currentWebView() const;
+    int webViewIndex(WebView *webView) const;
+    KAction *recentlyClosedTabsAction() const;
+    void setMakeBackTab(bool b);
 
     /**
      * show and hide TabBar if user doesn't choose
@@ -97,10 +95,6 @@ signals:
     void linkHovered(const QString &link);
     void loadProgress(int progress);
 
-    void geometryChangeRequested(const QRect &geometry);
-    void menuBarVisibilityChangeRequested(bool visible);
-    void statusBarVisibilityChangeRequested(bool visible);
-    void toolBarVisibilityChangeRequested(bool visible);
     void printRequested(QWebFrame *frame);
 
 public slots:

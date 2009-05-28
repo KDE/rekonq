@@ -40,6 +40,7 @@
 
 // Qt Includes
 #include <QtCore/QPointer>
+#include <QtCore/QIODevice>
 
 #include <QtGui/QDialog>
 #include <QtGui/QStyle>
@@ -48,11 +49,12 @@
 #include <QtNetwork/QAuthenticator>
 #include <QtNetwork/QNetworkProxy>
 #include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QSslError>
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
-        : QNetworkAccessManager(parent)
+        : AccessManager(parent)
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
@@ -61,7 +63,7 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
 #ifndef QT_NO_OPENSSL
     connect(this, SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError>&)),
-            SLOT(sslErrors(QNetworkReply*, const QList<QSslError>&)));
+            SLOT(slotSSLErrors(QNetworkReply*, const QList<QSslError>&)));
 #endif
 
     loadSettings();
@@ -75,9 +77,9 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
 void NetworkAccessManager::loadSettings()
 {
-    QNetworkProxy proxy;
     if (ReKonfig::isProxyEnabled())
     {
+        QNetworkProxy proxy;
         if (ReKonfig::proxyType() == 0)
         {
             proxy.setType(QNetworkProxy::Socks5Proxy);
@@ -90,8 +92,9 @@ void NetworkAccessManager::loadSettings()
         proxy.setPort(ReKonfig::proxyPort());
         proxy.setUser(ReKonfig::proxyUserName());
         proxy.setPassword(ReKonfig::proxyPassword());
+ 
+       setProxy(proxy);
     }
-    setProxy(proxy);
 }
 
 
@@ -157,7 +160,7 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
 
 
 #ifndef QT_NO_OPENSSL
-void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError> &error)
+void NetworkAccessManager::slotSSLErrors(QNetworkReply *reply, const QList<QSslError> &error)
 {
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
@@ -165,7 +168,9 @@ void NetworkAccessManager::sslErrors(QNetworkReply *reply, const QList<QSslError
     for (int i = 0; i < error.count(); ++i)
         errorStrings += error.at(i).errorString();
     QString errors = errorStrings.join(QLatin1String("\n"));
-    int ret = KMessageBox::warningContinueCancel(mainWindow, i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n");
+    int ret = KMessageBox::warningContinueCancel(mainWindow, 
+                    i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n");
+
     if (ret == KMessageBox::Yes)
         reply->ignoreSslErrors();
 }

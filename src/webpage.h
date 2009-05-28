@@ -21,8 +21,8 @@
 * ============================================================ */
 
 
-#ifndef WEBVIEW_H
-#define WEBVIEW_H
+#ifndef WEBPAGE_H
+#define WEBPAGE_H
 
 // KDE Includes
 #include <KUrl>
@@ -32,7 +32,6 @@
 
 // Qt Includes
 #include <QWebPage>
-#include <QWebView>
 
 // Forward Declarations
 class MainWindow;
@@ -45,52 +44,34 @@ class QAuthenticator;
 class QMouseEvent;
 class QNetworkProxy;
 class QNetworkReply;
-class WebPage;
+
+class WebView;
 
 
-class WebView : public KWebView
+class WebPage : public KWebPage
 {
     Q_OBJECT
 
 public:
-    explicit WebView(QWidget *parent = 0);
+    explicit WebPage(QObject *parent = 0);
 
-    KUrl url() const;
-    QString lastStatusBarText() const;
-    int progress() const;
-
-public Q_SLOTS:
-    void load(const KUrl &url);
-
-signals:
-    // switching tabs
-    void ctrlTabPressed();
-    void shiftCtrlTabPressed();
+public slots:
+    void manageNetworkErrors(QNetworkReply* reply);
 
 protected:
-    void contextMenuEvent(QContextMenuEvent *event);
+    bool acceptNavigationRequest(QWebFrame *frame,
+                                 const QNetworkRequest &request,
+                                 NavigationType type);
 
-    /**
-    * Filters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
-    * to make switch tab
-    */
-    void keyPressEvent(QKeyEvent *event);
+    KWebPage *createWindow(QWebPage::WebWindowType type);
 
-    // to reimplement from KWebView
-    virtual void setNewPage();
-
-private slots:
-    void setProgress(int progress);
-    void loadFinished();
-    void setStatusBarText(const QString &string);
-
-    void openLinkInNewTab(const KUrl &);
+// protected Q_SLOTS:
+//     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
 
 private:
-    WebPage *m_page;
+    void viewErrorPage(QNetworkReply *);
 
-    int m_progress;
-    QString m_statusBarText;
+    KUrl m_loadingUrl;
 };
 
 #endif

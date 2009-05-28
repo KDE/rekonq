@@ -93,10 +93,7 @@ public:
     /**
     * This function returns whether the owner supports tabs.
     */
-    virtual bool supportsTabs() const
-    {
-        return true;
-    }
+    virtual bool supportsTabs() const;
 
     /**
     * Called if the user wants to open every bookmark in this folder in a new tab.

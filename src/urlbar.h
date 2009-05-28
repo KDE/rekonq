@@ -49,15 +49,8 @@ public:
     UrlBar(QWidget *parent = 0);
     ~UrlBar();
 
-    void selectAll() const
-    {
-        lineEdit()->selectAll();
-    }
-    KUrl url() const
-    {
-        return m_currentUrl;
-    }
-
+    void selectAll() const;
+    KUrl url() const;
     QSize sizeHint() const;
 
 signals:
@@ -80,10 +73,7 @@ protected:
 private:
     void setupLineEdit();
 
-    KLineEdit *lineEdit() const
-    {
-        return m_lineEdit;
-    }
+    KLineEdit *lineEdit() const;
 
     static QLinearGradient generateGradient(const QColor &color, int height);
 

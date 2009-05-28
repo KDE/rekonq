@@ -36,6 +36,7 @@
 #include "networkaccessmanager.h"
 #include "download.h"
 #include "history.h"
+#include "webpage.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -43,6 +44,9 @@
 #include <KActionCollection>
 #include <KDebug>
 #include <KToolInvocation>
+
+#include <kdewebkit/kwebpage.h>
+#include <kdewebkit/kwebview.h>
 
 // Qt Includes
 #include <QtGui/QContextMenuEvent>
@@ -60,238 +64,9 @@
 #include <QtWebKit/QWebSettings>
 #include <QtWebKit/QWebView>
 
-#include <QtUiTools/QUiLoader>
-
-
-WebPage::WebPage(QObject *parent)
-        : QWebPage(parent)
-        , m_keyboardModifiers(Qt::NoModifier)
-        , m_pressedButtons(Qt::NoButton)
-{
-    setNetworkAccessManager(Application::networkAccessManager());
-
-    setForwardUnsupportedContent(true);
-    connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
-}
-
-
-WebPage::~WebPage()
-{
-}
-
-
-bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
-{
-    QString scheme = request.url().scheme();
-    if (scheme == QLatin1String("mailto"))
-    {
-        KToolInvocation::invokeMailer(request.url());
-        return false;
-    }
-
-    WebView *webView;
-
-    switch (type)
-    {
-    // user activated a submit button for an HTML form.
-    case QWebPage::NavigationTypeFormSubmitted:
-        kDebug() << "NavigationTypeFormSubmitted";
-        kDebug() << request.url();
-        break;
-
-    // An HTML form was submitted a second time.
-    case QWebPage::NavigationTypeFormResubmitted:
-        kDebug() << "NavigationTypeFormResubmitted";
-        break;
-
-    // A navigation to another document using a method not listed above.
-    case QWebPage::NavigationTypeOther:
-        kDebug() << "NavigationTypeOther";
-        break;
-
-    // user clicked on a link or pressed return on a focused link.
-    case QWebPage::NavigationTypeLinkClicked:
-        kDebug() << "NavigationTypeLinkClicked";
-        break;
-
-    // Navigation to a previously shown document in the back or forward history is requested.
-    case QWebPage::NavigationTypeBackOrForward:
-        kDebug() << "NavigationTypeBackOrForward";
-        break;
-
-        // user activated the reload action.
-    case QWebPage::NavigationTypeReload:
-        kDebug() << "NavigationTypeReload";
-
-#if QT_VERSION <= 040500
-        // HACK Ported from Arora
-        // A short term hack until QtWebKit can get a reload without cache QAction
-        // *FYI* currently type is never NavigationTypeReload
-        // See: https://bugs.webkit.org/show_bug.cgi?id=24283
-        if (qApp->keyboardModifiers() & Qt::ShiftModifier)
-        {
-            kDebug() << "Arora hack";
-            QNetworkRequest newRequest(request);
-            newRequest.setAttribute(QNetworkRequest::CacheLoadControlAttribute,
-                                    QNetworkRequest::AlwaysNetwork);
-            mainFrame()->load(request);
-            return false;
-        }
-#endif
-
-        break;
-
-        // should be nothing..
-    default:
-        kDebug() << "Default NON extant case..";
-        break;
-    }
-
-    if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
-    {
-        webView = Application::instance()->newWebView();
-        webView->setFocus();
-        webView->load(request);
-        m_keyboardModifiers = Qt::NoModifier;
-        m_pressedButtons = Qt::NoButton;
-        return false;
-    }
-
-    if (frame == mainFrame())
-    {
-        m_loadingUrl = request.url();
-        emit loadingUrl(m_loadingUrl);
-    }
-    else
-    {
-        // if frame doesn't exists (perhaps) we are pointing to a blank target..
-        if (!frame)
-        {
-            webView = Application::instance()->newWebView();
-            webView->setFocus();
-            webView->load(request);
-            return false;
-        }
-    }
-
-    return QWebPage::acceptNavigationRequest(frame, request, type);
-}
-
-
-QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
-{
-    kDebug() << "creating window as new tab.. ";
-
-    // added to manage web modal dialogs
-    if (type == QWebPage::WebModalDialog)
-    {
-        // FIXME : need a "real" implementation..
-        kDebug() << "Modal Dialog ---------------------------------------";
-    }
-
-    WebView *w = Application::instance()->newWebView();
-    return w->page();
-}
-
-
-QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
-{
-    kDebug() << "creating PLUGIN for rekonq ";
-    kDebug() << "classId = " << classId;
-    kDebug() << "url = " << url;
-    kDebug() << "Param Names = " << paramNames;
-    kDebug() << "Param Values = " << paramValues;
-
-    QUiLoader loader;
-    return loader.createWidget(classId, view());
-}
-
-
-void WebPage::handleUnsupportedContent(QNetworkReply *reply)
-{
-    // create convenience fake api:// protocol for KDE apidox search and Qt docs
-    if (reply->url().scheme() == "api")
-    {
-        QString path;
-        QString className = reply->url().host().toLower();
-        if (className[0] == 'k')
-        {
-            path = QString("http://api.kde.org/new.classmapper.php?class=%1").arg(className);
-        }
-        else if (className[0] == 'q')
-        {
-            path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
-        }
-        KUrl url(path);
-
-        Application::instance()->mainWindow()->loadUrl(url);
-        return;
-    }
-
-    if (reply->error() == QNetworkReply::NoError)
-    {
-        // st iframe unwanted download fix
-        if (reply->header(QNetworkRequest::ContentTypeHeader).isValid())
-        {
-            KUrl srcUrl = reply->url();
-            Application::downloadManager()->newDownload(srcUrl);
-        }
-        else
-        {
-             kDebug() << "invalid content type header";
-        }
-        return;
-    }
-
-    // display "not found" page
-    QString notfoundFilePath =  KStandardDirs::locate("data", "rekonq/htmls/notfound.html");
-    QFile file(notfoundFilePath);
-    bool isOpened = file.open(QIODevice::ReadOnly);
-    if (!isOpened)
-    {
-        kWarning() << "Couldn't open the notfound.html file";
-        return;
-    }
-    QString title = i18n("Error loading page: ") + reply->url().toString();
-
-    QString imagePath = KIconLoader::global()->iconPath("rekonq", KIconLoader::NoGroup, false);
-
-    QString html = QString(QLatin1String(file.readAll()))
-                   .arg(title)
-                   .arg("file://" + imagePath)
-                   .arg(reply->errorString())
-                   .arg(reply->url().toString());
-
-    QList<QWebFrame*> frames;
-    frames.append(mainFrame());
-    while (!frames.isEmpty())
-    {
-        QWebFrame *firstFrame = frames.takeFirst();
-        if (firstFrame->url() == reply->url())
-        {
-            firstFrame->setHtml(html, reply->url());
-            return;
-        }
-        QList<QWebFrame *> children = firstFrame->childFrames();
-        foreach(QWebFrame *frame, children)
-        {
-            frames.append(frame);
-        }
-    }
-    if (m_loadingUrl == reply->url())
-    {
-        mainFrame()->setHtml(html, reply->url());
-        // Don't put error pages to the history.
-        Application::historyManager()->removeHistoryEntry(reply->url(), mainFrame()->title());
-    }
-}
-
-
-// -----------------------------------------------------------------------------------------------------------------
-
 
 WebView::WebView(QWidget* parent)
-        : QWebView(parent)
+        : KWebView(parent)
         , m_page(new WebPage(this))
         , m_progress(0)
 {
@@ -299,9 +74,50 @@ WebView::WebView(QWidget* parent)
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(setProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
-    connect(page(), SIGNAL(loadingUrl(const QUrl&)),  this, SIGNAL(urlChanged(const QUrl &)));
-    connect(page(), SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequested(const QNetworkRequest &)));
-    page()->setForwardUnsupportedContent(true);
+
+    connect(this, SIGNAL(openUrlInNewTab(const KUrl &)), this, SLOT(openLinkInNewTab(const KUrl &)));
+}
+
+
+void WebView::setNewPage()
+{
+    setPage(new WebPage(this));
+}
+
+
+KUrl WebView::url() const 
+{ 
+    return KUrl(QWebView::url()); 
+}
+
+
+QString WebView::lastStatusBarText() const
+{ 
+    return m_statusBarText; 
+}
+
+
+int WebView::progress() const
+{ 
+    return m_progress; 
+}
+
+
+void WebView::load(const KUrl &url)
+{
+    QWebView::load(url);
+}
+
+
+void WebView::setProgress(int progress) 
+{ 
+    m_progress = progress; 
+}
+
+
+void WebView::setStatusBarText(const QString &string) 
+{ 
+    m_statusBarText = string; 
 }
 
 
@@ -315,14 +131,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     addBookmarkAction->setData(QVariant());
 
     KMenu menu(this);
-    QAction *a;
 
     // link actions
     bool linkIsEmpty = result.linkUrl().isEmpty();
     if (!linkIsEmpty)
     {
-        a = new KAction(KIcon("tab-new"), i18n("Open Link in New &Tab"), this);
-        connect(a, SIGNAL(triggered()), this, SLOT(openLinkInNewTab()));
+        QAction *a = pageAction(QWebPage::OpenLinkInNewWindow);
+        a->setText(i18n("Open Link in New &Tab"));
         menu.addAction(a);
     }
     else
@@ -335,10 +150,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // Developer Extras actions
     if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
     {
-        a = pageAction(QWebPage::InspectElement);
-        a->setIcon(KIcon("tools-report-bug"));
-        a->setText(i18n("&Inspect Element"));
-        menu.addAction(a);
+        menu.addAction(pageAction(QWebPage::InspectElement));
         menu.addSeparator();
     }
 
@@ -347,28 +159,19 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     if (result.isContentSelected() && result.isContentEditable())
     {
-        a = pageAction(QWebPage::Cut);
-        a->setIcon(KIcon("edit-cut"));
-        a->setText(i18n("Cu&t"));
-        menu.addAction(a);
+        menu.addAction(pageAction(QWebPage::Cut));
         b = true;
     }
 
     if (result.isContentSelected())
     {
-        a = pageAction(QWebPage::Copy);
-        a->setIcon(KIcon("edit-copy"));
-        a->setText(i18n("&Copy"));
-        menu.addAction(a);
+        menu.addAction(pageAction(QWebPage::Copy));
         b = true;
     }
 
     if (result.isContentEditable())
     {
-        a = pageAction(QWebPage::Paste);
-        a->setIcon(KIcon("edit-paste"));
-        a->setText(i18n("&Paste"));
-        menu.addAction(a);
+        menu.addAction(pageAction(QWebPage::Paste));
         b = true;
     }
 
@@ -380,31 +183,15 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // save/copy link actions
     if (!linkIsEmpty)
     {
-        a = pageAction(QWebPage::DownloadLinkToDisk);
-        a->setIcon(KIcon("folder-downloads"));
-        a->setText(i18n("&Save Link As..."));
-        menu.addAction(a);
-
-        a = pageAction(QWebPage::CopyLinkToClipboard);
-        a->setIcon(KIcon("insert-link"));
-        a->setText(i18n("&Copy Link Location"));
-        menu.addAction(a);
-
+        menu.addAction(pageAction(QWebPage::DownloadLinkToDisk));
+        menu.addAction(pageAction(QWebPage::CopyLinkToClipboard));
         menu.addSeparator();
 
         if (!result.pixmap().isNull())
         {
             // TODO Add "View Image" && remove copy_this_image action
-            a = pageAction(QWebPage::DownloadImageToDisk);
-            a->setIcon(KIcon("folder-image"));
-            a->setText(i18n("&Save Image As..."));
-            menu.addAction(a);
-
-            a = pageAction(QWebPage::CopyImageToClipboard);
-            a->setIcon(KIcon("insert-image"));
-            a->setText(i18n("&Copy This Image"));
-            menu.addAction(a);
-
+            menu.addAction(pageAction(QWebPage::DownloadImageToDisk));
+            menu.addAction(pageAction(QWebPage::CopyImageToClipboard));
             menu.addSeparator();
         }
     }
@@ -431,23 +218,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 }
 
 
-void WebView::wheelEvent(QWheelEvent *event)
+void WebView::openLinkInNewTab(const KUrl &url)
 {
-    if (QApplication::keyboardModifiers() & Qt::ControlModifier)
-    {
-        int numDegrees = event->delta() / 8;
-        int numSteps = numDegrees / 15;
-        setTextSizeMultiplier(textSizeMultiplier() + numSteps * 0.1);
-        event->accept();
-        return;
-    }
-    QWebView::wheelEvent(event);
-}
-
-
-void WebView::openLinkInNewTab()
-{
-    pageAction(QWebPage::OpenLinkInNewWindow)->trigger();
+    WebView *that = Application::instance()->newWebView();
+    that->load(url);
 }
 
 
@@ -459,37 +233,6 @@ void WebView::loadFinished()
         << "Url:" << url();
     }
     m_progress = 0;
-}
-
-
-void WebView::mousePressEvent(QMouseEvent *event)
-{
-    m_page->m_pressedButtons = event->buttons();
-    m_page->m_keyboardModifiers = event->modifiers();
-    QWebView::mousePressEvent(event);
-}
-
-
-void WebView::mouseReleaseEvent(QMouseEvent *event)
-{
-    QWebView::mouseReleaseEvent(event);
-    if (!event->isAccepted() && (m_page->m_pressedButtons & Qt::MidButton))
-    {
-        KUrl url(QApplication::clipboard()->text(QClipboard::Selection));
-        if (!url.isEmpty() && url.isValid() && !url.scheme().isEmpty())
-        {
-            setUrl(url);
-        }
-    }
-}
-
-
-void WebView::downloadRequested(const QNetworkRequest &request)
-{
-    KUrl srcUrl = request.url();
-    QString path = ReKonfig::downloadDir() + QString("/") + srcUrl.fileName();
-    KUrl destUrl = KUrl(path);
-    Application::downloadManager()->newDownload(srcUrl);
 }
 
 
