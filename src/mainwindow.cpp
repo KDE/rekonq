@@ -409,65 +409,6 @@ void MainWindow::slotUpdateBrowser()
 }
 
 
-KUrl MainWindow::guessUrlFromString(const QString &string)
-{
-    QString urlStr = string.trimmed();
-    QRegExp test(QLatin1String("^[a-zA-Z]+\\:.*"));
-
-    // Check if it looks like a qualified URL. Try parsing it and see.
-    bool hasSchema = test.exactMatch(urlStr);
-
-    if (hasSchema)
-    {
-        QUrl qurl(urlStr, QUrl::TolerantMode);
-        KUrl url(qurl);
-
-        if (url.isValid())
-        {
-            return url;
-        }
-    }
-
-    // Might be a file.
-    if (QFile::exists(urlStr))
-    {
-        QFileInfo info(urlStr);
-        return KUrl::fromPath(info.absoluteFilePath());
-    }
-
-    // Might be a shorturl - try to detect the schema.
-    if (!hasSchema)
-    {
-        int dotIndex = urlStr.indexOf(QLatin1Char('.'));
-
-        if (dotIndex != -1)
-        {
-            QString prefix = urlStr.left(dotIndex).toLower();
-            QString schema = (prefix == QLatin1String("ftp")) ? prefix : QLatin1String("http");
-            QUrl qurl(schema + QLatin1String("://") + urlStr, QUrl::TolerantMode);
-            KUrl url(qurl);
-
-            if (url.isValid())
-            {
-                return url;
-            }
-        }
-    }
-
-    // Fall back to QUrl's own tolerant parser.
-    QUrl qurl = QUrl(string, QUrl::TolerantMode);
-    KUrl url(qurl);
-
-    // finally for cases where the user just types in a hostname add http
-    if (qurl.scheme().isEmpty())
-    {
-        qurl = QUrl(QLatin1String("http://") + string, QUrl::TolerantMode);
-        url = KUrl(qurl);
-    }
-    return url;
-}
-
-
 void MainWindow::loadUrl(const KUrl &url)
 {
     m_view->loadUrl(url);
@@ -543,7 +484,7 @@ void MainWindow::slotFileOpen()
     if (filePath.isEmpty())
         return;
 
-    loadUrl(guessUrlFromString(filePath));
+    loadUrl(Application::guessUrlFromString(filePath));
 }
 
 

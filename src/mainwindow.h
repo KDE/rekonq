@@ -62,7 +62,6 @@ public:
     MainWindow();
     ~MainWindow();
 
-    static KUrl guessUrlFromString(const QString &url);
     MainView *mainView() const;
     WebView *currentTab() const;
     QAction *actionByName(const QString name);

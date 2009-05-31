@@ -75,9 +75,11 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
-    WebView* newWebView(Rekonq::OpenType type = Rekonq::Default);
+    WebView *newWebView(Rekonq::OpenType type = Rekonq::Default);
 
     KIcon icon(const KUrl &url) const;
+
+    static KUrl guessUrlFromString(const QString &url);
 
     static HistoryManager *historyManager();
     static CookieJar *cookieJar();

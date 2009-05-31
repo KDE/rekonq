@@ -362,10 +362,8 @@ WebView *MainView::newWebView(Rekonq::OpenType type)
     connect(webView, SIGNAL(shiftCtrlTabPressed()), this, SLOT(previousTab()));
 
     // connecting webPage signals with mainview
-    connect(webView->page(), SIGNAL(windowCloseRequested()),
-            this, SLOT(windowCloseRequested()));
-    connect(webView->page(), SIGNAL(printRequested(QWebFrame *)),
-            this, SIGNAL(printRequested(QWebFrame *)));
+    connect(webView->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
+    connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
     addTab(webView, i18n("(Untitled)"));
 
