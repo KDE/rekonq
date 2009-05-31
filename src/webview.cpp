@@ -34,7 +34,6 @@
 #include "mainview.h"
 #include "cookiejar.h"
 #include "networkaccessmanager.h"
-#include "download.h"
 #include "history.h"
 #include "webpage.h"
 

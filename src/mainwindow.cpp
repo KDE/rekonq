@@ -37,7 +37,6 @@
 #include "webview.h"
 #include "mainview.h"
 #include "bookmarks.h"
-#include "download.h"
 #include "findbar.h"
 #include "sidepanel.h"
 #include "urlbar.h"
@@ -485,7 +484,7 @@ void MainWindow::slotOpenLocation()
 void MainWindow::slotFileSaveAs()
 {
     KUrl srcUrl = currentTab()->url();
-    Application::downloadManager()->newDownload(srcUrl);
+    // FIXME implement download file 
 }
 
 

@@ -8,7 +8,6 @@ SET( rekonq_SRCS
     edittableview.cpp 
     edittreeview.cpp 
     history.cpp
-    download.cpp
     bookmarks.cpp
     modelmenu.cpp 
     networkaccessmanager.cpp

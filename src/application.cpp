@@ -34,7 +34,6 @@
 #include "networkaccessmanager.h"
 #include "mainview.h"
 #include "webview.h"
-#include "download.h"
 
 // KDE Includes
 #include <KCmdLineArgs>
@@ -52,7 +51,6 @@
 
 QPointer<HistoryManager> Application::s_historyManager;
 QPointer<NetworkAccessManager> Application::s_networkAccessManager;
-QPointer<DownloadManager> Application::s_downloadManager;
 QPointer<BookmarkProvider> Application::s_bookmarkProvider;
 
 
@@ -176,16 +174,6 @@ HistoryManager *Application::historyManager()
 }
 
 
-DownloadManager *Application::downloadManager()
-{
-    if (!s_downloadManager)
-    {
-        s_downloadManager = new DownloadManager();
-    }
-    return s_downloadManager;
-}
-
-
 BookmarkProvider *Application::bookmarkProvider()
 {
     if (!s_bookmarkProvider)
@@ -205,4 +193,3 @@ KIcon Application::icon(const KUrl &url) const
     }
     return icon;
 }
-
