@@ -22,8 +22,10 @@
 #include "panelhistory.h"
 #include "panelhistory.moc"
 
-// QT Includes
-#include <QLabel>
+// Qt Includes
+#include <QtGui/QLabel>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QHeaderView>
 
 // KDE Includes
 #include <KLocalizedString>
