@@ -102,7 +102,7 @@ Private::Private(SettingsDialog *parent)
     widget = new QWidget;
     webkitUi.setupUi(widget);
     widget->layout()->setMargin(0);
-    pageItem = parent->addPage(widget , i18n("Webkit"));
+    pageItem = parent->addPage(widget , i18n("WebKit"));
     QString webkitIconPath = KStandardDirs::locate("appdata", "pics/webkit-icon.png");
     kWarning() << webkitIconPath;
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
@@ -120,7 +120,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     setFaceType(KPageDialog::List);
     showButtonSeparator(true);
 
-    setWindowTitle(i18n("rekonfig.."));
+    setWindowTitle(i18n("rekonfig..."));
     setModal(true);
 
     readConfig();
