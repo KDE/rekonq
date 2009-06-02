@@ -187,7 +187,7 @@ CookiesExceptionsDialog::CookiesExceptionsDialog(CookieJar *cookieJar, QWidget *
 {
     setWindowFlags(Qt::Sheet);
     setCaption("Cookies Exceptions");
-    setButtons( KDialog::Ok );
+    setButtons( KDialog::Close );
 
     QWidget *widget = new QWidget(this);
     m_exceptionsWidget->setupUi(widget);

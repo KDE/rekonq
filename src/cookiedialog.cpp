@@ -172,7 +172,7 @@ CookiesDialog::CookiesDialog(CookieJar *cookieJar, QWidget *parent)
 {
     setWindowFlags(Qt::Sheet);
     setCaption("Cookies");
-    setButtons( KDialog::Ok );
+    setButtons( KDialog::Close );
 
     Ui::CookiesWidget *cookieWidget = new Ui::CookiesWidget;
     QWidget *widget = new QWidget(this);
