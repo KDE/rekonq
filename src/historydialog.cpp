@@ -69,13 +69,16 @@ HistoryDialog::HistoryDialog(QWidget *parent, HistoryManager *setHistory)
     m_historyWidg->tree->setAlternatingRowColors(true);
 
     QFontMetrics fm(font());
-    int header = fm.width(QLatin1Char('m')) * 40;
+    int header = fm.width(QLatin1Char('m')) * 30;
     m_historyWidg->tree->header()->resizeSection(0, header);
     m_historyWidg->tree->header()->setStretchLastSection(true);
-    connect(m_historyWidg->tree, SIGNAL(activated(const QModelIndex&)), this, SLOT(open()));
+
     m_historyWidg->tree->setContextMenuPolicy(Qt::CustomContextMenu);
+
     connect(m_historyWidg->tree, SIGNAL(customContextMenuRequested(const QPoint &)), 
             this, SLOT(customContextMenuRequested(const QPoint &)));
+
+    connect(m_historyWidg->tree, SIGNAL(activated(const QModelIndex&)), this, SLOT(open()));
 }
 
 

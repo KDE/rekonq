@@ -10,7 +10,6 @@ SET( rekonq_SRCS
     history.cpp
     historydialog.cpp
     historymenu.cpp
-    download.cpp
     bookmarks.cpp
     modelmenu.cpp 
     networkaccessmanager.cpp
