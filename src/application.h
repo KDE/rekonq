@@ -40,7 +40,6 @@ class KIcon;
 class KUrl;
 class BookmarkProvider;
 class CookieJar;
-class DownloadManager;
 class HistoryManager;
 class MainWindow;
 class NetworkAccessManager;
@@ -76,14 +75,15 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
-    WebView* newWebView(Rekonq::OpenType type = Rekonq::Default);
+    WebView *newWebView(Rekonq::OpenType type = Rekonq::Default);
 
     KIcon icon(const KUrl &url) const;
+
+    static KUrl guessUrlFromString(const QString &url);
 
     static HistoryManager *historyManager();
     static CookieJar *cookieJar();
     static NetworkAccessManager *networkAccessManager();
-    static DownloadManager *downloadManager();
     static BookmarkProvider *bookmarkProvider();
 
 public slots:
@@ -105,7 +105,6 @@ private slots:
 private:
     static QPointer<HistoryManager> s_historyManager;
     static QPointer<NetworkAccessManager> s_networkAccessManager;
-    static QPointer<DownloadManager> s_downloadManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;
 
     QPointer<MainWindow> m_mainWindow;

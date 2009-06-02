@@ -19,48 +19,47 @@
 * ============================================================ */
 
 
-// Self Includes
-#include "edittreeview.h"
-#include "edittreeview.moc"
+#ifndef HISTORYMENU_H
+#define HISTORYMENU_H
 
-// Qt includes
-#include <QtGui/QKeyEvent>
+#include "history.h"
 
+#include <QtCore/QList>
+#include <QtGui/QAction>
 
-EditTreeView::EditTreeView(QWidget *parent)
-        : QTreeView(parent)
+class ModelMenu;
+class QWidget;
+class QModelIndex;
+class KUrl;
+
+/**
+ * Menu that is dynamically populated from the history
+ *
+ */
+
+class HistoryMenu : public ModelMenu
 {
-}
+    Q_OBJECT
 
+signals:
+    void openUrl(const KUrl &url);
 
-void EditTreeView::keyPressEvent(QKeyEvent *event)
-{
-    if ((event->key() == Qt::Key_Delete
-            || event->key() == Qt::Key_Backspace)
-            && model())
-    {
-        removeOne();
-    }
-    else
-    {
-        QAbstractItemView::keyPressEvent(event);
-    }
-}
+public:
+    HistoryMenu(QWidget *parent = 0);
+    void setInitialActions(QList<QAction*> actions);
 
+protected:
+    bool prePopulated();
+    void postPopulated();
 
-void EditTreeView::removeOne()
-{
-    if (!model())
-        return;
-    QModelIndex ci = currentIndex();
-    int row = ci.row();
-    model()->removeRow(row, ci.parent());
-}
+private slots:
+    void activated(const QModelIndex &index);
+    void showHistoryDialog();
 
+private:
+    HistoryManager *m_history;
+    HistoryMenuModel *m_historyMenuModel;
+    QList<QAction*> m_initialActions;
+};
 
-void EditTreeView::removeAll()
-{
-    if (!model())
-        return;
-    model()->removeRows(0, model()->rowCount(rootIndex()), rootIndex());
-}
+#endif

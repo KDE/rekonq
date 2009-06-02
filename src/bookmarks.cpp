@@ -44,8 +44,9 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QActionGroup>
-#include <QFile>
+#include <QtCore/QFile>
+#include <QtGui/QActionGroup>
+
 
 
 BookmarkOwner::BookmarkOwner(QObject *parent)

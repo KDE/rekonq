@@ -1,0 +1,43 @@
+REKONQ FILES && CLASSES:
+
+cookies:
+    cookiedialog
+    cookieexceptiondialog
+    cookiejar
+    edittableview
+    edittreeview
+
+Ui:
+    mainwindow
+    mainview
+    tabbar
+    findbar
+    searchbar
+
+urlbar:
+    lineedit
+    stackedurlbar
+    urlbar
+
+webkit:
+    webview
+
+network:
+    networkaccessmanager
+
+panel:
+    panelhistory
+    sidepanel
+
+history:
+    history
+    modelmenu
+
+bookmarks:
+    bookmarks
+
+misc:
+    download
+    autosaver
+    application
+    settings

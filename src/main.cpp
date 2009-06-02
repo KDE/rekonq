@@ -18,15 +18,17 @@
 * ============================================================ */
 
 
+// Local Includes
 #include "application.h"
 
+// KDE Includes
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KDebug>
 
 
 static const char description[] =
-    I18N_NOOP("Webkit Based Browser for KDE");
+    I18N_NOOP("WebKit-based Web Browser for KDE");
 
 
 static const char version[] = "0.1.1";

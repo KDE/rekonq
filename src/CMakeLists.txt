@@ -8,7 +8,8 @@ SET( rekonq_SRCS
     edittableview.cpp 
     edittreeview.cpp 
     history.cpp
-    download.cpp
+    historydialog.cpp
+    historymenu.cpp
     bookmarks.cpp
     modelmenu.cpp 
     networkaccessmanager.cpp
@@ -23,6 +24,8 @@ SET( rekonq_SRCS
     lineedit.cpp
     stackedurlbar.cpp
     webpage.cpp
+    cookiedialog.cpp
+    cookieexceptiondialog.cpp
 )
 
 KDE4_ADD_UI_FILES( rekonq_SRCS

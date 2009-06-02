@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
+* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it
@@ -17,40 +17,41 @@
 *
 * ============================================================ */
 
-#ifndef PANELHISTORY_H
-#define PANELHISTORY_H
 
-// Local Includes
-#include "application.h"
-#include "history.h"
 
-// Qt Includes
-#include <QtGui/QWidget>
-#include <QtGui/QTreeView>
+#ifndef HISTORYDIALOG_H
+#define HISTORYDIALOG_H
 
-// Forward Declarations
+
+// Ui includes
+#include "ui_history.h"
+
+// KDE Includes
+#include <KDialog>
+
 class KUrl;
+class QPoint;
+class QWidget;
+class HistoryManager;
 
-
-class PanelHistory : public QWidget
+class HistoryDialog : public KDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY(PanelHistory)
-
-public:
-    explicit PanelHistory(QWidget *parent = 0);
-    virtual ~PanelHistory();
 
 signals:
-    void openUrl(const KUrl &);
+    void openUrl(const KUrl &url);
+
+public:
+    explicit HistoryDialog(QWidget *parent = 0, HistoryManager *history = 0);
+    QSize sizeHint() const;
 
 private slots:
+    void customContextMenuRequested(const QPoint &pos);
     void open();
+    void copy();
 
 private:
-    QTreeView *m_historyTreeView;
-    TreeProxyModel *m_treeProxyModel;
-
+    Ui::historyWidget *m_historyWidg;
 };
 
-#endif // PANELHISTORY_H
+#endif

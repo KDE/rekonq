@@ -27,7 +27,6 @@
 #include "modelmenu.h"
 
 // KDE Includes
-#include <KAction>
 #include <KUrl>
 
 // Qt Includes
@@ -256,39 +255,6 @@ private:
 };
 
 
-// ---------------------------------------------------------------------------------------------
-
-/**
- * Menu that is dynamically populated from the history
- *
- */
-
-class HistoryMenu : public ModelMenu
-{
-    Q_OBJECT
-
-signals:
-    void openUrl(const KUrl &url);
-
-public:
-    HistoryMenu(QWidget *parent = 0);
-    void setInitialActions(QList<QAction*> actions);
-
-protected:
-    bool prePopulated();
-    void postPopulated();
-
-private slots:
-    void activated(const QModelIndex &index);
-    void showHistoryDialog();
-
-private:
-    HistoryManager *m_history;
-    HistoryMenuModel *m_historyMenuModel;
-    QList<QAction*> m_initialActions;
-};
-
-
 // ----------------------------------------------------------------------------------------
 
 /**
@@ -382,28 +348,5 @@ protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
 };
 
-
-// ------------------------------------------------------------------------------------------
-
-
-// Ui includes
-#include "ui_history.h"
-
-class HistoryDialog : public QDialog, public Ui_HistoryDialog
-{
-    Q_OBJECT
-
-signals:
-    void openUrl(const KUrl &url);
-
-public:
-    explicit HistoryDialog(QWidget *parent = 0, HistoryManager *history = 0);
-
-private slots:
-    void customContextMenuRequested(const QPoint &pos);
-    void open();
-    void copy();
-
-};
 
 #endif // HISTORY_H

@@ -21,7 +21,7 @@
 * ============================================================ */
 
 
-// local Includes
+// Self Includes
 #include "download.h"
 #include "download.moc"
 

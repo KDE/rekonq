@@ -22,13 +22,13 @@
 #include "stackedurlbar.h"
 #include "stackedurlbar.moc"
 
-// KDE Includes
-#include "kdebug.h"
-
 // Local Includes
 #include "application.h"
 #include "history.h"
 #include "urlbar.h"
+
+// KDE Includes
+#include <KDebug>
 
 
 StackedUrlBar::StackedUrlBar(QWidget *parent)

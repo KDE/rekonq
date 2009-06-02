@@ -669,74 +669,6 @@ QModelIndex HistoryMenuModel::parent(const QModelIndex &index) const
 }
 
 
-// -------------------------------------------------------------------------------------------------------------
-
-
-HistoryMenu::HistoryMenu(QWidget *parent)
-        : ModelMenu(parent)
-        , m_history(0)
-{
-    connect(this, SIGNAL(activated(const QModelIndex &)), this, SLOT(activated(const QModelIndex &)));
-    setHoverRole(HistoryModel::UrlStringRole);
-}
-
-
-void HistoryMenu::activated(const QModelIndex &index)
-{
-    emit openUrl(index.data(HistoryModel::UrlRole).toUrl());
-}
-
-
-bool HistoryMenu::prePopulated()
-{
-    if (!m_history)
-    {
-        m_history = Application::historyManager();
-        m_historyMenuModel = new HistoryMenuModel(m_history->historyTreeModel(), this);
-        setModel(m_historyMenuModel);
-    }
-    // initial actions
-    for (int i = 0; i < m_initialActions.count(); ++i)
-        addAction(m_initialActions.at(i));
-    if (!m_initialActions.isEmpty())
-        addSeparator();
-    setFirstSeparator(m_historyMenuModel->bumpedRows());
-
-    return false;
-}
-
-
-void HistoryMenu::postPopulated()
-{
-    if (m_history->history().count() > 0)
-        addSeparator();
-
-    KAction *showAllAction = new KAction(i18n("Show All History"), this);
-    connect(showAllAction, SIGNAL(triggered()), this, SLOT(showHistoryDialog()));
-    addAction(showAllAction);
-
-    KAction *clearAction = new KAction(i18n("Clear History"), this);
-    connect(clearAction, SIGNAL(triggered()), m_history, SLOT(clear()));
-    addAction(clearAction);
-}
-
-
-void HistoryMenu::showHistoryDialog()
-{
-    HistoryDialog *dialog = new HistoryDialog(this);
-    connect(dialog, SIGNAL(openUrl(const KUrl&)), this, SIGNAL(openUrl(const KUrl&)));
-    dialog->show();
-}
-
-
-void HistoryMenu::setInitialActions(QList<QAction*> actions)
-{
-    m_initialActions = actions;
-    for (int i = 0; i < m_initialActions.count(); ++i)
-        addAction(m_initialActions.at(i));
-}
-
-
 // --------------------------------------------------------------------------------------------------------------
 
 
@@ -755,78 +687,8 @@ bool TreeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_
 }
 
 
-// -----------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------
 
-
-HistoryDialog::HistoryDialog(QWidget *parent, HistoryManager *setHistory) : QDialog(parent)
-{
-    HistoryManager *history = setHistory;
-    if (!history)
-        history = Application::historyManager();
-    setupUi(this);
-    tree->setUniformRowHeights(true);
-    tree->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tree->setTextElideMode(Qt::ElideMiddle);
-    QAbstractItemModel *model = history->historyTreeModel();
-    TreeProxyModel *proxyModel = new TreeProxyModel(this);
-    connect(search, SIGNAL(textChanged(QString)),
-            proxyModel, SLOT(setFilterFixedString(QString)));
-    connect(removeButton, SIGNAL(clicked()), tree, SLOT(removeOne()));
-    connect(removeAllButton, SIGNAL(clicked()), history, SLOT(clear()));
-    proxyModel->setSourceModel(model);
-    tree->setModel(proxyModel);
-    tree->setExpanded(proxyModel->index(0, 0), true);
-    tree->setAlternatingRowColors(true);
-    QFontMetrics fm(font());
-    int header = fm.width(QLatin1Char('m')) * 40;
-    tree->header()->resizeSection(0, header);
-    tree->header()->setStretchLastSection(true);
-    connect(tree, SIGNAL(activated(const QModelIndex&)),
-            this, SLOT(open()));
-    tree->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(tree, SIGNAL(customContextMenuRequested(const QPoint &)),
-            this, SLOT(customContextMenuRequested(const QPoint &)));
-}
-
-
-void HistoryDialog::customContextMenuRequested(const QPoint &pos)
-{
-    QMenu menu;
-    QModelIndex index = tree->indexAt(pos);
-    index = index.sibling(index.row(), 0);
-    if (index.isValid() && !tree->model()->hasChildren(index))
-    {
-        menu.addAction(i18n("Open"), this, SLOT(open()));
-        menu.addSeparator();
-        menu.addAction(i18n("Copy"), this, SLOT(copy()));
-    }
-    menu.addAction(i18n("Delete"), tree, SLOT(removeOne()));
-    menu.exec(QCursor::pos());
-}
-
-
-void HistoryDialog::open()
-{
-    QModelIndex index = tree->currentIndex();
-    if (!index.parent().isValid())
-        return;
-    emit openUrl(index.data(HistoryModel::UrlRole).toUrl());
-}
-
-
-void HistoryDialog::copy()
-{
-    QModelIndex index = tree->currentIndex();
-    if (!index.parent().isValid())
-        return;
-    QString url = index.data(HistoryModel::UrlStringRole).toString();
-
-    QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setText(url);
-}
-
-
-// ---------------------------------------------------------------------------------------------------------------
 
 HistoryFilterModel::HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent)
         : QAbstractProxyModel(parent),

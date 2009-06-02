@@ -21,6 +21,7 @@
 
 // Self Includes
 #include "edittableview.h"
+#include "edittableview.moc"
 
 // Qt Includes
 #include <QtGui/QKeyEvent>
