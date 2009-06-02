@@ -43,6 +43,7 @@ signals:
 
 public:
     explicit HistoryDialog(QWidget *parent = 0, HistoryManager *history = 0);
+    QSize sizeHint() const;
 
 private slots:
     void customContextMenuRequested(const QPoint &pos);

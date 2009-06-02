@@ -35,6 +35,7 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QClipboard>
+#include <QtGui/QDesktopWidget>
 
 
 HistoryDialog::HistoryDialog(QWidget *parent, HistoryManager *setHistory) 
@@ -51,6 +52,8 @@ HistoryDialog::HistoryDialog(QWidget *parent, HistoryManager *setHistory)
     QWidget *widget = new QWidget;
     m_historyWidg->setupUi(widget);
     setMainWidget(widget);
+
+    m_historyWidg->search->setClearButtonShown(true);
 
     m_historyWidg->tree->setUniformRowHeights(true);
     m_historyWidg->tree->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -69,7 +72,7 @@ HistoryDialog::HistoryDialog(QWidget *parent, HistoryManager *setHistory)
     m_historyWidg->tree->setAlternatingRowColors(true);
 
     QFontMetrics fm(font());
-    int header = fm.width(QLatin1Char('m')) * 30;
+    int header = fm.width(QLatin1Char('m')) * 25;
     m_historyWidg->tree->header()->resizeSection(0, header);
     m_historyWidg->tree->header()->setStretchLastSection(true);
 
@@ -116,4 +119,11 @@ void HistoryDialog::copy()
 
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(url);
+}
+
+QSize HistoryDialog::sizeHint() const
+{
+    QRect desktopRect = Application::desktop()->screenGeometry();
+    QSize size = desktopRect.size() * 0.7;
+    return size;
 }
