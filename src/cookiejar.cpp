@@ -49,87 +49,18 @@
 
 static const unsigned int JAR_VERSION = 23;
 
-static const char cookieFileName[] = "cookies.ini.NEW";
-
-// QDataStream &operator<<(QDataStream &stream, const QList<QNetworkCookie> &list)
-// {
-//     stream << JAR_VERSION;
-//     stream << quint32(list.size());
-//     for (int i = 0; i < list.size(); ++i)
-//         stream << list.at(i).toRawForm();
-//     return stream;
-// }
-// 
-// 
-// QDataStream &operator>>(QDataStream &stream, QList<QNetworkCookie> &list)
-// {
-//     list.clear();
-// 
-//     quint32 version;
-//     stream >> version;
-// 
-//     if (version != JAR_VERSION)
-//         return stream;
-// 
-//     quint32 count;
-//     stream >> count;
-//     for (quint32 i = 0; i < count; ++i)
-//     {
-//         QByteArray value;
-//         stream >> value;
-//         QList<QNetworkCookie> newCookies = QNetworkCookie::parseCookies(value);
-//         if (newCookies.count() == 0 && value.length() != 0)
-//         {
-//             kDebug() << "CookieJar: Unable to parse saved cookie:" << value;
-//         }
-//         for (int j = 0; j < newCookies.count(); ++j)
-//             list.append(newCookies.at(j));
-//         if (stream.atEnd())
-//             break;
-//     }
-//     return stream;
-// }
+static const char cookieFileName[] = "cookies";
 
 
 CookieJar::CookieJar(QObject *parent)
         : QNetworkCookieJar(parent)
-        , m_loaded(false)
-        , m_saveTimer(new AutoSaver(this))
         , m_acceptCookies(AcceptOnlyFromSitesNavigatedTo)
 {
-    load();
-}
-
-
-CookieJar::~CookieJar()
-{
-    if (m_keepCookies == KeepUntilExit)
-        clear();
-    m_saveTimer->saveIfNeccessary();
-}
-
-
-void CookieJar::clear()
-{
-    setAllCookies(QList<QNetworkCookie>());
-    m_saveTimer->changeOccurred();
-    emit cookiesChanged();
-}
-
-
-void CookieJar::load()
-{
-    if (m_loaded)
-        return;
-
     // load cookies and exceptions
     QString filepath = KStandardDirs::locateLocal("appdata", cookieFileName);
     KConfig iniconfig(filepath);
 
-// commented out to try managing cookies my way..
-//     qRegisterMetaTypeStreamOperators<QList<QNetworkCookie> >("QList<QNetworkCookie>");
-
-    KConfigGroup inigroup1 = iniconfig.group("general");
+    KConfigGroup inigroup1 = iniconfig.group("cookielist");
 
     QStringList cookieStringList = inigroup1.readEntry( QString("cookies"), QStringList() );
     QList<QNetworkCookie> cookieNetworkList;
@@ -149,8 +80,25 @@ void CookieJar::load()
     qSort( m_exceptions_allowForSession.begin(), m_exceptions_allowForSession.end() );
 
     loadSettings();
+}
+
+
+CookieJar::~CookieJar()
+{
+    if (m_keepCookies == KeepUntilExit)
+        clear();
 
     save();
+}
+
+
+void CookieJar::clear()
+{
+    setAllCookies(QList<QNetworkCookie>());
+
+    save();
+
+    emit cookiesChanged();
 }
 
 
@@ -189,21 +137,18 @@ void CookieJar::loadSettings()
         break;
     }
 
-    m_loaded = true;
     emit cookiesChanged();
 }
 
 
 void CookieJar::save()
 {
-    if (!m_loaded)
-        return;
     purgeOldCookies();
 
     QString filepath = KStandardDirs::locateLocal("appdata", cookieFileName);
     KConfig iniconfig( filepath );
 
-    KConfigGroup inigroup1 = iniconfig.group("general");
+    KConfigGroup inigroup1 = iniconfig.group("cookielist");
     QList<QNetworkCookie> cookies = allCookies();
     for (int i = cookies.count() - 1; i >= 0; --i)
     {
@@ -212,9 +157,9 @@ void CookieJar::save()
     }
 
     QStringList cookieStringList;
-    foreach( QNetworkCookie cook, cookies )
+    foreach( QNetworkCookie cookie, cookies )
     {
-        cookieStringList << QString( cook.toRawForm() );
+        cookieStringList << QString( cookie.toRawForm() );
     }
     inigroup1.writeEntry( QString("cookies"), cookieStringList );
 
@@ -273,16 +218,13 @@ void CookieJar::purgeOldCookies()
     if (oldCount == cookies.count())
         return;
     setAllCookies(cookies);
+
     emit cookiesChanged();
 }
 
 
 QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl &url) const
 {
-    CookieJar *that = const_cast<CookieJar*>(this);
-    if (!m_loaded)
-        that->load();
-
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
@@ -296,9 +238,6 @@ QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl &url) const
 
 bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const QUrl &url)
 {
-    if (!m_loaded)
-        load();
-
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return false;
@@ -340,17 +279,13 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const
                     setAllCookies(cookies);
                     addedCookies = true;
                 }
-#if 0
-                else
-                    kWarning() << "setCookiesFromUrl failed" << url << cookieList.value(0).toRawForm();
-#endif
             }
         }
     }
 
     if (addedCookies)
     {
-        m_saveTimer->changeOccurred();
+        save();
         emit cookiesChanged();
     }
     return addedCookies;
@@ -359,91 +294,76 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> &cookieList, const
 
 CookieJar::AcceptPolicy CookieJar::acceptPolicy() const
 {
-    if (!m_loaded)
-        (const_cast<CookieJar*>(this))->load();
     return m_acceptCookies;
 }
 
 
 void CookieJar::setAcceptPolicy(AcceptPolicy policy)
 {
-    if (!m_loaded)
-        load();
     if (policy == m_acceptCookies)
         return;
     m_acceptCookies = policy;
-    m_saveTimer->changeOccurred();
+
+    save();
 }
 
 
 CookieJar::KeepPolicy CookieJar::keepPolicy() const
 {
-    if (!m_loaded)
-        (const_cast<CookieJar*>(this))->load();
     return m_keepCookies;
 }
 
 
 void CookieJar::setKeepPolicy(KeepPolicy policy)
 {
-    if (!m_loaded)
-        load();
     if (policy == m_keepCookies)
         return;
     m_keepCookies = policy;
-    m_saveTimer->changeOccurred();
+
+    save();
 }
 
 
 QStringList CookieJar::blockedCookies() const
 {
-    if (!m_loaded)
-        (const_cast<CookieJar*>(this))->load();
     return m_exceptions_block;
 }
 
 
 QStringList CookieJar::allowedCookies() const
 {
-    if (!m_loaded)
-        (const_cast<CookieJar*>(this))->load();
     return m_exceptions_allow;
 }
 
 
 QStringList CookieJar::allowForSessionCookies() const
 {
-    if (!m_loaded)
-        (const_cast<CookieJar*>(this))->load();
     return m_exceptions_allowForSession;
 }
 
 
 void CookieJar::setBlockedCookies(const QStringList &list)
 {
-    if (!m_loaded)
-        load();
     m_exceptions_block = list;
     qSort(m_exceptions_block.begin(), m_exceptions_block.end());
-    m_saveTimer->changeOccurred();
+
+    save();
 }
 
 
 void CookieJar::setAllowedCookies(const QStringList &list)
 {
-    if (!m_loaded)
-        load();
     m_exceptions_allow = list;
     qSort(m_exceptions_allow.begin(), m_exceptions_allow.end());
-    m_saveTimer->changeOccurred();
+
+    save();
 }
 
 
 void CookieJar::setAllowForSessionCookies(const QStringList &list)
 {
-    if (!m_loaded)
-        load();
     m_exceptions_allowForSession = list;
     qSort(m_exceptions_allowForSession.begin(), m_exceptions_allowForSession.end());
-    m_saveTimer->changeOccurred();
+
+    save();
 }

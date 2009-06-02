@@ -268,4 +268,3 @@ QSize CookiesExceptionsDialog::sizeHint() const
     QSize size = desktopRect.size() * 0.6;
     return size;
 }
-

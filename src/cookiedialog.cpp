@@ -34,7 +34,6 @@ CookieModel::CookieModel(CookieJar *cookieJar, QObject *parent)
         , m_cookieJar(cookieJar)
 {
     connect(m_cookieJar, SIGNAL(cookiesChanged()), this, SLOT(cookiesChanged()));
-    m_cookieJar->load();
 }
 
 

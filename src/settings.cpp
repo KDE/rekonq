@@ -215,4 +215,3 @@ void SettingsDialog::setHomeToCurrentPage()
         d->generalUi.kcfg_homePage->setText(webView->url().prettyUrl());
     }
 }
-
