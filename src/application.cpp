@@ -252,3 +252,25 @@ KUrl Application::guessUrlFromString(const QString &string)
     }
     return url;
 }
+
+void Application::notify(const QString &msg, Rekonq::Notify status)
+{
+    switch(status)
+    {
+    case Rekonq::success:
+// hi32-actions-emoticon.png
+        KPassivePopup::message();
+        break;
+    case Rekonq::error:
+//     hi32-actions-edit-delete.png
+        KPassivePopup::message();
+        break;
+    case Rekonq::download:
+// kget/pics
+        KPassivePopup::message();
+        break;
+    default:
+        kDebug() << "nothing to be notified..";
+        break;
+    }
+}
