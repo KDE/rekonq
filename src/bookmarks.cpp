@@ -121,7 +121,12 @@ BookmarkMenu::~BookmarkMenu()
 
 KMenu *BookmarkMenu::viewContextMenu(QAction *action)
 {
-    return contextMenu(action);
+    // contextMenu() returns an invalid  KMenu (seg fault) for the folders in the toolbar
+    KMenu *menu = contextMenu(action);
+    if(menu)
+        return menu;
+
+    return 0;   // new KMenu();
 }
 
 
@@ -145,10 +150,11 @@ void BookmarkMenu::slotAddBookmark()
 
 
 BookmarkProvider::BookmarkProvider(QWidget *parent)
-        : QWidget(parent)
+        : QObject(parent)
+        , m_parent(parent)
         , m_manager(0)
         , m_owner(0)
-        , m_menu(new KMenu(this))
+        , m_menu(new KMenu(m_parent))
         , m_actionCollection(new KActionCollection(this))
         , m_bookmarkMenu(0)
         , m_bookmarkToolBar(0)
@@ -197,7 +203,7 @@ BookmarkProvider::~BookmarkProvider()
 
 void BookmarkProvider::setupToolBar()
 {
-    m_bookmarkToolBar = new KToolBar(this);
+    m_bookmarkToolBar = new KToolBar(m_parent);
     m_bookmarkToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_bookmarkToolBar->setIconDimensions(16);
     m_bookmarkToolBar->setAcceptDrops(true);
@@ -222,25 +228,18 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
         return;
     }
 
-    KActionCollection bookmarkCollection(this);
-
     KBookmarkGroup toolBarGroup = m_manager->toolbar();
     if (toolBarGroup.isNull())
         return;
 
+    m_bookmarkToolBar->clear();
+
     KBookmark bookmark = toolBarGroup.first();
     while (!bookmark.isNull())
     {
-        if (!bookmark.isGroup())
-        {
-            KAction *action = new KBookmarkAction(bookmark, m_owner, this);
-            QString text = bookmark.address();
-            bookmarkCollection.addAction(text, action);
-        }
+        m_bookmarkToolBar->addAction(fillBookmarkBar(bookmark));
         bookmark = toolBarGroup.next(bookmark);
     }
-    m_bookmarkToolBar->clear();
-    m_bookmarkToolBar->addActions(bookmarkCollection.actions());
 }
 
 
@@ -281,4 +280,33 @@ KAction* BookmarkProvider::bookmarkToolBarAction()
     bookmarkToolBarAction->setText(i18n("Bookmarks Bar"));
     bookmarkToolBarAction->setShortcutConfigurable(false);
     return bookmarkToolBarAction;
+}
+
+
+KAction *BookmarkProvider::fillBookmarkBar(const KBookmark &bookmark)
+{
+    if (bookmark.isGroup())
+    {
+        KBookmarkGroup group = bookmark.toGroup();
+        KBookmark bm = group.first();
+        KActionMenu *menuAction = new KActionMenu(KIcon(bookmark.icon()), bookmark.text(), this);
+        menuAction->setDelayed(false);
+        while (!bm.isNull())
+        {
+            menuAction->addAction(fillBookmarkBar(bm));
+            bm = group.next(bm);
+        }
+        return menuAction;
+    }
+ 
+    if(bookmark.isSeparator())
+    {
+        KAction *a = new KAction(this);
+        a->setSeparator(true);
+        return a;
+    }
+    else
+    {
+        return new KBookmarkAction(bookmark, m_owner, this);
+    }
 }

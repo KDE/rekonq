@@ -156,7 +156,7 @@ protected slots:
  *
  *
  */
-class BookmarkProvider : public QWidget
+class BookmarkProvider : public QObject
 {
     Q_OBJECT
 
@@ -221,7 +221,10 @@ public slots:
     void slotBookmarksChanged(const QString &group, const QString &caller);
 
 private:
+    KAction *fillBookmarkBar(const KBookmark &bookmark);
     void setupToolBar();
+
+    QWidget *m_parent;
 
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;
