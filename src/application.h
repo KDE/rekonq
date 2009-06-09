@@ -63,8 +63,9 @@ namespace Rekonq
     {
         Success,    ///< url successfully (down)loaded
         Error,      ///< url failed to (down)load
-        Download    ///< downloading url
-    }
+        Download,   ///< downloading url
+        Info        ///< information
+    };
 }
 
 
@@ -86,7 +87,7 @@ public:
 
     KIcon icon(const KUrl &url) const;
 
-    void notify(const QString &msg, Rekonq::Notify status);
+    void notifyMsg(const QString &msg, Rekonq::Notify status);
 
     static KUrl guessUrlFromString(const QString &url);
 

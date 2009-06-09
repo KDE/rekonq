@@ -42,6 +42,7 @@
 #include <KConfig>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
+#include <KPassivePopup>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -253,21 +254,25 @@ KUrl Application::guessUrlFromString(const QString &string)
     return url;
 }
 
-void Application::notify(const QString &msg, Rekonq::Notify status)
+
+void Application::notifyMsg(const QString &msg, Rekonq::Notify status)
 {
+    QPixmap px;
+
     switch(status)
     {
-    case Rekonq::success:
-// hi32-actions-emoticon.png
-        KPassivePopup::message();
+    case Rekonq::Success:
+        px.load("hi32-actions-emoticon.png");
+        KPassivePopup::message( i18n("Success!"), msg, px, this, 2);
         break;
-    case Rekonq::error:
-//     hi32-actions-edit-delete.png
-        KPassivePopup::message();
+    case Rekonq::Error:
+        px.load("hi32-actions-edit-delete.png");
+        KPassivePopup::message( i18n("Error!"), msg, px, this, 2);
         break;
-    case Rekonq::download:
-// kget/pics
-        KPassivePopup::message();
+    case Rekonq::Download:
+        QString path = KStandardDirs::locate("appdata", "pics/hi64-actions-download.png");
+        px.load(path);
+        KPassivePopup::message( i18n("Download!"), msg, px, this, 2);
         break;
     default:
         kDebug() << "nothing to be notified..";
