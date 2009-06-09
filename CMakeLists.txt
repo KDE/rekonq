@@ -9,7 +9,7 @@ PROJECT( rekonq )
 # rekonq info
 SET(REKONQ_MAJOR_VERSION "0")
 SET(REKONQ_MINOR_VERSION "1")
-SET(REKONQ_PATCH_VERSION "3")
+SET(REKONQ_PATCH_VERSION "4")
 
 SET(REKONQ_VERSION_STR
     "${REKONQ_MAJOR_VERSION}.${REKONQ_MINOR_VERSION}.${REKONQ_PATCH_VERSION}"
@@ -36,6 +36,21 @@ INCLUDE(MacroOptionalFindPackage)
 INCLUDE(FindPackageHandleStandardArgs)
 INCLUDE(KDE4Defaults)
 INCLUDE(MacroLibrary)
+
+# --------------- KNetworkAccessManager
+if(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
+else(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")    
+
+    find_package(KdeNetwork REQUIRED)
+
+    MESSAGE(STATUS "----------------------------------------------------------------------------------")
+    MESSAGE(STATUS "")
+    MESSAGE(STATUS " As KDE VERSION is minor than 4.2.70, rekonq will use KNetworkAccessManager ")
+    MESSAGE(STATUS " classes, instead of newly KIO::AccessManager. ")
+    MESSAGE(STATUS "")
+
+endif(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
+
 
 # ==================================================================================================
 # Log messages
@@ -90,9 +105,26 @@ ELSE(KDEWEBKIT_FOUND)
     MESSAGE(STATUS " KDE Webkit library found.............. NO")
     MESSAGE(STATUS "")
     MESSAGE(SEND_ERROR " rekonq needs, from version 0.2, KDEWEBKIT to be compiled. Please install it and try compiling again.")
-    MESSAGE(STATUS " You can actually retrieve it from playground/libs/webkitkde KDE svn")
+    MESSAGE(STATUS " You can actually retrieve it from playground/libs/webkitkde/kdewebkit KDE svn")
     MESSAGE(STATUS "")
 ENDIF(KDEWEBKIT_FOUND)
+
+# --------------- KNetworkAccessManager
+if(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
+else(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")    
+MESSAGE(STATUS "")
+IF(KDENETWORK_FOUND)
+    MESSAGE(STATUS " KDE Network library found............. YES")
+ELSE(KDENETWORK_FOUND)
+    MESSAGE(STATUS " KDE Network library found............. NO")
+    MESSAGE(STATUS "")
+    MESSAGE(SEND_ERROR " rekonq needs, from version 0.2, KDENETWORK if compiled with a KDE version minor than 4.2.69 ")
+    MESSAGE(STATUS " You can actually retrieve it from playground/libs/webkitkde/kdenetwork KDE svn")
+    MESSAGE(STATUS "")
+ENDIF(KDENETWORK_FOUND)
+
+endif(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
+
 
 MESSAGE(STATUS "")
 MESSAGE(STATUS "----------------------------------------------------------------------------------")
@@ -101,13 +133,29 @@ MESSAGE(STATUS "")
 
 ##### FINAL RESULTS #####
 
-IF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
-    MESSAGE(STATUS " rekonq will be compiled............... YES")
-    SET(REKONQ_CAN_BE_COMPILED true)
-ELSE(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
-    MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
-    SET(REKONQ_CAN_BE_COMPILED false)
-ENDIF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
+if(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
+
+    IF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
+        MESSAGE(STATUS " rekonq will be compiled............... YES")
+        SET(REKONQ_CAN_BE_COMPILED true)
+    ELSE(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
+        MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
+        SET(REKONQ_CAN_BE_COMPILED false)
+    ENDIF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
+
+else(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")    
+
+    IF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND AND KDENETWORK_FOUND)
+        MESSAGE(STATUS " rekonq will be compiled............... YES")
+        SET(REKONQ_CAN_BE_COMPILED true)
+    ELSE(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND AND KDENETWORK_FOUND)
+        MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
+        SET(REKONQ_CAN_BE_COMPILED false)
+    ENDIF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND AND KDENETWORK_FOUND)
+
+endif(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
+
+
 
 MESSAGE(STATUS "")
 MESSAGE(STATUS "----------------------------------------------------------------------------------")
@@ -116,15 +164,6 @@ MESSAGE(STATUS "")
 # ==================================================================================================
 
 IF(REKONQ_CAN_BE_COMPILED)
-
-    INCLUDE_DIRECTORIES ( ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_BINARY_DIR}
-        ${KDE4_INCLUDES}
-        ${QT4_INCLUDES}
-        ${QT_QTNETWORK_INCLUDE_DIR}
-        ${QT_QTWEBKIT_INCLUDE_DIR}
-        ${KDEWEBKIT_INCLUDE_DIR}    
-    )
 
     ADD_SUBDIRECTORY( src )
     ADD_SUBDIRECTORY( icons )
