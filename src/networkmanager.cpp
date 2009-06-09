@@ -51,13 +51,8 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QSslError>
 
-#if KDE_IS_VERSION(4,2,70)
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
         : KIO::AccessManager(parent)
-#else
-NetworkAccessManager::NetworkAccessManager(QObject *parent)
-        : KNetworkAccessManager(parent)
-#endif
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
