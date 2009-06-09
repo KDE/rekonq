@@ -19,8 +19,8 @@
 * ============================================================ */
 
 
-#ifndef NETWORKACCESSMANAGER_H
-#define NETWORKACCESSMANAGER_H
+#ifndef NETWORKMANAGER_H
+#define NETWORKMANAGER_H
 
 // KDE Includes
 #include <KIO/AccessManager>
@@ -29,8 +29,9 @@
 class QNetworkRequest;
 class QIODevice;
 
+using namespace KIO;
 
-class NetworkAccessManager : public KIO::AccessManager
+class NetworkAccessManager : public AccessManager
 {
     Q_OBJECT
 
@@ -50,4 +51,4 @@ private slots:
 
 };
 
-#endif // NETWORKACCESSMANAGER_H
+#endif // NETWORKMANAGER_H

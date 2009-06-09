@@ -51,8 +51,9 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QSslError>
 
+
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
-        : KIO::AccessManager(parent)
+        : AccessManager(parent)
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
@@ -94,7 +95,6 @@ void NetworkAccessManager::loadSettings()
        setProxy(proxy);
     }
 }
-
 
 
 void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *auth)
