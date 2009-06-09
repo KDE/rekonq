@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it
@@ -19,35 +18,10 @@
 * ============================================================ */
 
 
-#ifndef NETWORKACCESSMANAGER_H
-#define NETWORKACCESSMANAGER_H
+#include <kdeversion.h>
 
-// KDE Includes
-#include <KIO/AccessManager>
-
-class QNetworkRequest;
-class QIODevice;
-
-using namespace KIO;
-
-class NetworkAccessManager : public AccessManager
-{
-    Q_OBJECT
-
-public:
-    NetworkAccessManager(QObject *parent = 0);
-
-public slots:
-    void loadSettings();
-
-private slots:
-    void authenticationRequired(QNetworkReply *reply, QAuthenticator *auth);
-    void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth);
-
-#ifndef QT_NO_OPENSSL
-    void slotSSLErrors(QNetworkReply *reply, const QList<QSslError> &error);
+#if KDE_IS_VERSION(4,2,70)
+    #include "networkmanager.h"
+#else
+    #include "kaccessmanager.h"
 #endif
-
-};
-
-#endif // NETWORKACCESSMANAGER_H
