@@ -35,16 +35,8 @@
 #include <QWebView>
 
 // Forward Declarations
-class MainWindow;
-class Application;
 
-class KActionCollection;
 
-class QWebFrame;
-class QAuthenticator;
-class QMouseEvent;
-class QNetworkProxy;
-class QNetworkReply;
 class WebPage;
 
 

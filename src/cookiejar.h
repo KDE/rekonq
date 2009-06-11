@@ -29,7 +29,6 @@
 #include <QtNetwork/QNetworkCookieJar>
 
 // Forward Declarations
-class AutoSaver;
 class QUrl;
 
 
