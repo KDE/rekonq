@@ -26,8 +26,6 @@
 #include <KIO/AccessManager>
 
 // Forward Declarations
-class QNetworkRequest;
-class QIODevice;
 
 using namespace KIO;
 

@@ -31,17 +31,14 @@
 #include <KTabWidget>
 
 // Forward Declarations
-class QLineEdit;
 class QUrl;
 class QWebFrame;
 class QLabel;
 
 class KAction;
-class KCompletion;
 class KMenu;
 class KUrl;
 
-class HistoryCompletionModel;
 class StackedUrlBar;
 class TabBar;
 class UrlBar;

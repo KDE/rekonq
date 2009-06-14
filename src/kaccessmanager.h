@@ -27,8 +27,6 @@
 #include <kdenetwork/knetworkreply.h>
 
 // Forward Declarations
-class QNetworkRequest;
-class QIODevice;
 
 
 class NetworkAccessManager : public KNetworkAccessManager
