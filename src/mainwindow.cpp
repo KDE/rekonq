@@ -476,10 +476,10 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 void MainWindow::slotFileOpen()
 {
     QString filePath = KFileDialog::getOpenFileName(KUrl(),
-                       i18n("Web Resources (*.html *.htm *.svg *.png *.gif *.svgz); All files (*.*)"),
+                       i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n"\
+                            "*.*|All files (*.*)"),
                        this,
-                       i18n("Open Web Resource")
-                                                   );
+                       i18n("Open Web Resource"));
 
     if (filePath.isEmpty())
         return;
