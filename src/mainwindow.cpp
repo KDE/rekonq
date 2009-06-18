@@ -476,7 +476,7 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 void MainWindow::slotFileOpen()
 {
     QString filePath = KFileDialog::getOpenFileName(KUrl(),
-                       i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n"\
+                       i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n" \
                             "*.*|All files (*.*)"),
                        this,
                        i18n("Open Web Resource"));
@@ -704,8 +704,8 @@ void MainWindow::slotToggleInspector(bool enable)
     if (enable)
     {
         int result = KMessageBox::questionYesNo(this,
-                        i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
-                        "Do you want to reload all pages?"),
+                        i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n" \
+                             "Do you want to reload all pages?"),
                         i18n("Web Inspector")
                      );
 
@@ -834,17 +834,16 @@ bool MainWindow::queryClose()
 
         int answer = KMessageBox::questionYesNoCancel(
                          this,
-                         i18np( "Are you sure you want to close the window?\n" 
-                                "You have 1 tab open",
-                                "Are you sure you want to close the window?\n" 
-                                "You have %1 tabs open", 
-                                m_view->count()),
-                                i18n("Are you sure you want to close the window?"),
-                                KStandardGuiItem::quit(),
-                                KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
-                                KStandardGuiItem::cancel(),
-                                "confirmClosingMultipleTabs"
-                     );
+                         i18np("Are you sure you want to close the window?\n" \
+                               "You have 1 tab open",
+                               "Are you sure you want to close the window?\n" \
+                               "You have %1 tabs open",
+                               m_view->count()),
+                         i18n("Are you sure you want to close the window?"),
+                         KStandardGuiItem::quit(),
+                         KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
+                         KStandardGuiItem::cancel(),
+                         "confirmClosingMultipleTabs");
 
         switch (answer)
         {
