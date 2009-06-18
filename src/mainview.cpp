@@ -593,7 +593,7 @@ void MainView::webViewIconChanged()
     int index = webViewIndex(webView);
     if (-1 != index)
     {
-        QIcon icon = Application::instance()->icon(webView->url());
+        QIcon icon = Application::icon(webView->url());
         QLabel *label = animatedLoading(index, false);
         QMovie *movie = label->movie();
         delete movie;
@@ -643,7 +643,7 @@ void MainView::aboutToShowRecentTabsMenu()
     {
         KAction *action = new KAction(m_recentlyClosedTabsMenu);
         action->setData(m_recentlyClosedTabs.at(i));
-        QIcon icon = Application::instance()->icon(m_recentlyClosedTabs.at(i));
+        QIcon icon = Application::icon(m_recentlyClosedTabs.at(i));
         action->setIcon(icon);
         action->setText(m_recentlyClosedTabs.at(i).prettyUrl());
         m_recentlyClosedTabsMenu->addAction(action);

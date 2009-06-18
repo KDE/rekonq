@@ -184,7 +184,7 @@ BookmarkProvider *Application::bookmarkProvider()
 }
 
 
-KIcon Application::icon(const KUrl &url) const
+KIcon Application::icon(const KUrl &url)
 {
     KIcon icon = KIcon(QWebSettings::iconForUrl(url));
     if (icon.isNull())

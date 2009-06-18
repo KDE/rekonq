@@ -137,11 +137,11 @@ void UrlBar::slotUpdateUrl()
 {
     if (count())
     {
-        changeUrl(0, Application::instance()->icon(m_currentUrl), m_currentUrl);
+        changeUrl(0, Application::icon(m_currentUrl), m_currentUrl);
     }
     else
     {
-        insertUrl(0, Application::instance()->icon(m_currentUrl), m_currentUrl);
+        insertUrl(0, Application::icon(m_currentUrl), m_currentUrl);
     }
 
     setCurrentIndex(0);
