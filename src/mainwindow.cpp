@@ -570,15 +570,9 @@ void MainWindow::slotFindNext()
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
 
-    QWebPage::FindFlags options;
+    QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
-    {
-        options = QWebPage::FindCaseSensitively | QWebPage::FindWrapsAroundDocument;
-    }
-    else
-    {
-        options = QWebPage::FindWrapsAroundDocument;
-    }
+        options |= QWebPage::FindCaseSensitively;
 
     if (!currentTab()->findText(m_lastSearch, options))
     {
@@ -592,15 +586,9 @@ void MainWindow::slotFindPrevious()
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
 
-    QWebPage::FindFlags options;
+    QWebPage::FindFlags options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
-    {
-        options = QWebPage::FindCaseSensitively | QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
-    }
-    else
-    {
-        options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
-    }
+        options |= QWebPage::FindCaseSensitively;
 
     if (!currentTab()->findText(m_lastSearch, options))
     {
