@@ -81,7 +81,6 @@ private:
 
     LineEdit *m_lineEdit;
 
-    QIcon m_currentIcon;
     KUrl m_currentUrl;
     int m_progress;
 };
