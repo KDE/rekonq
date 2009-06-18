@@ -288,7 +288,7 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QLatin1String("private_browsing"), a);
-    connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotPrivateBrowsing(bool)));
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotPrivateBrowsing(bool)));
 
     // ================ history related actions
     m_historyBackAction = new KAction(KIcon("go-previous"), i18n("Back"), this);
@@ -524,7 +524,7 @@ void MainWindow::printRequested(QWebFrame *frame)
 void MainWindow::slotPrivateBrowsing(bool enable)
 {
     QWebSettings *settings = QWebSettings::globalSettings();
-    if (enable)
+    if (enable && !settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         QString title = i18n("Are you sure you want to turn on private browsing?");
         QString text = "<b>" + title + i18n("</b><br><br>When private browsing is turned on,"
@@ -535,8 +535,8 @@ void MainWindow::slotPrivateBrowsing(bool enable)
                                             "  Until you close the window, you can still click the Back and Forward buttons" \
                                             " to return to the web pages you have opened.");
 
-        int  button = KMessageBox::questionYesNo(this, text, title);
-        if (button == KMessageBox::Ok)
+        int button = KMessageBox::questionYesNo(this, text, title);
+        if (button == KMessageBox::Yes)
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
         }

@@ -102,7 +102,6 @@ private slots:
     void slotFileOpen();
     void slotFilePrintPreview();
     void slotFilePrint();
-    void slotPrivateBrowsing(bool);
     void slotFileSaveAs();
     void printRequested(QWebFrame *frame);
 
@@ -120,6 +119,7 @@ private slots:
 
     // Tools Menu slots
     void slotToggleInspector(bool enable);
+    void slotPrivateBrowsing(bool enable);
 
     // Settings Menu slots
     void slotShowMenubar(bool enable);
