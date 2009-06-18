@@ -58,8 +58,9 @@ protected:
 
     KWebPage *createWindow(QWebPage::WebWindowType type);
 
-// protected Q_SLOTS:
-//     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
+
+protected Q_SLOTS:
+    virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
 
 private:
     void viewErrorPage(QNetworkReply *);

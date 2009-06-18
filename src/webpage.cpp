@@ -42,6 +42,15 @@
 #include <KDebug>
 #include <KToolInvocation>
 
+#include <KDE/KParts/BrowserRun>
+/*#include <KDE/KAction>
+#include <KDE/KFileDialog>
+#include <KDE/KInputDialog>
+#include <KDE/KMessageBox>
+#include <KDE/KProtocolManager>*/
+#include <KDE/KMimeTypeTrader>
+#include <KDE/KRun>
+
 #include <kdewebkit/kwebpage.h>
 #include <kdewebkit/kwebview.h>
 
@@ -123,16 +132,39 @@ KWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 
 
 // FIXME: implement here (perhaps) mimetype discerning && file loading (KToolInvocation??)
-// void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
-// {
-// 
-//     if (reply->error() == QNetworkReply::NoError)
-//     {
-//         return slotDownloadRequested(reply->request(), reply);
-//     }
-// 
-//     viewErrorPage(reply);
-// }
+void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
+{
+
+    const KUrl url(reply->request().url());
+    kDebug() << "title:" << url;
+    kDebug() << "error:" << reply->errorString();
+
+    QString filename = url.fileName();
+    QString mimetype = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+    KService::Ptr offer = KMimeTypeTrader::self()->preferredService(mimetype);
+
+    KParts::BrowserRun::AskSaveResult res = KParts::BrowserRun::askSave(
+                                                url,
+                                                offer,
+                                                mimetype,   
+                                                filename
+                                            );
+    switch (res) 
+    {
+    case KParts::BrowserRun::Save:
+        slotDownloadRequested(reply->request(), reply);
+        return;
+    case KParts::BrowserRun::Cancel:
+        return;
+    default: // non existant case
+        break;
+    }
+
+    KUrl::List list;
+    list.append(url);
+    KRun::run(*offer,url,0);
+    return;
+}
 
 
 void WebPage::manageNetworkErrors(QNetworkReply* reply)
