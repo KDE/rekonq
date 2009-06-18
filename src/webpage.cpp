@@ -43,11 +43,6 @@
 #include <KToolInvocation>
 
 #include <KDE/KParts/BrowserRun>
-/*#include <KDE/KAction>
-#include <KDE/KFileDialog>
-#include <KDE/KInputDialog>
-#include <KDE/KMessageBox>
-#include <KDE/KProtocolManager>*/
 #include <KDE/KMimeTypeTrader>
 #include <KDE/KRun>
 
