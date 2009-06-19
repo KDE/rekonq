@@ -323,6 +323,11 @@ void MainWindow::setupActions()
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
+
+    // ==================== Bookmarks Actions
+    a = new KAction(i18n("Add Bookmark"), this);
+    a->setIcon(KIcon("rating"));
+    actionCollection()->addAction(QLatin1String("add_bookmark"),a);
 }
 
 
