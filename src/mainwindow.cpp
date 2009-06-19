@@ -357,7 +357,6 @@ void MainWindow::setupHistoryMenu()
     QList<QAction*> historyActions;
     historyActions.append(actionCollection()->action("history_back"));
     historyActions.append(actionCollection()->action("history_forward"));
-    historyActions.append(m_view->recentlyClosedTabsAction());
     historyMenu->setInitialActions(historyActions);
 }
 

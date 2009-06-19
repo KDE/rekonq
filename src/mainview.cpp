@@ -61,8 +61,6 @@
 
 MainView::MainView(QWidget *parent)
         : KTabWidget(parent)
-        , m_recentlyClosedTabsAction(0)
-        , m_recentlyClosedTabsMenu(new KMenu(this))
         , m_urlBars(new StackedUrlBar(this))
         , m_tabBar(new TabBar(this))
         , m_addTabButton(new QToolButton(this))
@@ -101,14 +99,6 @@ void MainView::postLaunch()
     m_addTabButton->setDefaultAction(Application::instance()->mainWindow()->actionByName("new_tab"));
     m_addTabButton->setAutoRaise(true);
     m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-
-
-    // Recently Closed Tab Action
-    connect(m_recentlyClosedTabsMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowRecentTabsMenu()));
-    connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)), this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
-    m_recentlyClosedTabsAction = new KAction(i18n("Recently Closed Tabs"), this);
-    m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
-    m_recentlyClosedTabsAction->setEnabled(false);
 }
 
 
@@ -170,12 +160,6 @@ WebView *MainView::currentWebView() const
 int MainView::webViewIndex(WebView *webView) const 
 { 
     return indexOf(webView); 
-}
-
-
-KAction *MainView::recentlyClosedTabsAction() const 
-{ 
-    return m_recentlyClosedTabsAction; 
 }
 
 
@@ -284,8 +268,6 @@ void MainView::slotWebPaste()
 
 void MainView::clear()
 {
-    // clear the recently closed tabs
-    m_recentlyClosedTabs.clear();
     // clear the line edit history
     for (int i = 0; i < m_urlBars->count(); ++i)
     {
@@ -529,20 +511,6 @@ void MainView::slotCloseTab(int index)
                 return;
         }
         hasFocus = tab->hasFocus();
-
-        m_recentlyClosedTabsAction->setEnabled(true);
-        m_recentlyClosedTabs.prepend(tab->url());
-
-        // don't add empty urls
-        if (tab->url().isValid())
-        {
-            m_recentlyClosedTabs.prepend(tab->url());
-        }
-
-        if (m_recentlyClosedTabs.size() >= MainView::m_recentlyClosedTabsSize)
-        {
-            m_recentlyClosedTabs.removeLast();
-        }
     }
 
     QWidget *urlBar = m_urlBars->urlBar(index);
@@ -675,28 +643,6 @@ void MainView::webViewUrlChanged(const QUrl &url)
         m_tabBar->setTabData(index, url);
     }
     emit tabsChanged();
-}
-
-
-void MainView::aboutToShowRecentTabsMenu()
-{
-    m_recentlyClosedTabsMenu->clear();
-    for (int i = 0; i < m_recentlyClosedTabs.count(); ++i)
-    {
-        KAction *action = new KAction(m_recentlyClosedTabsMenu);
-        action->setData(m_recentlyClosedTabs.at(i));
-        QIcon icon = Application::instance()->icon(m_recentlyClosedTabs.at(i));
-        action->setIcon(icon);
-        action->setText(m_recentlyClosedTabs.at(i).prettyUrl());
-        m_recentlyClosedTabsMenu->addAction(action);
-    }
-}
-
-
-void MainView::aboutToShowRecentTriggeredAction(QAction *action)
-{
-    KUrl url = action->data().toUrl();
-    loadUrl(url);
 }
 
 

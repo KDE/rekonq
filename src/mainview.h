@@ -133,8 +133,8 @@ public slots:
 
 private slots:
     void slotCurrentChanged(int index);
-    void aboutToShowRecentTabsMenu();
-    void aboutToShowRecentTriggeredAction(QAction *action); // need QAction!
+//     void aboutToShow/*Rec*/entTabsMenu();
+//     void aboutToShowRecentTriggeredAction(QAction *action); // need QAction!
 
     void webViewLoadStarted();
     void webViewLoadProgress(int progress);
@@ -177,12 +177,6 @@ private:
      */
     QLabel *animatedLoading(int index, bool addMovie);
 
-    static const int m_recentlyClosedTabsSize = 10;
-    KAction *m_recentlyClosedTabsAction;
-
-    KMenu *m_recentlyClosedTabsMenu;
-    QList<KUrl> m_recentlyClosedTabs;
-
     StackedUrlBar *m_urlBars;
     TabBar *m_tabBar;
 
@@ -194,4 +188,3 @@ private:
 };
 
 #endif
-
