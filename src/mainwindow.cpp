@@ -292,11 +292,7 @@ void MainWindow::setupActions()
 
     // ================ history related actions
     m_historyBackAction = new KAction(KIcon("go-previous"), i18n("Back"), this);
-    m_historyBackMenu = new KMenu(this);
-    m_historyBackAction->setMenu(m_historyBackMenu);
     connect(m_historyBackAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenPrevious()));
-    connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
-    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
     actionCollection()->addAction(QLatin1String("history_back"), m_historyBackAction);
 
     m_historyForwardAction = new KAction(KIcon("go-next"), i18n("Forward"), this);
@@ -767,44 +763,6 @@ void MainWindow::slotLoadProgress(int progress)
         m_stopReloadAction->setText(i18n("Reload"));
         connect(m_stopReloadAction, SIGNAL(triggered(bool)), reload, SIGNAL(triggered(bool)));
 
-    }
-}
-
-
-void MainWindow::slotAboutToShowBackMenu()
-{
-    m_historyBackMenu->clear();
-    if (!currentTab())
-        return;
-    QWebHistory *history = currentTab()->history();
-    int historyCount = history->count();
-    for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i)
-    {
-        QWebHistoryItem item = history->backItems(history->count()).at(i);
-        KAction *action = new KAction(this);
-        action->setData(-1*(historyCount - i - 1));
-        QIcon icon = Application::instance()->icon(item.url());
-        action->setIcon(icon);
-        action->setText(item.title());
-        m_historyBackMenu->addAction(action);
-    }
-}
-
-
-void MainWindow::slotOpenActionUrl(QAction *action)
-{
-    int offset = action->data().toInt();
-    QWebHistory *history = currentTab()->history();
-    if (offset < 0)
-    {
-        history->goToItem(history->backItems(-1*offset).first()); // back
-    }
-    else
-    {
-        if (offset > 0)
-        {
-            history->goToItem(history->forwardItems(history->count() - offset + 1).back()); // forward
-        }
     }
 }
 
