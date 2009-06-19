@@ -65,6 +65,7 @@ MainView::MainView(QWidget *parent)
         , m_recentlyClosedTabsMenu(new KMenu(this))
         , m_urlBars(new StackedUrlBar(this))
         , m_tabBar(new TabBar(this))
+        , m_addTabButton(new QToolButton(this))
 {
     // setting tabbar
     setTabBar(m_tabBar);
@@ -97,12 +98,48 @@ MainView::~MainView()
 
 void MainView::postLaunch()
 {
+    m_addTabButton->setDefaultAction(Application::instance()->mainWindow()->actionByName("new_tab"));
+    m_addTabButton->setAutoRaise(true);
+    m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+
+
     // Recently Closed Tab Action
     connect(m_recentlyClosedTabsMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowRecentTabsMenu()));
     connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)), this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
     m_recentlyClosedTabsAction = new KAction(i18n("Recently Closed Tabs"), this);
     m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
     m_recentlyClosedTabsAction->setEnabled(false);
+}
+
+
+void MainView::addTabButtonPosition()
+{
+    static bool ButtonInCorner = false;
+
+    QSize s1 = frameSize();
+    int tabWidgetWidth = s1.width();
+
+    QSize s2 = tabBar()->sizeHint();
+    int newPos = s2.width();
+
+    if( newPos > tabWidgetWidth )
+    {
+        if(ButtonInCorner)
+            return;
+        setCornerWidget(m_addTabButton);
+        ButtonInCorner = true;
+    }
+    else
+    {
+        if(ButtonInCorner)
+        {
+            setCornerWidget(0);
+            m_addTabButton->show();
+            ButtonInCorner = false;
+        }
+        m_addTabButton->move(newPos, 0);
+    }
+
 }
 
 
@@ -387,6 +424,7 @@ WebView *MainView::newWebView(Rekonq::OpenType type)
     emit tabsChanged();
 
     showTabBar();
+    addTabButtonPosition();
 
     return webView;
 }
@@ -446,6 +484,7 @@ void MainView::slotCloseOtherTabs(int index)
     }
 
     showTabBar();
+    addTabButtonPosition();
 }
 
 
@@ -460,6 +499,7 @@ void MainView::slotCloneTab(int index)
     tab->setUrl(webView(index)->url());
 
     showTabBar();
+    addTabButtonPosition();
 }
 
 
@@ -521,6 +561,7 @@ void MainView::slotCloseTab(int index)
     }
 
     showTabBar();
+    addTabButtonPosition();
 }
 
 

@@ -30,6 +30,9 @@
 // KDE Includes
 #include <KTabWidget>
 
+// Qt Includes
+#include <QtGui/QToolButton>
+
 // Forward Declarations
 class QUrl;
 class QWebFrame;
@@ -160,6 +163,8 @@ protected:
 
 private:
 
+    void addTabButtonPosition();
+
     /**
      * This function creates (if not exists) and returns a QLabel
      * with a loading QMovie.
@@ -184,6 +189,8 @@ private:
     QString m_loadingGitPath;
 
     bool m_makeBackTab;
+
+    QToolButton *m_addTabButton;
 };
 
 #endif
