@@ -21,7 +21,6 @@ SET( rekonq_SRCS
     edittableview.cpp 
     edittreeview.cpp 
     history.cpp
-    historydialog.cpp
     historymenu.cpp
     bookmarks.cpp
     modelmenu.cpp 

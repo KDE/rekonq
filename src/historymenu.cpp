@@ -23,7 +23,6 @@
 #include "historymenu.moc"
 
 #include "application.h"
-#include "historydialog.h"
 
 #include <QtGui/QWidget>
 #include <QtCore/QModelIndex>
@@ -70,20 +69,12 @@ void HistoryMenu::postPopulated()
         addSeparator();
 
     KAction *showAllAction = new KAction(i18n("Show All History"), this);
-    connect(showAllAction, SIGNAL(triggered()), this, SLOT(showHistoryDialog()));
+//     connect(showAllAction, SIGNAL(triggered()), this, SLOT(showHistoryDialog()));
     addAction(showAllAction);
 
     KAction *clearAction = new KAction(i18n("Clear History"), this);
     connect(clearAction, SIGNAL(triggered()), m_history, SLOT(clear()));
     addAction(clearAction);
-}
-
-
-void HistoryMenu::showHistoryDialog()
-{
-    HistoryDialog *dialog = new HistoryDialog(this);
-    connect(dialog, SIGNAL(openUrl(const KUrl&)), this, SIGNAL(openUrl(const KUrl&)));
-    dialog->show();
 }
 
 
