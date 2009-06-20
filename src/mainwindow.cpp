@@ -251,6 +251,7 @@ void MainWindow::setupActions()
 
     // stop reload Action
     m_stopReloadAction = new KAction(KIcon("view-refresh"), i18n("Reload"), this);
+    m_stopReloadAction->setShortcut(KShortcut(Qt::Key_F5));
     actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
 
@@ -337,7 +338,7 @@ void MainWindow::setupSidePanel()
     addDockWidget(Qt::LeftDockWidgetArea, m_sidePanel);
 
     // setup side panel actions
-    QAction* a = m_sidePanel->toggleViewAction();
+    KAction* a = (KAction *) m_sidePanel->toggleViewAction();
     a->setText( i18n("History Panel") );
     a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H)); // WARNING : is this the right shortcut ??
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
