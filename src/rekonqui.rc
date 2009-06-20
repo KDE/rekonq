@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="40">
+<gui name="rekonq" version="41">
 
 <MenuBar>
 
@@ -70,9 +70,6 @@
     <Action name="options_show_statusbar" />
     <Merge name="StandardToolBarMenuHandler" />
     <Merge/>
-    <Menu name="side_panels"><text>Side &amp;Panels</text>
-        <Action name="show_history_panel" />
-    </Menu>
     <Separator/>
     <Action name="fullscreen" />
     <Separator/>
@@ -88,11 +85,12 @@
 <text>Main Toolbar</text>
     <Action name="history_back" />
     <Action name="history_forward" />
+    <Separator />
     <Action name="stop_reload" />
     <Action name="go_home" />
-    <Action name="new_tab" />
     <Action name="url_bar" />
-    <Action name="search_bar" />
+    <Action name="add_bookmark" />
+    <Action name="options_configure" />
 </ToolBar>
 
 <!--  ============ Bookmarks ToolBar =========== -->

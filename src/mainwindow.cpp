@@ -251,6 +251,7 @@ void MainWindow::setupActions()
 
     // stop reload Action
     m_stopReloadAction = new KAction(KIcon("view-refresh"), i18n("Reload"), this);
+    m_stopReloadAction->setShortcut(KShortcut(Qt::Key_F5));
     actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
 
@@ -292,11 +293,7 @@ void MainWindow::setupActions()
 
     // ================ history related actions
     m_historyBackAction = new KAction(KIcon("go-previous"), i18n("Back"), this);
-    m_historyBackMenu = new KMenu(this);
-    m_historyBackAction->setMenu(m_historyBackMenu);
     connect(m_historyBackAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenPrevious()));
-    connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
-    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
     actionCollection()->addAction(QLatin1String("history_back"), m_historyBackAction);
 
     m_historyForwardAction = new KAction(KIcon("go-next"), i18n("Forward"), this);
@@ -323,6 +320,11 @@ void MainWindow::setupActions()
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
+
+    // ==================== Bookmarks Actions
+    a = new KAction(i18n("Add Bookmark"), this);
+    a->setIcon(KIcon("rating"));
+    actionCollection()->addAction(QLatin1String("add_bookmark"),a);
 }
 
 
@@ -336,8 +338,9 @@ void MainWindow::setupSidePanel()
     addDockWidget(Qt::LeftDockWidgetArea, m_sidePanel);
 
     // setup side panel actions
-    QAction* a = m_sidePanel->toggleViewAction();
-    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
+    KAction* a = (KAction *) m_sidePanel->toggleViewAction();
+    a->setText( i18n("History Panel") );
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H)); // WARNING : is this the right shortcut ??
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
 }
 
@@ -356,7 +359,6 @@ void MainWindow::setupHistoryMenu()
     QList<QAction*> historyActions;
     historyActions.append(actionCollection()->action("history_back"));
     historyActions.append(actionCollection()->action("history_forward"));
-    historyActions.append(m_view->recentlyClosedTabsAction());
     historyMenu->setInitialActions(historyActions);
 }
 
@@ -750,44 +752,6 @@ void MainWindow::slotLoadProgress(int progress)
         m_stopReloadAction->setText(i18n("Reload"));
         connect(m_stopReloadAction, SIGNAL(triggered(bool)), reload, SIGNAL(triggered(bool)));
 
-    }
-}
-
-
-void MainWindow::slotAboutToShowBackMenu()
-{
-    m_historyBackMenu->clear();
-    if (!currentTab())
-        return;
-    QWebHistory *history = currentTab()->history();
-    int historyCount = history->count();
-    for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i)
-    {
-        QWebHistoryItem item = history->backItems(history->count()).at(i);
-        KAction *action = new KAction(this);
-        action->setData(-1*(historyCount - i - 1));
-        QIcon icon = Application::icon(item.url());
-        action->setIcon(icon);
-        action->setText(item.title());
-        m_historyBackMenu->addAction(action);
-    }
-}
-
-
-void MainWindow::slotOpenActionUrl(QAction *action)
-{
-    int offset = action->data().toInt();
-    QWebHistory *history = currentTab()->history();
-    if (offset < 0)
-    {
-        history->goToItem(history->backItems(-1*offset).first()); // back
-    }
-    else
-    {
-        if (offset > 0)
-        {
-            history->goToItem(history->forwardItems(history->count() - offset + 1).back()); // forward
-        }
     }
 }
 

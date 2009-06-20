@@ -540,7 +540,7 @@ bool HistoryModel::removeRows(int row, int count, const QModelIndex &parent)
 //  -----------------------------------------------------------------------------------------------
 
 
-#define MOVEDROWS 10
+#define MOVEDROWS 20
 
 
 /*

@@ -30,18 +30,18 @@
 // KDE Includes
 #include <KTabWidget>
 
+// Qt Includes
+#include <QtGui/QToolButton>
+
 // Forward Declarations
-class QLineEdit;
 class QUrl;
 class QWebFrame;
 class QLabel;
 
 class KAction;
-class KCompletion;
 class KMenu;
 class KUrl;
 
-class HistoryCompletionModel;
 class StackedUrlBar;
 class TabBar;
 class UrlBar;
@@ -133,8 +133,8 @@ public slots:
 
 private slots:
     void slotCurrentChanged(int index);
-    void aboutToShowRecentTabsMenu();
-    void aboutToShowRecentTriggeredAction(QAction *action); // need QAction!
+//     void aboutToShow/*Rec*/entTabsMenu();
+//     void aboutToShowRecentTriggeredAction(QAction *action); // need QAction!
 
     void webViewLoadStarted();
     void webViewLoadProgress(int progress);
@@ -163,6 +163,8 @@ protected:
 
 private:
 
+    void addTabButtonPosition();
+
     /**
      * This function creates (if not exists) and returns a QLabel
      * with a loading QMovie.
@@ -175,19 +177,14 @@ private:
      */
     QLabel *animatedLoading(int index, bool addMovie);
 
-    static const int m_recentlyClosedTabsSize = 10;
-    KAction *m_recentlyClosedTabsAction;
-
-    KMenu *m_recentlyClosedTabsMenu;
-    QList<KUrl> m_recentlyClosedTabs;
-
     StackedUrlBar *m_urlBars;
     TabBar *m_tabBar;
 
     QString m_loadingGitPath;
 
     bool m_makeBackTab;
+
+    QToolButton *m_addTabButton;
 };
 
 #endif
-

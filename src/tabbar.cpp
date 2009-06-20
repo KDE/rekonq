@@ -70,25 +70,8 @@ TabBar::~TabBar()
 QSize TabBar::tabSizeHint(int index) const
 {
     QSize s = m_parent->sizeHint();
-    int w;
 
-    int n = count();
-
-    if (n > 6)
-    {
-        w = s.width() / 5;
-    }
-    else
-    {
-        if (n > 3)
-        {
-            w = s.width() / 4;
-        }
-        else
-        {
-            w = s.width() / 3;
-        }
-    }
+    int w = s.width() / 4;
     int h = KTabBar::tabSizeHint(index).height();
 
     QSize ts = QSize(w, h);

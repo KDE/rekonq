@@ -40,7 +40,6 @@ class QWebFrame;
 class KUrl;
 class KAction;
 class KActionMenu;
-class KIcon;
 class KMenu;
 
 class HistoryMenu;
@@ -90,11 +89,11 @@ private slots:
     void slotUpdateActions();
     void slotUpdateWindowTitle(const QString &title = QString());
     void slotOpenLocation();
-    void slotAboutToShowBackMenu();
+//     void slotAboutToShowBackMenu();
     void geometryChangeRequested(const QRect &geometry);
 
     // history related
-    void slotOpenActionUrl(QAction *action);
+//     void slotOpenActionUrl(QAction *action);
     void slotOpenPrevious();
     void slotOpenNext();
 
@@ -131,7 +130,6 @@ private:
     FindBar *m_findBar;
     SidePanel *m_sidePanel;
 
-    KMenu *m_historyBackMenu;
     KMenu *m_windowMenu;
     KActionMenu *m_historyActionMenu;
 

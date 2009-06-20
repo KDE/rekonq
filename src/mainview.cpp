@@ -61,10 +61,9 @@
 
 MainView::MainView(QWidget *parent)
         : KTabWidget(parent)
-        , m_recentlyClosedTabsAction(0)
-        , m_recentlyClosedTabsMenu(new KMenu(this))
         , m_urlBars(new StackedUrlBar(this))
         , m_tabBar(new TabBar(this))
+        , m_addTabButton(new QToolButton(this))
 {
     // setting tabbar
     setTabBar(m_tabBar);
@@ -97,12 +96,40 @@ MainView::~MainView()
 
 void MainView::postLaunch()
 {
-    // Recently Closed Tab Action
-    connect(m_recentlyClosedTabsMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowRecentTabsMenu()));
-    connect(m_recentlyClosedTabsMenu, SIGNAL(triggered(QAction *)), this, SLOT(aboutToShowRecentTriggeredAction(QAction *)));
-    m_recentlyClosedTabsAction = new KAction(i18n("Recently Closed Tabs"), this);
-    m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
-    m_recentlyClosedTabsAction->setEnabled(false);
+    m_addTabButton->setDefaultAction(Application::instance()->mainWindow()->actionByName("new_tab"));
+    m_addTabButton->setAutoRaise(true);
+    m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+}
+
+
+void MainView::addTabButtonPosition()
+{
+    static bool ButtonInCorner = false;
+
+    QSize s1 = frameSize();
+    int tabWidgetWidth = s1.width();
+
+    QSize s2 = tabBar()->sizeHint();
+    int newPos = s2.width();
+
+    if( newPos > tabWidgetWidth )
+    {
+        if(ButtonInCorner)
+            return;
+        setCornerWidget(m_addTabButton);
+        ButtonInCorner = true;
+    }
+    else
+    {
+        if(ButtonInCorner)
+        {
+            setCornerWidget(0);
+            m_addTabButton->show();
+            ButtonInCorner = false;
+        }
+        m_addTabButton->move(newPos, 0);
+    }
+
 }
 
 
@@ -133,12 +160,6 @@ WebView *MainView::currentWebView() const
 int MainView::webViewIndex(WebView *webView) const 
 { 
     return indexOf(webView); 
-}
-
-
-KAction *MainView::recentlyClosedTabsAction() const 
-{ 
-    return m_recentlyClosedTabsAction; 
 }
 
 
@@ -247,8 +268,6 @@ void MainView::slotWebPaste()
 
 void MainView::clear()
 {
-    // clear the recently closed tabs
-    m_recentlyClosedTabs.clear();
     // clear the line edit history
     for (int i = 0; i < m_urlBars->count(); ++i)
     {
@@ -387,6 +406,7 @@ WebView *MainView::newWebView(Rekonq::OpenType type)
     emit tabsChanged();
 
     showTabBar();
+    addTabButtonPosition();
 
     return webView;
 }
@@ -446,6 +466,7 @@ void MainView::slotCloseOtherTabs(int index)
     }
 
     showTabBar();
+    addTabButtonPosition();
 }
 
 
@@ -460,6 +481,7 @@ void MainView::slotCloneTab(int index)
     tab->setUrl(webView(index)->url());
 
     showTabBar();
+    addTabButtonPosition();
 }
 
 
@@ -488,20 +510,6 @@ void MainView::slotCloseTab(int index)
                 return;
         }
         hasFocus = tab->hasFocus();
-
-        m_recentlyClosedTabsAction->setEnabled(true);
-        m_recentlyClosedTabs.prepend(tab->url());
-
-        // don't add empty urls
-        if (tab->url().isValid())
-        {
-            m_recentlyClosedTabs.prepend(tab->url());
-        }
-
-        if (m_recentlyClosedTabs.size() >= MainView::m_recentlyClosedTabsSize)
-        {
-            m_recentlyClosedTabs.removeLast();
-        }
     }
 
     QWidget *urlBar = m_urlBars->urlBar(index);
@@ -520,6 +528,7 @@ void MainView::slotCloseTab(int index)
     }
 
     showTabBar();
+    addTabButtonPosition();
 }
 
 
@@ -633,28 +642,6 @@ void MainView::webViewUrlChanged(const QUrl &url)
         m_tabBar->setTabData(index, url);
     }
     emit tabsChanged();
-}
-
-
-void MainView::aboutToShowRecentTabsMenu()
-{
-    m_recentlyClosedTabsMenu->clear();
-    for (int i = 0; i < m_recentlyClosedTabs.count(); ++i)
-    {
-        KAction *action = new KAction(m_recentlyClosedTabsMenu);
-        action->setData(m_recentlyClosedTabs.at(i));
-        QIcon icon = Application::icon(m_recentlyClosedTabs.at(i));
-        action->setIcon(icon);
-        action->setText(m_recentlyClosedTabs.at(i).prettyUrl());
-        m_recentlyClosedTabsMenu->addAction(action);
-    }
-}
-
-
-void MainView::aboutToShowRecentTriggeredAction(QAction *action)
-{
-    KUrl url = action->data().toUrl();
-    loadUrl(url);
 }
 
 

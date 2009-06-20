@@ -34,18 +34,11 @@
 #include <QWebPage>
 
 // Forward Declarations
-class MainWindow;
-class Application;
 
-class KActionCollection;
 
 class QWebFrame;
-class QAuthenticator;
-class QMouseEvent;
-class QNetworkProxy;
 class QNetworkReply;
 
-class WebView;
 
 
 class WebPage : public KWebPage
@@ -65,8 +58,9 @@ protected:
 
     KWebPage *createWindow(QWebPage::WebWindowType type);
 
-// protected Q_SLOTS:
-//     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
+
+protected Q_SLOTS:
+    virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
 
 private:
     void viewErrorPage(QNetworkReply *);
