@@ -33,6 +33,7 @@
 
 // KDE Includes
 #include <KUrl>
+#include <KMessageBox>
 
 
 HistoryMenu::HistoryMenu(QWidget *parent)
@@ -78,8 +79,19 @@ void HistoryMenu::postPopulated()
     addAction(showAllAction);
 
     KAction *clearAction = new KAction(i18n("Clear History"), this);
-    connect(clearAction, SIGNAL(triggered()), m_history, SLOT(clear()));
+    connect(clearAction, SIGNAL(triggered()), this, SLOT(clearHistory()));
     addAction(clearAction);
+}
+
+
+void HistoryMenu::clearHistory()
+{
+    int res = KMessageBox::warningYesNo(this, i18n("Are you sure you want to delete history?"), i18n("History") );
+
+    if (res == KMessageBox::Yes)
+    {
+        m_history->clear();
+    }
 }
 
 

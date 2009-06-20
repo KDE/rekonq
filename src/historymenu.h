@@ -58,6 +58,7 @@ protected:
 
 private slots:
     void activated(const QModelIndex &index);
+    void clearHistory();
 
 private:
     HistoryManager *m_history;
