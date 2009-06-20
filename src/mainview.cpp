@@ -371,7 +371,7 @@ WebView *MainView::newWebView(Rekonq::OpenType type)
 
     // connecting webview with mainview
     connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
-    connect(webView, SIGNAL(loadProgress(int)), this, SLOT(webViewLoadProgress(int)));
+//     connect(webView, SIGNAL(loadProgress(int)), this, SLOT(webViewLoadProgress(int)));
     connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
     connect(webView, SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
     connect(webView, SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
@@ -553,20 +553,20 @@ void MainView::webViewLoadStarted()
 }
 
 
-void MainView::webViewLoadProgress(int progress)
-{
-    WebView *webView = qobject_cast<WebView*>(sender());
-    int index = webViewIndex(webView);
-    if (index != currentIndex() || index < 0)
-    {
-        return;
-    }
-
-    double totalBytes = static_cast<double>(webView->page()->totalBytes() / 1024);
-
-    QString message = i18n("Loading %1% (%2 %3)...", progress, totalBytes, QLatin1String("kB"));
-    emit showStatusBarMessage(message);
-}
+// void MainView::webViewLoadProgress(int progress)
+// {
+//     WebView *webView = qobject_cast<WebView*>(sender());
+//     int index = webViewIndex(webView);
+//     if (index != currentIndex() || index < 0)
+//     {
+//         return;
+//     }
+// 
+//     double totalBytes = static_cast<double>(webView->page()->totalBytes() / 1024);
+// 
+//     QString message = i18n("Loading %1% (%2 %3)...", progress, totalBytes, QLatin1String("kB"));
+//     emit showStatusBarMessage(message);
+// }
 
 
 void MainView::webViewLoadFinished(bool ok)

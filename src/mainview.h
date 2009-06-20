@@ -47,6 +47,23 @@ class TabBar;
 class UrlBar;
 
 
+namespace Rekonq
+{
+    /**
+     * @short notifying message status
+     * Different message status
+     */
+
+    enum Notify
+    {
+        Success,    ///< url successfully (down)loaded
+        Error,      ///< url failed to (down)load
+        Download,   ///< downloading url
+        Info        ///< information
+    };
+}
+
+
 /**
  *  This class represent rekonq Main View. It contains all WebViews and a stack widget
  *  of associated line edits.
@@ -112,6 +129,7 @@ public slots:
      * @param url The url to load
      */
     void loadUrl(const KUrl &url);
+
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);
     void slotCloseOtherTabs(int index);
@@ -135,7 +153,6 @@ private slots:
     void slotCurrentChanged(int index);
 
     void webViewLoadStarted();
-    void webViewLoadProgress(int progress);
     void webViewLoadFinished(bool ok);
     void webViewIconChanged();
     void webViewTitleChanged(const QString &title);

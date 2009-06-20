@@ -58,14 +58,6 @@ namespace Rekonq
         New,        ///< open url in new tab and make it current
         Background  ///< open url in new tab in background
     };
-
-    enum Notify
-    {
-        Success,    ///< url successfully (down)loaded
-        Error,      ///< url failed to (down)load
-        Download,   ///< downloading url
-        Info        ///< information
-    };
 }
 
 
@@ -86,8 +78,6 @@ public:
     WebView *newWebView(Rekonq::OpenType type = Rekonq::Default);
 
     KIcon icon(const KUrl &url) const;
-
-    void notifyMsg(const QString &msg, Rekonq::Notify status);
 
     static KUrl guessUrlFromString(const QString &url);
 

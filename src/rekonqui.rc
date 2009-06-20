@@ -67,7 +67,6 @@
 <!--  ============ SETTINGS menu =========== -->
 <Menu name="settings" noMerge="1"><text>&amp;Settings</text>
     <Action name="options_show_menubar" />
-    <Action name="options_show_statusbar" />
     <Merge name="StandardToolBarMenuHandler" />
     <Merge/>
     <Separator/>

@@ -58,6 +58,8 @@
 #include <KPushButton>
 #include <KTemporaryFile>
 #include <KJobUiDelegate>
+#include <KPassivePopup>
+#include <KStandardDirs>
 
 #include <kdeprintdialog.h>
 #include <kprintpreview.h>
@@ -159,9 +161,9 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
-    // status bar messages
-    connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
-    connect(m_view, SIGNAL(linkHovered(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
+    // "status bar" messages
+    connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), this, SLOT(notifyMessage(const QString&)));
+    connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
 
     // update toolbar actions signals
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
@@ -349,7 +351,6 @@ void MainWindow::setupHistoryMenu()
 {
     HistoryMenu *historyMenu = new HistoryMenu(this);
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
-    connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle(i18n("&History"));
 
     // setting history menu position
@@ -452,12 +453,6 @@ void MainWindow::slotPreferences()
 
     s->exec();
     delete s;
-}
-
-
-void MainWindow::slotUpdateStatusbar(const QString &string)
-{
-    statusBar()->showMessage(string, 2000);
 }
 
 
@@ -590,7 +585,7 @@ void MainWindow::slotFindNext()
 
     if (!currentTab()->findText(m_lastSearch, options))
     {
-        slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
+        notifyMessage(QString(m_lastSearch) + i18n(" not found."));
     }
 }
 
@@ -612,7 +607,7 @@ void MainWindow::slotFindPrevious()
 
     if (!currentTab()->findText(m_lastSearch, options))
     {
-        slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
+        notifyMessage(QString(m_lastSearch) + i18n(" not found."));
     }
 }
 
@@ -647,7 +642,6 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
     static bool menubarFlag;
     static bool mainToolBarFlag;
     static bool bookmarksToolBarFlag;
-    static bool statusBarFlag;
     static bool sidePanelFlag;
 
     if (makeFullScreen == true)
@@ -656,13 +650,11 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
         menubarFlag = menuBar()->isHidden();
         mainToolBarFlag = toolBar("mainToolBar")->isHidden();
         bookmarksToolBarFlag = toolBar("bookmarksToolBar")->isHidden();
-        statusBarFlag = statusBar()->isHidden();
         sidePanelFlag = sidePanel()->isHidden();
 
         menuBar()->hide();
         toolBar("mainToolBar")->hide();
         toolBar("bookmarksToolBar")->hide();
-        statusBar()->hide();
         sidePanel()->hide();
     }
     else
@@ -673,8 +665,6 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
             toolBar("mainToolBar")->show();
         if (!bookmarksToolBarFlag)
             toolBar("bookmarksToolBar")->show();
-        if (!statusBarFlag)
-            statusBar()->show();
         if (!sidePanelFlag)
             sidePanel()->show();
     }
@@ -857,4 +847,47 @@ QAction *MainWindow::actionByName(const QString name)
     kWarning() << "Action named: " << name << " not found, returning empty action.";
 
     return new QAction(this);  // return empty object instead of NULL pointer
+}
+
+
+void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
+{
+    if(msg.isEmpty())
+        return;
+
+    if(m_popup)
+        delete m_popup;
+
+    m_popup = new KPassivePopup(this);
+    m_popup->setAutoDelete(true);
+
+    QPixmap px;
+
+    switch(status)
+    {
+    case Rekonq::Info:
+        m_popup->setView(msg);
+        break;
+    case Rekonq::Success:
+        px.load("hi32-actions-emoticon.png");
+        m_popup->setView( i18n("Success!"), msg, px);
+        break;
+    case Rekonq::Error:
+        px.load("hi32-actions-edit-delete.png");
+        m_popup->setView( i18n("Error!"), msg, px);
+        break;
+    case Rekonq::Download:
+        px.load( KStandardDirs::locate("appdata", "pics/hi64-actions-download.png") );
+        m_popup->setView( i18n("Download!"), msg, px);
+        break;
+    default:
+        kDebug() << "nothing to be notified..";
+        break;
+    }
+
+    int x = geometry().x();
+    int y = geometry().y() + height() - 45;
+    QPoint p(x,y);
+
+    m_popup->show(p);
 }

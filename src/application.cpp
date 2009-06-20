@@ -253,29 +253,3 @@ KUrl Application::guessUrlFromString(const QString &string)
     }
     return url;
 }
-
-
-void Application::notifyMsg(const QString &msg, Rekonq::Notify status)
-{
-    QPixmap px;
-
-    switch(status)
-    {
-    case Rekonq::Success:
-        px.load("hi32-actions-emoticon.png");
-        KPassivePopup::message( i18n("Success!"), msg, px, this, 2);
-        break;
-    case Rekonq::Error:
-        px.load("hi32-actions-edit-delete.png");
-        KPassivePopup::message( i18n("Error!"), msg, px, this, 2);
-        break;
-    case Rekonq::Download:
-        QString path = KStandardDirs::locate("appdata", "pics/hi64-actions-download.png");
-        px.load(path);
-        KPassivePopup::message( i18n("Download!"), msg, px, this, 2);
-        break;
-    default:
-        kDebug() << "nothing to be notified..";
-        break;
-    }
-}

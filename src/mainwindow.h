@@ -41,6 +41,7 @@ class KUrl;
 class KAction;
 class KActionMenu;
 class KMenu;
+class KPassivePopup;
 
 class HistoryMenu;
 class FindBar;
@@ -78,6 +79,17 @@ public slots:
     void loadUrl(const KUrl &url);
     void slotUpdateBrowser();
 
+    /**
+     * Notifies a message in a popup
+     *
+     * @param msg The message to notify
+     *
+     * @param status The status message
+     *
+     */
+    void notifyMessage(const QString &msg, Rekonq::Notify status = Rekonq::Info);
+
+
 protected:
     bool queryClose();
 
@@ -85,7 +97,6 @@ private slots:
     void postLaunch();
     void slotUpdateConfiguration();
     void slotLoadProgress(int);
-    void slotUpdateStatusbar(const QString &string);
     void slotUpdateActions();
     void slotUpdateWindowTitle(const QString &title = QString());
     void slotOpenLocation();
@@ -139,6 +150,8 @@ private:
 
     QString m_lastSearch;
     QString m_homePage;
+
+    QPointer<KPassivePopup> m_popup;
 };
 
 #endif // MAINWINDOW_H
