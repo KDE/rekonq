@@ -145,6 +145,10 @@ void ModelMenu::aboutToShow()
     postPopulated();
 }
 
+
+// WARNING 
+// the code commented out here is to create a second separator in the history menu
+// with ALL history, subdivided by days. 
 void ModelMenu::createMenu(const QModelIndex &parent, int max, QMenu *parentMenu, QMenu *menu)
 {
     Q_UNUSED(parentMenu)
@@ -173,12 +177,12 @@ void ModelMenu::createMenu(const QModelIndex &parent, int max, QMenu *parentMenu
     for (int i = 0; i < end; ++i)
     {
         QModelIndex idx = m_model->index(i, 0, parent);
-/*        if (m_model->hasChildren(idx))
-        {
-            createMenu(idx, -1, menu);
-        }
-        else
-        {*/
+//         if (m_model->hasChildren(idx))
+//         {
+//             createMenu(idx, -1, menu);
+//         }
+//         else
+//         {
             if (m_separatorRole != 0
                     && idx.data(m_separatorRole).toBool())
                 addSeparator();
