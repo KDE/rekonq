@@ -19,15 +19,21 @@
 * ============================================================ */
 
 
+// Auto Includes
 #include "historymenu.h"
 #include "historymenu.moc"
 
+// Local Includes
 #include "application.h"
+#include "mainwindow.h"
 
+// Qt Includes
 #include <QtGui/QWidget>
 #include <QtCore/QModelIndex>
 
+// KDE Includes
 #include <KUrl>
+
 
 HistoryMenu::HistoryMenu(QWidget *parent)
         : ModelMenu(parent)
@@ -68,8 +74,7 @@ void HistoryMenu::postPopulated()
     if (m_history->history().count() > 0)
         addSeparator();
 
-    KAction *showAllAction = new KAction(i18n("Show All History"), this);
-//     connect(showAllAction, SIGNAL(triggered()), this, SLOT(showHistoryDialog()));
+    QAction *showAllAction = Application::instance()->mainWindow()->actionByName("show_history_panel");
     addAction(showAllAction);
 
     KAction *clearAction = new KAction(i18n("Clear History"), this);

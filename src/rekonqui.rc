@@ -70,9 +70,6 @@
     <Action name="options_show_statusbar" />
     <Merge name="StandardToolBarMenuHandler" />
     <Merge/>
-    <Menu name="side_panels"><text>Side &amp;Panels</text>
-        <Action name="show_history_panel" />
-    </Menu>
     <Separator/>
     <Action name="fullscreen" />
     <Separator/>

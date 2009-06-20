@@ -22,15 +22,19 @@
 #ifndef HISTORYMENU_H
 #define HISTORYMENU_H
 
+// Local Includes
 #include "history.h"
 
+// Qt Includes
 #include <QtCore/QList>
 #include <QtGui/QAction>
 
+// Forward Declarations
 class ModelMenu;
 class QWidget;
 class QModelIndex;
 class KUrl;
+
 
 /**
  * Menu that is dynamically populated from the history

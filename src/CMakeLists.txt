@@ -43,7 +43,7 @@ SET( rekonq_SRCS
 KDE4_ADD_UI_FILES( rekonq_SRCS
     cookies.ui
     cookiesexceptions.ui
-    history.ui
+    #history.ui
     password.ui
     proxy.ui
     settings_general.ui
