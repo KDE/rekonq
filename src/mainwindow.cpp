@@ -57,6 +57,7 @@
 #include <KGlobalSettings>
 #include <KPushButton>
 #include <KTemporaryFile>
+#include <KJobUiDelegate>
 
 #include <kdeprintdialog.h>
 #include <kprintpreview.h>
@@ -425,13 +426,14 @@ void MainWindow::slotOpenLocation()
 
 void MainWindow::slotFileSaveAs()
 {
-    QWebFrame* frame = m_view->currentWebView()->page()->currentFrame();
-
-    QString title = frame->title();
-    QString content = frame->toPlainText();
-
     KUrl srcUrl = currentTab()->url();
-    // FIXME implement download file 
+    
+    const QString destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), this);
+    if (destUrl.isEmpty()) return;
+    KIO::Job *job = KIO::file_copy(srcUrl, KUrl(destUrl), -1, KIO::Overwrite);
+    job->addMetaData("MaxCacheSize", "0");  // Don't store in http cache.
+    job->addMetaData("cache", "cache");     // Use entry from cache if available.
+    job->uiDelegate()->setAutoErrorHandlingEnabled(true);
 }
 
 
