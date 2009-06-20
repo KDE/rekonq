@@ -251,7 +251,6 @@ void MainWindow::setupActions()
 
     // stop reload Action
     m_stopReloadAction = new KAction(KIcon("view-refresh"), i18n("Reload"), this);
-    m_stopReloadAction->setShortcut(KShortcut(Qt::Key_F5));
     actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
 
@@ -426,6 +425,11 @@ void MainWindow::slotOpenLocation()
 
 void MainWindow::slotFileSaveAs()
 {
+    QWebFrame* frame = m_view->currentWebView()->page()->currentFrame();
+
+    QString title = frame->title();
+    QString content = frame->toPlainText();
+
     KUrl srcUrl = currentTab()->url();
     // FIXME implement download file 
 }

@@ -133,8 +133,6 @@ public slots:
 
 private slots:
     void slotCurrentChanged(int index);
-//     void aboutToShow/*Rec*/entTabsMenu();
-//     void aboutToShowRecentTriggeredAction(QAction *action); // need QAction!
 
     void webViewLoadStarted();
     void webViewLoadProgress(int progress);

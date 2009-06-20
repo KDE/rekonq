@@ -36,7 +36,7 @@
 
 <!--  ============ VIEW menu =========== -->
 <Menu name="view" noMerge="1"><text>&amp;View</text>
-    <Action name="stop_reload" />
+    <Action name="view_redisplay" />
     <Action name="go_home" />
     <Separator/>
     <Action name="bigger_font" />
