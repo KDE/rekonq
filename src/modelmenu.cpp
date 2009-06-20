@@ -147,17 +147,19 @@ void ModelMenu::aboutToShow()
 
 void ModelMenu::createMenu(const QModelIndex &parent, int max, QMenu *parentMenu, QMenu *menu)
 {
+    Q_UNUSED(parentMenu)
+
     if (!menu)
     {
-        QString title = parent.data().toString();
-        menu = new QMenu(title, this);
-        QIcon icon = qvariant_cast<QIcon>(parent.data(Qt::DecorationRole));
-        menu->setIcon(icon);
-        parentMenu->addMenu(menu);
-        QVariant v;
-        v.setValue(parent);
-        menu->menuAction()->setData(v);
-        connect(menu, SIGNAL(aboutToShow()), this, SLOT(aboutToShow()));
+//         QString title = parent.data().toString();
+//         menu = new QMenu(title, this);
+//         QIcon icon = qvariant_cast<QIcon>(parent.data(Qt::DecorationRole));
+//         menu->setIcon(icon);
+//         parentMenu->addMenu(menu);
+//         QVariant v;
+//         v.setValue(parent);
+//         menu->menuAction()->setData(v);
+//         connect(menu, SIGNAL(aboutToShow()), this, SLOT(aboutToShow()));
         return;
     }
 
