@@ -47,23 +47,6 @@ class TabBar;
 class UrlBar;
 
 
-namespace Rekonq
-{
-    /**
-     * @short notifying message status
-     * Different message status
-     */
-
-    enum Notify
-    {
-        Success,    ///< url successfully (down)loaded
-        Error,      ///< url failed to (down)load
-        Download,   ///< downloading url
-        Info        ///< information
-    };
-}
-
-
 /**
  *  This class represent rekonq Main View. It contains all WebViews and a stack widget
  *  of associated line edits.

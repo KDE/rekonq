@@ -49,6 +49,23 @@ class SidePanel;
 class WebView;
 
 
+namespace Rekonq
+{
+    /**
+     * @short notifying message status
+     * Different message status
+     */
+
+    enum Notify
+    {
+        Success,    ///< url successfully (down)loaded
+        Error,      ///< url failed to (down)load
+        Download,   ///< downloading url
+        Info        ///< information
+    };
+}
+
+
 /**
  * This class serves as the main window for rekonq.
  * It handles the menus, toolbars, and status bars.
