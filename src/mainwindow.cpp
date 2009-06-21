@@ -161,7 +161,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
-    // "status bar" messages
+    // "status bar" messages (new notifyMessage system)
     connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), this, SLOT(notifyMessage(const QString&)));
     connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
 
@@ -853,7 +853,10 @@ QAction *MainWindow::actionByName(const QString name)
 void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 {
     if(msg.isEmpty())
+    {
+        delete m_popup;
         return;
+    }
 
     if(m_popup)
         delete m_popup;

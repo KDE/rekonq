@@ -303,7 +303,7 @@ void MainView::slotCurrentChanged(int index)
     WebView *oldWebView = this->webView(m_urlBars->currentIndex());
     if (oldWebView)
     {
-        disconnect(oldWebView, SIGNAL(statusBarMessage(const QString&)),
+        disconnect(oldWebView->page(), SIGNAL(statusBarMessage(const QString&)),
                    this, SIGNAL(showStatusBarMessage(const QString&)));
         disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
                    this, SIGNAL(linkHovered(const QString&)));
@@ -311,7 +311,7 @@ void MainView::slotCurrentChanged(int index)
                    this, SIGNAL(loadProgress(int)));
     }
 
-    connect(webView, SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
+    connect(webView->page(), SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
     connect(webView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), this, SIGNAL(linkHovered(const QString&)));
     connect(webView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
 
