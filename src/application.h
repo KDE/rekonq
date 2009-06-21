@@ -58,6 +58,19 @@ namespace Rekonq
         New,        ///< open url in new tab and make it current
         Background  ///< open url in new tab in background
     };
+
+    /**
+     * @short notifying message status
+     * Different message status
+     */
+
+    enum Notify
+    {
+        Success,    ///< url successfully (down)loaded
+        Error,      ///< url failed to (down)load
+        Download,   ///< downloading url
+        Info        ///< information, (default)
+    };
 }
 
 

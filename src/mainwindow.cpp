@@ -57,6 +57,10 @@
 #include <KGlobalSettings>
 #include <KPushButton>
 #include <KTemporaryFile>
+#include <KJobUiDelegate>
+#include <KPassivePopup>
+#include <KStandardDirs>
+#include <KIconLoader>
 
 #include <kdeprintdialog.h>
 #include <kprintpreview.h>
@@ -158,9 +162,9 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
-    // status bar messages
-    connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
-    connect(m_view, SIGNAL(linkHovered(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
+    // "status bar" messages (new notifyMessage system)
+    connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
+    connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
 
     // update toolbar actions signals
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
@@ -292,11 +296,7 @@ void MainWindow::setupActions()
 
     // ================ history related actions
     m_historyBackAction = new KAction(KIcon("go-previous"), i18n("Back"), this);
-    m_historyBackMenu = new KMenu(this);
-    m_historyBackAction->setMenu(m_historyBackMenu);
     connect(m_historyBackAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenPrevious()));
-    connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
-    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
     actionCollection()->addAction(QLatin1String("history_back"), m_historyBackAction);
 
     m_historyForwardAction = new KAction(KIcon("go-next"), i18n("Forward"), this);
@@ -323,6 +323,11 @@ void MainWindow::setupActions()
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
+
+    // ==================== Bookmarks Actions
+    a = new KAction(i18n("Add Bookmark"), this);
+    a->setIcon(KIcon("rating"));
+    actionCollection()->addAction(QLatin1String("add_bookmark"),a);
 }
 
 
@@ -336,8 +341,9 @@ void MainWindow::setupSidePanel()
     addDockWidget(Qt::LeftDockWidgetArea, m_sidePanel);
 
     // setup side panel actions
-    QAction* a = m_sidePanel->toggleViewAction();
-    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
+    KAction* a = (KAction *) m_sidePanel->toggleViewAction();
+    a->setText( i18n("History Panel") );
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H)); // WARNING : is this the right shortcut ??
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
 }
 
@@ -346,7 +352,6 @@ void MainWindow::setupHistoryMenu()
 {
     HistoryMenu *historyMenu = new HistoryMenu(this);
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
-    connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle(i18n("&History"));
 
     // setting history menu position
@@ -356,7 +361,6 @@ void MainWindow::setupHistoryMenu()
     QList<QAction*> historyActions;
     historyActions.append(actionCollection()->action("history_back"));
     historyActions.append(actionCollection()->action("history_forward"));
-    historyActions.append(m_view->recentlyClosedTabsAction());
     historyMenu->setInitialActions(historyActions);
 }
 
@@ -425,7 +429,13 @@ void MainWindow::slotOpenLocation()
 void MainWindow::slotFileSaveAs()
 {
     KUrl srcUrl = currentTab()->url();
-    // FIXME implement download file 
+    
+    const QString destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), this);
+    if (destUrl.isEmpty()) return;
+    KIO::Job *job = KIO::file_copy(srcUrl, KUrl(destUrl), -1, KIO::Overwrite);
+    job->addMetaData("MaxCacheSize", "0");  // Don't store in http cache.
+    job->addMetaData("cache", "cache");     // Use entry from cache if available.
+    job->uiDelegate()->setAutoErrorHandlingEnabled(true);
 }
 
 
@@ -444,12 +454,6 @@ void MainWindow::slotPreferences()
 
     s->exec();
     delete s;
-}
-
-
-void MainWindow::slotUpdateStatusbar(const QString &string)
-{
-    statusBar()->showMessage(string, 2000);
 }
 
 
@@ -582,7 +586,7 @@ void MainWindow::slotFindNext()
 
     if (!currentTab()->findText(m_lastSearch, options))
     {
-        slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
+        notifyMessage(QString(m_lastSearch) + i18n(" not found."));
     }
 }
 
@@ -604,7 +608,7 @@ void MainWindow::slotFindPrevious()
 
     if (!currentTab()->findText(m_lastSearch, options))
     {
-        slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
+        notifyMessage(QString(m_lastSearch) + i18n(" not found."));
     }
 }
 
@@ -639,7 +643,6 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
     static bool menubarFlag;
     static bool mainToolBarFlag;
     static bool bookmarksToolBarFlag;
-    static bool statusBarFlag;
     static bool sidePanelFlag;
 
     if (makeFullScreen == true)
@@ -648,13 +651,11 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
         menubarFlag = menuBar()->isHidden();
         mainToolBarFlag = toolBar("mainToolBar")->isHidden();
         bookmarksToolBarFlag = toolBar("bookmarksToolBar")->isHidden();
-        statusBarFlag = statusBar()->isHidden();
         sidePanelFlag = sidePanel()->isHidden();
 
         menuBar()->hide();
         toolBar("mainToolBar")->hide();
         toolBar("bookmarksToolBar")->hide();
-        statusBar()->hide();
         sidePanel()->hide();
     }
     else
@@ -665,8 +666,6 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
             toolBar("mainToolBar")->show();
         if (!bookmarksToolBarFlag)
             toolBar("bookmarksToolBar")->show();
-        if (!statusBarFlag)
-            statusBar()->show();
         if (!sidePanelFlag)
             sidePanel()->show();
     }
@@ -766,44 +765,6 @@ void MainWindow::slotLoadProgress(int progress)
 }
 
 
-void MainWindow::slotAboutToShowBackMenu()
-{
-    m_historyBackMenu->clear();
-    if (!currentTab())
-        return;
-    QWebHistory *history = currentTab()->history();
-    int historyCount = history->count();
-    for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i)
-    {
-        QWebHistoryItem item = history->backItems(history->count()).at(i);
-        KAction *action = new KAction(this);
-        action->setData(-1*(historyCount - i - 1));
-        QIcon icon = Application::instance()->icon(item.url());
-        action->setIcon(icon);
-        action->setText(item.title());
-        m_historyBackMenu->addAction(action);
-    }
-}
-
-
-void MainWindow::slotOpenActionUrl(QAction *action)
-{
-    int offset = action->data().toInt();
-    QWebHistory *history = currentTab()->history();
-    if (offset < 0)
-    {
-        history->goToItem(history->backItems(-1*offset).first()); // back
-    }
-    else
-    {
-        if (offset > 0)
-        {
-            history->goToItem(history->forwardItems(history->count() - offset + 1).back()); // forward
-        }
-    }
-}
-
-
 void MainWindow::slotOpenPrevious()
 {
     QWebHistory *history = currentTab()->history();
@@ -887,4 +848,49 @@ QAction *MainWindow::actionByName(const QString name)
     kWarning() << "Action named: " << name << " not found, returning empty action.";
 
     return new QAction(this);  // return empty object instead of NULL pointer
+}
+
+
+// FIXME: better implement me, please!!
+void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
+{
+    // deleting popus if empty msgs
+    if(msg.isEmpty())
+    {
+        delete m_popup;
+        return;
+    }
+
+    if(m_popup)
+        delete m_popup;
+
+    m_popup = new KPassivePopup(this);
+    m_popup->setAutoDelete(true);
+
+    QPixmap px;
+    QString pixPath;
+
+    switch(status)
+    {
+    case Rekonq::Info:
+        break;
+    case Rekonq::Success:
+        break;
+    case Rekonq::Error:
+        break;
+    case Rekonq::Download:
+        break;
+    default:
+        kDebug() << "nothing to be notified..";
+        break;
+    }
+
+    m_popup->setView(msg);
+
+    // setting popus in bottom-left position
+    int x = geometry().x();
+    int y = geometry().y() + height() - 45;
+    QPoint p(x,y);
+
+    m_popup->show(p);
 }
