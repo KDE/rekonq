@@ -60,6 +60,7 @@
 #include <KJobUiDelegate>
 #include <KPassivePopup>
 #include <KStandardDirs>
+#include <KIconLoader>
 
 #include <kdeprintdialog.h>
 #include <kprintpreview.h>
@@ -162,7 +163,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
     // "status bar" messages (new notifyMessage system)
-    connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), this, SLOT(notifyMessage(const QString&)));
+    connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
     connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
 
     // update toolbar actions signals
@@ -850,8 +851,10 @@ QAction *MainWindow::actionByName(const QString name)
 }
 
 
+// FIXME: better implement me, please!!
 void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 {
+    // deleting popus if empty msgs
     if(msg.isEmpty())
     {
         delete m_popup;
@@ -865,29 +868,26 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     m_popup->setAutoDelete(true);
 
     QPixmap px;
+    QString pixPath;
 
     switch(status)
     {
     case Rekonq::Info:
-        m_popup->setView(msg);
         break;
     case Rekonq::Success:
-        px.load("hi32-actions-emoticon.png");
-        m_popup->setView( i18n("Success!"), msg, px);
         break;
     case Rekonq::Error:
-        px.load("hi32-actions-edit-delete.png");
-        m_popup->setView( i18n("Error!"), msg, px);
         break;
     case Rekonq::Download:
-        px.load( KStandardDirs::locate("appdata", "pics/hi64-actions-download.png") );
-        m_popup->setView( i18n("Download!"), msg, px);
         break;
     default:
         kDebug() << "nothing to be notified..";
         break;
     }
 
+    m_popup->setView(msg);
+
+    // setting popus in bottom-left position
     int x = geometry().x();
     int y = geometry().y() + height() - 45;
     QPoint p(x,y);

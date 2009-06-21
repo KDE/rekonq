@@ -49,21 +49,21 @@ class SidePanel;
 class WebView;
 
 
-namespace Rekonq
-{
-    /**
-     * @short notifying message status
-     * Different message status
-     */
-
-    enum Notify
-    {
-        Success,    ///< url successfully (down)loaded
-        Error,      ///< url failed to (down)load
-        Download,   ///< downloading url
-        Info        ///< information
-    };
-}
+// namespace Rekonq
+// {
+//     /**
+//      * @short notifying message status
+//      * Different message status
+//      */
+// 
+//     enum Notify
+//     {
+//         Success,    ///< url successfully (down)loaded
+//         Error,      ///< url failed to (down)load
+//         Download,   ///< downloading url
+//         Info        ///< information, (default)
+//     };
+// }
 
 
 /**
