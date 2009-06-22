@@ -136,6 +136,9 @@ MainWindow::MainWindow()
     // toolbar position, icon size, etc.
     setupGUI();
 
+    // no more status bar..
+    setStatusBar(0);
+
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
@@ -887,9 +890,12 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
     m_popup->setView(msg);
 
+    int h = KGlobalSettings::generalFont().pointSize();
+    kWarning() << "h: " << h;
+
     // setting popus in bottom-left position
     int x = geometry().x();
-    int y = geometry().y() + height() - 45;
+    int y = geometry().y() + height() - h*4;
     QPoint p(x,y);
 
     m_popup->show(p);
