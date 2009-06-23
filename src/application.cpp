@@ -190,7 +190,7 @@ KIcon Application::icon(const KUrl &url) const
     KIcon icon = KIcon(QWebSettings::iconForUrl(url));
     if (icon.isNull())
     {
-        icon = KIcon("kde");
+        icon = KIcon("text-html");
     }
     return icon;
 }
