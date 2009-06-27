@@ -141,7 +141,7 @@ void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
     KParts::BrowserRun::AskSaveResult res = KParts::BrowserRun::askSave(
                                                 url,
                                                 offer,
-                                                mimetype,   
+                                                mimetype,
                                                 filename
                                             );
     switch (res) 

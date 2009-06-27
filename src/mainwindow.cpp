@@ -57,6 +57,10 @@
 #include <KGlobalSettings>
 #include <KPushButton>
 #include <KTemporaryFile>
+#include <KJobUiDelegate>
+#include <KPassivePopup>
+#include <KStandardDirs>
+#include <KIconLoader>
 
 #include <kdeprintdialog.h>
 #include <kprintpreview.h>
@@ -132,6 +136,9 @@ MainWindow::MainWindow()
     // toolbar position, icon size, etc.
     setupGUI();
 
+    // no more status bar..
+    setStatusBar(0);
+
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
@@ -158,9 +165,9 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
-    // status bar messages
-    connect(m_view, SIGNAL(showStatusBarMessage(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
-    connect(m_view, SIGNAL(linkHovered(const QString&)), statusBar(), SLOT(showMessage(const QString&)));
+    // "status bar" messages (new notifyMessage system)
+    connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
+    connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
 
     // update toolbar actions signals
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
@@ -251,7 +258,6 @@ void MainWindow::setupActions()
 
     // stop reload Action
     m_stopReloadAction = new KAction(KIcon("view-refresh"), i18n("Reload"), this);
-    m_stopReloadAction->setShortcut(KShortcut(Qt::Key_F5));
     actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
 
@@ -349,7 +355,6 @@ void MainWindow::setupHistoryMenu()
 {
     HistoryMenu *historyMenu = new HistoryMenu(this);
     connect(historyMenu, SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
-    connect(historyMenu, SIGNAL(hovered(const QString&)), this, SLOT(slotUpdateStatusbar(const QString&)));
     historyMenu->setTitle(i18n("&History"));
 
     // setting history menu position
@@ -427,7 +432,13 @@ void MainWindow::slotOpenLocation()
 void MainWindow::slotFileSaveAs()
 {
     KUrl srcUrl = currentTab()->url();
-    // FIXME implement download file 
+    
+    const QString destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), this);
+    if (destUrl.isEmpty()) return;
+    KIO::Job *job = KIO::file_copy(srcUrl, KUrl(destUrl), -1, KIO::Overwrite);
+    job->addMetaData("MaxCacheSize", "0");  // Don't store in http cache.
+    job->addMetaData("cache", "cache");     // Use entry from cache if available.
+    job->uiDelegate()->setAutoErrorHandlingEnabled(true);
 }
 
 
@@ -446,12 +457,6 @@ void MainWindow::slotPreferences()
 
     s->exec();
     delete s;
-}
-
-
-void MainWindow::slotUpdateStatusbar(const QString &string)
-{
-    statusBar()->showMessage(string, 2000);
 }
 
 
@@ -578,7 +583,7 @@ void MainWindow::slotFindNext()
 
     if (!currentTab()->findText(m_lastSearch, options))
     {
-        slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
+        notifyMessage(QString(m_lastSearch) + i18n(" not found."));
     }
 }
 
@@ -594,7 +599,7 @@ void MainWindow::slotFindPrevious()
 
     if (!currentTab()->findText(m_lastSearch, options))
     {
-        slotUpdateStatusbar(QString(m_lastSearch) + i18n(" not found."));
+        notifyMessage(QString(m_lastSearch) + i18n(" not found."));
     }
 }
 
@@ -629,7 +634,6 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
     static bool menubarFlag;
     static bool mainToolBarFlag;
     static bool bookmarksToolBarFlag;
-    static bool statusBarFlag;
     static bool sidePanelFlag;
 
     if (makeFullScreen == true)
@@ -638,13 +642,11 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
         menubarFlag = menuBar()->isHidden();
         mainToolBarFlag = toolBar("mainToolBar")->isHidden();
         bookmarksToolBarFlag = toolBar("bookmarksToolBar")->isHidden();
-        statusBarFlag = statusBar()->isHidden();
         sidePanelFlag = sidePanel()->isHidden();
 
         menuBar()->hide();
         toolBar("mainToolBar")->hide();
         toolBar("bookmarksToolBar")->hide();
-        statusBar()->hide();
         sidePanel()->hide();
     }
     else
@@ -655,8 +657,6 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
             toolBar("mainToolBar")->show();
         if (!bookmarksToolBarFlag)
             toolBar("bookmarksToolBar")->show();
-        if (!statusBarFlag)
-            statusBar()->show();
         if (!sidePanelFlag)
             sidePanel()->show();
     }
@@ -838,4 +838,52 @@ QAction *MainWindow::actionByName(const QString name)
     kWarning() << "Action named: " << name << " not found, returning empty action.";
 
     return new QAction(this);  // return empty object instead of NULL pointer
+}
+
+
+// FIXME: better implement me, please!!
+void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
+{
+    // deleting popus if empty msgs
+    if(msg.isEmpty())
+    {
+        delete m_popup;
+        return;
+    }
+
+    if(m_popup)
+        delete m_popup;
+
+    m_popup = new KPassivePopup(this);
+    m_popup->setAutoDelete(true);
+
+    QPixmap px;
+    QString pixPath;
+
+    switch(status)
+    {
+    case Rekonq::Info:
+        break;
+    case Rekonq::Success:
+        break;
+    case Rekonq::Error:
+        break;
+    case Rekonq::Download:
+        break;
+    default:
+        kDebug() << "nothing to be notified..";
+        break;
+    }
+
+    m_popup->setView(msg);
+
+    int h = KGlobalSettings::generalFont().pointSize();
+    kWarning() << "h: " << h;
+
+    // setting popus in bottom-left position
+    int x = geometry().x();
+    int y = geometry().y() + height() - h*4;
+    QPoint p(x,y);
+
+    m_popup->show(p);
 }

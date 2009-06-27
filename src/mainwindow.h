@@ -41,11 +41,29 @@ class KUrl;
 class KAction;
 class KActionMenu;
 class KMenu;
+class KPassivePopup;
 
 class HistoryMenu;
 class FindBar;
 class SidePanel;
 class WebView;
+
+
+// namespace Rekonq
+// {
+//     /**
+//      * @short notifying message status
+//      * Different message status
+//      */
+// 
+//     enum Notify
+//     {
+//         Success,    ///< url successfully (down)loaded
+//         Error,      ///< url failed to (down)load
+//         Download,   ///< downloading url
+//         Info        ///< information, (default)
+//     };
+// }
 
 
 /**
@@ -78,6 +96,17 @@ public slots:
     void loadUrl(const KUrl &url);
     void slotUpdateBrowser();
 
+    /**
+     * Notifies a message in a popup
+     *
+     * @param msg The message to notify
+     *
+     * @param status The status message
+     *
+     */
+    void notifyMessage(const QString &msg, Rekonq::Notify status = Rekonq::Info);
+
+
 protected:
     bool queryClose();
 
@@ -85,15 +114,12 @@ private slots:
     void postLaunch();
     void slotUpdateConfiguration();
     void slotLoadProgress(int);
-    void slotUpdateStatusbar(const QString &string);
     void slotUpdateActions();
     void slotUpdateWindowTitle(const QString &title = QString());
     void slotOpenLocation();
-//     void slotAboutToShowBackMenu();
     void geometryChangeRequested(const QRect &geometry);
 
     // history related
-//     void slotOpenActionUrl(QAction *action);
     void slotOpenPrevious();
     void slotOpenNext();
 
@@ -141,6 +167,8 @@ private:
 
     QString m_lastSearch;
     QString m_homePage;
+
+    QPointer<KPassivePopup> m_popup;
 };
 
 #endif // MAINWINDOW_H

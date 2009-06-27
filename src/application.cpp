@@ -42,6 +42,7 @@
 #include <KConfig>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
+#include <KPassivePopup>
 
 // Qt Includes
 #include <QtCore/QTimer>

@@ -91,7 +91,7 @@ signals:
 
     // current tab signals
     void setCurrentTitle(const QString &url);
-    void showStatusBarMessage(const QString &message);
+    void showStatusBarMessage(const QString &message, Rekonq::Notify status = Rekonq::Info);
     void linkHovered(const QString &link);
     void loadProgress(int progress);
 
@@ -112,6 +112,7 @@ public slots:
      * @param url The url to load
      */
     void loadUrl(const KUrl &url);
+
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);
     void slotCloseOtherTabs(int index);
@@ -133,11 +134,8 @@ public slots:
 
 private slots:
     void slotCurrentChanged(int index);
-//     void aboutToShow/*Rec*/entTabsMenu();
-//     void aboutToShowRecentTriggeredAction(QAction *action); // need QAction!
 
     void webViewLoadStarted();
-    void webViewLoadProgress(int progress);
     void webViewLoadFinished(bool ok);
     void webViewIconChanged();
     void webViewTitleChanged(const QString &title);

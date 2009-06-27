@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="41">
+<gui name="rekonq" version="42">
 
 <MenuBar>
 
@@ -36,7 +36,7 @@
 
 <!--  ============ VIEW menu =========== -->
 <Menu name="view" noMerge="1"><text>&amp;View</text>
-    <Action name="stop_reload" />
+    <Action name="view_redisplay" />
     <Action name="go_home" />
     <Separator/>
     <Action name="bigger_font" />
@@ -67,7 +67,6 @@
 <!--  ============ SETTINGS menu =========== -->
 <Menu name="settings" noMerge="1"><text>&amp;Settings</text>
     <Action name="options_show_menubar" />
-    <Action name="options_show_statusbar" />
     <Merge name="StandardToolBarMenuHandler" />
     <Merge/>
     <Separator/>
