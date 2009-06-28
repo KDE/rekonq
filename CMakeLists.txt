@@ -37,9 +37,22 @@ INCLUDE(FindPackageHandleStandardArgs)
 INCLUDE(KDE4Defaults)
 INCLUDE(MacroLibrary)
 
+# =================================================================================================
+# KDE Version
+
+if(${KDE_VERSION_MINOR} GREATER "2")
+    SET(KDE_OLD_VERSION false)
+else(${KDE_VERSION_MINOR} GREATER "2")
+    if(${KDE_VERSION_RELEASE} GREATER "69")
+        SET(KDE_OLD_VERSION false)
+    else(${KDE_VERSION_RELEASE} GREATER "69")
+        SET(KDE_OLD_VERSION true)
+    endif(${KDE_VERSION_RELEASE} GREATER "69")
+endif(${KDE_VERSION_MINOR} GREATER "2")
+# =================================================================================================
+
 # --------------- KNetworkAccessManager
-if(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
-else(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")    
+if(KDE_OLD_VERSION)
 
     find_package(KdeNetwork REQUIRED)
 
@@ -49,7 +62,8 @@ else(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
     MESSAGE(STATUS " classes, instead of newly KIO::AccessManager. ")
     MESSAGE(STATUS "")
 
-endif(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
+endif(KDE_OLD_VERSION)
+
 
 
 # ==================================================================================================
@@ -110,21 +124,20 @@ ELSE(KDEWEBKIT_FOUND)
 ENDIF(KDEWEBKIT_FOUND)
 
 # --------------- KNetworkAccessManager
-if(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
-else(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")    
-MESSAGE(STATUS "")
-IF(KDENETWORK_FOUND)
-    MESSAGE(STATUS " KDE Network library found............. YES")
-ELSE(KDENETWORK_FOUND)
-    MESSAGE(STATUS " KDE Network library found............. NO")
-    MESSAGE(STATUS "")
-    MESSAGE(SEND_ERROR " rekonq needs, from version 0.2, KDENETWORK if compiled with a KDE version minor than 4.2.69 ")
-    MESSAGE(STATUS " You can actually retrieve it from playground/libs/webkitkde/kdenetwork KDE svn")
-    MESSAGE(STATUS "")
-ENDIF(KDENETWORK_FOUND)
+if(KDE_OLD_VERSION)
 
-endif(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
+    MESSAGE(STATUS "")
+    IF(KDENETWORK_FOUND)
+        MESSAGE(STATUS " KDE Network library found............. YES")
+    ELSE(KDENETWORK_FOUND)
+        MESSAGE(STATUS " KDE Network library found............. NO")
+        MESSAGE(STATUS "")
+        MESSAGE(SEND_ERROR " rekonq needs, from version 0.2, KDENETWORK if compiled with a KDE version minor than 4.2.69 ")
+        MESSAGE(STATUS " You can actually retrieve it from playground/libs/webkitkde/kdenetwork KDE svn")
+        MESSAGE(STATUS "")
+    ENDIF(KDENETWORK_FOUND)
 
+endif(KDE_OLD_VERSION)
 
 MESSAGE(STATUS "")
 MESSAGE(STATUS "----------------------------------------------------------------------------------")
@@ -133,17 +146,7 @@ MESSAGE(STATUS "")
 
 ##### FINAL RESULTS #####
 
-if(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
-
-    IF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
-        MESSAGE(STATUS " rekonq will be compiled............... YES")
-        SET(REKONQ_CAN_BE_COMPILED true)
-    ELSE(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
-        MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
-        SET(REKONQ_CAN_BE_COMPILED false)
-    ENDIF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
-
-else(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")    
+if(KDE_OLD_VERSION)
 
     IF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND AND KDENETWORK_FOUND)
         MESSAGE(STATUS " rekonq will be compiled............... YES")
@@ -153,8 +156,17 @@ else(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
         SET(REKONQ_CAN_BE_COMPILED false)
     ENDIF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND AND KDENETWORK_FOUND)
 
-endif(${KDE_VERSION_MINOR} EQUAL "2" AND ${KDE_VERSION_RELEASE} GREATER "69")
+else(KDE_OLD_VERSION)
 
+    IF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
+        MESSAGE(STATUS " rekonq will be compiled............... YES")
+        SET(REKONQ_CAN_BE_COMPILED true)
+    ELSE(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
+        MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
+        SET(REKONQ_CAN_BE_COMPILED false)
+    ENDIF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
+
+endif(KDE_OLD_VERSION)
 
 
 MESSAGE(STATUS "")
