@@ -891,7 +891,6 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     m_popup->setView(msg);
 
     int h = KGlobalSettings::generalFont().pointSize();
-    kWarning() << "h: " << h;
 
     // setting popus in bottom-left position
     int x = geometry().x();

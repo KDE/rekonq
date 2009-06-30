@@ -40,7 +40,7 @@
 #include <KUrl>
 #include <KActionCollection>
 #include <KDebug>
-#include <KToolInvocation>
+
 
 #include <KDE/KParts/BrowserRun>
 #include <KDE/KMimeTypeTrader>
@@ -73,40 +73,6 @@ WebPage::WebPage(QObject *parent)
 
     setNetworkAccessManager(Application::networkAccessManager());
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
-}
-
-
-bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
-{
-
-    // TODO: implement ioslaves protocols
-    QString scheme = request.url().scheme();
-    if (scheme == QLatin1String("mailto"))
-    {
-        KToolInvocation::invokeMailer(request.url());
-        return false;
-    }
-
-    // create convenience fake api:// protocol for KDE apidox search and Qt docs
-    if (scheme == QLatin1String("api"))
-    {
-        QString path;
-        QString className = request.url().host().toLower();
-        if (className[0] == 'k')
-        {
-            path = QString("http://api.kde.org/new.classmapper.php?class=%1").arg(className);
-        }
-        else if (className[0] == 'q')
-        {
-            path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
-        }
-        KUrl url(path);
-
-        Application::instance()->mainWindow()->loadUrl(url);
-        return false;
-    }
-
-    return QWebPage::acceptNavigationRequest(frame, request, type);
 }
 
 

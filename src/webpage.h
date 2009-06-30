@@ -48,12 +48,7 @@ public slots:
     void manageNetworkErrors(QNetworkReply* reply);
 
 protected:
-    bool acceptNavigationRequest(QWebFrame *frame,
-                                 const QNetworkRequest &request,
-                                 NavigationType type);
-
     KWebPage *createWindow(QWebPage::WebWindowType type);
-
 
 protected Q_SLOTS:
     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);

@@ -46,6 +46,7 @@
 #include <KActionCollection>
 #include <KDebug>
 #include <KStandardDirs>
+#include <KToolInvocation>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -629,23 +630,70 @@ void MainView::webViewUrlChanged(const QUrl &url)
 }
 
 
+// WARNING this method is ready to be refactored with real KServices implementation
+// and moved to a RekonqRun class (0.3 target)
 void MainView::loadUrl(const KUrl &url)
 {
     if (url.isEmpty())
         return;
 
-    currentUrlBar()->setUrl(url.prettyUrl());
+    QString scheme = url.scheme();
 
-    WebView *webView = currentWebView();
+    if (scheme == QLatin1String("mailto"))
+    {
+        KToolInvocation::invokeMailer(url);
+        return;
+    }
 
     KUrl loadingUrl(url);
 
+    // create convenience fake api:// protocol for KDE apidox search and Qt docs
+    if (scheme == QLatin1String("api"))
+    {
+        QString path;
+        QString className = url.host().toLower();
+        if (className[0] == 'k')
+        {
+            path = QString("http://api.kde.org/new.classmapper.php?class=%1").arg(className);
+        }
+        else if (className[0] == 'q')
+        {
+            path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
+        }
+        loadingUrl.setUrl(path);
+    }
+
     if (loadingUrl.isRelative())
     {
-        QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
-        loadingUrl.setUrl("//" + fn);
-        loadingUrl.setScheme("http");
+        if(loadingUrl.path().contains('.'))
+        {
+            QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
+            loadingUrl.setUrl("//" + fn);
+            loadingUrl.setScheme("http");
+        }
+        else
+        {
+            scheme = QLatin1String("gg");
+        }
     }
+
+    // create convenience fake gg:// protocol, waiting for KServices learning
+    if(scheme == QLatin1String("gg"))
+    {
+        QString str = loadingUrl.path();
+        loadingUrl.setUrl( QString("http://google.com/complete/search?output=toolbar&q=%1").arg(str) );
+    }
+
+    // create convenience fake wk:// protocol, waiting for KServices learning
+    if(scheme == QLatin1String("wk"))
+    {
+        QString str = loadingUrl.path();
+        loadingUrl.setUrl( QString("http://en.wikipedia.org/wiki/%1").arg(str) );
+    }
+
+    currentUrlBar()->setUrl(loadingUrl.prettyUrl());
+
+    WebView *webView = currentWebView();
 
     if (webView)
     {
