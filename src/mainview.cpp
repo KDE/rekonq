@@ -681,7 +681,7 @@ void MainView::loadUrl(const KUrl &url)
     if(scheme == QLatin1String("gg"))
     {
         QString str = loadingUrl.path();
-        loadingUrl.setUrl( QString("http://google.com/complete/search?output=toolbar&q=%1").arg(str) );
+        loadingUrl.setUrl( QString("http://google.com/complete/search?q=%1").arg(str) );
     }
 
     // create convenience fake wk:// protocol, waiting for KServices learning
