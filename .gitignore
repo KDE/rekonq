@@ -5,5 +5,6 @@ src/.ctagsdb
 .directory
 *.tmp
 build/
+qtcreator-build/
 CMakeLists.txt.user
 CMakeCache.txt

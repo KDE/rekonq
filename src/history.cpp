@@ -500,7 +500,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
         if (index.column() == 0)
         {
-            return Application::instance()->icon(item.url);
+            return Application::icon(item.url);
         }
     }
     return QVariant();

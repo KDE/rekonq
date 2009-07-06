@@ -90,7 +90,7 @@ public:
     MainWindow *mainWindow();
     WebView *newWebView(Rekonq::OpenType type = Rekonq::Default);
 
-    KIcon icon(const KUrl &url) const;
+    static KIcon icon(const KUrl &url);
 
     static KUrl guessUrlFromString(const QString &url);
 

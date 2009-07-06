@@ -295,7 +295,7 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QLatin1String("private_browsing"), a);
-    connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotPrivateBrowsing(bool)));
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotPrivateBrowsing(bool)));
 
     // ================ history related actions
     m_historyBackAction = new KAction(KIcon("go-previous"), i18n("Back"), this);
@@ -483,10 +483,10 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 void MainWindow::slotFileOpen()
 {
     QString filePath = KFileDialog::getOpenFileName(KUrl(),
-                       i18n("Web Resources (*.html *.htm *.svg *.png *.gif *.svgz); All files (*.*)"),
+                       i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n" \
+                            "*.*|All files (*.*)"),
                        this,
-                       i18n("Open Web Resource")
-                                                   );
+                       i18n("Open Web Resource"));
 
     if (filePath.isEmpty())
         return;
@@ -531,7 +531,7 @@ void MainWindow::printRequested(QWebFrame *frame)
 void MainWindow::slotPrivateBrowsing(bool enable)
 {
     QWebSettings *settings = QWebSettings::globalSettings();
-    if (enable)
+    if (enable && !settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         QString title = i18n("Are you sure you want to turn on private browsing?");
         QString text = "<b>" + title + i18n("</b><br><br>When private browsing is turned on,"
@@ -542,8 +542,8 @@ void MainWindow::slotPrivateBrowsing(bool enable)
                                             "  Until you close the window, you can still click the Back and Forward buttons" \
                                             " to return to the web pages you have opened.");
 
-        int  button = KMessageBox::questionYesNo(this, text, title);
-        if (button == KMessageBox::Ok)
+        int button = KMessageBox::questionYesNo(this, text, title);
+        if (button == KMessageBox::Yes)
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
         }
@@ -577,15 +577,9 @@ void MainWindow::slotFindNext()
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
 
-    QWebPage::FindFlags options;
+    QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
-    {
-        options = QWebPage::FindCaseSensitively | QWebPage::FindWrapsAroundDocument;
-    }
-    else
-    {
-        options = QWebPage::FindWrapsAroundDocument;
-    }
+        options |= QWebPage::FindCaseSensitively;
 
     if (!currentTab()->findText(m_lastSearch, options))
     {
@@ -599,15 +593,9 @@ void MainWindow::slotFindPrevious()
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
 
-    QWebPage::FindFlags options;
+    QWebPage::FindFlags options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
-    {
-        options = QWebPage::FindCaseSensitively | QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
-    }
-    else
-    {
-        options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
-    }
+        options |= QWebPage::FindCaseSensitively;
 
     if (!currentTab()->findText(m_lastSearch, options))
     {
@@ -718,8 +706,8 @@ void MainWindow::slotToggleInspector(bool enable)
     if (enable)
     {
         int result = KMessageBox::questionYesNo(this,
-                        i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n"
-                        "Do you want to reload all pages?"),
+                        i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n" \
+                             "Do you want to reload all pages?"),
                         i18n("Web Inspector")
                      );
 
@@ -810,17 +798,16 @@ bool MainWindow::queryClose()
 
         int answer = KMessageBox::questionYesNoCancel(
                          this,
-                         i18np( "Are you sure you want to close the window?\n" 
-                                "You have 1 tab open",
-                                "Are you sure you want to close the window?\n" 
-                                "You have %1 tabs open", 
-                                m_view->count()),
-                                i18n("Are you sure you want to close the window?"),
-                                KStandardGuiItem::quit(),
-                                KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
-                                KStandardGuiItem::cancel(),
-                                "confirmClosingMultipleTabs"
-                     );
+                         i18np("Are you sure you want to close the window?\n" \
+                               "You have 1 tab open",
+                               "Are you sure you want to close the window?\n" \
+                               "You have %1 tabs open",
+                               m_view->count()),
+                         i18n("Are you sure you want to close the window?"),
+                         KStandardGuiItem::quit(),
+                         KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
+                         KStandardGuiItem::cancel(),
+                         "confirmClosingMultipleTabs");
 
         switch (answer)
         {

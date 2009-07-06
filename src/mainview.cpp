@@ -502,11 +502,10 @@ void MainView::slotCloseTab(int index)
     {
         if (tab->isModified())
         {
-            int risp = KMessageBox::questionYesNo(this ,
+            int risp = KMessageBox::questionYesNo(this,
                         i18n("You have modified this page and when closing it you would lose the modification.\n"
-                        "Do you really want to close this page?\n"),
-                        i18n("Do you really want to close this page?")
-                       );
+                             "Do you really want to close this page?\n"),
+                        i18n("Do you really want to close this page?"));
             if (risp == KMessageBox::No)
                 return;
         }
@@ -587,7 +586,7 @@ void MainView::webViewIconChanged()
     int index = webViewIndex(webView);
     if (-1 != index)
     {
-        QIcon icon = Application::instance()->icon(webView->url());
+        QIcon icon = Application::icon(webView->url());
         QLabel *label = animatedLoading(index, false);
         QMovie *movie = label->movie();
         delete movie;
