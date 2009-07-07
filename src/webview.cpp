@@ -251,3 +251,17 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
     QWebView::keyPressEvent(event);
 }
+
+void WebView::mousePressEvent(QMouseEvent *event)
+{
+    switch(event->button()) {
+      case Qt::XButton1:
+        triggerPageAction(QWebPage::Back);
+        break;
+      case Qt::XButton2:
+        triggerPageAction(QWebPage::Forward);
+        break;
+      default:
+        QWebView::mousePressEvent(event);
+    };
+}
