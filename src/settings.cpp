@@ -162,9 +162,9 @@ void SettingsDialog::setWebSettingsToolTips()
 void SettingsDialog::readConfig()
 {
     // ======= General
-    d->generalUi.downloadDirUrlRequester->setMode(KFile::Directory | KFile::ExistingOnly | KFile::LocalOnly);
-    d->generalUi.downloadDirUrlRequester->setUrl(ReKonfig::downloadDir());
-    connect(d->generalUi.downloadDirUrlRequester, SIGNAL(textChanged(QString)), this, SLOT(saveSettings()));
+//     d->generalUi.downloadDirUrlRequester->setMode(KFile::Directory | KFile::ExistingOnly | KFile::LocalOnly);
+//     d->generalUi.downloadDirUrlRequester->setUrl(ReKonfig::downloadDir());
+//     connect(d->generalUi.downloadDirUrlRequester, SIGNAL(textChanged(QString)), this, SLOT(saveSettings()));
 
     // ======= Fonts
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
@@ -180,7 +180,7 @@ void SettingsDialog::readConfig()
 void SettingsDialog::saveSettings()
 {
     // General
-    ReKonfig::setDownloadDir(d->generalUi.downloadDirUrlRequester->url().prettyUrl());
+//     ReKonfig::setDownloadDir(d->generalUi.downloadDirUrlRequester->url().prettyUrl());
 
     // Save
     ReKonfig::self()->writeConfig();
