@@ -25,7 +25,6 @@
 #define MAINWINDOW_H
 
 // Local Includes
-#include "searchbar.h"
 #include "bookmarks.h"
 #include "mainview.h"
 #include "webview.h"
@@ -39,31 +38,12 @@ class QWebFrame;
 
 class KUrl;
 class KAction;
-class KActionMenu;
-class KMenu;
 class KPassivePopup;
 
 class HistoryMenu;
 class FindBar;
 class SidePanel;
 class WebView;
-
-
-// namespace Rekonq
-// {
-//     /**
-//      * @short notifying message status
-//      * Different message status
-//      */
-// 
-//     enum Notify
-//     {
-//         Success,    ///< url successfully (down)loaded
-//         Error,      ///< url failed to (down)load
-//         Download,   ///< downloading url
-//         Info        ///< information, (default)
-//     };
-// }
 
 
 /**
@@ -87,7 +67,7 @@ public:
 private:
     void setupActions();
     void setupHistoryMenu();
-    void setupToolBars();
+    void setupBars();
     void setupSidePanel();
     SidePanel *sidePanel();
 
@@ -152,16 +132,10 @@ private slots:
 
 private:
     MainView *m_view;
-    SearchBar *m_searchBar;
     FindBar *m_findBar;
     SidePanel *m_sidePanel;
 
-    KMenu *m_windowMenu;
-    KActionMenu *m_historyActionMenu;
-
     KAction *m_stopReloadAction;
-    KAction *m_stopAction;
-    KAction *m_reloadAction;
     KAction *m_historyBackAction;
     KAction *m_historyForwardAction;
 

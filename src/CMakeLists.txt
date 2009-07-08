@@ -22,7 +22,6 @@ SET( rekonq_SRCS
     modelmenu.cpp 
     urlbar.cpp
     findbar.cpp
-    searchbar.cpp
     settings.cpp
     webview.cpp 
     main.cpp

@@ -92,7 +92,6 @@
 MainWindow::MainWindow()
         : KXmlGuiWindow()
         , m_view(new MainView(this))
-        , m_searchBar(new SearchBar(this))
         , m_findBar(new FindBar(this))
         , m_sidePanel(0)
 {
@@ -119,8 +118,8 @@ MainWindow::MainWindow()
     // then, setup our actions
     setupActions();
 
-    // setting up toolbars: this has to be done BEFORE setupGUI!!
-    setupToolBars();
+    // setting up toolbars && location bar: this has to be done BEFORE setupGUI!!
+    setupBars();
 
     // Bookmark Menu
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
@@ -195,7 +194,7 @@ QSize MainWindow::sizeHint() const
 }
 
 
-void MainWindow::setupToolBars()
+void MainWindow::setupBars()
 {
     KAction *a;
 
@@ -204,13 +203,6 @@ void MainWindow::setupToolBars()
     a->setShortcut(KShortcut(Qt::Key_F6));
     a->setDefaultWidget(m_view->urlBarStack());
     actionCollection()->addAction(QLatin1String("url_bar"), a);
-
-    // search bar
-    a = new KAction(i18n("Search Bar"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_K));
-    a->setDefaultWidget(m_searchBar);
-    connect(m_searchBar, SIGNAL(search(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
-    actionCollection()->addAction(QLatin1String("search_bar"), a);
 
     // bookmarks bar
     KAction *bookmarkBarAction = Application::bookmarkProvider()->bookmarkToolBarAction();
@@ -360,7 +352,7 @@ void MainWindow::setupHistoryMenu()
     // setting history menu position
     menuBar()->insertMenu(actionCollection()->action("bookmarks"), historyMenu);
 
-    // setting initial actions
+    //  setting initial actions
     QList<QAction*> historyActions;
     historyActions.append(actionCollection()->action("history_back"));
     historyActions.append(actionCollection()->action("history_forward"));

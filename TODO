@@ -1,8 +1,8 @@
-- QWebFrame management
-- Fix crash on example sites..
+(4.6) - QWebFrame management
++ Fix crash on example sites..
 - improve DOCUMENTATION
-- Type "FormSubmitted" ("WordPress Bug")
-- cookies
++ Type "FormSubmitted" ("WordPress Bug")
++ cookies
 - unit tests
 
 LONG TERM GOALS
@@ -14,11 +14,14 @@ LONG TERM GOALS
 
 TO 0.2 release
 
-- unique url/search/history bar
-- WebkitKDE (ask about status)
-- cookie system refactor
-- bookmarks panel
-- MimeType Manager
-- BETTER KDE INTEGRATION (What else to be done??)
-- error pages
++- unique url/search/history bar
++ WebkitKDE (ask about status)
++ cookie system refactor
+x- bookmarks panel
+x- MimeType Manager
++- BETTER KDE INTEGRATION (What else to be done??)
++- error pages
 
+- CLEAN CLEAN CLEAN code
+- remove searchbar
+- 
