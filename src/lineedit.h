@@ -44,6 +44,7 @@ protected:
     virtual void contextMenuEvent(QContextMenuEvent*);
     virtual void focusInEvent(QFocusEvent*);
     virtual void focusOutEvent(QFocusEvent*);
+    virtual void mouseDoubleClickEvent(QMouseEvent *);
 };
 
 #endif // LINEEDIT_H

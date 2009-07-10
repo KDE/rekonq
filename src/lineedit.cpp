@@ -35,7 +35,6 @@ LineEdit::LineEdit(QWidget* parent)
 {
     setMinimumWidth(200);
     setFocusPolicy(Qt::WheelFocus);
-
     setHandleSignals(true);
 }
 
@@ -78,4 +77,9 @@ void LineEdit::focusOutEvent(QFocusEvent *event)
     // reset cursor state and deselect
     setCursorPosition(0);
     deselect();
+}
+
+void LineEdit::mouseDoubleClickEvent(QMouseEvent *)
+{
+    selectAll();
 }
