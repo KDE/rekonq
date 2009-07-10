@@ -61,7 +61,7 @@ signals:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-
+    void mousePressEvent(QMouseEvent *event);
     /**
     * Filters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
     * to make switch tab
