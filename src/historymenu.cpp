@@ -86,7 +86,7 @@ void HistoryMenu::postPopulated()
 
 void HistoryMenu::clearHistory()
 {
-    int res = KMessageBox::warningYesNo(this, i18n("Are you sure you want to delete history?"), i18n("History") );
+    int res = KMessageBox::warningYesNo(this, i18n("Are you sure you want to clear the history?"), i18n("Clear History") );
 
     if (res == KMessageBox::Yes)
     {
