@@ -177,6 +177,7 @@ void MainView::showTabBar()
         if (m_tabBar->isHidden())
         {
             m_tabBar->show();
+            m_addTabButton->show();
         }
         return;
     }
@@ -184,12 +185,14 @@ void MainView::showTabBar()
     if (m_tabBar->count() == 1)
     {
         m_tabBar->hide();
+        m_addTabButton->hide();
     }
     else
     {
         if (m_tabBar->isHidden())
         {
             m_tabBar->show();
+            m_addTabButton->show(); 
         }
     }
 }
