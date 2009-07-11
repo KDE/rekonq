@@ -108,10 +108,10 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
         : KBookmarkMenu(manager, owner, menu, actionCollection)
 
 {
-    actionCollection->addAction(KStandardAction::AddBookmark,
-                                QLatin1String("add_bookmark_payload"),
-                                this, SLOT(slotAddBookmark()));
-
+    KAction *a = KStandardAction::addBookmark(this, SLOT(slotAddBookmark()), this); 
+    a->setText(i18n("Add Bookmark"));
+    a->setIcon(KIcon("rating"));
+    actionCollection->addAction(QLatin1String("rekonq_add_bookmark"),a);
 }
 
 BookmarkMenu::~BookmarkMenu()

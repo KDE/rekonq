@@ -199,9 +199,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if (!linkIsEmpty)
     {
         menu.addSeparator();
-        QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("add_bookmark_payload");
-        addBookmarkAction->setData(result.linkUrl());
-        addBookmarkAction->setText(i18n("&Bookmark This Link"));
+        QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
+//         addBookmarkAction->setData(result.linkUrl());
+//         addBookmarkAction->setText(i18n("&Bookmark This Link"));
         menu.addAction(addBookmarkAction);
     }
 
