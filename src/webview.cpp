@@ -125,10 +125,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
     MainWindow *mainwindow = Application::instance()->mainWindow();
 
-    QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("add_bookmark_payload");
-    addBookmarkAction->setText(i18n("Bookmark This Page"));
-    addBookmarkAction->setData(QVariant());
-
     KMenu menu(this);
 
     // link actions
@@ -203,6 +199,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if (!linkIsEmpty)
     {
         menu.addSeparator();
+        QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("add_bookmark_payload");
         addBookmarkAction->setData(result.linkUrl());
         addBookmarkAction->setText(i18n("&Bookmark This Link"));
         menu.addAction(addBookmarkAction);
@@ -252,9 +249,11 @@ void WebView::keyPressEvent(QKeyEvent *event)
     QWebView::keyPressEvent(event);
 }
 
+
 void WebView::mousePressEvent(QMouseEvent *event)
 {
-    switch(event->button()) {
+    switch(event->button()) 
+    {
       case Qt::XButton1:
         triggerPageAction(QWebPage::Back);
         break;
