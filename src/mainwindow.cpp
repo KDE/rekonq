@@ -315,10 +315,7 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
 
-//     // ==================== Bookmarks Actions
-//     a = new KAction(i18n("Add Bookmark"), this);
-//     a->setIcon(KIcon("rating"));
-//     actionCollection()->addAction(QLatin1String("add_bookmark"),a);
+    // ==================== Bookmarks Actions
     QAction *ba = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
     actionCollection()->addAction(QLatin1String("rekonq_add_bookmark"), ba);
 }
