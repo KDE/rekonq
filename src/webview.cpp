@@ -65,11 +65,12 @@
 
 
 WebView::WebView(QWidget* parent)
-        : KWebView(parent)
+        : QWebView(parent)
         , m_page(new WebPage(this))
         , m_progress(0)
 {
     setPage(m_page);
+    
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(setProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
@@ -78,10 +79,10 @@ WebView::WebView(QWidget* parent)
 }
 
 
-void WebView::setNewPage()
-{
-    setPage(new WebPage(this));
-}
+// void WebView::setNewPage()
+// {
+//     setPage(new WebPage(this));
+// }
 
 
 KUrl WebView::url() const 
@@ -102,10 +103,10 @@ int WebView::progress() const
 }
 
 
-void WebView::load(const KUrl &url)
-{
-    QWebView::load(url);
-}
+// void WebView::load(const KUrl &url)
+// {
+//     QWebView::load(url);
+// }
 
 
 void WebView::setProgress(int progress) 

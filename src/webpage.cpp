@@ -45,6 +45,9 @@
 #include <KDE/KParts/BrowserRun>
 #include <KDE/KMimeTypeTrader>
 #include <KDE/KRun>
+#include <KDE/KFileDialog>
+#include <KDE/KInputDialog>
+#include <KDE/KMessageBox>
 
 #include <kdewebkit/kwebpage.h>
 #include <kdewebkit/kwebview.h>
@@ -65,9 +68,10 @@
 #include <QtWebKit/QWebSettings>
 #include <QtWebKit/QWebView>
 
+#include <QUiLoader>
 
 WebPage::WebPage(QObject *parent)
-        : KWebPage(parent)
+        : QWebPage(parent)
 {
     setForwardUnsupportedContent(true);
 
@@ -76,7 +80,7 @@ WebPage::WebPage(QObject *parent)
 }
 
 
-KWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
+QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
     kDebug() << "creating window as new tab.. ";
 
@@ -113,7 +117,7 @@ void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
     switch (res) 
     {
     case KParts::BrowserRun::Save:
-        slotDownloadRequested(reply->request(), reply);
+        slotDownloadRequested(reply->request());
         return;
     case KParts::BrowserRun::Cancel:
         return;
@@ -182,3 +186,90 @@ void WebPage::viewErrorPage(QNetworkReply *reply)
         Application::historyManager()->removeHistoryEntry(reply->url(), mainFrame()->title());
     }
 }
+
+
+void WebPage::javaScriptAlert(QWebFrame *frame, const QString &msg)
+{
+    KMessageBox::error(frame->page()->view(), msg, i18n("JavaScript"));
+}
+
+
+bool WebPage::javaScriptConfirm(QWebFrame *frame, const QString &msg)
+{
+    return (KMessageBox::warningYesNo(frame->page()->view(), msg, i18n("JavaScript"), KStandardGuiItem::ok(), KStandardGuiItem::cancel())
+            == KMessageBox::Yes);
+}
+
+
+bool WebPage::javaScriptPrompt(QWebFrame *frame, const QString &msg, const QString &defaultValue, QString *result)
+{
+    bool ok = false;
+    *result = KInputDialog::getText(i18n("JavaScript"), msg, defaultValue, &ok, frame->page()->view());
+    return ok;
+}
+
+
+QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
+{
+    kDebug() << "create Plugin requested:";
+    kDebug() << "classid:" << classId;
+    kDebug() << "url:" << url;
+    kDebug() << "paramNames:" << paramNames << " paramValues:" << paramValues;
+
+    QUiLoader loader;
+    return loader.createWidget(classId, view());
+}
+
+
+void WebPage::slotDownloadRequested(const QNetworkRequest &request)
+{
+    const KUrl url(request.url());
+    kDebug() << url;
+
+//     const QString fileName = d->getFileNameForDownload(request, reply);
+// 
+//     // parts of following code are based on khtml_ext.cpp
+//     // DownloadManager <-> konqueror integration
+//     // find if the integration is enabled
+//     // the empty key  means no integration
+//     // only use download manager for non-local urls!
+//     bool downloadViaKIO = true;
+//     if (!url.isLocalFile()) {
+//         KConfigGroup cfg = KSharedConfig::openConfig("konquerorrc", KConfig::NoGlobals)->group("HTML Settings");
+//         const QString downloadManger = cfg.readPathEntry("DownloadManager", QString());
+//         if (!downloadManger.isEmpty()) {
+//             // then find the download manager location
+//             kDebug() << "Using: " << downloadManger << " as Download Manager";
+//             QString cmd = KStandardDirs::findExe(downloadManger);
+//             if (cmd.isEmpty()) {
+//                 QString errMsg = i18n("The Download Manager (%1) could not be found in your $PATH.", downloadManger);
+//                 QString errMsgEx = i18n("Try to reinstall it. \n\nThe integration with Konqueror will be disabled.");
+//                 KMessageBox::detailedSorry(view(), errMsg, errMsgEx);
+//                 cfg.writePathEntry("DownloadManager", QString());
+//                 cfg.sync();
+//             } else {
+//                 downloadViaKIO = false;
+//                 cmd += ' ' + KShell::quoteArg(url.url());
+//                 kDebug() << "Calling command" << cmd;
+//                 KRun::runCommand(cmd, view());
+//             }
+//         }
+//     }
+// 
+//     if (downloadViaKIO) {
+//         const QString destUrl = KFileDialog::getSaveFileName(url.fileName(), QString(), view());
+//         if (destUrl.isEmpty()) return;
+//         KIO::Job *job = KIO::file_copy(url, KUrl(destUrl), -1, KIO::Overwrite);
+//         //job->setMetaData(metadata); //TODO: add metadata from request
+//         job->addMetaData("MaxCacheSize", "0"); // Don't store in http cache.
+//         job->addMetaData("cache", "cache"); // Use entry from cache if available.
+//         job->uiDelegate()->setAutoErrorHandlingEnabled(true);
+//     }
+}
+
+WebPage *WebPage::newWindow(WebWindowType type)
+{
+    Q_UNUSED(type);
+    return 0;
+}
+

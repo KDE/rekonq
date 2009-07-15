@@ -40,7 +40,7 @@
 class WebPage;
 
 
-class WebView : public KWebView
+class WebView : public QWebView
 {
     Q_OBJECT
 
@@ -51,8 +51,8 @@ public:
     QString lastStatusBarText() const;
     int progress() const;
 
-public Q_SLOTS:
-    void load(const KUrl &url);
+// public Q_SLOTS:
+//     void load(const KUrl &url);
 
 signals:
     // switching tabs
@@ -69,7 +69,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
     // to reimplement from KWebView
-    virtual void setNewPage();
+//     virtual void setNewPage();
 
 private slots:
     void setProgress(int progress);

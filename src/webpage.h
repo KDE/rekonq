@@ -37,7 +37,7 @@ class QWebFrame;
 class QNetworkReply;
 
 
-class WebPage : public KWebPage
+class WebPage : public QWebPage
 {
     Q_OBJECT
 
@@ -48,11 +48,21 @@ public slots:
     void manageNetworkErrors(QNetworkReply* reply);
 
 protected:
-    KWebPage *createWindow(QWebPage::WebWindowType type);
+    QWebPage *createWindow(QWebPage::WebWindowType type);
+    virtual WebPage *newWindow(WebWindowType type);
 
+//     QString chooseFile(QWebFrame *frame, const QString &suggestedFile);
+    
+    void javaScriptAlert(QWebFrame *frame, const QString &msg);
+    bool javaScriptConfirm(QWebFrame *frame, const QString &msg);
+    bool javaScriptPrompt(QWebFrame *frame, const QString &msg, const QString &defaultValue, QString *result);
+    
+    QObject *createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues);
+        
 protected Q_SLOTS:
     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
-
+    virtual void slotDownloadRequested(const QNetworkRequest &request);
+    
 private:
     void viewErrorPage(QNetworkReply *);
 
