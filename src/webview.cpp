@@ -44,9 +44,6 @@
 #include <KDebug>
 #include <KToolInvocation>
 
-#include <kdewebkit/kwebpage.h>
-#include <kdewebkit/kwebview.h>
-
 // Qt Includes
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QWheelEvent>
@@ -79,12 +76,6 @@ WebView::WebView(QWidget* parent)
 }
 
 
-// void WebView::setNewPage()
-// {
-//     setPage(new WebPage(this));
-// }
-
-
 KUrl WebView::url() const 
 { 
     return KUrl(QWebView::url()); 
@@ -101,12 +92,6 @@ int WebView::progress() const
 { 
     return m_progress; 
 }
-
-
-// void WebView::load(const KUrl &url)
-// {
-//     QWebView::load(url);
-// }
 
 
 void WebView::setProgress(int progress) 
@@ -201,8 +186,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         menu.addSeparator();
         QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
-//         addBookmarkAction->setData(result.linkUrl());
-//         addBookmarkAction->setText(i18n("&Bookmark This Link"));
         menu.addAction(addBookmarkAction);
     }
 

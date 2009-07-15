@@ -48,9 +48,7 @@
 #include <KDE/KFileDialog>
 #include <KDE/KInputDialog>
 #include <KDE/KMessageBox>
-
-#include <kdewebkit/kwebpage.h>
-#include <kdewebkit/kwebview.h>
+#include <KDE/KJobUiDelegate>
 
 // Qt Includes
 #include <QtGui/QContextMenuEvent>
@@ -179,12 +177,12 @@ void WebPage::viewErrorPage(QNetworkReply *reply)
             frames.append(frame);
         }
     }
-    if (m_loadingUrl == reply->url())
-    {
-        mainFrame()->setHtml(html, reply->url());
-        // Don't put error pages to the history.
-        Application::historyManager()->removeHistoryEntry(reply->url(), mainFrame()->title());
-    }
+//     if (m_loadingUrl == reply->url())
+//     {
+//         mainFrame()->setHtml(html, reply->url());
+//         // Don't put error pages to the history.
+//         Application::historyManager()->removeHistoryEntry(reply->url(), mainFrame()->title());
+//     }
 }
 
 
@@ -257,15 +255,24 @@ void WebPage::slotDownloadRequested(const QNetworkRequest &request)
 //     }
 // 
 //     if (downloadViaKIO) {
-//         const QString destUrl = KFileDialog::getSaveFileName(url.fileName(), QString(), view());
-//         if (destUrl.isEmpty()) return;
-//         KIO::Job *job = KIO::file_copy(url, KUrl(destUrl), -1, KIO::Overwrite);
-//         //job->setMetaData(metadata); //TODO: add metadata from request
-//         job->addMetaData("MaxCacheSize", "0"); // Don't store in http cache.
-//         job->addMetaData("cache", "cache"); // Use entry from cache if available.
-//         job->uiDelegate()->setAutoErrorHandlingEnabled(true);
+        const QString destUrl = KFileDialog::getSaveFileName(url.fileName(), QString(), view());
+        if (destUrl.isEmpty()) return;
+        KIO::Job *job = KIO::file_copy(url, KUrl(destUrl), -1, KIO::Overwrite);
+        //job->setMetaData(metadata); //TODO: add metadata from request
+        job->addMetaData("MaxCacheSize", "0"); // Don't store in http cache.
+        job->addMetaData("cache", "cache"); // Use entry from cache if available.
+        job->uiDelegate()->setAutoErrorHandlingEnabled(true);
 //     }
+
+
 }
+
+
+QString WebPage::chooseFile(QWebFrame *frame, const QString &suggestedFile)
+{
+    return KFileDialog::getOpenFileName(suggestedFile, QString(), frame->page()->view());
+}
+
 
 WebPage *WebPage::newWindow(WebWindowType type)
 {

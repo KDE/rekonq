@@ -51,7 +51,7 @@ protected:
     QWebPage *createWindow(QWebPage::WebWindowType type);
     virtual WebPage *newWindow(WebWindowType type);
 
-//     QString chooseFile(QWebFrame *frame, const QString &suggestedFile);
+    QString chooseFile(QWebFrame *frame, const QString &suggestedFile);
     
     void javaScriptAlert(QWebFrame *frame, const QString &msg);
     bool javaScriptConfirm(QWebFrame *frame, const QString &msg);
@@ -66,7 +66,7 @@ protected Q_SLOTS:
 private:
     void viewErrorPage(QNetworkReply *);
 
-    KUrl m_loadingUrl;
+//     KUrl m_loadingUrl;
 };
 
 #endif
