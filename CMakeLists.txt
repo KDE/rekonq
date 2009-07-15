@@ -30,7 +30,7 @@ FIND_PACKAGE(Qt4 REQUIRED)
 SET(KDE_MIN_VERSION 4.2.0)
 FIND_PACKAGE(KDE4 REQUIRED)
 
-FIND_PACKAGE(KdeWebKit REQUIRED)
+# FIND_PACKAGE(KdeWebKit REQUIRED)
 
 INCLUDE(MacroOptionalFindPackage)
 INCLUDE(FindPackageHandleStandardArgs)
@@ -112,16 +112,16 @@ ENDIF(KDE4_FOUND)
 
 MESSAGE(STATUS "") # ----------------------------------------------------------
 
-# ---------------- KdeWebkit
-IF(KDEWEBKIT_FOUND)
-    MESSAGE(STATUS " KDE Webkit library found.............. YES")
-ELSE(KDEWEBKIT_FOUND)
-    MESSAGE(STATUS " KDE Webkit library found.............. NO")
-    MESSAGE(STATUS "")
-    MESSAGE(SEND_ERROR " rekonq needs, from version 0.2, KDEWEBKIT to be compiled. Please install it and try compiling again.")
-    MESSAGE(STATUS " You can actually retrieve it from playground/libs/webkitkde/kdewebkit KDE svn")
-    MESSAGE(STATUS "")
-ENDIF(KDEWEBKIT_FOUND)
+# # ---------------- KdeWebkit
+# IF(KDEWEBKIT_FOUND)
+#     MESSAGE(STATUS " KDE Webkit library found.............. YES")
+# ELSE(KDEWEBKIT_FOUND)
+#     MESSAGE(STATUS " KDE Webkit library found.............. NO")
+#     MESSAGE(STATUS "")
+#     MESSAGE(SEND_ERROR " rekonq needs, from version 0.2, KDEWEBKIT to be compiled. Please install it and try compiling again.")
+#     MESSAGE(STATUS " You can actually retrieve it from playground/libs/webkitkde/kdewebkit KDE svn")
+#     MESSAGE(STATUS "")
+# # ENDIF(KDEWEBKIT_FOUND)
 
 # --------------- KNetworkAccessManager
 if(KDE_OLD_VERSION)
@@ -148,23 +148,23 @@ MESSAGE(STATUS "")
 
 if(KDE_OLD_VERSION)
 
-    IF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND AND KDENETWORK_FOUND)
+    IF(QT_FOUND AND KDE4_FOUND AND KDENETWORK_FOUND)
         MESSAGE(STATUS " rekonq will be compiled............... YES")
         SET(REKONQ_CAN_BE_COMPILED true)
-    ELSE(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND AND KDENETWORK_FOUND)
+    ELSE(QT_FOUND AND KDE4_FOUND AND KDENETWORK_FOUND)
         MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
         SET(REKONQ_CAN_BE_COMPILED false)
-    ENDIF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND AND KDENETWORK_FOUND)
+    ENDIF(QT_FOUND AND KDE4_FOUND AND KDENETWORK_FOUND)
 
 else(KDE_OLD_VERSION)
 
-    IF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
+    IF(QT_FOUND AND KDE4_FOUND)
         MESSAGE(STATUS " rekonq will be compiled............... YES")
         SET(REKONQ_CAN_BE_COMPILED true)
-    ELSE(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
+    ELSE(QT_FOUND AND KDE4_FOUND)
         MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
         SET(REKONQ_CAN_BE_COMPILED false)
-    ENDIF(QT_FOUND AND KDE4_FOUND AND KDEWEBKIT_FOUND)
+    ENDIF(QT_FOUND AND KDE4_FOUND)
 
 endif(KDE_OLD_VERSION)
 

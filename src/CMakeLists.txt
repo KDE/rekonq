@@ -38,7 +38,6 @@ SET( rekonq_SRCS
 KDE4_ADD_UI_FILES( rekonq_SRCS
     cookies.ui
     cookiesexceptions.ui
-    #history.ui
     password.ui
     proxy.ui
     settings_general.ui
@@ -58,7 +57,6 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}
-                        ${KDEWEBKIT_INCLUDE_DIR}    
 )
 
 if(KDE_OLD_VERSION)
@@ -70,9 +68,7 @@ endif(KDE_OLD_VERSION)
 
 ### -------------- ADDING DEFINITIONS...
 
-ADD_DEFINITIONS (   ${KDE4_DEFINITIONS}
-                    ${KDEWEBKIT_DEFINITIONS}
-)
+ADD_DEFINITIONS ( ${KDE4_DEFINITIONS} )
 
 if(KDE_OLD_VERSION)
 
@@ -92,10 +88,11 @@ KDE4_ADD_EXECUTABLE( rekonq ${rekonq_SRCS} )
 TARGET_LINK_LIBRARIES ( rekonq
                         ${QT_LIBRARIES} 
                         ${QT_QTNETWORK_LIBRARY}
+                        ${QT_QTWEBKIT_LIBRARY} 
+                        ${QT_QTUITOOLS_LIBRARY}
                         ${KDE4_KUTILS_LIBS}
                         ${KDE4_KDEUI_LIBS}
                         ${KDE4_KIO_LIBS}
-                        ${KDEWEBKIT_LIBRARIES}
 )
 
 if(KDE_OLD_VERSION)
