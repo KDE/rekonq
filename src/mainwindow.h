@@ -68,6 +68,8 @@ private:
     void setupActions();
     void setupHistoryMenu();
     void setupBars();
+    void setupTools();
+    
     void setupSidePanel();
     SidePanel *sidePanel();
 

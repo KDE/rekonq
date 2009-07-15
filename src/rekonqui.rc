@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="43">
+<gui name="rekonq" version="44">
 
 <MenuBar>
 
@@ -89,7 +89,7 @@
     <Action name="go_home" />
     <Action name="url_bar" />
     <Action name="bookmarksActionMenu" />
-    <Action name="options_configure" />
+    <Action name="rekonq_tools" />
 </ToolBar>
 
 <!--  ============ Bookmarks ToolBar =========== -->

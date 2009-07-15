@@ -120,7 +120,7 @@ MainWindow::MainWindow()
 
     // setting up toolbars && location bar: this has to be done BEFORE setupGUI!!
     setupBars();
-
+    
     // Bookmark Menu
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
     bmMenu->setIcon(KIcon("rating"));
@@ -129,6 +129,9 @@ MainWindow::MainWindow()
 
     // Side Panel: this has to be done BEFORE setupGUI!!
     setupSidePanel();
+
+    // setting up rekonq tools: to be done BEFORE setupGUI!
+    setupTools();
 
     // a call to KXmlGuiWindow::setupGUI() populates the GUI
     // with actions, using KXMLGUI.
@@ -316,10 +319,29 @@ void MainWindow::setupActions()
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
+}
 
-    // ==================== Bookmarks Actions
-//     QAction *ba = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
-//     actionCollection()->addAction(QLatin1String("rekonq_add_bookmark"), ba);
+
+void MainWindow::setupTools()
+{
+    KActionMenu *toolsMenu = new KActionMenu(KIcon("configure"), i18n("rekonq tools"), this);
+    toolsMenu->setDelayed(false);
+    
+    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
+    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
+    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
+    toolsMenu->addSeparator();
+    toolsMenu->addAction(actionByName(QLatin1String("private_browsing")));
+    toolsMenu->addAction(actionByName(QLatin1String("web_inspector")));
+    toolsMenu->addAction(actionByName(QLatin1String("page_source")));
+    toolsMenu->addSeparator();
+    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::ShowMenubar)));
+    toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
+    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
+    toolsMenu->addSeparator();
+    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
+
+    actionCollection()->addAction(QLatin1String("rekonq_tools"), toolsMenu);
 }
 
 
