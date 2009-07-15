@@ -9,7 +9,7 @@ PROJECT( rekonq )
 # rekonq info
 SET(REKONQ_MAJOR_VERSION "0")
 SET(REKONQ_MINOR_VERSION "1")
-SET(REKONQ_PATCH_VERSION "8")
+SET(REKONQ_PATCH_VERSION "9")
 
 SET(REKONQ_VERSION_STR
     "${REKONQ_MAJOR_VERSION}.${REKONQ_MINOR_VERSION}.${REKONQ_PATCH_VERSION}"
@@ -29,8 +29,6 @@ SET(QT_MIN_VERSION 4.5.0)
 FIND_PACKAGE(Qt4 REQUIRED)
 SET(KDE_MIN_VERSION 4.2.0)
 FIND_PACKAGE(KDE4 REQUIRED)
-
-# FIND_PACKAGE(KdeWebKit REQUIRED)
 
 INCLUDE(MacroOptionalFindPackage)
 INCLUDE(FindPackageHandleStandardArgs)
@@ -110,18 +108,6 @@ ELSE(KDE4_FOUND)
     MESSAGE(STATUS "")
 ENDIF(KDE4_FOUND)
 
-MESSAGE(STATUS "") # ----------------------------------------------------------
-
-# # ---------------- KdeWebkit
-# IF(KDEWEBKIT_FOUND)
-#     MESSAGE(STATUS " KDE Webkit library found.............. YES")
-# ELSE(KDEWEBKIT_FOUND)
-#     MESSAGE(STATUS " KDE Webkit library found.............. NO")
-#     MESSAGE(STATUS "")
-#     MESSAGE(SEND_ERROR " rekonq needs, from version 0.2, KDEWEBKIT to be compiled. Please install it and try compiling again.")
-#     MESSAGE(STATUS " You can actually retrieve it from playground/libs/webkitkde/kdewebkit KDE svn")
-#     MESSAGE(STATUS "")
-# # ENDIF(KDEWEBKIT_FOUND)
 
 # --------------- KNetworkAccessManager
 if(KDE_OLD_VERSION)
