@@ -64,8 +64,6 @@ private slots:
     void loadFinished();
     void setStatusBarText(const QString &string);
 
-    void openLinkInNewTab(const KUrl &);
-
 private:
     WebPage *m_page;
 

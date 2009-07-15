@@ -71,8 +71,6 @@ WebView::WebView(QWidget* parent)
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(setProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
-
-    connect(this, SIGNAL(openUrlInNewTab(const KUrl &)), this, SLOT(openLinkInNewTab(const KUrl &)));
 }
 
 
@@ -195,13 +193,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
 
     menu.exec(mapToGlobal(event->pos()));
-}
-
-
-void WebView::openLinkInNewTab(const KUrl &url)
-{
-    WebView *that = Application::instance()->newWebView();
-    that->load(url);
 }
 
 
