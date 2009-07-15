@@ -123,7 +123,9 @@ MainWindow::MainWindow()
 
     // Bookmark Menu
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
-    actionCollection()->addAction(QLatin1String("bookmarks"), bmMenu);
+    bmMenu->setIcon(KIcon("rating"));
+    actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
+    ((KActionMenu *)actionByName("bookmarksActionMenu"))->setDelayed(false);
 
     // Side Panel: this has to be done BEFORE setupGUI!!
     setupSidePanel();
@@ -316,8 +318,8 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
 
     // ==================== Bookmarks Actions
-    QAction *ba = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
-    actionCollection()->addAction(QLatin1String("rekonq_add_bookmark"), ba);
+//     QAction *ba = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
+//     actionCollection()->addAction(QLatin1String("rekonq_add_bookmark"), ba);
 }
 
 
@@ -345,7 +347,7 @@ void MainWindow::setupHistoryMenu()
     historyMenu->setTitle(i18n("&History"));
 
     // setting history menu position
-    menuBar()->insertMenu(actionCollection()->action("bookmarks"), historyMenu);
+    menuBar()->insertMenu(actionCollection()->action("bookmarksActionMenu"), historyMenu);
 
     //  setting initial actions
     QList<QAction*> historyActions;

@@ -55,7 +55,7 @@
 </Action>
 
 <!--  ============ BOOKMARKS menu =========== -->
-<Action name="bookmarks" ><text>&amp;Bookmarks</text>
+<Action name="bookmarksActionMenu" ><text>&amp;Bookmarks</text>
 </Action>
 
 <!--  ============ TOOLS menu =========== -->
@@ -88,7 +88,7 @@
     <Action name="stop_reload" />
     <Action name="go_home" />
     <Action name="url_bar" />
-    <Action name="rekonq_add_bookmark" />
+    <Action name="bookmarksActionMenu" />
     <Action name="options_configure" />
 </ToolBar>
 
