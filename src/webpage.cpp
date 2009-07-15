@@ -3,7 +3,10 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008 Dirk Mueller <mueller@kde.org>
+* Copyright (C) 2008 Urs Wolfer <uwolfer @ kde.org>
+* Copyright (C) 2008 Michael Howell <mhowell123@gmail.com>
+* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it
@@ -224,12 +227,6 @@ void WebPage::viewErrorPage(QNetworkReply *reply)
             frames.append(frame);
         }
     }
-//     if (m_loadingUrl == reply->url())
-//     {
-//         mainFrame()->setHtml(html, reply->url());
-//         // Don't put error pages to the history.
-//         Application::historyManager()->removeHistoryEntry(reply->url(), mainFrame()->title());
-//     }
 }
 
 
@@ -271,47 +268,13 @@ void WebPage::slotDownloadRequested(const QNetworkRequest &request)
     const KUrl url(request.url());
     kDebug() << url;
 
-//     const QString fileName = d->getFileNameForDownload(request, reply);
-// 
-//     // parts of following code are based on khtml_ext.cpp
-//     // DownloadManager <-> konqueror integration
-//     // find if the integration is enabled
-//     // the empty key  means no integration
-//     // only use download manager for non-local urls!
-//     bool downloadViaKIO = true;
-//     if (!url.isLocalFile()) {
-//         KConfigGroup cfg = KSharedConfig::openConfig("konquerorrc", KConfig::NoGlobals)->group("HTML Settings");
-//         const QString downloadManger = cfg.readPathEntry("DownloadManager", QString());
-//         if (!downloadManger.isEmpty()) {
-//             // then find the download manager location
-//             kDebug() << "Using: " << downloadManger << " as Download Manager";
-//             QString cmd = KStandardDirs::findExe(downloadManger);
-//             if (cmd.isEmpty()) {
-//                 QString errMsg = i18n("The Download Manager (%1) could not be found in your $PATH.", downloadManger);
-//                 QString errMsgEx = i18n("Try to reinstall it. \n\nThe integration with Konqueror will be disabled.");
-//                 KMessageBox::detailedSorry(view(), errMsg, errMsgEx);
-//                 cfg.writePathEntry("DownloadManager", QString());
-//                 cfg.sync();
-//             } else {
-//                 downloadViaKIO = false;
-//                 cmd += ' ' + KShell::quoteArg(url.url());
-//                 kDebug() << "Calling command" << cmd;
-//                 KRun::runCommand(cmd, view());
-//             }
-//         }
-//     }
-// 
-//     if (downloadViaKIO) {
-        const QString destUrl = KFileDialog::getSaveFileName(url.fileName(), QString(), view());
-        if (destUrl.isEmpty()) return;
-        KIO::Job *job = KIO::file_copy(url, KUrl(destUrl), -1, KIO::Overwrite);
-        //job->setMetaData(metadata); //TODO: add metadata from request
-        job->addMetaData("MaxCacheSize", "0"); // Don't store in http cache.
-        job->addMetaData("cache", "cache"); // Use entry from cache if available.
-        job->uiDelegate()->setAutoErrorHandlingEnabled(true);
-//     }
-
-
+    const QString destUrl = KFileDialog::getSaveFileName(url.fileName(), QString(), view());
+    if (destUrl.isEmpty()) return;
+    KIO::Job *job = KIO::file_copy(url, KUrl(destUrl), -1, KIO::Overwrite);
+    //job->setMetaData(metadata); //TODO: add metadata from request
+    job->addMetaData("MaxCacheSize", "0"); // Don't store in http cache.
+    job->addMetaData("cache", "cache"); // Use entry from cache if available.
+    job->uiDelegate()->setAutoErrorHandlingEnabled(true);
 }
 
 
@@ -326,4 +289,3 @@ WebPage *WebPage::newWindow(WebWindowType type)
     Q_UNUSED(type);
     return 0;
 }
-

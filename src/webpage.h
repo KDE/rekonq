@@ -2,7 +2,10 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
+* Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
+* Copyright (C) 2008 Dirk Mueller <mueller@kde.org>
+* Copyright (C) 2008 Urs Wolfer <uwolfer @ kde.org>
+* Copyright (C) 2008 Michael Howell <mhowell123@gmail.com>
 * Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
@@ -25,9 +28,6 @@
 
 // KDE Includes
 #include <KUrl>
-
-#include <kdewebkit/kwebpage.h>
-#include <kdewebkit/kwebview.h>
 
 // Qt Includes
 #include <QWebPage>
@@ -65,8 +65,6 @@ protected Q_SLOTS:
     
 private:
     void viewErrorPage(QNetworkReply *);
-
-//     KUrl m_loadingUrl;
 };
 
 #endif
