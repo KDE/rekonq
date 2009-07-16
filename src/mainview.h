@@ -72,8 +72,6 @@ public:
     StackedUrlBar *urlBarStack() const;
     WebView *currentWebView() const;
     int webViewIndex(WebView *webView) const;
-    KAction *recentlyClosedTabsAction() const;
-    void setMakeBackTab(bool b);
 
     /**
      * show and hide TabBar if user doesn't choose
@@ -104,7 +102,7 @@ public slots:
      *
      * @return a pointer to the new WebView
      */
-    WebView *newWebView(Rekonq::OpenType type = Rekonq::Default);
+    WebView *newTab();
 
     /**
      * Core browser slot. Load an url in a webview
@@ -179,8 +177,6 @@ private:
     TabBar *m_tabBar;
 
     QString m_loadingGitPath;
-
-    bool m_makeBackTab;
 
     QToolButton *m_addTabButton;
 };

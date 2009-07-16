@@ -164,12 +164,6 @@ int MainView::webViewIndex(WebView *webView) const
 }
 
 
-void MainView::setMakeBackTab(bool b) 
-{ 
-    m_makeBackTab = b; 
-}
-
-
 void MainView::showTabBar()
 {
     if (ReKonfig::alwaysShowTabBar())
@@ -358,7 +352,7 @@ WebView *MainView::webView(int index) const
 }
 
 
-WebView *MainView::newWebView(Rekonq::OpenType type)
+WebView *MainView::newTab()
 {
     // line edit
     UrlBar *urlBar = new UrlBar;  // Ownership of widget is passed on to the QStackedWidget (addWidget method).
@@ -389,22 +383,25 @@ WebView *MainView::newWebView(Rekonq::OpenType type)
 
     addTab(webView, i18n("(Untitled)"));
 
-    switch(type)
-    {
-    case Rekonq::Default:
-        if (!m_makeBackTab)
-        {
-            setCurrentWidget(webView);  // this method does NOT take ownership of webView
-            urlBar->setFocus();
-        }
-        break;
-    case Rekonq::New:
-        setCurrentWidget(webView);  // this method does NOT take ownership of webView
-        urlBar->setFocus();
-        break;
-    case Rekonq::Background:
-        break;
-    };
+    setCurrentWidget(webView);  // this method does NOT take ownership of webView
+    urlBar->setFocus();
+
+//     switch(type)
+//     {
+//     case Rekonq::Default:
+//         if (!m_makeBackTab)
+//         {
+//             setCurrentWidget(webView);  // this method does NOT take ownership of webView
+//             urlBar->setFocus();
+//         }
+//         break;
+//     case Rekonq::New:
+//         setCurrentWidget(webView);  // this method does NOT take ownership of webView
+//         urlBar->setFocus();
+//         break;
+//     case Rekonq::Background:
+//         break;
+//     };
 
     emit tabsChanged();
 
@@ -480,7 +477,7 @@ void MainView::slotCloneTab(int index)
         index = currentIndex();
     if (index < 0 || index >= count())
         return;
-    WebView *tab = newWebView();
+    WebView *tab = newTab();
     tab->setUrl(webView(index)->url());
 
     showTabBar();
@@ -758,7 +755,7 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (!childAt(event->pos()))
     {
-        newWebView(Rekonq::New);
+        newTab();
         return;
     }
     KTabWidget::mouseDoubleClickEvent(event);

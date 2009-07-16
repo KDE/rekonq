@@ -49,17 +49,6 @@ class WebView;
 namespace Rekonq
 {
     /**
-     * @short Open link options
-     * Different modes of opening new tab
-     */
-    enum OpenType
-    {
-        Default,    ///< open url according to users settings
-        New,        ///< open url in new tab and make it current
-        Background  ///< open url in new tab in background
-    };
-
-    /**
      * @short notifying message status
      * Different message status
      */
@@ -88,7 +77,7 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
-    WebView *newWebView(Rekonq::OpenType type = Rekonq::Default);
+    WebView *newWebView();
 
     static KIcon icon(const KUrl &url);
 

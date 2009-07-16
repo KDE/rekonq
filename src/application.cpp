@@ -141,9 +141,9 @@ MainWindow *Application::mainWindow()
 }
 
 
-WebView *Application::newWebView(Rekonq::OpenType type)
+WebView *Application::newWebView()
 {
-    return m_mainWindow->mainView()->newWebView(type);
+    return m_mainWindow->mainView()->newTab();
 }
 
 

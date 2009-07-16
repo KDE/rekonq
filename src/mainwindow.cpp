@@ -304,7 +304,7 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T, Qt::CTRL + Qt::Key_N));
     actionCollection()->addAction(QLatin1String("new_tab"), a);
-    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(newWebView()));
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(newTab()));
 
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_W));
@@ -386,7 +386,6 @@ void MainWindow::slotUpdateConfiguration()
     // ============== General ==================
     m_homePage = ReKonfig::homePage();
     mainView()->showTabBar();
-    mainView()->setMakeBackTab( ReKonfig::openTabsBack() );
 
     // "status bar" messages (new notifyMessage system)
     if(ReKonfig::showUrlsPopup())
