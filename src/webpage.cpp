@@ -100,7 +100,6 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 }
 
 
-// FIXME: implement here (perhaps) mimetype discerning && file loading (KToolInvocation??)
 void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
 {
 
