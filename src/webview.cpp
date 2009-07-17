@@ -48,6 +48,7 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
+#include <QtGui/QAction>
 
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
@@ -108,13 +109,15 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     MainWindow *mainwindow = Application::instance()->mainWindow();
 
     KMenu menu(this);
-
+    QAction *a;
+    
     // link actions
     bool linkIsEmpty = result.linkUrl().isEmpty();
     if (!linkIsEmpty)
     {
-        QAction *a = pageAction(QWebPage::OpenLinkInNewWindow);
+        a = pageAction(QWebPage::OpenLinkInNewWindow);
         a->setText(i18n("Open Link in New &Tab"));
+        a->setIcon(KIcon("window-new"));
         menu.addAction(a);
     }
     else
@@ -127,7 +130,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // Developer Extras actions
     if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
     {
-        menu.addAction(pageAction(QWebPage::InspectElement));
+        a = pageAction(QWebPage::InspectElement);  
+        a->setIcon(KIcon("view-process-all"));
+        menu.addAction(a);
         menu.addSeparator();
     }
 
@@ -136,19 +141,28 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     if (result.isContentSelected() && result.isContentEditable())
     {
-        menu.addAction(pageAction(QWebPage::Cut));
+        a = pageAction(QWebPage::Cut);
+        a->setIcon(KIcon("edit-cut"));
+        a->setShortcut(KStandardShortcut::cut().primary());
+        menu.addAction(a);
         b = true;
     }
 
     if (result.isContentSelected())
     {
-        menu.addAction(pageAction(QWebPage::Copy));
+        a = pageAction(QWebPage::Copy);
+        a->setIcon(KIcon("edit-copy"));
+        a->setShortcut(KStandardShortcut::copy().primary());
+        menu.addAction(a);
         b = true;
     }
 
     if (result.isContentEditable())
     {
-        menu.addAction(pageAction(QWebPage::Paste));
+        a = pageAction(QWebPage::Paste);
+        a->setIcon(KIcon("edit-paste"));
+        a->setShortcut(KStandardShortcut::paste().primary());
+        menu.addAction(a);
         b = true;
     }
 
@@ -160,15 +174,27 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // save/copy link actions
     if (!linkIsEmpty)
     {
-        menu.addAction(pageAction(QWebPage::DownloadLinkToDisk));
-        menu.addAction(pageAction(QWebPage::CopyLinkToClipboard));
+        a = pageAction(QWebPage::DownloadLinkToDisk);
+        a->setIcon(KIcon("document-save"));
+        menu.addAction(a);
+        
+        a = pageAction(QWebPage::CopyLinkToClipboard);
+        a->setIcon(KIcon("edit-copy"));
+        menu.addAction(a);
+
         menu.addSeparator();
 
         if (!result.pixmap().isNull())
         {
             // TODO Add "View Image" && remove copy_this_image action
-            menu.addAction(pageAction(QWebPage::DownloadImageToDisk));
-            menu.addAction(pageAction(QWebPage::CopyImageToClipboard));
+            a = pageAction(QWebPage::DownloadImageToDisk); 
+            a->setIcon(KIcon("document-save"));
+            menu.addAction(a);
+
+            a = pageAction(QWebPage::CopyImageToClipboard);
+            a->setIcon(KIcon("edit-copy"));
+            menu.addAction(a);
+            
             menu.addSeparator();
         }
     }

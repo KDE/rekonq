@@ -79,51 +79,7 @@ WebPage::WebPage(QObject *parent)
     setNetworkAccessManager(Application::networkAccessManager());
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
 
-    action(Back)->setIcon(KIcon("go-previous"));
-    action(Back)->setShortcut(KStandardShortcut::back().primary());
-
-    action(Forward)->setIcon(KIcon("go-next"));
-    action(Forward)->setShortcut(KStandardShortcut::forward().primary());
-
-    action(Reload)->setIcon(KIcon("view-refresh"));
-    action(Reload)->setShortcut(KStandardShortcut::reload().primary());
-
-    action(Stop)->setIcon(KIcon("process-stop"));
-    action(Stop)->setShortcut(Qt::Key_Escape);
-
-    action(Cut)->setIcon(KIcon("edit-cut"));
-    action(Cut)->setShortcut(KStandardShortcut::cut().primary());
-
-    action(Copy)->setIcon(KIcon("edit-copy"));
-    action(Copy)->setShortcut(KStandardShortcut::copy().primary());
-
-    action(Paste)->setIcon(KIcon("edit-paste"));
-    action(Paste)->setShortcut(KStandardShortcut::paste().primary());
-
-    action(Undo)->setIcon(KIcon("edit-undo"));
-    action(Undo)->setShortcut(KStandardShortcut::undo().primary());
-
-    action(Redo)->setIcon(KIcon("edit-redo"));
-    action(Redo)->setShortcut(KStandardShortcut::redo().primary());
-
-    action(InspectElement)->setIcon(KIcon("view-process-all"));
-    action(OpenLinkInNewWindow)->setIcon(KIcon("window-new"));
-    action(OpenFrameInNewWindow)->setIcon(KIcon("window-new"));
-    action(OpenImageInNewWindow)->setIcon(KIcon("window-new"));
-    action(CopyLinkToClipboard)->setIcon(KIcon("edit-copy"));
-    action(CopyImageToClipboard)->setIcon(KIcon("edit-copy"));
-    action(ToggleBold)->setIcon(KIcon("format-text-bold"));
-    action(ToggleItalic)->setIcon(KIcon("format-text-italic"));
-    action(ToggleUnderline)->setIcon(KIcon("format-text-underline"));
-    action(DownloadLinkToDisk)->setIcon(KIcon("document-save"));
-    action(DownloadImageToDisk)->setIcon(KIcon("document-save"));
-
-    settings()->setWebGraphic(QWebSettings::MissingPluginGraphic, KIcon("preferences-plugin").pixmap(32, 32));
-    settings()->setWebGraphic(QWebSettings::MissingImageGraphic, KIcon("image-missing").pixmap(32, 32));
-    settings()->setWebGraphic(QWebSettings::DefaultFrameIconGraphic, KIcon("applications-internet").pixmap(32, 32));
-
     connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(slotDownloadRequested(const QNetworkRequest &)));
-
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(slotHandleUnsupportedContent(QNetworkReply *)));
 }
 
