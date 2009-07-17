@@ -1,0 +1,17 @@
+[DEFAULT]
+verbose = True
+
+[project]
+target = svn:target
+start-revision = INITIAL
+root-directory = /DATI/KDE/SRC/rekonq
+state-file = tailor.state
+source = git:source
+subdir = .
+
+[git:source]
+repository = git@gitorious.org:rekonq/mainline.git
+
+[svn:target]
+repository = svn+ssh://adjam@svn.kde.org/home/kde/trunk/playground/network/rekonq
+
