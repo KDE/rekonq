@@ -91,6 +91,7 @@ public slots:
 
 protected:
     bool queryClose();
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void postLaunch();

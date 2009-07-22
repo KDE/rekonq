@@ -855,6 +855,18 @@ bool MainWindow::queryClose()
 }
 
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape)
+    {
+        m_findBar->hide();
+        return;
+    }
+
+    KXmlGuiWindow::keyPressEvent(event);
+}
+
+
 QAction *MainWindow::actionByName(const QString name)
 {
     QAction *ret = actionCollection()->action(name);

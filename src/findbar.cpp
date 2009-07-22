@@ -115,15 +115,15 @@ void FindBar::clear()
 
 void FindBar::show()
 {
+    // set focus to findbar if user select showFindBar shortcut
+    m_lineEdit->setFocus();
+    m_lineEdit->selectAll();
+
     // show findbar if not visible
     if (isVisible())
         return;
 
     QWidget::show();
-
-    // set focus to findbar if user select showFindBar shortcut
-    m_lineEdit->setFocus();
-    m_lineEdit->selectAll();
 }
 
 
