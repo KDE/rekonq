@@ -50,6 +50,7 @@ TabBar::TabBar(QWidget *parent)
 {
     setElideMode(Qt::ElideRight);
     setContextMenuPolicy(Qt::CustomContextMenu);
+    setDocumentMode(true);
     setMovable(true);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this,
             SLOT(contextMenuRequested(const QPoint &)));
