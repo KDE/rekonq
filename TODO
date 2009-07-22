@@ -14,14 +14,12 @@ LONG TERM GOALS
 
 TO 0.2 release
 
-+- unique url/search/history bar
-+ WebkitKDE (ask about status)
-+ cookie system refactor
-x- bookmarks panel
-x- MimeType Manager
-+- BETTER KDE INTEGRATION (What else to be done??)
-+- error pages
-
-- CLEAN CLEAN CLEAN code
-- remove searchbar
-- 
+- private browsing color
+- rekonqrun
+- findbar NO notify system
+- right click Google Search Integration
+- packaging / license
+- tools menu (to be decided)
+- error pages (timeout loading)
+- proxy DNS requests ??
+-  
