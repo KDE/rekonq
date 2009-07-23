@@ -358,6 +358,7 @@ void MainWindow::setupSidePanel()
     KAction* a = (KAction *) m_sidePanel->toggleViewAction();
     a->setText( i18n("History Panel") );
     a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H)); // WARNING : is this the right shortcut ??
+    a->setIcon(KIcon("view-history"));
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
 }
 
