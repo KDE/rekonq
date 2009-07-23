@@ -120,7 +120,7 @@ MainWindow::MainWindow()
 
     // setting up toolbars && location bar: this has to be done BEFORE setupGUI!!
     setupBars();
-    
+
     // Bookmark Menu
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
     bmMenu->setIcon(KIcon("rating"));
@@ -326,7 +326,7 @@ void MainWindow::setupTools()
 {
     KActionMenu *toolsMenu = new KActionMenu(KIcon("configure"), i18n("rekonq tools"), this);
     toolsMenu->setDelayed(false);
-    
+
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
@@ -389,20 +389,20 @@ void MainWindow::slotUpdateConfiguration()
     // "status bar" messages (new notifyMessage system)
     if(ReKonfig::showUrlsPopup())
     {
-        connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), 
+        connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)),
                     this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
-        connect(m_view, SIGNAL(linkHovered(const QString&)), 
+        connect(m_view, SIGNAL(linkHovered(const QString&)),
                     this, SLOT(notifyMessage(const QString&)));
     }
     else
     {
-        disconnect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), 
+        disconnect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)),
                     this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
-        disconnect(m_view, SIGNAL(linkHovered(const QString&)), 
+        disconnect(m_view, SIGNAL(linkHovered(const QString&)),
                     this, SLOT(notifyMessage(const QString&)));
     }
-    
-    
+
+
     // =========== Fonts ==============
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
 
@@ -460,7 +460,7 @@ void MainWindow::slotOpenLocation()
 void MainWindow::slotFileSaveAs()
 {
     KUrl srcUrl = currentTab()->url();
-    
+
     const QString destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), this);
     if (destUrl.isEmpty()) return;
     KIO::Job *job = KIO::file_copy(srcUrl, KUrl(destUrl), -1, KIO::Overwrite);
@@ -884,6 +884,10 @@ QAction *MainWindow::actionByName(const QString name)
 // FIXME: better implement me, please!!
 void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 {
+    if (this != QApplication::activeWindow()) {
+        return;
+    }
+
     // deleting popus if empty msgs
     if(msg.isEmpty())
     {
