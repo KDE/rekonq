@@ -116,7 +116,7 @@ void RekonqRun::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     switch(type)
     {
     case Rekonq::Default:
-        if (!Rekonq::openTabsBack())
+        if (!ReKonfig::openTabsBack())
         {
             setCurrentWidget(webView);  // this method does NOT take ownership of webView
         }
