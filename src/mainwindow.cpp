@@ -276,6 +276,7 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextSmaller()));
 
     a = new KAction(i18n("Page S&ource"), this);
+    a->setIcon(KIcon("application-xhtml+xml"));
     actionCollection()->addAction(QLatin1String("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewPageSource()));
 
@@ -298,7 +299,7 @@ void MainWindow::setupActions()
     m_historyForwardAction = new KAction(KIcon("go-next"), i18n("Forward"), this);
     connect(m_historyForwardAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenNext()));
     actionCollection()->addAction(QLatin1String("history_forward"), m_historyForwardAction);
-
+    
     // =================== Tab Actions
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T, Qt::CTRL + Qt::Key_N));

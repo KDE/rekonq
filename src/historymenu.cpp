@@ -76,8 +76,9 @@ void HistoryMenu::postPopulated()
         addSeparator();
 
     QAction *showAllAction = Application::instance()->mainWindow()->actionByName("show_history_panel");
+    showAllAction->setIcon(KIcon("view-history"));
     addAction(showAllAction);
-
+    
     KAction *clearAction = new KAction(i18n("Clear History"), this);
     connect(clearAction, SIGNAL(triggered()), this, SLOT(clearHistory()));
     addAction(clearAction);
