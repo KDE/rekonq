@@ -30,18 +30,30 @@
 namespace Rekonq
 {
     /**
-     * @short opening tab behaviour
-     * Different open tab behaviour
+     * @short Open link options
+     * Different modes of opening new tab
      */
-    
-    enum BrowserArguments
+    enum OpenType
     {
-        Default,    ///< follow rekonq settings
-        New,        ///< open tab with focus
-        Background  ///< open tab in the background
+        Default,    ///< open url according to users settings
+        New,        ///< open url in new tab and make it current
+        Background  ///< open url in new tab in background
     };
 }
 
+
+/**
+ * RekonqRun is not inherited from KRun or KParts::BrowserRun, as probably expected.
+ * We (actually) use this class just to find the REAL url to load (and load it!), so it does
+ * these operations:
+ *
+ * - stop loading malformed urls
+ * - find url scheme on relative urls
+ * - find right url to load on SearchProviders (Google, Wikipedia, etc.)
+ * - handle local urls (launches dolphin)
+ * - guess urls from strings
+ * 
+*/
 
 class RekonqRun : public QObject
 {
@@ -55,11 +67,11 @@ public:
 public slots:
 
     void loadUrl( const KUrl& url,
-                  const Rekonq::BrowserArguments& browserArgs = Rekonq::Default
+                  const Rekonq::OpenType& type = Rekonq::Default
                 );
            
     void loadUrl( const QString& urlString,
-                  const Rekonq::BrowserArguments& browserArgs = Rekonq::Default
+                  const Rekonq::OpenType& type = Rekonq::Default
                 );    
              
 private:

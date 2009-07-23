@@ -50,7 +50,7 @@ RekonqRun::~RekonqRun()
 }
 
 
-void RekonqRun::loadUrl(const KUrl& url, const Rekonq::BrowserArguments& browserArgs)
+void RekonqRun::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 {
     if (url.isEmpty())
         return;
@@ -113,7 +113,7 @@ void RekonqRun::loadUrl(const KUrl& url, const Rekonq::BrowserArguments& browser
     WebView *webView = m_window->newTab();
     m_window->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
 
-    switch(browserArgs)
+    switch(type)
     {
     case Rekonq::Default:
         if (!Rekonq::openTabsBack())
@@ -136,9 +136,9 @@ void RekonqRun::loadUrl(const KUrl& url, const Rekonq::BrowserArguments& browser
 }
 
 
-void RekonqRun::loadUrl(const QString& urlString, const Rekonq::BrowserArguments& browserArgs)
+void RekonqRun::loadUrl(const QString& urlString,  const Rekonq::OpenType& type)
 {    
-    return loadUrl( guessUrlFromString(urlString), browserArgs );
+    return loadUrl( guessUrlFromString(urlString), type );
 }
 
 
