@@ -89,7 +89,6 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
-    WebView *newWebView();
 
     static KIcon icon(const KUrl &url);
 

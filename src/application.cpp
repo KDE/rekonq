@@ -103,7 +103,6 @@ int Application::newInstance()
     }
     else
     {
-        m_mainWindow->mainView()->newTab();
         m_mainWindow->slotHome();
     }
 
@@ -141,12 +140,6 @@ void Application::slotSaveConfiguration() const
 MainWindow *Application::mainWindow()
 {
     return m_mainWindow;
-}
-
-
-WebView *Application::newWebView()
-{
-    return m_mainWindow->mainView()->newTab();
 }
 
 
