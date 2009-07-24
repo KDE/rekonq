@@ -79,6 +79,7 @@ void LineEdit::focusOutEvent(QFocusEvent *event)
     deselect();
 }
 
+
 void LineEdit::mouseDoubleClickEvent(QMouseEvent *)
 {
     selectAll();

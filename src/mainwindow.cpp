@@ -331,17 +331,27 @@ void MainWindow::setupTools()
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
+
     toolsMenu->addSeparator();
+        
+    KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Web Development"), this);
+    webMenu->addAction(actionByName(QLatin1String("web_inspector")));
+    webMenu->addAction(actionByName(QLatin1String("page_source")));
+    toolsMenu->addAction(webMenu);
+        
     toolsMenu->addAction(actionByName(QLatin1String("private_browsing")));
-    toolsMenu->addAction(actionByName(QLatin1String("web_inspector")));
-    toolsMenu->addAction(actionByName(QLatin1String("page_source")));
+
     toolsMenu->addSeparator();
-    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::ShowMenubar)));
+    
     toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
+    
     toolsMenu->addSeparator();
+
+    toolsMenu->addAction(KStandardAction::helpContents(this, SLOT(appHelpActivated()), actionCollection()));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
 
+    // adding rekonq_tools to rekonq actionCollection
     actionCollection()->addAction(QLatin1String("rekonq_tools"), toolsMenu);
 }
 
