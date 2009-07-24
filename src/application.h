@@ -67,9 +67,10 @@ namespace Rekonq
      */
     enum OpenType
     {
-        Default,    ///< open url according to users settings
-        New,        ///< open url in new tab and make it current
-        Background  ///< open url in new tab in background
+        CurrentTab,     ///< open url in current tab
+        SettingOpenTab, ///< open url according to users settings
+        NewTab,         ///< open url in new tab and make it current
+        BackgroundTab   ///< open url in new tab in background
     };
 
 }
@@ -107,11 +108,11 @@ public slots:
 public slots:
 
     void loadUrl( const KUrl& url,
-                  const Rekonq::OpenType& type = Rekonq::Default
+                  const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );
            
     void loadUrl( const QString& urlString,
-                  const Rekonq::OpenType& type = Rekonq::Default
+                  const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );    
 
                 

@@ -359,7 +359,7 @@ WebView *MainView::newTab()
     connect(urlBar, SIGNAL(activated(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
     m_urlBars->addUrlBar(urlBar);
 
-    WebView *webView = new WebView;  // should be deleted on tab close
+    WebView *webView = new WebView;  // should be deleted on tab close?
 
     // connecting webview with urlbar
     connect(webView, SIGNAL(loadProgress(int)), urlBar, SLOT(slotUpdateProgress(int)));

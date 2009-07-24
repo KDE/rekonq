@@ -97,12 +97,13 @@ int Application::newInstance()
     {
         for (int i = 0; i < args->count(); ++i)
         {
-               loadUrl(args->arg(i), Rekonq::New); 
+               loadUrl(args->arg(i), Rekonq::NewTab); 
         }
         args->clear();
     }
     else
     {
+        m_mainWindow->mainView()->newTab();
         m_mainWindow->slotHome();
     }
 
@@ -310,25 +311,35 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         loadingUrl.setUrl( QString("http://en.wikipedia.org/wiki/%1").arg(str) );
     }
 
-
-    WebView *webView = m_mainWindow->mainView()->newTab();
-    m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
-
-    switch(type)
+    WebView *webView;
+    if( type == Rekonq::CurrentTab )
     {
-    case Rekonq::Default:
-        if (!ReKonfig::openTabsBack())
-        {
-            m_mainWindow->mainView()->setCurrentWidget(webView);  // this method does NOT take ownership of webView
-        }
-        break;
-    case Rekonq::New:
-        m_mainWindow->mainView()->setCurrentWidget(webView);  // this method does NOT take ownership of webView
-        break;
-    case Rekonq::Background:
-        break;
-    };
+        webView = m_mainWindow->currentTab();
+        m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
+    }
+    else
+    {
+        webView = m_mainWindow->mainView()->newTab();
+        m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
 
+        switch(type)
+        {
+        case Rekonq::SettingOpenTab:
+            if (!ReKonfig::openTabsBack())
+            {
+                m_mainWindow->mainView()->setCurrentWidget(webView);  // this method does NOT take ownership of webView
+            }
+            break;
+        case Rekonq::NewTab:
+            m_mainWindow->mainView()->setCurrentWidget(webView);  // this method does NOT take ownership of webView
+            break;
+        case Rekonq::BackgroundTab: // no need for focus here
+            break;
+        case Rekonq::CurrentTab:    // nothing to do here.. just to save a warning!!
+            break;
+        };
+    }
+    
     if (webView)
     {
         webView->setFocus();

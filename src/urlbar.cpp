@@ -243,6 +243,7 @@ QSize UrlBar::sizeHint() const
     return size;
 }
 
+
 QLinearGradient UrlBar::generateGradient(const QColor &color, int height)
 {
     QColor base = s_defaultBaseColor;
