@@ -99,7 +99,7 @@
       <item>
        <widget class="QCheckBox" name="kcfg_showUrlsPopup">
         <property name="text">
-         <string>show urls in popup hovering links</string>
+         <string>Show URLs of links in a popup</string>
         </property>
        </widget>
       </item>
