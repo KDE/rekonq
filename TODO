@@ -15,11 +15,11 @@ LONG TERM GOALS
 TO 0.2 release
 
 - private browsing color
-- rekonqrun
+* rekonqrun
 - findbar NO notify system
 - right click Google Search Integration
 - packaging / license
 - tools menu (to be decided)
 - error pages (timeout loading)
 - proxy DNS requests ??
--  
+- no more KDEnetwork!! 
