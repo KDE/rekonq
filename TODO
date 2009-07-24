@@ -1,15 +1,7 @@
-(4.6) - QWebFrame management
-+ Fix crash on example sites..
-- improve DOCUMENTATION
-+ Type "FormSubmitted" ("WordPress Bug")
-+ cookies
+(Qt 4.6) - QWebFrame management
+(Qt 4.6) - QWebElements management
+- DOCUMENTATION
 - unit tests
-
-LONG TERM GOALS
-- history (io-slave)
-- file protocol view
-
-- new bookmarks system (What about??)
 
 
 TO 0.2 release
@@ -23,3 +15,4 @@ TO 0.2 release
 - error pages (timeout loading)
 - proxy DNS requests ??
 - no more KDEnetwork!! 
+- no reKonfig in loadUrl
