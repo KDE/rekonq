@@ -177,7 +177,7 @@ void MainWindow::postLaunch()
     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
 
     // bookmarks loading
-    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
+    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
 
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -350,7 +350,7 @@ void MainWindow::setupSidePanel()
 {
     // Setup history side panel
     m_sidePanel = new SidePanel(i18n("History"), this);
-    connect(m_sidePanel, SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
+    connect(m_sidePanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
     connect(m_sidePanel, SIGNAL(destroyed()), Application::instance(), SLOT(slotSaveConfiguration()));
 
     addDockWidget(Qt::LeftDockWidgetArea, m_sidePanel);
@@ -367,7 +367,7 @@ void MainWindow::setupSidePanel()
 void MainWindow::setupHistoryMenu()
 {
     HistoryMenu *historyMenu = new HistoryMenu(this);
-    connect(historyMenu, SIGNAL(openUrl(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
+    connect(historyMenu, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
     historyMenu->setTitle(i18n("&History"));
 
     // setting history menu position
@@ -442,12 +442,6 @@ void MainWindow::slotUpdateBrowser()
 {
     slotUpdateConfiguration();
     mainView()->slotReloadAllTabs();
-}
-
-
-void MainWindow::loadUrl(const KUrl &url)
-{
-    m_view->loadUrl(url);
 }
 
 
@@ -725,7 +719,7 @@ void MainWindow::slotViewPageSource()
 
 void MainWindow::slotHome()
 {
-    loadUrl(KUrl(m_homePage));
+    Application::instance()->loadUrl(KUrl(m_homePage));
 }
 
 

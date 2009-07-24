@@ -356,7 +356,7 @@ WebView *MainView::newTab()
 {
     // line edit
     UrlBar *urlBar = new UrlBar;  // Ownership of widget is passed on to the QStackedWidget (addWidget method).
-    connect(urlBar, SIGNAL(activated(const KUrl&)), this, SLOT(loadUrl(const KUrl&)));
+    connect(urlBar, SIGNAL(activated(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
     m_urlBars->addUrlBar(urlBar);
 
     WebView *webView = new WebView;  // should be deleted on tab close
@@ -385,23 +385,6 @@ WebView *MainView::newTab()
 
     setCurrentWidget(webView);  // this method does NOT take ownership of webView
     urlBar->setFocus();
-
-//     switch(type)
-//     {
-//     case Rekonq::Default:
-//         if (!m_makeBackTab)
-//         {
-//             setCurrentWidget(webView);  // this method does NOT take ownership of webView
-//             urlBar->setFocus();
-//         }
-//         break;
-//     case Rekonq::New:
-//         setCurrentWidget(webView);  // this method does NOT take ownership of webView
-//         urlBar->setFocus();
-//         break;
-//     case Rekonq::Background:
-//         break;
-//     };
 
     emit tabsChanged();
 
@@ -626,79 +609,6 @@ void MainView::webViewUrlChanged(const QUrl &url)
         m_tabBar->setTabData(index, url);
     }
     emit tabsChanged();
-}
-
-
-// WARNING this method is ready to be refactored with real KServices implementation
-// and moved to a RekonqRun class (0.3 target)
-void MainView::loadUrl(const KUrl &url)
-{
-    if (url.isEmpty())
-        return;
-
-    QString scheme = url.scheme();
-
-    if (scheme == QLatin1String("mailto"))
-    {
-        KToolInvocation::invokeMailer(url);
-        return;
-    }
-
-    KUrl loadingUrl(url);
-
-    // create convenience fake api:// protocol for KDE apidox search and Qt docs
-    if (scheme == QLatin1String("api"))
-    {
-        QString path;
-        QString className = url.host().toLower();
-        if (className[0] == 'k')
-        {
-            path = QString("http://api.kde.org/new.classmapper.php?class=%1").arg(className);
-        }
-        else if (className[0] == 'q')
-        {
-            path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
-        }
-        loadingUrl.setUrl(path);
-    }
-
-    if (loadingUrl.isRelative())
-    {
-        if(loadingUrl.path().contains('.'))
-        {
-            QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
-            loadingUrl.setUrl("//" + fn);
-            loadingUrl.setScheme("http");
-        }
-        else
-        {
-            scheme = QLatin1String("gg");
-        }
-    }
-
-    // create convenience fake gg:// protocol, waiting for KServices learning
-    if(scheme == QLatin1String("gg"))
-    {
-        QString str = loadingUrl.path();
-        loadingUrl.setUrl( QString("http://google.com/search?&q=%1").arg(str) );
-    }
-
-    // create convenience fake wk:// protocol, waiting for KServices learning
-    if(scheme == QLatin1String("wk"))
-    {
-        QString str = loadingUrl.path();
-        loadingUrl.setUrl( QString("http://en.wikipedia.org/wiki/%1").arg(str) );
-    }
-
-    currentUrlBar()->setUrl(loadingUrl.prettyUrl());
-
-    WebView *webView = currentWebView();
-
-    if (webView)
-    {
-        webView->setFocus();
-        webView->load(loadingUrl);
-    }
 }
 
 

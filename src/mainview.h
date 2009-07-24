@@ -104,13 +104,6 @@ public slots:
      */
     WebView *newTab();
 
-    /**
-     * Core browser slot. Load an url in a webview
-     *
-     * @param url The url to load
-     */
-    void loadUrl(const KUrl &url);
-
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);
     void slotCloseOtherTabs(int index);

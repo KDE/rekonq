@@ -89,11 +89,9 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bm)
 {
     QList<KUrl> urlList = bm.groupUrlList();
     QList<KUrl>::iterator url;
-    Application* app = Application::instance();
     for (url = urlList.begin(); url != urlList.end(); ++url)
     {
-        app->newWebView();
-        app->mainWindow()->loadUrl(*url);
+        Application::instance()->loadUrl(*url, Rekonq::New);
     }
 }
 
