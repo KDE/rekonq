@@ -73,9 +73,14 @@ WebView::WebView(QWidget* parent)
 }
 
 
-WebPage *WebView::page() const
+WebPage *WebView::page()
 {
-    return qobject_cast<WebPage *>(QWebView::page());
+    if(!m_page)
+    {
+        m_page = new WebPage();
+        setPage(m_page);
+    }
+    return m_page;
 }
 
 

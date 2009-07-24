@@ -88,14 +88,12 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
     kDebug() << "WebPage createWindow slot";
     
-    return createWindow(type);
+    return newWindow(type);
 }
 
 
 WebPage *WebPage::newWindow(WebWindowType type)
 {
-    kDebug() << "creating window as new tab.. ";
-
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
     {
