@@ -73,6 +73,12 @@ WebView::WebView(QWidget* parent)
 }
 
 
+WebPage *WebView::page() const
+{
+    return qobject_cast<WebPage *>(QWebView::page());
+}
+
+
 KUrl WebView::url() const 
 { 
     return KUrl(QWebView::url()); 

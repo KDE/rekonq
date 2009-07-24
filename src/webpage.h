@@ -48,7 +48,7 @@ public slots:
     void manageNetworkErrors(QNetworkReply* reply);
 
 protected:
-    QWebPage *createWindow(QWebPage::WebWindowType type);
+    WebPage *createWindow(WebWindowType type);
     virtual WebPage *newWindow(WebWindowType type);
 
     QString chooseFile(QWebFrame *frame, const QString &suggestedFile);

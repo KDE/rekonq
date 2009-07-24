@@ -84,7 +84,15 @@ WebPage::WebPage(QObject *parent)
 }
 
 
-QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
+WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
+{
+    kDebug() << "WebPage createWindow slot";
+    
+    return createWindow(type);
+}
+
+
+WebPage *WebPage::newWindow(WebWindowType type)
 {
     kDebug() << "creating window as new tab.. ";
 
@@ -95,7 +103,7 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
         kDebug() << "Modal Dialog ---------------------------------------";
     }
 
-    WebView *w = Application::instance()->newWebView();
+    WebView *w = Application::instance()->mainWindow()->mainView()->newTab();
     return w->page();
 }
 
@@ -236,11 +244,4 @@ void WebPage::slotDownloadRequested(const QNetworkRequest &request)
 QString WebPage::chooseFile(QWebFrame *frame, const QString &suggestedFile)
 {
     return KFileDialog::getOpenFileName(suggestedFile, QString(), frame->page()->view());
-}
-
-
-WebPage *WebPage::newWindow(WebWindowType type)
-{
-    Q_UNUSED(type);
-    return 0;
 }

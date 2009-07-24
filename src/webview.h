@@ -40,6 +40,7 @@ class WebView : public QWebView
 public:
     explicit WebView(QWidget *parent = 0);
 
+    WebPage *page() const;
     KUrl url() const;
     QString lastStatusBarText() const;
     int progress() const;
