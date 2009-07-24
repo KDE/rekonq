@@ -50,6 +50,7 @@
 #include <KPageWidgetItem>
 #include <KFontDialog>
 #include <KUrl>
+#include <KShortcutsEditor>
 
 // Qt Includes
 #include <QtCore/QPointer>
@@ -108,6 +109,10 @@ Private::Private(SettingsDialog *parent)
     kWarning() << webkitIconPath;
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
+    
+    widget = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(),parent);
+    pageItem = parent->addPage(widget , i18n("Shortcuts"));
+    pageItem->setIcon(KIcon("configure-shortcuts"));
 }
 
 
