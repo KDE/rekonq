@@ -32,7 +32,6 @@ SET( rekonq_SRCS
     webpage.cpp
     cookiedialog.cpp
     cookieexceptiondialog.cpp
-    rekonqrun.cpp
 )
 
 

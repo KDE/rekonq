@@ -60,6 +60,18 @@ namespace Rekonq
         Download,   ///< downloading url
         Info        ///< information, (default)
     };
+
+    /**
+     * @short Open link options
+     * Different modes of opening new tab
+     */
+    enum OpenType
+    {
+        Default,    ///< open url according to users settings
+        New,        ///< open url in new tab and make it current
+        Background  ///< open url in new tab in background
+    };
+
 }
 
 
@@ -81,8 +93,6 @@ public:
 
     static KIcon icon(const KUrl &url);
 
-    static KUrl guessUrlFromString(const QString &url);
-
     static HistoryManager *historyManager();
     static CookieJar *cookieJar();
     static NetworkAccessManager *networkAccessManager();
@@ -95,7 +105,17 @@ public slots:
      */
     void slotSaveConfiguration() const;
 
+public slots:
 
+    void loadUrl( const KUrl& url,
+                  const Rekonq::OpenType& type = Rekonq::Default
+                );
+           
+    void loadUrl( const QString& urlString,
+                  const Rekonq::OpenType& type = Rekonq::Default
+                );    
+
+                
 private slots:
 
     /**
@@ -105,6 +125,9 @@ private slots:
 
 
 private:
+
+    KUrl guessUrlFromString(const QString &url);
+
     static QPointer<HistoryManager> s_historyManager;
     static QPointer<NetworkAccessManager> s_networkAccessManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;

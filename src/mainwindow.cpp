@@ -520,7 +520,7 @@ void MainWindow::slotFileOpen()
     if (filePath.isEmpty())
         return;
 
-    loadUrl(Application::guessUrlFromString(filePath));
+    Application::instance()->loadUrl(filePath);
 }
 
 

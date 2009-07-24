@@ -34,6 +34,7 @@
 #include "networkaccessmanager.h"
 #include "mainview.h"
 #include "webview.h"
+#include "urlbar.h"
 
 // KDE Includes
 #include <KCmdLineArgs>
@@ -43,8 +44,12 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <KPassivePopup>
+#include <KToolInvocation>
 
 // Qt Includes
+#include <QRegExp>
+#include <QFile>
+#include <QFileInfo>
 #include <QtCore/QTimer>
 #include <QtWebKit/QWebSettings>
 #include <QtWebKit/QWebHistoryInterface>
@@ -84,7 +89,7 @@ int Application::newInstance()
         setWindowIcon(KIcon("rekonq"));
 
         m_mainWindow->show();
-
+        
         QTimer::singleShot(0, this, SLOT(postLaunch()));
     }
 
@@ -92,16 +97,14 @@ int Application::newInstance()
     {
         for (int i = 0; i < args->count(); ++i)
         {
-            KUrl url = guessUrlFromString(args->arg(i));
-            newWebView();
-            mainWindow()->loadUrl(url);
+               loadUrl(args->arg(i), Rekonq::New); 
         }
         args->clear();
     }
     else
     {
-        newWebView();
-        mainWindow()->slotHome();
+        m_mainWindow->mainView()->newTab();
+        m_mainWindow->slotHome();
     }
 
     return 0;
@@ -252,4 +255,96 @@ KUrl Application::guessUrlFromString(const QString &string)
         url = KUrl(qurl);
     }
     return url;
+}
+
+
+void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
+{
+    if (url.isEmpty())
+        return;
+
+    QString scheme = url.scheme();
+
+    if (scheme == QLatin1String("mailto"))
+    {
+        KToolInvocation::invokeMailer(url);
+        return;
+    }
+
+    KUrl loadingUrl(url);
+
+    // create convenience fake api:// protocol for KDE apidox search and Qt docs
+    if (scheme == QLatin1String("api"))
+    {
+        QString path;
+        QString className = url.host().toLower();
+        if (className[0] == 'k')
+        {
+            path = QString("http://api.kde.org/new.classmapper.php?class=%1").arg(className);
+        }
+        else if (className[0] == 'q')
+        {
+            path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
+        }
+        loadingUrl.setUrl(path);
+    }
+
+    if (loadingUrl.isRelative())
+    {
+        if(loadingUrl.path().contains('.'))
+        {
+            QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
+            loadingUrl.setUrl("//" + fn);
+            loadingUrl.setScheme("http");
+        }
+        else
+        {
+            scheme = QLatin1String("gg");
+        }
+    }
+
+    // create convenience fake gg:// protocol, waiting for KServices learning
+    if(scheme == QLatin1String("gg"))
+    {
+        QString str = loadingUrl.path();
+        loadingUrl.setUrl( QString("http://google.com/search?&q=%1").arg(str) );
+    }
+
+    // create convenience fake wk:// protocol, waiting for KServices learning
+    if(scheme == QLatin1String("wk"))
+    {
+        QString str = loadingUrl.path();
+        loadingUrl.setUrl( QString("http://en.wikipedia.org/wiki/%1").arg(str) );
+    }
+
+
+    WebView *webView = m_mainWindow->mainView()->newTab();
+    m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
+
+    switch(type)
+    {
+    case Rekonq::Default:
+        if (!ReKonfig::openTabsBack())
+        {
+            m_mainWindow->mainView()->setCurrentWidget(webView);  // this method does NOT take ownership of webView
+        }
+        break;
+    case Rekonq::New:
+        m_mainWindow->mainView()->setCurrentWidget(webView);  // this method does NOT take ownership of webView
+        break;
+    case Rekonq::Background:
+        break;
+    };
+
+    if (webView)
+    {
+        webView->setFocus();
+        webView->load(loadingUrl);
+    }
+}
+
+
+void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& type)
+{    
+    return loadUrl( guessUrlFromString(urlString), type );
 }
