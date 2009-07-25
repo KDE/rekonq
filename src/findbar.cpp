@@ -29,12 +29,14 @@
 #include <KPushButton>
 #include <klocalizedstring.h>
 #include <KXmlGuiWindow>
+#include <KApplication>
 
 // Qt Includes
 #include <QtGui/QWidget>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QToolButton>
 #include <QtGui/QLabel>
+#include <QtGui/QColor>
 #include <QtGui/QKeyEvent>
 #include <QtCore/QString>
 
@@ -139,6 +141,28 @@ void FindBar::keyPressEvent(QKeyEvent* event)
         emit searchString(m_lineEdit->text());
         return;
     }
+
     QWidget::keyPressEvent(event);
 }
+
+void FindBar::notifyMatch(bool match)
+{
+    QPalette p = m_lineEdit->palette();
+
+    if (m_lineEdit->text().isEmpty())
+    {
+	p.setColor(QPalette::Base, QColor(KApplication::palette().color(QPalette::Active, QPalette::Base)));
+    }
+    else if (match)
+    {
+	p.setColor(QPalette::Base, QColor(186, 249, 206));
+    }
+    else
+    {
+	p.setColor(QPalette::Base, QColor(247, 230, 230));
+    }
+    
+    m_lineEdit->setPalette(p);
+}
+
 

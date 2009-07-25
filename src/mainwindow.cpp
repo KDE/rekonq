@@ -614,10 +614,7 @@ void MainWindow::slotFindNext()
     if (m_findBar->matchCase())
         options |= QWebPage::FindCaseSensitively;
 
-    if (!currentTab()->findText(m_lastSearch, options))
-    {
-        notifyMessage(QString(m_lastSearch) + i18n(" not found."));
-    }
+    m_findBar->notifyMatch(currentTab()->findText(m_lastSearch, options));
 }
 
 
@@ -630,10 +627,7 @@ void MainWindow::slotFindPrevious()
     if (m_findBar->matchCase())
         options |= QWebPage::FindCaseSensitively;
 
-    if (!currentTab()->findText(m_lastSearch, options))
-    {
-        notifyMessage(QString(m_lastSearch) + i18n(" not found."));
-    }
+    m_findBar->notifyMatch(currentTab()->findText(m_lastSearch, options));
 }
 
 

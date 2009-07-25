@@ -51,6 +51,7 @@ public:
 public slots:
     void clear();
     void show();
+    void notifyMatch(bool match);
 
 protected Q_SLOTS:
     void keyPressEvent(QKeyEvent* event);
@@ -61,6 +62,7 @@ signals:
 private:
     KLineEdit *m_lineEdit;
     QCheckBox *m_matchCase;
+
 };
 
 #endif
