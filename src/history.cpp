@@ -1330,4 +1330,3 @@ void HistoryTreeModel::sourceRowsRemoved(const QModelIndex &parent, int start, i
         endRemoveRows();
     }
 }
-
