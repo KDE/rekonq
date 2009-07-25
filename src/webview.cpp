@@ -121,110 +121,115 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     KMenu menu(this);
     QAction *a;
-    
-    // link actions
+
+
     bool linkIsEmpty = result.linkUrl().isEmpty();
+
     if (!linkIsEmpty)
     {
+        // link actions
+	
         a = pageAction(QWebPage::OpenLinkInNewWindow);
         a->setText(i18n("Open Link in New &Tab"));
         a->setIcon(KIcon("window-new"));
         menu.addAction(a);
-    }
-    else
-    {
-        menu.addAction(mainwindow->actionByName("new_tab"));
-    }
-    menu.addAction(mainwindow->actionByName("view_redisplay"));
-    menu.addSeparator();
 
-    // Developer Extras actions
-    if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
-    {
-        a = pageAction(QWebPage::InspectElement);  
-        a->setIcon(KIcon("view-process-all"));
-        menu.addAction(a);
-        menu.addSeparator();
-    }
-
-    // cut - copy - paste Actions. 
-    bool b = false;
-
-    if (result.isContentSelected() && result.isContentEditable())
-    {
-        a = pageAction(QWebPage::Cut);
-        a->setIcon(KIcon("edit-cut"));
-        a->setShortcut(KStandardShortcut::cut().primary());
-        menu.addAction(a);
-        b = true;
-    }
-
-    if (result.isContentSelected())
-    {
-        a = pageAction(QWebPage::Copy);
-        a->setIcon(KIcon("edit-copy"));
-        a->setShortcut(KStandardShortcut::copy().primary());
-        menu.addAction(a);
-        b = true;
-    }
-
-    if (result.isContentEditable())
-    {
-        a = pageAction(QWebPage::Paste);
-        a->setIcon(KIcon("edit-paste"));
-        a->setShortcut(KStandardShortcut::paste().primary());
-        menu.addAction(a);
-        b = true;
-    }
-
-    if(b)
-    {
-        menu.addSeparator();
-    }
-
-    // save/copy link actions
-    if (!linkIsEmpty)
-    {
         a = pageAction(QWebPage::DownloadLinkToDisk);
         a->setIcon(KIcon("document-save"));
         menu.addAction(a);
-        
+
         a = pageAction(QWebPage::CopyLinkToClipboard);
         a->setIcon(KIcon("edit-copy"));
         menu.addAction(a);
 
-        menu.addSeparator();
-
         if (!result.pixmap().isNull())
         {
+	    menu.addSeparator();
+	  
             // TODO Add "View Image" && remove copy_this_image action
-            a = pageAction(QWebPage::DownloadImageToDisk); 
+            a = pageAction(QWebPage::DownloadImageToDisk);
             a->setIcon(KIcon("document-save"));
             menu.addAction(a);
 
             a = pageAction(QWebPage::CopyImageToClipboard);
             a->setIcon(KIcon("edit-copy"));
             menu.addAction(a);
-            
-            menu.addSeparator();
         }
+	
     }
-
-    // history actions
-    menu.addAction(mainwindow->actionByName("history_back"));
-    menu.addAction(mainwindow->actionByName("history_forward"));
-
-    // bookmark link action
-    if (!linkIsEmpty)
+    else if (result.isContentEditable() && result.isContentSelected())
     {
-        menu.addSeparator();
-        QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
+	// actions for text selected in field
+
+	a = pageAction(QWebPage::Cut);
+	a->setIcon(KIcon("edit-cut"));
+	a->setShortcut(KStandardShortcut::cut().primary());
+	menu.addAction(a);
+
+	a = pageAction(QWebPage::Copy);
+	a->setIcon(KIcon("edit-copy"));
+	a->setShortcut(KStandardShortcut::copy().primary());
+	menu.addAction(a);
+
+	a = pageAction(QWebPage::Paste);
+	a->setIcon(KIcon("edit-paste"));
+	a->setShortcut(KStandardShortcut::paste().primary());
+	menu.addAction(a);
+
+	// TODO Add translate, show translation
+    }
+    else if (result.isContentEditable())
+    {
+	// actions for a not selected field or a void field
+
+	//Warning: why it doesn't automatically select a field ?
+	//Why the paste action is disabled ?
+		
+	a = pageAction(QWebPage::Paste);
+	a->setIcon(KIcon("edit-paste"));
+	a->setShortcut(KStandardShortcut::paste().primary());
+	menu.addAction(a);
+    }
+    else if (result.isContentSelected())
+    {
+	// actions for text selected in page
+
+	a = pageAction(QWebPage::Copy);
+        a->setIcon(KIcon("edit-copy"));
+        a->setShortcut(KStandardShortcut::copy().primary());
+        menu.addAction(a);
+
+	// TODO Add search with google, wikipedia, show translation
+    }
+    else
+    {
+	//page actions
+	
+	menu.addAction(mainwindow->actionByName("new_tab"));
+	if(mainwindow->isFullScreen())
+	{
+	    menu.addAction(mainwindow->actionByName("fullscreen"));
+	}
+
+	menu.addSeparator();
+
+	menu.addAction(mainwindow->actionByName("history_back"));
+	menu.addAction(mainwindow->actionByName("history_forward"));
+	menu.addAction(mainwindow->actionByName("view_redisplay"));
+
+	menu.addSeparator();
+	
+	QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
         menu.addAction(addBookmarkAction);
-    }
+	
+	if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
+	{
+	    // Developer Extras actions
 
-    if(mainwindow->isFullScreen())
-    {
-        menu.addAction(mainwindow->actionByName("fullscreen"));
+	    a = pageAction(QWebPage::InspectElement);
+	    a->setIcon(KIcon("view-process-all"));
+	    menu.addAction(a);
+	}
     }
 
     menu.exec(mapToGlobal(event->pos()));
