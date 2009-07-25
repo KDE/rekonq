@@ -151,17 +151,19 @@ void FindBar::notifyMatch(bool match)
 
     if (m_lineEdit->text().isEmpty())
     {
-	p.setColor(QPalette::Base, QColor(KApplication::palette().color(QPalette::Active, QPalette::Base)));
+        p.setColor(QPalette::Base, QColor(KApplication::palette().color(QPalette::Active, QPalette::Base)));
     }
-    else if (match)
+    else 
     {
-	p.setColor(QPalette::Base, QColor(186, 249, 206));
+        if (match)
+        {
+            p.setColor(QPalette::Base, QColor(186, 249, 206));
+        }
+        else
+        {
+            p.setColor(QPalette::Base, QColor(247, 130, 130)); // previous were 247, 230, 230
+        }
     }
-    else
-    {
-	p.setColor(QPalette::Base, QColor(247, 230, 230));
-    }
-    
     m_lineEdit->setPalette(p);
 }
 
