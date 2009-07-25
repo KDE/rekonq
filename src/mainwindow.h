@@ -132,6 +132,9 @@ private slots:
     void slotShowMenubar(bool enable);
     void slotPreferences();
 
+    // clear private data
+    void clearPrivateData();
+    
 private:
     MainView *m_view;
     FindBar *m_findBar;

@@ -42,6 +42,9 @@
 #include "urlbar.h"
 #include "stackedurlbar.h"
 
+// Ui Includes
+#include "ui_cleardata.h"
+
 // KDE Includes
 #include <KUrl>
 #include <KStatusBar>
@@ -320,6 +323,11 @@ void MainWindow::setupActions()
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
+
+    // clear private data action
+    a = new KAction(KIcon("edit-clear"), i18n("Clear private data"), this);
+    actionCollection()->addAction(QLatin1String("clear_private_data"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
 }
 
 
@@ -331,16 +339,17 @@ void MainWindow::setupTools()
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
-
-    toolsMenu->addSeparator();
         
     KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Web Development"), this);
     webMenu->addAction(actionByName(QLatin1String("web_inspector")));
     webMenu->addAction(actionByName(QLatin1String("page_source")));
     toolsMenu->addAction(webMenu);
+
+    toolsMenu->addSeparator();
         
     toolsMenu->addAction(actionByName(QLatin1String("private_browsing")));
-
+    toolsMenu->addAction(actionByName(QLatin1String("clear_private_data")));
+    
     toolsMenu->addSeparator();
     
     toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
@@ -929,3 +938,42 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
     m_popup->show(p);
 }
+
+
+void MainWindow::clearPrivateData()
+{
+    QPointer<KDialog> dialog = new KDialog(this, Qt::Sheet);
+    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
+
+    Ui::ClearDataWidget clearWidget;
+    QWidget widget;
+    clearWidget.setupUi(&widget);
+
+    dialog->setMainWidget(&widget);
+
+    if (dialog->exec() == KDialog::Ok)
+    {
+        if(clearWidget.clearHistory->isChecked())
+        {
+            Application::historyManager()->clear();
+        }
+        
+        if(clearWidget.clearCookies->isChecked())
+        {
+            Application::cookieJar()->clear();
+        }
+        
+        if(clearWidget.clearCachedPages->isChecked())
+        {
+            Application::historyManager()->clear();
+        }
+        
+        if(clearWidget.clearWebIcons->isChecked())
+        {
+            Application::historyManager()->clear();
+        }
+    }
+    delete dialog;
+}
+
+    

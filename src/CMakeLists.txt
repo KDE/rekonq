@@ -45,6 +45,7 @@ KDE4_ADD_UI_FILES( rekonq_SRCS
     settings_privacy.ui
     settings_proxy.ui
     settings_webkit.ui
+    cleardata.ui
  )
 
 KDE4_ADD_KCFG_FILES( rekonq_SRCS rekonq.kcfgc )
