@@ -64,7 +64,8 @@ private slots:
     void setProgress(int progress);
     void loadFinished();
     void setStatusBarText(const QString &string);
-
+    void slotGooWikiSearch();
+    
 private:
     WebPage *m_page;
 

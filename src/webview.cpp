@@ -170,6 +170,20 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setShortcut(KStandardShortcut::paste().primary());
         menu.addAction(a);
 
+        menu.addSeparator();
+
+        a = new KAction(i18n("Google Search"), this);
+        a->setIcon(Application::icon(KUrl("http://www.google.com")));
+        a->setData("gg:");
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotGoogleSearch()));
+        menu.addAction(a);
+ 
+        a = new KAction(i18n("Wikipedia Search"), this);
+        a->setIcon(Application::icon(KUrl("http://wikipedia.org")));
+        a->setData("wk:");
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotWikipediaSearch()));
+        menu.addAction(a);
+
         // TODO Add translate, show translation
     }
     else if (result.isContentEditable())
@@ -191,7 +205,21 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setShortcut(KStandardShortcut::copy().primary());
         menu.addAction(a);
 
-        // TODO Add search with google, wikipedia, show translation
+        menu.addSeparator();
+
+        a = new KAction(i18n("Google Search"), this);
+        a->setIcon(Application::icon(KUrl("http://www.google.com")));
+        a->setData("gg:");
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotGooWikiSearch()));
+        menu.addAction(a);
+        
+        a = new KAction(i18n("Wikipedia Search"), this);
+        a->setIcon(Application::icon(KUrl("http://wikipedia.org")));
+        a->setData("wk:");
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotGooWikiSearch()));
+        menu.addAction(a);
+        
+        // TODO Add translate, show translation
     }
     else
     {
@@ -282,4 +310,13 @@ void WebView::mousePressEvent(QMouseEvent *event)
       default:
         QWebView::mousePressEvent(event);
     };
+}
+
+
+void WebView::slotGooWikiSearch()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    QString search = a->data().toString() + selectedText();
+    KUrl urlSearch = KUrl::fromEncoded(search.toUtf8());
+    Application::instance()->loadUrl(urlSearch, Rekonq::NewTab);
 }
