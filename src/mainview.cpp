@@ -70,7 +70,7 @@ MainView::MainView(QWidget *parent)
     setTabBar(m_tabBar);
 
     // loading pixmap path
-    m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
+    m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.mng");
 
     // connecting tabbar signals
     connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(slotCloseTab(int)));

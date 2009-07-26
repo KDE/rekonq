@@ -1,5 +1,5 @@
 INSTALL( 
-    FILES loading.gif
+    FILES loading.mng
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
 )
 
