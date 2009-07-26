@@ -26,6 +26,7 @@
 #include <KIO/AccessManager>
 
 // Forward Declarations
+class QNetworkDiskCache;
 
 using namespace KIO;
 
@@ -36,6 +37,8 @@ class NetworkAccessManager : public AccessManager
 public:
     NetworkAccessManager(QObject *parent = 0);
 
+    void resetDiskCache();
+    
 public slots:
     void loadSettings();
 
@@ -47,6 +50,9 @@ private slots:
     void slotSSLErrors(QNetworkReply *reply, const QList<QSslError> &error);
 #endif
 
+private:
+    QNetworkDiskCache *m_diskCache;
+    
 };
 
 #endif // NETWORKMANAGER_H

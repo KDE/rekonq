@@ -965,12 +965,12 @@ void MainWindow::clearPrivateData()
         
         if(clearWidget.clearCachedPages->isChecked())
         {
-            Application::historyManager()->clear();
+            Application::networkAccessManager()->resetDiskCache();
         }
         
         if(clearWidget.clearWebIcons->isChecked())
         {
-            Application::historyManager()->clear();
+            QWebSettings::clearIconDatabase();
         }
     }
     delete dialog;

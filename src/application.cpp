@@ -131,7 +131,6 @@ void Application::postLaunch()
 }
 
 
-
 void Application::slotSaveConfiguration() const
 {
     ReKonfig::self()->writeConfig();

@@ -50,10 +50,12 @@
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QSslError>
+#include <QtNetwork/QNetworkDiskCache>
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
         : AccessManager(parent)
+        , m_diskCache(0)
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
@@ -65,12 +67,11 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
             SLOT(slotSSLErrors(QNetworkReply*, const QList<QSslError>&)));
 #endif
 
+    // load AccessManager Settings
     loadSettings();
-
-    QNetworkDiskCache *diskCache = new QNetworkDiskCache(this);
-    QString location = KStandardDirs::locateLocal("cache", "", true);
-    diskCache->setCacheDirectory(location);
-    setCache(diskCache);
+    
+    // resetting disk cache
+    resetDiskCache();
 }
 
 
@@ -93,6 +94,38 @@ void NetworkAccessManager::loadSettings()
         proxy.setPassword(ReKonfig::proxyPassword());
  
        setProxy(proxy);
+    }
+}
+
+
+void NetworkAccessManager::resetDiskCache()
+{
+    if(!m_diskCache)
+    {
+        m_diskCache = new QNetworkDiskCache(this);
+        QString location = KStandardDirs::locateLocal("cache", "", true);
+        kDebug() << location;
+        
+        m_diskCache->setCacheDirectory(location);
+        setCache(m_diskCache);
+    }
+    else
+    {
+        QString location = m_diskCache->cacheDirectory();
+//         setCache(0);
+//         delete m_diskCache;
+            
+        QDir cacheDir(location + QString("/http") );
+        QStringList fileList = cacheDir.entryList();
+        foreach(QString str, fileList)
+        {
+            QFile file(str);
+            file.remove();
+        }
+
+//         m_diskCache = new QNetworkDiskCache(this);
+//         m_diskCache->setCacheDirectory(location);
+//         setCache(m_diskCache);
     }
 }
 

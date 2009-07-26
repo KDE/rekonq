@@ -26,12 +26,18 @@
      <property name="text">
       <string>history</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="clearCookies">
      <property name="text">
       <string>Cookies</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -40,12 +46,18 @@
      <property name="text">
       <string>Cached web pages</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="clearWebIcons">
      <property name="text">
       <string>Website Icons</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
