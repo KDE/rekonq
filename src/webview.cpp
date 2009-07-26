@@ -221,6 +221,19 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         
         // TODO Add translate, show translation
     }
+    else if (!result.pixmap().isNull())
+    {
+        menu.addSeparator();
+
+        // TODO Add "View Image" && remove copy_this_image action
+        a = pageAction(QWebPage::DownloadImageToDisk);
+        a->setIcon(KIcon("document-save"));
+        menu.addAction(a);
+
+        a = pageAction(QWebPage::CopyImageToClipboard);
+        a->setIcon(KIcon("edit-copy"));
+        menu.addAction(a);
+    }
     else
     {
         //page actions
@@ -235,20 +248,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(mainwindow->actionByName("history_back"));
         menu.addAction(mainwindow->actionByName("history_forward"));
         menu.addAction(mainwindow->actionByName("view_redisplay"));
-
-        if (!result.pixmap().isNull())
-        {
-            menu.addSeparator();
-
-            // TODO Add "View Image" && remove copy_this_image action
-            a = pageAction(QWebPage::DownloadImageToDisk);
-            a->setIcon(KIcon("document-save"));
-            menu.addAction(a);
-
-            a = pageAction(QWebPage::CopyImageToClipboard);
-            a->setIcon(KIcon("edit-copy"));
-            menu.addAction(a);
-        }
         
         menu.addSeparator();
 
