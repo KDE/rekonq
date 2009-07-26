@@ -175,13 +175,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a = new KAction(i18n("Google Search"), this);
         a->setIcon(Application::icon(KUrl("http://www.google.com")));
         a->setData("gg:");
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotGoogleSearch()));
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotGooWikiSearch()));
         menu.addAction(a);
  
         a = new KAction(i18n("Wikipedia Search"), this);
         a->setIcon(Application::icon(KUrl("http://wikipedia.org")));
         a->setData("wk:");
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotWikipediaSearch()));
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotGooWikiSearch()));
         menu.addAction(a);
 
         // TODO Add translate, show translation
