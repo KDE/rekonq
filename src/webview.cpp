@@ -298,6 +298,9 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
 void WebView::mousePressEvent(QMouseEvent *event)
 {
+    m_page->m_pressedButtons = event->buttons();
+    m_page->m_keyboardModifiers = event->modifiers();
+    
     switch(event->button()) 
     {
       case Qt::XButton1:
@@ -309,6 +312,20 @@ void WebView::mousePressEvent(QMouseEvent *event)
       default:
         QWebView::mousePressEvent(event);
     };
+}
+
+
+void WebView::wheelEvent(QWheelEvent *event)
+{
+    if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+    {
+        int numDegrees = event->delta() / 8;
+        int numSteps = numDegrees / 15;
+        setTextSizeMultiplier(textSizeMultiplier() + numSteps * 0.1);
+        event->accept();
+        return;
+    }
+    QWebView::wheelEvent(event);
 }
 
 

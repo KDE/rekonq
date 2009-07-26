@@ -73,6 +73,8 @@
 
 WebPage::WebPage(QObject *parent)
         : QWebPage(parent)
+        , m_keyboardModifiers(Qt::NoModifier)
+        , m_pressedButtons(Qt::NoButton)
 {
     setForwardUnsupportedContent(true);
 
@@ -81,6 +83,34 @@ WebPage::WebPage(QObject *parent)
 
     connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(slotDownloadRequested(const QNetworkRequest &)));
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(slotHandleUnsupportedContent(QNetworkReply *)));
+}
+
+
+bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
+{
+    if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
+    {
+        Application::instance()->loadUrl(request.url(), Rekonq::NewTab);
+        m_keyboardModifiers = Qt::NoModifier;
+        m_pressedButtons = Qt::NoButton;
+        return false;
+    }
+
+    if (frame == mainFrame())
+    {
+        return QWebPage::acceptNavigationRequest(frame, request, type);
+    }
+    else
+    {
+        // if frame doesn't exists (perhaps) we are pointing to a blank target..
+        if (!frame)
+        {
+            Application::instance()->loadUrl(request.url(), Rekonq::NewTab);
+            return false;
+        }
+    }
+
+    return QWebPage::acceptNavigationRequest(frame, request, type);
 }
 
 

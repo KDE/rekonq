@@ -309,9 +309,12 @@ void MainView::slotCurrentChanged(int index)
                    this, SIGNAL(loadProgress(int)));
     }
 
-    connect(webView->page(), SIGNAL(statusBarMessage(const QString&)), this, SIGNAL(showStatusBarMessage(const QString&)));
-    connect(webView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), this, SIGNAL(linkHovered(const QString&)));
-    connect(webView, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
+    connect(webView->page(), SIGNAL(statusBarMessage(const QString&)), 
+            this, SIGNAL(showStatusBarMessage(const QString&)));
+    connect(webView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
+            this, SIGNAL(linkHovered(const QString&)));
+    connect(webView, SIGNAL(loadProgress(int)), 
+            this, SIGNAL(loadProgress(int)));
 
     emit setCurrentTitle(webView->title());
     m_urlBars->setCurrentIndex(index);

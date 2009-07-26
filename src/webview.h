@@ -58,8 +58,8 @@ protected:
     * to make switch tab
     */
     void keyPressEvent(QKeyEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
-    
 private slots:
     void setProgress(int progress);
     void loadFinished();

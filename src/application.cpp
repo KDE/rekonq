@@ -97,7 +97,7 @@ int Application::newInstance()
     {
         for (int i = 0; i < args->count(); ++i)
         {
-               loadUrl(args->arg(i), Rekonq::NewTab); 
+            loadUrl(args->arg(i), Rekonq::NewTab); 
         }
         args->clear();
     }

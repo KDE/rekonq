@@ -50,21 +50,42 @@ public slots:
 protected:
     WebPage *createWindow(WebWindowType type);
     virtual WebPage *newWindow(WebWindowType type);
+    
+    virtual bool acceptNavigationRequest(QWebFrame *frame, 
+                                         const QNetworkRequest &request, 
+                                         NavigationType type);
+    
+    QString chooseFile(QWebFrame *frame, 
+                       const QString &suggestedFile);
+    
+    void javaScriptAlert(QWebFrame *frame, 
+                         const QString &msg);
+                         
+    bool javaScriptConfirm(QWebFrame *frame, 
+                           const QString &msg);
+                           
+    bool javaScriptPrompt(QWebFrame *frame, 
+                          const QString &msg, 
+                          const QString &defaultValue, QString *result);
+    
+    QObject *createPlugin(const QString &classId, 
+                          const QUrl &url, 
+                          const QStringList &paramNames, 
+                          const QStringList &paramValues);
+    
 
-    QString chooseFile(QWebFrame *frame, const QString &suggestedFile);
-    
-    void javaScriptAlert(QWebFrame *frame, const QString &msg);
-    bool javaScriptConfirm(QWebFrame *frame, const QString &msg);
-    bool javaScriptPrompt(QWebFrame *frame, const QString &msg, const QString &defaultValue, QString *result);
-    
-    QObject *createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues);
-        
-protected Q_SLOTS:
+protected Q_SLOTS:    
     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
     virtual void slotDownloadRequested(const QNetworkRequest &request);
     
 private:
+    friend class WebView;
+    
     void viewErrorPage(QNetworkReply *);
+
+    // keyboard/mouse modifiers
+    Qt::KeyboardModifiers m_keyboardModifiers;
+    Qt::MouseButtons m_pressedButtons;
 };
 
 #endif
