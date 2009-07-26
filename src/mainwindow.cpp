@@ -973,7 +973,8 @@ void MainWindow::clearPrivateData()
             QWebSettings::clearIconDatabase();
         }
     }
-    delete dialog;
+    // this let crash rekonq.
+//     delete dialog;
 }
 
     
