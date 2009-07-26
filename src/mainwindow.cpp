@@ -66,7 +66,7 @@
 #include <KIconLoader>
 
 #include <kdeprintdialog.h>
-#include <kprintpreview.h>
+
 
 
 // Qt Includes
@@ -83,6 +83,7 @@
 #include <QtGui/QDesktopWidget>
 #include <QtGui/QPrinter>
 #include <QtGui/QPrintDialog>
+#include <QtGui/QPrintPreviewDialog>
 
 #include <QtWebKit/QWebFrame>
 #include <QtWebKit/QWebHistory>
@@ -337,7 +338,7 @@ void MainWindow::setupTools()
     toolsMenu->setDelayed(false);
 
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
-    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
+    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::PrintPreview)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
         
     KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Web Development"), this);
@@ -543,8 +544,9 @@ void MainWindow::slotFilePrintPreview()
         return;
 
     QPrinter printer;
-    KPrintPreview previewdlg(&printer, this);
-    currentTab()->print(&printer);
+    QPrintPreviewDialog previewdlg(&printer, this);
+    connect(&previewdlg, SIGNAL(paintRequested(QPrinter *)),
+            currentTab(), SLOT(print(QPrinter *)));
     previewdlg.exec();
 }
 
