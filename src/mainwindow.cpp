@@ -953,7 +953,7 @@ void MainWindow::clearPrivateData()
 
     dialog->setMainWidget(&widget);
 
-    if (dialog->exec() == KDialog::Ok)
+    if (dialog->exec() == KDialog::Accepted)
     {
         if(clearWidget.clearHistory->isChecked())
         {
