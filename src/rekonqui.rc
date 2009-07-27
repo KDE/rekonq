@@ -62,6 +62,7 @@
 <Menu name="tools" noMerge="1"><text>&amp;Tools</text>
     <Action name="web_inspector" />
     <Action name="private_browsing" />
+    <Action name="clear_private_data" />
 </Menu>
 
 <!--  ============ SETTINGS menu =========== -->
