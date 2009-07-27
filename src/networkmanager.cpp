@@ -112,8 +112,8 @@ void NetworkAccessManager::resetDiskCache()
     else
     {
         QString location = m_diskCache->cacheDirectory();
-        setCache(0);
-        delete m_diskCache;
+//         setCache(0);
+//         delete m_diskCache;
             
         QDir cacheDir(location + QString("/http") );
         QStringList fileList = cacheDir.entryList();
@@ -123,9 +123,9 @@ void NetworkAccessManager::resetDiskCache()
             file.remove();
         }
 
-        m_diskCache = new QNetworkDiskCache(this);
-        m_diskCache->setCacheDirectory(location);
-        setCache(m_diskCache);
+//         m_diskCache = new QNetworkDiskCache(this);
+//         m_diskCache->setCacheDirectory(location);
+//         setCache(m_diskCache);
     }
 }
 
