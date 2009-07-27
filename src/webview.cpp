@@ -41,6 +41,8 @@
 #include <KActionCollection>
 #include <KDebug>
 #include <KToolInvocation>
+#include <KService>
+#include <KUriFilterData>
 
 // Qt Includes
 #include <QtGui/QContextMenuEvent>
@@ -172,17 +174,26 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addSeparator();
 
-        a = new KAction(i18n("Google Search"), this);
-        a->setIcon(Application::icon(KUrl("http://www.google.com")));
-        a->setData("gg:");
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotGooWikiSearch()));
-        menu.addAction(a);
- 
-        a = new KAction(i18n("Wikipedia Search"), this);
-        a->setIcon(Application::icon(KUrl("http://wikipedia.org")));
-        a->setData("wk:");
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotGooWikiSearch()));
-        menu.addAction(a);
+        KConfig config("kuriikwsfilterrc"); //Share with konqueror
+        KConfigGroup cg = config.group("General");
+        QStringList favoriteEngines;
+        favoriteEngines << "wikipedia" << "google"; //defaults
+        favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
+        const char keywordDelimiter = cg.readEntry("KeywordDelimiter", static_cast<int>(':'));
+        KService::Ptr service;
+        KUriFilterData data;
+        foreach (QString engine, favoriteEngines)
+        {
+            service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
+            const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
+            data.setData(searchProviderPrefix + "some keyword");
+            a = new KAction(i18n("Search with ")+service->name(), this);
+            a->setIcon(Application::icon(KUrl(data.uri())));
+            a->setData(searchProviderPrefix);
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
+            menu.addAction(a);
+        }
+
 
         // TODO Add translate, show translation
     }
@@ -207,18 +218,26 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addSeparator();
 
-        a = new KAction(i18n("Google Search"), this);
-        a->setIcon(Application::icon(KUrl("http://www.google.com")));
-        a->setData("gg:");
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotGooWikiSearch()));
-        menu.addAction(a);
-        
-        a = new KAction(i18n("Wikipedia Search"), this);
-        a->setIcon(Application::icon(KUrl("http://wikipedia.org")));
-        a->setData("wk:");
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(slotGooWikiSearch()));
-        menu.addAction(a);
-        
+        KConfig config("kuriikwsfilterrc"); //Share with konqueror
+        KConfigGroup cg = config.group("General");
+        QStringList favoriteEngines;
+        favoriteEngines << "wikipedia" << "google"; //defaults
+        favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
+        const char keywordDelimiter = cg.readEntry("KeywordDelimiter", static_cast<int>(':'));
+        KService::Ptr service;
+        KUriFilterData data;
+        foreach (QString engine, favoriteEngines)
+        {
+            service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
+            const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
+            data.setData(searchProviderPrefix + "some keyword");
+            a = new KAction(i18n("Search with ")+service->name(), this);
+            a->setIcon(Application::icon(KUrl(data.uri())));
+            a->setData(searchProviderPrefix);
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
+            menu.addAction(a);
+        }
+
         // TODO Add translate, show translation
     }
     else if (!result.pixmap().isNull())
@@ -329,7 +348,7 @@ void WebView::wheelEvent(QWheelEvent *event)
 }
 
 
-void WebView::slotGooWikiSearch()
+void WebView::slotSearch()
 {
     KAction *a = qobject_cast<KAction*>(sender());
     QString search = a->data().toString() + selectedText();
