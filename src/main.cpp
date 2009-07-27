@@ -31,7 +31,7 @@ static const char description[] =
     I18N_NOOP("WebKit based Web Browser for KDE");
 
 
-static const char version[] = "0.1.10";
+static const char version[] = "0.1.11";
 
 
 int main(int argc, char **argv)
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
                      "rekonq@kde.org"
                     );
 
-    // about authors
+    // --------------- about authors -----------------------------
     about.addAuthor(ki18n("Andrea Diamantini"),
                     ki18n("Project Lead, Developer"),
                     "adjam7@gmail.com",
@@ -64,6 +64,37 @@ int main(int argc, char **argv)
                     "kojots350@gmail.com",
                     "");
 
+    about.addAuthor(ki18n("Panagiotis Papadopoulos"),
+                    ki18n("Quite everything but code"),
+                    "pano_90@gmx.net",
+                    "");
+
+    about.addAuthor(ki18n("Lionel Chauvin"),
+                    ki18n("Developer, Ideas, Mockups"),
+                    "megabigbug@yahoo.fr",
+                    "");
+
+    // --------------- about credits -----------------------------                    
+    about.addCredit(ki18n("Henry de Valence"),
+                    ki18n("Promised help on multitask rekonq"),
+                    "hdevalence@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Abuus"),
+                    ki18n("Webview  mouse event support"),
+                    "hdevalence@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Johannes Zellner"),
+                    ki18n("Patches, suggestions, testing, bugfixing"),
+                    "hdevalence@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Ivan Cukic"),
+                    ki18n("Patches, bugfixing"),
+                    "ivan@fomentgroup.org",
+                    "");
+                    
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
 
