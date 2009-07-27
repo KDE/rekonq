@@ -268,13 +268,14 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (loadingUrl.isRelative())
     {
         QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
-        loadingUrl.setUrl("//" + fn);
         if(loadingUrl.path().contains('.'))
         {
+            loadingUrl.setUrl("//" + fn);
             loadingUrl.setScheme("http");
         }
         else
         {
+            loadingUrl.setUrl(fn);
             loadingUrl.setScheme("gg");
         }
     }
