@@ -590,6 +590,7 @@ void MainWindow::slotPrivateBrowsing(bool enable)
         if (button == KMessageBox::Yes)
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
+            m_view->currentUrlBar()->setBackgroundColor(palette().color(QPalette::Active, QPalette::Background));
         }
         else
         {
@@ -599,6 +600,7 @@ void MainWindow::slotPrivateBrowsing(bool enable)
     else
     {
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
+        m_view->currentUrlBar()->setBackgroundColor(palette().color(QPalette::Active, QPalette::Base));
 
         MainWindow* win = Application::instance()->mainWindow();
         win->m_lastSearch.clear();
@@ -751,8 +753,13 @@ void MainWindow::slotToggleInspector(bool enable)
 
         if (result == KMessageBox::Yes)
         {
+            m_view->currentUrlBar()->setBackgroundColor(QColor(247, 230, 230));
             m_view->slotReloadAllTabs();
         }
+    }
+    else
+    {
+        m_view->currentUrlBar()->setBackgroundColor(palette().color(QPalette::Active, QPalette::Base));
     }
 }
 

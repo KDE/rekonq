@@ -52,6 +52,7 @@ public:
     void selectAll() const;
     KUrl url() const;
     QSize sizeHint() const;
+    void setBackgroundColor(QColor);
 
 signals:
     void activated(const KUrl&);
