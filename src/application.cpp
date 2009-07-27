@@ -45,6 +45,7 @@
 #include <kio/jobclasses.h>
 #include <KPassivePopup>
 #include <KToolInvocation>
+#include <KUriFilter>
 
 // Qt Includes
 #include <QRegExp>
@@ -256,59 +257,30 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (url.isEmpty())
         return;
 
-    QString scheme = url.scheme();
-
-    if (scheme == QLatin1String("mailto"))
+    if (url.scheme() == QLatin1String("mailto"))
     {
         KToolInvocation::invokeMailer(url);
         return;
     }
-
+    
     KUrl loadingUrl(url);
-
-    // create convenience fake api:// protocol for KDE apidox search and Qt docs
-    if (scheme == QLatin1String("api"))
-    {
-        QString path;
-        QString className = url.host().toLower();
-        if (className[0] == 'k')
-        {
-            path = QString("http://api.kde.org/new.classmapper.php?class=%1").arg(className);
-        }
-        else if (className[0] == 'q')
-        {
-            path = QString("http://doc.trolltech.com/4.5/%1.html").arg(className);
-        }
-        loadingUrl.setUrl(path);
-    }
 
     if (loadingUrl.isRelative())
     {
+        QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
+        loadingUrl.setUrl("//" + fn);
         if(loadingUrl.path().contains('.'))
         {
-            QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
-            loadingUrl.setUrl("//" + fn);
             loadingUrl.setScheme("http");
         }
         else
         {
-            scheme = QLatin1String("gg");
+            loadingUrl.setScheme("gg");
         }
     }
 
-    // create convenience fake gg:// protocol, waiting for KServices learning
-    if(scheme == QLatin1String("gg"))
-    {
-        QString str = loadingUrl.path();
-        loadingUrl.setUrl( QString("http://google.com/search?&q=%1").arg(str) );
-    }
-
-    // create convenience fake wk:// protocol, waiting for KServices learning
-    if(scheme == QLatin1String("wk"))
-    {
-        QString str = loadingUrl.path();
-        loadingUrl.setUrl( QString("http://en.wikipedia.org/wiki/%1").arg(str) );
-    }
+    // this should let rekonq to support the beautiful KDE web browsing shortcuts
+    loadingUrl = KUriFilter::self()->filteredUri(loadingUrl);
 
     WebView *webView;
     if( type == Rekonq::CurrentTab )
