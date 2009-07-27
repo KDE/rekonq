@@ -6,17 +6,19 @@
 
 TO 0.2 release
 
-- private browsing color
+
 * rekonqrun
 * findbar NO notify system
 * right click Google Search Integration
-- packaging / license
 * tools menu (to be decided)
+* history menu
+* clear private data
+* ctrl + url click
+
+- private browsing color
+- BKO
 - error pages (timeout loading)
 - proxy DNS requests ??
 - no more KDEnetwork!! 
 - no reKonfig in loadUrl
-* history menu
-* clear private data
-- BKO
-- ctrl + url click
+- packaging / license
