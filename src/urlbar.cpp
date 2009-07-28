@@ -258,3 +258,9 @@ QLinearGradient UrlBar::generateGradient(const QColor &color, int height)
     gradient.setColorAt(1, base);
     return gradient;
 }
+
+void UrlBar::setBackgroundColor(QColor c)
+{
+    s_defaultBaseColor=c;
+    repaint();
+}

@@ -67,8 +67,6 @@
 
 #include <kdeprintdialog.h>
 
-
-
 // Qt Includes
 #include <QtCore/QTimer>
 #include <QtCore/QRect>
@@ -590,6 +588,7 @@ void MainWindow::slotPrivateBrowsing(bool enable)
         if (button == KMessageBox::Yes)
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
+            m_view->currentUrlBar()->setBackgroundColor(Qt::lightGray); // palette().color(QPalette::Active, QPalette::Background));
         }
         else
         {
@@ -599,10 +598,11 @@ void MainWindow::slotPrivateBrowsing(bool enable)
     else
     {
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
+        m_view->currentUrlBar()->setBackgroundColor(palette().color(QPalette::Active, QPalette::Base));
 
-        MainWindow* win = Application::instance()->mainWindow();
-        win->m_lastSearch.clear();
-        win->mainView()->clear();
+        m_lastSearch.clear();
+        m_view->clear();
+        m_view->slotReloadAllTabs();
     }
 }
 
