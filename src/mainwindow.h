@@ -131,7 +131,8 @@ private slots:
     // Settings Menu slots
     void slotShowMenubar(bool enable);
     void slotPreferences();
-
+    void configureWebShortcuts();
+    
     // clear private data
     void clearPrivateData();
     

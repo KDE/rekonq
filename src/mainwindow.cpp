@@ -327,6 +327,11 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("edit-clear"), i18n("Clear private data"), this);
     actionCollection()->addAction(QLatin1String("clear_private_data"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
+
+    // configure web shortcuts action
+    a = new KAction(KIcon("preferences-web-browser-shortcuts"), i18n("Web Shortcuts"), this);
+    actionCollection()->addAction(QLatin1String("web_shortcuts"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(configureWebShortcuts()));
 }
 
 
@@ -356,7 +361,9 @@ void MainWindow::setupTools()
     
     toolsMenu->addSeparator();
 
-    toolsMenu->addAction(KStandardAction::helpContents(this, SLOT(appHelpActivated()), actionCollection()));
+    // TODO: decide if re-enable this when rekonq docs will be written
+    // toolsMenu->addAction(KStandardAction::helpContents(this, SLOT(appHelpActivated()), actionCollection()));
+    toolsMenu->addAction(actionByName(QLatin1String("web_shortcuts")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
 
     // adding rekonq_tools to rekonq actionCollection
@@ -979,4 +986,9 @@ void MainWindow::clearPrivateData()
 //     delete dialog;
 }
 
+
+void MainWindow::configureWebShortcuts()
+{
+    KRun::run( "kcmshell4 ebrowsing", KUrl::List(), this);
+}
     

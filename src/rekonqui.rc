@@ -63,6 +63,7 @@
     <Action name="web_inspector" />
     <Action name="private_browsing" />
     <Action name="clear_private_data" />
+    <Action name="web_shortcuts" />
 </Menu>
 
 <!--  ============ SETTINGS menu =========== -->
