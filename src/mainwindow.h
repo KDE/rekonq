@@ -95,7 +95,7 @@ protected:
 private slots:
     void postLaunch();
     void slotUpdateConfiguration();
-    void slotLoadProgress(int);
+    void slotBrowserLoading(bool);
     void slotUpdateActions();
     void slotUpdateWindowTitle(const QString &title = QString());
     void slotOpenLocation();

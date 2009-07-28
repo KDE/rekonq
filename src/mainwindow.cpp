@@ -168,7 +168,7 @@ void MainWindow::postLaunch()
 
     // --------- connect signals and slots
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
-    connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(slotLoadProgress(int)));
+    connect(m_view, SIGNAL(browserLoading(bool)), this, SLOT(slotBrowserLoading(bool)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
     // update toolbar actions signals
@@ -252,7 +252,7 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotWebStop()));
 
     // stop reload Action
-    m_stopReloadAction = new KAction(KIcon("view-refresh"), i18n("Reload"), this);
+    m_stopReloadAction = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
     actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
 
@@ -770,11 +770,11 @@ WebView *MainWindow::currentTab() const
 }
 
 
-void MainWindow::slotLoadProgress(int progress)
+void MainWindow::slotBrowserLoading(bool v)
 {
     QAction *stop = actionCollection()->action("stop");
     QAction *reload = actionCollection()->action("view_redisplay");
-    if (progress < 100 && progress > 0)
+    if (v)
     {
         disconnect(m_stopReloadAction, SIGNAL(triggered(bool)), reload , SIGNAL(triggered(bool)));
         m_stopReloadAction->setIcon(KIcon("process-stop"));

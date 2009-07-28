@@ -65,13 +65,10 @@
 WebView::WebView(QWidget* parent)
         : QWebView(parent)
         , m_page(new WebPage(this))
-        , m_progress(0)
 {
     setPage(m_page);
     
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
-    connect(this, SIGNAL(loadProgress(int)), this, SLOT(setProgress(int)));
-    connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
 }
 
 
@@ -95,18 +92,6 @@ KUrl WebView::url() const
 QString WebView::lastStatusBarText() const
 { 
     return m_statusBarText; 
-}
-
-
-int WebView::progress() const
-{ 
-    return m_progress; 
-}
-
-
-void WebView::setProgress(int progress) 
-{ 
-    m_progress = progress; 
 }
 
 
@@ -283,17 +268,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
 
     menu.exec(mapToGlobal(event->pos()));
-}
-
-
-void WebView::loadFinished()
-{
-    if (m_progress != 100)
-    {
-        kWarning() << "Received finished signal while progress is still:" << progress()
-        << "Url:" << url();
-    }
-    m_progress = 0;
 }
 
 

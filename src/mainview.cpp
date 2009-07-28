@@ -305,20 +305,15 @@ void MainView::slotCurrentChanged(int index)
                    this, SIGNAL(showStatusBarMessage(const QString&)));
         disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
                    this, SIGNAL(linkHovered(const QString&)));
-        disconnect(oldWebView, SIGNAL(loadProgress(int)),
-                   this, SIGNAL(loadProgress(int)));
     }
 
     connect(webView->page(), SIGNAL(statusBarMessage(const QString&)), 
             this, SIGNAL(showStatusBarMessage(const QString&)));
     connect(webView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
             this, SIGNAL(linkHovered(const QString&)));
-    connect(webView, SIGNAL(loadProgress(int)), 
-            this, SIGNAL(loadProgress(int)));
 
     emit setCurrentTitle(webView->title());
     m_urlBars->setCurrentIndex(index);
-    emit loadProgress(webView->progress());
     emit showStatusBarMessage(webView->lastStatusBarText());
 
     // set focus to the current webview
@@ -531,6 +526,8 @@ void MainView::webViewLoadStarted()
         }
     }
 
+    emit browserLoading(true);
+
     if (index != currentIndex())
         return;
 
@@ -552,13 +549,14 @@ void MainView::webViewLoadFinished(bool ok)
     }
 
     webViewIconChanged();
-
+    emit browserLoading(false);
+    
     // don't display messages for background tabs
     if (index != currentIndex())
     {
         return;
     }
-
+    
     if (ok)
         emit showStatusBarMessage(i18n("Done"), Rekonq::Success);
     else

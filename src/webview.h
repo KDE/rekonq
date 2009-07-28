@@ -43,7 +43,6 @@ public:
     WebPage *page();
     KUrl url() const;
     QString lastStatusBarText() const;
-    int progress() const;
 
 signals:
     // switching tabs
@@ -61,15 +60,12 @@ protected:
     void wheelEvent(QWheelEvent *event);
 
 private slots:
-    void setProgress(int progress);
-    void loadFinished();
     void setStatusBarText(const QString &string);
     void slotSearch();
     
 private:
     WebPage *m_page;
-
-    int m_progress;
+    
     QString m_statusBarText;
 };
 
