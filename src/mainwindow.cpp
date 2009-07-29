@@ -301,7 +301,7 @@ void MainWindow::setupActions()
     m_historyForwardAction = new KAction(KIcon("go-next"), i18n("Forward"), this);
     connect(m_historyForwardAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenNext()));
     actionCollection()->addAction(QLatin1String("history_forward"), m_historyForwardAction);
-    
+
     // =================== Tab Actions
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T, Qt::CTRL + Qt::Key_N));
@@ -327,11 +327,6 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("edit-clear"), i18n("Clear private data"), this);
     actionCollection()->addAction(QLatin1String("clear_private_data"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
-
-    // configure web shortcuts action
-    a = new KAction(KIcon("preferences-web-browser-shortcuts"), i18n("Web Shortcuts"), this);
-    actionCollection()->addAction(QLatin1String("web_shortcuts"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(configureWebShortcuts()));
 }
 
 
@@ -343,27 +338,26 @@ void MainWindow::setupTools()
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::PrintPreview)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
-        
+
     KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Web Development"), this);
     webMenu->addAction(actionByName(QLatin1String("web_inspector")));
     webMenu->addAction(actionByName(QLatin1String("page_source")));
     toolsMenu->addAction(webMenu);
 
     toolsMenu->addSeparator();
-        
+
     toolsMenu->addAction(actionByName(QLatin1String("private_browsing")));
     toolsMenu->addAction(actionByName(QLatin1String("clear_private_data")));
-    
+
     toolsMenu->addSeparator();
-    
+
     toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
-    
+
     toolsMenu->addSeparator();
 
     // TODO: decide if re-enable this when rekonq docs will be written
     // toolsMenu->addAction(KStandardAction::helpContents(this, SLOT(appHelpActivated()), actionCollection()));
-    toolsMenu->addAction(actionByName(QLatin1String("web_shortcuts")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
 
     // adding rekonq_tools to rekonq actionCollection
@@ -966,17 +960,17 @@ void MainWindow::clearPrivateData()
         {
             Application::historyManager()->clear();
         }
-        
+
         if(clearWidget.clearCookies->isChecked())
         {
             Application::cookieJar()->clear();
         }
-        
+
         if(clearWidget.clearCachedPages->isChecked())
         {
             Application::networkAccessManager()->resetDiskCache();
         }
-        
+
         if(clearWidget.clearWebIcons->isChecked())
         {
             QWebSettings::clearIconDatabase();
@@ -985,10 +979,3 @@ void MainWindow::clearPrivateData()
     // this let crash rekonq.
 //     delete dialog;
 }
-
-
-void MainWindow::configureWebShortcuts()
-{
-    KRun::run( "kcmshell4 ebrowsing", KUrl::List(), this);
-}
-    

@@ -90,7 +90,7 @@ int Application::newInstance()
         setWindowIcon(KIcon("rekonq"));
 
         m_mainWindow->show();
-        
+
         QTimer::singleShot(0, this, SLOT(postLaunch()));
     }
 

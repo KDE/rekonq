@@ -69,7 +69,7 @@ private:
     void setupHistoryMenu();
     void setupBars();
     void setupTools();
-    
+
     void setupSidePanel();
     SidePanel *sidePanel();
 
@@ -131,11 +131,10 @@ private slots:
     // Settings Menu slots
     void slotShowMenubar(bool enable);
     void slotPreferences();
-    void configureWebShortcuts();
-    
+
     // clear private data
     void clearPrivateData();
-    
+
 private:
     MainView *m_view;
     FindBar *m_findBar;

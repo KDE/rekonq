@@ -51,6 +51,8 @@
 #include <KFontDialog>
 #include <KUrl>
 #include <KShortcutsEditor>
+#include <KCModuleInfo>
+#include <KCModuleProxy>
 
 // Qt Includes
 #include <QtCore/QPointer>
@@ -65,6 +67,7 @@ private:
     Ui::privacy privacyUi;
     Ui::proxy proxyUi;
     Ui::webkit webkitUi;
+    KCModuleProxy *ebrowsingModule;
 
     Private(SettingsDialog *parent);
 
@@ -109,10 +112,16 @@ Private::Private(SettingsDialog *parent)
     kWarning() << webkitIconPath;
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
-    
+
     widget = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(),parent);
     pageItem = parent->addPage(widget , i18n("Shortcuts"));
     pageItem->setIcon(KIcon("configure-shortcuts"));
+
+    KCModuleInfo ebrowsingInfo("ebrowsing.desktop");
+    ebrowsingModule = new KCModuleProxy(ebrowsingInfo,parent);
+    pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toLocal8Bit()));
+    pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
+
 }
 
 
@@ -135,9 +144,11 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->privacyUi.exceptionsButton, SIGNAL(clicked()), this, SLOT(showExceptions()));
     connect(d->privacyUi.cookiesButton, SIGNAL(clicked()), this, SLOT(showCookies()));
 
+    connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
+
     setWebSettingsToolTips();
 }
-
 
 
 SettingsDialog::~SettingsDialog()
@@ -189,8 +200,13 @@ void SettingsDialog::saveSettings()
 
     // Save
     ReKonfig::self()->writeConfig();
+    d->ebrowsingModule->save();
 }
 
+bool SettingsDialog::hasChanged()
+{
+    return KConfigDialog::hasChanged() || d->ebrowsingModule->changed();
+}
 
 // ----------------------------------------------------------------------------------------------
 
