@@ -255,7 +255,8 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
     connect(m_view, SIGNAL(browserLoading(bool)), this, SLOT(slotBrowserLoading(bool)));
-    
+    slotBrowserLoading(false); //first init for blank start page
+
     // ============== Custom Actions
     a = new KAction(KIcon("document-open-remote"), i18n("Open Location"), this);
     a->setShortcut(Qt::CTRL + Qt::Key_L);
