@@ -168,7 +168,6 @@ void MainWindow::postLaunch()
 
     // --------- connect signals and slots
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
-    connect(m_view, SIGNAL(browserLoading(bool)), this, SLOT(slotBrowserLoading(bool)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
     // update toolbar actions signals
@@ -252,10 +251,11 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotWebStop()));
 
     // stop reload Action
-    m_stopReloadAction = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
+    m_stopReloadAction = new KAction(this);
     actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
-
+    connect(m_view, SIGNAL(browserLoading(bool)), this, SLOT(slotBrowserLoading(bool)));
+    
     // ============== Custom Actions
     a = new KAction(KIcon("document-open-remote"), i18n("Open Location"), this);
     a->setShortcut(Qt::CTRL + Qt::Key_L);
