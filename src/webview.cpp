@@ -164,7 +164,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         QStringList favoriteEngines;
         favoriteEngines << "wikipedia" << "google"; //defaults
         favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
-        const char keywordDelimiter = cg.readEntry("KeywordDelimiter", static_cast<int>(':'));
+        QString keywordDelimiter = cg.readEntry("KeywordDelimiter", ":");
         KService::Ptr service;
         KUriFilterData data;
         foreach (QString engine, favoriteEngines)
@@ -208,7 +208,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         QStringList favoriteEngines;
         favoriteEngines << "wikipedia" << "google"; //defaults
         favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
-        const char keywordDelimiter = cg.readEntry("KeywordDelimiter", static_cast<int>(':'));
+        QString keywordDelimiter = cg.readEntry("KeywordDelimiter", ":");
         KService::Ptr service;
         KUriFilterData data;
         foreach (QString engine, favoriteEngines)

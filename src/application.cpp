@@ -262,26 +262,24 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         KToolInvocation::invokeMailer(url);
         return;
     }
-    
-    KUrl loadingUrl(url);
 
-    if (loadingUrl.isRelative())
+    KUrl loadingUrl(url);
+    if (loadingUrl.isRelative() && loadingUrl.path().contains("."))
     {
         QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
-        if(loadingUrl.path().contains('.'))
+        loadingUrl.setUrl("//" + fn);
+        loadingUrl.setScheme("http");
+    }
+    else if(loadingUrl.scheme()!="http")
+    {
+        // this should let rekonq to support the beautiful KDE web browsing shortcuts
+        KUriFilterData data(loadingUrl.pathOrUrl());
+        data.setCheckForExecutables (false); //if true, querries like "rekonq" or "dolphin" are considered as executables
+        if (KUriFilter::self()->filterUri(data))
         {
-            loadingUrl.setUrl("//" + fn);
-            loadingUrl.setScheme("http");
-        }
-        else
-        {
-            loadingUrl.setUrl(fn);
-            loadingUrl.setScheme("gg");
+            loadingUrl = data.uri().url();
         }
     }
-
-    // this should let rekonq to support the beautiful KDE web browsing shortcuts
-    loadingUrl = KUriFilter::self()->filteredUri(loadingUrl);
 
     WebView *webView;
     
@@ -309,7 +307,6 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         webView->load(loadingUrl);
     }
 }
-
 
 void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& type)
 {    
