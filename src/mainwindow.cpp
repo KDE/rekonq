@@ -325,7 +325,7 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
 
     // clear private data action
-    a = new KAction(KIcon("edit-clear"), i18n("Clear private data"), this);
+    a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data"), this);
     actionCollection()->addAction(QLatin1String("clear_private_data"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
 }

@@ -90,7 +90,7 @@ int main(int argc, char **argv)
                     "webmaster@nebulon.de",
                     "");
 
-    about.addCredit(ki18n("Ivan Cukic"),
+    about.addCredit(ki18n("Ivan Čukić"),
                     ki18n("Patches, bugfixing"),
                     "ivan@fomentgroup.org",
                     "");
