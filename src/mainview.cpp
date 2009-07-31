@@ -350,7 +350,7 @@ WebView *MainView::webView(int index) const
 }
 
 
-WebView *MainView::newTab()
+WebView *MainView::newTab(bool focus)
 {
     // line edit
     UrlBar *urlBar = new UrlBar;  // Ownership of widget is passed on to the QStackedWidget (addWidget method).
@@ -380,8 +380,8 @@ WebView *MainView::newTab()
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
     addTab(webView, i18n("(Untitled)"));
+    if (focus) setCurrentWidget(webView);
 
-    setCurrentWidget(webView);  // this method does NOT take ownership of webView
     urlBar->setFocus();
 
     emit tabsChanged();
@@ -662,7 +662,7 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
 }
 
 
-void MainView::mouseDoubleClickEvent(QMouseEvent *event)
+void MainView::mouseDoubleClickEvent(QMouseEvent *event) //WARNING Need to be fix
 {
     if (!childAt(event->pos()))
     {

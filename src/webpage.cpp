@@ -90,7 +90,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 {
     if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
-        Application::instance()->loadUrl(request.url(), Rekonq::NewTab);
+        Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);
         m_keyboardModifiers = Qt::NoModifier;
         m_pressedButtons = Qt::NoButton;
         return false;

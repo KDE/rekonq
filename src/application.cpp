@@ -283,35 +283,25 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     // this should let rekonq to support the beautiful KDE web browsing shortcuts
     loadingUrl = KUriFilter::self()->filteredUri(loadingUrl);
 
-    WebView *webView;
-    if( type == Rekonq::CurrentTab )
-    {
-        webView = m_mainWindow->currentTab();
-        m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
-    }
-    else
-    {
-        webView = m_mainWindow->mainView()->newTab();
-        m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
+    WebView *webView=m_mainWindow->mainView()->currentWebView();
 
-        switch(type)
-        {
-        case Rekonq::SettingOpenTab:
-            if (!ReKonfig::openTabsBack())
-            {
-                m_mainWindow->mainView()->setCurrentWidget(webView);  // this method does NOT take ownership of webView
-            }
-            break;
-        case Rekonq::NewTab:
-            m_mainWindow->mainView()->setCurrentWidget(webView);  // this method does NOT take ownership of webView
-            break;
-        case Rekonq::BackgroundTab: // no need for focus here
-            break;
-        case Rekonq::CurrentTab:    // nothing to do here.. just to save a warning!!
-            break;
-        };
-    }
-    
+    switch(type)
+    {
+    case Rekonq::SettingOpenTab:
+        webView = m_mainWindow->mainView()->newTab(!ReKonfig::openTabsBack());
+        break;
+    case Rekonq::NewTab:
+        webView = m_mainWindow->mainView()->newTab(true);
+        break;
+    case Rekonq::BackgroundTab:
+        webView = m_mainWindow->mainView()->newTab(false);
+        break;
+    case Rekonq::CurrentTab:    // nothing to do here.. just to save a warning!!
+        break;
+    };
+
+    m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
+
     if (webView)
     {
         webView->setFocus();
