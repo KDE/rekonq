@@ -53,7 +53,7 @@
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
-        : KNetworkAccessManager(parent)
+        : QNetworkAccessManager(parent)
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
@@ -67,10 +67,8 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
     loadSettings();
 
-    QNetworkDiskCache *diskCache = new QNetworkDiskCache(this);
-    QString location = KStandardDirs::locateLocal("cache", "", true);
-    diskCache->setCacheDirectory(location);
-    setCache(diskCache);
+    // resetting disk cache
+    resetDiskCache();
 }
 
 
@@ -126,6 +124,38 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
         auth->setPassword(passwordWidget.passwordLineEdit->text());
     }
     delete dialog;
+}
+
+
+void NetworkAccessManager::resetDiskCache()
+{
+    if(!m_diskCache)
+    {
+        m_diskCache = new QNetworkDiskCache(this);
+        QString location = KStandardDirs::locateLocal("cache", "", true);
+        kDebug() << location;
+        
+        m_diskCache->setCacheDirectory(location);
+        setCache(m_diskCache);
+    }
+    else
+    {
+        QString location = m_diskCache->cacheDirectory();
+//         setCache(0);
+//         delete m_diskCache;
+            
+        QDir cacheDir(location + QString("/http") );
+        QStringList fileList = cacheDir.entryList();
+        foreach(QString str, fileList)
+        {
+            QFile file(str);
+            file.remove();
+        }
+
+//         m_diskCache = new QNetworkDiskCache(this);
+//         m_diskCache->setCacheDirectory(location);
+//         setCache(m_diskCache);
+    }
 }
 
 

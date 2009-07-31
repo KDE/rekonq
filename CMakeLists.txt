@@ -3,7 +3,7 @@
 
 PROJECT( rekonq )
 
-# ===============================================================================================
+# ==================================================================================
 # Informations to update before to release this package.
 
 # rekonq info
@@ -17,12 +17,12 @@ SET(REKONQ_VERSION_STR
 
 SET(REKONQ_SITE "http://rekonq.sourceforge.net")
 
-# =================================================================================================
+# ==================================================================================
 # minimum cmake required
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 
-# =================================================================================================
+# ==================================================================================
 
 
 SET(QT_MIN_VERSION 4.5.0)
@@ -35,7 +35,7 @@ INCLUDE(FindPackageHandleStandardArgs)
 INCLUDE(KDE4Defaults)
 INCLUDE(MacroLibrary)
 
-# =================================================================================================
+# ==================================================================================
 # KDE Version
 
 if(${KDE_VERSION_MINOR} GREATER "2")
@@ -47,34 +47,18 @@ else(${KDE_VERSION_MINOR} GREATER "2")
         SET(KDE_OLD_VERSION true)
     endif(${KDE_VERSION_RELEASE} GREATER "69")
 endif(${KDE_VERSION_MINOR} GREATER "2")
-# =================================================================================================
 
-# --------------- KNetworkAccessManager
-if(KDE_OLD_VERSION)
-
-    find_package(KdeNetwork REQUIRED)
-
-    MESSAGE(STATUS "----------------------------------------------------------------------------------")
-    MESSAGE(STATUS "")
-    MESSAGE(STATUS " As KDE VERSION is minor than 4.2.70, rekonq will use KNetworkAccessManager ")
-    MESSAGE(STATUS " classes, instead of newly KIO::AccessManager. ")
-    MESSAGE(STATUS "")
-
-endif(KDE_OLD_VERSION)
-
-
-
-# ==================================================================================================
+# ==================================================================================
 # Log messages
 
 MESSAGE(STATUS "")
-MESSAGE(STATUS "----------------------------------------------------------------------------------")
+MESSAGE(STATUS "-----------------------------------------------------------------------")
 MESSAGE(STATUS " rekonq ${REKONQ_VERSION_STR} dependencies results  <${REKONQ_SITE}>")
 MESSAGE(STATUS "")
 
 # Require shared libraries results.
 
-# ----------------- Qt
+# ----------------------------------- Qt -------------------------------------
 SET(QT_VERS_STR
     "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
    )
@@ -90,9 +74,9 @@ ELSE(QT_FOUND)
     MESSAGE(STATUS "")
 ENDIF(QT_FOUND)
 
-MESSAGE(STATUS "") # -----------------------------------------------------------
+MESSAGE(STATUS "")
 
-# -------------- KDE
+# ---------------------------------- KDE -------------------------------------
 SET(KDE_VERS_STR
     "${KDE_VERSION_MAJOR}.${KDE_VERSION_MINOR}.${KDE_VERSION_RELEASE}"
    )
@@ -112,63 +96,40 @@ ENDIF(KDE4_FOUND)
 # --------------- KNetworkAccessManager
 if(KDE_OLD_VERSION)
 
+    MESSAGE(STATUS " As KDE version is minor than KDE 4.2.70, rekonq will have ")
+    MESSAGE(STATUS " some functions about KDE integration disabled ")
     MESSAGE(STATUS "")
-    IF(KDENETWORK_FOUND)
-        MESSAGE(STATUS " KDE Network library found............. YES")
-    ELSE(KDENETWORK_FOUND)
-        MESSAGE(STATUS " KDE Network library found............. NO")
-        MESSAGE(STATUS "")
-        MESSAGE(SEND_ERROR " rekonq needs, from version 0.2, KDENETWORK if compiled with a KDE version minor than 4.2.69 ")
-        MESSAGE(STATUS " You can actually retrieve it from playground/libs/webkitkde/kdenetwork KDE svn")
-        MESSAGE(STATUS "")
-    ENDIF(KDENETWORK_FOUND)
 
 endif(KDE_OLD_VERSION)
 
 MESSAGE(STATUS "")
-MESSAGE(STATUS "----------------------------------------------------------------------------------")
+MESSAGE(STATUS "-----------------------------------------------------------------------")
 MESSAGE(STATUS "")
 
 
 ##### FINAL RESULTS #####
 
-if(KDE_OLD_VERSION)
-
-    IF(QT_FOUND AND KDE4_FOUND AND KDENETWORK_FOUND)
-        MESSAGE(STATUS " rekonq will be compiled............... YES")
-        SET(REKONQ_CAN_BE_COMPILED true)
-    ELSE(QT_FOUND AND KDE4_FOUND AND KDENETWORK_FOUND)
-        MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
-        SET(REKONQ_CAN_BE_COMPILED false)
-    ENDIF(QT_FOUND AND KDE4_FOUND AND KDENETWORK_FOUND)
-
-else(KDE_OLD_VERSION)
-
-    IF(QT_FOUND AND KDE4_FOUND)
-        MESSAGE(STATUS " rekonq will be compiled............... YES")
-        SET(REKONQ_CAN_BE_COMPILED true)
-    ELSE(QT_FOUND AND KDE4_FOUND)
-        MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
-        SET(REKONQ_CAN_BE_COMPILED false)
-    ENDIF(QT_FOUND AND KDE4_FOUND)
-
-endif(KDE_OLD_VERSION)
-
+IF(QT_FOUND AND KDE4_FOUND)
+    MESSAGE(STATUS " rekonq will be compiled............... YES")
+    SET(REKONQ_CAN_BE_COMPILED true)
+ELSE(QT_FOUND AND KDE4_FOUND)
+    MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
+    SET(REKONQ_CAN_BE_COMPILED false)
+ENDIF(QT_FOUND AND KDE4_FOUND)
 
 MESSAGE(STATUS "")
-MESSAGE(STATUS "----------------------------------------------------------------------------------")
+MESSAGE(STATUS "-----------------------------------------------------------------------")
 MESSAGE(STATUS "")
 
-# ==================================================================================================
+# ===============================================================================
 
 IF(REKONQ_CAN_BE_COMPILED)
 
     ADD_SUBDIRECTORY( src )
     ADD_SUBDIRECTORY( icons )
     ADD_SUBDIRECTORY( data )
-#    ADD_SUBDIRECTORY( i18n )
-#    ADD_SUBDIRECTORY( doc )
 
 ENDIF(REKONQ_CAN_BE_COMPILED)
 
-# =====================================================================================================
+# ================================================================================
+

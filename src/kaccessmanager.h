@@ -22,20 +22,20 @@
 #ifndef KACCESSMANAGER_H
 #define KACCESSMANAGER_H
 
-//KDE Network Includes
-#include <kdenetwork/knetworkaccessmanager.h>
-#include <kdenetwork/knetworkreply.h>
 
-// Forward Declarations
+// Qt Includes
+#include <QtNetwork/QNetworkAccessManager>
 
 
-class NetworkAccessManager : public KNetworkAccessManager
+class NetworkAccessManager : public QNetworkAccessManager
 {
     Q_OBJECT
 
 public:
     NetworkAccessManager(QObject *parent = 0);
 
+    void resetDiskCache();
+    
 public slots:
     void loadSettings();
 
