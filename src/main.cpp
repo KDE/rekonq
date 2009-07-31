@@ -82,19 +82,24 @@ int main(int argc, char **argv)
 
     about.addCredit(ki18n("Abuus"),
                     ki18n("Webview  mouse event support"),
-                    "hdevalence@gmail.com",
+                    "buusmail@gmail.com",
                     "");
 
     about.addCredit(ki18n("Johannes Zellner"),
                     ki18n("Patches, suggestions, testing, bugfixing"),
-                    "hdevalence@gmail.com",
+                    "webmaster@nebulon.de",
                     "");
 
     about.addCredit(ki18n("Ivan Cukic"),
                     ki18n("Patches, bugfixing"),
                     "ivan@fomentgroup.org",
                     "");
-                    
+
+    about.addCredit(ki18n("Adrià Arrufat"),
+                    ki18n("New tab loading animation"),
+                    "swiftscythe@gmail.com",
+                    "");
+                   
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
 
