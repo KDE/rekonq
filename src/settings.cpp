@@ -159,7 +159,7 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::setWebSettingsToolTips()
 {
-    d->webkitUi.kcfg_autoLoadImages->setToolTip(i18n("Specifies whether images are automatically loaded in web pages"));
+    d->webkitUi.kcfg_autoLoadImages->setToolTip(i18n("Specifies whether images are automatically loaded in web pages."));
     d->webkitUi.kcfg_javascriptEnabled->setToolTip(i18n("Enables the execution of JavaScript programs."));
     d->webkitUi.kcfg_javaEnabled->setToolTip(i18n("Enables support for Java applets."));
     d->webkitUi.kcfg_pluginsEnabled->setToolTip(i18n("Enables support for plugins in web pages."));
