@@ -216,7 +216,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
             const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
             data.setData(searchProviderPrefix + "some keyword");
-            a = new KAction(i18n("Search with ")+service->name(), this);
+            a = new KAction(i18n("Search with %1", service->name()), this);
             a->setIcon(Application::icon(KUrl(data.uri())));
             a->setData(searchProviderPrefix);
             connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
