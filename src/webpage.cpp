@@ -117,7 +117,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
     kDebug() << "WebPage createWindow slot";
-    
+
     return newWindow(type);
 }
 

@@ -66,6 +66,7 @@ public:
     UrlBar *urlBar(int index) const;
     UrlBar *currentUrlBar() const;
     WebView *webView(int index) const;
+    QToolButton *addTabButton() const;
 
     // inlines
     TabBar *tabBar() const;
@@ -148,7 +149,7 @@ private slots:
 protected:
 
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
-
+    virtual void resizeEvent(QResizeEvent *event);
 
 private:
 

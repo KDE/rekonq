@@ -107,13 +107,10 @@ void MainView::addTabButtonPosition()
 {
     static bool ButtonInCorner = false;
 
-    QSize s1 = frameSize();
-    int tabWidgetWidth = s1.width();
+    int tabWidgetWidth = frameSize().width();
+    int tabBarWidth = tabBar()->tabSizeHint(0).width()*tabBar()->count();
 
-    QSize s2 = tabBar()->sizeHint();
-    int newPos = s2.width();
-
-    if( newPos > tabWidgetWidth )
+    if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
     {
         if(ButtonInCorner)
             return;
@@ -128,9 +125,15 @@ void MainView::addTabButtonPosition()
             m_addTabButton->show();
             ButtonInCorner = false;
         }
-        m_addTabButton->move(newPos, 0);
-    }
 
+        int newPos = tabWidgetWidth - m_addTabButton->width();
+        m_addTabButton->move(newPos, 0);
+
+        if (tabBar()->tabSizeHint(0).width()>=sizeHint().width()/4)
+            m_addTabButton->move(tabBarWidth, 0);
+        else
+            m_addTabButton->move(tabWidgetWidth - m_addTabButton->width(), 0);
+    }
 }
 
 
@@ -145,6 +148,10 @@ TabBar *MainView::tabBar() const
     return m_tabBar; 
 }
 
+QToolButton *MainView::addTabButton() const
+{
+    return m_addTabButton;
+}
 
 StackedUrlBar *MainView::urlBarStack() const 
 { 
@@ -674,4 +681,11 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event) //WARNING Need to be fi
         return;
     }
     KTabWidget::mouseDoubleClickEvent(event);
+}
+
+
+void MainView::resizeEvent(QResizeEvent *event)
+{
+    addTabButtonPosition();
+    KTabWidget::resizeEvent(event);
 }

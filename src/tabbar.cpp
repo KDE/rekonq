@@ -70,9 +70,21 @@ TabBar::~TabBar()
 
 QSize TabBar::tabSizeHint(int index) const
 {
-    QSize s = m_parent->sizeHint();
+    //TODO Create a SuperTabWidget class
 
-    int w = s.width() / 4;
+    int buttonSize = ((MainView *)m_parent)->addTabButton()->size().width();
+    int tabBarWidth = m_parent->size().width() - buttonSize;
+    int baseWidth =  m_parent->sizeHint().width()/4;
+    int minWidth =  m_parent->sizeHint().width()/8;
+
+    int w;
+    if (baseWidth*count()<tabBarWidth)
+        w=baseWidth;
+    else if (tabBarWidth/count()>minWidth)
+        w=tabBarWidth/count();
+    else
+        w=minWidth;
+
     int h = KTabBar::tabSizeHint(index).height();
 
     QSize ts = QSize(w, h);
