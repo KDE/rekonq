@@ -283,8 +283,8 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     // this should let rekonq to support the beautiful KDE web browsing shortcuts
     loadingUrl = KUriFilter::self()->filteredUri(loadingUrl);
 
-    WebView *webView=m_mainWindow->mainView()->currentWebView();
-
+    WebView *webView;
+    
     switch(type)
     {
     case Rekonq::SettingOpenTab:
@@ -296,7 +296,8 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     case Rekonq::BackgroundTab:
         webView = m_mainWindow->mainView()->newTab(false);
         break;
-    case Rekonq::CurrentTab:    // nothing to do here.. just to save a warning!!
+    case Rekonq::CurrentTab:
+        webView = m_mainWindow->mainView()->currentWebView();
         break;
     };
 

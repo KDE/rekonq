@@ -102,7 +102,7 @@ public slots:
      *
      * @return a pointer to the new WebView
      */
-    WebView *newTab(bool focus = true);
+    WebView *newTab(bool focused = true);
 
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);

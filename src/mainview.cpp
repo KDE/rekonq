@@ -350,7 +350,7 @@ WebView *MainView::webView(int index) const
 }
 
 
-WebView *MainView::newTab(bool focus)
+WebView *MainView::newTab(bool focused)
 {
     // line edit
     UrlBar *urlBar = new UrlBar;  // Ownership of widget is passed on to the QStackedWidget (addWidget method).
@@ -380,8 +380,12 @@ WebView *MainView::newTab(bool focus)
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
     addTab(webView, i18n("(Untitled)"));
-    if (focus) setCurrentWidget(webView);
-
+    
+    if (focused)
+    {
+        setCurrentWidget(webView);
+    }
+    
     urlBar->setFocus();
 
     emit tabsChanged();

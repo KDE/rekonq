@@ -105,7 +105,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         // if frame doesn't exists (perhaps) we are pointing to a blank target..
         if (!frame)
         {
-            Application::instance()->loadUrl(request.url(), Rekonq::NewTab);
+            Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);
             return false;
         }
     }
@@ -131,7 +131,7 @@ WebPage *WebPage::newWindow(WebWindowType type)
         kDebug() << "Modal Dialog ---------------------------------------";
     }
 
-    WebView *w = Application::instance()->mainWindow()->mainView()->newTab();
+    WebView *w = Application::instance()->mainWindow()->mainView()->newTab(!ReKonfig::openTabsBack());
     return w->page();
 }
 
