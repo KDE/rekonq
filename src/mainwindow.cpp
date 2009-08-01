@@ -931,13 +931,18 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
         break;
     }
 
-    m_popup->setView(msg);
-
+    m_popup->setFrameShape(QFrame::NoFrame);
+    QLabel *label = new QLabel(msg);
+    m_popup->setLineWidth(0);
+    m_popup->setView(label);
+    m_popup->setFixedSize(0, 0);
+    m_popup->layout()->setAlignment(Qt::AlignTop);
+    m_popup->layout()->setMargin(4);
     int h = KGlobalSettings::generalFont().pointSize();
 
     // setting popus in bottom-left position
     int x = geometry().x();
-    int y = geometry().y() + height() - h*4;
+    int y = geometry().y() + height() - h*3;
     QPoint p(x,y);
 
     m_popup->show(p);
