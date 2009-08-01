@@ -229,7 +229,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
 void UrlBar::focusOutEvent(QFocusEvent *event)
 {
     // set back last loaded url in case user cleared it
-    setUrl(m_currentUrl);
+    if (!m_currentUrl.equals(KUrl(lineEdit()->text()))) setUrl(m_currentUrl);
 
     KHistoryComboBox::focusOutEvent(event);
 }
