@@ -46,6 +46,8 @@
 #include <KPassivePopup>
 #include <KToolInvocation>
 #include <KUriFilter>
+#include <KMessageBox>
+#include <KProtocolInfo>
 
 // Qt Includes
 #include <QRegExp>
@@ -257,6 +259,12 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (url.isEmpty())
         return;
 
+    if ( !url.isValid() )
+    {
+        KMessageBox::error(0, i18n("Malformed URL\n%1", url.url()));
+        return;
+    }
+    
     if (url.scheme() == QLatin1String("mailto"))
     {
         KToolInvocation::invokeMailer(url);
@@ -264,21 +272,27 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
 
     KUrl loadingUrl(url);
-    if (loadingUrl.isRelative() && loadingUrl.path().contains("."))
+
+    // this should let rekonq filtering URI info and supporting
+    // the beautiful KDE web browsing shortcuts
+    KUriFilterData data(loadingUrl.pathOrUrl());
+    data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" 
+                                        // are considered as executables
+    if (KUriFilter::self()->filterUri(data))
     {
-        QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
-        loadingUrl.setUrl("//" + fn);
-        loadingUrl.setScheme("http");
+        loadingUrl = data.uri().url();
     }
-    else if(loadingUrl.scheme()!="http")
+    
+    if (loadingUrl.isRelative() && !loadingUrl.path().contains("."))
     {
-        // this should let rekonq to support the beautiful KDE web browsing shortcuts
-        KUriFilterData data(loadingUrl.pathOrUrl());
-        data.setCheckForExecutables (false); //if true, querries like "rekonq" or "dolphin" are considered as executables
-        if (KUriFilter::self()->filterUri(data))
-        {
-            loadingUrl = data.uri().url();
-        }
+        QString urlString = QString("http://www.google.com/search?q=%1").arg(loadingUrl.path());
+        loadingUrl = KUrl(urlString);
+    }
+    
+    if ( !KProtocolInfo::isKnownProtocol( loadingUrl ) )
+    {
+        KMessageBox::error(0, i18n("Protocol not supported\n%1", url.protocol()));
+        return;
     }
 
     WebView *webView;
