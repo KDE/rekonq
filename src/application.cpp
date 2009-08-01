@@ -98,7 +98,7 @@ int Application::newInstance()
     {
         for (int i = 0; i < args->count(); ++i)
         {
-            loadUrl(args->arg(i), Rekonq::NewTab); 
+            loadUrl(args->arg(i), Rekonq::NewCurrentTab); 
         }
         args->clear();
     }
@@ -288,10 +288,10 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     case Rekonq::SettingOpenTab:
         webView = m_mainWindow->mainView()->newTab(!ReKonfig::openTabsBack());
         break;
-    case Rekonq::NewTab:
+    case Rekonq::NewCurrentTab:
         webView = m_mainWindow->mainView()->newTab(true);
         break;
-    case Rekonq::BackgroundTab:
+    case Rekonq::NewBackTab:
         webView = m_mainWindow->mainView()->newTab(false);
         break;
     case Rekonq::CurrentTab:
