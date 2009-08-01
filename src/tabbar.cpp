@@ -79,12 +79,21 @@ QSize TabBar::tabSizeHint(int index) const
 
     int w;
     if (baseWidth*count()<tabBarWidth)
-        w=baseWidth;
-    else if (tabBarWidth/count()>minWidth)
-        w=tabBarWidth/count();
-    else
-        w=minWidth;
-
+    {
+        w = baseWidth;
+    }
+    else 
+    {
+        if (tabBarWidth/count()>minWidth)
+        {
+            w = tabBarWidth/count();
+        }
+        else
+        {
+            w = minWidth;
+        }
+    }
+    
     int h = KTabBar::tabSizeHint(index).height();
 
     QSize ts = QSize(w, h);
