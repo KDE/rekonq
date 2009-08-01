@@ -127,7 +127,6 @@ WebPage *WebPage::newWindow(WebWindowType type)
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
     {
-        // FIXME : need a "real" implementation..
         kDebug() << "Modal Dialog ---------------------------------------";
     }
 
@@ -136,6 +135,7 @@ WebPage *WebPage::newWindow(WebWindowType type)
 }
 
 
+// FIXME: dear slot, you need to handle unsupported content a bit better..
 void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
 {
 
