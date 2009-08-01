@@ -327,5 +327,5 @@ void WebView::slotSearch()
     KAction *a = qobject_cast<KAction*>(sender());
     QString search = a->data().toString() + selectedText();
     KUrl urlSearch = KUrl::fromEncoded(search.toUtf8());
-    Application::instance()->loadUrl(urlSearch, Rekonq::NewTab);
+    Application::instance()->loadUrl(urlSearch, Rekonq::NewCurrentTab);
 }
