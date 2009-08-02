@@ -933,16 +933,22 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
     m_popup->setFrameShape(QFrame::NoFrame);
     QLabel *label = new QLabel(msg);
+    label->setMaximumWidth(width()-8);
     m_popup->setLineWidth(0);
     m_popup->setView(label);
     m_popup->setFixedSize(0, 0);
     m_popup->layout()->setAlignment(Qt::AlignTop);
     m_popup->layout()->setMargin(4);
-    int h = KGlobalSettings::generalFont().pointSize();
 
     // setting popus in bottom-left position
+    int pageHeight = m_view->currentWebView()->page()->viewportSize().height();
+    int labelHeight = KGlobalSettings::generalFont().pointSize()*2 + 7;
+    bool scrollbarIsVisible = m_view->currentWebView()->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
+    int scrollbarSize = 0;
+    if (scrollbarIsVisible) scrollbarSize = 17; //TODO: detect QStyle size
+
     int x = geometry().x();
-    int y = geometry().y() + height() - h*3;
+    int y = m_view->currentWebView()->mapToGlobal(QPoint(0,pageHeight)).y() - labelHeight -scrollbarSize;
     QPoint p(x,y);
 
     m_popup->show(p);
