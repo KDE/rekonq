@@ -14,11 +14,11 @@ TO 0.2 release
 * history menu
 * clear private data
 * ctrl + url click
+* private browsing color
+* no more KDEnetwork!! 
+* no reKonfig in loadUrl (no need to fix this)
 
-- private browsing color
 - BKO
 - error pages (timeout loading)
 - proxy DNS requests ??
-- no more KDEnetwork!! 
-- no reKonfig in loadUrl
 - packaging / license
