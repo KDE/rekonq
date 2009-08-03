@@ -1,7 +1,7 @@
 ### ------- SETTING REKONQ FILES..
 
 SET( rekonq_SRCS
-    networkmanager.cpp
+    networkaccessmanager.cpp
     autosaver.cpp 
     application.cpp 
     mainwindow.cpp 
