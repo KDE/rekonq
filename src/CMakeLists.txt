@@ -1,13 +1,7 @@
 ### ------- SETTING REKONQ FILES..
 
-if(KDE_OLD_VERSION)
-    SET( rekonq_NAM kaccessmanager.cpp )
-else(KDE_OLD_VERSION)
-    SET( rekonq_NAM networkmanager.cpp )
-endif(KDE_OLD_VERSION)
-
 SET( rekonq_SRCS
-    ${rekonq_NAM}
+    networkmanager.cpp
     autosaver.cpp 
     application.cpp 
     mainwindow.cpp 
@@ -51,7 +45,6 @@ KDE4_ADD_UI_FILES( rekonq_SRCS
 KDE4_ADD_KCFG_FILES( rekonq_SRCS rekonq.kcfgc )
 
 
-
 ### ------------- INCLUDING DIRECTORIES...
 
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -60,28 +53,15 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${QT4_INCLUDES}
 )
 
-if(KDE_OLD_VERSION)
-
-    INCLUDE_DIRECTORIES( ${KDENETWORK_INCLUDE_DIR} )
-
-endif(KDE_OLD_VERSION)
-
 
 ### -------------- ADDING DEFINITIONS...
 
 ADD_DEFINITIONS ( ${KDE4_DEFINITIONS} )
 
-if(KDE_OLD_VERSION)
-
-    ADD_DEFINITIONS ( ${KDENETWORK_DEFINITIONS} )
-
-endif(KDE_OLD_VERSION)
-
 
 ### --------------- ADDING EXECUTABLE...
 
 KDE4_ADD_EXECUTABLE( rekonq ${rekonq_SRCS} )
-
 
 
 ### --------------- TARGETTING LINK LIBRARIES...
@@ -93,7 +73,6 @@ TARGET_LINK_LIBRARIES ( rekonq
                         ${QT_QTUITOOLS_LIBRARY}
                         ${KDE4_KUTILS_LIBS}
                         ${KDE4_KDEUI_LIBS}
-                        ${KDE4_KIO_LIBS}
 )
 
 

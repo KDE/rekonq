@@ -23,14 +23,16 @@
 #define NETWORKMANAGER_H
 
 // KDE Includes
-#include <KIO/AccessManager>
+// #include <KIO/AccessManager>
+
+#include <QtNetwork/QNetworkAccessManager>
 
 // Forward Declarations
 class QNetworkDiskCache;
 
-using namespace KIO;
+// using namespace KIO;
 
-class NetworkAccessManager : public AccessManager
+class NetworkAccessManager : public QNetworkAccessManager
 {
     Q_OBJECT
 

@@ -36,19 +36,6 @@ INCLUDE(KDE4Defaults)
 INCLUDE(MacroLibrary)
 
 # ==================================================================================
-# KDE Version
-
-if(${KDE_VERSION_MINOR} GREATER "2")
-    SET(KDE_OLD_VERSION false)
-else(${KDE_VERSION_MINOR} GREATER "2")
-    if(${KDE_VERSION_RELEASE} GREATER "69")
-        SET(KDE_OLD_VERSION false)
-    else(${KDE_VERSION_RELEASE} GREATER "69")
-        SET(KDE_OLD_VERSION true)
-    endif(${KDE_VERSION_RELEASE} GREATER "69")
-endif(${KDE_VERSION_MINOR} GREATER "2")
-
-# ==================================================================================
 # Log messages
 
 MESSAGE(STATUS "")
@@ -93,20 +80,6 @@ ELSE(KDE4_FOUND)
 ENDIF(KDE4_FOUND)
 
 
-# --------------- KNetworkAccessManager
-if(KDE_OLD_VERSION)
-
-    MESSAGE(STATUS " As KDE version is minor than KDE 4.2.70, rekonq will have ")
-    MESSAGE(STATUS " some functions about KDE integration disabled ")
-    MESSAGE(STATUS "")
-
-endif(KDE_OLD_VERSION)
-
-MESSAGE(STATUS "")
-MESSAGE(STATUS "-----------------------------------------------------------------------")
-MESSAGE(STATUS "")
-
-
 ##### FINAL RESULTS #####
 
 IF(QT_FOUND AND KDE4_FOUND)
@@ -132,4 +105,3 @@ IF(REKONQ_CAN_BE_COMPILED)
 ENDIF(REKONQ_CAN_BE_COMPILED)
 
 # ================================================================================
-
