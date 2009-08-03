@@ -96,20 +96,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         return false;
     }
 
-    if (frame == mainFrame())
-    {
-        return QWebPage::acceptNavigationRequest(frame, request, type);
-    }
-    else
-    {
-        // if frame doesn't exists (perhaps) we are pointing to a blank target..
-        if (!frame)
-        {
-            Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);
-            return false;
-        }
-    }
-
     return QWebPage::acceptNavigationRequest(frame, request, type);
 }
 
