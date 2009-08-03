@@ -20,8 +20,8 @@
 
 
 // Self Includes
-#include "networkmanager.h"
-#include "networkmanager.moc"
+#include "networkaccessmanager.h"
+#include "networkaccessmanager.moc"
 
 // Local Includes
 #include "application.h"
