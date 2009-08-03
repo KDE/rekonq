@@ -96,12 +96,6 @@ TARGET_LINK_LIBRARIES ( rekonq
                         ${KDE4_KIO_LIBS}
 )
 
-if(KDE_OLD_VERSION)
-
-    TARGET_LINK_LIBRARIES( ${KDENETWORK_LIBRARIES} )
-
-endif(KDE_OLD_VERSION)
-
 
 ### ------------ INSTALL FILES...
 
