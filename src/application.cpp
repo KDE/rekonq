@@ -273,6 +273,21 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
     KUrl loadingUrl(url);
 
+    if (loadingUrl.isRelative())
+    {
+        QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
+        if(loadingUrl.path().contains('.'))
+        {
+            loadingUrl.setUrl("//" + fn);
+            loadingUrl.setScheme("http");
+        }
+        else
+        {
+            loadingUrl.setUrl(fn);
+            loadingUrl.setScheme("gg");
+        }
+    }
+
     // this should let rekonq filtering URI info and supporting
     // the beautiful KDE web browsing shortcuts
     KUriFilterData data(loadingUrl.pathOrUrl());
@@ -281,12 +296,6 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (KUriFilter::self()->filterUri(data))
     {
         loadingUrl = data.uri().url();
-    }
-    
-    if (loadingUrl.isRelative() && !loadingUrl.path().contains("."))
-    {
-        QString urlString = QString("http://www.google.com/search?q=%1").arg(loadingUrl.path());
-        loadingUrl = KUrl(urlString);
     }
     
     if ( !KProtocolInfo::isKnownProtocol( loadingUrl ) )
@@ -321,6 +330,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         webView->load(loadingUrl);
     }
 }
+
 
 void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& type)
 {    
