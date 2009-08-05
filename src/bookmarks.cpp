@@ -33,13 +33,11 @@
 #include <KActionCollection>
 #include <KBookmark>
 #include <KBookmarkAction>
-#include <KBookmarkActionMenu>
 #include <KBookmarkGroup>
 #include <KBookmarkMenu>
 #include <KToolBar>
 #include <KDebug>
 #include <KMenu>
-#include <KMimeType>
 #include <KStandardDirs>
 #include <KUrl>
 

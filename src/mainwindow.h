@@ -31,12 +31,10 @@
 
 // KDE Includes
 #include <KXmlGuiWindow>
-#include <KToolBar>
 
 // Forward Declarations
 class QWebFrame;
 
-class KUrl;
 class KAction;
 class KPassivePopup;
 

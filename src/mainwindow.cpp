@@ -47,8 +47,6 @@
 
 // KDE Includes
 #include <KUrl>
-#include <KStatusBar>
-#include <KMenuBar>
 #include <KShortcut>
 #include <KStandardAction>
 #include <KAction>
@@ -56,15 +54,13 @@
 #include <KActionCollection>
 #include <KMessageBox>
 #include <KFileDialog>
-#include <KMenu>
 #include <KGlobalSettings>
 #include <KPushButton>
 #include <KTemporaryFile>
-#include <KJobUiDelegate>
 #include <KPassivePopup>
-#include <KStandardDirs>
-#include <KIconLoader>
-
+#include <KMenuBar>
+#include <KToolBar>
+#include <KJobUiDelegate>
 #include <kdeprintdialog.h>
 
 // Qt Includes
@@ -83,11 +79,7 @@
 #include <QtGui/QPrintDialog>
 #include <QtGui/QPrintPreviewDialog>
 
-#include <QtWebKit/QWebFrame>
 #include <QtWebKit/QWebHistory>
-#include <QtWebKit/QWebHistoryItem>
-#include <QtWebKit/QWebPage>
-#include <QtWebKit/QWebSettings>
 
 
 

@@ -25,10 +25,8 @@
 
 // KDE Includes
 #include <KUniqueApplication>
-#include <KCmdLineArgs>
 #include <KIcon>
 #include <KUrl>
-#include <KJob>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
@@ -43,7 +41,6 @@ class CookieJar;
 class HistoryManager;
 class MainWindow;
 class NetworkAccessManager;
-class WebView;
 
 
 namespace Rekonq

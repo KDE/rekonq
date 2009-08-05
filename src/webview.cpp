@@ -36,13 +36,11 @@
 #include "webpage.h"
 
 // KDE Includes
-#include <KStandardDirs>
 #include <KUrl>
-#include <KActionCollection>
 #include <KDebug>
-#include <KToolInvocation>
 #include <KService>
 #include <KUriFilterData>
+#include <KStandardShortcut>
 
 // Qt Includes
 #include <QtGui/QContextMenuEvent>
@@ -52,14 +50,7 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QAction>
 
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
 
-#include <QtWebKit/QWebFrame>
-#include <QtWebKit/QWebHitTestResult>
-#include <QtWebKit/QWebPage>
-#include <QtWebKit/QWebSettings>
-#include <QtWebKit/QWebView>
 
 
 WebView::WebView(QWidget* parent)

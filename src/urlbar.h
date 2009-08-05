@@ -32,8 +32,6 @@
 #include <KHistoryComboBox>
 
 // Qt Includes
-#include <QIcon>
-#include <QPointer>
 #include <QUrl>
 
 // Forward Declarations

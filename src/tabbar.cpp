@@ -33,8 +33,6 @@
 // KDE Includes
 #include <KShortcut>
 #include <KStandardShortcut>
-#include <KMessageBox>
-#include <KAction>
 #include <KDebug>
 #include <KGlobalSettings>
 

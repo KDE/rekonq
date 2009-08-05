@@ -24,7 +24,6 @@
 
 // KDE Includes
 #include <KLineEdit>
-#include <KAction>
 #include <KIcon>
 #include <KPushButton>
 #include <klocalizedstring.h>

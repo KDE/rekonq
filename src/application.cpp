@@ -38,12 +38,9 @@
 
 // KDE Includes
 #include <KCmdLineArgs>
-#include <KAboutData>
 #include <KStandardDirs>
-#include <KConfig>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
-#include <KPassivePopup>
 #include <KToolInvocation>
 #include <KUriFilter>
 #include <KMessageBox>
@@ -54,8 +51,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QtCore/QTimer>
-#include <QtWebKit/QWebSettings>
-#include <QtWebKit/QWebHistoryInterface>
 
 
 QPointer<HistoryManager> Application::s_historyManager;

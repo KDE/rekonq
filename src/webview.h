@@ -26,7 +26,6 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QWebPage>
 #include <QWebView>
 
 // Forward Declarations

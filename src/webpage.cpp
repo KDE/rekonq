@@ -41,7 +41,6 @@
 // KDE Includes
 #include <KStandardDirs>
 #include <KUrl>
-#include <KActionCollection>
 #include <KDebug>
 
 
@@ -60,14 +59,7 @@
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
 
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
 
-#include <QtWebKit/QWebFrame>
-#include <QtWebKit/QWebHitTestResult>
-#include <QtWebKit/QWebPage>
-#include <QtWebKit/QWebSettings>
-#include <QtWebKit/QWebView>
 
 #include <QUiLoader>
 

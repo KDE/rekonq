@@ -38,9 +38,6 @@ class QUrl;
 class QWebFrame;
 class QLabel;
 
-class KAction;
-class KMenu;
-class KUrl;
 
 class StackedUrlBar;
 class TabBar;

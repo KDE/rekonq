@@ -46,10 +46,6 @@
 #include <QtGui/QTextDocument>
 
 #include <QtNetwork/QAuthenticator>
-#include <QtNetwork/QNetworkProxy>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
-#include <QtNetwork/QSslError>
 #include <QtNetwork/QNetworkDiskCache>
 
 

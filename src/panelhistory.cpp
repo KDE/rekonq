@@ -28,10 +28,8 @@
 #include <QtGui/QHeaderView>
 
 // KDE Includes
-#include <KLocalizedString>
 #include <KLineEdit>
-#include <KUrl>
-
+#include <KLocalizedString>
 
 PanelHistory::PanelHistory(QWidget *parent)
         : QWidget(parent)

@@ -32,7 +32,6 @@
 #include <QtCore/QModelIndex>
 
 // KDE Includes
-#include <KUrl>
 #include <KMessageBox>
 
 

@@ -35,7 +35,6 @@
 #include <QtGui/QTableView>
 #include <QtGui/QSortFilterProxyModel>
 
-#include <QtNetwork/QNetworkCookieJar>
 
 
 class CookieModel : public QAbstractTableModel

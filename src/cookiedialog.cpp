@@ -28,7 +28,6 @@
 // KDE Includes
 #include <KLocalizedString>
 
-
 CookieModel::CookieModel(CookieJar *cookieJar, QObject *parent)
         : QAbstractTableModel(parent)
         , m_cookieJar(cookieJar)

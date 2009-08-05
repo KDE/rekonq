@@ -34,6 +34,7 @@
 // KDE Includes
 #include <KDebug>
 #include <KStandardDirs>
+#include <KLocale>
 
 // Qt Includes
 #include <QtCore/QList>
@@ -47,8 +48,6 @@
 
 #include <QtGui/QClipboard>
 
-#include <QtWebKit/QWebHistoryInterface>
-#include <QtWebKit/QWebSettings>
 
 // generic algorithms
 #include <QtAlgorithms>

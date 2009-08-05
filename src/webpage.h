@@ -27,7 +27,6 @@
 
 
 // KDE Includes
-#include <KUrl>
 
 // Qt Includes
 #include <QWebPage>

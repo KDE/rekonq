@@ -46,10 +46,7 @@
 // KDE Includes
 #include <KConfig>
 #include <KStandardDirs>
-#include <KConfigSkeleton>
 #include <KPageWidgetItem>
-#include <KFontDialog>
-#include <KUrl>
 #include <KShortcutsEditor>
 #include <KCModuleInfo>
 #include <KCModuleProxy>

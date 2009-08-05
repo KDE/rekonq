@@ -25,7 +25,6 @@
 
 // KDE Includes
 #include <KLineEdit>
-#include <KToolBar>
 
 // Qt Includes
 #include <QtGui/QWidget>

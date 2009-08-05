@@ -44,7 +44,6 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QCompleter>
 
-#include <QtWebKit/QWebSettings>
 
 
 static const unsigned int JAR_VERSION = 23;

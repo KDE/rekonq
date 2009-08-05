@@ -28,7 +28,6 @@
 // Forward Declarations
 class QWidget;
 class Private;
-class KCModuleProxy;
 
 class SettingsDialog : public KConfigDialog
 {
