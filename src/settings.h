@@ -54,8 +54,6 @@ private slots:
     void saveSettings();
 
     void setHomeToCurrentPage();
-    void showCookies();
-    void showExceptions();
 };
 
 #endif // SETTINGS_H

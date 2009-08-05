@@ -36,8 +36,6 @@
 // Local Includes
 #include "application.h"
 #include "mainwindow.h"
-// #include "cookiedialog.h"
-// #include "cookieexceptiondialog.h"
 #include "history.h"
 #include "networkaccessmanager.h"
 #include "webview.h"
@@ -71,7 +69,8 @@ private:
     Ui::proxy proxyUi;
     Ui::webkit webkitUi;
     KCModuleProxy *ebrowsingModule;
-
+    KCModuleProxy *cookiesModule;
+    
     Private(SettingsDialog *parent);
 
     friend class SettingsDialog;
@@ -100,6 +99,11 @@ Private::Private(SettingsDialog *parent)
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("Privacy"));
     pageItem->setIcon(KIcon("preferences-desktop-personal"));
+
+    KCModuleInfo cookiesInfo("cookies.desktop");
+    cookiesModule = new KCModuleProxy(cookiesInfo,parent);
+    pageItem = parent->addPage(cookiesModule, i18n(cookiesInfo.moduleName().toLocal8Bit()));
+    pageItem->setIcon(KIcon(cookiesInfo.icon()));
 
     widget = new QWidget;
     proxyUi.setupUi(widget);
@@ -144,10 +148,10 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     readConfig();
 
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
-    connect(d->privacyUi.exceptionsButton, SIGNAL(clicked()), this, SLOT(showExceptions()));
-    connect(d->privacyUi.cookiesButton, SIGNAL(clicked()), this, SLOT(showCookies()));
 
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
 
     setWebSettingsToolTips();
@@ -180,11 +184,6 @@ void SettingsDialog::setWebSettingsToolTips()
 // we need this function to UPDATE the config widget data..
 void SettingsDialog::readConfig()
 {
-    // ======= General
-//     d->generalUi.downloadDirUrlRequester->setMode(KFile::Directory | KFile::ExistingOnly | KFile::LocalOnly);
-//     d->generalUi.downloadDirUrlRequester->setUrl(ReKonfig::downloadDir());
-//     connect(d->generalUi.downloadDirUrlRequester, SIGNAL(textChanged(QString)), this, SLOT(saveSettings()));
-
     // ======= Fonts
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
 
@@ -198,35 +197,17 @@ void SettingsDialog::readConfig()
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
-    // General
-//     ReKonfig::setDownloadDir(d->generalUi.downloadDirUrlRequester->url().prettyUrl());
-
-    // Save
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
+    d->cookiesModule->save();
 }
 
 bool SettingsDialog::hasChanged()
 {
-    return KConfigDialog::hasChanged() || d->ebrowsingModule->changed();
-}
-
-// ----------------------------------------------------------------------------------------------
-
-
-void SettingsDialog::showCookies()
-{
-//     QPointer<CookiesDialog> dialog = new CookiesDialog(Application::cookieJar(), this);
-//     dialog->exec();
-//     delete dialog;
-}
-
-
-void SettingsDialog::showExceptions()
-{
-//     QPointer<CookiesExceptionsDialog> dialog = new CookiesExceptionsDialog(Application::cookieJar(), this);
-//     dialog->exec();
-//     delete dialog;
+    return KConfigDialog::hasChanged() 
+            || d->ebrowsingModule->changed()            
+            || d->cookiesModule->changed()
+            ;
 }
 
 
