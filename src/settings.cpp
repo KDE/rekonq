@@ -202,6 +202,7 @@ void SettingsDialog::saveSettings()
     d->cookiesModule->save();
 }
 
+
 bool SettingsDialog::hasChanged()
 {
     return KConfigDialog::hasChanged() 
