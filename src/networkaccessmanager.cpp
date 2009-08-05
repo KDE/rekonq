@@ -54,8 +54,9 @@
 #include <QtNetwork/QNetworkDiskCache>
 
 
+
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
-        : QNetworkAccessManager(parent)
+        : KIO::AccessManager(parent)
         , m_diskCache(0)
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),

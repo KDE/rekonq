@@ -77,8 +77,7 @@ protected:
                           const QUrl &url, 
                           const QStringList &paramNames, 
                           const QStringList &paramValues);
-    
-
+                          
 protected Q_SLOTS:    
     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
     virtual void slotDownloadRequested(const QNetworkRequest &request);

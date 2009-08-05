@@ -450,7 +450,7 @@ void MainWindow::slotUpdateConfiguration()
 
     // ====== load Settings on main classes
     Application::networkAccessManager()->loadSettings();
-    Application::cookieJar()->loadSettings();
+// FIXME (?)    Application::cookieJar()->loadSettings();
     Application::historyManager()->loadSettings();
 }
 
@@ -972,7 +972,7 @@ void MainWindow::clearPrivateData()
 
         if(clearWidget.clearCookies->isChecked())
         {
-            Application::cookieJar()->clear();
+            // FIXME (!) Application::cookieJar()->clear();
         }
 
         if(clearWidget.clearCachedPages->isChecked())

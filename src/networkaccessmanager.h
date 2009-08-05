@@ -27,14 +27,14 @@
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
 
-// Qt Includes
-#include <QtNetwork/QNetworkAccessManager>
+// KDE Includes
+#include <KIO/AccessManager>
 
 // Forward Declarations
 class QNetworkDiskCache;
 
 
-class NetworkAccessManager : public QNetworkAccessManager
+class NetworkAccessManager : public KIO::AccessManager
 {
     Q_OBJECT
 
@@ -56,7 +56,6 @@ private slots:
 
 private:
     QNetworkDiskCache *m_diskCache;
-    
 };
 
 #endif // NETWORKMANAGER_H

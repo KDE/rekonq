@@ -7,7 +7,7 @@ SET( rekonq_SRCS
     mainwindow.cpp 
     mainview.cpp
     tabbar.cpp
-    cookiejar.cpp 
+    cookiejar.cpp
     edittableview.cpp 
     edittreeview.cpp 
     history.cpp
@@ -24,8 +24,8 @@ SET( rekonq_SRCS
     lineedit.cpp
     stackedurlbar.cpp
     webpage.cpp
-    cookiedialog.cpp
-    cookieexceptiondialog.cpp
+#     cookiedialog.cpp
+#     cookieexceptiondialog.cpp
 )
 
 

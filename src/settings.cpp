@@ -216,17 +216,17 @@ bool SettingsDialog::hasChanged()
 
 void SettingsDialog::showCookies()
 {
-    QPointer<CookiesDialog> dialog = new CookiesDialog(Application::cookieJar(), this);
-    dialog->exec();
-    delete dialog;
+//     QPointer<CookiesDialog> dialog = new CookiesDialog(Application::cookieJar(), this);
+//     dialog->exec();
+//     delete dialog;
 }
 
 
 void SettingsDialog::showExceptions()
 {
-    QPointer<CookiesExceptionsDialog> dialog = new CookiesExceptionsDialog(Application::cookieJar(), this);
-    dialog->exec();
-    delete dialog;
+//     QPointer<CookiesExceptionsDialog> dialog = new CookiesExceptionsDialog(Application::cookieJar(), this);
+//     dialog->exec();
+//     delete dialog;
 }
 
 
