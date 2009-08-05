@@ -97,8 +97,8 @@ Private::Private(SettingsDialog *parent)
     widget = new QWidget;
     privacyUi.setupUi(widget);
     widget->layout()->setMargin(0);
-    pageItem = parent->addPage(widget , i18n("Privacy"));
-    pageItem->setIcon(KIcon("preferences-desktop-personal"));
+    pageItem = parent->addPage(widget , i18n("History"));
+    pageItem->setIcon(KIcon("view-history"));
 
     KCModuleInfo cookiesInfo("cookies.desktop");
     cookiesModule = new KCModuleProxy(cookiesInfo,parent);
