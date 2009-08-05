@@ -53,6 +53,7 @@ CookieJar::CookieJar(QObject* parent)
     : QNetworkCookieJar(parent)
     , m_windowId(10) //m_windowId is important else doesn't connect with KCookieServer
 {
+    m_kcookiejar = new QDBusInterface("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
 }
 
 
@@ -63,23 +64,17 @@ CookieJar::~CookieJar()
 
 QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl & url) const
 {
-
     QList<QNetworkCookie> cookieList;
+    QDBusReply<QString> reply = m_kcookiejar->call("findCookies", url.toString() , m_windowId);
 
-    if ( true ) // FIXME WebKitSettings::self()->isCookieJarEnabled())
+    if (reply.isValid())
     {
-        QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
-        QDBusReply<QString> reply = kcookiejar.call("findCookies", url.toString() , m_windowId);
-
-        if (reply.isValid())
-        {
-            cookieList << reply.value().toUtf8();
-            //kDebug() << reply.value();
-        }
-        else
-        {
-            kWarning() << "Unable to communicate with the cookiejar!";
-        }
+        cookieList << reply.value().toUtf8();
+        //kDebug() << reply.value();
+    }
+    else
+    {
+        kWarning() << "Unable to communicate with the cookiejar!";
     }
 
     return cookieList;
@@ -88,24 +83,16 @@ QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl & url) const
 
 bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, const QUrl & url)
 {
-
-    if ( true ) // FIXME WebKitSettings::self()->isCookieJarEnabled())
+    QByteArray cookieHeader;
+    foreach(const QNetworkCookie& cookie, cookieList)
     {
-        QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
-
-        QByteArray cookieHeader;
-        foreach(const QNetworkCookie& cookie, cookieList)
-        {
-            cookieHeader = "Set-Cookie: ";
-            cookieHeader += cookie.toRawForm();
-            kcookiejar.call("addCookies", url.toString(), cookieHeader, m_windowId);
-            //kDebug() << "url: " << url.host() << ", cookie: " << cookieHeader;
-        }
-
-        return !kcookiejar.lastError().isValid();
+        cookieHeader = "Set-Cookie: ";
+        cookieHeader += cookie.toRawForm();
+        m_kcookiejar->call("addCookies", url.toString(), cookieHeader, m_windowId);
+        //kDebug() << "url: " << url.host() << ", cookie: " << cookieHeader;
     }
 
-    return false;
+    return !m_kcookiejar->lastError().isValid();
 }
 
 
@@ -117,8 +104,7 @@ void CookieJar::setWindowId(qlonglong id)
 
 void CookieJar::clear()
 {
-    QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer", QDBusConnection::sessionBus());
-    QDBusReply<void> reply = kcookiejar.call( "deleteAllCookies" );
+    QDBusReply<void> reply = m_kcookiejar->call( "deleteAllCookies" );
     if (!reply.isValid())
     {
         kWarning() << "Unable to delete all the cookies as requested.";
