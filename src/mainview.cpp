@@ -686,3 +686,4 @@ void MainView::resizeEvent(QResizeEvent *event)
     addTabButtonPosition();
     KTabWidget::resizeEvent(event);
 }
+

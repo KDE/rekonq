@@ -138,7 +138,7 @@ void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
         return;
     case KParts::BrowserRun::Cancel:
         return;
-    default: // non existant case
+    default: // non extant case
         break;
     }
 

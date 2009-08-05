@@ -264,3 +264,4 @@ void UrlBar::setBackgroundColor(QColor c)
     s_defaultBaseColor=c;
     repaint();
 }
+

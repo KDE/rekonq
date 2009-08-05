@@ -36,7 +36,6 @@
 #include "bookmarks.h"
 #include "webview.h"
 #include "mainview.h"
-#include "bookmarks.h"
 #include "findbar.h"
 #include "sidepanel.h"
 #include "urlbar.h"
