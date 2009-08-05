@@ -24,14 +24,10 @@ SET( rekonq_SRCS
     lineedit.cpp
     stackedurlbar.cpp
     webpage.cpp
-#     cookiedialog.cpp
-#     cookieexceptiondialog.cpp
 )
 
 
 KDE4_ADD_UI_FILES( rekonq_SRCS
-#     cookies.ui
-#     cookiesexceptions.ui
     password.ui
     proxy.ui
     settings_general.ui

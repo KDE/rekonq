@@ -86,7 +86,6 @@ QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl & url) const
 }
 
 
-
 bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, const QUrl & url)
 {
 
@@ -109,7 +108,20 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, cons
     return false;
 }
 
+
 void CookieJar::setWindowId(qlonglong id)
 {
     m_windowId=id;
+}
+
+
+void CookieJar::clear()
+{
+    QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer", QDBusConnection::sessionBus());
+    QDBusReply<void> reply = kcookiejar.call( "deleteAllCookies" );
+    if (!reply.isValid())
+    {
+        kWarning() << "Unable to delete all the cookies as requested.";
+        return;
+    }
 }

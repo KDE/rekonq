@@ -972,7 +972,7 @@ void MainWindow::clearPrivateData()
 
         if(clearWidget.clearCookies->isChecked())
         {
-            // FIXME (!) Application::cookieJar()->clear();
+            Application::cookieJar()->clear();
         }
 
         if(clearWidget.clearCachedPages->isChecked())
