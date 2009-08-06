@@ -900,7 +900,10 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     // deleting popus if empty msgs
     if(msg.isEmpty())
     {
-        m_popup->deleteLater();
+        if(m_popup)
+        {
+            m_popup->deleteLater();
+        }
         return;
     }
 
