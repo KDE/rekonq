@@ -51,9 +51,9 @@
 
 CookieJar::CookieJar(QObject* parent)
     : QNetworkCookieJar(parent)
-    , m_windowId(10) //m_windowId is important else doesn't connect with KCookieServer
+    , m_windowId(10)    //  m_windowId is important else doesn't connect with KCookieServer (yeah!)
+    , m_kcookiejar(new QDBusInterface("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer"))
 {
-    m_kcookiejar = new QDBusInterface("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
 }
 
 
@@ -98,7 +98,7 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, cons
 
 void CookieJar::setWindowId(qlonglong id)
 {
-    m_windowId=id;
+    m_windowId = id;
 }
 
 

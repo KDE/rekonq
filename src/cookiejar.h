@@ -30,10 +30,12 @@
 
 // Qt Includes
 #include <QtNetwork/QNetworkCookieJar>
-#include <QtDBus/QtDBus>
+
+#include <QtDBus/QDBusInterface>
 
 // Forward Declarations
 class QUrl;
+
 
 class CookieJar : public QNetworkCookieJar
 {
