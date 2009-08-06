@@ -148,6 +148,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+    delete m_popup;
     delete m_view;
 }
 
