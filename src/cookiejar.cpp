@@ -32,9 +32,6 @@
 // Auto Includes
 #include "rekonq.h"
 
-// Local Includes
-#include "autosaver.h"
-
 // KDE Includes
 #include <KConfig>
 #include <KStandardDirs>
@@ -51,7 +48,7 @@
 
 CookieJar::CookieJar(QObject* parent)
     : QNetworkCookieJar(parent)
-    , m_windowId(10)    //  m_windowId is important else doesn't connect with KCookieServer (yeah!)
+    , m_windowId(-1)
     , m_kcookiejar(new QDBusInterface("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer"))
 {
 }
@@ -98,6 +95,7 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, cons
 
 void CookieJar::setWindowId(qlonglong id)
 {
+    kDebug() << id;
     m_windowId = id;
 }
 
