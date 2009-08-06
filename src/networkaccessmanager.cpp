@@ -56,7 +56,7 @@
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
-        : KIO::AccessManager(parent)
+        : QNetworkAccessManager(parent)
         , m_diskCache(0)
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
