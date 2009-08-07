@@ -298,7 +298,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     {
         loadingUrl = data.uri().url();
     }
-    
+
     if ( !KProtocolInfo::isKnownProtocol( loadingUrl ) )
     {
         KMessageBox::error(0, i18n("Protocol not supported\n%1", url.protocol()));
@@ -306,14 +306,19 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
 
     WebView *webView;
-    
+
     switch(type)
     {
     case Rekonq::SettingOpenTab:
         webView = m_mainWindow->mainView()->newTab(!ReKonfig::openTabsBack());
+        if (!ReKonfig::openTabsBack())
+        {
+            m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
+        }
         break;
     case Rekonq::NewCurrentTab:
         webView = m_mainWindow->mainView()->newTab(true);
+        m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
         break;
     case Rekonq::NewBackTab:
         webView = m_mainWindow->mainView()->newTab(false);
