@@ -320,10 +320,9 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         break;
     case Rekonq::CurrentTab:
         webView = m_mainWindow->mainView()->currentWebView();
+        m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
         break;
     };
-
-    m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
 
     if (webView)
     {

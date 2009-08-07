@@ -324,6 +324,7 @@ void MainView::slotCurrentChanged(int index)
 
     emit setCurrentTitle(webView->title());
     m_urlBars->setCurrentIndex(index);
+    currentUrlBar()->setUrl(webView->url());
     emit showStatusBarMessage(webView->lastStatusBarText());
 
     // set focus to the current webview
