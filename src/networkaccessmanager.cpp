@@ -153,7 +153,7 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
         auth->setUser(passwordWidget.userNameLineEdit->text());
         auth->setPassword(passwordWidget.passwordLineEdit->text());
     }
-    delete dialog;
+    dialog->deleteLater();
 }
 
 
@@ -182,7 +182,7 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
         auth->setUser(proxyWdg.userNameLineEdit->text());
         auth->setPassword(proxyWdg.passwordLineEdit->text());
     }
-    delete dialog;
+    dialog->deleteLater();
 }
 
 

@@ -36,7 +36,7 @@
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QLineEdit" name="userNameLineEdit"/>
+    <widget class="KLineEdit" name="userNameLineEdit"/>
    </item>
    <item row="2" column="0" colspan="2">
     <widget class="QLabel" name="passwordLabel">
@@ -46,7 +46,7 @@
     </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QLineEdit" name="passwordLineEdit">
+    <widget class="KLineEdit" name="passwordLineEdit">
      <property name="echoMode">
       <enum>QLineEdit::Password</enum>
      </property>

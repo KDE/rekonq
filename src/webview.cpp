@@ -164,7 +164,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         QString keywordDelimiter = cg.readEntry("KeywordDelimiter", ":");
         KService::Ptr service;
         KUriFilterData data;
-        foreach (QString engine, favoriteEngines)
+        foreach (const QString &engine, favoriteEngines)
         {
             service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
             const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
@@ -208,7 +208,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         QString keywordDelimiter = cg.readEntry("KeywordDelimiter", ":");
         KService::Ptr service;
         KUriFilterData data;
-        foreach (QString engine, favoriteEngines)
+        foreach (const QString &engine, favoriteEngines)
         {
             service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
             const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
