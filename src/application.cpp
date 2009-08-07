@@ -284,7 +284,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         }
         else
         {
-            loadingUrl.setUrl(fn);
+            loadingUrl.setUrl(url.fileName());
             loadingUrl.setScheme("gg");
         }
     }
