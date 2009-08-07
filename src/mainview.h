@@ -26,8 +26,8 @@
 * ============================================================ */
 
 
-#ifndef TABWIDGET_H
-#define TABWIDGET_H
+#ifndef MAINVIEW_H
+#define MAINVIEW_H
 
 // Local Includes
 #include "webview.h"
@@ -179,4 +179,4 @@ private:
     QToolButton *m_addTabButton;
 };
 
-#endif
+#endif // MAINVIEW_H

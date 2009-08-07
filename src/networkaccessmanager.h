@@ -24,11 +24,10 @@
 * ============================================================ */
 
 
-#ifndef NETWORKMANAGER_H
-#define NETWORKMANAGER_H
+#ifndef NETWORKACCESSMANAGER_H
+#define NETWORKACCESSMANAGER_H
 
 // KDE Includes
-// #include <KIO/AccessManager>
 #include <QtNetwork/QNetworkAccessManager>
 
 // Forward Declarations
@@ -59,4 +58,4 @@ private:
     QNetworkDiskCache *m_diskCache;
 };
 
-#endif // NETWORKMANAGER_H
+#endif // NETWORKACCESSMANAGER_H
