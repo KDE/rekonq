@@ -60,12 +60,6 @@ TabBar::TabBar(QWidget *parent)
     setMovable(true);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this,
             SLOT(contextMenuRequested(const QPoint &)));
-
-    // tabbar font
-    QFont standardFont = KGlobalSettings::generalFont();
-    QString fontFamily = standardFont.family();
-    int dim = standardFont.pointSize();
-    setFont(QFont(fontFamily, dim - 1));
 }
 
 
