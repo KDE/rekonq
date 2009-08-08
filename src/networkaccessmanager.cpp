@@ -56,7 +56,7 @@
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
-        : QNetworkAccessManager(parent)
+        : RekonqAccessManager(parent)
         , m_diskCache(0)
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),

@@ -408,9 +408,13 @@ void HistoryManager::save()
     if (saveAll)
     {
         if (historyFile.exists() && !historyFile.remove())
+        {
             kWarning() << "History: error removing old history." << historyFile.errorString();
+        }
         if (!tempFile.rename(historyFile.fileName()))
+        {
             kWarning() << "History: error moving new history over old." << tempFile.errorString() << historyFile.fileName();
+        }
     }
     m_lastSavedUrl = m_history.value(0).url;
 }

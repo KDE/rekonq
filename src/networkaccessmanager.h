@@ -27,14 +27,22 @@
 #ifndef NETWORKACCESSMANAGER_H
 #define NETWORKACCESSMANAGER_H
 
-// KDE Includes
-#include <QtNetwork/QNetworkAccessManager>
+#include <kdeversion.h>
+
+#if KDE_IS_VERSION(4, 2, 70)
+    #include <kio/accessmanager.h>
+    using namespace KIO;
+    typedef AccessManager RekonqAccessManager;
+#else
+    #include <QtNetwork/QNetworkAccessManager>
+    typedef QNetworkAccessManager RekonqAccessManager;
+#endif
 
 // Forward Declarations
 class QNetworkDiskCache;
 
 
-class NetworkAccessManager : public QNetworkAccessManager
+class NetworkAccessManager : public RekonqAccessManager
 {
     Q_OBJECT
 
