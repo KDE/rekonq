@@ -51,7 +51,9 @@ AutoSaver::AutoSaver(QObject *parent) : QObject(parent)
 AutoSaver::~AutoSaver()
 {
     if (m_timer.isActive())
+    {
         kWarning() << "AutoSaver: still active when destroyed, changes not saved.";
+    }
 }
 
 
