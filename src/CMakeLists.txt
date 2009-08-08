@@ -8,8 +8,6 @@ SET( rekonq_SRCS
     mainview.cpp
     tabbar.cpp
     cookiejar.cpp
-    edittableview.cpp 
-    edittreeview.cpp 
     history.cpp
     historymenu.cpp
     bookmarks.cpp
