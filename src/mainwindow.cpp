@@ -908,8 +908,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
         return;
     }
 
-    if(m_popup)
-        delete m_popup;
+    KPassivePopup *popup_sav = m_popup;
 
     m_popup = new KPassivePopup(this);
     m_popup->setAutoDelete(true);
@@ -953,6 +952,10 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     QPoint p(x,y);
 
     m_popup->show(p);
+    
+    if(popup_sav)
+        delete popup_sav;
+    
 }
 
 
