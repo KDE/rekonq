@@ -913,6 +913,8 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     m_popup = new KPassivePopup(this);
     m_popup->setAutoDelete(true);
 
+    connect(Application::instance(), SIGNAL(focusChanged(QWidget*,QWidget*)), m_popup, SLOT(hide()));
+
     QPixmap px;
     QString pixPath;
 
