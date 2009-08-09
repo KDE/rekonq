@@ -225,7 +225,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
         painter.setPen(Qt::transparent);
 
         QRect backgroundRect = lineEdit()->frameGeometry();
-        int mid = backgroundRect.width() / 100 * m_progress;
+        int mid = backgroundRect.width() * m_progress / 100;
         QRect progressRect(backgroundRect.x(), backgroundRect.y(), mid, backgroundRect.height());
         painter.drawRect(progressRect);
         painter.end();
