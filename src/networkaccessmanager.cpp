@@ -141,8 +141,8 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
 
     passwordWidget.iconLabel->setText(QString());
     passwordWidget.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
-
-    QString introMessage = i18n("<qt>Enter username and password for %1 at %2</qt>",
+    //FIXME Replace the text below with an explanation of what exactly %1 and %2 stand for
+    QString introMessage = i18nc("%1=stuff %2=stuff2", "<qt>Enter username and password for %1 at %2</qt>",
                                   Qt::escape(reply->url().toString()),
                                   Qt::escape(reply->url().toString())  );
     passwordWidget.introLabel->setText(introMessage);
@@ -172,7 +172,7 @@ void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &prox
 
     proxyWdg.iconLabel->setText(QString());
     proxyWdg.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
-
+    //FIXME Connect to proxy %1 using what? Best solution would be adding a %2 after the "using:" part and explain %1 and %2 in an i18nc call
     QString introMessage = i18n("<qt>Connect to proxy %1 using:</qt>", Qt::escape(proxy.hostName()) );
     proxyWdg.introLabel->setText(introMessage);
     proxyWdg.introLabel->setWordWrap(true);
