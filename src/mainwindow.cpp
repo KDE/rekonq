@@ -367,7 +367,7 @@ void MainWindow::setupTools()
 void MainWindow::setupSidePanel()
 {
     // Setup history side panel
-    m_sidePanel = new SidePanel(i18n("History"), this);
+    m_sidePanel = new SidePanel(i18n("History Panel"), this);
     connect(m_sidePanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
     connect(m_sidePanel, SIGNAL(destroyed()), Application::instance(), SLOT(slotSaveConfiguration()));
 
@@ -375,7 +375,6 @@ void MainWindow::setupSidePanel()
 
     // setup side panel actions
     KAction* a = (KAction *) m_sidePanel->toggleViewAction();
-    a->setText( i18n("History Panel") );
     a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H)); // WARNING : is this the right shortcut ??
     a->setIcon(KIcon("view-history"));
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
