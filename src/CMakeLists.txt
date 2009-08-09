@@ -30,7 +30,6 @@ KDE4_ADD_UI_FILES( rekonq_SRCS
     proxy.ui
     settings_general.ui
     settings_fonts.ui
-    settings_privacy.ui
     settings_proxy.ui
     settings_webkit.ui
     cleardata.ui

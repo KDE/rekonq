@@ -43,7 +43,6 @@
 //Ui Includes
 #include "ui_settings_general.h"
 #include "ui_settings_fonts.h"
-#include "ui_settings_privacy.h"
 #include "ui_settings_proxy.h"
 #include "ui_settings_webkit.h"
 
@@ -65,7 +64,6 @@ class Private
 private:
     Ui::general generalUi;
     Ui::fonts fontsUi;
-    Ui::privacy privacyUi;
     Ui::proxy proxyUi;
     Ui::webkit webkitUi;
     KCModuleProxy *ebrowsingModule;
@@ -93,12 +91,6 @@ Private::Private(SettingsDialog *parent)
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("Fonts"));
     pageItem->setIcon(KIcon("preferences-desktop-font"));
-
-    widget = new QWidget;
-    privacyUi.setupUi(widget);
-    widget->layout()->setMargin(0);
-    pageItem = parent->addPage(widget , i18n("History"));
-    pageItem->setIcon(KIcon("view-history"));
 
     KCModuleInfo cookiesInfo("cookies.desktop");
     cookiesModule = new KCModuleProxy(cookiesInfo,parent);

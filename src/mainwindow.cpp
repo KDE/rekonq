@@ -451,7 +451,6 @@ void MainWindow::slotUpdateConfiguration()
 
     // ====== load Settings on main classes
     Application::networkAccessManager()->loadSettings();
-// FIXME (?)    Application::cookieJar()->loadSettings();
     Application::historyManager()->loadSettings();
 }
 

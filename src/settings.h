@@ -43,7 +43,8 @@ class SettingsDialog : public KConfigDialog
 public:
     SettingsDialog(QWidget *parent = 0);
     ~SettingsDialog();
-    virtual bool hasChanged ();
+    
+    virtual bool hasChanged();
 
 private:
     Private* const d;
