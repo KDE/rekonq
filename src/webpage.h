@@ -36,11 +36,12 @@
 
 // Qt Includes
 #include <QWebPage>
+#include <QUrl>
 
 // Forward Declarations
 class QWebFrame;
 class QNetworkReply;
-
+class QUrl;
 
 class WebPage : public QWebPage
 {
@@ -89,6 +90,8 @@ private:
     // keyboard/mouse modifiers
     Qt::KeyboardModifiers m_keyboardModifiers;
     Qt::MouseButtons m_pressedButtons;
+
+    QUrl m_requestedUrl;
 };
 
 #endif

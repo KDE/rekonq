@@ -72,6 +72,7 @@ WebPage::WebPage(QObject *parent)
         : QWebPage(parent)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
+        , m_requestedUrl("")
 {
     setForwardUnsupportedContent(true);
 
@@ -85,6 +86,8 @@ WebPage::WebPage(QObject *parent)
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
+    m_requestedUrl = request.url();
+    
     if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
         Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);
@@ -155,6 +158,9 @@ void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
 
 void WebPage::manageNetworkErrors(QNetworkReply* reply)
 {
+    if (reply->url() != m_requestedUrl) //prevent favicon loading
+        return;
+
     switch (reply->error())
     {
         case QNetworkReply::NoError:
