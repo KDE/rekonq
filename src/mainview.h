@@ -96,7 +96,7 @@ signals:
     void setCurrentTitle(const QString &url);
     void showStatusBarMessage(const QString &message, Rekonq::Notify status = Rekonq::Info);
     void linkHovered(const QString &link);
-    void browserLoading(bool);
+    void browserTabLoading(bool);
 
     void printRequested(QWebFrame *frame);
 

@@ -252,7 +252,7 @@ void MainWindow::setupActions()
     m_stopReloadAction = new KAction(this);
     actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
-    connect(m_view, SIGNAL(browserLoading(bool)), this, SLOT(slotBrowserLoading(bool)));
+    connect(m_view, SIGNAL(browserTabLoading(bool)), this, SLOT(slotBrowserLoading(bool)));
     slotBrowserLoading(false); //first init for blank start page
 
     // ============== Custom Actions

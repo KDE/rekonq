@@ -58,7 +58,8 @@ public:
     KUrl url() const;
     QSize sizeHint() const;
     void setBackgroundColor(QColor);
-
+    bool isLoading();
+    
 signals:
     void activated(const KUrl&);
 

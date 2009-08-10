@@ -244,10 +244,7 @@ void UrlBar::focusOutEvent(QFocusEvent *event)
 
 QSize UrlBar::sizeHint() const
 {
-    QSize size(lineEdit()->sizeHint());
-    // make it (more or less) the same height with search bar (at least on oxygen)
-//     size.setHeight(size.height() + 2);
-    return size;
+    return lineEdit()->sizeHint();
 }
 
 
@@ -266,9 +263,19 @@ QLinearGradient UrlBar::generateGradient(const QColor &color, int height)
     return gradient;
 }
 
+
 void UrlBar::setBackgroundColor(QColor c)
 {
     s_defaultBaseColor=c;
     repaint();
 }
 
+
+bool UrlBar::isLoading()
+{
+    if(m_progress == 0)
+    {
+        return false;
+    }
+    return true;
+}

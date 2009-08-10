@@ -327,6 +327,12 @@ void MainView::slotCurrentChanged(int index)
     currentUrlBar()->setUrl(webView->url());
     emit showStatusBarMessage(webView->lastStatusBarText());
 
+    // notify UI to eventually switch stop/reload button
+    if(currentUrlBar()->isLoading())
+        emit browserTabLoading(true);
+    else
+        emit browserTabLoading(false);
+
     // set focus to the current webview
     webView->setFocus();
 }
@@ -541,7 +547,7 @@ void MainView::webViewLoadStarted()
         }
     }
 
-    emit browserLoading(true);
+    emit browserTabLoading(true);
 
     if (index != currentIndex())
         return;
@@ -564,7 +570,7 @@ void MainView::webViewLoadFinished(bool ok)
     }
 
     webViewIconChanged();
-    emit browserLoading(false);
+    emit browserTabLoading(false);
     
     // don't display messages for background tabs
     if (index != currentIndex())
