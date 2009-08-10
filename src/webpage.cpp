@@ -121,49 +121,72 @@ WebPage *WebPage::newWindow(WebWindowType type)
 // FIXME: dear slot, you need to handle unsupported content a bit better..
 void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
 {
-
-    const KUrl url(reply->request().url());
-    kDebug() << "title:" << url;
-    kDebug() << "error:" << reply->errorString();
-
-    QString filename = url.fileName();
-    QString mimetype = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-    KService::Ptr offer = KMimeTypeTrader::self()->preferredService(mimetype);
-
-    KParts::BrowserRun::AskSaveResult res = KParts::BrowserRun::askSave(
-                                                url,
-                                                offer,
-                                                mimetype,
-                                                filename
-                                            );
-    switch (res) 
+    if (reply->error() == QNetworkReply::NoError)
     {
-    case KParts::BrowserRun::Save:
-        slotDownloadRequested(reply->request());
-        return;
-    case KParts::BrowserRun::Cancel:
-        return;
-    default: // non extant case
-        break;
-    }
+        const KUrl url(reply->request().url());
+        QString filename = url.fileName();
+        QString mimetype = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+        KService::Ptr offer = KMimeTypeTrader::self()->preferredService(mimetype);
 
-    KUrl::List list;
-    list.append(url);
-    KRun::run(*offer,url,0);
+        KParts::BrowserRun::AskSaveResult res = KParts::BrowserRun::askSave(
+                                                            url,
+                                                            offer,
+                                                            mimetype,
+                                                            filename
+                                                        );
+        switch (res)
+        {
+            case KParts::BrowserRun::Save:
+                slotDownloadRequested(reply->request());
+                return;
+            case KParts::BrowserRun::Cancel:
+                return;
+            default: // non extant case
+                break;
+        }
+
+        KUrl::List list;
+        list.append(url);
+        KRun::run(*offer,url,0);
+    }
     return;
 }
 
 
 void WebPage::manageNetworkErrors(QNetworkReply* reply)
 {
-    if(reply->error() == QNetworkReply::NoError)
-        return;
+    switch (reply->error())
+    {
+        case QNetworkReply::NoError:
+            return;
+        case QNetworkReply::ContentNotFoundError:
+        {
+            QList<QWebFrame*> frames;
+            frames.append(mainFrame());
+            while (!frames.isEmpty())
+            {
+                QWebFrame *firstFrame = frames.takeFirst();
 
-    viewErrorPage(reply);
+                if (firstFrame->url() == reply->url())
+                {
+                    firstFrame->setHtml(errorPage(reply), reply->url());
+                    return;
+                }
+                QList<QWebFrame *> children = firstFrame->childFrames();
+                foreach(QWebFrame *frame, children)
+                {
+                    frames.append(frame);
+                }
+            }
+        }
+            break;
+        default:
+            mainFrame()->setHtml(errorPage(reply), reply->url());
+            break;
+    }
 }
 
-
-void WebPage::viewErrorPage(QNetworkReply *reply)
+QString WebPage::errorPage(QNetworkReply *reply)
 {
     // display "not found" page
     QString notfoundFilePath =  KStandardDirs::locate("data", "rekonq/htmls/notfound.html");
@@ -172,37 +195,19 @@ void WebPage::viewErrorPage(QNetworkReply *reply)
     if (!isOpened)
     {
         kWarning() << "Couldn't open the notfound.html file";
-        return;
+        return QString("");
     }
     QString title = i18n("Error loading page: ") + reply->url().toString();
 
     QString imagePath = KIconLoader::global()->iconPath("rekonq", KIconLoader::NoGroup, false);
 
     QString html = QString(QLatin1String(file.readAll()))
-                   .arg(title)
-                   .arg("file://" + imagePath)
-                   .arg(reply->errorString())
-                   .arg(reply->url().toString());
-
-    // test
-    QList<QWebFrame*> frames;
-    frames.append(mainFrame());
-    while (!frames.isEmpty())
-    {
-        QWebFrame *firstFrame = frames.takeFirst();
-        if (firstFrame->url() == reply->url())
-        {
-            firstFrame->setHtml(html, reply->url());
-            return;
-        }
-        QList<QWebFrame *> children = firstFrame->childFrames();
-        foreach(QWebFrame *frame, children)
-        {
-            frames.append(frame);
-        }
-    }
+                            .arg(title)
+                            .arg("file://" + imagePath)
+                            .arg(reply->errorString())
+                            .arg(reply->url().toString());
+    return html;
 }
-
 
 void WebPage::javaScriptAlert(QWebFrame *frame, const QString &msg)
 {

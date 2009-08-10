@@ -84,8 +84,7 @@ protected Q_SLOTS:
     
 private:
     friend class WebView;
-    
-    void viewErrorPage(QNetworkReply *);
+    QString errorPage(QNetworkReply *);
 
     // keyboard/mouse modifiers
     Qt::KeyboardModifiers m_keyboardModifiers;
