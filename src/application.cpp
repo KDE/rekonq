@@ -201,29 +201,24 @@ KUrl Application::guessUrlFromString(const QString &string)
     QString urlStr = string.trimmed();
     QRegExp test(QLatin1String("^[a-zA-Z]+\\:.*"));
 
-    // Check if it looks like a qualified URL. Try parsing it and see.
-    bool hasSchema = test.exactMatch(urlStr);
-
-    if (hasSchema)
-    {
-        QUrl qurl(urlStr, QUrl::TolerantMode);
-        KUrl url(qurl);
-
-        if (url.isValid())
-        {
-            return url;
-        }
-    }
-
     // Might be a file.
     if (QFile::exists(urlStr))
     {
         QFileInfo info(urlStr);
         return KUrl::fromPath(info.absoluteFilePath());
     }
-
-    // Might be a shorturl - try to detect the schema.
-    if (!hasSchema)
+    
+    // Check if it looks like a qualified URL. Try parsing it and see.
+    if (test.exactMatch(urlStr))
+    {
+        KUrl url(urlStr);
+        
+        if (url.isValid())
+        {
+            return url;
+        }
+    }
+    else    // Might be a shorturl - try to detect the schema.
     {
         int dotIndex = urlStr.indexOf(QLatin1Char('.'));
 
@@ -240,17 +235,10 @@ KUrl Application::guessUrlFromString(const QString &string)
             }
         }
     }
-
+    
     // Fall back to QUrl's own tolerant parser.
-    QUrl qurl = QUrl(string, QUrl::TolerantMode);
-    KUrl url(qurl);
+    KUrl url = KUrl(string);
 
-    // finally for cases where the user just types in a hostname add http
-    if (qurl.scheme().isEmpty())
-    {
-        qurl = QUrl(QLatin1String("http://") + string, QUrl::TolerantMode);
-        url = KUrl(qurl);
-    }
     return url;
 }
 
