@@ -49,7 +49,8 @@ class WebPage : public QWebPage
 
 public:
     explicit WebPage(QObject *parent = 0);
-
+    ~WebPage();
+    
 public slots:
     void manageNetworkErrors(QNetworkReply* reply);
 

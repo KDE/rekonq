@@ -72,7 +72,7 @@ WebPage::WebPage(QObject *parent)
         : QWebPage(parent)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
-        , m_requestedUrl("")
+        , m_requestedUrl()
 {
     setForwardUnsupportedContent(true);
 
@@ -81,6 +81,11 @@ WebPage::WebPage(QObject *parent)
 
     connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(slotDownloadRequested(const QNetworkRequest &)));
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(slotHandleUnsupportedContent(QNetworkReply *)));
+}
+
+
+WebPage::~WebPage()
+{
 }
 
 

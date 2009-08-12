@@ -56,6 +56,7 @@ CookieJar::CookieJar(QObject* parent)
 
 CookieJar::~CookieJar()
 {
+    delete m_kcookiejar;
 }
 
 
