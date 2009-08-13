@@ -48,7 +48,7 @@
 #include <KStandardDirs>
 #include <KUrl>
 #include <KDebug>
-
+#include <KToolInvocation>
 
 #include <KDE/KParts/BrowserRun>
 #include <KDE/KMimeTypeTrader>
@@ -92,7 +92,13 @@ WebPage::~WebPage()
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
     m_requestedUrl = request.url();
-    
+        
+    if (m_requestedUrl.scheme() == QLatin1String("mailto"))
+    {
+        KToolInvocation::invokeMailer(m_requestedUrl);
+        return false;
+    }
+        
     if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
         Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);
