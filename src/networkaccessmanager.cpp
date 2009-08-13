@@ -202,3 +202,9 @@ void NetworkAccessManager::slotSSLErrors(QNetworkReply *reply, const QList<QSslE
         reply->ignoreSslErrors();
 }
 #endif
+
+
+KIO::MetaData& NetworkAccessManager::metaData()
+{
+    return m_metaData;
+};

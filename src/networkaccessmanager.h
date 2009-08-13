@@ -48,7 +48,7 @@ class NetworkAccessManager : public RekonqAccessManager
 
 public:
     NetworkAccessManager(QObject *parent = 0);
-
+    KIO::MetaData& metaData();    
     void resetDiskCache();
     
 public slots:
@@ -64,6 +64,7 @@ private slots:
 
 private:
     QNetworkDiskCache *m_diskCache;
+    KIO::MetaData m_metaData;
 };
 
 #endif // NETWORKACCESSMANAGER_H
