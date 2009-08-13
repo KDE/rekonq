@@ -142,26 +142,27 @@ void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
         QString mimetype = reply->header(QNetworkRequest::ContentTypeHeader).toString();
         KService::Ptr offer = KMimeTypeTrader::self()->preferredService(mimetype);
 
-        KParts::BrowserRun::AskSaveResult res = KParts::BrowserRun::askSave(
-                                                            url,
-                                                            offer,
-                                                            mimetype,
-                                                            filename
-                                                        );
-        switch (res)
+        if( offer.isNull() ) // no service can handle this. We can just download it..
         {
-            case KParts::BrowserRun::Save:
-                slotDownloadRequested(reply->request());
-                return;
-            case KParts::BrowserRun::Cancel:
-                return;
-            default: // non extant case
-                break;
+            slotDownloadRequested(reply->request());
         }
-
-        KUrl::List list;
-        list.append(url);
-        KRun::run(*offer,url,0);
+        else
+        {
+            switch ( KParts::BrowserRun::askSave( url, offer, mimetype, filename ) )
+            {
+                case KParts::BrowserRun::Save:
+                    slotDownloadRequested(reply->request());
+                    return;
+                case KParts::BrowserRun::Cancel:
+                    return;
+                default: // non extant case
+                    break;
+            }
+            // case KParts::BrowserRun::Open
+            KUrl::List list;
+            list.append(url);
+            KRun::run(*offer,url,0);
+        }
     }
     return;
 }
