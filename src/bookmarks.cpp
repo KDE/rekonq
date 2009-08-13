@@ -64,10 +64,10 @@ void BookmarkOwner::openBookmark(const KBookmark & bookmark,
                                  Qt::MouseButtons mouseButtons,
                                  Qt::KeyboardModifiers keyboardModifiers)
 {
-    Q_UNUSED(mouseButtons)
-    Q_UNUSED(keyboardModifiers)
-
-    emit openUrl(bookmark.url());
+    if (keyboardModifiers & Qt::ControlModifier || mouseButtons == Qt::MidButton)
+        emit openUrl(bookmark.url(), Rekonq::SettingOpenTab);
+    else
+        emit openUrl(bookmark.url(), Rekonq::CurrentTab);
 }
 
 
@@ -183,7 +183,7 @@ BookmarkProvider::BookmarkProvider(QWidget *parent)
 
     // setup menu
     m_owner = new BookmarkOwner(this);
-    connect(m_owner, SIGNAL(openUrl(const KUrl&)), this, SIGNAL(openUrl(const KUrl&)));
+    connect(m_owner, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), this, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)));
     m_bookmarkMenu = new BookmarkMenu(m_manager, m_owner, m_menu, m_actionCollection);
 
     // setup toolbar

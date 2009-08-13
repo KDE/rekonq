@@ -293,7 +293,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
-    WebView *webView;
+    WebView *webView = 0;
 
     switch(type)
     {

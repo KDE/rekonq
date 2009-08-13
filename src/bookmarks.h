@@ -29,6 +29,9 @@
 #ifndef BOOKMARKS_H
 #define BOOKMARKS_H
 
+// Local Includes
+#include "application.h"
+
 // Qt Includes
 #include <QWidget>
 
@@ -115,7 +118,7 @@ signals:
      * @param url the URL to load
      *
      */
-    void openUrl(const KUrl &);
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
 
 private:
 
@@ -206,7 +209,7 @@ signals:
     *
     * @param url the URL to load
     */
-    void openUrl(const KUrl &url);
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
 
 
 public slots:
