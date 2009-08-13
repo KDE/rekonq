@@ -62,9 +62,6 @@ protected:
                                          const QNetworkRequest &request, 
                                          NavigationType type);
     
-    QString chooseFile(QWebFrame *frame, 
-                       const QString &suggestedFile);
-    
     void javaScriptAlert(QWebFrame *frame, 
                          const QString &msg);
                          

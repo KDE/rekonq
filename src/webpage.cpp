@@ -260,6 +260,7 @@ QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QS
 }
 
 
+// FIXME: sometimes url.fileName() fails to retrieve url file name
 void WebPage::slotDownloadRequested(const QNetworkRequest &request)
 {
     const KUrl url(request.url());
@@ -272,10 +273,4 @@ void WebPage::slotDownloadRequested(const QNetworkRequest &request)
     job->addMetaData("MaxCacheSize", "0"); // Don't store in http cache.
     job->addMetaData("cache", "cache"); // Use entry from cache if available.
     job->uiDelegate()->setAutoErrorHandlingEnabled(true);
-}
-
-
-QString WebPage::chooseFile(QWebFrame *frame, const QString &suggestedFile)
-{
-    return KFileDialog::getOpenFileName(suggestedFile, QString(), frame->page()->view());
 }
