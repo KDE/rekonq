@@ -91,13 +91,13 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
-    m_requestedUrl = request.url();
-        
     if (m_requestedUrl.scheme() == QLatin1String("mailto"))
     {
         KToolInvocation::invokeMailer(m_requestedUrl);
         return false;
     }
+
+    m_requestedUrl = request.url();
         
     if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
@@ -132,7 +132,6 @@ WebPage *WebPage::newWindow(WebWindowType type)
 }
 
 
-// FIXME: dear slot, you need to handle unsupported content a bit better..
 void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError)
@@ -170,39 +169,38 @@ void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
 
 void WebPage::manageNetworkErrors(QNetworkReply* reply)
 {
-    if (reply->url() != m_requestedUrl) //prevent favicon loading
+    if( reply->error() == QNetworkReply::NoError )
         return;
-
-    switch (reply->error())
+    
+    if( reply->url() != m_requestedUrl ) // prevent favicon loading
+        return;
+    
+    if( reply->error() == QNetworkReply::ContentNotFoundError )
     {
-        case QNetworkReply::NoError:
-            return;
-        case QNetworkReply::ContentNotFoundError:
+        QList<QWebFrame*> frames;
+        frames.append(mainFrame());
+        while (!frames.isEmpty())
         {
-            QList<QWebFrame*> frames;
-            frames.append(mainFrame());
-            while (!frames.isEmpty())
-            {
-                QWebFrame *firstFrame = frames.takeFirst();
+            QWebFrame *firstFrame = frames.takeFirst();
 
-                if (firstFrame->url() == reply->url())
-                {
-                    firstFrame->setHtml(errorPage(reply), reply->url());
-                    return;
-                }
-                QList<QWebFrame *> children = firstFrame->childFrames();
-                foreach(QWebFrame *frame, children)
-                {
-                    frames.append(frame);
-                }
+            if (firstFrame->url() == reply->url())
+            {
+                firstFrame->setHtml(errorPage(reply), reply->url());
+                return;
+            }
+            QList<QWebFrame *> children = firstFrame->childFrames();
+            foreach(QWebFrame *frame, children)
+            {
+                frames.append(frame);
             }
         }
-            break;
-        default:
-            mainFrame()->setHtml(errorPage(reply), reply->url());
-            break;
+    }
+    else
+    {
+        mainFrame()->setHtml(errorPage(reply), reply->url());
     }
 }
+
 
 QString WebPage::errorPage(QNetworkReply *reply)
 {
@@ -226,6 +224,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
                             .arg(reply->url().toString());
     return html;
 }
+
 
 void WebPage::javaScriptAlert(QWebFrame *frame, const QString &msg)
 {
@@ -260,7 +259,7 @@ QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QS
 }
 
 
-// FIXME: sometimes url.fileName() fails to retrieve url file name
+// TODO FIXME: sometimes url.fileName() fails to retrieve url file name
 void WebPage::slotDownloadRequested(const QNetworkRequest &request)
 {
     const KUrl url(request.url());
