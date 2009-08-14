@@ -146,7 +146,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
-
+    connect(this, SIGNAL(okClicked()), this, SLOT(saveSettings()));
+    
     setWebSettingsToolTips();
 }
 
