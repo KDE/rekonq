@@ -261,6 +261,8 @@ void BookmarkProvider::contextMenu(const QPoint &point)
     if (!action)
         return;
     KMenu *menu = m_bookmarkMenu->viewContextMenu(action);
+    if (!menu)
+        return;
     menu->popup(m_bookmarkToolBar->mapToGlobal(point));
 }
 
