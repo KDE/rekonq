@@ -208,3 +208,14 @@ KIO::MetaData& NetworkAccessManager::metaData()
 {
     return m_metaData;
 };
+
+
+QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
+{
+    // FIXME: rude hack. Waiting for a real POST behaviour fix ;)
+    if(op == PostOperation)
+    {
+        return QNetworkAccessManager::createRequest(op,req,outgoingData);
+    }
+    return AccessManager::createRequest(op,req,outgoingData);
+}

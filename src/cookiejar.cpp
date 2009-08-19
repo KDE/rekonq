@@ -68,7 +68,6 @@ QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl & url) const
     if (reply.isValid())
     {
         cookieList << reply.value().toUtf8();
-        //kDebug() << reply.value();
     }
     else
     {
@@ -87,7 +86,6 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, cons
         cookieHeader = "Set-Cookie: ";
         cookieHeader += cookie.toRawForm();
         m_kcookiejar->call("addCookies", url.toString(), cookieHeader, m_windowId);
-        //kDebug() << "url: " << url.host() << ", cookie: " << cookieHeader;
     }
 
     return !m_kcookiejar->lastError().isValid();
