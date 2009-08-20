@@ -111,6 +111,9 @@
         <entry name="localStorageDatabaseEnabled" type="Bool">
             <default>true</default>
         </entry>
+        <entry name="userCSS" type="Url">
+            <default></default>
+        </entry>
     </group>
 
 </kcfg>
