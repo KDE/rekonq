@@ -36,8 +36,6 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
-#include "cookiejar.h"
-#include "networkaccessmanager.h"
 #include "history.h"
 #include "webpage.h"
 
@@ -66,10 +64,6 @@ WebView::WebView(QWidget* parent)
     setPage(m_page);
     
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
-
-    const qlonglong winId = window()->winId();
-    Application::cookieJar()->setWindowId(winId);
-    Application::networkAccessManager()->metaData().insert("window-id", QString::number(winId));
 }
 
 

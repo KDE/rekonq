@@ -176,13 +176,18 @@ void MainWindow::postLaunch()
     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
 
     // bookmarks loading
-    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)), Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
+    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)), 
+            Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
 
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
     // accept d'n'd
     setAcceptDrops(true);
+    
+    const qlonglong winId = window()->winId();
+    Application::cookieJar()->setWindowId(winId);
+    Application::networkAccessManager()->metaData().insert("window-id", QString::number(winId));
 }
 
 
