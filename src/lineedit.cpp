@@ -45,6 +45,7 @@ LineEdit::LineEdit(QWidget* parent)
     setMinimumWidth(200);
     setFocusPolicy(Qt::WheelFocus);
     setHandleSignals(true);
+    setClearButtonShown(true);
 }
 
 
