@@ -367,6 +367,10 @@ WebView *MainView::webView(int index) const
 }
 
 
+// FIXME (0.3 target, after OneUrlBar). Divide in 2 functions:
+// 1. the slot void newTab() to create a "new empty focused tab"
+// 2. the public method WebView *newWebView() to just create a new webview 
+// without working with the focus and loading an url
 WebView *MainView::newTab(bool focused)
 {
     // line edit
