@@ -91,13 +91,13 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
+    m_requestedUrl = request.url();
+
     if (m_requestedUrl.scheme() == QLatin1String("mailto"))
     {
         KToolInvocation::invokeMailer(m_requestedUrl);
         return false;
     }
-
-    m_requestedUrl = request.url();
         
     if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
