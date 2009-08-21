@@ -18,7 +18,12 @@ SECTION 1: Preparation
 
 FIXME SECTION 2: Creating and Testing the Tarball
 
-* Run the release.rb script; OR Follow the guide lines in appendix A
+* Run the "release_script.sh"
+    VERSION=qualcosina
+    git tag -s $VERSION
+    git archive --prefix=rekonq-$VERSION/ $VERSION | bzip2 > releases/rekonq-$VERSION.tar.bz2
+    git archive --prefix=rekonq-$VERSION/ $VERSION | gzip > releases/rekonq-$VERSION.tar.gz
+
 * Test the following:
 
     $ ./configure && make
@@ -53,22 +58,6 @@ Section 4: The Release Day
  * Update kde-apps.org
 
 --------------------------------------------------------------------------------
-
-
-APPENDIX A (TODO remove this)
-
-This is what the release_amarok script does:
-
-1. Checkout a fresh copy of amarok, its docs and po; cd into the root
-2. Update APP_VERSION in amarok/src/amarok.h
-3. $ `find -name .svn -exec rm {} \;`
-4. $ export WANT_AUTOMAKE=1.6
-5. $ make -f Makefile.cvs
-6. $ rm -rf autom4te.cache config.h config.log
-7. $ pushd amarok; mv README TODO INSTALL ChangeLog AUTHORS COPYING amarok.lsm ..; popd
-8. $ mv ../multimedia ../amarok-VERSION
-9. $ tar cjf ../amarok-VERSION.tar.bz2 ../amarok-VERSION
-
 
 APPENDIX B (TODO create an analogue script)
 
