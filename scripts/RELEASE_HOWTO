@@ -1,0 +1,76 @@
+INSPIRED FROM AMAROK ONE
+
+Section 0: A few days in advance
+
+* Check that release date doesn't clash with KDE's schedule
+* Notify translators and update http://techbase.kde.org/Schedules/Extragear
+
+--------------------------------------------------------------------------------
+
+SECTION 1: Preparation
+
+* Check the README file is still relevant
+(?) * Run the "fixuifiles" script from the source-root
+* Bump Version Number (in the CMakeLists.txt && in src/main.cpp)
+* Commit the source to GIT
+
+--------------------------------------------------------------------------------
+
+FIXME SECTION 2: Creating and Testing the Tarball
+
+* Run the release.rb script; OR Follow the guide lines in appendix A
+* Test the following:
+
+    $ ./configure && make
+    $ ./configure --enable-final --disable-debug && make
+
+* Check it works OK without any amarok files in ~/.kde
+
+--------------------------------------------------------------------------------
+
+FIXME SECTION 3: Once Happy with the Tarball
+
+* SFtp the tarball to:
+    - ftpamarok@ktown.kde.org/stable/amarok/VERSION/src
+    - ftpamarok@ktown.kde.org/unstable/amarok/VERSION/src
+ (If you don't have access, mail sysadmin@kde.org)  
+
+* Notify packagers
+* Write release notes and dot story (and notify KDE-press list if necessary)
+* Add new version to Bugzilla
+
+--------------------------------------------------------------------------------
+
+Section 4: The Release Day
+
+* Update download page on the wiki
+* Update the rekonq.kde.org front-page
+* Send a witty, intelligent and diligently crafted email to the following lists:
+    - To:  kde-announce-apps@kde.org, rekonq@kde.org
+    - CC:  amarok-promo@kde.org
+    - BCC: kde-extra-gear@kde.org, kde-network@kde.org, kde-press-announce@kde.org
+ * Blog, update IRC channel topics, ...
+ * Update kde-apps.org
+
+--------------------------------------------------------------------------------
+
+
+APPENDIX A (TODO remove this)
+
+This is what the release_amarok script does:
+
+1. Checkout a fresh copy of amarok, its docs and po; cd into the root
+2. Update APP_VERSION in amarok/src/amarok.h
+3. $ `find -name .svn -exec rm {} \;`
+4. $ export WANT_AUTOMAKE=1.6
+5. $ make -f Makefile.cvs
+6. $ rm -rf autom4te.cache config.h config.log
+7. $ pushd amarok; mv README TODO INSTALL ChangeLog AUTHORS COPYING amarok.lsm ..; popd
+8. $ mv ../multimedia ../amarok-VERSION
+9. $ tar cjf ../amarok-VERSION.tar.bz2 ../amarok-VERSION
+
+
+APPENDIX B (TODO create an analogue script)
+
+To create a changelog in html format for updating the various articles and websites, run generate_changelog.rb.  
+It will output a file called ChangeLog.html.
