@@ -220,7 +220,7 @@ KUrl Application::guessUrlFromString(const QString &string)
     }
     else    // Might be a shorturl - try to detect the schema.
     {
-        int dotIndex = urlStr.indexOf(QLatin1Char('.'));
+        int dotIndex = urlStr.indexOf(QLatin1Char(':'));
 
         if (dotIndex != -1)
         {
@@ -237,7 +237,7 @@ KUrl Application::guessUrlFromString(const QString &string)
     }
     
     // Fall back to QUrl's own tolerant parser.
-    KUrl url = KUrl(string);
+    KUrl url = KUrl(urlStr);
 
     return url;
 }
