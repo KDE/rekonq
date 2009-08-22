@@ -87,7 +87,7 @@ int main(int argc, char **argv)
                     "");
 
     about.addCredit(ki18n("Abuus"),
-                    ki18n("Webview  mouse event support"),
+                    ki18n("Webview mouse event support"),
                     "buusmail@gmail.com",
                     "");
 

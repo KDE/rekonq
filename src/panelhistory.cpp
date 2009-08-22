@@ -51,7 +51,7 @@ PanelHistory::PanelHistory(QWidget *parent)
     // add search bar
     QHBoxLayout *hBoxLayout = new QHBoxLayout;
     hBoxLayout->setContentsMargins(5, 0, 0, 0);
-    QLabel *searchLabel = new QLabel(i18n("Search: "));
+    QLabel *searchLabel = new QLabel(i18n("Search:"));
     hBoxLayout->addWidget(searchLabel);
     KLineEdit *search = new KLineEdit;
     hBoxLayout->addWidget(search);

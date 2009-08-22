@@ -24,7 +24,7 @@
    <item>
     <widget class="QCheckBox" name="clearHistory">
      <property name="text">
-      <string>history</string>
+      <string>History</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -54,7 +54,7 @@
    <item>
     <widget class="QCheckBox" name="clearWebIcons">
      <property name="text">
-      <string>Website Icons</string>
+      <string>Website icons</string>
      </property>
      <property name="checked">
       <bool>true</bool>

@@ -250,7 +250,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
     if ( !url.isValid() )
     {
-        KMessageBox::error(0, i18n("Malformed URL\n%1", url.url()));
+        KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url()));
         return;
     }
     
@@ -289,7 +289,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
     if ( !KProtocolInfo::isKnownProtocol( loadingUrl ) )
     {
-        KMessageBox::error(0, i18n("Protocol not supported\n%1", url.protocol()));
+        KMessageBox::error(0, i18n("Protocol not supported:\n%1", url.protocol()));
         return;
     }
 
