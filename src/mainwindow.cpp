@@ -88,11 +88,12 @@
 
 
 MainWindow::MainWindow()
-        : KMainWindow()
-        , m_view(new MainView(this))
-        , m_findBar(new FindBar(this))
-        , m_sidePanel(0)
-        , m_ac( new KActionCollection(this) )
+    : KMainWindow()
+    , m_view(new MainView(this))
+    , m_findBar(new FindBar(this))
+    , m_sidePanel(0)
+    , m_historyBackMenu(0)
+    , m_ac( new KActionCollection(this) )
 {
     // enable window size "auto-save"
     setAutoSaveSettings();
@@ -160,8 +161,8 @@ void MainWindow::setupToolbar()
     KToolBar *mainToolBar = new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea);
     mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
     mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    mainToolBar->addAction( actionByName(KStandardAction::name(KStandardAction::Back)) );
-    mainToolBar->addAction( actionByName(KStandardAction::name(KStandardAction::Forward)) );
+    mainToolBar->addAction( actionByName("history_back") );
+    mainToolBar->addAction( actionByName("history_forward") );
     mainToolBar->addSeparator();
     mainToolBar->addAction( actionByName("stop_reload") );
     mainToolBar->addAction( actionByName(KStandardAction::name(KStandardAction::Home)) );
@@ -253,13 +254,13 @@ void MainWindow::setupActions()
     // WEB Actions (NO KStandardActions..)
     a = KStandardAction::redisplay(m_view, SLOT(slotWebReload()), actionCollection());
     a->setText(i18n("Reload"));
-    KStandardAction::back(m_view, SLOT(slotWebBack()), actionCollection());
-    KStandardAction::forward(m_view, SLOT(slotWebForward()), actionCollection());
-    KStandardAction::undo(m_view, SLOT(slotWebUndo()), actionCollection());
-    KStandardAction::redo(m_view, SLOT(slotWebRedo()), actionCollection());
-    KStandardAction::cut(m_view, SLOT(slotWebCut()), actionCollection());
-    KStandardAction::copy(m_view, SLOT(slotWebCopy()), actionCollection());
-    KStandardAction::paste(m_view, SLOT(slotWebPaste()), actionCollection());
+//     KStandardAction::back(m_view, SLOT(slotWebBack()), actionCollection());
+//     KStandardAction::forward(m_view, SLOT(slotWebForward()), actionCollection());
+//     KStandardAction::undo(m_view, SLOT(slotWebUndo()), actionCollection());
+//     KStandardAction::redo(m_view, SLOT(slotWebRedo()), actionCollection());
+//     KStandardAction::cut(m_view, SLOT(slotWebCut()), actionCollection());
+//     KStandardAction::copy(m_view, SLOT(slotWebCopy()), actionCollection());
+//     KStandardAction::paste(m_view, SLOT(slotWebPaste()), actionCollection());
 
     a = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Period));
@@ -315,6 +316,11 @@ void MainWindow::setupActions()
     connect(m_historyBackAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenPrevious()));
     actionCollection()->addAction(QLatin1String("history_back"), m_historyBackAction);
 
+    m_historyBackMenu = new KMenu(this);
+    m_historyBackAction->setMenu(m_historyBackMenu);
+    connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
+    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
+    
     m_historyForwardAction = new KAction(KIcon("go-next"), i18n("Forward"), this);
     connect(m_historyForwardAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenNext()));
     actionCollection()->addAction(QLatin1String("history_forward"), m_historyForwardAction);
@@ -1019,4 +1025,42 @@ void MainWindow::clearPrivateData()
     }
     // this let crash rekonq.
 //     delete dialog;
+}
+
+
+void MainWindow::slotAboutToShowBackMenu()
+{
+    m_historyBackMenu->clear();
+    if (!currentTab())
+        return;
+    QWebHistory *history = currentTab()->history();
+    int historyCount = history->count();
+    for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i)
+    {
+        QWebHistoryItem item = history->backItems(history->count()).at(i);
+        KAction *action = new KAction(this);
+        action->setData(-1*(historyCount - i - 1));
+        QIcon icon = Application::instance()->icon(item.url());
+        action->setIcon(icon);
+        action->setText(item.title());
+        m_historyBackMenu->addAction(action);
+    }
+}
+
+
+void MainWindow::slotOpenActionUrl(QAction *action)
+{
+    int offset = action->data().toInt();
+    QWebHistory *history = currentTab()->history();
+    if (offset < 0)
+    {
+        history->goToItem(history->backItems(-1*offset).first()); // back
+    }
+    else
+    {
+        if (offset > 0)
+        {
+            history->goToItem(history->forwardItems(history->count() - offset + 1).back()); // forward
+        }
+    }
 }

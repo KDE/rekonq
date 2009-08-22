@@ -142,6 +142,9 @@ private slots:
     // clear private data
     void clearPrivateData();
 
+    void slotAboutToShowBackMenu();
+    void slotOpenActionUrl(QAction *action);
+
 private:
     MainView *m_view;
     FindBar *m_findBar;
@@ -150,7 +153,8 @@ private:
     KAction *m_stopReloadAction;
     KAction *m_historyBackAction;
     KAction *m_historyForwardAction;
-
+    KMenu *m_historyBackMenu;
+    
     QString m_lastSearch;
     QString m_homePage;
 
