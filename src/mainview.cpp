@@ -295,6 +295,7 @@ void MainView::slotReloadTab(int index)
 }
 
 
+// TODO need some extra comments to better understand what happens here..
 void MainView::slotCurrentChanged(int index)
 {
     WebView *webView = this->webView(index);

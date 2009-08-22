@@ -69,7 +69,6 @@ public:
     WebView *webView(int index) const;
     QToolButton *addTabButton() const;
 
-    // inlines
     TabBar *tabBar() const;
     WebView *currentWebView() const;
     int webViewIndex(WebView *webView) const;

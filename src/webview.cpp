@@ -55,8 +55,6 @@
 #include <QtGui/QAction>
 
 
-
-
 WebView::WebView(QWidget* parent)
         : QWebView(parent)
         , m_page(new WebPage(this))
@@ -86,10 +84,12 @@ KUrl WebView::url() const
     return KUrl(QWebView::url()); 
 }
 
+
 int WebView::progress()
 {
     return m_progress;
 }
+
 
 QString WebView::lastStatusBarText() const
 { 
@@ -337,6 +337,7 @@ void WebView::slotUpdateProgress(int p)
 {
     m_progress=p;
 }
+
 
 void WebView::slotLoadFinished(bool)
 {

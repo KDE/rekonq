@@ -51,6 +51,7 @@
 
 QColor UrlBar::s_defaultBaseColor;
 
+
 UrlBar::UrlBar(QWidget *parent)
         : KHistoryComboBox(true, parent)
         , m_lineEdit(new LineEdit)
@@ -149,6 +150,7 @@ void UrlBar::setProgress(int progress)
     repaint();
 }
 
+
 void UrlBar::slotUpdateUrl()
 {
     if (count())
@@ -172,7 +174,7 @@ void UrlBar::slotUpdateUrl()
 }
 
 
-inline void UrlBar::slotActivated(const QString& url)
+void UrlBar::slotActivated(const QString& url)
 {
     if (url.isEmpty())
         return;
@@ -185,7 +187,7 @@ inline void UrlBar::slotActivated(const QString& url)
 }
 
 
-inline void UrlBar::slotCleared()
+void UrlBar::slotCleared()
 {
     // clear the history on user's request from context menu
     clear();
@@ -193,7 +195,7 @@ inline void UrlBar::slotCleared()
 }
 
 
-inline void UrlBar::slotLoadFinished(bool)
+void UrlBar::slotLoadFinished(bool)
 {
     // reset progress bar after small delay
     m_progress = 0;
@@ -201,7 +203,7 @@ inline void UrlBar::slotLoadFinished(bool)
 }
 
 
-inline void UrlBar::slotUpdateProgress(int progress)
+void UrlBar::slotUpdateProgress(int progress)
 {
     m_progress = progress;
     repaint();
@@ -290,7 +292,6 @@ bool UrlBar::isLoading()
 }
 
 
-
 KCompletion *UrlBar::completion()
 {
     // make sure completion was created
@@ -320,6 +321,7 @@ KCompletion *UrlBar::completion()
     }
     return m_completion;
 }
+
 
 HistoryCompletionModel *UrlBar::completionModel()
 {

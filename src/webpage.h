@@ -32,8 +32,6 @@
 #define WEBPAGE_H
 
 
-// KDE Includes
-
 // Qt Includes
 #include <QWebPage>
 #include <QUrl>
@@ -42,6 +40,7 @@
 class QWebFrame;
 class QNetworkReply;
 class QUrl;
+
 
 class WebPage : public QWebPage
 {
