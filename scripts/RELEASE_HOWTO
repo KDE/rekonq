@@ -10,8 +10,7 @@ Section 0: A few days in advance
 SECTION 1: Preparation
 
 * Check the README file is still relevant
-(?) * Run the "fixuifiles" script from the source-root
-* Bump Version Number (in the CMakeLists.txt && in src/main.cpp)
+* Bump Version Number (in the CMakeLists.txt && in src/main.cpp) (TODO: something better?)
 * Commit the source to GIT
 
 --------------------------------------------------------------------------------
@@ -22,14 +21,13 @@ FIXME SECTION 2: Creating and Testing the Tarball
     VERSION=qualcosina
     git tag -s $VERSION
     git archive --prefix=rekonq-$VERSION/ $VERSION | bzip2 > releases/rekonq-$VERSION.tar.bz2
-    git archive --prefix=rekonq-$VERSION/ $VERSION | gzip > releases/rekonq-$VERSION.tar.gz
 
 * Test the following:
 
     $ ./configure && make
     $ ./configure --enable-final --disable-debug && make
 
-* Check it works OK without any amarok files in ~/.kde
+* Check it works OK without any rekonq files in ~/.kde
 
 --------------------------------------------------------------------------------
 
@@ -37,7 +35,6 @@ FIXME SECTION 3: Once Happy with the Tarball
 
 * SFtp the tarball to:
     - ftpamarok@ktown.kde.org/stable/amarok/VERSION/src
-    - ftpamarok@ktown.kde.org/unstable/amarok/VERSION/src
  (If you don't have access, mail sysadmin@kde.org)  
 
 * Notify packagers
@@ -52,15 +49,8 @@ Section 4: The Release Day
 * Update the rekonq.kde.org front-page
 * Send a witty, intelligent and diligently crafted email to the following lists:
     - To:  kde-announce-apps@kde.org, rekonq@kde.org
-    - CC:  amarok-promo@kde.org
-    - BCC: kde-extra-gear@kde.org, kde-network@kde.org, kde-press-announce@kde.org
- * Blog, update IRC channel topics, ...
- * Update kde-apps.org
+    - BCC: kde-extra-gear@kde.org, kde-press-announce@kde.org
+* Blog, update IRC channel topics, ...
+* Update kde-apps.org
 
 --------------------------------------------------------------------------------
-
-APPENDIX B (TODO create an analogue script)
-
-To create a changelog in html format for updating the various articles and websites, 
-run generate_changelog.rb.  
-It will output a file called ChangeLog.html.
