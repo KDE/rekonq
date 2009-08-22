@@ -221,6 +221,9 @@ KActionCollection *MainWindow::actionCollection () const
 
 void MainWindow::setupActions()
 {
+    // this let shortcuts work..
+    actionCollection()->addAssociatedWidget(this);
+    
     KAction *a;
 
     // location bar
