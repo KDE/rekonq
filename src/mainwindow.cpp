@@ -45,7 +45,6 @@
 #include "findbar.h"
 #include "sidepanel.h"
 #include "urlbar.h"
-#include "stackedurlbar.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -206,7 +205,7 @@ void MainWindow::setupBars()
     // location bar
     a = new KAction(i18n("Location Bar"), this);
     a->setShortcut(KShortcut(Qt::Key_F6));
-    a->setDefaultWidget(m_view->urlBarStack());
+    a->setDefaultWidget(m_view->urlBar());
     actionCollection()->addAction(QLatin1String("url_bar"), a);
 
     // bookmarks bar
@@ -468,8 +467,8 @@ void MainWindow::slotUpdateBrowser()
 
 void MainWindow::slotOpenLocation()
 {
-    m_view->currentUrlBar()->selectAll();
-    m_view->currentUrlBar()->setFocus();
+    m_view->urlBar()->selectAll();
+    m_view->urlBar()->setFocus();
 }
 
 
@@ -591,7 +590,7 @@ void MainWindow::slotPrivateBrowsing(bool enable)
         if (button == KMessageBox::Yes)
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
-            m_view->currentUrlBar()->setBackgroundColor(Qt::lightGray); // palette().color(QPalette::Active, QPalette::Background));
+            m_view->urlBar()->setBackgroundColor(Qt::lightGray); // palette().color(QPalette::Active, QPalette::Background));
         }
         else
         {
@@ -601,7 +600,7 @@ void MainWindow::slotPrivateBrowsing(bool enable)
     else
     {
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
-        m_view->currentUrlBar()->setBackgroundColor(palette().color(QPalette::Active, QPalette::Base));
+        m_view->urlBar()->setBackgroundColor(palette().color(QPalette::Active, QPalette::Base));
 
         m_lastSearch.clear();
         m_view->clear();

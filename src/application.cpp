@@ -301,19 +301,19 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         webView = m_mainWindow->mainView()->newTab(!ReKonfig::openTabsBack());
         if (!ReKonfig::openTabsBack())
         {
-            m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
+            m_mainWindow->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
         }
         break;
     case Rekonq::NewCurrentTab:
         webView = m_mainWindow->mainView()->newTab(true);
-        m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
+        m_mainWindow->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
         break;
     case Rekonq::NewBackTab:
         webView = m_mainWindow->mainView()->newTab(false);
         break;
     case Rekonq::CurrentTab:
         webView = m_mainWindow->mainView()->currentWebView();
-        m_mainWindow->mainView()->currentUrlBar()->setUrl(loadingUrl.prettyUrl());
+        m_mainWindow->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
         break;
     };
 
