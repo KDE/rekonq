@@ -415,7 +415,6 @@ void MainView::slotReloadAllTabs()
 
 void MainView::windowCloseRequested()
 {
-
     WebPage *webPage = qobject_cast<WebPage*>(sender());
     WebView *webView = qobject_cast<WebView*>(webPage->view());
     int index = webViewIndex(webView);

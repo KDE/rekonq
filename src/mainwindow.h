@@ -36,7 +36,9 @@
 #include "webview.h"
 
 // KDE Includes
-#include <KXmlGuiWindow>
+#include <KMainWindow>
+#include <KActionCollection>
+#include <KToolBar>
 
 // Forward Declarations
 class QWebFrame;
@@ -55,7 +57,7 @@ class WebView;
  * It handles the menus, toolbars, and status bars.
  *
  */
-class MainWindow : public KXmlGuiWindow
+class MainWindow : public KMainWindow
 {
     Q_OBJECT
 
@@ -67,12 +69,13 @@ public:
     WebView *currentTab() const;
     QAction *actionByName(const QString name);
     virtual QSize sizeHint() const;
-
+    virtual KActionCollection *actionCollection () const;
+    
 private:
     void setupActions();
     void setupHistoryMenu();
-    void setupBars();
     void setupTools();
+    void setupToolbar();
 
     void setupSidePanel();
     SidePanel *sidePanel();
@@ -152,6 +155,8 @@ private:
     QString m_homePage;
 
     QPointer<KPassivePopup> m_popup;
+
+    KActionCollection *m_ac;
 };
 
 #endif // MAINWINDOW_H

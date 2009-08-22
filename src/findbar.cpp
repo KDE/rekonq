@@ -34,7 +34,7 @@
 #include <KIcon>
 #include <KPushButton>
 #include <klocalizedstring.h>
-#include <KXmlGuiWindow>
+#include <KMainWindow>
 #include <KApplication>
 
 // Qt Includes
@@ -47,7 +47,7 @@
 #include <QtCore/QString>
 
 
-FindBar::FindBar(KXmlGuiWindow *mainwindow)
+FindBar::FindBar(KMainWindow *mainwindow)
         : QWidget(mainwindow)
         , m_lineEdit(new KLineEdit(this))
         , m_matchCase(new QCheckBox(i18n("&Match case"), this))

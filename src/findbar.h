@@ -38,7 +38,7 @@
 #include <QtGui/QKeyEvent>
 
 // Forward Declarations
-class KXmlGuiWindow;
+class KMainWindow;
 class QKeyEvent;
 class QString;
 
@@ -48,7 +48,7 @@ class FindBar : public QWidget
     Q_OBJECT
 
 public:
-    FindBar(KXmlGuiWindow *mainwindow);
+    FindBar(KMainWindow *mainwindow);
     ~FindBar();
     KLineEdit *lineEdit() const;
     bool matchCase() const;
@@ -71,4 +71,3 @@ private:
 };
 
 #endif
-

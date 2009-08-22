@@ -88,11 +88,15 @@
 
 
 MainWindow::MainWindow()
-        : KXmlGuiWindow()
+        : KMainWindow()
         , m_view(new MainView(this))
         , m_findBar(new FindBar(this))
         , m_sidePanel(0)
+        , m_ac( new KActionCollection(this) )
 {
+    // enable window size "auto-save"
+    setAutoSaveSettings();
+    
     // updating rekonq configuration
     slotUpdateConfiguration();
 
@@ -116,27 +120,20 @@ MainWindow::MainWindow()
     // then, setup our actions
     setupActions();
 
-    // setting up toolbars && location bar: this has to be done BEFORE setupGUI!!
-    setupBars();
-
     // Bookmark Menu
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
     bmMenu->setIcon(KIcon("rating"));
     actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
     ((KActionMenu *)actionByName("bookmarksActionMenu"))->setDelayed(false);
 
-    // Side Panel: this has to be done BEFORE setupGUI!!
+    // setting Side Panel
     setupSidePanel();
 
-    // setting up rekonq tools: to be done BEFORE setupGUI!
+    // setting up rekonq tools
     setupTools();
-
-    // a call to KXmlGuiWindow::setupGUI() populates the GUI
-    // with actions, using KXMLGUI.
-    // It also applies the saved mainwindow settings, if any, and ask the
-    // mainwindow to automatically save settings if changed: window size,
-    // toolbar position, icon size, etc.
-    setupGUI();
+    
+    // setting up rekonq toolbar(s)   
+    setupToolbar();
 
     // no more status bar..
     setStatusBar(0);
@@ -158,11 +155,27 @@ SidePanel *MainWindow::sidePanel()
 }
 
 
+void MainWindow::setupToolbar()
+{
+    KToolBar *mainToolBar = new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea);
+    mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
+    mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    mainToolBar->addAction( actionByName(KStandardAction::name(KStandardAction::Back)) );
+    mainToolBar->addAction( actionByName(KStandardAction::name(KStandardAction::Forward)) );
+    mainToolBar->addSeparator();
+    mainToolBar->addAction( actionByName("stop_reload") );
+    mainToolBar->addAction( actionByName(KStandardAction::name(KStandardAction::Home)) );
+    mainToolBar->addAction( actionByName("url_bar") );
+    mainToolBar->addAction( actionByName("bookmarksActionMenu") );
+    mainToolBar->addAction( actionByName("rekonq_tools") );
+    
+    KToolBar::setToolBarsEditable(false);
+    KToolBar::setToolBarsLocked(true);
+}
+
+
 void MainWindow::postLaunch()
 {
-    // setup history menu: this has to be done AFTER setupGUI!!
-    setupHistoryMenu();
-
     // --------- connect signals and slots
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
@@ -183,7 +196,8 @@ void MainWindow::postLaunch()
 
     // accept d'n'd
     setAcceptDrops(true);
-    
+
+    // set CookieJar window Id
     const qlonglong winId = window()->winId();
     Application::cookieJar()->setWindowId(winId);
     Application::networkAccessManager()->metaData().insert("window-id", QString::number(winId));
@@ -198,7 +212,13 @@ QSize MainWindow::sizeHint() const
 }
 
 
-void MainWindow::setupBars()
+KActionCollection *MainWindow::actionCollection () const
+{
+    return m_ac;
+}
+
+
+void MainWindow::setupActions()
 {
     KAction *a;
 
@@ -211,12 +231,6 @@ void MainWindow::setupBars()
     // bookmarks bar
     KAction *bookmarkBarAction = Application::bookmarkProvider()->bookmarkToolBarAction();
     a = actionCollection()->addAction(QLatin1String("bookmarks_bar"), bookmarkBarAction);
-}
-
-
-void MainWindow::setupActions()
-{
-    KAction *a;
 
     // Standard Actions
     KStandardAction::open(this, SLOT(slotFileOpen()), actionCollection());
@@ -335,13 +349,21 @@ void MainWindow::setupActions()
 
 void MainWindow::setupTools()
 {
-    KActionMenu *toolsMenu = new KActionMenu(KIcon("configure"), i18n("rekonq tools"), this);
+    KActionMenu *toolsMenu = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
     toolsMenu->setDelayed(false);
 
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::PrintPreview)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
 
+    KActionMenu *fontMenu = new KActionMenu(KIcon("page-zoom"), i18n("Zoom"), this);
+    fontMenu->addAction(actionByName(QLatin1String("smaller_font")));
+    fontMenu->addAction(actionByName(QLatin1String("normal_font")));
+    fontMenu->addAction(actionByName(QLatin1String("bigger_font")));
+    toolsMenu->addAction(fontMenu);
+
+    toolsMenu->addSeparator();
+        
     KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Web Development"), this);
     webMenu->addAction(actionByName(QLatin1String("web_inspector")));
     webMenu->addAction(actionByName(QLatin1String("page_source")));
@@ -359,8 +381,7 @@ void MainWindow::setupTools()
 
     toolsMenu->addSeparator();
 
-    // TODO: decide if re-enable this when rekonq docs will be written
-    // toolsMenu->addAction(KStandardAction::helpContents(this, SLOT(appHelpActivated()), actionCollection()));
+    toolsMenu->addAction(helpMenu()->menuAction());
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
 
     // adding rekonq_tools to rekonq actionCollection
@@ -875,7 +896,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    KXmlGuiWindow::keyPressEvent(event);
+    KMainWindow::keyPressEvent(event);
 }
 
 
