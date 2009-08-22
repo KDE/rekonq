@@ -26,10 +26,9 @@
 * ============================================================ */
 
 
-
-
 #ifndef APPLICATION_H
 #define APPLICATION_H
+
 
 // KDE Includes
 #include <KUniqueApplication>
@@ -120,14 +119,12 @@ public slots:
                   const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );    
 
-                
 private slots:
 
     /**
      * Any actions that can be delayed until the window is visible
      */
     void postLaunch();
-
 
 private:
 

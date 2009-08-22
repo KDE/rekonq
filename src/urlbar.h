@@ -44,7 +44,8 @@
 // Forward Declarations
 class QLinearGradient;
 class QWidget;
-
+class KCompletion;
+class HistoryCompletionModel;
 
 class UrlBar : public KHistoryComboBox
 {
@@ -59,7 +60,10 @@ public:
     QSize sizeHint() const;
     void setBackgroundColor(QColor);
     bool isLoading();
-    
+    KCompletion *completion();
+    HistoryCompletionModel *completionModel();
+    void setProgress(int progress);
+
 signals:
     void activated(const KUrl&);
 
@@ -90,6 +94,9 @@ private:
 
     KUrl m_currentUrl;
     int m_progress;
+    
+    KCompletion *m_completion;
+    HistoryCompletionModel *m_completionModel;
 };
 
 #endif

@@ -55,15 +55,16 @@
 #include <QtGui/QAction>
 
 
-
-
 WebView::WebView(QWidget* parent)
         : QWebView(parent)
         , m_page(new WebPage(this))
+        , m_progress(0)
 {
     setPage(m_page);
     
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
+    connect(this, SIGNAL(loadProgress(int)), this, SLOT(slotUpdateProgress(int)));
+    connect(this, SIGNAL(loadFinished(bool)), this, SLOT(slotLoadFinished(bool)));
 }
 
 
@@ -81,6 +82,12 @@ WebPage *WebView::page()
 KUrl WebView::url() const 
 { 
     return KUrl(QWebView::url()); 
+}
+
+
+int WebView::progress()
+{
+    return m_progress;
 }
 
 
@@ -323,4 +330,16 @@ void WebView::slotSearch()
     QString search = a->data().toString() + selectedText();
     KUrl urlSearch = KUrl::fromEncoded(search.toUtf8());
     Application::instance()->loadUrl(urlSearch, Rekonq::NewCurrentTab);
+}
+
+
+void WebView::slotUpdateProgress(int p)
+{
+    m_progress=p;
+}
+
+
+void WebView::slotLoadFinished(bool)
+{
+    m_progress=0;
 }

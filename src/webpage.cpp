@@ -65,7 +65,7 @@
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
 
-#include <QUiLoader>
+#include <QtUiTools/QUiLoader>
 
 
 WebPage::WebPage(QObject *parent)

@@ -45,8 +45,6 @@ class QUrl;
 class QWebFrame;
 class QLabel;
 
-
-class StackedUrlBar;
 class TabBar;
 class UrlBar;
 
@@ -67,14 +65,11 @@ public:
 
 public:
 
-    UrlBar *urlBar(int index) const;
-    UrlBar *currentUrlBar() const;
+    UrlBar *urlBar() const;
     WebView *webView(int index) const;
     QToolButton *addTabButton() const;
 
-    // inlines
     TabBar *tabBar() const;
-    StackedUrlBar *urlBarStack() const;
     WebView *currentWebView() const;
     int webViewIndex(WebView *webView) const;
 
@@ -139,15 +134,6 @@ private slots:
 
     void windowCloseRequested();
 
-    /**
-     * This functions move tab info "from index to index"
-     *
-     * @param fromIndex the index from which we move
-     *
-     * @param toIndex the index to which we move
-     */
-    void moveTab(int fromIndex, int toIndex);
-
     void postLaunch();
 
 protected:
@@ -171,12 +157,14 @@ private:
      */
     QLabel *animatedLoading(int index, bool addMovie);
 
-    StackedUrlBar *m_urlBars;
+    UrlBar *m_urlBar;
     TabBar *m_tabBar;
 
     QString m_loadingGitPath;
 
     QToolButton *m_addTabButton;
+    
+    int m_currentTabIndex;
 };
 
 #endif // MAINVIEW_H

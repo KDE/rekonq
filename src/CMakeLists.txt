@@ -20,7 +20,6 @@ SET( rekonq_SRCS
     sidepanel.cpp
     panelhistory.cpp
     lineedit.cpp
-    stackedurlbar.cpp
     webpage.cpp
 )
 

@@ -38,7 +38,6 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "history.h"
-#include "stackedurlbar.h"
 #include "urlbar.h"
 #include "webview.h"
 
@@ -65,9 +64,10 @@
 
 MainView::MainView(QWidget *parent)
         : KTabWidget(parent)
-        , m_urlBars(new StackedUrlBar(this))
+        , m_urlBar(new UrlBar(this))
         , m_tabBar(new TabBar(this))
         , m_addTabButton(new QToolButton(this))
+        , m_currentTabIndex(0)
 {
     // setting tabbar
     setTabBar(m_tabBar);
@@ -83,9 +83,12 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(slotReloadAllTabs()));
     connect(m_tabBar, SIGNAL(tabMoved(int, int)), this, SLOT(moveTab(int, int)));
 
+    // connecting urlbar signals
+    connect(urlBar(), SIGNAL(activated(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
+    
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
-
+    
     setTabsClosable(true);
     connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
 
@@ -140,25 +143,21 @@ void MainView::addTabButtonPosition()
 }
 
 
-UrlBar *MainView::currentUrlBar() const 
-{ 
-    return urlBar(-1); 
-}
-
-
 TabBar *MainView::tabBar() const 
 { 
     return m_tabBar; 
 }
+
 
 QToolButton *MainView::addTabButton() const
 {
     return m_addTabButton;
 }
 
-StackedUrlBar *MainView::urlBarStack() const 
+
+UrlBar *MainView::urlBar() const 
 { 
-    return m_urlBars; 
+    return m_urlBar; 
 }
 
 
@@ -276,13 +275,9 @@ void MainView::slotWebPaste()
 
 void MainView::clear()
 {
-    // clear the line edit history
-    for (int i = 0; i < m_urlBars->count(); ++i)
-    {
-        /// TODO What exactly do we need to clear here?
-        urlBar(i)->clearHistory();
-        urlBar(i)->clear();
-    }
+    /// TODO What exactly do we need to clear here?
+    m_urlBar->clearHistory();
+    m_urlBar->clear();
 }
 
 
@@ -300,57 +295,54 @@ void MainView::slotReloadTab(int index)
 }
 
 
+// TODO need some extra comments to better understand what happens here..
 void MainView::slotCurrentChanged(int index)
 {
     WebView *webView = this->webView(index);
     if (!webView)
         return;
 
-    Q_ASSERT(m_urlBars->count() == count());
+    WebView *oldWebView = this->webView(m_currentTabIndex);
+    m_currentTabIndex=index;
 
-    WebView *oldWebView = this->webView(m_urlBars->currentIndex());
     if (oldWebView)
-    {
+    {        
+        // disconnecting webview with urlbar
+        disconnect(oldWebView, SIGNAL(loadProgress(int)), urlBar(), SLOT(slotUpdateProgress(int)));
+        disconnect(oldWebView, SIGNAL(loadFinished(bool)), urlBar(), SLOT(slotLoadFinished(bool)));
+        disconnect(oldWebView, SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
+        disconnect(oldWebView, SIGNAL(iconChanged()), urlBar(), SLOT(slotUpdateUrl()));
+    
         disconnect(oldWebView->page(), SIGNAL(statusBarMessage(const QString&)),
                    this, SIGNAL(showStatusBarMessage(const QString&)));
         disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
                    this, SIGNAL(linkHovered(const QString&)));
     }
 
+    // connecting webview with urlbar
+    connect(webView, SIGNAL(loadProgress(int)), urlBar(), SLOT(slotUpdateProgress(int)));
+    connect(webView, SIGNAL(loadFinished(bool)), urlBar(), SLOT(slotLoadFinished(bool)));
+    connect(webView, SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
+    connect(webView, SIGNAL(iconChanged()), urlBar(), SLOT(slotUpdateUrl()));
+    
     connect(webView->page(), SIGNAL(statusBarMessage(const QString&)), 
             this, SIGNAL(showStatusBarMessage(const QString&)));
     connect(webView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
             this, SIGNAL(linkHovered(const QString&)));
 
     emit setCurrentTitle(webView->title());
-    m_urlBars->setCurrentIndex(index);
-    currentUrlBar()->setUrl(webView->url());
+    urlBar()->setUrl(webView->url());
+    urlBar()->setProgress(webView->progress());
     emit showStatusBarMessage(webView->lastStatusBarText());
 
     // notify UI to eventually switch stop/reload button
-    if(currentUrlBar()->isLoading())
+    if(urlBar()->isLoading())
         emit browserTabLoading(true);
     else
         emit browserTabLoading(false);
 
     // set focus to the current webview
     webView->setFocus();
-}
-
-
-UrlBar *MainView::urlBar(int index) const
-{
-    if (index == -1)
-    {
-        index = m_urlBars->currentIndex();
-    }
-    UrlBar *urlBar = m_urlBars->urlBar(index);
-    if (urlBar)
-    {
-        return urlBar;
-    }
-    kWarning() << "URL bar with index" << index << "not found. Returning NULL. (line:" << __LINE__ << ")";
-    return NULL;
 }
 
 
@@ -373,18 +365,7 @@ WebView *MainView::webView(int index) const
 // without working with the focus and loading an url
 WebView *MainView::newTab(bool focused)
 {
-    // line edit
-    UrlBar *urlBar = new UrlBar;  // Ownership of widget is passed on to the QStackedWidget (addWidget method).
-    connect(urlBar, SIGNAL(activated(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
-    m_urlBars->addUrlBar(urlBar);
-
     WebView *webView = new WebView;  // should be deleted on tab close?
-
-    // connecting webview with urlbar
-    connect(webView, SIGNAL(loadProgress(int)), urlBar, SLOT(slotUpdateProgress(int)));
-    connect(webView, SIGNAL(loadFinished(bool)), urlBar, SLOT(slotLoadFinished(bool)));
-    connect(webView, SIGNAL(urlChanged(const QUrl &)), urlBar, SLOT(setUrl(const QUrl &)));
-    connect(webView, SIGNAL(iconChanged()), urlBar, SLOT(slotUpdateUrl()));
 
     // connecting webview with mainview
     connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
@@ -401,14 +382,15 @@ WebView *MainView::newTab(bool focused)
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
     addTab(webView, i18n("(Untitled)"));
+       
+    urlBar()->setUrl(KUrl(""));
     
     if (focused)
     {
         setCurrentWidget(webView);
+        urlBar()->setFocus();
     }
-    
-    urlBar->setFocus();
-
+  
     emit tabsChanged();
 
     showTabBar();
@@ -517,10 +499,6 @@ void MainView::slotCloseTab(int index)
         }
         hasFocus = tab->hasFocus();
     }
-
-    QWidget *urlBar = m_urlBars->urlBar(index);
-    m_urlBars->removeWidget(urlBar);
-    urlBar->deleteLater();   // urlBar is scheduled for deletion.
 
     QWidget *webView = widget(index);
     removeTab(index);
@@ -653,14 +631,6 @@ void MainView::previousTab()
     if (next < 0)
         next = count() - 1;
     setCurrentIndex(next);
-}
-
-
-void MainView::moveTab(int fromIndex, int toIndex)
-{
-    QWidget *lineEdit = m_urlBars->widget(fromIndex);
-    m_urlBars->removeWidget(lineEdit);
-    m_urlBars->insertWidget(toIndex, lineEdit);
 }
 
 

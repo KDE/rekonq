@@ -51,15 +51,21 @@
 
 QColor UrlBar::s_defaultBaseColor;
 
+
 UrlBar::UrlBar(QWidget *parent)
         : KHistoryComboBox(true, parent)
         , m_lineEdit(new LineEdit)
         , m_progress(0)
+        , m_completion(0)
+        , m_completionModel(0)
 {
     setUrlDropsEnabled(true);
     setAutoDeleteCompletionObject(true);
-    setMinimumWidth(180);
 
+    //cosmetic
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setMinimumWidth(180);
+    
     setTrapReturnKey(true);
 
     setupLineEdit();
@@ -72,7 +78,8 @@ UrlBar::UrlBar(QWidget *parent)
 
     // setup completion box
     completionBox()->setTabHandling(true);  // Konqueror bug #167135
-
+    setCompletionObject(completion());
+    
     // set dropdown list background
     QPalette p = view()->palette();
     p.setColor(QPalette::Base, palette().color(QPalette::Base));
@@ -132,11 +139,15 @@ void UrlBar::setupLineEdit()
 
 void UrlBar::setUrl(const QUrl& url)
 {
-    if (url.isEmpty())
-        return;
-
     m_currentUrl = url;
     slotUpdateUrl();
+}
+
+
+void UrlBar::setProgress(int progress)
+{
+    m_progress = progress;
+    repaint();
 }
 
 
@@ -163,7 +174,7 @@ void UrlBar::slotUpdateUrl()
 }
 
 
-inline void UrlBar::slotActivated(const QString& url)
+void UrlBar::slotActivated(const QString& url)
 {
     if (url.isEmpty())
         return;
@@ -176,7 +187,7 @@ inline void UrlBar::slotActivated(const QString& url)
 }
 
 
-inline void UrlBar::slotCleared()
+void UrlBar::slotCleared()
 {
     // clear the history on user's request from context menu
     clear();
@@ -184,7 +195,7 @@ inline void UrlBar::slotCleared()
 }
 
 
-inline void UrlBar::slotLoadFinished(bool)
+void UrlBar::slotLoadFinished(bool)
 {
     // reset progress bar after small delay
     m_progress = 0;
@@ -192,7 +203,7 @@ inline void UrlBar::slotLoadFinished(bool)
 }
 
 
-inline void UrlBar::slotUpdateProgress(int progress)
+void UrlBar::slotUpdateProgress(int progress)
 {
     m_progress = progress;
     repaint();
@@ -278,4 +289,46 @@ bool UrlBar::isLoading()
         return false;
     }
     return true;
+}
+
+
+KCompletion *UrlBar::completion()
+{
+    // make sure completion was created
+    if (!m_completion)
+    {
+        m_completion = new KCompletion();
+        m_completion->setCompletionMode(KGlobalSettings::CompletionPopupAuto);
+        m_completion->setOrder(KCompletion::Weighted);
+        m_completion->setIgnoreCase(true);
+        
+        kDebug() << "Initialize completion list...";
+        HistoryCompletionModel *model = completionModel();
+        int count = model->rowCount();
+        kDebug() << "...initialize history items" << count;
+        
+        // change order to insertion to avoid confusion of the addItem method
+        // in weighted it expects format string:number and it thinks http it the whole string
+        m_completion->setOrder(KCompletion::Insertion);
+        for (int i = 0; i < count; ++i)
+        {
+            QString item = model->data(model->index(i, 0)).toString();
+            item.remove(QRegExp("^http://|/$"));
+            m_completion->addItem(item);
+        }
+        
+        m_completion->setOrder(KCompletion::Weighted);
+    }
+    return m_completion;
+}
+
+
+HistoryCompletionModel *UrlBar::completionModel()
+{
+    if (!m_completionModel)
+    {
+        m_completionModel = new HistoryCompletionModel(this);
+        m_completionModel->setSourceModel(Application::historyManager()->historyFilterModel());
+    }
+    return m_completionModel;
 }
