@@ -339,6 +339,11 @@ WebView *MainView::newTab(bool focused)
 
     showTabBar();
     addTabButtonPosition();
+    
+    if (ReKonfig::newTabsOpenHomePage())
+    {
+        webView->load(QUrl(ReKonfig::homePage()));
+    }
 
     return webView;
 }
