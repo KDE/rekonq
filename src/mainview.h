@@ -81,7 +81,7 @@ public:
     void showTabBar();
     void clear();
 
-    WebView *newWebView();
+    WebView *newWebView(bool focused = true);
     
 signals:
     // tab widget signals
