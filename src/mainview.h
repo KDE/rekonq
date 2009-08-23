@@ -81,7 +81,8 @@ public:
     void showTabBar();
     void clear();
 
-
+    WebView *newWebView();
+    
 signals:
     // tab widget signals
     void tabsChanged();
@@ -100,9 +101,8 @@ public slots:
      * Core browser slot. This create a new tab with a WebView inside
      * for browsing.
      *
-     * @return a pointer to the new WebView
      */
-    WebView *newTab(bool focused = true);
+    void newTab();
 
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);

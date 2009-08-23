@@ -298,18 +298,20 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     switch(type)
     {
     case Rekonq::SettingOpenTab:
-        webView = m_mainWindow->mainView()->newTab(!ReKonfig::openTabsBack());
+        webView = m_mainWindow->mainView()->newWebView();
         if (!ReKonfig::openTabsBack())
         {
+            m_mainWindow->mainView()->setCurrentWidget(webView);
             m_mainWindow->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
         }
         break;
     case Rekonq::NewCurrentTab:
-        webView = m_mainWindow->mainView()->newTab(true);
+        webView = m_mainWindow->mainView()->newWebView();
+        m_mainWindow->mainView()->setCurrentWidget(webView);
         m_mainWindow->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
         break;
     case Rekonq::NewBackTab:
-        webView = m_mainWindow->mainView()->newTab(false);
+        webView = m_mainWindow->mainView()->newWebView();
         break;
     case Rekonq::CurrentTab:
         webView = m_mainWindow->mainView()->currentWebView();

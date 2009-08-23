@@ -307,7 +307,8 @@ WebView *MainView::webView(int index) const
 // 1. the slot void newTab() to create a "new empty focused tab"
 // 2. the public method WebView *newWebView() to just create a new webview 
 // without working with the focus and loading an url
-WebView *MainView::newTab(bool focused)
+
+WebView *MainView::newWebView()
 {
     WebView *webView = new WebView;  // should be deleted on tab close?
 
@@ -328,25 +329,70 @@ WebView *MainView::newTab(bool focused)
     addTab(webView, i18n("(Untitled)"));
        
     urlBar()->setUrl(KUrl(""));
-    
-    if (focused)
-    {
-        setCurrentWidget(webView);
-        urlBar()->setFocus();
-    }
-  
+
     emit tabsChanged();
 
     showTabBar();
     addTabButtonPosition();
     
-    if (ReKonfig::newTabsOpenHomePage())
-    {
-        webView->load(QUrl(ReKonfig::homePage()));
-    }
-
     return webView;
 }
+
+
+void MainView::newTab()
+{
+    WebView *w = newWebView();
+
+    setCurrentWidget(w);
+    urlBar()->setFocus();
+    
+    if (ReKonfig::newTabsOpenHomePage())
+    {
+        w->load(QUrl(ReKonfig::homePage()));
+    }
+}
+
+
+// WebView *MainView::newTab(bool focused)
+// {
+//     WebView *webView = new WebView;  // should be deleted on tab close?
+// 
+//     // connecting webview with mainview
+//     connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
+//     connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
+//     connect(webView, SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
+//     connect(webView, SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
+//     connect(webView, SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
+// 
+//     connect(webView, SIGNAL(ctrlTabPressed()), this, SLOT(nextTab()));
+//     connect(webView, SIGNAL(shiftCtrlTabPressed()), this, SLOT(previousTab()));
+// 
+//     // connecting webPage signals with mainview
+//     connect(webView->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
+//     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
+// 
+//     addTab(webView, i18n("(Untitled)"));
+//        
+//     urlBar()->setUrl(KUrl(""));
+//     
+//     if (focused)
+//     {
+//         setCurrentWidget(webView);
+//         urlBar()->setFocus();
+//     }
+//   
+//     emit tabsChanged();
+// 
+//     showTabBar();
+//     addTabButtonPosition();
+//     
+//     if (ReKonfig::newTabsOpenHomePage())
+//     {
+//         webView->load(QUrl(ReKonfig::homePage()));
+//     }
+// 
+//     return webView;
+// }
 
 
 void MainView::slotReloadAllTabs()
@@ -413,7 +459,7 @@ void MainView::slotCloneTab(int index)
         index = currentIndex();
     if (index < 0 || index >= count())
         return;
-    WebView *tab = newTab();
+    WebView *tab = newWebView();
     tab->setUrl(webView(index)->url());
 
     showTabBar();
