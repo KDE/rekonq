@@ -257,13 +257,6 @@ void MainWindow::setupActions()
     // WEB Actions (NO KStandardActions..)
     a = KStandardAction::redisplay(m_view, SLOT(slotWebReload()), actionCollection());
     a->setText(i18n("Reload"));
-//     KStandardAction::back(m_view, SLOT(slotWebBack()), actionCollection());
-//     KStandardAction::forward(m_view, SLOT(slotWebForward()), actionCollection());
-//     KStandardAction::undo(m_view, SLOT(slotWebUndo()), actionCollection());
-//     KStandardAction::redo(m_view, SLOT(slotWebRedo()), actionCollection());
-//     KStandardAction::cut(m_view, SLOT(slotWebCut()), actionCollection());
-//     KStandardAction::copy(m_view, SLOT(slotWebCopy()), actionCollection());
-//     KStandardAction::paste(m_view, SLOT(slotWebPaste()), actionCollection());
 
     a = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Period));

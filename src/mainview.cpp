@@ -217,62 +217,6 @@ void MainView::slotWebStop()
 }
 
 
-void MainView::slotWebBack()
-{
-    WebView *webView = currentWebView();
-    QAction *action = webView->page()->action(QWebPage::Back);
-    action->trigger();
-}
-
-
-void MainView::slotWebForward()
-{
-    WebView *webView = currentWebView();
-    QAction *action = webView->page()->action(QWebPage::Forward);
-    action->trigger();
-}
-
-
-void MainView::slotWebUndo()
-{
-    WebView *webView = currentWebView();
-    QAction *action = webView->page()->action(QWebPage::Undo);
-    action->trigger();
-}
-
-
-void MainView::slotWebRedo()
-{
-    WebView *webView = currentWebView();
-    QAction *action = webView->page()->action(QWebPage::Redo);
-    action->trigger();
-}
-
-
-void MainView::slotWebCut()
-{
-    WebView *webView = currentWebView();
-    QAction *action = webView->page()->action(QWebPage::Cut);
-    action->trigger();
-}
-
-
-void MainView::slotWebCopy()
-{
-    WebView *webView = currentWebView();
-    QAction *action = webView->page()->action(QWebPage::Copy);
-    action->trigger();
-}
-
-
-void MainView::slotWebPaste()
-{
-    WebView *webView = currentWebView();
-    QAction *action = webView->page()->action(QWebPage::Paste);
-    action->trigger();
-}
-
-
 void MainView::clear()
 {
     /// TODO What exactly do we need to clear here?

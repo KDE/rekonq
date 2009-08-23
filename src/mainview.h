@@ -115,13 +115,7 @@ public slots:
     // WEB slot actions
     void slotWebReload();
     void slotWebStop();
-    void slotWebBack();
-    void slotWebForward();
-    void slotWebUndo();
-    void slotWebRedo();
-    void slotWebCut();
-    void slotWebCopy();
-    void slotWebPaste();
+
 
 private slots:
     void slotCurrentChanged(int index);
