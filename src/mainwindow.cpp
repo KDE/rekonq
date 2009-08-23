@@ -238,9 +238,8 @@ void MainWindow::setupActions()
 
     // Standard Actions
     KStandardAction::open(this, SLOT(slotFileOpen()), actionCollection());
-    KStandardAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
-    KStandardAction::printPreview(this, SLOT(slotFilePrintPreview()), actionCollection());
-    KStandardAction::print(this, SLOT(slotFilePrint()), actionCollection());
+    KStandardAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());  
+    KStandardAction::print(this, SLOT(slotFilePrintPreview()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
     KStandardAction::find(m_findBar, SLOT(show()) , actionCollection());
     KStandardAction::findNext(this, SLOT(slotFindNext()) , actionCollection());
@@ -355,7 +354,7 @@ void MainWindow::setupTools()
     toolsMenu->setDelayed(false);
 
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
-    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::PrintPreview)));
+    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
 
     KActionMenu *fontMenu = new KActionMenu(KIcon("page-zoom"), i18n("Zoom"), this);
@@ -571,14 +570,6 @@ void MainWindow::slotFilePrintPreview()
     connect(&previewdlg, SIGNAL(paintRequested(QPrinter *)),
             currentTab(), SLOT(print(QPrinter *)));
     previewdlg.exec();
-}
-
-
-void MainWindow::slotFilePrint()
-{
-    if (!currentTab())
-        return;
-    printRequested(currentTab()->page()->mainFrame());
 }
 
 
