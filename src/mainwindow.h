@@ -115,7 +115,6 @@ private slots:
     // File Menu slots
     void slotFileOpen();
     void slotFilePrintPreview();
-    void slotFilePrint();
     void slotFileSaveAs();
     void printRequested(QWebFrame *frame);
 
