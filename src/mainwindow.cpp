@@ -383,6 +383,7 @@ void MainWindow::setupTools()
 
     toolsMenu->addSeparator();
 
+    helpMenu()->setIcon(KIcon("help-browser"));
     toolsMenu->addAction(helpMenu()->menuAction());
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
 
