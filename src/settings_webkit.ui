@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
+    <width>622</width>
     <height>360</height>
    </rect>
   </property>
@@ -17,49 +17,49 @@
       <string>WebKit Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
+      <item row="0" column="0" colspan="2">
        <widget class="QCheckBox" name="kcfg_autoLoadImages">
         <property name="text">
          <string>Autoload images</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" rowspan="6">
+      <item row="0" column="2" rowspan="6">
        <widget class="Line" name="line">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
+      <item row="0" column="3">
        <widget class="QCheckBox" name="kcfg_linksIncludedInFocusChain">
         <property name="text">
          <string>Links included in focus chain</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="kcfg_javascriptEnabled">
         <property name="text">
          <string>JavaScript support</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="1" column="3">
        <widget class="QCheckBox" name="kcfg_zoomTextOnly">
         <property name="text">
          <string>Zoom text only</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="kcfg_javaEnabled">
         <property name="text">
          <string>Java support</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
+      <item row="2" column="3">
        <widget class="QCheckBox" name="kcfg_printElementBackgrounds">
         <property name="text">
          <string>Print element backgrounds</string>
@@ -73,38 +73,61 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="3" column="3">
        <widget class="QCheckBox" name="kcfg_offlineStorageDatabaseEnabled">
         <property name="text">
          <string>Offline storage database</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="kcfg_javascriptCanOpenWindows">
         <property name="text">
          <string>JavaScript can open windows</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
+      <item row="4" column="3">
        <widget class="QCheckBox" name="kcfg_offlineWebApplicationCacheEnabled">
         <property name="text">
          <string>Offline web application cache</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
+      <item row="5" column="0" colspan="2">
        <widget class="QCheckBox" name="kcfg_javascriptCanAccessClipboard">
         <property name="text">
          <string>JavaScript can access clipboard</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="2">
+      <item row="5" column="3">
        <widget class="QCheckBox" name="kcfg_localStorageDatabaseEnabled">
         <property name="text">
          <string>Local storage database</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>User Style Sheet</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>User CSS path:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KUrlRequester" name="kcfg_userCSS">
+        <property name="filter">
+         <string>*.css</string>
         </property>
        </widget>
       </item>
@@ -119,13 +142,20 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>146</height>
+       <height>40</height>
       </size>
      </property>
     </spacer>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KUrlRequester</class>
+   <extends>QFrame</extends>
+   <header>kurlrequester.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
