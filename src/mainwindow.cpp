@@ -66,6 +66,7 @@
 #include <KToolBar>
 #include <KJobUiDelegate>
 #include <kdeprintdialog.h>
+#include <KToggleAction>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -343,6 +344,11 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
     actionCollection()->addAction(QLatin1String("clear_private_data"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
+
+    // Bookmarks ToolBar Action
+    a = new KToggleAction(KIcon("bookmark-toolbar"), i18n("Bookmark ToolBar"), this);
+    actionCollection()->addAction(QLatin1String("bm_bar"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(showBookmarkToolBar(bool)));
 }
 
 
@@ -375,6 +381,7 @@ void MainWindow::setupTools()
 
     toolsMenu->addSeparator();
 
+    toolsMenu->addAction(actionByName(QLatin1String("bm_bar")));    
     toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
 
@@ -1036,4 +1043,13 @@ void MainWindow::slotOpenActionUrl(QAction *action)
             history->goToItem(history->forwardItems(history->count() - offset + 1).back()); // forward
         }
     }
+}
+
+
+void MainWindow::showBookmarkToolBar(bool show)
+{
+    if(show)
+        toolBar("bmToolBar")->show();
+    else
+        toolBar("bmToolBar")->hide();
 }

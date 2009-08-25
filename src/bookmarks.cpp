@@ -186,7 +186,7 @@ BookmarkProvider::~BookmarkProvider()
 
 void BookmarkProvider::setupToolBar()
 {
-    m_bookmarkToolBar = new KToolBar(m_parent);
+    m_bookmarkToolBar = new KToolBar("bmToolBar", m_parent, Qt::TopToolBarArea);
     m_bookmarkToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_bookmarkToolBar->setIconDimensions(16);
     m_bookmarkToolBar->setAcceptDrops(true);

@@ -143,6 +143,8 @@ private slots:
     void slotAboutToShowBackMenu();
     void slotOpenActionUrl(QAction *action);
 
+    void showBookmarkToolBar(bool);
+
 private:
     MainView *m_view;
     FindBar *m_findBar;
