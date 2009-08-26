@@ -98,12 +98,14 @@ QList<HistoryItem> HistoryManager::history() const
 }
 
 
+// TODO port to KDE history
 bool HistoryManager::historyContains(const QString &url) const
 {
     return m_historyFilterModel->historyContains(url);
 }
 
 
+// TODO port to KDE history
 void HistoryManager::addHistoryEntry(const QString &url)
 {
     QUrl cleanUrl(url);
