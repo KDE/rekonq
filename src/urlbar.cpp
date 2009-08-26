@@ -84,9 +84,9 @@ UrlBar::UrlBar(QWidget *parent)
     QPalette p = view()->palette();
     p.setColor(QPalette::Base, palette().color(QPalette::Base));
     view()->setPalette(p);
-
+/*
     // set empty item with default icon
-    slotUpdateUrl();
+    slotUpdateUrl();*/
 }
 
 

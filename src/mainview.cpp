@@ -253,12 +253,12 @@ void MainView::slotCurrentChanged(int index)
 
     if (oldWebView)
     {        
-        // disconnecting webview with urlbar
+        // disconnecting webview from urlbar
         disconnect(oldWebView, SIGNAL(loadProgress(int)), urlBar(), SLOT(slotUpdateProgress(int)));
         disconnect(oldWebView, SIGNAL(loadFinished(bool)), urlBar(), SLOT(slotLoadFinished(bool)));
         disconnect(oldWebView, SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
-        disconnect(oldWebView, SIGNAL(iconChanged()), urlBar(), SLOT(slotUpdateUrl()));
     
+        // disconnecting webpage from mainview
         disconnect(oldWebView->page(), SIGNAL(statusBarMessage(const QString&)),
                    this, SIGNAL(showStatusBarMessage(const QString&)));
         disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
@@ -269,7 +269,6 @@ void MainView::slotCurrentChanged(int index)
     connect(webView, SIGNAL(loadProgress(int)), urlBar(), SLOT(slotUpdateProgress(int)));
     connect(webView, SIGNAL(loadFinished(bool)), urlBar(), SLOT(slotLoadFinished(bool)));
     connect(webView, SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
-    connect(webView, SIGNAL(iconChanged()), urlBar(), SLOT(slotUpdateUrl()));
     
     connect(webView->page(), SIGNAL(statusBarMessage(const QString&)), 
             this, SIGNAL(showStatusBarMessage(const QString&)));
@@ -531,6 +530,8 @@ void MainView::webViewIconChanged()
         delete movie;
         label->setMovie(0);
         label->setPixmap(icon.pixmap(16, 16));
+
+        urlBar()->slotUpdateUrl();
     }
 }
 

@@ -187,7 +187,15 @@ BookmarkProvider *Application::bookmarkProvider()
 
 KIcon Application::icon(const KUrl &url)
 {
-    KIcon icon = KIcon(QWebSettings::iconForUrl(url));
+    KIcon icon;
+    if(url.isEmpty())
+    {
+        icon = KIcon("text-html");
+    }
+    else
+    {
+        icon = KIcon(QWebSettings::iconForUrl(url));
+    }
     if (icon.isNull())
     {
         icon = KIcon("text-html");

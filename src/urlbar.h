@@ -70,12 +70,12 @@ signals:
 public slots:
     void setUrl(const QUrl &url);
     void slotUpdateProgress(int progress);
-
+    void slotUpdateUrl();
+    
 private slots:
     void slotActivated(const QString&);
     void slotLoadFinished(bool);
     void slotCleared();
-    void slotUpdateUrl();
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
