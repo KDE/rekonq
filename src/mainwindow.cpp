@@ -159,7 +159,6 @@ SidePanel *MainWindow::sidePanel()
 void MainWindow::setupToolbar()
 {
     KToolBar *mainToolBar = new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea);
-    mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
     mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     mainToolBar->addAction( actionByName("history_back") );
     mainToolBar->addAction( actionByName("history_forward") );
@@ -474,10 +473,9 @@ void MainWindow::slotUpdateConfiguration()
     defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
     defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
     defaultSettings->setAttribute(QWebSettings::LocalStorageDatabaseEnabled, ReKonfig::localStorageDatabaseEnabled());
-    /**
-     * Applies user defined CSS to all open webpages. If there no longer is a
-     * user defined CSS removes it from all open webpages.
-     */
+    
+    // Applies user defined CSS to all open webpages. If there no longer is a
+    // user defined CSS removes it from all open webpages.
     defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
 
     // ====== load Settings on main classes
