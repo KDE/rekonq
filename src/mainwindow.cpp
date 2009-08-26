@@ -250,7 +250,6 @@ void MainWindow::setupActions()
 
     KStandardAction::home(this, SLOT(slotHome()), actionCollection());
     KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
-    KStandardAction::showMenubar(this, SLOT(slotShowMenubar(bool)), actionCollection());
 
     // WEB Actions (NO KStandardActions..)
     a = KStandardAction::redisplay(m_view, SLOT(slotWebReload()), actionCollection());
