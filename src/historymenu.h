@@ -30,6 +30,7 @@
 
 // Local Includes
 #include "history.h"
+#include "historymodels.h"
 
 // Qt Includes
 #include <QtCore/QList>
