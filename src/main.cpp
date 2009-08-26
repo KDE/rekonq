@@ -50,8 +50,7 @@ int main(int argc, char **argv)
                      KAboutData::License_GPL_V3,
                      ki18n("(C) 2008-2009 Andrea Diamantini"),
                      KLocalizedString(),
-                     "http://rekonq.sourceforge.net",
-                     "rekonq@kde.org"
+                     "http://rekonq.sourceforge.net"
                     );
 
     // --------------- about authors -----------------------------

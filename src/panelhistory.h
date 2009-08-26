@@ -30,7 +30,7 @@
 
 // Local Includes
 #include "application.h"
-#include "history.h"
+#include "historymodels.h"
 
 // Qt Includes
 #include <QtGui/QWidget>

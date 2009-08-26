@@ -9,6 +9,7 @@ SET( rekonq_SRCS
     tabbar.cpp
     cookiejar.cpp
     history.cpp
+    historymodels.cpp
     historymenu.cpp
     bookmarks.cpp
     modelmenu.cpp 

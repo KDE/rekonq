@@ -33,7 +33,7 @@
 
 // Local Includes
 #include "application.h"
-#include "history.h"
+#include "historymodels.h"
 #include "lineedit.h"
 #include "mainwindow.h"
 #include "webview.h"
