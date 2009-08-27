@@ -41,7 +41,6 @@
 #include "mainview.h"
 #include "cookiejar.h"
 #include "networkaccessmanager.h"
-#include "history.h"
 #include "webview.h"
 
 // KDE Includes

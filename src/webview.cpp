@@ -36,7 +36,6 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
-#include "history.h"
 #include "webpage.h"
 
 // KDE Includes

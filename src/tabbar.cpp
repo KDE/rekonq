@@ -34,7 +34,6 @@
 // Local Includes
 #include "application.h"
 #include "mainwindow.h"
-#include "history.h"
 #include "urlbar.h"
 #include "webview.h"
 
