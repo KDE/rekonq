@@ -406,23 +406,6 @@ void MainWindow::setupSidePanel()
 }
 
 
-void MainWindow::setupHistoryMenu()
-{
-    HistoryMenu *historyMenu = new HistoryMenu(this);
-    connect(historyMenu, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
-    historyMenu->setTitle(i18n("&History"));
-
-    // setting history menu position
-    menuBar()->insertMenu(actionCollection()->action("bookmarksActionMenu"), historyMenu);
-
-    //  setting initial actions
-    QList<QAction*> historyActions;
-    historyActions.append(actionCollection()->action("history_back"));
-    historyActions.append(actionCollection()->action("history_forward"));
-    historyMenu->setInitialActions(historyActions);
-}
-
-
 void MainWindow::slotUpdateConfiguration()
 {
     // ============== General ==================

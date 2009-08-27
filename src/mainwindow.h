@@ -73,7 +73,6 @@ public:
     
 private:
     void setupActions();
-    void setupHistoryMenu();
     void setupTools();
     void setupToolbar();
 
