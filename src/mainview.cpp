@@ -66,7 +66,6 @@ MainView::MainView(QWidget *parent)
         : KTabWidget(parent)
         , m_urlBar(new UrlBar(this))
         , m_tabBar(new TabBar(this))
-        , m_addTabButton(new QToolButton(this))
         , m_currentTabIndex(0)
 {
     // setting tabbar
@@ -93,8 +92,6 @@ MainView::MainView(QWidget *parent)
     
     setTabsClosable(true);
     connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
-
-    QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
 
@@ -103,57 +100,9 @@ MainView::~MainView()
 }
 
 
-void MainView::postLaunch()
-{
-    m_addTabButton->setDefaultAction(Application::instance()->mainWindow()->actionByName("new_tab"));
-    m_addTabButton->setAutoRaise(true);
-    m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-}
-
-
-void MainView::addTabButtonPosition()
-{
-    static bool ButtonInCorner = false;
-
-    int tabWidgetWidth = frameSize().width();
-    int tabBarWidth = tabBar()->tabSizeHint(0).width()*tabBar()->count();
-
-    if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
-    {
-        if(ButtonInCorner)
-            return;
-        setCornerWidget(m_addTabButton);
-        ButtonInCorner = true;
-    }
-    else
-    {
-        if(ButtonInCorner)
-        {
-            setCornerWidget(0);
-            m_addTabButton->show();
-            ButtonInCorner = false;
-        }
-
-        int newPos = tabWidgetWidth - m_addTabButton->width();
-        m_addTabButton->move(newPos, 0);
-
-        if (tabBar()->tabSizeHint(0).width()>=sizeHint().width()/4)
-            m_addTabButton->move(tabBarWidth, 0);
-        else
-            m_addTabButton->move(tabWidgetWidth - m_addTabButton->width(), 0);
-    }
-}
-
-
 TabBar *MainView::tabBar() const 
 { 
     return m_tabBar; 
-}
-
-
-QToolButton *MainView::addTabButton() const
-{
-    return m_addTabButton;
 }
 
 
@@ -182,22 +131,20 @@ void MainView::showTabBar()
         if (m_tabBar->isHidden())
         {
             m_tabBar->show();
-            m_addTabButton->show();
         }
-        return;
-    }
-
-    if (m_tabBar->count() == 1)
-    {
-        m_tabBar->hide();
-        m_addTabButton->hide();
     }
     else
     {
-        if (m_tabBar->isHidden())
+        if (m_tabBar->count() == 1)
         {
-            m_tabBar->show();
-            m_addTabButton->show(); 
+            m_tabBar->hide();
+        }
+        else
+        {
+            if (m_tabBar->isHidden())
+            {
+                m_tabBar->show();
+            }
         }
     }
 }
@@ -332,7 +279,6 @@ WebView *MainView::newWebView(bool focused)
     emit tabsChanged();
 
     showTabBar();
-    addTabButtonPosition();
     
     return webView;
 }
@@ -405,7 +351,6 @@ void MainView::slotCloseOtherTabs(int index)
     }
 
     showTabBar();
-    addTabButtonPosition();
 }
 
 
@@ -420,7 +365,6 @@ void MainView::slotCloneTab(int index)
     tab->setUrl(webView(index)->url());
 
     showTabBar();
-    addTabButtonPosition();
 }
 
 
@@ -463,7 +407,6 @@ void MainView::slotCloseTab(int index)
     }
 
     showTabBar();
-    addTabButtonPosition();
 }
 
 
@@ -623,7 +566,6 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event) //WARNING Need to be fi
 
 void MainView::resizeEvent(QResizeEvent *event)
 {
-    addTabButtonPosition();
     KTabWidget::resizeEvent(event);
 }
 

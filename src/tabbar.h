@@ -35,6 +35,7 @@
 
 // Forward Declarations
 class QPoint;
+class QToolButton;
 
 /**
  * Tab bar with a few more features such as
@@ -63,6 +64,7 @@ protected:
      * Added to fix tab dimension
      */
     virtual QSize tabSizeHint(int index) const;
+    virtual void tabLayoutChange();
 
 private slots:
     void cloneTab();
@@ -70,11 +72,15 @@ private slots:
     void closeOtherTabs();
     void reloadTab();
     void contextMenuRequested(const QPoint &position);
+    void postLaunch();
 
 private:
     friend class MainView;
 
+    void setTabButtonPosition();
+
     QWidget *m_parent;
+    QToolButton *m_addTabButton;
 
     /**
      * the index in which we are seeing a Context menu

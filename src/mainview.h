@@ -38,7 +38,6 @@
 #include <KTabWidget>
 
 // Qt Includes
-#include <QtGui/QToolButton>
 
 // Forward Declarations
 class QUrl;
@@ -67,7 +66,6 @@ public:
 
     UrlBar *urlBar() const;
     WebView *webView(int index) const;
-    QToolButton *addTabButton() const;
 
     TabBar *tabBar() const;
     WebView *currentWebView() const;
@@ -128,17 +126,12 @@ private slots:
 
     void windowCloseRequested();
 
-    void postLaunch();
-
 protected:
 
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
 
 private:
-
-    void addTabButtonPosition();
-
     /**
      * This function creates (if not exists) and returns a QLabel
      * with a loading QMovie.
@@ -155,8 +148,6 @@ private:
     TabBar *m_tabBar;
 
     QString m_loadingGitPath;
-
-    QToolButton *m_addTabButton;
     
     int m_currentTabIndex;
 };

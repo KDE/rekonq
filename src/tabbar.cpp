@@ -47,11 +47,13 @@
 #include <QtCore/QString>
 
 #include <QtGui/QFont>
+#include <QtGui/QToolButton>
 
 
 TabBar::TabBar(QWidget *parent)
         : KTabBar(parent)
         , m_parent(parent)
+        , m_addTabButton(new QToolButton(this))
 {
     setElideMode(Qt::ElideRight);
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -59,6 +61,8 @@ TabBar::TabBar(QWidget *parent)
     setMovable(true);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this,
             SLOT(contextMenuRequested(const QPoint &)));
+
+    QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
 
@@ -67,11 +71,20 @@ TabBar::~TabBar()
 }
 
 
+void TabBar::postLaunch()
+{
+    m_addTabButton->setDefaultAction(Application::instance()->mainWindow()->actionByName("new_tab"));
+    m_addTabButton->setAutoRaise(true);
+    m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    m_addTabButton->show();
+}
+
+
 QSize TabBar::tabSizeHint(int index) const
 {
     //TODO Create a SuperTabWidget class
 
-    int buttonSize = ((MainView *)m_parent)->addTabButton()->size().width();
+    int buttonSize = m_addTabButton->size().width();
     int tabBarWidth = m_parent->size().width() - buttonSize;
     int baseWidth =  m_parent->sizeHint().width()/4;
     int minWidth =  m_parent->sizeHint().width()/8;
@@ -83,7 +96,7 @@ QSize TabBar::tabSizeHint(int index) const
     }
     else 
     {
-        if (tabBarWidth/count()>minWidth)
+        if (count() > 0 && tabBarWidth/count()>minWidth)
         {
             w = tabBarWidth/count();
         }
@@ -97,6 +110,13 @@ QSize TabBar::tabSizeHint(int index) const
 
     QSize ts = QSize(w, h);
     return ts;
+}
+
+
+void TabBar::tabLayoutChange()
+{
+    setTabButtonPosition();
+    QTabBar::tabLayoutChange();
 }
 
 
@@ -148,4 +168,18 @@ void TabBar::closeOtherTabs()
 void TabBar::reloadTab()
 {
     emit reloadTab(m_actualIndex);
+}
+
+
+void TabBar::setTabButtonPosition()
+{
+    int tabWidgetWidth = frameSize().width();
+    int tabBarWidth = tabSizeHint(0).width()*count();
+    int newPosY = height()/2.0 - m_addTabButton->height()/2.0;
+    int newPosX = tabWidgetWidth - m_addTabButton->width();
+
+    if (tabBarWidth + m_addTabButton->width() < tabWidgetWidth)
+        newPosX = tabBarWidth;
+
+    m_addTabButton->move(newPosX, newPosY);
 }
