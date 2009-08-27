@@ -153,31 +153,13 @@ void BookmarkMenu::slotAddBookmark()
 BookmarkProvider::BookmarkProvider(QWidget *parent)
         : QObject(parent)
         , m_parent(parent)
-        , m_manager(0)
+        , m_manager(KBookmarkManager::userBookmarksManager())
         , m_owner(0)
         , m_menu(new KMenu(m_parent))
         , m_actionCollection(new KActionCollection(this))
         , m_bookmarkMenu(0)
         , m_bookmarkToolBar(0)
 {
-    KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");  // share konqueror bookmarks
-
-    if (!QFile::exists(bookfile.path()))
-    {
-        bookfile = KUrl("~/.kde4/share/apps/konqueror/bookmarks.xml");
-        if (!QFile::exists(bookfile.path()))
-        {
-            QString bookmarksDefaultPath = KStandardDirs::locate("appdata" , "defaultbookmarks.xbel");
-            kWarning() << bookmarksDefaultPath;
-            QFile bkms(bookmarksDefaultPath);
-            QString bookmarksPath = KStandardDirs::locateLocal("appdata", "bookmarks.xml", true);
-            bookmarksPath.replace("rekonq", "konqueror");
-            bkms.copy(bookmarksPath);
-
-            bookfile = KUrl(bookmarksPath);
-        }
-    }
-    m_manager = KBookmarkManager::managerForExternalFile(bookfile.path());
     connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
             this, SLOT(slotBookmarksChanged(const QString &, const QString &)));
 
