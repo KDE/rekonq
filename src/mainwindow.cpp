@@ -163,6 +163,8 @@ void MainWindow::setupToolbar()
 {
     // ============ Main ToolBar  ================================
     m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    m_mainBar->setIconDimensions(22);
+    m_mainBar->setContextMenuPolicy(Qt::PreventContextMenu);
     m_mainBar->addAction( actionByName("history_back") );
     m_mainBar->addAction( actionByName("history_forward") );
     m_mainBar->addSeparator();
@@ -181,9 +183,6 @@ void MainWindow::setupToolbar()
     m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
     Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
-    
-//     KToolBar::setToolBarsEditable(false);
-//     KToolBar::setToolBarsLocked(true);
 }
 
 
