@@ -188,10 +188,9 @@ public:
 
 
     /**
-    * @short Get the Bookmarks Toolbar Action
-    * @return the Bookmarks Toolbar Action
+    * @short set the Bookmarks Toolbar Action
     */
-    KAction *bookmarkToolBarAction();
+    void setupBookmarkBar(KToolBar *);
 
 
     /**
@@ -231,9 +230,6 @@ public slots:
 
 private:
     KAction *fillBookmarkBar(const KBookmark &bookmark);
-    void setupToolBar();
-
-    QWidget *m_parent;
 
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;

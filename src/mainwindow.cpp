@@ -159,7 +159,8 @@ SidePanel *MainWindow::sidePanel()
 
 void MainWindow::setupToolbar()
 {
-    KToolBar *mainToolBar = new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea);
+    // ============ Main ToolBar  ================================
+    KToolBar *mainToolBar = new KToolBar( i18n("Main ToolBar"), this, Qt::TopToolBarArea, true, false, false);
     mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     mainToolBar->addAction( actionByName("history_back") );
     mainToolBar->addAction( actionByName("history_forward") );
@@ -170,8 +171,26 @@ void MainWindow::setupToolbar()
     mainToolBar->addAction( actionByName("bookmarksActionMenu") );
     mainToolBar->addAction( actionByName("rekonq_tools") );
     
-    KToolBar::setToolBarsEditable(false);
-    KToolBar::setToolBarsLocked(true);
+    // =========== Bookmarks ToolBar ================================
+    KToolBar *bmToolBar= new KToolBar( i18n("Bookmarks ToolBar"), this, Qt::TopToolBarArea, true, false, true);
+    bmToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    bmToolBar->setIconDimensions(16);
+    bmToolBar->setAcceptDrops(true);
+    bmToolBar->setContentsMargins(0, 0, 0, 0);
+    bmToolBar->setMinimumHeight(16);
+    bmToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    Application::bookmarkProvider()->setupBookmarkBar(bmToolBar);
+
+    // Bookmarks ToolBar Action
+    QAction *a = bmToolBar->toggleViewAction();    
+    a->setIcon( KIcon("bookmark-toolbar") );
+    actionCollection()->addAction(QLatin1String("bm_bar"), a);
+    
+//     connect(a, SIGNAL(triggered(bool)), this, SLOT(showBookmarkToolBar(bool)));
+    
+//     KToolBar::setToolBarsEditable(false);
+//     KToolBar::setToolBarsLocked(true);
 }
 
 
@@ -231,10 +250,6 @@ void MainWindow::setupActions()
     a->setShortcut(KShortcut(Qt::Key_F6));
     a->setDefaultWidget(m_view->urlBar());
     actionCollection()->addAction(QLatin1String("url_bar"), a);
-
-    // bookmarks bar
-    KAction *bookmarkBarAction = Application::bookmarkProvider()->bookmarkToolBarAction();
-    a = actionCollection()->addAction(QLatin1String("bookmarks_bar"), bookmarkBarAction);
 
     // Standard Actions
     KStandardAction::open(this, SLOT(slotFileOpen()), actionCollection());

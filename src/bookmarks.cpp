@@ -152,10 +152,9 @@ void BookmarkMenu::slotAddBookmark()
 
 BookmarkProvider::BookmarkProvider(QWidget *parent)
         : QObject(parent)
-        , m_parent(parent)
         , m_manager(KBookmarkManager::userBookmarksManager())
         , m_owner(0)
-        , m_menu(new KMenu(m_parent))
+        , m_menu(new KMenu(parent))
         , m_actionCollection(new KActionCollection(this))
         , m_bookmarkMenu(0)
         , m_bookmarkToolBar(0)
@@ -167,15 +166,11 @@ BookmarkProvider::BookmarkProvider(QWidget *parent)
     m_owner = new BookmarkOwner(this);
     connect(m_owner, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), this, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)));
     m_bookmarkMenu = new BookmarkMenu(m_manager, m_owner, m_menu, m_actionCollection);
-
-    // setup toolbar
-    setupToolBar();
 }
 
 
 BookmarkProvider::~BookmarkProvider()
 {
-    delete m_bookmarkToolBar;
     delete m_bookmarkMenu;
     delete m_actionCollection;
     delete m_menu;
@@ -184,15 +179,9 @@ BookmarkProvider::~BookmarkProvider()
 }
 
 
-void BookmarkProvider::setupToolBar()
+void BookmarkProvider::setupBookmarkBar(KToolBar *t)
 {
-    m_bookmarkToolBar = new KToolBar("bmToolBar", m_parent, Qt::TopToolBarArea);
-    m_bookmarkToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    m_bookmarkToolBar->setIconDimensions(16);
-    m_bookmarkToolBar->setAcceptDrops(true);
-    m_bookmarkToolBar->setContentsMargins(0, 0, 0, 0);
-    m_bookmarkToolBar->setMinimumHeight(16);
-    m_bookmarkToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_bookmarkToolBar = t;
     connect(m_bookmarkToolBar, SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(contextMenu(const QPoint &)));
 
@@ -255,16 +244,6 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu()
     bookmarkActionMenu->setMenu(m_menu);
     bookmarkActionMenu->setText(i18n("&Bookmarks"));
     return bookmarkActionMenu;
-}
-
-
-KAction* BookmarkProvider::bookmarkToolBarAction()
-{
-    KAction *bookmarkToolBarAction = new KAction(this);
-    bookmarkToolBarAction->setDefaultWidget(m_bookmarkToolBar);  // The ownership is transferred to action
-    bookmarkToolBarAction->setText(i18n("Bookmarks Bar"));
-    bookmarkToolBarAction->setShortcutConfigurable(false);
-    return bookmarkToolBarAction;
 }
 
 
