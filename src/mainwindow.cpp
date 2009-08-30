@@ -246,7 +246,7 @@ void MainWindow::setupActions()
     // Standard Actions
     KStandardAction::open(this, SLOT(slotFileOpen()), actionCollection());
     KStandardAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());  
-    KStandardAction::print(this, SLOT(slotFilePrintPreview()), actionCollection());
+    KStandardAction::print(this, SLOT(printRequested()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
     KStandardAction::find(m_findBar, SLOT(show()) , actionCollection());
     KStandardAction::findNext(this, SLOT(slotFindNext()) , actionCollection());
@@ -376,6 +376,11 @@ void MainWindow::setupTools()
     toolsMenu->addAction(fontMenu);
 
     toolsMenu->addSeparator();
+
+    toolsMenu->addAction(actionByName(QLatin1String("private_browsing")));
+    toolsMenu->addAction(actionByName(QLatin1String("clear_private_data")));
+
+    toolsMenu->addSeparator();
         
     KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Web Development"), this);
     webMenu->addAction(actionByName(QLatin1String("web_inspector")));
@@ -383,12 +388,7 @@ void MainWindow::setupTools()
     toolsMenu->addAction(webMenu);
 
     toolsMenu->addSeparator();
-
-    toolsMenu->addAction(actionByName(QLatin1String("private_browsing")));
-    toolsMenu->addAction(actionByName(QLatin1String("clear_private_data")));
-
-    toolsMenu->addSeparator();
-
+    
     toolsMenu->addAction(actionByName(QLatin1String("bm_bar")));    
     toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
@@ -561,29 +561,40 @@ void MainWindow::slotFileOpen()
 }
 
 
-void MainWindow::slotFilePrintPreview()
-{
-    if (!currentTab())
-        return;
-
-    QPrinter printer;
-    QPrintPreviewDialog previewdlg(&printer, this);
-    connect(&previewdlg, SIGNAL(paintRequested(QPrinter *)),
-            currentTab(), SLOT(print(QPrinter *)));
-    previewdlg.exec();
-}
+// void MainWindow::slotFilePrintPreview()
+// {
+//     if (!currentTab())
+//         return;
+// 
+//     QPrinter printer;
+//     QPrintPreviewDialog previewdlg(&printer, this);
+//     connect(&previewdlg, SIGNAL(paintRequested(QPrinter *)),
+//             currentTab(), SLOT(print(QPrinter *)));
+//     previewdlg.exec();
+// }
 
 
 void MainWindow::printRequested(QWebFrame *frame)
 {
-    QPrinter printer;
+    if (!currentTab())
+        return;
 
-    QPointer<QPrintDialog> dialog = KdePrint::createPrintDialog(&printer, this);
-    if (dialog->exec() == KDialog::Ok)
+    QWebFrame *printFrame = 0;
+    if(frame == 0)
     {
-        frame->print(&printer);
+        printFrame = currentTab()->page()->mainFrame();
     }
-    delete dialog;
+    else
+    {
+        printFrame = frame;
+    }
+    
+    QPrinter printer;
+    QPrintPreviewDialog previewdlg(&printer, this);
+    
+    connect(&previewdlg, SIGNAL(paintRequested(QPrinter *)), printFrame, SLOT(print(QPrinter *)));
+    
+    previewdlg.exec();
 }
 
 
@@ -1011,8 +1022,6 @@ void MainWindow::clearPrivateData()
             QWebSettings::clearIconDatabase();
         }
     }
-    // this let crash rekonq.
-//     delete dialog;
 }
 
 

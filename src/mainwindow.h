@@ -93,7 +93,8 @@ public slots:
      */
     void notifyMessage(const QString &msg, Rekonq::Notify status = Rekonq::Info);
 
-
+    void printRequested(QWebFrame *frame = 0);
+    
 protected:
     bool queryClose();
     void keyPressEvent(QKeyEvent *event);
@@ -111,21 +112,22 @@ private slots:
     void slotOpenPrevious();
     void slotOpenNext();
 
-    // File Menu slots
-    void slotFileOpen();
-    void slotFilePrintPreview();
-    void slotFileSaveAs();
-    void printRequested(QWebFrame *frame);
-
-    // Edit Menu slots
+    // Find Action slots
     void slotFind(const QString &);
     void slotFindNext();
     void slotFindPrevious();
 
-    // View Menu slots
+    // Zoom slots
     void slotViewTextBigger();
     void slotViewTextNormal();
     void slotViewTextSmaller();
+
+    
+    // File Menu slots
+    void slotFileOpen();
+//     void slotFilePrintPreview();
+    void slotFileSaveAs();
+
     void slotViewPageSource();
     void slotViewFullScreen(bool enable);
 

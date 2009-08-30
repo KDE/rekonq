@@ -117,7 +117,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setText(i18n("Open Link in New &Tab"));
         a->setIcon(KIcon("window-new"));
         menu.addAction(a);
-
+        
         a = pageAction(QWebPage::DownloadLinkToDisk);
         a->setIcon(KIcon("document-save"));
         menu.addAction(a);
@@ -243,6 +243,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         //page actions
         menu.addAction(mainwindow->actionByName("new_tab"));
+        
         if(mainwindow->isFullScreen())
         {
             menu.addAction(mainwindow->actionByName("fullscreen"));
@@ -254,8 +255,21 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(mainwindow->actionByName("history_forward"));
         menu.addAction(mainwindow->actionByName("view_redisplay"));
         
+        KActionMenu *frameMenu = new KActionMenu(i18n("Frame"), this);
+
+        a = pageAction(QWebPage::OpenFrameInNewWindow);
+        a->setText(i18n("Open in new tab"));
+        a->setIcon(KIcon("view-right-new"));
+        frameMenu->addAction(a);
+        
+        a = new KAction( KIcon("document-print-frame"), i18n("Print frame"), this);
+        connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
+        frameMenu->addAction(a);
+        menu.addAction(frameMenu);
+        
         menu.addSeparator();
 
+        menu.addAction(mainwindow->actionByName("page_source"));
         QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
         menu.addAction(addBookmarkAction);
 
@@ -341,4 +355,10 @@ void WebView::slotUpdateProgress(int p)
 void WebView::slotLoadFinished(bool)
 {
     m_progress=0;
+}
+
+
+void WebView::printFrame()
+{
+    Application::instance()->mainWindow()->printRequested(page()->currentFrame());
 }

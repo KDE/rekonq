@@ -72,6 +72,8 @@ private slots:
     void slotUpdateProgress(int progress);
     void slotLoadFinished(bool);
 
+    void printFrame();
+
 private:
     WebPage *m_page;
     int m_progress;
