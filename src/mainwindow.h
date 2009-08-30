@@ -143,8 +143,6 @@ private slots:
     void slotAboutToShowBackMenu();
     void slotOpenActionUrl(QAction *action);
 
-    void showBookmarkToolBar(bool);
-
 private:
     MainView *m_view;
     FindBar *m_findBar;
@@ -154,7 +152,10 @@ private:
     KAction *m_historyBackAction;
     KAction *m_historyForwardAction;
     KMenu *m_historyBackMenu;
-    
+
+    KToolBar *m_bmBar;
+    KToolBar *m_mainBar;
+
     QString m_lastSearch;
     QString m_homePage;
 

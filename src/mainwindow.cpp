@@ -94,6 +94,8 @@ MainWindow::MainWindow()
     , m_findBar(new FindBar(this))
     , m_sidePanel(0)
     , m_historyBackMenu(0)
+    , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, true) )
+    , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_ac( new KActionCollection(this) )
 {
     // enable window size "auto-save"
@@ -160,34 +162,25 @@ SidePanel *MainWindow::sidePanel()
 void MainWindow::setupToolbar()
 {
     // ============ Main ToolBar  ================================
-    KToolBar *mainToolBar = new KToolBar( i18n("Main ToolBar"), this, Qt::TopToolBarArea, true, false, false);
-    mainToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    mainToolBar->addAction( actionByName("history_back") );
-    mainToolBar->addAction( actionByName("history_forward") );
-    mainToolBar->addSeparator();
-    mainToolBar->addAction( actionByName("stop_reload") );
-    mainToolBar->addAction( actionByName(KStandardAction::name(KStandardAction::Home)) );
-    mainToolBar->addAction( actionByName("url_bar") );
-    mainToolBar->addAction( actionByName("bookmarksActionMenu") );
-    mainToolBar->addAction( actionByName("rekonq_tools") );
+    m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    m_mainBar->addAction( actionByName("history_back") );
+    m_mainBar->addAction( actionByName("history_forward") );
+    m_mainBar->addSeparator();
+    m_mainBar->addAction( actionByName("stop_reload") );
+    m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Home)) );
+    m_mainBar->addAction( actionByName("url_bar") );
+    m_mainBar->addAction( actionByName("bookmarksActionMenu") );
+    m_mainBar->addAction( actionByName("rekonq_tools") );
     
     // =========== Bookmarks ToolBar ================================
-    KToolBar *bmToolBar= new KToolBar( i18n("Bookmarks ToolBar"), this, Qt::TopToolBarArea, true, false, true);
-    bmToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    bmToolBar->setIconDimensions(16);
-    bmToolBar->setAcceptDrops(true);
-    bmToolBar->setContentsMargins(0, 0, 0, 0);
-    bmToolBar->setMinimumHeight(16);
-    bmToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    m_bmBar->setIconDimensions(16);
+    m_bmBar->setAcceptDrops(true);
+    m_bmBar->setContentsMargins(0, 0, 0, 0);
+    m_bmBar->setMinimumHeight(16);
+    m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    Application::bookmarkProvider()->setupBookmarkBar(bmToolBar);
-
-    // Bookmarks ToolBar Action
-    QAction *a = bmToolBar->toggleViewAction();    
-    a->setIcon( KIcon("bookmark-toolbar") );
-    actionCollection()->addAction(QLatin1String("bm_bar"), a);
-    
-//     connect(a, SIGNAL(triggered(bool)), this, SLOT(showBookmarkToolBar(bool)));
+    Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
     
 //     KToolBar::setToolBarsEditable(false);
 //     KToolBar::setToolBarsLocked(true);
@@ -361,9 +354,10 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
 
     // Bookmarks ToolBar Action
-    a = new KToggleAction(KIcon("bookmark-toolbar"), i18n("Bookmark ToolBar"), this);
-    actionCollection()->addAction(QLatin1String("bm_bar"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(showBookmarkToolBar(bool)));
+    QAction *qa = m_bmBar->toggleViewAction();
+    qa->setText( i18n("Bookmarks ToolBar") );
+    qa->setIcon( KIcon("bookmark-toolbar") );
+    actionCollection()->addAction(QLatin1String("bm_bar"), qa);
 }
 
 
@@ -1058,13 +1052,4 @@ void MainWindow::slotOpenActionUrl(QAction *action)
             history->goToItem(history->forwardItems(history->count() - offset + 1).back()); // forward
         }
     }
-}
-
-
-void MainWindow::showBookmarkToolBar(bool show)
-{
-    if(show)
-        toolBar("bmToolBar")->show();
-    else
-        toolBar("bmToolBar")->hide();
 }
