@@ -499,7 +499,12 @@ void MainWindow::slotFileSaveAs()
 {
     KUrl srcUrl = currentTab()->url();
 
-    const QString destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), this);
+    QString name = srcUrl.fileName();
+    if(name.isNull())
+    {
+        name = srcUrl.host() + QString(".html");
+    }
+    const QString destUrl = KFileDialog::getSaveFileName(name, QString(), this);
     if (destUrl.isEmpty()) return;
     KIO::Job *job = KIO::file_copy(srcUrl, KUrl(destUrl), -1, KIO::Overwrite);
     job->addMetaData("MaxCacheSize", "0");  // Don't store in http cache.
