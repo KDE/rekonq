@@ -352,7 +352,7 @@ void MainWindow::setupActions()
 
     // Bookmarks ToolBar Action
     QAction *qa = m_bmBar->toggleViewAction();
-    qa->setText( i18n("Bookmarks ToolBar") );
+    qa->setText( i18n("Bookmarks Toolbar") );
     qa->setIcon( KIcon("bookmark-toolbar") );
     actionCollection()->addAction(QLatin1String("bm_bar"), qa);
 }
@@ -836,9 +836,9 @@ bool MainWindow::queryClose()
         int answer = KMessageBox::questionYesNoCancel(
                          this,
                          i18np("Are you sure you want to close the window?\n" \
-                               "You have 1 tab open",
+                               "You have 1 tab open.",
                                "Are you sure you want to close the window?\n" \
-                               "You have %1 tabs open",
+                               "You have %1 tabs open.",
                                m_view->count()),
                          i18n("Closing..."),
                          KStandardGuiItem::quit(),
