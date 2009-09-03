@@ -164,7 +164,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // is content selected? Add SEARCH actions
     if(result.isContentSelected())
     {        
-        KActionMenu *searchMenu = new KActionMenu(i18n("Search with..."), this);
+        KActionMenu *searchMenu = new KActionMenu(i18n("Search with"), this);
 
         KConfig config("kuriikwsfilterrc"); //Share with konqueror
         KConfigGroup cg = config.group("General");
@@ -241,11 +241,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
 
     a = pageAction(QWebPage::OpenFrameInNewWindow);
-    a->setText(i18n("Open in new tab"));
+    a->setText(i18n("Open in New Tab"));
     a->setIcon(KIcon("view-right-new"));
     frameMenu->addAction(a);
     
-    a = new KAction( KIcon("document-print-frame"), i18n("Print frame"), this);
+    a = new KAction( KIcon("document-print-frame"), i18n("Print Frame"), this);
     connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
     frameMenu->addAction(a);
     menu.addAction(frameMenu);
