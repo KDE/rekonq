@@ -191,7 +191,7 @@ BookmarkProvider *Application::bookmarkProvider()
 {
     if (!s_bookmarkProvider)
     {
-        s_bookmarkProvider = new BookmarkProvider(instance()->mainWindow());
+        s_bookmarkProvider = new BookmarkProvider(instance());
     }
     return s_bookmarkProvider;
 }

@@ -65,9 +65,13 @@ void BookmarkOwner::openBookmark(const KBookmark & bookmark,
                                  Qt::KeyboardModifiers keyboardModifiers)
 {
     if (keyboardModifiers & Qt::ControlModifier || mouseButtons == Qt::MidButton)
+    {
         emit openUrl(bookmark.url(), Rekonq::SettingOpenTab);
+    }
     else
+    {
         emit openUrl(bookmark.url(), Rekonq::CurrentTab);
+    }
 }
 
 
@@ -150,11 +154,10 @@ void BookmarkMenu::slotAddBookmark()
 // ------------------------------------------------------------------------------------------------------
 
 
-BookmarkProvider::BookmarkProvider(QWidget *parent)
+BookmarkProvider::BookmarkProvider(QObject *parent)
         : QObject(parent)
         , m_manager(0)
         , m_owner(0)
-        , m_menu(new KMenu(parent))
         , m_actionCollection(new KActionCollection(this))
         , m_bookmarkMenu(0)
         , m_bookmarkToolBar(0)
@@ -183,7 +186,6 @@ BookmarkProvider::BookmarkProvider(QWidget *parent)
     // setup menu
     m_owner = new BookmarkOwner(this);
     connect(m_owner, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), this, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)));
-    m_bookmarkMenu = new BookmarkMenu(m_manager, m_owner, m_menu, m_actionCollection);
 }
 
 
@@ -191,7 +193,6 @@ BookmarkProvider::~BookmarkProvider()
 {
     delete m_bookmarkMenu;
     delete m_actionCollection;
-    delete m_menu;
     delete m_owner;
     delete m_manager;
 }
@@ -256,10 +257,12 @@ void BookmarkProvider::contextMenu(const QPoint &point)
 }
 
 
-KActionMenu* BookmarkProvider::bookmarkActionMenu()
+KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 {
-    KActionMenu *bookmarkActionMenu = new KActionMenu(this);
-    bookmarkActionMenu->setMenu(m_menu);
+    KMenu *menu = new KMenu(parent);
+    m_bookmarkMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
+    KActionMenu *bookmarkActionMenu = new KActionMenu(parent);
+    bookmarkActionMenu->setMenu(menu);
     bookmarkActionMenu->setText(i18n("&Bookmarks"));
     return bookmarkActionMenu;
 }

@@ -119,9 +119,6 @@ signals:
      *
      */
     void openUrl(const KUrl &, const Rekonq::OpenType &);
-
-private:
-
 };
 
 // ------------------------------------------------------------------------------
@@ -177,14 +174,15 @@ public:
     * @param parent The MainWindow to provide bookmarks objects
     *
     */
-    BookmarkProvider(QWidget* parent = 0);
+    BookmarkProvider(QObject* parent = 0);
     ~BookmarkProvider();
 
     /**
      * @short Get the Bookmarks Menu Action
+     * @param the parent widget
      * @return the Bookmarks Menu
      */
-    KActionMenu *bookmarkActionMenu();
+    KActionMenu *bookmarkActionMenu(QWidget *parent);
 
 
     /**
@@ -233,7 +231,6 @@ private:
 
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;
-    KMenu *m_menu;
     KActionCollection *m_actionCollection;
     BookmarkMenu *m_bookmarkMenu;
     KToolBar *m_bookmarkToolBar;

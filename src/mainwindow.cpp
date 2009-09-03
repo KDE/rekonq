@@ -125,7 +125,7 @@ MainWindow::MainWindow()
     setupActions();
 
     // Bookmark Menu
-    KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu();
+    KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu(this);
     bmMenu->setIcon(KIcon("rating"));
     actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
     ((KActionMenu *)actionByName("bookmarksActionMenu"))->setDelayed(false);
