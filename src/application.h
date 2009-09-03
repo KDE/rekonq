@@ -78,7 +78,8 @@ namespace Rekonq
         CurrentTab,     ///< open url in current tab
         SettingOpenTab, ///< open url according to users settings
         NewCurrentTab,  ///< open url in new tab and make it current
-        NewBackTab      ///< open url in new tab in background
+        NewBackTab,     ///< open url in new tab in background
+        NewWindow       ///< open url in new window
     };
 
 }

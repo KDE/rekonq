@@ -73,6 +73,8 @@ private slots:
     void slotLoadFinished(bool);
 
     void printFrame();
+    
+    void openLinkInNewWindow();
 
 private:
     WebPage *m_page;

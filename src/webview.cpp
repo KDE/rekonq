@@ -116,7 +116,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         // link actions
         a = pageAction(QWebPage::OpenLinkInNewWindow);
         a->setText(i18n("Open Link in New &Tab"));
-        a->setIcon(KIcon("window-new"));
+        a->setIcon(KIcon("tab-new"));
+        menu.addAction(a);
+
+        a = new KAction(KIcon("window-new"), i18n("Open Link in New &Window"), this);
+        a->setData( result.linkUrl() );
+        connect(a, SIGNAL( triggered(bool) ), this, SLOT( openLinkInNewWindow() ) );
         menu.addAction(a);
         
         a = pageAction(QWebPage::DownloadLinkToDisk);
@@ -211,6 +216,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         // page action
         menu.addAction(mainwindow->actionByName("new_tab"));    
+        menu.addAction(mainwindow->actionByName("new_window"));    
         menu.addSeparator();
     }
     
@@ -348,4 +354,12 @@ void WebView::slotLoadFinished(bool)
 void WebView::printFrame()
 {
     Application::instance()->mainWindow()->printRequested(page()->currentFrame());
+}
+
+
+void WebView::openLinkInNewWindow()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl url(a->data().toUrl());
+    Application::instance()->loadUrl(url, Rekonq::NewWindow);
 }
