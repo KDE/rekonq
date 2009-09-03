@@ -86,14 +86,13 @@ int Application::newInstance()
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
     // creating new window
-    MainWindow *w = new MainWindow;
-    w->setObjectName("MainWindow");
-    m_mainWindows.prepend(w);
-    w->show();
+    MainWindow *w = newMainWindow();
 
     if (args->count() > 0)
     {
-        for (int i = 0; i < args->count(); ++i)
+        loadUrl(args->arg(0));
+        
+        for (int i = 1; i < args->count(); ++i)
         {
             loadUrl(args->arg(i), Rekonq::NewCurrentTab); 
         }
@@ -101,10 +100,9 @@ int Application::newInstance()
     }
     else
     {
-        w->mainView()->newTab();
         w->slotHome();
     }
-
+        
     return 0;
 }
 
@@ -142,9 +140,7 @@ MainWindow *Application::mainWindow()
     if(m_mainWindows.isEmpty())
     {
         kDebug() << "No extant windows: creating one new...";
-        MainWindow *w = new MainWindow();
-        m_mainWindows.prepend(w);
-        w->show();
+        MainWindow *w = newMainWindow();
         QTimer::singleShot(0, this, SLOT(postLaunch()));
         return w;
     }
@@ -350,3 +346,16 @@ void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& typ
 {    
     return loadUrl( guessUrlFromString(urlString), type );
 }
+
+
+MainWindow *Application::newMainWindow()
+{
+    MainWindow *w = new MainWindow();
+    w->mainView()->newTab();
+    
+    m_mainWindows.prepend(w);
+    w->show();
+
+    return w;
+}
+

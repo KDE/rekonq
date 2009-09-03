@@ -243,8 +243,15 @@ void MainWindow::setupActions()
     a->setDefaultWidget(m_view->urlBar());
     actionCollection()->addAction(QLatin1String("url_bar"), a);
 
+    // new window action
+    a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
+    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
+    actionCollection()->addAction(QLatin1String("new_window"), a);
+    connect(a, SIGNAL(triggered(bool)), Application::instance(), SLOT(newMainWindow()));
+    
     // Standard Actions
     KStandardAction::open(this, SLOT(slotFileOpen()), actionCollection());
+    KStandardAction::openNew(Application::instance(), SLOT(newMainWindow()), actionCollection());
     KStandardAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());  
     KStandardAction::print(this, SLOT(printRequested()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
@@ -275,12 +282,7 @@ void MainWindow::setupActions()
     connect(m_view, SIGNAL(browserTabLoading(bool)), this, SLOT(slotBrowserLoading(bool)));
     slotBrowserLoading(false); //first init for blank start page
 
-    // ============== Custom Actions
-    a = new KAction(KIcon("document-open-remote"), i18n("Open Location"), this);
-    a->setShortcut(Qt::CTRL + Qt::Key_L);
-    actionCollection()->addAction(QLatin1String("open_location"), a);
-    connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
-
+    // ============== Zoom Actions
     a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
     actionCollection()->addAction(QLatin1String("bigger_font"), a);
@@ -296,6 +298,7 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("smaller_font"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextSmaller()));
 
+    // -----------
     a = new KAction(i18n("Page S&ource"), this);
     a->setIcon(KIcon("application-xhtml+xml"));
     actionCollection()->addAction(QLatin1String("page_source"), a);
@@ -328,7 +331,7 @@ void MainWindow::setupActions()
 
     // =================== Tab Actions
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T, Qt::CTRL + Qt::Key_N));
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
     actionCollection()->addAction(QLatin1String("new_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(newTab()));
 
@@ -365,6 +368,7 @@ void MainWindow::setupTools()
     KActionMenu *toolsMenu = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
     toolsMenu->setDelayed(false);
 
+    toolsMenu->addAction(actionByName(QLatin1String("new_window")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
@@ -485,13 +489,6 @@ void MainWindow::slotUpdateBrowser()
 {
     slotUpdateConfiguration();
     mainView()->slotReloadAllTabs();
-}
-
-
-void MainWindow::slotOpenLocation()
-{
-    m_view->urlBar()->selectAll();
-    m_view->urlBar()->setFocus();
 }
 
 
@@ -689,7 +686,6 @@ void MainWindow::slotViewTextSmaller()
 void MainWindow::slotViewFullScreen(bool makeFullScreen)
 {
     // state flags
-    static bool menubarFlag;
     static bool mainToolBarFlag;
     static bool bookmarksToolBarFlag;
     static bool sidePanelFlag;
@@ -697,20 +693,16 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
     if (makeFullScreen == true)
     {
         // save current state
-        menubarFlag = menuBar()->isHidden();
         mainToolBarFlag = toolBar("mainToolBar")->isHidden();
         bookmarksToolBarFlag = toolBar("bookmarksToolBar")->isHidden();
         sidePanelFlag = sidePanel()->isHidden();
 
-        menuBar()->hide();
         toolBar("mainToolBar")->hide();
         toolBar("bookmarksToolBar")->hide();
         sidePanel()->hide();
     }
     else
     {
-        if (!menubarFlag)
-            menuBar()->show();
         if (!mainToolBarFlag)
             toolBar("mainToolBar")->show();
         if (!bookmarksToolBarFlag)
@@ -840,15 +832,6 @@ void MainWindow::geometryChangeRequested(const QRect &geometry)
 }
 
 
-void MainWindow::slotShowMenubar(bool enable)
-{
-    if (enable)
-        menuBar()->show();
-    else
-        menuBar()->hide();
-}
-
-
 bool MainWindow::queryClose()
 {
     if (m_view->count() > 1)
@@ -861,7 +844,7 @@ bool MainWindow::queryClose()
                                "Are you sure you want to close the window?\n" \
                                "You have %1 tabs open",
                                m_view->count()),
-                         i18n("Are you sure you want to close the window?"),
+                         i18n("Closing..."),
                          KStandardGuiItem::quit(),
                          KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
                          KStandardGuiItem::cancel(),
@@ -911,10 +894,10 @@ QAction *MainWindow::actionByName(const QString name)
 }
 
 
-// FIXME: better implement me, please!!
 void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 {
-    if (this != QApplication::activeWindow()) {
+    if (this != QApplication::activeWindow())
+    {
         return;
     }
 

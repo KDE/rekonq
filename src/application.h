@@ -113,7 +113,7 @@ public slots:
      */
     void slotSaveConfiguration() const;
 
-public slots:
+    MainWindow *newMainWindow();
 
     void loadUrl( const KUrl& url,
                   const Rekonq::OpenType& type = Rekonq::CurrentTab

@@ -104,7 +104,6 @@ private slots:
     void slotBrowserLoading(bool);
     void slotUpdateActions();
     void slotUpdateWindowTitle(const QString &title = QString());
-    void slotOpenLocation();
     void geometryChangeRequested(const QRect &geometry);
 
     // history related
@@ -133,8 +132,7 @@ private slots:
     void slotToggleInspector(bool enable);
     void slotPrivateBrowsing(bool enable);
 
-    // Settings Menu slots
-    void slotShowMenubar(bool enable);
+    // Settings Menu slot
     void slotPreferences();
 
     // clear private data
