@@ -251,7 +251,6 @@ void MainWindow::setupActions()
     
     // Standard Actions
     KStandardAction::open(this, SLOT(slotFileOpen()), actionCollection());
-    KStandardAction::openNew(Application::instance(), SLOT(newMainWindow()), actionCollection());
     KStandardAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());  
     KStandardAction::print(this, SLOT(printRequested()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
