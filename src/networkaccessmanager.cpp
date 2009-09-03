@@ -210,12 +210,20 @@ KIO::MetaData& NetworkAccessManager::metaData()
 };
 
 
-// QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
-// {
-//     // FIXME: rude hack. Waiting for a real POST behaviour fix ;)
-//     if(op == PostOperation)
-//     {
-//         return QNetworkAccessManager::createRequest(op,req,outgoingData);
-//     }
-//     return AccessManager::createRequest(op,req,outgoingData);
-// }
+QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
+{
+    // TODO implement Ad-Block here (refuse connections..)
+    
+    QNetworkRequest request(req);
+
+    KIO::MetaData metaData(m_metaData);
+
+    QVariant attr = req.attribute(QNetworkRequest::User);
+    if (attr.isValid() && attr.type() == QVariant::Map)
+    {
+        metaData += attr.toMap();
+    }
+    request.setAttribute(QNetworkRequest::User, metaData.toVariant());
+
+    return AccessManager::createRequest(op,request,outgoingData);
+}
