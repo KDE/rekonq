@@ -561,19 +561,6 @@ void MainWindow::slotFileOpen()
 }
 
 
-// void MainWindow::slotFilePrintPreview()
-// {
-//     if (!currentTab())
-//         return;
-// 
-//     QPrinter printer;
-//     QPrintPreviewDialog previewdlg(&printer, this);
-//     connect(&previewdlg, SIGNAL(paintRequested(QPrinter *)),
-//             currentTab(), SLOT(print(QPrinter *)));
-//     previewdlg.exec();
-// }
-
-
 void MainWindow::printRequested(QWebFrame *frame)
 {
     if (!currentTab())

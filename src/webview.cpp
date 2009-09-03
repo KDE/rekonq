@@ -110,6 +110,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     KMenu menu(this);
     QAction *a;
 
+    // is a link?
     if (!result.linkUrl().isEmpty())
     {
         // link actions
@@ -125,40 +126,40 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a = pageAction(QWebPage::CopyLinkToClipboard);
         a->setIcon(KIcon("edit-copy"));
         menu.addAction(a);
-
-        if (!result.pixmap().isNull())
-        {
-            menu.addSeparator();
-
-            // TODO Add "View Image" && remove copy_this_image action
-            a = pageAction(QWebPage::DownloadImageToDisk);
-            a->setIcon(KIcon("document-save"));
-            menu.addAction(a);
-
-            a = pageAction(QWebPage::CopyImageToClipboard);
-            a->setIcon(KIcon("edit-copy"));
-            menu.addAction(a);
-        }
     }
-    else if (result.isContentEditable() && result.isContentSelected())
+    
+    // is content editable && selected? Add CUT
+    if (result.isContentEditable() && result.isContentSelected())
     {
         // actions for text selected in field
         a = pageAction(QWebPage::Cut);
         a->setIcon(KIcon("edit-cut"));
         a->setShortcut(KStandardShortcut::cut().primary());
         menu.addAction(a);
-
+    }
+    
+    // is content selected) Add COPY
+    if(result.isContentSelected())
+    {
         a = pageAction(QWebPage::Copy);
         a->setIcon(KIcon("edit-copy"));
         a->setShortcut(KStandardShortcut::copy().primary());
         menu.addAction(a);
-
+    }
+    
+    // is content editable? Add PASTE
+    if(result.isContentEditable())
+    {
         a = pageAction(QWebPage::Paste);
         a->setIcon(KIcon("edit-paste"));
         a->setShortcut(KStandardShortcut::paste().primary());
         menu.addAction(a);
-
-        menu.addSeparator();
+    }
+    
+    // is content selected? Add SEARCH actions
+    if(result.isContentSelected())
+    {        
+        KActionMenu *searchMenu = new KActionMenu(i18n("Search with..."), this);
 
         KConfig config("kuriikwsfilterrc"); //Share with konqueror
         KConfigGroup cg = config.group("General");
@@ -168,65 +169,28 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         QString keywordDelimiter = cg.readEntry("KeywordDelimiter", ":");
         KService::Ptr service;
         KUriFilterData data;
+        
         foreach (const QString &engine, favoriteEngines)
         {
-            service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-            const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
-            data.setData(searchProviderPrefix + "some keyword");
-            a = new KAction(i18n("Search with ")+service->name(), this);
-            a->setIcon(Application::icon(KUrl(data.uri())));
-            a->setData(searchProviderPrefix);
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
-            menu.addAction(a);
+            if(!engine.isNull())
+            {
+                service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
+                const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
+                data.setData(searchProviderPrefix + "some keyword");
+                a = new KAction(service->name(), this);
+                a->setIcon(Application::icon(KUrl(data.uri())));
+                a->setData(searchProviderPrefix);
+                connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
+                searchMenu->addAction(a);
+            }
         }
-
-
-        // TODO Add translate, show translation
-    }
-    else if (result.isContentEditable())
-    {
-        // actions for a not selected field or a void field
-        // WARNING: why it doesn't automatically select a field?
-        // Why the paste action is disabled?
-
-        a = pageAction(QWebPage::Paste);
-        a->setIcon(KIcon("edit-paste"));
-        a->setShortcut(KStandardShortcut::paste().primary());
-        menu.addAction(a);
-    }
-    else if (result.isContentSelected())
-    {
-        // actions for text selected in page
-        a = pageAction(QWebPage::Copy);
-        a->setIcon(KIcon("edit-copy"));
-        a->setShortcut(KStandardShortcut::copy().primary());
-        menu.addAction(a);
-
+        menu.addAction(searchMenu);
         menu.addSeparator();
-
-        KConfig config("kuriikwsfilterrc"); //Share with konqueror
-        KConfigGroup cg = config.group("General");
-        QStringList favoriteEngines;
-        favoriteEngines << "wikipedia" << "google"; //defaults
-        favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
-        QString keywordDelimiter = cg.readEntry("KeywordDelimiter", ":");
-        KService::Ptr service;
-        KUriFilterData data;
-        foreach (const QString &engine, favoriteEngines)
-        {
-            service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-            const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
-            data.setData(searchProviderPrefix + "some keyword");
-            a = new KAction(i18n("Search with %1", service->name()), this);
-            a->setIcon(Application::icon(KUrl(data.uri())));
-            a->setData(searchProviderPrefix);
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
-            menu.addAction(a);
-        }
-
-        // TODO Add translate, show translation
+        // TODO Add translate, show translation   
     }
-    else if (!result.pixmap().isNull())
+    
+    // is an image?
+    if (!result.pixmap().isNull())
     {
         menu.addSeparator();
 
@@ -238,36 +202,53 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a = pageAction(QWebPage::CopyImageToClipboard);
         a->setIcon(KIcon("edit-copy"));
         menu.addAction(a);
+
+        menu.addSeparator();
     }
-    else
+
+    // last (but not less) actions..
+    if(result.linkUrl().isEmpty())
     {
-        //page actions
-        menu.addAction(mainwindow->actionByName("new_tab"));
-        
-        if(mainwindow->isFullScreen())
-        {
-            menu.addAction(mainwindow->actionByName("fullscreen"));
-        }
+        // page action
+        menu.addAction(mainwindow->actionByName("new_tab"));    
+        menu.addSeparator();
+    }
+    
+    QWebHistory *history = page()->history();
+    if(history->canGoBack())
+    {
+        a = pageAction(QWebPage::Back);
+        a->setIcon(KIcon("go-previous"));
+        menu.addAction(a);
+    }
+    
+    if(history->canGoForward())
+    {
+        a = pageAction(QWebPage::Forward);
+        a->setIcon(KIcon("go-next"));
+        menu.addAction(a);
+    }
 
+    menu.addAction(mainwindow->actionByName("view_redisplay"));
+    
+    KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
+
+    a = pageAction(QWebPage::OpenFrameInNewWindow);
+    a->setText(i18n("Open in new tab"));
+    a->setIcon(KIcon("view-right-new"));
+    frameMenu->addAction(a);
+    
+    a = new KAction( KIcon("document-print-frame"), i18n("Print frame"), this);
+    connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
+    frameMenu->addAction(a);
+    menu.addAction(frameMenu);
+
+    // empty space actions
+    if(result.linkUrl().isEmpty())
+    {
         menu.addSeparator();
 
-        menu.addAction(mainwindow->actionByName("history_back"));
-        menu.addAction(mainwindow->actionByName("history_forward"));
-        menu.addAction(mainwindow->actionByName("view_redisplay"));
-        
-        KActionMenu *frameMenu = new KActionMenu(i18n("Frame"), this);
-
-        a = pageAction(QWebPage::OpenFrameInNewWindow);
-        a->setText(i18n("Open in new tab"));
-        a->setIcon(KIcon("view-right-new"));
-        frameMenu->addAction(a);
-        
-        a = new KAction( KIcon("document-print-frame"), i18n("Print frame"), this);
-        connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
-        frameMenu->addAction(a);
-        menu.addAction(frameMenu);
-        
-        menu.addSeparator();
+        menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
 
         menu.addAction(mainwindow->actionByName("page_source"));
         QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
@@ -280,6 +261,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             a->setIcon(KIcon("view-process-all"));
             menu.addAction(a);
         }
+    }
+
+    if(mainwindow->isFullScreen())
+    {
+        menu.addSeparator();
+        menu.addAction(mainwindow->actionByName("fullscreen"));
     }
 
     menu.exec(mapToGlobal(event->pos()));

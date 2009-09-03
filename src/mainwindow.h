@@ -125,7 +125,6 @@ private slots:
     
     // File Menu slots
     void slotFileOpen();
-//     void slotFilePrintPreview();
     void slotFileSaveAs();
 
     void slotViewPageSource();
