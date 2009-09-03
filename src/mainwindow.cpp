@@ -685,27 +685,29 @@ void MainWindow::slotViewTextSmaller()
 void MainWindow::slotViewFullScreen(bool makeFullScreen)
 {
     // state flags
-    static bool mainToolBarFlag;
     static bool bookmarksToolBarFlag;
     static bool sidePanelFlag;
 
     if (makeFullScreen == true)
     {
         // save current state
-        mainToolBarFlag = toolBar("mainToolBar")->isHidden();
-        bookmarksToolBarFlag = toolBar("bookmarksToolBar")->isHidden();
+        bookmarksToolBarFlag = m_bmBar->isHidden();
+        m_bmBar->hide();
+        
         sidePanelFlag = sidePanel()->isHidden();
-
-        toolBar("mainToolBar")->hide();
-        toolBar("bookmarksToolBar")->hide();
         sidePanel()->hide();
+
+        // hide main toolbar
+        m_mainBar->hide();
     }
     else
     {
-        if (!mainToolBarFlag)
-            toolBar("mainToolBar")->show();
+        // show main toolbar
+        m_mainBar->show();
+        
+        // restore previous state
         if (!bookmarksToolBarFlag)
-            toolBar("bookmarksToolBar")->show();
+            m_bmBar->show();
         if (!sidePanelFlag)
             sidePanel()->show();
     }
