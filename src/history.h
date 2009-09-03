@@ -87,7 +87,14 @@ class HistoryModel;
 class HistoryFilterModel;
 class HistoryTreeModel;
 
+class KCompletion;
 
+
+/**
+ * THE History Manager:
+ * It manages rekonq history
+ *
+ */
 class HistoryManager : public QWebHistoryInterface
 {
     Q_OBJECT
@@ -119,6 +126,11 @@ public:
     HistoryFilterModel *historyFilterModel() const;
     HistoryTreeModel *historyTreeModel() const;
 
+    /**
+    * @returns the KCompletion object.
+    */
+    KCompletion *completionObject() const;
+
 public slots:
     void clear();
     void loadSettings();
@@ -143,6 +155,9 @@ private:
     HistoryModel *m_historyModel;
     HistoryFilterModel *m_historyFilterModel;
     HistoryTreeModel *m_historyTreeModel;
+
+    // the completion object we sync with
+    KCompletion *m_completion;
 };
 
 

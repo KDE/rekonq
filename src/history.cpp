@@ -42,6 +42,7 @@
 #include <KDebug>
 #include <KStandardDirs>
 #include <KLocale>
+#include <KCompletion>
 
 // Qt Includes
 #include <QtCore/QList>
@@ -64,17 +65,23 @@ static const unsigned int HISTORY_VERSION = 23;
 
 
 HistoryManager::HistoryManager(QObject *parent)
-        : QWebHistoryInterface(parent)
-        , m_saveTimer(new AutoSaver(this))
-        , m_historyLimit(30)
-        , m_historyModel(0)
-        , m_historyFilterModel(0)
-        , m_historyTreeModel(0)
+    : QWebHistoryInterface(parent)
+    , m_saveTimer(new AutoSaver(this))
+    , m_historyLimit(30)
+    , m_historyModel(0)
+    , m_historyFilterModel(0)
+    , m_historyTreeModel(0)
+    , m_completion(0)
 {
+    // take care of the completion object
+    m_completion = new KCompletion;
+    m_completion->setOrder( KCompletion::Weighted );
+    
     m_expiredTimer.setSingleShot(true);
     connect(&m_expiredTimer, SIGNAL(timeout()), this, SLOT(checkForExpired()));
     connect(this, SIGNAL(entryAdded(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
     connect(this, SIGNAL(entryRemoved(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
+
     load();
 
     m_historyModel = new HistoryModel(this, this);
@@ -98,14 +105,12 @@ QList<HistoryItem> HistoryManager::history() const
 }
 
 
-// TODO port to KDE history
 bool HistoryManager::historyContains(const QString &url) const
 {
     return m_historyFilterModel->historyContains(url);
 }
 
 
-// TODO port to KDE history
 void HistoryManager::addHistoryEntry(const QString &url)
 {
     QUrl cleanUrl(url);
@@ -113,6 +118,11 @@ void HistoryManager::addHistoryEntry(const QString &url)
     cleanUrl.setHost(cleanUrl.host().toLower());
     HistoryItem item(cleanUrl.toString(), QDateTime::currentDateTime());
     addHistoryEntry(item);
+
+    // Add item to completion object
+    QString _url(url);
+    _url.remove(QRegExp("^http://|/$"));
+    m_completion->addItem(_url);
 }
 
 
@@ -199,6 +209,7 @@ void HistoryManager::addHistoryEntry(const HistoryItem &item)
 
     m_history.prepend(item);
     emit entryAdded(item);
+    
     if (m_history.count() == 1)
         checkForExpired();
 }
@@ -240,6 +251,11 @@ void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
             break;
         }
     }
+    
+    // Remove item from completion object
+    QString _url = url.path();
+    _url.remove(QRegExp("^http://|/$"));
+    m_completion->removeItem(_url);
 }
 
 
@@ -340,6 +356,11 @@ void HistoryManager::load()
 
         list.prepend(item);
         lastInsertedItem = item;
+
+        // Add item to completion object
+        QString _url = item.url;
+        _url.remove(QRegExp("^http://|/$"));
+        m_completion->addItem(_url);
     }
     if (needToSort)
         qSort(list.begin(), list.end());
@@ -420,4 +441,10 @@ void HistoryManager::save()
         }
     }
     m_lastSavedUrl = m_history.value(0).url;
+}
+
+
+KCompletion * HistoryManager::completionObject() const
+{
+    return m_completion;
 }

@@ -60,8 +60,7 @@ public:
     QSize sizeHint() const;
     void setBackgroundColor(QColor);
     bool isLoading();
-    KCompletion *completion();
-    HistoryCompletionModel *completionModel();
+    
     void setProgress(int progress);
 
 signals:
@@ -94,9 +93,6 @@ private:
 
     KUrl m_currentUrl;
     int m_progress;
-    
-    KCompletion *m_completion;
-    HistoryCompletionModel *m_completionModel;
 };
 
 #endif
