@@ -46,7 +46,6 @@ class QWebFrame;
 class KAction;
 class KPassivePopup;
 
-class HistoryMenu;
 class FindBar;
 class SidePanel;
 class WebView;

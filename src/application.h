@@ -39,6 +39,7 @@
 
 // Qt Includes
 #include <QPointer>
+#include <QList>
 
 // Forward Declarations
 class KIcon;
@@ -48,6 +49,9 @@ class CookieJar;
 class HistoryManager;
 class MainWindow;
 class NetworkAccessManager;
+
+
+typedef QList< QPointer<MainWindow> > MainWindowList;
 
 
 namespace Rekonq
@@ -134,7 +138,7 @@ private:
     static QPointer<NetworkAccessManager> s_networkAccessManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;
 
-    QPointer<MainWindow> m_mainWindow;
+    MainWindowList m_mainWindows;
 };
 
 #endif // APPLICATION_H

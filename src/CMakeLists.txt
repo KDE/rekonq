@@ -10,7 +10,6 @@ SET( rekonq_SRCS
     cookiejar.cpp
     history.cpp
     historymodels.cpp
-    historymenu.cpp
     bookmarks.cpp
     modelmenu.cpp 
     urlbar.cpp

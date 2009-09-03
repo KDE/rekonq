@@ -73,7 +73,7 @@ Application::Application()
 
 Application::~Application()
 {
-    delete m_mainWindow;
+    qDeleteAll(m_mainWindows);
     delete s_bookmarkProvider;
     delete s_networkAccessManager;
     delete s_historyManager;
@@ -85,17 +85,11 @@ int Application::newInstance()
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
-    if (!m_mainWindow)
-    {
-        m_mainWindow = new MainWindow();
-
-        m_mainWindow->setObjectName("MainWindow");
-        setWindowIcon(KIcon("rekonq"));
-
-        m_mainWindow->show();
-
-        QTimer::singleShot(0, this, SLOT(postLaunch()));
-    }
+    // creating new window
+    MainWindow *w = new MainWindow;
+    w->setObjectName("MainWindow");
+    m_mainWindows.prepend(w);
+    w->show();
 
     if (args->count() > 0)
     {
@@ -107,8 +101,8 @@ int Application::newInstance()
     }
     else
     {
-        m_mainWindow->mainView()->newTab();
-        m_mainWindow->slotHome();
+        w->mainView()->newTab();
+        w->slotHome();
     }
 
     return 0;
@@ -123,6 +117,8 @@ Application *Application::instance()
 
 void Application::postLaunch()
 {
+    setWindowIcon(KIcon("rekonq"));
+    
     // set Icon Database Path to store "favicons" associated with web sites
     QString directory = KStandardDirs::locateLocal("cache" , "" , true);
     if (directory.isEmpty())
@@ -143,7 +139,23 @@ void Application::slotSaveConfiguration() const
 
 MainWindow *Application::mainWindow()
 {
-    return m_mainWindow;
+    if(m_mainWindows.isEmpty())
+    {
+        kDebug() << "No extant windows: creating one new...";
+        MainWindow *w = new MainWindow();
+        m_mainWindows.prepend(w);
+        w->show();
+        QTimer::singleShot(0, this, SLOT(postLaunch()));
+        return w;
+    }
+    
+    MainWindow *active = qobject_cast<MainWindow*>(QApplication::activeWindow());
+    
+    if(!active)
+    {
+        return m_mainWindows.at(0);
+    }
+    return active;
 }
 
 
@@ -302,26 +314,27 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
 
     WebView *webView = 0;
-
+    MainWindow *w = mainWindow();
+    
     switch(type)
     {
     case Rekonq::SettingOpenTab:
-        webView = m_mainWindow->mainView()->newWebView(!ReKonfig::openTabsBack());
+        webView = w->mainView()->newWebView(!ReKonfig::openTabsBack());
         if (!ReKonfig::openTabsBack())
         {
-            m_mainWindow->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
+            w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
         }
         break;
     case Rekonq::NewCurrentTab:
-        webView = m_mainWindow->mainView()->newWebView(true);
-        m_mainWindow->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
+        webView = w->mainView()->newWebView(true);
+        w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
         break;
     case Rekonq::NewBackTab:
-        webView = m_mainWindow->mainView()->newWebView(false);
+        webView = w->mainView()->newWebView(false);
         break;
     case Rekonq::CurrentTab:
-        webView = m_mainWindow->mainView()->currentWebView();
-        m_mainWindow->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
+        webView = w->mainView()->currentWebView();
+        w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
         break;
     };
 

@@ -36,7 +36,7 @@
 // Local Includes
 #include "application.h"
 #include "settings.h"
-#include "historymenu.h"
+#include "history.h"
 #include "cookiejar.h"
 #include "networkaccessmanager.h"
 #include "bookmarks.h"
