@@ -361,7 +361,7 @@ void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& typ
 MainWindow *Application::newMainWindow()
 {
     MainWindow *w = new MainWindow();
-    w->mainView()->newTab();
+    w->mainView()->newWebView();    // remember using newWebView and NOT newTab here!!
     
     m_mainWindows.prepend(w);
     w->show();
