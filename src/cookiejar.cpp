@@ -32,6 +32,10 @@
 // Auto Includes
 #include "rekonq.h"
 
+// Local Includes
+#include "application.h"
+#include "mainwindow.h"
+
 // KDE Includes
 #include <KConfig>
 #include <KStandardDirs>
@@ -48,7 +52,6 @@
 
 CookieJar::CookieJar(QObject* parent)
     : QNetworkCookieJar(parent)
-    , m_windowId(-1)
     , m_kcookiejar(new QDBusInterface("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer"))
 {
 }
@@ -63,7 +66,7 @@ CookieJar::~CookieJar()
 QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl & url) const
 {
     QList<QNetworkCookie> cookieList;
-    QDBusReply<QString> reply = m_kcookiejar->call("findCookies", url.toString() , m_windowId);
+    QDBusReply<QString> reply = m_kcookiejar->call("listCookies", url.toString() );
 
     if (reply.isValid())
     {
@@ -85,17 +88,10 @@ bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, cons
     {
         cookieHeader = "Set-Cookie: ";
         cookieHeader += cookie.toRawForm();
-        m_kcookiejar->call("addCookies", url.toString(), cookieHeader, m_windowId);
+        m_kcookiejar->call("addCookies", url.toString(), cookieHeader, 0 );
     }
 
     return !m_kcookiejar->lastError().isValid();
-}
-
-
-void CookieJar::setWindowId(qlonglong id)
-{
-    kDebug() << id;
-    m_windowId = id;
 }
 
 

@@ -208,11 +208,6 @@ void MainWindow::postLaunch()
 
     // accept d'n'd
     setAcceptDrops(true);
-
-    // set CookieJar window Id
-    const qlonglong winId = window()->winId();
-    Application::cookieJar()->setWindowId(winId);
-    Application::networkAccessManager()->metaData().insert("window-id", QString::number(winId));
 }
 
 

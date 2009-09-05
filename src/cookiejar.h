@@ -44,7 +44,6 @@ class CookieJar : public QNetworkCookieJar
 public:
     CookieJar(QObject* parent = 0);
     virtual ~CookieJar();
-    void setWindowId(qlonglong id);
 
     virtual QList<QNetworkCookie> cookiesForUrl(const QUrl & url) const;
     virtual bool setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, const QUrl & url);
@@ -52,7 +51,6 @@ public:
     void clear();
 
 private:
-    qlonglong m_windowId;
     QDBusInterface *m_kcookiejar;
 };
 
