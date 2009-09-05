@@ -79,6 +79,13 @@ public:
     void showTabBar();
     void clear();
 
+    /**
+     * This function creates a new empty tab
+     * with a webview inside
+     * @param focused   decide if you wannna give focus 
+     *                  (or not) to this new tab (default true)
+     * @return the webview embedded in the new tab
+     */
     WebView *newWebView(bool focused = true);
     
 signals:
@@ -97,7 +104,8 @@ signals:
 public slots:
     /**
      * Core browser slot. This create a new tab with a WebView inside
-     * for browsing.
+     * for browsing and follows rekonq settings about opening there a
+     * home/blank/rekonq page
      *
      */
     void newTab();
