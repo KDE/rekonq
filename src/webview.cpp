@@ -177,7 +177,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         
         foreach (const QString &engine, favoriteEngines)
         {
-            if(!engine.isNull())
+            if(!engine.isEmpty())
             {
                 service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
                 const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
@@ -191,6 +191,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         }
         menu.addAction(searchMenu);
         menu.addSeparator();
+
         // TODO Add translate, show translation   
     }
     
