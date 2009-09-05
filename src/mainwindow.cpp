@@ -239,7 +239,6 @@ void MainWindow::setupActions()
 
     // location bar
     a = new KAction(i18n("Location Bar"), this);
-    a->setShortcut(KShortcut(Qt::Key_F6));
     a->setDefaultWidget(m_view->urlBar());
     actionCollection()->addAction(QLatin1String("url_bar"), a);
 
@@ -281,6 +280,12 @@ void MainWindow::setupActions()
     connect(m_view, SIGNAL(browserTabLoading(bool)), this, SLOT(slotBrowserLoading(bool)));
     slotBrowserLoading(false); //first init for blank start page
 
+    a = new KAction(this);
+    a->setShortcut(Qt::CTRL + Qt::Key_L);
+    actionCollection()->addAction(QLatin1String("open_location"), a);
+    connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
+
+    
     // ============== Zoom Actions
     a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
@@ -484,6 +489,13 @@ void MainWindow::slotUpdateBrowser()
 {
     slotUpdateConfiguration();
     mainView()->slotReloadAllTabs();
+}
+
+
+void MainWindow::slotOpenLocation()
+{
+    m_view->urlBar()->selectAll();
+    m_view->urlBar()->setFocus();
 }
 
 

@@ -120,8 +120,8 @@ private slots:
     void slotViewTextNormal();
     void slotViewTextSmaller();
 
-    
     // File Menu slots
+    void slotOpenLocation();
     void slotFileOpen();
     void slotFileSaveAs();
 
