@@ -165,8 +165,8 @@ void MainWindow::setupToolbar()
     m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     m_mainBar->setIconDimensions(22);
     m_mainBar->setContextMenuPolicy(Qt::PreventContextMenu);
-    m_mainBar->addAction( actionByName("history_back") );
-    m_mainBar->addAction( actionByName("history_forward") );
+    m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Back)) );
+    m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Forward)) );
     m_mainBar->addSeparator();
     m_mainBar->addAction( actionByName("stop_reload") );
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Home)) );
@@ -315,18 +315,14 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotPrivateBrowsing(bool)));
 
     // ================ history related actions
-    m_historyBackAction = new KAction(KIcon("go-previous"), i18n("Back"), this);
-    connect(m_historyBackAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenPrevious()));
-    actionCollection()->addAction(QLatin1String("history_back"), m_historyBackAction);
+    a = KStandardAction::back(this, SLOT(slotOpenPrevious()) , actionCollection());
 
     m_historyBackMenu = new KMenu(this);
-    m_historyBackAction->setMenu(m_historyBackMenu);
+    a->setMenu(m_historyBackMenu);
     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
     
-    m_historyForwardAction = new KAction(KIcon("go-next"), i18n("Forward"), this);
-    connect(m_historyForwardAction, SIGNAL(triggered(bool)), this, SLOT(slotOpenNext()));
-    actionCollection()->addAction(QLatin1String("history_forward"), m_historyForwardAction);
+    KStandardAction::forward(this, SLOT(slotOpenNext()) , actionCollection());
 
     // =================== Tab Actions
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
@@ -529,8 +525,11 @@ void MainWindow::slotPreferences()
 
 void MainWindow::slotUpdateActions()
 {
-    m_historyBackAction->setEnabled(currentTab()->history()->canGoBack());
-    m_historyForwardAction->setEnabled(currentTab()->history()->canGoForward());
+    QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
+    historyBackAction->setEnabled(currentTab()->history()->canGoBack());
+    
+    QAction *historyForwardAction = actionByName(KStandardAction::name(KStandardAction::Forward));
+    historyForwardAction->setEnabled(currentTab()->history()->canGoForward());
 }
 
 

@@ -147,8 +147,6 @@ private:
     SidePanel *m_sidePanel;
 
     KAction *m_stopReloadAction;
-    KAction *m_historyBackAction;
-    KAction *m_historyForwardAction;
     KMenu *m_historyBackMenu;
 
     KToolBar *m_bmBar;
