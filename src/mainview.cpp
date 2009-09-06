@@ -568,4 +568,3 @@ void MainView::resizeEvent(QResizeEvent *event)
 {
     KTabWidget::resizeEvent(event);
 }
-

@@ -191,7 +191,7 @@ void MainWindow::postLaunch()
     // --------- connect signals and slots
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
-
+    
     // update toolbar actions signals
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
@@ -826,16 +826,6 @@ void MainWindow::slotOpenNext()
     QWebHistory *history = currentTab()->history();
     if (history->canGoForward())
         history->goToItem(history->forwardItem());
-}
-
-
-// WARNING: this change will be there until rekonq'll have ONE mainwindow
-// (probably forever..)
-void MainWindow::geometryChangeRequested(const QRect &geometry)
-{
-    Q_UNUSED(geometry)
-//     setGeometry(geometry);
-    kDebug() << "No geometry change allowed";
 }
 
 

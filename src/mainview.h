@@ -133,7 +133,7 @@ private slots:
     void webViewUrlChanged(const QUrl &url);
 
     void windowCloseRequested();
-
+    
 protected:
 
     virtual void mouseDoubleClickEvent(QMouseEvent *event);

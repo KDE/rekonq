@@ -14,6 +14,12 @@
     <entry name="homePage" type="String">
         <default>http://www.kde.org/</default>
     </entry>
+    <entry name="openTabNoWindow" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="externalUrlNewTab" type="Bool">
+        <default>true</default>
+    </entry>
     <entry name="alwaysShowTabBar" type="Bool">
         <default>true</default>
     </entry>

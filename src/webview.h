@@ -75,6 +75,7 @@ private slots:
     void printFrame();
     
     void openLinkInNewWindow();
+    void openLinkInNewTab();
 
 private:
     WebPage *m_page;

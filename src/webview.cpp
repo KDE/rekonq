@@ -114,9 +114,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if (!result.linkUrl().isEmpty())
     {
         // link actions
-        a = pageAction(QWebPage::OpenLinkInNewWindow);
-        a->setText(i18n("Open in New &Tab"));
-        a->setIcon(KIcon("tab-new"));
+        a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
+        a->setData(result.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
         menu.addAction(a);
 
         a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), this);
@@ -363,4 +363,12 @@ void WebView::openLinkInNewWindow()
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
     Application::instance()->loadUrl(url, Rekonq::NewWindow);
+}
+
+
+void WebView::openLinkInNewTab()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl url(a->data().toUrl());
+    Application::instance()->loadUrl(url, Rekonq::SettingOpenTab);
 }

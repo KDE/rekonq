@@ -126,9 +126,15 @@ WebPage *WebPage::newWindow(WebWindowType type)
         kDebug() << "Modal Dialog ---------------------------------------";
     }
 
-    // FIXME: regression introduced. No more following rekonq setting about tab focus
-    // the FIX should be moving loadUrl code from Application to acceptNavigationRequest
-    WebView *w = Application::instance()->mainWindow()->mainView()->newWebView(!ReKonfig::openTabsBack());
+    WebView *w = 0;
+    if(ReKonfig::openTabNoWindow())
+    {
+        w = Application::instance()->mainWindow()->mainView()->newWebView(!ReKonfig::openTabsBack());
+    }
+    else
+    {
+        w = Application::instance()->newMainWindow()->mainView()->currentWebView();
+    }
     return w->page();
 }
 

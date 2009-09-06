@@ -85,21 +85,36 @@ int Application::newInstance()
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
-    // creating new window
-    MainWindow *w = newMainWindow();
-
     if (args->count() > 0)
     {
-        loadUrl(args->arg(0));
-        
-        for (int i = 1; i < args->count(); ++i)
+        // opening links in new tabs in ONE window
+        if(ReKonfig::externalUrlNewTab())
         {
-            loadUrl(args->arg(i), Rekonq::NewCurrentTab); 
+            // creating 1st new window
+            newMainWindow();        
+            loadUrl(args->arg(0));
+            
+            for (int i = 1; i < args->count(); ++i)
+            {
+                loadUrl(args->arg(i), Rekonq::NewCurrentTab); 
+            }
+            args->clear();
+            
         }
-        args->clear();
+        else
+        {
+            // opening ONE window for each URL
+            for (int i = 0; i < args->count(); ++i)
+            {
+                loadUrl(args->arg(i), Rekonq::NewWindow);
+            }
+            args->clear();
+        }
     }
     else
     {
+        // creating new window
+        MainWindow *w = newMainWindow();
         w->slotHome();
     }
         
