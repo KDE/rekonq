@@ -45,6 +45,7 @@
 #include "findbar.h"
 #include "sidepanel.h"
 #include "urlbar.h"
+#include "homepage.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -169,7 +170,6 @@ void MainWindow::setupToolbar()
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Forward)) );
     m_mainBar->addSeparator();
     m_mainBar->addAction( actionByName("stop_reload") );
-    m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Home)) );
     m_mainBar->addAction( actionByName("url_bar") );
     m_mainBar->addAction( actionByName("bookmarksActionMenu") );
     m_mainBar->addAction( actionByName("rekonq_tools") );
@@ -256,7 +256,6 @@ void MainWindow::setupActions()
     a = KStandardAction::fullScreen(this, SLOT(slotViewFullScreen(bool)), this, actionCollection());
     a->setShortcut(KShortcut(Qt::Key_F11, Qt::CTRL + Qt::SHIFT + Qt::Key_F));
 
-    KStandardAction::home(this, SLOT(slotHome()), actionCollection());
     KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
 
     // WEB Actions (NO KStandardActions..)
@@ -422,7 +421,6 @@ void MainWindow::setupSidePanel()
 void MainWindow::slotUpdateConfiguration()
 {
     // ============== General ==================
-    m_homePage = ReKonfig::homePage();
     mainView()->showTabBar();
 
     // "status bar" messages (new notifyMessage system)
@@ -752,7 +750,20 @@ void MainWindow::slotViewPageSource()
 
 void MainWindow::slotHome()
 {
-    Application::instance()->loadUrl(KUrl(m_homePage));
+    WebView *w = Application::instance()->mainWindow()->mainView()->currentWebView();
+    HomePage p;
+    
+    switch(ReKonfig::newTabsBehaviour())
+    {
+    case 0:
+        w->setHtml( p.rekonqHomePage(), QUrl("home:/"));
+        break;
+    case 2:
+        w->load( QUrl(ReKonfig::homePage()) );
+        break;
+    default:
+        break;
+    }
 }
 
 

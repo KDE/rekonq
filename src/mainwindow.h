@@ -152,7 +152,6 @@ private:
     KToolBar *m_mainBar;
 
     QString m_lastSearch;
-    QString m_homePage;
 
     QPointer<KPassivePopup> m_popup;
 

@@ -294,10 +294,17 @@ void MainView::newTab()
 
     urlBar()->setUrl(KUrl(""));
     urlBar()->setFocus();
-    
-    if (ReKonfig::newTabsOpenHomePage())
+
+    switch(ReKonfig::newTabsBehaviour())
     {
-        w->load(QUrl(ReKonfig::homePage()));
+    case 0:
+        w->load(QUrl("home:/"));
+        break;
+    case 2:
+        w->load( QUrl(ReKonfig::homePage()) );
+        break;
+    default:
+        break;
     }
 }
 

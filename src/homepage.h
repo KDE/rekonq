@@ -2,9 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -26,36 +24,36 @@
 * ============================================================ */
 
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef REKONQ_HOME_PAGE
+#define REKONQ_HOME_PAGE
 
-// KDE Includes
-#include <KConfigDialog>
+// Qt Includes
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
-// Forward Declarations
-class QWidget;
-class Private;
+// Forward Includes
+class KBookmark;
 
-class SettingsDialog : public KConfigDialog
+
+class HomePage : public QObject
 {
-    Q_OBJECT
-
-public:
-    SettingsDialog(QWidget *parent = 0);
-    ~SettingsDialog();
+Q_OBJECT
     
-    virtual bool hasChanged();
+public:
+    HomePage(QObject *parent = 0);
+    ~HomePage();
 
+    QString rekonqHomePage();
+    
 private:
-    Private* const d;
-    void setWebSettingsToolTips();
+    QString fillHistory();
+    QString fillBookmarks();
 
-private slots:
-    void readConfig();
-    void saveSettings();
+    QString createSubMenu(const QString &, const QString &);
+    QString createBookItem(const KBookmark &);
 
-    void setHomeToCurrentPage();
-    void checkLineEnable(int);
+    QString m_homePagePath;
+    QString m_imagesPath;
 };
 
-#endif // SETTINGS_H
+#endif // REKONQ_HOME_PAGE

@@ -141,6 +141,10 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
 
+    int n = d->generalUi.kcfg_newTabsBehaviour->currentIndex();
+    checkLineEnable(n);
+    connect(d->generalUi.kcfg_newTabsBehaviour, SIGNAL(currentIndexChanged(int)), this, SLOT(checkLineEnable(int)));
+    
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     
@@ -212,5 +216,20 @@ void SettingsDialog::setHomeToCurrentPage()
     if (webView)
     {
         d->generalUi.kcfg_homePage->setText(webView->url().prettyUrl());
+    }
+}
+
+
+void SettingsDialog::checkLineEnable(int n)
+{
+    if(n == 2)
+    {
+        d->generalUi.kcfg_homePage->setEnabled(true);
+        d->generalUi.setHomeToCurrentPageButton->setEnabled(true);
+    }
+    else
+    {
+        d->generalUi.kcfg_homePage->setEnabled(false);
+        d->generalUi.setHomeToCurrentPageButton->setEnabled(false);
     }
 }

@@ -200,6 +200,12 @@ public:
      */
     QAction *actionByName(const QString &name);
 
+    /**
+     * returns Bookmark Manager toolbar
+     *
+     * Used in rekonq home page
+     */
+    KBookmarkGroup toolbar();
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
