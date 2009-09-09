@@ -114,7 +114,7 @@ QString HomePage::fillHistory()
 
 QString HomePage::fillBookmarks()
 {
-    KBookmarkGroup toolBarGroup = Application::bookmarkProvider()->toolbar();
+    KBookmarkGroup toolBarGroup = Application::bookmarkProvider()->rootGroup();
     if (toolBarGroup.isNull())
     {
         return QString("Error retrieving bookmarks!");

@@ -297,7 +297,7 @@ KAction *BookmarkProvider::fillBookmarkBar(const KBookmark &bookmark)
 }
 
 
-KBookmarkGroup BookmarkProvider::toolbar()
+KBookmarkGroup BookmarkProvider::rootGroup()
 {
-    return m_manager->toolbar();
+    return m_manager->root();
 }

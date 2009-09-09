@@ -201,11 +201,11 @@ public:
     QAction *actionByName(const QString &name);
 
     /**
-     * returns Bookmark Manager toolbar
+     * returns Bookmark Manager root group
      *
-     * Used in rekonq home page
+     * @return the root bookmark group
      */
-    KBookmarkGroup toolbar();
+    KBookmarkGroup rootGroup();
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
