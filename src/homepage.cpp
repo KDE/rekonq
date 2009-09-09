@@ -35,6 +35,7 @@
 
 // KDE Includes
 #include <KStandardDirs>
+#include <KIconLoader>
 #include <KDebug>
 
 // Qt Includes
@@ -94,6 +95,7 @@ QString HomePage::fillHistory()
             for(int j=0; j< model->rowCount(index); ++j)
             {
                 QModelIndex son = model->index(j, 0, index );
+// FIXME add an icon to each history item   history += "<img src=\"" + ciao + "\" alt=\"icon\" />";
                 history += QString("<a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">") + 
                         son.data().toString() + QString("</a><br />");
             }
@@ -169,5 +171,8 @@ QString HomePage::createBookItem(const KBookmark &bookmark)
     {
         return QString("<hr />");
     }
-    return "<a href=\"" + bookmark.url().prettyUrl() + "\">" + bookmark.text() + "</a><br />";
+    
+    QString str = ""; // FIXME Add icon "<img src=\"" + KStandardDirs::findResource( "icon", bookmark.icon() + ".png" ) + "\" alt=\"icon\" />";
+    str += "<a href=\"" + bookmark.url().prettyUrl() + "\">" + bookmark.text() + "</a><br />";
+    return str;
 }
