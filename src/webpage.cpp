@@ -97,14 +97,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         KToolInvocation::invokeMailer(m_requestedUrl);
         return false;
     }
-    
-    if(m_requestedUrl.scheme() == QLatin1String("home"))
-    {
-        Application::instance()->mainWindow()->slotHome();
-        return false;
-    }
-    
-        
+
     if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
         Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);

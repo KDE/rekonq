@@ -79,7 +79,6 @@ private:
     SidePanel *sidePanel();
 
 public slots:
-    void slotHome();
     void slotUpdateBrowser();
 
     /**

@@ -122,7 +122,7 @@ int Application::newInstance()
     {
         // creating new window
         MainWindow *w = newMainWindow();
-        w->slotHome();
+        w->mainView()->slotHome();
     }
         
     return 0;
@@ -309,12 +309,6 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
-    if(url.scheme() == QLatin1String("home"))
-    {
-        mainWindow()->slotHome();
-        return;
-    }
-    
     KUrl loadingUrl(url);
 
     if (loadingUrl.isRelative())

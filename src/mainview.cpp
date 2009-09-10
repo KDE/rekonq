@@ -41,6 +41,7 @@
 #include "urlbar.h"
 #include "webview.h"
 #include "sessionmanager.h"
+#include "homepage.h"
 
 // KDE Includes
 #include <KUrl>
@@ -294,18 +295,8 @@ void MainView::newTab()
 
     urlBar()->setUrl(KUrl(""));
     urlBar()->setFocus();
-
-    switch(ReKonfig::newTabsBehaviour())
-    {
-    case 0:
-        w->load(QUrl("home:/"));
-        break;
-    case 2:
-        w->load( QUrl(ReKonfig::homePage()) );
-        break;
-    default:
-        break;
-    }
+    
+    slotHome();
 }
 
 
@@ -578,4 +569,23 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event) //WARNING Need to be fi
 void MainView::resizeEvent(QResizeEvent *event)
 {
     KTabWidget::resizeEvent(event);
+}
+
+
+void MainView::slotHome()
+{
+    WebView *w = currentWebView();
+    HomePage p;
+    
+    switch(ReKonfig::newTabsBehaviour())
+    {
+    case 0:
+        w->setHtml( p.rekonqHomePage(), QUrl());
+        break;
+    case 2:
+        w->load( QUrl(ReKonfig::homePage()) );
+        break;
+    default:
+        break;
+    }
 }

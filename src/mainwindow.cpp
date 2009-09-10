@@ -45,7 +45,6 @@
 #include "findbar.h"
 #include "sidepanel.h"
 #include "urlbar.h"
-#include "homepage.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -257,7 +256,7 @@ void MainWindow::setupActions()
     a = KStandardAction::fullScreen(this, SLOT(slotViewFullScreen(bool)), this, actionCollection());
     a->setShortcut(KShortcut(Qt::Key_F11, Qt::CTRL + Qt::SHIFT + Qt::Key_F));
 
-    KStandardAction::home(this, SLOT(slotHome()), actionCollection());
+    KStandardAction::home(m_view, SLOT(slotHome()), actionCollection());
     KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
 
     // WEB Actions (NO KStandardActions..)
@@ -747,25 +746,6 @@ void MainWindow::slotViewPageSource()
         }
     }
     KRun::runUrl(url, QLatin1String("text/plain"), this, isTempFile);
-}
-
-
-void MainWindow::slotHome()
-{
-    WebView *w = Application::instance()->mainWindow()->mainView()->currentWebView();
-    HomePage p;
-    
-    switch(ReKonfig::newTabsBehaviour())
-    {
-    case 0:
-        w->setHtml( p.rekonqHomePage(), QUrl("home:/"));
-        break;
-    case 2:
-        w->load( QUrl(ReKonfig::homePage()) );
-        break;
-    default:
-        break;
-    }
 }
 
 
