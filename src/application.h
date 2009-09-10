@@ -49,6 +49,7 @@ class CookieJar;
 class HistoryManager;
 class MainWindow;
 class NetworkAccessManager;
+class SessionManager;
 
 
 typedef QList< QPointer<MainWindow> > MainWindowList;
@@ -99,14 +100,16 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
-
+    MainWindowList mainWindowList();
+    
     static KIcon icon(const KUrl &url);
 
     static HistoryManager *historyManager();
     static CookieJar *cookieJar();
     static NetworkAccessManager *networkAccessManager();
     static BookmarkProvider *bookmarkProvider();
-
+    static SessionManager *sessionManager();
+    
 public slots:
     /**
      * Save application's configuration
@@ -138,7 +141,8 @@ private:
     static QPointer<HistoryManager> s_historyManager;
     static QPointer<NetworkAccessManager> s_networkAccessManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;
-
+    static QPointer<SessionManager> s_sessionManager;
+    
     MainWindowList m_mainWindows;
 };
 

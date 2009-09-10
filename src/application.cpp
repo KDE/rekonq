@@ -41,6 +41,7 @@
 #include "mainview.h"
 #include "webview.h"
 #include "urlbar.h"
+#include "sessionmanager.h"
 
 // KDE Includes
 #include <KCmdLineArgs>
@@ -62,6 +63,7 @@
 QPointer<HistoryManager> Application::s_historyManager;
 QPointer<NetworkAccessManager> Application::s_networkAccessManager;
 QPointer<BookmarkProvider> Application::s_bookmarkProvider;
+QPointer<SessionManager> Application::s_sessionManager;
 
 
 
@@ -82,6 +84,11 @@ Application::~Application()
 
 int Application::newInstance()
 {
+    if( isSessionRestored() && sessionManager()->restoreSession() )
+    {
+            return 1;
+    }
+    
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
@@ -141,6 +148,7 @@ void Application::postLaunch()
     QWebSettings::setIconDatabasePath(directory);
 
     Application::historyManager();
+    Application::sessionManager();
 }
 
 
@@ -205,6 +213,16 @@ BookmarkProvider *Application::bookmarkProvider()
         s_bookmarkProvider = new BookmarkProvider(instance());
     }
     return s_bookmarkProvider;
+}
+
+
+SessionManager *Application::sessionManager()
+{
+    if(!s_sessionManager)
+    {
+        s_sessionManager = new SessionManager(instance());
+    }
+    return s_sessionManager;
 }
 
 
@@ -384,3 +402,8 @@ MainWindow *Application::newMainWindow()
     return w;
 }
 
+
+MainWindowList Application::mainWindowList()
+{
+    return m_mainWindows;
+}

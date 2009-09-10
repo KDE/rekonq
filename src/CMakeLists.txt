@@ -21,6 +21,7 @@ SET( rekonq_SRCS
     panelhistory.cpp
     lineedit.cpp
     webpage.cpp
+    sessionmanager.cpp
 )
 
 

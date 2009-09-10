@@ -40,6 +40,7 @@
 #include "history.h"
 #include "urlbar.h"
 #include "webview.h"
+#include "sessionmanager.h"
 
 // KDE Includes
 #include <KUrl>
@@ -92,6 +93,9 @@ MainView::MainView(QWidget *parent)
     
     setTabsClosable(true);
     connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
+
+    // Session Manager
+    connect (this,SIGNAL(tabsChanged()),Application::sessionManager(),SLOT(saveSession()));
 }
 
 
