@@ -188,6 +188,10 @@ void MainWindow::setupToolbar()
 
 void MainWindow::postLaunch()
 {
+    // notification system
+    connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
+    connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
+
     // --------- connect signals and slots
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
@@ -423,23 +427,6 @@ void MainWindow::slotUpdateConfiguration()
 {
     // ============== General ==================
     mainView()->showTabBar();
-
-    // "status bar" messages (new notifyMessage system)
-    if(ReKonfig::showUrlsPopup())
-    {
-        connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)),
-                    this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
-        connect(m_view, SIGNAL(linkHovered(const QString&)),
-                    this, SLOT(notifyMessage(const QString&)));
-    }
-    else
-    {
-        disconnect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)),
-                    this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
-        disconnect(m_view, SIGNAL(linkHovered(const QString&)),
-                    this, SLOT(notifyMessage(const QString&)));
-    }
-
 
     // =========== Fonts ==============
     QWebSettings *defaultSettings = QWebSettings::globalSettings();

@@ -32,9 +32,6 @@
     <entry name="openTabsBack" type="Bool">
         <default>false</default>
     </entry>
-    <entry name="showUrlsPopup" type="Bool">
-        <default>true</default>
-    </entry>
   </group>
 
 <!-- Fonts Settings -->
