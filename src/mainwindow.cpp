@@ -12,9 +12,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -100,7 +100,7 @@ MainWindow::MainWindow()
 {
     // enable window size "auto-save"
     setAutoSaveSettings();
-    
+
     // updating rekonq configuration
     slotUpdateConfiguration();
 
@@ -135,8 +135,8 @@ MainWindow::MainWindow()
 
     // setting up rekonq tools
     setupTools();
-    
-    // setting up rekonq toolbar(s)   
+
+    // setting up rekonq toolbar(s)
     setupToolbar();
 
     // no more status bar..
@@ -173,7 +173,7 @@ void MainWindow::setupToolbar()
     m_mainBar->addAction( actionByName("url_bar") );
     m_mainBar->addAction( actionByName("bookmarksActionMenu") );
     m_mainBar->addAction( actionByName("rekonq_tools") );
-    
+
     // =========== Bookmarks ToolBar ================================
     m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_bmBar->setIconDimensions(16);
@@ -191,7 +191,7 @@ void MainWindow::postLaunch()
     // --------- connect signals and slots
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
-    
+
     // update toolbar actions signals
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
@@ -200,7 +200,7 @@ void MainWindow::postLaunch()
     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
 
     // bookmarks loading
-    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)), 
+    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
             Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
 
     // setting up toolbars to NOT have context menu enabled
@@ -229,7 +229,7 @@ void MainWindow::setupActions()
 {
     // this let shortcuts work..
     actionCollection()->addAssociatedWidget(this);
-    
+
     KAction *a;
 
     // location bar
@@ -242,10 +242,10 @@ void MainWindow::setupActions()
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
     actionCollection()->addAction(QLatin1String("new_window"), a);
     connect(a, SIGNAL(triggered(bool)), Application::instance(), SLOT(newMainWindow()));
-    
+
     // Standard Actions
     KStandardAction::open(this, SLOT(slotFileOpen()), actionCollection());
-    KStandardAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());  
+    KStandardAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
     KStandardAction::print(this, SLOT(printRequested()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
     KStandardAction::find(m_findBar, SLOT(show()) , actionCollection());
@@ -280,7 +280,7 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
 
-    
+
     // ============== Zoom Actions
     a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
@@ -321,7 +321,7 @@ void MainWindow::setupActions()
     a->setMenu(m_historyBackMenu);
     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
-    
+
     KStandardAction::forward(this, SLOT(slotOpenNext()) , actionCollection());
 
     // =================== Tab Actions
@@ -379,15 +379,15 @@ void MainWindow::setupTools()
     toolsMenu->addAction(actionByName(QLatin1String("clear_private_data")));
 
     toolsMenu->addSeparator();
-        
+
     KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Web Development"), this);
     webMenu->addAction(actionByName(QLatin1String("web_inspector")));
     webMenu->addAction(actionByName(QLatin1String("page_source")));
     toolsMenu->addAction(webMenu);
 
     toolsMenu->addSeparator();
-    
-    toolsMenu->addAction(actionByName(QLatin1String("bm_bar")));    
+
+    toolsMenu->addAction(actionByName(QLatin1String("bm_bar")));
     toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
 
@@ -468,7 +468,7 @@ void MainWindow::slotUpdateConfiguration()
     defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
     defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
     defaultSettings->setAttribute(QWebSettings::LocalStorageDatabaseEnabled, ReKonfig::localStorageDatabaseEnabled());
-    
+
     // Applies user defined CSS to all open webpages. If there no longer is a
     // user defined CSS removes it from all open webpages.
     defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
@@ -533,7 +533,7 @@ void MainWindow::slotUpdateActions()
 {
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
     historyBackAction->setEnabled(currentTab()->history()->canGoBack());
-    
+
     QAction *historyForwardAction = actionByName(KStandardAction::name(KStandardAction::Forward));
     historyForwardAction->setEnabled(currentTab()->history()->canGoForward());
 }
@@ -581,12 +581,12 @@ void MainWindow::printRequested(QWebFrame *frame)
     {
         printFrame = frame;
     }
-    
+
     QPrinter printer;
     QPrintPreviewDialog previewdlg(&printer, this);
-    
+
     connect(&previewdlg, SIGNAL(paintRequested(QPrinter *)), printFrame, SLOT(print(QPrinter *)));
-    
+
     previewdlg.exec();
 }
 
@@ -698,7 +698,7 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
         // save current state
         bookmarksToolBarFlag = m_bmBar->isHidden();
         m_bmBar->hide();
-        
+
         sidePanelFlag = sidePanel()->isHidden();
         sidePanel()->hide();
 
@@ -709,7 +709,7 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
     {
         // show main toolbar
         m_mainBar->show();
-        
+
         // restore previous state
         if (!bookmarksToolBarFlag)
             m_bmBar->show();
@@ -738,8 +738,7 @@ void MainWindow::slotViewPageSource()
 
         if (sourceFile.open())
         {
-            QDataStream stream(&sourceFile);
-            stream << currentTab()->page()->mainFrame()->toHtml().toUtf8();
+            sourceFile.write(currentTab()->page()->mainFrame()->toHtml().toUtf8());
 
             url = KUrl();
             url.setPath(sourceFile.fileName());
@@ -953,10 +952,10 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     QPoint p(x,y);
 
     m_popup->show(p);
-    
+
     if(popup_sav)
         delete popup_sav;
-    
+
 }
 
 
