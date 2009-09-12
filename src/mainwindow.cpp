@@ -94,8 +94,8 @@ MainWindow::MainWindow()
     , m_findBar(new FindBar(this))
     , m_sidePanel(0)
     , m_historyBackMenu(0)
-    , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, true) )
-    , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
+    , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, true, true) )
+    , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, true, true) )
     , m_ac( new KActionCollection(this) )
 {
     // enable window size "auto-save"
@@ -124,12 +124,6 @@ MainWindow::MainWindow()
     // then, setup our actions
     setupActions();
 
-    // Bookmark Menu
-    KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu(this);
-    bmMenu->setIcon(KIcon("rating"));
-    actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
-    ((KActionMenu *)actionByName("bookmarksActionMenu"))->setDelayed(false);
-
     // setting Side Panel
     setupSidePanel();
 
@@ -137,7 +131,7 @@ MainWindow::MainWindow()
     setupTools();
 
     // setting up rekonq toolbar(s)
-    setupToolbar();
+    setupToolbars();
 
     // no more status bar..
     setStatusBar(0);
@@ -159,12 +153,14 @@ SidePanel *MainWindow::sidePanel()
 }
 
 
-void MainWindow::setupToolbar()
+void MainWindow::setupToolbars()
 {
     // ============ Main ToolBar  ================================
     m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    m_mainBar->setIconDimensions(22);
     m_mainBar->setContextMenuPolicy(Qt::PreventContextMenu);
+    m_mainBar->setFloatable(false);
+    m_mainBar->setMovable(false);
+
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Back)) );
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Forward)) );
     m_mainBar->addSeparator();
@@ -176,11 +172,10 @@ void MainWindow::setupToolbar()
 
     // =========== Bookmarks ToolBar ================================
     m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    m_bmBar->setIconDimensions(16);
     m_bmBar->setAcceptDrops(true);
-    m_bmBar->setContentsMargins(0, 0, 0, 0);
-    m_bmBar->setMinimumHeight(16);
     m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_bmBar->setFloatable(false);
+    m_bmBar->setMovable(false);
 
     Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
 }
@@ -355,6 +350,12 @@ void MainWindow::setupActions()
     qa->setText( i18n("Bookmarks Toolbar") );
     qa->setIcon( KIcon("bookmark-toolbar") );
     actionCollection()->addAction(QLatin1String("bm_bar"), qa);
+    
+    // Bookmark Menu
+    KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu(this);
+    bmMenu->setIcon(KIcon("rating"));
+    bmMenu->setDelayed(false);
+    actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
 }
 
 

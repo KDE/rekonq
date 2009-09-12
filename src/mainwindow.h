@@ -73,7 +73,7 @@ public:
 private:
     void setupActions();
     void setupTools();
-    void setupToolbar();
+    void setupToolbars();
 
     void setupSidePanel();
     SidePanel *sidePanel();
@@ -148,9 +148,9 @@ private:
     KAction *m_stopReloadAction;
     KMenu *m_historyBackMenu;
 
-    KToolBar *m_bmBar;
     KToolBar *m_mainBar;
-
+    KToolBar *m_bmBar;
+    
     QString m_lastSearch;
     QString m_homePage;
 
