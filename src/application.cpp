@@ -115,7 +115,7 @@ int Application::newInstance()
     }
     else
     {
-        if(!sessionRestored())
+        if(!isSessionRestored())
         {
             // creating new window
             MainWindow *w = newMainWindow();
