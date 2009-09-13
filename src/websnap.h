@@ -2,6 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
+* Copyright (C) 2009 Nokia Corporation <qt-info@nokia.com>
 * Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
@@ -23,34 +24,42 @@
 *
 * ============================================================ */
 
+#ifndef WEB_SNAP_H
+#define WEB_SNAP_H
 
-#ifndef REKONQ_HOME_PAGE
-#define REKONQ_HOME_PAGE
 
-// Qt Includes
+#include <KUrl>
+
 #include <QtCore/QObject>
-#include <QtCore/QString>
-
-// Forward Includes
-class KBookmark;
+#include <QImage>
+#include <QWebPage>
 
 
-class HomePage : public QObject
+/**
+ * This class renders a site producing an image based
+ * on that.
+ * Heavily based on Graphics-Dojo WebSnap example (thanks!)
+ */
+class WebSnap : public QObject
 {
-Q_OBJECT
-    
+    Q_OBJECT
+
 public:
-    HomePage(QObject *parent = 0);
-    ~HomePage();
+    WebSnap(const KUrl &url, const QString &fileName);
 
-    QString rekonqHomePage();
-    
+signals:
+    void finished();
+
+private slots:
+    void load();
+    void saveResult(bool ok);
+
 private:
-    QString speedDial();
-    QString searchEngines();
-    QString recentlyClosedTabs();
-
-    QString m_homePagePath;
+    QWebPage m_page;
+    KUrl m_url;
+    QImage m_image;
+    QString m_fileName;
+    QSize m_targetSize;
 };
 
-#endif // REKONQ_HOME_PAGE
+#endif // WEB_SNAP_H

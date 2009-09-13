@@ -17,74 +17,38 @@ font-family: sans-serif;
 font-size: 100%;
 }
 
-/* ------------------------------------------------------- */
-
-div#container{
-margin: 0;
-}
-
-div#header{
-margin: 0;
-padding: 2px;
-background-color:#00f;
-color: #ff0;
-text-align: center;
-}
-
-div#footer{
-background-color:#00f;
-color: #ff0;
-text-align: center;
+#header{
+text-align:right;
+padding: 10px;
 }
 
 /* ------------------------------------------------------- */
 
-h2{
+h1{
 color: #00f;
 }
 
-td{
-padding: 2em;
-vertical-align: top;
+.float {
+  float: right;
+  width: 30%;
+  background-color: orange;
+  border-width: 2px;
+  border-style: solid;
+  border-color: black;
+  padding: 10px;
+  margin: 8px;
+  font-weight: bold;
+  color: white;
+  clear: right;
 }
 
-td.bookmarks{
-  border-left: 2px solid #0000FF;
-  border-top-width: 0px;
-  border-bottom-width: 0px;
-}
-
-.indent {
-margin-left: 2em;
+.thumbnail 
+{
+float:left;
+width:230px;
+margin:0 10px 10px 10px;
 }
 </style>
-
-<!-- =================================================================================== -->
-
-<script type="text/javascript">
-function ToggleVisibility(image, element)
-{
-    // Find the image.
-    var image = document.getElementById(image)
-
-    // Find the element to hide/unhide.
-    var element = document.getElementById(element)
-
-    // Check the element's current state.
-    if (element.style.display == "none")
-    {
-        // If hidden, unhide it.
-        element.style.display = "block";
-        image.src = "%1open.png";
-    }
-    else
-    {
-        // If not hidden, hide it.
-        element.style.display = "none";
-        image.src = "%1closed.png";
-    }
-}
-</script>
 
 <!-- =================================================================================== -->
 
@@ -93,24 +57,13 @@ function ToggleVisibility(image, element)
 <body>
 
 <div id="header">
-<h1>rekonq home page</h1>
+<h1>rekonq</h1>
 </div>
 
-<table width="100%">
-<tr>
-<td width="40%"><h2>History</h2></td>
-<td width="60%"><h2>Bookmarks</h2></td>
-</tr>
 
-<tr>
-<td>%2</td>
-<td class="bookmarks">%3</td>
-</tr>
-</table>
-
-<div id="footer">
-rekonq, lightweight Web Browser for KDE based on Webkit.
-</div>
+<div class="float">%1</div>
+<div class="float">%2</div>
+<div>%3</div>
 
 </body>
 </html>

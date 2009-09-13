@@ -32,6 +32,7 @@
 #include "historymodels.h"
 #include "bookmarks.h"
 #include "application.h"
+#include "websnap.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -46,7 +47,6 @@ HomePage::HomePage(QObject *parent)
     : QObject(parent)
 {
     m_homePagePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
-    m_imagesPath = "file://" + KStandardDirs::locate("appdata", "pics/");
 }
 
 
@@ -65,114 +65,156 @@ QString HomePage::rekonqHomePage()
         return QString("");
     }
 
-    QString history = fillHistory();
-
-    QString bookmarks = fillBookmarks();
+    QString speed = speedDial();
+    QString search = searchEngines();
+    QString closedtabs = recentlyClosedTabs();
+    
 
     QString html = QString(QLatin1String(file.readAll()))
-                        .arg(m_imagesPath)
-                        .arg(history)
-                        .arg(bookmarks);
+                        .arg(search)
+                        .arg(closedtabs)
+                        .arg(speed)
+                        ;
 
     return html;
 }
 
 
-QString HomePage::fillHistory()
+QString HomePage::speedDial()
 {
-    QString history = QString();
-    HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
+    KUrl::List ul ;
+    ul << KUrl("http://www.google.it") << KUrl("http://www.kde.org") << KUrl("http://rekonq.sourceforge.net")
+    << KUrl("http://www.slacky.eu") << KUrl("http://kde-apps.org") << KUrl("http://www.kernel.org") 
+    << KUrl("http://it.wikipedia.org") << KUrl("http://www.adjam.org") << KUrl("http://adjamblog.wordpress.com");
     
-    int i = 0;
-    do
+    QString speed = QString();
+    for(int i = 0; i< ul.count(); ++i)
     {
-        QModelIndex index = model->index(i, 0, QModelIndex() );
-        if(model->hasChildren(index))
+        KUrl url = ul.at(i);
+        QString fileName = QString("thumb") + QString::number(i) + QString(".png");
+        QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + fileName, true);
+        if( !QFile::exists(path) )
         {
-            QString s = QString::number(i);
-            history += createSubMenu(index.data().toString(), s);
-            history += "<p id=\"y" + s + "\" class=\"indent\" style=\"display:none\">";
-            for(int j=0; j< model->rowCount(index); ++j)
-            {
-                QModelIndex son = model->index(j, 0, index );
-// FIXME add an icon to each history item   history += "<img src=\"" + ciao + "\" alt=\"icon\" />";
-                history += QString("<a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">") + 
-                        son.data().toString() + QString("</a><br />");
-            }
-            history += "</p>";
+            kDebug() << "websnap";
+            WebSnap *ws = new WebSnap(url, fileName);
         }
-        else
-        {
-            history += QString("<p> NO CHILDREN: ") + index.data().toString() + QString("</p>");
-        }
-        i++;
-    }
-    while( model->hasIndex( i , 0 , QModelIndex() ) );
-
-    return history;
-    
-}
-
-
-QString HomePage::fillBookmarks()
-{
-    KBookmarkGroup toolBarGroup = Application::bookmarkProvider()->rootGroup();
-    if (toolBarGroup.isNull())
-    {
-        return QString("Error retrieving bookmarks!");
-    }
-
-    QString str = QString("");
-    KBookmark bookmark = toolBarGroup.first();
-    while (!bookmark.isNull())
-    {
-        str += createBookItem(bookmark);
-        bookmark = toolBarGroup.next(bookmark);
-    }
-    
-    return str;
-}
-
-
-QString HomePage::createSubMenu(const QString &item, const QString &s)
-{
-    QString menu = "<div onClick=\"ToggleVisibility('x" + s + "','y" + s + "')\">";
-
-    menu += "<p><img id=\"x" + s + "\" src=\"" + m_imagesPath + "closed.png\" /> <b><u>" + item + "</u></b></p></div>";
-    return menu;
-}
-
-
-QString HomePage::createBookItem(const KBookmark &bookmark)
-{
-    static int i = 0;
-    
-    if (bookmark.isGroup())
-    {
-        QString result = QString("");
-        QString ss = "b" + QString::number(i);
-        i++;
         
-        KBookmarkGroup group = bookmark.toGroup();
-        KBookmark bm = group.first();
-        result += createSubMenu( bookmark.text() , ss );
-        result += "<p id=\"y" + ss + "\" class=\"indent\" style=\"display:none\">";
-
-        while (!bm.isNull())
-        {
-            result += createBookItem(bm);    //menuAction->addAction(fillBookmarkBar(bm));
-            bm = group.next(bm);
-        }
-        result += "</p>";
-        return result;
+        speed += "<img class=\"thumbnail\" src=\"" + path + "\" width=\"200\" alt=\"" + url.prettyUrl() + "\" />";
     }
- 
-    if(bookmark.isSeparator())
-    {
-        return QString("<hr />");
-    }
-    
-    QString str = ""; // FIXME Add icon "<img src=\"" + KStandardDirs::findResource( "icon", bookmark.icon() + ".png" ) + "\" alt=\"icon\" />";
-    str += "<a href=\"" + bookmark.url().prettyUrl() + "\">" + bookmark.text() + "</a><br />";
-    return str;
+    return speed;
 }
+
+
+QString HomePage::searchEngines()
+{
+    QString engines = "engines";
+    
+    return engines;
+}
+
+
+QString HomePage::recentlyClosedTabs()
+{
+    QString closedtabs = "closed";
+
+    return closedtabs;
+}
+
+// QString HomePage::fillHistory()
+// {
+//     QString history = QString();
+//     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
+//     
+//     int i = 0;
+//     do
+//     {
+//         QModelIndex index = model->index(i, 0, QModelIndex() );
+//         if(model->hasChildren(index))
+//         {
+//             QString s = QString::number(i);
+//             history += createSubMenu(index.data().toString(), s);
+//             history += "<p id=\"y" + s + "\" class=\"indent\" style=\"display:none\">";
+//             for(int j=0; j< model->rowCount(index); ++j)
+//             {
+//                 QModelIndex son = model->index(j, 0, index );
+// // FIXME add an icon to each history item   history += "<img src=\"" + ciao + "\" alt=\"icon\" />";
+//                 history += QString("<a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">") + 
+//                         son.data().toString() + QString("</a><br />");
+//             }
+//             history += "</p>";
+//         }
+//         else
+//         {
+//             history += QString("<p> NO CHILDREN: ") + index.data().toString() + QString("</p>");
+//         }
+//         i++;
+//     }
+//     while( model->hasIndex( i , 0 , QModelIndex() ) );
+// 
+//     return history;
+//     
+// }
+// 
+// 
+// QString HomePage::fillBookmarks()
+// {
+//     KBookmarkGroup toolBarGroup = Application::bookmarkProvider()->rootGroup();
+//     if (toolBarGroup.isNull())
+//     {
+//         return QString("Error retrieving bookmarks!");
+//     }
+// 
+//     QString str = QString("");
+//     KBookmark bookmark = toolBarGroup.first();
+//     while (!bookmark.isNull())
+//     {
+//         str += createBookItem(bookmark);
+//         bookmark = toolBarGroup.next(bookmark);
+//     }
+//     
+//     return str;
+// }
+// 
+// 
+// QString HomePage::createSubMenu(const QString &item, const QString &s)
+// {
+//     QString menu = "<div onClick=\"ToggleVisibility('x" + s + "','y" + s + "')\">";
+// 
+//     menu += "<p><img id=\"x" + s + "\" src=\"" + m_imagesPath + "closed.png\" /> <b><u>" + item + "</u></b></p></div>";
+//     return menu;
+// }
+// 
+// 
+// QString HomePage::createBookItem(const KBookmark &bookmark)
+// {
+//     static int i = 0;
+//     
+//     if (bookmark.isGroup())
+//     {
+//         QString result = QString("");
+//         QString ss = "b" + QString::number(i);
+//         i++;
+//         
+//         KBookmarkGroup group = bookmark.toGroup();
+//         KBookmark bm = group.first();
+//         result += createSubMenu( bookmark.text() , ss );
+//         result += "<p id=\"y" + ss + "\" class=\"indent\" style=\"display:none\">";
+// 
+//         while (!bm.isNull())
+//         {
+//             result += createBookItem(bm);    //menuAction->addAction(fillBookmarkBar(bm));
+//             bm = group.next(bm);
+//         }
+//         result += "</p>";
+//         return result;
+//     }
+//  
+//     if(bookmark.isSeparator())
+//     {
+//         return QString("<hr />");
+//     }
+//     
+//     QString str = ""; // FIXME Add icon "<img src=\"" + KStandardDirs::findResource( "icon", bookmark.icon() + ".png" ) + "\" alt=\"icon\" />";
+//     str += "<a href=\"" + bookmark.url().prettyUrl() + "\">" + bookmark.text() + "</a><br />";
+//     return str;
+// }
