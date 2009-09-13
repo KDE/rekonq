@@ -117,27 +117,25 @@ QString HomePage::searchEngines()
 {
     QString engines = "<h2>Search Engines</h2>";
     
-    KConfig config("kuriikwsfilterrc"); //Share with konqueror
-    KConfigGroup cg = config.group("General");
-    QStringList favoriteEngines;
-    favoriteEngines << "google" << "wikipedia"; //defaults
-    favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
+//     KConfig config("kuriikwsfilterrc"); //Share with konqueror
+//     KConfigGroup cg = config.group("General");
+//     QStringList favoriteEngines;
+//     favoriteEngines << "google" << "wikipedia"; //defaults
+//     favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
+// 
+//     foreach (const QString &engine, favoriteEngines)
+//     {
+//         if(!engine.isEmpty())
+//         {
+//             engines += engine + ": <input type=\"text\" name=\"" + engine + "\" /><br />";
+//         }
+//     }
 
-    foreach (const QString &engine, favoriteEngines)
-    {
-        if(!engine.isEmpty())
-        {
-            engines += engine + ": <input type=\"text\" name=\"" + engine + "\" /><br />"; 
-//             service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-//             const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
-//             data.setData(searchProviderPrefix + "some keyword");
-//             a = new KAction(service->name(), this);
-//             a->setIcon(Application::icon(KUrl(data.uri())));
-//             a->setData(searchProviderPrefix);
-//             connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
-//             searchMenu->addAction(a);
-        }
-    }
+    // Google search engine
+    engines += "<form method=\"get\" action=\"http://www.google.com/search\">";
+    engines += "<label for=\"q\">Google:</label>";
+    engines += "<input type=\"text\" name=\"q\" />";
+    engines += "</form>";
     
     return engines;
 }
@@ -155,102 +153,3 @@ QString HomePage::recentlyClosedTabs()
     }
     return closed;
 }
-
-// QString HomePage::fillHistory()
-// {
-//     QString history = QString();
-//     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
-//     
-//     int i = 0;
-//     do
-//     {
-//         QModelIndex index = model->index(i, 0, QModelIndex() );
-//         if(model->hasChildren(index))
-//         {
-//             QString s = QString::number(i);
-//             history += createSubMenu(index.data().toString(), s);
-//             history += "<p id=\"y" + s + "\" class=\"indent\" style=\"display:none\">";
-//             for(int j=0; j< model->rowCount(index); ++j)
-//             {
-//                 QModelIndex son = model->index(j, 0, index );
-// // FIXME add an icon to each history item   history += "<img src=\"" + ciao + "\" alt=\"icon\" />";
-//                 history += QString("<a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">") + 
-//                         son.data().toString() + QString("</a><br />");
-//             }
-//             history += "</p>";
-//         }
-//         else
-//         {
-//             history += QString("<p> NO CHILDREN: ") + index.data().toString() + QString("</p>");
-//         }
-//         i++;
-//     }
-//     while( model->hasIndex( i , 0 , QModelIndex() ) );
-// 
-//     return history;
-//     
-// }
-// 
-// 
-// QString HomePage::fillBookmarks()
-// {
-//     KBookmarkGroup toolBarGroup = Application::bookmarkProvider()->rootGroup();
-//     if (toolBarGroup.isNull())
-//     {
-//         return QString("Error retrieving bookmarks!");
-//     }
-// 
-//     QString str = QString("");
-//     KBookmark bookmark = toolBarGroup.first();
-//     while (!bookmark.isNull())
-//     {
-//         str += createBookItem(bookmark);
-//         bookmark = toolBarGroup.next(bookmark);
-//     }
-//     
-//     return str;
-// }
-// 
-// 
-// QString HomePage::createSubMenu(const QString &item, const QString &s)
-// {
-//     QString menu = "<div onClick=\"ToggleVisibility('x" + s + "','y" + s + "')\">";
-// 
-//     menu += "<p><img id=\"x" + s + "\" src=\"" + m_imagesPath + "closed.png\" /> <b><u>" + item + "</u></b></p></div>";
-//     return menu;
-// }
-// 
-// 
-// QString HomePage::createBookItem(const KBookmark &bookmark)
-// {
-//     static int i = 0;
-//     
-//     if (bookmark.isGroup())
-//     {
-//         QString result = QString("");
-//         QString ss = "b" + QString::number(i);
-//         i++;
-//         
-//         KBookmarkGroup group = bookmark.toGroup();
-//         KBookmark bm = group.first();
-//         result += createSubMenu( bookmark.text() , ss );
-//         result += "<p id=\"y" + ss + "\" class=\"indent\" style=\"display:none\">";
-// 
-//         while (!bm.isNull())
-//         {
-//             result += createBookItem(bm);    //menuAction->addAction(fillBookmarkBar(bm));
-//             bm = group.next(bm);
-//         }
-//         result += "</p>";
-//         return result;
-//     }
-//  
-//     if(bookmark.isSeparator())
-//     {
-//         return QString("<hr />");
-//     }
-//     
-//     QString str = ""; // FIXME Add icon "<img src=\"" + KStandardDirs::findResource( "icon", bookmark.icon() + ".png" ) + "\" alt=\"icon\" />";
-//     str += "<a href=\"" + bookmark.url().prettyUrl() + "\">" + bookmark.text() + "</a><br />";
-//     return str;
-// }
