@@ -38,6 +38,8 @@
 #include <KStandardDirs>
 #include <KIconLoader>
 #include <KDebug>
+#include <KConfig>
+#include <KConfigGroup>
 
 // Qt Includes
 #include <QFile>
@@ -109,7 +111,29 @@ QString HomePage::speedDial()
 
 QString HomePage::searchEngines()
 {
-    QString engines = "engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines ";
+    QString engines = "<h2>Search Engines</h2>";
+    
+    KConfig config("kuriikwsfilterrc"); //Share with konqueror
+    KConfigGroup cg = config.group("General");
+    QStringList favoriteEngines;
+    favoriteEngines << "google" << "wikipedia"; //defaults
+    favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
+
+    foreach (const QString &engine, favoriteEngines)
+    {
+        if(!engine.isEmpty())
+        {
+            engines += engine + ": <input type=\"text\" name=\"" + engine + "\" /><br />"; 
+//             service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
+//             const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
+//             data.setData(searchProviderPrefix + "some keyword");
+//             a = new KAction(service->name(), this);
+//             a->setIcon(Application::icon(KUrl(data.uri())));
+//             a->setData(searchProviderPrefix);
+//             connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
+//             searchMenu->addAction(a);
+        }
+    }
     
     return engines;
 }
