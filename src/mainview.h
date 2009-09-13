@@ -84,9 +84,10 @@ public:
      * with a webview inside
      * @param focused   decide if you wannna give focus 
      *                  (or not) to this new tab (default true)
+     * @param nearParent  decide if you wanna create new tab near current or not
      * @return the webview embedded in the new tab
      */
-    WebView *newWebView(bool focused = true);
+    WebView *newWebView(bool focused = true, bool nearParent = false);
     
 signals:
     // tab widget signals

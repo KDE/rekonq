@@ -35,6 +35,9 @@
     <entry name="openTabsBack" type="Bool">
         <default>false</default>
     </entry>
+    <entry name="openTabsNearCurrent" type="Bool">
+        <default>false</default>
+    </entry>
   </group>
 
 <!-- Fonts Settings -->

@@ -256,7 +256,7 @@ WebView *MainView::webView(int index) const
 }
 
 
-WebView *MainView::newWebView(bool focused)
+WebView *MainView::newWebView(bool focused, bool nearParent)
 {
     WebView *webView = new WebView;  // should be deleted on tab close?
 
@@ -274,7 +274,10 @@ WebView *MainView::newWebView(bool focused)
     connect(webView->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
-    addTab(webView, i18n("(Untitled)"));
+    if (nearParent)
+        insertTab(currentIndex() + 1, webView, i18n("(Untitled)"));
+    else
+        addTab(webView, i18n("(Untitled)"));
        
     if (focused)
     {
