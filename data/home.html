@@ -20,6 +20,7 @@ font-size: 100%;
 #header{
 text-align:right;
 padding: 10px;
+margin:5px;
 }
 
 /* ------------------------------------------------------- */
@@ -28,18 +29,27 @@ h1{
 color: #00f;
 }
 
-.float {
-  float: right;
-  width: 30%;
-  background-color: orange;
-  border-width: 2px;
-  border-style: solid;
-  border-color: black;
-  padding: 10px;
-  margin: 8px;
-  font-weight: bold;
-  color: white;
-  clear: right;
+#float {
+float: right;
+width: 30%;
+clear: right;
+}
+
+.block {
+background-color: orange;
+border-width: 2px;
+border-style: solid;
+border-color: black;
+padding: 10px;
+margin:15px;
+font-weight: bold;
+color: white;
+clear: right;
+}
+
+#left{
+width:70%;
+margin-right:30%;
 }
 
 .thumbnail 
@@ -47,7 +57,7 @@ color: #00f;
 text-align: center;
 float:left;
 width:230px;
-margin:0 10px 10px 10px;
+margin:15px;
 }
 </style>
 
@@ -62,9 +72,11 @@ margin:0 10px 10px 10px;
 </div>
 
 
-<div class="float">%1</div>
-<div class="float">%2</div>
-<div>%3</div>
+<div id="float">
+<div class="block">%1</div>
+<div class="block">%2</div>
+</div>
+<div id="left">%3</div>
 
 </body>
 </html>

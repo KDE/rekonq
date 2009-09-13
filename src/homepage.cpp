@@ -85,9 +85,9 @@ QString HomePage::rekonqHomePage()
 QString HomePage::speedDial()
 {
     KUrl::List ul ;
-    ul << KUrl("http://www.google.it") << KUrl("http://www.kde.org") << KUrl("http://rekonq.sourceforge.net")
+    ul << KUrl("http://www.google.com") << KUrl("http://www.kde.org") << KUrl("http://sourceforge.net")
     << KUrl("http://www.slacky.eu") << KUrl("http://kde-apps.org") << KUrl("http://www.kernel.org") 
-    << KUrl("http://it.wikipedia.org") << KUrl("http://www.adjam.org") << KUrl("http://adjamblog.wordpress.com");
+    << KUrl("http://it.wikipedia.org") << KUrl("http://www.adjam.org") << KUrl("http://wordpress.com");
     
     QString speed = QString();
     for(int i = 0; i< ul.count(); ++i)
@@ -101,9 +101,11 @@ QString HomePage::speedDial()
             WebSnap *ws = new WebSnap(url, fileName);
         }
         
-        speed += "<div class=\"thumbnail\"><img src=\"" + path + "\" width=\"200\" alt=\"" + url.prettyUrl() + "\" />";
+        speed += "<div class=\"thumbnail\">";
+        speed += "<a href=\"" + url.prettyUrl() + "\">";
+        speed += "<img src=\"" + path + "\" width=\"200\" alt=\"" + url.prettyUrl() + "\" />";
         speed += "<br />";
-        speed += "<a href=\"" + url.prettyUrl() + "\">" + url.prettyUrl() + "</a></div>";
+        speed += url.prettyUrl() + "</a></div>";
     }
     return speed;
 }
@@ -141,7 +143,7 @@ QString HomePage::searchEngines()
 
 QString HomePage::recentlyClosedTabs()
 {
-    QString closedtabs = "engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines closed";
+    QString closedtabs = "<h2>Recently closed tabs</h2>";
 
     return closedtabs;
 }
