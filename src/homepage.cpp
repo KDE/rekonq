@@ -99,7 +99,9 @@ QString HomePage::speedDial()
             WebSnap *ws = new WebSnap(url, fileName);
         }
         
-        speed += "<img class=\"thumbnail\" src=\"" + path + "\" width=\"200\" alt=\"" + url.prettyUrl() + "\" />";
+        speed += "<div class=\"thumbnail\"><img src=\"" + path + "\" width=\"200\" alt=\"" + url.prettyUrl() + "\" />";
+        speed += "<br />";
+        speed += "<a href=\"" + url.prettyUrl() + "\">" + url.prettyUrl() + "</a></div>";
     }
     return speed;
 }
@@ -107,7 +109,7 @@ QString HomePage::speedDial()
 
 QString HomePage::searchEngines()
 {
-    QString engines = "engines";
+    QString engines = "engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines ";
     
     return engines;
 }
@@ -115,7 +117,7 @@ QString HomePage::searchEngines()
 
 QString HomePage::recentlyClosedTabs()
 {
-    QString closedtabs = "closed";
+    QString closedtabs = "engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines engines closed";
 
     return closedtabs;
 }
