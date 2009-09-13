@@ -37,7 +37,7 @@ static const char description[] =
     I18N_NOOP("A lightweight Web Browser for KDE based on WebKit");
 
 
-static const char version[] = "0.2.56";
+static const char version[] = "0.2.57";
 
 
 int main(int argc, char **argv)
