@@ -90,14 +90,6 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
-    m_requestedUrl = request.url();
-
-    if (m_requestedUrl.scheme() == QLatin1String("mailto"))
-    {
-        KToolInvocation::invokeMailer(m_requestedUrl);
-        return false;
-    }
-
     if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
         Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);
@@ -105,6 +97,14 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         m_pressedButtons = Qt::NoButton;
         return false;
     }
+
+    if (request.url().scheme() == QLatin1String("mailto"))
+    {
+        KToolInvocation::invokeMailer(request.url());
+        return false;
+    }
+
+    m_requestedUrl = request.url();
 
     return QWebPage::acceptNavigationRequest(frame, request, type);
 }
@@ -178,7 +178,8 @@ void WebPage::manageNetworkErrors(QNetworkReply* reply)
 {
     if( reply->error() == QNetworkReply::NoError )
         return;
-    
+
+
     if( reply->url() != m_requestedUrl ) // prevent favicon loading
         return;
     
