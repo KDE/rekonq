@@ -295,3 +295,9 @@ KAction *BookmarkProvider::fillBookmarkBar(const KBookmark &bookmark)
         return new KBookmarkAction(bookmark, m_owner, this);
     }
 }
+
+
+KBookmarkGroup BookmarkProvider::rootGroup()
+{
+    return m_manager->root();
+}

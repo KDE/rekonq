@@ -236,6 +236,7 @@ private:
  * A modified QSortFilterProxyModel that always accepts
  * the root nodes in the tree
  * so filtering is only done on the children.
+ *
  * Used in the HistoryDialog.
  *
  */

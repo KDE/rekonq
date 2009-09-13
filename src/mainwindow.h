@@ -79,8 +79,8 @@ private:
     SidePanel *sidePanel();
 
 public slots:
-    void slotHome();
     void slotUpdateBrowser();
+    void slotHome();
 
     /**
      * Notifies a message in a popup
@@ -104,7 +104,7 @@ private slots:
     void slotBrowserLoading(bool);
     void slotUpdateActions();
     void slotUpdateWindowTitle(const QString &title = QString());
-
+    
     // history related
     void slotOpenPrevious();
     void slotOpenNext();
@@ -152,7 +152,6 @@ private:
     KToolBar *m_bmBar;
     
     QString m_lastSearch;
-    QString m_homePage;
 
     QPointer<KPassivePopup> m_popup;
 

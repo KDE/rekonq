@@ -1,5 +1,5 @@
 INSTALL( 
-    FILES loading.mng
+    FILES closed.png loading.mng open.png webkit-icon.png
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
 )
 
@@ -14,11 +14,6 @@ INSTALL(
 )
 
 INSTALL( 
-    FILES notfound.html
+    FILES notfound.html home.html
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/htmls
-)
-
-INSTALL( 
-    FILES webkit-icon.png
-    DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
 )

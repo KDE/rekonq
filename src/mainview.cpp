@@ -41,6 +41,7 @@
 #include "urlbar.h"
 #include "webview.h"
 #include "sessionmanager.h"
+#include "homepage.h"
 
 // KDE Includes
 #include <KUrl>
@@ -295,9 +296,18 @@ void MainView::newTab()
     urlBar()->setUrl(KUrl(""));
     urlBar()->setFocus();
     
-    if (ReKonfig::newTabsOpenHomePage())
+    HomePage p;
+    
+    switch(ReKonfig::newTabsBehaviour())
     {
-        w->load(QUrl(ReKonfig::homePage()));
+    case 0:
+        w->setHtml( p.rekonqHomePage() );
+        break;
+    case 2:
+        w->load( QUrl(ReKonfig::homePage()) );
+        break;
+    default:
+        break;
     }
 }
 

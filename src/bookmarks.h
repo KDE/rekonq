@@ -200,6 +200,12 @@ public:
      */
     QAction *actionByName(const QString &name);
 
+    /**
+     * returns Bookmark Manager root group
+     *
+     * @return the root bookmark group
+     */
+    KBookmarkGroup rootGroup();
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
