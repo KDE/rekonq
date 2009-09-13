@@ -53,9 +53,6 @@ SessionManager::SessionManager(QObject *parent)
 
 SessionManager::~SessionManager()
 {
-    // rekonq is closing well. no need for session file
-    QFile sessionFile(m_sessionFilePath);
-    sessionFile.remove();
 }
 
 
@@ -110,7 +107,5 @@ bool SessionManager::restoreSession()
         }
     }
 
-    // session is restored. remove session file.
-    sessionFile.remove();
     return true;
 }

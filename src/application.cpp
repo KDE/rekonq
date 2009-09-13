@@ -84,11 +84,6 @@ Application::~Application()
 
 int Application::newInstance()
 {
-    if( isSessionRestored() && sessionManager()->restoreSession() )
-    {
-            return 1;
-    }
-    
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
@@ -120,9 +115,12 @@ int Application::newInstance()
     }
     else
     {
-        // creating new window
-        MainWindow *w = newMainWindow();
-        w->slotHome();
+        if(!sessionRestored())
+        {
+            // creating new window
+            MainWindow *w = newMainWindow();
+            w->slotHome();
+        }
     }
         
     return 0;

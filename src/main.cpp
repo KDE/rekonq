@@ -26,6 +26,7 @@
 
 // Local Includes
 #include "application.h"
+#include "sessionmanager.h"
 
 // KDE Includes
 #include <KAboutData>
@@ -127,5 +128,11 @@ int main(int argc, char **argv)
     }
 
     Application app;
+
+    if( app.isSessionRestored() )
+    {
+        Application::sessionManager()->restoreSession();
+    }
+    
     return app.exec();
 }
