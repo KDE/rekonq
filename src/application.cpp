@@ -122,7 +122,7 @@ int Application::newInstance()
     {
         // creating new window
         MainWindow *w = newMainWindow();
-        w->mainView()->slotHome();
+        w->slotHome();
     }
         
     return 0;

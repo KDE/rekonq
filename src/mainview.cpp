@@ -296,7 +296,19 @@ void MainView::newTab()
     urlBar()->setUrl(KUrl(""));
     urlBar()->setFocus();
     
-    slotHome();
+    HomePage p;
+    
+    switch(ReKonfig::newTabsBehaviour())
+    {
+    case 0:
+        w->setHtml( p.rekonqHomePage() );
+        break;
+    case 2:
+        w->load( QUrl(ReKonfig::homePage()) );
+        break;
+    default:
+        break;
+    }
 }
 
 
@@ -569,23 +581,4 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event) //WARNING Need to be fi
 void MainView::resizeEvent(QResizeEvent *event)
 {
     KTabWidget::resizeEvent(event);
-}
-
-
-void MainView::slotHome()
-{
-    WebView *w = currentWebView();
-    HomePage p;
-    
-    switch(ReKonfig::newTabsBehaviour())
-    {
-    case 0:
-        w->setHtml( p.rekonqHomePage(), QUrl());
-        break;
-    case 2:
-        w->load( QUrl(ReKonfig::homePage()) );
-        break;
-    default:
-        break;
-    }
 }

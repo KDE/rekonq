@@ -110,8 +110,6 @@ public slots:
      */
     void newTab();
 
-    void slotHome();
-    
     void slotCloneTab(int index = -1);
     void slotCloseTab(int index = -1);
     void slotCloseOtherTabs(int index);

@@ -80,6 +80,7 @@ private:
 
 public slots:
     void slotUpdateBrowser();
+    void slotHome();
 
     /**
      * Notifies a message in a popup
@@ -103,7 +104,7 @@ private slots:
     void slotBrowserLoading(bool);
     void slotUpdateActions();
     void slotUpdateWindowTitle(const QString &title = QString());
-
+    
     // history related
     void slotOpenPrevious();
     void slotOpenNext();

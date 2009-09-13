@@ -55,7 +55,6 @@ private slots:
     void saveSettings();
 
     void setHomeToCurrentPage();
-    void checkLineEnable(int);
 };
 
 #endif // SETTINGS_H

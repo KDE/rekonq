@@ -11,6 +11,9 @@
 
 <!-- General Settings -->
   <group name="General">
+    <entry name="useNewTabPage" type="Bool">
+        <default>true</default>
+    </entry>
     <entry name="newTabsBehaviour" type="Int">
         <default>0</default>
     </entry>
