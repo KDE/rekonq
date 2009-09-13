@@ -32,6 +32,8 @@
 #include "historymodels.h"
 #include "bookmarks.h"
 #include "application.h"
+#include "mainwindow.h"
+#include "mainview.h"
 #include "websnap.h"
 
 // KDE Includes
@@ -143,9 +145,15 @@ QString HomePage::searchEngines()
 
 QString HomePage::recentlyClosedTabs()
 {
-    QString closedtabs = "<h2>Recently closed tabs</h2>";
+    QString closed = "<h2>Recently closed tabs</h2>";
 
-    return closedtabs;
+    KUrl::List links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
+    
+    foreach(const KUrl &url, links)
+    {
+        closed += "<a href=\"" + url.prettyUrl() + "\">" + url.prettyUrl() + "</a><br />";
+    }
+    return closed;
 }
 
 // QString HomePage::fillHistory()

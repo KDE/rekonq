@@ -176,6 +176,8 @@ void MainView::clear()
     /// TODO What exactly do we need to clear here?
     m_urlBar->clearHistory();
     m_urlBar->clear();
+
+    m_recentlyClosedTabs.clear();
 }
 
 
@@ -403,11 +405,13 @@ void MainView::slotCloseTab(int index)
             int risp = KMessageBox::questionYesNo(this,
                         i18n("You have modified this page and when closing it you would lose the modifications.\n"
                              "Do you really want to close this page?\n"),
-                        i18n("Do you really want to close this page?"));
+                        i18n("Closing tab confirmation"));
             if (risp == KMessageBox::No)
                 return;
         }
         hasFocus = tab->hasFocus();
+        
+        m_recentlyClosedTabs.prepend(tab->url());
     }
 
     QWidget *webView = widget(index);
@@ -582,4 +586,10 @@ void MainView::mouseDoubleClickEvent(QMouseEvent *event) //WARNING Need to be fi
 void MainView::resizeEvent(QResizeEvent *event)
 {
     KTabWidget::resizeEvent(event);
+}
+
+
+KUrl::List MainView::recentlyClosedTabs()
+{
+    return m_recentlyClosedTabs;
 }
