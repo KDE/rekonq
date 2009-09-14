@@ -274,7 +274,8 @@ WebView *MainView::newWebView(bool focused)
     connect(webView->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
-    addTab(webView, i18n("(Untitled)"));
+    // opening tab NEAR the previous
+    insertTab(currentIndex() + 1, webView, i18n("(Untitled)"));
        
     if (focused)
     {
