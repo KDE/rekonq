@@ -31,7 +31,6 @@
 
 // KDE Includes
 #include <KConfigDialog>
-#include <KProgressDialog>
 
 // Forward Declarations
 class QWidget;
@@ -51,15 +50,11 @@ private:
     Private* const d;
     void setWebSettingsToolTips();
 
-    KProgressDialog *m_progress;
 private slots:
     void readConfig();
     void saveSettings();
 
     void setHomeToCurrentPage();
-
-    void updateSnaps();
-    void polish();
 };
 
 #endif // SETTINGS_H

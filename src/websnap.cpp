@@ -65,7 +65,6 @@ void WebSnap::saveResult(bool ok)
     if (!ok) 
     {
         kDebug() << "Error loading site..";
-        emit finished();
         return;
     }
 
@@ -85,7 +84,8 @@ void WebSnap::saveResult(bool ok)
     m_image = m_image.scaled(m_targetSize, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
     QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + m_fileName, true);
-    m_image.save( path );
-
-    emit finished();
+    if( m_image.save(path) )
+    {
+        emit finished();
+    }
 }

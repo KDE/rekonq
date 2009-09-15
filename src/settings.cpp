@@ -139,7 +139,6 @@ Private::Private(SettingsDialog *parent)
 SettingsDialog::SettingsDialog(QWidget *parent)
         : KConfigDialog(parent, "rekonfig", ReKonfig::self())
         , d(new Private(this))
-        , m_progress(0)
 {
     setFaceType(KPageDialog::List);
     showButtonSeparator(true);
@@ -156,7 +155,6 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
     connect(this, SIGNAL(okClicked()), this, SLOT(saveSettings()));
-    connect(this, SIGNAL(okClicked()), this, SLOT(updateSnaps()));
         
     setWebSettingsToolTips();
 }
@@ -252,30 +250,4 @@ void SettingsDialog::setHomeToCurrentPage()
     {
         d->generalUi.kcfg_homePage->setText(webView->url().prettyUrl());
     }
-}
-
-
-void SettingsDialog::updateSnaps()
-{
-    if(hasChanged())
-    {
-        QStringList urls = ReKonfig::previewUrls();
-        for(int i=0; i<9; ++i)
-        {
-            QString fileName = QString("thumb") + QString::number(i) + QString(".png");
-            WebSnap *ws = new WebSnap(urls.at(i), fileName);
-            connect(ws, SIGNAL(finished()), this, SLOT(polish()));
-        }
-        m_progress = new KProgressDialog(this, i18n("Loading..."), i18n("Retrieving site images..."));
-        m_progress->progressBar()->setRange(0,8);
-        m_progress->show();
-    }
-}
-
-
-void SettingsDialog::polish()
-{
-    WebSnap *ws = qobject_cast<WebSnap*>(sender());
-    delete ws;
-    m_progress->progressBar()->setValue( m_progress->progressBar()->value() + 1);
 }

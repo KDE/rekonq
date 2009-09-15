@@ -40,7 +40,7 @@ class HomePage : public QObject
 Q_OBJECT
     
 public:
-    HomePage(QObject *parent = 0);
+    HomePage(QObject *parent);
     ~HomePage();
 
     QString rekonqHomePage();

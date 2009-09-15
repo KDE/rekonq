@@ -97,7 +97,15 @@ QString HomePage::speedDial()
     {
         QString fileName = QString("thumb") + QString::number(i) + QString(".png");
         QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + fileName, true);
-        
+        if( !QFile::exists(path) )
+        {
+            kDebug() << "websnap" << i << "=========================================================";
+            WebSnap *ws = new WebSnap(urls.at(i), fileName);
+            
+            // we need polish being in an extant object!!
+            connect(ws, SIGNAL(finished()), Application::instance()->mainWindow()->mainView(), SLOT(polish()));
+        }
+
         speed += "<div class=\"thumbnail\">";
         speed += "<a href=\"" + urls.at(i) + "\">";
         speed += "<img src=\"" + path + "\" width=\"200\" alt=\"" + names.at(i) + "\" />";

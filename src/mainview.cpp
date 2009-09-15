@@ -42,6 +42,7 @@
 #include "webview.h"
 #include "sessionmanager.h"
 #include "homepage.h"
+#include "websnap.h"
 
 // KDE Includes
 #include <KUrl>
@@ -299,7 +300,7 @@ void MainView::newTab()
     urlBar()->setUrl(KUrl(""));
     urlBar()->setFocus();
     
-    HomePage p;
+    HomePage p(w);
     
     switch(ReKonfig::newTabsBehaviour())
     {
@@ -592,4 +593,25 @@ void MainView::resizeEvent(QResizeEvent *event)
 KUrl::List MainView::recentlyClosedTabs()
 {
     return m_recentlyClosedTabs;
+}
+
+
+void MainView::polish()
+{
+    static int i = 0;
+    WebSnap *ws = qobject_cast<WebSnap*>(sender());
+    delete ws;
+    
+    i++;
+    if(i<9)
+    {
+        WebView *w = currentWebView();
+        HomePage p(w);
+        w->setHtml( p.rekonqHomePage() );
+        kDebug() << "ciao---------------------------------------------____";
+    }
+    else
+    {
+        kDebug() << "EROORORORORORORORORORO";
+    }
 }
