@@ -49,7 +49,8 @@ private:
     QString speedDial();
     QString searchEngines();
     QString recentlyClosedTabs();
-
+    QString fillRecentHistory();
+    
     QString m_homePagePath;
 };
 

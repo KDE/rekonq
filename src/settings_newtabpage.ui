@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>newtabpage</class>
+ <widget class="QWidget" name="newtabpage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>377</width>
+    <height>444</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Previews</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="rowCount">
+         <number>9</number>
+        </property>
+        <property name="columnCount">
+         <number>2</number>
+        </property>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <column/>
+        <column/>
+        <item row="0" column="0">
+         <property name="text">
+          <string>KDE site</string>
+         </property>
+        </item>
+        <item row="0" column="1">
+         <property name="text">
+          <string>http://www.kde.org</string>
+         </property>
+        </item>
+        <item row="1" column="0">
+         <property name="text">
+          <string>KDE apps</string>
+         </property>
+        </item>
+        <item row="1" column="1">
+         <property name="text">
+          <string>http://kde-apps.org</string>
+         </property>
+        </item>
+        <item row="2" column="0">
+         <property name="text">
+          <string>rekonq site</string>
+         </property>
+        </item>
+        <item row="2" column="1">
+         <property name="text">
+          <string>http://rekonq.sourceforge.net</string>
+         </property>
+        </item>
+        <item row="3" column="0">
+         <property name="text">
+          <string>Google</string>
+         </property>
+        </item>
+        <item row="3" column="1">
+         <property name="text">
+          <string>http://www.google.com</string>
+         </property>
+        </item>
+        <item row="4" column="0">
+         <property name="text">
+          <string>Wikipedia</string>
+         </property>
+        </item>
+        <item row="4" column="1">
+         <property name="text">
+          <string>http://wikipedia.org</string>
+         </property>
+        </item>
+        <item row="5" column="0">
+         <property name="text">
+          <string>SourceForge</string>
+         </property>
+        </item>
+        <item row="5" column="1">
+         <property name="text">
+          <string>http://sourceforge.net</string>
+         </property>
+        </item>
+        <item row="6" column="0">
+         <property name="text">
+          <string>Kernel</string>
+         </property>
+        </item>
+        <item row="6" column="1">
+         <property name="text">
+          <string>http://www.kernel.org</string>
+         </property>
+        </item>
+        <item row="7" column="0">
+         <property name="text">
+          <string>Wordpress</string>
+         </property>
+        </item>
+        <item row="7" column="1">
+         <property name="text">
+          <string>http://wordpress.com</string>
+         </property>
+        </item>
+        <item row="8" column="0">
+         <property name="text">
+          <string>Planet KDE</string>
+         </property>
+        </item>
+        <item row="8" column="1">
+         <property name="text">
+          <string>http://planetkde.org</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>blocks</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QRadioButton" name="kcfg_useRecentlyClosedTabs">
+        <property name="text">
+         <string>show last 20 visited sites</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton_2">
+        <property name="text">
+         <string>show recently closed tabs</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

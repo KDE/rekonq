@@ -46,7 +46,7 @@ class WebSnap : public QObject
 
 public:
     WebSnap(const KUrl &url, const QString &fileName);
-
+    
 signals:
     void finished();
 

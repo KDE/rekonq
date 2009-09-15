@@ -38,9 +38,11 @@
 #include "mainwindow.h"
 #include "networkaccessmanager.h"
 #include "webview.h"
+#include "websnap.h"
 
 //Ui Includes
 #include "ui_settings_general.h"
+#include "ui_settings_newtabpage.h"
 #include "ui_settings_fonts.h"
 #include "ui_settings_proxy.h"
 #include "ui_settings_webkit.h"
@@ -62,6 +64,7 @@ class Private
 {
 private:
     Ui::general generalUi;
+    Ui::newtabpage newtabpageUi;
     Ui::fonts fontsUi;
     Ui::proxy proxyUi;
     Ui::webkit webkitUi;
@@ -85,6 +88,12 @@ Private::Private(SettingsDialog *parent)
     pageItem = parent->addPage(widget , i18n("General"));
     pageItem->setIcon(KIcon("rekonq"));
 
+    widget = new QWidget;
+    newtabpageUi.setupUi(widget);
+    widget->layout()->setMargin(0);
+    pageItem = parent->addPage(widget , i18n("New Tab Page"));
+    pageItem->setIcon(KIcon("tab-new"));
+    
     widget = new QWidget;
     fontsUi.setupUi(widget);
     widget->layout()->setMargin(0);
@@ -130,6 +139,7 @@ Private::Private(SettingsDialog *parent)
 SettingsDialog::SettingsDialog(QWidget *parent)
         : KConfigDialog(parent, "rekonfig", ReKonfig::self())
         , d(new Private(this))
+        , m_progress(0)
 {
     setFaceType(KPageDialog::List);
     showButtonSeparator(true);
@@ -146,7 +156,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
     connect(this, SIGNAL(okClicked()), this, SLOT(saveSettings()));
-    
+    connect(this, SIGNAL(okClicked()), this, SLOT(updateSnaps()));
+        
     setWebSettingsToolTips();
 }
 
@@ -177,6 +188,23 @@ void SettingsDialog::setWebSettingsToolTips()
 // we need this function to UPDATE the config widget data..
 void SettingsDialog::readConfig()
 {
+    // ====== New Tab Page
+    QTableWidget *t = d->newtabpageUi.tableWidget;
+    QStringList names, urls;
+    names = ReKonfig::previewNames();
+    urls = ReKonfig::previewUrls();
+    for(int i=0; i<9; ++i)
+    {
+        QTableWidgetItem *name = new QTableWidgetItem( names.at(i) );
+        t->setItem(i,0,name);
+        QTableWidgetItem *url = new QTableWidgetItem( urls.at(i) );
+        t->setItem(i,1,url);
+    }
+
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+    
+    
     // ======= Fonts
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
 
@@ -190,6 +218,17 @@ void SettingsDialog::readConfig()
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
+    QTableWidget *t = d->newtabpageUi.tableWidget;
+    QStringList names, urls;
+    for(int i=0; i<9; ++i)
+    {
+        names << t->item(i,0)->text();
+        urls << t->item(i,1)->text();
+    }
+
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+    
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
     d->cookiesModule->save();
@@ -213,4 +252,30 @@ void SettingsDialog::setHomeToCurrentPage()
     {
         d->generalUi.kcfg_homePage->setText(webView->url().prettyUrl());
     }
+}
+
+
+void SettingsDialog::updateSnaps()
+{
+    if(hasChanged())
+    {
+        QStringList urls = ReKonfig::previewUrls();
+        for(int i=0; i<9; ++i)
+        {
+            QString fileName = QString("thumb") + QString::number(i) + QString(".png");
+            WebSnap *ws = new WebSnap(urls.at(i), fileName);
+            connect(ws, SIGNAL(finished()), this, SLOT(polish()));
+        }
+        m_progress = new KProgressDialog(this, i18n("Loading..."), i18n("Retrieving site images..."));
+        m_progress->progressBar()->setRange(0,8);
+        m_progress->show();
+    }
+}
+
+
+void SettingsDialog::polish()
+{
+    WebSnap *ws = qobject_cast<WebSnap*>(sender());
+    delete ws;
+    m_progress->progressBar()->setValue( m_progress->progressBar()->value() + 1);
 }

@@ -33,6 +33,7 @@
 
 #include <QSize>
 #include <QWebFrame>
+#include <QWebSettings>
 #include <QPainter>
 #include <QTimer>
 
@@ -43,10 +44,12 @@ WebSnap::WebSnap(const KUrl &url, const QString &fileName)
     , m_image(QImage())
     , m_fileName(fileName)
 {
+    // this to not register websnap history
+    m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
+    
     m_targetSize = QSize(200, 150);
     connect(&m_page, SIGNAL(loadFinished(bool)), this, SLOT(saveResult(bool)));
     QTimer::singleShot(0, this, SLOT(load()));
-
 }
 
 

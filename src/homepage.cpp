@@ -28,6 +28,9 @@
 #include "homepage.h"
 #include "homepage.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "historymodels.h"
 #include "bookmarks.h"
@@ -71,12 +74,12 @@ QString HomePage::rekonqHomePage()
 
     QString speed = speedDial();
     QString search = searchEngines();
-    QString closedtabs = recentlyClosedTabs();
+    QString lastBlock = ReKonfig::useRecentlyClosedTabs() ? recentlyClosedTabs() : fillRecentHistory(); 
     
 
     QString html = QString(QLatin1String(file.readAll()))
                         .arg(search)
-                        .arg(closedtabs)
+                        .arg(lastBlock)
                         .arg(speed)
                         ;
 
@@ -86,28 +89,20 @@ QString HomePage::rekonqHomePage()
 
 QString HomePage::speedDial()
 {
-    KUrl::List ul ;
-    ul << KUrl("http://www.google.com") << KUrl("http://www.kde.org") << KUrl("http://sourceforge.net")
-    << KUrl("http://www.slacky.eu") << KUrl("http://kde-apps.org") << KUrl("http://www.kernel.org") 
-    << KUrl("http://it.wikipedia.org") << KUrl("http://www.adjam.org") << KUrl("http://wordpress.com");
+    QStringList names = ReKonfig::previewNames();
+    QStringList urls = ReKonfig::previewUrls();
     
     QString speed = QString();
-    for(int i = 0; i< ul.count(); ++i)
+    for(int i = 0; i< urls.count(); ++i)
     {
-        KUrl url = ul.at(i);
         QString fileName = QString("thumb") + QString::number(i) + QString(".png");
         QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + fileName, true);
-        if( !QFile::exists(path) )
-        {
-            kDebug() << "websnap";
-            WebSnap *ws = new WebSnap(url, fileName);
-        }
         
         speed += "<div class=\"thumbnail\">";
-        speed += "<a href=\"" + url.prettyUrl() + "\">";
-        speed += "<img src=\"" + path + "\" width=\"200\" alt=\"" + url.prettyUrl() + "\" />";
+        speed += "<a href=\"" + urls.at(i) + "\">";
+        speed += "<img src=\"" + path + "\" width=\"200\" alt=\"" + names.at(i) + "\" />";
         speed += "<br />";
-        speed += url.prettyUrl() + "</a></div>";
+        speed += names.at(i) + "</a></div>";
     }
     return speed;
 }
@@ -117,20 +112,6 @@ QString HomePage::searchEngines()
 {
     QString engines = "<h2>Search Engines</h2>";
     
-//     KConfig config("kuriikwsfilterrc"); //Share with konqueror
-//     KConfigGroup cg = config.group("General");
-//     QStringList favoriteEngines;
-//     favoriteEngines << "google" << "wikipedia"; //defaults
-//     favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
-// 
-//     foreach (const QString &engine, favoriteEngines)
-//     {
-//         if(!engine.isEmpty())
-//         {
-//             engines += engine + ": <input type=\"text\" name=\"" + engine + "\" /><br />";
-//         }
-//     }
-
     // Google search engine
     engines += "<form method=\"get\" action=\"http://www.google.com/search\">";
     engines += "<label for=\"q\">Google:</label>";
@@ -144,12 +125,52 @@ QString HomePage::searchEngines()
 QString HomePage::recentlyClosedTabs()
 {
     QString closed = "<h2>Recently closed tabs</h2>";
-
+    closed += "<ul>";
+    
     KUrl::List links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
     
     foreach(const KUrl &url, links)
     {
-        closed += "<a href=\"" + url.prettyUrl() + "\">" + url.prettyUrl() + "</a><br />";
+        closed += "<li><a href=\"" + url.prettyUrl() + "\">" + url.prettyUrl() + "</a></li>";
     }
+    
+    closed += "</ul>";
     return closed;
+}
+
+
+QString HomePage::fillRecentHistory()
+{
+    QString history = "<h2>Last 20 visited sites</h2>";
+    history += "<ul>";
+    
+    HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
+    
+    int i = 0;
+    do
+    {
+        QModelIndex index = model->index(i, 0, QModelIndex() );
+        if(model->hasChildren(index))
+        {
+            for(int j=0; j< model->rowCount(index) && i<20 ; ++j)
+            {
+                QModelIndex son = model->index(j, 0, index );
+
+                history += "<li>";
+                history += QString("<a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">");
+                history += son.data().toString();
+                history += QString("</a>");
+                history += "</li>";
+                
+                i++;
+            }
+        }
+        i++;
+    }
+    while( i<20 || model->hasIndex( i , 0 , QModelIndex() ) );
+
+    history += "<ul>";
+    
+    return history;
+    
 }
