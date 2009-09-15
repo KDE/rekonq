@@ -37,7 +37,6 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
-#include "websnap.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -99,7 +98,7 @@ QString HomePage::speedDial()
         
         speed += "<div class=\"thumbnail\">";
         speed += "<a href=\"" + urls.at(i) + "\">";
-        speed += "<object type=\"application/x-qt-plugin\"; classId=\"WebView\" name=\"" + pageName + "\" width=\"200\">";
+        speed += "<object type=\"application/x-qt-plugin\" data=\"" + urls.at(i) + "\" classId=\"WebView\" name=\"" + pageName + "\" width=\"200\">";
         speed += "<param name=\"load\" value=\"" + urls.at(i) + "\">"; 
         speed += "</object>";
 //         speed += "<img src=\"" + path + "\" width=\"200\" alt=\"" + names.at(i) + "\" />";

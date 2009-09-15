@@ -1,7 +1,6 @@
 ### ------- SETTING REKONQ FILES..
 
 SET( rekonq_SRCS
-    websnap.cpp
     homepage.cpp
     networkaccessmanager.cpp
     autosaver.cpp 
@@ -24,6 +23,7 @@ SET( rekonq_SRCS
     lineedit.cpp
     webpage.cpp
     sessionmanager.cpp
+    webpluginfactory.cpp
 )
 
 

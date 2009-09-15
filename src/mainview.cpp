@@ -42,7 +42,6 @@
 #include "webview.h"
 #include "sessionmanager.h"
 #include "homepage.h"
-#include "websnap.h"
 
 // KDE Includes
 #include <KUrl>

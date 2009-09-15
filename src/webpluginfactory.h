@@ -2,7 +2,6 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 Nokia Corporation <qt-info@nokia.com>
 * Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
@@ -24,42 +23,30 @@
 *
 * ============================================================ */
 
-#ifndef WEB_SNAP_H
-#define WEB_SNAP_H
+
+#ifndef WEB_PLUGIN_FACTORY_H
+#define WEB_PLUGIN_FACTORY_H
 
 
-#include <KUrl>
-
-#include <QtCore/QObject>
-#include <QImage>
-#include <QWebPage>
+#include <QtWebKit/QWebPluginFactory>
+#include <QtCore/QList>
+#include <QtGui/QWidget>
 
 
-/**
- * This class renders a site producing an image based
- * on that.
- * Heavily based on Graphics-Dojo WebSnap example (thanks!)
- */
-class WebSnap : public QObject
+class WebPluginFactory : public QWebPluginFactory
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
-    WebSnap(const KUrl &url, const QString &fileName);
-    
-signals:
-    void finished();
+    WebPluginFactory(QObject *parent);
+    ~WebPluginFactory();
 
-private slots:
-    void load();
-    void saveResult(bool ok);
+    virtual QObject *create(const QString &mimeType,
+                            const QUrl &url,
+                            const QStringList &argumentNames,
+                            const QStringList &argumentValues) const;
 
-private:
-    QWebPage m_page;
-    KUrl m_url;
-    QImage m_image;
-    QString m_fileName;
-    QSize m_targetSize;
+    virtual QList<Plugin> plugins() const;
 };
 
-#endif // WEB_SNAP_H
+#endif // WEB_PLUGIN_FACTORY_H

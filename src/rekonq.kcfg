@@ -12,10 +12,10 @@
 <!-- New Tab Page Settings -->
   <group name="NewTabPage">
     <entry name="previewNames" type="StringList">
-        <default>KDE site,Google,rekonq,SourceForge,kde-apps,kernel, wikipedia,wordpress,adjam site</default>
+        <default>KDE site,Google,rekonq</default>
     </entry>
     <entry name="previewUrls" type="StringList">
-        <default>http://www.kde.org,http://www.google.com,http://rekonq.sourceforge.net,http://sourceforge.net,http://kde-apps.org,http://www.kernel.org,http://wikipedia.org,http://wordpress.com,http://www.adjam.org</default>
+        <default>http://www.kde.org,http://www.google.com,http://rekonq.sourceforge.net</default>
     </entry>
     <entry name="useRecentlyClosedTabs" type="Bool">
         <default>false</default>

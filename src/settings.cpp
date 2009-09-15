@@ -38,7 +38,6 @@
 #include "mainwindow.h"
 #include "networkaccessmanager.h"
 #include "webview.h"
-#include "websnap.h"
 
 //Ui Includes
 #include "ui_settings_general.h"
