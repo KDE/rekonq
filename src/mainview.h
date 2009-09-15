@@ -124,8 +124,6 @@ public slots:
     void slotWebReload();
     void slotWebStop();
 
-    void polish();
-
 private slots:
     void slotCurrentChanged(int index);
 

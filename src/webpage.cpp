@@ -73,6 +73,9 @@ WebPage::WebPage(QObject *parent)
         , m_pressedButtons(Qt::NoButton)
         , m_requestedUrl()
 {
+    // Enable plugin support
+    settings()->setAttribute(QWebSettings::PluginsEnabled, true);
+   
     setForwardUnsupportedContent(true);
 
     setNetworkAccessManager(Application::networkAccessManager());

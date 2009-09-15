@@ -95,20 +95,14 @@ QString HomePage::speedDial()
     QString speed = QString();
     for(int i = 0; i< urls.count(); ++i)
     {
-        QString fileName = QString("thumb") + QString::number(i) + QString(".png");
-        QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + fileName, true);
-        if( !QFile::exists(path) )
-        {
-            kDebug() << "websnap" << i << "=========================================================";
-            WebSnap *ws = new WebSnap(urls.at(i), fileName);
-            
-            // we need polish being in an extant object!!
-            connect(ws, SIGNAL(finished()), Application::instance()->mainWindow()->mainView(), SLOT(polish()));
-        }
-
+        QString pageName = QString("page") + QString::number(i);
+        
         speed += "<div class=\"thumbnail\">";
         speed += "<a href=\"" + urls.at(i) + "\">";
-        speed += "<img src=\"" + path + "\" width=\"200\" alt=\"" + names.at(i) + "\" />";
+        speed += "<object type=\"application/x-qt-plugin\"; classId=\"WebView\" name=\"" + pageName + "\" width=\"200\">";
+        speed += "<param name=\"load\" value=\"" + urls.at(i) + "\">"; 
+        speed += "</object>";
+//         speed += "<img src=\"" + path + "\" width=\"200\" alt=\"" + names.at(i) + "\" />";
         speed += "<br />";
         speed += names.at(i) + "</a></div>";
     }

@@ -594,24 +594,3 @@ KUrl::List MainView::recentlyClosedTabs()
 {
     return m_recentlyClosedTabs;
 }
-
-
-void MainView::polish()
-{
-    static int i = 0;
-    WebSnap *ws = qobject_cast<WebSnap*>(sender());
-    delete ws;
-    
-    i++;
-    if(i<9)
-    {
-        WebView *w = currentWebView();
-        HomePage p(w);
-        w->setHtml( p.rekonqHomePage() );
-        kDebug() << "ciao---------------------------------------------____";
-    }
-    else
-    {
-        kDebug() << "EROORORORORORORORORORO";
-    }
-}
