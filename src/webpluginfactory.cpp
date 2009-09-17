@@ -58,7 +58,15 @@ QObject *WebPluginFactory::create(const QString &mimeType,
 
     WebView* w = new WebView( Application::instance()->mainWindow()->currentTab() );
     w->load(url);
-//     w->page()->setViewportSize(w->page()->mainFrame()->contentsSize());
+    QWebFrame *frame = w->page()->mainFrame();
+
+    QSize size = frame->contentsSize();
+    qreal zoom = size.height()/150.;
+    frame->setZoomFactor(zoom);
+
+    frame->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+    frame->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+    
     return w;
 }
 
