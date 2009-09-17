@@ -190,7 +190,7 @@ void SettingsDialog::readConfig()
     QStringList names, urls;
     names = ReKonfig::previewNames();
     urls = ReKonfig::previewUrls();
-    for(int i=0; i<9; ++i)
+    for(int i=0; i< urls.count(); ++i)
     {
         QTableWidgetItem *name = new QTableWidgetItem( names.at(i) );
         t->setItem(i,0,name);
