@@ -94,13 +94,10 @@ QString HomePage::speedDial()
     QString speed = QString();
     for(int i = 0; i< urls.count(); ++i)
     {
-        QString pageName = QString("page") + QString::number(i);
-        
         speed += "<div class=\"thumbnail\">";
         speed += "<a href=\"" + urls.at(i) + "\">";
         speed += "<object type=\"application/image-preview\" width=\"200\">";
         speed += "<param name=\"url\" value=\"" + urls.at(i) + "\">"; 
-        speed += "<param name=\"fileName\" value=\"" + pageName + "\">"; 
         speed += "</object>";
         speed += "<br />";
         speed += names.at(i) + "</a></div>";

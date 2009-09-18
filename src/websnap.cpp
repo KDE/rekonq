@@ -42,16 +42,13 @@
 #define HEIGHT 150
 
 
-WebSnap::WebSnap(const KUrl &url, const QString &fileName)
+WebSnap::WebSnap(const KUrl &url)
     : QObject()
     , m_url(url)
-    , m_image(new QImage(WIDTH, HEIGHT, QImage::Format_ARGB32_Premultiplied))
-    , m_fileName(fileName)
 {
     // this to not register websnap history
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
     
-    m_targetSize = QSize(200, 150);
     connect(&m_page, SIGNAL(loadFinished(bool)), this, SLOT(saveResult(bool)));
     QTimer::singleShot(0, this, SLOT(load()));
 }
@@ -59,6 +56,7 @@ WebSnap::WebSnap(const KUrl &url, const QString &fileName)
 
 void WebSnap::load()
 {
+    kDebug() << "loading..";
     m_page.mainFrame()->load(m_url);
 }
 
@@ -74,21 +72,30 @@ void WebSnap::saveResult(bool ok)
 
     // find proper size, we stick to sensible aspect ratio
     QSize size = m_page.mainFrame()->contentsSize();
-    size.setHeight(size.width() * 150 / 200);
+    size.setHeight(size.width() * HEIGHT / WIDTH );
     
     // create the target surface
-    m_image->fill(Qt::transparent);
+    m_image = QPixmap(WIDTH, HEIGHT);
+    m_image.fill(Qt::transparent);
 
     // render and rescale
-    QPainter p(m_image);
+    QPainter p(&m_image);
     m_page.setViewportSize(m_page.mainFrame()->contentsSize());
     m_page.mainFrame()->render(&p);
     p.end();
-    *m_image = (*m_image).scaled(WIDTH, HEIGHT, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+    m_image = m_image.scaled(WIDTH, HEIGHT, Qt::KeepAspectRatioByExpanding);
 
-    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + m_fileName, true);
-    if( m_image->save(path) )
+    
+    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/uno.png"), true);
+    if( m_image.save(path) )
     {
+        kDebug() << "finished";
         emit finished();
     }
+}
+
+
+QPixmap WebSnap::previewImage()
+{
+    return m_image;
 }

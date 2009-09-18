@@ -50,19 +50,17 @@ QObject *WebPluginFactory::create(const QString &mimeType,
                                   const QStringList &argumentNames,
                                   const QStringList &argumentValues) const
 {
+    kDebug() << "loading mimeType: " << mimeType;
+    
     if(mimeType == QString("application/image-preview") )
     {
-        QString url, fileName;
-        int i = 0;
-        Q_FOREACH(const QString &key, argumentNames)
+        for(int i = 0; i<argumentNames.count(); ++i)
         {
-            if(key == QString("url"))
-                url = argumentValues.at(i);
-            if(key == QString("fileName"))
-                url = argumentValues.at(i);            
-            ++i;
+            if(argumentNames.at(i) == QString("url"))
+            {
+                return new PreviewImage( argumentValues.at(i) );
+            }
         }
-        return new PreviewImage(url,fileName);
     }
 
     kDebug() << "No plugins found for" << mimeType;

@@ -28,22 +28,27 @@
 
 #include <KUrl>
 #include <KStandardDirs>
+#include <KDebug>
 
-
-PreviewImage::PreviewImage(const KUrl &url, const QString &fileName)
+PreviewImage::PreviewImage(const QString &url)
     : QLabel()
-    , m_url(url)
-    , m_fileName(fileName)
+    , ws(0)
 {
     QString path = KStandardDirs::locate("appdata", "pics/loading.mng"); //QString("thumbs/") + m_fileName, true);
     setPixmap( QPixmap(path) );
+    kDebug() << url;
+    ws = new WebSnap( KUrl(url) );
+    connect(ws, SIGNAL(finished()), this, SLOT(setSiteImage()));
 }
 
 
 PreviewImage::~PreviewImage()
 {
+    kDebug() << "bye bye..";
 }
 
-void PreviewImage::doItYourself()
+void PreviewImage::setSiteImage()
 {
+    kDebug() << "Done. works?";
+    setPixmap( ws->previewImage() );
 }

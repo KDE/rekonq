@@ -28,9 +28,10 @@
 #define PREVIEW_IMAGE_H
 
 
+#include "websnap.h"
+
 #include <QLabel>
 #include <QImage>
-#include <KUrl>
 
 
 class PreviewImage : public QLabel
@@ -38,20 +39,17 @@ class PreviewImage : public QLabel
     Q_OBJECT
 
 public:
-    explicit PreviewImage(const KUrl &url, const QString &fileName);
+    PreviewImage(const QString &url);
     
-    PreviewImage(const PreviewImage &);     // Q_DECLARE_METATYPE requires a copy-constructor
-
     ~PreviewImage();
     
 public slots:
-    void doItYourself();
+    void setSiteImage();
     
 private:
     QPixmap m_pixmap;
-    KUrl m_url;
-    QString m_fileName;
+
+    WebSnap *ws;
 };
-// Q_DECLARE_METATYPE(PreviewImage)
 
 #endif // PREVIEW_IMAGE_H

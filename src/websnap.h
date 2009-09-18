@@ -31,7 +31,7 @@
 #include <KUrl>
 
 #include <QtCore/QObject>
-#include <QImage>
+#include <QPixmap>
 #include <QWebPage>
 
 
@@ -45,9 +45,9 @@ class WebSnap : public QObject
     Q_OBJECT
 
 public:
-    WebSnap(const KUrl &url, const QString &fileName);
+    WebSnap(const KUrl &url);
     
-    QImage *previewImage();
+    QPixmap previewImage();
     
 signals:
     void finished();
@@ -59,9 +59,8 @@ private slots:
 private:
     QWebPage m_page;
     KUrl m_url;
-    QImage *m_image;
+    QPixmap m_image;
     QString m_fileName;
-    QSize m_targetSize;
 };
 
 #endif // WEB_SNAP_H
