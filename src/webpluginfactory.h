@@ -24,34 +24,29 @@
 * ============================================================ */
 
 
-#ifndef REKONQ_HOME_PAGE
-#define REKONQ_HOME_PAGE
-
-// Qt Includes
-#include <QtCore/QObject>
-#include <QtCore/QString>
-
-// Forward Includes
-class KBookmark;
+#ifndef WEB_PLUGIN_FACTORY_H
+#define WEB_PLUGIN_FACTORY_H
 
 
-class HomePage : public QObject
+#include <QtWebKit/QWebPluginFactory>
+#include <QtCore/QList>
+#include <QtGui/QWidget>
+
+
+class WebPluginFactory : public QWebPluginFactory
 {
 Q_OBJECT
-    
-public:
-    HomePage(QObject *parent);
-    ~HomePage();
 
-    QString rekonqHomePage();
-    
-private:
-    QString speedDial();
-    QString searchEngines();
-    QString recentlyClosedTabs();
-    QString fillRecentHistory();
-    
-    QString m_homePagePath;
+public:
+    WebPluginFactory(QObject *parent);
+    ~WebPluginFactory();
+
+    virtual QObject *create(const QString &mimeType,
+                            const QUrl &url,
+                            const QStringList &argumentNames,
+                            const QStringList &argumentValues) const;
+
+    virtual QList<Plugin> plugins() const;
 };
 
-#endif // REKONQ_HOME_PAGE
+#endif // WEB_PLUGIN_FACTORY_H

@@ -9,6 +9,20 @@
 <kcfgfile name="rekonqrc" />
 
 
+<!-- New Tab Page Settings -->
+  <group name="NewTabPage">
+    <entry name="previewNames" type="StringList">
+        <default>KDE site,Google,rekonq</default>
+    </entry>
+    <entry name="previewUrls" type="StringList">
+        <default>http://www.kde.org,http://www.google.com,http://rekonq.sourceforge.net</default>
+    </entry>
+    <entry name="showLastVisitedSites" type="Bool">
+        <default>true</default>
+    </entry>
+  </group>
+
+
 <!-- General Settings -->
   <group name="General">
     <entry name="useNewTabPage" type="Bool">

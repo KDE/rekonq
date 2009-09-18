@@ -41,6 +41,7 @@
 
 //Ui Includes
 #include "ui_settings_general.h"
+#include "ui_settings_newtabpage.h"
 #include "ui_settings_fonts.h"
 #include "ui_settings_proxy.h"
 #include "ui_settings_webkit.h"
@@ -62,6 +63,7 @@ class Private
 {
 private:
     Ui::general generalUi;
+    Ui::newtabpage newtabpageUi;
     Ui::fonts fontsUi;
     Ui::proxy proxyUi;
     Ui::webkit webkitUi;
@@ -85,6 +87,12 @@ Private::Private(SettingsDialog *parent)
     pageItem = parent->addPage(widget , i18n("General"));
     pageItem->setIcon(KIcon("rekonq"));
 
+    widget = new QWidget;
+    newtabpageUi.setupUi(widget);
+    widget->layout()->setMargin(0);
+    pageItem = parent->addPage(widget , i18n("New Tab Page"));
+    pageItem->setIcon(KIcon("tab-new"));
+    
     widget = new QWidget;
     fontsUi.setupUi(widget);
     widget->layout()->setMargin(0);
@@ -146,7 +154,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
     connect(this, SIGNAL(okClicked()), this, SLOT(saveSettings()));
-    
+        
     setWebSettingsToolTips();
 }
 
@@ -177,6 +185,28 @@ void SettingsDialog::setWebSettingsToolTips()
 // we need this function to UPDATE the config widget data..
 void SettingsDialog::readConfig()
 {
+    // ====== New Tab Page
+    QTableWidget *t = d->newtabpageUi.tableWidget;
+    QStringList names, urls;
+    names = ReKonfig::previewNames();
+    urls = ReKonfig::previewUrls();
+    for(int i=0; i< urls.count(); ++i)
+    {
+        QTableWidgetItem *name = new QTableWidgetItem( names.at(i) );
+        t->setItem(i,0,name);
+        QTableWidgetItem *url = new QTableWidgetItem( urls.at(i) );
+        t->setItem(i,1,url);
+    }
+
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+
+    if( ReKonfig::showLastVisitedSites() )
+        d->newtabpageUi.showLastVisitedSites->setChecked( true );
+    else
+        d->newtabpageUi.showRecentlyClosedTabs->setChecked( true );
+        
+    
     // ======= Fonts
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
 
@@ -190,6 +220,19 @@ void SettingsDialog::readConfig()
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
+    QTableWidget *t = d->newtabpageUi.tableWidget;
+    QStringList names, urls;
+    for(int i=0; i<9; ++i)
+    {
+        names << t->item(i,0)->text();
+        urls << t->item(i,1)->text();
+    }
+
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+
+    ReKonfig::setShowLastVisitedSites( d->newtabpageUi.showLastVisitedSites->isChecked() );
+
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
     d->cookiesModule->save();

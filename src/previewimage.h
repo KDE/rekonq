@@ -24,34 +24,32 @@
 * ============================================================ */
 
 
-#ifndef REKONQ_HOME_PAGE
-#define REKONQ_HOME_PAGE
-
-// Qt Includes
-#include <QtCore/QObject>
-#include <QtCore/QString>
-
-// Forward Includes
-class KBookmark;
+#ifndef PREVIEW_IMAGE_H
+#define PREVIEW_IMAGE_H
 
 
-class HomePage : public QObject
+#include "websnap.h"
+
+#include <QLabel>
+#include <QImage>
+
+
+class PreviewImage : public QLabel
 {
-Q_OBJECT
-    
-public:
-    HomePage(QObject *parent);
-    ~HomePage();
+    Q_OBJECT
 
-    QString rekonqHomePage();
+public:
+    PreviewImage(const QString &url, const QString &pos);
+    
+    ~PreviewImage();
+    
+public slots:
+    void setSiteImage();
     
 private:
-    QString speedDial();
-    QString searchEngines();
-    QString recentlyClosedTabs();
-    QString fillRecentHistory();
-    
-    QString m_homePagePath;
+    QPixmap m_pixmap;
+
+    WebSnap *ws;
 };
 
-#endif // REKONQ_HOME_PAGE
+#endif // PREVIEW_IMAGE_H

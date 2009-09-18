@@ -743,7 +743,7 @@ void MainWindow::slotHome()
     
     if(ReKonfig::useNewTabPage())
     {
-        HomePage p;
+        HomePage p(w);
         w->setHtml( p.rekonqHomePage(), QUrl());
     }
     else

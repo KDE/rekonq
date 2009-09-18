@@ -42,6 +42,7 @@
 #include "cookiejar.h"
 #include "networkaccessmanager.h"
 #include "webview.h"
+#include "webpluginfactory.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -73,6 +74,8 @@ WebPage::WebPage(QObject *parent)
         , m_pressedButtons(Qt::NoButton)
         , m_requestedUrl()
 {
+    setPluginFactory(new WebPluginFactory(this));
+    
     setForwardUnsupportedContent(true);
 
     setNetworkAccessManager(Application::networkAccessManager());

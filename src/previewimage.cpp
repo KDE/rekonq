@@ -23,35 +23,45 @@
 *
 * ============================================================ */
 
+#include "previewimage.h"
+#include "previewimage.moc"
 
-#ifndef REKONQ_HOME_PAGE
-#define REKONQ_HOME_PAGE
+#include <QFile>
 
-// Qt Includes
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <KUrl>
+#include <KStandardDirs>
+#include <KDebug>
 
-// Forward Includes
-class KBookmark;
+PreviewImage::PreviewImage(const QString &url, const QString &pos)
+    : QLabel()
+    , ws(0)
+{   
+    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rek") + pos + ".png", true);
+    
+    if(QFile::exists(path))
+    {
+        kDebug() << "exists! Loading it...";
+        m_pixmap.load(path);
+        setPixmap( m_pixmap );
+    }
+    else
+    {
+        QString path = KStandardDirs::locate("appdata", "pics/loading.mng");
+        setPixmap( QPixmap(path) );
+    
+        ws = new WebSnap( url, pos );
+        connect(ws, SIGNAL(finished()), this, SLOT(setSiteImage()));
+    }
+}
 
 
-class HomePage : public QObject
+PreviewImage::~PreviewImage()
 {
-Q_OBJECT
-    
-public:
-    HomePage(QObject *parent);
-    ~HomePage();
+    kDebug() << "bye bye..";
+}
 
-    QString rekonqHomePage();
-    
-private:
-    QString speedDial();
-    QString searchEngines();
-    QString recentlyClosedTabs();
-    QString fillRecentHistory();
-    
-    QString m_homePagePath;
-};
-
-#endif // REKONQ_HOME_PAGE
+void PreviewImage::setSiteImage()
+{
+    kDebug() << "Done. works?";
+    setPixmap( ws->previewImage() );
+}
