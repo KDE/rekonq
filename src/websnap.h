@@ -45,7 +45,7 @@ class WebSnap : public QObject
     Q_OBJECT
 
 public:
-    WebSnap(const KUrl &url);
+    WebSnap(const QString &url, const QString &pos);
     
     QPixmap previewImage();
     
@@ -58,9 +58,10 @@ private slots:
 
 private:
     QWebPage m_page;
-    KUrl m_url;
     QPixmap m_image;
-    QString m_fileName;
+
+    QString m_url;
+    QString m_pos;
 };
 
 #endif // WEB_SNAP_H

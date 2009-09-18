@@ -36,19 +36,21 @@
 #include <QWebSettings>
 #include <QPainter>
 #include <QTimer>
+#include <QFile>
 
 
 #define WIDTH  200
 #define HEIGHT 150
 
 
-WebSnap::WebSnap(const KUrl &url)
+WebSnap::WebSnap(const QString &url, const QString &pos)
     : QObject()
-    , m_url(url)
 {
+    m_url = url;
+    m_pos = pos;
+
     // this to not register websnap history
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
-    
     connect(&m_page, SIGNAL(loadFinished(bool)), this, SLOT(saveResult(bool)));
     QTimer::singleShot(0, this, SLOT(load()));
 }
@@ -57,7 +59,7 @@ WebSnap::WebSnap(const KUrl &url)
 void WebSnap::load()
 {
     kDebug() << "loading..";
-    m_page.mainFrame()->load(m_url);
+    m_page.mainFrame()->load( QUrl(m_url) );
 }
 
 
@@ -86,7 +88,7 @@ void WebSnap::saveResult(bool ok)
     m_image = m_image.scaled(WIDTH, HEIGHT, Qt::KeepAspectRatioByExpanding);
 
     
-    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/uno.png"), true);
+    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rek") + m_pos + ".png", true);
     if( m_image.save(path) )
     {
         kDebug() << "finished";

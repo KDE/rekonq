@@ -26,19 +26,32 @@
 #include "previewimage.h"
 #include "previewimage.moc"
 
+#include <QFile>
+
 #include <KUrl>
 #include <KStandardDirs>
 #include <KDebug>
 
-PreviewImage::PreviewImage(const QString &url)
+PreviewImage::PreviewImage(const QString &url, const QString &pos)
     : QLabel()
     , ws(0)
-{
-    QString path = KStandardDirs::locate("appdata", "pics/loading.mng"); //QString("thumbs/") + m_fileName, true);
-    setPixmap( QPixmap(path) );
-    kDebug() << url;
-    ws = new WebSnap( KUrl(url) );
-    connect(ws, SIGNAL(finished()), this, SLOT(setSiteImage()));
+{   
+    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rek") + pos + ".png", true);
+    
+    if(QFile::exists(path))
+    {
+        kDebug() << "exists! Loading it...";
+        m_pixmap.load(path);
+        setPixmap( m_pixmap );
+    }
+    else
+    {
+        QString path = KStandardDirs::locate("appdata", "pics/loading.mng");
+        setPixmap( QPixmap(path) );
+    
+        ws = new WebSnap( url, pos );
+        connect(ws, SIGNAL(finished()), this, SLOT(setSiteImage()));
+    }
 }
 
 

@@ -39,7 +39,7 @@ class PreviewImage : public QLabel
     Q_OBJECT
 
 public:
-    PreviewImage(const QString &url);
+    PreviewImage(const QString &url, const QString &pos);
     
     ~PreviewImage();
     
