@@ -201,8 +201,11 @@ void SettingsDialog::readConfig()
     ReKonfig::setPreviewNames(names);
     ReKonfig::setPreviewUrls(urls);
 
-    d->newtabpageUi.showLastVisitedSites->setChecked( ReKonfig::showLastVisitedSites() );
-
+    if( ReKonfig::showLastVisitedSites() )
+        d->newtabpageUi.showLastVisitedSites->setChecked( true );
+    else
+        d->newtabpageUi.showRecentlyClosedTabs->setChecked( true );
+        
     
     // ======= Fonts
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
