@@ -31,6 +31,8 @@
 #include "webview.h"
 #include "webpage.h"
 
+#include "websnap.h"
+
 #include <QWebFrame>
 
 #include "application.h"
@@ -52,22 +54,25 @@ QObject *WebPluginFactory::create(const QString &mimeType,
                                   const QStringList &argumentNames,
                                   const QStringList &argumentValues) const
 {
-    Q_UNUSED(mimeType)
-    Q_UNUSED(argumentNames)
-    Q_UNUSED(argumentValues)
+    if(mimeType == QString("application/image-preview") )
+    {
+        QString url, fileName;
+        int i = 0;
+        Q_FOREACH(const QString &key, argumentNames)
+        {
+            if(key == QString("url"))
+                url = argumentValues.at(i);
+            if(key == QString("fileName"))
+                url = argumentValues.at(i);            
+            ++i;
+        }
+        return new WebSnap(url,fileName);
+    }
 
-    WebView* w = new WebView( Application::instance()->mainWindow()->currentTab() );
-    w->load(url);
-    QWebFrame *frame = w->page()->mainFrame();
-
-    QSize size = frame->contentsSize();
-    qreal zoom = size.height()/150.;
-    frame->setZoomFactor(zoom);
-
-    frame->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
-    frame->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-    
-    return w;
+    kDebug() << "No plugins found for" << mimeType;
+    QWebView* webView = new QWebView;
+    webView->load(url);
+    return webView;
 }
 
 
@@ -76,8 +81,8 @@ QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins() const
     QList<QWebPluginFactory::Plugin> plugins;
     
     QWebPluginFactory::Plugin p;
-    p.name = "WebView";
-    p.description = "plugin for embedding WebViews";
+    p.name = "application/image-preview";
+    p.description = "plugin for embedding Web snapped images";
     plugins.append(p);
     
     return plugins;

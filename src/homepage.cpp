@@ -98,10 +98,10 @@ QString HomePage::speedDial()
         
         speed += "<div class=\"thumbnail\">";
         speed += "<a href=\"" + urls.at(i) + "\">";
-        speed += "<object type=\"application/x-qt-plugin\" data=\"" + urls.at(i) + "\" classId=\"WebView\" name=\"" + pageName + "\" width=\"200\">";
-        speed += "<param name=\"load\" value=\"" + urls.at(i) + "\">"; 
+        speed += "<object type=\"application/image-preview\" width=\"200\">";
+        speed += "<param name=\"url\" value=\"" + urls.at(i) + "\">"; 
+        speed += "<param name=\"fileName\" value=\"" + pageName + "\">"; 
         speed += "</object>";
-//         speed += "<img src=\"" + path + "\" width=\"200\" alt=\"" + names.at(i) + "\" />";
         speed += "<br />";
         speed += names.at(i) + "</a></div>";
     }
