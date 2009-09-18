@@ -200,7 +200,9 @@ void SettingsDialog::readConfig()
 
     ReKonfig::setPreviewNames(names);
     ReKonfig::setPreviewUrls(urls);
-    
+
+    d->newtabpageUi.showLastVisitedSites->setChecked( ReKonfig::showLastVisitedSites() );
+
     
     // ======= Fonts
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
@@ -225,7 +227,9 @@ void SettingsDialog::saveSettings()
 
     ReKonfig::setPreviewNames(names);
     ReKonfig::setPreviewUrls(urls);
-    
+
+    ReKonfig::setShowLastVisitedSites( d->newtabpageUi.showLastVisitedSites->isChecked() );
+
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
     d->cookiesModule->save();

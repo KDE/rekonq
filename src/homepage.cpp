@@ -73,7 +73,7 @@ QString HomePage::rekonqHomePage()
 
     QString speed = speedDial();
     QString search = searchEngines();
-    QString lastBlock = ReKonfig::useRecentlyClosedTabs() ? recentlyClosedTabs() : fillRecentHistory(); 
+    QString lastBlock = ReKonfig::showLastVisitedSites() ? fillRecentHistory() : recentlyClosedTabs() ; 
     
 
     QString html = QString(QLatin1String(file.readAll()))
