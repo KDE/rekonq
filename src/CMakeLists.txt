@@ -2,6 +2,7 @@
 
 SET( rekonq_SRCS
     homepage.cpp
+    previewimage.cpp
     websnap.cpp
     networkaccessmanager.cpp
     autosaver.cpp 

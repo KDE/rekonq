@@ -45,10 +45,7 @@ class WebView : public QWebView
 
 public:
     explicit WebView(QWidget *parent = 0);
-    
-    // Q_DECLARE_METATYPE requires a copy-constructor
-    WebView(const WebView &);
-
+  
     WebPage *page();
     KUrl url() const;
     QString lastStatusBarText() const;
@@ -85,6 +82,5 @@ private:
     int m_progress;
     QString m_statusBarText;
 };
-Q_DECLARE_METATYPE(WebView)
 
 #endif

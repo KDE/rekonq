@@ -28,15 +28,11 @@
 #include "webpluginfactory.h"
 #include "webpluginfactory.moc"
 
-#include "webview.h"
-#include "webpage.h"
-
-#include "websnap.h"
-
-#include <QWebFrame>
-
 #include "application.h"
 #include "mainwindow.h"
+#include "previewimage.h"
+
+#include <KDebug>
 
 WebPluginFactory::WebPluginFactory(QObject *parent)
     : QWebPluginFactory(parent)
@@ -66,7 +62,7 @@ QObject *WebPluginFactory::create(const QString &mimeType,
                 url = argumentValues.at(i);            
             ++i;
         }
-        return new WebSnap(url,fileName);
+        return new PreviewImage(url,fileName);
     }
 
     kDebug() << "No plugins found for" << mimeType;
