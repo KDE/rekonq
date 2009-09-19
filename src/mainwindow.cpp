@@ -741,7 +741,7 @@ void MainWindow::slotHome()
 {
     WebView *w = currentTab();
     
-    if(ReKonfig::useNewTabPage())
+    if(ReKonfig::newTabHomePage())
     {
         HomePage p(w);
         w->setHtml( p.rekonqHomePage(), QUrl());

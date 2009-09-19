@@ -185,6 +185,12 @@ void SettingsDialog::setWebSettingsToolTips()
 // we need this function to UPDATE the config widget data..
 void SettingsDialog::readConfig()
 {
+    // ======= General Page
+    if( ReKonfig::newTabHomePage() )
+        d->generalUi.rbUseNewTabPage->setChecked( true );
+    else
+        d->generalUi.rbUseHomePage->setChecked( true );
+            
     // ====== New Tab Page
     QTableWidget *t = d->newtabpageUi.tableWidget;
     QStringList names, urls;
@@ -220,6 +226,8 @@ void SettingsDialog::readConfig()
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
+    ReKonfig::setNewTabHomePage( d->generalUi.rbUseNewTabPage->isChecked() );
+    
     QTableWidget *t = d->newtabpageUi.tableWidget;
     QStringList names, urls;
     for(int i=0; i<9; ++i)

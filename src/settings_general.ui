@@ -21,7 +21,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QRadioButton" name="kcfg_useNewTabPage">
+       <widget class="QRadioButton" name="rbUseNewTabPage">
         <property name="text">
          <string>Use new tab page</string>
         </property>
@@ -33,7 +33,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QRadioButton" name="radioButton">
+         <widget class="QRadioButton" name="rbUseHomePage">
           <property name="text">
            <string>Use this page:</string>
           </property>
