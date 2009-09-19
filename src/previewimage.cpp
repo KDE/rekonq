@@ -27,6 +27,7 @@
 #include "previewimage.moc"
 
 #include <QFile>
+#include <QMovie>
 
 #include <KUrl>
 #include <KStandardDirs>
@@ -46,22 +47,28 @@ PreviewImage::PreviewImage(const QString &url, const QString &pos)
     }
     else
     {
-        QString path = KStandardDirs::locate("appdata", "pics/loading.mng");
-        setPixmap( QPixmap(path) );
-    
         ws = new WebSnap( url, pos );
         connect(ws, SIGNAL(finished()), this, SLOT(setSiteImage()));
+        
+        QString path = KStandardDirs::locate("appdata", "pics/busywidget.gif");
+
+        QMovie *movie = new QMovie(path, QByteArray(), this);
+        movie->setSpeed(50);
+        setMovie(movie);
+        movie->start();
     }
 }
 
 
 PreviewImage::~PreviewImage()
 {
-    kDebug() << "bye bye..";
 }
 
 void PreviewImage::setSiteImage()
 {
-    kDebug() << "Done. works?";
+    QMovie *m = movie();
+    delete m;
+    setMovie(0);
+    
     setPixmap( ws->previewImage() );
 }

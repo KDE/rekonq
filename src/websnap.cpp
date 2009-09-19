@@ -58,7 +58,6 @@ WebSnap::WebSnap(const QString &url, const QString &pos)
 
 void WebSnap::load()
 {
-    kDebug() << "loading..";
     m_page.mainFrame()->load( QUrl(m_url) );
 }
 
