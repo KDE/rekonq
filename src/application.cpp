@@ -52,6 +52,7 @@
 #include <KUriFilter>
 #include <KMessageBox>
 #include <KProtocolInfo>
+#include <KWindowInfo>
 
 // Qt Includes
 #include <QRegExp>
@@ -87,43 +88,46 @@ int Application::newInstance()
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
+    // is your app session restored? restore session...
+    if (isSessionRestored())
+    {
+        sessionManager()->restoreSession();
+        return 0;
+    }
+    
     if (args->count() > 0)
     {
-        // opening links in new tabs in ONE window
-        if(ReKonfig::externalUrlNewTab())
+        // is there a window open on the current desktop ? use it!
+        for (int i = 0; i < m_mainWindows.size(); ++i)
         {
-            // creating 1st new window
-            newMainWindow();        
-            loadUrl(args->arg(0));
-            
-            for (int i = 1; i < args->count(); ++i)
+            MainWindow *m = m_mainWindows.at(i);
+            KWindowInfo w = KWindowInfo(m->winId(), NET::WMDesktop);
+            if(w.isOnCurrentDesktop())
             {
-                loadUrl(args->arg(i), Rekonq::NewCurrentTab); 
+                m->activateWindow();
+                m->raise();
+                
+                for (int i = 0; i < args->count(); ++i)
+                    loadUrl(args->arg(i), Rekonq::NewCurrentTab);
+                
+                return 1;
             }
-            args->clear();
-            
         }
-        else
-        {
-            // opening ONE window for each URL
-            for (int i = 0; i < args->count(); ++i)
-            {
-                loadUrl(args->arg(i), Rekonq::NewWindow);
-            }
-            args->clear();
-        }
-    }
-    else
-    {
-        if(!isSessionRestored())
-        {
-            // creating new window
-            MainWindow *w = newMainWindow();
-            w->slotHome();
-        }
-    }
         
-    return 0;
+        // No windows in the current desktop? No windows at all?
+        // Create a new one and load there sites...
+        loadUrl(args->arg(0), Rekonq::NewWindow);
+        for (int i = 1; i < args->count(); ++i)
+            loadUrl(args->arg(i), Rekonq::SettingOpenTab);
+
+        return 2;
+    }
+    
+    // creating new window
+    MainWindow *w = newMainWindow();
+    w->slotHome();
+        
+    return 3;
 }
 
 

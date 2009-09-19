@@ -119,13 +119,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="kcfg_externalUrlNewTab">
-        <property name="text">
-         <string>Open external URLs as new tab in existing window</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QCheckBox" name="kcfg_alwaysShowTabBar">
         <property name="text">
          <string>Always show tab bar</string>
