@@ -79,6 +79,7 @@ MainView::MainView(QWidget *parent)
     // connecting tabbar signals
     connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(slotCloseTab(int)));
     connect(m_tabBar, SIGNAL(mouseMiddleClick(int)), this, SLOT(slotCloseTab(int)));
+    connect(m_tabBar, SIGNAL(newTabRequest()), this, SLOT(newTab()));
     
     connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(slotCloneTab(int)));
     connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(slotCloseOtherTabs(int)));
