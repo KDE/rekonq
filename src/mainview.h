@@ -43,10 +43,12 @@
 class QUrl;
 class QWebFrame;
 class QLabel;
+class QMouseEvent;
 
 class TabBar;
 class UrlBar;
 
+class KPassivePopup;
 
 /**
  *  This class represent rekonq Main View. It contains all WebViews and a stack widget
@@ -90,7 +92,12 @@ public:
      * @return the webview embedded in the new tab
      */
     WebView *newWebView(bool focused = true, bool nearParent = false);
-    
+
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void leaveEvent(QEvent *event);
+    void showTabPreview(int tab);
+    QPixmap renderTabPreview(int tab, int w, int h);
+
 signals:
     // tab widget signals
     void tabsChanged();
@@ -162,6 +169,9 @@ private:
     int m_currentTabIndex;
 
     KUrl::List m_recentlyClosedTabs;
+
+    QPointer<KPassivePopup> m_previewPopup;
+    int m_currentTabPreview;
 };
 
 #endif // MAINVIEW_H

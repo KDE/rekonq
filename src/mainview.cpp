@@ -51,6 +51,7 @@
 #include <KMessageBox>
 #include <KDebug>
 #include <KStandardDirs>
+#include <KPassivePopup>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -62,17 +63,22 @@
 #include <QtGui/QMovie>
 #include <QtGui/QWidget>
 #include <QtGui/QMouseEvent>
-
+#include <QtGui/QPainter>
+#include <QtGui/QVBoxLayout>
 
 MainView::MainView(QWidget *parent)
         : KTabWidget(parent)
         , m_urlBar(new UrlBar(this))
         , m_tabBar(new TabBar(this))
         , m_currentTabIndex(0)
+        , m_currentTabPreview(-1)
 {
     // setting tabbar
     setTabBar(m_tabBar);
 
+    // set mouse tracking for tab previews
+    setMouseTracking(true);
+     
     // loading pixmap path
     m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.mng");
 
@@ -594,4 +600,83 @@ void MainView::resizeEvent(QResizeEvent *event)
 KUrl::List MainView::recentlyClosedTabs()
 {
     return m_recentlyClosedTabs;
+}
+
+void MainView::mouseMoveEvent(QMouseEvent *event)
+{
+    //Find the tab under the mouse
+    int i = 0;
+    int tab = -1;
+    while (i<count() && tab==-1)
+    {
+        if (m_tabBar->tabRect(i).contains(event->pos())) tab = i;
+        i++;
+    }
+
+    //if found and not the current tab then show tab preview
+    if (tab!=-1 && tab!=m_tabBar->currentIndex() && m_currentTabPreview!=tab)
+    {
+        showTabPreview(tab);
+        m_currentTabPreview=tab;
+    }
+
+    //if current tab then hide previous tab preview
+    if (tab==m_tabBar->currentIndex())
+    {
+        if ( m_previewPopup)
+        {
+            m_previewPopup->hide();
+        }
+        m_currentTabPreview=-1;
+    }
+    
+    KTabWidget::mouseMoveEvent(event);
+}
+
+void MainView::leaveEvent(QEvent *event)
+{
+    //if leave tabwidget then hide previous tab preview
+    if ( m_previewPopup)
+    {
+        m_previewPopup->hide();
+    }
+    m_currentTabPreview=-1;
+    KTabWidget::leaveEvent(event);
+}
+
+QPixmap MainView::renderTabPreview(int tab, int w, int h)
+{  
+    QPixmap image = QPixmap(webView(tab)->width(), webView(tab)->height());
+    image.fill(Qt::transparent);
+    QPainter p(&image);
+    webView(tab)->page()->mainFrame()->render(&p);
+    p.end();
+    image = image.scaled(w, h, Qt::KeepAspectRatioByExpanding);
+
+    return image;
+}
+
+void MainView::showTabPreview(int tab)
+{
+    int w=200;
+    int h=w*((0.0+webView(tab)->height())/webView(tab)->width());
+
+    //delete previous tab preview
+    if (m_previewPopup)
+    {
+        delete m_previewPopup;
+    }
+    
+    m_previewPopup = new KPassivePopup(this);
+    m_previewPopup->setAutoDelete(true);
+    m_previewPopup->setFrameShape(QFrame::NoFrame);
+    m_previewPopup->setFixedSize(w, h);
+    QLabel *l = new QLabel();
+    l->setPixmap(renderTabPreview(tab, w, h));
+    m_previewPopup->setView(l);
+    m_previewPopup->layout()->setAlignment(Qt::AlignTop);
+    m_previewPopup->layout()->setMargin(0);
+
+    QPoint pos(m_tabBar->tabRect(tab).x(),m_tabBar->tabRect(tab).y()+m_tabBar->tabRect(tab).height());
+    m_previewPopup->show(mapToGlobal(pos));
 }
