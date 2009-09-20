@@ -69,10 +69,10 @@ QObject *WebPluginFactory::create(const QString &mimeType,
         return new PreviewImage(url, pos);
     }
 
+    // this let QtWebKit using builtin plugins 
+    // to load in example flash contents and so on..
     kDebug() << "No plugins found for" << mimeType;
-    QWebView* webView = new QWebView;
-    webView->load(url);
-    return webView;
+    return 0;
 }
 
 
