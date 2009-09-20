@@ -41,7 +41,6 @@ PreviewImage::PreviewImage(const QString &url, const QString &pos)
     
     if(QFile::exists(path))
     {
-        kDebug() << "exists! Loading it...";
         m_pixmap.load(path);
         setPixmap( m_pixmap );
     }
