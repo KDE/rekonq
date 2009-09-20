@@ -50,23 +50,25 @@ QObject *WebPluginFactory::create(const QString &mimeType,
                                   const QStringList &argumentNames,
                                   const QStringList &argumentValues) const
 {
+    Q_UNUSED(url)
+    
     kDebug() << "loading mimeType: " << mimeType;
     
     if(mimeType == QString("application/image-preview") )
     {   
-        QString url, pos;
+        QString imageUrl, pos;
         for(int i = 0; i<argumentNames.count(); ++i)
         {
             if(argumentNames.at(i) == QString("url"))
             {
-                url = argumentValues.at(i);
+                imageUrl = argumentValues.at(i);
             }
             if(argumentNames.at(i) == QString("position"))
             {
                 pos = argumentValues.at(i);
             }
         }
-        return new PreviewImage(url, pos);
+        return new PreviewImage(imageUrl, pos);
     }
 
     // this let QtWebKit using builtin plugins 
