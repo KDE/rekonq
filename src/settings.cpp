@@ -232,8 +232,11 @@ void SettingsDialog::saveSettings()
     QStringList names, urls;
     for(int i=0; i<9; ++i)
     {
-        names << t->item(i,0)->text();
-        urls << t->item(i,1)->text();
+        if(t->item(i,0))
+        {
+            names << t->item(i,0)->text();
+            urls << t->item(i,1)->text();
+        }
     }
 
     ReKonfig::setPreviewNames(names);
