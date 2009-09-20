@@ -96,7 +96,6 @@ public:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
     void showTabPreview(int tab);
-    QPixmap renderTabPreview(int tab, int w, int h);
 
 signals:
     // tab widget signals

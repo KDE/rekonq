@@ -61,6 +61,32 @@ void WebSnap::load()
     m_page.mainFrame()->load( QUrl(m_url) );
 }
 
+QPixmap WebSnap::renderPreview(QWebPage *page,int w, int h)
+{
+    // prepare page
+    page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); //Why it doesn't work with one setScrollBarPolicy ? bug in qtwebkit ?
+    page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+    page->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+    page->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+    
+    // create the target surface
+    QPixmap image = QPixmap(page->viewportSize());
+    image.fill(Qt::transparent);
+
+    // render
+    QPainter p(&image);
+    page->mainFrame()->render(&p);
+    p.end();
+    image = image.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+
+    // restore page settings
+    page->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
+    page->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
+    page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+    page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+    
+    return image;
+}
 
 void WebSnap::saveResult(bool ok)
 {
@@ -70,24 +96,10 @@ void WebSnap::saveResult(bool ok)
         kDebug() << "Error loading site..";
         return;
     }
-
-    // find proper image size and later resize it..
-    QSize size = m_page.mainFrame()->contentsSize();
-
-    // create the target surface
-    m_image = QPixmap( size );
-    m_image.fill(Qt::transparent);
-
-    // render and rescale
-    QPainter p(&m_image);
-    m_page.setViewportSize( size );
-    m_page.mainFrame()->render(&p);
-    p.end();
-    m_image = m_image.scaled(WIDTH, HEIGHT, Qt::KeepAspectRatioByExpanding);
-
     
     QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rek") + m_pos + ".png", true);
-    if( m_image.save(path) )
+    m_image = renderPreview(&m_page, WIDTH, HEIGHT);
+    if(m_image.save(path))
     {
         kDebug() << "finished";
         emit finished();
