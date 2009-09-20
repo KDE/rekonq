@@ -95,13 +95,12 @@ QString HomePage::speedDial()
     for(int i = 0; i< urls.count(); ++i)
     {
         speed += "<div class=\"thumbnail\">";
-        speed += "<a href=\"" + urls.at(i) + "\">";
         speed += "<object type=\"application/image-preview\" width=\"200\">";
         speed += "<param name=\"url\" value=\"" + urls.at(i) + "\">";
         speed += "<param name=\"position\" value=\"" + QString::number(i) + "\">"; 
         speed += "</object>";
         speed += "<br />";
-        speed += names.at(i) + "</a></div>";
+        speed += "<a href=\"" + urls.at(i) + "\">" + names.at(i) + "</a></div>";
     }
     return speed;
 }

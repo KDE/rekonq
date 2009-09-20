@@ -71,17 +71,16 @@ void WebSnap::saveResult(bool ok)
         return;
     }
 
-    // find proper size, we stick to sensible aspect ratio
+    // find proper image size and later resize it..
     QSize size = m_page.mainFrame()->contentsSize();
-    size.setHeight(size.width() * HEIGHT / WIDTH );
-    
+
     // create the target surface
-    m_image = QPixmap(WIDTH, HEIGHT);
+    m_image = QPixmap( size );
     m_image.fill(Qt::transparent);
 
     // render and rescale
     QPainter p(&m_image);
-    m_page.setViewportSize(m_page.mainFrame()->contentsSize());
+    m_page.setViewportSize( size );
     m_page.mainFrame()->render(&p);
     p.end();
     m_image = m_image.scaled(WIDTH, HEIGHT, Qt::KeepAspectRatioByExpanding);
