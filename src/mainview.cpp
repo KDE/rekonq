@@ -622,8 +622,8 @@ void MainView::mouseMoveEvent(QMouseEvent *event)
         m_currentTabPreview=tab;
     }
 
-    //if current tab then hide previous tab preview
-    if (tab==m_tabBar->currentIndex())
+    //if current tab or not found then hide previous tab preview
+    if (tab==m_tabBar->currentIndex() || tab==-1)
     {
         if ( m_previewPopup)
         {
@@ -658,7 +658,6 @@ void MainView::showTabPreview(int tab)
     }
     
     m_previewPopup = new KPassivePopup(this);
-    m_previewPopup->setAutoDelete(true);
     m_previewPopup->setFrameShape(QFrame::NoFrame);
     m_previewPopup->setFixedSize(w, h);
     QLabel *l = new QLabel();
