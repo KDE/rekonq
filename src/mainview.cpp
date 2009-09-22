@@ -42,6 +42,7 @@
 #include "webview.h"
 #include "sessionmanager.h"
 #include "homepage.h"
+#include "websnap.h"
 
 // KDE Includes
 #include <KUrl>
@@ -645,18 +646,6 @@ void MainView::leaveEvent(QEvent *event)
     KTabWidget::leaveEvent(event);
 }
 
-QPixmap MainView::renderTabPreview(int tab, int w, int h)
-{  
-    QPixmap image = QPixmap(webView(tab)->width(), webView(tab)->height());
-    image.fill(Qt::transparent);
-    QPainter p(&image);
-    webView(tab)->page()->mainFrame()->render(&p);
-    p.end();
-    image = image.scaled(w, h, Qt::KeepAspectRatioByExpanding);
-
-    return image;
-}
-
 void MainView::showTabPreview(int tab)
 {
     int w=200;
@@ -672,7 +661,7 @@ void MainView::showTabPreview(int tab)
     m_previewPopup->setFrameShape(QFrame::NoFrame);
     m_previewPopup->setFixedSize(w, h);
     QLabel *l = new QLabel();
-    l->setPixmap(renderTabPreview(tab, w, h));
+    l->setPixmap(WebSnap::renderPreview(webView(tab)->page(), w, h));
     m_previewPopup->setView(l);
     m_previewPopup->layout()->setAlignment(Qt::AlignTop);
     m_previewPopup->layout()->setMargin(0);

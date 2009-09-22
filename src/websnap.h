@@ -48,7 +48,8 @@ public:
     WebSnap(const QString &url, const QString &pos);
     
     QPixmap previewImage();
-    
+    static QPixmap renderPreview(QWebPage *page, int w, int h);
+
 signals:
     void finished();
 

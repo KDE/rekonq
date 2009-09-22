@@ -200,7 +200,7 @@ void WebPage::manageNetworkErrors(QNetworkReply* reply)
                 return;
             }
             QList<QWebFrame *> children = firstFrame->childFrames();
-            foreach(QWebFrame *frame, children)
+            Q_FOREACH(QWebFrame *frame, children)
             {
                 frames.append(frame);
             }

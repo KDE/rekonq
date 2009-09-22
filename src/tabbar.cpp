@@ -73,7 +73,17 @@ TabBar::~TabBar()
 
 void TabBar::postLaunch()
 {
-    m_addTabButton->setDefaultAction(Application::instance()->mainWindow()->actionByName("new_tab"));
+    // Find the correct MainWindow of this tab button
+    MainWindowList list = Application::instance()->mainWindowList();
+    Q_FOREACH(QPointer<MainWindow> w, list)
+    {
+        if (w->isAncestorOf(this))
+        {
+            m_addTabButton->setDefaultAction(w->actionByName("new_tab"));
+            break;
+        }
+    }
+    
     m_addTabButton->setAutoRaise(true);
     m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     m_addTabButton->show();

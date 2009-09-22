@@ -175,7 +175,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         KService::Ptr service;
         KUriFilterData data;
         
-        foreach (const QString &engine, favoriteEngines)
+        Q_FOREACH(const QString &engine, favoriteEngines)
         {
             if(!engine.isEmpty())
             {
