@@ -127,7 +127,7 @@ QString HomePage::recentlyClosedTabs()
     
     KUrl::List links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
     
-    foreach(const KUrl &url, links)
+    Q_FOREACH(const KUrl &url, links)
     {
         closed += "<li><a href=\"" + url.prettyUrl() + "\">" + url.prettyUrl() + "</a></li>";
     }

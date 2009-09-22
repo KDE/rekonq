@@ -117,7 +117,7 @@ void NetworkAccessManager::resetDiskCache()
             
         QDir cacheDir(location + QString("/http") );
         QStringList fileList = cacheDir.entryList();
-        foreach(QString str, fileList)
+        Q_FOREACH(QString str, fileList)
         {
             QFile file(str);
             file.remove();

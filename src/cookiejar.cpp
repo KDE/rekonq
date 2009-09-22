@@ -84,7 +84,7 @@ QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl & url) const
 bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, const QUrl & url)
 {
     QByteArray cookieHeader;
-    foreach(const QNetworkCookie& cookie, cookieList)
+    Q_FOREACH(const QNetworkCookie& cookie, cookieList)
     {
         cookieHeader = "Set-Cookie: ";
         cookieHeader += cookie.toRawForm();

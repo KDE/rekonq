@@ -66,7 +66,7 @@ void SessionManager::saveSession()
     }
     QDataStream out(&sessionFile);
     MainWindowList wl = Application::instance()->mainWindowList();
-    foreach(QPointer<MainWindow> w, wl)
+    Q_FOREACH(QPointer<MainWindow> w, wl)
     {
         out << QByteArray("window");
         MainView *mv = w->mainView();

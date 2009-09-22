@@ -75,14 +75,13 @@ void TabBar::postLaunch()
 {
     // Find the correct MainWindow of this tab button
     MainWindowList list = Application::instance()->mainWindowList();
-    MainWindow *window;
-    foreach (window, list)
+    Q_FOREACH(QPointer<MainWindow> w, list)
     {
-        if (window->isAncestorOf(this))
-	{
-	    m_addTabButton->setDefaultAction(window->actionByName("new_tab"));
-	    break;
-	}
+        if (w->isAncestorOf(this))
+        {
+            m_addTabButton->setDefaultAction(w->actionByName("new_tab"));
+            break;
+        }
     }
     
     m_addTabButton->setAutoRaise(true);
