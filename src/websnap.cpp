@@ -61,30 +61,44 @@ void WebSnap::load()
     m_page.mainFrame()->load( QUrl(m_url) );
 }
 
-QPixmap WebSnap::renderPreview(QWebPage *page,int w, int h)
+QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
 {
     // prepare page
-    page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); //Why it doesn't work with one setScrollBarPolicy ? bug in qtwebkit ?
-    page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
-    page->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-    page->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-    
-    // create the target surface
-    QPixmap image = QPixmap(page->viewportSize());
-    image.fill(Qt::transparent);
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); //Why it doesn't work with one setScrollBarPolicy ? bug in qtwebkit ?
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 
+    // find the best size
+    QSize size;
+    if (page.viewportSize().width() && page.viewportSize().height())
+    {
+        size = page.viewportSize();
+    }
+    else
+    {
+        int width = page.mainFrame()->contentsSize().width();
+        if (width < 640) width = 640;
+        size = QSize(width,width*((0.0+h)/w));
+        page.setViewportSize(size);
+    }
+
+    // create the target surface
+    QPixmap image = QPixmap(size);
+    image.fill(Qt::transparent);
+ 
     // render
     QPainter p(&image);
-    page->mainFrame()->render(&p);
+    page.mainFrame()->render(&p);
     p.end();
     image = image.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
     // restore page settings
-    page->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
-    page->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
-    page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
-    page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
-    
+    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
+    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+
     return image;
 }
 
@@ -96,9 +110,9 @@ void WebSnap::saveResult(bool ok)
         kDebug() << "Error loading site..";
         return;
     }
-    
+
     QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rek") + m_pos + ".png", true);
-    m_image = renderPreview(&m_page, WIDTH, HEIGHT);
+    m_image = renderPreview(m_page, WIDTH, HEIGHT);
     if(m_image.save(path))
     {
         kDebug() << "finished";

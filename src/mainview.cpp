@@ -661,7 +661,7 @@ void MainView::showTabPreview(int tab)
     m_previewPopup->setFrameShape(QFrame::NoFrame);
     m_previewPopup->setFixedSize(w, h);
     QLabel *l = new QLabel();
-    l->setPixmap(WebSnap::renderPreview(webView(tab)->page(), w, h));
+    l->setPixmap(WebSnap::renderPreview(*(webView(tab)->page()), w, h));
     m_previewPopup->setView(l);
     m_previewPopup->layout()->setAlignment(Qt::AlignTop);
     m_previewPopup->layout()->setMargin(0);
