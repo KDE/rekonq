@@ -658,7 +658,8 @@ void MainView::showTabPreview(int tab)
     }
     
     m_previewPopup = new KPassivePopup(this);
-    m_previewPopup->setFrameShape(QFrame::NoFrame);
+    m_previewPopup->setFrameShape(QFrame::StyledPanel);
+    m_previewPopup->setFrameShadow(QFrame::Plain);
     m_previewPopup->setFixedSize(w, h);
     QLabel *l = new QLabel();
     l->setPixmap(WebSnap::renderPreview(*(webView(tab)->page()), w, h));
