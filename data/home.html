@@ -11,6 +11,7 @@ padding:0;
 }
 
 body{
+background: url(%1/tile.gif) repeat-x #fff;
 margin:0;
 padding:0;
 font-family: sans-serif;
@@ -26,37 +27,79 @@ margin:5px;
 /* ------------------------------------------------------- */
 
 h1{
-color: #00f;
+color: #3F7AB7;
 }
 
 #float {
 float: right;
-width: 30%;
+width: 275px;
 clear: right;
+margin-right: 15px;
 }
 
 .block {
-background-color: #FFA500;
-border: 2px solid #000000;
-padding: 0.5em;
-margin:15px;
-font-weight: bold;
-color: white;
-clear: right;
+background: url(%1/bot.gif) bottom center no-repeat #f3f3f3;
+border-left: 1px solid #d9d9d9;
+border-right: 1px solid #d9d9d9;
+padding: 5px;
+width: 245px;
+margin: 0 15px 15px 0px;
+font-size: 0.8em;
+color: #444;
+
+/*font-weight: bold;
+clear: right;*/
+}
+
+.block h2 {
+background: url(%1/top.png) no-repeat;
+color: #333;
+line-height: 24px;
+padding: 0 7px;
+border: 0;
+margin: -6px -6px 0 -6px;
+font-size: 1em;
+}
+
+.block ul {
+padding-left: 1.5em;
+}
+
+.block ul a {
+color: #444;
+text-decoration: none;
+}
+
+.block ul a:hover {
+text-decoration: underline;
 }
 
 #left{
-width:70%;
-margin-right:30%;
+margin: 0 290px 0 0;
+background-color:#444;
+/*width:70%;
+margin-right:30%;*/
 }
 
-.thumbnail 
-{
+.thumbnail {
+background: url(%1/bg.png) no-repeat;
 text-align: center;
 float:left;
-width:230px;
-margin:15px;
+width:228px;
+padding: 11px 0px 0px 0px;
+margin: 0 15px;
 }
+
+.thumbnail a {
+display: block;
+text-align: center;
+width:228px;
+padding: 11px 0px 5px 0px;
+color: #767676;
+font-size: 0.8em;
+text-decoration:none;
+}
+
 </style>
 
 <!-- =================================================================================== -->
@@ -71,10 +114,10 @@ margin:15px;
 
 
 <div id="float">
-<div class="block">%1</div>
 <div class="block">%2</div>
+<div class="block">%3</div>
 </div>
-<div id="left">%3</div>
+<div id="left">%4</div>
 
 </body>
 </html>

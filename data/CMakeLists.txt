@@ -1,5 +1,5 @@
 INSTALL( 
-    FILES closed.png loading.mng open.png webkit-icon.png busywidget.gif
+    FILES bg.png bot.gif busywidget.gif closed.png loading.mng open.png tile.gif top.png webkit-icon.png    
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
 )
 

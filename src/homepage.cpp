@@ -71,12 +71,14 @@ QString HomePage::rekonqHomePage()
         return QString("");
     }
 
+    QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
     QString speed = speedDial();
     QString search = searchEngines();
     QString lastBlock = ReKonfig::showLastVisitedSites() ? fillRecentHistory() : recentlyClosedTabs() ; 
     
 
     QString html = QString(QLatin1String(file.readAll()))
+                        .arg(imagesPath)
                         .arg(search)
                         .arg(lastBlock)
                         .arg(speed)
