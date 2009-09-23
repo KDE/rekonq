@@ -45,7 +45,7 @@ class WebView : public QWebView
 
 public:
     explicit WebView(QWidget *parent = 0);
-  
+
     WebPage *page();
     KUrl url() const;
     QString lastStatusBarText() const;
@@ -73,7 +73,7 @@ private slots:
     void slotLoadFinished(bool);
 
     void printFrame();
-    
+
     void openLinkInNewWindow();
     void openLinkInNewTab();
 

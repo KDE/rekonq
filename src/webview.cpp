@@ -101,7 +101,6 @@ void WebView::setStatusBarText(const QString &string)
     m_statusBarText = string; 
 }
 
-
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
@@ -123,7 +122,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setData(result.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
-        
+
         a = pageAction(QWebPage::DownloadLinkToDisk);
         a->setIcon(KIcon("document-save"));
         menu.addAction(a);
@@ -132,7 +131,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setIcon(KIcon("edit-copy"));
         menu.addAction(a);
     }
-    
+
     // is content editable && selected? Add CUT
     if (result.isContentEditable() && result.isContentSelected())
     {
@@ -142,7 +141,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setShortcut(KStandardShortcut::cut().primary());
         menu.addAction(a);
     }
-    
+
     // is content selected) Add COPY
     if(result.isContentSelected())
     {
@@ -151,7 +150,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setShortcut(KStandardShortcut::copy().primary());
         menu.addAction(a);
     }
-    
+
     // is content editable? Add PASTE
     if(result.isContentEditable())
     {
@@ -160,10 +159,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setShortcut(KStandardShortcut::paste().primary());
         menu.addAction(a);
     }
-    
+
     // is content selected? Add SEARCH actions
     if(result.isContentSelected())
-    {        
+    {
         KActionMenu *searchMenu = new KActionMenu(i18n("Search with"), this);
 
         KConfig config("kuriikwsfilterrc"); //Share with konqueror
@@ -174,7 +173,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         QString keywordDelimiter = cg.readEntry("KeywordDelimiter", ":");
         KService::Ptr service;
         KUriFilterData data;
-        
+
         Q_FOREACH(const QString &engine, favoriteEngines)
         {
             if(!engine.isEmpty())
@@ -191,10 +190,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         }
         menu.addAction(searchMenu);
         menu.addSeparator();
-
         // TODO Add translate, show translation   
     }
-    
+
     // is an image?
     if (!result.pixmap().isNull())
     {
@@ -216,11 +214,28 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if(result.linkUrl().isEmpty())
     {
         // page action
-        menu.addAction(mainwindow->actionByName("new_tab"));    
-        menu.addAction(mainwindow->actionByName("new_window"));    
+        if (selectedText().startsWith("http://") || selectedText().startsWith("https://"))
+        {
+            //open selected text url in a new tab
+            a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab: "+selectedText().toUtf8()), this);
+            a->setData(QUrl(selectedText()));
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
+            menu.addAction(a);
+
+            //open selected text url in a new window
+            a = new KAction(KIcon("window-new"), i18n("Open in New &Window: "+selectedText().toUtf8()), this);
+            a->setData(QUrl(selectedText()));
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
+            menu.addAction(a);
+        }
+        else
+        {
+            menu.addAction(mainwindow->actionByName("new_tab"));    
+            menu.addAction(mainwindow->actionByName("new_window"));
+        }
         menu.addSeparator();
     }
-    
+
     QWebHistory *history = page()->history();
     if(history->canGoBack())
     {
@@ -228,7 +243,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setIcon(KIcon("go-previous"));
         menu.addAction(a);
     }
-    
+
     if(history->canGoForward())
     {
         a = pageAction(QWebPage::Forward);
@@ -237,14 +252,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
 
     menu.addAction(mainwindow->actionByName("view_redisplay"));
-    
+
     KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
 
     a = pageAction(QWebPage::OpenFrameInNewWindow);
     a->setText(i18n("Open in New Tab"));
     a->setIcon(KIcon("view-right-new"));
     frameMenu->addAction(a);
-    
+
     a = new KAction( KIcon("document-print-frame"), i18n("Print Frame"), this);
     connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
     frameMenu->addAction(a);
@@ -302,7 +317,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
 {
     m_page->m_pressedButtons = event->buttons();
     m_page->m_keyboardModifiers = event->modifiers();
-    
+
     switch(event->button()) 
     {
       case Qt::XButton1:
