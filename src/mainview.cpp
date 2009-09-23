@@ -306,9 +306,6 @@ void MainView::newTab()
 {
     WebView *w = newWebView();
 
-    urlBar()->setUrl(KUrl(""));
-    urlBar()->setFocus();
-    
     HomePage p(w);
     
     switch(ReKonfig::newTabsBehaviour())
@@ -316,12 +313,16 @@ void MainView::newTab()
     case 0:
         w->setHtml( p.rekonqHomePage() );
         break;
+    case 1:
+        urlBar()->setUrl(KUrl(""));
+        break;
     case 2:
         w->load( QUrl(ReKonfig::homePage()) );
         break;
     default:
         break;
     }
+    urlBar()->setFocus();
 }
 
 

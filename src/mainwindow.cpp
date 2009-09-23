@@ -745,6 +745,7 @@ void MainWindow::slotHome()
     {
         HomePage p(w);
         w->setHtml( p.rekonqHomePage(), QUrl());
+        m_view->urlBar()->setFocus();
     }
     else
     {
