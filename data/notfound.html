@@ -2,65 +2,64 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <title>%1</title>
-<style  type="text/css">
-body {
-  padding: 3em 0em;
-  background: #eeeeee;
+
+<style type="text/css">
+
+html{
+margin:0;
+padding:0;
 }
-hr {
-  color: lightgray;
-  width: 100%;
+
+body{
+background: url(%2/tile.gif) repeat-x #fff;
+margin:0;
+padding:0;
+font-family: sans-serif;
+font-size: 100%;
 }
-img {
-  float: left;
-  opacity: .8;
+
+#block {
+/* background: url(%2/bot.gif) bottom center #f3f3f3; */
+border: 2px solid #d9d9d9;
+padding: 10px;
+width: 600px;
+margin: 150px auto;
+color: #444;
+
+/*font-weight: bold;
+clear: right;*/
 }
-#box {
-  background: white;
-  border: 1px solid lightgray;
-  width: 600px;
-  padding: 60px;
-  margin: auto;
+
+h1{
+font-size: 130%;
+font-weight: bold;
+border-bottom: 1px solid lightgray;
+margin-left: 48px;
 }
-h1 {
-  font-size: 130%;
-  font-weight: bold;
-  border-bottom: 1px solid lightgray;
-  margin-left: 48px;
+
+h2{
+font-size: 100%;
+font-weight: normal;
+border-bottom: 1px solid lightgray;
+margin-left: 48px;
 }
-h2 {
-  font-size: 100%;
-  font-weight: normal;
-  border-bottom: 1px solid lightgray;
-  margin-left: 48px;
-}
+
 ul {
-  font-size: 80%;
-  padding-left: 48px;
-  margin: 0;
+padding: 12px 48px;
+margin: 0;
 }
+
 #reloadButton {
-  padding-left: 48px;
+margin-left: 48px;
+margin-bottom: 12px;
 }
+
 </style>
+
 </head>
+
 <body>
-  <div id="box">
-    <img src="%2" width="16" height="16" alt="Not found" />
-    <h1>%3</h1>
-    <h2>When connecting to: %4</h2>
-    <ul>
-      <li>Check the address for errors such as <b>ww</b>.kde.org
-      instead of <b>www</b>.kde.org</li>
-      <li>If the address is correct, try to check the network
-      connection.</li>
-      <li>If your computer or network is protected by a firewall or
-      proxy, make sure that rekonq is permitted to access
-      the network.</li>
-      <li>Of course, if rekonq doesn't work properly, you can always 
-      say it's a programmer error ;)</li>
-    </ul>
-    <br/><br/>
-  </div>
+<div id="block">%3</div>
 </body>
+
 </html>
