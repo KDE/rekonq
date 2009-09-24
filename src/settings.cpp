@@ -115,7 +115,6 @@ Private::Private(SettingsDialog *parent)
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("WebKit"));
     QString webkitIconPath = KStandardDirs::locate("appdata", "pics/webkit-icon.png");
-    kWarning() << webkitIconPath;
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
 
@@ -149,6 +148,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
 
+    connect(d->newtabpageUi.tableWidget, SIGNAL(cellChanged(int, int)), this, SLOT(deleteThumb(int,int)));
+    
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     
@@ -232,11 +233,10 @@ void SettingsDialog::saveSettings()
     QStringList names, urls;
     for(int i=0; i<9; ++i)
     {
-        if(t->item(i,0))
-        {
+        if(t->item(i,0) && !t->item(i,0)->text().isEmpty())
             names << t->item(i,0)->text();
+        if(t->item(i,1)&& !t->item(i,1)->text().isEmpty())
             urls << t->item(i,1)->text();
-        }
     }
 
     ReKonfig::setPreviewNames(names);
@@ -268,3 +268,14 @@ void SettingsDialog::setHomeToCurrentPage()
         d->generalUi.kcfg_homePage->setText(webView->url().prettyUrl());
     }
 }
+
+
+void SettingsDialog::deleteThumb(int row ,int col)
+{
+    if(col!=1)
+        return;
+    
+    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rek") + QString::number(row) + ".png", true);
+    QFile::remove(path);
+}
+    

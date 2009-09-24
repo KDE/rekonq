@@ -170,7 +170,6 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
         if (!QFile::exists(bookfile.path()))
         {
             QString bookmarksDefaultPath = KStandardDirs::locate("appdata" , "defaultbookmarks.xbel");
-            kWarning() << bookmarksDefaultPath;
             QFile bkms(bookmarksDefaultPath);
             QString bookmarksPath = KStandardDirs::locateLocal("appdata", "bookmarks.xml", true);
             bookmarksPath.replace("rekonq", "konqueror");
@@ -214,10 +213,7 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
     Q_UNUSED(caller)
 
     if (!m_bookmarkToolBar)
-    {
-        kWarning() << "There is no bookmark toolbar";
         return;
-    }
 
     KBookmarkGroup toolBarGroup = m_manager->toolbar();
     if (toolBarGroup.isNull())
@@ -239,8 +235,6 @@ QAction *BookmarkProvider::actionByName(const QString &name)
     QAction *action = m_actionCollection->action(name);
     if (action)
         return action;
-    /* else */
-    kWarning() << "Action named: " << name << " not found, returning empty action.";
     return new QAction(this);  // return empty object instead of NULL pointer
 }
 
