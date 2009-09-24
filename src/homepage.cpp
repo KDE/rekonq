@@ -110,7 +110,7 @@ QString HomePage::speedDial()
 
 QString HomePage::searchEngines()
 {
-    QString engines = "<h2>Search Engines</h2>";
+    QString engines = "<h2>" +  i18n("Search Engines") + "</h2>";
     
     // Google search engine
     engines += "<form method=\"get\" action=\"http://www.google.com/search\">";
@@ -124,7 +124,7 @@ QString HomePage::searchEngines()
 
 QString HomePage::recentlyClosedTabs()
 {
-    QString closed = "<h2>Recently closed tabs</h2>";
+    QString closed = "<h2>" + i18n("Recently closed tabs") + "</h2>";
     closed += "<ul>";
     
     KUrl::List links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
@@ -141,7 +141,7 @@ QString HomePage::recentlyClosedTabs()
 
 QString HomePage::fillRecentHistory()
 {
-    QString history = "<h2>Last 20 visited sites</h2>";
+    QString history = "<h2>" + i18n("Last 20 visited sites") + "</h2>";
     history += "<ul>";
     
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
