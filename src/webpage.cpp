@@ -272,10 +272,7 @@ bool WebPage::javaScriptPrompt(QWebFrame *frame, const QString &msg, const QStri
 
 QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
 {
-    kDebug() << "create Plugin requested:";
-    kDebug() << "classid:" << classId;
-    kDebug() << "url:" << url;
-    kDebug() << "paramNames:" << paramNames << " paramValues:" << paramValues;
+    kDebug() << "create Plugin requested with classId: " << classId;
 
     QUiLoader loader;
     return loader.createWidget(classId, view());
@@ -286,7 +283,6 @@ QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QS
 void WebPage::slotDownloadRequested(const QNetworkRequest &request)
 {
     const KUrl url(request.url());
-    kDebug() << url;
 
     const QString destUrl = KFileDialog::getSaveFileName(url.fileName(), QString(), view());
     if (destUrl.isEmpty()) return;

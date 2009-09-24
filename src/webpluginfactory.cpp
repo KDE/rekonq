@@ -73,7 +73,7 @@ QObject *WebPluginFactory::create(const QString &mimeType,
 
     // this let QtWebKit using builtin plugins 
     // to load in example flash contents and so on..
-    kDebug() << "No plugins found for" << mimeType;
+    kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
     return 0;
 }
 

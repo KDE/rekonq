@@ -93,7 +93,6 @@ QString HomePage::speedDial()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    kDebug() << urls;
     QString speed = QString();
     for(int i = 0; i< urls.count(); ++i)
     {

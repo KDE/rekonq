@@ -115,7 +115,6 @@ void WebSnap::saveResult(bool ok)
     m_image = renderPreview(m_page, WIDTH, HEIGHT);
     if(m_image.save(path))
     {
-        kDebug() << "finished";
         emit finished();
     }
 }

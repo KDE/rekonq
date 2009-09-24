@@ -926,7 +926,6 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     case Rekonq::Download:
         break;
     default:
-        kDebug() << "nothing to be notified..";
         break;
     }
 

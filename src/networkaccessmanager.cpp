@@ -106,7 +106,6 @@ void NetworkAccessManager::resetDiskCache()
     {
         m_diskCache = new QNetworkDiskCache(this);
         QString location = KStandardDirs::locateLocal("cache", "", true);
-        kDebug() << location;
         
         m_diskCache->setCacheDirectory(location);
         setCache(m_diskCache);
