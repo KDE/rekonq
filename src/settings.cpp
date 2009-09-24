@@ -144,7 +144,14 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     setWindowTitle(i18n("rekonfig..."));
     setModal(true);
 
+    QStringList headerLabels;
+    headerLabels << i18n("Name") << i18n("Url");
+    d->newtabpageUi.tableWidget->setHorizontalHeaderLabels(headerLabels);
+       
     readConfig();
+
+    // you have to do this after readConfig()...
+    d->newtabpageUi.tableWidget->resizeColumnsToContents();
 
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
 
