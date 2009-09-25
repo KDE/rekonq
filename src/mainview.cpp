@@ -103,7 +103,7 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
 
     // Session Manager
-    connect (this,SIGNAL(tabsChanged()),Application::sessionManager(),SLOT(saveSession()));
+    connect (this, SIGNAL(tabsChanged()), Application::sessionManager(), SLOT(saveSession()));
 }
 
 

@@ -89,12 +89,16 @@ int Application::newInstance()
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
     // is your app session restored? restore session...
-    if (isSessionRestored())
+    // this mechanism also falls back to load usual plain rekonq
+    // if something goes wrong...
+    if (isSessionRestored() && sessionManager()->restoreSession())
     {
-        sessionManager()->restoreSession();
+        kDebug() << "session restored";
         return 0;
     }
-    
+
+// --------------------------------------------------------------------------
+
     if (args->count() > 0)
     {
         // is there a window open on the current desktop ? use it!
@@ -143,10 +147,6 @@ void Application::postLaunch()
     
     // set Icon Database Path to store "favicons" associated with web sites
     QString directory = KStandardDirs::locateLocal("cache" , "" , true);
-    if (directory.isEmpty())
-    {
-        directory = QDir::homePath() + QLatin1String("/.") + QCoreApplication::applicationName();
-    }
     QWebSettings::setIconDatabasePath(directory);
 
     Application::historyManager();
@@ -166,7 +166,6 @@ MainWindow *Application::mainWindow()
     {
         kDebug() << "No extant windows: creating one new...";
         MainWindow *w = newMainWindow();
-        QTimer::singleShot(0, this, SLOT(postLaunch()));
         return w;
     }
     
@@ -401,7 +400,8 @@ MainWindow *Application::newMainWindow()
     
     m_mainWindows.prepend(w);
     w->show();
-
+    QTimer::singleShot(0, this, SLOT(postLaunch()));
+    
     return w;
 }
 

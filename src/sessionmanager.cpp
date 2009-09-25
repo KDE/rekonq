@@ -41,11 +41,12 @@
 
 // Qt Includes
 #include <QFile>
-#include <QDataStream>
+#include <QTextStream>
 
 
 SessionManager::SessionManager(QObject *parent)
     : QObject(parent)
+    , m_safe(true)
 {
     m_sessionFilePath = KStandardDirs::locateLocal("appdata" , "session");
 }
@@ -58,23 +59,28 @@ SessionManager::~SessionManager()
 
 void SessionManager::saveSession()
 {
+    if(!m_safe)
+        return;
+    m_safe = false;
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
     {
         kWarning() << "Unable to open session file" << sessionFile.fileName();
         return;
     }
-    QDataStream out(&sessionFile);
+    QTextStream out(&sessionFile);
     MainWindowList wl = Application::instance()->mainWindowList();
     Q_FOREACH(QPointer<MainWindow> w, wl)
     {
-        out << QByteArray("window");
+        out << "window\n";
         MainView *mv = w->mainView();
         for (int i = 0 ; i < mv->count() ; i++)
         {
-            out << mv->webView(i)->url().toEncoded();
+            out << mv->webView(i)->url().toEncoded(QUrl::StripTrailingSlash) << "\n";
         }
     }
+    sessionFile.close();
+    m_safe = true;
     return;
 }
 
@@ -90,22 +96,23 @@ bool SessionManager::restoreSession()
         return false;
     }
 
-    QDataStream in(&sessionFile);
-    int i = 0;
-    while (!sessionFile.atEnd())
+    QTextStream in(&sessionFile);
+    QString line;
+    do
     {
-        ++i;
-        QByteArray data;
-        in >> data;
-        if(data == QByteArray("window"))
+        line = in.readLine();
+        if(line == QString("window"))
         {
             Application::instance()->newMainWindow();
+            line = in.readLine();
+            Application::instance()->loadUrl(line);
         }
         else
         {
-            Application::instance()->loadUrl(data,Rekonq::NewCurrentTab);
+            Application::instance()->loadUrl(line, Rekonq::NewCurrentTab);
         }
     }
-
+    while(!line.isNull());
+    
     return true;
 }

@@ -34,6 +34,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
+
 /**
   *
   */
@@ -43,13 +44,15 @@ class SessionManager : public QObject
 public:
     SessionManager(QObject *parent = 0);
     ~SessionManager();
-    
-public slots:
-    void saveSession();
     bool restoreSession();
+    
+private slots:
+    void saveSession();
+
 
 private:
     QString m_sessionFilePath;
+    bool m_safe;
 };
 
 
