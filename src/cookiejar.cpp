@@ -52,21 +52,22 @@
 
 CookieJar::CookieJar(QObject* parent)
     : QNetworkCookieJar(parent)
-    , m_kcookiejar(new QDBusInterface("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer"))
+    , m_windowId(-1)
 {
 }
 
 
 CookieJar::~CookieJar()
 {
-    delete m_kcookiejar;
 }
 
 
 QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl & url) const
 {
+        
+    QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
     QList<QNetworkCookie> cookieList;
-    QDBusReply<QString> reply = m_kcookiejar->call("listCookies", url.toString() );
+    QDBusReply<QString> reply = kcookiejar.call("findDOMCookies", url.toString() );
 
     if (reply.isValid())
     {
@@ -83,24 +84,27 @@ QList<QNetworkCookie> CookieJar::cookiesForUrl(const QUrl & url) const
 
 bool CookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, const QUrl & url)
 {
+    QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
     QByteArray cookieHeader;
     Q_FOREACH(const QNetworkCookie& cookie, cookieList)
     {
         cookieHeader = "Set-Cookie: ";
         cookieHeader += cookie.toRawForm();
-        m_kcookiejar->call("addCookies", url.toString(), cookieHeader, 0 );
+        kcookiejar.call("addCookies", url.toString(), cookieHeader, m_windowId );
     }
 
-    return !m_kcookiejar->lastError().isValid();
+    return !kcookiejar.lastError().isValid();
 }
 
 
 void CookieJar::clear()
 {
-    QDBusReply<void> reply = m_kcookiejar->call( "deleteAllCookies" );
+    QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
+
+    QDBusReply<void> reply = kcookiejar.call( "deleteAllCookies" );
     if (!reply.isValid())
     {
         kWarning() << "Unable to delete all the cookies as requested.";
-        return;
     }
+    return;
 }

@@ -31,7 +31,6 @@
 // Qt Includes
 #include <QtNetwork/QNetworkCookieJar>
 
-#include <QtDBus/QDBusInterface>
 
 // Forward Declarations
 class QUrl;
@@ -51,7 +50,7 @@ public:
     void clear();
 
 private:
-    QDBusInterface *m_kcookiejar;
+    qlonglong m_windowId;
 };
 
 #endif // RECOOKIEJAR_H

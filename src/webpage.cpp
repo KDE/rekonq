@@ -272,8 +272,11 @@ bool WebPage::javaScriptPrompt(QWebFrame *frame, const QString &msg, const QStri
 
 QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
 {
-    kDebug() << "create Plugin requested with classId: " << classId;
-
+    kDebug() << "create Plugin requested:";
+    kDebug() << "classid:" << classId;
+    kDebug() << "url:" << url;
+    kDebug() << "paramNames:" << paramNames << " paramValues:" << paramValues;
+    
     QUiLoader loader;
     return loader.createWidget(classId, view());
 }
