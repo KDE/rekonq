@@ -57,7 +57,6 @@
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
         : AccessManager(parent)
-        , m_diskCache(0)
 {
     connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
@@ -102,25 +101,14 @@ void NetworkAccessManager::loadSettings()
 
 void NetworkAccessManager::resetDiskCache()
 {
-    if(!m_diskCache)
+    if(!cache())
     {
-        m_diskCache = new QNetworkDiskCache(this);
-        QString location = KStandardDirs::locateLocal("cache", "", true);
-        
-        m_diskCache->setCacheDirectory(location);
-        setCache(m_diskCache);
+        QNetworkDiskCache *diskCache = new QNetworkDiskCache(this);
+        setCache(diskCache);
     }
     else
     {
-        QString location = m_diskCache->cacheDirectory();
-            
-        QDir cacheDir(location + QString("/http") );
-        QStringList fileList = cacheDir.entryList();
-        Q_FOREACH(QString str, fileList)
-        {
-            QFile file(str);
-            file.remove();
-        }
+        cache()->clear();
     }
 }
 
@@ -203,26 +191,39 @@ void NetworkAccessManager::slotSSLErrors(QNetworkReply *reply, const QList<QSslE
 #endif
 
 
-KIO::MetaData& NetworkAccessManager::metaData()
+KIO::MetaData& NetworkAccessManager::sessionMetaData()
 {
-    return m_metaData;
-};
+    return m_sessionMetaData;
+}
+
+
+KIO::MetaData& NetworkAccessManager::requestMetaData()
+{
+    return m_requestMetaData;
+}
 
 
 QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
 {
     // TODO implement Ad-Block here (refuse connections..)
-    
-    QNetworkRequest request(req);
 
-    KIO::MetaData metaData(m_metaData);
+    QNetworkRequest request(req);
+    KIO::MetaData metaData = m_sessionMetaData;
+    metaData += m_requestMetaData;
 
     QVariant attr = req.attribute(QNetworkRequest::User);
     if (attr.isValid() && attr.type() == QVariant::Map)
     {
         metaData += attr.toMap();
     }
-    request.setAttribute(QNetworkRequest::User, metaData.toVariant());
 
-    return AccessManager::createRequest(op,request,outgoingData);
+    if (!metaData.isEmpty())
+    {
+        attr = metaData.toVariant();
+        request.setAttribute(QNetworkRequest::User, attr);
+    }
+
+    // Clear the per request meta data...
+    m_requestMetaData.clear();
+    return AccessManager::createRequest(op, request, outgoingData);
 }

@@ -31,9 +31,6 @@
 // KDE Includes
 #include <kio/accessmanager.h>
 
-// Forward Declarations
-class QNetworkDiskCache;
-
 
 using namespace KIO;
 
@@ -44,7 +41,10 @@ class NetworkAccessManager : public AccessManager
 
 public:
     NetworkAccessManager(QObject *parent = 0);
-    KIO::MetaData& metaData();    
+
+    KIO::MetaData& sessionMetaData();
+    KIO::MetaData& requestMetaData();
+
     void resetDiskCache();
     
 public slots:
@@ -62,8 +62,10 @@ private slots:
 #endif
 
 private:
-    QNetworkDiskCache *m_diskCache;
-    KIO::MetaData m_metaData;
+    KIO::MetaData m_sessionMetaData;
+    KIO::MetaData m_requestMetaData;
+
+
 };
 
 #endif // NETWORKACCESSMANAGER_H
