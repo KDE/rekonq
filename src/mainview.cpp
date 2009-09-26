@@ -581,18 +581,6 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
     return label;
 }
 
-
-void MainView::mouseDoubleClickEvent(QMouseEvent *event) //WARNING Need to be fix
-{
-    if (!childAt(event->pos()))
-    {
-        newTab();
-        return;
-    }
-    KTabWidget::mouseDoubleClickEvent(event);
-}
-
-
 void MainView::resizeEvent(QResizeEvent *event)
 {
     KTabWidget::resizeEvent(event);

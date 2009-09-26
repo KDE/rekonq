@@ -144,7 +144,6 @@ private slots:
     
 protected:
 
-    virtual void mouseDoubleClickEvent(QMouseEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
 
 private:
