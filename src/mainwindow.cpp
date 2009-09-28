@@ -143,6 +143,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+    Application::instance()->removeMainWindow(this);
     delete m_popup;
     delete m_view;
 }

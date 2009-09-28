@@ -127,6 +127,8 @@ public slots:
                   const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );    
 
+    void removeMainWindow(MainWindow *window);
+
 private slots:
 
     /**

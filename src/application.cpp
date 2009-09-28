@@ -406,6 +406,12 @@ MainWindow *Application::newMainWindow()
 }
 
 
+void Application::removeMainWindow(MainWindow *window)
+{
+    m_mainWindows.removeAt(m_mainWindows.indexOf(window, 0));
+}
+
+
 MainWindowList Application::mainWindowList()
 {
     return m_mainWindows;
