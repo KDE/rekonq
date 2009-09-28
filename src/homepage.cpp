@@ -93,7 +93,7 @@ QString HomePage::speedDial()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    QString speed = QString();
+    QString speed;
     for(int i = 0; i< urls.count(); ++i)
     {
         speed += "<div class=\"thumbnail\">";

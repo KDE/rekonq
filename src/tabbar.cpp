@@ -126,7 +126,7 @@ QSize TabBar::tabSizeHint(int index) const
 void TabBar::tabLayoutChange()
 {
     setTabButtonPosition();
-    QTabBar::tabLayoutChange();
+    KTabBar::tabLayoutChange();
 }
 
 

@@ -214,17 +214,18 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if(result.linkUrl().isEmpty())
     {
         // page action
-        if (selectedText().startsWith("http://") || selectedText().startsWith("https://"))
+        QString text = selectedText(); 
+        if (text.startsWith( QLatin1String("http://") ) || text.startsWith( QLatin1String("https://") ))
         {
             //open selected text url in a new tab
-            a = new KAction(KIcon("tab-new"), i18n("Open: '") + selectedText().toUtf8().left(15) + QString("...'"), this);
-            a->setData(QUrl(selectedText()));
+            a = new KAction(KIcon("tab-new"), i18n("Open: '") + text.toUtf8().left(15) + QString("...'"), this);
+            a->setData(QUrl(text));
             connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
             menu.addAction(a);
 
             //open selected text url in a new window
-            a = new KAction(KIcon("window-new"), i18n("Open: '") + selectedText().toUtf8().left(15) + QString("...'"), this);
-            a->setData(QUrl(selectedText()));
+            a = new KAction(KIcon("window-new"), i18n("Open: '") + text.toUtf8().left(15) + QString("...'"), this);
+            a->setData(QUrl(text));
             connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
             menu.addAction(a);
         }
