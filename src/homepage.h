@@ -44,10 +44,10 @@ public:
     ~HomePage();
 
     QString rekonqHomePage();
+    QString homePageMenu();
     
 private:
     QString speedDial();
-    QString searchEngines();
     QString recentlyClosedTabs();
     QString fillRecentHistory();
     

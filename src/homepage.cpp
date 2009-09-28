@@ -73,17 +73,13 @@ QString HomePage::rekonqHomePage()
 
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
     QString speed = speedDial();
-    QString search = searchEngines();
-    QString lastBlock = ReKonfig::showLastVisitedSites() ? fillRecentHistory() : recentlyClosedTabs() ; 
+    QString menu = homePageMenu();
     
-
     QString html = QString(QLatin1String(file.readAll()))
                         .arg(imagesPath)
-                        .arg(search)
-                        .arg(lastBlock)
+                        .arg(menu)
                         .arg(speed)
                         ;
-
     return html;
 }
 
@@ -93,32 +89,31 @@ QString HomePage::speedDial()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    QString speed;
-    for(int i = 0; i< urls.count(); ++i)
+    QString speed = "<tr>";
+    for(int i=0; i<4; ++i)
     {
-        speed += "<div class=\"thumbnail\">";
+        speed += "<td><div class=\"thumbnail\">";
         speed += "<object type=\"application/image-preview\" width=\"200\">";
         speed += "<param name=\"url\" value=\"" + urls.at(i) + "\">";
         speed += "<param name=\"position\" value=\"" + QString::number(i) + "\">"; 
         speed += "</object>";
-        speed += "<br />";
-        speed += "<a href=\"" + urls.at(i) + "\">" + names.at(i) + "</a></div>";
+        speed += "<br /><br />";
+        speed += "<a href=\"" + urls.at(i) + "\">" + names.at(i) + "</a></div></td>";
     }
+    speed += "</tr><tr>";
+    for(int i=4; i<8; ++i)
+    {
+        speed += "<td><div class=\"thumbnail\">";
+        speed += "<object type=\"application/image-preview\" width=\"200\">";
+        speed += "<param name=\"url\" value=\"" + urls.at(i) + "\">";
+        speed += "<param name=\"position\" value=\"" + QString::number(i) + "\">"; 
+        speed += "</object>";
+        speed += "<br /><br />";
+        speed += "<a href=\"" + urls.at(i) + "\">" + names.at(i) + "</a></div></td>";
+    }
+    speed += "</tr>";    
+    
     return speed;
-}
-
-
-QString HomePage::searchEngines()
-{
-    QString engines = "<h2>" +  i18n("Search Engines") + "</h2>";
-    
-    // Google search engine
-    engines += "<form method=\"get\" action=\"http://www.google.com/search\">";
-    engines += "<label for=\"q\">Google:</label>";
-    engines += "<input type=\"text\" name=\"q\" />";
-    engines += "</form>";
-    
-    return engines;
 }
 
 
@@ -126,14 +121,12 @@ QString HomePage::recentlyClosedTabs()
 {
     QString closed = "<h2>" + i18n("Recently closed tabs") + "</h2>";
     closed += "<ul>";
-    
     KUrl::List links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
     
     Q_FOREACH(const KUrl &url, links)
     {
         closed += "<li><a href=\"" + url.prettyUrl() + "\">" + url.prettyUrl() + "</a></li>";
     }
-    
     closed += "</ul>";
     return closed;
 }
@@ -143,9 +136,7 @@ QString HomePage::fillRecentHistory()
 {
     QString history = "<h2>" + i18n("Last 20 visited sites") + "</h2>";
     history += "<ul>";
-    
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
-    
     int i = 0;
     do
     {
@@ -170,7 +161,17 @@ QString HomePage::fillRecentHistory()
     while( i<20 || model->hasIndex( i , 0 , QModelIndex() ) );
 
     history += "<ul>";
-    
     return history;
-    
+}
+
+
+QString HomePage::homePageMenu()
+{
+    QString menu = "<ul>";
+    menu += "<li><a href=\"about:lastSites\">Last Visited Sites</a></li>";
+    menu += "<li><a href=\"about:history\">History</a></li>";
+    menu += "<li><a href=\"about:bookmarks\">Bookmarks</a></li>";
+    menu += "<li><a href=\"about:preferred\">Preferred</a></li>";
+    menu += "</ul>";
+    return menu;
 }
