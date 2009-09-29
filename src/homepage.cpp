@@ -98,7 +98,7 @@ QString HomePage::speedDial()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    QString speed = "<tr>";
+    QString speed = "<table><tr>";
     for(int i=0; i<4; ++i)
     {
         speed += "<td><div class=\"thumbnail\">";
@@ -120,7 +120,7 @@ QString HomePage::speedDial()
         speed += "<br /><br />";
         speed += "<a href=\"" + urls.at(i) + "\">" + names.at(i) + "</a></div></td>";
     }
-    speed += "</tr>";    
+    speed += "</tr></table>";
     
     return speed;
 }
@@ -188,7 +188,34 @@ QString HomePage::homePageMenu()
 
 QString HomePage::history()
 {
-    return QString("");
+    QString history = "<h2>" + i18n("History") + "</h2>";
+    history += "<ul>";
+    HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
+    int i = 0;
+    do
+    {
+        QModelIndex index = model->index(i, 0, QModelIndex() );
+        if(model->hasChildren(index))
+        {
+            for(int j=0; j< model->rowCount(index) && i<20 ; ++j)
+            {
+                QModelIndex son = model->index(j, 0, index );
+
+                history += "<li>";
+                history += QString("<a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">");
+                history += son.data().toString();
+                history += QString("</a>");
+                history += "</li>";
+                
+                i++;
+            }
+        }
+        i++;
+    }
+    while( i<20 || model->hasIndex( i , 0 , QModelIndex() ) );
+
+    history += "<ul>";
+    return history;
 }
 
 

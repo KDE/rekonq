@@ -12,10 +12,10 @@
 <!-- New Tab Page Settings -->
   <group name="NewTabPage">
     <entry name="previewNames" type="StringList">
-        <default>KDE site,Google,rekonq</default>
+        <default>KDE site,KDE site,KDE site,KDE site,KDE site,KDE site,Google,rekonq</default>
     </entry>
     <entry name="previewUrls" type="StringList">
-        <default>http://www.kde.org,http://www.google.com,http://rekonq.sourceforge.net</default>
+        <default>http://www.kde.org,http://www.kde.org,http://www.kde.org,http://www.kde.org,http://www.kde.org,http://www.kde.org,http://www.google.com,http://rekonq.sourceforge.net</default>
     </entry>
     <entry name="showLastVisitedSites" type="Bool">
         <default>true</default>
