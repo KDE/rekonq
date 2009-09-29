@@ -76,11 +76,11 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     
     QString speed;
     if(url == KUrl("about:lastSites"))
-        speed = fillRecentHistory();
+        speed = lastVisitedSites();
     if(url == KUrl("about:history"))
-        speed = history();
+        speed = fillHistory();
     if(url == KUrl("about:bookmarks"))
-        speed = bookmarks();
+        speed = fillBookmarks();
     if(url == KUrl("about:home") || url == KUrl("about:preferred"))
         speed = speedDial();
     
@@ -141,7 +141,7 @@ QString HomePage::recentlyClosedTabs()
 }
 
 
-QString HomePage::fillRecentHistory()
+QString HomePage::lastVisitedSites()
 {
     QString history = "<h2>" + i18n("Last 20 visited sites") + "</h2>";
     history += "<ul>";
@@ -186,41 +186,75 @@ QString HomePage::homePageMenu()
 }
 
 
-QString HomePage::history()
+QString HomePage::fillHistory()
 {
-    QString history = "<h2>" + i18n("History") + "</h2>";
-    history += "<ul>";
+    QString history = QString();
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
+    
     int i = 0;
     do
     {
         QModelIndex index = model->index(i, 0, QModelIndex() );
         if(model->hasChildren(index))
         {
-            for(int j=0; j< model->rowCount(index) && i<20 ; ++j)
+            history += "<tr colspan=\"2\"><td><h3>" + index.data().toString() + "</h3></td></tr>";
+            for(int j=0; j< model->rowCount(index); ++j)
             {
                 QModelIndex son = model->index(j, 0, index );
-
-                history += "<li>";
-                history += QString("<a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">");
-                history += son.data().toString();
-                history += QString("</a>");
-                history += "</li>";
-                
-                i++;
+                history += QString("<tr><td>") + son.data().toString() + QString("</td>");
+                history += QString("<td><a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">") + 
+                        son.data(HistoryModel::UrlStringRole).toString() + QString("</a></td></tr>");
             }
         }
         i++;
     }
-    while( i<20 || model->hasIndex( i , 0 , QModelIndex() ) );
+    while( model->hasIndex( i , 0 , QModelIndex() ) );
 
-    history += "<ul>";
     return history;
+    
 }
 
 
-QString HomePage::bookmarks()
+QString HomePage::fillBookmarks()
 {
-    return QString("");
+    KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
+    if (bookGroup.isNull())
+    {
+        return QString("Error retrieving bookmarks!");
+    }
+
+    QString str = QString("<table>");
+    KBookmark bookmark = bookGroup.first();
+    while (!bookmark.isNull())
+    {
+        str += createBookItem(bookmark);
+        bookmark = bookGroup.next(bookmark);
+    }
+    str += QString("</table>");
+    return str;
 }
 
+
+QString HomePage::createBookItem(const KBookmark &bookmark)
+{
+    if (bookmark.isGroup())
+    {
+        QString result = QString("");
+        KBookmarkGroup group = bookmark.toGroup();
+        KBookmark bm = group.first();
+        result += "<tr colspan=\"2\"><td><h3>" + bookmark.text() + "</h3></td></tr>";
+
+        while (!bm.isNull())
+        {
+            result += createBookItem(bm);
+            bm = group.next(bm);
+        }
+        return result;
+    }
+ 
+    if(bookmark.isSeparator())
+    {
+        return QString("<hr />");
+    }
+    return "<tr><td>" + bookmark.text() + "</td><td><a href=\"" + bookmark.url().prettyUrl() + "\">" + bookmark.url().prettyUrl() + "</a></td></tr>";
+}

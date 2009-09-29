@@ -53,10 +53,12 @@ public:
 private:
     QString speedDial();
     QString recentlyClosedTabs();
-    QString fillRecentHistory();
-    QString history();
-    QString bookmarks();
+    QString lastVisitedSites();
+    QString fillHistory();
+    QString fillBookmarks();
     
+    QString createBookItem(const KBookmark &bookmark);
+
     QString m_homePagePath;
 };
 
