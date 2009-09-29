@@ -32,7 +32,7 @@
 
 #include <QLabel>
 #include <QImage>
-
+#include <QString>
 
 class PreviewImage : public QLabel
 {
@@ -45,11 +45,15 @@ public:
     
 public slots:
     void setSiteImage();
-    
+
+protected:
+    void mousePressEvent(QMouseEvent *event);
+
 private:
     QPixmap m_pixmap;
-
     WebSnap *ws;
+    
+    QString m_url;
 };
 
 #endif // PREVIEW_IMAGE_H

@@ -26,6 +26,8 @@
 #include "previewimage.h"
 #include "previewimage.moc"
 
+#include "application.h"
+
 #include <QFile>
 #include <QMovie>
 
@@ -36,6 +38,7 @@
 PreviewImage::PreviewImage(const QString &url, const QString &pos)
     : QLabel()
     , ws(0)
+    , m_url(url)
 {   
     QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rek") + pos + ".png", true);
     
@@ -70,4 +73,11 @@ void PreviewImage::setSiteImage()
     setMovie(0);
     
     setPixmap( ws->previewImage() );
+}
+
+
+void PreviewImage::mousePressEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event)
+    Application::instance()->loadUrl(m_url);
 }
