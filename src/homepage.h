@@ -40,7 +40,7 @@ class HomePage : public QObject
 Q_OBJECT
     
 public:
-    HomePage(QObject *parent);
+    HomePage(QObject *parent = 0, const QString &authority = QString("home"));
     ~HomePage();
 
     QString rekonqHomePage();
@@ -52,6 +52,8 @@ private:
     QString fillRecentHistory();
     
     QString m_homePagePath;
+    
+    QString m_authority;
 };
 
 #endif // REKONQ_HOME_PAGE

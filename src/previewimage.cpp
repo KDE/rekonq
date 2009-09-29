@@ -66,6 +66,7 @@ PreviewImage::~PreviewImage()
 {
 }
 
+
 void PreviewImage::setSiteImage()
 {
     QMovie *m = movie();
