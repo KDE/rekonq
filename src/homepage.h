@@ -27,6 +27,10 @@
 #ifndef REKONQ_HOME_PAGE
 #define REKONQ_HOME_PAGE
 
+
+// KDE Includes
+#include <KUrl>
+
 // Qt Includes
 #include <QtCore/QObject>
 #include <QtCore/QString>
@@ -40,20 +44,20 @@ class HomePage : public QObject
 Q_OBJECT
     
 public:
-    HomePage(QObject *parent = 0, const QString &authority = QString("home"));
+    HomePage(QObject *parent = 0);
     ~HomePage();
 
-    QString rekonqHomePage();
+    QString rekonqHomePage(const KUrl &url = KUrl("about:home"));
     QString homePageMenu();
     
 private:
     QString speedDial();
     QString recentlyClosedTabs();
     QString fillRecentHistory();
+    QString history();
+    QString bookmarks();
     
     QString m_homePagePath;
-    
-    QString m_authority;
 };
 
 #endif // REKONQ_HOME_PAGE

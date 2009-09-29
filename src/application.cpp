@@ -42,6 +42,7 @@
 #include "webview.h"
 #include "urlbar.h"
 #include "sessionmanager.h"
+#include "homepage.h"
 
 // KDE Includes
 #include <KCmdLineArgs>
@@ -303,6 +304,13 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url()));
         return;
     }
+
+    // loading home pages
+    if (url.scheme() == QLatin1String("about"))
+    {
+        homePage(url);
+        return;
+    }
     
     if (url.scheme() == QLatin1String("mailto"))
     {
@@ -415,4 +423,16 @@ void Application::removeMainWindow(MainWindow *window)
 MainWindowList Application::mainWindowList()
 {
     return m_mainWindows;
+}
+
+
+void Application::homePage(const KUrl &url)
+{
+    kDebug() << "loading home: " << url;
+    MainView *view = mainWindow()->mainView(); 
+    WebView *w = view->currentWebView();
+    HomePage p(w);
+    w->setHtml( p.rekonqHomePage(url), url);
+    view->urlBar()->setFocus();
+    return;
 }

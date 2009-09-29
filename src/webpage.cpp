@@ -107,6 +107,12 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         return false;
     }
 
+    if (request.url().scheme() == QLatin1String("about"))
+    {
+        Application::instance()->loadUrl( request.url() );
+        return false;
+    }
+    
     m_requestedUrl = request.url();
 
     return QWebPage::acceptNavigationRequest(frame, request, type);

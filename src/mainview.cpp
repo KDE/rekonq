@@ -305,12 +305,10 @@ void MainView::newTab()
 {
     WebView *w = newWebView();
 
-    HomePage p(w);
-    
     switch(ReKonfig::newTabsBehaviour())
     {
     case 0:
-        w->setHtml( p.rekonqHomePage() );
+        Application::instance()->homePage();
         break;
     case 1:
         urlBar()->setUrl(KUrl(""));
@@ -581,6 +579,7 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
     return label;
 }
 
+
 void MainView::resizeEvent(QResizeEvent *event)
 {
     KTabWidget::resizeEvent(event);
@@ -591,6 +590,7 @@ KUrl::List MainView::recentlyClosedTabs()
 {
     return m_recentlyClosedTabs;
 }
+
 
 void MainView::mouseMoveEvent(QMouseEvent *event)
 {
@@ -633,6 +633,7 @@ void MainView::leaveEvent(QEvent *event)
     m_currentTabPreview=-1;
     KTabWidget::leaveEvent(event);
 }
+
 
 void MainView::showTabPreview(int tab)
 {

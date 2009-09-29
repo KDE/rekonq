@@ -49,9 +49,8 @@
 #include <QFile>
 
 
-HomePage::HomePage(QObject *parent, const QString &authority)
+HomePage::HomePage(QObject *parent)
     : QObject(parent)
-    , m_authority(authority)
 {
     m_homePagePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
 }
@@ -62,7 +61,7 @@ HomePage::~HomePage()
 }
 
 
-QString HomePage::rekonqHomePage()
+QString HomePage::rekonqHomePage(const KUrl &url)
 {
     QFile file(m_homePagePath);
     bool isOpened = file.open(QIODevice::ReadOnly);
@@ -73,8 +72,17 @@ QString HomePage::rekonqHomePage()
     }
 
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
-    QString speed = speedDial();
     QString menu = homePageMenu();
+    
+    QString speed;
+    if(url == KUrl("about:lastSites"))
+        speed = fillRecentHistory();
+    if(url == KUrl("about:history"))
+        speed = history();
+    if(url == KUrl("about:bookmarks"))
+        speed = bookmarks();
+    if(url == KUrl("about:home") || url == KUrl("about:preferred"))
+        speed = speedDial();
     
     QString html = QString(QLatin1String(file.readAll()))
                         .arg(imagesPath)
@@ -176,3 +184,16 @@ QString HomePage::homePageMenu()
     menu += "</ul>";
     return menu;
 }
+
+
+QString HomePage::history()
+{
+    return QString("");
+}
+
+
+QString HomePage::bookmarks()
+{
+    return QString("");
+}
+

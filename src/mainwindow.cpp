@@ -45,7 +45,6 @@
 #include "findbar.h"
 #include "sidepanel.h"
 #include "urlbar.h"
-#include "homepage.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -740,17 +739,13 @@ void MainWindow::slotViewPageSource()
 
 void MainWindow::slotHome()
 {
-    WebView *w = currentTab();
-    
     if(ReKonfig::newTabHomePage())
     {
-        HomePage p(w);
-        w->setHtml( p.rekonqHomePage(), QUrl());
-        m_view->urlBar()->setFocus();
+        Application::instance()->homePage();
     }
     else
     {
-        w->load( QUrl(ReKonfig::homePage()) );
+        currentTab()->load( QUrl(ReKonfig::homePage()) );
     }
 }
 
