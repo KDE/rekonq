@@ -73,8 +73,6 @@ public:
     WebView *currentWebView() const;
     int webViewIndex(WebView *webView) const;
 
-    KUrl::List recentlyClosedTabs();
-    
     /**
      * show and hide TabBar if user doesn't choose
      * "Always Show TabBar" option
@@ -165,8 +163,6 @@ private:
     QString m_loadingGitPath;
     
     int m_currentTabIndex;
-
-    KUrl::List m_recentlyClosedTabs;
 
     QPointer<KPassivePopup> m_previewPopup;
     int m_currentTabPreview;

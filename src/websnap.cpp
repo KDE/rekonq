@@ -43,11 +43,10 @@
 #define HEIGHT 150
 
 
-WebSnap::WebSnap(const QString &url, const QString &pos)
+WebSnap::WebSnap(const QString &url)
     : QObject()
 {
     m_url = url;
-    m_pos = pos;
 
     // this to not register websnap history
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
@@ -60,6 +59,7 @@ void WebSnap::load()
 {
     m_page.mainFrame()->load( QUrl(m_url) );
 }
+
 
 QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
 {
@@ -102,6 +102,7 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
     return image;
 }
 
+
 void WebSnap::saveResult(bool ok)
 {
     // crude error-checking
@@ -111,12 +112,8 @@ void WebSnap::saveResult(bool ok)
         return;
     }
 
-    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rek") + m_pos + ".png", true);
     m_image = renderPreview(m_page, WIDTH, HEIGHT);
-    if(m_image.save(path))
-    {
-        emit finished();
-    }
+    emit finished();
 }
 
 

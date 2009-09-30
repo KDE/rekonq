@@ -55,8 +55,6 @@ private slots:
     void saveSettings();
 
     void setHomeToCurrentPage();
-
-    void deleteThumb(int,int);
 };
 
 #endif // SETTINGS_H

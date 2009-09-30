@@ -51,8 +51,7 @@ public:
     QString homePageMenu();
     
 private:
-    QString speedDial();
-    QString recentlyClosedTabs();
+    QString fillPreferred();
     QString lastVisitedSites();
     QString fillHistory();
     QString fillBookmarks();

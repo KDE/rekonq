@@ -41,7 +41,6 @@
 
 //Ui Includes
 #include "ui_settings_general.h"
-#include "ui_settings_newtabpage.h"
 #include "ui_settings_fonts.h"
 #include "ui_settings_proxy.h"
 #include "ui_settings_webkit.h"
@@ -63,7 +62,6 @@ class Private
 {
 private:
     Ui::general generalUi;
-    Ui::newtabpage newtabpageUi;
     Ui::fonts fontsUi;
     Ui::proxy proxyUi;
     Ui::webkit webkitUi;
@@ -86,12 +84,6 @@ Private::Private(SettingsDialog *parent)
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("General"));
     pageItem->setIcon(KIcon("rekonq"));
-
-    widget = new QWidget;
-    newtabpageUi.setupUi(widget);
-    widget->layout()->setMargin(0);
-    pageItem = parent->addPage(widget , i18n("New Tab Page"));
-    pageItem->setIcon(KIcon("tab-new"));
     
     widget = new QWidget;
     fontsUi.setupUi(widget);
@@ -144,18 +136,10 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     setWindowTitle(i18n("rekonfig..."));
     setModal(true);
 
-    QStringList headerLabels;
-    headerLabels << i18n("Name") << i18n("Url");
-    d->newtabpageUi.tableWidget->setHorizontalHeaderLabels(headerLabels);
-       
     readConfig();
 
-    // you have to do this after readConfig()...
-    d->newtabpageUi.tableWidget->resizeColumnsToContents();
 
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
-
-    connect(d->newtabpageUi.tableWidget, SIGNAL(cellChanged(int, int)), this, SLOT(deleteThumb(int,int)));
     
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
@@ -198,28 +182,6 @@ void SettingsDialog::readConfig()
         d->generalUi.rbUseNewTabPage->setChecked( true );
     else
         d->generalUi.rbUseHomePage->setChecked( true );
-            
-    // ====== New Tab Page
-    QTableWidget *t = d->newtabpageUi.tableWidget;
-    QStringList names, urls;
-    names = ReKonfig::previewNames();
-    urls = ReKonfig::previewUrls();
-    for(int i=0; i< urls.count(); ++i)
-    {
-        QTableWidgetItem *name = new QTableWidgetItem( names.at(i) );
-        t->setItem(i,0,name);
-        QTableWidgetItem *url = new QTableWidgetItem( urls.at(i) );
-        t->setItem(i,1,url);
-    }
-
-    ReKonfig::setPreviewNames(names);
-    ReKonfig::setPreviewUrls(urls);
-
-    if( ReKonfig::showLastVisitedSites() )
-        d->newtabpageUi.showLastVisitedSites->setChecked( true );
-    else
-        d->newtabpageUi.showRecentlyClosedTabs->setChecked( true );
-        
     
     // ======= Fonts
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
@@ -235,21 +197,6 @@ void SettingsDialog::readConfig()
 void SettingsDialog::saveSettings()
 {
     ReKonfig::setNewTabHomePage( d->generalUi.rbUseNewTabPage->isChecked() );
-    
-    QTableWidget *t = d->newtabpageUi.tableWidget;
-    QStringList names, urls;
-    for(int i=0; i<9; ++i)
-    {
-        if(t->item(i,0) && !t->item(i,0)->text().isEmpty())
-            names << t->item(i,0)->text();
-        if(t->item(i,1)&& !t->item(i,1)->text().isEmpty())
-            urls << t->item(i,1)->text();
-    }
-
-    ReKonfig::setPreviewNames(names);
-    ReKonfig::setPreviewUrls(urls);
-
-    ReKonfig::setShowLastVisitedSites( d->newtabpageUi.showLastVisitedSites->isChecked() );
 
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
@@ -275,14 +222,3 @@ void SettingsDialog::setHomeToCurrentPage()
         d->generalUi.kcfg_homePage->setText(webView->url().prettyUrl());
     }
 }
-
-
-void SettingsDialog::deleteThumb(int row ,int col)
-{
-    if(col!=1)
-        return;
-    
-    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rek") + QString::number(row) + ".png", true);
-    QFile::remove(path);
-}
-    

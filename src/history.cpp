@@ -114,6 +114,11 @@ bool HistoryManager::historyContains(const QString &url) const
 void HistoryManager::addHistoryEntry(const QString &url)
 {
     QUrl cleanUrl(url);
+    
+    // don't store about: urls (home page related)
+    if(cleanUrl.scheme() == QString("about"))
+        return;
+    
     cleanUrl.setPassword(QString());
     cleanUrl.setHost(cleanUrl.host().toLower());
     HistoryItem item(cleanUrl.toString(), QDateTime::currentDateTime());

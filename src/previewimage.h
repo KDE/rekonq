@@ -39,21 +39,23 @@ class PreviewImage : public QLabel
     Q_OBJECT
 
 public:
-    PreviewImage(const QString &url, const QString &pos);
-    
+    PreviewImage(const QString &url);
     ~PreviewImage();
+    
+    QString guessNameFromUrl(QString url);
     
 public slots:
     void setSiteImage();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
-
+    
 private:
     QPixmap m_pixmap;
     WebSnap *ws;
     
     QString m_url;
+    QString m_savePath;
 };
 
 #endif // PREVIEW_IMAGE_H

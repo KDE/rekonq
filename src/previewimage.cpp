@@ -35,21 +35,22 @@
 #include <KStandardDirs>
 #include <KDebug>
 
-PreviewImage::PreviewImage(const QString &url, const QString &pos)
+
+PreviewImage::PreviewImage(const QString &url)
     : QLabel()
     , ws(0)
     , m_url(url)
 {   
-    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rek") + pos + ".png", true);
+    m_savePath = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(m_url) + ".png", true);
     
-    if(QFile::exists(path))
+    if(QFile::exists(m_savePath))
     {
-        m_pixmap.load(path);
+        m_pixmap.load(m_savePath);
         setPixmap( m_pixmap );
     }
     else
     {
-        ws = new WebSnap( url, pos );
+        ws = new WebSnap( url );
         connect(ws, SIGNAL(finished()), this, SLOT(setSiteImage()));
         
         QString path = KStandardDirs::locate("appdata", "pics/busywidget.gif");
@@ -73,7 +74,10 @@ void PreviewImage::setSiteImage()
     delete m;
     setMovie(0);
     
-    setPixmap( ws->previewImage() );
+    m_pixmap = ws->previewImage();
+    setPixmap(m_pixmap);
+
+    m_pixmap.save(m_savePath);
 }
 
 
@@ -81,4 +85,10 @@ void PreviewImage::mousePressEvent(QMouseEvent *event)
 {
     Q_UNUSED(event)
     Application::instance()->loadUrl(m_url);
+}
+
+
+QString PreviewImage::guessNameFromUrl(QString url)
+{
+    return QUrl(url).toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
 }

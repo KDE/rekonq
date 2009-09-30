@@ -82,7 +82,7 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     if(url == KUrl("about:bookmarks"))
         speed = fillBookmarks();
     if(url == KUrl("about:home") || url == KUrl("about:preferred"))
-        speed = speedDial();
+        speed = fillPreferred();
     
     QString html = QString(QLatin1String(file.readAll()))
                         .arg(imagesPath)
@@ -93,7 +93,7 @@ QString HomePage::rekonqHomePage(const KUrl &url)
 }
 
 
-QString HomePage::speedDial()
+QString HomePage::fillPreferred()
 {
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
@@ -104,7 +104,6 @@ QString HomePage::speedDial()
         speed += "<td><div class=\"thumbnail\">";
         speed += "<object type=\"application/image-preview\" width=\"200\">";
         speed += "<param name=\"url\" value=\"" + urls.at(i) + "\">";
-        speed += "<param name=\"position\" value=\"" + QString::number(i) + "\">"; 
         speed += "</object>";
         speed += "<br /><br />";
         speed += "<a href=\"" + urls.at(i) + "\">" + names.at(i) + "</a></div></td>";
@@ -115,7 +114,6 @@ QString HomePage::speedDial()
         speed += "<td><div class=\"thumbnail\">";
         speed += "<object type=\"application/image-preview\" width=\"200\">";
         speed += "<param name=\"url\" value=\"" + urls.at(i) + "\">";
-        speed += "<param name=\"position\" value=\"" + QString::number(i) + "\">"; 
         speed += "</object>";
         speed += "<br /><br />";
         speed += "<a href=\"" + urls.at(i) + "\">" + names.at(i) + "</a></div></td>";
@@ -126,51 +124,54 @@ QString HomePage::speedDial()
 }
 
 
-QString HomePage::recentlyClosedTabs()
-{
-    QString closed = "<h2>" + i18n("Recently closed tabs") + "</h2>";
-    closed += "<ul>";
-    KUrl::List links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
-    
-    Q_FOREACH(const KUrl &url, links)
-    {
-        closed += "<li><a href=\"" + url.prettyUrl() + "\">" + url.prettyUrl() + "</a></li>";
-    }
-    closed += "</ul>";
-    return closed;
-}
-
-
 QString HomePage::lastVisitedSites()
 {
-    QString history = "<h2>" + i18n("Last 20 visited sites") + "</h2>";
-    history += "<ul>";
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
+    
+    QString last = "<table><tr>";
     int i = 0;
     do
     {
         QModelIndex index = model->index(i, 0, QModelIndex() );
         if(model->hasChildren(index))
         {
-            for(int j=0; j< model->rowCount(index) && i<20 ; ++j)
+            for(int j=0; j< model->rowCount(index) && j<4; ++j)
             {
                 QModelIndex son = model->index(j, 0, index );
-
-                history += "<li>";
-                history += QString("<a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">");
-                history += son.data().toString();
-                history += QString("</a>");
-                history += "</li>";
+                
+                last += "<td><div class=\"thumbnail\">";
+                last += "<object type=\"application/image-preview\" width=\"200\">";
+                last += "<param name=\"url\" value=\"" + son.data(HistoryModel::UrlStringRole).toString() + "\">";
+                last += "<param name=\"position\" value=\"" + QString::number(i) + "\">"; 
+                last += "</object>";
+                last += "<br /><br />";
+                last += "<a href=\"" + son.data(HistoryModel::UrlStringRole).toString() + "\">" + son.data().toString() + "</a></div></td>";
+                
+                i++;
+            }
+            last += "</tr><tr>";
+            for(int j=4; j< model->rowCount(index) && j<8; ++j)
+            {
+                QModelIndex son = model->index(j, 0, index );
+                
+                last += "<td><div class=\"thumbnail\">";
+                last += "<object type=\"application/image-preview\" width=\"200\">";
+                last += "<param name=\"url\" value=\"" + son.data(HistoryModel::UrlStringRole).toString() + "\">";
+                last += "<param name=\"position\" value=\"" + QString::number(i) + "\">"; 
+                last += "</object>";
+                last += "<br /><br />";
+                last += "<a href=\"" + son.data(HistoryModel::UrlStringRole).toString() + "\">" + son.data().toString() + "</a></div></td>";
                 
                 i++;
             }
         }
         i++;
     }
-    while( i<20 || model->hasIndex( i , 0 , QModelIndex() ) );
+    while( i<8 || model->hasIndex( i , 0 , QModelIndex() ) );
 
-    history += "<ul>";
-    return history;
+    last += "</tr></table>";    
+    return last;
+
 }
 
 
@@ -188,7 +189,7 @@ QString HomePage::homePageMenu()
 
 QString HomePage::fillHistory()
 {
-    QString history = QString();
+    QString history = "<table>";
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
     int i = 0;
@@ -203,13 +204,15 @@ QString HomePage::fillHistory()
                 QModelIndex son = model->index(j, 0, index );
                 history += QString("<tr><td>") + son.data().toString() + QString("</td>");
                 history += QString("<td><a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">") + 
-                        son.data(HistoryModel::UrlStringRole).toString() + QString("</a></td></tr>");
+                        son.data(HistoryModel::UrlStringRole).toString() + QString("</a></td>");
+                history += QString("<td>") + son.data(HistoryModel::DateTimeRole).toString() + QString("</td></tr>");
             }
         }
         i++;
     }
     while( model->hasIndex( i , 0 , QModelIndex() ) );
 
+    history += "</table>";
     return history;
     
 }
