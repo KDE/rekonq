@@ -231,17 +231,17 @@ QString WebPage::errorPage(QNetworkReply *reply)
         return QString("");
     }
 
-    QString title = i18n("Error loading: ") + reply->url().path();
+    QString title = i18n("Error loading: %1", reply->url().path()); 
     
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
 
     QString msg = "<h1>" + reply->errorString() + "</h1>";
     
-    msg += "<h2>" + i18n("When connecting to: ") + reply->url().toString() + "</h2>";
+    msg += "<h2>" + i18nc("%1=an URL, e.g.'kde.org'", "When connecting to: %1", reply->url().toString()) + "</h2>";
     msg += "<ul><li>" + i18n("Check the address for errors such as <b>ww</b>.kde.org instead of <b>www</b>.kde.org");
     msg += "</li><li>" + i18n("If the address is correct, try to check the network connection.") + "</li><li>" ;
     msg += i18n("If your computer or network is protected by a firewall or proxy, make sure that rekonq is permitted to access the network.");
-    msg += "</li><li>" + i18n("Of course, if rekonq doesn't work properly, you can always say it's a programmer error ;)");
+    msg += "</li><li>" + i18n("Of course, if rekonq does not work properly, you can always say it is a programmer error ;)");
     msg += "</li></ul><br/><br/>";
     msg += "<input type=\"button\" id=\"reloadButton\" onClick=\"document.location.href='" + reply->url().path() + "';\" value=\"";
     msg += i18n("Try Again") + "\" />";
