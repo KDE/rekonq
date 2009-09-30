@@ -128,7 +128,7 @@ void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthent
 
     passwordWidget.iconLabel->setText(QString());
     passwordWidget.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
-    //FIXME Replace the text below with an explanation of what exactly %1 and %2 stand for
+    //FIXME Replace the text below with an explanation of what exactly %1 and %2 mean
     QString introMessage = i18nc("%1=stuff %2=stuff2", "<qt>Enter username and password for %1 at %2</qt>",
                                   Qt::escape(reply->url().toString()),
                                   Qt::escape(reply->url().toString())  );
