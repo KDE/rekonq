@@ -115,7 +115,7 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
 
 {
     KAction *a = KStandardAction::addBookmark(this, SLOT(slotAddBookmark()), this);
-    a->setText(i18n("Add Bookmark"));
+//     a->setText(i18n("Bookmark this Page"));
     actionCollection->addAction(QLatin1String("rekonq_add_bookmark"),a);
 }
 

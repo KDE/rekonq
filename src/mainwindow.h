@@ -140,6 +140,9 @@ private slots:
     void slotAboutToShowBackMenu();
     void slotOpenActionUrl(QAction *action);
 
+    // add link to the preferred shown in the rekonq homepage
+    void addPreferredLink();
+    
 private:
     MainView *m_view;
     FindBar *m_findBar;

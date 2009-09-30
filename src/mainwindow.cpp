@@ -355,12 +355,17 @@ void MainWindow::setupActions()
     qa->setText( i18n("Bookmarks Toolbar") );
     qa->setIcon( KIcon("bookmark-toolbar") );
     actionCollection()->addAction(QLatin1String("bm_bar"), qa);
-    
+
     // Bookmark Menu
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu(this);
     bmMenu->setIcon(KIcon("rating"));
     bmMenu->setDelayed(false);
     actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
+
+    // Add to preferred
+    a = new KAction(KIcon("rating"), i18n("Add to preferred"), this);
+    actionCollection()->addAction(QLatin1String("add_to_preferred"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(addPreferredLink()));
 }
 
 
@@ -1024,4 +1029,25 @@ void MainWindow::slotOpenActionUrl(QAction *action)
             history->goToItem(history->forwardItems(history->count() - offset + 1).back()); // forward
         }
     }
+}
+
+
+void MainWindow::addPreferredLink()
+{
+    QString name = currentTab()->title();
+    QString url = currentTab()->url().path();
+    
+    QStringList names = ReKonfig::previewNames();
+    QStringList urls = ReKonfig::previewUrls();
+    
+    names.prepend(name);
+    if(names.count() > 8)
+        names.removeLast();
+    
+    urls.prepend(url);
+    if(urls.count() > 8)
+        urls.removeLast();
+
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
 }
