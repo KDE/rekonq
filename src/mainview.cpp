@@ -409,9 +409,10 @@ void MainView::slotCloseTab(int index)
         if (tab->isModified())
         {
             int risp = KMessageBox::questionYesNo(this,
-                        i18n("You have modified this page and when closing it you would lose the modifications.\n"
-                             "Do you really want to close this page?\n"),
-                        i18n("Closing tab confirmation"));
+                        i18n("This tab contains changes that have not been submitted.\n"
+                             "Closing the tab will discard these changes.\n"
+                             "Do you really want to close this tab?\n"),
+                        i18n("Closing Modified Tab"));
             if (risp == KMessageBox::No)
                 return;
         }
