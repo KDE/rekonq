@@ -67,6 +67,7 @@
 #include <KJobUiDelegate>
 #include <kdeprintdialog.h>
 #include <KToggleAction>
+#include <KStandardDirs>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -990,6 +991,21 @@ void MainWindow::clearPrivateData()
         {
             QWebSettings::clearIconDatabase();
         }
+        
+        if(clearWidget.homePageThumbs->isChecked())
+        {
+            QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rekonq"), true);
+            path.remove("rekonq");
+            kDebug() << path;
+            QDir cacheDir(path);
+            QStringList fileList = cacheDir.entryList();
+            foreach(QString str, fileList)
+            {
+                kDebug() << str;
+                QFile file(path + str);
+                file.remove();
+            }
+        }
     }
 }
 
@@ -1035,7 +1051,7 @@ void MainWindow::slotOpenActionUrl(QAction *action)
 void MainWindow::addPreferredLink()
 {
     QString name = currentTab()->title();
-    QString url = currentTab()->url().path();
+    QString url = currentTab()->url().pathOrUrl();
     
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();

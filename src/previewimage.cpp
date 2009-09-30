@@ -90,5 +90,14 @@ void PreviewImage::mousePressEvent(QMouseEvent *event)
 
 QString PreviewImage::guessNameFromUrl(QString url)
 {
-    return QUrl(url).toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
+    QString name = QUrl(url).toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
+
+    // TODO learn Regular Expressions :)
+    name.remove('/');
+    name.remove('&');
+    name.remove('.');
+    name.remove('-');
+    name.remove('_');
+    
+    return name;
 }
