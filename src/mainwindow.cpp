@@ -364,7 +364,7 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
 
     // Add to preferred
-    a = new KAction(KIcon("rating"), i18n("Add to preferred"), this);
+    a = new KAction(KIcon("rating"), i18n("Add to Preferred"), this);
     actionCollection()->addAction(QLatin1String("add_to_preferred"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(addPreferredLink()));
 }
@@ -836,11 +836,11 @@ bool MainWindow::queryClose()
         int answer = KMessageBox::questionYesNoCancel(
                          this,
                          i18np("Are you sure you want to close the window?\n" \
-                               "You have 1 tab open.",
+                               "You still have 1 tab open.",
                                "Are you sure you want to close the window?\n" \
-                               "You have %1 tabs open.",
+                               "You still have %1 tabs open.",
                                m_view->count()),
-                         i18n("Closing..."),
+                         i18n("Closing rekonq"),
                          KStandardGuiItem::quit(),
                          KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
                          KStandardGuiItem::cancel(),
