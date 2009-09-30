@@ -66,7 +66,7 @@ FindBar::FindBar(KMainWindow *mainwindow)
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
     // label
-    QLabel *label = new QLabel(i18n("Find: "));
+    QLabel *label = new QLabel(i18n("Find:"));
     layout->addWidget(label);
 
     // lineEdit, focusProxy
