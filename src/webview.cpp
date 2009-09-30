@@ -215,7 +215,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         // page action
         QString text = selectedText(); 
-        if (text.startsWith( QLatin1String("http://") ) || text.startsWith( QLatin1String("https://") ))
+        if (text.startsWith( QLatin1String("http://") ) || text.startsWith( QLatin1String("https://") ) || text.startsWith( QLatin1String("www.") ) )
         {
             //open selected text url in a new tab
             a = new KAction(KIcon("tab-new"), i18n("Open: '") + text.toUtf8().left(15) + QString("...'"), this);
