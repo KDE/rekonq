@@ -50,6 +50,11 @@ WebSnap::WebSnap(const QUrl &url)
 
     // this to not register websnap history
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
+    
+    // this to not let this page open other windows
+    m_page.settings()->setAttribute(QWebSettings::PluginsEnabled, false);
+    m_page.settings()->setAttribute(QWebSettings::JavascriptEnabled, false);
+
     connect(&m_page, SIGNAL(loadFinished(bool)), this, SLOT(saveResult(bool)));
     QTimer::singleShot(0, this, SLOT(load()));
 }
