@@ -89,6 +89,7 @@ QString HomePage::rekonqHomePage(const KUrl &url)
                         .arg(menu)
                         .arg(speed)
                         ;
+                        
     return html;
 }
 
@@ -244,12 +245,13 @@ QString HomePage::createBookItem(const KBookmark &bookmark)
         KBookmarkGroup group = bookmark.toGroup();
         KBookmark bm = group.first();
         result += "<h3>" + bookmark.text() + "</h3>";
-
+        result += "<p style=\"padding-left: 30px;\">";
         while (!bm.isNull())
         {
             result += createBookItem(bm);
             bm = group.next(bm);
         }
+        result += "</p>";
         return result;
     }
  
