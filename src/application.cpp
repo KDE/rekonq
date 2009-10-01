@@ -230,15 +230,10 @@ SessionManager *Application::sessionManager()
 
 KIcon Application::icon(const KUrl &url)
 {
-    KIcon icon;
     if(url.isEmpty())
-    {
-        icon = KIcon("text-html");
-    }
-    else
-    {
-        icon = KIcon(QWebSettings::iconForUrl(url));
-    }
+        return KIcon("text-html");
+
+    KIcon icon = KIcon(QWebSettings::iconForUrl(url));
     if (icon.isNull())
     {
         icon = KIcon("text-html");
