@@ -36,7 +36,7 @@
 #include <KDebug>
 
 
-PreviewImage::PreviewImage(const QString &url)
+PreviewImage::PreviewImage(const QUrl &url)
     : QLabel()
     , ws(0)
     , m_url(url)
@@ -88,9 +88,9 @@ void PreviewImage::mousePressEvent(QMouseEvent *event)
 }
 
 
-QString PreviewImage::guessNameFromUrl(QString url)
+QString PreviewImage::guessNameFromUrl(QUrl url)
 {
-    QString name = QUrl(url).toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
+    QString name = url.toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
 
     // TODO learn Regular Expressions :)
     name.remove('/');

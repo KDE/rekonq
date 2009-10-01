@@ -32,17 +32,17 @@
 
 #include <QLabel>
 #include <QImage>
-#include <QString>
+#include <QUrl>
 
 class PreviewImage : public QLabel
 {
     Q_OBJECT
 
 public:
-    PreviewImage(const QString &url);
+    PreviewImage(const QUrl &url);
     ~PreviewImage();
     
-    QString guessNameFromUrl(QString url);
+    QString guessNameFromUrl(QUrl url);
     
 public slots:
     void setSiteImage();
@@ -54,7 +54,7 @@ private:
     QPixmap m_pixmap;
     WebSnap *ws;
     
-    QString m_url;
+    QUrl m_url;
     QString m_savePath;
 };
 

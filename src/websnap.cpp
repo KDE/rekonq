@@ -43,7 +43,7 @@
 #define HEIGHT 150
 
 
-WebSnap::WebSnap(const QString &url)
+WebSnap::WebSnap(const QUrl &url)
     : QObject()
 {
     m_url = url;
@@ -57,7 +57,7 @@ WebSnap::WebSnap(const QString &url)
 
 void WebSnap::load()
 {
-    m_page.mainFrame()->load( QUrl(m_url) );
+    m_page.mainFrame()->load(m_url);
 }
 
 
