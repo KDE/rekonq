@@ -81,8 +81,8 @@ QString HomePage::rekonqHomePage(const KUrl &url)
         speed = fillHistory();
     if(url == KUrl("about:bookmarks"))
         speed = fillBookmarks();
-    if(url == KUrl("about:home") || url == KUrl("about:preferred"))
-        speed = fillPreferred();
+    if(url == KUrl("about:home") || url == KUrl("about:favorites"))
+        speed = fillFavorites();
     
     QString html = QString(QLatin1String(file.readAll()))
                         .arg(imagesPath)
@@ -94,7 +94,7 @@ QString HomePage::rekonqHomePage(const KUrl &url)
 }
 
 
-QString HomePage::fillPreferred()
+QString HomePage::fillFavorites()
 {
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
@@ -166,7 +166,7 @@ QString HomePage::homePageMenu()
     menu += "<li><a href=\"about:lastSites\">Last Visited Sites</a></li>";
     menu += "<li><a href=\"about:history\">History</a></li>";
     menu += "<li><a href=\"about:bookmarks\">Bookmarks</a></li>";
-    menu += "<li><a href=\"about:preferred\">Preferred</a></li>";
+    menu += "<li><a href=\"about:favorites\">Favorites</a></li>";
     menu += "</ul>";
     return menu;
 }

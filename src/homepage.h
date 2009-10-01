@@ -51,7 +51,7 @@ public:
     QString homePageMenu();
     
 private:
-    QString fillPreferred();
+    QString fillFavorites();
     QString lastVisitedSites();
     QString fillHistory();
     QString fillBookmarks();

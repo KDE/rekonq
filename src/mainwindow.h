@@ -140,8 +140,8 @@ private slots:
     void slotAboutToShowBackMenu();
     void slotOpenActionUrl(QAction *action);
 
-    // add link to the preferred shown in the rekonq homepage
-    void addPreferredLink();
+    // add link to the favorites shown in the rekonq homepage
+    void addFavoriteLink();
     
 private:
     MainView *m_view;

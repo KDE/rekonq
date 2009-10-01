@@ -363,10 +363,10 @@ void MainWindow::setupActions()
     bmMenu->setDelayed(false);
     actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
 
-    // Add to preferred
-    a = new KAction(KIcon("rating"), i18n("Add to Preferred"), this);
-    actionCollection()->addAction(QLatin1String("add_to_preferred"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(addPreferredLink()));
+    // Add to favorites
+    a = new KAction(KIcon("rating"), i18n("Add to Favorites"), this);
+    actionCollection()->addAction(QLatin1String("add_to_favorites"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(addFavoriteLink()));
 }
 
 
@@ -1048,7 +1048,7 @@ void MainWindow::slotOpenActionUrl(QAction *action)
 }
 
 
-void MainWindow::addPreferredLink()
+void MainWindow::addFavoriteLink()
 {
     QString name = currentTab()->title();
     QString url = currentTab()->url().pathOrUrl();
