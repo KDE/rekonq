@@ -99,27 +99,22 @@ QString HomePage::fillPreferred()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    QString speed = "<table><tr>";
-    for(int i=0; i<4; ++i)
+    QString speed = "";
+    for(int i=0; i<8; ++i)
     {
-        speed += "<td><div class=\"thumbnail\">";
+        QString text = names.at(i);
+        if(text.length() > 20)
+        {
+            text.truncate(17);
+            text += "...";
+        }
+        speed += "<div class=\"thumbnail\">";
         speed += "<object type=\"application/image-preview\" data=\"";
         speed += urls.at(i) + "\" width=\"200\">";
         speed += "</object>";
         speed += "<br /><br />";
-        speed += "<a href=\"" + urls.at(i) + "\">" + names.at(i) + "</a></div></td>";
+        speed += "<a href=\"" + urls.at(i) + "\">" + text + "</a></div>";
     }
-    speed += "</tr><tr>";
-    for(int i=4; i<8; ++i)
-    {
-        speed += "<td><div class=\"thumbnail\">";
-        speed += "<object type=\"application/image-preview\" data=\"";
-        speed += urls.at(i) + "\" width=\"200\">";
-        speed += "</object>";
-        speed += "<br /><br />";
-        speed += "<a href=\"" + urls.at(i) + "\">" + names.at(i) + "</a></div></td>";
-    }
-    speed += "</tr></table>";
     
     return speed;
 }
@@ -129,37 +124,29 @@ QString HomePage::lastVisitedSites()
 {
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
-    QString last = "<table><tr>";
+    QString last = "";
     int i = 0;
     do
     {
         QModelIndex index = model->index(i, 0, QModelIndex() );
         if(model->hasChildren(index))
         {
-            for(int j=0; j< model->rowCount(index) && j<4; ++j)
+            for(int j=0; j< model->rowCount(index) && j<8; ++j)
             {
                 QModelIndex son = model->index(j, 0, index );
-                
-                last += "<td><div class=\"thumbnail\">";
+
+                QString text = son.data().toString();
+                if(text.length() > 20)
+                {
+                    text.truncate(17);
+                    text += "...";
+                }
+                last += "<div class=\"thumbnail\">";
                 last += "<object type=\"application/image-preview\" data=\"" + son.data(HistoryModel::UrlStringRole).toString();
                 last +=  "\" width=\"200\">";
                 last += "</object>";
                 last += "<br /><br />";
-                last += "<a href=\"" + son.data(HistoryModel::UrlStringRole).toString() + "\">" + son.data().toString() + "</a></div></td>";
-                
-                i++;
-            }
-            last += "</tr><tr>";
-            for(int j=4; j< model->rowCount(index) && j<8; ++j)
-            {
-                QModelIndex son = model->index(j, 0, index );
-                
-                last += "<td><div class=\"thumbnail\">";
-                last += "<object type=\"application/image-preview\" data=\"" + son.data(HistoryModel::UrlStringRole).toString();
-                last += "\" width=\"200\">"; 
-                last += "</object>";
-                last += "<br /><br />";
-                last += "<a href=\"" + son.data(HistoryModel::UrlStringRole).toString() + "\">" + son.data().toString() + "</a></div></td>";
+                last += "<a href=\"" + son.data(HistoryModel::UrlStringRole).toString() + "\">" + text + "</a></div>";
                 
                 i++;
             }
@@ -168,7 +155,6 @@ QString HomePage::lastVisitedSites()
     }
     while( i<8 || model->hasIndex( i , 0 , QModelIndex() ) );
 
-    last += "</tr></table>";    
     return last;
 
 }
