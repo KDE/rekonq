@@ -471,7 +471,7 @@ void MainView::webViewLoadFinished(bool ok)
 
     webViewIconChanged();
     emit browserTabLoading(false);
-    
+
     // don't display messages for background tabs
     if (index != currentIndex())
     {

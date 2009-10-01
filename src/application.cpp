@@ -428,6 +428,5 @@ void Application::homePage(const KUrl &url)
     WebView *w = view->currentWebView();
     HomePage p(w);
     w->setHtml( p.rekonqHomePage(url), url);
-    view->urlBar()->setFocus();
     return;
 }

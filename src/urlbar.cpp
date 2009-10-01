@@ -133,6 +133,11 @@ void UrlBar::setupLineEdit()
 
 void UrlBar::setUrl(const QUrl& url)
 {
+    if(url.scheme() == "about")
+    {
+        setFocus();
+        return;
+    }
     m_currentUrl = url;
     slotUpdateUrl();
 }
