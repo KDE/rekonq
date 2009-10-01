@@ -99,7 +99,7 @@ QString HomePage::fillFavorites()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    QString speed = "";
+    QString speed = "<h2>Favorites</h2>";
     for(int i=0; i<8; ++i)
     {
         QString text = names.at(i);
@@ -124,14 +124,15 @@ QString HomePage::lastVisitedSites()
 {
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
-    QString last = "";
+    QString last = "<h2>Last Visited Sites</h2>";
+    int sites = 0;
     int i = 0;
     do
     {
         QModelIndex index = model->index(i, 0, QModelIndex() );
         if(model->hasChildren(index))
         {
-            for(int j=0; j< model->rowCount(index) && j<8; ++j)
+            for(int j=0; j< model->rowCount(index) && sites<8; ++j)
             {
                 QModelIndex son = model->index(j, 0, index );
 
@@ -147,13 +148,12 @@ QString HomePage::lastVisitedSites()
                 last += "</object>";
                 last += "<br /><br />";
                 last += "<a href=\"" + son.data(HistoryModel::UrlStringRole).toString() + "\">" + text + "</a></div>";
-                
-                i++;
+                sites++;
             }
         }
         i++;
     }
-    while( i<8 || model->hasIndex( i , 0 , QModelIndex() ) );
+    while( sites<8 || model->hasIndex( i , 0 , QModelIndex() ) );
 
     return last;
 
@@ -162,21 +162,20 @@ QString HomePage::lastVisitedSites()
 
 QString HomePage::homePageMenu()
 {
-    QString menu = "<ul>";
-    menu += "<li><a href=\"about:lastSites\">Last Visited Sites</a></li>";
-    menu += "<li><a href=\"about:history\">History</a></li>";
-    menu += "<li><a href=\"about:bookmarks\">Bookmarks</a></li>";
-    menu += "<li><a href=\"about:favorites\">Favorites</a></li>";
-    menu += "</ul>";
+    QString menu = "";
+    menu += "<div class=\"link\"><a href=\"about:lastSites\">Last Visited Sites</a></div>";
+    menu += "<div class=\"link\"><a href=\"about:history\">History</a></div>";
+    menu += "<div class=\"link\"><a href=\"about:bookmarks\">Bookmarks</a></div>";
+    menu += "<div class=\"link\"><a href=\"about:favorites\">Favorites</a></div>";
     return menu;
 }
 
 
 QString HomePage::fillHistory()
 {
-    QString history = "";
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
+    QString history = "<h2>History</h2>";
     int i = 0;
     do
     {
@@ -200,7 +199,6 @@ QString HomePage::fillHistory()
 
     history += "</table>";
     return history;
-    
 }
 
 
@@ -212,7 +210,7 @@ QString HomePage::fillBookmarks()
         return QString("Error retrieving bookmarks!");
     }
 
-    QString str = QString("");
+    QString str = "<h2>Bookmarks</h2>";
     KBookmark bookmark = bookGroup.first();
     while (!bookmark.isNull())
     {
