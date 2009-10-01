@@ -79,7 +79,10 @@ protected:
 protected Q_SLOTS:    
     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
     virtual void slotDownloadRequested(const QNetworkRequest &request);
-    
+
+    void setSessionMetaData(const QString& key, const QString& value);
+    void setRequestMetaData(const QString& key, const QString& value);
+
 private:
     friend class WebView;
     QString errorPage(QNetworkReply *);
