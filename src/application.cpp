@@ -301,11 +301,8 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
 
     // loading home pages
-    if (url.scheme() == QLatin1String("about"))
-    {
-        homePage(url);
+    if (homePage(url))
         return;
-    }
     
     if (url.scheme() == QLatin1String("mailto"))
     {
@@ -421,12 +418,21 @@ MainWindowList Application::mainWindowList()
 }
 
 
-void Application::homePage(const KUrl &url)
+bool Application::homePage(const KUrl &url)
 {
-    kDebug() << "loading home: " << url;
-    MainView *view = mainWindow()->mainView(); 
-    WebView *w = view->currentWebView();
-    HomePage p(w);
-    w->setHtml( p.rekonqHomePage(url), url);
-    return;
+    if (    url == KUrl("about:lastSites") 
+         || url == KUrl("about:history") 
+         || url == KUrl("about:bookmarks")
+         || url == KUrl("about:favorites")
+         || url == KUrl("about:home")
+    )
+    {
+        kDebug() << "loading home: " << url;
+        MainView *view = mainWindow()->mainView(); 
+        WebView *w = view->currentWebView();
+        HomePage p(w);
+        w->setHtml( p.rekonqHomePage(url), url);
+        return true;
+    }
+    return false;
 }
