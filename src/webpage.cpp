@@ -80,8 +80,6 @@ WebPage::WebPage(QObject *parent)
 
     setNetworkAccessManager(Application::networkAccessManager());
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
-
-    setSessionMetaData("ssl_activate_warnings", "TRUE");
     
     connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(slotDownloadRequested(const QNetworkRequest &)));
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(slotHandleUnsupportedContent(QNetworkReply *)));
@@ -95,21 +93,6 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
-    // FIXME CHECK this 
-    if (frame)
-    {
-        // TODO: Check if we need to flag navigation from javascript as well.
-        // Currently QtWebKit provides no way to distinguish such requests and
-        // lumps them under QWebPage::NavigationTypeOther.
-        if (type == QWebPage::NavigationTypeLinkClicked)
-        {
-            QString scheme = request.url().scheme();
-            if (scheme == "https" || scheme == "webdavs")
-                setRequestMetaData("ssl_was_in_use", "TRUE");
-        }
-    }
-    setRequestMetaData("main_frame_request", (frame->parentFrame() ? "FALSE" : "TRUE"));
-
     if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
         Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);
@@ -317,16 +300,4 @@ void WebPage::slotDownloadRequested(const QNetworkRequest &request)
     job->addMetaData("MaxCacheSize", "0"); // Don't store in http cache.
     job->addMetaData("cache", "cache"); // Use entry from cache if available.
     job->uiDelegate()->setAutoErrorHandlingEnabled(true);
-}
-
-
-void WebPage::setSessionMetaData(const QString& key, const QString& value)
-{
-    qobject_cast<NetworkAccessManager*>(networkAccessManager())->sessionMetaData()[key] = value;
-}
-
-
-void WebPage::setRequestMetaData(const QString& key, const QString& value)
-{
-    qobject_cast<NetworkAccessManager*>(networkAccessManager())->requestMetaData()[key] = value;
 }

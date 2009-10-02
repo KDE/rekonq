@@ -41,17 +41,13 @@ class NetworkAccessManager : public AccessManager
 
 public:
     NetworkAccessManager(QObject *parent = 0);
-
-    KIO::MetaData& sessionMetaData();
-    KIO::MetaData& requestMetaData();
-
     void resetDiskCache();
     
 public slots:
     void loadSettings();
 
-protected:
-    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
+// protected:
+//     virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
 
 private slots:
     void authenticationRequired(QNetworkReply *reply, QAuthenticator *auth);
@@ -60,12 +56,6 @@ private slots:
 #ifndef QT_NO_OPENSSL
     void slotSSLErrors(QNetworkReply *reply, const QList<QSslError> &error);
 #endif
-
-private:
-    KIO::MetaData m_sessionMetaData;
-    KIO::MetaData m_requestMetaData;
-
-
 };
 
 #endif // NETWORKACCESSMANAGER_H

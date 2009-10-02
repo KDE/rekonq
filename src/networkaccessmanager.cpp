@@ -191,39 +191,27 @@ void NetworkAccessManager::slotSSLErrors(QNetworkReply *reply, const QList<QSslE
 #endif
 
 
-KIO::MetaData& NetworkAccessManager::sessionMetaData()
-{
-    return m_sessionMetaData;
-}
-
-
-KIO::MetaData& NetworkAccessManager::requestMetaData()
-{
-    return m_requestMetaData;
-}
-
-
-QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
-{
-    // TODO implement Ad-Block here (refuse connections..)
-
-    QNetworkRequest request(req);
-    KIO::MetaData metaData = m_sessionMetaData;
-    metaData += m_requestMetaData;
-
-    QVariant attr = req.attribute(QNetworkRequest::User);
-    if (attr.isValid() && attr.type() == QVariant::Map)
-    {
-        metaData += attr.toMap();
-    }
-
-    if (!metaData.isEmpty())
-    {
-        attr = metaData.toVariant();
-        request.setAttribute(QNetworkRequest::User, attr);
-    }
-
-    // Clear the per request meta data...
-    m_requestMetaData.clear();
-    return AccessManager::createRequest(op, request, outgoingData);
-}
+// QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
+// {
+//     // TODO implement Ad-Block here (refuse connections..)
+// 
+//     QNetworkRequest request(req);
+//     KIO::MetaData metaData = m_sessionMetaData;
+//     metaData += m_requestMetaData;
+// 
+//     QVariant attr = req.attribute(QNetworkRequest::User);
+//     if (attr.isValid() && attr.type() == QVariant::Map)
+//     {
+//         metaData += attr.toMap();
+//     }
+// 
+//     if (!metaData.isEmpty())
+//     {
+//         attr = metaData.toVariant();
+//         request.setAttribute(QNetworkRequest::User, attr);
+//     }
+// 
+//     // Clear the per request meta data...
+//     m_requestMetaData.clear();
+//     return AccessManager::createRequest(op, request, outgoingData);
+// }
