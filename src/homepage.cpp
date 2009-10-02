@@ -75,13 +75,13 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     QString menu = homePageMenu();
     
     QString speed;
-    if(url == KUrl("about:lastSites"))
+    if(url == KUrl("rekonq:lastSites"))
         speed = lastVisitedSites();
-    if(url == KUrl("about:history"))
+    if(url == KUrl("rekonq:history"))
         speed = fillHistory();
-    if(url == KUrl("about:bookmarks"))
+    if(url == KUrl("rekonq:bookmarks"))
         speed = fillBookmarks();
-    if(url == KUrl("about:home") || url == KUrl("about:favorites"))
+    if(url == KUrl("rekonq:home") || url == KUrl("rekonq:favorites"))
         speed = fillFavorites();
     
     QString html = QString(QLatin1String(file.readAll()))
@@ -163,10 +163,10 @@ QString HomePage::lastVisitedSites()
 QString HomePage::homePageMenu()
 {
     QString menu = "";
-    menu += "<div class=\"link\"><a href=\"about:lastSites\">Last Visited Sites</a></div>";
-    menu += "<div class=\"link\"><a href=\"about:history\">History</a></div>";
-    menu += "<div class=\"link\"><a href=\"about:bookmarks\">Bookmarks</a></div>";
-    menu += "<div class=\"link\"><a href=\"about:favorites\">Favorites</a></div>";
+    menu += "<div class=\"link\"><a href=\"rekonq:lastSites\">Last Visited Sites</a></div>";
+    menu += "<div class=\"link\"><a href=\"rekonq:history\">History</a></div>";
+    menu += "<div class=\"link\"><a href=\"rekonq:bookmarks\">Bookmarks</a></div>";
+    menu += "<div class=\"link\"><a href=\"rekonq:favorites\">Favorites</a></div>";
     return menu;
 }
 

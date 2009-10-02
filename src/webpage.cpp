@@ -107,7 +107,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         return false;
     }
 
-    if (request.url().scheme() == QLatin1String("about"))
+    if (request.url().scheme() == QLatin1String("rekonq"))
     {
         Application::instance()->loadUrl( request.url() );
         return false;

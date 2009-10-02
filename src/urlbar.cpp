@@ -133,7 +133,7 @@ void UrlBar::setupLineEdit()
 
 void UrlBar::setUrl(const QUrl& url)
 {
-    if(url.scheme() == "about")
+    if(url.scheme() == "rekonq")
     {
         setFocus();
         return;

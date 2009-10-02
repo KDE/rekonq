@@ -47,7 +47,7 @@ public:
     HomePage(QObject *parent = 0);
     ~HomePage();
 
-    QString rekonqHomePage(const KUrl &url = KUrl("about:home"));
+    QString rekonqHomePage(const KUrl &url = KUrl("rekonq:home"));
     QString homePageMenu();
     
 private:

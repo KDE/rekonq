@@ -115,8 +115,8 @@ void HistoryManager::addHistoryEntry(const QString &url)
 {
     QUrl cleanUrl(url);
     
-    // don't store about: urls (home page related)
-    if(cleanUrl.scheme() == QString("about"))
+    // don't store rekonq: urls (home page related)
+    if(cleanUrl.scheme() == QString("rekonq"))
         return;
     
     cleanUrl.setPassword(QString());

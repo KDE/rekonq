@@ -49,7 +49,6 @@ public:
 private slots:
     void saveSession();
 
-
 private:
     QString m_sessionFilePath;
     bool m_safe;

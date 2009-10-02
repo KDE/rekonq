@@ -420,11 +420,11 @@ MainWindowList Application::mainWindowList()
 
 bool Application::homePage(const KUrl &url)
 {
-    if (    url == KUrl("about:lastSites") 
-         || url == KUrl("about:history") 
-         || url == KUrl("about:bookmarks")
-         || url == KUrl("about:favorites")
-         || url == KUrl("about:home")
+    if (    url == KUrl("rekonq:lastSites") 
+         || url == KUrl("rekonq:history") 
+         || url == KUrl("rekonq:bookmarks")
+         || url == KUrl("rekonq:favorites")
+         || url == KUrl("rekonq:home")
     )
     {
         kDebug() << "loading home: " << url;
