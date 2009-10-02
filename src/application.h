@@ -101,7 +101,7 @@ public:
 
     MainWindow *mainWindow();
     MainWindowList mainWindowList();
-    void homePage(const KUrl &url = KUrl("about:home"));
+    bool homePage(const KUrl &url = KUrl("about:home"));
     
     static KIcon icon(const KUrl &url);
 

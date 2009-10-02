@@ -93,6 +93,7 @@ QString PreviewImage::guessNameFromUrl(QUrl url)
     QString name = url.toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
 
     // TODO learn Regular Expressions :)
+    // and implement something better here..
     name.remove('/');
     name.remove('&');
     name.remove('.');
