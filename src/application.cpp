@@ -95,7 +95,7 @@ int Application::newInstance()
     if (isSessionRestored() && sessionManager()->restoreSession())
     {
         kDebug() << "session restored";
-        return 0;
+        return 1;
     }
 
 // --------------------------------------------------------------------------
@@ -115,7 +115,7 @@ int Application::newInstance()
                 for (int i = 0; i < args->count(); ++i)
                     loadUrl(args->arg(i), Rekonq::NewCurrentTab);
                 
-                return 1;
+                return 2;
             }
         }
         
@@ -125,14 +125,14 @@ int Application::newInstance()
         for (int i = 1; i < args->count(); ++i)
             loadUrl(args->arg(i), Rekonq::SettingOpenTab);
 
-        return 2;
+        return 3;
     }
     
     // creating new window
     MainWindow *w = newMainWindow();
     w->slotHome();
         
-    return 3;
+    return 0;
 }
 
 
