@@ -67,6 +67,11 @@ WebView::WebView(QWidget* parent)
 }
 
 
+WebView::~WebView()
+{
+}
+
+
 WebPage *WebView::page()
 {
     if(!m_page)
@@ -179,7 +184,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             if(!engine.isEmpty())
             {
                 service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-                const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
+                const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter; // FIXME crashed
                 data.setData(searchProviderPrefix + "some keyword");
                 a = new KAction(service->name(), this);
                 a->setIcon(Application::icon(KUrl(data.uri())));
