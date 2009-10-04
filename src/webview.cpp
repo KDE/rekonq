@@ -128,6 +128,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
+        menu.addSeparator();
+        
         a = pageAction(QWebPage::DownloadLinkToDisk);
         a->setIcon(KIcon("document-save"));
         menu.addAction(a);
@@ -135,6 +137,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a = pageAction(QWebPage::CopyLinkToClipboard);
         a->setIcon(KIcon("edit-copy"));
         menu.addAction(a);
+        
+        menu.addSeparator();
     }
 
     // is content editable && selected? Add CUT
@@ -184,13 +188,16 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             if(!engine.isEmpty())
             {
                 service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-                const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter; // FIXME crashed
-                data.setData(searchProviderPrefix + "some keyword");
-                a = new KAction(service->name(), this);
-                a->setIcon(Application::icon(KUrl(data.uri())));
-                a->setData(searchProviderPrefix);
-                connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
-                searchMenu->addAction(a);
+                if(service)
+                {
+                    const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter; // FIXME crashed
+                    data.setData(searchProviderPrefix + "some keyword");
+                    a = new KAction(service->name(), this);
+                    a->setIcon(Application::icon(KUrl(data.uri())));
+                    a->setData(searchProviderPrefix);
+                    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
+                    searchMenu->addAction(a);
+                }
             }
         }
         
@@ -321,9 +328,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
 void WebView::mousePressEvent(QMouseEvent *event)
 {
-    m_page->m_pressedButtons = event->buttons();
-    m_page->m_keyboardModifiers = event->modifiers();
-
     switch(event->button()) 
     {
       case Qt::XButton1:
@@ -340,7 +344,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
 
 void WebView::wheelEvent(QWheelEvent *event)
 {
-    if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+    if (Application::keyboardModifiers() & Qt::ControlModifier)
     {
         int numDegrees = event->delta() / 8;
         int numSteps = numDegrees / 15;
