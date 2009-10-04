@@ -188,7 +188,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                 searchMenu->addAction(a);
             }
         }
-        menu.addAction(searchMenu);
+        
+        if (!searchMenu->menu()->isEmpty())
+        {
+            menu.addAction(searchMenu);
+        }
+        
         menu.addSeparator();
         // TODO Add translate, show translation   
     }
