@@ -314,24 +314,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 }
 
 
-void WebView::keyPressEvent(QKeyEvent *event)
-{
-    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Tab))
-    {
-        emit ctrlTabPressed();
-        return;
-    }
-
-    if ((event->modifiers() == Qt::ControlModifier + Qt::ShiftModifier) && (event->key() == Qt::Key_Backtab))
-    {
-        emit shiftCtrlTabPressed();
-        return;
-    }
-
-    QWebView::keyPressEvent(event);
-}
-
-
 void WebView::mousePressEvent(QMouseEvent *event)
 {
     m_page->m_pressedButtons = event->buttons();

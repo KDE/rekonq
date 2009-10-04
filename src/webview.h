@@ -51,19 +51,9 @@ public:
     QString lastStatusBarText() const;
     int progress();
 
-signals:
-    // switching tabs
-    void ctrlTabPressed();
-    void shiftCtrlTabPressed();
-
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void mousePressEvent(QMouseEvent *event);
-    /**
-    * Filters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
-    * to make switch tab
-    */
-    void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
 
 private slots:

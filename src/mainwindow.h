@@ -94,8 +94,20 @@ public slots:
 
     void printRequested(QWebFrame *frame = 0);
     
+    
+signals:
+    // switching tabs
+    void ctrlTabPressed();
+    void shiftCtrlTabPressed();
+    
 protected:
     bool queryClose();
+    
+    /**
+    * Filters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
+    * to make switch tab
+    * Filters out ESC key to show/hide the search bar
+    */
     void keyPressEvent(QKeyEvent *event);
 
 private slots:

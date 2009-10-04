@@ -274,9 +274,6 @@ WebView *MainView::newWebView(bool focused, bool nearParent)
     connect(webView, SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
     connect(webView, SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
 
-    connect(webView, SIGNAL(ctrlTabPressed()), this, SLOT(nextTab()));
-    connect(webView, SIGNAL(shiftCtrlTabPressed()), this, SLOT(previousTab()));
-
     // connecting webPage signals with mainview
     connect(webView->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));

@@ -193,6 +193,10 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
+    // (shift +) ctrl + tab switching 
+    connect(this, SIGNAL(ctrlTabPressed()), m_view, SLOT(nextTab()));
+    connect(this, SIGNAL(shiftCtrlTabPressed()), m_view, SLOT(previousTab()));
+
     // update toolbar actions signals
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
@@ -872,6 +876,18 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         return;
     }
 
+    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Tab))
+    {
+        emit ctrlTabPressed();
+        return;
+    }
+
+    if ((event->modifiers() == Qt::ControlModifier + Qt::ShiftModifier) && (event->key() == Qt::Key_Backtab))
+    {
+        emit shiftCtrlTabPressed();
+        return;
+    }
+    
     KMainWindow::keyPressEvent(event);
 }
 
