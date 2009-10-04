@@ -203,7 +203,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         menu.addSeparator();
 
-        // TODO Add "View Image" && remove copy_this_image action
+        // TODO remove copy_this_image action      
+        a = new KAction(KIcon("view-media-visualization"), i18n("&View Image"), this);
+        a->setData(result.imageUrl());
+        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
+        menu.addAction(a);
+        
         a = pageAction(QWebPage::DownloadImageToDisk);
         a->setIcon(KIcon("document-save"));
         menu.addAction(a);
@@ -384,6 +389,22 @@ void WebView::slotLoadFinished(bool)
 void WebView::printFrame()
 {
     Application::instance()->mainWindow()->printRequested(page()->currentFrame());
+}
+
+
+void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl url(a->data().toUrl());
+    
+    if (modifiers & Qt::ControlModifier || buttons == Qt::MidButton)
+    {
+        Application::instance()->loadUrl(url, Rekonq::SettingOpenTab);
+    }
+    else
+    {
+        Application::instance()->loadUrl(url, Rekonq::CurrentTab);
+    }
 }
 
 

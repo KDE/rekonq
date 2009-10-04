@@ -74,6 +74,7 @@ private slots:
 
     void printFrame();
 
+    void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
     void openLinkInNewWindow();
     void openLinkInNewTab();
 
