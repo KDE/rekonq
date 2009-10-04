@@ -52,7 +52,6 @@
 #include <KToolInvocation>
 #include <KUriFilter>
 #include <KMessageBox>
-#include <KProtocolInfo>
 #include <KWindowInfo>
 
 // Qt Includes
@@ -335,12 +334,6 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (KUriFilter::self()->filterUri(data))
     {
         loadingUrl = data.uri().url();
-    }
-
-    if ( !KProtocolInfo::isKnownProtocol( loadingUrl ) )
-    {
-        KMessageBox::error(0, i18n("Protocol not supported:\n%1", url.protocol()));
-        return;
     }
 
     WebView *webView = 0;
