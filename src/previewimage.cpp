@@ -30,7 +30,6 @@
 
 #include <QFile>
 #include <QMovie>
-#include <QMouseEvent>
 
 #include <KUrl>
 #include <KStandardDirs>
@@ -84,17 +83,8 @@ void PreviewImage::setSiteImage()
 
 void PreviewImage::mousePressEvent(QMouseEvent *event)
 {
-    switch(event->button()) 
-    {
-    case Qt::LeftButton:
-        Application::instance()->loadUrl(m_url);
-        break;
-    case Qt::RightButton:
-        // TODO
-        break;
-    default:
-        QLabel::mousePressEvent(event);
-    };
+    Q_UNUSED(event)
+    Application::instance()->loadUrl(m_url);
 }
 
 

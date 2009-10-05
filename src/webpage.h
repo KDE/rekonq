@@ -81,7 +81,12 @@ protected Q_SLOTS:
     virtual void slotDownloadRequested(const QNetworkRequest &request);
 
 private:
+    friend class WebView;
     QString errorPage(QNetworkReply *);
+
+    // keyboard/mouse modifiers
+    Qt::KeyboardModifiers m_keyboardModifiers;
+    Qt::MouseButtons m_pressedButtons;
 
     QUrl m_requestedUrl;
 };

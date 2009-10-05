@@ -70,6 +70,8 @@
 
 WebPage::WebPage(QObject *parent)
         : QWebPage(parent)
+        , m_keyboardModifiers(Qt::NoModifier)
+        , m_pressedButtons(Qt::NoButton)
         , m_requestedUrl()
 {
     setPluginFactory(new WebPluginFactory(this));
@@ -91,9 +93,11 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
-    if (Application::keyboardModifiers() & Qt::ControlModifier || Application::mouseButtons() == Qt::MidButton)
+    if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
         Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);
+        m_keyboardModifiers = Qt::NoModifier;
+        m_pressedButtons = Qt::NoButton;
         return false;
     }
 
