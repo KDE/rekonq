@@ -66,7 +66,7 @@ void BookmarkOwner::openBookmark(const KBookmark & bookmark,
 {
     if (keyboardModifiers & Qt::ControlModifier || mouseButtons == Qt::MidButton)
     {
-        emit openUrl(bookmark.url(), Rekonq::SettingOpenTab);
+        emit openUrl(bookmark.url(), Rekonq::NewCurrentTab);
     }
     else
     {
