@@ -74,18 +74,31 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
     QString menu = homePageMenu();
     
-    QString speed;
+    QString title, speed;
     if(url == KUrl("rekonq:lastSites"))
+    {
+        title = "<h2>" + i18n("Last Visited Sites") + "</h2>";
         speed = lastVisitedSites();
+    }
     if(url == KUrl("rekonq:history"))
+    {
+        title = "<h2>" + i18n("History") + "</h2>";
         speed = fillHistory();
+    }
     if(url == KUrl("rekonq:bookmarks"))
+    {
+        title = "<h2>" + i18n("Bookmarks") + "</h2>";
         speed = fillBookmarks();
+    }
     if(url == KUrl("rekonq:home") || url == KUrl("rekonq:favorites"))
+    {
+        title = "<h2>" + i18n("Favorites") + "</h2>";
         speed = fillFavorites();
+    }
     
     QString html = QString(QLatin1String(file.readAll()))
                         .arg(imagesPath)
+                        .arg(title)
                         .arg(menu)
                         .arg(speed)
                         ;
@@ -99,7 +112,7 @@ QString HomePage::fillFavorites()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    QString speed = "<h2>Favorites</h2>";
+    QString speed;
     for(int i=0; i<8; ++i)
     {
         QString text = names.at(i);
@@ -124,7 +137,7 @@ QString HomePage::lastVisitedSites()
 {
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
-    QString last = "<h2>Last Visited Sites</h2>";
+    QString last;
     int sites = 0;
     int i = 0;
     do
@@ -162,11 +175,13 @@ QString HomePage::lastVisitedSites()
 
 QString HomePage::homePageMenu()
 {
-    QString menu = "";
-    menu += "<div class=\"link\"><a href=\"rekonq:lastSites\">Last Visited Sites</a></div>";
-    menu += "<div class=\"link\"><a href=\"rekonq:history\">History</a></div>";
-    menu += "<div class=\"link\"><a href=\"rekonq:bookmarks\">Bookmarks</a></div>";
-    menu += "<div class=\"link\"><a href=\"rekonq:favorites\">Favorites</a></div>";
+    QString menu = "<div class=\"link\">";
+    menu += "<h1>rekonq</h1>";
+    menu += "<a href=\"rekonq:lastSites\">Last Visited Sites</a><br />";
+    menu += "<a href=\"rekonq:history\">History</a><br />";
+    menu += "<a href=\"rekonq:bookmarks\">Bookmarks</a><br /";
+    menu += "<a href=\"rekonq:favorites\">Favorites</a><br />";
+    menu += "</div>";
     return menu;
 }
 
@@ -175,7 +190,7 @@ QString HomePage::fillHistory()
 {
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
-    QString history = "<h2>History</h2>";
+    QString history;
     int i = 0;
     do
     {
@@ -210,7 +225,7 @@ QString HomePage::fillBookmarks()
         return QString("Error retrieving bookmarks!");
     }
 
-    QString str = "<h2>Bookmarks</h2>";
+    QString str;
     KBookmark bookmark = bookGroup.first();
     while (!bookmark.isNull())
     {
