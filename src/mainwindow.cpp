@@ -463,10 +463,21 @@ void MainWindow::slotUpdateConfiguration()
     defaultSettings->setAttribute(QWebSettings::LinksIncludedInFocusChain, ReKonfig::linksIncludedInFocusChain());
     defaultSettings->setAttribute(QWebSettings::ZoomTextOnly, ReKonfig::zoomTextOnly());
     defaultSettings->setAttribute(QWebSettings::PrintElementBackgrounds, ReKonfig::printElementBackgrounds());
+
+    // ===== HTML 5 features WebKit support ======
     defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
     defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
     defaultSettings->setAttribute(QWebSettings::LocalStorageDatabaseEnabled, ReKonfig::localStorageDatabaseEnabled());
-
+    if(ReKonfig::localStorageDatabaseEnabled())
+    {
+        kDebug() <<         QWebSettings::offlineStoragePath();
+        QString path = KStandardDirs::locateLocal("cache", QString("WebkitLocalStorage/rekonq"), true);
+        path.remove("rekonq");
+        kDebug() << path;
+        QWebSettings::setOfflineStoragePath(path);
+        QWebSettings::setOfflineStorageDefaultQuota(50000);
+    }
+    
     // Applies user defined CSS to all open webpages. If there no longer is a
     // user defined CSS removes it from all open webpages.
     defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
