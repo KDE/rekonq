@@ -27,9 +27,10 @@
 #ifndef PREVIEW_IMAGE_H
 #define PREVIEW_IMAGE_H
 
-
+// Local Includes
 #include "websnap.h"
 
+// Qt Includes
 #include <QLabel>
 #include <QImage>
 #include <QUrl>

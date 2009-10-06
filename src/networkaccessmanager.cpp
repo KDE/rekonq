@@ -54,7 +54,6 @@
 #include <QtNetwork/QNetworkDiskCache>
 
 
-
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
         : AccessManager(parent)
 {

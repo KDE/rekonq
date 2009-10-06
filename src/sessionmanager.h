@@ -36,7 +36,7 @@
 
 
 /**
-  *
+  * Session Management
   */
 class SessionManager : public QObject
 {

@@ -28,6 +28,7 @@
 #define WEB_PLUGIN_FACTORY_H
 
 
+// Qt Includes
 #include <QtWebKit/QWebPluginFactory>
 #include <QtCore/QList>
 #include <QtGui/QWidget>

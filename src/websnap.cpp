@@ -25,12 +25,15 @@
 * ============================================================ */
 
 
+// Self Includes
 #include "websnap.h"
 #include "websnap.moc"
 
+// KDE Includes
 #include <KDebug>
 #include <KStandardDirs>
 
+// Qt Includes
 #include <QSize>
 #include <QWebFrame>
 #include <QWebSettings>

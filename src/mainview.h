@@ -29,6 +29,7 @@
 #ifndef MAINVIEW_H
 #define MAINVIEW_H
 
+
 // Local Includes
 #include "webview.h"
 #include "webpage.h"
@@ -36,8 +37,6 @@
 
 // KDE Includes
 #include <KTabWidget>
-
-// Qt Includes
 
 // Forward Declarations
 class QUrl;
@@ -49,6 +48,7 @@ class TabBar;
 class UrlBar;
 
 class KPassivePopup;
+
 
 /**
  *  This class represent rekonq Main View. It contains all WebViews and a stack widget

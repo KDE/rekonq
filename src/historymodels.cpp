@@ -53,10 +53,8 @@
 
 #include <QtGui/QClipboard>
 
-
 // generic algorithms
 #include <QtAlgorithms>
-
 
 
 HistoryModel::HistoryModel(HistoryManager *history, QObject *parent)

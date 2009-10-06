@@ -29,6 +29,7 @@
 #ifndef HISTORYMODELS_H
 #define HISTORYMODELS_H
 
+
 // Local Includes
 #include "history.h"
 #include "modelmenu.h"
@@ -43,7 +44,6 @@
 #include <QTimer>
 #include <QSortFilterProxyModel>
 #include <QWebHistoryInterface>
-
 
 
 class HistoryModel : public QAbstractTableModel

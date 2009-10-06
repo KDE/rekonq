@@ -29,12 +29,14 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+
 // KDE Includes
 #include <KConfigDialog>
 
 // Forward Declarations
 class QWidget;
 class Private;
+
 
 class SettingsDialog : public KConfigDialog
 {

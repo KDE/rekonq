@@ -38,6 +38,7 @@
 #include <KLineEdit>
 #include <KLocalizedString>
 
+
 PanelHistory::PanelHistory(QWidget *parent)
         : QWidget(parent)
         , m_historyTreeView(new QTreeView)

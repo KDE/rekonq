@@ -24,12 +24,14 @@
 *
 * ============================================================ */
 
+
 #ifndef WEB_SNAP_H
 #define WEB_SNAP_H
 
-
+// KDE Includes
 #include <KUrl>
 
+// Qt Includes
 #include <QtCore/QObject>
 #include <QPixmap>
 #include <QWebPage>

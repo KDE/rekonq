@@ -28,9 +28,9 @@
 #ifndef RECOOKIEJAR_H
 #define RECOOKIEJAR_H
 
+
 // Qt Includes
 #include <QtNetwork/QNetworkCookieJar>
-
 
 // Forward Declarations
 class QUrl;

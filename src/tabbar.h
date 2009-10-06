@@ -30,6 +30,7 @@
 #ifndef TABBAR_H
 #define TABBAR_H
 
+
 // KDE Includes
 #include <KTabBar>
 
@@ -37,12 +38,12 @@
 class QPoint;
 class QToolButton;
 
+
 /**
  * Tab bar with a few more features such as
  * a context menu and shortcuts
  *
  */
-
 class TabBar : public KTabBar
 {
     Q_OBJECT

@@ -29,6 +29,7 @@
 #ifndef BOOKMARKS_H
 #define BOOKMARKS_H
 
+
 // Local Includes
 #include "application.h"
 
@@ -124,6 +125,7 @@ signals:
 // ------------------------------------------------------------------------------
 
 
+// KDE Includes
 #include <KBookmarkMenu>
 
 
@@ -243,4 +245,3 @@ private:
 };
 
 #endif
-

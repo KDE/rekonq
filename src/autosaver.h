@@ -28,13 +28,13 @@
 #ifndef AUTOSAVER_H
 #define AUTOSAVER_H
 
+
 // Qt Includes
 #include <QtCore/QObject>
 #include <QtCore/QBasicTimer>
 #include <QtCore/QTime>
-
-// Forward Declarations
 #include <QtCore/QTimerEvent>
+
 
 /**
  *  This class will call the save() slot on the parent object when the parent changes.

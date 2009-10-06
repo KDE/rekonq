@@ -67,6 +67,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QVBoxLayout>
 
+
 MainView::MainView(QWidget *parent)
         : KTabWidget(parent)
         , m_urlBar(new UrlBar(this))

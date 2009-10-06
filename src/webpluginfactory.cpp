@@ -28,11 +28,14 @@
 #include "webpluginfactory.h"
 #include "webpluginfactory.moc"
 
+// Local Includes
 #include "application.h"
 #include "mainwindow.h"
 #include "previewimage.h"
 
+// KDE Includes
 #include <KDebug>
+
 
 WebPluginFactory::WebPluginFactory(QObject *parent)
     : QWebPluginFactory(parent)

@@ -47,6 +47,7 @@ class QWidget;
 class KCompletion;
 class HistoryCompletionModel;
 
+
 class UrlBar : public KHistoryComboBox
 {
     Q_OBJECT

@@ -29,6 +29,7 @@
 #ifndef HISTORY_H
 #define HISTORY_H
 
+
 // Local Includes
 #include "modelmenu.h"
 
@@ -48,7 +49,6 @@
  * Elements in this class represent an history item
  *
  */
-
 class HistoryItem
 {
 public:

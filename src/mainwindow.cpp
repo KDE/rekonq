@@ -470,10 +470,8 @@ void MainWindow::slotUpdateConfiguration()
     defaultSettings->setAttribute(QWebSettings::LocalStorageDatabaseEnabled, ReKonfig::localStorageDatabaseEnabled());
     if(ReKonfig::localStorageDatabaseEnabled())
     {
-        kDebug() <<         QWebSettings::offlineStoragePath();
         QString path = KStandardDirs::locateLocal("cache", QString("WebkitLocalStorage/rekonq"), true);
         path.remove("rekonq");
-        kDebug() << path;
         QWebSettings::setOfflineStoragePath(path);
         QWebSettings::setOfflineStorageDefaultQuota(50000);
     }

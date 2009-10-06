@@ -56,7 +56,6 @@
 
 #include <QtGui/QClipboard>
 
-
 // generic algorithms
 #include <QtAlgorithms>
 

@@ -23,18 +23,23 @@
 *
 * ============================================================ */
 
+
+// Self Includes
 #include "previewimage.h"
 #include "previewimage.moc"
 
+// Local Includes
 #include "application.h"
 
-#include <QFile>
-#include <QMovie>
-#include <QMouseEvent>
-
+// KDE Includes
 #include <KUrl>
 #include <KStandardDirs>
 #include <KDebug>
+
+// Qt Includes
+#include <QFile>
+#include <QMovie>
+#include <QMouseEvent>
 
 
 PreviewImage::PreviewImage(const QUrl &url)

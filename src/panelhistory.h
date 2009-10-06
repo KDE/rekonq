@@ -28,6 +28,7 @@
 #ifndef PANELHISTORY_H
 #define PANELHISTORY_H
 
+
 // Local Includes
 #include "application.h"
 #include "historymodels.h"
