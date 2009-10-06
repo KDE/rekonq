@@ -72,7 +72,7 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     }
 
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
-    QString menu = homePageMenu();
+    QString menu = homePageMenu(url);
     
     QString speed;
     if(url == KUrl("rekonq:lastSites"))
@@ -99,7 +99,7 @@ QString HomePage::fillFavorites()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    QString speed = "<h2>Favorites</h2>";
+    QString speed;
     for(int i=0; i<8; ++i)
     {
         QString text = names.at(i);
@@ -124,7 +124,7 @@ QString HomePage::lastVisitedSites()
 {
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
-    QString last = "<h2>Last Visited Sites</h2>";
+    QString last;
     int sites = 0;
     int i = 0;
     do
@@ -160,13 +160,41 @@ QString HomePage::lastVisitedSites()
 }
 
 
-QString HomePage::homePageMenu()
+QString HomePage::homePageMenu(KUrl currentUrl)
 {
     QString menu = "";
-    menu += "<div class=\"link\"><a href=\"rekonq:lastSites\">Last Visited Sites</a></div>";
-    menu += "<div class=\"link\"><a href=\"rekonq:history\">History</a></div>";
-    menu += "<div class=\"link\"><a href=\"rekonq:bookmarks\">Bookmarks</a></div>";
-    menu += "<div class=\"link\"><a href=\"rekonq:favorites\">Favorites</a></div>";
+    
+    KIconLoader *loader = KIconLoader::global();
+    
+    menu += "<div class=\"link";
+    if(currentUrl == "rekonq:lastSites")
+        menu += " current";
+    menu += "\"><a href=\"rekonq:lastSites\">";
+    menu += "<img src=\"file:///" + loader->iconPath("edit-undo", KIconLoader::Desktop) + "\" />";
+    menu += "Last Visited</a></div>";
+    
+    menu += "<div class=\"link";
+    if(currentUrl == "rekonq:history")
+        menu += " current";
+    menu += "\"><a href=\"rekonq:history\">";
+    menu += "<img src=\"file:///" + loader->iconPath("view-history", KIconLoader::Desktop) + "\" />";
+    menu += "History</a></div>";
+    
+    menu += "<div class=\"link";
+    if(currentUrl == "rekonq:bookmarks")
+        menu += " current";
+    menu += "\"><a href=\"rekonq:bookmarks\">";
+    menu += "<img src=\"file:///" + loader->iconPath("bookmarks-organize", KIconLoader::Desktop) + "\" />";
+    menu += "Bookmarks</a></div>";
+    
+    menu += "<div class=\"link";
+    if(currentUrl == "rekonq:favorites" || currentUrl == "rekonq:home")
+        menu += " current";
+    menu += "\"><a href=\"rekonq:favorites\">";
+    menu += "<img src=\"file:///" + loader->iconPath("rating", KIconLoader::Desktop) + "\" />";
+    menu += "Favorites</a></div>";
+    
+    
     return menu;
 }
 
@@ -175,7 +203,7 @@ QString HomePage::fillHistory()
 {
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
-    QString history = "<h2>History</h2>";
+    QString history;
     int i = 0;
     do
     {
@@ -210,7 +238,7 @@ QString HomePage::fillBookmarks()
         return QString("Error retrieving bookmarks!");
     }
 
-    QString str = "<h2>Bookmarks</h2>";
+    QString str;
     KBookmark bookmark = bookGroup.first();
     while (!bookmark.isNull())
     {
@@ -228,8 +256,8 @@ QString HomePage::createBookItem(const KBookmark &bookmark)
         QString result = QString("");
         KBookmarkGroup group = bookmark.toGroup();
         KBookmark bm = group.first();
-        result += "<h3>" + bookmark.text() + "</h3>";
-        result += "<p style=\"padding-left: 30px;\">";
+        result += "<h4>" + bookmark.text() + "</h4>";
+        result += "<p class=\"bookfolder\">";
         while (!bm.isNull())
         {
             result += createBookItem(bm);

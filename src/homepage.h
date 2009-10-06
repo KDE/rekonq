@@ -48,7 +48,7 @@ public:
     ~HomePage();
 
     QString rekonqHomePage(const KUrl &url = KUrl("rekonq:home"));
-    QString homePageMenu();
+    QString homePageMenu(KUrl currentUrl);
     
 private:
     QString fillFavorites();
