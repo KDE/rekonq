@@ -180,18 +180,18 @@ QString HomePage::homePageMenu(KUrl currentUrl)
     KIconLoader *loader = KIconLoader::global();
     
     menu += "<div class=\"link";
+    if(currentUrl == "rekonq:favorites" || currentUrl == "rekonq:home")
+        menu += " current";
+    menu += "\"><a href=\"rekonq:favorites\">";
+    menu += "<img src=\"file:///" + loader->iconPath("rating", KIconLoader::Desktop) + "\" />";
+    menu += "Favorites</a></div>";
+    
+    menu += "<div class=\"link";
     if(currentUrl == "rekonq:lastSites")
         menu += " current";
     menu += "\"><a href=\"rekonq:lastSites\">";
     menu += "<img src=\"file:///" + loader->iconPath("edit-undo", KIconLoader::Desktop) + "\" />";
     menu += "Last Visited</a></div>";
-    
-    menu += "<div class=\"link";
-    if(currentUrl == "rekonq:history")
-        menu += " current";
-    menu += "\"><a href=\"rekonq:history\">";
-    menu += "<img src=\"file:///" + loader->iconPath("view-history", KIconLoader::Desktop) + "\" />";
-    menu += "History</a></div>";
     
     menu += "<div class=\"link";
     if(currentUrl == "rekonq:bookmarks")
@@ -201,11 +201,11 @@ QString HomePage::homePageMenu(KUrl currentUrl)
     menu += "Bookmarks</a></div>";
     
     menu += "<div class=\"link";
-    if(currentUrl == "rekonq:favorites" || currentUrl == "rekonq:home")
+    if(currentUrl == "rekonq:history")
         menu += " current";
-    menu += "\"><a href=\"rekonq:favorites\">";
-    menu += "<img src=\"file:///" + loader->iconPath("rating", KIconLoader::Desktop) + "\" />";
-    menu += "Favorites</a></div>";
+    menu += "\"><a href=\"rekonq:history\">";
+    menu += "<img src=\"file:///" + loader->iconPath("view-history", KIconLoader::Desktop) + "\" />";
+    menu += "History</a></div>";
     
     return menu;
 }
