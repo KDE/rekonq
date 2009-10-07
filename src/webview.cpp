@@ -184,13 +184,16 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             if(!engine.isEmpty())
             {
                 service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-                const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter; // FIXME crashed
-                data.setData(searchProviderPrefix + "some keyword");
-                a = new KAction(service->name(), this);
-                a->setIcon(Application::icon(KUrl(data.uri())));
-                a->setData(searchProviderPrefix);
-                connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
-                searchMenu->addAction(a);
+                if(service)
+                {
+                    const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
+                    data.setData(searchProviderPrefix + "some keyword");
+                    a = new KAction(service->name(), this);
+                    a->setIcon(Application::icon(KUrl(data.uri())));
+                    a->setData(searchProviderPrefix);
+                    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
+                    searchMenu->addAction(a);
+                }
             }
         }
         
