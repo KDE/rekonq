@@ -77,22 +77,18 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     QString title, speed;
     if(url == KUrl("rekonq:lastSites"))
     {
-        title = "<h2>" + i18n("Last Visited Sites") + "</h2>";
         speed = lastVisitedSites();
     }
     if(url == KUrl("rekonq:history"))
     {
-        title = "<h2>" + i18n("History") + "</h2>";
         speed = fillHistory();
     }
     if(url == KUrl("rekonq:bookmarks"))
     {
-        title = "<h2>" + i18n("Bookmarks") + "</h2>";
         speed = fillBookmarks();
     }
     if(url == KUrl("rekonq:home") || url == KUrl("rekonq:favorites"))
     {
-        title = "<h2>" + i18n("Favorites") + "</h2>";
         speed = fillFavorites();
     }
     
