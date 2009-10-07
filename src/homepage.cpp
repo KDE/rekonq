@@ -120,7 +120,7 @@ QString HomePage::fillFavorites()
         speed += "<object type=\"application/image-preview\" data=\"";
         speed += urls.at(i) + "\" width=\"200\">";
         speed += "</object>";
-        speed += "<br /><br />";
+        speed += "<br />";
         speed += "<a href=\"" + urls.at(i) + "\">" + text + "</a></div>";
     }
     
@@ -154,7 +154,7 @@ QString HomePage::lastVisitedSites()
                 last += "<object type=\"application/image-preview\" data=\"" + son.data(HistoryModel::UrlStringRole).toString();
                 last +=  "\" width=\"200\">";
                 last += "</object>";
-                last += "<br /><br />";
+                last += "<br />";
                 last += "<a href=\"" + son.data(HistoryModel::UrlStringRole).toString() + "\">" + text + "</a></div>";
                 sites++;
             }

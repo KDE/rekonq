@@ -341,6 +341,15 @@ void WebView::mousePressEvent(QMouseEvent *event)
 }
 
 
+void WebView::mouseMoveEvent(QMouseEvent *event)
+{
+    if( url().protocol() != "rekonq" )
+    {
+        QWebView::mouseMoveEvent(event);
+    }
+}
+
+
 void WebView::wheelEvent(QWheelEvent *event)
 {
     if (QApplication::keyboardModifiers() & Qt::ControlModifier)

@@ -48,6 +48,7 @@ class WebSnap : public QObject
 
 public:
     WebSnap(const QUrl &url);
+    ~WebSnap();
     
     QPixmap previewImage();
     static QPixmap renderPreview(const QWebPage &page, int w, int h);

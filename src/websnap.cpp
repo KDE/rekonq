@@ -63,6 +63,11 @@ WebSnap::WebSnap(const QUrl &url)
 }
 
 
+WebSnap::~WebSnap()
+{
+}
+
+
 void WebSnap::load()
 {
     m_page.mainFrame()->load(m_url);
@@ -72,8 +77,8 @@ void WebSnap::load()
 QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
 {
     // prepare page
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); //Why it doesn't work with one setScrollBarPolicy ? bug in qtwebkit ?
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); // Why it doesn't work with one setScrollBarPolicy?
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); // bug in qtwebkit ?
     page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
     page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 

@@ -71,6 +71,7 @@ PreviewImage::PreviewImage(const QUrl &url)
 
 PreviewImage::~PreviewImage()
 {
+    delete ws;
 }
 
 
@@ -84,6 +85,19 @@ void PreviewImage::setSiteImage()
     setPixmap(m_pixmap);
 
     m_pixmap.save(m_savePath);
+}
+
+
+void PreviewImage::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+}
+
+
+void PreviewImage::mouseMoveEvent(QMouseEvent *event)
+{
+    kDebug() << "moving mouse over preview image";
+    Q_UNUSED(event)
 }
 
 
@@ -102,6 +116,12 @@ void PreviewImage::mousePressEvent(QMouseEvent *event)
     };
 }
 
+
+void PreviewImage::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event)
+}
+    
 
 QString PreviewImage::guessNameFromUrl(QUrl url)
 {
