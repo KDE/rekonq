@@ -72,7 +72,7 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     }
 
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
-    QString menu = homePageMenu();
+    QString menu = homePageMenu(url);
     
     QString title, speed;
     if(url == KUrl("rekonq:lastSites"))
@@ -173,15 +173,40 @@ QString HomePage::lastVisitedSites()
 }
 
 
-QString HomePage::homePageMenu()
+QString HomePage::homePageMenu(KUrl currentUrl)
 {
-    QString menu = "<div class=\"link\">";
-    menu += "<h1>rekonq</h1>";
-    menu += "<a href=\"rekonq:lastSites\">Last Visited Sites</a><br />";
-    menu += "<a href=\"rekonq:history\">History</a><br />";
-    menu += "<a href=\"rekonq:bookmarks\">Bookmarks</a><br /";
-    menu += "<a href=\"rekonq:favorites\">Favorites</a><br />";
-    menu += "</div>";
+    QString menu = "";
+    
+    KIconLoader *loader = KIconLoader::global();
+    
+    menu += "<div class=\"link";
+    if(currentUrl == "rekonq:lastSites")
+        menu += " current";
+    menu += "\"><a href=\"rekonq:lastSites\">";
+    menu += "<img src=\"file:///" + loader->iconPath("edit-undo", KIconLoader::Desktop) + "\" />";
+    menu += "Last Visited</a></div>";
+    
+    menu += "<div class=\"link";
+    if(currentUrl == "rekonq:history")
+        menu += " current";
+    menu += "\"><a href=\"rekonq:history\">";
+    menu += "<img src=\"file:///" + loader->iconPath("view-history", KIconLoader::Desktop) + "\" />";
+    menu += "History</a></div>";
+    
+    menu += "<div class=\"link";
+    if(currentUrl == "rekonq:bookmarks")
+        menu += " current";
+    menu += "\"><a href=\"rekonq:bookmarks\">";
+    menu += "<img src=\"file:///" + loader->iconPath("bookmarks-organize", KIconLoader::Desktop) + "\" />";
+    menu += "Bookmarks</a></div>";
+    
+    menu += "<div class=\"link";
+    if(currentUrl == "rekonq:favorites" || currentUrl == "rekonq:home")
+        menu += " current";
+    menu += "\"><a href=\"rekonq:favorites\">";
+    menu += "<img src=\"file:///" + loader->iconPath("rating", KIconLoader::Desktop) + "\" />";
+    menu += "Favorites</a></div>";
+    
     return menu;
 }
 
@@ -243,8 +268,8 @@ QString HomePage::createBookItem(const KBookmark &bookmark)
         QString result = QString("");
         KBookmarkGroup group = bookmark.toGroup();
         KBookmark bm = group.first();
-        result += "<h3>" + bookmark.text() + "</h3>";
-        result += "<p style=\"padding-left: 30px;\">";
+        result += "<h4>" + bookmark.text() + "</h4>";
+        result += "<p class=\"bookfolder\">";
         while (!bm.isNull())
         {
             result += createBookItem(bm);
