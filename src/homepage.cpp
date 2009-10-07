@@ -74,31 +74,18 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
     QString menu = homePageMenu(url);
     
-    QString title, speed;
+    QString speed;
     if(url == KUrl("rekonq:lastSites"))
-    {
-        title = "<h2>" + i18n("Last Visited Sites") + "</h2>";
         speed = lastVisitedSites();
-    }
     if(url == KUrl("rekonq:history"))
-    {
-        title = "<h2>" + i18n("History") + "</h2>";
         speed = fillHistory();
-    }
     if(url == KUrl("rekonq:bookmarks"))
-    {
-        title = "<h2>" + i18n("Bookmarks") + "</h2>";
         speed = fillBookmarks();
-    }
     if(url == KUrl("rekonq:home") || url == KUrl("rekonq:favorites"))
-    {
-        title = "<h2>" + i18n("Favorites") + "</h2>";
         speed = fillFavorites();
-    }
     
     QString html = QString(QLatin1String(file.readAll()))
                         .arg(imagesPath)
-                        .arg(title)
                         .arg(menu)
                         .arg(speed)
                         ;
@@ -206,6 +193,7 @@ QString HomePage::homePageMenu(KUrl currentUrl)
     menu += "\"><a href=\"rekonq:favorites\">";
     menu += "<img src=\"file:///" + loader->iconPath("rating", KIconLoader::Desktop) + "\" />";
     menu += "Favorites</a></div>";
+    
     
     return menu;
 }
