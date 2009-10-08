@@ -48,7 +48,6 @@ class TabBar : public KTabBar
 {
     Q_OBJECT
 
-
 public:
     TabBar(QWidget *parent = 0);
     ~TabBar();
@@ -76,8 +75,6 @@ private slots:
     void postLaunch();
 
 private:
-    friend class MainView;
-
     void setTabButtonPosition();
 
     QWidget *m_parent;
