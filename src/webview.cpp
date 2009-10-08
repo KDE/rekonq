@@ -421,3 +421,15 @@ void WebView::openLinkInNewTab()
     KUrl url(a->data().toUrl());
     Application::instance()->loadUrl(url, Rekonq::SettingOpenTab);
 }
+
+
+// HACK short term hack: remove this function, unuseful in kdewebkit porting
+void WebView::keyPressEvent(QKeyEvent *event)
+{
+    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_C))
+    {
+        triggerPageAction(QWebPage::Copy);
+        return;
+    }
+    QWebView::keyPressEvent(event);
+}
