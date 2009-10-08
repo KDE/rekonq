@@ -94,15 +94,14 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(slotReloadTab(int)));
     connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(slotReloadAllTabs()));
 
+    connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
+
     // connecting urlbar signals
     connect(urlBar(), SIGNAL(activated(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
     
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
     
-    setTabsClosable(true);
-    connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
-
     // Session Manager
     connect (this, SIGNAL(tabsChanged()), Application::sessionManager(), SLOT(saveSession()));
 }
@@ -181,7 +180,8 @@ void MainView::slotWebStop()
 
 void MainView::clear()
 {
-    /// TODO What exactly do we need to clear here?
+    // FIXME (the programmer, not the code)
+    // What exactly do we need to clear here?
     m_urlBar->clearHistory();
     m_urlBar->clear();
 }
@@ -201,15 +201,18 @@ void MainView::slotReloadTab(int index)
 }
 
 
-// TODO need some extra comments to better understand what happens here..
 void MainView::slotCurrentChanged(int index)
 {
+    // retrieve the webview related to the index
     WebView *webView = this->webView(index);
     if (!webView)
         return;
 
+    // retrieve the old webview (that where we move from)
     WebView *oldWebView = this->webView(m_currentTabIndex);
-    m_currentTabIndex=index;
+    
+    // set current index
+    m_currentTabIndex = index;
 
     if (oldWebView)
     {        
@@ -259,7 +262,7 @@ WebView *MainView::webView(int index) const
         return webView;
     }
 
-    kWarning() << "WebView with index " << index << "not found. Returning NULL." ;
+    kDebug() << "WebView with index " << index << "not found. Returning NULL." ;
     return 0;
 }
 
@@ -348,11 +351,9 @@ void MainView::windowCloseRequested()
         {
             slotCloseTab(index);
         }
+        return;
     }
-    else
-    {
-        kWarning() << "Invalid tab index" << "line:" << __LINE__;
-    }
+    kDebug() << "Invalid tab index" << "line:" << __LINE__;
 }
 
 

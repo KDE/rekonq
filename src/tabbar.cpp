@@ -56,9 +56,13 @@ TabBar::TabBar(QWidget *parent)
         , m_addTabButton(new QToolButton(this))
 {
     setElideMode(Qt::ElideRight);
-    setContextMenuPolicy(Qt::CustomContextMenu);
+
     setDocumentMode(true);
+    setTabsClosable(true);
     setMovable(true);
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this,
             SLOT(contextMenuRequested(const QPoint &)));
 
