@@ -47,8 +47,6 @@ class QMouseEvent;
 class TabBar;
 class UrlBar;
 
-class KPassivePopup;
-
 
 /**
  *  This class represent rekonq Main View. It contains all WebViews and a stack widget
@@ -91,9 +89,6 @@ public:
      */
     WebView *newWebView(bool focused = true, bool nearParent = false);
 
-    virtual void mouseMoveEvent(QMouseEvent *event);
-    virtual void leaveEvent(QEvent *event);
-    void showTabPreview(int tab);
 
 signals:
     // tab widget signals
@@ -139,11 +134,8 @@ private slots:
     void webViewUrlChanged(const QUrl &url);
 
     void windowCloseRequested();
+
     
-protected:
-
-    virtual void resizeEvent(QResizeEvent *event);
-
 private:
     /**
      * This function creates (if not exists) and returns a QLabel
@@ -163,9 +155,6 @@ private:
     QString m_loadingGitPath;
     
     int m_currentTabIndex;
-
-    QPointer<KPassivePopup> m_previewPopup;
-    int m_currentTabPreview;
 };
 
 #endif // MAINVIEW_H

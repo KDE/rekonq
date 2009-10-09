@@ -31,12 +31,22 @@
 #define TABBAR_H
 
 
+// Local Includes
+#include "mainview.h"
+
+// Qt Includes
+#include <QPointer>
+
 // KDE Includes
 #include <KTabBar>
 
 // Forward Declarations
 class QPoint;
 class QToolButton;
+class QMouseEvent;
+class QEvent;
+
+class KPassivePopup;
 
 
 /**
@@ -49,8 +59,10 @@ class TabBar : public KTabBar
     Q_OBJECT
 
 public:
-    TabBar(QWidget *parent = 0);
+    TabBar(MainView *parent = 0);
     ~TabBar();
+
+    void showTabPreview(int tab);
 
 signals:
     void cloneTab(int index);
@@ -65,7 +77,9 @@ protected:
      */
     virtual QSize tabSizeHint(int index) const;
     virtual void tabLayoutChange();
-
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void leaveEvent(QEvent *event);
+    
 private slots:
     void cloneTab();
     void closeTab();
@@ -77,13 +91,16 @@ private slots:
 private:
     void setTabButtonPosition();
 
-    QWidget *m_parent;
+    MainView *m_parent;
     QToolButton *m_addTabButton;
 
     /**
      * the index in which we are seeing a Context menu
      */
     int m_actualIndex;
+
+    QPointer<KPassivePopup> m_previewPopup;
+    int m_currentTabPreview;
 };
 
 #endif

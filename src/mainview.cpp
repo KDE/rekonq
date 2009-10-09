@@ -42,7 +42,6 @@
 #include "webview.h"
 #include "sessionmanager.h"
 #include "homepage.h"
-#include "websnap.h"
 
 // KDE Includes
 #include <KUrl>
@@ -63,9 +62,6 @@
 #include <QtGui/QLabel>
 #include <QtGui/QMovie>
 #include <QtGui/QWidget>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPainter>
-#include <QtGui/QVBoxLayout>
 
 
 MainView::MainView(QWidget *parent)
@@ -73,7 +69,6 @@ MainView::MainView(QWidget *parent)
         , m_urlBar(new UrlBar(this))
         , m_tabBar(new TabBar(this))
         , m_currentTabIndex(0)
-        , m_currentTabPreview(-1)
 {
     // setting tabbar
     setTabBar(m_tabBar);
@@ -573,79 +568,4 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
     m_tabBar->setTabButton(index, QTabBar::LeftSide, 0);
     m_tabBar->setTabButton(index, QTabBar::LeftSide, label);
     return label;
-}
-
-
-void MainView::resizeEvent(QResizeEvent *event)
-{
-    KTabWidget::resizeEvent(event);
-}
-
-
-void MainView::mouseMoveEvent(QMouseEvent *event)
-{
-    //Find the tab under the mouse
-    int i = 0;
-    int tab = -1;
-    while (i<count() && tab==-1)
-    {
-        if (m_tabBar->tabRect(i).contains(event->pos())) tab = i;
-        i++;
-    }
-
-    //if found and not the current tab then show tab preview
-    if (tab!=-1 && tab!=m_tabBar->currentIndex() && m_currentTabPreview!=tab)
-    {
-        showTabPreview(tab);
-        m_currentTabPreview=tab;
-    }
-
-    //if current tab or not found then hide previous tab preview
-    if (tab==m_tabBar->currentIndex() || tab==-1)
-    {
-        if ( m_previewPopup)
-        {
-            m_previewPopup->hide();
-        }
-        m_currentTabPreview=-1;
-    }
-    
-    KTabWidget::mouseMoveEvent(event);
-}
-
-void MainView::leaveEvent(QEvent *event)
-{
-    //if leave tabwidget then hide previous tab preview
-    if ( m_previewPopup)
-    {
-        m_previewPopup->hide();
-    }
-    m_currentTabPreview=-1;
-    KTabWidget::leaveEvent(event);
-}
-
-
-void MainView::showTabPreview(int tab)
-{
-    int w=200;
-    int h=w*((0.0+webView(tab)->height())/webView(tab)->width());
-
-    //delete previous tab preview
-    if (m_previewPopup)
-    {
-        delete m_previewPopup;
-    }
-    
-    m_previewPopup = new KPassivePopup(this);
-    m_previewPopup->setFrameShape(QFrame::StyledPanel);
-    m_previewPopup->setFrameShadow(QFrame::Plain);
-    m_previewPopup->setFixedSize(w, h);
-    QLabel *l = new QLabel();
-    l->setPixmap(WebSnap::renderPreview(*(webView(tab)->page()), w, h));
-    m_previewPopup->setView(l);
-    m_previewPopup->layout()->setAlignment(Qt::AlignTop);
-    m_previewPopup->layout()->setMargin(0);
-
-    QPoint pos(m_tabBar->tabRect(tab).x(),m_tabBar->tabRect(tab).y()+m_tabBar->tabRect(tab).height());
-    m_previewPopup->show(mapToGlobal(pos));
 }
