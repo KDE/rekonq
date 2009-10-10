@@ -229,9 +229,16 @@ SessionManager *Application::sessionManager()
 
 KIcon Application::icon(const KUrl &url)
 {
+    if(url.scheme() == "rekonq" ||   
+        (url.isEmpty() // Urlbar is empty for homepage, but we want an icon
+        && !Application::instance()->mainWindowList().isEmpty() // avoid infinite loop at startup
+        && Application::instance()->mainWindow()->currentTab()->url().scheme() == "rekonq")  
+      )
+        return KIcon("go-home");
+        
     if(url.isEmpty())
         return KIcon("text-html");
-
+    
     KIcon icon = KIcon(QWebSettings::iconForUrl(url));
     if (icon.isNull())
     {
