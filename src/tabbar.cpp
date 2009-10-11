@@ -32,6 +32,7 @@
 #include "tabbar.moc"
 
 // Local Includes
+#include "rekonq.h"
 #include "application.h"
 #include "mainwindow.h"
 #include "urlbar.h"
@@ -265,47 +266,53 @@ void TabBar::showTabPreview(int tab)
 
 void TabBar::mouseMoveEvent(QMouseEvent *event)
 {
-    //Find the tab under the mouse
-    int i = 0;
-    int tab = -1;
-    while (i<count() && tab==-1)
+    if (ReKonfig::alwaysShowTabPreviews())
     {
-        if (tabRect(i).contains(event->pos())) 
+        //Find the tab under the mouse
+        int i = 0;
+        int tab = -1;
+        while (i<count() && tab==-1)
         {
-            tab = i;
+            if (tabRect(i).contains(event->pos())) 
+            {
+                tab = i;
+            }
+            i++;
         }
-        i++;
+
+        //if found and not the current tab then show tab preview
+        if (tab != -1 && tab != currentIndex() && m_currentTabPreview != tab)
+        {
+            showTabPreview(tab);
+            m_currentTabPreview = tab;
+        }
+
+        //if current tab or not found then hide previous tab preview
+        if (tab==currentIndex() || tab==-1)
+        {
+            if ( m_previewPopup)
+            {
+                m_previewPopup->hide();
+            }
+            m_currentTabPreview = -1;
+        }
     }
 
-    //if found and not the current tab then show tab preview
-    if (tab != -1 && tab != currentIndex() && m_currentTabPreview != tab)
-    {
-        showTabPreview(tab);
-        m_currentTabPreview = tab;
-    }
-
-    //if current tab or not found then hide previous tab preview
-    if (tab==currentIndex() || tab==-1)
-    {
-        if ( m_previewPopup)
-        {
-            m_previewPopup->hide();
-        }
-        m_currentTabPreview = -1;
-    }
-    
     KTabBar::mouseMoveEvent(event);
 }
 
 
 void TabBar::leaveEvent(QEvent *event)
 {
-    //if leave tabwidget then hide previous tab preview
-    if ( m_previewPopup)
+    if (ReKonfig::alwaysShowTabPreviews())
     {
-        m_previewPopup->hide();
+        //if leave tabwidget then hide previous tab preview
+        if ( m_previewPopup)
+        {
+            m_previewPopup->hide();
+        }
+        m_currentTabPreview = -1;
     }
-    m_currentTabPreview = -1;
 
     KTabBar::leaveEvent(event);
 }
