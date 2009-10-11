@@ -87,6 +87,16 @@ int Application::newInstance()
 {
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+    
+    // we share one process for several mainwindows,
+    // so initialize only once
+    static bool first = true;
+    
+    if (first)
+    {
+        QTimer::singleShot(0, this, SLOT(postLaunch()));
+        first = false;
+    }
 
     // is your app session restored? restore session...
     // this mechanism also falls back to load usual plain rekonq
@@ -151,6 +161,10 @@ void Application::postLaunch()
 
     Application::historyManager();
     Application::sessionManager();
+    
+    // bookmarks loading
+    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
+            Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
 }
 
 
@@ -393,7 +407,6 @@ MainWindow *Application::newMainWindow()
     
     m_mainWindows.prepend(w);
     w->show();
-    QTimer::singleShot(0, this, SLOT(postLaunch()));
     
     return w;
 }

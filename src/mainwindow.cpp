@@ -204,10 +204,6 @@ void MainWindow::postLaunch()
     // Find Bar signal
     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
 
-    // bookmarks loading
-    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
-            Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
-
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
