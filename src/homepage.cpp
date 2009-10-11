@@ -75,9 +75,9 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     QString menu = homePageMenu(url);
     
     QString speed;
-    if(url == KUrl("rekonq:lastSites"))
+    if(url == KUrl("rekonq:closedTabs"))
     {
-        speed = lastVisitedSites();
+        speed = fillRecentlyClosedTabs();
     }
     if(url == KUrl("rekonq:history"))
     {
@@ -182,11 +182,11 @@ QString HomePage::homePageMenu(KUrl currentUrl)
     menu += "Favorites</a></div>";
     
     menu += "<div class=\"link";
-    if(currentUrl == "rekonq:lastSites")
+    if(currentUrl == "rekonq:closedTabs")
         menu += " current";
-    menu += "\"><a href=\"rekonq:lastSites\">";
+    menu += "\"><a href=\"rekonq:closedTabs\">";
     menu += "<img src=\"file:///" + loader->iconPath("edit-undo", KIconLoader::Desktop) + "\" />";
-    menu += "Last Visited</a></div>";
+    menu += "Closed Tabs</a></div>";
     
     menu += "<div class=\"link";
     if(currentUrl == "rekonq:bookmarks")
@@ -283,4 +283,29 @@ QString HomePage::createBookItem(const KBookmark &bookmark)
     QString books = " ";
     books += "<a href=\"" + bookmark.url().prettyUrl() + "\">" + bookmark.text() + "</a><br />";
     return books;
+}
+
+
+QString HomePage::fillRecentlyClosedTabs()
+{
+    KUrl::List links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
+    QString closed;
+    
+    Q_FOREACH( const KUrl &url, links)
+    {   
+        QString text = url.prettyUrl();
+        if(text.length() > 20)
+        {
+            text.truncate(17);
+            text += "...";
+        }
+        closed += "<div class=\"thumbnail\">";
+        closed += "<object type=\"application/image-preview\" data=\"";
+        closed += url.path() + "\" width=\"200\">";
+        closed += "</object>";
+        closed += "<br />";
+        closed += "<a href=\"" + url.path() + "\">" + text + "</a></div>";
+    }
+    
+    return closed;
 }

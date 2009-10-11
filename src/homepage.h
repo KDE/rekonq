@@ -55,7 +55,8 @@ private:
     QString lastVisitedSites();
     QString fillHistory();
     QString fillBookmarks();
-    
+    QString fillRecentlyClosedTabs();
+
     QString createBookItem(const KBookmark &bookmark);
 
     QString m_homePagePath;

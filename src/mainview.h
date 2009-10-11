@@ -89,6 +89,7 @@ public:
      */
     WebView *newWebView(bool focused = true, bool nearParent = false);
 
+    KUrl::List recentlyClosedTabs();
 
 signals:
     // tab widget signals
@@ -155,6 +156,8 @@ private:
     QString m_loadingGitPath;
     
     int m_currentTabIndex;
+    
+    KUrl::List m_recentlyClosedTabs;
 };
 
 #endif // MAINVIEW_H
