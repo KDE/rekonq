@@ -95,8 +95,8 @@ MainWindow::MainWindow()
     , m_findBar(new FindBar(this))
     , m_sidePanel(0)
     , m_historyBackMenu(0)
-    , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, true, true) )
-    , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, true, true) )
+    , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
+    , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_ac( new KActionCollection(this) )
 {
     // enable window size "auto-save"
