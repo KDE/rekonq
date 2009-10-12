@@ -64,7 +64,7 @@
    <item>
     <widget class="QCheckBox" name="homePageThumbs">
      <property name="text">
-      <string>home page thumbs</string>
+      <string>Home page thumbs</string>
      </property>
      <property name="checked">
       <bool>true</bool>
