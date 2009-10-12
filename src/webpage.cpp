@@ -93,6 +93,16 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
+    // advise users on resubmitting data
+    if(type == QWebPage::NavigationTypeFormResubmitted)
+    {
+        int risp = KMessageBox::warningContinueCancel(view(), 
+                                                      i18n("Are you sure you want to send your data again?"), 
+                                                      i18n("Resend form data") );
+        if(risp == KMessageBox::Cancel)
+            return false;
+    }
+    
     if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
     {
         Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);
