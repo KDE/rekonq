@@ -223,7 +223,7 @@ QString HomePage::fillHistory()
             {
                 QModelIndex son = model->index(j, 0, index );
                 history += son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm");
-                history += " ";
+                history += ' ';
                 history += QString("<a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">") + 
                         son.data().toString() + QString("</a>");
                 history += "<br />";
