@@ -42,6 +42,7 @@
 // KDE Includes
 #include <KMessageBox>
 #include <KStandardDirs>
+#include <KProtocolManager>
 
 // Qt Includes
 #include <QtCore/QPointer>
@@ -69,7 +70,7 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
     // load AccessManager Settings
     loadSettings();
-    
+
     // resetting disk cache
     resetDiskCache();
 }
@@ -77,23 +78,31 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
 void NetworkAccessManager::loadSettings()
 {
-    if (ReKonfig::isProxyEnabled())
+    // Grab proxy settings from KDE settings
+    if (KProtocolManager::useProxy())
     {
-        QNetworkProxy proxy;
-        if (ReKonfig::proxyType() == 0)
+        QString proxyAddress = KProtocolManager::proxyFor("http");
+
+        if(!proxyAddress.isEmpty())
         {
-            proxy.setType(QNetworkProxy::Socks5Proxy);
+            KUrl proxyUrl(proxyAddress);
+            QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+
+            // See what kind of proxy we have here
+            if(proxyUrl.protocol() == "socks")
+            {
+                proxyType = QNetworkProxy::Socks5Proxy;
+            }
+            else
+            {
+                proxyType = QNetworkProxy::HttpProxy;
+            }
+
+            QNetworkProxy proxy(proxyType, proxyUrl.host(), (quint16)proxyUrl.port(),
+                                proxyUrl.user(), proxyUrl.pass());
+
+            setProxy(proxy);
         }
-        else
-        {
-            proxy.setType(QNetworkProxy::HttpProxy);
-        }
-        proxy.setHostName(ReKonfig::proxyHostName());
-        proxy.setPort(ReKonfig::proxyPort());
-        proxy.setUser(ReKonfig::proxyUserName());
-        proxy.setPassword(ReKonfig::proxyPassword());
- 
-       setProxy(proxy);
     }
 }
 

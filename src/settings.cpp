@@ -42,7 +42,6 @@
 //Ui Includes
 #include "ui_settings_general.h"
 #include "ui_settings_fonts.h"
-#include "ui_settings_proxy.h"
 #include "ui_settings_webkit.h"
 
 // KDE Includes
@@ -63,7 +62,6 @@ class Private
 private:
     Ui::general generalUi;
     Ui::fonts fontsUi;
-    Ui::proxy proxyUi;
     Ui::webkit webkitUi;
     KCModuleProxy *ebrowsingModule;
     KCModuleProxy *cookiesModule;
@@ -84,7 +82,7 @@ Private::Private(SettingsDialog *parent)
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("General"));
     pageItem->setIcon(KIcon("rekonq"));
-    
+
     widget = new QWidget;
     fontsUi.setupUi(widget);
     widget->layout()->setMargin(0);
@@ -95,12 +93,6 @@ Private::Private(SettingsDialog *parent)
     cookiesModule = new KCModuleProxy(cookiesInfo,parent);
     pageItem = parent->addPage(cookiesModule, i18n(cookiesInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(cookiesInfo.icon()));
-
-    widget = new QWidget;
-    proxyUi.setupUi(widget);
-    widget->layout()->setMargin(0);
-    pageItem = parent->addPage(widget , i18n("Proxy"));
-    pageItem->setIcon(KIcon("preferences-system-network"));
 
     widget = new QWidget;
     webkitUi.setupUi(widget);
@@ -185,11 +177,6 @@ void SettingsDialog::readConfig()
     
     // ======= Fonts
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
-
-    // ======= Proxy
-    bool proxyEnabled = ReKonfig::isProxyEnabled();
-    d->proxyUi.groupBox->setEnabled(proxyEnabled);
-    connect(d->proxyUi.kcfg_isProxyEnabled, SIGNAL(clicked(bool)), d->proxyUi.groupBox, SLOT(setEnabled(bool)));
 }
 
 
