@@ -376,7 +376,7 @@ void MainWindow::setupActions()
 
     // Bookmark Menu
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu(this);
-    bmMenu->setIcon(KIcon("bookmarks-organize"));
+    bmMenu->setIcon(KIcon("bookmarks"));
     bmMenu->setDelayed(false);
     actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
 

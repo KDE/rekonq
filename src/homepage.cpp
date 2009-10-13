@@ -178,21 +178,21 @@ QString HomePage::homePageMenu(KUrl currentUrl)
     if(currentUrl == "rekonq:favorites" || currentUrl == "rekonq:home")
         menu += " current";
     menu += "\"><a href=\"rekonq:favorites\">";
-    menu += "<img src=\"file:///" + loader->iconPath("rating", KIconLoader::Desktop) + "\" />";
+    menu += "<img src=\"file:///" + loader->iconPath("emblem-favorite", KIconLoader::Desktop) + "\" />";
     menu += "Favorites</a></div>";
     
     menu += "<div class=\"link";
     if(currentUrl == "rekonq:closedTabs")
         menu += " current";
     menu += "\"><a href=\"rekonq:closedTabs\">";
-    menu += "<img src=\"file:///" + loader->iconPath("edit-undo", KIconLoader::Desktop) + "\" />";
+    menu += "<img src=\"file:///" + loader->iconPath("edit-redo", KIconLoader::Desktop) + "\" />";
     menu += "Closed Tabs</a></div>";
     
     menu += "<div class=\"link";
     if(currentUrl == "rekonq:bookmarks")
         menu += " current";
     menu += "\"><a href=\"rekonq:bookmarks\">";
-    menu += "<img src=\"file:///" + loader->iconPath("bookmarks-organize", KIconLoader::Desktop) + "\" />";
+    menu += "<img src=\"file:///" + loader->iconPath("bookmarks", KIconLoader::Desktop) + "\" />";
     menu += "Bookmarks</a></div>";
     
     menu += "<div class=\"link";
