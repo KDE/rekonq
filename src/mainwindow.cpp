@@ -45,6 +45,7 @@
 #include "findbar.h"
 #include "sidepanel.h"
 #include "urlbar.h"
+#include "tabbar.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -68,6 +69,7 @@
 #include <kdeprintdialog.h>
 #include <KToggleAction>
 #include <KStandardDirs>
+#include <KActionCategory>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -168,7 +170,12 @@ void MainWindow::setupToolbars()
     m_mainBar->addSeparator();
     m_mainBar->addAction( actionByName("stop_reload") );
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Home)) );
-    m_mainBar->addAction( actionByName("url_bar") );
+
+    // location bar
+    KAction *urlBarAction = new KAction(this);
+    urlBarAction->setDefaultWidget(m_view->urlBar());
+    m_mainBar->addAction( urlBarAction );
+    
     m_mainBar->addAction( actionByName("bookmarksActionMenu") );
     m_mainBar->addAction( actionByName("rekonq_tools") );
 
@@ -232,12 +239,7 @@ void MainWindow::setupActions()
     actionCollection()->addAssociatedWidget(this);
 
     KAction *a;
-
-    // location bar
-    a = new KAction(i18n("Location Bar"), this);
-    a->setDefaultWidget(m_view->urlBar());
-    actionCollection()->addAction(QLatin1String("url_bar"), a);
-
+    
     // new window action
     a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
@@ -260,7 +262,6 @@ void MainWindow::setupActions()
     KStandardAction::home(this, SLOT(slotHome()), actionCollection());
     KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
 
-    // WEB Actions (NO KStandardActions..)
     a = KStandardAction::redisplay(m_view, SLOT(slotWebReload()), actionCollection());
     a->setText(i18n("Reload"));
 
@@ -276,13 +277,13 @@ void MainWindow::setupActions()
     connect(m_view, SIGNAL(browserTabLoading(bool)), this, SLOT(slotBrowserLoading(bool)));
     slotBrowserLoading(false); //first init for blank start page
 
-    a = new KAction(this);
+    a = new KAction(i18n("Open Location"), this);
     a->setShortcut(Qt::CTRL + Qt::Key_L);
     actionCollection()->addAction(QLatin1String("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
 
 
-    // ============== Zoom Actions
+    // ============================= Zoom Actions ===================================
     a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
     actionCollection()->addAction(QLatin1String("bigger_font"), a);
@@ -298,13 +299,12 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("smaller_font"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextSmaller()));
 
-    // -----------
+    // =============================== Tools Actions =================================
     a = new KAction(i18n("Page S&ource"), this);
     a->setIcon(KIcon("application-xhtml+xml"));
     actionCollection()->addAction(QLatin1String("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewPageSource()));
 
-    // ================ Tools (WebKit) Actions
     a = new KAction(KIcon("tools-report-bug"), i18n("Web &Inspector"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QLatin1String("web_inspector"), a);
@@ -315,7 +315,11 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("private_browsing"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(slotPrivateBrowsing(bool)));
 
-    // ================ history related actions
+    a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
+    actionCollection()->addAction(QLatin1String("clear_private_data"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
+
+    // ========================= History related actions ==============================
     a = KStandardAction::back(this, SLOT(slotOpenPrevious()) , actionCollection());
 
     m_historyBackMenu = new KMenu(this);
@@ -325,7 +329,7 @@ void MainWindow::setupActions()
 
     KStandardAction::forward(this, SLOT(slotOpenNext()) , actionCollection());
 
-    // =================== Tab Actions
+    // ============================== Tab Actions ====================================
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
     actionCollection()->addAction(QLatin1String("new_tab"), a);
@@ -346,11 +350,24 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
 
-    // clear private data action
-    a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
-    actionCollection()->addAction(QLatin1String("clear_private_data"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
+    a = new KAction(KIcon("tab-duplicate"), i18n("Clone Tab"), this);
+    actionCollection()->addAction(QLatin1String("clone_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(cloneTab()) );
 
+    a = new KAction(KIcon("tab-close-other"), i18n("Close &Other Tabs"), this);
+    actionCollection()->addAction( QLatin1String("close_other_tabs"), a);
+    connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(closeOtherTabs()) );
+    
+    a = new KAction(KIcon("view-refresh"), i18n("Reload Tab"), this);
+    actionCollection()->addAction( QLatin1String("reload_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(reloadTab()) );
+
+    a = new KAction(KIcon("view-refresh"), i18n("Reload All Tabs"), this);
+    actionCollection()->addAction( QLatin1String("reload_all_tabs"), a);
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotReloadAllTabs()) );
+
+    // ------------------------------------------------------------------------------------------------------------    
+    
     // Bookmarks ToolBar Action
     QAction *qa = m_bmBar->toggleViewAction();
     qa->setText( i18n("Bookmarks Toolbar") );

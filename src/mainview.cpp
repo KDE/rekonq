@@ -107,8 +107,8 @@ MainView::~MainView()
 }
 
 
-TabBar *MainView::tabBar() const 
-{ 
+TabBar *MainView::tabBar() const
+{
     return m_tabBar; 
 }
 

@@ -165,18 +165,18 @@ void TabBar::contextMenuRequested(const QPoint &position)
     {
         m_actualIndex = index;
 
-        menu.addAction(KIcon("tab-duplicate"), i18n("Clone Tab"), this, SLOT(cloneTab()));
+        menu.addAction( mainWindow->actionByName("clone_tab") );
         menu.addSeparator();
-        menu.addAction(KIcon("tab-close"), i18n("&Close Tab"), this, SLOT(closeTab()));
-        menu.addAction(KIcon("tab-close-other"), i18n("Close &Other Tabs"), this, SLOT(closeOtherTabs()));
+        menu.addAction( mainWindow->actionByName("close_tab") );
+        menu.addAction( mainWindow->actionByName("close_other_tabs") );
         menu.addSeparator();
-        menu.addAction(KIcon("view-refresh"), i18n("Reload Tab"), this, SLOT(reloadTab()));
+        menu.addAction( mainWindow->actionByName("reload_tab") );
     }
     else
     {
         menu.addSeparator();
     }
-    menu.addAction(i18n("Reload All Tabs"), this, SIGNAL(reloadAllTabs()));
+    menu.addAction( mainWindow->actionByName("reload_all_tabs") );
     menu.exec(QCursor::pos());
 }
 
