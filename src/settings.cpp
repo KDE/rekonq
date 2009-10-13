@@ -63,6 +63,7 @@ private:
     Ui::general generalUi;
     Ui::fonts fontsUi;
     Ui::webkit webkitUi;
+    KCModuleProxy *proxyModule;
     KCModuleProxy *ebrowsingModule;
     KCModuleProxy *cookiesModule;
     KShortcutsEditor *shortcutsEditor;
@@ -95,6 +96,11 @@ Private::Private(SettingsDialog *parent)
     pageItem = parent->addPage(cookiesModule, i18n(cookiesInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(cookiesInfo.icon()));
 
+    KCModuleInfo proxyInfo("proxy.desktop");
+    proxyModule = new KCModuleProxy(proxyInfo,parent);
+    pageItem = parent->addPage(proxyModule, i18n(proxyInfo.moduleName().toLocal8Bit()));
+    pageItem->setIcon(KIcon(proxyInfo.icon()));
+    
     widget = new QWidget;
     webkitUi.setupUi(widget);
     widget->layout()->setMargin(0);
@@ -136,6 +142,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->proxyModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->shortcutsEditor, SIGNAL(keyChange()), this, SLOT(updateButtons()));
         
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
@@ -190,6 +197,7 @@ void SettingsDialog::saveSettings()
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
     d->cookiesModule->save();
+    d->proxyModule->save();
     d->shortcutsEditor->save();
 }
 
@@ -199,6 +207,7 @@ bool SettingsDialog::hasChanged()
     return KConfigDialog::hasChanged() 
             || d->ebrowsingModule->changed()            
             || d->cookiesModule->changed()
+            || d->proxyModule->changed()
             ;
 }
 
