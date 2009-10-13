@@ -67,6 +67,7 @@ private:
     Ui::webkit webkitUi;
     KCModuleProxy *ebrowsingModule;
     KCModuleProxy *cookiesModule;
+    KShortcutsEditor *shortcutsEditor;
     
     Private(SettingsDialog *parent);
 
@@ -110,8 +111,8 @@ Private::Private(SettingsDialog *parent)
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
 
-    widget = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(),parent);
-    pageItem = parent->addPage(widget , i18n("Shortcuts"));
+    shortcutsEditor = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(),parent);
+    pageItem = parent->addPage(shortcutsEditor , i18n("Shortcuts"));
     pageItem->setIcon(KIcon("configure-shortcuts"));
 
     KCModuleInfo ebrowsingInfo("ebrowsing.desktop");
@@ -143,7 +144,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    
+    connect(d->shortcutsEditor, SIGNAL(keyChange()), this, SLOT(updateButtons()));
+        
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
     connect(this, SIGNAL(okClicked()), this, SLOT(saveSettings()));
         
@@ -201,6 +203,7 @@ void SettingsDialog::saveSettings()
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
     d->cookiesModule->save();
+    d->shortcutsEditor->save();
 }
 
 
