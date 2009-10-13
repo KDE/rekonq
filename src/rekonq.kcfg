@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
-<kcfg>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
 
 <!-- Includes -->
 <include>QtWebKit</include>
@@ -74,25 +77,6 @@
             <default>0</default>
         </entry>
     </group>
-
-<!-- Proxy Settings -->
-  <group name="Proxy">
-    <entry name="isProxyEnabled" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="proxyType" type="Int">
-        <default>0</default>
-    </entry>
-    <entry name="proxyHostName" type="String">
-    </entry>
-    <entry name="proxyPort" type="Int">
-        <default>8080</default>
-    </entry>
-    <entry name="proxyUserName" type="String">
-    </entry>
-    <entry name="proxyPassword" type="Password">
-    </entry>
-  </group>
 
 <!-- WebKit Settings -->
     <group name="Webkit">

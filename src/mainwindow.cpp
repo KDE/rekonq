@@ -1037,7 +1037,7 @@ void MainWindow::clearPrivateData()
             kDebug() << path;
             QDir cacheDir(path);
             QStringList fileList = cacheDir.entryList();
-            foreach(QString str, fileList)
+            foreach(const QString &str, fileList)
             {
                 kDebug() << str;
                 QFile file(path + str);
