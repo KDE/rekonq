@@ -60,7 +60,7 @@ QObject *WebPluginFactory::create(const QString &mimeType,
     
     if(mimeType == QString("application/image-preview") )
     {   
-        return new PreviewImage(url);
+        return new PreviewImage(url, argumentNames, argumentValues);
     }
 
     // this let QtWebKit using builtin plugins 

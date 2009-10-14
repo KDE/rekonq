@@ -30,29 +30,42 @@
 // Local Includes
 #include "websnap.h"
 
+// KDE Includes
+#include <KActionMenu>
+
 // Qt Includes
 #include <QLabel>
 #include <QImage>
 #include <QUrl>
+#include <QToolButton>
 
 class PreviewImage : public QLabel
 {
     Q_OBJECT
 
 public:
-    PreviewImage(const QUrl &url);
+    PreviewImage(const QUrl &url, 
+                 const QStringList &argumentNames = QStringList(), 
+                 const QStringList &argumentValues = QStringList());
     ~PreviewImage();
     
     QString guessNameFromUrl(QUrl url);
     
 public slots:
-    void setSiteImage();
+    void snapFinished();
+    void removeMe();
+    void setUrlFromAction();
 
 protected:
+    void contextMenuEvent(QContextMenuEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    
+    void setUrl(const QUrl &url);
+    KActionMenu *historyMenu();
+    void showEmptyPreview();
                 
 private:
     QPixmap m_pixmap;
@@ -60,6 +73,11 @@ private:
     
     QUrl m_url;
     QString m_savePath;
+    
+    bool m_isFavorite;
+    int m_index;
+    
+    QToolButton *m_button;
 };
 
 #endif // PREVIEW_IMAGE_H

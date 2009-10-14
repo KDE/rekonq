@@ -52,6 +52,9 @@ public:
     
     QPixmap previewImage();
     static QPixmap renderPreview(const QWebPage &page, int w, int h);
+    
+    QString snapTitle();
+    QUrl snapUrl();
 
 signals:
     void finished();
@@ -65,6 +68,7 @@ private:
     QPixmap m_image;
 
     QUrl m_url;
+    QString m_snapTitle;
 };
 
 #endif // WEB_SNAP_H

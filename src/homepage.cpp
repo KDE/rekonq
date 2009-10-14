@@ -70,7 +70,6 @@ QString HomePage::rekonqHomePage(const KUrl &url)
         kWarning() << "Couldn't open the home.html file";
         return QString("");
     }
-
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
     QString menu = homePageMenu(url);
     
@@ -119,6 +118,8 @@ QString HomePage::fillFavorites()
         speed += "<div class=\"thumbnail\">";
         speed += "<object type=\"application/image-preview\" data=\"";
         speed += urls.at(i) + "\" width=\"200\">";
+        speed += "<param name=\"index\" value=\"" + QString::number(i) + "\" />";
+        speed += "<param name=\"isFavorite\" value=\"true\" />";
         speed += "</object>";
         speed += "<br />";
         speed += "<a href=\"" + urls.at(i) + "\">" + text + "</a></div>";
@@ -133,35 +134,17 @@ QString HomePage::lastVisitedSites()
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
     QString last;
-    int sites = 0;
-    int i = 0;
-    do
+    QList<HistoryItem> history =  Application::historyManager()->history();
+    for (int i = 0; i < 8 && i < history.size(); ++i) 
     {
-        QModelIndex index = model->index(i, 0, QModelIndex() );
-        if(model->hasChildren(index))
-        {
-            for(int j=0; j< model->rowCount(index) && sites<8; ++j)
-            {
-                QModelIndex son = model->index(j, 0, index );
-
-                QString text = son.data().toString();
-                if(text.length() > 20)
-                {
-                    text.truncate(17);
-                    text += "...";
-                }
-                last += "<div class=\"thumbnail\">";
-                last += "<object type=\"application/image-preview\" data=\"" + son.data(HistoryModel::UrlStringRole).toString();
-                last +=  "\" width=\"200\">";
-                last += "</object>";
-                last += "<br />";
-                last += "<a href=\"" + son.data(HistoryModel::UrlStringRole).toString() + "\">" + text + "</a></div>";
-                sites++;
-            }
-        }
-        i++;
+        HistoryItem it = history.at(i);
+        last += "<div class=\"thumbnail\">";
+        last += "<object type=\"application/image-preview\" data=\"" + it.url;
+        last +=  "\" width=\"200\">";
+        last += "</object>";
+        last += "<br />";
+        last += "<a href=\"" + it.url + "\">" + it.url + "</a></div>";
     }
-    while( sites<8 || model->hasIndex( i , 0 , QModelIndex() ) );
 
     return last;
 
