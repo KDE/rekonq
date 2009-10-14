@@ -102,7 +102,6 @@ void TabBar::postLaunch()
     
     m_addTabButton->setAutoRaise(true);
     m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    m_addTabButton->show();
 }
 
 
