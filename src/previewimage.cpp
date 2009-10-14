@@ -146,6 +146,7 @@ void PreviewImage::showEmptyPreview()
 
 void PreviewImage::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    kDebug() << "no double click over here, thanks :D";
     Q_UNUSED(event);
 }
 
@@ -175,6 +176,7 @@ void PreviewImage::mousePressEvent(QMouseEvent *event)
 
 void PreviewImage::mouseReleaseEvent(QMouseEvent *event)
 {
+    kDebug() << "NOOOOOOO... don't leave your finger from the button!!!!";
     Q_UNUSED(event)
 }
     
@@ -241,9 +243,6 @@ void PreviewImage::removeMe()
     
     showEmptyPreview();
     
-    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(m_url) + ".png", true);
-    QFile::remove(path);
-    
     m_url = "";
 }
 
@@ -252,11 +251,7 @@ void PreviewImage::setUrlFromAction()
 {
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url = KUrl(a->data().toString());
-    
-    // delete thumb if exists to get a refreshed one.
-    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(url) + ".png", true);
-    QFile::remove(path);
-    
+        
     if(m_button)
     {
         layout()->deleteLater();
@@ -278,6 +273,9 @@ QString PreviewImage::guessNameFromUrl(QUrl url)
     name.remove('.');
     name.remove('-');
     name.remove('_');
+    name.remove('?');
+    name.remove('=');
+    name.remove('+');
     
     return name;
 }
