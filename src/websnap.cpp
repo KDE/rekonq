@@ -130,6 +130,20 @@ void WebSnap::saveResult(bool ok)
 }
 
 
+
+QString WebSnap::snapTitle()
+{
+    return m_page.mainFrame()->title();
+    return QString("");
+}
+
+
+QUrl WebSnap::snapUrl()
+{
+    return m_url;
+}
+
+
 QPixmap WebSnap::previewImage()
 {
     return m_image;

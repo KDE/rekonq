@@ -30,42 +30,45 @@
 
 // Local Includes
 #include "application.h"
+#include "history.h"
+#include "rekonq.h"
 
 // KDE Includes
 #include <KUrl>
 #include <KStandardDirs>
 #include <KDebug>
+#include <KMenu>
+#include <KAction>
+#include <KLocale>
 
 // Qt Includes
 #include <QFile>
 #include <QMovie>
 #include <QMouseEvent>
+#include <QHBoxLayout>
 
 
-PreviewImage::PreviewImage(const QUrl &url)
+PreviewImage::PreviewImage(const QUrl &url,
+                           const QStringList &argumentNames, 
+                           const QStringList &argumentValues)
     : QLabel()
     , ws(0)
-    , m_url(url)
+    , m_url(0)
+    , m_isFavorite(false)
+    , m_index(-1)
+    , m_button(0)
 {   
-    m_savePath = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(m_url) + ".png", true);
+    int i;
     
-    if(QFile::exists(m_savePath))
-    {
-        m_pixmap.load(m_savePath);
-        setPixmap( m_pixmap );
-    }
-    else
-    {
-        ws = new WebSnap( url );
-        connect(ws, SIGNAL(finished()), this, SLOT(setSiteImage()));
-        
-        QString path = KStandardDirs::locate("appdata", "pics/busywidget.gif");
-
-        QMovie *movie = new QMovie(path, QByteArray(), this);
-        movie->setSpeed(50);
-        setMovie(movie);
-        movie->start();
-    }
+    i = argumentNames.indexOf(QRegExp(QString("isFavorite"), Qt::CaseInsensitive, QRegExp::FixedString));
+    if(i > -1 && argumentValues.at(i) == "true")
+        m_isFavorite = true;
+    
+    i = argumentNames.indexOf(QRegExp(QString("index"), Qt::CaseInsensitive, QRegExp::FixedString));
+    if(i > -1)
+        m_index = argumentValues.at(i).toInt();
+    
+    setUrl(url);
 }
 
 
@@ -75,7 +78,41 @@ PreviewImage::~PreviewImage()
 }
 
 
-void PreviewImage::setSiteImage()
+
+void PreviewImage::setUrl(const QUrl& url)
+{
+    m_url = url;
+    
+    if(url.isEmpty())
+    {
+        showEmptyPreview();
+        return;
+    }
+    
+    m_savePath = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(m_url) + ".png", true);
+    
+    if(QFile::exists(m_savePath))
+    {
+        m_pixmap.load(m_savePath);
+        setPixmap(m_pixmap);
+    }
+    else
+    {
+        ws = new WebSnap( url );
+        connect(ws, SIGNAL(finished()), this, SLOT(snapFinished()));
+        
+        QString path = KStandardDirs::locate("appdata", "pics/busywidget.gif");
+        
+
+        QMovie *movie = new QMovie(path, QByteArray(), this);
+        movie->setSpeed(50);
+        setMovie(movie);
+        movie->start();
+    }
+}
+
+
+void PreviewImage::snapFinished()
 {
     QMovie *m = movie();
     delete m;
@@ -85,6 +122,37 @@ void PreviewImage::setSiteImage()
     setPixmap(m_pixmap);
 
     m_pixmap.save(m_savePath);
+    
+    if(m_index > -1)
+    {
+        // Update title
+        QStringList names = ReKonfig::previewNames();
+        // update url (for added thumbs)
+        QStringList urls = ReKonfig::previewUrls();
+        
+        // stripTrailingSlash to be sure to get the same string for same adress
+        urls.replace(m_index, ws->snapUrl().toString(QUrl::StripTrailingSlash));
+        names.replace(m_index, ws->snapTitle());
+        
+        ReKonfig::setPreviewNames(names);
+        ReKonfig::setPreviewUrls(urls);
+    }
+}
+
+
+void PreviewImage::showEmptyPreview()
+{
+    clear();
+    
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    m_button = new QToolButton(this);
+    m_button->setDefaultAction(historyMenu());
+    m_button->setPopupMode(QToolButton::InstantPopup);
+    m_button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    m_button->setText(i18n("Add Preview"));
+    m_button->setAutoRaise(true);
+    m_button->setIconSize(QSize(48, 48));
+    layout->addWidget(m_button);
 }
 
 
@@ -122,6 +190,96 @@ void PreviewImage::mouseReleaseEvent(QMouseEvent *event)
     Q_UNUSED(event)
 }
     
+
+void PreviewImage::contextMenuEvent(QContextMenuEvent* event)
+{
+    if(!m_isFavorite)
+        return;
+    
+    KMenu menu(this);
+    KAction *a;
+    
+    if(!m_url.isEmpty())
+    {
+        a = new KAction(KIcon("edit-delete"), i18n("Remove Thumbnail"), this);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(removeMe()));
+        menu.addAction(a);
+    }
+    menu.addAction(historyMenu());
+    
+    menu.exec(mapToGlobal(event->pos()));
+}
+
+
+KActionMenu* PreviewImage::historyMenu()
+{
+    KActionMenu *histMenu = new KActionMenu(KIcon("insert-image"), i18n("Set page to preview"), this);
+    QList<HistoryItem> history =  Application::historyManager()->history();
+    
+    if(history.isEmpty())
+    {
+        KAction *a = new KAction(i18n("History is empty"), this);
+        a->setEnabled(false);
+        histMenu->addAction(a);
+        return histMenu;
+    }
+    
+    int maxItems = 15;
+    for (int i = 0; i < maxItems && i < history.size() ; ++i) 
+    {
+        HistoryItem it = history.at(i);
+        KAction *a = new KAction(Application::icon(it.url), it.title, this);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(setUrlFromAction()));
+        a->setData(it.url);
+        histMenu->addAction(a);
+    }
+    
+    return histMenu;
+}
+
+
+void PreviewImage::removeMe()
+{
+    QStringList names = ReKonfig::previewNames();
+    QStringList urls = ReKonfig::previewUrls();
+    
+    int index = urls.indexOf(QRegExp(m_url.toString(QUrl::StripTrailingSlash), Qt::CaseSensitive, QRegExp::FixedString));
+
+    urls.replace(index, QString(""));
+    names.replace(index, QString(""));
+    
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+    
+    showEmptyPreview();
+    
+    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(m_url) + ".png", true);
+    QFile::remove(path);
+    
+    m_url = "";
+}
+
+
+void PreviewImage::setUrlFromAction()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl url = KUrl(a->data().toString());
+    
+    // delete thumb if exists to get a refreshed one.
+    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(url) + ".png", true);
+    QFile::remove(path);
+    
+    if(m_button)
+    {
+        layout()->deleteLater();
+        m_button->menu()->deleteLater();
+        m_button->deleteLater();
+    }
+    
+    setUrl(url);
+    
+}
+
 
 QString PreviewImage::guessNameFromUrl(QUrl url)
 {

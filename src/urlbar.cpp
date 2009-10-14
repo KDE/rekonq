@@ -135,10 +135,12 @@ void UrlBar::setUrl(const QUrl& url)
 {
     if(url.scheme() == "rekonq")
     {
+        m_currentUrl = "";
         setFocus();
-        return;
     }
-    m_currentUrl = url;
+    else
+        m_currentUrl = url;
+    
     slotUpdateUrl();
 }
 
