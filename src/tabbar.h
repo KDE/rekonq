@@ -63,6 +63,7 @@ public:
     ~TabBar();
 
     void showTabPreview(int tab);
+    void updateNewTabButton();
 
 signals:
     void cloneTab(int index);
@@ -76,7 +77,6 @@ protected:
      * Added to fix tab dimension
      */
     virtual QSize tabSizeHint(int index) const;
-    virtual void tabLayoutChange();
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
     
@@ -89,8 +89,6 @@ private slots:
     void postLaunch();
 
 private:
-    void setTabButtonPosition();
-
     MainView *m_parent;
     QToolButton *m_addTabButton;
 

@@ -451,7 +451,7 @@ void MainWindow::setupSidePanel()
 void MainWindow::slotUpdateConfiguration()
 {
     // ============== General ==================
-    mainView()->showTabBar();
+    mainView()->updateTabBar();
 
     // =========== Fonts ==============
     QWebSettings *defaultSettings = QWebSettings::globalSettings();

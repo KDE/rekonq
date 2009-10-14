@@ -131,7 +131,7 @@ int MainView::webViewIndex(WebView *webView) const
 }
 
 
-void MainView::showTabBar()
+void MainView::updateTabBar()
 {
     if (ReKonfig::alwaysShowTabBar())
     {
@@ -139,6 +139,7 @@ void MainView::showTabBar()
         {
             m_tabBar->show();
         }
+        m_tabBar->updateNewTabButton();
     }
     else
     {
@@ -152,6 +153,7 @@ void MainView::showTabBar()
             {
                 m_tabBar->show();
             }
+            m_tabBar->updateNewTabButton();
         }
     }
 }
@@ -283,15 +285,15 @@ WebView *MainView::newWebView(bool focused, bool nearParent)
         insertTab(currentIndex() + 1, webView, i18n("(Untitled)"));
     else
         addTab(webView, i18n("(Untitled)"));
-       
+
+    updateTabBar();
+    
     if (focused)
     {
         setCurrentWidget(webView);
     }
 
     emit tabsChanged();
-
-    showTabBar();
     
     return webView;
 }
@@ -369,7 +371,7 @@ void MainView::slotCloseOtherTabs(int index)
         slotCloseTab(i);
     }
 
-    showTabBar();
+    updateTabBar();
 }
 
 
@@ -383,7 +385,7 @@ void MainView::slotCloneTab(int index)
     WebView *tab = newWebView();
     tab->setUrl(webView(index)->url());
 
-    showTabBar();
+    updateTabBar();
 }
 
 
@@ -418,6 +420,7 @@ void MainView::slotCloseTab(int index)
 
     QWidget *webView = widget(index);
     removeTab(index);
+    updateTabBar();         // UI operation: do it ASAP!!
     webView->deleteLater();  // webView is scheduled for deletion.
 
     emit tabsChanged();
@@ -426,8 +429,6 @@ void MainView::slotCloseTab(int index)
     {
         currentWebView()->setFocus();
     }
-
-    showTabBar();
 }
 
 
@@ -577,4 +578,11 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
 KUrl::List MainView::recentlyClosedTabs()
 {
     return m_recentlyClosedTabs;
+}
+
+
+void MainView::resizeEvent(QResizeEvent *event)
+{
+    updateTabBar();
+    KTabWidget::resizeEvent(event);
 }
