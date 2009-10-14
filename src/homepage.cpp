@@ -131,8 +131,6 @@ QString HomePage::fillFavorites()
 
 QString HomePage::lastVisitedSites()
 {
-    HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
-    
     QString last;
     QList<HistoryItem> history =  Application::historyManager()->history();
     for (int i = 0; i < 8 && i < history.size(); ++i) 
