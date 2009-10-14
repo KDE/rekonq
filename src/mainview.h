@@ -76,7 +76,7 @@ public:
      * "Always Show TabBar" option
      *
      */
-    void showTabBar();
+    void updateTabBar();
     void clear();
 
     /**
@@ -136,7 +136,9 @@ private slots:
 
     void windowCloseRequested();
 
-    
+protected:
+    virtual void resizeEvent(QResizeEvent *event);
+
 private:
     /**
      * This function creates (if not exists) and returns a QLabel

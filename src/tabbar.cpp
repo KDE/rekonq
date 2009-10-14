@@ -89,11 +89,6 @@ TabBar::~TabBar()
 
 void TabBar::postLaunch()
 {
-    // HACK this is used to fix add tab button position
-    QToolButton *secondAddTabButton = new QToolButton(this);
-    secondAddTabButton->setAutoRaise(true);
-    secondAddTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    
     // Find the correct MainWindow of this tab button
     MainWindowList list = Application::instance()->mainWindowList();
     Q_FOREACH(QPointer<MainWindow> w, list)
@@ -101,7 +96,6 @@ void TabBar::postLaunch()
         if (w->isAncestorOf(this))
         {
             m_addTabButton->setDefaultAction(w->actionByName("new_tab"));
-            secondAddTabButton->setDefaultAction(w->actionByName("new_tab"));
             break;
         }
     }
@@ -109,10 +103,6 @@ void TabBar::postLaunch()
     m_addTabButton->setAutoRaise(true);
     m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     m_addTabButton->show();
-    
-    // stupid tabbar, that's what you gain...
-    m_parent->setCornerWidget(secondAddTabButton);
-    m_parent->cornerWidget()->hide();
 }
 
 
@@ -144,13 +134,6 @@ QSize TabBar::tabSizeHint(int index) const
 
     QSize ts = QSize(w, h);
     return ts;
-}
-
-
-void TabBar::tabLayoutChange()
-{
-    setTabButtonPosition();
-    KTabBar::tabLayoutChange();
 }
 
 
@@ -202,37 +185,6 @@ void TabBar::closeOtherTabs()
 void TabBar::reloadTab()
 {
     emit reloadTab(m_actualIndex);
-}
-
-
-void TabBar::setTabButtonPosition()
-{
-    if(count() >= MIN_WIDTH_DIVISOR - 1)
-    {
-        if(m_addTabButton->isVisible())
-        {
-            m_addTabButton->hide();
-            m_parent->cornerWidget()->show();
-        }
-        return;
-    }
-    
-    if(m_addTabButton->isHidden())
-    {
-        m_addTabButton->show();
-        m_parent->cornerWidget()->hide();
-    }
-
-    int tabWidgetWidth = frameSize().width();
-    int tabBarWidth = tabSizeHint(0).width()*count();
-    int newPosY = height() - m_addTabButton->height();
-    int newPosX = tabWidgetWidth - m_addTabButton->width();
-
-    if (tabBarWidth + m_addTabButton->width() < tabWidgetWidth)
-        newPosX = tabBarWidth;
-
-    m_addTabButton->move(newPosX, newPosY);
-    m_addTabButton->show();
 }
 
 
@@ -315,4 +267,38 @@ void TabBar::leaveEvent(QEvent *event)
     }
 
     KTabBar::leaveEvent(event);
+}
+
+
+void TabBar::updateNewTabButton()
+{
+    static bool ButtonInCorner = false;
+
+    int tabWidgetWidth = m_parent->frameSize().width();
+    int tabBarWidth = tabSizeHint(0).width() * count();
+
+    if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
+    {
+        if(ButtonInCorner)
+            return;
+        m_parent->setCornerWidget(m_addTabButton);
+        ButtonInCorner = true;
+    }
+    else
+    {
+        if(ButtonInCorner)
+        {
+            m_parent->setCornerWidget(0);
+            m_addTabButton->show();
+            ButtonInCorner = false;
+        }
+
+        int newPosX = tabWidgetWidth - m_addTabButton->width();
+        int newPosY = height() - m_addTabButton->height();
+
+        if (tabBarWidth + m_addTabButton->width() < tabWidgetWidth)
+            newPosX = tabBarWidth;
+
+        m_addTabButton->move(newPosX, newPosY);
+    }
 }
