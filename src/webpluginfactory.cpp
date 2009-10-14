@@ -53,14 +53,22 @@ QObject *WebPluginFactory::create(const QString &mimeType,
                                   const QStringList &argumentNames,
                                   const QStringList &argumentValues) const
 {
-    Q_UNUSED(argumentNames)
-    Q_UNUSED(argumentValues)
-    
     kDebug() << "loading mimeType: " << mimeType;
     
     if(mimeType == QString("application/image-preview") )
-    {   
-        return new PreviewImage(url, argumentNames, argumentValues);
+    {
+        int number = -1;
+        bool isFavorite = false;
+
+        int i;
+        i = argumentNames.indexOf( QString("isFavorite") );
+        if(i > -1)
+            isFavorite = true;
+        i = argumentNames.indexOf( QString("index") );
+        if(i > -1)
+            number = argumentValues.at(i).toInt();
+    
+        return new PreviewImage(url, number, isFavorite);
     }
 
     // this let QtWebKit using builtin plugins 

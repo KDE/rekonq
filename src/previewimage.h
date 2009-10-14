@@ -44,9 +44,7 @@ class PreviewImage : public QLabel
     Q_OBJECT
 
 public:
-    PreviewImage(const QUrl &url, 
-                 const QStringList &argumentNames = QStringList(), 
-                 const QStringList &argumentValues = QStringList());
+    PreviewImage(const QUrl &url, int index, bool isFavorite);
     ~PreviewImage();
     
     QString guessNameFromUrl(QUrl url);

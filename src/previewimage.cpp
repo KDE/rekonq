@@ -48,26 +48,14 @@
 #include <QHBoxLayout>
 
 
-PreviewImage::PreviewImage(const QUrl &url,
-                           const QStringList &argumentNames, 
-                           const QStringList &argumentValues)
+PreviewImage::PreviewImage(const QUrl &url, int index, bool isFavorite)
     : QLabel()
     , ws(0)
     , m_url(0)
-    , m_isFavorite(false)
-    , m_index(-1)
+    , m_isFavorite(isFavorite)
+    , m_index(index)
     , m_button(0)
 {   
-    int i;
-    
-    i = argumentNames.indexOf(QRegExp(QString("isFavorite"), Qt::CaseInsensitive, QRegExp::FixedString));
-    if(i > -1 && argumentValues.at(i) == "true")
-        m_isFavorite = true;
-    
-    i = argumentNames.indexOf(QRegExp(QString("index"), Qt::CaseInsensitive, QRegExp::FixedString));
-    if(i > -1)
-        m_index = argumentValues.at(i).toInt();
-    
     setUrl(url);
 }
 
@@ -274,10 +262,8 @@ void PreviewImage::setUrlFromAction()
         layout()->deleteLater();
         m_button->menu()->deleteLater();
         m_button->deleteLater();
-    }
-    
+    }    
     setUrl(url);
-    
 }
 
 
