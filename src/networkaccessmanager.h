@@ -42,17 +42,6 @@ class NetworkAccessManager : public AccessManager
 public:
     NetworkAccessManager(QObject *parent = 0);
     void resetDiskCache();
-    
-public slots:
-    void loadSettings();
-
-private slots:
-    void authenticationRequired(QNetworkReply *reply, QAuthenticator *auth);
-    void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth);
-
-#ifndef QT_NO_OPENSSL
-    void slotSSLErrors(QNetworkReply *reply, const QList<QSslError> &error);
-#endif
 };
 
 #endif // NETWORKACCESSMANAGER_H
