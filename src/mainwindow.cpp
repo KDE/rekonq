@@ -494,7 +494,6 @@ void MainWindow::slotUpdateConfiguration()
     defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
 
     // ====== load Settings on main classes
-    Application::networkAccessManager()->loadSettings();
     Application::historyManager()->loadSettings();
 }
 

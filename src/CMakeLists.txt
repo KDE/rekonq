@@ -30,8 +30,6 @@ SET( rekonq_SRCS
 
 
 KDE4_ADD_UI_FILES( rekonq_SRCS
-    password.ui
-    proxy.ui
     settings_general.ui
     settings_fonts.ui
     settings_webkit.ui

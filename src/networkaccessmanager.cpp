@@ -35,75 +35,18 @@
 // Auto Includes
 #include "rekonq.h"
 
-// Ui Includes
-#include "ui_password.h"
-#include "ui_proxy.h"
-
 // KDE Includes
-#include <KMessageBox>
 #include <KStandardDirs>
-#include <KProtocolManager>
 
 // Qt Includes
-#include <QtCore/QPointer>
-#include <QtCore/QIODevice>
-
-#include <QtGui/QStyle>
-#include <QtGui/QTextDocument>
-
-#include <QtNetwork/QAuthenticator>
 #include <QtNetwork/QNetworkDiskCache>
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
         : AccessManager(parent)
 {
-    connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
-            SLOT(authenticationRequired(QNetworkReply*, QAuthenticator*)));
-    connect(this, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)),
-            SLOT(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
-
-#ifndef QT_NO_OPENSSL
-    connect(this, SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError>&)),
-            SLOT(slotSSLErrors(QNetworkReply*, const QList<QSslError>&)));
-#endif
-
-    // load AccessManager Settings
-    loadSettings();
-
     // resetting disk cache
     resetDiskCache();
-}
-
-
-void NetworkAccessManager::loadSettings()
-{
-    // Grab proxy settings from KDE settings
-    if (KProtocolManager::useProxy())
-    {
-        QString proxyAddress = KProtocolManager::proxyFor("http");
-
-        if(!proxyAddress.isEmpty())
-        {
-            KUrl proxyUrl(proxyAddress);
-            QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
-
-            // See what kind of proxy we have here
-            if(proxyUrl.protocol() == "socks")
-            {
-                proxyType = QNetworkProxy::Socks5Proxy;
-            }
-            else
-            {
-                proxyType = QNetworkProxy::HttpProxy;
-            }
-
-            QNetworkProxy proxy(proxyType, proxyUrl.host(), (quint16)proxyUrl.port(),
-                                proxyUrl.user(), proxyUrl.pass());
-
-            setProxy(proxy);
-        }
-    }
 }
 
 
@@ -119,81 +62,3 @@ void NetworkAccessManager::resetDiskCache()
         cache()->clear();
     }
 }
-
-
-void NetworkAccessManager::authenticationRequired(QNetworkReply *reply, QAuthenticator *auth)
-{
-    MainWindow *mainWindow = Application::instance()->mainWindow();
-
-    QPointer<KDialog> dialog = new KDialog(mainWindow, Qt::Sheet);
-    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
-
-    Ui::passwordWidget passwordWidget;
-    QWidget widget;
-    passwordWidget.setupUi(&widget);
-
-    dialog->setMainWidget(&widget);
-
-    passwordWidget.iconLabel->setText(QString());
-    passwordWidget.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
-    //FIXME Replace the text below with an explanation of what exactly %1 and %2 mean
-    QString introMessage = i18nc("%1=stuff %2=stuff2", "<qt>Enter username and password for %1 at %2</qt>",
-                                  Qt::escape(reply->url().toString()),
-                                  Qt::escape(reply->url().toString())  );
-    passwordWidget.introLabel->setText(introMessage);
-    passwordWidget.introLabel->setWordWrap(true);
-
-    if (dialog->exec() == KDialog::Ok)
-    {
-        auth->setUser(passwordWidget.userNameLineEdit->text());
-        auth->setPassword(passwordWidget.passwordLineEdit->text());
-    }
-    dialog->deleteLater();
-}
-
-
-void NetworkAccessManager::proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth)
-{
-    MainWindow *mainWindow = Application::instance()->mainWindow();
-
-    QPointer<KDialog> dialog = new KDialog(mainWindow, Qt::Sheet);
-    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
-
-    Ui::proxyWidget proxyWdg;
-    QWidget widget;
-    proxyWdg.setupUi(&widget);
-
-    dialog->setMainWidget(&widget);
-
-    proxyWdg.iconLabel->setText(QString());
-    proxyWdg.iconLabel->setPixmap(mainWindow->style()->standardIcon(QStyle::SP_MessageBoxQuestion, 0, mainWindow).pixmap(32, 32));
-    //FIXME Connect to proxy %1 using what? Best solution would be adding a %2 after the "using:" part and explain %1 and %2 in an i18nc call
-    QString introMessage = i18n("<qt>Connect to proxy %1 using:</qt>", Qt::escape(proxy.hostName()) );
-    proxyWdg.introLabel->setText(introMessage);
-    proxyWdg.introLabel->setWordWrap(true);
-
-    if (dialog->exec() == KDialog::Ok)
-    {
-        auth->setUser(proxyWdg.userNameLineEdit->text());
-        auth->setPassword(proxyWdg.passwordLineEdit->text());
-    }
-    dialog->deleteLater();
-}
-
-
-#ifndef QT_NO_OPENSSL
-void NetworkAccessManager::slotSSLErrors(QNetworkReply *reply, const QList<QSslError> &error)
-{
-    MainWindow *mainWindow = Application::instance()->mainWindow();
-
-    QStringList errorStrings;
-    for (int i = 0; i < error.count(); ++i)
-        errorStrings += error.at(i).errorString();
-    QString errors = errorStrings.join(QLatin1String("\n"));
-    int ret = KMessageBox::warningContinueCancel(mainWindow, 
-                    i18n("SSL Errors:\n\n") + reply->url().toString() + "\n\n" + QString(errors) + "\n\n");
-
-    if (ret == KMessageBox::Yes)
-        reply->ignoreSslErrors();
-}
-#endif
