@@ -61,7 +61,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     
-    void setUrl(const QUrl &url);
+    void loadUrlPreview(const QUrl &url);
     KActionMenu *historyMenu();
     void showEmptyPreview();
                 
@@ -72,6 +72,7 @@ private:
     QUrl m_url;
     QString m_savePath;
     
+    bool loadingSnapshot;
     bool m_isFavorite;
     int m_index;
     

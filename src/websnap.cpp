@@ -134,7 +134,6 @@ void WebSnap::saveResult(bool ok)
 QString WebSnap::snapTitle()
 {
     return m_page.mainFrame()->title();
-    return QString("");
 }
 
 

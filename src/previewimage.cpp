@@ -52,11 +52,12 @@ PreviewImage::PreviewImage(const QUrl &url, int index, bool isFavorite)
     : QLabel()
     , ws(0)
     , m_url(0)
+    , loadingSnapshot(false)
     , m_isFavorite(isFavorite)
     , m_index(index)
     , m_button(0)
 {   
-    setUrl(url);
+    loadUrlPreview(url);
 }
 
 
@@ -67,7 +68,7 @@ PreviewImage::~PreviewImage()
 
 
 
-void PreviewImage::setUrl(const QUrl& url)
+void PreviewImage::loadUrlPreview(const QUrl& url)
 {
     m_url = url;
     
@@ -86,12 +87,13 @@ void PreviewImage::setUrl(const QUrl& url)
     }
     else
     {
+        loadingSnapshot = true;
         ws = new WebSnap( url );
         connect(ws, SIGNAL(finished()), this, SLOT(snapFinished()));
         
         QString path = KStandardDirs::locate("appdata", "pics/busywidget.gif");
         
-
+        // load an animation waiting for site preview
         QMovie *movie = new QMovie(path, QByteArray(), this);
         movie->setSpeed(50);
         setMovie(movie);
@@ -102,6 +104,7 @@ void PreviewImage::setUrl(const QUrl& url)
 
 void PreviewImage::snapFinished()
 {
+    loadingSnapshot = false;
     QMovie *m = movie();
     delete m;
     setMovie(0);
@@ -124,12 +127,17 @@ void PreviewImage::snapFinished()
         
         ReKonfig::setPreviewNames(names);
         ReKonfig::setPreviewUrls(urls);
+        
+        ReKonfig::self()->writeConfig();
     }
 }
 
 
 void PreviewImage::showEmptyPreview()
 {
+    if(!m_isFavorite)
+        return;
+    
     clear();
     
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -186,6 +194,9 @@ void PreviewImage::contextMenuEvent(QContextMenuEvent* event)
     if(!m_isFavorite)
         return;
     
+    if(loadingSnapshot)
+       return;
+    
     KMenu menu(this);
     KAction *a;
     
@@ -219,8 +230,8 @@ KActionMenu* PreviewImage::historyMenu()
     {
         HistoryItem it = history.at(i);
         KAction *a = new KAction(Application::icon(it.url), it.title, this);
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(setUrlFromAction()));
         a->setData(it.url);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(setUrlFromAction()));
         histMenu->addAction(a);
     }
     
@@ -241,6 +252,9 @@ void PreviewImage::removeMe()
     ReKonfig::setPreviewNames(names);
     ReKonfig::setPreviewUrls(urls);
     
+    // sync file data
+    ReKonfig::self()->writeConfig();
+
     showEmptyPreview();
     
     m_url = "";
@@ -258,7 +272,7 @@ void PreviewImage::setUrlFromAction()
         m_button->menu()->deleteLater();
         m_button->deleteLater();
     }    
-    setUrl(url);
+    loadUrlPreview(url);
 }
 
 
