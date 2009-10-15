@@ -1054,6 +1054,8 @@ void MainWindow::slotAboutToShowBackMenu()
         return;
     QWebHistory *history = currentTab()->history();
     int historyCount = history->count();
+    // Limit history views in the menu to 8
+    int limit = 0;
     for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i)
     {
         QWebHistoryItem item = history->backItems(history->count()).at(i);
@@ -1063,6 +1065,10 @@ void MainWindow::slotAboutToShowBackMenu()
         action->setIcon(icon);
         action->setText(item.title());
         m_historyBackMenu->addAction(action);
+        ++limit;
+        if (limit >= 8) {
+            break;
+        }
     }
 }
 
