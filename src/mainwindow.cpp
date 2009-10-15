@@ -1058,9 +1058,10 @@ void MainWindow::slotAboutToShowBackMenu()
     int limit = 0;
     for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i)
     {
+        qDebug() << history->currentItemIndex();
         QWebHistoryItem item = history->backItems(history->count()).at(i);
         KAction *action = new KAction(this);
-        action->setData(-1*(historyCount - i - 1));
+        action->setData(history->currentItemIndex() - (i + 1));
         QIcon icon = Application::icon(item.url());
         action->setIcon(icon);
         action->setText(item.title());
@@ -1077,9 +1078,11 @@ void MainWindow::slotOpenActionUrl(QAction *action)
 {
     int offset = action->data().toInt();
     QWebHistory *history = currentTab()->history();
+    qDebug() << offset;
+    qDebug() << history->itemAt(offset).isValid();
     if (offset < 0)
     {
-        history->goToItem(history->backItems(-1*offset).first()); // back
+        history->goToItem(history->itemAt(offset)); // back
     }
     else
     {
