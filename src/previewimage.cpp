@@ -216,6 +216,10 @@ void PreviewImage::contextMenuEvent(QContextMenuEvent* event)
         a = new KAction(KIcon("edit-delete"), i18n("Remove Thumbnail"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(removeMe()));
         menu.addAction(a);
+        
+        a = new KAction(KIcon("view-refresh"), i18n("Refresh Thumbnail"), &menu);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(refreshPreview()));
+        menu.addAction(a);
     }
     menu.addAction(historyMenu());
     
@@ -284,6 +288,14 @@ void PreviewImage::setUrlFromAction()
         m_button->deleteLater();
     }    
     loadUrlPreview(url);
+}
+
+
+void PreviewImage::refreshPreview()
+{
+    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(m_url) + ".png", true);
+    QFile::remove(path);
+    loadUrlPreview(m_url);
 }
 
 

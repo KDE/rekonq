@@ -53,6 +53,7 @@ public slots:
     void snapFinished();
     void removeMe();
     void setUrlFromAction();
+    void refreshPreview();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
