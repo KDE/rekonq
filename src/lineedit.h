@@ -49,8 +49,6 @@ public:
 
 protected:
     virtual void keyPressEvent(QKeyEvent*);
-    virtual void contextMenuEvent(QContextMenuEvent*);
-    virtual void focusInEvent(QFocusEvent*);
     virtual void mouseDoubleClickEvent(QMouseEvent *);
 };
 

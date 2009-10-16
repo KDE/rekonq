@@ -66,19 +66,6 @@ void LineEdit::keyPressEvent(QKeyEvent *event)
 }
 
 
-void LineEdit::contextMenuEvent(QContextMenuEvent *event)
-{
-    KLineEdit::contextMenuEvent(event);
-}
-
-
-void LineEdit::focusInEvent(QFocusEvent *event)
-{
-    selectAll();
-
-    KLineEdit::focusInEvent(event);
-}
-
 void LineEdit::mouseDoubleClickEvent(QMouseEvent *)
 {
     selectAll();
