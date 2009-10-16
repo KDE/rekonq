@@ -74,24 +74,30 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     QString menu = homePageMenu(url);
     
     QString speed;
+    QString title;
     if(url == KUrl("rekonq:allTabs"))
     {
         speed = fillAllTabs();
+        title = i18n("Open Tabs");
     }
     if(url == KUrl("rekonq:history"))
     {
         speed = fillHistory();
+        title = i18n("History");
     }
     if(url == KUrl("rekonq:bookmarks"))
     {
         speed = fillBookmarks();
+        title = i18n("Bookmarks");
     }
     if(url == KUrl("rekonq:home") || url == KUrl("rekonq:favorites"))
     {
         speed = fillFavorites();
+        title = i18n("Favorites");
     }
     
     QString html = QString(QLatin1String(file.readAll()))
+                        .arg(title)
                         .arg(imagesPath)
                         .arg(menu)
                         .arg(speed)
