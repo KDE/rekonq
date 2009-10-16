@@ -32,6 +32,8 @@
 #include "application.h"
 #include "history.h"
 #include "rekonq.h"
+#include "mainwindow.h"
+#include "mainview.h"
 
 // KDE Includes
 #include <KUrl>
@@ -168,17 +170,26 @@ void PreviewImage::mouseMoveEvent(QMouseEvent *event)
 
 void PreviewImage::mousePressEvent(QMouseEvent *event)
 {
-    switch(event->button())
+    if(event->button() == Qt::LeftButton)
     {
-    case Qt::LeftButton:
-        Application::instance()->loadUrl(m_url);
-        break;
-    case Qt::RightButton:
-        // TODO
-        break;
-    default:
-        QLabel::mousePressEvent(event);
+        if(m_isFavorite)
+        {
+            Application::instance()->loadUrl(m_url);
+        }
+        else
+        {
+            MainView *mv = Application::instance()->mainWindow()->mainView();
+            int actualIndex = mv->currentIndex();
+            
+            kDebug() << "Actual index: " << actualIndex;
+            kDebug() << "m_index: " << m_index;
+
+            mv->slotCloseTab(actualIndex);
+            mv->setCurrentIndex(m_index);
+        }
+        return;
     };
+    QLabel::mousePressEvent(event);
 }
 
 
