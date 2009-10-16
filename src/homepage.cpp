@@ -78,7 +78,7 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     if(url == KUrl("rekonq:allTabs"))
     {
         speed = fillAllTabs();
-        title = i18n("Open Tabs");
+        title = i18n("All Tabs");
     }
     if(url == KUrl("rekonq:history"))
     {
