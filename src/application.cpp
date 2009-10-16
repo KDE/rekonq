@@ -243,13 +243,16 @@ SessionManager *Application::sessionManager()
 
 KIcon Application::icon(const KUrl &url)
 {
-    if(url.scheme() == "rekonq" ||   
-        (url.isEmpty() // Urlbar is empty for homepage, but we want an icon
-        && !Application::instance()->mainWindowList().isEmpty() // avoid infinite loop at startup
-        && Application::instance()->mainWindow()->currentTab()->url().scheme() == "rekonq")  
-      )
-        return KIcon("go-home");
-        
+    if(!Application::instance()->mainWindowList().isEmpty()) // avoid infinite loop at startup
+    {
+        if(url.scheme() == "rekonq")
+            return KIcon("go-home");
+    
+        // means it is the urlbar
+        if(url.isEmpty() && Application::instance()->mainWindow()->currentTab()->url().scheme() == "rekonq")
+            return KIcon("arrow-right");
+    }
+    
     if(url.isEmpty())
         return KIcon("text-html");
     
