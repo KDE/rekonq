@@ -195,7 +195,7 @@ void PreviewImage::mousePressEvent(QMouseEvent *event)
 
 void PreviewImage::mouseReleaseEvent(QMouseEvent *event)
 {
-    kDebug() << "NOOOOOOO... don't leave your finger from the button!!!!";
+    kDebug() << "NO000... don't leave your finger from the button!!";
     Q_UNUSED(event)
 }
     

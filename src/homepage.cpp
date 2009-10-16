@@ -160,29 +160,32 @@ QString HomePage::homePageMenu(KUrl currentUrl)
         menu += " current";
     menu += "\"><a href=\"rekonq:favorites\">";
     menu += "<img src=\"file:///" + loader->iconPath("emblem-favorite", KIconLoader::Desktop) + "\" />";
-    menu += "Favorites</a></div>";
+    menu += i18n("Favorites");
+    menu += "</a></div>";
     
     menu += "<div class=\"link";
     if(currentUrl == "rekonq:allTabs")
         menu += " current";
     menu += "\"><a href=\"rekonq:allTabs\">";
     menu += "<img src=\"file:///" + loader->iconPath("tab-duplicate", KIconLoader::Desktop) + "\" />";
-    menu += "All Tabs</a></div>";
+    menu += i18n("All Tabs");
+    menu += "</a></div>";
     
     menu += "<div class=\"link";
     if(currentUrl == "rekonq:bookmarks")
         menu += " current";
     menu += "\"><a href=\"rekonq:bookmarks\">";
     menu += "<img src=\"file:///" + loader->iconPath("bookmarks", KIconLoader::Desktop) + "\" />";
-    menu += "Bookmarks</a></div>";
+    menu += i18n("Bookmarks");
+    menu += "</a></div>";
     
     menu += "<div class=\"link";
     if(currentUrl == "rekonq:history")
         menu += " current";
     menu += "\"><a href=\"rekonq:history\">";
     menu += "<img src=\"file:///" + loader->iconPath("view-history", KIconLoader::Desktop) + "\" />";
-    menu += "History</a></div>";
-    
+    menu += i18n("History");
+    menu += "</a></div>";
     
     return menu;
 }
