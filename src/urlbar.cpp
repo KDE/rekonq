@@ -154,6 +154,13 @@ void UrlBar::setProgress(int progress)
 
 void UrlBar::slotUpdateUrl()
 {
+    // Don't change my typed url...
+    if(hasFocus())
+    {
+        kDebug() << "Don't change my typed url...";
+        return;
+    }
+    
     if (count())
     {
         changeUrl(0, Application::icon(m_currentUrl), m_currentUrl);
