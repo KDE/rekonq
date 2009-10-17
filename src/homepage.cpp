@@ -75,10 +75,10 @@ QString HomePage::rekonqHomePage(const KUrl &url)
     
     QString speed;
     QString title;
-    if(url == KUrl("rekonq:allTabs"))
+    if(url == KUrl("rekonq:closedTabs"))
     {
-        speed = fillAllTabs();
-        title = i18n("All Tabs");
+        speed = fillClosedTabs();
+        title = i18n("Closed Tabs");
     }
     if(url == KUrl("rekonq:history"))
     {
@@ -170,11 +170,11 @@ QString HomePage::homePageMenu(KUrl currentUrl)
     menu += "</a></div>";
     
     menu += "<div class=\"link";
-    if(currentUrl == "rekonq:allTabs")
+    if(currentUrl == "rekonq:closedTabs")
         menu += " current";
-    menu += "\"><a href=\"rekonq:allTabs\">";
-    menu += "<img src=\"file:///" + loader->iconPath("tab-duplicate", KIconLoader::Desktop) + "\" />";
-    menu += i18n("All Tabs");
+    menu += "\"><a href=\"rekonq:closedTabs\">";
+    menu += "<img src=\"file:///" + loader->iconPath("tab-close", KIconLoader::Desktop) + "\" />";
+    menu += i18n("Closed Tabs");
     menu += "</a></div>";
     
     menu += "<div class=\"link";
@@ -276,29 +276,27 @@ QString HomePage::createBookItem(const KBookmark &bookmark)
 }
 
 
-QString HomePage::fillAllTabs()
+QString HomePage::fillClosedTabs()
 {
-    QString tabs;
+    KUrl::List links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
+    QString closed;
 
-    MainView *mv = Application::instance()->mainWindow()->mainView();
-    for (int i = 0 ; i < mv->count() -1 ; i++)
+    Q_FOREACH( const KUrl &url, links)
     {
-        QString urlString = mv->webView(i)->url().toEncoded(QUrl::StripTrailingSlash);
-        QString title = mv->webView(i)->title();
-
-        if(title.length() > 20)
+        QString text = url.prettyUrl();
+        if(text.length() > 20)
         {
-            title.truncate(17);
-            title += "...";
+            text.truncate(17);
+            text += "...";
         }
-        tabs += "<div class=\"thumbnail\">";
-        tabs += "<object type=\"application/image-preview\" data=\"";
-        tabs += urlString + "\" width=\"200\">";
-        tabs += "<param name=\"index\" value=\"" + QString::number(i) + "\" />";
-        tabs += "</object>";
-        tabs += "<br />";
-        tabs += "<a href=\"" + urlString + "\">" + title + "</a></div>";
-    }
-    
-    return tabs;
+
+        closed += "<div class=\"thumbnail\">";
+        closed += "<object type=\"application/image-preview\" data=\"";
+        closed += url.prettyUrl() + "\" width=\"200\">";
+        closed += "</object>";
+        closed += "<br />";
+        closed += "<a href=\"" + url.prettyUrl() + "\">" + text + "</a></div>";
+  }
+
+  return closed;
 }

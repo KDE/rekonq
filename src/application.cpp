@@ -442,7 +442,7 @@ MainWindowList Application::mainWindowList()
 
 bool Application::homePage(const KUrl &url)
 {
-    if (    url == KUrl("rekonq:allTabs") 
+    if (    url == KUrl("rekonq:closedTabs") 
          || url == KUrl("rekonq:history") 
          || url == KUrl("rekonq:bookmarks")
          || url == KUrl("rekonq:favorites")

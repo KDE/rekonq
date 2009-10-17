@@ -64,6 +64,7 @@ WebView::WebView(QWidget* parent)
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(slotUpdateProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(slotLoadFinished(bool)));
+    connect(this, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 }
 
 
@@ -196,12 +197,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                 }
             }
         }
-        
+
         if (!searchMenu->menu()->isEmpty())
         {
             menu.addAction(searchMenu);
         }
-        
+
         menu.addSeparator();
         // TODO Add translate, show translation   
     }
@@ -395,7 +396,7 @@ void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifier
 {
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
-    
+
     if (modifiers & Qt::ControlModifier || buttons == Qt::MidButton)
     {
         Application::instance()->loadUrl(url, Rekonq::SettingOpenTab);
@@ -433,3 +434,4 @@ void WebView::keyPressEvent(QKeyEvent *event)
     }
     QWebView::keyPressEvent(event);
 }
+

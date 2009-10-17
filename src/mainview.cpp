@@ -181,6 +181,8 @@ void MainView::clear()
     // What exactly do we need to clear here?
     m_urlBar->clearHistory();
     m_urlBar->clear();
+
+    m_recentlyClosedTabs.clear();
 }
 
 
@@ -414,6 +416,13 @@ void MainView::slotCloseTab(int index)
                 return;
         }
         hasFocus = tab->hasFocus();
+
+        //store close tab except homepage
+        if (!tab->url().prettyUrl().startsWith("rekonq:") && !tab->url().isEmpty())
+        {
+            m_recentlyClosedTabs.removeAll(tab->url());
+            m_recentlyClosedTabs.prepend(tab->url());
+        }
     }
 
     QWidget *webView = widget(index);
@@ -570,6 +579,12 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
     m_tabBar->setTabButton(index, QTabBar::LeftSide, 0);
     m_tabBar->setTabButton(index, QTabBar::LeftSide, label);
     return label;
+}
+
+
+KUrl::List MainView::recentlyClosedTabs()
+{
+    return m_recentlyClosedTabs;
 }
 
 
