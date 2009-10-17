@@ -95,24 +95,44 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
         size = QSize(width,width*((0.0+h)/w));
         page.setViewportSize(size);
     }
-
-    // create the target surface
-    QPixmap image = QPixmap(size);
-    image.fill(Qt::transparent);
- 
-    // render
-    QPainter p(&image);
+    
+    // create the page image
+    QImage pageImage = QImage(size, QImage::Format_ARGB32_Premultiplied);
+    pageImage.fill(Qt::transparent); 
+    // render it
+    QPainter p(&pageImage);
     page.mainFrame()->render(&p);
     p.end();
-    image = image.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+    pageImage = pageImage.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
+    // background image
+    QSize fixedSize(w + 30, h + 26);
+    QImage backImage = QImage(fixedSize, QImage::Format_ARGB32_Premultiplied);
+    QString backImagePath = KStandardDirs::locate("appdata", "pics/bg.png");
+    backImage.load( backImagePath );
+    
+    // create target
+    QImage resultImage = QImage(fixedSize, QImage::Format_ARGB32_Premultiplied);
+    resultImage.fill(Qt::transparent); 
+
+    QPainter pt(&resultImage);
+    pt.setCompositionMode(QPainter::CompositionMode_Source);
+    pt.fillRect(resultImage.rect(), Qt::transparent);
+    pt.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    pt.drawImage(0, 0, backImage);
+    pt.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    pt.drawImage(15, 13, pageImage);
+    pt.setCompositionMode(QPainter::CompositionMode_DestinationOver);
+    pt.fillRect(resultImage.rect(), Qt::transparent);
+    pt.end();
+    
     // restore page settings
     page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
     page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
 
-    return image;
+    return QPixmap::fromImage(resultImage);
 }
 
 

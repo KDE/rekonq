@@ -34,6 +34,7 @@
 // Qt Includes
 #include <QtCore/QObject>
 #include <QPixmap>
+#include <QImage>
 #include <QWebPage>
 
 

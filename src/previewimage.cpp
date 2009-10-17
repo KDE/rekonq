@@ -48,17 +48,26 @@
 #include <QMovie>
 #include <QMouseEvent>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 
 
-PreviewImage::PreviewImage(const QUrl &url, int index, bool isFavorite)
-    : QLabel()
+PreviewImage::PreviewImage(const QUrl &url, const QString &title, int index, bool isFavorite)
+    : QWidget()
     , ws(0)
-    , m_url(0)
     , loadingSnapshot(false)
+    , m_url(0)
+    , m_title(title)
     , m_isFavorite(isFavorite)
     , m_index(index)
     , m_button(0)
+    , m_imageLabel(new QLabel)
+    , m_textLabel(new QLabel)
 {
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(m_imageLabel);
+    mainLayout->addWidget(m_textLabel);
+    setLayout(mainLayout);
+    
     loadUrlPreview(url);
     setAlignment(Qt::AlignCenter);
 }
@@ -67,6 +76,8 @@ PreviewImage::PreviewImage(const QUrl &url, int index, bool isFavorite)
 PreviewImage::~PreviewImage()
 {
     delete ws;
+    delete m_imageLabel;
+    delete m_textLabel;
 }
 
 
@@ -86,7 +97,8 @@ void PreviewImage::loadUrlPreview(const QUrl& url)
     if(QFile::exists(m_savePath))
     {
         m_pixmap.load(m_savePath);
-        setPixmap(m_pixmap);
+        m_imageLabel->setPixmap(m_pixmap);
+        m_textLabel->setText(m_title);
     }
     else
     {
@@ -99,8 +111,9 @@ void PreviewImage::loadUrlPreview(const QUrl& url)
         // load an animation waiting for site preview
         QMovie *movie = new QMovie(path, QByteArray(), this);
         movie->setSpeed(50);
-        setMovie(movie);
+        m_imageLabel->setMovie(movie);
         movie->start();
+        m_textLabel->setText( i18n("Loading preview...") );
     }
 }
 
@@ -108,13 +121,19 @@ void PreviewImage::loadUrlPreview(const QUrl& url)
 void PreviewImage::snapFinished()
 {
     loadingSnapshot = false;
-    QMovie *m = movie();
+    QMovie *m = m_imageLabel->movie();
     delete m;
+<<<<<<< HEAD
     setMovie(0);
 
+=======
+    m_imageLabel->setMovie(0);
+    
+>>>>>>> STEP 1
     m_pixmap = ws->previewImage();
-    setPixmap(m_pixmap);
-
+    m_imageLabel->setPixmap(m_pixmap);
+    m_textLabel->setText(m_title);
+    
     m_pixmap.save(m_savePath);
 
     if(m_index > -1)
@@ -140,10 +159,11 @@ void PreviewImage::showEmptyPreview()
 {
     if(!m_isFavorite)
         return;
-
-    clear();
-
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    
+    m_imageLabel->clear();
+    m_textLabel->clear();
+    
+    QVBoxLayout *layout = new QVBoxLayout;
     m_button = new QToolButton(this);
     m_button->setDefaultAction(historyMenu());
     m_button->setPopupMode(QToolButton::InstantPopup);
@@ -152,6 +172,7 @@ void PreviewImage::showEmptyPreview()
     m_button->setAutoRaise(true);
     m_button->setIconSize(QSize(48, 48));
     layout->addWidget(m_button);
+    m_imageLabel->setLayout(layout);
 }
 
 
@@ -193,7 +214,7 @@ void PreviewImage::mousePressEvent(QMouseEvent *event)
         */
         return;
     };
-    QLabel::mousePressEvent(event);
+    QWidget::mousePressEvent(event);
 }
 
 
@@ -287,7 +308,7 @@ void PreviewImage::setUrlFromAction()
 
     if(m_button)
     {
-        layout()->deleteLater();
+        m_imageLabel->layout()->deleteLater();
         m_button->menu()->deleteLater();
         m_button->deleteLater();
     }

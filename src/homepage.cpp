@@ -123,18 +123,19 @@ QString HomePage::fillFavorites()
         }
         speed += "<div class=\"thumbnail\">";
         speed += "<object type=\"application/image-preview\" data=\"";
-        speed += urls.at(i) + "\" width=\"200\">";
+        speed += urls.at(i) + "\" >";
+        speed += "<param name=\"title\" value=\"" + text + "\" />";
         speed += "<param name=\"index\" value=\"" + QString::number(i) + "\" />";
         speed += "<param name=\"isFavorite\" value=\"true\" />";
         speed += "</object>";
-        speed += "<br />";
-        speed += "<a href=\"" + urls.at(i) + "\">" + text + "</a></div>";
+        speed += "</div>";
     }
     
     return speed;
 }
 
 
+// FIXME : port to new PreviewImage API to use...
 QString HomePage::lastVisitedSites()
 {
     QString last;
@@ -293,9 +294,10 @@ QString HomePage::fillClosedTabs()
         closed += "<div class=\"thumbnail\">";
         closed += "<object type=\"application/image-preview\" data=\"";
         closed += url.prettyUrl() + "\" width=\"200\">";
+        closed += "<param name=\"title\" value=\"" + text + "\" />";
+        closed += "<param name=\"index\" value=\"" + QString::number(i) + "\" />";
         closed += "</object>";
-        closed += "<br />";
-        closed += "<a href=\"" + url.prettyUrl() + "\">" + text + "</a></div>";
+        closed += "</div>";
   }
 
   return closed;

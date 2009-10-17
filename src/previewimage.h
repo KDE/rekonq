@@ -35,16 +35,17 @@
 
 // Qt Includes
 #include <QLabel>
+#include <QFrame>
 #include <QImage>
 #include <QUrl>
 #include <QToolButton>
 
-class PreviewImage : public QLabel
+class PreviewImage : public QWidget
 {
     Q_OBJECT
 
 public:
-    PreviewImage(const QUrl &url, int index, bool isFavorite);
+    PreviewImage(const QUrl &url, const QString &title, int index, bool isFavorite);
     ~PreviewImage();
     
     QString guessNameFromUrl(QUrl url);
@@ -70,14 +71,18 @@ private:
     QPixmap m_pixmap;
     WebSnap *ws;
     
-    QUrl m_url;
-    QString m_savePath;
-    
+    QString m_savePath;    
     bool loadingSnapshot;
+    
+    QUrl m_url;    
+    QString m_title;
     bool m_isFavorite;
     int m_index;
     
     QToolButton *m_button;
+    
+    QLabel *m_imageLabel;
+    QLabel *m_textLabel;
 };
 
 #endif // PREVIEW_IMAGE_H
