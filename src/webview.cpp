@@ -135,6 +135,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a = pageAction(QWebPage::CopyLinkToClipboard);
         a->setIcon(KIcon("edit-copy"));
         menu.addAction(a);
+        
+        menu.addSeparator();
     }
 
     // is content editable && selected? Add CUT
@@ -153,6 +155,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a = pageAction(QWebPage::Copy);
         a->setIcon(KIcon("edit-copy"));
         a->setShortcut(KStandardShortcut::copy().primary());
+        if(!result.isContentEditable()) // "Cut" "Copy Text" "Paste" is ugly. Don't add "text" with cut/paste
+            a->setText(i18n("Copy Text"));
+        else
+            a->setText(i18n("Copy"));
         menu.addAction(a);
     }
 
