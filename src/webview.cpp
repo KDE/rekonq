@@ -168,7 +168,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // is content selected? Add SEARCH actions
     if(result.isContentSelected())
     {
-        KActionMenu *searchMenu = new KActionMenu(i18n("Search with"), this);
+        KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18n("Search with"), this);
 
         KConfig config("kuriikwsfilterrc"); //Share with konqueror
         KConfigGroup cg = config.group("General");
