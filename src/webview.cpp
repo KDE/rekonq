@@ -135,6 +135,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a = pageAction(QWebPage::CopyLinkToClipboard);
         a->setIcon(KIcon("edit-copy"));
         menu.addAction(a);
+        
+        menu.addSeparator();
     }
 
     // is content editable && selected? Add CUT
