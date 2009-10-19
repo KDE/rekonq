@@ -249,8 +249,8 @@ KIcon Application::icon(const KUrl &url)
         if(url.isEmpty() && Application::instance()->mainWindow()->currentTab()->url().scheme() == "rekonq")
             return KIcon("arrow-right");
         
-        if(url == KUrl("rekonq:allTabs"))
-            return KIcon("tab-duplicate");
+        if(url == KUrl("rekonq:closedTabs"))
+            return KIcon("tab-close");
         if(url == KUrl("rekonq:history"))
             return KIcon("view-history");
         if(url == KUrl("rekonq:bookmarks"))
