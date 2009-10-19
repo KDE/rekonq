@@ -60,6 +60,7 @@ PreviewImage::PreviewImage(const QUrl &url, int index, bool isFavorite)
     , m_button(0)
 {
     loadUrlPreview(url);
+    setAlignment(Qt::AlignCenter);
 }
 
 
