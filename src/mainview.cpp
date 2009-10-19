@@ -420,8 +420,11 @@ void MainView::slotCloseTab(int index)
         //store close tab except homepage
         if (!tab->url().prettyUrl().startsWith("rekonq:") && !tab->url().isEmpty())
         {
-            m_recentlyClosedTabs.removeAll(tab->url());
-            m_recentlyClosedTabs.prepend(tab->url());
+            QString title = tab->title();
+            QString url = tab->url().prettyUrl();
+            HistoryItem item(url, QDateTime::currentDateTime(), title);
+            m_recentlyClosedTabs.removeAll(item);
+            m_recentlyClosedTabs.prepend(item);
         }
     }
 
@@ -582,7 +585,7 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
 }
 
 
-KUrl::List MainView::recentlyClosedTabs()
+QList<HistoryItem> MainView::recentlyClosedTabs()
 {
     return m_recentlyClosedTabs;
 }

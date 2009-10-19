@@ -279,12 +279,12 @@ QString HomePage::createBookItem(const KBookmark &bookmark)
 
 QString HomePage::fillClosedTabs()
 {
-    KUrl::List links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
+    QList<HistoryItem> links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
     QString closed;
 
-    Q_FOREACH( const KUrl &url, links)
+    Q_FOREACH( const HistoryItem &item, links)
     {
-        QString text = url.prettyUrl();
+        QString text = item.title;
         if(text.length() > 20)
         {
             text.truncate(17);
@@ -293,7 +293,7 @@ QString HomePage::fillClosedTabs()
 
         closed += "<div class=\"thumbnail\">";
         closed += "<object type=\"application/image-preview\" data=\"";
-        closed += url.prettyUrl() + "\" width=\"200\">";
+        closed += item.url + "\" width=\"200\">";
         closed += "<param name=\"title\" value=\"" + text + "\" />";
         closed += "</object>";
         closed += "</div>";

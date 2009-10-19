@@ -34,6 +34,7 @@
 #include "webview.h"
 #include "webpage.h"
 #include "application.h"
+#include "history.h"
 
 // KDE Includes
 #include <KTabWidget>
@@ -89,7 +90,7 @@ public:
      */
     WebView *newWebView(bool focused = true, bool nearParent = false);
 
-    KUrl::List recentlyClosedTabs();
+    QList<HistoryItem> recentlyClosedTabs();
 
 signals:
     // tab widget signals
@@ -159,7 +160,7 @@ private:
 
     int m_currentTabIndex;
 
-    KUrl::List m_recentlyClosedTabs;
+    QList<HistoryItem> m_recentlyClosedTabs;
 };
 
 #endif // MAINVIEW_H
