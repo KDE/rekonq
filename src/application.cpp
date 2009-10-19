@@ -339,6 +339,12 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
+    // WARNING this is just a temporary hack waiting for the new "awesome bar" (rekonq 0.4 target)
+    // and it may not work in all cases.
+    // Known issues are (add that here to test the awesome bar code):
+    // - web shortcuts with space separator
+    // - relative urls
+    // - ...
     KUrl loadingUrl(url);
 
     if (loadingUrl.isRelative())
@@ -365,6 +371,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     {
         loadingUrl = data.uri().url();
     }
+    // ------------------- END WARNING --------------------------------------
 
     WebView *webView = 0;
     MainWindow *w = 0;
