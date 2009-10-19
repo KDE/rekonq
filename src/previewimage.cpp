@@ -299,6 +299,7 @@ void PreviewImage::setUrlFromAction()
 
     m_url = KUrl(urlData.at(0));
     m_title = urlData.at(1);
+    checkTitle();
     
     if(m_button)
     {
@@ -307,6 +308,20 @@ void PreviewImage::setUrlFromAction()
         m_button->deleteLater();
     }
     loadUrlPreview(m_url);
+
+    // Update title
+    QStringList names = ReKonfig::previewNames();
+    // update url (for added thumbs)
+    QStringList urls = ReKonfig::previewUrls();
+
+    // stripTrailingSlash to be sure to get the same string for same adress
+    urls.replace(m_index, m_url.toString(QUrl::StripTrailingSlash));
+    names.replace(m_index, m_title);
+
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+
+    ReKonfig::self()->writeConfig();
 }
 
 
