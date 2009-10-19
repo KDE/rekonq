@@ -63,21 +63,25 @@ PreviewImage::PreviewImage(const QUrl &url, const QString &title, int index, boo
     , m_imageLabel(new QLabel)
     , m_textLabel(new QLabel)
 {
+    setMinimumSize(300,200);
+    
+    m_imageLabel->setAlignment(Qt::AlignCenter);
+    m_textLabel->setAlignment(Qt::AlignCenter);
+    
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(m_imageLabel);
     mainLayout->addWidget(m_textLabel);
     setLayout(mainLayout);
     
     loadUrlPreview(url);
-//     setAlignment(Qt::AlignCenter);
 }
 
 
 PreviewImage::~PreviewImage()
 {
     delete ws;
-    delete m_imageLabel;
     delete m_textLabel;
+    delete m_imageLabel;
 }
 
 
@@ -128,6 +132,11 @@ void PreviewImage::snapFinished()
     m_pixmap = ws->previewImage();
     m_imageLabel->setPixmap(m_pixmap);
     m_textLabel->setText(m_title);
+    
+    kDebug() << "m_pixmap: " << m_pixmap.size();
+    kDebug() << "text label: " << m_textLabel->size();
+    kDebug() << "iamge label: " << m_imageLabel->size();
+    kDebug() << "widget: " << size();
     
     m_pixmap.save(m_savePath);
 
@@ -189,24 +198,7 @@ void PreviewImage::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
-       // if(m_isFavorite)
-       // {
-            Application::instance()->loadUrl(m_url);
-
-            //TODO: what is that ? :
-       /* }
-        else
-        {
-            MainView *mv = Application::instance()->mainWindow()->mainView();
-            int actualIndex = mv->currentIndex();
-
-            kDebug() << "Actual index: " << actualIndex;
-            kDebug() << "m_index: " << m_index;
-
-            mv->slotCloseTab(actualIndex);
-            mv->setCurrentIndex(m_index);
-        }
-        */
+        Application::instance()->loadUrl(m_url);
         return;
     };
     QWidget::mousePressEvent(event);

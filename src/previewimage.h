@@ -39,6 +39,8 @@
 #include <QImage>
 #include <QUrl>
 #include <QToolButton>
+#include <QSize>
+
 
 class PreviewImage : public QWidget
 {
@@ -55,7 +57,7 @@ public slots:
     void removeMe();
     void setUrlFromAction();
     void refreshPreview();
-
+    
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
