@@ -102,6 +102,7 @@ void PreviewImage::loadUrlPreview(const QUrl& url)
     {
         m_pixmap.load(m_savePath);
         m_imageLabel->setPixmap(m_pixmap);
+        checkTitle();
         m_textLabel->setText(m_title);
     }
     else
@@ -131,6 +132,7 @@ void PreviewImage::snapFinished()
     
     m_pixmap = ws->previewImage();
     m_imageLabel->setPixmap(m_pixmap);
+    checkTitle();
     m_textLabel->setText(m_title);
     
 //     kDebug() << "m_pixmap: " << m_pixmap.size();
@@ -167,6 +169,7 @@ void PreviewImage::showEmptyPreview()
     m_imageLabel->clear();
     m_textLabel->clear();
     
+    QHBoxLayout *layout = new QHBoxLayout(m_imageLabel);
     m_button = new QToolButton(m_imageLabel);
     m_button->setDefaultAction(historyMenu());
     m_button->setPopupMode(QToolButton::InstantPopup);
@@ -174,9 +177,8 @@ void PreviewImage::showEmptyPreview()
     m_button->setText(i18n("Add Preview"));
     m_button->setAutoRaise(true);
     m_button->setIconSize(QSize(48, 48));
-    m_button->show();
-    
-//     m_textLabel->setText( i18n("Add Preview") );
+    layout->addWidget(m_button);
+    m_imageLabel->setLayout(layout);
 }
 
 
@@ -332,4 +334,14 @@ QString PreviewImage::guessNameFromUrl(QUrl url)
     name.remove('+');
 
     return name;
+}
+
+
+void PreviewImage::checkTitle()
+{
+    if(m_title.length() > 23)
+    {
+        m_title.truncate(20);
+        m_title += "...";
+    }
 }

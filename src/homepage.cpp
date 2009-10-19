@@ -115,15 +115,9 @@ QString HomePage::fillFavorites()
     QString speed;
     for(int i=0; i<8; ++i)
     {
-        QString text = names.at(i);
-        if(text.length() > 23)
-        {
-            text.truncate(20);
-            text += "...";
-        }
         speed += "<div class=\"thumbnail\">";
         speed += "<object type=\"application/image-preview\" data=\"" + urls.at(i) + "\" >";
-        speed += "<param name=\"title\" value=\"" + text + "\" />";
+        speed += "<param name=\"title\" value=\"" + names.at(i) + "\" />";
         speed += "<param name=\"index\" value=\"" + QString::number(i) + "\" />";
         speed += "<param name=\"isFavorite\" value=\"true\" />";
         speed += "</object>";
@@ -146,7 +140,7 @@ QString HomePage::lastVisitedSites()
         last += "<object type=\"application/image-preview\" data=\"" + it.url +  "\" >";
         last += "</object>";
         last += "<br />";
-        last += "<a href=\"" + it.url + "\">" + it.url + "</a></div>";
+        last += "<a href=\"" + it.url + "\">" + it.title + "</a></div>";
     }
 
     return last;
@@ -282,16 +276,9 @@ QString HomePage::fillClosedTabs()
 
     Q_FOREACH( const HistoryItem &item, links)
     {
-        QString text = item.title;
-        if(text.length() > 20)
-        {
-            text.truncate(17);
-            text += "...";
-        }
-
         closed += "<div class=\"thumbnail\">";
         closed += "<object type=\"application/image-preview\" data=\"" + item.url + "\" >";
-        closed += "<param name=\"title\" value=\"" + text + "\" />";
+        closed += "<param name=\"title\" value=\"" + item.title + "\" />";
         closed += "</object>";
         closed += "</div>";
   }

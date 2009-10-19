@@ -70,6 +70,8 @@ protected:
     void showEmptyPreview();
                 
 private:
+    void checkTitle();
+    
     QPixmap m_pixmap;
     WebSnap *ws;
     
