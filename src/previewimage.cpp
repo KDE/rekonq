@@ -69,7 +69,7 @@ PreviewImage::PreviewImage(const QUrl &url, const QString &title, int index, boo
     setLayout(mainLayout);
     
     loadUrlPreview(url);
-    setAlignment(Qt::AlignCenter);
+//     setAlignment(Qt::AlignCenter);
 }
 
 
@@ -123,13 +123,8 @@ void PreviewImage::snapFinished()
     loadingSnapshot = false;
     QMovie *m = m_imageLabel->movie();
     delete m;
-<<<<<<< HEAD
-    setMovie(0);
-
-=======
     m_imageLabel->setMovie(0);
     
->>>>>>> STEP 1
     m_pixmap = ws->previewImage();
     m_imageLabel->setPixmap(m_pixmap);
     m_textLabel->setText(m_title);

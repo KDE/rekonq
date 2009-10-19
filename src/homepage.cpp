@@ -295,7 +295,6 @@ QString HomePage::fillClosedTabs()
         closed += "<object type=\"application/image-preview\" data=\"";
         closed += url.prettyUrl() + "\" width=\"200\">";
         closed += "<param name=\"title\" value=\"" + text + "\" />";
-        closed += "<param name=\"index\" value=\"" + QString::number(i) + "\" />";
         closed += "</object>";
         closed += "</div>";
   }
