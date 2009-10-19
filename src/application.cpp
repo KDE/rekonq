@@ -344,7 +344,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (loadingUrl.isRelative())
     {
         QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
-        if(loadingUrl.path().contains('.'))
+        if(loadingUrl.path().contains('.') && !loadingUrl.path().contains(' '))
         {
             loadingUrl.setUrl("//" + fn);
             loadingUrl.setScheme("http");
