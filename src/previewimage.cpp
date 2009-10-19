@@ -133,10 +133,10 @@ void PreviewImage::snapFinished()
     m_imageLabel->setPixmap(m_pixmap);
     m_textLabel->setText(m_title);
     
-    kDebug() << "m_pixmap: " << m_pixmap.size();
-    kDebug() << "text label: " << m_textLabel->size();
-    kDebug() << "iamge label: " << m_imageLabel->size();
-    kDebug() << "widget: " << size();
+//     kDebug() << "m_pixmap: " << m_pixmap.size();
+//     kDebug() << "text label: " << m_textLabel->size();
+//     kDebug() << "image label: " << m_imageLabel->size();
+//     kDebug() << "widget: " << size();
     
     m_pixmap.save(m_savePath);
 
@@ -167,16 +167,16 @@ void PreviewImage::showEmptyPreview()
     m_imageLabel->clear();
     m_textLabel->clear();
     
-    QVBoxLayout *layout = new QVBoxLayout;
-    m_button = new QToolButton(this);
+    m_button = new QToolButton(m_imageLabel);
     m_button->setDefaultAction(historyMenu());
     m_button->setPopupMode(QToolButton::InstantPopup);
     m_button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     m_button->setText(i18n("Add Preview"));
     m_button->setAutoRaise(true);
     m_button->setIconSize(QSize(48, 48));
-    layout->addWidget(m_button);
-    m_imageLabel->setLayout(layout);
+    m_button->show();
+    
+//     m_textLabel->setText( i18n("Add Preview") );
 }
 
 
@@ -257,7 +257,9 @@ KActionMenu* PreviewImage::historyMenu()
     {
         HistoryItem it = history.at(i);
         KAction *a = new KAction(Application::icon(it.url), it.title, this);
-        a->setData(it.url);
+        QStringList urlData;
+        urlData << it.url << it.title;
+        a->setData(urlData);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(setUrlFromAction()));
         histMenu->addAction(a);
     }
@@ -291,15 +293,18 @@ void PreviewImage::removeMe()
 void PreviewImage::setUrlFromAction()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    KUrl url = KUrl(a->data().toString());
+    QStringList urlData = a->data().toStringList();
 
+    m_url = KUrl(urlData.at(0));
+    m_title = urlData.at(1);
+    
     if(m_button)
     {
         m_imageLabel->layout()->deleteLater();
         m_button->menu()->deleteLater();
         m_button->deleteLater();
     }
-    loadUrlPreview(url);
+    loadUrlPreview(m_url);
 }
 
 
