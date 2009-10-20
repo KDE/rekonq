@@ -52,18 +52,27 @@
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QAction>
+#include <QtCore/QTimer>
 
 
 WebView::WebView(QWidget* parent)
         : QWebView(parent)
         , m_page(new WebPage(this))
         , m_progress(0)
+        , m_scrollTimer(new QTimer(this))
+        , m_scrollDirection(WebView::NoScroll)
+        , m_scrollSpeedVertical(0)
+        , m_scrollSpeedHorizontal(0)
+
 {
     setPage(m_page);
     
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(slotUpdateProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(slotLoadFinished(bool)));
+
+    connect(m_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
+    m_scrollTimer->setInterval(50);
 }
 
 
@@ -105,6 +114,7 @@ void WebView::setStatusBarText(const QString &string)
 { 
     m_statusBarText = string; 
 }
+
 
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
@@ -239,7 +249,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         // page action
         QString text = selectedText(); 
-        if (text.startsWith( QLatin1String("http://") ) || text.startsWith( QLatin1String("https://") ) || text.startsWith( QLatin1String("www.") ) )
+        if (text.startsWith( QLatin1String("http://") ) 
+            || text.startsWith( QLatin1String("https://") ) 
+            || text.startsWith( QLatin1String("www.") ) 
+           )
         {
             QString truncatedURL = text;
             if (text.length() > 18)
@@ -328,8 +341,82 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 }
 
 
+void WebView::stopScrollAnimation()
+{
+    m_scrollTimer->stop();
+    m_scrollSpeedVertical = 0;
+    m_scrollSpeedHorizontal = 0;
+    m_scrollDirection = WebView::NoScroll;
+}
+
+
+void WebView::startScrollAnimation(ScrollDirection direction)
+{
+    // if no scrollspeed, set the requested direction, otherwise it's just a slowdown or speedup
+    if (m_scrollSpeedVertical == 0 && (direction == WebView::Up || direction == WebView::Down))
+        m_scrollDirection |= direction;
+    if (m_scrollSpeedHorizontal == 0 && (direction == WebView::Left || direction == WebView::Right))
+        m_scrollDirection |= direction;
+
+    // update scrollspeed
+    switch (direction)
+    {
+        case WebView::Up:
+            --m_scrollSpeedVertical;
+            break;
+        case WebView::Down:
+            ++m_scrollSpeedVertical;
+            break;
+        case WebView::Left:
+            --m_scrollSpeedHorizontal;
+            break;
+        case WebView::Right:
+            ++m_scrollSpeedHorizontal;
+            break;
+        default:
+            break;
+    }
+
+    if (!m_scrollTimer->isActive())
+        m_scrollTimer->start();
+
+    return;
+}
+
+
+void WebView::scrollFrameChanged()
+{
+    // clear finished scrolling
+    if (m_scrollSpeedVertical == 0)
+        m_scrollDirection &= ~WebView::Up | ~WebView::Down;
+    if (m_scrollSpeedHorizontal == 0)
+        m_scrollDirection &= ~WebView::Left | ~WebView::Right;
+
+    // all scrolling finished
+    if (m_scrollDirection == WebView::NoScroll)
+    {
+        m_scrollTimer->stop();
+        return;
+    }
+
+    // do the scrolling
+    page()->currentFrame()->scroll(m_scrollSpeedHorizontal, m_scrollSpeedVertical);
+
+    // check if we reached the end
+    int y = page()->currentFrame()->scrollPosition().y();
+    int x = page()->currentFrame()->scrollPosition().x();
+
+    if (y == 0 || y == page()->currentFrame()->scrollBarMaximum(Qt::Vertical))
+        m_scrollSpeedVertical = 0;
+    if (x == 0 || x == page()->currentFrame()->scrollBarMaximum(Qt::Horizontal))
+        m_scrollSpeedHorizontal = 0;
+}
+
+
 void WebView::mousePressEvent(QMouseEvent *event)
 {
+    stopScrollAnimation();
+
     m_page->m_pressedButtons = event->buttons();
     m_page->m_keyboardModifiers = event->modifiers();
 
@@ -358,6 +445,8 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 
 void WebView::wheelEvent(QWheelEvent *event)
 {
+    stopScrollAnimation();
+
     if (QApplication::keyboardModifiers() & Qt::ControlModifier)
     {
         int numDegrees = event->delta() / 8;
@@ -429,7 +518,6 @@ void WebView::openLinkInNewTab()
 }
 
 
-// HACK short term hack: remove this function, unuseful in kdewebkit porting
 void WebView::keyPressEvent(QKeyEvent *event)
 {
     if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_C))
@@ -437,6 +525,27 @@ void WebView::keyPressEvent(QKeyEvent *event)
         triggerPageAction(QWebPage::Copy);
         return;
     }
+
+    if (event->modifiers() == Qt::ShiftModifier)
+    {
+        switch (event->key())
+        {
+        case Qt::Key_Down:
+            startScrollAnimation(WebView::Down);
+            return;
+        case Qt::Key_Up:
+            startScrollAnimation(WebView::Up);
+            return;
+        case Qt::Key_Left:
+            startScrollAnimation(WebView::Left);
+            return;
+        case Qt::Key_Right:
+            startScrollAnimation(WebView::Right);
+            return;
+        default:
+            break;
+        }
+    }
+
     QWebView::keyPressEvent(event);
 }
-
