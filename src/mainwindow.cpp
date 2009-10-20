@@ -207,7 +207,9 @@ void MainWindow::postLaunch()
     // update toolbar actions signals
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
-
+    // launch it manually. Just the first time...
+    slotUpdateActions();
+    
     // Find Bar signal
     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
 
