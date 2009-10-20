@@ -64,7 +64,6 @@ WebView::WebView(QWidget* parent)
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(slotUpdateProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(slotLoadFinished(bool)));
-    connect(this, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 }
 
 

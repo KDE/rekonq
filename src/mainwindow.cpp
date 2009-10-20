@@ -1054,22 +1054,22 @@ void MainWindow::slotAboutToShowBackMenu()
         return;
     QWebHistory *history = currentTab()->history();
     int historyCount = history->count();
+
     // Limit history views in the menu to 8
-    int limit = 0;
+    if(historyCount > 8)
+        historyCount = 8;
+    
+    kDebug() << "History Count: " << historyCount;
     for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i)
     {
-        qDebug() << history->currentItemIndex();
         QWebHistoryItem item = history->backItems(history->count()).at(i);
         KAction *action = new KAction(this);
-        action->setData(history->currentItemIndex() - (i + 1));
-        QIcon icon = Application::icon(item.url());
+        action->setData( i - history->currentItemIndex() );
+        kDebug() << "Current Item Index: " << history->currentItemIndex();
+        QIcon icon = Application::icon(item.url()); 
         action->setIcon(icon);
         action->setText(item.title());
         m_historyBackMenu->addAction(action);
-        ++limit;
-        if (limit >= 8) {
-            break;
-        }
     }
 }
 
@@ -1077,20 +1077,26 @@ void MainWindow::slotAboutToShowBackMenu()
 void MainWindow::slotOpenActionUrl(QAction *action)
 {
     int offset = action->data().toInt();
+    kDebug() << "Offset: " << offset;
     QWebHistory *history = currentTab()->history();
-    qDebug() << offset;
-    qDebug() << history->itemAt(offset).isValid();
+    
+    if(!history->itemAt(offset).isValid())
+    {
+        kDebug() << "Invalid Offset!";
+        return;
+    }
+    
     if (offset < 0)
     {
         history->goToItem(history->itemAt(offset)); // back
+        return;
     }
-    else
+    
+    if (offset > 0)
     {
-        if (offset > 0)
-        {
-            history->goToItem(history->forwardItems(history->count() - offset + 1).back()); // forward
-        }
+        history->goToItem(history->forwardItems(history->count() - offset).back()); // forward FIXME CRASH
     }
+    
 }
 
 
