@@ -66,6 +66,8 @@ TARGET_LINK_LIBRARIES ( rekonq
                         ${QT_QTUITOOLS_LIBRARY}
                         ${KDE4_KUTILS_LIBS}
                         ${KDE4_KDEUI_LIBS}
+                        ${KDE4_KIO_LIBS}
+                        ${KDE4_KPARTS_LIBS}
 )
 
 
