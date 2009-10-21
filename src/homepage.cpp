@@ -158,7 +158,7 @@ QString HomePage::homePageMenu(KUrl currentUrl)
     if(currentUrl == "rekonq:favorites" || currentUrl == "rekonq:home")
         menu += " current";
     menu += "\"><a href=\"rekonq:favorites\">";
-    menu += "<img src=\"file:///" + loader->iconPath("emblem-favorite", KIconLoader::Desktop) + "\" />";
+    menu += "<img src=\"file:///" + loader->iconPath("emblem-favorite", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
     menu += i18n("Favorites");
     menu += "</a></div>";
     
@@ -166,7 +166,7 @@ QString HomePage::homePageMenu(KUrl currentUrl)
     if(currentUrl == "rekonq:closedTabs")
         menu += " current";
     menu += "\"><a href=\"rekonq:closedTabs\">";
-    menu += "<img src=\"file:///" + loader->iconPath("tab-close", KIconLoader::Desktop) + "\" />";
+    menu += "<img src=\"file:///" + loader->iconPath("tab-close", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
     menu += i18n("Closed Tabs");
     menu += "</a></div>";
     
@@ -174,7 +174,7 @@ QString HomePage::homePageMenu(KUrl currentUrl)
     if(currentUrl == "rekonq:bookmarks")
         menu += " current";
     menu += "\"><a href=\"rekonq:bookmarks\">";
-    menu += "<img src=\"file:///" + loader->iconPath("bookmarks", KIconLoader::Desktop) + "\" />";
+    menu += "<img src=\"file:///" + loader->iconPath("bookmarks", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
     menu += i18n("Bookmarks");
     menu += "</a></div>";
     
@@ -182,7 +182,7 @@ QString HomePage::homePageMenu(KUrl currentUrl)
     if(currentUrl == "rekonq:history")
         menu += " current";
     menu += "\"><a href=\"rekonq:history\">";
-    menu += "<img src=\"file:///" + loader->iconPath("view-history", KIconLoader::Desktop) + "\" />";
+    menu += "<img src=\"file:///" + loader->iconPath("view-history", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
     menu += i18n("History");
     menu += "</a></div>";
     
