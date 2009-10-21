@@ -301,21 +301,27 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addAction(mainwindow->actionByName("view_redisplay"));
 
+        menu.addSeparator();
+
         menu.addAction(mainwindow->actionByName("new_tab"));    
         menu.addAction(mainwindow->actionByName("new_window"));
 
         menu.addSeparator();
 
         //Frame
+        KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
+
         a = pageAction(QWebPage::OpenFrameInNewWindow);
         a->setText(i18n("Open Frame in New Tab"));
         a->setIcon(KIcon("view-right-new"));
-        menu.addAction(a);
+        frameMenu->addAction(a);
 
         a = new KAction( KIcon("document-print-frame"), i18n("Print Frame"), this);
         connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
-        menu.addAction(a);
+        frameMenu->addAction(a);
 
+        menu.addAction(frameMenu);
+        
         menu.addSeparator();
 
         //Page
