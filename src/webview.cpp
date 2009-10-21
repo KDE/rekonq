@@ -145,7 +145,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a = pageAction(QWebPage::CopyLinkToClipboard);
         a->setIcon(KIcon("edit-copy"));
         menu.addAction(a);
-        
+
         menu.addSeparator();
     }
 
@@ -165,10 +165,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a = pageAction(QWebPage::Copy);
         a->setIcon(KIcon("edit-copy"));
         a->setShortcut(KStandardShortcut::copy().primary());
-        if(!result.isContentEditable()) // "Cut" "Copy Text" "Paste" is ugly. Don't add "text" with cut/paste
-            a->setText(i18n("Copy Text"));
+        a->setText(i18n("Copy")); 
+        if(!result.linkUrl().isEmpty())
+        	a->setText(i18n("Copy Text")); //for link
         else
-            a->setText(i18n("Copy"));
+                a->setText(i18n("Copy"));
         menu.addAction(a);
     }
 
@@ -232,7 +233,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setData(result.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
         menu.addAction(a);
-        
+
         a = pageAction(QWebPage::DownloadImageToDisk);
         a->setIcon(KIcon("document-save"));
         menu.addAction(a);
@@ -244,10 +245,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
     }
 
-    // last (but not less) actions..
+    // Open url text in new tab/window
     if(result.linkUrl().isEmpty())
     {
-        // page action
+
         QString text = selectedText(); 
         if (text.startsWith( QLatin1String("http://") ) 
             || text.startsWith( QLatin1String("https://") ) 
@@ -272,52 +273,61 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             a->setData(QUrl(text));
             connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
             menu.addAction(a);
+
+            menu.addSeparator();
         }
-        else
+
+    }
+
+    // page actions
+    if (!result.isContentSelected() && result.linkUrl().isEmpty())
+    {
+
+        // navigation
+        QWebHistory *history = page()->history();
+        if(history->canGoBack())
         {
-            menu.addAction(mainwindow->actionByName("new_tab"));    
-            menu.addAction(mainwindow->actionByName("new_window"));
+            a = pageAction(QWebPage::Back);
+            a->setIcon(KIcon("go-previous"));
+            menu.addAction(a);
         }
+
+        if(history->canGoForward())
+        {
+            a = pageAction(QWebPage::Forward);
+            a->setIcon(KIcon("go-next"));
+            menu.addAction(a);
+        }
+
+        menu.addAction(mainwindow->actionByName("view_redisplay"));
+
+        menu.addAction(mainwindow->actionByName("new_tab"));    
+        menu.addAction(mainwindow->actionByName("new_window"));
+
         menu.addSeparator();
-    }
 
-    QWebHistory *history = page()->history();
-    if(history->canGoBack())
-    {
-        a = pageAction(QWebPage::Back);
-        a->setIcon(KIcon("go-previous"));
+        //Frame
+        a = pageAction(QWebPage::OpenFrameInNewWindow);
+        a->setText(i18n("Open Frame in New Tab"));
+        a->setIcon(KIcon("view-right-new"));
         menu.addAction(a);
-    }
 
-    if(history->canGoForward())
-    {
-        a = pageAction(QWebPage::Forward);
-        a->setIcon(KIcon("go-next"));
+        a = new KAction( KIcon("document-print-frame"), i18n("Print Frame"), this);
+        connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
         menu.addAction(a);
-    }
 
-    menu.addAction(mainwindow->actionByName("view_redisplay"));
-
-    KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
-
-    a = pageAction(QWebPage::OpenFrameInNewWindow);
-    a->setText(i18n("Open in New Tab"));
-    a->setIcon(KIcon("view-right-new"));
-    frameMenu->addAction(a);
-
-    a = new KAction( KIcon("document-print-frame"), i18n("Print Frame"), this);
-    connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
-    frameMenu->addAction(a);
-    menu.addAction(frameMenu);
-
-    // empty space actions
-    if(result.linkUrl().isEmpty())
-    {
         menu.addSeparator();
+
+        //Page
+        a = pageAction(QWebPage::SelectAll);
+        a->setIcon(KIcon("edit-select-all"));
+        a->setShortcut(KStandardShortcut::selectAll().primary());
+        a->setText(i18n("Select All"));
+        menu.addAction(a);
 
         menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
-
         menu.addAction(mainwindow->actionByName("page_source"));
+	
         menu.addAction(mainwindow->actionByName("add_to_favorites"));
         QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
         menu.addAction(addBookmarkAction);
@@ -329,12 +339,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             a->setIcon(KIcon("view-process-all"));
             menu.addAction(a);
         }
-    }
 
-    if(mainwindow->isFullScreen())
-    {
-        menu.addSeparator();
-        menu.addAction(mainwindow->actionByName("fullscreen"));
+        if(mainwindow->isFullScreen())
+        {
+            menu.addSeparator();
+            menu.addAction(mainwindow->actionByName("fullscreen"));
+        }
     }
 
     menu.exec(mapToGlobal(event->pos()));
