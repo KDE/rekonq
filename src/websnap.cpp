@@ -74,7 +74,7 @@ void WebSnap::load()
 }
 
 
-QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
+QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h, bool border)
 {
     // prepare page
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); // Why it doesn't work with one setScrollBarPolicy?
@@ -105,6 +105,15 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
     p.end();
     pageImage = pageImage.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
+    // restore page settings
+    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
+    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+
+    if(!border)
+        return QPixmap::fromImage(pageImage);
+    
     // background image
     QSize fixedSize(w + 30, h + 26);
     QImage backImage = QImage(fixedSize, QImage::Format_ARGB32_Premultiplied);
@@ -126,12 +135,6 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
     pt.fillRect(resultImage.rect(), Qt::transparent);
     pt.end();
     
-    // restore page settings
-    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
-    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
-
     return QPixmap::fromImage(resultImage);
 }
 
@@ -145,7 +148,7 @@ void WebSnap::saveResult(bool ok)
         return;
     }
 
-    m_image = renderPreview(m_page, WIDTH, HEIGHT);
+    m_image = renderPreview(m_page, WIDTH, HEIGHT, true);
     emit finished();
 }
 

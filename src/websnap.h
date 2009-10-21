@@ -52,7 +52,7 @@ public:
     ~WebSnap();
     
     QPixmap previewImage();
-    static QPixmap renderPreview(const QWebPage &page, int w, int h);
+    static QPixmap renderPreview(const QWebPage &page, int w, int h, bool border = false);
     
     QString snapTitle();
     QUrl snapUrl();
