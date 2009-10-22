@@ -190,21 +190,23 @@ void TabBar::reloadTab()
 void TabBar::showTabPreview(int tab)
 {
     WebView *view = m_parent->webView(tab);
-    
+    WebView *currentView = m_parent->webView(currentIndex());
+
     int w = tabSizeHint(tab).width();
-    int h = w*((0.0 + view->height())/view->width());
+    int h = w*((0.0 + currentView->height())/currentView->width());
 
     //delete previous tab preview
     if (m_previewPopup)
     {
         delete m_previewPopup;
     }
-    
+
     m_previewPopup = new KPassivePopup(this);
     m_previewPopup->setFrameShape(QFrame::StyledPanel);
     m_previewPopup->setFrameShadow(QFrame::Plain);
     m_previewPopup->setFixedSize(w, h);
     QLabel *l = new QLabel();
+    view->page()->setViewportSize(currentView->page()->viewportSize());
     l->setPixmap(WebSnap::renderPreview(*(view->page()), w, h));
     m_previewPopup->setView(l);
     m_previewPopup->layout()->setAlignment(Qt::AlignTop);

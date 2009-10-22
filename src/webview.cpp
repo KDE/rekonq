@@ -436,7 +436,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
     m_page->m_pressedButtons = event->buttons();
     m_page->m_keyboardModifiers = event->modifiers();
 
-    switch(event->button()) 
+    switch(event->button())
     {
       case Qt::XButton1:
         triggerPageAction(QWebPage::Back);
