@@ -112,7 +112,7 @@ QString HomePage::fillFavorites()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    QString speed;
+    QString speed="<div class=\"favorites\">";
     for(int i=0; i<8; ++i)
     {
         speed += "<div class=\"thumbnail\">";
@@ -123,7 +123,8 @@ QString HomePage::fillFavorites()
         speed += "</object>";
         speed += "</div>";
     }
-    
+
+    speed += "</div>";
     return speed;
 }
 
