@@ -147,7 +147,6 @@ MainWindow::~MainWindow()
 {
     Application::instance()->removeMainWindow(this);
     delete m_popup;
-//     delete m_view;
 }
 
 
@@ -389,6 +388,7 @@ void MainWindow::setupTools()
     KActionMenu *toolsMenu = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
     toolsMenu->setDelayed(false);
 
+    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Open)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
@@ -571,8 +571,8 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 void MainWindow::slotFileOpen()
 {
     QString filePath = KFileDialog::getOpenFileName(KUrl(),
-                       i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n" \
-                            "*.*|All files (*.*)"),
+                       i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n" 
+                       "*.*|All files (*.*)"),
                        this,
                        i18n("Open Web Resource"));
 
