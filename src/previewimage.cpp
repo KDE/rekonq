@@ -74,6 +74,8 @@ PreviewImage::PreviewImage(const QUrl &url, const QString &title, int index, boo
     setLayout(mainLayout);
     
     loadUrlPreview(url);
+    
+    setCursor(Qt::PointingHandCursor);
 }
 
 
@@ -119,6 +121,7 @@ void PreviewImage::loadUrlPreview(const QUrl& url)
         m_imageLabel->setMovie(movie);
         movie->start();
         m_textLabel->setText( i18n("Loading preview...") );
+        setCursor(Qt::BusyCursor);
     }
 }
 
@@ -134,6 +137,8 @@ void PreviewImage::snapFinished()
     m_imageLabel->setPixmap(m_pixmap);
     checkTitle();
     m_textLabel->setText(m_title);
+    
+    setCursor(Qt::PointingHandCursor);
     
 //     kDebug() << "m_pixmap: " << m_pixmap.size();
 //     kDebug() << "text label: " << m_textLabel->size();
