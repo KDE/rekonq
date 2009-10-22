@@ -41,6 +41,7 @@
 
 //Ui Includes
 #include "ui_settings_general.h"
+#include "ui_settings_tabs.h"
 #include "ui_settings_fonts.h"
 #include "ui_settings_webkit.h"
 
@@ -60,9 +61,12 @@
 class Private
 {
 private:
+    
     Ui::general generalUi;
+    Ui::tabs tabsUi;
     Ui::fonts fontsUi;
     Ui::webkit webkitUi;
+    
     KCModuleProxy *proxyModule;
     KCModuleProxy *ebrowsingModule;
     KCModuleProxy *cookiesModule;
@@ -84,6 +88,12 @@ Private::Private(SettingsDialog *parent)
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("General"));
     pageItem->setIcon(KIcon("rekonq"));
+
+    widget = new QWidget;
+    tabsUi.setupUi(widget);
+    widget->layout()->setMargin(0);
+    pageItem = parent->addPage(widget , i18n("Tabs"));
+    pageItem->setIcon(KIcon("tab-duplicate"));
 
     widget = new QWidget;
     fontsUi.setupUi(widget);
@@ -118,7 +128,7 @@ Private::Private(SettingsDialog *parent)
     pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
 
-    parent->setMinimumSize(800,500);
+    parent->setMinimumSize(600,400);
 }
 
 
@@ -129,7 +139,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
         : KConfigDialog(parent, "rekonfig", ReKonfig::self())
         , d(new Private(this))
 {
-    setFaceType(KPageDialog::List);
+    setFaceType(KPageDialog::Tree);
     showButtonSeparator(true);
 
     setWindowTitle(i18n("rekonfig..."));
@@ -178,12 +188,6 @@ void SettingsDialog::setWebSettingsToolTips()
 // we need this function to UPDATE the config widget data..
 void SettingsDialog::readConfig()
 {
-    // ======= General Page
-    if( ReKonfig::newTabHomePage() )
-        d->generalUi.rbUseNewTabPage->setChecked( true );
-    else
-        d->generalUi.rbUseHomePage->setChecked( true );
-    
     // ======= Fonts
     d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
 }
@@ -192,8 +196,6 @@ void SettingsDialog::readConfig()
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
-    ReKonfig::setNewTabHomePage( d->generalUi.rbUseNewTabPage->isChecked() );
-
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
     d->cookiesModule->save();

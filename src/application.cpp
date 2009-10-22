@@ -137,10 +137,25 @@ int Application::newInstance()
         return 3;
     }
     
-    // creating new window
-    MainWindow *w = newMainWindow();
-    w->slotHome();
-        
+    MainWindow *w = 0;
+    switch(ReKonfig::startupBehaviour())
+    {
+        case 0: // open home page
+            w = newMainWindow();
+            w->slotHome();
+            break;
+        case 1: // open new tab page
+            w = newMainWindow();
+            w->homePage();
+            break;
+        case 2: // restore session
+            if(sessionManager()->restoreSession())
+                break;
+        default:
+            w = newMainWindow();
+            w->slotHome();
+            break;
+    }
     return 0;
 }
 
@@ -330,7 +345,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
 
     // loading home pages
-    if (homePage(url))
+    if (mainWindow()->homePage(url))
         return;
     
     if (url.scheme() == QLatin1String("mailto"))
@@ -444,24 +459,4 @@ void Application::removeMainWindow(MainWindow *window)
 MainWindowList Application::mainWindowList()
 {
     return m_mainWindows;
-}
-
-
-bool Application::homePage(const KUrl &url)
-{
-    if (    url == KUrl("rekonq:closedTabs") 
-         || url == KUrl("rekonq:history") 
-         || url == KUrl("rekonq:bookmarks")
-         || url == KUrl("rekonq:favorites")
-         || url == KUrl("rekonq:home")
-    )
-    {
-        kDebug() << "loading home: " << url;
-        MainView *view = mainWindow()->mainView(); 
-        WebView *w = view->currentWebView();
-        HomePage p(w);
-        w->setHtml( p.rekonqHomePage(url), url);
-        return true;
-    }
-    return false;
 }

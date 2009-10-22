@@ -101,7 +101,6 @@ public:
 
     MainWindow *mainWindow();
     MainWindowList mainWindowList();
-    bool homePage(const KUrl &url = KUrl("rekonq:home"));
     
     static KIcon icon(const KUrl &url);
 
