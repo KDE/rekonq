@@ -70,6 +70,8 @@ public:
     virtual QSize sizeHint() const;
     virtual KActionCollection *actionCollection () const;
     
+    bool homePage(const KUrl &url = KUrl("rekonq:home"));
+
 private:
     void setupActions();
     void setupTools();

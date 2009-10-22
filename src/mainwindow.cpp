@@ -46,6 +46,7 @@
 #include "sidepanel.h"
 #include "urlbar.h"
 #include "tabbar.h"
+#include "homepage.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -767,14 +768,7 @@ void MainWindow::slotViewPageSource()
 
 void MainWindow::slotHome()
 {
-    if(ReKonfig::newTabHomePage())
-    {
-        Application::instance()->homePage();
-    }
-    else
-    {
-        currentTab()->load( QUrl(ReKonfig::homePage()) );
-    }
+    currentTab()->load( QUrl(ReKonfig::homePage()) );
 }
 
 
@@ -1094,4 +1088,23 @@ void MainWindow::slotOpenActionUrl(QAction *action)
         history->goToItem(history->forwardItems(history->count() - offset).back()); // forward FIXME CRASH
     }
     
+}
+
+
+bool MainWindow::homePage(const KUrl &url)
+{
+    if (    url == KUrl("rekonq:closedTabs") 
+         || url == KUrl("rekonq:history") 
+         || url == KUrl("rekonq:bookmarks")
+         || url == KUrl("rekonq:favorites")
+         || url == KUrl("rekonq:home")
+    )
+    {
+        kDebug() << "loading home: " << url;
+        WebView *w = currentTab();
+        HomePage p(w);
+        w->setHtml( p.rekonqHomePage(url), url);
+        return true;
+    }
+    return false;
 }

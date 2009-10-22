@@ -307,7 +307,7 @@ void MainView::newTab()
     switch(ReKonfig::newTabsBehaviour())
     {
     case 0:
-        if(Application::instance()->homePage())
+        if(Application::instance()->mainWindow()->homePage())
             break;
     case 1:
         urlBar()->setUrl(KUrl(""));

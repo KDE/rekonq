@@ -31,6 +31,7 @@ SET( rekonq_SRCS
 
 KDE4_ADD_UI_FILES( rekonq_SRCS
     settings_general.ui
+    settings_tabs.ui
     settings_fonts.ui
     settings_webkit.ui
     cleardata.ui
