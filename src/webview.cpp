@@ -333,8 +333,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
         menu.addAction(mainwindow->actionByName("page_source"));
-	
-        menu.addAction(mainwindow->actionByName("add_to_favorites"));
+
         QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
         menu.addAction(addBookmarkAction);
 

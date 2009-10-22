@@ -381,11 +381,6 @@ void MainWindow::setupActions()
     bmMenu->setIcon(KIcon("bookmarks"));
     bmMenu->setDelayed(false);
     actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
-
-    // Add to favorites
-    a = new KAction(KIcon("rating"), i18n("Add to Favorites"), this);
-    actionCollection()->addAction(QLatin1String("add_to_favorites"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(addFavoriteLink()));
 }
 
 
@@ -1099,40 +1094,4 @@ void MainWindow::slotOpenActionUrl(QAction *action)
         history->goToItem(history->forwardItems(history->count() - offset).back()); // forward FIXME CRASH
     }
     
-}
-
-
-void MainWindow::addFavoriteLink()
-{
-    QString name = currentTab()->title();
-    QString url = currentTab()->url().prettyUrl(KUrl::RemoveTrailingSlash);
-    
-    QStringList names = ReKonfig::previewNames();
-    QStringList urls = ReKonfig::previewUrls();
-    
-    
-    for (int i = 0; i < 8 && i < urls.size() ; ++i) 
-    {
-        if(urls.at(i).isEmpty() || urls.at(i) == url)
-        {
-            names.replace(i, name);
-            urls.replace(i, url);
-            break;
-        }
-        if(i == 7)
-        {
-            names.prepend(name);
-            if(names.count() > 8)
-                names.removeLast();
-            
-            urls.prepend(url);
-            if(urls.count() > 8)
-                urls.removeLast();
-            
-            break;
-        }
-    }
-
-    ReKonfig::setPreviewNames(names);
-    ReKonfig::setPreviewUrls(urls);
 }
