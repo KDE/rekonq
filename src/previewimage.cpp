@@ -63,12 +63,23 @@ PreviewImage::PreviewImage(const QUrl &url, const QString &title, int index, boo
     , m_imageLabel(new QLabel)
     , m_textLabel(new QLabel)
 {
-    setMinimumSize(300,200);
-    
+
+    int borderTop = 14;
+    int borderRight = 14;
+    int borderBottom = 14;
+    int borderLeft = 14;
+
+    int previewWidth=200;
+    int previewHeight=150;
+
+    int urlHeight=18;
+    setFixedSize(borderLeft+previewWidth+borderRight, borderTop+previewHeight+borderBottom+urlHeight);
+
     m_imageLabel->setAlignment(Qt::AlignCenter);
     m_textLabel->setAlignment(Qt::AlignCenter);
     
     QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->setMargin(0);
     mainLayout->addWidget(m_imageLabel);
     mainLayout->addWidget(m_textLabel);
     setLayout(mainLayout);
@@ -95,6 +106,8 @@ void PreviewImage::loadUrlPreview(const QUrl& url)
         showEmptyPreview();
         return;
     }
+
+    m_textLabel->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX); //unhide
 
     m_savePath = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(m_url) + ".png", true);
 
@@ -165,10 +178,12 @@ void PreviewImage::showEmptyPreview()
 {
     if(!m_isFavorite)
         return;
-    
+
     m_imageLabel->clear();
     m_textLabel->clear();
-    
+
+    m_textLabel->setMaximumSize(0,0); //hide (is there an other way for hide ?)
+
     QHBoxLayout *layout = new QHBoxLayout(m_imageLabel);
     m_button = new QToolButton(m_imageLabel);
     m_button->setDefaultAction(historyMenu());
