@@ -263,12 +263,12 @@ void PreviewImage::contextMenuEvent(QContextMenuEvent* event)
 
 KActionMenu* PreviewImage::historyMenu()
 {
-    KActionMenu *histMenu = new KActionMenu(KIcon("insert-image"), i18n("Set page to preview"), this);
+    KActionMenu *histMenu = new KActionMenu(KIcon("insert-image"), i18n("Set Page to Preview"), this);
     QList<HistoryItem> history =  Application::historyManager()->history();
 
     if(history.isEmpty())
     {
-        KAction *a = new KAction(i18n("History is empty"), this);
+        KAction *a = new KAction(i18n("History is Empty"), this);
         a->setEnabled(false);
         histMenu->addAction(a);
         return histMenu;
