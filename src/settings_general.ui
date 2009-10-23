@@ -17,7 +17,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>On startup</string>
+      <string>On Startup</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
@@ -44,7 +44,7 @@
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>rekonq        </string>
+         <string>When starting rekonq:</string>
         </property>
        </widget>
       </item>
@@ -58,17 +58,17 @@
         </property>
         <item>
          <property name="text">
-          <string>opens home page</string>
+          <string>Open the Home Page</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>opens new tab page</string>
+          <string>Open the New Tab Page</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>restores the last open pages</string>
+          <string>Restore the Last Opened Tabs</string>
          </property>
         </item>
        </widget>
@@ -103,7 +103,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Home Page Url:</string>
+         <string>Home page URL:</string>
         </property>
        </widget>
       </item>
