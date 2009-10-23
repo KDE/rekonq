@@ -112,7 +112,7 @@ QString HomePage::fillFavorites()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    QString speed="<div class=\"favorites\">";
+    QString speed = "<div class=\"favorites\">";
     for(int i=0; i<8; ++i)
     {
         speed += "<div class=\"thumbnail\">";
@@ -151,7 +151,7 @@ QString HomePage::lastVisitedSites()
 
 QString HomePage::homePageMenu(KUrl currentUrl)
 {
-    QString menu = "";
+    QString menu;
     
     KIconLoader *loader = KIconLoader::global();
     
@@ -245,7 +245,7 @@ QString HomePage::createBookItem(const KBookmark &bookmark)
 {
     if (bookmark.isGroup())
     {
-        QString result = QString("");
+        QString result;
         KBookmarkGroup group = bookmark.toGroup();
         KBookmark bm = group.first();
         result += "<h3>" + bookmark.text() + "</h3>";
@@ -264,8 +264,7 @@ QString HomePage::createBookItem(const KBookmark &bookmark)
         return QString("<hr />");
     }
     
-    QString books = " ";
-    books += "<a href=\"" + bookmark.url().prettyUrl() + "\">" + bookmark.text() + "</a><br />";
+    QString books = "<a href=\"" + bookmark.url().prettyUrl() + "\">" + bookmark.text() + "</a><br />";
     return books;
 }
 
