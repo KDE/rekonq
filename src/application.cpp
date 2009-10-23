@@ -192,11 +192,7 @@ void Application::slotSaveConfiguration() const
 MainWindow *Application::mainWindow()
 {
     if(m_mainWindows.isEmpty())
-    {
-        kDebug() << "No extant windows: creating one new...";
-        MainWindow *w = newMainWindow();
-        return w;
-    }
+        return 0;
     
     MainWindow *active = qobject_cast<MainWindow*>(QApplication::activeWindow());
     
