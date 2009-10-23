@@ -545,16 +545,17 @@ void WebView::openLinkInNewTab()
 
 void WebView::keyPressEvent(QKeyEvent *event)
 {
-    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_C))
-    {
-        triggerPageAction(QWebPage::Copy);
-        return;
-    }
-
-    if (event->modifiers() == Qt::ShiftModifier)
+    // CTRL has been promoted rekonq favorite modifier.. :D
+    if ( event->modifiers() == Qt::ControlModifier )
     {
         switch (event->key())
         {
+        case Qt::Key_A:
+            triggerPageAction(QWebPage::SelectAll);
+            return;
+        case Qt::Key_C:
+            triggerPageAction(QWebPage::Copy);
+            return;
         case Qt::Key_Down:
             startScrollAnimation(WebView::Down);
             return;
