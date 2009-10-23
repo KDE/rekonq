@@ -551,25 +551,10 @@ void WebView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    if (event->modifiers() == Qt::ShiftModifier)
+    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_A))
     {
-        switch (event->key())
-        {
-        case Qt::Key_Down:
-            startScrollAnimation(WebView::Down);
-            return;
-        case Qt::Key_Up:
-            startScrollAnimation(WebView::Up);
-            return;
-        case Qt::Key_Left:
-            startScrollAnimation(WebView::Left);
-            return;
-        case Qt::Key_Right:
-            startScrollAnimation(WebView::Right);
-            return;
-        default:
-            break;
-        }
+        triggerPageAction(QWebPage::SelectAll);
+        return;
     }
 
     QWebView::keyPressEvent(event);
