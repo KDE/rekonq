@@ -961,7 +961,6 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     }
 
     // useful values
-    int windowWidth = width();
     int pageHeight = m_view->currentWebView()->page()->viewportSize().height();
     int labelHeight = KGlobalSettings::generalFont().pointSize()*2 + 7;
     bool scrollbarIsVisible = m_view->currentWebView()->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
@@ -975,21 +974,25 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     // setting the popup
     m_popup->setFrameShape(QFrame::NoFrame);
     QLabel *label = new QLabel(msg);
+    label->setMaximumWidth(width()-8);
     m_popup->setLineWidth(0);
     m_popup->setView(label);
-    m_popup->setFixedSize(windowWidth/3, labelHeight);
+    m_popup->setFixedSize(0, 0);
     m_popup->layout()->setAlignment(Qt::AlignTop);
     m_popup->layout()->setMargin(4);
 
     // setting popus in bottom-(left/right) position
     int x = geometry().x();
+    int y;
     if(m_flickeringZone)
     {
-        x = width() - m_popup->width();
-        label->setAlignment(Qt::AlignRight);
+        y = m_view->currentWebView()->mapToGlobal(QPoint(0,0)).y();
     }
-        
-    int y = m_view->currentWebView()->mapToGlobal(QPoint(0,pageHeight)).y() - labelHeight - scrollbarSize;
+    else
+    {
+        y = m_view->currentWebView()->mapToGlobal(QPoint(0,pageHeight)).y() - labelHeight - scrollbarSize;
+    }
+    
     QPoint p(x,y);
 
     m_popup->show(p);
