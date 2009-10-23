@@ -72,6 +72,8 @@ public:
     
     bool homePage(const KUrl &url = KUrl("rekonq:home"));
 
+    void setFlickeringZone(bool b);
+    
 private:
     void setupActions();
     void setupTools();
@@ -170,6 +172,8 @@ private:
     QPointer<KPassivePopup> m_popup;
 
     KActionCollection *m_ac;
+
+    bool m_flickeringZone;
 };
 
 #endif // MAINWINDOW_H
