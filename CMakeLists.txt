@@ -103,7 +103,6 @@ IF(REKONQ_CAN_BE_COMPILED)
     ADD_SUBDIRECTORY( data )
     ADD_SUBDIRECTORY( docs )
 
-
 ENDIF(REKONQ_CAN_BE_COMPILED)
 
 # ================================================================================
