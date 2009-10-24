@@ -17,7 +17,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>On Startup</string>
+      <string>Startup</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
