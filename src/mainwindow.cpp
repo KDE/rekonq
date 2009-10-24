@@ -87,9 +87,9 @@
 #include <QtGui/QPrinter>
 #include <QtGui/QPrintDialog>
 #include <QtGui/QPrintPreviewDialog>
+#include <QtGui/QFontMetrics>
 
 #include <QtWebKit/QWebHistory>
-
 
 
 MainWindow::MainWindow()
@@ -101,7 +101,6 @@ MainWindow::MainWindow()
     , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_ac( new KActionCollection(this) )
-    , m_flickeringZone(false)
 {
     // enable window size "auto-save"
     setAutoSaveSettings();
@@ -960,39 +959,41 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
         break;
     }
 
-    // useful values
-    int pageHeight = m_view->currentWebView()->page()->viewportSize().height();
-    int labelHeight = KGlobalSettings::generalFont().pointSize()*2 + 7;
-    bool scrollbarIsVisible = m_view->currentWebView()->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
-    int scrollbarSize = 0;
-    if (scrollbarIsVisible) 
-    {
-        //TODO: detect QStyle size
-        scrollbarSize = 17;
-    }
-        
+    int margin = 4;
+
     // setting the popup
     m_popup->setFrameShape(QFrame::NoFrame);
     QLabel *label = new QLabel(msg);
-    label->setMaximumWidth(width()-8);
+    label->setMaximumWidth(width()-2*margin);
     m_popup->setLineWidth(0);
     m_popup->setView(label);
     m_popup->setFixedSize(0, 0);
     m_popup->layout()->setAlignment(Qt::AlignTop);
-    m_popup->layout()->setMargin(4);
+    m_popup->layout()->setMargin(margin);
 
-    // setting popus in bottom-(left/right) position
+    // useful values
+    QSize labelSize(label->fontMetrics().width(msg)+2*margin, label->fontMetrics().height()+2*margin);
+    bool scrollbarIsVisible = m_view->currentWebView()->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
+    int scrollbarSize = 0;
+    if (scrollbarIsVisible)
+    {
+        //TODO: detect QStyle size
+        scrollbarSize = 17;
+    }
+    QPoint webViewOrigin = m_view->currentWebView()->mapToGlobal(QPoint(0,0));
+    int bottomLeftY=webViewOrigin.y() + m_view->currentWebView()->page()->viewportSize().height() - labelSize.height() - scrollbarSize;
+
+    // setting popup in bottom-left position
     int x = geometry().x();
-    int y;
-    if(m_flickeringZone)
+    int y = bottomLeftY;
+
+    QPoint mousePos = m_view->currentWebView()->mapToGlobal(m_view->currentWebView()->mousePos());
+    if(QRect(webViewOrigin.x(),bottomLeftY,labelSize.width(),labelSize.height()).contains(mousePos))
     {
-        y = m_view->currentWebView()->mapToGlobal(QPoint(0,0)).y();
+        // setting popup above the mouse
+        y = bottomLeftY - labelSize.height();
     }
-    else
-    {
-        y = m_view->currentWebView()->mapToGlobal(QPoint(0,pageHeight)).y() - labelHeight - scrollbarSize;
-    }
-    
+
     QPoint p(x,y);
 
     m_popup->show(p);
@@ -1122,10 +1123,4 @@ bool MainWindow::homePage(const KUrl &url)
         return true;
     }
     return false;
-}
-
-
-void MainWindow::setFlickeringZone(bool b)
-{
-    m_flickeringZone = b;
 }
