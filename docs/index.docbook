@@ -1,0 +1,199 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN"
+"dtd/kdex.dtd" [
+  <!ENTITY rekonq "<application>rekonq</application>"> 
+  <!ENTITY kappname "&rekonq;">
+  <!ENTITY Konqueror "Konqueror">
+  <!ENTITY krunner "krunner">
+  <!ENTITY Andrea.Diamantini "<personname>
+                              <firstname>Andrea</firstname>
+                              <surname>Diamantini</surname>
+                              </personname>
+                              ">
+  <!ENTITY Rohan.Garg         "<personname>
+                              <firstname>Rohan</firstname>
+                              <surname>Garg</surname>
+                              </personname>
+                              ">
+ <!ENTITY The.rekonq.Team "<personname>
+                              <firstname>rekonq</firstname>
+                              <surname>Team</surname>
+                              </personname>
+                              ">
+  <!ENTITY Andrea.Diamantini.mail "<email>adjam7@gmail.com</email>">
+  <!ENTITY Rohan.Garg.mail "<email>rohan16garg@gmail.com</email>">
+  <!ENTITY The.rekonq.Team.mail "<email>rekonq@kde.org</email>">
+  <!ENTITY package "playground-network">
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % English "INCLUDE"> 
+]>
+
+<book lang="&language;">
+
+<bookinfo>
+<title>The &rekonq; Handbook</title>
+
+<authorgroup>
+<author>&Andrea.Diamantini; &Andrea.Diamantini.mail;</author>
+<author>&Rohan.Garg; &Rohan.Garg.mail;</author>
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
+</authorgroup>
+
+<copyright>
+<year>2008</year>
+<year>2009</year>
+<holder>&Andrea.Diamantini;</holder>
+<holder>&Rohan.Garg;</holder>
+</copyright>
+
+<legalnotice>&FDLNotice;</legalnotice>
+
+<date>2009-10-22</date>
+<releaseinfo>0.0.5</releaseinfo>
+
+<abstract>
+<para>
+&rekonq; is a lightweight &kde; browser based on WebKit with support for tabbed browsing.
+</para>
+</abstract>
+
+<keywordset>
+<keyword>KDE</keyword>
+<keyword>browser</keyword>
+<keyword>rekonq</keyword>
+<keyword>webkit</keyword>
+</keywordset>
+
+</bookinfo>
+
+<!-- ================== CHAPTER ==================  -->
+
+<chapter id="Overview">
+
+<title>Overview</title>
+
+<para>
+&rekonq; is a lightweight &kde; browser based on WebKit . It can currently 
+<itemizedlist>
+<listitem><para>Share bookmarks with &Konqueror;</para></listitem>
+<listitem><para>Handle tabbed browsing</para></listitem>
+<listitem><para>Display tab previews</para></listitem>
+<listitem><para>Handle flash based sites</para></listitem>
+<listitem><para>Navigate in a proxied net</para></listitem>
+<listitem><para>Browse anonymously</para></listitem>
+<listitem><para>Inspect web pages</para></listitem>
+</itemizedlist>
+</para>
+</chapter>
+
+<!-- ================== CHAPTER ==================  -->
+
+<chapter id="Introduction">
+
+<title>Introduction</title>
+
+<para>
+&rekonq; is a lightweight &kde; browser based on WebKit. Its code is based on Nokia QtDemoBrowser. Its implementation is going to embrace KDE technologies to have a full-featured KDE web browser.
+</para>
+</chapter>
+<!-- ================== CHAPTER ==================  -->
+
+<chapter id="Using-rekonq">
+<title>Using &rekonq;</title>
+
+
+<para>
+<screenshot>
+<screeninfo>Here's a screenshot of &rekonq;</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="screenshot.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+<sect1 id="Starting">
+
+<title>Starting &rekonq;</title>
+<para>
+rekonq can be started in the following ways
+<itemizedlist>
+<listitem><para>From the K menu select <guimenuitem>Applications</guimenuitem> -> <guimenuitem>Internet</guimenuitem> -> <guimenuitem>rekonq</guimenuitem></para></listitem>
+<listitem><para><keycap>Alt+F2</keycap>will open a <guimenuitem>Run Command</guimenuitem> dialog box,type rekonq (lower case) and press <keycap>Enter</keycap> or the <guibutton>Run</guibutton> to start &rekonq;</para></listitem>
+</itemizedlist>
+</para>
+</sect1>
+</chapter>
+
+
+<!-- ================== CHAPTER ==================  -->
+
+<chapter id="Credits">
+
+<title>Credits and License</title>
+
+<para>
+&rekonq;
+</para>
+
+<para>
+Program copyright:
+</para>
+
+<itemizedlist>
+<title>Developers</title>
+<!-- <listitem><para>&Andrea.Diamantini; &Andrea.Diamantini.mail;</para></listitem> ##Need to confirm from adjam if his name is required -->
+<listitem><para>&The.rekonq.Team; &The.rekonq.Team.mail; Find more about us in the 'About rekonq' section</para></listitem>
+
+
+</itemizedlist>
+
+<para>
+Documentation copyright 2009 &Rohan.Garg; &Rohan.Garg.mail;
+</para>
+<para>
+Documentation copyright 2008 &Andrea.Diamantini; &Andrea.Diamantini.mail;
+</para>
+
+
+<!--TRANS:CREDIT_FOR_TRANSLATORS-->
+
+&underFDL;               <!-- FDL: do not remove -->
+&underBSDLicense;        <!-- BSD License -->
+
+</chapter>
+
+<appendix id="Installation">
+<title>Installation</title>
+
+<sect1 id="Getting-rekonq">
+<title>How to obtain &rekonq;</title>
+<!-- &install.intro.documentation; ##Install instructions obsolete,confirm with adjam if this is internally linked? -->
+<para>Stable Packages of rekonq can be downloaded via standard repositories of your distribution</para>
+</sect1>
+
+<sect1 id="Requirements">
+<title>Requirements</title>
+
+<para>
+In order to successfully use &rekonq;, you need at least &Qt; 4.4.x and &kde; 4.1.x.
+</para>
+
+</sect1>
+
+<sect1 id="compilation">
+<title>Compilation and Installation</title>
+<para>If you wish to compile rekonq,go to <ulink url="http://techbase.kde.org/Projects/rekonq/Compiling_rekonq">The how to compile &rekonq; page</ulink>.
+</para>
+</sect1>
+
+</appendix>
+
+&documentation.index;
+
+</book>
