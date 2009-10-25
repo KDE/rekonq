@@ -128,7 +128,7 @@ Private::Private(SettingsDialog *parent)
     pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
 
-    parent->setMinimumSize(600,400);
+    parent->setMinimumSize(700,500);
 }
 
 
