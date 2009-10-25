@@ -79,6 +79,7 @@ protected:
     virtual QSize tabSizeHint(int index) const;
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
     
 private slots:
     void cloneTab();

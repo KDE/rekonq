@@ -268,6 +268,19 @@ void TabBar::leaveEvent(QEvent *event)
     KTabBar::leaveEvent(event);
 }
 
+void TabBar::mousePressEvent(QMouseEvent *event)
+{
+    // just close tab on middle mouse click
+    if (event->button() == Qt::MidButton)
+    {
+        int index = tabAt(event->pos());
+        emit closeTab(index);
+        return;
+    }
+    
+    KTabBar::mousePressEvent(event);
+}
+
 
 void TabBar::updateNewTabButton()
 {
