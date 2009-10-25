@@ -155,6 +155,7 @@ void UrlBar::setProgress(int progress)
 void UrlBar::slotUpdateUrl()
 {
     // Don't change my typed url...
+    // FIXME this is not a proper solution (also if it works...)
     if(hasFocus())
     {
         kDebug() << "Don't change my typed url...";
