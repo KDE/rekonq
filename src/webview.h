@@ -62,7 +62,8 @@ public:
     KUrl url() const;
     QString lastStatusBarText() const;
     int progress();
-
+    QPoint mousePos();
+    
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -94,6 +95,7 @@ private:
     int m_scrollDirection;
     int m_scrollSpeedVertical;
     int m_scrollSpeedHorizontal;
+    QPoint m_mousePos;
 };
 
 #endif

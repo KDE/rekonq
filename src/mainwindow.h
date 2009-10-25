@@ -69,11 +69,9 @@ public:
     QAction *actionByName(const QString name);
     virtual QSize sizeHint() const;
     virtual KActionCollection *actionCollection () const;
-    
+
     bool homePage(const KUrl &url = KUrl("rekonq:home"));
 
-    void setFlickeringZone(bool b);
-    
 private:
     void setupActions();
     void setupTools();
@@ -97,16 +95,16 @@ public slots:
     void notifyMessage(const QString &msg, Rekonq::Notify status = Rekonq::Info);
 
     void printRequested(QWebFrame *frame = 0);
-    
-    
+
+
 signals:
     // switching tabs
     void ctrlTabPressed();
     void shiftCtrlTabPressed();
-    
+
 protected:
     bool queryClose();
-    
+
     /**
     * Filters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
     * to make switch tab
@@ -120,7 +118,7 @@ private slots:
     void slotBrowserLoading(bool);
     void slotUpdateActions();
     void slotUpdateWindowTitle(const QString &title = QString());
-    
+
     // history related
     void slotOpenPrevious();
     void slotOpenNext();
@@ -172,8 +170,6 @@ private:
     QPointer<KPassivePopup> m_popup;
 
     KActionCollection *m_ac;
-
-    bool m_flickeringZone;
 };
 
 #endif // MAINWINDOW_H

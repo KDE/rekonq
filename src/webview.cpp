@@ -63,6 +63,7 @@ WebView::WebView(QWidget* parent)
         , m_scrollDirection(WebView::NoScroll)
         , m_scrollSpeedVertical(0)
         , m_scrollSpeedHorizontal(0)
+        , m_mousePos(QPoint(0,0))
 
 {
     setPage(m_page);
@@ -451,20 +452,17 @@ void WebView::mousePressEvent(QMouseEvent *event)
 
 void WebView::mouseMoveEvent(QMouseEvent *event)
 {
-    QPoint p = event->pos();
-    QSize s = size();
-    int x = s.width() / 2;
-    int y = s.height() - 30;    // quite reasonable value, without performing requests, cause of speed
+    m_mousePos = event->pos();
 
-    if(p.x() <= x && p.y() >= y )
-        Application::instance()->mainWindow()->setFlickeringZone(true);
-    else
-        Application::instance()->mainWindow()->setFlickeringZone(false);
-    
     if( url().protocol() != "rekonq" )
     {
         QWebView::mouseMoveEvent(event);
     }
+}
+
+QPoint WebView::mousePos()
+{
+    return m_mousePos;
 }
 
 
