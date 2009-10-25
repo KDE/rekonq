@@ -49,6 +49,7 @@
 #include <QMouseEvent>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QPainter>
 
 
 PreviewImage::PreviewImage(const QUrl &url, const QString &title, int index, bool isFavorite)
@@ -62,31 +63,47 @@ PreviewImage::PreviewImage(const QUrl &url, const QString &title, int index, boo
     , m_button(0)
     , m_imageLabel(new QLabel)
     , m_textLabel(new QLabel)
+    , m_backgroundLabel(new QLabel)
+    , m_previewLabel(new QLabel)
 {
 
     int borderTop = 14;
-    int borderRight = 14;
+    int borderRight = 16;
     int borderBottom = 14;
-    int borderLeft = 14;
+    int borderLeft = 16;
 
     int previewWidth=200;
     int previewHeight=150;
 
     int urlHeight=18;
-    setFixedSize(borderLeft+previewWidth+borderRight, borderTop+previewHeight+borderBottom+urlHeight);
 
+    m_size = QSize(borderLeft+previewWidth+borderRight, borderTop+previewHeight+borderBottom+urlHeight);
+
+    setFixedSize(m_size);
+    m_previewLabel->setFixedSize(m_size);
+
+    m_backgroundLabel->setPixmap(renderBackground(previewWidth,previewHeight, borderTop, borderBottom, borderLeft, borderRight));
+
+    m_previewLabel->setAlignment(Qt::AlignCenter);
+    m_backgroundLabel->setAlignment(Qt::AlignCenter);
     m_imageLabel->setAlignment(Qt::AlignCenter);
     m_textLabel->setAlignment(Qt::AlignCenter);
-    
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setMargin(0);
-    mainLayout->addWidget(m_imageLabel);
-    mainLayout->addWidget(m_textLabel);
-    setLayout(mainLayout);
-    
+
+    m_previewLabel->setLayout(new QVBoxLayout);
+    m_previewLabel->layout()->setMargin(0);
+    m_previewLabel->layout()->addWidget(m_backgroundLabel);
+    m_previewLabel->layout()->addWidget(m_textLabel);
+    m_previewLabel->setCursor(Qt::PointingHandCursor);
+
+    m_backgroundLabel->setLayout(new QVBoxLayout);
+    m_backgroundLabel->layout()->addWidget(m_imageLabel);
+
+    setLayout(new QHBoxLayout);
+    layout()->setMargin(0);
+    layout()->setAlignment(Qt::AlignCenter);
+    layout()->addWidget(m_previewLabel);
+
     loadUrlPreview(url);
-    
-    setCursor(Qt::PointingHandCursor);
 }
 
 
@@ -95,8 +112,37 @@ PreviewImage::~PreviewImage()
     delete ws;
     delete m_textLabel;
     delete m_imageLabel;
+    delete m_backgroundLabel;
+    delete m_previewLabel;
 }
 
+
+QPixmap PreviewImage::renderBackground(int w, int h, int t, int b, int l, int r)
+{
+    QImage backImage(KStandardDirs::locate("appdata", "pics/bg.png"));
+    QImage resultImage(QSize(w + l + r, h + t + b), QImage::Format_ARGB32_Premultiplied);
+
+    if (!backImage.isNull())
+    {
+        int sw = backImage.width() - l - r;
+        int sh = backImage.height() - t - b;
+        QPainter pt(&resultImage);
+        pt.setCompositionMode(QPainter::CompositionMode_Source);
+        pt.fillRect(resultImage.rect(), Qt::transparent);
+        pt.drawImage(QRect(0, 0, l, t), backImage, QRect(0, 0, l, t));
+        pt.drawImage(QRect(l, 0, w, t), backImage, QRect(l, 0, sw, t));
+        pt.drawImage(QRect(l + w, 0, r, t), backImage, QRect(l + sw, 0, r, t));
+        pt.drawImage(QRect(0, t, l, h), backImage, QRect(0, t, l, sh));
+        pt.drawImage(QRect(l, t, w, h), backImage, QRect(l, t, sw, sh));
+        pt.drawImage(QRect(l + w, t, r, h), backImage, QRect(l + sw, t, r, sh));
+        pt.drawImage(QRect(0, t + h, l , b), backImage, QRect(0, t + sh, l , b));
+        pt.drawImage(QRect(l, t + h, w, b), backImage, QRect(l, t + sh, sw, b));
+        pt.drawImage(QRect(l + w, t + h, w, b), backImage, QRect(l + sw, t + sh, sw, b));
+        pt.end();
+    }
+
+    return QPixmap::fromImage(resultImage);
+}
 
 
 void PreviewImage::loadUrlPreview(const QUrl& url)
@@ -109,7 +155,7 @@ void PreviewImage::loadUrlPreview(const QUrl& url)
         return;
     }
 
-    m_textLabel->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX); //unhide
+    m_previewLabel->setFixedSize(m_size); //unhide
 
     m_savePath = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(m_url) + ".png", true);
 
@@ -145,19 +191,19 @@ void PreviewImage::snapFinished()
     QMovie *m = m_imageLabel->movie();
     delete m;
     m_imageLabel->setMovie(0);
-    
+
     m_pixmap = ws->previewImage();
     m_imageLabel->setPixmap(m_pixmap);
     checkTitle();
     m_textLabel->setText(m_title);
-    
+
     setCursor(Qt::PointingHandCursor);
-    
+
 //     kDebug() << "m_pixmap: " << m_pixmap.size();
 //     kDebug() << "text label: " << m_textLabel->size();
 //     kDebug() << "image label: " << m_imageLabel->size();
 //     kDebug() << "widget: " << size();
-    
+
     m_pixmap.save(m_savePath);
 
     if(m_index > -1)
@@ -187,18 +233,17 @@ void PreviewImage::showEmptyPreview()
     m_imageLabel->clear();
     m_textLabel->clear();
 
-    m_textLabel->setMaximumSize(0,0); //hide (is there an other way for hide ?)
+    m_previewLabel->setFixedSize(0,0); //hide
 
-    QHBoxLayout *layout = new QHBoxLayout(m_imageLabel);
-    m_button = new QToolButton(m_imageLabel);
+
+    m_button = new QToolButton();
     m_button->setDefaultAction(historyMenu());
     m_button->setPopupMode(QToolButton::InstantPopup);
     m_button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     m_button->setText(i18n("Add Preview"));
     m_button->setAutoRaise(true);
     m_button->setIconSize(QSize(48, 48));
-    layout->addWidget(m_button);
-    m_imageLabel->setLayout(layout);
+    layout()->addWidget(m_button);
 }
 
 
@@ -320,7 +365,7 @@ void PreviewImage::setUrlFromAction()
     m_url = KUrl(urlData.at(0));
     m_title = urlData.at(1);
     checkTitle();
-    
+
     if(m_button)
     {
         m_imageLabel->layout()->deleteLater();
