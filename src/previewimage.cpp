@@ -167,7 +167,7 @@ void PreviewImage::snapFinished()
         // update url (for added thumbs)
         QStringList urls = ReKonfig::previewUrls();
 
-        // stripTrailingSlash to be sure to get the same string for same adress
+        // stripTrailingSlash to be sure to get the same string for same address
         urls.replace(m_index, ws->snapUrl().toString(QUrl::StripTrailingSlash));
         names.replace(m_index, ws->snapTitle());
 
