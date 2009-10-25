@@ -92,6 +92,36 @@ int Application::newInstance()
     // so initialize only once
     static bool first = true;
     
+    if(args->count() == 0)
+    {
+        MainWindow *w = 0;
+        if(first)   // we are starting rekonq, for the first time with no args: use startup behaviour
+        {
+            switch(ReKonfig::startupBehaviour())
+            {
+                case 0: // open home page
+                    w = newMainWindow();
+                    w->slotHome();
+                    break;
+                case 1: // open new tab page
+                    w = newMainWindow();
+                    w->homePage();
+                    break;
+                case 2: // restore session
+                    if(sessionManager()->restoreSession())
+                        break;
+                default:
+                    w = newMainWindow();
+                    w->slotHome();
+                    break;
+            }    
+        }
+        else    // rekonq has just been started. Just open a new window
+        {
+            w = newMainWindow();
+        }
+    }
+    
     if (first)
     {
         QTimer::singleShot(0, this, SLOT(postLaunch()));
@@ -106,9 +136,8 @@ int Application::newInstance()
         kDebug() << "session restored";
         return 1;
     }
-
-// --------------------------------------------------------------------------
-
+    
+    // are there args? load them..
     if (args->count() > 0)
     {
         // is there a window open on the current desktop ? use it!
@@ -137,25 +166,6 @@ int Application::newInstance()
         return 3;
     }
     
-    MainWindow *w = 0;
-    switch(ReKonfig::startupBehaviour())
-    {
-        case 0: // open home page
-            w = newMainWindow();
-            w->slotHome();
-            break;
-        case 1: // open new tab page
-            w = newMainWindow();
-            w->homePage();
-            break;
-        case 2: // restore session
-            if(sessionManager()->restoreSession())
-                break;
-        default:
-            w = newMainWindow();
-            w->slotHome();
-            break;
-    }
     return 0;
 }
 
