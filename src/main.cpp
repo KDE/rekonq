@@ -121,6 +121,11 @@ int main(int argc, char **argv)
                     "rohan16garg@gmail.com",
                     "");
                     
+    about.addCredit(ki18n("Dario Freddi"),
+                    ki18n("Patches, hints, first KWallet support implementation"),
+                    "drf@kde.org",
+                    "");
+                    
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
 
