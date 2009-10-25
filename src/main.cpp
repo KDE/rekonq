@@ -122,8 +122,13 @@ int main(int argc, char **argv)
                     "");
                     
     about.addCredit(ki18n("Dario Freddi"),
-                    ki18n("Patches, hints, first KWallet support implementation"),
+                    ki18n("Patches, hints, first KWallet support implementation (not yet included)"),
                     "drf@kde.org",
+                    "");
+
+    about.addCredit(ki18n("Jon de Andrés Frías"),
+                    ki18n("first awesome bar implementation (wait next version and you'll see..)"),
+                    "jondeandres@gmail.com",
                     "");
                     
     // Initialize command line args
