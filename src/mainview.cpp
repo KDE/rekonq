@@ -383,8 +383,15 @@ void MainView::slotCloneTab(int index)
         index = currentIndex();
     if (index < 0 || index >= count())
         return;
-    WebView *tab = newWebView();
-    tab->setUrl(webView(index)->url());
+    
+    WebView *tab = newWebView();    
+    KUrl url = webView(index)->url();
+    
+    // workaround against bug in webkit:
+    // only set url if it is not empty
+    // otherwise the current working directory will be used
+    if (!url.isEmpty())
+        tab->setUrl(url);
 
     updateTabBar();
 }
