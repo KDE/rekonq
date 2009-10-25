@@ -38,7 +38,7 @@ static const char description[] =
     I18N_NOOP("A lightweight Web Browser for KDE based on WebKit");
 
 
-static const char version[] = "0.2.71";
+static const char version[] = "0.2.72";
 
 
 int main(int argc, char **argv)
@@ -65,11 +65,6 @@ int main(int argc, char **argv)
                     "alexandr.domrachev@gmail.com",
                     "");
 
-    about.addAuthor(ki18n("Pawel Prazak"),
-                    ki18n("Developer"),
-                    "kojots350@gmail.com",
-                    "");
-
     about.addAuthor(ki18n("Panagiotis Papadopoulos"),
                     ki18n("Quite everything but code"),
                     "pano_90@gmx.net",
@@ -80,6 +75,21 @@ int main(int argc, char **argv)
                     "megabigbug@yahoo.fr",
                     "");
 
+    about.addAuthor(ki18n("Johannes Zellner"),
+                    ki18n("Patches, suggestions, testing, bugfixing"),
+                    "webmaster@nebulon.de",
+                    "");
+
+    about.addAuthor(ki18n("Matthieu Gicquel"),
+                    ki18n("Developer, Ideas, Tabloid improvements"),
+                    "matthieu@bureau.home",
+                    "");
+
+    about.addAuthor(ki18n("Ronny Scholz"),
+                    ki18n("(Tons of ) patches, testing, bugfixing"),
+                    "ronny_scholz@web.de",
+                    "");
+                    
     // --------------- about credits -----------------------------                    
     about.addCredit(ki18n("Henry de Valence"),
                     ki18n("Promised help on multitask rekonq"),
@@ -91,11 +101,6 @@ int main(int argc, char **argv)
                     "buusmail@gmail.com",
                     "");
 
-    about.addCredit(ki18n("Johannes Zellner"),
-                    ki18n("Patches, suggestions, testing, bugfixing"),
-                    "webmaster@nebulon.de",
-                    "");
-
     about.addCredit(ki18n("Ivan Čukić"),
                     ki18n("Patches, bugfixing"),
                     "ivan@fomentgroup.org",
@@ -105,7 +110,12 @@ int main(int argc, char **argv)
                     ki18n("New tab loading animation"),
                     "swiftscythe@gmail.com",
                     "");
-                   
+
+    about.addAuthor(ki18n("Pawel Prazak"),
+                    ki18n("Developer"),
+                    "kojots350@gmail.com",
+                    "");
+                    
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
 
