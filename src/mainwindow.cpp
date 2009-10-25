@@ -259,7 +259,9 @@ void MainWindow::setupActions()
 
     // we all like "short" shortcuts.. ;)
     a = KStandardAction::fullScreen(this, SLOT(slotViewFullScreen(bool)), this, actionCollection());
-    a->setShortcut(KShortcut(Qt::Key_F11, Qt::CTRL + Qt::SHIFT + Qt::Key_F));
+    QList<QKeySequence> shortcutFullScreenList;
+    shortcutFullScreenList << KStandardShortcut::fullScreen() << QKeySequence( Qt::Key_F11 );
+    a->setShortcuts( shortcutFullScreenList );
 
     KStandardAction::home(this, SLOT(slotHome()), actionCollection());
     KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
