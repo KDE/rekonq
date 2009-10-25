@@ -111,9 +111,14 @@ int main(int argc, char **argv)
                     "swiftscythe@gmail.com",
                     "");
 
-    about.addAuthor(ki18n("Pawel Prazak"),
+    about.addCredit(ki18n("Pawel Prazak"),
                     ki18n("Developer"),
                     "kojots350@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Rohan Garg"),
+                    ki18n("Handbook"),
+                    "rohan16garg@gmail.com",
                     "");
                     
     // Initialize command line args
