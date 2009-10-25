@@ -49,44 +49,49 @@ class PreviewImage : public QWidget
 public:
     PreviewImage(const QUrl &url, const QString &title, int index, bool isFavorite);
     ~PreviewImage();
-    
+
     QString guessNameFromUrl(QUrl url);
-    
+
 public slots:
     void snapFinished();
     void removeMe();
     void setUrlFromAction();
     void refreshPreview();
-    
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    
+
     void loadUrlPreview(const QUrl &url);
     KActionMenu *historyMenu();
     void showEmptyPreview();
-                
+
 private:
     void checkTitle();
-    
+    QPixmap renderBackground(int w, int h, int t, int b, int l, int r);
+
     QPixmap m_pixmap;
     WebSnap *ws;
-    
+
     QString m_savePath;    
     bool loadingSnapshot;
-    
+
     QUrl m_url;    
     QString m_title;
     bool m_isFavorite;
     int m_index;
-    
+
     QToolButton *m_button;
-    
+
     QLabel *m_imageLabel;
     QLabel *m_textLabel;
+    QLabel *m_backgroundLabel;
+    QLabel *m_previewLabel;
+    
+    QSize m_size;
 };
 
 #endif // PREVIEW_IMAGE_H

@@ -74,7 +74,7 @@ void WebSnap::load()
 }
 
 
-QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h, bool border)
+QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
 {
     // prepare page
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); // Why it doesn't work with one setScrollBarPolicy?
@@ -111,31 +111,7 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h, bool border)
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
 
-    if(!border)
-        return QPixmap::fromImage(pageImage);
-    
-    // background image
-    QSize fixedSize(w + 30, h + 26);
-    QImage backImage = QImage(fixedSize, QImage::Format_ARGB32_Premultiplied);
-    QString backImagePath = KStandardDirs::locate("appdata", "pics/bg.png");
-    backImage.load( backImagePath );
-    
-    // create target
-    QImage resultImage = QImage(fixedSize, QImage::Format_ARGB32_Premultiplied);
-    resultImage.fill(Qt::transparent); 
-
-    QPainter pt(&resultImage);
-    pt.setCompositionMode(QPainter::CompositionMode_Source);
-    pt.fillRect(resultImage.rect(), Qt::transparent);
-    pt.setCompositionMode(QPainter::CompositionMode_SourceOver);
-    pt.drawImage(0, 0, backImage);
-    pt.setCompositionMode(QPainter::CompositionMode_SourceOver);
-    pt.drawImage(15, 13, pageImage);
-    pt.setCompositionMode(QPainter::CompositionMode_DestinationOver);
-    pt.fillRect(resultImage.rect(), Qt::transparent);
-    pt.end();
-    
-    return QPixmap::fromImage(resultImage);
+    return QPixmap::fromImage(pageImage);
 }
 
 
@@ -148,7 +124,7 @@ void WebSnap::saveResult(bool ok)
         return;
     }
 
-    m_image = renderPreview(m_page, WIDTH, HEIGHT, true);
+    m_image = renderPreview(m_page, WIDTH, HEIGHT);
     emit finished();
 }
 
