@@ -24,6 +24,9 @@
 * ============================================================ */
 
 
+// version include
+#include "../version.h"
+
 // Local Includes
 #include "application.h"
 #include "sessionmanager.h"
@@ -38,15 +41,12 @@ static const char description[] =
     I18N_NOOP("A lightweight Web Browser for KDE based on WebKit");
 
 
-static const char version[] = "0.2.72";
-
-
 int main(int argc, char **argv)
 {
     KAboutData about("rekonq",
                      0,
                      ki18n("rekonq"),
-                     version,
+                     REKONQ_VERSION,
                      ki18n(description),
                      KAboutData::License_GPL_V3,
                      ki18n("(C) 2008-2009 Andrea Diamantini"),

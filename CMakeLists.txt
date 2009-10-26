@@ -7,13 +7,9 @@ PROJECT( rekonq )
 # Informations to update before to release this package.
 
 # rekonq info
-SET(REKONQ_MAJOR_VERSION "0")
-SET(REKONQ_MINOR_VERSION "2")
-SET(REKONQ_PATCH_VERSION "72")
+SET(REKONQ_VERSION "0.2.72" )
 
-SET(REKONQ_VERSION_STR
-    "${REKONQ_MAJOR_VERSION}.${REKONQ_MINOR_VERSION}.${REKONQ_PATCH_VERSION}"
-   )
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/version.h )
 
 SET(REKONQ_SITE "http://rekonq.sourceforge.net")
 
@@ -40,7 +36,7 @@ INCLUDE(MacroLibrary)
 
 MESSAGE(STATUS "")
 MESSAGE(STATUS "-----------------------------------------------------------------------")
-MESSAGE(STATUS " rekonq ${REKONQ_VERSION_STR} dependencies results  <${REKONQ_SITE}>")
+MESSAGE(STATUS " rekonq ${REKONQ_VERSION} dependencies results  <${REKONQ_SITE}>")
 MESSAGE(STATUS "")
 
 # Require shared libraries results.
