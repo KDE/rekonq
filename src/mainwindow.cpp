@@ -495,6 +495,8 @@ void MainWindow::slotUpdateConfiguration()
 
     // ====== load Settings on main classes
     Application::historyManager()->loadSettings();
+
+    defaultSettings = 0;
 }
 
 

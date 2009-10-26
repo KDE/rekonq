@@ -72,7 +72,6 @@ WebPage::WebPage(QObject *parent)
         : QWebPage(parent)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
-        , m_requestedUrl()
 {
     setPluginFactory(new WebPluginFactory(this));
     
