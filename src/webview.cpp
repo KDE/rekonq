@@ -370,11 +370,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
 void WebView::mouseMoveEvent(QMouseEvent *event)
 {
     m_mousePos = event->pos();
-
-    if( url().protocol() != "rekonq" )
-    {
-        QWebView::mouseMoveEvent(event);
-    }
+    QWebView::mouseMoveEvent(event);
 }
 
 QPoint WebView::mousePos()
