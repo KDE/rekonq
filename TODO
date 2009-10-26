@@ -1,24 +1,3 @@
-(Qt 4.6) - QWebFrame management
-(Qt 4.6) - QWebElements management
-- DOCUMENTATION
-- unit tests
+Please, refer to rekonq TechBase page for this
+(http://techbase.kde.org/Projects/rekonq/Roadmap)
 
-
-TO 0.2 release
-
-
-* rekonqrun
-* findbar NO notify system
-* right click Google Search Integration
-* tools menu (to be decided)
-* history menu
-* clear private data
-* ctrl + url click
-* private browsing color
-* no more KDEnetwork!! 
-* no reKonfig in loadUrl (no need to fix this)
-
-- BKO
-- error pages (timeout loading)
-- proxy DNS requests ??
-- packaging / license
