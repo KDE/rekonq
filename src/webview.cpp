@@ -431,7 +431,7 @@ void WebView::scrollFrameChanged()
 
 void WebView::mousePressEvent(QMouseEvent *event)
 {
-    stopScrollAnimation();
+//     stopScrollAnimation();
 
     m_page->m_pressedButtons = event->buttons();
     m_page->m_keyboardModifiers = event->modifiers();
@@ -468,7 +468,7 @@ QPoint WebView::mousePos()
 
 void WebView::wheelEvent(QWheelEvent *event)
 {
-    stopScrollAnimation();
+//     stopScrollAnimation();
 
     if (QApplication::keyboardModifiers() & Qt::ControlModifier)
     {
