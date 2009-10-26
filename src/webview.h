@@ -37,24 +37,13 @@
 
 // Forward Declarations
 class WebPage;
-class QTimer;
 
 
 class WebView : public QWebView
 {
     Q_OBJECT
-    Q_ENUMS(ScrollDirection)
 
 public:
-    enum ScrollDirection
-    {
-        NoScroll = 0,
-        Up = 2,
-        Down = 4,
-        Left = 6,
-        Right = 16
-    };
-    
     explicit WebView(QWidget *parent = 0);
     ~WebView();
     
@@ -83,18 +72,11 @@ private slots:
     void openLinkInNewWindow();
     void openLinkInNewTab();
 
-    void startScrollAnimation(ScrollDirection direction);
-    void stopScrollAnimation();
-    void scrollFrameChanged();
-
 private:
     WebPage *m_page;
     int m_progress;
     QString m_statusBarText;
-    QTimer *m_scrollTimer;
-    int m_scrollDirection;
-    int m_scrollSpeedVertical;
-    int m_scrollSpeedHorizontal;
+
     QPoint m_mousePos;
 };
 
