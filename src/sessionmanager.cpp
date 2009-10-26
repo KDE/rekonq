@@ -76,7 +76,7 @@ void SessionManager::saveSession()
         MainView *mv = w->mainView();
         for (int i = 0 ; i < mv->count() ; i++)
         {
-            out << mv->webView(i)->url().toEncoded(QUrl::StripTrailingSlash) << "\n";
+            out << mv->webView(i)->url().toEncoded() << "\n";
         }
     }
     sessionFile.close();
