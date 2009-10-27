@@ -161,14 +161,18 @@ void UrlBar::slotUpdateUrl()
         kDebug() << "Don't change my typed url...";
         return;
     }
-    
+
+    KIcon icon;
+    if(m_currentUrl.isEmpty()) icon = KIcon("arrow-right");
+    else icon = Application::icon(m_currentUrl);
+
     if (count())
     {
-        changeUrl(0, Application::icon(m_currentUrl), m_currentUrl);
+        changeUrl(0, icon, m_currentUrl);
     }
     else
     {
-        insertUrl(0, Application::icon(m_currentUrl), m_currentUrl);
+        insertUrl(0, icon, m_currentUrl);
     }
 
     setCurrentIndex(0);

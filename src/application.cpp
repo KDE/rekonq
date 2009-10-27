@@ -266,10 +266,7 @@ KIcon Application::icon(const KUrl &url)
 {
     if(!Application::instance()->mainWindowList().isEmpty()) // avoid infinite loop at startup
     {
-        // means it is the urlbar
-        if(url.isEmpty() && Application::instance()->mainWindow()->currentTab()->url().scheme() == "rekonq")
-            return KIcon("arrow-right");
-        
+
         if(url == KUrl("rekonq:closedTabs"))
             return KIcon("tab-close");
         if(url == KUrl("rekonq:history"))
