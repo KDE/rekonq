@@ -357,7 +357,7 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_W));
     actionCollection()->addAction(QLatin1String("close_tab"), a);
-    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotCloseTab()));
+    connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(closeTab()));
 
     a = new KAction(KIcon("tab-duplicate"), i18n("Clone Tab"), this);
     actionCollection()->addAction(QLatin1String("clone_tab"), a);
