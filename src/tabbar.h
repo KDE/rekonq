@@ -86,8 +86,11 @@ private slots:
     void closeTab();
     void closeOtherTabs();
     void reloadTab();
-    void contextMenuRequested(const QPoint &position);
+
     void postLaunch();
+
+    void slotContextMenuRequested(int, const QPoint &);
+    void slotEmptyAreaContextMenu(const QPoint &);
 
 private:
     MainView *m_parent;

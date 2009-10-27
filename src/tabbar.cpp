@@ -75,8 +75,8 @@ TabBar::TabBar(MainView *parent)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this,
-            SLOT(contextMenuRequested(const QPoint &)));
+    connect(this, SIGNAL(contextMenu(int, const QPoint &)), this, SLOT(slotContextMenuRequested(int, const QPoint &)));
+    connect(this, SIGNAL(emptyAreaContextMenu(const QPoint &)), this, SLOT(slotEmptyAreaContextMenu(const QPoint &)));
 
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
@@ -133,33 +133,6 @@ QSize TabBar::tabSizeHint(int index) const
 
     QSize ts = QSize(w, h);
     return ts;
-}
-
-
-void TabBar::contextMenuRequested(const QPoint &position)
-{
-    KMenu menu;
-    MainWindow *mainWindow = Application::instance()->mainWindow();
-
-    menu.addAction(mainWindow->actionByName(QLatin1String("new_tab")));
-    int index = tabAt(position);
-    if (-1 != index)
-    {
-        m_actualIndex = index;
-
-        menu.addAction( mainWindow->actionByName("clone_tab") );
-        menu.addSeparator();
-        menu.addAction( mainWindow->actionByName("close_tab") );
-        menu.addAction( mainWindow->actionByName("close_other_tabs") );
-        menu.addSeparator();
-        menu.addAction( mainWindow->actionByName("reload_tab") );
-    }
-    else
-    {
-        menu.addSeparator();
-    }
-    menu.addAction( mainWindow->actionByName("reload_all_tabs") );
-    menu.exec(QCursor::pos());
 }
 
 
@@ -311,4 +284,37 @@ void TabBar::updateNewTabButton()
 
         m_addTabButton->move(newPosX, newPosY);
     }
+}
+
+
+void TabBar::slotContextMenuRequested(int tab, const QPoint &pos)
+{
+    m_actualIndex = tab;
+
+    KMenu menu;
+    MainWindow *mainWindow = Application::instance()->mainWindow();
+
+    menu.addAction(mainWindow->actionByName(QLatin1String("new_tab")));
+    menu.addAction( mainWindow->actionByName("clone_tab") );
+    menu.addSeparator();
+    menu.addAction( mainWindow->actionByName("close_tab") );
+    menu.addAction( mainWindow->actionByName("close_other_tabs") );
+    menu.addSeparator();
+    menu.addAction( mainWindow->actionByName("reload_tab") );
+    menu.addAction( mainWindow->actionByName("reload_all_tabs") );
+
+    menu.exec(pos);
+}
+
+
+void TabBar::slotEmptyAreaContextMenu(const QPoint &pos)
+{
+    KMenu menu;
+    MainWindow *mainWindow = Application::instance()->mainWindow();
+
+    menu.addAction(mainWindow->actionByName(QLatin1String("new_tab")));
+    menu.addSeparator();
+    menu.addAction( mainWindow->actionByName("reload_all_tabs") );
+
+    menu.exec(pos);
 }

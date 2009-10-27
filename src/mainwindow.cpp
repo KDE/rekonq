@@ -333,16 +333,15 @@ void MainWindow::setupActions()
 
     KStandardAction::forward(this, SLOT(slotOpenNext()) , actionCollection());
 
-    // ============================== Tab Actions ====================================
+    // ============================== General Tab Actions ====================================
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
     actionCollection()->addAction(QLatin1String("new_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(newTab()));
 
-    a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_W));
-    actionCollection()->addAction(QLatin1String("close_tab"), a);
-    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotCloseTab()));
+    a = new KAction(KIcon("view-refresh"), i18n("Reload All Tabs"), this);
+    actionCollection()->addAction( QLatin1String("reload_all_tabs"), a);
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotReloadAllTabs()) );
 
     a = new KAction(i18n("Show Next Tab"), this);
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext());
@@ -353,6 +352,12 @@ void MainWindow::setupActions()
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
+
+    // ============================== Indexed Tab Actions ====================================
+    a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_W));
+    actionCollection()->addAction(QLatin1String("close_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotCloseTab()));
 
     a = new KAction(KIcon("tab-duplicate"), i18n("Clone Tab"), this);
     actionCollection()->addAction(QLatin1String("clone_tab"), a);
@@ -365,14 +370,8 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("view-refresh"), i18n("Reload Tab"), this);
     actionCollection()->addAction( QLatin1String("reload_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(reloadTab()) );
-
-    a = new KAction(KIcon("view-refresh"), i18n("Reload All Tabs"), this);
-    actionCollection()->addAction( QLatin1String("reload_all_tabs"), a);
-    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotReloadAllTabs()) );
-
-    // ------------------------------------------------------------------------------------------------------------    
     
-    // Bookmarks ToolBar Action
+    // ----------------------- Bookmarks ToolBar Action --------------------------------------
     QAction *qa = m_bmBar->toggleViewAction();
     qa->setText( i18n("Bookmarks Toolbar") );
     qa->setIcon( KIcon("bookmark-toolbar") );
