@@ -362,7 +362,6 @@ void MainWindow::setupActions()
 
     // ============================== Indexed Tab Actions ====================================
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_W));
     actionCollection()->addAction(QLatin1String("close_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(closeTab()));
 
@@ -892,24 +891,34 @@ bool MainWindow::queryClose()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    // hide findbar
     if (event->key() == Qt::Key_Escape)
     {
         m_findBar->hide();
         return;
     }
 
+    // ctrl + tab action
     if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Tab))
     {
         emit ctrlTabPressed();
         return;
     }
 
+    // shift + ctrl + tab action
     if ((event->modifiers() == Qt::ControlModifier + Qt::ShiftModifier) && (event->key() == Qt::Key_Backtab))
     {
         emit shiftCtrlTabPressed();
         return;
     }
 
+    // close current tab action
+    if ((event->modifiers() == Qt::ControlModifier) && event->key() == Qt::Key_W)
+    {
+        m_view->slotCloseTab(m_view->currentIndex());
+        return;
+    }
+    
     KMainWindow::keyPressEvent(event);
 }
 
