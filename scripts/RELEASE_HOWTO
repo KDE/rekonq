@@ -10,7 +10,7 @@ Section 0: A few days in advance
 SECTION 1: Preparation
 
 * Check the README file is still relevant
-* Bump Version Number (in the CMakeLists.txt && in src/main.cpp) (TODO: something better?)
+* Bump Version Number (in the CMakeLists.txt file)
 * Commit the source to GIT
 
 --------------------------------------------------------------------------------
