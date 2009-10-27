@@ -267,7 +267,13 @@ void PreviewImage::mousePressEvent(QMouseEvent *event)
     {
         Application::instance()->loadUrl(m_url);
         return;
-    };
+    }
+    else if(event->button() == Qt::MidButton)
+    {
+        Application::instance()->loadUrl(m_url, Rekonq::SettingOpenTab);
+        return;
+    }
+
     QWidget::mousePressEvent(event);
 }
 
