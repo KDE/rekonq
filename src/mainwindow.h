@@ -167,9 +167,10 @@ private:
     
     QString m_lastSearch;
 
-    QPointer<KPassivePopup> m_popup;
+    KPassivePopup *m_popup;
 
     KActionCollection *m_ac;
+
 };
 
 #endif // MAINWINDOW_H

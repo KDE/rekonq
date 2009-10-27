@@ -100,6 +100,7 @@ MainWindow::MainWindow()
     , m_historyBackMenu(0)
     , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, false) )
+    , m_popup( new KPassivePopup(this) )
     , m_ac( new KActionCollection(this) )
 {
     // enable window size "auto-save"
@@ -139,6 +140,12 @@ MainWindow::MainWindow()
 
     // no more status bar..
     setStatusBar(0);
+
+    // setting popup notification
+    m_popup->setAutoDelete(false);
+    connect(Application::instance(), SIGNAL(focusChanged(QWidget*,QWidget*)), m_popup, SLOT(hide()));
+    m_popup->setFrameShape(QFrame::NoFrame);
+    m_popup->setLineWidth(0);
 
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
@@ -902,7 +909,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         emit shiftCtrlTabPressed();
         return;
     }
-    
+
     KMainWindow::keyPressEvent(event);
 }
 
@@ -931,19 +938,9 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     // deleting popus if empty msgs
     if(msg.isEmpty())
     {
-        if(m_popup)
-        {
-            m_popup->deleteLater();
-        }
+        m_popup->hide();
         return;
     }
-
-    KPassivePopup *popup_sav = m_popup;
-
-    m_popup = new KPassivePopup(this);
-    m_popup->setAutoDelete(true);
-
-    connect(Application::instance(), SIGNAL(focusChanged(QWidget*,QWidget*)), m_popup, SLOT(hide()));
 
     QPixmap px;
     QString pixPath;
@@ -965,17 +962,15 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     int margin = 4;
 
     // setting the popup
-    m_popup->setFrameShape(QFrame::NoFrame);
     QLabel *label = new QLabel(msg);
     label->setMaximumWidth(width()-2*margin);
-    m_popup->setLineWidth(0);
     m_popup->setView(label);
-    m_popup->setFixedSize(0, 0);
+    QSize labelSize(label->fontMetrics().width(msg)+2*margin, label->fontMetrics().height()+2*margin);
+    m_popup->setFixedSize(labelSize);
     m_popup->layout()->setAlignment(Qt::AlignTop);
     m_popup->layout()->setMargin(margin);
 
     // useful values
-    QSize labelSize(label->fontMetrics().width(msg)+2*margin, label->fontMetrics().height()+2*margin);
     bool scrollbarIsVisible = m_view->currentWebView()->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
     int scrollbarSize = 0;
     if (scrollbarIsVisible)
@@ -997,12 +992,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
         y = bottomLeftY - labelSize.height();
     }
 
-    QPoint p(x,y);
-
-    m_popup->show(p);
-
-    if(popup_sav)
-        delete popup_sav;
+    m_popup->show(QPoint(x,y));
 }
 
 
@@ -1038,7 +1028,7 @@ void MainWindow::clearPrivateData()
         {
             QWebSettings::clearIconDatabase();
         }
-        
+
         if(clearWidget.homePageThumbs->isChecked())
         {
             QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rekonq"), true);
@@ -1068,7 +1058,7 @@ void MainWindow::slotAboutToShowBackMenu()
     // Limit history views in the menu to 8
     if(historyCount > 8)
         historyCount = 8;
-    
+
     kDebug() << "History Count: " << historyCount;
     for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i)
     {
@@ -1095,18 +1085,18 @@ void MainWindow::slotOpenActionUrl(QAction *action)
         kDebug() << "Invalid Offset!";
         return;
     }
-    
+
     if (offset < 0)
     {
         history->goToItem(history->itemAt(offset)); // back
         return;
     }
-    
+
     if (offset > 0)
     {
         history->goToItem(history->forwardItems(history->count() - offset).back()); // forward FIXME CRASH
     }
-    
+
 }
 
 
