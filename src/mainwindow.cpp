@@ -214,6 +214,7 @@ void MainWindow::postLaunch()
     // update toolbar actions signals
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
+
     // launch it manually. Just the first time...
     slotUpdateActions();
     
@@ -225,6 +226,9 @@ void MainWindow::postLaunch()
 
     // accept d'n'd
     setAcceptDrops(true);
+
+    // KActionCollection read settings
+    m_ac->readSettings();
 }
 
 
