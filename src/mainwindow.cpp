@@ -976,9 +976,9 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
     // setting the popup
     QLabel *label = new QLabel(msg);
-    label->setMaximumWidth(width()-2*margin);
     m_popup->setView(label);
     QSize labelSize(label->fontMetrics().width(msg)+2*margin, label->fontMetrics().height()+2*margin);
+    if (labelSize.width() > width()) labelSize.setWidth(width());
     m_popup->setFixedSize(labelSize);
     m_popup->layout()->setAlignment(Qt::AlignTop);
     m_popup->layout()->setMargin(margin);
