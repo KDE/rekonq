@@ -101,6 +101,7 @@ MainWindow::MainWindow()
     , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_popup( new KPassivePopup(this) )
+    , m_hidePopup( new QTimer(this) )
     , m_ac( new KActionCollection(this) )
 {
     // enable window size "auto-save"
@@ -146,6 +147,7 @@ MainWindow::MainWindow()
     connect(Application::instance(), SIGNAL(focusChanged(QWidget*,QWidget*)), m_popup, SLOT(hide()));
     m_popup->setFrameShape(QFrame::NoFrame);
     m_popup->setLineWidth(0);
+    connect(m_hidePopup, SIGNAL(timeout()), m_popup, SLOT(hide()));
 
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
@@ -951,12 +953,12 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     // deleting popus if empty msgs
     if(msg.isEmpty())
     {
-        m_popup->hide();
+        m_hidePopup->start(250);
         return;
     }
 
-    QPixmap px;
-    QString pixPath;
+    m_hidePopup->stop();
+    
 
     switch(status)
     {

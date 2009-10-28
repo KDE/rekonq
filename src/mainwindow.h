@@ -168,6 +168,7 @@ private:
     QString m_lastSearch;
 
     KPassivePopup *m_popup;
+    QTimer *m_hidePopup;
 
     KActionCollection *m_ac;
 
