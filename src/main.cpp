@@ -71,7 +71,7 @@ int main(int argc, char **argv)
                     "");
 
     about.addAuthor(ki18n("Lionel Chauvin"),
-                    ki18n("Developer, Ideas, Mockups"),
+                    ki18n("Developer, Ideas, Mockups. And the icon."),
                     "megabigbug@yahoo.fr",
                     "");
 
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
                     "");
 
     about.addCredit(ki18n("Ivan Čukić"),
-                    ki18n("Patches, bugfixing"),
+                    ki18n("Patches, bugfixing and ideas"),
                     "ivan@fomentgroup.org",
                     "");
 
