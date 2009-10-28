@@ -119,7 +119,7 @@ Private::Private(SettingsDialog *parent)
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
 
-    shortcutsEditor = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(),parent);
+    shortcutsEditor = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(), parent);
     pageItem = parent->addPage(shortcutsEditor , i18n("Shortcuts"));
     pageItem->setIcon(KIcon("configure-shortcuts"));
 
@@ -210,6 +210,7 @@ bool SettingsDialog::hasChanged()
             || d->ebrowsingModule->changed()            
             || d->cookiesModule->changed()
             || d->proxyModule->changed()
+            || d->shortcutsEditor->isModified();
             ;
 }
 
