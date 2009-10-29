@@ -60,22 +60,8 @@ protected:
     virtual bool acceptNavigationRequest(QWebFrame *frame, 
                                          const QNetworkRequest &request, 
                                          NavigationType type);
-    
-    void javaScriptAlert(QWebFrame *frame, 
-                         const QString &msg);
-                         
-    bool javaScriptConfirm(QWebFrame *frame, 
-                           const QString &msg);
-                           
-    bool javaScriptPrompt(QWebFrame *frame, 
-                          const QString &msg, 
-                          const QString &defaultValue, QString *result);
-    
-    QObject *createPlugin(const QString &classId, 
-                          const QUrl &url, 
-                          const QStringList &paramNames, 
-                          const QStringList &paramValues);
-                          
+
+                                         
 protected Q_SLOTS:    
     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
     virtual void slotDownloadRequested(const QNetworkRequest &request);

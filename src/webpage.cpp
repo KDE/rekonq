@@ -65,8 +65,6 @@
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
 
-#include <QtUiTools/QUiLoader>
-
 
 WebPage::WebPage(QObject *parent)
         : QWebPage(parent)
@@ -261,39 +259,6 @@ QString WebPage::errorPage(QNetworkReply *reply)
                             .arg(msg)
                             ;
     return html;
-}
-
-
-void WebPage::javaScriptAlert(QWebFrame *frame, const QString &msg)
-{
-    KMessageBox::error(frame->page()->view(), msg, i18n("JavaScript"));
-}
-
-
-bool WebPage::javaScriptConfirm(QWebFrame *frame, const QString &msg)
-{
-    return (KMessageBox::warningYesNo(frame->page()->view(), msg, i18n("JavaScript"), KStandardGuiItem::ok(), KStandardGuiItem::cancel())
-            == KMessageBox::Yes);
-}
-
-
-bool WebPage::javaScriptPrompt(QWebFrame *frame, const QString &msg, const QString &defaultValue, QString *result)
-{
-    bool ok = false;
-    *result = KInputDialog::getText(i18n("JavaScript"), msg, defaultValue, &ok, frame->page()->view());
-    return ok;
-}
-
-
-QObject *WebPage::createPlugin(const QString &classId, const QUrl &url, const QStringList &paramNames, const QStringList &paramValues)
-{
-    kDebug() << "create Plugin requested:";
-    kDebug() << "classid:" << classId;
-    kDebug() << "url:" << url;
-    kDebug() << "paramNames:" << paramNames << " paramValues:" << paramValues;
-    
-    QUiLoader loader;
-    return loader.createWidget(classId, view());
 }
 
 
