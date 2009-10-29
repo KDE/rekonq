@@ -49,12 +49,12 @@
 #include <KUrl>
 #include <KDebug>
 #include <KToolInvocation>
+#include <KProtocolManager>
 
 #include <KDE/KParts/BrowserRun>
 #include <KDE/KMimeTypeTrader>
 #include <KDE/KRun>
 #include <KDE/KFileDialog>
-#include <KDE/KInputDialog>
 #include <KDE/KMessageBox>
 #include <KDE/KJobUiDelegate>
 
@@ -274,4 +274,16 @@ void WebPage::slotDownloadRequested(const QNetworkRequest &request)
     job->addMetaData("MaxCacheSize", "0"); // Don't store in http cache.
     job->addMetaData("cache", "cache"); // Use entry from cache if available.
     job->uiDelegate()->setAutoErrorHandlingEnabled(true);
+}
+
+
+QString WebPage::userAgentForUrl(const QUrl& _url) const
+{
+    const KUrl url(_url);
+    QString userAgent = KProtocolManager::userAgentForHost((url.isLocalFile() ? "localhost" : url.host()));
+
+    if (userAgent == KProtocolManager::defaultUserAgent())
+        return QWebPage::userAgentForUrl(_url);
+
+    return userAgent;
 }

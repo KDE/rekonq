@@ -61,7 +61,8 @@ protected:
                                          const QNetworkRequest &request, 
                                          NavigationType type);
 
-                                         
+    virtual QString userAgentForUrl(const QUrl& url) const;
+    
 protected Q_SLOTS:    
     virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
     virtual void slotDownloadRequested(const QNetworkRequest &request);
