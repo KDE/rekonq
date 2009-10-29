@@ -144,6 +144,10 @@ void TabBar::showTabPreview(int tab)
     WebView *view = m_parent->webView(tab);
     WebView *currentView = m_parent->webView(currentIndex());
 
+    // should fix bug #212219
+    if(!currentView)
+        return;
+    
     int w = tabSizeHint(tab).width();
     int h = w*((0.0 + currentView->height())/currentView->width());
 
