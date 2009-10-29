@@ -64,7 +64,6 @@
 TabBar::TabBar(MainView *parent)
         : KTabBar(parent)
         , m_parent(parent)
-        , m_addTabButton(new QToolButton(this))
         , m_currentTabPreview(-1)
 {
     setElideMode(Qt::ElideRight);
@@ -77,8 +76,6 @@ TabBar::TabBar(MainView *parent)
 
     connect(this, SIGNAL(contextMenu(int, const QPoint &)), this, SLOT(slotContextMenuRequested(int, const QPoint &)));
     connect(this, SIGNAL(emptyAreaContextMenu(const QPoint &)), this, SLOT(slotEmptyAreaContextMenu(const QPoint &)));
-
-    QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
 
@@ -87,27 +84,9 @@ TabBar::~TabBar()
 }
 
 
-void TabBar::postLaunch()
-{
-    // Find the correct MainWindow of this tab button
-    MainWindowList list = Application::instance()->mainWindowList();
-    Q_FOREACH(QPointer<MainWindow> w, list)
-    {
-        if (w->isAncestorOf(this))
-        {
-            m_addTabButton->setDefaultAction(w->actionByName("new_tab"));
-            break;
-        }
-    }
-    
-    m_addTabButton->setAutoRaise(true);
-    m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-}
-
-
 QSize TabBar::tabSizeHint(int index) const
 {
-    int buttonSize = m_addTabButton->size().width();
+    int buttonSize = m_parent->addTabButton()->size().width();
     int tabBarWidth = m_parent->size().width() - buttonSize;
     int baseWidth =  m_parent->sizeHint().width()/BASE_WIDTH_DIVISOR;
     int minWidth =  m_parent->sizeHint().width()/MIN_WIDTH_DIVISOR;
@@ -243,6 +222,7 @@ void TabBar::leaveEvent(QEvent *event)
     KTabBar::leaveEvent(event);
 }
 
+
 void TabBar::mousePressEvent(QMouseEvent *event)
 {
     // just close tab on middle mouse click
@@ -250,40 +230,6 @@ void TabBar::mousePressEvent(QMouseEvent *event)
         return;
     
     KTabBar::mousePressEvent(event);
-}
-
-
-void TabBar::updateNewTabButton()
-{
-    static bool ButtonInCorner = false;
-
-    int tabWidgetWidth = m_parent->frameSize().width();
-    int tabBarWidth = tabSizeHint(0).width() * count();
-
-    if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
-    {
-        if(ButtonInCorner)
-            return;
-        m_parent->setCornerWidget(m_addTabButton);
-        ButtonInCorner = true;
-    }
-    else
-    {
-        if(ButtonInCorner)
-        {
-            m_parent->setCornerWidget(0);
-            m_addTabButton->show();
-            ButtonInCorner = false;
-        }
-
-        int newPosX = tabWidgetWidth - m_addTabButton->width();
-        int newPosY = height() - m_addTabButton->height();
-
-        if (tabBarWidth + m_addTabButton->width() < tabWidgetWidth)
-            newPosX = tabBarWidth;
-
-        m_addTabButton->move(newPosX, newPosY);
-    }
 }
 
 

@@ -68,6 +68,7 @@ MainView::MainView(QWidget *parent)
         : KTabWidget(parent)
         , m_urlBar(new UrlBar(this))
         , m_tabBar(new TabBar(this))
+        , m_addTabButton(new QToolButton(this))
         , m_currentTabIndex(0)
 {
     // setting tabbar
@@ -97,13 +98,82 @@ MainView::MainView(QWidget *parent)
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
     
-    // Session Manager
-    connect (this, SIGNAL(tabsChanged()), Application::sessionManager(), SLOT(saveSession()));
+    QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
 
 
 MainView::~MainView()
 {
+}
+
+
+void MainView::postLaunch()
+{
+    // Session Manager
+    connect (this, SIGNAL(tabsChanged()), Application::sessionManager(), SLOT(saveSession()));
+    
+    // Find the correct MainWindow of this tab button
+    MainWindowList list = Application::instance()->mainWindowList();
+    Q_FOREACH(QPointer<MainWindow> w, list)
+    {
+        if (w->isAncestorOf(this))
+        {
+            m_addTabButton->setDefaultAction(w->actionByName("new_tab"));
+            break;
+        }
+    }
+    
+    m_addTabButton->setAutoRaise(true);
+    m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+}
+
+
+void MainView::updateTabButtonPosition()
+{
+    kDebug() << "updating new tab button position..";
+    
+    static bool ButtonInCorner = false;
+
+    int tabWidgetWidth = frameSize().width();
+    int tabBarWidth = m_tabBar->tabSizeHint(0).width()*m_tabBar->count();
+
+    if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
+    {
+        if(ButtonInCorner)
+            return;
+        setCornerWidget(m_addTabButton);
+        ButtonInCorner = true;
+    }
+    else
+    {
+        if(ButtonInCorner)
+        {
+            setCornerWidget(0);
+            m_addTabButton->show();
+            ButtonInCorner = false;
+        }
+
+        // detecting X position
+        int newPosX = tabBarWidth;      
+        int tabWidthHint = m_tabBar->tabSizeHint(0).width();
+        if (tabWidthHint < sizeHint().width()/4)
+            newPosX = tabWidgetWidth - m_addTabButton->width();
+
+        // detecting Y position
+        int newPosY = m_tabBar->height() - m_addTabButton->height();
+        if(newPosY < 0)
+            newPosY = 5;    // this hardcoded value is used in just ONE situation:
+                            // the first time an user changes the "Always Show Tab Bar" settings
+                            // try some better fixes, if you can :D
+
+        m_addTabButton->move(newPosX, newPosY);
+    }
+}
+
+
+QToolButton *MainView::addTabButton() const
+{
+    return m_addTabButton;
 }
 
 
@@ -138,23 +208,25 @@ void MainView::updateTabBar()
         if (m_tabBar->isHidden())
         {
             m_tabBar->show();
+            m_addTabButton->show();
         }
-        m_tabBar->updateNewTabButton();
+        updateTabButtonPosition();
+        return;
+    }
+
+    if (m_tabBar->count() == 1)
+    {
+        m_tabBar->hide();
+        m_addTabButton->hide();
     }
     else
     {
-        if (m_tabBar->count() == 1)
+        if (m_tabBar->isHidden())
         {
-            m_tabBar->hide();
+            m_tabBar->show();
+            m_addTabButton->show();
         }
-        else
-        {
-            if (m_tabBar->isHidden())
-            {
-                m_tabBar->show();
-            }
-            m_tabBar->updateNewTabButton();
-        }
+        updateTabButtonPosition();
     }
 }
 

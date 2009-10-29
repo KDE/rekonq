@@ -42,7 +42,6 @@
 
 // Forward Declarations
 class QPoint;
-class QToolButton;
 class QMouseEvent;
 class QEvent;
 
@@ -63,7 +62,6 @@ public:
     ~TabBar();
 
     void showTabPreview(int tab);
-    void updateNewTabButton();
 
 signals:
     void cloneTab(int index);
@@ -77,6 +75,7 @@ protected:
      * Added to fix tab dimension
      */
     virtual QSize tabSizeHint(int index) const;
+    
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
@@ -87,14 +86,13 @@ private slots:
     void closeOtherTabs();
     void reloadTab();
 
-    void postLaunch();
-
     void slotContextMenuRequested(int, const QPoint &);
     void slotEmptyAreaContextMenu(const QPoint &);
 
 private:
+    friend class MainView;
+    
     MainView *m_parent;
-    QToolButton *m_addTabButton;
 
     /**
      * the index in which we are seeing a Context menu

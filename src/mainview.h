@@ -39,6 +39,9 @@
 // KDE Includes
 #include <KTabWidget>
 
+// Qt Includes
+#include <QtGui/QToolButton>
+
 // Forward Declarations
 class QUrl;
 class QWebFrame;
@@ -78,6 +81,8 @@ public:
      *
      */
     void updateTabBar();
+    
+    QToolButton *addTabButton() const;
     void clear();
 
     /**
@@ -137,10 +142,14 @@ private slots:
 
     void windowCloseRequested();
 
+    void postLaunch();
+    
 protected:
     virtual void resizeEvent(QResizeEvent *event);
 
 private:
+    void updateTabButtonPosition();
+
     /**
      * This function creates (if not exists) and returns a QLabel
      * with a loading QMovie.
@@ -157,6 +166,9 @@ private:
     TabBar *m_tabBar;
 
     QString m_loadingGitPath;
+
+    // the new tab button
+    QToolButton *m_addTabButton;
 
     int m_currentTabIndex;
 

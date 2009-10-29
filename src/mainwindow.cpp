@@ -240,7 +240,7 @@ QSize MainWindow::sizeHint() const
 }
 
 
-KActionCollection *MainWindow::actionCollection () const
+KActionCollection *MainWindow::actionCollection() const
 {
     return m_ac;
 }
@@ -460,7 +460,7 @@ void MainWindow::setupSidePanel()
 void MainWindow::slotUpdateConfiguration()
 {
     // ============== General ==================
-    mainView()->updateTabBar();
+    m_view->updateTabBar();
 
     // =========== Fonts ==============
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
