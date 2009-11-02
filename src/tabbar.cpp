@@ -47,14 +47,13 @@
 #include <KPassivePopup>
 
 // Qt Includes
-#include <QtCore/QString>
-
-#include <QtGui/QFont>
-#include <QtGui/QToolButton>
-#include <QtGui/QLabel>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPainter>
-#include <QtGui/QVBoxLayout>
+#include <QString>
+#include <QFont>
+#include <QToolButton>
+#include <QLabel>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QVBoxLayout>
 
 
 #define BASE_WIDTH_DIVISOR    4
