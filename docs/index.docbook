@@ -3,8 +3,6 @@
 "dtd/kdex.dtd" [
   <!ENTITY rekonq "<application>rekonq</application>"> 
   <!ENTITY kappname "&rekonq;">
-  <!ENTITY Konqueror "Konqueror">
-  <!ENTITY krunner "krunner">
   <!ENTITY Andrea.Diamantini "<personname>
                               <firstname>Andrea</firstname>
                               <surname>Diamantini</surname>
@@ -36,7 +34,6 @@
 <authorgroup>
 <author>&Andrea.Diamantini; &Andrea.Diamantini.mail;</author>
 <author>&Rohan.Garg; &Rohan.Garg.mail;</author>
-<!-- TRANS:ROLES_OF_TRANSLATORS -->
 </authorgroup>
 
 <copyright>
@@ -75,8 +72,8 @@
 <para>
 &rekonq; is a lightweight web browser for &kde; based on WebKit. It can currently 
 <itemizedlist>
-<listitem><para>Share bookmarks with &Konqueror;</para></listitem>
-<listitem><para>Share Cookies with &Konqueror;</para></listitem>
+<listitem><para>Share bookmarks with &konqueror;</para></listitem>
+<listitem><para>Share Cookies with &konqueror;</para></listitem>
 <listitem><para>Handle tabbed browsing</para></listitem>
 <listitem><para>Display tab previews</para></listitem>
 <listitem><para>Handle support for NS plugins (eg: flash)</para></listitem>
@@ -94,7 +91,8 @@
 <title>Introduction</title>
 
 <para>
-&rekonq; is a lightweight web browser for &kde; based on WebKit. Its code is based on Nokia QtDemoBrowser. Its implementation is going to embrace &kde; technologies to have a full-featured &kde; web browser.
+&rekonq; is a lightweight web browser for &kde; based on WebKit. Its code is based on Nokia QtDemoBrowser. 
+Its implementation is going to embrace &kde; technologies to have a full-featured &kde; web browser.
 </para>
 </chapter>
 <!-- ================== CHAPTER ==================  -->
@@ -122,15 +120,22 @@
 
 <title>Starting &rekonq;</title>
 <para>
-rekonq can be started in the following ways
+&rekonq; can be started in the following ways
 <itemizedlist>
-<listitem><para>From the K menu select <guimenuitem>Applications</guimenuitem> -> <guimenuitem>Internet</guimenuitem> -> <guimenuitem>rekonq</guimenuitem></para></listitem>
-<listitem><para><keycap>Alt+F2</keycap>will open a <guimenuitem>Run Command</guimenuitem> dialog box,type rekonq (lower case) and press <keycap>Enter</keycap> or the <guibutton>Run</guibutton> to start &rekonq;</para></listitem>
+<listitem><para>From the application launcher select 
+<menuchoice>
+<guimenuitem>Applications</guimenuitem>
+<guisubmenu>Internet</guisubmenu>
+<guimenuitem>rekonq</guimenuitem>
+</menuchoice>
+</para></listitem>
+<listitem><para><keycombo action="simul">&Ctrl;<keycap>F2</keycap></keycombo> will open a
+<guimenuitem>Run Command</guimenuitem> dialog box,type rekonq (lower case) and press &Enter; or
+the <guibutton>Run</guibutton> to start &rekonq;</para></listitem>
 </itemizedlist>
 </para>
 </sect1>
 </chapter>
-
 
 <!-- ================== CHAPTER ==================  -->
 
@@ -148,7 +153,7 @@ Program copyright:
 
 <itemizedlist>
 <title>Developers</title>
-<listitem><para>&The.rekonq.Team; &The.rekonq.Team.mail; Find more about us in the 'About rekonq' section</para></listitem>
+<listitem><para>&The.rekonq.Team; &The.rekonq.Team.mail; Find more about us in the 'About &rekonq;' section</para></listitem>
 
 
 </itemizedlist>
@@ -173,8 +178,7 @@ Documentation copyright 2009 &Rohan.Garg; &Rohan.Garg.mail;
 
 <sect1 id="Getting-rekonq">
 <title>How to obtain &rekonq;</title>
-<!-- &install.intro.documentation; ##Install instructions obsolete,confirm with adjam if this is internally linked? -->
-<para>Stable Packages of rekonq can be downloaded via standard repositories of your distribution</para>
+<para>Stable Packages of &rekonq; can be downloaded via standard repositories of your distribution</para>
 </sect1>
 
 <sect1 id="Requirements">
@@ -188,7 +192,8 @@ In order to successfully use &rekonq;, you need at least &Qt; 4.5.x and &kde; 4.
 
 <sect1 id="compilation">
 <title>Compilation and Installation</title>
-<para>If you wish to compile rekonq,go to <ulink url="http://techbase.kde.org/Projects/rekonq/Compiling_rekonq">The how to compile &rekonq; page</ulink>.
+<para>If you wish to compile &rekonq;,go to
+<ulink url="http://techbase.kde.org/Projects/rekonq/Compiling_rekonq">The how to compile &rekonq; page</ulink>.
 </para>
 </sect1>
 
