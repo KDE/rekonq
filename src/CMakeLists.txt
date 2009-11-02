@@ -1,3 +1,8 @@
+### ------- tests sub dir -------
+
+ADD_SUBDIRECTORY( tests )
+
+
 ### ------- SETTING REKONQ FILES..
 
 SET( rekonq_KDEINIT_SRCS
