@@ -129,7 +129,7 @@ Its implementation is going to embrace &kde; technologies to have a full-feature
 <guimenuitem>rekonq</guimenuitem>
 </menuchoice>
 </para></listitem>
-<listitem><para><keycombo action="simul">&Ctrl;<keycap>F2</keycap></keycombo> will open a
+<listitem><para><keycombo action="simul">&Alt;<keycap>F2</keycap></keycombo> will open a
 <guimenuitem>Run Command</guimenuitem> dialog box,type rekonq (lower case) and press &Enter; or
 the <guibutton>Run</guibutton> to start &rekonq;</para></listitem>
 </itemizedlist>
