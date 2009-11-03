@@ -39,19 +39,18 @@
 #include "webpage.h"
 
 // KDE Includes
-#include <KUrl>
 #include <KDebug>
 #include <KService>
 #include <KUriFilterData>
 #include <KStandardShortcut>
 
 // Qt Includes
-#include <QtGui/QContextMenuEvent>
-#include <QtGui/QWheelEvent>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QAction>
+#include <QContextMenuEvent>
+#include <QWheelEvent>
+#include <QMouseEvent>
+#include <QClipboard>
+#include <QKeyEvent>
+#include <QAction>
 
 
 WebView::WebView(QWidget* parent)
