@@ -81,6 +81,9 @@ UrlBar::UrlBar(QWidget *parent)
     QPalette p = view()->palette();
     p.setColor(QPalette::Base, palette().color(QPalette::Base));
     view()->setPalette(p);
+
+    // load urls on activated urlbar signal
+    connect(this, SIGNAL(activated(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
 }
 
 

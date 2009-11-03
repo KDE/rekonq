@@ -91,9 +91,6 @@ MainView::MainView(QWidget *parent)
     connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(slotReloadAllTabs()));
 
     connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
-
-    // connecting urlbar signals
-    connect(urlBar(), SIGNAL(activated(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
     
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));

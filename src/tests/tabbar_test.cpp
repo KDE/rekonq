@@ -18,8 +18,11 @@
  * Boston, MA  02110-1301  USA
  */
 
-#include <QtGui/QtGui>
-#include <QtTest/QtTest>
+#include <qtest_kde.h>
+
+#include <QtTest>
+#include <QtCore>
+#include <QtGui>
 
 #include "../tabbar.h"
 
@@ -101,6 +104,7 @@ void TabBarTest::cleanup()
 {
 }
 
+// -------------------------------------------
 
 void TabBarTest::tabbar_data()
 {
@@ -109,8 +113,10 @@ void TabBarTest::tabbar_data()
 
 void TabBarTest::tabbar()
 {
+    SubTabBar widget;
 }
 
+// -------------------------------------------
 
 void TabBarTest::tabSizeHint_data()
 {
@@ -127,7 +133,8 @@ void TabBarTest::tabSizeHint()
 //     SubTabBar bar;
 //     QVERIFY(bar.call_tabSizeHint(index).width() <= 250);
 }
+    
+// -------------------------------------------
 
-
-QTEST_MAIN(TabBarTest)
-#include "tst_tabbar.moc"
+QTEST_KDEMAIN(TabBarTest, GUI)
+#include "tabbar_test.moc"

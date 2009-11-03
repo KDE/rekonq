@@ -31,6 +31,7 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "webview.h"
 #include "webpage.h"
 #include "application.h"
@@ -58,7 +59,7 @@ class UrlBar;
  *
  */
 
-class MainView : public KTabWidget
+class REKONQ_TESTS_EXPORT MainView : public KTabWidget
 {
     Q_OBJECT
 
