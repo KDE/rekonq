@@ -1,6 +1,11 @@
+### ------- tests sub dir -------
+
+ADD_SUBDIRECTORY( tests )
+
+
 ### ------- SETTING REKONQ FILES..
 
-SET( rekonq_SRCS
+SET( rekonq_KDEINIT_SRCS
     homepage.cpp
     previewimage.cpp
     websnap.cpp
@@ -18,8 +23,7 @@ SET( rekonq_SRCS
     urlbar.cpp
     findbar.cpp
     settings.cpp
-    webview.cpp 
-    main.cpp
+    webview.cpp
     sidepanel.cpp
     panelhistory.cpp
     lineedit.cpp
@@ -29,7 +33,7 @@ SET( rekonq_SRCS
 )
 
 
-KDE4_ADD_UI_FILES( rekonq_SRCS
+KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings_general.ui
     settings_tabs.ui
     settings_fonts.ui
@@ -37,7 +41,7 @@ KDE4_ADD_UI_FILES( rekonq_SRCS
     cleardata.ui
  )
 
-KDE4_ADD_KCFG_FILES( rekonq_SRCS rekonq.kcfgc )
+KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
 
 
 ### ------------- INCLUDING DIRECTORIES...
@@ -55,12 +59,12 @@ ADD_DEFINITIONS ( ${KDE4_DEFINITIONS} )
 
 ### --------------- ADDING EXECUTABLE...
 
-KDE4_ADD_EXECUTABLE( rekonq ${rekonq_SRCS} )
+KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
 
 
 ### --------------- TARGETTING LINK LIBRARIES...
 
-TARGET_LINK_LIBRARIES ( rekonq
+TARGET_LINK_LIBRARIES ( kdeinit_rekonq
                         ${QT_LIBRARIES} 
                         ${QT_QTNETWORK_LIBRARY}
                         ${QT_QTWEBKIT_LIBRARY} 
@@ -74,4 +78,5 @@ TARGET_LINK_LIBRARIES ( rekonq
 ### ------------ INSTALL FILES...
 
 INSTALL( TARGETS rekonq ${INSTALL_TARGETS_DEFAULT_ARGS} )
+INSTALL( TARGETS kdeinit_rekonq  ${INSTALL_TARGETS_DEFAULT_ARGS} )
 INSTALL( FILES rekonq.kcfg  DESTINATION  ${KCFG_INSTALL_DIR} )

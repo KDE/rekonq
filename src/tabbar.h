@@ -32,6 +32,7 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "mainview.h"
 
 // Qt Includes
@@ -53,7 +54,7 @@ class KPassivePopup;
  * a context menu and shortcuts
  *
  */
-class TabBar : public KTabBar
+class REKONQ_TESTS_EXPORT TabBar : public KTabBar
 {
     Q_OBJECT
 

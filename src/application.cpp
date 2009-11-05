@@ -172,7 +172,7 @@ int Application::newInstance()
 
 Application *Application::instance()
 {
-    return (static_cast<Application *>(QCoreApplication::instance()));
+    return (qobject_cast<Application *>(QCoreApplication::instance()));
 }
 
 
