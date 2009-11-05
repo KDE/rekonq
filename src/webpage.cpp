@@ -271,8 +271,8 @@ void WebPage::slotDownloadRequested(const QNetworkRequest &request)
     if (destUrl.isEmpty()) return;
     KIO::Job *job = KIO::file_copy(url, KUrl(destUrl), -1, KIO::Overwrite);
     //job->setMetaData(metadata); //TODO: add metadata from request
-    job->addMetaData("MaxCacheSize", "0"); // Don't store in http cache.
-    job->addMetaData("cache", "cache"); // Use entry from cache if available.
+    job->addMetaData( QLatin1String("MaxCacheSize"), QLatin1String("0") ); // Don't store in http cache.
+    job->addMetaData( QLatin1String("cache"), QLatin1String("cache") ); // Use entry from cache if available.
     job->uiDelegate()->setAutoErrorHandlingEnabled(true);
 }
 
