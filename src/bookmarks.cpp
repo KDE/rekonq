@@ -219,13 +219,16 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
     if (toolBarGroup.isNull())
         return;
 
-    m_bookmarkToolBar->clear(); // FIXME CRASH
-
-    KBookmark bookmark = toolBarGroup.first();
-    while (!bookmark.isNull())
+    if(m_bookmarkToolBar)
     {
-        m_bookmarkToolBar->addAction(fillBookmarkBar(bookmark));
-        bookmark = toolBarGroup.next(bookmark);
+        m_bookmarkToolBar->clear(); // FIXME CRASH
+
+        KBookmark bookmark = toolBarGroup.first();
+        while (!bookmark.isNull())
+        {
+            m_bookmarkToolBar->addAction(fillBookmarkBar(bookmark));
+            bookmark = toolBarGroup.next(bookmark);
+        }
     }
 }
 
