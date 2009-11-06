@@ -201,7 +201,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Home Page</string>
+          <string comment="@item:inlistbox">Home Page</string>
          </property>
         </item>
        </widget>
