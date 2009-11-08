@@ -357,6 +357,37 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
+    // first, create the webview(s) to not let hangs UI..
+    WebView *webView = 0;
+    MainWindow *w = 0;
+    
+    if(type == Rekonq::NewWindow)
+    {
+        w = newMainWindow();
+    }
+    else
+    {
+        w = mainWindow();
+    }
+    
+    switch(type)
+    {
+    case Rekonq::SettingOpenTab:
+        webView = w->mainView()->newWebView(!ReKonfig::openTabsBack(),
+                                            ReKonfig::openTabsNearCurrent());
+        break;
+    case Rekonq::NewCurrentTab:
+        webView = w->mainView()->newWebView(true);
+        break;
+    case Rekonq::NewBackTab:
+        webView = w->mainView()->newWebView(false, ReKonfig::openTabsNearCurrent());
+        break;
+    case Rekonq::NewWindow:
+    case Rekonq::CurrentTab:
+        webView = w->mainView()->currentWebView();
+        break;
+    };
+
     // WARNING this is just a temporary hack waiting for the new "awesome bar" (rekonq 0.4 target)
     // and it may not work in all cases.
     // Known issues are (add that here to test the awesome bar code):
@@ -387,46 +418,15 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
                                         // are considered as executables
     if (KUriFilter::self()->filterUri(data))
     {
-        loadingUrl = data.uri().url();
+    loadingUrl = data.uri().url();
     }
     // ------------------- END WARNING --------------------------------------
 
-    WebView *webView = 0;
-    MainWindow *w = 0;
-    
-    if(type == Rekonq::NewWindow)
+    if (!ReKonfig::openTabsBack())
     {
-        w = newMainWindow();
-    }
-    else
-    {
-        w = mainWindow();
+        w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
     }
     
-    switch(type)
-    {
-    case Rekonq::SettingOpenTab:
-        webView = w->mainView()->newWebView(!ReKonfig::openTabsBack(),
-                                            ReKonfig::openTabsNearCurrent());
-        if (!ReKonfig::openTabsBack())
-        {
-            w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
-        }
-        break;
-    case Rekonq::NewCurrentTab:
-        webView = w->mainView()->newWebView(true);
-        w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
-        break;
-    case Rekonq::NewBackTab:
-        webView = w->mainView()->newWebView(false, ReKonfig::openTabsNearCurrent());
-        break;
-    case Rekonq::NewWindow:
-    case Rekonq::CurrentTab:
-        webView = w->mainView()->currentWebView();
-        w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
-        break;
-    };
-
     if (webView)
     {
         webView->setFocus();
