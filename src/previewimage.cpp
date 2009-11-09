@@ -56,7 +56,7 @@ PreviewImage::PreviewImage(const QUrl &url, const QString &title, int index, boo
     : QWidget()
     , ws(0)
     , loadingSnapshot(false)
-    , m_url(0)
+    , m_url(url)
     , m_title(title)
     , m_isFavorite(isFavorite)
     , m_index(index)
@@ -72,10 +72,10 @@ PreviewImage::PreviewImage(const QUrl &url, const QString &title, int index, boo
     int borderBottom = 14;
     int borderLeft = 16;
 
-    int previewWidth=200;
-    int previewHeight=150;
+    int previewWidth = 200;
+    int previewHeight = 150;
 
-    int urlHeight=18;
+    int urlHeight = 18;
 
     m_size = QSize(borderLeft+previewWidth+borderRight, borderTop+previewHeight+borderBottom+urlHeight);
 
