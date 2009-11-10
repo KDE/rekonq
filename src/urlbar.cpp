@@ -69,10 +69,10 @@ UrlBar::UrlBar(QWidget *parent)
     setupLineEdit();
 
     // add every item to history
-    connect(this, SIGNAL(returnPressed(const QString&)), SLOT(slotActivated(const QString&)));
-    connect(completionBox(), SIGNAL(activated(const QString&)), SLOT(slotActivated(const QString&)));
+    connect(this, SIGNAL(returnPressed(const QString&)), SLOT(activated(const QString&)));
+    connect(completionBox(), SIGNAL(activated(const QString&)), SLOT(activated(const QString&)));
 
-    connect(this, SIGNAL(cleared()), SLOT(slotCleared()));
+    connect(this, SIGNAL(cleared()), SLOT(cleared()));
 
     // setup completion box
     setCompletionObject( Application::historyManager()->completionObject() );
@@ -144,7 +144,7 @@ void UrlBar::setUrl(const QUrl& url)
     else
         m_currentUrl = url;
 
-    slotUpdateUrl();
+    updateUrl();
 }
 
 
@@ -155,7 +155,7 @@ void UrlBar::setProgress(int progress)
 }
 
 
-void UrlBar::slotUpdateUrl()
+void UrlBar::updateUrl()
 {
     // Don't change my typed url...
     // FIXME this is not a proper solution (also if it works...)
@@ -190,7 +190,7 @@ void UrlBar::slotUpdateUrl()
 }
 
 
-void UrlBar::slotActivated(const QString& url)
+void UrlBar::activated(const QString& url)
 {
     if (url.isEmpty())
         return;
@@ -203,7 +203,7 @@ void UrlBar::slotActivated(const QString& url)
 }
 
 
-void UrlBar::slotCleared()
+void UrlBar::cleared()
 {
     // clear the history on user's request from context menu
     clear();
@@ -211,7 +211,7 @@ void UrlBar::slotCleared()
 }
 
 
-void UrlBar::slotLoadFinished(bool)
+void UrlBar::loadFinished(bool)
 {
     // reset progress bar after small delay
     m_progress = 0;
@@ -219,7 +219,7 @@ void UrlBar::slotLoadFinished(bool)
 }
 
 
-void UrlBar::slotUpdateProgress(int progress)
+void UrlBar::updateProgress(int progress)
 {
     m_progress = progress;
     repaint();

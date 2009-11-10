@@ -81,19 +81,19 @@ MainView::MainView(MainWindow *parent)
     m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.mng");
 
     // connecting tabbar signals
-    connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(slotCloseTab(int)));
-    connect(m_tabBar, SIGNAL(mouseMiddleClick(int)), this, SLOT(slotCloseTab(int)));
+    connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(closeTab(int)));
+    connect(m_tabBar, SIGNAL(mouseMiddleClick(int)), this, SLOT(closeTab(int)));
     connect(m_tabBar, SIGNAL(newTabRequest()), this, SLOT(newTab()));
     
-    connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(slotCloneTab(int)));
-    connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(slotCloseOtherTabs(int)));
-    connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(slotReloadTab(int)));
-    connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(slotReloadAllTabs()));
+    connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(cloneTab(int)));
+    connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(closeOtherTabs(int)));
+    connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(reloadTab(int)));
+    connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(reloadAllTabs()));
 
-    connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(slotCloseTab(int)));
+    connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
     
     // current page index changing
-    connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
     
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 }
@@ -219,7 +219,7 @@ void MainView::updateTabBar()
 }
 
 
-void MainView::slotWebReload()
+void MainView::webReload()
 {
     WebView *webView = currentWebView();
     QAction *action = webView->page()->action(QWebPage::Reload);
@@ -227,7 +227,7 @@ void MainView::slotWebReload()
 }
 
 
-void MainView::slotWebStop()
+void MainView::webStop()
 {
     WebView *webView = currentWebView();
     QAction *action = webView->page()->action(QWebPage::Stop);
@@ -247,7 +247,7 @@ void MainView::clear()
 
 
 // When index is -1 index chooses the current tab
-void MainView::slotReloadTab(int index)
+void MainView::reloadTab(int index)
 {
     if (index < 0)
         index = currentIndex();
@@ -261,7 +261,7 @@ void MainView::slotReloadTab(int index)
 
 
 // this slot is called on tab switching
-void MainView::slotCurrentChanged(int index)
+void MainView::currentChanged(int index)
 {
     // retrieve the webview related to the index
     WebView *webView = this->webView(index);
@@ -277,8 +277,8 @@ void MainView::slotCurrentChanged(int index)
     if (oldWebView)
     {        
         // disconnecting webview from urlbar
-        disconnect(oldWebView, SIGNAL(loadProgress(int)), urlBar(), SLOT(slotUpdateProgress(int)));
-        disconnect(oldWebView, SIGNAL(loadFinished(bool)), urlBar(), SLOT(slotLoadFinished(bool)));
+        disconnect(oldWebView, SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
+        disconnect(oldWebView, SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
         disconnect(oldWebView, SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
     
         // disconnecting webpage from mainview
@@ -289,8 +289,8 @@ void MainView::slotCurrentChanged(int index)
     }
 
     // connecting webview with urlbar
-    connect(webView, SIGNAL(loadProgress(int)), urlBar(), SLOT(slotUpdateProgress(int)));
-    connect(webView, SIGNAL(loadFinished(bool)), urlBar(), SLOT(slotLoadFinished(bool)));
+    connect(webView, SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
+    connect(webView, SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
     connect(webView, SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
     
     connect(webView->page(), SIGNAL(statusBarMessage(const QString&)), 
@@ -384,7 +384,7 @@ void MainView::newTab()
 }
 
 
-void MainView::slotReloadAllTabs()
+void MainView::reloadAllTabs()
 {
     for (int i = 0; i < count(); ++i)
     {
@@ -411,7 +411,7 @@ void MainView::windowCloseRequested()
         }
         else
         {
-            slotCloseTab(index);
+            closeTab(index);
         }
         return;
     }
@@ -419,19 +419,19 @@ void MainView::windowCloseRequested()
 }
 
 
-void MainView::slotCloseOtherTabs(int index)
+void MainView::closeOtherTabs(int index)
 {
     if (-1 == index)
         return;
 
     for (int i = count() - 1; i > index; --i)
     {
-        slotCloseTab(i);
+        closeTab(i);
     }
 
     for (int i = index - 1; i >= 0; --i)
     {
-        slotCloseTab(i);
+        closeTab(i);
     }
 
     updateTabBar();
@@ -439,7 +439,7 @@ void MainView::slotCloseOtherTabs(int index)
 
 
 // When index is -1 index chooses the current tab
-void MainView::slotCloneTab(int index)
+void MainView::cloneTab(int index)
 {
     if (index < 0)
         index = currentIndex();
@@ -460,7 +460,7 @@ void MainView::slotCloneTab(int index)
 
 
 // When index is -1 index chooses the current tab
-void MainView::slotCloseTab(int index)
+void MainView::closeTab(int index)
 {
     // do nothing if just one tab is opened
     if (count() == 1)
@@ -575,7 +575,7 @@ void MainView::webViewIconChanged()
         label->setMovie(0);
         label->setPixmap(icon.pixmap(16, 16));
 
-        urlBar()->slotUpdateUrl();
+        urlBar()->updateUrl();
     }
 }
 

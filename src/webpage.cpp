@@ -78,8 +78,8 @@ WebPage::WebPage(QObject *parent)
     setNetworkAccessManager(Application::networkAccessManager());
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     
-    connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(slotDownloadRequested(const QNetworkRequest &)));
-    connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(slotHandleUnsupportedContent(QNetworkReply *)));
+    connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequested(const QNetworkRequest &)));
+    connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
 }
 
 
@@ -155,7 +155,7 @@ WebPage *WebPage::newWindow(WebWindowType type)
 }
 
 
-void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
+void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError)
     {
@@ -166,14 +166,14 @@ void WebPage::slotHandleUnsupportedContent(QNetworkReply *reply)
 
         if( offer.isNull() ) // no service can handle this. We can just download it..
         {
-            slotDownloadRequested(reply->request());
+            downloadRequested(reply->request());
         }
         else
         {
             switch ( KParts::BrowserRun::askSave( url, offer, mimetype, filename ) )
             {
                 case KParts::BrowserRun::Save:
-                    slotDownloadRequested(reply->request());
+                    downloadRequested(reply->request());
                     return;
                 case KParts::BrowserRun::Cancel:
                     return;
@@ -263,7 +263,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
 
 
 // TODO FIXME: sometimes url.fileName() fails to retrieve url file name
-void WebPage::slotDownloadRequested(const QNetworkRequest &request)
+void WebPage::downloadRequested(const QNetworkRequest &request)
 {
     const KUrl url(request.url());
 

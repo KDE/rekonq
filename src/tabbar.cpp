@@ -73,8 +73,8 @@ TabBar::TabBar(MainView *parent)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(this, SIGNAL(contextMenu(int, const QPoint &)), this, SLOT(slotContextMenuRequested(int, const QPoint &)));
-    connect(this, SIGNAL(emptyAreaContextMenu(const QPoint &)), this, SLOT(slotEmptyAreaContextMenu(const QPoint &)));
+    connect(this, SIGNAL(contextMenu(int, const QPoint &)), this, SLOT(contextMenu(int, const QPoint &)));
+    connect(this, SIGNAL(emptyAreaContextMenu(const QPoint &)), this, SLOT(emptyAreaContextMenu(const QPoint &)));
 }
 
 
@@ -236,7 +236,7 @@ void TabBar::mousePressEvent(QMouseEvent *event)
 }
 
 
-void TabBar::slotContextMenuRequested(int tab, const QPoint &pos)
+void TabBar::contextMenu(int tab, const QPoint &pos)
 {
     m_actualIndex = tab;
 
@@ -256,7 +256,7 @@ void TabBar::slotContextMenuRequested(int tab, const QPoint &pos)
 }
 
 
-void TabBar::slotEmptyAreaContextMenu(const QPoint &pos)
+void TabBar::emptyAreaContextMenu(const QPoint &pos)
 {
     KMenu menu;
     MainWindow *mainWindow = Application::instance()->mainWindow();

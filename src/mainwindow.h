@@ -82,7 +82,7 @@ private:
     SidePanel *sidePanel();
 
 public slots:
-    void slotUpdateBrowser();
+    void updateBrowser();
     void homePage();
 
     /**
@@ -115,45 +115,45 @@ protected:
 
 private slots:
     void postLaunch();
-    void slotUpdateConfiguration();
-    void slotBrowserLoading(bool);
-    void slotUpdateActions();
-    void slotUpdateWindowTitle(const QString &title = QString());
+    void updateConfiguration();
+    void browserLoading(bool);
+    void updateActions();
+    void updateWindowTitle(const QString &title = QString());
 
     // history related
-    void slotOpenPrevious();
-    void slotOpenNext();
+    void openPrevious();
+    void openNext();
 
     // Find Action slots
-    void slotFind(const QString &);
-    void slotFindNext();
-    void slotFindPrevious();
+    void find(const QString &);
+    void findNext();
+    void findPrevious();
 
     // Zoom slots
-    void slotViewTextBigger();
-    void slotViewTextNormal();
-    void slotViewTextSmaller();
+    void viewTextBigger();
+    void viewTextNormal();
+    void viewTextSmaller();
 
     // File Menu slots
-    void slotOpenLocation();
-    void slotFileOpen();
-    void slotFileSaveAs();
+    void openLocation();
+    void fileOpen();
+    void fileSaveAs();
 
-    void slotViewPageSource();
-    void slotViewFullScreen(bool enable);
+    void viewPageSource();
+    void viewFullScreen(bool enable);
 
     // Tools Menu slots
-    void slotToggleInspector(bool enable);
-    void slotPrivateBrowsing(bool enable);
+    void toggleInspector(bool enable);
+    void privateBrowsing(bool enable);
 
     // Settings Menu slot
-    void slotPreferences();
+    void preferences();
 
     // clear private data
     void clearPrivateData();
 
-    void slotAboutToShowBackMenu();
-    void slotOpenActionUrl(QAction *action);
+    void aboutToShowBackMenu();
+    void openActionUrl(QAction *action);
 
 private:
     MainView *m_view;

@@ -63,8 +63,8 @@ WebView::WebView(QWidget* parent)
     setPage(m_page);
     
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
-    connect(this, SIGNAL(loadProgress(int)), this, SLOT(slotUpdateProgress(int)));
-    connect(this, SIGNAL(loadFinished(bool)), this, SLOT(slotLoadFinished(bool)));
+    connect(this, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
+    connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 }
 
 
@@ -200,7 +200,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                     a = new KAction(service->name(), this);
                     a->setIcon(Application::icon(KUrl(data.uri())));
                     a->setData(searchProviderPrefix);
-                    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotSearch()));
+                    connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
                     searchMenu->addAction(a);
                 }
             }
@@ -399,7 +399,7 @@ void WebView::wheelEvent(QWheelEvent *event)
 }
 
 
-void WebView::slotSearch()
+void WebView::search()
 {
     KAction *a = qobject_cast<KAction*>(sender());
     QString search = a->data().toString() + selectedText();
@@ -408,13 +408,13 @@ void WebView::slotSearch()
 }
 
 
-void WebView::slotUpdateProgress(int p)
+void WebView::updateProgress(int p)
 {
     m_progress = p;
 }
 
 
-void WebView::slotLoadFinished(bool)
+void WebView::loadFinished(bool)
 {
     m_progress = 0;
 }

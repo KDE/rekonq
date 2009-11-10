@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "homepage.h"
-#include "homepage.moc"
 
 // Auto Includes
 #include "rekonq.h"

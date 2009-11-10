@@ -121,20 +121,20 @@ public slots:
      */
     void newTab();
 
-    void slotCloneTab(int index = -1);
-    void slotCloseTab(int index = -1);
-    void slotCloseOtherTabs(int index);
-    void slotReloadTab(int index = -1);
-    void slotReloadAllTabs();
+    void cloneTab(int index = -1);
+    void closeTab(int index = -1);
+    void closeOtherTabs(int index);
+    void reloadTab(int index = -1);
+    void reloadAllTabs();
     void nextTab();
     void previousTab();
 
     // WEB slot actions
-    void slotWebReload();
-    void slotWebStop();
+    void webReload();
+    void webStop();
 
 private slots:
-    void slotCurrentChanged(int index);
+    void currentChanged(int index);
 
     void webViewLoadStarted();
     void webViewLoadFinished(bool ok);

@@ -72,14 +72,14 @@ FindBar::FindBar(KMainWindow *mainwindow)
     // lineEdit, focusProxy
     setFocusProxy(m_lineEdit);
     m_lineEdit->setMaximumWidth(250);
-    connect(m_lineEdit, SIGNAL(textChanged(const QString &)), mainwindow, SLOT(slotFind(const QString &)));
+    connect(m_lineEdit, SIGNAL(textChanged(const QString &)), mainwindow, SLOT(find(const QString &)));
     layout->addWidget(m_lineEdit);
 
     // buttons
     KPushButton *findNext = new KPushButton(KIcon("go-down"), i18n("&Next"), this);
     KPushButton *findPrev = new KPushButton(KIcon("go-up"), i18n("&Previous"), this);
-    connect(findNext, SIGNAL(clicked()), mainwindow, SLOT(slotFindNext()));
-    connect(findPrev, SIGNAL(clicked()), mainwindow, SLOT(slotFindPrevious()));
+    connect(findNext, SIGNAL(clicked()), mainwindow, SLOT(findNext()));
+    connect(findPrev, SIGNAL(clicked()), mainwindow, SLOT(findPrevious()));
     layout->addWidget(findNext);
     layout->addWidget(findPrev);
 

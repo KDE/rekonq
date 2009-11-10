@@ -115,7 +115,7 @@ public slots:
      * Save application's configuration
      * @see ReKonfig::self()->writeConfig();
      */
-    void slotSaveConfiguration() const;
+    void saveConfiguration() const;
 
     MainWindow *newMainWindow();
 

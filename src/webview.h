@@ -62,9 +62,9 @@ protected:
     
 private slots:
     void setStatusBarText(const QString &string);
-    void slotSearch();
-    void slotUpdateProgress(int progress);
-    void slotLoadFinished(bool);
+    void search();
+    void updateProgress(int progress);
+    void loadFinished(bool);
 
     void printFrame();
 

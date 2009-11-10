@@ -108,7 +108,7 @@ MainWindow::MainWindow()
     setAutoSaveSettings();
 
     // updating rekonq configuration
-    slotUpdateConfiguration();
+    updateConfiguration();
 
     // creating a centralWidget containing panel, m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
@@ -206,7 +206,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
 
     // --------- connect signals and slots
-    connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(slotUpdateWindowTitle(const QString &)));
+    connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
     // (shift +) ctrl + tab switching 
@@ -214,14 +214,14 @@ void MainWindow::postLaunch()
     connect(this, SIGNAL(shiftCtrlTabPressed()), m_view, SLOT(previousTab()));
 
     // update toolbar actions signals
-    connect(m_view, SIGNAL(tabsChanged()), this, SLOT(slotUpdateActions()));
-    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(slotUpdateActions()));
+    connect(m_view, SIGNAL(tabsChanged()), this, SLOT(updateActions()));
+    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(updateActions()));
 
     // launch it manually. Just the first time...
-    slotUpdateActions();
+    updateActions();
     
     // Find Bar signal
-    connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(slotFind(const QString &)));
+    connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(find(const QString &)));
 
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -262,89 +262,89 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), Application::instance(), SLOT(newMainWindow()));
 
     // Standard Actions
-    KStandardAction::open(this, SLOT(slotFileOpen()), actionCollection());
-    KStandardAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
+    KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
+    KStandardAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
     KStandardAction::print(this, SLOT(printRequested()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
-    KStandardAction::find(m_findBar, SLOT(show()) , actionCollection());
-    KStandardAction::findNext(this, SLOT(slotFindNext()) , actionCollection());
-    KStandardAction::findPrev(this, SLOT(slotFindPrevious()) , actionCollection());
 
-    // we all like "short" shortcuts.. ;)
-    a = KStandardAction::fullScreen(this, SLOT(slotViewFullScreen(bool)), this, actionCollection());
+    KStandardAction::find(m_findBar, SLOT(show()) , actionCollection());
+    KStandardAction::findNext(this, SLOT(findNext()) , actionCollection());
+    KStandardAction::findPrev(this, SLOT(findPrevious()) , actionCollection());
+
+    a = KStandardAction::fullScreen(this, SLOT(viewFullScreen(bool)), this, actionCollection());
     QList<QKeySequence> shortcutFullScreenList;
     shortcutFullScreenList << KStandardShortcut::fullScreen() << QKeySequence( Qt::Key_F11 );
     a->setShortcuts( shortcutFullScreenList );
 
     KStandardAction::home(this, SLOT(homePage()), actionCollection());
-    KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
+    KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
 
-    a = KStandardAction::redisplay(m_view, SLOT(slotWebReload()), actionCollection());
+    a = KStandardAction::redisplay(m_view, SLOT(webReload()), actionCollection());
     a->setText(i18n("Reload"));
 
     a = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Period));
     actionCollection()->addAction(QLatin1String("stop"), a);
-    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotWebStop()));
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(webStop()));
 
     // stop reload Action
     m_stopReloadAction = new KAction(this);
     actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
-    connect(m_view, SIGNAL(browserTabLoading(bool)), this, SLOT(slotBrowserLoading(bool)));
-    slotBrowserLoading(false); //first init for blank start page
+    connect(m_view, SIGNAL(browserTabLoading(bool)), this, SLOT(browserLoading(bool)));
+    browserLoading(false); //first init for blank start page
 
     a = new KAction(i18n("Open Location"), this);
     a->setShortcut(Qt::CTRL + Qt::Key_L);
     actionCollection()->addAction(QLatin1String("open_location"), a);
-    connect(a, SIGNAL(triggered(bool)) , this, SLOT(slotOpenLocation()));
+    connect(a, SIGNAL(triggered(bool)) , this, SLOT(openLocation()));
 
 
     // ============================= Zoom Actions ===================================
     a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
     actionCollection()->addAction(QLatin1String("bigger_font"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextBigger()));
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewTextBigger()));
 
     a = new KAction(KIcon("zoom-original"),  i18n("&Normal Font"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_0));
     actionCollection()->addAction(QLatin1String("normal_font"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextNormal()));
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewTextNormal()));
 
     a = new KAction(KIcon("zoom-out"),  i18n("&Shrink Font"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Minus));
     actionCollection()->addAction(QLatin1String("smaller_font"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewTextSmaller()));
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewTextSmaller()));
 
     // =============================== Tools Actions =================================
     a = new KAction(i18n("Page S&ource"), this);
     a->setIcon(KIcon("application-xhtml+xml"));
     actionCollection()->addAction(QLatin1String("page_source"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotViewPageSource()));
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewPageSource()));
 
     a = new KAction(KIcon("tools-report-bug"), i18n("Web &Inspector"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QLatin1String("web_inspector"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotToggleInspector(bool)));
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(toggleInspector(bool)));
 
     a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QLatin1String("private_browsing"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(slotPrivateBrowsing(bool)));
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(privateBrowsing(bool)));
 
     a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
     actionCollection()->addAction(QLatin1String("clear_private_data"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
 
     // ========================= History related actions ==============================
-    a = KStandardAction::back(this, SLOT(slotOpenPrevious()) , actionCollection());
+    a = KStandardAction::back(this, SLOT(openPrevious()) , actionCollection());
 
     m_historyBackMenu = new KMenu(this);
     a->setMenu(m_historyBackMenu);
-    connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(slotAboutToShowBackMenu()));
-    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(slotOpenActionUrl(QAction *)));
+    connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowBackMenu()));
+    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(openActionUrl(QAction *)));
 
-    KStandardAction::forward(this, SLOT(slotOpenNext()) , actionCollection());
+    KStandardAction::forward(this, SLOT(openNext()) , actionCollection());
 
     // ============================== General Tab Actions ====================================
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
@@ -354,7 +354,7 @@ void MainWindow::setupActions()
 
     a = new KAction(KIcon("view-refresh"), i18n("Reload All Tabs"), this);
     actionCollection()->addAction( QLatin1String("reload_all_tabs"), a);
-    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(slotReloadAllTabs()) );
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(reloadAllTabs()) );
 
     a = new KAction(i18n("Show Next Tab"), this);
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext());
@@ -447,7 +447,7 @@ void MainWindow::setupSidePanel()
     // Setup history side panel
     m_sidePanel = new SidePanel(i18n("History Panel"), this);
     connect(m_sidePanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
-    connect(m_sidePanel, SIGNAL(destroyed()), Application::instance(), SLOT(slotSaveConfiguration()));
+    connect(m_sidePanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
 
     addDockWidget(Qt::LeftDockWidgetArea, m_sidePanel);
 
@@ -459,7 +459,7 @@ void MainWindow::setupSidePanel()
 }
 
 
-void MainWindow::slotUpdateConfiguration()
+void MainWindow::updateConfiguration()
 {
     // ============== General ==================
     kDebug() << "update conf";
@@ -512,21 +512,21 @@ void MainWindow::slotUpdateConfiguration()
 }
 
 
-void MainWindow::slotUpdateBrowser()
+void MainWindow::updateBrowser()
 {
-    slotUpdateConfiguration();
-    mainView()->slotReloadAllTabs();
+    updateConfiguration();
+    mainView()->reloadAllTabs();
 }
 
 
-void MainWindow::slotOpenLocation()
+void MainWindow::openLocation()
 {
     m_view->urlBar()->selectAll();
     m_view->urlBar()->setFocus();
 }
 
 
-void MainWindow::slotFileSaveAs()
+void MainWindow::fileSaveAs()
 {
     KUrl srcUrl = currentTab()->url();
 
@@ -544,7 +544,7 @@ void MainWindow::slotFileSaveAs()
 }
 
 
-void MainWindow::slotPreferences()
+void MainWindow::preferences()
 {
     // an instance the dialog could be already created and could be cached,
     // in which case you want to display the cached dialog
@@ -555,14 +555,14 @@ void MainWindow::slotPreferences()
     QPointer<SettingsDialog> s = new SettingsDialog(this);
 
     // keep us informed when the user changes settings
-    connect(s, SIGNAL(settingsChanged(const QString&)), this, SLOT(slotUpdateBrowser()));
+    connect(s, SIGNAL(settingsChanged(const QString&)), this, SLOT(updateBrowser()));
 
     s->exec();
     delete s;
 }
 
 
-void MainWindow::slotUpdateActions()
+void MainWindow::updateActions()
 {
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
     historyBackAction->setEnabled(currentTab()->history()->canGoBack());
@@ -572,7 +572,7 @@ void MainWindow::slotUpdateActions()
 }
 
 
-void MainWindow::slotUpdateWindowTitle(const QString &title)
+void MainWindow::updateWindowTitle(const QString &title)
 {
     if (title.isEmpty())
     {
@@ -585,7 +585,7 @@ void MainWindow::slotUpdateWindowTitle(const QString &title)
 }
 
 
-void MainWindow::slotFileOpen()
+void MainWindow::fileOpen()
 {
     QString filePath = KFileDialog::getOpenFileName(KUrl(),
                        i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n" 
@@ -624,7 +624,7 @@ void MainWindow::printRequested(QWebFrame *frame)
 }
 
 
-void MainWindow::slotPrivateBrowsing(bool enable)
+void MainWindow::privateBrowsing(bool enable)
 {
     QWebSettings *settings = QWebSettings::globalSettings();
     if (enable && !settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
@@ -657,21 +657,21 @@ void MainWindow::slotPrivateBrowsing(bool enable)
 
         m_lastSearch.clear();
         m_view->clear();
-        m_view->slotReloadAllTabs();
+        m_view->reloadAllTabs();
     }
 }
 
 
-void MainWindow::slotFind(const QString & search)
+void MainWindow::find(const QString & search)
 {
     if (!currentTab())
         return;
     m_lastSearch = search;
-    slotFindNext();
+    findNext();
 }
 
 
-void MainWindow::slotFindNext()
+void MainWindow::findNext()
 {
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
@@ -684,7 +684,7 @@ void MainWindow::slotFindNext()
 }
 
 
-void MainWindow::slotFindPrevious()
+void MainWindow::findPrevious()
 {
     if (!currentTab() && m_lastSearch.isEmpty())
         return;
@@ -697,7 +697,7 @@ void MainWindow::slotFindPrevious()
 }
 
 
-void MainWindow::slotViewTextBigger()
+void MainWindow::viewTextBigger()
 {
     if (!currentTab())
         return;
@@ -705,7 +705,7 @@ void MainWindow::slotViewTextBigger()
 }
 
 
-void MainWindow::slotViewTextNormal()
+void MainWindow::viewTextNormal()
 {
     if (!currentTab())
         return;
@@ -713,7 +713,7 @@ void MainWindow::slotViewTextNormal()
 }
 
 
-void MainWindow::slotViewTextSmaller()
+void MainWindow::viewTextSmaller()
 {
     if (!currentTab())
         return;
@@ -721,7 +721,7 @@ void MainWindow::slotViewTextSmaller()
 }
 
 
-void MainWindow::slotViewFullScreen(bool makeFullScreen)
+void MainWindow::viewFullScreen(bool makeFullScreen)
 {
     // state flags
     static bool bookmarksToolBarFlag;
@@ -755,7 +755,7 @@ void MainWindow::slotViewFullScreen(bool makeFullScreen)
 }
 
 
-void MainWindow::slotViewPageSource()
+void MainWindow::viewPageSource()
 {
     if (!currentTab())
         return;
@@ -789,7 +789,7 @@ void MainWindow::homePage()
 }
 
 
-void MainWindow::slotToggleInspector(bool enable)
+void MainWindow::toggleInspector(bool enable)
 {
     QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, enable);
     if (enable)
@@ -802,7 +802,7 @@ void MainWindow::slotToggleInspector(bool enable)
 
         if (result == KMessageBox::Yes)
         {
-            m_view->slotReloadAllTabs();
+            m_view->reloadAllTabs();
         }
     }
 }
@@ -821,7 +821,7 @@ WebView *MainWindow::currentTab() const
 }
 
 
-void MainWindow::slotBrowserLoading(bool v)
+void MainWindow::browserLoading(bool v)
 {
     QAction *stop = actionCollection()->action("stop");
     QAction *reload = actionCollection()->action("view_redisplay");
@@ -845,7 +845,7 @@ void MainWindow::slotBrowserLoading(bool v)
 }
 
 
-void MainWindow::slotOpenPrevious()
+void MainWindow::openPrevious()
 {
     QWebHistory *history = currentTab()->history();
     if (history->canGoBack())
@@ -853,7 +853,7 @@ void MainWindow::slotOpenPrevious()
 }
 
 
-void MainWindow::slotOpenNext()
+void MainWindow::openNext()
 {
     QWebHistory *history = currentTab()->history();
     if (history->canGoForward())
@@ -887,7 +887,7 @@ bool MainWindow::queryClose()
             break;
         case KMessageBox::No:
             // Close only the current tab
-            m_view->slotCloseTab();
+            m_view->closeTab();
         default:
             return false;
         }
@@ -923,7 +923,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     // close current tab action
     if ((event->modifiers() == Qt::ControlModifier) && event->key() == Qt::Key_W)
     {
-        m_view->slotCloseTab(m_view->currentIndex());
+        m_view->closeTab(m_view->currentIndex());
         return;
     }
     
@@ -1064,7 +1064,7 @@ void MainWindow::clearPrivateData()
 }
 
 
-void MainWindow::slotAboutToShowBackMenu()
+void MainWindow::aboutToShowBackMenu()
 {
     m_historyBackMenu->clear();
     if (!currentTab())
@@ -1091,7 +1091,7 @@ void MainWindow::slotAboutToShowBackMenu()
 }
 
 
-void MainWindow::slotOpenActionUrl(QAction *action)
+void MainWindow::openActionUrl(QAction *action)
 {
     int offset = action->data().toInt();
     kDebug() << "Offset: " << offset;

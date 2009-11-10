@@ -64,8 +64,8 @@ protected:
     virtual QString userAgentForUrl(const QUrl& url) const;
     
 protected Q_SLOTS:    
-    virtual void slotHandleUnsupportedContent(QNetworkReply *reply);
-    virtual void slotDownloadRequested(const QNetworkRequest &request);
+    virtual void handleUnsupportedContent(QNetworkReply *reply);
+    virtual void downloadRequested(const QNetworkRequest &request);
 
 private:
     friend class WebView;
