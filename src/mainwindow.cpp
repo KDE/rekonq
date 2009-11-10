@@ -276,7 +276,7 @@ void MainWindow::setupActions()
     shortcutFullScreenList << KStandardShortcut::fullScreen() << QKeySequence( Qt::Key_F11 );
     a->setShortcuts( shortcutFullScreenList );
 
-    KStandardAction::home(this, SLOT(slotHome()), actionCollection());
+    KStandardAction::home(this, SLOT(homePage()), actionCollection());
     KStandardAction::preferences(this, SLOT(slotPreferences()), actionCollection());
 
     a = KStandardAction::redisplay(m_view, SLOT(slotWebReload()), actionCollection());
@@ -462,6 +462,7 @@ void MainWindow::setupSidePanel()
 void MainWindow::slotUpdateConfiguration()
 {
     // ============== General ==================
+    kDebug() << "update conf";
     m_view->updateTabBar();
 
     // =========== Fonts ==============
@@ -782,7 +783,7 @@ void MainWindow::slotViewPageSource()
 }
 
 
-void MainWindow::slotHome()
+void MainWindow::homePage()
 {
     currentTab()->load( QUrl(ReKonfig::homePage()) );
 }
@@ -1116,7 +1117,7 @@ void MainWindow::slotOpenActionUrl(QAction *action)
 }
 
 
-bool MainWindow::homePage(const KUrl &url)
+bool MainWindow::newTabPage(const KUrl &url)
 {
     if (    url == KUrl("rekonq:closedTabs") 
          || url == KUrl("rekonq:history") 
@@ -1127,8 +1128,9 @@ bool MainWindow::homePage(const KUrl &url)
     {
         kDebug() << "loading home: " << url;
         WebView *w = currentTab();
-        HomePage p(w);
-        w->setHtml( p.rekonqHomePage(url), url);
+        HomePage p;
+        QString html = p.rekonqHomePage(url);
+        w->setHtml(html, url);
         return true;
     }
     return false;

@@ -94,31 +94,28 @@ int Application::newInstance()
     
     if(args->count() == 0)
     {
-        MainWindow *w = 0;
         if(first)   // we are starting rekonq, for the first time with no args: use startup behaviour
         {
             switch(ReKonfig::startupBehaviour())
             {
                 case 0: // open home page
-                    w = newMainWindow();
-                    w->slotHome();
+                    mainWindow()->homePage();
                     break;
                 case 1: // open new tab page
-                    w = newMainWindow();
-                    w->homePage();
+                    kDebug() << "newInstance";
+                    mainWindow()->newTabPage();
                     break;
                 case 2: // restore session
                     if(sessionManager()->restoreSession())
                         break;
                 default:
-                    w = newMainWindow();
-                    w->slotHome();
+                    mainWindow()->homePage();
                     break;
             }    
         }
         else    // rekonq has just been started. Just open a new window
         {
-            w = newMainWindow();
+            newMainWindow();
         }
     }
     
@@ -348,8 +345,8 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
 
     // loading home pages
-    kDebug() << "here..";
-    if (mainWindow()->homePage(url))
+    kDebug() << "loadUrl loading " << url;
+    if (mainWindow()->newTabPage(url))
         return;
     
     if (url.scheme() == QLatin1String("mailto"))
@@ -360,17 +357,8 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
     // first, create the webview(s) to not let hangs UI..
     WebView *webView = 0;
-    MainWindow *w = 0;
-    
-    if(type == Rekonq::NewWindow)
-    {
-        w = newMainWindow();
-    }
-    else
-    {
-        w = mainWindow();
-    }
-    
+    MainWindow *w = mainWindow();
+        
     switch(type)
     {
     case Rekonq::SettingOpenTab:
@@ -419,7 +407,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
                                         // are considered as executables
     if (KUriFilter::self()->filterUri(data))
     {
-    loadingUrl = data.uri().url();
+        loadingUrl = data.uri().url();
     }
     // ------------------- END WARNING --------------------------------------
 
@@ -445,6 +433,7 @@ void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& typ
 MainWindow *Application::newMainWindow()
 {
     MainWindow *w = new MainWindow();
+    kDebug() << "newMainWindow";
     w->mainView()->newWebView();    // remember using newWebView and NOT newTab here!!
     
     m_mainWindows.prepend(w);

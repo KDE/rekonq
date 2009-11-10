@@ -49,8 +49,7 @@
 #include <QFile>
 
 
-HomePage::HomePage(QObject *parent)
-    : QObject(parent)
+HomePage::HomePage()
 {
     m_homePagePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
 }

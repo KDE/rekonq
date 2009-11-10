@@ -36,6 +36,7 @@
 #include "webpage.h"
 #include "application.h"
 #include "history.h"
+#include "mainwindow.h"
 
 // KDE Includes
 #include <KTabWidget>
@@ -54,8 +55,8 @@ class UrlBar;
 
 
 /**
- *  This class represent rekonq Main View. It contains all WebViews and a stack widget
- *  of associated line edits.
+ * This class represent rekonq Main View. 
+ * It contains all WebViews and the url bar.
  *
  */
 
@@ -64,7 +65,7 @@ class REKONQ_TESTS_EXPORT MainView : public KTabWidget
     Q_OBJECT
 
 public:
-    MainView(QWidget *parent = 0);
+    MainView(MainWindow *parent);
     ~MainView();
 
 public:
@@ -174,6 +175,8 @@ private:
     int m_currentTabIndex;
 
     QList<HistoryItem> m_recentlyClosedTabs;
+
+    MainWindow *m_parentWindow;
 };
 
 #endif // MAINVIEW_H

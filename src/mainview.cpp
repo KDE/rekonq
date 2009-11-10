@@ -36,7 +36,6 @@
 // Local Includes
 #include "tabbar.h"
 #include "application.h"
-#include "mainwindow.h"
 #include "history.h"
 #include "urlbar.h"
 #include "webview.h"
@@ -64,12 +63,13 @@
 #include <QtGui/QWidget>
 
 
-MainView::MainView(QWidget *parent)
+MainView::MainView(MainWindow *parent)
         : KTabWidget(parent)
         , m_urlBar(new UrlBar(this))
         , m_tabBar(new TabBar(this))
         , m_addTabButton(new QToolButton(this))
         , m_currentTabIndex(0)
+        , m_parentWindow(parent)
 {
     // setting tabbar
     setTabBar(m_tabBar);
@@ -109,17 +109,8 @@ void MainView::postLaunch()
     // Session Manager
     connect (this, SIGNAL(tabsChanged()), Application::sessionManager(), SLOT(saveSession()));
     
-    // Find the correct MainWindow of this tab button
-    MainWindowList list = Application::instance()->mainWindowList();
-    Q_FOREACH(QPointer<MainWindow> w, list)
-    {
-        if (w->isAncestorOf(this))
-        {
-            m_addTabButton->setDefaultAction(w->actionByName("new_tab"));
-            break;
-        }
-    }
-    
+    m_addTabButton->setDefaultAction(m_parentWindow->actionByName("new_tab"));
+
     m_addTabButton->setAutoRaise(true);
     m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
@@ -356,6 +347,7 @@ WebView *MainView::newWebView(bool focused, bool nearParent)
     else
         addTab(webView, i18n("(Untitled)"));
 
+    kDebug() << "newWebView";
     updateTabBar();
     
     if (focused)
@@ -375,13 +367,14 @@ void MainView::newTab()
 
     switch(ReKonfig::newTabsBehaviour())
     {
-    case 0:
-        if(Application::instance()->mainWindow()->homePage())
+    case 0: // new tab page
+        kDebug() << "newTab";
+        if(m_parentWindow->newTabPage())
             break;
-    case 1:
+    case 1: // blank page
         urlBar()->setUrl(KUrl(""));
         break;
-    case 2:
+    case 2: // homepage
         w->load( QUrl(ReKonfig::homePage()) );
         break;
     default:
@@ -414,7 +407,7 @@ void MainView::windowCloseRequested()
     {
         if (count() == 1)
         {
-            Application::instance()->mainWindow()->close();
+            m_parentWindow->close();
         }
         else
         {
@@ -669,6 +662,7 @@ QList<HistoryItem> MainView::recentlyClosedTabs()
 
 void MainView::resizeEvent(QResizeEvent *event)
 {
+    kDebug() << "resizeEvent";
     updateTabBar();
     KTabWidget::resizeEvent(event);
 }

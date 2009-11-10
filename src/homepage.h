@@ -39,18 +39,18 @@
 class KBookmark;
 
 
-class HomePage : public QObject
+class HomePage
 {
-Q_OBJECT
     
 public:
-    HomePage(QObject *parent = 0);
+    HomePage();
     ~HomePage();
 
     QString rekonqHomePage(const KUrl &url = KUrl("rekonq:home"));
-    QString homePageMenu(KUrl currentUrl);
-    
+     
 private:
+    QString homePageMenu(KUrl currentUrl);
+
     QString fillFavorites();
     QString lastVisitedSites();
     QString fillHistory();

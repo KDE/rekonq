@@ -32,7 +32,7 @@
 
 // Local Includes
 #include "bookmarks.h"
-#include "mainview.h"
+// #include "mainview.h"
 #include "webview.h"
 
 // KDE Includes
@@ -49,6 +49,7 @@ class KPassivePopup;
 class FindBar;
 class SidePanel;
 class WebView;
+class MainView;
 
 
 /**
@@ -70,7 +71,7 @@ public:
     virtual QSize sizeHint() const;
     virtual KActionCollection *actionCollection () const;
 
-    bool homePage(const KUrl &url = KUrl("rekonq:home"));
+    bool newTabPage(const KUrl &url = KUrl("rekonq:home"));
 
 private:
     void setupActions();
@@ -82,7 +83,7 @@ private:
 
 public slots:
     void slotUpdateBrowser();
-    void slotHome();
+    void homePage();
 
     /**
      * Notifies a message in a popup

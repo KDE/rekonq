@@ -59,7 +59,7 @@ class REKONQ_TESTS_EXPORT TabBar : public KTabBar
     Q_OBJECT
 
 public:
-    TabBar(MainView *parent = 0);
+    TabBar(MainView *parent);
     ~TabBar();
 
     void showTabPreview(int tab);
