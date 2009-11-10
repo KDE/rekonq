@@ -202,7 +202,7 @@ void Application::slotSaveConfiguration() const
 MainWindow *Application::mainWindow()
 {
     if(m_mainWindows.isEmpty())
-        return 0;
+        return newMainWindow();
     
     MainWindow *active = qobject_cast<MainWindow*>(QApplication::activeWindow());
     
@@ -348,6 +348,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
 
     // loading home pages
+    kDebug() << "here..";
     if (mainWindow()->homePage(url))
         return;
     
