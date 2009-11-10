@@ -1113,11 +1113,11 @@ void MainWindow::openActionUrl(QAction *action)
 
 bool MainWindow::newTabPage(const KUrl &url)
 {
-    if (    url == KUrl("rekonq:closedTabs") 
-         || url == KUrl("rekonq:history") 
-         || url == KUrl("rekonq:bookmarks")
-         || url == KUrl("rekonq:favorites")
-         || url == KUrl("rekonq:home")
+    if (    url == KUrl("about:closedTabs") 
+         || url == KUrl("about:history") 
+         || url == KUrl("about:bookmarks")
+         || url == KUrl("about:favorites")
+         || url == KUrl("about:home")
     )
     {
         kDebug() << "loading home: " << url;

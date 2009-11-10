@@ -73,22 +73,22 @@ QString NewTabPage::newTabPageCode(const KUrl &url)
     
     QString speed;
     QString title;
-    if(url == KUrl("rekonq:closedTabs"))
+    if(url == KUrl("about:closedTabs"))
     {
         speed = closedTabsPage();
         title = i18n("Closed Tabs");
     }
-    if(url == KUrl("rekonq:history"))
+    if(url == KUrl("about:history"))
     {
         speed = historyPage();
         title = i18n("History");
     }
-    if(url == KUrl("rekonq:bookmarks"))
+    if(url == KUrl("about:bookmarks"))
     {
         speed = bookmarksPage();
         title = i18n("Bookmarks");
     }
-    if(url == KUrl("rekonq:home") || url == KUrl("rekonq:favorites"))
+    if(url == KUrl("about:home") || url == KUrl("about:favorites"))
     {
         speed = favoritesPage();
         title = i18n("Favorites");
@@ -154,33 +154,33 @@ QString NewTabPage::browsingMenu(const KUrl &currentUrl)
     KIconLoader *loader = KIconLoader::global();
     
     menu += "<div class=\"link";
-    if(currentUrl == "rekonq:favorites" || currentUrl == "rekonq:home")
+    if(currentUrl == "about:favorites" || currentUrl == "about:home")
         menu += " current";
-    menu += "\"><a href=\"rekonq:favorites\">";
+    menu += "\"><a href=\"about:favorites\">";
     menu += "<img src=\"file:///" + loader->iconPath("emblem-favorite", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
     menu += i18n("Favorites");
     menu += "</a></div>";
     
     menu += "<div class=\"link";
-    if(currentUrl == "rekonq:closedTabs")
+    if(currentUrl == "about:closedTabs")
         menu += " current";
-    menu += "\"><a href=\"rekonq:closedTabs\">";
+    menu += "\"><a href=\"about:closedTabs\">";
     menu += "<img src=\"file:///" + loader->iconPath("tab-close", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
     menu += i18n("Closed Tabs");
     menu += "</a></div>";
     
     menu += "<div class=\"link";
-    if(currentUrl == "rekonq:bookmarks")
+    if(currentUrl == "about:bookmarks")
         menu += " current";
-    menu += "\"><a href=\"rekonq:bookmarks\">";
+    menu += "\"><a href=\"about:bookmarks\">";
     menu += "<img src=\"file:///" + loader->iconPath("bookmarks", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
     menu += i18n("Bookmarks");
     menu += "</a></div>";
     
     menu += "<div class=\"link";
-    if(currentUrl == "rekonq:history")
+    if(currentUrl == "about:history")
         menu += " current";
-    menu += "\"><a href=\"rekonq:history\">";
+    menu += "\"><a href=\"about:history\">";
     menu += "<img src=\"file:///" + loader->iconPath("view-history", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
     menu += i18n("History");
     menu += "</a></div>";

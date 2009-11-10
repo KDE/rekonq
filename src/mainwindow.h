@@ -71,7 +71,7 @@ public:
     virtual QSize sizeHint() const;
     virtual KActionCollection *actionCollection () const;
 
-    bool newTabPage(const KUrl &url = KUrl("rekonq:home"));
+    bool newTabPage(const KUrl &url = KUrl("about:home"));
 
 private:
     void setupActions();

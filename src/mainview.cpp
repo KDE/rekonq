@@ -484,7 +484,7 @@ void MainView::closeTab(int index)
         hasFocus = tab->hasFocus();
 
         //store close tab except homepage
-        if (!tab->url().prettyUrl().startsWith( QLatin1String("rekonq:") ) && !tab->url().isEmpty())
+        if (!tab->url().prettyUrl().startsWith( QLatin1String("about:") ) && !tab->url().isEmpty())
         {
             QString title = tab->title();
             QString url = tab->url().prettyUrl();

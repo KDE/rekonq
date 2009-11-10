@@ -262,13 +262,13 @@ KIcon Application::icon(const KUrl &url)
     if(!Application::instance()->mainWindowList().isEmpty()) // avoid infinite loop at startup
     {
 
-        if(url == KUrl("rekonq:closedTabs"))
+        if(url == KUrl("about:closedTabs"))
             return KIcon("tab-close");
-        if(url == KUrl("rekonq:history"))
+        if(url == KUrl("about:history"))
             return KIcon("view-history");
-        if(url == KUrl("rekonq:bookmarks"))
+        if(url == KUrl("about:bookmarks"))
             return KIcon("bookmarks");
-        if(url == KUrl("rekonq:home") || url == KUrl("rekonq:favorites"))
+        if(url == KUrl("about:home") || url == KUrl("about:favorites"))
             return KIcon("emblem-favorite");
     }
     

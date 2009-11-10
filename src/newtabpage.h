@@ -51,7 +51,7 @@ public:
      *  about: url and loads the corresponding part of the 
      *  new tab page
      */
-    QString newTabPageCode(const KUrl &url = KUrl("rekonq:home"));
+    QString newTabPageCode(const KUrl &url = KUrl("about:home"));
      
 protected:  // these are the function to build the new tab page
     
