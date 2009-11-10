@@ -199,11 +199,6 @@ void PreviewImage::snapFinished()
 
     setCursor(Qt::PointingHandCursor);
 
-//     kDebug() << "m_pixmap: " << m_pixmap.size();
-//     kDebug() << "text label: " << m_textLabel->size();
-//     kDebug() << "image label: " << m_imageLabel->size();
-//     kDebug() << "widget: " << size();
-
     m_pixmap.save(m_savePath);
 
     if(m_index > -1)

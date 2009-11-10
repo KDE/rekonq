@@ -347,7 +347,6 @@ WebView *MainView::newWebView(bool focused, bool nearParent)
     else
         addTab(webView, i18n("(Untitled)"));
 
-    kDebug() << "newWebView";
     updateTabBar();
     
     if (focused)
@@ -368,7 +367,6 @@ void MainView::newTab()
     switch(ReKonfig::newTabsBehaviour())
     {
     case 0: // new tab page
-        kDebug() << "newTab";
         if(m_parentWindow->newTabPage())
             break;
     case 1: // blank page
@@ -662,7 +660,6 @@ QList<HistoryItem> MainView::recentlyClosedTabs()
 
 void MainView::resizeEvent(QResizeEvent *event)
 {
-    kDebug() << "resizeEvent";
     updateTabBar();
     KTabWidget::resizeEvent(event);
 }

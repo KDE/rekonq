@@ -37,7 +37,6 @@
 #include "application.h"
 
 // KDE Includes
-#include <KDebug>
 #include <KStandardDirs>
 #include <KLocale>
 
@@ -923,9 +922,6 @@ QModelIndex HistoryTreeModel::mapFromSource(const QModelIndex &sourceIndex) cons
         --it;
 
     int dateRow = qMax(0, it - m_sourceRowCache.begin());
-    // FIXME fix crach on history submenu open. BUG:'ASSERT failure in QList<T>::at: "index out of range"'
-    //       it crashes when dateRow == 1
-    // kDebug() << m_sourceRowCache << dateRow;
     int row = sourceIndex.row() - m_sourceRowCache.at(dateRow);
     return createIndex(row, sourceIndex.column(), dateRow + 1);
 }

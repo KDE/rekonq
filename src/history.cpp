@@ -39,7 +39,6 @@
 #include "application.h"
 
 // KDE Includes
-#include <KDebug>
 #include <KStandardDirs>
 #include <KLocale>
 #include <KCompletion>

@@ -30,9 +30,6 @@
 #include "lineedit.h"
 #include "lineedit.moc"
 
-// KDE Includes
-#include <KDebug>
-
 // Qt Includes
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QFocusEvent>

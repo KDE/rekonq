@@ -42,7 +42,6 @@
 // KDE Includes
 #include <KShortcut>
 #include <KStandardShortcut>
-#include <KDebug>
 #include <KGlobalSettings>
 #include <KPassivePopup>
 

@@ -39,7 +39,6 @@
 #include "webpage.h"
 
 // KDE Includes
-#include <KDebug>
 #include <KService>
 #include <KUriFilterData>
 #include <KStandardShortcut>

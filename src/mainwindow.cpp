@@ -462,7 +462,6 @@ void MainWindow::setupSidePanel()
 void MainWindow::updateConfiguration()
 {
     // ============== General ==================
-    kDebug() << "update conf";
     m_view->updateTabBar();
 
     // =========== Fonts ==============
@@ -1050,12 +1049,10 @@ void MainWindow::clearPrivateData()
         {
             QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rekonq"), true);
             path.remove("rekonq");
-            kDebug() << path;
             QDir cacheDir(path);
             QStringList fileList = cacheDir.entryList();
             foreach(const QString &str, fileList)
             {
-                kDebug() << str;
                 QFile file(path + str);
                 file.remove();
             }
@@ -1076,13 +1073,11 @@ void MainWindow::aboutToShowBackMenu()
     if(historyCount > 8)
         historyCount = 8;
 
-    kDebug() << "History Count: " << historyCount;
     for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i)
     {
         QWebHistoryItem item = history->backItems(history->count()).at(i);
         KAction *action = new KAction(this);
         action->setData( i - history->currentItemIndex() );
-        kDebug() << "Current Item Index: " << history->currentItemIndex();
         QIcon icon = Application::icon(item.url()); 
         action->setIcon(icon);
         action->setText(item.title());
@@ -1094,7 +1089,6 @@ void MainWindow::aboutToShowBackMenu()
 void MainWindow::openActionUrl(QAction *action)
 {
     int offset = action->data().toInt();
-    kDebug() << "Offset: " << offset;
     QWebHistory *history = currentTab()->history();
     
     if(!history->itemAt(offset).isValid())

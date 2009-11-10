@@ -102,7 +102,6 @@ int Application::newInstance()
                     mainWindow()->homePage();
                     break;
                 case 1: // open new tab page
-                    kDebug() << "newInstance";
                     mainWindow()->newTabPage();
                     break;
                 case 2: // restore session
@@ -345,7 +344,6 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
 
     // loading home pages
-    kDebug() << "loadUrl loading " << url;
     if (mainWindow()->newTabPage(url))
         return;
     
@@ -433,7 +431,6 @@ void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& typ
 MainWindow *Application::newMainWindow()
 {
     MainWindow *w = new MainWindow();
-    kDebug() << "newMainWindow";
     w->mainView()->newWebView();    // remember using newWebView and NOT newTab here!!
     
     m_mainWindows.prepend(w);
