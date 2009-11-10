@@ -46,7 +46,7 @@
 #include "sidepanel.h"
 #include "urlbar.h"
 #include "tabbar.h"
-#include "homepage.h"
+#include "newtabpage.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -1122,8 +1122,8 @@ bool MainWindow::newTabPage(const KUrl &url)
     {
         kDebug() << "loading home: " << url;
         WebView *w = currentTab();
-        HomePage p;
-        QString html = p.rekonqHomePage(url);
+        NewTabPage p;
+        QString html = p.newTabPageCode(url);
         w->setHtml(html, url);
         return true;
     }

@@ -40,7 +40,6 @@
 #include "urlbar.h"
 #include "webview.h"
 #include "sessionmanager.h"
-#include "homepage.h"
 
 // KDE Includes
 #include <KUrl>

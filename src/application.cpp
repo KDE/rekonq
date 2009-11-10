@@ -42,7 +42,6 @@
 #include "webview.h"
 #include "urlbar.h"
 #include "sessionmanager.h"
-#include "homepage.h"
 
 // KDE Includes
 #include <KCmdLineArgs>

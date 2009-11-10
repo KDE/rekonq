@@ -25,7 +25,7 @@
 
 
 // Self Includes
-#include "homepage.h"
+#include "newtabpage.h"
 
 // Auto Includes
 #include "rekonq.h"
@@ -48,20 +48,20 @@
 #include <QFile>
 
 
-HomePage::HomePage()
+NewTabPage::NewTabPage()
 {
-    m_homePagePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
+    m_htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
 }
 
 
-HomePage::~HomePage()
+NewTabPage::~NewTabPage()
 {
 }
 
 
-QString HomePage::rekonqHomePage(const KUrl &url)
+QString NewTabPage::newTabPageCode(const KUrl &url)
 {
-    QFile file(m_homePagePath);
+    QFile file(m_htmlFilePath);
     bool isOpened = file.open(QIODevice::ReadOnly);
     if (!isOpened)
     {
@@ -69,28 +69,28 @@ QString HomePage::rekonqHomePage(const KUrl &url)
         return QString("");
     }
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
-    QString menu = homePageMenu(url);
+    QString menu = browsingMenu(url);
     
     QString speed;
     QString title;
     if(url == KUrl("rekonq:closedTabs"))
     {
-        speed = fillClosedTabs();
+        speed = closedTabsPage();
         title = i18n("Closed Tabs");
     }
     if(url == KUrl("rekonq:history"))
     {
-        speed = fillHistory();
+        speed = historyPage();
         title = i18n("History");
     }
     if(url == KUrl("rekonq:bookmarks"))
     {
-        speed = fillBookmarks();
+        speed = bookmarksPage();
         title = i18n("Bookmarks");
     }
     if(url == KUrl("rekonq:home") || url == KUrl("rekonq:favorites"))
     {
-        speed = fillFavorites();
+        speed = favoritesPage();
         title = i18n("Favorites");
     }
     
@@ -105,7 +105,7 @@ QString HomePage::rekonqHomePage(const KUrl &url)
 }
 
 
-QString HomePage::fillFavorites()
+QString NewTabPage::favoritesPage()
 {
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
@@ -128,7 +128,7 @@ QString HomePage::fillFavorites()
 
 
 // FIXME : port to new PreviewImage API to use...
-QString HomePage::lastVisitedSites()
+QString NewTabPage::lastVisitedPage()
 {
     QString last;
     QList<HistoryItem> history =  Application::historyManager()->history();
@@ -147,7 +147,7 @@ QString HomePage::lastVisitedSites()
 }
 
 
-QString HomePage::homePageMenu(KUrl currentUrl)
+QString NewTabPage::browsingMenu(const KUrl &currentUrl)
 {
     QString menu;
     
@@ -189,7 +189,7 @@ QString HomePage::homePageMenu(KUrl currentUrl)
 }
 
 
-QString HomePage::fillHistory()
+QString NewTabPage::historyPage()
 {
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
@@ -220,7 +220,7 @@ QString HomePage::fillHistory()
 }
 
 
-QString HomePage::fillBookmarks()
+QString NewTabPage::bookmarksPage()
 {
     KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
     if (bookGroup.isNull())
@@ -239,7 +239,7 @@ QString HomePage::fillBookmarks()
 }
 
 
-QString HomePage::createBookItem(const KBookmark &bookmark)
+QString NewTabPage::createBookItem(const KBookmark &bookmark)
 {
     if (bookmark.isGroup())
     {
@@ -267,7 +267,7 @@ QString HomePage::createBookItem(const KBookmark &bookmark)
 }
 
 
-QString HomePage::fillClosedTabs()
+QString NewTabPage::closedTabsPage()
 {
     QList<HistoryItem> links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
     QString closed;

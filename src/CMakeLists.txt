@@ -6,7 +6,7 @@ ADD_SUBDIRECTORY( tests )
 ### ------- SETTING REKONQ FILES..
 
 SET( rekonq_KDEINIT_SRCS
-    homepage.cpp
+    newtabpage.cpp
     previewimage.cpp
     websnap.cpp
     networkaccessmanager.cpp

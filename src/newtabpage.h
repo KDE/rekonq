@@ -24,8 +24,8 @@
 * ============================================================ */
 
 
-#ifndef REKONQ_HOME_PAGE
-#define REKONQ_HOME_PAGE
+#ifndef REKONQ_NEW_TAB_PAGE
+#define REKONQ_NEW_TAB_PAGE
 
 
 // KDE Includes
@@ -39,27 +39,34 @@
 class KBookmark;
 
 
-class HomePage
+class NewTabPage
 {
     
 public:
-    HomePage();
-    ~HomePage();
+    NewTabPage();
+    ~NewTabPage();
 
-    QString rekonqHomePage(const KUrl &url = KUrl("rekonq:home"));
+    /**
+     *  This is the unique NewTabPage public method. It takes an
+     *  about: url and loads the corresponding part of the 
+     *  new tab page
+     */
+    QString newTabPageCode(const KUrl &url = KUrl("rekonq:home"));
      
+protected:  // these are the function to build the new tab page
+    
+    QString browsingMenu(const KUrl &currentUrl);
+
+    QString favoritesPage();
+    QString lastVisitedPage();
+    QString historyPage();
+    QString bookmarksPage();
+    QString closedTabsPage();
+
 private:
-    QString homePageMenu(KUrl currentUrl);
-
-    QString fillFavorites();
-    QString lastVisitedSites();
-    QString fillHistory();
-    QString fillBookmarks();
-    QString fillClosedTabs();
-
     QString createBookItem(const KBookmark &bookmark);
 
-    QString m_homePagePath;
+    QString m_htmlFilePath;
 };
 
-#endif // REKONQ_HOME_PAGE
+#endif // REKONQ_NEW_TAB_PAGE
