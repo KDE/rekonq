@@ -170,6 +170,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         }
         else
         {
+            // WARNING switch to BrowserOpenOrSaveQuestion for 4.4
             switch ( KParts::BrowserRun::askSave( url, offer, mimetype, filename ) )
             {
                 case KParts::BrowserRun::Save:
