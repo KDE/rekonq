@@ -368,12 +368,6 @@ void WebView::mousePressEvent(QMouseEvent *event)
 void WebView::mouseMoveEvent(QMouseEvent *event)
 {
     m_mousePos = event->pos();
-    
-    // fix crashes on loading homepage links when no internet
-    // connection (so, failed loading)
-    if(url().protocol() == QLatin1String("rekonq"))
-        return;
-
     QWebView::mouseMoveEvent(event);
 }
 

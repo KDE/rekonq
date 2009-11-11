@@ -114,9 +114,10 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         return false;
     }
 
-    if (request.url().scheme() == QLatin1String("rekonq"))
+    if (request.url().scheme() == QLatin1String("about"))
     {
-        Application::instance()->loadUrl( request.url() );
+        kDebug() << "loading " << request.url();
+        Application::instance()->mainWindow()->newTabPage( request.url() );
         return false;
     }
     
@@ -129,7 +130,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
     kDebug() << "WebPage createWindow slot";
-
     return newWindow(type);
 }
 
@@ -138,9 +138,7 @@ WebPage *WebPage::newWindow(WebWindowType type)
 {
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
-    {
-        kDebug() << "Modal Dialog ---------------------------------------";
-    }
+        kDebug() << "Modal Dialog";
 
     WebView *w = 0;
     if(ReKonfig::openTabNoWindow())
