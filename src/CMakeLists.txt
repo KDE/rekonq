@@ -9,13 +9,11 @@ SET( rekonq_KDEINIT_SRCS
     newtabpage.cpp
     previewimage.cpp
     websnap.cpp
-    networkaccessmanager.cpp
     autosaver.cpp 
     application.cpp 
     mainwindow.cpp 
     mainview.cpp
     tabbar.cpp
-    cookiejar.cpp
     history.cpp
     historymodels.cpp
     bookmarks.cpp
@@ -66,8 +64,8 @@ KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
 
 TARGET_LINK_LIBRARIES ( kdeinit_rekonq
                         ${QT_LIBRARIES} 
-                        ${QT_QTNETWORK_LIBRARY}
                         ${QT_QTWEBKIT_LIBRARY} 
+                        ${KDE4_KDEWEBKIT_LIBS}
                         ${KDE4_KUTILS_LIBS}
                         ${KDE4_KDEUI_LIBS}
                         ${KDE4_KIO_LIBS}

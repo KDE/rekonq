@@ -35,9 +35,7 @@
 
 // Local Includes
 #include "mainwindow.h"
-#include "cookiejar.h"
 #include "history.h"
-#include "networkaccessmanager.h"
 #include "mainview.h"
 #include "webview.h"
 #include "urlbar.h"
@@ -61,7 +59,6 @@
 
 
 QPointer<HistoryManager> Application::s_historyManager;
-QPointer<NetworkAccessManager> Application::s_networkAccessManager;
 QPointer<BookmarkProvider> Application::s_bookmarkProvider;
 QPointer<SessionManager> Application::s_sessionManager;
 
@@ -77,7 +74,6 @@ Application::~Application()
 {
     qDeleteAll(m_mainWindows);
     delete s_bookmarkProvider;
-    delete s_networkAccessManager;
     delete s_historyManager;
 }
 
@@ -206,23 +202,6 @@ MainWindow *Application::mainWindow()
         return m_mainWindows.at(0);
     }
     return active;
-}
-
-
-CookieJar *Application::cookieJar()
-{
-    return (CookieJar *)networkAccessManager()->cookieJar();
-}
-
-
-NetworkAccessManager *Application::networkAccessManager()
-{
-    if (!s_networkAccessManager)
-    {
-        s_networkAccessManager = new NetworkAccessManager();
-        s_networkAccessManager->setCookieJar(new CookieJar);
-    }
-    return s_networkAccessManager;
 }
 
 

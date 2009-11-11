@@ -53,7 +53,7 @@
 
 
 WebView::WebView(QWidget* parent)
-        : QWebView(parent)
+        : KWebView(parent, false)
         , m_page(new WebPage(this))
         , m_progress(0)
         , m_mousePos(QPoint(0,0))
@@ -375,20 +375,6 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 QPoint WebView::mousePos()
 {
     return m_mousePos;
-}
-
-
-void WebView::wheelEvent(QWheelEvent *event)
-{
-    if (QApplication::keyboardModifiers() & Qt::ControlModifier)
-    {
-        int numDegrees = event->delta() / 8;
-        int numSteps = numDegrees / 15;
-        setTextSizeMultiplier(textSizeMultiplier() + numSteps * 0.1);
-        event->accept();
-        return;
-    }
-    QWebView::wheelEvent(event);
 }
 
 

@@ -36,7 +36,6 @@
 // Local Includes
 #include "application.h"
 #include "mainwindow.h"
-#include "networkaccessmanager.h"
 #include "webview.h"
 
 //Ui Includes

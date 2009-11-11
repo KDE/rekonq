@@ -39,8 +39,6 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
-#include "cookiejar.h"
-#include "networkaccessmanager.h"
 #include "webview.h"
 #include "webpluginfactory.h"
 
@@ -66,8 +64,8 @@
 #include <QtGui/QKeyEvent>
 
 
-WebPage::WebPage(QObject *parent)
-        : QWebPage(parent)
+WebPage::WebPage(QObject *parent, qlonglong windowId)
+        : KWebPage(parent, windowId)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
 {
@@ -75,8 +73,7 @@ WebPage::WebPage(QObject *parent)
     
     setForwardUnsupportedContent(true);
 
-    setNetworkAccessManager(Application::networkAccessManager());
-    connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
+    connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     
     connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequested(const QNetworkRequest &)));
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
@@ -122,7 +119,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     
     m_requestedUrl = request.url();
 
-    return QWebPage::acceptNavigationRequest(frame, request, type);
+    return KWebPage::acceptNavigationRequest(frame, request, type);
 }
 
 
@@ -257,31 +254,4 @@ QString WebPage::errorPage(QNetworkReply *reply)
                             .arg(msg)
                             ;
     return html;
-}
-
-
-// TODO FIXME: sometimes url.fileName() fails to retrieve url file name
-void WebPage::downloadRequested(const QNetworkRequest &request)
-{
-    const KUrl url(request.url());
-
-    const QString destUrl = KFileDialog::getSaveFileName(url.fileName(), QString(), view());
-    if (destUrl.isEmpty()) return;
-    KIO::Job *job = KIO::file_copy(url, KUrl(destUrl), -1, KIO::Overwrite);
-    //job->setMetaData(metadata); //TODO: add metadata from request
-    job->addMetaData( QLatin1String("MaxCacheSize"), QLatin1String("0") ); // Don't store in http cache.
-    job->addMetaData( QLatin1String("cache"), QLatin1String("cache") ); // Use entry from cache if available.
-    job->uiDelegate()->setAutoErrorHandlingEnabled(true);
-}
-
-
-QString WebPage::userAgentForUrl(const QUrl& _url) const
-{
-    const KUrl url(_url);
-    QString userAgent = KProtocolManager::userAgentForHost((url.isLocalFile() ? "localhost" : url.host()));
-
-    if (userAgent == KProtocolManager::defaultUserAgent())
-        return QWebPage::userAgentForUrl(_url);
-
-    return userAgent;
 }

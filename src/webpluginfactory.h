@@ -28,13 +28,15 @@
 #define WEB_PLUGIN_FACTORY_H
 
 
+// KDE Includes
+#include <KWebPluginFactory>
+
 // Qt Includes
-#include <QtWebKit/QWebPluginFactory>
 #include <QtCore/QList>
 #include <QtGui/QWidget>
 
 
-class WebPluginFactory : public QWebPluginFactory
+class WebPluginFactory : public KWebPluginFactory
 {
 Q_OBJECT
 

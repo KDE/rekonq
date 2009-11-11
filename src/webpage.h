@@ -32,22 +32,23 @@
 #define WEBPAGE_H
 
 
+// KDE Includes
+#include <KWebPage>
+
 // Qt Includes
-#include <QWebPage>
 #include <QUrl>
 
 // Forward Declarations
 class QWebFrame;
 class QNetworkReply;
-class QUrl;
 
 
-class WebPage : public QWebPage
+class WebPage : public KWebPage
 {
     Q_OBJECT
 
 public:
-    explicit WebPage(QObject *parent = 0);
+    explicit WebPage(QObject *parent = 0, qlonglong windowId = 0);
     ~WebPage();
     
 public slots:
@@ -59,13 +60,10 @@ protected:
     
     virtual bool acceptNavigationRequest(QWebFrame *frame, 
                                          const QNetworkRequest &request, 
-                                         NavigationType type);
-
-    virtual QString userAgentForUrl(const QUrl& url) const;
+                                         NavigationType type);//
     
 protected Q_SLOTS:    
     virtual void handleUnsupportedContent(QNetworkReply *reply);
-    virtual void downloadRequested(const QNetworkRequest &request);
 
 private:
     friend class WebView;

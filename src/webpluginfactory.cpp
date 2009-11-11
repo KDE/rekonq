@@ -38,7 +38,7 @@
 
 
 WebPluginFactory::WebPluginFactory(QObject *parent)
-    : QWebPluginFactory(parent)
+    : KWebPluginFactory(parent)
 {
 }
 
@@ -78,13 +78,13 @@ QObject *WebPluginFactory::create(const QString &mimeType,
     // this let QtWebKit using builtin plugins 
     // to load in example flash contents and so on..
     kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
-    return 0;
+    return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
 }
 
 
 QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins() const
 {
-    QList<QWebPluginFactory::Plugin> plugins;
+    QList<KWebPluginFactory::Plugin> plugins = KWebPluginFactory::plugins();
     
     QWebPluginFactory::Plugin p;
     p.name = "application/image-preview";
