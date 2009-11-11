@@ -1,5 +1,6 @@
-### ------- tests sub dir -------
+### ------- sub dirs -------
 
+ADD_SUBDIRECTORY( data )
 ADD_SUBDIRECTORY( tests )
 
 
