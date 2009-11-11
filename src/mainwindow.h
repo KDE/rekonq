@@ -32,7 +32,6 @@
 
 // Local Includes
 #include "bookmarks.h"
-// #include "mainview.h"
 #include "webview.h"
 
 // KDE Includes

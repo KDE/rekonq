@@ -27,8 +27,8 @@
 
 
 // Self Includes
-#include "settings.h"
-#include "settings.moc"
+#include "settingsdialog.h"
+#include "settingsdialog.moc"
 
 // Auto Includes
 #include "rekonq.h"

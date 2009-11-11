@@ -26,8 +26,8 @@
 * ============================================================ */
 
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef SETTINGS_DIALOG_H
+#define SETTINGS_DIALOG_H
 
 
 // KDE Includes
@@ -59,4 +59,4 @@ private slots:
     void setHomeToCurrentPage();
 };
 
-#endif // SETTINGS_H
+#endif // SETTINGS_DIALOG_H

@@ -35,7 +35,7 @@
 
 // Local Includes
 #include "application.h"
-#include "settings.h"
+#include "settingsdialog.h"
 #include "history.h"
 #include "bookmarks.h"
 #include "webview.h"
