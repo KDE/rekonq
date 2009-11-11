@@ -129,14 +129,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
-        a = pageAction(QWebPage::DownloadLinkToDisk);
-        a->setIcon(KIcon("document-save"));
-        menu.addAction(a);
-
-        a = pageAction(QWebPage::CopyLinkToClipboard);
-        a->setIcon(KIcon("edit-copy"));
-        menu.addAction(a);
-
+        menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
+        menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
         menu.addSeparator();
     }
 
@@ -144,33 +138,24 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if (result.isContentEditable() && result.isContentSelected())
     {
         // actions for text selected in field
-        a = pageAction(QWebPage::Cut);
-        a->setIcon(KIcon("edit-cut"));
-        a->setShortcut(KStandardShortcut::cut().primary());
-        menu.addAction(a);
+        menu.addAction(pageAction(KWebPage::Cut));
     }
 
     // is content selected) Add COPY
     if(result.isContentSelected())
     {
-        a = pageAction(QWebPage::Copy);
-        a->setIcon(KIcon("edit-copy"));
-        a->setShortcut(KStandardShortcut::copy().primary());
-        a->setText(i18n("Copy")); 
+        a = pageAction(KWebPage::Copy);
         if(!result.linkUrl().isEmpty())
-        	a->setText(i18n("Copy Text")); //for link
+            a->setText(i18n("Copy Text")); //for link
         else
-                a->setText(i18n("Copy"));
+            a->setText(i18n("Copy"));
         menu.addAction(a);
     }
 
     // is content editable? Add PASTE
     if(result.isContentEditable())
     {
-        a = pageAction(QWebPage::Paste);
-        a->setIcon(KIcon("edit-paste"));
-        a->setShortcut(KStandardShortcut::paste().primary());
-        menu.addAction(a);
+        menu.addAction(pageAction(KWebPage::Paste));
     }
 
     // is content selected? Add SEARCH actions
@@ -225,14 +210,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
         menu.addAction(a);
 
-        a = pageAction(QWebPage::DownloadImageToDisk);
-        a->setIcon(KIcon("document-save"));
-        menu.addAction(a);
-
-        a = pageAction(QWebPage::CopyImageToClipboard);
-        a->setIcon(KIcon("edit-copy"));
-        menu.addAction(a);
-
+        menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
+        menu.addAction(pageAction(KWebPage::CopyImageToClipboard));
         menu.addSeparator();
     }
 
@@ -278,16 +257,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         QWebHistory *history = page()->history();
         if(history->canGoBack())
         {
-            a = pageAction(QWebPage::Back);
-            a->setIcon(KIcon("go-previous"));
-            menu.addAction(a);
+            menu.addAction(pageAction(KWebPage::Back));
         }
 
         if(history->canGoForward())
         {
-            a = pageAction(QWebPage::Forward);
-            a->setIcon(KIcon("go-next"));
-            menu.addAction(a);
+            menu.addAction(pageAction(KWebPage::Forward));
         }
 
         menu.addAction(mainwindow->actionByName("view_redisplay"));
@@ -302,10 +277,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         //Frame
         KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
 
-        a = pageAction(QWebPage::OpenFrameInNewWindow);
-        a->setText(i18n("Open Frame in New Tab"));
-        a->setIcon(KIcon("view-right-new"));
-        frameMenu->addAction(a);
+        frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
 
         a = new KAction( KIcon("document-print-frame"), i18n("Print Frame"), this);
         connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
@@ -315,12 +287,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         
         menu.addSeparator();
 
-        //Page
-        a = pageAction(QWebPage::SelectAll);
-        a->setIcon(KIcon("edit-select-all"));
-        a->setShortcut(KStandardShortcut::selectAll().primary());
-        a->setText(i18n("Select All"));
-        menu.addAction(a);
+        // Page Actions
+        menu.addAction(pageAction(KWebPage::SelectAll));
 
         menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
         menu.addAction(mainwindow->actionByName("page_source"));
@@ -331,9 +299,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
         {
             // Developer Extras actions
-            a = pageAction(QWebPage::InspectElement);
-            a->setIcon(KIcon("view-process-all"));
-            menu.addAction(a);
+            menu.addAction(pageAction(KWebPage::InspectElement));
         }
 
         if(mainwindow->isFullScreen())
@@ -354,10 +320,10 @@ void WebView::mousePressEvent(QMouseEvent *event)
     switch(event->button())
     {
       case Qt::XButton1:
-        triggerPageAction(QWebPage::Back);
+        triggerPageAction(KWebPage::Back);
         break;
       case Qt::XButton2:
-        triggerPageAction(QWebPage::Forward);
+        triggerPageAction(KWebPage::Forward);
         break;
       default:
         QWebView::mousePressEvent(event);
@@ -441,13 +407,13 @@ void WebView::keyPressEvent(QKeyEvent *event)
 {
     if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_C))
     {
-        triggerPageAction(QWebPage::Copy);
+        triggerPageAction(KWebPage::Copy);
         return;
     }
 
     if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_A))
     {
-        triggerPageAction(QWebPage::SelectAll);
+        triggerPageAction(KWebPage::SelectAll);
         return;
     }
 
