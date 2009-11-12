@@ -76,7 +76,7 @@ WebPage *WebView::page()
 {
     if(!m_page)
     {
-        m_page = new WebPage();
+        m_page = new WebPage(this);
         setPage(m_page);
     }
     return m_page;

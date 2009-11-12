@@ -49,7 +49,8 @@
 #include <KToolInvocation>
 #include <KProtocolManager>
 
-#include <KDE/KParts/BrowserRun>
+#include <kparts/browseropenorsavequestion.h>
+
 #include <KDE/KMimeTypeTrader>
 #include <KDE/KRun>
 #include <KDE/KFileDialog>
@@ -73,9 +74,9 @@ WebPage::WebPage(QObject *parent, qlonglong windowId)
     
     setForwardUnsupportedContent(true);
 
-    connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
+    connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     
-    connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequested(const QNetworkRequest &)));
+    connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequest(const QNetworkRequest &)));
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
 }
 
@@ -126,12 +127,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
     kDebug() << "WebPage createWindow slot";
-    return newWindow(type);
-}
 
-
-WebPage *WebPage::newWindow(WebWindowType type)
-{
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
         kDebug() << "Modal Dialog";
@@ -154,34 +150,32 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (reply->error() == QNetworkReply::NoError)
     {
         const KUrl url(reply->request().url());
-        QString filename = url.fileName();
-        QString mimetype = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-        KService::Ptr offer = KMimeTypeTrader::self()->preferredService(mimetype);
+
+        QString mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+        KService::Ptr offer = KMimeTypeTrader::self()->preferredService(mimeType);
 
         if( offer.isNull() ) // no service can handle this. We can just download it..
         {
-            downloadRequested(reply->request());
+            downloadRequest(reply->request());
+            return;
         }
-        else
+
+        KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), url, mimeType);
+        switch ( dlg.askEmbedOrSave() )
         {
-            // WARNING switch to BrowserOpenOrSaveQuestion for 4.4
-            switch ( KParts::BrowserRun::askSave( url, offer, mimetype, filename ) )
-            {
-                case KParts::BrowserRun::Save:
-                    downloadRequested(reply->request());
-                    return;
-                case KParts::BrowserRun::Cancel:
-                    return;
-                default: // non extant case
-                    break;
-            }
-            // case KParts::BrowserRun::Open
-            KUrl::List list;
-            list.append(url);
-            KRun::run(*offer,url,0);
+            case KParts::BrowserOpenOrSaveQuestion::Save:
+                downloadRequested(reply->request());
+                return;
+            case KParts::BrowserOpenOrSaveQuestion::Cancel:
+                return;
+            default: // non extant case
+                break;
         }
+        // case KParts::BrowserRun::Embed
+        KUrl::List list;
+        list.append(url);
+        KRun::run(*offer,url,0);
     }
-    return;
 }
 
 
@@ -255,3 +249,12 @@ QString WebPage::errorPage(QNetworkReply *reply)
                             ;
     return html;
 }
+
+
+bool WebPage::authorizedRequest(const QUrl &url) const
+{
+    Q_UNUSED(url)
+    // TODO implement ad-block here
+    return true;
+}
+

@@ -50,13 +50,14 @@ class WebPage : public KWebPage
 public:
     explicit WebPage(QObject *parent = 0, qlonglong windowId = 0);
     ~WebPage();
-    
+
+    virtual bool authorizedRequest(const QUrl &url) const;
+
 public slots:
     void manageNetworkErrors(QNetworkReply* reply);
 
 protected:
     WebPage *createWindow(WebWindowType type);
-    virtual WebPage *newWindow(WebWindowType type);
     
     virtual bool acceptNavigationRequest(QWebFrame *frame, 
                                          const QNetworkRequest &request, 
