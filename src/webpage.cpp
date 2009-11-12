@@ -76,7 +76,6 @@ WebPage::WebPage(QObject *parent, qlonglong windowId)
 
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     
-    connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequest(const QNetworkRequest &)));
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
 }
 
@@ -257,4 +256,3 @@ bool WebPage::authorizedRequest(const QUrl &url) const
     // TODO implement ad-block here
     return true;
 }
-

@@ -54,14 +54,14 @@ public:
     virtual bool authorizedRequest(const QUrl &url) const;
 
 public slots:
-    void manageNetworkErrors(QNetworkReply* reply);
+    void manageNetworkErrors(QNetworkReply *reply);
 
 protected:
     WebPage *createWindow(WebWindowType type);
     
     virtual bool acceptNavigationRequest(QWebFrame *frame, 
                                          const QNetworkRequest &request, 
-                                         NavigationType type);//
+                                         NavigationType type);
     
 protected Q_SLOTS:    
     virtual void handleUnsupportedContent(QNetworkReply *reply);

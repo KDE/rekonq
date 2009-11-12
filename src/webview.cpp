@@ -66,6 +66,9 @@ WebView::WebView(QWidget* parent)
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 
     connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), this, SLOT(loadInNewTab(const KUrl &)) );
+
+    connect(this, SIGNAL(linkShiftClicked(const KUrl &)), this, SLOT(downloadRequest(const KUrl &)));
+    connect(page(), SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequest(const QNetworkRequest &r)));
 }
 
 
@@ -428,3 +431,14 @@ void WebView::loadInNewTab(const KUrl &url)
     Application::instance()->loadUrl(url, Rekonq::NewCurrentTab);
 }
     
+    
+void WebView::downloadRequest(const KUrl &url)
+{
+    m_page->downloadRequest(QNetworkRequest(url));
+}
+
+
+void WebView::downloadRequest(const QNetworkRequest &request)
+{
+    m_page->downloadRequest(request);
+}

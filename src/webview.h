@@ -73,6 +73,9 @@ private slots:
 
     void loadInNewTab(const KUrl &url);
     
+    void downloadRequest(const KUrl &url);
+    void downloadRequest(const QNetworkRequest &request);
+
 private:
     WebPage *m_page;
     int m_progress;
