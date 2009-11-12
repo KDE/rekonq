@@ -64,6 +64,8 @@ WebView::WebView(QWidget* parent)
     connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
+
+    connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), this, SLOT(loadInNewTab(const KUrl &)) );
 }
 
 
@@ -419,3 +421,10 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
     QWebView::keyPressEvent(event);
 }
+
+
+void WebView::loadInNewTab(const KUrl &url)
+{
+    Application::instance()->loadUrl(url, Rekonq::NewCurrentTab);
+}
+    

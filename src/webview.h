@@ -71,6 +71,8 @@ private slots:
     void openLinkInNewWindow();
     void openLinkInNewTab();
 
+    void loadInNewTab(const KUrl &url);
+    
 private:
     WebPage *m_page;
     int m_progress;
