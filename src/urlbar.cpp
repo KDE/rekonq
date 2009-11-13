@@ -136,7 +136,7 @@ void UrlBar::setupLineEdit()
 
 void UrlBar::setUrl(const QUrl& url)
 {
-    if(url.scheme() == "rekonq")
+    if(url.scheme() == "about")
     {
         m_currentUrl = "";
         setFocus();
