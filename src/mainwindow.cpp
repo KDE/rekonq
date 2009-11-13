@@ -103,6 +103,7 @@ MainWindow::MainWindow()
     , m_popup( new KPassivePopup(this) )
     , m_hidePopup( new QTimer(this) )
     , m_ac( new KActionCollection(this) )
+    , m_loadingNewTabPage(false)
 {
     // enable window size "auto-save"
     setAutoSaveSettings();
@@ -1113,6 +1114,9 @@ void MainWindow::openActionUrl(QAction *action)
 
 bool MainWindow::newTabPage(const KUrl &url)
 {
+    if(m_loadingNewTabPage)
+        return false;
+    
     if (    url == KUrl("about:closedTabs") 
          || url == KUrl("about:history") 
          || url == KUrl("about:bookmarks")
@@ -1120,11 +1124,13 @@ bool MainWindow::newTabPage(const KUrl &url)
          || url == KUrl("about:home")
     )
     {
+        m_loadingNewTabPage = true;
         kDebug() << "loading home: " << url;
         WebView *w = currentTab();
         NewTabPage p;
         QString html = p.newTabPageCode(url);
         w->setHtml(html, url);
+        m_loadingNewTabPage = false;
         return true;
     }
     return false;

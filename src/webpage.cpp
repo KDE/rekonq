@@ -116,9 +116,8 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
     if (request.url().scheme() == QLatin1String("about"))
     {
-        kDebug() << "loading " << request.url();
         Application::instance()->mainWindow()->newTabPage( request.url() );
-        return false;
+        return true;
     }
     
     m_requestedUrl = request.url();

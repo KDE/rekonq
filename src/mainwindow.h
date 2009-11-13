@@ -172,7 +172,8 @@ private:
     QTimer *m_hidePopup;
 
     KActionCollection *m_ac;
-
+    
+    bool m_loadingNewTabPage;
 };
 
 #endif // MAINWINDOW_H
