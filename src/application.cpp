@@ -154,7 +154,7 @@ int Application::newInstance()
         
         // No windows in the current desktop? No windows at all?
         // Create a new one and load there sites...
-        loadUrl(args->arg(0), Rekonq::NewWindow);
+        loadUrl(args->arg(0), Rekonq::CurrentTab);
         for (int i = 1; i < args->count(); ++i)
             loadUrl(args->arg(i), Rekonq::SettingOpenTab);
 
@@ -354,7 +354,11 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
     // first, create the webview(s) to not let hangs UI..
     WebView *webView = 0;
-    MainWindow *w = mainWindow();
+    MainWindow *w = 0;
+    if(type == Rekonq::NewWindow)
+        w = newMainWindow();
+    else
+        w = mainWindow();
         
     switch(type)
     {
