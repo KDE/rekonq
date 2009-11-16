@@ -33,6 +33,7 @@ SET( rekonq_KDEINIT_SRCS
 
 	bookmarkspanel/bookmarkspanel.cpp
 	bookmarkspanel/bookmarkstreemodel.cpp
+	bookmarkspanel/bookmarksproxy.cpp
 )
 
 

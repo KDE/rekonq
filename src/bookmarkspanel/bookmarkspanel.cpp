@@ -27,6 +27,7 @@
 // rekonq includes
 #include "bookmarkspanel.h"
 #include "bookmarkstreemodel.h"
+#include "bookmarksproxy.h"
 
 // Auto Includes
 #include "rekonq.h"
@@ -35,7 +36,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTreeView>
-#include <QSortFilterProxyModel>
 #include <QHeaderView>
 
 // KDE includes
@@ -74,11 +74,12 @@ void BookmarksPanel::setup()
     // setup search bar
     QHBoxLayout *searchLayout = new QHBoxLayout;
     searchLayout->setContentsMargins(5, 0, 0, 0);
-    QLabel *searchLabel = new QLabel(i18n("Search:"));
+    QLabel *searchLabel = new QLabel(i18n("&Search:"));
     searchLayout->addWidget(searchLabel);
     KLineEdit *search = new KLineEdit;
     search->setClearButtonShown(true);
     searchLayout->addWidget(search);
+	searchLabel->setBuddy( search );
 
 	// setup tree view
 	QTreeView *treeView = new QTreeView(ui);
@@ -100,23 +101,10 @@ void BookmarksPanel::setup()
 	setWidget(ui);
 
 	BookmarksTreeModel *model = new BookmarksTreeModel( this );
-	treeView->setModel( model );
+	BookmarksProxy *proxy = new BookmarksProxy(ui);
+	proxy->setSourceModel( model );
+	treeView->setModel( proxy );
 
+	connect(search, SIGNAL(textChanged(QString)), proxy, SLOT(setFilterFixedString(QString)));
 	connect( treeView, SIGNAL( activated(QModelIndex) ), this, SLOT( bookmarkActivated(QModelIndex) ) );
-
-// 	QSortFilterProxyModel *proxy = new QSortFilterProxyModel(ui);
-    //-
-//     HistoryManager *historyManager = Application::historyManager();
-//     QAbstractItemModel *model = historyManager->historyTreeModel();
-//
-//     m_treeProxyModel->setSourceModel(model);
-//     m_treeView->setModel(m_treeProxyModel);
-//     m_treeView->setExpanded(m_treeProxyModel->index(0, 0), true);
-//     m_treeView->header()->hideSection(1);
-//     QFontMetrics fm(font());
-//     int header = fm.width(QLatin1Char('m')) * 40;
-//     m_treeView->header()->resizeSection(0, header);
-//
-//     connect(search, SIGNAL(textChanged(QString)), m_treeProxy, SLOT(setFilterFixedString(QString)));
-//     connect(m_treeView, SIGNAL(activated(const QModelIndex&)), this, SLOT(open()));
 }
