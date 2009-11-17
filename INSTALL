@@ -1,8 +1,7 @@
 ===== Building rekonq from sources =====
 
 WARNING: 
-rekonq before 0.1 release depends on Qt4.4.x.
-From 0.1 release on, to build rekonq you need Qt4.5.x
+rekonq 0.3 release needs at least Qt4.5.x and KDE4.3.1 to build
 
 
 === Prerequisites ===
@@ -15,7 +14,7 @@ Qt4.x.y:
 
 KDE 4 
 
-  KDE 4.1 (or better) should be prepackaged for all mayor linux distributions. Please see
+  KDE 4.x should be prepackaged for all mayor linux distributions. Please see
   http://techbase.kde.org/Getting_Started/Build/stable_Version
   for instructions on how to build and setup a KDE4 environment to work in.
 
