@@ -33,13 +33,13 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QWebView>
+#include <KWebView>
 
 // Forward Declarations
 class WebPage;
 
 
-class WebView : public QWebView
+class WebView : public KWebView
 {
     Q_OBJECT
 
@@ -55,9 +55,8 @@ public:
     
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);// need to be ported
     void mouseMoveEvent(QMouseEvent *event);
-    void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
     
 private slots:
@@ -71,6 +70,11 @@ private slots:
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
     void openLinkInNewWindow();
     void openLinkInNewTab();
+
+    void loadInNewTab(const KUrl &url);
+    
+    void downloadRequest(const KUrl &url);
+    void downloadRequest(const QNetworkRequest &request);
 
 private:
     WebPage *m_page;

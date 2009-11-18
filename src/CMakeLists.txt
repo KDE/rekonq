@@ -1,36 +1,34 @@
-### ------- tests sub dir -------
+### ------- sub dirs -------
 
+ADD_SUBDIRECTORY( data )
 ADD_SUBDIRECTORY( tests )
 
 
 ### ------- SETTING REKONQ FILES..
 
 SET( rekonq_KDEINIT_SRCS
-    newtabpage.cpp
-    previewimage.cpp
-    websnap.cpp
-    networkaccessmanager.cpp
-    autosaver.cpp
-    application.cpp
-    mainwindow.cpp
-    mainview.cpp
-    tabbar.cpp
-    cookiejar.cpp
+    application.cpp 
+    autosaver.cpp 
+    bookmarks.cpp
+    findbar.cpp
     history.cpp
     historymodels.cpp
-    bookmarks.cpp
-    modelmenu.cpp
-    urlbar.cpp
-    findbar.cpp
-    settings.cpp
-    webview.cpp
-    sidepanel.cpp
-    panelhistory.cpp
     lineedit.cpp
-    webpage.cpp
+    mainview.cpp
+    mainwindow.cpp 
+    modelmenu.cpp 
+    panelhistory.cpp
+    previewimage.cpp
     sessionmanager.cpp
+    sidepanel.cpp
+    tabbar.cpp
+    urlbar.cpp
+    webpage.cpp
     webpluginfactory.cpp
-
+    websnap.cpp
+    webview.cpp
+    rekonqpage/newtabpage.cpp
+    settings/settingsdialog.cpp
 	bookmarkspanel/bookmarkspanel.cpp
 	bookmarkspanel/bookmarkstreemodel.cpp
 	bookmarkspanel/bookmarksproxy.cpp
@@ -38,10 +36,10 @@ SET( rekonq_KDEINIT_SRCS
 
 
 KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
-    settings_general.ui
-    settings_tabs.ui
-    settings_fonts.ui
-    settings_webkit.ui
+    settings/settings_general.ui
+    settings/settings_tabs.ui
+    settings/settings_fonts.ui
+    settings/settings_webkit.ui
     cleardata.ui
  )
 
@@ -51,6 +49,8 @@ KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
 ### ------------- INCLUDING DIRECTORIES...
 
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
+                        ${CMAKE_CURRENT_SOURCE_DIR}/rekonqpage
+                        ${CMAKE_CURRENT_SOURCE_DIR}/settings
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}
@@ -69,9 +69,9 @@ KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
 ### --------------- TARGETTING LINK LIBRARIES...
 
 TARGET_LINK_LIBRARIES ( kdeinit_rekonq
-                        ${QT_LIBRARIES}
-                        ${QT_QTNETWORK_LIBRARY}
-                        ${QT_QTWEBKIT_LIBRARY}
+                        ${QT_LIBRARIES} 
+                        ${QT_QTWEBKIT_LIBRARY} 
+                        ${KDE4_KDEWEBKIT_LIBS}
                         ${KDE4_KUTILS_LIBS}
                         ${KDE4_KDEUI_LIBS}
                         ${KDE4_KIO_LIBS}

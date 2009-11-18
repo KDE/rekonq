@@ -3,7 +3,9 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>*
+* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+*
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License as
@@ -24,41 +26,37 @@
 * ============================================================ */
 
 
-// Self Includes
-#include "networkaccessmanager.h"
-#include "networkaccessmanager.moc"
+#ifndef SETTINGS_DIALOG_H
+#define SETTINGS_DIALOG_H
 
-// Local Includes
-#include "application.h"
-#include "mainwindow.h"
-
-// Auto Includes
-#include "rekonq.h"
 
 // KDE Includes
-#include <KStandardDirs>
+#include <KConfigDialog>
 
-// Qt Includes
-#include <QtNetwork/QNetworkDiskCache>
+// Forward Declarations
+class QWidget;
+class Private;
 
 
-NetworkAccessManager::NetworkAccessManager(QObject *parent)
-        : AccessManager(parent)
+class SettingsDialog : public KConfigDialog
 {
-    // resetting disk cache
-    resetDiskCache();
-}
+    Q_OBJECT
 
+public:
+    SettingsDialog(QWidget *parent = 0);
+    ~SettingsDialog();
+    
+    virtual bool hasChanged();
 
-void NetworkAccessManager::resetDiskCache()
-{
-    if(!cache())
-    {
-        QNetworkDiskCache *diskCache = new QNetworkDiskCache(this);
-        setCache(diskCache);
-    }
-    else
-    {
-        cache()->clear();
-    }
-}
+private:
+    Private* const d;
+    void setWebSettingsToolTips();
+
+private slots:
+    void readConfig();
+    void saveSettings();
+
+    void setHomeToCurrentPage();
+};
+
+#endif // SETTINGS_DIALOG_H

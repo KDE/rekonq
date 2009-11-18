@@ -39,8 +39,6 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
-#include "cookiejar.h"
-#include "networkaccessmanager.h"
 #include "webview.h"
 #include "webpluginfactory.h"
 
@@ -51,7 +49,8 @@
 #include <KToolInvocation>
 #include <KProtocolManager>
 
-#include <KDE/KParts/BrowserRun>
+#include <kparts/browseropenorsavequestion.h>
+
 #include <KDE/KMimeTypeTrader>
 #include <KDE/KRun>
 #include <KDE/KFileDialog>
@@ -66,8 +65,8 @@
 #include <QtGui/QKeyEvent>
 
 
-WebPage::WebPage(QObject *parent)
-        : QWebPage(parent)
+WebPage::WebPage(QObject *parent, qlonglong windowId)
+        : KWebPage(parent, windowId)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
 {
@@ -75,10 +74,8 @@ WebPage::WebPage(QObject *parent)
     
     setForwardUnsupportedContent(true);
 
-    setNetworkAccessManager(Application::networkAccessManager());
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     
-    connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequested(const QNetworkRequest &)));
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
 }
 
@@ -122,19 +119,14 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     
     m_requestedUrl = request.url();
 
-    return QWebPage::acceptNavigationRequest(frame, request, type);
+    return KWebPage::acceptNavigationRequest(frame, request, type);
 }
 
 
 WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
     kDebug() << "WebPage createWindow slot";
-    return newWindow(type);
-}
 
-
-WebPage *WebPage::newWindow(WebWindowType type)
-{
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
         kDebug() << "Modal Dialog";
@@ -157,34 +149,32 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (reply->error() == QNetworkReply::NoError)
     {
         const KUrl url(reply->request().url());
-        QString filename = url.fileName();
-        QString mimetype = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-        KService::Ptr offer = KMimeTypeTrader::self()->preferredService(mimetype);
+
+        QString mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+        KService::Ptr offer = KMimeTypeTrader::self()->preferredService(mimeType);
 
         if( offer.isNull() ) // no service can handle this. We can just download it..
         {
-            downloadRequested(reply->request());
+            downloadRequest(reply->request());
+            return;
         }
-        else
+
+        KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), url, mimeType);
+        switch ( dlg.askEmbedOrSave() )
         {
-            // WARNING switch to BrowserOpenOrSaveQuestion for 4.4
-            switch ( KParts::BrowserRun::askSave( url, offer, mimetype, filename ) )
-            {
-                case KParts::BrowserRun::Save:
-                    downloadRequested(reply->request());
-                    return;
-                case KParts::BrowserRun::Cancel:
-                    return;
-                default: // non extant case
-                    break;
-            }
-            // case KParts::BrowserRun::Open
-            KUrl::List list;
-            list.append(url);
-            KRun::run(*offer,url,0);
+            case KParts::BrowserOpenOrSaveQuestion::Save:
+                downloadRequested(reply->request());
+                return;
+            case KParts::BrowserOpenOrSaveQuestion::Cancel:
+                return;
+            default: // non extant case
+                break;
         }
+        // case KParts::BrowserRun::Embed
+        KUrl::List list;
+        list.append(url);
+        KRun::run(*offer,url,0);
     }
-    return;
 }
 
 
@@ -260,28 +250,9 @@ QString WebPage::errorPage(QNetworkReply *reply)
 }
 
 
-// TODO FIXME: sometimes url.fileName() fails to retrieve url file name
-void WebPage::downloadRequested(const QNetworkRequest &request)
+bool WebPage::authorizedRequest(const QUrl &url) const
 {
-    const KUrl url(request.url());
-
-    const QString destUrl = KFileDialog::getSaveFileName(url.fileName(), QString(), view());
-    if (destUrl.isEmpty()) return;
-    KIO::Job *job = KIO::file_copy(url, KUrl(destUrl), -1, KIO::Overwrite);
-    //job->setMetaData(metadata); //TODO: add metadata from request
-    job->addMetaData( QLatin1String("MaxCacheSize"), QLatin1String("0") ); // Don't store in http cache.
-    job->addMetaData( QLatin1String("cache"), QLatin1String("cache") ); // Use entry from cache if available.
-    job->uiDelegate()->setAutoErrorHandlingEnabled(true);
-}
-
-
-QString WebPage::userAgentForUrl(const QUrl& _url) const
-{
-    const KUrl url(_url);
-    QString userAgent = KProtocolManager::userAgentForHost((url.isLocalFile() ? "localhost" : url.host()));
-
-    if (userAgent == KProtocolManager::defaultUserAgent())
-        return QWebPage::userAgentForUrl(_url);
-
-    return userAgent;
+    Q_UNUSED(url)
+    // TODO implement ad-block here
+    return true;
 }

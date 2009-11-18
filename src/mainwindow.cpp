@@ -35,10 +35,8 @@
 
 // Local Includes
 #include "application.h"
-#include "settings.h"
+#include "settingsdialog.h"
 #include "history.h"
-#include "cookiejar.h"
-#include "networkaccessmanager.h"
 #include "bookmarks.h"
 #include "webview.h"
 #include "mainview.h"
@@ -89,6 +87,9 @@
 #include <QtGui/QPrintDialog>
 #include <QtGui/QPrintPreviewDialog>
 #include <QtGui/QFontMetrics>
+
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusReply>
 
 #include <QtWebKit/QWebHistory>
 
@@ -1067,12 +1068,13 @@ void MainWindow::clearPrivateData()
 
         if(clearWidget.clearCookies->isChecked())
         {
-            Application::cookieJar()->clear();
+            QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
+            QDBusReply<void> reply = kcookiejar.call( "deleteAllCookies" );
         }
 
         if(clearWidget.clearCachedPages->isChecked())
         {
-            Application::networkAccessManager()->resetDiskCache();
+            // TODO implement me!
         }
 
         if(clearWidget.clearWebIcons->isChecked())

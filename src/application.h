@@ -45,10 +45,8 @@
 class KIcon;
 class KUrl;
 class BookmarkProvider;
-class CookieJar;
 class HistoryManager;
 class MainWindow;
-class NetworkAccessManager;
 class SessionManager;
 
 
@@ -105,8 +103,6 @@ public:
     static KIcon icon(const KUrl &url);
 
     static HistoryManager *historyManager();
-    static CookieJar *cookieJar();
-    static NetworkAccessManager *networkAccessManager();
     static BookmarkProvider *bookmarkProvider();
     static SessionManager *sessionManager();
     
@@ -141,7 +137,6 @@ private:
     KUrl guessUrlFromString(const QString &url);
 
     static QPointer<HistoryManager> s_historyManager;
-    static QPointer<NetworkAccessManager> s_networkAccessManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;
     static QPointer<SessionManager> s_sessionManager;
     

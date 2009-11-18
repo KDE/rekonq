@@ -27,8 +27,8 @@
 
 
 // Self Includes
-#include "settings.h"
-#include "settings.moc"
+#include "settingsdialog.h"
+#include "settingsdialog.moc"
 
 // Auto Includes
 #include "rekonq.h"
@@ -36,7 +36,6 @@
 // Local Includes
 #include "application.h"
 #include "mainwindow.h"
-#include "networkaccessmanager.h"
 #include "webview.h"
 
 //Ui Includes
@@ -70,6 +69,7 @@ private:
     KCModuleProxy *proxyModule;
     KCModuleProxy *ebrowsingModule;
     KCModuleProxy *cookiesModule;
+    KCModuleProxy *cacheModule;
     KShortcutsEditor *shortcutsEditor;
     
     Private(SettingsDialog *parent);
@@ -110,7 +110,12 @@ Private::Private(SettingsDialog *parent)
     proxyModule = new KCModuleProxy(proxyInfo,parent);
     pageItem = parent->addPage(proxyModule, i18n(proxyInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(proxyInfo.icon()));
-    
+
+    KCModuleInfo cacheInfo("cache.desktop");
+    cacheModule = new KCModuleProxy(cacheInfo,parent);
+    pageItem = parent->addPage(cacheModule, i18n(cacheInfo.moduleName().toLocal8Bit()));
+    pageItem->setIcon(KIcon(cacheInfo.icon()));
+        
     widget = new QWidget;
     webkitUi.setupUi(widget);
     widget->layout()->setMargin(0);
@@ -153,6 +158,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->proxyModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->cacheModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+
     connect(d->shortcutsEditor, SIGNAL(keyChange()), this, SLOT(updateButtons()));
         
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
@@ -200,6 +207,7 @@ void SettingsDialog::saveSettings()
     d->ebrowsingModule->save();
     d->cookiesModule->save();
     d->proxyModule->save();
+    d->cacheModule->save();
     d->shortcutsEditor->save();
 }
 
@@ -210,6 +218,7 @@ bool SettingsDialog::hasChanged()
             || d->ebrowsingModule->changed()            
             || d->cookiesModule->changed()
             || d->proxyModule->changed()
+            || d->cacheModule->changed()
             || d->shortcutsEditor->isModified();
             ;
 }
