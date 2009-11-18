@@ -1,9 +1,8 @@
 INSPIRED FROM AMAROK ONE
 
-Section 0: A few days in advance
+SECTION 0: A few days in advance
 
 * Check that release date doesn't clash with KDE's schedule
-* Notify translators and update http://techbase.kde.org/Schedules/Extragear
 
 --------------------------------------------------------------------------------
 
@@ -15,42 +14,27 @@ SECTION 1: Preparation
 
 --------------------------------------------------------------------------------
 
-FIXME SECTION 2: Creating and Testing the Tarball
+SECTION 2: Creating and Testing the Tarball
 
 * Run the "release_script.sh"
     VERSION=qualcosina
     git tag -s $VERSION
     git archive --prefix=rekonq-$VERSION/ $VERSION | bzip2 > releases/rekonq-$VERSION.tar.bz2
 
-* Test the following:
-
-    $ ./configure && make
-    $ ./configure --enable-final --disable-debug && make
-
+* Test package with current KDE version:
+* Optionally add docs and translations.
+* Test package with docs AND translations added
 * Check it works OK without any rekonq files in ~/.kde
 
 --------------------------------------------------------------------------------
 
-FIXME SECTION 3: Once Happy with the Tarball
+SECTION 4: The Release Day
 
-* SFtp the tarball to:
-    - ftpamarok@ktown.kde.org/stable/amarok/VERSION/src
- (If you don't have access, mail sysadmin@kde.org)  
-
-* Notify packagers
-* Write release notes and dot story (and notify KDE-press list if necessary)
 * Add new version to Bugzilla
-
---------------------------------------------------------------------------------
-
-Section 4: The Release Day
-
-* Update download page on the wiki
-* Update the rekonq.kde.org front-page
-* Send a witty, intelligent and diligently crafted email to the following lists:
-    - To:  kde-announce-apps@kde.org, rekonq@kde.org
-    - BCC: kde-extra-gear@kde.org, kde-press-announce@kde.org
-* Blog, update IRC channel topics, ...
+* Push tarball to sf repository
+* Update sf rekonq site
 * Update kde-apps.org
+* Update IRC channel topic
+* Blog about!
 
 --------------------------------------------------------------------------------
