@@ -268,10 +268,14 @@ void MainWindow::setupActions()
     KStandardAction::print(this, SLOT(printRequested()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
 
-    KStandardAction::find(m_findBar, SLOT(show()) , actionCollection());
+    a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
+    QList<QKeySequence> shortcutFindList;
+    shortcutFindList << KStandardShortcut::find() << QKeySequence( Qt::Key_Slash );
+    a->setShortcuts( shortcutFindList );
+
     KStandardAction::findNext(this, SLOT(findNext()) , actionCollection());
     KStandardAction::findPrev(this, SLOT(findPrevious()) , actionCollection());
-
+   
     a = KStandardAction::fullScreen(this, SLOT(viewFullScreen(bool)), this, actionCollection());
     QList<QKeySequence> shortcutFullScreenList;
     shortcutFullScreenList << KStandardShortcut::fullScreen() << QKeySequence( Qt::Key_F11 );
