@@ -10,16 +10,16 @@ SET( rekonq_KDEINIT_SRCS
     previewimage.cpp
     websnap.cpp
     networkaccessmanager.cpp
-    autosaver.cpp 
-    application.cpp 
-    mainwindow.cpp 
+    autosaver.cpp
+    application.cpp
+    mainwindow.cpp
     mainview.cpp
     tabbar.cpp
     cookiejar.cpp
     history.cpp
     historymodels.cpp
     bookmarks.cpp
-    modelmenu.cpp 
+    modelmenu.cpp
     urlbar.cpp
     findbar.cpp
     settings.cpp
@@ -30,6 +30,10 @@ SET( rekonq_KDEINIT_SRCS
     webpage.cpp
     sessionmanager.cpp
     webpluginfactory.cpp
+
+	bookmarkspanel/bookmarkspanel.cpp
+	bookmarkspanel/bookmarkstreemodel.cpp
+	bookmarkspanel/bookmarksproxy.cpp
 )
 
 
@@ -65,9 +69,9 @@ KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
 ### --------------- TARGETTING LINK LIBRARIES...
 
 TARGET_LINK_LIBRARIES ( kdeinit_rekonq
-                        ${QT_LIBRARIES} 
+                        ${QT_LIBRARIES}
                         ${QT_QTNETWORK_LIBRARY}
-                        ${QT_QTWEBKIT_LIBRARY} 
+                        ${QT_QTWEBKIT_LIBRARY}
                         ${KDE4_KUTILS_LIBS}
                         ${KDE4_KDEUI_LIBS}
                         ${KDE4_KIO_LIBS}

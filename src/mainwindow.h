@@ -12,9 +12,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -48,6 +48,7 @@ class KPassivePopup;
 
 class FindBar;
 class SidePanel;
+class BookmarksPanel;
 class WebView;
 class MainView;
 
@@ -80,6 +81,9 @@ private:
 
     void setupSidePanel();
     SidePanel *sidePanel();
+
+	void setupBookmarksPanel();
+	BookmarksPanel *bookmarksPanel();
 
 public slots:
     void updateBrowser();
@@ -159,20 +163,21 @@ private:
     MainView *m_view;
     FindBar *m_findBar;
     SidePanel *m_sidePanel;
+	BookmarksPanel *m_bookmarksPanel;
 
     KAction *m_stopReloadAction;
     KMenu *m_historyBackMenu;
 
     KToolBar *m_mainBar;
     KToolBar *m_bmBar;
-    
+
     QString m_lastSearch;
 
     KPassivePopup *m_popup;
     QTimer *m_hidePopup;
 
     KActionCollection *m_ac;
-    
+
     bool m_loadingNewTabPage;
 };
 

@@ -44,6 +44,7 @@
 #include "mainview.h"
 #include "findbar.h"
 #include "sidepanel.h"
+#include "bookmarkspanel/bookmarkspanel.h"
 #include "urlbar.h"
 #include "tabbar.h"
 #include "newtabpage.h"
@@ -97,6 +98,7 @@ MainWindow::MainWindow()
     , m_view(new MainView(this))
     , m_findBar(new FindBar(this))
     , m_sidePanel(0)
+	, m_bookmarksPanel(0)
     , m_historyBackMenu(0)
     , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, false) )
@@ -133,6 +135,7 @@ MainWindow::MainWindow()
 
     // setting Side Panel
     setupSidePanel();
+	setupBookmarksPanel();
 
     // setting up rekonq tools
     setupTools();
@@ -166,6 +169,11 @@ SidePanel *MainWindow::sidePanel()
     return m_sidePanel;
 }
 
+BookmarksPanel *MainWindow::bookmarksPanel()
+{
+    return m_bookmarksPanel;
+}
+
 
 void MainWindow::setupToolbars()
 {
@@ -185,7 +193,7 @@ void MainWindow::setupToolbars()
     KAction *urlBarAction = new KAction(this);
     urlBarAction->setDefaultWidget(m_view->urlBar());
     m_mainBar->addAction( urlBarAction );
-    
+
     m_mainBar->addAction( actionByName("bookmarksActionMenu") );
     m_mainBar->addAction( actionByName("rekonq_tools") );
 
@@ -210,7 +218,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
-    // (shift +) ctrl + tab switching 
+    // (shift +) ctrl + tab switching
     connect(this, SIGNAL(ctrlTabPressed()), m_view, SLOT(nextTab()));
     connect(this, SIGNAL(shiftCtrlTabPressed()), m_view, SLOT(previousTab()));
 
@@ -220,7 +228,7 @@ void MainWindow::postLaunch()
 
     // launch it manually. Just the first time...
     updateActions();
-    
+
     // Find Bar signal
     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(find(const QString &)));
 
@@ -255,7 +263,7 @@ void MainWindow::setupActions()
     actionCollection()->addAssociatedWidget(this);
 
     KAction *a;
-    
+
     // new window action
     a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
@@ -383,11 +391,11 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("tab-close-other"), i18n("Close &Other Tabs"), this);
     actionCollection()->addAction( QLatin1String("close_other_tabs"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(closeOtherTabs()) );
-    
+
     a = new KAction(KIcon("view-refresh"), i18n("Reload Tab"), this);
     actionCollection()->addAction( QLatin1String("reload_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(reloadTab()) );
-    
+
     // ----------------------- Bookmarks ToolBar Action --------------------------------------
     QAction *qa = m_bmBar->toggleViewAction();
     qa->setText( i18n("Bookmarks Toolbar") );
@@ -434,6 +442,7 @@ void MainWindow::setupTools()
 
     toolsMenu->addAction(actionByName(QLatin1String("bm_bar")));
     toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
+	toolsMenu->addAction(actionByName(QLatin1String("show_bookmarks_panel")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
 
     toolsMenu->addSeparator();
@@ -461,6 +470,21 @@ void MainWindow::setupSidePanel()
     a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H)); // WARNING : is this the right shortcut ??
     a->setIcon(KIcon("view-history"));
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
+}
+
+void MainWindow::setupBookmarksPanel()
+{
+	m_bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
+    connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
+    connect(m_bookmarksPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
+
+    addDockWidget(Qt::LeftDockWidgetArea, m_bookmarksPanel);
+
+    // setup side panel actions
+    KAction* a = (KAction *) m_bookmarksPanel->toggleViewAction();
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B)); // FIXME: this shortcut should be configurable !
+    a->setIcon(KIcon("bookmarks-organize"));
+    actionCollection()->addAction(QLatin1String("show_bookmarks_panel"), a);
 }
 
 
@@ -504,7 +528,7 @@ void MainWindow::updateConfiguration()
         QWebSettings::setOfflineStoragePath(path);
         QWebSettings::setOfflineStorageDefaultQuota(50000);
     }
-    
+
     // Applies user defined CSS to all open webpages. If there no longer is a
     // user defined CSS removes it from all open webpages.
     defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
@@ -592,7 +616,7 @@ void MainWindow::updateWindowTitle(const QString &title)
 void MainWindow::fileOpen()
 {
     QString filePath = KFileDialog::getOpenFileName(KUrl(),
-                       i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n" 
+                       i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n"
                        "*.*|All files (*.*)"),
                        this,
                        i18n("Open Web Resource"));
@@ -730,6 +754,7 @@ void MainWindow::viewFullScreen(bool makeFullScreen)
     // state flags
     static bool bookmarksToolBarFlag;
     static bool sidePanelFlag;
+	static bool bookmarksPanelFlag;
 
     if (makeFullScreen == true)
     {
@@ -739,6 +764,9 @@ void MainWindow::viewFullScreen(bool makeFullScreen)
 
         sidePanelFlag = sidePanel()->isHidden();
         sidePanel()->hide();
+
+		 bookmarksPanelFlag = bookmarksPanel()->isHidden();
+        bookmarksPanel()->hide();
 
         // hide main toolbar
         m_mainBar->hide();
@@ -753,6 +781,8 @@ void MainWindow::viewFullScreen(bool makeFullScreen)
             m_bmBar->show();
         if (!sidePanelFlag)
             sidePanel()->show();
+        if (!bookmarksPanelFlag)
+            bookmarksPanel()->show();
     }
 
     KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
@@ -930,7 +960,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         m_view->closeTab(m_view->currentIndex());
         return;
     }
-    
+
     KMainWindow::keyPressEvent(event);
 }
 
@@ -964,7 +994,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     }
 
     m_hidePopup->stop();
-    
+
 
     switch(status)
     {
@@ -1083,7 +1113,7 @@ void MainWindow::aboutToShowBackMenu()
         QWebHistoryItem item = history->backItems(history->count()).at(i);
         KAction *action = new KAction(this);
         action->setData( i - history->currentItemIndex() );
-        QIcon icon = Application::icon(item.url()); 
+        QIcon icon = Application::icon(item.url());
         action->setIcon(icon);
         action->setText(item.title());
         m_historyBackMenu->addAction(action);
@@ -1095,7 +1125,7 @@ void MainWindow::openActionUrl(QAction *action)
 {
     int offset = action->data().toInt();
     QWebHistory *history = currentTab()->history();
-    
+
     if(!history->itemAt(offset).isValid())
     {
         kDebug() << "Invalid Offset!";
@@ -1120,9 +1150,9 @@ bool MainWindow::newTabPage(const KUrl &url)
 {
     if(m_loadingNewTabPage)
         return false;
-    
-    if (    url == KUrl("about:closedTabs") 
-         || url == KUrl("about:history") 
+
+    if (    url == KUrl("about:closedTabs")
+         || url == KUrl("about:history")
          || url == KUrl("about:bookmarks")
          || url == KUrl("about:favorites")
          || url == KUrl("about:home")
