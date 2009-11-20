@@ -32,6 +32,9 @@
 #define WEBPAGE_H
 
 
+// Local Includes
+#include "adblockmanager.h"
+
 // KDE Includes
 #include <KWebPage>
 
@@ -75,6 +78,8 @@ private:
     Qt::MouseButtons m_pressedButtons;
 
     QUrl m_requestedUrl;
+    
+    AdBlockManager *m_adBlockMan;
 };
 
 #endif

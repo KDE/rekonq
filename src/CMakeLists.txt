@@ -27,11 +27,16 @@ SET( rekonq_KDEINIT_SRCS
     webpluginfactory.cpp
     websnap.cpp
     webview.cpp
+#----------------------------------------
     rekonqpage/newtabpage.cpp
+#----------------------------------------
     settings/settingsdialog.cpp
-	bookmarkspanel/bookmarkspanel.cpp
-	bookmarkspanel/bookmarkstreemodel.cpp
-	bookmarkspanel/bookmarksproxy.cpp
+#----------------------------------------
+    bookmarkspanel/bookmarkspanel.cpp
+    bookmarkspanel/bookmarkstreemodel.cpp
+    bookmarkspanel/bookmarksproxy.cpp
+#----------------------------------------
+    adblock/adblockmanager.cpp
 )
 
 
@@ -51,6 +56,7 @@ KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/rekonqpage
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
+                        ${CMAKE_CURRENT_SOURCE_DIR}/adblock
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}
