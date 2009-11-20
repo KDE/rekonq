@@ -603,13 +603,28 @@ void MainWindow::updateActions()
 
 void MainWindow::updateWindowTitle(const QString &title)
 {
+    QWebSettings *settings = QWebSettings::globalSettings();
     if (title.isEmpty())
     {
-        setWindowTitle("rekonq");
+        if(settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+        {
+            setWindowTitle("rekonq (" + i18n("Private Browsing")  + ")");
+        }
+        else
+        {
+            setWindowTitle("rekonq");
+        }
     }
     else
     {
-        setWindowTitle(title + " - rekonq");
+        if(settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+        {
+            setWindowTitle(title + " - rekonq (" + i18n("Private Browsing")  + ")");
+        }
+        else
+        {
+            setWindowTitle(title + " - rekonq");
+        }
     }
 }
 
