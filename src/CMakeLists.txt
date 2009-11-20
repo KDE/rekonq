@@ -2,6 +2,7 @@
 
 ADD_SUBDIRECTORY( data )
 ADD_SUBDIRECTORY( tests )
+ADD_SUBDIRECTORY( adblock )
 
 
 ### ------- SETTING REKONQ FILES..
