@@ -67,6 +67,20 @@
         </item>
        </layout>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout2">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Minimal font size:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="kcfg_minFontSize"/>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
@@ -90,6 +104,11 @@
    <class>KFontComboBox</class>
    <extends>KComboBox</extends>
    <header>kfontcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

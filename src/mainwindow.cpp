@@ -468,14 +468,15 @@ void MainWindow::setupSidePanel()
 
     // setup side panel actions
     KAction* a = (KAction *) m_sidePanel->toggleViewAction();
-    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H)); // WARNING : is this the right shortcut ??
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     a->setIcon(KIcon("view-history"));
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
 }
 
+
 void MainWindow::setupBookmarksPanel()
 {
-	m_bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
+    m_bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
     connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
     connect(m_bookmarksPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
 
@@ -483,7 +484,7 @@ void MainWindow::setupBookmarksPanel()
 
     // setup side panel actions
     KAction* a = (KAction *) m_bookmarksPanel->toggleViewAction();
-    a->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B)); // FIXME: this shortcut should be configurable !
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
     a->setIcon(KIcon("bookmarks-organize"));
     actionCollection()->addAction(QLatin1String("show_bookmarks_panel"), a);
 }
@@ -498,10 +499,17 @@ void MainWindow::updateConfiguration()
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
 
     int fnSize = ReKonfig::fontSize();
+    int minFnSize = ReKonfig::minFontSize();
+
+    // font size / dpi WARNING: is this right? why we need this?
+    float toPix = m_view->logicalDpiY()/72.0;
+    if (toPix < 96.0/72.0) 
+        toPix = 96.0/72.0;
 
     QFont standardFont = ReKonfig::standardFont();
     defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, fnSize);
+    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, fnSize*toPix);
+    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, minFnSize*toPix);
 
     QFont fixedFont = ReKonfig::fixedFont();
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());

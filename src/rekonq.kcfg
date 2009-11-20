@@ -71,6 +71,9 @@
     <entry name="fontSize" type="Int">
     <default>16</default>
     </entry>
+    <entry name="minFontSize" type="Int">
+    <default>8</default>
+    </entry>
   </group>
 
 <!-- Privacy Settings -->
