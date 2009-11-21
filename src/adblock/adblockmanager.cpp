@@ -32,7 +32,9 @@
 
 AdBlockManager::AdBlockManager(QObject *parent)
     : QObject(parent)
+    , _isAdblockEnabled(false)
 {
+    loadSettings();
 }
 
 
@@ -41,7 +43,28 @@ AdBlockManager::~AdBlockManager()
 }
 
 
+void AdBlockManager::loadSettings()
+{
+//     KConfigGroup cg(_config, _group);
+//     groupBox->setChecked( cg.readEntry("Enabled", false) );
+// 
+//     int num = cg.readEntry("Count", 0);
+//     for (int i = 0; i < num; ++i)
+//     {
+//     QString key = "Filter-" + QString::number(i);
+//     QString filter = cg.readEntry( key, QString() );
+//     listWidget->addItem(filter);
+//     }
+}
+
+
 bool AdBlockManager::isUrlAllowed(const QUrl &url)
 {
+    if (url.scheme() == QLatin1String("data"))
+        return false;
+
+    if (!_isAdblockEnabled)
+        return false;
+
     return true;
 }

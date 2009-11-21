@@ -51,7 +51,6 @@ K_EXPORT_PLUGIN(RekonqPluginFactory("kcmrekonqfactory"))
 
 KCMWebkitAdblock::KCMWebkitAdblock(QWidget *parent, const QVariantList &args)
     : KCModule(KGlobal::mainComponent(), parent, args)
-    , _isAdblockEnabled(false)
     , _group("adblock")
 {
     KAboutData *about = new KAboutData( I18N_NOOP("kcmrekonqfactory"), 0, 
@@ -64,7 +63,6 @@ KCMWebkitAdblock::KCMWebkitAdblock(QWidget *parent, const QVariantList &args)
     
     setupUi(this);
     connect(label, SIGNAL(linkActivated(const QString &)), SLOT(infoLinkActivated(const QString &)) );
-    connect(groupBox,SIGNAL(clicked(bool)), this, SLOT(stateChanged(bool)));
     searchLine->setListWidget(listWidget);
     
     connect(addButton,SIGNAL(clicked()),this,SLOT(addExpr()));
@@ -85,7 +83,7 @@ void KCMWebkitAdblock::defaults()
     searchLine->clear();
     lineEdit->clear();
     listWidget->clear();
-    groupBox->setChecked(false); // set also _isAdblockEnabled    
+    groupBox->setChecked(false);
 }
 
 
@@ -137,18 +135,6 @@ void KCMWebkitAdblock::infoLinkActivated(const QString &url)
 }
 
 
-void KCMWebkitAdblock::stateChanged(bool state)
-{
-    _isAdblockEnabled = state;
-}
-
-
-bool KCMWebkitAdblock::isAdblockEnabled()
-{
-    return _isAdblockEnabled;
-}
-    
-    
 void KCMWebkitAdblock::addExpr()
 {
     listWidget->addItem( lineEdit->text() );

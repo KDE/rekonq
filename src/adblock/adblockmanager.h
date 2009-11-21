@@ -29,8 +29,11 @@
 #define ADBLOCK_MANAGER_H
 
 
+// Qt Includes
 #include <QObject>
+#include <QStringList>
 
+// Forward Includes
 class QUrl;
 
 
@@ -41,8 +44,13 @@ Q_OBJECT
 public:
     AdBlockManager(QObject *parent = 0);
     ~AdBlockManager();
-    
+
+    void loadSettings();
     bool isUrlAllowed(const QUrl &url);
+    
+private:
+    bool _isAdblockEnabled;
+    QStringList _blocks;
 };
 
 #endif

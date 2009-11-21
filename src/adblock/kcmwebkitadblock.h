@@ -42,26 +42,20 @@ Q_OBJECT
 
 public:
     KCMWebkitAdblock(QWidget *parent, const QVariantList &args);
-
     ~KCMWebkitAdblock();
     
     void defaults();
     void load();
     void save();
     
-    bool isAdblockEnabled();
-    
 private slots:
     void infoLinkActivated(const QString &url);
-    void stateChanged(bool state);
 
     void addExpr();
     void removeSelected();
     void importExpr();
     
 private:
-    bool _isAdblockEnabled;
-
     KSharedConfig::Ptr _config;
     QString _group;
 };
