@@ -31,6 +31,15 @@
 // KDE Includes
 #include <KDE/KPluginFactory>
 #include <KDE/KPluginLoader>
+#include <KDE/KAboutData>
+#include <KDE/KTemporaryFile>
+#include <KDE/KIO/NetAccess>
+#include <KDE/KDebug>
+
+// Qt Includes
+#include <QtCore/QTextStream>
+#include <QtGui/QWhatsThis>
+#include <QtGui/QListWidgetItem>
 
 
 K_PLUGIN_FACTORY(RekonqPluginFactory,
@@ -42,8 +51,27 @@ K_EXPORT_PLUGIN(RekonqPluginFactory("kcmrekonqfactory"))
 
 KCMWebkitAdblock::KCMWebkitAdblock(QWidget *parent, const QVariantList &args)
     : KCModule(KGlobal::mainComponent(), parent, args)
+    , _isAdblockEnabled(false)
+    , _group("adblock")
 {
+    KAboutData *about = new KAboutData( I18N_NOOP("kcmrekonqfactory"), 0, 
+                                        ki18n( "rekonq Browsing Control Module" ), 0, 
+                                        KLocalizedString(), KAboutData::License_GPL, 
+                                        ki18n( "(c) 2009 Andrea Diamantini" ) );
+    
+    about->addAuthor( ki18n("Andrea Diamantini"), KLocalizedString(), "adjam7@gmail.com" );
+    setAboutData( about );
+    
     setupUi(this);
+    connect(label, SIGNAL(linkActivated(const QString &)), SLOT(infoLinkActivated(const QString &)) );
+    connect(groupBox,SIGNAL(clicked(bool)), this, SLOT(stateChanged(bool)));
+    searchLine->setListWidget(listWidget);
+    
+    connect(addButton,SIGNAL(clicked()),this,SLOT(addExpr()));
+    connect(removeButton, SIGNAL(clicked()), this, SLOT(removeSelected()));
+    connect(importButton, SIGNAL(clicked()), this, SLOT(importExpr()));
+
+    _config = KSharedConfig::openConfig("webkitrc", KConfig::NoGlobals);
 }
 
 
@@ -54,14 +82,118 @@ KCMWebkitAdblock::~KCMWebkitAdblock()
 
 void KCMWebkitAdblock::defaults()
 {
+    searchLine->clear();
+    lineEdit->clear();
+    listWidget->clear();
+    groupBox->setChecked(false); // set also _isAdblockEnabled    
 }
 
 
 void KCMWebkitAdblock::load()
 {
+    KConfigGroup cg(_config, _group);
+    groupBox->setChecked( cg.readEntry("Enabled", false) );
+        
+    int num = cg.readEntry("Count", 0);
+    for (int i = 0; i < num; ++i)
+    {
+        QString key = "Filter-" + QString::number(i);
+        QString filter = cg.readEntry( key, QString() );
+        listWidget->addItem(filter);
+    }
+//     updateButton();
 }
 
 
 void KCMWebkitAdblock::save()
 {
+    KConfigGroup cg(_config, _group);
+    cg.deleteGroup();
+    cg = KConfigGroup(_config, _group);
+
+    cg.writeEntry("Enabled", groupBox->isChecked());
+
+    for(int i = 0; i < listWidget->count(); ++i )
+    {
+        QString key = "Filter-" + QString::number(i);
+        cg.writeEntry(key, listWidget->item(i)->text());
+    }
+    cg.writeEntry("Count", listWidget->count());
+    cg.sync();
+}
+
+
+void KCMWebkitAdblock::infoLinkActivated(const QString &url)
+{
+    QString helpString = i18n("<qt><p>Enter an expression to filter. Filters can be defined as either:"
+        "<ul><li>a shell-style wildcard, e.g. <tt>http://www.example.com/ads*</tt>, the wildcards <tt>*?[]</tt> may be used</li>"
+        "<li>a full regular expression by surrounding the string with '<tt>/</tt>', e.g. <tt>/\\/(ad|banner)\\./</tt></li></ul>"
+        "<p>Any filter string can be preceded by '<tt>@@</tt>' to whitelist (allow) any matching URL, "
+        "which takes priority over any blacklist (blocking) filter.");
+
+    
+    if ( url == "filterhelp" )
+        QWhatsThis::showText( QCursor::pos(), helpString );
+}
+
+
+void KCMWebkitAdblock::stateChanged(bool state)
+{
+    _isAdblockEnabled = state;
+}
+
+
+bool KCMWebkitAdblock::isAdblockEnabled()
+{
+    return _isAdblockEnabled;
+}
+    
+    
+void KCMWebkitAdblock::addExpr()
+{
+    listWidget->addItem( lineEdit->text() );
+    lineEdit->clear();
+}
+
+
+void KCMWebkitAdblock::removeSelected()
+{
+    listWidget->takeItem(listWidget->currentRow());
+    searchLine->clear();
+}
+
+
+void KCMWebkitAdblock::importExpr()
+{
+   
+    QString target;
+    KUrl url("http://adblockplus.mozdev.org/easylist/easylist.txt");
+        
+    kDebug() << "downloading list..";
+    
+    bool success = KIO::NetAccess::download(url, target, 0);
+    if(!success)
+    {
+        kDebug() << "not success";
+        return;
+    }
+    
+    QFile temp(target);
+    if (!temp.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        kDebug() << "File not open";
+        return;
+    }
+    
+    QTextStream stream(&temp);
+    QString line;
+    do 
+    {
+        line = stream.readLine();
+        if(!line.startsWith('!') && !line.startsWith('['))
+            listWidget->addItem(line);
+    }
+    while (!line.isNull());
+    
+    KIO::NetAccess::removeTempFile(target);
 }

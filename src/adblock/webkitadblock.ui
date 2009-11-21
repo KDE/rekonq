@@ -15,23 +15,37 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QCheckBox" name="enableAdblock">
-     <property name="text">
-      <string>Enable adblock</string>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>enable adblock</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
      </property>
      <property name="checked">
       <bool>true</bool>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>adblock settings</string>
-     </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="KListWidget" name="klistWidget"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Search:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="KListWidgetSearchLine" name="searchLine">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="KListWidget" name="listWidget"/>
       </item>
       <item>
        <widget class="QLabel" name="label">
@@ -41,10 +55,10 @@
        </widget>
       </item>
       <item>
-       <widget class="KListWidgetSearchLine" name="searchline"/>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="KLineEdit" name="lineEdit"/>
+        </item>
         <item>
          <widget class="QPushButton" name="addButton">
           <property name="text">
@@ -52,24 +66,21 @@
           </property>
          </widget>
         </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QPushButton" name="removeButton">
           <property name="text">
-           <string>Remove</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="searchButton">
-          <property name="text">
-           <string>Search</string>
+           <string>Remove Expr</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="importButton">
           <property name="text">
-           <string>Import</string>
+           <string>Import from...</string>
           </property>
          </widget>
         </item>

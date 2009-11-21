@@ -9,6 +9,6 @@ X-KDE-Library=kcm_webkitadblock
 X-KDE-PluginKeyword=webkitAdblock
 X-KDE-ParentApp=kcontrol
 
-Name=Webkit AdBlock Settings
+Name=Webkit AdBlock
 
 Categories=Qt;KDE;X-KDE-settings-webbrowsing;

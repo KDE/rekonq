@@ -70,6 +70,7 @@ private:
     KCModuleProxy *ebrowsingModule;
     KCModuleProxy *cookiesModule;
     KCModuleProxy *cacheModule;
+    KCModuleProxy *adblockModule;
     KShortcutsEditor *shortcutsEditor;
     
     Private(SettingsDialog *parent);
@@ -124,6 +125,11 @@ Private::Private(SettingsDialog *parent)
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
 
+    KCModuleInfo adblockInfo("webkitAdblock.desktop");
+    adblockModule = new KCModuleProxy(adblockInfo,parent);
+    pageItem = parent->addPage(adblockModule, i18n(adblockInfo.moduleName().toLocal8Bit()));
+    pageItem->setIcon(KIcon(adblockInfo.icon()));
+    
     shortcutsEditor = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(), parent);
     pageItem = parent->addPage(shortcutsEditor , i18n("Shortcuts"));
     pageItem->setIcon(KIcon("configure-shortcuts"));
@@ -133,7 +139,9 @@ Private::Private(SettingsDialog *parent)
     pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
 
-    parent->setMinimumSize(700,500);
+    // WARNING remember wheh changing here that the smaller netbooks
+    // have a 1024x576 resolution. So DONT bother that limits!!
+    parent->setMinimumSize(700,525);    
 }
 
 
@@ -144,14 +152,11 @@ SettingsDialog::SettingsDialog(QWidget *parent)
         : KConfigDialog(parent, "rekonfig", ReKonfig::self())
         , d(new Private(this))
 {
-    setFaceType(KPageDialog::Tree);
-    showButtonSeparator(true);
-
-    setWindowTitle(i18n("rekonfig..."));
+    showButtonSeparator(false);
+    setWindowTitle(i18n("Configure - rekonq"));
     setModal(true);
 
     readConfig();
-
 
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
     
@@ -159,7 +164,8 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->proxyModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->cacheModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-
+    connect(d->adblockModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    
     connect(d->shortcutsEditor, SIGNAL(keyChange()), this, SLOT(updateButtons()));
         
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
@@ -209,6 +215,7 @@ void SettingsDialog::saveSettings()
     d->proxyModule->save();
     d->cacheModule->save();
     d->shortcutsEditor->save();
+    d->adblockModule->save();
 }
 
 
@@ -219,6 +226,7 @@ bool SettingsDialog::hasChanged()
             || d->cookiesModule->changed()
             || d->proxyModule->changed()
             || d->cacheModule->changed()
+            || d->adblockModule->changed()
             || d->shortcutsEditor->isModified();
             ;
 }

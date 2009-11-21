@@ -33,6 +33,7 @@
 
 // KDE Includes
 #include <kcmodule.h>
+#include <ksharedconfig.h>
 
 
 class KCMWebkitAdblock : public KCModule, private Ui::WebkitAdblock
@@ -47,6 +48,22 @@ public:
     void defaults();
     void load();
     void save();
+    
+    bool isAdblockEnabled();
+    
+private slots:
+    void infoLinkActivated(const QString &url);
+    void stateChanged(bool state);
+
+    void addExpr();
+    void removeSelected();
+    void importExpr();
+    
+private:
+    bool _isAdblockEnabled;
+
+    KSharedConfig::Ptr _config;
+    QString _group;
 };
 
 #endif
