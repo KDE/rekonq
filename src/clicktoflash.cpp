@@ -39,9 +39,9 @@
 
 #include <KDebug>
 
-ClickToFlash::ClickToFlash(const WebPluginFactory *factory, QWidget *parent)
+ClickToFlash::ClickToFlash(const WebPluginFactory *factory, QUrl pluginUrl, QWidget *parent)
     : QWidget(parent)
-    , m_factory(factory)
+    , m_url(pluginUrl)
 {
     
     kDebug() << "creating clicktoflash";
@@ -96,6 +96,7 @@ void ClickToFlash::loadAll()
 */
 void ClickToFlash::load(bool loadAll)
 {
+    kDebug() << "called";
     QWidget *parent = parentWidget();
     QWebView *view = 0;
     while (parent) 
@@ -126,17 +127,37 @@ void ClickToFlash::load(bool loadAll)
         elements.append(docElement.findAll(selector.arg(QLatin1String("embed"))));
 
         QWebElement element;
+        kDebug() << m_url;
+        bool isRightElement = false;
         foreach (element, elements) 
         {
-            QWebElement substitute = element.clone();
-            emit signalLoadClickToFlash(true);
-            element.replace(substitute);
+            // TODO : find a proper solution to compare a QWebElement with a plugin
+            if(QUrl(element.attribute("data")) == m_url
+            || QUrl(element.attribute("src")) == m_url)
+                isRightElement = true;
+            
+            QWebElementCollection collec = element.findAll("param");
+            int i = 0;
+            while(i < collec.count() && isRightElement == false)
+            {
+                if(QUrl(collec.at(i).attribute("value")) == m_url)
+                    isRightElement = true;
+                i++;
+            }
+            
+            if(isRightElement)
+            {
+                QWebElement substitute = element.clone();
+                emit signalLoadClickToFlash(true);
+                element.replace(substitute);
+                return;
+            }
         }
 
         frames += frame->childFrames();
     }
     
-    deleteLater();
+    //deleteLater();
 }
 
 

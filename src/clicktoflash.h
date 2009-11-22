@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <QToolButton>
+#include <QUrl>
 
 class WebPluginFactory;
 
@@ -38,7 +39,10 @@ class ClickToFlash : public QWidget
 {
     Q_OBJECT
 public:
-    ClickToFlash(const WebPluginFactory *factory, QWidget *parent = 0);
+    /**
+    pluginUrl : used to find the right QWebElement between the ones of the different plugins
+    */
+    ClickToFlash(const WebPluginFactory *factory, QUrl pluginUrl, QWidget *parent = 0);
 
 signals:
     void signalLoadClickToFlash(bool);
@@ -52,7 +56,7 @@ private slots:
     void load(bool loadAll = false);
     
 private:
-    const WebPluginFactory *m_factory;
+    const QUrl m_url;
 };
 
 #endif // CLICKTOFLASH_H

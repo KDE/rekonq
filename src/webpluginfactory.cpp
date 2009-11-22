@@ -88,7 +88,7 @@ QObject *WebPluginFactory::create(const QString &mimeType,
     if(mimeType == QString("application/x-shockwave-flash") 
         && !loadClickToFlash) // the button wasn't clicked
     {
-        ClickToFlash* ctf = new ClickToFlash(this);
+        ClickToFlash* ctf = new ClickToFlash(this, url);
         connect(ctf, SIGNAL(signalLoadClickToFlash(bool)), this, SLOT(setLoadClickToFlash(bool)));
         return ctf;
     }
