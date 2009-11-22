@@ -7,38 +7,40 @@ ADD_SUBDIRECTORY( tests )
 ### ------- SETTING REKONQ FILES..
 
 SET( rekonq_KDEINIT_SRCS
-    application.cpp 
-    findbar.cpp
-    mainview.cpp
-    mainwindow.cpp 
-    previewimage.cpp
-    sessionmanager.cpp
-    tabbar.cpp
-    webpage.cpp
-    webpluginfactory.cpp
-    websnap.cpp
-    webview.cpp
+application.cpp 
+findbar.cpp
+mainview.cpp
+mainwindow.cpp 
+previewimage.cpp
+sessionmanager.cpp
+tabbar.cpp
+webpage.cpp
+webpluginfactory.cpp
+websnap.cpp
+webview.cpp
 #----------------------------------------
-    history/autosaver.cpp 
-    history/historymanager.cpp
-    history/historymodels.cpp
-    history/historypanel.cpp
-    history/sidepanel.cpp
+history/autosaver.cpp 
+history/historymanager.cpp
+history/historymodels.cpp
+history/historypanel.cpp
+history/sidepanel.cpp
 #----------------------------------------
-    rekonqpage/newtabpage.cpp
+rekonqpage/newtabpage.cpp
 #----------------------------------------
-    settings/settingsdialog.cpp
+settings/settingsdialog.cpp
 #----------------------------------------
-    bookmarks/bookmarksmanager.cpp
-    bookmarks/bookmarkspanel.cpp
-    bookmarks/bookmarkstreemodel.cpp
-    bookmarks/bookmarksproxy.cpp
+bookmarks/bookmarksmanager.cpp
+bookmarks/bookmarkspanel.cpp
+bookmarks/bookmarkstreemodel.cpp
+bookmarks/bookmarksproxy.cpp
 #----------------------------------------
-    adblock/adblockmanager.cpp
-    adblock/khtml_filter.cpp
+adblock/adblockmanager.cpp
+adblock/khtml_filter.cpp
 #----------------------------------------
-    urlbar/urlbar.cpp
-    urlbar/lineedit.cpp
+urlbar/urlbar.cpp
+urlbar/lineedit.cpp
+#----------------------------------------
+clicktoflash.cpp
 )
 
 

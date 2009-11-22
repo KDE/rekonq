@@ -50,6 +50,15 @@ public:
                             const QStringList &argumentValues) const;
 
     virtual QList<Plugin> plugins() const;
+    
+signals:
+    void signalLoadClickToFlash(bool) const;
+    
+public slots:
+    void setLoadClickToFlash(bool load);
+    
+private:
+    bool loadClickToFlash;
 };
 
 #endif // WEB_PLUGIN_FACTORY_H
