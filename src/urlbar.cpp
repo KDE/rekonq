@@ -61,7 +61,7 @@ UrlBar::UrlBar(QWidget *parent)
     setAutoDeleteCompletionObject(true);
 
     //cosmetic
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setMinimumWidth(180);
     
     setTrapReturnKey(true);
@@ -339,3 +339,4 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 
     KHistoryComboBox::keyPressEvent(event);
 }
+
