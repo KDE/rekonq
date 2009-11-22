@@ -29,6 +29,7 @@
 #include "webpluginfactory.moc"
 
 // Local Includes
+#include "rekonq.h"
 #include "application.h"
 #include "mainwindow.h"
 #include "previewimage.h"
@@ -84,6 +85,9 @@ QObject *WebPluginFactory::create(const QString &mimeType,
     
         return new PreviewImage(url, title, number, isFavorite);
     }
+    
+    if(ReKonfig::pluginsEnabled() == 0)
+        return 0;
     
     if(mimeType == QString("application/x-shockwave-flash") 
         && !loadClickToFlash) // the button wasn't clicked
