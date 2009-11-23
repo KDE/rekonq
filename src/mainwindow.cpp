@@ -46,6 +46,7 @@
 #include "urlbar.h"
 #include "tabbar.h"
 #include "newtabpage.h"
+#include "adblockmanager.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -544,7 +545,8 @@ void MainWindow::updateConfiguration()
 
     // ====== load Settings on main classes
     Application::historyManager()->loadSettings();
-
+    Application::adblockManager()->loadSettings();
+    
     defaultSettings = 0;
 }
 

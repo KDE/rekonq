@@ -48,6 +48,7 @@ class BookmarkProvider;
 class HistoryManager;
 class MainWindow;
 class SessionManager;
+class AdBlockManager;
 
 
 typedef QList< QPointer<MainWindow> > MainWindowList;
@@ -105,6 +106,7 @@ public:
     static HistoryManager *historyManager();
     static BookmarkProvider *bookmarkProvider();
     static SessionManager *sessionManager();
+    static AdBlockManager *adblockManager();
     
 public slots:
     /**
@@ -139,6 +141,7 @@ private:
     static QPointer<HistoryManager> s_historyManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;
     static QPointer<SessionManager> s_sessionManager;
+    static QPointer<AdBlockManager> s_adblockManager;
     
     MainWindowList m_mainWindows;
 };

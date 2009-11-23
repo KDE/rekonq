@@ -41,6 +41,7 @@
 #include "mainview.h"
 #include "webview.h"
 #include "webpluginfactory.h"
+#include "adblockmanager.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -69,7 +70,6 @@ WebPage::WebPage(QObject *parent, qlonglong windowId)
         : KWebPage(parent, windowId)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
-        , m_adBlockMan(new AdBlockManager(this))
 {
     setPluginFactory(new WebPluginFactory(this));
     
@@ -257,5 +257,5 @@ bool WebPage::authorizedRequest(const QUrl &url) const
     if(url.scheme() != QLatin1String("http"))
         return true;
     
-    return m_adBlockMan->isUrlAllowed(url);
+    return Application::adblockManager()->isUrlAllowed(url);
 }

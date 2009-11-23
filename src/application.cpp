@@ -40,6 +40,7 @@
 #include "webview.h"
 #include "urlbar.h"
 #include "sessionmanager.h"
+#include "adblockmanager.h"
 
 // KDE Includes
 #include <KCmdLineArgs>
@@ -61,7 +62,7 @@
 QPointer<HistoryManager> Application::s_historyManager;
 QPointer<BookmarkProvider> Application::s_bookmarkProvider;
 QPointer<SessionManager> Application::s_sessionManager;
-
+QPointer<AdBlockManager> Application::s_adblockManager;
 
 
 Application::Application()
@@ -431,4 +432,15 @@ void Application::removeMainWindow(MainWindow *window)
 MainWindowList Application::mainWindowList()
 {
     return m_mainWindows;
+}
+
+
+
+AdBlockManager *Application::adblockManager()
+{
+    if(!s_adblockManager)
+    {
+        s_adblockManager = new AdBlockManager(instance());
+    }
+    return s_adblockManager;
 }
