@@ -27,6 +27,16 @@
 #include "adblockmanager.h"
 #include "adblockmanager.moc"
 
+
+// Local Includes
+#include "adblockrule.h"
+
+// KDE Includes
+#include <KSharedConfig>
+#include <KConfigGroup>
+#include <KDebug>
+
+// Qt Includes
 #include <QUrl>
 
 
@@ -45,26 +55,53 @@ AdBlockManager::~AdBlockManager()
 
 void AdBlockManager::loadSettings()
 {
-//     KConfigGroup cg(_config, _group);
-//     groupBox->setChecked( cg.readEntry("Enabled", false) );
-// 
-//     int num = cg.readEntry("Count", 0);
-//     for (int i = 0; i < num; ++i)
-//     {
-//     QString key = "Filter-" + QString::number(i);
-//     QString filter = cg.readEntry( key, QString() );
-//     listWidget->addItem(filter);
-//     }
+    _blockList.clear();
+    
+    KSharedConfig::Ptr config = KSharedConfig::openConfig("webkitrc", KConfig::NoGlobals);
+    KConfigGroup cg(config, "adblock");
+    
+    _isAdblockEnabled = cg.readEntry("Enabled", false);
+
+    int num = cg.readEntry("Count", 0);
+    for (int i = 0; i < num; ++i)
+    {
+        QString key = "Filter-" + QString::number(i);
+        QString filter = cg.readEntry( key, QString() );
+        if(!filter.isEmpty())
+        {
+            if (filter.startsWith(QLatin1String("@@")))
+                _whiteList << filter;
+            else
+                _blockList << filter;
+        }
+    }
 }
 
 
 bool AdBlockManager::isUrlAllowed(const QUrl &url)
 {
-    if (url.scheme() == QLatin1String("data"))
-        return false;
-
+    kDebug() << "matching rule...";
     if (!_isAdblockEnabled)
-        return false;
+        return true;
 
+    QString urlString = QString::fromUtf8(url.toEncoded());
+    
+    foreach(const QString &str, _whiteList)
+    {
+        AdBlockRule rule(str);
+        kDebug() << "checking white list rule...";
+        if(rule.match(urlString))
+            return true;
+    }
+    
+    foreach(const QString &str, _blockList)
+    {
+        AdBlockRule rule(str);
+        kDebug() << "checking block list rule...";
+        if(rule.match(urlString))
+            return false;
+    }
+    
+    kDebug() << "done";
     return true;
 }

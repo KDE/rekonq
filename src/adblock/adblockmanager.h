@@ -50,7 +50,8 @@ public:
     
 private:
     bool _isAdblockEnabled;
-    QStringList _blocks;
+    QStringList _blockList;
+    QStringList _whiteList;
 };
 
 #endif
