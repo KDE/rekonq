@@ -99,7 +99,6 @@ void KCMWebkitAdblock::load()
         QString filter = cg.readEntry( key, QString() );
         listWidget->addItem(filter);
     }
-//     updateButton();
 }
 
 
@@ -139,6 +138,7 @@ void KCMWebkitAdblock::addExpr()
 {
     listWidget->addItem( lineEdit->text() );
     lineEdit->clear();
+    emit changed(true);
 }
 
 
@@ -146,6 +146,7 @@ void KCMWebkitAdblock::removeSelected()
 {
     listWidget->takeItem(listWidget->currentRow());
     searchLine->clear();
+    emit changed(true);
 }
 
 
@@ -182,4 +183,5 @@ void KCMWebkitAdblock::importExpr()
     while (!line.isNull());
     
     KIO::NetAccess::removeTempFile(target);
+    emit changed(true);
 }
