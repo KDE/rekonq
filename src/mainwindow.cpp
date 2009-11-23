@@ -502,15 +502,15 @@ void MainWindow::updateConfiguration()
     int fnSize = ReKonfig::fontSize();
     int minFnSize = ReKonfig::minFontSize();
 
-    // font size / dpi WARNING: is this right? why we need this?
-    float toPix = m_view->logicalDpiY()/72.0;
-    if (toPix < 96.0/72.0) 
-        toPix = 96.0/72.0;
+//     // font size / dpi WARNING: is this right? why we need this?
+//     float toPix = m_view->logicalDpiY()/72.0;
+//     if (toPix < 96.0/72.0) 
+//         toPix = 96.0/72.0;
 
     QFont standardFont = ReKonfig::standardFont();
     defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, fnSize*toPix);
-    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, minFnSize*toPix);
+    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, fnSize);
+    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, minFnSize);
 
     QFont fixedFont = ReKonfig::fixedFont();
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
