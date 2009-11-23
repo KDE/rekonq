@@ -41,6 +41,7 @@
 #include "mainview.h"
 #include "webview.h"
 #include "webpluginfactory.h"
+#include "adblockmanager.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -252,7 +253,9 @@ QString WebPage::errorPage(QNetworkReply *reply)
 
 bool WebPage::authorizedRequest(const QUrl &url) const
 {
-    Q_UNUSED(url)
-    // TODO implement ad-block here
-    return true;
+    // we filter just http sites
+    if(url.scheme() != QLatin1String("http"))
+        return true;
+    
+    return Application::adblockManager()->isUrlAllowed(url);
 }

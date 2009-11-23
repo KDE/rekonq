@@ -38,6 +38,7 @@
 #include "urlbar.h"
 #include "webview.h"
 #include "websnap.h"
+#include "mainview.h"
 
 // KDE Includes
 #include <KShortcut>
@@ -59,9 +60,8 @@
 #define MIN_WIDTH_DIVISOR     8
 
 
-TabBar::TabBar(MainView *parent)
+TabBar::TabBar(QWidget *parent)
         : KTabBar(parent)
-        , m_parent(parent)
         , m_currentTabPreview(-1)
 {
     setElideMode(Qt::ElideRight);
@@ -84,10 +84,12 @@ TabBar::~TabBar()
 
 QSize TabBar::tabSizeHint(int index) const
 {
-    int buttonSize = m_parent->addTabButton()->size().width();
-    int tabBarWidth = m_parent->size().width() - buttonSize;
-    int baseWidth =  m_parent->sizeHint().width()/BASE_WIDTH_DIVISOR;
-    int minWidth =  m_parent->sizeHint().width()/MIN_WIDTH_DIVISOR;
+    MainView *view = qobject_cast<MainView *>(parent());
+    
+    int buttonSize = view->addTabButton()->size().width();
+    int tabBarWidth = view->size().width() - buttonSize;
+    int baseWidth =  view->sizeHint().width()/BASE_WIDTH_DIVISOR;
+    int minWidth =  view->sizeHint().width()/MIN_WIDTH_DIVISOR;
 
     int w;
     if (baseWidth*count()<tabBarWidth)
@@ -139,8 +141,10 @@ void TabBar::reloadTab()
 
 void TabBar::showTabPreview(int tab)
 {
-    WebView *view = m_parent->webView(tab);
-    WebView *currentView = m_parent->webView(currentIndex());
+    MainView *mv = qobject_cast<MainView *>(parent());
+    
+    WebView *view = mv->webView(tab);
+    WebView *currentView = mv->webView(currentIndex());
 
     // should fix bug #212219
     if(!currentView)

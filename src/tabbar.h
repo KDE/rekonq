@@ -33,7 +33,6 @@
 
 // Local Includes
 #include "rekonqprivate_export.h"
-#include "mainview.h"
 
 // Qt Includes
 #include <QPointer>
@@ -59,7 +58,7 @@ class REKONQ_TESTS_EXPORT TabBar : public KTabBar
     Q_OBJECT
 
 public:
-    TabBar(MainView *parent);
+    TabBar(QWidget *parent);
     ~TabBar();
 
     void showTabPreview(int tab);
@@ -93,8 +92,6 @@ private slots:
 private:
     friend class MainView;
     
-    MainView *m_parent;
-
     /**
      * the index in which we are seeing a Context menu
      */

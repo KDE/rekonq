@@ -46,6 +46,7 @@
 #include "urlbar.h"
 #include "tabbar.h"
 #include "newtabpage.h"
+#include "adblockmanager.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -211,6 +212,9 @@ void MainWindow::setupToolbars()
 
 void MainWindow::postLaunch()
 {
+    // KActionCollection read settings
+    m_ac->readSettings();
+    
     // notification system
     connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
     connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
@@ -238,9 +242,6 @@ void MainWindow::postLaunch()
 
     // accept d'n'd
     setAcceptDrops(true);
-
-    // KActionCollection read settings
-    m_ac->readSettings();
 }
 
 
@@ -501,15 +502,10 @@ void MainWindow::updateConfiguration()
     int fnSize = ReKonfig::fontSize();
     int minFnSize = ReKonfig::minFontSize();
 
-    // font size / dpi WARNING: is this right? why we need this?
-    float toPix = m_view->logicalDpiY()/72.0;
-    if (toPix < 96.0/72.0) 
-        toPix = 96.0/72.0;
-
     QFont standardFont = ReKonfig::standardFont();
     defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, fnSize*toPix);
-    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, minFnSize*toPix);
+    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, fnSize);
+    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, minFnSize);
 
     QFont fixedFont = ReKonfig::fixedFont();
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
@@ -544,7 +540,8 @@ void MainWindow::updateConfiguration()
 
     // ====== load Settings on main classes
     Application::historyManager()->loadSettings();
-
+    Application::adblockManager()->loadSettings();
+    
     defaultSettings = 0;
 }
 
