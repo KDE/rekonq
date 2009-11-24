@@ -25,8 +25,8 @@
 * ============================================================ */
 
 
-#ifndef PANELHISTORY_H
-#define PANELHISTORY_H
+#ifndef HISTORYPANEL_H
+#define HISTORYPANEL_H
 
 
 // Local Includes
@@ -41,14 +41,13 @@
 class KUrl;
 
 
-class PanelHistory : public QWidget
+class HistoryPanel : public QWidget
 {
-    Q_OBJECT
-    Q_DISABLE_COPY(PanelHistory)
+Q_OBJECT
 
 public:
-    explicit PanelHistory(QWidget *parent = 0);
-    virtual ~PanelHistory();
+    explicit HistoryPanel(QWidget *parent = 0);
+    virtual ~HistoryPanel();
 
 signals:
     void openUrl(const KUrl &);
@@ -62,4 +61,4 @@ private:
 
 };
 
-#endif // PANELHISTORY_H
+#endif // HISTORYPANEL_H

@@ -36,14 +36,13 @@
 
 // Forward Declarations
 class KUrl;
-class PanelHistory;
+class HistoryPanel;
 
 
 class SidePanel : public QDockWidget
 {
     Q_OBJECT
-    Q_DISABLE_COPY(SidePanel)
-
+    
 public:
     explicit SidePanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
     ~SidePanel();
@@ -52,7 +51,7 @@ signals:
     void openUrl(const KUrl &);
 
 private:
-    PanelHistory *m_panelHistory;
+    HistoryPanel *m_historyPanel;
 
 };
 

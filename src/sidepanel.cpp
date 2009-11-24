@@ -33,21 +33,21 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "panelhistory.h"
+#include "historypanel.h"
 
 
 SidePanel::SidePanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
         : QDockWidget(title, parent, flags)
-        , m_panelHistory(new PanelHistory(this))
+        , m_historyPanel(new HistoryPanel(this))
 {
     setObjectName("sidePanel");
     setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     setShown(ReKonfig::showSideBar());
 
-    connect(m_panelHistory, SIGNAL(openUrl(const KUrl&)), this, SIGNAL(openUrl(const KUrl&)));
+    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&)), this, SIGNAL(openUrl(const KUrl&)));
 
-    setWidget(m_panelHistory);
+    setWidget(m_historyPanel);
 }
 
 
@@ -56,5 +56,5 @@ SidePanel::~SidePanel()
     // Save side panel's state
     ReKonfig::setShowSideBar(!isHidden());
 
-    delete m_panelHistory;
+    delete m_historyPanel;
 }

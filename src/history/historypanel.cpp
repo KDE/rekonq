@@ -26,8 +26,8 @@
 
 
 // Self Includes
-#include "panelhistory.h"
-#include "panelhistory.moc"
+#include "historypanel.h"
+#include "historypanel.moc"
 
 // Qt Includes
 #include <QtGui/QLabel>
@@ -39,7 +39,7 @@
 #include <KLocalizedString>
 
 
-PanelHistory::PanelHistory(QWidget *parent)
+HistoryPanel::HistoryPanel(QWidget *parent)
         : QWidget(parent)
         , m_historyTreeView(new QTreeView)
         , m_treeProxyModel(new TreeProxyModel(this))
@@ -84,14 +84,14 @@ PanelHistory::PanelHistory(QWidget *parent)
 }
 
 
-PanelHistory::~PanelHistory()
+HistoryPanel::~HistoryPanel()
 {
     delete m_treeProxyModel;
     delete m_historyTreeView;
 }
 
 
-void PanelHistory::open()
+void HistoryPanel::open()
 {
     QModelIndex index = m_historyTreeView->currentIndex();
     if (!index.parent().isValid())
