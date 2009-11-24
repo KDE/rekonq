@@ -45,7 +45,6 @@
 class QLinearGradient;
 class QWidget;
 class KCompletion;
-class HistoryCompletionModel;
 
 
 class UrlBar : public KHistoryComboBox
