@@ -30,8 +30,8 @@
 #define CLICKTOFLASH_H
 
 #include <QWidget>
-#include <QToolButton>
 #include <QUrl>
+
 
 class WebPluginFactory;
 

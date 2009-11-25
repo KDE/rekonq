@@ -28,25 +28,19 @@
 
 #include "clicktoflash.h"
 
-#include <KLocalizedString>
-
-#include <QFile>
-#include <QMenu>
 #include <QWebFrame>
 #include <QWebView>
 #include <QWebElement>
 #include <QHBoxLayout>
-#include <QContextMenuEvent>
+#include <QToolButton>
 
-#include <KMenu>
-#include <KDebug>
+#include <KLocalizedString>
+
 
 ClickToFlash::ClickToFlash(QUrl pluginUrl, QWidget *parent)
     : QWidget(parent)
     , m_url(pluginUrl)
 {
-    
-    kDebug() << "creating clicktoflash";
     QHBoxLayout *l = new QHBoxLayout(this);
     setLayout(l);
     
@@ -61,9 +55,7 @@ ClickToFlash::ClickToFlash(QUrl pluginUrl, QWidget *parent)
 
 
 void ClickToFlash::load()
-{
-    //bool loadAll = true;
-    
+{  
     QWidget *parent = parentWidget();
     QWebView *view = 0;
     while (parent) 
@@ -115,7 +107,6 @@ void ClickToFlash::load()
             
             if(isRightElement)
             {
-                kDebug() << "called";
                 QWebElement substitute = element.clone();
                 emit signalLoadClickToFlash(true);
                 element.replace(substitute);
