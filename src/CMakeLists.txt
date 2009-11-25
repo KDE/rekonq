@@ -38,7 +38,7 @@ SET( rekonq_KDEINIT_SRCS
     bookmarkspanel/bookmarksproxy.cpp
 #----------------------------------------
     adblock/adblockmanager.cpp
-    adblock/adblockrule.cpp
+    adblock/khtml_filter.cpp
 )
 
 

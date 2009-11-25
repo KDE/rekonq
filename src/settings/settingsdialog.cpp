@@ -125,7 +125,7 @@ Private::Private(SettingsDialog *parent)
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
 
-    KCModuleInfo adblockInfo("webkitAdblock.desktop");
+    KCModuleInfo adblockInfo("khtml_filter.desktop");
     adblockModule = new KCModuleProxy(adblockInfo,parent);
     pageItem = parent->addPage(adblockModule, i18n(adblockInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(adblockInfo.icon()));

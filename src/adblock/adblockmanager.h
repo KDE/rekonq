@@ -29,6 +29,9 @@
 #define ADBLOCK_MANAGER_H
 
 
+// Local Includes
+#include "khtml_filter_p.h"
+
 // Qt Includes
 #include <QObject>
 #include <QStringList>
@@ -50,8 +53,10 @@ public:
     
 private:
     bool _isAdblockEnabled;
-    QStringList _blockList;
-    QStringList _whiteList;
+    bool _isHideAdsEnabled;
+    
+    khtml::FilterSet _adBlackList;
+    khtml::FilterSet _adWhiteList;
 };
 
 #endif

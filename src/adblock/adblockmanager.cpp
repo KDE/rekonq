@@ -43,6 +43,7 @@
 AdBlockManager::AdBlockManager(QObject *parent)
     : QObject(parent)
     , _isAdblockEnabled(false)
+    , _isHideAdsEnabled(false)
 {
     loadSettings();
 }
@@ -55,24 +56,31 @@ AdBlockManager::~AdBlockManager()
 
 void AdBlockManager::loadSettings()
 {
-    _blockList.clear();
-    
-    KSharedConfig::Ptr config = KSharedConfig::openConfig("webkitrc", KConfig::NoGlobals);
-    KConfigGroup cg(config, "adblock");
-    
-    _isAdblockEnabled = cg.readEntry("Enabled", false);
+    KSharedConfig::Ptr config = KSharedConfig::openConfig("khtmlrc", KConfig::NoGlobals);
+    KConfigGroup cg( config, "Filter Settings" );
 
-    int num = cg.readEntry("Count", 0);
-    for (int i = 0; i < num; ++i)
+    if ( cg.exists() )
     {
-        QString key = "Filter-" + QString::number(i);
-        QString filter = cg.readEntry( key, QString() );
-        if(!filter.isEmpty())
+        _isAdblockEnabled = cg.readEntry("Enabled", false);
+        _isHideAdsEnabled = cg.readEntry("Shrink", false);
+
+        _adBlackList.clear();
+        _adWhiteList.clear();
+
+        QMap<QString,QString> entryMap = cg.entryMap();
+        QMap<QString,QString>::ConstIterator it;
+        for( it = entryMap.constBegin(); it != entryMap.constEnd(); ++it )
         {
-            if (filter.startsWith(QLatin1String("@@")))
-                _whiteList << filter;
-            else
-                _blockList << filter;
+            QString name = it.key();
+            QString url = it.value();
+
+            if (name.startsWith(QLatin1String("Filter")))
+            {
+                if (url.startsWith(QLatin1String("@@")))
+                    _adWhiteList.addFilter(url);
+                else
+                    _adBlackList.addFilter(url);
+            }
         }
     }
 }
@@ -80,28 +88,11 @@ void AdBlockManager::loadSettings()
 
 bool AdBlockManager::isUrlAllowed(const QUrl &url)
 {
-    kDebug() << "matching rule...";
     if (!_isAdblockEnabled)
         return true;
 
     QString urlString = QString::fromUtf8(url.toEncoded());
     
-    foreach(const QString &str, _whiteList)
-    {
-        AdBlockRule rule(str);
-        kDebug() << "checking white list rule...";
-        if(rule.match(urlString))
-            return true;
-    }
-    
-    foreach(const QString &str, _blockList)
-    {
-        AdBlockRule rule(str);
-        kDebug() << "checking block list rule...";
-        if(rule.match(urlString))
-            return false;
-    }
-    
-    kDebug() << "done";
-    return true;
+    // Check the blacklist, and only if that matches, the whitelist
+    return _adBlackList.isUrlMatched(urlString) && !_adWhiteList.isUrlMatched(urlString);
 }
