@@ -30,9 +30,6 @@
 #define HISTORY_H
 
 
-// Local Includes
-#include "modelmenu.h"
-
 // KDE Includes
 #include <KUrl>
 

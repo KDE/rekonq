@@ -9,13 +9,11 @@ ADD_SUBDIRECTORY( adblock )
 
 SET( rekonq_KDEINIT_SRCS
     application.cpp 
-    autosaver.cpp 
     bookmarks.cpp
     findbar.cpp
     lineedit.cpp
     mainview.cpp
     mainwindow.cpp 
-    modelmenu.cpp 
     previewimage.cpp
     sessionmanager.cpp
     sidepanel.cpp
@@ -26,6 +24,7 @@ SET( rekonq_KDEINIT_SRCS
     websnap.cpp
     webview.cpp
 #----------------------------------------
+    history/autosaver.cpp 
     history/history.cpp
     history/historymodels.cpp
     history/historypanel.cpp

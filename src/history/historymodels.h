@@ -32,7 +32,6 @@
 
 // Local Includes
 #include "history.h"
-#include "modelmenu.h"
 
 // KDE Includes
 #include <KUrl>
