@@ -39,23 +39,18 @@ class ClickToFlash : public QWidget
 {
     Q_OBJECT
 public:
-    /**
-    pluginUrl : used to find the right QWebElement between the ones of the different plugins
-    */
-    ClickToFlash(const WebPluginFactory *factory, QUrl pluginUrl, QWidget *parent = 0);
+    ClickToFlash(QUrl pluginUrl, QWidget *parent = 0);
 
 signals:
     void signalLoadClickToFlash(bool);
     
 private slots:
-    /*void configure();
-    void addToWhitelist();
-    void removeFromWhitelist();
-    void showContextMenu();
-    void loadAll();*/
-    void load(bool loadAll = false);
+    void load();
     
 private:
+    /**
+    used to find the right QWebElement between the ones of the different plugins
+    */
     const QUrl m_url;
 };
 

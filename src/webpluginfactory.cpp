@@ -86,13 +86,16 @@ QObject *WebPluginFactory::create(const QString &mimeType,
         return new PreviewImage(url, title, number, isFavorite);
     }
     
-    if(ReKonfig::pluginsEnabled() == 0)
+    if(ReKonfig::pluginsEnabled() == 0) // plugins are enabled
+    {
+        kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
         return 0;
+    }
     
     if(mimeType == QString("application/x-shockwave-flash") 
         && !loadClickToFlash) // the button wasn't clicked
     {
-        ClickToFlash* ctf = new ClickToFlash(this, url);
+        ClickToFlash* ctf = new ClickToFlash(url);
         connect(ctf, SIGNAL(signalLoadClickToFlash(bool)), this, SLOT(setLoadClickToFlash(bool)));
         return ctf;
     }

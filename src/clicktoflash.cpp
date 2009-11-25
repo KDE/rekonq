@@ -36,10 +36,12 @@
 #include <QWebView>
 #include <QWebElement>
 #include <QHBoxLayout>
+#include <QContextMenuEvent>
 
+#include <KMenu>
 #include <KDebug>
 
-ClickToFlash::ClickToFlash(const WebPluginFactory *factory, QUrl pluginUrl, QWidget *parent)
+ClickToFlash::ClickToFlash(QUrl pluginUrl, QWidget *parent)
     : QWidget(parent)
     , m_url(pluginUrl)
 {
@@ -54,49 +56,14 @@ ClickToFlash::ClickToFlash(const WebPluginFactory *factory, QUrl pluginUrl, QWid
     button->setText(i18n("Load animation"));
     button->setAutoRaise(false);
     layout()->addWidget(button);
-    connect(button, SIGNAL(clicked(bool)), this, SLOT(load(bool)));
+    connect(button, SIGNAL(clicked(bool)), this, SLOT(load()));
 }
 
-/*void ClickToFlash::showContextMenu()
-{
-    QMenu menu;
-    menu.addAction(tr("Load"), this, SLOT(load()));
-    menu.addAction(tr("Load All"), this, SLOT(loadAll()));
-    menu.addSeparator();
-    QString host = url.host();
-    QAction *add = menu.addAction(tr("Add %1 to Whitelist").arg(host), this, SLOT(addToWhitelist()));
-    QAction *remove = menu.addAction(tr("Remove from Whitelist"), this, SLOT(removeFromWhitelist()));
-    bool onWhitelist = m_plugin->onWhitelist(host);
-    add->setEnabled(!onWhitelist);
-    remove->setEnabled(onWhitelist);
-    menu.addSeparator();
-    menu.addAction(tr("Settings"), this, SLOT(configure()));
-    menu.exec(QCursor::pos());
-}
 
-void ClickToFlash::addToWhitelist()
+void ClickToFlash::load()
 {
-    m_plugin->addToWhitelist(url.host());
-}
-
-void ClickToFlash::removeFromWhitelist()
-{
-    m_plugin->removeFromWhitelist(url.host());
-}
-
-void ClickToFlash::configure()
-{
-    m_plugin->configure();
-}
-
-void ClickToFlash::loadAll()
-{
-    load(true);
-}
-*/
-void ClickToFlash::load(bool loadAll)
-{
-    kDebug() << "called";
+    //bool loadAll = true;
+    
     QWidget *parent = parentWidget();
     QWebView *view = 0;
     while (parent) 
@@ -125,28 +92,30 @@ void ClickToFlash::load(bool loadAll)
         QWebElementCollection elements;
         elements.append(docElement.findAll(selector.arg(QLatin1String("object"))));
         elements.append(docElement.findAll(selector.arg(QLatin1String("embed"))));
-
-        QWebElement element;
-        kDebug() << m_url;
+        
         bool isRightElement = false;
-        foreach (element, elements) 
+        foreach (QWebElement element, elements) 
         {
             // TODO : find a proper solution to compare a QWebElement with a plugin
+            // With this "manual" test, it's probably not working everywhere
             if(QUrl(element.attribute("data")) == m_url
-            || QUrl(element.attribute("src")) == m_url)
+                || QUrl(element.attribute("src")) == m_url)
                 isRightElement = true;
-            
-            QWebElementCollection collec = element.findAll("param");
-            int i = 0;
-            while(i < collec.count() && isRightElement == false)
+            else
             {
-                if(QUrl(collec.at(i).attribute("value")) == m_url)
+                QWebElementCollection collec = element.findAll("param");
+                int i = 0;
+                while(i < collec.count() && isRightElement == false)
+                {
+                    if(QUrl(collec.at(i).attribute("value")) == m_url)
                     isRightElement = true;
-                i++;
+                    i++;
+                }
             }
             
             if(isRightElement)
             {
+                kDebug() << "called";
                 QWebElement substitute = element.clone();
                 emit signalLoadClickToFlash(true);
                 element.replace(substitute);
@@ -157,7 +126,7 @@ void ClickToFlash::load(bool loadAll)
         frames += frame->childFrames();
     }
     
-    //deleteLater();
+    deleteLater();
 }
 
 

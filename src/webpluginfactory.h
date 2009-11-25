@@ -52,12 +52,17 @@ public:
     virtual QList<Plugin> plugins() const;
     
 signals:
+
     void signalLoadClickToFlash(bool) const;
     
 public slots:
     void setLoadClickToFlash(bool load);
     
 private:
+    /**
+        When true, force loading of next flash animation (don't show clicktoflash)
+        We use signals/slots to set this property because QWebPluginFactory::create is const
+    */
     bool loadClickToFlash;
 };
 
