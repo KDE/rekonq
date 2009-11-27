@@ -34,15 +34,14 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "application.h"
 #include "settingsdialog.h"
-#include "history.h"
-#include "bookmarks.h"
+#include "historymanager.h"
+#include "bookmarksmanager.h"
 #include "webview.h"
 #include "mainview.h"
 #include "findbar.h"
 #include "sidepanel.h"
-#include "bookmarkspanel/bookmarkspanel.h"
+#include "bookmarkspanel.h"
 #include "urlbar.h"
 #include "tabbar.h"
 #include "newtabpage.h"

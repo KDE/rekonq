@@ -32,7 +32,7 @@
 
 // Local Includes
 #include "historymodels.h"
-#include "bookmarks.h"
+#include "bookmarksmanager.h"
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"

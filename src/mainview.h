@@ -35,7 +35,7 @@
 #include "webview.h"
 #include "webpage.h"
 #include "application.h"
-#include "history.h"
+#include "historymanager.h"
 #include "mainwindow.h"
 
 // KDE Includes

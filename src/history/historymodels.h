@@ -31,7 +31,7 @@
 
 
 // Local Includes
-#include "history.h"
+#include "historymanager.h"
 
 // KDE Includes
 #include <KUrl>

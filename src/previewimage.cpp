@@ -30,7 +30,7 @@
 
 // Local Includes
 #include "application.h"
-#include "history.h"
+#include "historymanager.h"
 #include "rekonq.h"
 #include "mainwindow.h"
 #include "mainview.h"

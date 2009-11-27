@@ -31,13 +31,13 @@
 
 
 // Local Includes
-#include "bookmarks.h"
-#include "webview.h"
+#include "application.h"
 
 // KDE Includes
 #include <KMainWindow>
 #include <KActionCollection>
 #include <KToolBar>
+#include <KUrl>
 
 // Forward Declarations
 class QWebFrame;

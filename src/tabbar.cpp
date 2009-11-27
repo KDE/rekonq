@@ -45,6 +45,7 @@
 #include <KStandardShortcut>
 #include <KGlobalSettings>
 #include <KPassivePopup>
+#include <KMenu>
 
 // Qt Includes
 #include <QString>

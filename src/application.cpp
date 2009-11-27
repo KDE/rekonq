@@ -35,7 +35,8 @@
 
 // Local Includes
 #include "mainwindow.h"
-#include "history.h"
+#include "historymanager.h"
+#include "bookmarksmanager.h"
 #include "mainview.h"
 #include "webview.h"
 #include "urlbar.h"

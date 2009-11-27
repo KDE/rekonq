@@ -27,13 +27,12 @@
 
 
 // Self Includes
-#include "bookmarks.h"
-#include "bookmarks.moc"
+#include "bookmarksmanager.h"
+#include "bookmarksmanager.moc"
 
 // Local Includes
 #include "mainwindow.h"
 #include "webview.h"
-#include "application.h"
 
 // KDE Includes
 #include <KActionCollection>

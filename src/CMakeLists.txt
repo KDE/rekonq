@@ -9,36 +9,37 @@ ADD_SUBDIRECTORY( adblock )
 
 SET( rekonq_KDEINIT_SRCS
     application.cpp 
-    bookmarks.cpp
     findbar.cpp
-    lineedit.cpp
     mainview.cpp
     mainwindow.cpp 
     previewimage.cpp
     sessionmanager.cpp
-    sidepanel.cpp
     tabbar.cpp
-    urlbar.cpp
     webpage.cpp
     webpluginfactory.cpp
     websnap.cpp
     webview.cpp
 #----------------------------------------
     history/autosaver.cpp 
-    history/history.cpp
+    history/historymanager.cpp
     history/historymodels.cpp
     history/historypanel.cpp
+    history/sidepanel.cpp
 #----------------------------------------
     rekonqpage/newtabpage.cpp
 #----------------------------------------
     settings/settingsdialog.cpp
 #----------------------------------------
-    bookmarkspanel/bookmarkspanel.cpp
-    bookmarkspanel/bookmarkstreemodel.cpp
-    bookmarkspanel/bookmarksproxy.cpp
+    bookmarks/bookmarksmanager.cpp
+    bookmarks/bookmarkspanel.cpp
+    bookmarks/bookmarkstreemodel.cpp
+    bookmarks/bookmarksproxy.cpp
 #----------------------------------------
     adblock/adblockmanager.cpp
     adblock/khtml_filter.cpp
+#----------------------------------------
+    urlbar/urlbar.cpp
+    urlbar/lineedit.cpp
 )
 
 
@@ -57,6 +58,8 @@ KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
 
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/adblock
+                        ${CMAKE_CURRENT_SOURCE_DIR}/urlbar
+                        ${CMAKE_CURRENT_SOURCE_DIR}/bookmarks
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/rekonqpage
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings

@@ -35,10 +35,7 @@
 
 // Local Includes
 #include "tabbar.h"
-#include "application.h"
-#include "history.h"
 #include "urlbar.h"
-#include "webview.h"
 #include "sessionmanager.h"
 
 // KDE Includes
@@ -50,6 +47,7 @@
 #include <KDebug>
 #include <KStandardDirs>
 #include <KPassivePopup>
+#include <KLocalizedString>
 
 // Qt Includes
 #include <QtCore/QTimer>

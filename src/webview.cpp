@@ -37,11 +37,14 @@
 #include "mainwindow.h"
 #include "mainview.h"
 #include "webpage.h"
+#include "bookmarksmanager.h"
 
 // KDE Includes
 #include <KService>
 #include <KUriFilterData>
 #include <KStandardShortcut>
+#include <KMenu>
+#include <KActionMenu>
 
 // Qt Includes
 #include <QContextMenuEvent>

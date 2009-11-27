@@ -1,8 +1,8 @@
 #include "bookmarkstreemodel.h"
 
 // rekonq includes
-#include "../application.h"
-#include "../bookmarks.h"
+#include "application.h"
+#include "bookmarksmanager.h"
 
 // KDE includes
 #include <KBookmarkGroup>
