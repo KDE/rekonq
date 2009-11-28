@@ -51,8 +51,6 @@ public:
     explicit WebPage(QObject *parent = 0, qlonglong windowId = 0);
     ~WebPage();
 
-    virtual bool authorizedRequest(const QUrl &url) const;
-
 public slots:
     void manageNetworkErrors(QNetworkReply *reply);
 
