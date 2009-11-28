@@ -101,7 +101,7 @@
             <default>true</default>
         </entry>
         <entry name="pluginsEnabled" type="Int">
-            <default>0</default>
+            <default>1</default>
         </entry>
         <entry name="javascriptCanOpenWindows" type="Bool">
             <default>true</default>
