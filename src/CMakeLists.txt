@@ -18,24 +18,25 @@ SET( rekonq_KDEINIT_SRCS
     webpluginfactory.cpp
     websnap.cpp
     webview.cpp
-#----------------------------------------
+    clicktoflash.cpp
+    #----------------------------------------
     history/autosaver.cpp 
     history/historymanager.cpp
     history/historymodels.cpp
     history/historypanel.cpp
     history/sidepanel.cpp
-#----------------------------------------
+    #----------------------------------------
     rekonqpage/newtabpage.cpp
-#----------------------------------------
+    #----------------------------------------
     settings/settingsdialog.cpp
-#----------------------------------------
+    #----------------------------------------
     bookmarks/bookmarksmanager.cpp
     bookmarks/bookmarkspanel.cpp
     bookmarks/bookmarkstreemodel.cpp
     bookmarks/bookmarksproxy.cpp
-#----------------------------------------
+    #----------------------------------------
     adblock/adblockmanager.cpp
-#----------------------------------------
+    #----------------------------------------
     urlbar/urlbar.cpp
     urlbar/lineedit.cpp
 )

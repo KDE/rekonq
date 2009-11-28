@@ -29,9 +29,11 @@
 #include "webpluginfactory.moc"
 
 // Local Includes
+#include "rekonq.h"
 #include "application.h"
 #include "mainwindow.h"
 #include "previewimage.h"
+#include "clicktoflash.h"
 
 // KDE Includes
 #include <KDebug>
@@ -40,11 +42,20 @@
 WebPluginFactory::WebPluginFactory(QObject *parent)
     : KWebPluginFactory(parent)
 {
+    loadClickToFlash = false;
+    connect(this, SIGNAL(signalLoadClickToFlash(bool)), SLOT(setLoadClickToFlash(bool)));
 }
 
 
 WebPluginFactory::~WebPluginFactory()
 {
+}
+
+
+
+void WebPluginFactory::setLoadClickToFlash(bool load)
+{
+    loadClickToFlash = load;
 }
 
 
@@ -74,7 +85,25 @@ QObject *WebPluginFactory::create(const QString &mimeType,
     
         return new PreviewImage(url, title, number, isFavorite);
     }
-
+    
+    if(ReKonfig::pluginsEnabled() == 0) // plugins are enabled
+    {
+        kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
+        return 0;
+    }
+    
+    if(mimeType == QString("application/x-shockwave-flash") 
+        && !loadClickToFlash)
+    {
+        ClickToFlash* ctf = new ClickToFlash(url);
+        connect(ctf, SIGNAL(signalLoadClickToFlash(bool)), this, SLOT(setLoadClickToFlash(bool)));
+        return ctf;
+    }
+    
+    // this let QtWebKit using builtin plugins 
+    // to load in example flash contents and so on..
+    kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
+    emit signalLoadClickToFlash(false);
     return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
 }
 
@@ -87,6 +116,11 @@ QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins() const
     p.name = "application/image-preview";
     p.description = "plugin for embedding Web snapped images";
     plugins.append(p);
+    
+    p.name = "application/x-shockwave-flash";
+    p.description = "Plugin for flash animations";
+    plugins.append(p);
+    
     
     return plugins;
 }

@@ -100,8 +100,8 @@
         <entry name="javaEnabled" type="Bool">
             <default>true</default>
         </entry>
-        <entry name="pluginsEnabled" type="Bool">
-            <default>true</default>
+        <entry name="pluginsEnabled" type="Int">
+            <default>0</default>
         </entry>
         <entry name="javascriptCanOpenWindows" type="Bool">
             <default>true</default>
