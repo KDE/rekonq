@@ -71,7 +71,7 @@ ClickToFlash::ClickToFlash(QUrl pluginUrl, QWidget *parent)
     QToolButton *button = new QToolButton(this);
     button->setPopupMode(QToolButton::InstantPopup);
     button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    button->setText(i18n("Load animation"));
+    button->setText(i18n("Load Plugin"));
     button->setAutoRaise(false);
     layout()->addWidget(button);
     connect(button, SIGNAL(clicked(bool)), this, SLOT(load()));
