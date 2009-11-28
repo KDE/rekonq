@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009, Benjamin C. Meyer
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,31 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- */
+ * ============================================================
+ *
+ * This file is a part of the rekonq project
+ *
+ * Copyright (C) 2009 by Matthieu Gicquel <matgic78@gmail.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License or (at your option) version 3 or any later version
+ * accepted by the membership of KDE e.V. (or its successor approved
+ * by the membership of KDE e.V.), which shall act as a proxy 
+ * defined in Section 14 of version 3 of the license.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * ============================================================ */
+
 
 #include "clicktoflash.h"
 
@@ -81,7 +105,7 @@ void ClickToFlash::load()
         QWebFrame *frame = frames.takeFirst();
         QWebElement docElement = frame->documentElement();
 
-        QWebElementCollection elements;
+        QList<QWebElement> elements;
         elements.append(docElement.findAll(selector.arg(QLatin1String("object"))));
         elements.append(docElement.findAll(selector.arg(QLatin1String("embed"))));
         
@@ -95,7 +119,7 @@ void ClickToFlash::load()
                 isRightElement = true;
             else
             {
-                QWebElementCollection collec = element.findAll("param");
+                QList<QWebElement> collec = element.findAll("param");
                 int i = 0;
                 while(i < collec.count() && isRightElement == false)
                 {
