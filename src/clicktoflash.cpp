@@ -105,7 +105,7 @@ void ClickToFlash::load()
         QWebFrame *frame = frames.takeFirst();
         QWebElement docElement = frame->documentElement();
 
-        QList<QWebElement> elements;
+        QWebElementCollection elements;
         elements.append(docElement.findAll(selector.arg(QLatin1String("object"))));
         elements.append(docElement.findAll(selector.arg(QLatin1String("embed"))));
         
@@ -119,7 +119,7 @@ void ClickToFlash::load()
                 isRightElement = true;
             else
             {
-                QList<QWebElement> collec = element.findAll("param");
+                QWebElementCollection collec = element.findAll("param");
                 int i = 0;
                 while(i < collec.count() && isRightElement == false)
                 {
