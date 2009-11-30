@@ -75,7 +75,7 @@ WebPage::WebPage(QObject *parent)
     setNetworkAccessManager(new NetworkAccessManager(this));
     setPluginFactory(new WebPluginFactory(this));
     
-// FIXME    setForwardUnsupportedContent(true);
+    setForwardUnsupportedContent(true);
 
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     

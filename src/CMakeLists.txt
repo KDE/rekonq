@@ -38,7 +38,7 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     adblock/adblockmanager.cpp
     adblock/adblocknetworkreply.cpp
-    adblock/khtml_filter.cpp
+    adblock/adblockrule.cpp
     #----------------------------------------
     urlbar/urlbar.cpp
     urlbar/lineedit.cpp

@@ -30,6 +30,7 @@
 
 // Local Includes
 #include "adblocknetworkreply.h"
+#include "adblockrule.h"
 
 // KDE Includes
 #include <KSharedConfig>
@@ -64,9 +65,8 @@ void AdBlockManager::loadSettings()
         _isAdblockEnabled = cg.readEntry("Enabled", false);
         _isHideAdsEnabled = cg.readEntry("Shrink", false);
 
-        _adBlackList.clear();
-        _adWhiteList.clear();
-
+        filterList.clear();
+        
         QMap<QString,QString> entryMap = cg.entryMap();
         QMap<QString,QString>::ConstIterator it;
         for( it = entryMap.constBegin(); it != entryMap.constEnd(); ++it )
@@ -76,10 +76,7 @@ void AdBlockManager::loadSettings()
 
             if (name.startsWith(QLatin1String("Filter")))
             {
-                if (url.startsWith(QLatin1String("@@")))
-                    _adWhiteList.addFilter(url);
-                else
-                    _adBlackList.addFilter(url);
+                filterList << url;
             }
         }
     }
@@ -91,13 +88,37 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request)
     if (!_isAdblockEnabled)
         return 0;
     
-    QString urlString = request.url().toString();
+    // we (ad)block just http traffic
+    if(request.url().scheme() != QLatin1String("http"))
+        return 0;
     
-        // Check the blacklist, and only if that matches, the whitelist
-    if(_adBlackList.isUrlMatched(urlString) && !_adWhiteList.isUrlMatched(urlString))
+    QString urlString = request.url().toString();
+    kDebug() << "****************************** ADBLOCK: Matching url: "<< urlString;
+
+    foreach(const QString &filter, filterList)
     {
-        AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
-        return reply;
+        AdBlockRule rule(filter);
+        if(rule.match(urlString))
+        {
+            kDebug() << "****ADBLOCK: Matched: **************************";
+            AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
+            return reply;        
+        }
     }
+    
+    
+    
+    // Check the blacklist, and only if that matches, the whitelist
+    
+    
+    
+    
+    
+//     if(_adBlackList.isUrlMatched(urlString) && !_adWhiteList.isUrlMatched(urlString))
+//     {
+//         kDebug() << "****ADBLOCK: Matched: **************************";
+//         AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
+//         return reply;
+//     }
     return 0;
 }
