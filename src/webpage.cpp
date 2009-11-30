@@ -41,6 +41,7 @@
 #include "mainview.h"
 #include "webview.h"
 #include "webpluginfactory.h"
+#include "networkaccessmanager.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -65,14 +66,16 @@
 #include <QtGui/QKeyEvent>
 
 
-WebPage::WebPage(QObject *parent, qlonglong windowId)
-        : KWebPage(parent, windowId)
+WebPage::WebPage(QObject *parent)
+        : KWebPage(parent, KWalletIntegration)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
 {
+    // rekonq own classes integration
+    setNetworkAccessManager(new NetworkAccessManager(this));
     setPluginFactory(new WebPluginFactory(this));
     
-    setForwardUnsupportedContent(true);
+// FIXME    setForwardUnsupportedContent(true);
 
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     

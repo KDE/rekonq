@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
-*
+* Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
+* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>*
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License as
@@ -24,40 +24,26 @@
 * ============================================================ */
 
 
-
-#ifndef ADBLOCK_MANAGER_H
-#define ADBLOCK_MANAGER_H
-
-
-// Local Includes
-#include "khtml_filter_p.h"
-
-// Qt Includes
-#include <QObject>
-#include <QStringList>
-#include <QNetworkReply>
-
-// Forward Includes
-class QNetworkRequest;
+#ifndef NETWORKACCESSMANAGER_H
+#define NETWORKACCESSMANAGER_H
 
 
-class AdBlockManager : public QObject
+// KDE Includes
+#include <kio/accessmanager.h>
+
+
+using namespace KIO::Integration;
+
+
+class NetworkAccessManager : public AccessManager
 {
-Q_OBJECT
-    
+    Q_OBJECT
+
 public:
-    AdBlockManager(QObject *parent = 0);
-    ~AdBlockManager();
+    NetworkAccessManager(QObject *parent = 0);
 
-    void loadSettings();
-    QNetworkReply *block(const QNetworkRequest &request);
-    
-private:
-    bool _isAdblockEnabled;
-    bool _isHideAdsEnabled;
-
-    khtml::FilterSet _adBlackList;
-    khtml::FilterSet _adWhiteList;
+protected:
+    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
 };
 
-#endif
+#endif // NETWORKACCESSMANAGER_H

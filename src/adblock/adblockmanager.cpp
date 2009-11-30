@@ -24,9 +24,12 @@
 * ============================================================ */
 
 
+// Self Includes
 #include "adblockmanager.h"
 #include "adblockmanager.moc"
 
+// Local Includes
+#include "adblocknetworkreply.h"
 
 // KDE Includes
 #include <KSharedConfig>
@@ -53,10 +56,48 @@ AdBlockManager::~AdBlockManager()
 
 void AdBlockManager::loadSettings()
 {
+    KSharedConfig::Ptr config = KSharedConfig::openConfig("khtmlrc", KConfig::NoGlobals);
+    KConfigGroup cg( config, "Filter Settings" );
+
+    if ( cg.exists() )
+    {
+        _isAdblockEnabled = cg.readEntry("Enabled", false);
+        _isHideAdsEnabled = cg.readEntry("Shrink", false);
+
+        _adBlackList.clear();
+        _adWhiteList.clear();
+
+        QMap<QString,QString> entryMap = cg.entryMap();
+        QMap<QString,QString>::ConstIterator it;
+        for( it = entryMap.constBegin(); it != entryMap.constEnd(); ++it )
+        {
+            QString name = it.key();
+            QString url = it.value();
+
+            if (name.startsWith(QLatin1String("Filter")))
+            {
+                if (url.startsWith(QLatin1String("@@")))
+                    _adWhiteList.addFilter(url);
+                else
+                    _adBlackList.addFilter(url);
+            }
+        }
+    }
 }
 
 
-bool AdBlockManager::isUrlAllowed(const QUrl &url)
+QNetworkReply *AdBlockManager::block(const QNetworkRequest &request)
 {
-    return true;
+    if (!_isAdblockEnabled)
+        return 0;
+    
+    QString urlString = request.url().toString();
+    
+        // Check the blacklist, and only if that matches, the whitelist
+    if(_adBlackList.isUrlMatched(urlString) && !_adWhiteList.isUrlMatched(urlString))
+    {
+        AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
+        return reply;
+    }
+    return 0;
 }
