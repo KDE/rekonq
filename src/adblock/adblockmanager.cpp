@@ -66,6 +66,10 @@ void AdBlockManager::loadSettings()
 
         filterList.clear();
         
+        // no need to load filters if adblock is not enabled :)
+        if(!_isAdblockEnabled)
+            return;
+        
         QMap<QString,QString> entryMap = cg.entryMap();
         QMap<QString,QString>::ConstIterator it;
         for( it = entryMap.constBegin(); it != entryMap.constEnd(); ++it )
@@ -93,13 +97,12 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request)
         return 0;
     
     QString urlString = request.url().toString();
-    kDebug() << "****************************** ADBLOCK: Matching url: "<< urlString;
 
     foreach(const AdBlockRule &filter, filterList)
     {
         if(filter.match(urlString))
         {
-            kDebug() << "****ADBLOCK: Matched: **************************";
+            kDebug() << "****ADBLOCK: Matched: ***********" << urlString;
             AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
             return reply;        
         }
