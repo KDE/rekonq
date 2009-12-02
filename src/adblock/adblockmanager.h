@@ -28,10 +28,12 @@
 #ifndef ADBLOCK_MANAGER_H
 #define ADBLOCK_MANAGER_H
 
+// Local Includes
+#include "adblockrule.h"
+typedef QList<AdBlockRule> AdBlockRuleList;
 
 // Qt Includes
 #include <QObject>
-#include <QStringList>
 #include <QNetworkReply>
 
 // Forward Includes
@@ -53,7 +55,7 @@ private:
     bool _isAdblockEnabled;
     bool _isHideAdsEnabled;
 
-    QStringList filterList;
+    AdBlockRuleList filterList;
 };
 
 #endif

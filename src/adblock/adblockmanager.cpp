@@ -30,7 +30,6 @@
 
 // Local Includes
 #include "adblocknetworkreply.h"
-#include "adblockrule.h"
 
 // KDE Includes
 #include <KSharedConfig>
@@ -76,7 +75,8 @@ void AdBlockManager::loadSettings()
 
             if (name.startsWith(QLatin1String("Filter")))
             {
-                filterList << url;
+                AdBlockRule filter(url);
+                filterList << filter;
             }
         }
     }
@@ -95,30 +95,14 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request)
     QString urlString = request.url().toString();
     kDebug() << "****************************** ADBLOCK: Matching url: "<< urlString;
 
-    foreach(const QString &filter, filterList)
+    foreach(const AdBlockRule &filter, filterList)
     {
-        AdBlockRule rule(filter);
-        if(rule.match(urlString))
+        if(filter.match(urlString))
         {
             kDebug() << "****ADBLOCK: Matched: **************************";
             AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
             return reply;        
         }
     }
-    
-    
-    
-    // Check the blacklist, and only if that matches, the whitelist
-    
-    
-    
-    
-    
-//     if(_adBlackList.isUrlMatched(urlString) && !_adWhiteList.isUrlMatched(urlString))
-//     {
-//         kDebug() << "****ADBLOCK: Matched: **************************";
-//         AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
-//         return reply;
-//     }
     return 0;
 }

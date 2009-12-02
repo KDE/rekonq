@@ -79,4 +79,5 @@ private:
     QStringList m_options;
 };
 
+
 #endif // ADBLOCKRULE_H
