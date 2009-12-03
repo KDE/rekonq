@@ -20,6 +20,7 @@ SET( rekonq_KDEINIT_SRCS
     webview.cpp
     clicktoflash.cpp
     networkaccessmanager.cpp
+    webinspectordock.cpp
     #----------------------------------------
     history/autosaver.cpp 
     history/historymanager.cpp
@@ -42,8 +43,6 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     urlbar/urlbar.cpp
     urlbar/lineedit.cpp
-#----------------------------------------
-    webinspectordock.cpp
 )
 
 
