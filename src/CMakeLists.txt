@@ -42,6 +42,8 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     urlbar/urlbar.cpp
     urlbar/lineedit.cpp
+#----------------------------------------
+    webinspectordock.cpp
 )
 
 

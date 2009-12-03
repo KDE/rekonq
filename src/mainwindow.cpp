@@ -42,6 +42,7 @@
 #include "findbar.h"
 #include "sidepanel.h"
 #include "bookmarkspanel.h"
+#include "webinspectordock.h"
 #include "urlbar.h"
 #include "tabbar.h"
 #include "newtabpage.h"
@@ -99,7 +100,8 @@ MainWindow::MainWindow()
     , m_view(new MainView(this))
     , m_findBar(new FindBar(this))
     , m_sidePanel(0)
-	, m_bookmarksPanel(0)
+    , m_bookmarksPanel(0)
+    , m_webInspectorDock(0)
     , m_historyBackMenu(0)
     , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, false) )
@@ -136,7 +138,8 @@ MainWindow::MainWindow()
 
     // setting Side Panel
     setupSidePanel();
-	setupBookmarksPanel();
+    setupBookmarksPanel();
+    setupWebInspector();
 
     // setting up rekonq tools
     setupTools();
@@ -336,11 +339,6 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QLatin1String("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(viewPageSource()));
 
-    a = new KAction(KIcon("tools-report-bug"), i18n("Web &Inspector"), this);
-    a->setCheckable(true);
-    actionCollection()->addAction(QLatin1String("web_inspector"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(toggleInspector(bool)));
-
     a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QLatin1String("private_browsing"), a);
@@ -488,6 +486,22 @@ void MainWindow::setupBookmarksPanel()
     a->setIcon(KIcon("bookmarks-organize"));
     actionCollection()->addAction(QLatin1String("show_bookmarks_panel"), a);
 }
+
+
+void MainWindow::setupWebInspector()
+{
+    m_webInspectorDock = new WebInspectorDock(i18n("Web Inspector"), this);
+    connect(mainView(), SIGNAL(currentChanged(int)), m_webInspectorDock, SLOT(changeCurrentPage()));
+    
+    KAction *a = new KAction(KIcon("tools-report-bug"), i18n("Web &Inspector"), this);
+    a->setCheckable(true);
+    actionCollection()->addAction(QLatin1String("web_inspector"), a);
+    connect(a, SIGNAL(triggered(bool)), m_webInspectorDock, SLOT(toggle(bool)));
+    
+    addDockWidget(Qt::BottomDockWidgetArea, m_webInspectorDock);
+    m_webInspectorDock->hide();
+}
+
 
 
 void MainWindow::updateConfiguration()
@@ -844,25 +858,6 @@ void MainWindow::viewPageSource()
 void MainWindow::homePage()
 {
     currentTab()->load( QUrl(ReKonfig::homePage()) );
-}
-
-
-void MainWindow::toggleInspector(bool enable)
-{
-    QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, enable);
-    if (enable)
-    {
-        int result = KMessageBox::questionYesNo(this,
-                        i18n("The web inspector will only work correctly for pages that were loaded after enabling.\n" \
-                             "Do you want to reload all pages?"),
-                        i18n("Web Inspector")
-                     );
-
-        if (result == KMessageBox::Yes)
-        {
-            m_view->reloadAllTabs();
-        }
-    }
 }
 
 
