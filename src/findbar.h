@@ -67,6 +67,7 @@ signals:
 private:
     KLineEdit *m_lineEdit;
     QCheckBox *m_matchCase;
+    QTimer *m_hideTimer;
 
 };
 

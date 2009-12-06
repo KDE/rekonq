@@ -45,12 +45,14 @@
 #include <QtGui/QColor>
 #include <QtGui/QKeyEvent>
 #include <QtCore/QString>
+#include <QtCore/QTimer>
 
 
 FindBar::FindBar(KMainWindow *mainwindow)
         : QWidget(mainwindow)
         , m_lineEdit(new KLineEdit(this))
         , m_matchCase(new QCheckBox(i18n("&Match case"), this))
+        , m_hideTimer(new QTimer(this))
 {
     QHBoxLayout *layout = new QHBoxLayout;
 
@@ -64,6 +66,9 @@ FindBar::FindBar(KMainWindow *mainwindow)
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
+
+    // hide timer 
+    connect(m_hideTimer, SIGNAL(timeout()), this, SLOT(hide()));
 
     // label
     QLabel *label = new QLabel(i18n("Find:"));
@@ -92,7 +97,7 @@ FindBar::FindBar(KMainWindow *mainwindow)
     layout->addStretch();
 
     setLayout(layout);
-
+    
     // we start off hidden
     hide();
 }
@@ -132,6 +137,7 @@ void FindBar::show()
         return;
 
     QWidget::show();
+    m_hideTimer->start(60000);
 }
 
 
@@ -140,6 +146,7 @@ void FindBar::keyPressEvent(QKeyEvent* event)
     if (event->key() == Qt::Key_Escape)
     {
         hide();
+        m_hideTimer->stop();
         return;
     }
     if (event->key() == Qt::Key_Return && !m_lineEdit->text().isEmpty())
@@ -171,6 +178,5 @@ void FindBar::notifyMatch(bool match)
         }
     }
     m_lineEdit->setPalette(p);
+    m_hideTimer->start(60000);
 }
-
-
