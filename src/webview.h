@@ -37,6 +37,7 @@
 
 // Forward Declarations
 class WebPage;
+class WalletWidget;
 
 
 class WebView : public KWebView
@@ -52,6 +53,7 @@ public:
     QString lastStatusBarText() const;
     int progress();
     QPoint mousePos();
+    QWidget *walletBar();
     
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
@@ -73,14 +75,11 @@ private slots:
 
     void loadInNewTab(const KUrl &url);
     
-    void downloadRequest(const KUrl &url);
-    void downloadRequest(const QNetworkRequest &request);
-
 private:
     WebPage *m_page;
+    WalletWidget *m_walletBar;
     int m_progress;
     QString m_statusBarText;
-
     QPoint m_mousePos;
 };
 

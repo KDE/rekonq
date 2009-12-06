@@ -97,8 +97,8 @@
 
 MainWindow::MainWindow()
     : KMainWindow()
-    , m_view(new MainView(this))
-    , m_findBar(new FindBar(this))
+    , m_view( new MainView(this) )
+    , m_findBar( new FindBar(this) )
     , m_sidePanel(0)
     , m_bookmarksPanel(0)
     , m_webInspectorDock(0)

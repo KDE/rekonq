@@ -24,18 +24,22 @@
 * ============================================================ */
 
 
+// Self Includes
 #include "walletwidget.h"
 #include "walletwidget.moc"
 
-#include <QLabel>
+// KDE Includes
+#include <klocalizedstring.h>
+
+// Qt Includes
 #include <QPushButton>
-#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 
-WalletWidget::WalletWidget(QObject *parent)
+WalletWidget::WalletWidget(QWidget *parent)
     : QWidget(parent)
+    , m_label( new QLabel(this) )
 {
-    QLabel *label = new QLabel( i18n("Do you want rekonq to remember the password for %1 on %2?"), this);
     QPushButton *rememberButton = new QPushButton( i18n("remember"), this);
     QPushButton *neverHereButton = new QPushButton( i18n("never for this site"), this);
     QPushButton *notNowButton = new QPushButton( i18n("not now"), this);
@@ -45,13 +49,16 @@ WalletWidget::WalletWidget(QObject *parent)
     connect(notNowButton, SIGNAL(clicked()), this, SLOT(notNowRememberData()));
         
     // layout
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(label);
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(m_label);
     layout->addWidget(rememberButton);
     layout->addWidget(neverHereButton);
     layout->addWidget(notNowButton);
 
     setLayout(layout);
+    
+    // we start off hidden
+    hide();
 }
 
 
@@ -62,21 +69,38 @@ WalletWidget::~WalletWidget()
 
 void WalletWidget::rememberData()
 {
-    WebView *w = Application::instance()->mainWindow()->currentTab();
-    w->page()->wallet()->saveFormData(w->page()->currentFrame());
     hide();
+    emit saveFormDataAccepted(m_key);
 }
 
 
 void WalletWidget::neverRememberData()
 {
-    hide();
+    // TODO: store site url (to remember never bother about)
+    notNowRememberData();
 }
 
 
 void WalletWidget::notNowRememberData()
 {
     hide();
+    emit saveFormDataRejected (m_key);
 }
 
 
+void WalletWidget::onSaveFormData(const QString &key, const QUrl &url)
+{
+    m_label->setText( i18n("Do you want rekonq to remember the password for %1 on %2?")
+                        .arg(key)
+                        .arg(url.host())
+                    );
+    m_key = key;
+    m_url = url;
+    
+    // TODO: check if url is stored somewhere to not remember pass..
+    if(true)
+        show();
+    else
+        notNowRememberData();
+    
+}

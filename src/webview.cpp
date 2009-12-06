@@ -38,6 +38,7 @@
 #include "mainview.h"
 #include "webpage.h"
 #include "bookmarksmanager.h"
+#include "walletwidget.h"
 
 // KDE Includes
 #include <KService>
@@ -45,6 +46,7 @@
 #include <KStandardShortcut>
 #include <KMenu>
 #include <KActionMenu>
+#include <kwebwallet.h>
 
 // Qt Includes
 #include <QContextMenuEvent>
@@ -56,22 +58,36 @@
 
 
 WebView::WebView(QWidget* parent)
-        : KWebView(parent, false)
-        , m_page(new WebPage(this))
-        , m_progress(0)
-        , m_mousePos(QPoint(0,0))
+    : KWebView(parent, false)
+    , m_page( new WebPage(this) )
+    , m_walletBar( new WalletWidget(this) )
+    , m_progress(0)
+    , m_mousePos(QPoint(0,0))
 
 {
     setPage(m_page);
     
-    connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
+    connect(m_page, SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 
     connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), this, SLOT(loadInNewTab(const KUrl &)) );
 
-    connect(this, SIGNAL(linkShiftClicked(const KUrl &)), this, SLOT(downloadRequest(const KUrl &)));
-    connect(page(), SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequest(const QNetworkRequest &r)));
+    // download system
+    connect(this, SIGNAL(linkShiftClicked(const KUrl &)), m_page, SLOT(downloadUrl(const KUrl &)));
+    connect(m_page, SIGNAL(downloadRequested(const QNetworkRequest &)), m_page, SLOT(downloadRequest(const QNetworkRequest &r)));
+
+    // kwallet
+    KWebWallet *w = m_page->wallet();
+    if(w)
+    {
+        connect (w, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)), 
+                 m_walletBar, SLOT(onSaveFormData(const QString &, const QUrl &)));
+        connect(m_walletBar, SIGNAL(saveFormDataAccepted(const QString &)), 
+                w, SLOT(acceptSaveFormDataRequest(const QString &)));
+        connect(m_walletBar, SIGNAL(saveFormDataRejected(const QString &)), 
+                w, SLOT(rejectSaveFormDataRequest(const QString &)));
+    }
 }
 
 
@@ -433,15 +449,9 @@ void WebView::loadInNewTab(const KUrl &url)
 {
     Application::instance()->loadUrl(url, Rekonq::NewCurrentTab);
 }
-    
-    
-void WebView::downloadRequest(const KUrl &url)
-{
-    m_page->downloadRequest(QNetworkRequest(url));
-}
 
 
-void WebView::downloadRequest(const QNetworkRequest &request)
+QWidget *WebView::walletBar()
 {
-    m_page->downloadRequest(request);
+    return m_walletBar;
 }

@@ -30,9 +30,9 @@
 
 // Qt Includes
 #include <QWidget>
-
-// Forward Declarations
-class KMainWindow;
+#include <QString>
+#include <QUrl>
+#include <QLabel>
 
 
 class WalletWidget : public QWidget
@@ -40,7 +40,7 @@ class WalletWidget : public QWidget
     Q_OBJECT
 
 public:
-    WalletWidget(QObject *parent);
+    WalletWidget(QWidget *parent);
     ~WalletWidget();
 
 private slots:
@@ -48,6 +48,17 @@ private slots:
     void rememberData();
     void neverRememberData();
     void notNowRememberData();
+    void onSaveFormData(const QString &, const QUrl &);
+
+signals:    
+    void saveFormDataAccepted(const QString &);
+    void saveFormDataRejected(const QString &);
+
+private:
+    QString m_key;
+    QUrl m_url;
+
+    QLabel *m_label;
 };
 
 #endif // WALLET_WIDGET_H

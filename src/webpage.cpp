@@ -81,11 +81,6 @@ WebPage::WebPage(QObject *parent)
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
-
-    // kwallet
-    KWebWallet *w = wallet();
-    connect(w, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)), 
-            w, SLOT(acceptSaveFormDataRequest(const QString &)));
 }
 
 

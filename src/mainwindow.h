@@ -73,7 +73,7 @@ public:
     virtual KActionCollection *actionCollection () const;
 
     bool newTabPage(const KUrl &url = KUrl("about:home"));
-
+    
 private:
     void setupActions();
     void setupTools();
