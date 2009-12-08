@@ -52,6 +52,7 @@
 #include <KUriFilter>
 #include <KMessageBox>
 #include <KWindowInfo>
+#include <KUrl>
 
 // Qt Includes
 #include <QRegExp>
@@ -265,71 +266,26 @@ KIcon Application::icon(const KUrl &url)
 }
 
 
-KUrl Application::guessUrlFromString(const QString &string)
-{
-    QString urlStr = string.trimmed();
-    QRegExp test(QLatin1String("^[a-zA-Z]+\\:.*"));
-
-    // Might be a file.
-    if (QFile::exists(urlStr))
-    {
-        QFileInfo info(urlStr);
-        return KUrl::fromPath(info.absoluteFilePath());
-    }
-    
-    // Check if it looks like a qualified URL. Try parsing it and see.
-    if (test.exactMatch(urlStr))
-    {
-        KUrl url(urlStr);
-        
-        if (url.isValid())
-        {
-            return url;
-        }
-    }
-    else    // Might be a shorturl - try to detect the schema.
-    {
-        int dotIndex = urlStr.indexOf(QLatin1Char(':'));
-
-        if (dotIndex != -1)
-        {
-            QString prefix = urlStr.left(dotIndex).toLower();
-            QString schema = (prefix == QLatin1String("ftp")) ? prefix : QLatin1String("http");
-            QUrl qurl(schema + QLatin1String("://") + urlStr, QUrl::TolerantMode);
-            KUrl url(qurl);
-
-            if (url.isValid())
-            {
-                return url;
-            }
-        }
-    }
-    
-    // Fall back to QUrl's own tolerant parser.
-    KUrl url = KUrl(urlStr);
-
-    return url;
-}
-
-
 void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 {
     if (url.isEmpty())
         return;
 
-    if ( !url.isValid() )
+    KUrl loadingUrl = xssSanitization(url);
+
+    if ( !loadingUrl.isValid() )
     {
-        KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url()));
+        KMessageBox::error(0, i18n("Malformed URL:\n%1", loadingUrl.url(KUrl::RemoveTrailingSlash)));
         return;
     }
 
     // loading home pages
-    if (mainWindow()->newTabPage(url))
+    if (mainWindow()->newTabPage(loadingUrl))
         return;
     
-    if (url.scheme() == QLatin1String("mailto"))
+    if (loadingUrl.scheme() == QLatin1String("mailto"))
     {
-        KToolInvocation::invokeMailer(url);
+        KToolInvocation::invokeMailer(loadingUrl);
         return;
     }
 
@@ -365,8 +321,6 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     // - web shortcuts with space separator
     // - relative urls
     // - ...
-    KUrl loadingUrl(url);
-
     if (loadingUrl.isRelative())
     {
         QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
@@ -408,7 +362,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
 void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& type)
 {    
-    return loadUrl( guessUrlFromString(urlString), type );
+    return loadUrl( QUrl::fromUserInput(urlString), type );
 }
 
 
@@ -445,3 +399,19 @@ AdBlockManager *Application::adblockManager()
     }
     return s_adblockManager;
 }
+
+
+KUrl Application::xssSanitization(const KUrl &url)
+{
+    QString urlString = url.url();
+    
+    QList<QChar> l;     // TODO: learn regular expression
+    l << '\'' << '\"' << '<' << '>';
+    foreach(const QChar &c, l)
+    {
+        QStringList list = urlString.split(c);
+        urlString = list.at(0);
+    }
+    return KUrl(urlString);
+}
+    

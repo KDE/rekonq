@@ -33,7 +33,6 @@
 // KDE Includes
 #include <KUniqueApplication>
 #include <KIcon>
-#include <KUrl>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
@@ -135,9 +134,8 @@ private slots:
     void postLaunch();
 
 private:
-
-    KUrl guessUrlFromString(const QString &url);
-
+    KUrl xssSanitization(const KUrl &url);
+    
     static QPointer<HistoryManager> s_historyManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;
     static QPointer<SessionManager> s_sessionManager;

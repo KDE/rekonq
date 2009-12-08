@@ -75,7 +75,7 @@ WebView::WebView(QWidget* parent)
 
     // download system
     connect(this, SIGNAL(linkShiftClicked(const KUrl &)), m_page, SLOT(downloadUrl(const KUrl &)));
-    connect(m_page, SIGNAL(downloadRequested(const QNetworkRequest &)), m_page, SLOT(downloadRequest(const QNetworkRequest &r)));
+    connect(m_page, SIGNAL(downloadRequested(const QNetworkRequest &)), m_page, SLOT(downloadRequest(const QNetworkRequest &)));
 
     // kwallet
     KWebWallet *w = m_page->wallet();
