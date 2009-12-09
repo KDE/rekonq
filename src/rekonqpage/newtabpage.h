@@ -28,12 +28,16 @@
 #define REKONQ_NEW_TAB_PAGE
 
 
+// rekonq Includes
+#include <webpage.h>
+
 // KDE Includes
 #include <KUrl>
 
 // Qt Includes
 #include <QtCore/QObject>
 #include <QtCore/QString>
+#include <QWebElement>
 
 // Forward Includes
 class KBookmark;
@@ -43,7 +47,7 @@ class NewTabPage
 {
     
 public:
-    NewTabPage();
+    NewTabPage(WebPage *page);
     ~NewTabPage();
 
     /**
@@ -51,22 +55,32 @@ public:
      *  about: url and loads the corresponding part of the 
      *  new tab page
      */
-    QString newTabPageCode(const KUrl &url = KUrl("about:home"));
+    void generate(const KUrl &url = KUrl("about:home"));
      
 protected:  // these are the function to build the new tab page
-    
-    QString browsingMenu(const KUrl &currentUrl);
+    void browsingMenu(const KUrl &currentUrl);
 
-    QString favoritesPage();
-    QString lastVisitedPage();
-    QString historyPage();
-    QString bookmarksPage();
-    QString closedTabsPage();
+    void favoritesPage();
+    //QString lastVisitedPage();
+    void historyPage();
+    void bookmarksPage();
+    void closedTabsPage();
 
 private:
-    QString createBookItem(const KBookmark &bookmark);
+    void createBookItem(const KBookmark &bookmark, QWebElement parent);
+    
+    /** This function helps to get faster a new markup of one type,it isn't easy to create one with QWebElement.
+        It gets it in the #models div of home.html.
+        It works for all elements defined here.
+    */
+    inline QWebElement markup(QString selector) 
+    {
+       return m_root.document().findFirst("#models > " + selector).clone();
+    }
 
-    QString m_htmlFilePath;
+    QString m_html;
+    
+    QWebElement m_root;
 };
 
 #endif // REKONQ_NEW_TAB_PAGE
