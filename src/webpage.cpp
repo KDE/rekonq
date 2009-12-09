@@ -41,6 +41,7 @@
 #include "mainview.h"
 #include "webview.h"
 #include "webpluginfactory.h"
+#include "networkaccessmanager.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -48,6 +49,7 @@
 #include <KDebug>
 #include <KToolInvocation>
 #include <KProtocolManager>
+#include <kwebwallet.h>
 
 #include <kparts/browseropenorsavequestion.h>
 
@@ -65,11 +67,13 @@
 #include <QtGui/QKeyEvent>
 
 
-WebPage::WebPage(QObject *parent, qlonglong windowId)
-        : KWebPage(parent, windowId)
+WebPage::WebPage(QObject *parent)
+        : KWebPage(parent, KWalletIntegration)
         , m_keyboardModifiers(Qt::NoModifier)
         , m_pressedButtons(Qt::NoButton)
 {
+    // rekonq own classes integration
+    setNetworkAccessManager(new NetworkAccessManager(this));
     setPluginFactory(new WebPluginFactory(this));
     
     setForwardUnsupportedContent(true);
@@ -183,7 +187,6 @@ void WebPage::manageNetworkErrors(QNetworkReply* reply)
     if( reply->error() == QNetworkReply::NoError )
         return;
 
-
     if( reply->url() != m_requestedUrl ) // prevent favicon loading
         return;
     
@@ -219,6 +222,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     // display "not found" page
     QString notfoundFilePath =  KStandardDirs::locate("data", "rekonq/htmls/notfound.html");
     QFile file(notfoundFilePath);
+
     bool isOpened = file.open(QIODevice::ReadOnly);
     if (!isOpened)
     {
@@ -227,18 +231,17 @@ QString WebPage::errorPage(QNetworkReply *reply)
     }
 
     QString title = i18n("Error loading: %1", reply->url().path()); 
-    
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
-
     QString msg = "<h1>" + reply->errorString() + "</h1>";
+    QString urlString = reply->url().toString( QUrl::RemoveUserInfo | QUrl::RemoveQuery );
     
-    msg += "<h2>" + i18nc("%1=an URL, e.g.'kde.org'", "When connecting to: %1", reply->url().toString()) + "</h2>";
+    msg += "<h2>" + i18nc("%1=an URL, e.g.'kde.org'", "When connecting to: %1", urlString ) + "</h2>";
     msg += "<ul><li>" + i18n("Check the address for errors such as <b>ww</b>.kde.org instead of <b>www</b>.kde.org");
     msg += "</li><li>" + i18n("If the address is correct, try to check the network connection.") + "</li><li>" ;
     msg += i18n("If your computer or network is protected by a firewall or proxy, make sure that rekonq is permitted to access the network.");
     msg += "</li><li>" + i18n("Of course, if rekonq does not work properly, you can always say it is a programmer error ;)");
     msg += "</li></ul><br/><br/>";
-    msg += "<input type=\"button\" id=\"reloadButton\" onClick=\"document.location.href='" + reply->url().path() + "';\" value=\"";
+    msg += "<input type=\"button\" id=\"reloadButton\" onClick=\"document.location.href='" + urlString + "';\" value=\"";
     msg += i18n("Try Again") + "\" />";
     
     QString html = QString(QLatin1String(file.readAll()))

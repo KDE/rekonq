@@ -19,6 +19,9 @@ SET( rekonq_KDEINIT_SRCS
     websnap.cpp
     webview.cpp
     clicktoflash.cpp
+    networkaccessmanager.cpp
+    webinspectordock.cpp
+    walletwidget.cpp
     #----------------------------------------
     history/autosaver.cpp 
     history/historymanager.cpp
@@ -36,6 +39,8 @@ SET( rekonq_KDEINIT_SRCS
     bookmarks/bookmarksproxy.cpp
     #----------------------------------------
     adblock/adblockmanager.cpp
+    adblock/adblocknetworkreply.cpp
+    adblock/adblockrule.cpp
     #----------------------------------------
     urlbar/urlbar.cpp
     urlbar/lineedit.cpp

@@ -48,6 +48,7 @@
 #include <KStandardDirs>
 #include <KPassivePopup>
 #include <KLocalizedString>
+#include <kwebwallet.h>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -544,6 +545,13 @@ void MainView::webViewLoadFinished(bool ok)
     webViewIconChanged();
     emit browserTabLoading(false);
 
+    // KWallet Integration
+    // TODO: Add check for sites exempt from automatic form filling...
+    if (webView->page()->wallet()) 
+    {
+        webView->page()->wallet()->fillFormData(webView->page()->mainFrame());
+    }
+    
     // don't display messages for background tabs
     if (index != currentIndex())
     {

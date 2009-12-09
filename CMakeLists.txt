@@ -7,7 +7,7 @@ PROJECT( rekonq )
 # Informations to update before to release this package.
 
 # rekonq info
-SET(REKONQ_VERSION "0.3.16" )
+SET(REKONQ_VERSION "0.3.19" )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/version.h )
 
@@ -23,7 +23,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 
 SET(QT_MIN_VERSION 4.6.0)
 FIND_PACKAGE(Qt4 REQUIRED)
-SET(KDE_MIN_VERSION 4.3.75)
+SET(KDE_MIN_VERSION 4.3.80)
 FIND_PACKAGE(KDE4 REQUIRED)
 
 INCLUDE(MacroOptionalFindPackage)

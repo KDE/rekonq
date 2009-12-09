@@ -138,12 +138,13 @@ void UrlBar::setUrl(const QUrl& url)
 {
     if(url.scheme() == "about")
     {
-        m_currentUrl = "";
+        m_currentUrl = KUrl();
         setFocus();
     }
     else
-        m_currentUrl = url;
-
+    {
+        m_currentUrl = KUrl(url);
+    }
     updateUrl();
 }
 
@@ -166,8 +167,14 @@ void UrlBar::updateUrl()
     }
 
     KIcon icon;
-    if(m_currentUrl.isEmpty()) icon = KIcon("arrow-right");
-    else icon = Application::icon(m_currentUrl);
+    if(m_currentUrl.isEmpty()) 
+    {
+        icon = KIcon("arrow-right");
+    }
+    else 
+    {
+        icon = Application::icon(m_currentUrl);
+    }
 
     if (count())
     {
@@ -190,14 +197,14 @@ void UrlBar::updateUrl()
 }
 
 
-void UrlBar::activated(const QString& url)
+void UrlBar::activated(const QString& urlString)
 {
-    if (url.isEmpty())
+    if (urlString.isEmpty())
         return;
 
-    setUrl(url);
+    setUrl(urlString);
 
-    Application::historyManager()->addHistoryEntry(url);
+    Application::historyManager()->addHistoryEntry(urlString);
 
     emit activated(m_currentUrl);
 }
@@ -260,15 +267,6 @@ void UrlBar::paintEvent(QPaintEvent *event)
 }
 
 
-void UrlBar::focusOutEvent(QFocusEvent *event)
-{
-    // set back last loaded url in case user cleared it
-    if (!m_currentUrl.equals(KUrl(lineEdit()->text()))) setUrl(m_currentUrl);
-
-    KHistoryComboBox::focusOutEvent(event);
-}
-
-
 QSize UrlBar::sizeHint() const
 {
     return lineEdit()->sizeHint();
@@ -293,7 +291,7 @@ QLinearGradient UrlBar::generateGradient(const QColor &color, int height)
 
 void UrlBar::setBackgroundColor(QColor c)
 {
-    s_defaultBaseColor=c;
+    s_defaultBaseColor = c;
     repaint();
 }
 

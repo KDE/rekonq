@@ -78,7 +78,6 @@ private slots:
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
-    virtual void focusOutEvent(QFocusEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
 
 private:

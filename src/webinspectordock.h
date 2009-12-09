@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009 by Matthieu Gicquel<matgic78@gmail.com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,38 +24,35 @@
 * ============================================================ */
 
 
+#ifndef WEBINSPECTORDOCK_H
+#define WEBINSPECTORDOCK_H
 
-#ifndef ADBLOCK_MANAGER_H
-#define ADBLOCK_MANAGER_H
 
 // Local Includes
-#include "adblockrule.h"
-typedef QList<AdBlockRule> AdBlockRuleList;
+#include "mainwindow.h"
 
 // Qt Includes
-#include <QObject>
-#include <QNetworkReply>
+#include <QDockWidget>
 
-// Forward Includes
-class QNetworkRequest;
-
-
-class AdBlockManager : public QObject
+/**
+    Docked web inspector
+    behaviour : hide/show by tab, not globally
+*/
+class WebInspectorDock : public QDockWidget
 {
-Q_OBJECT
-    
+    Q_OBJECT
 public:
-    AdBlockManager(QObject *parent = 0);
-    ~AdBlockManager();
-
-    void loadSettings();
-    QNetworkReply *block(const QNetworkRequest &request);
+    WebInspectorDock(QString title, QWidget *parent);
     
-private:
-    bool _isAdblockEnabled;
-    bool _isHideAdsEnabled;
-
-    AdBlockRuleList filterList;
+public slots:
+    void toggle(bool enable);
+    void changeCurrentPage();   
+    
+protected:
+    virtual void closeEvent(QCloseEvent *event);
+    
+    MainWindow *mainWindow();
+        
 };
 
 #endif

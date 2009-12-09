@@ -48,6 +48,7 @@ class KPassivePopup;
 class FindBar;
 class SidePanel;
 class BookmarksPanel;
+class WebInspectorDock;
 class WebView;
 class MainView;
 
@@ -72,7 +73,7 @@ public:
     virtual KActionCollection *actionCollection () const;
 
     bool newTabPage(const KUrl &url = KUrl("about:home"));
-
+    
 private:
     void setupActions();
     void setupTools();
@@ -81,8 +82,10 @@ private:
     void setupSidePanel();
     SidePanel *sidePanel();
 
-	void setupBookmarksPanel();
-	BookmarksPanel *bookmarksPanel();
+    void setupBookmarksPanel();
+    BookmarksPanel *bookmarksPanel();
+    
+    void setupWebInspector();
 
 public slots:
     void updateBrowser();
@@ -99,8 +102,7 @@ public slots:
     void notifyMessage(const QString &msg, Rekonq::Notify status = Rekonq::Info);
 
     void printRequested(QWebFrame *frame = 0);
-
-
+    
 signals:
     // switching tabs
     void ctrlTabPressed();
@@ -146,7 +148,6 @@ private slots:
     void viewFullScreen(bool enable);
 
     // Tools Menu slots
-    void toggleInspector(bool enable);
     void privateBrowsing(bool enable);
 
     // Settings Menu slot
@@ -162,7 +163,8 @@ private:
     MainView *m_view;
     FindBar *m_findBar;
     SidePanel *m_sidePanel;
-	BookmarksPanel *m_bookmarksPanel;
+    BookmarksPanel *m_bookmarksPanel;
+    WebInspectorDock *m_webInspectorDock;
 
     KAction *m_stopReloadAction;
     KMenu *m_historyBackMenu;

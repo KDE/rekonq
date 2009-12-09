@@ -24,38 +24,41 @@
 * ============================================================ */
 
 
+#ifndef WALLET_WIDGET_H
+#define WALLET_WIDGET_H
 
-#ifndef ADBLOCK_MANAGER_H
-#define ADBLOCK_MANAGER_H
-
-// Local Includes
-#include "adblockrule.h"
-typedef QList<AdBlockRule> AdBlockRuleList;
 
 // Qt Includes
-#include <QObject>
-#include <QNetworkReply>
+#include <QWidget>
+#include <QString>
+#include <QUrl>
+#include <QLabel>
 
-// Forward Includes
-class QNetworkRequest;
 
-
-class AdBlockManager : public QObject
+class WalletWidget : public QWidget
 {
-Q_OBJECT
-    
+    Q_OBJECT
+
 public:
-    AdBlockManager(QObject *parent = 0);
-    ~AdBlockManager();
+    WalletWidget(QWidget *parent);
+    ~WalletWidget();
 
-    void loadSettings();
-    QNetworkReply *block(const QNetworkRequest &request);
+private slots:
     
-private:
-    bool _isAdblockEnabled;
-    bool _isHideAdsEnabled;
+    void rememberData();
+    void neverRememberData();
+    void notNowRememberData();
+    void onSaveFormData(const QString &, const QUrl &);
 
-    AdBlockRuleList filterList;
+signals:    
+    void saveFormDataAccepted(const QString &);
+    void saveFormDataRejected(const QString &);
+
+private:
+    QString m_key;
+    QUrl m_url;
+
+    QLabel *m_label;
 };
 
-#endif
+#endif // WALLET_WIDGET_H
