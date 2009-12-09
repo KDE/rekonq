@@ -40,9 +40,9 @@ WalletWidget::WalletWidget(QWidget *parent)
     : QWidget(parent)
     , m_label( new QLabel(this) )
 {
-    QPushButton *rememberButton = new QPushButton( i18n("remember"), this);
-    QPushButton *neverHereButton = new QPushButton( i18n("never for this site"), this);
-    QPushButton *notNowButton = new QPushButton( i18n("not now"), this);
+    QPushButton *rememberButton = new QPushButton( i18n("Remember"), this);
+    QPushButton *neverHereButton = new QPushButton( i18n("Never for This Site"), this);
+    QPushButton *notNowButton = new QPushButton( i18n("Not Now"), this);
 
     connect(rememberButton, SIGNAL(clicked()), this, SLOT(rememberData()));
     connect(neverHereButton, SIGNAL(clicked()), this, SLOT(neverRememberData()));
@@ -90,7 +90,7 @@ void WalletWidget::notNowRememberData()
 
 void WalletWidget::onSaveFormData(const QString &key, const QUrl &url)
 {
-    m_label->setText( i18n("Do you want rekonq to remember the password for %1 on %2?")
+    m_label->setText( i18n("Do you want rekonq to remember the password for \"%1\" on \"%2\"?")
                         .arg(key)
                         .arg(url.host())
                     );
