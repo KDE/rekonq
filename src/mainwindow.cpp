@@ -1179,11 +1179,8 @@ bool MainWindow::newTabPage(const KUrl &url)
     )
     {
         m_loadingNewTabPage = true;
-        kDebug() << "loading home: " << url;
-        WebView *w = currentTab();
-        NewTabPage p;
-        QString html = p.newTabPageCode(url);
-        w->setHtml(html, url);
+        NewTabPage p(currentTab()->page());
+        p.generate(url);
         m_loadingNewTabPage = false;
         return true;
     }

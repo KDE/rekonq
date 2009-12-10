@@ -48,9 +48,20 @@
 #include <QFile>
 
 
-NewTabPage::NewTabPage()
+NewTabPage::NewTabPage(WebPage *page)
+    : m_root(page->mainFrame()->documentElement())
 {
-    m_htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
+    QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
+    
+    QFile file(htmlFilePath);
+    bool isOpened = file.open(QIODevice::ReadOnly);
+    if (!isOpened)
+        kWarning() << "Couldn't open the home.html file";
+    
+    QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
+    
+    m_html = file.readAll();
+    m_html.replace(QString("%2"), imagesPath);
 }
 
 
@@ -59,76 +70,62 @@ NewTabPage::~NewTabPage()
 }
 
 
-QString NewTabPage::newTabPageCode(const KUrl &url)
-{
-    QFile file(m_htmlFilePath);
-    bool isOpened = file.open(QIODevice::ReadOnly);
-    if (!isOpened)
-    {
-        kWarning() << "Couldn't open the home.html file";
-        return QString("");
-    }
-    QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
-    QString menu = browsingMenu(url);
+void NewTabPage::generate(const KUrl &url)
+{    
+    QWebPage *page = m_root.webFrame()->page();
+    page->mainFrame()->setHtml(m_html);
+
+    m_root = page->mainFrame()->documentElement().findFirst("#content");
     
-    QString speed;
+    browsingMenu(url);
+    
     QString title;
     if(url == KUrl("about:closedTabs"))
     {
-        speed = closedTabsPage();
+        closedTabsPage();
         title = i18n("Closed Tabs");
     }
     if(url == KUrl("about:history"))
     {
-        speed = historyPage();
+        historyPage();
         title = i18n("History");
     }
     if(url == KUrl("about:bookmarks"))
     {
-        speed = bookmarksPage();
+        bookmarksPage();
         title = i18n("Bookmarks");
     }
     if(url == KUrl("about:home") || url == KUrl("about:favorites"))
     {
-        speed = favoritesPage();
+        favoritesPage();
         title = i18n("Favorites");
     }
     
-    QString html = QString(QLatin1String(file.readAll()))
-                        .arg(title)
-                        .arg(imagesPath)
-                        .arg(menu)
-                        .arg(speed)
-                        ;
-                        
-    return html;
+    m_root.document().findFirst("title").setPlainText(title);
 }
 
 
-QString NewTabPage::favoritesPage()
+void NewTabPage::favoritesPage()
 {
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    QString speed = "<div class=\"favorites\">";
+    m_root.addClass("favorites");
+    
     for(int i=0; i<8; ++i)
     {
-        speed += "<div class=\"thumbnail\">";
-        speed += "<object type=\"application/image-preview\" data=\"" + urls.at(i) + "\" >";
-        speed += "<param name=\"title\" value=\"" + names.at(i) + "\" />";
-        speed += "<param name=\"index\" value=\"" + QString::number(i) + "\" />";
-        speed += "<param name=\"isFavorite\" value=\"true\" />";
-        speed += "</object>";
-        speed += "</div>";
+        QWebElement speed = markup(".thumbnail");
+        speed.findFirst("object").setAttribute("data" , urls.at(i));
+        speed.findFirst("param[name=title]").setAttribute("value", names.at(i));
+        speed.findFirst("param[name=index]").setAttribute("value", QString::number(i));
+        speed.findFirst("param[name=isFavorite]").setAttribute("value", "true");
+        m_root.appendInside(speed);
     }
-
-    speed += "</div>";
-    return speed;
 }
 
 
 // FIXME : port to new PreviewImage API to use...
-QString NewTabPage::lastVisitedPage()
+/*QString NewTabPage::lastVisitedPage()
 {
     QString last;
     QList<HistoryItem> history =  Application::historyManager()->history();
@@ -144,142 +141,140 @@ QString NewTabPage::lastVisitedPage()
 
     return last;
 
-}
+}*/
 
 
-QString NewTabPage::browsingMenu(const KUrl &currentUrl)
+void NewTabPage::browsingMenu(const KUrl &currentUrl)
 {
-    QString menu;
+    QList<QWebElement> navItems;
     
     KIconLoader *loader = KIconLoader::global();
     
-    menu += "<div class=\"link";
-    if(currentUrl == "about:favorites" || currentUrl == "about:home")
-        menu += " current";
-    menu += "\"><a href=\"about:favorites\">";
-    menu += "<img src=\"file:///" + loader->iconPath("emblem-favorite", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
-    menu += i18n("Favorites");
-    menu += "</a></div>";
+    QWebElement nav = markup(".link"); // Favorites
+    nav.findFirst("a").setAttribute("href", "about:favorites");
+    nav.findFirst("img").setAttribute("src" , QString("file:///" + 
+    loader->iconPath("emblem-favorite", KIconLoader::Desktop ||KIconLoader::SizeSmall)));
+    nav.findFirst("a").appendInside(i18n("Favorites"));
+    navItems.append(nav);
     
-    menu += "<div class=\"link";
-    if(currentUrl == "about:closedTabs")
-        menu += " current";
-    menu += "\"><a href=\"about:closedTabs\">";
-    menu += "<img src=\"file:///" + loader->iconPath("tab-close", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
-    menu += i18n("Closed Tabs");
-    menu += "</a></div>";
+    nav = markup(".link"); // Closed Tabs
+    nav.findFirst("a").setAttribute("href", "about:closedTabs");
+    nav.findFirst("img").setAttribute("src" , QString("file:///" + 
+    loader->iconPath("tab-close", KIconLoader::Desktop ||KIconLoader::SizeSmall)));
+    nav.findFirst("a").appendInside(i18n("Closed Tabs"));
+    navItems.append(nav);
     
-    menu += "<div class=\"link";
-    if(currentUrl == "about:bookmarks")
-        menu += " current";
-    menu += "\"><a href=\"about:bookmarks\">";
-    menu += "<img src=\"file:///" + loader->iconPath("bookmarks", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
-    menu += i18n("Bookmarks");
-    menu += "</a></div>";
+    nav = markup(".link"); // Bookmarks
+    nav.findFirst("a").setAttribute("href", "about:bookmarks");
+    nav.findFirst("img").setAttribute("src" , QString("file:///" + 
+    loader->iconPath("bookmarks", KIconLoader::Desktop ||KIconLoader::SizeSmall)));
+    nav.findFirst("a").appendInside(i18n("Bookmarks"));
+    navItems.append(nav);
     
-    menu += "<div class=\"link";
-    if(currentUrl == "about:history")
-        menu += " current";
-    menu += "\"><a href=\"about:history\">";
-    menu += "<img src=\"file:///" + loader->iconPath("view-history", KIconLoader::Desktop || KIconLoader::SizeSmall) + "\" />";
-    menu += i18n("History");
-    menu += "</a></div>";
+    nav = markup(".link"); // History
+    nav.findFirst("a").setAttribute("href", "about:history");
+    nav.findFirst("img").setAttribute("src" , QString("file:///" + 
+    loader->iconPath("view-history", KIconLoader::Desktop ||KIconLoader::SizeSmall)));
+    nav.findFirst("a").appendInside(i18n("History"));
+    navItems.append(nav);
     
-    return menu;
+    QWebElement it;
+    foreach(it, navItems)
+    {
+        if(it.findFirst("a").attribute("href") == currentUrl.toMimeDataString())
+            it.addClass("current");
+        else if(currentUrl == "about:home" && it.findFirst("a").attribute("href") == "about:favorites")
+                it.addClass("current");
+        m_root.document().findFirst("#navigation").appendInside(it);
+    }
 }
 
 
-QString NewTabPage::historyPage()
+void NewTabPage::historyPage()
 {
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
-    QString history;
     int i = 0;
     do
     {
         QModelIndex index = model->index(i, 0, QModelIndex() );
         if(model->hasChildren(index))
         {
-            history += "<h3>" + index.data().toString() + "</h3>";
+            m_root.appendInside(markup("h3"));
+            m_root.lastChild().setPlainText(index.data().toString());
+            
             for(int j=0; j< model->rowCount(index); ++j)
             {
                 QModelIndex son = model->index(j, 0, index );
-                history += son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm");
-                history += ' ';
-                history += QString("<a href=\"") + son.data(HistoryModel::UrlStringRole).toString() + QString("\">") + 
-                        son.data().toString() + QString("</a>");
-                history += "<br />";
+                m_root.appendInside(son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm"));
+                m_root.appendInside("  ");
+                m_root.appendInside(markup("a"));
+                m_root.lastChild().setAttribute("href" , son.data(HistoryModel::UrlStringRole).toString());
+                m_root.lastChild().appendInside(son.data().toString());
+                m_root.appendInside("<br/>");
             }
         }
         i++;
     }
     while( model->hasIndex( i , 0 , QModelIndex() ) );
-
-    history += "</table>";
-    return history;
 }
 
 
-QString NewTabPage::bookmarksPage()
+void NewTabPage::bookmarksPage()
 {
     KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
     if (bookGroup.isNull())
     {
-        return QString("Error retrieving bookmarks!");
+        return;
     }
 
-    QString str;
     KBookmark bookmark = bookGroup.first();
     while (!bookmark.isNull())
     {
-        str += createBookItem(bookmark);
+        createBookItem(bookmark, m_root);
         bookmark = bookGroup.next(bookmark);
     }
-    return str;
 }
 
 
-QString NewTabPage::createBookItem(const KBookmark &bookmark)
+void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
 {
     if (bookmark.isGroup())
     {
-        QString result;
         KBookmarkGroup group = bookmark.toGroup();
         KBookmark bm = group.first();
-        result += "<h3>" + bookmark.text() + "</h3>";
-        result += "<p class=\"bookfolder\">";
+        parent.appendInside(markup("h3"));
+        parent.lastChild().setPlainText(group.text());
+        parent.appendInside(markup(".bookfolder"));
         while (!bm.isNull())
         {
-            result += createBookItem(bm);
+            createBookItem(bm, parent.lastChild()); // it is .bookfolder
             bm = group.next(bm);
         }
-        result += "</p>";
-        return result;
     }
- 
-    if(bookmark.isSeparator())
+    else if(bookmark.isSeparator())
     {
-        return QString("<hr />");
+        parent.appendInside("<hr/>");
     }
-    
-    QString books = "<a href=\"" + bookmark.url().prettyUrl() + "\">" + bookmark.text() + "</a><br />";
-    return books;
+    else
+    {
+        parent.appendInside(markup("a"));
+        parent.lastChild().setAttribute("href" , bookmark.url().prettyUrl());
+        parent.lastChild().setPlainText(bookmark.text());
+        parent.appendInside("<br/>");
+    }
 }
 
 
-QString NewTabPage::closedTabsPage()
+void NewTabPage::closedTabsPage()
 {
     QList<HistoryItem> links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
-    QString closed;
 
-    Q_FOREACH( const HistoryItem &item, links)
+    foreach(const HistoryItem &item, links)
     {
-        closed += "<div class=\"thumbnail\">";
-        closed += "<object type=\"application/image-preview\" data=\"" + item.url + "\" >";
-        closed += "<param name=\"title\" value=\"" + item.title + "\" />";
-        closed += "</object>";
-        closed += "</div>";
-  }
-
-  return closed;
+        QWebElement closed = markup(".thumbnail");
+        closed.findFirst("object").setAttribute("data" , item.url);
+        closed.findFirst("param[name=title]").setAttribute("value", item.title);
+        m_root.appendInside(closed);
+    }
 }
