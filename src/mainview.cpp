@@ -547,7 +547,7 @@ void MainView::webViewLoadFinished(bool ok)
 
     // KWallet Integration
     // TODO: Add check for sites exempt from automatic form filling...
-    if (webView->page()->wallet()) 
+    if (webView && webView->page() && webView->page()->wallet()) 
     {
         webView->page()->wallet()->fillFormData(webView->page()->mainFrame());
     }
