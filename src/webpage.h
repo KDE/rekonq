@@ -64,6 +64,9 @@ protected:
 protected Q_SLOTS:    
     virtual void handleUnsupportedContent(QNetworkReply *reply);
 
+private slots:
+    void loadFinished(bool);
+
 private:
     friend class WebView;
     QString errorPage(QNetworkReply *);

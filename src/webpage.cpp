@@ -81,6 +81,7 @@ WebPage::WebPage(QObject *parent)
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
+    connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 }
 
 
@@ -178,6 +179,17 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         KUrl::List list;
         list.append(url);
         KRun::run(*offer,url,0);
+    }
+}
+
+
+void WebPage::loadFinished(bool)
+{
+    // KWallet Integration
+    // TODO: Add check for sites exempt from automatic form filling...
+    if (wallet()) 
+    {
+        wallet()->fillFormData(mainFrame());
     }
 }
 
