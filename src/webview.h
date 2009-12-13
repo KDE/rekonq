@@ -37,7 +37,6 @@
 
 // Forward Declarations
 class WebPage;
-class WalletWidget;
 
 
 class WebView : public KWebView
@@ -45,7 +44,7 @@ class WebView : public KWebView
     Q_OBJECT
 
 public:
-    explicit WebView(QWidget *parent = 0, QWidget *messageWidget = 0);
+    explicit WebView(QWidget *parent = 0);
     ~WebView();
     
     WebPage *page();
@@ -75,8 +74,7 @@ private slots:
     void loadInNewTab(const KUrl &url);
     
 private:
-    WebPage *m_page;
-    QWidget *m_messageWidget;
+    WebPage *const m_page;
     int m_progress;
     QString m_statusBarText;
     QPoint m_mousePos;

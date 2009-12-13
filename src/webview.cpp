@@ -38,7 +38,6 @@
 #include "mainview.h"
 #include "webpage.h"
 #include "bookmarksmanager.h"
-#include "walletwidget.h"
 
 // KDE Includes
 #include <KService>
@@ -46,7 +45,6 @@
 #include <KStandardShortcut>
 #include <KMenu>
 #include <KActionMenu>
-#include <kwebwallet.h>
 
 // Qt Includes
 #include <QContextMenuEvent>
@@ -58,15 +56,14 @@
 #include <QLayout>
 
 
-WebView::WebView(QWidget* parent, QWidget* messageWidget)
+WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
     , m_page( new WebPage(this) )
-    , m_messageWidget(messageWidget)
     , m_progress(0)
     , m_mousePos(QPoint(0,0))
 {
     setPage(m_page);
-    
+
     connect(m_page, SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
@@ -76,32 +73,6 @@ WebView::WebView(QWidget* parent, QWidget* messageWidget)
     // download system
     connect(this, SIGNAL(linkShiftClicked(const KUrl &)), m_page, SLOT(downloadUrl(const KUrl &)));
     connect(m_page, SIGNAL(downloadRequested(const QNetworkRequest &)), m_page, SLOT(downloadRequest(const QNetworkRequest &)));
-
-    if (messageWidget)
-    {
-        WalletWidget *walletBar = new WalletWidget(messageWidget);
-        messageWidget->layout()->addWidget(walletBar);
-        // kwallet
-        KWebWallet *w = m_page->wallet();
-        if(w)
-        {
-            connect (w, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)), 
-                    walletBar, SLOT(onSaveFormData(const QString &, const QUrl &)));
-            connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)), 
-                    w, SLOT(acceptSaveFormDataRequest(const QString &)));
-            connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)), 
-                    w, SLOT(rejectSaveFormDataRequest(const QString &)));
-
-            connect (w, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)), 
-                    messageWidget, SLOT(show()));                   
-            connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)), 
-                    messageWidget, SLOT(hide()));
-            connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)), 
-                    messageWidget, SLOT(hide()));
-
-        }
-    }
-
 }
 
 
@@ -112,11 +83,6 @@ WebView::~WebView()
 
 WebPage *WebView::page()
 {
-    if(!m_page)
-    {
-        m_page = new WebPage(this);
-        setPage(m_page);
-    }
     return m_page;
 }
 

@@ -36,6 +36,7 @@
 // Local Includes
 #include "tabbar.h"
 #include "urlbar.h"
+#include "walletwidget.h"
 #include "sessionmanager.h"
 
 // KDE Includes
@@ -48,6 +49,7 @@
 #include <KStandardDirs>
 #include <KPassivePopup>
 #include <KLocalizedString>
+#include <kwebwallet.h>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -330,25 +332,49 @@ WebView *MainView::webView(int index) const
 
 WebView *MainView::newWebView(bool focused, bool nearParent)
 {
-    QWidget* w = new QWidget;
-    QVBoxLayout* l = new QVBoxLayout;
+    QWidget* w=new QWidget(this);
+
+    QVBoxLayout* l=new QVBoxLayout(w);
     l->setMargin(0);
-    
-    // this messageBar with its relative layout is useful to embed widget, 
-    // like the wallet bar and so on
-    QWidget* messageBar = new QWidget;  // should be deleted on tab close? // yes!
-    QVBoxLayout* l2 = new QVBoxLayout;
-    messageBar->setLayout(l2);
-    messageBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-    messageBar->hide();
-    
+
+    QWidget* messageBar=new QWidget(w);
     l->addWidget(messageBar);
-    
-    WebView *webView = new WebView(w, messageBar);  // should be deleted on tab close?
+    messageBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+
+    QVBoxLayout* l2 = new QVBoxLayout(messageBar);
+    l2->setMargin(0);
+    l2->setSpacing(0);
+
+    WebView *webView = new WebView(w);
     l->addWidget(webView);
     webView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    w->setLayout(l);
-    
+
+    // add kwallet bar
+    {
+        WalletWidget *walletBar = new WalletWidget(messageBar);
+        messageBar->layout()->addWidget(walletBar);
+        walletBar->hide();
+
+        KWebWallet *wallet = webView->page()->wallet();
+        if(wallet)
+        {
+            connect(wallet, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)),
+                    walletBar, SLOT(onSaveFormData(const QString &, const QUrl &)));
+            connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)),
+                    wallet, SLOT(acceptSaveFormDataRequest(const QString &)));
+            connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)),
+                    wallet, SLOT(rejectSaveFormDataRequest(const QString &)));
+
+            connect(wallet, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)),
+                    walletBar, SLOT(show()));
+            connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)),
+                    walletBar, SLOT(hide()));
+            connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)),
+                    walletBar, SLOT(hide()));
+
+        }
+    }
+
     // connecting webview with mainview
     connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
     connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
