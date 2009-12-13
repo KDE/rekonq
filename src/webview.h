@@ -45,7 +45,7 @@ class WebView : public KWebView
     Q_OBJECT
 
 public:
-    explicit WebView(QWidget *parent = 0);
+    explicit WebView(QWidget *parent = 0, QWidget *messageWidget = 0);
     ~WebView();
     
     WebPage *page();
@@ -53,7 +53,6 @@ public:
     QString lastStatusBarText() const;
     int progress();
     QPoint mousePos();
-    QWidget *walletBar();
     
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
@@ -77,7 +76,7 @@ private slots:
     
 private:
     WebPage *m_page;
-    WalletWidget *m_walletBar;
+    QWidget *m_messageWidget;
     int m_progress;
     QString m_statusBarText;
     QPoint m_mousePos;

@@ -30,8 +30,10 @@
 
 // KDE Includes
 #include <klocalizedstring.h>
+#include <KIcon>
 
 // Qt Includes
+#include <QToolButton>
 #include <QPushButton>
 #include <QHBoxLayout>
 
@@ -40,25 +42,32 @@ WalletWidget::WalletWidget(QWidget *parent)
     : QWidget(parent)
     , m_label( new QLabel(this) )
 {
-    QPushButton *rememberButton = new QPushButton( i18n("remember"), this);
-    QPushButton *neverHereButton = new QPushButton( i18n("never for this site"), this);
-    QPushButton *notNowButton = new QPushButton( i18n("not now"), this);
+    m_label->setWordWrap(true);
 
+    QToolButton *closeButton = new QToolButton(this);
+    closeButton->setAutoRaise(true);
+    closeButton->setIcon(KIcon("dialog-close"));
+
+    QPushButton *rememberButton = new QPushButton(KIcon("document-save"), i18n("remember"), this);
+    QPushButton *neverHereButton = new QPushButton(KIcon("process-stop"), i18n("never for this site"), this);
+    QPushButton *notNowButton = new QPushButton(KIcon("dialog-cancel"), i18n("not now"), this);
+
+    connect(closeButton, SIGNAL(clicked()), this, SLOT(notNowRememberData()));
     connect(rememberButton, SIGNAL(clicked()), this, SLOT(rememberData()));
     connect(neverHereButton, SIGNAL(clicked()), this, SLOT(neverRememberData()));
     connect(notNowButton, SIGNAL(clicked()), this, SLOT(notNowRememberData()));
         
     // layout
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(m_label);
-    layout->addWidget(rememberButton);
-    layout->addWidget(neverHereButton);
-    layout->addWidget(notNowButton);
+    QGridLayout *layout = new QGridLayout(this);
+    layout->setMargin(0);
+    layout->addWidget(closeButton,0,0);
+    layout->addWidget(m_label,0,1);
+    layout->addWidget(rememberButton,0,2);
+    layout->addWidget(neverHereButton,0,3);
+    layout->addWidget(notNowButton,0,4);
+    layout->setColumnStretch(1,100);
 
     setLayout(layout);
-    
-    // we start off hidden
-    hide();
 }
 
 
@@ -69,7 +78,6 @@ WalletWidget::~WalletWidget()
 
 void WalletWidget::rememberData()
 {
-    hide();
     emit saveFormDataAccepted(m_key);
 }
 
@@ -83,7 +91,6 @@ void WalletWidget::neverRememberData()
 
 void WalletWidget::notNowRememberData()
 {
-    hide();
     emit saveFormDataRejected (m_key);
 }
 
@@ -96,11 +103,4 @@ void WalletWidget::onSaveFormData(const QString &key, const QUrl &url)
                     );
     m_key = key;
     m_url = url;
-    
-    // TODO: check if url is stored somewhere to not remember pass..
-    if(true)
-        show();
-    else
-        notNowRememberData();
-    
 }

@@ -55,15 +55,14 @@
 #include <QClipboard>
 #include <QKeyEvent>
 #include <QAction>
+#include <QLayout>
 
-
-WebView::WebView(QWidget* parent)
+WebView::WebView(QWidget* parent, QWidget* messageWidget)
     : KWebView(parent, false)
     , m_page( new WebPage(this) )
-    , m_walletBar( new WalletWidget(this) )
     , m_progress(0)
     , m_mousePos(QPoint(0,0))
-
+    , m_messageWidget(messageWidget)
 {
     setPage(m_page);
     
@@ -77,17 +76,32 @@ WebView::WebView(QWidget* parent)
     connect(this, SIGNAL(linkShiftClicked(const KUrl &)), m_page, SLOT(downloadUrl(const KUrl &)));
     connect(m_page, SIGNAL(downloadRequested(const QNetworkRequest &)), m_page, SLOT(downloadRequest(const QNetworkRequest &)));
 
-    // kwallet
-    KWebWallet *w = m_page->wallet();
-    if(w)
+    if (messageWidget)
     {
-        connect (w, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)), 
-                 m_walletBar, SLOT(onSaveFormData(const QString &, const QUrl &)));
-        connect(m_walletBar, SIGNAL(saveFormDataAccepted(const QString &)), 
-                w, SLOT(acceptSaveFormDataRequest(const QString &)));
-        connect(m_walletBar, SIGNAL(saveFormDataRejected(const QString &)), 
-                w, SLOT(rejectSaveFormDataRequest(const QString &)));
+      
+        WalletWidget *walletBar= new WalletWidget(messageWidget);
+        messageWidget->layout()->addWidget(walletBar);
+        // kwallet
+        KWebWallet *w = m_page->wallet();
+        if(w)
+        {
+            connect (w, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)), 
+                    walletBar, SLOT(onSaveFormData(const QString &, const QUrl &)));
+            connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)), 
+                    w, SLOT(acceptSaveFormDataRequest(const QString &)));
+            connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)), 
+                    w, SLOT(rejectSaveFormDataRequest(const QString &)));
+
+            connect (w, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)), 
+                    messageWidget, SLOT(show()));                   
+            connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)), 
+                    messageWidget, SLOT(hide()));
+            connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)), 
+                    messageWidget, SLOT(hide()));
+
+        }
     }
+
 }
 
 
@@ -448,10 +462,4 @@ void WebView::keyPressEvent(QKeyEvent *event)
 void WebView::loadInNewTab(const KUrl &url)
 {
     Application::instance()->loadUrl(url, Rekonq::NewCurrentTab);
-}
-
-
-QWidget *WebView::walletBar()
-{
-    return m_walletBar;
 }
