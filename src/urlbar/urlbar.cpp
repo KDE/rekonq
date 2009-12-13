@@ -33,10 +33,10 @@
 
 // Local Includes
 #include "application.h"
-#include "historymodels.h"
 #include "lineedit.h"
 #include "mainwindow.h"
 #include "webview.h"
+#include "historymanager.h"
 
 // KDE Includes
 #include <KDebug>
@@ -44,9 +44,10 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QtGui/QPainter>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QPalette>
+#include <QPainter>
+#include <QPaintEvent>
+#include <QPalette>
+#include <QTimer>
 
 
 QColor UrlBar::s_defaultBaseColor;
@@ -203,9 +204,6 @@ void UrlBar::activated(const QString& urlString)
         return;
 
     setUrl(urlString);
-
-    Application::historyManager()->addHistoryEntry(urlString);
-
     emit activated(m_currentUrl);
 }
 
@@ -214,7 +212,6 @@ void UrlBar::cleared()
 {
     // clear the history on user's request from context menu
     clear();
-    Application::historyManager()->clear();
 }
 
 

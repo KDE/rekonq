@@ -347,6 +347,9 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
     // ------------------- END WARNING --------------------------------------
 
+    // we are sure of the url now, let's add it to history
+    historyManager()->addHistoryEntry( loadingUrl.prettyUrl() );
+    
     if (!ReKonfig::openTabsBack())
     {
         w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
