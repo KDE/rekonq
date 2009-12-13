@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>485</width>
-    <height>360</height>
+    <width>437</width>
+    <height>346</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -143,7 +143,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Some descriptive text here:</string>
+         <string>When loading web pages:</string>
         </property>
        </widget>
       </item>
