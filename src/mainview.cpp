@@ -59,7 +59,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QMovie>
 #include <QtGui/QWidget>
-
+#include <QtGui/QVBoxLayout>
 
 MainView::MainView(MainWindow *parent)
         : KTabWidget(parent)
@@ -182,8 +182,8 @@ WebView *MainView::currentWebView() const
 
 
 int MainView::webViewIndex(WebView *webView) const 
-{ 
-    return indexOf(webView); 
+{
+    return indexOf(webView->parentWidget()); 
 }
 
 
@@ -252,9 +252,7 @@ void MainView::reloadTab(int index)
     if (index < 0 || index >= count())
         return;
 
-    QWidget *widget = this->widget(index);
-    if (WebView *tab = qobject_cast<WebView*>(widget))
-        tab->reload();
+    webView(index)->reload();
 }
 
 
@@ -314,10 +312,13 @@ void MainView::currentChanged(int index)
 
 WebView *MainView::webView(int index) const
 {
-    QWidget *widget = this->widget(index);
-    if (WebView *webView = qobject_cast<WebView*>(widget))
+    if (this->widget(index) &&  this->widget(index)->layout() && this->widget(index)->layout()->itemAt(1)) //TODO: find why it crashes when closetab without that.
     {
-        return webView;
+        QWidget *widget =  this->widget(index)->layout()->itemAt(1)->widget();
+        if (WebView *webView = qobject_cast<WebView*>(widget))
+        {
+            return webView;
+        }
     }
 
     kDebug() << "WebView with index " << index << "not found. Returning NULL." ;
@@ -327,8 +328,20 @@ WebView *MainView::webView(int index) const
 
 WebView *MainView::newWebView(bool focused, bool nearParent)
 {
-    WebView *webView = new WebView;  // should be deleted on tab close?
+    QWidget* w=new QWidget;
+    QVBoxLayout* l=new QVBoxLayout(w);
+    l->setMargin(0);
+    QWidget* messageBar=new QWidget;  // should be deleted on tab close?
+    QVBoxLayout* l2=new QVBoxLayout(messageBar);
+    l->addWidget(messageBar);
 
+    messageBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    messageBar->hide();
+    
+    WebView *webView = new WebView(w,messageBar);  // should be deleted on tab close?
+    l->addWidget(webView);
+    webView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    
     // connecting webview with mainview
     connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
     connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
@@ -339,17 +352,17 @@ WebView *MainView::newWebView(bool focused, bool nearParent)
     // connecting webPage signals with mainview
     connect(webView->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
     connect(webView->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
-
+    
     if (nearParent)
-        insertTab(currentIndex() + 1, webView, i18n("(Untitled)"));
+        insertTab(currentIndex() + 1, w, i18n("(Untitled)"));
     else
-        addTab(webView, i18n("(Untitled)"));
+        addTab(w, i18n("(Untitled)"));
 
     updateTabBar();
     
     if (focused)
     {
-        setCurrentWidget(webView);
+        setCurrentWidget(w);
     }
 
     emit tabsChanged();
@@ -384,11 +397,7 @@ void MainView::reloadAllTabs()
 {
     for (int i = 0; i < count(); ++i)
     {
-        QWidget *tabWidget = widget(i);
-        if (WebView *tab = qobject_cast<WebView*>(tabWidget))
-        {
-            tab->reload();
-        }
+        webView(i)->reload();
     }
 }
 
@@ -493,7 +502,7 @@ void MainView::closeTab(int index)
         }
     }
 
-    QWidget *webView = widget(index);
+    QWidget *webView = this->webView(index);
     removeTab(index);
     updateTabBar();         // UI operation: do it ASAP!!
     webView->deleteLater();  // webView is scheduled for deletion.
