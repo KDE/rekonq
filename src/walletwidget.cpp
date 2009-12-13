@@ -36,7 +36,7 @@
 #include <QToolButton>
 #include <QPushButton>
 #include <QHBoxLayout>
-
+#include <QString>
 
 WalletWidget::WalletWidget(QWidget *parent)
     : QWidget(parent)
@@ -97,10 +97,7 @@ void WalletWidget::notNowRememberData()
 
 void WalletWidget::onSaveFormData(const QString &key, const QUrl &url)
 {
-    m_label->setText( i18n("Do you want rekonq to remember the password for %1 on %2?")
-                        .arg(key)
-                        .arg(url.host())
-                    );
+    m_label->setText( i18n("Do you want rekonq to remember the password for ").append(key).append(i18n(" on ")).append(url.host()).append(i18n("?")) );
     m_key = key;
     m_url = url;
 }
