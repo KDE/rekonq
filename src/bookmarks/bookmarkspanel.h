@@ -34,6 +34,7 @@
 class KUrl;
 class QModelIndex;
 
+
 class BookmarksPanel : public QDockWidget
 {
     Q_OBJECT
@@ -47,10 +48,10 @@ signals:
     void openUrl(const KUrl &);
 
 private slots:
-	void bookmarkActivated( const QModelIndex &index );
+    void bookmarkActivated( const QModelIndex &index );
 
 private:
-	void setup();
+    void setup();
 
     QWidget *ui;
 };

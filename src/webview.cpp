@@ -60,8 +60,8 @@
 
 WebView::WebView(QWidget* parent, QWidget* messageWidget)
     : KWebView(parent, false)
-    , m_messageWidget(messageWidget)
     , m_page( new WebPage(this) )
+    , m_messageWidget(messageWidget)
     , m_progress(0)
     , m_mousePos(QPoint(0,0))
 {

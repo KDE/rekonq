@@ -25,17 +25,18 @@
 
 // Self Includes
 #include "webinspectordock.h"
+#include "webinspectordock.moc"
 
 // Local Includes
 #include "webview.h"
 #include "webpage.h"
 
-// Qt Includes
-#include <QWebInspector>
-
 // KDE Includes
 #include "KAction"
 #include "KDebug"
+
+// Qt Includes
+#include <QWebInspector>
 
 
 WebInspectorDock::WebInspectorDock(QString title, QWidget *parent) 

@@ -24,8 +24,11 @@
 * ============================================================ */
 
 
-// rekonq includes
+// Self Includes
 #include "bookmarkspanel.h"
+#include "bookmarkspanel.moc"
+
+// Local Includes
 #include "bookmarkstreemodel.h"
 #include "bookmarksproxy.h"
 
@@ -42,11 +45,11 @@
 #include <KLineEdit>
 #include <KLocalizedString>
 
-BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags):
-	QDockWidget(title, parent, flags)
-{
-	setup();
 
+BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
+    : QDockWidget(title, parent, flags)
+{
+    setup();
     setShown(ReKonfig::showBookmarksPanel());
 }
 
@@ -54,22 +57,23 @@ BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::Window
 BookmarksPanel::~BookmarksPanel()
 {
     ReKonfig::setShowBookmarksPanel(!isHidden());
-
-	delete ui;
+    delete ui;
 }
+
 
 void BookmarksPanel::bookmarkActivated( const QModelIndex &index )
 {
-	if( index.isValid() )
-		emit openUrl( qVariantValue< KUrl >( index.data( Qt::UserRole ) ) );
+    if( index.isValid() )
+        emit openUrl( qVariantValue< KUrl >( index.data( Qt::UserRole ) ) );
 }
+
 
 void BookmarksPanel::setup()
 {
-	setObjectName("bookmarksPanel");
+    setObjectName("bookmarksPanel");
     setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-	ui = new QWidget(this);
+    ui = new QWidget(this);
 
     // setup search bar
     QHBoxLayout *searchLayout = new QHBoxLayout;
@@ -79,16 +83,16 @@ void BookmarksPanel::setup()
     KLineEdit *search = new KLineEdit;
     search->setClearButtonShown(true);
     searchLayout->addWidget(search);
-	searchLabel->setBuddy( search );
+    searchLabel->setBuddy( search );
 
-	// setup tree view
-	QTreeView *treeView = new QTreeView(ui);
+    // setup tree view
+    QTreeView *treeView = new QTreeView(ui);
     treeView->setUniformRowHeights(true);
     treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
     treeView->setTextElideMode(Qt::ElideMiddle);
     treeView->setAlternatingRowColors(true);
-	treeView->header()->hide();
-	treeView->setRootIsDecorated( false );
+    treeView->header()->hide();
+    treeView->setRootIsDecorated( false );
 
     // put everything together
     QVBoxLayout *vBoxLayout = new QVBoxLayout;
@@ -96,15 +100,15 @@ void BookmarksPanel::setup()
     vBoxLayout->addLayout(searchLayout);
     vBoxLayout->addWidget(treeView);
 
-	// add it to the UI
+    // add it to the UI
     ui->setLayout(vBoxLayout);
-	setWidget(ui);
+    setWidget(ui);
 
-	BookmarksTreeModel *model = new BookmarksTreeModel( this );
-	BookmarksProxy *proxy = new BookmarksProxy(ui);
-	proxy->setSourceModel( model );
-	treeView->setModel( proxy );
+    BookmarksTreeModel *model = new BookmarksTreeModel( this );
+    BookmarksProxy *proxy = new BookmarksProxy(ui);
+    proxy->setSourceModel( model );
+    treeView->setModel( proxy );
 
-	connect(search, SIGNAL(textChanged(QString)), proxy, SLOT(setFilterFixedString(QString)));
-	connect( treeView, SIGNAL( activated(QModelIndex) ), this, SLOT( bookmarkActivated(QModelIndex) ) );
+    connect(search, SIGNAL(textChanged(QString)), proxy, SLOT(setFilterFixedString(QString)));
+    connect( treeView, SIGNAL( activated(QModelIndex) ), this, SLOT( bookmarkActivated(QModelIndex) ) );
 }

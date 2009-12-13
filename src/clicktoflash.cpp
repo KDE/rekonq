@@ -50,15 +50,20 @@
  * ============================================================ */
 
 
+// Self Includes
 #include "clicktoflash.h"
+#include "clicktoflash.moc"
 
+// KDE Includes
+#include <KLocalizedString>
+
+// Qt Includes
 #include <QWebFrame>
 #include <QWebView>
 #include <QWebElement>
 #include <QHBoxLayout>
 #include <QToolButton>
 
-#include <KLocalizedString>
 
 
 ClickToFlash::ClickToFlash(QUrl pluginUrl, QWidget *parent)

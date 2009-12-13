@@ -312,7 +312,10 @@ void MainView::currentChanged(int index)
 
 WebView *MainView::webView(int index) const
 {
-    if (this->widget(index) &&  this->widget(index)->layout() && this->widget(index)->layout()->itemAt(1)) //TODO: find why it crashes when closetab without that.
+    if( this->widget(index) 
+        && this->widget(index)->layout() 
+        && this->widget(index)->layout()->itemAt(1) //TODO: find why it crashes when closetab without that.
+      )
     {
         QWidget *widget =  this->widget(index)->layout()->itemAt(1)->widget();
         if (WebView *webView = qobject_cast<WebView*>(widget))
@@ -328,19 +331,24 @@ WebView *MainView::webView(int index) const
 
 WebView *MainView::newWebView(bool focused, bool nearParent)
 {
-    QWidget* w=new QWidget;
-    QVBoxLayout* l=new QVBoxLayout(w);
+    QWidget* w = new QWidget;
+    QVBoxLayout* l = new QVBoxLayout;
     l->setMargin(0);
-    QWidget* messageBar=new QWidget;  // should be deleted on tab close?
-    QVBoxLayout* l2=new QVBoxLayout(messageBar);
-    l->addWidget(messageBar);
-
+    
+    // this messageBar with its relative layout is useful to embed widget, 
+    // like the wallet bar and so on
+    QWidget* messageBar = new QWidget;  // should be deleted on tab close? // yes!
+    QVBoxLayout* l2 = new QVBoxLayout;
+    messageBar->setLayout(l2);
     messageBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
     messageBar->hide();
     
-    WebView *webView = new WebView(w,messageBar);  // should be deleted on tab close?
+    l->addWidget(messageBar);
+    
+    WebView *webView = new WebView(w, messageBar);  // should be deleted on tab close?
     l->addWidget(webView);
     webView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    w->setLayout(l);
     
     // connecting webview with mainview
     connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
@@ -505,8 +513,8 @@ void MainView::closeTab(int index)
     QWidget *webView = this->webView(index);
     removeTab(index);
     updateTabBar();         // UI operation: do it ASAP!!
-    webView->deleteLater();  // webView is scheduled for deletion.
-
+    webView->deleteLater(); // webView is scheduled for deletion.
+        
     emit tabsChanged();
 
     if (hasFocus && count() > 0)
