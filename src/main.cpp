@@ -82,7 +82,7 @@ extern "C" KDE_EXPORT int kdemain( int argc, char **argv )
 
     about.addAuthor(ki18n("Matthieu Gicquel"),
                     ki18n("Developer, Ideas, Tabloid improvements"),
-                    "matthieu@bureau.home",
+                    "matgic78@gmail.com",
                     "");
 
     about.addAuthor(ki18n("Ronny Scholz"),
