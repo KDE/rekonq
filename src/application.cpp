@@ -38,7 +38,7 @@
 #include "historymanager.h"
 #include "bookmarksmanager.h"
 #include "mainview.h"
-#include "webview.h"
+#include "webtab.h"
 #include "urlbar.h"
 #include "sessionmanager.h"
 #include "adblockmanager.h"
@@ -290,7 +290,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
 
     // first, create the webview(s) to not let hangs UI..
-    WebView *webView = 0;
+    WebTab *webView = 0;
     MainWindow *w = 0;
     if(type == Rekonq::NewWindow)
         w = newMainWindow();
@@ -300,18 +300,18 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     switch(type)
     {
     case Rekonq::SettingOpenTab:
-        webView = w->mainView()->newWebView(!ReKonfig::openTabsBack(),
-                                            ReKonfig::openTabsNearCurrent());
+        webView = w->mainView()->newWebTab(!ReKonfig::openTabsBack(),
+                                           ReKonfig::openTabsNearCurrent());
         break;
     case Rekonq::NewCurrentTab:
-        webView = w->mainView()->newWebView(true);
+        webView = w->mainView()->newWebTab(true);
         break;
     case Rekonq::NewBackTab:
-        webView = w->mainView()->newWebView(false, ReKonfig::openTabsNearCurrent());
+        webView = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
         break;
     case Rekonq::NewWindow:
     case Rekonq::CurrentTab:
-        webView = w->mainView()->currentWebView();
+        webView = w->mainView()->currentWebTab();
         break;
     };
 
@@ -358,7 +358,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (webView)
     {
         webView->setFocus();
-        webView->load(loadingUrl);
+        webView->view()->load(loadingUrl);
     }
 }
 
@@ -372,7 +372,7 @@ void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& typ
 MainWindow *Application::newMainWindow()
 {
     MainWindow *w = new MainWindow();
-    w->mainView()->newWebView();    // remember using newWebView and NOT newTab here!!
+    w->mainView()->newWebTab();    // remember using newWebView and NOT newTab here!!
     
     m_mainWindows.prepend(w);
     w->show();

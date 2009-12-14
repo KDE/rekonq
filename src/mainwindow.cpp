@@ -37,7 +37,7 @@
 #include "settingsdialog.h"
 #include "historymanager.h"
 #include "bookmarksmanager.h"
-#include "webview.h"
+#include "webtab.h"
 #include "mainview.h"
 #include "findbar.h"
 #include "sidepanel.h"
@@ -616,10 +616,10 @@ void MainWindow::preferences()
 void MainWindow::updateActions()
 {
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
-    historyBackAction->setEnabled(currentTab()->history()->canGoBack());
+    historyBackAction->setEnabled(currentTab()->view()->history()->canGoBack());
 
     QAction *historyForwardAction = actionByName(KStandardAction::name(KStandardAction::Forward));
-    historyForwardAction->setEnabled(currentTab()->history()->canGoForward());
+    historyForwardAction->setEnabled(currentTab()->view()->history()->canGoForward());
 }
 
 
@@ -746,7 +746,7 @@ void MainWindow::findNext()
     if (m_findBar->matchCase())
         options |= QWebPage::FindCaseSensitively;
 
-    m_findBar->notifyMatch(currentTab()->findText(m_lastSearch, options));
+    m_findBar->notifyMatch(currentTab()->view()->findText(m_lastSearch, options));
 }
 
 
@@ -759,7 +759,7 @@ void MainWindow::findPrevious()
     if (m_findBar->matchCase())
         options |= QWebPage::FindCaseSensitively;
 
-    m_findBar->notifyMatch(currentTab()->findText(m_lastSearch, options));
+    m_findBar->notifyMatch(currentTab()->view()->findText(m_lastSearch, options));
 }
 
 
@@ -767,7 +767,7 @@ void MainWindow::viewTextBigger()
 {
     if (!currentTab())
         return;
-    currentTab()->setTextSizeMultiplier(currentTab()->textSizeMultiplier() + 0.1);
+    currentTab()->view()->setTextSizeMultiplier(currentTab()->view()->textSizeMultiplier() + 0.1);
 }
 
 
@@ -775,7 +775,7 @@ void MainWindow::viewTextNormal()
 {
     if (!currentTab())
         return;
-    currentTab()->setTextSizeMultiplier(1.0);
+    currentTab()->view()->setTextSizeMultiplier(1.0);
 }
 
 
@@ -783,7 +783,7 @@ void MainWindow::viewTextSmaller()
 {
     if (!currentTab())
         return;
-    currentTab()->setTextSizeMultiplier(currentTab()->textSizeMultiplier() - 0.1);
+    currentTab()->view()->setTextSizeMultiplier(currentTab()->view()->textSizeMultiplier() - 0.1);
 }
 
 
@@ -857,7 +857,7 @@ void MainWindow::viewPageSource()
 
 void MainWindow::homePage()
 {
-    currentTab()->load( QUrl(ReKonfig::homePage()) );
+    currentTab()->view()->load( QUrl(ReKonfig::homePage()) );
 }
 
 
@@ -868,9 +868,9 @@ MainView *MainWindow::mainView() const
 
 
 
-WebView *MainWindow::currentTab() const
+WebTab *MainWindow::currentTab() const
 {
-    return m_view->currentWebView();
+    return m_view->currentWebTab();
 }
 
 
@@ -900,7 +900,7 @@ void MainWindow::browserLoading(bool v)
 
 void MainWindow::openPrevious()
 {
-    QWebHistory *history = currentTab()->history();
+    QWebHistory *history = currentTab()->view()->history();
     if (history->canGoBack())
         history->goToItem(history->backItem());
 }
@@ -908,7 +908,7 @@ void MainWindow::openPrevious()
 
 void MainWindow::openNext()
 {
-    QWebHistory *history = currentTab()->history();
+    QWebHistory *history = currentTab()->view()->history();
     if (history->canGoForward())
         history->goToItem(history->forwardItem());
 }
@@ -1041,21 +1041,21 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     m_popup->layout()->setMargin(margin);
 
     // useful values
-    bool scrollbarIsVisible = m_view->currentWebView()->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
+    bool scrollbarIsVisible = m_view->currentWebTab()->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
     int scrollbarSize = 0;
     if (scrollbarIsVisible)
     {
         //TODO: detect QStyle size
         scrollbarSize = 17;
     }
-    QPoint webViewOrigin = m_view->currentWebView()->mapToGlobal(QPoint(0,0));
-    int bottomLeftY=webViewOrigin.y() + m_view->currentWebView()->page()->viewportSize().height() - labelSize.height() - scrollbarSize;
+    QPoint webViewOrigin = m_view->currentWebTab()->mapToGlobal(QPoint(0,0));
+    int bottomLeftY=webViewOrigin.y() + m_view->currentWebTab()->page()->viewportSize().height() - labelSize.height() - scrollbarSize;
 
     // setting popup in bottom-left position
     int x = geometry().x();
     int y = bottomLeftY;
 
-    QPoint mousePos = m_view->currentWebView()->mapToGlobal(m_view->currentWebView()->mousePos());
+    QPoint mousePos = m_view->currentWebTab()->mapToGlobal(m_view->currentWebTab()->view()->mousePos());
     if(QRect(webViewOrigin.x(),bottomLeftY,labelSize.width(),labelSize.height()).contains(mousePos))
     {
         // setting popup above the mouse
@@ -1121,7 +1121,7 @@ void MainWindow::aboutToShowBackMenu()
     m_historyBackMenu->clear();
     if (!currentTab())
         return;
-    QWebHistory *history = currentTab()->history();
+    QWebHistory *history = currentTab()->view()->history();
     int historyCount = history->count();
 
     // Limit history views in the menu to 8
@@ -1144,7 +1144,7 @@ void MainWindow::aboutToShowBackMenu()
 void MainWindow::openActionUrl(QAction *action)
 {
     int offset = action->data().toInt();
-    QWebHistory *history = currentTab()->history();
+    QWebHistory *history = currentTab()->view()->history();
 
     if(!history->itemAt(offset).isValid())
     {

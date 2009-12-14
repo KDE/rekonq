@@ -28,6 +28,7 @@
 #include "webinspectordock.moc"
 
 // Local Includes
+#include "webtab.h"
 #include "webview.h"
 #include "webpage.h"
 
@@ -64,20 +65,20 @@ void WebInspectorDock::toggle(bool enable)
     mainWindow()->actionByName("web_inspector")->setChecked(enable);
     if (enable)
     {
-        mainWindow()->currentTab()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+        mainWindow()->currentTab()->view()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
         findChild<QWebInspector *>()->setPage(mainWindow()->currentTab()->page());
         show();
     }
     else
     {
         hide();
-        mainWindow()->currentTab()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);
+        mainWindow()->currentTab()->view()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);
     }
 }
 
 
 void WebInspectorDock::changeCurrentPage() 
 {     
-    bool enable = mainWindow()->currentTab()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled);
+    bool enable = mainWindow()->currentTab()->view()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled);
     toggle(enable);
 }

@@ -25,46 +25,44 @@
 * ============================================================ */
 
 
-#ifndef WEBVIEW_H
-#define WEBVIEW_H
+#ifndef WEBTAB_H
+#define WEBTAB_H
 
 
 // KDE Includes
+#include <KUrl>
 #include <KWebView>
 
 // Forward Declarations
 class WebPage;
+class WebView;
 
 
-class WebView : public KWebView
+class WebTab : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit WebView(QWidget *parent);
-    ~WebView();
+    explicit WebTab(QWidget *parent = 0);
+    ~WebTab();
 
-    WebPage *page() { return m_page; }
-    QPoint mousePos();
-
-protected:
-    void contextMenuEvent(QContextMenuEvent *event);
-    void mousePressEvent(QMouseEvent *event);// need to be ported
-    void mouseMoveEvent(QMouseEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    WebView *view();
+    WebPage *page();
+    KUrl url() const;
+    QString lastStatusBarText() const;
+    int progress();
 
 private slots:
-    void search();
+    void setStatusBarText(const QString &string);
+    void updateProgress(int progress);
+    void loadFinished(bool);
 
-    void printFrame();
-
-    void openLinkInNewWindow();
-    void openLinkInNewTab();
-    void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
+    void loadInNewTab(const KUrl &url);
 
 private:
-    WebPage *const m_page;
-    QPoint m_mousePos;
+    WebView *const m_view;
+    int m_progress;
+    QString m_statusBarText;
 };
 
 #endif

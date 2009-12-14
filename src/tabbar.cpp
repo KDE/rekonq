@@ -36,7 +36,7 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "urlbar.h"
-#include "webview.h"
+#include "webtab.h"
 #include "websnap.h"
 #include "mainview.h"
 
@@ -144,8 +144,8 @@ void TabBar::showTabPreview(int tab)
 {
     MainView *mv = qobject_cast<MainView *>(parent());
     
-    WebView *view = mv->webView(tab);
-    WebView *currentView = mv->webView(currentIndex());
+    WebTab *view = mv->webTab(tab);
+    WebTab *currentView = mv->webTab(currentIndex());
 
     // should fix bug #212219
     if(!currentView)

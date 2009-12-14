@@ -36,7 +36,7 @@
 // Local Includes
 #include "application.h"
 #include "mainwindow.h"
-#include "webview.h"
+#include "webtab.h"
 
 //Ui Includes
 #include "ui_settings_general.h"
@@ -235,9 +235,9 @@ bool SettingsDialog::hasChanged()
 void SettingsDialog::setHomeToCurrentPage()
 {
     MainWindow *mw = static_cast<MainWindow*>(parent());
-    WebView *webView = mw->currentTab();
-    if (webView)
+    WebTab *webTab = mw->currentTab();
+    if (webTab)
     {
-        d->generalUi.kcfg_homePage->setText(webView->url().prettyUrl());
+        d->generalUi.kcfg_homePage->setText(webTab->url().prettyUrl());
     }
 }

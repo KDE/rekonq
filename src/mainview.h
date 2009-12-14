@@ -71,11 +71,10 @@ public:
 public:
 
     UrlBar *urlBar() const;
-    WebView *webView(int index) const;
+    WebTab *webTab(int index) const;
 
     TabBar *tabBar() const;
-    WebView *currentWebView() const;
-    int webViewIndex(WebView *webView) const;
+    WebTab *currentWebTab() const;
 
     /**
      * show and hide TabBar if user doesn't choose
@@ -95,7 +94,7 @@ public:
      * @param nearParent  decide if you wanna create new tab near current or not
      * @return the webview embedded in the new tab
      */
-    WebView *newWebView(bool focused = true, bool nearParent = false);
+    WebTab *newWebTab(bool focused = true, bool nearParent = false);
 
     QList<HistoryItem> recentlyClosedTabs();
 

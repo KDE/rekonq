@@ -59,16 +59,9 @@
 WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
     , m_page( new WebPage(this) )
-    , m_progress(0)
     , m_mousePos(QPoint(0,0))
 {
     setPage(m_page);
-
-    connect(m_page, SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
-    connect(this, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
-    connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
-
-    connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), this, SLOT(loadInNewTab(const KUrl &)) );
 
     // download system
     connect(this, SIGNAL(linkShiftClicked(const KUrl &)), m_page, SLOT(downloadUrl(const KUrl &)));
@@ -78,36 +71,6 @@ WebView::WebView(QWidget* parent)
 
 WebView::~WebView()
 {
-}
-
-
-WebPage *WebView::page()
-{
-    return m_page;
-}
-
-
-KUrl WebView::url() const 
-{ 
-    return KUrl(QWebView::url()); 
-}
-
-
-int WebView::progress()
-{
-    return m_progress;
-}
-
-
-QString WebView::lastStatusBarText() const
-{ 
-    return m_statusBarText; 
-}
-
-
-void WebView::setStatusBarText(const QString &string) 
-{ 
-    m_statusBarText = string; 
 }
 
 
@@ -357,18 +320,6 @@ void WebView::search()
 }
 
 
-void WebView::updateProgress(int p)
-{
-    m_progress = p;
-}
-
-
-void WebView::loadFinished(bool)
-{
-    m_progress = 0;
-}
-
-
 void WebView::printFrame()
 {
     Application::instance()->mainWindow()->printRequested(page()->currentFrame());
@@ -422,10 +373,4 @@ void WebView::keyPressEvent(QKeyEvent *event)
     }
 
     QWebView::keyPressEvent(event);
-}
-
-
-void WebView::loadInNewTab(const KUrl &url)
-{
-    Application::instance()->loadUrl(url, Rekonq::NewCurrentTab);
 }
