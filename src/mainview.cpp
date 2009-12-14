@@ -336,6 +336,7 @@ WebView *MainView::newWebView(bool focused, bool nearParent)
 
     QVBoxLayout* l=new QVBoxLayout(w);
     l->setMargin(0);
+    l->setSpacing(0);
 
     QWidget* messageBar=new QWidget(w);
     l->addWidget(messageBar);
@@ -349,32 +350,13 @@ WebView *MainView::newWebView(bool focused, bool nearParent)
     l->addWidget(webView);
     webView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
-    // add kwallet bar
+    KWebWallet *wallet = webView->page()->wallet();
+    if(wallet)
     {
-        WalletWidget *walletBar = new WalletWidget(messageBar);
-        messageBar->layout()->addWidget(walletBar);
-        walletBar->hide();
-
-        KWebWallet *wallet = webView->page()->wallet();
-        if(wallet)
-        {
-            connect(wallet, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)),
-                    walletBar, SLOT(onSaveFormData(const QString &, const QUrl &)));
-            connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)),
-                    wallet, SLOT(acceptSaveFormDataRequest(const QString &)));
-            connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)),
-                    wallet, SLOT(rejectSaveFormDataRequest(const QString &)));
-
-            connect(wallet, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)),
-                    walletBar, SLOT(show()));
-            connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)),
-                    walletBar, SLOT(hide()));
-            connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)),
-                    walletBar, SLOT(hide()));
-
-        }
+        connect(wallet, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)),
+                this, SLOT(createWalletBar(const QString &, const QUrl &)));
     }
-
+    
     // connecting webview with mainview
     connect(webView, SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
     connect(webView, SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
@@ -403,6 +385,21 @@ WebView *MainView::newWebView(bool focused, bool nearParent)
     return webView;
 }
 
+
+void MainView::createWalletBar(const QString &key, const QUrl &url)
+{    
+    KWebWallet *wallet = currentWebView()->page()->wallet();
+    QWidget *messageBar=this->widget(currentIndex())->layout()->itemAt(0)->widget();
+
+    WalletWidget *walletBar = new WalletWidget(messageBar);
+    walletBar->onSaveFormData(key,url);
+    messageBar->layout()->addWidget(walletBar);
+
+    connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)),
+            wallet, SLOT(acceptSaveFormDataRequest(const QString &)));
+    connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)),
+            wallet, SLOT(rejectSaveFormDataRequest(const QString &)));
+}
 
 void MainView::newTab()
 {

@@ -48,6 +48,8 @@ private slots:
     void rememberData();
     void neverRememberData();
     void notNowRememberData();
+
+public slots:
     void onSaveFormData(const QString &, const QUrl &);
 
 signals:    
@@ -55,6 +57,8 @@ signals:
     void saveFormDataRejected(const QString &);
 
 private:
+    void destroy();
+
     QString m_key;
     QUrl m_url;
 
