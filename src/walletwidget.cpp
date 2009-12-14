@@ -97,7 +97,7 @@ void WalletWidget::notNowRememberData()
 
 void WalletWidget::onSaveFormData(const QString &key, const QUrl &url)
 {
-    m_label->setText( i18n("Do you want rekonq to remember the password for ").append(url.userName()).append(i18n(" on ")).append(url.host()).append(i18n("?")) );
+    m_label->setText( i18n("Do you want rekonq to remember the password on %1?", url.host() ) );
 
     m_key = key;
     m_url = url;
