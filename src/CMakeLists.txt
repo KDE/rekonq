@@ -18,6 +18,7 @@ SET( rekonq_KDEINIT_SRCS
     webpluginfactory.cpp
     websnap.cpp
     webview.cpp
+    webtab.cpp
     clicktoflash.cpp
     networkaccessmanager.cpp
     webinspectordock.cpp

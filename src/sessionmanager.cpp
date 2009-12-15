@@ -34,6 +34,7 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -76,7 +77,7 @@ void SessionManager::saveSession()
         MainView *mv = w->mainView();
         for (int i = 0 ; i < mv->count() ; i++)
         {
-            out << mv->webView(i)->url().toEncoded() << "\n";
+            out << mv->webTab(i)->url().toEncoded() << "\n";
         }
     }
     sessionFile.close();

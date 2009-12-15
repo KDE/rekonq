@@ -49,7 +49,7 @@ class FindBar;
 class SidePanel;
 class BookmarksPanel;
 class WebInspectorDock;
-class WebView;
+class WebTab;
 class MainView;
 
 
@@ -67,7 +67,7 @@ public:
     ~MainWindow();
 
     MainView *mainView() const;
-    WebView *currentTab() const;
+    WebTab *currentTab() const;
     QAction *actionByName(const QString name);
     virtual QSize sizeHint() const;
     virtual KActionCollection *actionCollection () const;

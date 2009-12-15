@@ -38,6 +38,7 @@
 #include <QHBoxLayout>
 #include <QString>
 
+
 WalletWidget::WalletWidget(QWidget *parent)
     : QWidget(parent)
     , m_label( new QLabel(this) )
@@ -94,6 +95,7 @@ void WalletWidget::notNowRememberData()
     emit saveFormDataRejected (m_key);
     destroy();
 }
+
 
 void WalletWidget::destroy()
 {

@@ -32,6 +32,7 @@
 
 // Local Includes
 #include "mainwindow.h"
+#include "webtab.h"
 #include "webview.h"
 
 // KDE Includes
@@ -88,7 +89,7 @@ QString BookmarkOwner::currentUrl() const
 
 QString BookmarkOwner::currentTitle() const
 {
-    return Application::instance()->mainWindow()->currentTab()->title();
+    return Application::instance()->mainWindow()->currentTab()->view()->title();
 }
 
 

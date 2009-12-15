@@ -39,7 +39,7 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
-#include "webview.h"
+#include "webtab.h"
 #include "webpluginfactory.h"
 #include "networkaccessmanager.h"
 
@@ -126,14 +126,14 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     if (type == QWebPage::WebModalDialog)
         kDebug() << "Modal Dialog";
 
-    WebView *w = 0;
+    WebTab *w = 0;
     if(ReKonfig::openTabNoWindow())
     {
-        w = Application::instance()->mainWindow()->mainView()->newWebView(!ReKonfig::openTabsBack());
+        w = Application::instance()->mainWindow()->mainView()->newWebTab(!ReKonfig::openTabsBack());
     }
     else
     {
-        w = Application::instance()->newMainWindow()->mainView()->currentWebView();
+        w = Application::instance()->newMainWindow()->mainView()->currentWebTab();
     }
     return w->page();
 }
