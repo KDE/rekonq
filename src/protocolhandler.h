@@ -30,6 +30,8 @@
 
 class QNetworkRequest;
 class QWebFrame;
+class QString;
+class KUrl;
 
 
 class ProtocolHandler
@@ -40,6 +42,9 @@ public:
    ~ProtocolHandler();
 
    bool handle(const QNetworkRequest &request, QWebFrame *frame);
+
+private:
+   QString fileHandling(const KUrl &url);
 };
 
 #endif  // PROTOCOL_HANDLER_H

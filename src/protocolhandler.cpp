@@ -30,14 +30,22 @@
 #include "newtabpage.h"
 
 // KDE Includes
+#include <klocalizedstring.h>
 #include <KUrl>
 #include <KRun>
 #include <KToolInvocation>
+#include <KStandardDirs>
+#include <KDebug>
+#include <KMimeType>
+#include <KIconLoader>
 
 // Qt Includes
 #include <QLatin1String>
 #include <QNetworkRequest>
 #include <QWebFrame>
+#include <QDir>
+#include <QFile>
+#include <QDateTime>
 
 
 ProtocolHandler::ProtocolHandler()
@@ -54,13 +62,14 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
 {
     KUrl url( request.url() );
     
-    // mailto handling
+    // "mailto" handling
     if ( url.protocol() == QLatin1String("mailto") )
     {
         KToolInvocation::invokeMailer(url);
         return true;
     }
 
+    // "about" handling
     if ( url.protocol() == QLatin1String("about") )
     {
         if( url == KUrl("about:closedTabs")
@@ -90,12 +99,87 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
     // "file" handling
     if(url.protocol() == QLatin1String("file"))
     {
-        KUrl::List list;
-        list.append(url);
-        KRun::run("dolphin %u",url,0);
+        QString html = fileHandling(url);
+        kDebug() << html;
+        frame->setHtml( html );
+//         KUrl::List list;
+//         list.append(url);
+//         KRun::run("dolphin %u",url,0);
 
         return true;
     }
     
     return false;
+}
+
+
+QString ProtocolHandler::fileHandling(const KUrl &url)
+{
+    QDir dir(url.toLocalFile());
+    
+    if (!dir.exists()) 
+    {
+        QString errStr = i18n("Error opening: %1: No such file or directory", dir.absolutePath() );
+        return errStr;
+    }
+    if (!dir.isReadable()) 
+    {
+        QString errStr = i18n("Unable to read %1", dir.absolutePath() );
+        return errStr;
+    }
+    
+     // display "not found" page
+    QString notfoundFilePath =  KStandardDirs::locate("data", "rekonq/htmls/notfound.html");
+    QFile file(notfoundFilePath);
+
+    bool isOpened = file.open(QIODevice::ReadOnly);
+    if (!isOpened)
+    {
+        return QString("rekonq error, sorry :(");
+    }
+
+    QString title = url.path(); 
+    QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
+    QString msg = "<h1>" + url.path() + "</h1>";
+
+    dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
+    QFileInfoList entries = dir.entryInfoList();
+
+    msg += "<table>";
+    msg += "<tr><th>" + i18n("Name") + "</th><th>" + i18n("Size") + "</th><th>" + i18n("Last Modified") + "</th></tr>";
+    
+    foreach(const QFileInfo &item, entries)
+    {
+        msg += "<tr>";
+        QString fullPath = QString("file://") + item.absoluteFilePath();
+        
+        QString iconName = KMimeType::defaultMimeTypePtr()->iconNameForUrl(fullPath);
+        kDebug() << "***************************************" << iconName << "********************************";
+        QString icon = QString("file://") + KIconLoader::global()->iconPath( iconName, KIconLoader::Small );
+        
+        msg += "<td>";
+        msg += "<img src=\"" + icon + "\" alt=\"" + iconName + "\" /> ";
+        msg += "<a href=\"" + fullPath + "\">" + item.fileName() + "</a>";
+        msg += "</td>";
+        
+        msg += "<td>";
+        msg += QString::number( item.size()/1024 ) + "KB";
+        msg += "</td>";
+        
+        msg += "<td>";
+        msg += item.lastModified().toString("dd/MM/yyyy hh:mm:ss");
+        msg += "</td>";
+        
+        msg += "</tr>";
+    }
+    msg += "</table>";
+    
+         
+    QString html = QString(QLatin1String(file.readAll()))
+                            .arg(title)
+                            .arg(imagesPath)
+                            .arg(msg)
+                            ;
+                           
+    return html;
 }

@@ -48,17 +48,14 @@ QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkR
         kDebug() << outgoingDataByteArray;
         kDebug() << "*************************************************************************";
     }
-        
-    QNetworkRequest request(req);
-    request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
 
     // Adblock
     if (op == QNetworkAccessManager::GetOperation)
     {
-        QNetworkReply *reply = Application::adblockManager()->block(request);
+        QNetworkReply *reply = Application::adblockManager()->block(req);
         if (reply)
             return reply;
     }
 
-    return AccessManager::createRequest(op,request,outgoingData);
+    return AccessManager::createRequest(op,req,outgoingData);
 }
