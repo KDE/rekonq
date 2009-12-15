@@ -145,7 +145,9 @@ private slots:
     void windowCloseRequested();
 
     void postLaunch();
-    
+
+    void createWalletBar(const QString &, const QUrl &);
+
 protected:
     virtual void resizeEvent(QResizeEvent *event);
 

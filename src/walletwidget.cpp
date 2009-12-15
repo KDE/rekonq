@@ -59,7 +59,6 @@ WalletWidget::WalletWidget(QWidget *parent)
         
     // layout
     QGridLayout *layout = new QGridLayout(this);
-    layout->setMargin(0);
     layout->addWidget(closeButton,0,0);
     layout->addWidget(m_label,0,1);
     layout->addWidget(rememberButton,0,2);
@@ -79,6 +78,7 @@ WalletWidget::~WalletWidget()
 void WalletWidget::rememberData()
 {
     emit saveFormDataAccepted(m_key);
+    destroy();
 }
 
 
@@ -92,6 +92,16 @@ void WalletWidget::neverRememberData()
 void WalletWidget::notNowRememberData()
 {
     emit saveFormDataRejected (m_key);
+    destroy();
+}
+
+void WalletWidget::destroy()
+{
+    if (parentWidget() && parentWidget()->layout())
+    {
+        parentWidget()->layout()->removeWidget(this);
+    }
+    this->deleteLater();
 }
 
 
