@@ -25,8 +25,8 @@
 
 
 // Self Includes
-#include "walletwidget.h"
-#include "walletwidget.moc"
+#include "walletbar.h"
+#include "walletbar.moc"
 
 // KDE Includes
 #include <klocalizedstring.h>
@@ -39,7 +39,7 @@
 #include <QString>
 
 
-WalletWidget::WalletWidget(QWidget *parent)
+WalletBar::WalletBar(QWidget *parent)
     : QWidget(parent)
     , m_label( new QLabel(this) )
 {
@@ -71,33 +71,33 @@ WalletWidget::WalletWidget(QWidget *parent)
 }
 
 
-WalletWidget::~WalletWidget()
+WalletBar::~WalletBar()
 {
 }
 
 
-void WalletWidget::rememberData()
+void WalletBar::rememberData()
 {
     emit saveFormDataAccepted(m_key);
     destroy();
 }
 
 
-void WalletWidget::neverRememberData()
+void WalletBar::neverRememberData()
 {
     // TODO: store site url (to remember never bother about)
     notNowRememberData();
 }
 
 
-void WalletWidget::notNowRememberData()
+void WalletBar::notNowRememberData()
 {
     emit saveFormDataRejected (m_key);
     destroy();
 }
 
 
-void WalletWidget::destroy()
+void WalletBar::destroy()
 {
     if (parentWidget() && parentWidget()->layout())
     {
@@ -107,7 +107,7 @@ void WalletWidget::destroy()
 }
 
 
-void WalletWidget::onSaveFormData(const QString &key, const QUrl &url)
+void WalletBar::onSaveFormData(const QString &key, const QUrl &url)
 {
     m_label->setText( i18n("Do you want rekonq to remember the password on %1?", url.host() ) );
 

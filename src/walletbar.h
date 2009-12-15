@@ -35,13 +35,13 @@
 #include <QLabel>
 
 
-class WalletWidget : public QWidget
+class WalletBar : public QWidget
 {
     Q_OBJECT
 
 public:
-    WalletWidget(QWidget *parent);
-    ~WalletWidget();
+    WalletBar(QWidget *parent);
+    ~WalletBar();
 
 private slots:
     

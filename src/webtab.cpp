@@ -38,7 +38,7 @@
 #include "mainview.h"
 #include "webpage.h"
 #include "bookmarksmanager.h"
-#include "walletwidget.h"
+#include "walletbar.h"
 
 // KDE Includes
 #include <KService>
@@ -159,7 +159,7 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
     KWebWallet *wallet = page()->wallet();
     QWidget *messageBar = layout()->itemAt(0)->widget();
 
-    WalletWidget *walletBar = new WalletWidget(messageBar);
+    WalletBar *walletBar = new WalletBar(messageBar);
     walletBar->onSaveFormData(key,url);
     messageBar->layout()->addWidget(walletBar);
 

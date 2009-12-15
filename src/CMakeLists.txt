@@ -22,7 +22,7 @@ SET( rekonq_KDEINIT_SRCS
     clicktoflash.cpp
     networkaccessmanager.cpp
     webinspectordock.cpp
-    walletwidget.cpp
+    walletbar.cpp
     #----------------------------------------
     history/autosaver.cpp 
     history/historymanager.cpp
