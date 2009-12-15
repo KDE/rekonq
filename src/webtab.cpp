@@ -66,6 +66,7 @@ WebTab::WebTab(QWidget* parent)
 {
     QVBoxLayout* l = new QVBoxLayout(this);
     l->setMargin(0);
+    l->setSpacing(0);
 
     QWidget* messageBar = new QWidget(this);
     l->addWidget(messageBar);
