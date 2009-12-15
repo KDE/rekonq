@@ -23,6 +23,7 @@ SET( rekonq_KDEINIT_SRCS
     networkaccessmanager.cpp
     webinspectordock.cpp
     walletbar.cpp
+    protocolhandler.cpp
     #----------------------------------------
     history/autosaver.cpp 
     history/historymanager.cpp

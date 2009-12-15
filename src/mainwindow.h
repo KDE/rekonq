@@ -71,9 +71,7 @@ public:
     QAction *actionByName(const QString name);
     virtual QSize sizeHint() const;
     virtual KActionCollection *actionCollection () const;
-
-    bool newTabPage(const KUrl &url = KUrl("about:home"));
-    
+   
 private:
     void setupActions();
     void setupTools();
@@ -178,8 +176,6 @@ private:
     QTimer *m_hidePopup;
 
     KActionCollection *m_ac;
-
-    bool m_loadingNewTabPage;
 };
 
 #endif // MAINWINDOW_H

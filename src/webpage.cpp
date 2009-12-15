@@ -100,18 +100,9 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             return false;
     }
 
-    if (request.url().scheme() == QLatin1String("mailto"))
-    {
-        KToolInvocation::invokeMailer(request.url());
+    if(m_protHandler.handle(request,frame))
         return false;
-    }
-
-    if (request.url().scheme() == QLatin1String("about"))
-    {
-        Application::instance()->mainWindow()->newTabPage( request.url() );
-        return true;
-    }
-    
+        
     m_requestedUrl = request.url();
 
     return KWebPage::acceptNavigationRequest(frame, request, type);

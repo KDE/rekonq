@@ -51,15 +51,15 @@
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QtCore/QTimer>
-#include <QtCore/QString>
+#include <QTimer>
+#include <QString>
+#include <QAction>
+#include <QIcon>
+#include <QLabel>
+#include <QMovie>
+#include <QWidget>
+#include <QVBoxLayout>
 
-#include <QtGui/QAction>
-#include <QtGui/QIcon>
-#include <QtGui/QLabel>
-#include <QtGui/QMovie>
-#include <QtGui/QWidget>
-#include <QtGui/QVBoxLayout>
 
 MainView::MainView(MainWindow *parent)
         : KTabWidget(parent)
@@ -351,18 +351,18 @@ WebTab *MainView::newWebTab(bool focused, bool nearParent)
 
 void MainView::newTab()
 {
-    WebTab *w = newWebTab();
+    WebView *w = newWebTab()->view();
 
     switch(ReKonfig::newTabsBehaviour())
     {
     case 0: // new tab page
-        if(m_parentWindow->newTabPage())
-            break;
+        w->load( KUrl("about:home") );
+        break;
     case 1: // blank page
         urlBar()->setUrl(KUrl(""));
         break;
     case 2: // homepage
-        w->view()->load( QUrl(ReKonfig::homePage()) );
+        w->load( KUrl(ReKonfig::homePage()) );
         break;
     default:
         break;

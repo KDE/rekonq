@@ -48,8 +48,8 @@
 #include <QFile>
 
 
-NewTabPage::NewTabPage(WebPage *page)
-    : m_root(page->mainFrame()->documentElement())
+NewTabPage::NewTabPage(QWebFrame *frame)
+    : m_root(frame->documentElement())
 {
     QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
     

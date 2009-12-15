@@ -45,7 +45,6 @@
 #include "webinspectordock.h"
 #include "urlbar.h"
 #include "tabbar.h"
-#include "newtabpage.h"
 #include "adblockmanager.h"
 
 // Ui Includes
@@ -108,7 +107,6 @@ MainWindow::MainWindow()
     , m_popup( new KPassivePopup(this) )
     , m_hidePopup( new QTimer(this) )
     , m_ac( new KActionCollection(this) )
-    , m_loadingNewTabPage(false)
 {
     // enable window size "auto-save"
     setAutoSaveSettings();
@@ -1163,26 +1161,4 @@ void MainWindow::openActionUrl(QAction *action)
         history->goToItem(history->forwardItems(history->count() - offset).back()); // forward FIXME CRASH
     }
 
-}
-
-
-bool MainWindow::newTabPage(const KUrl &url)
-{
-    if(m_loadingNewTabPage)
-        return false;
-
-    if (    url == KUrl("about:closedTabs")
-         || url == KUrl("about:history")
-         || url == KUrl("about:bookmarks")
-         || url == KUrl("about:favorites")
-         || url == KUrl("about:home")
-    )
-    {
-        m_loadingNewTabPage = true;
-        NewTabPage p(currentTab()->page());
-        p.generate(url);
-        m_loadingNewTabPage = false;
-        return true;
-    }
-    return false;
 }

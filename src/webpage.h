@@ -32,6 +32,9 @@
 #define WEBPAGE_H
 
 
+// Local Includes
+#include "protocolhandler.h"
+
 // KDE Includes
 #include <KWebPage>
 
@@ -71,6 +74,7 @@ private:
     QString errorPage(QNetworkReply *);
 
     QUrl m_requestedUrl;
+    ProtocolHandler m_protHandler;
 };
 
 #endif

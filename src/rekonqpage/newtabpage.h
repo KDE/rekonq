@@ -47,7 +47,7 @@ class NewTabPage
 {
     
 public:
-    NewTabPage(WebPage *page);
+    NewTabPage(QWebFrame *frame);
     ~NewTabPage();
 
     /**

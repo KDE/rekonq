@@ -100,7 +100,7 @@ int Application::newInstance()
                     mainWindow()->homePage();
                     break;
                 case 1: // open new tab page
-                    mainWindow()->newTabPage();
+                    loadUrl( KUrl("about:home") );
                     break;
                 case 2: // restore session
                     if(sessionManager()->restoreSession())
@@ -279,9 +279,9 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
-    // loading home pages
-    if (mainWindow()->newTabPage(loadingUrl))
-        return;
+    /*    // loading home pages
+        if (mainWindow()->newTabPage(loadingUrl))
+            return;*/
     
     if (loadingUrl.scheme() == QLatin1String("mailto"))
     {
