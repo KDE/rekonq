@@ -65,9 +65,9 @@ WebView::WebView(QWidget* parent)
     setPage(m_page);
 
     connect(m_page, SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
+    
     connect(this, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
-
     connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), this, SLOT(loadInNewTab(const KUrl &)) );
 
     // download system
@@ -316,11 +316,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     menu.exec(mapToGlobal(event->pos()));
 }
 
+
 void WebView::mousePressEvent(QMouseEvent *event)
 {
-    m_page->m_pressedButtons = event->buttons();
-    m_page->m_keyboardModifiers = event->modifiers();
-
     switch(event->button())
     {
       case Qt::XButton1:
@@ -330,7 +328,8 @@ void WebView::mousePressEvent(QMouseEvent *event)
         triggerPageAction(KWebPage::Forward);
         break;
       default:
-        QWebView::mousePressEvent(event);
+        KWebView::mousePressEvent(event);
+        break;
     };
 }
 
@@ -338,7 +337,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
 void WebView::mouseMoveEvent(QMouseEvent *event)
 {
     m_mousePos = event->pos();
-    QWebView::mouseMoveEvent(event);
+    KWebView::mouseMoveEvent(event);
 }
 
 
@@ -420,8 +419,8 @@ void WebView::keyPressEvent(QKeyEvent *event)
         triggerPageAction(KWebPage::SelectAll);
         return;
     }
-
-    QWebView::keyPressEvent(event);
+    
+    KWebView::keyPressEvent(event);
 }
 
 

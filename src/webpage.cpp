@@ -69,8 +69,6 @@
 
 WebPage::WebPage(QObject *parent)
         : KWebPage(parent, KWalletIntegration)
-        , m_keyboardModifiers(Qt::NoModifier)
-        , m_pressedButtons(Qt::NoButton)
 {
     // rekonq own classes integration
     setNetworkAccessManager(new NetworkAccessManager(this));
@@ -100,14 +98,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
                                                       i18n("Resend form data") );
         if(risp == KMessageBox::Cancel)
             return false;
-    }
-    
-    if (m_keyboardModifiers & Qt::ControlModifier || m_pressedButtons == Qt::MidButton)
-    {
-        Application::instance()->loadUrl(request.url(), Rekonq::SettingOpenTab);
-        m_keyboardModifiers = Qt::NoModifier;
-        m_pressedButtons = Qt::NoButton;
-        return false;
     }
 
     if (request.url().scheme() == QLatin1String("mailto"))
