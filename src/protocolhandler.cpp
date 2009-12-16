@@ -29,6 +29,9 @@
 // Local Includes
 #include "newtabpage.h"
 #include "application.h"
+#include "mainwindow.h"
+#include "mainview.h"
+#include "urlbar.h"
 
 // KDE Includes
 #include <klocalizedstring.h>
@@ -108,7 +111,8 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
         else // dir
         {
             QString html = dirHandling(url);
-            frame->setHtml( html );
+            frame->setHtml(html);
+            Application::instance()->mainWindow()->mainView()->urlBar()->setUrl(url);
         }
 //         KUrl::List list;
 //         list.append(url);
