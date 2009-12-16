@@ -28,6 +28,7 @@
 
 // Local Includes
 #include "newtabpage.h"
+#include "application.h"
 
 // KDE Includes
 #include <klocalizedstring.h>
@@ -99,8 +100,16 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
     // "file" handling
     if(url.protocol() == QLatin1String("file"))
     {
-        QString html = fileHandling(url);
-        frame->setHtml( html );
+        QFileInfo fileInfo(url.path());
+        if(fileInfo.isFile())
+        {
+            new KRun(url, 0, 0, true);
+        }
+        else // dir
+        {
+            QString html = dirHandling(url);
+            frame->setHtml( html );
+        }
 //         KUrl::List list;
 //         list.append(url);
 //         KRun::run("dolphin %u",url,0);
@@ -112,7 +121,7 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
 }
 
 
-QString ProtocolHandler::fileHandling(const KUrl &url)
+QString ProtocolHandler::dirHandling(const KUrl &url)
 {
     QDir dir(url.toLocalFile());
     
@@ -170,7 +179,7 @@ QString ProtocolHandler::fileHandling(const KUrl &url)
         msg += "<td align=\"right\">";
         if(item.isFile())
         {
-            msg += QString::number( item.size()/1024 ) + "KB";
+            msg += QString::number( item.size()/1024 ) + " KB";
         }
         msg += "</td>";
         
@@ -185,7 +194,6 @@ QString ProtocolHandler::fileHandling(const KUrl &url)
          
     QString html = QString(QLatin1String(file.readAll()))
                             .arg(title)
-//                             .arg(imagesPath)
                             .arg(msg)
                             ;
                            

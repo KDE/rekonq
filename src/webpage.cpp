@@ -224,7 +224,6 @@ QString WebPage::errorPage(QNetworkReply *reply)
     }
 
     QString title = i18n("Error loading: %1", reply->url().path()); 
-    QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
     QString msg = "<h1>" + reply->errorString() + "</h1>";
     QString urlString = reply->url().toString( QUrl::RemoveUserInfo | QUrl::RemoveQuery );
     
@@ -239,7 +238,6 @@ QString WebPage::errorPage(QNetworkReply *reply)
     
     QString html = QString(QLatin1String(file.readAll()))
                             .arg(title)
-                            .arg(imagesPath)
                             .arg(msg)
                             ;
     return html;

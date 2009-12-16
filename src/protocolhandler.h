@@ -44,7 +44,7 @@ public:
    bool handle(const QNetworkRequest &request, QWebFrame *frame);
 
 private:
-   QString fileHandling(const KUrl &url);
+   QString dirHandling(const KUrl &url);
 };
 
 #endif  // PROTOCOL_HANDLER_H
