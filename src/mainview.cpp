@@ -259,22 +259,22 @@ void MainView::currentChanged(int index)
         return;
 
     // retrieve the old webview (that where we move from)
-    WebView *oldWebView = this->webTab(m_currentTabIndex)->view();
+    WebTab *oldWebTab = this->webTab(m_currentTabIndex);
     
     // set current index
     m_currentTabIndex = index;
 
-    if (oldWebView)
+    if (oldWebTab)
     {        
         // disconnecting webview from urlbar
-        disconnect(oldWebView, SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
-        disconnect(oldWebView, SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
-        disconnect(oldWebView, SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
+        disconnect(oldWebTab->view(), SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
+        disconnect(oldWebTab->view(), SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
+        disconnect(oldWebTab->view(), SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
     
         // disconnecting webpage from mainview
-        disconnect(oldWebView->page(), SIGNAL(statusBarMessage(const QString&)),
+        disconnect(oldWebTab->page(), SIGNAL(statusBarMessage(const QString&)),
                    this, SIGNAL(showStatusBarMessage(const QString&)));
-        disconnect(oldWebView->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
+        disconnect(oldWebTab->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
                    this, SIGNAL(linkHovered(const QString&)));
     }
 
