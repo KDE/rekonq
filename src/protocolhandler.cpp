@@ -104,17 +104,13 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
     if(url.protocol() == QLatin1String("file"))
     {
         QFileInfo fileInfo(url.path());
-        if(fileInfo.isFile())
-        {
-            new KRun(url, 0, 0, true);
-        }
-        else // dir
+        if(fileInfo.isDir())
         {
             QString html = dirHandling(url);
             frame->setHtml(html);
             Application::instance()->mainWindow()->mainView()->urlBar()->setUrl(url);
+            return true;
         }
-        return true;
     }
     
     return false;

@@ -134,27 +134,33 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError)
     {
-        const KUrl url(reply->request().url());
+        const KUrl url( reply->url() );
 
         QString mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
         KService::Ptr offer = KMimeTypeTrader::self()->preferredService(mimeType);
 
+        bool isLocal = url.isLocalFile();
+        
         if( offer.isNull() ) // no service can handle this. We can just download it..
         {
-            downloadRequest(reply->request());
+            isLocal ? KMessageBox::sorry(view(), i18n("No service can handle this :(") ) : downloadRequest(reply->request());
             return;
         }
 
-        KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), url, mimeType);
-        switch ( dlg.askEmbedOrSave() )
+        if(!isLocal)
         {
-            case KParts::BrowserOpenOrSaveQuestion::Save:
-                downloadRequested(reply->request());
-                return;
-            case KParts::BrowserOpenOrSaveQuestion::Cancel:
-                return;
-            default: // non extant case
-                break;
+        
+            KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), url, mimeType);
+            switch ( dlg.askEmbedOrSave() )
+            {
+                case KParts::BrowserOpenOrSaveQuestion::Save:
+                    downloadRequested(reply->request());
+                    return;
+                case KParts::BrowserOpenOrSaveQuestion::Cancel:
+                    return;
+                default: // non extant case
+                    break;
+            }
         }
         // case KParts::BrowserRun::Embed
         KUrl::List list;
