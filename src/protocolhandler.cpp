@@ -100,7 +100,6 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
     if(url.protocol() == QLatin1String("file"))
     {
         QString html = fileHandling(url);
-        kDebug() << html;
         frame->setHtml( html );
 //         KUrl::List list;
 //         list.append(url);
@@ -139,14 +138,21 @@ QString ProtocolHandler::fileHandling(const KUrl &url)
     }
 
     QString title = url.path(); 
-    QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
-    QString msg = "<h1>" + url.path() + "</h1>";
+    QString msg = "<h1>" + i18n("Index of ") + "file://" + url.path() + "</h1>";
 
     dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
     QFileInfoList entries = dir.entryInfoList();
 
-    msg += "<table>";
-    msg += "<tr><th>" + i18n("Name") + "</th><th>" + i18n("Size") + "</th><th>" + i18n("Last Modified") + "</th></tr>";
+    if(!dir.isRoot())
+    {
+        QString path = "file://" + dir.absoluteFilePath("..");
+        QString uparrow = KIconLoader::global()->iconPath( "arrow-up", KIconLoader::Small );
+        msg += "<img src=\"file://" + uparrow + "\" alt=\"up-arrow\" />";
+        msg += "<a href=\"" + path + "\">" + i18n("Up to higher level directory") + "</a><br /><br />";
+    }
+    
+    msg += "<table width=\"100%\">";
+    msg += "<tr><th align=\"left\">" + i18n("Name") + "</th><th>" + i18n("Size") + "</th><th>" + i18n("Last Modified") + "</th></tr>";
     
     foreach(const QFileInfo &item, entries)
     {
@@ -154,19 +160,21 @@ QString ProtocolHandler::fileHandling(const KUrl &url)
         QString fullPath = QString("file://") + item.absoluteFilePath();
         
         QString iconName = KMimeType::defaultMimeTypePtr()->iconNameForUrl(fullPath);
-        kDebug() << "***************************************" << iconName << "********************************";
         QString icon = QString("file://") + KIconLoader::global()->iconPath( iconName, KIconLoader::Small );
         
-        msg += "<td>";
+        msg += "<td width=\"70%\">";
         msg += "<img src=\"" + icon + "\" alt=\"" + iconName + "\" /> ";
         msg += "<a href=\"" + fullPath + "\">" + item.fileName() + "</a>";
         msg += "</td>";
         
-        msg += "<td>";
-        msg += QString::number( item.size()/1024 ) + "KB";
+        msg += "<td align=\"right\">";
+        if(item.isFile())
+        {
+            msg += QString::number( item.size()/1024 ) + "KB";
+        }
         msg += "</td>";
         
-        msg += "<td>";
+        msg += "<td align=\"right\">";
         msg += item.lastModified().toString("dd/MM/yyyy hh:mm:ss");
         msg += "</td>";
         
@@ -177,7 +185,7 @@ QString ProtocolHandler::fileHandling(const KUrl &url)
          
     QString html = QString(QLatin1String(file.readAll()))
                             .arg(title)
-                            .arg(imagesPath)
+//                             .arg(imagesPath)
                             .arg(msg)
                             ;
                            
