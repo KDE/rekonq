@@ -136,9 +136,9 @@ QString ProtocolHandler::dirHandling(const KUrl &url)
         return errStr;
     }
     
-     // display "not found" page
-    QString notfoundFilePath =  KStandardDirs::locate("data", "rekonq/htmls/notfound.html");
-    QFile file(notfoundFilePath);
+     // display "rekonq info" page
+    QString infoFilePath =  KStandardDirs::locate("data", "rekonq/htmls/rekonqinfo.html");
+    QFile file(infoFilePath);
 
     bool isOpened = file.open(QIODevice::ReadOnly);
     if (!isOpened)

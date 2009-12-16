@@ -213,14 +213,13 @@ void WebPage::manageNetworkErrors(QNetworkReply* reply)
 QString WebPage::errorPage(QNetworkReply *reply)
 {
     // display "not found" page
-    QString notfoundFilePath =  KStandardDirs::locate("data", "rekonq/htmls/notfound.html");
+    QString notfoundFilePath =  KStandardDirs::locate("data", "rekonq/htmls/rekonqinfo.html");
     QFile file(notfoundFilePath);
 
     bool isOpened = file.open(QIODevice::ReadOnly);
     if (!isOpened)
     {
-        kWarning() << "Couldn't open the notfound.html file";
-        return QString("");
+        return QString("Couldn't open the rekonqinfo.html file");
     }
 
     QString title = i18n("Error loading: %1", reply->url().path()); 

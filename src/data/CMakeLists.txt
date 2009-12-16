@@ -14,6 +14,6 @@ INSTALL(
 )
 
 INSTALL( 
-    FILES notfound.html home.html
+    FILES rekonqinfo.html home.html
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/htmls
 )
