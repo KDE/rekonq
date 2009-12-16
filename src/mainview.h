@@ -127,7 +127,8 @@ public slots:
     void reloadAllTabs();
     void nextTab();
     void previousTab();
-
+    void detachTab(int index = -1);
+    
     // WEB slot actions
     void webReload();
     void webStop();

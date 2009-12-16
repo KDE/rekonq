@@ -87,7 +87,8 @@ MainView::MainView(MainWindow *parent)
     connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(closeOtherTabs(int)));
     connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(reloadTab(int)));
     connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(reloadAllTabs()));
-
+    connect(m_tabBar, SIGNAL(detachTab(int)), this, SLOT(detachTab(int)));
+    
     connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
     
     // current page index changing
@@ -647,4 +648,18 @@ void MainView::resizeEvent(QResizeEvent *event)
 {
     updateTabBar();
     KTabWidget::resizeEvent(event);
+}
+
+
+void MainView::detachTab(int index)
+{
+    if (index < 0)
+        index = currentIndex();
+    if (index < 0 || index >= count())
+        return;
+
+    KUrl url = webTab(index)->view()->url();
+    closeTab(index);
+    
+    Application::instance()->loadUrl(url, Rekonq::NewWindow);
 }

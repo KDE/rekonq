@@ -140,6 +140,12 @@ void TabBar::reloadTab()
 }
 
 
+void TabBar::detachTab()
+{
+    emit detachTab(m_actualIndex);
+}
+
+
 void TabBar::showTabPreview(int tab)
 {
     MainView *mv = qobject_cast<MainView *>(parent());
@@ -249,6 +255,7 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
 
     menu.addAction(mainWindow->actionByName(QLatin1String("new_tab")));
     menu.addAction( mainWindow->actionByName("clone_tab") );
+    menu.addAction( mainWindow->actionByName("detach_tab") );
     menu.addSeparator();
     menu.addAction( mainWindow->actionByName("close_tab") );
     menu.addAction( mainWindow->actionByName("close_other_tabs") );

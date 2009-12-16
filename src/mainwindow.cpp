@@ -393,6 +393,10 @@ void MainWindow::setupActions()
     actionCollection()->addAction( QLatin1String("reload_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(reloadTab()) );
 
+    a = new KAction(KIcon("tab-detach"), i18n("Detach Tab"), this);
+    actionCollection()->addAction( QLatin1String("detach_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(detachTab()) );
+    
     // ----------------------- Bookmarks ToolBar Action --------------------------------------
     QAction *qa = m_bmBar->toggleViewAction();
     qa->setText( i18n("Bookmarks Toolbar") );

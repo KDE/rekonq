@@ -69,6 +69,7 @@ signals:
     void closeOtherTabs(int index);
     void reloadTab(int index);
     void reloadAllTabs();
+    void detachTab(int index);
 
 protected:
     /**
@@ -85,7 +86,8 @@ private slots:
     void closeTab();
     void closeOtherTabs();
     void reloadTab();
-
+    void detachTab();
+    
     void contextMenu(int, const QPoint &);
     void emptyAreaContextMenu(const QPoint &);
 
