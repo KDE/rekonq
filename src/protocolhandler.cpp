@@ -114,10 +114,6 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
             frame->setHtml(html);
             Application::instance()->mainWindow()->mainView()->urlBar()->setUrl(url);
         }
-//         KUrl::List list;
-//         list.append(url);
-//         KRun::run("dolphin %u",url,0);
-
         return true;
     }
     
