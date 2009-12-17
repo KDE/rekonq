@@ -46,6 +46,7 @@
 
 // Qt Includes
 #include <QFile>
+#include <websnap.h>
 
 
 NewTabPage::NewTabPage(QWebFrame *frame)
@@ -72,6 +73,16 @@ NewTabPage::~NewTabPage()
 
 void NewTabPage::generate(const KUrl &url)
 {    
+    if(KUrl("about:preview").isParentOf(url))
+    {
+        if(url.directory() == QString("preview/remove"))
+        {
+            removePreview(url.fileName().toInt());
+            return;
+        }
+    }
+    
+    
     QWebPage *page = m_root.webFrame()->page();
     page->mainFrame()->setHtml(m_html);
 
@@ -80,25 +91,25 @@ void NewTabPage::generate(const KUrl &url)
     browsingMenu(url);
     
     QString title;
-    if(url == KUrl("about:closedTabs"))
-    {
-        closedTabsPage();
-        title = i18n("Closed Tabs");
-    }
-    if(url == KUrl("about:history"))
-    {
-        historyPage();
-        title = i18n("History");
-    }
-    if(url == KUrl("about:bookmarks"))
-    {
-        bookmarksPage();
-        title = i18n("Bookmarks");
-    }
     if(url == KUrl("about:home") || url == KUrl("about:favorites"))
     {
         favoritesPage();
         title = i18n("Favorites");
+    }
+    else if(url == KUrl("about:closedTabs"))
+    {
+        closedTabsPage();
+        title = i18n("Closed Tabs");
+    }
+    else if(url == KUrl("about:history"))
+    {
+        historyPage();
+        title = i18n("History");
+    }
+    else if(url == KUrl("about:bookmarks"))
+    {
+        bookmarksPage();
+        title = i18n("Bookmarks");
     }
     
     m_root.document().findFirst("title").setPlainText(title);
@@ -114,34 +125,111 @@ void NewTabPage::favoritesPage()
     
     for(int i=0; i<8; ++i)
     {
-        QWebElement speed = markup(".thumbnail");
-        speed.findFirst("object").setAttribute("data" , urls.at(i));
-        speed.findFirst("param[name=title]").setAttribute("value", names.at(i));
-        speed.findFirst("param[name=index]").setAttribute("value", QString::number(i));
-        speed.findFirst("param[name=isFavorite]").setAttribute("value", "true");
+        QWebElement speed;
+        
+        if(urls.at(i).isEmpty())
+            speed = emptyPreview();
+        else if(!QFile::exists(WebSnap::fileForUrl(urls.at(i)).toLocalFile()))
+            speed = loadingPreview(i, urls.at(i));
+        else
+            speed = validPreview(i, urls.at(i), names.at(i));
+        
+        speed.setAttribute("id", "preview" + QVariant(i).toString());
         m_root.appendInside(speed);
     }
 }
 
 
-// FIXME : port to new PreviewImage API to use...
-/*QString NewTabPage::lastVisitedPage()
+QWebElement NewTabPage::emptyPreview()
 {
-    QString last;
-    QList<HistoryItem> history =  Application::historyManager()->history();
-    for (int i = 0; i < 8 && i < history.size(); ++i) 
-    {
-        HistoryItem it = history.at(i);
-        last += "<div class=\"thumbnail\">";
-        last += "<object type=\"application/image-preview\" data=\"" + it.url +  "\" >";
-        last += "</object>";
-        last += "<br />";
-        last += "<a href=\"" + it.url + "\">" + it.title + "</a></div>";
-    }
+    QWebElement prev = markup(".thumbnail");
+    
+    prev.findFirst("img").setAttribute("src" , QString("file:///") +
+                    KIconLoader::global()->iconPath("insert-image", KIconLoader::Desktop));
+    prev.findFirst("span").appendInside(i18n("Set a Preview..."));
+    
+    return prev;
+}
 
-    return last;
 
-}*/
+QWebElement NewTabPage::loadingPreview(int index, KUrl url)
+{
+    QWebElement prev = markup(".thumbnail");
+    
+    prev.findFirst("img").setAttribute("src" , 
+    QString("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
+    prev.findFirst("span").appendInside(i18n("Loading Preview..."));
+    WebSnap *snap = new WebSnap(url);
+    snap->SetData(QVariant(index));
+    connect(snap, SIGNAL(finished()), SLOT(snapFinished()));
+    
+    return prev;
+}
+
+QWebElement NewTabPage::validPreview(int index, KUrl url, QString title)
+{
+    QWebElement prev = markup(".thumbnail");
+    KUrl previewPath = WebSnap::fileForUrl(url);
+    QString iString = QVariant(index).toString();
+    
+    prev.findFirst(".preview").setAttribute("src" , previewPath.toMimeDataString());
+    prev.findFirst("a").setAttribute("href", url.toMimeDataString());
+    prev.findFirst("span > a").setAttribute("href", url.toMimeDataString());
+    prev.findFirst("span").appendInside(checkTitle(title));
+    
+    prev.findFirst(".modify img").setAttribute("src", QString("file:///") +
+    KIconLoader::global()->iconPath("insert-image", KIconLoader::DefaultState));
+    prev.findFirst(".modify").setAttribute("href", QString("about:preview/modify/" + iString ));
+    
+    prev.findFirst(".remove img").setAttribute("src", QString("file:///") +
+    KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
+    prev.findFirst(".remove").setAttribute("href", QString("about:preview/remove/" + iString ));
+    
+    return prev;
+}
+
+
+void NewTabPage::snapFinished()
+{
+    WebSnap *snap = qobject_cast<WebSnap*>(sender());
+    QWebElement thumb = m_root.findFirst("#preview" + snap->data().toString());
+    thumb.findFirst("img").setAttribute("src", WebSnap::fileForUrl(snap->snapUrl()).toMimeDataString());
+    thumb.findFirst("p").setPlainText(snap->snapTitle());
+    
+    // Save the new config
+    QStringList names = ReKonfig::previewNames();
+    QStringList urls = ReKonfig::previewUrls();
+    
+    // stripTrailingSlash to be sure to get the same string for same address
+    urls.replace(snap->data().toInt(), snap->snapUrl().toString(QUrl::StripTrailingSlash));
+    names.replace(snap->data().toInt() , snap->snapTitle());
+    
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+    
+    ReKonfig::self()->writeConfig();
+}
+
+
+void NewTabPage::removePreview(int index)
+{
+    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
+    
+    
+    QStringList names = ReKonfig::previewNames();
+    QStringList urls = ReKonfig::previewUrls();
+    
+    urls.replace(index, QString(""));
+    names.replace(index, QString(""));
+    
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+    
+    // sync file data
+    ReKonfig::self()->writeConfig();
+    
+    prev.replace(emptyPreview());
+}
 
 
 void NewTabPage::browsingMenu(const KUrl &currentUrl)
@@ -277,4 +365,15 @@ void NewTabPage::closedTabsPage()
         closed.findFirst("param[name=title]").setAttribute("value", item.title);
         m_root.appendInside(closed);
     }
+}
+
+
+QString NewTabPage::checkTitle(QString title)
+{
+    if(title.length() > 23)
+    {
+        title.truncate(20);
+        title += "...";
+    }
+    return title;
 }

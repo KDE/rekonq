@@ -51,18 +51,26 @@ public:
     WebSnap(const QUrl &url);
     ~WebSnap();
     
-    QPixmap previewImage();
+    QPixmap previewImage(); // TODO : remove
+    
     static QPixmap renderPreview(const QWebPage &page, int w, int h);
+    
+    static KUrl fileForUrl(KUrl url);
+    
+    static QString guessNameFromUrl(QUrl url);
     
     QString snapTitle();
     QUrl snapUrl();
+    
+    void SetData(QVariant data);
+    QVariant& data();
 
 signals:
     void finished();
 
 private slots:
     void load();
-    void saveResult(bool ok);
+    void saveResult(bool ok = true);
 
 private:
     QWebPage m_page;
@@ -70,6 +78,8 @@ private:
 
     QUrl m_url;
     QString m_snapTitle;
+    
+    QVariant m_data;
 };
 
 #endif // WEB_SNAP_H

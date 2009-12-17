@@ -28,9 +28,6 @@
 #define REKONQ_NEW_TAB_PAGE
 
 
-// rekonq Includes
-#include <webpage.h>
-
 // KDE Includes
 #include <KUrl>
 
@@ -41,11 +38,12 @@
 
 // Forward Includes
 class KBookmark;
+class WebPage;
 
 
-class NewTabPage
+class NewTabPage : public QObject
 {
-    
+Q_OBJECT
 public:
     NewTabPage(QWebFrame *frame);
     ~NewTabPage();
@@ -56,12 +54,19 @@ public:
      *  new tab page
      */
     void generate(const KUrl &url = KUrl("about:home"));
+    
+protected slots:
+    void snapFinished();
+    void removePreview(int index);
      
 protected:  // these are the function to build the new tab page
     void browsingMenu(const KUrl &currentUrl);
 
     void favoritesPage();
-    //QString lastVisitedPage();
+    QWebElement emptyPreview();
+    QWebElement loadingPreview(int index, KUrl url);
+    QWebElement validPreview(int index, KUrl url, QString title);
+    
     void historyPage();
     void bookmarksPage();
     void closedTabsPage();
@@ -77,6 +82,8 @@ private:
     {
        return m_root.document().findFirst("#models > " + selector).clone();
     }
+    
+    QString checkTitle(QString title);
 
     QString m_html;
     

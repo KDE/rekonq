@@ -32,8 +32,10 @@
 #define WEBPAGE_H
 
 
+
 // Local Includes
 #include "protocolhandler.h"
+#include "newtabpage.h"
 
 // KDE Includes
 #include <KWebPage>
@@ -76,6 +78,7 @@ private:
 
     QUrl m_requestedUrl;
     ProtocolHandler m_protHandler;
+    NewTabPage *m_newTabPage;
 };
 
 #endif

@@ -115,16 +115,62 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
 }
 
 
+KUrl WebSnap::fileForUrl(KUrl url)
+{
+    QString filePath = 
+            KStandardDirs::locateLocal("cache", QString("thumbs/") + WebSnap::guessNameFromUrl(url) + ".png", true);
+    return KUrl(filePath);
+}
+
+
+void WebSnap::SetData(QVariant data)
+{
+    m_data = data;
+}
+
+QVariant& WebSnap::data()
+{
+    return m_data;
+}
+
+
+
+QString WebSnap::guessNameFromUrl(QUrl url)
+{
+    QString name = url.toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
+    
+    // TODO learn Regular Expressions :)
+    // and implement something better here..
+    name.remove('/');
+    name.remove('&');
+    name.remove('.');
+    name.remove('-');
+    name.remove('_');
+    name.remove('?');
+    name.remove('=');
+    name.remove('+');
+    
+    return name;
+}
+
+
 void WebSnap::saveResult(bool ok)
 {
     // crude error-checking
     if (!ok) 
     {
         kDebug() << "Error loading site..";
-        return;
+        m_snapTitle = "Error...";
+        m_image = QPixmap();
     }
-
-    m_image = renderPreview(m_page, WIDTH, HEIGHT);
+    else
+    {
+        m_image = renderPreview(m_page, WIDTH, HEIGHT);
+    }
+    
+    m_image.save(fileForUrl(m_url).toLocalFile());
+    kDebug() << "finished";
+    
     emit finished();
 }
 
