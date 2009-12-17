@@ -497,7 +497,7 @@ void MainView::closeTab(int index)
 
 void MainView::webViewLoadStarted()
 {
-    KWebView *webView = qobject_cast<KWebView*>(sender());
+    WebView *webView = qobject_cast<WebView *>(sender());
     int index = indexOf(webView->parentWidget());
     if (-1 != index)
     {
@@ -519,7 +519,7 @@ void MainView::webViewLoadStarted()
 
 void MainView::webViewLoadFinished(bool ok)
 {
-    KWebView *webView = qobject_cast<KWebView*>(sender());
+    WebView *webView = qobject_cast<WebView *>(sender());
     int index = indexOf(webView->parentWidget());
 
     if (-1 != index)
@@ -548,7 +548,7 @@ void MainView::webViewLoadFinished(bool ok)
 
 void MainView::webViewIconChanged()
 {
-    KWebView *webView = qobject_cast<KWebView*>(sender());
+    WebView *webView = qobject_cast<WebView *>(sender());
     int index = indexOf(webView->parentWidget());
     if (-1 != index)
     {
@@ -571,7 +571,7 @@ void MainView::webViewTitleChanged(const QString &title)
     {
         tabTitle = i18n("(Untitled)");
     }
-    KWebView *webView = qobject_cast<KWebView*>(sender());
+    WebView *webView = qobject_cast<WebView *>(sender());
     int index = indexOf(webView->parentWidget());
     if (-1 != index)
     {
@@ -587,7 +587,7 @@ void MainView::webViewTitleChanged(const QString &title)
 
 void MainView::webViewUrlChanged(const QUrl &url)
 {
-    KWebView *webView = qobject_cast<KWebView*>(sender());
+    WebView *webView = qobject_cast<WebView *>(sender());
     int index = indexOf(webView->parentWidget());
     if (-1 != index)
     {
