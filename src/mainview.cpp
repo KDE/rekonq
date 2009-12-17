@@ -481,10 +481,10 @@ void MainView::closeTab(int index)
         }
     }
 
-    QWidget *webView = this->webTab(index);
+    QWidget *webTab = this->webTab(index);
     removeTab(index);
     updateTabBar();         // UI operation: do it ASAP!!
-    webView->deleteLater(); // webView is scheduled for deletion.
+    delete webTab; // webView is scheduled for deletion.
         
     emit tabsChanged();
 

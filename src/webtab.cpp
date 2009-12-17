@@ -61,7 +61,7 @@
 
 WebTab::WebTab(QWidget* parent)
     : QWidget(parent)
-    , m_view( new WebView(parent) )
+    , m_view( new WebView(this) )
     , m_progress(0)
 {
     QVBoxLayout* l = new QVBoxLayout(this);
@@ -98,6 +98,7 @@ WebTab::WebTab(QWidget* parent)
 
 WebTab::~WebTab()
 {
+    delete m_view;
 }
 
 

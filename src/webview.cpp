@@ -71,6 +71,7 @@ WebView::WebView(QWidget* parent)
 
 WebView::~WebView()
 {
+     disconnect();
 }
 
 
