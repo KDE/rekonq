@@ -255,44 +255,44 @@ void MainView::reloadTab(int index)
 void MainView::currentChanged(int index)
 {
     // retrieve the webview related to the index
-    WebTab *webTab = this->webTab(index);
-    if (!webTab)
+    WebTab *tab = this->webTab(index);
+    if (!tab)
         return;
 
     // retrieve the old webview (that where we move from)
-    WebTab *oldWebTab = this->webTab(m_currentTabIndex);
+    WebTab *oldTab = this->webTab(m_currentTabIndex);
     
     // set current index
     m_currentTabIndex = index;
 
-    if (oldWebTab)
+    if (oldTab)
     {        
         // disconnecting webview from urlbar
-        disconnect(oldWebTab->view(), SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
-        disconnect(oldWebTab->view(), SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
-        disconnect(oldWebTab->view(), SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
+        disconnect(oldTab->view(), SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
+        disconnect(oldTab->view(), SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
+        disconnect(oldTab->view(), SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
     
         // disconnecting webpage from mainview
-        disconnect(oldWebTab->page(), SIGNAL(statusBarMessage(const QString&)),
+        disconnect(oldTab->page(), SIGNAL(statusBarMessage(const QString&)),
                    this, SIGNAL(showStatusBarMessage(const QString&)));
-        disconnect(oldWebTab->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
+        disconnect(oldTab->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
                    this, SIGNAL(linkHovered(const QString&)));
     }
 
     // connecting webview with urlbar
-    connect(webTab->view(), SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
-    connect(webTab->view(), SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
-    connect(webTab->view(), SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
+    connect(tab->view(), SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
+    connect(tab->view(), SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
+    connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
     
-    connect(webTab->view()->page(), SIGNAL(statusBarMessage(const QString&)), 
+    connect(tab->view()->page(), SIGNAL(statusBarMessage(const QString&)), 
             this, SIGNAL(showStatusBarMessage(const QString&)));
-    connect(webTab->view()->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
+    connect(tab->view()->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
             this, SIGNAL(linkHovered(const QString&)));
 
-    emit setCurrentTitle(webTab->view()->title());
-    urlBar()->setUrl(webTab->view()->url());
-    urlBar()->setProgress(webTab->progress());
-    emit showStatusBarMessage(webTab->lastStatusBarText());
+    emit setCurrentTitle(tab->view()->title());
+    urlBar()->setUrl(tab->view()->url());
+    urlBar()->setProgress(tab->progress());
+    emit showStatusBarMessage(tab->lastStatusBarText());
 
     // notify UI to eventually switch stop/reload button
     if(urlBar()->isLoading())
@@ -301,52 +301,53 @@ void MainView::currentChanged(int index)
         emit browserTabLoading(false);
 
     // set focus to the current webview
-    webTab->setFocus();
+    tab->setFocus();
 }
 
 
 WebTab *MainView::webTab(int index) const
 {
-    if (WebTab *webTab = qobject_cast<WebTab*>(this->widget(index)))
+    WebTab *tab = qobject_cast<WebTab *>( this->widget(index) );
+    if(tab)
     {
-        return webTab;
+        return tab;
     }
 
-    kDebug() << "WebView with index " << index << "not found. Returning NULL." ;
+    kDebug() << "WebTab with index " << index << "not found. Returning NULL." ;
     return 0;
 }
 
 
 WebTab *MainView::newWebTab(bool focused, bool nearParent)
 {
-    WebTab* webTab = new WebTab(this);
+    WebTab* tab = new WebTab(this);
 
     // connecting webview with mainview
-    connect(webTab->view(), SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
-    connect(webTab->view(), SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
-    connect(webTab->view(), SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
-    connect(webTab->view(), SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
-    connect(webTab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
+    connect(tab->view(), SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
+    connect(tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
+    connect(tab->view(), SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
+    connect(tab->view(), SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
+    connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
 
     // connecting webPage signals with mainview
-    connect(webTab->view()->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
-    connect(webTab->view()->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
+    connect(tab->view()->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
+    connect(tab->view()->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
     
     if (nearParent)
-        insertTab(currentIndex() + 1, webTab, i18n("(Untitled)"));
+        insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
     else
-        addTab(webTab, i18n("(Untitled)"));
+        addTab(tab, i18n("(Untitled)"));
 
     updateTabBar();
     
     if (focused)
     {
-        setCurrentWidget(webTab);
+        setCurrentWidget(tab);
     }
 
     emit tabsChanged();
     
-    return webTab;
+    return tab;
 }
 
 
@@ -383,9 +384,9 @@ void MainView::reloadAllTabs()
 
 void MainView::windowCloseRequested()
 {
-    WebPage *webPage = qobject_cast<WebPage*>(sender());
-    WebTab *webView = qobject_cast<WebTab*>(webPage->view());
-    int index = indexOf(webView->parentWidget());
+    WebPage *page = qobject_cast<WebPage *>( sender() );
+    WebView *view = qobject_cast<WebView *>( page->view() );
+    int index = indexOf( view->parentWidget() );
 
     if (index >= 0)
     {
@@ -456,7 +457,8 @@ void MainView::closeTab(int index)
         return;
 
     bool hasFocus = false;
-    if (WebTab *tab = webTab(index))
+    WebTab *tab = webTab(index);
+    if (tab)
     {
         if (tab->view()->isModified())
         {
@@ -479,26 +481,25 @@ void MainView::closeTab(int index)
             m_recentlyClosedTabs.removeAll(item);
             m_recentlyClosedTabs.prepend(item);
         }
-    }
 
-    QWidget *webTab = this->webTab(index);
-    removeTab(index);
-    updateTabBar();         // UI operation: do it ASAP!!
-    delete webTab; // webView is scheduled for deletion.
+        removeTab(index);
+        updateTabBar();         // UI operation: do it ASAP!!
+        delete tab; // webView is scheduled for deletion.
         
-    emit tabsChanged();
+        emit tabsChanged();
 
-    if (hasFocus && count() > 0)
-    {
-        currentWebTab()->setFocus();
+        if (hasFocus && count() > 0)
+        {
+            currentWebTab()->setFocus();
+        }       
     }
 }
 
 
 void MainView::webViewLoadStarted()
 {
-    WebView *webView = qobject_cast<WebView *>(sender());
-    int index = indexOf(webView->parentWidget());
+    WebView *view = qobject_cast<WebView *>( sender() );
+    int index = indexOf( view->parentWidget() );
     if (-1 != index)
     {
         QLabel *label = animatedLoading(index, true);
@@ -519,8 +520,10 @@ void MainView::webViewLoadStarted()
 
 void MainView::webViewLoadFinished(bool ok)
 {
-    WebView *webView = qobject_cast<WebView *>(sender());
-    int index = indexOf(webView->parentWidget());
+    WebView *view = qobject_cast<WebView *>( sender() );
+    int index = -1;
+    if(view)
+        index = indexOf( view->parentWidget() );
 
     if (-1 != index)
     {
@@ -548,11 +551,11 @@ void MainView::webViewLoadFinished(bool ok)
 
 void MainView::webViewIconChanged()
 {
-    WebView *webView = qobject_cast<WebView *>(sender());
-    int index = indexOf(webView->parentWidget());
+    WebView *view = qobject_cast<WebView *>( sender() );
+    int index = indexOf( view->parentWidget() );
     if (-1 != index)
     {
-        QIcon icon = Application::icon(webView->url());
+        QIcon icon = Application::icon(view->url());
         QLabel *label = animatedLoading(index, false);
         QMovie *movie = label->movie();
         delete movie;
@@ -571,8 +574,8 @@ void MainView::webViewTitleChanged(const QString &title)
     {
         tabTitle = i18n("(Untitled)");
     }
-    WebView *webView = qobject_cast<WebView *>(sender());
-    int index = indexOf(webView->parentWidget());
+    WebView *view = qobject_cast<WebView *>( sender() );
+    int index = indexOf( view->parentWidget() );
     if (-1 != index)
     {
         setTabText(index, tabTitle);
@@ -581,14 +584,14 @@ void MainView::webViewTitleChanged(const QString &title)
     {
         emit setCurrentTitle(tabTitle);
     }
-    Application::historyManager()->updateHistoryEntry(webView->url(), tabTitle);
+    Application::historyManager()->updateHistoryEntry(view->url(), tabTitle);
 }
 
 
 void MainView::webViewUrlChanged(const QUrl &url)
 {
-    WebView *webView = qobject_cast<WebView *>(sender());
-    int index = indexOf(webView->parentWidget());
+    WebView *view = qobject_cast<WebView *>( sender() );
+    int index = indexOf( view->parentWidget() );
     if (-1 != index)
     {
         m_tabBar->setTabData(index, url);
