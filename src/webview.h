@@ -28,13 +28,11 @@
 #ifndef WEBVIEW_H
 #define WEBVIEW_H
 
-
 // KDE Includes
 #include <KWebView>
 
 // Forward Declarations
 class WebPage;
-
 
 class WebView : public KWebView
 {
@@ -61,6 +59,8 @@ private slots:
     void openLinkInNewWindow();
     void openLinkInNewTab();
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
+    void downloadLinkWithKGet();
+    void downloadAllContentsWithKGet();
 
 private:
     WebPage *const m_page;
