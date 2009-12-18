@@ -57,6 +57,9 @@
     <entry name="alwaysShowTabPreviews" type="Bool">
         <default>true</default>
     </entry>
+    <entry name="closeTabSelectPrevious" type="Bool">
+        <default>false</default>
+    </entry>
   </group>
 
 

@@ -511,6 +511,12 @@ void MainWindow::updateConfiguration()
     // ============== General ==================
     m_view->updateTabBar();
 
+    // ============== Tabs ==================
+    if (ReKonfig::closeTabSelectPrevious())
+        m_view->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
+    else
+        m_view->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
+    
     // =========== Fonts ==============
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
 
