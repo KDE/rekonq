@@ -348,7 +348,10 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     // ------------------- END WARNING --------------------------------------
 
     // we are sure of the url now, let's add it to history
-    historyManager()->addHistoryEntry( loadingUrl.prettyUrl() );
+    // anyway we store here just http sites because local and ftp ones are
+    // added trough the protocol handler and the other are ignored
+    if( url.protocol() == QLatin1String("http") )
+        historyManager()->addHistoryEntry( loadingUrl.prettyUrl() );
     
     if (!ReKonfig::openTabsBack())
     {

@@ -28,23 +28,34 @@
 #define PROTOCOL_HANDLER_H
 
 
+#include <KDirLister>
+#include <QWebFrame>
+
 class QNetworkRequest;
 class QWebFrame;
 class QString;
 class KUrl;
 
 
-class ProtocolHandler
+class ProtocolHandler : public QObject
 {
-    
-public:
-   ProtocolHandler();    
-   ~ProtocolHandler();
+Q_OBJECT
 
-   bool handle(const QNetworkRequest &request, QWebFrame *frame);
+public:
+    ProtocolHandler(QObject *parent = 0);    
+    ~ProtocolHandler();
+
+    bool handle(const QNetworkRequest &request, QWebFrame *frame);
+
+private slots:
+    void showResults(const KFileItemList &);
 
 private:
-   QString dirHandling(const KUrl &url);
+    QString dirHandling(const KFileItemList &list);
+   
+    KDirLister *_lister;
+    QWebFrame *_frame;
+    KUrl _url;
 };
 
 #endif  // PROTOCOL_HANDLER_H

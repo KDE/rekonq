@@ -32,6 +32,7 @@
 #include "mainwindow.h"
 #include "mainview.h"
 #include "urlbar.h"
+#include "historymanager.h"
 
 // KDE Includes
 #include <klocalizedstring.h>
@@ -42,6 +43,8 @@
 #include <KDebug>
 #include <KMimeType>
 #include <KIconLoader>
+#include <KDirLister>
+#include <KFileItem>
 
 // Qt Includes
 #include <QLatin1String>
@@ -52,8 +55,12 @@
 #include <QDateTime>
 
 
-ProtocolHandler::ProtocolHandler()
+ProtocolHandler::ProtocolHandler(QObject *parent)
+    : QObject(parent)
+    , _lister(new KDirLister)
+    , _frame(0)
 {
+    connect( _lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
 }
 
 
@@ -64,51 +71,49 @@ ProtocolHandler::~ProtocolHandler()
 
 bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
 {
-    KUrl url( request.url() );
+    _url = request.url();
+    _frame = frame;
     
     // "mailto" handling
-    if ( url.protocol() == QLatin1String("mailto") )
+    if ( _url.protocol() == QLatin1String("mailto") )
     {
-        KToolInvocation::invokeMailer(url);
+        KToolInvocation::invokeMailer(_url);
         return true;
     }
 
     // "about" handling
-    if ( url.protocol() == QLatin1String("about") )
+    if ( _url.protocol() == QLatin1String("about") )
     {
-        if( url == KUrl("about:closedTabs")
-            || url == KUrl("about:history")
-            || url == KUrl("about:bookmarks")
-            || url == KUrl("about:favorites")
-            || url == KUrl("about:home")
+        if( _url == KUrl("about:closedTabs")
+            || _url == KUrl("about:history")
+            || _url == KUrl("about:bookmarks")
+            || _url == KUrl("about:favorites")
+            || _url == KUrl("about:home")
             )
         {
             NewTabPage p(frame);
-            p.generate(url);
-        
+            p.generate(_url);
             return true;
         }
     }
 
     // "ftp" handling
-    if(url.protocol() == QLatin1String("ftp"))
+    if( _url.protocol() == QLatin1String("ftp") )
     {
-        KUrl::List list;
-        list.append(url);
-        KRun::run("dolphin %u",url,0);
-
+        // TODO
+        // I need to know if the url represent a file
+        // and, in that case we have to just return false!
+        _lister->openUrl(_url);
         return true;
     }
     
     // "file" handling
-    if(url.protocol() == QLatin1String("file"))
+    if(_url.protocol() == QLatin1String("file") )
     {
-        QFileInfo fileInfo(url.path());
+        QFileInfo fileInfo( _url.path() );
         if(fileInfo.isDir())
         {
-            QString html = dirHandling(url);
-            frame->setHtml(html);
-            Application::instance()->mainWindow()->mainView()->urlBar()->setUrl(url);
+            _lister->openUrl(_url);
             return true;
         }
     }
@@ -117,18 +122,20 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
 }
 
 
-QString ProtocolHandler::dirHandling(const KUrl &url)
+QString ProtocolHandler::dirHandling(const KFileItemList &list)
 {
-    QDir dir(url.toLocalFile());
+
+    KFileItem mainItem = _lister->rootItem();
+    KUrl rootUrl = mainItem.url();
     
-    if (!dir.exists()) 
+    if (mainItem.isNull()) 
     {
-        QString errStr = i18n("Error opening: %1: No such file or directory", dir.absolutePath() );
+        QString errStr = i18n("Error opening: %1: No such file or directory", rootUrl.prettyUrl() );
         return errStr;
     }
-    if (!dir.isReadable()) 
+    if (!mainItem.isReadable()) 
     {
-        QString errStr = i18n("Unable to read %1", dir.absolutePath() );
+        QString errStr = i18n("Unable to read %1", rootUrl.prettyUrl() );
         return errStr;
     }
     
@@ -142,15 +149,13 @@ QString ProtocolHandler::dirHandling(const KUrl &url)
         return QString("rekonq error, sorry :(");
     }
 
-    QString title = url.path(); 
-    QString msg = "<h1>" + i18n("Index of ") + "file://" + url.path() + "</h1>";
+    QString title = _url.prettyUrl(); 
+    QString msg = "<h1>" + i18n("Index of ") + _url.prettyUrl() + "</h1>";
 
-    dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
-    QFileInfoList entries = dir.entryInfoList();
 
-    if(!dir.isRoot())
+    if(rootUrl.cd(".."))
     {
-        QString path = "file://" + dir.absoluteFilePath("..");
+        QString path = rootUrl.prettyUrl();
         QString uparrow = KIconLoader::global()->iconPath( "arrow-up", KIconLoader::Small );
         msg += "<img src=\"file://" + uparrow + "\" alt=\"up-arrow\" />";
         msg += "<a href=\"" + path + "\">" + i18n("Up to higher level directory") + "</a><br /><br />";
@@ -158,18 +163,18 @@ QString ProtocolHandler::dirHandling(const KUrl &url)
     
     msg += "<table width=\"100%\">";
     msg += "<tr><th align=\"left\">" + i18n("Name") + "</th><th>" + i18n("Size") + "</th><th>" + i18n("Last Modified") + "</th></tr>";
-    
-    foreach(const QFileInfo &item, entries)
+
+    foreach(const KFileItem &item, list)
     {
         msg += "<tr>";
-        QString fullPath = QString("file://") + item.absoluteFilePath();
+        QString fullPath = item.url().prettyUrl();
         
-        QString iconName = KMimeType::defaultMimeTypePtr()->iconNameForUrl(fullPath);
+        QString iconName = item.iconName();
         QString icon = QString("file://") + KIconLoader::global()->iconPath( iconName, KIconLoader::Small );
         
         msg += "<td width=\"70%\">";
         msg += "<img src=\"" + icon + "\" alt=\"" + iconName + "\" /> ";
-        msg += "<a href=\"" + fullPath + "\">" + item.fileName() + "</a>";
+        msg += "<a href=\"" + fullPath + "\">" + item.name() + "</a>";
         msg += "</td>";
         
         msg += "<td align=\"right\">";
@@ -180,7 +185,7 @@ QString ProtocolHandler::dirHandling(const KUrl &url)
         msg += "</td>";
         
         msg += "<td align=\"right\">";
-        msg += item.lastModified().toString("dd/MM/yyyy hh:mm:ss");
+        msg += item.timeString();
         msg += "</td>";
         
         msg += "</tr>";
@@ -195,3 +200,24 @@ QString ProtocolHandler::dirHandling(const KUrl &url)
                            
     return html;
 }
+
+
+void ProtocolHandler::showResults(const KFileItemList &list)
+{
+    if(_lister->rootItem().isFile())
+    {
+        WebPage *page = qobject_cast<WebPage *>( _frame->page() );
+        page->downloadUrl( _lister->rootItem().url() );
+        return;
+    }
+    
+    if ( list.isEmpty() )
+        return;
+    
+    QString html = dirHandling(list);
+    _frame->setHtml(html);
+
+    Application::instance()->mainWindow()->mainView()->urlBar()->setUrl(_url);
+    Application::historyManager()->addHistoryEntry( _url.prettyUrl() );
+}
+
