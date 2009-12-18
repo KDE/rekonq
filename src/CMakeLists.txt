@@ -11,7 +11,6 @@ SET( rekonq_KDEINIT_SRCS
     findbar.cpp
     mainview.cpp
     mainwindow.cpp 
-    previewimage.cpp
     sessionmanager.cpp
     tabbar.cpp
     webpage.cpp

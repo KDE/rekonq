@@ -80,6 +80,10 @@ void NewTabPage::generate(const KUrl &url)
             removePreview(url.fileName().toInt());
             return;
         }
+        if(url.directory() == QString("preview/modify"))
+        {
+            return;
+        }
     }
     
     
@@ -125,28 +129,31 @@ void NewTabPage::favoritesPage()
     
     for(int i=0; i<8; ++i)
     {
-        QWebElement speed;
+        KUrl url = urls.at(i);
+        QWebElement prev;
         
-        if(urls.at(i).isEmpty())
-            speed = emptyPreview();
-        else if(!QFile::exists(WebSnap::fileForUrl(urls.at(i)).toLocalFile()))
-            speed = loadingPreview(i, urls.at(i));
+        if(url.isEmpty())
+            prev = emptyPreview(i);
+        else if(!QFile::exists(WebSnap::fileForUrl(url).toLocalFile()))
+            prev = loadingPreview(i, url);
         else
-            speed = validPreview(i, urls.at(i), names.at(i));
+            prev = validPreview(i, url, names.at(i));
         
-        speed.setAttribute("id", "preview" + QVariant(i).toString());
-        m_root.appendInside(speed);
+        prev.setAttribute("id", "preview" + QVariant(i).toString());
+        m_root.appendInside(prev);
     }
 }
 
 
-QWebElement NewTabPage::emptyPreview()
+QWebElement NewTabPage::emptyPreview(int index)
 {
     QWebElement prev = markup(".thumbnail");
     
-    prev.findFirst("img").setAttribute("src" , QString("file:///") +
+    prev.findFirst(".preview img").setAttribute("src" , QString("file:///") +
                     KIconLoader::global()->iconPath("insert-image", KIconLoader::Desktop));
     prev.findFirst("span").appendInside(i18n("Set a Preview..."));
+    prev.findFirst("a").setAttribute("href", QString("about:/preview/modify/" + QVariant(index).toString()));
+    hideControls(prev);
     
     return prev;
 }
@@ -156,9 +163,11 @@ QWebElement NewTabPage::loadingPreview(int index, KUrl url)
 {
     QWebElement prev = markup(".thumbnail");
     
-    prev.findFirst("img").setAttribute("src" , 
-    QString("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
+    prev.findFirst(".preview img").setAttribute("src" , 
+                QString("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
     prev.findFirst("span").appendInside(i18n("Loading Preview..."));
+    showControls(prev);
+    
     WebSnap *snap = new WebSnap(url);
     snap->SetData(QVariant(index));
     connect(snap, SIGNAL(finished()), SLOT(snapFinished()));
@@ -172,29 +181,43 @@ QWebElement NewTabPage::validPreview(int index, KUrl url, QString title)
     KUrl previewPath = WebSnap::fileForUrl(url);
     QString iString = QVariant(index).toString();
     
-    prev.findFirst(".preview").setAttribute("src" , previewPath.toMimeDataString());
+    prev.findFirst(".preview img").setAttribute("src" , previewPath.toMimeDataString());
     prev.findFirst("a").setAttribute("href", url.toMimeDataString());
-    prev.findFirst("span > a").setAttribute("href", url.toMimeDataString());
+    prev.findFirst("span a").setAttribute("href", url.toMimeDataString());
     prev.findFirst("span").appendInside(checkTitle(title));
     
     prev.findFirst(".modify img").setAttribute("src", QString("file:///") +
-    KIconLoader::global()->iconPath("insert-image", KIconLoader::DefaultState));
+                KIconLoader::global()->iconPath("insert-image", KIconLoader::DefaultState));
     prev.findFirst(".modify").setAttribute("href", QString("about:preview/modify/" + iString ));
     
     prev.findFirst(".remove img").setAttribute("src", QString("file:///") +
-    KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
+                KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
     prev.findFirst(".remove").setAttribute("href", QString("about:preview/remove/" + iString ));
     
+    showControls(prev);
+    
+    
     return prev;
+}
+
+
+void NewTabPage::hideControls(QWebElement e)
+{
+    e.findFirst(".remove").setStyleProperty("visibility", "hidden");
+    e.findFirst(".modify").setStyleProperty("visibility", "hidden");
+}
+void NewTabPage::showControls(QWebElement e)
+{
+    e.findFirst(".remove").setStyleProperty("visibility", "visible");
+    e.findFirst(".modify").setStyleProperty("visibility", "visible");
 }
 
 
 void NewTabPage::snapFinished()
 {
     WebSnap *snap = qobject_cast<WebSnap*>(sender());
-    QWebElement thumb = m_root.findFirst("#preview" + snap->data().toString());
-    thumb.findFirst("img").setAttribute("src", WebSnap::fileForUrl(snap->snapUrl()).toMimeDataString());
-    thumb.findFirst("p").setPlainText(snap->snapTitle());
+    QWebElement prev = m_root.findFirst("#preview" + snap->data().toString());
+    prev.replace(validPreview(snap->data().toInt(), snap->snapUrl(), snap->snapTitle()));
     
     // Save the new config
     QStringList names = ReKonfig::previewNames();
@@ -228,7 +251,7 @@ void NewTabPage::removePreview(int index)
     // sync file data
     ReKonfig::self()->writeConfig();
     
-    prev.replace(emptyPreview());
+    prev.replace(emptyPreview(index));
 }
 
 
@@ -357,13 +380,22 @@ void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
 void NewTabPage::closedTabsPage()
 {
     QList<HistoryItem> links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
-
-    foreach(const HistoryItem &item, links)
+    
+    for(int i=0; i < links.count(); ++i)
     {
-        QWebElement closed = markup(".thumbnail");
-        closed.findFirst("object").setAttribute("data" , item.url);
-        closed.findFirst("param[name=title]").setAttribute("value", item.title);
-        m_root.appendInside(closed);
+        HistoryItem item = links.at(i);
+        QWebElement prev;
+        
+        if(item.url.isEmpty())
+            continue;
+        else if(!QFile::exists(WebSnap::fileForUrl(item.url).toLocalFile()))
+            prev = loadingPreview(i, item.url);
+        else
+            prev = validPreview(i, item.url, item.title);
+        
+        prev.setAttribute("id", "preview" + QVariant(i).toString());
+        hideControls(prev);
+        m_root.appendInside(prev);
     }
 }
 

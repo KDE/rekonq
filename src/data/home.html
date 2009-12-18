@@ -127,10 +127,12 @@ width:25%; margin-top: 7%;
 min-width:250px; min-height:192px;
 }
 
+.preview img {
+}
 .preview {
-display: block;
-width: 200px;
-height: 150px;
+display: table-cell;
+vertical-align: middle;
+width: 200px; height: 150px;
 padding: 14px 16px;
 background: url(%2/bg.png) no-repeat;
 -webkit-background-size: 100% 100%; 
@@ -154,10 +156,10 @@ opacity: 0;
 }
 
 .remove {
-    float: right;
+float: right;
 }
 .modify {
-    float: left;
+float: left;
 }
 
 .title {
@@ -171,12 +173,8 @@ text-align: center;
 .thumbnail a {
 text-align:center;
 }
-.thumbnail a:hover {
+.thumbnail a:hover, span {
 color:#3F7AB7;
-}
-
-.thumbnail span {
-
 }
 
 /* -------------------------------------------------------- */
@@ -210,7 +208,9 @@ margin-bottom: 0.5em;
     </div>
     <div class="thumbnail">
         <a>
-            <img class="preview"></img>
+            <div class ="preview">
+                <img />
+            </div>
             <div class="title">
                 <a class="button modify"><img /></a>
                 <span><a></a></span>

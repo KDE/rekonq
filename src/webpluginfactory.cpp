@@ -32,7 +32,6 @@
 #include "rekonq.h"
 #include "application.h"
 #include "mainwindow.h"
-#include "previewimage.h"
 #include "clicktoflash.h"
 
 // KDE Includes
@@ -65,27 +64,7 @@ QObject *WebPluginFactory::create(const QString &mimeType,
                                   const QStringList &argumentValues) const
 {
     kDebug() << "loading mimeType: " << mimeType;
-    
-    if(mimeType == QString("application/image-preview") )
-    {
-        QString title;
-        int number = -1;
-        bool isFavorite = false;
-
-        int i;
-        i = argumentNames.indexOf( QString("title") );
-        if(i > -1)
-            title = argumentValues.at(i);
-        i = argumentNames.indexOf( QString("isFavorite") );
-        if(i > -1)
-            isFavorite = true;
-        i = argumentNames.indexOf( QString("index") );
-        if(i > -1)
-            number = argumentValues.at(i).toInt();
-    
-        return new PreviewImage(url, title, number, isFavorite);
-    }
-    
+        
     if(ReKonfig::pluginsEnabled() == 0) // plugins are enabled
     {
         kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
@@ -112,10 +91,7 @@ QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins() const
 {
     QList<KWebPluginFactory::Plugin> plugins = KWebPluginFactory::plugins();
     
-    QWebPluginFactory::Plugin p;
-    p.name = "application/image-preview";
-    p.description = "plugin for embedding Web snapped images";
-    plugins.append(p);
+    KWebPluginFactory::Plugin p;
     
     p.name = "application/x-shockwave-flash";
     p.description = "Plugin for flash animations";

@@ -63,9 +63,16 @@ protected:  // these are the function to build the new tab page
     void browsingMenu(const KUrl &currentUrl);
 
     void favoritesPage();
-    QWebElement emptyPreview();
+    QWebElement emptyPreview(int index);
     QWebElement loadingPreview(int index, KUrl url);
     QWebElement validPreview(int index, KUrl url, QString title);
+    
+    /** This function takes a QwebElement with the .thumbnail structure.
+        It hides the "remove" and "modify" buttons->
+    */
+    void hideControls(QWebElement e);
+    void showControls(QWebElement e);
+    
     
     void historyPage();
     void bookmarksPage();
