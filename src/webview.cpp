@@ -400,9 +400,10 @@ void WebView::downloadLinkWithKGet()
     QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
     KAction *a = qobject_cast<KAction*>(sender());  
 
-    QList<QString> contentList;
-    contentList.append(a->data().toUrl().toString());
-    kget.call("importLinks", QVariant(contentList));
+    QString url = a->data().toUrl().toString(QUrl::RemoveFragment);
+    QString filename = QDir::homePath()+"/"+url.remove(0,url.lastIndexOf("/")+1);
+    kDebug() << filename;
+    kget.call("addTransfer", a->data().toUrl().toString(), filename, true);
 }
 
 
