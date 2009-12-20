@@ -45,6 +45,7 @@
 #include <KStandardShortcut>
 #include <KMenu>
 #include <KActionMenu>
+#include <ktoolinvocation.h>
 
 // Qt Includes
 #include <QContextMenuEvent>
@@ -54,7 +55,10 @@
 #include <QKeyEvent>
 #include <QAction>
 #include <QLayout>
-
+#include <QtDBus/QDBusConnectionInterface>
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusReply>
+#include <QDir>
 
 WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
@@ -98,6 +102,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(a);
 
         menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
+
+        a = new KAction(KIcon("kget"), i18n("Download with KGet"), this);
+        a->setData(result.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(downloadLinkWithKGet()));
+        menu.addAction(a);
+        
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
         menu.addSeparator();
     }
@@ -254,11 +264,16 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(frameMenu);
         
         menu.addSeparator();
-
+        
         // Page Actions
         menu.addAction(pageAction(KWebPage::SelectAll));
 
         menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
+
+        a = new KAction(KIcon("kget"), i18n("Download All with KGet"), this);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(downloadAllContentsWithKGet()));
+        menu.addAction(a);
+
         menu.addAction(mainwindow->actionByName("page_source"));
 
         QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
@@ -373,4 +388,45 @@ void WebView::keyPressEvent(QKeyEvent *event)
     }
     
     KWebView::keyPressEvent(event);
+}
+
+
+void WebView::downloadLinkWithKGet()
+{  
+    if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
+    {
+        KToolInvocation::kdeinitExecWait("kget");
+    }
+    QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
+    KAction *a = qobject_cast<KAction*>(sender());  
+
+    QList<QString> contentList;
+    contentList.append(a->data().toUrl().toString());
+    kget.call("importLinks", QVariant(contentList));
+}
+
+
+
+void WebView::downloadAllContentsWithKGet()
+{
+    QList<QString> contentList;
+
+    QWebElementCollection images = page()->mainFrame()->documentElement().findAll("img");
+    foreach(QWebElement img, images)
+    {
+        contentList.append(img.attribute("src"));
+    }
+    
+    QWebElementCollection links = page()->mainFrame()->documentElement().findAll("a");
+    foreach(QWebElement link, links)
+    {
+        contentList.append(link.attribute("href"));
+    }
+    
+    if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
+    {
+        KToolInvocation::kdeinitExecWait("kget");
+    }
+    QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
+    kget.call("importLinks", QVariant(contentList));
 }
