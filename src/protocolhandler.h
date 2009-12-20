@@ -27,14 +27,18 @@
 #ifndef PROTOCOL_HANDLER_H
 #define PROTOCOL_HANDLER_H
 
-
+// KDE Includes
 #include <KDirLister>
+
+// Qt Includes
 #include <QWebFrame>
 
+// Forward Declarations
 class QNetworkRequest;
 class QWebFrame;
 class QString;
 class KUrl;
+class KJob;
 
 
 class ProtocolHandler : public QObject
@@ -47,9 +51,13 @@ public:
 
     bool handle(const QNetworkRequest &request, QWebFrame *frame);
 
+signals:
+    void downloadUrl( const KUrl &);
+    
 private slots:
     void showResults(const KFileItemList &);
-
+    void slotMostLocalUrlResult(KJob *);
+    
 private:
     QString dirHandling(const KFileItemList &list);
    

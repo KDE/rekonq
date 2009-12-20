@@ -45,6 +45,8 @@
 #include <KIconLoader>
 #include <KDirLister>
 #include <KFileItem>
+#include <KJob>
+#include <kio/udsentry.h>
 
 // Qt Includes
 #include <QLatin1String>
@@ -97,17 +99,19 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
         }
     }
 
-    // "ftp" handling
+    // "ftp" handling. A little bit "hard" handling this. Hope I found
+    // the best solution.
+    // My idea is: webkit cannot handle in any way ftp. So we have surely to return true here.
+    // We start trying to guess what the url represent: it's a dir? show its contents (and download them).
+    // it's a file? download it. It's another thing? beat me, but I don't know what to do...
     if( _url.protocol() == QLatin1String("ftp") )
     {
-        // TODO
-        // I need to know if the url represent a file
-        // and, in that case we have to just return false!
-        _lister->openUrl(_url);
+        KIO::StatJob *job = KIO::stat(_url);
+        connect(job, SIGNAL(result(KJob*)), this, SLOT( slotMostLocalUrlResult(KJob*) ));
         return true;
     }
     
-    // "file" handling
+    // "file" handling. This is quite trivial :)
     if(_url.protocol() == QLatin1String("file") )
     {
         QFileInfo fileInfo( _url.path() );
@@ -133,6 +137,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
         QString errStr = i18n("Error opening: %1: No such file or directory", rootUrl.prettyUrl() );
         return errStr;
     }
+    
     if (!mainItem.isReadable()) 
     {
         QString errStr = i18n("Unable to read %1", rootUrl.prettyUrl() );
@@ -221,3 +226,21 @@ void ProtocolHandler::showResults(const KFileItemList &list)
     Application::historyManager()->addHistoryEntry( _url.prettyUrl() );
 }
 
+
+void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
+{
+    if(job->error())
+    {
+        // TODO
+        kDebug() << "error";
+    }
+    else
+    {
+        KIO::StatJob *statJob = static_cast<KIO::StatJob*>(job);
+        KIO::UDSEntry entry = statJob->statResult();
+        if( entry.isDir() )
+            _lister->openUrl(_url);
+        else
+            emit downloadUrl(_url);
+    }
+}

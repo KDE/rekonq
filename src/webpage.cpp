@@ -80,6 +80,9 @@ WebPage::WebPage(QObject *parent)
     
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
+
+    // protocol handler signals
+    connect(&m_protHandler, SIGNAL(downloadUrl(const KUrl &)), this, SLOT(downloadUrl(const KUrl &)));
 }
 
 
