@@ -101,13 +101,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
-        menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
-
-        a = new KAction(KIcon("kget"), i18n("Download with KGet"), this);
-        a->setData(result.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(downloadLinkWithKGet()));
-        menu.addAction(a);
-        
+        menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));      
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
         menu.addSeparator();
     }
@@ -270,9 +264,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
 
-        a = new KAction(KIcon("kget"), i18n("Download All with KGet"), this);
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(downloadAllContentsWithKGet()));
-        menu.addAction(a);
+        if (ReKonfig::kgetList())
+        {
+            a = new KAction(KIcon("kget"), i18n("List all links"), this);
+            connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
+            menu.addAction(a);
+        }
 
         menu.addAction(mainwindow->actionByName("page_source"));
 
@@ -390,44 +387,3 @@ void WebView::keyPressEvent(QKeyEvent *event)
     KWebView::keyPressEvent(event);
 }
 
-
-void WebView::downloadLinkWithKGet()
-{  
-    if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
-    {
-        KToolInvocation::kdeinitExecWait("kget");
-    }
-    QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-    KAction *a = qobject_cast<KAction*>(sender());  
-
-    QString url = a->data().toUrl().toString(QUrl::RemoveFragment);
-    QString filename = QDir::homePath()+"/"+url.remove(0,url.lastIndexOf("/")+1);
-    kDebug() << filename;
-    kget.call("addTransfer", a->data().toUrl().toString(), filename, true);
-}
-
-
-
-void WebView::downloadAllContentsWithKGet()
-{
-    QList<QString> contentList;
-
-    QWebElementCollection images = page()->mainFrame()->documentElement().findAll("img");
-    foreach(QWebElement img, images)
-    {
-        contentList.append(img.attribute("src"));
-    }
-    
-    QWebElementCollection links = page()->mainFrame()->documentElement().findAll("a");
-    foreach(QWebElement link, links)
-    {
-        contentList.append(link.attribute("href"));
-    }
-    
-    if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
-    {
-        KToolInvocation::kdeinitExecWait("kget");
-    }
-    QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-    kget.call("importLinks", QVariant(contentList));
-}

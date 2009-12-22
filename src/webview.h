@@ -59,8 +59,6 @@ private slots:
     void openLinkInNewWindow();
     void openLinkInNewTab();
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
-    void downloadLinkWithKGet();
-    void downloadAllContentsWithKGet();
 
 private:
     WebPage *const m_page;

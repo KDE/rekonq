@@ -38,6 +38,12 @@
     <entry name="showBookmarksPanel" type="Bool">
         <default>false</default>
     </entry>
+    <entry name="kgetDownload" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="kgetList" type="Bool">
+        <default>false</default>
+    </entry>
   </group>
 
 <!-- Tabs Settings -->

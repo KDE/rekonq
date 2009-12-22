@@ -53,6 +53,8 @@
 
 #include <kparts/browseropenorsavequestion.h>
 
+#include <kio/renamedialog.h>
+
 #include <KDE/KMimeTypeTrader>
 #include <KDE/KRun>
 #include <KDE/KFileDialog>
@@ -249,4 +251,77 @@ QString WebPage::errorPage(QNetworkReply *reply)
                             .arg(msg)
                             ;
     return html;
+}
+
+
+void WebPage::downloadRequest(const QNetworkRequest &request)
+{
+    if (ReKonfig::kgetDownload())
+    {
+        //*Copy of kwebpage code (Shouldn't be done in kwepage ?)
+
+        KUrl destUrl;
+        KUrl srcUrl (request.url());
+        int result = KIO::R_OVERWRITE;
+
+        do 
+        {
+            destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), view());
+
+            if (destUrl.isLocalFile()) 
+            {
+                QFileInfo finfo (destUrl.toLocalFile());
+                if (finfo.exists()) 
+                {
+                    QDateTime now = QDateTime::currentDateTime();
+                    KIO::RenameDialog dlg (view(), i18n("Overwrite File?"), srcUrl, destUrl,
+                                        KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),
+                                        -1, finfo.size(),
+                                        now.toTime_t(), finfo.created().toTime_t(),
+                                        now.toTime_t(), finfo.lastModified().toTime_t());
+                    result = dlg.exec();
+                }
+            }
+        } 
+        while (result == KIO::R_CANCEL && destUrl.isValid());
+
+        if (result == KIO::R_OVERWRITE && destUrl.isValid()) 
+        {
+            //*End of copy code
+            
+            //KGet integration:
+            if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
+            {
+                KToolInvocation::kdeinitExecWait("kget");
+            }
+            QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
+            kget.call("addTransfer", srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
+        }
+    }
+    else KWebPage::downloadRequest(request);
+}
+
+
+void WebPage::downloadAllContentsWithKGet()
+{
+    QList<QString> contentList;
+
+    QWebElementCollection images = mainFrame()->documentElement().findAll("img");
+    foreach(QWebElement img, images)
+    {
+        contentList.append(img.attribute("src"));
+    }
+    
+    QWebElementCollection links = mainFrame()->documentElement().findAll("a");
+    foreach(QWebElement link, links)
+    {
+        contentList.append(link.attribute("href"));
+    }
+    
+    if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
+    {
+        KToolInvocation::kdeinitExecWait("kget");
+    }
+    QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
+    kget.call("importLinks", QVariant(contentList));
 }
