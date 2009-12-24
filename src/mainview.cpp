@@ -186,12 +186,15 @@ void MainView::updateTabBar()
 {
     if (ReKonfig::alwaysShowTabBar())
     {
-        if (m_tabBar->isHidden())
+        if (!isTabBarHidden())
         {
-            m_tabBar->show();
-            m_addTabButton->show();
+            if (m_tabBar->isHidden())
+            {
+                m_tabBar->show();
+                m_addTabButton->show();
+            }
+            updateTabButtonPosition();
         }
-        updateTabButtonPosition();
         return;
     }
 
@@ -200,7 +203,7 @@ void MainView::updateTabBar()
         m_tabBar->hide();
         m_addTabButton->hide();
     }
-    else
+    else if (!isTabBarHidden())
     {
         if (m_tabBar->isHidden())
         {
@@ -209,6 +212,13 @@ void MainView::updateTabBar()
         }
         updateTabButtonPosition();
     }
+}
+
+
+void MainView::setTabBarHidden(bool hide)
+{
+    m_addTabButton->setVisible(!hide);
+    KTabWidget::setTabBarHidden(hide);
 }
 
 
