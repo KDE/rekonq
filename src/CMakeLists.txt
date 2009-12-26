@@ -31,6 +31,7 @@ SET( rekonq_KDEINIT_SRCS
     history/historypanel.cpp
     #----------------------------------------
     rekonqpage/newtabpage.cpp
+    rekonqpage/previewchooser.cpp
     #----------------------------------------
     settings/settingsdialog.cpp
     #----------------------------------------

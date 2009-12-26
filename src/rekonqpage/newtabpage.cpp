@@ -36,6 +36,7 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
+#include "previewchooser.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -43,6 +44,7 @@
 #include <KDebug>
 #include <KConfig>
 #include <KConfigGroup>
+#include <KDialog>
 
 // Qt Includes
 #include <QFile>
@@ -82,6 +84,9 @@ void NewTabPage::generate(const KUrl &url)
         }
         if(url.directory() == QString("preview/modify"))
         {
+            PreviewChooser *pc = new PreviewChooser(url.fileName().toInt());
+            connect(pc, SIGNAL(urlChoosed(int,KUrl)), SLOT(setPreview(int,KUrl)));
+            pc->show();
             return;
         }
     }
@@ -139,7 +144,8 @@ void NewTabPage::favoritesPage()
         else
             prev = validPreview(i, url, names.at(i));
         
-        prev.setAttribute("id", "preview" + QVariant(i).toString());
+        setupPreview(prev, i);
+        
         m_root.appendInside(prev);
     }
 }
@@ -152,7 +158,9 @@ QWebElement NewTabPage::emptyPreview(int index)
     prev.findFirst(".preview img").setAttribute("src" , QString("file:///") +
                     KIconLoader::global()->iconPath("insert-image", KIconLoader::Desktop));
     prev.findFirst("span").appendInside(i18n("Set a Preview..."));
-    prev.findFirst("a").setAttribute("href", QString("about:/preview/modify/" + QVariant(index).toString()));
+    prev.findFirst("a").setAttribute("href", QString("about:preview/modify/" + QVariant(index).toString()));
+    
+    setupPreview(prev, index);
     hideControls(prev);
     
     return prev;
@@ -166,6 +174,8 @@ QWebElement NewTabPage::loadingPreview(int index, KUrl url)
     prev.findFirst(".preview img").setAttribute("src" , 
                 QString("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
     prev.findFirst("span").appendInside(i18n("Loading Preview..."));
+    
+    setupPreview(prev, index);
     showControls(prev);
     
     WebSnap *snap = new WebSnap(url);
@@ -184,18 +194,10 @@ QWebElement NewTabPage::validPreview(int index, KUrl url, QString title)
     prev.findFirst(".preview img").setAttribute("src" , previewPath.toMimeDataString());
     prev.findFirst("a").setAttribute("href", url.toMimeDataString());
     prev.findFirst("span a").setAttribute("href", url.toMimeDataString());
-    prev.findFirst("span").appendInside(checkTitle(title));
+    prev.findFirst("span").setPlainText(checkTitle(title));
     
-    prev.findFirst(".modify img").setAttribute("src", QString("file:///") +
-                KIconLoader::global()->iconPath("insert-image", KIconLoader::DefaultState));
-    prev.findFirst(".modify").setAttribute("href", QString("about:preview/modify/" + iString ));
-    
-    prev.findFirst(".remove img").setAttribute("src", QString("file:///") +
-                KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
-    prev.findFirst(".remove").setAttribute("href", QString("about:preview/remove/" + iString ));
-    
+    setupPreview(prev, index);
     showControls(prev);
-    
     
     return prev;
 }
@@ -210,6 +212,19 @@ void NewTabPage::showControls(QWebElement e)
 {
     e.findFirst(".remove").setStyleProperty("visibility", "visible");
     e.findFirst(".modify").setStyleProperty("visibility", "visible");
+}
+
+void NewTabPage::setupPreview(QWebElement e, int index)
+{
+    e.findFirst(".remove img").setAttribute("src", QString("file:///") +
+    KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
+    e.findFirst(".modify img").setAttribute("src", QString("file:///") +
+    KIconLoader::global()->iconPath("insert-image", KIconLoader::DefaultState));
+    
+    e.findFirst(".modify").setAttribute("href", QString("about:preview/modify/" + QVariant(index).toString()));
+    e.findFirst(".remove").setAttribute("href", QString("about:preview/remove/" + QVariant(index).toString()));
+    
+    e.setAttribute("id", "preview" + QVariant(index).toString());
 }
 
 
@@ -252,6 +267,24 @@ void NewTabPage::removePreview(int index)
     ReKonfig::self()->writeConfig();
     
     prev.replace(emptyPreview(index));
+}
+
+
+void NewTabPage::setPreview(int index, KUrl url)
+{
+    if(url.isEmpty())
+        return;
+    
+    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
+    
+    QStringList urls = ReKonfig::previewUrls();
+    urls.replace(index, url.toMimeDataString());
+    ReKonfig::setPreviewUrls(urls);
+    ReKonfig::self()->writeConfig();
+
+    prev.replace(loadingPreview(index, url));
+
+    
 }
 
 

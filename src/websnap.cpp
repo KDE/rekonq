@@ -167,7 +167,7 @@ void WebSnap::saveResult(bool ok)
     {
         m_image = renderPreview(m_page, WIDTH, HEIGHT);
     }
-    
+    QFile::remove(fileForUrl(m_url).toLocalFile());
     m_image.save(fileForUrl(m_url).toLocalFile());
     kDebug() << "finished";
     

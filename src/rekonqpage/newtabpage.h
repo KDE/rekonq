@@ -58,6 +58,7 @@ public:
 protected slots:
     void snapFinished();
     void removePreview(int index);
+    void setPreview(int index, KUrl url);
      
 protected:  // these are the function to build the new tab page
     void browsingMenu(const KUrl &currentUrl);
@@ -72,6 +73,7 @@ protected:  // these are the function to build the new tab page
     */
     void hideControls(QWebElement e);
     void showControls(QWebElement e);
+    void setupPreview(QWebElement e, int index);
     
     
     void historyPage();
