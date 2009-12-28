@@ -152,7 +152,7 @@ void WebTab::loadFinished(bool)
 
 void WebTab::loadInNewTab(const KUrl &url)
 {
-    Application::instance()->loadUrl(url, Rekonq::NewCurrentTab);
+    Application::instance()->loadUrl(url, Rekonq::SettingOpenTab);
 }
 
 
