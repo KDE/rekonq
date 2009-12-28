@@ -447,9 +447,26 @@ void MainView::cloneTab(int index)
 // When index is -1 index chooses the current tab
 void MainView::closeTab(int index)
 {
-    // do nothing if just one tab is opened
+    // open default homePage if just one tab is opened
     if (count() == 1)
+    {
+        WebView *w = currentWebTab()->view();
+        urlBar()->setUrl(KUrl(""));
+        switch(ReKonfig::newTabsBehaviour())
+        {
+        case 0: // new tab page
+        case 1: // blank page
+            w->load( KUrl("about:home") );
+            break;
+        case 2: // homepage
+            w->load( KUrl(ReKonfig::homePage()) );
+            break;
+        default:
+            break;
+        }
+        urlBar()->setFocus();
         return;
+    }
 
     if (index < 0)
         index = currentIndex();

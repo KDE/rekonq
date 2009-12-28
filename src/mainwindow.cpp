@@ -922,42 +922,6 @@ void MainWindow::openNext()
 }
 
 
-bool MainWindow::queryClose()
-{
-    if (m_view->count() > 1)
-    {
-
-        int answer = KMessageBox::questionYesNoCancel(
-                         this,
-                         i18np("Are you sure you want to close the window?\n" \
-                               "You still have 1 tab open.",
-                               "Are you sure you want to close the window?\n" \
-                               "You still have %1 tabs open.",
-                               m_view->count()),
-                         i18n("Closing rekonq"),
-                         KStandardGuiItem::quit(),
-                         KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
-                         KStandardGuiItem::cancel(),
-                         "confirmClosingMultipleTabs");
-
-        switch (answer)
-        {
-        case KMessageBox::Yes:
-            // Quit
-            return true;
-            break;
-        case KMessageBox::No:
-            // Close only the current tab
-            m_view->closeTab();
-        default:
-            return false;
-        }
-    }
-
-    return true;
-}
-
-
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     // hide findbar

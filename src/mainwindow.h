@@ -107,8 +107,6 @@ signals:
     void shiftCtrlTabPressed();
 
 protected:
-    bool queryClose();
-
     /**
     * Filters (SHIFT + ) CTRL + TAB events and emit (shift)ctrlTabPressed()
     * to make switch tab
