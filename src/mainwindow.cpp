@@ -797,21 +797,30 @@ void MainWindow::viewTextSmaller()
 
 void MainWindow::viewFullScreen(bool makeFullScreen)
 {
+    setWidgetsVisible(!makeFullScreen);
+    KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
+}
+
+
+void MainWindow::setWidgetsVisible(bool makeVisible)
+{
     // state flags
     static bool bookmarksToolBarFlag;
     static bool sidePanelFlag;
-	static bool bookmarksPanelFlag;
+    static bool bookmarksPanelFlag;
 
-    if (makeFullScreen == true)
+    if (!makeVisible)
     {
         // save current state
         bookmarksToolBarFlag = m_bmBar->isHidden();
         m_bmBar->hide();
 
+        m_view->setTabBarHidden(true);
+        
         sidePanelFlag = sidePanel()->isHidden();
         sidePanel()->hide();
 
-		 bookmarksPanelFlag = bookmarksPanel()->isHidden();
+        bookmarksPanelFlag = bookmarksPanel()->isHidden();
         bookmarksPanel()->hide();
 
         // hide main toolbar
@@ -821,6 +830,7 @@ void MainWindow::viewFullScreen(bool makeFullScreen)
     {
         // show main toolbar
         m_mainBar->show();
+        m_view->setTabBarHidden(false);
 
         // restore previous state
         if (!bookmarksToolBarFlag)
@@ -829,9 +839,7 @@ void MainWindow::viewFullScreen(bool makeFullScreen)
             sidePanel()->show();
         if (!bookmarksPanelFlag)
             bookmarksPanel()->show();
-    }
-
-    KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
+    }    
 }
 
 

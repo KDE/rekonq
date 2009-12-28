@@ -313,6 +313,17 @@ void WebView::mousePressEvent(QMouseEvent *event)
 void WebView::mouseMoveEvent(QMouseEvent *event)
 {
     m_mousePos = event->pos();
+    if (Application::instance()->mainWindow()->isFullScreen())
+    {        
+        if (event->pos().y()>=0 && event->pos().y()<=4)
+        {
+            Application::instance()->mainWindow()->setWidgetsVisible(true); 
+        }
+        else
+        {
+            Application::instance()->mainWindow()->setWidgetsVisible(false); 
+        }
+    }
     KWebView::mouseMoveEvent(event);
 }
 
