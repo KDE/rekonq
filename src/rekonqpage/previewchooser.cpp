@@ -29,6 +29,7 @@
 #include <bookmarkstreemodel.h>
 #include <bookmarksproxy.h>
 #include <mainview.h>
+#include <webtab.h>
 
 // Qt Includes
 #include <QLabel>
@@ -100,7 +101,7 @@ void PreviewChooser::refreshModel()
     MainView *mv = Application::instance()->mainWindow()->mainView();
     for(int i=0; i < mv->count(); ++i)
     {
-        WebView *view = qobject_cast<WebView *>(mv->webView(i));
+        WebView *view = qobject_cast<WebView *>(mv->webTab(i)->view());
         
         if(view->url().scheme() == "about:")
             continue;
