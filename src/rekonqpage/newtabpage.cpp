@@ -53,6 +53,7 @@
 
 NewTabPage::NewTabPage(QWebFrame *frame)
     : m_root(frame->documentElement())
+    , m_url(KUrl())
 {
     QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
     
@@ -73,7 +74,7 @@ NewTabPage::~NewTabPage()
 }
 
 
-void NewTabPage::generate(const KUrl &url)
+void NewTabPage::generate(KUrl url)
 {    
     if(KUrl("about:preview").isParentOf(url))
     {
@@ -106,6 +107,7 @@ void NewTabPage::generate(const KUrl &url)
     {
         favoritesPage();
         title = i18n("Favorites");
+        url = KUrl("about:favorites");
     }
     else if(url == KUrl("about:closedTabs"))
     {
@@ -122,6 +124,8 @@ void NewTabPage::generate(const KUrl &url)
         bookmarksPage();
         title = i18n("Bookmarks");
     }
+    
+    m_url = url;
     
     m_root.document().findFirst("title").setPlainText(title);
 }
@@ -235,6 +239,9 @@ void NewTabPage::snapFinished()
     WebSnap *snap = qobject_cast<WebSnap*>(sender());
     QWebElement prev = m_root.findFirst("#preview" + snap->data().toString());
     prev.replace(validPreview(snap->data().toInt(), snap->snapUrl(), snap->snapTitle()));
+    
+    if(m_url != KUrl("about:favorites"))
+        return;
     
     // Save the new config
     QStringList names = ReKonfig::previewNames();

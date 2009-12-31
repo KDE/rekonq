@@ -53,7 +53,7 @@ public:
      *  about: url and loads the corresponding part of the 
      *  new tab page
      */
-    void generate(const KUrl &url = KUrl("about:home"));
+    void generate(KUrl url = KUrl("about:home"));
     
 protected slots:
     void snapFinished();
@@ -97,6 +97,8 @@ private:
     QString m_html;
     
     QWebElement m_root;
+    
+    KUrl m_url;
 };
 
 #endif // REKONQ_NEW_TAB_PAGE
