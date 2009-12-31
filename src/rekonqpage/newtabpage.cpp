@@ -84,7 +84,9 @@ void NewTabPage::generate(const KUrl &url)
         }
         if(url.directory() == QString("preview/modify"))
         {
-            PreviewChooser *pc = new PreviewChooser(url.fileName().toInt());
+            int index = url.fileName().toInt();
+            QString url = m_root.findFirst("#preview" + QVariant(index).toString() + " > a").attribute("href");
+            PreviewChooser *pc = new PreviewChooser(index, url);
             connect(pc, SIGNAL(urlChoosed(int,KUrl)), SLOT(setPreview(int,KUrl)));
             pc->show();
             return;

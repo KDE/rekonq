@@ -40,7 +40,7 @@
 #include <KLocalizedString>
 
 
-PreviewChooser::PreviewChooser(int previewIndex)
+PreviewChooser::PreviewChooser(int previewIndex, QString url)
         : KDialog(0)
         , m_treeView(new QTreeView)
         , m_model(new QStandardItemModel)
@@ -70,6 +70,15 @@ PreviewChooser::PreviewChooser(int previewIndex)
     m_line = new KLineEdit;
     connect(m_line, SIGNAL(textChanged(QString)), SLOT(urlChanged()));
     urlLayout->addWidget(m_line);
+    
+    if(url.isEmpty() || url.startsWith("about:"))
+       m_line->setText(QString("http://"));
+    else
+    {
+        m_line->setText(url);
+        m_line->setSelection(8, m_line->text().size());
+    }
+    
 
     // setup view
     QVBoxLayout *vBoxLayout = new QVBoxLayout;
@@ -103,10 +112,10 @@ void PreviewChooser::refreshModel()
     {
         WebView *view = qobject_cast<WebView *>(mv->webTab(i)->view());
         
-        if(view->url().scheme() == "about:")
+        if(view->url().scheme() == "about")
             continue;
         
-        QStandardItem *it = new QStandardItem(view->icon(), view->title());
+        QStandardItem *it = new QStandardItem(Application::icon(view->url()), view->title());
         it->setData(QVariant(view->url()), Qt::ToolTipRole);
         m_model->insertRow(i, it);
     }
@@ -123,7 +132,7 @@ void PreviewChooser::setUrl(QModelIndex i)
 
 void PreviewChooser::buttonClicked(KDialog::ButtonCode code)
 {
-    if(code == KDialog::Apply || code == KDialog::Ok)
+    if(code == KDialog::Apply || (code == KDialog::Ok && isButtonEnabled(KDialog::Apply)))
     {
         emit urlChoosed(m_previewIndex, KUrl(m_line->text()));
         enableButtonApply(false);

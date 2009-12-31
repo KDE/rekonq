@@ -46,7 +46,7 @@ class PreviewChooser : public KDialog
 Q_OBJECT
 
 public:
-    explicit PreviewChooser(int previewIndex);
+    explicit PreviewChooser(int previewIndex, QString url);
     virtual ~PreviewChooser();
 
 signals:
