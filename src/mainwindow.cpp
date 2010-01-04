@@ -181,9 +181,9 @@ void MainWindow::setupToolbars()
 {
     // ============ Main ToolBar  ================================
     m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    m_mainBar->setContextMenuPolicy(Qt::PreventContextMenu);
-    m_mainBar->setFloatable(false);
-    m_mainBar->setMovable(false);
+//     m_mainBar->setContextMenuPolicy(Qt::PreventContextMenu);
+//     m_mainBar->setFloatable(false);
+//     m_mainBar->setMovable(false);
 
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Back)) );
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Forward)) );
@@ -203,8 +203,8 @@ void MainWindow::setupToolbars()
     m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_bmBar->setAcceptDrops(true);
     m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
-    m_bmBar->setFloatable(false);
-    m_bmBar->setMovable(false);
+//     m_bmBar->setFloatable(false);
+//     m_bmBar->setMovable(false);
 
     Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
 }
