@@ -181,9 +181,6 @@ void MainWindow::setupToolbars()
 {
     // ============ Main ToolBar  ================================
     m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-//     m_mainBar->setContextMenuPolicy(Qt::PreventContextMenu);
-//     m_mainBar->setFloatable(false);
-//     m_mainBar->setMovable(false);
 
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Back)) );
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Forward)) );
@@ -203,8 +200,6 @@ void MainWindow::setupToolbars()
     m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_bmBar->setAcceptDrops(true);
     m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
-//     m_bmBar->setFloatable(false);
-//     m_bmBar->setMovable(false);
 
     Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
 }
@@ -398,7 +393,14 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(detachTab()) );
     
     // ----------------------- Bookmarks ToolBar Action --------------------------------------
-    QAction *qa = m_bmBar->toggleViewAction();
+    QAction *qa;
+    
+    qa = m_mainBar->toggleViewAction();
+    qa->setText( i18n("Main Toolbar") );
+    qa->setIcon( KIcon("bookmark-toolbar") );
+    actionCollection()->addAction(QLatin1String("main_bar"), qa);
+    
+    qa = m_bmBar->toggleViewAction();
     qa->setText( i18n("Bookmarks Toolbar") );
     qa->setIcon( KIcon("bookmark-toolbar") );
     actionCollection()->addAction(QLatin1String("bm_bar"), qa);
