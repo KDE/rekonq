@@ -51,7 +51,7 @@ PreviewChooser::PreviewChooser(int previewIndex, QString url)
     setModal(true);
     
     setButtons(KDialog::Cancel | KDialog::Apply | KDialog::Ok);
-    setDefaultButton(KDialog::Ok);
+    //setDefaultButton(KDialog::Ok);
     connect(this, SIGNAL(buttonClicked(KDialog::ButtonCode)), this, SLOT(buttonClicked(KDialog::ButtonCode)));
     
     m_treeView->setUniformRowHeights(true);
@@ -68,18 +68,7 @@ PreviewChooser::PreviewChooser(int previewIndex, QString url)
     QLabel *searchLabel = new QLabel(i18n("adress:"));
     urlLayout->addWidget(searchLabel);
     m_line = new KLineEdit;
-    connect(m_line, SIGNAL(textChanged(QString)), SLOT(urlChanged()));
-    urlLayout->addWidget(m_line);
     
-    if(url.isEmpty() || url.startsWith("about:"))
-       m_line->setText(QString("http://"));
-    else
-    {
-        m_line->setText(url);
-        m_line->setSelection(8, m_line->text().size());
-    }
-    
-
     // setup view
     QVBoxLayout *vBoxLayout = new QVBoxLayout;
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
@@ -94,6 +83,21 @@ PreviewChooser::PreviewChooser(int previewIndex, QString url)
     m_treeView->setModel(m_model);
     
     connect(m_treeView, SIGNAL(activated(QModelIndex)), SLOT(setUrl(QModelIndex)));
+    
+    connect(m_line, SIGNAL(textChanged(QString)), SLOT(urlChanged()));
+    urlLayout->addWidget(m_line);
+    
+    if(url.isEmpty() || url.startsWith("about:"))
+        m_line->setText(QString("http://"));
+    else
+    {
+        m_line->setText(url);
+        m_line->setSelection(8, m_line->text().size());
+    }
+    
+    enableButtonApply(false);
+    setFocusProxy(mainWidget);
+    mainWidget->setFocusProxy(m_line);
 }
 
 
@@ -112,12 +116,12 @@ void PreviewChooser::refreshModel()
     {
         WebView *view = qobject_cast<WebView *>(mv->webTab(i)->view());
         
-        if(view->url().scheme() == "about")
-            continue;
-        
-        QStandardItem *it = new QStandardItem(Application::icon(view->url()), view->title());
-        it->setData(QVariant(view->url()), Qt::ToolTipRole);
-        m_model->insertRow(i, it);
+        if(view->url().scheme() != "about")
+        {
+            QStandardItem *it = new QStandardItem(Application::icon(view->url()), view->title());
+            it->setData(QVariant(view->url()), Qt::ToolTipRole);
+            m_model->appendRow(it);
+        }
     }
 }
 
