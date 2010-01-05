@@ -85,6 +85,14 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
     if( _url.protocol() == QLatin1String("http") || _url.protocol() == QLatin1String("https") )
         return false;
     
+    // javascript handling
+    if( _url.protocol() == QLatin1String("javascript") )
+    {
+        QString scriptSource = _url.authority();
+        QVariant result = frame->evaluateJavaScript(scriptSource);
+        return true;
+    }
+    
     // "mailto" handling
     if ( _url.protocol() == QLatin1String("mailto") )
     {
