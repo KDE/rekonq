@@ -239,47 +239,50 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addAction(mainwindow->actionByName("view_redisplay"));
 
-        menu.addSeparator();
-
-        menu.addAction(mainwindow->actionByName("new_tab"));    
-        menu.addAction(mainwindow->actionByName("new_window"));
-
-        menu.addSeparator();
-
-        //Frame
-        KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
-
-        frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
-
-        a = new KAction( KIcon("document-print-frame"), i18n("Print Frame"), this);
-        connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
-        frameMenu->addAction(a);
-
-        menu.addAction(frameMenu);
-        
-        menu.addSeparator();
-        
-        // Page Actions
-        menu.addAction(pageAction(KWebPage::SelectAll));
-
-        menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
-
-        if (ReKonfig::kgetList())
+        if( result.pixmap().isNull() )
         {
-            a = new KAction(KIcon("kget"), i18n("List all links"), this);
-            connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
-            menu.addAction(a);
-        }
+            menu.addSeparator();
 
-        menu.addAction(mainwindow->actionByName("page_source"));
+            menu.addAction(mainwindow->actionByName("new_tab"));    
+            menu.addAction(mainwindow->actionByName("new_window"));
 
-        QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
-        menu.addAction(addBookmarkAction);
+            menu.addSeparator();
 
-        if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
-        {
-            // Developer Extras actions
-            menu.addAction(pageAction(KWebPage::InspectElement));
+            //Frame
+            KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
+
+            frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
+
+            a = new KAction( KIcon("document-print-frame"), i18n("Print Frame"), this);
+            connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
+            frameMenu->addAction(a);
+
+            menu.addAction(frameMenu);
+            
+            menu.addSeparator();
+            
+            // Page Actions
+            menu.addAction(pageAction(KWebPage::SelectAll));
+
+            menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
+
+            if (ReKonfig::kgetList())
+            {
+                a = new KAction(KIcon("kget"), i18n("List all links"), this);
+                connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
+                menu.addAction(a);
+            }
+
+            menu.addAction(mainwindow->actionByName("page_source"));
+
+            QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
+            menu.addAction(addBookmarkAction);
+
+            if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
+            {
+                // Developer Extras actions
+                menu.addAction(pageAction(KWebPage::InspectElement));
+            }
         }
 
         if(mainwindow->isFullScreen())
@@ -397,4 +400,3 @@ void WebView::keyPressEvent(QKeyEvent *event)
     
     KWebView::keyPressEvent(event);
 }
-
