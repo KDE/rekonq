@@ -250,7 +250,7 @@ KIcon Application::icon(const KUrl &url)
             return KIcon("view-history");
         if(url == KUrl("about:bookmarks"))
             return KIcon("bookmarks");
-        if(url == KUrl("about:home") || url == KUrl("about:favorites"))
+        if(url == KUrl("about:favorites"))
             return KIcon("emblem-favorite");
     }
     

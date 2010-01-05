@@ -29,6 +29,9 @@
     <entry name="newTabsBehaviour" type="Int">
         <default>0</default>
     </entry>
+    <entry name="newTabStartPage" type="Int">
+        <default>0</default>
+    </entry>
     <entry name="homePage" type="String">
         <default>http://www.kde.org/</default>
     </entry>

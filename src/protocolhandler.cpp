@@ -26,6 +26,9 @@
 // Self Includes
 #include "protocolhandler.h"
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "newtabpage.h"
 #include "application.h"
@@ -76,6 +79,12 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
     _url = request.url();
     _frame = frame;
     
+    kDebug() << "URL PROTOCOL: " << _url;
+    
+    // "http(s)" (fast) handling
+    if( _url.protocol() == QLatin1String("http") || _url.protocol() == QLatin1String("https") )
+        return false;
+    
     // "mailto" handling
     if ( _url.protocol() == QLatin1String("mailto") )
     {
@@ -86,11 +95,30 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
     // "about" handling
     if ( _url.protocol() == QLatin1String("about") )
     {
+        if( _url == KUrl("about:home") )
+        {
+            switch(ReKonfig::newTabStartPage())
+            {
+            case 0: // favorites
+                _url = KUrl("about:favorites");
+                break;
+            case 1: // closed tabs
+                _url = KUrl("about:closedTabs");
+                break;
+            case 2: // history
+                _url = KUrl("about:history");
+                break;
+            case 3: // bookmarks
+                _url = KUrl("about:bookmarks");
+                break;
+            default: // unuseful
+                break;
+            }
+        }
         if( _url == KUrl("about:closedTabs")
             || _url == KUrl("about:history")
             || _url == KUrl("about:bookmarks")
             || _url == KUrl("about:favorites")
-            || _url == KUrl("about:home")
             )
         {
             NewTabPage p(frame);
