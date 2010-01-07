@@ -274,15 +274,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             }
 
             menu.addAction(mainwindow->actionByName("page_source"));
-
-            QAction *addBookmarkAction = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
-            menu.addAction(addBookmarkAction);
-
-            if (page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled))
-            {
-                // Developer Extras actions
-                menu.addAction(pageAction(KWebPage::InspectElement));
-            }
+            
+            a = new KAction( KIcon("layer-visible-on"), i18n("Inspect Element"), this);
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(inspect()));
+            menu.addAction(a);
+            
+            a = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
+            menu.addAction(a);
         }
 
         if(mainwindow->isFullScreen())
@@ -399,4 +397,12 @@ void WebView::keyPressEvent(QKeyEvent *event)
     }
     
     KWebView::keyPressEvent(event);
+}
+
+
+void WebView::inspect()
+{
+    QAction *a = Application::instance()->mainWindow()->actionByName("web_inspector");
+    if(a && !a->isChecked())
+        a->trigger();
 }
