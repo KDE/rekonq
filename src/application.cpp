@@ -271,7 +271,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (url.isEmpty())
         return;
 
-    KUrl loadingUrl = xssSanitization(url);
+    KUrl loadingUrl(url);
 
     if ( !loadingUrl.isValid() )
     {
@@ -279,10 +279,6 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
-    /*    // loading home pages
-        if (mainWindow()->newTabPage(loadingUrl))
-            return;*/
-    
     if (loadingUrl.scheme() == QLatin1String("mailto"))
     {
         KToolInvocation::invokeMailer(loadingUrl);
@@ -404,20 +400,5 @@ AdBlockManager *Application::adblockManager()
         s_adblockManager = new AdBlockManager(instance());
     }
     return s_adblockManager;
-}
-
-
-KUrl Application::xssSanitization(const KUrl &url)
-{
-    QString urlString = url.url();
-    
-    QList<QChar> l;     // TODO: learn regular expression
-    l << '\'' << '\"' << '<' << '>';
-    foreach(const QChar &c, l)
-    {
-        QStringList list = urlString.split(c);
-        urlString = list.at(0);
-    }
-    return KUrl(urlString);
 }
     

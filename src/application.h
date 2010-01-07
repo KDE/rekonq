@@ -134,8 +134,6 @@ private slots:
     void postLaunch();
 
 private:
-    KUrl xssSanitization(const KUrl &url);
-    
     static QPointer<HistoryManager> s_historyManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;
     static QPointer<SessionManager> s_sessionManager;
