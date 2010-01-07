@@ -191,6 +191,10 @@ void WebPage::manageNetworkErrors(QNetworkReply* reply)
     if( reply->error() == QNetworkReply::NoError )
         return;
 
+    // don't bother on adblocked urls
+    if( reply->error() == QNetworkReply::ContentAccessDenied )
+        return;
+    
     if( reply->url() != m_requestedUrl ) // prevent favicon loading
         return;
     
