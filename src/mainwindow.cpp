@@ -1023,6 +1023,11 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     m_popup->layout()->setMargin(margin);
 
     // useful values
+    
+    // fix crash on window close
+    if(!m_view->currentWebTab()->page()->currentFrame())
+        return;
+    
     bool scrollbarIsVisible = m_view->currentWebTab()->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
     int scrollbarSize = 0;
     if (scrollbarIsVisible)
