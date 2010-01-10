@@ -813,16 +813,17 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
 
     if (!makeVisible)
     {
-        // save current state
-        bookmarksToolBarFlag = m_bmBar->isHidden();
-        m_bmBar->hide();
-
-        m_view->setTabBarHidden(true);
+        // save current state, if in windowed mode
+        if (!isFullScreen())
+        {
+            bookmarksToolBarFlag = m_bmBar->isHidden();
+            sidePanelFlag = sidePanel()->isHidden();
+            bookmarksPanelFlag = bookmarksPanel()->isHidden();
+        }
         
-        sidePanelFlag = sidePanel()->isHidden();
-        sidePanel()->hide();
-
-        bookmarksPanelFlag = bookmarksPanel()->isHidden();
+        m_bmBar->hide();        
+        m_view->setTabBarHidden(true);
+        sidePanel()->hide();       
         bookmarksPanel()->hide();
 
         // hide main toolbar
@@ -834,7 +835,7 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
         m_mainBar->show();
         m_view->setTabBarHidden(false);
 
-        // restore previous state
+        // restore state of windowed mode
         if (!bookmarksToolBarFlag)
             m_bmBar->show();
         if (!sidePanelFlag)
