@@ -25,6 +25,7 @@
 
 // Self Includes
 #include "protocolhandler.h"
+#include "protocolhandler.moc"
 
 // Auto Includes
 #include "rekonq.h"
@@ -74,12 +75,16 @@ ProtocolHandler::~ProtocolHandler()
 }
 
 
-bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
+bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *frame)
 {
     _url = request.url();
     _frame = frame;
     
     kDebug() << "URL PROTOCOL: " << _url;
+    
+    // relative urls
+    if(_url.isRelative())
+        return false;
     
     // "http(s)" (fast) handling
     if( _url.protocol() == QLatin1String("http") || _url.protocol() == QLatin1String("https") )
@@ -134,6 +139,29 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
             return true;
         }
     }
+    
+    return false;
+}
+
+
+bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *frame)
+{
+    _url = request.url();
+    _frame = frame;
+    
+    kDebug() << "URL PROTOCOL: " << _url;
+    
+    // "http(s)" (fast) handling
+    if( _url.protocol() == QLatin1String("http") || _url.protocol() == QLatin1String("https") )
+        return false;
+    
+    // "mailto" handling: It needs to be handled both here(mail links clicked)
+    // and in prehandling (mail url launched)
+    if ( _url.protocol() == QLatin1String("mailto") )
+    {
+        KToolInvocation::invokeMailer(_url);
+        return true;
+    }
 
     // "ftp" handling. A little bit "hard" handling this. Hope I found
     // the best solution.
@@ -154,6 +182,7 @@ bool ProtocolHandler::handle(const QNetworkRequest &request, QWebFrame *frame)
         if(fileInfo.isDir())
         {
             _lister->openUrl(_url);
+            Application::instance()->mainWindow()->mainView()->urlBar()->setUrl(_url);
             return true;
         }
     }

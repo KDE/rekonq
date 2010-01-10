@@ -49,8 +49,18 @@ public:
     ProtocolHandler(QObject *parent = 0);    
     ~ProtocolHandler();
 
-    bool handle(const QNetworkRequest &request, QWebFrame *frame);
+    /**
+     * This function handles all the protocols that have to be handled before
+     * WebKit does
+     */
+    bool preHandling(const QNetworkRequest &request, QWebFrame *frame);
 
+    /**
+     * This function handles all the protocols that have to be handled after
+     * WebKit tried to
+     */
+    bool postHandling(const QNetworkRequest &request, QWebFrame *frame);
+    
 signals:
     void downloadUrl( const KUrl &);
     

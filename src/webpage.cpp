@@ -105,9 +105,11 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             return false;
     }
 
-    if(m_protHandler.handle(request,frame))
+    if (frame && m_protHandler.preHandling( request, frame ))
+    {
         return false;
-        
+    }
+
     m_requestedUrl = request.url();
 
     return KWebPage::acceptNavigationRequest(frame, request, type);
@@ -189,6 +191,9 @@ void WebPage::loadFinished(bool)
 void WebPage::manageNetworkErrors(QNetworkReply* reply)
 {
     if( reply->error() == QNetworkReply::NoError )
+        return;
+
+    if(m_protHandler.postHandling( reply->request(), mainFrame() ))
         return;
 
     // don't bother on adblocked urls

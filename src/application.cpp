@@ -271,7 +271,8 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (url.isEmpty())
         return;
 
-    KUrl loadingUrl(url);
+    // sanitization
+    KUrl loadingUrl( url.toEncoded() );
 
     if ( !loadingUrl.isValid() )
     {
@@ -279,74 +280,41 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
-    if (loadingUrl.scheme() == QLatin1String("mailto"))
-    {
-        KToolInvocation::invokeMailer(loadingUrl);
-        return;
-    }
-
     // first, create the webview(s) to not let hangs UI..
-    WebTab *webView = 0;
+    WebTab *tab = 0;
     MainWindow *w = 0;
-    if(type == Rekonq::NewWindow)
-        w = newMainWindow();
-    else
-        w = mainWindow();
+    w = (type == Rekonq::NewWindow) 
+        ? newMainWindow()
+        : mainWindow();
         
     switch(type)
     {
     case Rekonq::SettingOpenTab:
-        webView = w->mainView()->newWebTab(!ReKonfig::openTabsBack(),
+        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(),
                                            ReKonfig::openTabsNearCurrent());
         break;
     case Rekonq::NewCurrentTab:
-        webView = w->mainView()->newWebTab(true);
+        tab = w->mainView()->newWebTab(true);
         break;
     case Rekonq::NewBackTab:
-        webView = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
+        tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
         break;
     case Rekonq::NewWindow:
     case Rekonq::CurrentTab:
-        webView = w->mainView()->currentWebTab();
+        tab = w->mainView()->currentWebTab();
         break;
     };
-
-    // WARNING this is just a temporary hack waiting for the new "awesome bar" (rekonq 0.4 target)
-    // and it may not work in all cases.
-    // Known issues are (add that here to test the awesome bar code):
-    // - web shortcuts with space separator
-    // - relative urls
-    // - ...
-    if (loadingUrl.isRelative())
-    {
-        QString fn = loadingUrl.url(KUrl::RemoveTrailingSlash);
-        if(loadingUrl.path().contains('.') && !loadingUrl.path().contains(' '))
-        {
-            loadingUrl.setUrl("//" + fn);
-            loadingUrl.setScheme("http");
-        }
-        else
-        {
-            loadingUrl.setUrl(url.fileName());
-            loadingUrl.setScheme("gg");
-        }
-    }
 
     // this should let rekonq filtering URI info and supporting
     // the beautiful KDE web browsing shortcuts
     KUriFilterData data(loadingUrl.pathOrUrl());
-    data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" 
-                                        // are considered as executables
-    if (KUriFilter::self()->filterUri(data))
-    {
-        loadingUrl = data.uri().url();
-    }
-    // ------------------- END WARNING --------------------------------------
+    data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
+    loadingUrl = KUriFilter::self()->filterUri(data) ? data.uri().url() : QUrl::fromUserInput(loadingUrl.pathOrUrl());
 
     // we are sure of the url now, let's add it to history
     // anyway we store here just http sites because local and ftp ones are
     // added trough the protocol handler and the other are ignored
-    if( url.protocol() == QLatin1String("http") )
+    if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("https") )
         historyManager()->addHistoryEntry( loadingUrl.prettyUrl() );
     
     if (!ReKonfig::openTabsBack())
@@ -354,12 +322,13 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
     }
     
-    if (webView)
+    if (tab)
     {
-        webView->setFocus();
-        webView->view()->load(loadingUrl);
+        tab->setFocus();
+        tab->view()->load(loadingUrl);
     }
 }
+
 
 
 void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& type)
