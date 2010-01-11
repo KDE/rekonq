@@ -1110,20 +1110,23 @@ void MainWindow::aboutToShowBackMenu()
     if (!currentTab())
         return;
     QWebHistory *history = currentTab()->view()->history();
-    int historyCount = history->count();
+    int pivot = history->currentItemIndex();
+    int offset = 0;
+    QList<QWebHistoryItem> historyList = history->backItems(8); //no more than 8 elements!
+    int listCount = historyList.count();
+    if(pivot >= 8)
+        offset = pivot - 8; 
+    
 
-    // Limit history views in the menu to 8
-    if(historyCount > 8)
-        historyCount = 8;
 
-    for (int i = history->backItems(historyCount).count() - 1; i >= 0; --i)
+    for(int i = listCount - 1; i>=0; --i)
     {
-        QWebHistoryItem item = history->backItems(history->count()).at(i);
+        QWebHistoryItem item = historyList.at(i);
         KAction *action = new KAction(this);
-        action->setData( i - history->currentItemIndex() );
-        QIcon icon = Application::icon(item.url());
-        action->setIcon(icon);
-        action->setText(item.title());
+        action->setData(i + offset);
+        QIcon icon = Application::icon( item.url() );
+        action->setIcon( icon );
+        action->setText( item.title() );
         m_historyBackMenu->addAction(action);
     }
 }
@@ -1131,24 +1134,14 @@ void MainWindow::aboutToShowBackMenu()
 
 void MainWindow::openActionUrl(QAction *action)
 {
-    int offset = action->data().toInt();
-    QWebHistory *history = currentTab()->view()->history();
-
-    if(!history->itemAt(offset).isValid())
+    int index = action->data().toInt();
+    
+    QWebHistory *history = currentTab()->view()->history();    
+    if(!history->itemAt(index).isValid())
     {
-        kDebug() << "Invalid Offset!";
+        kDebug() << "Invalid Index!: "<< index;
         return;
     }
 
-    if (offset < 0)
-    {
-        history->goToItem(history->itemAt(offset)); // back
-        return;
-    }
-
-    if (offset > 0)
-    {
-        history->goToItem(history->forwardItems(history->count() - offset).back()); // forward FIXME CRASH
-    }
-
+    history->goToItem( history->itemAt(index) );
 }
