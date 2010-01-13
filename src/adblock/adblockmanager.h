@@ -30,7 +30,6 @@
 
 // Local Includes
 #include "adblockrule.h"
-typedef QList<AdBlockRule> AdBlockRuleList;
 
 // Qt Includes
 #include <QObject>
@@ -38,6 +37,84 @@ typedef QList<AdBlockRule> AdBlockRuleList;
 
 // Forward Includes
 class QNetworkRequest;
+
+// Definitions
+typedef QList<AdBlockRule> AdBlockRuleList;
+
+
+// NOTE: AdBlockPlus Filters (fast) summary
+// 
+// # Basic Filter rules
+// 
+// RULE = http://example.com/ads/* 
+// this should block every link containing all things from that link
+// 
+// # Exception rules
+// 
+// RULE = @@advice*
+// 
+// this will save every site, also that matched by other rules, cointaining words
+// that starts with "advice". Wildcards && regular expression allowed here.
+// 
+// # Beginning/end matching rules
+// 
+// RULE=|http://badsite.com
+// 
+// will stop all links starting with http://badsite.com
+// 
+// RULE=*swf|
+// 
+// will stop all links to direct flash contents
+// 
+// # Comments
+// 
+// RULE=!azz..
+// 
+// Every rule starting with a ! is commented out and should not be checked
+// 
+// # Filter Options
+// 
+// You can also specify a number of options to modify the behavior of a filter. 
+// You list these options separated with commas after a dollar sign ($) at the end of the filter
+// 
+// RULE=*/ads/*$element,match-case
+// 
+// where $element can be one of the following:
+// $script             external scripts loaded via HTML script tag
+// $image              regular images, typically loaded via HTML img tag
+// $background         background images, often specified via CSS
+// $stylesheet         external CSS stylesheet files
+// $object             content handled by browser plugins, e.g. Flash or Java
+// $xbl                XBL bindings (typically loaded by -moz-binding CSS property) Firefox 3 or higher required
+// $ping               link pings Firefox 3 or higher required
+// $xmlhttprequest     requests started by the XMLHttpRequest object Firefox 3 or higher required
+// $object-subrequest  requests started plugins like Flash Firefox 3 or higher required
+// $dtd                DTD files loaded by XML documents Firefox 3 or higher required
+// $subdocument        embedded pages, usually included via HTML frames
+// $document           the page itself (only exception rules can be applied to the page)
+// $other              types of requests not covered in the list above
+// 
+// Inverse type options are allowed through the ~ sign, for example:
+// 
+// RULE=*/ads/*~$script,match-case
+// 
+// # Regular expressions
+// 
+// They usually allow to check for (a lot of) sites, using just one rule, but be careful:
+// BASIC FILTERS ARE PROCESSED FASTER THAN REGULAR EXPRESSIONS (In ADP! In rekonq, I don't know...)
+// 
+// 
+// ##### ELEMENT HIDING
+// 
+// This is quite different from usual adblock (but, for me, more powerful!). Sometimes you will find advertisements 
+// that can’t be blocked because they are embedded as text in the web page itself.
+// All you can do there is HIDE the element :)
+// 
+// RULE=##div.advise
+// 
+// The previous rule will hide every div whose class is named "advise". Usual CSS selectors apply here :)
+//
+// END NOTE
 
 
 class AdBlockManager : public QObject
