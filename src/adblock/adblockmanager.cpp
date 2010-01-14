@@ -83,24 +83,23 @@ void AdBlockManager::loadSettings()
 
             if (name.startsWith(QLatin1String("Filter")))
             {
-                if(url.startsWith("!"))
-                {
-                    continue;
-                }
-                
-                if(url.startsWith("@@"))
-                {
-                    AdBlockRule rule( url.mid(2) );
-                    _whiteList << rule;
-                    continue;
-                }
-                
-                if(url.startsWith("##"))
-                {
-                    _hideList << url.mid(2);
-                }
-                else
-                {
+                if(!url.startsWith("!"))
+                {           
+                    // white rules
+                    if(url.startsWith("@@"))
+                    {
+                        AdBlockRule rule( url.mid(2) );
+                        _whiteList << rule;
+                        continue;
+                    }
+                    
+                    // hide (CSS) rules
+                    if(url.startsWith("##"))
+                    {
+                        _hideList << url.mid(2);
+                        continue;
+                    }
+
                     AdBlockRule rule( url );
                     _blackList << rule;
                 }

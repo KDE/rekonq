@@ -58,6 +58,9 @@
 #include <QRegExp>
 #include <QUrl>
 
+#define QL1S(x) QLatin1String(x)
+#define QL1C(x) QLatin1Char(x)
+
 
 AdBlockRule::AdBlockRule(const QString &filter)
 {
@@ -65,31 +68,29 @@ AdBlockRule::AdBlockRule(const QString &filter)
 
     QString parsedLine = filter;
     
-    if (parsedLine.startsWith(QLatin1Char('/'))) 
+    if ( parsedLine.startsWith( QL1C('/') ) && parsedLine.endsWith( QL1C('/') ) ) 
     {
-        if (parsedLine.endsWith(QLatin1Char('/'))) 
-        {
-            parsedLine = parsedLine.mid(1);
-            parsedLine = parsedLine.left(parsedLine.size() - 1);
-            isRegExpRule = true;
-        }
+        parsedLine = parsedLine.mid(1);
+        parsedLine = parsedLine.left(parsedLine.size() - 1);
+        isRegExpRule = true;
     }
     
-    int options = parsedLine.indexOf(QLatin1String("$"), 0);
+    int options = parsedLine.indexOf( QL1C('$'), 0);
     if (options >= 0) 
     {
-        m_options = parsedLine.mid(options + 1).split(QLatin1Char(','));
+        m_options = parsedLine.mid(options + 1).split(QL1C(','));
         parsedLine = parsedLine.left(options);
     }
 
     if(!isRegExpRule)
         parsedLine = convertPatternToRegExp(parsedLine);
+    
     m_regExp = QRegExp(parsedLine, Qt::CaseInsensitive, QRegExp::RegExp2);
 
-    if (m_options.contains(QLatin1String("match-case"))) 
+    if (m_options.contains( QL1S("match-case") )) 
     {
         m_regExp.setCaseSensitivity(Qt::CaseSensitive);
-        m_options.removeOne(QLatin1String("match-case"));
+        m_options.removeOne( QL1S("match-case") );
     }
 }
 
@@ -101,34 +102,36 @@ bool AdBlockRule::match(const QString &encodedUrl) const
 {
     bool matched = m_regExp.indexIn(encodedUrl) != -1;
 
-    if (matched && !m_options.isEmpty()) 
-    {
-        // we only support domain right now
-        if (m_options.count() == 1)
-        {
-            foreach (const QString &option, m_options) 
-            {
-                if (option.startsWith(QLatin1String("domain="))) 
-                {
-                    QUrl url = QUrl::fromEncoded(encodedUrl.toUtf8());
-                    QString host = url.host();
-                    QStringList domainOptions = option.mid(7).split(QLatin1Char('|'));
-                    foreach (QString domainOption, domainOptions) 
-                    {
-                        bool negate = domainOption.at(0) == QLatin1Char('~');
-                        if (negate)
-                            domainOption = domainOption.mid(1);
-                        bool hostMatched = domainOption == host;
-                        if (hostMatched && !negate)
-                            return true;
-                        if (!hostMatched && negate)
-                            return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
+// TODO: Reimplement this in rekonq 0.5 :)
+//
+//     if (matched && !m_options.isEmpty()) 
+//     {
+//         // we only support domain right now
+//         if (m_options.count() == 1)
+//         {
+//             foreach (const QString &option, m_options) 
+//             {
+//                 if (option.startsWith( QL1S("domain=") )) 
+//                 {
+//                     QUrl url = QUrl::fromEncoded(encodedUrl.toUtf8());
+//                     QString host = url.host();
+//                     QStringList domainOptions = option.mid(7).split( QL1C('|') );
+//                     foreach (QString domainOption, domainOptions) 
+//                     {
+//                         bool negate = domainOption.at(0) == QL1C('~');
+//                         if (negate)
+//                             domainOption = domainOption.mid(1);
+//                         bool hostMatched = domainOption == host;
+//                         if (hostMatched && !negate)
+//                             return true;
+//                         if (!hostMatched && negate)
+//                             return true;
+//                     }
+//                 }
+//             }
+//         }
+//         return false;
+//     }
 
     return matched;
 }
@@ -137,17 +140,37 @@ bool AdBlockRule::match(const QString &encodedUrl) const
 QString AdBlockRule::convertPatternToRegExp(const QString &wildcardPattern)
 {
     QString pattern = wildcardPattern;
-    return pattern.replace(QRegExp(QLatin1String("\\*+")), QLatin1String("*"))   // remove multiple wildcards
-        .replace(QRegExp(QLatin1String("\\^\\|$")), QLatin1String("^"))        // remove anchors following separator placeholder
-        .replace(QRegExp(QLatin1String("^(\\*)")), QLatin1String(""))          // remove leading wildcards
-        .replace(QRegExp(QLatin1String("(\\*)$")), QLatin1String(""))          // remove trailing wildcards
-        .replace(QRegExp(QLatin1String("(\\W)")), QLatin1String("\\\\1"))      // escape special symbols
-        .replace(QRegExp(QLatin1String("^\\\\\\|\\\\\\|")),
-                 QLatin1String("^[\\w\\-]+:\\/+(?!\\/)(?:[^\\/]+\\.)?"))       // process extended anchor at expression start
-        .replace(QRegExp(QLatin1String("\\\\\\^")),
-                 QLatin1String("(?:[^\\w\\d\\-.%]|$)"))                        // process separator placeholders
-        .replace(QRegExp(QLatin1String("^\\\\\\|")), QLatin1String("^"))       // process anchor at expression start
-        .replace(QRegExp(QLatin1String("\\\\\\|$")), QLatin1String("$"))       // process anchor at expression end
-        .replace(QRegExp(QLatin1String("\\\\\\*")), QLatin1String(".*"))       // replace wildcards by .*
-        ;
+    
+    // remove multiple wildcards
+    pattern.replace(QRegExp( QL1S("\\*+") ), QL1S("*") );
+    
+    // remove anchors following separator placeholder
+    pattern.replace(QRegExp( QL1S("\\^\\|$") ), QL1S("^") );
+    
+    // remove leading wildcards
+    pattern.replace(QRegExp( QL1S("^(\\*)") ), QL1S("") );
+    
+    // remove trailing wildcards
+    pattern.replace(QRegExp( QL1S("(\\*)$") ), QL1S("") );
+    
+    // escape special symbols
+    pattern.replace(QRegExp( QL1S("(\\W)") ), QL1S("\\\\1") );
+    
+    // process extended anchor at expression start
+    pattern.replace(QRegExp( QL1S("^\\\\\\|\\\\\\|") ), QL1S("^[\\w\\-]+:\\/+(?!\\/)(?:[^\\/]+\\.)?") );
+    
+    // process separator placeholders
+    pattern.replace(QRegExp( QL1S("\\\\\\^") ), QL1S("(?:[^\\w\\d\\-.%]|$)") );
+    
+    // process anchor at expression start
+    pattern.replace(QRegExp( QL1S("^\\\\\\|") ), QL1S("^") );
+    
+    // process anchor at expression end
+    pattern.replace(QRegExp( QL1S("\\\\\\|$") ), QL1S("$") );
+    
+    // replace wildcards by .*
+    pattern.replace(QRegExp( QL1S("\\\\\\*") ), QL1S(".*") );
+
+    // Finally, return...
+    return pattern;
 }
