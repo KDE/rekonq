@@ -60,24 +60,10 @@
 
 
 AdBlockRule::AdBlockRule(const QString &filter)
-    : m_cssRule(false)
-    , m_exceptionRule(false)
-    , m_enabledRule(true)
 {
     bool isRegExpRule = false;
 
-    if (filter.startsWith(QLatin1String("!")) || filter.trimmed().isEmpty())
-        m_enabledRule = false;
-
-    if (filter.contains(QLatin1String("##")))
-        m_cssRule = true;
-
     QString parsedLine = filter;
-    if (parsedLine.startsWith(QLatin1String("@@"))) 
-    {
-        m_exceptionRule = true;
-        parsedLine = parsedLine.mid(2);
-    }
     
     if (parsedLine.startsWith(QLatin1Char('/'))) 
     {
@@ -113,12 +99,6 @@ AdBlockRule::AdBlockRule(const QString &filter)
 // return true means "matched rule", so stop url!
 bool AdBlockRule::match(const QString &encodedUrl) const
 {
-    if (m_cssRule)
-        return false;
-
-    if (!m_enabledRule)
-        return false;
-
     bool matched = m_regExp.indexIn(encodedUrl) != -1;
 
     if (matched && !m_options.isEmpty()) 

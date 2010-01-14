@@ -30,6 +30,7 @@
 
 // Local Includes
 #include "adblocknetworkreply.h"
+#include "webpage.h"
 
 // KDE Includes
 #include <KSharedConfig>
@@ -38,6 +39,7 @@
 
 // Qt Includes
 #include <QUrl>
+#include <QWebElement>
 
 
 AdBlockManager::AdBlockManager(QObject *parent)
@@ -64,11 +66,13 @@ void AdBlockManager::loadSettings()
         _isAdblockEnabled = cg.readEntry("Enabled", false);
         _isHideAdsEnabled = cg.readEntry("Shrink", false);
 
-        filterList.clear();
-        
         // no need to load filters if adblock is not enabled :)
         if(!_isAdblockEnabled)
             return;
+
+        _whiteList.clear();
+        _blackList.clear();
+        _hideList.clear();
         
         QMap<QString,QString> entryMap = cg.entryMap();
         QMap<QString,QString>::ConstIterator it;
@@ -79,8 +83,27 @@ void AdBlockManager::loadSettings()
 
             if (name.startsWith(QLatin1String("Filter")))
             {
-                AdBlockRule filter(url);
-                filterList << filter;
+                if(url.startsWith("!"))
+                {
+                    continue;
+                }
+                
+                if(url.startsWith("@@"))
+                {
+                    AdBlockRule rule( url.mid(2) );
+                    _whiteList << rule;
+                    continue;
+                }
+                
+                if(url.startsWith("##"))
+                {
+                    _hideList << url.mid(2);
+                }
+                else
+                {
+                    AdBlockRule rule( url );
+                    _blackList << rule;
+                }
             }
         }
     }
@@ -98,14 +121,52 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request)
     
     QString urlString = request.url().toString();
 
-    foreach(const AdBlockRule &filter, filterList)
+    // check white rules before :)
+    foreach(const AdBlockRule &filter, _whiteList)
     {
         if(filter.match(urlString))
         {
-            kDebug() << "****ADBLOCK: Matched: ***********" << urlString;
+            kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched: ***********" << urlString;
+            return 0;        
+        }
+    }
+    
+    // then check the black ones :(
+    foreach(const AdBlockRule &filter, _blackList)
+    {
+        if(filter.match(urlString))
+        {
+            kDebug() << "****ADBLOCK: BLACK RULE Matched: ***********" << urlString;
             AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
             return reply;        
         }
     }
+    
+    // no match
     return 0;
+}
+
+
+void AdBlockManager::applyHidingRules(WebPage *page)
+{
+    if(!page || !page->mainFrame())
+        return;
+    
+    if (!_isAdblockEnabled)
+        return;
+    
+    if (!_isHideAdsEnabled)
+        return;
+    
+    foreach(const QString &filter, _hideList)
+    {
+        QWebElement document = page->mainFrame()->documentElement();
+        QWebElementCollection elements = document.findAll(filter);
+
+        foreach (QWebElement element, elements) 
+        {
+            element.setStyleProperty(QLatin1String("visibility"), QLatin1String("hidden"));
+            element.removeFromDocument();
+        }
+    }
 }

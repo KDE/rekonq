@@ -42,6 +42,7 @@
 #include "webtab.h"
 #include "webpluginfactory.h"
 #include "networkaccessmanager.h"
+#include "adblockmanager.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -179,6 +180,8 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
 void WebPage::loadFinished(bool)
 {
+    Application::adblockManager()->applyHidingRules(this);
+    
     // KWallet Integration
     // TODO: Add check for sites exempt from automatic form filling...
     if (wallet()) 

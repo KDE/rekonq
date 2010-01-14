@@ -28,19 +28,6 @@
 #ifndef ADBLOCK_MANAGER_H
 #define ADBLOCK_MANAGER_H
 
-// Local Includes
-#include "adblockrule.h"
-
-// Qt Includes
-#include <QObject>
-#include <QNetworkReply>
-
-// Forward Includes
-class QNetworkRequest;
-
-// Definitions
-typedef QList<AdBlockRule> AdBlockRuleList;
-
 
 // NOTE: AdBlockPlus Filters (fast) summary
 // 
@@ -114,7 +101,23 @@ typedef QList<AdBlockRule> AdBlockRuleList;
 // 
 // The previous rule will hide every div whose class is named "advise". Usual CSS selectors apply here :)
 //
-// END NOTE
+// END NOTE ----------------------------------------------------------------------------------------------------------
+
+
+// Local Includes
+#include "adblockrule.h"
+
+// Qt Includes
+#include <QObject>
+#include <QNetworkReply>
+
+// Forward Includes
+class QNetworkRequest;
+class WebPage;
+class QStringList;
+
+// Definitions
+typedef QList<AdBlockRule> AdBlockRuleList;
 
 
 class AdBlockManager : public QObject
@@ -127,12 +130,15 @@ public:
 
     void loadSettings();
     QNetworkReply *block(const QNetworkRequest &request);
+    void applyHidingRules(WebPage *page);
     
 private:
     bool _isAdblockEnabled;
     bool _isHideAdsEnabled;
 
-    AdBlockRuleList filterList;
+    AdBlockRuleList _blackList;
+    AdBlockRuleList _whiteList;
+    QStringList _hideList;
 };
 
 #endif
