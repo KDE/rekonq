@@ -31,35 +31,35 @@
 
 // NOTE: AdBlockPlus Filters (fast) summary
 // 
-// # Basic Filter rules
+// ### Basic Filter rules
 // 
 // RULE = http://example.com/ads/* 
 // this should block every link containing all things from that link
 // 
-// # Exception rules
+// ### Exception rules (@@)
 // 
 // RULE = @@advice*
 // 
 // this will save every site, also that matched by other rules, cointaining words
 // that starts with "advice". Wildcards && regular expression allowed here.
 // 
-// # Beginning/end matching rules
+// ### Beginning/end matching rules (||)
 // 
-// RULE=|http://badsite.com
+// RULE=||http://badsite.com
 // 
 // will stop all links starting with http://badsite.com
 // 
-// RULE=*swf|
+// RULE=*swf||
 // 
 // will stop all links to direct flash contents
 // 
-// # Comments
+// ### Comments (!)
 // 
 // RULE=!azz..
 // 
 // Every rule starting with a ! is commented out and should not be checked
 // 
-// # Filter Options
+// ### Filter Options
 // 
 // You can also specify a number of options to modify the behavior of a filter. 
 // You list these options separated with commas after a dollar sign ($) at the end of the filter
@@ -85,13 +85,13 @@
 // 
 // RULE=*/ads/*~$script,match-case
 // 
-// # Regular expressions
+// ### Regular expressions
 // 
 // They usually allow to check for (a lot of) sites, using just one rule, but be careful:
 // BASIC FILTERS ARE PROCESSED FASTER THAN REGULAR EXPRESSIONS (In ADP! In rekonq, I don't know...)
 // 
 // 
-// ##### ELEMENT HIDING
+// ### ELEMENT HIDING (##)
 // 
 // This is quite different from usual adblock (but, for me, more powerful!). Sometimes you will find advertisements 
 // that can’t be blocked because they are embedded as text in the web page itself.
