@@ -42,10 +42,6 @@
 #include <QFile>
 
 
-#define WIDTH  200
-#define HEIGHT 150
-
-
 WebSnap::WebSnap(const QUrl &url)
     : QObject()
 {
@@ -112,6 +108,13 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
 
     return QPixmap::fromImage(pageImage);
+}
+
+
+void WebSnap::savePreview(QPixmap pm, KUrl url)
+{
+    QFile::remove(fileForUrl(url).toLocalFile());
+    pm.save(fileForUrl(url).toLocalFile());
 }
 
 

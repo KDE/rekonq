@@ -72,7 +72,7 @@
 
 WebPage::WebPage(QObject *parent)
         : KWebPage(parent, KWalletIntegration)
-        , m_newTabPage(0)
+        , m_newTabPage(new NewTabPage(mainFrame() ))
 {
     setForwardUnsupportedContent(true);
 
@@ -104,6 +104,12 @@ WebPage::~WebPage()
 }
 
 
+NewTabPage* WebPage::newTabPage()
+{
+    return m_newTabPage;
+}
+
+
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
     // advise users on resubmitting data
@@ -114,14 +120,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
                                                       i18n("Resend form data") );
         if(risp == KMessageBox::Cancel)
             return false;
-    }
-    
-    if (request.url().scheme() == QLatin1String("about"))
-    {
-        if(m_newTabPage == 0)
-            m_newTabPage = new NewTabPage(frame);
-        m_newTabPage->generate(request.url());
-        return false;
     }
 
     if (frame && m_protHandler.preHandling( request, frame ))

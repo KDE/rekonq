@@ -37,6 +37,9 @@
 #include <QImage>
 #include <QWebPage>
 
+#define WIDTH  200
+#define HEIGHT 150
+
 
 /**
  * This class renders a site producing an image based
@@ -53,11 +56,13 @@ public:
     
     QPixmap previewImage(); // TODO : remove
     
-    static QPixmap renderPreview(const QWebPage &page, int w, int h);
+    static QPixmap renderPreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
     
     static KUrl fileForUrl(KUrl url);
     
     static QString guessNameFromUrl(QUrl url);
+    
+    static void savePreview(QPixmap pm, KUrl url);
     
     QString snapTitle();
     QUrl snapUrl();

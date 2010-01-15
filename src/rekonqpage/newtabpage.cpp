@@ -36,7 +36,8 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
-#include "previewchooser.h"
+#include "websnap.h"
+#include "previewselectorbar.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -48,7 +49,6 @@
 
 // Qt Includes
 #include <QFile>
-#include <websnap.h>
 
 
 NewTabPage::NewTabPage(QWebFrame *frame)
@@ -86,10 +86,8 @@ void NewTabPage::generate(KUrl url)
         if(url.directory() == QString("preview/modify"))
         {
             int index = url.fileName().toInt();
-            QString url = m_root.findFirst("#preview" + QVariant(index).toString() + " > a").attribute("href");
-            PreviewChooser *pc = new PreviewChooser(index, url);
-            connect(pc, SIGNAL(urlChoosed(int,KUrl)), SLOT(setPreview(int,KUrl)));
-            pc->show();
+            Application::instance()->mainWindow()->findChild<PreviewSelectorBar *>()
+                        ->enable(index, qobject_cast< WebPage* >(m_root.webFrame()->page()));
             return;
         }
     }
@@ -260,9 +258,6 @@ void NewTabPage::snapFinished()
 
 void NewTabPage::removePreview(int index)
 {
-    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
-    
-    
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
     
@@ -272,9 +267,9 @@ void NewTabPage::removePreview(int index)
     ReKonfig::setPreviewNames(names);
     ReKonfig::setPreviewUrls(urls);
     
-    // sync file data
     ReKonfig::self()->writeConfig();
     
+    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
     prev.replace(emptyPreview(index));
 }
 
@@ -285,16 +280,31 @@ void NewTabPage::setPreview(int index, KUrl url)
         return;
     
     QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
-    
-    QStringList urls = ReKonfig::previewUrls();
-    urls.replace(index, url.toMimeDataString());
-    ReKonfig::setPreviewUrls(urls);
-    ReKonfig::self()->writeConfig();
-
     prev.replace(loadingPreview(index, url));
-
     
 }
+
+
+void NewTabPage::setPreview(int index, WebPage* page)
+{
+    KUrl url = page->mainFrame()->url();
+    
+    WebSnap::savePreview(WebSnap::renderPreview(*page), url);
+    
+    QStringList names = ReKonfig::previewNames();
+    QStringList urls = ReKonfig::previewUrls();
+    
+    urls.replace(index, url.toMimeDataString());
+    names.replace(index, page->mainFrame()->title());
+    
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+    
+    ReKonfig::self()->writeConfig();
+    
+    setPreview(index, url);
+}
+
 
 
 void NewTabPage::browsingMenu(const KUrl &currentUrl)

@@ -108,36 +108,9 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     // "about" handling
     if ( _url.protocol() == QLatin1String("about") )
     {
-        if( _url == KUrl("about:home") )
-        {
-            switch(ReKonfig::newTabStartPage())
-            {
-            case 0: // favorites
-                _url = KUrl("about:favorites");
-                break;
-            case 1: // closed tabs
-                _url = KUrl("about:closedTabs");
-                break;
-            case 2: // history
-                _url = KUrl("about:history");
-                break;
-            case 3: // bookmarks
-                _url = KUrl("about:bookmarks");
-                break;
-            default: // unuseful
-                break;
-            }
-        }
-        if( _url == KUrl("about:closedTabs")
-            || _url == KUrl("about:history")
-            || _url == KUrl("about:bookmarks")
-            || _url == KUrl("about:favorites")
-            )
-        {
-            NewTabPage p(frame);
-            p.generate(_url);
-            return true;
-        }
+        NewTabPage p(frame);
+        p.generate(_url);
+        return true;
     }
     
     return false;

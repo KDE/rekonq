@@ -55,10 +55,19 @@ public:
      */
     void generate(KUrl url = KUrl("about:home"));
     
-protected slots:
+public slots:
     void snapFinished();
     void removePreview(int index);
+    
+    /**
+        Used for recently closed tabs
+    */
     void setPreview(int index, KUrl url);
+    
+    /**
+        Used for favorites
+    */
+    void setPreview(int index, WebPage *page);
      
 protected:  // these are the function to build the new tab page
     void browsingMenu(const KUrl &currentUrl);
