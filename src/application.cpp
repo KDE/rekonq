@@ -309,7 +309,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     // the beautiful KDE web browsing shortcuts
     KUriFilterData data(loadingUrl.pathOrUrl());
     data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
-    loadingUrl = KUriFilter::self()->filterUri(data) ? data.uri().url() : QUrl::fromUserInput(loadingUrl.pathOrUrl());
+    loadingUrl = KUriFilter::self()->filterUri(data) ? data.uri().pathOrUrl() : QUrl::fromUserInput(loadingUrl.pathOrUrl());
 
     // we are sure of the url now, let's add it to history
     // anyway we store here just http sites because local and ftp ones are

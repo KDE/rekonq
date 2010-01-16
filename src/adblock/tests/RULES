@@ -10,10 +10,10 @@ adv
 @@advice
 !
 ! Block every google site :)
-|http://google*
+||http://google*
 !
 ! Block every pdf file!
-*pdf|
+*pdf||
 !
 ! Block every div of the class "advise"
 ##div.advise
