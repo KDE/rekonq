@@ -108,6 +108,8 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
 
     return QPixmap::fromImage(pageImage);
+    
+    kDebug() << w << h;
 }
 
 
@@ -172,8 +174,8 @@ void WebSnap::saveResult(bool ok)
     }
     QFile::remove(fileForUrl(m_url).toLocalFile());
     m_image.save(fileForUrl(m_url).toLocalFile());
-    kDebug() << "finished";
     
+    kDebug() << "finished";
     emit finished();
 }
 

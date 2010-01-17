@@ -32,8 +32,8 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 #include <QWebElement>
 
 // Forward Includes
@@ -58,16 +58,6 @@ public:
 public slots:
     void snapFinished();
     void removePreview(int index);
-    
-    /**
-        Used for recently closed tabs
-    */
-    void setPreview(int index, KUrl url);
-    
-    /**
-        Used for favorites
-    */
-    void setPreview(int index, WebPage *page);
      
 protected:  // these are the function to build the new tab page
     void browsingMenu(const KUrl &currentUrl);

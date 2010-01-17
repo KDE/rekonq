@@ -21,6 +21,10 @@
 // Auto Includes
 #include "previewselectorbar.h"
 
+// Local Include
+#include "rekonq.h"
+#include "websnap.h"
+
 // KDE Includes
 #include <KIcon>
 #include <KLocalizedString>
@@ -130,8 +134,24 @@ void PreviewSelectorBar::loadFinished()
 
 void PreviewSelectorBar::clicked()
 {
-    m_page->newTabPage()->setPreview(m_previewIndex, m_page);
+    KUrl url = m_page->mainFrame()->url();
+    
+    WebSnap::savePreview(WebSnap::renderPreview(*m_page), url);
+    
+    QStringList names = ReKonfig::previewNames();
+    QStringList urls = ReKonfig::previewUrls();
+    
+    urls.replace(m_previewIndex, url.toMimeDataString());
+    names.replace(m_previewIndex, m_page->mainFrame()->title());
+    
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+    
+    ReKonfig::self()->writeConfig();
+    
+    
     m_page->mainFrame()->load(KUrl("about:favorites"));
+    
     hide();
 }
 
