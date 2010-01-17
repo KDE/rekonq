@@ -148,7 +148,7 @@ private slots:
 
     void postLaunch();
 
-    
+
 protected:
     virtual void resizeEvent(QResizeEvent *event);
 

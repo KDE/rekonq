@@ -511,7 +511,7 @@ void MainView::closeTab(int index)
 
         removeTab(index);
         updateTabBar();         // UI operation: do it ASAP!!
-        delete tab; // webView is scheduled for deletion.
+        tab->deleteLater();  // webView is scheduled for deletion.
         
         emit tabsChanged();
 
