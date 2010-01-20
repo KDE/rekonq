@@ -55,11 +55,11 @@
 #define ADBLOCKRULE_H
 
 // Qt Includes
-#include <QStringList>
+#include <QRegExp>
+#include <QString>
 
 // Forward Includes
 class QUrl;
-class QRegExp;
 
 
 class AdBlockRule
@@ -73,7 +73,9 @@ private:
     QString convertPatternToRegExp(const QString &wildcardPattern);
     
     QRegExp m_regExp;
-    QStringList m_options;
+    
+    // Rule Options
+    bool m_optionMatchRule;
 };
 
 

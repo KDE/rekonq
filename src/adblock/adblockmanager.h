@@ -110,11 +110,11 @@
 // Qt Includes
 #include <QObject>
 #include <QNetworkReply>
+#include <QStringList>
 
 // Forward Includes
 class QNetworkRequest;
 class WebPage;
-class QStringList;
 
 // Definitions
 typedef QList<AdBlockRule> AdBlockRuleList;
