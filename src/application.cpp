@@ -68,7 +68,7 @@ QPointer<AdBlockManager> Application::s_adblockManager;
 
 
 Application::Application()
-        : KUniqueApplication()
+    : KUniqueApplication()
 {
 }
 
@@ -76,8 +76,11 @@ Application::Application()
 Application::~Application()
 {
     qDeleteAll(m_mainWindows);
+
     delete s_bookmarkProvider;
     delete s_historyManager;
+    delete s_sessionManager;
+    delete s_adblockManager;
 }
 
 
@@ -340,7 +343,7 @@ void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& typ
 MainWindow *Application::newMainWindow()
 {
     MainWindow *w = new MainWindow();
-    w->mainView()->newWebTab();    // remember using newWebView and NOT newTab here!!
+    w->mainView()->newWebTab();    // remember using newWebTab and NOT newTab here!!
     
     m_mainWindows.prepend(w);
     w->show();
@@ -361,7 +364,6 @@ MainWindowList Application::mainWindowList()
 }
 
 
-
 AdBlockManager *Application::adblockManager()
 {
     if(!s_adblockManager)
@@ -370,4 +372,3 @@ AdBlockManager *Application::adblockManager()
     }
     return s_adblockManager;
 }
-    

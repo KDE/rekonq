@@ -44,8 +44,7 @@ WebInspectorDock::WebInspectorDock(QString title, QWidget *parent)
     : QDockWidget(title, parent) 
 {
     setObjectName("webInspectorDock");
-    QWebInspector *inspector = new QWebInspector(this);
-    setWidget(inspector);
+    setWidget( new QWebInspector(this) );
 }
     
 void WebInspectorDock::closeEvent(QCloseEvent *event) 
