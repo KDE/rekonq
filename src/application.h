@@ -110,6 +110,7 @@ public:
 public slots:
     /**
      * Save application's configuration
+     *
      * @see ReKonfig::self()->writeConfig();
      */
     void saveConfiguration() const;

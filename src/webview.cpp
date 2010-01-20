@@ -60,6 +60,7 @@
 #include <QtDBus/QDBusReply>
 #include <QDir>
 
+
 WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
     , m_page( new WebPage(this) )
