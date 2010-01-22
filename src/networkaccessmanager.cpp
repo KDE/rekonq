@@ -41,14 +41,6 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
 QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
 {
-    if (op == PostOperation && outgoingData)
-    {
-        QByteArray outgoingDataByteArray = outgoingData->peek(1024 * 1024);
-        kDebug() << "*************************************************************************";
-        kDebug() << outgoingDataByteArray;
-        kDebug() << "*************************************************************************";
-    }
-
     // Adblock
     if (op == QNetworkAccessManager::GetOperation)
     {
