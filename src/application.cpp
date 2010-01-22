@@ -42,6 +42,7 @@
 #include "urlbar.h"
 #include "sessionmanager.h"
 #include "adblockmanager.h"
+#include "webview.h"
 
 // KDE Includes
 #include <KCmdLineArgs>
@@ -283,36 +284,9 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
-    // first, create the webview(s) to not let hangs UI..
-    WebTab *tab = 0;
-    MainWindow *w = 0;
-    w = (type == Rekonq::NewWindow) 
-        ? newMainWindow()
-        : mainWindow();
-        
-    switch(type)
-    {
-    case Rekonq::SettingOpenTab:
-        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(),
-                                           ReKonfig::openTabsNearCurrent());
-        break;
-    case Rekonq::NewCurrentTab:
-        tab = w->mainView()->newWebTab(true);
-        break;
-    case Rekonq::NewBackTab:
-        tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
-        break;
-    case Rekonq::NewWindow:
-    case Rekonq::CurrentTab:
-        tab = w->mainView()->currentWebTab();
-        break;
-    };
+    WebView *view = createView(type);
 
-    // this should let rekonq filtering URI info and supporting
-    // the beautiful KDE web browsing shortcuts
-    KUriFilterData data(loadingUrl.pathOrUrl());
-    data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
-    loadingUrl = KUriFilter::self()->filterUri(data) ? data.uri().pathOrUrl() : QUrl::fromUserInput(loadingUrl.pathOrUrl());
+    loadingUrl = resolvUrl( loadingUrl.pathOrUrl() );
 
     // we are sure of the url now, let's add it to history
     // anyway we store here just http sites because local and ftp ones are
@@ -320,15 +294,15 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("https") )
         historyManager()->addHistoryEntry( loadingUrl.prettyUrl() );
     
-    if (!ReKonfig::openTabsBack())
-    {
-        w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
-    }
+//     if (!ReKonfig::openTabsBack())
+//     {
+//         w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
+//     }
     
-    if (tab)
+    if (view)
     {
-        tab->setFocus();
-        tab->view()->load(loadingUrl);
+        view->setFocus();
+        view->load(loadingUrl);
     }
 }
 
@@ -371,4 +345,48 @@ AdBlockManager *Application::adblockManager()
         s_adblockManager = new AdBlockManager(instance());
     }
     return s_adblockManager;
+}
+
+
+WebView *Application::createView(const Rekonq::OpenType &type)
+{
+    // first, create the webview(s) to not let hangs UI..
+    WebTab *tab = 0;
+    MainWindow *w = 0;
+    w = (type == Rekonq::NewWindow) 
+        ? newMainWindow()
+        : mainWindow();
+        
+    switch(type)
+    {
+    case Rekonq::SettingOpenTab:
+        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
+        break;
+    case Rekonq::NewCurrentTab:
+        tab = w->mainView()->newWebTab(true);
+        break;
+    case Rekonq::NewBackTab:
+        tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
+        break;
+    case Rekonq::NewWindow:
+    case Rekonq::CurrentTab:
+        tab = w->mainView()->currentWebTab();
+        break;
+    };
+    
+    return tab->view();
+}
+
+
+KUrl Application::resolvUrl(const QString &urlString)
+{
+    // this should let rekonq filtering URI info and supporting
+    // the beautiful KDE web browsing shortcuts
+    KUriFilterData data(urlString);
+    data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
+    KUrl url = KUriFilter::self()->filterUri(data) 
+        ? data.uri().pathOrUrl() 
+        : QUrl::fromUserInput( urlString );
+        
+    return url;
 }

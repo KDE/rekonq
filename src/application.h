@@ -48,6 +48,7 @@ class HistoryManager;
 class MainWindow;
 class SessionManager;
 class AdBlockManager;
+class WebView;
 
 
 typedef QList< QPointer<MainWindow> > MainWindowList;
@@ -135,6 +136,11 @@ private slots:
     void postLaunch();
 
 private:
+    
+    // loadUrl Utilities
+    WebView *createView(const Rekonq::OpenType &);
+    KUrl resolvUrl(const QString &);
+    
     static QPointer<HistoryManager> s_historyManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;
     static QPointer<SessionManager> s_sessionManager;
