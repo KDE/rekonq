@@ -29,7 +29,6 @@
 #include "previewimage.moc"
 
 // Local Includes
-#include "application.h"
 #include "historymanager.h"
 #include "rekonq.h"
 #include "mainwindow.h"
@@ -103,6 +102,9 @@ PreviewImage::PreviewImage(const QUrl &url, const QString &title, int index, boo
     layout()->setAlignment(Qt::AlignCenter);
     layout()->addWidget(m_previewLabel);
 
+    connect(this, SIGNAL(loadUrl(const KUrl &, const Rekonq::OpenType &)), 
+            Application::instance(), SLOT(loadUrl(const KUrl &, const Rekonq::OpenType &)));
+    
     loadUrlPreview(url);
 }
 
@@ -260,12 +262,12 @@ void PreviewImage::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
-        Application::instance()->loadUrl(m_url);
+        emit loadUrl(m_url, Rekonq::CurrentTab);
         return;
     }
     else if(event->button() == Qt::MidButton)
     {
-        Application::instance()->loadUrl(m_url, Rekonq::SettingOpenTab);
+        emit loadUrl(m_url, Rekonq::SettingOpenTab);
         return;
     }
 

@@ -91,8 +91,6 @@ WebTab::WebTab(QWidget* parent)
 
     connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(m_view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
-
-    connect(m_view, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), this, SLOT(loadInNewTab(const KUrl &)) );
 }
 
 
@@ -147,12 +145,6 @@ void WebTab::updateProgress(int p)
 void WebTab::loadFinished(bool)
 {
     m_progress = 0;
-}
-
-
-void WebTab::loadInNewTab(const KUrl &url)
-{
-    Application::instance()->loadUrl(url, Rekonq::SettingOpenTab);
 }
 
 

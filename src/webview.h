@@ -28,11 +28,15 @@
 #ifndef WEBVIEW_H
 #define WEBVIEW_H
 
+// Local Includes
+#include "application.h"
+
 // KDE Includes
 #include <KWebView>
 
 // Forward Declarations
 class WebPage;
+
 
 class WebView : public KWebView
 {
@@ -56,11 +60,16 @@ private slots:
 
     void printFrame();
 
+    void loadUrlInNewTab(const KUrl &);
     void openLinkInNewWindow();
     void openLinkInNewTab();
+    
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
     void inspect();
 
+signals:
+    void loadUrl(const KUrl &, const Rekonq::OpenType &);
+    
 private:
     WebPage *const m_page;
     QPoint m_mousePos;

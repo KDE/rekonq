@@ -29,6 +29,7 @@
 
 // Local Includes
 #include "websnap.h"
+#include "application.h"
 
 // KDE Includes
 #include <KActionMenu>
@@ -58,6 +59,9 @@ public slots:
     void setUrlFromAction();
     void refreshPreview();
 
+signals:
+    void loadUrl(const KUrl &, const Rekonq::OpenType &);
+    
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);

@@ -33,7 +33,6 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
 #include "webpage.h"
@@ -69,8 +68,18 @@ WebView::WebView(QWidget* parent)
     setPage(m_page);
 
     // download system
-    connect(this, SIGNAL(linkShiftClicked(const KUrl &)), m_page, SLOT(downloadUrl(const KUrl &)));
-    connect(m_page, SIGNAL(downloadRequested(const QNetworkRequest &)), m_page, SLOT(downloadRequest(const QNetworkRequest &)));
+    connect(this, SIGNAL(linkShiftClicked(const KUrl &)), 
+            m_page, SLOT(downloadUrl(const KUrl &)));
+    connect(m_page, SIGNAL(downloadRequested(const QNetworkRequest &)), 
+            m_page, SLOT(downloadRequest(const QNetworkRequest &)));
+            
+    // middle click || ctrl + click signal
+    connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), 
+            this, SLOT(loadUrlInNewTab(const KUrl &)) );
+
+    // loadUrl signal
+    connect(this, SIGNAL(loadUrl(const KUrl &, const Rekonq::OpenType &)), 
+            Application::instance(), SLOT(loadUrl(const KUrl &, const Rekonq::OpenType &)));
 }
 
 
@@ -341,7 +350,8 @@ void WebView::search()
     KAction *a = qobject_cast<KAction*>(sender());
     QString search = a->data().toString() + selectedText();
     KUrl urlSearch = KUrl::fromEncoded(search.toUtf8());
-    Application::instance()->loadUrl(urlSearch, Rekonq::NewCurrentTab);
+    
+    emit loadUrl(urlSearch, Rekonq::NewCurrentTab);
 }
 
 
@@ -358,11 +368,11 @@ void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifier
 
     if (modifiers & Qt::ControlModifier || buttons == Qt::MidButton)
     {
-        Application::instance()->loadUrl(url, Rekonq::SettingOpenTab);
+        emit loadUrl(url, Rekonq::SettingOpenTab);
     }
     else
     {
-        Application::instance()->loadUrl(url, Rekonq::CurrentTab);
+        emit loadUrl(url, Rekonq::CurrentTab);
     }
 }
 
@@ -371,7 +381,8 @@ void WebView::openLinkInNewWindow()
 {
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
-    Application::instance()->loadUrl(url, Rekonq::NewWindow);
+    
+    emit loadUrl(url, Rekonq::NewWindow);
 }
 
 
@@ -379,7 +390,8 @@ void WebView::openLinkInNewTab()
 {
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
-    Application::instance()->loadUrl(url, Rekonq::SettingOpenTab);
+    
+    emit loadUrl(url, Rekonq::SettingOpenTab);
 }
 
 
@@ -406,4 +418,10 @@ void WebView::inspect()
     QAction *a = Application::instance()->mainWindow()->actionByName("web_inspector");
     if(a && !a->isChecked())
         a->trigger();
+}
+
+
+void WebView::loadUrlInNewTab(const KUrl &url)
+{
+    emit loadUrl(url, Rekonq::SettingOpenTab);
 }
