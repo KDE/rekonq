@@ -23,9 +23,10 @@
 *
 * ============================================================ */
 
+
 // Self Includes
-#include "webinspectordock.h"
-#include "webinspectordock.moc"
+#include "webinspectorpanel.h"
+#include "webinspectorpanel.moc"
 
 // Local Includes
 #include "webtab.h"
@@ -40,26 +41,28 @@
 #include <QWebInspector>
 
 
-WebInspectorDock::WebInspectorDock(QString title, QWidget *parent) 
+WebInspectorPanel::WebInspectorPanel(QString title, QWidget *parent) 
     : QDockWidget(title, parent) 
 {
     setObjectName("webInspectorDock");
     setWidget( new QWebInspector(this) );
 }
     
-void WebInspectorDock::closeEvent(QCloseEvent *event) 
+
+void WebInspectorPanel::closeEvent(QCloseEvent *event) 
 {     
     Q_UNUSED(event);
     toggle(false);
 }
 
-MainWindow* WebInspectorDock::mainWindow()
+
+MainWindow* WebInspectorPanel::mainWindow()
 {     
     return qobject_cast< MainWindow* >(parentWidget());
 }
 
 
-void WebInspectorDock::toggle(bool enable)
+void WebInspectorPanel::toggle(bool enable)
 {
     mainWindow()->actionByName("web_inspector")->setChecked(enable);
     if (enable)
@@ -76,7 +79,7 @@ void WebInspectorDock::toggle(bool enable)
 }
 
 
-void WebInspectorDock::changeCurrentPage() 
+void WebInspectorPanel::changeCurrentPage() 
 {     
     bool enable = mainWindow()->currentTab()->view()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled);
     toggle(enable);

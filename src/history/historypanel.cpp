@@ -29,25 +29,52 @@
 #include "historypanel.h"
 #include "historypanel.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
+// Local Includes
+#include "application.h"
+#include "historymodels.h"
+
 // Qt Includes
 #include <QtGui/QLabel>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
+#include <QtGui/QTreeView>
+
 
 // KDE Includes
 #include <KLineEdit>
 #include <KLocalizedString>
 
 
-HistoryPanel::HistoryPanel(QWidget *parent)
-        : QWidget(parent)
-        , m_historyTreeView(new QTreeView)
-        , m_treeProxyModel(new TreeProxyModel(this))
+HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
+    : QDockWidget(title, parent, flags)
 {
-    m_historyTreeView->setUniformRowHeights(true);
-    m_historyTreeView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_historyTreeView->setTextElideMode(Qt::ElideMiddle);
-    m_historyTreeView->setAlternatingRowColors(true);
+    setup();
+    setShown(ReKonfig::showHistoryPanel());
+}
+
+
+HistoryPanel::~HistoryPanel()
+{
+    // Save side panel's state
+    ReKonfig::setShowHistoryPanel(!isHidden());
+}
+
+
+void HistoryPanel::setup()
+{
+    setObjectName("historyPanel");
+    setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    
+    QWidget *ui = new QWidget(this);
+
+    QTreeView *historyTreeView = new QTreeView(this);
+    historyTreeView->setUniformRowHeights(true);
+    historyTreeView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    historyTreeView->setTextElideMode(Qt::ElideMiddle);
+    historyTreeView->setAlternatingRowColors(true);
 
     // add search bar
     QHBoxLayout *hBoxLayout = new QHBoxLayout;
@@ -60,42 +87,35 @@ HistoryPanel::HistoryPanel(QWidget *parent)
     QWidget *searchBar = new QWidget;
     searchBar->setLayout(hBoxLayout);
 
-    // setup view
+    // setup layout
     QVBoxLayout *vBoxLayout = new QVBoxLayout;
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
     vBoxLayout->addWidget(searchBar);
-    vBoxLayout->addWidget(m_historyTreeView);
-    setLayout(vBoxLayout);
+    vBoxLayout->addWidget(historyTreeView);
+
+    // add it to the UI
+    ui->setLayout(vBoxLayout);
+    setWidget(ui);
 
     //-
     HistoryManager *historyManager = Application::historyManager();
     QAbstractItemModel *model = historyManager->historyTreeModel();
 
-    m_treeProxyModel->setSourceModel(model);
-    m_historyTreeView->setModel(m_treeProxyModel);
-    m_historyTreeView->setExpanded(m_treeProxyModel->index(0, 0), true);
-    m_historyTreeView->header()->hideSection(1);
+    TreeProxyModel *treeProxyModel = new TreeProxyModel(this);
+    treeProxyModel->setSourceModel(model);
+    historyTreeView->setModel(treeProxyModel);
+    historyTreeView->setExpanded(treeProxyModel->index(0, 0), true);
+    historyTreeView->header()->hideSection(1);
     QFontMetrics fm(font());
     int header = fm.width(QLatin1Char('m')) * 40;
-    m_historyTreeView->header()->resizeSection(0, header);
+    historyTreeView->header()->resizeSection(0, header);
 
-    connect(search, SIGNAL(textChanged(QString)), m_treeProxyModel, SLOT(setFilterFixedString(QString)));
-    connect(m_historyTreeView, SIGNAL(activated(const QModelIndex&)), this, SLOT(open()));
+    connect(search, SIGNAL(textChanged(QString)), treeProxyModel, SLOT(setFilterFixedString(QString)));
+    connect(historyTreeView, SIGNAL(activated(const QModelIndex &)), this, SLOT(itemActivated(const QModelIndex &)));
 }
 
 
-HistoryPanel::~HistoryPanel()
+void HistoryPanel::itemActivated(const QModelIndex &item)
 {
-    delete m_treeProxyModel;
-    delete m_historyTreeView;
+    emit openUrl( item.data(HistoryModel::UrlRole).toUrl() );
 }
-
-
-void HistoryPanel::open()
-{
-    QModelIndex index = m_historyTreeView->currentIndex();
-    if (!index.parent().isValid())
-        return;
-    emit openUrl(index.data(HistoryModel::UrlRole).toUrl());
-}
-

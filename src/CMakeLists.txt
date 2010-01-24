@@ -21,7 +21,7 @@ SET( rekonq_KDEINIT_SRCS
     webtab.cpp
     clicktoflash.cpp
     networkaccessmanager.cpp
-    webinspectordock.cpp
+    webinspectorpanel.cpp
     walletbar.cpp
     protocolhandler.cpp
     #----------------------------------------
@@ -29,7 +29,6 @@ SET( rekonq_KDEINIT_SRCS
     history/historymanager.cpp
     history/historymodels.cpp
     history/historypanel.cpp
-    history/sidepanel.cpp
     #----------------------------------------
     rekonqpage/newtabpage.cpp
     #----------------------------------------

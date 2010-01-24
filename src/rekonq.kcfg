@@ -35,7 +35,7 @@
     <entry name="homePage" type="String">
         <default>http://www.kde.org/</default>
     </entry>
-    <entry name="showSideBar" type="Bool">
+    <entry name="showHistoryPanel" type="Bool">
         <default>false</default>
     </entry>
     <entry name="showBookmarksPanel" type="Bool">

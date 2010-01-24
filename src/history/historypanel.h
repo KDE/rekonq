@@ -29,36 +29,31 @@
 #define HISTORYPANEL_H
 
 
-// Local Includes
-#include "application.h"
-#include "historymodels.h"
-
 // Qt Includes
-#include <QtGui/QWidget>
-#include <QtGui/QTreeView>
+#include <QDockWidget>
 
 // Forward Declarations
 class KUrl;
+class QWidget;
+class QModelIndex;
 
 
-class HistoryPanel : public QWidget
+class HistoryPanel : public QDockWidget
 {
 Q_OBJECT
 
 public:
-    explicit HistoryPanel(QWidget *parent = 0);
-    virtual ~HistoryPanel();
+    explicit HistoryPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    ~HistoryPanel();
 
 signals:
     void openUrl(const KUrl &);
 
 private slots:
-    void open();
+    void itemActivated(const QModelIndex &);
 
 private:
-    QTreeView *m_historyTreeView;
-    TreeProxyModel *m_treeProxyModel;
-
+    void setup();
 };
 
 #endif // HISTORYPANEL_H

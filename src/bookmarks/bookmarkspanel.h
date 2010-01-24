@@ -38,7 +38,6 @@ class QModelIndex;
 class BookmarksPanel : public QDockWidget
 {
     Q_OBJECT
-    Q_DISABLE_COPY(BookmarksPanel)
 
 public:
     explicit BookmarksPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
@@ -52,8 +51,6 @@ private slots:
 
 private:
     void setup();
-
-    QWidget *ui;
 };
 
 #endif // BOOKMARKSPANEL_H

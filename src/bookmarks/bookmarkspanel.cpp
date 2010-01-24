@@ -57,7 +57,6 @@ BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::Window
 BookmarksPanel::~BookmarksPanel()
 {
     ReKonfig::setShowBookmarksPanel(!isHidden());
-    delete ui;
 }
 
 
@@ -73,7 +72,7 @@ void BookmarksPanel::setup()
     setObjectName("bookmarksPanel");
     setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    ui = new QWidget(this);
+    QWidget *ui = new QWidget(this);
 
     // setup search bar
     QHBoxLayout *searchLayout = new QHBoxLayout;
@@ -110,5 +109,5 @@ void BookmarksPanel::setup()
     treeView->setModel( proxy );
 
     connect(search, SIGNAL(textChanged(QString)), proxy, SLOT(setFilterFixedString(QString)));
-    connect( treeView, SIGNAL( activated(QModelIndex) ), this, SLOT( bookmarkActivated(QModelIndex) ) );
+    connect(treeView, SIGNAL( activated(QModelIndex) ), this, SLOT( bookmarkActivated(QModelIndex) ) );
 }

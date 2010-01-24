@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
+* Copyright (C) 2009 by Matthieu Gicquel<matgic78@gmail.com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,34 +24,35 @@
 * ============================================================ */
 
 
-#ifndef SIDEPANEL_H
-#define SIDEPANEL_H
+#ifndef WEBINSPECTOR_PANEL_H
+#define WEBINSPECTOR_PANEL_H
+
 
 // Local Includes
-#include "application.h"
+#include "mainwindow.h"
 
 // Qt Includes
 #include <QDockWidget>
 
-// Forward Declarations
-class KUrl;
-class HistoryPanel;
-
-
-class SidePanel : public QDockWidget
+/**
+    Docked web inspector
+    behaviour : hide/show by tab, not globally
+*/
+class WebInspectorPanel : public QDockWidget
 {
     Q_OBJECT
-    
 public:
-    explicit SidePanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~SidePanel();
-
-signals:
-    void openUrl(const KUrl &);
-
-private:
-    HistoryPanel *m_historyPanel;
-
+    WebInspectorPanel(QString title, QWidget *parent);
+    
+public slots:
+    void toggle(bool enable);
+    void changeCurrentPage();   
+    
+protected:
+    virtual void closeEvent(QCloseEvent *event);
+    
+    MainWindow *mainWindow();
+        
 };
 
-#endif // SIDEPANEL_H
+#endif

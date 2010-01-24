@@ -46,9 +46,9 @@ class KAction;
 class KPassivePopup;
 
 class FindBar;
-class SidePanel;
+class HistoryPanel;
 class BookmarksPanel;
-class WebInspectorDock;
+class WebInspectorPanel;
 class WebTab;
 class MainView;
 
@@ -77,15 +77,8 @@ private:
     void setupActions();
     void setupTools();
     void setupToolbars();
-
-    void setupSidePanel();
-    SidePanel *sidePanel();
-
-    void setupBookmarksPanel();
-    BookmarksPanel *bookmarksPanel();
+    void setupPanels();
     
-    void setupWebInspector();
-
 public slots:
     void updateBrowser();
     void homePage();
@@ -159,9 +152,10 @@ private slots:
 private:
     MainView *m_view;
     FindBar *m_findBar;
-    SidePanel *m_sidePanel;
+    
+    HistoryPanel *m_historyPanel;
     BookmarksPanel *m_bookmarksPanel;
-    WebInspectorDock *m_webInspectorDock;
+    WebInspectorPanel *m_webInspectorPanel;
 
     KAction *m_stopReloadAction;
     KMenu *m_historyBackMenu;
@@ -178,4 +172,3 @@ private:
 };
 
 #endif // MAINWINDOW_H
-
