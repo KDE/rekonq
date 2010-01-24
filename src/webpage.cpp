@@ -91,6 +91,7 @@ WebPage::WebPage(QObject *parent)
 
 WebPage::~WebPage()
 {
+    disconnect();
 }
 
 
