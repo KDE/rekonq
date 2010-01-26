@@ -139,11 +139,6 @@ private slots:
     void loadResolvedUrl(ThreadWeaver::Job *);
     
 private:
-    
-    // loadUrl Utilities
-//     WebView *createView(const Rekonq::OpenType &);
-//     KUrl resolvUrl(const QString &);
-    
     static QPointer<HistoryManager> s_historyManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;
     static QPointer<SessionManager> s_sessionManager;

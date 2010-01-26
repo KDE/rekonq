@@ -363,36 +363,6 @@ AdBlockManager *Application::adblockManager()
 }
 
 
-// WebView *Application::createView(const Rekonq::OpenType &type)
-// {
-//     // first, create the webview(s) to not let hangs UI..
-//     WebTab *tab = 0;
-//     MainWindow *w = 0;
-//     w = (type == Rekonq::NewWindow) 
-//         ? newMainWindow()
-//         : mainWindow();
-//         
-//     switch(type)
-//     {
-//     case Rekonq::SettingOpenTab:
-//         tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
-//         break;
-//     case Rekonq::NewCurrentTab:
-//         tab = w->mainView()->newWebTab(true);
-//         break;
-//     case Rekonq::NewBackTab:
-//         tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
-//         break;
-//     case Rekonq::NewWindow:
-//     case Rekonq::CurrentTab:
-//         tab = w->mainView()->currentWebTab();
-//         break;
-//     };
-//     
-//     return tab->view();
-// }
-
-
 void Application::loadResolvedUrl(ThreadWeaver::Job *job)
 {
     FilterUrlJob *threadedJob = static_cast<FilterUrlJob *>(job);
