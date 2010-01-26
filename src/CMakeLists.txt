@@ -24,6 +24,7 @@ SET( rekonq_KDEINIT_SRCS
     webinspectorpanel.cpp
     walletbar.cpp
     protocolhandler.cpp
+    filterurljob.cpp
     #----------------------------------------
     history/autosaver.cpp 
     history/historymanager.cpp
@@ -93,6 +94,7 @@ TARGET_LINK_LIBRARIES ( kdeinit_rekonq
                         ${KDE4_KDEUI_LIBS}
                         ${KDE4_KIO_LIBS}
                         ${KDE4_KPARTS_LIBS}
+                        ${KDE4_THREADWEAVER_LIBRARIES}
 )
 
 

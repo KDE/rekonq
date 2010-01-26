@@ -35,6 +35,7 @@
 #include <KIcon>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
+#include <ThreadWeaver/Job>
 
 // Qt Includes
 #include <QPointer>
@@ -135,11 +136,13 @@ private slots:
      */
     void postLaunch();
 
+    void loadResolvedUrl(ThreadWeaver::Job *);
+    
 private:
     
     // loadUrl Utilities
-    WebView *createView(const Rekonq::OpenType &);
-    KUrl resolvUrl(const QString &);
+//     WebView *createView(const Rekonq::OpenType &);
+//     KUrl resolvUrl(const QString &);
     
     static QPointer<HistoryManager> s_historyManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;

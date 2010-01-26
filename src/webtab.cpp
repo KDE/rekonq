@@ -108,7 +108,7 @@ WebView *WebTab::view()
 
 WebPage *WebTab::page()
 {
-    return m_view->page();
+    return m_view->page();  // FIXME
 }
 
 

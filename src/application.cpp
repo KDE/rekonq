@@ -43,6 +43,7 @@
 #include "sessionmanager.h"
 #include "adblockmanager.h"
 #include "webview.h"
+#include "filterurljob.h"
 
 // KDE Includes
 #include <KCmdLineArgs>
@@ -54,6 +55,7 @@
 #include <KMessageBox>
 #include <KWindowInfo>
 #include <KUrl>
+#include <ThreadWeaver/Weaver>
 
 // Qt Includes
 #include <QRegExp>
@@ -71,6 +73,8 @@ QPointer<AdBlockManager> Application::s_adblockManager;
 Application::Application()
     : KUniqueApplication()
 {
+    connect(Weaver::instance(), SIGNAL( jobDone(ThreadWeaver::Job*) ), 
+            this, SLOT( loadResolvedUrl(ThreadWeaver::Job*) ) );
 }
 
 
@@ -284,25 +288,36 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
-    WebView *view = createView(type);
-   
-//     if (!ReKonfig::openTabsBack())
-//     {
-//         w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
-//     }
+    // first, create the webview(s) to not let hangs UI..
+    WebTab *tab = 0;
+    MainWindow *w = 0;
+    w = (type == Rekonq::NewWindow) 
+        ? newMainWindow()
+        : mainWindow();
+        
+    switch(type)
+    {
+    case Rekonq::SettingOpenTab:
+        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
+        break;
+    case Rekonq::NewCurrentTab:
+        tab = w->mainView()->newWebTab(true);
+        break;
+    case Rekonq::NewBackTab:
+        tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
+        break;
+    case Rekonq::NewWindow:
+    case Rekonq::CurrentTab:
+        tab = w->mainView()->currentWebTab();
+        break;
+    };
+    
+    WebView *view = tab->view();
     
     if (view)
     {
-        loadingUrl = resolvUrl( loadingUrl.pathOrUrl() );
-
-        // we are sure of the url now, let's add it to history
-        // anyway we store here just http sites because local and ftp ones are
-        // added trough the protocol handler and the other are ignored
-        if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("https") )
-            historyManager()->addHistoryEntry( loadingUrl.prettyUrl() );
-        
-        view->setFocus();
-        view->load(loadingUrl);
+        FilterUrlJob *job = new FilterUrlJob(view, loadingUrl.pathOrUrl(), this);
+        Weaver::instance()->enqueue(job);
     }
 }
 
@@ -348,45 +363,54 @@ AdBlockManager *Application::adblockManager()
 }
 
 
-WebView *Application::createView(const Rekonq::OpenType &type)
+// WebView *Application::createView(const Rekonq::OpenType &type)
+// {
+//     // first, create the webview(s) to not let hangs UI..
+//     WebTab *tab = 0;
+//     MainWindow *w = 0;
+//     w = (type == Rekonq::NewWindow) 
+//         ? newMainWindow()
+//         : mainWindow();
+//         
+//     switch(type)
+//     {
+//     case Rekonq::SettingOpenTab:
+//         tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
+//         break;
+//     case Rekonq::NewCurrentTab:
+//         tab = w->mainView()->newWebTab(true);
+//         break;
+//     case Rekonq::NewBackTab:
+//         tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
+//         break;
+//     case Rekonq::NewWindow:
+//     case Rekonq::CurrentTab:
+//         tab = w->mainView()->currentWebTab();
+//         break;
+//     };
+//     
+//     return tab->view();
+// }
+
+
+void Application::loadResolvedUrl(ThreadWeaver::Job *job)
 {
-    // first, create the webview(s) to not let hangs UI..
-    WebTab *tab = 0;
-    MainWindow *w = 0;
-    w = (type == Rekonq::NewWindow) 
-        ? newMainWindow()
-        : mainWindow();
-        
-    switch(type)
-    {
-    case Rekonq::SettingOpenTab:
-        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
-        break;
-    case Rekonq::NewCurrentTab:
-        tab = w->mainView()->newWebTab(true);
-        break;
-    case Rekonq::NewBackTab:
-        tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
-        break;
-    case Rekonq::NewWindow:
-    case Rekonq::CurrentTab:
-        tab = w->mainView()->currentWebTab();
-        break;
-    };
+    FilterUrlJob *threadedJob = static_cast<FilterUrlJob *>(job);
+    KUrl url = threadedJob->url();
+    WebView *view = threadedJob->view();
     
-    return tab->view();
-}
-
-
-KUrl Application::resolvUrl(const QString &urlString)
-{
-    // this should let rekonq filtering URI info and supporting
-    // the beautiful KDE web browsing shortcuts
-    KUriFilterData data(urlString);
-    data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
-    KUrl url = KUriFilter::self()->filterUri(data) 
-        ? data.uri().pathOrUrl() 
-        : QUrl::fromUserInput( urlString );
+    if (view)
+    {
+        view->setFocus();
+        view->load(url);    
         
-    return url;
+        // we are sure of the url now, let's add it to history
+        // anyway we store here just http sites because local and ftp ones are
+        // added trough the protocol handler and the other are ignored
+        if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("https") )
+            historyManager()->addHistoryEntry( url.prettyUrl() );
+    }
+    
+    // Bye and thanks :)
+    delete threadedJob;
 }
