@@ -187,7 +187,7 @@ void MainWindow::setupToolbars()
     m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_bmBar->setAcceptDrops(true);
     m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
-
+    m_bmBar->setIconDimensions(16);
     Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
 }
 
