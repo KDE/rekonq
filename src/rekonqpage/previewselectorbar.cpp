@@ -135,7 +135,7 @@ void PreviewSelectorBar::loadFinished()
 void PreviewSelectorBar::clicked()
 {
     KUrl url = m_page->mainFrame()->url();
-    
+
     WebSnap::savePreview(WebSnap::renderPreview(*m_page), url);
     
     QStringList names = ReKonfig::previewNames();

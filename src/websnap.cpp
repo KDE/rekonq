@@ -80,17 +80,10 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
 
     // find the best size
     QSize size;
-    if (page.viewportSize().width() && page.viewportSize().height())
-    {
-        size = page.viewportSize();
-    }
-    else
-    {
-        int width = page.mainFrame()->contentsSize().width();
-        if (width < 640) width = 640;
-        size = QSize(width,width*((0.0+h)/w));
-        page.setViewportSize(size);
-    }
+    int width = page.mainFrame()->contentsSize().width();
+    if (width < 640) width = 640;
+    size = QSize(width,width*((0.0+h)/w));
+    page.setViewportSize(size);
     
     // create the page image
     QImage pageImage = QImage(size, QImage::Format_ARGB32_Premultiplied);
@@ -108,13 +101,12 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
 
     return QPixmap::fromImage(pageImage);
-    
-    kDebug() << w << h;
 }
 
 
 void WebSnap::savePreview(QPixmap pm, KUrl url)
 {
+    kDebug() << "saving preview";
     QFile::remove(fileForUrl(url).toLocalFile());
     pm.save(fileForUrl(url).toLocalFile());
 }
