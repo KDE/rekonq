@@ -224,8 +224,10 @@ void NewTabPage::setupPreview(QWebElement e, int index)
 {
     e.findFirst(".remove img").setAttribute("src", QString("file:///") +
     KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
+    e.findFirst(".remove").setAttribute("title", "Remove favorite");
     e.findFirst(".modify img").setAttribute("src", QString("file:///") +
     KIconLoader::global()->iconPath("insert-image", KIconLoader::DefaultState));
+    e.findFirst(".modify").setAttribute("title", "Set new favorite");
     
     e.findFirst(".modify").setAttribute("href", QString("about:preview/modify/" + QVariant(index).toString()));
     e.findFirst(".remove").setAttribute("href", QString("about:preview/remove/" + QVariant(index).toString()));
