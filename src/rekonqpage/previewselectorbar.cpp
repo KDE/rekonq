@@ -50,7 +50,7 @@ void PreviewSelectorBar::setup()
     if(m_button != 0)
         return;
     
-    m_label = new QLabel(i18n("Please go to the page you want to preview"), this);
+    m_label = new QLabel(i18n("Please open up the webpage you want to add as favorite"), this);
     m_label->setWordWrap(true);
     
     QToolButton *closeButton = new QToolButton(this);
@@ -58,7 +58,7 @@ void PreviewSelectorBar::setup()
     closeButton->setIcon(KIcon("dialog-close"));
     connect(closeButton, SIGNAL(clicked(bool)), SLOT(hide()));
     
-    m_button = new QPushButton(KIcon("insert-image"), i18n("Set to this page"), this);
+    m_button = new QPushButton(KIcon("insert-image"), i18n("Set to This Page"), this);
     m_button->setMaximumWidth(250);
     connect(m_button, SIGNAL(clicked(bool)), SLOT(clicked()));
     
@@ -91,7 +91,7 @@ void PreviewSelectorBar::verifyUrl()
     else
     {
         m_button->setEnabled(false);
-        m_button->setToolTip(i18n("You can't set this page as preview"));
+        m_button->setToolTip(i18n("You can not add this webpage as favorite"));
     }
 }
 
