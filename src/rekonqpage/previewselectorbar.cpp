@@ -59,14 +59,16 @@ void PreviewSelectorBar::setup()
     connect(closeButton, SIGNAL(clicked(bool)), SLOT(hide()));
     
     m_button = new QPushButton(KIcon("insert-image"), i18n("Set to this page"), this);
+    m_button->setMaximumWidth(250);
     connect(m_button, SIGNAL(clicked(bool)), SLOT(clicked()));
     
     // layout
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(closeButton);
-    layout->addStretch();
     layout->addWidget(m_label);
     layout->addWidget(m_button);
+    
+    layout->setContentsMargins(2, 0, 2, 0);
     
     setLayout(layout);
 }

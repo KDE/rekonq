@@ -148,7 +148,6 @@ void UrlBar::setUrl(const QUrl& url)
         m_currentUrl = KUrl(url);
         updateUrl();
     }
-
 }
 
 
