@@ -153,8 +153,8 @@ void TabBar::showTabPreview(int tab)
     WebTab *view = mv->webTab(tab);
     WebTab *currentView = mv->webTab(currentIndex());
 
-    // should fix bug #212219
-    if(!currentView)
+    // check if view && currentView exist before using them :)
+    if(!currentView || !view)
         return;
     
     int w = tabSizeHint(tab).width();
