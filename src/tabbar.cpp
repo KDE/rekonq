@@ -199,7 +199,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         }
 
         //if found and not the current tab then show tab preview
-        if (tab != -1 && tab != currentIndex() && m_currentTabPreview != tab)
+        if (tab != -1 && tab != currentIndex() && m_currentTabPreview != tab && event->buttons() == Qt::NoButton)
         {
             showTabPreview(tab);
             m_currentTabPreview = tab;
