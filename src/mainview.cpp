@@ -306,6 +306,10 @@ void MainView::currentChanged(int index)
         emit browserTabLoading(true);
     else
         emit browserTabLoading(false);
+    
+    // update zoom slider
+    if(!Application::instance()->mainWindowList().isEmpty())
+        Application::instance()->mainWindow()->setZoomSliderFactor(tab->view()->zoomFactor());
 
     // set focus to the current webview
     tab->setFocus();
