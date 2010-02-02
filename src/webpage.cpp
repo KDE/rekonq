@@ -73,11 +73,19 @@
 WebPage::WebPage(QObject *parent)
         : KWebPage(parent, KWalletIntegration)
 {
-    // rekonq own classes integration
-    setNetworkAccessManager(new NetworkAccessManager(this));
+    setForwardUnsupportedContent(true);
+
+    // rekonq Network Manager
+    NetworkAccessManager *manager = new NetworkAccessManager(this);
+    
+    // disable QtWebKit cache to just use KIO one..
+    manager->setCache(0);
+    
+    setNetworkAccessManager(manager);
+    
+    // Web Plugin Factory
     setPluginFactory(new WebPluginFactory(this));
     
-    setForwardUnsupportedContent(true);
 
     connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     
@@ -91,6 +99,7 @@ WebPage::WebPage(QObject *parent)
 
 WebPage::~WebPage()
 {
+    disconnect();
 }
 
 

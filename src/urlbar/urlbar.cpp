@@ -140,13 +140,15 @@ void UrlBar::setUrl(const QUrl& url)
     if(url.scheme() == "about")
     {
         m_currentUrl = KUrl();
+        updateUrl();    // updateUrl before setFocus        
         setFocus();
     }
     else
     {
         m_currentUrl = KUrl(url);
+        updateUrl();
     }
-    updateUrl();
+
 }
 
 
@@ -302,36 +304,43 @@ bool UrlBar::isLoading()
     return true;
 }
 
+
 void UrlBar::keyPressEvent(QKeyEvent *event)
 {
     QString currentText = m_lineEdit->text().trimmed();
-    if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-        && !currentText.startsWith(QLatin1String("http://"), Qt::CaseInsensitive))
+    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
     {
-        QString append;
-        if (event->modifiers() == Qt::ControlModifier)
+        if( !currentText.startsWith(QLatin1String("http://"), Qt::CaseInsensitive) )
         {
-            append = QLatin1String(".com");
-        }
-        else if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
-        {
-            append = QLatin1String(".org");
-        }
-        else if (event->modifiers() == Qt::ShiftModifier)
-        {
-            append = QLatin1String(".net");
-        }
+            QString append;
+            if (event->modifiers() == Qt::ControlModifier)
+            {
+                append = QLatin1String(".com");
+            }
+            else if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
+            {
+                append = QLatin1String(".org");
+            }
+            else if (event->modifiers() == Qt::ShiftModifier)
+            {
+                append = QLatin1String(".net");
+            }
 
-        QUrl url(QLatin1String("http://www.") + currentText);
-        QString host = url.host();
-        if (!host.endsWith(append, Qt::CaseInsensitive))
+            QUrl url(QLatin1String("http://www.") + currentText);
+            QString host = url.host();
+            if (!host.endsWith(append, Qt::CaseInsensitive))
+            {
+                host += append;
+                url.setHost(host);
+                m_lineEdit->setText(url.toString());
+            }
+        }
+        else
         {
-            host += append;
-            url.setHost(host);
-            m_lineEdit->setText(url.toString());
+            // fill lineEdit with its stripped contents to remove trailing spaces
+            m_lineEdit->setText(currentText);
         }
     }
 
     KHistoryComboBox::keyPressEvent(event);
 }
-

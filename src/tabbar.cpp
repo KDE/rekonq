@@ -153,8 +153,8 @@ void TabBar::showTabPreview(int tab)
     WebTab *view = mv->webTab(tab);
     WebTab *currentView = mv->webTab(currentIndex());
 
-    // should fix bug #212219
-    if(!currentView)
+    // check if view && currentView exist before using them :)
+    if(!currentView || !view)
         return;
     
     int w = tabSizeHint(tab).width();
@@ -199,7 +199,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         }
 
         //if found and not the current tab then show tab preview
-        if (tab != -1 && tab != currentIndex() && m_currentTabPreview != tab)
+        if (tab != -1 && tab != currentIndex() && m_currentTabPreview != tab && event->buttons() == Qt::NoButton)
         {
             showTabPreview(tab);
             m_currentTabPreview = tab;

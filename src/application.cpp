@@ -42,6 +42,8 @@
 #include "urlbar.h"
 #include "sessionmanager.h"
 #include "adblockmanager.h"
+#include "webview.h"
+#include "filterurljob.h"
 
 // KDE Includes
 #include <KCmdLineArgs>
@@ -53,6 +55,7 @@
 #include <KMessageBox>
 #include <KWindowInfo>
 #include <KUrl>
+#include <ThreadWeaver/Weaver>
 
 // Qt Includes
 #include <QRegExp>
@@ -68,16 +71,21 @@ QPointer<AdBlockManager> Application::s_adblockManager;
 
 
 Application::Application()
-        : KUniqueApplication()
+    : KUniqueApplication()
 {
+    connect(Weaver::instance(), SIGNAL( jobDone(ThreadWeaver::Job*) ), 
+            this, SLOT( loadResolvedUrl(ThreadWeaver::Job*) ) );
 }
 
 
 Application::~Application()
 {
     qDeleteAll(m_mainWindows);
+
     delete s_bookmarkProvider;
     delete s_historyManager;
+    delete s_sessionManager;
+    delete s_adblockManager;
 }
 
 
@@ -290,8 +298,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     switch(type)
     {
     case Rekonq::SettingOpenTab:
-        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(),
-                                           ReKonfig::openTabsNearCurrent());
+        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
         break;
     case Rekonq::NewCurrentTab:
         tab = w->mainView()->newWebTab(true);
@@ -304,28 +311,13 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         tab = w->mainView()->currentWebTab();
         break;
     };
-
-    // this should let rekonq filtering URI info and supporting
-    // the beautiful KDE web browsing shortcuts
-    KUriFilterData data(loadingUrl.pathOrUrl());
-    data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
-    loadingUrl = KUriFilter::self()->filterUri(data) ? data.uri().pathOrUrl() : QUrl::fromUserInput(loadingUrl.pathOrUrl());
-
-    // we are sure of the url now, let's add it to history
-    // anyway we store here just http sites because local and ftp ones are
-    // added trough the protocol handler and the other are ignored
-    if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("https") )
-        historyManager()->addHistoryEntry( loadingUrl.prettyUrl() );
     
-    if (!ReKonfig::openTabsBack())
-    {
-        w->mainView()->urlBar()->setUrl(loadingUrl.prettyUrl());
-    }
+    WebView *view = tab->view();
     
-    if (tab)
+    if (view)
     {
-        tab->setFocus();
-        tab->view()->load(loadingUrl);
+        FilterUrlJob *job = new FilterUrlJob(view, loadingUrl.pathOrUrl(), this);
+        Weaver::instance()->enqueue(job);
     }
 }
 
@@ -340,7 +332,7 @@ void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& typ
 MainWindow *Application::newMainWindow()
 {
     MainWindow *w = new MainWindow();
-    w->mainView()->newWebTab();    // remember using newWebView and NOT newTab here!!
+    w->mainView()->newWebTab();    // remember using newWebTab and NOT newTab here!!
     
     m_mainWindows.prepend(w);
     w->show();
@@ -361,7 +353,6 @@ MainWindowList Application::mainWindowList()
 }
 
 
-
 AdBlockManager *Application::adblockManager()
 {
     if(!s_adblockManager)
@@ -370,4 +361,26 @@ AdBlockManager *Application::adblockManager()
     }
     return s_adblockManager;
 }
+
+
+void Application::loadResolvedUrl(ThreadWeaver::Job *job)
+{
+    FilterUrlJob *threadedJob = static_cast<FilterUrlJob *>(job);
+    KUrl url = threadedJob->url();
+    WebView *view = threadedJob->view();
     
+    if (view)
+    {
+        view->setFocus();
+        view->load(url);    
+        
+        // we are sure of the url now, let's add it to history
+        // anyway we store here just http sites because local and ftp ones are
+        // added trough the protocol handler and the other are ignored
+        if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("https") )
+            historyManager()->addHistoryEntry( url.prettyUrl() );
+    }
+    
+    // Bye and thanks :)
+    delete threadedJob;
+}

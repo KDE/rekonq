@@ -40,9 +40,9 @@
 #include "webtab.h"
 #include "mainview.h"
 #include "findbar.h"
-#include "sidepanel.h"
+#include "historypanel.h"
 #include "bookmarkspanel.h"
-#include "webinspectordock.h"
+#include "webinspectorpanel.h"
 #include "urlbar.h"
 #include "tabbar.h"
 #include "adblockmanager.h"
@@ -98,9 +98,9 @@ MainWindow::MainWindow()
     : KMainWindow()
     , m_view( new MainView(this) )
     , m_findBar( new FindBar(this) )
-    , m_sidePanel(0)
+    , m_historyPanel(0)
     , m_bookmarksPanel(0)
-    , m_webInspectorDock(0)
+    , m_webInspectorPanel(0)
     , m_historyBackMenu(0)
     , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, false) )
@@ -134,10 +134,8 @@ MainWindow::MainWindow()
     // then, setup our actions
     setupActions();
 
-    // setting Side Panel
-    setupSidePanel();
-    setupBookmarksPanel();
-    setupWebInspector();
+    // setting Panels
+    setupPanels();
 
     // setting up rekonq tools
     setupTools();
@@ -166,17 +164,6 @@ MainWindow::~MainWindow()
 }
 
 
-SidePanel *MainWindow::sidePanel()
-{
-    return m_sidePanel;
-}
-
-BookmarksPanel *MainWindow::bookmarksPanel()
-{
-    return m_bookmarksPanel;
-}
-
-
 void MainWindow::setupToolbars()
 {
     // ============ Main ToolBar  ================================
@@ -200,7 +187,7 @@ void MainWindow::setupToolbars()
     m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_bmBar->setAcceptDrops(true);
     m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
-
+    m_bmBar->setIconDimensions(16);
     Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
 }
 
@@ -459,51 +446,50 @@ void MainWindow::setupTools()
 }
 
 
-void MainWindow::setupSidePanel()
+void MainWindow::setupPanels()
 {
-    // Setup history side panel
-    m_sidePanel = new SidePanel(i18n("History Panel"), this);
-    connect(m_sidePanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
-    connect(m_sidePanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
+    KAction* a;
+    
+    // STEP 1
+    // Setup history panel
+    m_historyPanel = new HistoryPanel(i18n("History Panel"), this);
+    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
+    connect(m_historyPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
 
-    addDockWidget(Qt::LeftDockWidgetArea, m_sidePanel);
+    addDockWidget(Qt::LeftDockWidgetArea, m_historyPanel);
 
-    // setup side panel actions
-    KAction* a = (KAction *) m_sidePanel->toggleViewAction();
-    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
+    // setup history panel action
+    a = (KAction *) m_historyPanel->toggleViewAction();
+    a->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_H) );
     a->setIcon(KIcon("view-history"));
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
-}
 
-
-void MainWindow::setupBookmarksPanel()
-{
+    // STEP 2
+    // Setup bookmarks panel
     m_bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
     connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
     connect(m_bookmarksPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
 
     addDockWidget(Qt::LeftDockWidgetArea, m_bookmarksPanel);
 
-    // setup side panel actions
-    KAction* a = (KAction *) m_bookmarksPanel->toggleViewAction();
-    a->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
+    // setup bookmarks panel action
+    a = (KAction *) m_bookmarksPanel->toggleViewAction();
+    a->setShortcut( QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B) );
     a->setIcon(KIcon("bookmarks-organize"));
     actionCollection()->addAction(QLatin1String("show_bookmarks_panel"), a);
-}
 
-
-void MainWindow::setupWebInspector()
-{
-    m_webInspectorDock = new WebInspectorDock(i18n("Web Inspector"), this);
-    connect(mainView(), SIGNAL(currentChanged(int)), m_webInspectorDock, SLOT(changeCurrentPage()));
+    // STEP 3
+    // Setup webinspector panel
+    m_webInspectorPanel = new WebInspectorPanel(i18n("Web Inspector"), this);
+    connect(mainView(), SIGNAL(currentChanged(int)), m_webInspectorPanel, SLOT(changeCurrentPage()));
     
-    KAction *a = new KAction(KIcon("tools-report-bug"), i18n("Web &Inspector"), this);
+    a = new KAction(KIcon("tools-report-bug"), i18n("Web &Inspector"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QLatin1String("web_inspector"), a);
-    connect(a, SIGNAL(triggered(bool)), m_webInspectorDock, SLOT(toggle(bool)));
+    connect(a, SIGNAL(triggered(bool)), m_webInspectorPanel, SLOT(toggle(bool)));
     
-    addDockWidget(Qt::BottomDockWidgetArea, m_webInspectorDock);
-    m_webInspectorDock->hide();
+    addDockWidget(Qt::BottomDockWidgetArea, m_webInspectorPanel);
+    m_webInspectorPanel->hide();
 }
 
 
@@ -710,13 +696,12 @@ void MainWindow::privateBrowsing(bool enable)
                             "<p>When private browsing is turned on,"
                             " web pages are not added to the history,"
                             " new cookies are not stored, current cookies cannot be accessed,"
-                            " site icons will not be stored, the session will not be saved, "
-                            " and searches are not added to the pop-up menu in the Google search box."
-                            "  Until you close the window, you can still click the Back and Forward buttons"
+                            " site icons will not be stored, the session will not be saved."
+                            " Until you close the window, you can still click the Back and Forward buttons"
                             " to return to the web pages you have opened.</p>", title);
 
-        int button = KMessageBox::questionYesNo(this, text, title);
-        if (button == KMessageBox::Yes)
+        int button = KMessageBox::warningContinueCancel(this, text, title);
+        if (button == KMessageBox::Continue)
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
             m_view->urlBar()->setBackgroundColor(Qt::lightGray); // palette().color(QPalette::Active, QPalette::Background));
@@ -808,7 +793,7 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
 {
     // state flags
     static bool bookmarksToolBarFlag;
-    static bool sidePanelFlag;
+    static bool historyPanelFlag;
     static bool bookmarksPanelFlag;
 
     if (!makeVisible)
@@ -817,14 +802,14 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
         if (!isFullScreen())
         {
             bookmarksToolBarFlag = m_bmBar->isHidden();
-            sidePanelFlag = sidePanel()->isHidden();
-            bookmarksPanelFlag = bookmarksPanel()->isHidden();
+            historyPanelFlag = m_historyPanel->isHidden();
+            bookmarksPanelFlag = m_bookmarksPanel->isHidden();
         }
         
         m_bmBar->hide();        
         m_view->setTabBarHidden(true);
-        sidePanel()->hide();       
-        bookmarksPanel()->hide();
+        m_historyPanel->hide();       
+        m_bookmarksPanel->hide();
 
         // hide main toolbar
         m_mainBar->hide();
@@ -838,10 +823,10 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
         // restore state of windowed mode
         if (!bookmarksToolBarFlag)
             m_bmBar->show();
-        if (!sidePanelFlag)
-            sidePanel()->show();
+        if (!historyPanelFlag)
+            m_historyPanel->show();
         if (!bookmarksPanelFlag)
-            bookmarksPanel()->show();
+            m_bookmarksPanel->show();
     }    
 }
 

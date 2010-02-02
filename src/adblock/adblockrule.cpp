@@ -52,17 +52,22 @@
  * ============================================================ */
 
 
+// Self Includes
 #include "adblockrule.h"
 
+// Qt Includes
+#include <QStringList>
 #include <QDebug>
 #include <QRegExp>
 #include <QUrl>
 
+// Defines
 #define QL1S(x) QLatin1String(x)
 #define QL1C(x) QLatin1Char(x)
 
 
 AdBlockRule::AdBlockRule(const QString &filter)
+    : m_optionMatchRule(false)
 {
     bool isRegExpRule = false;
 
@@ -75,11 +80,13 @@ AdBlockRule::AdBlockRule(const QString &filter)
         isRegExpRule = true;
     }
     
-    int options = parsedLine.indexOf( QL1C('$'), 0);
-    if (options >= 0) 
+    int optionsNumber = parsedLine.indexOf( QL1C('$'), 0);
+    QStringList options;
+    
+    if (optionsNumber >= 0) 
     {
-        m_options = parsedLine.mid(options + 1).split(QL1C(','));
-        parsedLine = parsedLine.left(options);
+        options = parsedLine.mid(optionsNumber + 1).split(QL1C(','));
+        parsedLine = parsedLine.left(optionsNumber);
     }
 
     if(!isRegExpRule)
@@ -87,10 +94,10 @@ AdBlockRule::AdBlockRule(const QString &filter)
     
     m_regExp = QRegExp(parsedLine, Qt::CaseInsensitive, QRegExp::RegExp2);
 
-    if (m_options.contains( QL1S("match-case") )) 
+    if ( options.contains( QL1S("match-case") )) 
     {
         m_regExp.setCaseSensitivity(Qt::CaseSensitive);
-        m_options.removeOne( QL1S("match-case") );
+        m_optionMatchRule = true;
     }
 }
 

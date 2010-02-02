@@ -35,6 +35,7 @@
 #include <KIcon>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
+#include <ThreadWeaver/Job>
 
 // Qt Includes
 #include <QPointer>
@@ -48,6 +49,7 @@ class HistoryManager;
 class MainWindow;
 class SessionManager;
 class AdBlockManager;
+class WebView;
 
 
 typedef QList< QPointer<MainWindow> > MainWindowList;
@@ -110,6 +112,7 @@ public:
 public slots:
     /**
      * Save application's configuration
+     *
      * @see ReKonfig::self()->writeConfig();
      */
     void saveConfiguration() const;
@@ -133,6 +136,8 @@ private slots:
      */
     void postLaunch();
 
+    void loadResolvedUrl(ThreadWeaver::Job *);
+    
 private:
     static QPointer<HistoryManager> s_historyManager;
     static QPointer<BookmarkProvider> s_bookmarkProvider;

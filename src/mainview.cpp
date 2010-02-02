@@ -146,14 +146,11 @@ void MainView::updateTabButtonPosition()
         if (tabWidthHint < sizeHint().width()/4)
             newPosX = tabWidgetWidth - m_addTabButton->width();
 
-        // detecting Y position
-        int newPosY = m_tabBar->height() - m_addTabButton->height();
-        if(newPosY < 0)
-            newPosY = 5;    // this hardcoded value is used in just ONE situation:
-                            // the first time an user changes the "Always Show Tab Bar" settings
-                            // try some better fixes, if you can :D
+        // Y position is fixed
+        // Here I noticed with some emphiric valutations ( :D )
+        // that 2 look better than 0, just that..
 
-        m_addTabButton->move(newPosX, newPosY);
+        m_addTabButton->move(newPosX, 2);
     }
 }
 
@@ -511,7 +508,7 @@ void MainView::closeTab(int index)
 
         removeTab(index);
         updateTabBar();         // UI operation: do it ASAP!!
-        delete tab; // webView is scheduled for deletion.
+        tab->deleteLater();  // webView is scheduled for deletion.
         
         emit tabsChanged();
 

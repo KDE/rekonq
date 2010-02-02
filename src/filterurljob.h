@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
+* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,36 +24,38 @@
 * ============================================================ */
 
 
-// Self Includes
-#include "sidepanel.h"
-#include "sidepanel.moc"
-
-// Auto Includes
-#include "rekonq.h"
+#ifndef FILTER_URL_JOB_H
+#define FILTER_URL_JOB_H
 
 // Local Includes
-#include "historypanel.h"
+#include "webview.h"
+
+// KDE Includes
+#include <KUrl>
+#include <ThreadWeaver/Job>
+
+// Qt Includes
+#include <QString>
 
 
-SidePanel::SidePanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
-        : QDockWidget(title, parent, flags)
-        , m_historyPanel(new HistoryPanel(this))
+using namespace ThreadWeaver;
+
+
+class FilterUrlJob : public Job
 {
-    setObjectName("sidePanel");
-    setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+public:
+    FilterUrlJob(WebView *view, const QString &urlString, QObject *parent = 0);
 
-    setShown(ReKonfig::showSideBar());
+    WebView *view();
+    KUrl url();
+    
+protected:
+    void run();
+    
+private:
+    WebView *_view;
+    QString _urlString;
+    KUrl _url;
+};
 
-    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&)), this, SIGNAL(openUrl(const KUrl&)));
-
-    setWidget(m_historyPanel);
-}
-
-
-SidePanel::~SidePanel()
-{
-    // Save side panel's state
-    ReKonfig::setShowSideBar(!isHidden());
-
-    delete m_historyPanel;
-}
+#endif // FILTER_URL_JOB_H

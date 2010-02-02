@@ -57,10 +57,8 @@ private slots:
     void updateProgress(int progress);
     void loadFinished(bool);
 
-    void loadInNewTab(const KUrl &url);
-
     void createWalletBar(const QString &, const QUrl &);
-
+    
 private:
     WebView *const m_view;
     int m_progress;

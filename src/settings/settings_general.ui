@@ -244,22 +244,22 @@
         </property>
         <item>
          <property name="text">
-          <string>favorites</string>
+          <string>Favorites</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>closed tabs</string>
+          <string>Closed Tabs</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>history</string>
+          <string>Bookmarks</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>bookmarks</string>
+          <string>History</string>
          </property>
         </item>
        </widget>
@@ -276,12 +276,15 @@
       <item>
        <widget class="QCheckBox" name="kcfg_kgetDownload">
         <property name="text">
-         <string>Download with KGet</string>
+         <string>Use KGet for downloading files</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="kcfg_kgetList">
+        <property name="whatsThis">
+         <string>If enabled, rekonq will display an additional context menu entry, which, when selected, lists all available links of the current website in KGet.</string>
+        </property>	
         <property name="text">
          <string>List links with KGet</string>
         </property>

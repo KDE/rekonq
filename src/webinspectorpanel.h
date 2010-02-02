@@ -24,8 +24,8 @@
 * ============================================================ */
 
 
-#ifndef WEBINSPECTORDOCK_H
-#define WEBINSPECTORDOCK_H
+#ifndef WEBINSPECTOR_PANEL_H
+#define WEBINSPECTOR_PANEL_H
 
 
 // Local Includes
@@ -38,11 +38,11 @@
     Docked web inspector
     behaviour : hide/show by tab, not globally
 */
-class WebInspectorDock : public QDockWidget
+class WebInspectorPanel : public QDockWidget
 {
     Q_OBJECT
 public:
-    WebInspectorDock(QString title, QWidget *parent);
+    WebInspectorPanel(QString title, QWidget *parent);
     
 public slots:
     void toggle(bool enable);

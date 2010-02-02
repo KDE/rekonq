@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
+* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,34 +24,44 @@
 * ============================================================ */
 
 
-#ifndef SIDEPANEL_H
-#define SIDEPANEL_H
+// Self Includes
+#include "filterurljob.h"
 
-// Local Includes
-#include "application.h"
+// KDE Includes
+#include <KUriFilter>
+#include <KUriFilterData>
 
 // Qt Includes
-#include <QDockWidget>
-
-// Forward Declarations
-class KUrl;
-class HistoryPanel;
+#include <QUrl>
 
 
-class SidePanel : public QDockWidget
+FilterUrlJob::FilterUrlJob(WebView *view, const QString &urlString, QObject *parent)
+    : Job(parent)
+    , _view(view)
+    , _urlString(urlString)
 {
-    Q_OBJECT
-    
-public:
-    explicit SidePanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~SidePanel();
+}
 
-signals:
-    void openUrl(const KUrl &);
 
-private:
-    HistoryPanel *m_historyPanel;
+WebView *FilterUrlJob::view()
+{
+    return _view;
+}
 
-};
 
-#endif // SIDEPANEL_H
+KUrl FilterUrlJob::url()
+{
+    return _url;
+}
+
+
+void FilterUrlJob::run()
+{
+    // this should let rekonq filtering URI info and supporting
+    // the beautiful KDE web browsing shortcuts
+    KUriFilterData data(_urlString);
+    data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
+    _url = KUriFilter::self()->filterUri(data) 
+        ? data.uri().pathOrUrl() 
+        : QUrl::fromUserInput( _urlString );
+}
