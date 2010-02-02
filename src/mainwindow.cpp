@@ -700,8 +700,8 @@ void MainWindow::privateBrowsing(bool enable)
                             " Until you close the window, you can still click the Back and Forward buttons"
                             " to return to the web pages you have opened.</p>", title);
 
-        int button = KMessageBox::questionYesNo(this, text, title);
-        if (button == KMessageBox::Yes)
+        int button = KMessageBox::warningContinueCancel(this, text, title);
+        if (button == KMessageBox::Continue)
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
             m_view->urlBar()->setBackgroundColor(Qt::lightGray); // palette().color(QPalette::Active, QPalette::Background));
