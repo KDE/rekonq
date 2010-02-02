@@ -278,7 +278,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
             if (ReKonfig::kgetList())
             {
-                a = new KAction(KIcon("kget"), i18n("List all links"), this);
+                a = new KAction(KIcon("kget"), i18n("List All Links"), this);
                 connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
                 menu.addAction(a);
             }
