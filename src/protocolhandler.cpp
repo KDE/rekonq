@@ -199,13 +199,13 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     
     if (mainItem.isNull()) 
     {
-        QString errStr = i18n("Error opening: %1: No such file or directory", rootUrl.prettyUrl() );
+        QString errStr = i18nc("%1=an URL", "Error opening '%1': No such file or directory.", rootUrl.prettyUrl() );
         return errStr;
     }
     
     if (!mainItem.isReadable()) 
     {
-        QString errStr = i18n("Unable to read %1", rootUrl.prettyUrl() );
+        QString errStr = i18nc("%1=an URL", "Unable to read %1", rootUrl.prettyUrl() );
         return errStr;
     }
     
@@ -220,7 +220,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     }
 
     QString title = _url.prettyUrl(); 
-    QString msg = "<h1>" + i18n("Index of ") + _url.prettyUrl() + "</h1>";
+    QString msg = i18nc("%1=an URL", "<h1>Index of %1</h1>", _url.prettyUrl());
 
 
     if(rootUrl.cd(".."))
