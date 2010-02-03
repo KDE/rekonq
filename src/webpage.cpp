@@ -72,7 +72,6 @@
 
 WebPage::WebPage(QObject *parent)
         : KWebPage(parent, KWalletIntegration)
-        , m_newTabPage(new NewTabPage(mainFrame() ))
 {
     setForwardUnsupportedContent(true);
 
@@ -101,12 +100,6 @@ WebPage::WebPage(QObject *parent)
 WebPage::~WebPage()
 {
     disconnect();
-}
-
-
-NewTabPage* WebPage::newTabPage()
-{
-    return m_newTabPage;
 }
 
 

@@ -55,8 +55,6 @@ class WebPage : public KWebPage
 public:
     explicit WebPage(QObject *parent = 0);
     ~WebPage();
-    
-    NewTabPage *newTabPage();
 
 public slots:
     void manageNetworkErrors(QNetworkReply *reply);
@@ -80,7 +78,6 @@ private:
 
     QUrl m_requestedUrl;
     ProtocolHandler m_protHandler;
-    NewTabPage *m_newTabPage;
 };
 
 #endif
