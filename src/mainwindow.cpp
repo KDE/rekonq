@@ -76,7 +76,7 @@
 #include <QtCore/QRect>
 #include <QtCore/QSize>
 #include <QtCore/QList>
-#include <QtCore/QPointer>
+#include <QtCore/QWeakPointer>
 
 #include <QtGui/QWidget>
 #include <QtGui/QVBoxLayout>
@@ -599,13 +599,14 @@ void MainWindow::preferences()
         return;
 
     // we didn't find an instance of this dialog, so lets create it
-    QPointer<SettingsDialog> s = new SettingsDialog(this);
+    QWeakPointer<SettingsDialog> s = new SettingsDialog(this);
 
     // keep us informed when the user changes settings
-    connect(s, SIGNAL(settingsChanged(const QString&)), this, SLOT(updateBrowser()));
+    connect(s.data(), SIGNAL(settingsChanged(const QString&)), this, SLOT(updateBrowser()));
 
-    s->exec();
-    delete s;
+    s.data()->exec();
+    delete s.data();
+    s.clear();
 }
 
 
@@ -1041,16 +1042,16 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
 void MainWindow::clearPrivateData()
 {
-    QPointer<KDialog> dialog = new KDialog(this, Qt::Sheet);
-    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
+    QWeakPointer<KDialog> dialog = new KDialog(this, Qt::Sheet);
+    dialog.data()->setButtons(KDialog::Ok | KDialog::Cancel);
 
     Ui::ClearDataWidget clearWidget;
     QWidget widget;
     clearWidget.setupUi(&widget);
 
-    dialog->setMainWidget(&widget);
+    dialog.data()->setMainWidget(&widget);
 
-    if (dialog->exec() == KDialog::Accepted)
+    if (dialog.data()->exec() == KDialog::Accepted)
     {
         if(clearWidget.clearHistory->isChecked())
         {

@@ -71,10 +71,10 @@ void SessionManager::saveSession()
     }
     QTextStream out(&sessionFile);
     MainWindowList wl = Application::instance()->mainWindowList();
-    Q_FOREACH(QPointer<MainWindow> w, wl)
+    Q_FOREACH(QWeakPointer<MainWindow> w, wl)
     {
         out << "window\n";
-        MainView *mv = w->mainView();
+        MainView *mv = w.data()->mainView();
         for (int i = 0 ; i < mv->count() ; i++)
         {
             out << mv->webTab(i)->url().toEncoded() << "\n";

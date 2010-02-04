@@ -35,7 +35,7 @@
 #include "rekonqprivate_export.h"
 
 // Qt Includes
-#include <QPointer>
+#include <QWeakPointer>
 
 // KDE Includes
 #include <KTabBar>
@@ -99,7 +99,7 @@ private:
      */
     int m_actualIndex;
 
-    QPointer<KPassivePopup> m_previewPopup;
+    QWeakPointer<KPassivePopup> m_previewPopup;
     int m_currentTabPreview;
 };
 

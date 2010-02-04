@@ -64,10 +64,10 @@
 #include <QtCore/QTimer>
 
 
-QPointer<HistoryManager> Application::s_historyManager;
-QPointer<BookmarkProvider> Application::s_bookmarkProvider;
-QPointer<SessionManager> Application::s_sessionManager;
-QPointer<AdBlockManager> Application::s_adblockManager;
+QWeakPointer<HistoryManager> Application::s_historyManager;
+QWeakPointer<BookmarkProvider> Application::s_bookmarkProvider;
+QWeakPointer<SessionManager> Application::s_sessionManager;
+QWeakPointer<AdBlockManager> Application::s_adblockManager;
 
 
 Application::Application()
@@ -80,12 +80,23 @@ Application::Application()
 
 Application::~Application()
 {
-    qDeleteAll(m_mainWindows);
+    foreach( QWeakPointer<MainWindow> window, m_mainWindows)
+    {
+        delete window.data();
+        window.clear();
+    }
 
-    delete s_bookmarkProvider;
-    delete s_historyManager;
-    delete s_sessionManager;
-    delete s_adblockManager;
+    delete s_bookmarkProvider.data();
+    s_bookmarkProvider.clear();
+    
+    delete s_historyManager.data();
+    s_historyManager.clear();
+    
+    delete s_sessionManager.data();
+    s_sessionManager.clear();
+    
+    delete s_adblockManager.data();
+    s_adblockManager.clear();
 }
 
 
@@ -145,7 +156,7 @@ int Application::newInstance()
         // is there a window open on the current desktop ? use it!
         for (int i = 0; i < m_mainWindows.size(); ++i)
         {
-            MainWindow *m = m_mainWindows.at(i);
+            MainWindow *m = m_mainWindows.at(i).data();
             KWindowInfo w = KWindowInfo(m->winId(), NET::WMDesktop);
             if(w.isOnCurrentDesktop())
             {
@@ -210,7 +221,7 @@ MainWindow *Application::mainWindow()
     
     if(!active)
     {
-        return m_mainWindows.at(0);
+        return m_mainWindows.at(0).data();
     }
     return active;
 }
@@ -218,38 +229,38 @@ MainWindow *Application::mainWindow()
 
 HistoryManager *Application::historyManager()
 {
-    if (!s_historyManager)
+    if ( s_historyManager.isNull() )
     {
         s_historyManager = new HistoryManager();
-        QWebHistoryInterface::setDefaultInterface(s_historyManager);
+        QWebHistoryInterface::setDefaultInterface( s_historyManager.data() );
     }
-    return s_historyManager;
+    return s_historyManager.data();
 }
 
 
 BookmarkProvider *Application::bookmarkProvider()
 {
-    if (!s_bookmarkProvider)
+    if ( s_bookmarkProvider.isNull() )
     {
         s_bookmarkProvider = new BookmarkProvider(instance());
     }
-    return s_bookmarkProvider;
+    return s_bookmarkProvider.data();
 }
 
 
 SessionManager *Application::sessionManager()
 {
-    if(!s_sessionManager)
+    if( s_sessionManager.isNull() )
     {
         s_sessionManager = new SessionManager(instance());
     }
-    return s_sessionManager;
+    return s_sessionManager.data();
 }
 
 
 KIcon Application::icon(const KUrl &url)
 {
-    if(!Application::instance()->mainWindowList().isEmpty()) // avoid infinite loop at startup
+    if( !Application::instance()->mainWindowList().isEmpty() ) // avoid infinite loop at startup
     {
 
         if(url == KUrl("about:closedTabs"))
@@ -355,11 +366,11 @@ MainWindowList Application::mainWindowList()
 
 AdBlockManager *Application::adblockManager()
 {
-    if(!s_adblockManager)
+    if( s_adblockManager.isNull() )
     {
         s_adblockManager = new AdBlockManager(instance());
     }
-    return s_adblockManager;
+    return s_adblockManager.data();
 }
 
 

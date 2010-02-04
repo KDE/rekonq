@@ -38,7 +38,7 @@
 #include <ThreadWeaver/Job>
 
 // Qt Includes
-#include <QPointer>
+#include <QWeakPointer>
 #include <QList>
 
 // Forward Declarations
@@ -52,7 +52,7 @@ class AdBlockManager;
 class WebView;
 
 
-typedef QList< QPointer<MainWindow> > MainWindowList;
+typedef QList< QWeakPointer<MainWindow> > MainWindowList;
 
 
 namespace Rekonq
@@ -139,10 +139,10 @@ private slots:
     void loadResolvedUrl(ThreadWeaver::Job *);
     
 private:
-    static QPointer<HistoryManager> s_historyManager;
-    static QPointer<BookmarkProvider> s_bookmarkProvider;
-    static QPointer<SessionManager> s_sessionManager;
-    static QPointer<AdBlockManager> s_adblockManager;
+    static QWeakPointer<HistoryManager> s_historyManager;
+    static QWeakPointer<BookmarkProvider> s_bookmarkProvider;
+    static QWeakPointer<SessionManager> s_sessionManager;
+    static QWeakPointer<AdBlockManager> s_adblockManager;
     
     MainWindowList m_mainWindows;
 };

@@ -53,7 +53,6 @@
 #include <KCModuleProxy>
 
 // Qt Includes
-#include <QtCore/QPointer>
 #include <QtGui/QWidget>
 
 

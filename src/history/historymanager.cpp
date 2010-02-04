@@ -69,10 +69,9 @@ HistoryManager::HistoryManager(QObject *parent)
     , m_historyModel(0)
     , m_historyFilterModel(0)
     , m_historyTreeModel(0)
-    , m_completion(0)
+    , m_completion(new KCompletion)
 {
     // take care of the completion object
-    m_completion = new KCompletion;
     m_completion->setOrder( KCompletion::Weighted );
     
     m_expiredTimer.setSingleShot(true);

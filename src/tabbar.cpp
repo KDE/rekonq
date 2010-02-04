@@ -161,24 +161,21 @@ void TabBar::showTabPreview(int tab)
     int h = w*((0.0 + currentView->height())/currentView->width());
 
     //delete previous tab preview
-    if (m_previewPopup)
-    {
-        delete m_previewPopup;
-    }
-
+    m_previewPopup.clear();
+    
     m_previewPopup = new KPassivePopup(this);
-    m_previewPopup->setFrameShape(QFrame::StyledPanel);
-    m_previewPopup->setFrameShadow(QFrame::Plain);
-    m_previewPopup->setFixedSize(w, h);
+    m_previewPopup.data()->setFrameShape(QFrame::StyledPanel);
+    m_previewPopup.data()->setFrameShadow(QFrame::Plain);
+    m_previewPopup.data()->setFixedSize(w, h);
     QLabel *l = new QLabel();
     view->page()->setViewportSize(currentView->page()->viewportSize());
     l->setPixmap(WebSnap::renderPreview(*(view->page()), w, h));
-    m_previewPopup->setView(l);
-    m_previewPopup->layout()->setAlignment(Qt::AlignTop);
-    m_previewPopup->layout()->setMargin(0);
+    m_previewPopup.data()->setView(l);
+    m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);
+    m_previewPopup.data()->layout()->setMargin(0);
 
     QPoint pos( tabRect(tab).x() , tabRect(tab).y() + tabRect(tab).height() );
-    m_previewPopup->show(mapToGlobal(pos));
+    m_previewPopup.data()->show(mapToGlobal(pos));
 }
 
 
@@ -208,9 +205,9 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         //if current tab or not found then hide previous tab preview
         if (tab==currentIndex() || tab==-1)
         {
-            if ( m_previewPopup)
+            if ( !m_previewPopup.isNull() )
             {
-                m_previewPopup->hide();
+                m_previewPopup.data()->hide();
             }
             m_currentTabPreview = -1;
         }
@@ -225,9 +222,9 @@ void TabBar::leaveEvent(QEvent *event)
     if (ReKonfig::alwaysShowTabPreviews())
     {
         //if leave tabwidget then hide previous tab preview
-        if ( m_previewPopup)
+        if ( !m_previewPopup.isNull() )
         {
-            m_previewPopup->hide();
+            m_previewPopup.data()->hide();
         }
         m_currentTabPreview = -1;
     }
