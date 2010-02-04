@@ -93,6 +93,14 @@ void NewTabPage::generate(KUrl url)
         }
     }
     
+    if(    url != KUrl("about:home")
+        && url != KUrl("about:favorites")
+        && url != KUrl("about:closedTabs")
+        && url != KUrl("about:history")
+        && url != KUrl("about:bookmarks")
+        )
+        return;
+    
     
     QWebPage *page = m_root.webFrame()->page();
     page->mainFrame()->setHtml(m_html);
