@@ -308,7 +308,7 @@ void MainView::currentChanged(int index)
         emit browserTabLoading(false);
 
     // set focus to the current webview
-    tab->setFocus();
+    tab->view()->setFocus();
 }
 
 
@@ -507,8 +507,8 @@ void MainView::closeTab(int index)
         }
 
         removeTab(index);
-        updateTabBar();         // UI operation: do it ASAP!!
-        tab->deleteLater();  // webView is scheduled for deletion.
+        updateTabBar();        // UI operation: do it ASAP!!
+        tab->deleteLater();    // webView is scheduled for deletion.
         
         emit tabsChanged();
 

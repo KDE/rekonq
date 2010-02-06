@@ -925,6 +925,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Escape)
     {
         m_findBar->hide();
+        currentTab()->setFocus();   // give focus to web pages
         return;
     }
 

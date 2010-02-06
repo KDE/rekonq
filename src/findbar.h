@@ -56,6 +56,7 @@ public:
 public slots:
     void clear();
     void show();
+    void hide();
     void notifyMatch(bool match);
 
 protected Q_SLOTS:
@@ -68,7 +69,6 @@ private:
     KLineEdit *m_lineEdit;
     QCheckBox *m_matchCase;
     QTimer *m_hideTimer;
-
 };
 
 #endif

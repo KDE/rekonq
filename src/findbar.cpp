@@ -143,12 +143,6 @@ void FindBar::show()
 
 void FindBar::keyPressEvent(QKeyEvent* event)
 {
-    if (event->key() == Qt::Key_Escape)
-    {
-        hide();
-        m_hideTimer->stop();
-        return;
-    }
     if (event->key() == Qt::Key_Return && !m_lineEdit->text().isEmpty())
     {
         emit searchString(m_lineEdit->text());
@@ -157,6 +151,7 @@ void FindBar::keyPressEvent(QKeyEvent* event)
 
     QWidget::keyPressEvent(event);
 }
+
 
 void FindBar::notifyMatch(bool match)
 {
@@ -179,4 +174,12 @@ void FindBar::notifyMatch(bool match)
     }
     m_lineEdit->setPalette(p);
     m_hideTimer->start(60000);
+}
+
+
+
+void FindBar::hide()
+{
+    m_hideTimer->stop();
+    QWidget::hide();
 }

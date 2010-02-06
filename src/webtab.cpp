@@ -64,6 +64,9 @@ WebTab::WebTab(QWidget* parent)
     , m_view( new WebView(this) )
     , m_progress(0)
 {
+    // fix focus handling
+    setFocusProxy( m_view );
+    
     QVBoxLayout* l = new QVBoxLayout(this);
     l->setMargin(0);
     l->setSpacing(0);

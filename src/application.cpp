@@ -382,8 +382,8 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
     
     if (view)
     {
-        view->setFocus();
         view->load(url);    
+        view->setFocus();
         
         // we are sure of the url now, let's add it to history
         // anyway we store here just http sites because local and ftp ones are
