@@ -56,7 +56,7 @@ public:
     void generate(KUrl url = KUrl("about:home"));
     
 public slots:
-    void snapFinished();
+    void snapFinished(int index, KUrl url, QString title);
     void removePreview(int index);
      
 protected:  // these are the function to build the new tab page

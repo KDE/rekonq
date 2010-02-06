@@ -76,7 +76,7 @@ NewTabPage::~NewTabPage()
 
 
 void NewTabPage::generate(KUrl url)
-{    
+{
     if(KUrl("about:preview").isParentOf(url))
     {
         if(url.directory() == QString("preview/remove"))
@@ -140,10 +140,10 @@ void NewTabPage::generate(KUrl url)
 
 void NewTabPage::favoritesPage()
 {
+    m_root.addClass("favorites");
+    
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
-
-    m_root.addClass("favorites");
     
     for(int i=0; i<8; ++i)
     {
@@ -187,14 +187,12 @@ QWebElement NewTabPage::loadingPreview(int index, KUrl url)
     prev.findFirst(".preview img").setAttribute("src" , 
                 QString("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
     prev.findFirst("span").appendInside(i18n("Loading Preview..."));
+    prev.findFirst("a").setAttribute("href", url.toMimeDataString());
     
     setupPreview(prev, index);
     showControls(prev);
     
-    WebSnap *snap = new WebSnap(url);
-    bool test = connect(snap, SIGNAL(finished()), this, SLOT(snapFinished()));
-    kDebug() << test;
-    snap->SetData(QVariant(index));
+    new WebSnap(url, m_root.webFrame()->page(), index);
     
     return prev;
 }
@@ -244,12 +242,29 @@ void NewTabPage::setupPreview(QWebElement e, int index)
 }
 
 
-void NewTabPage::snapFinished()
-{    
-    kDebug() << "called";
-    WebSnap *snap = qobject_cast<WebSnap*>(sender());
-    QWebElement prev = m_root.findFirst("#preview" + snap->data().toString());
-    prev.replace(validPreview(snap->data().toInt(), snap->snapUrl(), snap->snapTitle()));
+void NewTabPage::snapFinished(int index, KUrl url, QString title)
+{
+    // do not try to modify the page if it isn't the newTabPage
+    if(m_root.document().findAll("#rekonq-newtabpage").count() == 0)
+        return;
+    
+    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
+    QWebElement newPrev = validPreview(index, url, title);
+    
+    if(m_root.findAll(".closedTabs").count() != 0)
+        hideControls(newPrev);
+    
+    prev.replace(newPrev);
+    
+    // update title
+    if(m_root.findAll(".favorites").count() != 0)
+    {
+        QStringList names = ReKonfig::previewNames();
+        names.replace(index, title);
+        ReKonfig::setPreviewNames(names);
+        
+        ReKonfig::self()->writeConfig();
+    }
 }
 
 
@@ -319,6 +334,8 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
 
 void NewTabPage::historyPage()
 {
+    m_root.addClass("history");
+    
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
     int i = 0;
@@ -349,6 +366,8 @@ void NewTabPage::historyPage()
 
 void NewTabPage::bookmarksPage()
 {
+    m_root.addClass("bookmarks");
+    
     KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
     if (bookGroup.isNull())
     {
@@ -395,6 +414,8 @@ void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
 
 void NewTabPage::closedTabsPage()
 {
+    m_root.addClass("closedTabs");
+    
     QList<HistoryItem> links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
     
     for(int i=0; i < links.count(); ++i)

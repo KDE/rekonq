@@ -29,6 +29,9 @@
 #include "websnap.h"
 #include "websnap.moc"
 
+// Local Includes
+#include "newtabpage.h"
+
 // KDE Includes
 #include <KDebug>
 #include <KStandardDirs>
@@ -42,10 +45,12 @@
 #include <QFile>
 
 
-WebSnap::WebSnap(const QUrl &url)
+WebSnap::WebSnap(const QUrl& url, QWebPage* originatingPage, int previewIndex)
     : QObject()
 {
     m_url = url;
+    m_originatingPage = originatingPage;
+    m_previewIndex = previewIndex;
 
     // this to not register websnap history
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
@@ -120,18 +125,6 @@ KUrl WebSnap::fileForUrl(KUrl url)
 }
 
 
-void WebSnap::SetData(QVariant data)
-{
-    m_data = data;
-}
-
-QVariant& WebSnap::data()
-{
-    return m_data;
-}
-
-
-
 QString WebSnap::guessNameFromUrl(QUrl url)
 {
     QString name = url.toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
@@ -163,12 +156,16 @@ void WebSnap::saveResult(bool ok)
     else
     {
         m_image = renderPreview(m_page, WIDTH, HEIGHT);
+        m_snapTitle = m_page.mainFrame()->title();
     }
     QFile::remove(fileForUrl(m_url).toLocalFile());
     m_image.save(fileForUrl(m_url).toLocalFile());
     
-    kDebug() << "finished";
-    emit finished();
+    //m_originatingPage->mainFrame()->load(KUrl("about:preview/replace/" + QVariant(m_previewIndex).toString()));
+    NewTabPage p(m_originatingPage->mainFrame());
+    p.snapFinished(m_previewIndex, m_url, m_snapTitle);
+    
+    deleteLater();
 }
 
 

@@ -51,7 +51,7 @@ class WebSnap : public QObject
     Q_OBJECT
 
 public:
-    WebSnap(const QUrl &url);
+    WebSnap(const QUrl &url, QWebPage *originatingPage, int previewIndex);
     ~WebSnap();
     
     QPixmap previewImage(); // TODO : remove
@@ -66,12 +66,6 @@ public:
     
     QString snapTitle();
     QUrl snapUrl();
-    
-    void SetData(QVariant data);
-    QVariant& data();
-
-signals:
-    void finished();
 
 private slots:
     void load();
@@ -84,7 +78,8 @@ private:
     QUrl m_url;
     QString m_snapTitle;
     
-    QVariant m_data;
+    QWebPage *m_originatingPage;
+    int m_previewIndex;
 };
 
 #endif // WEB_SNAP_H
