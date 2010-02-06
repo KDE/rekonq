@@ -1,4 +1,5 @@
-/* ============================================================
+
+class PreviewSelectorBar;/* ============================================================
 *
 * This file is a part of the rekonq project
 *
@@ -32,6 +33,7 @@
 
 // Local Includes
 #include "application.h"
+#include "previewselectorbar.h"
 
 // KDE Includes
 #include <KMainWindow>
@@ -156,7 +158,9 @@ private slots:
 private:
     MainView *m_view;
     FindBar *m_findBar;
-    
+
+    PreviewSelectorBar *m_previewSelectorBar;
+
     HistoryPanel *m_historyPanel;
     BookmarksPanel *m_bookmarksPanel;
     WebInspectorPanel *m_webInspectorPanel;

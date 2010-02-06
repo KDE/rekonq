@@ -32,8 +32,10 @@
 #define WEBPAGE_H
 
 
+
 // Local Includes
 #include "protocolhandler.h"
+#include "newtabpage.h"
 
 // KDE Includes
 #include <KWebPage>

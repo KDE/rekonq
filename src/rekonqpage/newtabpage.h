@@ -28,24 +28,22 @@
 #define REKONQ_NEW_TAB_PAGE
 
 
-// rekonq Includes
-#include <webpage.h>
-
 // KDE Includes
 #include <KUrl>
 
 // Qt Includes
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 #include <QWebElement>
 
 // Forward Includes
 class KBookmark;
+class WebPage;
 
 
-class NewTabPage
+class NewTabPage : public QObject
 {
-    
+Q_OBJECT
 public:
     NewTabPage(QWebFrame *frame);
     ~NewTabPage();
@@ -55,13 +53,28 @@ public:
      *  about: url and loads the corresponding part of the 
      *  new tab page
      */
-    void generate(const KUrl &url = KUrl("about:home"));
+    void generate(KUrl url = KUrl("about:home"));
+    
+public slots:
+    void snapFinished(int index, KUrl url, QString title);
+    void removePreview(int index);
      
 protected:  // these are the function to build the new tab page
     void browsingMenu(const KUrl &currentUrl);
 
     void favoritesPage();
-    //QString lastVisitedPage();
+    QWebElement emptyPreview(int index);
+    QWebElement loadingPreview(int index, KUrl url);
+    QWebElement validPreview(int index, KUrl url, QString title);
+    
+    /** This function takes a QwebElement with the .thumbnail structure.
+        It hides the "remove" and "modify" buttons->
+    */
+    void hideControls(QWebElement e);
+    void showControls(QWebElement e);
+    void setupPreview(QWebElement e, int index);
+    
+    
     void historyPage();
     void bookmarksPage();
     void closedTabsPage();
@@ -77,10 +90,14 @@ private:
     {
        return m_root.document().findFirst("#models > " + selector).clone();
     }
+    
+    QString checkTitle(QString title);
 
     QString m_html;
     
     QWebElement m_root;
+    
+    KUrl m_url;
 };
 
 #endif // REKONQ_NEW_TAB_PAGE

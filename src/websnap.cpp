@@ -29,6 +29,9 @@
 #include "websnap.h"
 #include "websnap.moc"
 
+// Local Includes
+#include "newtabpage.h"
+
 // KDE Includes
 #include <KDebug>
 #include <KStandardDirs>
@@ -42,14 +45,12 @@
 #include <QFile>
 
 
-#define WIDTH  200
-#define HEIGHT 150
-
-
-WebSnap::WebSnap(const QUrl &url)
+WebSnap::WebSnap(const QUrl& url, QWebPage* originatingPage, int previewIndex)
     : QObject()
 {
     m_url = url;
+    m_originatingPage = originatingPage;
+    m_previewIndex = previewIndex;
 
     // this to not register websnap history
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
@@ -84,17 +85,10 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
 
     // find the best size
     QSize size;
-    if (page.viewportSize().width() && page.viewportSize().height())
-    {
-        size = page.viewportSize();
-    }
-    else
-    {
-        int width = page.mainFrame()->contentsSize().width();
-        if (width < 640) width = 640;
-        size = QSize(width,width*((0.0+h)/w));
-        page.setViewportSize(size);
-    }
+    int width = page.mainFrame()->contentsSize().width();
+    if (width < 640) width = 640;
+    size = QSize(width,width*((0.0+h)/w));
+    page.setViewportSize(size);
     
     // create the page image
     QImage pageImage = QImage(size, QImage::Format_ARGB32_Premultiplied);
@@ -115,17 +109,63 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
 }
 
 
+void WebSnap::savePreview(QPixmap pm, KUrl url)
+{
+    kDebug() << "saving preview";
+    QFile::remove(fileForUrl(url).toLocalFile());
+    pm.save(fileForUrl(url).toLocalFile());
+}
+
+
+KUrl WebSnap::fileForUrl(KUrl url)
+{
+    QString filePath = 
+            KStandardDirs::locateLocal("cache", QString("thumbs/") + WebSnap::guessNameFromUrl(url) + ".png", true);
+    return KUrl(filePath);
+}
+
+
+QString WebSnap::guessNameFromUrl(QUrl url)
+{
+    QString name = url.toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
+    
+    // TODO learn Regular Expressions :)
+    // and implement something better here..
+    name.remove('/');
+    name.remove('&');
+    name.remove('.');
+    name.remove('-');
+    name.remove('_');
+    name.remove('?');
+    name.remove('=');
+    name.remove('+');
+    
+    return name;
+}
+
+
 void WebSnap::saveResult(bool ok)
 {
     // crude error-checking
     if (!ok) 
     {
         kDebug() << "Error loading site..";
-        return;
+        m_snapTitle = "Error...";
+        m_image = QPixmap();
     }
-
-    m_image = renderPreview(m_page, WIDTH, HEIGHT);
-    emit finished();
+    else
+    {
+        m_image = renderPreview(m_page, WIDTH, HEIGHT);
+        m_snapTitle = m_page.mainFrame()->title();
+    }
+    QFile::remove(fileForUrl(m_url).toLocalFile());
+    m_image.save(fileForUrl(m_url).toLocalFile());
+    
+    //m_originatingPage->mainFrame()->load(KUrl("about:preview/replace/" + QVariant(m_previewIndex).toString()));
+    NewTabPage p(m_originatingPage->mainFrame());
+    p.snapFinished(m_previewIndex, m_url, m_snapTitle);
+    
+    deleteLater();
 }
 
 

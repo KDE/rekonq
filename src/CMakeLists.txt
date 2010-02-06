@@ -11,7 +11,6 @@ SET( rekonq_KDEINIT_SRCS
     findbar.cpp
     mainview.cpp
     mainwindow.cpp 
-    previewimage.cpp
     sessionmanager.cpp
     tabbar.cpp
     webpage.cpp
@@ -32,6 +31,7 @@ SET( rekonq_KDEINIT_SRCS
     history/historypanel.cpp
     #----------------------------------------
     rekonqpage/newtabpage.cpp
+    rekonqpage/previewselectorbar.cpp
     #----------------------------------------
     settings/settingsdialog.cpp
     #----------------------------------------

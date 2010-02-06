@@ -37,6 +37,9 @@
 #include <QImage>
 #include <QWebPage>
 
+#define WIDTH  200
+#define HEIGHT 150
+
 
 /**
  * This class renders a site producing an image based
@@ -48,21 +51,25 @@ class WebSnap : public QObject
     Q_OBJECT
 
 public:
-    WebSnap(const QUrl &url);
+    WebSnap(const QUrl &url, QWebPage *originatingPage, int previewIndex);
     ~WebSnap();
     
-    QPixmap previewImage();
-    static QPixmap renderPreview(const QWebPage &page, int w, int h);
+    QPixmap previewImage(); // TODO : remove
+    
+    static QPixmap renderPreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
+    
+    static KUrl fileForUrl(KUrl url);
+    
+    static QString guessNameFromUrl(QUrl url);
+    
+    static void savePreview(QPixmap pm, KUrl url);
     
     QString snapTitle();
     QUrl snapUrl();
 
-signals:
-    void finished();
-
 private slots:
     void load();
-    void saveResult(bool ok);
+    void saveResult(bool ok = true);
 
 private:
     QWebPage m_page;
@@ -70,6 +77,9 @@ private:
 
     QUrl m_url;
     QString m_snapTitle;
+    
+    QWebPage *m_originatingPage;
+    int m_previewIndex;
 };
 
 #endif // WEB_SNAP_H

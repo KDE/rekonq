@@ -26,6 +26,7 @@
 
 // Self Includes
 #include "newtabpage.h"
+#include "newtabpage.moc"
 
 // Auto Includes
 #include "rekonq.h"
@@ -36,6 +37,8 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
+#include "websnap.h"
+#include "previewselectorbar.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -43,6 +46,7 @@
 #include <KDebug>
 #include <KConfig>
 #include <KConfigGroup>
+#include <KDialog>
 
 // Qt Includes
 #include <QFile>
@@ -50,6 +54,7 @@
 
 NewTabPage::NewTabPage(QWebFrame *frame)
     : m_root(frame->documentElement())
+    , m_url(KUrl())
 {
     QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
     
@@ -70,8 +75,33 @@ NewTabPage::~NewTabPage()
 }
 
 
-void NewTabPage::generate(const KUrl &url)
-{    
+void NewTabPage::generate(KUrl url)
+{
+    if(KUrl("about:preview").isParentOf(url))
+    {
+        if(url.directory() == QString("preview/remove"))
+        {
+            removePreview(url.fileName().toInt());
+            return;
+        }
+        if(url.directory() == QString("preview/modify"))
+        {
+            int index = url.fileName().toInt();
+            Application::instance()->mainWindow()->findChild<PreviewSelectorBar *>()
+                        ->enable(index, qobject_cast< WebPage* >(m_root.webFrame()->page()));
+            return;
+        }
+    }
+    
+    if(    url != KUrl("about:home")
+        && url != KUrl("about:favorites")
+        && url != KUrl("about:closedTabs")
+        && url != KUrl("about:history")
+        && url != KUrl("about:bookmarks")
+        )
+        return;
+    
+    
     QWebPage *page = m_root.webFrame()->page();
     page->mainFrame()->setHtml(m_html);
 
@@ -80,26 +110,29 @@ void NewTabPage::generate(const KUrl &url)
     browsingMenu(url);
     
     QString title;
-    if(url == KUrl("about:closedTabs"))
-    {
-        closedTabsPage();
-        title = i18n("Closed Tabs");
-    }
-    if(url == KUrl("about:history"))
-    {
-        historyPage();
-        title = i18n("History");
-    }
-    if(url == KUrl("about:bookmarks"))
-    {
-        bookmarksPage();
-        title = i18n("Bookmarks");
-    }
     if(url == KUrl("about:home") || url == KUrl("about:favorites"))
     {
         favoritesPage();
         title = i18n("Favorites");
+        url = KUrl("about:favorites");
     }
+    else if(url == KUrl("about:closedTabs"))
+    {
+        closedTabsPage();
+        title = i18n("Closed Tabs");
+    }
+    else if(url == KUrl("about:history"))
+    {
+        historyPage();
+        title = i18n("History");
+    }
+    else if(url == KUrl("about:bookmarks"))
+    {
+        bookmarksPage();
+        title = i18n("Bookmarks");
+    }
+    
+    m_url = url;
     
     m_root.document().findFirst("title").setPlainText(title);
 }
@@ -107,41 +140,150 @@ void NewTabPage::generate(const KUrl &url)
 
 void NewTabPage::favoritesPage()
 {
+    m_root.addClass("favorites");
+    
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
-
-    m_root.addClass("favorites");
     
     for(int i=0; i<8; ++i)
     {
-        QWebElement speed = markup(".thumbnail");
-        speed.findFirst("object").setAttribute("data" , urls.at(i));
-        speed.findFirst("param[name=title]").setAttribute("value", names.at(i));
-        speed.findFirst("param[name=index]").setAttribute("value", QString::number(i));
-        speed.findFirst("param[name=isFavorite]").setAttribute("value", "true");
-        m_root.appendInside(speed);
+        KUrl url = urls.at(i);
+        QWebElement prev;
+        
+        if(url.isEmpty())
+            prev = emptyPreview(i);
+        else if(!QFile::exists(WebSnap::fileForUrl(url).toLocalFile()))
+            prev = loadingPreview(i, url);
+        else
+            prev = validPreview(i, url, names.at(i));
+        
+        setupPreview(prev, i);
+        
+        m_root.appendInside(prev);
     }
 }
 
 
-// FIXME : port to new PreviewImage API to use...
-/*QString NewTabPage::lastVisitedPage()
+QWebElement NewTabPage::emptyPreview(int index)
 {
-    QString last;
-    QList<HistoryItem> history =  Application::historyManager()->history();
-    for (int i = 0; i < 8 && i < history.size(); ++i) 
+    QWebElement prev = markup(".thumbnail");
+    
+    prev.findFirst(".preview img").setAttribute("src" , QString("file:///") +
+                    KIconLoader::global()->iconPath("insert-image", KIconLoader::Desktop));
+    prev.findFirst("span").appendInside(i18n("Set a Preview..."));
+    prev.findFirst("a").setAttribute("href", QString("about:preview/modify/" + QVariant(index).toString()));
+    
+    setupPreview(prev, index);
+    hideControls(prev);
+    
+    return prev;
+}
+
+
+QWebElement NewTabPage::loadingPreview(int index, KUrl url)
+{
+    QWebElement prev = markup(".thumbnail");
+    
+    prev.findFirst(".preview img").setAttribute("src" , 
+                QString("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
+    prev.findFirst("span").appendInside(i18n("Loading Preview..."));
+    prev.findFirst("a").setAttribute("href", url.toMimeDataString());
+    
+    setupPreview(prev, index);
+    showControls(prev);
+    
+    new WebSnap(url, m_root.webFrame()->page(), index);
+    
+    return prev;
+}
+
+QWebElement NewTabPage::validPreview(int index, KUrl url, QString title)
+{
+    QWebElement prev = markup(".thumbnail");
+    KUrl previewPath = WebSnap::fileForUrl(url);
+    QString iString = QVariant(index).toString();
+    
+    prev.findFirst(".preview img").setAttribute("src" , previewPath.toMimeDataString());
+    prev.findFirst("a").setAttribute("href", url.toMimeDataString());
+    prev.findFirst("span a").setAttribute("href", url.toMimeDataString());
+    prev.findFirst("span").setPlainText(checkTitle(title));
+    
+    setupPreview(prev, index);
+    showControls(prev);
+    
+    return prev;
+}
+
+
+void NewTabPage::hideControls(QWebElement e)
+{
+    e.findFirst(".remove").setStyleProperty("visibility", "hidden");
+    e.findFirst(".modify").setStyleProperty("visibility", "hidden");
+}
+void NewTabPage::showControls(QWebElement e)
+{
+    e.findFirst(".remove").setStyleProperty("visibility", "visible");
+    e.findFirst(".modify").setStyleProperty("visibility", "visible");
+}
+
+void NewTabPage::setupPreview(QWebElement e, int index)
+{
+    e.findFirst(".remove img").setAttribute("src", QString("file:///") +
+    KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
+    e.findFirst(".remove").setAttribute("title", "Remove favorite");
+    e.findFirst(".modify img").setAttribute("src", QString("file:///") +
+    KIconLoader::global()->iconPath("insert-image", KIconLoader::DefaultState));
+    e.findFirst(".modify").setAttribute("title", "Set new favorite");
+    
+    e.findFirst(".modify").setAttribute("href", QString("about:preview/modify/" + QVariant(index).toString()));
+    e.findFirst(".remove").setAttribute("href", QString("about:preview/remove/" + QVariant(index).toString()));
+    
+    e.setAttribute("id", "preview" + QVariant(index).toString());
+}
+
+
+void NewTabPage::snapFinished(int index, KUrl url, QString title)
+{
+    // do not try to modify the page if it isn't the newTabPage
+    if(m_root.document().findAll("#rekonq-newtabpage").count() == 0)
+        return;
+    
+    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
+    QWebElement newPrev = validPreview(index, url, title);
+    
+    if(m_root.findAll(".closedTabs").count() != 0)
+        hideControls(newPrev);
+    
+    prev.replace(newPrev);
+    
+    // update title
+    if(m_root.findAll(".favorites").count() != 0)
     {
-        HistoryItem it = history.at(i);
-        last += "<div class=\"thumbnail\">";
-        last += "<object type=\"application/image-preview\" data=\"" + it.url +  "\" >";
-        last += "</object>";
-        last += "<br />";
-        last += "<a href=\"" + it.url + "\">" + it.title + "</a></div>";
+        QStringList names = ReKonfig::previewNames();
+        names.replace(index, title);
+        ReKonfig::setPreviewNames(names);
+        
+        ReKonfig::self()->writeConfig();
     }
+}
 
-    return last;
 
-}*/
+void NewTabPage::removePreview(int index)
+{
+    QStringList names = ReKonfig::previewNames();
+    QStringList urls = ReKonfig::previewUrls();
+    
+    urls.replace(index, QString(""));
+    names.replace(index, QString(""));
+    
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+    
+    ReKonfig::self()->writeConfig();
+    
+    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
+    prev.replace(emptyPreview(index));
+}
 
 
 void NewTabPage::browsingMenu(const KUrl &currentUrl)
@@ -192,6 +334,8 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
 
 void NewTabPage::historyPage()
 {
+    m_root.addClass("history");
+    
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
     int i = 0;
@@ -222,6 +366,8 @@ void NewTabPage::historyPage()
 
 void NewTabPage::bookmarksPage()
 {
+    m_root.addClass("bookmarks");
+    
     KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
     if (bookGroup.isNull())
     {
@@ -268,13 +414,35 @@ void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
 
 void NewTabPage::closedTabsPage()
 {
+    m_root.addClass("closedTabs");
+    
     QList<HistoryItem> links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
-
-    foreach(const HistoryItem &item, links)
+    
+    for(int i=0; i < links.count(); ++i)
     {
-        QWebElement closed = markup(".thumbnail");
-        closed.findFirst("object").setAttribute("data" , item.url);
-        closed.findFirst("param[name=title]").setAttribute("value", item.title);
-        m_root.appendInside(closed);
+        HistoryItem item = links.at(i);
+        QWebElement prev;
+        
+        if(item.url.isEmpty())
+            continue;
+        else if(!QFile::exists(WebSnap::fileForUrl(item.url).toLocalFile()))
+            prev = loadingPreview(i, item.url);
+        else
+            prev = validPreview(i, item.url, item.title);
+        
+        prev.setAttribute("id", "preview" + QVariant(i).toString());
+        hideControls(prev);
+        m_root.appendInside(prev);
     }
+}
+
+
+QString NewTabPage::checkTitle(QString title)
+{
+    if(title.length() > 23)
+    {
+        title.truncate(20);
+        title += "...";
+    }
+    return title;
 }

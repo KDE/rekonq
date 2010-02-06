@@ -54,6 +54,10 @@ margin-top: 0.5em;
 a{
 color: #3F7AB7;
 text-decoration: none;
+-webkit-transition-property: color;
+-webkit-transition-duration: 0.5s;
+-webkit-transition-timing-function: ease;
+
 }
 a:hover{
 color: black;
@@ -62,7 +66,7 @@ color: black;
 /* ------------------------------------------------------- */
 /* page sections */
 
-#container {
+#rekonq-newtabpage {
 width: 100%;
 }
 
@@ -118,18 +122,59 @@ margin-top: -5%;
 /* Thumbnail class */
 
 .thumbnail {
-text-align: center;
 display: inline-block;
-width:25%;
-margin-top: 7%;
-min-width:250px;
-min-height:192px;
+width:25%; margin-top: 7%;
+min-width:250px; min-height:192px;
 }
 
-.thumbnail object{
+.preview img {
+}
+.preview {
+display: table-cell;
+vertical-align: middle;
+width: 200px; height: 150px;
+padding: 14px 16px;
+background: url(%2/bg.png) no-repeat;
+-webkit-background-size: 100% 100%; 
+-webkit-background-clip: padding;
+}
+.thumbnail:hover .preview , .thumbnail:hover .button img {
+opacity: 0.8;
+}
+
+.button img, .preview {
+-webkit-transition-property: opacity;
+-webkit-transition-duration: 0.8s;
+-webkit-transition-timing-function: ease-in-out;
+}
+
+.button img {
+display: inline-block;
+width: 16px;
+height: 16px;
+opacity: 0;
+}
+
+.remove {
+float: right;
+}
+.modify {
+float: left;
+}
+
+.title {
+display: block;
+width: 200px;
+height: 15px;
+padding: 0 14px;
 text-align: center;
-width:228px;
-height:192px;
+}
+
+.thumbnail a {
+text-align:center;
+}
+.thumbnail a:hover, span {
+color:#3F7AB7;
 }
 
 /* -------------------------------------------------------- */
@@ -146,7 +191,7 @@ margin-bottom: 0.5em;
 
 <body>
 
-<div id="container">
+<div id="rekonq-newtabpage">
     <div id="navigation">
     </div>
     
@@ -162,11 +207,16 @@ margin-bottom: 0.5em;
         </a>
     </div>
     <div class="thumbnail">
-        <object type="application/image-preview" data="">
-            <param name="title" />
-            <param name="index" />
-            <param name="isFavorite" />
-        </object>
+        <a>
+            <div class ="preview">
+                <img />
+            </div>
+            <div class="title">
+                <a class="button modify"><img /></a>
+                <span><a></a></span>
+                <a class="button remove"><img /></a>
+            </div>
+        </a>
     </div>
     <h3></h3>
     <a></a>

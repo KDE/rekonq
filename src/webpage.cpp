@@ -118,6 +118,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     if (frame && m_protHandler.preHandling( request, frame ))
     {
         return false;
+
     }
 
     m_requestedUrl = request.url();
