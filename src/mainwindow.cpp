@@ -298,20 +298,20 @@ void MainWindow::setupActions()
 
 
     // ============================= Zoom Actions ===================================
-    a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
+    a = new KAction(KIcon("zoom-in"), i18n("&Zoom In"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
-    actionCollection()->addAction(QLatin1String("bigger_font"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewTextBigger()));
-
-    a = new KAction(KIcon("zoom-original"),  i18n("&Normal Font"), this);
+    actionCollection()->addAction(QLatin1String("zoom_in"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomIn()));
+    
+    a = new KAction(KIcon("zoom-original"),  i18n("&Normal Zoom"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_0));
-    actionCollection()->addAction(QLatin1String("normal_font"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewTextNormal()));
+    actionCollection()->addAction(QLatin1String("zoom_normal"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomNormal()));
 
-    a = new KAction(KIcon("zoom-out"),  i18n("&Shrink Font"), this);
+    a = new KAction(KIcon("zoom-out"),  i18n("&Zoom Out"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Minus));
-    actionCollection()->addAction(QLatin1String("smaller_font"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewTextSmaller()));
+    actionCollection()->addAction(QLatin1String("zoom_out"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomOut()));
 
     // =============================== Tools Actions =================================
     a = new KAction(i18n("Page S&ource"), this);
@@ -409,12 +409,43 @@ void MainWindow::setupTools()
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
-
-    KActionMenu *fontMenu = new KActionMenu(KIcon("page-zoom"), i18n("Zoom"), this);
-    fontMenu->addAction(actionByName(QLatin1String("smaller_font")));
-    fontMenu->addAction(actionByName(QLatin1String("normal_font")));
-    fontMenu->addAction(actionByName(QLatin1String("bigger_font")));
-    toolsMenu->addAction(fontMenu);
+    
+    
+    
+    // setup zoom widget
+    QWidget *zoomWidget = new QWidget(this);
+    
+    QToolButton *zoomOut = new QToolButton(zoomWidget);
+    zoomOut->setDefaultAction(actionByName(QLatin1String("zoom_out")));
+    zoomOut->setAutoRaise(true);
+    
+    m_zoomSlider = new QSlider(Qt::Horizontal, zoomWidget);
+    m_zoomSlider->setTracking(true);
+    m_zoomSlider->setRange(1, 19);      // divide by 10 to obtain a qreal for zoomFactor()
+    m_zoomSlider->setValue(10);
+    m_zoomSlider->setPageStep(3);
+    connect(m_zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(setZoomFactor(int)));
+    
+    QToolButton *zoomIn = new QToolButton(zoomWidget);
+    zoomIn->setDefaultAction(actionByName(QLatin1String("zoom_in")));
+    zoomIn->setAutoRaise(true);
+    
+    QToolButton *zoomNormal = new QToolButton(zoomWidget);
+    zoomNormal->setDefaultAction(actionByName(QLatin1String("zoom_normal")));
+    zoomNormal->setAutoRaise(true);
+    
+    QHBoxLayout* zoomWidgetLayout = new QHBoxLayout(zoomWidget);
+    zoomWidgetLayout->setSpacing(0);
+    zoomWidgetLayout->setMargin(0);
+    zoomWidgetLayout->addWidget(zoomOut);
+    zoomWidgetLayout->addWidget(m_zoomSlider);
+    zoomWidgetLayout->addWidget(zoomIn);
+    zoomWidgetLayout->addWidget(zoomNormal);
+    
+    QWidgetAction *zoomAction = new QWidgetAction(this);
+    zoomAction->setDefaultWidget(zoomWidget);
+    toolsMenu->addAction(zoomAction);
+    
 
     toolsMenu->addSeparator();
 
@@ -759,27 +790,31 @@ void MainWindow::findPrevious()
 }
 
 
-void MainWindow::viewTextBigger()
+void MainWindow::zoomIn()
 {
-    if (!currentTab())
-        return;
-    currentTab()->view()->setTextSizeMultiplier(currentTab()->view()->textSizeMultiplier() + 0.1);
+    m_zoomSlider->setValue(m_zoomSlider->value() + 1);
 }
 
-
-void MainWindow::viewTextNormal()
+void MainWindow::zoomNormal()
 {
-    if (!currentTab())
-        return;
-    currentTab()->view()->setTextSizeMultiplier(1.0);
+    m_zoomSlider->setValue(10);
 }
 
-
-void MainWindow::viewTextSmaller()
+void MainWindow::zoomOut()
 {
-    if (!currentTab())
+    m_zoomSlider->setValue(m_zoomSlider->value() - 1);
+}
+
+void MainWindow::setZoomFactor(int factor)
+{
+    if(!currentTab())
         return;
-    currentTab()->view()->setTextSizeMultiplier(currentTab()->view()->textSizeMultiplier() - 0.1);
+    currentTab()->view()->setZoomFactor(QVariant(factor).toReal() / 10);
+}
+
+void MainWindow::setZoomSliderFactor(qreal factor)
+{
+    m_zoomSlider->setValue(factor*10);
 }
 
 

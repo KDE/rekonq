@@ -41,6 +41,7 @@
 
 // Forward Declarations
 class QWebFrame;
+class QSlider;
 
 class KAction;
 class KPassivePopup;
@@ -72,7 +73,9 @@ public:
     virtual QSize sizeHint() const;
     virtual KActionCollection *actionCollection () const;
     void setWidgetsVisible(bool makeFullScreen);
-   
+
+    void setZoomSliderFactor(qreal factor);
+
 private:
     void setupActions();
     void setupTools();
@@ -125,9 +128,10 @@ private slots:
     void findPrevious();
 
     // Zoom slots
-    void viewTextBigger();
-    void viewTextNormal();
-    void viewTextSmaller();
+    void zoomIn();
+    void zoomNormal();
+    void zoomOut();
+    void setZoomFactor(int factor);
 
     // File Menu slots
     void openLocation();
@@ -162,6 +166,8 @@ private:
 
     KToolBar *m_mainBar;
     KToolBar *m_bmBar;
+
+    QSlider *m_zoomSlider;
 
     QString m_lastSearch;
 
