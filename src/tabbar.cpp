@@ -161,6 +161,7 @@ void TabBar::showTabPreview(int tab)
     int h = w*((0.0 + currentView->height())/currentView->width());
 
     //delete previous tab preview
+    delete m_previewPopup.data();
     m_previewPopup.clear();
     
     m_previewPopup = new KPassivePopup(this);
