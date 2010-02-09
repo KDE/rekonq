@@ -1,5 +1,5 @@
 
-class PreviewSelectorBar;/* ============================================================
+/* ============================================================
 *
 * This file is a part of the rekonq project
 *
@@ -158,8 +158,6 @@ private slots:
 private:
     MainView *m_view;
     FindBar *m_findBar;
-
-    PreviewSelectorBar *m_previewSelectorBar;
 
     HistoryPanel *m_historyPanel;
     BookmarksPanel *m_bookmarksPanel;

@@ -98,7 +98,6 @@ MainWindow::MainWindow()
     : KMainWindow()
     , m_view( new MainView(this) )
     , m_findBar( new FindBar(this) )
-    , m_previewSelectorBar( new PreviewSelectorBar(this) )
     , m_historyPanel(0)
     , m_bookmarksPanel(0)
     , m_webInspectorPanel(0)
@@ -123,7 +122,6 @@ MainWindow::MainWindow()
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_view);
-    layout->addWidget(m_previewSelectorBar);
     layout->addWidget(m_findBar);
     centralWidget->setLayout(layout);
 
@@ -650,9 +648,6 @@ void MainWindow::updateActions()
 
     QAction *historyForwardAction = actionByName(KStandardAction::name(KStandardAction::Forward));
     historyForwardAction->setEnabled(currentTab()->view()->history()->canGoForward());
-    
-    if(m_previewSelectorBar->isVisible())
-        m_previewSelectorBar->setPage(currentTab()->page());
 }
 
 
