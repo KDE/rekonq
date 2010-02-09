@@ -44,18 +44,17 @@ class WebPage;
 class NewTabPage : public QObject
 {
 Q_OBJECT
+
 public:
     NewTabPage(QWebFrame *frame);
     ~NewTabPage();
 
     /**
-     *  This is the unique NewTabPage public method. It takes an
-     *  about: url and loads the corresponding part of the 
-     *  new tab page
+     * This method takes an about: url and loads 
+     * the corresponding part of the new tab page
      */
     void generate(KUrl url = KUrl("about:home"));
     
-public slots:
     void snapFinished(int index, KUrl url, QString title);
     void removePreview(int index);
      
@@ -63,6 +62,10 @@ protected:  // these are the function to build the new tab page
     void browsingMenu(const KUrl &currentUrl);
 
     void favoritesPage();
+    void historyPage();
+    void bookmarksPage();
+    void closedTabsPage();
+
     QWebElement emptyPreview(int index);
     QWebElement loadingPreview(int index, KUrl url);
     QWebElement validPreview(int index, KUrl url, QString title);
@@ -73,12 +76,7 @@ protected:  // these are the function to build the new tab page
     void hideControls(QWebElement e);
     void showControls(QWebElement e);
     void setupPreview(QWebElement e, int index);
-    
-    
-    void historyPage();
-    void bookmarksPage();
-    void closedTabsPage();
-
+     
 private:
     void createBookItem(const KBookmark &bookmark, QWebElement parent);
     

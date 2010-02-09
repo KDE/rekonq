@@ -197,6 +197,7 @@ QWebElement NewTabPage::loadingPreview(int index, KUrl url)
     return prev;
 }
 
+
 QWebElement NewTabPage::validPreview(int index, KUrl url, QString title)
 {
     QWebElement prev = markup(".thumbnail");
@@ -220,11 +221,14 @@ void NewTabPage::hideControls(QWebElement e)
     e.findFirst(".remove").setStyleProperty("visibility", "hidden");
     e.findFirst(".modify").setStyleProperty("visibility", "hidden");
 }
+
+
 void NewTabPage::showControls(QWebElement e)
 {
     e.findFirst(".remove").setStyleProperty("visibility", "visible");
     e.findFirst(".modify").setStyleProperty("visibility", "visible");
 }
+
 
 void NewTabPage::setupPreview(QWebElement e, int index)
 {
