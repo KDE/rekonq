@@ -1,29 +1,40 @@
-/*
-    <one line to give the program's name and a brief idea of what it does.>
-    Copyright (C) <year>  <name of author>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
+/* ============================================================
+*
+* This file is a part of the rekonq project
+*
+* Copyright (C) 2010 by Matthieu Gicquel<matgic78 at gmail dot com>
+* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
+*
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as
+* published by the Free Software Foundation; either version 2 of
+* the License or (at your option) version 3 or any later version
+* accepted by the membership of KDE e.V. (or its successor approved
+* by the membership of KDE e.V.), which shall act as a proxy 
+* defined in Section 14 of version 3 of the license.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+* ============================================================ */
 
 
 // Auto Includes
 #include "previewselectorbar.h"
+#include "previewselectorbar.moc"
 
 // Local Include
 #include "rekonq.h"
 #include "websnap.h"
+#include "application.h"
+#include "mainwindow.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KIcon>
@@ -35,32 +46,23 @@
 #include <QString>
 
 
-PreviewSelectorBar::PreviewSelectorBar(QWidget* parent)
+PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
         : QWidget(parent)
         , m_button(0)
         , m_label(0)
-        , m_page(0)
+        , m_previewIndex(index)
 {
-    hide();
-}
-
-
-void PreviewSelectorBar::setup()
-{
-    if(m_button != 0)
-        return;
-    
     m_label = new QLabel(i18n("Please open up the webpage you want to add as favorite"), this);
     m_label->setWordWrap(true);
     
     QToolButton *closeButton = new QToolButton(this);
     closeButton->setAutoRaise(true);
     closeButton->setIcon(KIcon("dialog-close"));
-    connect(closeButton, SIGNAL(clicked(bool)), SLOT(hide()));
+    connect(closeButton, SIGNAL(clicked(bool)), this, SLOT(destroy()));
     
     m_button = new QPushButton(KIcon("insert-image"), i18n("Set to This Page"), this);
     m_button->setMaximumWidth(250);
-    connect(m_button, SIGNAL(clicked(bool)), SLOT(clicked()));
+    connect(m_button, SIGNAL(clicked(bool)), this, SLOT(clicked()));
     
     // layout
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -74,16 +76,15 @@ void PreviewSelectorBar::setup()
 }
 
 
-void PreviewSelectorBar::setPage(WebPage* page)
+PreviewSelectorBar::~PreviewSelectorBar()
 {
-    m_page = page;
-    verifyUrl();
 }
 
 
 void PreviewSelectorBar::verifyUrl()
 {
-    if(m_page->mainFrame()->url().scheme() != "about")
+    
+    if(Application::instance()->mainWindow()->currentTab()->page()->mainFrame()->url().scheme() != "about")
     {
         m_button->setEnabled(true);
         m_button->setToolTip("");
@@ -96,33 +97,11 @@ void PreviewSelectorBar::verifyUrl()
 }
 
 
-void PreviewSelectorBar::enable(int previewIndex, WebPage* page)
-{
-    if(m_page != 0)
-        disconnect(m_page, 0, this, 0);
-
-    
-    setup();
-    m_previewIndex = previewIndex;
-    m_page = page;
-    
-    verifyUrl();
-    
-    show();
-    
-    connect(page, SIGNAL(loadStarted()), SLOT(loadProgress()));
-    connect(page, SIGNAL(loadProgress(int)), SLOT(loadProgress()));
-    connect(page, SIGNAL(loadFinished(bool)), SLOT(loadFinished()));
-    connect(page->mainFrame(), SIGNAL(urlChanged(QUrl)), SLOT(verifyUrl()));
-}
-
-
 void PreviewSelectorBar::loadProgress()
 {
     m_button->setEnabled(false);
     m_button->setToolTip(i18n("Page is loading..."));
 }
-
 
 
 void PreviewSelectorBar::loadFinished()
@@ -136,25 +115,38 @@ void PreviewSelectorBar::loadFinished()
 
 void PreviewSelectorBar::clicked()
 {
-    KUrl url = m_page->mainFrame()->url();
+    WebPage *page = Application::instance()->mainWindow()->currentTab()->page();
+    
+    if(page)
+    {
+        KUrl url = page->mainFrame()->url();
 
-    WebSnap::savePreview(WebSnap::renderPreview(*m_page), url);
+        WebSnap::savePreview(WebSnap::renderPreview(*page), url);
+        
+        QStringList names = ReKonfig::previewNames();
+        QStringList urls = ReKonfig::previewUrls();
+        
+        urls.replace(m_previewIndex, url.toMimeDataString());
+        names.replace(m_previewIndex, page->mainFrame()->title());
+        
+        ReKonfig::setPreviewNames(names);
+        ReKonfig::setPreviewUrls(urls);
+        
+        ReKonfig::self()->writeConfig();
+        
+        
+        page->mainFrame()->load(KUrl("about:favorites"));
+    }
     
-    QStringList names = ReKonfig::previewNames();
-    QStringList urls = ReKonfig::previewUrls();
-    
-    urls.replace(m_previewIndex, url.toMimeDataString());
-    names.replace(m_previewIndex, m_page->mainFrame()->title());
-    
-    ReKonfig::setPreviewNames(names);
-    ReKonfig::setPreviewUrls(urls);
-    
-    ReKonfig::self()->writeConfig();
-    
-    
-    m_page->mainFrame()->load(KUrl("about:favorites"));
-    
-    hide();
+    destroy();
 }
 
 
+void PreviewSelectorBar::destroy()
+{
+    if (parentWidget() && parentWidget()->layout())
+    {
+        parentWidget()->layout()->removeWidget(this);
+    }
+    this->deleteLater();
+}

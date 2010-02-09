@@ -39,6 +39,7 @@
 #include "webpage.h"
 #include "bookmarksmanager.h"
 #include "walletbar.h"
+#include "previewselectorbar.h"
 
 // KDE Includes
 #include <KService>
@@ -164,4 +165,17 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
             wallet, SLOT(acceptSaveFormDataRequest(const QString &)));
     connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)),
             wallet, SLOT(rejectSaveFormDataRequest(const QString &)));
+}
+
+
+void WebTab::createPreviewSelectorBar(int index)
+{
+    QWidget *messageBar = layout()->itemAt(0)->widget();
+    PreviewSelectorBar *bar = new PreviewSelectorBar(index, messageBar);
+    messageBar->layout()->addWidget(bar);
+    
+    connect(page(), SIGNAL(loadStarted()), bar, SLOT(loadProgress()));
+    connect(page(), SIGNAL(loadProgress(int)), bar, SLOT(loadProgress()));
+    connect(page(), SIGNAL(loadFinished(bool)), bar, SLOT(loadFinished()));
+    connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)), bar, SLOT(verifyUrl()));
 }

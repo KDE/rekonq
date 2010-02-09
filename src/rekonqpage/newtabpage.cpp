@@ -39,6 +39,7 @@
 #include "mainview.h"
 #include "websnap.h"
 #include "previewselectorbar.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -87,8 +88,7 @@ void NewTabPage::generate(KUrl url)
         if(url.directory() == QString("preview/modify"))
         {
             int index = url.fileName().toInt();
-            Application::instance()->mainWindow()->findChild<PreviewSelectorBar *>()
-                        ->enable(index, qobject_cast< WebPage* >(m_root.webFrame()->page()));
+            Application::instance()->mainWindow()->currentTab()->createPreviewSelectorBar(index);
             return;
         }
     }

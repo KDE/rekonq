@@ -51,14 +51,15 @@ public:
     KUrl url() const;
     QString lastStatusBarText() const;
     int progress();
-
+    void createPreviewSelectorBar(int index);
+    
 private slots:
     void setStatusBarText(const QString &string);
     void updateProgress(int progress);
     void loadFinished(bool);
 
     void createWalletBar(const QString &, const QUrl &);
-    
+
 private:
     WebView *const m_view;
     int m_progress;
