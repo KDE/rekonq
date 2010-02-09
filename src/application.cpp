@@ -380,10 +380,12 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
     KUrl url = threadedJob->url();
     WebView *view = threadedJob->view();
     
+    // Bye and thanks :)
+    delete threadedJob;
+    
     if (view)
     {
         view->load(url);    
-        view->setFocus();
         
         // we are sure of the url now, let's add it to history
         // anyway we store here just http sites because local and ftp ones are
@@ -391,7 +393,4 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
         if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("https") )
             historyManager()->addHistoryEntry( url.prettyUrl() );
     }
-    
-    // Bye and thanks :)
-    delete threadedJob;
 }
