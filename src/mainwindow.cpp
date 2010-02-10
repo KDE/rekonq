@@ -103,7 +103,7 @@ MainWindow::MainWindow()
     , m_bookmarksPanel(0)
     , m_webInspectorPanel(0)
     , m_historyBackMenu(0)
-    , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
+    , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, true, false) )
     , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, false) )
     , m_popup( new KPassivePopup(this) )
     , m_hidePopup( new QTimer(this) )
@@ -184,12 +184,19 @@ void MainWindow::setupToolbars()
     m_mainBar->addAction( actionByName("bookmarksActionMenu") );
     m_mainBar->addAction( actionByName("rekonq_tools") );
 
+    m_mainBar->setContextMenuPolicy(Qt::PreventContextMenu);
+    
+    m_mainBar->show();  // this just to fix reopening rekonq after fullscreen close
+    
     // =========== Bookmarks ToolBar ================================
     m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_bmBar->setAcceptDrops(true);
     m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
     m_bmBar->setIconDimensions(16);
     Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
+
+    KToolBar::setToolBarsEditable(false);
+    KToolBar::setToolBarsLocked(true);
 }
 
 
