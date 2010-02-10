@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -56,14 +56,9 @@ extern "C" KDE_EXPORT int kdemain( int argc, char **argv )
 
     // --------------- about authors -----------------------------
     about.addAuthor(ki18n("Andrea Diamantini"),
-                    ki18n("Project Lead, Developer"),
+                    ki18n("Project Lead, Developer, Maintainer"),
                     "adjam7@gmail.com",
                     "http://www.adjam.org");
-
-    about.addAuthor(ki18n("Domrachev Alexandr"),
-                    ki18n("Developer"),
-                    "alexandr.domrachev@gmail.com",
-                    "");
 
     about.addAuthor(ki18n("Panagiotis Papadopoulos"),
                     ki18n("Quite everything but code"),
@@ -91,6 +86,11 @@ extern "C" KDE_EXPORT int kdemain( int argc, char **argv )
                     "");
                     
     // --------------- about credits -----------------------------                    
+    about.addCredit(ki18n("Domrachev Alexandr"),
+                    ki18n("Developer"),
+                    "alexandr.domrachev@gmail.com",
+                    "");
+
     about.addCredit(ki18n("Henry de Valence"),
                     ki18n("Promised help on multitask rekonq"),
                     "hdevalence@gmail.com",
