@@ -1058,7 +1058,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
         //TODO: detect QStyle size
         scrollbarSize = 17;
     }
-    QPoint webViewOrigin = m_view->currentWebTab()->mapToGlobal(QPoint(0,0));
+    QPoint webViewOrigin = m_view->currentWebTab()->view()->mapToGlobal(QPoint(0,0));
     int bottomLeftY=webViewOrigin.y() + m_view->currentWebTab()->page()->viewportSize().height() - labelSize.height() - scrollbarSize;
 
     // setting popup in bottom-left position
