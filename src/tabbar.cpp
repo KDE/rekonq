@@ -158,7 +158,7 @@ void TabBar::showTabPreview(int tab)
         return;
     
     int w = tabSizeHint(tab).width();
-    int h = w*((0.0 + currentView->height())/currentView->width());
+    int h = w * ( (0.0 + currentView->height()) / currentView->width() );
 
     //delete previous tab preview
     delete m_previewPopup.data();
@@ -175,7 +175,7 @@ void TabBar::showTabPreview(int tab)
     m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);
     m_previewPopup.data()->layout()->setMargin(0);
 
-    QPoint pos( tabRect(tab).x() , tabRect(tab).y() + tabRect(tab).height() );
+    QPoint pos( tabRect(tab).x() , tabRect(tab).y() + tabRect(tab).height() - 3);
     m_previewPopup.data()->show(mapToGlobal(pos));
 }
 
