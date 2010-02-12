@@ -171,7 +171,7 @@ QWebElement NewTabPage::emptyPreview(int index)
     
     prev.findFirst(".preview img").setAttribute("src" , QString("file:///") +
                     KIconLoader::global()->iconPath("insert-image", KIconLoader::Desktop));
-    prev.findFirst("span").appendInside(i18n("Set a Preview..."));
+    prev.findFirst("span a").setPlainText(i18n("Set a Preview..."));
     prev.findFirst("a").setAttribute("href", QString("about:preview/modify/" + QVariant(index).toString()));
     
     setupPreview(prev, index);
@@ -187,7 +187,7 @@ QWebElement NewTabPage::loadingPreview(int index, KUrl url)
     
     prev.findFirst(".preview img").setAttribute("src" , 
                 QString("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
-    prev.findFirst("span").appendInside(i18n("Loading Preview..."));
+    prev.findFirst("span a").setPlainText(i18n("Loading Preview..."));
     prev.findFirst("a").setAttribute("href", url.toMimeDataString());
     
     setupPreview(prev, index);
@@ -208,7 +208,7 @@ QWebElement NewTabPage::validPreview(int index, KUrl url, QString title)
     prev.findFirst(".preview img").setAttribute("src" , previewPath.toMimeDataString());
     prev.findFirst("a").setAttribute("href", url.toMimeDataString());
     prev.findFirst("span a").setAttribute("href", url.toMimeDataString());
-    prev.findFirst("span").setPlainText(checkTitle(title));
+    prev.findFirst("span a").setPlainText(checkTitle(title));
     
     setupPreview(prev, index);
     showControls(prev);

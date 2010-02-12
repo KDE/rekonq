@@ -6,142 +6,111 @@
 
 <style type="text/css">
 
-/* ------------------------------------------------------- */
+/* -------------------------------------------------------- */
+/* css reset */
+* {
+border: 0; padding: 0; margin: 0;
+}
+
+/* -------------------------------------------------------- */
 /* generic styles */
 
-html, body, div, h1, h2, h3, h4, a, p{
-margin:0;
-padding:0;
-border:0;
-}
-
-body{
+body {
 background: url(%2/tile.gif) repeat-x #fff;
-font-family: sans-serif;
-font-size: 0.8em;
-text-align: center;
+font-family: sans-serif; font-size: 0.8em;
 }
 
-h1{
-font: normal bold 2em sans-serif;
-text-align:right;
-color: #3F7AB7;
-margin-right:3%;
-margin-top: 0.5%;
-float:right;
+#rekonq-newtabpage {
+width: 100%;
+text-align: center; /* center #navigation */
 }
 
-h2{
-font: normal bold 1.2em sans-serif;
-color: #3F7AB7;
-margin-top: 2em;
+#content {
+text-align: left;
+margin: 0 1% 2% 1%;
 }
 
-h3{
+h3 {
 border-bottom-width: 1px;
 -webkit-border-image: url(%2/category.png) 1 1 1 1  stretch stretch;
-padding: 0.2em;
-margin-top: 0.5em;
-margin-bottom: 0.5em;
-font: normal bold 1em sans-serif;
+padding: 0.2em; margin: 0.5em 0;
+font: normal bold 1em;
 }
 
-h4{
-font-size: 1em;
-margin-top: 0.5em;
-}
-
-a{
+a {
 color: #3F7AB7;
 text-decoration: none;
 -webkit-transition-property: color;
 -webkit-transition-duration: 0.5s;
 -webkit-transition-timing-function: ease;
-
 }
-a:hover{
+a:hover {
 color: black;
 }
 
-/* ------------------------------------------------------- */
-/* page sections */
-
-#rekonq-newtabpage {
-width: 100%;
-}
+/* -------------------------------------------------------- */
+/* Navigation bar */
 
 #navigation {
 display: inline-block;
-margin-top: 2%;
-margin-bottom: 2%;
-text-align: center;
+margin: 2%;
 border-width: 5px;
 -webkit-border-image: url(%2/bg2.png) 12 12 12 12  stretch stretch;
 }
 
-#content {
-text-align: left;
-margin: 2%;
-}
-
-/* -------------------------------------------------------- */
-/* div navigations styles */
-
-.link{
+.link {
 display: inline-block;
 }
-
-.link img{
-vertical-align: middle;
-margin-right: 5px;
+.link img {
+vertical-align: middle; margin-right: 5px;
 }
-
-.link a{
-color: black;
-text-decoration:none;
-font: normal 1em sans-serif;
+.link a {
+color: black; 
 }
 
 .current{
 border-width: 6px;
 -webkit-border-image: url(%2/button.png) 6 stretch stretch;
 }
-
-#navigation .link:not(.current){
-margin-right: 10px;
-margin-left: 10px;
-}
-
-
-.favorites{
-text-align: center;
-margin-top: -5%;
+.link:not(.current){
+margin: 0 10px;
 }
 
 /* -------------------------------------------------------- */
-/* Thumbnail class */
+/* Previews */
+
+#content.favorites, #content.closedTabs {
+text-align: center;
+}
 
 .thumbnail {
 display: inline-block;
-width:25%; margin-top: 4%;
-min-width:250px; min-height:192px;
+width: 25%; min-width: 240px;
+height: 170px;
+margin: 3% 0 3% 0;
 }
 
-.preview img {
+.thumb-inner {
+width: 232px; /* 200 + 16*2 */
+margin: auto;
 }
+
 .preview {
-display: table-cell;
-vertical-align: middle;
+display: table-cell; vertical-align: middle;
 width: 200px; height: 150px;
-padding: 14px 16px;
+padding: 14px 16px 12px;
 background: url(%2/bg.png) no-repeat;
 -webkit-background-size: 100% 100%; 
--webkit-background-clip: padding;
-}
-.thumbnail:hover .preview , .thumbnail:hover .button img {
-opacity: 0.8;
 }
 
+.title {
+padding: 0 12px;
+}
+
+.thumbnail:hover .preview , 
+.thumbnail:hover .button img {
+opacity: 0.8;
+}
 .button img, .preview {
 -webkit-transition-property: opacity;
 -webkit-transition-duration: 0.8s;
@@ -154,7 +123,6 @@ width: 16px;
 height: 16px;
 opacity: 0;
 }
-
 .remove {
 float: right;
 }
@@ -162,23 +130,12 @@ float: right;
 float: left;
 }
 
-.title {
-display: block;
-width: 200px;
-height: 15px;
-padding: 0 14px;
-text-align: center;
-}
-
-.thumbnail a {
-text-align:center;
-}
 .thumbnail a:hover, span {
 color:#3F7AB7;
 }
 
 /* -------------------------------------------------------- */
-/* Bookmarks page*/
+/* Bookmarks page */
 
 .bookfolder{
 margin-left: 2em;
@@ -192,11 +149,8 @@ margin-bottom: 0.5em;
 <body>
 
 <div id="rekonq-newtabpage">
-    <div id="navigation">
-    </div>
-    
+    <div id="navigation"></div>
     <div id="content">
-    
     </div>
 </div>
 
@@ -207,21 +161,23 @@ margin-bottom: 0.5em;
         </a>
     </div>
     <div class="thumbnail">
-        <a>
-            <div class ="preview">
-                <img />
-            </div>
+        <div class ="thumb-inner">
+            <a>
+                <div class ="preview">
+                    <img />
+                </div>
+            </a>
             <div class="title">
                 <a class="button modify"><img /></a>
                 <span><a></a></span>
                 <a class="button remove"><img /></a>
             </div>
-        </a>
+        </div>
     </div>
     <h3></h3>
     <a></a>
-    </br>
-    <p class="bookfolder"></h3>
+    <br />
+    <p class="bookfolder"></p>
 </div>
 
 </body>
