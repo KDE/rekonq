@@ -139,7 +139,7 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     WebTab *w = 0;
     if(ReKonfig::openTabNoWindow())
     {
-        w = Application::instance()->mainWindow()->mainView()->newWebTab(!ReKonfig::openTabsBack());
+        w = Application::instance()->mainWindow()->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
     }
     else
     {
