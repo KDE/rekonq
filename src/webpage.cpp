@@ -162,7 +162,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         
         if( offer.isNull() ) // no service can handle this. We can just download it..
         {
-            isLocal ? KMessageBox::sorry(view(), i18n("No service can handle this :(") ) : downloadRequest(reply->request());
+            isLocal 
+                ? KMessageBox::sorry(view(), i18n("No service can handle this :(") ) 
+                : downloadRequest( reply->request() );
             return;
         }
 
@@ -173,7 +175,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             switch ( dlg.askEmbedOrSave() )
             {
                 case KParts::BrowserOpenOrSaveQuestion::Save:
-                    downloadRequested(reply->request());
+                    downloadRequest( reply->request() );
                     return;
                 case KParts::BrowserOpenOrSaveQuestion::Cancel:
                     return;
@@ -320,8 +322,11 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
             QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
             kget.call("addTransfer", srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
         }
+        
+        return;
     }
-    else KWebPage::downloadRequest(request);
+    
+    KWebPage::downloadRequest(request);
 }
 
 
