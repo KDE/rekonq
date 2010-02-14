@@ -131,7 +131,7 @@ int Application::newInstance()
         }
         else    // rekonq has just been started. Just open a new window
         {
-            newMainWindow();
+            loadUrl( KUrl("about:home") , Rekonq::NewWindow );
         }
     }
     
