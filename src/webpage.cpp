@@ -116,7 +116,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             return false;
     }
 
-    if (frame && m_protHandler.preHandling( request, frame ))
+    if ( frame && m_protHandler.preHandling(request, frame) )
     {
         return false;
 
@@ -162,6 +162,8 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         
         if( offer.isNull() ) // no service can handle this. We can just download it..
         {
+            kDebug() << "no service can handle this. We can just download it..";
+            
             isLocal 
                 ? KMessageBox::sorry(view(), i18n("No service can handle this :(") ) 
                 : downloadRequest( reply->request() );
@@ -175,6 +177,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             switch ( dlg.askEmbedOrSave() )
             {
                 case KParts::BrowserOpenOrSaveQuestion::Save:
+                    kDebug() << "service handling: download!";
                     downloadRequest( reply->request() );
                     return;
                 case KParts::BrowserOpenOrSaveQuestion::Cancel:
@@ -204,7 +207,7 @@ void WebPage::loadFinished(bool)
 }
 
 
-void WebPage::manageNetworkErrors(QNetworkReply* reply)
+void WebPage::manageNetworkErrors(QNetworkReply *reply)
 {
     if( reply->error() == QNetworkReply::NoError )
         return;
