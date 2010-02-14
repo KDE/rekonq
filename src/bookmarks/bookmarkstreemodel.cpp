@@ -268,7 +268,7 @@ void BookmarksTreeModel::bookmarksChanged( const QString &groupAddress )
     QModelIndex nodeIndex;
 
     QStringList indexChain( groupAddress.split( '/', QString::SkipEmptyParts) );
-    foreach( QString sIndex, indexChain ) 
+    foreach( const QString &sIndex, indexChain ) 
     {
         bool ok;
         int i = sIndex.toInt( &ok );

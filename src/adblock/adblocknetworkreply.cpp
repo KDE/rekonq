@@ -68,7 +68,7 @@ AdBlockNetworkReply::AdBlockNetworkReply(const QNetworkRequest &request, const Q
     setOperation(QNetworkAccessManager::GetOperation);
     setRequest(request);
     setUrl(request.url());
-    setError(QNetworkReply::ContentAccessDenied, i18n("Blocked by AdBlockRule: %1").arg(urlString));
+    setError(QNetworkReply::ContentAccessDenied, i18n("Blocked by AdBlockRule: %1", urlString) );
     QTimer::singleShot(0, this, SLOT(delayedFinished()));
 }
 

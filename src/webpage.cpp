@@ -283,7 +283,7 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
 {
     if (ReKonfig::kgetDownload())
     {
-        //*Copy of kwebpage code (Shouldn't be done in kwepage ?)
+        //*Copy of kwebpage code (Shouldn't be done in kwebpage ?)
 
         KUrl destUrl;
         KUrl srcUrl (request.url());

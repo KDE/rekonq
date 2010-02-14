@@ -37,13 +37,13 @@ class BookmarksProxy : public QSortFilterProxyModel
     Q_DISABLE_COPY(BookmarksProxy)
 
 public:
-	BookmarksProxy( QObject *parent = 0 );
+    BookmarksProxy( QObject *parent = 0 );
 
 protected:
-	virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
 
-	// returns true if any child(or childs-child...) matches filter
-	bool recursiveMatch( const QModelIndex &index ) const;
+    // returns true if any child(or children-child...) matches filter
+    bool recursiveMatch( const QModelIndex &index ) const;
 };
 
 #endif // BOOKMARKSPROXY_H

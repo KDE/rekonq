@@ -24,8 +24,8 @@
 * ============================================================ */
 
 
-#ifndef WALLET_WIDGET_H
-#define WALLET_WIDGET_H
+#ifndef WALLET_BAR_H
+#define WALLET_BAR_H
 
 
 // Qt Includes
@@ -65,4 +65,4 @@ private:
     QLabel *m_label;
 };
 
-#endif // WALLET_WIDGET_H
+#endif // WALLET_BAR_H

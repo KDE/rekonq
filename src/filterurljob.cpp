@@ -31,9 +31,6 @@
 #include <KUriFilter>
 #include <KUriFilterData>
 
-// Qt Includes
-#include <QUrl>
-
 
 FilterUrlJob::FilterUrlJob(WebView *view, const QString &urlString, QObject *parent)
     : Job(parent)

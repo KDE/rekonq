@@ -138,7 +138,7 @@ Private::Private(SettingsDialog *parent)
     pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
 
     // WARNING remember wheh changing here that the smaller netbooks
-    // have a 1024x576 resolution. So DONT bother that limits!!
+    // have a 1024x576 resolution. So DON'T bother that limits!!
     parent->setMinimumSize(700,525);    
 }
 
