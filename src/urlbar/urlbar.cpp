@@ -37,6 +37,7 @@
 #include "mainwindow.h"
 #include "webview.h"
 #include "historymanager.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KDebug>
@@ -204,6 +205,9 @@ void UrlBar::activated(const QString& urlString)
     if (urlString.isEmpty())
         return;
 
+    // this fix urlbar behaviour, removing focus from there and enabling
+    // loading animation. Temporary fix??
+    Application::instance()->mainWindow()->currentTab()->setFocus();
     setUrl(urlString);
     emit activated(m_currentUrl);
 }
