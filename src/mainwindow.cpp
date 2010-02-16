@@ -418,9 +418,7 @@ void MainWindow::setupTools()
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
-    
-    
-    
+        
     // setup zoom widget
     QWidget *zoomWidget = new QWidget(this);
     
@@ -455,7 +453,6 @@ void MainWindow::setupTools()
     zoomAction->setDefaultWidget(zoomWidget);
     toolsMenu->addAction(zoomAction);
     
-
     toolsMenu->addSeparator();
 
     toolsMenu->addAction(actionByName(QLatin1String("private_browsing")));
@@ -472,7 +469,7 @@ void MainWindow::setupTools()
 
     toolsMenu->addAction(actionByName(QLatin1String("bm_bar")));
     toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
-	toolsMenu->addAction(actionByName(QLatin1String("show_bookmarks_panel")));
+    toolsMenu->addAction(actionByName(QLatin1String("show_bookmarks_panel")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
 
     toolsMenu->addSeparator();
@@ -500,7 +497,7 @@ void MainWindow::setupPanels()
 
     // setup history panel action
     a = (KAction *) m_historyPanel->toggleViewAction();
-    a->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_H) );
+    a->setShortcut( KShortcut(Qt::CTRL + Qt::Key_H) );
     a->setIcon(KIcon("view-history"));
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
 
@@ -514,7 +511,7 @@ void MainWindow::setupPanels()
 
     // setup bookmarks panel action
     a = (KAction *) m_bookmarksPanel->toggleViewAction();
-    a->setShortcut( QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B) );
+    a->setShortcut( KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B) );
     a->setIcon(KIcon("bookmarks-organize"));
     actionCollection()->addAction(QLatin1String("show_bookmarks_panel"), a);
 
