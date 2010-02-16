@@ -501,7 +501,7 @@ void MainView::closeTab(int index)
         }
         hasFocus = tab->hasFocus();
 
-        //store close tab except homepage
+        // store close tab except homepage
         if (!tab->url().prettyUrl().startsWith( QLatin1String("about:") ) && !tab->url().isEmpty())
         {
             QString title = tab->view()->title();
@@ -513,7 +513,7 @@ void MainView::closeTab(int index)
 
         removeTab(index);
         updateTabBar();        // UI operation: do it ASAP!!
-        tab->deleteLater();    // webView is scheduled for deletion.
+        tab->deleteLater();    // tab is scheduled for deletion.
         
         emit tabsChanged();
 

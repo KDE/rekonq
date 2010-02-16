@@ -36,6 +36,7 @@
 #include "mainwindow.h"
 #include "mainview.h"
 #include "urlbar.h"
+#include "webtab.h"
 #include "historymanager.h"
 
 // KDE Includes
@@ -63,10 +64,9 @@
 
 ProtocolHandler::ProtocolHandler(QObject *parent)
     : QObject(parent)
-    , _lister(new KDirLister)
+    , _lister(0)
     , _frame(0)
 {
-    connect( _lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
 }
 
 
@@ -154,8 +154,10 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
         QFileInfo fileInfo( _url.path() );
         if(fileInfo.isDir())
         {
+            _lister = new KDirLister;
+            connect( _lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
-            Application::instance()->mainWindow()->mainView()->urlBar()->setUrl(_url);
+            
             return true;
         }
     }
@@ -166,6 +168,10 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
 
 QString ProtocolHandler::dirHandling(const KFileItemList &list)
 {
+    if (!_lister)
+    {
+        return QString("rekonq error, sorry :(");
+    }
 
     KFileItem mainItem = _lister->rootItem();
     KUrl rootUrl = mainItem.url();
@@ -254,14 +260,14 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         return;
     }
     
-    if ( list.isEmpty() )
-        return;
-    
     QString html = dirHandling(list);
     _frame->setHtml(html);
 
+    Application::instance()->mainWindow()->currentTab()->setFocus();
     Application::instance()->mainWindow()->mainView()->urlBar()->setUrl(_url);
     Application::historyManager()->addHistoryEntry( _url.prettyUrl() );
+
+    delete _lister;
 }
 
 
@@ -277,7 +283,11 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
         KIO::StatJob *statJob = static_cast<KIO::StatJob*>(job);
         KIO::UDSEntry entry = statJob->statResult();
         if( entry.isDir() )
+        {
+            _lister = new KDirLister;
+            connect( _lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
+        }
         else
             emit downloadUrl(_url);
     }
