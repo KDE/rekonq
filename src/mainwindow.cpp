@@ -267,23 +267,26 @@ void MainWindow::setupActions()
     KStandardAction::quit(this , SLOT(close()), actionCollection());
 
     a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
-    QList<QKeySequence> shortcutFindList;
-    shortcutFindList << KStandardShortcut::find() << QKeySequence( Qt::Key_Slash );
-    a->setShortcuts( shortcutFindList );
+    KShortcut findShortcut = KStandardShortcut::find();
+    findShortcut.setAlternate( Qt::Key_Slash );
+    a->setShortcut( findShortcut );
 
     KStandardAction::findNext(this, SLOT(findNext()) , actionCollection());
     KStandardAction::findPrev(this, SLOT(findPrevious()) , actionCollection());
    
     a = KStandardAction::fullScreen(this, SLOT(viewFullScreen(bool)), this, actionCollection());
-    QList<QKeySequence> shortcutFullScreenList;
-    shortcutFullScreenList << KStandardShortcut::fullScreen() << QKeySequence( Qt::Key_F11 );
-    a->setShortcuts( shortcutFullScreenList );
+    KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
+    fullScreenShortcut.setAlternate( Qt::Key_F11 );
+    a->setShortcut( fullScreenShortcut );
 
     KStandardAction::home(this, SLOT(homePage()), actionCollection());
     KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
 
     a = KStandardAction::redisplay(m_view, SLOT(webReload()), actionCollection());
     a->setText(i18n("Reload"));
+    KShortcut reloadShortcut = KStandardShortcut::reload();
+    reloadShortcut.setAlternate( Qt::CTRL + Qt::Key_R );
+    a->setShortcut( reloadShortcut );
 
     a = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Period));
