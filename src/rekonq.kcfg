@@ -23,6 +23,9 @@
 
 <!-- General Settings -->
   <group name="General">
+    <entry name="FirstExecution" type="Bool">
+        <default>true</default>
+    </entry>
     <entry name="startupBehaviour" type="Int">
         <default>1</default>
     </entry>

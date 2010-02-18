@@ -168,8 +168,6 @@ MainWindow::~MainWindow()
 void MainWindow::setupToolbars()
 {
     // ============ Main ToolBar  ================================
-    m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Back)) );
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Forward)) );
     m_mainBar->addSeparator();
@@ -187,14 +185,23 @@ void MainWindow::setupToolbars()
     m_mainBar->show();  // this just to fix reopening rekonq after fullscreen close
     
     // =========== Bookmarks ToolBar ================================
-    m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_bmBar->setAcceptDrops(true);
     m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
-    m_bmBar->setIconDimensions(16);
     Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
 
-    KToolBar::setToolBarsEditable(false);
-    KToolBar::setToolBarsLocked(true);
+    if(ReKonfig::firstExecution())
+    {
+        m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        
+        m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        m_bmBar->setIconDimensions(16);
+        m_bmBar->hide();
+        
+        KToolBar::setToolBarsEditable(false);
+        KToolBar::setToolBarsLocked(true);
+        
+        ReKonfig::setFirstExecution(false);
+    }
 }
 
 
