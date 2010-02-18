@@ -538,11 +538,10 @@ void MainView::webViewLoadStarted()
         }
     }
 
-    emit browserTabLoading(true);
-
     if (index != currentIndex())
         return;
 
+    emit browserTabLoading(true);
     emit showStatusBarMessage(i18n("Loading..."));
 }
 
