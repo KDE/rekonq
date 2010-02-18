@@ -94,15 +94,6 @@ void NewTabPage::generate(KUrl url)
         }
     }
     
-    if(    url != KUrl("about:home")
-        && url != KUrl("about:favorites")
-        && url != KUrl("about:closedTabs")
-        && url != KUrl("about:history")
-        && url != KUrl("about:bookmarks")
-        )
-        return;
-    
-    
     QWebPage *page = m_root.webFrame()->page();
     page->mainFrame()->setHtml(m_html);
 
@@ -111,7 +102,7 @@ void NewTabPage::generate(KUrl url)
     browsingMenu(url);
     
     QString title;
-    if(url == KUrl("about:home") || url == KUrl("about:favorites"))
+    if(url == KUrl("about:favorites"))
     {
         favoritesPage();
         title = i18n("Favorites");
@@ -134,7 +125,6 @@ void NewTabPage::generate(KUrl url)
     }
     
     m_url = url;
-    
     m_root.document().findFirst("title").setPlainText(title);
 }
 

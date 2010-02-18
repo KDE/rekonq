@@ -208,8 +208,9 @@ void UrlBar::activated(const QString& urlString)
     // this fix urlbar behaviour, removing focus from there and enabling
     // loading animation. Temporary fix??
     Application::instance()->mainWindow()->currentTab()->setFocus();
-    setUrl(urlString);
-    emit activated(m_currentUrl);
+
+    setUrl( KUrl(urlString) );
+    emit activated( KUrl(urlString) );
 }
 
 
