@@ -583,7 +583,7 @@ void MainView::webViewIconChanged()
     int index = indexOf( view->parentWidget() );
     if (-1 != index)
     {
-        QIcon icon = Application::icon(view->url());
+        KIcon icon = Application::icon(view->url());
         QLabel *label = animatedLoading(index, false);
         QMovie *movie = label->movie();
         delete movie;

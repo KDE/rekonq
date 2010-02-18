@@ -1165,7 +1165,7 @@ void MainWindow::aboutToShowBackMenu()
         QWebHistoryItem item = historyList.at(i);
         KAction *action = new KAction(this);
         action->setData(i + offset);
-        QIcon icon = Application::icon( item.url() );
+        KIcon icon = Application::icon( item.url() );
         action->setIcon( icon );
         action->setText( item.title() );
         m_historyBackMenu->addAction(action);

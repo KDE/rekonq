@@ -260,22 +260,24 @@ SessionManager *Application::sessionManager()
 
 KIcon Application::icon(const KUrl &url)
 {
-    if( !Application::instance()->mainWindowList().isEmpty() ) // avoid infinite loop at startup
-    {
+    // avoid infinite loop at startup
+    if( Application::instance()->mainWindowList().isEmpty() )
+        return KIcon("text-html");
 
-        if(url == KUrl("about:closedTabs"))
-            return KIcon("tab-close");
-        if(url == KUrl("about:history"))
-            return KIcon("view-history");
-        if(url == KUrl("about:bookmarks"))
-            return KIcon("bookmarks");
-        if(url == KUrl("about:favorites"))
-            return KIcon("emblem-favorite");
-    }
-    
+    // first things first..
     if(url.isEmpty())
         return KIcon("text-html");
-    
+
+    // rekonq icons..
+    if(url == KUrl("about:closedTabs"))
+        return KIcon("tab-close");
+    if(url == KUrl("about:history"))
+        return KIcon("view-history");
+    if(url == KUrl("about:bookmarks"))
+        return KIcon("bookmarks");
+    if(url == KUrl("about:favorites"))
+        return KIcon("emblem-favorite");
+
     KIcon icon = KIcon(QWebSettings::iconForUrl(url));
     if (icon.isNull())
     {
