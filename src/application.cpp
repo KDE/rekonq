@@ -396,3 +396,10 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
             historyManager()->addHistoryEntry( url.prettyUrl() );
     }
 }
+
+
+void Application::newWindow()
+{
+    loadUrl( KUrl("about:home"), Rekonq::NewWindow );
+    mainWindow()->mainView()->urlBar()->setFocus();
+}

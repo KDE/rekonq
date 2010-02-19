@@ -100,6 +100,7 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
+    MainWindow *newMainWindow();
     MainWindowList mainWindowList();
     
     static KIcon icon(const KUrl &url);
@@ -117,8 +118,6 @@ public slots:
      */
     void saveConfiguration() const;
 
-    MainWindow *newMainWindow();
-
     void loadUrl( const KUrl& url,
                   const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );
@@ -127,6 +126,7 @@ public slots:
                   const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );    
 
+    void newWindow();
     void removeMainWindow(MainWindow *window);
 
 private slots:

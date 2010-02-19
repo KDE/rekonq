@@ -265,7 +265,7 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
     actionCollection()->addAction(QLatin1String("new_window"), a);
-    connect(a, SIGNAL(triggered(bool)), Application::instance(), SLOT(newMainWindow()));
+    connect(a, SIGNAL(triggered(bool)), Application::instance(), SLOT(newWindow()));
 
     // Standard Actions
     KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
