@@ -110,7 +110,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     {
         if( _url == KUrl("about:blank") )
         {
-            frame->setHtml( QString() );
+            frame->setHtml( QString() , _url );
             return true;
         }
         
@@ -288,7 +288,7 @@ void ProtocolHandler::showResults(const KFileItemList &list)
     }
     
     QString html = dirHandling(list);
-    _frame->setHtml(html);
+    _frame->setHtml( html, _url );
 
     Application::instance()->mainWindow()->currentTab()->setFocus();
     Application::instance()->mainWindow()->mainView()->urlBar()->setUrl(_url);

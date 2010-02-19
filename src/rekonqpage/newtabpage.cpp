@@ -95,7 +95,7 @@ void NewTabPage::generate(KUrl url)
     }
     
     QWebPage *page = m_root.webFrame()->page();
-    page->mainFrame()->setHtml(m_html);
+    page->mainFrame()->setHtml(m_html,m_url);
 
     m_root = page->mainFrame()->documentElement().findFirst("#content");
     

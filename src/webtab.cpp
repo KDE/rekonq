@@ -60,7 +60,7 @@
 #include <QVBoxLayout>
 
 
-WebTab::WebTab(QWidget* parent)
+WebTab::WebTab(QWidget *parent)
     : QWidget(parent)
     , m_view( new WebView(this) )
     , m_progress(0)
@@ -68,15 +68,15 @@ WebTab::WebTab(QWidget* parent)
     // fix focus handling
     setFocusProxy( m_view );
     
-    QVBoxLayout* l = new QVBoxLayout(this);
+    QVBoxLayout *l = new QVBoxLayout(this);
     l->setMargin(0);
     l->setSpacing(0);
 
-    QWidget* messageBar = new QWidget(this);
+    QWidget *messageBar = new QWidget(this);
     l->addWidget(messageBar);
     messageBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
-    QVBoxLayout* l2 = new QVBoxLayout(messageBar);
+    QVBoxLayout *l2 = new QVBoxLayout(messageBar);
     l2->setMargin(0);
     l2->setSpacing(0);
 

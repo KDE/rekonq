@@ -60,6 +60,7 @@ public slots:
     void manageNetworkErrors(QNetworkReply *reply);
     virtual void downloadRequest(const QNetworkRequest &request);
     void downloadAllContentsWithKGet();
+
 protected:
     WebPage *createWindow(WebWindowType type);
     
