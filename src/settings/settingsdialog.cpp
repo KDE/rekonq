@@ -151,7 +151,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
         , d(new Private(this))
 {
     showButtonSeparator(false);
-    setWindowTitle(i18n("Configure - rekonq"));
+    setWindowTitle(i18nic("Window title of the settings dialog", "Configure – rekonq"));
     setModal(true);
 
     readConfig();
