@@ -92,7 +92,7 @@ FindBar::FindBar(KMainWindow *mainwindow)
     // Case sensitivity. Deliberately set so this is off by default.
     m_matchCase->setCheckState(Qt::Unchecked);
     m_matchCase->setTristate(false);
-    connect(m_matchCase, SIGNAL(toggled(bool)), mainwindow, SLOT(findNext()));
+    connect(m_matchCase, SIGNAL(toggled(bool)), mainwindow, SLOT(matchCaseUpdate()));
     layout->addWidget(m_matchCase);
 
     // stretching widget on the left
