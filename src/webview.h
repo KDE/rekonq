@@ -46,7 +46,7 @@ public:
     explicit WebView(QWidget *parent);
     ~WebView();
 
-    WebPage *page() { return m_page; }
+    WebPage *page();
     QPoint mousePos();
 
 protected:
@@ -71,7 +71,6 @@ signals:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
     
 private:
-    WebPage *const m_page;
     QPoint m_mousePos;
 };
 

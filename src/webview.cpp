@@ -62,16 +62,16 @@
 
 WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
-    , m_page( new WebPage(this) )
-    , m_mousePos(QPoint(0,0))
+    , m_mousePos( QPoint(0,0) )
 {
-    setPage(m_page);
+    WebPage *page = new WebPage(this);
+    setPage(page);
 
     // download system
     connect(this, SIGNAL(linkShiftClicked(const KUrl &)), 
-            m_page, SLOT(downloadUrl(const KUrl &)));
-    connect(m_page, SIGNAL(downloadRequested(const QNetworkRequest &)), 
-            m_page, SLOT(downloadRequest(const QNetworkRequest &)));
+            page, SLOT(downloadUrl(const KUrl &)));
+    connect(page, SIGNAL(downloadRequested(const QNetworkRequest &)), 
+            page, SLOT(downloadRequest(const QNetworkRequest &)));
             
     // middle click || ctrl + click signal
     connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), 
@@ -86,6 +86,13 @@ WebView::WebView(QWidget* parent)
 WebView::~WebView()
 {
      disconnect();
+}
+
+
+WebPage *WebView::page()
+{
+    WebPage *page = qobject_cast<WebPage *>( KWebView::page() );
+    return page;
 }
 
 
