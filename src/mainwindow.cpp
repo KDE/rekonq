@@ -671,7 +671,7 @@ void MainWindow::updateWindowTitle(const QString &title)
     {
         if(settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         {
-            setWindowTitle(i18nc("Window title when private browsing is activated", "rekonq (Private Browsing)"));
+            setWindowTitle(i18nc("Window title when private browsing is activated", "rekonq (Private Browsing)")); 
         }
         else
         {
@@ -682,11 +682,11 @@ void MainWindow::updateWindowTitle(const QString &title)
     {
         if(settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         {
-            setWindowTitle(title + " - rekonq (" + i18n("Private Browsing")  + ')');
+            setWindowTitle(i18nc("window title, %1 = title of the active website", "%1 – rekonq (Private Browsing)", title) ); 
         }
         else
         {
-            setWindowTitle(title + " - rekonq");
+            setWindowTitle(i18nc("window title, %1 = title of the active website", "%1 – rekonq", title));
         }
     }
 }
