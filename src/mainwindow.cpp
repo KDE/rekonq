@@ -774,11 +774,6 @@ void MainWindow::find(const QString & search)
         return;
     m_lastSearch = search;
     
-    if(m_lastSearch.isEmpty())
-    {
-      currentTab()->view()->page()->focusNextPrevChild(true);
-      return;
-    }
     findNext();
 }
 
@@ -788,7 +783,7 @@ void MainWindow::findNext()
     if (!currentTab())
         return;
 
-    if(m_lastSearch.isEmpty() || m_findBar->isHidden())
+    if(m_findBar->isHidden())
     {
       currentTab()->view()->page()->focusNextPrevChild(true);
       return;
@@ -810,7 +805,7 @@ void MainWindow::findPrevious()
     if (!currentTab())
         return;
 
-    if(m_lastSearch.isEmpty() || m_findBar->isHidden())
+    if(m_findBar->isHidden())
     {
       currentTab()->view()->page()->focusNextPrevChild(true);
       return;
