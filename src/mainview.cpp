@@ -63,15 +63,15 @@
 
 
 MainView::MainView(MainWindow *parent)
-        : KTabWidget(parent)
-        , m_urlBar(new UrlBar(this))
-        , m_tabBar(new TabBar(this))
-        , m_addTabButton(new QToolButton(this))
-        , m_currentTabIndex(0)
-        , m_parentWindow(parent)
+    : KTabWidget(parent)
+    , m_urlBar(new UrlBar(this))
+    , m_addTabButton(new QToolButton(this))
+    , m_currentTabIndex(0)
+    , m_parentWindow(parent)
 {
     // setting tabbar
-    setTabBar(m_tabBar);
+    TabBar *tabBar = new TabBar(this);
+    setTabBar(tabBar);
 
     // set mouse tracking for tab previews
     setMouseTracking(true);
@@ -80,17 +80,17 @@ MainView::MainView(MainWindow *parent)
     m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.mng");
 
     // connecting tabbar signals
-    connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(closeTab(int)));
-    connect(m_tabBar, SIGNAL(mouseMiddleClick(int)), this, SLOT(closeTab(int)));
-    connect(m_tabBar, SIGNAL(newTabRequest()), this, SLOT(newTab()));
+    connect(tabBar, SIGNAL(closeTab(int)),          this,   SLOT(closeTab(int)) );
+    connect(tabBar, SIGNAL(mouseMiddleClick(int)),  this,   SLOT(closeTab(int)) );
+    connect(tabBar, SIGNAL(newTabRequest()),        this,   SLOT(newTab())      );
     
-    connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(cloneTab(int)));
-    connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(closeOtherTabs(int)));
-    connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(reloadTab(int)));
-    connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(reloadAllTabs()));
-    connect(m_tabBar, SIGNAL(detachTab(int)), this, SLOT(detachTab(int)));
+    connect(tabBar, SIGNAL(cloneTab(int)),          this,   SLOT(cloneTab(int)) );
+    connect(tabBar, SIGNAL(closeOtherTabs(int)),    this,   SLOT(closeOtherTabs(int))   );
+    connect(tabBar, SIGNAL(reloadTab(int)),         this,   SLOT(reloadTab(int))    );
+    connect(tabBar, SIGNAL(reloadAllTabs()),        this,   SLOT(reloadAllTabs())   );
+    connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int))    );
     
-    connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+    connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)) );
     
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
@@ -123,7 +123,7 @@ void MainView::updateTabButtonPosition()
     static bool ButtonInCorner = false;
 
     int tabWidgetWidth = frameSize().width();
-    int tabBarWidth = m_tabBar->tabSizeHint(0).width()*m_tabBar->count();
+    int tabBarWidth = tabBar()->tabSizeHint(0).width() * tabBar()->count();
 
     if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
     {
@@ -143,7 +143,7 @@ void MainView::updateTabButtonPosition()
 
         // detecting X position
         int newPosX = tabBarWidth;      
-        int tabWidthHint = m_tabBar->tabSizeHint(0).width();
+        int tabWidthHint = tabBar()->tabSizeHint(0).width();
         if (tabWidthHint < sizeHint().width()/4)
             newPosX = tabWidgetWidth - m_addTabButton->width();
 
@@ -164,7 +164,8 @@ QToolButton *MainView::addTabButton() const
 
 TabBar *MainView::tabBar() const
 {
-    return m_tabBar; 
+    TabBar *tabBar = qobject_cast<TabBar *>( KTabWidget::tabBar() );
+    return tabBar; 
 }
 
 
@@ -182,13 +183,13 @@ WebTab *MainView::currentWebTab() const
 
 void MainView::updateTabBar()
 {
-    if (ReKonfig::alwaysShowTabBar())
+    if( ReKonfig::alwaysShowTabBar() )
     {
         if (!isTabBarHidden())
         {
-            if (m_tabBar->isHidden())
+            if (tabBar()->isHidden())
             {
-                m_tabBar->show();
+                tabBar()->show();
                 m_addTabButton->show();
             }
             updateTabButtonPosition();
@@ -196,16 +197,16 @@ void MainView::updateTabBar()
         return;
     }
 
-    if (m_tabBar->count() == 1)
+    if( tabBar()->count() == 1 )
     {
-        m_tabBar->hide();
+        tabBar()->hide();
         m_addTabButton->hide();
     }
-    else if (!isTabBarHidden())
+    else if( !isTabBarHidden() )
     {
-        if (m_tabBar->isHidden())
+        if ( tabBar()->isHidden() )
         {
-            m_tabBar->show();
+            tabBar()->show();
             m_addTabButton->show();
         }
         updateTabButtonPosition();
@@ -622,7 +623,7 @@ void MainView::webViewUrlChanged(const QUrl &url)
     int index = indexOf( view->parentWidget() );
     if (-1 != index)
     {
-        m_tabBar->setTabData(index, url);
+        tabBar()->setTabData(index, url);
     }
     emit tabsChanged();
 }
@@ -651,7 +652,7 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
     if (index == -1)
         return 0;
 
-    QLabel *label = qobject_cast<QLabel*>(m_tabBar->tabButton(index, QTabBar::LeftSide));
+    QLabel *label = qobject_cast<QLabel* >(tabBar()->tabButton(index, QTabBar::LeftSide));
     if (!label)
     {
         label = new QLabel(this);
@@ -663,8 +664,8 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
         label->setMovie(movie);
         movie->start();
     }
-    m_tabBar->setTabButton(index, QTabBar::LeftSide, 0);
-    m_tabBar->setTabButton(index, QTabBar::LeftSide, label);
+    tabBar()->setTabButton(index, QTabBar::LeftSide, 0);
+    tabBar()->setTabButton(index, QTabBar::LeftSide, label);
     return label;
 }
 

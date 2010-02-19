@@ -69,8 +69,6 @@ public:
     MainView(MainWindow *parent);
     ~MainView();
 
-public:
-
     UrlBar *urlBar() const;
     WebTab *webTab(int index) const;
 
@@ -168,8 +166,10 @@ private:
      */
     QLabel *animatedLoading(int index, bool addMovie);
 
+
+// --------------------------------------------------------------------------
+
     UrlBar *m_urlBar;
-    TabBar *m_tabBar;
 
     QString m_loadingGitPath;
 
