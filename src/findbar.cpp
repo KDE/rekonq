@@ -64,7 +64,7 @@ FindBar::FindBar(KMainWindow *mainwindow)
     hideButton->setAutoRaise(true);
     hideButton->setIcon(KIcon("dialog-close"));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
-    connect(hideButton, SIGNAL(clicked()), this, SLOT(findNext()));
+    connect(hideButton, SIGNAL(clicked()), mainwindow, SLOT(findNext()));
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
@@ -92,6 +92,7 @@ FindBar::FindBar(KMainWindow *mainwindow)
     // Case sensitivity. Deliberately set so this is off by default.
     m_matchCase->setCheckState(Qt::Unchecked);
     m_matchCase->setTristate(false);
+    connect(m_matchCase, SIGNAL(toggled(bool)), mainwindow, SLOT(findNext()));
     layout->addWidget(m_matchCase);
 
     // stretching widget on the left
@@ -143,7 +144,7 @@ void FindBar::show()
     // emit a new find signal with the current text
     QString temp = m_lineEdit->text();
     m_lineEdit->setText("");
-    m_lineEdit->setText(m_lineEdit->text());
+    m_lineEdit->setText(temp);
 }
 
 
