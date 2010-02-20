@@ -108,10 +108,10 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     // "about" handling
     if ( _url.protocol() == QLatin1String("about") )
     {
+        // let webkit manage the about:blank url...
         if( _url == KUrl("about:blank") )
         {
-            frame->setHtml( QString() , _url );
-            return true;
+            return false;
         }
         
         if( _url == KUrl("about:home") )
