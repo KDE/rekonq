@@ -127,6 +127,7 @@ private slots:
 
     // Find Action slots
     void find(const QString &);
+    void matchCaseUpdate();
     void findNext();
     void findPrevious();
 
