@@ -65,6 +65,7 @@
 MainView::MainView(MainWindow *parent)
     : KTabWidget(parent)
     , m_urlBar(new UrlBar(this))
+    , m_addTabButton(0)
     , m_currentTabIndex(0)
     , m_parentWindow(parent)
 {
