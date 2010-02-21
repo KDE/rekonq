@@ -335,17 +335,21 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
 void WebPage::downloadAllContentsWithKGet()
 {
     QList<QString> contentList;
+    KUrl baseUrl(m_requestedUrl);
+    KUrl relativeUrl;
 
     QWebElementCollection images = mainFrame()->documentElement().findAll("img");
     foreach(QWebElement img, images)
     {
-        contentList.append(img.attribute("src"));
+      relativeUrl.setEncodedUrl(img.attribute("src").toUtf8(),KUrl::TolerantMode); 
+      contentList.append(QString(baseUrl.resolved(relativeUrl).toEncoded()));
     }
     
     QWebElementCollection links = mainFrame()->documentElement().findAll("a");
     foreach(QWebElement link, links)
     {
-        contentList.append(link.attribute("href"));
+	relativeUrl.setEncodedUrl(link.attribute("href").toUtf8(),KUrl::TolerantMode); 
+	contentList.append(QString(baseUrl.resolved(relativeUrl).toEncoded()));
     }
     
     if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
