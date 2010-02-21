@@ -35,11 +35,9 @@
 // Qt Includes
 #include <QtGui/QWidget>
 #include <QtGui/QCheckBox>
-#include <QtGui/QKeyEvent>
 
 // Forward Declarations
 class KMainWindow;
-class QKeyEvent;
 class QString;
 
 
@@ -52,15 +50,11 @@ public:
     ~FindBar();
     KLineEdit *lineEdit() const;
     bool matchCase() const;
-
-public slots:
-    void clear();
-    void show();
-    void hide();
     void notifyMatch(bool match);
 
-protected Q_SLOTS:
-    void keyPressEvent(QKeyEvent* event);
+public slots:
+    void show();
+    void hide();
 
 signals:
     void searchString(const QString &);
