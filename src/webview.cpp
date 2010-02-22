@@ -425,6 +425,7 @@ void WebView::inspect()
     QAction *a = Application::instance()->mainWindow()->actionByName("web_inspector");
     if(a && !a->isChecked())
         a->trigger();
+    pageAction(QWebPage::InspectElement)->trigger();
 }
 
 
