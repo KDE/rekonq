@@ -77,7 +77,6 @@ private slots:
 private:
     QString errorPage(QNetworkReply *);
 
-    QUrl m_requestedUrl;
     ProtocolHandler m_protHandler;
 };
 

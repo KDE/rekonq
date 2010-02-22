@@ -72,7 +72,7 @@
 
 
 WebPage::WebPage(QObject *parent)
-        : KWebPage(parent, KWalletIntegration)
+    : KWebPage(parent, KWalletIntegration)
 {
     setForwardUnsupportedContent(true);
 
@@ -87,9 +87,10 @@ WebPage::WebPage(QObject *parent)
     // Web Plugin Factory
     setPluginFactory(new WebPluginFactory(this));
     
-
-    connect(networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
+    // managing errors
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     
+    // handling load & content
     connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 
@@ -120,8 +121,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     {
         return false;
     }
-
-    m_requestedUrl = request.url();
 
     return KWebPage::acceptNavigationRequest(frame, request, type);
 }
@@ -218,7 +217,10 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     if( reply->error() == QNetworkReply::ContentAccessDenied )
         return;
     
-    if( reply->url() != m_requestedUrl ) // prevent favicon loading
+    // don't bother on elements loading errors: we'll manage just 
+    // main url page ones
+    WebView *v = qobject_cast<WebView *>(view());
+    if( reply->url() != v->url() )
         return;
     
     if( reply->error() == QNetworkReply::ContentNotFoundError )
