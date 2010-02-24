@@ -62,12 +62,8 @@
 
 WebTab::WebTab(QWidget *parent)
     : QWidget(parent)
-    , m_view( new WebView(this) )
     , m_progress(0)
 {
-    // fix focus handling
-    setFocusProxy( m_view );
-    
     QVBoxLayout *l = new QVBoxLayout(this);
     l->setMargin(0);
     l->setSpacing(0);
@@ -80,10 +76,14 @@ WebTab::WebTab(QWidget *parent)
     l2->setMargin(0);
     l2->setSpacing(0);
 
-    l->addWidget(m_view);
-    m_view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-   
-    KWebWallet *wallet = page()->wallet();
+    WebView *view = new WebView(this);
+    l->addWidget(view);
+    view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // fix focus handling
+    setFocusProxy( view );
+
+    KWebWallet *wallet = view->page()->wallet();
    
     if(wallet)
     {
@@ -91,34 +91,34 @@ WebTab::WebTab(QWidget *parent)
                 this, SLOT(createWalletBar(const QString &, const QUrl &)));
     }
 
-    connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
+    connect(view->page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
 
-    connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
-    connect(m_view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
+    connect(view, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
+    connect(view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 }
 
 
 WebTab::~WebTab()
 {
-    delete m_view;
 }
 
 
 WebView *WebTab::view()
 {
-    return m_view;
+    WebView *view = qobject_cast<WebView *>( layout()->itemAt(1)->widget() );
+    return view;
 }
 
 
 WebPage *WebTab::page()
 {
-    return m_view->page();  // FIXME
+    return view()->page();
 }
 
 
-KUrl WebTab::url() const 
-{ 
-    return KUrl(m_view->url()); 
+KUrl WebTab::url() 
+{
+    return KUrl( view()->url() ); 
 }
 
 

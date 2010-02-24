@@ -31,7 +31,9 @@
 
 // KDE Includes
 #include <KUrl>
-#include <KWebView>
+
+// Qt Includes
+#include <QWidget>
 
 // Forward Declarations
 class WebPage;
@@ -48,7 +50,7 @@ public:
 
     WebView *view();
     WebPage *page();
-    KUrl url() const;
+    KUrl url();
     QString lastStatusBarText() const;
     int progress();
     void createPreviewSelectorBar(int index);
@@ -61,7 +63,6 @@ private slots:
     void createWalletBar(const QString &, const QUrl &);
 
 private:
-    WebView *const m_view;
     int m_progress;
     QString m_statusBarText;
 };
