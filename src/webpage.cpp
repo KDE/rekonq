@@ -337,7 +337,7 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
 void WebPage::downloadAllContentsWithKGet()
 {
     QSet<QString> contents;
-    KUrl baseUrl(m_requestedUrl);
+    KUrl baseUrl( currentFrame()->url() );
     KUrl relativeUrl;
 
     QWebElementCollection images = mainFrame()->documentElement().findAll("img");
