@@ -51,12 +51,11 @@ public:
     WebView *view();
     WebPage *page();
     KUrl url();
-    QString lastStatusBarText() const;
+
     int progress();
     void createPreviewSelectorBar(int index);
     
 private slots:
-    void setStatusBarText(const QString &string);
     void updateProgress(int progress);
     void loadFinished(bool);
 
@@ -64,7 +63,6 @@ private slots:
 
 private:
     int m_progress;
-    QString m_statusBarText;
 };
 
 #endif

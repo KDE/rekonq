@@ -128,18 +128,6 @@ int WebTab::progress()
 }
 
 
-QString WebTab::lastStatusBarText() const
-{ 
-    return m_statusBarText; 
-}
-
-
-void WebTab::setStatusBarText(const QString &string) 
-{ 
-    m_statusBarText = string; 
-}
-
-
 void WebTab::updateProgress(int p)
 {
     m_progress = p;

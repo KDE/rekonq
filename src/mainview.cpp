@@ -294,15 +294,17 @@ void MainView::currentChanged(int index)
     connect(tab->view(), SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
     connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
     
-    connect(tab->view()->page(), SIGNAL(statusBarMessage(const QString&)), 
+    connect(tab->page(), SIGNAL(statusBarMessage(const QString&)), 
             this, SIGNAL(showStatusBarMessage(const QString&)));
-    connect(tab->view()->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
+    connect(tab->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
             this, SIGNAL(linkHovered(const QString&)));
 
     emit setCurrentTitle(tab->view()->title());
     urlBar()->setUrl(tab->view()->url());
     urlBar()->setProgress(tab->progress());
-    emit showStatusBarMessage(tab->lastStatusBarText());
+
+    // clean up "status bar"
+    emit showStatusBarMessage( QString() );
 
     // notify UI to eventually switch stop/reload button
     if(urlBar()->isLoading())
