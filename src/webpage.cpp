@@ -336,18 +336,22 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
 
 void WebPage::downloadAllContentsWithKGet()
 {
-    QList<QString> contentList;
+    QSet<QString> contents;
+    KUrl baseUrl(m_requestedUrl);
+    KUrl relativeUrl;
 
     QWebElementCollection images = mainFrame()->documentElement().findAll("img");
     foreach(QWebElement img, images)
     {
-        contentList.append(img.attribute("src"));
+	relativeUrl.setEncodedUrl(img.attribute("src").toUtf8(),KUrl::TolerantMode); 
+	contents << baseUrl.resolved(relativeUrl).toString();
     }
     
     QWebElementCollection links = mainFrame()->documentElement().findAll("a");
     foreach(QWebElement link, links)
     {
-        contentList.append(link.attribute("href"));
+	relativeUrl.setEncodedUrl(link.attribute("href").toUtf8(),KUrl::TolerantMode); 
+	contents << baseUrl.resolved(relativeUrl).toString();
     }
     
     if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
@@ -355,5 +359,5 @@ void WebPage::downloadAllContentsWithKGet()
         KToolInvocation::kdeinitExecWait("kget");
     }
     QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-    kget.call("importLinks", QVariant(contentList));
+    kget.call("importLinks", QVariant(contents.toList()));
 }
