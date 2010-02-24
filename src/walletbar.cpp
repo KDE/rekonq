@@ -28,6 +28,9 @@
 #include "walletbar.h"
 #include "walletbar.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 // KDE Includes
 #include <klocalizedstring.h>
 #include <KIcon>
@@ -85,7 +88,11 @@ void WalletBar::rememberData()
 
 void WalletBar::neverRememberData()
 {
-    // TODO: store site url (to remember never bother about)
+    // add url to the blacklist
+    QStringList list = ReKonfig::walletBlackList(); 
+    list << m_url.toString();
+    ReKonfig::setWalletBlackList( list );
+    
     notNowRememberData();
 }
 

@@ -141,7 +141,13 @@ void WebTab::loadFinished(bool)
 
 
 void WebTab::createWalletBar(const QString &key, const QUrl &url)
-{    
+{
+    // check if the url is in the wallet blacklist
+    QString urlString = url.toString();
+    QStringList blackList = ReKonfig::walletBlackList();
+    if( blackList.contains( urlString ) )
+        return;
+    
     KWebWallet *wallet = page()->wallet();
     QWidget *messageBar = layout()->itemAt(0)->widget();
 
