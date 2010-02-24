@@ -777,22 +777,17 @@ void MainWindow::find(const QString & search)
     findNext();
 }
 
+
 void MainWindow::matchCaseUpdate()
 {
     if (!currentTab())
         return;
     
-    QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
-    
-    if (m_findBar->matchCase())
-        options |= QWebPage::FindCaseSensitively;
-    
     currentTab()->view()->findText(m_lastSearch, QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument);
-    bool found = currentTab()->view()->findText(m_lastSearch, options);
-    m_findBar->notifyMatch(found);
-    if(!found)
-	currentTab()->view()->page()->focusNextPrevChild(true);
+    findNext();
 }
+
+
 void MainWindow::findNext()
 {
     if (!currentTab())
@@ -819,12 +814,6 @@ void MainWindow::findPrevious()
 {
     if (!currentTab())
         return;
-
-    if(m_findBar->isHidden())
-    {
-      currentTab()->view()->page()->focusNextPrevChild(true);
-      return;
-    }
     
     QWebPage::FindFlags options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())

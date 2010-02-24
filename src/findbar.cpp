@@ -43,7 +43,6 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QLabel>
 #include <QtGui/QColor>
-#include <QtGui/QKeyEvent>
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
@@ -64,7 +63,6 @@ FindBar::FindBar(KMainWindow *mainwindow)
     hideButton->setAutoRaise(true);
     hideButton->setIcon(KIcon("dialog-close"));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
-    connect(hideButton, SIGNAL(clicked()), mainwindow, SLOT(findNext()));
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
@@ -122,41 +120,21 @@ bool FindBar::matchCase() const
 }
 
 
-void FindBar::clear()
-{
-    m_lineEdit->setText(QString());
-}
-
-
 void FindBar::show()
 {
-    // set focus to findbar if user select showFindBar shortcut
-    m_lineEdit->setFocus();
-    m_lineEdit->selectAll();
-
     // show findbar if not visible
     if (isVisible())
         return;
-
+    
     QWidget::show();
     m_hideTimer->start(60000);
     
     // emit a new find signal with the current text
-    QString temp = m_lineEdit->text();
-    m_lineEdit->setText("");
-    m_lineEdit->setText(temp);
-}
-
-
-void FindBar::keyPressEvent(QKeyEvent* event)
-{
-    if (event->key() == Qt::Key_Return && !m_lineEdit->text().isEmpty())
-    {
-        emit searchString(m_lineEdit->text());
-        return;
-    }
-
-    QWidget::keyPressEvent(event);
+    emit(searchString(m_lineEdit->text()));
+    
+    // set focus to findbar if user select showFindBar shortcut
+    m_lineEdit->setFocus();
+    m_lineEdit->selectAll();
 }
 
 
@@ -184,9 +162,9 @@ void FindBar::notifyMatch(bool match)
 }
 
 
-
 void FindBar::hide()
 {
     m_hideTimer->stop();
     QWidget::hide();
+    emit(searchString(m_lineEdit->text()));
 }
