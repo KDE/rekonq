@@ -74,13 +74,13 @@
 WebPage::WebPage(QWidget *parent)
     : KWebPage(parent, KWalletIntegration)
 {
+    // ----- handling unsupported content...
     setForwardUnsupportedContent(true);
+    connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
 
-    // rekonq Network Manager
+    // ----- rekonq Network Manager
     NetworkAccessManager *manager = new NetworkAccessManager(this);
-    
-    // disable QtWebKit cache to just use KIO one..
-    manager->setCache(0);
+    manager->setCache(0);   // disable QtWebKit cache to just use KIO one..
     
     // set cookieJar window ID..
     if (parent && parent->window())
@@ -88,14 +88,11 @@ WebPage::WebPage(QWidget *parent)
 
     setNetworkAccessManager(manager);
     
-    // Web Plugin Factory
+    // ----- Web Plugin Factory
     setPluginFactory(new WebPluginFactory(this));
     
-    // managing errors
+    // ----- last stuffs
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
-    
-    // handling load & content
-    connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 
     // protocol handler signals
@@ -211,45 +208,50 @@ void WebPage::loadFinished(bool)
 
 void WebPage::manageNetworkErrors(QNetworkReply *reply)
 {
-    if( reply->error() == QNetworkReply::NoError )
-        return;
-
-    if(m_protHandler.postHandling( reply->request(), mainFrame() ))
-        return;
-
-    // don't bother on adblocked urls
-    if( reply->error() == QNetworkReply::ContentAccessDenied )
-        return;
+    WebView *v = 0;
     
-    // don't bother on elements loading errors: we'll manage just 
-    // main url page ones
-    WebView *v = qobject_cast<WebView *>(view());
-    if( reply->url() != v->url() )
-        return;
+    // NOTE 
+    // These are not all networkreply errors, 
+    // but just that supported directly by KIO
     
-    if( reply->error() == QNetworkReply::ContentNotFoundError )
+    switch( reply->error() )
     {
-        QList<QWebFrame*> frames;
-        frames.append(mainFrame());
-        while (!frames.isEmpty())
-        {
-            QWebFrame *firstFrame = frames.takeFirst();
+        
+    case QNetworkReply::NoError:                            // no error. Simple :)
+        break;
 
-            if (firstFrame->url() == reply->url())
-            {
-                firstFrame->setHtml(errorPage(reply), reply->url());
-                return;
-            }
-            QList<QWebFrame *> children = firstFrame->childFrames();
-            Q_FOREACH(QWebFrame *frame, children)
-            {
-                frames.append(frame);
-            }
-        }
-    }
-    else
-    {
-        mainFrame()->setHtml(errorPage(reply), reply->url());
+    case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
+
+        if( m_protHandler.postHandling(reply->request(), mainFrame()) )
+            break;
+
+    case QNetworkReply::ContentAccessDenied:                 // access to remote content denied (similar to HTTP error 401)
+        kDebug() << "We (hopefully) are managing this through the adblock :)";
+        break;
+        
+    case QNetworkReply::ConnectionRefusedError:              // remote server refused connection
+    case QNetworkReply::HostNotFoundError:                   // invalid hostname
+    case QNetworkReply::TimeoutError:                        // connection time out
+    case QNetworkReply::OperationCanceledError:              // operation canceled via abort() or close() calls
+    case QNetworkReply::ProxyNotFoundError:                  // invalid proxy hostname
+    case QNetworkReply::ContentOperationNotPermittedError:   // operation requested on remote content not permitted
+    case QNetworkReply::ContentNotFoundError:                // remote content not found on server (similar to HTTP error 404)
+    case QNetworkReply::ProtocolUnknownError:                // Unknown protocol
+    case QNetworkReply::ProtocolInvalidOperationError:       // requested operation is invalid for this protocol
+
+        // don't bother on elements loading errors: 
+        // we'll manage just main url page ones
+        v = qobject_cast<WebView *>(view());
+        if( reply->url() != v->url() )
+            break;
+        
+        mainFrame()->setHtml( errorPage(reply), reply->url() );
+        break;
+
+    default:
+        kDebug() << "Nothing to do here..";
+        break;
+
     }
 }
 
