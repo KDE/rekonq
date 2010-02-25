@@ -182,6 +182,13 @@ void TabBar::showTabPreview(int tab)
 
 void TabBar::mouseMoveEvent(QMouseEvent *event)
 {
+    if (event->buttons() & Qt::LeftButton)
+    {
+        // hide addNewTabButton when moving tabs
+        MainView *view = qobject_cast<MainView *>(parent());
+        QTimer::singleShot(200, view->addTabButton(), SLOT(hide()));
+    }
+        
     if (ReKonfig::alwaysShowTabPreviews())
     {
         //Find the tab under the mouse
@@ -275,4 +282,13 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
     menu.addAction( mainWindow->actionByName("reload_all_tabs") );
 
     menu.exec(pos);
+}
+
+
+void TabBar::mouseReleaseEvent(QMouseEvent *event)
+{
+    MainView *mv = qobject_cast<MainView *>(parent());
+    QTimer::singleShot(200, mv->addTabButton(), SLOT(show()));
+    
+    KTabBar::mouseReleaseEvent(event);
 }
