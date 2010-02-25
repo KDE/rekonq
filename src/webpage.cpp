@@ -71,7 +71,7 @@
 #include <QtGui/QKeyEvent>
 
 
-WebPage::WebPage(QObject *parent)
+WebPage::WebPage(QWidget *parent)
     : KWebPage(parent, KWalletIntegration)
 {
     setForwardUnsupportedContent(true);
@@ -82,6 +82,10 @@ WebPage::WebPage(QObject *parent)
     // disable QtWebKit cache to just use KIO one..
     manager->setCache(0);
     
+    // set cookieJar window ID..
+    if (parent && parent->window())
+        manager->setCookieJarWindowId(parent->window()->winId());
+
     setNetworkAccessManager(manager);
     
     // Web Plugin Factory

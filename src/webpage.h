@@ -53,7 +53,7 @@ class WebPage : public KWebPage
     Q_OBJECT
 
 public:
-    explicit WebPage(QObject *parent = 0);
+    explicit WebPage(QWidget *parent = 0);
     ~WebPage();
 
 public slots:
