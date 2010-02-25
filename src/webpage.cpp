@@ -69,6 +69,7 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
+#include <QWebFrame>
 
 
 WebPage::WebPage(QWidget *parent)
@@ -208,6 +209,8 @@ void WebPage::loadFinished(bool)
 
 void WebPage::manageNetworkErrors(QNetworkReply *reply)
 {
+    Q_ASSERT(reply);
+
     WebView *v = 0;
     
     // NOTE 
