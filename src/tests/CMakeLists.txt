@@ -20,13 +20,13 @@ target_link_libraries( tabbar_test
 
 ##### ------------- mainview test
 
-kde4_add_unit_test( mainview_test mainview_test.cpp )
- 
-target_link_libraries( mainview_test
-    kdeinit_rekonq
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${QT_QTTEST_LIBRARY}
-)
+# kde4_add_unit_test( mainview_test mainview_test.cpp )
+#  
+# target_link_libraries( mainview_test
+#     kdeinit_rekonq
+#     ${KDE4_KDECORE_LIBS}
+#     ${KDE4_KDEUI_LIBS}
+#     ${QT_QTTEST_LIBRARY}
+# )
 
 ############################################################

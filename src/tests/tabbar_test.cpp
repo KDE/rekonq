@@ -50,32 +50,23 @@ private slots:
 class SubTabBar : public TabBar
 {
 public:
-    void call_cloneTab(int index)
-        { return SubTabBar::cloneTab(index); }
-
-    void call_closeOtherTabs(int index)
-        { return SubTabBar::closeOtherTabs(index); }
-
-    void call_closeTab(int index)
-        { return SubTabBar::closeTab(index); }
-
-    void call_mouseMoveEvent(QMouseEvent* event)
-        { return SubTabBar::mouseMoveEvent(event); }
-
-    void call_mousePressEvent(QMouseEvent* event)
-        { return SubTabBar::mousePressEvent(event); }
-
-    void call_reloadAllTabs()
-        { return SubTabBar::reloadAllTabs(); }
-
-    void call_reloadTab(int index)
-        { return SubTabBar::reloadTab(index); }
+    
+    SubTabBar(QWidget *parent) : TabBar(parent) {};
 
     QSize call_tabSizeHint(int index) const
         { return SubTabBar::tabSizeHint(index); }
-
-    void call_showTabPreview(int tab)
-        { return SubTabBar::showTabPreview(tab); }
+        
+    void call_mouseMoveEvent(QMouseEvent* event)
+        { return SubTabBar::mouseMoveEvent(event); }
+        
+    void call_leaveEvent(QEvent* event)
+        { return SubTabBar::leaveEvent(event); }
+        
+    void call_mousePressEvent(QMouseEvent* event)
+        { return SubTabBar::mousePressEvent(event); }
+        
+    void call_mouseReleaseEvent(QMouseEvent* event)
+        { return SubTabBar::mouseReleaseEvent(event); }        
 };
 
 
@@ -113,7 +104,8 @@ void TabBarTest::tabbar_data()
 
 void TabBarTest::tabbar()
 {
-    SubTabBar widget;
+    QWidget *w = new QWidget;
+    SubTabBar widget(w);
 }
 
 // -------------------------------------------
