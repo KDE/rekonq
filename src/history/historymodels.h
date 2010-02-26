@@ -31,6 +31,7 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "historymanager.h"
 
 // KDE Includes
@@ -45,7 +46,7 @@
 #include <QWebHistoryInterface>
 
 
-class HistoryModel : public QAbstractTableModel
+class REKONQ_TESTS_EXPORT HistoryModel : public QAbstractTableModel
 {
     Q_OBJECT
 
@@ -85,7 +86,7 @@ private:
  *
  */
 
-class HistoryFilterModel : public QAbstractProxyModel
+class REKONQ_TESTS_EXPORT HistoryFilterModel : public QAbstractProxyModel
 {
     Q_OBJECT
 

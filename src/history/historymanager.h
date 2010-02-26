@@ -30,6 +30,9 @@
 #define HISTORY_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KUrl>
 
@@ -92,7 +95,7 @@ class KCompletion;
  * It manages rekonq history
  *
  */
-class HistoryManager : public QWebHistoryInterface
+class REKONQ_TESTS_EXPORT HistoryManager : public QWebHistoryInterface
 {
     Q_OBJECT
     Q_PROPERTY(int historyLimit READ historyLimit WRITE setHistoryLimit)

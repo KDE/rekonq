@@ -29,6 +29,9 @@
 #define WEB_PLUGIN_FACTORY_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KWebPluginFactory>
 
@@ -37,7 +40,7 @@
 #include <QtGui/QWidget>
 
 
-class WebPluginFactory : public KWebPluginFactory
+class REKONQ_TESTS_EXPORT WebPluginFactory : public KWebPluginFactory
 {
 Q_OBJECT
 

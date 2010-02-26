@@ -29,6 +29,9 @@
 #define WEBTAB_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KUrl>
 
@@ -40,7 +43,7 @@ class WebPage;
 class WebView;
 
 
-class WebTab : public QWidget
+class REKONQ_TESTS_EXPORT WebTab : public QWidget
 {
     Q_OBJECT
 

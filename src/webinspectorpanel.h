@@ -29,6 +29,9 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
+
+// Local Includes
 #include "mainwindow.h"
 
 // Qt Includes
@@ -38,7 +41,7 @@
     Docked web inspector
     behaviour : hide/show by tab, not globally
 */
-class WebInspectorPanel : public QDockWidget
+class REKONQ_TESTS_EXPORT WebInspectorPanel : public QDockWidget
 {
     Q_OBJECT
 public:

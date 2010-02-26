@@ -29,6 +29,9 @@
 #define REKONQ_NEW_TAB_PAGE
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KUrl>
 
@@ -42,7 +45,7 @@ class KBookmark;
 class WebPage;
 
 
-class NewTabPage : public QObject
+class REKONQ_TESTS_EXPORT NewTabPage : public QObject
 {
 Q_OBJECT
 

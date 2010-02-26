@@ -34,6 +34,7 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "protocolhandler.h"
 #include "newtabpage.h"
 
@@ -48,7 +49,7 @@ class QWebFrame;
 class QNetworkReply;
 
 
-class WebPage : public KWebPage
+class REKONQ_TESTS_EXPORT WebPage : public KWebPage
 {
     Q_OBJECT
 

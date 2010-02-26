@@ -29,6 +29,9 @@
 #define NETWORKACCESSMANAGER_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <kio/accessmanager.h>
 
@@ -36,7 +39,7 @@
 using namespace KIO::Integration;
 
 
-class NetworkAccessManager : public AccessManager
+class REKONQ_TESTS_EXPORT NetworkAccessManager : public AccessManager
 {
     Q_OBJECT
 

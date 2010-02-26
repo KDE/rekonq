@@ -27,6 +27,10 @@
 #ifndef PROTOCOL_HANDLER_H
 #define PROTOCOL_HANDLER_H
 
+
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KDirLister>
 
@@ -41,7 +45,7 @@ class KUrl;
 class KJob;
 
 
-class ProtocolHandler : public QObject
+class REKONQ_TESTS_EXPORT ProtocolHandler : public QObject
 {
 Q_OBJECT
 

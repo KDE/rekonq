@@ -54,6 +54,9 @@
 #define ADBLOCK_NETWORK_REPLY_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QNetworkReply>
 #include <QString>
@@ -62,7 +65,7 @@
 class AdBlockRule;
 
 
-class AdBlockNetworkReply : public QNetworkReply
+class REKONQ_TESTS_EXPORT AdBlockNetworkReply : public QNetworkReply
 {
     Q_OBJECT
 

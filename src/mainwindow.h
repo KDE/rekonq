@@ -33,6 +33,7 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "application.h"
 #include "previewselectorbar.h"
 
@@ -62,7 +63,7 @@ class MainView;
  * It handles the menus, toolbars, and status bars.
  *
  */
-class MainWindow : public KMainWindow
+class REKONQ_TESTS_EXPORT MainWindow : public KMainWindow
 {
     Q_OBJECT
 

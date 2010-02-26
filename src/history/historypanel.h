@@ -29,6 +29,9 @@
 #define HISTORYPANEL_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QDockWidget>
 
@@ -38,7 +41,7 @@ class QWidget;
 class QModelIndex;
 
 
-class HistoryPanel : public QDockWidget
+class REKONQ_TESTS_EXPORT HistoryPanel : public QDockWidget
 {
 Q_OBJECT
 

@@ -29,6 +29,9 @@
 #define FINDBAR_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KLineEdit>
 
@@ -41,7 +44,7 @@ class KMainWindow;
 class QString;
 
 
-class FindBar : public QWidget
+class REKONQ_TESTS_EXPORT FindBar : public QWidget
 {
     Q_OBJECT
 

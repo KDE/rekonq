@@ -29,6 +29,9 @@
 #define AUTOSAVER_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QtCore/QObject>
 #include <QtCore/QBasicTimer>
@@ -43,7 +46,7 @@
  *
  */
 
-class AutoSaver : public QObject
+class REKONQ_TESTS_EXPORT AutoSaver : public QObject
 {
     Q_OBJECT
 

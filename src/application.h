@@ -29,6 +29,8 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+// Local Includes
+#include "rekonqprivate_export.h"
 
 // KDE Includes
 #include <KUniqueApplication>
@@ -89,7 +91,7 @@ namespace Rekonq
 /**
   *
   */
-class Application : public KUniqueApplication
+class REKONQ_TESTS_EXPORT Application : public KUniqueApplication
 {
     Q_OBJECT
 

@@ -30,6 +30,9 @@
 #define SESSION_MANAGER_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QtCore/QObject>
 #include <QtCore/QString>
@@ -38,7 +41,7 @@
 /**
   * Session Management
   */
-class SessionManager : public QObject
+class REKONQ_TESTS_EXPORT SessionManager : public QObject
 {
     Q_OBJECT
 public:

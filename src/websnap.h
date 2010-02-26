@@ -29,6 +29,9 @@
 #ifndef WEB_SNAP_H
 #define WEB_SNAP_H
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KUrl>
 
@@ -47,7 +50,7 @@
  * on that.
  * Heavily based on Graphics-Dojo WebSnap example (thanks!)
  */
-class WebSnap : public QObject
+class REKONQ_TESTS_EXPORT WebSnap : public QObject
 {
     Q_OBJECT
 

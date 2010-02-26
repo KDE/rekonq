@@ -30,6 +30,9 @@
 #define LINEEDIT_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KLineEdit>
 
@@ -39,7 +42,7 @@ class QFocusEvent;
 class QKeyEvent;
 
 
-class LineEdit : public KLineEdit
+class REKONQ_TESTS_EXPORT LineEdit : public KLineEdit
 {
     Q_OBJECT
 

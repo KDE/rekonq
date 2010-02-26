@@ -54,6 +54,7 @@
 #ifndef ADBLOCKRULE_H
 #define ADBLOCKRULE_H
 
+
 // Qt Includes
 #include <QRegExp>
 #include <QString>

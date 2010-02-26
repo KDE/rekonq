@@ -29,6 +29,7 @@
 #define PREVIEWSELECTORBAR_H
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "webpage.h"
 
 // Qt Includes
@@ -37,7 +38,7 @@
 #include <QLabel>
 
 
-class PreviewSelectorBar : public QWidget
+class REKONQ_TESTS_EXPORT PreviewSelectorBar : public QWidget
 {
 Q_OBJECT
 

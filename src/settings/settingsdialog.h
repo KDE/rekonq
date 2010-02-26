@@ -29,6 +29,9 @@
 #define SETTINGS_DIALOG_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KConfigDialog>
 
@@ -37,7 +40,7 @@ class QWidget;
 class Private;
 
 
-class SettingsDialog : public KConfigDialog
+class REKONQ_TESTS_EXPORT SettingsDialog : public KConfigDialog
 {
     Q_OBJECT
 

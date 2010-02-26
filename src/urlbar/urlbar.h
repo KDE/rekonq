@@ -32,6 +32,7 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "lineedit.h"
 
 // KDE Includes
@@ -47,7 +48,7 @@ class QWidget;
 class KCompletion;
 
 
-class UrlBar : public KHistoryComboBox
+class REKONQ_TESTS_EXPORT UrlBar : public KHistoryComboBox
 {
     Q_OBJECT
 

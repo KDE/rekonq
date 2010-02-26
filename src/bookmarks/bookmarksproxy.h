@@ -28,10 +28,15 @@
 #ifndef BOOKMARKSPROXY_H
 #define BOOKMARKSPROXY_H
 
+
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QSortFilterProxyModel>
 
-class BookmarksProxy : public QSortFilterProxyModel
+
+class REKONQ_TESTS_EXPORT BookmarksProxy : public QSortFilterProxyModel
 {
     Q_OBJECT
     Q_DISABLE_COPY(BookmarksProxy)

@@ -31,6 +31,7 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "application.h"
 
 // Qt Includes
@@ -55,7 +56,7 @@ class KBookmarkManager;
  * bookmarks as actions
  *
  */
-class BookmarkOwner : public QObject , public KBookmarkOwner
+class REKONQ_TESTS_EXPORT BookmarkOwner : public QObject , public KBookmarkOwner
 {
     Q_OBJECT
 

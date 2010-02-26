@@ -29,6 +29,9 @@
 #define WEBVIEW_H
 
 // Local Includes
+#include "rekonqprivate_export.h"
+
+// Local Includes
 #include "application.h"
 
 // KDE Includes
@@ -38,7 +41,7 @@
 class WebPage;
 
 
-class WebView : public KWebView
+class REKONQ_TESTS_EXPORT WebView : public KWebView
 {
     Q_OBJECT
 

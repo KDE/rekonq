@@ -28,15 +28,22 @@
 #ifndef CLICKTOFLASH_H
 #define CLICKTOFLASH_H
 
+
+// Local Includes
+#include "rekonqprivate_export.h"
+
+// Qt Includes
 #include <QWidget>
 #include <QUrl>
 
-
+// Forward Declarations
 class WebPluginFactory;
 
-class ClickToFlash : public QWidget
+
+class REKONQ_TESTS_EXPORT ClickToFlash : public QWidget
 {
     Q_OBJECT
+    
 public:
     explicit ClickToFlash(QUrl pluginUrl, QWidget *parent = 0);
 

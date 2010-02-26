@@ -28,6 +28,9 @@
 #define WALLET_BAR_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QWidget>
 #include <QString>
@@ -35,7 +38,7 @@
 #include <QLabel>
 
 
-class WalletBar : public QWidget
+class REKONQ_TESTS_EXPORT WalletBar : public QWidget
 {
     Q_OBJECT
 

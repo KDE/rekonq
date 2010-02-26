@@ -105,6 +105,7 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "adblockrule.h"
 
 // Qt Includes
@@ -120,7 +121,7 @@ class WebPage;
 typedef QList<AdBlockRule> AdBlockRuleList;
 
 
-class AdBlockManager : public QObject
+class REKONQ_TESTS_EXPORT AdBlockManager : public QObject
 {
 Q_OBJECT
     

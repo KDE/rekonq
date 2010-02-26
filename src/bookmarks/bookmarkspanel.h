@@ -28,6 +28,10 @@
 #ifndef BOOKMARKSPANEL_H
 #define BOOKMARKSPANEL_H
 
+
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QDockWidget>
 
@@ -36,7 +40,7 @@ class KUrl;
 class QModelIndex;
 
 
-class BookmarksPanel : public QDockWidget
+class REKONQ_TESTS_EXPORT BookmarksPanel : public QDockWidget
 {
     Q_OBJECT
 

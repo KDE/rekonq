@@ -28,13 +28,18 @@
 #ifndef BOOKMARKSTREEMODEL_H
 #define BOOKMARKSTREEMODEL_H
 
-// Qt Includes
-#include <QAbstractItemModel>
+
+// Local Includes
+#include "rekonqprivate_export.h"
 
 // KDE includes
 #include <KBookmark>
 
-class BookmarksTreeModel : public QAbstractItemModel
+// Qt Includes
+#include <QAbstractItemModel>
+
+
+class REKONQ_TESTS_EXPORT BookmarksTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
     Q_DISABLE_COPY(BookmarksTreeModel)
