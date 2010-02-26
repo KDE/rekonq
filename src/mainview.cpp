@@ -186,12 +186,15 @@ void MainView::updateTabBar()
 {
     if( ReKonfig::alwaysShowTabBar() )
     {
-        if (tabBar()->isHidden())
+        if (!isTabBarHidden())
         {
-            tabBar()->show();
-            m_addTabButton->show();
+            if (tabBar()->isHidden())
+            {
+                tabBar()->show();
+                m_addTabButton->show();
+            }
+            updateTabButtonPosition();
         }
-        updateTabButtonPosition();
         return;
     }
 
@@ -200,7 +203,7 @@ void MainView::updateTabBar()
         tabBar()->hide();
         m_addTabButton->hide();
     }
-    else
+    else if( !isTabBarHidden() )
     {
         if ( tabBar()->isHidden() )
         {
