@@ -24,29 +24,14 @@
 #include <QtCore>
 #include <QtGui>
 
-#include "../tabbar.h"
+#include "mainwindow.h"
+#include "mainview.h"
+#include "tabbar.h"
 
 
-class TabBarTest : public QObject
-{
-    Q_OBJECT
-
-public slots:
-    void initTestCase();
-    void cleanupTestCase();
-    void init();
-    void cleanup();
-
-private slots:
-    void tabbar_data();
-    void tabbar();
-
-    void tabSizeHint_data();
-    void tabSizeHint();
-};
-
-
-// Subclass that exposes the protected functions.
+/**
+ * Subclass that exposes the protected functions.
+ */
 class SubTabBar : public TabBar
 {
 public:
@@ -70,62 +55,84 @@ public:
 };
 
 
-// This will be called before the first test function is executed.
-// It is only called once.
-void TabBarTest::initTestCase()
+// ------------------------------------------------------------------
+
+
+class TabBarTest : public QObject
 {
-}
+    Q_OBJECT
 
+public slots:
+    void initTestCase();
+    void cleanupTestCase();
+    
+private slots:
+    void tabSizeHint_data();
+    void tabSizeHint();
+    
+    void mousePress_data();
+    void mousePress();
+    
+private:
+    SubTabBar *_bar;
+};
 
-// This will be called after the last test function is executed.
-// It is only called once.
-void TabBarTest::cleanupTestCase()
-{
-}
-
-
-// This will be called before each test function is executed.
-void TabBarTest::init()
-{
-}
-
-
-// This will be called after every test function.
-void TabBarTest::cleanup()
-{
-}
 
 // -------------------------------------------
 
-void TabBarTest::tabbar_data()
+void TabBarTest::initTestCase()
 {
+    MainWindow *w = new MainWindow;
+    MainView *mv = new MainView(w);
+    _bar = new SubTabBar(mv);
 }
 
-
-void TabBarTest::tabbar()
+void TabBarTest::cleanupTestCase()
 {
-    QWidget *w = new QWidget;
-    SubTabBar widget(w);
+    delete _bar;
 }
 
 // -------------------------------------------
 
 void TabBarTest::tabSizeHint_data()
 {
-//     QTest::addColumn<int>("index");
-//     QTest::newRow("0") << 0;
+    QTest::addColumn<int>("index");
+
+    QTest::newRow("1th") << 0;
+    QTest::newRow("2nd") << 1;
+    QTest::newRow("3rd") << 2;
+    QTest::newRow("4th") << 3;
+    QTest::newRow("5th") << 4;
+    QTest::newRow("6th") << 5;
+    QTest::newRow("7th") << 6;
+    QTest::newRow("8th") << 7;
+    QTest::newRow("9th") << 8;
+    QTest::newRow("10th") << 9;
 }
 
 
-// protected QSize tabSizeHint(int index) const
 void TabBarTest::tabSizeHint()
 {
-    // Need fixes as our function uses MainView methods to determine size
-//     QFETCH(int, index);
-//     SubTabBar bar;
-//     QVERIFY(bar.call_tabSizeHint(index).width() <= 250);
+    QFETCH(int, index);
+
+    QVERIFY(_bar->call_tabSizeHint(index).width() > 0);
 }
-    
+
+
+void TabBarTest::mousePress_data()
+{
+}
+
+
+void TabBarTest::mousePress()
+{
+//     QTest::mousePress(_bar, Qt::MidButton);
+// //     QCOMPARE();  ?
+// 
+//     QTest::mousePress(_bar, Qt::LeftButton);
+// //     QCOMPARE();  ?
+}
+
 // -------------------------------------------
 
 QTEST_KDEMAIN(TabBarTest, GUI)

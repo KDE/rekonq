@@ -93,13 +93,13 @@ QSize TabBar::tabSizeHint(int index) const
     int minWidth =  view->sizeHint().width()/MIN_WIDTH_DIVISOR;
 
     int w;
-    if (baseWidth*count()<tabBarWidth)
+    if (baseWidth*count() < tabBarWidth)
     {
         w = baseWidth;
     }
     else 
     {
-        if (count() > 0 && tabBarWidth/count()>minWidth)
+        if (count() > 0 && tabBarWidth/count() > minWidth)
         {
             w = tabBarWidth/count();
         }

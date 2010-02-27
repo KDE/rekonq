@@ -31,8 +31,21 @@
 #include <QtCore>
 #include <QtGui>
 
-#include "../mainview.h"
-#include "../webview.h"
+#include "mainview.h"
+#include "webview.h"
+
+
+// Subclass that exposes the protected functions.
+class SubMainView : public MainView
+{
+public:
+    SubMainView(MainWindow *parent) : MainView(parent) {};
+    
+    void call_resizeEvent(QResizeEvent *event)
+        { return SubMainView::resizeEvent(event); }
+};
+
+// -----------------------------------------------------------
 
 
 class MainViewTest : public QObject
@@ -42,8 +55,6 @@ class MainViewTest : public QObject
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    void init();
-    void cleanup();
 
 private slots:
     void tabwidget_data();
@@ -75,38 +86,30 @@ private slots:
     
     void currentChanged_data();
     void currentChanged();
+
+private:
+    MainWindow *mainWindow;
+    SubMainView *mainView;
 };
 
 
-// Subclass that exposes the protected functions.
-class SubMainView : public MainView
-{
-public:
-    void call_resizeEvent(QResizeEvent *event)
-        { return SubMainView::resizeEvent(event); }
-};
+// -------------------------------------------------------------------------------
 
 
 // This will be called before the first test function is executed.
 // It is only called once.
 void MainViewTest::initTestCase()
 {
+    mainWindow = new MainWindow;
+    mainView = new SubMainView(mainWindow);
 }
 
 // This will be called after the last test function is executed.
 // It is only called once.
 void MainViewTest::cleanupTestCase()
 {
-}
-
-// This will be called before each test function is executed.
-void MainViewTest::init()
-{
-}
-
-// This will be called after every test function.
-void MainViewTest::cleanup()
-{
+    delete mainView;
+    delete mainWindow;
 }
 
 // -------------------------------------------
@@ -117,7 +120,6 @@ void MainViewTest::tabwidget_data()
 
 void MainViewTest::tabwidget()
 {
-    SubMainView widget;
 //     widget.currentWebView();
 //     QCOMPARE(widget.currentIndex(), 0);
 //     widget.newTab();
@@ -140,7 +142,6 @@ void MainViewTest::closeTab()
 {
     QFETCH(int, index);
 
-    SubMainView widget;
 /*
     QSignalSpy spy0(&widget, SIGNAL(linkHovered(const QString &)));
     QSignalSpy spy3(&widget, SIGNAL(setCurrentTitle(const QString &)));
