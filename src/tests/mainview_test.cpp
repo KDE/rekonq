@@ -31,6 +31,7 @@
 #include <QtGui>
 #include <QtTest>
 
+#include "mainwindow.h"
 #include "mainview.h"
 #include "webview.h"
 
@@ -87,15 +88,15 @@ private:
 // It is only called once.
 void MainViewTest::initTestCase()
 {
-    window = new MainWindow;
-    view = window->mainView();
+//     window = new MainWindow;
+//     view = window->mainView();
 }
 
 // This will be called after the last test function is executed.
 // It is only called once.
 void MainViewTest::cleanupTestCase()
 {
-    delete window;
+//     delete window;
 }
 
 // -------------------------------------------

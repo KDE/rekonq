@@ -50,13 +50,13 @@ private:
 
 void MainWindowTest::initTestCase()
 {
-    window = new MainWindow;
+//     window = new MainWindow;
 }
 
 
 void MainWindowTest::cleanupTestCase()
 {
-    delete window;
+//     delete window;
 }
 
 // -------------------------------------------
