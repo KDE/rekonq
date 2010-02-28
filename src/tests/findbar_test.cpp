@@ -26,7 +26,7 @@
 #include <QtWebKit>
 
 #include "findbar.h"
-
+#include "mainwindow.h"
 
 
 class FindBarTest : public QObject
@@ -38,7 +38,8 @@ public slots:
     void cleanupTestCase();
     
 private slots:
-
+    void matchCase();
+    void notifyMatch();
 
 private:
     FindBar *bar;
@@ -50,13 +51,23 @@ private:
 
 void FindBarTest::initTestCase()
 {
+    MainWindow *w = new MainWindow;
+    bar = new FindBar(w);
 }
 
 
 void FindBarTest::cleanupTestCase()
 {
+    delete bar;
 }
     
+void FindBarTest::matchCase()
+{
+}
+
+void FindBarTest::notifyMatch()
+{
+}
 
 // -------------------------------------------
 

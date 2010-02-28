@@ -40,7 +40,6 @@
 #include <QtGui/QCheckBox>
 
 // Forward Declarations
-class KMainWindow;
 class QString;
 
 
@@ -49,7 +48,7 @@ class REKONQ_TESTS_EXPORT FindBar : public QWidget
     Q_OBJECT
 
 public:
-    FindBar(KMainWindow *mainwindow);
+    FindBar(QWidget *parent);
     ~FindBar();
     KLineEdit *lineEdit() const;
     bool matchCase() const;

@@ -29,12 +29,14 @@
 #include "findbar.h"
 #include "findbar.moc"
 
+// Local Includes
+#include "mainwindow.h"
+
 // KDE Includes
 #include <KLineEdit>
 #include <KIcon>
 #include <KPushButton>
 #include <klocalizedstring.h>
-#include <KMainWindow>
 #include <KApplication>
 
 // Qt Includes
@@ -47,8 +49,8 @@
 #include <QtCore/QTimer>
 
 
-FindBar::FindBar(KMainWindow *mainwindow)
-        : QWidget(mainwindow)
+FindBar::FindBar(QWidget *parent)
+        : QWidget(parent)
         , m_lineEdit(new KLineEdit(this))
         , m_matchCase(new QCheckBox(i18n("&Match case"), this))
         , m_hideTimer(new QTimer(this))
@@ -73,24 +75,27 @@ FindBar::FindBar(KMainWindow *mainwindow)
     QLabel *label = new QLabel(i18n("Find:"));
     layout->addWidget(label);
 
+    // mainwindow pointer
+    MainWindow *window = qobject_cast<MainWindow *>(parent);
+    
     // lineEdit, focusProxy
     setFocusProxy(m_lineEdit);
     m_lineEdit->setMaximumWidth(250);
-    connect(m_lineEdit, SIGNAL(textChanged(const QString &)), mainwindow, SLOT(find(const QString &)));
+    connect(m_lineEdit, SIGNAL(textChanged(const QString &)), window, SLOT(find(const QString &)));
     layout->addWidget(m_lineEdit);
 
     // buttons
     KPushButton *findNext = new KPushButton(KIcon("go-down"), i18n("&Next"), this);
     KPushButton *findPrev = new KPushButton(KIcon("go-up"), i18n("&Previous"), this);
-    connect(findNext, SIGNAL(clicked()), mainwindow, SLOT(findNext()));
-    connect(findPrev, SIGNAL(clicked()), mainwindow, SLOT(findPrevious()));
+    connect(findNext, SIGNAL(clicked()), window, SLOT(findNext()));
+    connect(findPrev, SIGNAL(clicked()), window, SLOT(findPrevious()));
     layout->addWidget(findNext);
     layout->addWidget(findPrev);
 
     // Case sensitivity. Deliberately set so this is off by default.
     m_matchCase->setCheckState(Qt::Unchecked);
     m_matchCase->setTristate(false);
-    connect(m_matchCase, SIGNAL(toggled(bool)), mainwindow, SLOT(matchCaseUpdate()));
+    connect(m_matchCase, SIGNAL(toggled(bool)), window, SLOT(matchCaseUpdate()));
     layout->addWidget(m_matchCase);
 
     // stretching widget on the left
