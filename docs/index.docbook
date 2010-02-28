@@ -50,7 +50,7 @@
 
 <abstract>
 <para>
-&rekonq; is a lightweight web browser for &kde; based on WebKit.
+&rekonq; is a lightweight web browser for &kde; based on QtWebKit.
 </para>
 </abstract>
 
@@ -70,14 +70,14 @@
 <title>Overview</title>
 
 <para>
-&rekonq; is a lightweight web browser for &kde; based on WebKit. It can currently 
+&rekonq; is a lightweight web browser for &kde; based on QtWebKit. Amongst other it provides the following features: 
 <itemizedlist>
-<listitem><para>Share bookmarks with &konqueror;</para></listitem>
-<listitem><para>Share Cookies with &konqueror;</para></listitem>
-<listitem><para>Handle tabbed browsing</para></listitem>
-<listitem><para>Display tab previews</para></listitem>
-<listitem><para>Handle support for NS plugins (eg: flash)</para></listitem>
-<listitem><para>Share General &kde; Proxy settings</para></listitem>
+<listitem><para>Shared bookmarks with &konqueror;</para></listitem>
+<listitem><para>Shared cookies with &konqueror;</para></listitem>
+<listitem><para>Tabbed browsing</para></listitem>
+<listitem><para>Display of tab previews</para></listitem>
+<listitem><para>Support for NS plugins (&eg;: Flash)</para></listitem>
+<listitem><para>Shared general &kde; proxy settings</para></listitem>
 <listitem><para>Browse anonymously</para></listitem>
 <listitem><para>Inspect web pages</para></listitem>
 </itemizedlist>
@@ -91,8 +91,8 @@
 <title>Introduction</title>
 
 <para>
-&rekonq; is a lightweight web browser for &kde; based on WebKit. Its code is based on Nokia QtDemoBrowser. 
-Its implementation is going to embrace &kde; technologies to have a full-featured &kde; web browser.
+&rekonq; is a lightweight web browser for &kde; based on QtWebKit. Its code is based on the Nokia QtDemoBrowser.
+Its implementation is going to embrace &kde; technologies, in order to have a full-featured &kde; web browser.
 </para>
 </chapter>
 <!-- ================== CHAPTER ==================  -->
@@ -169,7 +169,7 @@ Documentation copyright 2009 &Rohan.Garg; &Rohan.Garg.mail;
 <!--TRANS:CREDIT_FOR_TRANSLATORS-->
 
 &underFDL;               <!-- FDL: do not remove -->
-&underBSDLicense;        <!-- BSD License -->
+&underGPL;        <!-- GPL License -->
 
 </chapter>
 
@@ -185,15 +185,16 @@ Documentation copyright 2009 &Rohan.Garg; &Rohan.Garg.mail;
 <title>Requirements</title>
 
 <para>
-In order to successfully use &rekonq;, you need at least &Qt; 4.5.x and &kde; 4.3.x.
+In order to successfully use &rekonq;, you need at least &Qt; 4.6.x and &kde; 4.4.x.
 </para>
 
 </sect1>
 
 <sect1 id="compilation">
 <title>Compilation and Installation</title>
-<para>If you wish to compile &rekonq;,go to
+<para>If you wish to compile &rekonq;, go to
 <ulink url="http://techbase.kde.org/Projects/rekonq/Compiling_rekonq">The how to compile &rekonq; page</ulink>.
+<!-- TODO: add the instructions from the webpage above, to this docbook -->
 </para>
 </sect1>
 
