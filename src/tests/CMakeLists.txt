@@ -67,6 +67,7 @@ target_link_libraries( protocolhandler_test
     kdeinit_rekonq
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}
+    ${KDE4_KDEWEBKIT_LIBS}
     ${QT_QTTEST_LIBRARY}
 )
 

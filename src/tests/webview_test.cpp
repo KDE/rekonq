@@ -29,6 +29,7 @@
 #include "webview.h"
 #include "webtab.h"
 
+
 class WebViewTest : public QObject
 {
     Q_OBJECT
@@ -57,6 +58,7 @@ void WebViewTest::initTestCase()
 
 void WebViewTest::cleanupTestCase()
 {
+    delete tab;
 }
     
     

@@ -63,6 +63,7 @@ void FindBarTest::cleanupTestCase()
     
 void FindBarTest::matchCase()
 {
+    
 }
 
 void FindBarTest::notifyMatch()

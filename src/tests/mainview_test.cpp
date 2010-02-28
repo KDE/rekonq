@@ -96,7 +96,7 @@ void MainViewTest::initTestCase()
 // It is only called once.
 void MainViewTest::cleanupTestCase()
 {
-//     delete window;
+//     delete window;   // FIXME: this let the test fail. Why??
 }
 
 // -------------------------------------------
@@ -107,13 +107,16 @@ void MainViewTest::tabwidget_data()
 
 void MainViewTest::tabwidget()
 {
-//     widget.currentWebView();
-//     QCOMPARE(widget.currentIndex(), 0);
-//     widget.newTab();
-//     widget.nextTab();
-//     QCOMPARE(widget.currentIndex(), 1);
-//     widget.previousTab();
-//     QCOMPARE(widget.currentIndex(), 0);
+    QCOMPARE(view->currentIndex(), -1);
+    
+//     view->newTab();    
+//     QCOMPARE(view->currentIndex(), 1); 
+//     view->newTab();
+//     view->nextTab();
+//     QCOMPARE(view->currentIndex(), 0);
+// 
+//     view->previousTab();
+//     QCOMPARE(view->currentIndex(), 0);
 }
 
 // -------------------------------------------
@@ -124,32 +127,30 @@ void MainViewTest::closeTab_data()
     QTest::newRow("null") << 0;
 }
 
-// public void closeTab(int index = -1)
+
 void MainViewTest::closeTab()
 {
-    QFETCH(int, index);
-
-/*
-    QSignalSpy spy0(&widget, SIGNAL(linkHovered(const QString &)));
-    QSignalSpy spy3(&widget, SIGNAL(setCurrentTitle(const QString &)));
-QSignalSpy spy5(&widget, SIGNAL(tabsChanged()));
-    QSignalSpy spy6(&widget, SIGNAL(lastTabClosed()));
-
-    widget.newTab();
-    widget.slotCloseTab(index);
-    widget.newTab();
-    widget.slotCloseTab(index);
-    widget.newTab();
-
-    QCOMPARE(spy0.count(), 0);
-    QCOMPARE(spy3.count(), 2);
-    QCOMPARE(spy5.count(), 0);
-    QCOMPARE(spy6.count(), 0);*/
+//     QFETCH(int, index);
+// 
+//     QSignalSpy spy1(view, SIGNAL(linkHovered(const QString &)));
+//     QSignalSpy spy2(view, SIGNAL(setCurrentTitle(const QString &)));
+//     QSignalSpy spy3(view, SIGNAL(tabsChanged()));
+//     QSignalSpy spy4(view, SIGNAL(lastTabClosed()));
+// 
+//     view->newTab();
+//     view->closeTab(index);
+//     view->newTab();
+//     view->closeTab(index);
+//     view->newTab();
+// 
+//     QCOMPARE(spy1.count(), 0);
+//     QCOMPARE(spy2.count(), 2);
+//     QCOMPARE(spy3.count(), 0);
+//     QCOMPARE(spy4.count(), 0);
 }
 
 // -------------------------------------------
 
-Q_DECLARE_METATYPE(WebView*)
 void MainViewTest::currentWebView_data()
 {
     /*
@@ -158,7 +159,6 @@ void MainViewTest::currentWebView_data()
     */
 }
 
-// public WebView *currentWebView() const
 void MainViewTest::currentWebView()
 {
     /*
@@ -166,12 +166,12 @@ void MainViewTest::currentWebView()
 
     SubMainView widget;
 
-    QSignalSpy spy0(&widget, SIGNAL(linkHovered(const QString &)));
-    QSignalSpy spy2(&widget, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(&widget, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(&widget, SIGNAL(showStatusBarMessage(const QString &)));
-    QSignalSpy spy5(&widget, SIGNAL(tabsChanged()));
-    QSignalSpy spy6(&widget, SIGNAL(lastTabClosed()));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy5(view, SIGNAL(tabsChanged()));
+    QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
     QCOMPARE(widget.currentWebView(), currentWebView);
 
@@ -193,31 +193,24 @@ void MainViewTest::newTab_data()
     QTest::newRow("null") << 0;
 }
 
-// public void newTab()
+
 void MainViewTest::newTab()
 {
-    /*
-    QFETCH(int, foo);
-
-    SubMainView widget;
-
-    QSignalSpy spy0(&widget, SIGNAL(linkHovered(const QString &)));
-    QSignalSpy spy2(&widget, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(&widget, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(&widget, SIGNAL(showStatusBarMessage(const QString &)));
-    QSignalSpy spy5(&widget, SIGNAL(tabsChanged()));
-    QSignalSpy spy6(&widget, SIGNAL(lastTabClosed()));
-
-    widget.newTab();
-
-    QCOMPARE(spy0.count(), 0);
-    QCOMPARE(spy2.count(), 0);
-    QCOMPARE(spy3.count(), 0);
-    QCOMPARE(spy4.count(), 0);
-    QCOMPARE(spy5.count(), 0);
-    QCOMPARE(spy6.count(), 0);
-    */
-    QSKIP("Test is not implemented.", SkipAll);
+//     QFETCH(int, foo);
+// 
+//     QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+//     QSignalSpy spy1(view, SIGNAL(setCurrentTitle(const QString &)));
+//     QSignalSpy spy2(view, SIGNAL(showStatusBarMessage(const QString &)));
+//     QSignalSpy spy3(view, SIGNAL(tabsChanged()));
+//     QSignalSpy spy4(view, SIGNAL(lastTabClosed()));
+// 
+//     view->newTab();
+// 
+//     QCOMPARE(spy0.count(), 0);
+//     QCOMPARE(spy1.count(), 0);
+//     QCOMPARE(spy2.count(), 0);
+//     QCOMPARE(spy3.count(), 0);
+//     QCOMPARE(spy4.count(), 0);
 }
 
 // -------------------------------------------
@@ -236,12 +229,12 @@ void MainViewTest::nextTab()
 
     SubMainView widget;
 
-    QSignalSpy spy0(&widget, SIGNAL(linkHovered(const QString &)));
-    QSignalSpy spy2(&widget, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(&widget, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(&widget, SIGNAL(showStatusBarMessage(const QString &)));
-    QSignalSpy spy5(&widget, SIGNAL(tabsChanged()));
-    QSignalSpy spy6(&widget, SIGNAL(lastTabClosed()));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy5(view, SIGNAL(tabsChanged()));
+    QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
     widget.nextTab();
 
@@ -272,12 +265,12 @@ void MainViewTest::previousTab()
 
     SubMainView widget;
 
-    QSignalSpy spy0(&widget, SIGNAL(linkHovered(const QString &)));
-    QSignalSpy spy2(&widget, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(&widget, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(&widget, SIGNAL(showStatusBarMessage(const QString &)));
-    QSignalSpy spy5(&widget, SIGNAL(tabsChanged()));
-    QSignalSpy spy6(&widget, SIGNAL(lastTabClosed()));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy5(view, SIGNAL(tabsChanged()));
+    QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
     widget.previousTab();
 
@@ -302,12 +295,12 @@ void MainViewTest::recentlyClosedTabs()
     /*
     SubMainView widget;
 
-    QSignalSpy spy0(&widget, SIGNAL(linkHovered(const QString &)));
-    QSignalSpy spy2(&widget, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(&widget, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(&widget, SIGNAL(showStatusBarMessage(const QString &)));
-    QSignalSpy spy5(&widget, SIGNAL(tabsChanged()));
-    QSignalSpy spy6(&widget, SIGNAL(lastTabClosed()));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy5(view, SIGNAL(tabsChanged()));
+    QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
     QCOMPARE(spy0.count(), 0);
     QCOMPARE(spy2.count(), 0);
@@ -335,12 +328,12 @@ void MainViewTest::setCurrentTitle(const QString &)
 
     SubMainView widget;
 
-    QSignalSpy spy0(&widget, SIGNAL(linkHovered(const QString &)));
-    QSignalSpy spy2(&widget, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(&widget, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(&widget, SIGNAL(showStatusBarMessage(const QString &)));
-    QSignalSpy spy5(&widget, SIGNAL(tabsChanged()));
-    QSignalSpy spy6(&widget, SIGNAL(lastTabClosed()));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy5(view, SIGNAL(tabsChanged()));
+    QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
     widget.call_setCurrentTitle(url);
 
@@ -370,12 +363,12 @@ void MainViewTest::showStatusBarMessage(const QString &)
 
     SubMainView widget;
 
-    QSignalSpy spy0(&widget, SIGNAL(linkHovered(const QString &)));
-    QSignalSpy spy2(&widget, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(&widget, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(&widget, SIGNAL(showStatusBarMessage(const QString &)));
-    QSignalSpy spy5(&widget, SIGNAL(tabsChanged()));
-    QSignalSpy spy6(&widget, SIGNAL(lastTabClosed()));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy5(view, SIGNAL(tabsChanged()));
+    QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
     widget.call_showStatusBarMessage(message);
 
@@ -391,14 +384,12 @@ void MainViewTest::showStatusBarMessage(const QString &)
 
 // -------------------------------------------
 
-// void slotCurrentChanged(int index);
 void MainViewTest::currentChanged_data()
 {
     QTest::addColumn<int>("foo");
     QTest::newRow("null") << 0;
 }
 
-// private slotCurrentChanged
 void MainViewTest::currentChanged()
 {
     /*
@@ -406,12 +397,12 @@ void MainViewTest::currentChanged()
 
     SubMainView widget;
 
-    QSignalSpy spy0(&widget, SIGNAL(linkHovered(const QString &)));
-    QSignalSpy spy2(&widget, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(&widget, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(&widget, SIGNAL(showStatusBarMessage(const QString &)));
-    QSignalSpy spy5(&widget, SIGNAL(tabsChanged()));
-    QSignalSpy spy6(&widget, SIGNAL(lastTabClosed()));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy5(view, SIGNAL(tabsChanged()));
+    QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
     widget.call_tabsChanged();
 

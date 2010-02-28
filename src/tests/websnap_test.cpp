@@ -50,7 +50,6 @@ private:
 
 void WebSnapTest::initTestCase()
 {
-//     snap = new WebSnap;
 }
 
 

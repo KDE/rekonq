@@ -24,7 +24,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtTest>
-
+#include <QtWebKit>
 
 #include "protocolhandler.h"
 
@@ -38,8 +38,12 @@ public slots:
     void cleanupTestCase();
     
 private slots:
+    void preHandling_data();
+    void preHandling();
 
-
+    void postHandling_data();
+    void postHandling();
+    
 private:
     ProtocolHandler *handler;
 };
@@ -62,6 +66,50 @@ void ProtocolhandlerTest::cleanupTestCase()
 // -------------------------------------------
 
 
+void ProtocolhandlerTest::preHandling_data()
+{
+    QTest::addColumn<QString>("urlString");
+    
+    QTest::newRow("mailto")     << "mailto:me@here.com";
+    QTest::newRow("relative")   << "google.it";
+    QTest::newRow("javascript") << "javascript:alertbox('hello')";
+    QTest::newRow("aboutblank") << "about:blank";
+    QTest::newRow("abouthome")  << "about:home";
+    QTest::newRow("ftp")        << "ftp://ftp.kde.org";
+    QTest::newRow("file")       << "file:///home";
+}
+
+
+void ProtocolhandlerTest::preHandling()
+{
+//     QFETCH( QString, urlString );
+//     
+//     QWebView *view = new QWebView;
+//     QWebFrame *frame = view->page()->mainFrame();
+//     
+//     QNetworkRequest *request = new QNetworkRequest( QUrl(urlString) );
+//     handler->preHandling( request, frame );
+}
+
+
+void ProtocolhandlerTest::postHandling_data()
+{
+    QTest::addColumn<QString>("urlString");
+    
+    QTest::newRow("mailto")     << "mailto:me@here.com";
+    QTest::newRow("relative")   << "google.it";
+    QTest::newRow("javascript") << "javascript:alertbox('hello')";
+    QTest::newRow("aboutblank") << "about:blank";
+    QTest::newRow("abouthome")  << "about:home";
+    QTest::newRow("ftp")        << "ftp://ftp.kde.org";
+    QTest::newRow("file")       << "file:///home";
+}
+
+
+void ProtocolhandlerTest::postHandling()
+{
+}
+    
 // -------------------------------------------
 
 QTEST_KDEMAIN(ProtocolhandlerTest,GUI)

@@ -34,10 +34,6 @@
 class WebPageTest : public QObject
 {
     Q_OBJECT
-
-public:
-    WebPageTest();
-    virtual ~WebPageTest();
     
 public slots:
     void initTestCase();
@@ -63,14 +59,6 @@ private:
 
 
 // -------------------------------------------
-
-
-WebPageTest::WebPageTest()
-{}
-
-
-WebPageTest::~WebPageTest()
-{}
 
 
 void WebPageTest::initTestCase()
