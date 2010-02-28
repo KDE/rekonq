@@ -100,16 +100,16 @@ private:
 // It is only called once.
 void MainViewTest::initTestCase()
 {
-    mainWindow = new MainWindow;
-    mainView = new SubMainView(mainWindow);
+//     mainWindow = new MainWindow;
+//     mainView = new SubMainView(mainWindow);
 }
 
 // This will be called after the last test function is executed.
 // It is only called once.
 void MainViewTest::cleanupTestCase()
 {
-    delete mainView;
-    delete mainWindow;
+//     delete mainView;
+//     delete mainWindow;
 }
 
 // -------------------------------------------

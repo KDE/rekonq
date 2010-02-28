@@ -25,43 +25,41 @@
 #include <QtCore>
 #include <QtWebKit>
 
-#include "webpage.h"
-#include "webview.h"
-#include "webtab.h"
+#include "networkaccessmanager.h"
 
 
-class WebTabTest : public QObject
+class NetworkAccessManagerTest : public QObject
 {
     Q_OBJECT
     
 public slots:
     void initTestCase();
     void cleanupTestCase();
+    
+private slots:
 
 private:
-    WebTab *tab;
+    NetworkAccessManager *manager;
 };
 
 
 // -------------------------------------------
 
-
-void WebTabTest::initTestCase()
+void NetworkAccessManagerTest::initTestCase()
 {
-//     tab = new WebTab;
 }
 
 
-void WebTabTest::cleanupTestCase()
+void NetworkAccessManagerTest::cleanupTestCase()
 {
-//     delete tab;
 }
     
     
 // -------------------------------------------
 
 
+
 // -------------------------------------------
 
-QTEST_MAIN(WebTabTest)
-#include "webtab_test.moc"
+QTEST_MAIN(NetworkAccessManagerTest)
+#include "networkaccessmanager_test.moc"

@@ -25,43 +25,43 @@
 #include <QtCore>
 #include <QtWebKit>
 
-#include "webpage.h"
-#include "webview.h"
-#include "webtab.h"
+#include "websnap.h"
 
 
-class WebTabTest : public QObject
+class WebSnapTest : public QObject
 {
     Q_OBJECT
+
     
 public slots:
     void initTestCase();
     void cleanupTestCase();
+    
+private slots:
 
 private:
-    WebTab *tab;
+    WebSnap *snap;
 };
 
 
 // -------------------------------------------
 
 
-void WebTabTest::initTestCase()
+void WebSnapTest::initTestCase()
 {
-//     tab = new WebTab;
 }
 
 
-void WebTabTest::cleanupTestCase()
+void WebSnapTest::cleanupTestCase()
 {
-//     delete tab;
 }
     
     
 // -------------------------------------------
 
 
+
 // -------------------------------------------
 
-QTEST_MAIN(WebTabTest)
-#include "webtab_test.moc"
+QTEST_MAIN(WebSnapTest)
+#include "websnap_test.moc"

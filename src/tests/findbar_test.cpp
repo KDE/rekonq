@@ -25,43 +25,40 @@
 #include <QtCore>
 #include <QtWebKit>
 
-#include "webpage.h"
-#include "webview.h"
-#include "webtab.h"
+#include "findbar.h"
 
 
-class WebTabTest : public QObject
+
+class FindBarTest : public QObject
 {
     Q_OBJECT
-    
+   
 public slots:
     void initTestCase();
     void cleanupTestCase();
+    
+private slots:
+
 
 private:
-    WebTab *tab;
+    FindBar *bar;
 };
 
 
 // -------------------------------------------
 
 
-void WebTabTest::initTestCase()
+void FindBarTest::initTestCase()
 {
-//     tab = new WebTab;
 }
 
 
-void WebTabTest::cleanupTestCase()
+void FindBarTest::cleanupTestCase()
 {
-//     delete tab;
 }
     
-    
-// -------------------------------------------
-
 
 // -------------------------------------------
 
-QTEST_MAIN(WebTabTest)
-#include "webtab_test.moc"
+QTEST_MAIN(FindBarTest)
+#include "findbar_test.moc"

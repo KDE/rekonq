@@ -25,36 +25,34 @@
 #include <QtCore>
 #include <QtWebKit>
 
-#include "webpage.h"
 #include "webview.h"
-#include "webtab.h"
 
 
-class WebTabTest : public QObject
+class WebViewTest : public QObject
 {
     Q_OBJECT
     
 public slots:
     void initTestCase();
     void cleanupTestCase();
+    
+private slots:
 
 private:
-    WebTab *tab;
+    WebView *view;
 };
 
 
 // -------------------------------------------
 
 
-void WebTabTest::initTestCase()
+void WebViewTest::initTestCase()
 {
-//     tab = new WebTab;
 }
 
 
-void WebTabTest::cleanupTestCase()
+void WebViewTest::cleanupTestCase()
 {
-//     delete tab;
 }
     
     
@@ -63,5 +61,5 @@ void WebTabTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_MAIN(WebTabTest)
-#include "webtab_test.moc"
+QTEST_MAIN(WebViewTest)
+#include "webview_test.moc"

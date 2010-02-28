@@ -74,15 +74,15 @@ WebPageTest::~WebPageTest()
 
 void WebPageTest::initTestCase()
 {
-    tab = new WebTab;
-    view = new WebView(tab);
-    page = view->page();
+//     tab = new WebTab;
+//     view = new WebView(tab);
+//     page = view->page();
 }
 
 
 void WebPageTest::cleanupTestCase()
 {
-    delete tab;
+//     delete tab;
 }
     
     

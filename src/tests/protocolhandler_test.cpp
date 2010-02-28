@@ -25,36 +25,34 @@
 #include <QtCore>
 #include <QtWebKit>
 
-#include "webpage.h"
-#include "webview.h"
-#include "webtab.h"
+#include "protocolhandler.h"
 
 
-class WebTabTest : public QObject
+class ProtocolhandlerTest : public QObject
 {
     Q_OBJECT
     
 public slots:
     void initTestCase();
     void cleanupTestCase();
+    
+private slots:
+
 
 private:
-    WebTab *tab;
+    ProtocolHandler *handler;
 };
 
 
 // -------------------------------------------
 
-
-void WebTabTest::initTestCase()
+void ProtocolhandlerTest::initTestCase()
 {
-//     tab = new WebTab;
 }
 
 
-void WebTabTest::cleanupTestCase()
+void ProtocolhandlerTest::cleanupTestCase()
 {
-//     delete tab;
 }
     
     
@@ -63,5 +61,5 @@ void WebTabTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_MAIN(WebTabTest)
-#include "webtab_test.moc"
+QTEST_MAIN(ProtocolhandlerTest)
+#include "protocolhandler_test.moc"

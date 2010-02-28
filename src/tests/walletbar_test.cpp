@@ -25,43 +25,42 @@
 #include <QtCore>
 #include <QtWebKit>
 
-#include "webpage.h"
-#include "webview.h"
-#include "webtab.h"
+#include "walletbar.h"
 
 
-class WebTabTest : public QObject
+class WalletBarTest : public QObject
 {
     Q_OBJECT
     
 public slots:
     void initTestCase();
     void cleanupTestCase();
+    
+private slots:
 
 private:
-    WebTab *tab;
+    WalletBar *bar;
 };
 
 
 // -------------------------------------------
 
 
-void WebTabTest::initTestCase()
+void WalletBarTest::initTestCase()
 {
-//     tab = new WebTab;
 }
 
 
-void WebTabTest::cleanupTestCase()
+void WalletBarTest::cleanupTestCase()
 {
-//     delete tab;
 }
     
     
 // -------------------------------------------
 
 
+
 // -------------------------------------------
 
-QTEST_MAIN(WebTabTest)
-#include "webtab_test.moc"
+QTEST_MAIN(WalletBarTest)
+#include "walletbar_test.moc"

@@ -25,43 +25,38 @@
 #include <QtCore>
 #include <QtWebKit>
 
-#include "webpage.h"
-#include "webview.h"
-#include "webtab.h"
+#include "mainwindow.h"
 
 
-class WebTabTest : public QObject
+class MainWindowTest : public QObject
 {
     Q_OBJECT
     
 public slots:
     void initTestCase();
     void cleanupTestCase();
+    
+private slots:
+
 
 private:
-    WebTab *tab;
+    MainWindow *window;
 };
 
 
 // -------------------------------------------
 
 
-void WebTabTest::initTestCase()
+void MainWindowTest::initTestCase()
 {
-//     tab = new WebTab;
 }
 
 
-void WebTabTest::cleanupTestCase()
+void MainWindowTest::cleanupTestCase()
 {
-//     delete tab;
 }
-    
-    
-// -------------------------------------------
-
 
 // -------------------------------------------
 
-QTEST_MAIN(WebTabTest)
-#include "webtab_test.moc"
+QTEST_MAIN(MainWindowTest)
+#include "mainwindow_test.moc"
