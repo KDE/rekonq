@@ -50,7 +50,7 @@ private:
 
 void MainWindowTest::initTestCase()
 {
-//     window = new MainWindow;
+    window = new MainWindow;
 }
 
 
