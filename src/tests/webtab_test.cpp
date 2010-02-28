@@ -21,8 +21,9 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QtCore>
+#include <QtGui>
+#include <QtTest>
 #include <QtWebKit>
 
 #include "webpage.h"
@@ -48,13 +49,13 @@ private:
 
 void WebTabTest::initTestCase()
 {
-//     tab = new WebTab;
+    tab = new WebTab;
 }
 
 
 void WebTabTest::cleanupTestCase()
 {
-//     delete tab;
+    delete tab;
 }
     
     
@@ -63,5 +64,5 @@ void WebTabTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_MAIN(WebTabTest)
+QTEST_KDEMAIN(WebTabTest,GUI)
 #include "webtab_test.moc"

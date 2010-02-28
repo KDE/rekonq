@@ -21,12 +21,13 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QtCore>
+#include <QtGui>
+#include <QtTest>
 #include <QtWebKit>
 
 #include "webview.h"
-
+#include "webtab.h"
 
 class WebViewTest : public QObject
 {
@@ -40,6 +41,7 @@ private slots:
 
 private:
     WebView *view;
+    WebTab *tab;
 };
 
 
@@ -48,6 +50,8 @@ private:
 
 void WebViewTest::initTestCase()
 {
+    tab = new WebTab;
+    view = tab->view();
 }
 
 
@@ -61,5 +65,5 @@ void WebViewTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_MAIN(WebViewTest)
+QTEST_KDEMAIN(WebViewTest,GUI)
 #include "webview_test.moc"

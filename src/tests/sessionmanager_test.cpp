@@ -21,9 +21,10 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QtCore>
-#include <QtWebKit>
+#include <QtGui>
+#include <QtTest>
+
 
 #include "sessionmanager.h"
 
@@ -48,11 +49,13 @@ private:
 
 void SessionManagerTest::initTestCase()
 {
+    sessman = new SessionManager;
 }
 
 
 void SessionManagerTest::cleanupTestCase()
 {
+    delete sessman;
 }
     
     
@@ -62,5 +65,5 @@ void SessionManagerTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_MAIN(SessionManagerTest)
+QTEST_KDEMAIN(SessionManagerTest,GUI)
 #include "sessionmanager_test.moc"

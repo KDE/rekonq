@@ -21,9 +21,8 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
-#include <QtCore>
-#include <QtWebKit>
+#include <QtGui>
+#include <QtTest/QtTest>
 
 #include "findbar.h"
 #include "mainwindow.h"
@@ -43,6 +42,7 @@ private slots:
 
 private:
     FindBar *bar;
+    MainWindow *w;
 };
 
 
@@ -51,7 +51,7 @@ private:
 
 void FindBarTest::initTestCase()
 {
-    MainWindow *w = new MainWindow;
+    w = new MainWindow;
     bar = new FindBar(w);
 }
 
@@ -71,5 +71,5 @@ void FindBarTest::notifyMatch()
 
 // -------------------------------------------
 
-QTEST_MAIN(FindBarTest)
+QTEST_KDEMAIN(FindBarTest, GUI)
 #include "findbar_test.moc"

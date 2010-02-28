@@ -21,9 +21,9 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QtCore>
-#include <QtWebKit>
+#include <QtGui>
+#include <QtTest>
 
 #include "walletbar.h"
 
@@ -48,11 +48,14 @@ private:
 
 void WalletBarTest::initTestCase()
 {
+    QWidget *w = new QWidget;
+    bar = new WalletBar(w);
 }
 
 
 void WalletBarTest::cleanupTestCase()
 {
+    delete bar;
 }
     
     
@@ -62,5 +65,5 @@ void WalletBarTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_MAIN(WalletBarTest)
+QTEST_KDEMAIN(WalletBarTest,GUI)
 #include "walletbar_test.moc"

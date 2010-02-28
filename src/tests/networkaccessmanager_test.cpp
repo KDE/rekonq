@@ -21,9 +21,9 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QtCore>
-#include <QtWebKit>
+#include <QtGui>
+#include <QtTest>
 
 #include "networkaccessmanager.h"
 
@@ -47,11 +47,13 @@ private:
 
 void NetworkAccessManagerTest::initTestCase()
 {
+    manager = new NetworkAccessManager;
 }
 
 
 void NetworkAccessManagerTest::cleanupTestCase()
 {
+    delete manager;
 }
     
     
@@ -61,5 +63,5 @@ void NetworkAccessManagerTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_MAIN(NetworkAccessManagerTest)
+QTEST_KDEMAIN(NetworkAccessManagerTest,GUI)
 #include "networkaccessmanager_test.moc"

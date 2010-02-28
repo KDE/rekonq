@@ -22,6 +22,7 @@ target_link_libraries( findbar_test
     kdeinit_rekonq
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}
+    ${QT_QTGUI_LIBRARY}
     ${QT_QTTEST_LIBRARY}
 )
 

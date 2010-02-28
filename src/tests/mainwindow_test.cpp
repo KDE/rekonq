@@ -21,11 +21,12 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QtCore>
-#include <QtWebKit>
+#include <QtGui>
+#include <QtTest>
 
 #include "mainwindow.h"
+#include "application.h"
 
 
 class MainWindowTest : public QObject
@@ -49,14 +50,16 @@ private:
 
 void MainWindowTest::initTestCase()
 {
+    window = new MainWindow;
 }
 
 
 void MainWindowTest::cleanupTestCase()
 {
+    delete window;
 }
 
 // -------------------------------------------
 
-QTEST_MAIN(MainWindowTest)
+QTEST_KDEMAIN(MainWindowTest,GUI)
 #include "mainwindow_test.moc"

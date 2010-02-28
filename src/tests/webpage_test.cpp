@@ -21,8 +21,9 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QtCore>
+#include <QtGui>
+#include <QtTest>
 #include <QtWebKit>
 
 #include "webpage.h"
@@ -74,15 +75,15 @@ WebPageTest::~WebPageTest()
 
 void WebPageTest::initTestCase()
 {
-//     tab = new WebTab;
-//     view = new WebView(tab);
-//     page = view->page();
+    tab = new WebTab;
+    view = tab->view();
+    page = tab->page();
 }
 
 
 void WebPageTest::cleanupTestCase()
 {
-//     delete tab;
+    delete tab;
 }
     
     
@@ -119,5 +120,5 @@ void WebPageTest::loadFinished()
 
 // -------------------------------------------
 
-QTEST_MAIN(WebPageTest)
+QTEST_KDEMAIN(WebPageTest,GUI)
 #include "webpage_test.moc"

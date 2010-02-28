@@ -21,9 +21,10 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QtCore>
-#include <QtWebKit>
+#include <QtGui>
+#include <QtTest>
+
 
 #include "protocolhandler.h"
 
@@ -48,11 +49,13 @@ private:
 
 void ProtocolhandlerTest::initTestCase()
 {
+    handler = new ProtocolHandler;
 }
 
 
 void ProtocolhandlerTest::cleanupTestCase()
 {
+    delete handler;
 }
     
     
@@ -61,5 +64,5 @@ void ProtocolhandlerTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_MAIN(ProtocolhandlerTest)
+QTEST_KDEMAIN(ProtocolhandlerTest,GUI)
 #include "protocolhandler_test.moc"

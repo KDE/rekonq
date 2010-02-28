@@ -27,25 +27,12 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QtCore>
 #include <QtGui>
+#include <QtTest>
 
 #include "mainview.h"
 #include "webview.h"
-
-
-// Subclass that exposes the protected functions.
-class SubMainView : public MainView
-{
-public:
-    SubMainView(MainWindow *parent) : MainView(parent) {};
-    
-    void call_resizeEvent(QResizeEvent *event)
-        { return SubMainView::resizeEvent(event); }
-};
-
-// -----------------------------------------------------------
 
 
 class MainViewTest : public QObject
@@ -88,8 +75,8 @@ private slots:
     void currentChanged();
 
 private:
-    MainWindow *mainWindow;
-    SubMainView *mainView;
+    MainWindow *window;
+    MainView *view;
 };
 
 
@@ -100,16 +87,15 @@ private:
 // It is only called once.
 void MainViewTest::initTestCase()
 {
-//     mainWindow = new MainWindow;
-//     mainView = new SubMainView(mainWindow);
+    window = new MainWindow;
+    view = window->mainView();
 }
 
 // This will be called after the last test function is executed.
 // It is only called once.
 void MainViewTest::cleanupTestCase()
 {
-//     delete mainView;
-//     delete mainWindow;
+    delete window;
 }
 
 // -------------------------------------------

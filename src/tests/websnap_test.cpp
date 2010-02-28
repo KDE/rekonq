@@ -21,8 +21,9 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QtCore>
+#include <QtGui>
+#include <QtTest>
 #include <QtWebKit>
 
 #include "websnap.h"
@@ -49,11 +50,13 @@ private:
 
 void WebSnapTest::initTestCase()
 {
+//     snap = new WebSnap;
 }
 
 
 void WebSnapTest::cleanupTestCase()
 {
+    delete snap;
 }
     
     
@@ -63,5 +66,5 @@ void WebSnapTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_MAIN(WebSnapTest)
+QTEST_KDEMAIN(WebSnapTest,GUI)
 #include "websnap_test.moc"
