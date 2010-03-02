@@ -161,13 +161,13 @@ void UrlBar::setProgress(int progress)
 
 void UrlBar::updateUrl()
 {
-//     // Don't change my typed url...
-//     // FIXME this is not a proper solution (also if it works...)
-//     if(hasFocus())
-//     {
-//         kDebug() << "Don't change my typed url...";
-//         return;
-//     }
+    // Don't change my typed url...
+    // FIXME this is not a proper solution (also if it works...)
+    if(hasFocus())
+    {
+        kDebug() << "Don't change my typed url...";
+        return;
+    }
 
     KIcon icon;
     if(m_currentUrl.isEmpty()) 
