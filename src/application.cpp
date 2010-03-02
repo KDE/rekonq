@@ -53,7 +53,6 @@
 #include <KToolInvocation>
 #include <KUriFilter>
 #include <KMessageBox>
-#include <KWindowInfo>
 #include <KUrl>
 #include <ThreadWeaver/Weaver>
 
@@ -153,21 +152,17 @@ int Application::newInstance()
     // are there args? load them..
     if (args->count() > 0)
     {
-        // is there a window open on the current desktop ? use it!
-        for (int i = 0; i < m_mainWindows.size(); ++i)
+        // are there any windows there? use it
+        int index = m_mainWindows.size();
+        if(index > 0)
         {
-            MainWindow *m = m_mainWindows.at(i).data();
-            KWindowInfo w = KWindowInfo(m->winId(), NET::WMDesktop);
-            if(w.isOnCurrentDesktop())
-            {
-                m->activateWindow();
-                m->raise();
+            MainWindow *m = m_mainWindows.at(index - 1).data();
+            m->activateWindow();
                 
-                for (int i = 0; i < args->count(); ++i)
-                    loadUrl(args->arg(i), Rekonq::NewCurrentTab);
+            for (int i = 0; i < args->count(); ++i)
+                loadUrl(args->arg(i), Rekonq::NewCurrentTab);
                 
-                return 2;
-            }
+            return 2;
         }
         
         // No windows in the current desktop? No windows at all?
