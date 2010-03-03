@@ -783,7 +783,7 @@ void MainWindow::matchCaseUpdate()
     if (!currentTab())
         return;
     
-    currentTab()->view()->findText(m_lastSearch, QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument);
+    currentTab()->view()->findText(m_lastSearch, QWebPage::FindBackward);
     findNext();
 }
 
@@ -794,7 +794,12 @@ void MainWindow::findNext()
         return;
 
     if(m_findBar->isHidden())
+    {
+        QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
+        currentTab()->view()->page()->focusNextPrevChild(true);
+        currentTab()->view()->page()->currentFrame()->setScrollPosition(previous_position);
         return;
+    }
     
     QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
@@ -802,6 +807,13 @@ void MainWindow::findNext()
 
     bool found = currentTab()->view()->findText(m_lastSearch, options);
     m_findBar->notifyMatch(found);
+
+    if(!found)
+    {
+        QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
+        currentTab()->view()->page()->focusNextPrevChild(true);
+        currentTab()->view()->page()->currentFrame()->setScrollPosition(previous_position);
+    }
 }
 
 
