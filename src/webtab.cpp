@@ -91,8 +91,6 @@ WebTab::WebTab(QWidget *parent)
                 this, SLOT(createWalletBar(const QString &, const QUrl &)));
     }
 
-    connect(view->page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
-
     connect(view, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 }
