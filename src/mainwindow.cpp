@@ -795,9 +795,9 @@ void MainWindow::findNext()
 
     if(m_findBar->isHidden())
     {
-        QPoint test = currentTab()->view()->page()->currentFrame()->scrollPosition();
+        QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
         currentTab()->view()->page()->focusNextPrevChild(true);
-        currentTab()->view()->page()->currentFrame()->setScrollPosition(test);
+        currentTab()->view()->page()->currentFrame()->setScrollPosition(previous_position);
         return;
     }
     
@@ -809,9 +809,9 @@ void MainWindow::findNext()
     m_findBar->notifyMatch(found);
     if(!found)
     {
-        QPoint test = currentTab()->view()->page()->currentFrame()->scrollPosition();
+        QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
         currentTab()->view()->page()->focusNextPrevChild(true);
-        currentTab()->view()->page()->currentFrame()->setScrollPosition(test);
+        currentTab()->view()->page()->currentFrame()->setScrollPosition(previous_position);
     }
 }
 
