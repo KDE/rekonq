@@ -795,8 +795,10 @@ void MainWindow::findNext()
 
     if(m_findBar->isHidden())
     {
-      currentTab()->view()->page()->focusNextPrevChild(true);
-      return;
+        QPoint test = currentTab()->view()->page()->currentFrame()->scrollPosition();
+        currentTab()->view()->page()->focusNextPrevChild(true);
+        currentTab()->view()->page()->currentFrame()->setScrollPosition(test);
+        return;
     }
     
     QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
@@ -806,7 +808,11 @@ void MainWindow::findNext()
     bool found = currentTab()->view()->findText(m_lastSearch, options);
     m_findBar->notifyMatch(found);
     if(!found)
-	currentTab()->view()->page()->focusNextPrevChild(true);
+    {
+        QPoint test = currentTab()->view()->page()->currentFrame()->scrollPosition();
+        currentTab()->view()->page()->focusNextPrevChild(true);
+        currentTab()->view()->page()->currentFrame()->setScrollPosition(test);
+    }
 }
 
 
@@ -821,8 +827,6 @@ void MainWindow::findPrevious()
 
     bool found = currentTab()->view()->findText(m_lastSearch, options);
     m_findBar->notifyMatch(found);
-    if(!found)
-	currentTab()->view()->page()->focusNextPrevChild(true);
 }
 
 
