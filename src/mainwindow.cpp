@@ -783,7 +783,7 @@ void MainWindow::matchCaseUpdate()
     if (!currentTab())
         return;
     
-    currentTab()->view()->findText(m_lastSearch, QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument);
+    currentTab()->view()->findText(m_lastSearch, QWebPage::FindBackward);
     findNext();
 }
 
