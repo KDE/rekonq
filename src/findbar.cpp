@@ -82,6 +82,7 @@ FindBar::FindBar(QWidget *parent)
     setFocusProxy(m_lineEdit);
     m_lineEdit->setMaximumWidth(250);
     connect(m_lineEdit, SIGNAL(textChanged(const QString &)), window, SLOT(find(const QString &)));
+    connect(m_lineEdit, SIGNAL(returnPressed()), mainwindow, SLOT(findNext()));
     layout->addWidget(m_lineEdit);
 
     // buttons
