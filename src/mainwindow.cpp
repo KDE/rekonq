@@ -794,10 +794,7 @@ void MainWindow::findNext()
         return;
 
     if(m_findBar->isHidden())
-    {
-      currentTab()->view()->page()->focusNextPrevChild(true);
-      return;
-    }
+        return;
     
     QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
@@ -805,8 +802,6 @@ void MainWindow::findNext()
 
     bool found = currentTab()->view()->findText(m_lastSearch, options);
     m_findBar->notifyMatch(found);
-    if(!found)
-	currentTab()->view()->page()->focusNextPrevChild(true);
 }
 
 
@@ -821,8 +816,6 @@ void MainWindow::findPrevious()
 
     bool found = currentTab()->view()->findText(m_lastSearch, options);
     m_findBar->notifyMatch(found);
-    if(!found)
-	currentTab()->view()->page()->focusNextPrevChild(true);
 }
 
 
