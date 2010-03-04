@@ -41,8 +41,8 @@
 
 WebPluginFactory::WebPluginFactory(QObject *parent)
     : KWebPluginFactory(parent)
+    , _loadClickToFlash(false)
 {
-    loadClickToFlash = false;
     connect(this, SIGNAL(signalLoadClickToFlash(bool)), SLOT(setLoadClickToFlash(bool)));
 }
 
@@ -55,7 +55,7 @@ WebPluginFactory::~WebPluginFactory()
 
 void WebPluginFactory::setLoadClickToFlash(bool load)
 {
-    loadClickToFlash = load;
+    _loadClickToFlash = load;
 }
 
 
@@ -65,39 +65,37 @@ QObject *WebPluginFactory::create(const QString &mimeType,
                                   const QStringList &argumentValues) const
 {
     kDebug() << "loading mimeType: " << mimeType;
-        
-    if(ReKonfig::pluginsEnabled() == 0) // plugins are enabled
+    
+    switch( ReKonfig::pluginsEnabled() )
     {
+    case 0:
         kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
+        return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
+        
+    case 1:
+        if( mimeType != QString("application/x-shockwave-flash") )
+            break;
+        
+        if( _loadClickToFlash )
+        {
+            emit signalLoadClickToFlash(false);
+            return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
+        }
+        else
+        {
+            ClickToFlash* ctf = new ClickToFlash(url);
+            connect(ctf, SIGNAL(signalLoadClickToFlash(bool)), this, SLOT(setLoadClickToFlash(bool)));
+            return ctf;
+        }
+        break;
+        
+    case 2:
         return 0;
+        
+    default:
+        kDebug() << "oh oh.. this should NEVER happen..";
+        break;
     }
     
-    if(mimeType == QString("application/x-shockwave-flash") 
-        && !loadClickToFlash)
-    {
-        ClickToFlash* ctf = new ClickToFlash(url);
-        connect(ctf, SIGNAL(signalLoadClickToFlash(bool)), this, SLOT(setLoadClickToFlash(bool)));
-        return ctf;
-    }
-    
-    // this let QtWebKit using builtin plugins 
-    // to load in example flash contents and so on..
-    kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
-    emit signalLoadClickToFlash(false);
     return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
-}
-
-
-QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins() const
-{
-    QList<KWebPluginFactory::Plugin> plugins = KWebPluginFactory::plugins();
-    
-    KWebPluginFactory::Plugin p;
-    
-    p.name = "application/x-shockwave-flash";
-    p.description = "Plugin for flash animations";
-    plugins.append(p);
-    
-    
-    return plugins;
 }
