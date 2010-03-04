@@ -124,11 +124,11 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             case 1: // closed tabs
                 _url = KUrl("about:closedTabs");
                 break;
-            case 2: // history
-                _url = KUrl("about:history");
-                break;
-            case 3: // bookmarks
+            case 2: // bookmarks
                 _url = KUrl("about:bookmarks");
+                break;
+            case 3: // history
+                _url = KUrl("about:history");
                 break;
             default: // unuseful
                 break;

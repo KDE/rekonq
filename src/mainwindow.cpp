@@ -603,13 +603,6 @@ void MainWindow::updateConfiguration()
 }
 
 
-void MainWindow::updateBrowser()
-{
-    updateConfiguration();
-    mainView()->reloadAllTabs();
-}
-
-
 void MainWindow::openLocation()
 {
     m_view->urlBar()->selectAll();
@@ -646,7 +639,7 @@ void MainWindow::preferences()
     QWeakPointer<SettingsDialog> s = new SettingsDialog(this);
 
     // keep us informed when the user changes settings
-    connect(s.data(), SIGNAL(settingsChanged(const QString&)), this, SLOT(updateBrowser()));
+    connect(s.data(), SIGNAL(settingsChanged(const QString&)), this, SLOT(updateConfiguration()));
 
     s.data()->exec();
     delete s.data();

@@ -87,7 +87,6 @@ private:
     void setupPanels();
     
 public slots:
-    void updateBrowser();
     void homePage();
 
     /**
