@@ -31,6 +31,7 @@
 
 // KDE Includes
 #include <KLocalizedString>
+#include <KDebug>
 
 // Qt Includes
 #include <QWebFrame>
@@ -89,28 +90,11 @@ void ClickToFlash::load()
         elements.append(docElement.findAll(selector.arg(QLatin1String("object"))));
         elements.append(docElement.findAll(selector.arg(QLatin1String("embed"))));
         
-        bool isRightElement = false;
         foreach (QWebElement element, elements) 
         {
-            // TODO : find a proper solution to compare a QWebElement with a plugin
-            // With this "manual" test, it's probably not working everywhere
-            if(QUrl(element.attribute("data")) == m_url
-                || QUrl(element.attribute("src")) == m_url)
-                isRightElement = true;
-            else
+            if( checkElement(element) )
             {
-                QWebElementCollection collec = element.findAll("param");
-                int i = 0;
-                while(i < collec.count() && isRightElement == false)
-                {
-                    if(QUrl(collec.at(i).attribute("value")) == m_url)
-                    isRightElement = true;
-                    i++;
-                }
-            }
-            
-            if(isRightElement)
-            {
+                kDebug() << "RETURNED TRUE ...........................";
                 QWebElement substitute = element.clone();
                 emit signalLoadClickToFlash(true);
                 element.replace(substitute);
@@ -118,9 +102,39 @@ void ClickToFlash::load()
                 return;
             }
         }
-
         frames += frame->childFrames();
     }
 }
 
 
+bool ClickToFlash::checkElement(QWebElement el)
+{
+    kDebug() << "src: " << QUrl(el.attribute("src"));
+    kDebug() << "url: " << m_url;
+
+    QString checkString;
+    QString urlString;
+    
+    checkString = QUrl(el.attribute("src")).toString( QUrl::RemoveQuery );
+    urlString = m_url.toString( QUrl::RemoveQuery );
+    
+    if( urlString.contains( checkString ) )
+        return true;
+     
+    QWebElementCollection collec = el.findAll("*");
+    int i = 0;
+    while( i < collec.count() )
+    {
+        QWebElement el = collec.at(i);
+
+        checkString = QUrl(el.attribute("src")).toString( QUrl::RemoveQuery );
+        urlString = m_url.toString( QUrl::RemoveQuery );
+
+        if( urlString.contains( checkString ) )
+            return true;
+        
+        i++;
+    }
+
+    return false;
+}

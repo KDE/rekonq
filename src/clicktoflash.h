@@ -35,6 +35,7 @@
 // Qt Includes
 #include <QWidget>
 #include <QUrl>
+#include <QWebElement>
 
 // Forward Declarations
 class WebPluginFactory;
@@ -54,6 +55,8 @@ private slots:
     void load();
     
 private:
+    bool checkElement(QWebElement el);
+    
     /**
     used to find the right QWebElement between the ones of the different plugins
     */
