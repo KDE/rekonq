@@ -114,14 +114,13 @@ void ClickToFlash::load()
                 QWebElement substitute = element.clone();
                 emit signalLoadClickToFlash(true);
                 element.replace(substitute);
+                deleteLater();
                 return;
             }
         }
 
         frames += frame->childFrames();
     }
-    
-    deleteLater();
 }
 
 
