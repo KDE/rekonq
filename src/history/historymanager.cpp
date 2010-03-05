@@ -316,7 +316,7 @@ void HistoryManager::load()
         return;
     if (!historyFile.open(QFile::ReadOnly))
     {
-        kWarning() << "Unable to open history file" << historyFile.fileName();
+        kDebug() << "Unable to open history file" << historyFile.fileName();
         return;
     }
 
@@ -416,7 +416,7 @@ void HistoryManager::save()
 
     if (!open)
     {
-        kWarning() << "Unable to open history file for saving"
+        kDebug() << "Unable to open history file for saving"
         << (saveAll ? tempFile.fileName() : historyFile.fileName());
         return;
     }
@@ -436,11 +436,11 @@ void HistoryManager::save()
     {
         if (historyFile.exists() && !historyFile.remove())
         {
-            kWarning() << "History: error removing old history." << historyFile.errorString();
+            kDebug() << "History: error removing old history." << historyFile.errorString();
         }
         if (!tempFile.rename(historyFile.fileName()))
         {
-            kWarning() << "History: error moving new history over old." << tempFile.errorString() << historyFile.fileName();
+            kDebug() << "History: error moving new history over old." << tempFile.errorString() << historyFile.fileName();
         }
     }
     m_lastSavedUrl = m_history.value(0).url;

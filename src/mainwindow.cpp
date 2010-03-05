@@ -1031,7 +1031,7 @@ QAction *MainWindow::actionByName(const QString name)
         return ret;
 
     /* else */
-    kWarning() << "Action named: " << name << " not found, returning empty action.";
+    kDebug() << "Action named: " << name << " not found, returning empty action.";
 
     return new QAction(this);  // return empty object instead of NULL pointer
 }

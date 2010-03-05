@@ -59,16 +59,19 @@ NewTabPage::NewTabPage(QWebFrame *frame)
     , m_url(KUrl())
 {
     QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
+    QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");    
     
     QFile file(htmlFilePath);
     bool isOpened = file.open(QIODevice::ReadOnly);
     if (!isOpened)
-        kWarning() << "Couldn't open the home.html file";
-    
-    QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");
-    
-    m_html = file.readAll();
-    m_html.replace(QString("%2"), imagesPath);
+    {
+        kDebug() << "Couldn't open the home.html file";
+    }
+    else
+    {
+        m_html = file.readAll();
+        m_html.replace(QString("%2"), imagesPath);
+    }
 }
 
 

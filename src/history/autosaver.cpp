@@ -52,7 +52,7 @@ AutoSaver::~AutoSaver()
 {
     if (m_timer.isActive())
     {
-        kWarning() << "AutoSaver: still active when destroyed, changes not saved.";
+        kDebug() << "AutoSaver: still active when destroyed, changes not saved.";
     }
 }
 
@@ -94,7 +94,7 @@ void AutoSaver::saveIfNeccessary()
     m_firstChange = QTime();
     if (!QMetaObject::invokeMethod(parent(), "save", Qt::DirectConnection))
     {
-        kWarning() << "AutoSaver: error invoking slot save() on parent";
+        kDebug() << "AutoSaver: error invoking slot save() on parent";
     }
 }
 
