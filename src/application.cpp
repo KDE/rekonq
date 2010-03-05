@@ -143,17 +143,17 @@ int Application::newInstance()
     {
         QTimer::singleShot(0, this, SLOT(postLaunch()));
         first = false;
+        
+        // is your app session restored? restore session...
+        // this mechanism also falls back to load usual plain rekonq
+        // if something goes wrong...
+        if (ReKonfig::recoverOnCrash() && sessionManager()->restoreSession())
+        {
+            kDebug() << "session restored";
+            return 1;
+        }
     }
 
-    // is your app session restored? restore session...
-    // this mechanism also falls back to load usual plain rekonq
-    // if something goes wrong...
-    if (ReKonfig::recoverOnCrash() && sessionManager()->restoreSession())
-    {
-        kDebug() << "session restored";
-        return 1;
-    }
-    
     // are there args? load them..
     if (args->count() > 0)
     {
