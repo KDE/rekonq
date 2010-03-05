@@ -79,6 +79,11 @@ Application::Application()
 
 Application::~Application()
 {
+    // ok, we are closing well.
+    // Don't recover on next load..
+    ReKonfig::setRecoverOnCrash(false);
+    saveConfiguration();
+    
     foreach( QWeakPointer<MainWindow> window, m_mainWindows)
     {
         delete window.data();
@@ -143,7 +148,7 @@ int Application::newInstance()
     // is your app session restored? restore session...
     // this mechanism also falls back to load usual plain rekonq
     // if something goes wrong...
-    if (isSessionRestored() && sessionManager()->restoreSession())
+    if (ReKonfig::recoverOnCrash() && sessionManager()->restoreSession())
     {
         kDebug() << "session restored";
         return 1;
@@ -198,6 +203,10 @@ void Application::postLaunch()
     // bookmarks loading
     connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
             Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
+
+    // crash recovering
+    ReKonfig::setRecoverOnCrash(true);
+    saveConfiguration();
 }
 
 

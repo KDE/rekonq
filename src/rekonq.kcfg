@@ -25,6 +25,9 @@
     <entry name="walletBlackList" type="StringList">
         <default></default>
     </entry>
+    <entry name="recoverOnCrash" type="bool">
+        <default>false</default>
+    </entry>
 </group>
 
 <!-- New Tab Page Settings -->
