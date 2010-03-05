@@ -150,15 +150,15 @@ void TabBar::showTabPreview(int tab)
 {
     MainView *mv = qobject_cast<MainView *>(parent());
     
-    WebTab *view = mv->webTab(tab);
-    WebTab *currentView = mv->webTab(currentIndex());
+    WebTab *indexedTab = mv->webTab(tab);
+    WebTab *currentTab = mv->webTab(currentIndex());
 
     // check if view && currentView exist before using them :)
-    if(!currentView || !view)
+    if(!currentTab || !indexedTab)
         return;
     
     int w = tabSizeHint(tab).width();
-    int h = w * ( (0.0 + currentView->height()) / currentView->width() );
+    int h = w * ( (0.0 + currentTab->height()) / currentTab->width() );
 
     //delete previous tab preview
     delete m_previewPopup.data();
@@ -170,9 +170,7 @@ void TabBar::showTabPreview(int tab)
     m_previewPopup.data()->setFixedSize(w, h);
     
     QLabel *l = new QLabel();
-    QWebPage copyPage(view->page());
-    copyPage.setViewportSize(currentView->page()->viewportSize());
-    l->setPixmap(WebSnap::renderPreview(copyPage, w, h));
+    l->setPixmap( WebSnap::renderPreview( *indexedTab->page() , w, h) );
     
     m_previewPopup.data()->setView(l);
     m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);
