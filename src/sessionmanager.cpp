@@ -66,7 +66,7 @@ void SessionManager::saveSession()
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
     {
-        kWarning() << "Unable to open session file" << sessionFile.fileName();
+        kDebug() << "Unable to open session file" << sessionFile.fileName();
         return;
     }
     QTextStream out(&sessionFile);
@@ -93,7 +93,7 @@ bool SessionManager::restoreSession()
         return false;
     if (!sessionFile.open(QFile::ReadOnly))
     {
-        kWarning() << "Unable to open session file" << sessionFile.fileName();
+        kDebug() << "Unable to open session file" << sessionFile.fileName();
         return false;
     }
 
@@ -104,16 +104,17 @@ bool SessionManager::restoreSession()
         line = in.readLine();
         if(line == QString("window"))
         {
-            Application::instance()->newMainWindow();
             line = in.readLine();
-            Application::instance()->loadUrl(line);
+            kDebug() << "New Window line: " << line;
+            Application::instance()->loadUrl(line, Rekonq::NewWindow);
         }
         else
         {
+            kDebug() << "New Current Tab line: " << line;
             Application::instance()->loadUrl(line, Rekonq::NewCurrentTab);
         }
     }
-    while(!line.isNull());
+    while(!line.isEmpty());
     
     return true;
 }

@@ -81,7 +81,7 @@ Application::~Application()
 {
     // ok, we are closing well.
     // Don't recover on next load..
-    ReKonfig::setRecoverOnCrash(false);
+    ReKonfig::setRecoverOnCrash(0);
     saveConfiguration();
     
     foreach( QWeakPointer<MainWindow> window, m_mainWindows)
@@ -147,7 +147,7 @@ int Application::newInstance()
         // is your app session restored? restore session...
         // this mechanism also falls back to load usual plain rekonq
         // if something goes wrong...
-        if (ReKonfig::recoverOnCrash() && sessionManager()->restoreSession())
+        if (ReKonfig::recoverOnCrash() == 1 && sessionManager()->restoreSession())
         {
             kDebug() << "session restored";
             return 1;
@@ -205,7 +205,8 @@ void Application::postLaunch()
             Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
 
     // crash recovering
-    ReKonfig::setRecoverOnCrash(true);
+    int n = ReKonfig::recoverOnCrash();
+    ReKonfig::setRecoverOnCrash(++n);
     saveConfiguration();
 }
 
