@@ -183,7 +183,7 @@ QWebElement NewTabPage::loadingPreview(int index, KUrl url)
     setupPreview(prev, index);
     showControls(prev);
     
-    new WebSnap(url, m_root.webFrame()->page(), index);
+    new WebSnap(url, m_root.webFrame(), index);
     
     return prev;
 }

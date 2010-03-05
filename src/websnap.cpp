@@ -46,13 +46,12 @@
 #include <QFile>
 
 
-WebSnap::WebSnap(const QUrl& url, QWebPage* originatingPage, int previewIndex)
+WebSnap::WebSnap(const QUrl& url, QWebFrame *frame, int index)
     : QObject()
+    , m_url(url)
+    , m_frame(frame)
+    , m_previewIndex(index)
 {
-    m_url = url;
-    m_originatingPage = originatingPage;
-    m_previewIndex = previewIndex;
-
     // this to not register websnap history
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
     
@@ -76,14 +75,12 @@ void WebSnap::load()
 }
 
 
-QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
+QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h)
 {
     // prepare page
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); // Why it doesn't work with one setScrollBarPolicy?
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); // bug in qtwebkit ?
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
     page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-
+    
     // find the best size
     QSize size;
     int width = page.mainFrame()->contentsSize().width();
@@ -102,8 +99,6 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
 
     // restore page settings
     page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
-    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
 
     return QPixmap::fromImage(pageImage);
@@ -120,8 +115,7 @@ void WebSnap::savePreview(QPixmap pm, KUrl url)
 
 KUrl WebSnap::fileForUrl(KUrl url)
 {
-    QString filePath = 
-            KStandardDirs::locateLocal("cache", QString("thumbs/") + WebSnap::guessNameFromUrl(url) + ".png", true);
+    QString filePath = KStandardDirs::locateLocal("cache", QString("thumbs/") + WebSnap::guessNameFromUrl(url) + ".png", true);
     return KUrl(filePath);
 }
 
@@ -162,13 +156,11 @@ void WebSnap::saveResult(bool ok)
     QFile::remove(fileForUrl(m_url).toLocalFile());
     m_image.save(fileForUrl(m_url).toLocalFile());
     
-    //m_originatingPage->mainFrame()->load(KUrl("about:preview/replace/" + QVariant(m_previewIndex).toString()));
-    NewTabPage p(m_originatingPage->mainFrame());
+    NewTabPage p( m_frame );
     p.snapFinished(m_previewIndex, m_url, m_snapTitle);
     
     deleteLater();
 }
-
 
 
 QString WebSnap::snapTitle()

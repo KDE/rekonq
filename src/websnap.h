@@ -55,7 +55,7 @@ class REKONQ_TESTS_EXPORT WebSnap : public QObject
     Q_OBJECT
 
 public:
-    WebSnap(const QUrl &url, QWebPage *originatingPage, int previewIndex);
+    WebSnap(const QUrl &url, QWebFrame *frame, int index);
     ~WebSnap();
     
     QPixmap previewImage(); // TODO : remove
@@ -82,7 +82,7 @@ private:
     QUrl m_url;
     QString m_snapTitle;
     
-    QWebPage *m_originatingPage;
+    QWebFrame *m_frame;
     int m_previewIndex;
 };
 
