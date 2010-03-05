@@ -88,6 +88,7 @@ private:
     
 public slots:
     void homePage();
+    void homePage(Qt::MouseButtons);
 
     /**
      * Notifies a message in a popup
@@ -123,7 +124,9 @@ private slots:
 
     // history related
     void openPrevious();
+    void openPrevious(Qt::MouseButtons);
     void openNext();
+    void openNext(Qt::MouseButtons);
 
     // Find Action slots
     void find(const QString &);
