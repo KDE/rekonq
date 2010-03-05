@@ -168,9 +168,12 @@ void TabBar::showTabPreview(int tab)
     m_previewPopup.data()->setFrameShape(QFrame::StyledPanel);
     m_previewPopup.data()->setFrameShadow(QFrame::Plain);
     m_previewPopup.data()->setFixedSize(w, h);
+    
     QLabel *l = new QLabel();
-    view->page()->setViewportSize(currentView->page()->viewportSize());
-    l->setPixmap(WebSnap::renderPreview(*(view->page()), w, h));
+    QWebPage copyPage(view->page());
+    copyPage.setViewportSize(currentView->page()->viewportSize());
+    l->setPixmap(WebSnap::renderPreview(copyPage, w, h));
+    
     m_previewPopup.data()->setView(l);
     m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);
     m_previewPopup.data()->layout()->setMargin(0);
