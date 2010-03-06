@@ -495,12 +495,12 @@ void MainView::closeTab(int index)
     {
         if (tab->view()->isModified())
         {
-            int risp = KMessageBox::questionYesNo(this,
+            int risp = KMessageBox::warningContinueCancel(this,
                         i18n("This tab contains changes that have not been submitted.\n"
                              "Closing the tab will discard these changes.\n"
                              "Do you really want to close this tab?\n"),
-                        i18n("Closing Modified Tab"));
-            if (risp == KMessageBox::No)
+                        i18n("Closing Modified Tab"), KGuiItem(i18n("&Discard Changes"),"view-refresh"), KStandardGuiItem::cancel());
+            if (risp != KMessageBox::Continue)
                 return;
         }
         hasFocus = tab->hasFocus();
