@@ -499,7 +499,7 @@ void MainView::closeTab(int index)
                         i18n("This tab contains changes that have not been submitted.\n"
                              "Closing the tab will discard these changes.\n"
                              "Do you really want to close this tab?\n"),
-                        i18n("Closing Modified Tab"), KGuiItem(i18n("&Discard Changes"),"view-refresh"), KStandardGuiItem::cancel());
+                        i18n("Closing Modified Tab"), KGuiItem(i18n("Close &Tab"),"tab-close"), KStandardGuiItem::cancel());
             if (risp != KMessageBox::Continue)
                 return;
         }
