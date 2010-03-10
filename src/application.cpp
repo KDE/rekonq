@@ -108,14 +108,22 @@ int Application::newInstance()
 {
     KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    
-    // we share one process for several mainwindows,
-    // so initialize only once
-    static bool first = true;
+
+    bool isFirstLoad = m_mainWindows.isEmpty();
+
+    // is your app session restored? restore session...
+    // this mechanism also falls back to load usual plain rekonq
+    // if something goes wrong...
+    if (isFirstLoad && ReKonfig::recoverOnCrash() == 1 && sessionManager()->restoreSession())
+    {
+        QTimer::singleShot(0, this, SLOT(postLaunch()));
+        kDebug() << "session restored";
+        return 1;
+    }
     
     if(args->count() == 0)
     {
-        if(first)   // we are starting rekonq, for the first time with no args: use startup behaviour
+        if(isFirstLoad)   // we are starting rekonq, for the first time with no args: use startup behaviour
         {
             switch(ReKonfig::startupBehaviour())
             {
@@ -138,47 +146,31 @@ int Application::newInstance()
             loadUrl( KUrl("about:home") , Rekonq::NewWindow );
         }
     }
-    
-    if (first)
+    else
     {
-        QTimer::singleShot(0, this, SLOT(postLaunch()));
-        first = false;
-        
-        // is your app session restored? restore session...
-        // this mechanism also falls back to load usual plain rekonq
-        // if something goes wrong...
-        if (ReKonfig::recoverOnCrash() == 1 && sessionManager()->restoreSession())
+        if(isFirstLoad)
         {
-            kDebug() << "session restored";
-            return 1;
+            // No windows in the current desktop? No windows at all?
+            // Create a new one and load there sites...
+            loadUrl(args->arg(0), Rekonq::CurrentTab);
+            for (int i = 1; i < args->count(); ++i)
+                loadUrl(args->arg(i), Rekonq::SettingOpenTab);
+        }
+        else
+        {
+            // are there any windows there? use it
+            int index = m_mainWindows.size();
+            if(index > 0)
+            {
+                MainWindow *m = m_mainWindows.at(index - 1).data();
+                m->activateWindow();
+                for (int i = 0; i < args->count(); ++i)
+                    loadUrl(args->arg(i), Rekonq::NewCurrentTab);
+            }
         }
     }
 
-    // are there args? load them..
-    if (args->count() > 0)
-    {
-        // are there any windows there? use it
-        int index = m_mainWindows.size();
-        if(index > 0)
-        {
-            MainWindow *m = m_mainWindows.at(index - 1).data();
-            m->activateWindow();
-                
-            for (int i = 0; i < args->count(); ++i)
-                loadUrl(args->arg(i), Rekonq::NewCurrentTab);
-                
-            return 2;
-        }
-        
-        // No windows in the current desktop? No windows at all?
-        // Create a new one and load there sites...
-        loadUrl(args->arg(0), Rekonq::CurrentTab);
-        for (int i = 1; i < args->count(); ++i)
-            loadUrl(args->arg(i), Rekonq::SettingOpenTab);
-
-        return 3;
-    }
-    
+    QTimer::singleShot(0, this, SLOT(postLaunch()));
     return 0;
 }
 
