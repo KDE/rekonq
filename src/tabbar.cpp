@@ -293,3 +293,17 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
     
     KTabBar::mouseReleaseEvent(event);
 }
+
+
+void TabBar::tabRemoved(int index)
+{
+    Q_UNUSED(index)
+    if (ReKonfig::alwaysShowTabPreviews())
+    {
+        if ( !m_previewPopup.isNull() )
+        {
+            m_previewPopup.data()->hide();
+        }
+        m_currentTabPreview = -1;
+    }
+}
