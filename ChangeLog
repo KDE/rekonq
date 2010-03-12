@@ -1,3 +1,28 @@
+0.4
+- moved to kdewebkit (this means based on kde 4.4)
+- kwallet support
+- KIO full support (cookies, cache, proxy, network)
+- file:// && ftp:// protocol easy handling
+- improved rekonq pages (in the about: protocol)
+- multithreaded url resolver (hopefully, no more UI freezes)
+- adblock support, first part (load manually links, for now...)
+- improved fullscreen mode
+- embedded inspector (A-LA firebug)
+- first kget integration
+- optional "clickToFlash" feature
+- tons of bugs fixed
+
+0.3
+- Simpler UI
+- new icon
+- multi windows support
+- KDE proxy setting support
+- "new tab home page" (tech preview)
+- Initial handbook added
+- tab previews
+- save & restore session support
+- Compiles on Windows, too
+
 0.2
 - simpler and better UI 
 - unique urlbar (integrated google search)
