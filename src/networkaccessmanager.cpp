@@ -42,12 +42,41 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 
 QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
 {
-    // Adblock
-    if (op == QNetworkAccessManager::GetOperation)
+    QNetworkReply *reply = 0;
+    
+    switch(op)
     {
-        QNetworkReply *reply = Application::adblockManager()->block(req);
+    case QNetworkAccessManager::HeadOperation:
+        kDebug() << "HEAD OPERATION";
+        if(outgoingData)
+        {
+            QByteArray outgoingDataByteArray = outgoingData->peek(1024 * 1024);
+            kDebug() << outgoingDataByteArray;
+        }
+        break;
+    
+    case QNetworkAccessManager::GetOperation:
+        kDebug() << "GET OPERATION";
+        reply = Application::adblockManager()->block(req);
         if (reply)
             return reply;
+        break;
+    
+    case QNetworkAccessManager::PutOperation:
+        kDebug() << "PUT OPERATION";
+        break;
+    
+    case QNetworkAccessManager::PostOperation:
+        kDebug() << "POST OPERATION";
+        break;
+    
+    case QNetworkAccessManager::DeleteOperation:
+        kDebug() << "DELETE OPERATION";
+        break;
+        
+    default:
+        kDebug() << "UNKNOWN OPERATION";
+        break;
     }
 
     return AccessManager::createRequest(op,req,outgoingData);
