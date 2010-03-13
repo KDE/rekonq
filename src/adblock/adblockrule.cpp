@@ -181,3 +181,9 @@ QString AdBlockRule::convertPatternToRegExp(const QString &wildcardPattern)
     // Finally, return...
     return pattern;
 }
+
+
+QString AdBlockRule::pattern() const
+{
+    return m_regExp.pattern();
+}

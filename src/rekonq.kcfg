@@ -7,6 +7,7 @@
 
 <!-- Includes -->
 <include>QtWebKit</include>
+<include>QDateTime</include>
 <include>KUrl</include>
 
 <kcfgfile name="rekonqrc" />
@@ -148,6 +149,29 @@
         </entry>
         <entry name="userCSS" type="Url">
             <default></default>
+        </entry>
+    </group>
+
+
+<!-- AdBlock Settings -->
+    <group name="AdBlock">
+        <entry name="adBlockEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="hideAdsEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="subscriptionNames" type="StringList">
+            <default>easylist</default>
+        </entry>
+        <entry name="subscriptionUrls" type="StringList">
+            <default>https://easylist-downloads.adblockplus.org/easylist.txt</default>
+        </entry>
+        <entry name="lastUpdate" type="DateTime">
+            <default>QDateTime(QDate(2009,03,13))</default>
+        </entry>
+        <entry name="updateInterval" type="Int">
+            <default>7</default>
         </entry>
     </group>
 

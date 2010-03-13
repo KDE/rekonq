@@ -36,12 +36,14 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "webtab.h"
+#include "adblockwidget.h"
 
 //Ui Includes
 #include "ui_settings_general.h"
 #include "ui_settings_tabs.h"
 #include "ui_settings_fonts.h"
 #include "ui_settings_webkit.h"
+#include "ui_settings_adblock.h"
 
 // KDE Includes
 #include <KConfig>
@@ -63,12 +65,14 @@ private:
     Ui::tabs tabsUi;
     Ui::fonts fontsUi;
     Ui::webkit webkitUi;
+
+    AdBlockWidget *adBlockWidg;
     
     KCModuleProxy *proxyModule;
     KCModuleProxy *ebrowsingModule;
     KCModuleProxy *cookiesModule;
     KCModuleProxy *cacheModule;
-    KCModuleProxy *adblockModule;
+
     KShortcutsEditor *shortcutsEditor;
     
     Private(SettingsDialog *parent);
@@ -123,10 +127,10 @@ Private::Private(SettingsDialog *parent)
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
 
-    KCModuleInfo adblockInfo("khtml_filter.desktop");
-    adblockModule = new KCModuleProxy(adblockInfo,parent);
-    pageItem = parent->addPage(adblockModule, i18n(adblockInfo.moduleName().toLocal8Bit()));
-    pageItem->setIcon(KIcon(adblockInfo.icon()));
+    adBlockWidg = new AdBlockWidget(parent);
+    adBlockWidg->layout()->setMargin(0);
+    pageItem = parent->addPage(adBlockWidg , i18n("Ad Block"));
+    pageItem->setIcon( KIcon("preferences-web-browser-adblock") );
     
     shortcutsEditor = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(), parent);
     pageItem = parent->addPage(shortcutsEditor , i18n("Shortcuts"));
@@ -137,7 +141,7 @@ Private::Private(SettingsDialog *parent)
     pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
 
-    // WARNING remember wheh changing here that the smaller netbooks
+    // WARNING remember wheh changing here that the smallest netbooks
     // have a 1024x576 resolution. So DON'T bother that limits!!
     parent->setMinimumSize(700,525);    
 }
@@ -162,8 +166,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->proxyModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->cacheModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    connect(d->adblockModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    
+
     connect(d->shortcutsEditor, SIGNAL(keyChange()), this, SLOT(updateButtons()));
         
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
@@ -213,7 +216,7 @@ void SettingsDialog::saveSettings()
     d->proxyModule->save();
     d->cacheModule->save();
     d->shortcutsEditor->save();
-    d->adblockModule->save();
+    d->adBlockWidg->save();
 }
 
 
@@ -224,7 +227,6 @@ bool SettingsDialog::hasChanged()
             || d->cookiesModule->changed()
             || d->proxyModule->changed()
             || d->cacheModule->changed()
-            || d->adblockModule->changed()
             || d->shortcutsEditor->isModified();
             ;
 }

@@ -112,6 +112,8 @@
 #include <QObject>
 #include <QNetworkReply>
 #include <QStringList>
+#include <QByteArray>
+#include <KIO/Job>
 
 // Forward Includes
 class QNetworkRequest;
@@ -129,9 +131,20 @@ public:
     AdBlockManager(QObject *parent = 0);
     ~AdBlockManager();
 
-    void loadSettings();
     QNetworkReply *block(const QNetworkRequest &request);
     void applyHidingRules(WebPage *page);
+
+public slots:
+    void loadSettings();
+
+private:
+    void updateNextSubscription();
+    void saveRules(const QStringList &);
+    void loadRules(const QStringList &);
+    
+private slots:
+    void slotResult(KJob *);
+    void subscriptionData(KIO::Job*, const QByteArray&);
     
 private:
     bool _isAdblockEnabled;
@@ -140,6 +153,9 @@ private:
     AdBlockRuleList _blackList;
     AdBlockRuleList _whiteList;
     QStringList _hideList;
+
+    int _index;
+    QByteArray _buffer;
 };
 
 #endif

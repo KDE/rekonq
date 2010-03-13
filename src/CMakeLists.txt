@@ -34,6 +34,7 @@ SET( rekonq_KDEINIT_SRCS
     rekonqpage/previewselectorbar.cpp
     #----------------------------------------
     settings/settingsdialog.cpp
+    settings/adblockwidget.cpp
     #----------------------------------------
     bookmarks/bookmarksmanager.cpp
     bookmarks/bookmarkspanel.cpp
@@ -54,6 +55,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_tabs.ui
     settings/settings_fonts.ui
     settings/settings_webkit.ui
+    settings/settings_adblock.ui
     cleardata.ui
  )
 

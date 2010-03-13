@@ -352,15 +352,15 @@ void WebPage::downloadAllContentsWithKGet()
     QWebElementCollection images = mainFrame()->documentElement().findAll("img");
     foreach(QWebElement img, images)
     {
-	relativeUrl.setEncodedUrl(img.attribute("src").toUtf8(),KUrl::TolerantMode); 
-	contents << baseUrl.resolved(relativeUrl).toString();
+        relativeUrl.setEncodedUrl(img.attribute("src").toUtf8(),KUrl::TolerantMode); 
+        contents << baseUrl.resolved(relativeUrl).toString();
     }
     
     QWebElementCollection links = mainFrame()->documentElement().findAll("a");
     foreach(QWebElement link, links)
     {
-	relativeUrl.setEncodedUrl(link.attribute("href").toUtf8(),KUrl::TolerantMode); 
-	contents << baseUrl.resolved(relativeUrl).toString();
+        relativeUrl.setEncodedUrl(link.attribute("href").toUtf8(),KUrl::TolerantMode); 
+        contents << baseUrl.resolved(relativeUrl).toString();
     }
     
     if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
