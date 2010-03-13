@@ -87,8 +87,7 @@ private:
     void setupPanels();
     
 public slots:
-    void homePage();
-    void homePage(Qt::MouseButtons);
+    void homePage(Qt::MouseButtons = Qt::LeftButton);
 
     /**
      * Notifies a message in a popup
@@ -123,10 +122,8 @@ private slots:
     void updateWindowTitle(const QString &title = QString());
 
     // history related
-    void openPrevious();
-    void openPrevious(Qt::MouseButtons);
-    void openNext();
-    void openNext(Qt::MouseButtons);
+    void openPrevious(Qt::MouseButtons = Qt::LeftButton);
+    void openNext(Qt::MouseButtons = Qt::LeftButton);
 
     // Find Action slots
     void find(const QString &);

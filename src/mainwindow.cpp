@@ -941,12 +941,6 @@ void MainWindow::homePage(Qt::MouseButtons btn)
 }
 
 
-void MainWindow::homePage()
-{
-    homePage(Qt::LeftButton);
-}
-
-
 MainView *MainWindow::mainView() const
 {
     return m_view;
@@ -984,12 +978,6 @@ void MainWindow::browserLoading(bool v)
 }
 
 
-void MainWindow::openPrevious()
-{
-    openPrevious(Qt::LeftButton);
-}
-
-
 void MainWindow::openPrevious(Qt::MouseButtons btn)
 {
     QWebHistory *history = currentTab()->view()->history();
@@ -1001,12 +989,6 @@ void MainWindow::openPrevious(Qt::MouseButtons btn)
         else
             Application::instance()->loadUrl(back);
     }
-}
-
-
-void MainWindow::openNext()
-{
-    openNext(Qt::LeftButton);
 }
 
 
