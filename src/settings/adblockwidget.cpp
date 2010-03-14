@@ -24,15 +24,19 @@
 * ============================================================ */
 
 
+// Self Includes
 #include "adblockwidget.h"
 #include "adblockwidget.moc"
 
+// Auto Includes
 #include "rekonq.h"
 
+// KDE Includes
 #include <KSharedConfig>
 #include <KIcon>
 #include <KDebug>
 
+// Qt Includes
 #include <QString>
 #include <QWhatsThis>
 #include <QListWidgetItem>
@@ -40,6 +44,7 @@
 
 AdBlockWidget::AdBlockWidget(QWidget *parent)
     : QWidget(parent)
+    , _changed(false)
 {
     setupUi(this);
     
@@ -53,11 +58,18 @@ AdBlockWidget::AdBlockWidget(QWidget *parent)
     
     insertButton->setIcon( KIcon("list-add") );
     connect( insertButton, SIGNAL( clicked() ), this, SLOT( insertRule() ) );
-        
+            
     removeButton->setIcon( KIcon("list-remove") );
     connect( removeButton, SIGNAL( clicked() ), this, SLOT( removeRule() ) );
     
     load();
+    
+    // emit changed signal
+    connect( insertButton,       SIGNAL( clicked() ),           this, SLOT( hasChanged() ) );
+    connect( removeButton,       SIGNAL( clicked() ),           this, SLOT( hasChanged() ) );
+    connect( checkEnableAdblock, SIGNAL( stateChanged(int) ),   this, SLOT( hasChanged() ) );
+    connect( checkHideAds,       SIGNAL( stateChanged(int) ),   this, SLOT( hasChanged() ) );
+    connect( spinBox,            SIGNAL( valueChanged(int) ),   this, SLOT( hasChanged() ) );
 }
 
 
@@ -98,7 +110,10 @@ void AdBlockWidget::load()
     checkEnableAdblock->setChecked(isAdBlockEnabled);
     
     bool areImageFiltered = ReKonfig::hideAdsEnabled();
-    checkHideImages->setChecked(areImageFiltered);
+    checkHideAds->setChecked(areImageFiltered);
+    
+    int days = ReKonfig::updateInterval();
+    spinBox->setValue( days );
     
     QStringList subscriptions = ReKonfig::subscriptionNames();
 
@@ -155,4 +170,21 @@ void AdBlockWidget::save()
         localRules << item->text();
     }
     localGroup.writeEntry( "local-rules" , localRules );
+
+    ReKonfig::setAdBlockEnabled( checkEnableAdblock->isChecked() );
+    ReKonfig::setHideAdsEnabled( checkHideAds->isChecked() );
+    ReKonfig::setUpdateInterval( spinBox->value() );
+}
+
+
+void AdBlockWidget::hasChanged()
+{
+    _changed = true;
+    emit changed(true);
+}
+
+
+bool AdBlockWidget::changed()
+{
+    return _changed;
 }

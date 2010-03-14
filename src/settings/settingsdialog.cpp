@@ -37,13 +37,13 @@
 #include "mainwindow.h"
 #include "webtab.h"
 #include "adblockwidget.h"
+#include "networkwidget.h"
 
 //Ui Includes
 #include "ui_settings_general.h"
 #include "ui_settings_tabs.h"
 #include "ui_settings_fonts.h"
 #include "ui_settings_webkit.h"
-#include "ui_settings_adblock.h"
 
 // KDE Includes
 #include <KConfig>
@@ -67,11 +67,9 @@ private:
     Ui::webkit webkitUi;
 
     AdBlockWidget *adBlockWidg;
+    NetworkWidget *networkWidg;
     
-    KCModuleProxy *proxyModule;
     KCModuleProxy *ebrowsingModule;
-    KCModuleProxy *cookiesModule;
-    KCModuleProxy *cacheModule;
 
     KShortcutsEditor *shortcutsEditor;
     
@@ -103,21 +101,6 @@ Private::Private(SettingsDialog *parent)
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("Fonts"));
     pageItem->setIcon(KIcon("preferences-desktop-font"));
-
-    KCModuleInfo cookiesInfo("cookies.desktop");
-    cookiesModule = new KCModuleProxy(cookiesInfo,parent);
-    pageItem = parent->addPage(cookiesModule, i18n(cookiesInfo.moduleName().toLocal8Bit()));
-    pageItem->setIcon(KIcon(cookiesInfo.icon()));
-
-    KCModuleInfo proxyInfo("proxy.desktop");
-    proxyModule = new KCModuleProxy(proxyInfo,parent);
-    pageItem = parent->addPage(proxyModule, i18n(proxyInfo.moduleName().toLocal8Bit()));
-    pageItem->setIcon(KIcon(proxyInfo.icon()));
-
-    KCModuleInfo cacheInfo("cache.desktop");
-    cacheModule = new KCModuleProxy(cacheInfo,parent);
-    pageItem = parent->addPage(cacheModule, i18n(cacheInfo.moduleName().toLocal8Bit()));
-    pageItem->setIcon(KIcon(cacheInfo.icon()));
         
     widget = new QWidget;
     webkitUi.setupUi(widget);
@@ -127,6 +110,11 @@ Private::Private(SettingsDialog *parent)
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
 
+    networkWidg = new NetworkWidget(parent);
+    networkWidg->layout()->setMargin(0);
+    pageItem = parent->addPage(networkWidg , i18n("Network"));
+    pageItem->setIcon( KIcon("preferences-system-network") );
+    
     adBlockWidg = new AdBlockWidget(parent);
     adBlockWidg->layout()->setMargin(0);
     pageItem = parent->addPage(adBlockWidg , i18n("Ad Block"));
@@ -162,15 +150,16 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
     
+    // update buttons
+    connect(d->adBlockWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->networkWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    connect(d->proxyModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    connect(d->cacheModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-
-    connect(d->shortcutsEditor, SIGNAL(keyChange()), this, SLOT(updateButtons()));
-        
+    
+    connect(d->shortcutsEditor, SIGNAL(keyChange()),   this, SLOT(updateButtons()));
+    
+    // save settings
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
-    connect(this, SIGNAL(okClicked()), this, SLOT(saveSettings()));
+    connect(this, SIGNAL(okClicked()),    this, SLOT(saveSettings()));
         
     setWebSettingsToolTips();
 }
@@ -212,21 +201,18 @@ void SettingsDialog::saveSettings()
 {
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
-    d->cookiesModule->save();
-    d->proxyModule->save();
-    d->cacheModule->save();
     d->shortcutsEditor->save();
     d->adBlockWidg->save();
+    d->networkWidg->save();
 }
 
 
 bool SettingsDialog::hasChanged()
 {
     return KConfigDialog::hasChanged() 
-            || d->ebrowsingModule->changed()            
-            || d->cookiesModule->changed()
-            || d->proxyModule->changed()
-            || d->cacheModule->changed()
+            || d->adBlockWidg->changed()
+            || d->networkWidg->changed()
+            || d->ebrowsingModule->changed()
             || d->shortcutsEditor->isModified();
             ;
 }

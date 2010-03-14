@@ -35,6 +35,7 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     settings/settingsdialog.cpp
     settings/adblockwidget.cpp
+    settings/networkwidget.cpp
     #----------------------------------------
     bookmarks/bookmarksmanager.cpp
     bookmarks/bookmarkspanel.cpp

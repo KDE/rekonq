@@ -22,7 +22,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="checkHideImages">
+    <widget class="QCheckBox" name="checkHideAds">
      <property name="text">
       <string>&amp;Hide filtered Elements</string>
      </property>

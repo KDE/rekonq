@@ -24,43 +24,40 @@
 * ============================================================ */
 
 
-#ifndef ADBLOCK_WIDGET_H
-#define ADBLOCK_WIDGET_H
+#ifndef NETWORK_WIDGET_H
+#define NETWORK_WIDGET_H
 
 
-// Ui Includes
-#include "ui_settings_adblock.h"
+// KDE Includes
+#include <KCModuleProxy>
 
 // Qt Includes
 #include <QWidget>
-#include <QTreeWidgetItem>
 
 
-class AdBlockWidget : public QWidget, private Ui::adblock
+class NetworkWidget : public QWidget
 {
 Q_OBJECT
 
 public:
-    AdBlockWidget(QWidget *parent = 0);
-    
+    NetworkWidget(QWidget *parent = 0);
+    ~NetworkWidget();
+       
     void save();
     bool changed();
-    
+
 signals:
     void changed(bool);
-    
+
 private slots:
     void hasChanged();
     
-    void slotInfoLinkActivated(const QString &);
-    void insertRule();
-    void removeRule();
-
 private:
-    void load();
-    void loadRules(QTreeWidgetItem *item);
+    KCModuleProxy *_cacheModule;
+    KCModuleProxy *_cookiesModule;
+    KCModuleProxy *_proxyModule;
 
     bool _changed;
 };
 
-#endif // ADBLOCK_WIDGET_H
+#endif // NETWORK_WIDGET_H
