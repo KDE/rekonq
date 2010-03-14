@@ -52,9 +52,13 @@
 FindBar::FindBar(QWidget *parent)
         : QWidget(parent)
         , m_lineEdit(new KLineEdit(this))
-        , m_matchCase(new QCheckBox(i18n("&Match case"), this))
         , m_hideTimer(new QTimer(this))
-{
+        , m_matchCase(new QCheckBox(i18n("&Match case"), this))
+        , m_highlightAll(new QCheckBox(i18n("&Highlight All"), this))
+{    
+    // mainwindow pointer
+    MainWindow *window = qobject_cast<MainWindow *>(parent);
+    
     QHBoxLayout *layout = new QHBoxLayout;
 
     // cosmetic
@@ -65,6 +69,7 @@ FindBar::FindBar(QWidget *parent)
     hideButton->setAutoRaise(true);
     hideButton->setIcon(KIcon("dialog-close"));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(hideButton, SIGNAL(clicked()), window, SLOT(highlightAll()));
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
@@ -75,9 +80,6 @@ FindBar::FindBar(QWidget *parent)
     QLabel *label = new QLabel(i18n("Find:"));
     layout->addWidget(label);
 
-    // mainwindow pointer
-    MainWindow *window = qobject_cast<MainWindow *>(parent);
-    
     // lineEdit, focusProxy
     setFocusProxy(m_lineEdit);
     m_lineEdit->setMaximumWidth(250);
@@ -92,12 +94,18 @@ FindBar::FindBar(QWidget *parent)
     connect(findPrev, SIGNAL(clicked()), window, SLOT(findPrevious()));
     layout->addWidget(findNext);
     layout->addWidget(findPrev);
-
+    
     // Case sensitivity. Deliberately set so this is off by default.
     m_matchCase->setCheckState(Qt::Unchecked);
     m_matchCase->setTristate(false);
     connect(m_matchCase, SIGNAL(toggled(bool)), window, SLOT(matchCaseUpdate()));
     layout->addWidget(m_matchCase);
+
+    // Hightlight All. On by default
+    m_highlightAll->setCheckState(Qt::Checked);
+    m_highlightAll->setTristate(false);
+    connect(m_highlightAll, SIGNAL(toggled(bool)), window, SLOT(highlightAll()));
+    layout->addWidget(m_highlightAll);
 
     // stretching widget on the left
     layout->addStretch();
@@ -123,6 +131,12 @@ KLineEdit *FindBar::lineEdit() const
 bool FindBar::matchCase() const
 {
     return m_matchCase->isChecked();
+}
+
+
+bool FindBar::highlightAllState() const
+{
+    return m_highlightAll->isChecked();
 }
 
 
