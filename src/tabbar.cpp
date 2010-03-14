@@ -244,6 +244,15 @@ void TabBar::leaveEvent(QEvent *event)
 
 void TabBar::mousePressEvent(QMouseEvent *event)
 {
+    if (ReKonfig::alwaysShowTabPreviews())
+    {
+        if ( !m_previewPopup.isNull() )
+        {
+            m_previewPopup.data()->hide();
+        }
+        m_currentTabPreview = -1;
+    }
+
     // just close tab on middle mouse click
     if (event->button() == Qt::MidButton)
         return;
