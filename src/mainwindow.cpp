@@ -286,7 +286,8 @@ void MainWindow::setupActions()
     fullScreenShortcut.setAlternate( Qt::Key_F11 );
     a->setShortcut( fullScreenShortcut );
 
-    KStandardAction::home(this, SLOT(homePage()), actionCollection());
+    a = actionCollection()->addAction( KStandardAction::Home );
+    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(homePage(Qt::MouseButtons)));
     KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
 
     a = KStandardAction::redisplay(m_view, SLOT(webReload()), actionCollection());
@@ -345,14 +346,16 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
 
     // ========================= History related actions ==============================
-    a = KStandardAction::back(this, SLOT(openPrevious()) , actionCollection());
+    a = actionCollection()->addAction( KStandardAction::Back );
+    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(openPrevious(Qt::MouseButtons)));
 
     m_historyBackMenu = new KMenu(this);
     a->setMenu(m_historyBackMenu);
     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowBackMenu()));
     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(openActionUrl(QAction *)));
 
-    KStandardAction::forward(this, SLOT(openNext()) , actionCollection());
+    a = actionCollection()->addAction( KStandardAction::Forward );
+    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(openNext(Qt::MouseButtons)));
 
     // ============================== General Tab Actions ====================================
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
@@ -929,9 +932,12 @@ void MainWindow::viewPageSource()
 }
 
 
-void MainWindow::homePage()
+void MainWindow::homePage(Qt::MouseButtons btn)
 {
-    currentTab()->view()->load( QUrl(ReKonfig::homePage()) );
+    if(btn == Qt::MidButton)
+        Application::instance()->loadUrl( KUrl(ReKonfig::homePage()), Rekonq::SettingOpenTab );
+    else
+        currentTab()->view()->load( QUrl(ReKonfig::homePage()) );
 }
 
 
@@ -972,19 +978,31 @@ void MainWindow::browserLoading(bool v)
 }
 
 
-void MainWindow::openPrevious()
+void MainWindow::openPrevious(Qt::MouseButtons btn)
 {
     QWebHistory *history = currentTab()->view()->history();
     if (history->canGoBack())
-        history->goToItem(history->backItem());
+    {
+        KUrl back = history->backItem().url();
+        if(btn == Qt::MidButton)
+            Application::instance()->loadUrl(back, Rekonq::SettingOpenTab);
+        else
+            Application::instance()->loadUrl(back);
+    }
 }
 
 
-void MainWindow::openNext()
+void MainWindow::openNext(Qt::MouseButtons btn)
 {
     QWebHistory *history = currentTab()->view()->history();
     if (history->canGoForward())
-        history->goToItem(history->forwardItem());
+    {
+        KUrl next = history->forwardItem().url();
+        if(btn == Qt::MidButton)
+            Application::instance()->loadUrl(next, Rekonq::SettingOpenTab);
+        else
+            Application::instance()->loadUrl(next);
+    }
 }
 
 
