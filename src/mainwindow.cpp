@@ -794,6 +794,8 @@ void MainWindow::findNext()
         return;
     }
     
+    highlightAll();
+    
     QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
         options |= QWebPage::FindCaseSensitively;
@@ -821,6 +823,24 @@ void MainWindow::findPrevious()
 
     bool found = currentTab()->view()->findText(m_lastSearch, options);
     m_findBar->notifyMatch(found);
+}
+
+void MainWindow::highlightAll()
+{
+    if (!currentTab())
+        return;
+    
+    QWebPage::FindFlags options = QWebPage::HighlightAllOccurrences;
+    
+    currentTab()->view()->findText("", options); //Clear an existing highlight
+    
+    if(m_findBar->highlightAllState() && !m_findBar->isHidden())
+    {
+	if (m_findBar->matchCase())
+	    options |= QWebPage::FindCaseSensitively;
+
+        currentTab()->view()->findText(m_lastSearch, options);
+    }
 }
 
 

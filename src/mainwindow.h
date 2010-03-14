@@ -130,6 +130,7 @@ private slots:
     void matchCaseUpdate();
     void findNext();
     void findPrevious();
+    void highlightAll();
 
     // Zoom slots
     void zoomIn();

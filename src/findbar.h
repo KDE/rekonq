@@ -53,6 +53,7 @@ public:
     KLineEdit *lineEdit() const;
     bool matchCase() const;
     void notifyMatch(bool match);
+    bool highlightAllState() const;
 
 public slots:
     void show();
@@ -63,8 +64,9 @@ signals:
 
 private:
     KLineEdit *m_lineEdit;
-    QCheckBox *m_matchCase;
     QTimer *m_hideTimer;
+    QCheckBox *m_matchCase;
+    QCheckBox *m_highlightAll;
 };
 
 #endif
