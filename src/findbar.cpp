@@ -54,7 +54,7 @@ FindBar::FindBar(QWidget *parent)
         , m_lineEdit(new KLineEdit(this))
         , m_hideTimer(new QTimer(this))
         , m_matchCase(new QCheckBox(i18n("&Match case"), this))
-        , m_highlightAll(new QCheckBox(i18n("&Highlight All"), this))
+        , m_highlightAll(new QCheckBox(i18n("&Highlight all"), this))
 {    
     // mainwindow pointer
     MainWindow *window = qobject_cast<MainWindow *>(parent);
