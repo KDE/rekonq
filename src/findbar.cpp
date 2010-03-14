@@ -69,7 +69,6 @@ FindBar::FindBar(QWidget *parent)
     hideButton->setAutoRaise(true);
     hideButton->setIcon(KIcon("dialog-close"));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
-    connect(hideButton, SIGNAL(clicked()), window, SLOT(highlightAll()));
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 

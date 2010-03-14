@@ -786,6 +786,8 @@ void MainWindow::findNext()
     if (!currentTab())
         return;
 
+    highlightAll();
+    
     if(m_findBar->isHidden())
     {
         QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
@@ -793,8 +795,6 @@ void MainWindow::findNext()
         currentTab()->view()->page()->currentFrame()->setScrollPosition(previous_position);
         return;
     }
-    
-    highlightAll();
     
     QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
