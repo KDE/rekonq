@@ -789,6 +789,8 @@ void MainWindow::findNext()
     if (!currentTab())
         return;
 
+    highlightAll();
+    
     if(m_findBar->isHidden())
     {
         QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
