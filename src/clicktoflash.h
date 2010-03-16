@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (c) 2009, Benjamin C. Meyer
+* Copyright (C) 2009 by Benjamin C. Meyer <ben@meyerhome.net>
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78@gmail.com>
 *
 *

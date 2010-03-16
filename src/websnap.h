@@ -48,7 +48,7 @@
 /**
  * This class is used in many classes of rekonq to produce an image 
  * based on the site corresponding to the url passed as argument.
- * It also cached the images to not retrieve them everytime :)
+ * It also cached the images to not retrieve them every time :)
  *
  * Heavily based on Graphics-Dojo WebSnap example (thanks!)
  *

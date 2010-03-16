@@ -312,12 +312,13 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
                 if (finfo.exists()) 
                 {
                     QDateTime now = QDateTime::currentDateTime();
-                    KIO::RenameDialog dlg (view(), i18n("Overwrite File?"), srcUrl, destUrl,
-                                        KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),
-                                        -1, finfo.size(),
-                                        now.toTime_t(), finfo.created().toTime_t(),
-                                        now.toTime_t(), finfo.lastModified().toTime_t());
-                    result = dlg.exec();
+                    QPointer<KIO::RenameDialog> dlg = new KIO::RenameDialog( view(), i18n("Overwrite File?"), srcUrl, destUrl,
+                                                                            KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),
+                                                                            -1, finfo.size(),
+                                                                            now.toTime_t(), finfo.created().toTime_t(),
+                                                                            now.toTime_t(), finfo.lastModified().toTime_t());
+                    result = dlg->exec();
+                    delete dlg;
                 }
             }
         } 
