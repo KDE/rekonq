@@ -62,7 +62,8 @@ public:
     void snapFinished(int index, KUrl url, QString title);
     void removePreview(int index);
      
-protected:  // these are the function to build the new tab page
+protected:  
+    // these are the functions to build the new tab page
     void browsingMenu(const KUrl &currentUrl);
 
     void favoritesPage();
@@ -70,13 +71,15 @@ protected:  // these are the function to build the new tab page
     void bookmarksPage();
     void closedTabsPage();
 
+    // Previews handling
     QWebElement emptyPreview(int index);
     QWebElement loadingPreview(int index, KUrl url);
     QWebElement validPreview(int index, KUrl url, QString title);
     
-    /** This function takes a QwebElement with the .thumbnail structure.
-        It hides the "remove" and "modify" buttons->
-    */
+    /** This function takes a QwebElement with the .thumbnail structure,
+     *  hiding the "remove" and "modify" buttons
+     *
+     */
     void hideControls(QWebElement e);
     void showControls(QWebElement e);
     void setupPreview(QWebElement e, int index);
@@ -84,10 +87,13 @@ protected:  // these are the function to build the new tab page
 private:
     void createBookItem(const KBookmark &bookmark, QWebElement parent);
     
-    /** This function helps to get faster a new markup of one type,it isn't easy to create one with QWebElement.
-        It gets it in the #models div of home.html.
-        It works for all elements defined here.
-    */
+    /** This function helps to get faster a new markup of one type,
+     *  it isn't easy to create one with QWebElement.
+     *
+     *  It gets it in the #models div of home.html.
+     *  It works for all elements defined here.
+     *
+     */
     inline QWebElement markup(QString selector) 
     {
        return m_root.document().findFirst("#models > " + selector).clone();
@@ -98,8 +104,6 @@ private:
     QString m_html;
     
     QWebElement m_root;
-    
-    KUrl m_url;
 };
 
 #endif // REKONQ_NEW_TAB_PAGE

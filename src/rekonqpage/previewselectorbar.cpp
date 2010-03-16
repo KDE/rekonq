@@ -119,10 +119,10 @@ void PreviewSelectorBar::clicked()
     
     if(page)
     {
-        KUrl url = page->mainFrame()->url();
-
-        WebSnap::savePreview(WebSnap::renderPreview(*page), url);
+        // this is done just lo let the render process being faster..
+        WebSnap::renderPreview(*page);
         
+        KUrl url = page->mainFrame()->url();        
         QStringList names = ReKonfig::previewNames();
         QStringList urls = ReKonfig::previewUrls();
         

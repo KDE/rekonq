@@ -56,7 +56,6 @@
 
 NewTabPage::NewTabPage(QWebFrame *frame)
     : m_root(frame->documentElement())
-    , m_url(KUrl())
 {
     QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");    
@@ -98,7 +97,7 @@ void NewTabPage::generate(KUrl url)
     }
     
     QWebPage *page = m_root.webFrame()->page();
-    page->mainFrame()->setHtml(m_html,m_url);
+    page->mainFrame()->setHtml(m_html);
 
     m_root = page->mainFrame()->documentElement().findFirst("#content");
     
@@ -109,7 +108,6 @@ void NewTabPage::generate(KUrl url)
     {
         favoritesPage();
         title = i18n("Favorites");
-        url = KUrl("about:favorites");
     }
     else if(url == KUrl("about:closedTabs"))
     {
@@ -127,7 +125,6 @@ void NewTabPage::generate(KUrl url)
         title = i18n("Bookmarks");
     }
     
-    m_url = url;
     m_root.document().findFirst("title").setPlainText(title);
 }
 

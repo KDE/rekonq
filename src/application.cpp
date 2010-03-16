@@ -353,7 +353,7 @@ MainWindow *Application::newMainWindow()
 
 void Application::removeMainWindow(MainWindow *window)
 {
-    m_mainWindows.removeAt(m_mainWindows.indexOf(window, 0));
+    m_mainWindows.removeOne(window);
 }
 
 

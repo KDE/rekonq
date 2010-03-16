@@ -46,9 +46,17 @@
 
 
 /**
- * This class renders a site producing an image based
- * on that.
+ * This class is used in many classes of rekonq to produce an image 
+ * based on the site corresponding to the url passed as argument.
+ * It also cached the images to not retrieve them everytime :)
+ *
  * Heavily based on Graphics-Dojo WebSnap example (thanks!)
+ *
+ * We use this in the following rekonq classes:
+ * - TabBar class:          to show a tab preview                (given a page, you show WITHOUT saving an image)
+ * - NewTabPage class:      to show the favorites page "preview" (given an url, you show AND save an image)
+ * - PreviewSelector class: to save new favorite selection       (given a page, you show AND save an image)
+ *
  */
 class REKONQ_TESTS_EXPORT WebSnap : public QObject
 {
@@ -56,20 +64,13 @@ class REKONQ_TESTS_EXPORT WebSnap : public QObject
 
 public:
     WebSnap(const QUrl &url, QWebFrame *frame, int index);
-    ~WebSnap();
-    
-    QPixmap previewImage(); // TODO : remove
-    
-    static QPixmap renderPreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
-    
+       
+    static QPixmap renderPreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT, bool save = true);
+        
     static KUrl fileForUrl(KUrl url);
-    
     static QString guessNameFromUrl(QUrl url);
     
-    static void savePreview(QPixmap pm, KUrl url);
-    
     QString snapTitle();
-    QUrl snapUrl();
 
 private slots:
     void load();

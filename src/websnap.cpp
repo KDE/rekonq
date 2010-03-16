@@ -60,12 +60,8 @@ WebSnap::WebSnap(const QUrl& url, QWebFrame *frame, int index)
     m_page.settings()->setAttribute(QWebSettings::JavascriptEnabled, false);
 
     connect(&m_page, SIGNAL(loadFinished(bool)), this, SLOT(saveResult(bool)));
+    
     QTimer::singleShot(0, this, SLOT(load()));
-}
-
-
-WebSnap::~WebSnap()
-{
 }
 
 
@@ -77,7 +73,7 @@ void WebSnap::load()
 
 // NOTE please, be careful modifying this. 
 // You are playing with fire..
-QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h)
+QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h, bool save)
 {
     // prepare page
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
@@ -87,7 +83,10 @@ QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h)
     // find the best size
     QSize size;
     int width = page.mainFrame()->contentsSize().width();
-    if (width < 640) width = 640;
+    if (width < 640) 
+    {
+        width = 640;
+    }
     size = QSize(width,width*((0.0+h)/w));
     page.setViewportSize(size);
     
@@ -106,15 +105,16 @@ QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h)
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     page.setViewportSize(oldSize);
     
-    return QPixmap::fromImage(pageImage);
-}
-
-
-void WebSnap::savePreview(QPixmap pm, KUrl url)
-{
-    kDebug() << "saving preview";
-    QFile::remove(fileForUrl(url).toLocalFile());
-    pm.save(fileForUrl(url).toLocalFile());
+    QPixmap pm = QPixmap::fromImage(pageImage);
+    if(save)
+    {
+        KUrl url( page.mainFrame()->url() );
+        kDebug() << "saving preview";
+        QFile::remove( fileForUrl(url).toLocalFile() );
+        pm.save(fileForUrl(url).toLocalFile());
+    }
+    
+    return pm;
 }
 
 
@@ -164,23 +164,11 @@ void WebSnap::saveResult(bool ok)
     NewTabPage p( m_frame );
     p.snapFinished(m_previewIndex, m_url, m_snapTitle);
     
-    deleteLater();
+    this->deleteLater();
 }
 
 
 QString WebSnap::snapTitle()
 {
     return m_page.mainFrame()->title();
-}
-
-
-QUrl WebSnap::snapUrl()
-{
-    return m_url;
-}
-
-
-QPixmap WebSnap::previewImage()
-{
-    return m_image;
 }
