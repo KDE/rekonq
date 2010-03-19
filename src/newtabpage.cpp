@@ -79,7 +79,7 @@ NewTabPage::~NewTabPage()
 }
 
 
-void NewTabPage::generate(KUrl url)
+void NewTabPage::generate(const KUrl &url)
 {
     if(KUrl("about:preview").isParentOf(url))
     {
@@ -171,7 +171,7 @@ QWebElement NewTabPage::emptyPreview(int index)
 }
 
 
-QWebElement NewTabPage::loadingPreview(int index, KUrl url)
+QWebElement NewTabPage::loadingPreview(int index, const KUrl &url)
 {
     QWebElement prev = markup(".thumbnail");
     
@@ -189,7 +189,7 @@ QWebElement NewTabPage::loadingPreview(int index, KUrl url)
 }
 
 
-QWebElement NewTabPage::validPreview(int index, KUrl url, QString title)
+QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &title)
 {
     QWebElement prev = markup(".thumbnail");
     KUrl previewPath = WebSnap::fileForUrl(url);
@@ -237,7 +237,7 @@ void NewTabPage::setupPreview(QWebElement e, int index)
 }
 
 
-void NewTabPage::snapFinished(int index, KUrl url, QString title)
+void NewTabPage::snapFinished(int index, const KUrl &url, const QString &title)
 {
     // do not try to modify the page if it isn't the newTabPage
     if(m_root.document().findAll("#rekonq-newtabpage").count() == 0)
@@ -432,12 +432,13 @@ void NewTabPage::closedTabsPage()
 }
 
 
-QString NewTabPage::checkTitle(QString title)
+QString NewTabPage::checkTitle(const QString &title)
 {
-    if(title.length() > 23)
+    QString t(title);
+    if(t.length() > 23)
     {
-        title.truncate(20);
-        title += "...";
+        t.truncate(20);
+        t += "...";
     }
-    return title;
+    return t;
 }

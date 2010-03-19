@@ -57,13 +57,15 @@ public:
      * This method takes an about: url and loads 
      * the corresponding part of the new tab page
      */
-    void generate(KUrl url = KUrl("about:home"));
+    void generate(const KUrl &url = KUrl("about:home"));
     
-    void snapFinished(int index, KUrl url, QString title);
-    void removePreview(int index);
+    void snapFinished(int index, const KUrl &url, const QString &title);
+
      
-protected:  
-    // these are the functions to build the new tab page
+private:
+    // these are the "high-level" functions to build the new tab page
+    // basically, you call browsingMenu + one the the *Page methods
+    // to load a page
     void browsingMenu(const KUrl &currentUrl);
 
     void favoritesPage();
@@ -71,38 +73,46 @@ protected:
     void bookmarksPage();
     void closedTabsPage();
 
+    // --------------------------------------------------------------------------
+    // "low-level" functions
+    // we use these to create the pages over
+    
     // Previews handling
     QWebElement emptyPreview(int index);
-    QWebElement loadingPreview(int index, KUrl url);
-    QWebElement validPreview(int index, KUrl url, QString title);
+    QWebElement loadingPreview(int index, const KUrl &url);
+    QWebElement validPreview(int index, const KUrl &url, const QString &title);
+
+    void removePreview(int index);
     
-    /** This function takes a QwebElement with the .thumbnail structure,
-     *  hiding the "remove" and "modify" buttons
+    /** 
+     * This function takes a QwebElement with the .thumbnail structure,
+     * hiding the "remove" and "modify" buttons
      *
      */
     void hideControls(QWebElement e);
     void showControls(QWebElement e);
     void setupPreview(QWebElement e, int index);
      
-private:
     void createBookItem(const KBookmark &bookmark, QWebElement parent);
     
-    /** This function helps to get faster a new markup of one type,
-     *  it isn't easy to create one with QWebElement.
+    /** 
+     * This function helps to get faster a new markup of one type,
+     * it isn't easy to create one with QWebElement.
      *
-     *  It gets it in the #models div of home.html.
-     *  It works for all elements defined here.
+     * It gets it in the #models div of home.html.
+     * It works for all elements defined here.
      *
      */
-    inline QWebElement markup(QString selector) 
+    inline QWebElement markup(const QString &selector) 
     {
        return m_root.document().findFirst("#models > " + selector).clone();
     }
     
-    QString checkTitle(QString title);
+    QString checkTitle(const QString &title);
 
-    QString m_html;
     
+private:
+    QString m_html;
     QWebElement m_root;
 };
 
