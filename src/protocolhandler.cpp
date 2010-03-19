@@ -38,6 +38,7 @@
 #include "urlbar.h"
 #include "webtab.h"
 #include "historymanager.h"
+#include "adblockmanager.h"
 
 // KDE Includes
 #include <klocalizedstring.h>
@@ -52,6 +53,7 @@
 #include <KFileItem>
 #include <KJob>
 #include <kio/udsentry.h>
+#include <KMessageBox>
 
 // Qt Includes
 #include <QLatin1String>
@@ -60,6 +62,9 @@
 #include <QDir>
 #include <QFile>
 #include <QDateTime>
+
+// Defines
+#define QL1S(x)  QLatin1String(x)
 
 
 ProtocolHandler::ProtocolHandler(QObject *parent)
@@ -87,11 +92,11 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         return false;
     
     // "http(s)" (fast) handling
-    if( _url.protocol() == QLatin1String("http") || _url.protocol() == QLatin1String("https") )
+    if( _url.protocol() == QL1S("http") || _url.protocol() == QL1S("https") )
         return false;
     
     // javascript handling
-    if( _url.protocol() == QLatin1String("javascript") )
+    if( _url.protocol() == QL1S("javascript") )
     {
         QString scriptSource = _url.authority();
         QVariant result = frame->evaluateJavaScript(scriptSource);
@@ -99,14 +104,21 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     }
     
     // "mailto" handling
-    if ( _url.protocol() == QLatin1String("mailto") )
+    if ( _url.protocol() == QL1S("mailto") )
     {
         KToolInvocation::invokeMailer(_url);
         return true;
     }
 
+    // "abp" handling
+    if ( _url.protocol() == QL1S("abp") )
+    {
+        abpHandling();
+        return true;
+    }
+    
     // "about" handling
-    if ( _url.protocol() == QLatin1String("about") )
+    if ( _url.protocol() == QL1S("about") )
     {
         // let webkit manage the about:blank url...
         if( _url == KUrl("about:blank") )
@@ -152,12 +164,12 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     kDebug() << "URL PROTOCOL: " << _url;
     
     // "http(s)" (fast) handling
-    if( _url.protocol() == QLatin1String("http") || _url.protocol() == QLatin1String("https") )
+    if( _url.protocol() == QL1S("http") || _url.protocol() == QL1S("https") )
         return false;
     
     // "mailto" handling: It needs to be handled both here(mail links clicked)
     // and in prehandling (mail url launched)
-    if ( _url.protocol() == QLatin1String("mailto") )
+    if ( _url.protocol() == QL1S("mailto") )
     {
         KToolInvocation::invokeMailer(_url);
         return true;
@@ -168,7 +180,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     // My idea is: webkit cannot handle in any way ftp. So we have surely to return true here.
     // We start trying to guess what the url represent: it's a dir? show its contents (and download them).
     // it's a file? download it. It's another thing? beat me, but I don't know what to do...
-    if( _url.protocol() == QLatin1String("ftp") )
+    if( _url.protocol() == QL1S("ftp") )
     {
         KIO::StatJob *job = KIO::stat(_url);
         connect(job, SIGNAL(result(KJob*)), this, SLOT( slotMostLocalUrlResult(KJob*) ));
@@ -176,7 +188,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     }
     
     // "file" handling. This is quite trivial :)
-    if( _url.protocol() == QLatin1String("file") )
+    if( _url.protocol() == QL1S("file") )
     {
         QFileInfo fileInfo( _url.path() );
         if(fileInfo.isDir())
@@ -269,7 +281,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     msg += "</table>";
     
          
-    QString html = QString(QLatin1String(file.readAll()))
+    QString html = QString(QL1S(file.readAll()))
                             .arg(title)
                             .arg(msg)
                             ;
@@ -317,5 +329,59 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
         }
         else
             emit downloadUrl(_url);
+    }
+}
+
+
+/**
+ * abp scheme (easy) explanation
+ *
+ */
+void ProtocolHandler::abpHandling()
+{
+    kDebug() << _url;
+    
+    QString path = _url.path();
+    if( path != QL1S("subscribe") )
+        return;
+    
+    QMap<QString, QString> map = _url.queryItems( KUrl::CaseInsensitiveKeys );
+    
+    QString location = map.value( QL1S("location") );
+    kDebug() << location;
+    
+    QString title = map.value( QL1S("title") );
+    kDebug() << title;
+    
+    QString requireslocation = map.value( QL1S("requireslocation") );
+    kDebug() << requireslocation;
+    
+    QString requirestitle = map.value( QL1S("requirestitle") );
+    kDebug() << requirestitle;
+ 
+    QString info;
+    if( requirestitle.isEmpty() || requireslocation.isEmpty() )
+    {
+        info = title;
+    }
+    else
+    {
+        info = i18n("\n %1,\n %2 (required by %3)\n", title, requirestitle, title);
+    }
+    
+    if ( KMessageBox::questionYesNo( 0,
+                                     i18n("Do you want to add the following subscriptions to your adblock settings?\n") + info,
+                                     i18n("Add automatic subscription to the adblock"),
+                                     KGuiItem(i18n("Add")),
+                                     KGuiItem(i18n("Discard")) 
+                                   )
+        )
+    {
+        if( !requireslocation.isEmpty() && !requirestitle.isEmpty() )
+        {
+            Application::adblockManager()->addSubscription( requirestitle, requireslocation );
+        }
+        Application::adblockManager()->addSubscription( title, location );
+        Application::adblockManager()->loadSettings(false);
     }
 }

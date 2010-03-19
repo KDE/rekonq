@@ -60,7 +60,7 @@ AdBlockManager::~AdBlockManager()
 }
 
 
-void AdBlockManager::loadSettings()
+void AdBlockManager::loadSettings(bool checkUpdateDate)
 {
     _index = 0;
     _buffer.clear();
@@ -92,7 +92,7 @@ void AdBlockManager::loadSettings()
     QDateTime lastUpdate = ReKonfig::lastUpdate();  //  the day of the implementation.. :)
     int days = ReKonfig::updateInterval();
     
-    if( today > lastUpdate.addDays( days ) )
+    if( !checkUpdateDate || today > lastUpdate.addDays( days ) )
     {
         ReKonfig::setLastUpdate( today );
         
@@ -101,10 +101,10 @@ void AdBlockManager::loadSettings()
     }
 
     // else
-    QStringList names = ReKonfig::subscriptionNames();
-    foreach(const QString &name, names)
+    QStringList titles = ReKonfig::subscriptionTitles();
+    foreach(const QString &title, titles)
     {
-        rules = rulesGroup.readEntry( name + "-rules" , QStringList() );
+        rules = rulesGroup.readEntry( title + "-rules" , QStringList() );
         loadRules(rules);
     }
 }
@@ -208,13 +208,11 @@ void AdBlockManager::applyHidingRules(WebPage *page)
 
 void AdBlockManager::updateNextSubscription()
 {
-    kDebug() << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO";
-
-    QStringList subUrlStrings = ReKonfig::subscriptionUrls();
+    QStringList locations = ReKonfig::subscriptionLocations();
     
-    if( _index < subUrlStrings.size() )
+    if( _index < locations.size() )
     {
-        QString urlString = subUrlStrings.at(_index);
+        QString urlString = locations.at(_index);
         kDebug() << "DOWNLOADING FROM " << urlString;
         KUrl subUrl = KUrl( urlString );
         
@@ -276,10 +274,28 @@ void AdBlockManager::saveRules(const QStringList &rules)
             cleanedRules << r;
     }
     
-    QStringList names = ReKonfig::subscriptionNames();
-    QString name = names.at(_index) + "-rules";
+    QStringList titles = ReKonfig::subscriptionTitles();
+    QString title = titles.at(_index) + "-rules";
     
     KSharedConfig::Ptr config = KGlobal::config();
     KConfigGroup cg( config , "rules" );
-    cg.writeEntry( name, cleanedRules );
+    cg.writeEntry( title, cleanedRules );
+}
+
+
+void AdBlockManager::addSubscription(const QString &title, const QString &location)
+{
+    QStringList titles = ReKonfig::subscriptionTitles();
+    if( titles.contains(title) )
+        return;
+    
+    QStringList locations = ReKonfig::subscriptionLocations();
+    if( locations.contains(location) )
+        return;
+    
+    titles << title;
+    locations << location;
+    
+    ReKonfig::setSubscriptionTitles(titles);
+    ReKonfig::setSubscriptionLocations(locations);
 }

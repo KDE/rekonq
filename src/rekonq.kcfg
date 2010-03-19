@@ -161,10 +161,10 @@
         <entry name="hideAdsEnabled" type="Bool">
             <default>true</default>
         </entry>
-        <entry name="subscriptionNames" type="StringList">
-            <default>easylist</default>
+        <entry name="subscriptionTitles" type="StringList">
+            <default>EasyList</default>
         </entry>
-        <entry name="subscriptionUrls" type="StringList">
+        <entry name="subscriptionLocations" type="StringList">
             <default>https://easylist-downloads.adblockplus.org/easylist.txt</default>
         </entry>
         <entry name="lastUpdate" type="DateTime">

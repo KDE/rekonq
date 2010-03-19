@@ -133,9 +133,10 @@ public:
 
     QNetworkReply *block(const QNetworkRequest &request);
     void applyHidingRules(WebPage *page);
-
+    void addSubscription(const QString &title, const QString &location);
+    
 public slots:
-    void loadSettings();
+    void loadSettings(bool checkUpdateDate = true);
 
 private:
     void updateNextSubscription();

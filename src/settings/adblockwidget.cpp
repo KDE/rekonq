@@ -115,7 +115,7 @@ void AdBlockWidget::load()
     int days = ReKonfig::updateInterval();
     spinBox->setValue( days );
     
-    QStringList subscriptions = ReKonfig::subscriptionNames();
+    QStringList subscriptions = ReKonfig::subscriptionTitles();
 
     // load automatic rules
     foreach(QString sub, subscriptions)
