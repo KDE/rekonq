@@ -262,6 +262,11 @@
           <string>History</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Downloads</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>
@@ -284,7 +289,7 @@
        <widget class="QCheckBox" name="kcfg_kgetList">
         <property name="whatsThis">
          <string>If enabled, rekonq will display an additional context menu entry, which, when selected, lists all available links of the current website in KGet.</string>
-        </property>	
+        </property>
         <property name="text">
          <string>List links with KGet</string>
         </property>

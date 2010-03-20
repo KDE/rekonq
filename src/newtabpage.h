@@ -63,8 +63,8 @@ public:
 
      
 private:
-    // these are the "high-level" functions to build the new tab page
-    // basically, you call browsingMenu + one the the *Page methods
+    // these are the "high-level" functions to build the new tab page.
+    // Basically, you call browsingMenu + one of the *Page methods
     // to load a page
     void browsingMenu(const KUrl &currentUrl);
 
@@ -72,7 +72,8 @@ private:
     void historyPage();
     void bookmarksPage();
     void closedTabsPage();
-
+    void downloadsPage();
+    
     // --------------------------------------------------------------------------
     // "low-level" functions
     // we use these to create the pages over

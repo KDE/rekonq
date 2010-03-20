@@ -71,6 +71,9 @@
 #include <QtGui/QKeyEvent>
 #include <QWebFrame>
 
+// Defines
+#define QL1S(x)  QLatin1String(x)
+
 
 WebPage::WebPage(QWidget *parent)
     : KWebPage(parent, KWalletIntegration)
@@ -292,55 +295,76 @@ QString WebPage::errorPage(QNetworkReply *reply)
 }
 
 
+// WARNING
+// this code is actually copied from KWebPage::downloadRequest to save
+// downloads data before. If you have some better ideas about,
+// feel free to let us know about :)
 void WebPage::downloadRequest(const QNetworkRequest &request)
 {
-    if (ReKonfig::kgetDownload())
-    {
-        //*Copy of kwebpage code (Shouldn't be done in kwebpage ?)
-
-        KUrl destUrl;
-        KUrl srcUrl (request.url());
-        int result = KIO::R_OVERWRITE;
-
-        do 
+    KUrl destUrl;                                                                                                                         
+    KUrl srcUrl (request.url());                                                                                                          
+    int result = KIO::R_OVERWRITE;                                                                                                        
+                                                                                                                                          
+    do 
+    {                                                                                                                                  
+        destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), view());                                                     
+                                                                                                                                          
+        if (destUrl.isLocalFile()) 
+        {                                                                                                      
+            QFileInfo finfo( destUrl.toLocalFile() );                                                                                      
+            if ( finfo.exists() ) 
+            {                                                                                                         
+                QDateTime now = QDateTime::currentDateTime();                                                                             
+                QPointer<KIO::RenameDialog> dlg = new KIO::RenameDialog( view(), 
+                                                                         i18n("Overwrite File?"), 
+                                                                         srcUrl, 
+                                                                         destUrl,                                                  
+                                                                         KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),                                            
+                                                                         -1, 
+                                                                         finfo.size(),                                                                                  
+                                                                         now.toTime_t(), 
+                                                                         finfo.created().toTime_t(),                                                        
+                                                                         now.toTime_t(), 
+                                                                         finfo.lastModified().toTime_t()
+                                                                        );                                                  
+                result = dlg->exec();
+                delete dlg;                                                                                                      
+            }                                                                                                                             
+        }                                                                                                                                 
+    } 
+    while ( result == KIO::R_CANCEL && destUrl.isValid() );                                                                               
+    
+    // now store data
+    // now, destUrl, srcUrl
+    Application::historyManager()->addDownload( srcUrl.pathOrUrl() , destUrl.pathOrUrl() );
+    
+    if ( result == KIO::R_OVERWRITE && destUrl.isValid() ) 
+    {                                               
+        if ( ReKonfig::kgetDownload() )
         {
-            destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), view());
-
-            if (destUrl.isLocalFile()) 
-            {
-                QFileInfo finfo (destUrl.toLocalFile());
-                if (finfo.exists()) 
-                {
-                    QDateTime now = QDateTime::currentDateTime();
-                    QPointer<KIO::RenameDialog> dlg = new KIO::RenameDialog( view(), i18n("Overwrite File?"), srcUrl, destUrl,
-                                                                            KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),
-                                                                            -1, finfo.size(),
-                                                                            now.toTime_t(), finfo.created().toTime_t(),
-                                                                            now.toTime_t(), finfo.lastModified().toTime_t());
-                    result = dlg->exec();
-                    delete dlg;
-                }
-            }
-        } 
-        while (result == KIO::R_CANCEL && destUrl.isValid());
-
-        if (result == KIO::R_OVERWRITE && destUrl.isValid()) 
-        {
-            //*End of copy code
-            
             //KGet integration:
             if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
             {
                 KToolInvocation::kdeinitExecWait("kget");
             }
             QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-            kget.call("addTransfer", srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
+            if( kget.isValid() )
+            {
+                kget.call("addTransfer", srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
+                return;
+            }
         }
         
-        return;
-    }
-    
-    KWebPage::downloadRequest(request);
+        // else, use KIO or fallback to it
+        KIO::Job *job = KIO::file_copy(srcUrl, destUrl, -1, KIO::Overwrite);                                                              
+        QVariant attr = request.attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData));                         
+        if (attr.isValid() && attr.type() == QVariant::Map)                                                                               
+            job->setMetaData(KIO::MetaData(attr.toMap()));                                                                                
+                                                                                                                                        
+        job->addMetaData(QL1S("MaxCacheSize"), QL1S("0")); // Don't store in http cache.                                                    
+        job->addMetaData(QL1S("cache"), QL1S("cache"));   // Use entry from cache if available.                                               
+        job->uiDelegate()->setAutoErrorHandlingEnabled(true);
+    } 
 }
 
 
@@ -369,5 +393,8 @@ void WebPage::downloadAllContentsWithKGet()
         KToolInvocation::kdeinitExecWait("kget");
     }
     QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-    kget.call("importLinks", QVariant(contents.toList()));
+    if( kget.isValid() )
+    {
+        kget.call("importLinks", QVariant(contents.toList()));
+    }
 }

@@ -142,6 +142,8 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             case 3: // history
                 _url = KUrl("about:history");
                 break;
+            case 4: // downloads
+                _url = KUrl("about:downloads");
             default: // unuseful
                 break;
             }

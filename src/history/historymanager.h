@@ -57,7 +57,10 @@ public:
                          const QDateTime &d = QDateTime(), 
                          const QString &t = QString()
                         )
-            : title(t), url(u), dateTime(d) {}
+            : title(t)
+            , url(u), 
+            dateTime(d) 
+    {}
 
     inline bool operator==(const HistoryItem &other) const
     {
@@ -77,6 +80,29 @@ public:
 };
 
 
+// ---------------------------------------------------------------------------------------------------------------
+
+
+class DownloadItem
+{
+public:
+    DownloadItem() {}
+    explicit DownloadItem(const QString &srcUrl,
+                          const QString &destUrl,
+                          const QDateTime &d
+                          )
+        : srcUrlString(srcUrl)
+        , destUrlString(destUrl)
+        , dateTime(d)
+    {}
+    
+    QString srcUrlString;
+    QString destUrlString;
+    QDateTime dateTime;
+};
+
+
+typedef QList<DownloadItem> DownloadList;
 
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -131,6 +157,10 @@ public:
     */
     KCompletion *completionObject() const;
 
+    void addDownload(const QString &srcUrl, const QString &destUrl);
+    DownloadList downloads();
+    bool clearDownloadsHistory();
+    
 public slots:
     void clear();
     void loadSettings();

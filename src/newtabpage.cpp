@@ -53,6 +53,9 @@
 // Qt Includes
 #include <QFile>
 
+// Defines
+#define QL1S(x)  QLatin1String(x)
+
 
 NewTabPage::NewTabPage(QWebFrame *frame)
     : m_root(frame->documentElement())
@@ -123,6 +126,11 @@ void NewTabPage::generate(const KUrl &url)
     {
         bookmarksPage();
         title = i18n("Bookmarks");
+    }
+    else if(url == KUrl("about:downloads"))
+    {
+        downloadsPage();
+        title = i18n("Downloads");
     }
     
     m_root.document().findFirst("title").setPlainText(title);
@@ -315,6 +323,13 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
     nav.findFirst("a").appendInside(i18n("History"));
     navItems.append(nav);
     
+    nav = markup(".link"); // History
+    nav.findFirst("a").setAttribute("href", "about:downloads");
+    nav.findFirst("img").setAttribute("src" , QString("file:///" + 
+    loader->iconPath("download", KIconLoader::Desktop ||KIconLoader::SizeSmall)));
+    nav.findFirst("a").appendInside(i18n("Downloads"));
+    navItems.append(nav);
+    
     QWebElement it;
     foreach(it, navItems)
     {
@@ -441,4 +456,40 @@ QString NewTabPage::checkTitle(const QString &title)
         t += "...";
     }
     return t;
+}
+
+
+void NewTabPage::downloadsPage()
+{
+    m_root.addClass("downloads");
+
+    DownloadList list = Application::historyManager()->downloads();
+    
+    foreach(const DownloadItem &item, list)
+    {
+        m_root.appendInside(markup("h3"));
+        m_root.lastChild().setPlainText("");
+    
+        KUrl u = KUrl(item.destUrlString);
+        QString fName = u.fileName();
+        QString dir = QL1S("file://") + u.directory();
+        
+        m_root.appendInside( item.dateTime.toString("dddd") );
+        m_root.appendInside("<br/>");
+        m_root.appendInside( item.dateTime.toString("dd MMMM yyyy") );
+        m_root.appendInside(", ");
+        m_root.appendInside( item.dateTime.toString("hh:mm:ss") );
+        m_root.appendInside("<br/>");
+        
+        m_root.appendInside(fName);
+        m_root.appendInside("<br/>");
+        
+        m_root.appendInside(item.srcUrlString);
+        m_root.appendInside("<br/>");
+
+        m_root.appendInside(markup("a"));
+        m_root.lastChild().setAttribute("href" , dir);
+        m_root.lastChild().setPlainText("browse dir");
+        m_root.appendInside("<br/>");
+    }
 }

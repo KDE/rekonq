@@ -451,3 +451,56 @@ KCompletion * HistoryManager::completionObject() const
 {
     return m_completion;
 }
+
+
+void HistoryManager::addDownload(const QString &srcUrl, const QString &destUrl)
+{
+    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QFile downloadFile(downloadFilePath);
+    if ( !downloadFile.open(QFile::WriteOnly | QFile::Append) )
+    {
+        kDebug() << "azz...";
+        return;
+    }
+    QDataStream out(&downloadFile);
+    out << srcUrl;
+    out << destUrl;
+    out << QDateTime::currentDateTime();
+    downloadFile.close();
+}
+
+
+DownloadList HistoryManager::downloads()
+{
+    DownloadList list;
+    
+    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QFile downloadFile(downloadFilePath);
+    if ( !downloadFile.open(QFile::ReadOnly) )
+    {
+        kDebug() << "azz...";
+        return list;
+    }
+    
+    QDataStream in(&downloadFile);
+    while(!in.atEnd())
+    {
+        QString srcUrl;
+        in >> srcUrl;
+        QString destUrl;
+        in >> destUrl;
+        QDateTime dt;
+        in >> dt;
+        DownloadItem item(srcUrl, destUrl, dt);
+        list << item;
+    }
+    return list;
+}
+
+
+bool HistoryManager::clearDownloadsHistory()
+{
+    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QFile downloadFile(downloadFilePath);
+    return downloadFile.remove();
+}
