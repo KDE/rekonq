@@ -23,6 +23,7 @@ SET( rekonq_KDEINIT_SRCS
     webinspectorpanel.cpp
     webpage.cpp
     webpluginfactory.cpp
+    websslinfo.cpp
     websnap.cpp
     webview.cpp
     webtab.cpp

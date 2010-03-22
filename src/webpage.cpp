@@ -45,6 +45,8 @@
 #include "networkaccessmanager.h"
 #include "adblockmanager.h"
 
+#include "sslinfodialog_p.h"
+
 // KDE Includes
 #include <KStandardDirs>
 #include <KUrl>
@@ -73,6 +75,32 @@
 
 // Defines
 #define QL1S(x)  QLatin1String(x)
+#define QL1C(x)  QLatin1Char(x)
+
+
+// Returns true if the scheme and domain of the two urls match...
+static bool domainSchemeMatch(const QUrl& u1, const QUrl& u2)
+{
+    if (u1.scheme() != u2.scheme())
+        return false;
+
+    QStringList u1List = u1.host().split(QL1C('.'), QString::SkipEmptyParts);
+    QStringList u2List = u2.host().split(QL1C('.'), QString::SkipEmptyParts);
+
+    if (qMin(u1List.count(), u2List.count()) < 2)
+        return false;  // better safe than sorry...
+
+    while (u1List.count() > 2)
+        u1List.removeFirst();
+
+    while (u2List.count() > 2)
+        u2List.removeFirst();
+
+    return (u1List == u2List);
+}
+
+
+// ---------------------------------------------------------------------------------
 
 
 WebPage::WebPage(QWidget *parent)
@@ -92,6 +120,14 @@ WebPage::WebPage(QWidget *parent)
 
     setNetworkAccessManager(manager);
     
+    // activate ssl warnings
+    setSessionMetaData("ssl_activate_warnings", "TRUE");
+    
+    // Override the 'Accept' header sent by QtWebKit which favors XML over HTML!
+    // Setting the accept meta-data to null will force kio_http to use its own
+    // default settings for this header.
+    setSessionMetaData(QL1S("accept"), QString());
+    
     // ----- Web Plugin Factory
     setPluginFactory(new WebPluginFactory(this));
     
@@ -100,7 +136,7 @@ WebPage::WebPage(QWidget *parent)
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 
     // protocol handler signals
-    connect(&m_protHandler, SIGNAL(downloadUrl(const KUrl &)), this, SLOT(downloadUrl(const KUrl &)));
+    connect(&_protHandler, SIGNAL(downloadUrl(const KUrl &)), this, SLOT(downloadUrl(const KUrl &)));
 }
 
 
@@ -112,21 +148,54 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
-    // advise users on resubmitting data
-    if(type == QWebPage::NavigationTypeFormResubmitted)
+    if(frame)
     {
-        int risp = KMessageBox::warningContinueCancel(view(), 
-                                                      i18n("Are you sure you want to send your data again?"), 
-                                                      i18n("Resend form data") );
-        if(risp == KMessageBox::Cancel)
+        if ( _protHandler.preHandling(request, frame) )
+        {
             return false;
+        }
+               
+        switch (type) 
+        {
+        case QWebPage::NavigationTypeLinkClicked:
+            if (_sslInfo.isValid() )
+            {
+                setRequestMetaData("ssl_was_in_use", "TRUE");
+            }
+            break;
+            
+        case QWebPage::NavigationTypeFormSubmitted:
+            break;
+            
+        case QWebPage::NavigationTypeFormResubmitted:
+            if( KMessageBox::warningContinueCancel(view(), 
+                                                    i18n("Are you sure you want to send your data again?"), 
+                                                    i18n("Resend form data") 
+                                                  )
+                == KMessageBox::Cancel)
+            {
+                return false;                
+            }
+            break;
+            
+        case QWebPage::NavigationTypeReload:
+        case QWebPage::NavigationTypeBackOrForward:
+        case QWebPage::NavigationTypeOther:
+            break;
+            
+        default:
+            break;
+        }    
+    
+        if(frame == mainFrame())
+        {
+            setRequestMetaData("main_frame_request", "TRUE");
+        }
+        else
+        {
+            setRequestMetaData("main_frame_request", "FALSE");
+        }
     }
-
-    if ( frame && m_protHandler.preHandling(request, frame) )
-    {
-        return false;
-    }
-
     return KWebPage::acceptNavigationRequest(frame, request, type);
 }
 
@@ -197,15 +266,31 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 }
 
 
-void WebPage::loadFinished(bool)
+void WebPage::loadFinished(bool ok)
 {
+    if(!ok)
+        return;
+    
     Application::adblockManager()->applyHidingRules(this);
     
+    QStringList list = ReKonfig::walletBlackList();
+    
     // KWallet Integration
-    // TODO: Add check for sites exempt from automatic form filling...
-    if (wallet()) 
+    if ( wallet() 
+         && !list.contains( mainFrame()->url().toString() ) 
+       ) 
     {
         wallet()->fillFormData(mainFrame());
+    }
+    
+    // TODO: implement me!
+    if(_sslInfo.isValid())
+    {
+        // show an icon in the urlbar
+    }
+    else
+    {
+        // hide the icon in the urlbar
     }
 }
 
@@ -213,22 +298,35 @@ void WebPage::loadFinished(bool)
 void WebPage::manageNetworkErrors(QNetworkReply *reply)
 {
     Q_ASSERT(reply);
-
-    WebView *v = 0;
+    QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
+    const bool isMainFrameRequest = (frame == mainFrame());
     
-    // NOTE 
-    // These are not all networkreply errors, 
+    if ( isMainFrameRequest 
+         && _sslInfo.isValid()
+         && !domainSchemeMatch(reply->url(), _sslInfo.url())
+       ) 
+    {
+        //kDebug() << "Reseting cached SSL info...";
+        _sslInfo = WebSslInfo();
+    }
+            
+    // NOTE: These are not all networkreply errors, 
     // but just that supported directly by KIO
-    
     switch( reply->error() )
     {
         
-    case QNetworkReply::NoError:                            // no error. Simple :)
+    case QNetworkReply::NoError:                             // no error. Simple :)
+        if ( isMainFrameRequest && !_sslInfo.isValid() ) 
+        {
+            // Obtain and set the SSL information if any...
+            _sslInfo.fromMetaData(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)));
+            _sslInfo.setUrl(reply->url());
+        }
         break;
 
     case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
 
-        if( m_protHandler.postHandling(reply->request(), mainFrame()) )
+        if( _protHandler.postHandling(reply->request(), mainFrame()) )
             break;
 
     case QNetworkReply::ContentAccessDenied:                 // access to remote content denied (similar to HTTP error 401)
@@ -247,8 +345,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 
         // don't bother on elements loading errors: 
         // we'll manage just main url page ones
-        v = qobject_cast<WebView *>(view());
-        if( reply->url() != v->url() )
+        if( !isMainFrameRequest )
             break;
         
         mainFrame()->setHtml( errorPage(reply), reply->url() );
@@ -396,5 +493,33 @@ void WebPage::downloadAllContentsWithKGet()
     if( kget.isValid() )
     {
         kget.call("importLinks", QVariant(contents.toList()));
+    }
+}
+
+
+void WebPage::showSSLInfo()
+{
+    if (_sslInfo.isValid()) 
+    {
+        QPointer<KSslInfoDialog> dlg = new KSslInfoDialog ( view() );
+        dlg->setSslInfo( _sslInfo.certificateChain(),
+                         _sslInfo.peerAddress().toString(),
+                         mainFrame()->url().host(),
+                         _sslInfo.protocol(),
+                         _sslInfo.ciphers(),
+                         _sslInfo.usedChiperBits(),
+                         _sslInfo.supportedChiperBits(),
+                         KSslInfoDialog::errorsFromString( _sslInfo.certificateErrors() )
+                        );
+
+        dlg->open();
+        delete dlg;
+    } 
+    else 
+    {
+        KMessageBox::information( 0, 
+                                  i18n("The SSL information for this site appears to be corrupt."), 
+                                  i18nc("Secure Sockets Layer", "SSL")
+                                );
     }
 }

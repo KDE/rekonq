@@ -37,6 +37,7 @@
 #include "rekonqprivate_export.h"
 #include "protocolhandler.h"
 #include "newtabpage.h"
+#include "websslinfo.h"
 
 // KDE Includes
 #include <KWebPage>
@@ -56,6 +57,8 @@ class REKONQ_TESTS_EXPORT WebPage : public KWebPage
 public:
     explicit WebPage(QWidget *parent = 0);
     ~WebPage();
+
+    void showSSLInfo();
 
 public slots:
     void manageNetworkErrors(QNetworkReply *reply);
@@ -78,7 +81,9 @@ private slots:
 private:
     QString errorPage(QNetworkReply *);
 
-    ProtocolHandler m_protHandler;
+    ProtocolHandler _protHandler;
+
+    WebSslInfo _sslInfo;
 };
 
 #endif
