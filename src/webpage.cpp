@@ -148,6 +148,18 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
+    KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
+    KIO::MetaData metaData = manager->requestMetaData();
+    
+    // Get the SSL information sent, if any...
+    if( metaData.contains(QL1S("ssl_in_use")) ) 
+    {
+        WebSslInfo info;
+        info.fromMetaData(metaData.toVariant());
+        info.setUrl(request.url());
+        _sslInfo = info;
+    }
+    
     if(frame)
     {
         if ( _protHandler.preHandling(request, frame) )
@@ -287,10 +299,12 @@ void WebPage::loadFinished(bool ok)
     if(_sslInfo.isValid())
     {
         // show an icon in the urlbar
+        kDebug() << "----------------- SSL VALID INFO!!!! ------------------";
     }
     else
     {
         // hide the icon in the urlbar
+        kDebug() << "----------------- SSL INFO NOT VALID... ------------------";
     }
 }
 
@@ -298,6 +312,7 @@ void WebPage::loadFinished(bool ok)
 void WebPage::manageNetworkErrors(QNetworkReply *reply)
 {
     Q_ASSERT(reply);
+    WebView *v = 0;
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
     
@@ -343,9 +358,10 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     case QNetworkReply::ProtocolUnknownError:                // Unknown protocol
     case QNetworkReply::ProtocolInvalidOperationError:       // requested operation is invalid for this protocol
 
-        // don't bother on elements loading errors: 
+        // don't bother on elements loading errors:
         // we'll manage just main url page ones
-        if( !isMainFrameRequest )
+        v = qobject_cast<WebView *>(view());
+        if( reply->url() != v->url() )
             break;
         
         mainFrame()->setHtml( errorPage(reply), reply->url() );
