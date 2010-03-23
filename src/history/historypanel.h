@@ -31,6 +31,8 @@
 
 // Local Includes
 #include "rekonqprivate_export.h"
+#include "application.h"
+#include "urltreeview.h"
 
 // Qt Includes
 #include <QDockWidget>
@@ -50,13 +52,17 @@ public:
     ~HistoryPanel();
 
 signals:
-    void openUrl(const KUrl &);
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void itemHovered(const QString &);
 
 private slots:
-    void itemActivated(const QModelIndex &);
+    void contextMenuItem(const QPoint &pos);
+    void contextMenuGroup(const QPoint &pos);
+    void openAll();
 
 private:
     void setup();
+    UrlTreeView *m_treeView;
 };
 
 #endif // HISTORYPANEL_H

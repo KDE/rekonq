@@ -500,7 +500,8 @@ void MainWindow::setupPanels()
     // STEP 1
     // Setup history panel
     m_historyPanel = new HistoryPanel(i18n("History Panel"), this);
-    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
+    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
+    connect(m_historyPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
     connect(m_historyPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
 
     addDockWidget(Qt::LeftDockWidgetArea, m_historyPanel);
@@ -514,7 +515,8 @@ void MainWindow::setupPanels()
     // STEP 2
     // Setup bookmarks panel
     m_bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
-    connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
+    connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
+    connect(m_bookmarksPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
     connect(m_bookmarksPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
 
     addDockWidget(Qt::LeftDockWidgetArea, m_bookmarksPanel);
