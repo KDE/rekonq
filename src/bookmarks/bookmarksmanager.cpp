@@ -178,7 +178,9 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
             bookfile = KUrl(bookmarksPath);
         }
     }
-    m_manager = KBookmarkManager::managerForExternalFile(bookfile.path());
+    // A workaround to avoid a long delay between the two changed signals of the bookmark manager
+    m_manager = KBookmarkManager::managerForFile(bookfile.path(), "rekonq");
+    
     connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
             this, SLOT(slotBookmarksChanged(const QString &, const QString &)));
 

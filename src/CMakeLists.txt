@@ -19,6 +19,7 @@ SET( rekonq_KDEINIT_SRCS
     protocolhandler.cpp
     sessionmanager.cpp
     tabbar.cpp
+    urltreeview.cpp
     walletbar.cpp
     webinspectorpanel.cpp
     webpage.cpp
