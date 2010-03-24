@@ -2,9 +2,9 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -30,6 +30,9 @@
 #define LINEEDIT_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KLineEdit>
 
@@ -39,7 +42,7 @@ class QFocusEvent;
 class QKeyEvent;
 
 
-class LineEdit : public KLineEdit
+class REKONQ_TESTS_EXPORT LineEdit : public KLineEdit
 {
     Q_OBJECT
 
@@ -47,12 +50,9 @@ public:
     explicit LineEdit(QWidget *parent = 0);
     virtual ~LineEdit();
 
-    
 protected:
     virtual void keyPressEvent(QKeyEvent*);
     virtual void mouseDoubleClickEvent(QMouseEvent *);
-
-
 };
 
 #endif // LINEEDIT_H

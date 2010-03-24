@@ -39,7 +39,6 @@
 
 // KDE Includes
 #include <KBookmarkOwner>
-#include <KCompletion>
 
 // Forward Declarations
 class BookmarkProvider;
@@ -211,13 +210,7 @@ public:
      */
     KBookmarkGroup rootGroup();
 
-    KBookmarkManager *bookmarkManager();
-    
-    /**
-    * @returns the KCompletion object.
-    */
-    KCompletion *completionObject() const;
-
+	KBookmarkManager *bookmarkManager() { return m_manager; }
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
@@ -252,7 +245,6 @@ private:
     KActionCollection *m_actionCollection;
     BookmarkMenu *m_bookmarkMenu;
     KToolBar *m_bookmarkToolBar;
-    KCompletion *m_completion;
 };
 
 #endif
