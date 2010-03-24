@@ -242,7 +242,6 @@ void MainView::clear()
 {
     // FIXME (the programmer, not the code)
     // What exactly do we need to clear here?
-    m_urlBar->clearHistory();
     m_urlBar->clear();
 
     m_recentlyClosedTabs.clear();

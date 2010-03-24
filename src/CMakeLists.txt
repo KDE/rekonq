@@ -48,6 +48,9 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     urlbar/urlbar.cpp
     urlbar/lineedit.cpp
+    urlbar/completionwidget.cpp
+    urlbar/urlresolver.cpp
+    urlbar/listitem.cpp
 )
 
 
