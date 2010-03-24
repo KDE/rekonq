@@ -82,6 +82,9 @@ void NetworkWidget::save()
     _cookiesModule->save();
     _proxyModule->save();
     _cacheModule->save();
+
+    _changed = false;
+    emit changed(false);
 }
 
 

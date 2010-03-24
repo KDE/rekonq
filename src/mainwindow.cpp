@@ -543,6 +543,11 @@ void MainWindow::setupPanels()
 
 void MainWindow::updateConfiguration()
 {
+    kDebug() << "======================================================================================================================";
+    kDebug() << "======================================================================================================================";
+        kDebug() << "======================================================================================================================";
+            kDebug() << "======================================================================================================================";
+            
     // ============== General ==================
     m_view->updateTabBar();
 
@@ -639,14 +644,13 @@ void MainWindow::preferences()
         return;
 
     // we didn't find an instance of this dialog, so lets create it
-    QWeakPointer<SettingsDialog> s = new SettingsDialog(this);
+    QPointer<SettingsDialog> s = new SettingsDialog(this);
 
     // keep us informed when the user changes settings
-    connect(s.data(), SIGNAL(settingsChanged(const QString&)), this, SLOT(updateConfiguration()));
+    connect(s, SIGNAL(settingsChanged(const QString&)), this, SLOT(updateConfiguration()));
 
-    s.data()->exec();
-    delete s.data();
-    s.clear();
+    s->exec();
+    delete s;
 }
 
 

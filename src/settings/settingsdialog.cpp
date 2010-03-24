@@ -199,11 +199,17 @@ void SettingsDialog::readConfig()
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
+    if (!hasChanged())
+        return;
+    
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
     d->shortcutsEditor->save();
     d->adBlockWidg->save();
     d->networkWidg->save();
+
+    updateButtons();
+    emit settingsChanged("ReKonfig");
 }
 
 

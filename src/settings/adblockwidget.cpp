@@ -174,6 +174,9 @@ void AdBlockWidget::save()
     ReKonfig::setAdBlockEnabled( checkEnableAdblock->isChecked() );
     ReKonfig::setHideAdsEnabled( checkHideAds->isChecked() );
     ReKonfig::setUpdateInterval( spinBox->value() );
+
+    _changed = false;
+    emit changed(false);
 }
 
 
