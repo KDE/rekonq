@@ -84,7 +84,7 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
     KConfigGroup rulesGroup( config, "rules" );
     QStringList rules;
     rules = rulesGroup.readEntry( "local-rules" , QStringList() );
-    loadRules( rules );
+    loadRules(rules);
 
     // ----------------------------------------------------------
         
@@ -115,26 +115,35 @@ void AdBlockManager::loadRules(const QStringList &rules)
     foreach(const QString &stringRule, rules)
     {
         // ! rules are comments
-        if( !stringRule.startsWith('!') && !stringRule.startsWith('[') && !stringRule.isEmpty() )
-        {           
-            // white rules
-            if( stringRule.startsWith( QLatin1String("@@") ) )
-            {
-                AdBlockRule rule( stringRule.mid(2) );
-                _whiteList << rule;
-                continue;
-            }
-            
-            // hide (CSS) rules
-            if( stringRule.startsWith( QLatin1String("##") ) )
-            {
-                _hideList << stringRule.mid(2);
-                continue;
-            }
-
-            AdBlockRule rule( stringRule );
-            _blackList << rule;
+        if( stringRule.startsWith('!') )
+            continue;
+        
+        // [ rules are ABP infos
+        if( stringRule.startsWith('[') )
+            continue;
+        
+        // empty rules are just dangerous.. 
+        // (an empty rule in whitelist allows all, in blacklist blocks all..)
+        if( stringRule.isEmpty() )
+            continue;
+           
+        // white rules
+        if( stringRule.startsWith( QLatin1String("@@") ) )
+        {
+            AdBlockRule rule( stringRule.mid(2) );
+            _whiteList << rule;
+            continue;
         }
+        
+        // hide (CSS) rules
+        if( stringRule.startsWith( QLatin1String("##") ) )
+        {
+            _hideList << stringRule.mid(2);
+            continue;
+        }
+
+        AdBlockRule rule( stringRule );
+        _blackList << rule;
     }
 }
 
@@ -182,7 +191,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request)
 
 void AdBlockManager::applyHidingRules(WebPage *page)
 {
-    if(!page || !page->mainFrame())
+    if(!page)
         return;
     
     if (!_isAdblockEnabled)
