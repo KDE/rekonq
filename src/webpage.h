@@ -61,7 +61,6 @@ public:
     void showSSLInfo();
 
 public slots:
-    void manageNetworkErrors(QNetworkReply *reply);
     virtual void downloadRequest(const QNetworkRequest &request);
     void downloadAllContentsWithKGet();
 
@@ -76,13 +75,13 @@ protected Q_SLOTS:
     virtual void handleUnsupportedContent(QNetworkReply *reply);
 
 private slots:
+    void manageNetworkErrors(QNetworkReply *reply);
     void loadFinished(bool);
 
 private:
     QString errorPage(QNetworkReply *);
 
     ProtocolHandler _protHandler;
-
     WebSslInfo _sslInfo;
 };
 
