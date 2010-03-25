@@ -1009,12 +1009,19 @@ void MainWindow::openPrevious(Qt::MouseButtons btn)
     QWebHistory *history = currentTab()->view()->history();
     if (history->canGoBack())
     {
-        KUrl back = history->backItem().url();
         if(btn == Qt::MidButton)
+        {
+            KUrl back = history->backItem().url();
             Application::instance()->loadUrl(back, Rekonq::SettingOpenTab);
+        }
         else
-            Application::instance()->loadUrl(back);
+        {
+            history->goToItem(history->backItem());
+        }
+        
+        updateActions();
     }
+    
 }
 
 
@@ -1023,11 +1030,16 @@ void MainWindow::openNext(Qt::MouseButtons btn)
     QWebHistory *history = currentTab()->view()->history();
     if (history->canGoForward())
     {
-        KUrl next = history->forwardItem().url();
         if(btn == Qt::MidButton)
+        {
+            KUrl next = history->forwardItem().url();
             Application::instance()->loadUrl(next, Rekonq::SettingOpenTab);
+        }
         else
-            Application::instance()->loadUrl(next);
+        {
+            history->goToItem(history->forwardItem());
+        }
+        updateActions();
     }
 }
 
