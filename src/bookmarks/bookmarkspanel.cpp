@@ -157,13 +157,16 @@ void BookmarksPanel::autoExpand(const QModelIndex &root)
 {
 
     int count = m_treeView->model()->rowCount(root);
-    QModelIndex temp;
+    QModelIndex index;
 
     for(int i = 0; i < count; i++)
     {
-        temp = m_treeView->model()->index(i,0,root);
-        m_treeView->setExpanded(temp, bookmarkForIndex(temp).toGroup().isOpen());
-        autoExpand(temp);
+        index = m_treeView->model()->index(i, 0, root);
+        if(index.isValid() && bookmarkForIndex(index).isGroup())
+        {
+            m_treeView->setExpanded(index, bookmarkForIndex(index).toGroup().isOpen());
+            autoExpand(index);
+        }
     }
 }
 
@@ -369,7 +372,7 @@ void BookmarksPanel::editBookmark()
 void BookmarksPanel::openAll()
 {
     QModelIndex index = m_treeView->currentIndex();
-    if(!index.isValid())
+    if(!index.isValid() || !bookmarkForIndex(index).isGroup())
         return;
 
     QList<KUrl> allChild = bookmarkForIndex(index).toGroup().groupUrlList();
