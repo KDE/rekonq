@@ -47,12 +47,6 @@ WebPluginFactory::WebPluginFactory(QObject *parent)
 }
 
 
-WebPluginFactory::~WebPluginFactory()
-{
-}
-
-
-
 void WebPluginFactory::setLoadClickToFlash(bool load)
 {
     _loadClickToFlash = load;
@@ -69,7 +63,7 @@ QObject *WebPluginFactory::create(const QString &mimeType,
     switch( ReKonfig::pluginsEnabled() )
     {
     case 0:
-        kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
+        kDebug() << "No plugins found for" << mimeType << ". Falling back to KDEWebKit ones...";
         return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
         
     case 1:
