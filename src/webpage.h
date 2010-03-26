@@ -80,7 +80,7 @@ private slots:
 
 private:
     QString errorPage(QNetworkReply *);
-
+    
     ProtocolHandler _protHandler;
     WebSslInfo _sslInfo;
 };

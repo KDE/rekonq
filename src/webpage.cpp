@@ -271,9 +271,22 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             }
         }
         // case KParts::BrowserRun::Embed
-        KUrl::List list;
-        list.append(url);
-        KRun::run(*offer,url,0);
+        QString html;
+        html += "<html>";
+        html += "<head>";
+        html += "<title>";
+        html += url.pathOrUrl();
+        html += "</title>";
+        html += "<style type=\"text/css\">";
+        html += "* { border: 0; padding: 0; margin: 0; }";
+        html += "</style>";
+        html += "</head>";    
+        html += "<body>";
+        html += "<embed src=\"" + url.pathOrUrl() + "\" width=\"100%\" height=\"100%\" />";
+        html += "</body>";
+        html += "</html>";
+        
+        mainFrame()->setHtml(html, url);
     }
 }
 

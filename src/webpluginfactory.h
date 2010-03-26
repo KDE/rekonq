@@ -46,7 +46,6 @@ Q_OBJECT
 
 public:
     WebPluginFactory(QObject *parent);
-    ~WebPluginFactory();
 
     virtual QObject *create(const QString &mimeType,
                             const QUrl &url,
