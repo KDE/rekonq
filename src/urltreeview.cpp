@@ -74,7 +74,7 @@ void UrlTreeView::mousePressEvent(QMouseEvent *event)
 
     if(event->button() == Qt::RightButton)
     {
-        if(index.model()->rowCount(index) == 0)
+        if(model()->rowCount(index) == 0)
         {
             // An empty group needs to be handle by the panels
             emit contextMenuItemRequested(event->pos());
@@ -100,7 +100,7 @@ void UrlTreeView::mouseReleaseEvent(QMouseEvent *event)
 
     else if(event->button() == Qt::LeftButton)
     {
-        if(index.model()->rowCount(index) == 0)
+        if(model()->rowCount(index) == 0)
             validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
         else
             setExpanded(index, !isExpanded(index));
@@ -118,7 +118,7 @@ void UrlTreeView::keyPressEvent(QKeyEvent *event)
 
     if(event->key() == Qt::Key_Return)
     {
-        if(index.model()->rowCount(index) == 0)
+        if(model()->rowCount(index) == 0)
             validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
         else
             setExpanded(index, !isExpanded(index));

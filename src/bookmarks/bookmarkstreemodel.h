@@ -84,13 +84,16 @@ public:
     virtual QMimeData *mimeData( const QModelIndexList & indexes ) const;
 
 private slots:
-    void bookmarksChanged( const QString &groupAddress );
+    void bookmarksChanged();
+    void saveOnly();
+    void reconnectManager();
 
 signals:
-    void bookmarkChangedFinished();
+    void bookmarksUpdated();
 
 private:
     BtmItem *m_root;
+
     void resetModel();
     void setRoot(KBookmarkGroup bmg);
     void populate( BtmItem *node, KBookmarkGroup bmg);
