@@ -52,7 +52,8 @@
 
 
 HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
-    : QDockWidget(title, parent, flags)
+    : QDockWidget(title, parent, flags),
+    m_treeView(new UrlTreeView(this))
 {
     setup();
     setShown(ReKonfig::showHistoryPanel());
@@ -73,7 +74,6 @@ void HistoryPanel::setup()
     
     QWidget *ui = new QWidget(this);
 
-    m_treeView = new UrlTreeView(this);
     m_treeView->setUniformRowHeights(true);
     m_treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_treeView->setTextElideMode(Qt::ElideMiddle);

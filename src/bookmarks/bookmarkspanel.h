@@ -66,7 +66,6 @@ private slots:
     void deleteBookmark();
     void openFolderInTabs();
     void editBookmark();
-    void newBookmark();
     void newBookmarkGroup();
     void newSeparator();
     void onCollapse(const QModelIndex &index);
