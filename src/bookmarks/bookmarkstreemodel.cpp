@@ -148,8 +148,9 @@ BookmarksTreeModel::BookmarksTreeModel(QObject *parent)
     , m_root(0)
 {
     resetModel();
-    connect( this, SIGNAL(bookmarkChangedFinished()), parent, SLOT(callAutoExpand()));
-    connect( Application::bookmarkProvider()->bookmarkManager(), SIGNAL( changed(QString,QString) ), this, SLOT( bookmarksChanged(QString) ) );
+    connect( this, SIGNAL(bookmarksUpdated()), parent, SLOT(loadFoldedState()));
+    connect( Application::bookmarkProvider()->bookmarkManager(), SIGNAL( changed(QString,QString) ), this, SLOT( bookmarksChanged() ) );
+    connect( parent, SIGNAL(saveOnlyRequested()), this, SLOT(saveOnly()) );
 }
 
 
@@ -283,11 +284,10 @@ QVariant BookmarksTreeModel::data(const QModelIndex &index, int role) const
 }
 
 
-void BookmarksTreeModel::bookmarksChanged( const QString &groupAddress )
+void BookmarksTreeModel::bookmarksChanged()
 {
-    Q_UNUSED(groupAddress);
     resetModel();
-    emit bookmarkChangedFinished();
+    emit bookmarksUpdated();
 }
 
 
@@ -333,6 +333,20 @@ void BookmarksTreeModel::populate( BtmItem *node, KBookmarkGroup bmg)
 KBookmark BookmarksTreeModel::bookmarkForIndex(const QModelIndex index) const
 {
     return static_cast<BtmItem*>(index.internalPointer())->getBkm();
+}
+
+
+void BookmarksTreeModel::saveOnly()
+{
+    disconnect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString,QString)), this, SLOT(bookmarksChanged()));
+    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString,QString)), this, SLOT(reconnectManager()));
+    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+}
+
+
+void BookmarksTreeModel::reconnectManager()
+{
+    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL( changed(QString,QString) ), this, SLOT(bookmarksChanged()));
 }
 
 

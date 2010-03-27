@@ -40,7 +40,6 @@
 // KDE Includes
 #include <KBookmark>
 #include <KActionCollection>
-#include <KMenu>
 
 // Forward Declarations
 class KUrl;
@@ -58,24 +57,24 @@ public:
 signals:
     void openUrl(const KUrl &, const Rekonq::OpenType &);
     void itemHovered(const QString &);
-    void saveExpFinished(const QString &);
-    void saveRequested();
+    void saveOnlyRequested();
 
 private slots:
     void contextMenuBk(const QPoint &pos);
     void contextMenuBkGroup(const QPoint &pos, const bool emptyGroup = false);
     void contextMenuBlank(const QPoint &pos);
     void deleteBookmark();
-    void openAll();
+    void openFolderInTabs();
     void editBookmark();
     void newBookmark();
     void newBookmarkGroup();
     void newSeparator();
-    void bookmarkPage();
-    void autoExpand(const QModelIndex &root = QModelIndex());
     void onCollapse(const QModelIndex &index);
     void onExpand(const QModelIndex &index);
-    void callAutoExpand();
+    void bookmarkCurrentPage();
+    void loadFoldedState(const QModelIndex &root);
+    void loadFoldedState();
+
 
 private:
     void setup();
@@ -84,10 +83,8 @@ private:
     KBookmark bookmarkForIndex(const QModelIndex &index);
 
     UrlTreeView *m_treeView;
-    QStringList m_expList;
-    KActionCollection m_ac;
-    KMenu *menu;
-    bool expandLock;
+    KActionCollection *m_ac;
+    bool m_loadingState;
 };
 
 #endif // BOOKMARKSPANEL_H
