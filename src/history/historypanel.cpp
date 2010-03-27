@@ -52,7 +52,8 @@
 
 
 HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
-    : QDockWidget(title, parent, flags)
+    : QDockWidget(title, parent, flags),
+    m_treeView(new UrlTreeView(this))
 {
     setup();
     setShown(ReKonfig::showHistoryPanel());
@@ -73,7 +74,6 @@ void HistoryPanel::setup()
     
     QWidget *ui = new QWidget(this);
 
-    m_treeView = new UrlTreeView(this);
     m_treeView->setUniformRowHeights(true);
     m_treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_treeView->setTextElideMode(Qt::ElideMiddle);
@@ -129,15 +129,15 @@ void HistoryPanel::contextMenuItem(const QPoint &pos)
     connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInCurrentTab()));
     menu->addAction(action);
 
-    action = new KAction(KIcon("tab-new"), i18n("Open in new tab"), this);
+    action = new KAction(KIcon("tab-new"), i18n("Open in New Tab"), this);
     connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInNewTab()));
     menu->addAction(action);
 
-    action = new KAction(KIcon("window-new"), i18n("Open in new window"), this);
+    action = new KAction(KIcon("window-new"), i18n("Open in New Window"), this);
     connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInNewWindow()));
     menu->addAction(action);
 
-    action = new KAction(KIcon("edit-copy"), i18n("Copy link"), this);
+    action = new KAction(KIcon("edit-copy"), i18n("Copy Link Address"), this);
     connect(action, SIGNAL(triggered()), m_treeView, SLOT(copyToClipboard()));
     menu->addAction(action);
 
@@ -152,7 +152,7 @@ void HistoryPanel::contextMenuGroup(const QPoint &pos)
     KMenu *menu = new KMenu(this);
     KAction* action;
 
-    action = new KAction(KIcon("tab-new"), i18n("Open all Bookmarks"), this);
+    action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(openAll()));
 
     menu->addAction(action);
