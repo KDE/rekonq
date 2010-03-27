@@ -38,6 +38,26 @@
 // Qt Includes
 #include <QAbstractItemModel>
 
+class BtmItem
+{
+public:
+    BtmItem(const KBookmark &bm);
+    ~BtmItem();
+    QVariant data( int role = Qt::DisplayRole ) const;
+    int row() const;
+    int childCount() const;
+    BtmItem* child( int n );
+    BtmItem* parent() const;
+    void appendChild(BtmItem *child);
+    void clear();
+    KBookmark getBkm() const;
+
+private:
+    BtmItem *m_parent;
+    QList< BtmItem* > m_children;
+    KBookmark m_kbm;
+};
+
 
 class REKONQ_TESTS_EXPORT BookmarksTreeModel : public QAbstractItemModel
 {
@@ -48,28 +68,36 @@ public:
     explicit BookmarksTreeModel(QObject *parent = 0);
     ~BookmarksTreeModel();
 
-	virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-	virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
-	virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex &index) const;
-	virtual QVariant data(const QModelIndex &index, int role) const;
-//     virtual bool setData(const QModelIndex &index, const QVariant &value, int role);
+    virtual QVariant data(const QModelIndex &index, int role) const;
+
+    virtual QStringList mimeTypes () const;
+    virtual bool dropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent);
+    virtual Qt::DropActions supportedDropActions () const;
+    virtual QMimeData *mimeData( const QModelIndexList & indexes ) const;
 
 private slots:
-	void bookmarksChanged( const QString &groupAddress );
+    void bookmarksChanged();
+    void saveOnly();
+    void reconnectManager();
+
+signals:
+    void bookmarksUpdated();
 
 private:
-	class BtmItem;
-	BtmItem *m_root;
+    BtmItem *m_root;
 
-	void resetModel();
-
+    void resetModel();
     void setRoot(KBookmarkGroup bmg);
-	void populate( BtmItem *node, KBookmarkGroup bmg);
+    void populate( BtmItem *node, KBookmarkGroup bmg);
+    KBookmark bookmarkForIndex(const QModelIndex index) const;
 };
 
 #endif // BOOKMARKSTREEMODEL_H

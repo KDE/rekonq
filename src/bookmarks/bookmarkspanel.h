@@ -31,9 +31,15 @@
 
 // Local Includes
 #include "rekonqprivate_export.h"
+#include "application.h"
+#include "urltreeview.h"
 
 // Qt Includes
 #include <QDockWidget>
+
+// KDE Includes
+#include <KBookmark>
+#include <KActionCollection>
 
 // Forward Declarations
 class KUrl;
@@ -49,13 +55,35 @@ public:
     ~BookmarksPanel();
 
 signals:
-    void openUrl(const KUrl &);
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void itemHovered(const QString &);
+    void saveOnlyRequested();
 
 private slots:
-    void bookmarkActivated( const QModelIndex &index );
+    void contextMenuBk(const QPoint &pos);
+    void contextMenuBkGroup(const QPoint &pos, const bool emptyGroup = false);
+    void contextMenuBlank(const QPoint &pos);
+    void deleteBookmark();
+    void openFolderInTabs();
+    void editBookmark();
+    void newBookmarkGroup();
+    void newSeparator();
+    void onCollapse(const QModelIndex &index);
+    void onExpand(const QModelIndex &index);
+    void bookmarkCurrentPage();
+    void loadFoldedState(const QModelIndex &root);
+    void loadFoldedState();
+
 
 private:
     void setup();
+    void setupActions();
+    void contextMenuSeparator(const QPoint &pos);
+    KBookmark bookmarkForIndex(const QModelIndex &index);
+
+    UrlTreeView *m_treeView;
+    KActionCollection *m_ac;
+    bool m_loadingState;
 };
 
 #endif // BOOKMARKSPANEL_H

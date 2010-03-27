@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
-* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -11,9 +10,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,44 +24,46 @@
 * ============================================================ */
 
 
-#ifndef HISTORYPANEL_H
-#define HISTORYPANEL_H
-
+#ifndef URLTREEVIEW_H
+#define URLTREEVIEW_H
 
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "application.h"
-#include "urltreeview.h"
 
 // Qt Includes
-#include <QDockWidget>
-
-// Forward Declarations
-class KUrl;
-class QWidget;
-class QModelIndex;
+#include <QTreeView>
 
 
-class REKONQ_TESTS_EXPORT HistoryPanel : public QDockWidget
+class UrlTreeView : public QTreeView
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit HistoryPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~HistoryPanel();
+    UrlTreeView(QWidget *parent = 0);
+    ~UrlTreeView();
 
 signals:
     void openUrl(const KUrl &, const Rekonq::OpenType &);
     void itemHovered(const QString &);
+    void delKeyPressed();
+    void contextMenuItemRequested(const QPoint &pos);
+    void contextMenuGroupRequested(const QPoint &pos);
+    void contextMenuEmptyRequested(const QPoint &pos);
 
-private slots:
-    void contextMenuItem(const QPoint &pos);
-    void contextMenuGroup(const QPoint &pos);
-    void openAll();
+public slots:
+    void copyToClipboard();
+    void openInCurrentTab();
+    void openInNewTab();
+    void openInNewWindow();
+
+protected:
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 private:
-    void setup();
-    UrlTreeView *m_treeView;
+    void validOpenUrl(const KUrl &url, Rekonq::OpenType openType = Rekonq::CurrentTab);
 };
 
-#endif // HISTORYPANEL_H
+#endif // URLTREEVIEW_H

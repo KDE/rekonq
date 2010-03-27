@@ -210,7 +210,9 @@ public:
      */
     KBookmarkGroup rootGroup();
 
-	KBookmarkManager *bookmarkManager() { return m_manager; }
+    KBookmarkManager *bookmarkManager() { return m_manager; }
+    BookmarkOwner *bookmarkOwner() { return m_owner; }
+    
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
