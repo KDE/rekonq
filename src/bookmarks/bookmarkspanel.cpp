@@ -187,7 +187,7 @@ void BookmarksPanel::setupActions()
     m_ac->addAction("open_window", action);
 
     action = new KAction(KIcon("rating"), i18n("Bookmark Current Page"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(bookmarkPage()));
+    connect(action, SIGNAL(triggered()), this, SLOT(bookmarkCurrentPage()));
     m_ac->addAction("bookmark_page", action);
 
     action = new KAction(KIcon("bookmark-new"), i18n("New Bookmark"), this);
