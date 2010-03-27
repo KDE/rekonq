@@ -202,7 +202,7 @@ void BookmarksPanel::setupActions()
     connect(action, SIGNAL(triggered()), this, SLOT(newSeparator()));
     m_ac->addAction("separator_new", action);
 
-    action = new KAction(KIcon("edit-copy"), i18n("Copy Link Adress"), this);
+    action = new KAction(KIcon("edit-copy"), i18n("Copy Link Address"), this);
     connect(action, SIGNAL(triggered()), m_treeView, SLOT(copyToClipboard()));
     m_ac->addAction("copy", action);
 
