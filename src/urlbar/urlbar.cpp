@@ -155,7 +155,7 @@ void UrlBar::setUrl(const QUrl& url)
 void UrlBar::setProgress(int progress)
 {
     m_progress = progress;
-    repaint();
+    update();
 }
 
 
@@ -225,14 +225,14 @@ void UrlBar::loadFinished(bool)
 {
     // reset progress bar after small delay
     m_progress = 0;
-    QTimer::singleShot(200, this, SLOT(repaint()));
+    QTimer::singleShot(200, this, SLOT(update()));
 }
 
 
 void UrlBar::updateProgress(int progress)
 {
     m_progress = progress;
-    repaint();
+    update();
 }
 
 
@@ -295,7 +295,7 @@ QLinearGradient UrlBar::generateGradient(const QColor &color, int height)
 void UrlBar::setBackgroundColor(QColor c)
 {
     s_defaultBaseColor = c;
-    repaint();
+    update();
 }
 
 
