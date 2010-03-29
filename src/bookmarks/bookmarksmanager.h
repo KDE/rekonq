@@ -219,6 +219,8 @@ public:
     */
     KCompletion *completionObject() const;
 
+    QString titleForBookmarkUrl(QString url);
+    
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
@@ -245,8 +247,10 @@ public slots:
      */
     void slotBookmarksChanged(const QString &group, const QString &caller);
 
+    
 private:
     KAction *fillBookmarkBar(const KBookmark &bookmark);
+    QString titleForBookmarkUrl(const KBookmark &bookmark, QString url);
 
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;

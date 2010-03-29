@@ -294,7 +294,7 @@ KAction *BookmarkProvider::fillBookmarkBar(const KBookmark &bookmark)
     }
     else
     {        
-        m_completion->addItem(bookmark.url().path());
+        m_completion->addItem(bookmark.url().url());
         return new KBookmarkAction(bookmark, m_owner, this);
     }
 }
@@ -309,3 +309,51 @@ KCompletion *BookmarkProvider::completionObject() const
 {
     return m_completion;
 }
+
+
+
+
+
+QString BookmarkProvider::titleForBookmarkUrl(QString url)
+{
+    QString title = "";
+    KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
+    if (bookGroup.isNull())
+    {
+        return title;
+    }
+
+    KBookmark bookmark = bookGroup.first();
+    while (!bookmark.isNull() && title.isEmpty())
+    {
+        title = titleForBookmarkUrl(bookmark, url);
+        bookmark = bookGroup.next(bookmark);
+    }
+    
+    return title;
+}
+
+
+QString BookmarkProvider::titleForBookmarkUrl(const KBookmark &bookmark, QString url)
+{
+    QString title = "";
+    if (bookmark.isGroup())
+    {
+        KBookmarkGroup group = bookmark.toGroup();
+        KBookmark bm = group.first();
+        while (!bm.isNull() && title.isEmpty())
+        {
+            title = titleForBookmarkUrl(bm, url); // it is .bookfolder
+            bm = group.next(bm);
+        }
+    }
+    else if(!bookmark.isSeparator() && bookmark.url()==url)
+    {
+        title = bookmark.fullText();
+    }
+    
+    return title;
+}
+
+
+

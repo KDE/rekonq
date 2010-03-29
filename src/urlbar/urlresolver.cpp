@@ -195,9 +195,10 @@ UrlSearchList UrlResolver::bookmarksResolution()
     QStringList bookmarkResults = bookmarkCompletion->substringCompletion(_urlString);
     Q_FOREACH(const QString &s, bookmarkResults)
     {
-        UrlSearchItem it( s, QString(), QString("rating") );
+        UrlSearchItem it( s, Application::bookmarkProvider()->titleForBookmarkUrl(s), QString("rating") );
         list << it;
     }
+
 
     return list;
 }
