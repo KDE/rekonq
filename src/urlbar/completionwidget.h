@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
-* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,44 +24,54 @@
 * ============================================================ */
 
 
-#ifndef HISTORYPANEL_H
-#define HISTORYPANEL_H
+#ifndef COMPLETION_WIDGET_H
+#define COMPLETION_WIDGET_H
 
 
 // Local Includes
-#include "rekonqprivate_export.h"
-#include "application.h"
-#include "urltreeview.h"
+#include "urlresolver.h"
+#include "listitem.h"
 
 // Qt Includes
-#include <QDockWidget>
+#include <QFrame>
+
+// KDE Includes
+#include <KLineEdit>
 
 // Forward Declarations
 class KUrl;
-class QWidget;
-class QModelIndex;
 
 
-class REKONQ_TESTS_EXPORT HistoryPanel : public QDockWidget
+class CompletionWidget : public QFrame
 {
 Q_OBJECT
 
 public:
-    explicit HistoryPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~HistoryPanel();
+    CompletionWidget(QWidget *parent);
+
+    void insertSearchList(const UrlSearchList &list);
+    void popup();
+
+    void up();
+    void down();
+    void clear();
+    virtual bool eventFilter(QObject *obj, QEvent *ev);
+    void setVisible(bool visible);
+    KUrl currentUrl();
+    
+private slots:
+    void itemChosen(ListItem *item);
 
 signals:
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
-    void itemHovered(const QString &);
-
-private slots:
-    void contextMenuItem(const QPoint &pos);
-    void contextMenuGroup(const QPoint &pos);
-    void openAll();
+    void chosenUrl(const QString&);
 
 private:
-    void setup();
-    UrlTreeView *m_treeView;
+    void sizeAndPosition();
+    
+    QWidget *_parent;
+
+    UrlSearchList _list;
+    int _currentIndex;
 };
 
-#endif // HISTORYPANEL_H
+#endif // COMPLETION_WIDGET_H

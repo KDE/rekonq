@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
-* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,44 +24,36 @@
 * ============================================================ */
 
 
-#ifndef HISTORYPANEL_H
-#define HISTORYPANEL_H
-
-
-// Local Includes
-#include "rekonqprivate_export.h"
-#include "application.h"
-#include "urltreeview.h"
-
 // Qt Includes
-#include <QDockWidget>
+#include <QWidget>
+#include <QStyleOptionViewItemV4>
 
 // Forward Declarations
-class KUrl;
-class QWidget;
-class QModelIndex;
+class UrlSearchItem;
 
 
-class REKONQ_TESTS_EXPORT HistoryPanel : public QDockWidget
+class ListItem : public QWidget
 {
 Q_OBJECT
 
 public:
-    explicit HistoryPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~HistoryPanel();
+    ListItem(const UrlSearchItem &item, QWidget *parent = 0);
+    ~ListItem();
+
+    void activate();
+    void deactivate();
 
 signals:
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
-    void itemHovered(const QString &);
+    void itemClicked(ListItem *item);
 
-private slots:
-    void contextMenuItem(const QPoint &pos);
-    void contextMenuGroup(const QPoint &pos);
-    void openAll();
+protected:
+   virtual void paintEvent(QPaintEvent *event);
+   virtual void enterEvent(QEvent *);
+   virtual void leaveEvent(QEvent *);
+   virtual void mousePressEvent(QMouseEvent *e);
 
 private:
-    void setup();
-    UrlTreeView *m_treeView;
-};
+    QStyleOptionViewItemV4 m_option;
+    QString guessNameFromUrl(QUrl url);
 
-#endif // HISTORYPANEL_H
+};

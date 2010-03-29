@@ -2,10 +2,10 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -32,23 +32,23 @@
 
 
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "lineedit.h"
+#include "completionwidget.h"
 
 // KDE Includes
 #include <KUrl>
-#include <KHistoryComboBox>
+#include <KComboBox>
 
 // Qt Includes
 #include <QUrl>
+#include <QPointer>
 
 // Forward Declarations
 class QLinearGradient;
 class QWidget;
-class KCompletion;
 
 
-class REKONQ_TESTS_EXPORT UrlBar : public KHistoryComboBox
+class UrlBar : public KComboBox
 {
     Q_OBJECT
 
@@ -61,31 +61,24 @@ public:
     QSize sizeHint() const;
     void setBackgroundColor(QColor);
     bool isLoading();
-    
     void setProgress(int progress);
-
-signals:
-    void activated(const KUrl&);
 
 public slots:
     void setUrl(const QUrl &url);
     void updateProgress(int progress);
     void updateUrl();
-    
+
 private slots:
     void activated(const QString& url);
     void loadFinished(bool);
-    void cleared();
+    void suggestUrls(const QString &editedText);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
+    virtual void focusInEvent(QFocusEvent *event);
 
 private:
-    void setupLineEdit();
-
-    KLineEdit *lineEdit() const;
-
     static QLinearGradient generateGradient(const QColor &color, int height);
 
     static QColor s_defaultBaseColor;
@@ -94,6 +87,9 @@ private:
 
     KUrl m_currentUrl;
     int m_progress;
+
+    CompletionWidget *m_box;
+    KUrl m_suggestedUrl;
 };
 
 #endif

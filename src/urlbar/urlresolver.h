@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
-* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,44 +24,49 @@
 * ============================================================ */
 
 
-#ifndef HISTORYPANEL_H
-#define HISTORYPANEL_H
+#ifndef URL_RESOLVER_H
+#define URL_RESOLVER_H
 
-
-// Local Includes
-#include "rekonqprivate_export.h"
-#include "application.h"
-#include "urltreeview.h"
 
 // Qt Includes
-#include <QDockWidget>
+#include <QString>
+#include <QList>
 
 // Forward Declarations
 class KUrl;
-class QWidget;
-class QModelIndex;
 
-
-class REKONQ_TESTS_EXPORT HistoryPanel : public QDockWidget
+class UrlSearchItem
 {
-Q_OBJECT
-
 public:
-    explicit HistoryPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~HistoryPanel();
-
-signals:
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
-    void itemHovered(const QString &);
-
-private slots:
-    void contextMenuItem(const QPoint &pos);
-    void contextMenuGroup(const QPoint &pos);
-    void openAll();
-
-private:
-    void setup();
-    UrlTreeView *m_treeView;
+    QString url;
+    QString title;
+    QString icon;
+    
+    UrlSearchItem(const QString &_url, const QString &_title = QString(), const QString &_icon = QString())
+        : url(_url), title(_title), icon(_icon)
+    {};
 };
 
-#endif // HISTORYPANEL_H
+typedef QList <UrlSearchItem> UrlSearchList;
+
+
+// ----------------------------------------------------------------------
+
+
+class UrlResolver
+{
+public:
+    UrlResolver(const QString &typedUrl);
+    
+    UrlSearchList orderedSearchItems();
+
+private:
+    QString _urlString;
+
+    UrlSearchList webSearchesResolution();
+    UrlSearchList historyResolution();
+    UrlSearchList qurlFromUserInputResolution();
+    UrlSearchList bookmarksResolution();
+};
+
+#endif // URL_RESOLVER_H

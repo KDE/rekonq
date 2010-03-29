@@ -161,7 +161,12 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
         , m_actionCollection(new KActionCollection(this))
         , m_bookmarkMenu(0)
         , m_bookmarkToolBar(0)
+        , m_completion(0)
 {
+    // take care of the completion object
+    m_completion = new KCompletion;
+    m_completion->setOrder( KCompletion::Weighted );
+
     KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");  // share konqueror bookmarks
 
     if (!QFile::exists(bookfile.path()))
@@ -178,7 +183,9 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
             bookfile = KUrl(bookmarksPath);
         }
     }
-    m_manager = KBookmarkManager::managerForExternalFile(bookfile.path());
+    // A workaround to avoid a long delay between the two changed signals of the bookmark manager
+    m_manager = KBookmarkManager::managerForFile(bookfile.path(), "rekonq");
+    
     connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
             this, SLOT(slotBookmarksChanged(const QString &, const QString &)));
 
@@ -220,6 +227,7 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
         return;
 
     m_bookmarkToolBar->clear(); // FIXME CRASH
+    m_completion->clear();
 
     KBookmark bookmark = toolBarGroup.first();
     while (!bookmark.isNull())
@@ -285,7 +293,8 @@ KAction *BookmarkProvider::fillBookmarkBar(const KBookmark &bookmark)
         return a;
     }
     else
-    {
+    {        
+        m_completion->addItem(bookmark.url().path());
         return new KBookmarkAction(bookmark, m_owner, this);
     }
 }
@@ -294,4 +303,9 @@ KAction *BookmarkProvider::fillBookmarkBar(const KBookmark &bookmark)
 KBookmarkGroup BookmarkProvider::rootGroup()
 {
     return m_manager->root();
+}
+
+KCompletion *BookmarkProvider::completionObject() const
+{
+    return m_completion;
 }
