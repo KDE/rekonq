@@ -67,6 +67,7 @@ private:
     UrlSearchList historyResolution();
     UrlSearchList qurlFromUserInputResolution();
     UrlSearchList bookmarksResolution();
+    bool isHttp();
 };
 
 #endif // URL_RESOLVER_H

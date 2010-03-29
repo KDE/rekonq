@@ -70,8 +70,17 @@ UrlSearchList UrlResolver::orderedSearchItems()
     
     UrlSearchList list;
     
-    list << qurlFromUserInputResolution();
-    list << webSearchesResolution();
+    if(isHttp())
+    {
+        list << qurlFromUserInputResolution();
+        list << webSearchesResolution();
+    }
+    else
+    {  
+        list << webSearchesResolution();
+        list << qurlFromUserInputResolution();
+    }
+
     int firstResults = list.count();
     int checkPoint = 9 - firstResults;
     
@@ -93,6 +102,21 @@ UrlSearchList UrlResolver::orderedSearchItems()
 }
 
 
+bool UrlResolver::isHttp()
+{
+    QString r = "[\\d\\w-.]+\\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|"\
+    "c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrst]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|"\
+    "h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|"\
+    "m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|"\
+    "s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|"\
+    "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
+    "pro)";
+
+    return (QRegExp(r, Qt::CaseInsensitive).indexIn(_urlString) != -1) 
+            || _urlString.startsWith("http:") 
+            || _urlString.startsWith("https:");
+}
+
 //////////////////////////////////////////////////////////////////////////
 // PRIVATE ENGINES
 
@@ -108,10 +132,12 @@ UrlSearchList UrlResolver::qurlFromUserInputResolution()
     {
         QByteArray ba = urlFromUserInput.toEncoded();
         if(!ba.isEmpty())
-        {
-            QString str(ba);
-            UrlSearchItem it(str);
-            list << it;
+        {           
+            QString gUrl = QString(ba);
+            QString gTitle = i18n("Browse");
+            UrlSearchItem gItem(gUrl, gTitle, QString("") );
+            list << gItem;
+
         }
     }
     
@@ -125,7 +151,7 @@ UrlSearchList UrlResolver::webSearchesResolution()
     UrlSearchList list;
     
     QString url1 = _urlString;
-    if(KUrl(url1).isRelative() && !url1.contains('.'))
+    if(KUrl(url1).isRelative())
     {
         // KUriFilter has the worst performance possible here and let this trick unusable
         QString gUrl = QString("http://www.google.com/search?q=%1&ie=UTF-8&oe=UTF-8").arg(url1);
@@ -133,10 +159,10 @@ UrlSearchList UrlResolver::webSearchesResolution()
         UrlSearchItem gItem(gUrl, gTitle, QString("http://www.google.com") );
         list << gItem;
         
-        QString wUrl = QString("http://en.wikipedia.org/wiki/Special:Search?search=%1&go=Go").arg(url1);
-        QString wTitle = i18n("Search Wikipedia for ") + url1;
-        UrlSearchItem wItem(wUrl, wTitle, QString("http://wikipedia.org") );
-        list << wItem;
+//         QString wUrl = QString("http://en.wikipedia.org/wiki/Special:Search?search=%1&go=Go").arg(url1);
+//         QString wTitle = i18n("Search Wikipedia for ") + url1;
+//         UrlSearchItem wItem(wUrl, wTitle, QString("http://wikipedia.org") );
+//         list << wItem;
     }
 
     return list;
