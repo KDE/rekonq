@@ -3,8 +3,6 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -26,33 +24,36 @@
 * ============================================================ */
 
 
-#ifndef LINEEDIT_H
-#define LINEEDIT_H
-
-
-// KDE Includes
-#include <KLineEdit>
+// Qt Includes
+#include <QWidget>
+#include <QStyleOptionViewItemV4>
 
 // Forward Declarations
-class QContextMenuEvent;
-class QFocusEvent;
-class QKeyEvent;
+class UrlSearchItem;
 
 
-class LineEdit : public KLineEdit
+class ListItem : public QWidget
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
-    explicit LineEdit(QWidget *parent = 0);
-    virtual ~LineEdit();
+    ListItem(const UrlSearchItem &item, QWidget *parent = 0);
+    ~ListItem();
 
-    
+    void activate();
+    void deactivate();
+
+signals:
+    void itemClicked(ListItem *item);
+
 protected:
-    virtual void keyPressEvent(QKeyEvent*);
-    virtual void mouseDoubleClickEvent(QMouseEvent *);
+   virtual void paintEvent(QPaintEvent *event);
+   virtual void enterEvent(QEvent *);
+   virtual void leaveEvent(QEvent *);
+   virtual void mousePressEvent(QMouseEvent *e);
 
+private:
+    QStyleOptionViewItemV4 m_option;
+    QString guessNameFromUrl(QUrl url);
 
 };
-
-#endif // LINEEDIT_H

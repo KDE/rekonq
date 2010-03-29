@@ -3,8 +3,6 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -26,33 +24,49 @@
 * ============================================================ */
 
 
-#ifndef LINEEDIT_H
-#define LINEEDIT_H
+#ifndef URL_RESOLVER_H
+#define URL_RESOLVER_H
 
 
-// KDE Includes
-#include <KLineEdit>
+// Qt Includes
+#include <QString>
+#include <QList>
 
 // Forward Declarations
-class QContextMenuEvent;
-class QFocusEvent;
-class QKeyEvent;
+class KUrl;
 
-
-class LineEdit : public KLineEdit
+class UrlSearchItem
 {
-    Q_OBJECT
-
 public:
-    explicit LineEdit(QWidget *parent = 0);
-    virtual ~LineEdit();
-
+    QString url;
+    QString title;
+    QString icon;
     
-protected:
-    virtual void keyPressEvent(QKeyEvent*);
-    virtual void mouseDoubleClickEvent(QMouseEvent *);
-
-
+    UrlSearchItem(const QString &_url, const QString &_title = QString(), const QString &_icon = QString())
+        : url(_url), title(_title), icon(_icon)
+    {};
 };
 
-#endif // LINEEDIT_H
+typedef QList <UrlSearchItem> UrlSearchList;
+
+
+// ----------------------------------------------------------------------
+
+
+class UrlResolver
+{
+public:
+    UrlResolver(const QString &typedUrl);
+    
+    UrlSearchList orderedSearchItems();
+
+private:
+    QString _urlString;
+
+    UrlSearchList webSearchesResolution();
+    UrlSearchList historyResolution();
+    UrlSearchList qurlFromUserInputResolution();
+    UrlSearchList bookmarksResolution();
+};
+
+#endif // URL_RESOLVER_H

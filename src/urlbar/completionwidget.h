@@ -3,8 +3,6 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -26,33 +24,54 @@
 * ============================================================ */
 
 
-#ifndef LINEEDIT_H
-#define LINEEDIT_H
+#ifndef COMPLETION_WIDGET_H
+#define COMPLETION_WIDGET_H
 
+
+// Local Includes
+#include "urlresolver.h"
+#include "listitem.h"
+
+// Qt Includes
+#include <QFrame>
 
 // KDE Includes
 #include <KLineEdit>
 
 // Forward Declarations
-class QContextMenuEvent;
-class QFocusEvent;
-class QKeyEvent;
+class KUrl;
 
 
-class LineEdit : public KLineEdit
+class CompletionWidget : public QFrame
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
-    explicit LineEdit(QWidget *parent = 0);
-    virtual ~LineEdit();
+    CompletionWidget(QWidget *parent);
 
+    void insertSearchList(const UrlSearchList &list);
+    void popup();
+
+    void up();
+    void down();
+    void clear();
+    virtual bool eventFilter(QObject *obj, QEvent *ev);
+    void setVisible(bool visible);
+    KUrl currentUrl();
     
-protected:
-    virtual void keyPressEvent(QKeyEvent*);
-    virtual void mouseDoubleClickEvent(QMouseEvent *);
+private slots:
+    void itemChosen(ListItem *item);
 
+signals:
+    void chosenUrl(const QString&);
 
+private:
+    void sizeAndPosition();
+    
+    QWidget *_parent;
+
+    UrlSearchList _list;
+    int _currentIndex;
 };
 
-#endif // LINEEDIT_H
+#endif // COMPLETION_WIDGET_H
