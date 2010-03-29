@@ -86,6 +86,23 @@ void NewTabPage::generate(const KUrl &url)
 {
     if(KUrl("about:preview").isParentOf(url))
     {
+        if(url.fileName() == QString("add"))
+        {
+            QStringList names = ReKonfig::previewNames();
+            QStringList urls = ReKonfig::previewUrls();
+            
+            names.append("");
+            urls.append("");
+            
+            ReKonfig::setPreviewNames(names);
+            ReKonfig::setPreviewUrls(urls);
+            
+            // Why doesn't it work well ?
+            // m_root.appendInside(emptyPreview(names.length() - 1));
+            // Replacing with this :
+            generate(KUrl("about:favorites"));
+            return;
+        }
         if(url.directory() == QString("preview/remove"))
         {
             removePreview(url.fileName().toInt());
@@ -141,10 +158,13 @@ void NewTabPage::favoritesPage()
 {
     m_root.addClass("favorites");
     
+    // TODO : create a nice button to replace this ugly link
+    m_root.document().findFirst("#navigation").appendOutside("<a href=\"about:preview/add\">Add Preview</a>");
+    
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
     
-    for(int i=0; i<8; ++i)
+    for(int i=0; i < urls.count() ; ++i)
     {
         KUrl url = urls.at(i);
         QWebElement prev;
@@ -173,7 +193,7 @@ QWebElement NewTabPage::emptyPreview(int index)
     prev.findFirst("a").setAttribute("href", QString("about:preview/modify/" + QVariant(index).toString()));
     
     setupPreview(prev, index);
-    hideControls(prev);
+    //hideControls(prev);
     
     return prev;
 }
@@ -276,16 +296,31 @@ void NewTabPage::removePreview(int index)
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
     
-    urls.replace(index, QString(""));
-    names.replace(index, QString(""));
-    
-    ReKonfig::setPreviewNames(names);
-    ReKonfig::setPreviewUrls(urls);
+    if(urls.at(index) == "")
+    {
+        urls.removeAt(index);
+        names.removeAt(index);
+        
+        // modify config before
+        ReKonfig::setPreviewNames(names);
+        ReKonfig::setPreviewUrls(urls);
+        
+        // reload to update index
+        generate(KUrl("about:favorites"));
+    }
+    else
+    {
+        urls.replace(index, QString(""));
+        names.replace(index, QString(""));
+        
+        QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
+        prev.replace(emptyPreview(index));
+        
+        ReKonfig::setPreviewNames(names);
+        ReKonfig::setPreviewUrls(urls);
+    }
     
     ReKonfig::self()->writeConfig();
-    
-    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
-    prev.replace(emptyPreview(index));
 }
 
 
