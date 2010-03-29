@@ -72,7 +72,7 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list)
     {
         UrlSearchItem item = list.at(i);
         ListItem *suggestion = new ListItem(item);
-        connect(suggestion, SIGNAL(itemClicked(ListItem *)), this, SLOT(itemChosen(ListItem *)));
+        connect(suggestion, SIGNAL(itemClicked(ListItem *, Qt::MouseButton)), this, SLOT(itemChosen(ListItem *, Qt::MouseButton)));
         suggestion->setObjectName( QString::number(i) );
         layout()->addWidget( suggestion );
     }
@@ -208,7 +208,7 @@ bool CompletionWidget::eventFilter( QObject *o, QEvent *e )
 
                 case Qt::Key_Return:
                         hide();
-                        emit chosenUrl(currentUrl().url());
+                        emit chosenUrl(currentUrl().url(), Rekonq::CurrentTab);
                         ev->accept();
                         return true;
                     break;
@@ -235,8 +235,11 @@ void CompletionWidget::setVisible( bool visible )
 }
 
 
-void CompletionWidget::itemChosen(ListItem *item)
+void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button)
 {
-    emit chosenUrl(_list.at(layout()->indexOf(item)).url);
+    if(button == Qt::MidButton)
+        emit chosenUrl(_list.at(layout()->indexOf(item)).url, Rekonq::NewCurrentTab);
+    else
+        emit chosenUrl(_list.at(layout()->indexOf(item)).url, Rekonq::CurrentTab);
     hide();
 }

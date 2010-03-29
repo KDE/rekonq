@@ -44,6 +44,7 @@
 #include <QPixmap>
 #include <QStylePainter>
 #include <QFile>
+#include <QMouseEvent>
 
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
     : QWidget(parent),
@@ -167,7 +168,7 @@ void ListItem::leaveEvent(QEvent *e)
 
 void ListItem::mousePressEvent(QMouseEvent *e)
 {
-    emit itemClicked(this);
+    emit itemClicked(this, e->button());
     QWidget::mousePressEvent(e);
 }
 
