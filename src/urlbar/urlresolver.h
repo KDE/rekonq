@@ -43,6 +43,8 @@ public:
     UrlSearchItem(const QString &_url, const QString &_title = QString(), const QString &_icon = QString())
         : url(_url), title(_title), icon(_icon)
     {};
+    
+    bool operator==(UrlSearchItem i);
 };
 
 typedef QList <UrlSearchItem> UrlSearchList;

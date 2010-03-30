@@ -53,6 +53,10 @@
 // 4 ."kuriikwsfilter"
 // 5. "fixhosturifilter"
 
+bool UrlSearchItem::operator==(UrlSearchItem i)
+{ 
+    return url==i.url; 
+}
 
 UrlResolver::UrlResolver(const QString &typedUrl)
     : _urlString(typedUrl)
@@ -97,8 +101,27 @@ UrlSearchList UrlResolver::orderedSearchItems()
             historyList = historyList.mid(0,3);
             bookmarksList = bookmarksList.mid(0,3);
         }
-        list << historyList;
-        list << bookmarksList;
+        
+        QList<UrlSearchItem> common;
+        
+        foreach (UrlSearchItem i, historyList)
+        {
+            if (!bookmarksList.contains(i)) 
+                list << i;
+            else 
+                common << i;
+        }
+        
+        foreach (UrlSearchItem i, common)
+        {
+                list << i;
+        }
+        
+        foreach (UrlSearchItem i, bookmarksList)
+        {
+            if (!common.contains(i)) 
+                list << i;
+        }
     }
 
     return list;
