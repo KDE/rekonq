@@ -166,7 +166,7 @@ void AdBlockWidget::save()
     n = listWidget->count();
     for(int i = 0; i < n; ++i)
     {
-        QListWidgetItem *item = listWidget->takeItem(i);
+        QListWidgetItem *item = listWidget->item(i);
         localRules << item->text();
     }
     localGroup.writeEntry( "local-rules" , localRules );
