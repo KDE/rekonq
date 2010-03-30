@@ -69,7 +69,7 @@ public slots:
     void updateUrl();
 
 private slots:
-    void activated(const QString& url);
+    void activated(const QString& url, Rekonq::OpenType = Rekonq::CurrentTab);
     void loadFinished(bool);
     void suggestUrls(const QString &editedText);
 

@@ -44,7 +44,7 @@ public:
     void deactivate();
 
 signals:
-    void itemClicked(ListItem *item);
+    void itemClicked(ListItem *item, Qt::MouseButton);
 
 protected:
    virtual void paintEvent(QPaintEvent *event);

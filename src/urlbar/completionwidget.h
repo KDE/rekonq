@@ -29,6 +29,7 @@
 
 
 // Local Includes
+#include "application.h"
 #include "urlresolver.h"
 #include "listitem.h"
 
@@ -60,10 +61,10 @@ public:
     KUrl currentUrl();
     
 private slots:
-    void itemChosen(ListItem *item);
+    void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton);
 
 signals:
-    void chosenUrl(const QString&);
+    void chosenUrl(const QString&, Rekonq::OpenType);
 
 private:
     void sizeAndPosition();
