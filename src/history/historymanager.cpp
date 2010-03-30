@@ -362,7 +362,7 @@ void HistoryManager::load()
 
         // Add item to completion object
         QString _url = item.url;
-        _url.remove(QRegExp("^http://|/$"));
+        //_url.remove(QRegExp("^http://|/$"));
         m_completion->addItem(_url);
     }
     if (needToSort)
@@ -504,3 +504,27 @@ bool HistoryManager::clearDownloadsHistory()
     QFile downloadFile(downloadFilePath);
     return downloadFile.remove();
 }
+
+
+QString HistoryManager::titleForHistoryUrl(QString url)
+{
+    QString title = "";
+
+    int i = 0;
+    while (i< history().count() && title.isEmpty())
+    {
+        if (history().at(i).url == url)
+        {
+             title = history().at(i).title;
+        }
+        i++;
+    }
+    
+    if (title.isEmpty())
+    {
+        title = url;
+    }
+
+    return title;
+}
+

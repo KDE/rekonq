@@ -330,6 +330,11 @@ QString BookmarkProvider::titleForBookmarkUrl(QString url)
         bookmark = bookGroup.next(bookmark);
     }
     
+    if (title.isEmpty())
+    {
+        title = url;
+    }
+    
     return title;
 }
 

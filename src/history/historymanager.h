@@ -141,6 +141,8 @@ public:
     void updateHistoryEntry(const KUrl &url, const QString &title);
     void removeHistoryEntry(const KUrl &url, const QString &title = QString());
 
+    QString titleForHistoryUrl(QString url);
+    
     int historyLimit() const;
     void setHistoryLimit(int limit);
 

@@ -181,7 +181,7 @@ UrlSearchList UrlResolver::historyResolution()
     QStringList historyResults = historyCompletion->substringCompletion(_urlString);
     Q_FOREACH(const QString &s, historyResults)
     {
-        UrlSearchItem it(s, s, QString("view-history"));
+        UrlSearchItem it(s, Application::historyManager()->titleForHistoryUrl(s), QString("view-history"));
         list << it;
     }
 
