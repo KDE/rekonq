@@ -275,41 +275,31 @@ void MainView::currentChanged(int index)
     m_currentTabIndex = index;
 
     if (oldTab)
-    {        
-        // disconnecting webview from urlbar
-        disconnect(oldTab->view(), SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
-        disconnect(oldTab->view(), SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
-        disconnect(oldTab->view(), SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
-    
+    {           
         // disconnecting webpage from mainview
         disconnect(oldTab->page(), SIGNAL(statusBarMessage(const QString&)),
                    this, SIGNAL(showStatusBarMessage(const QString&)));
         disconnect(oldTab->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
                    this, SIGNAL(linkHovered(const QString&)));
     }
-
-    // connecting webview with urlbar
-    connect(tab->view(), SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
-    connect(tab->view(), SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
-    connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
     
     connect(tab->page(), SIGNAL(statusBarMessage(const QString&)), 
             this, SIGNAL(showStatusBarMessage(const QString&)));
     connect(tab->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
             this, SIGNAL(linkHovered(const QString&)));
 
-    emit setCurrentTitle(tab->view()->title());
-    urlBar()->setUrl(tab->view()->url());
-    urlBar()->setProgress(tab->progress());
-
+    emit currentTitle(tab->view()->title());
+    urlBar()->setCurrentTab(tab);
+    
     // clean up "status bar"
     emit showStatusBarMessage( QString() );
 
     // notify UI to eventually switch stop/reload button
-    if(urlBar()->isLoading())
-        emit browserTabLoading(true);
-    else
+    int progr = tab->progress();
+    if(progr == 0)
         emit browserTabLoading(false);
+    else
+        emit browserTabLoading(true);
     
     // update zoom slider
     if(!Application::instance()->mainWindowList().isEmpty())
@@ -613,7 +603,7 @@ void MainView::webViewTitleChanged(const QString &title)
     }
     if (currentIndex() == index)
     {
-        emit setCurrentTitle(tabTitle);
+        emit currentTitle(tabTitle);
     }
     Application::historyManager()->updateHistoryEntry(view->url(), tabTitle);
 }

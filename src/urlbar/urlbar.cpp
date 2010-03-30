@@ -50,14 +50,13 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-QColor UrlBar::s_defaultBaseColor;
-
 
 UrlBar::UrlBar(QWidget *parent)
     : KComboBox(true, parent)
     , m_lineEdit(new LineEdit)
-    , m_progress(0)
     , m_box(new CompletionWidget(this))
+    , _tab(0)
+    , _privateMode(false)
 {
     //cosmetic
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -71,11 +70,6 @@ UrlBar::UrlBar(QWidget *parent)
     QPalette p = m_lineEdit->palette();
     p.setColor(QPalette::Base, Qt::transparent);
     m_lineEdit->setPalette(p);
-
-    if (!s_defaultBaseColor.isValid())
-    {
-        s_defaultBaseColor = palette().color(QPalette::Base);
-    }
 
     setLineEdit(m_lineEdit);
 
@@ -120,13 +114,6 @@ void UrlBar::setUrl(const QUrl& url)
         updateUrl();
     }
 
-}
-
-
-void UrlBar::setProgress(int progress)
-{
-    m_progress = progress;
-    update();
 }
 
 
@@ -184,26 +171,21 @@ void UrlBar::activated(const QString& urlString, Rekonq::OpenType type)
 }
 
 
-void UrlBar::loadFinished(bool)
-{
-    // reset progress bar after small delay
-    m_progress = 0;
-    QTimer::singleShot(200, this, SLOT(update()));
-}
-
-
-void UrlBar::updateProgress(int progress)
-{
-    m_progress = progress;
-    update();
-}
-
-
 void UrlBar::paintEvent(QPaintEvent *event)
 {
+    QColor backgroundColor;
+    if( _privateMode )
+    {
+        backgroundColor = QColor(192, 192, 192);  // gray
+    }
+    else
+    {
+        backgroundColor = Application::palette().color(QPalette::Base);
+    }
+    
     // set background color of UrlBar
     QPalette p = palette();
-    p.setColor(QPalette::Base, s_defaultBaseColor);
+    p.setColor(QPalette::Base, backgroundColor);
     setPalette(p);
 
     KComboBox::paintEvent(event);
@@ -221,11 +203,20 @@ void UrlBar::paintEvent(QPaintEvent *event)
         {
             loadingColor = QColor(116, 192, 250);
         }
-        painter.setBrush(generateGradient(loadingColor, height()));
+        int progr = _tab->progress();
+        
+        backgroundColor.setAlpha(0);
+        backgroundColor.setAlpha(200);
+        QLinearGradient gradient(0, 0, width(), height() );
+        gradient.setColorAt(0, loadingColor);
+        gradient.setColorAt(((double)progr)/100, backgroundColor);
+        
+        painter.setBrush( gradient );
         painter.setPen(Qt::transparent);
 
+
         QRect backgroundRect = m_lineEdit->frameGeometry();
-        int mid = backgroundRect.width() * m_progress / 100;
+        int mid = backgroundRect.width() * progr / 100;
         QRect progressRect(backgroundRect.x(), backgroundRect.y(), mid, backgroundRect.height());
         painter.drawRect(progressRect);
         painter.end();
@@ -239,41 +230,8 @@ QSize UrlBar::sizeHint() const
 }
 
 
-QLinearGradient UrlBar::generateGradient(const QColor &color, int height)
-{
-    QColor base = s_defaultBaseColor;
-    base.setAlpha(0);
-    QColor barColor = color;
-    barColor.setAlpha(200);
-    QLinearGradient gradient(0, 0, 0, height);
-    gradient.setColorAt(0, base);
-    gradient.setColorAt(0.25, barColor.lighter(120));
-    gradient.setColorAt(0.5, barColor);
-    gradient.setColorAt(0.75, barColor.lighter(120));
-    gradient.setColorAt(1, base);
-    return gradient;
-}
-
-
-void UrlBar::setBackgroundColor(QColor c)
-{
-    s_defaultBaseColor = c;
-    update();
-}
-
-
-bool UrlBar::isLoading()
-{
-    if(m_progress == 0)
-    {
-        return false;
-    }
-    return true;
-}
-
 void UrlBar::keyPressEvent(QKeyEvent *event)
 {
-
     // this handles the Modifiers + Return key combinations
     QString currentText = m_lineEdit->text().trimmed();
     if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
@@ -337,4 +295,23 @@ void UrlBar::focusInEvent(QFocusEvent *event)
     connect(this, SIGNAL(editTextChanged(const QString &)), this, SLOT(suggestUrls(const QString &)));
     
     KComboBox::focusInEvent(event);
+}
+
+
+void UrlBar::setCurrentTab(WebTab *tab)
+{
+    if(_tab)
+        disconnect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setUrl(const QUrl &)));
+    _tab = tab;
+    connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setUrl(const QUrl &)));
+
+    // update it now (the first time)
+    setUrl( _tab->url() );
+    update();
+}
+
+
+void UrlBar::setPrivateMode(bool on)
+{
+    _privateMode = on;
 }

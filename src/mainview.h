@@ -105,7 +105,7 @@ signals:
     void lastTabClosed();
 
     // current tab signals
-    void setCurrentTitle(const QString &url);
+    void currentTitle(const QString &url);
     void showStatusBarMessage(const QString &message, Rekonq::Notify status = Rekonq::Info);
     void linkHovered(const QString &link);
     void browserTabLoading(bool);

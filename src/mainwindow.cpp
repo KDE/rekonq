@@ -215,7 +215,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
 
     // --------- connect signals and slots
-    connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
+    connect(m_view, SIGNAL(currentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
     // (shift +) ctrl + tab switching
@@ -751,7 +751,7 @@ void MainWindow::privateBrowsing(bool enable)
         if (button == KMessageBox::Continue)
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
-            m_view->urlBar()->setBackgroundColor(Qt::lightGray); // palette().color(QPalette::Active, QPalette::Background));
+            m_view->urlBar()->setPrivateMode(true);
         }
         else
         {
@@ -761,8 +761,8 @@ void MainWindow::privateBrowsing(bool enable)
     else
     {
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
-        m_view->urlBar()->setBackgroundColor(palette().color(QPalette::Active, QPalette::Base));
-
+        m_view->urlBar()->setPrivateMode(false);
+        
         m_lastSearch.clear();
         m_view->clear();
         m_view->reloadAllTabs();

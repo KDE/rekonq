@@ -34,6 +34,7 @@
 // Local Includes
 #include "lineedit.h"
 #include "completionwidget.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KUrl>
@@ -59,18 +60,16 @@ public:
     void selectAll() const;
     KUrl url() const;
     QSize sizeHint() const;
-    void setBackgroundColor(QColor);
-    bool isLoading();
-    void setProgress(int progress);
 
+    void setCurrentTab(WebTab *);
+    void setPrivateMode(bool on);
+    
 public slots:
     void setUrl(const QUrl &url);
-    void updateProgress(int progress);
     void updateUrl();
 
 private slots:
     void activated(const QString& url, Rekonq::OpenType = Rekonq::CurrentTab);
-    void loadFinished(bool);
     void suggestUrls(const QString &editedText);
 
 protected:
@@ -79,17 +78,13 @@ protected:
     virtual void focusInEvent(QFocusEvent *event);
 
 private:
-    static QLinearGradient generateGradient(const QColor &color, int height);
-
-    static QColor s_defaultBaseColor;
-
     LineEdit *m_lineEdit;
 
     KUrl m_currentUrl;
-    int m_progress;
 
     CompletionWidget *m_box;
-    KUrl m_suggestedUrl;
+    WebTab *_tab;
+    bool _privateMode;
 };
 
 #endif
