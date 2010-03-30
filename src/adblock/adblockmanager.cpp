@@ -188,7 +188,8 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
                 {
                     kDebug() << "MATCHES ATTRIBUTE!!!!!";
                     el.setStyleProperty(QLatin1String("visibility"), QLatin1String("hidden"));
-                    el.removeFromDocument();
+                    el.setStyleProperty(QLatin1String("width"), QLatin1String("0"));
+                    el.setStyleProperty(QLatin1String("height"), QLatin1String("0"));
                 }
             }
             
