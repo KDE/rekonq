@@ -131,7 +131,7 @@ public:
     AdBlockManager(QObject *parent = 0);
     ~AdBlockManager();
 
-    QNetworkReply *block(const QNetworkRequest &request);
+    QNetworkReply *block(const QNetworkRequest &request, WebPage *page);
     void applyHidingRules(WebPage *page);
     void addSubscription(const QString &title, const QString &location);
     

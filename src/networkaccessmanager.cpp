@@ -32,10 +32,15 @@
 // Local Includes
 #include "application.h"
 #include "adblockmanager.h"
+#include "webpage.h"
+
+// KDE Includes
 #include <KDebug>
+
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
     : AccessManager(parent)
+    , _parentPage( qobject_cast<WebPage *>(parent) )
 {
 }
 
@@ -48,16 +53,16 @@ QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkR
     {
     case QNetworkAccessManager::HeadOperation:
         kDebug() << "HEAD OPERATION";
-        if(outgoingData)
-        {
-            QByteArray outgoingDataByteArray = outgoingData->peek(1024 * 1024);
-            kDebug() << outgoingDataByteArray;
-        }
+//         if(outgoingData)
+//         {
+//             QByteArray outgoingDataByteArray = outgoingData->peek(1024 * 1024);
+//             kDebug() << outgoingDataByteArray;
+//         }
         break;
     
     case QNetworkAccessManager::GetOperation:
         kDebug() << "GET OPERATION";
-        reply = Application::adblockManager()->block(req);
+        reply = Application::adblockManager()->block(req, _parentPage);
         if (reply)
             return reply;
         break;

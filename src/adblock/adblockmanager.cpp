@@ -148,7 +148,7 @@ void AdBlockManager::loadRules(const QStringList &rules)
 }
 
 
-QNetworkReply *AdBlockManager::block(const QNetworkRequest &request)
+QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *page)
 {
     if (!_isAdblockEnabled)
         return 0;
@@ -179,6 +179,19 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request)
             kDebug() << "****ADBLOCK: BLACK RULE Matched: ***********";
             kDebug() << "Filter exp: " << filter.pattern();
             kDebug() << "UrlString:  " << urlString;
+            
+            QWebElement document = page->mainFrame()->documentElement();
+            QWebElementCollection elements = document.findAll("*");
+            foreach (QWebElement el, elements) 
+            {
+                if(filter.match( el.attribute("src") ) )
+                {
+                    kDebug() << "MATCHES ATTRIBUTE!!!!!";
+                    el.setStyleProperty(QLatin1String("visibility"), QLatin1String("hidden"));
+                    el.removeFromDocument();
+                }
+            }
+            
             AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
             return reply;        
         }
@@ -197,19 +210,38 @@ void AdBlockManager::applyHidingRules(WebPage *page)
     if (!_isAdblockEnabled)
         return;
     
+//     // BLACK RULES 
+//     foreach(const AdBlockRule &filter, _blackList)
+//     {
+//         QWebElementCollection elements = document.findAll("*");
+//         foreach (QWebElement el, elements) 
+//         {
+//             if(filter.match( el.attribute("src") ) )
+//             {
+//                 kDebug() << "MATCHES!!!!!";
+//                 el.setStyleProperty(QLatin1String("visibility"), QLatin1String("hidden"));
+//                 el.removeFromDocument();
+//             }
+//         }
+//     }
+    
     if (!_isHideAdsEnabled)
         return;
+
+    QWebElement document = page->mainFrame()->documentElement();
     
+    // HIDE RULES
     foreach(const QString &filter, _hideList)
     {
-        QWebElement document = page->mainFrame()->documentElement();
         QWebElementCollection elements = document.findAll(filter);
 
-        foreach (QWebElement element, elements) 
+        foreach (QWebElement el, elements) 
         {
-            kDebug() << "Hide element: " << element.localName();
-            element.setStyleProperty(QLatin1String("visibility"), QLatin1String("hidden"));
-            element.removeFromDocument();
+            if(el.isNull())
+                continue;
+            kDebug() << "Hide element: " << el.localName();
+            el.setStyleProperty(QLatin1String("visibility"), QLatin1String("hidden"));
+            el.removeFromDocument();
         }
     }
 }

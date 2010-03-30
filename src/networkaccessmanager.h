@@ -31,6 +31,7 @@
 
 // Local Includes
 #include "rekonqprivate_export.h"
+#include "webpage.h"
 
 // KDE Includes
 #include <kio/accessmanager.h>
@@ -44,10 +45,13 @@ class REKONQ_TESTS_EXPORT NetworkAccessManager : public AccessManager
     Q_OBJECT
 
 public:
-    NetworkAccessManager(QObject *parent = 0);
+    NetworkAccessManager(QObject *parent);
 
 protected:
     virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
+
+private:
+    WebPage *_parentPage;
 };
 
 #endif // NETWORKACCESSMANAGER_H
