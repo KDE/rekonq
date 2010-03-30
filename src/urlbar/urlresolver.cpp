@@ -81,23 +81,26 @@ UrlSearchList UrlResolver::orderedSearchItems()
         list << qurlFromUserInputResolution();
     }
 
-    int firstResults = list.count();
-    int checkPoint = 9 - firstResults;
-    
-    UrlSearchList historyList = historyResolution();
-    int historyResults = historyList.count();
-    
-    UrlSearchList bookmarksList = bookmarksResolution();
-    int bookmarkResults = bookmarksList.count();
-    
-    if(historyResults + bookmarkResults > checkPoint)
+    if (_urlString.length()>2)
     {
-        historyList = historyList.mid(0,3);
-        bookmarksList = bookmarksList.mid(0,3);
+        int firstResults = list.count();
+        int checkPoint = 9 - firstResults;
+
+        UrlSearchList historyList = historyResolution();
+        int historyResults = historyList.count();
+
+        UrlSearchList bookmarksList = bookmarksResolution();
+        int bookmarkResults = bookmarksList.count();
+
+        if(historyResults + bookmarkResults > checkPoint)
+        {
+            historyList = historyList.mid(0,3);
+            bookmarksList = bookmarksList.mid(0,3);
+        }
+        list << historyList;
+        list << bookmarksList;
     }
-    list << historyList;
-    list << bookmarksList;
-    
+
     return list;
 }
 
