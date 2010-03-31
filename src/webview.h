@@ -30,8 +30,6 @@
 
 // Local Includes
 #include "rekonqprivate_export.h"
-
-// Local Includes
 #include "application.h"
 
 // KDE Includes
@@ -70,11 +68,17 @@ private slots:
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
     void inspect();
 
+    void scrollFrameChanged();
+    
 signals:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
     
 private:
-    QPoint m_mousePos;
+    QPoint _mousePos;
+
+    QTimer *_scrollTimer;
+    int _VScrollSpeed;
+    int _HScrollSpeed;
 };
 
 #endif

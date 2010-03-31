@@ -211,21 +211,6 @@ void AdBlockManager::applyHidingRules(WebPage *page)
     if (!_isAdblockEnabled)
         return;
     
-//     // BLACK RULES 
-//     foreach(const AdBlockRule &filter, _blackList)
-//     {
-//         QWebElementCollection elements = document.findAll("*");
-//         foreach (QWebElement el, elements) 
-//         {
-//             if(filter.match( el.attribute("src") ) )
-//             {
-//                 kDebug() << "MATCHES!!!!!";
-//                 el.setStyleProperty(QLatin1String("visibility"), QLatin1String("hidden"));
-//                 el.removeFromDocument();
-//             }
-//         }
-//     }
-    
     if (!_isHideAdsEnabled)
         return;
 

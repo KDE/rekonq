@@ -62,7 +62,10 @@
 
 WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
-    , m_mousePos( QPoint(0,0) )
+    , _mousePos( QPoint(0,0) )
+    , _scrollTimer( new QTimer(this) )
+    , _VScrollSpeed(0)
+    , _HScrollSpeed(0)
 {
     WebPage *page = new WebPage(this);
     setPage(page);
@@ -80,6 +83,10 @@ WebView::WebView(QWidget* parent)
     // loadUrl signal
     connect(this, SIGNAL(loadUrl(const KUrl &, const Rekonq::OpenType &)), 
             Application::instance(), SLOT(loadUrl(const KUrl &, const Rekonq::OpenType &)));
+
+    // scrolling timer
+    connect(_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
+    _scrollTimer->setInterval(50);
 }
 
 
@@ -330,7 +337,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
 
 void WebView::mouseMoveEvent(QMouseEvent *event)
 {
-    m_mousePos = event->pos();
+    _mousePos = event->pos();
     if (Application::instance()->mainWindow()->isFullScreen())
     {        
         if (event->pos().y()>=0 && event->pos().y()<=4)
@@ -348,7 +355,7 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 
 QPoint WebView::mousePos()
 {
-    return m_mousePos;
+    return _mousePos;
 }
 
 
@@ -404,16 +411,61 @@ void WebView::openLinkInNewTab()
 
 void WebView::keyPressEvent(QKeyEvent *event)
 {
-    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_C))
+    if ( event->modifiers() == Qt::ControlModifier )
     {
-        triggerPageAction(KWebPage::Copy);
-        return;
-    }
+        if ( event->key() == Qt::Key_C )
+        {
+            triggerPageAction(KWebPage::Copy);
+            return;
+        }
 
-    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_A))
+        if ( event->key() == Qt::Key_A )
+        {
+            triggerPageAction(KWebPage::SelectAll);
+            return;
+        }
+    }
+    
+    if ( event->modifiers() == Qt::ShiftModifier )
     {
-        triggerPageAction(KWebPage::SelectAll);
-        return;
+        kDebug() << "scrolling..";
+        if( event->key() == Qt::Key_Up )
+        {
+            _VScrollSpeed -= 1;
+            _scrollTimer->start();
+            return;
+        }
+        
+        if( event->key() == Qt::Key_Down )
+        {
+            _VScrollSpeed += 1;
+            _scrollTimer->start();
+            return;
+        }
+        
+        if( event->key() == Qt::Key_Right )
+        {
+            _HScrollSpeed += 1;
+            _scrollTimer->start();
+            return;
+        }
+        
+        if( event->key() == Qt::Key_Left )
+        {
+            _HScrollSpeed -= 1;
+            _scrollTimer->start();
+            return;
+        }
+        
+        if(_scrollTimer->isActive())
+        {
+            _scrollTimer->stop();
+        }
+        else
+        {
+            if(_VScrollSpeed || _HScrollSpeed)
+                _scrollTimer->start();
+        }
     }
     
     KWebView::keyPressEvent(event);
@@ -432,4 +484,20 @@ void WebView::inspect()
 void WebView::loadUrlInNewTab(const KUrl &url)
 {
     emit loadUrl(url, Rekonq::SettingOpenTab);
+}
+
+
+void WebView::scrollFrameChanged()
+{
+    // do the scrolling
+    page()->currentFrame()->scroll( _HScrollSpeed, _VScrollSpeed );
+    
+    // check if we reached the end
+    int y = page()->currentFrame()->scrollPosition().y();
+    if (y == 0 || y == page()->currentFrame()->scrollBarMaximum(Qt::Vertical))
+        _VScrollSpeed = 0;
+
+    int x = page()->currentFrame()->scrollPosition().x();
+    if (x == 0 || x == page()->currentFrame()->scrollBarMaximum(Qt::Horizontal))
+        _HScrollSpeed = 0;
 }
