@@ -82,7 +82,14 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list)
 void CompletionWidget::sizeAndPosition()
 {
     // size
-    setFixedHeight(layout()->count() * 44 );
+    int h = 34;
+    ListItem *widget;
+    for(int i = 0; i < layout()->count(); ++i)
+    {
+        widget = findChild<ListItem *>( QString::number(i) );
+        h = qMax(widget->sizeHint().height(), h);
+    }
+    setFixedHeight(layout()->count() * (h + 10) );
     setFixedWidth( _parent->width() );
 
     // position
@@ -206,6 +213,7 @@ bool CompletionWidget::eventFilter( QObject *o, QEvent *e )
                     }
                     break;
 
+                case Qt::Key_Enter:
                 case Qt::Key_Return:
                         hide();
                         emit chosenUrl(currentUrl().url(), Rekonq::CurrentTab);
