@@ -158,8 +158,12 @@ void NewTabPage::favoritesPage()
 {
     m_root.addClass("favorites");
     
-    // TODO : create a nice button to replace this ugly link
-    m_root.document().findFirst("#navigation").appendOutside("<a href=\"about:preview/add\">Add Preview</a>");
+    QWebElement add = markup(".link");
+    add.findFirst("a").setAttribute("href", "about:preview/add");
+    add.findFirst("img").setAttribute("src" , QString("file:///" + 
+                                    KIconLoader::global()->iconPath("list-add", KIconLoader::Small || KIconLoader::SizeSmall)));
+    add.findFirst("span").appendInside(i18n("Add Preview"));
+    m_root.document().findFirst("#actions").appendInside(add);
     
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
@@ -334,35 +338,35 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
     nav.findFirst("a").setAttribute("href", "about:favorites");
     nav.findFirst("img").setAttribute("src" , QString("file:///" + 
     loader->iconPath("emblem-favorite", KIconLoader::Desktop ||KIconLoader::SizeSmall)));
-    nav.findFirst("a").appendInside(i18n("Favorites"));
+    nav.findFirst("span").appendInside(i18n("Favorites"));
     navItems.append(nav);
     
     nav = markup(".link"); // Closed Tabs
     nav.findFirst("a").setAttribute("href", "about:closedTabs");
     nav.findFirst("img").setAttribute("src" , QString("file:///" + 
     loader->iconPath("tab-close", KIconLoader::Desktop ||KIconLoader::SizeSmall)));
-    nav.findFirst("a").appendInside(i18n("Closed Tabs"));
+    nav.findFirst("span").appendInside(i18n("Closed Tabs"));
     navItems.append(nav);
     
     nav = markup(".link"); // Bookmarks
     nav.findFirst("a").setAttribute("href", "about:bookmarks");
     nav.findFirst("img").setAttribute("src" , QString("file:///" + 
     loader->iconPath("bookmarks", KIconLoader::Desktop ||KIconLoader::SizeSmall)));
-    nav.findFirst("a").appendInside(i18n("Bookmarks"));
+    nav.findFirst("span").appendInside(i18n("Bookmarks"));
     navItems.append(nav);
     
     nav = markup(".link"); // History
     nav.findFirst("a").setAttribute("href", "about:history");
     nav.findFirst("img").setAttribute("src" , QString("file:///" + 
     loader->iconPath("view-history", KIconLoader::Desktop ||KIconLoader::SizeSmall)));
-    nav.findFirst("a").appendInside(i18n("History"));
+    nav.findFirst("span").appendInside(i18n("History"));
     navItems.append(nav);
     
-    nav = markup(".link"); // History
+    nav = markup(".link"); // Downloads
     nav.findFirst("a").setAttribute("href", "about:downloads");
     nav.findFirst("img").setAttribute("src" , QString("file:///" + 
     loader->iconPath("download", KIconLoader::Desktop ||KIconLoader::SizeSmall)));
-    nav.findFirst("a").appendInside(i18n("Downloads"));
+    nav.findFirst("span").appendInside(i18n("Downloads"));
     navItems.append(nav);
     
     QWebElement it;

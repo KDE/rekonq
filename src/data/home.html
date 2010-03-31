@@ -49,23 +49,55 @@ color: black;
 }
 
 /* -------------------------------------------------------- */
-/* Navigation bar */
+/* Top bar */
+
+#top {
+margin: 20px;
+}
+
+.topBar {
+display: inline-block;
+border-width: 5px;
+}
 
 #navigation {
-display: inline-block;
-margin: 2%;
-border-width: 5px;
 -webkit-border-image: url(%2/bg2.png) 12 12 12 12  stretch stretch;
+max-width: 75%;
+}
+
+#actions, #balance {
+margin-top: 12px;
+width: 10%;
+}
+
+#actions {
+float: right;
+}
+
+#balance {
+display: hidden; float: left;
+height: 16px;
 }
 
 .link {
 display: inline-block;
 }
-.link img {
-vertical-align: middle; margin-right: 5px;
+.link img, .link span {
+vertical-align: middle; display: inline-block; 
 }
-.link a {
-color: black; 
+color: black;
+
+#actions .link {
+-webkit-transition-property: opacity;
+-webkit-transition-duration: 0.8s;
+-webkit-transition-timing-function: ease;
+opacity: 0.2;
+}
+#actions .link:hover {
+opacity: 1;
+}
+#actions .link img {
+margin-right: 3px; width: 16px;
 }
 
 .current{
@@ -161,7 +193,11 @@ margin-right: 5px;
 <body>
 
 <div id="rekonq-newtabpage">
-    <div id="navigation"></div>
+    <div id="top">
+        <div class="topBar" id="balance"></div> <!-- This # is the same size as #actions to center #navigation -->
+        <div class="topBar" id="navigation"></div>
+        <div class="topBar" id="actions"></div>
+    </div>
     <div id="content">
     </div>
 </div>
@@ -171,6 +207,7 @@ margin-right: 5px;
     <div class="link">
         <a href="">
             <img src="" />
+            <span></span>
         </a>
     </div>
     <div class="thumbnail">
