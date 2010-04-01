@@ -176,7 +176,7 @@ void TabBar::showTabPreview(int tab)
     m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);
     m_previewPopup.data()->layout()->setMargin(0);
 
-    QPoint pos( tabRect(tab).x() , tabRect(tab).y() + tabRect(tab).height() - 3);
+    QPoint pos( tabRect(tab).x() , tabRect(tab).y() + tabRect(tab).height());
     m_previewPopup.data()->show(mapToGlobal(pos));
 }
 
