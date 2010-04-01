@@ -300,30 +300,14 @@ void NewTabPage::removePreview(int index)
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
     
-    if(urls.at(index) == "")
-    {
-        urls.removeAt(index);
-        names.removeAt(index);
-        
-        // modify config before
-        ReKonfig::setPreviewNames(names);
-        ReKonfig::setPreviewUrls(urls);
-        
-        // reload to update index
-        generate(KUrl("about:favorites"));
-    }
-    else
-    {
-        urls.replace(index, QString(""));
-        names.replace(index, QString(""));
-        
-        QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
-        prev.replace(emptyPreview(index));
-        
-        ReKonfig::setPreviewNames(names);
-        ReKonfig::setPreviewUrls(urls);
-    }
+    urls.removeAt(index);
+    names.removeAt(index);
     
+    ReKonfig::setPreviewNames(names);
+    ReKonfig::setPreviewUrls(urls);
+    
+    generate(KUrl("about:favorites"));
+
     ReKonfig::self()->writeConfig();
 }
 
