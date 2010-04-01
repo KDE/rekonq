@@ -47,12 +47,9 @@ public:
     explicit LineEdit(QWidget *parent = 0);
     virtual ~LineEdit();
 
-    
 protected:
     virtual void keyPressEvent(QKeyEvent*);
     virtual void mouseDoubleClickEvent(QMouseEvent *);
-
-
 };
 
 #endif // LINEEDIT_H

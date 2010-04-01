@@ -46,9 +46,10 @@
 #include <QFile>
 #include <QMouseEvent>
 
+
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
-    : QWidget(parent),
-    m_option()
+    : QWidget(parent)
+    , m_option()
 {
     QHBoxLayout *hLayout = new QHBoxLayout;
     QVBoxLayout *vLayout = new QVBoxLayout;
@@ -101,6 +102,7 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
     deactivate();
 }
 
+
 ListItem::~ListItem()
 {
     disconnect();
@@ -130,15 +132,16 @@ QString ListItem::guessNameFromUrl(QUrl url)
 void ListItem::activate()
 {
     m_option.state |= QStyle::State_Selected;
-    repaint();
+    update();
 }
 
 
 void ListItem::deactivate()
 {
     m_option.state  &= ~QStyle::State_Selected;
-    repaint();
+    update();
 }
+
 
 void ListItem::paintEvent(QPaintEvent *event)
 {
@@ -152,23 +155,25 @@ void ListItem::paintEvent(QPaintEvent *event)
     }
 }
 
+
 void ListItem::enterEvent(QEvent *e)
 {
     m_option.state |= QStyle::State_MouseOver;
-    repaint();
+    update();
     QWidget::enterEvent(e);
 }
+
 
 void ListItem::leaveEvent(QEvent *e)
 {
     m_option.state &= ~QStyle::State_MouseOver;
-    repaint();
+    update();
     QWidget::enterEvent(e);
 }
+
 
 void ListItem::mousePressEvent(QMouseEvent *e)
 {
     emit itemClicked(this, e->button());
     QWidget::mousePressEvent(e);
 }
-

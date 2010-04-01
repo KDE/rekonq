@@ -34,7 +34,7 @@ class UrlSearchItem;
 
 class ListItem : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     ListItem(const UrlSearchItem &item, QWidget *parent = 0);
@@ -55,5 +55,4 @@ protected:
 private:
     QStyleOptionViewItemV4 m_option;
     QString guessNameFromUrl(QUrl url);
-
 };

@@ -28,6 +28,9 @@
 #include "completionwidget.h"
 #include "completionwidget.moc"
 
+// Local Includes
+#include "application.h"
+
 // KDE Includes
 #include <KGlobalSettings>
 #include <KDebug>
@@ -41,16 +44,17 @@
 #include <QEvent>
 #include <QKeyEvent>
 
+// Defines
 #define MAX_ELEMENTS 9
-#include "application.h"
+
 
 CompletionWidget::CompletionWidget( QWidget *parent)
-:QFrame( parent, Qt::ToolTip)
+    :QFrame( parent, Qt::ToolTip)
     , _parent(parent)
     , _currentIndex(-1)
 {
     QPalette p(palette());
-    p.setColor(QPalette::Background, Qt::white); //todo: choose the correct color
+    p.setColor(QPalette::Background, Qt::white); // TODO: choose the correct color
     setPalette(p);
     setFrameStyle(QFrame::Panel);
     setLayoutDirection(Qt::LeftToRight);
@@ -126,10 +130,6 @@ void CompletionWidget::up()
     widget->activate();
 }
 
-KUrl CompletionWidget::currentUrl()
-{
-    return _list.at(_currentIndex).url;
-}
 
 void CompletionWidget::down()
 {
@@ -149,6 +149,7 @@ void CompletionWidget::down()
     ListItem *widget = findChild<ListItem *>( QString::number(_currentIndex) );
     widget->activate();
 }
+
 
 void CompletionWidget::clear()
 {
@@ -216,7 +217,7 @@ bool CompletionWidget::eventFilter( QObject *o, QEvent *e )
                 case Qt::Key_Enter:
                 case Qt::Key_Return:
                         hide();
-                        emit chosenUrl(currentUrl().url(), Rekonq::CurrentTab);
+                        emit chosenUrl(_list.at(_currentIndex).url, Rekonq::CurrentTab);
                         ev->accept();
                         return true;
                     break;

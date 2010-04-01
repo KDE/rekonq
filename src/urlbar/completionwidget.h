@@ -33,32 +33,26 @@
 #include "urlresolver.h"
 #include "listitem.h"
 
-// Qt Includes
-#include <QFrame>
-
 // KDE Includes
 #include <KLineEdit>
 
-// Forward Declarations
-class KUrl;
+// Qt Includes
+#include <QFrame>
 
 
 class CompletionWidget : public QFrame
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     CompletionWidget(QWidget *parent);
 
     void insertSearchList(const UrlSearchList &list);
     void popup();
-
-    void up();
-    void down();
     void clear();
+
     virtual bool eventFilter(QObject *obj, QEvent *ev);
     void setVisible(bool visible);
-    KUrl currentUrl();
     
 private slots:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton);
@@ -68,7 +62,9 @@ signals:
 
 private:
     void sizeAndPosition();
-    
+    void up();
+    void down();
+
     QWidget *_parent;
 
     UrlSearchList _list;

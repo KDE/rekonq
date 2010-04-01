@@ -32,8 +32,6 @@
 #include <QString>
 #include <QList>
 
-// Forward Declarations
-class KUrl;
 
 class UrlSearchItem
 {
