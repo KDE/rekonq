@@ -467,29 +467,37 @@ void NewTabPage::downloadsPage()
     
     foreach(const DownloadItem &item, list)
     {
-        m_root.appendInside(markup("h3"));
-        m_root.lastChild().setPlainText("");
+        m_root.prependInside(markup("div"));
+        
+        QWebElement div = m_root.firstChild();
+        div.addClass("download");
     
         KUrl u = KUrl(item.destUrlString);
         QString fName = u.fileName();
         QString dir = QL1S("file://") + u.directory();
         
-        m_root.appendInside( item.dateTime.toString("dddd") );
-        m_root.appendInside("<br/>");
-        m_root.appendInside( item.dateTime.toString("dd MMMM yyyy") );
-        m_root.appendInside(", ");
-        m_root.appendInside( item.dateTime.toString("hh:mm:ss") );
-        m_root.appendInside("<br/>");
+        KIconLoader *loader = KIconLoader::global();
+        QString iconPath = "file://" + loader->iconPath(KMimeType::iconNameForUrl(u), KIconLoader::Desktop);
         
-        m_root.appendInside(fName);
-        m_root.appendInside("<br/>");
+        div.appendInside(markup("img"));
+        div.lastChild().setAttribute("src", iconPath );
         
-        m_root.appendInside(item.srcUrlString);
-        m_root.appendInside("<br/>");
+        div.appendInside("<strong>" + fName + "</strong>");
+        div.appendInside(" - ");
+        div.appendInside( item.dateTime.toString("'<em>'dd MMMM yyyy hh:mm'</em>'") );
+        div.appendInside("<br/>");
+        
+        div.appendInside(item.srcUrlString);
+        div.appendInside("<br/>");
 
-        m_root.appendInside(markup("a"));
-        m_root.lastChild().setAttribute("href" , dir);
-        m_root.lastChild().setPlainText("browse dir");
-        m_root.appendInside("<br/>");
+        div.appendInside(markup("a"));
+        div.lastChild().setAttribute("href" , dir);
+        div.lastChild().setPlainText("Browse dir");
+        
+        /* TODO : make this link work
+        div.appendInside(" - ");
+        div.appendInside(markup("a"));
+        div.lastChild().setAttribute("href" , u.toMimeDataString());
+        div.lastChild().setPlainText("Open file");*/
     }
 }
