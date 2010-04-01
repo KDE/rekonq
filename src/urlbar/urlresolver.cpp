@@ -45,6 +45,7 @@
 #include <QByteArray>
 #include <QUrl>
 
+#define MAX_ELEMENTS 9
 
 // NOTE default kurifilter plugin list (at least in my box)
 // 1. "kshorturifilter"
@@ -106,10 +107,15 @@ UrlSearchList UrlResolver::orderedSearchItems()
         
         foreach (UrlSearchItem i, historyList)
         {
-            if (!bookmarksList.contains(i)) 
+            if (!bookmarksList.contains(i))
+            {
                 list << i;
+            }
             else 
+            {
+                i.type |= UrlSearchItem::Bookmark;
                 common << i;
+            }
         }
         
         foreach (UrlSearchItem i, common)
@@ -161,7 +167,7 @@ UrlSearchList UrlResolver::qurlFromUserInputResolution()
         {           
             QString gUrl = QString(ba);
             QString gTitle = i18n("Browse");
-            UrlSearchItem gItem(gUrl, gTitle, QString("") );
+            UrlSearchItem gItem(UrlSearchItem::Browse, gUrl, gTitle, QString("") );
             list << gItem;
 
         }
@@ -182,7 +188,7 @@ UrlSearchList UrlResolver::webSearchesResolution()
         // KUriFilter has the worst performance possible here and let this trick unusable
         QString gUrl = QString("http://www.google.com/search?q=%1&ie=UTF-8&oe=UTF-8").arg(url1);
         QString gTitle = i18n("Search Google for ") + url1;
-        UrlSearchItem gItem(gUrl, gTitle, QString("http://www.google.com") );
+        UrlSearchItem gItem(UrlSearchItem::Search, gUrl, gTitle, QString("http://www.google.com") );
         list << gItem;
         
 //         QString wUrl = QString("http://en.wikipedia.org/wiki/Special:Search?search=%1&go=Go").arg(url1);
@@ -204,7 +210,7 @@ UrlSearchList UrlResolver::historyResolution()
     QStringList historyResults = historyCompletion->substringCompletion(_urlString);
     Q_FOREACH(const QString &s, historyResults)
     {
-        UrlSearchItem it(s, Application::historyManager()->titleForHistoryUrl(s), QString("view-history"));
+        UrlSearchItem it(UrlSearchItem::History, s, Application::historyManager()->titleForHistoryUrl(s), QString("view-history"));
         list << it;
     }
 
@@ -221,7 +227,7 @@ UrlSearchList UrlResolver::bookmarksResolution()
     QStringList bookmarkResults = bookmarkCompletion->substringCompletion(_urlString);
     Q_FOREACH(const QString &s, bookmarkResults)
     {
-        UrlSearchItem it( s, Application::bookmarkProvider()->titleForBookmarkUrl(s), QString("rating") );
+        UrlSearchItem it(UrlSearchItem::Bookmark, s, Application::bookmarkProvider()->titleForBookmarkUrl(s), QString("rating") );
         list << it;
     }
 

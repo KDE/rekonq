@@ -45,32 +45,52 @@
 #include <QStylePainter>
 #include <QFile>
 #include <QMouseEvent>
+#include <QWebSettings>
 
 
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
     : QWidget(parent)
     , m_option()
 {
+    //preview and icon
+    
     QHBoxLayout *hLayout = new QHBoxLayout;
-    QVBoxLayout *vLayout = new QVBoxLayout;
+ 
+    QLabel *previewLabelIcon = new QLabel;
+    previewLabelIcon->setFixedSize(45,33);
+    hLayout->addWidget(previewLabelIcon);
 
-    QLabel *previewLabel = new QLabel;
-    previewLabel->setFixedSize(40,30);
-    QPixmap preview;
+    QPixmap pixmapIcon = KIcon(QWebSettings::iconForUrl(item.url)).pixmap(16);
     QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(item.url) + ".png", true);
     if(QFile::exists(path))
     {
+        QLabel *previewLabel = new QLabel(previewLabelIcon);
+        previewLabel->setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
+        QPixmap preview;
         preview.load(path);
-        previewLabel->setPixmap(preview.scaled(40,30));
-    }
-    else
+        if (!pixmapIcon.isNull())
+        {
+            previewLabel->setFixedSize(38,29);
+            previewLabel->setPixmap(preview.scaled(38,29, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        }
+        else
+        {
+            previewLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            previewLabel->setFixedSize(45,33);
+            previewLabel->setPixmap(preview.scaled(45,33, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));  
+        }
+    } 
+
+    if (!pixmapIcon.isNull())
     {
-        if(item.icon.startsWith( QLatin1String("http://") ) )
-            preview = Application::icon( item.icon ).pixmap(22);
+        QLabel *iconLabel = new QLabel(previewLabelIcon);
+        iconLabel->setPixmap(pixmapIcon);
+        iconLabel->move(27, 16);
     }
-    previewLabel->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
     
-    hLayout->addWidget(previewLabel);
+    //title and url
+    
+    QVBoxLayout *vLayout = new QVBoxLayout;  
     hLayout->addLayout(vLayout);
     
     QLabel *titleLabel = new QLabel("<b>" + item.title + "</b>");
@@ -82,17 +102,27 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
     vLayout->addWidget(titleLabel);
     vLayout->addWidget(urlLabel);
 
+    //type icon
 
-    QLabel *iconLabel = new QLabel;
-    QPixmap pixmap;
-    if(item.icon.startsWith( QLatin1String("http://") ) )
-        pixmap = Application::icon( item.icon ).pixmap(18);
-    else
-        pixmap = KIcon(item.icon).pixmap(18);
+    if (item.type & UrlSearchItem::Browse)
+    {
+        insertIcon(hLayout, "applications-internet");
+    }
+    
+    if (item.type & UrlSearchItem::Search)
+    {
+         insertIcon(hLayout, "edit-find");
+    }
+   
+    if (item.type & UrlSearchItem::Bookmark)
+    {
+         insertIcon(hLayout, "rating");
+    }
 
-    iconLabel->setPixmap(pixmap);
-    iconLabel->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-    hLayout->addWidget(iconLabel);
+    if (item.type & UrlSearchItem::History)
+    {
+         insertIcon(hLayout, "view-history");
+    }
 
     setLayout(hLayout);
     
@@ -106,6 +136,16 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
 ListItem::~ListItem()
 {
     disconnect();
+}
+
+
+void ListItem::insertIcon(QLayout *layout, QString icon)
+{
+    QLabel *iconLabel = new QLabel;
+    QPixmap pixmap = KIcon(icon).pixmap(18);
+    iconLabel->setPixmap(pixmap);
+    iconLabel->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+    layout->addWidget(iconLabel);
 }
 
 

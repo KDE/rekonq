@@ -35,13 +35,25 @@
 
 class UrlSearchItem
 {
-public:
+
+    public:
+
+    enum types 
+    { 
+        Search     = 0x00000001,
+        Browse     = 0x00000010,
+        History    = 0x00000100,
+        Bookmark   = 0x00001000,
+        Suggestion = 0x00010000,
+    };   
+
+    int type;
     QString url;
     QString title;
     QString icon;
-    
-    UrlSearchItem(const QString &_url, const QString &_title = QString(), const QString &_icon = QString())
-        : url(_url), title(_title), icon(_icon)
+
+    UrlSearchItem(const int &_type, const QString &_url, const QString &_title = QString(), const QString &_icon = QString())
+        : type(_type), url(_url), title(_title), icon(_icon)
     {};
     
     bool operator==(UrlSearchItem i);

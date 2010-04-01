@@ -26,6 +26,7 @@
 
 // Qt Includes
 #include <QWidget>
+#include <QLayout>
 #include <QStyleOptionViewItemV4>
 
 // Forward Declarations
@@ -55,4 +56,5 @@ protected:
 private:
     QStyleOptionViewItemV4 m_option;
     QString guessNameFromUrl(QUrl url);
+    void insertIcon(QLayout *layout, QString icon);
 };

@@ -44,9 +44,6 @@
 #include <QEvent>
 #include <QKeyEvent>
 
-// Defines
-#define MAX_ELEMENTS 9
-
 
 CompletionWidget::CompletionWidget( QWidget *parent)
     :QFrame( parent, Qt::ToolTip)
@@ -68,16 +65,12 @@ CompletionWidget::CompletionWidget( QWidget *parent)
 void CompletionWidget::insertSearchList(const UrlSearchList &list)
 {
     _list = list;
-    int min = MAX_ELEMENTS;
-    if(list.count() < min)
-        min = list.count();
-    
-    for(int i = 0; i<min ; ++i)
+    int i=0;
+    foreach(UrlSearchItem item, _list)
     {
-        UrlSearchItem item = list.at(i);
         ListItem *suggestion = new ListItem(item);
         connect(suggestion, SIGNAL(itemClicked(ListItem *, Qt::MouseButton)), this, SLOT(itemChosen(ListItem *, Qt::MouseButton)));
-        suggestion->setObjectName( QString::number(i) );
+        suggestion->setObjectName( QString::number(i++) );
         layout()->addWidget( suggestion );
     }
 }
