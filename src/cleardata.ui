@@ -24,7 +24,17 @@
    <item>
     <widget class="QCheckBox" name="clearHistory">
      <property name="text">
-      <string>History</string>
+      <string>Visited pages history</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="clearDownloads">
+     <property name="text">
+      <string>Downloads history</string>
      </property>
      <property name="checked">
       <bool>true</bool>

@@ -1186,7 +1186,12 @@ void MainWindow::clearPrivateData()
         {
             Application::historyManager()->clear();
         }
-
+        
+        if(clearWidget.clearDownloads->isChecked())
+        {
+            Application::historyManager()->clearDownloadsHistory();
+        }
+        
         if(clearWidget.clearCookies->isChecked())
         {
             QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
