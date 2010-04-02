@@ -232,6 +232,12 @@ QSize UrlBar::sizeHint() const
 
 void UrlBar::keyPressEvent(QKeyEvent *event)
 {
+    if(event->key() == Qt::Key_Escape)
+    {
+        m_box->hide();
+        return;
+    }
+    
     // this handles the Modifiers + Return key combinations
     QString currentText = m_lineEdit->text().trimmed();
     if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
