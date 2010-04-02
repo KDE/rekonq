@@ -86,7 +86,7 @@ WebView::WebView(QWidget* parent)
 
     // scrolling timer
     connect(_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
-    _scrollTimer->setInterval(50);
+    _scrollTimer->setInterval(100);
 }
 
 
@@ -426,34 +426,38 @@ void WebView::keyPressEvent(QKeyEvent *event)
         }
     }
     
+    // Auto Scrolling
     if ( event->modifiers() == Qt::ShiftModifier )
     {
-        kDebug() << "scrolling..";
         if( event->key() == Qt::Key_Up )
         {
-            _VScrollSpeed -= 1;
-            _scrollTimer->start();
+            _VScrollSpeed--;
+            if( !_scrollTimer->isActive() )
+                _scrollTimer->start();
             return;
         }
         
         if( event->key() == Qt::Key_Down )
         {
-            _VScrollSpeed += 1;
-            _scrollTimer->start();
+            _VScrollSpeed++;
+            if( !_scrollTimer->isActive() )
+                _scrollTimer->start();
             return;
         }
         
         if( event->key() == Qt::Key_Right )
         {
-            _HScrollSpeed += 1;
-            _scrollTimer->start();
+            _HScrollSpeed++;
+            if( !_scrollTimer->isActive() )
+                _scrollTimer->start();
             return;
         }
         
         if( event->key() == Qt::Key_Left )
         {
-            _HScrollSpeed -= 1;
-            _scrollTimer->start();
+            _HScrollSpeed--;
+            if( !_scrollTimer->isActive() )
+                _scrollTimer->start();
             return;
         }
         
