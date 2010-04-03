@@ -93,7 +93,6 @@
 #include <QtDBus/QDBusReply>
 
 #include <QtWebKit/QWebHistory>
-#include <QKeyEvent>
 
 
 MainWindow::MainWindow()
