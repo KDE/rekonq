@@ -2,9 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -26,45 +24,28 @@
 * ============================================================ */
 
 
-#ifndef LINEEDIT_H
-#define LINEEDIT_H
 
+#ifndef ICON_BUTTON_H
+#define ICON_BUTTON_H
 
-// Local Includes
-#include "iconbutton.h"
 
 // KDE Includes
-#include <KLineEdit>
+#include <KUrl>
 #include <KIcon>
 
+// Qt Includes
 #include <QToolButton>
 
-// Forward Declarations
-class QContextMenuEvent;
-class QFocusEvent;
-class QKeyEvent;
-class QStyleOptionFrameV2;
 
-
-class LineEdit : public KLineEdit
+class IconButton : public QToolButton
 {
     Q_OBJECT
 
 public:
-    explicit LineEdit(QWidget *parent = 0);
-    virtual ~LineEdit();
-    
-    IconButton *iconButton() const;
-    
-    void updateStyles();
-    
-protected:
-    virtual void keyPressEvent(QKeyEvent *);
-    virtual void mouseDoubleClickEvent(QMouseEvent *);
-    virtual void paintEvent(QPaintEvent *);
-    
-private:    
-    IconButton *_icon;    
+    IconButton(QWidget *parent = 0);
+
+    void setIconUrl(const KUrl &url, bool trusted);
+    void updateIcon(KIcon icon);
 };
 
-#endif // LINEEDIT_H
+#endif // ICON_BUTTON_H

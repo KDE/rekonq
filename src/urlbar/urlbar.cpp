@@ -50,124 +50,59 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
+// Defines
+#define QL1S(x)  QLatin1String(x)
+
 
 UrlBar::UrlBar(QWidget *parent)
-    : KComboBox(true, parent)
-    , m_lineEdit(new LineEdit)
-    , m_box(new CompletionWidget(this))
+    : LineEdit(parent)
+    , _box(new CompletionWidget(this))
     , _tab(0)
     , _privateMode(false)
 {
-    //cosmetic
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    setMinimumWidth(180);
-
-    // signal handlings
-    setTrapReturnKey(true);
-    setUrlDropsEnabled(true);
-    
-    // Make m_lineEdit background transparent
-    QPalette p = m_lineEdit->palette();
-    p.setColor(QPalette::Base, Qt::transparent);
-    m_lineEdit->setPalette(p);
-
-    setLineEdit(m_lineEdit);
-
-    // clear the URL bar
-    m_lineEdit->clear();
     // load urls on activated urlbar signal
-    connect(this, SIGNAL(returnPressed(const QString&)), SLOT(activated(const QString&)));
-    
-    installEventFilter(m_box);
-    connect(m_box, SIGNAL(chosenUrl(const QString&, Rekonq::OpenType)), SLOT(activated(const QString&, Rekonq::OpenType)));
+    connect(this, SIGNAL(returnPressed(const QString&)), this, SLOT(activated(const QString&)));
+
+    // suggestions
+    installEventFilter(_box);
+    connect(_box, SIGNAL(chosenUrl(const QString&, Rekonq::OpenType)), SLOT(activated(const QString&, Rekonq::OpenType)));
 }
 
 
 UrlBar::~UrlBar()
 {
+    delete _box;
 }
 
 
-void UrlBar::selectAll() const
+void UrlBar::setQUrl(const QUrl& url)
 {
-    m_lineEdit->selectAll();
-}
-
-
-KUrl UrlBar::url() const
-{
-    return m_currentUrl;
-}
-
-
-void UrlBar::setUrl(const QUrl& url)
-{
-    if(url.scheme() == "about")
+    if(url.scheme() == QL1S("about") )
     {
-        m_currentUrl = KUrl();
-        updateUrl();
+        iconButton()->updateIcon( KIcon("arrow-right") );
         setFocus();
     }
     else
     {
-        m_currentUrl = KUrl(url);
-        updateUrl();
+        LineEdit::setUrl(url);
+        setCursorPosition(0);
+        iconButton()->updateIcon( Application::icon(url) );
     }
 
-}
-
-
-void UrlBar::updateUrl()
-{
-    // Don't change my typed url...
-    // FIXME this is not a proper solution (also if it works...)
-    if(hasFocus())
-    {
-        kDebug() << "Don't change my typed url...";
-        return;
-    }
-
-    KIcon icon;
-    if(m_currentUrl.isEmpty()) 
-    {
-        icon = KIcon("arrow-right");
-    }
-    else 
-    {
-        icon = Application::icon(m_currentUrl);
-    }
-
-    if (count())
-    {
-        changeUrl(0, icon, m_currentUrl);
-    }
-    else
-    {
-        insertUrl(0, icon, m_currentUrl);
-    }
-
-    setCurrentIndex(0);
-
-    // important security consideration: always display the beginning
-    // of the url rather than its end to prevent spoofing attempts.
-    // Must be AFTER setCurrentIndex
-    if (!hasFocus())
-    {
-        m_lineEdit->setCursorPosition(0);
-    }
+    updateStyles();
 }
 
 
 void UrlBar::activated(const QString& urlString, Rekonq::OpenType type)
 {
-    disconnect(this, SIGNAL(editTextChanged(const QString &)), this, SLOT(suggestUrls(const QString &)));
+    disconnect(this, SIGNAL(textChanged(const QString &)), this, SLOT(suggestUrls(const QString &)));
     
     if (urlString.isEmpty())
         return;
 
     clearFocus();
-    setUrl(urlString);
-    Application::instance()->loadUrl(m_currentUrl, type);
+    setText(urlString);
+    Application::instance()->loadUrl(urlString, type);
 }
 
 
@@ -185,17 +120,16 @@ void UrlBar::paintEvent(QPaintEvent *event)
     
     // set background color of UrlBar
     QPalette p = palette();
-    p.setColor(QPalette::Base, backgroundColor);
-    setPalette(p);
 
-    KComboBox::paintEvent(event);
-
-    if (!hasFocus())
+    int progr = _tab->progress();
+    if (progr == 0) 
     {
-        QPainter painter(this);
-
+        p.setBrush(QPalette::Base, backgroundColor);
+    } 
+    else 
+    {
         QColor loadingColor;
-        if (m_currentUrl.scheme() == QLatin1String("https"))
+        if ( _tab->url().scheme() == QLatin1String("https"))
         {
             loadingColor = QColor(248, 248, 100);
         }
@@ -203,30 +137,16 @@ void UrlBar::paintEvent(QPaintEvent *event)
         {
             loadingColor = QColor(116, 192, 250);
         }
-        int progr = _tab->progress();
-        
-        backgroundColor.setAlpha(0);
-        backgroundColor.setAlpha(200);
-        QLinearGradient gradient(0, 0, width(), height() );
+    
+    
+        QLinearGradient gradient(0, 0, width(), 0);
         gradient.setColorAt(0, loadingColor);
         gradient.setColorAt(((double)progr)/100, backgroundColor);
-        
-        painter.setBrush( gradient );
-        painter.setPen(Qt::transparent);
-
-
-        QRect backgroundRect = m_lineEdit->frameGeometry();
-        int mid = backgroundRect.width() * progr / 100;
-        QRect progressRect(backgroundRect.x(), backgroundRect.y(), mid, backgroundRect.height());
-        painter.drawRect(progressRect);
-        painter.end();
+        p.setBrush(QPalette::Base, gradient);
     }
-}
-
-
-QSize UrlBar::sizeHint() const
-{
-    return m_lineEdit->sizeHint();
+    setPalette(p);
+    
+    LineEdit::paintEvent(event);
 }
 
 
@@ -234,12 +154,12 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Escape)
     {
-        m_box->hide();
+        _box->hide();
         return;
     }
     
     // this handles the Modifiers + Return key combinations
-    QString currentText = m_lineEdit->text().trimmed();
+    QString currentText = text().trimmed();
     if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
         && !currentText.startsWith(QLatin1String("http://"), Qt::CaseInsensitive))
     {
@@ -263,11 +183,11 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
         {
             host += append;
             url.setHost(host);
-            m_lineEdit->setText(url.toString());
+            setText(url.toString());
         }
     }
     
-    KComboBox::keyPressEvent(event);
+    LineEdit::keyPressEvent(event);
 }
 
 
@@ -280,7 +200,7 @@ void UrlBar::suggestUrls(const QString &text)
 
     if(text.isEmpty())
     {
-        m_box->hide();
+        _box->hide();
         return;
     }
 
@@ -289,35 +209,63 @@ void UrlBar::suggestUrls(const QString &text)
 
     if(list.count() > 0)
     {
-        m_box->clear();
-        m_box->insertSearchList(list);
-        m_box->popup();
+        _box->clear();
+        _box->insertSearchList(list);
+        _box->popup();
     }
 }
+
 
 void UrlBar::focusInEvent(QFocusEvent *event)
 {
     // activate suggestions on edit text
-    connect(this, SIGNAL(editTextChanged(const QString &)), this, SLOT(suggestUrls(const QString &)));
+    connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(suggestUrls(const QString &)));
     
-    KComboBox::focusInEvent(event);
+    LineEdit::focusInEvent(event);
 }
 
 
 void UrlBar::setCurrentTab(WebTab *tab)
 {
     if(_tab)
-        disconnect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setUrl(const QUrl &)));
+    {
+        disconnect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
+        disconnect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
+        disconnect(_tab->page(), SIGNAL(validSSLInfo(bool)), this, SLOT(setTrustedHost(bool)));
+        disconnect(iconButton(), SIGNAL(clicked()), _tab->page(), SLOT(showSSLInfo()));
+    }
     _tab = tab;
-    connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setUrl(const QUrl &)));
-
+    connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
+    connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
+    connect(_tab->page(), SIGNAL(validSSLInfo(bool)), this, SLOT(setTrustedHost(bool)));
+    connect(iconButton(), SIGNAL(clicked()), _tab->page(), SLOT(showSSLInfo()));
+            
     // update it now (the first time)
-    setUrl( _tab->url() );
-    update();
+    updateStyles();
+    _tab->view()->setFocus();
+    setQUrl( _tab->url() );
 }
 
 
 void UrlBar::setPrivateMode(bool on)
 {
     _privateMode = on;
+}
+
+
+void UrlBar::loadFinished()
+{
+    // show RSS
+    
+    // show KGet downloads??
+    
+    // last, but not least
+    updateStyles();
+}
+
+
+void UrlBar::setTrustedHost(bool on)
+{
+    kDebug() << "SET TRUSTED HOST..";
+    iconButton()->setIconUrl( _tab->url() , on );
 }

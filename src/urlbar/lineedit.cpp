@@ -30,24 +30,64 @@
 #include "lineedit.h"
 #include "lineedit.moc"
 
+// KDE Includes
+#include <klocalizedstring.h>
+#include <KDebug>
+
 // Qt Includes
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QFocusEvent>
 #include <QtGui/QKeyEvent>
+#include <QStyleOptionFrameV2>
+#include <QPainter>
 
 
 LineEdit::LineEdit(QWidget* parent)
-        : KLineEdit(parent)
+    : KLineEdit(parent)
+    , _icon( new IconButton(this) )
 {
+    // cosmetic
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setMinimumWidth(200);
-    setFocusPolicy(Qt::WheelFocus);
-    setHandleSignals(true);
+    setMinimumHeight(26);
+    updateStyles();
+    
+    // doesn't show the clear button
     setClearButtonShown(false);
+    
+    // trap Key_Enter & Key_Return events, while emitting the returnPressed signal
+    setTrapReturnKey(true);
+    
+    // insert decoded URLs
+    setUrlDropsEnabled(true);
+
+    // accept focus, via tabbing, clicking & wheeling
+    setFocusPolicy(Qt::WheelFocus);
+    
+    // disable completion object (we have our own :) )
+    setCompletionObject(0);
 }
 
 
 LineEdit::~LineEdit()
 {
+    delete _icon;
+}
+
+
+void LineEdit::updateStyles()
+{
+    adjustSize();
+    _icon->adjustSize();
+    if(_icon->toolButtonStyle() == Qt::ToolButtonIconOnly)
+        _icon->move( 4, 3);
+    else
+        _icon->move( 2, 1);
+    
+    int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
+    setStyleSheet(QString("LineEdit { padding-left: %1px; } ").arg(_icon->sizeHint().width() + frameWidth + 1));
+
+    update();
 }
 
 
@@ -66,4 +106,29 @@ void LineEdit::keyPressEvent(QKeyEvent *event)
 void LineEdit::mouseDoubleClickEvent(QMouseEvent *)
 {
     selectAll();
+}
+
+
+IconButton *LineEdit::iconButton() const
+{
+    return _icon;
+}
+
+
+void LineEdit::paintEvent(QPaintEvent *event)
+{
+    KLineEdit::paintEvent(event);
+    
+    if (text().isEmpty() && !hasFocus()) 
+    {
+        QStyleOptionFrame option;
+        initStyleOption(&option);
+        QRect textRect = style()->subElementRect(QStyle::SE_LineEditContents, &option, this);
+        QPainter painter(this);
+        painter.setPen(Qt::gray);
+        painter.drawText( textRect, 
+                          Qt::AlignLeft | Qt::AlignVCenter, 
+                          i18n("Search Bookmarks, History, Google.. and the Kitchen Sink!")
+                        );
+    }
 }

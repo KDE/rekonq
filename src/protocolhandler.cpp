@@ -305,7 +305,6 @@ void ProtocolHandler::showResults(const KFileItemList &list)
     _frame->setHtml( html, _url );
 
     Application::instance()->mainWindow()->currentTab()->setFocus();
-    Application::instance()->mainWindow()->mainView()->urlBar()->setUrl(_url);
     Application::historyManager()->addHistoryEntry( _url.prettyUrl() );
 
     delete _lister;

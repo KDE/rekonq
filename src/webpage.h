@@ -58,8 +58,6 @@ public:
     explicit WebPage(QWidget *parent = 0);
     ~WebPage();
 
-    void showSSLInfo();
-
 public slots:
     virtual void downloadRequest(const QNetworkRequest &request);
     void downloadAllContentsWithKGet();
@@ -77,7 +75,11 @@ protected Q_SLOTS:
 private slots:
     void manageNetworkErrors(QNetworkReply *reply);
     void loadFinished(bool);
+    void showSSLInfo();
 
+signals:
+    void validSSLInfo(bool);
+    
 private:
     QString errorPage(QNetworkReply *);
     

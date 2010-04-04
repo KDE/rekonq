@@ -304,18 +304,9 @@ void WebPage::loadFinished(bool)
     {
         wallet()->fillFormData(mainFrame());
     }
-    
-    // TODO: implement me!
-    if(_sslInfo.isValid())
-    {
-        // show an icon in the urlbar
-        kDebug() << "----------------- SSL VALID INFO!!!! ------------------";
-    }
-    else
-    {
-        // hide the icon in the urlbar
-        kDebug() << "----------------- SSL INFO NOT VALID... ------------------";
-    }
+
+    if( mainFrame()->url().scheme() == QL1S("https") )
+        emit validSSLInfo( _sslInfo.isValid() );
 }
 
 
@@ -538,13 +529,23 @@ void WebPage::showSSLInfo()
                          KSslInfoDialog::errorsFromString( _sslInfo.certificateErrors() )
                         );
 
-        dlg->open();
+        dlg->exec();
         delete dlg;
-    } 
-    else 
+        
+        return;
+    }
+    
+    if( mainFrame()->url().scheme() == QL1S("https") )
     {
-        KMessageBox::information( 0, 
-                                  i18n("The SSL information for this site appears to be corrupt."), 
+        KMessageBox::error( view(), 
+                              i18n("The SSL information for this site appears to be corrupt."), 
+                              i18nc("Secure Sockets Layer", "SSL")
+                            );
+    }
+    else
+    {
+        KMessageBox::information( view(), 
+                                  i18n("This site doesn't contain SSL information."), 
                                   i18nc("Secure Sockets Layer", "SSL")
                                 );
     }

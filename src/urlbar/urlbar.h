@@ -49,7 +49,7 @@ class QLinearGradient;
 class QWidget;
 
 
-class UrlBar : public KComboBox
+class UrlBar : public LineEdit
 {
     Q_OBJECT
 
@@ -57,32 +57,24 @@ public:
     UrlBar(QWidget *parent = 0);
     ~UrlBar();
 
-    void selectAll() const;
-    KUrl url() const;
-    QSize sizeHint() const;
-
     void setCurrentTab(WebTab *);
     void setPrivateMode(bool on);
-    
-public slots:
-    void setUrl(const QUrl &url);
-    void updateUrl();
 
 private slots:
     void activated(const QString& url, Rekonq::OpenType = Rekonq::CurrentTab);
     void suggestUrls(const QString &editedText);
+    void setQUrl(const QUrl &url);
 
+    void loadFinished();
+    void setTrustedHost(bool on);
+    
 protected:
     virtual void paintEvent(QPaintEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void focusInEvent(QFocusEvent *event);
 
 private:
-    LineEdit *m_lineEdit;
-
-    KUrl m_currentUrl;
-
-    CompletionWidget *m_box;
+    CompletionWidget *_box;
     WebTab *_tab;
     bool _privateMode;
 };

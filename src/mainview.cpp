@@ -366,7 +366,7 @@ void MainView::newTab()
         w->load( KUrl("about:home") );
         break;
     case 1: // blank page
-        urlBar()->setUrl(KUrl(""));
+        urlBar()->clear();
         break;
     case 2: // homepage
         w->load( KUrl(ReKonfig::homePage()) );
@@ -452,16 +452,18 @@ void MainView::cloneTab(int index)
 // When index is -1 index chooses the current tab
 void MainView::closeTab(int index)
 {
+    urlBar()->clear();
+    
     // open default homePage if just one tab is opened
     if (count() == 1)
     {
         WebView *w = currentWebTab()->view();
-        urlBar()->setUrl(KUrl(""));
         switch(ReKonfig::newTabsBehaviour())
         {
         case 0: // new tab page
         case 1: // blank page
             w->load( KUrl("about:home") );
+            urlBar()->setFocus();
             break;
         case 2: // homepage
             w->load( KUrl(ReKonfig::homePage()) );
@@ -469,7 +471,6 @@ void MainView::closeTab(int index)
         default:
             break;
         }
-        urlBar()->setFocus();
         return;
     }
 
@@ -478,43 +479,36 @@ void MainView::closeTab(int index)
     if (index < 0 || index >= count())
         return;
 
-    bool hasFocus = false;
     WebTab *tab = webTab(index);
-    if (tab)
+    if (!tab)
+        return;
+
+    if (tab->view()->isModified())
     {
-        if (tab->view()->isModified())
-        {
-            int risp = KMessageBox::warningContinueCancel(this,
-                        i18n("This tab contains changes that have not been submitted.\n"
-                             "Closing the tab will discard these changes.\n"
-                             "Do you really want to close this tab?\n"),
-                        i18n("Closing Modified Tab"), KGuiItem(i18n("Close &Tab"),"tab-close"), KStandardGuiItem::cancel());
-            if (risp != KMessageBox::Continue)
-                return;
-        }
-        hasFocus = tab->hasFocus();
-
-        // store close tab except homepage
-        if (!tab->url().prettyUrl().startsWith( QLatin1String("about:") ) && !tab->url().isEmpty())
-        {
-            QString title = tab->view()->title();
-            QString url = tab->url().prettyUrl();
-            HistoryItem item(url, QDateTime::currentDateTime(), title);
-            m_recentlyClosedTabs.removeAll(item);
-            m_recentlyClosedTabs.prepend(item);
-        }
-
-        removeTab(index);
-        updateTabBar();        // UI operation: do it ASAP!!
-        tab->deleteLater();    // tab is scheduled for deletion.
-        
-        emit tabsChanged();
-
-        if (hasFocus && count() > 0)
-        {
-            currentWebTab()->setFocus();
-        }       
+        int risp = KMessageBox::warningContinueCancel(this,
+                    i18n("This tab contains changes that have not been submitted.\n"
+                            "Closing the tab will discard these changes.\n"
+                            "Do you really want to close this tab?\n"),
+                    i18n("Closing Modified Tab"), KGuiItem(i18n("Close &Tab"),"tab-close"), KStandardGuiItem::cancel());
+        if (risp != KMessageBox::Continue)
+            return;
     }
+
+    // store close tab except homepage
+    if (!tab->url().prettyUrl().startsWith( QLatin1String("about:") ) && !tab->url().isEmpty())
+    {
+        QString title = tab->view()->title();
+        QString url = tab->url().prettyUrl();
+        HistoryItem item(url, QDateTime::currentDateTime(), title);
+        m_recentlyClosedTabs.removeAll(item);
+        m_recentlyClosedTabs.prepend(item);
+    }
+
+    removeTab(index);
+    updateTabBar();        // UI operation: do it ASAP!!
+    tab->deleteLater();    // tab is scheduled for deletion.
+    
+    emit tabsChanged();
 }
 
 
@@ -582,8 +576,6 @@ void MainView::webViewIconChanged()
         delete movie;
         label->setMovie(0);
         label->setPixmap(icon.pixmap(16, 16));
-
-        urlBar()->updateUrl();
     }
 }
 
