@@ -425,6 +425,14 @@ void WebView::keyPressEvent(QKeyEvent *event)
             return;
         }
     }
+ 
+    QWebHitTestResult result = page()->mainFrame()->hitTestContent( mapFromGlobal( QCursor::pos() ) );
+    
+    if( result.isContentEditable() )
+    {
+        KWebView::keyPressEvent(event);
+        return;
+    }
     
     // Auto Scrolling
     if ( event->modifiers() == Qt::ShiftModifier )

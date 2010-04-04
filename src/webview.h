@@ -52,7 +52,7 @@ public:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-    void mousePressEvent(QMouseEvent *event);// need to be ported
+    void mousePressEvent(QMouseEvent *event);   // need to be ported
     void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
