@@ -66,6 +66,7 @@ WebView::WebView(QWidget* parent)
     , _scrollTimer( new QTimer(this) )
     , _VScrollSpeed(0)
     , _HScrollSpeed(0)
+    , _disableAutoScroll(false)
 {
     WebPage *page = new WebPage(this);
     setPage(page);
@@ -320,6 +321,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
 void WebView::mousePressEvent(QMouseEvent *event)
 {
+    QWebHitTestResult result = page()->mainFrame()->hitTestContent( event->pos() );
+    _disableAutoScroll = result.isContentEditable();
+    
     switch(event->button())
     {
       case Qt::XButton1:
@@ -426,9 +430,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
         }
     }
  
-    QWebHitTestResult result = page()->mainFrame()->hitTestContent( mapFromGlobal( QCursor::pos() ) );
-    
-    if( result.isContentEditable() )
+    if(_disableAutoScroll)
     {
         KWebView::keyPressEvent(event);
         return;

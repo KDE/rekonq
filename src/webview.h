@@ -79,6 +79,7 @@ private:
     QTimer *_scrollTimer;
     int _VScrollSpeed;
     int _HScrollSpeed;
+    bool _disableAutoScroll;
 };
 
 #endif
