@@ -115,6 +115,17 @@ void NewTabPage::generate(const KUrl &url)
             return;
         }
     }
+    if(url.fileName() == QString("clear"))
+    {
+        Application::instance()->mainWindow()->actionByName("clear_private_data")->trigger();
+        generate(QString("about:" + url.directory()));
+        return;
+    }
+    if(url == KUrl("about:bookmarks/edit"))
+    {   
+        Application::bookmarkProvider()->bookmarkManager()->slotEditBookmarks();
+        return;
+    }
     
     QWebPage *page = m_root.webFrame()->page();
     page->mainFrame()->setHtml(m_html);
@@ -369,6 +380,13 @@ void NewTabPage::historyPage()
 {
     m_root.addClass("history");
     
+    QWebElement clearData = markup(".link");
+    clearData.findFirst("a").setAttribute("href", "about:history/clear");
+    QString iconPath = QString("file:///" + KIconLoader::global()->iconPath("edit-clear", KIconLoader::SizeSmall || KIconLoader::Small));
+    clearData.findFirst("img").setAttribute("src" , iconPath );
+    clearData.findFirst("span").appendInside(i18n("Clear Private Data"));
+    m_root.document().findFirst("#actions").appendInside(clearData);
+    
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
     int i = 0;
@@ -400,6 +418,13 @@ void NewTabPage::historyPage()
 void NewTabPage::bookmarksPage()
 {
     m_root.addClass("bookmarks");
+    
+    QWebElement editBookmarks = markup(".link");
+    editBookmarks.findFirst("a").setAttribute("href", "about:bookmarks/edit");
+    QString iconPath = QString("file:///" + KIconLoader::global()->iconPath("bookmarks-organize", KIconLoader::SizeSmall || KIconLoader::Small));
+    editBookmarks.findFirst("img").setAttribute("src" , iconPath);
+    editBookmarks.findFirst("span").appendInside(i18n("Edit Bookmarks"));
+    m_root.document().findFirst("#actions").appendInside(editBookmarks);
     
     KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
     if (bookGroup.isNull())
@@ -485,6 +510,13 @@ QString NewTabPage::checkTitle(const QString &title)
 void NewTabPage::downloadsPage()
 {
     m_root.addClass("downloads");
+    
+    QWebElement clearData = markup(".link");
+    clearData.findFirst("a").setAttribute("href", "about:downloads/clear");
+    QString iconPath = QString("file:///" + KIconLoader::global()->iconPath("edit-clear", KIconLoader::SizeSmall || KIconLoader::Small));
+    clearData.findFirst("img").setAttribute("src" , iconPath );
+    clearData.findFirst("span").appendInside(i18n("Clear Private Data"));
+    m_root.document().findFirst("#actions").appendInside(clearData);
 
     DownloadList list = Application::historyManager()->downloads();
     
