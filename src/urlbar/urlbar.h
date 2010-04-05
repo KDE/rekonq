@@ -72,6 +72,7 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void focusInEvent(QFocusEvent *event);
+    virtual void dropEvent(QDropEvent *event);
 
 private:
     CompletionWidget *_box;
