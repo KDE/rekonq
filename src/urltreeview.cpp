@@ -95,8 +95,8 @@ void UrlTreeView::mouseReleaseEvent(QMouseEvent *event)
     if(!index.isValid())
         return;
 
-    if(event->button() == Qt::MidButton)
-        validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewCurrentTab);
+    if(event->button() == Qt::MidButton || event->modifiers() == Qt::ControlModifier)
+        validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::SettingOpenTab);
 
     else if(event->button() == Qt::LeftButton)
     {
