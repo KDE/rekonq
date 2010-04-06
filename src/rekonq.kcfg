@@ -34,10 +34,10 @@
 <!-- New Tab Page Settings -->
   <group name="NewTabPage">
     <entry name="previewNames" type="StringList">
-        <default>KDE Homepage,KDE-Apps,KDE-Look,UserBase,KDE Community Forums,TechBase,Planet KDE,rekonq</default>
+        <default>KDE Homepage,UserBase,,,,,,</default>
     </entry>
     <entry name="previewUrls" type="StringList">
-        <default>http://www.kde.org,http://kde-apps.org,http://kde-look.org,http://userbase.kde.org,http://forum.kde.org,http://techbase.kde.org,http://planetkde.org,http://rekonq.sourceforge.net</default>
+        <default>http://www.kde.org,http://userbase.kde.org,,,,,,</default>
     </entry>
   </group>
 
