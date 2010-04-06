@@ -194,6 +194,7 @@ public:
     */
     void setupBookmarkBar(KToolBar *);
 
+    void removeToolBar(KToolBar*);
 
     /**
      * @short Get action by name
@@ -220,7 +221,7 @@ public:
     KCompletion *completionObject() const;
 
     QString titleForBookmarkUrl(QString url);
-    
+
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
@@ -256,8 +257,30 @@ private:
     BookmarkOwner *m_owner;
     KActionCollection *m_actionCollection;
     BookmarkMenu *m_bookmarkMenu;
-    KToolBar *m_bookmarkToolBar;
+    QList<KToolBar*> m_bookmarkToolBars;
     KCompletion *m_completion;
 };
+
+
+// ------------------------------------------------------------------------------------------
+
+
+class BookmarkActionMenu : public KBookmarkActionMenu
+{
+    Q_OBJECT
+
+public:
+    BookmarkActionMenu (const KBookmarkGroup &bm, QObject *parent);
+    void addFolderActions();
+
+private slots:
+    void openActionInTabs();
+    void bookmarkCurrentPage();
+
+private:
+    KBookmarkGroup m_group;
+
+};
+
 
 #endif

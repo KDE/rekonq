@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Nils Weigel <nehlsen at gmail dot com>
-* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,55 +24,40 @@
 * ============================================================ */
 
 
-#ifndef BOOKMARKSPANEL_H
-#define BOOKMARKSPANEL_H
-
+#ifndef BOOKMARKCONTEXTMENU_H
+#define BOOKMARKCONTEXTMENU_H
 
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "application.h"
-#include "urltreeview.h"
 
 // Qt Includes
-#include <QDockWidget>
-
-// KDE Includes
-#include <KBookmark>
-
-// Forward Declarations
-class KUrl;
-class QModelIndex;
+#include <KBookmarkMenu>
 
 
-class REKONQ_TESTS_EXPORT BookmarksPanel : public QDockWidget
+class BookmarkContextMenu : public KBookmarkContextMenu
 {
     Q_OBJECT
-
 public:
-    explicit BookmarksPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~BookmarksPanel();
-
-signals:
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
-    void itemHovered(const QString &);
-    void saveOnlyRequested();
+    BookmarkContextMenu(const KBookmark & bk, KBookmarkManager * manager, KBookmarkOwner *owner, QWidget * parent = 0);
+    virtual void addActions();
 
 private slots:
-    void contextMenu(const QPoint &pos);
-
+    void openInCurrentTab();
+    void openInNewTab();
+    void openInNewWindow();
     void deleteBookmark();
-    void onCollapse(const QModelIndex &index);
-    void onExpand(const QModelIndex &index);
-    void loadFoldedState(const QModelIndex &root);
-    void loadFoldedState();
-
+    void openFolderInTabs();
+    void editBookmark();
+    void newBookmarkGroup();
+    void newSeparator();
+    void bookmarkCurrentPage();
 
 private:
-    void setup();
-    KBookmark bookmarkForIndex(const QModelIndex &index);
-
-    UrlTreeView *m_treeView;
-    bool m_loadingState;
+    void setupActions();
+    void addFolderActions();
+    void addBookmarkActions();
+    void addSeparatorActions();
+    KActionCollection *m_ac;
 };
 
-#endif // BOOKMARKSPANEL_H
+#endif // BOOKMARKCONTEXTMENU_H

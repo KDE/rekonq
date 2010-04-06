@@ -160,6 +160,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+    Application::bookmarkProvider()->removeToolBar(m_bmBar);
     Application::instance()->removeMainWindow(this);
     delete m_popup;
 }

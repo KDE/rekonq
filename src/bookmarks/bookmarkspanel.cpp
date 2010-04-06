@@ -32,6 +32,7 @@
 #include "bookmarksmanager.h"
 #include "bookmarkstreemodel.h"
 #include "bookmarksproxy.h"
+#include "bookmarkcontextmenu.h"
 
 // Auto Includes
 #include "rekonq.h"
@@ -39,26 +40,21 @@
 // Qt includes
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QTreeView>
 #include <QHeaderView>
 
 // KDE includes
 #include <KLineEdit>
 #include <KLocalizedString>
-#include <KAction>
 #include <KMenu>
-#include <KBookmarkDialog>
 #include <KMessageBox>
 
 
 BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
     : QDockWidget(title, parent, flags),
     m_treeView(new UrlTreeView(this)),
-    m_ac(new KActionCollection(this)),
     m_loadingState(false)
 {
     setup();
-    setupActions();
     setShown(ReKonfig::showBookmarksPanel());
 }
 
@@ -111,14 +107,27 @@ void BookmarksPanel::setup()
     proxy->setSourceModel( model );
     m_treeView->setModel( proxy );
 
-    connect(m_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenuBk(const QPoint &)));
-    connect(m_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenuBkGroup(const QPoint &)));
-    connect(m_treeView, SIGNAL(contextMenuEmptyRequested(const QPoint &)), this, SLOT(contextMenuBlank(const QPoint &)));
+    connect(m_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
+    connect(m_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
+    connect(m_treeView, SIGNAL(contextMenuEmptyRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
     connect(m_treeView, SIGNAL(delKeyPressed()), this, SLOT(deleteBookmark()));
     connect(m_treeView, SIGNAL(collapsed(const QModelIndex &)), this, SLOT(onCollapse(const QModelIndex &)));
     connect(m_treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(onExpand(const QModelIndex &)));
     connect(search, SIGNAL(textChanged(const QString &)), proxy, SLOT(setFilterFixedString(const QString &)));
     loadFoldedState();
+}
+
+
+KBookmark BookmarksPanel::bookmarkForIndex(const QModelIndex &index)
+{
+    if(!index.isValid())
+        return KBookmark();
+
+    const QAbstractProxyModel* proxyModel = dynamic_cast< const QAbstractProxyModel* >(index.model());
+    QModelIndex originalIndex = proxyModel->mapToSource(index);
+
+    BtmItem *node = static_cast< BtmItem* >( originalIndex.internalPointer() );
+    return node->getBkm();
 }
 
 
@@ -170,165 +179,16 @@ void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 }
 
 
-void BookmarksPanel::setupActions()
+void BookmarksPanel::contextMenu(const QPoint &pos)
 {
-    KAction* action;
-
-    action = new KAction(KIcon("tab-new"), i18n("Open"), this);
-    connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInCurrentTab()));
-    m_ac->addAction("open", action);
-
-    action = new KAction(KIcon("tab-new"), i18n("Open in New Tab"), this);
-    connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInNewTab()));
-    m_ac->addAction("open_tab", action);
-
-    action = new KAction(KIcon("window-new"), i18n("Open in New Window"), this);
-    connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInNewWindow()));
-    m_ac->addAction("open_window", action);
-
-    action = new KAction(KIcon("bookmark-new"), i18n("Add Bookmark Here"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(bookmarkCurrentPage()));
-    m_ac->addAction("bookmark_page", action);
-
-    action = new KAction(KIcon("folder-new"), i18n("New Bookmark Folder"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(newBookmarkGroup()));
-    m_ac->addAction("folder_new", action);
-
-    action = new KAction(KIcon("edit-clear"), i18n("New Separator"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(newSeparator()));
-    m_ac->addAction("separator_new", action);
-
-    action = new KAction(KIcon("edit-copy"), i18n("Copy Link Address"), this);
-    connect(action, SIGNAL(triggered()), m_treeView, SLOT(copyToClipboard()));
-    m_ac->addAction("copy", action);
-
-    action = new KAction(KIcon("edit-delete"), i18n("Delete Bookmark"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(deleteBookmark()));
-    m_ac->addAction("delete", action);
-
-    action = new KAction(KIcon("configure"), i18n("Properties"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(editBookmark()));
-    m_ac->addAction("properties", action);
-
-    action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(openFolderInTabs()));
-    m_ac->addAction("open_all", action);
-}
-
-
-KBookmark BookmarksPanel::bookmarkForIndex(const QModelIndex &index)
-{
-    if(!index.isValid())
-        return KBookmark();
-
-    const QAbstractProxyModel* proxyModel = dynamic_cast< const QAbstractProxyModel* >(index.model());
-    QModelIndex originalIndex = proxyModel->mapToSource(index);
-
-    BtmItem *node = static_cast< BtmItem* >( originalIndex.internalPointer() );
-    return node->getBkm();
-}
-
-
-void BookmarksPanel::contextMenuBk(const QPoint &pos)
-{
-    QPoint position = m_treeView->mapToGlobal(pos);
     QModelIndex index = m_treeView->indexAt(pos);
-    if(!index.isValid() || m_loadingState)
+    if(m_loadingState)
         return;
 
     KBookmark selected = bookmarkForIndex(index);
 
-    if(selected.isGroup())
-    {
-        contextMenuBkGroup(pos, true);
-        return;
-    }
-
-    if(selected.isSeparator())
-    {
-        contextMenuSeparator(pos);
-        return;
-    }
-
-    KMenu *menu = new KMenu(this);
-
-    menu->addAction(m_ac->action("open"));
-    menu->addAction(m_ac->action("open_tab"));
-    menu->addAction(m_ac->action("open_window"));
-
-    menu->addSeparator();
-
-    menu->addAction(m_ac->action("bookmark_page"));
-    menu->addAction(m_ac->action("folder_new"));
-    menu->addAction(m_ac->action("separator_new"));
-
-    menu->addSeparator();
-
-    menu->addAction(m_ac->action("copy"));
-
-    menu->addSeparator();
-
-    menu->addAction(m_ac->action("delete"));
-    menu->addAction(m_ac->action("properties"));
-
-    menu->popup(position);
-}
-
-
-void BookmarksPanel::contextMenuBkGroup(const QPoint &pos, bool emptyGroup)
-{
-    if(m_loadingState)
-        return;
-
-    QPoint position = m_treeView->mapToGlobal(pos);
-    KMenu *menu = new KMenu(this);
-
-    if(!emptyGroup)
-    {
-        menu->addAction(m_ac->action("open_all"));
-        menu->addSeparator();
-    }
-
-    menu->addAction(m_ac->action("bookmark_page"));
-    menu->addAction(m_ac->action("folder_new"));
-    menu->addAction(m_ac->action("separator_new"));
-
-    menu->addSeparator();
-
-    menu->addAction(m_ac->action("delete"));
-    menu->addAction(m_ac->action("properties"));
-
-    menu->popup(position);
-}
-
-
-void BookmarksPanel::contextMenuSeparator(const QPoint &pos)
-{
-    QPoint position = m_treeView->mapToGlobal(pos);
-    KMenu *menu = new KMenu(this);
-
-    menu->addAction(m_ac->action("bookmark_page"));
-    menu->addAction(m_ac->action("folder_new"));
-    menu->addAction(m_ac->action("separator_new"));
-
-    menu->addSeparator();
-
-    menu->addAction(m_ac->action("delete"));
-
-    menu->popup(position);
-}
-
-
-void BookmarksPanel::contextMenuBlank(const QPoint &pos)
-{
-    QPoint position = m_treeView->mapToGlobal(pos);
-    KMenu *menu = new KMenu(this);
-
-    menu->addAction(m_ac->action("bookmark_page"));
-    menu->addAction(m_ac->action("folder_new"));
-    menu->addAction(m_ac->action("separator_new"));
-
-    menu->popup(position);
+    BookmarkContextMenu *menu = new BookmarkContextMenu(selected, Application::bookmarkProvider()->bookmarkManager(), Application::bookmarkProvider()->bookmarkOwner(), this);
+    menu->popup(m_treeView->mapToGlobal(pos));
 }
 
 
@@ -355,129 +215,4 @@ void BookmarksPanel::deleteBookmark()
 
     bm.parentGroup().deleteBookmark(bm);
     Application::instance()->bookmarkProvider()->bookmarkManager()->emitChanged();
-}
-
-
-void BookmarksPanel::editBookmark()
-{
-    QModelIndex index = m_treeView->currentIndex();
-    if(!index.isValid())
-        return;
-
-    KBookmark selected = bookmarkForIndex(index);
-
-    KBookmarkDialog *dialog = Application::bookmarkProvider()->bookmarkOwner()->bookmarkDialog(Application::bookmarkProvider()->bookmarkManager(), QApplication::activeWindow());
-    dialog->editBookmark(selected);
-    delete dialog;
-}
-
-
-void BookmarksPanel::openFolderInTabs()
-{
-    QModelIndex index = m_treeView->currentIndex();
-    if(!index.isValid() || !bookmarkForIndex(index).isGroup())
-        return;
-
-    QList<KUrl> allChild = bookmarkForIndex(index).toGroup().groupUrlList();
-
-    if(allChild.length() > 8) // 8, a good choice ?
-    {
-        if(!(KMessageBox::warningContinueCancel(this, i18n("You are about to open a lot of tabs : %1\nAre you sure  ?", QString::number(allChild.length()))) == KMessageBox::Continue))
-            return;
-    }
-
-    for(int i = 0; i < allChild.length(); i++)
-        emit openUrl(allChild.at(i).url(), Rekonq::SettingOpenTab);
-}
-
-
-void BookmarksPanel::newBookmarkGroup()
-{
-    QModelIndex index = m_treeView->currentIndex();
-    KBookmark newBk;
-
-    KBookmarkDialog *dialog = Application::bookmarkProvider()->bookmarkOwner()->bookmarkDialog(Application::bookmarkProvider()->bookmarkManager(), QApplication::activeWindow());
-
-    if(index.isValid())
-    {
-        KBookmark selected = bookmarkForIndex(index);
-
-        if(selected.isGroup())
-        {
-            newBk = dialog->createNewFolder("New folder", selected);
-        }
-
-        else
-        {
-            newBk = dialog->createNewFolder("New folder", selected.parentGroup());
-            selected.parentGroup().moveBookmark(newBk, selected);
-            Application::bookmarkProvider()->bookmarkManager()->emitChanged();
-        } 
-    }
-
-    else
-    {
-        dialog->createNewFolder("New folder");
-    }
-
-    delete dialog;
-}
-
-
-void BookmarksPanel::newSeparator()
-{
-    QModelIndex index = m_treeView->currentIndex();
-
-    KBookmark selected;
-    KBookmark newBk;
-
-    if(index.isValid())
-    {
-        selected = bookmarkForIndex(index);
-
-        if(selected.isGroup())
-            newBk = selected.toGroup().createNewSeparator();
-        else
-            newBk = selected.parentGroup().createNewSeparator();
-    }
-
-    else
-    {
-        newBk = Application::bookmarkProvider()->rootGroup().createNewSeparator();
-    }
-
-    KBookmarkGroup parent = newBk.parentGroup();
-    newBk.setIcon(("edit-clear"));
-    parent.addBookmark(newBk);
-
-    if(index.isValid())
-        parent.moveBookmark(newBk, selected);
-
-    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
-}
-
-
-void BookmarksPanel::bookmarkCurrentPage()
-{
-    QModelIndex index = m_treeView->currentIndex();
-    KBookmarkGroup parent = Application::bookmarkProvider()->rootGroup();
-
-    if(index.isValid())
-    {
-        KBookmark selected = bookmarkForIndex(index);
-        parent = selected.parentGroup();
-
-        if(selected.isGroup())
-            parent = selected.toGroup();
-
-        KBookmark newBk = parent.addBookmark(Application::bookmarkProvider()->bookmarkOwner()->currentTitle(), KUrl(Application::bookmarkProvider()->bookmarkOwner()->currentUrl()), "text-html");
-        parent.moveBookmark(newBk, selected.parentGroup().previous(selected));
-    }
-
-    else
-    {
-       parent.addBookmark(Application::bookmarkProvider()->bookmarkOwner()->currentTitle(), KUrl(Application::bookmarkProvider()->bookmarkOwner()->currentUrl()), "text-html");
-    }
-
-    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
 }

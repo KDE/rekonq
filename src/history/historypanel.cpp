@@ -121,7 +121,6 @@ void HistoryPanel::setup()
 
 void HistoryPanel::contextMenuItem(const QPoint &pos)
 {
-    QPoint position = m_treeView->mapToGlobal(pos);
     KMenu *menu = new KMenu(this);
     KAction* action;
 
@@ -143,12 +142,11 @@ void HistoryPanel::contextMenuItem(const QPoint &pos)
 
     if (!menu)
         return;
-    menu->popup(position);
+    menu->popup(m_treeView->mapToGlobal(pos));
 }
 
 void HistoryPanel::contextMenuGroup(const QPoint &pos)
 {
-    QPoint position = m_treeView->mapToGlobal(pos);
     KMenu *menu = new KMenu(this);
     KAction* action;
 
@@ -159,7 +157,7 @@ void HistoryPanel::contextMenuGroup(const QPoint &pos)
 
     if (!menu)
         return;
-    menu->popup(position);
+    menu->popup(m_treeView->mapToGlobal(pos));
 }
 
 void HistoryPanel::openAll()
@@ -173,9 +171,9 @@ void HistoryPanel::openAll()
     for(int i = 0; i < index.model()->rowCount(index); i++)
         allChild << qVariantValue<KUrl>(index.child(i, 0).data(Qt::UserRole));
 
-    if(allChild.length() > 8) // 8, a good choice ?
+    if(allChild.length() > 8)
     {
-        if(!(KMessageBox::warningContinueCancel(this, i18n("You are about to open a lot of tabs : %1\nAre you sure  ?", QString::number(allChild.length()))) == KMessageBox::Continue))
+        if(!(KMessageBox::warningContinueCancel(this, i18n("You are about to open %1 tabs.\nAre you sure  ?", QString::number(allChild.length()))) == KMessageBox::Continue))
             return;
     }
 
