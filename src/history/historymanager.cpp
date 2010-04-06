@@ -455,6 +455,9 @@ KCompletion * HistoryManager::completionObject() const
 
 void HistoryManager::addDownload(const QString &srcUrl, const QString &destUrl)
 {
+    QWebSettings *globalSettings = QWebSettings::globalSettings();
+    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+      return;
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
     QFile downloadFile(downloadFilePath);
     if ( !downloadFile.open(QFile::WriteOnly | QFile::Append) )
