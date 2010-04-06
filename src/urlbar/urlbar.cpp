@@ -269,3 +269,10 @@ void UrlBar::setTrustedHost(bool on)
     kDebug() << "SET TRUSTED HOST..";
     iconButton()->setIconUrl( _tab->url() , on );
 }
+
+
+void UrlBar::dropEvent(QDropEvent *event)
+{
+    LineEdit::dropEvent(event);
+    activated(text());
+}
