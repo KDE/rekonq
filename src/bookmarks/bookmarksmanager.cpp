@@ -218,10 +218,12 @@ void BookmarkProvider::setupBookmarkBar(KToolBar *toolbar)
     slotBookmarksChanged("", "");
 }
 
+
 void BookmarkProvider::removeToolBar(KToolBar *toolbar)
 {
     m_bookmarkToolBars.removeOne(toolbar);
 }
+
 
 void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString &caller)
 {

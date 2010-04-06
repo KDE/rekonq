@@ -31,6 +31,9 @@
 #include "application.h"
 #include "bookmarksmanager.h"
 
+// Qt Includes
+#include <QClipboard>
+
 // KDE Includes
 #include <KMessageBox>
 #include <KActionCollection>
@@ -188,6 +191,17 @@ void BookmarkContextMenu::openInNewWindow()
     Application::instance()->loadUrl(bookmark().url(), Rekonq::NewWindow);
 }
 
+
+void BookmarkContextMenu::copyToClipboard()
+{
+    if(bookmark().isNull())
+        return;
+
+    QClipboard *cb = QApplication::clipboard();
+    cb->setText(bookmark().url().url());
+}
+
+
 void BookmarkContextMenu::deleteBookmark()
 {
     KBookmark bm = bookmark();
@@ -228,7 +242,6 @@ void BookmarkContextMenu::openFolderInTabs()
 
 void BookmarkContextMenu::newBookmarkGroup()
 {
-    KBookmark newBk;
     KBookmark selected = bookmark();
     KBookmarkDialog *dialog = owner()->bookmarkDialog(manager(), QApplication::activeWindow());
 
@@ -236,11 +249,12 @@ void BookmarkContextMenu::newBookmarkGroup()
     {
         if(selected.isGroup())
         {
-            newBk = dialog->createNewFolder("New folder", selected);
+            dialog->createNewFolder("New folder", selected);
         }
 
         else
         {
+            KBookmark newBk;
             newBk = dialog->createNewFolder("New folder", selected.parentGroup());
             selected.parentGroup().moveBookmark(newBk, selected);
             manager()->emitChanged();

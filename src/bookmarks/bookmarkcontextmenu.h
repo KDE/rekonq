@@ -45,6 +45,7 @@ private slots:
     void openInCurrentTab();
     void openInNewTab();
     void openInNewWindow();
+    void copyToClipboard();
     void deleteBookmark();
     void openFolderInTabs();
     void editBookmark();
