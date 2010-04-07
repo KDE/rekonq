@@ -119,6 +119,7 @@ void HistoryPanel::setup()
     connect(m_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenuGroup(const QPoint &)));
 }
 
+
 void HistoryPanel::contextMenuItem(const QPoint &pos)
 {
     KMenu *menu = new KMenu(this);
@@ -145,6 +146,7 @@ void HistoryPanel::contextMenuItem(const QPoint &pos)
     menu->popup(m_treeView->mapToGlobal(pos));
 }
 
+
 void HistoryPanel::contextMenuGroup(const QPoint &pos)
 {
     KMenu *menu = new KMenu(this);
@@ -160,6 +162,7 @@ void HistoryPanel::contextMenuGroup(const QPoint &pos)
     menu->popup(m_treeView->mapToGlobal(pos));
 }
 
+
 void HistoryPanel::openAll()
 {
     QModelIndex index = m_treeView->currentIndex();
@@ -173,10 +176,14 @@ void HistoryPanel::openAll()
 
     if(allChild.length() > 8)
     {
-        if(!(KMessageBox::warningContinueCancel(this, i18n("You are about to open %1 tabs.\nAre you sure  ?", QString::number(allChild.length()))) == KMessageBox::Continue))
+        if( !(KMessageBox::warningContinueCancel(this, 
+                                                i18n("You are about to open %1 tabs.\nAre you sure  ?", 
+                                                QString::number(allChild.length()))) == KMessageBox::Continue)
+          )
             return;
     }
 
     for(int i = 0; i < allChild.length(); i++)
         emit openUrl(allChild.at(i).url(), Rekonq::SettingOpenTab);
 }
+

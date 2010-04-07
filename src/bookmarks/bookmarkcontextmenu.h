@@ -37,6 +37,7 @@
 class BookmarkContextMenu : public KBookmarkContextMenu
 {
     Q_OBJECT
+
 public:
     BookmarkContextMenu(const KBookmark & bk, KBookmarkManager * manager, KBookmarkOwner *owner, QWidget * parent = 0);
     virtual void addActions();
@@ -62,3 +63,4 @@ private:
 };
 
 #endif // BOOKMARKCONTEXTMENU_H
+

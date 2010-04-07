@@ -31,13 +31,13 @@
 #include "application.h"
 #include "bookmarksmanager.h"
 
-// Qt Includes
-#include <QClipboard>
-
 // KDE Includes
 #include <KMessageBox>
 #include <KActionCollection>
 #include <KBookmarkDialog>
+
+// Qt Includes
+#include <QClipboard>
 
 
 BookmarkContextMenu::BookmarkContextMenu(const KBookmark & bookmark, KBookmarkManager *manager, KBookmarkOwner *owner, QWidget *parent)
@@ -321,3 +321,4 @@ void BookmarkContextMenu::bookmarkCurrentPage()
 
     manager()->emitChanged();
 }
+
