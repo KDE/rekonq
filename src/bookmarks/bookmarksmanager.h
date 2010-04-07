@@ -5,6 +5,7 @@
 * Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
 * Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
