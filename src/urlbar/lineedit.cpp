@@ -143,13 +143,16 @@ IconButton *LineEdit::addRightIcon(LineEdit::icon ic)
     switch(ic)
     {
     case LineEdit::KGet:
-        rightIcon->setIcon( QIcon(KStandardDirs::locate("data", "rekonq/pics/kget-icon.png")) );
+        rightIcon->setIcon( KIcon("download") );
+        rightIcon->setToolTip( i18n("List all links with KGet") );
         break;
     case LineEdit::RSS:
-        rightIcon->setIcon( QIcon(KStandardDirs::locate("data", "rekonq/pics/rss-icon.png")) );
+        rightIcon->setIcon( KIcon("application-rss+xml") );
+        rightIcon->setToolTip( i18n("List all available RSS feeds") );
         break;
     case LineEdit::SSL:
-        rightIcon->setIcon( QIcon(KStandardDirs::locate("data", "rekonq/pics/ssl-icon.png")) );
+        rightIcon->setIcon( KIcon("object-locked") );
+        rightIcon->setToolTip( i18n("Show SSL Infos") );
         break;
     default:
         kDebug() << "ERROR.. default non extant case!!";

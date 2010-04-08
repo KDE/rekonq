@@ -2,7 +2,7 @@ INSTALL(
     FILES 
     bg2.png bg.png tile.gif category.png button.png
     busywidget.gif loading.mng  
-    webkit-icon.png rss-icon.png kget-icon.png ssl-icon.png
+    webkit-icon.png
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
 )
 
