@@ -289,53 +289,23 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (url.isEmpty())
         return;
 
-    // sanitization
-    KUrl loadingUrl( url.toEncoded() );
-
-    if ( !loadingUrl.isValid() )
+    if ( !url.isValid() )
     {
-        KMessageBox::error(0, i18n("Malformed URL:\n%1", loadingUrl.url(KUrl::RemoveTrailingSlash)));
+        KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url(KUrl::RemoveTrailingSlash)));
         return;
     }
 
-    // first, create the webview(s) to not let hangs UI..
-    WebTab *tab = 0;
-    MainWindow *w = 0;
-    w = (type == Rekonq::NewWindow) 
-        ? newMainWindow()
-        : mainWindow();
-        
-    switch(type)
-    {
-    case Rekonq::SettingOpenTab:
-        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
-        break;
-    case Rekonq::NewCurrentTab:
-        tab = w->mainView()->newWebTab(true);
-        break;
-    case Rekonq::NewBackTab:
-        tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
-        break;
-    case Rekonq::NewWindow:
-    case Rekonq::CurrentTab:
-        tab = w->mainView()->currentWebTab();
-        break;
-    };
-    
-    WebView *view = tab->view();
-    
-    if (view)
-    {
-        FilterUrlJob *job = new FilterUrlJob(view, loadingUrl.pathOrUrl(), this);
-        Weaver::instance()->enqueue(job);
-    }
+    prepareLoading(url.pathOrUrl(), type);
 }
 
 
 
 void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& type)
-{    
-    return loadUrl( QUrl::fromUserInput(urlString), type );
+{
+    if(urlString.isEmpty())
+        return;
+
+    prepareLoading(urlString, type);
 }
 
 
@@ -399,4 +369,40 @@ void Application::newWindow()
 {
     loadUrl( KUrl("about:home"), Rekonq::NewWindow );
     mainWindow()->mainView()->urlBarWidget()->setFocus();
+}
+
+
+void Application::prepareLoading(const QString& urlString, const Rekonq::OpenType& type)
+{
+    // first, create the webview(s) to not let hangs UI..
+    WebTab *tab = 0;
+    MainWindow *w = 0;
+    w = (type == Rekonq::NewWindow) 
+        ? newMainWindow()
+        : mainWindow();
+        
+    switch(type)
+    {
+    case Rekonq::SettingOpenTab:
+        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
+        break;
+    case Rekonq::NewCurrentTab:
+        tab = w->mainView()->newWebTab(true);
+        break;
+    case Rekonq::NewBackTab:
+        tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
+        break;
+    case Rekonq::NewWindow:
+    case Rekonq::CurrentTab:
+        tab = w->mainView()->currentWebTab();
+        break;
+    };
+    
+    WebView *view = tab->view();
+    
+    if (view)
+    {
+        FilterUrlJob *job = new FilterUrlJob(view, urlString, this);
+        Weaver::instance()->enqueue(job);
+    }
 }
