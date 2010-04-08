@@ -31,6 +31,9 @@
 #include "urlbar.h"
 #include "urlbar.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "application.h"
 #include "lineedit.h"
@@ -60,6 +63,11 @@ UrlBar::UrlBar(QWidget *parent)
     , _tab(0)
     , _privateMode(false)
 {
+    _tab = qobject_cast<WebTab *>(parent);
+    
+    connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
+    connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
+    
     // load urls on activated urlbar signal
     connect(this, SIGNAL(returnPressed(const QString&)), this, SLOT(activated(const QString&)));
 
@@ -77,19 +85,21 @@ UrlBar::~UrlBar()
 
 void UrlBar::setQUrl(const QUrl& url)
 {
+    // find a better place? Ideally a loadStarted connected slot..
+    clearRightIcons();
+    
     if(url.scheme() == QL1S("about") )
     {
-        iconButton()->updateIcon( KIcon("arrow-right") );
+        iconButton()->setIcon( KIcon("arrow-right") );
+        clear();
         setFocus();
     }
     else
     {
         LineEdit::setUrl(url);
         setCursorPosition(0);
-        iconButton()->updateIcon( Application::icon(url) );
+        iconButton()->setIcon( Application::icon(url) );
     }
-
-    updateStyles();
 }
 
 
@@ -111,7 +121,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     QColor backgroundColor;
     if( _privateMode )
     {
-        backgroundColor = QColor(192, 192, 192);  // gray
+        backgroundColor = QColor(220, 220, 220);  // light gray
     }
     else
     {
@@ -124,21 +134,16 @@ void UrlBar::paintEvent(QPaintEvent *event)
     int progr = _tab->progress();
     if (progr == 0) 
     {
+        if( _tab->url().scheme() == QL1S("https") )
+        {
+            backgroundColor = QColor(255, 255, 171);  // light yellow
+        }
         p.setBrush(QPalette::Base, backgroundColor);
     } 
     else 
     {
-        QColor loadingColor;
-        if ( _tab->url().scheme() == QLatin1String("https"))
-        {
-            loadingColor = QColor(248, 248, 100);
-        }
-        else
-        {
-            loadingColor = QColor(116, 192, 250);
-        }
-    
-    
+        QColor loadingColor = QColor(116, 192, 250);
+        
         QLinearGradient gradient(0, 0, width(), 0);
         gradient.setColorAt(0, loadingColor);
         gradient.setColorAt(((double)progr)/100, backgroundColor);
@@ -225,49 +230,9 @@ void UrlBar::focusInEvent(QFocusEvent *event)
 }
 
 
-void UrlBar::setCurrentTab(WebTab *tab)
-{
-    if(_tab)
-    {
-        disconnect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
-        disconnect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
-        disconnect(_tab->page(), SIGNAL(validSSLInfo(bool)), this, SLOT(setTrustedHost(bool)));
-        disconnect(iconButton(), SIGNAL(clicked()), _tab->page(), SLOT(showSSLInfo()));
-    }
-    _tab = tab;
-    connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
-    connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
-    connect(_tab->page(), SIGNAL(validSSLInfo(bool)), this, SLOT(setTrustedHost(bool)));
-    connect(iconButton(), SIGNAL(clicked()), _tab->page(), SLOT(showSSLInfo()));
-            
-    // update it now (the first time)
-    updateStyles();
-    _tab->view()->setFocus();
-    setQUrl( _tab->url() );
-}
-
-
 void UrlBar::setPrivateMode(bool on)
 {
     _privateMode = on;
-}
-
-
-void UrlBar::loadFinished()
-{
-    // show RSS
-    
-    // show KGet downloads??
-    
-    // last, but not least
-    updateStyles();
-}
-
-
-void UrlBar::setTrustedHost(bool on)
-{
-    kDebug() << "SET TRUSTED HOST..";
-    iconButton()->setIconUrl( _tab->url() , on );
 }
 
 
@@ -275,4 +240,37 @@ void UrlBar::dropEvent(QDropEvent *event)
 {
     LineEdit::dropEvent(event);
     activated(text());
+}
+
+
+void UrlBar::loadFinished()
+{
+    if(_tab->progress() != 0)
+        return;
+    
+    if(_tab->url().scheme() == QL1S("about") )
+        return;
+    
+    // show KGet downloads??
+    if(ReKonfig::kgetList())
+    {
+        IconButton *bt = addRightIcon(LineEdit::KGet);
+        connect(bt, SIGNAL(clicked()), _tab->page(), SLOT(downloadAllContentsWithKGet()));
+    }
+    
+    // show RSS
+    if(_tab->hasRSSInfo())
+    {
+        IconButton *bt = addRightIcon(LineEdit::RSS);
+        connect(bt, SIGNAL(clicked()), _tab, SLOT(showRSSInfo()));
+    }
+    
+    // show SSL
+    if(_tab->url().scheme() == QL1S("https") )
+    {
+        IconButton *bt = addRightIcon(LineEdit::SSL);
+        connect(bt, SIGNAL(clicked()), _tab->page(), SLOT(showSSLInfo()));
+    }
+    
+    update();
 }

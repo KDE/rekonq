@@ -64,7 +64,7 @@
 
 MainView::MainView(MainWindow *parent)
     : KTabWidget(parent)
-    , m_urlBar(new UrlBar(this))
+    , _bars(new QStackedWidget(this))
     , m_addTabButton(0)
     , m_currentTabIndex(0)
     , m_parentWindow(parent)
@@ -92,6 +92,7 @@ MainView::MainView(MainWindow *parent)
     connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int))    );
     
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)) );
+    connect(tabBar, SIGNAL(tabMoved(int, int)),     this,   SLOT(movedTab(int, int)) );
     
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
@@ -119,8 +120,6 @@ void MainView::postLaunch()
 
 void MainView::updateTabButtonPosition()
 {
-    kDebug() << "updating new tab button position..";
-    
     static bool ButtonInCorner = false;
 
     int tabWidgetWidth = frameSize().width();
@@ -151,7 +150,6 @@ void MainView::updateTabButtonPosition()
         // Y position is fixed
         // Here I noticed with some emphiric valutations ( :D )
         // that 2 look better than 0, just that..
-
         m_addTabButton->move(newPosX, 2);
     }
 }
@@ -170,9 +168,15 @@ TabBar *MainView::tabBar() const
 }
 
 
-UrlBar *MainView::urlBar() const 
+UrlBar *MainView::urlBar() const
+{
+    return qobject_cast<UrlBar *>(_bars->widget(m_currentTabIndex));
+}
+
+
+QWidget *MainView::urlBarWidget() const 
 { 
-    return m_urlBar; 
+    return _bars; 
 }
 
 
@@ -238,16 +242,6 @@ void MainView::webStop()
 }
 
 
-void MainView::clear()
-{
-    // FIXME (the programmer, not the code)
-    // What exactly do we need to clear here?
-     m_urlBar->clear();
-
-    m_recentlyClosedTabs.clear();
-}
-
-
 // When index is -1 index chooses the current tab
 void MainView::reloadTab(int index)
 {
@@ -289,7 +283,7 @@ void MainView::currentChanged(int index)
             this, SIGNAL(linkHovered(const QString&)));
 
     emit currentTitle(tab->view()->title());
-    urlBar()->setCurrentTab(tab);
+    _bars->setCurrentIndex(index);
     
     // clean up "status bar"
     emit showStatusBarMessage( QString() );
@@ -326,7 +320,8 @@ WebTab *MainView::webTab(int index) const
 WebTab *MainView::newWebTab(bool focused, bool nearParent)
 {
     WebTab* tab = new WebTab(this);
-
+    UrlBar *bar = new UrlBar(tab);
+    
     // connecting webview with mainview
     connect(tab->view(), SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
     connect(tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
@@ -339,10 +334,15 @@ WebTab *MainView::newWebTab(bool focused, bool nearParent)
     connect(tab->view()->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
     
     if (nearParent)
+    {
         insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
+        _bars->insertWidget(currentIndex() + 1, bar);
+    }
     else
+    {
         addTab(tab, i18n("(Untitled)"));
-
+        _bars->addWidget(bar);
+    }
     updateTabBar();
     
     if (focused)
@@ -374,7 +374,7 @@ void MainView::newTab()
     default:
         break;
     }
-    urlBar()->setFocus();
+    urlBarWidget()->setFocus();
 }
 
 
@@ -452,8 +452,6 @@ void MainView::cloneTab(int index)
 // When index is -1 index chooses the current tab
 void MainView::closeTab(int index)
 {
-    urlBar()->clear();
-    
     // open default homePage if just one tab is opened
     if (count() == 1)
     {
@@ -463,7 +461,7 @@ void MainView::closeTab(int index)
         case 0: // new tab page
         case 1: // blank page
             w->load( KUrl("about:home") );
-            urlBar()->setFocus();
+            urlBarWidget()->setFocus();
             break;
         case 2: // homepage
             w->load( KUrl(ReKonfig::homePage()) );
@@ -507,6 +505,10 @@ void MainView::closeTab(int index)
     removeTab(index);
     updateTabBar();        // UI operation: do it ASAP!!
     tab->deleteLater();    // tab is scheduled for deletion.
+
+    QWidget *urlbar = _bars->widget(index);
+    _bars->removeWidget(urlbar);
+    urlbar->deleteLater();
     
     emit tabsChanged();
 }
@@ -678,4 +680,12 @@ void MainView::detachTab(int index)
     closeTab(index);
     
     Application::instance()->loadUrl(url, Rekonq::NewWindow);
+}
+
+
+void MainView::movedTab(int from,int to)
+{
+    QWidget *bar = _bars->widget(from);
+    _bars->removeWidget(bar);
+    _bars->insertWidget(to, bar);
 }

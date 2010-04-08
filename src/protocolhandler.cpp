@@ -85,16 +85,14 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     _url = request.url();
     _frame = frame;
     
-    kDebug() << "URL PROTOCOL: " << _url;
-    
-    // relative urls
-    if(_url.isRelative())
-        return false;
-    
     // "http(s)" (fast) handling
     if( _url.protocol() == QL1S("http") || _url.protocol() == QL1S("https") )
         return false;
-    
+
+    // relative urls
+    if(_url.isRelative())
+        return false;
+        
     // javascript handling
     if( _url.protocol() == QL1S("javascript") )
     {
@@ -148,7 +146,9 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
                 break;
             }
         }
-        
+    
+        Application::instance()->mainWindow()->mainView()->urlBar()->clearRightIcons();
+
         NewTabPage p(frame);
         p.generate(_url);
         return true;

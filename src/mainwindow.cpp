@@ -177,7 +177,7 @@ void MainWindow::setupToolbars()
 
     // location bar
     KAction *urlBarAction = new KAction(this);
-    urlBarAction->setDefaultWidget(m_view->urlBar());
+    urlBarAction->setDefaultWidget(m_view->urlBarWidget());
     m_mainBar->addAction( urlBarAction );
 
     m_mainBar->addAction( actionByName("bookmarksActionMenu") );
@@ -760,7 +760,6 @@ void MainWindow::privateBrowsing(bool enable)
         m_view->urlBar()->setPrivateMode(false);
         
         m_lastSearch.clear();
-        m_view->clear();
         m_view->reloadAllTabs();
     }
 }

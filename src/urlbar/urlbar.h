@@ -57,7 +57,6 @@ public:
     UrlBar(QWidget *parent = 0);
     ~UrlBar();
 
-    void setCurrentTab(WebTab *);
     void setPrivateMode(bool on);
 
 private slots:
@@ -66,7 +65,6 @@ private slots:
     void setQUrl(const QUrl &url);
 
     void loadFinished();
-    void setTrustedHost(bool on);
     
 protected:
     virtual void paintEvent(QPaintEvent *event);

@@ -33,6 +33,8 @@
 // KDE Includes
 #include <klocalizedstring.h>
 #include <KDebug>
+#include <KStandardDirs>
+#include <KIconLoader>
 
 // Qt Includes
 #include <QtGui/QContextMenuEvent>
@@ -42,6 +44,18 @@
 #include <QPainter>
 
 
+IconButton::IconButton(QWidget *parent)
+    : QToolButton(parent)
+{
+    setToolButtonStyle(Qt::ToolButtonIconOnly);
+    setStyleSheet("IconButton { background-color:transparent; border: none; padding: 0px}");
+    setCursor(Qt::ArrowCursor);
+}
+
+
+// -----------------------------------------------------------------------------------------------------------
+
+
 LineEdit::LineEdit(QWidget* parent)
     : KLineEdit(parent)
     , _icon( new IconButton(this) )
@@ -49,8 +63,11 @@ LineEdit::LineEdit(QWidget* parent)
     // cosmetic
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setMinimumWidth(200);
-    setMinimumHeight(26);
-    updateStyles();
+    setMinimumHeight(20);
+
+    // initial style
+    _icon->move(4,6);
+    setStyleSheet( QString("LineEdit { padding: 0 0 0 %1px;} ").arg(_icon->sizeHint().width()) );
     
     // doesn't show the clear button
     setClearButtonShown(false);
@@ -72,22 +89,6 @@ LineEdit::LineEdit(QWidget* parent)
 LineEdit::~LineEdit()
 {
     delete _icon;
-}
-
-
-void LineEdit::updateStyles()
-{
-    adjustSize();
-    _icon->adjustSize();
-    if(_icon->toolButtonStyle() == Qt::ToolButtonIconOnly)
-        _icon->move( 4, 3);
-    else
-        _icon->move( 2, 1);
-    
-    int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
-    setStyleSheet(QString("LineEdit { padding-left: %1px; } ").arg(_icon->sizeHint().width() + frameWidth + 1));
-
-    update();
 }
 
 
@@ -117,18 +118,70 @@ IconButton *LineEdit::iconButton() const
 
 void LineEdit::paintEvent(QPaintEvent *event)
 {
+    // you need this before our code to draw inside the line edit..
     KLineEdit::paintEvent(event);
     
-    if (text().isEmpty() && !hasFocus()) 
-    {
+    if (text().isEmpty()) 
+    {       
         QStyleOptionFrame option;
         initStyleOption(&option);
         QRect textRect = style()->subElementRect(QStyle::SE_LineEditContents, &option, this);
         QPainter painter(this);
         painter.setPen(Qt::gray);
         painter.drawText( textRect, 
-                          Qt::AlignLeft | Qt::AlignVCenter, 
-                          i18n("Search Bookmarks, History, Google.. and the Kitchen Sink!")
+                          Qt::AlignCenter, 
+                          i18n("Search Bookmarks, History, Google.. just start typing here!")
                         );
+    }
+}
+
+
+IconButton *LineEdit::addRightIcon(LineEdit::icon ic)
+{
+    IconButton *rightIcon = new IconButton(this);
+    
+    switch(ic)
+    {
+    case LineEdit::KGet:
+        rightIcon->setIcon( QIcon(KStandardDirs::locate("data", "rekonq/pics/kget-icon.png")) );
+        break;
+    case LineEdit::RSS:
+        rightIcon->setIcon( QIcon(KStandardDirs::locate("data", "rekonq/pics/rss-icon.png")) );
+        break;
+    case LineEdit::SSL:
+        rightIcon->setIcon( QIcon(KStandardDirs::locate("data", "rekonq/pics/ssl-icon.png")) );
+        break;
+    default:
+        kDebug() << "ERROR.. default non extant case!!";
+        break;
+    }
+    
+    _rightIconsList << rightIcon;
+    int iconsCount = _rightIconsList.count();
+    rightIcon->move( width() - 23*iconsCount, 6);
+    rightIcon->show();
+    
+    return rightIcon;
+}
+
+
+void LineEdit::clearRightIcons()
+{
+    qDeleteAll(_rightIconsList);
+    _rightIconsList.clear();
+}
+
+
+void LineEdit::resizeEvent(QResizeEvent *event)
+{
+    KLineEdit::resizeEvent(event);
+    
+    int iconsCount = _rightIconsList.count();
+    int w = width();
+    
+    for(int i = 0; i < iconsCount; ++i)
+    {
+        IconButton *bt = _rightIconsList.at(i);
+        bt->move( w - 23*(i+1), 6);
     }
 }

@@ -57,15 +57,20 @@ public:
 
     int progress();
     void createPreviewSelectorBar(int index);
+
+    bool hasRSSInfo();
     
 private slots:
     void updateProgress(int progress);
     void loadFinished(bool);
 
     void createWalletBar(const QString &, const QUrl &);
-
+    void showRSSInfo();
+    
 private:
     int m_progress;
+    
+    KUrl::List _rssList;
 };
 
 #endif

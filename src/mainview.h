@@ -44,6 +44,7 @@
 
 // Qt Includes
 #include <QtGui/QToolButton>
+#include <QStackedWidget>
 
 // Forward Declarations
 class QUrl;
@@ -69,6 +70,7 @@ public:
     MainView(MainWindow *parent);
     ~MainView();
 
+    QWidget *urlBarWidget() const;
     UrlBar *urlBar() const;
     WebTab *webTab(int index) const;
 
@@ -85,7 +87,6 @@ public:
     void setTabBarHidden(bool hide);
     
     QToolButton *addTabButton() const;
-    void clear();
 
     /**
      * This function creates a new empty tab
@@ -146,7 +147,7 @@ private slots:
     void windowCloseRequested();
 
     void postLaunch();
-
+    void movedTab(int,int);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
@@ -169,7 +170,7 @@ private:
 
 // --------------------------------------------------------------------------
 
-    UrlBar *m_urlBar;
+    QStackedWidget *_bars;
 
     QString m_loadingGitPath;
 

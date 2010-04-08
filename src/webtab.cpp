@@ -49,6 +49,7 @@
 #include <KActionMenu>
 #include <KWebView>
 #include <kwebwallet.h>
+#include <KDE/KMessageBox>
 
 // Qt Includes
 #include <QContextMenuEvent>
@@ -58,6 +59,9 @@
 #include <QKeyEvent>
 #include <QAction>
 #include <QVBoxLayout>
+
+// Defines
+#define QL1S(x)  QLatin1String(x)
 
 
 WebTab::WebTab(QWidget *parent)
@@ -170,4 +174,34 @@ void WebTab::createPreviewSelectorBar(int index)
     connect(page(), SIGNAL(loadProgress(int)), bar, SLOT(loadProgress()));
     connect(page(), SIGNAL(loadFinished(bool)), bar, SLOT(loadFinished()));
     connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)), bar, SLOT(verifyUrl()));
+}
+
+
+bool WebTab::hasRSSInfo()
+{
+    _rssList.clear();
+    QWebElementCollection col = page()->mainFrame()->findAllElements("link");
+    foreach(QWebElement el, col)
+    {
+        if( el.attribute("type") == QL1S("application/rss+xml") || el.attribute("type") == QL1S("application/rss+xml") )
+            _rssList << KUrl( el.attribute("href") );
+    }
+    
+    return !_rssList.isEmpty();
+}
+
+
+void WebTab::showRSSInfo()
+{
+    QString urlList = QString("Here are the rss link found: <br /><br />");
+    foreach(const KUrl &url, _rssList)
+    {
+        urlList += QString("<a href=\"") + url.url() + QString("\">") + url.url() + QString("</a><br />");
+    }
+    urlList += QString("<br />Enough for now.. waiting for some cool akonadi based feeds management :)");
+    
+    KMessageBox::information( view(), 
+                              urlList,
+                              "RSS Management"
+                            );
 }

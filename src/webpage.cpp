@@ -304,9 +304,6 @@ void WebPage::loadFinished(bool)
     {
         wallet()->fillFormData(mainFrame());
     }
-
-    if( mainFrame()->url().scheme() == QL1S("https") )
-        emit validSSLInfo( _sslInfo.isValid() );
 }
 
 
