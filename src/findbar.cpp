@@ -150,7 +150,7 @@ void FindBar::show()
     }
 
     m_hideTimer->start(60000);
-            
+    
     // set focus to findbar if user select showFindBar shortcut
     m_lineEdit->setFocus();
     m_lineEdit->selectAll();
