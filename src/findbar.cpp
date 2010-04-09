@@ -143,14 +143,13 @@ bool FindBar::highlightAllState() const
 void FindBar::show()
 {
     // show findbar if not visible
-    if (isVisible())
-        return;
-    
-    QWidget::show();
+    if(isHidden())
+    {
+        QWidget::show();
+        emit searchString(m_lineEdit->text());
+    }
+
     m_hideTimer->start(60000);
-    
-    // emit a new find signal with the current text
-    emit(searchString(m_lineEdit->text()));
     
     // set focus to findbar if user select showFindBar shortcut
     m_lineEdit->setFocus();
