@@ -445,12 +445,12 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
     } 
     while ( result == KIO::R_CANCEL && destUrl.isValid() );                                                                               
     
-    // now store data
-    // now, destUrl, srcUrl
-    Application::historyManager()->addDownload( srcUrl.pathOrUrl() , destUrl.pathOrUrl() );
-    
     if ( result == KIO::R_OVERWRITE && destUrl.isValid() ) 
-    {                                               
+    {                                   
+        // now store data
+        // now, destUrl, srcUrl
+        Application::historyManager()->addDownload( srcUrl.pathOrUrl() , destUrl.pathOrUrl() );
+        
         if ( ReKonfig::kgetDownload() )
         {
             //KGet integration:
