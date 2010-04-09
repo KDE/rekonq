@@ -61,6 +61,9 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
+// Defines
+#define QL1S(x)  QLatin1String(x)
+
 
 MainView::MainView(MainWindow *parent)
     : KTabWidget(parent)
@@ -300,7 +303,10 @@ void MainView::currentChanged(int index)
         Application::instance()->mainWindow()->setZoomSliderFactor(tab->view()->zoomFactor());
 
     // set focus to the current webview
-    tab->view()->setFocus();
+    if(tab->url().scheme() == QL1S("about"))
+        _bars->currentWidget()->setFocus();
+    else
+        tab->view()->setFocus();
 }
 
 
@@ -374,7 +380,7 @@ void MainView::newTab()
     default:
         break;
     }
-    urlBarWidget()->setFocus();
+    _bars->currentWidget()->setFocus();
 }
 
 

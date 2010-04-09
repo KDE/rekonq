@@ -112,7 +112,7 @@ void UrlBar::activated(const QString& urlString, Rekonq::OpenType type)
 
     clearFocus();
     setText(urlString);
-    Application::instance()->loadUrl(urlString, type);
+    Application::instance()->loadUrl(urlString.trimmed(), type);
 }
 
 
