@@ -63,10 +63,9 @@ LineEdit::LineEdit(QWidget* parent)
     // cosmetic
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setMinimumWidth(200);
-    setMinimumHeight(20);
+    setMinimumHeight(26);
 
     // initial style
-    _icon->move(4,6);
     setStyleSheet( QString("LineEdit { padding: 0 0 0 %1px;} ").arg(_icon->sizeHint().width()) );
     
     // doesn't show the clear button
@@ -177,7 +176,8 @@ void LineEdit::clearRightIcons()
 
 void LineEdit::resizeEvent(QResizeEvent *event)
 {
-    KLineEdit::resizeEvent(event);
+    int newHeight = ( height() - 19 )/2;
+    _icon->move(4, newHeight );
     
     int iconsCount = _rightIconsList.count();
     int w = width();
@@ -185,6 +185,9 @@ void LineEdit::resizeEvent(QResizeEvent *event)
     for(int i = 0; i < iconsCount; ++i)
     {
         IconButton *bt = _rightIconsList.at(i);
-        bt->move( w - 23*(i+1), 6);
+        bt->move( w - 25*(i+1), newHeight );
     }
+
+    KLineEdit::resizeEvent(event);
+
 }

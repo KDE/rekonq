@@ -249,7 +249,10 @@ void UrlBar::loadFinished()
         return;
     
     if(_tab->url().scheme() == QL1S("about") )
+    {
+        update();
         return;
+    }
     
     // show KGet downloads??
     if(ReKonfig::kgetList())
