@@ -49,6 +49,7 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KDialog>
+#include <KCalendarSystem>
 
 // Qt Includes
 #include <QFile>
@@ -539,7 +540,8 @@ void NewTabPage::downloadsPage()
         
         div.appendInside("<strong>" + fName + "</strong>");
         div.appendInside(" - ");
-        div.appendInside( item.dateTime.toString("'<em>'dd MMMM yyyy hh:mm'</em>'") );
+        QString date = KGlobal::locale()->formatDateTime(item.dateTime, KLocale::FancyLongDate);
+        div.appendInside("<em>" + date + "</em>");
         div.appendInside("<br/>");
         
         div.appendInside(item.srcUrlString);
