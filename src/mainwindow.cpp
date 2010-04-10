@@ -1169,8 +1169,12 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
 void MainWindow::clearPrivateData()
 {
-    QWeakPointer<KDialog> dialog = new KDialog(this, Qt::Sheet);
+    QWeakPointer<KDialog> dialog = new KDialog(this);
+    dialog.data()->setCaption(i18n("Clear Private Data"));
     dialog.data()->setButtons(KDialog::Ok | KDialog::Cancel);
+    
+    dialog.data()->button(KDialog::Ok)->setIcon(KIcon("edit-clear"));
+    dialog.data()->button(KDialog::Ok)->setText(i18n("Clear"));
 
     Ui::ClearDataWidget clearWidget;
     QWidget widget;
