@@ -1169,20 +1169,20 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
 void MainWindow::clearPrivateData()
 {
-    QWeakPointer<KDialog> dialog = new KDialog(this);
-    dialog.data()->setCaption(i18n("Clear Private Data"));
-    dialog.data()->setButtons(KDialog::Ok | KDialog::Cancel);
+    QPointer<KDialog> dialog = new KDialog(this);
+    dialog->setCaption(i18n("Clear Private Data"));
+    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
     
-    dialog.data()->button(KDialog::Ok)->setIcon(KIcon("edit-clear"));
-    dialog.data()->button(KDialog::Ok)->setText(i18n("Clear"));
+    dialog->button(KDialog::Ok)->setIcon(KIcon("edit-clear"));
+    dialog->button(KDialog::Ok)->setText(i18n("Clear"));
 
     Ui::ClearDataWidget clearWidget;
     QWidget widget;
     clearWidget.setupUi(&widget);
 
-    dialog.data()->setMainWidget(&widget);
+    dialog->setMainWidget(&widget);
 
-    if (dialog.data()->exec() == KDialog::Accepted)
+    if (dialog->exec() == KDialog::Ok)
     {
         if(clearWidget.clearHistory->isChecked())
         {
@@ -1223,6 +1223,8 @@ void MainWindow::clearPrivateData()
             }
         }
     }
+    
+    dialog->deleteLater();
 }
 
 
