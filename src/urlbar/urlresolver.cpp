@@ -187,12 +187,12 @@ UrlSearchList UrlResolver::webSearchesResolution()
     {
         // KUriFilter has the worst performance possible here and let this trick unusable
         QString gUrl = QString("http://www.google.com/search?q=%1&ie=UTF-8&oe=UTF-8").arg(url1);
-        QString gTitle = i18n("Search Google for ") + url1;
+        QString gTitle = i18n("Search Google for %1", url1);
         UrlSearchItem gItem(UrlSearchItem::Search, gUrl, gTitle, QString("http://www.google.com") );
         list << gItem;
         
 //         QString wUrl = QString("http://en.wikipedia.org/wiki/Special:Search?search=%1&go=Go").arg(url1);
-//         QString wTitle = i18n("Search Wikipedia for ") + url1;
+//         QString wTitle = i18n("Search Wikipedia for %1", url1);
 //         UrlSearchItem wItem(wUrl, wTitle, QString("http://wikipedia.org") );
 //         list << wItem;
     }
