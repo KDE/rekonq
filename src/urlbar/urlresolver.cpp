@@ -60,7 +60,7 @@ bool UrlSearchItem::operator==(UrlSearchItem i)
 }
 
 UrlResolver::UrlResolver(const QString &typedUrl)
-    : _urlString(typedUrl)
+    : _urlString( typedUrl.trimmed() )
 {
 }
 
@@ -162,15 +162,10 @@ UrlSearchList UrlResolver::qurlFromUserInputResolution()
     QUrl urlFromUserInput = QUrl::fromUserInput(url2);
     if(urlFromUserInput.isValid())
     {
-        QByteArray ba = urlFromUserInput.toEncoded();
-        if(!ba.isEmpty())
-        {           
-            QString gUrl = QString(ba);
-            QString gTitle = i18n("Browse");
-            UrlSearchItem gItem(UrlSearchItem::Browse, gUrl, gTitle, QString("") );
-            list << gItem;
-
-        }
+        KUrl gUrl(urlFromUserInput);
+        QString gTitle = i18n("Browse");
+        UrlSearchItem gItem(UrlSearchItem::Browse, gUrl, gTitle);
+        list << gItem;
     }
     
     return list;
@@ -182,19 +177,14 @@ UrlSearchList UrlResolver::webSearchesResolution()
 {
     UrlSearchList list;
     
-    QString url1 = _urlString;
-    if(KUrl(url1).isRelative())
+    KUrl url1(_urlString);
+    if(url1.isRelative())
     {
         // KUriFilter has the worst performance possible here and let this trick unusable
-        QString gUrl = QString("http://www.google.com/search?q=%1&ie=UTF-8&oe=UTF-8").arg(url1);
-        QString gTitle = i18n("Search Google for %1", url1);
-        UrlSearchItem gItem(UrlSearchItem::Search, gUrl, gTitle, QString("http://www.google.com") );
+        KUrl gUrl( QString("gg:") + _urlString );
+        QString gTitle = i18n("Search Google for %1", _urlString);
+        UrlSearchItem gItem(UrlSearchItem::Search, gUrl, gTitle );
         list << gItem;
-        
-//         QString wUrl = QString("http://en.wikipedia.org/wiki/Special:Search?search=%1&go=Go").arg(url1);
-//         QString wTitle = i18n("Search Wikipedia for %1", url1);
-//         UrlSearchItem wItem(wUrl, wTitle, QString("http://wikipedia.org") );
-//         list << wItem;
     }
 
     return list;
@@ -210,7 +200,7 @@ UrlSearchList UrlResolver::historyResolution()
     QStringList historyResults = historyCompletion->substringCompletion(_urlString);
     Q_FOREACH(const QString &s, historyResults)
     {
-        UrlSearchItem it(UrlSearchItem::History, s, Application::historyManager()->titleForHistoryUrl(s), QString("view-history"));
+        UrlSearchItem it(UrlSearchItem::History, KUrl(s), Application::historyManager()->titleForHistoryUrl(s) ); //, QString("view-history"));
         list << it;
     }
 
@@ -227,7 +217,7 @@ UrlSearchList UrlResolver::bookmarksResolution()
     QStringList bookmarkResults = bookmarkCompletion->substringCompletion(_urlString);
     Q_FOREACH(const QString &s, bookmarkResults)
     {
-        UrlSearchItem it(UrlSearchItem::Bookmark, s, Application::bookmarkProvider()->titleForBookmarkUrl(s), QString("rating") );
+        UrlSearchItem it(UrlSearchItem::Bookmark, KUrl(s), Application::bookmarkProvider()->titleForBookmarkUrl(s) ); //, QString("rating") );
         list << it;
     }
 

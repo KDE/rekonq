@@ -28,6 +28,9 @@
 #define URL_RESOLVER_H
 
 
+// KDE Includes
+#include <KUrl>
+
 // Qt Includes
 #include <QString>
 #include <QList>
@@ -48,12 +51,11 @@ class UrlSearchItem
     };   
 
     int type;
-    QString url;
+    KUrl url;
     QString title;
-    QString icon;
 
-    UrlSearchItem(const int &_type, const QString &_url, const QString &_title = QString(), const QString &_icon = QString())
-        : type(_type), url(_url), title(_title), icon(_icon)
+    UrlSearchItem(const int &_type, const KUrl &_url, const QString &_title = QString())
+        : type(_type), url(_url), title(_title)
     {};
     
     bool operator==(UrlSearchItem i);

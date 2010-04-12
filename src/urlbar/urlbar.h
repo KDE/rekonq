@@ -60,7 +60,7 @@ public:
     void setPrivateMode(bool on);
 
 private slots:
-    void activated(const QString& url, Rekonq::OpenType = Rekonq::CurrentTab);
+    void activated(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
     void suggestUrls(const QString &editedText);
     void setQUrl(const QUrl &url);
 

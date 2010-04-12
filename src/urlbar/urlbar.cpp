@@ -73,7 +73,7 @@ UrlBar::UrlBar(QWidget *parent)
 
     // suggestions
     installEventFilter(_box);
-    connect(_box, SIGNAL(chosenUrl(const QString&, Rekonq::OpenType)), SLOT(activated(const QString&, Rekonq::OpenType)));
+    connect(_box, SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), SLOT(activated(const KUrl &, Rekonq::OpenType)));
 }
 
 
@@ -103,16 +103,13 @@ void UrlBar::setQUrl(const QUrl& url)
 }
 
 
-void UrlBar::activated(const QString& urlString, Rekonq::OpenType type)
+void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 {
     disconnect(this, SIGNAL(textChanged(const QString &)), this, SLOT(suggestUrls(const QString &)));
     
-    if (urlString.isEmpty())
-        return;
-
     clearFocus();
-    setText(urlString);
-    Application::instance()->loadUrl(urlString.trimmed(), type);
+    setUrl(url);
+    Application::instance()->loadUrl(url, type);
 }
 
 

@@ -58,7 +58,7 @@ private slots:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton);
 
 signals:
-    void chosenUrl(const QString&, Rekonq::OpenType);
+    void chosenUrl(const KUrl &, Rekonq::OpenType);
 
 private:
     void sizeAndPosition();

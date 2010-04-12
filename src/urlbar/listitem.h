@@ -31,6 +31,7 @@
 
 // Forward Declarations
 class UrlSearchItem;
+class KUrl;
 
 
 class ListItem : public QWidget
@@ -54,7 +55,8 @@ protected:
    virtual void mousePressEvent(QMouseEvent *e);
 
 private:
-    QStyleOptionViewItemV4 m_option;
-    QString guessNameFromUrl(QUrl url);
+    QString guessNameFromUrl(KUrl url);
     void insertIcon(QLayout *layout, QString icon);
+    
+    QStyleOptionViewItemV4 _option;
 };

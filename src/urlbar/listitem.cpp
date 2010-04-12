@@ -35,6 +35,7 @@
 #include <KIcon>
 #include <KStandardDirs>
 #include <KDebug>
+#include <KUrl>
 
 // Qt Includes
 #include <QHBoxLayout>
@@ -45,12 +46,10 @@
 #include <QStylePainter>
 #include <QFile>
 #include <QMouseEvent>
-#include <QWebSettings>
 
 
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
     : QWidget(parent)
-    , m_option()
 {
     //preview and icon
     
@@ -60,7 +59,9 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
     previewLabelIcon->setFixedSize(45,33);
     hLayout->addWidget(previewLabelIcon);
 
-    QPixmap pixmapIcon = KIcon(QWebSettings::iconForUrl(item.url)).pixmap(16);
+    // pixmap should ever exists
+    QPixmap pixmapIcon = Application::icon(item.url).pixmap(16);
+    
     QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl(item.url) + ".png", true);
     if(QFile::exists(path))
     {
@@ -68,35 +69,23 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
         previewLabel->setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
         QPixmap preview;
         preview.load(path);
-        if (!pixmapIcon.isNull())
-        {
-            previewLabel->setFixedSize(38,29);
-            previewLabel->setPixmap(preview.scaled(38,29, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        }
-        else
-        {
-            previewLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            previewLabel->setFixedSize(45,33);
-            previewLabel->setPixmap(preview.scaled(45,33, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));  
-        }
+        
+        previewLabel->setFixedSize(38,29);
+        previewLabel->setPixmap(preview.scaled(38,29, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     } 
 
-    if (!pixmapIcon.isNull())
-    {
-        QLabel *iconLabel = new QLabel(previewLabelIcon);
-        iconLabel->setPixmap(pixmapIcon);
-        iconLabel->move(27, 16);
-    }
+    QLabel *iconLabel = new QLabel(previewLabelIcon);
+    iconLabel->setPixmap(pixmapIcon);
+    iconLabel->move(27, 16);
     
-    //title and url
-    
+    //title and url    
     QVBoxLayout *vLayout = new QVBoxLayout;  
     hLayout->addLayout(vLayout);
     
     QLabel *titleLabel = new QLabel("<b>" + item.title + "</b>");
     titleLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     
-    QLabel *urlLabel = new QLabel("<i>" + item.url + "</i>");
+    QLabel *urlLabel = new QLabel("<i>" + item.url.url() + "</i>");
     urlLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         
     vLayout->addWidget(titleLabel);
@@ -126,8 +115,8 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
 
     setLayout(hLayout);
     
-    m_option.initFrom(this);
-    m_option.direction = Qt::LeftToRight;
+    _option.initFrom(this);
+    _option.direction = Qt::LeftToRight;
     
     deactivate();
 }
@@ -150,9 +139,9 @@ void ListItem::insertIcon(QLayout *layout, QString icon)
 
 
 //TODO: REMOVE DUPLICATE CODE WITH PREVIEWIMAGE
-QString ListItem::guessNameFromUrl(QUrl url)
+QString ListItem::guessNameFromUrl(KUrl url)
 {
-    QString name = url.toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
+    QString name = url.url();// toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
     
     // TODO learn Regular Expressions :)
     // and implement something better here..
@@ -171,14 +160,14 @@ QString ListItem::guessNameFromUrl(QUrl url)
 
 void ListItem::activate()
 {
-    m_option.state |= QStyle::State_Selected;
+    _option.state |= QStyle::State_Selected;
     update();
 }
 
 
 void ListItem::deactivate()
 {
-    m_option.state  &= ~QStyle::State_Selected;
+    _option.state  &= ~QStyle::State_Selected;
     update();
 }
 
@@ -187,18 +176,18 @@ void ListItem::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     
-    if( m_option.state.testFlag(QStyle::State_Selected) ||  m_option.state.testFlag(QStyle::State_MouseOver))
+    if( _option.state.testFlag(QStyle::State_Selected) ||  _option.state.testFlag(QStyle::State_MouseOver) )
     {
         QPainter painter(this);
-        m_option.rect=QRect(QPoint(),size());
-        style()->drawPrimitive(QStyle::PE_PanelItemViewItem, &m_option, &painter, this);
+        _option.rect = QRect(QPoint(),size());
+        style()->drawPrimitive(QStyle::PE_PanelItemViewItem, &_option, &painter, this);
     }
 }
 
 
 void ListItem::enterEvent(QEvent *e)
 {
-    m_option.state |= QStyle::State_MouseOver;
+    _option.state |= QStyle::State_MouseOver;
     update();
     QWidget::enterEvent(e);
 }
@@ -206,7 +195,7 @@ void ListItem::enterEvent(QEvent *e)
 
 void ListItem::leaveEvent(QEvent *e)
 {
-    m_option.state &= ~QStyle::State_MouseOver;
+    _option.state &= ~QStyle::State_MouseOver;
     update();
     QWidget::enterEvent(e);
 }
