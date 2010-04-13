@@ -68,9 +68,6 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
     
-    // load urls on activated urlbar signal
-    connect(this, SIGNAL(returnPressed(const QString&)), this, SLOT(activated(const QString&)));
-
     // suggestions
     installEventFilter(_box);
     connect(_box, SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), SLOT(activated(const KUrl &, Rekonq::OpenType)));
