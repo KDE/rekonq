@@ -59,7 +59,8 @@ private slots:
 
 signals:
     void chosenUrl(const KUrl &, Rekonq::OpenType);
-
+    void loadTypedUrl();
+    
 private:
     void sizeAndPosition();
     void up();

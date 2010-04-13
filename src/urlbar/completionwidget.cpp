@@ -97,7 +97,6 @@ void CompletionWidget::sizeAndPosition()
 
 void CompletionWidget::popup()
 {
-    down();
     sizeAndPosition();
     if (!isVisible()) 
         show();
@@ -210,7 +209,10 @@ bool CompletionWidget::eventFilter( QObject *o, QEvent *e )
                 case Qt::Key_Enter:
                 case Qt::Key_Return:
                         hide();
-                        emit chosenUrl(_list.at(_currentIndex).url, Rekonq::CurrentTab);
+                        if(_currentIndex >= 0)
+                            emit chosenUrl(_list.at(_currentIndex).url, Rekonq::CurrentTab);
+                        else
+                            emit loadTypedUrl();
                         ev->accept();
                         return true;
                     break;
