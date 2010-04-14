@@ -24,6 +24,10 @@
 * ============================================================ */
 
 
+#ifndef LISTITEM_H
+#define LISTITEM_H
+
+
 // Qt Includes
 #include <QWidget>
 #include <QLayout>
@@ -60,3 +64,6 @@ private:
     
     QStyleOptionViewItemV4 _option;
 };
+
+
+#endif // LISTITEM_H

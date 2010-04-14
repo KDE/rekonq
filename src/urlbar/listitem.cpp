@@ -26,6 +26,7 @@
 
 // Self Includes
 #include "listitem.h"   
+#include "listitem.moc"   
 
 // Local Includes
 #include "urlresolver.h"

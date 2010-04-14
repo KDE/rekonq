@@ -63,4 +63,3 @@ private:
 };
 
 #endif // BOOKMARKCONTEXTMENU_H
-
