@@ -845,8 +845,8 @@ void MainWindow::highlightAll()
     
     if(m_findBar->highlightAllState() && !m_findBar->isHidden())
     {
-    if (m_findBar->matchCase())
-        options |= QWebPage::FindCaseSensitively;
+        if (m_findBar->matchCase())
+            options |= QWebPage::FindCaseSensitively;
 
         currentTab()->view()->findText(m_lastSearch, options);
     }
