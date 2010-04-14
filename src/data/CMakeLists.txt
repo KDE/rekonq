@@ -7,7 +7,9 @@ INSTALL(
 )
 
 INSTALL( 
-    FILES defaultbookmarks.xbel
+    FILES 
+    defaultbookmarks.xbel
+    default.css
     DESTINATION ${DATA_INSTALL_DIR}/rekonq
 )
 
@@ -17,6 +19,8 @@ INSTALL(
 )
 
 INSTALL( 
-    FILES rekonqinfo.html home.html
+    FILES 
+    rekonqinfo.html 
+    home.html
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/htmls
 )

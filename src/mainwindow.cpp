@@ -599,7 +599,10 @@ void MainWindow::updateConfiguration()
 
     // Applies user defined CSS to all open webpages. If there no longer is a
     // user defined CSS removes it from all open webpages.
-    defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
+    if(ReKonfig::userCSS().isEmpty())
+        defaultSettings->setUserStyleSheetUrl( KUrl(KStandardDirs::locate("appdata" , "default.css")) );
+    else
+        defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
 
     // ====== load Settings on main classes
     Application::historyManager()->loadSettings();
@@ -842,8 +845,8 @@ void MainWindow::highlightAll()
     
     if(m_findBar->highlightAllState() && !m_findBar->isHidden())
     {
-	if (m_findBar->matchCase())
-	    options |= QWebPage::FindCaseSensitively;
+    if (m_findBar->matchCase())
+        options |= QWebPage::FindCaseSensitively;
 
         currentTab()->view()->findText(m_lastSearch, options);
     }

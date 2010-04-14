@@ -55,8 +55,8 @@
 
 
 BookmarkOwner::BookmarkOwner(QObject *parent)
-        : QObject(parent)
-        , KBookmarkOwner()
+    : QObject(parent)
+    , KBookmarkOwner()
 {
 }
 
@@ -119,11 +119,10 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
                            KBookmarkOwner *owner,
                            KMenu *menu,
                            KActionCollection* actionCollection)
-        : KBookmarkMenu(manager, owner, menu, actionCollection)
+    : KBookmarkMenu(manager, owner, menu, actionCollection)
 
 {
     KAction *a = KStandardAction::addBookmark(this, SLOT(slotAddBookmark()), this);
-//     a->setText(i18n("Bookmark this Page"));
     actionCollection->addAction(QLatin1String("rekonq_add_bookmark"),a);
 }
 
