@@ -123,10 +123,6 @@ public slots:
     void loadUrl( const KUrl& url,
                   const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );
-           
-    void loadUrl( const QString& urlString,
-                  const Rekonq::OpenType& type = Rekonq::CurrentTab
-                );    
 
     void newWindow();
     void removeMainWindow(MainWindow *window);
@@ -141,8 +137,6 @@ private slots:
     void loadResolvedUrl(ThreadWeaver::Job *);
     
 private:
-    void prepareLoading(const QString& urlString, const Rekonq::OpenType& type);
-    
     static QWeakPointer<HistoryManager> s_historyManager;
     static QWeakPointer<BookmarkProvider> s_bookmarkProvider;
     static QWeakPointer<SessionManager> s_sessionManager;

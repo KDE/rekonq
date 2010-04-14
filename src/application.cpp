@@ -154,7 +154,7 @@ int Application::newInstance()
             // Create a new one and load there sites...
             loadUrl(args->arg(0), Rekonq::CurrentTab);
             for (int i = 1; i < args->count(); ++i)
-                loadUrl(args->arg(i), Rekonq::SettingOpenTab);
+                loadUrl( KUrl( args->arg(i) ), Rekonq::SettingOpenTab);
         }
         else
         {
@@ -165,7 +165,7 @@ int Application::newInstance()
                 MainWindow *m = m_mainWindows.at(index - 1).data();
                 m->activateWindow();
                 for (int i = 0; i < args->count(); ++i)
-                    loadUrl(args->arg(i), Rekonq::NewCurrentTab);
+                    loadUrl( KUrl( args->arg(i) ), Rekonq::NewCurrentTab);
             }
         }
     }
@@ -295,17 +295,37 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
-    prepareLoading(url.pathOrUrl(), type);
-}
-
-
-
-void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& type)
-{
-    if(urlString.isEmpty())
-        return;
-
-    prepareLoading(urlString, type);
+    // first, create the webview(s) to not let hangs UI..
+    WebTab *tab = 0;
+    MainWindow *w = 0;
+    w = (type == Rekonq::NewWindow) 
+        ? newMainWindow()
+        : mainWindow();
+        
+    switch(type)
+    {
+    case Rekonq::SettingOpenTab:
+        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
+        break;
+    case Rekonq::NewCurrentTab:
+        tab = w->mainView()->newWebTab(true);
+        break;
+    case Rekonq::NewBackTab:
+        tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
+        break;
+    case Rekonq::NewWindow:
+    case Rekonq::CurrentTab:
+        tab = w->mainView()->currentWebTab();
+        break;
+    };
+    
+    WebView *view = tab->view();
+    
+    if (view)
+    {
+        FilterUrlJob *job = new FilterUrlJob(view, url.pathOrUrl(), this);
+        Weaver::instance()->enqueue(job);
+    }
 }
 
 
@@ -369,40 +389,4 @@ void Application::newWindow()
 {
     loadUrl( KUrl("about:home"), Rekonq::NewWindow );
     mainWindow()->mainView()->urlBarWidget()->setFocus();
-}
-
-
-void Application::prepareLoading(const QString& urlString, const Rekonq::OpenType& type)
-{
-    // first, create the webview(s) to not let hangs UI..
-    WebTab *tab = 0;
-    MainWindow *w = 0;
-    w = (type == Rekonq::NewWindow) 
-        ? newMainWindow()
-        : mainWindow();
-        
-    switch(type)
-    {
-    case Rekonq::SettingOpenTab:
-        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
-        break;
-    case Rekonq::NewCurrentTab:
-        tab = w->mainView()->newWebTab(true);
-        break;
-    case Rekonq::NewBackTab:
-        tab = w->mainView()->newWebTab(false, ReKonfig::openTabsNearCurrent());
-        break;
-    case Rekonq::NewWindow:
-    case Rekonq::CurrentTab:
-        tab = w->mainView()->currentWebTab();
-        break;
-    };
-    
-    WebView *view = tab->view();
-    
-    if (view)
-    {
-        FilterUrlJob *job = new FilterUrlJob(view, urlString, this);
-        Weaver::instance()->enqueue(job);
-    }
 }
