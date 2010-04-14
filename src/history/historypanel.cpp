@@ -52,8 +52,8 @@
 
 
 HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
-    : QDockWidget(title, parent, flags),
-    m_treeView(new UrlTreeView(this))
+    : QDockWidget(title, parent, flags)
+    , m_treeView(new PanelTreeView(this))
 {
     setup();
     setShown(ReKonfig::showHistoryPanel());

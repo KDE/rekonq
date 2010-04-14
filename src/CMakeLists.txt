@@ -15,11 +15,11 @@ SET( rekonq_KDEINIT_SRCS
     mainwindow.cpp 
     networkaccessmanager.cpp
     newtabpage.cpp
+    paneltreeview.cpp
     previewselectorbar.cpp
     protocolhandler.cpp
     sessionmanager.cpp
     tabbar.cpp
-    urltreeview.cpp
     walletbar.cpp
     webinspectorpanel.cpp
     webpage.cpp

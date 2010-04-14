@@ -24,8 +24,8 @@
 * ============================================================ */
 
 
-#ifndef URLTREEVIEW_H
-#define URLTREEVIEW_H
+#ifndef PANELTREEVIEW_H
+#define PANELTREEVIEW_H
 
 // Local Includes
 #include "application.h"
@@ -34,13 +34,13 @@
 #include <QTreeView>
 
 
-class UrlTreeView : public QTreeView
+class PanelTreeView : public QTreeView
 {
     Q_OBJECT
 
 public:
-    UrlTreeView(QWidget *parent = 0);
-    ~UrlTreeView();
+    PanelTreeView(QWidget *parent = 0);
+    ~PanelTreeView();
 
 signals:
     void openUrl(const KUrl &, const Rekonq::OpenType &);
@@ -66,4 +66,4 @@ private:
     void validOpenUrl(const KUrl &url, Rekonq::OpenType openType = Rekonq::CurrentTab);
 };
 
-#endif // URLTREEVIEW_H
+#endif // PANELTREEVIEW_H

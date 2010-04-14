@@ -25,7 +25,8 @@
 
 
 // Self Includes
-#include "urltreeview.h"
+#include "paneltreeview.h"
+#include "paneltreeview.moc"
 
 // Local Includes
 #include "application.h"
@@ -35,7 +36,7 @@
 #include <QClipboard>
 
 
-UrlTreeView::UrlTreeView(QWidget *parent)
+PanelTreeView::PanelTreeView(QWidget *parent)
     : QTreeView(parent)
 {
     connect(this, SIGNAL(itemHovered(const QString &)), parent, SIGNAL(itemHovered(const QString &)));
@@ -45,12 +46,12 @@ UrlTreeView::UrlTreeView(QWidget *parent)
 }
 
 
-UrlTreeView::~UrlTreeView()
+PanelTreeView::~PanelTreeView()
 {
 }
 
 
-void UrlTreeView::mousePressEvent(QMouseEvent *event)
+void PanelTreeView::mousePressEvent(QMouseEvent *event)
 {
     const QModelIndex index = indexAt(event->pos());
     bool expanded = isExpanded(index);
@@ -87,7 +88,7 @@ void UrlTreeView::mousePressEvent(QMouseEvent *event)
 }
 
 
-void UrlTreeView::mouseReleaseEvent(QMouseEvent *event)
+void PanelTreeView::mouseReleaseEvent(QMouseEvent *event)
 {
     QTreeView::mouseReleaseEvent(event);
 
@@ -108,7 +109,7 @@ void UrlTreeView::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
-void UrlTreeView::keyPressEvent(QKeyEvent *event)
+void PanelTreeView::keyPressEvent(QKeyEvent *event)
 {
     QTreeView::keyPressEvent(event);
     QModelIndex index = currentIndex();
@@ -131,7 +132,7 @@ void UrlTreeView::keyPressEvent(QKeyEvent *event)
 }
 
 
-void UrlTreeView::validOpenUrl(const KUrl &url, Rekonq::OpenType openType)
+void PanelTreeView::validOpenUrl(const KUrl &url, Rekonq::OpenType openType)
 {
     // To workaround a crash when the url is about:blank
     if(url.url() == "about:blank")
@@ -141,7 +142,7 @@ void UrlTreeView::validOpenUrl(const KUrl &url, Rekonq::OpenType openType)
 }
 
 
-void UrlTreeView::mouseMoveEvent(QMouseEvent *event)
+void PanelTreeView::mouseMoveEvent(QMouseEvent *event)
 {
     QTreeView::mouseMoveEvent(event);
     const QModelIndex index = indexAt(event->pos());
@@ -154,7 +155,7 @@ void UrlTreeView::mouseMoveEvent(QMouseEvent *event)
 }
 
 
-void UrlTreeView::openInCurrentTab()
+void PanelTreeView::openInCurrentTab()
 {
     QModelIndex index = currentIndex();
     if(!index.isValid())
@@ -164,7 +165,7 @@ void UrlTreeView::openInCurrentTab()
 }
 
 
-void UrlTreeView::copyToClipboard()
+void PanelTreeView::copyToClipboard()
 {
     QModelIndex index = currentIndex();
     if(!index.isValid())
@@ -175,7 +176,7 @@ void UrlTreeView::copyToClipboard()
 }
 
 
-void UrlTreeView::openInNewTab()
+void PanelTreeView::openInNewTab()
 {
     QModelIndex index = currentIndex();
     if(!index.isValid())
@@ -185,7 +186,7 @@ void UrlTreeView::openInNewTab()
 }
 
 
-void UrlTreeView::openInNewWindow()
+void PanelTreeView::openInNewWindow()
 {
     QModelIndex index = currentIndex();
     if(!index.isValid())

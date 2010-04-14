@@ -51,9 +51,9 @@
 
 
 BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
-    : QDockWidget(title, parent, flags),
-    m_treeView(new UrlTreeView(this)),
-    m_loadingState(false)
+    : QDockWidget(title, parent, flags)
+    , m_treeView(new PanelTreeView(this))
+    , m_loadingState(false)
 {
     setup();
     setShown(ReKonfig::showBookmarksPanel());

@@ -33,7 +33,7 @@
 // Local Includes
 #include "rekonqprivate_export.h"
 #include "application.h"
-#include "urltreeview.h"
+#include "paneltreeview.h"
 
 // Qt Includes
 #include <QDockWidget>
@@ -73,7 +73,7 @@ private:
     void setup();
     KBookmark bookmarkForIndex(const QModelIndex &index);
 
-    UrlTreeView *m_treeView;
+    PanelTreeView *m_treeView;
     bool m_loadingState;
 };
 

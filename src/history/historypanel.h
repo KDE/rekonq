@@ -32,7 +32,7 @@
 // Local Includes
 #include "rekonqprivate_export.h"
 #include "application.h"
-#include "urltreeview.h"
+#include "paneltreeview.h"
 
 // Qt Includes
 #include <QDockWidget>
@@ -62,7 +62,7 @@ private slots:
 
 private:
     void setup();
-    UrlTreeView *m_treeView;
+    PanelTreeView *m_treeView;
 };
 
 #endif // HISTORYPANEL_H
