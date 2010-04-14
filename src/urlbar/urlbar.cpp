@@ -67,7 +67,8 @@ UrlBar::UrlBar(QWidget *parent)
     
     connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
-    
+    connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
+        
     // suggestions
     installEventFilter(_box);
     connect(_box, SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), SLOT(activated(const KUrl &, Rekonq::OpenType)));
@@ -83,9 +84,6 @@ UrlBar::~UrlBar()
 
 void UrlBar::setQUrl(const QUrl& url)
 {
-    // find a better place? Ideally a loadStarted connected slot..
-    clearRightIcons();
-    
     if(url.scheme() == QL1S("about") )
     {
         iconButton()->setIcon( KIcon("arrow-right") );

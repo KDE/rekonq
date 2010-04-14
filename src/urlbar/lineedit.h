@@ -77,9 +77,7 @@ public:
     virtual ~LineEdit();
     
     IconButton *iconButton() const;
-    
-    void clearRightIcons();
-    
+
 protected:
     virtual void keyPressEvent(QKeyEvent *);
     virtual void mouseDoubleClickEvent(QMouseEvent *);
@@ -87,6 +85,9 @@ protected:
     virtual void resizeEvent(QResizeEvent *);
     
     IconButton *addRightIcon(LineEdit::icon );
+
+private slots:
+    void clearRightIcons();
 
 private:    
     IconButton *_icon;

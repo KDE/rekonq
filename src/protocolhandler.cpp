@@ -146,8 +146,6 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
                 break;
             }
         }
-    
-        Application::instance()->mainWindow()->mainView()->urlBar()->clearRightIcons();
 
         NewTabPage p(frame);
         p.generate(_url);
