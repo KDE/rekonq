@@ -5,4 +5,6 @@ setting a local stylesheet in rekonq config
 */
 
 /* Set background color to white for sites forgetting this */
+body{
 background-color:#FFFFFF;
+}
