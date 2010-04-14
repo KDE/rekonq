@@ -50,45 +50,36 @@ CompletionWidget::CompletionWidget( QWidget *parent)
     , _parent(parent)
     , _currentIndex(-1)
 {
-    QPalette p(palette());
-    p.setColor(QPalette::Background, Qt::white); // TODO: choose the correct color
-    setPalette(p);
     setFrameStyle(QFrame::Panel);
     setLayoutDirection(Qt::LeftToRight);
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
+    layout->setSpacing(0);
     setLayout(layout);
-
 }
 
 
 void CompletionWidget::insertSearchList(const UrlSearchList &list)
 {
     _list = list;
-    int i=0;
+    int i = 0;
     foreach(UrlSearchItem item, _list)
     {
         ListItem *suggestion = new ListItem(item);
+        suggestion->setBackgroundRole(i%2 ? QPalette::AlternateBase : QPalette::Base);
         connect(suggestion, SIGNAL(itemClicked(ListItem *, Qt::MouseButton)), this, SLOT(itemChosen(ListItem *, Qt::MouseButton)));
-        suggestion->setObjectName( QString::number(i++) );
+        suggestion->setObjectName( QString::number(i) );
         layout()->addWidget( suggestion );
+        i++;
     }
 }
 
 
 void CompletionWidget::sizeAndPosition()
 {
-    // size
-    int h = 34;
-    ListItem *widget;
-    for(int i = 0; i < layout()->count(); ++i)
-    {
-        widget = findChild<ListItem *>( QString::number(i) );
-        h = qMax(widget->sizeHint().height(), h);
-    }
-    setFixedHeight(layout()->count() * (h + 10) );
     setFixedWidth( _parent->width() );
-
+    adjustSize();
+    
     // position
     QPoint p = _parent->mapToGlobal( QPoint(0,0) );
     move(p.x(), p.y() + _parent->height());

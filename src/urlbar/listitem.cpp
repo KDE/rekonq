@@ -51,7 +51,14 @@
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
     : QWidget(parent)
 {
-    //preview and icon
+    setAutoFillBackground(true);
+    
+    QPalette p = palette();
+    p.setColor(QPalette::Base, Qt::white);                    // TODO: choose the correct color
+    p.setColor(QPalette::AlternateBase, QColor(247,247,247)); // TODO: choose the correct color
+    setPalette(p);
+    
+    // ----------------------------------------
     
     QHBoxLayout *hLayout = new QHBoxLayout;
  
