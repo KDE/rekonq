@@ -66,7 +66,8 @@ WebView::WebView(QWidget* parent)
     , _scrollTimer( new QTimer(this) )
     , _VScrollSpeed(0)
     , _HScrollSpeed(0)
-    , _disableAutoScroll(false)
+    , _canEnableAutoScroll(true)
+    , _isAutoScrollEnabled(false)
 {
     WebPage *page = new WebPage(this);
     setPage(page);
@@ -321,27 +322,60 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
 void WebView::mousePressEvent(QMouseEvent *event)
 {
-    QWebHitTestResult result = page()->mainFrame()->hitTestContent( event->pos() );
-    _disableAutoScroll = result.isContentEditable();
+    if(_isAutoScrollEnabled)
+    {
+        setCursor(Qt::ArrowCursor);
+        _VScrollSpeed = 0;
+        _HScrollSpeed = 0;
+        _scrollTimer->stop();
+        _isAutoScrollEnabled = false;
+        return;
+    }
     
+    QWebHitTestResult result = page()->mainFrame()->hitTestContent( event->pos() );
+    _canEnableAutoScroll = !result.isContentEditable()  && result.linkUrl().isEmpty();
+        
     switch(event->button())
     {
       case Qt::XButton1:
         triggerPageAction(KWebPage::Back);
         break;
+      
       case Qt::XButton2:
         triggerPageAction(KWebPage::Forward);
         break;
+      
+      case Qt::MidButton:
+        if(_canEnableAutoScroll && !_isAutoScrollEnabled)
+        {
+            setCursor( KIcon("transform-move").pixmap(32) );
+            _clickPos = event->pos();
+            _isAutoScrollEnabled = true;
+        }
+        break;
+        
       default:
-        KWebView::mousePressEvent(event);
         break;
     };
+    KWebView::mousePressEvent(event);
 }
 
 
 void WebView::mouseMoveEvent(QMouseEvent *event)
 {
     _mousePos = event->pos();
+    
+    if(_isAutoScrollEnabled)
+    {
+        QPoint r = _mousePos - _clickPos;
+        _HScrollSpeed = r.x() / 2;  // you are too fast..
+        _VScrollSpeed = r.y() / 2;
+        if( !_scrollTimer->isActive() )
+                _scrollTimer->start();
+        
+        return;
+    }
+    
     if (Application::instance()->mainWindow()->isFullScreen())
     {        
         if (event->pos().y()>=0 && event->pos().y()<=4)
@@ -430,7 +464,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
         }
     }
  
-    if(_disableAutoScroll)
+    if(!_canEnableAutoScroll)
     {
         KWebView::keyPressEvent(event);
         return;

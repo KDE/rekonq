@@ -52,7 +52,7 @@ public:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-    void mousePressEvent(QMouseEvent *event);   // need to be ported
+    void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
@@ -75,11 +75,13 @@ signals:
     
 private:
     QPoint _mousePos;
+    QPoint _clickPos;
 
     QTimer *_scrollTimer;
     int _VScrollSpeed;
     int _HScrollSpeed;
-    bool _disableAutoScroll;
+    bool _canEnableAutoScroll;
+    bool _isAutoScrollEnabled;
 };
 
 #endif
