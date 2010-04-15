@@ -216,7 +216,7 @@ void UrlBar::suggestUrls(const QString &text)
     if(list.count() > 0)
     {
         _box->clear();
-        _box->insertSearchList(list);
+        _box->insertSearchList(list, text);
         _box->popup();
     }
 }

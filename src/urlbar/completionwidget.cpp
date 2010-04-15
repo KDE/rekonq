@@ -59,18 +59,18 @@ CompletionWidget::CompletionWidget( QWidget *parent)
 }
 
 
-void CompletionWidget::insertSearchList(const UrlSearchList &list)
+void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString& text)
 {
     _list = list;
     int i = 0;
     foreach(UrlSearchItem item, _list)
     {
-        ListItem *suggestion = new ListItem(item);
-        suggestion->setBackgroundRole(i%2 ? QPalette::AlternateBase : QPalette::Base);
+        ListItem *suggestion = ListItemFactory::create(item, text);
+        suggestion->setBackgroundRole(i%2 ? QPalette::AlternateBase: QPalette::Base);     
         connect(suggestion, SIGNAL(itemClicked(ListItem *, Qt::MouseButton)), this, SLOT(itemChosen(ListItem *, Qt::MouseButton)));
-        suggestion->setObjectName( QString::number(i) );
+        connect(this, SIGNAL(nextItemSubChoice()), suggestion, SLOT(nextItemSubChoice()));
+        suggestion->setObjectName( QString::number(i++) );
         layout()->addWidget( suggestion );
-        i++;
     }
 }
 
@@ -88,8 +88,9 @@ void CompletionWidget::sizeAndPosition()
 
 void CompletionWidget::popup()
 {
+    down();
     sizeAndPosition();
-    if (!isVisible()) 
+    if (!isVisible())
         show();
 }
 
@@ -195,17 +196,23 @@ bool CompletionWidget::eventFilter( QObject *o, QEvent *e )
                         ev->accept();
                         return true;
                     }
-                    break;
-
-                case Qt::Key_Enter:
-                case Qt::Key_Return:
-                        hide();
-                        if(_currentIndex >= 0)
-                            emit chosenUrl(_list.at(_currentIndex).url, Rekonq::CurrentTab);
-                        else
-                            emit loadTypedUrl();
+                    else if (ev->modifiers() & Qt::ControlModifier)
+                    {
+                        emit nextItemSubChoice();
                         ev->accept();
                         return true;
+                    }
+                    break;
+                    
+                case Qt::Key_Enter:
+                case Qt::Key_Return:
+                    hide();
+                    if(_currentIndex >= 0)
+                        emit chosenUrl(_list.at(_currentIndex).url, Rekonq::CurrentTab);
+                    else
+                        emit loadTypedUrl();
+                    ev->accept();
+                    return true;
                     break;
             }
         }

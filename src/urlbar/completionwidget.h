@@ -47,7 +47,7 @@ class CompletionWidget : public QFrame
 public:
     CompletionWidget(QWidget *parent);
 
-    void insertSearchList(const UrlSearchList &list);
+    void insertSearchList(const UrlSearchList &list, const QString& text);
     void popup();
     void clear();
 
@@ -59,6 +59,7 @@ private slots:
 
 signals:
     void chosenUrl(const KUrl &, Rekonq::OpenType);
+    void nextItemSubChoice();
     void loadTypedUrl();
     
 private:
@@ -70,6 +71,7 @@ private:
 
     UrlSearchList _list;
     int _currentIndex;
+    QString *_searchEngine;
 };
 
 #endif // COMPLETION_WIDGET_H

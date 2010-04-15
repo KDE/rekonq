@@ -27,7 +27,6 @@
 #ifndef URL_RESOLVER_H
 #define URL_RESOLVER_H
 
-
 // KDE Includes
 #include <KUrl>
 
@@ -43,21 +42,21 @@ class UrlSearchItem
 
     enum types 
     { 
-        Search     = 0x00000001,
-        Browse     = 0x00000010,
-        History    = 0x00000100,
-        Bookmark   = 0x00001000,
-        Suggestion = 0x00010000,
+        Search          = 0x00000001,
+        Browse          = 0x00000010,
+        History         = 0x00000100,
+        Bookmark        = 0x00001000,
     };   
 
     int type;
     KUrl url;
     QString title;
+    QString icon;
 
-    UrlSearchItem(const int &_type, const KUrl &_url, const QString &_title = QString())
-        : type(_type), url(_url), title(_title)
+    UrlSearchItem(const int &_type, const KUrl &_url, const QString &_title = QString(), const QString &_icon = QString())
+    : type(_type), url(_url), title(_title), icon(_icon)
     {};
-    
+
     bool operator==(UrlSearchItem i);
 };
 
@@ -75,7 +74,7 @@ public:
     UrlSearchList orderedSearchItems();
 
 private:
-    QString _urlString;
+    QString _urlString; //TODO: give a better name
 
     UrlSearchList webSearchesResolution();
     UrlSearchList historyResolution();
