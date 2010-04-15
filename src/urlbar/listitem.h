@@ -23,19 +23,25 @@
 *
 * ============================================================ */
 
-
 #ifndef LISTITEM_H
 #define LISTITEM_H
 
+// KDE Includes
+#include <KToolBar>
+#include <KAction>
+#include <KService>
+
+// Local Includes
+#include "urlresolver.h"
 
 // Qt Includes
 #include <QWidget>
 #include <QLayout>
 #include <QStyleOptionViewItemV4>
+#include <QLabel>
 
 // Forward Declarations
 class UrlSearchItem;
-class KUrl;
 
 
 class ListItem : public QWidget
@@ -44,10 +50,15 @@ class ListItem : public QWidget
 
 public:
     ListItem(const UrlSearchItem &item, QWidget *parent = 0);
-    ~ListItem();
+    virtual ~ListItem();
 
     void activate();
     void deactivate();
+
+    KUrl url();
+    
+public slots:
+    virtual void nextItemSubChoice();
 
 signals:
     void itemClicked(ListItem *item, Qt::MouseButton);
@@ -59,11 +70,135 @@ protected:
    virtual void mousePressEvent(QMouseEvent *e);
 
 private:
-    QString guessNameFromUrl(KUrl url);
-    void insertIcon(QLayout *layout, QString icon);
-    
-    QStyleOptionViewItemV4 _option;
+    QStyleOptionViewItemV4 m_option;    
+ 
+protected:
+    KUrl m_url;
 };
 
 
-#endif // LISTITEM_H
+class TypeIcon : public QLabel
+{
+    Q_OBJECT
+    
+    public:
+        TypeIcon(int type, QWidget *parent = 0);
+    private:
+        QLabel *getIcon(QString icon);
+};
+
+
+class ItemIcon : public QLabel
+{
+    Q_OBJECT
+
+    public:
+        ItemIcon(QString icon, QWidget *parent = 0);
+};
+
+
+class ItemText : public QLabel
+{
+    Q_OBJECT
+    
+    public:
+        ItemText(QString text, QString underlined, QWidget *parent = 0);
+        QString underlineText(QString text, QString textToUnderline);
+};
+
+
+//-------------------------------------------------------------------------------------------------
+
+class EngineBar : public KToolBar
+{
+    Q_OBJECT
+    
+    public:
+        EngineBar(QString text, QString selectedEngine, QWidget *parent = 0);
+        static QString defaultEngine();
+        void selectNextEngine();
+        
+    signals:
+        void searchEngineChanged(QString url, QString engine);
+
+    private slots:
+        void changeSearchEngine();
+    
+    private:
+        KAction *newEngineAction(KService::Ptr service, QString selectedEngine, QString text);
+
+        QActionGroup *m_engineGroup;
+};
+
+
+class SearchListItem : public ListItem
+{
+    Q_OBJECT
+    
+    public:
+        SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+        
+    public slots:
+        virtual void nextItemSubChoice();
+
+    protected:
+        
+        
+    private slots:
+        void changeSearchEngine(QString url, QString engine);
+        
+    private:
+        QString searchItemTitle(QString engine, QString text);
+        ItemText* m_titleLabel;
+        ItemIcon* m_iconLabel;
+        EngineBar* m_engineBar;
+        QString m_text;
+        static QString m_currentEngine;
+};
+
+
+//-------------------------------------------------------------------------------------------------
+
+class PreviewListItem : public ListItem
+{
+    Q_OBJECT
+    
+    public:
+        PreviewListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+};
+
+
+class ItemPreview : public QLabel
+{
+    Q_OBJECT
+    
+    public:
+        ItemPreview(QString url,int width, int height, QWidget *parent = 0);
+
+    private:
+        static QString guessNameFromUrl(QUrl url);
+};
+
+//-------------------------------------------------------------------------------------------------
+
+class BrowseListItem : public ListItem
+{
+    Q_OBJECT
+    
+    public:
+        BrowseListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+    protected:
+
+};
+
+//-------------------------------------------------------------------------------------------------
+
+class ListItemFactory
+{
+    public:
+        static ListItem *create(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+        
+};
+
+
+#endif

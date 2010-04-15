@@ -60,7 +60,7 @@ bool UrlSearchItem::operator==(UrlSearchItem i)
 }
 
 UrlResolver::UrlResolver(const QString &typedUrl)
-    : _urlString( typedUrl.trimmed() )
+    : _urlString(typedUrl.trimmed())
 {
 }
 
@@ -78,19 +78,15 @@ UrlSearchList UrlResolver::orderedSearchItems()
     if(isHttp())
     {
         list << qurlFromUserInputResolution();
-        list << webSearchesResolution();
     }
-    else
-    {  
-        list << webSearchesResolution();
-        list << qurlFromUserInputResolution();
-    }
+        
+    list << webSearchesResolution();
 
     if (_urlString.length()>2)
     {
         int firstResults = list.count();
         int checkPoint = 9 - firstResults;
-
+        
         UrlSearchList historyList = historyResolution();
         int historyResults = historyList.count();
 
@@ -136,7 +132,12 @@ UrlSearchList UrlResolver::orderedSearchItems()
 
 bool UrlResolver::isHttp()
 {
-    QString r = "[\\d\\w-.]+\\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|"\
+    QString ipv4 = "^0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])"\
+    "\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])";
+    
+    QString ipv6 = "^([0-9a-fA-F]{4}|0)(\\:([0-9a-fA-F]{4}|0)){7}";
+    
+    QString address = "[\\d\\w-.]+\\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|"\
     "c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrst]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|"\
     "h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|"\
     "m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|"\
@@ -144,9 +145,11 @@ bool UrlResolver::isHttp()
     "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
     "pro)";
 
-    return (QRegExp(r, Qt::CaseInsensitive).indexIn(_urlString) != -1) 
-            || _urlString.startsWith("http:") 
-            || _urlString.startsWith("https:");
+    return _urlString.startsWith("http://")  
+            || _urlString.startsWith("https://")
+            || (QRegExp(address, Qt::CaseInsensitive).indexIn(_urlString) != -1)
+            || (QRegExp(ipv4, Qt::CaseInsensitive).indexIn(_urlString) != -1)
+            || (QRegExp(ipv6, Qt::CaseInsensitive).indexIn(_urlString) != -1);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -156,19 +159,8 @@ bool UrlResolver::isHttp()
 // STEP 1 = QUrl from User Input (easily the best solution... )
 UrlSearchList UrlResolver::qurlFromUserInputResolution()
 {
-    UrlSearchList list;
-    
-    QString url2 = _urlString;
-    QUrl urlFromUserInput = QUrl::fromUserInput(url2);
-    if(urlFromUserInput.isValid())
-    {
-        KUrl gUrl(urlFromUserInput);
-        QString gTitle = i18n("Browse");
-        UrlSearchItem gItem(UrlSearchItem::Browse, gUrl, gTitle);
-        list << gItem;
-    }
-    
-    return list;
+    UrlSearchItem gItem(UrlSearchItem::Browse, KUrl(_urlString), QString());
+    return UrlSearchList() << gItem;
 }
 
 
@@ -176,14 +168,12 @@ UrlSearchList UrlResolver::qurlFromUserInputResolution()
 UrlSearchList UrlResolver::webSearchesResolution()
 {
     UrlSearchList list;
-    
-    KUrl url1(_urlString);
-    if(url1.isRelative())
+
+    if(KUrl(_urlString).isRelative())
     {
-        // KUriFilter has the worst performance possible here and let this trick unusable
-        KUrl gUrl( QString("gg:") + _urlString );
-        QString gTitle = i18n("Search Google for %1", _urlString);
-        UrlSearchItem gItem(UrlSearchItem::Search, gUrl, gTitle );
+        QString gUrl = QString("http://www.google.com/search?q=%1&ie=UTF-8&oe=UTF-8").arg(_urlString);
+        QString gTitle = i18n("Search Google for ") + _urlString;
+        UrlSearchItem gItem(UrlSearchItem::Search, KUrl(), gTitle);
         list << gItem;
     }
 
@@ -200,7 +190,7 @@ UrlSearchList UrlResolver::historyResolution()
     QStringList historyResults = historyCompletion->substringCompletion(_urlString);
     Q_FOREACH(const QString &s, historyResults)
     {
-        UrlSearchItem it(UrlSearchItem::History, KUrl(s), Application::historyManager()->titleForHistoryUrl(s) ); //, QString("view-history"));
+        UrlSearchItem it(UrlSearchItem::History, KUrl(s), Application::historyManager()->titleForHistoryUrl(s));
         list << it;
     }
 
@@ -217,7 +207,7 @@ UrlSearchList UrlResolver::bookmarksResolution()
     QStringList bookmarkResults = bookmarkCompletion->substringCompletion(_urlString);
     Q_FOREACH(const QString &s, bookmarkResults)
     {
-        UrlSearchItem it(UrlSearchItem::Bookmark, KUrl(s), Application::bookmarkProvider()->titleForBookmarkUrl(s) ); //, QString("rating") );
+        UrlSearchItem it(UrlSearchItem::Bookmark, KUrl(s), Application::bookmarkProvider()->titleForBookmarkUrl(s));
         list << it;
     }
 
