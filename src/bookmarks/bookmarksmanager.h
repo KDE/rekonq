@@ -115,6 +115,8 @@ public:
     */
     virtual void openFolderinTabs(const KBookmarkGroup &bm);
 
+    virtual QList< QPair<QString, QString> > currentBookmarkList() const;
+
 signals:
     /**
      * This signal is emitted when an url has to be loaded

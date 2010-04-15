@@ -35,6 +35,7 @@
 #include "mainwindow.h"
 #include "webtab.h"
 #include "webview.h"
+#include "mainview.h"
 #include "bookmarkcontextmenu.h"
 
 // KDE Includes
@@ -51,7 +52,6 @@
 // Qt Includes
 #include <QtCore/QFile>
 #include <QtGui/QActionGroup>
-
 
 
 BookmarkOwner::BookmarkOwner(QObject *parent)
@@ -109,6 +109,22 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bm)
     {
         Application::instance()->loadUrl(*url, Rekonq::NewCurrentTab);
     }
+}
+
+
+QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
+{
+    QList< QPair<QString, QString> > bkList;
+    int tabNumber = Application::instance()->mainWindow()->mainView()->count();
+
+    for(int i = 0; i < tabNumber; i++)
+    {
+        QPair<QString, QString> item;
+        item.first = Application::instance()->mainWindow()->mainView()->webTab(i)->view()->title();
+        item.second = Application::instance()->mainWindow()->mainView()->webTab(i)->url().url();
+        bkList += item;
+    }
+    return bkList;
 }
 
 
@@ -405,9 +421,19 @@ void BookmarkActionMenu::addFolderActions()
 
     if(!m_group.first().isNull())
     {
-        action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
-        connect(action, SIGNAL(triggered(bool)), this, SLOT(openActionInTabs()));
-        addAction(action);
+        KBookmark bookmark = m_group.first();
+
+        while(bookmark.isGroup() || bookmark.isSeparator())
+        {
+            bookmark = m_group.next(bookmark);
+        }
+
+        if(!bookmark.isNull())
+        {
+            action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
+            connect(action, SIGNAL(triggered(bool)), this, SLOT(openActionInTabs()));
+            addAction(action);
+        }
     }
 
     action = new KAction(KIcon("bookmark-new"), i18n("Add Bookmark Here"), this);
