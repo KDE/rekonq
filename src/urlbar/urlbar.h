@@ -60,11 +60,12 @@ public:
     void setPrivateMode(bool on);
 
 private slots:
-    void activated(const KUrl& url = KUrl(), Rekonq::OpenType = Rekonq::CurrentTab);
+    void activated(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
     void suggestUrls(const QString &editedText);
     void setQUrl(const QUrl &url);
 
     void loadFinished();
+    void loadTyped(const QString &);
     
 protected:
     virtual void paintEvent(QPaintEvent *event);

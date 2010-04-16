@@ -51,10 +51,9 @@ class UrlSearchItem
     int type;
     KUrl url;
     QString title;
-    QString icon;
 
-    UrlSearchItem(const int &_type, const KUrl &_url, const QString &_title = QString(), const QString &_icon = QString())
-    : type(_type), url(_url), title(_title), icon(_icon)
+    UrlSearchItem(const int &_type, const KUrl &_url, const QString &_title = QString())
+    : type(_type), url(_url), title(_title)
     {};
 
     bool operator==(UrlSearchItem i);
@@ -74,7 +73,7 @@ public:
     UrlSearchList orderedSearchItems();
 
 private:
-    QString _urlString; //TODO: give a better name
+    QString _typedString;
 
     UrlSearchList webSearchesResolution();
     UrlSearchList historyResolution();

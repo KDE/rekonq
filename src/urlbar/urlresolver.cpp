@@ -45,7 +45,9 @@
 #include <QByteArray>
 #include <QUrl>
 
+// defines
 #define MAX_ELEMENTS 9
+
 
 // NOTE default kurifilter plugin list (at least in my box)
 // 1. "kshorturifilter"
@@ -54,13 +56,15 @@
 // 4 ."kuriikwsfilter"
 // 5. "fixhosturifilter"
 
+
 bool UrlSearchItem::operator==(UrlSearchItem i)
 { 
     return url==i.url; 
 }
 
+
 UrlResolver::UrlResolver(const QString &typedUrl)
-    : _urlString(typedUrl.trimmed())
+    : _typedString(typedUrl.trimmed())
 {
 }
 
@@ -75,15 +79,17 @@ UrlSearchList UrlResolver::orderedSearchItems()
     
     UrlSearchList list;
     
-    if(isHttp())
-    {
-        list << qurlFromUserInputResolution();
-    }
+//     if(isHttp())
+//     {
+//         list << qurlFromUserInputResolution();
+//     }
         
     list << webSearchesResolution();
 
-    if (_urlString.length()>2)
+    if (_typedString.length() >= 2)
     {
+        list << qurlFromUserInputResolution();
+        
         int firstResults = list.count();
         int checkPoint = 9 - firstResults;
         
@@ -145,12 +151,13 @@ bool UrlResolver::isHttp()
     "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
     "pro)";
 
-    return _urlString.startsWith("http://")  
-            || _urlString.startsWith("https://")
-            || (QRegExp(address, Qt::CaseInsensitive).indexIn(_urlString) != -1)
-            || (QRegExp(ipv4, Qt::CaseInsensitive).indexIn(_urlString) != -1)
-            || (QRegExp(ipv6, Qt::CaseInsensitive).indexIn(_urlString) != -1);
+    return _typedString.startsWith("http://")  
+            || _typedString.startsWith("https://")
+            || (QRegExp(address, Qt::CaseInsensitive).indexIn(_typedString) != -1)
+            || (QRegExp(ipv4, Qt::CaseInsensitive).indexIn(_typedString) != -1)
+            || (QRegExp(ipv6, Qt::CaseInsensitive).indexIn(_typedString) != -1);
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 // PRIVATE ENGINES
@@ -159,8 +166,18 @@ bool UrlResolver::isHttp()
 // STEP 1 = QUrl from User Input (easily the best solution... )
 UrlSearchList UrlResolver::qurlFromUserInputResolution()
 {
-    UrlSearchItem gItem(UrlSearchItem::Browse, KUrl(_urlString), QString());
-    return UrlSearchList() << gItem;
+    UrlSearchList list;
+    QString url2 = _typedString;
+    QUrl urlFromUserInput = QUrl::fromUserInput(url2);
+    if(urlFromUserInput.isValid())
+    {
+        KUrl gUrl(urlFromUserInput);
+        QString gTitle = i18n("Browse");
+        UrlSearchItem gItem(UrlSearchItem::Browse, gUrl, gTitle);
+        list << gItem;
+    }
+
+    return list;
 }
 
 
@@ -169,11 +186,9 @@ UrlSearchList UrlResolver::webSearchesResolution()
 {
     UrlSearchList list;
 
-    if(KUrl(_urlString).isRelative())
-    {
-        QString gUrl = QString("http://www.google.com/search?q=%1&ie=UTF-8&oe=UTF-8").arg(_urlString);
-        QString gTitle = i18n("Search Google for ") + _urlString;
-        UrlSearchItem gItem(UrlSearchItem::Search, KUrl(), gTitle);
+    if(KUrl(_typedString).isRelative())
+    {        
+        UrlSearchItem gItem(UrlSearchItem::Search, KUrl(), QString() );    // others will find this url..
         list << gItem;
     }
 
@@ -187,7 +202,7 @@ UrlSearchList UrlResolver::historyResolution()
     UrlSearchList list;
     
     KCompletion *historyCompletion = Application::historyManager()->completionObject();
-    QStringList historyResults = historyCompletion->substringCompletion(_urlString);
+    QStringList historyResults = historyCompletion->substringCompletion(_typedString);
     Q_FOREACH(const QString &s, historyResults)
     {
         UrlSearchItem it(UrlSearchItem::History, KUrl(s), Application::historyManager()->titleForHistoryUrl(s));
@@ -204,13 +219,12 @@ UrlSearchList UrlResolver::bookmarksResolution()
     UrlSearchList list;
     
     KCompletion *bookmarkCompletion = Application::bookmarkProvider()->completionObject();
-    QStringList bookmarkResults = bookmarkCompletion->substringCompletion(_urlString);
+    QStringList bookmarkResults = bookmarkCompletion->substringCompletion(_typedString);
     Q_FOREACH(const QString &s, bookmarkResults)
     {
         UrlSearchItem it(UrlSearchItem::Bookmark, KUrl(s), Application::bookmarkProvider()->titleForBookmarkUrl(s));
         list << it;
     }
-
 
     return list;
 }

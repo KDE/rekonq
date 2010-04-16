@@ -23,16 +23,18 @@
 *
 * ============================================================ */
 
+
 #ifndef LISTITEM_H
 #define LISTITEM_H
+
+
+// Local Includes
+#include "urlresolver.h"
 
 // KDE Includes
 #include <KToolBar>
 #include <KAction>
 #include <KService>
-
-// Local Includes
-#include "urlresolver.h"
 
 // Qt Includes
 #include <QWidget>
@@ -77,127 +79,145 @@ protected:
 };
 
 
+// -------------------------------------------------------------------------
+
+
 class TypeIcon : public QLabel
 {
     Q_OBJECT
     
-    public:
-        TypeIcon(int type, QWidget *parent = 0);
-    private:
-        QLabel *getIcon(QString icon);
+public:
+    TypeIcon(int type, QWidget *parent = 0);
+
+private:
+    QLabel *getIcon(QString icon);
 };
+
+
+// -------------------------------------------------------------------------
 
 
 class ItemIcon : public QLabel
 {
     Q_OBJECT
 
-    public:
-        ItemIcon(QString icon, QWidget *parent = 0);
+public:
+    ItemIcon(const QString &icon, QWidget *parent = 0);
 };
+
+
+// -------------------------------------------------------------------------
 
 
 class ItemText : public QLabel
 {
     Q_OBJECT
     
-    public:
-        ItemText(QString text, QString underlined, QWidget *parent = 0);
-        QString underlineText(QString text, QString textToUnderline);
+public:
+    ItemText(const QString &text, const QString &textToPointOut, QWidget *parent = 0);
 };
 
 
-//-------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+
 
 class EngineBar : public KToolBar
 {
     Q_OBJECT
     
-    public:
-        EngineBar(QString text, QString selectedEngine, QWidget *parent = 0);
-        static QString defaultEngine();
-        void selectNextEngine();
-        
-    signals:
-        void searchEngineChanged(QString url, QString engine);
-
-    private slots:
-        void changeSearchEngine();
+public:
+    EngineBar(const QString &text, const QString &selectedEngine, QWidget *parent = 0);
+    static QString defaultEngine();
+    void selectNextEngine();
+    KUrl url() { return m_url; };
     
-    private:
-        KAction *newEngineAction(KService::Ptr service, QString selectedEngine, QString text);
+signals:
+    void searchEngineChanged(QString url, QString engine);
 
-        QActionGroup *m_engineGroup;
+private slots:
+    void changeSearchEngine();
+
+private:
+    KAction *newEngineAction(KService::Ptr service, QString selectedEngine);
+
+    QActionGroup *m_engineGroup;
+    KUrl m_url;
 };
+
+
+// -------------------------------------------------------------------------
 
 
 class SearchListItem : public ListItem
 {
     Q_OBJECT
     
-    public:
-        SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
-        
-    public slots:
-        virtual void nextItemSubChoice();
-
-    protected:
-        
-        
-    private slots:
-        void changeSearchEngine(QString url, QString engine);
-        
-    private:
-        QString searchItemTitle(QString engine, QString text);
-        ItemText* m_titleLabel;
-        ItemIcon* m_iconLabel;
-        EngineBar* m_engineBar;
-        QString m_text;
-        static QString m_currentEngine;
+public:
+    SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+    
+public slots:
+    virtual void nextItemSubChoice();
+    
+private slots:
+    void changeSearchEngine(QString url, QString engine);
+    
+private:
+    QString searchItemTitle(QString engine, QString text);
+    ItemText* m_titleLabel;
+    ItemIcon* m_iconLabel;
+    EngineBar* m_engineBar;
+    QString m_text;
+    
+    static QString m_currentEngine;
 };
 
 
-//-------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+
 
 class PreviewListItem : public ListItem
 {
     Q_OBJECT
     
-    public:
-        PreviewListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+public:
+    PreviewListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
 };
+
+
+// -------------------------------------------------------------------------
 
 
 class ItemPreview : public QLabel
 {
     Q_OBJECT
     
-    public:
-        ItemPreview(QString url,int width, int height, QWidget *parent = 0);
+public:
+    ItemPreview(const QString &url, int width, int height, QWidget *parent = 0);
 
-    private:
-        static QString guessNameFromUrl(QUrl url);
+private:
+    static QString guessNameFromUrl(QUrl url);
 };
 
-//-------------------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------
+
 
 class BrowseListItem : public ListItem
 {
     Q_OBJECT
     
-    public:
-        BrowseListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
-    protected:
-
+public:
+    BrowseListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
 };
+
 
 //-------------------------------------------------------------------------------------------------
 
+
 class ListItemFactory
 {
-    public:
-        static ListItem *create(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
-        
+public:
+    static ListItem *create(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
 };
 
 

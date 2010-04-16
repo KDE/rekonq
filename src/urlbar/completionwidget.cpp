@@ -45,8 +45,8 @@
 #include <QKeyEvent>
 
 
-CompletionWidget::CompletionWidget( QWidget *parent)
-    :QFrame( parent, Qt::ToolTip)
+CompletionWidget::CompletionWidget(QWidget *parent)
+    : QFrame( parent, Qt::ToolTip)
     , _parent(parent)
     , _currentIndex(-1)
 {
@@ -206,12 +206,12 @@ bool CompletionWidget::eventFilter( QObject *o, QEvent *e )
                     
                 case Qt::Key_Enter:
                 case Qt::Key_Return:
-                    hide();
-                    if(_currentIndex >= 0)
-                        emit chosenUrl(_list.at(_currentIndex).url, Rekonq::CurrentTab);
-                    else
-                        emit loadTypedUrl();
+
+                    // need this to let ListItem magic work..
+                    ListItem *child = findChild<ListItem *>( QString::number(_currentIndex) );
+                    emit chosenUrl( child->url(), Rekonq::CurrentTab);                                              
                     ev->accept();
+                    hide();
                     return true;
                     break;
             }
@@ -233,6 +233,7 @@ void CompletionWidget::setVisible( bool visible )
         Application::instance()->removeEventFilter(this);
     }
     
+
     QFrame::setVisible(visible);
 }
 
@@ -240,8 +241,8 @@ void CompletionWidget::setVisible( bool visible )
 void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button)
 {
     if(button == Qt::MidButton)
-        emit chosenUrl(_list.at(layout()->indexOf(item)).url, Rekonq::NewCurrentTab);
+        emit chosenUrl( item->url(), Rekonq::NewCurrentTab);
     else
-        emit chosenUrl(_list.at(layout()->indexOf(item)).url, Rekonq::CurrentTab);
+        emit chosenUrl( item->url(), Rekonq::CurrentTab);
     hide();
 }
