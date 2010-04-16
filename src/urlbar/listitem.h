@@ -114,7 +114,7 @@ class ItemText : public QLabel
     Q_OBJECT
     
 public:
-    ItemText(const QString &text, const QString &textToPointOut, QWidget *parent = 0);
+    ItemText(const QString &text, const QString &textToPointOut = QString(), QWidget *parent = 0);
 };
 
 
