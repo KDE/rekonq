@@ -30,6 +30,7 @@
 
 // Local Includes
 #include "application.h"
+#include "urlresolver.h"
 
 // KDE Includes
 #include <KGlobalSettings>
@@ -173,6 +174,8 @@ bool CompletionWidget::eventFilter( QObject *o, QEvent *e )
     //actions on the CompletionWidget
     if (wid && wid->isAncestorOf(_parent) && isVisible()) 
     {
+        ListItem *child;
+    
         if ( type == QEvent::KeyPress ) 
         {
             QKeyEvent *ev = static_cast<QKeyEvent *>( e );
@@ -196,7 +199,7 @@ bool CompletionWidget::eventFilter( QObject *o, QEvent *e )
                         ev->accept();
                         return true;
                     }
-                    else if (ev->modifiers() & Qt::ControlModifier)
+                    if (ev->modifiers() & Qt::ControlModifier)
                     {
                         emit nextItemSubChoice();
                         ev->accept();
@@ -206,18 +209,19 @@ bool CompletionWidget::eventFilter( QObject *o, QEvent *e )
                     
                 case Qt::Key_Enter:
                 case Qt::Key_Return:
-
-                    // need this to let ListItem magic work..
-                    ListItem *child = findChild<ListItem *>( QString::number(_currentIndex) );
+                    child = findChild<ListItem *>( QString::number(_currentIndex) );
                     emit chosenUrl( child->url(), Rekonq::CurrentTab);                                              
                     ev->accept();
                     hide();
                     return true;
-                    break;
+                    
+                case Qt::Key_Escape:
+                    hide();
+                    return true;
             }
         }
     }
-
+    
     return QFrame::eventFilter(o,e);
 }
 
@@ -245,4 +249,26 @@ void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button)
     else
         emit chosenUrl( item->url(), Rekonq::CurrentTab);
     hide();
+}
+
+
+
+
+void CompletionWidget::suggestUrls(const QString &text)
+{   
+    if(text.isEmpty())
+    {
+        hide();
+        return;
+    }
+
+    UrlResolver res(text);
+    UrlSearchList list = res.orderedSearchItems();
+
+    if(list.count() > 0)
+    {
+        clear();
+        insertSearchList(list, text);
+        popup();
+    }
 }

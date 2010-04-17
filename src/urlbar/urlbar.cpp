@@ -38,8 +38,9 @@
 #include "application.h"
 #include "lineedit.h"
 #include "mainwindow.h"
+#include "webtab.h"
 #include "webview.h"
-#include "urlresolver.h"
+#include "completionwidget.h"
 
 // KDE Includes
 #include <KDebug>
@@ -71,7 +72,7 @@ UrlBar::UrlBar(QWidget *parent)
         
     // suggestions
     installEventFilter(_box);
-    connect(_box, SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), SLOT(activated(const KUrl &, Rekonq::OpenType)));
+    connect(_box, SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), this, SLOT(activated(const KUrl &, Rekonq::OpenType)));
     
     // load typed urls
     connect(this, SIGNAL(returnPressed(const QString &)), this, SLOT(loadTyped(const QString &)));
@@ -103,7 +104,7 @@ void UrlBar::setQUrl(const QUrl& url)
 
 void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 {
-    disconnect(this, SIGNAL(textChanged(const QString &)), this, SLOT(suggestUrls(const QString &)));
+    disconnect(this, SIGNAL(textChanged(const QString &)), _box, SLOT(suggestUrls(const QString &)));
     
     clearFocus();
     setUrl(url);
@@ -152,12 +153,6 @@ void UrlBar::paintEvent(QPaintEvent *event)
 
 void UrlBar::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Escape)
-    {
-        _box->hide();
-        return;
-    }
-    
     // this handles the Modifiers + Return key combinations
     QString currentText = text().trimmed();
     if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
@@ -191,35 +186,10 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 }
 
 
-void UrlBar::suggestUrls(const QString &text)
-{   
-    if (!hasFocus())
-    {
-        return;
-    }
-
-    if(text.isEmpty())
-    {
-        _box->hide();
-        return;
-    }
-
-    UrlResolver res(text);
-    UrlSearchList list = res.orderedSearchItems();
-
-    if(list.count() > 0)
-    {
-        _box->clear();
-        _box->insertSearchList(list, text);
-        _box->popup();
-    }
-}
-
-
 void UrlBar::focusInEvent(QFocusEvent *event)
 {
     // activate suggestions on edit text
-    connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(suggestUrls(const QString &)));
+    connect(this, SIGNAL(textChanged(const QString &)), _box, SLOT(suggestUrls(const QString &)));
     
     LineEdit::focusInEvent(event);
 }

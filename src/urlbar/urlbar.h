@@ -33,20 +33,16 @@
 
 // Local Includes
 #include "lineedit.h"
-#include "completionwidget.h"
-#include "webtab.h"
+#include "application.h"
 
 // KDE Includes
 #include <KUrl>
-#include <KComboBox>
-
-// Qt Includes
-#include <QUrl>
-#include <QPointer>
 
 // Forward Declarations
 class QLinearGradient;
 class QWidget;
+class CompletionWidget;
+class WebTab;
 
 
 class UrlBar : public LineEdit
@@ -61,7 +57,6 @@ public:
 
 private slots:
     void activated(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
-    void suggestUrls(const QString &editedText);
     void setQUrl(const QUrl &url);
 
     void loadFinished();

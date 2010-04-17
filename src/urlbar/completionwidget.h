@@ -30,7 +30,6 @@
 
 // Local Includes
 #include "application.h"
-#include "urlresolver.h"
 #include "listitem.h"
 
 // KDE Includes
@@ -47,21 +46,22 @@ class CompletionWidget : public QFrame
 public:
     CompletionWidget(QWidget *parent);
 
-    void insertSearchList(const UrlSearchList &list, const QString& text);
-    void popup();
-    void clear();
-
     virtual bool eventFilter(QObject *obj, QEvent *ev);
     void setVisible(bool visible);
     
 private slots:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton);
+    void suggestUrls(const QString &text);
 
 signals:
     void chosenUrl(const KUrl &, Rekonq::OpenType);
     void nextItemSubChoice();
     
 private:
+    void insertSearchList(const UrlSearchList &list, const QString& text);
+    void popup();
+    void clear();
+
     void sizeAndPosition();
     void up();
     void down();
