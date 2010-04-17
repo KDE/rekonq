@@ -113,7 +113,7 @@ public:
     * The default implementation does nothing.
     * This is only called if supportsTabs() returns true
     */
-    virtual void openFolderinTabs(const KBookmarkGroup &bm);
+    virtual void openFolderinTabs(const KBookmarkGroup &bookmark);
 
     virtual QList< QPair<QString, QString> > currentBookmarkList() const;
 
@@ -133,7 +133,6 @@ signals:
 // KDE Includes
 #include <KBookmarkMenu>
 
-
 /**
  * This class represent the rekonq bookmarks menu.
  * It's just a simple class inherited from KBookmarkMenu
@@ -148,12 +147,22 @@ public:
                  KBookmarkOwner* owner,
                  KMenu* menu,
                  KActionCollection* actionCollection);
+    BookmarkMenu(KBookmarkManager  *manager,
+                 KBookmarkOwner  *owner,
+                 KMenu  *parentMenu,
+                 const QString &parentAddress);
     ~BookmarkMenu();
 
-    virtual KMenu *viewContextMenu(QAction* action);
+protected:
+    virtual KMenu * contextMenu(QAction * act);
+    virtual void refill();
+    virtual QAction* actionForBookmark(const KBookmark &bookmark);
 
 protected slots:
     void slotAddBookmark();
+
+private:
+    void addOpenFolderInTabs();
 
 };
 
@@ -262,27 +271,6 @@ private:
     BookmarkMenu *m_bookmarkMenu;
     QList<KToolBar*> m_bookmarkToolBars;
     KCompletion *m_completion;
-};
-
-
-// ------------------------------------------------------------------------------------------
-
-
-class BookmarkActionMenu : public KBookmarkActionMenu
-{
-    Q_OBJECT
-
-public:
-    BookmarkActionMenu (const KBookmarkGroup &bm, QObject *parent);
-    void addFolderActions();
-
-private slots:
-    void openActionInTabs();
-    void bookmarkCurrentPage();
-
-private:
-    KBookmarkGroup m_group;
-
 };
 
 

@@ -323,6 +323,11 @@ void BookmarksTreeModel::populate( BtmItem *node, KBookmarkGroup bmg)
         BtmItem *newChild = new BtmItem( bm );
         if( bm.isGroup() )
             populate( newChild, bm.toGroup() );
+        else
+        {
+            Application::bookmarkProvider()->completionObject()->addItem(bm.url().url());
+            //QMessageBox::information(new QWidget(), "", bm.url().url());
+        }
 
         node->appendChild( newChild );
         bm = bmg.next( bm );

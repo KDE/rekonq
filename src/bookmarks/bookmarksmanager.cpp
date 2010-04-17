@@ -94,9 +94,9 @@ QString BookmarkOwner::currentTitle() const
 }
 
 
-void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bm)
+void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
 {
-    QList<KUrl> urlList = bm.groupUrlList();
+    QList<KUrl> urlList = bookmark.groupUrlList();
 
     if(urlList.length() > 8)
     {
@@ -107,7 +107,7 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bm)
     QList<KUrl>::iterator url;
     for (url = urlList.begin(); url != urlList.end(); ++url)
     {
-        Application::instance()->loadUrl(*url, Rekonq::NewCurrentTab);
+        emit openUrl(*url, Rekonq::NewCurrentTab);
     }
 }
 
@@ -136,23 +136,35 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
                            KMenu *menu,
                            KActionCollection* actionCollection)
     : KBookmarkMenu(manager, owner, menu, actionCollection)
-
 {
     KAction *a = KStandardAction::addBookmark(this, SLOT(slotAddBookmark()), this);
     actionCollection->addAction(QLatin1String("rekonq_add_bookmark"),a);
+    refill();
 }
+
+
+BookmarkMenu::BookmarkMenu(KBookmarkManager  *manager,
+                           KBookmarkOwner  *owner,
+                           KMenu  *parentMenu,
+                           const QString &parentAddress)
+    : KBookmarkMenu(manager, owner, parentMenu, parentAddress)
+{
+    refill();
+}
+
 
 BookmarkMenu::~BookmarkMenu()
 {
 }
 
 
-KMenu *BookmarkMenu::viewContextMenu(QAction *action)
+KMenu * BookmarkMenu::contextMenu(QAction *act)
 {
-    KBookmarkActionInterface* act = dynamic_cast<KBookmarkActionInterface *>(action);
-     if (!act)
+
+    KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(act);
+     if (!action)
          return 0;
-     return new BookmarkContextMenu(act->bookmark(), manager(), owner());
+     return new BookmarkContextMenu(action->bookmark(), manager(), owner());
 }
 
 
@@ -169,6 +181,76 @@ void BookmarkMenu::slotAddBookmark()
     }
 
     KBookmarkMenu::slotAddBookmark();
+}
+
+
+QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
+{
+    if(bookmark.isGroup())
+    {
+        KBookmarkActionMenu *actionMenu = new KBookmarkActionMenu(bookmark, this);
+        new BookmarkMenu(manager(), owner(), actionMenu->menu(), bookmark.address());
+        return actionMenu;
+    }
+    else if(bookmark.isSeparator())
+    {
+        return KBookmarkMenu::actionForBookmark(bookmark);
+    }
+    else
+    {
+        Application::bookmarkProvider()->completionObject()->addItem(bookmark.url().url());
+        return  new KBookmarkAction( bookmark, owner(), this );
+    }
+}
+
+
+void BookmarkMenu::refill()
+{
+    fillBookmarks();
+
+    if(parentMenu()->actions().count() > 0)
+        parentMenu()->addSeparator();
+
+    if(isRoot())
+    {
+        addAddBookmark();
+        addAddBookmarksList();
+        addNewFolder();
+        addEditBookmarks();
+
+    }
+    else
+    {
+        addOpenFolderInTabs();
+        addAddBookmark();
+        addAddBookmarksList();
+        addNewFolder();
+    }
+}
+
+
+void BookmarkMenu::addOpenFolderInTabs()
+{
+    KAction *action;
+    KBookmarkGroup group = manager()->findByAddress(parentAddress()).toGroup();
+
+    if(!group.first().isNull())
+    {
+        KBookmark bookmark = group.first();
+
+        while(bookmark.isGroup() || bookmark.isSeparator())
+        {
+            bookmark = group.next(bookmark);
+        }
+
+        if(!bookmark.isNull())
+        {
+            action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
+            action->setHelpText( i18n( "Open all bookmarks in this folder as a new tab." ) );
+            connect(action, SIGNAL(triggered(bool)), this, SLOT(slotOpenFolderInTabs()));
+            parentMenu()->addAction(action);
+        }
+    }
 }
 
 
@@ -203,7 +285,7 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
             bookfile = KUrl(bookmarksPath);
         }
     }
-    // A workaround to avoid a long delay between the two changed signals of the bookmark manager
+
     m_manager = KBookmarkManager::managerForFile(bookfile.path(), "rekonq");
     
     connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
@@ -227,8 +309,9 @@ BookmarkProvider::~BookmarkProvider()
 void BookmarkProvider::setupBookmarkBar(KToolBar *toolbar)
 {
     KToolBar *bookmarkToolBar = toolbar;
-    m_bookmarkToolBars.append(toolbar);
-    connect(bookmarkToolBar, SIGNAL(customContextMenuRequested(const QPoint &)),
+    m_bookmarkToolBars.append(bookmarkToolBar);
+    bookmarkToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(bookmarkToolbar, SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(contextMenu(const QPoint &)));
 
     slotBookmarksChanged("", "");
@@ -246,6 +329,8 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
     Q_UNUSED(group)
     Q_UNUSED(caller)
 
+    m_completion->clear();
+
     foreach(KToolBar *bookmarkToolBar, m_bookmarkToolBars)
     {
         if (bookmarkToolBar)
@@ -255,7 +340,6 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
                 return;
 
             bookmarkToolBar->clear();
-            m_completion->clear();
 
             KBookmark bookmark = toolBarGroup.first();
             while (!bookmark.isNull())
@@ -286,11 +370,11 @@ void BookmarkProvider::contextMenu(const QPoint &point)
     if(!bookmarkToolBar)
         return;
 
-    KAction* action = dynamic_cast<KAction*>(bookmarkToolBar->actionAt(point));
+    KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(bookmarkToolBar->actionAt(point));
     if (!action)
         return;
 
-    KMenu *menu = m_bookmarkMenu->viewContextMenu(action);
+    KMenu *menu = new BookmarkContextMenu(action->bookmark(), bookmarkManager(), bookmarkOwner());
     if (!menu)
         return;
 
@@ -313,17 +397,10 @@ KAction *BookmarkProvider::fillBookmarkBar(const KBookmark &bookmark)
 {
     if (bookmark.isGroup())
     {
-        KBookmarkGroup group = bookmark.toGroup();
-        KBookmark bm = group.first();
-        BookmarkActionMenu *menuAction = new BookmarkActionMenu(group, this);
+        KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), this);
+        menuAction->setDelayed(false);
+        new BookmarkMenu(bookmarkManager(), bookmarkOwner(), menuAction->menu(), bookmark.address());
 
-        while (!bm.isNull())
-        {
-            menuAction->addAction(fillBookmarkBar(bm));
-            bm = group.next(bm);
-        }
-
-        menuAction->addFolderActions();
         return menuAction;
     }
  
@@ -336,8 +413,7 @@ KAction *BookmarkProvider::fillBookmarkBar(const KBookmark &bookmark)
         return a;
     }
     else
-    {        
-        m_completion->addItem(bookmark.url().url());
+    {
         return new KBookmarkAction(bookmark, m_owner, this);
     }
 }
@@ -399,58 +475,4 @@ QString BookmarkProvider::titleForBookmarkUrl(const KBookmark &bookmark, QString
     }
     
     return title;
-}
-
-
-// ----------------------------------------------------------------------------------------------
-
-
-BookmarkActionMenu::BookmarkActionMenu(const KBookmarkGroup &bm, QObject *parent)
-    : KBookmarkActionMenu(bm, bm.text(), parent)
-    , m_group(bm)
-{
-    setIcon(KIcon(bm.icon()));
-    setDelayed(false);
-}
-
-
-void BookmarkActionMenu::addFolderActions()
-{
-    addSeparator();
-    KAction *action;
-
-    if(!m_group.first().isNull())
-    {
-        KBookmark bookmark = m_group.first();
-
-        while(bookmark.isGroup() || bookmark.isSeparator())
-        {
-            bookmark = m_group.next(bookmark);
-        }
-
-        if(!bookmark.isNull())
-        {
-            action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
-            connect(action, SIGNAL(triggered(bool)), this, SLOT(openActionInTabs()));
-            addAction(action);
-        }
-    }
-
-    action = new KAction(KIcon("bookmark-new"), i18n("Add Bookmark Here"), this);
-    connect(action, SIGNAL(triggered(bool)), this, SLOT(bookmarkCurrentPage()));
-    addAction(action);
-}
-
-
-void BookmarkActionMenu::bookmarkCurrentPage()
-{
-    m_group.addBookmark(Application::bookmarkProvider()->bookmarkOwner()->currentTitle(), KUrl(Application::bookmarkProvider()->bookmarkOwner()->currentUrl()));
-    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
-}
-
-
-void BookmarkActionMenu::openActionInTabs()
-{
-    if(!m_group.isNull())
-        Application::bookmarkProvider()->bookmarkOwner()->openFolderinTabs(m_group);
 }
