@@ -467,7 +467,7 @@ void MainView::closeTab(int index)
         case 0: // new tab page
         case 1: // blank page
             w->load( KUrl("about:home") );
-            urlBarWidget()->setFocus();
+            urlBar()->setFocus();
             break;
         case 2: // homepage
             w->load( KUrl(ReKonfig::homePage()) );
