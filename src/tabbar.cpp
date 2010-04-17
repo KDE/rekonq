@@ -164,13 +164,16 @@ void TabBar::showTabPreview(int tab)
     delete m_previewPopup.data();
     m_previewPopup.clear();
     
+    if (indexedTab->progress() != 0)
+        return;
+     
     m_previewPopup = new KPassivePopup(this);
     m_previewPopup.data()->setFrameShape(QFrame::StyledPanel);
     m_previewPopup.data()->setFrameShadow(QFrame::Plain);
     m_previewPopup.data()->setFixedSize(w, h);
     
     QLabel *l = new QLabel();
-    l->setPixmap( WebSnap::renderPreview( *indexedTab->page(), w, h, false) );
+    l->setPixmap( WebSnap::renderPreview( *indexedTab->page(), w, h, true) );
     
     m_previewPopup.data()->setView(l);
     m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);

@@ -31,6 +31,7 @@
 // Local Includes
 #include "urlresolver.h"
 #include "application.h"
+#include "websnap.h"
 
 // KDE Includes
 #include <KIcon>
@@ -238,33 +239,14 @@ ItemPreview::ItemPreview(const QString &url, int width, int height, QWidget *par
     setFixedSize(width, height);
     setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
 
-    QString path = KStandardDirs::locateLocal("cache", QString("thumbs/") + guessNameFromUrl( QUrl(url) ) + ".png", true);
+    KUrl u = WebSnap::fileForUrl( QUrl(url) );
+    QString path = u.pathOrUrl();
     if(QFile::exists(path))
     {     
         QPixmap preview;
         preview.load(path);
         setPixmap(preview.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     }
-}
-
-
-//TODO: REMOVE DUPLICATE CODE WITH PREVIEWIMAGE
-QString ItemPreview::guessNameFromUrl(QUrl url)
-{
-    QString name = url.toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
-    
-    // TODO learn Regular Expressions :)
-    // and implement something better here..
-    name.remove('/');
-    name.remove('&');
-    name.remove('.');
-    name.remove('-');
-    name.remove('_');
-    name.remove('?');
-    name.remove('=');
-    name.remove('+');
-    
-    return name;
 }
 
 

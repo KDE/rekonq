@@ -193,9 +193,6 @@ class ItemPreview : public QLabel
     
 public:
     ItemPreview(const QString &url, int width, int height, QWidget *parent = 0);
-
-private:
-    static QString guessNameFromUrl(QUrl url);
 };
 
 

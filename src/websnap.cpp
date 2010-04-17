@@ -146,20 +146,22 @@ QString WebSnap::guessNameFromUrl(QUrl url)
 
 void WebSnap::saveResult(bool ok)
 {
+    QPixmap image = QPixmap();
+    
     // crude error-checking
     if (!ok) 
     {
         kDebug() << "Error loading site..";
         m_snapTitle = "Error...";
-        m_image = QPixmap();
+        
     }
     else
     {
-        m_image = renderPreview(m_page, WIDTH, HEIGHT);
+        image = renderPreview(m_page, WIDTH, HEIGHT);
         m_snapTitle = m_page.mainFrame()->title();
     }
     QFile::remove(fileForUrl(m_url).toLocalFile());
-    m_image.save(fileForUrl(m_url).toLocalFile());
+    image.save(fileForUrl(m_url).toLocalFile());
     
     NewTabPage p( m_frame );
     p.snapFinished(m_previewIndex, m_url, m_snapTitle);

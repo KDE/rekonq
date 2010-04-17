@@ -78,7 +78,6 @@ private slots:
 
 private:
     QWebPage m_page;
-    QPixmap m_image;
 
     QUrl m_url;
     QString m_snapTitle;
