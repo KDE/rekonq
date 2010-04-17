@@ -283,26 +283,32 @@ void NewTabPage::setupPreview(QWebElement e, int index)
 
 void NewTabPage::snapFinished(int index, const KUrl &url, const QString &title)
 {
-    // do not try to modify the page if it isn't the newTabPage
-    if(m_root.document().findAll("#rekonq-newtabpage").count() == 0)
-        return;
-    
-    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
-    QWebElement newPrev = validPreview(index, url, title);
-    
-    if(m_root.findAll(".closedTabs").count() != 0)
-        hideControls(newPrev);
-    
-    prev.replace(newPrev);
-    
-    // update title
-    if(m_root.findAll(".favorites").count() != 0)
+    // Update title if necessary
+    QStringList urls = ReKonfig::previewUrls();
+    if(KUrl(urls.at(index)) == url)
     {
         QStringList names = ReKonfig::previewNames();
         names.replace(index, title);
         ReKonfig::setPreviewNames(names);
         
         ReKonfig::self()->writeConfig();
+    }
+    
+    // Update page, but only if open
+    if(m_root.document().findAll("#rekonq-newtabpage").count() == 0)
+        return;
+    if(m_root.findAll(".favorites").count() == 0 && m_root.findAll(".closedTabs").count() == 0)
+        return;
+        
+    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
+    if(KUrl(prev.findFirst("a").attribute("href")) == url)
+    {
+        QWebElement newPrev = validPreview(index, url, title);
+        
+        if(m_root.findAll(".closedTabs").count() != 0)
+            hideControls(newPrev);
+        
+        prev.replace(newPrev);
     }
 }
 
