@@ -199,7 +199,9 @@ ItemText::ItemText(const QString &text, const QString &textToPointOut, QWidget *
     : QLabel(parent)
 {
     QString t = text;
-    t = t.replace(QRegExp("(" + textToPointOut + ")", Qt::CaseInsensitive), "<b>\\1</b>");
+    if (!textToPointOut.isEmpty())
+        t = t.replace(QRegExp("(" + textToPointOut + ")", Qt::CaseInsensitive), "<b>\\1</b>");
+
     setText(t);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 }
@@ -279,7 +281,7 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
     if (m_currentEngine == "") m_currentEngine = EngineBar::defaultEngine();
     
     m_iconLabel = new ItemIcon("edit-find", this); //TODO: get the default engine icon
-    m_titleLabel = new ItemText(searchItemTitle(m_currentEngine, text), text);
+    m_titleLabel = new ItemText(searchItemTitle(m_currentEngine, text));
     m_engineBar = new EngineBar(text, m_currentEngine, this);
     
     // without this it will not work :)
@@ -297,7 +299,7 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
 
 QString SearchListItem::searchItemTitle(QString engine, QString text)
 {
-    return QString("Search "+ engine +" for <u>"+text+"</u>");
+    return QString("Search "+ engine +" for <b>"+text+"</b>");
 }
 
 
