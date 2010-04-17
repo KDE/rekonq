@@ -256,6 +256,10 @@ void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button)
 
 void CompletionWidget::suggestUrls(const QString &text)
 {   
+    QWidget *w = qobject_cast<QWidget *>(parent());
+    if(!w->hasFocus())
+        return;
+
     if(text.isEmpty())
     {
         hide();
