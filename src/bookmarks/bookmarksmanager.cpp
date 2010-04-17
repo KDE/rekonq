@@ -311,7 +311,7 @@ void BookmarkProvider::setupBookmarkBar(KToolBar *toolbar)
     KToolBar *bookmarkToolBar = toolbar;
     m_bookmarkToolBars.append(bookmarkToolBar);
     bookmarkToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(bookmarkToolbar, SIGNAL(customContextMenuRequested(const QPoint &)),
+    connect(bookmarkToolBar, SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(contextMenu(const QPoint &)));
 
     slotBookmarksChanged("", "");
