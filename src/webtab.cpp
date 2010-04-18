@@ -184,7 +184,20 @@ bool WebTab::hasRSSInfo()
     foreach(QWebElement el, col)
     {
         if( el.attribute("type") == QL1S("application/rss+xml") || el.attribute("type") == QL1S("application/rss+xml") )
-            _rssList << KUrl( el.attribute("href") );
+        {
+            KUrl u = KUrl( el.attribute("href") );
+            if(u.isRelative())
+            {
+                u = url();
+                // NOTE
+                // cd() is probably better than setPath() here, 
+                // for all those url sites just having a path
+                if(u.cd( el.attribute("href") ))
+                    _rssList << u;
+            }
+            else
+                _rssList << u;
+        }
     }
     
     return !_rssList.isEmpty();
