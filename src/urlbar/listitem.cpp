@@ -405,7 +405,7 @@ BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, Q
 {
     QString url = text;
     layout()->addWidget(new ItemIcon(item.url.url()));
-    layout()->addWidget(new ItemText("Browse <i>http://" + url.remove("http://") + "</i>", text));
+    layout()->addWidget(new ItemText("Browse <i>http://<b>" + url.remove("http://") + "</b></i>"));
     layout()->addWidget(new TypeIcon(item.type));
 }
 
