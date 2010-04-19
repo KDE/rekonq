@@ -180,6 +180,13 @@ void NewTabPage::favoritesPage()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
     
+    if(urls.isEmpty())
+    {
+        m_root.addClass("empty");
+        m_root.setPlainText(i18n("You can add a preview by clicking the \"Add Preview\" button in the top-right corner of this page"));
+        return;
+    }
+    
     for(int i=0; i < urls.count() ; ++i)
     {
         KUrl url = urls.at(i);
@@ -396,6 +403,13 @@ void NewTabPage::historyPage()
     
     HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
     
+    if(model->rowCount() == 0)
+    {
+        m_root.addClass("empty");
+        m_root.setPlainText(i18n("Your browsing history is empty"));
+        return;
+    }
+    
     int i = 0;
     do
     {
@@ -436,6 +450,8 @@ void NewTabPage::bookmarksPage()
     KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
     if (bookGroup.isNull())
     {
+        m_root.addClass("empty");
+        m_root.setPlainText(i18n("You have no bookmarks"));
         return;
     }
 
@@ -483,6 +499,13 @@ void NewTabPage::closedTabsPage()
     
     QList<HistoryItem> links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
     
+    if(links.isEmpty())
+    {
+        m_root.addClass("empty");
+        m_root.setPlainText(i18n("There are no recently closed tabs"));
+        return;
+    }
+    
     for(int i=0; i < links.count(); ++i)
     {
         HistoryItem item = links.at(i);
@@ -526,6 +549,13 @@ void NewTabPage::downloadsPage()
     m_root.document().findFirst("#actions").appendInside(clearData);
 
     DownloadList list = Application::historyManager()->downloads();
+    
+    if(list.isEmpty())
+    {
+        m_root.addClass("empty");
+        m_root.setPlainText(i18n("There are no recently downloaded files to show"));
+        return;
+    }
     
     foreach(const DownloadItem &item, list)
     {
