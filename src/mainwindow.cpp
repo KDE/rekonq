@@ -71,6 +71,7 @@
 #include <KToggleAction>
 #include <KStandardDirs>
 #include <KActionCategory>
+#include <KProcess>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -1183,8 +1184,9 @@ void MainWindow::clearPrivateData()
     clearWidget.setupUi(&widget);
 
     dialog->setMainWidget(&widget);
+    dialog->exec();
 
-    if (dialog->exec() == KDialog::Ok)
+    if (dialog->result() == QDialog::Accepted)
     {
         if(clearWidget.clearHistory->isChecked())
         {
@@ -1204,7 +1206,8 @@ void MainWindow::clearPrivateData()
 
         if(clearWidget.clearCachedPages->isChecked())
         {
-            // TODO implement me!
+            KProcess::startDetached(KStandardDirs::findExe("kio_http_cache_cleaner"), 
+                                    QStringList(QLatin1String("--clear-all")));
         }
 
         if(clearWidget.clearWebIcons->isChecked())
