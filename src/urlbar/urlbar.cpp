@@ -60,7 +60,6 @@
 
 UrlBar::UrlBar(QWidget *parent)
     : LineEdit(parent)
-    , _box(new CompletionWidget(this))
     , _tab(0)
     , _privateMode(false)
 {
@@ -69,19 +68,18 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
-        
-    // suggestions
-    installEventFilter(_box);
-    connect(_box, SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), this, SLOT(activated(const KUrl &, Rekonq::OpenType)));
     
     // load typed urls
     connect(this, SIGNAL(returnPressed(const QString &)), this, SLOT(loadTyped(const QString &)));
+
+    activateSuggestions(true);
 }
 
 
 UrlBar::~UrlBar()
 {
-    delete _box;
+    activateSuggestions(false);
+    _box.clear();
 }
 
 
@@ -105,7 +103,7 @@ void UrlBar::setQUrl(const QUrl& url)
 
 void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 {
-    disconnect(this, SIGNAL(textChanged(const QString &)), _box, SLOT(suggestUrls(const QString &)));
+    activateSuggestions(false);
     
     clearFocus();
     setUrl(url);
@@ -189,8 +187,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 
 void UrlBar::focusInEvent(QFocusEvent *event)
 {
-    // activate suggestions on edit text
-    connect(this, SIGNAL(textChanged(const QString &)), _box, SLOT(suggestUrls(const QString &)));
+    activateSuggestions(true);
     
     LineEdit::focusInEvent(event);
 }
@@ -248,4 +245,26 @@ void UrlBar::loadFinished()
 void UrlBar::loadTyped(const QString &text)
 {
     activated(KUrl(text));
+}
+
+
+void UrlBar::activateSuggestions(bool b)
+{
+    if(b)
+    {
+        if(_box.isNull())
+        {
+            _box = new CompletionWidget(this);
+            installEventFilter(_box.data());
+            connect(_box.data(), SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), this, SLOT(activated(const KUrl &, Rekonq::OpenType)));
+
+            // activate suggestions on edit text
+            connect(this, SIGNAL(textChanged(const QString &)), _box.data(), SLOT(suggestUrls(const QString &)));
+        }
+    }
+    else
+    {
+        removeEventFilter(_box.data());
+        _box.data()->deleteLater();
+    }
 }
