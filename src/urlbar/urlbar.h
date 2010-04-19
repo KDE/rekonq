@@ -38,6 +38,9 @@
 // KDE Includes
 #include <KUrl>
 
+// Qt Includes
+#include <QWeakPointer>
+
 // Forward Declarations
 class QLinearGradient;
 class QWidget;
@@ -69,7 +72,9 @@ protected:
     virtual void dropEvent(QDropEvent *event);
 
 private:
-    CompletionWidget *_box;
+    void activateSuggestions(bool);
+    
+    QWeakPointer<CompletionWidget> _box;
     WebTab *_tab;
     bool _privateMode;
 };
