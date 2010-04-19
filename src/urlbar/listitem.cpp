@@ -28,6 +28,9 @@
 #include "listitem.h"   
 #include "listitem.moc"   
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "urlresolver.h"
 #include "application.h"
@@ -51,6 +54,9 @@
 #include <QMouseEvent>
 #include <QWebSettings>
 #include <QFile>
+
+// Defines
+#define QL1S(x)  QLatin1String(x)
 
 
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
@@ -260,7 +266,8 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
     : ListItem(item, parent)
     , m_text(text)
 {
-    if (m_currentEngine == "") m_currentEngine = EngineBar::defaultEngine();
+    if (m_currentEngine == "") 
+        m_currentEngine = EngineBar::defaultEngine();
     
     m_iconLabel = new ItemIcon("edit-find", this); //TODO: get the default engine icon
     m_titleLabel = new ItemText(searchItemTitle(m_currentEngine, text));
@@ -315,10 +322,10 @@ EngineBar::EngineBar(const QString &text, const QString &selectedEngine, QWidget
     QStringList favoriteEngines;
     favoriteEngines << "wikipedia" << "google"; //defaults
     favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
-    QString defaultEngine = cg.readEntry("DefaultSearchEngine", "google");
-    KService::Ptr service;
     
-    service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(defaultEngine));
+    // default engine
+    QString defaultEngine = EngineBar::defaultEngine();
+    KService::Ptr service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(defaultEngine));
     m_engineGroup->addAction(newEngineAction(service, selectedEngine));
     
     // set url;
@@ -344,11 +351,31 @@ EngineBar::EngineBar(const QString &text, const QString &selectedEngine, QWidget
 
 QString EngineBar::defaultEngine()
 {    
-    KConfig config("kuriikwsfilterrc"); //Share with konqueror
-    KConfigGroup cg = config.group("General");
-    QString d = cg.readEntry("DefaultSearchEngine", "google");
-    KService::Ptr service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
-    return service->name();
+    int n = ReKonfig::searchEngine();
+    QString engine;
+    switch(n)
+    {
+    case 0:
+        engine = QL1S("google");
+        break;
+    case 1:
+        engine = QL1S("altavista");
+        break;
+    case 2:
+        engine = QL1S("lycos");
+        break;
+    case 3:
+        engine = QL1S("wikipedia");
+        break;
+    case 4:
+        engine = QL1S("wolfram");
+        break;
+    default:
+        engine = QL1S("google");
+        break;
+    }
+
+    return engine;
 }
 
 
