@@ -251,7 +251,8 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             isLocal 
                 ? KMessageBox::sorry(view(), i18n("No service can handle this :(") ) 
                 : downloadRequest( reply->request() );
-            return;
+            
+            return reply->deleteLater();
         }
 
         if(!isLocal)
@@ -263,9 +264,11 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
                 case KParts::BrowserOpenOrSaveQuestion::Save:
                     kDebug() << "service handling: download!";
                     downloadRequest( reply->request() );
-                    return;
+                    return reply->deleteLater();               
+                    
                 case KParts::BrowserOpenOrSaveQuestion::Cancel:
-                    return;
+                    return reply->deleteLater();               
+                    
                 default: // non extant case
                     break;
             }
@@ -287,6 +290,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         html += "</html>";
         
         mainFrame()->setHtml(html, url);
+        return reply->deleteLater();
     }
 }
 
@@ -370,6 +374,8 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         break;
 
     }
+    
+    reply->deleteLater();
 }
 
 

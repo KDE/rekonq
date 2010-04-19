@@ -94,7 +94,8 @@ WebView::WebView(QWidget* parent)
 
 WebView::~WebView()
 {
-     disconnect();
+    delete _scrollTimer;
+    disconnect(); 
 }
 
 
