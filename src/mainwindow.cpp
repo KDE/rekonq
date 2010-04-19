@@ -187,7 +187,6 @@ void MainWindow::setupToolbars()
     
     // =========== Bookmarks ToolBar ================================
     m_bmBar->setAcceptDrops(true);
-    m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
     Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
 
     if(ReKonfig::firstExecution())
