@@ -185,18 +185,19 @@ bool WebTab::hasRSSInfo()
     {
         if( el.attribute("type") == QL1S("application/rss+xml") || el.attribute("type") == QL1S("application/rss+xml") )
         {
-            KUrl u = KUrl( el.attribute("href") );
-            if(u.isRelative())
+            if( el.attribute("href").startsWith( QL1S("http") ) )
             {
-                u = url();
+                _rssList << KUrl( el.attribute("href") );
+            }
+            else
+            {
+                KUrl u = url();
                 // NOTE
                 // cd() is probably better than setPath() here, 
                 // for all those url sites just having a path
                 if(u.cd( el.attribute("href") ))
                     _rssList << u;
             }
-            else
-                _rssList << u;
         }
     }
     
