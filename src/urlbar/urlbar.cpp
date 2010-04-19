@@ -95,6 +95,7 @@ void UrlBar::setQUrl(const QUrl& url)
     }
     else
     {
+        clearFocus();
         LineEdit::setUrl(url);
         setCursorPosition(0);
         iconButton()->setIcon( Application::icon(url) );
