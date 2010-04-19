@@ -75,7 +75,7 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
     p.setColor(QPalette::AlternateBase, QColor(247,247,247)); // TODO: choose the correct color
     setPalette(p);
 
-    QHBoxLayout *hLayout = new QHBoxLayout;
+    QHBoxLayout *hLayout = new QHBoxLayout(this);
     hLayout->setSpacing(4);
     setLayout(hLayout);
 
@@ -156,11 +156,11 @@ void ListItem::nextItemSubChoice()
 // ---------------------------------------------------------------
 
 
-TypeIcon::TypeIcon(int type, QWidget *parent)
+TypeIconLabel::TypeIconLabel(int type, QWidget *parent)
     : QLabel(parent)
 {
     setMinimumWidth(40);
-    QHBoxLayout *hLayout = new QHBoxLayout;
+    QHBoxLayout *hLayout = new QHBoxLayout(this);
     hLayout->setMargin(0);
     hLayout->setAlignment(Qt::AlignRight);
     setLayout(hLayout);
@@ -172,9 +172,9 @@ TypeIcon::TypeIcon(int type, QWidget *parent)
 }
 
 
-QLabel *TypeIcon::getIcon(QString icon)
+QLabel *TypeIconLabel::getIcon(QString icon)
 {
-    QLabel *iconLabel = new QLabel;
+    QLabel *iconLabel = new QLabel(this);
     iconLabel->setFixedSize(16,16);  
     QPixmap pixmap = KIcon(icon).pixmap(16);
     iconLabel->setPixmap(pixmap);
@@ -185,7 +185,7 @@ QLabel *TypeIcon::getIcon(QString icon)
 // ---------------------------------------------------------------
 
 
-ItemIcon::ItemIcon(const QString &icon, QWidget *parent)
+IconLabel::IconLabel(const QString &icon, QWidget *parent)
     : QLabel(parent)
 {
     QPixmap pixmapIcon = KIcon(QWebSettings::iconForUrl(icon)).pixmap(16);
@@ -202,7 +202,7 @@ ItemIcon::ItemIcon(const QString &icon, QWidget *parent)
 // ---------------------------------------------------------------
 
 
-ItemText::ItemText(const QString &text, const QString &textToPointOut, QWidget *parent)
+TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget *parent)
     : QLabel(parent)
 {
     QString t = text;
@@ -220,26 +220,26 @@ ItemText::ItemText(const QString &text, const QString &textToPointOut, QWidget *
 PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
     : ListItem(item, parent)
 {
-    QLabel *previewLabelIcon = new QLabel;
+    QLabel *previewLabelIcon = new QLabel(parent);
     previewLabelIcon->setFixedSize(45,33);
-    new ItemPreview(item.url.url(), 38, 29, previewLabelIcon);
-    ItemIcon* icon = new ItemIcon(item.url.url(), previewLabelIcon);
+    new PreviewLabel(item.url.url(), 38, 29, previewLabelIcon);
+    IconLabel* icon = new IconLabel(item.url.url(), previewLabelIcon);
     icon->move(27, 16);
     layout()->addWidget(previewLabelIcon);
   
-    QVBoxLayout *vLayout = new QVBoxLayout; 
+    QVBoxLayout *vLayout = new QVBoxLayout(this); 
     vLayout->setMargin(0);
     ((QHBoxLayout *)layout())->addLayout(vLayout);
-    vLayout->addWidget(new ItemText(item.title, text));
-    vLayout->addWidget(new ItemText("<i>" + item.url.url() + "</i>", text));
-    layout()->addWidget(new TypeIcon(item.type));
+    vLayout->addWidget( new TextLabel(item.title, text, this) );
+    vLayout->addWidget( new TextLabel("<i>" + item.url.url() + "</i>", text, this) );
+    layout()->addWidget( new TypeIconLabel(item.type, this) );
 }
 
 
 // ---------------------------------------------------------------
 
 
-ItemPreview::ItemPreview(const QString &url, int width, int height, QWidget *parent)
+PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *parent)
     : QLabel(parent)
 {
     setFixedSize(width, height);
@@ -269,8 +269,8 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
     if (m_currentEngine == "") 
         m_currentEngine = EngineBar::defaultEngine();
     
-    m_iconLabel = new ItemIcon("edit-find", this); //TODO: get the default engine icon
-    m_titleLabel = new ItemText(searchItemTitle(m_currentEngine, text));
+    m_iconLabel = new IconLabel("edit-find", this); //TODO: get the default engine icon
+    m_titleLabel = new TextLabel(searchItemTitle(m_currentEngine, text));
     m_engineBar = new EngineBar(text, m_currentEngine, this);
     
     // without this it will not work :)
@@ -278,9 +278,9 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
     
     layout()->addWidget(m_iconLabel);
     layout()->addWidget(m_titleLabel);
-    layout()->addWidget(new QLabel("Engines: "));
+    layout()->addWidget( new QLabel( i18n("Engines: "), this ) );
     layout()->addWidget(m_engineBar);
-    layout()->addWidget(new TypeIcon(item.type));
+    layout()->addWidget( new TypeIconLabel(item.type, this) );
     
     connect(m_engineBar, SIGNAL(searchEngineChanged(QString, QString)), this, SLOT(changeSearchEngine(QString, QString)));
 }
@@ -306,6 +306,9 @@ void SearchListItem::nextItemSubChoice()
 {
     m_engineBar->selectNextEngine();
 }
+
+
+// -----------------------------------------------------------------------------------------------
 
 
 EngineBar::EngineBar(const QString &text, const QString &selectedEngine, QWidget *parent)
@@ -431,9 +434,9 @@ BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, Q
     : ListItem(item, parent)
 {
     QString url = text;
-    layout()->addWidget(new ItemIcon(item.url.url()));
-    layout()->addWidget(new ItemText("Browse <i>http://<b>" + url.remove("http://") + "</b></i>"));
-    layout()->addWidget(new TypeIcon(item.type));
+    layout()->addWidget( new IconLabel(item.url.url(), this) );
+    layout()->addWidget( new TextLabel( QL1S("Browse <i>http://<b>") + url.remove("http://") + QL1S("</b></i>"), QString(), this) );
+    layout()->addWidget( new TypeIconLabel(item.type, this) );
 }
 
 

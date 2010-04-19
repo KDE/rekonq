@@ -82,12 +82,12 @@ protected:
 // -------------------------------------------------------------------------
 
 
-class TypeIcon : public QLabel
+class TypeIconLabel : public QLabel
 {
     Q_OBJECT
     
 public:
-    TypeIcon(int type, QWidget *parent = 0);
+    TypeIconLabel(int type, QWidget *parent = 0);
 
 private:
     QLabel *getIcon(QString icon);
@@ -97,24 +97,24 @@ private:
 // -------------------------------------------------------------------------
 
 
-class ItemIcon : public QLabel
+class IconLabel : public QLabel
 {
     Q_OBJECT
 
 public:
-    ItemIcon(const QString &icon, QWidget *parent = 0);
+    IconLabel(const QString &icon, QWidget *parent = 0);
 };
 
 
 // -------------------------------------------------------------------------
 
 
-class ItemText : public QLabel
+class TextLabel : public QLabel
 {
     Q_OBJECT
     
 public:
-    ItemText(const QString &text, const QString &textToPointOut = QString(), QWidget *parent = 0);
+    TextLabel(const QString &text, const QString &textToPointOut = QString(), QWidget *parent = 0);
 };
 
 
@@ -164,8 +164,8 @@ private slots:
     
 private:
     QString searchItemTitle(QString engine, QString text);
-    ItemText* m_titleLabel;
-    ItemIcon* m_iconLabel;
+    TextLabel* m_titleLabel;
+    IconLabel* m_iconLabel;
     EngineBar* m_engineBar;
     QString m_text;
     
@@ -188,12 +188,12 @@ public:
 // -------------------------------------------------------------------------
 
 
-class ItemPreview : public QLabel
+class PreviewLabel : public QLabel
 {
     Q_OBJECT
     
 public:
-    ItemPreview(const QString &url, int width, int height, QWidget *parent = 0);
+    PreviewLabel(const QString &url, int width, int height, QWidget *parent = 0);
 };
 
 
