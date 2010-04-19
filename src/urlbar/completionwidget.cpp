@@ -28,6 +28,9 @@
 #include "completionwidget.h"
 #include "completionwidget.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "application.h"
 #include "urlresolver.h"
@@ -45,11 +48,15 @@
 #include <QEvent>
 #include <QKeyEvent>
 
+// Defines
+#define QL1S(x)  QLatin1String(x)
+
 
 CompletionWidget::CompletionWidget(QWidget *parent)
-    : QFrame( parent, Qt::ToolTip)
+    : QFrame(parent, Qt::ToolTip)
     , _parent(parent)
     , _currentIndex(-1)
+    , _searchEngine( defaultSearchEngine() )
 {
     setFrameStyle(QFrame::Panel);
     setLayoutDirection(Qt::LeftToRight);
@@ -66,8 +73,8 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString
     int i = 0;
     foreach(UrlSearchItem item, _list)
     {
-        ListItem *suggestion = ListItemFactory::create(item, text);
-        suggestion->setBackgroundRole(i%2 ? QPalette::AlternateBase: QPalette::Base);     
+        ListItem *suggestion = ListItemFactory::create(item, text, this);
+        suggestion->setBackgroundRole(i%2 ? QPalette::AlternateBase : QPalette::Base);     
         connect(suggestion, SIGNAL(itemClicked(ListItem *, Qt::MouseButton)), this, SLOT(itemChosen(ListItem *, Qt::MouseButton)));
         connect(this, SIGNAL(nextItemSubChoice()), suggestion, SLOT(nextItemSubChoice()));
         suggestion->setObjectName( QString::number(i++) );
@@ -268,11 +275,40 @@ void CompletionWidget::suggestUrls(const QString &text)
 
     UrlResolver res(text);
     UrlSearchList list = res.orderedSearchItems();
-
     if(list.count() > 0)
     {
         clear();
         insertSearchList(list, text);
         popup();
     }
+}
+
+
+QString CompletionWidget::defaultSearchEngine()
+{
+    int n = ReKonfig::searchEngine();
+    QString engine;
+    switch(n)
+    {
+    case 0:
+        engine = QL1S("google");
+        break;
+    case 1:
+        engine = QL1S("altavista");
+        break;
+    case 2:
+        engine = QL1S("lycos");
+        break;
+    case 3:
+        engine = QL1S("wikipedia");
+        break;
+    case 4:
+        engine = QL1S("wolfram");
+        break;
+    default:
+        engine = QL1S("google");
+        break;
+    }
+
+    return engine;
 }

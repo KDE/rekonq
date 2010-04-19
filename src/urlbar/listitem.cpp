@@ -35,6 +35,7 @@
 #include "urlresolver.h"
 #include "application.h"
 #include "websnap.h"
+#include "completionwidget.h"
 
 // KDE Includes
 #include <KIcon>
@@ -188,12 +189,7 @@ QLabel *TypeIconLabel::getIcon(QString icon)
 IconLabel::IconLabel(const QString &icon, QWidget *parent)
     : QLabel(parent)
 {
-    QPixmap pixmapIcon = KIcon(QWebSettings::iconForUrl(icon)).pixmap(16);
-    if (pixmapIcon.isNull())
-    {
-        pixmapIcon = KIcon("text-html").pixmap(16);
-    }
-
+    QPixmap pixmapIcon = Application::icon( KUrl(icon) ).pixmap(16);
     setFixedSize(16,16);
     setPixmap(pixmapIcon);
 }
@@ -220,7 +216,7 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
 PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
     : ListItem(item, parent)
 {
-    QLabel *previewLabelIcon = new QLabel(parent);
+    QLabel *previewLabelIcon = new QLabel(this);
     previewLabelIcon->setFixedSize(45,33);
     new PreviewLabel(item.url.url(), 38, 29, previewLabelIcon);
     IconLabel* icon = new IconLabel(item.url.url(), previewLabelIcon);
@@ -229,9 +225,10 @@ PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text,
   
     QVBoxLayout *vLayout = new QVBoxLayout(this); 
     vLayout->setMargin(0);
-    ((QHBoxLayout *)layout())->addLayout(vLayout);
     vLayout->addWidget( new TextLabel(item.title, text, this) );
     vLayout->addWidget( new TextLabel("<i>" + item.url.url() + "</i>", text, this) );
+    ((QHBoxLayout *)layout())->addLayout(vLayout);
+    
     layout()->addWidget( new TypeIconLabel(item.type, this) );
 }
 
@@ -259,27 +256,25 @@ PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *p
 // ---------------------------------------------------------------
 
 
-QString SearchListItem::m_currentEngine = "";
-
-
 SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
     : ListItem(item, parent)
     , m_text(text)
 {
-    if (m_currentEngine == "") 
-        m_currentEngine = EngineBar::defaultEngine();
+    CompletionWidget *w = qobject_cast<CompletionWidget *>(parent);
+    QString currentEngine = w->searchEngine();
+    kDebug() << currentEngine;
     
     m_iconLabel = new IconLabel("edit-find", this); //TODO: get the default engine icon
-    m_titleLabel = new TextLabel(searchItemTitle(m_currentEngine, text));
-    m_engineBar = new EngineBar(text, m_currentEngine, this);
+    m_titleLabel = new TextLabel( searchItemTitle(currentEngine, text), QString(), this);
+    m_engineBar = new EngineBar(text, currentEngine, parent);
     
     // without this it will not work :)
     m_url = m_engineBar->url();
     
-    layout()->addWidget(m_iconLabel);
-    layout()->addWidget(m_titleLabel);
+    layout()->addWidget( m_iconLabel );
+    layout()->addWidget( m_titleLabel );
     layout()->addWidget( new QLabel( i18n("Engines: "), this ) );
-    layout()->addWidget(m_engineBar);
+    layout()->addWidget( m_engineBar );
     layout()->addWidget( new TypeIconLabel(item.type, this) );
     
     connect(m_engineBar, SIGNAL(searchEngineChanged(QString, QString)), this, SLOT(changeSearchEngine(QString, QString)));
@@ -296,9 +291,11 @@ void SearchListItem::changeSearchEngine(QString url, QString engine)
 {
     m_titleLabel->setText(searchItemTitle(engine,m_text));
     m_iconLabel->setPixmap(Application::icon( KUrl(url) ).pixmap(16));
-    QString url2 = url.replace("\\{@}",m_text);
+    QString url2 = url.replace( QL1S("\\{@}"), m_text);
     m_url = KUrl(url2);
-    m_currentEngine = engine;
+
+    CompletionWidget *w = qobject_cast<CompletionWidget *>(parent());
+    w->setCurrentEngine( engine );
 }
 
 
@@ -327,8 +324,10 @@ EngineBar::EngineBar(const QString &text, const QString &selectedEngine, QWidget
     favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
     
     // default engine
-    QString defaultEngine = EngineBar::defaultEngine();
+    CompletionWidget *w = qobject_cast<CompletionWidget *>(parent);
+    QString defaultEngine = w->searchEngine();
     KService::Ptr service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(defaultEngine));
+    
     m_engineGroup->addAction(newEngineAction(service, selectedEngine));
     
     // set url;
@@ -341,7 +340,7 @@ EngineBar::EngineBar(const QString &text, const QString &selectedEngine, QWidget
         if(!engine.isEmpty())
         {
             service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-            if(service && service->desktopEntryName()!=defaultEngine)
+            if(service && service->desktopEntryName() != defaultEngine)
             {
                 m_engineGroup->addAction(newEngineAction(service, selectedEngine));
             }
@@ -352,45 +351,16 @@ EngineBar::EngineBar(const QString &text, const QString &selectedEngine, QWidget
 }
 
 
-QString EngineBar::defaultEngine()
-{    
-    int n = ReKonfig::searchEngine();
-    QString engine;
-    switch(n)
-    {
-    case 0:
-        engine = QL1S("google");
-        break;
-    case 1:
-        engine = QL1S("altavista");
-        break;
-    case 2:
-        engine = QL1S("lycos");
-        break;
-    case 3:
-        engine = QL1S("wikipedia");
-        break;
-    case 4:
-        engine = QL1S("wolfram");
-        break;
-    default:
-        engine = QL1S("google");
-        break;
-    }
-
-    return engine;
-}
-
-
 KAction *EngineBar::newEngineAction(KService::Ptr service, QString selectedEngine)
 {
     KAction *a = new KAction(Application::icon(m_url), service->name(), this);
     a->setCheckable(true);
-    if (service->name()==selectedEngine) a->setChecked(true);
+    if (service->name()==selectedEngine) 
+        a->setChecked(true);
     
     QString url = service->property("Query").toString();
     
-    a->setData(QStringList() << url << service->name());
+    a->setData( QStringList() << url << service->desktopEntryName() );
     connect(a, SIGNAL(triggered(bool)), this, SLOT(changeSearchEngine()));
 
     return a;
@@ -447,18 +417,22 @@ ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text
 {
     ListItem *newItem;
     
-    if (item.type & UrlSearchItem::Browse)
+    switch(item.type)
     {
+    case UrlSearchItem::Browse:
         newItem = new BrowseListItem(item, text, parent);
-    }
-    else if (item.type & UrlSearchItem::Search)
-    {
-        newItem = new SearchListItem(item, text, parent);
-    }
-    else
-    {
-        newItem = new PreviewListItem(item, text, parent);
-    }
+        break;
     
+    case UrlSearchItem::Search:
+        newItem = new SearchListItem(item, text, parent);
+        break;
+    
+    case UrlSearchItem::History:
+    case UrlSearchItem::Bookmark:
+    default:
+        newItem = new PreviewListItem(item, text, parent);
+        break;
+    }
+   
     return newItem;
 }

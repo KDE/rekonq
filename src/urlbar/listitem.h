@@ -128,7 +128,6 @@ class EngineBar : public KToolBar
 public:
     EngineBar(const QString &text, const QString &selectedEngine, QWidget *parent = 0);
     
-    static QString defaultEngine();
     void selectNextEngine();
     KUrl url() { return m_url; };
     
@@ -164,12 +163,12 @@ private slots:
     
 private:
     QString searchItemTitle(QString engine, QString text);
+
     TextLabel* m_titleLabel;
     IconLabel* m_iconLabel;
     EngineBar* m_engineBar;
-    QString m_text;
     
-    static QString m_currentEngine;
+    QString m_text;
 };
 
 
@@ -215,7 +214,7 @@ public:
 class ListItemFactory
 {
 public:
-    static ListItem *create(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+    static ListItem *create(const UrlSearchItem &item, const QString &text, QWidget *parent);
 };
 
 

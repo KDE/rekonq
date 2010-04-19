@@ -49,6 +49,9 @@ public:
     virtual bool eventFilter(QObject *obj, QEvent *ev);
     void setVisible(bool visible);
     
+    QString searchEngine() { return _searchEngine; };
+    void setCurrentEngine(const QString &engine) { _searchEngine = engine; };
+    
 private slots:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton);
     void suggestUrls(const QString &text);
@@ -58,6 +61,8 @@ signals:
     void nextItemSubChoice();
     
 private:
+    QString defaultSearchEngine();
+    
     void insertSearchList(const UrlSearchList &list, const QString& text);
     void popup();
     void clear();
@@ -70,7 +75,8 @@ private:
 
     UrlSearchList _list;
     int _currentIndex;
-    QString *_searchEngine;
+
+    QString _searchEngine;
 };
 
 #endif // COMPLETION_WIDGET_H
