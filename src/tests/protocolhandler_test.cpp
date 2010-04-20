@@ -24,6 +24,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtTest>
+#include <QtNetwork>
 #include <QtWebKit>
 
 #include "protocolhandler.h"
@@ -69,45 +70,58 @@ void ProtocolhandlerTest::cleanupTestCase()
 void ProtocolhandlerTest::preHandling_data()
 {
     QTest::addColumn<QString>("urlString");
+    QTest::addColumn<bool>("result");
     
-    QTest::newRow("mailto")     << "mailto:me@here.com";
-    QTest::newRow("relative")   << "google.it";
-    QTest::newRow("javascript") << "javascript:alertbox('hello')";
-    QTest::newRow("aboutblank") << "about:blank";
-    QTest::newRow("abouthome")  << "about:home";
-    QTest::newRow("ftp")        << "ftp://ftp.kde.org";
-    QTest::newRow("file")       << "file:///home";
+    QTest::newRow("mailto")     << "mailto:me@here.com"             << true  ;
+    QTest::newRow("relative")   << "google.it"                      << false ;
+    QTest::newRow("javascript") << "javascript:alertbox('hello')"   << true  ;
+    QTest::newRow("aboutblank") << "about:blank"                    << false ;
+    QTest::newRow("abouthome")  << "about:home"                     << true  ;
+    QTest::newRow("ftp")        << "ftp://ftp.kde.org"              << false ;
+    QTest::newRow("file")       << "file:///home"                   << false ;
 }
 
 
 void ProtocolhandlerTest::preHandling()
 {
-//     QFETCH( QString, urlString );
-//     
-//     QWebView *view = new QWebView;
-//     QWebFrame *frame = view->page()->mainFrame();
-//     
-//     QNetworkRequest *request = new QNetworkRequest( QUrl(urlString) );
-//     handler->preHandling( request, frame );
+    QFETCH( QString, urlString );
+    QFETCH( bool   , result    );
+    
+    QWebView *view = new QWebView;
+    QWebFrame *frame = view->page()->mainFrame();
+    
+    QNetworkRequest request = QNetworkRequest( QUrl(urlString) );
+
+    QCOMPARE( handler->preHandling( request, frame ) , result );
 }
 
 
 void ProtocolhandlerTest::postHandling_data()
 {
     QTest::addColumn<QString>("urlString");
+    QTest::addColumn<bool>("result");
     
-    QTest::newRow("mailto")     << "mailto:me@here.com";
-    QTest::newRow("relative")   << "google.it";
-    QTest::newRow("javascript") << "javascript:alertbox('hello')";
-    QTest::newRow("aboutblank") << "about:blank";
-    QTest::newRow("abouthome")  << "about:home";
-    QTest::newRow("ftp")        << "ftp://ftp.kde.org";
-    QTest::newRow("file")       << "file:///home";
+    QTest::newRow("mailto")     << "mailto:me@here.com"             << true  ;
+    QTest::newRow("relative")   << "google.it"                      << false ;
+    QTest::newRow("javascript") << "javascript:alertbox('hello')"   << false ;
+    QTest::newRow("aboutblank") << "about:blank"                    << false ;
+    QTest::newRow("abouthome")  << "about:home"                     << false ;
+    QTest::newRow("ftp")        << "ftp://ftp.kde.org"              << true  ;
+    QTest::newRow("file")       << "file:///home"                   << true  ;
 }
 
 
 void ProtocolhandlerTest::postHandling()
 {
+    QFETCH( QString, urlString );
+    QFETCH( bool   , result    );
+    
+    QWebView *view = new QWebView;
+    QWebFrame *frame = view->page()->mainFrame();
+    
+    QNetworkRequest request = QNetworkRequest( QUrl(urlString) );
+
+    QCOMPARE( handler->postHandling( request, frame ) , result );
 }
     
 // -------------------------------------------

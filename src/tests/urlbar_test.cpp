@@ -25,10 +25,14 @@
 #include <QtGui>
 #include <QtTest>
 
-#include "networkaccessmanager.h"
+#include "webpage.h"
+#include "webview.h"
+#include "webtab.h"
+
+#include "urlbar.h"
 
 
-class NetworkAccessManagerTest : public QObject
+class UrlBarTest : public QObject
 {
     Q_OBJECT
     
@@ -39,21 +43,24 @@ public slots:
 private slots:
 
 private:
-    NetworkAccessManager *manager;
+    UrlBar *bar;
+    WebTab *tab;
 };
 
 
 // -------------------------------------------
 
-void NetworkAccessManagerTest::initTestCase()
+void UrlBarTest::initTestCase()
 {
-    manager = new NetworkAccessManager(this);
+    tab = new WebTab;
+    bar = new UrlBar(tab);
 }
 
 
-void NetworkAccessManagerTest::cleanupTestCase()
+void UrlBarTest::cleanupTestCase()
 {
-    delete manager;
+    delete bar;
+    delete tab;
 }
     
     
@@ -63,5 +70,5 @@ void NetworkAccessManagerTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_KDEMAIN(NetworkAccessManagerTest,GUI)
-#include "networkaccessmanager_test.moc"
+QTEST_KDEMAIN(UrlBarTest,GUI)
+#include "urlbar_test.moc"

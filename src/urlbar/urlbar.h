@@ -32,6 +32,7 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "lineedit.h"
 #include "application.h"
 
@@ -48,7 +49,7 @@ class CompletionWidget;
 class WebTab;
 
 
-class UrlBar : public LineEdit
+class REKONQ_TESTS_EXPORT UrlBar : public LineEdit
 {
     Q_OBJECT
 

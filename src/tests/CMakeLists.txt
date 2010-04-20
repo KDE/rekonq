@@ -7,7 +7,6 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_BINARY_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/../adblock
                         ${CMAKE_CURRENT_SOURCE_DIR}/../bookmarks
                         ${CMAKE_CURRENT_SOURCE_DIR}/../history
-                        ${CMAKE_CURRENT_SOURCE_DIR}/../rekonqpage
                         ${CMAKE_CURRENT_SOURCE_DIR}/../settings
                         ${CMAKE_CURRENT_SOURCE_DIR}/../urlbar
                         ${KDE4_INCLUDES}
@@ -68,6 +67,7 @@ target_link_libraries( protocolhandler_test
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KDEWEBKIT_LIBS}
+    ${QT_QTNETWORK_LIBRARY}
     ${QT_QTTEST_LIBRARY}
 )
 
@@ -146,6 +146,18 @@ target_link_libraries( webtab_test
 kde4_add_unit_test( webview_test webview_test.cpp )
 
 target_link_libraries( webview_test
+    kdeinit_rekonq
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_KDEWEBKIT_LIBS}
+    ${QT_QTTEST_LIBRARY}
+)
+
+##### ------------- urlbar test
+
+kde4_add_unit_test( urlbar_test urlbar_test.cpp )
+
+target_link_libraries( urlbar_test
     kdeinit_rekonq
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}
