@@ -417,21 +417,20 @@ ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text
 {
     ListItem *newItem;
     
-    switch(item.type)
+    if(item.type & UrlSearchItem::Browse)
     {
-    case UrlSearchItem::Browse:
         newItem = new BrowseListItem(item, text, parent);
-        break;
-    
-    case UrlSearchItem::Search:
-        newItem = new SearchListItem(item, text, parent);
-        break;
-    
-    case UrlSearchItem::History:
-    case UrlSearchItem::Bookmark:
-    default:
-        newItem = new PreviewListItem(item, text, parent);
-        break;
+    }
+    else
+    {
+        if(item.type & UrlSearchItem::Search)
+        {
+            newItem = new SearchListItem(item, text, parent);
+        }
+        else
+        {
+            newItem = new PreviewListItem(item, text, parent);
+        }
     }
    
     return newItem;
