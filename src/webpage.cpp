@@ -267,7 +267,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
                     return;               
                     
                 case KParts::BrowserOpenOrSaveQuestion::Cancel:
-                    return reply->deleteLater();               
+                    return;               
                     
                 default: // non extant case
                     break;
@@ -374,8 +374,6 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         break;
 
     }
-    
-    reply->deleteLater();
 }
 
 
