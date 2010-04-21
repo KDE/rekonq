@@ -32,22 +32,24 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "lineedit.h"
+#include "application.h"
 
 // KDE Includes
 #include <KUrl>
-#include <KHistoryComboBox>
 
 // Qt Includes
-#include <QUrl>
+#include <QWeakPointer>
 
 // Forward Declarations
 class QLinearGradient;
 class QWidget;
-class KCompletion;
+class CompletionWidget;
+class WebTab;
 
 
-class UrlBar : public KHistoryComboBox
+class REKONQ_TESTS_EXPORT UrlBar : public LineEdit
 {
     Q_OBJECT
 
@@ -55,44 +57,27 @@ public:
     UrlBar(QWidget *parent = 0);
     ~UrlBar();
 
-    void selectAll() const;
-    KUrl url() const;
-    QSize sizeHint() const;
-    void setBackgroundColor(QColor);
-    bool isLoading();
-    
-    void setProgress(int progress);
+    void setPrivateMode(bool on);
 
-signals:
-    void activated(const KUrl&);
-
-public slots:
-    void setUrl(const QUrl &url);
-    void updateProgress(int progress);
-    void updateUrl();
-    
 private slots:
-    void activated(const QString& url);
-    void loadFinished(bool);
-    void cleared();
+    void activated(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
+    void setQUrl(const QUrl &url);
 
+    void loadFinished();
+    void loadTyped(const QString &);
+    
 protected:
     virtual void paintEvent(QPaintEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
+    virtual void focusInEvent(QFocusEvent *event);
+    virtual void dropEvent(QDropEvent *event);
 
 private:
-    void setupLineEdit();
-
-    KLineEdit *lineEdit() const;
-
-    static QLinearGradient generateGradient(const QColor &color, int height);
-
-    static QColor s_defaultBaseColor;
-
-    LineEdit *m_lineEdit;
-
-    KUrl m_currentUrl;
-    int m_progress;
+    void activateSuggestions(bool);
+    
+    QWeakPointer<CompletionWidget> _box;
+    WebTab *_tab;
+    bool _privateMode;
 };
 
 #endif

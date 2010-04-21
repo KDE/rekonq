@@ -8,7 +8,7 @@ SECTION 0: A few days in advance
 
 SECTION 1: Preparation
 
-* Check the README file is still relevant
+* Update CHANGELOG file
 * Bump Version Number (in the CMakeLists.txt file)
 * Commit the source to GIT
 

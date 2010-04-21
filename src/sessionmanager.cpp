@@ -2,9 +2,9 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Yoram Bar-Haim <<yoram.b at zend dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -66,15 +66,15 @@ void SessionManager::saveSession()
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
     {
-        kWarning() << "Unable to open session file" << sessionFile.fileName();
+        kDebug() << "Unable to open session file" << sessionFile.fileName();
         return;
     }
     QTextStream out(&sessionFile);
     MainWindowList wl = Application::instance()->mainWindowList();
-    Q_FOREACH(QPointer<MainWindow> w, wl)
+    Q_FOREACH(QWeakPointer<MainWindow> w, wl)
     {
         out << "window\n";
-        MainView *mv = w->mainView();
+        MainView *mv = w.data()->mainView();
         for (int i = 0 ; i < mv->count() ; i++)
         {
             out << mv->webTab(i)->url().toEncoded() << "\n";
@@ -93,7 +93,7 @@ bool SessionManager::restoreSession()
         return false;
     if (!sessionFile.open(QFile::ReadOnly))
     {
-        kWarning() << "Unable to open session file" << sessionFile.fileName();
+        kDebug() << "Unable to open session file" << sessionFile.fileName();
         return false;
     }
 
@@ -104,16 +104,17 @@ bool SessionManager::restoreSession()
         line = in.readLine();
         if(line == QString("window"))
         {
-            Application::instance()->newMainWindow();
             line = in.readLine();
-            Application::instance()->loadUrl(line);
+            kDebug() << "New Window line: " << line;
+            Application::instance()->loadUrl(line, Rekonq::NewWindow);
         }
         else
         {
+            kDebug() << "New Current Tab line: " << line;
             Application::instance()->loadUrl(line, Rekonq::NewCurrentTab);
         }
     }
-    while(!line.isNull());
+    while(!line.isEmpty());
     
     return true;
 }

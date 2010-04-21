@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Nils Weigel <nehlsen at gmail dot com>
+* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -32,94 +33,112 @@
 #include "application.h"
 #include "bookmarksmanager.h"
 
+// Qt Includes
+#include <QMimeData>
+
 // KDE includes
 #include <KBookmarkGroup>
 #include <KLocalizedString>
 
 
-class BookmarksTreeModel::BtmItem
+BtmItem::BtmItem(const KBookmark &bm)
+    : m_parent(0)
+    , m_kbm(bm)
 {
-public:
-    BtmItem(const KBookmark &bm)
-        : m_parent(0)
-        , m_kbm(bm)
+}
+
+
+BtmItem::~BtmItem()
+{
+    qDeleteAll(m_children);
+}
+
+
+QVariant BtmItem::data( int role ) const
+{
+    if( m_kbm.isNull() )
+        return QVariant();  // should only happen for root item
+
+    if( role == Qt::DisplayRole )
+        return m_kbm.text();
+    if( role == Qt::DecorationRole )
+        return KIcon( m_kbm.icon() );
+    if( role == Qt::UserRole )
+        return m_kbm.url();
+    if( role == Qt::ToolTipRole)
     {
-    }
-    
-    
-    ~BtmItem()
-    {
-        qDeleteAll(m_children);
-    }
-
-
-    QVariant data( int role = Qt::DisplayRole ) const
-    {
-        if( m_kbm.isNull() )
-            return QVariant();  // should only happen for root item
-
-        if( role == Qt::DisplayRole )
-            return m_kbm.text();
-        if( role == Qt::DecorationRole )
-            return KIcon( m_kbm.icon() );
-        if( role == Qt::UserRole )
-            return m_kbm.url();
-
-        return QVariant();
-    }
-
-
-    int row() const
-    {
-        if(m_parent)
-            return m_parent->m_children.indexOf( const_cast< BtmItem* >( this ) );
-        return 0;
-    }
-
-
-    int childCount() const
-    {
-        return m_children.count();
+        QString tooltip = "";
+	
+        if(!m_kbm.text().isEmpty())
+	{
+            tooltip += m_kbm.text();
+	}
+        if(m_kbm.isGroup())
+	{
+            tooltip += " [" + QString::number(childCount()) + " " + i18n("Items") + "]";
+	}
+        if(!m_kbm.url().url().isEmpty())
+        {
+            if(!tooltip.isEmpty())
+                tooltip += "\n";
+            tooltip += m_kbm.url().url();
+        }
+        return tooltip;
     }
 
-
-    BtmItem* child( int n )
-    {
-        Q_ASSERT(n>=0);
-        Q_ASSERT(n<childCount());
-
-        return m_children.at(n);
-    }
+    return QVariant();
+}
 
 
-    BtmItem* parent() const
-    {
-        return m_parent;
-    }
+int BtmItem::row() const
+{
+    if(m_parent)
+        return m_parent->m_children.indexOf( const_cast< BtmItem* >( this ) );
+    return 0;
+}
 
 
-    void appendChild(BtmItem *child)
-    {
-        if( !child )
-            return;
-
-        child->m_parent = this;
-        m_children << child;
-    }
+int BtmItem::childCount() const
+{
+    return m_children.count();
+}
 
 
-    void clear()
-    {
-        qDeleteAll(m_children);
-        m_children.clear();
-    }
+BtmItem* BtmItem::child( int n )
+{
+    Q_ASSERT(n>=0);
+    Q_ASSERT(n<childCount());
 
-private:
-    BtmItem *m_parent;
-    QList< BtmItem* > m_children;
-    KBookmark m_kbm;
-};
+    return m_children.at(n);
+}
 
+
+BtmItem* BtmItem::parent() const
+{
+    return m_parent;
+}
+
+
+void BtmItem::appendChild(BtmItem *child)
+{
+    if( !child )
+        return;
+
+    child->m_parent = this;
+    m_children << child;
+}
+
+
+void BtmItem::clear()
+{
+    qDeleteAll(m_children);
+    m_children.clear();
+}
+
+KBookmark BtmItem::getBkm() const
+{
+    return m_kbm;
+}
 
 // -------------------------------------------------------------------------------------
 
@@ -129,8 +148,9 @@ BookmarksTreeModel::BookmarksTreeModel(QObject *parent)
     , m_root(0)
 {
     resetModel();
-    connect( Application::bookmarkProvider()->bookmarkManager(), SIGNAL( changed(QString,QString) ), this, SLOT( bookmarksChanged(QString) ) );
-    connect( Application::bookmarkProvider()->bookmarkManager(), SIGNAL( bookmarksChanged(QString) ), this, SLOT( bookmarksChanged(QString) ) );
+    connect( this, SIGNAL(bookmarksUpdated()), parent, SLOT(loadFoldedState()));
+    connect( Application::bookmarkProvider()->bookmarkManager(), SIGNAL( changed(QString,QString) ), this, SLOT( bookmarksChanged() ) );
+    connect( parent, SIGNAL(saveOnlyRequested()), this, SLOT(saveOnly()) );
 }
 
 
@@ -178,8 +198,17 @@ QVariant BookmarksTreeModel::headerData(int section, Qt::Orientation orientation
 
 Qt::ItemFlags BookmarksTreeModel::flags(const QModelIndex &index) const
 {
-    Q_UNUSED(index)
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    Qt::ItemFlags flags = QAbstractItemModel::flags(index);
+    
+    if(!index.isValid())
+        return flags | Qt::ItemIsDropEnabled;
+
+    flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+
+    if(bookmarkForIndex(index).isGroup())
+        flags |= Qt::ItemIsDropEnabled;
+    
+    return flags;
 }
 
 
@@ -255,32 +284,10 @@ QVariant BookmarksTreeModel::data(const QModelIndex &index, int role) const
 }
 
 
-void BookmarksTreeModel::bookmarksChanged( const QString &groupAddress )
+void BookmarksTreeModel::bookmarksChanged()
 {
-    if( groupAddress.isEmpty() )
-    {
-        resetModel();
-        return;
-    }
-
-    BtmItem *node = m_root;
-    QModelIndex nodeIndex;
-
-    QStringList indexChain( groupAddress.split( '/', QString::SkipEmptyParts) );
-    foreach( QString sIndex, indexChain ) 
-    {
-        bool ok;
-        int i = sIndex.toInt( &ok );
-        if( !ok )
-            break;
-
-        if( i < 0 || i >= node->childCount() )
-            break;
-
-        node = node->child( i );
-        nodeIndex = index( i, 0, nodeIndex );
-    }
-    emit dataChanged( index( 0, 0, nodeIndex ), index( node->childCount(), 0, nodeIndex ) );
+    resetModel();
+    emit bookmarksUpdated();
 }
 
 
@@ -320,4 +327,101 @@ void BookmarksTreeModel::populate( BtmItem *node, KBookmarkGroup bmg)
         node->appendChild( newChild );
         bm = bmg.next( bm );
     }
+}
+
+
+KBookmark BookmarksTreeModel::bookmarkForIndex(const QModelIndex index) const
+{
+    return static_cast<BtmItem*>(index.internalPointer())->getBkm();
+}
+
+
+void BookmarksTreeModel::saveOnly()
+{
+    disconnect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString,QString)), this, SLOT(bookmarksChanged()));
+    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString,QString)), this, SLOT(reconnectManager()));
+    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+}
+
+
+void BookmarksTreeModel::reconnectManager()
+{
+    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL( changed(QString,QString) ), this, SLOT(bookmarksChanged()));
+}
+
+
+Qt::DropActions BookmarksTreeModel::supportedDropActions () const
+{
+    return Qt::MoveAction;
+}
+
+
+QStringList BookmarksTreeModel::mimeTypes () const
+{
+    return KBookmark::List::mimeDataTypes();
+}
+
+
+QMimeData* BookmarksTreeModel::mimeData( const QModelIndexList & indexes ) const
+{
+    QMimeData *mimeData = new QMimeData;
+
+    QByteArray addresse = bookmarkForIndex(indexes.first()).address().toLatin1();
+    mimeData->setData( "application/rekonq-bookmark", addresse);
+    bookmarkForIndex(indexes.first()).populateMimeData(mimeData);
+
+    return mimeData;
+}
+
+
+bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex & parent)
+{
+    if(action == Qt::MoveAction)
+    {
+        if(data->hasFormat("application/rekonq-bookmark"))
+        {
+            QByteArray addresses = data->data("application/rekonq-bookmark");
+            KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+
+            QModelIndex destIndex = index(row, column, parent);
+
+            KBookmark dropDestBookmark;
+            if(destIndex.isValid())
+                dropDestBookmark = bookmarkForIndex(destIndex);
+
+            KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
+            if(parent.isValid())
+                root = bookmarkForIndex(parent).toGroup();
+
+            if(!destIndex.isValid())
+            {
+                if(!parent.isValid()) // Drop into a blank area
+                {
+                    Application::bookmarkProvider()->rootGroup().deleteBookmark(bookmark);
+                    Application::bookmarkProvider()->rootGroup().addBookmark(bookmark);
+                }
+                else // Drop at the last item of the group or directly on the main item of the group
+                {
+                    root.deleteBookmark(bookmark);
+                    root.addBookmark(bookmark);
+                }
+            }
+
+            else
+            {
+                if(row == -1)
+                {
+                    root.deleteBookmark(bookmark);
+                    root.addBookmark(bookmark);
+                }
+                else // A classic drop
+                {
+                    root.moveBookmark(bookmark, root.previous(dropDestBookmark));
+                }
+            }
+
+            Application::bookmarkProvider()->bookmarkManager()->emitChanged(root);
+        }
+    }
+    return true;
 }

@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -29,12 +29,14 @@
 #include "findbar.h"
 #include "findbar.moc"
 
+// Local Includes
+#include "mainwindow.h"
+
 // KDE Includes
 #include <KLineEdit>
 #include <KIcon>
 #include <KPushButton>
 #include <klocalizedstring.h>
-#include <KMainWindow>
 #include <KApplication>
 
 // Qt Includes
@@ -43,17 +45,20 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QLabel>
 #include <QtGui/QColor>
-#include <QtGui/QKeyEvent>
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
 
-FindBar::FindBar(KMainWindow *mainwindow)
-        : QWidget(mainwindow)
+FindBar::FindBar(QWidget *parent)
+        : QWidget(parent)
         , m_lineEdit(new KLineEdit(this))
-        , m_matchCase(new QCheckBox(i18n("&Match case"), this))
         , m_hideTimer(new QTimer(this))
-{
+        , m_matchCase(new QCheckBox(i18n("&Match case"), this))
+        , m_highlightAll(new QCheckBox(i18n("&Highlight all"), this))
+{    
+    // mainwindow pointer
+    MainWindow *window = qobject_cast<MainWindow *>(parent);
+    
     QHBoxLayout *layout = new QHBoxLayout;
 
     // cosmetic
@@ -64,6 +69,7 @@ FindBar::FindBar(KMainWindow *mainwindow)
     hideButton->setAutoRaise(true);
     hideButton->setIcon(KIcon("dialog-close"));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(hideButton, SIGNAL(clicked()), window, SLOT(highlightAll()));
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
@@ -77,21 +83,29 @@ FindBar::FindBar(KMainWindow *mainwindow)
     // lineEdit, focusProxy
     setFocusProxy(m_lineEdit);
     m_lineEdit->setMaximumWidth(250);
-    connect(m_lineEdit, SIGNAL(textChanged(const QString &)), mainwindow, SLOT(find(const QString &)));
+    connect(m_lineEdit, SIGNAL(textChanged(const QString &)), window, SLOT(find(const QString &)));
+    connect(m_lineEdit, SIGNAL(returnPressed()), window, SLOT(findNext()));
     layout->addWidget(m_lineEdit);
 
     // buttons
     KPushButton *findNext = new KPushButton(KIcon("go-down"), i18n("&Next"), this);
     KPushButton *findPrev = new KPushButton(KIcon("go-up"), i18n("&Previous"), this);
-    connect(findNext, SIGNAL(clicked()), mainwindow, SLOT(findNext()));
-    connect(findPrev, SIGNAL(clicked()), mainwindow, SLOT(findPrevious()));
+    connect(findNext, SIGNAL(clicked()), window, SLOT(findNext()));
+    connect(findPrev, SIGNAL(clicked()), window, SLOT(findPrevious()));
     layout->addWidget(findNext);
     layout->addWidget(findPrev);
-
+    
     // Case sensitivity. Deliberately set so this is off by default.
     m_matchCase->setCheckState(Qt::Unchecked);
     m_matchCase->setTristate(false);
+    connect(m_matchCase, SIGNAL(toggled(bool)), window, SLOT(matchCaseUpdate()));
     layout->addWidget(m_matchCase);
+
+    // Hightlight All. On by default
+    m_highlightAll->setCheckState(Qt::Checked);
+    m_highlightAll->setTristate(false);
+    connect(m_highlightAll, SIGNAL(toggled(bool)), window, SLOT(highlightAll()));
+    layout->addWidget(m_highlightAll);
 
     // stretching widget on the left
     layout->addStretch();
@@ -120,43 +134,28 @@ bool FindBar::matchCase() const
 }
 
 
-void FindBar::clear()
+bool FindBar::highlightAllState() const
 {
-    m_lineEdit->setText(QString());
+    return m_highlightAll->isChecked();
 }
 
 
 void FindBar::show()
 {
+    // show findbar if not visible
+    if(isHidden())
+    {
+        QWidget::show();
+        emit searchString(m_lineEdit->text());
+    }
+
+    m_hideTimer->start(60000);
+    
     // set focus to findbar if user select showFindBar shortcut
     m_lineEdit->setFocus();
     m_lineEdit->selectAll();
-
-    // show findbar if not visible
-    if (isVisible())
-        return;
-
-    QWidget::show();
-    m_hideTimer->start(60000);
 }
 
-
-void FindBar::keyPressEvent(QKeyEvent* event)
-{
-    if (event->key() == Qt::Key_Escape)
-    {
-        hide();
-        m_hideTimer->stop();
-        return;
-    }
-    if (event->key() == Qt::Key_Return && !m_lineEdit->text().isEmpty())
-    {
-        emit searchString(m_lineEdit->text());
-        return;
-    }
-
-    QWidget::keyPressEvent(event);
-}
 
 void FindBar::notifyMatch(bool match)
 {
@@ -179,4 +178,12 @@ void FindBar::notifyMatch(bool match)
     }
     m_lineEdit->setPalette(p);
     m_hideTimer->start(60000);
+}
+
+
+void FindBar::hide()
+{
+    m_hideTimer->stop();
+    QWidget::hide();
+    emit(searchString(m_lineEdit->text()));
 }

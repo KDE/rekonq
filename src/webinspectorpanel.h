@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Matthieu Gicquel<matgic78@gmail.com>
+* Copyright (C) 2010 by Matthieu Gicquel<matgic78 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -29,6 +29,9 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
+
+// Local Includes
 #include "mainwindow.h"
 
 // Qt Includes
@@ -38,7 +41,7 @@
     Docked web inspector
     behaviour : hide/show by tab, not globally
 */
-class WebInspectorPanel : public QDockWidget
+class REKONQ_TESTS_EXPORT WebInspectorPanel : public QDockWidget
 {
     Q_OBJECT
 public:

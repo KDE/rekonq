@@ -4,7 +4,7 @@
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
 * Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -30,6 +30,9 @@
 #define HISTORY_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KUrl>
 
@@ -54,7 +57,10 @@ public:
                          const QDateTime &d = QDateTime(), 
                          const QString &t = QString()
                         )
-            : title(t), url(u), dateTime(d) {}
+            : title(t)
+            , url(u), 
+            dateTime(d) 
+    {}
 
     inline bool operator==(const HistoryItem &other) const
     {
@@ -74,6 +80,29 @@ public:
 };
 
 
+// ---------------------------------------------------------------------------------------------------------------
+
+
+class DownloadItem
+{
+public:
+    DownloadItem() {}
+    explicit DownloadItem(const QString &srcUrl,
+                          const QString &destUrl,
+                          const QDateTime &d
+                          )
+        : srcUrlString(srcUrl)
+        , destUrlString(destUrl)
+        , dateTime(d)
+    {}
+    
+    QString srcUrlString;
+    QString destUrlString;
+    QDateTime dateTime;
+};
+
+
+typedef QList<DownloadItem> DownloadList;
 
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -92,7 +121,7 @@ class KCompletion;
  * It manages rekonq history
  *
  */
-class HistoryManager : public QWebHistoryInterface
+class REKONQ_TESTS_EXPORT HistoryManager : public QWebHistoryInterface
 {
     Q_OBJECT
     Q_PROPERTY(int historyLimit READ historyLimit WRITE setHistoryLimit)
@@ -112,6 +141,8 @@ public:
     void updateHistoryEntry(const KUrl &url, const QString &title);
     void removeHistoryEntry(const KUrl &url, const QString &title = QString());
 
+    QString titleForHistoryUrl(QString url);
+    
     int historyLimit() const;
     void setHistoryLimit(int limit);
 
@@ -128,6 +159,10 @@ public:
     */
     KCompletion *completionObject() const;
 
+    void addDownload(const QString &srcUrl, const QString &destUrl);
+    DownloadList downloads();
+    bool clearDownloadsHistory();
+    
 public slots:
     void clear();
     void loadSettings();

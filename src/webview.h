@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -29,6 +29,7 @@
 #define WEBVIEW_H
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "application.h"
 
 // KDE Includes
@@ -38,7 +39,7 @@
 class WebPage;
 
 
-class WebView : public KWebView
+class REKONQ_TESTS_EXPORT WebView : public KWebView
 {
     Q_OBJECT
 
@@ -46,12 +47,12 @@ public:
     explicit WebView(QWidget *parent);
     ~WebView();
 
-    WebPage *page() { return m_page; }
+    WebPage *page();
     QPoint mousePos();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-    void mousePressEvent(QMouseEvent *event);// need to be ported
+    void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
@@ -67,12 +68,20 @@ private slots:
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
     void inspect();
 
+    void scrollFrameChanged();
+    
 signals:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
     
 private:
-    WebPage *const m_page;
-    QPoint m_mousePos;
+    QPoint _mousePos;
+    QPoint _clickPos;
+
+    QTimer *_scrollTimer;
+    int _VScrollSpeed;
+    int _HScrollSpeed;
+    bool _canEnableAutoScroll;
+    bool _isAutoScrollEnabled;
 };
 
 #endif

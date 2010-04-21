@@ -24,9 +24,12 @@
 * ============================================================ */
 
 
-#ifndef WALLET_WIDGET_H
-#define WALLET_WIDGET_H
+#ifndef WALLET_BAR_H
+#define WALLET_BAR_H
 
+
+// Local Includes
+#include "rekonqprivate_export.h"
 
 // Qt Includes
 #include <QWidget>
@@ -35,7 +38,7 @@
 #include <QLabel>
 
 
-class WalletBar : public QWidget
+class REKONQ_TESTS_EXPORT WalletBar : public QWidget
 {
     Q_OBJECT
 
@@ -65,4 +68,4 @@ private:
     QLabel *m_label;
 };
 
-#endif // WALLET_WIDGET_H
+#endif // WALLET_BAR_H

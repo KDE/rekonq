@@ -4,7 +4,7 @@
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
 * Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -69,10 +69,9 @@ HistoryManager::HistoryManager(QObject *parent)
     , m_historyModel(0)
     , m_historyFilterModel(0)
     , m_historyTreeModel(0)
-    , m_completion(0)
+    , m_completion(new KCompletion)
 {
     // take care of the completion object
-    m_completion = new KCompletion;
     m_completion->setOrder( KCompletion::Weighted );
     
     m_expiredTimer.setSingleShot(true);
@@ -317,7 +316,7 @@ void HistoryManager::load()
         return;
     if (!historyFile.open(QFile::ReadOnly))
     {
-        kWarning() << "Unable to open history file" << historyFile.fileName();
+        kDebug() << "Unable to open history file" << historyFile.fileName();
         return;
     }
 
@@ -363,7 +362,7 @@ void HistoryManager::load()
 
         // Add item to completion object
         QString _url = item.url;
-        _url.remove(QRegExp("^http://|/$"));
+        //_url.remove(QRegExp("^http://|/$"));
         m_completion->addItem(_url);
     }
     if (needToSort)
@@ -417,7 +416,7 @@ void HistoryManager::save()
 
     if (!open)
     {
-        kWarning() << "Unable to open history file for saving"
+        kDebug() << "Unable to open history file for saving"
         << (saveAll ? tempFile.fileName() : historyFile.fileName());
         return;
     }
@@ -437,11 +436,11 @@ void HistoryManager::save()
     {
         if (historyFile.exists() && !historyFile.remove())
         {
-            kWarning() << "History: error removing old history." << historyFile.errorString();
+            kDebug() << "History: error removing old history." << historyFile.errorString();
         }
         if (!tempFile.rename(historyFile.fileName()))
         {
-            kWarning() << "History: error moving new history over old." << tempFile.errorString() << historyFile.fileName();
+            kDebug() << "History: error moving new history over old." << tempFile.errorString() << historyFile.fileName();
         }
     }
     m_lastSavedUrl = m_history.value(0).url;
@@ -452,3 +451,83 @@ KCompletion * HistoryManager::completionObject() const
 {
     return m_completion;
 }
+
+
+void HistoryManager::addDownload(const QString &srcUrl, const QString &destUrl)
+{
+    QWebSettings *globalSettings = QWebSettings::globalSettings();
+    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+      return;
+    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QFile downloadFile(downloadFilePath);
+    if ( !downloadFile.open(QFile::WriteOnly | QFile::Append) )
+    {
+        kDebug() << "azz...";
+        return;
+    }
+    QDataStream out(&downloadFile);
+    out << srcUrl;
+    out << destUrl;
+    out << QDateTime::currentDateTime();
+    downloadFile.close();
+}
+
+
+DownloadList HistoryManager::downloads()
+{
+    DownloadList list;
+    
+    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QFile downloadFile(downloadFilePath);
+    if ( !downloadFile.open(QFile::ReadOnly) )
+    {
+        kDebug() << "azz...";
+        return list;
+    }
+    
+    QDataStream in(&downloadFile);
+    while(!in.atEnd())
+    {
+        QString srcUrl;
+        in >> srcUrl;
+        QString destUrl;
+        in >> destUrl;
+        QDateTime dt;
+        in >> dt;
+        DownloadItem item(srcUrl, destUrl, dt);
+        list << item;
+    }
+    return list;
+}
+
+
+bool HistoryManager::clearDownloadsHistory()
+{
+    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QFile downloadFile(downloadFilePath);
+    return downloadFile.remove();
+}
+
+
+QString HistoryManager::titleForHistoryUrl(QString url)
+{
+    QString title = "";
+
+    int i = 0;
+    while (i< history().count() && title.isEmpty())
+    {
+        if (history().at(i).url == url)
+        {
+             title = history().at(i).title;
+        }
+        i++;
+    }
+    
+    if (title.isEmpty())
+    {
+        title = url;
+    }
+
+    return title;
+}
+

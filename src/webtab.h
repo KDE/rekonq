@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -29,16 +29,21 @@
 #define WEBTAB_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KUrl>
-#include <KWebView>
+
+// Qt Includes
+#include <QWidget>
 
 // Forward Declarations
 class WebPage;
 class WebView;
 
 
-class WebTab : public QWidget
+class REKONQ_TESTS_EXPORT WebTab : public QWidget
 {
     Q_OBJECT
 
@@ -48,21 +53,24 @@ public:
 
     WebView *view();
     WebPage *page();
-    KUrl url() const;
-    QString lastStatusBarText() const;
-    int progress();
+    KUrl url();
 
+    int progress();
+    void createPreviewSelectorBar(int index);
+
+    bool hasRSSInfo();
+    
 private slots:
-    void setStatusBarText(const QString &string);
     void updateProgress(int progress);
     void loadFinished(bool);
 
     void createWalletBar(const QString &, const QUrl &);
+    void showRSSInfo();
     
 private:
-    WebView *const m_view;
     int m_progress;
-    QString m_statusBarText;
+    
+    KUrl::List _rssList;
 };
 
 #endif

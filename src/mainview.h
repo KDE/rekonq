@@ -2,9 +2,10 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -43,6 +44,7 @@
 
 // Qt Includes
 #include <QtGui/QToolButton>
+#include <QStackedWidget>
 
 // Forward Declarations
 class QUrl;
@@ -68,8 +70,7 @@ public:
     MainView(MainWindow *parent);
     ~MainView();
 
-public:
-
+    QWidget *urlBarWidget() const;
     UrlBar *urlBar() const;
     WebTab *webTab(int index) const;
 
@@ -86,7 +87,6 @@ public:
     void setTabBarHidden(bool hide);
     
     QToolButton *addTabButton() const;
-    void clear();
 
     /**
      * This function creates a new empty tab
@@ -106,7 +106,7 @@ signals:
     void lastTabClosed();
 
     // current tab signals
-    void setCurrentTitle(const QString &url);
+    void currentTitle(const QString &url);
     void showStatusBarMessage(const QString &message, Rekonq::Notify status = Rekonq::Info);
     void linkHovered(const QString &link);
     void browserTabLoading(bool);
@@ -147,7 +147,7 @@ private slots:
     void windowCloseRequested();
 
     void postLaunch();
-
+    void movedTab(int,int);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
@@ -167,8 +167,10 @@ private:
      */
     QLabel *animatedLoading(int index, bool addMovie);
 
-    UrlBar *m_urlBar;
-    TabBar *m_tabBar;
+
+// --------------------------------------------------------------------------
+
+    QStackedWidget *_bars;
 
     QString m_loadingGitPath;
 

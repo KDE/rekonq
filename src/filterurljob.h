@@ -28,6 +28,7 @@
 #define FILTER_URL_JOB_H
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "webview.h"
 
 // KDE Includes
@@ -41,7 +42,7 @@
 using namespace ThreadWeaver;
 
 
-class FilterUrlJob : public Job
+class REKONQ_TESTS_EXPORT FilterUrlJob : public Job
 {
 public:
     FilterUrlJob(WebView *view, const QString &urlString, QObject *parent = 0);

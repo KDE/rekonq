@@ -3,9 +3,9 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -35,7 +35,7 @@
 #include "rekonqprivate_export.h"
 
 // Qt Includes
-#include <QPointer>
+#include <QWeakPointer>
 
 // KDE Includes
 #include <KTabBar>
@@ -80,6 +80,8 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void tabRemoved(int);
     
 private slots:
     void cloneTab();
@@ -99,7 +101,7 @@ private:
      */
     int m_actualIndex;
 
-    QPointer<KPassivePopup> m_previewPopup;
+    QWeakPointer<KPassivePopup> m_previewPopup;
     int m_currentTabPreview;
 };
 

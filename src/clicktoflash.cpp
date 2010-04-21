@@ -1,53 +1,28 @@
-/*
- * Copyright (c) 2009, Benjamin C. Meyer
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the Benjamin Meyer nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ============================================================
- *
- * This file is a part of the rekonq project
- *
- * Copyright (C) 2009 by Matthieu Gicquel <matgic78@gmail.com>
- *
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy 
- * defined in Section 14 of version 3 of the license.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * ============================================================ */
+/* ============================================================
+*
+* This file is a part of the rekonq project
+*
+* Copyright (C) 2009 by Benjamin C. Meyer <ben@meyerhome.net>
+* Copyright (C) 2010 by Matthieu Gicquel <matgic78@gmail.com>
+*
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as
+* published by the Free Software Foundation; either version 2 of
+* the License or (at your option) version 3 or any later version
+* accepted by the membership of KDE e.V. (or its successor approved
+* by the membership of KDE e.V.), which shall act as a proxy 
+* defined in Section 14 of version 3 of the license.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+* ============================================================ */
 
 
 // Self Includes
@@ -56,6 +31,7 @@
 
 // KDE Includes
 #include <KLocalizedString>
+#include <KDebug>
 
 // Qt Includes
 #include <QWebFrame>
@@ -114,39 +90,51 @@ void ClickToFlash::load()
         elements.append(docElement.findAll(selector.arg(QLatin1String("object"))));
         elements.append(docElement.findAll(selector.arg(QLatin1String("embed"))));
         
-        bool isRightElement = false;
         foreach (QWebElement element, elements) 
         {
-            // TODO : find a proper solution to compare a QWebElement with a plugin
-            // With this "manual" test, it's probably not working everywhere
-            if(QUrl(element.attribute("data")) == m_url
-                || QUrl(element.attribute("src")) == m_url)
-                isRightElement = true;
-            else
+            if( checkElement(element) )
             {
-                QWebElementCollection collec = element.findAll("param");
-                int i = 0;
-                while(i < collec.count() && isRightElement == false)
-                {
-                    if(QUrl(collec.at(i).attribute("value")) == m_url)
-                    isRightElement = true;
-                    i++;
-                }
-            }
-            
-            if(isRightElement)
-            {
+                kDebug() << "RETURNED TRUE ...........................";
                 QWebElement substitute = element.clone();
                 emit signalLoadClickToFlash(true);
                 element.replace(substitute);
+                deleteLater();
                 return;
             }
         }
-
         frames += frame->childFrames();
     }
-    
-    deleteLater();
 }
 
 
+bool ClickToFlash::checkElement(QWebElement el)
+{
+    kDebug() << "src: " << QUrl(el.attribute("src"));
+    kDebug() << "url: " << m_url;
+
+    QString checkString;
+    QString urlString;
+    
+    checkString = QUrl(el.attribute("src")).toString( QUrl::RemoveQuery );
+    urlString = m_url.toString( QUrl::RemoveQuery );
+    
+    if( urlString.contains( checkString ) )
+        return true;
+     
+    QWebElementCollection collec = el.findAll("*");
+    int i = 0;
+    while( i < collec.count() )
+    {
+        QWebElement el = collec.at(i);
+
+        checkString = QUrl(el.attribute("src")).toString( QUrl::RemoveQuery );
+        urlString = m_url.toString( QUrl::RemoveQuery );
+
+        if( urlString.contains( checkString ) )
+            return true;
+        
+        i++;
+    }
+
+    return false;
+}

@@ -31,12 +31,16 @@
 #include "urlbar.h"
 #include "urlbar.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "application.h"
 #include "lineedit.h"
 #include "mainwindow.h"
+#include "webtab.h"
 #include "webview.h"
-#include "historymanager.h"
+#include "completionwidget.h"
 
 // KDE Includes
 #include <KDebug>
@@ -48,299 +52,219 @@
 #include <QPaintEvent>
 #include <QPalette>
 #include <QTimer>
+#include <QVBoxLayout>
 
-
-QColor UrlBar::s_defaultBaseColor;
+// Defines
+#define QL1S(x)  QLatin1String(x)
 
 
 UrlBar::UrlBar(QWidget *parent)
-        : KHistoryComboBox(true, parent)
-        , m_lineEdit(new LineEdit)
-        , m_progress(0)
+    : LineEdit(parent)
+    , _tab(0)
+    , _privateMode(false)
 {
-    setUrlDropsEnabled(true);
-    setAutoDeleteCompletionObject(true);
-
-    //cosmetic
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    setMinimumWidth(180);
+    _tab = qobject_cast<WebTab *>(parent);
     
-    setTrapReturnKey(true);
-
-    setupLineEdit();
-
-    // add every item to history
-    connect(this, SIGNAL(returnPressed(const QString&)), SLOT(activated(const QString&)));
-    connect(completionBox(), SIGNAL(activated(const QString&)), SLOT(activated(const QString&)));
-
-    connect(this, SIGNAL(cleared()), SLOT(cleared()));
-
-    // setup completion box
-    setCompletionObject( Application::historyManager()->completionObject() );
+    connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
+    connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
+    connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
     
-    // set dropdown list background
-    QPalette p = view()->palette();
-    p.setColor(QPalette::Base, palette().color(QPalette::Base));
-    view()->setPalette(p);
+    // load typed urls
+    connect(this, SIGNAL(returnPressed(const QString &)), this, SLOT(loadTyped(const QString &)));
 
-    // load urls on activated urlbar signal
-    connect(this, SIGNAL(activated(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
+    activateSuggestions(true);
 }
 
 
 UrlBar::~UrlBar()
 {
+    activateSuggestions(false);
+    _box.clear();
 }
 
 
-void UrlBar::selectAll() const
+void UrlBar::setQUrl(const QUrl& url)
 {
-    lineEdit()->selectAll();
-}
-
-
-KUrl UrlBar::url() const
-{
-    return m_currentUrl;
-}
-
-
-KLineEdit *UrlBar::lineEdit() const
-{
-    return m_lineEdit;
-}
-
-
-void UrlBar::setupLineEdit()
-{
-    // Make m_lineEdit background transparent
-    QPalette p = m_lineEdit->palette();
-    p.setColor(QPalette::Base, Qt::transparent);
-    m_lineEdit->setPalette(p);
-
-    if (!s_defaultBaseColor.isValid())
+    if(url.scheme() == QL1S("about") )
     {
-        s_defaultBaseColor = palette().color(QPalette::Base);
-    }
-
-    setLineEdit(m_lineEdit);
-
-    // Make the lineedit consume the Qt::Key_Enter event...
-    lineEdit()->setTrapReturnKey(true);
-
-    lineEdit()->setHandleSignals(true);
-
-    // clear the URL bar
-    lineEdit()->clear();
-}
-
-
-void UrlBar::setUrl(const QUrl& url)
-{
-    if(url.scheme() == "about")
-    {
-        m_currentUrl = KUrl();
-        updateUrl();    // updateUrl before setFocus        
+        iconButton()->setIcon( KIcon("arrow-right") );
+        clear();
         setFocus();
     }
     else
     {
-        m_currentUrl = KUrl(url);
-        updateUrl();
-    }
-
-}
-
-
-void UrlBar::setProgress(int progress)
-{
-    m_progress = progress;
-    repaint();
-}
-
-
-void UrlBar::updateUrl()
-{
-    // Don't change my typed url...
-    // FIXME this is not a proper solution (also if it works...)
-    if(hasFocus())
-    {
-        kDebug() << "Don't change my typed url...";
-        return;
-    }
-
-    KIcon icon;
-    if(m_currentUrl.isEmpty()) 
-    {
-        icon = KIcon("arrow-right");
-    }
-    else 
-    {
-        icon = Application::icon(m_currentUrl);
-    }
-
-    if (count())
-    {
-        changeUrl(0, icon, m_currentUrl);
-    }
-    else
-    {
-        insertUrl(0, icon, m_currentUrl);
-    }
-
-    setCurrentIndex(0);
-
-    // important security consideration: always display the beginning
-    // of the url rather than its end to prevent spoofing attempts.
-    // Must be AFTER setCurrentIndex
-    if (!hasFocus())
-    {
-        lineEdit()->setCursorPosition(0);
+        clearFocus();
+        LineEdit::setUrl(url);
+        setCursorPosition(0);
+        iconButton()->setIcon( Application::icon(url) );
     }
 }
 
 
-void UrlBar::activated(const QString& urlString)
+void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 {
-    if (urlString.isEmpty())
-        return;
-
-    setUrl(urlString);
-    emit activated(m_currentUrl);
-}
-
-
-void UrlBar::cleared()
-{
-    // clear the history on user's request from context menu
-    clear();
-}
-
-
-void UrlBar::loadFinished(bool)
-{
-    // reset progress bar after small delay
-    m_progress = 0;
-    QTimer::singleShot(200, this, SLOT(repaint()));
-}
-
-
-void UrlBar::updateProgress(int progress)
-{
-    m_progress = progress;
-    repaint();
+    activateSuggestions(false);
+    
+    clearFocus();
+    setUrl(url);
+    Application::instance()->loadUrl(url, type);
 }
 
 
 void UrlBar::paintEvent(QPaintEvent *event)
 {
+    QColor backgroundColor;
+    if( _privateMode )
+    {
+        backgroundColor = QColor(220, 220, 220);  // light gray
+    }
+    else
+    {
+        backgroundColor = Application::palette().color(QPalette::Base);
+    }
+    
     // set background color of UrlBar
     QPalette p = palette();
-    p.setColor(QPalette::Base, s_defaultBaseColor);
+
+    int progr = _tab->progress();
+    if (progr == 0) 
+    {
+        if( _tab->url().scheme() == QL1S("https") )
+        {
+            backgroundColor = QColor(255, 255, 171);  // light yellow
+        }
+        p.setBrush(QPalette::Base, backgroundColor);
+    } 
+    else 
+    {
+        QColor loadingColor = QColor(116, 192, 250);
+        
+        QLinearGradient gradient(0, 0, width(), 0);
+        gradient.setColorAt(0, loadingColor);
+        gradient.setColorAt(((double)progr)/100, backgroundColor);
+        p.setBrush(QPalette::Base, gradient);
+    }
     setPalette(p);
-
-    KHistoryComboBox::paintEvent(event);
-
-    if (!hasFocus())
-    {
-        QPainter painter(this);
-
-        QColor loadingColor;
-        if (m_currentUrl.scheme() == QLatin1String("https"))
-        {
-            loadingColor = QColor(248, 248, 100);
-        }
-        else
-        {
-            loadingColor = QColor(116, 192, 250);
-        }
-        painter.setBrush(generateGradient(loadingColor, height()));
-        painter.setPen(Qt::transparent);
-
-        QRect backgroundRect = lineEdit()->frameGeometry();
-        int mid = backgroundRect.width() * m_progress / 100;
-        QRect progressRect(backgroundRect.x(), backgroundRect.y(), mid, backgroundRect.height());
-        painter.drawRect(progressRect);
-        painter.end();
-    }
-}
-
-
-QSize UrlBar::sizeHint() const
-{
-    return lineEdit()->sizeHint();
-}
-
-
-QLinearGradient UrlBar::generateGradient(const QColor &color, int height)
-{
-    QColor base = s_defaultBaseColor;
-    base.setAlpha(0);
-    QColor barColor = color;
-    barColor.setAlpha(200);
-    QLinearGradient gradient(0, 0, 0, height);
-    gradient.setColorAt(0, base);
-    gradient.setColorAt(0.25, barColor.lighter(120));
-    gradient.setColorAt(0.5, barColor);
-    gradient.setColorAt(0.75, barColor.lighter(120));
-    gradient.setColorAt(1, base);
-    return gradient;
-}
-
-
-void UrlBar::setBackgroundColor(QColor c)
-{
-    s_defaultBaseColor = c;
-    repaint();
-}
-
-
-bool UrlBar::isLoading()
-{
-    if(m_progress == 0)
-    {
-        return false;
-    }
-    return true;
+    
+    LineEdit::paintEvent(event);
 }
 
 
 void UrlBar::keyPressEvent(QKeyEvent *event)
 {
-    QString currentText = m_lineEdit->text().trimmed();
-    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+    // this handles the Modifiers + Return key combinations
+    QString currentText = text().trimmed();
+    if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+        && !currentText.startsWith(QLatin1String("http://"), Qt::CaseInsensitive))
     {
-        if( !currentText.startsWith(QLatin1String("http://"), Qt::CaseInsensitive) )
+        QString append;
+        if (event->modifiers() == Qt::ControlModifier)
         {
-            QString append;
-            if (event->modifiers() == Qt::ControlModifier)
-            {
-                append = QLatin1String(".com");
-            }
-            else if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
-            {
-                append = QLatin1String(".org");
-            }
-            else if (event->modifiers() == Qt::ShiftModifier)
-            {
-                append = QLatin1String(".net");
-            }
-
-            QUrl url(QLatin1String("http://www.") + currentText);
-            QString host = url.host();
-            if (!host.endsWith(append, Qt::CaseInsensitive))
-            {
-                host += append;
-                url.setHost(host);
-                m_lineEdit->setText(url.toString());
-            }
+            append = QLatin1String(".com");
         }
-        else
+        else if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
         {
-            // fill lineEdit with its stripped contents to remove trailing spaces
-            m_lineEdit->setText(currentText);
+            append = QLatin1String(".org");
+        }
+        else if (event->modifiers() == Qt::ShiftModifier)
+        {
+            append = QLatin1String(".net");
+        }
+
+        QUrl url(QLatin1String("http://www.") + currentText);
+        QString host = url.host();
+        if (!host.endsWith(append, Qt::CaseInsensitive))
+        {
+            host += append;
+            url.setHost(host);
+            setText(url.toString());
         }
     }
+    
+    LineEdit::keyPressEvent(event);
+}
 
-    KHistoryComboBox::keyPressEvent(event);
+
+void UrlBar::focusInEvent(QFocusEvent *event)
+{
+    activateSuggestions(true);
+    
+    LineEdit::focusInEvent(event);
+}
+
+
+void UrlBar::setPrivateMode(bool on)
+{
+    _privateMode = on;
+}
+
+
+void UrlBar::dropEvent(QDropEvent *event)
+{
+    LineEdit::dropEvent(event);
+    activated(text());
+}
+
+
+void UrlBar::loadFinished()
+{
+    if(_tab->progress() != 0)
+        return;
+    
+    if(_tab->url().scheme() == QL1S("about") )
+    {
+        update();
+        return;
+    }
+    
+    // show KGet downloads??
+    if(ReKonfig::kgetList())
+    {
+        IconButton *bt = addRightIcon(LineEdit::KGet);
+        connect(bt, SIGNAL(clicked()), _tab->page(), SLOT(downloadAllContentsWithKGet()));
+    }
+    
+    // show RSS
+    if(_tab->hasRSSInfo())
+    {
+        IconButton *bt = addRightIcon(LineEdit::RSS);
+        connect(bt, SIGNAL(clicked()), _tab, SLOT(showRSSInfo()));
+    }
+    
+    // show SSL
+    if(_tab->url().scheme() == QL1S("https") )
+    {
+        IconButton *bt = addRightIcon(LineEdit::SSL);
+        connect(bt, SIGNAL(clicked()), _tab->page(), SLOT(showSSLInfo()));
+    }
+    
+    update();
+}
+
+
+void UrlBar::loadTyped(const QString &text)
+{
+    activated(KUrl(text));
+}
+
+
+void UrlBar::activateSuggestions(bool b)
+{
+    if(b)
+    {
+        if(_box.isNull())
+        {
+            _box = new CompletionWidget(this);
+            installEventFilter(_box.data());
+            connect(_box.data(), SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), this, SLOT(activated(const KUrl &, Rekonq::OpenType)));
+
+            // activate suggestions on edit text
+            connect(this, SIGNAL(textChanged(const QString &)), _box.data(), SLOT(suggestUrls(const QString &)));
+        }
+    }
+    else
+    {
+        removeEventFilter(_box.data());
+        _box.data()->deleteLater();
+    }
 }

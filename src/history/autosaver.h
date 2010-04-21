@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -29,6 +29,9 @@
 #define AUTOSAVER_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QtCore/QObject>
 #include <QtCore/QBasicTimer>
@@ -43,7 +46,7 @@
  *
  */
 
-class AutoSaver : public QObject
+class REKONQ_TESTS_EXPORT AutoSaver : public QObject
 {
     Q_OBJECT
 

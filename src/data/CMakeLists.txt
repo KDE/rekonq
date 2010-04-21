@@ -1,10 +1,15 @@
 INSTALL( 
-    FILES bg2.png bg.png bot.gif busywidget.gif closed.png loading.mng open.png tile.gif top.png webkit-icon.png category.png button.png
+    FILES 
+    bg2.png bg.png tile.gif category.png button.png
+    busywidget.gif loading.mng  
+    webkit-icon.png
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
 )
 
 INSTALL( 
-    FILES defaultbookmarks.xbel
+    FILES 
+    defaultbookmarks.xbel
+    default.css
     DESTINATION ${DATA_INSTALL_DIR}/rekonq
 )
 
@@ -14,6 +19,8 @@ INSTALL(
 )
 
 INSTALL( 
-    FILES rekonqinfo.html home.html
+    FILES 
+    rekonqinfo.html 
+    home.html
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/htmls
 )

@@ -30,7 +30,7 @@
  *
  * This file is a part of the rekonq project
  *
- * Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+ * Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
  * This program is free software; you can redistribute it and/or
@@ -180,4 +180,10 @@ QString AdBlockRule::convertPatternToRegExp(const QString &wildcardPattern)
 
     // Finally, return...
     return pattern;
+}
+
+
+QString AdBlockRule::pattern() const
+{
+    return m_regExp.pattern();
 }

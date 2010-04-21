@@ -2,7 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -28,6 +29,9 @@
 #define WEB_PLUGIN_FACTORY_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KWebPluginFactory>
 
@@ -36,23 +40,19 @@
 #include <QtGui/QWidget>
 
 
-class WebPluginFactory : public KWebPluginFactory
+class REKONQ_TESTS_EXPORT WebPluginFactory : public KWebPluginFactory
 {
 Q_OBJECT
 
 public:
     WebPluginFactory(QObject *parent);
-    ~WebPluginFactory();
 
     virtual QObject *create(const QString &mimeType,
                             const QUrl &url,
                             const QStringList &argumentNames,
                             const QStringList &argumentValues) const;
 
-    virtual QList<Plugin> plugins() const;
-    
 signals:
-
     void signalLoadClickToFlash(bool) const;
     
 public slots:
@@ -63,7 +63,7 @@ private:
         When true, force loading of next flash animation (don't show clicktoflash)
         We use signals/slots to set this property because QWebPluginFactory::create is const
     */
-    bool loadClickToFlash;
+    bool _loadClickToFlash;
 };
 
 #endif // WEB_PLUGIN_FACTORY_H

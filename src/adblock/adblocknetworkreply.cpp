@@ -28,7 +28,7 @@
  *
  * This file is a part of the rekonq project
  *
- * Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+ * Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
  * This program is free software; you can redistribute it and/or
@@ -68,7 +68,7 @@ AdBlockNetworkReply::AdBlockNetworkReply(const QNetworkRequest &request, const Q
     setOperation(QNetworkAccessManager::GetOperation);
     setRequest(request);
     setUrl(request.url());
-    setError(QNetworkReply::ContentAccessDenied, i18n("Blocked by AdBlockRule: %1").arg(urlString));
+    setError(QNetworkReply::ContentAccessDenied, i18n("Blocked by AdBlockRule: %1", urlString) );
     QTimer::singleShot(0, this, SLOT(delayedFinished()));
 }
 

@@ -3,6 +3,8 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Nils Weigel <nehlsen at gmail dot com>
+* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -27,15 +29,24 @@
 #ifndef BOOKMARKSPANEL_H
 #define BOOKMARKSPANEL_H
 
+
+// Local Includes
+#include "rekonqprivate_export.h"
+#include "application.h"
+#include "paneltreeview.h"
+
 // Qt Includes
 #include <QDockWidget>
+
+// KDE Includes
+#include <KBookmark>
 
 // Forward Declarations
 class KUrl;
 class QModelIndex;
 
 
-class BookmarksPanel : public QDockWidget
+class REKONQ_TESTS_EXPORT BookmarksPanel : public QDockWidget
 {
     Q_OBJECT
 
@@ -44,13 +55,26 @@ public:
     ~BookmarksPanel();
 
 signals:
-    void openUrl(const KUrl &);
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void itemHovered(const QString &);
+    void saveOnlyRequested();
 
 private slots:
-    void bookmarkActivated( const QModelIndex &index );
+    void contextMenu(const QPoint &pos);
+
+    void deleteBookmark();
+    void onCollapse(const QModelIndex &index);
+    void onExpand(const QModelIndex &index);
+    void loadFoldedState(const QModelIndex &root);
+    void loadFoldedState();
+
 
 private:
     void setup();
+    KBookmark bookmarkForIndex(const QModelIndex &index);
+
+    PanelTreeView *m_treeView;
+    bool m_loadingState;
 };
 
 #endif // BOOKMARKSPANEL_H

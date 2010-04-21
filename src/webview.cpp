@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -62,16 +62,21 @@
 
 WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
-    , m_page( new WebPage(this) )
-    , m_mousePos(QPoint(0,0))
+    , _mousePos( QPoint(0,0) )
+    , _scrollTimer( new QTimer(this) )
+    , _VScrollSpeed(0)
+    , _HScrollSpeed(0)
+    , _canEnableAutoScroll(true)
+    , _isAutoScrollEnabled(false)
 {
-    setPage(m_page);
+    WebPage *page = new WebPage(this);
+    setPage(page);
 
     // download system
     connect(this, SIGNAL(linkShiftClicked(const KUrl &)), 
-            m_page, SLOT(downloadUrl(const KUrl &)));
-    connect(m_page, SIGNAL(downloadRequested(const QNetworkRequest &)), 
-            m_page, SLOT(downloadRequest(const QNetworkRequest &)));
+            page, SLOT(downloadUrl(const KUrl &)));
+    connect(page, SIGNAL(downloadRequested(const QNetworkRequest &)), 
+            page, SLOT(downloadRequest(const QNetworkRequest &)));
             
     // middle click || ctrl + click signal
     connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), 
@@ -80,12 +85,24 @@ WebView::WebView(QWidget* parent)
     // loadUrl signal
     connect(this, SIGNAL(loadUrl(const KUrl &, const Rekonq::OpenType &)), 
             Application::instance(), SLOT(loadUrl(const KUrl &, const Rekonq::OpenType &)));
+
+    // scrolling timer
+    connect(_scrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
+    _scrollTimer->setInterval(100);
 }
 
 
 WebView::~WebView()
 {
-     disconnect();
+    delete _scrollTimer;
+    disconnect(); 
+}
+
+
+WebPage *WebView::page()
+{
+    WebPage *page = qobject_cast<WebPage *>( KWebView::page() );
+    return page;
 }
 
 
@@ -164,7 +181,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                     const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
                     data.setData(searchProviderPrefix + "some keyword");
                     a = new KAction(service->name(), this);
-                    a->setIcon(Application::icon(KUrl(data.uri())));
+                    a->setIcon( Application::icon( data.uri() ) );
                     a->setData(searchProviderPrefix);
                     connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
                     searchMenu->addAction(a);
@@ -306,24 +323,60 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
 void WebView::mousePressEvent(QMouseEvent *event)
 {
+    if(_isAutoScrollEnabled)
+    {
+        setCursor(Qt::ArrowCursor);
+        _VScrollSpeed = 0;
+        _HScrollSpeed = 0;
+        _scrollTimer->stop();
+        _isAutoScrollEnabled = false;
+        return;
+    }
+    
+    QWebHitTestResult result = page()->mainFrame()->hitTestContent( event->pos() );
+    _canEnableAutoScroll = !result.isContentEditable()  && result.linkUrl().isEmpty();
+        
     switch(event->button())
     {
       case Qt::XButton1:
         triggerPageAction(KWebPage::Back);
         break;
+      
       case Qt::XButton2:
         triggerPageAction(KWebPage::Forward);
         break;
+      
+      case Qt::MidButton:
+        if(_canEnableAutoScroll && !_isAutoScrollEnabled)
+        {
+            setCursor( KIcon("transform-move").pixmap(32) );
+            _clickPos = event->pos();
+            _isAutoScrollEnabled = true;
+        }
+        break;
+        
       default:
-        KWebView::mousePressEvent(event);
         break;
     };
+    KWebView::mousePressEvent(event);
 }
 
 
 void WebView::mouseMoveEvent(QMouseEvent *event)
 {
-    m_mousePos = event->pos();
+    _mousePos = event->pos();
+    
+    if(_isAutoScrollEnabled)
+    {
+        QPoint r = _mousePos - _clickPos;
+        _HScrollSpeed = r.x() / 2;  // you are too fast..
+        _VScrollSpeed = r.y() / 2;
+        if( !_scrollTimer->isActive() )
+                _scrollTimer->start();
+        
+        return;
+    }
+    
     if (Application::instance()->mainWindow()->isFullScreen())
     {        
         if (event->pos().y()>=0 && event->pos().y()<=4)
@@ -341,7 +394,7 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 
 QPoint WebView::mousePos()
 {
-    return m_mousePos;
+    return _mousePos;
 }
 
 
@@ -397,16 +450,71 @@ void WebView::openLinkInNewTab()
 
 void WebView::keyPressEvent(QKeyEvent *event)
 {
-    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_C))
+    if ( event->modifiers() == Qt::ControlModifier )
     {
-        triggerPageAction(KWebPage::Copy);
+        if ( event->key() == Qt::Key_C )
+        {
+            triggerPageAction(KWebPage::Copy);
+            return;
+        }
+
+        if ( event->key() == Qt::Key_A )
+        {
+            triggerPageAction(KWebPage::SelectAll);
+            return;
+        }
+    }
+ 
+    if(!_canEnableAutoScroll)
+    {
+        KWebView::keyPressEvent(event);
         return;
     }
-
-    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_A))
+    
+    // Auto Scrolling
+    if ( event->modifiers() == Qt::ShiftModifier )
     {
-        triggerPageAction(KWebPage::SelectAll);
-        return;
+        if( event->key() == Qt::Key_Up )
+        {
+            _VScrollSpeed--;
+            if( !_scrollTimer->isActive() )
+                _scrollTimer->start();
+            return;
+        }
+        
+        if( event->key() == Qt::Key_Down )
+        {
+            _VScrollSpeed++;
+            if( !_scrollTimer->isActive() )
+                _scrollTimer->start();
+            return;
+        }
+        
+        if( event->key() == Qt::Key_Right )
+        {
+            _HScrollSpeed++;
+            if( !_scrollTimer->isActive() )
+                _scrollTimer->start();
+            return;
+        }
+        
+        if( event->key() == Qt::Key_Left )
+        {
+            _HScrollSpeed--;
+            if( !_scrollTimer->isActive() )
+                _scrollTimer->start();
+            return;
+        }
+        
+        if(_scrollTimer->isActive())
+        {
+            _scrollTimer->stop();
+        }
+        else
+        {
+            if(_VScrollSpeed || _HScrollSpeed)
+                _scrollTimer->start();
+        }
     }
     
     KWebView::keyPressEvent(event);
@@ -418,10 +526,27 @@ void WebView::inspect()
     QAction *a = Application::instance()->mainWindow()->actionByName("web_inspector");
     if(a && !a->isChecked())
         a->trigger();
+    pageAction(QWebPage::InspectElement)->trigger();
 }
 
 
 void WebView::loadUrlInNewTab(const KUrl &url)
 {
     emit loadUrl(url, Rekonq::SettingOpenTab);
+}
+
+
+void WebView::scrollFrameChanged()
+{
+    // do the scrolling
+    page()->currentFrame()->scroll( _HScrollSpeed, _VScrollSpeed );
+    
+    // check if we reached the end
+    int y = page()->currentFrame()->scrollPosition().y();
+    if (y == 0 || y == page()->currentFrame()->scrollBarMaximum(Qt::Vertical))
+        _VScrollSpeed = 0;
+
+    int x = page()->currentFrame()->scrollPosition().x();
+    if (x == 0 || x == page()->currentFrame()->scrollBarMaximum(Qt::Horizontal))
+        _HScrollSpeed = 0;
 }

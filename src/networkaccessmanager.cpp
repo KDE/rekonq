@@ -3,7 +3,8 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>*
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+*
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License as
@@ -31,22 +32,56 @@
 // Local Includes
 #include "application.h"
 #include "adblockmanager.h"
+#include "webpage.h"
+
+// KDE Includes
 #include <KDebug>
+
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
     : AccessManager(parent)
+    , _parentPage( qobject_cast<WebPage *>(parent) )
 {
 }
 
 
 QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
 {
-    // Adblock
-    if (op == QNetworkAccessManager::GetOperation)
+    QNetworkReply *reply = 0;
+    
+    switch(op)
     {
-        QNetworkReply *reply = Application::adblockManager()->block(req);
+    case QNetworkAccessManager::HeadOperation:
+        kDebug() << "HEAD OPERATION";
+//         if(outgoingData)
+//         {
+//             QByteArray outgoingDataByteArray = outgoingData->peek(1024 * 1024);
+//             kDebug() << outgoingDataByteArray;
+//         }
+        break;
+    
+    case QNetworkAccessManager::GetOperation:
+        kDebug() << "GET OPERATION";
+        reply = Application::adblockManager()->block(req, _parentPage);
         if (reply)
             return reply;
+        break;
+    
+    case QNetworkAccessManager::PutOperation:
+        kDebug() << "PUT OPERATION";
+        break;
+    
+    case QNetworkAccessManager::PostOperation:
+        kDebug() << "POST OPERATION";
+        break;
+    
+    case QNetworkAccessManager::DeleteOperation:
+        kDebug() << "DELETE OPERATION";
+        break;
+        
+    default:
+        kDebug() << "UNKNOWN OPERATION";
+        break;
     }
 
     return AccessManager::createRequest(op,req,outgoingData);

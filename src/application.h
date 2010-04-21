@@ -2,9 +2,9 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -29,6 +29,8 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+// Local Includes
+#include "rekonqprivate_export.h"
 
 // KDE Includes
 #include <KUniqueApplication>
@@ -38,7 +40,7 @@
 #include <ThreadWeaver/Job>
 
 // Qt Includes
-#include <QPointer>
+#include <QWeakPointer>
 #include <QList>
 
 // Forward Declarations
@@ -52,7 +54,7 @@ class AdBlockManager;
 class WebView;
 
 
-typedef QList< QPointer<MainWindow> > MainWindowList;
+typedef QList< QWeakPointer<MainWindow> > MainWindowList;
 
 
 namespace Rekonq
@@ -89,7 +91,7 @@ namespace Rekonq
 /**
   *
   */
-class Application : public KUniqueApplication
+class REKONQ_TESTS_EXPORT Application : public KUniqueApplication
 {
     Q_OBJECT
 
@@ -100,6 +102,7 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
+    MainWindow *newMainWindow();
     MainWindowList mainWindowList();
     
     static KIcon icon(const KUrl &url);
@@ -117,16 +120,11 @@ public slots:
      */
     void saveConfiguration() const;
 
-    MainWindow *newMainWindow();
-
     void loadUrl( const KUrl& url,
                   const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );
-           
-    void loadUrl( const QString& urlString,
-                  const Rekonq::OpenType& type = Rekonq::CurrentTab
-                );    
 
+    void newWindow();
     void removeMainWindow(MainWindow *window);
 
 private slots:
@@ -139,10 +137,10 @@ private slots:
     void loadResolvedUrl(ThreadWeaver::Job *);
     
 private:
-    static QPointer<HistoryManager> s_historyManager;
-    static QPointer<BookmarkProvider> s_bookmarkProvider;
-    static QPointer<SessionManager> s_sessionManager;
-    static QPointer<AdBlockManager> s_adblockManager;
+    static QWeakPointer<HistoryManager> s_historyManager;
+    static QWeakPointer<BookmarkProvider> s_bookmarkProvider;
+    static QWeakPointer<SessionManager> s_sessionManager;
+    static QWeakPointer<AdBlockManager> s_adblockManager;
     
     MainWindowList m_mainWindows;
 };

@@ -30,24 +30,64 @@
 #include "lineedit.h"
 #include "lineedit.moc"
 
+// KDE Includes
+#include <klocalizedstring.h>
+#include <KDebug>
+#include <KStandardDirs>
+#include <KIconLoader>
+
 // Qt Includes
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QFocusEvent>
 #include <QtGui/QKeyEvent>
+#include <QStyleOptionFrameV2>
+#include <QPainter>
+
+
+IconButton::IconButton(QWidget *parent)
+    : QToolButton(parent)
+{
+    setToolButtonStyle(Qt::ToolButtonIconOnly);
+    setStyleSheet("IconButton { background-color:transparent; border: none; padding: 0px}");
+    setCursor(Qt::ArrowCursor);
+}
+
+
+// -----------------------------------------------------------------------------------------------------------
 
 
 LineEdit::LineEdit(QWidget* parent)
-        : KLineEdit(parent)
+    : KLineEdit(parent)
+    , _icon( new IconButton(this) )
 {
+    // cosmetic
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setMinimumWidth(200);
+    setMinimumHeight(26);
+
+    // initial style
+    setStyleSheet( QString("LineEdit { padding: 0 0 0 %1px;} ").arg(_icon->sizeHint().width()) );
+    
+    // doesn't show the clear button
+    setClearButtonShown(false);
+    
+    // trap Key_Enter & Key_Return events, while emitting the returnPressed signal
+    setTrapReturnKey(true);
+    
+    // insert decoded URLs
+    setUrlDropsEnabled(true);
+
+    // accept focus, via tabbing, clicking & wheeling
     setFocusPolicy(Qt::WheelFocus);
-    setHandleSignals(true);
-    setClearButtonShown(true);
+    
+    // disable completion object (we have our own :) )
+    setCompletionObject(0);
 }
 
 
 LineEdit::~LineEdit()
 {
+    delete _icon;
 }
 
 
@@ -66,4 +106,88 @@ void LineEdit::keyPressEvent(QKeyEvent *event)
 void LineEdit::mouseDoubleClickEvent(QMouseEvent *)
 {
     selectAll();
+}
+
+
+IconButton *LineEdit::iconButton() const
+{
+    return _icon;
+}
+
+
+void LineEdit::paintEvent(QPaintEvent *event)
+{
+    // you need this before our code to draw inside the line edit..
+    KLineEdit::paintEvent(event);
+    
+    if (text().isEmpty()) 
+    {       
+        QStyleOptionFrame option;
+        initStyleOption(&option);
+        QRect textRect = style()->subElementRect(QStyle::SE_LineEditContents, &option, this);
+        QPainter painter(this);
+        painter.setPen(Qt::gray);
+        painter.drawText( textRect, 
+                          Qt::AlignCenter, 
+                          i18n("Search Bookmarks, History, Web.. just start typing here!")
+                        );
+    }
+}
+
+
+IconButton *LineEdit::addRightIcon(LineEdit::icon ic)
+{
+    IconButton *rightIcon = new IconButton(this);
+    
+    switch(ic)
+    {
+    case LineEdit::KGet:
+        rightIcon->setIcon( KIcon("download") );
+        rightIcon->setToolTip( i18n("List all links with KGet") );
+        break;
+    case LineEdit::RSS:
+        rightIcon->setIcon( KIcon("application-rss+xml") );
+        rightIcon->setToolTip( i18n("List all available RSS feeds") );
+        break;
+    case LineEdit::SSL:
+        rightIcon->setIcon( KIcon("object-locked") );
+        rightIcon->setToolTip( i18n("Show SSL Infos") );
+        break;
+    default:
+        kDebug() << "ERROR.. default non extant case!!";
+        break;
+    }
+    
+    _rightIconsList << rightIcon;
+    int iconsCount = _rightIconsList.count();
+    rightIcon->move( width() - 23*iconsCount, 6);
+    rightIcon->show();
+    
+    return rightIcon;
+}
+
+
+void LineEdit::clearRightIcons()
+{
+    qDeleteAll(_rightIconsList);
+    _rightIconsList.clear();
+}
+
+
+void LineEdit::resizeEvent(QResizeEvent *event)
+{
+    int newHeight = ( height() - 19 )/2;
+    _icon->move(4, newHeight );
+    
+    int iconsCount = _rightIconsList.count();
+    int w = width();
+    
+    for(int i = 0; i < iconsCount; ++i)
+    {
+        IconButton *bt = _rightIconsList.at(i);
+        bt->move( w - 25*(i+1), newHeight );
+    }
+
+    KLineEdit::resizeEvent(event);
+
 }

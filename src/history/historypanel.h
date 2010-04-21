@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>*
 * Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
+* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -29,6 +29,11 @@
 #define HISTORYPANEL_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+#include "application.h"
+#include "paneltreeview.h"
+
 // Qt Includes
 #include <QDockWidget>
 
@@ -38,7 +43,7 @@ class QWidget;
 class QModelIndex;
 
 
-class HistoryPanel : public QDockWidget
+class REKONQ_TESTS_EXPORT HistoryPanel : public QDockWidget
 {
 Q_OBJECT
 
@@ -47,13 +52,17 @@ public:
     ~HistoryPanel();
 
 signals:
-    void openUrl(const KUrl &);
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void itemHovered(const QString &);
 
 private slots:
-    void itemActivated(const QModelIndex &);
+    void contextMenuItem(const QPoint &pos);
+    void contextMenuGroup(const QPoint &pos);
+    void openAll();
 
 private:
     void setup();
+    PanelTreeView *m_treeView;
 };
 
 #endif // HISTORYPANEL_H

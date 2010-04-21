@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>ClearDataWidget</class>
  <widget class="QWidget" name="ClearDataWidget">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>208</height>
+    <width>245</width>
+    <height>226</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,15 +19,47 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>Clear the following items:</string>
+      <string>&lt;h3&gt;Clear the following items:&lt;/h3&gt;</string>
      </property>
     </widget>
    </item>
    <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="QCheckBox" name="clearHistory">
      <property name="text">
-      <string>History</string>
+      <string>Visited pages history</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="clearDownloads">
+     <property name="text">
+      <string>Downloads history</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -76,10 +111,13 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::MinimumExpanding</enum>
+     </property>
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>15</height>
       </size>
      </property>
     </spacer>

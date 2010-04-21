@@ -1,2 +1,2 @@
 #! /bin/sh
-$XGETTEXT *.cpp -o $podir/rekonq.pot
+$XGETTEXT *.cpp */*.cpp -o $podir/rekonq.pot

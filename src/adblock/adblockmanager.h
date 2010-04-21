@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -105,12 +105,15 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "adblockrule.h"
 
 // Qt Includes
 #include <QObject>
 #include <QNetworkReply>
 #include <QStringList>
+#include <QByteArray>
+#include <KIO/Job>
 
 // Forward Includes
 class QNetworkRequest;
@@ -120,7 +123,7 @@ class WebPage;
 typedef QList<AdBlockRule> AdBlockRuleList;
 
 
-class AdBlockManager : public QObject
+class REKONQ_TESTS_EXPORT AdBlockManager : public QObject
 {
 Q_OBJECT
     
@@ -128,9 +131,21 @@ public:
     AdBlockManager(QObject *parent = 0);
     ~AdBlockManager();
 
-    void loadSettings();
-    QNetworkReply *block(const QNetworkRequest &request);
+    QNetworkReply *block(const QNetworkRequest &request, WebPage *page);
     void applyHidingRules(WebPage *page);
+    void addSubscription(const QString &title, const QString &location);
+    
+public slots:
+    void loadSettings(bool checkUpdateDate = true);
+
+private:
+    void updateNextSubscription();
+    void saveRules(const QStringList &);
+    void loadRules(const QStringList &);
+    
+private slots:
+    void slotResult(KJob *);
+    void subscriptionData(KIO::Job*, const QByteArray&);
     
 private:
     bool _isAdblockEnabled;
@@ -139,6 +154,9 @@ private:
     AdBlockRuleList _blackList;
     AdBlockRuleList _whiteList;
     QStringList _hideList;
+
+    int _index;
+    QByteArray _buffer;
 };
 
 #endif

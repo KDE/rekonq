@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>*
 * Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
+* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -46,10 +46,14 @@
 // KDE Includes
 #include <KLineEdit>
 #include <KLocalizedString>
+#include <KMenu>
+#include <KAction>
+#include <KMessageBox>
 
 
 HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
     : QDockWidget(title, parent, flags)
+    , m_treeView(new PanelTreeView(this))
 {
     setup();
     setShown(ReKonfig::showHistoryPanel());
@@ -70,11 +74,11 @@ void HistoryPanel::setup()
     
     QWidget *ui = new QWidget(this);
 
-    QTreeView *historyTreeView = new QTreeView(this);
-    historyTreeView->setUniformRowHeights(true);
-    historyTreeView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    historyTreeView->setTextElideMode(Qt::ElideMiddle);
-    historyTreeView->setAlternatingRowColors(true);
+    m_treeView->setUniformRowHeights(true);
+    m_treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_treeView->setTextElideMode(Qt::ElideMiddle);
+    m_treeView->setAlternatingRowColors(true);
+    m_treeView->header()->hide();
 
     // add search bar
     QHBoxLayout *hBoxLayout = new QHBoxLayout;
@@ -91,7 +95,7 @@ void HistoryPanel::setup()
     QVBoxLayout *vBoxLayout = new QVBoxLayout;
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
     vBoxLayout->addWidget(searchBar);
-    vBoxLayout->addWidget(historyTreeView);
+    vBoxLayout->addWidget(m_treeView);
 
     // add it to the UI
     ui->setLayout(vBoxLayout);
@@ -103,19 +107,83 @@ void HistoryPanel::setup()
 
     TreeProxyModel *treeProxyModel = new TreeProxyModel(this);
     treeProxyModel->setSourceModel(model);
-    historyTreeView->setModel(treeProxyModel);
-    historyTreeView->setExpanded(treeProxyModel->index(0, 0), true);
-    historyTreeView->header()->hideSection(1);
+    m_treeView->setModel(treeProxyModel);
+    m_treeView->setExpanded(treeProxyModel->index(0, 0), true);
+    m_treeView->header()->hideSection(1);
     QFontMetrics fm(font());
     int header = fm.width(QLatin1Char('m')) * 40;
-    historyTreeView->header()->resizeSection(0, header);
+    m_treeView->header()->resizeSection(0, header);
 
     connect(search, SIGNAL(textChanged(QString)), treeProxyModel, SLOT(setFilterFixedString(QString)));
-    connect(historyTreeView, SIGNAL(activated(const QModelIndex &)), this, SLOT(itemActivated(const QModelIndex &)));
+    connect(m_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenuItem(const QPoint &)));
+    connect(m_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenuGroup(const QPoint &)));
 }
 
 
-void HistoryPanel::itemActivated(const QModelIndex &item)
+void HistoryPanel::contextMenuItem(const QPoint &pos)
 {
-    emit openUrl( item.data(HistoryModel::UrlRole).toUrl() );
+    KMenu *menu = new KMenu(this);
+    KAction* action;
+
+    action = new KAction(KIcon("tab-new"), i18n("Open"), this);
+    connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInCurrentTab()));
+    menu->addAction(action);
+
+    action = new KAction(KIcon("tab-new"), i18n("Open in New Tab"), this);
+    connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInNewTab()));
+    menu->addAction(action);
+
+    action = new KAction(KIcon("window-new"), i18n("Open in New Window"), this);
+    connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInNewWindow()));
+    menu->addAction(action);
+
+    action = new KAction(KIcon("edit-copy"), i18n("Copy Link Address"), this);
+    connect(action, SIGNAL(triggered()), m_treeView, SLOT(copyToClipboard()));
+    menu->addAction(action);
+
+    if (!menu)
+        return;
+    menu->popup(m_treeView->mapToGlobal(pos));
 }
+
+
+void HistoryPanel::contextMenuGroup(const QPoint &pos)
+{
+    KMenu *menu = new KMenu(this);
+    KAction* action;
+
+    action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
+    connect(action, SIGNAL(triggered()), this, SLOT(openAll()));
+
+    menu->addAction(action);
+
+    if (!menu)
+        return;
+    menu->popup(m_treeView->mapToGlobal(pos));
+}
+
+
+void HistoryPanel::openAll()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if(!index.isValid())
+        return;
+
+    QList<KUrl> allChild;
+
+    for(int i = 0; i < index.model()->rowCount(index); i++)
+        allChild << qVariantValue<KUrl>(index.child(i, 0).data(Qt::UserRole));
+
+    if(allChild.length() > 8)
+    {
+        if( !(KMessageBox::warningContinueCancel(this, 
+                                                i18n("You are about to open %1 tabs.\nAre you sure  ?", 
+                                                QString::number(allChild.length()))) == KMessageBox::Continue)
+          )
+            return;
+    }
+
+    for(int i = 0; i < allChild.length(); i++)
+        emit openUrl(allChild.at(i).url(), Rekonq::SettingOpenTab);
+}
+

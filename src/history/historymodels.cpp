@@ -4,7 +4,7 @@
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
 * Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -118,6 +118,8 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
         return item.dateTime.date();
     case UrlRole:
         return QUrl(item.url);
+    case Qt::UserRole:
+	return KUrl(item.url);
     case UrlStringRole:
         return item.url;
     case Qt::DisplayRole:
@@ -144,6 +146,12 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
         {
             return Application::icon(item.url);
         }
+    case Qt::ToolTipRole:
+        QString tooltip = "";
+        if(!item.title.isEmpty())
+            tooltip = item.title + "\n";
+        tooltip += item.dateTime.toString(Qt::SystemLocaleShortDate) + "\n" + item.url;
+        return tooltip;
     }
     return QVariant();
 }

@@ -2,9 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -37,6 +36,8 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "webtab.h"
+#include "adblockwidget.h"
+#include "networkwidget.h"
 
 //Ui Includes
 #include "ui_settings_general.h"
@@ -53,7 +54,6 @@
 #include <KCModuleProxy>
 
 // Qt Includes
-#include <QtCore/QPointer>
 #include <QtGui/QWidget>
 
 
@@ -65,12 +65,12 @@ private:
     Ui::tabs tabsUi;
     Ui::fonts fontsUi;
     Ui::webkit webkitUi;
+
+    AdBlockWidget *adBlockWidg;
+    NetworkWidget *networkWidg;
     
-    KCModuleProxy *proxyModule;
     KCModuleProxy *ebrowsingModule;
-    KCModuleProxy *cookiesModule;
-    KCModuleProxy *cacheModule;
-    KCModuleProxy *adblockModule;
+
     KShortcutsEditor *shortcutsEditor;
     
     Private(SettingsDialog *parent);
@@ -101,21 +101,6 @@ Private::Private(SettingsDialog *parent)
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("Fonts"));
     pageItem->setIcon(KIcon("preferences-desktop-font"));
-
-    KCModuleInfo cookiesInfo("cookies.desktop");
-    cookiesModule = new KCModuleProxy(cookiesInfo,parent);
-    pageItem = parent->addPage(cookiesModule, i18n(cookiesInfo.moduleName().toLocal8Bit()));
-    pageItem->setIcon(KIcon(cookiesInfo.icon()));
-
-    KCModuleInfo proxyInfo("proxy.desktop");
-    proxyModule = new KCModuleProxy(proxyInfo,parent);
-    pageItem = parent->addPage(proxyModule, i18n(proxyInfo.moduleName().toLocal8Bit()));
-    pageItem->setIcon(KIcon(proxyInfo.icon()));
-
-    KCModuleInfo cacheInfo("cache.desktop");
-    cacheModule = new KCModuleProxy(cacheInfo,parent);
-    pageItem = parent->addPage(cacheModule, i18n(cacheInfo.moduleName().toLocal8Bit()));
-    pageItem->setIcon(KIcon(cacheInfo.icon()));
         
     widget = new QWidget;
     webkitUi.setupUi(widget);
@@ -125,10 +110,15 @@ Private::Private(SettingsDialog *parent)
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
 
-    KCModuleInfo adblockInfo("khtml_filter.desktop");
-    adblockModule = new KCModuleProxy(adblockInfo,parent);
-    pageItem = parent->addPage(adblockModule, i18n(adblockInfo.moduleName().toLocal8Bit()));
-    pageItem->setIcon(KIcon(adblockInfo.icon()));
+    networkWidg = new NetworkWidget(parent);
+    networkWidg->layout()->setMargin(0);
+    pageItem = parent->addPage(networkWidg , i18n("Network"));
+    pageItem->setIcon( KIcon("preferences-system-network") );
+    
+    adBlockWidg = new AdBlockWidget(parent);
+    adBlockWidg->layout()->setMargin(0);
+    pageItem = parent->addPage(adBlockWidg , i18n("Ad Block"));
+    pageItem->setIcon( KIcon("preferences-web-browser-adblock") );
     
     shortcutsEditor = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(), parent);
     pageItem = parent->addPage(shortcutsEditor , i18n("Shortcuts"));
@@ -139,8 +129,8 @@ Private::Private(SettingsDialog *parent)
     pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
 
-    // WARNING remember wheh changing here that the smaller netbooks
-    // have a 1024x576 resolution. So DONT bother that limits!!
+    // WARNING remember wheh changing here that the smallest netbooks
+    // have a 1024x576 resolution. So DON'T bother that limits!!
     parent->setMinimumSize(700,525);    
 }
 
@@ -153,23 +143,23 @@ SettingsDialog::SettingsDialog(QWidget *parent)
         , d(new Private(this))
 {
     showButtonSeparator(false);
-    setWindowTitle(i18n("Configure - rekonq"));
+    setWindowTitle(i18nc("Window title of the settings dialog", "Configure – rekonq"));
     setModal(true);
 
     readConfig();
 
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
     
+    // update buttons
+    connect(d->adBlockWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->networkWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    connect(d->cookiesModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    connect(d->proxyModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    connect(d->cacheModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    connect(d->adblockModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     
-    connect(d->shortcutsEditor, SIGNAL(keyChange()), this, SLOT(updateButtons()));
-        
+    connect(d->shortcutsEditor, SIGNAL(keyChange()),   this, SLOT(updateButtons()));
+    
+    // save settings
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
-    connect(this, SIGNAL(okClicked()), this, SLOT(saveSettings()));
+    connect(this, SIGNAL(okClicked()),    this, SLOT(saveSettings()));
         
     setWebSettingsToolTips();
 }
@@ -209,24 +199,26 @@ void SettingsDialog::readConfig()
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
+    if (!hasChanged())
+        return;
+    
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
-    d->cookiesModule->save();
-    d->proxyModule->save();
-    d->cacheModule->save();
     d->shortcutsEditor->save();
-    d->adblockModule->save();
+    d->adBlockWidg->save();
+    d->networkWidg->save();
+
+    updateButtons();
+    emit settingsChanged("ReKonfig");
 }
 
 
 bool SettingsDialog::hasChanged()
 {
     return KConfigDialog::hasChanged() 
-            || d->ebrowsingModule->changed()            
-            || d->cookiesModule->changed()
-            || d->proxyModule->changed()
-            || d->cacheModule->changed()
-            || d->adblockModule->changed()
+            || d->adBlockWidg->changed()
+            || d->networkWidg->changed()
+            || d->ebrowsingModule->changed()
             || d->shortcutsEditor->isModified();
             ;
 }

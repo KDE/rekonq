@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -29,46 +29,44 @@
 #define FINDBAR_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KLineEdit>
 
 // Qt Includes
 #include <QtGui/QWidget>
 #include <QtGui/QCheckBox>
-#include <QtGui/QKeyEvent>
 
 // Forward Declarations
-class KMainWindow;
-class QKeyEvent;
 class QString;
 
 
-class FindBar : public QWidget
+class REKONQ_TESTS_EXPORT FindBar : public QWidget
 {
     Q_OBJECT
 
 public:
-    FindBar(KMainWindow *mainwindow);
+    FindBar(QWidget *parent);
     ~FindBar();
     KLineEdit *lineEdit() const;
     bool matchCase() const;
+    void notifyMatch(bool match);
+    bool highlightAllState() const;
 
 public slots:
-    void clear();
     void show();
-    void notifyMatch(bool match);
-
-protected Q_SLOTS:
-    void keyPressEvent(QKeyEvent* event);
+    void hide();
 
 signals:
     void searchString(const QString &);
 
 private:
     KLineEdit *m_lineEdit;
-    QCheckBox *m_matchCase;
     QTimer *m_hideTimer;
-
+    QCheckBox *m_matchCase;
+    QCheckBox *m_highlightAll;
 };
 
 #endif

@@ -3,7 +3,8 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 Nokia Corporation <qt-info@nokia.com>
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -29,6 +30,9 @@
 #include "websnap.h"
 #include "websnap.moc"
 
+// Local Includes
+#include "newtabpage.h"
+
 // KDE Includes
 #include <KDebug>
 #include <KStandardDirs>
@@ -42,15 +46,12 @@
 #include <QFile>
 
 
-#define WIDTH  200
-#define HEIGHT 150
-
-
-WebSnap::WebSnap(const QUrl &url)
+WebSnap::WebSnap(const QUrl& url, QWebFrame *frame, int index)
     : QObject()
+    , m_url(url)
+    , m_frame(frame)
+    , m_previewIndex(index)
 {
-    m_url = url;
-
     // this to not register websnap history
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
     
@@ -59,12 +60,8 @@ WebSnap::WebSnap(const QUrl &url)
     m_page.settings()->setAttribute(QWebSettings::JavascriptEnabled, false);
 
     connect(&m_page, SIGNAL(loadFinished(bool)), this, SLOT(saveResult(bool)));
+    
     QTimer::singleShot(0, this, SLOT(load()));
-}
-
-
-WebSnap::~WebSnap()
-{
 }
 
 
@@ -74,31 +71,29 @@ void WebSnap::load()
 }
 
 
-QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
+// NOTE please, be careful modifying this. 
+// You are playing with fire..
+QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h, bool save)
 {
     // prepare page
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); // Why it doesn't work with one setScrollBarPolicy?
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff); // bug in qtwebkit ?
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
     page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-
+    QSize oldSize = page.viewportSize();
+    
     // find the best size
     QSize size;
-    if (page.viewportSize().width() && page.viewportSize().height())
+    int width = page.mainFrame()->contentsSize().width();
+    if (width < 640) 
     {
-        size = page.viewportSize();
+        width = 640;
     }
-    else
-    {
-        int width = page.mainFrame()->contentsSize().width();
-        if (width < 640) width = 640;
-        size = QSize(width,width*((0.0+h)/w));
-        page.setViewportSize(size);
-    }
+    size = QSize(width,width*((0.0+h)/w));
+    page.setViewportSize(size);
     
     // create the page image
     QImage pageImage = QImage(size, QImage::Format_ARGB32_Premultiplied);
-    pageImage.fill(Qt::transparent); 
+    pageImage.fill(Qt::transparent);
+    
     // render it
     QPainter p(&pageImage);
     page.mainFrame()->render(&p);
@@ -107,42 +102,75 @@ QPixmap WebSnap::renderPreview(const QWebPage &page,int w, int h)
 
     // restore page settings
     page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
-    page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+    page.setViewportSize(oldSize);
+    
+    QPixmap pm = QPixmap::fromImage(pageImage);
+    if(save)
+    {
+        KUrl url( page.mainFrame()->url() );
+        kDebug() << "saving preview";
+        QFile::remove( fileForUrl(url).toLocalFile() );
+        pm.save(fileForUrl(url).toLocalFile());
+    }
+    
+    return pm;
+}
 
-    return QPixmap::fromImage(pageImage);
+
+KUrl WebSnap::fileForUrl(KUrl url)
+{
+    QString filePath = KStandardDirs::locateLocal("cache", QString("thumbs/") + WebSnap::guessNameFromUrl(url) + ".png", true);
+    return KUrl(filePath);
+}
+
+
+QString WebSnap::guessNameFromUrl(QUrl url)
+{
+    QString name = url.toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
+    
+    // TODO learn Regular Expressions :)
+    // and implement something better here..
+    name.remove('/');
+    name.remove('&');
+    name.remove('.');
+    name.remove('-');
+    name.remove('_');
+    name.remove('?');
+    name.remove('=');
+    name.remove('+');
+    
+    return name;
 }
 
 
 void WebSnap::saveResult(bool ok)
 {
+    QPixmap image = QPixmap();
+    
     // crude error-checking
     if (!ok) 
     {
         kDebug() << "Error loading site..";
-        return;
+        m_snapTitle = "Error...";
+        
     }
-
-    m_image = renderPreview(m_page, WIDTH, HEIGHT);
-    emit finished();
+    else
+    {
+        image = renderPreview(m_page, WIDTH, HEIGHT);
+        m_snapTitle = m_page.mainFrame()->title();
+    }
+    QFile::remove(fileForUrl(m_url).toLocalFile());
+    image.save(fileForUrl(m_url).toLocalFile());
+    
+    NewTabPage p( m_frame );
+    p.snapFinished(m_previewIndex, m_url, m_snapTitle);
+    
+    this->deleteLater();
 }
-
 
 
 QString WebSnap::snapTitle()
 {
     return m_page.mainFrame()->title();
-}
-
-
-QUrl WebSnap::snapUrl()
-{
-    return m_url;
-}
-
-
-QPixmap WebSnap::previewImage()
-{
-    return m_image;
 }

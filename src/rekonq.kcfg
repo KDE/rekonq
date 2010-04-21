@@ -7,17 +7,37 @@
 
 <!-- Includes -->
 <include>QtWebKit</include>
+<include>QDateTime</include>
 <include>KUrl</include>
 
 <kcfgfile name="rekonqrc" />
 
+<!-- Miscellaneuos (not config UI) settins -->
+<group name="misc">
+    <entry name="FirstExecution" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="showHistoryPanel" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="showBookmarksPanel" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="walletBlackList" type="StringList">
+        <default></default>
+    </entry>
+    <entry name="recoverOnCrash" type="Int">
+        <default>0</default>
+    </entry>
+</group>
+
 <!-- New Tab Page Settings -->
   <group name="NewTabPage">
     <entry name="previewNames" type="StringList">
-        <default>KDE Homepage,KDE-Apps,KDE-Look,UserBase,KDE Community Forums,TechBase,Planet KDE,rekonq</default>
+        <default>KDE Homepage,UserBase,rekonq site</default>
     </entry>
     <entry name="previewUrls" type="StringList">
-        <default>http://www.kde.org,http://kde-apps.org,http://kde-look.org,http://userbase.kde.org,http://forum.kde.org,http://techbase.kde.org,http://planetkde.org,http://rekonq.sourceforge.net</default>
+        <default>http://www.kde.org,http://userbase.kde.org,http://rekonq.sourceforge.net</default>
     </entry>
   </group>
 
@@ -35,19 +55,16 @@
     <entry name="homePage" type="String">
         <default>http://www.kde.org/</default>
     </entry>
-    <entry name="showHistoryPanel" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="showBookmarksPanel" type="Bool">
-        <default>false</default>
-    </entry>
     <entry name="kgetDownload" type="Bool">
         <default>false</default>
     </entry>
     <entry name="kgetList" type="Bool">
         <default>false</default>
     </entry>
-  </group>
+    <entry name="searchEngine" type="Int">
+        <default>0</default>
+    </entry>
+   </group>
 
 <!-- Tabs Settings -->
   <group name="Tabs">
@@ -93,12 +110,6 @@
         <entry name="expireHistory" type="Int">
             <default>1</default>
         </entry>
-        <entry name="acceptCookies" type="Int">
-            <default>2</default>
-        </entry>
-        <entry name="keepCookiesUntil" type="Int">
-            <default>0</default>
-        </entry>
     </group>
 
 <!-- WebKit Settings -->
@@ -141,6 +152,29 @@
         </entry>
         <entry name="userCSS" type="Url">
             <default></default>
+        </entry>
+    </group>
+
+
+<!-- AdBlock Settings -->
+    <group name="AdBlock">
+        <entry name="adBlockEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="hideAdsEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="subscriptionTitles" type="StringList">
+            <default>EasyList</default>
+        </entry>
+        <entry name="subscriptionLocations" type="StringList">
+            <default>https://easylist-downloads.adblockplus.org/easylist.txt</default>
+        </entry>
+        <entry name="lastUpdate" type="DateTime">
+            <default>QDateTime(QDate(2009,03,13))</default>
+        </entry>
+        <entry name="updateInterval" type="Int">
+            <default>7</default>
         </entry>
     </group>
 

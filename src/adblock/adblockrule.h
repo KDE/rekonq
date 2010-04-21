@@ -29,7 +29,7 @@
  *
  * This file is a part of the rekonq project
  *
- * Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+ * Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
  * This program is free software; you can redistribute it and/or
@@ -54,6 +54,7 @@
 #ifndef ADBLOCKRULE_H
 #define ADBLOCKRULE_H
 
+
 // Qt Includes
 #include <QRegExp>
 #include <QString>
@@ -68,7 +69,9 @@ public:
     AdBlockRule(const QString &filter);
 
     bool match(const QString &encodedUrl) const;
-
+    
+    QString pattern() const;
+    
 private:    
     QString convertPatternToRegExp(const QString &wildcardPattern);
     

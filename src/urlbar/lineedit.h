@@ -32,11 +32,32 @@
 
 // KDE Includes
 #include <KLineEdit>
+#include <KIcon>
+
+// Qt Includes
+#include <QToolButton>
 
 // Forward Declarations
 class QContextMenuEvent;
 class QFocusEvent;
 class QKeyEvent;
+class QStyleOptionFrameV2;
+
+
+class IconButton : public QToolButton
+{
+    Q_OBJECT
+
+public:
+    IconButton(QWidget *parent = 0);
+};
+
+
+// ------------------------------------------------------------------------------------
+
+
+// Definitions
+typedef QList<IconButton *> IconButtonPointerList;
 
 
 class LineEdit : public KLineEdit
@@ -44,12 +65,33 @@ class LineEdit : public KLineEdit
     Q_OBJECT
 
 public:
+    
+    enum icon
+    { 
+        KGet    = 0x00000001,
+        RSS     = 0x00000010,
+        SSL     = 0x00000100,
+    };   
+
     explicit LineEdit(QWidget *parent = 0);
     virtual ~LineEdit();
+    
+    IconButton *iconButton() const;
 
 protected:
-    virtual void keyPressEvent(QKeyEvent*);
+    virtual void keyPressEvent(QKeyEvent *);
     virtual void mouseDoubleClickEvent(QMouseEvent *);
+    virtual void paintEvent(QPaintEvent *);
+    virtual void resizeEvent(QResizeEvent *);
+    
+    IconButton *addRightIcon(LineEdit::icon );
+
+private slots:
+    void clearRightIcons();
+
+private:    
+    IconButton *_icon;
+    IconButtonPointerList _rightIconsList;
 };
 
 #endif // LINEEDIT_H

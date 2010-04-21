@@ -31,9 +31,6 @@
 #include <KUriFilter>
 #include <KUriFilterData>
 
-// Qt Includes
-#include <QUrl>
-
 
 FilterUrlJob::FilterUrlJob(WebView *view, const QString &urlString, QObject *parent)
     : Job(parent)
@@ -61,7 +58,12 @@ void FilterUrlJob::run()
     // the beautiful KDE web browsing shortcuts
     KUriFilterData data(_urlString);
     data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
-    _url = KUriFilter::self()->filterUri(data) 
-        ? data.uri().pathOrUrl() 
-        : QUrl::fromUserInput( _urlString );
+
+    if(KUriFilter::self()->filterUri(data) && data.uriType() != KUriFilterData::Error)
+    {
+        QString tempUrlString = data.uri().url();
+        _url = KUrl(tempUrlString);
+    }
+    else
+        _url = QUrl::fromUserInput( _urlString );
 }

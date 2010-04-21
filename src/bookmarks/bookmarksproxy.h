@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Nils Weigel <nehlsen at gmail dot com>
+* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -27,22 +28,27 @@
 #ifndef BOOKMARKSPROXY_H
 #define BOOKMARKSPROXY_H
 
+
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QSortFilterProxyModel>
 
-class BookmarksProxy : public QSortFilterProxyModel
+
+class REKONQ_TESTS_EXPORT BookmarksProxy : public QSortFilterProxyModel
 {
     Q_OBJECT
     Q_DISABLE_COPY(BookmarksProxy)
 
 public:
-	BookmarksProxy( QObject *parent = 0 );
+    BookmarksProxy( QObject *parent = 0 );
 
 protected:
-	virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
 
-	// returns true if any child(or childs-child...) matches filter
-	bool recursiveMatch( const QModelIndex &index ) const;
+    // returns true if any child(or children-child...) matches filter
+    bool recursiveMatch( const QModelIndex &index ) const;
 };
 
 #endif // BOOKMARKSPROXY_H

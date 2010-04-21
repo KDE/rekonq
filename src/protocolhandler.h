@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License as
@@ -27,6 +27,10 @@
 #ifndef PROTOCOL_HANDLER_H
 #define PROTOCOL_HANDLER_H
 
+
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // KDE Includes
 #include <KDirLister>
 
@@ -41,7 +45,7 @@ class KUrl;
 class KJob;
 
 
-class ProtocolHandler : public QObject
+class REKONQ_TESTS_EXPORT ProtocolHandler : public QObject
 {
 Q_OBJECT
 
@@ -70,7 +74,8 @@ private slots:
     
 private:
     QString dirHandling(const KFileItemList &list);
-   
+    void abpHandling();
+    
     KDirLister *_lister;
     QWebFrame *_frame;
     KUrl _url;

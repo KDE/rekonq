@@ -2,9 +2,10 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -60,17 +61,21 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
+// Defines
+#define QL1S(x)  QLatin1String(x)
+
 
 MainView::MainView(MainWindow *parent)
-        : KTabWidget(parent)
-        , m_urlBar(new UrlBar(this))
-        , m_tabBar(new TabBar(this))
-        , m_addTabButton(new QToolButton(this))
-        , m_currentTabIndex(0)
-        , m_parentWindow(parent)
+    : KTabWidget(parent)
+    , _bars(new QStackedWidget(this))
+    , m_addTabButton(0)
+    , m_currentTabIndex(0)
+    , m_parentWindow(parent)
 {
     // setting tabbar
-    setTabBar(m_tabBar);
+    TabBar *tabBar = new TabBar(this);
+    m_addTabButton = new QToolButton(this);
+    setTabBar(tabBar);
 
     // set mouse tracking for tab previews
     setMouseTracking(true);
@@ -79,17 +84,18 @@ MainView::MainView(MainWindow *parent)
     m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.mng");
 
     // connecting tabbar signals
-    connect(m_tabBar, SIGNAL(closeTab(int)), this, SLOT(closeTab(int)));
-    connect(m_tabBar, SIGNAL(mouseMiddleClick(int)), this, SLOT(closeTab(int)));
-    connect(m_tabBar, SIGNAL(newTabRequest()), this, SLOT(newTab()));
+    connect(tabBar, SIGNAL(closeTab(int)),          this,   SLOT(closeTab(int)) );
+    connect(tabBar, SIGNAL(mouseMiddleClick(int)),  this,   SLOT(closeTab(int)) );
+    connect(tabBar, SIGNAL(newTabRequest()),        this,   SLOT(newTab())      );
     
-    connect(m_tabBar, SIGNAL(cloneTab(int)), this, SLOT(cloneTab(int)));
-    connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(closeOtherTabs(int)));
-    connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(reloadTab(int)));
-    connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(reloadAllTabs()));
-    connect(m_tabBar, SIGNAL(detachTab(int)), this, SLOT(detachTab(int)));
+    connect(tabBar, SIGNAL(cloneTab(int)),          this,   SLOT(cloneTab(int)) );
+    connect(tabBar, SIGNAL(closeOtherTabs(int)),    this,   SLOT(closeOtherTabs(int))   );
+    connect(tabBar, SIGNAL(reloadTab(int)),         this,   SLOT(reloadTab(int))    );
+    connect(tabBar, SIGNAL(reloadAllTabs()),        this,   SLOT(reloadAllTabs())   );
+    connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int))    );
     
-    connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+    connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)) );
+    connect(tabBar, SIGNAL(tabMoved(int, int)),     this,   SLOT(movedTab(int, int)) );
     
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
@@ -117,12 +123,10 @@ void MainView::postLaunch()
 
 void MainView::updateTabButtonPosition()
 {
-    kDebug() << "updating new tab button position..";
-    
     static bool ButtonInCorner = false;
 
     int tabWidgetWidth = frameSize().width();
-    int tabBarWidth = m_tabBar->tabSizeHint(0).width()*m_tabBar->count();
+    int tabBarWidth = tabBar()->tabSizeHint(0).width() * tabBar()->count();
 
     if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
     {
@@ -142,14 +146,13 @@ void MainView::updateTabButtonPosition()
 
         // detecting X position
         int newPosX = tabBarWidth;      
-        int tabWidthHint = m_tabBar->tabSizeHint(0).width();
+        int tabWidthHint = tabBar()->tabSizeHint(0).width();
         if (tabWidthHint < sizeHint().width()/4)
             newPosX = tabWidgetWidth - m_addTabButton->width();
 
         // Y position is fixed
         // Here I noticed with some emphiric valutations ( :D )
         // that 2 look better than 0, just that..
-
         m_addTabButton->move(newPosX, 2);
     }
 }
@@ -163,13 +166,20 @@ QToolButton *MainView::addTabButton() const
 
 TabBar *MainView::tabBar() const
 {
-    return m_tabBar; 
+    TabBar *tabBar = qobject_cast<TabBar *>( KTabWidget::tabBar() );
+    return tabBar; 
 }
 
 
-UrlBar *MainView::urlBar() const 
+UrlBar *MainView::urlBar() const
+{
+    return qobject_cast<UrlBar *>(_bars->widget(m_currentTabIndex));
+}
+
+
+QWidget *MainView::urlBarWidget() const 
 { 
-    return m_urlBar; 
+    return _bars; 
 }
 
 
@@ -181,13 +191,13 @@ WebTab *MainView::currentWebTab() const
 
 void MainView::updateTabBar()
 {
-    if (ReKonfig::alwaysShowTabBar())
+    if( ReKonfig::alwaysShowTabBar() )
     {
         if (!isTabBarHidden())
         {
-            if (m_tabBar->isHidden())
+            if (tabBar()->isHidden())
             {
-                m_tabBar->show();
+                tabBar()->show();
                 m_addTabButton->show();
             }
             updateTabButtonPosition();
@@ -195,16 +205,16 @@ void MainView::updateTabBar()
         return;
     }
 
-    if (m_tabBar->count() == 1)
+    if( tabBar()->count() == 1 )
     {
-        m_tabBar->hide();
+        tabBar()->hide();
         m_addTabButton->hide();
     }
-    else if (!isTabBarHidden())
+    else if( !isTabBarHidden() )
     {
-        if (m_tabBar->isHidden())
+        if ( tabBar()->isHidden() )
         {
-            m_tabBar->show();
+            tabBar()->show();
             m_addTabButton->show();
         }
         updateTabButtonPosition();
@@ -235,17 +245,6 @@ void MainView::webStop()
 }
 
 
-void MainView::clear()
-{
-    // FIXME (the programmer, not the code)
-    // What exactly do we need to clear here?
-    m_urlBar->clearHistory();
-    m_urlBar->clear();
-
-    m_recentlyClosedTabs.clear();
-}
-
-
 // When index is -1 index chooses the current tab
 void MainView::reloadTab(int index)
 {
@@ -273,42 +272,41 @@ void MainView::currentChanged(int index)
     m_currentTabIndex = index;
 
     if (oldTab)
-    {        
-        // disconnecting webview from urlbar
-        disconnect(oldTab->view(), SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
-        disconnect(oldTab->view(), SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
-        disconnect(oldTab->view(), SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
-    
+    {           
         // disconnecting webpage from mainview
         disconnect(oldTab->page(), SIGNAL(statusBarMessage(const QString&)),
                    this, SIGNAL(showStatusBarMessage(const QString&)));
         disconnect(oldTab->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
                    this, SIGNAL(linkHovered(const QString&)));
     }
-
-    // connecting webview with urlbar
-    connect(tab->view(), SIGNAL(loadProgress(int)), urlBar(), SLOT(updateProgress(int)));
-    connect(tab->view(), SIGNAL(loadFinished(bool)), urlBar(), SLOT(loadFinished(bool)));
-    connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), urlBar(), SLOT(setUrl(const QUrl &)));
     
-    connect(tab->view()->page(), SIGNAL(statusBarMessage(const QString&)), 
+    connect(tab->page(), SIGNAL(statusBarMessage(const QString&)), 
             this, SIGNAL(showStatusBarMessage(const QString&)));
-    connect(tab->view()->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
+    connect(tab->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)), 
             this, SIGNAL(linkHovered(const QString&)));
 
-    emit setCurrentTitle(tab->view()->title());
-    urlBar()->setUrl(tab->view()->url());
-    urlBar()->setProgress(tab->progress());
-    emit showStatusBarMessage(tab->lastStatusBarText());
+    emit currentTitle(tab->view()->title());
+    _bars->setCurrentIndex(index);
+    
+    // clean up "status bar"
+    emit showStatusBarMessage( QString() );
 
     // notify UI to eventually switch stop/reload button
-    if(urlBar()->isLoading())
-        emit browserTabLoading(true);
-    else
+    int progr = tab->progress();
+    if(progr == 0)
         emit browserTabLoading(false);
+    else
+        emit browserTabLoading(true);
+    
+    // update zoom slider
+    if(!Application::instance()->mainWindowList().isEmpty())
+        Application::instance()->mainWindow()->setZoomSliderFactor(tab->view()->zoomFactor());
 
     // set focus to the current webview
-    tab->setFocus();
+    if(tab->url().scheme() == QL1S("about"))
+        _bars->currentWidget()->setFocus();
+    else
+        tab->view()->setFocus();
 }
 
 
@@ -328,7 +326,8 @@ WebTab *MainView::webTab(int index) const
 WebTab *MainView::newWebTab(bool focused, bool nearParent)
 {
     WebTab* tab = new WebTab(this);
-
+    UrlBar *bar = new UrlBar(tab);
+    
     // connecting webview with mainview
     connect(tab->view(), SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
     connect(tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
@@ -341,10 +340,15 @@ WebTab *MainView::newWebTab(bool focused, bool nearParent)
     connect(tab->view()->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
     
     if (nearParent)
+    {
         insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
+        _bars->insertWidget(currentIndex() + 1, bar);
+    }
     else
+    {
         addTab(tab, i18n("(Untitled)"));
-
+        _bars->addWidget(bar);
+    }
     updateTabBar();
     
     if (focused)
@@ -368,7 +372,7 @@ void MainView::newTab()
         w->load( KUrl("about:home") );
         break;
     case 1: // blank page
-        urlBar()->setUrl(KUrl(""));
+        urlBar()->clear();
         break;
     case 2: // homepage
         w->load( KUrl(ReKonfig::homePage()) );
@@ -376,7 +380,7 @@ void MainView::newTab()
     default:
         break;
     }
-    urlBar()->setFocus();
+    _bars->currentWidget()->setFocus();
 }
 
 
@@ -458,12 +462,12 @@ void MainView::closeTab(int index)
     if (count() == 1)
     {
         WebView *w = currentWebTab()->view();
-        urlBar()->setUrl(KUrl(""));
         switch(ReKonfig::newTabsBehaviour())
         {
         case 0: // new tab page
         case 1: // blank page
             w->load( KUrl("about:home") );
+            urlBar()->setFocus();
             break;
         case 2: // homepage
             w->load( KUrl(ReKonfig::homePage()) );
@@ -471,7 +475,6 @@ void MainView::closeTab(int index)
         default:
             break;
         }
-        urlBar()->setFocus();
         return;
     }
 
@@ -480,43 +483,40 @@ void MainView::closeTab(int index)
     if (index < 0 || index >= count())
         return;
 
-    bool hasFocus = false;
     WebTab *tab = webTab(index);
-    if (tab)
+    if (!tab)
+        return;
+
+    if (tab->view()->isModified())
     {
-        if (tab->view()->isModified())
-        {
-            int risp = KMessageBox::questionYesNo(this,
-                        i18n("This tab contains changes that have not been submitted.\n"
-                             "Closing the tab will discard these changes.\n"
-                             "Do you really want to close this tab?\n"),
-                        i18n("Closing Modified Tab"));
-            if (risp == KMessageBox::No)
-                return;
-        }
-        hasFocus = tab->hasFocus();
-
-        //store close tab except homepage
-        if (!tab->url().prettyUrl().startsWith( QLatin1String("about:") ) && !tab->url().isEmpty())
-        {
-            QString title = tab->view()->title();
-            QString url = tab->url().prettyUrl();
-            HistoryItem item(url, QDateTime::currentDateTime(), title);
-            m_recentlyClosedTabs.removeAll(item);
-            m_recentlyClosedTabs.prepend(item);
-        }
-
-        removeTab(index);
-        updateTabBar();         // UI operation: do it ASAP!!
-        tab->deleteLater();  // webView is scheduled for deletion.
-        
-        emit tabsChanged();
-
-        if (hasFocus && count() > 0)
-        {
-            currentWebTab()->setFocus();
-        }       
+        int risp = KMessageBox::warningContinueCancel(this,
+                    i18n("This tab contains changes that have not been submitted.\n"
+                            "Closing the tab will discard these changes.\n"
+                            "Do you really want to close this tab?\n"),
+                    i18n("Closing Modified Tab"), KGuiItem(i18n("Close &Tab"),"tab-close"), KStandardGuiItem::cancel());
+        if (risp != KMessageBox::Continue)
+            return;
     }
+
+    // store close tab except homepage
+    if (!tab->url().prettyUrl().startsWith( QLatin1String("about:") ) && !tab->url().isEmpty())
+    {
+        QString title = tab->view()->title();
+        QString url = tab->url().prettyUrl();
+        HistoryItem item(url, QDateTime::currentDateTime(), title);
+        m_recentlyClosedTabs.removeAll(item);
+        m_recentlyClosedTabs.prepend(item);
+    }
+
+    removeTab(index);
+    updateTabBar();        // UI operation: do it ASAP!!
+    tab->deleteLater();    // tab is scheduled for deletion.
+
+    QWidget *urlbar = _bars->widget(index);
+    _bars->removeWidget(urlbar);
+    urlbar->deleteLater();
+    
+    emit tabsChanged();
 }
 
 
@@ -533,11 +533,10 @@ void MainView::webViewLoadStarted()
         }
     }
 
-    emit browserTabLoading(true);
-
     if (index != currentIndex())
         return;
 
+    emit browserTabLoading(true);
     emit showStatusBarMessage(i18n("Loading..."));
 }
 
@@ -579,14 +578,12 @@ void MainView::webViewIconChanged()
     int index = indexOf( view->parentWidget() );
     if (-1 != index)
     {
-        QIcon icon = Application::icon(view->url());
+        KIcon icon = Application::icon(view->url());
         QLabel *label = animatedLoading(index, false);
         QMovie *movie = label->movie();
         delete movie;
         label->setMovie(0);
         label->setPixmap(icon.pixmap(16, 16));
-
-        urlBar()->updateUrl();
     }
 }
 
@@ -606,7 +603,7 @@ void MainView::webViewTitleChanged(const QString &title)
     }
     if (currentIndex() == index)
     {
-        emit setCurrentTitle(tabTitle);
+        emit currentTitle(tabTitle);
     }
     Application::historyManager()->updateHistoryEntry(view->url(), tabTitle);
 }
@@ -618,7 +615,7 @@ void MainView::webViewUrlChanged(const QUrl &url)
     int index = indexOf( view->parentWidget() );
     if (-1 != index)
     {
-        m_tabBar->setTabData(index, url);
+        tabBar()->setTabData(index, url);
     }
     emit tabsChanged();
 }
@@ -647,7 +644,7 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
     if (index == -1)
         return 0;
 
-    QLabel *label = qobject_cast<QLabel*>(m_tabBar->tabButton(index, QTabBar::LeftSide));
+    QLabel *label = qobject_cast<QLabel* >(tabBar()->tabButton(index, QTabBar::LeftSide));
     if (!label)
     {
         label = new QLabel(this);
@@ -659,8 +656,8 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
         label->setMovie(movie);
         movie->start();
     }
-    m_tabBar->setTabButton(index, QTabBar::LeftSide, 0);
-    m_tabBar->setTabButton(index, QTabBar::LeftSide, label);
+    tabBar()->setTabButton(index, QTabBar::LeftSide, 0);
+    tabBar()->setTabButton(index, QTabBar::LeftSide, label);
     return label;
 }
 
@@ -689,4 +686,12 @@ void MainView::detachTab(int index)
     closeTab(index);
     
     Application::instance()->loadUrl(url, Rekonq::NewWindow);
+}
+
+
+void MainView::movedTab(int from,int to)
+{
+    QWidget *bar = _bars->widget(from);
+    _bars->removeWidget(bar);
+    _bars->insertWidget(to, bar);
 }

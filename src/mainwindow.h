@@ -1,10 +1,12 @@
+
 /* ============================================================
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -31,7 +33,9 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "application.h"
+#include "previewselectorbar.h"
 
 // KDE Includes
 #include <KMainWindow>
@@ -41,6 +45,7 @@
 
 // Forward Declarations
 class QWebFrame;
+class QSlider;
 
 class KAction;
 class KPassivePopup;
@@ -58,7 +63,7 @@ class MainView;
  * It handles the menus, toolbars, and status bars.
  *
  */
-class MainWindow : public KMainWindow
+class REKONQ_TESTS_EXPORT MainWindow : public KMainWindow
 {
     Q_OBJECT
 
@@ -72,7 +77,9 @@ public:
     virtual QSize sizeHint() const;
     virtual KActionCollection *actionCollection () const;
     void setWidgetsVisible(bool makeFullScreen);
-   
+
+    void setZoomSliderFactor(qreal factor);
+
 private:
     void setupActions();
     void setupTools();
@@ -80,8 +87,7 @@ private:
     void setupPanels();
     
 public slots:
-    void updateBrowser();
-    void homePage();
+    void homePage(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
 
     /**
      * Notifies a message in a popup
@@ -116,18 +122,21 @@ private slots:
     void updateWindowTitle(const QString &title = QString());
 
     // history related
-    void openPrevious();
-    void openNext();
+    void openPrevious(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
+    void openNext(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
 
     // Find Action slots
     void find(const QString &);
+    void matchCaseUpdate();
     void findNext();
     void findPrevious();
+    void highlightAll();
 
     // Zoom slots
-    void viewTextBigger();
-    void viewTextNormal();
-    void viewTextSmaller();
+    void zoomIn();
+    void zoomNormal();
+    void zoomOut();
+    void setZoomFactor(int factor);
 
     // File Menu slots
     void openLocation();
@@ -152,7 +161,7 @@ private slots:
 private:
     MainView *m_view;
     FindBar *m_findBar;
-    
+
     HistoryPanel *m_historyPanel;
     BookmarksPanel *m_bookmarksPanel;
     WebInspectorPanel *m_webInspectorPanel;
@@ -162,6 +171,8 @@ private:
 
     KToolBar *m_mainBar;
     KToolBar *m_bmBar;
+
+    QSlider *m_zoomSlider;
 
     QString m_lastSearch;
 

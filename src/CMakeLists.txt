@@ -8,37 +8,41 @@ ADD_SUBDIRECTORY( tests )
 
 SET( rekonq_KDEINIT_SRCS
     application.cpp 
+    clicktoflash.cpp
+    filterurljob.cpp
     findbar.cpp
     mainview.cpp
     mainwindow.cpp 
-    previewimage.cpp
+    networkaccessmanager.cpp
+    newtabpage.cpp
+    paneltreeview.cpp
+    previewselectorbar.cpp
+    protocolhandler.cpp
     sessionmanager.cpp
     tabbar.cpp
+    walletbar.cpp
+    webinspectorpanel.cpp
     webpage.cpp
     webpluginfactory.cpp
+    websslinfo.cpp
     websnap.cpp
     webview.cpp
     webtab.cpp
-    clicktoflash.cpp
-    networkaccessmanager.cpp
-    webinspectorpanel.cpp
-    walletbar.cpp
-    protocolhandler.cpp
-    filterurljob.cpp
     #----------------------------------------
     history/autosaver.cpp 
     history/historymanager.cpp
     history/historymodels.cpp
     history/historypanel.cpp
     #----------------------------------------
-    rekonqpage/newtabpage.cpp
-    #----------------------------------------
     settings/settingsdialog.cpp
+    settings/adblockwidget.cpp
+    settings/networkwidget.cpp
     #----------------------------------------
     bookmarks/bookmarksmanager.cpp
     bookmarks/bookmarkspanel.cpp
     bookmarks/bookmarkstreemodel.cpp
     bookmarks/bookmarksproxy.cpp
+    bookmarks/bookmarkcontextmenu.cpp
     #----------------------------------------
     adblock/adblockmanager.cpp
     adblock/adblocknetworkreply.cpp
@@ -46,6 +50,9 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     urlbar/urlbar.cpp
     urlbar/lineedit.cpp
+    urlbar/completionwidget.cpp
+    urlbar/urlresolver.cpp
+    urlbar/listitem.cpp
 )
 
 
@@ -54,6 +61,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_tabs.ui
     settings/settings_fonts.ui
     settings/settings_webkit.ui
+    settings/settings_adblock.ui
     cleardata.ui
  )
 

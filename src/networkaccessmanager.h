@@ -3,7 +3,8 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>*
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+*
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License as
@@ -28,6 +29,10 @@
 #define NETWORKACCESSMANAGER_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+#include "webpage.h"
+
 // KDE Includes
 #include <kio/accessmanager.h>
 
@@ -35,15 +40,18 @@
 using namespace KIO::Integration;
 
 
-class NetworkAccessManager : public AccessManager
+class REKONQ_TESTS_EXPORT NetworkAccessManager : public AccessManager
 {
     Q_OBJECT
 
 public:
-    NetworkAccessManager(QObject *parent = 0);
+    NetworkAccessManager(QObject *parent);
 
 protected:
     virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
+
+private:
+    WebPage *_parentPage;
 };
 
 #endif // NETWORKACCESSMANAGER_H

@@ -2,7 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -32,7 +33,6 @@
 #include "rekonq.h"
 #include "application.h"
 #include "mainwindow.h"
-#include "previewimage.h"
 #include "clicktoflash.h"
 
 // KDE Includes
@@ -41,21 +41,15 @@
 
 WebPluginFactory::WebPluginFactory(QObject *parent)
     : KWebPluginFactory(parent)
+    , _loadClickToFlash(false)
 {
-    loadClickToFlash = false;
     connect(this, SIGNAL(signalLoadClickToFlash(bool)), SLOT(setLoadClickToFlash(bool)));
 }
 
 
-WebPluginFactory::~WebPluginFactory()
-{
-}
-
-
-
 void WebPluginFactory::setLoadClickToFlash(bool load)
 {
-    loadClickToFlash = load;
+    _loadClickToFlash = load;
 }
 
 
@@ -66,61 +60,36 @@ QObject *WebPluginFactory::create(const QString &mimeType,
 {
     kDebug() << "loading mimeType: " << mimeType;
     
-    if(mimeType == QString("application/image-preview") )
+    switch( ReKonfig::pluginsEnabled() )
     {
-        QString title;
-        int number = -1;
-        bool isFavorite = false;
-
-        int i;
-        i = argumentNames.indexOf( QString("title") );
-        if(i > -1)
-            title = argumentValues.at(i);
-        i = argumentNames.indexOf( QString("isFavorite") );
-        if(i > -1)
-            isFavorite = true;
-        i = argumentNames.indexOf( QString("index") );
-        if(i > -1)
-            number = argumentValues.at(i).toInt();
-    
-        return new PreviewImage(url, title, number, isFavorite);
-    }
-    
-    if(ReKonfig::pluginsEnabled() == 0) // plugins are enabled
-    {
-        kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
+    case 0:
+        kDebug() << "No plugins found for" << mimeType << ". Falling back to KDEWebKit ones...";
+        return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
+        
+    case 1:
+        if( mimeType != QString("application/x-shockwave-flash") )
+            break;
+        
+        if( _loadClickToFlash )
+        {
+            emit signalLoadClickToFlash(false);
+            return 0; //KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
+        }
+        else
+        {
+            ClickToFlash* ctf = new ClickToFlash(url);
+            connect(ctf, SIGNAL(signalLoadClickToFlash(bool)), this, SLOT(setLoadClickToFlash(bool)));
+            return ctf;
+        }
+        break;
+        
+    case 2:
         return 0;
+        
+    default:
+        kDebug() << "oh oh.. this should NEVER happen..";
+        break;
     }
     
-    if(mimeType == QString("application/x-shockwave-flash") 
-        && !loadClickToFlash)
-    {
-        ClickToFlash* ctf = new ClickToFlash(url);
-        connect(ctf, SIGNAL(signalLoadClickToFlash(bool)), this, SLOT(setLoadClickToFlash(bool)));
-        return ctf;
-    }
-    
-    // this let QtWebKit using builtin plugins 
-    // to load in example flash contents and so on..
-    kDebug() << "No plugins found for" << mimeType << ". Falling back to QtWebKit ones...";
-    emit signalLoadClickToFlash(false);
     return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
-}
-
-
-QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins() const
-{
-    QList<KWebPluginFactory::Plugin> plugins = KWebPluginFactory::plugins();
-    
-    QWebPluginFactory::Plugin p;
-    p.name = "application/image-preview";
-    p.description = "plugin for embedding Web snapped images";
-    plugins.append(p);
-    
-    p.name = "application/x-shockwave-flash";
-    p.description = "Plugin for flash animations";
-    plugins.append(p);
-    
-    
-    return plugins;
 }

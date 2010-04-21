@@ -2,9 +2,9 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -53,7 +53,6 @@
 #include <KToolInvocation>
 #include <KUriFilter>
 #include <KMessageBox>
-#include <KWindowInfo>
 #include <KUrl>
 #include <ThreadWeaver/Weaver>
 
@@ -64,10 +63,10 @@
 #include <QtCore/QTimer>
 
 
-QPointer<HistoryManager> Application::s_historyManager;
-QPointer<BookmarkProvider> Application::s_bookmarkProvider;
-QPointer<SessionManager> Application::s_sessionManager;
-QPointer<AdBlockManager> Application::s_adblockManager;
+QWeakPointer<HistoryManager> Application::s_historyManager;
+QWeakPointer<BookmarkProvider> Application::s_bookmarkProvider;
+QWeakPointer<SessionManager> Application::s_sessionManager;
+QWeakPointer<AdBlockManager> Application::s_adblockManager;
 
 
 Application::Application()
@@ -80,27 +79,51 @@ Application::Application()
 
 Application::~Application()
 {
-    qDeleteAll(m_mainWindows);
+    // ok, we are closing well.
+    // Don't recover on next load..
+    ReKonfig::setRecoverOnCrash(0);
+    saveConfiguration();
+    
+    foreach( QWeakPointer<MainWindow> window, m_mainWindows)
+    {
+        delete window.data();
+        window.clear();
+    }
 
-    delete s_bookmarkProvider;
-    delete s_historyManager;
-    delete s_sessionManager;
-    delete s_adblockManager;
+    delete s_bookmarkProvider.data();
+    s_bookmarkProvider.clear();
+    
+    delete s_historyManager.data();
+    s_historyManager.clear();
+    
+    delete s_sessionManager.data();
+    s_sessionManager.clear();
+    
+    delete s_adblockManager.data();
+    s_adblockManager.clear();
 }
 
 
 int Application::newInstance()
 {
-    KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
+    KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    
-    // we share one process for several mainwindows,
-    // so initialize only once
-    static bool first = true;
+
+    bool isFirstLoad = m_mainWindows.isEmpty();
+
+    // is your app session restored? restore session...
+    // this mechanism also falls back to load usual plain rekonq
+    // if something goes wrong...
+    if (isFirstLoad && ReKonfig::recoverOnCrash() == 1 && sessionManager()->restoreSession())
+    {
+        QTimer::singleShot(0, this, SLOT(postLaunch()));
+        kDebug() << "session restored";
+        return 1;
+    }
     
     if(args->count() == 0)
     {
-        if(first)   // we are starting rekonq, for the first time with no args: use startup behaviour
+        if(isFirstLoad)   // we are starting rekonq, for the first time with no args: use startup behaviour
         {
             switch(ReKonfig::startupBehaviour())
             {
@@ -120,54 +143,34 @@ int Application::newInstance()
         }
         else    // rekonq has just been started. Just open a new window
         {
-            newMainWindow();
+            loadUrl( KUrl("about:home") , Rekonq::NewWindow );
         }
     }
-    
-    if (first)
+    else
     {
-        QTimer::singleShot(0, this, SLOT(postLaunch()));
-        first = false;
-    }
-
-    // is your app session restored? restore session...
-    // this mechanism also falls back to load usual plain rekonq
-    // if something goes wrong...
-    if (isSessionRestored() && sessionManager()->restoreSession())
-    {
-        kDebug() << "session restored";
-        return 1;
-    }
-    
-    // are there args? load them..
-    if (args->count() > 0)
-    {
-        // is there a window open on the current desktop ? use it!
-        for (int i = 0; i < m_mainWindows.size(); ++i)
+        if(isFirstLoad)
         {
-            MainWindow *m = m_mainWindows.at(i);
-            KWindowInfo w = KWindowInfo(m->winId(), NET::WMDesktop);
-            if(w.isOnCurrentDesktop())
+            // No windows in the current desktop? No windows at all?
+            // Create a new one and load there sites...
+            loadUrl(args->arg(0), Rekonq::CurrentTab);
+            for (int i = 1; i < args->count(); ++i)
+                loadUrl( KUrl( args->arg(i) ), Rekonq::SettingOpenTab);
+        }
+        else
+        {
+            // are there any windows there? use it
+            int index = m_mainWindows.size();
+            if(index > 0)
             {
+                MainWindow *m = m_mainWindows.at(index - 1).data();
                 m->activateWindow();
-                m->raise();
-                
                 for (int i = 0; i < args->count(); ++i)
-                    loadUrl(args->arg(i), Rekonq::NewCurrentTab);
-                
-                return 2;
+                    loadUrl( KUrl( args->arg(i) ), Rekonq::NewCurrentTab);
             }
         }
-        
-        // No windows in the current desktop? No windows at all?
-        // Create a new one and load there sites...
-        loadUrl(args->arg(0), Rekonq::CurrentTab);
-        for (int i = 1; i < args->count(); ++i)
-            loadUrl(args->arg(i), Rekonq::SettingOpenTab);
-
-        return 3;
     }
-    
+
+    QTimer::singleShot(0, this, SLOT(postLaunch()));
     return 0;
 }
 
@@ -192,6 +195,11 @@ void Application::postLaunch()
     // bookmarks loading
     connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
             Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
+
+    // crash recovering
+    int n = ReKonfig::recoverOnCrash();
+    ReKonfig::setRecoverOnCrash(++n);
+    saveConfiguration();
 }
 
 
@@ -210,7 +218,7 @@ MainWindow *Application::mainWindow()
     
     if(!active)
     {
-        return m_mainWindows.at(0);
+        return m_mainWindows.at(0).data();
     }
     return active;
 }
@@ -218,53 +226,55 @@ MainWindow *Application::mainWindow()
 
 HistoryManager *Application::historyManager()
 {
-    if (!s_historyManager)
+    if ( s_historyManager.isNull() )
     {
         s_historyManager = new HistoryManager();
-        QWebHistoryInterface::setDefaultInterface(s_historyManager);
+        QWebHistoryInterface::setDefaultInterface( s_historyManager.data() );
     }
-    return s_historyManager;
+    return s_historyManager.data();
 }
 
 
 BookmarkProvider *Application::bookmarkProvider()
 {
-    if (!s_bookmarkProvider)
+    if ( s_bookmarkProvider.isNull() )
     {
         s_bookmarkProvider = new BookmarkProvider(instance());
     }
-    return s_bookmarkProvider;
+    return s_bookmarkProvider.data();
 }
 
 
 SessionManager *Application::sessionManager()
 {
-    if(!s_sessionManager)
+    if( s_sessionManager.isNull() )
     {
         s_sessionManager = new SessionManager(instance());
     }
-    return s_sessionManager;
+    return s_sessionManager.data();
 }
 
 
 KIcon Application::icon(const KUrl &url)
 {
-    if(!Application::instance()->mainWindowList().isEmpty()) // avoid infinite loop at startup
-    {
+    // avoid infinite loop at startup
+    if( Application::instance()->mainWindowList().isEmpty() )
+        return KIcon("text-html");
 
-        if(url == KUrl("about:closedTabs"))
-            return KIcon("tab-close");
-        if(url == KUrl("about:history"))
-            return KIcon("view-history");
-        if(url == KUrl("about:bookmarks"))
-            return KIcon("bookmarks");
-        if(url == KUrl("about:favorites"))
-            return KIcon("emblem-favorite");
-    }
-    
+    // first things first..
     if(url.isEmpty())
         return KIcon("text-html");
-    
+
+    // rekonq icons..
+    if(url == KUrl("about:closedTabs"))
+        return KIcon("tab-close");
+    if(url == KUrl("about:history"))
+        return KIcon("view-history");
+    if(url == KUrl("about:bookmarks"))
+        return KIcon("bookmarks");
+    if(url == KUrl("about:favorites"))
+        return KIcon("emblem-favorite");
+
     KIcon icon = KIcon(QWebSettings::iconForUrl(url));
     if (icon.isNull())
     {
@@ -279,12 +289,9 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (url.isEmpty())
         return;
 
-    // sanitization
-    KUrl loadingUrl( url.toEncoded() );
-
-    if ( !loadingUrl.isValid() )
+    if ( !url.isValid() )
     {
-        KMessageBox::error(0, i18n("Malformed URL:\n%1", loadingUrl.url(KUrl::RemoveTrailingSlash)));
+        KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url(KUrl::RemoveTrailingSlash)));
         return;
     }
 
@@ -316,16 +323,9 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     
     if (view)
     {
-        FilterUrlJob *job = new FilterUrlJob(view, loadingUrl.pathOrUrl(), this);
+        FilterUrlJob *job = new FilterUrlJob(view, url.pathOrUrl(), this);
         Weaver::instance()->enqueue(job);
     }
-}
-
-
-
-void Application::loadUrl(const QString& urlString,  const Rekonq::OpenType& type)
-{    
-    return loadUrl( QUrl::fromUserInput(urlString), type );
 }
 
 
@@ -343,7 +343,7 @@ MainWindow *Application::newMainWindow()
 
 void Application::removeMainWindow(MainWindow *window)
 {
-    m_mainWindows.removeAt(m_mainWindows.indexOf(window, 0));
+    m_mainWindows.removeOne(window);
 }
 
 
@@ -355,11 +355,11 @@ MainWindowList Application::mainWindowList()
 
 AdBlockManager *Application::adblockManager()
 {
-    if(!s_adblockManager)
+    if( s_adblockManager.isNull() )
     {
         s_adblockManager = new AdBlockManager(instance());
     }
-    return s_adblockManager;
+    return s_adblockManager.data();
 }
 
 
@@ -369,9 +369,11 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
     KUrl url = threadedJob->url();
     WebView *view = threadedJob->view();
     
+    // Bye and thanks :)
+    delete threadedJob;
+    
     if (view)
     {
-        view->setFocus();
         view->load(url);    
         
         // we are sure of the url now, let's add it to history
@@ -380,7 +382,11 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
         if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("https") )
             historyManager()->addHistoryEntry( url.prettyUrl() );
     }
-    
-    // Bye and thanks :)
-    delete threadedJob;
+}
+
+
+void Application::newWindow()
+{
+    loadUrl( KUrl("about:home"), Rekonq::NewWindow );
+    mainWindow()->mainView()->urlBarWidget()->setFocus();
 }

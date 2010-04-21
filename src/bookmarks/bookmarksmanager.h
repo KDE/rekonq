@@ -2,9 +2,10 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -31,6 +32,7 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "application.h"
 
 // Qt Includes
@@ -38,6 +40,7 @@
 
 // KDE Includes
 #include <KBookmarkOwner>
+#include <KCompletion>
 
 // Forward Declarations
 class BookmarkProvider;
@@ -55,7 +58,7 @@ class KBookmarkManager;
  * bookmarks as actions
  *
  */
-class BookmarkOwner : public QObject , public KBookmarkOwner
+class REKONQ_TESTS_EXPORT BookmarkOwner : public QObject , public KBookmarkOwner
 {
     Q_OBJECT
 
@@ -110,7 +113,9 @@ public:
     * The default implementation does nothing.
     * This is only called if supportsTabs() returns true
     */
-    virtual void openFolderinTabs(const KBookmarkGroup &bm);
+    virtual void openFolderinTabs(const KBookmarkGroup &bookmark);
+
+    virtual QList< QPair<QString, QString> > currentBookmarkList() const;
 
 signals:
     /**
@@ -128,7 +133,6 @@ signals:
 // KDE Includes
 #include <KBookmarkMenu>
 
-
 /**
  * This class represent the rekonq bookmarks menu.
  * It's just a simple class inherited from KBookmarkMenu
@@ -143,12 +147,22 @@ public:
                  KBookmarkOwner* owner,
                  KMenu* menu,
                  KActionCollection* actionCollection);
+    BookmarkMenu(KBookmarkManager  *manager,
+                 KBookmarkOwner  *owner,
+                 KMenu  *parentMenu,
+                 const QString &parentAddress);
     ~BookmarkMenu();
 
-    virtual KMenu *viewContextMenu(QAction* action);
+protected:
+    virtual KMenu * contextMenu(QAction * act);
+    virtual void refill();
+    virtual QAction* actionForBookmark(const KBookmark &bookmark);
 
 protected slots:
     void slotAddBookmark();
+
+private:
+    void addOpenFolderInTabs();
 
 };
 
@@ -192,6 +206,7 @@ public:
     */
     void setupBookmarkBar(KToolBar *);
 
+    void removeToolBar(KToolBar*);
 
     /**
      * @short Get action by name
@@ -209,7 +224,16 @@ public:
      */
     KBookmarkGroup rootGroup();
 
-	KBookmarkManager *bookmarkManager() { return m_manager; }
+    KBookmarkManager *bookmarkManager() { return m_manager; }
+    BookmarkOwner *bookmarkOwner() { return m_owner; }
+    
+    /**
+    * @returns the KCompletion object.
+    */
+    KCompletion *completionObject() const;
+
+    QString titleForBookmarkUrl(QString url);
+
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
@@ -236,14 +260,18 @@ public slots:
      */
     void slotBookmarksChanged(const QString &group, const QString &caller);
 
+    
 private:
     KAction *fillBookmarkBar(const KBookmark &bookmark);
+    QString titleForBookmarkUrl(const KBookmark &bookmark, QString url);
 
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;
     KActionCollection *m_actionCollection;
     BookmarkMenu *m_bookmarkMenu;
-    KToolBar *m_bookmarkToolBar;
+    QList<KToolBar*> m_bookmarkToolBars;
+    KCompletion *m_completion;
 };
+
 
 #endif

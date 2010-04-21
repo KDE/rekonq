@@ -28,7 +28,7 @@
  *
  * This file is a part of the rekonq project
  *
- * Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+ * Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
  * This program is free software; you can redistribute it and/or
@@ -54,6 +54,9 @@
 #define ADBLOCK_NETWORK_REPLY_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QNetworkReply>
 #include <QString>
@@ -62,7 +65,7 @@
 class AdBlockRule;
 
 
-class AdBlockNetworkReply : public QNetworkReply
+class REKONQ_TESTS_EXPORT AdBlockNetworkReply : public QNetworkReply
 {
     Q_OBJECT
 

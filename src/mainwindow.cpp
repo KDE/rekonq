@@ -2,9 +2,10 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -70,13 +71,14 @@
 #include <KToggleAction>
 #include <KStandardDirs>
 #include <KActionCategory>
+#include <KProcess>
 
 // Qt Includes
 #include <QtCore/QTimer>
 #include <QtCore/QRect>
 #include <QtCore/QSize>
 #include <QtCore/QList>
-#include <QtCore/QPointer>
+#include <QtCore/QWeakPointer>
 
 #include <QtGui/QWidget>
 #include <QtGui/QVBoxLayout>
@@ -102,8 +104,8 @@ MainWindow::MainWindow()
     , m_bookmarksPanel(0)
     , m_webInspectorPanel(0)
     , m_historyBackMenu(0)
-    , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, false, false) )
-    , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, false) )
+    , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, true, true) )
+    , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, true) )
     , m_popup( new KPassivePopup(this) )
     , m_hidePopup( new QTimer(this) )
     , m_ac( new KActionCollection(this) )
@@ -159,6 +161,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+    Application::bookmarkProvider()->removeToolBar(m_bmBar);
     Application::instance()->removeMainWindow(this);
     delete m_popup;
 }
@@ -167,8 +170,6 @@ MainWindow::~MainWindow()
 void MainWindow::setupToolbars()
 {
     // ============ Main ToolBar  ================================
-    m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Back)) );
     m_mainBar->addAction( actionByName(KStandardAction::name(KStandardAction::Forward)) );
     m_mainBar->addSeparator();
@@ -177,18 +178,31 @@ void MainWindow::setupToolbars()
 
     // location bar
     KAction *urlBarAction = new KAction(this);
-    urlBarAction->setDefaultWidget(m_view->urlBar());
+    urlBarAction->setDefaultWidget(m_view->urlBarWidget());
     m_mainBar->addAction( urlBarAction );
 
     m_mainBar->addAction( actionByName("bookmarksActionMenu") );
     m_mainBar->addAction( actionByName("rekonq_tools") );
-
+    
+    m_mainBar->show();  // this just to fix reopening rekonq after fullscreen close
+    
     // =========== Bookmarks ToolBar ================================
-    m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     m_bmBar->setAcceptDrops(true);
-    m_bmBar->setContextMenuPolicy(Qt::CustomContextMenu);
-    m_bmBar->setIconDimensions(16);
     Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
+
+    if(ReKonfig::firstExecution())
+    {
+        m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        
+        m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        m_bmBar->setIconDimensions(16);
+        m_bmBar->hide();
+        
+        KToolBar::setToolBarsEditable(false);
+        KToolBar::setToolBarsLocked(true);
+        
+        ReKonfig::setFirstExecution(false);
+    }
 }
 
 
@@ -202,7 +216,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
 
     // --------- connect signals and slots
-    connect(m_view, SIGNAL(setCurrentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
+    connect(m_view, SIGNAL(currentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
     // (shift +) ctrl + tab switching
@@ -252,7 +266,7 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
     actionCollection()->addAction(QLatin1String("new_window"), a);
-    connect(a, SIGNAL(triggered(bool)), Application::instance(), SLOT(newMainWindow()));
+    connect(a, SIGNAL(triggered(bool)), Application::instance(), SLOT(newWindow()));
 
     // Standard Actions
     KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
@@ -261,23 +275,27 @@ void MainWindow::setupActions()
     KStandardAction::quit(this , SLOT(close()), actionCollection());
 
     a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
-    QList<QKeySequence> shortcutFindList;
-    shortcutFindList << KStandardShortcut::find() << QKeySequence( Qt::Key_Slash );
-    a->setShortcuts( shortcutFindList );
+    KShortcut findShortcut = KStandardShortcut::find();
+    findShortcut.setAlternate( Qt::Key_Slash );
+    a->setShortcut( findShortcut );
 
     KStandardAction::findNext(this, SLOT(findNext()) , actionCollection());
     KStandardAction::findPrev(this, SLOT(findPrevious()) , actionCollection());
    
     a = KStandardAction::fullScreen(this, SLOT(viewFullScreen(bool)), this, actionCollection());
-    QList<QKeySequence> shortcutFullScreenList;
-    shortcutFullScreenList << KStandardShortcut::fullScreen() << QKeySequence( Qt::Key_F11 );
-    a->setShortcuts( shortcutFullScreenList );
+    KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
+    fullScreenShortcut.setAlternate( Qt::Key_F11 );
+    a->setShortcut( fullScreenShortcut );
 
-    KStandardAction::home(this, SLOT(homePage()), actionCollection());
+    a = actionCollection()->addAction( KStandardAction::Home );
+    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(homePage(Qt::MouseButtons, Qt::KeyboardModifiers)));
     KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
 
     a = KStandardAction::redisplay(m_view, SLOT(webReload()), actionCollection());
     a->setText(i18n("Reload"));
+    KShortcut reloadShortcut = KStandardShortcut::reload();
+    reloadShortcut.setAlternate( Qt::CTRL + Qt::Key_R );
+    a->setShortcut( reloadShortcut );
 
     a = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Period));
@@ -298,20 +316,20 @@ void MainWindow::setupActions()
 
 
     // ============================= Zoom Actions ===================================
-    a = new KAction(KIcon("zoom-in"), i18n("&Enlarge Font"), this);
+    a = new KAction(KIcon("zoom-in"), i18n("&Zoom In"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
-    actionCollection()->addAction(QLatin1String("bigger_font"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewTextBigger()));
-
-    a = new KAction(KIcon("zoom-original"),  i18n("&Normal Font"), this);
+    actionCollection()->addAction(QLatin1String("zoom_in"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomIn()));
+    
+    a = new KAction(KIcon("zoom-original"),  i18n("&Normal Zoom"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_0));
-    actionCollection()->addAction(QLatin1String("normal_font"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewTextNormal()));
+    actionCollection()->addAction(QLatin1String("zoom_normal"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomNormal()));
 
-    a = new KAction(KIcon("zoom-out"),  i18n("&Shrink Font"), this);
+    a = new KAction(KIcon("zoom-out"),  i18n("&Zoom Out"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Minus));
-    actionCollection()->addAction(QLatin1String("smaller_font"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewTextSmaller()));
+    actionCollection()->addAction(QLatin1String("zoom_out"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomOut()));
 
     // =============================== Tools Actions =================================
     a = new KAction(i18n("Page S&ource"), this);
@@ -329,14 +347,16 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
 
     // ========================= History related actions ==============================
-    a = KStandardAction::back(this, SLOT(openPrevious()) , actionCollection());
+    a = actionCollection()->addAction( KStandardAction::Back );
+    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(openPrevious(Qt::MouseButtons, Qt::KeyboardModifiers)));
 
     m_historyBackMenu = new KMenu(this);
     a->setMenu(m_historyBackMenu);
     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowBackMenu()));
     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(openActionUrl(QAction *)));
 
-    KStandardAction::forward(this, SLOT(openNext()) , actionCollection());
+    a = actionCollection()->addAction( KStandardAction::Forward );
+    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(openNext(Qt::MouseButtons, Qt::KeyboardModifiers)));
 
     // ============================== General Tab Actions ====================================
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
@@ -409,13 +429,41 @@ void MainWindow::setupTools()
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
-
-    KActionMenu *fontMenu = new KActionMenu(KIcon("page-zoom"), i18n("Zoom"), this);
-    fontMenu->addAction(actionByName(QLatin1String("smaller_font")));
-    fontMenu->addAction(actionByName(QLatin1String("normal_font")));
-    fontMenu->addAction(actionByName(QLatin1String("bigger_font")));
-    toolsMenu->addAction(fontMenu);
-
+        
+    // setup zoom widget
+    QWidget *zoomWidget = new QWidget(this);
+    
+    QToolButton *zoomOut = new QToolButton(zoomWidget);
+    zoomOut->setDefaultAction(actionByName(QLatin1String("zoom_out")));
+    zoomOut->setAutoRaise(true);
+    
+    m_zoomSlider = new QSlider(Qt::Horizontal, zoomWidget);
+    m_zoomSlider->setTracking(true);
+    m_zoomSlider->setRange(1, 19);      // divide by 10 to obtain a qreal for zoomFactor()
+    m_zoomSlider->setValue(10);
+    m_zoomSlider->setPageStep(3);
+    connect(m_zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(setZoomFactor(int)));
+    
+    QToolButton *zoomIn = new QToolButton(zoomWidget);
+    zoomIn->setDefaultAction(actionByName(QLatin1String("zoom_in")));
+    zoomIn->setAutoRaise(true);
+    
+    QToolButton *zoomNormal = new QToolButton(zoomWidget);
+    zoomNormal->setDefaultAction(actionByName(QLatin1String("zoom_normal")));
+    zoomNormal->setAutoRaise(true);
+    
+    QHBoxLayout* zoomWidgetLayout = new QHBoxLayout(zoomWidget);
+    zoomWidgetLayout->setSpacing(0);
+    zoomWidgetLayout->setMargin(0);
+    zoomWidgetLayout->addWidget(zoomOut);
+    zoomWidgetLayout->addWidget(m_zoomSlider);
+    zoomWidgetLayout->addWidget(zoomIn);
+    zoomWidgetLayout->addWidget(zoomNormal);
+    
+    QWidgetAction *zoomAction = new QWidgetAction(this);
+    zoomAction->setDefaultWidget(zoomWidget);
+    toolsMenu->addAction(zoomAction);
+    
     toolsMenu->addSeparator();
 
     toolsMenu->addAction(actionByName(QLatin1String("private_browsing")));
@@ -432,7 +480,7 @@ void MainWindow::setupTools()
 
     toolsMenu->addAction(actionByName(QLatin1String("bm_bar")));
     toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
-	toolsMenu->addAction(actionByName(QLatin1String("show_bookmarks_panel")));
+    toolsMenu->addAction(actionByName(QLatin1String("show_bookmarks_panel")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
 
     toolsMenu->addSeparator();
@@ -453,28 +501,30 @@ void MainWindow::setupPanels()
     // STEP 1
     // Setup history panel
     m_historyPanel = new HistoryPanel(i18n("History Panel"), this);
-    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
+    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
+    connect(m_historyPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
     connect(m_historyPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
 
     addDockWidget(Qt::LeftDockWidgetArea, m_historyPanel);
 
     // setup history panel action
     a = (KAction *) m_historyPanel->toggleViewAction();
-    a->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_H) );
+    a->setShortcut( KShortcut(Qt::CTRL + Qt::Key_H) );
     a->setIcon(KIcon("view-history"));
     actionCollection()->addAction(QLatin1String("show_history_panel"), a);
 
     // STEP 2
     // Setup bookmarks panel
     m_bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
-    connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&)), Application::instance(), SLOT(loadUrl(const KUrl&)));
+    connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
+    connect(m_bookmarksPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
     connect(m_bookmarksPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
 
     addDockWidget(Qt::LeftDockWidgetArea, m_bookmarksPanel);
 
     // setup bookmarks panel action
     a = (KAction *) m_bookmarksPanel->toggleViewAction();
-    a->setShortcut( QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B) );
+    a->setShortcut( KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B) );
     a->setIcon(KIcon("bookmarks-organize"));
     actionCollection()->addAction(QLatin1String("show_bookmarks_panel"), a);
 
@@ -549,20 +599,16 @@ void MainWindow::updateConfiguration()
 
     // Applies user defined CSS to all open webpages. If there no longer is a
     // user defined CSS removes it from all open webpages.
-    defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
+    if(ReKonfig::userCSS().isEmpty())
+        defaultSettings->setUserStyleSheetUrl( KUrl(KStandardDirs::locate("appdata" , "default.css")) );
+    else
+        defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
 
     // ====== load Settings on main classes
     Application::historyManager()->loadSettings();
     Application::adblockManager()->loadSettings();
     
     defaultSettings = 0;
-}
-
-
-void MainWindow::updateBrowser()
-{
-    updateConfiguration();
-    mainView()->reloadAllTabs();
 }
 
 
@@ -602,7 +648,7 @@ void MainWindow::preferences()
     QPointer<SettingsDialog> s = new SettingsDialog(this);
 
     // keep us informed when the user changes settings
-    connect(s, SIGNAL(settingsChanged(const QString&)), this, SLOT(updateBrowser()));
+    connect(s, SIGNAL(settingsChanged(const QString&)), this, SLOT(updateConfiguration()));
 
     s->exec();
     delete s;
@@ -626,7 +672,7 @@ void MainWindow::updateWindowTitle(const QString &title)
     {
         if(settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         {
-            setWindowTitle("rekonq (" + i18n("Private Browsing")  + ")");
+            setWindowTitle(i18nc("Window title when private browsing is activated", "rekonq (Private Browsing)")); 
         }
         else
         {
@@ -637,11 +683,11 @@ void MainWindow::updateWindowTitle(const QString &title)
     {
         if(settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         {
-            setWindowTitle(title + " - rekonq (" + i18n("Private Browsing")  + ")");
+            setWindowTitle(i18nc("window title, %1 = title of the active website", "%1 – rekonq (Private Browsing)", title) ); 
         }
         else
         {
-            setWindowTitle(title + " - rekonq");
+            setWindowTitle(i18nc("window title, %1 = title of the active website", "%1 – rekonq", title));
         }
     }
 }
@@ -704,7 +750,7 @@ void MainWindow::privateBrowsing(bool enable)
         if (button == KMessageBox::Continue)
         {
             settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
-            m_view->urlBar()->setBackgroundColor(Qt::lightGray); // palette().color(QPalette::Active, QPalette::Background));
+            m_view->urlBar()->setPrivateMode(true);
         }
         else
         {
@@ -714,10 +760,9 @@ void MainWindow::privateBrowsing(bool enable)
     else
     {
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
-        m_view->urlBar()->setBackgroundColor(palette().color(QPalette::Active, QPalette::Base));
-
+        m_view->urlBar()->setPrivateMode(false);
+        
         m_lastSearch.clear();
-        m_view->clear();
         m_view->reloadAllTabs();
     }
 }
@@ -728,57 +773,111 @@ void MainWindow::find(const QString & search)
     if (!currentTab())
         return;
     m_lastSearch = search;
+    
+    findNext();
+}
+
+
+void MainWindow::matchCaseUpdate()
+{
+    if (!currentTab())
+        return;
+    
+    currentTab()->view()->findText(m_lastSearch, QWebPage::FindBackward);
     findNext();
 }
 
 
 void MainWindow::findNext()
 {
-    if (!currentTab() && m_lastSearch.isEmpty())
+    if (!currentTab())
         return;
 
+    highlightAll();
+    
+    if(m_findBar->isHidden())
+    {
+        QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
+        currentTab()->view()->page()->focusNextPrevChild(true);
+        currentTab()->view()->page()->currentFrame()->setScrollPosition(previous_position);
+        return;
+    }
+    
+    highlightAll();
+    
     QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
         options |= QWebPage::FindCaseSensitively;
 
-    m_findBar->notifyMatch(currentTab()->view()->findText(m_lastSearch, options));
+    bool found = currentTab()->view()->findText(m_lastSearch, options);
+    m_findBar->notifyMatch(found);
+
+    if(!found)
+    {
+        QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
+        currentTab()->view()->page()->focusNextPrevChild(true);
+        currentTab()->view()->page()->currentFrame()->setScrollPosition(previous_position);
+    }
 }
 
 
 void MainWindow::findPrevious()
 {
-    if (!currentTab() && m_lastSearch.isEmpty())
+    if (!currentTab())
         return;
-
+    
     QWebPage::FindFlags options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
         options |= QWebPage::FindCaseSensitively;
 
-    m_findBar->notifyMatch(currentTab()->view()->findText(m_lastSearch, options));
+    bool found = currentTab()->view()->findText(m_lastSearch, options);
+    m_findBar->notifyMatch(found);
 }
 
-
-void MainWindow::viewTextBigger()
+void MainWindow::highlightAll()
 {
     if (!currentTab())
         return;
-    currentTab()->view()->setTextSizeMultiplier(currentTab()->view()->textSizeMultiplier() + 0.1);
+    
+    QWebPage::FindFlags options = QWebPage::HighlightAllOccurrences;
+    
+    currentTab()->view()->findText("", options); //Clear an existing highlight
+    
+    if(m_findBar->highlightAllState() && !m_findBar->isHidden())
+    {
+        if (m_findBar->matchCase())
+            options |= QWebPage::FindCaseSensitively;
+
+        currentTab()->view()->findText(m_lastSearch, options);
+    }
 }
 
 
-void MainWindow::viewTextNormal()
+void MainWindow::zoomIn()
 {
-    if (!currentTab())
-        return;
-    currentTab()->view()->setTextSizeMultiplier(1.0);
+    m_zoomSlider->setValue(m_zoomSlider->value() + 1);
 }
 
-
-void MainWindow::viewTextSmaller()
+void MainWindow::zoomNormal()
 {
-    if (!currentTab())
+    m_zoomSlider->setValue(10);
+}
+
+void MainWindow::zoomOut()
+{
+    m_zoomSlider->setValue(m_zoomSlider->value() - 1);
+}
+
+void MainWindow::setZoomFactor(int factor)
+{
+    if(!currentTab())
         return;
-    currentTab()->view()->setTextSizeMultiplier(currentTab()->view()->textSizeMultiplier() - 0.1);
+    currentTab()->view()->setZoomFactor(QVariant(factor).toReal() / 10);
+}
+
+void MainWindow::setZoomSliderFactor(qreal factor)
+{
+    m_zoomSlider->setValue(factor*10);
 }
 
 
@@ -859,9 +958,12 @@ void MainWindow::viewPageSource()
 }
 
 
-void MainWindow::homePage()
+void MainWindow::homePage(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers keyboardModifiers)
 {
-    currentTab()->view()->load( QUrl(ReKonfig::homePage()) );
+    if(mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
+        Application::instance()->loadUrl( KUrl(ReKonfig::homePage()), Rekonq::SettingOpenTab );
+    else
+        currentTab()->view()->load( QUrl(ReKonfig::homePage()) );
 }
 
 
@@ -902,19 +1004,41 @@ void MainWindow::browserLoading(bool v)
 }
 
 
-void MainWindow::openPrevious()
+void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers keyboardModifiers)
 {
     QWebHistory *history = currentTab()->view()->history();
     if (history->canGoBack())
-        history->goToItem(history->backItem());
+    {
+        if(mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
+        {
+            Application::instance()->loadUrl(history->backItem().url(), Rekonq::SettingOpenTab);
+        }
+        else
+        {
+            history->goToItem(history->backItem());
+        }
+        
+        updateActions();
+    }
+    
 }
 
 
-void MainWindow::openNext()
+void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers keyboardModifiers)
 {
     QWebHistory *history = currentTab()->view()->history();
     if (history->canGoForward())
-        history->goToItem(history->forwardItem());
+    {
+        if(mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
+        {
+            Application::instance()->loadUrl(history->forwardItem().url(), Rekonq::SettingOpenTab);
+        }
+        else
+        {
+            history->goToItem(history->forwardItem());
+        }
+        updateActions();
+    }
 }
 
 
@@ -924,6 +1048,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Escape)
     {
         m_findBar->hide();
+        currentTab()->setFocus();   // give focus to web pages
         return;
     }
 
@@ -960,7 +1085,7 @@ QAction *MainWindow::actionByName(const QString name)
         return ret;
 
     /* else */
-    kWarning() << "Action named: " << name << " not found, returning empty action.";
+    kDebug() << "Action named: " << name << " not found, returning empty action.";
 
     return new QAction(this);  // return empty object instead of NULL pointer
 }
@@ -1009,27 +1134,33 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     m_popup->layout()->setMargin(margin);
 
     // useful values
-    
+    WebTab *tab = m_view->currentWebTab();
+
     // fix crash on window close
-    if(!m_view->currentWebTab()->page()->currentFrame())
+    if(!tab)
+        return;
+
+    // fix crash on window close
+    if(!tab->page())
         return;
     
-    bool scrollbarIsVisible = m_view->currentWebTab()->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
+    bool scrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
     int scrollbarSize = 0;
     if (scrollbarIsVisible)
     {
         //TODO: detect QStyle size
         scrollbarSize = 17;
     }
-    QPoint webViewOrigin = m_view->currentWebTab()->mapToGlobal(QPoint(0,0));
-    int bottomLeftY=webViewOrigin.y() + m_view->currentWebTab()->page()->viewportSize().height() - labelSize.height() - scrollbarSize;
+    
+    QPoint webViewOrigin = tab->view()->mapToGlobal(QPoint(0,0));
+    int bottomLeftY = webViewOrigin.y() + tab->page()->viewportSize().height() - labelSize.height() - scrollbarSize;
 
     // setting popup in bottom-left position
     int x = geometry().x();
     int y = bottomLeftY;
 
-    QPoint mousePos = m_view->currentWebTab()->mapToGlobal(m_view->currentWebTab()->view()->mousePos());
-    if(QRect(webViewOrigin.x(),bottomLeftY,labelSize.width(),labelSize.height()).contains(mousePos))
+    QPoint mousePos = tab->mapToGlobal( tab->view()->mousePos() );
+    if( QRect( webViewOrigin.x() , bottomLeftY , labelSize.width() , labelSize.height() ).contains(mousePos) )
     {
         // setting popup above the mouse
         y = bottomLeftY - labelSize.height();
@@ -1041,22 +1172,32 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
 void MainWindow::clearPrivateData()
 {
-    QPointer<KDialog> dialog = new KDialog(this, Qt::Sheet);
+    QPointer<KDialog> dialog = new KDialog(this);
+    dialog->setCaption(i18n("Clear Private Data"));
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
+    
+    dialog->button(KDialog::Ok)->setIcon(KIcon("edit-clear"));
+    dialog->button(KDialog::Ok)->setText(i18n("Clear"));
 
     Ui::ClearDataWidget clearWidget;
     QWidget widget;
     clearWidget.setupUi(&widget);
 
     dialog->setMainWidget(&widget);
+    dialog->exec();
 
-    if (dialog->exec() == KDialog::Accepted)
+    if (dialog->result() == QDialog::Accepted)
     {
         if(clearWidget.clearHistory->isChecked())
         {
             Application::historyManager()->clear();
         }
-
+        
+        if(clearWidget.clearDownloads->isChecked())
+        {
+            Application::historyManager()->clearDownloadsHistory();
+        }
+        
         if(clearWidget.clearCookies->isChecked())
         {
             QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
@@ -1065,7 +1206,8 @@ void MainWindow::clearPrivateData()
 
         if(clearWidget.clearCachedPages->isChecked())
         {
-            // TODO implement me!
+            KProcess::startDetached(KStandardDirs::findExe("kio_http_cache_cleaner"), 
+                                    QStringList(QLatin1String("--clear-all")));
         }
 
         if(clearWidget.clearWebIcons->isChecked())
@@ -1086,6 +1228,8 @@ void MainWindow::clearPrivateData()
             }
         }
     }
+    
+    dialog->deleteLater();
 }
 
 
@@ -1109,7 +1253,7 @@ void MainWindow::aboutToShowBackMenu()
         QWebHistoryItem item = historyList.at(i);
         KAction *action = new KAction(this);
         action->setData(i + offset);
-        QIcon icon = Application::icon( item.url() );
+        KIcon icon = Application::icon( item.url() );
         action->setIcon( icon );
         action->setText( item.title() );
         m_historyBackMenu->addAction(action);

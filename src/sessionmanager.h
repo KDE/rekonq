@@ -2,9 +2,9 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Yoram Bar-Haim <<yoram.b at zend dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -30,6 +30,9 @@
 #define SESSION_MANAGER_H
 
 
+// Local Includes
+#include "rekonqprivate_export.h"
+
 // Qt Includes
 #include <QtCore/QObject>
 #include <QtCore/QString>
@@ -38,7 +41,7 @@
 /**
   * Session Management
   */
-class SessionManager : public QObject
+class REKONQ_TESTS_EXPORT SessionManager : public QObject
 {
     Q_OBJECT
 public:

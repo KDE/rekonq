@@ -24,7 +24,38 @@
 #include <QtCore>
 #include <QtGui>
 
-#include "../tabbar.h"
+#include "mainwindow.h"
+#include "mainview.h"
+#include "tabbar.h"
+
+
+/**
+ * Subclass that exposes the protected functions.
+ */
+class SubTabBar : public TabBar
+{
+public:
+    
+    SubTabBar(QWidget *parent) : TabBar(parent) {};
+
+    QSize call_tabSizeHint(int index) const
+        { return SubTabBar::tabSizeHint(index); }
+        
+    void call_mouseMoveEvent(QMouseEvent* event)
+        { return SubTabBar::mouseMoveEvent(event); }
+        
+    void call_leaveEvent(QEvent* event)
+        { return SubTabBar::leaveEvent(event); }
+        
+    void call_mousePressEvent(QMouseEvent* event)
+        { return SubTabBar::mousePressEvent(event); }
+        
+    void call_mouseReleaseEvent(QMouseEvent* event)
+        { return SubTabBar::mouseReleaseEvent(event); }        
+};
+
+
+// ------------------------------------------------------------------
 
 
 class TabBarTest : public QObject
@@ -34,106 +65,74 @@ class TabBarTest : public QObject
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    void init();
-    void cleanup();
-
+    
 private slots:
-    void tabbar_data();
-    void tabbar();
-
     void tabSizeHint_data();
     void tabSizeHint();
+    
+    void mousePress_data();
+    void mousePress();
+    
+private:
+    SubTabBar *_bar;
 };
 
-
-// Subclass that exposes the protected functions.
-class SubTabBar : public TabBar
-{
-public:
-    void call_cloneTab(int index)
-        { return SubTabBar::cloneTab(index); }
-
-    void call_closeOtherTabs(int index)
-        { return SubTabBar::closeOtherTabs(index); }
-
-    void call_closeTab(int index)
-        { return SubTabBar::closeTab(index); }
-
-    void call_mouseMoveEvent(QMouseEvent* event)
-        { return SubTabBar::mouseMoveEvent(event); }
-
-    void call_mousePressEvent(QMouseEvent* event)
-        { return SubTabBar::mousePressEvent(event); }
-
-    void call_reloadAllTabs()
-        { return SubTabBar::reloadAllTabs(); }
-
-    void call_reloadTab(int index)
-        { return SubTabBar::reloadTab(index); }
-
-    QSize call_tabSizeHint(int index) const
-        { return SubTabBar::tabSizeHint(index); }
-
-    void call_showTabPreview(int tab)
-        { return SubTabBar::showTabPreview(tab); }
-};
-
-
-// This will be called before the first test function is executed.
-// It is only called once.
-void TabBarTest::initTestCase()
-{
-}
-
-
-// This will be called after the last test function is executed.
-// It is only called once.
-void TabBarTest::cleanupTestCase()
-{
-}
-
-
-// This will be called before each test function is executed.
-void TabBarTest::init()
-{
-}
-
-
-// This will be called after every test function.
-void TabBarTest::cleanup()
-{
-}
 
 // -------------------------------------------
 
-void TabBarTest::tabbar_data()
+void TabBarTest::initTestCase()
 {
+    MainWindow *w = new MainWindow;
+    MainView *mv = new MainView(w);
+    _bar = new SubTabBar(mv);
 }
 
-
-void TabBarTest::tabbar()
+void TabBarTest::cleanupTestCase()
 {
-    SubTabBar widget;
+    delete _bar;
 }
 
 // -------------------------------------------
 
 void TabBarTest::tabSizeHint_data()
 {
-//     QTest::addColumn<int>("index");
-//     QTest::newRow("0") << 0;
+    QTest::addColumn<int>("index");
+
+    QTest::newRow("1th") << 0;
+    QTest::newRow("2nd") << 1;
+    QTest::newRow("3rd") << 2;
+    QTest::newRow("4th") << 3;
+    QTest::newRow("5th") << 4;
+    QTest::newRow("6th") << 5;
+    QTest::newRow("7th") << 6;
+    QTest::newRow("8th") << 7;
+    QTest::newRow("9th") << 8;
+    QTest::newRow("10th") << 9;
 }
 
 
-// protected QSize tabSizeHint(int index) const
 void TabBarTest::tabSizeHint()
 {
-    // Need fixes as our function uses MainView methods to determine size
-//     QFETCH(int, index);
-//     SubTabBar bar;
-//     QVERIFY(bar.call_tabSizeHint(index).width() <= 250);
+    QFETCH(int, index);
+
+    QVERIFY(_bar->call_tabSizeHint(index).width() > 0);
 }
-    
+
+
+void TabBarTest::mousePress_data()
+{
+}
+
+
+void TabBarTest::mousePress()
+{
+//     QTest::mousePress(_bar, Qt::MidButton);
+// //     QCOMPARE();  ?
+// 
+//     QTest::mousePress(_bar, Qt::LeftButton);
+// //     QCOMPARE();  ?
+}
+
 // -------------------------------------------
 
 QTEST_KDEMAIN(TabBarTest, GUI)

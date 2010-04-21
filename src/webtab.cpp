@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -39,6 +39,7 @@
 #include "webpage.h"
 #include "bookmarksmanager.h"
 #include "walletbar.h"
+#include "previewselectorbar.h"
 
 // KDE Includes
 #include <KService>
@@ -48,6 +49,7 @@
 #include <KActionMenu>
 #include <KWebView>
 #include <kwebwallet.h>
+#include <KDE/KMessageBox>
 
 // Qt Includes
 #include <QContextMenuEvent>
@@ -58,28 +60,34 @@
 #include <QAction>
 #include <QVBoxLayout>
 
+// Defines
+#define QL1S(x)  QLatin1String(x)
 
-WebTab::WebTab(QWidget* parent)
+
+WebTab::WebTab(QWidget *parent)
     : QWidget(parent)
-    , m_view( new WebView(this) )
     , m_progress(0)
 {
-    QVBoxLayout* l = new QVBoxLayout(this);
+    QVBoxLayout *l = new QVBoxLayout(this);
     l->setMargin(0);
     l->setSpacing(0);
 
-    QWidget* messageBar = new QWidget(this);
+    QWidget *messageBar = new QWidget(this);
     l->addWidget(messageBar);
     messageBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
-    QVBoxLayout* l2 = new QVBoxLayout(messageBar);
+    QVBoxLayout *l2 = new QVBoxLayout(messageBar);
     l2->setMargin(0);
     l2->setSpacing(0);
 
-    l->addWidget(m_view);
-    m_view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-   
-    KWebWallet *wallet = page()->wallet();
+    WebView *view = new WebView(this);
+    l->addWidget(view);
+    view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // fix focus handling
+    setFocusProxy( view );
+
+    KWebWallet *wallet = view->page()->wallet();
    
     if(wallet)
     {
@@ -87,52 +95,38 @@ WebTab::WebTab(QWidget* parent)
                 this, SLOT(createWalletBar(const QString &, const QUrl &)));
     }
 
-    connect(page(), SIGNAL(statusBarMessage(const QString&)), this, SLOT(setStatusBarText(const QString&)));
-
-    connect(m_view, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
-    connect(m_view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
+    connect(view, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
+    connect(view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 }
 
 
 WebTab::~WebTab()
 {
-    delete m_view;
 }
 
 
 WebView *WebTab::view()
 {
-    return m_view;
+    WebView *view = qobject_cast<WebView *>( layout()->itemAt(1)->widget() );
+    return view;
 }
 
 
 WebPage *WebTab::page()
 {
-    return m_view->page();  // FIXME
+    return view()->page();
 }
 
 
-KUrl WebTab::url() const 
-{ 
-    return KUrl(m_view->url()); 
+KUrl WebTab::url() 
+{
+    return KUrl( view()->url() ); 
 }
 
 
 int WebTab::progress()
 {
     return m_progress;
-}
-
-
-QString WebTab::lastStatusBarText() const
-{ 
-    return m_statusBarText; 
-}
-
-
-void WebTab::setStatusBarText(const QString &string) 
-{ 
-    m_statusBarText = string; 
 }
 
 
@@ -149,7 +143,13 @@ void WebTab::loadFinished(bool)
 
 
 void WebTab::createWalletBar(const QString &key, const QUrl &url)
-{    
+{
+    // check if the url is in the wallet blacklist
+    QString urlString = url.toString();
+    QStringList blackList = ReKonfig::walletBlackList();
+    if( blackList.contains( urlString ) )
+        return;
+    
     KWebWallet *wallet = page()->wallet();
     QWidget *messageBar = layout()->itemAt(0)->widget();
 
@@ -161,4 +161,61 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
             wallet, SLOT(acceptSaveFormDataRequest(const QString &)));
     connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)),
             wallet, SLOT(rejectSaveFormDataRequest(const QString &)));
+}
+
+
+void WebTab::createPreviewSelectorBar(int index)
+{
+    QWidget *messageBar = layout()->itemAt(0)->widget();
+    PreviewSelectorBar *bar = new PreviewSelectorBar(index, messageBar);
+    messageBar->layout()->addWidget(bar);
+    
+    connect(page(), SIGNAL(loadStarted()), bar, SLOT(loadProgress()));
+    connect(page(), SIGNAL(loadProgress(int)), bar, SLOT(loadProgress()));
+    connect(page(), SIGNAL(loadFinished(bool)), bar, SLOT(loadFinished()));
+    connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)), bar, SLOT(verifyUrl()));
+}
+
+
+bool WebTab::hasRSSInfo()
+{
+    _rssList.clear();
+    QWebElementCollection col = page()->mainFrame()->findAllElements("link");
+    foreach(QWebElement el, col)
+    {
+        if( el.attribute("type") == QL1S("application/rss+xml") || el.attribute("type") == QL1S("application/rss+xml") )
+        {
+            if( el.attribute("href").startsWith( QL1S("http") ) )
+            {
+                _rssList << KUrl( el.attribute("href") );
+            }
+            else
+            {
+                KUrl u = url();
+                // NOTE
+                // cd() is probably better than setPath() here, 
+                // for all those url sites just having a path
+                if(u.cd( el.attribute("href") ))
+                    _rssList << u;
+            }
+        }
+    }
+    
+    return !_rssList.isEmpty();
+}
+
+
+void WebTab::showRSSInfo()
+{
+    QString urlList = QString("Here are the rss link found: <br /><br />");
+    foreach(const KUrl &url, _rssList)
+    {
+        urlList += QString("<a href=\"") + url.url() + QString("\">") + url.url() + QString("</a><br />");
+    }
+    urlList += QString("<br />Enough for now.. waiting for some cool akonadi based feeds management :)");
+    
+    KMessageBox::information( view(), 
+                              urlList,
+                              "RSS Management"
+                            );
 }

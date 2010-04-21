@@ -6,7 +6,8 @@
 * Copyright (C) 2008 Dirk Mueller <mueller@kde.org>
 * Copyright (C) 2008 Urs Wolfer <uwolfer @ kde.org>
 * Copyright (C) 2008 Michael Howell <mhowell123@gmail.com>
-* Copyright (C) 2008-2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -33,7 +34,10 @@
 
 
 // Local Includes
+#include "rekonqprivate_export.h"
 #include "protocolhandler.h"
+#include "newtabpage.h"
+#include "websslinfo.h"
 
 // KDE Includes
 #include <KWebPage>
@@ -46,18 +50,18 @@ class QWebFrame;
 class QNetworkReply;
 
 
-class WebPage : public KWebPage
+class REKONQ_TESTS_EXPORT WebPage : public KWebPage
 {
     Q_OBJECT
 
 public:
-    explicit WebPage(QObject *parent = 0);
+    explicit WebPage(QWidget *parent = 0);
     ~WebPage();
 
 public slots:
-    void manageNetworkErrors(QNetworkReply *reply);
     virtual void downloadRequest(const QNetworkRequest &request);
     void downloadAllContentsWithKGet();
+
 protected:
     WebPage *createWindow(WebWindowType type);
     
@@ -69,13 +73,15 @@ protected Q_SLOTS:
     virtual void handleUnsupportedContent(QNetworkReply *reply);
 
 private slots:
+    void manageNetworkErrors(QNetworkReply *reply);
     void loadFinished(bool);
-
+    void showSSLInfo();
+    
 private:
     QString errorPage(QNetworkReply *);
-
-    QUrl m_requestedUrl;
-    ProtocolHandler m_protHandler;
+    
+    ProtocolHandler _protHandler;
+    WebSslInfo _sslInfo;
 };
 
 #endif
