@@ -207,15 +207,15 @@ bool WebTab::hasRSSInfo()
 
 void WebTab::showRSSInfo()
 {
-    QString urlList = QString("Here are the rss link found: <br /><br />");
+    QString urlList = QString(i18n("The following RSS feeds were found:<br /><br />"));
     foreach(const KUrl &url, _rssList)
     {
         urlList += QString("<a href=\"") + url.url() + QString("\">") + url.url() + QString("</a><br />");
     }
-    urlList += QString("<br />Enough for now.. waiting for some cool akonadi based feeds management :)");
+    urlList += QString(i18n("<br />Enough for now... Waiting for some cool Akonadi based feeds management :)"));
     
     KMessageBox::information( view(), 
                               urlList,
-                              "RSS Management"
+                              i18n("RSS Management")
                             );
 }
