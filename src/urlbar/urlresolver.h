@@ -37,9 +37,8 @@
 
 class UrlSearchItem
 {
-
-    public:
-
+public:
+    
     enum types 
     { 
         Search          = 0x00000001,

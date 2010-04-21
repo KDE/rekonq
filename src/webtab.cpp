@@ -50,6 +50,7 @@
 #include <KWebView>
 #include <kwebwallet.h>
 #include <KDE/KMessageBox>
+#include <KProcess>
 
 // Qt Includes
 #include <QContextMenuEvent>
@@ -179,43 +180,76 @@ void WebTab::createPreviewSelectorBar(int index)
 
 bool WebTab::hasRSSInfo()
 {
-    _rssList.clear();
-    QWebElementCollection col = page()->mainFrame()->findAllElements("link");
-    foreach(QWebElement el, col)
-    {
-        if( el.attribute("type") == QL1S("application/rss+xml") || el.attribute("type") == QL1S("application/rss+xml") )
-        {
-            if( el.attribute("href").startsWith( QL1S("http") ) )
-            {
-                _rssList << KUrl( el.attribute("href") );
-            }
-            else
-            {
-                KUrl u = url();
-                // NOTE
-                // cd() is probably better than setPath() here, 
-                // for all those url sites just having a path
-                if(u.cd( el.attribute("href") ))
-                    _rssList << u;
-            }
-        }
-    }
+    QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
+    col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
+    if(col.count() != 0)
+        return true;
     
-    return !_rssList.isEmpty();
+    return false;
 }
 
 
-void WebTab::showRSSInfo()
+void WebTab::showRSSInfo(QPoint menuPos)
 {
-    QString urlList = QString(i18n("The following RSS feeds were found:<br /><br />"));
-    foreach(const KUrl &url, _rssList)
-    {
-        urlList += QString("<a href=\"") + url.url() + QString("\">") + url.url() + QString("</a><br />");
-    }
-    urlList += QString(i18n("<br />Enough for now... Waiting for some cool Akonadi based feeds management :)"));
+    KMenu *menu = new KMenu();
+    menu->addTitle(KIcon("application-rss+xml"), i18n("Add Streams to Akregator"));
     
-    KMessageBox::information( view(), 
-                              urlList,
-                              i18n("RSS Management")
-                            );
+    QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
+    col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
+    foreach(QWebElement el, col)
+    {
+        QString urlString;
+        if( el.attribute("href").startsWith( QL1S("http") ) )
+            urlString = el.attribute("href");
+        else
+        {
+            KUrl u = url();
+            // NOTE
+            // cd() is probably better than setPath() here, 
+            // for all those url sites just having a path
+            if(u.cd( el.attribute("href") ))
+                    urlString = u.toMimeDataString();
+        }
+        
+        QString title = el.attribute("title");
+        if(title.isEmpty())
+            title= el.attribute("href");
+        
+        KAction *action = new KAction(title, menu);
+        action->setData(urlString);
+        
+        menu->addAction(action);
+    }
+    
+    QAction *action = menu->exec(menuPos);
+    if(action == 0)
+        return;
+    
+    // Akregator is running
+    if(QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.akregator"))
+    {
+        QDBusInterface akregator("org.kde.akregator", "/Akregator", "org.kde.akregator.part");
+        QDBusReply<void> reply = akregator.call("addFeedsToGroup", action->data().toStringList(), i18n("Imported Feeds"));
+        
+        if(!reply.isValid()) 
+        {
+            KMessageBox::error( 0, QString(i18n("Could not add stream to akregator, Please add it manually :")
+                                            + "<br /><br /> <a href=\"" + action->data().toString() + "\">"
+                                            + action->data().toString() + "</a>"));
+        }
+    }
+    // Akregator is not running
+    else
+    {
+        KProcess proc;
+        proc << "akregator" << "-g" << i18n("Imported Feeds");
+        proc << "-a" << action->data().toString();
+        if(proc.startDetached() == 0)
+        {
+            KMessageBox::error( 0, QString(i18n("There was an error. Please verify Akregator is installed on your system.")
+                                            + "<br /><br /> <a href=\"" + action->data().toString() + "\">"
+                                            + action->data().toString() + "</a>"));
+        }
+        
+    }
 }
