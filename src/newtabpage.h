@@ -58,9 +58,12 @@ public:
      * the corresponding part of the new tab page
      */
     void generate(const KUrl &url = KUrl("about:home"));
-    
-    void snapFinished(int index, const KUrl &url, const QString &title);
 
+    /**
+     * This method updates thumbs, removing loading previews
+     * and providing a real picture
+     */
+    void snapFinished();
      
 private:
     // these are the "high-level" functions to build the new tab page.
@@ -110,7 +113,6 @@ private:
     }
     
     QString checkTitle(const QString &title);
-
     
 private:
     QString m_html;

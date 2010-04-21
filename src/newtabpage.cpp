@@ -59,7 +59,8 @@
 
 
 NewTabPage::NewTabPage(QWebFrame *frame)
-    : m_root(frame->documentElement())
+    : QObject(frame)
+    , m_root(frame->documentElement())
 {
     QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
     QString imagesPath = QString("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QString("rekonq/pics");    
@@ -183,18 +184,18 @@ void NewTabPage::favoritesPage()
     if(urls.isEmpty())
     {
         m_root.addClass("empty");
-        m_root.setPlainText(i18n("You can add a preview by clicking the \"Add Preview\" button in the top-right corner of this page"));
+        m_root.setPlainText( i18n("You can add a preview by clicking the \"Add Preview\" button in the top-right corner of this page") );
         return;
     }
     
     for(int i=0; i < urls.count() ; ++i)
     {
-        KUrl url = urls.at(i);
+        KUrl url = KUrl( urls.at(i) );
         QWebElement prev;
         
         if(url.isEmpty())
             prev = emptyPreview(i);
-        else if(!QFile::exists(WebSnap::fileForUrl(url).toLocalFile()))
+        else if( !WebSnap::existsImage(url) )
             prev = loadingPreview(i, url);
         else
             prev = validPreview(i, url, names.at(i));
@@ -233,9 +234,13 @@ QWebElement NewTabPage::loadingPreview(int index, const KUrl &url)
     
     setupPreview(prev, index);
     showControls(prev);
-    
-    new WebSnap(url, m_root.webFrame(), index);
-    
+
+    // NOTE: we need the page frame for two reasons
+    // 1) to link to the WebPage calling the snapFinished slot
+    // 2) to "auto-destroy" snaps on tab closing :)
+    QWebFrame *frame = qobject_cast<QWebFrame *>(parent());
+    WebSnap *snap = new WebSnap(url, frame);
+    connect(snap, SIGNAL(snapDone(bool)), frame->page(), SLOT(updateImage(bool)));
     return prev;
 }
 
@@ -243,13 +248,13 @@ QWebElement NewTabPage::loadingPreview(int index, const KUrl &url)
 QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &title)
 {
     QWebElement prev = markup(".thumbnail");
-    KUrl previewPath = WebSnap::fileForUrl(url);
+    QString previewPath = QL1S("file://") + WebSnap::imagePathFromUrl(url);
     QString iString = QVariant(index).toString();
     
-    prev.findFirst(".preview img").setAttribute("src" , previewPath.toMimeDataString());
-    prev.findFirst("a").setAttribute("href", url.toMimeDataString());
-    prev.findFirst("span a").setAttribute("href", url.toMimeDataString());
-    prev.findFirst("span a").setPlainText(checkTitle(title));
+    prev.findFirst(".preview img").setAttribute("src" , previewPath );
+    prev.findFirst("a").setAttribute("href", url.toMimeDataString() );  // NOTE ?
+    prev.findFirst("span a").setAttribute("href", url.toMimeDataString() ); // NOTE ?
+    prev.findFirst("span a").setPlainText( checkTitle(title) );
     
     setupPreview(prev, index);
     showControls(prev);
@@ -288,34 +293,35 @@ void NewTabPage::setupPreview(QWebElement e, int index)
 }
 
 
-void NewTabPage::snapFinished(int index, const KUrl &url, const QString &title)
+void NewTabPage::snapFinished()
 {
-    // Update title if necessary
-    QStringList urls = ReKonfig::previewUrls();
-    if(KUrl(urls.at(index)) == url)
-    {
-        QStringList names = ReKonfig::previewNames();
-        names.replace(index, title);
-        ReKonfig::setPreviewNames(names);
-        
-        ReKonfig::self()->writeConfig();
-    }
-    
     // Update page, but only if open
     if(m_root.document().findAll("#rekonq-newtabpage").count() == 0)
         return;
     if(m_root.findAll(".favorites").count() == 0 && m_root.findAll(".closedTabs").count() == 0)
         return;
-        
-    QWebElement prev = m_root.findFirst("#preview" + QVariant(index).toString());
-    if(KUrl(prev.findFirst("a").attribute("href")) == url)
+    
+    QStringList urls = ReKonfig::previewUrls();
+    QStringList names = ReKonfig::previewNames();
+    
+    for(int i = 0; i < urls.count(); i++)
     {
-        QWebElement newPrev = validPreview(index, url, title);
+        KUrl url = KUrl( urls.at(i) );
+        QString title = names.at(i);
         
-        if(m_root.findAll(".closedTabs").count() != 0)
-            hideControls(newPrev);
-        
-        prev.replace(newPrev);
+        if( WebSnap::existsImage(url) )
+        {
+            QWebElement prev = m_root.findFirst("#preview" + QVariant(i).toString());
+            if( KUrl(prev.findFirst("a").attribute("href")) == url )
+            {
+                QWebElement newPrev = validPreview(i, url, title);
+                
+                if(m_root.findAll(".closedTabs").count() != 0)
+                    hideControls(newPrev);
+                
+                prev.replace(newPrev);
+            }            
+        }
     }
 }
 
@@ -513,10 +519,10 @@ void NewTabPage::closedTabsPage()
         
         if(item.url.isEmpty())
             continue;
-        else if(!QFile::exists(WebSnap::fileForUrl(item.url).toLocalFile()))
-            prev = loadingPreview(i, item.url);
-        else
-            prev = validPreview(i, item.url, item.title);
+            
+        prev = WebSnap::existsImage( KUrl(item.url) )
+            ? validPreview(i, item.url, item.title)
+            : loadingPreview(i, item.url);
         
         prev.setAttribute("id", "preview" + QVariant(i).toString());
         hideControls(prev);

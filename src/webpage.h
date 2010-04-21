@@ -76,7 +76,8 @@ private slots:
     void manageNetworkErrors(QNetworkReply *reply);
     void loadFinished(bool);
     void showSSLInfo();
-    
+    void updateImage(bool ok);
+
 private:
     QString errorPage(QNetworkReply *);
     

@@ -46,11 +46,9 @@
 #include <QFile>
 
 
-WebSnap::WebSnap(const QUrl& url, QWebFrame *frame, int index)
-    : QObject()
+WebSnap::WebSnap(const KUrl& url, QObject *parent)
+    : QObject(parent)
     , m_url(url)
-    , m_frame(frame)
-    , m_previewIndex(index)
 {
     // this to not register websnap history
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
@@ -63,8 +61,7 @@ WebSnap::WebSnap(const QUrl& url, QWebFrame *frame, int index)
     
     QTimer::singleShot(0, this, SLOT(load()));
 }
-
-
+    
 void WebSnap::load()
 {
     m_page.mainFrame()->load(m_url);
@@ -73,7 +70,7 @@ void WebSnap::load()
 
 // NOTE please, be careful modifying this. 
 // You are playing with fire..
-QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h, bool save)
+QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h)
 {
     // prepare page
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
@@ -106,28 +103,21 @@ QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h, bool save)
     page.setViewportSize(oldSize);
     
     QPixmap pm = QPixmap::fromImage(pageImage);
-    if(save)
-    {
-        KUrl url( page.mainFrame()->url() );
-        kDebug() << "saving preview";
-        QFile::remove( fileForUrl(url).toLocalFile() );
-        pm.save(fileForUrl(url).toLocalFile());
-    }
+    KUrl url( page.mainFrame()->url() );
+    kDebug() << "saving preview";
+    
+    QString path = imagePathFromUrl(url);
+    QFile::remove( path );
+    pm.save( path );
     
     return pm;
 }
 
 
-KUrl WebSnap::fileForUrl(KUrl url)
+QString WebSnap::imagePathFromUrl(const KUrl &url)
 {
-    QString filePath = KStandardDirs::locateLocal("cache", QString("thumbs/") + WebSnap::guessNameFromUrl(url) + ".png", true);
-    return KUrl(filePath);
-}
-
-
-QString WebSnap::guessNameFromUrl(QUrl url)
-{
-    QString name = url.toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
+    QUrl temp = QUrl( url.url() );
+    QString name = temp.toString( QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash );
     
     // TODO learn Regular Expressions :)
     // and implement something better here..
@@ -140,37 +130,28 @@ QString WebSnap::guessNameFromUrl(QUrl url)
     name.remove('=');
     name.remove('+');
     
-    return name;
+    return KStandardDirs::locateLocal("cache", QString("thumbs/") + name + ".png", true);
 }
 
 
 void WebSnap::saveResult(bool ok)
 {
-    QPixmap image = QPixmap();
-    
-    // crude error-checking
-    if (!ok) 
+    if (ok) 
     {
-        kDebug() << "Error loading site..";
-        m_snapTitle = "Error...";
-        
+        QPixmap image = renderPreview(m_page, WIDTH, HEIGHT);
+        QString path = imagePathFromUrl( m_url);
+        QFile::remove( path );
+        image.save( path );
     }
-    else
-    {
-        image = renderPreview(m_page, WIDTH, HEIGHT);
-        m_snapTitle = m_page.mainFrame()->title();
-    }
-    QFile::remove(fileForUrl(m_url).toLocalFile());
-    image.save(fileForUrl(m_url).toLocalFile());
-    
-    NewTabPage p( m_frame );
-    p.snapFinished(m_previewIndex, m_url, m_snapTitle);
+
+    emit snapDone(ok);
+    kDebug() << "SAVE RESULTS: " << ok << " URL: " << m_url;
     
     this->deleteLater();
 }
 
 
-QString WebSnap::snapTitle()
+bool WebSnap::existsImage(const KUrl &u)
 {
-    return m_page.mainFrame()->title();
+    return QFile::exists( imagePathFromUrl(u) );
 }

@@ -564,3 +564,55 @@ void WebPage::showSSLInfo()
                                 );
     }
 }
+
+
+
+
+void WebPage::updateImage(bool ok)
+{
+    if(!ok)
+        kDebug() << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO";
+    else
+        kDebug() << "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY";
+    
+/*    int previewIndex = 1;
+    KUrl url;
+    QString snapTitle = QString("ciao");*/
+//     // Update page, but only if open
+//     if(m_root.document().findAll("#rekonq-newtabpage").count() == 0)
+//         return;
+//     if(m_root.findAll(".favorites").count() == 0 || m_root.findAll(".closedTabs").count() == 0)
+//         return;
+//         
+//     QStringList urls = ReKonfig::previewUrls();
+//     
+//     for(int i = 0; i < urls.count(); i++)
+//     {
+//         QString title = urls.at(i);
+//         KUrl url( title );
+//         
+//         
+//         if( WebSnap::existsImage(url) )
+//         {
+//             QStringList names = ReKonfig::previewNames();
+//             names.replace(i, title);
+//             ReKonfig::setPreviewNames(names);            
+//             ReKonfig::self()->writeConfig();
+//    
+//             QWebElement prev = m_root.findFirst("#preview" + QVariant(i).toString());
+//             if(KUrl(prev.findFirst("a").attribute("href")) == url )
+//             {
+//                 QWebElement newPrev = validPreview(i, url, title);
+//                 
+//                 if(m_root.findAll(".closedTabs").count() != 0)
+//                     hideControls(newPrev);
+//                 
+//                 prev.replace(newPrev);
+//             }
+//             break;
+//         }
+//     }
+
+    NewTabPage p( mainFrame() );
+    p.snapFinished();
+}

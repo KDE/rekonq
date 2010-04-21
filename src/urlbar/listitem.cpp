@@ -242,12 +242,11 @@ PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *p
     setFixedSize(width, height);
     setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
 
-    KUrl u = WebSnap::fileForUrl( QUrl(url) );
-    QString path = u.pathOrUrl();
-    if(QFile::exists(path))
+    KUrl u = KUrl(url);
+    if( WebSnap::existsImage( KUrl(u) ) )
     {     
         QPixmap preview;
-        preview.load(path);
+        preview.load( WebSnap::imagePathFromUrl(u) );
         setPixmap(preview.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     }
 }
