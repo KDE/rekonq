@@ -240,11 +240,11 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         const KUrl url( reply->url() );
 
         QString mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-        KService::Ptr offer = KMimeTypeTrader::self()->preferredService(mimeType);
+        KService::Ptr appService = KMimeTypeTrader::self()->preferredService(mimeType);
 
         bool isLocal = url.isLocalFile();
         
-        if( offer.isNull() ) // no service can handle this. We can just download it..
+        if( appService.isNull() ) // no service can handle this. We can just download it..
         {
             kDebug() << "no service can handle this. We can just download it..";
             
@@ -273,23 +273,36 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
                     break;
             }
         }
-        // case KParts::BrowserRun::Embed
-        QString html;
-        html += "<html>";
-        html += "<head>";
-        html += "<title>";
-        html += url.pathOrUrl();
-        html += "</title>";
-        html += "<style type=\"text/css\">";
-        html += "* { border: 0; padding: 0; margin: 0; }";
-        html += "</style>";
-        html += "</head>";    
-        html += "<body>";
-        html += "<embed src=\"" + url.pathOrUrl() + "\" width=\"100%\" height=\"100%\" />";
-        html += "</body>";
-        html += "</html>";
         
-        mainFrame()->setHtml(html, url);
+        // case KParts::BrowserRun::Embed
+        
+        KService::List partServices = KMimeTypeTrader::self()->query( mimeType, QL1S("KParts/ReadOnlyPart") );
+        if(partServices.count() > 0)
+        {
+            // A part can handle this. Embed it!
+            QString html;
+            html += "<html>";
+            html += "<head>";
+            html += "<title>";
+            html += url.pathOrUrl();
+            html += "</title>";
+            html += "<style type=\"text/css\">";
+            html += "* { border: 0; padding: 0; margin: 0; }";
+            html += "</style>";
+            html += "</head>";    
+            html += "<body>";
+            html += "<embed src=\"" + url.pathOrUrl() + "\" width=\"100%\" height=\"100%\" />";
+            html += "</body>";
+            html += "</html>";
+            
+            mainFrame()->setHtml(html, url);
+        }
+        else
+        {
+            // No parts, just app services. Load it!
+            KRun::run(*appService, url, 0); 
+        }
+        
         return;
     }
 }
