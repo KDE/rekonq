@@ -282,7 +282,7 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
 
 QString SearchListItem::searchItemTitle(QString engine, QString text)
 {
-    return QString("Search "+ engine +" for <b>"+text+"</b>");
+    return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, text));
 }
 
 

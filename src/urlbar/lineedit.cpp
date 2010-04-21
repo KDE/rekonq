@@ -129,7 +129,7 @@ void LineEdit::paintEvent(QPaintEvent *event)
         painter.setPen(Qt::gray);
         painter.drawText( textRect, 
                           Qt::AlignCenter, 
-                          i18n("Search Bookmarks, History, Web.. just start typing here!")
+                          i18n("Start typing here to search your bookmarks, history and the web...")
                         );
     }
 }

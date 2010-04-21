@@ -172,7 +172,7 @@ UrlSearchList UrlResolver::qurlFromUserInputResolution()
     if(urlFromUserInput.isValid())
     {
         KUrl gUrl(urlFromUserInput);
-        QString gTitle = i18n("Browse");
+        QString gTitle = i18nc("Browse a website", "Browse");
         UrlSearchItem gItem(UrlSearchItem::Browse, gUrl, gTitle);
         list << gItem;
     }
