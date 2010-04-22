@@ -40,6 +40,7 @@
 #include "bookmarksmanager.h"
 #include "walletbar.h"
 #include "previewselectorbar.h"
+#include "rsswidget.h"
 
 // KDE Includes
 #include <KService>
@@ -50,7 +51,6 @@
 #include <KWebView>
 #include <kwebwallet.h>
 #include <KDE/KMessageBox>
-#include <KProcess>
 
 // Qt Includes
 #include <QContextMenuEvent>
@@ -189,13 +189,13 @@ bool WebTab::hasRSSInfo()
 }
 
 
-void WebTab::showRSSInfo(QPoint menuPos)
+void WebTab::showRSSInfo(QPoint pos)
 {
-    KMenu *menu = new KMenu();
-    menu->addTitle(KIcon("application-rss+xml"), i18n("Add Streams to Akregator"));
-    
     QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
     col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
+    
+    QMap<KUrl, QString> map;
+    int i = 0;
     foreach(QWebElement el, col)
     {
         QString urlString;
@@ -215,41 +215,11 @@ void WebTab::showRSSInfo(QPoint menuPos)
         if(title.isEmpty())
             title= el.attribute("href");
         
-        KAction *action = new KAction(title, menu);
-        action->setData(urlString);
+        map.insert(KUrl(urlString), title);
         
-        menu->addAction(action);
+        i++;
     }
     
-    QAction *action = menu->exec(menuPos);
-    if(action == 0)
-        return;
-    
-    // Akregator is running
-    if(QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.akregator"))
-    {
-        QDBusInterface akregator("org.kde.akregator", "/Akregator", "org.kde.akregator.part");
-        QDBusReply<void> reply = akregator.call("addFeedsToGroup", action->data().toStringList(), i18n("Imported Feeds"));
-        
-        if(!reply.isValid()) 
-        {
-            KMessageBox::error( 0, QString(i18n("Could not add stream to akregator, Please add it manually :")
-                                            + "<br /><br /> <a href=\"" + action->data().toString() + "\">"
-                                            + action->data().toString() + "</a>"));
-        }
-    }
-    // Akregator is not running
-    else
-    {
-        KProcess proc;
-        proc << "akregator" << "-g" << i18n("Imported Feeds");
-        proc << "-a" << action->data().toString();
-        if(proc.startDetached() == 0)
-        {
-            KMessageBox::error( 0, QString(i18n("There was an error. Please verify Akregator is installed on your system.")
-                                            + "<br /><br /> <a href=\"" + action->data().toString() + "\">"
-                                            + action->data().toString() + "</a>"));
-        }
-        
-    }
+    RSSWidget *widget = new RSSWidget(map, window()); 
+    widget->showAt(pos);
 }

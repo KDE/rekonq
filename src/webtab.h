@@ -65,7 +65,7 @@ private slots:
     void loadFinished(bool);
 
     void createWalletBar(const QString &, const QUrl &);
-    void showRSSInfo(QPoint menuPos);
+    void showRSSInfo(QPoint pos);
     
 private:
     int m_progress;

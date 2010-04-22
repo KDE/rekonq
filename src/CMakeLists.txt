@@ -52,6 +52,7 @@ SET( rekonq_KDEINIT_SRCS
     urlbar/completionwidget.cpp
     urlbar/urlresolver.cpp
     urlbar/listitem.cpp
+    urlbar/rsswidget.cpp
 )
 
 
