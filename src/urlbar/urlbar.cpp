@@ -35,8 +35,6 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "application.h"
-#include "lineedit.h"
 #include "mainwindow.h"
 #include "webtab.h"
 #include "webview.h"
@@ -45,7 +43,6 @@
 // KDE Includes
 #include <KDebug>
 #include <KCompletionBox>
-#include <KUrl>
 
 // Qt Includes
 #include <QPainter>
@@ -58,11 +55,47 @@
 #define QL1S(x)  QLatin1String(x)
 
 
+IconButton::IconButton(QWidget *parent)
+    : QToolButton(parent)
+{
+    setToolButtonStyle(Qt::ToolButtonIconOnly);
+    setStyleSheet("IconButton { background-color:transparent; border: none; padding: 0px}");
+    setCursor(Qt::ArrowCursor);
+}
+
+
+// -----------------------------------------------------------------------------------------------------------
+
+
 UrlBar::UrlBar(QWidget *parent)
-    : LineEdit(parent)
+    : KLineEdit(parent)
     , _tab(0)
     , _privateMode(false)
+    , _icon( new IconButton(this) )
 {
+    // initial style
+    setStyleSheet( QString("UrlBar { padding: 0 0 0 %1px;} ").arg(_icon->sizeHint().width()) );
+
+    // cosmetic
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    setMinimumWidth(200);
+    setMinimumHeight(26);
+
+    // doesn't show the clear button
+    setClearButtonShown(false);
+    
+    // trap Key_Enter & Key_Return events, while emitting the returnPressed signal
+    setTrapReturnKey(true);
+    
+    // insert decoded URLs
+    setUrlDropsEnabled(true);
+
+    // accept focus, via tabbing, clicking & wheeling
+    setFocusPolicy(Qt::WheelFocus);
+    
+    // disable completion object (we have our own :) )
+    setCompletionObject(0);
+    
     _tab = qobject_cast<WebTab *>(parent);
     
     connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
@@ -79,6 +112,7 @@ UrlBar::UrlBar(QWidget *parent)
 UrlBar::~UrlBar()
 {
     activateSuggestions(false);
+    delete _icon;
     _box.clear();
 }
 
@@ -87,16 +121,16 @@ void UrlBar::setQUrl(const QUrl& url)
 {
     if(url.scheme() == QL1S("about") )
     {
-        iconButton()->setIcon( KIcon("arrow-right") );
+        _icon->setIcon( KIcon("arrow-right") );
         clear();
         setFocus();
     }
     else
     {
         clearFocus();
-        LineEdit::setUrl(url);
+        KLineEdit::setUrl(url);
         setCursorPosition(0);
-        iconButton()->setIcon( Application::icon(url) );
+        _icon->setIcon( Application::icon(url) );
     }
 }
 
@@ -146,7 +180,21 @@ void UrlBar::paintEvent(QPaintEvent *event)
     }
     setPalette(p);
     
-    LineEdit::paintEvent(event);
+    // you need this before our code to draw inside the line edit..
+    KLineEdit::paintEvent(event);
+    
+    if (text().isEmpty()) 
+    {       
+        QStyleOptionFrame option;
+        initStyleOption(&option);
+        QRect textRect = style()->subElementRect(QStyle::SE_LineEditContents, &option, this);
+        QPainter painter(this);
+        painter.setPen(Qt::gray);
+        painter.drawText( textRect, 
+                          Qt::AlignCenter, 
+                          i18n("Start typing here to search your bookmarks, history and the web...")
+                        );
+    }
 }
 
 
@@ -181,7 +229,13 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
         }
     }
     
-    LineEdit::keyPressEvent(event);
+    if (event->key() == Qt::Key_Escape)
+    {
+        clearFocus();
+        event->accept();
+    }
+
+    KLineEdit::keyPressEvent(event);
 }
 
 
@@ -189,7 +243,7 @@ void UrlBar::focusInEvent(QFocusEvent *event)
 {
     activateSuggestions(true);
     
-    LineEdit::focusInEvent(event);
+    KLineEdit::focusInEvent(event);
 }
 
 
@@ -201,7 +255,7 @@ void UrlBar::setPrivateMode(bool on)
 
 void UrlBar::dropEvent(QDropEvent *event)
 {
-    LineEdit::dropEvent(event);
+    KLineEdit::dropEvent(event);
     activated(text());
 }
 
@@ -220,21 +274,21 @@ void UrlBar::loadFinished()
     // show KGet downloads??
     if(ReKonfig::kgetList())
     {
-        IconButton *bt = addRightIcon(LineEdit::KGet);
+        IconButton *bt = addRightIcon(UrlBar::KGet);
         connect(bt, SIGNAL(clicked()), _tab->page(), SLOT(downloadAllContentsWithKGet()));
     }
     
     // show RSS
     if(_tab->hasRSSInfo())
     {
-        IconButton *bt = addRightIcon(LineEdit::RSS);
+        IconButton *bt = addRightIcon(UrlBar::RSS);
         connect(bt, SIGNAL(clicked()), _tab, SLOT(showRSSInfo()));
     }
     
     // show SSL
     if(_tab->url().scheme() == QL1S("https") )
     {
-        IconButton *bt = addRightIcon(LineEdit::SSL);
+        IconButton *bt = addRightIcon(UrlBar::SSL);
         connect(bt, SIGNAL(clicked()), _tab->page(), SLOT(showSSLInfo()));
     }
     
@@ -267,4 +321,68 @@ void UrlBar::activateSuggestions(bool b)
         removeEventFilter(_box.data());
         _box.data()->deleteLater();
     }
+}
+
+
+void UrlBar::mouseDoubleClickEvent(QMouseEvent *)
+{
+    selectAll();
+}
+
+
+IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
+{
+    IconButton *rightIcon = new IconButton(this);
+    
+    switch(ic)
+    {
+    case UrlBar::KGet:
+        rightIcon->setIcon( KIcon("download") );
+        rightIcon->setToolTip( i18n("List all links with KGet") );
+        break;
+    case UrlBar::RSS:
+        rightIcon->setIcon( KIcon("application-rss+xml") );
+        rightIcon->setToolTip( i18n("List all available RSS feeds") );
+        break;
+    case UrlBar::SSL:
+        rightIcon->setIcon( KIcon("object-locked") );
+        rightIcon->setToolTip( i18n("Show SSL Infos") );
+        break;
+    default:
+        kDebug() << "ERROR.. default non extant case!!";
+        break;
+    }
+    
+    _rightIconsList << rightIcon;
+    int iconsCount = _rightIconsList.count();
+    rightIcon->move( width() - 23*iconsCount, 6);
+    rightIcon->show();
+    
+    return rightIcon;
+}
+
+
+void UrlBar::clearRightIcons()
+{
+    qDeleteAll(_rightIconsList);
+    _rightIconsList.clear();
+}
+
+
+void UrlBar::resizeEvent(QResizeEvent *event)
+{
+    int newHeight = ( height() - 19 )/2;
+    _icon->move(4, newHeight );
+    
+    int iconsCount = _rightIconsList.count();
+    int w = width();
+    
+    for(int i = 0; i < iconsCount; ++i)
+    {
+        IconButton *bt = _rightIconsList.at(i);
+        bt->move( w - 25*(i+1), newHeight );
+    }
+
+    KLineEdit::resizeEvent(event);
+
 }

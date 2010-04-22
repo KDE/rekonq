@@ -33,14 +33,15 @@
 
 // Local Includes
 #include "rekonqprivate_export.h"
-#include "lineedit.h"
 #include "application.h"
 
 // KDE Includes
 #include <KUrl>
+#include <KLineEdit>
 
 // Qt Includes
 #include <QWeakPointer>
+#include <QToolButton>
 
 // Forward Declarations
 class QLinearGradient;
@@ -49,12 +50,36 @@ class CompletionWidget;
 class WebTab;
 
 
-class REKONQ_TESTS_EXPORT UrlBar : public LineEdit
+class IconButton : public QToolButton
 {
     Q_OBJECT
 
 public:
-    UrlBar(QWidget *parent = 0);
+    IconButton(QWidget *parent = 0);
+};
+
+
+// Definitions
+typedef QList<IconButton *> IconButtonPointerList;
+
+
+// ------------------------------------------------------------------------------------
+
+
+class REKONQ_TESTS_EXPORT UrlBar : public KLineEdit
+{
+    Q_OBJECT
+
+public:
+
+    enum icon
+    { 
+        KGet    = 0x00000001,
+        RSS     = 0x00000010,
+        SSL     = 0x00000100,
+    };   
+
+    explicit UrlBar(QWidget *parent = 0);
     ~UrlBar();
 
     void setPrivateMode(bool on);
@@ -65,19 +90,28 @@ private slots:
 
     void loadFinished();
     void loadTyped(const QString &);
-    
+
+    void clearRightIcons();
+
 protected:
-    virtual void paintEvent(QPaintEvent *event);
-    virtual void keyPressEvent(QKeyEvent *event);
-    virtual void focusInEvent(QFocusEvent *event);
-    virtual void dropEvent(QDropEvent *event);
+    void paintEvent(QPaintEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+    void focusInEvent(QFocusEvent *event);
+    void dropEvent(QDropEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *);
+    void resizeEvent(QResizeEvent *);
 
 private:
+    IconButton *addRightIcon(UrlBar::icon );
     void activateSuggestions(bool);
     
     QWeakPointer<CompletionWidget> _box;
     WebTab *_tab;
     bool _privateMode;
+
+    IconButton *_icon;
+    IconButtonPointerList _rightIconsList;
 };
+
 
 #endif
