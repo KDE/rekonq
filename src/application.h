@@ -102,7 +102,7 @@ public:
     static Application *instance();
 
     MainWindow *mainWindow();
-    MainWindow *newMainWindow();
+    MainWindow *newMainWindow(bool withTab = true);
     MainWindowList mainWindowList();
     
     static KIcon icon(const KUrl &url);

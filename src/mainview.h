@@ -123,7 +123,7 @@ public slots:
     void newTab();
 
     void cloneTab(int index = -1);
-    void closeTab(int index = -1);
+    void closeTab(int index = -1, bool del = true);
     void closeOtherTabs(int index);
     void reloadTab(int index = -1);
     void reloadAllTabs();

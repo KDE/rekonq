@@ -456,7 +456,7 @@ void MainView::cloneTab(int index)
 
 
 // When index is -1 index chooses the current tab
-void MainView::closeTab(int index)
+void MainView::closeTab(int index, bool del)
 {
     // open default homePage if just one tab is opened
     if (count() == 1)
@@ -510,11 +510,15 @@ void MainView::closeTab(int index)
 
     removeTab(index);
     updateTabBar();        // UI operation: do it ASAP!!
-    tab->deleteLater();    // tab is scheduled for deletion.
 
     QWidget *urlbar = _bars->widget(index);
     _bars->removeWidget(urlbar);
-    urlbar->deleteLater();
+    
+    if(del)
+    {
+        tab->deleteLater();    // tab is scheduled for deletion.
+        urlbar->deleteLater();
+    }
     
     emit tabsChanged();
 }
@@ -682,10 +686,17 @@ void MainView::detachTab(int index)
     if (index < 0 || index >= count())
         return;
 
-    KUrl url = webTab(index)->view()->url();
-    closeTab(index);
+    WebTab *tab = webTab(index);
+    QString label = tab->view()->title();
+    QWidget *bar = _bars->widget(index);
     
-    Application::instance()->loadUrl(url, Rekonq::NewWindow);
+    closeTab(index, false);
+    
+    MainWindow *w = Application::instance()->newMainWindow(false);
+    w->mainView()->addTab(tab, Application::icon(tab->url()), label);
+    QStackedWidget *stack = qobject_cast<QStackedWidget *>(w->mainView()->urlBarWidget());
+    stack->insertWidget(0, bar);
+    w->mainView()->updateTabBar();
 }
 
 
