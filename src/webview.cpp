@@ -37,6 +37,7 @@
 #include "mainview.h"
 #include "webpage.h"
 #include "bookmarksmanager.h"
+#include "searchengine.h"
 
 // KDE Includes
 #include <KService>
@@ -162,31 +163,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18n("Search with"), this);
 
-        KConfig config("kuriikwsfilterrc"); //Share with konqueror
-        KConfigGroup cg = config.group("General");
-        QStringList favoriteEngines;
-        favoriteEngines << "wikipedia" << "google"; //defaults
-        favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
-        QString keywordDelimiter = cg.readEntry("KeywordDelimiter", ":");
-        KService::Ptr service;
-        KUriFilterData data;
-
-        Q_FOREACH(const QString &engine, favoriteEngines)
+        foreach(KService::Ptr engine, SearchEngine::favorites())
         {
-            if(!engine.isEmpty())
-            {
-                service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-                if(service)
-                {
-                    const QString searchProviderPrefix = *(service->property("Keys").toStringList().begin()) + keywordDelimiter;
-                    data.setData(searchProviderPrefix + "some keyword");
-                    a = new KAction(service->name(), this);
-                    a->setIcon( Application::icon( data.uri() ) );
-                    a->setData(searchProviderPrefix);
-                    connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
-                    searchMenu->addAction(a);
-                }
-            }
+             a = new KAction(engine->name(), this);
+             a->setIcon( Application::icon( SearchEngine::buildQuery(engine,"")) );
+             a->setData(engine->entryPath());
+             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
+             searchMenu->addAction(a);
         }
 
         if (!searchMenu->menu()->isEmpty())
@@ -401,9 +384,9 @@ QPoint WebView::mousePos()
 void WebView::search()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    QString search = a->data().toString() + selectedText();
-    KUrl urlSearch = KUrl::fromEncoded(search.toUtf8());
-    
+    KService::Ptr engine = KService::serviceByDesktopPath(a->data().toString());
+    KUrl urlSearch = KUrl(SearchEngine::buildQuery(engine, selectedText()));
+
     emit loadUrl(urlSearch, Rekonq::NewCurrentTab);
 }
 

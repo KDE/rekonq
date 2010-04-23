@@ -34,6 +34,7 @@
 // Local Includes
 #include "application.h"
 #include "urlresolver.h"
+#include "searchengine.h"
 
 // KDE Includes
 #include <KGlobalSettings>
@@ -48,15 +49,12 @@
 #include <QEvent>
 #include <QKeyEvent>
 
-// Defines
-#define QL1S(x)  QLatin1String(x)
-
 
 CompletionWidget::CompletionWidget(QWidget *parent)
     : QFrame(parent, Qt::ToolTip)
     , _parent(parent)
     , _currentIndex(-1)
-    , _searchEngine( defaultSearchEngine() )
+    , _searchEngine( SearchEngine::defaultEngine() )
 {
     setFrameStyle(QFrame::Panel);
     setLayoutDirection(Qt::LeftToRight);
@@ -259,8 +257,6 @@ void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button)
 }
 
 
-
-
 void CompletionWidget::suggestUrls(const QString &text)
 {   
     QWidget *w = qobject_cast<QWidget *>(parent());
@@ -284,31 +280,3 @@ void CompletionWidget::suggestUrls(const QString &text)
 }
 
 
-QString CompletionWidget::defaultSearchEngine()
-{
-    int n = ReKonfig::searchEngine();
-    QString engine;
-    switch(n)
-    {
-    case 0:
-        engine = QL1S("google");
-        break;
-    case 1:
-        engine = QL1S("altavista");
-        break;
-    case 2:
-        engine = QL1S("lycos");
-        break;
-    case 3:
-        engine = QL1S("wikipedia");
-        break;
-    case 4:
-        engine = QL1S("wolfram");
-        break;
-    default:
-        engine = QL1S("google");
-        break;
-    }
-
-    return engine;
-}
