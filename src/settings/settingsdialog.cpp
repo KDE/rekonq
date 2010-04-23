@@ -38,6 +38,7 @@
 #include "webtab.h"
 #include "adblockwidget.h"
 #include "networkwidget.h"
+#include "searchengine.h"
 
 //Ui Includes
 #include "ui_settings_general.h"
@@ -207,7 +208,11 @@ void SettingsDialog::saveSettings()
     d->shortcutsEditor->save();
     d->adBlockWidg->save();
     d->networkWidg->save();
-
+    SearchEngine::loadDefaultWS();
+    SearchEngine::loadDelimiter();
+    SearchEngine::loadFavorites();
+    
+    
     updateButtons();
     emit settingsChanged("ReKonfig");
 }
