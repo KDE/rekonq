@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>437</width>
-    <height>346</height>
+    <width>643</width>
+    <height>560</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -17,21 +17,48 @@
       <string>WebKit Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0" colspan="2">
+      <item row="0" column="0">
        <widget class="QCheckBox" name="kcfg_autoLoadImages">
         <property name="text">
          <string>Autoload images</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item row="0" column="1" rowspan="7">
+       <widget class="Line" name="line">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
        <widget class="QCheckBox" name="kcfg_linksIncludedInFocusChain">
         <property name="text">
          <string>Links included in focus chain</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="kcfg_dnsPrefetch">
+        <property name="text">
+         <string>prefetch DNS entries</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="kcfg_zoomTextOnly">
+        <property name="text">
+         <string>Zoom text only</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
        <widget class="QCheckBox" name="kcfg_javascriptEnabled">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -44,72 +71,52 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QCheckBox" name="kcfg_zoomTextOnly">
-        <property name="text">
-         <string>Zoom text only</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="kcfg_javaEnabled">
-        <property name="text">
-         <string>Java support</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
+      <item row="2" column="2">
        <widget class="QCheckBox" name="kcfg_printElementBackgrounds">
         <property name="text">
          <string>Print element backgrounds</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="3">
+      <item row="4" column="2">
        <widget class="QCheckBox" name="kcfg_offlineStorageDatabaseEnabled">
         <property name="text">
          <string>Offline storage database</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="3">
-       <widget class="QCheckBox" name="kcfg_offlineWebApplicationCacheEnabled">
+      <item row="3" column="0" rowspan="2">
+       <widget class="QCheckBox" name="kcfg_javaEnabled">
         <property name="text">
-         <string>Offline web application cache</string>
+         <string>Java support</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="3">
-       <widget class="QCheckBox" name="kcfg_localStorageDatabaseEnabled">
-        <property name="text">
-         <string>Local storage database</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
+      <item row="5" column="0">
        <widget class="QCheckBox" name="kcfg_javascriptCanOpenWindows">
         <property name="text">
          <string>JavaScript can open windows</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="2">
+       <widget class="QCheckBox" name="kcfg_offlineWebApplicationCacheEnabled">
+        <property name="text">
+         <string>Offline web application cache</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
        <widget class="QCheckBox" name="kcfg_javascriptCanAccessClipboard">
         <property name="text">
          <string>JavaScript can access clipboard</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" rowspan="6">
-       <widget class="Line" name="line">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+      <item row="6" column="2">
+       <widget class="QCheckBox" name="kcfg_localStorageEnabled">
+        <property name="text">
+         <string>Local Storage</string>
         </property>
        </widget>
       </item>

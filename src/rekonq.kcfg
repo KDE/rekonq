@@ -117,6 +117,9 @@
         <entry name="autoLoadImages" type="Bool">
             <default>true</default>
         </entry>
+        <entry name="dnsPrefetch" type="Bool">
+            <default>true</default>
+        </entry>
         <entry name="javascriptEnabled" type="Bool">
             <default>true</default>
         </entry>
@@ -147,7 +150,7 @@
         <entry name="offlineWebApplicationCacheEnabled" type="Bool">
             <default>true</default>
         </entry>
-        <entry name="localStorageDatabaseEnabled" type="Bool">
+        <entry name="localStorageEnabled" type="Bool">
             <default>true</default>
         </entry>
         <entry name="userCSS" type="Url">

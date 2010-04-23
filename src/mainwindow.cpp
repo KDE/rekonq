@@ -572,6 +572,7 @@ void MainWindow::updateConfiguration()
 
     // ================ WebKit ============================
     defaultSettings->setAttribute(QWebSettings::AutoLoadImages, ReKonfig::autoLoadImages());
+    defaultSettings->setAttribute(QWebSettings::DnsPrefetchEnabled, ReKonfig::dnsPrefetch());
     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, ReKonfig::javascriptEnabled());
     defaultSettings->setAttribute(QWebSettings::JavaEnabled, ReKonfig::javaEnabled());
     defaultSettings->setAttribute(QWebSettings::JavascriptCanOpenWindows, ReKonfig::javascriptCanOpenWindows());
@@ -588,8 +589,8 @@ void MainWindow::updateConfiguration()
     // ===== HTML 5 features WebKit support ======
     defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
     defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
-    defaultSettings->setAttribute(QWebSettings::LocalStorageDatabaseEnabled, ReKonfig::localStorageDatabaseEnabled());
-    if(ReKonfig::localStorageDatabaseEnabled())
+    defaultSettings->setAttribute(QWebSettings::LocalStorageEnabled, ReKonfig::localStorageEnabled());
+    if(ReKonfig::localStorageEnabled())
     {
         QString path = KStandardDirs::locateLocal("cache", QString("WebkitLocalStorage/rekonq"), true);
         path.remove("rekonq");

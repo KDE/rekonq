@@ -174,6 +174,7 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::setWebSettingsToolTips()
 {
     d->webkitUi.kcfg_autoLoadImages->setToolTip(i18n("Specifies whether images are automatically loaded in web pages."));
+    d->webkitUi.kcfg_dnsPrefetch->setToolTip( i18n("Specifies whether WebKit will try to pre-fetch DNS entries to speed up browsing.") );
     d->webkitUi.kcfg_javascriptEnabled->setToolTip(i18n("Enables the execution of JavaScript programs."));
     d->webkitUi.kcfg_javaEnabled->setToolTip(i18n("Enables support for Java applets."));
     d->webkitUi.kcfg_pluginsEnabled->setToolTip(i18n("Enables support for plugins in web pages."));
@@ -184,7 +185,7 @@ void SettingsDialog::setWebSettingsToolTips()
     d->webkitUi.kcfg_printElementBackgrounds->setToolTip(i18n("If enabled, background colors and images are also drawn when the page is printed."));
     d->webkitUi.kcfg_offlineStorageDatabaseEnabled->setToolTip(i18n("Enables support for the HTML 5 offline storage feature."));
     d->webkitUi.kcfg_offlineWebApplicationCacheEnabled->setToolTip(i18n("Enables support for the HTML 5 web application cache feature."));
-    d->webkitUi.kcfg_localStorageDatabaseEnabled->setToolTip(i18n("Enables support for the HTML 5 local storage feature."));
+    d->webkitUi.kcfg_localStorageEnabled->setToolTip(i18n("Enables support for the HTML 5 local storage feature."));
 }
 
 
