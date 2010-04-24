@@ -687,16 +687,25 @@ void MainView::detachTab(int index)
         return;
 
     WebTab *tab = webTab(index);
-    QString label = tab->view()->title();
-    QWidget *bar = _bars->widget(index);
-    
-    closeTab(index, false);
-    
-    MainWindow *w = Application::instance()->newMainWindow(false);
-    w->mainView()->addTab(tab, Application::icon(tab->url()), label);
-    QStackedWidget *stack = qobject_cast<QStackedWidget *>(w->mainView()->urlBarWidget());
-    stack->insertWidget(0, bar);
-    w->mainView()->updateTabBar();
+    KUrl u = tab->url();
+    kDebug() << u;
+    if( u.scheme() == QL1S("about") )
+    {
+        closeTab(index);
+        Application::instance()->loadUrl(u, Rekonq::NewWindow);
+    }
+    else
+    {
+        QString label = tab->view()->title();
+        QWidget *bar = _bars->widget(index);    
+        closeTab(index, false);
+        
+        MainWindow *w = Application::instance()->newMainWindow(false);
+        w->mainView()->addTab(tab, Application::icon( u ), label);
+        QStackedWidget *stack = qobject_cast<QStackedWidget *>(w->mainView()->urlBarWidget());
+        stack->insertWidget(0, bar);
+        w->mainView()->updateTabBar();
+    }
 }
 
 
