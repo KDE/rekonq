@@ -150,10 +150,7 @@ void MainView::updateTabButtonPosition()
         if (tabWidthHint < sizeHint().width()/4)
             newPosX = tabWidgetWidth - m_addTabButton->width();
 
-        // Y position is fixed
-        // Here I noticed with some emphiric valutations ( :D )
-        // that 2 look better than 0, just that..
-        m_addTabButton->move(newPosX, 2);
+        m_addTabButton->move(newPosX, 0);
     }
 }
 
