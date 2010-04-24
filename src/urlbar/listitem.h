@@ -126,22 +126,18 @@ class EngineBar : public KToolBar
     Q_OBJECT
     
 public:
-    EngineBar(const QString &text, const QString &selectedEngine, QWidget *parent = 0);
-    
+    EngineBar(KService::Ptr selectedEngine, QWidget *parent = 0);
     void selectNextEngine();
-    KUrl url() { return m_url; };
     
 signals:
-    void searchEngineChanged(QString url, QString engine);
+    void searchEngineChanged(KService::Ptr engine);
 
 private slots:
     void changeSearchEngine();
 
 private:
-    KAction *newEngineAction(KService::Ptr service, QString selectedEngine);
-
+    KAction *newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine);
     QActionGroup *m_engineGroup;
-    KUrl m_url;
 };
 
 
@@ -159,7 +155,7 @@ public slots:
     virtual void nextItemSubChoice();
     
 private slots:
-    void changeSearchEngine(QString url, QString engine);
+    void changeSearchEngine(KService::Ptr engine);
     
 private:
     QString searchItemTitle(QString engine, QString text);
@@ -167,8 +163,8 @@ private:
     TextLabel* m_titleLabel;
     IconLabel* m_iconLabel;
     EngineBar* m_engineBar;
-    
     QString m_text;
+    KService::Ptr m_currentEngine;
 };
 
 

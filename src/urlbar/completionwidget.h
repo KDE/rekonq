@@ -34,6 +34,7 @@
 
 // KDE Includes
 #include <KLineEdit>
+#include <KService>
 
 // Qt Includes
 #include <QFrame>
@@ -49,8 +50,8 @@ public:
     virtual bool eventFilter(QObject *obj, QEvent *ev);
     void setVisible(bool visible);
     
-    QString searchEngine() { return _searchEngine; };
-    void setCurrentEngine(const QString &engine) { _searchEngine = engine; };
+    KService::Ptr searchEngine() { return _searchEngine; };
+    void setCurrentEngine(KService::Ptr engine) { _searchEngine = engine; };
     
 private slots:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton);
@@ -61,8 +62,6 @@ signals:
     void nextItemSubChoice();
     
 private:
-    QString defaultSearchEngine();
-    
     void insertSearchList(const UrlSearchList &list, const QString& text);
     void popup();
     void clear();
@@ -76,7 +75,7 @@ private:
     UrlSearchList _list;
     int _currentIndex;
 
-    QString _searchEngine;
+    KService::Ptr _searchEngine;
 };
 
 #endif // COMPLETION_WIDGET_H

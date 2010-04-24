@@ -184,15 +184,7 @@ UrlSearchList UrlResolver::qurlFromUserInputResolution()
 // STEP 2 = Web Searches
 UrlSearchList UrlResolver::webSearchesResolution()
 {
-    UrlSearchList list;
-
-    if(KUrl(_typedString).isRelative())
-    {        
-        UrlSearchItem gItem(UrlSearchItem::Search, KUrl(), QString() );    // others will find this url..
-        list << gItem;
-    }
-
-    return list;
+    return UrlSearchList() << UrlSearchItem(UrlSearchItem::Search, KUrl(), QString());
 }
 
 

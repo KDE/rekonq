@@ -36,13 +36,12 @@
 #include "application.h"
 #include "websnap.h"
 #include "completionwidget.h"
+#include "searchengine.h"
 
 // KDE Includes
 #include <KIcon>
-#include <KStandardDirs>
 #include <KDebug>
 #include <QActionGroup>
-#include <KConfigGroup>
 #include <KIcon>
 
 // Qt Includes
@@ -254,29 +253,37 @@ PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *p
 
 // ---------------------------------------------------------------
 
-
 SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
     : ListItem(item, parent)
     , m_text(text)
 {
-    CompletionWidget *w = qobject_cast<CompletionWidget *>(parent);
-    QString currentEngine = w->searchEngine();
-    kDebug() << currentEngine;
+    KService::Ptr currentEngine = SearchEngine::defaultEngine();
     
+    QString query = text;
+    KService::Ptr engine = SearchEngine::fromString(text);
+    if (engine)
+    {
+        query = query.remove(0, text.indexOf(SearchEngine::delimiter())+1);
+    }
+    else
+    {
+        engine = currentEngine;
+    }
+    
+    m_url = SearchEngine::buildQuery(engine, query);
+
     m_iconLabel = new IconLabel("edit-find", this); //TODO: get the default engine icon
-    m_titleLabel = new TextLabel( searchItemTitle(currentEngine, text), QString(), this);
-    m_engineBar = new EngineBar(text, currentEngine, parent);
-    
-    // without this it will not work :)
-    m_url = m_engineBar->url();
+    m_titleLabel = new TextLabel( searchItemTitle(engine->name(), query), QString(), this);
+    m_engineBar = new EngineBar(currentEngine, parent);
+
     
     layout()->addWidget( m_iconLabel );
     layout()->addWidget( m_titleLabel );
     layout()->addWidget( new QLabel( i18n("Engines: "), this ) );
     layout()->addWidget( m_engineBar );
     layout()->addWidget( new TypeIconLabel(item.type, this) );
-    
-    connect(m_engineBar, SIGNAL(searchEngineChanged(QString, QString)), this, SLOT(changeSearchEngine(QString, QString)));
+
+    connect(m_engineBar, SIGNAL(searchEngineChanged(KService::Ptr)), this, SLOT(changeSearchEngine(KService::Ptr)));
 }
 
 
@@ -285,13 +292,11 @@ QString SearchListItem::searchItemTitle(QString engine, QString text)
     return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, text));
 }
 
-
-void SearchListItem::changeSearchEngine(QString url, QString engine)
+void SearchListItem::changeSearchEngine(KService::Ptr engine)
 {
-    m_titleLabel->setText(searchItemTitle(engine,m_text));
-    m_iconLabel->setPixmap(Application::icon( KUrl(url) ).pixmap(16));
-    QString url2 = url.replace( QL1S("\\{@}"), m_text);
-    m_url = KUrl(url2);
+    m_titleLabel->setText(searchItemTitle(engine->name(),m_text));
+    m_iconLabel->setPixmap(Application::icon( KUrl(engine->property("Query").toString()) ).pixmap(16));
+    m_url = SearchEngine::buildQuery(engine, m_text);
 
     CompletionWidget *w = qobject_cast<CompletionWidget *>(parent());
     w->setCurrentEngine( engine );
@@ -307,42 +312,21 @@ void SearchListItem::nextItemSubChoice()
 // -----------------------------------------------------------------------------------------------
 
 
-EngineBar::EngineBar(const QString &text, const QString &selectedEngine, QWidget *parent)
-    : KToolBar(parent)
+EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
+: KToolBar(parent)
 {   
     setIconSize(QSize(16,16));
     setToolButtonStyle(Qt::ToolButtonIconOnly);
     
     m_engineGroup = new QActionGroup(this);
     m_engineGroup->setExclusive(true);
-    
-    KConfig config("kuriikwsfilterrc"); //Share with konqueror
-    KConfigGroup cg = config.group("General");
-    QStringList favoriteEngines;
-    favoriteEngines << "wikipedia" << "google"; //defaults
-    favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
-    
-    // default engine
-    CompletionWidget *w = qobject_cast<CompletionWidget *>(parent);
-    QString defaultEngine = w->searchEngine();
-    KService::Ptr service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(defaultEngine));
-    
-    m_engineGroup->addAction(newEngineAction(service, selectedEngine));
-    
-    // set url;
-    QString url = service->property("Query").toString();
-    url = url.replace("\\{@}",text);
-    m_url = KUrl(url);
-    
-    Q_FOREACH(const QString &engine, favoriteEngines)
+
+    m_engineGroup->addAction(newEngineAction(SearchEngine::defaultEngine(), selectedEngine));    
+    foreach(KService::Ptr engine, SearchEngine::favorites())
     {
-        if(!engine.isEmpty())
+        if(engine->desktopEntryName()!=SearchEngine::defaultEngine()->desktopEntryName())
         {
-            service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-            if(service && service->desktopEntryName() != defaultEngine)
-            {
-                m_engineGroup->addAction(newEngineAction(service, selectedEngine));
-            }
+            m_engineGroup->addAction(newEngineAction(engine, selectedEngine));
         }
     }
     
@@ -350,18 +334,14 @@ EngineBar::EngineBar(const QString &text, const QString &selectedEngine, QWidget
 }
 
 
-KAction *EngineBar::newEngineAction(KService::Ptr service, QString selectedEngine)
+KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine)
 {
-    KAction *a = new KAction(Application::icon(m_url), service->name(), this);
+    QString url = engine->property("Query").toString();
+    KAction *a = new KAction(Application::icon(url), engine->name(), this);
     a->setCheckable(true);
-    if (service->name()==selectedEngine) 
-        a->setChecked(true);
-    
-    QString url = service->property("Query").toString();
-    
-    a->setData( QStringList() << url << service->desktopEntryName() );
+    if (engine->desktopEntryName()==selectedEngine->desktopEntryName()) a->setChecked(true);
+    a->setData(engine->entryPath());
     connect(a, SIGNAL(triggered(bool)), this, SLOT(changeSearchEngine()));
-
     return a;
 }
 
@@ -369,8 +349,7 @@ KAction *EngineBar::newEngineAction(KService::Ptr service, QString selectedEngin
 void EngineBar::changeSearchEngine()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    QStringList list = a->data().toStringList();    
-    emit searchEngineChanged(list.first(), list.last());
+    emit searchEngineChanged(KService::serviceByDesktopPath(a->data().toString()));
 }
 
 
