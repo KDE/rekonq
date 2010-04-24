@@ -65,12 +65,10 @@ private slots:
     void loadFinished(bool);
 
     void createWalletBar(const QString &, const QUrl &);
-    void showRSSInfo();
+    void showRSSInfo(QPoint pos);
     
 private:
     int m_progress;
-    
-    KUrl::List _rssList;
 };
 
 #endif

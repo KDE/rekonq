@@ -53,9 +53,12 @@ class WebTab;
 class IconButton : public QToolButton
 {
     Q_OBJECT
-
 public:
     IconButton(QWidget *parent = 0);
+signals:
+    void clicked(QPoint);
+protected:
+    void mouseReleaseEvent(QMouseEvent *event);
 };
 
 

@@ -63,6 +63,10 @@ IconButton::IconButton(QWidget *parent)
     setCursor(Qt::ArrowCursor);
 }
 
+void IconButton::mouseReleaseEvent(QMouseEvent* event)
+{
+    emit clicked(event->globalPos());
+}
 
 // -----------------------------------------------------------------------------------------------------------
 
@@ -282,7 +286,7 @@ void UrlBar::loadFinished()
     if(_tab->hasRSSInfo())
     {
         IconButton *bt = addRightIcon(UrlBar::RSS);
-        connect(bt, SIGNAL(clicked()), _tab, SLOT(showRSSInfo()));
+        connect(bt, SIGNAL(clicked(QPoint)), _tab, SLOT(showRSSInfo(QPoint)));
     }
     
     // show SSL

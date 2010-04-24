@@ -40,6 +40,7 @@
 #include "bookmarksmanager.h"
 #include "walletbar.h"
 #include "previewselectorbar.h"
+#include "rsswidget.h"
 
 // KDE Includes
 #include <KService>
@@ -199,43 +200,46 @@ void WebTab::createPreviewSelectorBar(int index)
 
 bool WebTab::hasRSSInfo()
 {
-    _rssList.clear();
-    QWebElementCollection col = page()->mainFrame()->findAllElements("link");
-    foreach(QWebElement el, col)
-    {
-        if( el.attribute("type") == QL1S("application/rss+xml") || el.attribute("type") == QL1S("application/rss+xml") )
-        {
-            if( el.attribute("href").startsWith( QL1S("http") ) )
-            {
-                _rssList << KUrl( el.attribute("href") );
-            }
-            else
-            {
-                KUrl u = url();
-                // NOTE
-                // cd() is probably better than setPath() here, 
-                // for all those url sites just having a path
-                if(u.cd( el.attribute("href") ))
-                    _rssList << u;
-            }
-        }
-    }
+    QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
+    col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
+    if(col.count() != 0)
+        return true;
     
-    return !_rssList.isEmpty();
+    return false;
 }
 
 
-void WebTab::showRSSInfo()
+void WebTab::showRSSInfo(QPoint pos)
 {
-    QString urlList = QString(i18n("The following RSS feeds were found:<br /><br />"));
-    foreach(const KUrl &url, _rssList)
-    {
-        urlList += QString("<a href=\"") + url.url() + QString("\">") + url.url() + QString("</a><br />");
-    }
-    urlList += QString(i18n("<br />Enough for now... Waiting for some cool Akonadi based feeds management :)"));
+    QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
+    col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
     
-    KMessageBox::information( view(), 
-                              urlList,
-                              i18n("RSS Management")
-                            );
+    QMap<KUrl, QString> map;
+    int i = 0;
+    foreach(QWebElement el, col)
+    {
+        QString urlString;
+        if( el.attribute("href").startsWith( QL1S("http") ) )
+            urlString = el.attribute("href");
+        else
+        {
+            KUrl u = url();
+            // NOTE
+            // cd() is probably better than setPath() here, 
+            // for all those url sites just having a path
+            if(u.cd( el.attribute("href") ))
+                    urlString = u.toMimeDataString();
+        }
+        
+        QString title = el.attribute("title");
+        if(title.isEmpty())
+            title= el.attribute("href");
+        
+        map.insert(KUrl(urlString), title);
+        
+        i++;
+    }
+    
+    RSSWidget *widget = new RSSWidget(map, window()); 
+    widget->showAt(pos);
 }
