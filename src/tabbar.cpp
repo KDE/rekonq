@@ -273,7 +273,9 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
 
     menu.addAction(mainWindow->actionByName(QLatin1String("new_tab")));
     menu.addAction( mainWindow->actionByName("clone_tab") );
-    menu.addAction( mainWindow->actionByName("detach_tab") );
+
+    if(count() > 1)
+        menu.addAction( mainWindow->actionByName("detach_tab") );
     menu.addSeparator();
     menu.addAction( mainWindow->actionByName("close_tab") );
     menu.addAction( mainWindow->actionByName("close_other_tabs") );

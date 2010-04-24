@@ -329,10 +329,12 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 }
 
 
-MainWindow *Application::newMainWindow()
+MainWindow *Application::newMainWindow(bool withTab)
 {
     MainWindow *w = new MainWindow();
-    w->mainView()->newWebTab();    // remember using newWebTab and NOT newTab here!!
+    
+    if(withTab)
+        w->mainView()->newWebTab();    // remember using newWebTab and NOT newTab here!!
     
     m_mainWindows.prepend(w);
     w->show();
