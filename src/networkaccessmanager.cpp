@@ -45,19 +45,20 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 }
 
 
-QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
+QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData)
 {
     QNetworkReply *reply = 0;
+    
+    QNetworkRequest req = request;
+    req.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+    req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
+//     if (!m_acceptLanguage.isEmpty())
+//         req.setRawHeader("Accept-Language", m_acceptLanguage);
     
     switch(op)
     {
     case QNetworkAccessManager::HeadOperation:
         kDebug() << "HEAD OPERATION";
-//         if(outgoingData)
-//         {
-//             QByteArray outgoingDataByteArray = outgoingData->peek(1024 * 1024);
-//             kDebug() << outgoingDataByteArray;
-//         }
         break;
     
     case QNetworkAccessManager::GetOperation:
