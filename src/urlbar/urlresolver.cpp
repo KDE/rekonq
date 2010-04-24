@@ -75,17 +75,21 @@ UrlSearchList UrlResolver::orderedSearchItems()
     // catch first 3 results from the two resulting lists :)
 
     UrlSearchList list;
-
-//     if(isHttp())
-//     {
-//         list << qurlFromUserInputResolution();
-//     }
-
-    list << qurlFromUserInputResolution();
-    list << webSearchesResolution();
-
-    if (_typedString.length() >= 2)
+    
+    if(isHttp())
     {
+        list << qurlFromUserInputResolution();
+        list << webSearchesResolution();
+    }
+    else
+    {
+        list << webSearchesResolution();
+        list << qurlFromUserInputResolution();
+    }
+
+    
+    if (_typedString.length() >= 2)
+    {      
         int firstResults = list.count();
         int checkPoint = 9 - firstResults;
 
@@ -127,6 +131,8 @@ UrlSearchList UrlResolver::orderedSearchItems()
                 list << i;
         }
     }
+
+    list = placeTypedDomaineNameOnTop(list);
 
     return list;
 }
@@ -215,3 +221,25 @@ UrlSearchList UrlResolver::bookmarksResolution()
 
     return list;
 }
+
+
+UrlSearchList UrlResolver::placeTypedDomaineNameOnTop(UrlSearchList list)
+{
+    int i=0;
+    bool found = false;
+
+    while(i<list.count() && !found)
+    {
+        UrlSearchItem item = list.at(i);
+        if (item.url.url().contains("."+_typedString+".") || item.url.url().contains("/"+_typedString+"."))
+        {
+            list.removeAt(i);
+            list.insert(0,item);
+            found = true;
+        }
+        i++;
+    }
+    
+    return list;
+}
+

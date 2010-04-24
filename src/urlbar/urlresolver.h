@@ -82,6 +82,8 @@ private:
     UrlSearchList historyResolution();
     UrlSearchList qurlFromUserInputResolution();
     UrlSearchList bookmarksResolution();
+    UrlSearchList placeTypedDomaineNameOnTop(UrlSearchList list);
+     
     bool isHttp();
 };
 
