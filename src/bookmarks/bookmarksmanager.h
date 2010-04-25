@@ -262,7 +262,7 @@ public slots:
 
     
 private:
-    KAction *fillBookmarkBar(const KBookmark &bookmark);
+    void fillBookmarkBar(KToolBar *toolBar);
     QString titleForBookmarkUrl(const KBookmark &bookmark, QString url);
 
     KBookmarkManager *m_manager;
