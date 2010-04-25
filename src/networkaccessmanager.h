@@ -51,7 +51,7 @@ protected:
     virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData = 0);
 
 private:
-    WebPage *_parentPage;
+    QByteArray _acceptLanguage;
 };
 
 #endif // NETWORKACCESSMANAGER_H

@@ -116,7 +116,6 @@ protected:
 
 private slots:
     void postLaunch();
-    void updateConfiguration();
     void browserLoading(bool);
     void updateActions();
     void updateWindowTitle(const QString &title = QString());
