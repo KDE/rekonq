@@ -113,9 +113,6 @@ MainWindow::MainWindow()
     // enable window size "auto-save"
     setAutoSaveSettings();
 
-    // updating rekonq configuration
-    updateConfiguration();
-
     // creating a centralWidget containing panel, m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
     centralWidget->setContentsMargins(0, 0, 0, 0);
@@ -543,76 +540,6 @@ void MainWindow::setupPanels()
 }
 
 
-
-void MainWindow::updateConfiguration()
-{
-    // ============== General ==================
-    m_view->updateTabBar();
-
-    // ============== Tabs ==================
-    if (ReKonfig::closeTabSelectPrevious())
-        m_view->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
-    else
-        m_view->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
-    
-    // =========== Fonts ==============
-    QWebSettings *defaultSettings = QWebSettings::globalSettings();
-
-    int fnSize = ReKonfig::fontSize();
-    int minFnSize = ReKonfig::minFontSize();
-
-    QFont standardFont = ReKonfig::standardFont();
-    defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, fnSize);
-    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, minFnSize);
-
-    QFont fixedFont = ReKonfig::fixedFont();
-    defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fnSize);
-
-    // ================ WebKit ============================
-    defaultSettings->setAttribute(QWebSettings::AutoLoadImages, ReKonfig::autoLoadImages());
-    defaultSettings->setAttribute(QWebSettings::DnsPrefetchEnabled, ReKonfig::dnsPrefetch());
-    defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, ReKonfig::javascriptEnabled());
-    defaultSettings->setAttribute(QWebSettings::JavaEnabled, ReKonfig::javaEnabled());
-    defaultSettings->setAttribute(QWebSettings::JavascriptCanOpenWindows, ReKonfig::javascriptCanOpenWindows());
-    defaultSettings->setAttribute(QWebSettings::JavascriptCanAccessClipboard, ReKonfig::javascriptCanAccessClipboard());
-    defaultSettings->setAttribute(QWebSettings::LinksIncludedInFocusChain, ReKonfig::linksIncludedInFocusChain());
-    defaultSettings->setAttribute(QWebSettings::ZoomTextOnly, ReKonfig::zoomTextOnly());
-    defaultSettings->setAttribute(QWebSettings::PrintElementBackgrounds, ReKonfig::printElementBackgrounds());
-    
-    if(ReKonfig::pluginsEnabled() == 2)
-        defaultSettings->setAttribute(QWebSettings::PluginsEnabled, false);
-    else
-        defaultSettings->setAttribute(QWebSettings::PluginsEnabled, true);
-
-    // ===== HTML 5 features WebKit support ======
-    defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
-    defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
-    defaultSettings->setAttribute(QWebSettings::LocalStorageEnabled, ReKonfig::localStorageEnabled());
-    if(ReKonfig::localStorageEnabled())
-    {
-        QString path = KStandardDirs::locateLocal("cache", QString("WebkitLocalStorage/rekonq"), true);
-        path.remove("rekonq");
-        QWebSettings::setOfflineStoragePath(path);
-        QWebSettings::setOfflineStorageDefaultQuota(50000);
-    }
-
-    // Applies user defined CSS to all open webpages. If there no longer is a
-    // user defined CSS removes it from all open webpages.
-    if(ReKonfig::userCSS().isEmpty())
-        defaultSettings->setUserStyleSheetUrl( KUrl(KStandardDirs::locate("appdata" , "default.css")) );
-    else
-        defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
-
-    // ====== load Settings on main classes
-    Application::historyManager()->loadSettings();
-    Application::adblockManager()->loadSettings();
-    
-    defaultSettings = 0;
-}
-
-
 void MainWindow::openLocation()
 {
     m_view->urlBar()->selectAll();
@@ -649,7 +576,7 @@ void MainWindow::preferences()
     QPointer<SettingsDialog> s = new SettingsDialog(this);
 
     // keep us informed when the user changes settings
-    connect(s, SIGNAL(settingsChanged(const QString&)), this, SLOT(updateConfiguration()));
+    connect(s, SIGNAL(settingsChanged(const QString&)), Application::instance(), SLOT(updateConfiguration()));
 
     s->exec();
     delete s;

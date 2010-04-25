@@ -136,6 +136,8 @@ private slots:
 
     void loadResolvedUrl(ThreadWeaver::Job *);
     
+    void updateConfiguration();
+    
 private:
     static QWeakPointer<HistoryManager> s_historyManager;
     static QWeakPointer<BookmarkProvider> s_bookmarkProvider;

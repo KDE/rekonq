@@ -36,52 +36,64 @@
 
 // KDE Includes
 #include <KDebug>
+#include <KLocale>
+#include <KProtocolManager>
+
+// Defines
+#define QL1S(x)  QLatin1String(x)
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
     : AccessManager(parent)
-    , _parentPage( qobject_cast<WebPage *>(parent) )
 {
+    QString c = KGlobal::locale()->country();
+    if(c == QL1S("C"))
+        c = QL1S("en_US");
+    if(c != QL1S("en_US"))
+        c.append( QL1S(", en_US") );
+    
+    _acceptLanguage = c.toLatin1();
 }
 
 
-QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
+QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData)
 {
+    WebPage *parentPage = qobject_cast<WebPage *>( parent() );
+    
     QNetworkReply *reply = 0;
     
-    switch(op)
+    QNetworkRequest req = request;
+    req.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+    req.setRawHeader("Accept-Language", _acceptLanguage);
+
+    KIO::CacheControl cc = KProtocolManager::cacheControl();
+    switch(cc)
     {
-    case QNetworkAccessManager::HeadOperation:
-        kDebug() << "HEAD OPERATION";
-//         if(outgoingData)
-//         {
-//             QByteArray outgoingDataByteArray = outgoingData->peek(1024 * 1024);
-//             kDebug() << outgoingDataByteArray;
-//         }
-        break;
-    
-    case QNetworkAccessManager::GetOperation:
-        kDebug() << "GET OPERATION";
-        reply = Application::adblockManager()->block(req, _parentPage);
-        if (reply)
-            return reply;
-        break;
-    
-    case QNetworkAccessManager::PutOperation:
-        kDebug() << "PUT OPERATION";
-        break;
-    
-    case QNetworkAccessManager::PostOperation:
-        kDebug() << "POST OPERATION";
-        break;
-    
-    case QNetworkAccessManager::DeleteOperation:
-        kDebug() << "DELETE OPERATION";
+    case KIO::CC_CacheOnly:      // Fail request if not in cache.
+        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
         break;
         
-    default:
-        kDebug() << "UNKNOWN OPERATION";
+    case KIO::CC_Refresh:        // Always validate cached entry with remote site.
+        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork);
         break;
+        
+    case KIO::CC_Reload:         // Always fetch from remote site
+        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
+        break;
+
+    case KIO::CC_Cache:          // Use cached entry if available.
+    case KIO::CC_Verify:         // Validate cached entry with remote site if expired.
+    default:
+        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
+        break;
+    }
+    
+
+    if( op == QNetworkAccessManager::GetOperation )
+    {
+        reply = Application::adblockManager()->block(req, parentPage);
+        if (reply)
+            return reply;
     }
 
     return AccessManager::createRequest(op,req,outgoingData);

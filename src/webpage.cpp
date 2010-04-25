@@ -148,6 +148,8 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
+    _loadingUrl = request.url();
+    
     KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
     KIO::MetaData metaData = manager->requestMetaData();
     
@@ -308,8 +310,13 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 }
 
 
-void WebPage::loadFinished(bool)
+void WebPage::loadFinished(bool ok)
 {
+    kDebug() << "===========================";
+    kDebug() << ok;
+    kDebug() << mainFrame()->url();
+    kDebug() << "===========================";
+    
     Application::adblockManager()->applyHidingRules(this);
     
     QStringList list = ReKonfig::walletBlackList();
@@ -327,7 +334,7 @@ void WebPage::loadFinished(bool)
 void WebPage::manageNetworkErrors(QNetworkReply *reply)
 {
     Q_ASSERT(reply);
-    WebView *v = 0;
+
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
     
@@ -355,7 +362,6 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         break;
 
     case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
-
         if( _protHandler.postHandling(reply->request(), mainFrame()) )
             break;
 
@@ -373,13 +379,8 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     case QNetworkReply::ProtocolUnknownError:                // Unknown protocol
     case QNetworkReply::ProtocolInvalidOperationError:       // requested operation is invalid for this protocol
 
-        // don't bother on elements loading errors:
-        // we'll manage just main url page ones
-        v = qobject_cast<WebView *>(view());
-        if( reply->url() != v->url() )
-            break;
-        
-        mainFrame()->setHtml( errorPage(reply), reply->url() );
+        if(reply->url() == _loadingUrl)
+            mainFrame()->setHtml( errorPage(reply), reply->url() );
         break;
 
     default:
