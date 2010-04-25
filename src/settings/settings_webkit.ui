@@ -47,7 +47,7 @@
       <item row="1" column="0">
        <widget class="QCheckBox" name="kcfg_dnsPrefetch">
         <property name="text">
-         <string>prefetch DNS entries</string>
+         <string>Prefetch DNS entries</string>
         </property>
        </widget>
       </item>
