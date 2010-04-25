@@ -213,19 +213,19 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     }
 
     KFileItem mainItem = _lister->rootItem();
-    KUrl rootUrl = mainItem.url();
-    
     if (mainItem.isNull()) 
     {
-        QString errStr = i18nc("%1=an URL", "Error opening '%1': No such file or directory.", rootUrl.prettyUrl() );
+        QString errStr = i18nc("%1=an URL", "Error opening '%1': No such file or directory.", _url.prettyUrl() );
+        return errStr;
+    }
+
+    if (!mainItem.isReadable()) 
+    {
+        QString errStr = i18nc("%1=an URL", "Unable to read %1", _url.prettyUrl() );
         return errStr;
     }
     
-    if (!mainItem.isReadable()) 
-    {
-        QString errStr = i18nc("%1=an URL", "Unable to read %1", rootUrl.prettyUrl() );
-        return errStr;
-    }
+    KUrl rootUrl = mainItem.url();
     
      // display "rekonq info" page
     QString infoFilePath =  KStandardDirs::locate("data", "rekonq/htmls/rekonqinfo.html");
@@ -292,7 +292,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
 
 void ProtocolHandler::showResults(const KFileItemList &list)
 {
-    if(_lister->rootItem().isFile())
+    if(!_lister->rootItem().isNull() && _lister->rootItem().isReadable() && _lister->rootItem().isFile())
     {
         WebPage *page = qobject_cast<WebPage *>( _frame->page() );
         page->downloadUrl( _lister->rootItem().url() );
