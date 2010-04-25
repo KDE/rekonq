@@ -335,18 +335,8 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
     {
         if (bookmarkToolBar)
         {
-            KBookmarkGroup toolBarGroup = m_manager->toolbar();
-            if (toolBarGroup.isNull())
-                return;
-
             bookmarkToolBar->clear();
-
-            KBookmark bookmark = toolBarGroup.first();
-            while (!bookmark.isNull())
-            {
-                bookmarkToolBar->addAction(fillBookmarkBar(bookmark));
-                bookmark = toolBarGroup.next(bookmark);
-            }
+            fillBookmarkBar(bookmarkToolBar);
         }
     }
 }
@@ -393,28 +383,32 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 }
 
 
-KAction *BookmarkProvider::fillBookmarkBar(const KBookmark &bookmark)
+void BookmarkProvider::fillBookmarkBar(KToolBar *toolBar)
 {
-    if (bookmark.isGroup())
-    {
-        KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), this);
-        menuAction->setDelayed(false);
-        new BookmarkMenu(bookmarkManager(), bookmarkOwner(), menuAction->menu(), bookmark.address());
+    KBookmarkGroup root = m_manager->toolbar();
+    if(root.isNull())
+        return;
 
-        return menuAction;
-    }
- 
-    if(bookmark.isSeparator())
+    for(KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
     {
-        KAction *a = new KBookmarkAction(bookmark, m_owner, this);
-        a->setText("");
-        a->setIcon(QIcon());
-        a->setSeparator(true);
-        return a;
-    }
-    else
-    {
-        return new KBookmarkAction(bookmark, m_owner, this);
+        if (bookmark.isGroup())
+        {
+            KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), this);
+            menuAction->setDelayed(false);
+            new BookmarkMenu(bookmarkManager(), bookmarkOwner(), menuAction->menu(), bookmark.address());
+
+            toolBar->addAction(menuAction);
+        }
+
+        else if(bookmark.isSeparator())
+        {
+            toolBar->addSeparator();
+        }
+
+        else
+        {
+            toolBar->addAction(new KBookmarkAction(bookmark, m_owner, this));
+        }
     }
 }
 
