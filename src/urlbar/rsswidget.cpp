@@ -55,7 +55,7 @@ RSSWidget::RSSWidget(QMap< KUrl, QString > map, QWidget *parent)
     
     
     QLabel *agregator = new QLabel(this);
-    agregator->setText(i18n("Agregator"));
+    agregator->setText(i18n("Aggregator:"));
     
     m_agregators = new KComboBox(this);
     m_agregators->addItem(KIcon("application-rss+xml"), QString("Akregator"));
@@ -65,7 +65,7 @@ RSSWidget::RSSWidget(QMap< KUrl, QString > map, QWidget *parent)
     
     
     QLabel *feed = new QLabel(this);
-    feed->setText(i18n("Feed"));
+    feed->setText(i18n("Feed:"));
     
     m_feeds = new KComboBox(this);
     foreach(QString title, m_map)
