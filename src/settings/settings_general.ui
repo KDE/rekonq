@@ -226,19 +226,19 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <widget class="QCheckBox" name="kcfg_kgetDownload">
+        <property name="text">
+         <string>Use KGet for downloading files</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="kcfg_kgetList">
         <property name="whatsThis">
          <string>If enabled, rekonq will display an additional context menu entry, which, when selected, lists all available links of the current website in KGet.</string>
         </property>
         <property name="text">
          <string>List links with KGet</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_kgetDownload">
-        <property name="text">
-         <string>Use KGet for downloading files</string>
         </property>
        </widget>
       </item>
