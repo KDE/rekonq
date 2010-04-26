@@ -29,6 +29,9 @@
     <entry name="recoverOnCrash" type="Int">
         <default>0</default>
     </entry>
+    <entry name="defaultEncoding" type="String">
+        <default>UTF-8</default>
+    </entry>
 </group>
 
 <!-- New Tab Page Settings -->
