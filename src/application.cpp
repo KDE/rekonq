@@ -411,9 +411,11 @@ void Application::updateConfiguration()
     else
         view->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
     
-    // =========== Fonts ==============
+    // =========== Encodings & Fonts ==============
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
 
+    defaultSettings->setDefaultTextEncoding( ReKonfig::defaultEncoding() );
+    
     int fnSize = ReKonfig::fontSize();
     int minFnSize = ReKonfig::minFontSize();
 

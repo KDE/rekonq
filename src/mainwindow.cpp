@@ -104,6 +104,7 @@ MainWindow::MainWindow()
     , m_bookmarksPanel(0)
     , m_webInspectorPanel(0)
     , m_historyBackMenu(0)
+    , m_encodingMenu( new KMenu(this) )
     , m_mainBar( new KToolBar( QString("MainToolBar"), this, Qt::TopToolBarArea, true, true, true) )
     , m_bmBar( new KToolBar( QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, true) )
     , m_popup( new KPassivePopup(this) )
@@ -161,6 +162,7 @@ MainWindow::~MainWindow()
     Application::bookmarkProvider()->removeToolBar(m_bmBar);
     Application::instance()->removeMainWindow(this);
     delete m_popup;
+    delete m_encodingMenu;
 }
 
 
@@ -396,6 +398,7 @@ void MainWindow::setupActions()
     actionCollection()->addAction( QLatin1String("detach_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(detachTab()) );
     
+    
     // ----------------------- Bookmarks ToolBar Action --------------------------------------
     QAction *qa;
     
@@ -414,6 +417,14 @@ void MainWindow::setupActions()
     bmMenu->setIcon(KIcon("bookmarks"));
     bmMenu->setDelayed(false);
     actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
+
+    
+    // ---------------- Encodings -----------------------------------
+    a = new KAction( KIcon("character-set"), i18n("Set Encoding"), this);
+    actionCollection()->addAction( QLatin1String("encodings"), a);
+    a->setMenu(m_encodingMenu);
+    connect(m_encodingMenu, SIGNAL(aboutToShow()), this, SLOT( populateEncodingMenu() ) );
+    connect(m_encodingMenu, SIGNAL(triggered(QAction *)), this, SLOT( setEncoding(QAction *) ));
 }
 
 
@@ -482,6 +493,8 @@ void MainWindow::setupTools()
 
     toolsMenu->addSeparator();
 
+    toolsMenu->addAction(actionByName(QLatin1String("encodings")));
+    
     helpMenu()->setIcon(KIcon("help-browser"));
     toolsMenu->addAction(helpMenu()->menuAction());
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
@@ -1174,8 +1187,6 @@ void MainWindow::aboutToShowBackMenu()
     if(pivot >= 8)
         offset = pivot - 8; 
     
-
-
     for(int i = listCount - 1; i>=0; --i)
     {
         QWebHistoryItem item = historyList.at(i);
@@ -1201,4 +1212,38 @@ void MainWindow::openActionUrl(QAction *action)
     }
 
     history->goToItem( history->itemAt(index) );
+}
+
+    
+void MainWindow::setEncoding(QAction *qa)
+{
+    QString currentCodec = qa->text().toLatin1();
+    currentCodec = currentCodec.remove('&');
+    kDebug() << currentCodec;
+    QWebSettings::globalSettings()->setDefaultTextEncoding( currentCodec );
+    ReKonfig::setDefaultEncoding(currentCodec);
+}
+
+
+void MainWindow::populateEncodingMenu()
+{
+    QList<QByteArray> byteCodecs = QTextCodec::availableCodecs();
+    QStringList codecs;
+    Q_FOREACH(const QByteArray &b, byteCodecs)
+    {
+        codecs << QString(b);
+    }
+    codecs.sort();
+    
+    QString currentCodec = ReKonfig::defaultEncoding();
+    kDebug() << "Current Codec: " << currentCodec;
+    
+    m_encodingMenu->clear();
+    Q_FOREACH(const QString &codec, codecs)
+    {
+        QAction *action = m_encodingMenu->addAction(codec);
+        action->setCheckable(true);
+        if (currentCodec == codec)
+            action->setChecked(true);
+    }
 }

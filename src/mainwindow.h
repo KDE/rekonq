@@ -157,6 +157,10 @@ private slots:
     void aboutToShowBackMenu();
     void openActionUrl(QAction *action);
 
+    // encodings
+    void setEncoding(QAction *);
+    void populateEncodingMenu();
+
 private:
     MainView *m_view;
     FindBar *m_findBar;
@@ -167,7 +171,8 @@ private:
 
     KAction *m_stopReloadAction;
     KMenu *m_historyBackMenu;
-
+    KMenu *m_encodingMenu;
+    
     KToolBar *m_mainBar;
     KToolBar *m_bmBar;
 
