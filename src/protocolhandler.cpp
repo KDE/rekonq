@@ -211,21 +211,9 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     {
         return QString("rekonq error, sorry :(");
     }
-
-    KFileItem mainItem = _lister->rootItem();
-    if (mainItem.isNull()) 
-    {
-        QString errStr = i18nc("%1=an URL", "Error opening '%1': No such file or directory.", _url.prettyUrl() );
-        return errStr;
-    }
-
-    if (!mainItem.isReadable()) 
-    {
-        QString errStr = i18nc("%1=an URL", "Unable to read %1", _url.prettyUrl() );
-        return errStr;
-    }
     
-    KUrl rootUrl = mainItem.url();
+    // let me modify it..
+    KUrl rootUrl = _url;
     
      // display "rekonq info" page
     QString infoFilePath =  KStandardDirs::locate("data", "rekonq/htmls/rekonqinfo.html");

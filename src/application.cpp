@@ -400,6 +400,9 @@ void Application::newWindow()
 
 void Application::updateConfiguration()
 {
+    // FIXME: 
+    // all things related to mainview can be 
+    // improved/moved/replicated in all the mainwindows
     MainView *view = mainWindow()->mainView();
     
     // ============== General ==================
