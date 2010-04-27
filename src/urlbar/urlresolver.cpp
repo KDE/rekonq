@@ -83,13 +83,12 @@ UrlSearchList UrlResolver::orderedSearchItems()
 //     {
 //         list << qurlFromUserInputResolution();
 //     }
-        
+
+    list << qurlFromUserInputResolution();        
     list << webSearchesResolution();
 
     if (_typedString.length() >= 2)
-    {
-        list << qurlFromUserInputResolution();
-        
+    {       
         int firstResults = list.count();
         int checkPoint = 9 - firstResults;
         

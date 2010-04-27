@@ -312,11 +312,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
 void WebPage::loadFinished(bool ok)
 {
-    kDebug() << "===========================";
-    kDebug() << ok;
-    kDebug() << mainFrame()->url();
-    kDebug() << "===========================";
-    
     Application::adblockManager()->applyHidingRules(this);
     
     QStringList list = ReKonfig::walletBlackList();

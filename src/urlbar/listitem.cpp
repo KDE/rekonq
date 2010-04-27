@@ -75,10 +75,6 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
     p.setColor(QPalette::AlternateBase, QColor(247,247,247)); // TODO: choose the correct color
     setPalette(p);
 
-    QHBoxLayout *hLayout = new QHBoxLayout(this);
-    hLayout->setSpacing(4);
-    setLayout(hLayout);
-
     deactivate();            
 }
 
@@ -147,6 +143,7 @@ KUrl ListItem::url()
     return m_url;
 }
 
+
 void ListItem::nextItemSubChoice()
 {
     //will be override
@@ -160,7 +157,7 @@ TypeIconLabel::TypeIconLabel(int type, QWidget *parent)
     : QLabel(parent)
 {
     setMinimumWidth(40);
-    QHBoxLayout *hLayout = new QHBoxLayout(this);
+    QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setMargin(0);
     hLayout->setAlignment(Qt::AlignRight);
     setLayout(hLayout);
@@ -215,20 +212,26 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
 PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
     : ListItem(item, parent)
 {
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    hLayout->setSpacing(4);
+
     QLabel *previewLabelIcon = new QLabel(this);
     previewLabelIcon->setFixedSize(45,33);
     new PreviewLabel(item.url.url(), 38, 29, previewLabelIcon);
     IconLabel* icon = new IconLabel(item.url.url(), previewLabelIcon);
     icon->move(27, 16);
-    layout()->addWidget(previewLabelIcon);
-  
-    QVBoxLayout *vLayout = new QVBoxLayout(this); 
+    hLayout->addWidget(previewLabelIcon);
+    
+    QVBoxLayout *vLayout = new QVBoxLayout; 
     vLayout->setMargin(0);
     vLayout->addWidget( new TextLabel(item.title, text, this) );
     vLayout->addWidget( new TextLabel("<i>" + item.url.url() + "</i>", text, this) );
-    ((QHBoxLayout *)layout())->addLayout(vLayout);
+
+    hLayout->addLayout(vLayout);
     
-    layout()->addWidget( new TypeIconLabel(item.type, this) );
+    hLayout->addWidget( new TypeIconLabel(item.type, this) );
+
+    setLayout(hLayout);
 }
 
 
@@ -253,6 +256,7 @@ PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *p
 
 // ---------------------------------------------------------------
 
+
 SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
     : ListItem(item, parent)
     , m_text(text)
@@ -276,13 +280,17 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
     m_titleLabel = new TextLabel( searchItemTitle(engine->name(), query), QString(), this);
     m_engineBar = new EngineBar(currentEngine, parent);
 
-    
-    layout()->addWidget( m_iconLabel );
-    layout()->addWidget( m_titleLabel );
-    layout()->addWidget( new QLabel( i18n("Engines: "), this ) );
-    layout()->addWidget( m_engineBar );
-    layout()->addWidget( new TypeIconLabel(item.type, this) );
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    hLayout->setSpacing(4);
 
+    hLayout->addWidget( m_iconLabel );
+    hLayout->addWidget( m_titleLabel );
+    hLayout->addWidget( new QLabel( i18n("Engines: "), this ) );
+    hLayout->addWidget( m_engineBar );
+    hLayout->addWidget( new TypeIconLabel(item.type, this) );
+
+    setLayout(hLayout);
+    
     connect(m_engineBar, SIGNAL(searchEngineChanged(KService::Ptr)), this, SLOT(changeSearchEngine(KService::Ptr)));
 }
 
@@ -382,9 +390,15 @@ BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, Q
     : ListItem(item, parent)
 {
     QString url = text;
-    layout()->addWidget( new IconLabel(item.url.url(), this) );
-    layout()->addWidget( new TextLabel( QL1S("Browse <i>http://<b>") + url.remove("http://") + QL1S("</b></i>"), QString(), this) );
-    layout()->addWidget( new TypeIconLabel(item.type, this) );
+    
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    hLayout->setSpacing(4);
+    
+    hLayout->addWidget( new IconLabel(item.url.url(), this) );
+    hLayout->addWidget( new TextLabel( QL1S("Browse <i>http://<b>") + url.remove("http://") + QL1S("</b></i>"), QString(), this) );
+    hLayout->addWidget( new TypeIconLabel(item.type, this) );
+
+    setLayout(hLayout);
 }
 
 
