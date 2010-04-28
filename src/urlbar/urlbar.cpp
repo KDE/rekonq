@@ -279,7 +279,7 @@ void UrlBar::loadFinished()
     if(ReKonfig::kgetList())
     {
         IconButton *bt = addRightIcon(UrlBar::KGet);
-        connect(bt, SIGNAL(clicked()), _tab->page(), SLOT(downloadAllContentsWithKGet()));
+        connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(downloadAllContentsWithKGet()));
     }
     
     // show RSS
@@ -293,7 +293,7 @@ void UrlBar::loadFinished()
     if(_tab->url().scheme() == QL1S("https") )
     {
         IconButton *bt = addRightIcon(UrlBar::SSL);
-        connect(bt, SIGNAL(clicked()), _tab->page(), SLOT(showSSLInfo()));
+        connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo()));
     }
     
     update();
