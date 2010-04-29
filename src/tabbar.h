@@ -61,8 +61,6 @@ public:
     TabBar(QWidget *parent);
     ~TabBar();
 
-    void showTabPreview(int tab);
-
 signals:
     void cloneTab(int index);
     void closeTab(int index);
@@ -94,6 +92,8 @@ private slots:
     void emptyAreaContextMenu(const QPoint &);
 
 private:
+    void showTabPreview(int tab);
+    
     friend class MainView;
     
     /**

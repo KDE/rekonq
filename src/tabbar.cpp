@@ -197,25 +197,31 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
     {
         //Find the tab under the mouse
         int i = 0;
-        int tab = -1;
-        while (i<count() && tab==-1)
+        int tabIndex = -1;
+        while (    i<count() 
+                && tabIndex == -1 
+              )
         {
             if (tabRect(i).contains(event->pos())) 
             {
-                tab = i;
+                tabIndex = i;
             }
             i++;
         }
 
-        //if found and not the current tab then show tab preview
-        if (tab != -1 && tab != currentIndex() && m_currentTabPreview != tab && event->buttons() == Qt::NoButton)
+        // if found and not the current tab then show tab preview
+        if (    tabIndex != -1 
+             && tabIndex != currentIndex() 
+             && m_currentTabPreview != tabIndex 
+             && event->buttons() == Qt::NoButton
+           )
         {
-            showTabPreview(tab);
-            m_currentTabPreview = tab;
+            showTabPreview(tabIndex);
+            m_currentTabPreview = tabIndex;
         }
 
-        //if current tab or not found then hide previous tab preview
-        if (tab==currentIndex() || tab==-1)
+        // if current tab or not found then hide previous tab preview
+        if (tabIndex == currentIndex() || tabIndex == -1)
         {
             if ( !m_previewPopup.isNull() )
             {
