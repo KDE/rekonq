@@ -237,6 +237,11 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 
 void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
+    // NOTE
+    // This is probably needed just in ONE stupid case..
+    if( _protHandler.postHandling(reply->request(), mainFrame()) )
+        return;
+    
     if (reply->error() == QNetworkReply::NoError)
     {
         const KUrl url( reply->url() );
@@ -358,14 +363,14 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         }
         break;
 
-    case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
-        if( _protHandler.postHandling(reply->request(), mainFrame()) )
-            break;
-
     case QNetworkReply::ContentAccessDenied:                 // access to remote content denied (similar to HTTP error 401)
         kDebug() << "We (hopefully) are managing this through the adblock :)";
         break;
-        
+
+    case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
+        if( _protHandler.postHandling(reply->request(), mainFrame()) )
+            break;
+    
     case QNetworkReply::ConnectionRefusedError:              // remote server refused connection
     case QNetworkReply::HostNotFoundError:                   // invalid hostname
     case QNetworkReply::TimeoutError:                        // connection time out

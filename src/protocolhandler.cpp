@@ -205,6 +205,27 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
 }
 
 
+// ---------------------------------------------------------------------------------------------------------------------------
+
+
+void ProtocolHandler::showResults(const KFileItemList &list)
+{
+    if(!_lister->rootItem().isNull() && _lister->rootItem().isReadable() && _lister->rootItem().isFile())
+    {
+        emit downloadUrl( _lister->rootItem().url() );
+        return;
+    }
+    
+    QString html = dirHandling(list);
+    _frame->setHtml( html, _url );
+
+    Application::instance()->mainWindow()->currentTab()->setFocus();
+    Application::historyManager()->addHistoryEntry( _url.prettyUrl() );
+
+    delete _lister;
+}
+
+
 QString ProtocolHandler::dirHandling(const KFileItemList &list)
 {
     if (!_lister)
@@ -278,25 +299,6 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
 }
 
 
-void ProtocolHandler::showResults(const KFileItemList &list)
-{
-    if(!_lister->rootItem().isNull() && _lister->rootItem().isReadable() && _lister->rootItem().isFile())
-    {
-        WebPage *page = qobject_cast<WebPage *>( _frame->page() );
-        page->downloadUrl( _lister->rootItem().url() );
-        return;
-    }
-    
-    QString html = dirHandling(list);
-    _frame->setHtml( html, _url );
-
-    Application::instance()->mainWindow()->currentTab()->setFocus();
-    Application::historyManager()->addHistoryEntry( _url.prettyUrl() );
-
-    delete _lister;
-}
-
-
 void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
 {
     if(job->error())
@@ -315,7 +317,9 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
             _lister->openUrl(_url);
         }
         else
+        {
             emit downloadUrl(_url);
+        }
     }
 }
 

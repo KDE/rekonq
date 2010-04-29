@@ -66,7 +66,7 @@ public:
     bool postHandling(const QNetworkRequest &request, QWebFrame *frame);
     
 signals:
-    void downloadUrl( const KUrl &);
+    void downloadUrl(const KUrl &);
     
 private slots:
     void showResults(const KFileItemList &);

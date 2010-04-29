@@ -568,8 +568,8 @@ void MainView::webViewLoadFinished(bool ok)
     
     if (ok)
         emit showStatusBarMessage(i18n("Done"), Rekonq::Success);
-    else
-        emit showStatusBarMessage(i18n("Failed to load"), Rekonq::Error);
+//     else
+//         emit showStatusBarMessage(i18n("Failed to load"), Rekonq::Error);
 }
 
 

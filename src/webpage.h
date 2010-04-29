@@ -69,10 +69,8 @@ protected:
                                          const QNetworkRequest &request, 
                                          NavigationType type);
     
-protected Q_SLOTS:    
-    virtual void handleUnsupportedContent(QNetworkReply *reply);
-
 private slots:
+    void handleUnsupportedContent(QNetworkReply *reply);
     void manageNetworkErrors(QNetworkReply *reply);
     void loadFinished(bool);
     void showSSLInfo();
