@@ -391,11 +391,13 @@ BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, Q
 {
     QString url = text;
     
+    kDebug() << text;
+    
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
     
     hLayout->addWidget( new IconLabel(item.url.url(), this) );
-    hLayout->addWidget( new TextLabel( QL1S("Browse <i>http://<b>") + url.remove("http://") + QL1S("</b></i>"), QString(), this) );
+    hLayout->addWidget( new TextLabel(item.url.url(), text, this) );
     hLayout->addWidget( new TypeIconLabel(item.type, this) );
 
     setLayout(hLayout);
