@@ -21,10 +21,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 # ==================================================================================
 
 
-SET(QT_MIN_VERSION 4.6.0)
-FIND_PACKAGE(Qt4 REQUIRED)
-SET(KDE_MIN_VERSION 4.4.0)
-FIND_PACKAGE(KDE4 REQUIRED)
+FIND_PACKAGE(Qt4 4.6.0 COMPONENTS QtCore QtGui QtNetwork QtWebKit REQUIRED)
+FIND_PACKAGE(KDE4 4.4.0 REQUIRED)
 
 INCLUDE(MacroOptionalFindPackage)
 INCLUDE(FindPackageHandleStandardArgs)
@@ -46,16 +44,16 @@ SET(QT_VERS_STR
     "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
    )
 
-IF(QT_FOUND)
+IF(QT4_FOUND)
     MESSAGE(STATUS " Qt library found...................... YES")
     MESSAGE(STATUS " Qt version ${QT_VERS_STR} found! ")
-ELSE(QT_FOUND)
+ELSE(QT4_FOUND)
     MESSAGE(STATUS " Qt library found...................... NO")
     MESSAGE(STATUS "")
     MESSAGE(SEND_ERROR " rekonq needs at least Qt ${QT_MIN_VERSION}. Please install it and try compiling again.")
     MESSAGE(STATUS " Qt website is at http://qt.nokia.com")
     MESSAGE(STATUS "")
-ENDIF(QT_FOUND)
+ENDIF(QT4_FOUND)
 
 MESSAGE(STATUS "")
 
@@ -78,13 +76,13 @@ ENDIF(KDE4_FOUND)
 
 ##### FINAL RESULTS #####
 
-IF(QT_FOUND AND KDE4_FOUND)
+IF(QT4_FOUND AND KDE4_FOUND)
     MESSAGE(STATUS " rekonq will be compiled............... YES")
     SET(REKONQ_CAN_BE_COMPILED true)
-ELSE(QT_FOUND AND KDE4_FOUND)
+ELSE(QT4_FOUND AND KDE4_FOUND)
     MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
     SET(REKONQ_CAN_BE_COMPILED false)
-ENDIF(QT_FOUND AND KDE4_FOUND)
+ENDIF(QT4_FOUND AND KDE4_FOUND)
 
 MESSAGE(STATUS "")
 MESSAGE(STATUS "-----------------------------------------------------------------------")
