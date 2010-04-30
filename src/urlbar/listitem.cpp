@@ -55,9 +55,6 @@
 #include <QWebSettings>
 #include <QFile>
 
-// Defines
-#define QL1S(x)  QLatin1String(x)
-
 
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
         : QWidget(parent)

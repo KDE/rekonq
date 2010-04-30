@@ -28,8 +28,10 @@
 #ifndef PREVIEWSELECTORBAR_H
 #define PREVIEWSELECTORBAR_H
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "webpage.h"
 
 // Qt Includes

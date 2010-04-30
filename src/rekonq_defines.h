@@ -25,8 +25,12 @@
 * ============================================================ */
 
 
-#ifndef REKONQPRIVATE_EXPORT_H
-#define REKONQPRIVATE_EXPORT_H
+#ifndef REKONQ_DEFINES_H
+#define REKONQ_DEFINES_H
+
+
+// ----------------------------------------------------------------------------------------------------
+// UNIT TESTS NEED
 
 /* needed for KDE_EXPORT and KDE_IMPORT macros */
 #include <kdemacros.h>
@@ -40,4 +44,47 @@
 #define REKONQ_TESTS_EXPORT KDE_IMPORT
 #endif
 
-#endif  // REKONQPRIVATE_EXPORT_H
+
+// ----------------------------------------------------------------------------------------------------
+// DEFINES
+
+#define QL1S(x)  QLatin1String(x)
+#define QL1C(x)  QLatin1Char(x)
+
+
+
+// ----------------------------------------------------------------------------------------------------
+// ENUMS
+
+namespace Rekonq
+{
+    /**
+    * @short notifying message status
+    * Different message status
+    */
+
+    enum Notify
+    {
+        Success,    ///< url successfully (down)loaded
+        Error,      ///< url failed to (down)load
+        Download,   ///< downloading url
+        Info        ///< information, (default)
+    };
+
+    /**
+    * @short Open link options
+    * Different modes of opening new tab
+    */
+    enum OpenType
+    {
+        CurrentTab,     ///< open url in current tab
+        SettingOpenTab, ///< open url according to users settings
+        NewCurrentTab,  ///< open url in new tab and make it current
+        NewBackTab,     ///< open url in new tab in background
+        NewWindow       ///< open url in new window
+    };
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+#endif  // REKONQ_DEFINES_H

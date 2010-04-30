@@ -55,6 +55,9 @@
 #define ADBLOCKRULE_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Qt Includes
 #include <QRegExp>
 #include <QString>

@@ -54,8 +54,8 @@
 #define ADBLOCK_NETWORK_REPLY_H
 
 
-// Local Includes
-#include "rekonqprivate_export.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
 // Qt Includes
 #include <QNetworkReply>

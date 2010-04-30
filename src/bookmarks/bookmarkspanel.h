@@ -30,8 +30,10 @@
 #define BOOKMARKSPANEL_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "application.h"
 #include "paneltreeview.h"
 

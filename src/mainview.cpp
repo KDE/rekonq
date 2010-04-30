@@ -61,9 +61,6 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
-// Defines
-#define QL1S(x)  QLatin1String(x)
-
 
 MainView::MainView(MainWindow *parent)
         : KTabWidget(parent)

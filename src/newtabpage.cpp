@@ -54,9 +54,6 @@
 // Qt Includes
 #include <QFile>
 
-// Defines
-#define QL1S(x)  QLatin1String(x)
-
 
 NewTabPage::NewTabPage(QWebFrame *frame)
         : QObject(frame)

@@ -28,8 +28,11 @@
 #ifndef WEBVIEW_H
 #define WEBVIEW_H
 
+
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "application.h"
 
 // KDE Includes

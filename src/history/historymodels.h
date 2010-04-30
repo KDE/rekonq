@@ -30,8 +30,10 @@
 #define HISTORYMODELS_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "historymanager.h"
 
 // KDE Includes

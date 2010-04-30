@@ -20,6 +20,9 @@
 #ifndef RSSWIDGET_H
 #define RSSWIDGET_H
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Qt Includes
 #include <QFrame>
 #include <KUrl>

@@ -61,10 +61,6 @@
 #include <QRegExp>
 #include <QUrl>
 
-// Defines
-#define QL1S(x) QLatin1String(x)
-#define QL1C(x) QLatin1Char(x)
-
 
 AdBlockRule::AdBlockRule(const QString &filter)
         : m_optionMatchRule(false)

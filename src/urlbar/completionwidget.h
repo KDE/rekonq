@@ -28,6 +28,9 @@
 #define COMPLETION_WIDGET_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
 #include "application.h"
 #include "listitem.h"

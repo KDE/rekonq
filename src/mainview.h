@@ -31,8 +31,10 @@
 #define MAINVIEW_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "webview.h"
 #include "webpage.h"
 #include "application.h"

@@ -30,10 +30,8 @@
 #ifndef URLBAR_H
 #define URLBAR_H
 
-
-// Local Includes
-#include "rekonqprivate_export.h"
-#include "application.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
 // KDE Includes
 #include <KUrl>
@@ -53,12 +51,16 @@ class WebTab;
 class IconButton : public QToolButton
 {
     Q_OBJECT
+
 public:
     IconButton(QWidget *parent = 0);
+    
 signals:
     void clicked(QPoint);
+
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
+
 };
 
 

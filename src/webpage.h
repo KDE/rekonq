@@ -33,8 +33,10 @@
 #define WEBPAGE_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "protocolhandler.h"
 #include "newtabpage.h"
 #include "websslinfo.h"
@@ -60,7 +62,7 @@ public:
 
 public slots:
     virtual void downloadRequest(const QNetworkRequest &request);
-    void downloadAllContentsWithKGet();
+    void downloadAllContentsWithKGet(QPoint);
 
 protected:
     WebPage *createWindow(WebWindowType type);
@@ -73,7 +75,7 @@ private slots:
     void handleUnsupportedContent(QNetworkReply *reply);
     void manageNetworkErrors(QNetworkReply *reply);
     void loadFinished(bool);
-    void showSSLInfo();
+    void showSSLInfo(QPoint);
     void updateImage(bool ok);
 
 private:

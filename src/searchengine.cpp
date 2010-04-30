@@ -24,16 +24,13 @@
 *
 * ============================================================ */
 
+
 //local includes
 #include "searchengine.h"
 
 //KDE includes
 #include <KConfigGroup>
 #include <KServiceTypeTrader>
-
-
-// Defines
-#define QL1S(x)  QLatin1String(x)
 
 
 QString SearchEngine::m_delimiter = "";

@@ -63,9 +63,6 @@
 #include <QFile>
 #include <QDateTime>
 
-// Defines
-#define QL1S(x)  QLatin1String(x)
-
 
 ProtocolHandler::ProtocolHandler(QObject *parent)
         : QObject(parent)

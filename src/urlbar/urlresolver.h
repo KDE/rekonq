@@ -27,6 +27,10 @@
 #ifndef URL_RESOLVER_H
 #define URL_RESOLVER_H
 
+
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // KDE Includes
 #include <KUrl>
 

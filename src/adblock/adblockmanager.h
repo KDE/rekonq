@@ -104,8 +104,10 @@
 // END NOTE ----------------------------------------------------------------------------------------------------------
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "adblockrule.h"
 
 // Qt Includes

@@ -27,6 +27,10 @@
 #ifndef SEARCHENGINE_H
 #define SEARCHENGINE_H
 
+
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Auto Includes
 #include "rekonq.h"
 
@@ -35,6 +39,7 @@
 
 //Qt Includes
 #include <QString>
+
 
 class SearchEngine
 {

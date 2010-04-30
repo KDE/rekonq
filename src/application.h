@@ -29,8 +29,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-// Local Includes
-#include "rekonqprivate_export.h"
+
+// Rekonq Includes
+#include "rekonq_defines.h"
 
 // KDE Includes
 #include <KUniqueApplication>
@@ -55,37 +56,6 @@ class WebView;
 
 
 typedef QList< QWeakPointer<MainWindow> > MainWindowList;
-
-
-namespace Rekonq
-{
-/**
- * @short notifying message status
- * Different message status
- */
-
-enum Notify
-{
-    Success,    ///< url successfully (down)loaded
-    Error,      ///< url failed to (down)load
-    Download,   ///< downloading url
-    Info        ///< information, (default)
-};
-
-/**
- * @short Open link options
- * Different modes of opening new tab
- */
-enum OpenType
-{
-    CurrentTab,     ///< open url in current tab
-    SettingOpenTab, ///< open url according to users settings
-    NewCurrentTab,  ///< open url in new tab and make it current
-    NewBackTab,     ///< open url in new tab in background
-    NewWindow       ///< open url in new window
-};
-
-}
 
 
 /**

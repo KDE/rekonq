@@ -25,6 +25,7 @@
 * ============================================================ */
 
 
+
 // Self Includes
 #include "networkaccessmanager.h"
 #include "networkaccessmanager.moc"
@@ -38,9 +39,6 @@
 #include <KDebug>
 #include <KLocale>
 #include <KProtocolManager>
-
-// Defines
-#define QL1S(x)  QLatin1String(x)
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)

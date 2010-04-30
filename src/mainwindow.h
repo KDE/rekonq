@@ -31,11 +31,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
-// Local Includes
-#include "rekonqprivate_export.h"
-#include "application.h"
-#include "previewselectorbar.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
 // KDE Includes
 #include <KMainWindow>

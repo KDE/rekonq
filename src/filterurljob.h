@@ -27,8 +27,10 @@
 #ifndef FILTER_URL_JOB_H
 #define FILTER_URL_JOB_H
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
-#include "rekonqprivate_export.h"
 #include "webview.h"
 
 // KDE Includes

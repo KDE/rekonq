@@ -29,8 +29,8 @@
 #define BOOKMARKSPROXY_H
 
 
-// Local Includes
-#include "rekonqprivate_export.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
 // Qt Includes
 #include <QSortFilterProxyModel>

@@ -29,8 +29,8 @@
 #define WEBTAB_H
 
 
-// Local Includes
-#include "rekonqprivate_export.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
 // KDE Includes
 #include <KUrl>

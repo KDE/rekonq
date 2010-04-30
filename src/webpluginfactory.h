@@ -29,8 +29,8 @@
 #define WEB_PLUGIN_FACTORY_H
 
 
-// Local Includes
-#include "rekonqprivate_export.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
 // KDE Includes
 #include <KWebPluginFactory>

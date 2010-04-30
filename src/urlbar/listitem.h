@@ -28,6 +28,9 @@
 #define LISTITEM_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
 #include "urlresolver.h"
 

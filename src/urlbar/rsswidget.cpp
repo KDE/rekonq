@@ -33,6 +33,7 @@
 #include <QDBusInterface>
 #include <QDBusConnectionInterface>
 #include <QLabel>
+#include <QPushButton>
 
 // KDE Includes
 #include <KLocalizedString>

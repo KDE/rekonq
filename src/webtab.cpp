@@ -61,9 +61,6 @@
 #include <QAction>
 #include <QVBoxLayout>
 
-// Defines
-#define QL1S(x)  QLatin1String(x)
-
 
 WebTab::WebTab(QWidget *parent)
         : QWidget(parent)

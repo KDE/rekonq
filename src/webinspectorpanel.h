@@ -28,8 +28,8 @@
 #define WEBINSPECTOR_PANEL_H
 
 
-// Local Includes
-#include "rekonqprivate_export.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
 // Local Includes
 #include "mainwindow.h"

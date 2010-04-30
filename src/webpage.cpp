@@ -73,10 +73,6 @@
 #include <QtGui/QKeyEvent>
 #include <QWebFrame>
 
-// Defines
-#define QL1S(x)  QLatin1String(x)
-#define QL1C(x)  QLatin1Char(x)
-
 
 // Returns true if the scheme and domain of the two urls match...
 static bool domainSchemeMatch(const QUrl& u1, const QUrl& u2)
@@ -509,7 +505,7 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
 }
 
 
-void WebPage::downloadAllContentsWithKGet()
+void WebPage::downloadAllContentsWithKGet(QPoint)
 {
     QSet<QString> contents;
     KUrl baseUrl(currentFrame()->url());
@@ -541,7 +537,7 @@ void WebPage::downloadAllContentsWithKGet()
 }
 
 
-void WebPage::showSSLInfo()
+void WebPage::showSSLInfo(QPoint)
 {
     if (_sslInfo.isValid())
     {
