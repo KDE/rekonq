@@ -277,17 +277,17 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
     KMenu menu;
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
-    menu.addAction(mainWindow->actionByName(QLatin1String("new_tab")));
-    menu.addAction(mainWindow->actionByName("clone_tab"));
+    menu.addAction(mainWindow->actionByName( QL1S("new_tab") ));
+    menu.addAction(mainWindow->actionByName( QL1S("clone_tab") ));
 
     if (count() > 1)
-        menu.addAction(mainWindow->actionByName("detach_tab"));
+        menu.addAction(mainWindow->actionByName( QL1S("detach_tab") ));
     menu.addSeparator();
-    menu.addAction(mainWindow->actionByName("close_tab"));
-    menu.addAction(mainWindow->actionByName("close_other_tabs"));
+    menu.addAction(mainWindow->actionByName( QL1S("close_tab") ));
+    menu.addAction(mainWindow->actionByName( QL1S("close_other_tabs") ));
     menu.addSeparator();
-    menu.addAction(mainWindow->actionByName("reload_tab"));
-    menu.addAction(mainWindow->actionByName("reload_all_tabs"));
+    menu.addAction(mainWindow->actionByName( QL1S("reload_tab") ));
+    menu.addAction(mainWindow->actionByName( QL1S("reload_all_tabs") ));
 
     menu.exec(pos);
 }
@@ -298,9 +298,9 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
     KMenu menu;
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
-    menu.addAction(mainWindow->actionByName(QLatin1String("new_tab")));
+    menu.addAction(mainWindow->actionByName( QL1S("new_tab") ));
     menu.addSeparator();
-    menu.addAction(mainWindow->actionByName("reload_all_tabs"));
+    menu.addAction(mainWindow->actionByName( QL1S("reload_all_tabs") ));
 
     menu.exec(pos);
 }

@@ -74,7 +74,7 @@ void ClickToFlash::load()
     if (!view)
         return;
 
-    const QString selector = QLatin1String("%1[type=\"application/x-shockwave-flash\"]");
+    const QString selector = QL1S("%1[type=\"application/x-shockwave-flash\"]");
 
     hide();
 
@@ -86,8 +86,8 @@ void ClickToFlash::load()
         QWebElement docElement = frame->documentElement();
 
         QWebElementCollection elements;
-        elements.append(docElement.findAll(selector.arg(QLatin1String("object"))));
-        elements.append(docElement.findAll(selector.arg(QLatin1String("embed"))));
+        elements.append(docElement.findAll(selector.arg(QL1S("object"))));
+        elements.append(docElement.findAll(selector.arg(QL1S("embed"))));
 
         foreach(QWebElement element, elements)
         {

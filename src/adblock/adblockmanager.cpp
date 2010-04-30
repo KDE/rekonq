@@ -127,7 +127,7 @@ void AdBlockManager::loadRules(const QStringList &rules)
             continue;
 
         // white rules
-        if (stringRule.startsWith(QLatin1String("@@")))
+        if (stringRule.startsWith(QL1S("@@")))
         {
             AdBlockRule rule(stringRule.mid(2));
             _whiteList << rule;
@@ -135,7 +135,7 @@ void AdBlockManager::loadRules(const QStringList &rules)
         }
 
         // hide (CSS) rules
-        if (stringRule.startsWith(QLatin1String("##")))
+        if (stringRule.startsWith(QL1S("##")))
         {
             _hideList << stringRule.mid(2);
             continue;
@@ -153,7 +153,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
         return 0;
 
     // we (ad)block just http traffic
-    if (request.url().scheme() != QLatin1String("http"))
+    if (request.url().scheme() != QL1S("http"))
         return 0;
 
     QString urlString = request.url().toString();
@@ -186,9 +186,9 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
                 if (filter.match(el.attribute("src")))
                 {
                     kDebug() << "MATCHES ATTRIBUTE!!!!!";
-                    el.setStyleProperty(QLatin1String("visibility"), QLatin1String("hidden"));
-                    el.setStyleProperty(QLatin1String("width"), QLatin1String("0"));
-                    el.setStyleProperty(QLatin1String("height"), QLatin1String("0"));
+                    el.setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+                    el.setStyleProperty(QL1S("width"), QL1S("0"));
+                    el.setStyleProperty(QL1S("height"), QL1S("0"));
                 }
             }
 
@@ -225,7 +225,7 @@ void AdBlockManager::applyHidingRules(WebPage *page)
             if (el.isNull())
                 continue;
             kDebug() << "Hide element: " << el.localName();
-            el.setStyleProperty(QLatin1String("visibility"), QLatin1String("hidden"));
+            el.setStyleProperty(QL1S("visibility"), QL1S("hidden"));
             el.removeFromDocument();
         }
     }

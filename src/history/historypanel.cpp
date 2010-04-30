@@ -111,7 +111,7 @@ void HistoryPanel::setup()
     m_treeView->setExpanded(treeProxyModel->index(0, 0), true);
     m_treeView->header()->hideSection(1);
     QFontMetrics fm(font());
-    int header = fm.width(QLatin1Char('m')) * 40;
+    int header = fm.width( QL1C('m') ) * 40;
     m_treeView->header()->resizeSection(0, header);
 
     connect(search, SIGNAL(textChanged(QString)), treeProxyModel, SLOT(setFilterFixedString(QString)));

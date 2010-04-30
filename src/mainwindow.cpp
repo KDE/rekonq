@@ -260,7 +260,7 @@ void MainWindow::setupActions()
     // new window action
     a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
-    actionCollection()->addAction(QLatin1String("new_window"), a);
+    actionCollection()->addAction(QL1S("new_window"), a);
     connect(a, SIGNAL(triggered(bool)), Application::instance(), SLOT(newWindow()));
 
     // Standard Actions
@@ -294,51 +294,51 @@ void MainWindow::setupActions()
 
     a = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Period));
-    actionCollection()->addAction(QLatin1String("stop"), a);
+    actionCollection()->addAction(QL1S("stop"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(webStop()));
 
     // stop reload Action
     m_stopReloadAction = new KAction(this);
-    actionCollection()->addAction(QLatin1String("stop_reload") , m_stopReloadAction);
+    actionCollection()->addAction(QL1S("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
     connect(m_view, SIGNAL(browserTabLoading(bool)), this, SLOT(browserLoading(bool)));
     browserLoading(false); //first init for blank start page
 
     a = new KAction(i18n("Open Location"), this);
     a->setShortcut(Qt::CTRL + Qt::Key_L);
-    actionCollection()->addAction(QLatin1String("open_location"), a);
+    actionCollection()->addAction(QL1S("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(openLocation()));
 
 
     // ============================= Zoom Actions ===================================
     a = new KAction(KIcon("zoom-in"), i18n("&Zoom In"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
-    actionCollection()->addAction(QLatin1String("zoom_in"), a);
+    actionCollection()->addAction(QL1S("zoom_in"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomIn()));
 
     a = new KAction(KIcon("zoom-original"),  i18n("&Normal Zoom"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_0));
-    actionCollection()->addAction(QLatin1String("zoom_normal"), a);
+    actionCollection()->addAction(QL1S("zoom_normal"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomNormal()));
 
     a = new KAction(KIcon("zoom-out"),  i18n("&Zoom Out"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Minus));
-    actionCollection()->addAction(QLatin1String("zoom_out"), a);
+    actionCollection()->addAction(QL1S("zoom_out"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomOut()));
 
     // =============================== Tools Actions =================================
     a = new KAction(i18n("Page S&ource"), this);
     a->setIcon(KIcon("application-xhtml+xml"));
-    actionCollection()->addAction(QLatin1String("page_source"), a);
+    actionCollection()->addAction(QL1S("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(viewPageSource()));
 
     a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
     a->setCheckable(true);
-    actionCollection()->addAction(QLatin1String("private_browsing"), a);
+    actionCollection()->addAction(QL1S("private_browsing"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(privateBrowsing(bool)));
 
     a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
-    actionCollection()->addAction(QLatin1String("clear_private_data"), a);
+    actionCollection()->addAction(QL1S("clear_private_data"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
 
     // ========================= History related actions ==============================
@@ -356,42 +356,42 @@ void MainWindow::setupActions()
     // ============================== General Tab Actions ====================================
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
-    actionCollection()->addAction(QLatin1String("new_tab"), a);
+    actionCollection()->addAction(QL1S("new_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(newTab()));
 
     a = new KAction(KIcon("view-refresh"), i18n("Reload All Tabs"), this);
-    actionCollection()->addAction(QLatin1String("reload_all_tabs"), a);
+    actionCollection()->addAction(QL1S("reload_all_tabs"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(reloadAllTabs()));
 
     a = new KAction(i18n("Show Next Tab"), this);
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext());
-    actionCollection()->addAction(QLatin1String("show_next_tab"), a);
+    actionCollection()->addAction(QL1S("show_next_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(nextTab()));
 
     a = new KAction(i18n("Show Previous Tab"), this);
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
-    actionCollection()->addAction(QLatin1String("show_prev_tab"), a);
+    actionCollection()->addAction(QL1S("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
 
     // ============================== Indexed Tab Actions ====================================
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
-    actionCollection()->addAction(QLatin1String("close_tab"), a);
+    actionCollection()->addAction(QL1S("close_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(closeTab()));
 
     a = new KAction(KIcon("tab-duplicate"), i18n("Clone Tab"), this);
-    actionCollection()->addAction(QLatin1String("clone_tab"), a);
+    actionCollection()->addAction(QL1S("clone_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(cloneTab()));
 
     a = new KAction(KIcon("tab-close-other"), i18n("Close &Other Tabs"), this);
-    actionCollection()->addAction(QLatin1String("close_other_tabs"), a);
+    actionCollection()->addAction(QL1S("close_other_tabs"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(closeOtherTabs()));
 
     a = new KAction(KIcon("view-refresh"), i18n("Reload Tab"), this);
-    actionCollection()->addAction(QLatin1String("reload_tab"), a);
+    actionCollection()->addAction(QL1S("reload_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(reloadTab()));
 
     a = new KAction(KIcon("tab-detach"), i18n("Detach Tab"), this);
-    actionCollection()->addAction(QLatin1String("detach_tab"), a);
+    actionCollection()->addAction(QL1S("detach_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(detachTab()));
 
 
@@ -401,23 +401,23 @@ void MainWindow::setupActions()
     qa = m_mainBar->toggleViewAction();
     qa->setText(i18n("Main Toolbar"));
     qa->setIcon(KIcon("bookmark-toolbar"));
-    actionCollection()->addAction(QLatin1String("main_bar"), qa);
+    actionCollection()->addAction(QL1S("main_bar"), qa);
 
     qa = m_bmBar->toggleViewAction();
     qa->setText(i18n("Bookmarks Toolbar"));
     qa->setIcon(KIcon("bookmark-toolbar"));
-    actionCollection()->addAction(QLatin1String("bm_bar"), qa);
+    actionCollection()->addAction(QL1S("bm_bar"), qa);
 
     // Bookmark Menu
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu(this);
     bmMenu->setIcon(KIcon("bookmarks"));
     bmMenu->setDelayed(false);
-    actionCollection()->addAction(QLatin1String("bookmarksActionMenu"), bmMenu);
+    actionCollection()->addAction(QL1S("bookmarksActionMenu"), bmMenu);
 
 
     // ---------------- Encodings -----------------------------------
     a = new KAction(KIcon("character-set"), i18n("Set Encoding"), this);
-    actionCollection()->addAction(QLatin1String("encodings"), a);
+    actionCollection()->addAction(QL1S("encodings"), a);
     a->setMenu(m_encodingMenu);
     connect(m_encodingMenu, SIGNAL(aboutToShow()), this, SLOT(populateEncodingMenu()));
     connect(m_encodingMenu, SIGNAL(triggered(QAction *)), this, SLOT(setEncoding(QAction *)));
@@ -438,7 +438,7 @@ void MainWindow::setupTools()
     QWidget *zoomWidget = new QWidget(this);
 
     QToolButton *zoomOut = new QToolButton(zoomWidget);
-    zoomOut->setDefaultAction(actionByName(QLatin1String("zoom_out")));
+    zoomOut->setDefaultAction(actionByName(QL1S("zoom_out")));
     zoomOut->setAutoRaise(true);
 
     m_zoomSlider = new QSlider(Qt::Horizontal, zoomWidget);
@@ -449,11 +449,11 @@ void MainWindow::setupTools()
     connect(m_zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(setZoomFactor(int)));
 
     QToolButton *zoomIn = new QToolButton(zoomWidget);
-    zoomIn->setDefaultAction(actionByName(QLatin1String("zoom_in")));
+    zoomIn->setDefaultAction(actionByName(QL1S("zoom_in")));
     zoomIn->setAutoRaise(true);
 
     QToolButton *zoomNormal = new QToolButton(zoomWidget);
-    zoomNormal->setDefaultAction(actionByName(QLatin1String("zoom_normal")));
+    zoomNormal->setDefaultAction(actionByName(QL1S("zoom_normal")));
     zoomNormal->setAutoRaise(true);
 
     QHBoxLayout* zoomWidgetLayout = new QHBoxLayout(zoomWidget);
@@ -470,33 +470,33 @@ void MainWindow::setupTools()
 
     toolsMenu->addSeparator();
 
-    toolsMenu->addAction(actionByName(QLatin1String("private_browsing")));
-    toolsMenu->addAction(actionByName(QLatin1String("clear_private_data")));
+    toolsMenu->addAction(actionByName(QL1S("private_browsing")));
+    toolsMenu->addAction(actionByName(QL1S("clear_private_data")));
 
     toolsMenu->addSeparator();
 
     KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Web Development"), this);
-    webMenu->addAction(actionByName(QLatin1String("web_inspector")));
-    webMenu->addAction(actionByName(QLatin1String("page_source")));
+    webMenu->addAction(actionByName(QL1S("web_inspector")));
+    webMenu->addAction(actionByName(QL1S("page_source")));
     toolsMenu->addAction(webMenu);
 
     toolsMenu->addSeparator();
 
-    toolsMenu->addAction(actionByName(QLatin1String("bm_bar")));
-    toolsMenu->addAction(actionByName(QLatin1String("show_history_panel")));
-    toolsMenu->addAction(actionByName(QLatin1String("show_bookmarks_panel")));
+    toolsMenu->addAction(actionByName(QL1S("bm_bar")));
+    toolsMenu->addAction(actionByName(QL1S("show_history_panel")));
+    toolsMenu->addAction(actionByName(QL1S("show_bookmarks_panel")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
 
     toolsMenu->addSeparator();
 
-    toolsMenu->addAction(actionByName(QLatin1String("encodings")));
+    toolsMenu->addAction(actionByName(QL1S("encodings")));
 
     helpMenu()->setIcon(KIcon("help-browser"));
     toolsMenu->addAction(helpMenu()->menuAction());
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
 
     // adding rekonq_tools to rekonq actionCollection
-    actionCollection()->addAction(QLatin1String("rekonq_tools"), toolsMenu);
+    actionCollection()->addAction(QL1S("rekonq_tools"), toolsMenu);
 }
 
 
@@ -517,7 +517,7 @@ void MainWindow::setupPanels()
     a = (KAction *) m_historyPanel->toggleViewAction();
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
     a->setIcon(KIcon("view-history"));
-    actionCollection()->addAction(QLatin1String("show_history_panel"), a);
+    actionCollection()->addAction(QL1S("show_history_panel"), a);
 
     // STEP 2
     // Setup bookmarks panel
@@ -532,7 +532,7 @@ void MainWindow::setupPanels()
     a = (KAction *) m_bookmarksPanel->toggleViewAction();
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
     a->setIcon(KIcon("bookmarks-organize"));
-    actionCollection()->addAction(QLatin1String("show_bookmarks_panel"), a);
+    actionCollection()->addAction(QL1S("show_bookmarks_panel"), a);
 
     // STEP 3
     // Setup webinspector panel
@@ -541,7 +541,7 @@ void MainWindow::setupPanels()
 
     a = new KAction(KIcon("tools-report-bug"), i18n("Web &Inspector"), this);
     a->setCheckable(true);
-    actionCollection()->addAction(QLatin1String("web_inspector"), a);
+    actionCollection()->addAction(QL1S("web_inspector"), a);
     connect(a, SIGNAL(triggered(bool)), m_webInspectorPanel, SLOT(toggle(bool)));
 
     addDockWidget(Qt::BottomDockWidgetArea, m_webInspectorPanel);
@@ -891,7 +891,7 @@ void MainWindow::viewPageSource()
             isTempFile = true;
         }
     }
-    KRun::runUrl(url, QLatin1String("text/plain"), this, isTempFile);
+    KRun::runUrl(url, QL1S("text/plain"), this, isTempFile);
 }
 
 
@@ -1144,7 +1144,7 @@ void MainWindow::clearPrivateData()
         if (clearWidget.clearCachedPages->isChecked())
         {
             KProcess::startDetached(KStandardDirs::findExe("kio_http_cache_cleaner"),
-                                    QStringList(QLatin1String("--clear-all")));
+                                    QStringList(QL1S("--clear-all")));
         }
 
         if (clearWidget.clearWebIcons->isChecked())

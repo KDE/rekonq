@@ -206,23 +206,23 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     // this handles the Modifiers + Return key combinations
     QString currentText = text().trimmed();
     if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-            && !currentText.startsWith(QLatin1String("http://"), Qt::CaseInsensitive))
+            && !currentText.startsWith(QL1S("http://"), Qt::CaseInsensitive))
     {
         QString append;
         if (event->modifiers() == Qt::ControlModifier)
         {
-            append = QLatin1String(".com");
+            append = QL1S(".com");
         }
         else if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
         {
-            append = QLatin1String(".org");
+            append = QL1S(".org");
         }
         else if (event->modifiers() == Qt::ShiftModifier)
         {
-            append = QLatin1String(".net");
+            append = QL1S(".net");
         }
 
-        QUrl url(QLatin1String("http://www.") + currentText);
+        QUrl url(QL1S("http://www.") + currentText);
         QString host = url.host();
         if (!host.endsWith(append, Qt::CaseInsensitive))
         {

@@ -492,7 +492,7 @@ void MainView::closeTab(int index, bool del)
     }
 
     // store close tab except homepage
-    if (!tab->url().prettyUrl().startsWith(QLatin1String("about:")) && !tab->url().isEmpty())
+    if (!tab->url().prettyUrl().startsWith(QL1S("about:")) && !tab->url().isEmpty())
     {
         QString title = tab->view()->title();
         QString url = tab->url().prettyUrl();

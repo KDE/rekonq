@@ -424,7 +424,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     msg += "<input type=\"button\" id=\"reloadButton\" onClick=\"document.location.href='" + urlString + "';\" value=\"";
     msg += i18n("Try Again") + "\" />";
 
-    QString html = QString(QLatin1String(file.readAll()))
+    QString html = QString(QL1S(file.readAll()))
                    .arg(title)
                    .arg(msg)
                    ;

@@ -381,7 +381,7 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
         // we are sure of the url now, let's add it to history
         // anyway we store here just http sites because local and ftp ones are
         // added trough the protocol handler and the other are ignored
-        if (url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("https"))
+        if (url.protocol() == QL1S("http") || url.protocol() == QL1S("https"))
             historyManager()->addHistoryEntry(url.prettyUrl());
     }
 }

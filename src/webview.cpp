@@ -204,9 +204,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
 
         QString text = selectedText();
-        if (text.startsWith(QLatin1String("http://"))
-                || text.startsWith(QLatin1String("https://"))
-                || text.startsWith(QLatin1String("www."))
+        if (text.startsWith(QL1S("http://"))
+                || text.startsWith(QL1S("https://"))
+                || text.startsWith(QL1S("www."))
            )
         {
             QString truncatedURL = text;
