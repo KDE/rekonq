@@ -31,7 +31,6 @@
 // KDE Includes
 #include <KTabWidget>
 #include <KCModuleInfo>
-#include <KDebug>
 
 // Qt Includes
 #include <QVBoxLayout>

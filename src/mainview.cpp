@@ -46,7 +46,6 @@
 #include <KShortcut>
 #include <KStandardShortcut>
 #include <KMessageBox>
-#include <KDebug>
 #include <KStandardDirs>
 #include <KPassivePopup>
 #include <KLocalizedString>

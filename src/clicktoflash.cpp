@@ -31,7 +31,6 @@
 
 // KDE Includes
 #include <KLocalizedString>
-#include <KDebug>
 
 // Qt Includes
 #include <QWebFrame>

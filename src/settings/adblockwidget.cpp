@@ -142,7 +142,6 @@ void AdBlockWidget::loadRules(QTreeWidgetItem *item)
     KConfigGroup localGroup(config, "rules");
 
     QString str = item->text(0) + "-rules";
-    kDebug() << str;
     QStringList rules = localGroup.readEntry(str , QStringList());
 
     foreach(const QString &rule, rules)

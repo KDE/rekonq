@@ -37,11 +37,11 @@
 // Local Includes
 #include "mainwindow.h"
 #include "webtab.h"
+#include "webpage.h"
 #include "webview.h"
 #include "completionwidget.h"
 
 // KDE Includes
-#include <KDebug>
 #include <KCompletionBox>
 
 // Qt Includes

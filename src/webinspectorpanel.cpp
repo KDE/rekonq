@@ -35,7 +35,6 @@
 
 // KDE Includes
 #include "KAction"
-#include "KDebug"
 
 // Qt Includes
 #include <QWebInspector>

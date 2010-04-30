@@ -35,9 +35,6 @@
 #include "mainwindow.h"
 #include "clicktoflash.h"
 
-// KDE Includes
-#include <KDebug>
-
 
 WebPluginFactory::WebPluginFactory(QObject *parent)
         : KWebPluginFactory(parent)

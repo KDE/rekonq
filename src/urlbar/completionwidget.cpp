@@ -38,7 +38,6 @@
 
 // KDE Includes
 #include <KGlobalSettings>
-#include <KDebug>
 #include <KUrl>
 
 // Qt Includes

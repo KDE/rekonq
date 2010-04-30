@@ -50,7 +50,6 @@
 // KDE Includes
 #include <KStandardDirs>
 #include <KUrl>
-#include <KDebug>
 #include <KToolInvocation>
 #include <KProtocolManager>
 #include <kwebwallet.h>

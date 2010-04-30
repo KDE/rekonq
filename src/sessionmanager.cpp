@@ -38,7 +38,6 @@
 
 // KDE Includes
 #include <KStandardDirs>
-#include <KDebug>
 
 // Qt Includes
 #include <QFile>

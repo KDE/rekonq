@@ -43,7 +43,6 @@
 #include <KBookmarkAction>
 #include <KBookmarkGroup>
 #include <KToolBar>
-#include <KDebug>
 #include <KMenu>
 #include <KStandardDirs>
 #include <KUrl>

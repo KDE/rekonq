@@ -36,7 +36,6 @@
 #include "webpage.h"
 
 // KDE Includes
-#include <KDebug>
 #include <KLocale>
 #include <KProtocolManager>
 

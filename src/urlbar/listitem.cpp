@@ -40,7 +40,6 @@
 
 // KDE Includes
 #include <KIcon>
-#include <KDebug>
 #include <QActionGroup>
 #include <KIcon>
 

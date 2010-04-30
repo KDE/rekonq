@@ -38,7 +38,6 @@
 // KDE Includes
 #include <KSharedConfig>
 #include <KConfigGroup>
-#include <KDebug>
 #include <KIO/TransferJob>
 
 // Qt Includes

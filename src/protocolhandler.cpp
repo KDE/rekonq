@@ -46,7 +46,6 @@
 #include <KRun>
 #include <KToolInvocation>
 #include <KStandardDirs>
-#include <KDebug>
 #include <KMimeType>
 #include <KIconLoader>
 #include <KDirLister>

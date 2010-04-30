@@ -27,6 +27,13 @@
 #include "webtab.h"
 #include "webview.h"
 
+// KDE Includes
+#include <KLocalizedString>
+#include <KComboBox>
+#include <KIcon>
+#include <KProcess>
+#include <KMessageBox>
+
 // Qt Includes
 #include <QFormLayout>
 #include <QDialogButtonBox>
@@ -34,13 +41,6 @@
 #include <QDBusConnectionInterface>
 #include <QLabel>
 #include <QPushButton>
-
-// KDE Includes
-#include <KLocalizedString>
-#include <KComboBox>
-#include <KIcon>
-#include <KProcess>
-#include <KMessageBox>
 
 
 RSSWidget::RSSWidget(QMap< KUrl, QString > map, QWidget *parent)

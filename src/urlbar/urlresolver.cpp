@@ -35,7 +35,6 @@
 // KDE Includes
 #include <KUriFilter>
 #include <KCompletion>
-#include <KDebug>
 #include <KService>
 #include <KConfig>
 #include <KConfigGroup>

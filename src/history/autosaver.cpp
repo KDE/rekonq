@@ -31,9 +31,6 @@
 #include "autosaver.h"
 #include "autosaver.moc"
 
-// KDE Includes
-#include <KDebug>
-
 // Qt Includes
 #include <QtCore/QMetaObject>
 

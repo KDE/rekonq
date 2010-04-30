@@ -45,7 +45,6 @@
 // KDE Includes
 #include <KStandardDirs>
 #include <KIconLoader>
-#include <KDebug>
 #include <KConfig>
 #include <KConfigGroup>
 #include <KDialog>
