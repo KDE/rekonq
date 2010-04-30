@@ -15,9 +15,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -64,11 +64,11 @@ public slots:
 
 protected:
     WebPage *createWindow(WebWindowType type);
-    
-    virtual bool acceptNavigationRequest(QWebFrame *frame, 
-                                         const QNetworkRequest &request, 
+
+    virtual bool acceptNavigationRequest(QWebFrame *frame,
+                                         const QNetworkRequest &request,
                                          NavigationType type);
-    
+
 private slots:
     void handleUnsupportedContent(QNetworkReply *reply);
     void manageNetworkErrors(QNetworkReply *reply);
@@ -79,7 +79,7 @@ private slots:
 private:
     QString errorPage(QNetworkReply *);
     QUrl _loadingUrl;
-    
+
     ProtocolHandler _protHandler;
     WebSslInfo _sslInfo;
 };

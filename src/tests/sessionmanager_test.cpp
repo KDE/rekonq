@@ -32,11 +32,11 @@
 class SessionManagerTest : public QObject
 {
     Q_OBJECT
-    
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
 
 private:
@@ -57,13 +57,13 @@ void SessionManagerTest::cleanupTestCase()
 {
     delete sessman;
 }
-    
-    
-// -------------------------------------------
-
 
 
 // -------------------------------------------
 
-QTEST_KDEMAIN(SessionManagerTest,GUI)
+
+
+// -------------------------------------------
+
+QTEST_KDEMAIN(SessionManagerTest, GUI)
 #include "sessionmanager_test.moc"

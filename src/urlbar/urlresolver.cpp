@@ -10,9 +10,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -58,13 +58,13 @@
 
 
 bool UrlSearchItem::operator==(UrlSearchItem i)
-{ 
-    return url==i.url; 
+{
+    return url == i.url;
 }
 
 
 UrlResolver::UrlResolver(const QString &typedUrl)
-    : _typedString(typedUrl.trimmed())
+        : _typedString(typedUrl.trimmed())
 {
 }
 
@@ -72,61 +72,61 @@ UrlResolver::UrlResolver(const QString &typedUrl)
 UrlSearchList UrlResolver::orderedSearchItems()
 {
     // NOTE: the logic here is : "we wanna suggest (at least) 9 elements"
-    // so we have (more or less) 3 from first results (1 from QUrl Resolutions, 2 from 
+    // so we have (more or less) 3 from first results (1 from QUrl Resolutions, 2 from
     // default search engines).
     // There are 6 remaining: if bookmarkResults + historyResults <= 6, catch all, else
     // catch first 3 results from the two resulting lists :)
-    
+
     UrlSearchList list;
-    
+
 //     if(isHttp())
 //     {
 //         list << qurlFromUserInputResolution();
 //     }
 
-    list << qurlFromUserInputResolution();        
+    list << qurlFromUserInputResolution();
     list << webSearchesResolution();
 
     if (_typedString.length() >= 2)
-    {       
+    {
         int firstResults = list.count();
         int checkPoint = 9 - firstResults;
-        
+
         UrlSearchList historyList = historyResolution();
         int historyResults = historyList.count();
 
         UrlSearchList bookmarksList = bookmarksResolution();
         int bookmarkResults = bookmarksList.count();
 
-        if(historyResults + bookmarkResults > checkPoint)
+        if (historyResults + bookmarkResults > checkPoint)
         {
-            historyList = historyList.mid(0,3);
-            bookmarksList = bookmarksList.mid(0,3);
+            historyList = historyList.mid(0, 3);
+            bookmarksList = bookmarksList.mid(0, 3);
         }
-        
+
         QList<UrlSearchItem> common;
-        
-        foreach (UrlSearchItem i, historyList)
+
+        foreach(UrlSearchItem i, historyList)
         {
             if (!bookmarksList.contains(i))
             {
                 list << i;
             }
-            else 
+            else
             {
                 i.type |= UrlSearchItem::Bookmark;
                 common << i;
             }
         }
-        
-        foreach (UrlSearchItem i, common)
+
+        foreach(UrlSearchItem i, common)
         {
-                list << i;
+            list << i;
         }
-        
-        foreach (UrlSearchItem i, bookmarksList)
+
+        foreach(UrlSearchItem i, bookmarksList)
         {
-            if (!common.contains(i)) 
+            if (!common.contains(i))
                 list << i;
         }
     }
@@ -138,23 +138,23 @@ UrlSearchList UrlResolver::orderedSearchItems()
 bool UrlResolver::isHttp()
 {
     QString ipv4 = "^0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])"\
-    "\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])";
-    
-    QString ipv6 = "^([0-9a-fA-F]{4}|0)(\\:([0-9a-fA-F]{4}|0)){7}";
-    
-    QString address = "[\\d\\w-.]+\\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|"\
-    "c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrst]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|"\
-    "h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|"\
-    "m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|"\
-    "s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|"\
-    "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
-    "pro)";
+                   "\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])";
 
-    return _typedString.startsWith("http://")  
-            || _typedString.startsWith("https://")
-            || (QRegExp(address, Qt::CaseInsensitive).indexIn(_typedString) != -1)
-            || (QRegExp(ipv4, Qt::CaseInsensitive).indexIn(_typedString) != -1)
-            || (QRegExp(ipv6, Qt::CaseInsensitive).indexIn(_typedString) != -1);
+    QString ipv6 = "^([0-9a-fA-F]{4}|0)(\\:([0-9a-fA-F]{4}|0)){7}";
+
+    QString address = "[\\d\\w-.]+\\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|"\
+                      "c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrst]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|"\
+                      "h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|"\
+                      "m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|"\
+                      "s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|"\
+                      "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
+                      "pro)";
+
+    return _typedString.startsWith("http://")
+           || _typedString.startsWith("https://")
+           || (QRegExp(address, Qt::CaseInsensitive).indexIn(_typedString) != -1)
+           || (QRegExp(ipv4, Qt::CaseInsensitive).indexIn(_typedString) != -1)
+           || (QRegExp(ipv6, Qt::CaseInsensitive).indexIn(_typedString) != -1);
 }
 
 
@@ -168,7 +168,7 @@ UrlSearchList UrlResolver::qurlFromUserInputResolution()
     UrlSearchList list;
     QString url2 = _typedString;
     QUrl urlFromUserInput = QUrl::fromUserInput(url2);
-    if(urlFromUserInput.isValid())
+    if (urlFromUserInput.isValid())
     {
         QString gTitle = i18nc("Browse a website", "Browse");
         UrlSearchItem gItem(UrlSearchItem::Browse, urlFromUserInput, gTitle);
@@ -190,7 +190,7 @@ UrlSearchList UrlResolver::webSearchesResolution()
 UrlSearchList UrlResolver::historyResolution()
 {
     UrlSearchList list;
-    
+
     KCompletion *historyCompletion = Application::historyManager()->completionObject();
     QStringList historyResults = historyCompletion->substringCompletion(_typedString);
     Q_FOREACH(const QString &s, historyResults)
@@ -207,7 +207,7 @@ UrlSearchList UrlResolver::historyResolution()
 UrlSearchList UrlResolver::bookmarksResolution()
 {
     UrlSearchList list;
-    
+
     KCompletion *bookmarkCompletion = Application::bookmarkProvider()->completionObject();
     QStringList bookmarkResults = bookmarkCompletion->substringCompletion(_typedString);
     Q_FOREACH(const QString &s, bookmarkResults)

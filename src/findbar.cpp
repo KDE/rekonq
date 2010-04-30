@@ -11,9 +11,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -55,10 +55,10 @@ FindBar::FindBar(QWidget *parent)
         , m_hideTimer(new QTimer(this))
         , m_matchCase(new QCheckBox(i18n("&Match case"), this))
         , m_highlightAll(new QCheckBox(i18n("&Highlight all"), this))
-{    
+{
     // mainwindow pointer
     MainWindow *window = qobject_cast<MainWindow *>(parent);
-    
+
     QHBoxLayout *layout = new QHBoxLayout;
 
     // cosmetic
@@ -73,7 +73,7 @@ FindBar::FindBar(QWidget *parent)
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
-    // hide timer 
+    // hide timer
     connect(m_hideTimer, SIGNAL(timeout()), this, SLOT(hide()));
 
     // label
@@ -94,7 +94,7 @@ FindBar::FindBar(QWidget *parent)
     connect(findPrev, SIGNAL(clicked()), window, SLOT(findPrevious()));
     layout->addWidget(findNext);
     layout->addWidget(findPrev);
-    
+
     // Case sensitivity. Deliberately set so this is off by default.
     m_matchCase->setCheckState(Qt::Unchecked);
     m_matchCase->setTristate(false);
@@ -111,7 +111,7 @@ FindBar::FindBar(QWidget *parent)
     layout->addStretch();
 
     setLayout(layout);
-    
+
     // we start off hidden
     hide();
 }
@@ -143,14 +143,14 @@ bool FindBar::highlightAllState() const
 void FindBar::show()
 {
     // show findbar if not visible
-    if(isHidden())
+    if (isHidden())
     {
         QWidget::show();
         emit searchString(m_lineEdit->text());
     }
 
     m_hideTimer->start(60000);
-    
+
     // set focus to findbar if user select showFindBar shortcut
     m_lineEdit->setFocus();
     m_lineEdit->selectAll();
@@ -165,7 +165,7 @@ void FindBar::notifyMatch(bool match)
     {
         p.setColor(QPalette::Base, QColor(KApplication::palette().color(QPalette::Active, QPalette::Base)));
     }
-    else 
+    else
     {
         if (match)
         {

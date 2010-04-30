@@ -10,9 +10,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -41,23 +41,23 @@
 #include <QWebInspector>
 
 
-WebInspectorPanel::WebInspectorPanel(QString title, QWidget *parent) 
-    : QDockWidget(title, parent) 
+WebInspectorPanel::WebInspectorPanel(QString title, QWidget *parent)
+        : QDockWidget(title, parent)
 {
     setObjectName("webInspectorDock");
-    setWidget( new QWebInspector(this) );
+    setWidget(new QWebInspector(this));
 }
-    
 
-void WebInspectorPanel::closeEvent(QCloseEvent *event) 
-{     
+
+void WebInspectorPanel::closeEvent(QCloseEvent *event)
+{
     Q_UNUSED(event);
     toggle(false);
 }
 
 
 MainWindow* WebInspectorPanel::mainWindow()
-{     
+{
     return qobject_cast< MainWindow* >(parentWidget());
 }
 
@@ -79,8 +79,8 @@ void WebInspectorPanel::toggle(bool enable)
 }
 
 
-void WebInspectorPanel::changeCurrentPage() 
-{     
+void WebInspectorPanel::changeCurrentPage()
+{
     bool enable = mainWindow()->currentTab()->view()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled);
     toggle(enable);
 }

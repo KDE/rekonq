@@ -31,22 +31,22 @@
 class RSSWidget : public QFrame
 {
     Q_OBJECT
-    
+
 public:
     // QMap< feedUrl, feedTitle>
     RSSWidget(QMap<KUrl, QString> map, QWidget *parent);
-    
+
     void showAt(QPoint pos);
-    
+
 public slots:
     void accepted();
-    
+
 private:
     void addWithAkregator(QString url);
     void addWithGoogleReader(QString url);
-    
+
     QMap<KUrl, QString> m_map;
-    
+
     KComboBox *m_agregators;
     KComboBox *m_feeds;
 };

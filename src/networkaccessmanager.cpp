@@ -11,9 +11,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -44,39 +44,39 @@
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
-    : AccessManager(parent)
+        : AccessManager(parent)
 {
     QString c = KGlobal::locale()->country();
-    if(c == QL1S("C"))
+    if (c == QL1S("C"))
         c = QL1S("en_US");
-    if(c != QL1S("en_US"))
-        c.append( QL1S(", en_US") );
-    
+    if (c != QL1S("en_US"))
+        c.append(QL1S(", en_US"));
+
     _acceptLanguage = c.toLatin1();
 }
 
 
 QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData)
 {
-    WebPage *parentPage = qobject_cast<WebPage *>( parent() );
-    
+    WebPage *parentPage = qobject_cast<WebPage *>(parent());
+
     QNetworkReply *reply = 0;
-    
+
     QNetworkRequest req = request;
     req.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
     req.setRawHeader("Accept-Language", _acceptLanguage);
 
     KIO::CacheControl cc = KProtocolManager::cacheControl();
-    switch(cc)
+    switch (cc)
     {
     case KIO::CC_CacheOnly:      // Fail request if not in cache.
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
         break;
-        
+
     case KIO::CC_Refresh:        // Always validate cached entry with remote site.
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork);
         break;
-        
+
     case KIO::CC_Reload:         // Always fetch from remote site
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
         break;
@@ -87,14 +87,14 @@ QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkR
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
         break;
     }
-    
 
-    if( op == QNetworkAccessManager::GetOperation )
+
+    if (op == QNetworkAccessManager::GetOperation)
     {
         reply = Application::adblockManager()->block(req, parentPage);
         if (reply)
             return reply;
     }
 
-    return AccessManager::createRequest(op,req,outgoingData);
+    return AccessManager::createRequest(op, req, outgoingData);
 }

@@ -11,9 +11,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -47,14 +47,14 @@ class WebPage;
 
 class REKONQ_TESTS_EXPORT NewTabPage : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     NewTabPage(QWebFrame *frame);
     ~NewTabPage();
 
     /**
-     * This method takes an about: url and loads 
+     * This method takes an about: url and loads
      * the corresponding part of the new tab page
      */
     void generate(const KUrl &url = KUrl("about:home"));
@@ -64,7 +64,7 @@ public:
      * and providing a real picture
      */
     void snapFinished();
-     
+
 private:
     // these are the "high-level" functions to build the new tab page.
     // Basically, you call browsingMenu + one of the *Page methods
@@ -76,19 +76,19 @@ private:
     void bookmarksPage();
     void closedTabsPage();
     void downloadsPage();
-    
+
     // --------------------------------------------------------------------------
     // "low-level" functions
     // we use these to create the pages over
-    
+
     // Previews handling
     QWebElement emptyPreview(int index);
     QWebElement loadingPreview(int index, const KUrl &url);
     QWebElement validPreview(int index, const KUrl &url, const QString &title);
 
     void removePreview(int index);
-    
-    /** 
+
+    /**
      * This function takes a QwebElement with the .thumbnail structure,
      * hiding the "remove" and "modify" buttons
      *
@@ -96,10 +96,10 @@ private:
     void hideControls(QWebElement e);
     void showControls(QWebElement e);
     void setupPreview(QWebElement e, int index);
-     
+
     void createBookItem(const KBookmark &bookmark, QWebElement parent);
-    
-    /** 
+
+    /**
      * This function helps to get faster a new markup of one type,
      * it isn't easy to create one with QWebElement.
      *
@@ -107,13 +107,13 @@ private:
      * It works for all elements defined here.
      *
      */
-    inline QWebElement markup(const QString &selector) 
+    inline QWebElement markup(const QString &selector)
     {
-       return m_root.document().findFirst("#models > " + selector).clone();
+        return m_root.document().findFirst("#models > " + selector).clone();
     }
-    
+
     QString checkTitle(const QString &title);
-    
+
 private:
     QString m_html;
     QWebElement m_root;

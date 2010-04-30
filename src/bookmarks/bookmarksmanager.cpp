@@ -13,9 +13,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -55,8 +55,8 @@
 
 
 BookmarkOwner::BookmarkOwner(QObject *parent)
-    : QObject(parent)
-    , KBookmarkOwner()
+        : QObject(parent)
+        , KBookmarkOwner()
 {
 }
 
@@ -98,9 +98,9 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
 {
     QList<KUrl> urlList = bookmark.groupUrlList();
 
-    if(urlList.length() > 8)
+    if (urlList.length() > 8)
     {
-        if(!(KMessageBox::warningContinueCancel(Application::instance()->mainWindow(), i18n("You are about to open %1 tabs.\nAre you sure  ?", QString::number(urlList.length()))) == KMessageBox::Continue))
+        if (!(KMessageBox::warningContinueCancel(Application::instance()->mainWindow(), i18n("You are about to open %1 tabs.\nAre you sure  ?", QString::number(urlList.length()))) == KMessageBox::Continue))
             return;
     }
 
@@ -117,7 +117,7 @@ QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
     QList< QPair<QString, QString> > bkList;
     int tabNumber = Application::instance()->mainWindow()->mainView()->count();
 
-    for(int i = 0; i < tabNumber; i++)
+    for (int i = 0; i < tabNumber; i++)
     {
         QPair<QString, QString> item;
         item.first = Application::instance()->mainWindow()->mainView()->webTab(i)->view()->title();
@@ -135,10 +135,10 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
                            KBookmarkOwner *owner,
                            KMenu *menu,
                            KActionCollection* actionCollection)
-    : KBookmarkMenu(manager, owner, menu, actionCollection)
+        : KBookmarkMenu(manager, owner, menu, actionCollection)
 {
     KAction *a = KStandardAction::addBookmark(this, SLOT(slotAddBookmark()), this);
-    actionCollection->addAction(QLatin1String("rekonq_add_bookmark"),a);
+    actionCollection->addAction(QLatin1String("rekonq_add_bookmark"), a);
     refill();
 }
 
@@ -147,7 +147,7 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager  *manager,
                            KBookmarkOwner  *owner,
                            KMenu  *parentMenu,
                            const QString &parentAddress)
-    : KBookmarkMenu(manager, owner, parentMenu, parentAddress)
+        : KBookmarkMenu(manager, owner, parentMenu, parentAddress)
 {
     refill();
 }
@@ -162,9 +162,9 @@ KMenu * BookmarkMenu::contextMenu(QAction *act)
 {
 
     KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(act);
-     if (!action)
-         return 0;
-     return new BookmarkContextMenu(action->bookmark(), manager(), owner());
+    if (!action)
+        return 0;
+    return new BookmarkContextMenu(action->bookmark(), manager(), owner());
 }
 
 
@@ -186,20 +186,20 @@ void BookmarkMenu::slotAddBookmark()
 
 QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
 {
-    if(bookmark.isGroup())
+    if (bookmark.isGroup())
     {
         KBookmarkActionMenu *actionMenu = new KBookmarkActionMenu(bookmark, this);
         new BookmarkMenu(manager(), owner(), actionMenu->menu(), bookmark.address());
         return actionMenu;
     }
-    else if(bookmark.isSeparator())
+    else if (bookmark.isSeparator())
     {
         return KBookmarkMenu::actionForBookmark(bookmark);
     }
     else
     {
         Application::bookmarkProvider()->completionObject()->addItem(bookmark.url().url());
-        return  new KBookmarkAction( bookmark, owner(), this );
+        return  new KBookmarkAction(bookmark, owner(), this);
     }
 }
 
@@ -208,10 +208,10 @@ void BookmarkMenu::refill()
 {
     fillBookmarks();
 
-    if(parentMenu()->actions().count() > 0)
+    if (parentMenu()->actions().count() > 0)
         parentMenu()->addSeparator();
 
-    if(isRoot())
+    if (isRoot())
     {
         addAddBookmark();
         addAddBookmarksList();
@@ -234,19 +234,19 @@ void BookmarkMenu::addOpenFolderInTabs()
     KAction *action;
     KBookmarkGroup group = manager()->findByAddress(parentAddress()).toGroup();
 
-    if(!group.first().isNull())
+    if (!group.first().isNull())
     {
         KBookmark bookmark = group.first();
 
-        while(bookmark.isGroup() || bookmark.isSeparator())
+        while (bookmark.isGroup() || bookmark.isSeparator())
         {
             bookmark = group.next(bookmark);
         }
 
-        if(!bookmark.isNull())
+        if (!bookmark.isNull())
         {
             action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
-            action->setHelpText( i18n( "Open all bookmarks in this folder as a new tab." ) );
+            action->setHelpText(i18n("Open all bookmarks in this folder as a new tab."));
             connect(action, SIGNAL(triggered(bool)), this, SLOT(slotOpenFolderInTabs()));
             parentMenu()->addAction(action);
         }
@@ -267,7 +267,7 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
 {
     // take care of the completion object
     m_completion = new KCompletion;
-    m_completion->setOrder( KCompletion::Weighted );
+    m_completion->setOrder(KCompletion::Weighted);
 
     KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");  // share konqueror bookmarks
 
@@ -287,7 +287,7 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
     }
 
     m_manager = KBookmarkManager::managerForFile(bookfile.path(), "rekonq");
-    
+
     connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
             this, SLOT(slotBookmarksChanged(const QString &, const QString &)));
 
@@ -353,11 +353,11 @@ QAction *BookmarkProvider::actionByName(const QString &name)
 
 void BookmarkProvider::contextMenu(const QPoint &point)
 {
-    if(m_bookmarkToolBars.isEmpty())
+    if (m_bookmarkToolBars.isEmpty())
         return;
 
     KToolBar *bookmarkToolBar = m_bookmarkToolBars.at(0);
-    if(!bookmarkToolBar)
+    if (!bookmarkToolBar)
         return;
 
     KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(bookmarkToolBar->actionAt(point));
@@ -386,10 +386,10 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 void BookmarkProvider::fillBookmarkBar(KToolBar *toolBar)
 {
     KBookmarkGroup root = m_manager->toolbar();
-    if(root.isNull())
+    if (root.isNull())
         return;
 
-    for(KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
+    for (KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
     {
         if (bookmark.isGroup())
         {
@@ -400,7 +400,7 @@ void BookmarkProvider::fillBookmarkBar(KToolBar *toolBar)
             toolBar->addAction(menuAction);
         }
 
-        else if(bookmark.isSeparator())
+        else if (bookmark.isSeparator())
         {
             toolBar->addSeparator();
         }
@@ -440,12 +440,12 @@ QString BookmarkProvider::titleForBookmarkUrl(QString url)
         title = titleForBookmarkUrl(bookmark, url);
         bookmark = bookGroup.next(bookmark);
     }
-    
+
     if (title.isEmpty())
     {
         title = url;
     }
-    
+
     return title;
 }
 
@@ -463,10 +463,10 @@ QString BookmarkProvider::titleForBookmarkUrl(const KBookmark &bookmark, QString
             bm = group.next(bm);
         }
     }
-    else if(!bookmark.isSeparator() && bookmark.url()==url)
+    else if (!bookmark.isSeparator() && bookmark.url() == url)
     {
         title = bookmark.fullText();
     }
-    
+
     return title;
 }

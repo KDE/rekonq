@@ -11,9 +11,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -41,7 +41,7 @@ QString SearchEngine::m_delimiter = "";
 
 QString SearchEngine::delimiter()
 {
-    if (m_delimiter=="") loadDelimiter();
+    if (m_delimiter == "") loadDelimiter();
     return m_delimiter;
 }
 
@@ -58,14 +58,14 @@ KService::Ptr SearchEngine::m_defaultWS;
 
 
 KService::Ptr SearchEngine::defaultWS()
-{   
+{
     if (!m_defaultWS) loadDefaultWS();
     return m_defaultWS;
 }
 
 
 void SearchEngine::loadDefaultWS()
-{    
+{
     KConfig config("kuriikwsfilterrc"); //Share with konqueror
     KConfigGroup cg = config.group("General");
     QString d = cg.readEntry("DefaultSearchEngine", "google");
@@ -79,7 +79,7 @@ KService::Ptr SearchEngine::fromString(QString text)
     int i = 0;
     bool found = false;
     KService::Ptr service;
-    while(!found && i<providers.size())
+    while (!found && i < providers.size())
     {
         foreach(QString key, providers.at(i)->property("Keys").toStringList())
         {
@@ -92,13 +92,13 @@ KService::Ptr SearchEngine::fromString(QString text)
         }
         i++;
     }
-    
+
     return service;
 }
 
 
 QString SearchEngine::buildQuery(KService::Ptr engine, QString text)
-{   
+{
     QString query = engine->property("Query").toString();
     query = query.replace("\\{@}", KUrl::toPercentEncoding(text));
     return query;
@@ -122,7 +122,7 @@ void SearchEngine::loadFavorites()
     QStringList f;
     f << "wikipedia" << "google"; //defaults
     f = cg.readEntry("FavoriteSearchEngines", f);
-    
+
     KService::List favorites;
     KService::Ptr service;
     foreach(QString e, f)
@@ -130,7 +130,7 @@ void SearchEngine::loadFavorites()
         service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(e));
         if (service) favorites << service;
     }
-    
+
     m_favorites = favorites;
 }
 
@@ -139,28 +139,28 @@ KService::Ptr SearchEngine::defaultEngine()
 {
     int n = ReKonfig::searchEngine();
     QString engine;
-    switch(n)
+    switch (n)
     {
-        case 0:
-            engine = QL1S("google");
-            break;
-        case 1:
-            engine = QL1S("altavista");
-            break;
-        case 2:
-            engine = QL1S("lycos");
-            break;
-        case 3:
-            engine = QL1S("wikipedia");
-            break;
-        case 4:
-            engine = QL1S("wolfram");
-            break;
-        default:
-            engine = QL1S("google");
-            break;
+    case 0:
+        engine = QL1S("google");
+        break;
+    case 1:
+        engine = QL1S("altavista");
+        break;
+    case 2:
+        engine = QL1S("lycos");
+        break;
+    case 3:
+        engine = QL1S("wikipedia");
+        break;
+    case 4:
+        engine = QL1S("wolfram");
+        break;
+    default:
+        engine = QL1S("google");
+        break;
     }
-    
+
     return KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
 }
 

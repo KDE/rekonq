@@ -9,9 +9,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -68,9 +68,9 @@
 
 
 ProtocolHandler::ProtocolHandler(QObject *parent)
-    : QObject(parent)
-    , _lister(0)
-    , _frame(0)
+        : QObject(parent)
+        , _lister(0)
+        , _frame(0)
 {
 }
 
@@ -84,49 +84,49 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
 {
     _url = request.url();
     _frame = frame;
-    
+
     // "http(s)" (fast) handling
-    if( _url.protocol() == QL1S("http") || _url.protocol() == QL1S("https") )
+    if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https"))
         return false;
 
     // relative urls
-    if(_url.isRelative())
+    if (_url.isRelative())
         return false;
-        
+
     // javascript handling
-    if( _url.protocol() == QL1S("javascript") )
+    if (_url.protocol() == QL1S("javascript"))
     {
         QString scriptSource = _url.authority();
         QVariant result = frame->evaluateJavaScript(scriptSource);
         return true;
     }
-    
+
     // "mailto" handling
-    if ( _url.protocol() == QL1S("mailto") )
+    if (_url.protocol() == QL1S("mailto"))
     {
         KToolInvocation::invokeMailer(_url);
         return true;
     }
 
     // "abp" handling
-    if ( _url.protocol() == QL1S("abp") )
+    if (_url.protocol() == QL1S("abp"))
     {
         abpHandling();
         return true;
     }
-    
+
     // "about" handling
-    if ( _url.protocol() == QL1S("about") )
+    if (_url.protocol() == QL1S("about"))
     {
         // let webkit manage the about:blank url...
-        if( _url == KUrl("about:blank") )
+        if (_url == KUrl("about:blank"))
         {
             return false;
         }
-        
-        if( _url == KUrl("about:home") )
+
+        if (_url == KUrl("about:home"))
         {
-            switch(ReKonfig::newTabStartPage())
+            switch (ReKonfig::newTabStartPage())
             {
             case 0: // favorites
                 _url = KUrl("about:favorites");
@@ -151,7 +151,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         p.generate(_url);
         return true;
     }
-    
+
     return false;
 }
 
@@ -160,16 +160,16 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
 {
     _url = request.url();
     _frame = frame;
-    
+
     kDebug() << "URL PROTOCOL: " << _url;
-    
+
     // "http(s)" (fast) handling
-    if( _url.protocol() == QL1S("http") || _url.protocol() == QL1S("https") )
+    if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https"))
         return false;
-    
+
     // "mailto" handling: It needs to be handled both here(mail links clicked)
     // and in prehandling (mail url launched)
-    if ( _url.protocol() == QL1S("mailto") )
+    if (_url.protocol() == QL1S("mailto"))
     {
         KToolInvocation::invokeMailer(_url);
         return true;
@@ -180,27 +180,27 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     // My idea is: webkit cannot handle in any way ftp. So we have surely to return true here.
     // We start trying to guess what the url represent: it's a dir? show its contents (and download them).
     // it's a file? download it. It's another thing? beat me, but I don't know what to do...
-    if( _url.protocol() == QL1S("ftp") )
+    if (_url.protocol() == QL1S("ftp"))
     {
         KIO::StatJob *job = KIO::stat(_url);
-        connect(job, SIGNAL(result(KJob*)), this, SLOT( slotMostLocalUrlResult(KJob*) ));
+        connect(job, SIGNAL(result(KJob*)), this, SLOT(slotMostLocalUrlResult(KJob*)));
         return true;
     }
-    
+
     // "file" handling. This is quite trivial :)
-    if( _url.protocol() == QL1S("file") )
+    if (_url.protocol() == QL1S("file"))
     {
-        QFileInfo fileInfo( _url.path() );
-        if(fileInfo.isDir())
+        QFileInfo fileInfo(_url.path());
+        if (fileInfo.isDir())
         {
             _lister = new KDirLister;
-            connect( _lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
+            connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
-            
+
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -210,17 +210,17 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
 
 void ProtocolHandler::showResults(const KFileItemList &list)
 {
-    if(!_lister->rootItem().isNull() && _lister->rootItem().isReadable() && _lister->rootItem().isFile())
+    if (!_lister->rootItem().isNull() && _lister->rootItem().isReadable() && _lister->rootItem().isFile())
     {
-        emit downloadUrl( _lister->rootItem().url() );
+        emit downloadUrl(_lister->rootItem().url());
         return;
     }
-    
+
     QString html = dirHandling(list);
-    _frame->setHtml( html, _url );
+    _frame->setHtml(html, _url);
 
     Application::instance()->mainWindow()->currentTab()->setFocus();
-    Application::historyManager()->addHistoryEntry( _url.prettyUrl() );
+    Application::historyManager()->addHistoryEntry(_url.prettyUrl());
 
     delete _lister;
 }
@@ -232,11 +232,11 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     {
         return QString("rekonq error, sorry :(");
     }
-    
+
     // let me modify it..
     KUrl rootUrl = _url;
-    
-     // display "rekonq info" page
+
+    // display "rekonq info" page
     QString infoFilePath =  KStandardDirs::locate("data", "rekonq/htmls/rekonqinfo.html");
     QFile file(infoFilePath);
 
@@ -246,18 +246,18 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
         return QString("rekonq error, sorry :(");
     }
 
-    QString title = _url.prettyUrl(); 
+    QString title = _url.prettyUrl();
     QString msg = i18nc("%1=an URL", "<h1>Index of %1</h1>", _url.prettyUrl());
 
 
-    if(rootUrl.cd(".."))
+    if (rootUrl.cd(".."))
     {
         QString path = rootUrl.prettyUrl();
-        QString uparrow = KIconLoader::global()->iconPath( "arrow-up", KIconLoader::Small );
+        QString uparrow = KIconLoader::global()->iconPath("arrow-up", KIconLoader::Small);
         msg += "<img src=\"file://" + uparrow + "\" alt=\"up-arrow\" />";
         msg += "<a href=\"" + path + "\">" + i18n("Up to higher level directory") + "</a><br /><br />";
     }
-    
+
     msg += "<table width=\"100%\">";
     msg += "<tr><th align=\"left\">" + i18n("Name") + "</th><th>" + i18n("Size") + "</th><th>" + i18n("Last Modified") + "</th></tr>";
 
@@ -265,43 +265,43 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     {
         msg += "<tr>";
         QString fullPath = item.url().prettyUrl();
-        
+
         QString iconName = item.iconName();
-        QString icon = QString("file://") + KIconLoader::global()->iconPath( iconName, KIconLoader::Small );
-        
+        QString icon = QString("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);
+
         msg += "<td width=\"70%\">";
         msg += "<img src=\"" + icon + "\" alt=\"" + iconName + "\" /> ";
         msg += "<a href=\"" + fullPath + "\">" + item.name() + "</a>";
         msg += "</td>";
-        
+
         msg += "<td align=\"right\">";
-        if(item.isFile())
+        if (item.isFile())
         {
-            msg += QString::number( item.size()/1024 ) + " KB";
+            msg += QString::number(item.size() / 1024) + " KB";
         }
         msg += "</td>";
-        
+
         msg += "<td align=\"right\">";
         msg += item.timeString();
         msg += "</td>";
-        
+
         msg += "</tr>";
     }
     msg += "</table>";
-    
-         
+
+
     QString html = QString(QL1S(file.readAll()))
-                            .arg(title)
-                            .arg(msg)
-                            ;
-                           
+                   .arg(title)
+                   .arg(msg)
+                   ;
+
     return html;
 }
 
 
 void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
 {
-    if(job->error())
+    if (job->error())
     {
         // TODO
         kDebug() << "error";
@@ -310,10 +310,10 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
     {
         KIO::StatJob *statJob = static_cast<KIO::StatJob*>(job);
         KIO::UDSEntry entry = statJob->statResult();
-        if( entry.isDir() )
+        if (entry.isDir())
         {
             _lister = new KDirLister;
-            connect( _lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
+            connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
         }
         else
@@ -331,27 +331,27 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
 void ProtocolHandler::abpHandling()
 {
     kDebug() << _url;
-    
+
     QString path = _url.path();
-    if( path != QL1S("subscribe") )
+    if (path != QL1S("subscribe"))
         return;
-    
-    QMap<QString, QString> map = _url.queryItems( KUrl::CaseInsensitiveKeys );
-    
-    QString location = map.value( QL1S("location") );
+
+    QMap<QString, QString> map = _url.queryItems(KUrl::CaseInsensitiveKeys);
+
+    QString location = map.value(QL1S("location"));
     kDebug() << location;
-    
-    QString title = map.value( QL1S("title") );
+
+    QString title = map.value(QL1S("title"));
     kDebug() << title;
-    
-    QString requireslocation = map.value( QL1S("requireslocation") );
+
+    QString requireslocation = map.value(QL1S("requireslocation"));
     kDebug() << requireslocation;
-    
-    QString requirestitle = map.value( QL1S("requirestitle") );
+
+    QString requirestitle = map.value(QL1S("requirestitle"));
     kDebug() << requirestitle;
- 
+
     QString info;
-    if( requirestitle.isEmpty() || requireslocation.isEmpty() )
+    if (requirestitle.isEmpty() || requireslocation.isEmpty())
     {
         info = title;
     }
@@ -359,20 +359,20 @@ void ProtocolHandler::abpHandling()
     {
         info = i18n("\n %1,\n %2 (required by %3)\n", title, requirestitle, title);
     }
-    
-    if ( KMessageBox::questionYesNo( 0,
-                                     i18n("Do you want to add the following subscriptions to your adblock settings?\n") + info,
-                                     i18n("Add automatic subscription to the adblock"),
-                                     KGuiItem(i18n("Add")),
-                                     KGuiItem(i18n("Discard")) 
-                                   )
-        )
+
+    if (KMessageBox::questionYesNo(0,
+                                   i18n("Do you want to add the following subscriptions to your adblock settings?\n") + info,
+                                   i18n("Add automatic subscription to the adblock"),
+                                   KGuiItem(i18n("Add")),
+                                   KGuiItem(i18n("Discard"))
+                                  )
+       )
     {
-        if( !requireslocation.isEmpty() && !requirestitle.isEmpty() )
+        if (!requireslocation.isEmpty() && !requirestitle.isEmpty())
         {
-            Application::adblockManager()->addSubscription( requirestitle, requireslocation );
+            Application::adblockManager()->addSubscription(requirestitle, requireslocation);
         }
-        Application::adblockManager()->addSubscription( title, location );
+        Application::adblockManager()->addSubscription(title, location);
         Application::adblockManager()->loadSettings(false);
     }
 }

@@ -12,9 +12,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -46,7 +46,7 @@
 
 
 /**
- * This class is used in many classes of rekonq to produce an image 
+ * This class is used in many classes of rekonq to produce an image
  * based on the site corresponding to the url passed as argument.
  * It also cached the images to not retrieve them every time :)
  *
@@ -73,7 +73,7 @@ public:
      * @param parent the object parent
      */
     WebSnap(const KUrl &url, QObject *parent = 0);
-     
+
     /**
      * Snaps a pixmap of size w * h from a page and save it to cache
      *
@@ -83,7 +83,7 @@ public:
      *
      * @return the pixmap snapped from the page
      */
-    static QPixmap renderPreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);        
+    static QPixmap renderPreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
 
     /**
      * Guess the local path where the image for the url provided
@@ -94,21 +94,21 @@ public:
      * @return the local path of the url snap
      */
     static QString imagePathFromUrl(const KUrl &url);
-    
+
     /**
      * Determines if a snap exists for that url
      *
      */
     static bool existsImage(const KUrl &url);
 
-    
+
 private slots:
     void saveResult(bool ok = true);
     void load();
 
 signals:
     void snapDone(bool ok);
-        
+
 private:
     QWebPage m_page;
     KUrl m_url;

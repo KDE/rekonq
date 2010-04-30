@@ -10,9 +10,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -38,21 +38,21 @@
 class UrlSearchItem
 {
 public:
-    
-    enum types 
-    { 
+
+    enum types
+    {
         Search          = 0x00000001,
         Browse          = 0x00000010,
         History         = 0x00000100,
         Bookmark        = 0x00001000,
-    };   
+    };
 
     int type;
     KUrl url;
     QString title;
 
     UrlSearchItem(const int &_type, const KUrl &_url, const QString &_title = QString())
-    : type(_type), url(_url), title(_title)
+            : type(_type), url(_url), title(_title)
     {};
 
     bool operator==(UrlSearchItem i);
@@ -68,7 +68,7 @@ class UrlResolver
 {
 public:
     UrlResolver(const QString &typedUrl);
-    
+
     UrlSearchList orderedSearchItems();
 
 private:

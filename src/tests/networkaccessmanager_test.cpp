@@ -31,11 +31,11 @@
 class NetworkAccessManagerTest : public QObject
 {
     Q_OBJECT
-    
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
 
 private:
@@ -55,13 +55,13 @@ void NetworkAccessManagerTest::cleanupTestCase()
 {
     delete manager;
 }
-    
-    
-// -------------------------------------------
-
 
 
 // -------------------------------------------
 
-QTEST_KDEMAIN(NetworkAccessManagerTest,GUI)
+
+
+// -------------------------------------------
+
+QTEST_KDEMAIN(NetworkAccessManagerTest, GUI)
 #include "networkaccessmanager_test.moc"

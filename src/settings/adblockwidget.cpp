@@ -43,64 +43,64 @@
 
 
 AdBlockWidget::AdBlockWidget(QWidget *parent)
-    : QWidget(parent)
-    , _changed(false)
+        : QWidget(parent)
+        , _changed(false)
 {
     setupUi(this);
-    
-    hintLabel->setText( i18n("<qt>Filter expression (e.g. <tt>http://www.example.com/ad/*</tt>, <a href=\"filterhelp\">more information</a>):") );
-    connect( hintLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotInfoLinkActivated(const QString &)) );
- 
+
+    hintLabel->setText(i18n("<qt>Filter expression (e.g. <tt>http://www.example.com/ad/*</tt>, <a href=\"filterhelp\">more information</a>):"));
+    connect(hintLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotInfoLinkActivated(const QString &)));
+
     listWidget->setSortingEnabled(true);
     listWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-    
+
     searchLine->setListWidget(listWidget);
-    
-    insertButton->setIcon( KIcon("list-add") );
-    connect( insertButton, SIGNAL( clicked() ), this, SLOT( insertRule() ) );
-            
-    removeButton->setIcon( KIcon("list-remove") );
-    connect( removeButton, SIGNAL( clicked() ), this, SLOT( removeRule() ) );
-    
+
+    insertButton->setIcon(KIcon("list-add"));
+    connect(insertButton, SIGNAL(clicked()), this, SLOT(insertRule()));
+
+    removeButton->setIcon(KIcon("list-remove"));
+    connect(removeButton, SIGNAL(clicked()), this, SLOT(removeRule()));
+
     load();
-    
+
     // emit changed signal
-    connect( insertButton,       SIGNAL( clicked() ),           this, SLOT( hasChanged() ) );
-    connect( removeButton,       SIGNAL( clicked() ),           this, SLOT( hasChanged() ) );
-    connect( checkEnableAdblock, SIGNAL( stateChanged(int) ),   this, SLOT( hasChanged() ) );
-    connect( checkHideAds,       SIGNAL( stateChanged(int) ),   this, SLOT( hasChanged() ) );
-    connect( spinBox,            SIGNAL( valueChanged(int) ),   this, SLOT( hasChanged() ) );
+    connect(insertButton,       SIGNAL(clicked()),           this, SLOT(hasChanged()));
+    connect(removeButton,       SIGNAL(clicked()),           this, SLOT(hasChanged()));
+    connect(checkEnableAdblock, SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
+    connect(checkHideAds,       SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
+    connect(spinBox,            SIGNAL(valueChanged(int)),   this, SLOT(hasChanged()));
 }
 
 
 void AdBlockWidget::slotInfoLinkActivated(const QString &url)
 {
     Q_UNUSED(url)
-    
+
     QString hintHelpString = i18n("<qt><p>Enter an expression to filter. Filters can be defined as either:"
                                   "<ul><li>a shell-style wildcard, e.g. <tt>http://www.example.com/ads*</tt>, the wildcards <tt>*?[]</tt> may be used</li>"
                                   "<li>a full regular expression by surrounding the string with '<tt>/</tt>', e.g. <tt>/\\/(ad|banner)\\./</tt></li></ul>"
                                   "<p>Any filter string can be preceded by '<tt>@@</tt>' to whitelist (allow) any matching URL, "
                                   "which takes priority over any blacklist (blocking) filter.");
 
-    QWhatsThis::showText( QCursor::pos(), hintHelpString );
+    QWhatsThis::showText(QCursor::pos(), hintHelpString);
 }
 
 
 void AdBlockWidget::insertRule()
 {
     QString rule = addFilterLineEdit->text();
-    if(rule.isEmpty())
+    if (rule.isEmpty())
         return;
-    
-    listWidget->addItem( rule );
+
+    listWidget->addItem(rule);
     addFilterLineEdit->clear();
 }
 
 
 void AdBlockWidget::removeRule()
 {
-        listWidget->takeItem( listWidget->currentRow() );    
+    listWidget->takeItem(listWidget->currentRow());
 }
 
 
@@ -108,13 +108,13 @@ void AdBlockWidget::load()
 {
     bool isAdBlockEnabled = ReKonfig::adBlockEnabled();
     checkEnableAdblock->setChecked(isAdBlockEnabled);
-    
+
     bool areImageFiltered = ReKonfig::hideAdsEnabled();
     checkHideAds->setChecked(areImageFiltered);
-    
+
     int days = ReKonfig::updateInterval();
-    spinBox->setValue( days );
-    
+    spinBox->setValue(days);
+
     QStringList subscriptions = ReKonfig::subscriptionTitles();
 
     // load automatic rules
@@ -124,14 +124,14 @@ void AdBlockWidget::load()
         subItem->setText(0, sub);
         loadRules(subItem);
     }
-    
+
     // load local rules
     KSharedConfig::Ptr config = KGlobal::config();
-    KConfigGroup localGroup( config, "rules" );
-    QStringList rules = localGroup.readEntry( "local-rules" , QStringList() );
+    KConfigGroup localGroup(config, "rules");
+    QStringList rules = localGroup.readEntry("local-rules" , QStringList());
     foreach(const QString &rule, rules)
     {
-        listWidget->addItem( rule );
+        listWidget->addItem(rule);
     }
 }
 
@@ -139,12 +139,12 @@ void AdBlockWidget::load()
 void AdBlockWidget::loadRules(QTreeWidgetItem *item)
 {
     KSharedConfig::Ptr config = KGlobal::config();
-    KConfigGroup localGroup( config, "rules" );
-    
+    KConfigGroup localGroup(config, "rules");
+
     QString str = item->text(0) + "-rules";
     kDebug() << str;
-    QStringList rules = localGroup.readEntry( str , QStringList() );
-    
+    QStringList rules = localGroup.readEntry(str , QStringList());
+
     foreach(const QString &rule, rules)
     {
         QTreeWidgetItem *subItem = new QTreeWidgetItem(item);
@@ -159,21 +159,21 @@ void AdBlockWidget::save()
 
     // local rules
     KSharedConfig::Ptr config = KGlobal::config();
-    KConfigGroup localGroup( config , "rules" );
-   
+    KConfigGroup localGroup(config , "rules");
+
     QStringList localRules;
-    
+
     n = listWidget->count();
-    for(int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         QListWidgetItem *item = listWidget->item(i);
         localRules << item->text();
     }
-    localGroup.writeEntry( "local-rules" , localRules );
+    localGroup.writeEntry("local-rules" , localRules);
 
-    ReKonfig::setAdBlockEnabled( checkEnableAdblock->isChecked() );
-    ReKonfig::setHideAdsEnabled( checkHideAds->isChecked() );
-    ReKonfig::setUpdateInterval( spinBox->value() );
+    ReKonfig::setAdBlockEnabled(checkEnableAdblock->isChecked());
+    ReKonfig::setHideAdsEnabled(checkHideAds->isChecked());
+    ReKonfig::setUpdateInterval(spinBox->value());
 
     _changed = false;
     emit changed(false);

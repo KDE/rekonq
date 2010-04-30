@@ -44,9 +44,9 @@
  * @see KSSL
  * @short KDE SSL Information Dialog
  */
-class KDE_EXPORT KSslInfoDialog : public KDialog 
+class KDE_EXPORT KSslInfoDialog : public KDialog
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     /**

@@ -18,7 +18,7 @@
 #   ...
 # }
 #
-# I like this way, for me more readable.
+# I like this way, for me more readable. :)
 #
 # Kdelibs coding style is defined in http://techbase.kde.org/Policies/Kdelibs_Coding_Style 
 
@@ -42,7 +42,7 @@ astyle \
 `find -type f -name '*.cpp'` `find -type f -name '*.h'`
 
 echo "Removing .orig files..."
-rm *.orig
+rm *.orig */*.orig
 
 echo "Done!"
 

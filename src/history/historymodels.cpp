@@ -12,9 +12,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -119,7 +119,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     case UrlRole:
         return QUrl(item.url);
     case Qt::UserRole:
-	return KUrl(item.url);
+        return KUrl(item.url);
     case UrlStringRole:
         return item.url;
     case Qt::DisplayRole:
@@ -148,7 +148,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
         }
     case Qt::ToolTipRole:
         QString tooltip = "";
-        if(!item.title.isEmpty())
+        if (!item.title.isEmpty())
             tooltip = item.title + "\n";
         tooltip += item.dateTime.toString(Qt::SystemLocaleShortDate) + "\n" + item.url;
         return tooltip;

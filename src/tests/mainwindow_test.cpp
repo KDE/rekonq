@@ -32,11 +32,11 @@
 class MainWindowTest : public QObject
 {
     Q_OBJECT
-    
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
 
 
@@ -61,5 +61,5 @@ void MainWindowTest::cleanupTestCase()
 
 // -------------------------------------------
 
-QTEST_KDEMAIN(MainWindowTest,GUI)
+QTEST_KDEMAIN(MainWindowTest, GUI)
 #include "mainwindow_test.moc"

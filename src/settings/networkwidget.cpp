@@ -38,34 +38,34 @@
 
 
 NetworkWidget::NetworkWidget(QWidget *parent)
-    : QWidget(parent)
-    , _cacheModule(0)
-    , _cookiesModule(0)
-    , _proxyModule(0)
-    , _changed(false)
+        : QWidget(parent)
+        , _cacheModule(0)
+        , _cookiesModule(0)
+        , _proxyModule(0)
+        , _changed(false)
 {
     QVBoxLayout *l = new QVBoxLayout(this);
     l->setMargin(0);
     l->setSpacing(0);
-    
+
     KTabWidget *tabWidget = new KTabWidget(this);
     l->addWidget(tabWidget);
 
-    KCModuleInfo cacheInfo("cache.desktop");                                                                              
-    _cacheModule = new KCModuleProxy(cacheInfo,parent);
-    tabWidget->addTab( _cacheModule, i18n(cacheInfo.moduleName().toLocal8Bit()) );
-    
-    KCModuleInfo cookiesInfo("cookies.desktop");
-    _cookiesModule = new KCModuleProxy(cookiesInfo,parent);
-    tabWidget->addTab( _cookiesModule, i18n(cookiesInfo.moduleName().toLocal8Bit()) );                              
-                                                                                                                      
-    KCModuleInfo proxyInfo("proxy.desktop");                                                                              
-    _proxyModule = new KCModuleProxy(proxyInfo,parent);
-    tabWidget->addTab( _proxyModule, i18n(proxyInfo.moduleName().toLocal8Bit()) );
+    KCModuleInfo cacheInfo("cache.desktop");
+    _cacheModule = new KCModuleProxy(cacheInfo, parent);
+    tabWidget->addTab(_cacheModule, i18n(cacheInfo.moduleName().toLocal8Bit()));
 
-    connect(_cacheModule,   SIGNAL( changed(bool) ), this, SLOT( hasChanged() ) );
-    connect(_cookiesModule, SIGNAL( changed(bool) ), this, SLOT( hasChanged() ) );
-    connect(_proxyModule,   SIGNAL( changed(bool) ), this, SLOT( hasChanged() ) );
+    KCModuleInfo cookiesInfo("cookies.desktop");
+    _cookiesModule = new KCModuleProxy(cookiesInfo, parent);
+    tabWidget->addTab(_cookiesModule, i18n(cookiesInfo.moduleName().toLocal8Bit()));
+
+    KCModuleInfo proxyInfo("proxy.desktop");
+    _proxyModule = new KCModuleProxy(proxyInfo, parent);
+    tabWidget->addTab(_proxyModule, i18n(proxyInfo.moduleName().toLocal8Bit()));
+
+    connect(_cacheModule,   SIGNAL(changed(bool)), this, SLOT(hasChanged()));
+    connect(_cookiesModule, SIGNAL(changed(bool)), this, SLOT(hasChanged()));
+    connect(_proxyModule,   SIGNAL(changed(bool)), this, SLOT(hasChanged()));
 }
 
 

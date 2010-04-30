@@ -12,9 +12,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -54,12 +54,12 @@ class HistoryItem
 public:
     HistoryItem() {}
     explicit HistoryItem(const QString &u,
-                         const QDateTime &d = QDateTime(), 
+                         const QDateTime &d = QDateTime(),
                          const QString &t = QString()
                         )
             : title(t)
-            , url(u), 
-            dateTime(d) 
+            , url(u),
+            dateTime(d)
     {}
 
     inline bool operator==(const HistoryItem &other) const
@@ -90,12 +90,12 @@ public:
     explicit DownloadItem(const QString &srcUrl,
                           const QString &destUrl,
                           const QDateTime &d
-                          )
-        : srcUrlString(srcUrl)
-        , destUrlString(destUrl)
-        , dateTime(d)
+                         )
+            : srcUrlString(srcUrl)
+            , destUrlString(destUrl)
+            , dateTime(d)
     {}
-    
+
     QString srcUrlString;
     QString destUrlString;
     QDateTime dateTime;
@@ -142,7 +142,7 @@ public:
     void removeHistoryEntry(const KUrl &url, const QString &title = QString());
 
     QString titleForHistoryUrl(QString url);
-    
+
     int historyLimit() const;
     void setHistoryLimit(int limit);
 
@@ -162,7 +162,7 @@ public:
     void addDownload(const QString &srcUrl, const QString &destUrl);
     DownloadList downloads();
     bool clearDownloadsHistory();
-    
+
 public slots:
     void clear();
     void loadSettings();

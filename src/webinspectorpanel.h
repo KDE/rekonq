@@ -10,9 +10,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -46,16 +46,16 @@ class REKONQ_TESTS_EXPORT WebInspectorPanel : public QDockWidget
     Q_OBJECT
 public:
     WebInspectorPanel(QString title, QWidget *parent);
-    
+
 public slots:
     void toggle(bool enable);
-    void changeCurrentPage();   
-    
+    void changeCurrentPage();
+
 protected:
     virtual void closeEvent(QCloseEvent *event);
-    
+
     MainWindow *mainWindow();
-        
+
 };
 
 #endif

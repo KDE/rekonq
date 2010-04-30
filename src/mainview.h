@@ -13,9 +13,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -57,7 +57,7 @@ class UrlBar;
 
 
 /**
- * This class represent rekonq Main View. 
+ * This class represent rekonq Main View.
  * It contains all WebViews and the url bar.
  *
  */
@@ -83,15 +83,15 @@ public:
      *
      */
     void updateTabBar();
-    
+
     void setTabBarHidden(bool hide);
-    
+
     QToolButton *addTabButton() const;
 
     /**
      * This function creates a new empty tab
      * with a webview inside
-     * @param focused   decide if you wannna give focus 
+     * @param focused   decide if you wannna give focus
      *                  (or not) to this new tab (default true)
      * @param nearParent  decide if you wanna create new tab near current or not
      * @return the webview embedded in the new tab
@@ -130,7 +130,7 @@ public slots:
     void nextTab();
     void previousTab();
     void detachTab(int index = -1);
-    
+
     // WEB slot actions
     void webReload();
     void webStop();
@@ -147,7 +147,7 @@ private slots:
     void windowCloseRequested();
 
     void postLaunch();
-    void movedTab(int,int);
+    void movedTab(int, int);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);

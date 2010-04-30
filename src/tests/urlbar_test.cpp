@@ -35,11 +35,11 @@
 class UrlBarTest : public QObject
 {
     Q_OBJECT
-    
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
 
 private:
@@ -62,13 +62,13 @@ void UrlBarTest::cleanupTestCase()
     delete bar;
     delete tab;
 }
-    
-    
-// -------------------------------------------
-
 
 
 // -------------------------------------------
 
-QTEST_KDEMAIN(UrlBarTest,GUI)
+
+
+// -------------------------------------------
+
+QTEST_KDEMAIN(UrlBarTest, GUI)
 #include "urlbar_test.moc"

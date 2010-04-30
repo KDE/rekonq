@@ -43,10 +43,10 @@ class BtmItem
 public:
     BtmItem(const KBookmark &bm);
     ~BtmItem();
-    QVariant data( int role = Qt::DisplayRole ) const;
+    QVariant data(int role = Qt::DisplayRole) const;
     int row() const;
     int childCount() const;
-    BtmItem* child( int n );
+    BtmItem* child(int n);
     BtmItem* parent() const;
     void appendChild(BtmItem *child);
     void clear();
@@ -78,10 +78,10 @@ public:
     virtual QModelIndex parent(const QModelIndex &index) const;
     virtual QVariant data(const QModelIndex &index, int role) const;
 
-    virtual QStringList mimeTypes () const;
+    virtual QStringList mimeTypes() const;
     virtual bool dropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent);
-    virtual Qt::DropActions supportedDropActions () const;
-    virtual QMimeData *mimeData( const QModelIndexList & indexes ) const;
+    virtual Qt::DropActions supportedDropActions() const;
+    virtual QMimeData *mimeData(const QModelIndexList & indexes) const;
 
 private slots:
     void bookmarksChanged();
@@ -96,7 +96,7 @@ private:
 
     void resetModel();
     void setRoot(KBookmarkGroup bmg);
-    void populate( BtmItem *node, KBookmarkGroup bmg);
+    void populate(BtmItem *node, KBookmarkGroup bmg);
     KBookmark bookmarkForIndex(const QModelIndex index) const;
 };
 

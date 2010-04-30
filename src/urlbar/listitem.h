@@ -10,9 +10,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -58,7 +58,7 @@ public:
     void deactivate();
 
     KUrl url();
-    
+
 public slots:
     virtual void nextItemSubChoice();
 
@@ -66,14 +66,14 @@ signals:
     void itemClicked(ListItem *item, Qt::MouseButton);
 
 protected:
-   virtual void paintEvent(QPaintEvent *event);
-   virtual void enterEvent(QEvent *);
-   virtual void leaveEvent(QEvent *);
-   virtual void mousePressEvent(QMouseEvent *e);
+    virtual void paintEvent(QPaintEvent *event);
+    virtual void enterEvent(QEvent *);
+    virtual void leaveEvent(QEvent *);
+    virtual void mousePressEvent(QMouseEvent *e);
 
 private:
-    QStyleOptionViewItemV4 m_option;    
- 
+    QStyleOptionViewItemV4 m_option;
+
 protected:
     KUrl m_url;
 };
@@ -85,7 +85,7 @@ protected:
 class TypeIconLabel : public QLabel
 {
     Q_OBJECT
-    
+
 public:
     TypeIconLabel(int type, QWidget *parent = 0);
 
@@ -112,7 +112,7 @@ public:
 class TextLabel : public QLabel
 {
     Q_OBJECT
-    
+
 public:
     TextLabel(const QString &text, const QString &textToPointOut = QString(), QWidget *parent = 0);
 };
@@ -124,11 +124,11 @@ public:
 class EngineBar : public KToolBar
 {
     Q_OBJECT
-    
+
 public:
     EngineBar(KService::Ptr selectedEngine, QWidget *parent = 0);
     void selectNextEngine();
-    
+
 signals:
     void searchEngineChanged(KService::Ptr engine);
 
@@ -147,16 +147,16 @@ private:
 class SearchListItem : public ListItem
 {
     Q_OBJECT
-    
+
 public:
     SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
-    
+
 public slots:
     virtual void nextItemSubChoice();
-    
+
 private slots:
     void changeSearchEngine(KService::Ptr engine);
-    
+
 private:
     QString searchItemTitle(QString engine, QString text);
 
@@ -174,7 +174,7 @@ private:
 class PreviewListItem : public ListItem
 {
     Q_OBJECT
-    
+
 public:
     PreviewListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
 };
@@ -186,7 +186,7 @@ public:
 class PreviewLabel : public QLabel
 {
     Q_OBJECT
-    
+
 public:
     PreviewLabel(const QString &url, int width, int height, QWidget *parent = 0);
 };
@@ -198,7 +198,7 @@ public:
 class BrowseListItem : public ListItem
 {
     Q_OBJECT
-    
+
 public:
     BrowseListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
 };

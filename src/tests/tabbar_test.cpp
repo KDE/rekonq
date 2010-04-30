@@ -35,23 +35,33 @@
 class SubTabBar : public TabBar
 {
 public:
-    
+
     SubTabBar(QWidget *parent) : TabBar(parent) {};
 
     QSize call_tabSizeHint(int index) const
-        { return SubTabBar::tabSizeHint(index); }
-        
+    {
+        return SubTabBar::tabSizeHint(index);
+    }
+
     void call_mouseMoveEvent(QMouseEvent* event)
-        { return SubTabBar::mouseMoveEvent(event); }
-        
+    {
+        return SubTabBar::mouseMoveEvent(event);
+    }
+
     void call_leaveEvent(QEvent* event)
-        { return SubTabBar::leaveEvent(event); }
-        
+    {
+        return SubTabBar::leaveEvent(event);
+    }
+
     void call_mousePressEvent(QMouseEvent* event)
-        { return SubTabBar::mousePressEvent(event); }
-        
+    {
+        return SubTabBar::mousePressEvent(event);
+    }
+
     void call_mouseReleaseEvent(QMouseEvent* event)
-        { return SubTabBar::mouseReleaseEvent(event); }        
+    {
+        return SubTabBar::mouseReleaseEvent(event);
+    }
 };
 
 
@@ -65,14 +75,14 @@ class TabBarTest : public QObject
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
     void tabSizeHint_data();
     void tabSizeHint();
-    
+
     void mousePress_data();
     void mousePress();
-    
+
 private:
     SubTabBar *_bar;
 };
@@ -128,7 +138,7 @@ void TabBarTest::mousePress()
 {
 //     QTest::mousePress(_bar, Qt::MidButton);
 // //     QCOMPARE();  ?
-// 
+//
 //     QTest::mousePress(_bar, Qt::LeftButton);
 // //     QCOMPARE();  ?
 }

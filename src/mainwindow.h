@@ -75,7 +75,7 @@ public:
     WebTab *currentTab() const;
     QAction *actionByName(const QString name);
     virtual QSize sizeHint() const;
-    virtual KActionCollection *actionCollection () const;
+    virtual KActionCollection *actionCollection() const;
     void setWidgetsVisible(bool makeFullScreen);
 
     void setZoomSliderFactor(qreal factor);
@@ -85,7 +85,7 @@ private:
     void setupTools();
     void setupToolbars();
     void setupPanels();
-    
+
 public slots:
     void homePage(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
 
@@ -100,7 +100,7 @@ public slots:
     void notifyMessage(const QString &msg, Rekonq::Notify status = Rekonq::Info);
 
     void printRequested(QWebFrame *frame = 0);
-    
+
 signals:
     // switching tabs
     void ctrlTabPressed();
@@ -172,7 +172,7 @@ private:
     KAction *m_stopReloadAction;
     KMenu *m_historyBackMenu;
     KMenu *m_encodingMenu;
-    
+
     KToolBar *m_mainBar;
     KToolBar *m_bmBar;
 

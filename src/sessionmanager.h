@@ -48,7 +48,7 @@ public:
     SessionManager(QObject *parent = 0);
     ~SessionManager();
     bool restoreSession();
-    
+
 private slots:
     void saveSession();
 

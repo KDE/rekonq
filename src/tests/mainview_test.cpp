@@ -11,9 +11,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -47,31 +47,31 @@ public slots:
 private slots:
     void tabwidget_data();
     void tabwidget();
-    
+
     void closeTab_data();
     void closeTab();
-    
+
     void currentWebView_data();
     void currentWebView();
-    
+
     void newTab_data();
     void newTab();
-    
+
     void nextTab_data();
     void nextTab();
-    
+
     void previousTab_data();
     void previousTab();
-    
+
     void recentlyClosedTabs_data();
     void recentlyClosedTabs();
-    
+
     void setCurrentTitle_data();
     void setCurrentTitle(const QString &);
-    
+
     void showStatusBarMessage_data();
     void showStatusBarMessage(const QString &);
-    
+
     void currentChanged_data();
     void currentChanged();
 
@@ -108,13 +108,13 @@ void MainViewTest::tabwidget_data()
 void MainViewTest::tabwidget()
 {
     QCOMPARE(view->currentIndex(), -1);
-    
-//     view->newTab();    
-//     QCOMPARE(view->currentIndex(), 1); 
+
+//     view->newTab();
+//     QCOMPARE(view->currentIndex(), 1);
 //     view->newTab();
 //     view->nextTab();
 //     QCOMPARE(view->currentIndex(), 0);
-// 
+//
 //     view->previousTab();
 //     QCOMPARE(view->currentIndex(), 0);
 }
@@ -131,18 +131,18 @@ void MainViewTest::closeTab_data()
 void MainViewTest::closeTab()
 {
 //     QFETCH(int, index);
-// 
+//
 //     QSignalSpy spy1(view, SIGNAL(linkHovered(const QString &)));
 //     QSignalSpy spy2(view, SIGNAL(setCurrentTitle(const QString &)));
 //     QSignalSpy spy3(view, SIGNAL(tabsChanged()));
 //     QSignalSpy spy4(view, SIGNAL(lastTabClosed()));
-// 
+//
 //     view->newTab();
 //     view->closeTab(index);
 //     view->newTab();
 //     view->closeTab(index);
 //     view->newTab();
-// 
+//
 //     QCOMPARE(spy1.count(), 0);
 //     QCOMPARE(spy2.count(), 2);
 //     QCOMPARE(spy3.count(), 0);
@@ -197,15 +197,15 @@ void MainViewTest::newTab_data()
 void MainViewTest::newTab()
 {
 //     QFETCH(int, foo);
-// 
+//
 //     QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
 //     QSignalSpy spy1(view, SIGNAL(setCurrentTitle(const QString &)));
 //     QSignalSpy spy2(view, SIGNAL(showStatusBarMessage(const QString &)));
 //     QSignalSpy spy3(view, SIGNAL(tabsChanged()));
 //     QSignalSpy spy4(view, SIGNAL(lastTabClosed()));
-// 
+//
 //     view->newTab();
-// 
+//
 //     QCOMPARE(spy0.count(), 0);
 //     QCOMPARE(spy1.count(), 0);
 //     QCOMPARE(spy2.count(), 0);

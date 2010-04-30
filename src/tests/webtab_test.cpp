@@ -34,7 +34,7 @@
 class WebTabTest : public QObject
 {
     Q_OBJECT
-    
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
@@ -57,12 +57,12 @@ void WebTabTest::cleanupTestCase()
 {
     delete tab;
 }
-    
-    
-// -------------------------------------------
 
 
 // -------------------------------------------
 
-QTEST_KDEMAIN(WebTabTest,GUI)
+
+// -------------------------------------------
+
+QTEST_KDEMAIN(WebTabTest, GUI)
 #include "webtab_test.moc"

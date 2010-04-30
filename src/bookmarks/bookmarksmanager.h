@@ -224,9 +224,15 @@ public:
      */
     KBookmarkGroup rootGroup();
 
-    KBookmarkManager *bookmarkManager() { return m_manager; }
-    BookmarkOwner *bookmarkOwner() { return m_owner; }
-    
+    KBookmarkManager *bookmarkManager()
+    {
+        return m_manager;
+    }
+    BookmarkOwner *bookmarkOwner()
+    {
+        return m_owner;
+    }
+
     /**
     * @returns the KCompletion object.
     */
@@ -260,7 +266,7 @@ public slots:
      */
     void slotBookmarksChanged(const QString &group, const QString &caller);
 
-    
+
 private:
     void fillBookmarkBar(KToolBar *toolBar);
     QString titleForBookmarkUrl(const KBookmark &bookmark, QString url);

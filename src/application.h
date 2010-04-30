@@ -12,9 +12,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -59,31 +59,31 @@ typedef QList< QWeakPointer<MainWindow> > MainWindowList;
 
 namespace Rekonq
 {
-    /**
-     * @short notifying message status
-     * Different message status
-     */
+/**
+ * @short notifying message status
+ * Different message status
+ */
 
-    enum Notify
-    {
-        Success,    ///< url successfully (down)loaded
-        Error,      ///< url failed to (down)load
-        Download,   ///< downloading url
-        Info        ///< information, (default)
-    };
+enum Notify
+{
+    Success,    ///< url successfully (down)loaded
+    Error,      ///< url failed to (down)load
+    Download,   ///< downloading url
+    Info        ///< information, (default)
+};
 
-    /**
-     * @short Open link options
-     * Different modes of opening new tab
-     */
-    enum OpenType
-    {
-        CurrentTab,     ///< open url in current tab
-        SettingOpenTab, ///< open url according to users settings
-        NewCurrentTab,  ///< open url in new tab and make it current
-        NewBackTab,     ///< open url in new tab in background
-        NewWindow       ///< open url in new window
-    };
+/**
+ * @short Open link options
+ * Different modes of opening new tab
+ */
+enum OpenType
+{
+    CurrentTab,     ///< open url in current tab
+    SettingOpenTab, ///< open url according to users settings
+    NewCurrentTab,  ///< open url in new tab and make it current
+    NewBackTab,     ///< open url in new tab in background
+    NewWindow       ///< open url in new window
+};
 
 }
 
@@ -104,14 +104,14 @@ public:
     MainWindow *mainWindow();
     MainWindow *newMainWindow(bool withTab = true);
     MainWindowList mainWindowList();
-    
+
     static KIcon icon(const KUrl &url);
 
     static HistoryManager *historyManager();
     static BookmarkProvider *bookmarkProvider();
     static SessionManager *sessionManager();
     static AdBlockManager *adblockManager();
-    
+
 public slots:
     /**
      * Save application's configuration
@@ -120,8 +120,8 @@ public slots:
      */
     void saveConfiguration() const;
 
-    void loadUrl( const KUrl& url,
-                  const Rekonq::OpenType& type = Rekonq::CurrentTab
+    void loadUrl(const KUrl& url,
+                 const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );
 
     void newWindow();
@@ -135,15 +135,15 @@ private slots:
     void postLaunch();
 
     void loadResolvedUrl(ThreadWeaver::Job *);
-    
+
     void updateConfiguration();
-    
+
 private:
     static QWeakPointer<HistoryManager> s_historyManager;
     static QWeakPointer<BookmarkProvider> s_bookmarkProvider;
     static QWeakPointer<SessionManager> s_sessionManager;
     static QWeakPointer<AdBlockManager> s_adblockManager;
-    
+
     MainWindowList m_mainWindows;
 };
 

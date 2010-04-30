@@ -51,9 +51,9 @@
 
 
 BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
-    : QDockWidget(title, parent, flags)
-    , m_treeView(new PanelTreeView(this))
-    , m_loadingState(false)
+        : QDockWidget(title, parent, flags)
+        , m_treeView(new PanelTreeView(this))
+        , m_loadingState(false)
 {
     setup();
     setShown(ReKonfig::showBookmarksPanel());
@@ -81,7 +81,7 @@ void BookmarksPanel::setup()
     KLineEdit *search = new KLineEdit;
     search->setClearButtonShown(true);
     searchLayout->addWidget(search);
-    searchLabel->setBuddy( search );
+    searchLabel->setBuddy(search);
 
     // setup tree view
     m_treeView->setUniformRowHeights(true);
@@ -103,10 +103,10 @@ void BookmarksPanel::setup()
     ui->setLayout(vBoxLayout);
     setWidget(ui);
 
-    BookmarksTreeModel *model = new BookmarksTreeModel( this );
+    BookmarksTreeModel *model = new BookmarksTreeModel(this);
     BookmarksProxy *proxy = new BookmarksProxy(ui);
-    proxy->setSourceModel( model );
-    m_treeView->setModel( proxy );
+    proxy->setSourceModel(model);
+    m_treeView->setModel(proxy);
 
     connect(m_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
     connect(m_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
@@ -121,20 +121,20 @@ void BookmarksPanel::setup()
 
 KBookmark BookmarksPanel::bookmarkForIndex(const QModelIndex &index)
 {
-    if(!index.isValid())
+    if (!index.isValid())
         return KBookmark();
 
     const QAbstractProxyModel* proxyModel = dynamic_cast< const QAbstractProxyModel* >(index.model());
     QModelIndex originalIndex = proxyModel->mapToSource(index);
 
-    BtmItem *node = static_cast< BtmItem* >( originalIndex.internalPointer() );
+    BtmItem *node = static_cast< BtmItem* >(originalIndex.internalPointer());
     return node->getBkm();
 }
 
 
 void BookmarksPanel::onCollapse(const QModelIndex &index)
 {
-    if(m_loadingState)
+    if (m_loadingState)
         return;
 
     KBookmark bookmark = bookmarkForIndex(index);
@@ -145,7 +145,7 @@ void BookmarksPanel::onCollapse(const QModelIndex &index)
 
 void BookmarksPanel::onExpand(const QModelIndex &index)
 {
-    if(m_loadingState)
+    if (m_loadingState)
         return;
 
     KBookmark bookmark = bookmarkForIndex(index);
@@ -168,10 +168,10 @@ void BookmarksPanel::loadFoldedState(const QModelIndex &root)
     int count = m_treeView->model()->rowCount(root);
     QModelIndex index;
 
-    for(int i = 0; i < count; i++)
+    for (int i = 0; i < count; i++)
     {
         index = m_treeView->model()->index(i, 0, root);
-        if(index.isValid() && bookmarkForIndex(index).isGroup())
+        if (index.isValid() && bookmarkForIndex(index).isGroup())
         {
             m_treeView->setExpanded(index, bookmarkForIndex(index).toGroup().isOpen());
             loadFoldedState(index);
@@ -183,7 +183,7 @@ void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 void BookmarksPanel::contextMenu(const QPoint &pos)
 {
     QModelIndex index = m_treeView->indexAt(pos);
-    if(m_loadingState)
+    if (m_loadingState)
         return;
 
     KBookmark selected = bookmarkForIndex(index);
@@ -196,21 +196,21 @@ void BookmarksPanel::contextMenu(const QPoint &pos)
 void BookmarksPanel::deleteBookmark()
 {
     QModelIndex index = m_treeView->currentIndex();
-    if(!index.isValid())
+    if (!index.isValid())
         return;
 
     KBookmark bm = bookmarkForIndex(index);
     bool folder = bm.isGroup();
 
     if (KMessageBox::warningContinueCancel(
-            QApplication::activeWindow(),
-            folder ? i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", bm.text())
-                   : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", bm.text()),
-            folder ? i18n("Bookmark Folder Deletion")
-                   : i18n("Bookmark Deletion"),
-            KStandardGuiItem::del())
-          != KMessageBox::Continue
-        )
+                QApplication::activeWindow(),
+                folder ? i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", bm.text())
+                : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", bm.text()),
+                folder ? i18n("Bookmark Folder Deletion")
+                : i18n("Bookmark Deletion"),
+                KStandardGuiItem::del())
+            != KMessageBox::Continue
+       )
         return;
 
 

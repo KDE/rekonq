@@ -10,9 +10,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -41,7 +41,7 @@ static const char description[] =
     I18N_NOOP("A lightweight Web Browser for KDE based on WebKit");
 
 
-extern "C" KDE_EXPORT int kdemain( int argc, char **argv )
+extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
 {
     KAboutData about("rekonq",
                      0,
@@ -84,8 +84,8 @@ extern "C" KDE_EXPORT int kdemain( int argc, char **argv )
                     ki18n("(Tons of ) patches, testing, bugfixing"),
                     "ronny_scholz@web.de",
                     "");
-                    
-    // --------------- about credits -----------------------------                    
+
+    // --------------- about credits -----------------------------
     about.addCredit(ki18n("Domrachev Alexandr"),
                     ki18n("Developer"),
                     "alexandr.domrachev@gmail.com",
@@ -120,7 +120,7 @@ extern "C" KDE_EXPORT int kdemain( int argc, char **argv )
                     ki18n("Handbook"),
                     "rohan16garg@gmail.com",
                     "");
-                    
+
     about.addCredit(ki18n("Dario Freddi"),
                     ki18n("Patches, hints, first KWallet support implementation (not yet included)"),
                     "drf@kde.org",
@@ -130,7 +130,7 @@ extern "C" KDE_EXPORT int kdemain( int argc, char **argv )
                     ki18n("first awesome bar implementation (wait next version and you'll see..)"),
                     "jondeandres@gmail.com",
                     "");
-                    
+
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
 

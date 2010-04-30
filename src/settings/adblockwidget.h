@@ -38,20 +38,20 @@
 
 class AdBlockWidget : public QWidget, private Ui::adblock
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     AdBlockWidget(QWidget *parent = 0);
-    
+
     void save();
     bool changed();
-    
+
 signals:
     void changed(bool);
-    
+
 private slots:
     void hasChanged();
-    
+
     void slotInfoLinkActivated(const QString &);
     void insertRule();
     void removeRule();

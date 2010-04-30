@@ -31,11 +31,11 @@
 class WalletBarTest : public QObject
 {
     Q_OBJECT
-    
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
 
 private:
@@ -57,13 +57,13 @@ void WalletBarTest::cleanupTestCase()
 {
     delete bar;
 }
-    
-    
-// -------------------------------------------
-
 
 
 // -------------------------------------------
 
-QTEST_KDEMAIN(WalletBarTest,GUI)
+
+
+// -------------------------------------------
+
+QTEST_KDEMAIN(WalletBarTest, GUI)
 #include "walletbar_test.moc"

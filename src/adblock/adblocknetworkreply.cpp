@@ -36,9 +36,9 @@
  * published by the Free Software Foundation; either version 2 of
  * the License or (at your option) version 3 or any later version
  * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy 
+ * by the membership of KDE e.V.), which shall act as a proxy
  * defined in Section 14 of version 3 of the license.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -63,12 +63,12 @@
 
 
 AdBlockNetworkReply::AdBlockNetworkReply(const QNetworkRequest &request, const QString &urlString, QObject *parent)
-    : QNetworkReply(parent)
+        : QNetworkReply(parent)
 {
     setOperation(QNetworkAccessManager::GetOperation);
     setRequest(request);
     setUrl(request.url());
-    setError(QNetworkReply::ContentAccessDenied, i18n("Blocked by AdBlockRule: %1", urlString) );
+    setError(QNetworkReply::ContentAccessDenied, i18n("Blocked by AdBlockRule: %1", urlString));
     QTimer::singleShot(0, this, SLOT(delayedFinished()));
 }
 

@@ -42,8 +42,8 @@
 
 
 BookmarkContextMenu::BookmarkContextMenu(const KBookmark & bookmark, KBookmarkManager *manager, KBookmarkOwner *owner, QWidget *parent)
-    : KBookmarkContextMenu(bookmark, manager, owner, parent)
-    , m_ac(new KActionCollection(this))
+        : KBookmarkContextMenu(bookmark, manager, owner, parent)
+        , m_ac(new KActionCollection(this))
 {
     setupActions();
 }
@@ -120,7 +120,7 @@ void BookmarkContextMenu::addBookmarkActions()
 
 void BookmarkContextMenu::addFolderActions()
 {
-    if(!bookmark().toGroup().first().isNull())
+    if (!bookmark().toGroup().first().isNull())
     {
         addAction(m_ac->action("open_all"));
         addSeparator();
@@ -151,17 +151,17 @@ void BookmarkContextMenu::addSeparatorActions()
 
 void BookmarkContextMenu::addActions()
 {
-    if(bookmark().isGroup())
+    if (bookmark().isGroup())
     {
         addFolderActions();
     }
 
-    else if(bookmark().isSeparator())
+    else if (bookmark().isSeparator())
     {
         addSeparatorActions();
     }
 
-    else if(bookmark().isNull())
+    else if (bookmark().isNull())
     {
         addAction(m_ac->action("bookmark_page"));
         addAction(m_ac->action("folder_new"));
@@ -195,7 +195,7 @@ void BookmarkContextMenu::openInNewWindow()
 
 void BookmarkContextMenu::copyToClipboard()
 {
-    if(bookmark().isNull())
+    if (bookmark().isNull())
         return;
 
     QClipboard *cb = QApplication::clipboard();
@@ -209,14 +209,14 @@ void BookmarkContextMenu::deleteBookmark()
     bool folder = bm.isGroup();
 
     if (KMessageBox::warningContinueCancel(
-            QApplication::activeWindow(),
-            folder ? i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", bm.text())
-                   : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", bm.text()),
-            folder ? i18n("Bookmark Folder Deletion")
-                   : i18n("Bookmark Deletion"),
-            KStandardGuiItem::del())
-          != KMessageBox::Continue
-        )
+                QApplication::activeWindow(),
+                folder ? i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", bm.text())
+                : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", bm.text()),
+                folder ? i18n("Bookmark Folder Deletion")
+                : i18n("Bookmark Deletion"),
+                KStandardGuiItem::del())
+            != KMessageBox::Continue
+       )
         return;
 
     bm.parentGroup().deleteBookmark(bm);
@@ -236,7 +236,7 @@ void BookmarkContextMenu::editBookmark()
 
 void BookmarkContextMenu::openFolderInTabs()
 {
-    if(bookmark().isGroup())
+    if (bookmark().isGroup())
         owner()->openFolderinTabs(bookmark().toGroup());
 }
 
@@ -246,9 +246,9 @@ void BookmarkContextMenu::newBookmarkGroup()
     KBookmark selected = bookmark();
     KBookmarkDialog *dialog = owner()->bookmarkDialog(manager(), QApplication::activeWindow());
 
-    if(!selected.isNull())
+    if (!selected.isNull())
     {
-        if(selected.isGroup())
+        if (selected.isGroup())
         {
             dialog->createNewFolder("New folder", selected);
         }
@@ -275,9 +275,9 @@ void BookmarkContextMenu::newSeparator()
     KBookmark selected = bookmark();
     KBookmark newBk;
 
-    if(!selected.isNull())
+    if (!selected.isNull())
     {
-        if(selected.isGroup())
+        if (selected.isGroup())
             newBk = selected.toGroup().createNewSeparator();
         else
             newBk = selected.parentGroup().createNewSeparator();
@@ -292,7 +292,7 @@ void BookmarkContextMenu::newSeparator()
     newBk.setIcon(("edit-clear"));
     parent.addBookmark(newBk);
 
-    if(!selected.isNull())
+    if (!selected.isNull())
         parent.moveBookmark(newBk, selected);
 
     manager()->emitChanged();
@@ -304,11 +304,11 @@ void BookmarkContextMenu::bookmarkCurrentPage()
     KBookmarkGroup parent = Application::bookmarkProvider()->rootGroup();
     KBookmark selected = bookmark();
 
-    if(!selected.isNull())
+    if (!selected.isNull())
     {
         parent = selected.parentGroup();
 
-        if(selected.isGroup())
+        if (selected.isGroup())
             parent = selected.toGroup();
 
         KBookmark newBk = parent.addBookmark(owner()->currentTitle(), KUrl(owner()->currentUrl()), "text-html");
@@ -317,7 +317,7 @@ void BookmarkContextMenu::bookmarkCurrentPage()
 
     else
     {
-       parent.addBookmark(owner()->currentTitle(), KUrl(owner()->currentUrl()), "text-html");
+        parent.addBookmark(owner()->currentTitle(), KUrl(owner()->currentUrl()), "text-html");
     }
 
     manager()->emitChanged();

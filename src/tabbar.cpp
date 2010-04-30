@@ -13,9 +13,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -86,29 +86,29 @@ TabBar::~TabBar()
 QSize TabBar::tabSizeHint(int index) const
 {
     MainView *view = qobject_cast<MainView *>(parent());
-    
+
     int buttonSize = view->addTabButton()->size().width();
     int tabBarWidth = view->size().width() - buttonSize;
-    int baseWidth =  view->sizeHint().width()/BASE_WIDTH_DIVISOR;
-    int minWidth =  view->sizeHint().width()/MIN_WIDTH_DIVISOR;
+    int baseWidth =  view->sizeHint().width() / BASE_WIDTH_DIVISOR;
+    int minWidth =  view->sizeHint().width() / MIN_WIDTH_DIVISOR;
 
     int w;
     if (baseWidth*count() < tabBarWidth)
     {
         w = baseWidth;
     }
-    else 
+    else
     {
-        if (count() > 0 && tabBarWidth/count() > minWidth)
+        if (count() > 0 && tabBarWidth / count() > minWidth)
         {
-            w = tabBarWidth/count();
+            w = tabBarWidth / count();
         }
         else
         {
             w = minWidth;
         }
     }
-    
+
     int h = KTabBar::tabSizeHint(index).height();
 
     QSize ts = QSize(w, h);
@@ -149,37 +149,37 @@ void TabBar::detachTab()
 void TabBar::showTabPreview(int tab)
 {
     MainView *mv = qobject_cast<MainView *>(parent());
-    
+
     WebTab *indexedTab = mv->webTab(tab);
     WebTab *currentTab = mv->webTab(currentIndex());
 
     // check if view && currentView exist before using them :)
-    if(!currentTab || !indexedTab)
+    if (!currentTab || !indexedTab)
         return;
-    
+
     int w = tabSizeHint(tab).width();
-    int h = w * ( (0.0 + currentTab->height()) / currentTab->width() );
+    int h = w * ((0.0 + currentTab->height()) / currentTab->width());
 
     //delete previous tab preview
     delete m_previewPopup.data();
     m_previewPopup.clear();
-    
+
     if (indexedTab->progress() != 0)
         return;
-     
+
     m_previewPopup = new KPassivePopup(this);
     m_previewPopup.data()->setFrameShape(QFrame::StyledPanel);
     m_previewPopup.data()->setFrameShadow(QFrame::Plain);
     m_previewPopup.data()->setFixedSize(w, h);
-    
+
     QLabel *l = new QLabel();
-    l->setPixmap( WebSnap::renderPreview( *indexedTab->page(), w, h) );
-    
+    l->setPixmap(WebSnap::renderPreview(*indexedTab->page(), w, h));
+
     m_previewPopup.data()->setView(l);
     m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);
     m_previewPopup.data()->layout()->setMargin(0);
 
-    QPoint pos( tabRect(tab).x() , tabRect(tab).y() + tabRect(tab).height());
+    QPoint pos(tabRect(tab).x() , tabRect(tab).y() + tabRect(tab).height());
     m_previewPopup.data()->show(mapToGlobal(pos));
 }
 
@@ -192,17 +192,17 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         MainView *view = qobject_cast<MainView *>(parent());
         QTimer::singleShot(200, view->addTabButton(), SLOT(hide()));
     }
-        
+
     if (ReKonfig::alwaysShowTabPreviews())
     {
         //Find the tab under the mouse
         int i = 0;
         int tabIndex = -1;
-        while (    i<count() 
-                && tabIndex == -1 
+        while (i < count()
+                && tabIndex == -1
               )
         {
-            if (tabRect(i).contains(event->pos())) 
+            if (tabRect(i).contains(event->pos()))
             {
                 tabIndex = i;
             }
@@ -210,10 +210,10 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         }
 
         // if found and not the current tab then show tab preview
-        if (    tabIndex != -1 
-             && tabIndex != currentIndex() 
-             && m_currentTabPreview != tabIndex 
-             && event->buttons() == Qt::NoButton
+        if (tabIndex != -1
+                && tabIndex != currentIndex()
+                && m_currentTabPreview != tabIndex
+                && event->buttons() == Qt::NoButton
            )
         {
             showTabPreview(tabIndex);
@@ -223,7 +223,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         // if current tab or not found then hide previous tab preview
         if (tabIndex == currentIndex() || tabIndex == -1)
         {
-            if ( !m_previewPopup.isNull() )
+            if (!m_previewPopup.isNull())
             {
                 m_previewPopup.data()->hide();
             }
@@ -240,7 +240,7 @@ void TabBar::leaveEvent(QEvent *event)
     if (ReKonfig::alwaysShowTabPreviews())
     {
         //if leave tabwidget then hide previous tab preview
-        if ( !m_previewPopup.isNull() )
+        if (!m_previewPopup.isNull())
         {
             m_previewPopup.data()->hide();
         }
@@ -255,7 +255,7 @@ void TabBar::mousePressEvent(QMouseEvent *event)
 {
     if (ReKonfig::alwaysShowTabPreviews())
     {
-        if ( !m_previewPopup.isNull() )
+        if (!m_previewPopup.isNull())
         {
             m_previewPopup.data()->hide();
         }
@@ -265,7 +265,7 @@ void TabBar::mousePressEvent(QMouseEvent *event)
     // just close tab on middle mouse click
     if (event->button() == Qt::MidButton)
         return;
-    
+
     KTabBar::mousePressEvent(event);
 }
 
@@ -278,16 +278,16 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
     menu.addAction(mainWindow->actionByName(QLatin1String("new_tab")));
-    menu.addAction( mainWindow->actionByName("clone_tab") );
+    menu.addAction(mainWindow->actionByName("clone_tab"));
 
-    if(count() > 1)
-        menu.addAction( mainWindow->actionByName("detach_tab") );
+    if (count() > 1)
+        menu.addAction(mainWindow->actionByName("detach_tab"));
     menu.addSeparator();
-    menu.addAction( mainWindow->actionByName("close_tab") );
-    menu.addAction( mainWindow->actionByName("close_other_tabs") );
+    menu.addAction(mainWindow->actionByName("close_tab"));
+    menu.addAction(mainWindow->actionByName("close_other_tabs"));
     menu.addSeparator();
-    menu.addAction( mainWindow->actionByName("reload_tab") );
-    menu.addAction( mainWindow->actionByName("reload_all_tabs") );
+    menu.addAction(mainWindow->actionByName("reload_tab"));
+    menu.addAction(mainWindow->actionByName("reload_all_tabs"));
 
     menu.exec(pos);
 }
@@ -300,7 +300,7 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
 
     menu.addAction(mainWindow->actionByName(QLatin1String("new_tab")));
     menu.addSeparator();
-    menu.addAction( mainWindow->actionByName("reload_all_tabs") );
+    menu.addAction(mainWindow->actionByName("reload_all_tabs"));
 
     menu.exec(pos);
 }
@@ -310,7 +310,7 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
 {
     MainView *mv = qobject_cast<MainView *>(parent());
     QTimer::singleShot(200, mv->addTabButton(), SLOT(show()));
-    
+
     KTabBar::mouseReleaseEvent(event);
 }
 
@@ -320,7 +320,7 @@ void TabBar::tabRemoved(int index)
     Q_UNUSED(index)
     if (ReKonfig::alwaysShowTabPreviews())
     {
-        if ( !m_previewPopup.isNull() )
+        if (!m_previewPopup.isNull())
         {
             m_previewPopup.data()->hide();
         }

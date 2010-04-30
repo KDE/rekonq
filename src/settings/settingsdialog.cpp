@@ -11,9 +11,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -61,7 +61,7 @@
 class Private
 {
 private:
-    
+
     Ui::general generalUi;
     Ui::tabs tabsUi;
     Ui::fonts fontsUi;
@@ -69,11 +69,11 @@ private:
 
     AdBlockWidget *adBlockWidg;
     NetworkWidget *networkWidg;
-    
+
     KCModuleProxy *ebrowsingModule;
 
     KShortcutsEditor *shortcutsEditor;
-    
+
     Private(SettingsDialog *parent);
 
     friend class SettingsDialog;
@@ -102,7 +102,7 @@ Private::Private(SettingsDialog *parent)
     widget->layout()->setMargin(0);
     pageItem = parent->addPage(widget , i18n("Fonts"));
     pageItem->setIcon(KIcon("preferences-desktop-font"));
-        
+
     widget = new QWidget;
     webkitUi.setupUi(widget);
     widget->layout()->setMargin(0);
@@ -114,25 +114,25 @@ Private::Private(SettingsDialog *parent)
     networkWidg = new NetworkWidget(parent);
     networkWidg->layout()->setMargin(0);
     pageItem = parent->addPage(networkWidg , i18n("Network"));
-    pageItem->setIcon( KIcon("preferences-system-network") );
-    
+    pageItem->setIcon(KIcon("preferences-system-network"));
+
     adBlockWidg = new AdBlockWidget(parent);
     adBlockWidg->layout()->setMargin(0);
     pageItem = parent->addPage(adBlockWidg , i18n("Ad Block"));
-    pageItem->setIcon( KIcon("preferences-web-browser-adblock") );
-    
+    pageItem->setIcon(KIcon("preferences-web-browser-adblock"));
+
     shortcutsEditor = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(), parent);
     pageItem = parent->addPage(shortcutsEditor , i18n("Shortcuts"));
     pageItem->setIcon(KIcon("configure-shortcuts"));
 
     KCModuleInfo ebrowsingInfo("ebrowsing.desktop");
-    ebrowsingModule = new KCModuleProxy(ebrowsingInfo,parent);
+    ebrowsingModule = new KCModuleProxy(ebrowsingInfo, parent);
     pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
 
     // WARNING remember wheh changing here that the smallest netbooks
     // have a 1024x576 resolution. So DON'T bother that limits!!
-    parent->setMinimumSize(700,525);    
+    parent->setMinimumSize(700, 525);
 }
 
 
@@ -150,18 +150,18 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     readConfig();
 
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
-    
+
     // update buttons
     connect(d->adBlockWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->networkWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    
+
     connect(d->shortcutsEditor, SIGNAL(keyChange()),   this, SLOT(updateButtons()));
-    
+
     // save settings
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
     connect(this, SIGNAL(okClicked()),    this, SLOT(saveSettings()));
-        
+
     setWebSettingsToolTips();
 }
 
@@ -175,7 +175,7 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::setWebSettingsToolTips()
 {
     d->webkitUi.kcfg_autoLoadImages->setToolTip(i18n("Specifies whether images are automatically loaded in web pages."));
-    d->webkitUi.kcfg_dnsPrefetch->setToolTip( i18n("Specifies whether WebKit will try to prefetch DNS entries to speed up browsing.") );
+    d->webkitUi.kcfg_dnsPrefetch->setToolTip(i18n("Specifies whether WebKit will try to prefetch DNS entries to speed up browsing."));
     d->webkitUi.kcfg_javascriptEnabled->setToolTip(i18n("Enables the execution of JavaScript programs."));
     d->webkitUi.kcfg_javaEnabled->setToolTip(i18n("Enables support for Java applets."));
     d->webkitUi.kcfg_pluginsEnabled->setToolTip(i18n("Enables support for plugins in web pages."));
@@ -203,7 +203,7 @@ void SettingsDialog::saveSettings()
 {
     if (!hasChanged())
         return;
-    
+
     ReKonfig::self()->writeConfig();
     d->ebrowsingModule->save();
     d->shortcutsEditor->save();
@@ -212,8 +212,8 @@ void SettingsDialog::saveSettings()
     SearchEngine::loadDefaultWS();
     SearchEngine::loadDelimiter();
     SearchEngine::loadFavorites();
-    
-    
+
+
     updateButtons();
     emit settingsChanged("ReKonfig");
 }
@@ -221,12 +221,12 @@ void SettingsDialog::saveSettings()
 
 bool SettingsDialog::hasChanged()
 {
-    return KConfigDialog::hasChanged() 
-            || d->adBlockWidg->changed()
-            || d->networkWidg->changed()
-            || d->ebrowsingModule->changed()
-            || d->shortcutsEditor->isModified();
-            ;
+    return KConfigDialog::hasChanged()
+           || d->adBlockWidg->changed()
+           || d->networkWidg->changed()
+           || d->ebrowsingModule->changed()
+           || d->shortcutsEditor->isModified();
+    ;
 }
 
 

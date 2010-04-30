@@ -11,9 +11,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -40,8 +40,8 @@
 
 
 WebPluginFactory::WebPluginFactory(QObject *parent)
-    : KWebPluginFactory(parent)
-    , _loadClickToFlash(false)
+        : KWebPluginFactory(parent)
+        , _loadClickToFlash(false)
 {
     connect(this, SIGNAL(signalLoadClickToFlash(bool)), SLOT(setLoadClickToFlash(bool)));
 }
@@ -59,18 +59,18 @@ QObject *WebPluginFactory::create(const QString &mimeType,
                                   const QStringList &argumentValues) const
 {
     kDebug() << "loading mimeType: " << mimeType;
-    
-    switch( ReKonfig::pluginsEnabled() )
+
+    switch (ReKonfig::pluginsEnabled())
     {
     case 0:
         kDebug() << "No plugins found for" << mimeType << ". Falling back to KDEWebKit ones...";
         return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
-        
+
     case 1:
-        if( mimeType != QString("application/x-shockwave-flash") )
+        if (mimeType != QString("application/x-shockwave-flash"))
             break;
-        
-        if( _loadClickToFlash )
+
+        if (_loadClickToFlash)
         {
             emit signalLoadClickToFlash(false);
             return 0; //KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
@@ -82,14 +82,14 @@ QObject *WebPluginFactory::create(const QString &mimeType,
             return ctf;
         }
         break;
-        
+
     case 2:
         return 0;
-        
+
     default:
         kDebug() << "oh oh.. this should NEVER happen..";
         break;
     }
-    
+
     return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
 }

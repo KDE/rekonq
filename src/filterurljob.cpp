@@ -10,9 +10,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -33,9 +33,9 @@
 
 
 FilterUrlJob::FilterUrlJob(WebView *view, const QString &urlString, QObject *parent)
-    : Job(parent)
-    , _view(view)
-    , _urlString(urlString)
+        : Job(parent)
+        , _view(view)
+        , _urlString(urlString)
 {
 }
 
@@ -59,11 +59,11 @@ void FilterUrlJob::run()
     KUriFilterData data(_urlString);
     data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
 
-    if(KUriFilter::self()->filterUri(data) && data.uriType() != KUriFilterData::Error)
+    if (KUriFilter::self()->filterUri(data) && data.uriType() != KUriFilterData::Error)
     {
         QString tempUrlString = data.uri().url();
         _url = KUrl(tempUrlString);
     }
     else
-        _url = QUrl::fromUserInput( _urlString );
+        _url = QUrl::fromUserInput(_urlString);
 }

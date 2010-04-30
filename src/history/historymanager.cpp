@@ -12,9 +12,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -63,17 +63,17 @@ static const unsigned int HISTORY_VERSION = 23;
 
 
 HistoryManager::HistoryManager(QObject *parent)
-    : QWebHistoryInterface(parent)
-    , m_saveTimer(new AutoSaver(this))
-    , m_historyLimit(30)
-    , m_historyModel(0)
-    , m_historyFilterModel(0)
-    , m_historyTreeModel(0)
-    , m_completion(new KCompletion)
+        : QWebHistoryInterface(parent)
+        , m_saveTimer(new AutoSaver(this))
+        , m_historyLimit(30)
+        , m_historyModel(0)
+        , m_historyFilterModel(0)
+        , m_historyTreeModel(0)
+        , m_completion(new KCompletion)
 {
     // take care of the completion object
-    m_completion->setOrder( KCompletion::Weighted );
-    
+    m_completion->setOrder(KCompletion::Weighted);
+
     m_expiredTimer.setSingleShot(true);
     connect(&m_expiredTimer, SIGNAL(timeout()), this, SLOT(checkForExpired()));
     connect(this, SIGNAL(entryAdded(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
@@ -112,11 +112,11 @@ bool HistoryManager::historyContains(const QString &url) const
 void HistoryManager::addHistoryEntry(const QString &url)
 {
     QUrl cleanUrl(url);
-    
+
     // don't store about: urls (home page related)
-    if(cleanUrl.scheme() == QString("about"))
+    if (cleanUrl.scheme() == QString("about"))
         return;
-    
+
     cleanUrl.setPassword(QString());
     cleanUrl.setHost(cleanUrl.host().toLower());
     HistoryItem item(cleanUrl.toString(), QDateTime::currentDateTime());
@@ -212,7 +212,7 @@ void HistoryManager::addHistoryEntry(const HistoryItem &item)
 
     m_history.prepend(item);
     emit entryAdded(item);
-    
+
     if (m_history.count() == 1)
         checkForExpired();
 }
@@ -254,7 +254,7 @@ void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
             break;
         }
     }
-    
+
     // Remove item from completion object
     QString _url = url.path();
     _url.remove(QRegExp("^http://|/$"));
@@ -457,10 +457,10 @@ void HistoryManager::addDownload(const QString &srcUrl, const QString &destUrl)
 {
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-      return;
+        return;
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
     QFile downloadFile(downloadFilePath);
-    if ( !downloadFile.open(QFile::WriteOnly | QFile::Append) )
+    if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
     {
         kDebug() << "azz...";
         return;
@@ -476,17 +476,17 @@ void HistoryManager::addDownload(const QString &srcUrl, const QString &destUrl)
 DownloadList HistoryManager::downloads()
 {
     DownloadList list;
-    
+
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
     QFile downloadFile(downloadFilePath);
-    if ( !downloadFile.open(QFile::ReadOnly) )
+    if (!downloadFile.open(QFile::ReadOnly))
     {
         kDebug() << "azz...";
         return list;
     }
-    
+
     QDataStream in(&downloadFile);
-    while(!in.atEnd())
+    while (!in.atEnd())
     {
         QString srcUrl;
         in >> srcUrl;
@@ -514,15 +514,15 @@ QString HistoryManager::titleForHistoryUrl(QString url)
     QString title = "";
 
     int i = 0;
-    while (i< history().count() && title.isEmpty())
+    while (i < history().count() && title.isEmpty())
     {
         if (history().at(i).url == url)
         {
-             title = history().at(i).title;
+            title = history().at(i).title;
         }
         i++;
     }
-    
+
     if (title.isEmpty())
     {
         title = url;

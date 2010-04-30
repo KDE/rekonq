@@ -33,11 +33,11 @@
 class WebViewTest : public QObject
 {
     Q_OBJECT
-    
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
 
 private:
@@ -60,12 +60,12 @@ void WebViewTest::cleanupTestCase()
 {
     delete tab;
 }
-    
-    
-// -------------------------------------------
 
 
 // -------------------------------------------
 
-QTEST_KDEMAIN(WebViewTest,GUI)
+
+// -------------------------------------------
+
+QTEST_KDEMAIN(WebViewTest, GUI)
 #include "webview_test.moc"

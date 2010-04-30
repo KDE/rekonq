@@ -15,9 +15,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -104,7 +104,7 @@ static bool domainSchemeMatch(const QUrl& u1, const QUrl& u2)
 
 
 WebPage::WebPage(QWidget *parent)
-    : KWebPage(parent, KWalletIntegration)
+        : KWebPage(parent, KWalletIntegration)
 {
     // ----- handling unsupported content...
     setForwardUnsupportedContent(true);
@@ -113,24 +113,24 @@ WebPage::WebPage(QWidget *parent)
     // ----- rekonq Network Manager
     NetworkAccessManager *manager = new NetworkAccessManager(this);
     manager->setCache(0);   // disable QtWebKit cache to just use KIO one..
-    
+
     // set cookieJar window ID..
     if (parent && parent->window())
         manager->setCookieJarWindowId(parent->window()->winId());
 
     setNetworkAccessManager(manager);
-    
+
     // activate ssl warnings
     setSessionMetaData("ssl_activate_warnings", "TRUE");
-    
+
     // Override the 'Accept' header sent by QtWebKit which favors XML over HTML!
     // Setting the accept meta-data to null will force kio_http to use its own
     // default settings for this header.
     setSessionMetaData(QL1S("accept"), QString());
-    
+
     // ----- Web Plugin Factory
     setPluginFactory(new WebPluginFactory(this));
-    
+
     // ----- last stuffs
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
@@ -149,59 +149,59 @@ WebPage::~WebPage()
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
     _loadingUrl = request.url();
-    
+
     KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
     KIO::MetaData metaData = manager->requestMetaData();
-    
+
     // Get the SSL information sent, if any...
-    if( metaData.contains(QL1S("ssl_in_use")) ) 
+    if (metaData.contains(QL1S("ssl_in_use")))
     {
         WebSslInfo info;
         info.fromMetaData(metaData.toVariant());
         info.setUrl(request.url());
         _sslInfo = info;
     }
-    
-    if(frame)
+
+    if (frame)
     {
-        if ( _protHandler.preHandling(request, frame) )
+        if (_protHandler.preHandling(request, frame))
         {
             return false;
         }
-               
-        switch (type) 
+
+        switch (type)
         {
         case QWebPage::NavigationTypeLinkClicked:
-            if (_sslInfo.isValid() )
+            if (_sslInfo.isValid())
             {
                 setRequestMetaData("ssl_was_in_use", "TRUE");
             }
             break;
-            
+
         case QWebPage::NavigationTypeFormSubmitted:
             break;
-            
+
         case QWebPage::NavigationTypeFormResubmitted:
-            if( KMessageBox::warningContinueCancel(view(), 
-                                                    i18n("Are you sure you want to send your data again?"), 
-                                                    i18n("Resend form data") 
+            if (KMessageBox::warningContinueCancel(view(),
+                                                   i18n("Are you sure you want to send your data again?"),
+                                                   i18n("Resend form data")
                                                   )
-                == KMessageBox::Cancel)
+                    == KMessageBox::Cancel)
             {
-                return false;                
+                return false;
             }
             break;
-            
+
         case QWebPage::NavigationTypeReload:
         case QWebPage::NavigationTypeBackOrForward:
         case QWebPage::NavigationTypeOther:
             break;
-            
+
         default:
             break;
-        }    
-    
-        if(frame == mainFrame())
+        }
+
+        if (frame == mainFrame())
         {
             setRequestMetaData("main_frame_request", "TRUE");
         }
@@ -223,7 +223,7 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
         kDebug() << "Modal Dialog";
 
     WebTab *w = 0;
-    if(ReKonfig::openTabNoWindow())
+    if (ReKonfig::openTabNoWindow())
     {
         w = Application::instance()->mainWindow()->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
     }
@@ -239,52 +239,52 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     // NOTE
     // This is probably needed just in ONE stupid case..
-    if( _protHandler.postHandling(reply->request(), mainFrame()) )
+    if (_protHandler.postHandling(reply->request(), mainFrame()))
         return;
-    
+
     if (reply->error() == QNetworkReply::NoError)
     {
-        const KUrl url( reply->url() );
+        const KUrl url(reply->url());
 
         QString mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
         KService::Ptr appService = KMimeTypeTrader::self()->preferredService(mimeType);
 
         bool isLocal = url.isLocalFile();
-        
-        if( appService.isNull() ) // no service can handle this. We can just download it..
+
+        if (appService.isNull())  // no service can handle this. We can just download it..
         {
             kDebug() << "no service can handle this. We can just download it..";
-            
-            isLocal 
-                ? KMessageBox::sorry(view(), i18n("No service can handle this :(") ) 
-                : downloadRequest( reply->request() );
-            
+
+            isLocal
+            ? KMessageBox::sorry(view(), i18n("No service can handle this :("))
+            : downloadRequest(reply->request());
+
             return;
         }
 
-        if(!isLocal)
+        if (!isLocal)
         {
-        
+
             KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), url, mimeType);
-            switch ( dlg.askEmbedOrSave() )
+            switch (dlg.askEmbedOrSave())
             {
-                case KParts::BrowserOpenOrSaveQuestion::Save:
-                    kDebug() << "service handling: download!";
-                    downloadRequest( reply->request() );
-                    return;               
-                    
-                case KParts::BrowserOpenOrSaveQuestion::Cancel:
-                    return;               
-                    
-                default: // non extant case
-                    break;
+            case KParts::BrowserOpenOrSaveQuestion::Save:
+                kDebug() << "service handling: download!";
+                downloadRequest(reply->request());
+                return;
+
+            case KParts::BrowserOpenOrSaveQuestion::Cancel:
+                return;
+
+            default: // non extant case
+                break;
             }
         }
-        
+
         // case KParts::BrowserRun::Embed
-        
-        KService::List partServices = KMimeTypeTrader::self()->query( mimeType, QL1S("KParts/ReadOnlyPart") );
-        if(partServices.count() > 0)
+
+        KService::List partServices = KMimeTypeTrader::self()->query(mimeType, QL1S("KParts/ReadOnlyPart"));
+        if (partServices.count() > 0)
         {
             // A part can handle this. Embed it!
             QString html;
@@ -296,20 +296,20 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             html += "<style type=\"text/css\">";
             html += "* { border: 0; padding: 0; margin: 0; }";
             html += "</style>";
-            html += "</head>";    
+            html += "</head>";
             html += "<body>";
             html += "<embed src=\"" + url.pathOrUrl() + "\" width=\"100%\" height=\"100%\" />";
             html += "</body>";
             html += "</html>";
-            
+
             mainFrame()->setHtml(html, url);
         }
         else
         {
             // No parts, just app services. Load it!
-            KRun::run(*appService, url, 0); 
+            KRun::run(*appService, url, 0);
         }
-        
+
         return;
     }
 }
@@ -318,15 +318,15 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 void WebPage::loadFinished(bool ok)
 {
     Q_UNUSED(ok);
-    
+
     Application::adblockManager()->applyHidingRules(this);
-    
+
     QStringList list = ReKonfig::walletBlackList();
-    
+
     // KWallet Integration
-    if ( wallet() 
-         && !list.contains( mainFrame()->url().toString() ) 
-       ) 
+    if (wallet()
+            && !list.contains(mainFrame()->url().toString())
+       )
     {
         wallet()->fillFormData(mainFrame());
     }
@@ -339,23 +339,23 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
-    
-    if ( isMainFrameRequest 
-         && _sslInfo.isValid()
-         && !domainSchemeMatch(reply->url(), _sslInfo.url())
-       ) 
+
+    if (isMainFrameRequest
+            && _sslInfo.isValid()
+            && !domainSchemeMatch(reply->url(), _sslInfo.url())
+       )
     {
         //kDebug() << "Reseting cached SSL info...";
         _sslInfo = WebSslInfo();
     }
-            
-    // NOTE: These are not all networkreply errors, 
+
+    // NOTE: These are not all networkreply errors,
     // but just that supported directly by KIO
-    switch( reply->error() )
+    switch (reply->error())
     {
-        
+
     case QNetworkReply::NoError:                             // no error. Simple :)
-        if ( isMainFrameRequest && !_sslInfo.isValid() ) 
+        if (isMainFrameRequest && !_sslInfo.isValid())
         {
             // Obtain and set the SSL information if any...
             _sslInfo.fromMetaData(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)));
@@ -368,9 +368,9 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         break;
 
     case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
-        if( _protHandler.postHandling(reply->request(), mainFrame()) )
+        if (_protHandler.postHandling(reply->request(), mainFrame()))
             break;
-    
+
     case QNetworkReply::ConnectionRefusedError:              // remote server refused connection
     case QNetworkReply::HostNotFoundError:                   // invalid hostname
     case QNetworkReply::TimeoutError:                        // connection time out
@@ -381,8 +381,8 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     case QNetworkReply::ProtocolUnknownError:                // Unknown protocol
     case QNetworkReply::ProtocolInvalidOperationError:       // requested operation is invalid for this protocol
 
-        if(reply->url() == _loadingUrl)
-            mainFrame()->setHtml( errorPage(reply), reply->url() );
+        if (reply->url() == _loadingUrl)
+            mainFrame()->setHtml(errorPage(reply), reply->url());
         break;
 
     default:
@@ -405,11 +405,11 @@ QString WebPage::errorPage(QNetworkReply *reply)
         return QString("Couldn't open the rekonqinfo.html file");
     }
 
-    QString title = i18n("Error loading: %1", reply->url().path()); 
-    QString urlString = reply->url().toString( QUrl::RemoveUserInfo | QUrl::RemoveQuery );
-    
-    QString iconPath = QString("file://") + KIconLoader::global()->iconPath( "dialog-warning" , KIconLoader::Small );
-    iconPath.replace( QL1S("16"), QL1S("128") );
+    QString title = i18n("Error loading: %1", reply->url().path());
+    QString urlString = reply->url().toString(QUrl::RemoveUserInfo | QUrl::RemoveQuery);
+
+    QString iconPath = QString("file://") + KIconLoader::global()->iconPath("dialog-warning" , KIconLoader::Small);
+    iconPath.replace(QL1S("16"), QL1S("128"));
 
     QString msg;
     msg += "<table>";
@@ -417,9 +417,9 @@ QString WebPage::errorPage(QNetworkReply *reply)
     msg += "<img src=\"" + iconPath + "\" />";
     msg += "</td><td>";
     msg += "<h1>" + reply->errorString() + "</h1>";
-    msg += "<h2>" + i18nc("%1=an URL, e.g.'kde.org'", "When connecting to: <b>%1</b>", urlString ) + "</h2>";
+    msg += "<h2>" + i18nc("%1=an URL, e.g.'kde.org'", "When connecting to: <b>%1</b>", urlString) + "</h2>";
     msg += "</td></tr></table>";
-    
+
     msg += "<ul><li>" + i18n("Check the address for errors such as <b>ww</b>.kde.org instead of <b>www</b>.kde.org");
     msg += "</li><li>" + i18n("If the address is correct, try to check the network connection.") + "</li><li>" ;
     msg += i18n("If your computer or network is protected by a firewall or proxy, make sure that rekonq is permitted to access the network.");
@@ -427,11 +427,11 @@ QString WebPage::errorPage(QNetworkReply *reply)
     msg += "</li></ul><br/><br/>";
     msg += "<input type=\"button\" id=\"reloadButton\" onClick=\"document.location.href='" + urlString + "';\" value=\"";
     msg += i18n("Try Again") + "\" />";
-    
+
     QString html = QString(QLatin1String(file.readAll()))
-                            .arg(title)
-                            .arg(msg)
-                            ;
+                   .arg(title)
+                   .arg(msg)
+                   ;
     return html;
 }
 
@@ -442,99 +442,99 @@ QString WebPage::errorPage(QNetworkReply *reply)
 // feel free to let us know about :)
 void WebPage::downloadRequest(const QNetworkRequest &request)
 {
-    KUrl destUrl;                                                                                                                         
-    KUrl srcUrl (request.url());                                                                                                          
-    int result = KIO::R_OVERWRITE;                                                                                                        
-                                                                                                                                          
-    do 
-    {                                                                                                                                  
-        destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), view());                                                     
-                                                                                                                                          
-        if (destUrl.isLocalFile()) 
-        {                                                                                                      
-            QFileInfo finfo( destUrl.toLocalFile() );                                                                                      
-            if ( finfo.exists() ) 
-            {                                                                                                         
-                QDateTime now = QDateTime::currentDateTime();                                                                             
-                QPointer<KIO::RenameDialog> dlg = new KIO::RenameDialog( view(), 
-                                                                         i18n("Overwrite File?"), 
-                                                                         srcUrl, 
-                                                                         destUrl,                                                  
-                                                                         KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),                                            
-                                                                         -1, 
-                                                                         finfo.size(),                                                                                  
-                                                                         now.toTime_t(), 
-                                                                         finfo.created().toTime_t(),                                                        
-                                                                         now.toTime_t(), 
-                                                                         finfo.lastModified().toTime_t()
-                                                                        );                                                  
+    KUrl destUrl;
+    KUrl srcUrl(request.url());
+    int result = KIO::R_OVERWRITE;
+
+    do
+    {
+        destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), view());
+
+        if (destUrl.isLocalFile())
+        {
+            QFileInfo finfo(destUrl.toLocalFile());
+            if (finfo.exists())
+            {
+                QDateTime now = QDateTime::currentDateTime();
+                QPointer<KIO::RenameDialog> dlg = new KIO::RenameDialog(view(),
+                        i18n("Overwrite File?"),
+                        srcUrl,
+                        destUrl,
+                        KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),
+                        -1,
+                        finfo.size(),
+                        now.toTime_t(),
+                        finfo.created().toTime_t(),
+                        now.toTime_t(),
+                        finfo.lastModified().toTime_t()
+                                                                       );
                 result = dlg->exec();
-                delete dlg;                                                                                                      
-            }                                                                                                                             
-        }                                                                                                                                 
-    } 
-    while ( result == KIO::R_CANCEL && destUrl.isValid() );                                                                               
-    
-    if ( result == KIO::R_OVERWRITE && destUrl.isValid() ) 
-    {                                   
+                delete dlg;
+            }
+        }
+    }
+    while (result == KIO::R_CANCEL && destUrl.isValid());
+
+    if (result == KIO::R_OVERWRITE && destUrl.isValid())
+    {
         // now store data
         // now, destUrl, srcUrl
-        Application::historyManager()->addDownload( srcUrl.pathOrUrl() , destUrl.pathOrUrl() );
-        
-        if ( ReKonfig::kgetDownload() )
+        Application::historyManager()->addDownload(srcUrl.pathOrUrl() , destUrl.pathOrUrl());
+
+        if (ReKonfig::kgetDownload())
         {
             //KGet integration:
-            if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
+            if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
             {
                 KToolInvocation::kdeinitExecWait("kget");
             }
             QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-            if( kget.isValid() )
+            if (kget.isValid())
             {
                 kget.call("addTransfer", srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
                 return;
             }
         }
-        
+
         // else, use KIO or fallback to it
-        KIO::Job *job = KIO::file_copy(srcUrl, destUrl, -1, KIO::Overwrite);                                                              
-        QVariant attr = request.attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData));                         
-        if (attr.isValid() && attr.type() == QVariant::Map)                                                                               
-            job->setMetaData(KIO::MetaData(attr.toMap()));                                                                                
-                                                                                                                                        
-        job->addMetaData(QL1S("MaxCacheSize"), QL1S("0")); // Don't store in http cache.                                                    
-        job->addMetaData(QL1S("cache"), QL1S("cache"));   // Use entry from cache if available.                                               
+        KIO::Job *job = KIO::file_copy(srcUrl, destUrl, -1, KIO::Overwrite);
+        QVariant attr = request.attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData));
+        if (attr.isValid() && attr.type() == QVariant::Map)
+            job->setMetaData(KIO::MetaData(attr.toMap()));
+
+        job->addMetaData(QL1S("MaxCacheSize"), QL1S("0")); // Don't store in http cache.
+        job->addMetaData(QL1S("cache"), QL1S("cache"));   // Use entry from cache if available.
         job->uiDelegate()->setAutoErrorHandlingEnabled(true);
-    } 
+    }
 }
 
 
 void WebPage::downloadAllContentsWithKGet()
 {
     QSet<QString> contents;
-    KUrl baseUrl( currentFrame()->url() );
+    KUrl baseUrl(currentFrame()->url());
     KUrl relativeUrl;
 
     QWebElementCollection images = mainFrame()->documentElement().findAll("img");
     foreach(QWebElement img, images)
     {
-        relativeUrl.setEncodedUrl(img.attribute("src").toUtf8(),KUrl::TolerantMode); 
+        relativeUrl.setEncodedUrl(img.attribute("src").toUtf8(), KUrl::TolerantMode);
         contents << baseUrl.resolved(relativeUrl).toString();
     }
-    
+
     QWebElementCollection links = mainFrame()->documentElement().findAll("a");
     foreach(QWebElement link, links)
     {
-        relativeUrl.setEncodedUrl(link.attribute("href").toUtf8(),KUrl::TolerantMode); 
+        relativeUrl.setEncodedUrl(link.attribute("href").toUtf8(), KUrl::TolerantMode);
         contents << baseUrl.resolved(relativeUrl).toString();
     }
-    
-    if(!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
+
+    if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
     {
         KToolInvocation::kdeinitExecWait("kget");
     }
     QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-    if( kget.isValid() )
+    if (kget.isValid())
     {
         kget.call("importLinks", QVariant(contents.toList()));
     }
@@ -543,37 +543,37 @@ void WebPage::downloadAllContentsWithKGet()
 
 void WebPage::showSSLInfo()
 {
-    if (_sslInfo.isValid()) 
+    if (_sslInfo.isValid())
     {
-        QPointer<KSslInfoDialog> dlg = new KSslInfoDialog ( view() );
-        dlg->setSslInfo( _sslInfo.certificateChain(),
-                         _sslInfo.peerAddress().toString(),
-                         mainFrame()->url().host(),
-                         _sslInfo.protocol(),
-                         _sslInfo.ciphers(),
-                         _sslInfo.usedChiperBits(),
-                         _sslInfo.supportedChiperBits(),
-                         KSslInfoDialog::errorsFromString( _sslInfo.certificateErrors() )
-                        );
+        QPointer<KSslInfoDialog> dlg = new KSslInfoDialog(view());
+        dlg->setSslInfo(_sslInfo.certificateChain(),
+                        _sslInfo.peerAddress().toString(),
+                        mainFrame()->url().host(),
+                        _sslInfo.protocol(),
+                        _sslInfo.ciphers(),
+                        _sslInfo.usedChiperBits(),
+                        _sslInfo.supportedChiperBits(),
+                        KSslInfoDialog::errorsFromString(_sslInfo.certificateErrors())
+                       );
 
         dlg->exec();
         delete dlg;
-        
+
         return;
     }
-    
-    if( mainFrame()->url().scheme() == QL1S("https") )
+
+    if (mainFrame()->url().scheme() == QL1S("https"))
     {
-        KMessageBox::error( view(), 
-                              i18n("The SSL information for this site appears to be corrupt."), 
-                              i18nc("Secure Sockets Layer", "SSL")
-                            );
+        KMessageBox::error(view(),
+                           i18n("The SSL information for this site appears to be corrupt."),
+                           i18nc("Secure Sockets Layer", "SSL")
+                          );
     }
     else
     {
-        KMessageBox::information( view(), 
-                                  i18n("This site doesn't contain SSL information."), 
-                                  i18nc("Secure Sockets Layer", "SSL")
+        KMessageBox::information(view(),
+                                 i18n("This site doesn't contain SSL information."),
+                                 i18nc("Secure Sockets Layer", "SSL")
                                 );
     }
 }
@@ -583,9 +583,9 @@ void WebPage::showSSLInfo()
 
 void WebPage::updateImage(bool ok)
 {
-    if(ok)
+    if (ok)
     {
-        NewTabPage p( mainFrame() );
+        NewTabPage p(mainFrame());
         p.snapFinished();
     }
 }

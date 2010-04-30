@@ -13,9 +13,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -76,11 +76,11 @@ class REKONQ_TESTS_EXPORT UrlBar : public KLineEdit
 public:
 
     enum icon
-    { 
+    {
         KGet    = 0x00000001,
         RSS     = 0x00000010,
         SSL     = 0x00000100,
-    };   
+    };
 
     explicit UrlBar(QWidget *parent = 0);
     ~UrlBar();
@@ -105,9 +105,9 @@ protected:
     void resizeEvent(QResizeEvent *);
 
 private:
-    IconButton *addRightIcon(UrlBar::icon );
+    IconButton *addRightIcon(UrlBar::icon);
     void activateSuggestions(bool);
-    
+
     QWeakPointer<CompletionWidget> _box;
     WebTab *_tab;
     bool _privateMode;

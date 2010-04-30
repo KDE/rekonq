@@ -11,9 +11,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -52,8 +52,8 @@
 
 
 HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
-    : QDockWidget(title, parent, flags)
-    , m_treeView(new PanelTreeView(this))
+        : QDockWidget(title, parent, flags)
+        , m_treeView(new PanelTreeView(this))
 {
     setup();
     setShown(ReKonfig::showHistoryPanel());
@@ -71,7 +71,7 @@ void HistoryPanel::setup()
 {
     setObjectName("historyPanel");
     setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    
+
     QWidget *ui = new QWidget(this);
 
     m_treeView->setUniformRowHeights(true);
@@ -166,24 +166,24 @@ void HistoryPanel::contextMenuGroup(const QPoint &pos)
 void HistoryPanel::openAll()
 {
     QModelIndex index = m_treeView->currentIndex();
-    if(!index.isValid())
+    if (!index.isValid())
         return;
 
     QList<KUrl> allChild;
 
-    for(int i = 0; i < index.model()->rowCount(index); i++)
+    for (int i = 0; i < index.model()->rowCount(index); i++)
         allChild << qVariantValue<KUrl>(index.child(i, 0).data(Qt::UserRole));
 
-    if(allChild.length() > 8)
+    if (allChild.length() > 8)
     {
-        if( !(KMessageBox::warningContinueCancel(this, 
-                                                i18n("You are about to open %1 tabs.\nAre you sure  ?", 
-                                                QString::number(allChild.length()))) == KMessageBox::Continue)
-          )
+        if (!(KMessageBox::warningContinueCancel(this,
+                i18n("You are about to open %1 tabs.\nAre you sure  ?",
+                     QString::number(allChild.length()))) == KMessageBox::Continue)
+           )
             return;
     }
 
-    for(int i = 0; i < allChild.length(); i++)
+    for (int i = 0; i < allChild.length(); i++)
         emit openUrl(allChild.at(i).url(), Rekonq::SettingOpenTab);
 }
 

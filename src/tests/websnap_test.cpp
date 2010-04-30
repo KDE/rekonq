@@ -33,11 +33,11 @@ class WebSnapTest : public QObject
 {
     Q_OBJECT
 
-    
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
 
 private:
@@ -57,13 +57,13 @@ void WebSnapTest::cleanupTestCase()
 {
     delete snap;
 }
-    
-    
-// -------------------------------------------
-
 
 
 // -------------------------------------------
 
-QTEST_KDEMAIN(WebSnapTest,GUI)
+
+
+// -------------------------------------------
+
+QTEST_KDEMAIN(WebSnapTest, GUI)
 #include "websnap_test.moc"

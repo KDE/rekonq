@@ -34,11 +34,11 @@
 class WebPageTest : public QObject
 {
     Q_OBJECT
-    
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
     void manageNetworkErrors();
     void downloadRequest();
@@ -46,9 +46,9 @@ private slots:
 
     void createWindow();
     void acceptNavigationRequest();
-    
+
     void handleUnsupportedContent();
-    
+
     void loadFinished();
 
 private:
@@ -73,8 +73,8 @@ void WebPageTest::cleanupTestCase()
 {
     delete tab;
 }
-    
-    
+
+
 // -------------------------------------------
 
 
@@ -108,5 +108,5 @@ void WebPageTest::loadFinished()
 
 // -------------------------------------------
 
-QTEST_KDEMAIN(WebPageTest,GUI)
+QTEST_KDEMAIN(WebPageTest, GUI)
 #include "webpage_test.moc"

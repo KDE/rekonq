@@ -46,8 +46,8 @@
 
 
 SessionManager::SessionManager(QObject *parent)
-    : QObject(parent)
-    , m_safe(true)
+        : QObject(parent)
+        , m_safe(true)
 {
     m_sessionFilePath = KStandardDirs::locateLocal("appdata" , "session");
 }
@@ -60,7 +60,7 @@ SessionManager::~SessionManager()
 
 void SessionManager::saveSession()
 {
-    if(!m_safe)
+    if (!m_safe)
         return;
     m_safe = false;
     QFile sessionFile(m_sessionFilePath);
@@ -102,7 +102,7 @@ bool SessionManager::restoreSession()
     do
     {
         line = in.readLine();
-        if(line == QString("window"))
+        if (line == QString("window"))
         {
             line = in.readLine();
             kDebug() << "New Window line: " << line;
@@ -114,7 +114,7 @@ bool SessionManager::restoreSession()
             Application::instance()->loadUrl(line, Rekonq::NewCurrentTab);
         }
     }
-    while(!line.isEmpty());
-    
+    while (!line.isEmpty());
+
     return true;
 }

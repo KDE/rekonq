@@ -42,43 +42,43 @@
 #include <KMessageBox>
 
 
-RSSWidget::RSSWidget(QMap< KUrl, QString > map, QWidget *parent) 
+RSSWidget::RSSWidget(QMap< KUrl, QString > map, QWidget *parent)
         : QFrame(parent, Qt::Popup)
         , m_map(map)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setFixedWidth(250);
     setFrameStyle(Panel);
-    
+
     QFormLayout *layout = new QFormLayout(this);
     setLayout(layout);
-    
-    
+
+
     QLabel *agregator = new QLabel(this);
     agregator->setText(i18n("Aggregator:"));
-    
+
     m_agregators = new KComboBox(this);
     m_agregators->addItem(KIcon("application-rss+xml"), QString("Akregator"));
     m_agregators->addItem(Application::icon(KUrl("http://google.com/reader")), i18n("Google Reader"));
-    
+
     layout->addRow(agregator, m_agregators);
-    
-    
+
+
     QLabel *feed = new QLabel(this);
     feed->setText(i18n("Feed:"));
-    
+
     m_feeds = new KComboBox(this);
     foreach(QString title, m_map)
-        m_feeds->addItem(title);
-    
+    m_feeds->addItem(title);
+
     layout->addRow(feed, m_feeds);
-    
-    
+
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
     buttonBox->button(QDialogButtonBox::Ok)->setText(i18n("Add Feed"));
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accepted()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
-    
+
     layout->addWidget(buttonBox);
 }
 
@@ -95,12 +95,12 @@ void RSSWidget::showAt(QPoint pos)
 void RSSWidget::accepted()
 {
     QString url = m_map.key(m_feeds->currentText()).toMimeDataString();
-    
-    if(m_agregators->currentIndex() == 0)
+
+    if (m_agregators->currentIndex() == 0)
         addWithAkregator(url);
     else
         addWithGoogleReader(url);
-    
+
     close();
 }
 
@@ -115,15 +115,15 @@ void RSSWidget::addWithGoogleReader(QString url)
 void RSSWidget::addWithAkregator(QString url)
 {
     // Akregator is running
-    if(QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.akregator"))
+    if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.akregator"))
     {
         QDBusInterface akregator("org.kde.akregator", "/Akregator", "org.kde.akregator.part");
         QDBusReply<void> reply = akregator.call("addFeedsToGroup", QStringList(url) , i18n("Imported Feeds"));
-        
-        if(!reply.isValid()) 
+
+        if (!reply.isValid())
         {
-            KMessageBox::error( 0, QString(i18n("Could not add stream to akregator, Please add it manually :")
-            + "<br /><br /> <a href=\"" + url + "\">" + url + "</a>"));
+            KMessageBox::error(0, QString(i18n("Could not add stream to akregator, Please add it manually :")
+                                          + "<br /><br /> <a href=\"" + url + "\">" + url + "</a>"));
         }
     }
     // Akregator is not running
@@ -132,12 +132,12 @@ void RSSWidget::addWithAkregator(QString url)
         KProcess proc;
         proc << "akregator" << "-g" << i18n("Imported Feeds");
         proc << "-a" << url;
-        if(proc.startDetached() == 0)
+        if (proc.startDetached() == 0)
         {
-            KMessageBox::error( 0, QString(i18n("There was an error. Please verify Akregator is installed on your system.")
-            + "<br /><br /> <a href=\"" + url + "\">" + url + "</a>"));
+            KMessageBox::error(0, QString(i18n("There was an error. Please verify Akregator is installed on your system.")
+                                          + "<br /><br /> <a href=\"" + url + "\">" + url + "</a>"));
         }
-        
+
     }
 }
 

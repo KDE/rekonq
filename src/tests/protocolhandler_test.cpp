@@ -33,18 +33,18 @@
 class ProtocolhandlerTest : public QObject
 {
     Q_OBJECT
-    
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
     void preHandling_data();
     void preHandling();
 
     void postHandling_data();
     void postHandling();
-    
+
 private:
     ProtocolHandler *handler;
 };
@@ -62,8 +62,8 @@ void ProtocolhandlerTest::cleanupTestCase()
 {
     delete handler;
 }
-    
-    
+
+
 // -------------------------------------------
 
 
@@ -71,7 +71,7 @@ void ProtocolhandlerTest::preHandling_data()
 {
     QTest::addColumn<QString>("urlString");
     QTest::addColumn<bool>("result");
-    
+
     QTest::newRow("mailto")     << "mailto:me@here.com"             << true  ;
     QTest::newRow("relative")   << "google.it"                      << false ;
     QTest::newRow("javascript") << "javascript:alertbox('hello')"   << true  ;
@@ -84,15 +84,15 @@ void ProtocolhandlerTest::preHandling_data()
 
 void ProtocolhandlerTest::preHandling()
 {
-    QFETCH( QString, urlString );
-    QFETCH( bool   , result    );
-    
+    QFETCH(QString, urlString);
+    QFETCH(bool   , result);
+
     QWebView *view = new QWebView;
     QWebFrame *frame = view->page()->mainFrame();
-    
-    QNetworkRequest request = QNetworkRequest( QUrl(urlString) );
 
-    QCOMPARE( handler->preHandling( request, frame ) , result );
+    QNetworkRequest request = QNetworkRequest(QUrl(urlString));
+
+    QCOMPARE(handler->preHandling(request, frame) , result);
 }
 
 
@@ -100,7 +100,7 @@ void ProtocolhandlerTest::postHandling_data()
 {
     QTest::addColumn<QString>("urlString");
     QTest::addColumn<bool>("result");
-    
+
     QTest::newRow("mailto")     << "mailto:me@here.com"             << true  ;
     QTest::newRow("relative")   << "google.it"                      << false ;
     QTest::newRow("javascript") << "javascript:alertbox('hello')"   << false ;
@@ -113,18 +113,18 @@ void ProtocolhandlerTest::postHandling_data()
 
 void ProtocolhandlerTest::postHandling()
 {
-    QFETCH( QString, urlString );
-    QFETCH( bool   , result    );
-    
+    QFETCH(QString, urlString);
+    QFETCH(bool   , result);
+
     QWebView *view = new QWebView;
     QWebFrame *frame = view->page()->mainFrame();
-    
-    QNetworkRequest request = QNetworkRequest( QUrl(urlString) );
 
-    QCOMPARE( handler->postHandling( request, frame ) , result );
+    QNetworkRequest request = QNetworkRequest(QUrl(urlString));
+
+    QCOMPARE(handler->postHandling(request, frame) , result);
 }
-    
+
 // -------------------------------------------
 
-QTEST_KDEMAIN(ProtocolhandlerTest,GUI)
+QTEST_KDEMAIN(ProtocolhandlerTest, GUI)
 #include "protocolhandler_test.moc"

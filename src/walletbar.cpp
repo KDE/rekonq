@@ -10,9 +10,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -43,8 +43,8 @@
 
 
 WalletBar::WalletBar(QWidget *parent)
-    : QWidget(parent)
-    , m_label( new QLabel(this) )
+        : QWidget(parent)
+        , m_label(new QLabel(this))
 {
     m_label->setWordWrap(true);
 
@@ -60,15 +60,15 @@ WalletBar::WalletBar(QWidget *parent)
     connect(rememberButton, SIGNAL(clicked()), this, SLOT(rememberData()));
     connect(neverHereButton, SIGNAL(clicked()), this, SLOT(neverRememberData()));
     connect(notNowButton, SIGNAL(clicked()), this, SLOT(notNowRememberData()));
-        
+
     // layout
     QGridLayout *layout = new QGridLayout(this);
-    layout->addWidget(closeButton,0,0);
-    layout->addWidget(m_label,0,1);
-    layout->addWidget(rememberButton,0,2);
-    layout->addWidget(neverHereButton,0,3);
-    layout->addWidget(notNowButton,0,4);
-    layout->setColumnStretch(1,100);
+    layout->addWidget(closeButton, 0, 0);
+    layout->addWidget(m_label, 0, 1);
+    layout->addWidget(rememberButton, 0, 2);
+    layout->addWidget(neverHereButton, 0, 3);
+    layout->addWidget(notNowButton, 0, 4);
+    layout->setColumnStretch(1, 100);
 
     setLayout(layout);
 }
@@ -89,17 +89,17 @@ void WalletBar::rememberData()
 void WalletBar::neverRememberData()
 {
     // add url to the blacklist
-    QStringList list = ReKonfig::walletBlackList(); 
+    QStringList list = ReKonfig::walletBlackList();
     list << m_url.toString();
-    ReKonfig::setWalletBlackList( list );
-    
+    ReKonfig::setWalletBlackList(list);
+
     notNowRememberData();
 }
 
 
 void WalletBar::notNowRememberData()
 {
-    emit saveFormDataRejected (m_key);
+    emit saveFormDataRejected(m_key);
     destroy();
 }
 
@@ -116,7 +116,7 @@ void WalletBar::destroy()
 
 void WalletBar::onSaveFormData(const QString &key, const QUrl &url)
 {
-    m_label->setText( i18n("Do you want rekonq to remember the password on %1?", url.host() ) );
+    m_label->setText(i18n("Do you want rekonq to remember the password on %1?", url.host()));
 
     m_key = key;
     m_url = url;

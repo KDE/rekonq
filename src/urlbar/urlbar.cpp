@@ -13,9 +13,9 @@
 * published by the Free Software Foundation; either version 2 of
 * the License or (at your option) version 3 or any later version
 * accepted by the membership of KDE e.V. (or its successor approved
-* by the membership of KDE e.V.), which shall act as a proxy 
+* by the membership of KDE e.V.), which shall act as a proxy
 * defined in Section 14 of version 3 of the license.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -56,7 +56,7 @@
 
 
 IconButton::IconButton(QWidget *parent)
-    : QToolButton(parent)
+        : QToolButton(parent)
 {
     setToolButtonStyle(Qt::ToolButtonIconOnly);
     setStyleSheet("IconButton { background-color:transparent; border: none; padding: 0px}");
@@ -72,13 +72,13 @@ void IconButton::mouseReleaseEvent(QMouseEvent* event)
 
 
 UrlBar::UrlBar(QWidget *parent)
-    : KLineEdit(parent)
-    , _tab(0)
-    , _privateMode(false)
-    , _icon( new IconButton(this) )
+        : KLineEdit(parent)
+        , _tab(0)
+        , _privateMode(false)
+        , _icon(new IconButton(this))
 {
     // initial style
-    setStyleSheet( QString("UrlBar { padding: 0 0 0 %1px;} ").arg(_icon->sizeHint().width()) );
+    setStyleSheet(QString("UrlBar { padding: 0 0 0 %1px;} ").arg(_icon->sizeHint().width()));
 
     // cosmetic
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -87,25 +87,25 @@ UrlBar::UrlBar(QWidget *parent)
 
     // doesn't show the clear button
     setClearButtonShown(false);
-    
+
     // trap Key_Enter & Key_Return events, while emitting the returnPressed signal
     setTrapReturnKey(true);
-    
+
     // insert decoded URLs
     setUrlDropsEnabled(true);
 
     // accept focus, via tabbing, clicking & wheeling
     setFocusPolicy(Qt::WheelFocus);
-    
+
     // disable completion object (we have our own :) )
     setCompletionObject(0);
-    
+
     _tab = qobject_cast<WebTab *>(parent);
-    
+
     connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
-    
+
     // load typed urls
     connect(this, SIGNAL(returnPressed(const QString &)), this, SLOT(loadTyped(const QString &)));
 
@@ -123,9 +123,9 @@ UrlBar::~UrlBar()
 
 void UrlBar::setQUrl(const QUrl& url)
 {
-    if(url.scheme() == QL1S("about") )
+    if (url.scheme() == QL1S("about"))
     {
-        _icon->setIcon( KIcon("arrow-right") );
+        _icon->setIcon(KIcon("arrow-right"));
         clear();
         setFocus();
     }
@@ -134,7 +134,7 @@ void UrlBar::setQUrl(const QUrl& url)
         clearFocus();
         KLineEdit::setUrl(url);
         setCursorPosition(0);
-        _icon->setIcon( Application::icon(url) );
+        _icon->setIcon(Application::icon(url));
     }
 }
 
@@ -142,7 +142,7 @@ void UrlBar::setQUrl(const QUrl& url)
 void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 {
     activateSuggestions(false);
-    
+
     clearFocus();
     setUrl(url);
     Application::instance()->loadUrl(url, type);
@@ -152,7 +152,7 @@ void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 void UrlBar::paintEvent(QPaintEvent *event)
 {
     QColor backgroundColor;
-    if( _privateMode )
+    if (_privateMode)
     {
         backgroundColor = QColor(220, 220, 220);  // light gray
     }
@@ -160,43 +160,43 @@ void UrlBar::paintEvent(QPaintEvent *event)
     {
         backgroundColor = Application::palette().color(QPalette::Base);
     }
-    
+
     // set background color of UrlBar
     QPalette p = palette();
 
     int progr = _tab->progress();
-    if (progr == 0) 
+    if (progr == 0)
     {
-        if( _tab->url().scheme() == QL1S("https") )
+        if (_tab->url().scheme() == QL1S("https"))
         {
             backgroundColor = QColor(255, 255, 171);  // light yellow
         }
         p.setBrush(QPalette::Base, backgroundColor);
-    } 
-    else 
+    }
+    else
     {
         QColor loadingColor = QColor(116, 192, 250);
-        
+
         QLinearGradient gradient(0, 0, width(), 0);
         gradient.setColorAt(0, loadingColor);
-        gradient.setColorAt(((double)progr)/100, backgroundColor);
+        gradient.setColorAt(((double)progr) / 100, backgroundColor);
         p.setBrush(QPalette::Base, gradient);
     }
     setPalette(p);
-    
+
     // you need this before our code to draw inside the line edit..
     KLineEdit::paintEvent(event);
-    
-    if (text().isEmpty()) 
-    {       
+
+    if (text().isEmpty())
+    {
         QStyleOptionFrame option;
         initStyleOption(&option);
         QRect textRect = style()->subElementRect(QStyle::SE_LineEditContents, &option, this);
         QPainter painter(this);
         painter.setPen(Qt::gray);
-        painter.drawText( textRect, 
-                          Qt::AlignCenter, 
-                          i18n("Start typing here to search your bookmarks, history and the web...")
+        painter.drawText(textRect,
+                         Qt::AlignCenter,
+                         i18n("Start typing here to search your bookmarks, history and the web...")
                         );
     }
 }
@@ -207,7 +207,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     // this handles the Modifiers + Return key combinations
     QString currentText = text().trimmed();
     if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-        && !currentText.startsWith(QLatin1String("http://"), Qt::CaseInsensitive))
+            && !currentText.startsWith(QLatin1String("http://"), Qt::CaseInsensitive))
     {
         QString append;
         if (event->modifiers() == Qt::ControlModifier)
@@ -232,7 +232,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
             setText(url.toString());
         }
     }
-    
+
     if (event->key() == Qt::Key_Escape)
     {
         clearFocus();
@@ -246,7 +246,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 void UrlBar::focusInEvent(QFocusEvent *event)
 {
     activateSuggestions(true);
-    
+
     KLineEdit::focusInEvent(event);
 }
 
@@ -266,36 +266,36 @@ void UrlBar::dropEvent(QDropEvent *event)
 
 void UrlBar::loadFinished()
 {
-    if(_tab->progress() != 0)
+    if (_tab->progress() != 0)
         return;
-    
-    if(_tab->url().scheme() == QL1S("about") )
+
+    if (_tab->url().scheme() == QL1S("about"))
     {
         update();
         return;
     }
-    
+
     // show KGet downloads??
-    if(ReKonfig::kgetList())
+    if (ReKonfig::kgetList())
     {
         IconButton *bt = addRightIcon(UrlBar::KGet);
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(downloadAllContentsWithKGet()));
     }
-    
+
     // show RSS
-    if(_tab->hasRSSInfo())
+    if (_tab->hasRSSInfo())
     {
         IconButton *bt = addRightIcon(UrlBar::RSS);
         connect(bt, SIGNAL(clicked(QPoint)), _tab, SLOT(showRSSInfo(QPoint)));
     }
-    
+
     // show SSL
-    if(_tab->url().scheme() == QL1S("https") )
+    if (_tab->url().scheme() == QL1S("https"))
     {
         IconButton *bt = addRightIcon(UrlBar::SSL);
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo()));
     }
-    
+
     update();
 }
 
@@ -308,9 +308,9 @@ void UrlBar::loadTyped(const QString &text)
 
 void UrlBar::activateSuggestions(bool b)
 {
-    if(b)
+    if (b)
     {
-        if(_box.isNull())
+        if (_box.isNull())
         {
             _box = new CompletionWidget(this);
             installEventFilter(_box.data());
@@ -337,31 +337,31 @@ void UrlBar::mouseDoubleClickEvent(QMouseEvent *)
 IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
 {
     IconButton *rightIcon = new IconButton(this);
-    
-    switch(ic)
+
+    switch (ic)
     {
     case UrlBar::KGet:
-        rightIcon->setIcon( KIcon("download") );
-        rightIcon->setToolTip( i18n("List all links with KGet") );
+        rightIcon->setIcon(KIcon("download"));
+        rightIcon->setToolTip(i18n("List all links with KGet"));
         break;
     case UrlBar::RSS:
-        rightIcon->setIcon( KIcon("application-rss+xml") );
-        rightIcon->setToolTip( i18n("List all available RSS feeds") );
+        rightIcon->setIcon(KIcon("application-rss+xml"));
+        rightIcon->setToolTip(i18n("List all available RSS feeds"));
         break;
     case UrlBar::SSL:
-        rightIcon->setIcon( KIcon("object-locked") );
-        rightIcon->setToolTip( i18n("Show SSL Infos") );
+        rightIcon->setIcon(KIcon("object-locked"));
+        rightIcon->setToolTip(i18n("Show SSL Infos"));
         break;
     default:
         kDebug() << "ERROR.. default non extant case!!";
         break;
     }
-    
+
     _rightIconsList << rightIcon;
     int iconsCount = _rightIconsList.count();
-    rightIcon->move( width() - 23*iconsCount, 6);
+    rightIcon->move(width() - 23*iconsCount, 6);
     rightIcon->show();
-    
+
     return rightIcon;
 }
 
@@ -375,16 +375,16 @@ void UrlBar::clearRightIcons()
 
 void UrlBar::resizeEvent(QResizeEvent *event)
 {
-    int newHeight = ( height() - 19 )/2;
-    _icon->move(4, newHeight );
-    
+    int newHeight = (height() - 19) / 2;
+    _icon->move(4, newHeight);
+
     int iconsCount = _rightIconsList.count();
     int w = width();
-    
-    for(int i = 0; i < iconsCount; ++i)
+
+    for (int i = 0; i < iconsCount; ++i)
     {
         IconButton *bt = _rightIconsList.at(i);
-        bt->move( w - 25*(i+1), newHeight );
+        bt->move(w - 25*(i + 1), newHeight);
     }
 
     KLineEdit::resizeEvent(event);

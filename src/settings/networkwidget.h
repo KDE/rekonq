@@ -37,12 +37,12 @@
 
 class NetworkWidget : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     NetworkWidget(QWidget *parent = 0);
     ~NetworkWidget();
-       
+
     void save();
     bool changed();
 
@@ -51,7 +51,7 @@ signals:
 
 private slots:
     void hasChanged();
-    
+
 private:
     KCModuleProxy *_cacheModule;
     KCModuleProxy *_cookiesModule;

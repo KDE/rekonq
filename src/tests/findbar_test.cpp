@@ -31,11 +31,11 @@
 class FindBarTest : public QObject
 {
     Q_OBJECT
-   
+
 public slots:
     void initTestCase();
     void cleanupTestCase();
-    
+
 private slots:
     void matchCase();
     void notifyMatch();
@@ -60,10 +60,10 @@ void FindBarTest::cleanupTestCase()
 {
     delete bar;
 }
-    
+
 void FindBarTest::matchCase()
 {
-    
+
 }
 
 void FindBarTest::notifyMatch()

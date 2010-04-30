@@ -30,27 +30,27 @@
 #include "bookmarksproxy.moc"
 
 
-BookmarksProxy::BookmarksProxy( QObject *parent )
-    : QSortFilterProxyModel( parent )
+BookmarksProxy::BookmarksProxy(QObject *parent)
+        : QSortFilterProxyModel(parent)
 {
 }
 
 
-bool BookmarksProxy::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+bool BookmarksProxy::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
-    QModelIndex idx = sourceModel()->index( source_row, 0, source_parent );
-    return recursiveMatch( idx );
+    QModelIndex idx = sourceModel()->index(source_row, 0, source_parent);
+    return recursiveMatch(idx);
 }
 
 
-bool BookmarksProxy::recursiveMatch( const QModelIndex &index ) const
+bool BookmarksProxy::recursiveMatch(const QModelIndex &index) const
 {
-    if( index.data().toString().contains( filterRegExp() ) )
+    if (index.data().toString().contains(filterRegExp()))
         return true;
 
-    for( int childRow = 0; childRow < sourceModel()->rowCount( index ); ++childRow ) 
+    for (int childRow = 0; childRow < sourceModel()->rowCount(index); ++childRow)
     {
-        if( recursiveMatch( sourceModel()->index( childRow, 0, index ) ) )
+        if (recursiveMatch(sourceModel()->index(childRow, 0, index)))
             return true;
     }
     return false;
