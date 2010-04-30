@@ -73,7 +73,7 @@ public:
      * @param url the url to load
      * @param parent the object parent
      */
-    WebSnap(const KUrl &url, QObject *parent = 0);
+    explicit WebSnap(const KUrl &url, QObject *parent = 0);
 
     /**
      * Snaps a pixmap of size w * h from a page and save it to cache

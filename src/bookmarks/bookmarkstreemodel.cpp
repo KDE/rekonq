@@ -75,12 +75,12 @@ QVariant BtmItem::data(int role) const
         }
         if (m_kbm.isGroup())
         {
-            tooltip += " [" + QString::number(childCount()) + " " + i18n("Items") + "]";
+            tooltip += " [" + QString::number(childCount()) + ' ' + i18n("Items") + ']';
         }
         if (!m_kbm.url().url().isEmpty())
         {
             if (!tooltip.isEmpty())
-                tooltip += "\n";
+                tooltip += '\n';
             tooltip += m_kbm.url().url();
         }
         return tooltip;

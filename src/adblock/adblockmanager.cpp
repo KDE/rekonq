@@ -117,7 +117,7 @@ void AdBlockManager::loadRules(const QStringList &rules)
         if (stringRule.startsWith('!'))
             continue;
 
-        // [ rules are ABP infos
+        // [ rules are ABP info
         if (stringRule.startsWith('['))
             continue;
 

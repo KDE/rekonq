@@ -68,7 +68,7 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString
 {
     _list = list;
     int i = 0;
-    foreach(UrlSearchItem item, _list)
+    foreach(const UrlSearchItem &item, _list)
     {
         ListItem *suggestion = ListItemFactory::create(item, text, this);
         suggestion->setBackgroundRole(i % 2 ? QPalette::AlternateBase : QPalette::Base);

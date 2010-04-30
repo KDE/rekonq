@@ -41,7 +41,6 @@
 // KDE Includes
 #include <KIcon>
 #include <QActionGroup>
-#include <KIcon>
 
 // Qt Includes
 #include <QHBoxLayout>
@@ -195,7 +194,7 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
 {
     QString t = text;
     if (!textToPointOut.isEmpty())
-        t = t.replace(QRegExp("(" + textToPointOut + ")", Qt::CaseInsensitive), "<b>\\1</b>");
+        t = t.replace(QRegExp('(' + textToPointOut + ')', Qt::CaseInsensitive), "<b>\\1</b>");
 
     setText(t);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);

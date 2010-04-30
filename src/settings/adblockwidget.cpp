@@ -118,7 +118,7 @@ void AdBlockWidget::load()
     QStringList subscriptions = ReKonfig::subscriptionTitles();
 
     // load automatic rules
-    foreach(QString sub, subscriptions)
+    foreach(const QString &sub, subscriptions)
     {
         QTreeWidgetItem *subItem = new QTreeWidgetItem(treeWidget);
         subItem->setText(0, sub);

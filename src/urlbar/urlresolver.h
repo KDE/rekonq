@@ -59,7 +59,7 @@ public:
             : type(_type), url(_url), title(_title)
     {};
 
-    bool operator==(UrlSearchItem i);
+    bool operator==(const UrlSearchItem &i);
 };
 
 typedef QList <UrlSearchItem> UrlSearchList;

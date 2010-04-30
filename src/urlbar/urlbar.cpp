@@ -347,7 +347,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         break;
     case UrlBar::SSL:
         rightIcon->setIcon(KIcon("object-locked"));
-        rightIcon->setToolTip(i18n("Show SSL Infos"));
+        rightIcon->setToolTip(i18n("Show SSL Info"));
         break;
     default:
         kDebug() << "ERROR.. default non extant case!!";

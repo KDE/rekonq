@@ -149,8 +149,8 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     case Qt::ToolTipRole:
         QString tooltip = "";
         if (!item.title.isEmpty())
-            tooltip = item.title + "\n";
-        tooltip += item.dateTime.toString(Qt::SystemLocaleShortDate) + "\n" + item.url;
+            tooltip = item.title + '\n';
+        tooltip += item.dateTime.toString(Qt::SystemLocaleShortDate) + '\n' + item.url;
         return tooltip;
     }
     return QVariant();

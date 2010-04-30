@@ -78,7 +78,8 @@ KService::Ptr SearchEngine::fromString(QString text)
     KService::Ptr service;
     while (!found && i < providers.size())
     {
-        foreach(QString key, providers.at(i)->property("Keys").toStringList())
+        QStringList list = providers.at(i)->property("Keys").toStringList();
+        foreach(const QString &key, list)
         {
             const QString searchPrefix = key + delimiter();
             if (text.startsWith(searchPrefix))
@@ -116,16 +117,17 @@ void SearchEngine::loadFavorites()
 {
     KConfig config("kuriikwsfilterrc"); //Share with konqueror
     KConfigGroup cg = config.group("General");
-    QStringList f;
-    f << "wikipedia" << "google"; //defaults
-    f = cg.readEntry("FavoriteSearchEngines", f);
+    QStringList favoriteEngines;
+    favoriteEngines << "wikipedia" << "google"; //defaults
+    favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
 
     KService::List favorites;
     KService::Ptr service;
-    foreach(QString e, f)
+    foreach(const QString &engine, favoriteEngines)
     {
-        service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(e));
-        if (service) favorites << service;
+        service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
+        if (service) 
+            favorites << service;
     }
 
     m_favorites = favorites;
@@ -160,4 +162,3 @@ KService::Ptr SearchEngine::defaultEngine()
 
     return KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
 }
-

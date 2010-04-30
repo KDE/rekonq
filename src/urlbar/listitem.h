@@ -54,7 +54,7 @@ class ListItem : public QWidget
     Q_OBJECT
 
 public:
-    ListItem(const UrlSearchItem &item, QWidget *parent = 0);
+    explicit ListItem(const UrlSearchItem &item, QWidget *parent = 0);
     virtual ~ListItem();
 
     void activate();
@@ -90,7 +90,7 @@ class TypeIconLabel : public QLabel
     Q_OBJECT
 
 public:
-    TypeIconLabel(int type, QWidget *parent = 0);
+    explicit TypeIconLabel(int type, QWidget *parent = 0);
 
 private:
     QLabel *getIcon(QString icon);
@@ -129,7 +129,7 @@ class EngineBar : public KToolBar
     Q_OBJECT
 
 public:
-    EngineBar(KService::Ptr selectedEngine, QWidget *parent = 0);
+    explicit EngineBar(KService::Ptr selectedEngine, QWidget *parent = 0);
     void selectNextEngine();
 
 signals:
@@ -152,7 +152,7 @@ class SearchListItem : public ListItem
     Q_OBJECT
 
 public:
-    SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+    explicit SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
 
 public slots:
     virtual void nextItemSubChoice();

@@ -56,7 +56,7 @@
 // 5. "fixhosturifilter"
 
 
-bool UrlSearchItem::operator==(UrlSearchItem i)
+bool UrlSearchItem::operator==(const UrlSearchItem &i)
 {
     return url == i.url;
 }
@@ -118,12 +118,12 @@ UrlSearchList UrlResolver::orderedSearchItems()
             }
         }
 
-        foreach(UrlSearchItem i, common)
+        foreach(const UrlSearchItem &i, common)
         {
             list << i;
         }
 
-        foreach(UrlSearchItem i, bookmarksList)
+        foreach(const UrlSearchItem &i, bookmarksList)
         {
             if (!common.contains(i))
                 list << i;
@@ -149,8 +149,8 @@ bool UrlResolver::isHttp()
                       "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
                       "pro)";
 
-    return _typedString.startsWith("http://")
-           || _typedString.startsWith("https://")
+    return _typedString.startsWith( QL1S("http://") )
+           || _typedString.startsWith( QL1S("https://") )
            || (QRegExp(address, Qt::CaseInsensitive).indexIn(_typedString) != -1)
            || (QRegExp(ipv4, Qt::CaseInsensitive).indexIn(_typedString) != -1)
            || (QRegExp(ipv6, Qt::CaseInsensitive).indexIn(_typedString) != -1);

@@ -61,7 +61,6 @@ RSSWidget::RSSWidget(QMap< KUrl, QString > map, QWidget *parent)
     QFormLayout *layout = new QFormLayout(this);
     setLayout(layout);
 
-
     QLabel *agregator = new QLabel(this);
     agregator->setText(i18n("Aggregator:"));
 
@@ -76,9 +75,12 @@ RSSWidget::RSSWidget(QMap< KUrl, QString > map, QWidget *parent)
     feed->setText(i18n("Feed:"));
 
     m_feeds = new KComboBox(this);
-    foreach(QString title, m_map)
-    m_feeds->addItem(title);
 
+    foreach(const QString &title, m_map)
+    {
+        m_feeds->addItem(title);
+    }
+    
     layout->addRow(feed, m_feeds);
 
 

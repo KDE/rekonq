@@ -70,7 +70,7 @@ void SessionManager::saveSession()
     }
     QTextStream out(&sessionFile);
     MainWindowList wl = Application::instance()->mainWindowList();
-    Q_FOREACH(QWeakPointer<MainWindow> w, wl)
+    Q_FOREACH(const QWeakPointer<MainWindow> &w, wl)
     {
         out << "window\n";
         MainView *mv = w.data()->mainView();
