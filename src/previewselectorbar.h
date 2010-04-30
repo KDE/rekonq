@@ -31,9 +31,6 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "webpage.h"
-
 // Qt Includes
 #include <QWidget>
 #include <QPushButton>

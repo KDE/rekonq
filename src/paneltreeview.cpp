@@ -31,9 +31,13 @@
 // Local Includes
 #include "application.h"
 
+// KDE Includes
+#include <KUrl>
+
 // Qt Includes
-#include <QMouseEvent>
-#include <QClipboard>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QClipboard>
 
 
 PanelTreeView::PanelTreeView(QWidget *parent)
@@ -171,7 +175,7 @@ void PanelTreeView::copyToClipboard()
     if (!index.isValid())
         return;
 
-    QClipboard *cb = QApplication::clipboard();
+    QClipboard *cb = Application::clipboard();
     cb->setText(qVariantValue< KUrl >(index.data(Qt::UserRole)).url());
 }
 

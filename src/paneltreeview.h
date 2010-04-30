@@ -27,14 +27,17 @@
 #ifndef PANELTREEVIEW_H
 #define PANELTREEVIEW_H
 
-// Local Includes
-#include "application.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
 // Qt Includes
 #include <QTreeView>
 
+// Forward Declarations
+class KUrl;
 
-class PanelTreeView : public QTreeView
+
+class REKONQ_TESTS_EXPORT PanelTreeView : public QTreeView
 {
     Q_OBJECT
 

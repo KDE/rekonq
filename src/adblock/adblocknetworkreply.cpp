@@ -58,8 +58,10 @@
 #include <klocalizedstring.h>
 
 // Qt Includes
-#include <QNetworkRequest>
-#include <QTimer>
+#include <QtCore/QTimer>
+#include <QtCore/QString>
+
+#include <QtNetwork/QNetworkRequest>
 
 
 AdBlockNetworkReply::AdBlockNetworkReply(const QNetworkRequest &request, const QString &urlString, QObject *parent)

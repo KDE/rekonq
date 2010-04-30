@@ -32,9 +32,6 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "application.h"
-
 // KDE Includes
 #include <KWebView>
 

@@ -110,12 +110,14 @@
 // Local Includes
 #include "adblockrule.h"
 
+// KDE Includes
+#include <KIO/Job>
+
 // Qt Includes
 #include <QObject>
 #include <QNetworkReply>
 #include <QStringList>
 #include <QByteArray>
-#include <KIO/Job>
 
 // Forward Includes
 class QNetworkRequest;

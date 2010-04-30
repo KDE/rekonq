@@ -38,10 +38,12 @@
 
 // Qt Includes
 #include <QtCore/QObject>
-#include <QPixmap>
-#include <QImage>
-#include <QWebPage>
 
+#include <QtGui/QPixmap>
+
+#include <QtWebKit/QWebPage>
+
+// Defines
 #define WIDTH  200
 #define HEIGHT 150
 

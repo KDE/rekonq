@@ -40,9 +40,10 @@
 
 // KDE Includes
 #include <KIcon>
-#include <QActionGroup>
+#include <KAction>
 
 // Qt Includes
+#include <QActionGroup>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>

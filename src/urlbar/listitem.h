@@ -36,17 +36,17 @@
 
 // KDE Includes
 #include <KToolBar>
-#include <KAction>
 #include <KService>
 
 // Qt Includes
 #include <QWidget>
-#include <QLayout>
 #include <QStyleOptionViewItemV4>
 #include <QLabel>
 
 // Forward Declarations
 class UrlSearchItem;
+class KAction;
+class QActionGroup;
 
 
 class ListItem : public QWidget

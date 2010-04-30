@@ -35,6 +35,7 @@
 #include "rekonq.h"
 
 // Local Includes
+#include "application.h"
 #include "mainwindow.h"
 #include "webtab.h"
 #include "webpage.h"
@@ -45,11 +46,11 @@
 #include <KCompletionBox>
 
 // Qt Includes
-#include <QPainter>
-#include <QPaintEvent>
-#include <QPalette>
-#include <QTimer>
-#include <QVBoxLayout>
+#include <QtGui/QPainter>
+#include <QtGui/QPaintEvent>
+#include <QtGui/QPalette>
+#include <QtGui/QVBoxLayout>
+
 
 
 IconButton::IconButton(QWidget *parent)
@@ -64,6 +65,7 @@ void IconButton::mouseReleaseEvent(QMouseEvent* event)
 {
     emit clicked(event->globalPos());
 }
+
 
 // -----------------------------------------------------------------------------------------------------------
 

@@ -40,9 +40,7 @@
 #include <KConfigGroup>
 
 // Qt Includes
-#include <QString>
 #include <QByteArray>
-#include <QUrl>
 
 // defines
 #define MAX_ELEMENTS 9

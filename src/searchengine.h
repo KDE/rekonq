@@ -31,9 +31,6 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Auto Includes
-#include "rekonq.h"
-
 // KDE Includes
 #include <KService>
 

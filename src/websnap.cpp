@@ -37,12 +37,15 @@
 #include <KStandardDirs>
 
 // Qt Includes
-#include <QSize>
-#include <QWebFrame>
-#include <QWebSettings>
-#include <QPainter>
-#include <QTimer>
-#include <QFile>
+#include <QtCore/QSize>
+#include <QtCore/QTimer>
+#include <QtCore/QFile>
+
+#include <QtGui/QPainter>
+
+#include <QtWebKit/QWebFrame>
+#include <QtWebKit/QWebSettings>
+
 
 
 WebSnap::WebSnap(const KUrl& url, QObject *parent)

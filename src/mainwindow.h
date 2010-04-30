@@ -41,18 +41,19 @@
 #include <KUrl>
 
 // Forward Declarations
-class QWebFrame;
-class QSlider;
-
-class KAction;
-class KPassivePopup;
-
 class FindBar;
 class HistoryPanel;
 class BookmarksPanel;
 class WebInspectorPanel;
 class WebTab;
 class MainView;
+
+class KAction;
+class KPassivePopup;
+
+class QWebFrame;
+class QSlider;
+
 
 
 /**

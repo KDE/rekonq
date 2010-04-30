@@ -57,8 +57,6 @@
 
 // Qt Includes
 #include <QStringList>
-#include <QDebug>
-#include <QRegExp>
 #include <QUrl>
 
 

@@ -48,17 +48,19 @@
 #include <ktoolinvocation.h>
 
 // Qt Includes
-#include <QContextMenuEvent>
-#include <QWheelEvent>
-#include <QMouseEvent>
-#include <QClipboard>
-#include <QKeyEvent>
-#include <QAction>
-#include <QLayout>
+#include <QtCore/QDir>
+
+#include <QtGui/QAction>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QWheelEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QClipboard>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QLayout>
+
 #include <QtDBus/QDBusConnectionInterface>
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusReply>
-#include <QDir>
 
 
 WebView::WebView(QWidget* parent)

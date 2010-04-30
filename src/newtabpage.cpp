@@ -46,12 +46,11 @@
 #include <KStandardDirs>
 #include <KIconLoader>
 #include <KConfig>
-#include <KConfigGroup>
 #include <KDialog>
 #include <KCalendarSystem>
 
 // Qt Includes
-#include <QFile>
+#include <QtCore/QFile>
 
 
 NewTabPage::NewTabPage(QWebFrame *frame)

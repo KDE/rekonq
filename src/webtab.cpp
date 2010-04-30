@@ -53,13 +53,12 @@
 #include <KDE/KMessageBox>
 
 // Qt Includes
-#include <QContextMenuEvent>
-#include <QWheelEvent>
-#include <QMouseEvent>
-#include <QClipboard>
-#include <QKeyEvent>
-#include <QAction>
-#include <QVBoxLayout>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QWheelEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QClipboard>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QVBoxLayout>
 
 
 WebTab::WebTab(QWidget *parent)

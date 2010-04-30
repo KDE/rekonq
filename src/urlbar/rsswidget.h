@@ -32,10 +32,12 @@
 
 // KDE Includes
 #include <KComboBox>
+#include <KUrl>
 
 // Qt Includes
-#include <QFrame>
-#include <KUrl>
+#include <QtCore/QMap>
+
+#include <QtGui/QFrame>
 
 
 class RSSWidget : public QFrame

@@ -29,21 +29,26 @@
 #include "previewselectorbar.h"
 #include "previewselectorbar.moc"
 
-// Local Include
+// Self Includes
 #include "rekonq.h"
+
+// Local Include
 #include "websnap.h"
 #include "application.h"
 #include "mainwindow.h"
 #include "webtab.h"
+#include "webpage.h"
 
 // KDE Includes
 #include <KIcon>
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QToolButton>
-#include <QHBoxLayout>
-#include <QString>
+#include <QtCore/QString>
+
+#include <QtGui/QToolButton>
+#include <QtGui/QHBoxLayout>
+
 
 
 PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)

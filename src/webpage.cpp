@@ -70,7 +70,8 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
-#include <QWebFrame>
+
+#include <QtWebKit/QWebFrame>
 
 
 // Returns true if the scheme and domain of the two urls match...

@@ -52,7 +52,6 @@
 #include "ui_cleardata.h"
 
 // KDE Includes
-#include <KUrl>
 #include <KShortcut>
 #include <KStandardAction>
 #include <KAction>
@@ -65,7 +64,6 @@
 #include <KTemporaryFile>
 #include <KPassivePopup>
 #include <KMenuBar>
-#include <KToolBar>
 #include <KJobUiDelegate>
 #include <kdeprintdialog.h>
 #include <KToggleAction>
@@ -80,9 +78,7 @@
 #include <QtCore/QList>
 #include <QtCore/QWeakPointer>
 
-#include <QtGui/QWidget>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QAction>
 #include <QtGui/QFont>
 #include <QtGui/QDesktopWidget>
 #include <QtGui/QPrinter>

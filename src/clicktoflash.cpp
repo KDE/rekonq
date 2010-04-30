@@ -41,7 +41,7 @@
 
 
 
-ClickToFlash::ClickToFlash(QUrl pluginUrl, QWidget *parent)
+ClickToFlash::ClickToFlash(const QUrl &pluginUrl, QWidget *parent)
         : QWidget(parent)
         , m_url(pluginUrl)
 {

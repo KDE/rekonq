@@ -40,8 +40,9 @@
 #include <KStandardDirs>
 
 // Qt Includes
-#include <QFile>
-#include <QTextStream>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
+
 
 
 SessionManager::SessionManager(QObject *parent)

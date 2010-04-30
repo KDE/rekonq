@@ -59,10 +59,10 @@
 
 // Qt Includes
 #include <QNetworkReply>
-#include <QString>
 
 // Forward Declarations
 class AdBlockRule;
+class QString;
 
 
 class REKONQ_TESTS_EXPORT AdBlockNetworkReply : public QNetworkReply

@@ -28,6 +28,9 @@
 //local includes
 #include "searchengine.h"
 
+// Auto Includes
+#include "rekonq.h"
+
 //KDE includes
 #include <KConfigGroup>
 #include <KServiceTypeTrader>

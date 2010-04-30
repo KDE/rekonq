@@ -51,16 +51,12 @@
 #include <KStandardDirs>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
-#include <KToolInvocation>
 #include <KUriFilter>
 #include <KMessageBox>
 #include <KUrl>
 #include <ThreadWeaver/Weaver>
 
 // Qt Includes
-#include <QRegExp>
-#include <QFile>
-#include <QFileInfo>
 #include <QtCore/QTimer>
 
 

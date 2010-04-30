@@ -32,11 +32,9 @@
 #include "rekonq_defines.h"
 
 // Local Includes
-#include "application.h"
 #include "listitem.h"
 
 // KDE Includes
-#include <KLineEdit>
 #include <KService>
 
 // Qt Includes
@@ -57,6 +55,7 @@ public:
     {
         return _searchEngine;
     };
+    
     void setCurrentEngine(KService::Ptr engine)
     {
         _searchEngine = engine;

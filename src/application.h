@@ -36,8 +36,6 @@
 // KDE Includes
 #include <KUniqueApplication>
 #include <KIcon>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
 #include <ThreadWeaver/Job>
 
 // Qt Includes

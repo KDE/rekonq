@@ -35,10 +35,9 @@
 // Qt Includes
 #include <QWidget>
 #include <QUrl>
-#include <QWebElement>
 
 // Forward Declarations
-class WebPluginFactory;
+class QWebElement;
 
 
 class REKONQ_TESTS_EXPORT ClickToFlash : public QWidget
@@ -46,7 +45,7 @@ class REKONQ_TESTS_EXPORT ClickToFlash : public QWidget
     Q_OBJECT
 
 public:
-    explicit ClickToFlash(QUrl pluginUrl, QWidget *parent = 0);
+    explicit ClickToFlash(const QUrl &pluginUrl, QWidget *parent = 0);
 
 signals:
     void signalLoadClickToFlash(bool);

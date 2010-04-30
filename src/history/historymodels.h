@@ -40,10 +40,8 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QDateTime>
 #include <QHash>
 #include <QObject>
-#include <QTimer>
 #include <QSortFilterProxyModel>
 #include <QWebHistoryInterface>
 

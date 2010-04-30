@@ -59,8 +59,8 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QRegExp>
-#include <QString>
+#include <QtCore/QRegExp>
+#include <QtCore/QString>
 
 // Forward Includes
 class QUrl;

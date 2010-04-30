@@ -36,18 +36,19 @@
 
 // KDE Includes
 #include <KLocalizedString>
-#include <KComboBox>
 #include <KIcon>
 #include <KProcess>
 #include <KMessageBox>
 
 // Qt Includes
-#include <QFormLayout>
-#include <QDialogButtonBox>
-#include <QDBusInterface>
-#include <QDBusConnectionInterface>
-#include <QLabel>
-#include <QPushButton>
+#include <QtGui/QFormLayout>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusConnectionInterface>
+
 
 
 RSSWidget::RSSWidget(QMap< KUrl, QString > map, QWidget *parent)

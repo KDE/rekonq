@@ -41,12 +41,13 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QPoint>
-#include <QSize>
-#include <QVBoxLayout>
-#include <QString>
-#include <QEvent>
-#include <QKeyEvent>
+#include <QtCore/QPoint>
+#include <QtCore/QSize>
+#include <QtCore/QEvent>
+
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QKeyEvent>
+
 
 
 CompletionWidget::CompletionWidget(QWidget *parent)
