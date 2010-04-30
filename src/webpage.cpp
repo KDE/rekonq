@@ -406,10 +406,20 @@ QString WebPage::errorPage(QNetworkReply *reply)
     }
 
     QString title = i18n("Error loading: %1", reply->url().path()); 
-    QString msg = "<h1>" + reply->errorString() + "</h1>";
     QString urlString = reply->url().toString( QUrl::RemoveUserInfo | QUrl::RemoveQuery );
     
-    msg += "<h2>" + i18nc("%1=an URL, e.g.'kde.org'", "When connecting to: %1", urlString ) + "</h2>";
+    QString iconPath = QString("file://") + KIconLoader::global()->iconPath( "dialog-warning" , KIconLoader::Small );
+    iconPath.replace( QL1S("16"), QL1S("128") );
+
+    QString msg;
+    msg += "<table>";
+    msg += "<tr><td>";
+    msg += "<img src=\"" + iconPath + "\" />";
+    msg += "</td><td>";
+    msg += "<h1>" + reply->errorString() + "</h1>";
+    msg += "<h2>" + i18nc("%1=an URL, e.g.'kde.org'", "When connecting to: <b>%1</b>", urlString ) + "</h2>";
+    msg += "</td></tr></table>";
+    
     msg += "<ul><li>" + i18n("Check the address for errors such as <b>ww</b>.kde.org instead of <b>www</b>.kde.org");
     msg += "</li><li>" + i18n("If the address is correct, try to check the network connection.") + "</li><li>" ;
     msg += i18n("If your computer or network is protected by a firewall or proxy, make sure that rekonq is permitted to access the network.");
