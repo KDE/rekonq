@@ -216,7 +216,7 @@ Here a List of configurable point and explanation for it:
 
 </sect1>
 
-<sect1>
+<sect1 id="Tabs">
 
 <title>Configure the Tabs settings</title>
 
@@ -237,7 +237,7 @@ Here a List of configurable point and explanation for it:
 
 </sect1>
 
-<sect1>
+<sect1 id="Fonts">
 
 <title>Configure the Fonts settings</title>
 
@@ -258,7 +258,7 @@ Here a List of configurable point and explanation for it:
 
 </sect1>
 
-<sect1>
+<sect1 id="Webkit">
 
 <title>Configure the Webkit settings</title>
 
@@ -314,7 +314,7 @@ As you can see the Cookies can be configured in many ways.
 </para>
 </sect2>
 
-<sect2>
+<sect2 id="Rest">
 
 <title>Rest</title>
 
@@ -351,7 +351,7 @@ As you can see the Cookies can be configured in many ways.
 
 </sect1>
 
-<sect1>
+<sect1 id="AdBlock">
 
 <title>Configure the Adblock settings</title>
 
@@ -387,7 +387,7 @@ As you can see the Cookies can be configured in many ways.
 
 </sect1>
 
-<sect1>
+<sect1 id="WebShortcut">
 
 <title>Configure the Shortcut settings</title>
 
