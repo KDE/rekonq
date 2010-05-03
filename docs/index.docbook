@@ -13,6 +13,11 @@
                               <surname>Garg</surname>
                               </personname>
                               ">
+  <!ENTITY Jonathan.Kolberg   "<personname>
+                              <firstname>Jonathan</firstname>
+                              <surname>Kolberg</surname>
+                              </personname>
+                              ">
  <!ENTITY The.rekonq.Team "<personname>
                               <firstname>rekonq</firstname>
                               <surname>Team</surname>
@@ -20,6 +25,7 @@
                               ">
   <!ENTITY Andrea.Diamantini.mail "<email>adjam7@gmail.com</email>">
   <!ENTITY Rohan.Garg.mail "<email>rohan16garg@gmail.com</email>">
+  <!ENTITY Jonathan.Kolberg.mail "<email>bulldog98@kubuntu-de.org</email>">
   <!ENTITY The.rekonq.Team.mail "<email>rekonq@kde.org</email>">
   <!ENTITY package "playground-network">
   <!ENTITY % addindex "IGNORE">
@@ -34,19 +40,23 @@
 <authorgroup>
 <author>&Andrea.Diamantini; &Andrea.Diamantini.mail;</author>
 <author>&Rohan.Garg; &Rohan.Garg.mail;</author>
+<author>&Jonathan.Kolberg; &Jonathan.Kolberg.mail;</author>
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
 </authorgroup>
 
 <copyright>
 <year>2008</year>
-<year>2009</year>
+<year>2009-2010</year>
+<year>2010</year>
 <holder>&Andrea.Diamantini;</holder>
 <holder>&Rohan.Garg;</holder>
+<holder>&Jonathan.Kolberg;</holder>
 </copyright>
 
 <legalnotice>&FDLNotice;</legalnotice>
 
-<date>2009-10-22</date>
-<releaseinfo>0.3.0</releaseinfo>
+<date>2010-05-01</date>
+<releaseinfo>0.5.0</releaseinfo>
 
 <abstract>
 <para>
@@ -74,12 +84,16 @@
 <itemizedlist>
 <listitem><para>Shared bookmarks with &konqueror;</para></listitem>
 <listitem><para>Shared cookies with &konqueror;</para></listitem>
-<listitem><para>Tabbed browsing</para></listitem>
-<listitem><para>Display of tab previews</para></listitem>
-<listitem><para>Support for NS plugins (&eg;: Flash)</para></listitem>
-<listitem><para>Shared general &kde; proxy settings</para></listitem>
+<listitem><para>Handle tabbed browsing</para></listitem>
+<listitem><para>Display tab previews</para></listitem>
+<listitem><para>Handle support for NS plugins (eg: flash)</para></listitem>
+<listitem><para>Share General &kde; Proxy settings</para></listitem>
 <listitem><para>Browse anonymously</para></listitem>
 <listitem><para>Inspect web pages</para></listitem>
+<listitem><para>File and &FTP; protocol handling</para></listitem>
+<listitem><para>KWallet support for storing passwords</para></listitem>
+<listitem><para>Ad-Block support</para></listitem>
+<listitem><para>&kget; Download integration</para></listitem>
 </itemizedlist>
 </para>
 </chapter>
@@ -91,7 +105,7 @@
 <title>Introduction</title>
 
 <para>
-&rekonq; is a lightweight web browser for &kde; based on QtWebKit. Its code is based on the Nokia QtDemoBrowser.
+&rekonq; is a lightweight web browser for &kde; based on WebKit. Its code is based on the Nokia QtDemoBrowser.
 Its implementation is going to embrace &kde; technologies, in order to have a full-featured &kde; web browser.
 </para>
 </chapter>
@@ -115,6 +129,19 @@ Its implementation is going to embrace &kde; technologies, in order to have a fu
 
 </screenshot>
 </para>
+<important><para>Like all &kde; applications, &rekonq; is highly
+        configurable. This document describes how &rekonq; behaves with the normal,
+        default settings.
+        </para>
+        <para> A three button mouse can be useful when you are running
+        &rekonq; or any other &kde; application. If your mouse only has two buttons
+        then you should be able to set your system up so that you can simulate a a middle mouse button by pressing both buttons at the same time.
+        </para>
+        <para>If you are used to having to double-click to perform an action,
+        then take care, because in common with the rest of &kde;, &rekonq; defaults
+        to single-clicking.
+        </para>
+</important>
 
 <sect1 id="Starting">
 
@@ -122,19 +149,286 @@ Its implementation is going to embrace &kde; technologies, in order to have a fu
 <para>
 &rekonq; can be started in the following ways
 <itemizedlist>
-<listitem><para>From the application launcher select 
-<menuchoice>
-<guimenuitem>Applications</guimenuitem>
-<guisubmenu>Internet</guisubmenu>
-<guimenuitem>rekonq</guimenuitem>
-</menuchoice>
-</para></listitem>
-<listitem><para><keycombo action="simul">&Alt;<keycap>F2</keycap></keycombo> will open a
-<guimenuitem>Run Command</guimenuitem> dialog box,type rekonq (lower case) and press &Enter; or
-the <guibutton>Run</guibutton> to start &rekonq;</para></listitem>
+  <listitem><para>From the application launcher select 
+    <menuchoice>
+    <guimenuitem>Applications</guimenuitem>
+    <guisubmenu>Internet</guisubmenu>
+    <guimenuitem>rekonq</guimenuitem>
+    </menuchoice>
+  </para></listitem>
+  <listitem><para><keycombo action="simul">&Alt;<keycap>F2</keycap></keycombo> will open a
+        <guimenuitem>Run Command</guimenuitem> dialog box,type &rekonq; (lower case) and press &Enter; or
+        the <guibutton>Run</guibutton> to start &rekonq;</para></listitem>
 </itemizedlist>
 </para>
 </sect1>
+</chapter>
+<!-- ================== CHAPTER ==================  -->
+
+<chapter id="Config-rekonq">
+<title>Configure &rekonq;</title>
+
+<sect1 id="General">
+
+<title>Do the general settings of &rekonq;</title>
+
+<para>
+You want to configure the general behavior of &rekonq;? You found the right place to get it explained.
+</para>
+
+<para>
+To open the general settings go to
+<menuchoice>
+<guimenuitem>Toolbutton</guimenuitem>
+<guisubmenu>Configure rekonq</guisubmenu>
+</menuchoice>
+</para>
+
+<para>
+<screenshot>
+<screeninfo>Now you should see this</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="general.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+<para>
+Here a List of configurable point and explanation for it:
+
+<itemizedlist>
+  <listitem> <para> <guimenuitem> When starting rekonq:</guimenuitem>  You can configure what &rekonq; should do on startup. </para> </listitem>
+  <listitem> <para> <guimenuitem> Home page URL:</guimenuitem>  You can either set your home page directly trought tipping the &URL; in. </para> </listitem>
+  <listitem> <para> <guimenuitem> Set to Current Page</guimenuitem> Sets your home page to the one you are visiting at the moment. </para> </listitem>
+  <listitem> <para> <guimenuitem> Default search engine:</guimenuitem> Here you can choose the search engine you like to be searched with as default. </para> </listitem>
+  <listitem> <para> <guimenuitem> Use KGet for downloading files</guimenuitem> This activates wether you want to download with <application>&kget;</application>. </para> </listitem>
+  <listitem> <para> <guimenuitem> List links with KGet</guimenuitem> ????? </para> </listitem>
+<!-- What does this? -->
+</itemizedlist>
+
+</para>
+
+</sect1>
+
+<sect1 id="Tabs">
+
+<title>Configure the Tabs settings</title>
+
+<para>
+<screenshot>
+<screeninfo>Now you should see this</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="tabs.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+</sect1>
+
+<sect1 id="Fonts">
+
+<title>Configure the Fonts settings</title>
+
+<para>
+<screenshot>
+<screeninfo>Now you should see this</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="fonts.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+</sect1>
+
+<sect1 id="Webkit">
+
+<title>Configure the Webkit settings</title>
+
+<para>
+<screenshot>
+<screeninfo>Now you should see this</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="webkit.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+</sect1>
+
+<sect1 id="Network">
+
+<title>Network configuration</title>
+
+<sect2 id="Cookies">
+
+<title>Handling of Cookies with &rekonq;</title>
+
+<para>
+<screenshot>
+<screeninfo>This is a screenshot of the cookie settings dialog</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="cookies.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+<para>
+As you can see the Cookies can be configured in many ways.
+</para>
+
+<para>
+&rekonq; can handel Cookies in three ways
+<itemizedlist>
+<listitem><para>"Ask for Confirmation"</para></listitem>
+</itemizedlist>
+</para>
+</sect2>
+
+<sect2 id="Rest">
+
+<title>Rest</title>
+
+<para>
+<screenshot>
+<screeninfo>Now you should see this</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="cache.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+<para>
+<screenshot>
+<screeninfo>Now you should see this</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="proxy.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+</sect2>
+
+</sect1>
+
+<sect1 id="AdBlock">
+
+<title>Configure the Adblock settings</title>
+
+<para>
+<screenshot>
+<screeninfo>Now you should see this</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="automatic_fiters.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+<para>
+<screenshot>
+<screeninfo>Now you should see this</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="own_filter.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+</sect1>
+
+<sect1 id="WebShortcut">
+
+<title>Configure the Shortcut settings</title>
+
+<para>
+<screenshot>
+<screeninfo>Now you should see this</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="shortcuts.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+</sect1>
+
+<sect1>
+
+<title>Configure the Web Shortcuts settings</title>
+
+<para>
+<screenshot>
+<screeninfo>Now you should see this</screeninfo>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="webshortcuts.png" format="PNG"/>
+	  </imageobject>
+	  <textobject>
+	    <phrase>Screenshot</phrase>
+	  </textobject>
+	</mediaobject>
+
+</screenshot>
+</para>
+
+</sect1>
+
 </chapter>
 
 <!-- ================== CHAPTER ==================  -->
@@ -162,12 +456,14 @@ Program copyright:
 Documentation copyright 2008 &Andrea.Diamantini; &Andrea.Diamantini.mail;
 </para>
 <para>
-Documentation copyright 2009 &Rohan.Garg; &Rohan.Garg.mail;
+Documentation copyright 2009-2010 &Rohan.Garg; &Rohan.Garg.mail;
+</para>
+<para>
+Documentation copyright 2010 &Jonathan.Kolberg; &Jonathan.Kolberg.mail;
 </para>
 
 
 <!--TRANS:CREDIT_FOR_TRANSLATORS-->
-
 &underFDL;               <!-- FDL: do not remove -->
 &underGPL;        <!-- GPL License -->
 
