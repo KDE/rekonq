@@ -71,7 +71,7 @@ public:
 
     MainView *mainView() const;
     WebTab *currentTab() const;
-    QAction *actionByName(const QString name);
+    QAction *actionByName(const QString &name);
     virtual QSize sizeHint() const;
     virtual KActionCollection *actionCollection() const;
     void setWidgetsVisible(bool makeFullScreen);

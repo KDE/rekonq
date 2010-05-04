@@ -63,28 +63,22 @@
 
 WebTab::WebTab(QWidget *parent)
         : QWidget(parent)
+        , _view(new WebView(this))
         , m_progress(0)
 {
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
     QVBoxLayout *l = new QVBoxLayout(this);
     l->setMargin(0);
     l->setSpacing(0);
 
-    QWidget *messageBar = new QWidget(this);
-    l->addWidget(messageBar);
-    messageBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    QVBoxLayout *l2 = new QVBoxLayout(messageBar);
-    l2->setMargin(0);
-    l2->setSpacing(0);
-
-    WebView *view = new WebView(this);
-    l->addWidget(view);
-    view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    l->addWidget(_view);
+    _view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // fix focus handling
-    setFocusProxy(view);
+    setFocusProxy(_view);
 
-    KWebWallet *wallet = view->page()->wallet();
+    KWebWallet *wallet = _view->page()->wallet();
 
     if (wallet)
     {
@@ -92,8 +86,8 @@ WebTab::WebTab(QWidget *parent)
                 this, SLOT(createWalletBar(const QString &, const QUrl &)));
     }
 
-    connect(view, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
-    connect(view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
+    connect(_view, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
+    connect(_view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 }
 
 
@@ -104,8 +98,7 @@ WebTab::~WebTab()
 
 WebView *WebTab::view()
 {
-    WebView *view = qobject_cast<WebView *>(layout()->itemAt(1)->widget());
-    return view;
+    return _view;
 }
 
 
@@ -168,11 +161,9 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
         return;
 
     KWebWallet *wallet = page()->wallet();
-    QWidget *messageBar = layout()->itemAt(0)->widget();
-
-    WalletBar *walletBar = new WalletBar(messageBar);
+    WalletBar *walletBar = new WalletBar(this);
     walletBar->onSaveFormData(key, url);
-    messageBar->layout()->addWidget(walletBar);
+    qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, walletBar);
 
     connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)),
             wallet, SLOT(acceptSaveFormDataRequest(const QString &)));
@@ -183,10 +174,9 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
 
 void WebTab::createPreviewSelectorBar(int index)
 {
-    QWidget *messageBar = layout()->itemAt(0)->widget();
-    PreviewSelectorBar *bar = new PreviewSelectorBar(index, messageBar);
-    messageBar->layout()->addWidget(bar);
-
+    PreviewSelectorBar *bar = new PreviewSelectorBar(index, this);
+    qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, bar);
+    
     connect(page(), SIGNAL(loadStarted()), bar, SLOT(loadProgress()));
     connect(page(), SIGNAL(loadProgress(int)), bar, SLOT(loadProgress()));
     connect(page(), SIGNAL(loadFinished(bool)), bar, SLOT(loadFinished()));
@@ -211,7 +201,7 @@ void WebTab::showRSSInfo(QPoint pos)
     col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
 
     QMap<KUrl, QString> map;
-    int i = 0;
+    
     foreach(QWebElement el, col)
     {
         QString urlString;
@@ -232,8 +222,6 @@ void WebTab::showRSSInfo(QPoint pos)
             title = el.attribute("href");
 
         map.insert(KUrl(urlString), title);
-
-        i++;
     }
 
     RSSWidget *widget = new RSSWidget(map, window());

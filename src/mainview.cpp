@@ -102,6 +102,8 @@ MainView::MainView(MainWindow *parent)
 
 MainView::~MainView()
 {
+    delete _bars;
+    delete m_addTabButton;
 }
 
 

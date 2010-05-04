@@ -330,7 +330,7 @@ void BookmarksTreeModel::populate(BtmItem *node, KBookmarkGroup bmg)
 }
 
 
-KBookmark BookmarksTreeModel::bookmarkForIndex(const QModelIndex index) const
+KBookmark BookmarksTreeModel::bookmarkForIndex(const QModelIndex &index) const
 {
     return static_cast<BtmItem*>(index.internalPointer())->getBkm();
 }

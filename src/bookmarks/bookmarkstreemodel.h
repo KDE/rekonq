@@ -97,7 +97,7 @@ private:
     void resetModel();
     void setRoot(KBookmarkGroup bmg);
     void populate(BtmItem *node, KBookmarkGroup bmg);
-    KBookmark bookmarkForIndex(const QModelIndex index) const;
+    KBookmark bookmarkForIndex(const QModelIndex &index) const;
 };
 
 #endif // BOOKMARKSTREEMODEL_H

@@ -40,6 +40,8 @@ class BookmarkContextMenu : public KBookmarkContextMenu
 
 public:
     BookmarkContextMenu(const KBookmark & bk, KBookmarkManager * manager, KBookmarkOwner *owner, QWidget * parent = 0);
+    ~BookmarkContextMenu();
+    
     virtual void addActions();
 
 private slots:
@@ -59,6 +61,7 @@ private:
     void addFolderActions();
     void addBookmarkActions();
     void addSeparatorActions();
+
     KActionCollection *m_ac;
 };
 

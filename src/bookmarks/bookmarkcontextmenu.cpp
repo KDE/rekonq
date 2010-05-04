@@ -49,6 +49,12 @@ BookmarkContextMenu::BookmarkContextMenu(const KBookmark & bookmark, KBookmarkMa
 }
 
 
+BookmarkContextMenu::~BookmarkContextMenu()
+{
+    delete m_ac;
+}
+
+
 void BookmarkContextMenu::setupActions()
 {
     KAction* action;

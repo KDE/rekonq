@@ -68,6 +68,8 @@ private slots:
     void showRSSInfo(QPoint pos);
 
 private:
+    WebView *_view;
+    
     int m_progress;
 };
 

@@ -51,7 +51,7 @@
 
 
 
-RSSWidget::RSSWidget(QMap< KUrl, QString > map, QWidget *parent)
+RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
         : QFrame(parent, Qt::Popup)
         , m_map(map)
 {
@@ -87,23 +87,31 @@ RSSWidget::RSSWidget(QMap< KUrl, QString > map, QWidget *parent)
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
     buttonBox->button(QDialogButtonBox::Ok)->setText(i18n("Add Feed"));
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accepted()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     layout->addWidget(buttonBox);
 }
 
 
-void RSSWidget::showAt(QPoint pos)
+RSSWidget::~RSSWidget()
 {
-    pos.setX(pos.x() - 200);
-    pos.setY(pos.y() + 10);
-    move(pos);
+    delete m_agregators;
+    delete m_feeds;
+}
+
+
+void RSSWidget::showAt(const QPoint &pos)
+{
+    QPoint p;
+    p.setX(pos.x() - 200);
+    p.setY(pos.y() + 10);
+    move(p);
     show();
 }
 
 
-void RSSWidget::accepted()
+void RSSWidget::accept()
 {
     QString url = m_map.key(m_feeds->currentText()).toMimeDataString();
 
@@ -112,18 +120,25 @@ void RSSWidget::accepted()
     else
         addWithGoogleReader(url);
 
-    close();
+    reject();
 }
 
 
-void RSSWidget::addWithGoogleReader(QString url)
+void RSSWidget::reject()
+{
+    close();
+    this->deleteLater();
+}
+
+
+void RSSWidget::addWithGoogleReader(const QString &url)
 {
     KUrl toLoad = KUrl("http://www.google.com/ig/add?feedurl=" + url);
     Application::instance()->mainWindow()->currentTab()->view()->load(toLoad);
 }
 
 
-void RSSWidget::addWithAkregator(QString url)
+void RSSWidget::addWithAkregator(const QString &url)
 {
     // Akregator is running
     if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.akregator"))
@@ -151,4 +166,3 @@ void RSSWidget::addWithAkregator(QString url)
 
     }
 }
-

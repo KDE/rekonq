@@ -122,44 +122,39 @@ void HistoryPanel::setup()
 
 void HistoryPanel::contextMenuItem(const QPoint &pos)
 {
-    KMenu *menu = new KMenu(this);
+    KMenu menu;
     KAction* action;
 
     action = new KAction(KIcon("tab-new"), i18n("Open"), this);
     connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInCurrentTab()));
-    menu->addAction(action);
+    menu.addAction(action);
 
     action = new KAction(KIcon("tab-new"), i18n("Open in New Tab"), this);
     connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInNewTab()));
-    menu->addAction(action);
+    menu.addAction(action);
 
     action = new KAction(KIcon("window-new"), i18n("Open in New Window"), this);
     connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInNewWindow()));
-    menu->addAction(action);
+    menu.addAction(action);
 
     action = new KAction(KIcon("edit-copy"), i18n("Copy Link Address"), this);
     connect(action, SIGNAL(triggered()), m_treeView, SLOT(copyToClipboard()));
-    menu->addAction(action);
+    menu.addAction(action);
 
-    if (!menu)
-        return;
-    menu->popup(m_treeView->mapToGlobal(pos));
+    menu.exec(m_treeView->mapToGlobal(pos));
 }
 
 
 void HistoryPanel::contextMenuGroup(const QPoint &pos)
 {
-    KMenu *menu = new KMenu(this);
+    KMenu menu;
     KAction* action;
 
     action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(openAll()));
+    menu.addAction(action);
 
-    menu->addAction(action);
-
-    if (!menu)
-        return;
-    menu->popup(m_treeView->mapToGlobal(pos));
+    menu.exec(m_treeView->mapToGlobal(pos));
 }
 
 

@@ -46,16 +46,18 @@ class RSSWidget : public QFrame
 
 public:
     // QMap< feedUrl, feedTitle>
-    RSSWidget(QMap<KUrl, QString> map, QWidget *parent);
+    RSSWidget(const QMap<KUrl, QString> &map, QWidget *parent = 0);
+    ~RSSWidget();
+    
+    void showAt(const QPoint &pos);
 
-    void showAt(QPoint pos);
-
-public slots:
-    void accepted();
-
+private slots:
+    void accept();
+    void reject();
+    
 private:
-    void addWithAkregator(QString url);
-    void addWithGoogleReader(QString url);
+    void addWithAkregator(const QString &url);
+    void addWithGoogleReader(const QString &url);
 
     QMap<KUrl, QString> m_map;
 

@@ -157,8 +157,27 @@ MainWindow::~MainWindow()
 {
     Application::bookmarkProvider()->removeToolBar(m_bmBar);
     Application::instance()->removeMainWindow(this);
-    delete m_popup;
+    
+    delete m_view;
+    delete m_findBar;
+
+    delete m_historyPanel;
+    delete m_bookmarksPanel;
+    delete m_webInspectorPanel;
+
+    delete m_stopReloadAction;
+    delete m_historyBackMenu;
     delete m_encodingMenu;
+
+    delete m_mainBar;
+    delete m_bmBar;
+
+    delete m_zoomSlider;
+
+    delete m_popup;
+    delete m_hidePopup;
+
+    delete m_ac;
 }
 
 
@@ -168,7 +187,7 @@ void MainWindow::setupToolbars()
     m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Back)));
     m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Forward)));
     m_mainBar->addSeparator();
-    m_mainBar->addAction(actionByName("stop_reload"));
+    m_mainBar->addAction(actionByName( QL1S("stop_reload") ));
     m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Home)));
 
     // location bar
@@ -176,8 +195,8 @@ void MainWindow::setupToolbars()
     urlBarAction->setDefaultWidget(m_view->urlBarWidget());
     m_mainBar->addAction(urlBarAction);
 
-    m_mainBar->addAction(actionByName("bookmarksActionMenu"));
-    m_mainBar->addAction(actionByName("rekonq_tools"));
+    m_mainBar->addAction(actionByName( QL1S("bookmarksActionMenu") ));
+    m_mainBar->addAction(actionByName( QL1S("rekonq_tools") ));
 
     m_mainBar->show();  // this just to fix reopening rekonq after fullscreen close
 
@@ -691,7 +710,7 @@ void MainWindow::privateBrowsing(bool enable)
         }
         else
         {
-            actionCollection()->action("private_browsing")->setChecked(false);
+            actionCollection()->action( QL1S("private_browsing") )->setChecked(false);
         }
     }
     else
@@ -1014,7 +1033,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 }
 
 
-QAction *MainWindow::actionByName(const QString name)
+QAction *MainWindow::actionByName(const QString &name)
 {
     QAction *ret = actionCollection()->action(name);
 

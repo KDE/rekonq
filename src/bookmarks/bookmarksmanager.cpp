@@ -302,6 +302,8 @@ BookmarkProvider::~BookmarkProvider()
     delete m_actionCollection;
     delete m_owner;
     delete m_manager;
+
+    delete m_completion;
 }
 
 
@@ -363,11 +365,8 @@ void BookmarkProvider::contextMenu(const QPoint &point)
     if (!action)
         return;
 
-    KMenu *menu = new BookmarkContextMenu(action->bookmark(), bookmarkManager(), bookmarkOwner());
-    if (!menu)
-        return;
-
-    menu->popup(bookmarkToolBar->mapToGlobal(point));
+    BookmarkContextMenu menu(action->bookmark(), bookmarkManager(), bookmarkOwner());
+    menu.exec(bookmarkToolBar->mapToGlobal(point));
 }
 
 

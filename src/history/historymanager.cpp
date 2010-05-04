@@ -94,6 +94,12 @@ HistoryManager::~HistoryManager()
 {
     m_saveTimer->saveIfNeccessary();
     delete m_completion;
+
+    delete m_saveTimer;
+
+    delete m_historyModel;
+    delete m_historyFilterModel;
+    delete m_historyTreeModel;
 }
 
 

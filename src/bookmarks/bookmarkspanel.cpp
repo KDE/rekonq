@@ -188,8 +188,13 @@ void BookmarksPanel::contextMenu(const QPoint &pos)
 
     KBookmark selected = bookmarkForIndex(index);
 
-    BookmarkContextMenu *menu = new BookmarkContextMenu(selected, Application::bookmarkProvider()->bookmarkManager(), Application::bookmarkProvider()->bookmarkOwner(), this);
-    menu->popup(m_treeView->mapToGlobal(pos));
+    BookmarkContextMenu menu( selected, 
+                              Application::bookmarkProvider()->bookmarkManager(), 
+                              Application::bookmarkProvider()->bookmarkOwner(), 
+                              this
+                            );
+                            
+    menu.exec(m_treeView->mapToGlobal(pos));
 }
 
 

@@ -73,6 +73,7 @@ ProtocolHandler::ProtocolHandler(QObject *parent)
 
 ProtocolHandler::~ProtocolHandler()
 {
+    delete _lister;
 }
 
 
@@ -189,6 +190,9 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
         QFileInfo fileInfo(_url.path());
         if (fileInfo.isDir())
         {
+            if(_lister)
+                delete _lister;
+            
             _lister = new KDirLister;
             connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
@@ -209,15 +213,16 @@ void ProtocolHandler::showResults(const KFileItemList &list)
     if (!_lister->rootItem().isNull() && _lister->rootItem().isReadable() && _lister->rootItem().isFile())
     {
         emit downloadUrl(_lister->rootItem().url());
-        return;
     }
+    else
+    {
+        QString html = dirHandling(list);
+        _frame->setHtml(html, _url);
 
-    QString html = dirHandling(list);
-    _frame->setHtml(html, _url);
-
-    Application::instance()->mainWindow()->currentTab()->setFocus();
-    Application::historyManager()->addHistoryEntry(_url.prettyUrl());
-
+        Application::instance()->mainWindow()->currentTab()->setFocus();
+        Application::historyManager()->addHistoryEntry(_url.prettyUrl());
+    }
+    
     delete _lister;
 }
 
@@ -308,6 +313,9 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
         KIO::UDSEntry entry = statJob->statResult();
         if (entry.isDir())
         {
+            if(_lister)
+                delete _lister;
+            
             _lister = new KDirLister;
             connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
