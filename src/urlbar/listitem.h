@@ -105,7 +105,7 @@ class IconLabel : public QLabel
     Q_OBJECT
 
 public:
-    IconLabel(const QString &icon, QWidget *parent = 0);
+    explicit IconLabel(const QString &icon, QWidget *parent = 0);
 };
 
 
@@ -117,7 +117,7 @@ class TextLabel : public QLabel
     Q_OBJECT
 
 public:
-    TextLabel(const QString &text, const QString &textToPointOut = QString(), QWidget *parent = 0);
+    explicit TextLabel(const QString &text, const QString &textToPointOut = QString(), QWidget *parent = 0);
 };
 
 

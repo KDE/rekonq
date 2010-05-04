@@ -54,7 +54,7 @@
 // 5. "fixhosturifilter"
 
 
-bool UrlSearchItem::operator==(const UrlSearchItem &i)
+bool UrlSearchItem::operator==(const UrlSearchItem &i) const
 {
     return url == i.url;
 }
