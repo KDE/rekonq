@@ -79,7 +79,7 @@ private slots:
     void updateImage(bool ok);
 
 private:
-    QString errorPage(QNetworkReply *);
+    QString errorPage(QNetworkReply *reply);
     QUrl _loadingUrl;
 
     ProtocolHandler _protHandler;

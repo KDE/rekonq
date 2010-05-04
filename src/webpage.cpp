@@ -236,7 +236,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     // NOTE
     // This is probably needed just in ONE stupid case..
     if (_protHandler.postHandling(reply->request(), mainFrame()))
-        return;
+        return reply->deleteLater();
 
     if (reply->error() == QNetworkReply::NoError)
     {
@@ -255,7 +255,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             ? KMessageBox::sorry(view(), i18n("No service can handle this :("))
             : downloadRequest(reply->request());
 
-            return;
+            return reply->deleteLater();
         }
 
         if (!isLocal)
@@ -267,10 +267,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             case KParts::BrowserOpenOrSaveQuestion::Save:
                 kDebug() << "service handling: download!";
                 downloadRequest(reply->request());
-                return;
+                return reply->deleteLater();
 
             case KParts::BrowserOpenOrSaveQuestion::Cancel:
-                return;
+                return reply->deleteLater();
 
             default: // non extant case
                 break;
@@ -306,7 +306,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             KRun::run(*appService, url, 0);
         }
 
-        return;
+        return; // FIXME: crash reply->deleteLater();
     }
 }
 
@@ -386,6 +386,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         break;
 
     }
+    reply->deleteLater();
 }
 
 
