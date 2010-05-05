@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,38 +24,46 @@
 * ============================================================ */
 
 
-#ifndef NETWORKACCESSMANAGER_H
-#define NETWORKACCESSMANAGER_H
+#ifndef ANALYZER_PANEL_H
+#define ANALYZER_PANEL_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
 // Local Includes
-#include "webpage.h"
+#include "mainwindow.h"
 
-// KDE Includes
-#include <kio/accessmanager.h>
+// Qt Includes
+#include <QDockWidget>
+
+// Forward Declarations
+class NetworkAnalyzer;
 
 
-using namespace KIO::Integration;
-
-
-class REKONQ_TESTS_EXPORT NetworkAccessManager : public AccessManager
+/**
+    Docked network analyzer
+    behaviour : hide/show by tab, not globally
+*/
+class REKONQ_TESTS_EXPORT NetworkAnalyzerPanel : public QDockWidget
 {
     Q_OBJECT
-
 public:
-    NetworkAccessManager(QObject *parent);
+    NetworkAnalyzerPanel(const QString &title, QWidget *parent);
+    ~NetworkAnalyzerPanel();
+
+    
+public slots:
+    void toggle(bool enable);
+    void changeCurrentPage();
 
 protected:
-    virtual QNetworkReply *createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData = 0);
+    virtual void closeEvent(QCloseEvent *event);
 
-signals:
-    void networkData(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QNetworkReply *reply); 
+    MainWindow *mainWindow();
 
 private:
-    QByteArray _acceptLanguage;
+    NetworkAnalyzer *_viewer;
 };
 
-#endif // NETWORKACCESSMANAGER_H
+#endif // NET_ANALYZER_PANEL_H

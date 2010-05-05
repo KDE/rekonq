@@ -278,5 +278,3 @@ void CompletionWidget::suggestUrls(const QString &text)
         popup();
     }
 }
-
-

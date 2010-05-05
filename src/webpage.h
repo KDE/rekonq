@@ -60,6 +60,9 @@ public:
     explicit WebPage(QWidget *parent = 0);
     ~WebPage();
 
+    bool hasNetworkAnalyzerEnabled() const;
+    void enableNetworkAnalyzer(bool);
+    
 public slots:
     virtual void downloadRequest(const QNetworkRequest &request);
     void downloadAllContentsWithKGet(QPoint);
@@ -84,6 +87,8 @@ private:
 
     ProtocolHandler _protHandler;
     WebSslInfo _sslInfo;
+    
+    bool _networkAnalyzer;
 };
 
 #endif

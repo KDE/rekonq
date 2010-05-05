@@ -47,6 +47,7 @@
 #include "urlbar.h"
 #include "tabbar.h"
 #include "adblockmanager.h"
+#include "analyzerpanel.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -99,6 +100,7 @@ MainWindow::MainWindow()
         , m_historyPanel(0)
         , m_bookmarksPanel(0)
         , m_webInspectorPanel(0)
+        , m_analyzerPanel(0)
         , m_historyBackMenu(0)
         , m_encodingMenu(new KMenu(this))
         , m_mainBar(new KToolBar(QString("MainToolBar"), this, Qt::TopToolBarArea, true, true, true))
@@ -494,9 +496,10 @@ void MainWindow::setupTools()
 
     toolsMenu->addSeparator();
 
-    KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Web Development"), this);
+    KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Development"), this);
     webMenu->addAction(actionByName(QL1S("web_inspector")));
     webMenu->addAction(actionByName(QL1S("page_source")));
+    webMenu->addAction(actionByName(QL1S("net_analyzer")));
     toolsMenu->addAction(webMenu);
 
     toolsMenu->addSeparator();
@@ -565,6 +568,19 @@ void MainWindow::setupPanels()
 
     addDockWidget(Qt::BottomDockWidgetArea, m_webInspectorPanel);
     m_webInspectorPanel->hide();
+    
+    // STEP 4
+    // Setup Network analyzer panel
+    m_analyzerPanel = new NetworkAnalyzerPanel( i18n("Network Analyzer"), this);
+    connect(mainView(), SIGNAL(currentChanged(int)), m_analyzerPanel, SLOT(changeCurrentPage()));
+
+    a = new KAction(KIcon("document-edit-decrypt-verify"), i18n("Network Analyzer"), this);
+    a->setCheckable(true);
+    actionCollection()->addAction(QL1S("net_analyzer"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(enableNetworkAnalysis(bool)));
+
+    addDockWidget(Qt::BottomDockWidgetArea, m_analyzerPanel);
+    m_analyzerPanel->hide();
 }
 
 
@@ -1261,4 +1277,11 @@ void MainWindow::populateEncodingMenu()
         if (currentCodec == codec)
             action->setChecked(true);
     }
+}
+
+
+void MainWindow::enableNetworkAnalysis(bool b)
+{
+    currentTab()->page()->enableNetworkAnalyzer(b);
+    m_analyzerPanel->toggle(b);
 }

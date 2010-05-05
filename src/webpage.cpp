@@ -101,6 +101,7 @@ static bool domainSchemeMatch(const QUrl& u1, const QUrl& u2)
 
 WebPage::WebPage(QWidget *parent)
         : KWebPage(parent, KWalletIntegration)
+        , _networkAnalyzer(false)
 {
     // ----- handling unsupported content...
     setForwardUnsupportedContent(true);
@@ -576,8 +577,6 @@ void WebPage::showSSLInfo(QPoint)
 }
 
 
-
-
 void WebPage::updateImage(bool ok)
 {
     if (ok)
@@ -585,4 +584,16 @@ void WebPage::updateImage(bool ok)
         NewTabPage p(mainFrame());
         p.snapFinished();
     }
+}
+
+
+bool WebPage::hasNetworkAnalyzerEnabled() const
+{
+    return _networkAnalyzer;
+}
+
+
+void WebPage::enableNetworkAnalyzer(bool b)
+{
+    _networkAnalyzer = b;
 }

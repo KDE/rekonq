@@ -47,6 +47,7 @@ class BookmarksPanel;
 class WebInspectorPanel;
 class WebTab;
 class MainView;
+class NetworkAnalyzerPanel;
 
 class KAction;
 class KPassivePopup;
@@ -159,6 +160,8 @@ private slots:
     void setEncoding(QAction *);
     void populateEncodingMenu();
 
+    void enableNetworkAnalysis(bool);
+    
 private:
     MainView *m_view;
     FindBar *m_findBar;
@@ -166,7 +169,8 @@ private:
     HistoryPanel *m_historyPanel;
     BookmarksPanel *m_bookmarksPanel;
     WebInspectorPanel *m_webInspectorPanel;
-
+    NetworkAnalyzerPanel *m_analyzerPanel;
+    
     KAction *m_stopReloadAction;
     KMenu *m_historyBackMenu;
     KMenu *m_encodingMenu;

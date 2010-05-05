@@ -54,6 +54,9 @@ SET( rekonq_KDEINIT_SRCS
     urlbar/urlresolver.cpp
     urlbar/listitem.cpp
     urlbar/rsswidget.cpp
+    #----------------------------------------
+    analyzer/analyzerpanel.cpp
+    analyzer/networkanalyzer.cpp
 )
 
 
@@ -78,6 +81,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/rekonqpage
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
+                        ${CMAKE_CURRENT_SOURCE_DIR}/analyzer
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}

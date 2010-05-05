@@ -39,6 +39,9 @@
 #include <KLocale>
 #include <KProtocolManager>
 
+// Qt Includes
+#include <QtNetwork/QNetworkReply>
+
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
         : AccessManager(parent)
@@ -53,7 +56,7 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 }
 
 
-QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &request, QIODevice *outgoingData)
+QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData)
 {
     WebPage *parentPage = qobject_cast<WebPage *>(parent());
 
@@ -89,9 +92,13 @@ QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkR
     if (op == QNetworkAccessManager::GetOperation)
     {
         reply = Application::adblockManager()->block(req, parentPage);
-        if (reply)
-            return reply;
     }
 
-    return AccessManager::createRequest(op, req, outgoingData);
+    if(!reply)
+        reply = AccessManager::createRequest(op, req, outgoingData);
+
+    if(parentPage->hasNetworkAnalyzerEnabled())
+        emit networkData( op, req, reply ); 
+
+    return reply;
 }
