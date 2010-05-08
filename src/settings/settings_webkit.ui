@@ -137,8 +137,8 @@
      <property name="title">
       <string>Plugin Settings</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="enabled">
          <bool>true</bool>
@@ -149,13 +149,28 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text">
          <string>When loading web pages:</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="1">
        <widget class="KComboBox" name="kcfg_pluginsEnabled">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <item>
          <property name="text">
           <string>Autoload Plugins</string>
@@ -181,15 +196,24 @@
      <property name="title">
       <string>User Style Sheet</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
        <widget class="QLabel" name="label">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text">
          <string>User CSS path:</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
-      <item>
+      <item row="0" column="1">
        <widget class="KUrlRequester" name="kcfg_userCSS">
         <property name="filter">
          <string>*.css</string>
