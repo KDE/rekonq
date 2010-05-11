@@ -279,9 +279,10 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
 
     menu.addAction(mainWindow->actionByName( QL1S("new_tab") ));
     menu.addAction(mainWindow->actionByName( QL1S("clone_tab") ));
-
     if (count() > 1)
         menu.addAction(mainWindow->actionByName( QL1S("detach_tab") ));
+    menu.addAction(mainWindow->actionByName( QL1S("open_closed_tabs") ));
+    menu.addAction(mainWindow->actionByName( QL1S("closed_tab_menu") ));
     menu.addSeparator();
     menu.addAction(mainWindow->actionByName( QL1S("close_tab") ));
     menu.addAction(mainWindow->actionByName( QL1S("close_other_tabs") ));
@@ -299,6 +300,8 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
     menu.addAction(mainWindow->actionByName( QL1S("new_tab") ));
+    menu.addAction(mainWindow->actionByName( QL1S("open_closed_tabs") ));
+    menu.addAction(mainWindow->actionByName( QL1S("closed_tab_menu") ));
     menu.addSeparator();
     menu.addAction(mainWindow->actionByName( QL1S("reload_all_tabs") ));
 

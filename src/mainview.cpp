@@ -637,6 +637,22 @@ void MainView::previousTab()
     setCurrentIndex(next);
 }
 
+void MainView::openClosedTabs()
+{
+    foreach (const HistoryItem &item, recentlyClosedTabs())
+    {
+        Application::instance()->loadUrl( KUrl(item.url), Rekonq::SettingOpenTab);
+    }
+}
+
+void MainView::openClosedTab()
+{
+    KAction *action = qobject_cast<KAction *>(sender());
+    if (action)
+    {
+        Application::instance()->loadUrl(action->data().toUrl(), Rekonq::SettingOpenTab);
+    }
+}
 
 QLabel *MainView::animatedLoading(int index, bool addMovie)
 {

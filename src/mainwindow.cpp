@@ -393,6 +393,16 @@ void MainWindow::setupActions()
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QL1S("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
+    
+    a = new KAction(KIcon("tab-new"), i18n("Open Closed Tabs"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
+    actionCollection()->addAction(QL1S("open_closed_tabs"), a);
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(openClosedTabs()));
+
+    // Closed Tabs Menu
+    KActionMenu *closedTabsMenu = new KActionMenu(KIcon("tab-new"), i18n("Closed Tabs"), this);
+    closedTabsMenu->setDelayed(false);
+    actionCollection()->addAction(QL1S("closed_tab_menu"), closedTabsMenu);
 
     // ============================== Indexed Tab Actions ====================================
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
@@ -634,6 +644,27 @@ void MainWindow::updateActions()
 
     QAction *historyForwardAction = actionByName(KStandardAction::name(KStandardAction::Forward));
     historyForwardAction->setEnabled(currentTab()->view()->history()->canGoForward());
+
+    QAction *openClosedTabsAction = actionByName(QLatin1String("open_closed_tabs"));
+    openClosedTabsAction->setEnabled(mainView()->recentlyClosedTabs().size() > 0);
+
+    // update closed tabs menu
+    KActionMenu *am = dynamic_cast<KActionMenu *>(actionByName(QLatin1String("closed_tab_menu")));
+    if (!am)
+        return;
+
+    am->setEnabled(mainView()->recentlyClosedTabs().size() > 0);
+
+    if (am->menu())
+        am->menu()->clear();
+
+    foreach (HistoryItem item, mainView()->recentlyClosedTabs())
+    {
+        KAction *a = new KAction(Application::icon(item.url), item.title, this);
+        a->setData(item.url);
+        connect(a, SIGNAL(triggered()), m_view, SLOT(openClosedTab()));
+        am->addAction(a);
+    }
 }
 
 
