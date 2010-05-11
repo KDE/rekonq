@@ -55,7 +55,7 @@
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Automatic update interval:</string>
+            <string>Automatic update interval (days):</string>
            </property>
           </widget>
          </item>
