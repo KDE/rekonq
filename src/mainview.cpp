@@ -109,6 +109,18 @@ MainView::~MainView()
 
 void MainView::postLaunch()
 {
+    QStringList list = Application::sessionManager()->closedSites();
+    foreach(const QString &line, list)
+    {
+        if(line.startsWith( QL1S("about") ))
+            break;
+        QString title = line;
+        QString url = title;
+        HistoryItem item(url, QDateTime::currentDateTime(), title);
+        m_recentlyClosedTabs.removeAll(item);
+        m_recentlyClosedTabs.prepend(item);
+    }
+    
     // Session Manager
     connect(this, SIGNAL(tabsChanged()), Application::sessionManager(), SLOT(saveSession()));
 
@@ -493,8 +505,7 @@ void MainView::closeTab(int index, bool del)
             return;
     }
 
-    // store close tab except homepage
-    if (!tab->url().prettyUrl().startsWith(QL1S("about:")) && !tab->url().isEmpty())
+    if (!tab->url().isEmpty())
     {
         QString title = tab->view()->title();
         QString url = tab->url().prettyUrl();

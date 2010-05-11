@@ -49,6 +49,8 @@ public:
     ~SessionManager();
     bool restoreSession();
 
+    QStringList closedSites();
+    
 private slots:
     void saveSession();
 

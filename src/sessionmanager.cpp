@@ -106,15 +106,44 @@ bool SessionManager::restoreSession()
         {
             line = in.readLine();
             kDebug() << "New Window line: " << line;
-            Application::instance()->loadUrl(line, Rekonq::NewWindow);
+            Application::instance()->loadUrl( KUrl(line), Rekonq::NewWindow);
         }
         else
         {
             kDebug() << "New Current Tab line: " << line;
-            Application::instance()->loadUrl(line, Rekonq::NewCurrentTab);
+            Application::instance()->loadUrl( KUrl(line), Rekonq::NewCurrentTab);
         }
     }
     while (!line.isEmpty());
 
     return true;
+}
+
+
+QStringList SessionManager::closedSites()
+{
+    QStringList list;
+    
+    QFile sessionFile(m_sessionFilePath);
+    if (!sessionFile.exists())
+        return list;
+    if (!sessionFile.open(QFile::ReadOnly))
+    {
+        kDebug() << "Unable to open session file" << sessionFile.fileName();
+        return list;
+    }
+
+    QTextStream in(&sessionFile);
+    QString line;
+    do
+    {
+        line = in.readLine();
+        if (line != QString("window"))
+        {
+            list << QString(line);
+        }
+    }
+    while (!line.isEmpty());
+
+    return list;
 }
