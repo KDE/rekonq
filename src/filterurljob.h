@@ -35,6 +35,7 @@
 
 // KDE Includes
 #include <KUrl>
+#include <KUriFilter>
 #include <ThreadWeaver/Job>
 
 // Qt Includes
@@ -59,6 +60,8 @@ private:
     WebView *_view;
     QString _urlString;
     KUrl _url;
+    KUriFilter *uriFilter;
+
 };
 
 #endif // FILTER_URL_JOB_H

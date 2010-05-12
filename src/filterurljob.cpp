@@ -28,15 +28,14 @@
 #include "filterurljob.h"
 
 // KDE Includes
-#include <KUriFilter>
 #include <KUriFilterData>
-
 
 FilterUrlJob::FilterUrlJob(WebView *view, const QString &urlString, QObject *parent)
         : Job(parent)
         , _view(view)
         , _urlString(urlString)
 {
+    uriFilter = KUriFilter::self();
 }
 
 
@@ -59,7 +58,7 @@ void FilterUrlJob::run()
     KUriFilterData data(_urlString);
     data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
 
-    if (KUriFilter::self()->filterUri(data) && data.uriType() != KUriFilterData::Error)
+    if (uriFilter->filterUri(data) && data.uriType() != KUriFilterData::Error)
     {
         QString tempUrlString = data.uri().url();
         _url = KUrl(tempUrlString);
