@@ -61,9 +61,10 @@ public:
         _searchEngine = engine;
     };
 
+    void suggestUrls(const QString &text);
+
 private slots:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton);
-    void suggestUrls(const QString &text);
 
 signals:
     void chosenUrl(const KUrl &, Rekonq::OpenType);

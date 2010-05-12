@@ -46,6 +46,7 @@ class QLinearGradient;
 class QWidget;
 class CompletionWidget;
 class WebTab;
+class QTimer;
 
 
 class IconButton : public QToolButton
@@ -97,6 +98,9 @@ private slots:
     void loadTyped(const QString &);
 
     void clearRightIcons();
+    
+    void detectTypedString(const QString &);
+    void suggest();
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -116,6 +120,8 @@ private:
 
     IconButton *_icon;
     IconButtonPointerList _rightIconsList;
+
+    QTimer *_suggestionTimer;
 };
 
 

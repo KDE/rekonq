@@ -75,6 +75,7 @@ UrlBar::UrlBar(QWidget *parent)
         , _tab(0)
         , _privateMode(false)
         , _icon(new IconButton(this))
+        , _suggestionTimer(new QTimer(this))
 {
     // initial style
     setStyleSheet(QString("UrlBar { padding: 0 0 0 %1px;} ").arg(_icon->sizeHint().width()));
@@ -108,6 +109,9 @@ UrlBar::UrlBar(QWidget *parent)
     // load typed urls
     connect(this, SIGNAL(returnPressed(const QString &)), this, SLOT(loadTyped(const QString &)));
 
+    _suggestionTimer->setSingleShot(true);
+    connect(_suggestionTimer, SIGNAL(timeout()), this, SLOT(suggest()));
+    
     activateSuggestions(true);
 }
 
@@ -316,11 +320,12 @@ void UrlBar::activateSuggestions(bool b)
             connect(_box.data(), SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), this, SLOT(activated(const KUrl &, Rekonq::OpenType)));
 
             // activate suggestions on edit text
-            connect(this, SIGNAL(textChanged(const QString &)), _box.data(), SLOT(suggestUrls(const QString &)));
+            connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(detectTypedString(const QString &)));
         }
     }
     else
     {
+        disconnect(this, SIGNAL(textChanged(const QString &)), this, SLOT(detectTypedString(const QString &)));
         removeEventFilter(_box.data());
         _box.data()->deleteLater();
     }
@@ -388,4 +393,21 @@ void UrlBar::resizeEvent(QResizeEvent *event)
 
     KLineEdit::resizeEvent(event);
 
+}
+
+
+void UrlBar::detectTypedString(const QString &typed)
+{
+    Q_UNUSED(typed);
+    
+    if(_suggestionTimer->isActive())
+        _suggestionTimer->stop();
+    _suggestionTimer->start(200);
+}
+
+
+void UrlBar::suggest()
+{
+    if(!_box.isNull())
+        _box.data()->suggestUrls( text() );
 }
