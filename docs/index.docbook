@@ -46,16 +46,21 @@
 
 <copyright>
 <year>2008</year>
-<year>2009-2010</year>
-<year>2010</year>
 <holder>&Andrea.Diamantini;</holder>
+</copyright>
+<copyright>
+<year>2009</year>
+<year>2010</year>
 <holder>&Rohan.Garg;</holder>
+</copyright>
+<copyright>
+<year>2010</year>
 <holder>&Jonathan.Kolberg;</holder>
 </copyright>
 
 <legalnotice>&FDLNotice;</legalnotice>
 
-<date>2010-05-01</date>
+<date>2010-05-07</date>
 <releaseinfo>0.5.0</releaseinfo>
 
 <abstract>
@@ -157,7 +162,7 @@ Its implementation is going to embrace &kde; technologies, in order to have a fu
     </menuchoice>
   </para></listitem>
   <listitem><para><keycombo action="simul">&Alt;<keycap>F2</keycap></keycombo> will open a
-        <guimenuitem>Run Command</guimenuitem> dialog box,type &rekonq; (lower case) and press &Enter; or
+        <guimenuitem>Run Command</guimenuitem> dialog box,type <userinput><command>rekonq</command></userinput> (lower case) and press &Enter; or
         the <guibutton>Run</guibutton> to start &rekonq;</para></listitem>
 </itemizedlist>
 </para>
@@ -200,17 +205,36 @@ To open the general settings go to
 </para>
 
 <para>
-Here a List of configurable point and explanation for it:
+Here a List of configurable points and explanation for it:
 
-<itemizedlist>
-  <listitem> <para> <guimenuitem> When starting rekonq:</guimenuitem>  You can configure what &rekonq; should do on startup. </para> </listitem>
-  <listitem> <para> <guimenuitem> Home page URL:</guimenuitem>  You can either set your home page directly trought tipping the &URL; in. </para> </listitem>
-  <listitem> <para> <guimenuitem> Set to Current Page</guimenuitem> Sets your home page to the one you are visiting at the moment. </para> </listitem>
-  <listitem> <para> <guimenuitem> Default search engine:</guimenuitem> Here you can choose the search engine you like to be searched with as default. </para> </listitem>
-  <listitem> <para> <guimenuitem> Use KGet for downloading files</guimenuitem> This activates wether you want to download with <application>&kget;</application>. </para> </listitem>
-  <listitem> <para> <guimenuitem> List links with KGet</guimenuitem> ????? </para> </listitem>
+<variablelist>
+  <varlistentry>
+    <term><guilabel>When starting rekonq:</guilabel></term>
+    <listitem> <para>You can configure what &rekonq; should do on startup.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Home page URL:</guilabel></term>
+    <listitem><para>You can either set your home page directly trought tipping the &URL; in.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guibutton>Set to Current Page</guibutton></term>
+    <listitem><para>Sets your home page to the one you are visiting at the moment.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Default search engine:</guilabel></term>
+    <listitem><para> Here you can choose the search engine you like to be searched with as default.</para> </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Use KGet for downloading files</guilabel></term>
+    <listitem><para>This activates the <application>&kget;</application> download integration. If this is active &rekonq; will download everything trough &kget;</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>List links with KGet</guilabel></term>
+    <listitem><para>?????</para></listitem>
+  </varlistentry>
+
 <!-- What does this? -->
-</itemizedlist>
+</variablelist>
 
 </para>
 
@@ -220,9 +244,19 @@ Here a List of configurable point and explanation for it:
 
 <title>Configure the Tabs settings</title>
 
+<para>Here you learn how to change the settings for tabs.</para>
+
+<para>To come to the dialog open 
+<menuchoice>
+<guimenuitem>Toolbutton</guimenuitem>
+<guisubmenu>Configure rekonq</guisubmenu>
+<guimenuitem>Tabs</guimenuitem>
+</menuchoice>
+</para>
+
 <para>
 <screenshot>
-<screeninfo>Now you should see this</screeninfo>
+<screeninfo>Now this dialog should appear</screeninfo>
 	<mediaobject>
 	  <imageobject>
 	    <imagedata fileref="tabs.png" format="PNG"/>
@@ -233,6 +267,38 @@ Here a List of configurable point and explanation for it:
 	</mediaobject>
 
 </screenshot>
+</para>
+
+<para>
+Here a List of configurable points and explanation for it:
+
+<variablelist>
+  <varlistentry>
+    <term><guilabel>Open links in new tab instead of in new window</guilabel></term>
+    <listitem><para>This enables thedefault opening of links in new tabs.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Always show tab bar</guilabel></term>
+    <listitem> <para>This forces &rekonq; to show the tab bar evan if there is only one tab.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Open new tabs in the background</guilabel></term>
+    <listitem> <para>This makes &rekonq; not swiching to new tabs.</para> </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Open new tabs after currently active one</guilabel></term>
+    <listitem> <para>This makes it to default that tabs are opened next to the currently active one.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Show preview when hovering tab</guilabel></term>
+    <listitem> <para>This shows you an preview of the contend of a tab if you hover it. This can be useful if you have many tabs opened. </para> </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Activate previously used tab when closing the current one</guilabel></term>
+    <listitem> <para>This makes &rekonq; storing you last opend tab and if you close you current one it will reopen the old one. This also can be useful if you use many tabs </para> </listitem>
+  </varlistentry>
+</variablelist>
+
 </para>
 
 </sect1>
@@ -254,6 +320,30 @@ Here a List of configurable point and explanation for it:
 	</mediaobject>
 
 </screenshot>
+</para>
+
+<para>
+
+Following will explain the configurable things and what they do
+<variablelist>
+  <varlistentry>
+    <term><guilabel>Standard font</guilabel></term>
+    <listitem><para>Here you can set your default font. The first part is the name of the font followed by the size of the font.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Fixed font</guilabel></term>
+    <listitem><para>Here you can set your font for &rekonq; labels. The same synopsis like Standard font.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Font size</guilabel></term>
+    <listitem><para>To configure your prefered size of font.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Minimal font size:</guilabel></term>
+    <listitem><para>You can configure the minimal size of fonts in &rekonq;. Every smaller font will grow to that size.</para></listitem>
+  </varlistentry>
+</variablelist>
+
 </para>
 
 </sect1>
@@ -360,7 +450,7 @@ As you can see the Cookies can be configured in many ways.
 <screeninfo>Now you should see this</screeninfo>
 	<mediaobject>
 	  <imageobject>
-	    <imagedata fileref="automatic_fiters.png" format="PNG"/>
+	    <imagedata fileref="automatic_filters.png" format="PNG"/>
 	  </imageobject>
 	  <textobject>
 	    <phrase>Screenshot</phrase>
@@ -442,7 +532,7 @@ As you can see the Cookies can be configured in many ways.
 </para>
 
 <para>
-Program copyright:
+Program copyright: &underGPL;
 </para>
 
 <itemizedlist>
@@ -466,31 +556,97 @@ Documentation copyright 2010 &Jonathan.Kolberg; &Jonathan.Kolberg.mail;
 <!--TRANS:CREDIT_FOR_TRANSLATORS-->
 &underFDL;               <!-- FDL: do not remove -->
 &underBSDLicense;        <!-- BSD License -->
+<!-- Still needed? -->
 
 </chapter>
 
-<appendix id="Installation">
+<appendix id="installation">
 <title>Installation</title>
 
-<sect1 id="Getting-rekonq">
+<sect1 id="getting-rekonq">
 <title>How to obtain &rekonq;</title>
 <para>Stable Packages of &rekonq; can be downloaded via standard repositories of your distribution</para>
+
+<para>You also can compile &rekonq; yourself see <link linkend="compilation">Compilation and Installation</link> for that.</para>
 </sect1>
 
-<sect1 id="Requirements">
+<sect1 id="requirements">
 <title>Requirements</title>
 
-<para>
-In order to successfully use &rekonq;, you need at least &Qt; 4.6.x and &kde; 4.4.x.
-</para>
-
+<para>In order to successfully use &rekonq;, you need at least &Qt; 4.6.x and &kde; 4.4.x.</para>
 </sect1>
 
 <sect1 id="compilation">
 <title>Compilation and Installation</title>
-<para>If you wish to compile &rekonq;, go to
-<ulink url="http://techbase.kde.org/Projects/rekonq/Compiling_rekonq">The how to compile &rekonq; page</ulink>.
-<!-- TODO: add the instructions from the webpage above, to this docbook -->
+<para>If you wish to compile &rekonq;, you have to install the headers of kdelibs and you need git and the build essentials installed.</para>
+
+<para>Under Debian/Ubuntu you get those throught running</para>
+
+<para>
+  <userinput><command>sudo</command> <command>apt-get</command>
+    <option>install</option> <parameter>build-essential kdelibs5-dev git-core</parameter>
+  </userinput>
+</para>
+
+<para>Under OpenSuse you get those throught running</para>
+<para>
+  <userinput><command>sudo</command> <command>zypper</command>
+    <option>in</option> <parameter>libkde4-devel git-core gcc gcc-c++ make cmake</parameter>
+  </userinput>
+</para>
+
+<para>
+We will be using git, as the most recent code is available on the git repository. The gitorious page for rekonq can be found <ulink url="http://gitorious.org/rekonq">here</ulink>. Stable releases, can also be downloaded <ulink url="http://sourceforge.net/projects/rekonq/files/">here</ulink> in form of tarballs. 
+</para>
+
+<para>
+Now we need to checkout the latest code. To do so, in a terminal run:
+</para>
+
+<para>
+  <userinput>
+    <command>git</command> <option>clone</option> <parameter>git://gitorious.org/rekonq/mainline.git</parameter>
+  </userinput>
+</para>
+
+<para>
+To compile the code tip in the following
+</para>
+
+<para>
+  <userinput>
+    <command>cd</command> <parameter>directory_where_rekonq_source_code_is</parameter>
+  </userinput>
+</para>
+
+<para>
+  <userinput>
+    <command>mkdir</command> <parameter>build</parameter>
+  </userinput>
+</para>
+
+<para>
+  <userinput>
+    <command>cd</command> <parameter>build</parameter>
+  </userinput>
+</para>
+
+<para>
+  <userinput>
+    <command>cmake</command> <option>-DCMAKE_INSTALL_PREFIX=`<command>kde4-config</command> <option>--prefix</option>`</option> <parameter>..</parameter>
+  </userinput>
+</para>
+
+<para>
+  <userinput>
+    <command>make</command>
+  </userinput>
+</para>
+
+<para>
+  <userinput>
+    <command>sudo</command> <command>make</command> <parameter>install</parameter>
+  </userinput>
 </para>
 </sect1>
 
