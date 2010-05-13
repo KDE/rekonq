@@ -73,7 +73,6 @@ ProtocolHandler::ProtocolHandler(QObject *parent)
 
 ProtocolHandler::~ProtocolHandler()
 {
-    delete _lister;
 }
 
 
@@ -196,7 +195,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
             if(_lister)
                 delete _lister;
             
-            _lister = new KDirLister;
+            _lister = new KDirLister(this);
             connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
 
@@ -319,7 +318,7 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
             if(_lister)
                 delete _lister;
             
-            _lister = new KDirLister;
+            _lister = new KDirLister(this);
             connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
         }
