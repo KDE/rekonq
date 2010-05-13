@@ -43,6 +43,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QTreeWidget" name="treeWidget">
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
          <column>
           <property name="text">
            <string notr="true">1</string>
@@ -55,12 +61,15 @@
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Automatic update interval (days):</string>
+            <string>Update automatic filters every:</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QSpinBox" name="spinBox">
+           <property name="suffix">
+            <string> days</string>
+           </property>
            <property name="value">
             <number>7</number>
            </property>
