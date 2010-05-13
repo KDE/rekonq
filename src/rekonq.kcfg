@@ -34,18 +34,20 @@
     </entry>
 </group>
 
+
 <!-- New Tab Page Settings -->
-  <group name="NewTabPage">
+<group name="NewTabPage">
     <entry name="previewNames" type="StringList">
         <default>KDE Homepage,UserBase,rekonq site</default>
     </entry>
     <entry name="previewUrls" type="StringList">
         <default>http://www.kde.org,http://userbase.kde.org,http://rekonq.sourceforge.net</default>
     </entry>
-  </group>
+</group>
+
 
 <!-- General Settings -->
-  <group name="General">
+<group name="General">
     <entry name="startupBehaviour" type="Int">
         <default>1</default>
     </entry>
@@ -67,10 +69,11 @@
     <entry name="searchEngine" type="Int">
         <default>0</default>
     </entry>
-   </group>
+</group>
+
 
 <!-- Tabs Settings -->
-  <group name="Tabs">
+<group name="Tabs">
     <entry name="openTabNoWindow" type="Bool">
         <default>true</default>
     </entry>
@@ -89,99 +92,101 @@
     <entry name="closeTabSelectPrevious" type="Bool">
         <default>false</default>
     </entry>
-  </group>
+</group>
 
 
 <!-- Fonts Settings -->
-  <group name="Fonts">
+<group name="Fonts">
     <entry name="standardFont" type="Font">
-    <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont))</default>
+        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont))</default>
     </entry>
     <entry name="fixedFont" type="Font">
-    <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::FixedFont))</default>
+        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::FixedFont))</default>
     </entry>
     <entry name="fontSize" type="Int">
-    <default>16</default>
+        <default>16</default>
     </entry>
     <entry name="minFontSize" type="Int">
-    <default>8</default>
+        <default>8</default>
     </entry>
-  </group>
+</group>
+
 
 <!-- Privacy Settings -->
-    <group name="Privacy">
-        <entry name="expireHistory" type="Int">
-            <default>1</default>
-        </entry>
-    </group>
+<group name="Privacy">
+    <entry name="expireHistory" type="Int">
+        <default>1</default>
+    </entry>
+</group>
+
 
 <!-- WebKit Settings -->
-    <group name="Webkit">
-        <entry name="autoLoadImages" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="dnsPrefetch" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="javascriptEnabled" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="javaEnabled" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="pluginsEnabled" type="Int">
-            <default>0</default>
-        </entry>
-        <entry name="javascriptCanOpenWindows" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="javascriptCanAccessClipboard" type="Bool">
-            <default>false</default>
-        </entry>
-        <entry name="linksIncludedInFocusChain" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="zoomTextOnly" type="Bool">
-            <default>false</default>
-        </entry>
-        <entry name="printElementBackgrounds" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="offlineStorageDatabaseEnabled" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="offlineWebApplicationCacheEnabled" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="localStorageEnabled" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="userCSS" type="Url">
-            <default></default>
-        </entry>
-    </group>
+<group name="Webkit">
+    <entry name="autoLoadImages" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="dnsPrefetch" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="javascriptEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="javaEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="pluginsEnabled" type="Int">
+        <default>0</default>
+    </entry>
+    <entry name="javascriptCanOpenWindows" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="javascriptCanAccessClipboard" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="linksIncludedInFocusChain" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="zoomTextOnly" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="printElementBackgrounds" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="offlineStorageDatabaseEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="offlineWebApplicationCacheEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="localStorageEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="userCSS" type="Url">
+        <default></default>
+    </entry>
+</group>
 
 
 <!-- AdBlock Settings -->
-    <group name="AdBlock">
-        <entry name="adBlockEnabled" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="hideAdsEnabled" type="Bool">
-            <default>true</default>
-        </entry>
-        <entry name="subscriptionTitles" type="StringList">
-            <default>EasyList</default>
-        </entry>
-        <entry name="subscriptionLocations" type="StringList">
-            <default>https://easylist-downloads.adblockplus.org/easylist.txt</default>
-        </entry>
-        <entry name="lastUpdate" type="DateTime">
-            <default>QDateTime(QDate(2009,03,13))</default>
-        </entry>
-        <entry name="updateInterval" type="Int">
-            <default>7</default>
-        </entry>
-    </group>
+<group name="AdBlock">
+    <entry name="adBlockEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="hideAdsEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="subscriptionTitles" type="StringList">
+        <default>EasyList</default>
+    </entry>
+    <entry name="subscriptionLocations" type="StringList">
+        <default>https://easylist-downloads.adblockplus.org/easylist.txt</default>
+    </entry>
+    <entry name="lastUpdate" type="DateTime">
+        <default>QDateTime(QDate(2009,03,13))</default>
+    </entry>
+    <entry name="updateInterval" type="Int">
+        <default>7</default>
+    </entry>
+</group>
 
 </kcfg>

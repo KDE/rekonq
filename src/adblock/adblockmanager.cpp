@@ -80,9 +80,9 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
 
     // just to be sure..
     _isHideAdsEnabled = ReKonfig::hideAdsEnabled();
-
-    // local settings
-    KSharedConfig::Ptr config = KGlobal::config();
+    
+    // read settings
+    KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup rulesGroup(config, "rules");
     QStringList rules;
     rules = rulesGroup.readEntry("local-rules" , QStringList());
@@ -306,7 +306,7 @@ void AdBlockManager::saveRules(const QStringList &rules)
     QStringList titles = ReKonfig::subscriptionTitles();
     QString title = titles.at(_index) + "-rules";
 
-    KSharedConfig::Ptr config = KGlobal::config();
+    KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup cg(config , "rules");
     cg.writeEntry(title, cleanedRules);
 }
