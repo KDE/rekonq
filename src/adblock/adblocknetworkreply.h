@@ -71,7 +71,7 @@ class REKONQ_TESTS_EXPORT AdBlockNetworkReply : public QNetworkReply
 
 public:
     AdBlockNetworkReply(const QNetworkRequest &request, const QString &urlString, QObject *parent = 0);
-    void abort() {};
+    void abort();
 
 protected:
     qint64 readData(char *data, qint64 maxSize);

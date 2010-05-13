@@ -126,7 +126,7 @@ void AdBlockWidget::load()
     }
 
     // load local rules
-    KSharedConfig::Ptr config = KGlobal::config();
+    KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup localGroup(config, "rules");
     QStringList rules = localGroup.readEntry("local-rules" , QStringList());
     foreach(const QString &rule, rules)
@@ -138,7 +138,7 @@ void AdBlockWidget::load()
 
 void AdBlockWidget::loadRules(QTreeWidgetItem *item)
 {
-    KSharedConfig::Ptr config = KGlobal::config();
+    KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup localGroup(config, "rules");
 
     QString str = item->text(0) + "-rules";
@@ -157,7 +157,7 @@ void AdBlockWidget::save()
     int n;
 
     // local rules
-    KSharedConfig::Ptr config = KGlobal::config();
+    KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup localGroup(config , "rules");
 
     QStringList localRules;

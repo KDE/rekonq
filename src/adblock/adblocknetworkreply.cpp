@@ -75,6 +75,11 @@ AdBlockNetworkReply::AdBlockNetworkReply(const QNetworkRequest &request, const Q
 }
 
 
+void AdBlockNetworkReply::abort()
+{
+}
+
+
 qint64 AdBlockNetworkReply::readData(char *data, qint64 maxSize)
 {
     Q_UNUSED(data);

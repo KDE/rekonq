@@ -79,9 +79,6 @@ private:
     QString convertPatternToRegExp(const QString &wildcardPattern);
 
     QRegExp m_regExp;
-
-    // Rule Options
-    bool m_optionMatchRule;
 };
 
 
