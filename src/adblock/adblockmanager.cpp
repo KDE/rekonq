@@ -56,6 +56,9 @@ AdBlockManager::AdBlockManager(QObject *parent)
 
 AdBlockManager::~AdBlockManager()
 {
+    _whiteList.clear();
+    _blackList.clear();
+    _hideList.clear();
 }
 
 

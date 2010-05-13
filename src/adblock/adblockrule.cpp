@@ -61,7 +61,6 @@
 
 
 AdBlockRule::AdBlockRule(const QString &filter)
-        : m_optionMatchRule(false)
 {
     bool isRegExpRule = false;
 
@@ -91,7 +90,6 @@ AdBlockRule::AdBlockRule(const QString &filter)
     if (options.contains(QL1S("match-case")))
     {
         m_regExp.setCaseSensitivity(Qt::CaseSensitive);
-        m_optionMatchRule = true;
     }
 }
 
@@ -101,40 +99,7 @@ AdBlockRule::AdBlockRule(const QString &filter)
 // return true means "matched rule", so stop url!
 bool AdBlockRule::match(const QString &encodedUrl) const
 {
-    bool matched = m_regExp.indexIn(encodedUrl) != -1;
-
-// TODO: Reimplement this in rekonq 0.5 :)
-//
-//     if (matched && !m_options.isEmpty())
-//     {
-//         // we only support domain right now
-//         if (m_options.count() == 1)
-//         {
-//             foreach (const QString &option, m_options)
-//             {
-//                 if (option.startsWith( QL1S("domain=") ))
-//                 {
-//                     QUrl url = QUrl::fromEncoded(encodedUrl.toUtf8());
-//                     QString host = url.host();
-//                     QStringList domainOptions = option.mid(7).split( QL1C('|') );
-//                     foreach (QString domainOption, domainOptions)
-//                     {
-//                         bool negate = domainOption.at(0) == QL1C('~');
-//                         if (negate)
-//                             domainOption = domainOption.mid(1);
-//                         bool hostMatched = domainOption == host;
-//                         if (hostMatched && !negate)
-//                             return true;
-//                         if (!hostMatched && negate)
-//                             return true;
-//                     }
-//                 }
-//             }
-//         }
-//         return false;
-//     }
-
-    return matched;
+    return m_regExp.indexIn(encodedUrl) != -1;
 }
 
 
