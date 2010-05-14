@@ -63,7 +63,7 @@
 
 MainView::MainView(MainWindow *parent)
         : KTabWidget(parent)
-        , _bars(new QStackedWidget(this))
+        , _widgetBar(new StackedUrlBar(this))
         , m_addTabButton(0)
         , m_currentTabIndex(0)
         , m_parentWindow(parent)
@@ -91,7 +91,7 @@ MainView::MainView(MainWindow *parent)
     connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int)));
 
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)));
-    connect(tabBar, SIGNAL(tabMoved(int, int)),     this,   SLOT(movedTab(int, int)));
+    connect(tabBar, SIGNAL(tabMoved(int, int)),     _widgetBar, SLOT(moveBar(int, int)));
 
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
@@ -102,7 +102,7 @@ MainView::MainView(MainWindow *parent)
 
 MainView::~MainView()
 {
-    delete _bars;
+    delete _widgetBar;
     delete m_addTabButton;
 }
 
@@ -180,13 +180,13 @@ TabBar *MainView::tabBar() const
 
 UrlBar *MainView::urlBar() const
 {
-    return qobject_cast<UrlBar *>(_bars->widget(m_currentTabIndex));
+    return _widgetBar->urlBar(m_currentTabIndex);
 }
 
 
-QWidget *MainView::urlBarWidget() const
+StackedUrlBar *MainView::widgetBar() const
 {
-    return _bars;
+    return _widgetBar;
 }
 
 
@@ -293,7 +293,7 @@ void MainView::currentChanged(int index)
             this, SIGNAL(linkHovered(const QString&)));
 
     emit currentTitle(tab->view()->title());
-    _bars->setCurrentIndex(index);
+    _widgetBar->setCurrentIndex(index);
 
     // clean up "status bar"
     emit showStatusBarMessage(QString());
@@ -311,7 +311,7 @@ void MainView::currentChanged(int index)
 
     // set focus to the current webview
     if (tab->url().scheme() == QL1S("about"))
-        _bars->currentWidget()->setFocus();
+        _widgetBar->currentWidget()->setFocus();
     else
         tab->view()->setFocus();
 }
@@ -349,12 +349,12 @@ WebTab *MainView::newWebTab(bool focused, bool nearParent)
     if (nearParent)
     {
         insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
-        _bars->insertWidget(currentIndex() + 1, bar);
+        _widgetBar->insertWidget(currentIndex() + 1, bar);
     }
     else
     {
         addTab(tab, i18n("(Untitled)"));
-        _bars->addWidget(bar);
+        _widgetBar->addWidget(bar);
     }
     updateTabBar();
 
@@ -387,7 +387,7 @@ void MainView::newTab()
     default:
         break;
     }
-    _bars->currentWidget()->setFocus();
+    urlBar()->setFocus();
 }
 
 
@@ -521,8 +521,8 @@ void MainView::closeTab(int index, bool del)
     removeTab(index);
     updateTabBar();        // UI operation: do it ASAP!!
 
-    QWidget *urlbar = _bars->widget(index);
-    _bars->removeWidget(urlbar);
+    UrlBar *urlbar = _widgetBar->urlBar(index);
+    _widgetBar->removeWidget(urlbar);
 
     if (del)
     {
@@ -723,21 +723,12 @@ void MainView::detachTab(int index)
     else
     {
         QString label = tab->view()->title();
-        QWidget *bar = _bars->widget(index);
+        UrlBar *bar = _widgetBar->urlBar(index);
         closeTab(index, false);
 
         MainWindow *w = Application::instance()->newMainWindow(false);
         w->mainView()->addTab(tab, Application::icon(u), label);
-        QStackedWidget *stack = qobject_cast<QStackedWidget *>(w->mainView()->urlBarWidget());
-        stack->insertWidget(0, bar);
+        _widgetBar->insertWidget(0, bar);
         w->mainView()->updateTabBar();
     }
-}
-
-
-void MainView::movedTab(int from, int to)
-{
-    QWidget *bar = _bars->widget(from);
-    _bars->removeWidget(bar);
-    _bars->insertWidget(to, bar);
 }

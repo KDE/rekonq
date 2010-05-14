@@ -40,13 +40,13 @@
 #include "application.h"
 #include "historymanager.h"
 #include "mainwindow.h"
+#include "stackedurlbar.h"
 
 // KDE Includes
 #include <KTabWidget>
 
 // Qt Includes
 #include <QtGui/QToolButton>
-#include <QStackedWidget>
 
 // Forward Declarations
 class QUrl;
@@ -72,7 +72,7 @@ public:
     MainView(MainWindow *parent);
     ~MainView();
 
-    QWidget *urlBarWidget() const;
+    StackedUrlBar *widgetBar() const;
     UrlBar *urlBar() const;
     WebTab *webTab(int index) const;
 
@@ -151,7 +151,6 @@ private slots:
     void windowCloseRequested();
 
     void postLaunch();
-    void movedTab(int, int);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
@@ -174,7 +173,7 @@ private:
 
 // --------------------------------------------------------------------------
 
-    QStackedWidget *_bars;
+    StackedUrlBar *_widgetBar;
 
     QString m_loadingGitPath;
 

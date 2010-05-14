@@ -194,7 +194,7 @@ void MainWindow::setupToolbars()
 
     // location bar
     KAction *urlBarAction = new KAction(this);
-    urlBarAction->setDefaultWidget(m_view->urlBarWidget());
+    urlBarAction->setDefaultWidget(m_view->widgetBar());
     m_mainBar->addAction(urlBarAction);
 
     m_mainBar->addAction(actionByName( QL1S("bookmarksActionMenu") ));

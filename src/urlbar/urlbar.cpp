@@ -61,6 +61,7 @@ IconButton::IconButton(QWidget *parent)
     setCursor(Qt::ArrowCursor);
 }
 
+
 void IconButton::mouseReleaseEvent(QMouseEvent* event)
 {
     emit clicked(event->globalPos());
@@ -79,11 +80,6 @@ UrlBar::UrlBar(QWidget *parent)
 {
     // initial style
     setStyleSheet(QString("UrlBar { padding: 0 0 0 %1px;} ").arg(_icon->sizeHint().width()));
-
-    // cosmetic
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    setMinimumWidth(200);
-    setMinimumHeight(26);
 
     // doesn't show the clear button
     setClearButtonShown(false);
@@ -363,7 +359,8 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
 
     _rightIconsList << rightIcon;
     int iconsCount = _rightIconsList.count();
-    rightIcon->move(width() - 23*iconsCount, 6);
+    int iconHeight = (height() - 18) / 2;
+    rightIcon->move(width() - 23*iconsCount, iconHeight);
     rightIcon->show();
 
     return rightIcon;
@@ -379,7 +376,7 @@ void UrlBar::clearRightIcons()
 
 void UrlBar::resizeEvent(QResizeEvent *event)
 {
-    int newHeight = (height() - 19) / 2;
+    int newHeight = (height() - 18) / 2;
     _icon->move(4, newHeight);
 
     int iconsCount = _rightIconsList.count();

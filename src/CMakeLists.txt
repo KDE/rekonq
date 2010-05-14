@@ -49,6 +49,7 @@ SET( rekonq_KDEINIT_SRCS
     adblock/adblocknetworkreply.cpp
     adblock/adblockrule.cpp
     #----------------------------------------
+    urlbar/stackedurlbar.cpp
     urlbar/urlbar.cpp
     urlbar/completionwidget.cpp
     urlbar/urlresolver.cpp
