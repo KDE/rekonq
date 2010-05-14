@@ -97,7 +97,7 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     if(!reply)
         reply = AccessManager::createRequest(op, req, outgoingData);
 
-    if(parentPage->hasNetworkAnalyzerEnabled())
+    if(parentPage && parentPage->hasNetworkAnalyzerEnabled())
         emit networkData( op, req, reply ); 
 
     return reply;
