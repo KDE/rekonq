@@ -88,48 +88,45 @@ UrlSearchList UrlResolver::orderedSearchItems()
     }
 
     
-    if (_typedString.length() >= 2)
-    {      
-        int firstResults = list.count();
-        int checkPoint = 9 - firstResults;
+    int firstResults = list.count();
+    int checkPoint = 9 - firstResults;
 
-        UrlSearchList historyList = historyResolution();
-        int historyResults = historyList.count();
+    UrlSearchList historyList = historyResolution();
+    int historyResults = historyList.count();
 
-        UrlSearchList bookmarksList = bookmarksResolution();
-        int bookmarkResults = bookmarksList.count();
+    UrlSearchList bookmarksList = bookmarksResolution();
+    int bookmarkResults = bookmarksList.count();
 
-        if (historyResults + bookmarkResults > checkPoint)
-        {
-            historyList = historyList.mid(0, 3);
-            bookmarksList = bookmarksList.mid(0, 3);
-        }
+    if (historyResults + bookmarkResults > checkPoint)
+    {
+        historyList = historyList.mid(0, 3);
+        bookmarksList = bookmarksList.mid(0, 3);
+    }
 
-        QList<UrlSearchItem> common;
+    QList<UrlSearchItem> common;
 
-        foreach(UrlSearchItem i, historyList)
-        {
-            if (!bookmarksList.contains(i))
-            {
-                list << i;
-            }
-            else
-            {
-                i.type |= UrlSearchItem::Bookmark;
-                common << i;
-            }
-        }
-
-        foreach(const UrlSearchItem &i, common)
+    foreach(UrlSearchItem i, historyList)
+    {
+        if (!bookmarksList.contains(i))
         {
             list << i;
         }
-
-        foreach(const UrlSearchItem &i, bookmarksList)
+        else
         {
-            if (!common.contains(i))
-                list << i;
+            i.type |= UrlSearchItem::Bookmark;
+            common << i;
         }
+    }
+
+    foreach(const UrlSearchItem &i, common)
+    {
+        list << i;
+    }
+
+    foreach(const UrlSearchItem &i, bookmarksList)
+    {
+        if (!common.contains(i))
+            list << i;
     }
 
     list = placeTypedDomaineNameOnTop(list);

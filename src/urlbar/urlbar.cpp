@@ -398,7 +398,11 @@ void UrlBar::resizeEvent(QResizeEvent *event)
 
 void UrlBar::detectTypedString(const QString &typed)
 {
-    Q_UNUSED(typed);
+    if(typed.count() == 1)
+    {
+        QTimer::singleShot(0, this, SLOT(suggest()));
+        return;
+    }
     
     if(_suggestionTimer->isActive())
         _suggestionTimer->stop();
