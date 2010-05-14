@@ -90,9 +90,11 @@ public:
 
     void setPrivateMode(bool on);
 
+public slots:
+    void setQUrl(const QUrl &url);
+
 private slots:
     void activated(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
-    void setQUrl(const QUrl &url);
 
     void loadFinished();
     void loadTyped(const QString &);

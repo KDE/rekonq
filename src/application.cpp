@@ -319,6 +319,10 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         break;
     };
 
+
+    // rapidly show first loading url..
+    w->mainView()->urlBar()->setQUrl(url);
+    
     WebView *view = tab->view();
 
     if (view)

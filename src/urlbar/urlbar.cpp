@@ -190,7 +190,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     // you need this before our code to draw inside the line edit..
     KLineEdit::paintEvent(event);
 
-    if (text().isEmpty())
+    if( text().isEmpty() && progr == 0 )
     {
         QStyleOptionFrame option;
         initStyleOption(&option);
@@ -305,7 +305,7 @@ void UrlBar::loadFinished()
 
 void UrlBar::loadTyped(const QString &text)
 {
-    activated(KUrl(text));
+    activated( KUrl(text) );
 }
 
 
@@ -392,7 +392,6 @@ void UrlBar::resizeEvent(QResizeEvent *event)
     }
 
     KLineEdit::resizeEvent(event);
-
 }
 
 
