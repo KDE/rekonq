@@ -469,6 +469,10 @@ void MainView::closeTab(int index, bool del)
     if (count() == 1)
     {
         WebView *w = currentWebTab()->view();
+        
+        if( currentWebTab()->url().protocol() == QL1S("about") )
+            return;
+        
         switch (ReKonfig::newTabsBehaviour())
         {
         case 0: // new tab page
