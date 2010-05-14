@@ -35,6 +35,7 @@
 #include "application.h"
 #include "urlresolver.h"
 #include "searchengine.h"
+#include "urlbar.h"
 
 // KDE Includes
 #include <KGlobalSettings>
@@ -180,7 +181,8 @@ bool CompletionWidget::eventFilter(QObject *o, QEvent *e)
     if (wid && wid->isAncestorOf(_parent) && isVisible())
     {
         ListItem *child;
-
+        UrlBar *w;
+        
         if (type == QEvent::KeyPress)
         {
             QKeyEvent *ev = static_cast<QKeyEvent *>(e);
@@ -214,12 +216,21 @@ bool CompletionWidget::eventFilter(QObject *o, QEvent *e)
 
             case Qt::Key_Enter:
             case Qt::Key_Return:
-                child = findChild<ListItem *>(QString::number(_currentIndex));
-                emit chosenUrl(child->url(), Rekonq::CurrentTab);
+                w = qobject_cast<UrlBar *>(parent());               
+                if(w->text() == _typedString)
+                {
+                    child = findChild<ListItem *>(QString::number(_currentIndex));
+                    emit chosenUrl(child->url(), Rekonq::CurrentTab);
+                }
+                else
+                {
+                    // this will be used just on fast typing..
+                    emit chosenUrl(KUrl(w->text()), Rekonq::CurrentTab);
+                }
                 ev->accept();
                 hide();
                 return true;
-
+                
             case Qt::Key_Escape:
                 hide();
                 return true;
@@ -259,6 +270,8 @@ void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button)
 
 void CompletionWidget::suggestUrls(const QString &text)
 {
+    _typedString = text;
+    
     QWidget *w = qobject_cast<QWidget *>(parent());
     if (!w->hasFocus())
         return;

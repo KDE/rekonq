@@ -296,6 +296,7 @@ QString SearchListItem::searchItemTitle(QString engine, QString text)
     return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, text));
 }
 
+
 void SearchListItem::changeSearchEngine(KService::Ptr engine)
 {
     m_titleLabel->setText(searchItemTitle(engine->name(), m_text));

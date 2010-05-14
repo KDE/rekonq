@@ -85,6 +85,8 @@ private:
     int _currentIndex;
 
     KService::Ptr _searchEngine;
+
+    QString _typedString;
 };
 
 #endif // COMPLETION_WIDGET_H

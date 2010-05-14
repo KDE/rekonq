@@ -222,7 +222,7 @@ UrlSearchList UrlResolver::bookmarksResolution()
 
 UrlSearchList UrlResolver::placeTypedDomaineNameOnTop(UrlSearchList list)
 {
-    int i=0;
+    int i = 0;
     bool found = false;
 
     while(i<list.count() && !found)
@@ -239,4 +239,3 @@ UrlSearchList UrlResolver::placeTypedDomaineNameOnTop(UrlSearchList list)
     
     return list;
 }
-
