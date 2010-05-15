@@ -85,7 +85,14 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString
 void CompletionWidget::sizeAndPosition()
 {
     setFixedWidth(_parent->width());
-    adjustSize();
+
+    int h=0;
+    for (int i = 0; i < layout()->count(); i++)
+    {
+        QWidget *widget = layout()->itemAt(i)->widget();
+        h += widget->sizeHint().height();
+    }
+    setFixedSize(_parent->width(),h+5);
 
     // position
     QPoint p = _parent->mapToGlobal(QPoint(0, 0));

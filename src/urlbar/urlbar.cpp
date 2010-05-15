@@ -402,7 +402,7 @@ void UrlBar::detectTypedString(const QString &typed)
     
     if(_suggestionTimer->isActive())
         _suggestionTimer->stop();
-    _suggestionTimer->start(150);
+    _suggestionTimer->start(50);
 }
 
 
