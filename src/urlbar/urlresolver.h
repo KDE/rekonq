@@ -45,6 +45,7 @@ public:
 
     enum types
     {
+        Undefined       = 0x00000000,
         Search          = 0x00000001,
         Browse          = 0x00000010,
         History         = 0x00000100,
@@ -54,7 +55,15 @@ public:
     int type;
     KUrl url;
     QString title;
-
+    
+    UrlSearchItem(const UrlSearchItem &item)
+    : type(item.type), url(item.url), title(item.title)
+    {};
+    
+    UrlSearchItem()
+    : type(UrlSearchItem::Undefined), url(KUrl()), title("")
+    {};
+    
     UrlSearchItem(const int &_type, const KUrl &_url, const QString &_title = QString())
             : type(_type), url(_url), title(_title)
     {};
@@ -82,7 +91,7 @@ private:
     UrlSearchList historyResolution();
     UrlSearchList qurlFromUserInputResolution();
     UrlSearchList bookmarksResolution();
-    UrlSearchList placeTypedDomaineNameOnTop(UrlSearchList list);
+    UrlSearchItem privilegedItem(UrlSearchList* list);
      
     static QRegExp _browseRegexp;
 };

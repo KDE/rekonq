@@ -140,11 +140,22 @@ UrlSearchList UrlResolver::orderedSearchItems()
     int firstResults = list.count();
     int checkPoint = 9 - firstResults;
 
-    UrlSearchList historyList = historyResolution();
-    int historyResults = historyList.count();
-
-    UrlSearchList bookmarksList = bookmarksResolution();
+    UrlSearchList bookmarksList = bookmarksResolution(); 
+    UrlSearchItem privileged = privilegedItem(&bookmarksList);
     int bookmarkResults = bookmarksList.count();
+    
+    UrlSearchList historyList = historyResolution();
+    if (privileged.type == UrlSearchItem::Undefined)
+    {
+        privileged = privilegedItem(&historyList);
+    }
+    
+    if (privileged.type != UrlSearchItem::Undefined)
+    {
+        list.insert(0,privileged);
+    }
+
+    int historyResults = historyList.count();
 
     if (historyResults + bookmarkResults > checkPoint)
     {
@@ -177,8 +188,6 @@ UrlSearchList UrlResolver::orderedSearchItems()
         if (!common.contains(i))
             list << i;
     }
-
-    list = placeTypedDomaineNameOnTop(list);
 
     return list;
 }
@@ -246,22 +255,19 @@ UrlSearchList UrlResolver::bookmarksResolution()
 }
 
 
-UrlSearchList UrlResolver::placeTypedDomaineNameOnTop(UrlSearchList list)
+UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
 {
-    int i = 0;
-    bool found = false;
-
-    while(i<list.count() && !found)
+    int i=0;
+    while(i<list->count())
     {
-        UrlSearchItem item = list.at(i);
+        UrlSearchItem item = list->at(i);
         if (item.url.url().contains("."+_typedString+".") || item.url.url().contains("/"+_typedString+"."))
         {
-            list.removeAt(i);
-            list.insert(0,item);
-            found = true;
+            list->removeAt(i);
+            return item;
         }
         i++;
     }
-    
-    return list;
+    return UrlSearchItem();
 }
+
