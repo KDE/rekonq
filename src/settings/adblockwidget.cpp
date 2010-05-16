@@ -108,6 +108,9 @@ void AdBlockWidget::load()
 {
     bool isAdBlockEnabled = ReKonfig::adBlockEnabled();
     checkEnableAdblock->setChecked(isAdBlockEnabled);
+    // update enabled status
+    checkHideAds->setEnabled(checkEnableAdblock->isChecked());
+    tabWidget->setEnabled(checkEnableAdblock->isChecked());
 
     bool areImageFiltered = ReKonfig::hideAdsEnabled();
     checkHideAds->setChecked(areImageFiltered);
@@ -181,6 +184,9 @@ void AdBlockWidget::save()
 
 void AdBlockWidget::hasChanged()
 {
+    // update enabled status
+    checkHideAds->setEnabled(checkEnableAdblock->isChecked());
+    tabWidget->setEnabled(checkEnableAdblock->isChecked());
     _changed = true;
     emit changed(true);
 }
