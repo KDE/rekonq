@@ -60,9 +60,32 @@ bool UrlSearchItem::operator==(const UrlSearchItem &i) const
 }
 
 
+QRegExp* UrlResolver::_browseRegexp = NULL;
+
+
 UrlResolver::UrlResolver(const QString &typedUrl)
         : _typedString(typedUrl.trimmed())
 {
+    if (_browseRegexp==NULL)
+    {
+        QString protocol = "^(http://|https://|file://|ftp://)";
+        
+        QString ipv4 = "^0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])"\
+        "\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])";
+        
+        QString ipv6 = "^([0-9a-fA-F]{4}|0)(\\:([0-9a-fA-F]{4}|0)){7}";
+        
+        QString address = "[\\d\\w-.]+\\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|"\
+        "c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrst]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|"\
+        "h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|"\
+        "m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|"\
+        "s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|"\
+        "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
+        "pro)";
+        
+        _browseRegexp = new QRegExp("(" + protocol + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 +")");
+    }
+    
 }
 
 
@@ -76,7 +99,7 @@ UrlSearchList UrlResolver::orderedSearchItems()
 
     UrlSearchList list;
     
-    if(isHttp())
+    if(_browseRegexp->indexIn(_typedString) != -1)
     {
         list << qurlFromUserInputResolution();
         list << webSearchesResolution();
@@ -132,29 +155,6 @@ UrlSearchList UrlResolver::orderedSearchItems()
     list = placeTypedDomaineNameOnTop(list);
 
     return list;
-}
-
-
-bool UrlResolver::isHttp()
-{
-    QString ipv4 = "^0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])"\
-                   "\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])";
-
-    QString ipv6 = "^([0-9a-fA-F]{4}|0)(\\:([0-9a-fA-F]{4}|0)){7}";
-
-    QString address = "[\\d\\w-.]+\\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|"\
-                      "c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrst]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|"\
-                      "h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|"\
-                      "m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|"\
-                      "s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|"\
-                      "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
-                      "pro)";
-
-    return _typedString.startsWith( QL1S("http://") )
-           || _typedString.startsWith( QL1S("https://") )
-           || (QRegExp(address, Qt::CaseInsensitive).indexIn(_typedString) != -1)
-           || (QRegExp(ipv4, Qt::CaseInsensitive).indexIn(_typedString) != -1)
-           || (QRegExp(ipv6, Qt::CaseInsensitive).indexIn(_typedString) != -1);
 }
 
 
