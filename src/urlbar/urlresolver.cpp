@@ -46,7 +46,8 @@
 #define MAX_ELEMENTS 9
 
 
-// NOTE default kurifilter plugin list (at least in my box)
+// NOTE 
+// default kurifilter plugin list (at least in my box):
 // 1. "kshorturifilter"
 // 2. "kurisearchfilter"
 // 3. "localdomainurifilter"
@@ -60,14 +61,19 @@ bool UrlSearchItem::operator==(const UrlSearchItem &i) const
 }
 
 
-QRegExp* UrlResolver::_browseRegexp = NULL;
+// ------------------------------------------------------------------------
+
+
+QRegExp UrlResolver::_browseRegexp;
 
 
 UrlResolver::UrlResolver(const QString &typedUrl)
         : _typedString(typedUrl.trimmed())
 {
-    if (_browseRegexp==NULL)
+    if ( _browseRegexp.isEmpty() )
     {
+        kDebug() << "browse regexp empty. Setting value..";
+        
         QString protocol = "^(http://|https://|file://|ftp://)";
         
         QString ipv4 = "^0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])"\
@@ -83,7 +89,7 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
         "pro)";
         
-        _browseRegexp = new QRegExp("(" + protocol + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 +")");
+        _browseRegexp = QRegExp("(" + protocol + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 +")");
     }
     
 }
@@ -99,7 +105,7 @@ UrlSearchList UrlResolver::orderedSearchItems()
 
     UrlSearchList list;
     
-    if(_browseRegexp->indexIn(_typedString) != -1)
+    if(_browseRegexp.indexIn(_typedString) != -1)
     {
         list << qurlFromUserInputResolution();
         list << webSearchesResolution();

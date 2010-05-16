@@ -84,7 +84,7 @@ private:
     UrlSearchList bookmarksResolution();
     UrlSearchList placeTypedDomaineNameOnTop(UrlSearchList list);
      
-    static QRegExp *_browseRegexp;
+    static QRegExp _browseRegexp;
 };
 
 #endif // URL_RESOLVER_H
