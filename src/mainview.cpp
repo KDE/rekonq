@@ -123,6 +123,7 @@ void MainView::postLaunch()
     
     // Session Manager
     connect(this, SIGNAL(tabsChanged()), Application::sessionManager(), SLOT(saveSession()));
+    connect(this, SIGNAL(currentChanged(int)), Application::sessionManager(), SLOT(saveSession()));
 
     m_addTabButton->setDefaultAction(m_parentWindow->actionByName("new_tab"));
 
