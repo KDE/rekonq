@@ -93,8 +93,18 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     if (_url.protocol() == QL1S("javascript"))
     {
         QString scriptSource = _url.authority();
-        if(scriptSource.isEmpty())
-            return false;
+        if(scriptSource.isEmpty()) {
+            // if javascript:<code here> then authority() returns
+            // an empty string. Extract the source manually
+// Use the prettyUrl() since that is unencoded
+
+            // 11 is length of 'javascript:'
+            // fromPercentEncoding() is used to decode all the % encoded
+            // characters to normal, so that it is treated as valid javascript
+            scriptSource = QUrl::fromPercentEncoding(_url.url().mid(11).toAscii());
+            if(scriptSource.isEmpty())
+                return false;
+        }
         
         QVariant result = frame->evaluateJavaScript(scriptSource);
         return true;
