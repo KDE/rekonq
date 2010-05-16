@@ -104,6 +104,24 @@ UrlSearchList UrlResolver::orderedSearchItems()
     // catch first 3 results from the two resulting lists :)
 
     UrlSearchList list;
+
+    if( _typedString == QL1S("about:") )
+    {
+        UrlSearchItem home(UrlSearchItem::Browse, KUrl("about:home"),       QL1S("home") );
+        list << home;
+        UrlSearchItem favs(UrlSearchItem::Browse, KUrl("about:favorites"),  QL1S("favorites") );
+        list << favs;
+        UrlSearchItem clos(UrlSearchItem::Browse, KUrl("about:closedTabs"), QL1S("closed tabs") );
+        list << clos;
+        UrlSearchItem book(UrlSearchItem::Browse, KUrl("about:bookmarks"),  QL1S("bookmarks") );
+        list << book;
+        UrlSearchItem hist(UrlSearchItem::Browse, KUrl("about:history"),    QL1S("history") );
+        list << hist;
+        UrlSearchItem down(UrlSearchItem::Browse, KUrl("about:downloads"),  QL1S("downloads") );
+        list << down;
+
+        return list;
+    }
     
     if(_browseRegexp.indexIn(_typedString) != -1)
     {
