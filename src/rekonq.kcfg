@@ -29,9 +29,6 @@
     <entry name="recoverOnCrash" type="Int">
         <default>0</default>
     </entry>
-    <entry name="defaultEncoding" type="String">
-        <default>UTF-8</default>
-    </entry>
 </group>
 
 
@@ -185,7 +182,7 @@
         <default>https://easylist-downloads.adblockplus.org/easylist.txt</default>
     </entry>
     <entry name="lastUpdate" type="DateTime">
-        <default>QDateTime(QDate(2009,03,13))</default>
+        <default code="true">QDateTime(QDate(2009,03,13))</default>
     </entry>
     <entry name="updateInterval" type="Int">
         <default>7</default>

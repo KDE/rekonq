@@ -499,6 +499,8 @@ void MainWindow::setupTools()
     zoomAction->setDefaultWidget(zoomWidget);
     toolsMenu->addAction(zoomAction);
 
+    toolsMenu->addAction(actionByName(QL1S("encodings")));
+
     toolsMenu->addSeparator();
 
     toolsMenu->addAction(actionByName(QL1S("private_browsing")));
@@ -520,8 +522,6 @@ void MainWindow::setupTools()
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
 
     toolsMenu->addSeparator();
-
-    toolsMenu->addAction(actionByName(QL1S("encodings")));
 
     helpMenu()->setIcon(KIcon("help-browser"));
     toolsMenu->addAction(helpMenu()->menuAction());
@@ -1286,8 +1286,7 @@ void MainWindow::setEncoding(QAction *qa)
     QString currentCodec = qa->text().toLatin1();
     currentCodec = currentCodec.remove('&');
     kDebug() << currentCodec;
-    QWebSettings::globalSettings()->setDefaultTextEncoding(currentCodec);
-    ReKonfig::setDefaultEncoding(currentCodec);
+    currentTab()->page()->settings()->setDefaultTextEncoding(currentCodec);
 }
 
 
@@ -1301,7 +1300,7 @@ void MainWindow::populateEncodingMenu()
     }
     codecs.sort();
 
-    QString currentCodec = ReKonfig::defaultEncoding();
+    QString currentCodec = currentTab()->page()->settings()->defaultTextEncoding();
     kDebug() << "Current Codec: " << currentCodec;
 
     m_encodingMenu->clear();
