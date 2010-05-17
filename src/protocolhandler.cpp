@@ -65,7 +65,7 @@
 
 ProtocolHandler::ProtocolHandler(QObject *parent)
         : QObject(parent)
-        , _lister(0)
+        , _lister( new KDirLister(this) )
         , _frame(0)
 {
 }
@@ -73,6 +73,7 @@ ProtocolHandler::ProtocolHandler(QObject *parent)
 
 ProtocolHandler::~ProtocolHandler()
 {
+    delete _lister;
 }
 
 
@@ -96,7 +97,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         if(scriptSource.isEmpty()) {
             // if javascript:<code here> then authority() returns
             // an empty string. Extract the source manually
-// Use the prettyUrl() since that is unencoded
+            // Use the prettyUrl() since that is unencoded
 
             // 11 is length of 'javascript:'
             // fromPercentEncoding() is used to decode all the % encoded
@@ -202,10 +203,6 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
         QFileInfo fileInfo(_url.path());
         if (fileInfo.isDir())
         {
-            if(_lister)
-                delete _lister;
-            
-            _lister = new KDirLister(this);
             connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
 
@@ -234,8 +231,6 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         Application::instance()->mainWindow()->currentTab()->setFocus();
         Application::historyManager()->addHistoryEntry(_url.prettyUrl());
     }
-    
-    delete _lister;
 }
 
 
@@ -325,10 +320,6 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
         KIO::UDSEntry entry = statJob->statResult();
         if (entry.isDir())
         {
-            if(_lister)
-                delete _lister;
-            
-            _lister = new KDirLister(this);
             connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
         }
