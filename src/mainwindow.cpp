@@ -963,10 +963,14 @@ void MainWindow::viewPageSource()
 
 void MainWindow::homePage(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers keyboardModifiers)
 {
+    KUrl homeUrl = ReKonfig::useNewTabPage() 
+        ? KUrl( QL1S("about:home") )
+        : KUrl( ReKonfig::homePage() );
+        
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
-        Application::instance()->loadUrl(KUrl(ReKonfig::homePage()), Rekonq::SettingOpenTab);
+        Application::instance()->loadUrl( homeUrl, Rekonq::SettingOpenTab);
     else
-        currentTab()->view()->load(QUrl(ReKonfig::homePage()));
+        currentTab()->view()->load( homeUrl );
 }
 
 

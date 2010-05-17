@@ -151,6 +151,10 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
     connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
 
+    // new tab page
+    disableHomeSettings(ReKonfig::useNewTabPage());
+    connect(d->generalUi.kcfg_useNewTabPage, SIGNAL(toggled(bool)), this, SLOT(disableHomeSettings(bool)));
+    
     // update buttons
     connect(d->adBlockWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->networkWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
@@ -238,4 +242,11 @@ void SettingsDialog::setHomeToCurrentPage()
     {
         d->generalUi.kcfg_homePage->setText(webTab->url().prettyUrl());
     }
+}
+
+
+void SettingsDialog::disableHomeSettings(bool b)
+{
+    d->generalUi.kcfg_homePage->setEnabled(!b);
+    d->generalUi.setHomeToCurrentPageButton->setEnabled(!b);
 }

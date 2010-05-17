@@ -59,6 +59,7 @@ private slots:
     void saveSettings();
 
     void setHomeToCurrentPage();
+    void disableHomeSettings(bool);
 };
 
 #endif // SETTINGS_DIALOG_H
