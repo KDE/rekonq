@@ -90,6 +90,9 @@ UrlBar::UrlBar(QWidget *parent)
     // insert decoded URLs
     setUrlDropsEnabled(true);
 
+    // tooltip
+    setToolTip(i18n("Type here to search your bookmarks, history and the web.."));
+
     // accept focus, via tabbing, clicking & wheeling
     setFocusPolicy(Qt::WheelFocus);
 
@@ -194,8 +197,8 @@ void UrlBar::paintEvent(QPaintEvent *event)
         QPainter painter(this);
         painter.setPen(Qt::gray);
         painter.drawText(textRect,
-                         Qt::AlignCenter,
-                         i18n("Start typing here to search your bookmarks, history and the web...")
+                         Qt::AlignVCenter | Qt::AlignCenter,
+                         i18n("Type here to search your bookmarks, history and the web..")
                         );
     }
 }
