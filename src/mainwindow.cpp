@@ -1016,13 +1016,22 @@ void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifie
     QWebHistory *history = currentTab()->view()->history();
     if (history->canGoBack())
     {
+        QWebHistoryItem *item;
+        if (currentTab()->view()->page()->isOnRekonqPage())
+        {
+            item = new QWebHistoryItem(history->currentItem());
+            currentTab()->view()->page()->setIsOnRekonqPage(false);
+        }
+        else
+            item = new QWebHistoryItem(history->backItem());
+
         if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
         {
-            Application::instance()->loadUrl(history->backItem().url(), Rekonq::SettingOpenTab);
+            Application::instance()->loadUrl(item->url(), Rekonq::SettingOpenTab);
         }
         else
         {
-            history->goToItem(history->backItem());
+            history->goToItem(*item);
         }
 
         updateActions();
@@ -1036,13 +1045,22 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
     QWebHistory *history = currentTab()->view()->history();
     if (history->canGoForward())
     {
+        QWebHistoryItem *item;
+        if (currentTab()->view()->page()->isOnRekonqPage())
+        {
+            item = new QWebHistoryItem(history->currentItem());
+            currentTab()->view()->page()->setIsOnRekonqPage(false);
+        }
+        else
+            item = new QWebHistoryItem(history->forwardItem());
+
         if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
         {
-            Application::instance()->loadUrl(history->forwardItem().url(), Rekonq::SettingOpenTab);
+            Application::instance()->loadUrl(item->url(), Rekonq::SettingOpenTab);
         }
         else
         {
-            history->goToItem(history->forwardItem());
+            history->goToItem(*item);
         }
         updateActions();
     }
@@ -1253,6 +1271,22 @@ void MainWindow::aboutToShowBackMenu()
     if (pivot >= 8)
         offset = pivot - 8;
 
+    /*
+     * Need a bug report upstream. 
+     * Seems setHtml() do some garbage in history
+     * Here history->currentItem() have backItem url and currentItem (error page) title
+     */
+    if (currentTab()->view()->page()->isOnRekonqPage())
+    {
+        QWebHistoryItem item = history->currentItem();
+        KAction *action = new KAction(this);
+        action->setData(listCount + offset++);
+        KIcon icon = Application::icon(item.url());
+        action->setIcon(icon);
+        action->setText(item.title());
+        m_historyBackMenu->addAction(action);
+    }
+         
     for (int i = listCount - 1; i >= 0; --i)
     {
         QWebHistoryItem item = historyList.at(i);

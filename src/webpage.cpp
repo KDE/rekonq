@@ -102,6 +102,7 @@ static bool domainSchemeMatch(const QUrl& u1, const QUrl& u2)
 WebPage::WebPage(QWidget *parent)
         : KWebPage(parent, KWalletIntegration)
         , _networkAnalyzer(false)
+        , _isOnRekonqPage(false)
 {
     // ----- handling unsupported content...
     setForwardUnsupportedContent(true);
@@ -145,6 +146,9 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
+    _isOnRekonqPage = false;
+    kDebug() << "ACCEPT_NAVIGATION false";
+ 
     _loadingUrl = request.url();
 
     KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
@@ -237,7 +241,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     // NOTE
     // This is probably needed just in ONE stupid case..
     if (_protHandler.postHandling(reply->request(), mainFrame()))
-        return; // FIXME RE-ENABLE ME reply->deleteLater();
+        return;
 
     if (reply->error() == QNetworkReply::NoError)
     {
@@ -256,7 +260,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             ? KMessageBox::sorry(view(), i18n("No service can handle this :("))
             : downloadRequest(reply->request());
 
-            return; // FIXME RE-ENABLE ME  reply->deleteLater();
+            return;
         }
 
         if (!isLocal)
@@ -268,10 +272,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             case KParts::BrowserOpenOrSaveQuestion::Save:
                 kDebug() << "service handling: download!";
                 downloadRequest(reply->request());
-                return; // FIXME RE-ENABLE ME  reply->deleteLater();
+                return;
 
             case KParts::BrowserOpenOrSaveQuestion::Cancel:
-                return; // FIXME RE-ENABLE ME  reply->deleteLater();
+                return;
 
             default: // non extant case
                 break;
@@ -279,7 +283,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         }
 
         // case KParts::BrowserRun::Embed
-
         KService::List partServices = KMimeTypeTrader::self()->query(mimeType, QL1S("KParts/ReadOnlyPart"));
         if (partServices.count() > 0)
         {
@@ -299,7 +302,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             html += "</body>";
             html += "</html>";
 
-            mainFrame()->setHtml(html, url);
+            mainFrame()->setHtml(html);
+            _isOnRekonqPage = true;
+            kDebug() << "EMBED true";
         }
         else
         {
@@ -307,7 +312,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             KRun::run(*appService, url, 0);
         }
 
-        return ; // FIXME RE-ENABLE ME reply->deleteLater();
+        return;
     }
 }
 
@@ -315,7 +320,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 void WebPage::loadFinished(bool ok)
 {
     Q_UNUSED(ok);
-
+    
     Application::adblockManager()->applyHidingRules(this);
 
     QStringList list = ReKonfig::walletBlackList();
@@ -379,7 +384,11 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     case QNetworkReply::ProtocolInvalidOperationError:       // requested operation is invalid for this protocol
 
         if (reply->url() == _loadingUrl)
-            mainFrame()->setHtml(errorPage(reply), reply->url());
+        {
+            mainFrame()->setHtml(errorPage(reply));
+            _isOnRekonqPage = true;
+            kDebug() << "ERROR true";
+        }
         break;
 
     default:
@@ -387,7 +396,6 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         break;
 
     }
-    // FIXME RE-ENABLE ME     reply->deleteLater();
 }
 
 
@@ -584,16 +592,4 @@ void WebPage::updateImage(bool ok)
         NewTabPage p(mainFrame());
         p.snapFinished();
     }
-}
-
-
-bool WebPage::hasNetworkAnalyzerEnabled() const
-{
-    return _networkAnalyzer;
-}
-
-
-void WebPage::enableNetworkAnalyzer(bool b)
-{
-    _networkAnalyzer = b;
 }

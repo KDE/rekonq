@@ -124,8 +124,9 @@ void NewTabPage::generate(const KUrl &url)
         return;
     }
 
-    QWebPage *page = m_root.webFrame()->page();
+    WebPage *page = qobject_cast <WebPage *>(m_root.webFrame()->page());
     page->mainFrame()->setHtml(m_html);
+    page->setIsOnRekonqPage(true);
 
     m_root = page->mainFrame()->documentElement().findFirst("#content");
 

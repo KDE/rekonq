@@ -226,7 +226,8 @@ void ProtocolHandler::showResults(const KFileItemList &list)
     else
     {
         QString html = dirHandling(list);
-        _frame->setHtml(html, _url);
+        _frame->setHtml(html);
+        qobject_cast<WebPage *>(_frame->page())->setIsOnRekonqPage(true);
 
         Application::instance()->mainWindow()->currentTab()->setFocus();
         Application::historyManager()->addHistoryEntry(_url.prettyUrl());
