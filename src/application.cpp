@@ -140,7 +140,22 @@ int Application::newInstance()
         }
         else    // rekonq has just been started. Just open a new window
         {
-            loadUrl(KUrl("about:home") , Rekonq::NewWindow);
+            switch (ReKonfig::newTabsBehaviour())
+            {
+            case 0: // new tab page
+                loadUrl(KUrl("about:home") , Rekonq::NewWindow);
+                break;
+            case 1: // blank page
+                loadUrl(KUrl("about:blank") , Rekonq::NewWindow);
+                break;
+            case 2: // homepage
+                loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
+                break;
+           default:
+                loadUrl(KUrl("about:blank") , Rekonq::NewWindow);
+                break;
+           }
+
         }
     }
     else
