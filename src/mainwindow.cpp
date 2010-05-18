@@ -1292,11 +1292,12 @@ void MainWindow::setEncoding(QAction *qa)
 
 void MainWindow::populateEncodingMenu()
 {
-    QList<QByteArray> byteCodecs = QTextCodec::availableCodecs();
     QStringList codecs;
-    Q_FOREACH(const QByteArray &b, byteCodecs)
+    QList<int> mibs = QTextCodec::availableMibs();
+    Q_FOREACH (const int &mib, mibs) 
     {
-        codecs << QString(b);
+        QString codec = QLatin1String(QTextCodec::codecForMib(mib)->name());
+        codecs.append(codec);
     }
     codecs.sort();
 
@@ -1304,13 +1305,36 @@ void MainWindow::populateEncodingMenu()
     kDebug() << "Current Codec: " << currentCodec;
 
     m_encodingMenu->clear();
+    KMenu *isoMenu = new KMenu( QL1S("ISO"), m_encodingMenu);
+    KMenu *winMenu = new KMenu( QL1S("windows"), m_encodingMenu);
+    KMenu *isciiMenu = new KMenu( QL1S("Iscii"), m_encodingMenu);
+    KMenu *uniMenu = new KMenu( QL1S("UNICODE"), m_encodingMenu);
+    KMenu *otherMenu = new KMenu( QL1S("Other"), m_encodingMenu);
+    
+    QAction *a;
     Q_FOREACH(const QString &codec, codecs)
     {
-        QAction *action = m_encodingMenu->addAction(codec);
-        action->setCheckable(true);
+        
+        if( codec.startsWith( QL1S("ISO"), Qt::CaseInsensitive ) )
+            a = isoMenu->addAction(codec);
+        else if( codec.startsWith( QL1S("win") ) )
+            a = winMenu->addAction(codec);
+        else if( codec.startsWith( QL1S("Iscii") ) )
+            a = isciiMenu->addAction(codec);
+        else if( codec.startsWith( QL1S("UT") ) )
+            a = uniMenu->addAction(codec);
+        else 
+            a = otherMenu->addAction(codec);
+            
+        a->setCheckable(true);
         if (currentCodec == codec)
-            action->setChecked(true);
+            a->setChecked(true);
     }
+    m_encodingMenu->addMenu( isoMenu );
+    m_encodingMenu->addMenu( winMenu );
+    m_encodingMenu->addMenu( isciiMenu );
+    m_encodingMenu->addMenu( uniMenu );
+    m_encodingMenu->addMenu( otherMenu );
 }
 
 
