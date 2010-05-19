@@ -76,6 +76,8 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         
         QString protocol = "^(http://|https://|file://|ftp://)";
         
+        QString local = "^/";
+        
         QString ipv4 = "^0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])"\
         "\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])";
         
@@ -89,7 +91,7 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
         "pro)";
         
-        _browseRegexp = QRegExp("(" + protocol + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 +")");
+        _browseRegexp = QRegExp("(" + protocol + ")|(" + local + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 +")");
     }
     
 }
