@@ -44,6 +44,7 @@
 #include "webpluginfactory.h"
 #include "networkaccessmanager.h"
 #include "adblockmanager.h"
+#include "urlbar.h"
 
 #include "sslinfodialog_p.h"
 
@@ -238,19 +239,56 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 
 void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
-    // NOTE
+    Q_ASSERT (reply);
+    // NOTE: 
+    // Until kio implements a way to resume/continue a network
+    // request. We must abort the reply to prevent a zombie process
+    // from continuing to download the unsupported content!
+    reply->abort();
+
     // This is probably needed just in ONE stupid case..
     if (_protHandler.postHandling(reply->request(), mainFrame()))
         return;
 
     if (reply->error() == QNetworkReply::NoError)
     {
-        const KUrl url(reply->url());
+        KUrl replyUrl = reply->url();
 
-        QString mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+        // HACK -------------------------------------------
+        QString mimeType;
+        QString suggestedFileName;
+        
+        QString app = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+        QStringList headerList = app.split( ';' );
+        
+        kDebug() << headerList;
+        kDebug() << headerList.count();
+        
+        if(headerList.count() > 0)
+        {
+            mimeType = headerList.takeFirst().trimmed();
+            Q_FOREACH(const QString &head, headerList)
+            {
+                if( head.contains( QL1S("name") ) )
+                {
+                    // this is not so sure.. :)
+                    suggestedFileName = head;
+                    suggestedFileName = suggestedFileName.remove( QL1S("name=") );
+                    suggestedFileName = suggestedFileName.remove( '"' );
+                    suggestedFileName = suggestedFileName.trimmed();
+                    break;
+                }
+            }
+        }
+        else
+        {
+            mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+        }
+        // ------------------------------------------------
+        
         KService::Ptr appService = KMimeTypeTrader::self()->preferredService(mimeType);
 
-        bool isLocal = url.isLocalFile();
+        bool isLocal = replyUrl.isLocalFile();
 
         if (appService.isNull())  // no service can handle this. We can just download it..
         {
@@ -266,7 +304,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         if (!isLocal)
         {
 
-            KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), url, mimeType);
+            KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), replyUrl, mimeType);
+            if(!suggestedFileName.isEmpty())
+                dlg.setSuggestedFileName(suggestedFileName);
+            
             switch (dlg.askEmbedOrSave())
             {
             case KParts::BrowserOpenOrSaveQuestion::Save:
@@ -286,30 +327,34 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         KService::List partServices = KMimeTypeTrader::self()->query(mimeType, QL1S("KParts/ReadOnlyPart"));
         if (partServices.count() > 0)
         {
+            QString p = replyUrl.pathOrUrl();
+            
             // A part can handle this. Embed it!
             QString html;
             html += "<html>";
             html += "<head>";
             html += "<title>";
-            html += url.pathOrUrl();
+            html += p;
             html += "</title>";
             html += "<style type=\"text/css\">";
             html += "* { border: 0; padding: 0; margin: 0; }";
             html += "</style>";
             html += "</head>";
             html += "<body>";
-            html += "<embed src=\"" + url.pathOrUrl() + "\" width=\"100%\" height=\"100%\" />";
+            html += "<object type=\"" + mimeType + "\" data=\"" + p + "\" width=\"100%\" height=\"100%\" />";
             html += "</body>";
             html += "</html>";
 
-            mainFrame()->setHtml(html);
+            mainFrame()->setHtml(html);            
             _isOnRekonqPage = true;
             kDebug() << "EMBED true";
+            Application::instance()->mainWindow()->mainView()->urlBar()->setQUrl(replyUrl);
+            Application::instance()->mainWindow()->updateActions();
         }
         else
         {
             // No parts, just app services. Load it!
-            KRun::run(*appService, url, 0);
+            KRun::run(*appService, replyUrl, 0);
         }
 
         return;

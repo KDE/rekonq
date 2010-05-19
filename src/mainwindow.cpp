@@ -639,17 +639,23 @@ void MainWindow::preferences()
 
 void MainWindow::updateActions()
 {
+    bool rekonqPage = currentTab()->page()->isOnRekonqPage();
+    kDebug() << "UPDATE ACTIONS: rekonq page = " << rekonqPage;
+    
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
-    historyBackAction->setEnabled(currentTab()->view()->history()->canGoBack());
+    if( rekonqPage )
+        historyBackAction->setEnabled(true);
+    else
+        historyBackAction->setEnabled(currentTab()->view()->history()->canGoBack());
 
     QAction *historyForwardAction = actionByName(KStandardAction::name(KStandardAction::Forward));
     historyForwardAction->setEnabled(currentTab()->view()->history()->canGoForward());
 
-    QAction *openClosedTabsAction = actionByName(QLatin1String("open_closed_tabs"));
+    QAction *openClosedTabsAction = actionByName( QL1S("open_closed_tabs") );
     openClosedTabsAction->setEnabled(mainView()->recentlyClosedTabs().size() > 0);
 
     // update closed tabs menu
-    KActionMenu *am = dynamic_cast<KActionMenu *>(actionByName(QLatin1String("closed_tab_menu")));
+    KActionMenu *am = dynamic_cast<KActionMenu *>(actionByName( QL1S("closed_tab_menu") ));
     if (!am)
         return;
 
@@ -861,15 +867,18 @@ void MainWindow::zoomIn()
     m_zoomSlider->setValue(m_zoomSlider->value() + 1);
 }
 
+
 void MainWindow::zoomNormal()
 {
     m_zoomSlider->setValue(10);
 }
 
+
 void MainWindow::zoomOut()
 {
     m_zoomSlider->setValue(m_zoomSlider->value() - 1);
 }
+
 
 void MainWindow::setZoomFactor(int factor)
 {
@@ -877,6 +886,7 @@ void MainWindow::setZoomFactor(int factor)
         return;
     currentTab()->view()->setZoomFactor(QVariant(factor).toReal() / 10);
 }
+
 
 void MainWindow::setZoomSliderFactor(qreal factor)
 {
@@ -989,8 +999,8 @@ WebTab *MainWindow::currentTab() const
 
 void MainWindow::browserLoading(bool v)
 {
-    QAction *stop = actionCollection()->action("stop");
-    QAction *reload = actionCollection()->action("view_redisplay");
+    QAction *stop = actionCollection()->action( QL1S("stop") );
+    QAction *reload = actionCollection()->action( QL1S("view_redisplay") );
     if (v)
     {
         disconnect(m_stopReloadAction, SIGNAL(triggered(bool)), reload , SIGNAL(triggered(bool)));
@@ -1014,56 +1024,68 @@ void MainWindow::browserLoading(bool v)
 void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers keyboardModifiers)
 {
     QWebHistory *history = currentTab()->view()->history();
-    if (history->canGoBack())
+    QWebHistoryItem *item = 0;
+    
+    if (currentTab()->page()->isOnRekonqPage())
     {
-        QWebHistoryItem *item;
-        if (currentTab()->view()->page()->isOnRekonqPage())
+        item = new QWebHistoryItem(history->currentItem());
+        currentTab()->view()->page()->setIsOnRekonqPage(false);
+    }
+    else
+    {
+        if (history->canGoBack())
         {
-            item = new QWebHistoryItem(history->currentItem());
-            currentTab()->view()->page()->setIsOnRekonqPage(false);
-        }
-        else
             item = new QWebHistoryItem(history->backItem());
-
-        if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
-        {
-            Application::instance()->loadUrl(item->url(), Rekonq::SettingOpenTab);
         }
-        else
-        {
-            history->goToItem(*item);
-        }
-
-        updateActions();
     }
 
+    if(!item)
+        return;
+    
+    if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
+    {
+        Application::instance()->loadUrl(item->url(), Rekonq::SettingOpenTab);
+    }
+    else
+    {
+        history->goToItem(*item);
+    }
+
+    updateActions();
 }
 
 
 void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers keyboardModifiers)
 {
     QWebHistory *history = currentTab()->view()->history();
-    if (history->canGoForward())
-    {
-        QWebHistoryItem *item;
-        if (currentTab()->view()->page()->isOnRekonqPage())
-        {
-            item = new QWebHistoryItem(history->currentItem());
-            currentTab()->view()->page()->setIsOnRekonqPage(false);
-        }
-        else
-            item = new QWebHistoryItem(history->forwardItem());
+    QWebHistoryItem *item = 0;
 
-        if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
-        {
-            Application::instance()->loadUrl(item->url(), Rekonq::SettingOpenTab);
-        }
-        else
-        {
-            history->goToItem(*item);
-        }
-        updateActions();
+    if (currentTab()->view()->page()->isOnRekonqPage())
+    {
+        item = new QWebHistoryItem(history->currentItem());
+        currentTab()->view()->page()->setIsOnRekonqPage(false);
     }
+    else
+    {
+        if (history->canGoForward())
+        {
+            item = new QWebHistoryItem(history->forwardItem());
+        }
+    }
+    
+    if(!item)
+        return;
+    
+    if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
+    {
+        Application::instance()->loadUrl(item->url(), Rekonq::SettingOpenTab);
+    }
+    else
+    {
+        history->goToItem(*item);
+    }
+    
+    updateActions();
 }
 
 

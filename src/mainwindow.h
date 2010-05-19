@@ -100,6 +100,8 @@ public slots:
 
     void printRequested(QWebFrame *frame = 0);
 
+    void updateActions();
+
 signals:
     // switching tabs
     void ctrlTabPressed();
@@ -116,7 +118,6 @@ protected:
 private slots:
     void postLaunch();
     void browserLoading(bool);
-    void updateActions();
     void updateWindowTitle(const QString &title = QString());
 
     // history related
