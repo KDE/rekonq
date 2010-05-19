@@ -76,14 +76,11 @@ WebView::WebView(QWidget* parent)
     setPage(page);
 
     // download system
-    connect(this, SIGNAL(linkShiftClicked(const KUrl &)),
-            page, SLOT(downloadUrl(const KUrl &)));
-    connect(page, SIGNAL(downloadRequested(const QNetworkRequest &)),
-            page, SLOT(downloadRequest(const QNetworkRequest &)));
+    connect(this, SIGNAL(linkShiftClicked(const KUrl &)), page, SLOT(downloadUrl(const KUrl &)));
+    connect(page, SIGNAL(downloadRequested(const QNetworkRequest &)), page, SLOT(downloadThings(const QNetworkRequest &)));
 
     // middle click || ctrl + click signal
-    connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)),
-            this, SLOT(loadUrlInNewTab(const KUrl &)));
+    connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), this, SLOT(loadUrlInNewTab(const KUrl &)));
 
     // loadUrl signal
     connect(this, SIGNAL(loadUrl(const KUrl &, const Rekonq::OpenType &)),

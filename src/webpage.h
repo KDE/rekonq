@@ -67,7 +67,6 @@ public:
     inline void setIsOnRekonqPage(bool b) { _isOnRekonqPage = b; };
 
 public slots:
-    virtual void downloadRequest(const QNetworkRequest &request);
     void downloadAllContentsWithKGet(QPoint);
 
 protected:
@@ -84,7 +83,15 @@ private slots:
     void showSSLInfo(QPoint);
     void updateImage(bool ok);
 
-private:
+    /**
+     * This new slot is needed to provide integration between rekonq & KGet, 
+     * to better manage file names and to not overwrite KWebPage default behavior on need
+     *
+     * @see KWebPage::downloadRequest.
+     */
+    void downloadThings(const QNetworkRequest &request, const QString &suggestedFileName = QString());
+    
+private:  
     QString errorPage(QNetworkReply *reply);
     QUrl _loadingUrl;
 

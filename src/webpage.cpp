@@ -296,7 +296,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
             isLocal
             ? KMessageBox::sorry(view(), i18n("No service can handle this :("))
-            : downloadRequest(reply->request());
+            : downloadThings(reply->request(), suggestedFileName);
 
             return;
         }
@@ -312,7 +312,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             {
             case KParts::BrowserOpenOrSaveQuestion::Save:
                 kDebug() << "service handling: download!";
-                downloadRequest(reply->request());
+                downloadThings(reply->request(), suggestedFileName);
                 return;
 
             case KParts::BrowserOpenOrSaveQuestion::Cancel:
@@ -491,15 +491,28 @@ QString WebPage::errorPage(QNetworkReply *reply)
 // this code is actually copied from KWebPage::downloadRequest to save
 // downloads data before. If you have some better ideas about,
 // feel free to let us know about :)
-void WebPage::downloadRequest(const QNetworkRequest &request)
+void WebPage::downloadThings(const QNetworkRequest &request, const QString &suggestedFileName)
 {
     KUrl destUrl;
     KUrl srcUrl(request.url());
+    
+    if( !ReKonfig::kgetDownload() && suggestedFileName.isEmpty() )
+    {
+        kDebug() << "Using KWebPage downloadRequest..";
+        Application::historyManager()->addDownload(srcUrl.pathOrUrl() , destUrl.pathOrUrl());
+        KWebPage::downloadRequest(request);
+        return;
+    }
+    
     int result = KIO::R_OVERWRITE;
 
     do
     {
-        destUrl = KFileDialog::getSaveFileName(srcUrl.fileName(), QString(), view());
+        QString fName = suggestedFileName.isEmpty()
+            ? srcUrl.fileName()
+            : suggestedFileName;
+            
+        destUrl = KFileDialog::getSaveFileName(fName, QString(), view());
 
         if (destUrl.isLocalFile())
         {
