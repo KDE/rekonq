@@ -60,7 +60,8 @@ private:
     WebView *_view;
     QString _urlString;
     KUrl _url;
-    KUriFilter *uriFilter;
+    
+    static KUriFilter *s_uriFilter;
 
 };
 
