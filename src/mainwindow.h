@@ -115,6 +115,8 @@ protected:
     */
     void keyPressEvent(QKeyEvent *event);
 
+    bool queryClose();
+    
 private slots:
     void postLaunch();
     void browserLoading(bool);
