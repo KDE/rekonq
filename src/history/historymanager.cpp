@@ -517,23 +517,6 @@ bool HistoryManager::clearDownloadsHistory()
 
 QString HistoryManager::titleForHistoryUrl(QString url)
 {
-    QString title = "";
-
-    int i = 0;
-    while (i < history().count() && title.isEmpty())
-    {
-        if (history().at(i).url == url)
-        {
-            title = history().at(i).title;
-        }
-        i++;
-    }
-
-    if (title.isEmpty())
-    {
-        title = url;
-    }
-
-    return title;
+    return history().at(m_historyFilterModel->historyLocation(url)).title;
 }
 
