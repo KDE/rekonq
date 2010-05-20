@@ -56,26 +56,35 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
         , m_map(map)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    setFixedWidth(250);
+    
+    setMinimumWidth(200);
     setFrameStyle(Panel);
 
     QFormLayout *layout = new QFormLayout(this);
     setLayout(layout);
 
+    QLabel *title = new QLabel(this);
+    title->setText(i18n("<h4>Subscribe to RSS Feeds</h4>"));
+    layout->addRow(title);
+
+    // Agregators
     QLabel *agregator = new QLabel(this);
     agregator->setText(i18n("Aggregator:"));
 
     m_agregators = new KComboBox(this);
-    m_agregators->addItem(KIcon("application-rss+xml"), QString("Akregator"));
+    m_agregators->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    
+    m_agregators->addItem(KIcon("akregator"), QString("Akregator"));
     m_agregators->addItem(Application::icon(KUrl("http://google.com/reader")), i18n("Google Reader"));
 
     layout->addRow(agregator, m_agregators);
 
-
+    // Feeds List
     QLabel *feed = new QLabel(this);
     feed->setText(i18n("Feed:"));
 
     m_feeds = new KComboBox(this);
+    m_feeds->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     foreach(const QString &title, m_map)
     {
@@ -84,13 +93,16 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     
     layout->addRow(feed, m_feeds);
 
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
-    buttonBox->button(QDialogButtonBox::Ok)->setText(i18n("Add Feed"));
+    // Buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    
+    QPushButton *addFeed = new QPushButton(KIcon("list-add"), i18n("Add Feed"), buttonBox);
+    buttonBox->addButton(addFeed, QDialogButtonBox::AcceptRole);
+    
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    layout->addWidget(buttonBox);
+    layout->addRow(buttonBox);
 }
 
 
