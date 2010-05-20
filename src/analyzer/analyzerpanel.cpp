@@ -79,10 +79,7 @@ void NetworkAnalyzerPanel::toggle(bool enable)
         connect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)),
                     _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *) ) );
 
-                    
-//         mainWindow()->currentTab()->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-//         findChild<QWebInspector *>()->setPage(mainWindow()->currentTab()->page());
-        show();
+         show();
     }
     else
     {
@@ -91,13 +88,12 @@ void NetworkAnalyzerPanel::toggle(bool enable)
                     _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *) ) );
 
         hide();
-//         mainWindow()->currentTab()->view()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);
     }
 }
 
 
 void NetworkAnalyzerPanel::changeCurrentPage()
 {
-    bool enable = mainWindow()->currentTab()->view()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled);
+    bool enable = mainWindow()->currentTab()->page()->hasNetworkAnalyzerEnabled();
     toggle(enable);
 }

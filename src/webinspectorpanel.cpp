@@ -42,9 +42,9 @@
 
 WebInspectorPanel::WebInspectorPanel(QString title, QWidget *parent)
         : QDockWidget(title, parent)
+        , _inspector(0)
 {
     setObjectName("webInspectorDock");
-    setWidget(new QWebInspector(this));
 }
 
 
@@ -55,31 +55,34 @@ void WebInspectorPanel::closeEvent(QCloseEvent *event)
 }
 
 
-MainWindow* WebInspectorPanel::mainWindow()
-{
-    return qobject_cast< MainWindow* >(parentWidget());
-}
-
-
 void WebInspectorPanel::toggle(bool enable)
 {
-    mainWindow()->actionByName("web_inspector")->setChecked(enable);
+    MainWindow *w = qobject_cast<MainWindow *>(parent());
+    w->actionByName( QL1S("web_inspector") )->setChecked(enable);
     if (enable)
     {
-        mainWindow()->currentTab()->view()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-        findChild<QWebInspector *>()->setPage(mainWindow()->currentTab()->page());
+        w->currentTab()->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+        if(!_inspector)
+        {
+            _inspector = new QWebInspector(this);
+            _inspector->setPage( w->currentTab()->page() );
+            setWidget(_inspector);
+        }
         show();
     }
     else
     {
+        w->currentTab()->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);
+        delete _inspector;
+        _inspector = 0;
         hide();
-        mainWindow()->currentTab()->view()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);
     }
 }
 
 
 void WebInspectorPanel::changeCurrentPage()
 {
-    bool enable = mainWindow()->currentTab()->view()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled);
+    MainWindow *w = qobject_cast<MainWindow *>(parent());
+    bool enable = w->currentTab()->page()->settings()->testAttribute(QWebSettings::DeveloperExtrasEnabled);
     toggle(enable);
 }

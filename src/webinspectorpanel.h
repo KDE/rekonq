@@ -35,7 +35,11 @@
 #include "mainwindow.h"
 
 // Qt Includes
-#include <QDockWidget>
+#include <QtGui/QDockWidget>
+
+// Forward
+class QWebInspector;
+
 
 /**
     Docked web inspector
@@ -54,8 +58,7 @@ public slots:
 protected:
     virtual void closeEvent(QCloseEvent *event);
 
-    MainWindow *mainWindow();
-
+    QWebInspector *_inspector;
 };
 
 #endif
