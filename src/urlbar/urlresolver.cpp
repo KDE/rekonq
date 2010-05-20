@@ -140,14 +140,14 @@ UrlSearchList UrlResolver::orderedSearchItems()
     int firstResults = list.count();
     int checkPoint = 9 - firstResults;
 
-    UrlSearchList bookmarksList = bookmarksResolution(); 
-    UrlSearchItem privileged = privilegedItem(&bookmarksList);
-    int bookmarkResults = bookmarksList.count();
-    
     UrlSearchList historyList = historyResolution();
+    UrlSearchItem privileged = privilegedItem(&historyList);
+    int historyResults = historyList.count();
+    
+    UrlSearchList bookmarksList = bookmarksResolution(); 
     if (privileged.type == UrlSearchItem::Undefined)
     {
-        privileged = privilegedItem(&historyList);
+        privileged = privilegedItem(&bookmarksList);
     }
     
     if (privileged.type != UrlSearchItem::Undefined)
@@ -155,9 +155,9 @@ UrlSearchList UrlResolver::orderedSearchItems()
         list.insert(0,privileged);
     }
 
-    int historyResults = historyList.count();
+    int bookmarksResults = bookmarksList.count();
 
-    if (historyResults + bookmarkResults > checkPoint)
+    if (historyResults + bookmarksResults > checkPoint)
     {
         historyList = historyList.mid(0, 3);
         bookmarksList = bookmarksList.mid(0, 3);
@@ -261,7 +261,8 @@ UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
     while(i<list->count())
     {
         UrlSearchItem item = list->at(i);
-        if (item.url.url().contains("."+_typedString+".") || item.url.url().contains("/"+_typedString+"."))
+        kDebug() << item.url.host();
+        if (item.url.host().contains( _typedString + QL1C('.') ) )
         {
             list->removeAt(i);
             return item;
