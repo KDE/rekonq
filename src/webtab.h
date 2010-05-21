@@ -32,15 +32,15 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Local Includes
+#include "webpage.h"
+#include "webview.h"
+
 // KDE Includes
 #include <KUrl>
 
 // Qt Includes
 #include <QWidget>
-
-// Forward Declarations
-class WebPage;
-class WebView;
 
 
 class REKONQ_TESTS_EXPORT WebTab : public QWidget
@@ -51,11 +51,11 @@ public:
     explicit WebTab(QWidget *parent = 0);
     ~WebTab();
 
-    WebView *view();
-    WebPage *page();
+    inline WebView *view() { return _view; }
+    inline WebPage *page() { return view()->page(); }
+    inline int progress() { return m_progress; }
+    
     KUrl url();
-
-    int progress();
     void createPreviewSelectorBar(int index);
 
     bool hasRSSInfo();

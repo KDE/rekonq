@@ -50,7 +50,7 @@ class REKONQ_TESTS_EXPORT FindBar : public QWidget
 public:
     FindBar(QWidget *parent);
     ~FindBar();
-    KLineEdit *lineEdit() const;
+
     bool matchCase() const;
     void notifyMatch(bool match);
     bool highlightAllState() const;

@@ -70,11 +70,12 @@ public:
     MainWindow();
     ~MainWindow();
 
-    MainView *mainView() const;
+    inline MainView *mainView() const { return m_view; }
+    inline KActionCollection *actionCollection() const { return m_ac; }
+    inline QAction *actionByName(const QString &name) { return actionCollection()->action(name); }
+    
     WebTab *currentTab() const;
-    QAction *actionByName(const QString &name);
     virtual QSize sizeHint() const;
-    virtual KActionCollection *actionCollection() const;
     void setWidgetsVisible(bool makeFullScreen);
 
     void setZoomSliderFactor(qreal factor);

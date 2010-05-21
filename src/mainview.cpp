@@ -35,7 +35,6 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "webtab.h"
 #include "tabbar.h"
 #include "urlbar.h"
 #include "sessionmanager.h"
@@ -166,12 +165,6 @@ void MainView::updateTabButtonPosition()
 }
 
 
-QToolButton *MainView::addTabButton() const
-{
-    return m_addTabButton;
-}
-
-
 TabBar *MainView::tabBar() const
 {
     TabBar *tabBar = qobject_cast<TabBar *>(KTabWidget::tabBar());
@@ -182,12 +175,6 @@ TabBar *MainView::tabBar() const
 UrlBar *MainView::urlBar() const
 {
     return _widgetBar->urlBar(m_currentTabIndex);
-}
-
-
-StackedUrlBar *MainView::widgetBar() const
-{
-    return _widgetBar;
 }
 
 
@@ -690,12 +677,6 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
     tabBar()->setTabButton(index, QTabBar::LeftSide, 0);
     tabBar()->setTabButton(index, QTabBar::LeftSide, label);
     return label;
-}
-
-
-QList<HistoryItem> MainView::recentlyClosedTabs()
-{
-    return m_recentlyClosedTabs;
 }
 
 

@@ -126,12 +126,6 @@ FindBar::~FindBar()
 }
 
 
-KLineEdit *FindBar::lineEdit() const
-{
-    return m_lineEdit;
-}
-
-
 bool FindBar::matchCase() const
 {
     return m_matchCase->isChecked();

@@ -36,7 +36,6 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
-#include "webpage.h"
 #include "bookmarksmanager.h"
 #include "walletbar.h"
 #include "previewselectorbar.h"
@@ -96,18 +95,6 @@ WebTab::~WebTab()
 }
 
 
-WebView *WebTab::view()
-{
-    return _view;
-}
-
-
-WebPage *WebTab::page()
-{
-    return view()->page();
-}
-
-
 // TODO:
 // Import the "about" check and the one in protocolhandler
 // in some (static?) methods in NewTabPage
@@ -131,12 +118,6 @@ KUrl WebTab::url()
             return KUrl("about:downloads");
     }
     return u;
-}
-
-
-int WebTab::progress()
-{
-    return m_progress;
 }
 
 

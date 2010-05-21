@@ -37,6 +37,7 @@
 // Local Includes
 #include "webview.h"
 #include "webpage.h"
+#include "webtab.h"
 #include "application.h"
 #include "historymanager.h"
 #include "mainwindow.h"
@@ -72,7 +73,7 @@ public:
     MainView(MainWindow *parent);
     ~MainView();
 
-    StackedUrlBar *widgetBar() const;
+    inline StackedUrlBar *widgetBar() const { return _widgetBar; }
     UrlBar *urlBar() const;
     WebTab *webTab(int index) const;
 
@@ -88,7 +89,7 @@ public:
 
     void setTabBarHidden(bool hide);
 
-    QToolButton *addTabButton() const;
+    inline QToolButton *addTabButton() const { return m_addTabButton; }
 
     /**
      * This function creates a new empty tab
@@ -100,7 +101,7 @@ public:
      */
     WebTab *newWebTab(bool focused = true, bool nearParent = false);
 
-    QList<HistoryItem> recentlyClosedTabs();
+    inline QList<HistoryItem> recentlyClosedTabs() { return m_recentlyClosedTabs; }
 
 signals:
     // tab widget signals

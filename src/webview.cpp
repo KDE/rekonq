@@ -374,12 +374,6 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 }
 
 
-QPoint WebView::mousePos()
-{
-    return _mousePos;
-}
-
-
 void WebView::search()
 {
     KAction *a = qobject_cast<KAction*>(sender());

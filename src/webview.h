@@ -48,7 +48,8 @@ public:
     ~WebView();
 
     WebPage *page();
-    QPoint mousePos();
+    
+    inline QPoint mousePos() { return _mousePos; }
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);

@@ -265,12 +265,6 @@ QSize MainWindow::sizeHint() const
 }
 
 
-KActionCollection *MainWindow::actionCollection() const
-{
-    return m_ac;
-}
-
-
 void MainWindow::setupActions()
 {
     // this let shortcuts work..
@@ -984,13 +978,6 @@ void MainWindow::homePage(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
 }
 
 
-MainView *MainWindow::mainView() const
-{
-    return m_view;
-}
-
-
-
 WebTab *MainWindow::currentTab() const
 {
     return m_view->currentWebTab();
@@ -1121,20 +1108,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 
     KMainWindow::keyPressEvent(event);
-}
-
-
-QAction *MainWindow::actionByName(const QString &name)
-{
-    QAction *ret = actionCollection()->action(name);
-
-    if (ret)
-        return ret;
-
-    /* else */
-    kDebug() << "Action named: " << name << " not found, returning empty action.";
-
-    return new QAction(this);  // return empty object instead of NULL pointer
 }
 
 
