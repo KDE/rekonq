@@ -316,7 +316,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
     }
 
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
-    _canEnableAutoScroll = !result.isContentEditable()  && result.linkUrl().isEmpty();
+    _canEnableAutoScroll = !ReKonfig::disableAutoScroll() && !result.isContentEditable()  && result.linkUrl().isEmpty();
 
     switch (event->button())
     {
