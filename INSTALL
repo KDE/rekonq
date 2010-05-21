@@ -30,4 +30,6 @@ then be found in build/src and is executed with ./rekonq.
 
 === Getting Help ===
 
-If you need help with rekonq, you can find it in the irc-channel #rekonq on irc.freenode.net 
+If you need help with rekonq, you can find it in the irc-channel #rekonq on irc.freenode.net or by viewing the Handbook that comes with rekonq.
+You can view the rekonq Handbook by pressing F1 after starting rekonq.
+Techbase page : http://techbase.kde.org/Projects/rekonq
