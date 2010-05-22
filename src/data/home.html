@@ -40,9 +40,7 @@ font: normal bold 1em;
 a {
 color: #3F7AB7;
 text-decoration: none;
--webkit-transition-property: color;
--webkit-transition-duration: 0.5s;
--webkit-transition-timing-function: ease;
+-webkit-transition: color 0.5s ease;
 }
 a:hover {
 color: black;
@@ -81,7 +79,12 @@ height: 16px;
 
 .link {
 display: inline-block;
+-webkit-transition: opacity 0.5s ease;
 }
+.link:not(.current):hover {
+opacity: 0.6;
+}
+
 .link img, .link span {
 vertical-align: middle; display: inline-block; 
 }
@@ -89,15 +92,6 @@ vertical-align: middle; display: inline-block;
 color: black;
 }
 
-#actions .link {
--webkit-transition-property: opacity;
--webkit-transition-duration: 0.8s;
--webkit-transition-timing-function: ease;
-opacity: 0.2;
-}
-#actions .link:hover {
-opacity: 1;
-}
 #actions .link img {
 margin-right: 3px; width: 16px;
 }
@@ -141,22 +135,13 @@ background: url(%2/bg.png) no-repeat;
 padding: 0 12px;
 }
 
-.thumbnail:hover .preview , 
-.thumbnail:hover .button img {
-opacity: 0.8;
-}
-.button img, .preview {
--webkit-transition-property: opacity;
--webkit-transition-duration: 0.8s;
--webkit-transition-timing-function: ease-in-out;
-}
-
 .button img {
 display: inline-block;
 width: 16px;
 height: 16px;
 opacity: 0;
 }
+
 .remove {
 float: right;
 }
@@ -164,7 +149,20 @@ float: right;
 float: left;
 }
 
-.thumbnail a:hover, .thumbnail span {
+.button img, .preview {
+-webkit-transition: opacity 0.8s ease-in-out;
+}
+.thumb-inner:hover .preview {
+opacity: 0.6;
+}
+.thumb-inner:hover .button img {
+opacity: 0.4;
+-webkit-transition: opacity 0.8s ease-out;
+}
+.thumb-inner .button img:hover {
+opacity: 1;
+}
+.thumbnail a:hover {
 color:#3F7AB7;
 }
 
