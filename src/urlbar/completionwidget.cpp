@@ -68,6 +68,11 @@ CompletionWidget::CompletionWidget(QWidget *parent)
 
 void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString& text)
 {
+    if (!isVisible())
+    {
+        _searchEngine = SearchEngine::defaultEngine();
+    }
+
     _list = list;
     int i = 0;
     foreach(const UrlSearchItem &item, _list)

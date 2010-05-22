@@ -257,8 +257,6 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
         : ListItem(item, parent)
         , m_text(text)
 {
-    KService::Ptr currentEngine = SearchEngine::defaultEngine();
-
     QString query = text;
     KService::Ptr engine = SearchEngine::fromString(text);
     if (engine)
@@ -267,7 +265,7 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
     }
     else
     {
-        engine = currentEngine;
+        engine = qobject_cast<CompletionWidget *>(parent)->searchEngine();
     }
 
     m_url = SearchEngine::buildQuery(engine, query);
@@ -302,9 +300,7 @@ void SearchListItem::changeSearchEngine(KService::Ptr engine)
     m_titleLabel->setText(searchItemTitle(engine->name(), m_text));
     m_iconLabel->setPixmap(Application::icon(KUrl(engine->property("Query").toString())).pixmap(16));
     m_url = SearchEngine::buildQuery(engine, m_text);
-
-    CompletionWidget *w = qobject_cast<CompletionWidget *>(parent());
-    w->setCurrentEngine(engine);
+    qobject_cast<CompletionWidget *>(parent())->setSearchEngine(engine);
 }
 
 
