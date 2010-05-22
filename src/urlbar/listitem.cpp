@@ -274,7 +274,7 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
 
     m_iconLabel = new IconLabel("edit-find", this); //TODO: get the default engine icon
     m_titleLabel = new TextLabel(searchItemTitle(engine->name(), query), QString(), this);
-    m_engineBar = new EngineBar(currentEngine, parent);
+    m_engineBar = new EngineBar(engine, parent);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
