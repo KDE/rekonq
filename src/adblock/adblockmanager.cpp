@@ -114,6 +114,7 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
 
 void AdBlockManager::loadRules(const QStringList &rules)
 {
+    kDebug() << "LOADING RULES LIST...";
     foreach(const QString &stringRule, rules)
     {
         // ! rules are comments
@@ -259,15 +260,14 @@ void AdBlockManager::updateNextSubscription()
 
 void AdBlockManager::slotResult(KJob *job)
 {
-    kDebug() << "SLOTRESULT";
     if (job->error())
         return;
 
+    kDebug() << "SAVING RULES..";
     QList<QByteArray> list = _buffer.split('\n');
     QStringList ruleList;
     foreach(const QByteArray &ba, list)
     {
-        kDebug() << ba;
         ruleList << QString(ba);
     }
     loadRules(ruleList);
@@ -282,7 +282,6 @@ void AdBlockManager::slotResult(KJob *job)
 
 void AdBlockManager::subscriptionData(KIO::Job* job, const QByteArray& data)
 {
-    kDebug() << "subscriptionData";
     Q_UNUSED(job)
 
     if (data.isEmpty())

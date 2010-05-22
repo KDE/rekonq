@@ -93,7 +93,6 @@ void ClickToFlash::load()
         {
             if (checkElement(element))
             {
-                kDebug() << "RETURNED TRUE ...........................";
                 QWebElement substitute = element.clone();
                 emit signalLoadClickToFlash(true);
                 element.replace(substitute);
@@ -108,6 +107,7 @@ void ClickToFlash::load()
 
 bool ClickToFlash::checkElement(QWebElement el)
 {
+    // check these two values..
     kDebug() << "src: " << QUrl(el.attribute("src"));
     kDebug() << "url: " << m_url;
 

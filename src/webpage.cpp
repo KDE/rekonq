@@ -148,8 +148,6 @@ WebPage::~WebPage()
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
     _isOnRekonqPage = false;
-    kDebug() << "ACCEPT_NAVIGATION false";
- 
     _loadingUrl = request.url();
 
     KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
@@ -218,8 +216,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
 WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
-    kDebug() << "WebPage createWindow slot";
-
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
         kDebug() << "Modal Dialog";
@@ -260,9 +256,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         
         QString app = reply->header(QNetworkRequest::ContentTypeHeader).toString();
         QStringList headerList = app.split( ';' );
-        
-        kDebug() << headerList;
-        kDebug() << headerList.count();
         
         if(headerList.count() > 0)
         {
@@ -311,7 +304,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             switch (dlg.askEmbedOrSave())
             {
             case KParts::BrowserOpenOrSaveQuestion::Save:
-                kDebug() << "service handling: download!";
+                kDebug() << "user choice: no services, just download!";
                 downloadThings(reply->request(), suggestedFileName);
                 return;
 
@@ -347,7 +340,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
             mainFrame()->setHtml(html);            
             _isOnRekonqPage = true;
-            kDebug() << "EMBED true";
             Application::instance()->mainWindow()->mainView()->urlBar()->setQUrl(replyUrl);
             Application::instance()->mainWindow()->updateActions();
         }
@@ -392,7 +384,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
             && !domainSchemeMatch(reply->url(), _sslInfo.url())
        )
     {
-        //kDebug() << "Reseting cached SSL info...";
+        // Reseting cached SSL info...
         _sslInfo = WebSslInfo();
     }
 
@@ -432,12 +424,11 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         {
             mainFrame()->setHtml(errorPage(reply));
             _isOnRekonqPage = true;
-            kDebug() << "ERROR true";
         }
         break;
 
     default:
-        kDebug() << "Nothing to do here..";
+        // Nothing to do here..
         break;
 
     }

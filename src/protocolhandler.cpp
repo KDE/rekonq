@@ -339,7 +339,7 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
  */
 void ProtocolHandler::abpHandling()
 {
-    kDebug() << _url;
+    kDebug() << "handling abp url: " << _url;
 
     QString path = _url.path();
     if (path != QL1S("subscribe"))
@@ -348,16 +348,9 @@ void ProtocolHandler::abpHandling()
     QMap<QString, QString> map = _url.queryItems(KUrl::CaseInsensitiveKeys);
 
     QString location = map.value(QL1S("location"));
-    kDebug() << location;
-
     QString title = map.value(QL1S("title"));
-    kDebug() << title;
-
     QString requireslocation = map.value(QL1S("requireslocation"));
-    kDebug() << requireslocation;
-
     QString requirestitle = map.value(QL1S("requirestitle"));
-    kDebug() << requirestitle;
 
     QString info;
     if (requirestitle.isEmpty() || requireslocation.isEmpty())

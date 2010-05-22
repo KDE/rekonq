@@ -110,33 +110,34 @@ bool SessionManager::restoreSession()
         if (line == QString("window"))
         {
             line = in.readLine();
-            kDebug() << "New Window line: " << line;
             Application::instance()->loadUrl( KUrl(line), Rekonq::NewWindow);
         }
-        else if (line == QString("currenttab"))
-        {
-	  kDebug() << "Set Current Tab Line" << endl;
-	  line = in.readLine();
-	  bool ok;
-	  int idx = line.toInt(&ok);
-	  if (ok)
-	  {
-	    kDebug() << "Setting current tab to " << idx << endl;
-	    // Get last mainwindow created which will be first one in mainwindow list
-	    MainWindowList wl = Application::instance()->mainWindowList();
-	    if (wl.count() > 0)
-	    {
-	      MainView *mv = wl[0].data()->mainView();
-	      emit mv->tabBar()->setCurrentIndex(idx);
-	    }	    
-	  }
-	  else
-	    kDebug() << "Failed to convert currenttab index line <" << line << "> to in value" << endl;
-	}
         else
         {
-            kDebug() << "New Current Tab line: " << line;
-	    Application::instance()->loadUrl( KUrl(line), Rekonq::NewCurrentTab);
+            if (line == QString("currenttab"))
+            {
+                line = in.readLine();
+                bool ok;
+                int idx = line.toInt(&ok);
+                if (ok)
+                {
+                    // Get last mainwindow created which will be first one in mainwindow list
+                    MainWindowList wl = Application::instance()->mainWindowList();
+                    if (wl.count() > 0)
+                    {
+                        MainView *mv = wl[0].data()->mainView();
+                        emit mv->tabBar()->setCurrentIndex(idx);
+                    }
+                }
+                else
+                {
+                    kDebug() << "Failed to convert currenttab index line <" << line << "> to in value" << endl;
+                }
+            }
+            else
+            {
+                Application::instance()->loadUrl( KUrl(line), Rekonq::NewCurrentTab);
+            }
         }
     }
     while (!line.isEmpty());

@@ -634,7 +634,6 @@ void MainWindow::preferences()
 void MainWindow::updateActions()
 {
     bool rekonqPage = currentTab()->page()->isOnRekonqPage();
-    kDebug() << "UPDATE ACTIONS: rekonq page = " << rekonqPage;
     
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
     if( rekonqPage )
@@ -1314,7 +1313,7 @@ void MainWindow::setEncoding(QAction *qa)
 {
     QString currentCodec = qa->text().toLatin1();
     currentCodec = currentCodec.remove('&');
-    kDebug() << currentCodec;
+    kDebug() << "Setting codec: " << currentCodec;
     currentTab()->page()->settings()->setDefaultTextEncoding(currentCodec);
 }
 
@@ -1331,7 +1330,6 @@ void MainWindow::populateEncodingMenu()
     codecs.sort();
 
     QString currentCodec = currentTab()->page()->settings()->defaultTextEncoding();
-    kDebug() << "Current Codec: " << currentCodec;
 
     m_encodingMenu->clear();
     KMenu *isoMenu = new KMenu( QL1S("ISO"), m_encodingMenu);

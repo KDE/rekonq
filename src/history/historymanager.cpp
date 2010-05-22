@@ -468,7 +468,7 @@ void HistoryManager::addDownload(const QString &srcUrl, const QString &destUrl)
     QFile downloadFile(downloadFilePath);
     if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
     {
-        kDebug() << "azz...";
+        kDebug() << "Unable to open download file (WRITE mode)..";
         return;
     }
     QDataStream out(&downloadFile);
@@ -487,7 +487,7 @@ DownloadList HistoryManager::downloads()
     QFile downloadFile(downloadFilePath);
     if (!downloadFile.open(QFile::ReadOnly))
     {
-        kDebug() << "azz...";
+        kDebug() << "Unable to open download file (READ mode)..";
         return list;
     }
 
