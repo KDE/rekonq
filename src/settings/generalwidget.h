@@ -24,24 +24,23 @@
 * ============================================================ */
 
 
-#ifndef ADBLOCK_WIDGET_H
-#define ADBLOCK_WIDGET_H
+#ifndef GENERAL_WIDGET_H
+#define GENERAL_WIDGET_H
 
 
 // Ui Includes
-#include "ui_settings_adblock.h"
+#include "ui_settings_general.h"
 
 // Qt Includes
 #include <QtGui/QWidget>
-#include <QtGui/QTreeWidgetItem>
 
 
-class AdBlockWidget : public QWidget, private Ui::adblock
+class GeneralWidget : public QWidget, private Ui::general
 {
     Q_OBJECT
 
 public:
-    AdBlockWidget(QWidget *parent = 0);
+    GeneralWidget(QWidget *parent = 0);
 
     void save();
     bool changed();
@@ -51,16 +50,11 @@ signals:
 
 private slots:
     void hasChanged();
-
-    void slotInfoLinkActivated(const QString &);
-    void insertRule();
-    void removeRule();
+    void setHomeToCurrentPage();
+    void disableHomeSettings(bool);
 
 private:
-    void load();
-    void loadRules(QTreeWidgetItem *item);
-
     bool _changed;
 };
 
-#endif // ADBLOCK_WIDGET_H
+#endif // GENERAL_WIDGET_H

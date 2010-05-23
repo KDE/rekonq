@@ -24,43 +24,30 @@
 * ============================================================ */
 
 
-#ifndef ADBLOCK_WIDGET_H
-#define ADBLOCK_WIDGET_H
+// Local Includes
+#include "tabswidget.h"
+#include "tabswidget.moc"
 
 
-// Ui Includes
-#include "ui_settings_adblock.h"
-
-// Qt Includes
-#include <QtGui/QWidget>
-#include <QtGui/QTreeWidgetItem>
-
-
-class AdBlockWidget : public QWidget, private Ui::adblock
+TabsWidget::TabsWidget(QWidget *parent)
+        : QWidget(parent)
+        , _changed(false)
 {
-    Q_OBJECT
+    setupUi(this);
+}
 
-public:
-    AdBlockWidget(QWidget *parent = 0);
 
-    void save();
-    bool changed();
+void TabsWidget::save()
+{
+}
 
-signals:
-    void changed(bool);
 
-private slots:
-    void hasChanged();
+bool TabsWidget::changed()
+{
+    return _changed;
+}
 
-    void slotInfoLinkActivated(const QString &);
-    void insertRule();
-    void removeRule();
 
-private:
-    void load();
-    void loadRules(QTreeWidgetItem *item);
-
-    bool _changed;
-};
-
-#endif // ADBLOCK_WIDGET_H
+void TabsWidget::hasChanged()
+{
+}

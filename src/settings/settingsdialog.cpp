@@ -36,15 +36,15 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "webtab.h"
-#include "adblockwidget.h"
-#include "networkwidget.h"
 #include "searchengine.h"
 
-//Ui Includes
-#include "ui_settings_general.h"
-#include "ui_settings_tabs.h"
-#include "ui_settings_fonts.h"
-#include "ui_settings_webkit.h"
+// Widget Includes
+#include "adblockwidget.h"
+#include "networkwidget.h"
+#include "generalwidget.h"
+#include "appearancewidget.h"
+#include "webkitwidget.h"
+#include "tabswidget.h"
 
 // KDE Includes
 #include <KConfig>
@@ -61,20 +61,19 @@
 class Private
 {
 private:
+    Private(SettingsDialog *parent);
 
-    Ui::general generalUi;
-    Ui::tabs tabsUi;
-    Ui::fonts fontsUi;
-    Ui::webkit webkitUi;
-
-    AdBlockWidget *adBlockWidg;
+private:
+    GeneralWidget *generalWidg;
+    TabsWidget *tabsWidg;
+    AppearanceWidget *appearanceWidg;
+    WebKitWidget *webkitWidg;
     NetworkWidget *networkWidg;
-
+    AdBlockWidget *adBlockWidg;
+    
     KCModuleProxy *ebrowsingModule;
 
     KShortcutsEditor *shortcutsEditor;
-
-    Private(SettingsDialog *parent);
 
     friend class SettingsDialog;
 };
@@ -82,55 +81,59 @@ private:
 
 Private::Private(SettingsDialog *parent)
 {
-    QWidget *widget;
     KPageWidgetItem *pageItem;
 
-    widget = new QWidget;
-    generalUi.setupUi(widget);
-    widget->layout()->setMargin(0);
-    pageItem = parent->addPage(widget , i18n("General"));
+    // -- 1
+    generalWidg = new GeneralWidget(parent);
+    generalWidg->layout()->setMargin(0);
+    pageItem = parent->addPage(generalWidg, i18n("General"));
     pageItem->setIcon(KIcon("rekonq"));
 
-    widget = new QWidget;
-    tabsUi.setupUi(widget);
-    widget->layout()->setMargin(0);
-    pageItem = parent->addPage(widget , i18n("Tabs"));
+    // -- 2
+    tabsWidg = new TabsWidget(parent);
+    tabsWidg->layout()->setMargin(0);
+    pageItem = parent->addPage(tabsWidg, i18n("Tabs"));
     pageItem->setIcon(KIcon("tab-duplicate"));
-
-    widget = new QWidget;
-    fontsUi.setupUi(widget);
-    widget->layout()->setMargin(0);
-    pageItem = parent->addPage(widget , i18n("Fonts"));
+    
+    // -- 3
+    appearanceWidg = new AppearanceWidget(parent);
+    appearanceWidg->layout()->setMargin(0);
+    pageItem = parent->addPage(appearanceWidg, i18n("Appearance"));
     pageItem->setIcon(KIcon("preferences-desktop-font"));
-
-    widget = new QWidget;
-    webkitUi.setupUi(widget);
-    widget->layout()->setMargin(0);
-    pageItem = parent->addPage(widget , i18n("WebKit"));
+    
+    // -- 4
+    webkitWidg = new WebKitWidget(parent);
+    webkitWidg->layout()->setMargin(0);
+    pageItem = parent->addPage(webkitWidg, i18n("WebKit"));
     QString webkitIconPath = KStandardDirs::locate("appdata", "pics/webkit-icon.png");
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
-
+    
+    // -- 5
     networkWidg = new NetworkWidget(parent);
     networkWidg->layout()->setMargin(0);
     pageItem = parent->addPage(networkWidg , i18n("Network"));
     pageItem->setIcon(KIcon("preferences-system-network"));
 
+    // -- 6
     adBlockWidg = new AdBlockWidget(parent);
     adBlockWidg->layout()->setMargin(0);
     pageItem = parent->addPage(adBlockWidg , i18n("Ad Block"));
     pageItem->setIcon(KIcon("preferences-web-browser-adblock"));
 
+    // -- 7
     shortcutsEditor = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(), parent);
     pageItem = parent->addPage(shortcutsEditor , i18n("Shortcuts"));
     pageItem->setIcon(KIcon("configure-shortcuts"));
 
+    // -- 8
     KCModuleInfo ebrowsingInfo("ebrowsing.desktop");
     ebrowsingModule = new KCModuleProxy(ebrowsingInfo, parent);
     pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toLocal8Bit()));
     pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
 
-    // WARNING remember wheh changing here that the smallest netbooks
+    // WARNING 
+    // remember wheh changing here that the smallest netbooks
     // have a 1024x576 resolution. So DON'T bother that limits!!
     parent->setMinimumSize(700, 525);
 }
@@ -148,25 +151,20 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     setModal(true);
 
     readConfig();
-
-    connect(d->generalUi.setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
-
-    // new tab page
-    disableHomeSettings(ReKonfig::useNewTabPage());
-    connect(d->generalUi.kcfg_useNewTabPage, SIGNAL(toggled(bool)), this, SLOT(disableHomeSettings(bool)));
     
     // update buttons
-    connect(d->adBlockWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->generalWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->tabsWidg,        SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->appearanceWidg,  SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->webkitWidg,      SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->networkWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->adBlockWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-
     connect(d->shortcutsEditor, SIGNAL(keyChange()),   this, SLOT(updateButtons()));
 
     // save settings
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
     connect(this, SIGNAL(okClicked()),    this, SLOT(saveSettings()));
-
-    setWebSettingsToolTips();
 }
 
 
@@ -176,29 +174,9 @@ SettingsDialog::~SettingsDialog()
 }
 
 
-void SettingsDialog::setWebSettingsToolTips()
-{
-    d->webkitUi.kcfg_autoLoadImages->setToolTip(i18n("Specifies whether images are automatically loaded in web pages."));
-    d->webkitUi.kcfg_dnsPrefetch->setToolTip(i18n("Specifies whether WebKit will try to prefetch DNS entries to speed up browsing."));
-    d->webkitUi.kcfg_javascriptEnabled->setToolTip(i18n("Enables the execution of JavaScript programs."));
-    d->webkitUi.kcfg_javaEnabled->setToolTip(i18n("Enables support for Java applets."));
-    d->webkitUi.kcfg_pluginsEnabled->setToolTip(i18n("Enables support for plugins in web pages."));
-    d->webkitUi.kcfg_javascriptCanOpenWindows->setToolTip(i18n("If enabled, JavaScript programs are allowed to open new windows."));
-    d->webkitUi.kcfg_javascriptCanAccessClipboard->setToolTip(i18n("If enabled, JavaScript programs are allowed to read from and to write to the clipboard."));
-    d->webkitUi.kcfg_linksIncludedInFocusChain->setToolTip(i18n("If enabled, hyperlinks are included in the keyboard focus chain."));
-    d->webkitUi.kcfg_zoomTextOnly->setToolTip(i18n("If enabled, the zoom factor on a frame is only applied to the text."));
-    d->webkitUi.kcfg_printElementBackgrounds->setToolTip(i18n("If enabled, background colors and images are also drawn when the page is printed."));
-    d->webkitUi.kcfg_offlineStorageDatabaseEnabled->setToolTip(i18n("Enables support for the HTML 5 offline storage feature."));
-    d->webkitUi.kcfg_offlineWebApplicationCacheEnabled->setToolTip(i18n("Enables support for the HTML 5 web application cache feature."));
-    d->webkitUi.kcfg_localStorageEnabled->setToolTip(i18n("Enables support for the HTML 5 local storage feature."));
-}
-
-
 // we need this function to UPDATE the config widget data..
 void SettingsDialog::readConfig()
 {
-    // ======= Fonts
-    d->fontsUi.kcfg_fixedFont->setOnlyFixed(true);
 }
 
 
@@ -209,14 +187,19 @@ void SettingsDialog::saveSettings()
         return;
 
     ReKonfig::self()->writeConfig();
-    d->ebrowsingModule->save();
-    d->shortcutsEditor->save();
-    d->adBlockWidg->save();
+    
+    d->generalWidg->save();
+    d->tabsWidg->save();
+    d->appearanceWidg->save();
+    d->webkitWidg->save();
     d->networkWidg->save();
+    d->adBlockWidg->save();
+    d->shortcutsEditor->save();
+    d->ebrowsingModule->save();
+    
     SearchEngine::loadDefaultWS();
     SearchEngine::loadDelimiter();
     SearchEngine::loadFavorites();
-
 
     updateButtons();
     emit settingsChanged("ReKonfig");
@@ -226,27 +209,13 @@ void SettingsDialog::saveSettings()
 bool SettingsDialog::hasChanged()
 {
     return KConfigDialog::hasChanged()
-           || d->adBlockWidg->changed()
+           || d->generalWidg->changed()
+           || d->tabsWidg->changed()
+           || d->appearanceWidg->changed()
+           || d->webkitWidg->changed()
            || d->networkWidg->changed()
+           || d->adBlockWidg->changed()
            || d->ebrowsingModule->changed()
            || d->shortcutsEditor->isModified();
     ;
-}
-
-
-void SettingsDialog::setHomeToCurrentPage()
-{
-    MainWindow *mw = static_cast<MainWindow*>(parent());
-    WebTab *webTab = mw->currentTab();
-    if (webTab)
-    {
-        d->generalUi.kcfg_homePage->setText(webTab->url().prettyUrl());
-    }
-}
-
-
-void SettingsDialog::disableHomeSettings(bool b)
-{
-    d->generalUi.kcfg_homePage->setEnabled(!b);
-    d->generalUi.setHomeToCurrentPageButton->setEnabled(!b);
 }

@@ -24,24 +24,23 @@
 * ============================================================ */
 
 
-#ifndef ADBLOCK_WIDGET_H
-#define ADBLOCK_WIDGET_H
+#ifndef WEBKIT_WIDGET_H
+#define WEBKIT_WIDGET_H
 
 
 // Ui Includes
-#include "ui_settings_adblock.h"
+#include "ui_settings_webkit.h"
 
 // Qt Includes
 #include <QtGui/QWidget>
-#include <QtGui/QTreeWidgetItem>
 
 
-class AdBlockWidget : public QWidget, private Ui::adblock
+class WebKitWidget : public QWidget, private Ui::webkit
 {
     Q_OBJECT
 
 public:
-    AdBlockWidget(QWidget *parent = 0);
+    WebKitWidget(QWidget *parent = 0);
 
     void save();
     bool changed();
@@ -52,15 +51,10 @@ signals:
 private slots:
     void hasChanged();
 
-    void slotInfoLinkActivated(const QString &);
-    void insertRule();
-    void removeRule();
-
 private:
-    void load();
-    void loadRules(QTreeWidgetItem *item);
+    void setWebSettingsToolTips();
 
     bool _changed;
 };
 
-#endif // ADBLOCK_WIDGET_H
+#endif // WEBKIT_WIDGET_H

@@ -24,43 +24,62 @@
 * ============================================================ */
 
 
-#ifndef ADBLOCK_WIDGET_H
-#define ADBLOCK_WIDGET_H
+// Self Includes
+#include "generalwidget.h"
+#include "generalwidget.moc"
+
+// Auto Includes
+#include "rekonq.h"
+
+// Local Includes
+#include "application.h"
+#include "mainwindow.h"
+#include "webtab.h"
 
 
-// Ui Includes
-#include "ui_settings_adblock.h"
-
-// Qt Includes
-#include <QtGui/QWidget>
-#include <QtGui/QTreeWidgetItem>
-
-
-class AdBlockWidget : public QWidget, private Ui::adblock
+GeneralWidget::GeneralWidget(QWidget *parent)
+        : QWidget(parent)
+        , _changed(false)
 {
-    Q_OBJECT
+    setupUi(this);
 
-public:
-    AdBlockWidget(QWidget *parent = 0);
+    connect(setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
 
-    void save();
-    bool changed();
+    disableHomeSettings(ReKonfig::useNewTabPage());
+    
+    connect(kcfg_useNewTabPage, SIGNAL(toggled(bool)), this, SLOT(disableHomeSettings(bool)));
+}
 
-signals:
-    void changed(bool);
 
-private slots:
-    void hasChanged();
+void GeneralWidget::save()
+{
+}
 
-    void slotInfoLinkActivated(const QString &);
-    void insertRule();
-    void removeRule();
 
-private:
-    void load();
-    void loadRules(QTreeWidgetItem *item);
+bool GeneralWidget::changed()
+{
+    return _changed;
+}
 
-    bool _changed;
-};
 
-#endif // ADBLOCK_WIDGET_H
+void GeneralWidget::hasChanged()
+{
+}
+
+
+void GeneralWidget::setHomeToCurrentPage()
+{
+    MainWindow *mw = qobject_cast<MainWindow*>(parent());
+    WebTab *webTab = mw->currentTab();
+    if (webTab)
+    {
+        kcfg_homePage->setText(webTab->url().prettyUrl());
+    }
+}
+
+
+void GeneralWidget::disableHomeSettings(bool b)
+{
+    kcfg_homePage->setEnabled(!b);
+    setHomeToCurrentPageButton->setEnabled(!b);
+}
