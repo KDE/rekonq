@@ -213,11 +213,12 @@ void BookmarkContextMenu::deleteBookmark()
 {
     KBookmark bm = bookmark();
     bool folder = bm.isGroup();
+    QString name = QString(bm.text()).replace("&&", "&");
 
     if (KMessageBox::warningContinueCancel(
                 QApplication::activeWindow(),
-                folder ? i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", bm.text())
-                : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", bm.text()),
+                folder ? i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", name)
+                : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", name),
                 folder ? i18n("Bookmark Folder Deletion")
                 : i18n("Bookmark Deletion"),
                 KStandardGuiItem::del())
@@ -233,9 +234,10 @@ void BookmarkContextMenu::deleteBookmark()
 void BookmarkContextMenu::editBookmark()
 {
     KBookmark selected = bookmark();
-
+    selected.setFullText(selected.text().replace("&&", "&"));
     KBookmarkDialog *dialog = owner()->bookmarkDialog(manager(), QApplication::activeWindow());
     dialog->editBookmark(selected);
+    selected.setFullText(selected.text().replace("&", "&&"));
     delete dialog;
 }
 
@@ -317,7 +319,7 @@ void BookmarkContextMenu::bookmarkCurrentPage()
         if (selected.isGroup())
             parent = selected.toGroup();
 
-        KBookmark newBk = parent.addBookmark(owner()->currentTitle(), KUrl(owner()->currentUrl()), "text-html");
+        KBookmark newBk = parent.addBookmark(owner()->currentTitle().replace("&", "&&"), KUrl(owner()->currentUrl()), "text-html");
         parent.moveBookmark(newBk, selected.parentGroup().previous(selected));
     }
 
