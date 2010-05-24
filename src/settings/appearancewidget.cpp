@@ -28,14 +28,20 @@
 #include "appearancewidget.h"
 #include "appearancewidget.moc"
 
+// KDE Includes
+#include <KFontRequester>
+
 
 AppearanceWidget::AppearanceWidget(QWidget *parent)
         : QWidget(parent)
         , _changed(false)
 {
     setupUi(this);
-    
-//     kcfg_fixedFont->setOnlyFixed(true);
+
+    KFontRequester *fixedFontRequester = new KFontRequester(this, true);
+    fixedFontRequester->setObjectName( QL1S("kcfg_fixedFont") );
+
+    gridLayout->addWidget(fixedFontRequester, 1, 1, 1, 1);
 }
 
 
