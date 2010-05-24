@@ -512,6 +512,8 @@ void MainView::closeTab(int index, bool del)
     UrlBar *urlbar = _widgetBar->urlBar(index);
     _widgetBar->removeWidget(urlbar);
 
+    _widgetBar->setCurrentIndex(m_currentTabIndex);
+
     if (del)
     {
         tab->deleteLater();    // tab is scheduled for deletion.
