@@ -398,6 +398,16 @@ void MainWindow::setupActions()
     closedTabsMenu->setDelayed(false);
     actionCollection()->addAction(QL1S("closed_tab_menu"), closedTabsMenu);
 
+    // shortcuts for quickly switching to a tab
+    for( int i = 1; i <= 9; i++ ) {
+        a = new KAction(i18n("Switch to Tab %1", i), this);
+        a->setShortcut(KShortcut( QString("Alt+%1").arg(i) ));
+        a->setData( QVariant(i) );
+        actionCollection()->addAction(QL1S(("switch_tab_" + QString::number(i)).toAscii()), a);
+        connect(a, SIGNAL(triggered(bool)), m_view, SLOT(switchToTab()));
+    }
+
+
     // ============================== Indexed Tab Actions ====================================
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
     actionCollection()->addAction(QL1S("close_tab"), a);

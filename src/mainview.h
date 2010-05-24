@@ -135,6 +135,7 @@ public slots:
     void detachTab(int index = -1);
     void openClosedTabs();
     void openClosedTab();
+    void switchToTab();
 
     // WEB slot actions
     void webReload();
