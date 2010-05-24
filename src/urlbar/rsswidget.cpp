@@ -115,9 +115,12 @@ RSSWidget::~RSSWidget()
 
 void RSSWidget::showAt(const QPoint &pos)
 {
+    adjustSize();
+    
     QPoint p;
-    p.setX(pos.x() - 200);
+    p.setX(pos.x() - width());
     p.setY(pos.y() + 10);
+    
     move(p);
     show();
 }
