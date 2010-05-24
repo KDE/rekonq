@@ -657,6 +657,17 @@ void MainView::openClosedTab()
     }
 }
 
+void MainView::switchToTab()
+{
+    // uses the sender to determine the tab index
+    QAction *sender = static_cast<QAction*>(QObject::sender());
+    int index = sender->data().toInt();
+    index -= 1; // to compensate for off by 1 presented to the user
+    if( index < 0 || index >= count() )
+        return;
+    setCurrentIndex( index );
+}
+
 QLabel *MainView::animatedLoading(int index, bool addMovie)
 {
     if (index == -1)
