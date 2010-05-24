@@ -415,34 +415,45 @@ void Application::newWindow()
 
 void Application::updateConfiguration()
 {
-    // FIXME:
-    // all things related to mainview can be
-    // improved/moved/replicated in all the mainwindows
-    MainView *view = mainWindow()->mainView();
-
-    // ============== General ==================
-    view->updateTabBar();
-
     // ============== Tabs ==================
-    if (ReKonfig::closeTabSelectPrevious())
-        view->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
-    else
-        view->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
+    bool b = ReKonfig::closeTabSelectPrevious();
+    Q_FOREACH(const QWeakPointer<MainWindow> &w, m_mainWindows)
+    {
+        MainView *mv = w.data()->mainView();
+        mv->updateTabBar();
+    
+        if (b)
+            mv->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
+        else
+            mv->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
+    }
 
+    QWebSettings *defaultSettings = QWebSettings::globalSettings();    
+    
     // =========== Fonts ==============
-    QWebSettings *defaultSettings = QWebSettings::globalSettings();
-
-    int fnSize = ReKonfig::fontSize();
-    int minFnSize = ReKonfig::minFontSize();
-
     QFont standardFont = ReKonfig::standardFont();
+    kDebug() << "STANDARD FONT" << standardFont.pixelSize();
     defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, fnSize);
-    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, minFnSize);
+    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, standardFont.pointSize());
 
     QFont fixedFont = ReKonfig::fixedFont();
     defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fnSize);
+    defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fixedFont.pointSize());
+
+    QFont serifFont = ReKonfig::serifFont();
+    defaultSettings->setFontFamily(QWebSettings::SerifFont, serifFont.family());
+    
+    QFont sansSerifFont = ReKonfig::sansSerifFont();
+    defaultSettings->setFontFamily(QWebSettings::SansSerifFont, sansSerifFont.family());
+    
+    QFont cursiveFont = ReKonfig::cursiveFont();
+    defaultSettings->setFontFamily(QWebSettings::FixedFont, cursiveFont.family());
+    
+    QFont fantasyFont = ReKonfig::fantasyFont();
+    defaultSettings->setFontFamily(QWebSettings::FantasyFont, fantasyFont.family());
+    
+    int minimumFontSize = ReKonfig::minFontSize();
+    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, minimumFontSize);
 
     // ================ WebKit ============================
     defaultSettings->setAttribute(QWebSettings::AutoLoadImages, ReKonfig::autoLoadImages());

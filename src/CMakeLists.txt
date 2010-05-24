@@ -37,6 +37,10 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     settings/settingsdialog.cpp
     settings/adblockwidget.cpp
+    settings/appearancewidget.cpp
+    settings/generalwidget.cpp
+    settings/tabswidget.cpp
+    settings/webkitwidget.cpp
     settings/networkwidget.cpp
     #----------------------------------------
     bookmarks/bookmarksmanager.cpp
@@ -64,7 +68,7 @@ SET( rekonq_KDEINIT_SRCS
 KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_general.ui
     settings/settings_tabs.ui
-    settings/settings_fonts.ui
+    settings/settings_appearance.ui
     settings/settings_webkit.ui
     settings/settings_adblock.ui
     cleardata.ui

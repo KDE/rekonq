@@ -52,14 +52,10 @@ public:
 
 private:
     Private* const d;
-    void setWebSettingsToolTips();
 
 private slots:
     void readConfig();
     void saveSettings();
-
-    void setHomeToCurrentPage();
-    void disableHomeSettings(bool);
 };
 
 #endif // SETTINGS_DIALOG_H

@@ -24,43 +24,32 @@
 * ============================================================ */
 
 
-#ifndef ADBLOCK_WIDGET_H
-#define ADBLOCK_WIDGET_H
+// Self Includes
+#include "appearancewidget.h"
+#include "appearancewidget.moc"
 
 
-// Ui Includes
-#include "ui_settings_adblock.h"
-
-// Qt Includes
-#include <QtGui/QWidget>
-#include <QtGui/QTreeWidgetItem>
-
-
-class AdBlockWidget : public QWidget, private Ui::adblock
+AppearanceWidget::AppearanceWidget(QWidget *parent)
+        : QWidget(parent)
+        , _changed(false)
 {
-    Q_OBJECT
+    setupUi(this);
+    
+//     kcfg_fixedFont->setOnlyFixed(true);
+}
 
-public:
-    AdBlockWidget(QWidget *parent = 0);
 
-    void save();
-    bool changed();
+void AppearanceWidget::save()
+{
+}
 
-signals:
-    void changed(bool);
 
-private slots:
-    void hasChanged();
+bool AppearanceWidget::changed()
+{
+    return _changed;
+}
 
-    void slotInfoLinkActivated(const QString &);
-    void insertRule();
-    void removeRule();
 
-private:
-    void load();
-    void loadRules(QTreeWidgetItem *item);
-
-    bool _changed;
-};
-
-#endif // ADBLOCK_WIDGET_H
+void AppearanceWidget::hasChanged()
+{
+}
