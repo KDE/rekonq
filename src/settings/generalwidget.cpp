@@ -69,7 +69,7 @@ void GeneralWidget::hasChanged()
 
 void GeneralWidget::setHomeToCurrentPage()
 {
-    MainWindow *mw = qobject_cast<MainWindow*>(parent());
+    MainWindow *mw = Application::instance()->mainWindow();
     WebTab *webTab = mw->currentTab();
     if (webTab)
     {
