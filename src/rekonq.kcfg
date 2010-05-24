@@ -106,8 +106,17 @@
     <entry name="fixedFont" type="Font">
         <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::FixedFont))</default>
     </entry>
-    <entry name="fontSize" type="Int">
-        <default>16</default>
+    <entry name="serifFont" type="Font">
+        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::SerifFont))</default>
+    </entry>
+    <entry name="sansSerifFont" type="Font">
+        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::SansSerifFont))</default>
+    </entry>
+    <entry name="cursiveFont" type="Font">
+        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::CursiveFont))</default>
+    </entry>
+    <entry name="fantasyFont" type="Font">
+        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::FantasyFont))</default>
     </entry>
     <entry name="minFontSize" type="Int">
         <default>8</default>

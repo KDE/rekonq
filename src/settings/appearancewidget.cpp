@@ -35,7 +35,7 @@ AppearanceWidget::AppearanceWidget(QWidget *parent)
 {
     setupUi(this);
     
-    kcfg_fixedFont->setOnlyFixed(true);
+//     kcfg_fixedFont->setOnlyFixed(true);
 }
 
 
