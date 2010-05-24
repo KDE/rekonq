@@ -220,7 +220,16 @@ PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text,
 
     QVBoxLayout *vLayout = new QVBoxLayout;
     vLayout->setMargin(0);
-    vLayout->addWidget(new TextLabel(item.title, text, this));
+
+    QString title = item.title;
+    if (title.isEmpty())
+    {
+        title = item.url.url();
+        title = title.remove("http://");
+	title.truncate(title.indexOf("/"));
+    }
+
+    vLayout->addWidget(new TextLabel(title, text, this));
     vLayout->addWidget(new TextLabel("<i>" + item.url.url() + "</i>", text, this));
 
     hLayout->addLayout(vLayout);
