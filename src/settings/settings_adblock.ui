@@ -17,14 +17,14 @@
    <item>
     <widget class="QCheckBox" name="checkEnableAdblock">
      <property name="text">
-      <string>&amp;Enable AdBlock</string>
+      <string>&amp;Enable Ad Block</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="checkHideAds">
      <property name="text">
-      <string>&amp;Hide filtered Elements</string>
+      <string>&amp;Hide filtered elements</string>
      </property>
     </widget>
    </item>
@@ -128,6 +128,9 @@
          </item>
          <item>
           <widget class="QToolButton" name="insertButton">
+           <property name="toolTip">
+            <string>Add filter expression</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -135,6 +138,9 @@
          </item>
          <item>
           <widget class="QToolButton" name="removeButton">
+           <property name="toolTip">
+            <string>Remove filter expression</string>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
