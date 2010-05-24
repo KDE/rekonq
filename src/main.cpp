@@ -69,7 +69,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     ki18n("Developer, Ideas, Mockups. And the icon."),
                     "megabigbug@yahoo.fr",
                     "");
-
+    
     about.addAuthor(ki18n("Johannes Zellner"),
                     ki18n("Patches, suggestions, testing, bugfixing"),
                     "webmaster@nebulon.de",
@@ -85,15 +85,41 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "ronny_scholz@web.de",
                     "");
 
-    // --------------- about credits -----------------------------
-    about.addCredit(ki18n("Domrachev Alexandr"),
-                    ki18n("Developer"),
-                    "alexandr.domrachev@gmail.com",
+    about.addAuthor(ki18n("Rohan Garg"),
+                    ki18n("Handbook, maintains a Kubuntu PPA with rekonq git packages"),
+                    "rohan16garg@gmail.com",
                     "");
 
-    about.addCredit(ki18n("Henry de Valence"),
-                    ki18n("Promised help on multitask rekonq"),
-                    "hdevalence@gmail.com",
+    about.addAuthor(ki18n("Yoann Laissus"),
+                    ki18n("Developer, history & bookmarks improvements"),
+                    "yoann.laissus@gmail.com",
+                    "");
+                    
+    about.addAuthor(ki18n("Cedric Bellegarde"),
+                    ki18n("Patched code quite everywhere :)"),
+                    "gnumdk@adishatz.1s.fr",
+                    "");
+                        
+    about.addAuthor(ki18n("Jonathan Raphael Joachim Kolberg"),
+                    ki18n("Handbook, maintains a Kubuntu PPA with rekonq git packages"),
+                    "bulldog98@freenet.de",
+                    "");
+                    
+                    
+    // --------------- about credits -----------------------------
+    about.addCredit(ki18n("Lindsay Mathieson"),
+                    ki18n("Provided patches & hints. Discovered bugs"),
+                    "lindsay.mathieson@gmail.com",
+                    "");
+                    
+    about.addCredit(ki18n("Abdurrahman AVCI"),
+                    ki18n("Provided patches & hints"),
+                    "abdurrahmanavci@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Domrachev Alexandr"),
+                    ki18n("Former Developer"),
+                    "alexandr.domrachev@gmail.com",
                     "");
 
     about.addCredit(ki18n("Abuus"),
@@ -112,22 +138,17 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "");
 
     about.addCredit(ki18n("Pawel Prazak"),
-                    ki18n("Developer"),
+                    ki18n("Former Developer"),
                     "kojots350@gmail.com",
                     "");
 
-    about.addCredit(ki18n("Rohan Garg"),
-                    ki18n("Handbook"),
-                    "rohan16garg@gmail.com",
-                    "");
-
     about.addCredit(ki18n("Dario Freddi"),
-                    ki18n("Patches, hints, first KWallet support implementation (not yet included)"),
+                    ki18n("Patches, hints, first KWallet support implementation"),
                     "drf@kde.org",
                     "");
 
     about.addCredit(ki18n("Jon de Andrés Frías"),
-                    ki18n("first awesome bar implementation (wait next version and you'll see..)"),
+                    ki18n("first awesome bar implementation"),
                     "jondeandres@gmail.com",
                     "");
 
