@@ -271,4 +271,3 @@ UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
     }
     return UrlSearchItem();
 }
-

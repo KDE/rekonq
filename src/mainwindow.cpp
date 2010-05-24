@@ -951,26 +951,8 @@ void MainWindow::viewPageSource()
     if (!currentTab())
         return;
 
-    KUrl url(currentTab()->url());
-    bool isTempFile = false;
-    if (!url.isLocalFile())
-    {
-        KTemporaryFile sourceFile;
-
-        /// TODO: autochoose tempfile suffix
-        sourceFile.setSuffix(QString(".html"));
-        sourceFile.setAutoRemove(false);
-
-        if (sourceFile.open())
-        {
-            sourceFile.write(currentTab()->page()->mainFrame()->toHtml().toUtf8());
-
-            url = KUrl();
-            url.setPath(sourceFile.fileName());
-            isTempFile = true;
-        }
-    }
-    KRun::runUrl(url, QL1S("text/plain"), this, isTempFile);
+    KUrl url = currentTab()->url();
+    KRun::runUrl(url, QL1S("text/plain"), this, false);
 }
 
 
