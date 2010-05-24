@@ -432,7 +432,6 @@ void Application::updateConfiguration()
     
     // =========== Fonts ==============
     QFont standardFont = ReKonfig::standardFont();
-    kDebug() << "STANDARD FONT" << standardFont.pixelSize();
     defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
     defaultSettings->setFontSize(QWebSettings::DefaultFontSize, standardFont.pointSize());
 
