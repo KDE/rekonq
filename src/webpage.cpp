@@ -246,111 +246,112 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (_protHandler.postHandling(reply->request(), mainFrame()))
         return;
 
-    if (reply->error() == QNetworkReply::NoError)
+    if (reply->error() != QNetworkReply::NoError)
+        return;
+    
+    KUrl replyUrl = reply->url();
+
+    // HACK -------------------------------------------
+    QString mimeType;
+    QString suggestedFileName;
+    
+    QString app = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+    QStringList headerList = app.split( ';' );
+    
+    if(headerList.count() > 0)
     {
-        KUrl replyUrl = reply->url();
-
-        // HACK -------------------------------------------
-        QString mimeType;
-        QString suggestedFileName;
-        
-        QString app = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-        QStringList headerList = app.split( ';' );
-        
-        if(headerList.count() > 0)
+        mimeType = headerList.takeFirst().trimmed();
+        Q_FOREACH(const QString &head, headerList)
         {
-            mimeType = headerList.takeFirst().trimmed();
-            Q_FOREACH(const QString &head, headerList)
+            if( head.contains( QL1S("name") ) )
             {
-                if( head.contains( QL1S("name") ) )
-                {
-                    // this is not so sure.. :)
-                    suggestedFileName = head;
-                    suggestedFileName = suggestedFileName.remove( QL1S("name=") );
-                    suggestedFileName = suggestedFileName.remove( '"' );
-                    suggestedFileName = suggestedFileName.trimmed();
-                    break;
-                }
-            }
-        }
-        else
-        {
-            mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-        }
-        // ------------------------------------------------
-        
-        KService::Ptr appService = KMimeTypeTrader::self()->preferredService(mimeType);
-
-        bool isLocal = replyUrl.isLocalFile();
-
-        if (appService.isNull())  // no service can handle this. We can just download it..
-        {
-            kDebug() << "no service can handle this. We can just download it..";
-
-            isLocal
-            ? KMessageBox::sorry(view(), i18n("No service can handle this :("))
-            : downloadThings(reply->request(), suggestedFileName);
-
-            return;
-        }
-
-        if (!isLocal)
-        {
-
-            KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), replyUrl, mimeType);
-            if(!suggestedFileName.isEmpty())
-                dlg.setSuggestedFileName(suggestedFileName);
-            
-            switch (dlg.askEmbedOrSave())
-            {
-            case KParts::BrowserOpenOrSaveQuestion::Save:
-                kDebug() << "user choice: no services, just download!";
-                downloadThings(reply->request(), suggestedFileName);
-                return;
-
-            case KParts::BrowserOpenOrSaveQuestion::Cancel:
-                return;
-
-            default: // non extant case
+                // this is not so sure.. :)
+                suggestedFileName = head;
+                suggestedFileName = suggestedFileName.remove( QL1S("name=") );
+                suggestedFileName = suggestedFileName.remove( '"' );
+                suggestedFileName = suggestedFileName.trimmed();
                 break;
             }
         }
+    }
+    else
+    {
+        mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+    }
+    kDebug() << "Detected MimeType = " << mimeType;
+    // ------------------------------------------------
+    
+    KService::Ptr appService = KMimeTypeTrader::self()->preferredService(mimeType);
 
-        // case KParts::BrowserRun::Embed
-        KService::List partServices = KMimeTypeTrader::self()->query(mimeType, QL1S("KParts/ReadOnlyPart"));
-        if (partServices.count() > 0)
-        {
-            QString p = replyUrl.pathOrUrl();
-            
-            // A part can handle this. Embed it!
-            QString html;
-            html += "<html>";
-            html += "<head>";
-            html += "<title>";
-            html += p;
-            html += "</title>";
-            html += "<style type=\"text/css\">";
-            html += "* { border: 0; padding: 0; margin: 0; }";
-            html += "</style>";
-            html += "</head>";
-            html += "<body>";
-            html += "<object type=\"" + mimeType + "\" data=\"" + p + "\" width=\"100%\" height=\"100%\" />";
-            html += "</body>";
-            html += "</html>";
+    bool isLocal = replyUrl.isLocalFile();
 
-            mainFrame()->setHtml(html);            
-            _isOnRekonqPage = true;
-            Application::instance()->mainWindow()->mainView()->urlBar()->setQUrl(replyUrl);
-            Application::instance()->mainWindow()->updateActions();
-        }
-        else
-        {
-            // No parts, just app services. Load it!
-            KRun::run(*appService, replyUrl, 0);
-        }
+    if (appService.isNull())  // no service can handle this. We can just download it..
+    {
+        kDebug() << "no service can handle this. We can just download it..";
+
+        isLocal
+        ? KMessageBox::sorry(view(), i18n("No service can handle this :("))
+        : downloadThings(reply->request(), suggestedFileName);
 
         return;
     }
+
+    if (!isLocal)
+    {
+
+        KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), replyUrl, mimeType);
+        if(!suggestedFileName.isEmpty())
+            dlg.setSuggestedFileName(suggestedFileName);
+        
+        switch (dlg.askEmbedOrSave())
+        {
+        case KParts::BrowserOpenOrSaveQuestion::Save:
+            kDebug() << "user choice: no services, just download!";
+            downloadThings(reply->request(), suggestedFileName);
+            return;
+
+        case KParts::BrowserOpenOrSaveQuestion::Cancel:
+            return;
+
+        default: // non extant case
+            break;
+        }
+    }
+
+    // case KParts::BrowserRun::Embed
+    KService::List partServices = KMimeTypeTrader::self()->query(mimeType, QL1S("KParts/ReadOnlyPart"));
+    if (partServices.count() > 0)
+    {
+        QString p = replyUrl.pathOrUrl();
+        
+        // A part can handle this. Embed it!
+        QString html;
+        html += "<html>";
+        html += "<head>";
+        html += "<title>";
+        html += p;
+        html += "</title>";
+        html += "<style type=\"text/css\">";
+        html += "* { border: 0; padding: 0; margin: 0; }";
+        html += "</style>";
+        html += "</head>";
+        html += "<body>";
+        html += "<object type=\"" + mimeType + "\" data=\"" + p + "\" width=\"100%\" height=\"100%\" />";
+        html += "</body>";
+        html += "</html>";
+
+        mainFrame()->setHtml(html);            
+        _isOnRekonqPage = true;
+        Application::instance()->mainWindow()->mainView()->urlBar()->setQUrl(replyUrl);
+        Application::instance()->mainWindow()->updateActions();
+    }
+    else
+    {
+        // No parts, just app services. Load it!
+        KRun::run(*appService, replyUrl, 0);
+    }
+
+    return;
 }
 
 
