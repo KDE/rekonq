@@ -336,7 +336,10 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
 
     // rapidly show first loading url..
-    w->mainView()->urlBar()->setQUrl(url);
+    int tabIndex = w->mainView()->indexOf(tab);
+    Q_ASSERT( tabIndex != -1 );
+    UrlBar *barForTab = qobject_cast<UrlBar *>(w->mainView()->widgetBar()->widget(tabIndex));
+    barForTab->setQUrl(url);
     
     WebView *view = tab->view();
 
