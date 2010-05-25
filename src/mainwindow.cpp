@@ -320,7 +320,9 @@ void MainWindow::setupActions()
     browserLoading(false); //first init for blank start page
 
     a = new KAction(i18n("Open Location"), this);
-    a->setShortcut(Qt::CTRL + Qt::Key_L);
+    KShortcut openLocationShortcut(Qt::CTRL + Qt::Key_L);
+    openLocationShortcut.setAlternate(Qt::Key_F6);
+    a->setShortcut(openLocationShortcut);
     actionCollection()->addAction(QL1S("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(openLocation()));
 
