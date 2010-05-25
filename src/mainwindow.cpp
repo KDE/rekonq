@@ -1372,8 +1372,8 @@ bool MainWindow::queryClose()
     {
         int answer = KMessageBox::questionYesNoCancel(                                                                                    
                         this,                                                                                                            
-                        i18np("Are you sure you want to close the window?\n" "You have 1 tab open",
-                         "Are you sure you want to close the window?\n" "You have %1 tabs open" , 
+                        i18np("Are you sure you want to close the window?\n" "You have 1 tab open.",
+                         "Are you sure you want to close the window?\n" "You have %1 tabs open.", 
                         m_view->count()),
                         i18n("Are you sure you want to close the window?"),                                                              
                         KStandardGuiItem::quit(),                                                                                        

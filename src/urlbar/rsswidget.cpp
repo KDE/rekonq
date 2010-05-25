@@ -163,7 +163,7 @@ void RSSWidget::addWithAkregator(const QString &url)
 
         if (!reply.isValid())
         {
-            KMessageBox::error(0, QString(i18n("Could not add stream to akregator, Please add it manually :")
+            KMessageBox::error(0, QString(i18n("Could not add feed to Akregator. Please add it manually:")
                                           + "<br /><br /> <a href=\"" + url + "\">" + url + "</a>"));
         }
     }

@@ -172,7 +172,7 @@ void HistoryPanel::openAll()
     if (allChild.length() > 8)
     {
         if (!(KMessageBox::warningContinueCancel(this,
-                i18n("You are about to open %1 tabs.\nAre you sure  ?",
+                i18n("You are about to open %1 tabs.\nAre you sure?",
                      QString::number(allChild.length()))) == KMessageBox::Continue)
            )
             return;

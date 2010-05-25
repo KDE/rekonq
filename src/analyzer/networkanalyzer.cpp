@@ -48,7 +48,7 @@ NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
     , _requestList(new QTreeWidget(this))
 {
     QStringList headers;
-    headers << i18n("Method") << i18n("Url") << i18n("Response") << i18n("Length") << i18n("Content Type") << i18n("Info");
+    headers << i18n("Method") << i18n("URL") << i18n("Response") << i18n("Length") << i18n("Content Type") << i18n("Info");
     _requestList->setHeaderLabels( headers );
     
     _requestList->header()->setResizeMode(0, QHeaderView::ResizeToContents);

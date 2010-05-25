@@ -91,7 +91,7 @@ UrlBar::UrlBar(QWidget *parent)
     setUrlDropsEnabled(true);
 
     // tooltip
-    setToolTip(i18n("Type here to search your bookmarks, history and the web.."));
+    setToolTip(i18n("Type here to search your bookmarks, history and the web..."));
 
     // accept focus, via tabbing, clicking & wheeling
     setFocusPolicy(Qt::WheelFocus);

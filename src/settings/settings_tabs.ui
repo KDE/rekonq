@@ -73,7 +73,7 @@
          </size>
         </property>
         <property name="text">
-         <string>New tab page starts with:</string>
+         <string>New Tab Page starts with:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

@@ -100,7 +100,7 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
     if (urlList.length() > 8)
     {
         if ( !(KMessageBox::warningContinueCancel(  Application::instance()->mainWindow(), 
-                                                    i18n("You are about to open %1 tabs.\nAre you sure  ?", 
+                                                    i18n("You are about to open %1 tabs.\nAre you sure?", 
                                                     QString::number( urlList.length() ))
                                                  ) == KMessageBox::Continue) 
            )
