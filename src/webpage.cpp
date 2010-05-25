@@ -402,24 +402,28 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         }
         break;
 
+    case QNetworkReply::OperationCanceledError:              // operation canceled via abort() or close() calls
+        // ignore this..
+        return;
+        
     case QNetworkReply::ContentAccessDenied:                 // access to remote content denied (similar to HTTP error 401)
         kDebug() << "We (hopefully) are managing this through the adblock :)";
         break;
 
     case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
-        if (_protHandler.postHandling(reply->request(), mainFrame()))
-            break;
+        _protHandler.postHandling(reply->request(), mainFrame());
+        return;
 
     case QNetworkReply::ConnectionRefusedError:              // remote server refused connection
     case QNetworkReply::HostNotFoundError:                   // invalid hostname
     case QNetworkReply::TimeoutError:                        // connection time out
-    case QNetworkReply::OperationCanceledError:              // operation canceled via abort() or close() calls
     case QNetworkReply::ProxyNotFoundError:                  // invalid proxy hostname
     case QNetworkReply::ContentOperationNotPermittedError:   // operation requested on remote content not permitted
     case QNetworkReply::ContentNotFoundError:                // remote content not found on server (similar to HTTP error 404)
     case QNetworkReply::ProtocolUnknownError:                // Unknown protocol
     case QNetworkReply::ProtocolInvalidOperationError:       // requested operation is invalid for this protocol
 
+        kDebug() << "ERROR " << reply->error() << ": " << reply->errorString();
         if (reply->url() == _loadingUrl)
         {
             mainFrame()->setHtml(errorPage(reply));
