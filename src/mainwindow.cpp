@@ -609,8 +609,19 @@ void MainWindow::openLocation()
 
 void MainWindow::fileSaveAs()
 {
-    KUrl srcUrl = currentTab()->url();
-
+    KUrl srcUrl;
+    WebTab *w = currentTab();
+    if (w->page()->isOnRekonqPage())
+    {
+        QWebElement el = w->page()->mainFrame()->documentElement();
+        srcUrl = KUrl( el.findFirst("object").attribute("data") );
+    }
+    else
+    {
+        srcUrl = w->url();
+    }
+    kDebug() << "URL to save: " << srcUrl;
+    
     QString name = srcUrl.fileName();
     if (name.isNull())
     {
