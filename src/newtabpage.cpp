@@ -582,7 +582,7 @@ void NewTabPage::downloadsPage()
         div.appendInside("<em>" + date + "</em>");
         div.appendInside("<br/>");
 
-        div.appendInside(item.srcUrlString);
+        div.appendInside("<a href=" + item.srcUrlString + ">" + item.srcUrlString + "</a>");
         div.appendInside("<br/>");
 
         div.appendInside(markup("a"));
