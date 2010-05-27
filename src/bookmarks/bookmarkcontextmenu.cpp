@@ -234,7 +234,7 @@ void BookmarkContextMenu::deleteBookmark()
 void BookmarkContextMenu::editBookmark()
 {
     KBookmark selected = bookmark();
-    selected.setFullText(selected.text().replace("&&", '&'));
+    selected.setFullText(selected.text().replace("&&", "&"));
     KBookmarkDialog *dialog = owner()->bookmarkDialog(manager(), QApplication::activeWindow());
     dialog->editBookmark(selected);
     selected.setFullText(selected.text().replace('&', "&&"));
