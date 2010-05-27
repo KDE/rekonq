@@ -91,7 +91,7 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
         "pro)";
         
-        _browseRegexp = QRegExp("(" + protocol + ")|(" + local + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 +")");
+        _browseRegexp = QRegExp('(' + protocol + ")|(" + local + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 +')');
     }
     
 }

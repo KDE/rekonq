@@ -412,7 +412,7 @@ void BookmarkProvider::fillBookmarkBar(KToolBar *toolBar)
         else
         {
             KBookmarkAction* a = new KBookmarkAction(bookmark, m_owner, this);
-            a->setIconText(a->iconText().replace("&", "&&"));
+            a->setIconText(a->iconText().replace('&', "&&"));
             toolBar->addAction(a);
         }
     }

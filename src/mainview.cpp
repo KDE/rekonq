@@ -596,7 +596,7 @@ void MainView::webViewTitleChanged(const QString &title)
 {
     QString viewTitle = title.isEmpty()? i18n("(Untitled)") : title;
     QString tabTitle = viewTitle;
-    tabTitle.replace("&", "&&");
+    tabTitle.replace('&', "&&");
     
     WebView *view = qobject_cast<WebView *>(sender());
     int index = indexOf(view->parentWidget());
