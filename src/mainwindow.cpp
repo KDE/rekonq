@@ -680,7 +680,7 @@ void MainWindow::updateActions()
     if (am->menu())
         am->menu()->clear();
 
-    foreach (HistoryItem item, mainView()->recentlyClosedTabs())
+    foreach (const HistoryItem &item, mainView()->recentlyClosedTabs())
     {
         KAction *a = new KAction(Application::icon(item.url), item.title, this);
         a->setData(item.url);

@@ -380,8 +380,7 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
     nav.findFirst("span").appendInside(i18n("Downloads"));
     navItems.append(nav);
 
-    QWebElement it;
-    foreach(it, navItems)
+    foreach(QWebElement it, navItems)
     {
         if (it.findFirst("a").attribute("href") == currentUrl.toMimeDataString())
             it.addClass("current");

@@ -615,14 +615,14 @@ void WebPage::downloadAllContentsWithKGet(QPoint)
     KUrl relativeUrl;
 
     QWebElementCollection images = mainFrame()->documentElement().findAll("img");
-    foreach(QWebElement img, images)
+    foreach(const QWebElement &img, images)
     {
         relativeUrl.setEncodedUrl(img.attribute("src").toUtf8(), KUrl::TolerantMode);
         contents << baseUrl.resolved(relativeUrl).toString();
     }
 
     QWebElementCollection links = mainFrame()->documentElement().findAll("a");
-    foreach(QWebElement link, links)
+    foreach(const QWebElement &link, links)
     {
         relativeUrl.setEncodedUrl(link.attribute("href").toUtf8(), KUrl::TolerantMode);
         contents << baseUrl.resolved(relativeUrl).toString();
