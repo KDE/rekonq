@@ -449,7 +449,7 @@ void Application::updateConfiguration()
     defaultSettings->setFontFamily(QWebSettings::SansSerifFont, sansSerifFont.family());
     
     QFont cursiveFont = ReKonfig::cursiveFont();
-    defaultSettings->setFontFamily(QWebSettings::FixedFont, cursiveFont.family());
+    defaultSettings->setFontFamily(QWebSettings::CursiveFont, cursiveFont.family());
     
     QFont fantasyFont = ReKonfig::fantasyFont();
     defaultSettings->setFontFamily(QWebSettings::FantasyFont, fantasyFont.family());
