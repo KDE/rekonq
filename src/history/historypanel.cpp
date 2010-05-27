@@ -175,7 +175,7 @@ void HistoryPanel::openAll()
                 i18ncp("%1=Number of tabs. Value is always >=8",
                        "You are about to open %1 tabs.\nAre you sure?",
                        "You are about to open %1 tabs.\nAre you sure?",
-                     QString::number(allChild.length()))) == KMessageBox::Continue)
+                       allChild.length())) == KMessageBox::Continue)
            )
             return;
     }

@@ -103,7 +103,7 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
                                                     i18ncp("%1=Number of tabs. Value is always >=8",
                                                            "You are about to open %1 tabs.\nAre you sure?",
                                                            "You are about to open %1 tabs.\nAre you sure?", 
-                                                    QString::number( urlList.length() ))
+                                                           urlList.length())
                                                  ) == KMessageBox::Continue) 
            )
             return;

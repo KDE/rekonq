@@ -75,7 +75,7 @@ QVariant BtmItem::data(int role) const
         }
         if (m_kbm.isGroup())
         {
-            tooltip += i18nc("%1=Number of items in bookmark folder", " (%1 items)", QString::number(childCount()));
+            tooltip += i18nc("%1=Number of items in bookmark folder", " (%1 items)", childCount());
         }
         if (!m_kbm.url().url().isEmpty())
         {
