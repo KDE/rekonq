@@ -186,12 +186,15 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QCheckBox" name="kcfg_disableAutoScroll">
+       <widget class="QCheckBox" name="kcfg_autoScroll">
         <property name="toolTip">
-         <string>Disable automatic scrolling on middle click in a web page</string>
+         <string>Toggle automatic scrolling on middle click in a web page</string>
         </property>
         <property name="text">
-         <string>Disable auto scrolling</string>
+         <string>Auto-scroll on middle-click</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
