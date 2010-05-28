@@ -31,6 +31,7 @@ GenericName[pt_BR]=Navegador WebKit do KDE
 GenericName[sv]=Webkit webbläsare för KDE
 GenericName[uk]=Переглядач мережі на WebKit для KDE
 GenericName[x-test]=xxWebKit KDE Browserxx
+GenericName[zh_CN]=Webkit KDE 浏览器
 Icon=rekonq
 Type=Application
 Exec=rekonq %u
