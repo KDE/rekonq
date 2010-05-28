@@ -237,7 +237,7 @@ void BookmarkContextMenu::editBookmark()
     selected.setFullText(selected.text().replace("&&", "&"));
     KBookmarkDialog *dialog = owner()->bookmarkDialog(manager(), QApplication::activeWindow());
     dialog->editBookmark(selected);
-    selected.setFullText(selected.text().replace("&", "&&"));
+    selected.setFullText(selected.text().replace('&', "&&"));
     delete dialog;
 }
 
@@ -319,7 +319,7 @@ void BookmarkContextMenu::bookmarkCurrentPage()
         if (selected.isGroup())
             parent = selected.toGroup();
 
-        KBookmark newBk = parent.addBookmark(owner()->currentTitle().replace("&", "&&"), KUrl(owner()->currentUrl()), "text-html");
+        KBookmark newBk = parent.addBookmark(owner()->currentTitle().replace('&', "&&"), KUrl(owner()->currentUrl()), "text-html");
         parent.moveBookmark(newBk, selected.parentGroup().previous(selected));
     }
 

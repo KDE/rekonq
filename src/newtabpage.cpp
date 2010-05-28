@@ -380,8 +380,7 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
     nav.findFirst("span").appendInside(i18n("Downloads"));
     navItems.append(nav);
 
-    QWebElement it;
-    foreach(it, navItems)
+    foreach(QWebElement it, navItems)
     {
         if (it.findFirst("a").attribute("href") == currentUrl.toMimeDataString())
             it.addClass("current");
@@ -582,7 +581,7 @@ void NewTabPage::downloadsPage()
         div.appendInside("<em>" + date + "</em>");
         div.appendInside("<br/>");
 
-        div.appendInside("<a href=" + item.srcUrlString + ">" + item.srcUrlString + "</a>");
+        div.appendInside("<a href=" + item.srcUrlString + '>' + item.srcUrlString + "</a>");
         div.appendInside("<br/>");
 
         div.appendInside(markup("a"));

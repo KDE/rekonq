@@ -103,7 +103,7 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
                                                     i18ncp("%1=Number of tabs. Value is always >=8",
                                                            "You are about to open %1 tabs.\nAre you sure?",
                                                            "You are about to open %1 tabs.\nAre you sure?", 
-                                                    QString::number( urlList.length() ))
+                                                           urlList.length())
                                                  ) == KMessageBox::Continue) 
            )
             return;
@@ -412,7 +412,7 @@ void BookmarkProvider::fillBookmarkBar(KToolBar *toolBar)
         else
         {
             KBookmarkAction* a = new KBookmarkAction(bookmark, m_owner, this);
-            a->setIconText(a->iconText().replace("&", "&&"));
+            a->setIconText(a->iconText().replace('&', "&&"));
             toolBar->addAction(a);
         }
     }
