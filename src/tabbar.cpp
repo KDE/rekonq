@@ -186,6 +186,11 @@ void TabBar::showTabPreview(int tab)
 
 void TabBar::mouseMoveEvent(QMouseEvent *event)
 {
+    if (count() == 1)
+    {
+        return;
+    }
+
     if (event->buttons() & Qt::LeftButton)
     {
         // hide addNewTabButton when moving tabs
