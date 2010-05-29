@@ -129,7 +129,7 @@ void ListItem::leaveEvent(QEvent *e)
 
 void ListItem::mousePressEvent(QMouseEvent *e)
 {
-    emit itemClicked(this, e->button());
+    emit itemClicked(this, e->button(), e->modifiers());
     QWidget::mousePressEvent(e);
 }
 

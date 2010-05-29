@@ -64,7 +64,7 @@ public:
     void suggestUrls(const QString &text);
 
 private slots:
-    void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton);
+    void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
 
 signals:
     void chosenUrl(const KUrl &, Rekonq::OpenType);

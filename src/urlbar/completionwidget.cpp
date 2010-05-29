@@ -74,7 +74,7 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString
     {
         ListItem *suggestion = ListItemFactory::create(item, text, this);
         suggestion->setBackgroundRole(i % 2 ? QPalette::AlternateBase : QPalette::Base);
-        connect(suggestion, SIGNAL(itemClicked(ListItem *, Qt::MouseButton)), this, SLOT(itemChosen(ListItem *, Qt::MouseButton)));
+        connect(suggestion, SIGNAL(itemClicked(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)), this, SLOT(itemChosen(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)));
         connect(this, SIGNAL(nextItemSubChoice()), suggestion, SLOT(nextItemSubChoice()));
         suggestion->setObjectName(QString::number(i++));
         layout()->addWidget(suggestion);
@@ -265,9 +265,9 @@ void CompletionWidget::setVisible(bool visible)
 }
 
 
-void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button)
+void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::KeyboardModifiers modifier)
 {
-    if (button == Qt::MidButton)
+    if (button == Qt::MidButton || modifier == Qt::ControlModifier)
         emit chosenUrl(item->url(), Rekonq::NewCurrentTab);
     else
         emit chosenUrl(item->url(), Rekonq::CurrentTab);
