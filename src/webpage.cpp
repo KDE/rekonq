@@ -113,6 +113,9 @@ static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData 
     do 
     {
         destUrl = KFileDialog::getSaveFileName(fileName, QString(), parent);
+        
+        if(destUrl.isEmpty())
+            return false;
 
         if (destUrl.isLocalFile()) 
         {
