@@ -66,7 +66,7 @@ public slots:
     virtual void nextItemSubChoice();
 
 signals:
-    void itemClicked(ListItem *item, Qt::MouseButton);
+    void itemClicked(ListItem *item, Qt::MouseButton, Qt::KeyboardModifiers);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
