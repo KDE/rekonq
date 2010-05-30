@@ -906,7 +906,7 @@ void MainWindow::setZoomFactor(int factor)
 
 void MainWindow::setZoomSliderFactor(qreal factor)
 {
-    m_zoomSlider->setValue(factor*10);
+    m_zoomSlider->setValue(factor * 10);
 }
 
 

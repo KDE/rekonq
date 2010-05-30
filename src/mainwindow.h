@@ -78,8 +78,6 @@ public:
     virtual QSize sizeHint() const;
     void setWidgetsVisible(bool makeFullScreen);
 
-    void setZoomSliderFactor(qreal factor);
-
 private:
     void setupActions();
     void setupTools();
@@ -102,6 +100,8 @@ public slots:
     void printRequested(QWebFrame *frame = 0);
 
     void updateActions();
+
+    void setZoomSliderFactor(qreal factor);
 
 signals:
     // switching tabs

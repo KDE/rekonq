@@ -56,6 +56,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
 private slots:
     void search();
@@ -73,6 +74,7 @@ private slots:
 
 signals:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
+    void zoomChanged(qreal);
 
 private:
     QPoint _mousePos;

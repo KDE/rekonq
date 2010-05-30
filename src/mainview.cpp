@@ -329,6 +329,7 @@ WebTab *MainView::newWebTab(bool focused, bool nearParent)
     connect(tab->view(), SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
     connect(tab->view(), SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
     connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
+    connect(tab->view(), SIGNAL(zoomChanged(qreal)), m_parentWindow, SLOT(setZoomSliderFactor(qreal)));
 
     // connecting webPage signals with mainview
     connect(tab->view()->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
