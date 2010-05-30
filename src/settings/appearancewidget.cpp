@@ -28,8 +28,8 @@
 #include "appearancewidget.h"
 #include "appearancewidget.moc"
 
-// KDE Includes
-#include <KFontRequester>
+// Auto Includes
+#include "rekonq.h"
 
 
 AppearanceWidget::AppearanceWidget(QWidget *parent)
@@ -37,16 +37,33 @@ AppearanceWidget::AppearanceWidget(QWidget *parent)
         , _changed(false)
 {
     setupUi(this);
-
-    KFontRequester *fixedFontRequester = new KFontRequester(this, true);
-    fixedFontRequester->setObjectName( QL1S("kcfg_fixedFont") );
-
-    gridLayout->addWidget(fixedFontRequester, 1, 1, 1, 1);
+    
+    fixedFontChooser->setOnlyFixed(true);
+    
+    standardFontChooser->setCurrentFont( QFont( ReKonfig::standardFontFamily() ) );
+    fixedFontChooser->setCurrentFont( QFont( ReKonfig::fixedFontFamily() ) );
+    serifFontChooser->setCurrentFont( QFont( ReKonfig::serifFontFamily() ) );
+    sansSerifFontChooser->setCurrentFont( QFont( ReKonfig::sansSerifFontFamily() ) );
+    cursiveFontChooser->setCurrentFont( QFont( ReKonfig::cursiveFontFamily() ) );
+    fantasyFontChooser->setCurrentFont( QFont( ReKonfig::fantasyFontFamily() ) );
+                        
+    connect(standardFontChooser,    SIGNAL(currentFontChanged(const QFont &)), this, SLOT(slotStandardFont(const QFont &)));
+    connect(fixedFontChooser,       SIGNAL(currentFontChanged(const QFont &)), this, SLOT(slotFixedFont(const QFont &)));
+    connect(serifFontChooser,       SIGNAL(currentFontChanged(const QFont &)), this, SLOT(slotSerifFont(const QFont &)));
+    connect(sansSerifFontChooser,   SIGNAL(currentFontChanged(const QFont &)), this, SLOT(slotSansSerifFont(const QFont &)));
+    connect(cursiveFontChooser,     SIGNAL(currentFontChanged(const QFont &)), this, SLOT(slotCursiveFont(const QFont &)));
+    connect(fantasyFontChooser,     SIGNAL(currentFontChanged(const QFont &)), this, SLOT(slotFantasyFont(const QFont &)));
 }
 
 
 void AppearanceWidget::save()
 {
+    ReKonfig::setStandardFontFamily(reFont[0]);
+    ReKonfig::setFixedFontFamily(reFont[1]);
+    ReKonfig::setSerifFontFamily(reFont[2]);
+    ReKonfig::setSansSerifFontFamily(reFont[3]);
+    ReKonfig::setCursiveFontFamily(reFont[4]);
+    ReKonfig::setFantasyFontFamily(reFont[5]);
 }
 
 
@@ -58,4 +75,47 @@ bool AppearanceWidget::changed()
 
 void AppearanceWidget::hasChanged()
 {
+    _changed = true;
+}
+
+
+void AppearanceWidget::slotStandardFont(const QFont &f)
+{
+    reFont[0] = f.family();
+    hasChanged();
+}
+
+
+void AppearanceWidget::slotFixedFont(const QFont &f)
+{
+    reFont[1] = f.family();
+    hasChanged();
+}
+
+
+void AppearanceWidget::slotSerifFont(const QFont &f)
+{
+    reFont[2] = f.family();
+    hasChanged();
+}
+
+
+void AppearanceWidget::slotSansSerifFont(const QFont &f)
+{
+    reFont[3] = f.family();
+    hasChanged();
+}
+
+
+void AppearanceWidget::slotCursiveFont(const QFont &f)
+{
+    reFont[4] = f.family();
+    hasChanged();
+}
+
+
+void AppearanceWidget::slotFantasyFont(const QFont &f)
+{
+    reFont[5] = f.family();
+    hasChanged();
 }

@@ -433,30 +433,26 @@ void Application::updateConfiguration()
 
     QWebSettings *defaultSettings = QWebSettings::globalSettings();    
     
-    // =========== Fonts ==============
-    QFont standardFont = ReKonfig::standardFont();
-    defaultSettings->setFontFamily(QWebSettings::StandardFont, standardFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, standardFont.pointSize());
+    // =========== Fonts ==============    
+    defaultSettings->setFontFamily(QWebSettings::StandardFont, ReKonfig::standardFontFamily() );
+    defaultSettings->setFontFamily(QWebSettings::FixedFont, ReKonfig::fixedFontFamily() );
+    defaultSettings->setFontFamily(QWebSettings::SerifFont, ReKonfig::serifFontFamily() );
+    defaultSettings->setFontFamily(QWebSettings::SansSerifFont, ReKonfig::sansSerifFontFamily() );
+    defaultSettings->setFontFamily(QWebSettings::CursiveFont, ReKonfig::cursiveFontFamily());
+    defaultSettings->setFontFamily(QWebSettings::FantasyFont, ReKonfig::fantasyFontFamily());
 
-    QFont fixedFont = ReKonfig::fixedFont();
-    defaultSettings->setFontFamily(QWebSettings::FixedFont, fixedFont.family());
-    defaultSettings->setFontSize(QWebSettings::DefaultFixedFontSize, fixedFont.pointSize());
-
-    QFont serifFont = ReKonfig::serifFont();
-    defaultSettings->setFontFamily(QWebSettings::SerifFont, serifFont.family());
-    
-    QFont sansSerifFont = ReKonfig::sansSerifFont();
-    defaultSettings->setFontFamily(QWebSettings::SansSerifFont, sansSerifFont.family());
-    
-    QFont cursiveFont = ReKonfig::cursiveFont();
-    defaultSettings->setFontFamily(QWebSettings::CursiveFont, cursiveFont.family());
-    
-    QFont fantasyFont = ReKonfig::fantasyFont();
-    defaultSettings->setFontFamily(QWebSettings::FantasyFont, fantasyFont.family());
-    
+    // compute font size 
+    // (I have to admit I know nothing about these DPI questions..: copied from kwebkitpart, as someone suggested)
+    // font size in pixels =  font size in inches × screen dpi
+    int defaultFontSize = ReKonfig::defaultFontSize();    
     int minimumFontSize = ReKonfig::minFontSize();
-    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, minimumFontSize);
+    
+    float toPix = mainWindow()->currentTab()->view()->logicalDpiY()/72.0;
+    
+    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix) );
+    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix) );
 
+    
     // ================ WebKit ============================
     defaultSettings->setAttribute(QWebSettings::AutoLoadImages, ReKonfig::autoLoadImages());
     defaultSettings->setAttribute(QWebSettings::DnsPrefetchEnabled, ReKonfig::dnsPrefetch());

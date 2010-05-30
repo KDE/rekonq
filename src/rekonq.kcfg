@@ -9,6 +9,7 @@
 <include>QtWebKit</include>
 <include>QDateTime</include>
 <include>KUrl</include>
+<include>KGlobalSettings</include>
 
 <kcfgfile name="rekonqrc" />
 
@@ -100,23 +101,26 @@
 
 <!-- Fonts Settings -->
 <group name="Fonts">
-    <entry name="standardFont" type="Font">
-        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont))</default>
+    <entry name="standardFontFamily" type="String">
+        <default code="true">KGlobalSettings::generalFont().family()</default>
     </entry>
-    <entry name="fixedFont" type="Font">
-        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::FixedFont))</default>
+    <entry name="fixedFontFamily" type="String">
+        <default code="true">KGlobalSettings::fixedFont().family()</default>
     </entry>
-    <entry name="serifFont" type="Font">
-        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::SerifFont))</default>
+    <entry name="serifFontFamily" type="String">
+        <default code="true">QWebSettings::globalSettings()->fontFamily(QWebSettings::SerifFont)</default>
     </entry>
-    <entry name="sansSerifFont" type="Font">
-        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::SansSerifFont))</default>
+    <entry name="sansSerifFontFamily" type="String">
+        <default code="true">QWebSettings::globalSettings()->fontFamily(QWebSettings::SansSerifFont)</default>
     </entry>
-    <entry name="cursiveFont" type="Font">
-        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::CursiveFont))</default>
+    <entry name="cursiveFontFamily" type="String">
+        <default code="true">QWebSettings::globalSettings()->fontFamily(QWebSettings::CursiveFont)</default>
     </entry>
-    <entry name="fantasyFont" type="Font">
-        <default code="true">QFont(QWebSettings::globalSettings()->fontFamily(QWebSettings::FantasyFont))</default>
+    <entry name="fantasyFontFamily" type="String">
+        <default code="true">QWebSettings::globalSettings()->fontFamily(QWebSettings::FantasyFont)</default>
+    </entry>
+    <entry name="defaultFontSize" type="Int">
+        <default>16</default>
     </entry>
     <entry name="minFontSize" type="Int">
         <default>8</default>
