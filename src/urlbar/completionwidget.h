@@ -56,7 +56,7 @@ public:
         return _searchEngine;
     };
     
-    void setCurrentEngine(KService::Ptr engine)
+    void setSearchEngine(KService::Ptr engine)
     {
         _searchEngine = engine;
     };
