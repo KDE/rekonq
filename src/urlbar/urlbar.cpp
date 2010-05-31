@@ -203,7 +203,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
         painter.setPen(Qt::gray);
         painter.drawText(textRect,
                          Qt::AlignVCenter | Qt::AlignCenter,
-                         i18n("Type here to search your bookmarks, history and the web..")
+                         i18n("Type here to search your bookmarks, history and the web...")
                         );
     }
 }
