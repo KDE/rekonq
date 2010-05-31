@@ -328,20 +328,10 @@ void MainWindow::setupActions()
 
 
     // ============================= Zoom Actions ===================================
-    a = new KAction(KIcon("zoom-in"), i18n("&Zoom In"), this);
-    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Plus));
-    actionCollection()->addAction(QL1S("zoom_in"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomIn()));
-
-    a = new KAction(KIcon("zoom-original"),  i18n("&Normal Zoom"), this);
+    actionCollection()->addAction(KStandardAction::ZoomIn, this, SLOT(zoomIn()));
+    a = actionCollection()->addAction(KStandardAction::ActualSize, this, SLOT(zoomNormal()));
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_0));
-    actionCollection()->addAction(QL1S("zoom_normal"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomNormal()));
-
-    a = new KAction(KIcon("zoom-out"),  i18n("&Zoom Out"), this);
-    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Minus));
-    actionCollection()->addAction(QL1S("zoom_out"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(zoomOut()));
+    actionCollection()->addAction(KStandardAction::ZoomOut, this, SLOT(zoomOut()));
 
     // =============================== Tools Actions =================================
     a = new KAction(i18n("Page S&ource"), this);
@@ -475,7 +465,7 @@ void MainWindow::setupTools()
     QWidget *zoomWidget = new QWidget(this);
 
     QToolButton *zoomOut = new QToolButton(zoomWidget);
-    zoomOut->setDefaultAction(actionByName(QL1S("zoom_out")));
+    zoomOut->setDefaultAction(actionByName(KStandardAction::name(KStandardAction::ZoomOut)));
     zoomOut->setAutoRaise(true);
 
     m_zoomSlider = new QSlider(Qt::Horizontal, zoomWidget);
@@ -486,11 +476,11 @@ void MainWindow::setupTools()
     connect(m_zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(setZoomFactor(int)));
 
     QToolButton *zoomIn = new QToolButton(zoomWidget);
-    zoomIn->setDefaultAction(actionByName(QL1S("zoom_in")));
+    zoomIn->setDefaultAction(actionByName(KStandardAction::name(KStandardAction::ZoomIn)));
     zoomIn->setAutoRaise(true);
 
     QToolButton *zoomNormal = new QToolButton(zoomWidget);
-    zoomNormal->setDefaultAction(actionByName(QL1S("zoom_normal")));
+    zoomNormal->setDefaultAction(actionByName(KStandardAction::name(KStandardAction::ActualSize)));
     zoomNormal->setAutoRaise(true);
 
     QHBoxLayout* zoomWidgetLayout = new QHBoxLayout(zoomWidget);
