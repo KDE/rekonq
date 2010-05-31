@@ -67,6 +67,9 @@ private slots:
     void createWalletBar(const QString &, const QUrl &);
     void showRSSInfo(QPoint pos);
 
+signals:
+    void loadProgressing();
+    
 private:
     WebView *_view;
     

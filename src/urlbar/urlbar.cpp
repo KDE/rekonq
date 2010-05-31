@@ -101,6 +101,8 @@ UrlBar::UrlBar(QWidget *parent)
 
     _tab = qobject_cast<WebTab *>(parent);
 
+    connect(_tab, SIGNAL(loadProgressing()), this, SLOT(update()));
+    
     connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));

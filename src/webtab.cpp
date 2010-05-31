@@ -124,6 +124,7 @@ KUrl WebTab::url()
 void WebTab::updateProgress(int p)
 {
     m_progress = p;
+    emit loadProgressing();
 }
 
 
