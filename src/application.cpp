@@ -447,10 +447,12 @@ void Application::updateConfiguration()
     int defaultFontSize = ReKonfig::defaultFontSize();    
     int minimumFontSize = ReKonfig::minFontSize();
     
-    float toPix = mainWindow()->currentTab()->view()->logicalDpiY()/72.0;
-
-    if (toPix < 96.0/72.0) 
-        toPix = 96.0/72.0;
+    int logDpiY = mainWindow()->currentTab()->view()->logicalDpiY();
+    kDebug() << "Logical Dot per Inch Y: " << logDpiY;
+    
+    float toPix = (logDpiY < 96.0)
+        ? 96.0/72.0
+        : logDpiY/72.0 ;
 
     defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix) );
     defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix) );
