@@ -164,9 +164,9 @@ int Application::newInstance()
         {
             // No windows in the current desktop? No windows at all?
             // Create a new one and load there sites...
-            loadUrl(args->arg(0), Rekonq::CurrentTab);
+            loadUrl(args->url(0), Rekonq::CurrentTab);
             for (int i = 1; i < args->count(); ++i)
-                loadUrl(KUrl(args->arg(i)), Rekonq::SettingOpenTab);
+                loadUrl( args->url(i), Rekonq::SettingOpenTab);
         }
         else
         {
@@ -177,7 +177,7 @@ int Application::newInstance()
                 MainWindow *m = m_mainWindows.at(index - 1).data();
                 m->activateWindow();
                 for (int i = 0; i < args->count(); ++i)
-                    loadUrl(KUrl(args->arg(i)), Rekonq::NewCurrentTab);
+                    loadUrl( args->url(i), Rekonq::NewCurrentTab);
             }
         }
     }
