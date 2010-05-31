@@ -154,7 +154,7 @@ void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 
 
 void UrlBar::paintEvent(QPaintEvent *event)
-{
+{   
     QColor backgroundColor;
     if (_privateMode)
     {
@@ -179,9 +179,11 @@ void UrlBar::paintEvent(QPaintEvent *event)
     }
     else
     {
-        QColor loadingColor = QColor(116, 192, 250);
+        // NOTE: I chose this instead of the old QColor(116, 192, 250)
+        // to try respecting style colors
+        QColor loadingColor = Application::palette().color(QPalette::ToolTipBase);
 
-        QLinearGradient gradient(0, 0, width(), 0);
+        QLinearGradient gradient( QPoint(0, 0), QPoint(width(), height()) );
         gradient.setColorAt(0, loadingColor);
         gradient.setColorAt(((double)progr) / 100 - .000001, loadingColor);
         gradient.setColorAt(((double)progr) / 100, backgroundColor);
