@@ -181,6 +181,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
 
         QLinearGradient gradient(0, 0, width(), 0);
         gradient.setColorAt(0, loadingColor);
+        gradient.setColorAt(((double)progr) / 100 - .000001, loadingColor);
         gradient.setColorAt(((double)progr) / 100, backgroundColor);
         p.setBrush(QPalette::Base, gradient);
     }
