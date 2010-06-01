@@ -537,6 +537,8 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         {
             mainFrame()->setHtml(errorPage(reply));
             _isOnRekonqPage = true;
+            Application::instance()->mainWindow()->mainView()->urlBar()->setQUrl(_loadingUrl);
+            Application::instance()->mainWindow()->updateActions();
         }
         break;
 
@@ -560,7 +562,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
         return QString("Couldn't open the rekonqinfo.html file");
     }
 
-    QString title = i18n("Error loading: %1", reply->url().path());
+    QString title = i18n("Error loading: %1", reply->url().toString());
     QString urlString = reply->url().toString(QUrl::RemoveUserInfo | QUrl::RemoveQuery);
 
     QString iconPath = QString("file://") + KIconLoader::global()->iconPath("dialog-warning" , KIconLoader::Small);
