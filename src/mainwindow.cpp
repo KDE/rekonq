@@ -1319,7 +1319,8 @@ void MainWindow::setEncoding(QAction *qa)
     QString currentCodec = qa->text().toLatin1();
     currentCodec = currentCodec.remove('&');
     kDebug() << "Setting codec: " << currentCodec;
-    currentTab()->page()->settings()->setDefaultTextEncoding(currentCodec);
+    currentTab()->view()->settings()->setDefaultTextEncoding(currentCodec);
+    currentTab()->view()->reload();
 }
 
 
