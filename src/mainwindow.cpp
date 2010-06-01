@@ -659,7 +659,7 @@ void MainWindow::updateActions()
     bool rekonqPage = currentTab()->page()->isOnRekonqPage();
     
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
-    if( rekonqPage )
+    if( rekonqPage && currentTab()->view()->history()->count() > 0 )
         historyBackAction->setEnabled(true);
     else
         historyBackAction->setEnabled(currentTab()->view()->history()->canGoBack());
