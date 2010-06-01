@@ -106,19 +106,74 @@ int Application::newInstance()
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
+    // not that easy, indeed
+    // We have to consider 3 variables here: 
+    // 1) Is first load?
+    // 2) Are there arguments?
+    // 3) Is rekonq recovering from crash?
+    // so, we have 8 possible cases...
     bool isFirstLoad = m_mainWindows.isEmpty();
-
-    // is your app session restored? restore session...
-    // this mechanism also falls back to load usual plain rekonq
-    // if something goes wrong...
-    if (isFirstLoad && ReKonfig::recoverOnCrash() == 1 && sessionManager()->restoreSession())
+    bool areThereArguments = (args->count() > 0);
+    bool isRekonqCrashed = (ReKonfig::recoverOnCrash() == 1);
+    
+    kDebug() << "is first load? " << isFirstLoad;
+    kDebug() << "are there arguments? " << areThereArguments;
+    kDebug() << "is rekonq crashed? " << isRekonqCrashed;
+    
+    int exitValue = 1 * isFirstLoad + 2 * areThereArguments + 4 * isRekonqCrashed;
+    
+    if(isRekonqCrashed)
     {
-        QTimer::singleShot(0, this, SLOT(postLaunch()));
-        kDebug() << "session restored";
-        return 1;
+        if( isFirstLoad  && sessionManager()->restoreSession() )
+        {
+            kDebug() << "session restored from crash";
+        }
     }
-
-    if (args->count() == 0)
+    else
+    {
+        if( isFirstLoad && ReKonfig::startupBehaviour() == 2 )
+        {
+            sessionManager()->restoreSession();
+            kDebug() << "session restored following settings";
+            if(areThereArguments)
+                loadUrl( KUrl("about:blank"), Rekonq::NewCurrentTab);
+        }
+    }
+    
+    if(areThereArguments)
+    {
+        KUrl::List urlList;
+        for(int i = 0; i < args->count(); ++i)
+        {
+            const KUrl u = args->url(i);
+            if (u.isLocalFile() && QFile::exists(u.toLocalFile())) // "rekonq somefile.html" case
+                urlList += u;
+            else
+                urlList += KUrl( args->arg(i) ); // "rekonq kde.org" || "rekonq kde:kdialog" case
+        }
+        
+        if (isFirstLoad)
+        {
+            // No windows in the current desktop? No windows at all?
+            // Create a new one and load there sites...
+            loadUrl(urlList.at(0), Rekonq::CurrentTab);
+            for (int i = 1; i < urlList.count(); ++i)
+                loadUrl( urlList.at(i), Rekonq::SettingOpenTab);
+        }
+        else
+        {
+            // are there any windows there? use it
+            int index = m_mainWindows.size();
+            if (index > 0)
+            {
+                MainWindow *m = m_mainWindows.at(index - 1).data();
+                m->activateWindow();
+                Q_FOREACH(const KUrl &u, urlList)
+                    loadUrl(u, Rekonq::NewCurrentTab);
+            }
+        }    
+    }
+    else
     {
         if (isFirstLoad)  // we are starting rekonq, for the first time with no args: use startup behaviour
         {
@@ -131,8 +186,8 @@ int Application::newInstance()
                 loadUrl(KUrl("about:home"));
                 break;
             case 2: // restore session
-                if (sessionManager()->restoreSession())
-                    break;
+                // NOTE: this has just been considered
+                break;
             default:
                 mainWindow()->homePage();
                 break;
@@ -156,34 +211,16 @@ int Application::newInstance()
                 break;
            }
 
-        }
+        }    
     }
-    else
+    
+    
+    if(isFirstLoad)
     {
-        if (isFirstLoad)
-        {
-            // No windows in the current desktop? No windows at all?
-            // Create a new one and load there sites...
-            loadUrl(args->url(0), Rekonq::CurrentTab);
-            for (int i = 1; i < args->count(); ++i)
-                loadUrl( args->url(i), Rekonq::SettingOpenTab);
-        }
-        else
-        {
-            // are there any windows there? use it
-            int index = m_mainWindows.size();
-            if (index > 0)
-            {
-                MainWindow *m = m_mainWindows.at(index - 1).data();
-                m->activateWindow();
-                for (int i = 0; i < args->count(); ++i)
-                    loadUrl( args->url(i), Rekonq::NewCurrentTab);
-            }
-        }
+        QTimer::singleShot(0, this, SLOT(postLaunch()));
     }
-
-    QTimer::singleShot(0, this, SLOT(postLaunch()));
-    return 0;
+    
+    return exitValue;
 }
 
 
