@@ -66,9 +66,8 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
     m_option.direction = Qt::LeftToRight;
 
     QPalette p(palette());
-    p.setColor(QPalette::Base, Qt::white); // TODO: choose the correct color
-
-    p.setColor(QPalette::AlternateBase, QColor(247, 247, 247)); // TODO: choose the correct color
+    p.setColor(QPalette::Base, Application::palette().color(QPalette::Base));
+    p.setColor(QPalette::AlternateBase, Application::palette().color(QPalette::AlternateBase));
     setPalette(p);
 
     deactivate();
