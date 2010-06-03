@@ -148,6 +148,10 @@ void TabBar::detachTab()
 
 void TabBar::showTabPreview(int tab)
 {
+    //delete previous tab preview
+    delete m_previewPopup.data();
+    m_previewPopup.clear();
+
     MainView *mv = qobject_cast<MainView *>(parent());
 
     WebTab *indexedTab = mv->webTab(tab);
@@ -157,15 +161,12 @@ void TabBar::showTabPreview(int tab)
     if (!currentTab || !indexedTab)
         return;
 
-    int w = tabSizeHint(tab).width();
-    int h = w * ((0.0 + currentTab->height()) / currentTab->width());
-
-    //delete previous tab preview
-    delete m_previewPopup.data();
-    m_previewPopup.clear();
-
+    // no previews during load
     if (indexedTab->progress() != 0)
         return;
+    
+    int w = tabSizeHint(tab).width();
+    int h = w * ((0.0 + currentTab->height()) / currentTab->width());
 
     m_previewPopup = new KPassivePopup(this);
     m_previewPopup.data()->setFrameShape(QFrame::StyledPanel);
