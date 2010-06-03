@@ -42,10 +42,10 @@
 #include <QtCore/QFile>
 
 #include <QtGui/QPainter>
+#include <QtGui/QAction>
 
 #include <QtWebKit/QWebFrame>
 #include <QtWebKit/QWebSettings>
-
 
 
 WebSnap::WebSnap(const KUrl& url, QObject *parent)
@@ -63,6 +63,15 @@ WebSnap::WebSnap(const KUrl& url, QObject *parent)
 
     QTimer::singleShot(0, this, SLOT(load()));
 }
+
+
+WebSnap::~WebSnap()
+{
+    kDebug() << "oh oh..";
+    m_page.action(QWebPage::Stop)->trigger();
+    m_page.deleteLater();
+}
+
 
 void WebSnap::load()
 {

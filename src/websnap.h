@@ -77,6 +77,8 @@ public:
      */
     explicit WebSnap(const KUrl &url, QObject *parent = 0);
 
+    ~WebSnap();
+    
     /**
      * Snaps a pixmap of size w * h from a page and save it to cache
      *
