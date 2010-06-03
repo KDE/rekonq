@@ -399,7 +399,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         kDebug() << "no service can handle this. We can just download it..";
 
         isLocal
-        ? KMessageBox::sorry(view(), i18n("No service can handle this :("))
+        ? KMessageBox::sorry(view(), i18n("No service can handle this file."))
         : downloadReply(reply, suggestedFileName);
 
         return;
@@ -677,7 +677,7 @@ void WebPage::showSSLInfo(QPoint)
     else
     {
         KMessageBox::information(view(),
-                                 i18n("This site doesn't contain SSL information."),
+                                 i18n("This site does not contain SSL information."),
                                  i18nc("Secure Sockets Layer", "SSL")
                                 );
     }
