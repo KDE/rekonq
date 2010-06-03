@@ -91,9 +91,9 @@ private slots:
     void contextMenu(int, const QPoint &);
     void emptyAreaContextMenu(const QPoint &);
 
-private:
-    void showTabPreview(int tab);
+    void showTabPreview();
 
+private:
     friend class MainView;
 
     /**
@@ -102,7 +102,11 @@ private:
     int m_actualIndex;
 
     QWeakPointer<KPassivePopup> m_previewPopup;
-    int m_currentTabPreview;
+    
+    /**
+     * the index of the tab preview shown
+     */
+    int m_currentTabPreviewIndex;
 };
 
 #endif

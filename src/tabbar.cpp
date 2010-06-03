@@ -63,7 +63,8 @@
 
 TabBar::TabBar(QWidget *parent)
         : KTabBar(parent)
-        , m_currentTabPreview(-1)
+        , m_actualIndex(-1)
+        , m_currentTabPreviewIndex(-1)
 {
     setElideMode(Qt::ElideRight);
 
@@ -146,7 +147,7 @@ void TabBar::detachTab()
 }
 
 
-void TabBar::showTabPreview(int tab)
+void TabBar::showTabPreview()
 {
     //delete previous tab preview
     delete m_previewPopup.data();
@@ -154,7 +155,7 @@ void TabBar::showTabPreview(int tab)
 
     MainView *mv = qobject_cast<MainView *>(parent());
 
-    WebTab *indexedTab = mv->webTab(tab);
+    WebTab *indexedTab = mv->webTab(m_currentTabPreviewIndex);
     WebTab *currentTab = mv->webTab(currentIndex());
 
     // check if view && currentView exist before using them :)
@@ -165,7 +166,7 @@ void TabBar::showTabPreview(int tab)
     if (indexedTab->progress() != 0)
         return;
     
-    int w = tabSizeHint(tab).width();
+    int w = tabSizeHint(m_currentTabPreviewIndex).width();
     int h = w * ((0.0 + currentTab->height()) / currentTab->width());
 
     m_previewPopup = new KPassivePopup(this);
@@ -180,7 +181,7 @@ void TabBar::showTabPreview(int tab)
     m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);
     m_previewPopup.data()->layout()->setMargin(0);
 
-    QPoint pos(tabRect(tab).x() , tabRect(tab).y() + tabRect(tab).height());
+    QPoint pos(tabRect(m_currentTabPreviewIndex).x() , tabRect(m_currentTabPreviewIndex).y() + tabRect(m_currentTabPreviewIndex).height());
     m_previewPopup.data()->show(mapToGlobal(pos));
 }
 
@@ -218,12 +219,12 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         // if found and not the current tab then show tab preview
         if (tabIndex != -1
                 && tabIndex != currentIndex()
-                && m_currentTabPreview != tabIndex
+                && m_currentTabPreviewIndex != tabIndex
                 && event->buttons() == Qt::NoButton
            )
         {
-            showTabPreview(tabIndex);
-            m_currentTabPreview = tabIndex;
+            m_currentTabPreviewIndex = tabIndex;
+            QTimer::singleShot(200, this, SLOT( showTabPreview() ) );
         }
 
         // if current tab or not found then hide previous tab preview
@@ -233,7 +234,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
             {
                 m_previewPopup.data()->hide();
             }
-            m_currentTabPreview = -1;
+            m_currentTabPreviewIndex = -1;
         }
     }
 
@@ -250,7 +251,7 @@ void TabBar::leaveEvent(QEvent *event)
         {
             m_previewPopup.data()->hide();
         }
-        m_currentTabPreview = -1;
+        m_currentTabPreviewIndex = -1;
     }
 
     KTabBar::leaveEvent(event);
@@ -265,7 +266,7 @@ void TabBar::mousePressEvent(QMouseEvent *event)
         {
             m_previewPopup.data()->hide();
         }
-        m_currentTabPreview = -1;
+        m_currentTabPreviewIndex = -1;
     }
 
     // just close tab on middle mouse click
@@ -333,6 +334,6 @@ void TabBar::tabRemoved(int index)
         {
             m_previewPopup.data()->hide();
         }
-        m_currentTabPreview = -1;
+        m_currentTabPreviewIndex = -1;
     }
 }
