@@ -303,7 +303,12 @@ void UrlBar::loadFinished()
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo(QPoint)));
     }
 
-    update();
+    // we need to update urlbar after the right icon settings
+    // removing this code (where setStyleSheet automatically calls update) needs adding again 
+    // an update call
+    kDebug() << "resetting stylesheet";
+    int rightIconWidth = 25 * (_rightIconsList.count());
+    setStyleSheet(QString("UrlBar { padding: 0 %2px 0 %1px;} ").arg(_icon->sizeHint().width()).arg(rightIconWidth));
 }
 
 
