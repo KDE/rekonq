@@ -111,6 +111,11 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "");
                     
     // --------------- about credits -----------------------------
+    about.addCredit(ki18n("Dawit Alemayehu"),
+                    ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
+                    "adawit@kde.org",
+                    "");
+                    
     about.addCredit(ki18n("Lindsay Mathieson"),
                     ki18n("Provided Patches & Hints, Discovered Bugs"),
                     "lindsay.mathieson@gmail.com",

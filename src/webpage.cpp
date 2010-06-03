@@ -8,6 +8,7 @@
 * Copyright (C) 2008 Michael Howell <mhowell123@gmail.com>
 * Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
+* Copyright (C) 2009-2010 Dawit Alemayehu <adawit at kde dot org>
 *
 *
 * This program is free software; you can redistribute it and/or
