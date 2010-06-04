@@ -413,9 +413,11 @@ void MainView::windowCloseRequested()
 
 void MainView::closeOtherTabs(int index)
 {
-    if (-1 == index)
+    if (index < 0)
+        index = currentIndex();
+    if (index < 0 || index >= count())
         return;
-
+    
     for (int i = count() - 1; i > index; --i)
     {
         closeTab(i);
@@ -430,7 +432,6 @@ void MainView::closeOtherTabs(int index)
 }
 
 
-// When index is -1 index chooses the current tab
 void MainView::cloneTab(int index)
 {
     if (index < 0)

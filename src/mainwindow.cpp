@@ -402,6 +402,7 @@ void MainWindow::setupActions()
 
     // ============================== Indexed Tab Actions ====================================
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
+    a->setShortcuts( KStandardShortcut::close() );
     actionCollection()->addAction(QL1S("close_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(closeTab()));
 
@@ -1091,13 +1092,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if ((event->modifiers() == Qt::ControlModifier + Qt::ShiftModifier) && (event->key() == Qt::Key_Backtab))
     {
         emit shiftCtrlTabPressed();
-        return;
-    }
-
-    // close current tab action
-    if ((event->modifiers() == Qt::ControlModifier) && event->key() == Qt::Key_W)
-    {
-        m_view->closeTab(m_view->currentIndex());
         return;
     }
 

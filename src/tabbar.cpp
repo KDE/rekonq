@@ -120,30 +120,35 @@ QSize TabBar::tabSizeHint(int index) const
 void TabBar::cloneTab()
 {
     emit cloneTab(m_actualIndex);
+    m_actualIndex = -1;
 }
 
 
 void TabBar::closeTab()
 {
     emit closeTab(m_actualIndex);
+    m_actualIndex = -1;
 }
 
 
 void TabBar::closeOtherTabs()
 {
     emit closeOtherTabs(m_actualIndex);
+    m_actualIndex = -1;
 }
 
 
 void TabBar::reloadTab()
 {
     emit reloadTab(m_actualIndex);
+    m_actualIndex = -1;
 }
 
 
 void TabBar::detachTab()
 {
     emit detachTab(m_actualIndex);
+    m_actualIndex = -1;
 }
 
 

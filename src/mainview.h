@@ -125,14 +125,17 @@ public slots:
      */
     void newTab();
 
+    // Indexed slots
     void cloneTab(int index = -1);
     void closeTab(int index = -1, bool del = true);
-    void closeOtherTabs(int index);
+    void closeOtherTabs(int index = -1);
     void reloadTab(int index = -1);
+    void detachTab(int index = -1);
+    
     void reloadAllTabs();
     void nextTab();
     void previousTab();
-    void detachTab(int index = -1);
+    
     void openClosedTabs();
     void openClosedTab();
     void switchToTab();
