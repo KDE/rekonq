@@ -61,6 +61,9 @@ signals:
     void itemHovered(const QString &);
     void saveOnlyRequested();
 
+public slots:
+    void showing(bool);
+    
 private slots:
     void contextMenu(const QPoint &pos);
 
@@ -70,13 +73,14 @@ private slots:
     void loadFoldedState(const QModelIndex &root);
     void loadFoldedState();
 
-
 private:
     void setup();
     KBookmark bookmarkForIndex(const QModelIndex &index);
 
     PanelTreeView *m_treeView;
     bool m_loadingState;
+    
+    bool _loaded;
 };
 
 #endif // BOOKMARKSPANEL_H

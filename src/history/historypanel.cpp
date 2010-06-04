@@ -54,8 +54,13 @@
 HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
         : QDockWidget(title, parent, flags)
         , m_treeView(new PanelTreeView(this))
+        , _loaded(false)
 {
-    setup();
+    setObjectName("historyPanel");
+    setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    
+    connect(this, SIGNAL(visibilityChanged(bool)), this, SLOT(showing(bool)));
+    
     setShown(ReKonfig::showHistoryPanel());
 }
 
@@ -67,10 +72,17 @@ HistoryPanel::~HistoryPanel()
 }
 
 
+
+void HistoryPanel::showing(bool b)
+{
+    if(b && !_loaded)
+        setup();
+}
+
+
 void HistoryPanel::setup()
 {
-    setObjectName("historyPanel");
-    setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    kDebug() << "Loading history panel setup...";
 
     QWidget *ui = new QWidget(this);
 
@@ -117,6 +129,8 @@ void HistoryPanel::setup()
     connect(search, SIGNAL(textChanged(QString)), treeProxyModel, SLOT(setFilterFixedString(QString)));
     connect(m_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenuItem(const QPoint &)));
     connect(m_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenuGroup(const QPoint &)));
+
+    _loaded = true;
 }
 
 

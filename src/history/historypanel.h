@@ -53,6 +53,9 @@ public:
     explicit HistoryPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
     ~HistoryPanel();
 
+public slots:
+    void showing(bool);
+    
 signals:
     void openUrl(const KUrl &, const Rekonq::OpenType &);
     void itemHovered(const QString &);
@@ -65,6 +68,8 @@ private slots:
 private:
     void setup();
     PanelTreeView *m_treeView;
+
+    bool _loaded;
 };
 
 #endif // HISTORYPANEL_H

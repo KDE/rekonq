@@ -54,8 +54,13 @@ BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::Window
         : QDockWidget(title, parent, flags)
         , m_treeView(new PanelTreeView(this))
         , m_loadingState(false)
+        , _loaded(false)
 {
-    setup();
+    setObjectName("bookmarksPanel");
+    setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+    connect(this, SIGNAL(visibilityChanged(bool)), this, SLOT(showing(bool)));
+
     setShown(ReKonfig::showBookmarksPanel());
 }
 
@@ -66,10 +71,16 @@ BookmarksPanel::~BookmarksPanel()
 }
 
 
+void BookmarksPanel::showing(bool b)
+{
+    if(b && !_loaded)
+        setup();
+}
+
+
 void BookmarksPanel::setup()
 {
-    setObjectName("bookmarksPanel");
-    setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    kDebug() << "Loading bookmarks panel setup...";
 
     QWidget *ui = new QWidget(this);
 
@@ -116,6 +127,8 @@ void BookmarksPanel::setup()
     connect(m_treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(onExpand(const QModelIndex &)));
     connect(search, SIGNAL(textChanged(const QString &)), proxy, SLOT(setFilterFixedString(const QString &)));
     loadFoldedState();
+
+    _loaded = true;
 }
 
 

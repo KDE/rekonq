@@ -144,7 +144,6 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
 {
     KAction *a = KStandardAction::addBookmark(this, SLOT(slotAddBookmark()), this);
     actionCollection->addAction(QL1S("rekonq_add_bookmark"), a);
-    refill();
 }
 
 
@@ -154,7 +153,6 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager  *manager,
                            const QString &parentAddress)
         : KBookmarkMenu(manager, owner, parentMenu, parentAddress)
 {
-    refill();
 }
 
 
