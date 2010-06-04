@@ -33,11 +33,14 @@
 
 // KDE Includes
 #include <KUrl>
+#include <KCompletion>
 
 // Qt Includes
 #include <QString>
 #include <QList>
+#include <QDateTime>
 
+class AwesomeUrlCompletion;
 
 class UrlSearchItem
 {
@@ -53,22 +56,62 @@ public:
     };
 
     int type;
-    KUrl url;
+    QString url;
     QString title;
+    QDateTime visitDateTime;
+    int visitCount;
+    QString description;
+    QString bookmarkPath;
     
-    UrlSearchItem(const UrlSearchItem &item)
-    : type(item.type), url(item.url), title(item.title)
+    UrlSearchItem(const UrlSearchItem &item) : type(item.type),
+                                               url(item.url),
+                                               title(item.title),
+                                               visitDateTime(item.visitDateTime),
+                                               visitCount(item.visitCount),
+                                               description(item.description),
+                                               bookmarkPath(item.bookmarkPath)
     {};
     
-    UrlSearchItem()
-    : type(UrlSearchItem::Undefined), url(KUrl()), title("")
+    UrlSearchItem() : type(UrlSearchItem::Undefined),
+                      url(QString()),
+                      title(QString()),
+                      visitDateTime(QDateTime()),
+                      visitCount(0),
+                      description(QString()),
+                      bookmarkPath(QString())
     {};
     
-    UrlSearchItem(const int &_type, const KUrl &_url, const QString &_title = QString())
-            : type(_type), url(_url), title(_title)
+    UrlSearchItem(const int &_type,
+                  const QString &_url,
+                  const QString &_title = QString(),
+                  const QDateTime &visitDateTime  = QDateTime(),
+                  const int       &visitCount     = 0,
+                  const QString   &description    = QString(),
+                  const QString   &bookmarkPath   = QString()
+                  )
+                  : type(_type),
+                  url(_url),
+                  title(_title),
+                  visitDateTime(visitDateTime),
+                  visitCount(visitCount),
+                  description(description),
+                  bookmarkPath(bookmarkPath)
     {};
 
-    bool operator==(const UrlSearchItem &i) const;
+    inline bool operator==(const UrlSearchItem &i) const
+    {
+        return i.url == url;//TODO && i.title == title;
+    }
+    
+    inline bool operator <(const UrlSearchItem &i) const
+    {
+        return visitDateTime < i.visitDateTime;
+    }
+    
+    inline bool operator >(const UrlSearchItem &i) const
+    {
+        return visitDateTime > i.visitDateTime;
+    }
 };
 
 typedef QList <UrlSearchItem> UrlSearchList;
@@ -94,6 +137,31 @@ private:
     UrlSearchItem privilegedItem(UrlSearchList* list);
      
     static QRegExp _browseRegexp;
+};
+
+// ------------------------------------------------------------------------------
+
+
+/**
+ * This class represents all searchable item for the awesomebar.
+ */
+class AwesomeUrlCompletion// : public KCompletion
+{
+public:
+    AwesomeUrlCompletion();
+    ~AwesomeUrlCompletion();
+    void addItem(const UrlSearchItem& item);
+    void removeItem(const UrlSearchItem& item);
+    void setOrder(KCompletion::CompOrder);
+    void updateTitle(const UrlSearchItem& item, const QString& newTitle);
+    void clear();
+    UrlSearchList substringCompletion(const QString& completionString);
+    
+private:
+    UrlSearchList m_items;
+    UrlSearchList m_filteredItems;
+    bool m_resetCompletion;
+    QString m_lastCompletionString;
 };
 
 #endif // URL_RESOLVER_H

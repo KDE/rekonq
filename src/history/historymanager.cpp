@@ -69,8 +69,9 @@ HistoryManager::HistoryManager(QObject *parent)
         , m_historyModel(0)
         , m_historyFilterModel(0)
         , m_historyTreeModel(0)
-        , m_completion(new KCompletion)
+        , m_completion(new AwesomeUrlCompletion)
 {
+    kDebug() << "Loading HistoryManager...";
     // take care of the completion object
     m_completion->setOrder(KCompletion::Weighted);
 
@@ -87,6 +88,7 @@ HistoryManager::HistoryManager(QObject *parent)
 
     // QWebHistoryInterface will delete the history manager
     QWebHistoryInterface::setDefaultInterface(this);
+    kDebug() << "Loading HistoryManager... DONE";
 }
 
 
@@ -131,7 +133,8 @@ void HistoryManager::addHistoryEntry(const QString &url)
     // Add item to completion object
     QString _url(url);
     _url.remove(QRegExp("^http://|/$"));
-    m_completion->addItem(_url);
+    UrlSearchItem urlSearchItem(UrlSearchItem::History, _url, QString(), item.dateTime, 1, QString(), QString());
+    m_completion->addItem(urlSearchItem);
 }
 
 
@@ -251,20 +254,21 @@ void HistoryManager::removeHistoryEntry(const HistoryItem &item)
 
 void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
 {
+    HistoryItem item;
     for (int i = 0; i < m_history.count(); ++i)
     {
         if (url == m_history.at(i).url
                 && (title.isEmpty() || title == m_history.at(i).title))
         {
-            removeHistoryEntry(m_history.at(i));
+            item = m_history.at(i);
+            removeHistoryEntry(item);
             break;
         }
     }
 
     // Remove item from completion object
-    QString _url = url.path();
-    _url.remove(QRegExp("^http://|/$"));
-    m_completion->removeItem(_url);
+    UrlSearchItem urlSearchItem(UrlSearchItem::History, item.url, item.title, item.dateTime, 0, QString(), QString());
+    m_completion->removeItem(urlSearchItem);
 }
 
 
@@ -367,9 +371,10 @@ void HistoryManager::load()
         lastInsertedItem = item;
 
         // Add item to completion object
-        QString _url = item.url;
+        //QString _url = item.url;
         //_url.remove(QRegExp("^http://|/$"));
-        m_completion->addItem(_url);
+        UrlSearchItem urlSearchItem(UrlSearchItem::History, item.url, item.title, item.dateTime, 1, QString(), QString());
+        m_completion->addItem(urlSearchItem);
     }
     if (needToSort)
         qSort(list.begin(), list.end());
@@ -453,7 +458,7 @@ void HistoryManager::save()
 }
 
 
-KCompletion * HistoryManager::completionObject() const
+AwesomeUrlCompletion * HistoryManager::completionObject() const
 {
     return m_completion;
 }

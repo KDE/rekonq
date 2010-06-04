@@ -43,7 +43,7 @@
 #include <QByteArray>
 
 // defines
-#define MAX_ELEMENTS 9
+#define MAX_ELEMENTS 10
 
 
 // NOTE 
@@ -53,12 +53,6 @@
 // 3. "localdomainurifilter"
 // 4 ."kuriikwsfilter"
 // 5. "fixhosturifilter"
-
-
-bool UrlSearchItem::operator==(const UrlSearchItem &i) const
-{
-    return url == i.url;
-}
 
 
 // ------------------------------------------------------------------------
@@ -99,27 +93,31 @@ UrlResolver::UrlResolver(const QString &typedUrl)
 
 UrlSearchList UrlResolver::orderedSearchItems()
 {
-    // NOTE: the logic here is : "we wanna suggest (at least) 9 elements"
-    // so we have (more or less) 3 from first results (1 from QUrl Resolutions, 2 from
-    // default search engines).
-    // There are 6 remaining: if bookmarkResults + historyResults <= 6, catch all, else
-    // catch first 3 results from the two resulting lists :)
+    // NOTE 
+    // the logic here is : "we wanna suggest (at least) 10 elements"
+    // so we have (more or less) 2 from first results (1 from QUrl Resolutions, 1 from
+    // search engines).
+    // There are 8 remaining: if bookmarkResults + historyResults <= 8, catch all, else
+    // catch first 4 results from the two resulting lists :)
 
+    QTime myTime;
+    myTime.start();
+    
     UrlSearchList list;
 
     if( _typedString == QL1S("about:") )
     {
-        UrlSearchItem home(UrlSearchItem::Browse, KUrl("about:home"),       QL1S("home") );
+        UrlSearchItem home(UrlSearchItem::Browse, QString("about:home"),       QL1S("home") );
         list << home;
-        UrlSearchItem favs(UrlSearchItem::Browse, KUrl("about:favorites"),  QL1S("favorites") );
+        UrlSearchItem favs(UrlSearchItem::Browse, QString("about:favorites"),  QL1S("favorites") );
         list << favs;
-        UrlSearchItem clos(UrlSearchItem::Browse, KUrl("about:closedTabs"), QL1S("closed tabs") );
+        UrlSearchItem clos(UrlSearchItem::Browse, QString("about:closedTabs"), QL1S("closed tabs") );
         list << clos;
-        UrlSearchItem book(UrlSearchItem::Browse, KUrl("about:bookmarks"),  QL1S("bookmarks") );
+        UrlSearchItem book(UrlSearchItem::Browse, QString("about:bookmarks"),  QL1S("bookmarks") );
         list << book;
-        UrlSearchItem hist(UrlSearchItem::Browse, KUrl("about:history"),    QL1S("history") );
+        UrlSearchItem hist(UrlSearchItem::Browse, QString("about:history"),    QL1S("history") );
         list << hist;
-        UrlSearchItem down(UrlSearchItem::Browse, KUrl("about:downloads"),  QL1S("downloads") );
+        UrlSearchItem down(UrlSearchItem::Browse, QString("about:downloads"),  QL1S("downloads") );
         list << down;
 
         return list;
@@ -136,59 +134,135 @@ UrlSearchList UrlResolver::orderedSearchItems()
         list << qurlFromUserInputResolution();
     }
 
-    
-    int firstResults = list.count();
-    int checkPoint = 9 - firstResults;
-
+    //find the history items that match the typed string
     UrlSearchList historyList = historyResolution();
     UrlSearchItem privileged = privilegedItem(&historyList);
     int historyResults = historyList.count();
     
-    UrlSearchList bookmarksList = bookmarksResolution(); 
+    //find the bookmarks items that match the typed string
+    UrlSearchList bookmarksList = bookmarksResolution();
     if (privileged.type == UrlSearchItem::Undefined)
     {
         privileged = privilegedItem(&bookmarksList);
     }
+    else if(privileged.type == UrlSearchItem::History && bookmarksList.removeOne(privileged))
+    {
+        privileged.type |= UrlSearchItem::Bookmark;
+    }
+    int bookmarksResults = bookmarksList.count();
     
     if (privileged.type != UrlSearchItem::Undefined)
     {
-        list.insert(0,privileged);
+        list.prepend(privileged);
     }
-
-    int bookmarksResults = bookmarksList.count();
-
-    if (historyResults + bookmarksResults > checkPoint)
+    
+    int availableEntries = MAX_ELEMENTS - list.count();
+    
+    UrlSearchList commonList;
+    int commonResutls = 0;
+    
+    //prefer items which are history items als well bookmarks item
+    //if there are more than 1000 bookmark results, the performance impact is noticeable
+    if(bookmarksResults < 1000)
     {
-        historyList = historyList.mid(0, 3);
-        bookmarksList = bookmarksList.mid(0, 3);
-    }
-
-    QList<UrlSearchItem> common;
-
-    foreach(UrlSearchItem i, historyList)
-    {
-        if (!bookmarksList.contains(i))
+        //add as many items to the common list as there are available entries in the dropdown list
+        UrlSearchItem urlSearchItem;
+        for(int i = 0; i < historyList.count(); i++)
         {
-            list << i;
+            if (bookmarksList.removeOne(historyList.at(i)))
+            {
+                urlSearchItem = historyList.takeAt(i);
+                urlSearchItem.type |= UrlSearchItem::Bookmark;
+                commonList << urlSearchItem;
+                commonResutls++;
+                if(commonResutls >= availableEntries)
+                {
+                    break;
+                }
+            }
         }
-        else
+        
+        commonResutls = commonList.count();
+        if(commonResutls >= availableEntries)
         {
-            i.type |= UrlSearchItem::Bookmark;
-            common << i;
+            commonList = commonList.mid(0, availableEntries);
+            historyList = UrlSearchList();
+            bookmarksList = UrlSearchList();
+            availableEntries = 0;
+        }
+        else        //remove all items from the history and bookmarks list up to the remaining entries in the dropdown list
+        {
+            availableEntries -= commonResutls;
+            if(historyResults >= availableEntries)
+            {
+                historyList = historyList.mid(0, availableEntries);
+            }
+            if(bookmarksResults >= availableEntries)
+            {
+                bookmarksList = bookmarksList.mid(0, availableEntries);
+            }
         }
     }
-
-    foreach(const UrlSearchItem &i, common)
+    else        //if there are too many bookmarks items, remove all items up to the remaining entries in the dropdown list
     {
-        list << i;
-    }
+        
+        if(historyResults >= availableEntries)
+        {
+            historyList = historyList.mid(0, availableEntries);
+        }
+        if(bookmarksResults >= availableEntries)
+        {
+            bookmarksList = bookmarksList.mid(0, availableEntries);
+        }
 
-    foreach(const UrlSearchItem &i, bookmarksList)
+        UrlSearchItem urlSearchItem;
+        for(int i = 0; i < historyList.count(); i++)
+        {
+            if (bookmarksList.removeOne(historyList.at(i)))
+            {
+                urlSearchItem = historyList.takeAt(i);
+                urlSearchItem.type |= UrlSearchItem::Bookmark;
+                commonList << urlSearchItem;
+            }
+        }
+        
+        availableEntries -= commonList.count();
+    }
+    
+    historyResults = historyList.count();
+    bookmarksResults = bookmarksList.count();
+    commonResutls = commonList.count();
+    
+    //now fill the list to MAX_ELEMENTS
+    if(availableEntries > 0)
     {
-        if (!common.contains(i))
-            list << i;
+        int historyEntries = ((int) (availableEntries / 2)) + availableEntries % 2;
+        int bookmarksEntries = availableEntries - historyEntries;
+        
+        if (historyResults >= historyEntries && bookmarksResults >= bookmarksEntries)
+        {
+            historyList = historyList.mid(0, historyEntries);
+            bookmarksList = bookmarksList.mid(0, bookmarksEntries);
+        }
+        else if (historyResults < historyEntries && bookmarksResults >= bookmarksEntries)
+        {
+            if(historyResults + bookmarksResults > availableEntries)
+            {
+                bookmarksList = bookmarksList.mid(0, availableEntries - historyResults);
+            }
+        }
+        else if (historyResults >= historyEntries && bookmarksResults < bookmarksEntries)
+        {
+            if(historyResults + bookmarksResults > availableEntries)
+            {
+                historyList = historyList.mid(0, availableEntries - bookmarksResults);
+            }
+        }
     }
-
+    
+    list = list + historyList + commonList + bookmarksList;
+    qWarning() << "orderedSearchItems leave: " << " elapsed: " << myTime.elapsed();
+    
     return list;
 }
 
@@ -206,7 +280,7 @@ UrlSearchList UrlResolver::qurlFromUserInputResolution()
     if (urlFromUserInput.isValid())
     {
         QString gTitle = i18nc("Browse a website", "Browse");
-        UrlSearchItem gItem(UrlSearchItem::Browse, urlFromUserInput, gTitle);
+        UrlSearchItem gItem(UrlSearchItem::Browse, urlFromUserInput.toString(), gTitle);
         list << gItem;
     }
 
@@ -217,57 +291,166 @@ UrlSearchList UrlResolver::qurlFromUserInputResolution()
 // STEP 2 = Web Searches
 UrlSearchList UrlResolver::webSearchesResolution()
 {
-    return UrlSearchList() << UrlSearchItem(UrlSearchItem::Search, KUrl(), QString());
+    return UrlSearchList() << UrlSearchItem(UrlSearchItem::Search, QString(), QString());
 }
 
 
 // STEP 3 = history completion
 UrlSearchList UrlResolver::historyResolution()
 {
-    UrlSearchList list;
-
-    KCompletion *historyCompletion = Application::historyManager()->completionObject();
-    QStringList historyResults = historyCompletion->substringCompletion(_typedString);
-    Q_FOREACH(const QString &s, historyResults)
-    {
-        UrlSearchItem it(UrlSearchItem::History, KUrl(s), Application::historyManager()->titleForHistoryUrl(s));
-        list << it;
-    }
-
-    return list;
+    AwesomeUrlCompletion *historyCompletion = Application::historyManager()->completionObject();
+    return historyCompletion->substringCompletion(_typedString);
 }
 
 
 // STEP 4 = bookmarks completion
 UrlSearchList UrlResolver::bookmarksResolution()
 {
-    UrlSearchList list;
-
-    KCompletion *bookmarkCompletion = Application::bookmarkProvider()->completionObject();
-    QStringList bookmarkResults = bookmarkCompletion->substringCompletion(_typedString);
-    Q_FOREACH(const QString &s, bookmarkResults)
-    {
-        UrlSearchItem it(UrlSearchItem::Bookmark, KUrl(s), Application::bookmarkProvider()->titleForBookmarkUrl(s));
-        list << it;
-    }
-
-    return list;
+    AwesomeUrlCompletion *bookmarkCompletion = Application::bookmarkProvider()->completionObject();
+    return bookmarkCompletion->substringCompletion(_typedString);
 }
 
 
 UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
 {
-    int i=0;
-    while(i<list->count())
+    UrlSearchItem item;
+    QString dot;
+    if(!_typedString.endsWith(QL1C('.')))
     {
-        UrlSearchItem item = list->at(i);
-        kDebug() << item.url.host();
-        if (item.url.host().contains( _typedString + QL1C('.') ) )
+        dot = QString(QL1C('.'));
+    }
+    
+    for(int i = 0; i<list->count(); i++)
+    {
+        item = list->at(i);
+        //kDebug() << item.url.host();
+        //TODO: move this to AwesomeUrlCompletion::substringCompletion and add a priviledged flag to UrlSearchItem
+        if (item.url.contains(_typedString + dot))
         {
             list->removeAt(i);
             return item;
         }
-        i++;
     }
     return UrlSearchItem();
+}
+
+// ------------------------------------------------------------------------------------------------------
+
+
+AwesomeUrlCompletion::AwesomeUrlCompletion()
+{
+    m_resetCompletion = true;
+}
+
+
+AwesomeUrlCompletion::~AwesomeUrlCompletion()
+{
+
+}
+
+
+void AwesomeUrlCompletion::addItem(const UrlSearchItem& itemToAdd)
+{
+    bool match = false;
+    QTime myTime;
+    myTime.start();
+    for(int i = 0; i < m_items.count(); i++)
+    {
+        //check if item is already in list; the items are equal if the url and the title are equal
+        if(m_items[i] == itemToAdd)
+        {
+            match = true;
+            //TODO: check what to do if comment or bookmarkPath are different
+            if(m_items[i] < itemToAdd)
+            {
+                m_items[i].visitDateTime = itemToAdd.visitDateTime;
+            }
+            m_items[i].visitCount += itemToAdd.visitCount;
+        }
+    }
+    if(!match)
+    {
+        m_items.append(itemToAdd);
+    }
+    m_resetCompletion = true;
+}
+
+
+void AwesomeUrlCompletion::removeItem(const UrlSearchItem& item)
+{
+    m_resetCompletion = m_items.removeOne(item);
+}
+
+
+void AwesomeUrlCompletion::setOrder(KCompletion::CompOrder)
+{
+    //TODO
+}
+
+
+void AwesomeUrlCompletion::updateTitle(const UrlSearchItem& item, const QString& newTitle)
+{
+    foreach(UrlSearchItem i, m_items)
+    {
+        if(i == item)
+        {
+            i.title = newTitle;
+        }
+    }
+    m_resetCompletion = true;
+}
+
+
+void AwesomeUrlCompletion::clear()
+{
+    m_items.clear();
+    m_resetCompletion = true;
+}
+
+
+UrlSearchList AwesomeUrlCompletion::substringCompletion(const QString& completionString)
+{
+    UrlSearchList* searchList;
+    UrlSearchList tempList;
+    
+    if(!m_resetCompletion)
+    {
+        if(completionString.length() <= 1)
+        {
+            m_resetCompletion = true;
+        }
+        if(!m_resetCompletion && completionString.length() < m_lastCompletionString.length())
+        {
+            m_resetCompletion = true;
+        }
+        if(!m_resetCompletion && !completionString.startsWith(m_lastCompletionString, Qt::CaseInsensitive))
+        {
+            m_resetCompletion = true;
+        }
+    }
+    
+    if(m_resetCompletion)
+    {
+        searchList = &m_items;
+        m_resetCompletion = false;
+    }
+    else
+    {
+        searchList = &m_filteredItems;
+    }
+    
+    Q_FOREACH(const UrlSearchItem &i, *searchList)
+    {
+        //TODO: split string and also search for each word if the are more than one word separated with space
+        if(    i.url.contains(completionString, Qt::CaseInsensitive) 
+            || i.title.contains(completionString, Qt::CaseInsensitive) 
+            || i.description.contains(completionString, Qt::CaseInsensitive)
+          )
+        {
+            tempList.append(i);
+        }
+    }
+    m_lastCompletionString = completionString;
+    m_filteredItems = tempList;
+    return m_filteredItems;
 }

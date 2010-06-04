@@ -32,6 +32,7 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+#include "urlresolver.h"
 
 // KDE Includes
 #include <KUrl>
@@ -113,9 +114,6 @@ class HistoryModel;
 class HistoryFilterModel;
 class HistoryTreeModel;
 
-class KCompletion;
-
-
 /**
  * THE History Manager:
  * It manages rekonq history
@@ -155,9 +153,9 @@ public:
     HistoryTreeModel *historyTreeModel() const;
 
     /**
-    * @returns the KCompletion object.
+    * @returns the AwesomeUrlCompletion object.
     */
-    KCompletion *completionObject() const;
+    AwesomeUrlCompletion *completionObject() const;
 
     void addDownload(const QString &srcUrl, const QString &destUrl);
     DownloadList downloads();
@@ -189,7 +187,7 @@ private:
     HistoryTreeModel *m_historyTreeModel;
 
     // the completion object we sync with
-    KCompletion *m_completion;
+    AwesomeUrlCompletion *m_completion;
 };
 
 

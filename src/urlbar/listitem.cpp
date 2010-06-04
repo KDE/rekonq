@@ -212,8 +212,8 @@ PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text,
 
     QLabel *previewLabelIcon = new QLabel(this);
     previewLabelIcon->setFixedSize(45, 33);
-    new PreviewLabel(item.url.url(), 38, 29, previewLabelIcon);
-    IconLabel* icon = new IconLabel(item.url.url(), previewLabelIcon);
+    new PreviewLabel(item.url, 38, 29, previewLabelIcon);
+    IconLabel* icon = new IconLabel(item.url, previewLabelIcon);
     icon->move(27, 16);
     hLayout->addWidget(previewLabelIcon);
 
@@ -223,13 +223,13 @@ PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text,
     QString title = item.title;
     if (title.isEmpty())
     {
-        title = item.url.url();
+        title = item.url;
         title = title.remove("http://");
-	title.truncate(title.indexOf("/"));
+        title.truncate(title.indexOf("/"));
     }
 
     vLayout->addWidget(new TextLabel(title, text, this));
-    vLayout->addWidget(new TextLabel("<i>" + item.url.url() + "</i>", text, this));
+    vLayout->addWidget(new TextLabel("<i>" + item.url + "</i>", text, this));
 
     hLayout->addLayout(vLayout);
 
@@ -278,7 +278,7 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
 
     m_url = SearchEngine::buildQuery(engine, query);
 
-    m_iconLabel = new IconLabel("edit-find", this); //TODO: get the default engine icon
+    m_iconLabel = new IconLabel("edit-find", this); //TODO: get the default engine icon (will be easy in KDE SC 4.5)
     m_titleLabel = new TextLabel(searchItemTitle(engine->name(), query), QString(), this);
     m_engineBar = new EngineBar(engine, parent);
 
@@ -397,8 +397,8 @@ BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, Q
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
 
-    hLayout->addWidget(new IconLabel(item.url.url(), this));
-    hLayout->addWidget(new TextLabel(item.url.url(), text, this));
+    hLayout->addWidget(new IconLabel(item.url, this));
+    hLayout->addWidget(new TextLabel(item.url, text, this));
     hLayout->addWidget(new TypeIconLabel(item.type, this));
 
     setLayout(hLayout);

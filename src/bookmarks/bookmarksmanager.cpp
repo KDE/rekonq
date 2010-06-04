@@ -203,7 +203,8 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
     }
     else
     {
-        Application::bookmarkProvider()->completionObject()->addItem(bookmark.url().url());
+        UrlSearchItem urlSearchItem(UrlSearchItem::Bookmark, bookmark.url().prettyUrl() , bookmark.fullText(), QDateTime(), 1, bookmark.description(), QString());
+        Application::bookmarkProvider()->completionObject()->addItem(urlSearchItem);
         return  new KBookmarkAction(bookmark, owner(), this);
     }
 }
@@ -222,7 +223,6 @@ void BookmarkMenu::refill()
         addAddBookmarksList();
         addNewFolder();
         addEditBookmarks();
-
     }
     else
     {
@@ -270,8 +270,9 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
         , m_bookmarkMenu(0)
         , m_completion(0)
 {
+    kDebug() << "Loading Bookmarks Manager...";
     // take care of the completion object
-    m_completion = new KCompletion;
+    m_completion = new AwesomeUrlCompletion;
     m_completion->setOrder(KCompletion::Weighted);
 
     KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");  // share konqueror bookmarks
@@ -299,6 +300,8 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
     // setup menu
     m_owner = new BookmarkOwner(this);
     connect(m_owner, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), this, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)));
+
+    kDebug() << "Loading Bookmarks Manager... DONE!";
 }
 
 
@@ -346,6 +349,7 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
             fillBookmarkBar(bookmarkToolBar);
         }
     }
+    //TODO: also change completion object
 }
 
 
@@ -379,7 +383,9 @@ void BookmarkProvider::contextMenu(const QPoint &point)
 KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 {
     KMenu *menu = new KMenu(parent);
+    kDebug() << "new Bookmarks Menu...";
     m_bookmarkMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
+    kDebug() << "new Bookmarks Menu...DONE";
     KActionMenu *bookmarkActionMenu = new KActionMenu(parent);
     bookmarkActionMenu->setMenu(menu);
     bookmarkActionMenu->setText(i18n("&Bookmarks"));
@@ -425,7 +431,7 @@ KBookmarkGroup BookmarkProvider::rootGroup()
 }
 
 
-KCompletion *BookmarkProvider::completionObject() const
+AwesomeUrlCompletion *BookmarkProvider::completionObject() const
 {
     return m_completion;
 }

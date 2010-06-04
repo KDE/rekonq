@@ -109,6 +109,7 @@ MainWindow::MainWindow()
         , m_hidePopup(new QTimer(this))
         , m_ac(new KActionCollection(this))
 {
+    kDebug() << "MainWindow ctor...";
     // enable window size "auto-save"
     setAutoSaveSettings();
 
@@ -152,6 +153,8 @@ MainWindow::MainWindow()
     connect(m_hidePopup, SIGNAL(timeout()), m_popup, SLOT(hide()));
 
     QTimer::singleShot(0, this, SLOT(postLaunch()));
+
+    kDebug() << "MainWindow ctor...DONE";
 }
 
 
@@ -185,6 +188,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupToolbars()
 {
+    kDebug() << "setup toolbars...";
+    
     // ============ Main ToolBar  ================================
     m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Back)));
     m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Forward)));
@@ -267,6 +272,8 @@ QSize MainWindow::sizeHint() const
 
 void MainWindow::setupActions()
 {
+    kDebug() << "setup actions...";
+    
     // this let shortcuts work..
     actionCollection()->addAssociatedWidget(this);
 
@@ -454,6 +461,7 @@ void MainWindow::setupActions()
 
 void MainWindow::setupTools()
 {
+    kDebug() << "setup tools...";
     KActionMenu *toolsMenu = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
     toolsMenu->setDelayed(false);
 
@@ -531,6 +539,7 @@ void MainWindow::setupTools()
 
 void MainWindow::setupPanels()
 {
+    kDebug() << "setup panels...";
     KAction* a;
 
     // STEP 1

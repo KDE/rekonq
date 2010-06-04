@@ -36,13 +36,13 @@
 
 // Local Includes
 #include "application.h"
+#include "urlresolver.h"
 
 // Qt Includes
 #include <QWidget>
 
 // KDE Includes
 #include <KBookmarkOwner>
-#include <KCompletion>
 
 // Forward Declarations
 class BookmarkProvider;
@@ -226,19 +226,14 @@ public:
      */
     KBookmarkGroup rootGroup();
 
-    KBookmarkManager *bookmarkManager()
-    {
-        return m_manager;
-    }
-    BookmarkOwner *bookmarkOwner()
-    {
-        return m_owner;
-    }
+    inline KBookmarkManager *bookmarkManager() { return m_manager; }
+    
+    inline BookmarkOwner *bookmarkOwner() { return m_owner; }
 
     /**
-    * @returns the KCompletion object.
+    * @returns the AwesomeUrlCompletion object.
     */
-    KCompletion *completionObject() const;
+    AwesomeUrlCompletion *completionObject() const;
 
     QString titleForBookmarkUrl(QString url);
 
@@ -278,7 +273,7 @@ private:
     KActionCollection *m_actionCollection;
     BookmarkMenu *m_bookmarkMenu;
     QList<KToolBar*> m_bookmarkToolBars;
-    KCompletion *m_completion;
+    AwesomeUrlCompletion *m_completion;
 };
 
 
