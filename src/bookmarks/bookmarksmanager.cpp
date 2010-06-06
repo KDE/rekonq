@@ -270,6 +270,7 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
         , m_actionCollection(new KActionCollection(this))
         , m_bookmarkMenu(0)
         , m_completion(0)
+        , _bookmarkActionMenu(0)
 {
     kDebug() << "Loading Bookmarks Manager...";
     // take care of the completion object
@@ -384,13 +385,26 @@ void BookmarkProvider::contextMenu(const QPoint &point)
 KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 {
     KMenu *menu = new KMenu(parent);
-    kDebug() << "new Bookmarks Menu...";
-    m_bookmarkMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
-    kDebug() << "new Bookmarks Menu...DONE";
-    KActionMenu *bookmarkActionMenu = new KActionMenu(parent);
-    bookmarkActionMenu->setMenu(menu);
-    bookmarkActionMenu->setText(i18n("&Bookmarks"));
-    return bookmarkActionMenu;
+    _bookmarkActionMenu = new KActionMenu(parent);
+    _bookmarkActionMenu->setMenu(menu);
+    _bookmarkActionMenu->setText(i18n("&Bookmarks"));
+    connect(menu, SIGNAL(aboutToShow()), this, SLOT(triggerBookmarkMenu()));
+    
+    return _bookmarkActionMenu;
+}
+
+
+void BookmarkProvider::triggerBookmarkMenu()
+{
+    kDebug() << "triggering Bookmarks Menu...";
+    if(!m_bookmarkMenu)
+    {
+        KMenu *menu = qobject_cast<KMenu *>(sender());
+        kDebug() << "new Bookmarks Menu...";
+        m_bookmarkMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
+        kDebug() << "new Bookmarks Menu...DONE";
+        menu->exec( QCursor::pos() );
+    }
 }
 
 

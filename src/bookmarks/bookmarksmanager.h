@@ -263,7 +263,9 @@ public slots:
      */
     void slotBookmarksChanged(const QString &group, const QString &caller);
 
-
+private slots:
+    void triggerBookmarkMenu();
+    
 private:
     void fillBookmarkBar(KToolBar *toolBar);
     QString titleForBookmarkUrl(const KBookmark &bookmark, QString url);
@@ -274,6 +276,8 @@ private:
     BookmarkMenu *m_bookmarkMenu;
     QList<KToolBar*> m_bookmarkToolBars;
     AwesomeUrlCompletion *m_completion;
+    
+    KActionMenu *_bookmarkActionMenu;
 };
 
 
