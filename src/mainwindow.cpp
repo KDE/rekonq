@@ -1373,6 +1373,10 @@ void MainWindow::enableNetworkAnalysis(bool b)
 
 bool MainWindow::queryClose()
 {
+    // this should fux bug 240432
+    if(Application::instance()->sessionSaving())
+        return true;
+    
     if (m_view->count() > 1)                                                                                                              
     {
         int answer = KMessageBox::questionYesNoCancel(                                                                                    
