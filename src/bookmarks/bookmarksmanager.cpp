@@ -403,7 +403,6 @@ void BookmarkProvider::triggerBookmarkMenu()
         kDebug() << "new Bookmarks Menu...";
         m_bookmarkMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
         kDebug() << "new Bookmarks Menu...DONE";
-        menu->exec( QCursor::pos() );
     }
 }
 
