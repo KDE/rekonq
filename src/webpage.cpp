@@ -521,7 +521,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         break;
 
     case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
-        _protHandler.postHandling(reply->request(), mainFrame());
+        _protHandler.postHandling(reply->request(), frame);
         return;
 
     case QNetworkReply::ConnectionRefusedError:              // remote server refused connection
@@ -536,10 +536,13 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         kDebug() << "ERROR " << reply->error() << ": " << reply->errorString();
         if (reply->url() == _loadingUrl)
         {
-            mainFrame()->setHtml(errorPage(reply));
+            frame->setHtml(errorPage(reply));
+            if(isMainFrameRequest)
+            {
             _isOnRekonqPage = true;
             Application::instance()->mainWindow()->mainView()->urlBar()->setQUrl(_loadingUrl);
             Application::instance()->mainWindow()->updateActions();
+            }
         }
         break;
 
