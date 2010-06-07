@@ -498,19 +498,30 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
 void WebView::wheelEvent(QWheelEvent *event)
 {
+    KWebView::wheelEvent(event);
+
+
     // Sync with the zoom slider
     if (event->modifiers() == Qt::ControlModifier)
     {
-        emit zoomChanged(zoomFactor());
+        // Limits of the slider
+        if (zoomFactor() > 1.9)
+            setZoomFactor(1.9);
+        else if (zoomFactor() < 0.1)
+            setZoomFactor(0.1);
+
+        // Round the factor (Fix slider's end value)
+        int newFactor = zoomFactor() * 10;
+        if ((zoomFactor() * 10 - newFactor) > 0.5)
+            newFactor++;
+
+
+        emit zoomChanged((qreal)newFactor / 10);
     }
     
-    KWebView::wheelEvent(event);
 
-    // Limits of the slider
-    if (zoomFactor() > 1.9)
-        setZoomFactor(1.9);
-    else if (zoomFactor() < 0.1)
-        setZoomFactor(0.1);
+
+
 }
 
 
