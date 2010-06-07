@@ -115,53 +115,39 @@ KService::List SearchEngine::favorites()
     return m_favorites;
 }
 
-
 void SearchEngine::loadFavorites()
 {
-    KConfig config("kuriikwsfilterrc"); //Share with konqueror
-    KConfigGroup cg = config.group("General");
-    QStringList favoriteEngines;
-    favoriteEngines << "wikipedia" << "google"; //defaults
-    favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
-
-    KService::List favorites;
-    KService::Ptr service;
-    foreach(const QString &engine, favoriteEngines)
-    {
-        service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-        if (service) 
-            favorites << service;
-    }
-
-    m_favorites = favorites;
+  KConfig config("kuriikwsfilterrc"); //Share with konqueror
+  KConfigGroup cg = config.group("General");
+  QStringList favoriteEngines;
+  favoriteEngines << "google"; //defaults
+  favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
+  
+  KService::List favorites;
+  KService::Ptr service;
+  foreach(const QString &engine, favoriteEngines)
+  {
+    service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
+    if (service)
+      favorites << service;
+  }
+  
+  m_favorites = favorites;
 }
 
 
 KService::Ptr SearchEngine::defaultEngine()
 {
-    int n = ReKonfig::searchEngine();
-    QString engine;
-    switch (n)
-    {
-    case 0:
-        engine = QL1S("google");
-        break;
-    case 1:
-        engine = QL1S("altavista");
-        break;
-    case 2:
-        engine = QL1S("lycos");
-        break;
-    case 3:
-        engine = QL1S("wikipedia");
-        break;
-    case 4:
-        engine = QL1S("wolfram");
-        break;
-    default:
-        engine = QL1S("google");
-        break;
-    }
-
-    return KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
+  KConfig config("kuriikwsfilterrc"); //Share with konqueror
+  KConfigGroup cg = config.group("General");
+  QString d = cg.readEntry("DefaultSearchEngine");
+  KService::Ptr service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
+  if (!service)
+  {
+    d = QL1S("google");
+    service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
+  }
+  
+  return service;
+  
 }
