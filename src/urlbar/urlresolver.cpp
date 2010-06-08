@@ -316,18 +316,16 @@ UrlSearchList UrlResolver::bookmarksResolution()
 UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
 {
     UrlSearchItem item;
-    QString dot;
-    if(!_typedString.endsWith(QL1C('.')))
-    {
-        dot = QString(QL1C('.'));
-    }
+    QString dot = QString(QL1C('.')); 
+    QString test1 = QString(QL1C('/')) + _typedString + dot;
+    QString test2 = dot + _typedString + dot;
     
     for(int i = 0; i<list->count(); i++)
     {
         item = list->at(i);
         //kDebug() << item.url.host();
         //TODO: move this to AwesomeUrlCompletion::substringCompletion and add a priviledged flag to UrlSearchItem
-        if (item.url.contains(_typedString + dot))
+        if (item.url.contains(test1) || item.url.contains(test2))
         {
             list->removeAt(i);
             return item;
