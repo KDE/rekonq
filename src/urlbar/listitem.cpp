@@ -59,11 +59,9 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
         : QWidget(parent)
         , m_option()
         , m_url(item.url)
-{
-    setAutoFillBackground(true);
-
+{    
     m_option.initFrom(this);
-    m_option.direction = Qt::LeftToRight;
+    m_option.direction = Qt::LeftToRight;   
 
     // use the same application palette (hence, the same colors)
     // Qt docs says that using this cctor is possible & fast (qt:qpalette)
@@ -97,16 +95,18 @@ void ListItem::deactivate()
 
 void ListItem::paintEvent(QPaintEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event);   
+
+    QWidget::paintEvent(event);
+    QPainter painter(this);
+    m_option.rect = QRect(QPoint(), size());
+    painter.fillRect(m_option.rect, palette().brush(backgroundRole()));
 
     if (m_option.state.testFlag(QStyle::State_Selected) ||  m_option.state.testFlag(QStyle::State_MouseOver))
     {
-        QPainter painter(this);
-        m_option.rect = QRect(QPoint(), size());
         style()->drawPrimitive(QStyle::PE_PanelItemViewItem, &m_option, &painter, this);
     }
 
-    QWidget::paintEvent(event);
 }
 
 
