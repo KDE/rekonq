@@ -64,6 +64,8 @@ AdBlockWidget::AdBlockWidget(QWidget *parent)
 
     load();
 
+    spinBox->setSuffix(ki18np(" day", " days"));
+
     // emit changed signal
     connect(insertButton,       SIGNAL(clicked()),           this, SLOT(hasChanged()));
     connect(removeButton,       SIGNAL(clicked()),           this, SLOT(hasChanged()));
