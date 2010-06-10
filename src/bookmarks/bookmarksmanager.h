@@ -273,7 +273,6 @@ private:
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;
     KActionCollection *m_actionCollection;
-    BookmarkMenu *m_bookmarkMenu;
     QList<KToolBar*> m_bookmarkToolBars;
     AwesomeUrlCompletion *m_completion;
     

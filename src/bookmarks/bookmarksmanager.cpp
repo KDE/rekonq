@@ -213,6 +213,7 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
 
 void BookmarkMenu::refill()
 {
+    clear();
     fillBookmarks();
 
     if (parentMenu()->actions().count() > 0)
@@ -268,7 +269,6 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
         , m_manager(0)
         , m_owner(0)
         , m_actionCollection(new KActionCollection(this))
-        , m_bookmarkMenu(0)
         , m_completion(0)
         , _bookmarkActionMenu(0)
 {
@@ -309,7 +309,6 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
 
 BookmarkProvider::~BookmarkProvider()
 {
-    delete m_bookmarkMenu;
     delete m_actionCollection;
     delete m_owner;
     delete m_manager;
@@ -397,11 +396,12 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 void BookmarkProvider::triggerBookmarkMenu()
 {
     kDebug() << "triggering Bookmarks Menu...";
-    if(!m_bookmarkMenu)
+    KMenu *menu = qobject_cast<KMenu *>(sender());
+
+    if(menu->actions().count() == 0)
     {
-        KMenu *menu = qobject_cast<KMenu *>(sender());
         kDebug() << "new Bookmarks Menu...";
-        m_bookmarkMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
+        new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
         kDebug() << "new Bookmarks Menu...DONE";
     }
 }
