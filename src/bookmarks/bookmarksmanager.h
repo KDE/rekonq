@@ -160,9 +160,6 @@ protected:
     virtual void refill();
     virtual QAction* actionForBookmark(const KBookmark &bookmark);
 
-protected slots:
-    void slotAddBookmark();
-
 private:
     void addOpenFolderInTabs();
 
@@ -265,6 +262,7 @@ public slots:
 
 private slots:
     void triggerBookmarkMenu();
+    void slotAddBookmark();
     
 private:
     void fillBookmarkBar(KToolBar *toolBar);

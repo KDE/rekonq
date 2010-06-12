@@ -142,9 +142,6 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
                            KActionCollection* actionCollection)
         : KBookmarkMenu(manager, owner, menu, actionCollection)
 {
-    KAction *a = KStandardAction::addBookmark(this, SLOT(slotAddBookmark()), this);
-    actionCollection->addAction(QL1S("rekonq_add_bookmark"), a);
-
     refill();
 }
 
@@ -171,22 +168,6 @@ KMenu * BookmarkMenu::contextMenu(QAction *act)
     if (!action)
         return 0;
     return new BookmarkContextMenu(action->bookmark(), manager(), owner());
-}
-
-
-void BookmarkMenu::slotAddBookmark()
-{
-    KAction *action = qobject_cast<KAction *>(sender());
-    if (action && !action->data().isNull())
-    {
-        KBookmarkGroup parentBookmark = manager()->findByAddress(parentAddress()).toGroup();
-        /// TODO Add bookmark Icon
-        parentBookmark.addBookmark(owner()->currentTitle(), action->data().toUrl());
-        manager()->emitChanged();
-        return;
-    }
-
-    KBookmarkMenu::slotAddBookmark();
 }
 
 
@@ -302,6 +283,9 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
     // setup menu
     m_owner = new BookmarkOwner(this);
     connect(m_owner, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), this, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)));
+
+    KAction *a = KStandardAction::addBookmark(this, SLOT(slotAddBookmark()), this);
+    m_actionCollection->addAction(QL1S("rekonq_add_bookmark"), a);
 
     kDebug() << "Loading Bookmarks Manager... DONE!";
 }
@@ -490,4 +474,12 @@ QString BookmarkProvider::titleForBookmarkUrl(const KBookmark &bookmark, QString
     }
 
     return title;
+}
+
+
+void BookmarkProvider::slotAddBookmark()
+{
+    KBookmarkGroup parentBookmark = rootGroup();
+    parentBookmark.addBookmark(bookmarkOwner()->currentTitle(), bookmarkOwner()->currentUrl());
+    bookmarkManager()->emitChanged();
 }
