@@ -107,14 +107,14 @@ bool SessionManager::restoreSession()
     do
     {
         line = in.readLine();
-        if (line == QString("window"))
+        if (line == QL1S("window"))
         {
             line = in.readLine();
             Application::instance()->loadUrl( KUrl(line), Rekonq::NewWindow);
         }
         else
         {
-            if (line == QString("currenttab"))
+            if (line == QL1S("currenttab"))
             {
                 line = in.readLine();
                 bool ok;
@@ -128,10 +128,6 @@ bool SessionManager::restoreSession()
                         MainView *mv = wl[0].data()->mainView();
                         emit mv->tabBar()->setCurrentIndex(idx);
                     }
-                }
-                else
-                {
-                    kDebug() << "Failed to convert currenttab index line <" << line << "> to in value" << endl;
                 }
             }
             else
@@ -164,9 +160,16 @@ QStringList SessionManager::closedSites()
     do
     {
         line = in.readLine();
-        if (line != QString("window"))
+        if (line != QL1S("window"))
         {
-            list << QString(line);
+            if(line == QL1S("currenttab"))
+            {
+                in.readLine();  // drop out the next field, containing the index of the current tab..
+            }
+            else
+            {
+                list << QString(line);
+            }
         }
     }
     while (!line.isEmpty());
