@@ -156,13 +156,17 @@ void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 void UrlBar::paintEvent(QPaintEvent *event)
 {   
     QColor backgroundColor;
+    QColor foregroundColor;
+    
     if (_privateMode)
     {
         backgroundColor = QColor(220, 220, 220);  // light gray
+        foregroundColor = Qt::black;
     }
     else
     {
         backgroundColor = Application::palette().color(QPalette::Base);
+        foregroundColor = Application::palette().color(QPalette::Text);
     }
 
     // set background color of UrlBar
@@ -174,13 +178,13 @@ void UrlBar::paintEvent(QPaintEvent *event)
         if (_tab->url().scheme() == QL1S("https"))
         {
             backgroundColor = QColor(255, 255, 171);  // light yellow
+            foregroundColor = Qt::black;
         }
         p.setBrush(QPalette::Base, backgroundColor);
+        p.setBrush(QPalette::Text, foregroundColor);
     }
     else
     {
-        // NOTE: I chose this instead of the old QColor(116, 192, 250)
-        // to try respecting style colors
         QColor loadingColor = Application::palette().color(QPalette::ToolTipBase);
 
         QLinearGradient gradient( QPoint(0, 0), QPoint(width(), height()) );
