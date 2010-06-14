@@ -53,7 +53,7 @@
 #include <QMouseEvent>
 #include <QWebSettings>
 #include <QFile>
-
+#include <QTextDocument>
 
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
         : QWidget(parent)
@@ -299,7 +299,7 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
 
 QString SearchListItem::searchItemTitle(QString engine, QString text)
 {
-    return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, text));
+    return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, Qt::escape(text)));
 }
 
 
