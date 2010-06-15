@@ -94,6 +94,8 @@ private slots:
     void showTabPreview();
 
 private:
+    void setupHistoryActions();
+    
     friend class MainView;
 
     /**

@@ -115,7 +115,7 @@ void MainView::postLaunch()
             break;
         QString title = line;
         QString url = title;
-        HistoryItem item(url, QDateTime::currentDateTime(), title);
+        HistoryItem item(url, QDateTime(), title);
         m_recentlyClosedTabs.removeAll(item);
         m_recentlyClosedTabs.prepend(item);
     }
@@ -503,7 +503,7 @@ void MainView::closeTab(int index, bool del)
     {
         QString title = tab->view()->title();
         QString url = tab->url().prettyUrl();
-        HistoryItem item(url, QDateTime::currentDateTime(), title);
+        HistoryItem item(url, QDateTime(), title);
         m_recentlyClosedTabs.removeAll(item);
         m_recentlyClosedTabs.prepend(item);
     }
@@ -649,6 +649,7 @@ void MainView::openClosedTabs()
     {
         Application::instance()->loadUrl( KUrl(item.url), Rekonq::SettingOpenTab);
     }
+    m_recentlyClosedTabs.clear();
 }
 
 void MainView::openClosedTab()
@@ -657,6 +658,11 @@ void MainView::openClosedTab()
     if (action)
     {
         Application::instance()->loadUrl(action->data().toUrl(), Rekonq::SettingOpenTab);
+        
+        QString title = action->text();
+        title = title.remove('&');
+        HistoryItem item(action->data().toString(), QDateTime(), title );
+        m_recentlyClosedTabs.removeAll(item);
     }
 }
 

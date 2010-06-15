@@ -46,6 +46,7 @@
 #include <KGlobalSettings>
 #include <KPassivePopup>
 #include <KMenu>
+#include <KActionMenu>
 
 // Qt Includes
 #include <QString>
@@ -284,6 +285,8 @@ void TabBar::mousePressEvent(QMouseEvent *event)
 
 void TabBar::contextMenu(int tab, const QPoint &pos)
 {
+    setupHistoryActions();
+    
     m_actualIndex = tab;
 
     KMenu menu;
@@ -308,6 +311,8 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
 
 void TabBar::emptyAreaContextMenu(const QPoint &pos)
 {
+    setupHistoryActions();
+    
     KMenu menu;
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
@@ -340,5 +345,37 @@ void TabBar::tabRemoved(int index)
             m_previewPopup.data()->hide();
         }
         m_currentTabPreviewIndex = -1;
+    }
+}
+
+
+void TabBar::setupHistoryActions()
+{
+    MainWindow *w = Application::instance()->mainWindow();
+    MainView *mv = qobject_cast<MainView *>(parent());
+    
+    QAction *openClosedTabsAction = w->actionByName( QL1S("open_closed_tabs") );
+    openClosedTabsAction->setEnabled( mv->recentlyClosedTabs().size() > 0 );
+
+    // update closed tabs menu
+    KActionMenu *am = qobject_cast<KActionMenu *>( w->actionByName( QL1S("closed_tab_menu") ));
+    if (!am)
+        return;
+
+    bool isEnabled = ( mv->recentlyClosedTabs().size() > 0 );
+    am->setEnabled(isEnabled);
+
+    if (am->menu())
+        am->menu()->clear();
+
+    if(!isEnabled)
+        return;
+
+    foreach (const HistoryItem &item, mv->recentlyClosedTabs())
+    {
+        KAction *a = new KAction(Application::icon(item.url), item.title, this);
+        a->setData(item.url);
+        connect(a, SIGNAL(triggered()), mv, SLOT(openClosedTab()));
+        am->addAction(a);
     }
 }

@@ -656,6 +656,7 @@ void MainWindow::preferences()
 
 void MainWindow::updateActions()
 {
+    kDebug() << "updating actions..";
     bool rekonqPage = currentTab()->page()->isOnRekonqPage();
     
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
@@ -666,27 +667,6 @@ void MainWindow::updateActions()
 
     QAction *historyForwardAction = actionByName(KStandardAction::name(KStandardAction::Forward));
     historyForwardAction->setEnabled(currentTab()->view()->history()->canGoForward());
-
-    QAction *openClosedTabsAction = actionByName( QL1S("open_closed_tabs") );
-    openClosedTabsAction->setEnabled(mainView()->recentlyClosedTabs().size() > 0);
-
-    // update closed tabs menu
-    KActionMenu *am = dynamic_cast<KActionMenu *>(actionByName( QL1S("closed_tab_menu") ));
-    if (!am)
-        return;
-
-    am->setEnabled(mainView()->recentlyClosedTabs().size() > 0);
-
-    if (am->menu())
-        am->menu()->clear();
-
-    foreach (const HistoryItem &item, mainView()->recentlyClosedTabs())
-    {
-        KAction *a = new KAction(Application::icon(item.url), item.title, this);
-        a->setData(item.url);
-        connect(a, SIGNAL(triggered()), m_view, SLOT(openClosedTab()));
-        am->addAction(a);
-    }
 }
 
 
