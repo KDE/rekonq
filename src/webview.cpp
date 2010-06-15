@@ -216,6 +216,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
 
         QString text = selectedText();
+        text = text.trimmed();
         if (text.startsWith(QL1S("http://"))
                 || text.startsWith(QL1S("https://"))
                 || text.startsWith(QL1S("www."))
