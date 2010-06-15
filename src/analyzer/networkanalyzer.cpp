@@ -51,11 +51,11 @@ NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
     headers << i18n("Method") << i18n("URL") << i18n("Response") << i18n("Length") << i18n("Content Type") << i18n("Info");
     _requestList->setHeaderLabels( headers );
     
-    _requestList->header()->setResizeMode(0, QHeaderView::ResizeToContents);
-    _requestList->header()->setResizeMode(1, QHeaderView::Stretch);
-    _requestList->header()->setResizeMode(2, QHeaderView::ResizeToContents);
-    _requestList->header()->setResizeMode(3, QHeaderView::ResizeToContents);
-    _requestList->header()->setResizeMode(4, QHeaderView::ResizeToContents);
+    _requestList->header()->setResizeMode(0, QHeaderView::Interactive);
+    _requestList->header()->setResizeMode(1, QHeaderView::Interactive);
+    _requestList->header()->setResizeMode(2, QHeaderView::Interactive);
+    _requestList->header()->setResizeMode(3, QHeaderView::Interactive);
+    _requestList->header()->setResizeMode(4, QHeaderView::Interactive);
     
     _requestList->setAlternatingRowColors(true);
     
@@ -107,6 +107,8 @@ void NetworkAnalyzer::addRequest( QNetworkAccessManager::Operation op, const QNe
 
     _mapper->setMapping( reply, reply );
     connect( reply, SIGNAL( finished() ), _mapper, SLOT( map() ) );
+
+    _requestList->header()->resizeSections(QHeaderView::ResizeToContents);
 }
 
 
