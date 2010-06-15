@@ -57,6 +57,7 @@
 #include <QtGui/QClipboard>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QLayout>
+#include <QtGui/QWindowsStyle>
 
 #include <QtDBus/QDBusConnectionInterface>
 #include <QtDBus/QDBusInterface>
@@ -74,7 +75,21 @@ WebView::WebView(QWidget* parent)
 {
     WebPage *page = new WebPage(this);
     setPage(page);
-
+    
+    // // NOTE This is a lot hackish. We copied it from Arora, but using a "Windows Style" 
+    // // seems really a pity to me. The problem is that using a KStyle everything seems "broken"
+    // // (at least with dark colors). So I think the code should be somthing like:
+    // KStyle s;
+    // setPalette( s.standardPalette() );
+    // // But it doesn't work :(
+    // // We'll see in next KDE releases...
+    QPalette p;
+    if (p.color(QPalette::Window) != Qt::white) {
+        QWindowsStyle s;
+        p = s.standardPalette();
+        setPalette(p);
+    }
+    
     // download system
     connect(this, SIGNAL(linkShiftClicked(const KUrl &)), page, SLOT(downloadUrl(const KUrl &)));
     connect(page, SIGNAL(downloadRequested(const QNetworkRequest &)), page, SLOT(downloadRequest(const QNetworkRequest &)));
