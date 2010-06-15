@@ -46,6 +46,7 @@
 #include "networkaccessmanager.h"
 #include "adblockmanager.h"
 #include "urlbar.h"
+#include "websnap.h"
 
 #include "sslinfodialog_p.h"
 
@@ -407,7 +408,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     if (!isLocal)
     {
-
         KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), replyUrl, mimeType);
         if(!suggestedFileName.isEmpty())
             dlg.setSuggestedFileName(suggestedFileName);
@@ -466,8 +466,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
 void WebPage::loadFinished(bool ok)
 {
-    Q_UNUSED(ok);
-    
     Application::adblockManager()->applyHidingRules(this);
 
     QStringList list = ReKonfig::walletBlackList();
@@ -478,6 +476,11 @@ void WebPage::loadFinished(bool ok)
        )
     {
         wallet()->fillFormData(mainFrame());
+    }
+    
+    if(ok)
+    {
+        WebSnap::renderPreview(*this);
     }
 }
 
