@@ -48,11 +48,11 @@ class NetworkAnalyzer;
 class REKONQ_TESTS_EXPORT NetworkAnalyzerPanel : public QDockWidget
 {
     Q_OBJECT
+
 public:
     NetworkAnalyzerPanel(const QString &title, QWidget *parent);
     ~NetworkAnalyzerPanel();
 
-    
 public slots:
     void toggle(bool enable);
     void changeCurrentPage();

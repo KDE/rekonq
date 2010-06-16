@@ -63,7 +63,7 @@ void NetworkAnalyzerPanel::closeEvent(QCloseEvent *event)
 
 MainWindow* NetworkAnalyzerPanel::mainWindow()
 {
-    return qobject_cast< MainWindow* >(parentWidget());
+    return qobject_cast<MainWindow *>(parentWidget());
 }
 
 
@@ -73,9 +73,11 @@ void NetworkAnalyzerPanel::toggle(bool enable)
     WebPage *page = mainWindow()->currentTab()->page();
     NetworkAccessManager *manager = qobject_cast<NetworkAccessManager *>(page->networkAccessManager());
     
+    page->enableNetworkAnalyzer(enable);
+    
     if (enable)
     {
-        connect(page, SIGNAL(loadStarted()), _viewer, SLOT(clear()));
+         connect(page, SIGNAL(loadStarted()), _viewer, SLOT(clear()));
         connect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)),
                     _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *) ) );
 
