@@ -83,14 +83,8 @@ void WebSnap::load()
 // You are playing with fire..
 QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h, bool save)
 {
-    // NOTE
-    // it seems no way to enable/disable scrollbars in new QtWebKit's
-    // and this is affecting tabbed browsing
-
     // prepare page
     QSize oldSize = page.viewportSize();
-//     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
-//     page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 
     // find the best size
     QSize size;
@@ -108,13 +102,11 @@ QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h, bool save)
 
     // render it
     QPainter p(&pageImage);
-    page.mainFrame()->render(&p);
+    page.mainFrame()->render(&p, QWebFrame::ContentsLayer);
     p.end();
     pageImage = pageImage.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
     // restore page settings
-//     page.mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
-//     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
     page.setViewportSize(oldSize);
 
     QPixmap pm = QPixmap::fromImage(pageImage);
