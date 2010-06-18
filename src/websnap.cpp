@@ -81,7 +81,7 @@ void WebSnap::load()
 
 // NOTE please, be careful modifying this.
 // You are playing with fire..
-QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h)
+QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h, bool save)
 {
     // NOTE
     // it seems no way to enable/disable scrollbars in new QtWebKit's
@@ -118,13 +118,16 @@ QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h)
     page.setViewportSize(oldSize);
 
     QPixmap pm = QPixmap::fromImage(pageImage);
-    KUrl url(page.mainFrame()->url());
-    kDebug() << "saving preview";
-
-    QString path = imagePathFromUrl(url);
-    QFile::remove(path);
-    pm.save(path);
-
+    
+    if(save)
+    {
+        KUrl url(page.mainFrame()->url());
+        kDebug() << "saving preview";
+        QString path = imagePathFromUrl(url);
+        QFile::remove(path);
+        pm.save(path);
+    }
+    
     return pm;
 }
 

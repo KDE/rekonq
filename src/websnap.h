@@ -85,10 +85,11 @@ public:
      * @param page the page to snap
      * @param w the image width
      * @param h the image height
+     * @param save decide to save or not the preview on cache
      *
      * @return the pixmap snapped from the page
      */
-    static QPixmap renderPreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
+    static QPixmap renderPreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT, bool save = true);
 
     /**
      * Guess the local path where the image for the url provided
