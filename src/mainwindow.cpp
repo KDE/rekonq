@@ -1292,6 +1292,14 @@ void MainWindow::setEncoding(QAction *qa)
     QString currentCodec = qa->text().toLatin1();
     currentCodec = currentCodec.remove('&');
     kDebug() << "Setting codec: " << currentCodec;
+    if(currentCodec == QL1S("Default") )
+    {
+        kDebug() << "QWebSettings::globalSettings()->defaultTextEncoding() = " << QWebSettings::globalSettings()->defaultTextEncoding();
+        currentTab()->view()->settings()->setDefaultTextEncoding( QWebSettings::globalSettings()->defaultTextEncoding() );
+        currentTab()->view()->reload();
+        return;
+    }
+    
     currentTab()->view()->settings()->setDefaultTextEncoding(currentCodec);
     currentTab()->view()->reload();
 }
@@ -1318,6 +1326,8 @@ void MainWindow::populateEncodingMenu()
     KMenu *otherMenu = new KMenu( QL1S("Other"), m_encodingMenu);
     
     QAction *a;
+    bool isDefaultCodecUsed = true;
+    
     Q_FOREACH(const QString &codec, codecs)
     {
         
@@ -1334,8 +1344,17 @@ void MainWindow::populateEncodingMenu()
             
         a->setCheckable(true);
         if (currentCodec == codec)
+        {
             a->setChecked(true);
+            isDefaultCodecUsed = false;
+        }
     }
+    
+    a = new QAction( QL1S("Default"), this);
+    a->setCheckable(true);
+    a->setChecked(isDefaultCodecUsed);
+            
+    m_encodingMenu->addAction( a );
     m_encodingMenu->addMenu( isoMenu );
     m_encodingMenu->addMenu( winMenu );
     m_encodingMenu->addMenu( isciiMenu );

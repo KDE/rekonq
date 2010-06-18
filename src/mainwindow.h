@@ -56,7 +56,6 @@ class QWebFrame;
 class QSlider;
 
 
-
 /**
  * This class serves as the main window for rekonq.
  * It handles the menus, toolbars, and status bars.
