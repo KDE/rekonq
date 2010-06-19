@@ -518,7 +518,7 @@ void MainView::closeTab(int index, bool del)
 
     if (del)
     {
-        tab->deleteLater();    // tab is scheduled for deletion.
+        tab->deleteLater();
         urlbar->deleteLater();
     }
 
@@ -716,7 +716,7 @@ void MainView::detachTab(int index)
 
     WebTab *tab = webTab(index);
     KUrl u = tab->url();
-    kDebug() << u;
+    kDebug() << "detaching tab with url: " << u;
     if (u.scheme() == QL1S("about"))
     {
         closeTab(index);
@@ -730,7 +730,7 @@ void MainView::detachTab(int index)
 
         MainWindow *w = Application::instance()->newMainWindow(false);
         w->mainView()->addTab(tab, Application::icon(u), label);
-        _widgetBar->insertWidget(0, bar);
+        w->mainView()->widgetBar()->insertWidget(0, bar);
         w->mainView()->updateTabBar();
     }
 }
