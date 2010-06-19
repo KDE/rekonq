@@ -1320,10 +1320,10 @@ void MainWindow::populateEncodingMenu()
 
     m_encodingMenu->clear();
     KMenu *isoMenu = new KMenu( QL1S("ISO"), m_encodingMenu);
-    KMenu *winMenu = new KMenu( QL1S("windows"), m_encodingMenu);
-    KMenu *isciiMenu = new KMenu( QL1S("Iscii"), m_encodingMenu);
-    KMenu *uniMenu = new KMenu( QL1S("UNICODE"), m_encodingMenu);
-    KMenu *otherMenu = new KMenu( QL1S("Other"), m_encodingMenu);
+    KMenu *winMenu = new KMenu( QL1S("Windows"), m_encodingMenu);
+    KMenu *isciiMenu = new KMenu( QL1S("ISCII"), m_encodingMenu);
+    KMenu *uniMenu = new KMenu( QL1S("Unicode"), m_encodingMenu);
+    KMenu *otherMenu = new KMenu( i18n("Other"), m_encodingMenu);
     
     QAction *a;
     bool isDefaultCodecUsed = true;
@@ -1350,7 +1350,7 @@ void MainWindow::populateEncodingMenu()
         }
     }
     
-    a = new QAction( QL1S("Default"), this);
+    a = new QAction( i18nc("Default website encoding", "Default"), this);
     a->setCheckable(true);
     a->setChecked(isDefaultCodecUsed);
             
