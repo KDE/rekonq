@@ -167,7 +167,14 @@ int Application::newInstance()
             if (index > 0)
             {
                 MainWindow *m = m_mainWindows.at(index - 1).data();
-                m->activateWindow();
+                if(m->isMinimized())
+                    m->showNormal();
+                if( !m->isActiveWindow() )
+                {
+                    m->activateWindow();
+                    m->raise();
+                }
+
                 Q_FOREACH(const KUrl &u, urlList)
                     loadUrl(u, Rekonq::NewCurrentTab);
             }
