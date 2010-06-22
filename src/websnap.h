@@ -89,8 +89,9 @@ public:
      *
      * @return the pixmap snapped from the page
      */
-    static QPixmap renderPreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT, bool save = true);
-
+    static QPixmap renderPagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
+    static QPixmap renderTabPreview(const QWebPage &page, int w, int h);   
+    
     /**
      * Guess the local path where the image for the url provided
      * should be
@@ -118,6 +119,7 @@ signals:
 private:
     QWebPage m_page;
     KUrl m_url;
+    static QPixmap render(const QWebPage &page, int w, int h);
 };
 
 #endif // WEB_SNAP_H

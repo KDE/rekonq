@@ -181,7 +181,7 @@ void TabBar::showTabPreview()
     m_previewPopup.data()->setFixedSize(w, h);
 
     QLabel *l = new QLabel();
-    l->setPixmap( WebSnap::renderPreview(*indexedTab->page(), w, h, false) );
+    l->setPixmap( WebSnap::renderTabPreview(*indexedTab->page(), w, h) );
 
     m_previewPopup.data()->setView(l);
     m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);
