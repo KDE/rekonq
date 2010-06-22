@@ -79,9 +79,33 @@ void WebSnap::load()
 }
 
 
+
+QPixmap WebSnap::render(const QWebPage &page, int w, int h)
+{
+    // create the page image
+    QPixmap pageImage = QPixmap(w, h);
+    pageImage.fill(Qt::transparent);
+
+    // render it
+    QPainter p(&pageImage);
+    page.mainFrame()->render(&p, QWebFrame::ContentsLayer);
+    p.end();
+    
+    return pageImage;
+}
+
+
+QPixmap WebSnap::renderTabPreview(const QWebPage &page, int w, int h)
+{ 
+    QPixmap pageImage = WebSnap::render(page, page.viewportSize().width()+17, page.viewportSize().height());
+    return pageImage.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  
+}
+
+
+
 // NOTE please, be careful modifying this.
 // You are playing with fire..
-QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h, bool save)
+QPixmap WebSnap::renderPagePreview(const QWebPage &page, int w, int h)
 {
     // prepare page
     QSize oldSize = page.viewportSize();
@@ -96,32 +120,23 @@ QPixmap WebSnap::renderPreview(const QWebPage &page, int w, int h, bool save)
     size = QSize(width, width * ((0.0 + h) / w));
     page.setViewportSize(size);
 
-    // create the page image
-    QImage pageImage = QImage(size, QImage::Format_ARGB32_Premultiplied);
-    pageImage.fill(Qt::transparent);
+    //render
+    QPixmap pageImage = WebSnap::render(page, page.viewportSize().width(), page.viewportSize().height());
+    
+    // detect scrollbar size
+    int scrollbarWidth = (page.mainFrame()->scrollBarMaximum(Qt::Horizontal) ? 17  : 0); //TODO: detect QStyle size for scrollbars
+    int scrollbarHeight = (page.mainFrame()->scrollBarMaximum(Qt::Vertical) ? 17 : 0);
 
-    // render it
-    QPainter p(&pageImage);
-    page.mainFrame()->render(&p, QWebFrame::ContentsLayer);
-    p.end();
+    // resize image
+    pageImage = pageImage.copy(0, 0, width - scrollbarWidth, size.height() - scrollbarHeight);
     pageImage = pageImage.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
     // restore page settings
     page.setViewportSize(oldSize);
-
-    QPixmap pm = QPixmap::fromImage(pageImage);
     
-    if(save)
-    {
-        KUrl url(page.mainFrame()->url());
-        kDebug() << "saving preview";
-        QString path = imagePathFromUrl(url);
-        QFile::remove(path);
-        pm.save(path);
-    }
-    
-    return pm;
+    return pageImage;
 }
+
 
 
 QString WebSnap::imagePathFromUrl(const KUrl &url)
@@ -148,7 +163,7 @@ void WebSnap::saveResult(bool ok)
 {
     if (ok)
     {
-        QPixmap image = renderPreview(m_page, WIDTH, HEIGHT);
+        QPixmap image = renderPagePreview(m_page, WIDTH, HEIGHT);
         QString path = imagePathFromUrl(m_url);
         QFile::remove(path);
         image.save(path);

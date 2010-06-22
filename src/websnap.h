@@ -80,17 +80,28 @@ public:
     ~WebSnap();
     
     /**
-     * Snaps a pixmap of size w * h from a page and save it to cache
+     * Snaps a pixmap of size w * h from a page
      *
      * @param page the page to snap
      * @param w the image width
      * @param h the image height
-     * @param save decide to save or not the preview on cache
      *
      * @return the pixmap snapped from the page
      */
-    static QPixmap renderPreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT, bool save = true);
-
+    static QPixmap renderPagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
+    
+    
+    /**
+     * Snaps a pixmap of size w * h from a page for tab preview
+     *
+     * @param page the page to snap
+     * @param w the image width
+     * @param h the image height
+     *
+     * @return the pixmap snapped from the page
+     */
+    static QPixmap renderTabPreview(const QWebPage &page, int w, int h);   
+    
     /**
      * Guess the local path where the image for the url provided
      * should be
@@ -118,6 +129,9 @@ signals:
 private:
     QWebPage m_page;
     KUrl m_url;
+    
+    //render a preview: common part of renderPagePreview() and renderTabPreview()
+    static QPixmap render(const QWebPage &page, int w, int h);
 };
 
 #endif // WEB_SNAP_H
