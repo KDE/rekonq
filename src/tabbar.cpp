@@ -206,6 +206,8 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         QTimer::singleShot(200, view->addTabButton(), SLOT(hide()));
     }
 
+    KTabBar::mouseMoveEvent(event);
+    
     if (ReKonfig::alwaysShowTabPreviews())
     {
         //Find the tab under the mouse
@@ -243,8 +245,6 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
             m_currentTabPreviewIndex = -1;
         }
     }
-
-    KTabBar::mouseMoveEvent(event);
 }
 
 
