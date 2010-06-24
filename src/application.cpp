@@ -364,7 +364,13 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     switch (type)
     {
     case Rekonq::NewTab:
-        tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
+        if( ReKonfig::openTabNoWindow() )
+            tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
+        else
+        {
+            w = newMainWindow();
+            tab = w->mainView()->currentWebTab();
+        }
         break;
     case Rekonq::NewFocusedTab:
         tab = w->mainView()->newWebTab(true);
