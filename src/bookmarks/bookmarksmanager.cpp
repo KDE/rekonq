@@ -66,7 +66,7 @@ void BookmarkOwner::openBookmark(const KBookmark & bookmark,
 {
     if (keyboardModifiers & Qt::ControlModifier || mouseButtons == Qt::MidButton)
     {
-        emit openUrl(bookmark.url(), Rekonq::SettingOpenTab);
+        emit openUrl(bookmark.url(), Rekonq::NewTab);
     }
     else
     {
@@ -112,7 +112,7 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
     QList<KUrl>::iterator url;
     for (url = urlList.begin(); url != urlList.end(); ++url)
     {
-        emit openUrl(*url, Rekonq::NewCurrentTab);
+        emit openUrl(*url, Rekonq::NewFocusedTab);
     }
 }
 

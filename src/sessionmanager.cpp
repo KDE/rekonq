@@ -132,7 +132,7 @@ bool SessionManager::restoreSession()
             }
             else
             {
-                Application::instance()->loadUrl( KUrl(line), Rekonq::NewCurrentTab);
+                Application::instance()->loadUrl( KUrl(line), Rekonq::NewFocusedTab);
             }
         }
     }

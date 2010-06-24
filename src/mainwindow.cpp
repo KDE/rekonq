@@ -956,7 +956,7 @@ void MainWindow::homePage(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
         : KUrl( ReKonfig::homePage() );
         
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
-        Application::instance()->loadUrl( homeUrl, Rekonq::SettingOpenTab);
+        Application::instance()->loadUrl( homeUrl, Rekonq::NewTab);
     else
         currentTab()->view()->load( homeUrl );
 }
@@ -1015,7 +1015,7 @@ void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifie
     
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
     {
-        Application::instance()->loadUrl(item->url(), Rekonq::SettingOpenTab);
+        Application::instance()->loadUrl(item->url(), Rekonq::NewTab);
     }
     else
     {
@@ -1049,7 +1049,7 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
     
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
     {
-        Application::instance()->loadUrl(item->url(), Rekonq::SettingOpenTab);
+        Application::instance()->loadUrl(item->url(), Rekonq::NewTab);
     }
     else
     {

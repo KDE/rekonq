@@ -136,7 +136,7 @@ int Application::newInstance()
             sessionManager()->restoreSession();
             kDebug() << "session restored following settings";
             if(areThereArguments)
-                loadUrl( KUrl("about:blank"), Rekonq::NewCurrentTab);
+                loadUrl( KUrl("about:blank"), Rekonq::NewFocusedTab);
         }
     }
     
@@ -158,7 +158,7 @@ int Application::newInstance()
             // Create a new one and load there sites...
             loadUrl(urlList.at(0), Rekonq::CurrentTab);
             for (int i = 1; i < urlList.count(); ++i)
-                loadUrl( urlList.at(i), Rekonq::SettingOpenTab);
+                loadUrl( urlList.at(i), Rekonq::NewTab);
         }
         else
         {
@@ -176,7 +176,7 @@ int Application::newInstance()
                 }
 
                 Q_FOREACH(const KUrl &u, urlList)
-                    loadUrl(u, Rekonq::NewCurrentTab);
+                    loadUrl(u, Rekonq::NewFocusedTab);
             }
         }    
     }
@@ -363,10 +363,10 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
     switch (type)
     {
-    case Rekonq::SettingOpenTab:
+    case Rekonq::NewTab:
         tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack(), ReKonfig::openTabsNearCurrent());
         break;
-    case Rekonq::NewCurrentTab:
+    case Rekonq::NewFocusedTab:
         tab = w->mainView()->newWebTab(true);
         break;
     case Rekonq::NewBackTab:

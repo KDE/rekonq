@@ -396,7 +396,7 @@ void WebView::search()
     KService::Ptr engine = KService::serviceByDesktopPath(a->data().toString());
     KUrl urlSearch = KUrl(SearchEngine::buildQuery(engine, selectedText()));
 
-    emit loadUrl(urlSearch, Rekonq::NewCurrentTab);
+    emit loadUrl(urlSearch, Rekonq::NewFocusedTab);
 }
 
 
@@ -413,7 +413,7 @@ void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifier
 
     if (modifiers & Qt::ControlModifier || buttons == Qt::MidButton)
     {
-        emit loadUrl(url, Rekonq::SettingOpenTab);
+        emit loadUrl(url, Rekonq::NewTab);
     }
     else
     {
@@ -436,7 +436,7 @@ void WebView::openLinkInNewTab()
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
 
-    emit loadUrl(url, Rekonq::SettingOpenTab);
+    emit loadUrl(url, Rekonq::NewTab);
 }
 
 
@@ -552,7 +552,7 @@ void WebView::inspect()
 
 void WebView::loadUrlInNewTab(const KUrl &url)
 {
-    emit loadUrl(url, Rekonq::SettingOpenTab);
+    emit loadUrl(url, Rekonq::NewTab);
 }
 
 

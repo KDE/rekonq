@@ -189,7 +189,7 @@ void BookmarkContextMenu::openInCurrentTab()
 
 void BookmarkContextMenu::openInNewTab()
 {
-    Application::instance()->loadUrl(bookmark().url(), Rekonq::SettingOpenTab);
+    Application::instance()->loadUrl(bookmark().url(), Rekonq::NewTab);
 }
 
 

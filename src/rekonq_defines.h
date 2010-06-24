@@ -78,8 +78,8 @@ namespace Rekonq
     enum OpenType
     {
         CurrentTab,     ///< open url in current tab
-        SettingOpenTab, ///< open url according to users settings
-        NewCurrentTab,  ///< open url in new tab and make it current
+        NewTab,         ///< open url according to users settings
+        NewFocusedTab,  ///< open url in new tab and focus it
         NewBackTab,     ///< open url in new tab in background
         NewWindow       ///< open url in new window
     };

@@ -101,7 +101,7 @@ void PanelTreeView::mouseReleaseEvent(QMouseEvent *event)
         return;
 
     if (event->button() == Qt::MidButton || event->modifiers() == Qt::ControlModifier)
-        validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::SettingOpenTab);
+        validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
 
     else if (event->button() == Qt::LeftButton)
     {
@@ -186,7 +186,7 @@ void PanelTreeView::openInNewTab()
     if (!index.isValid())
         return;
 
-    validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::SettingOpenTab);
+    validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
 }
 
 

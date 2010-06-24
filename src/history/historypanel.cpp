@@ -195,6 +195,6 @@ void HistoryPanel::openAll()
     }
 
     for (int i = 0; i < allChild.length(); i++)
-        emit openUrl(allChild.at(i).url(), Rekonq::SettingOpenTab);
+        emit openUrl(allChild.at(i).url(), Rekonq::NewTab);
 }
 
