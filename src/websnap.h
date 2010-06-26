@@ -89,7 +89,29 @@ public:
      * @return the pixmap snapped from the page
      */
     static QPixmap renderPagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
+        
+    /**
+     * Snaps a pixmap of size w * h from a visible page
+     *
+     * @param page the page to snap
+     * @param w the image width
+     * @param h the image height
+     *
+     * @return the pixmap snapped from the page
+     */
+    static QPixmap renderVisiblePagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
     
+    
+    /**
+     * Snaps a pixmap of size w * h from a visible page
+     *
+     * @param page the page to snap
+     * @param w the image width
+     * @param h the image height
+     *
+     * @return the pixmap snapped from the page
+     */
+    static QPixmap renderClosingPagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
     
     /**
      * Snaps a pixmap of size w * h from a page for tab preview

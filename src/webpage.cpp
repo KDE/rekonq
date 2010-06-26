@@ -46,6 +46,7 @@
 #include "networkaccessmanager.h"
 #include "adblockmanager.h"
 #include "urlbar.h"
+#include "websnap.h"
 
 #include "sslinfodialog_p.h"
 
@@ -211,7 +212,7 @@ WebPage::WebPage(QWidget *parent)
 
 WebPage::~WebPage()
 {
-    disconnect();
+    disconnect();    
 }
 
 
@@ -479,6 +480,15 @@ void WebPage::loadFinished(bool ok)
     {
         wallet()->fillFormData(mainFrame());
     }
+/*
+    if (ok)
+    {        
+        QPixmap preview = WebSnap::renderVisiblePagePreview(*this);
+        QString path = WebSnap::imagePathFromUrl(mainFrame()->url().toString());
+        QFile::remove(path);
+        preview.save(path);
+    }
+*/
 }
 
 
