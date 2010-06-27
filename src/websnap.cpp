@@ -101,8 +101,13 @@ QPixmap WebSnap::renderTabPreview(const QWebPage &page, int w, int h)
     return pageImage.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  
 }
 
+/*
+// This code is an attempt to render a page currently displayed in a tab without alterate it.
+// It currently does not work but can give ideas:
+// - activate/disable scrollbars of a webview causes problems => this method try to not do that
+// - the viewport and the scroll position must be modified an restored
+// - page.setViewportSize(size); does not seem to work when the page is currently displayed in a webview
 
-// This method tries to render a page currently displayed in a tab without alterate it.
 QPixmap WebSnap::renderVisiblePagePreview(const QWebPage &page, int w, int h)
 {
     // save page settings
@@ -141,7 +146,7 @@ QPixmap WebSnap::renderVisiblePagePreview(const QWebPage &page, int w, int h)
 
     return pageImage;
 }
-
+*/
 
 QPixmap WebSnap::renderClosingPagePreview(const QWebPage &page, int w, int h)
 {   
