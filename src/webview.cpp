@@ -38,6 +38,7 @@
 #include "webpage.h"
 #include "bookmarksmanager.h"
 #include "searchengine.h"
+#include "websnap.h"
 
 // KDE Includes
 #include <KService>
@@ -111,6 +112,13 @@ WebView::~WebView()
 {
     delete _scrollTimer;
     disconnect();
+
+    WebPage* p = page();
+    
+    QPixmap preview = WebSnap::renderClosingPagePreview(*p);
+    QString path = WebSnap::imagePathFromUrl(p->mainFrame()->url().toString());
+    QFile::remove(path);
+    preview.save(path);
 }
 
 

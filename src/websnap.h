@@ -89,7 +89,19 @@ public:
      * @return the pixmap snapped from the page
      */
     static QPixmap renderPagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
+        
+    // static QPixmap renderVisiblePagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT); TODO: try to make this method work => more previews for the urlbar
     
+    /**
+     * Snaps a pixmap of size w * h from a page of a tab that is currently closing
+     *
+     * @param page the page to snap
+     * @param w the image width
+     * @param h the image height
+     *
+     * @return the pixmap snapped from the page
+     */
+    static QPixmap renderClosingPagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
     
     /**
      * Snaps a pixmap of size w * h from a page for tab preview
