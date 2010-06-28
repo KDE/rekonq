@@ -568,6 +568,7 @@ void NewTabPage::downloadsPage()
         KUrl u = KUrl(item.destUrlString);
         QString fName = u.fileName();
         QString dir = QL1S("file://") + u.directory();
+        QString file = dir + '/' + fName;
 
         KIconLoader *loader = KIconLoader::global();
         QString iconPath = "file://" + loader->iconPath(KMimeType::iconNameForUrl(u), KIconLoader::Desktop);
@@ -585,13 +586,12 @@ void NewTabPage::downloadsPage()
         div.appendInside("<br/>");
 
         div.appendInside(markup("a"));
-        div.lastChild().setAttribute("href" , dir);
-        div.lastChild().setPlainText("Browse dir");
+        div.lastChild().setAttribute("href", dir);
+        div.lastChild().setPlainText(i18n("Open directory"));
 
-        /* TODO : make this link work
         div.appendInside(" - ");
         div.appendInside(markup("a"));
-        div.lastChild().setAttribute("href" , u.toMimeDataString());
-        div.lastChild().setPlainText("Open file");*/
+        div.lastChild().setAttribute("href", file);
+        div.lastChild().setPlainText(i18n("Open file"));
     }
 }
