@@ -345,7 +345,10 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
 
 KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine)
 {
-    QString url = engine->property("Query").toString();
+    QUrl u = engine->property("Query").toUrl();
+    KUrl url = KUrl( u.toString( QUrl::RemovePath | QUrl::RemoveQuery ) );
+    
+    kDebug() << "Engine NAME: " << engine->name() << " URL: " << url;
     KAction *a = new KAction(Application::icon(url), engine->name(), this);
     a->setCheckable(true);
     if (engine->desktopEntryName() == selectedEngine->desktopEntryName()) a->setChecked(true);

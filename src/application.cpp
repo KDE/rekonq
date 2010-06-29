@@ -337,6 +337,7 @@ KIcon Application::icon(const KUrl &url)
     KIcon icon = KIcon(QWebSettings::iconForUrl(url));
     if (icon.isNull())
     {
+        kDebug() << "null icon";
         icon = KIcon("text-html");
     }
     return icon;
