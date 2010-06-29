@@ -137,6 +137,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     KMenu menu(this);
     QAction *a;
 
+    KAction *inspectAction = new KAction(KIcon("layer-visible-on"), i18n("Inspect Element"), this);
+    connect(inspectAction, SIGNAL(triggered(bool)), this, SLOT(inspect()));
+
     // is a link?
     if (!result.linkUrl().isEmpty())
     {
@@ -153,7 +156,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
-        menu.addSeparator();
+        menu.addSeparator();        
     }
 
     // is content editable && selected? Add CUT
@@ -200,6 +203,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         }
 
         menu.addSeparator();
+        
+        menu.addAction(inspectAction);
         // TODO Add translate, show translation
     }
 
@@ -217,6 +222,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
         menu.addAction(pageAction(KWebPage::CopyImageToClipboard));
         menu.addSeparator();
+        
+        menu.addAction(inspectAction);
     }
 
     // Open url text in new tab/window
@@ -251,7 +258,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
             menu.addSeparator();
         }
-
     }
 
     // page actions
@@ -308,9 +314,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
             menu.addAction(mainwindow->actionByName("page_source"));
 
-            a = new KAction(KIcon("layer-visible-on"), i18n("Inspect Element"), this);
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(inspect()));
-            menu.addAction(a);
+            menu.addAction(inspectAction);
 
             a = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
             menu.addAction(a);
