@@ -94,7 +94,7 @@ public slots:
      * @param status The status message
      *
      */
-    void notifyMessage(const QString &msg, Rekonq::Notify status = Rekonq::Info);
+    void notifyMessage(const QString &msg, Rekonq::Notify status = Rekonq::Url);
 
     void printRequested(QWebFrame *frame = 0);
 

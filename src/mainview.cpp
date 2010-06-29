@@ -543,7 +543,7 @@ void MainView::webViewLoadStarted()
         return;
 
     emit browserTabLoading(true);
-    emit showStatusBarMessage(i18n("Loading..."));
+    emit showStatusBarMessage(i18n("Loading..."), Rekonq::Info);
 }
 
 
@@ -572,7 +572,7 @@ void MainView::webViewLoadFinished(bool ok)
     }
 
     if (ok)
-        emit showStatusBarMessage(i18n("Done"), Rekonq::Success);
+        emit showStatusBarMessage(i18n("Done"), Rekonq::Info);
 //     else
 //         emit showStatusBarMessage(i18n("Failed to load"), Rekonq::Error);
 }

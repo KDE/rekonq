@@ -68,7 +68,8 @@ namespace Rekonq
         Success,    ///< url successfully (down)loaded
         Error,      ///< url failed to (down)load
         Download,   ///< downloading url
-        Info        ///< information, (default)
+        Info,       ///< information
+        Url         ///< url string shown (default)
     };
 
     /**
