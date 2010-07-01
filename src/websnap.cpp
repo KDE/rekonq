@@ -96,8 +96,12 @@ QPixmap WebSnap::render(const QWebPage &page, int w, int h)
 
 
 QPixmap WebSnap::renderTabPreview(const QWebPage &page, int w, int h)
-{ 
-    QPixmap pageImage = WebSnap::render(page, page.viewportSize().width()+17, page.viewportSize().height());
+{
+    QSize oldSize = page.viewportSize();
+    int width = page.mainFrame()->contentsSize().width();
+    page.setViewportSize(QSize(width, width * ((0.0 + h) / w)));   
+    QPixmap pageImage = WebSnap::render(page, page.viewportSize().width(), page.viewportSize().height());
+    page.setViewportSize(oldSize);
     return pageImage.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  
 }
 
