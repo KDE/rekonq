@@ -32,7 +32,8 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-#include <QTimeLine>
+//Qt Includes
+#include <QTime>
 
 // KDE Includes
 #include <KWebView>
@@ -87,21 +88,20 @@ private:
     QPoint _mousePos;
     QPoint _clickPos;
 
-    QTimer *_scrollTimer;
+    // Auto Scroll
+    QTimer *_autoScrollTimer;
     int _VScrollSpeed;
     int _HScrollSpeed;
     bool _canEnableAutoScroll;
     bool _isAutoScrollEnabled;
 
-    QTimeLine *smoothScroller;
-    QTimer *timer;
-    int nbSteps;
-    int nbTicks;
-    bool bas;
-    QTime *time;
-    bool smoothScrolling;
-    int dy;
-    int steps;
+    // Smooth Scroll
+    QTimer *_smoothScrollTimer;
+    QTime _smoothScrollTime;
+    bool _scrollBottom;
+    bool _smoothScrolling;
+    int _dy;
+    int _smoothScrollSteps;
 };
 
 #endif
