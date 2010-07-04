@@ -85,7 +85,7 @@ WebView::WebView(QWidget* parent)
     // // But it doesn't work :(
     // // We'll see in next KDE releases...
     QPalette p;
-    if (p.color(QPalette::Window) != Qt::white) {
+    if (p.color(QPalette::ButtonText).lightness() > 50) { //if it is a dark theme
         QWindowsStyle s;
         p = s.standardPalette();
         setPalette(p);
