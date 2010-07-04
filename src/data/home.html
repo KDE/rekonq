@@ -51,34 +51,35 @@ color: black;
 
 #top {
 margin: 20px;
+display:table;
+width: 95%;
 }
 
-.topBar {
-display: inline-block;
-border-width: 5px;
+.topSide, .topMiddle {
+display:table-cell;
+}
+
+.topSide{
+width: 15%;
 }
 
 #navigation {
 -webkit-border-image: url(%2/bg2.png) 12 12 12 12  stretch stretch;
-max-width: 55%;
+display: table;
+border-width: 5px;
+margin-left: auto;
+margin-right: auto;
 }
 
-#actions, #balance {
-margin-top: 12px;
-width: 20%;
-}
 
-#actions {
-float: right;
-}
-
-#balance {
-display: hidden; float: left;
-height: 16px;
+#actions{
+display: table;
+width:auto;
 }
 
 .link {
-display: inline-block;
+display: table-cell;
+/*display:inline-block;*/
 -webkit-transition: opacity 0.5s ease;
 }
 .link:not(.current):hover {
@@ -102,6 +103,7 @@ border-width: 6px;
 }
 .link:not(.current){
 margin: 0 10px;
+padding:3px;
 }
 
 /* -------------------------------------------------------- */
@@ -201,9 +203,13 @@ text-align: center;
 
 <div id="rekonq-newtabpage">
     <div id="top">
-        <div class="topBar" id="balance"></div> <!-- This # is the same size as #actions to center #navigation -->
-        <div class="topBar" id="navigation"></div>
-        <div class="topBar" id="actions"></div>
+       <div class="topSide"></div>
+       <div class="topMiddle">
+            <div id="navigation"></div>
+       </div>
+       <div class="topSide">
+            <div id="actions"></div>
+        </div>
     </div>
     <div id="content">
     </div>
