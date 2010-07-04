@@ -96,10 +96,9 @@ public:
      * with a webview inside
      * @param focused   decide if you wannna give focus
      *                  (or not) to this new tab (default true)
-     * @param nearParent  decide if you wanna create new tab near current or not
      * @return the webview embedded in the new tab
      */
-    WebTab *newWebTab(bool focused = true, bool nearParent = false);
+    WebTab *newWebTab(bool focused = true);
 
     inline QList<HistoryItem> recentlyClosedTabs() { return m_recentlyClosedTabs; }
 

@@ -318,7 +318,7 @@ WebTab *MainView::webTab(int index) const
 }
 
 
-WebTab *MainView::newWebTab(bool focused, bool nearParent)
+WebTab *MainView::newWebTab(bool focused)
 {
     WebTab* tab = new WebTab(this);
     UrlBar *bar = new UrlBar(tab);
@@ -335,7 +335,7 @@ WebTab *MainView::newWebTab(bool focused, bool nearParent)
     connect(tab->view()->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
     connect(tab->view()->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
-    if (nearParent)
+    if ( ReKonfig::openTabsNearCurrent() )
     {
         insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
         _widgetBar->insertWidget(currentIndex() + 1, bar);
