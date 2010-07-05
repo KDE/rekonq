@@ -1,6 +1,18 @@
 Please, refer to http://techbase.kde.org/Projects/rekonq/Roadmap page
 to track all features available on new rekonq releases.
 
+0.5
+- Ad-Block Improvements (automatic list update, abp scheme support)
+- Awesome UrlBar (Tech Preview)
+- RSS support
+- auto-scroll
+- downloads history page
+- settings improvements
+- undo close tab
+- improved tab cloning && detaching
+- SSL info support
+- Bookmarks & history panel improvements
+
 0.4
 - moved to kdewebkit (this means based on kde 4.4)
 - kwallet support
