@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=rekonq
+Name[bg]=rekonq
 Name[cs]=rekonq
 Name[da]=rekonq
 Name[de]=rekonq
@@ -23,6 +24,7 @@ Name[x-test]=xxrekonqxx
 Name[zh_CN]=rekonq
 Name[zh_TW]=rekonq
 GenericName=WebKit KDE Browser
+GenericName[bg]=Браузър с WebKit за KDE
 GenericName[cs]=Prohlížeč pro KDE založený na WebKitu
 GenericName[da]=KDE-browser baseret på WebKit
 GenericName[de]=WebKit-basierter Webbrowser für KDE
