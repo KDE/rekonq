@@ -53,6 +53,7 @@
 #include <KJob>
 #include <kio/udsentry.h>
 #include <KMessageBox>
+#include <kprocess.h>
 
 // Qt Includes
 #include <QLatin1String>
@@ -118,6 +119,22 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         return true;
     }
 
+    // "apturl" handling
+    if (_url.protocol() == QL1S ("apt"))
+    {
+      //Declare apturl as QString
+      QString apturl="apturl";
+      //We need to convert the url to QStringList to pass as a argument to apturl
+      QStringList host;
+      host << _url.url();
+
+      if ( KProcess::execute (apturl,host)==0)
+        return true;
+      else 
+        return false;
+
+    }
+    
     // "abp" handling
     if (_url.protocol() == QL1S("abp"))
     {
