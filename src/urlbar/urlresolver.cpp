@@ -68,7 +68,7 @@ UrlResolver::UrlResolver(const QString &typedUrl)
     {
         kDebug() << "browse regexp empty. Setting value..";
         
-        QString protocol = "^(http://|https://|file://|ftp://|man:|info:)";
+        QString protocol = "^(http://|https://|file://|ftp://|man:|info:|apt:)";
         
         QString localhost = "^localhost";
         
