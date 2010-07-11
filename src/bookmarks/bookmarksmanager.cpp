@@ -234,7 +234,7 @@ void BookmarkMenu::addOpenFolderInTabs()
         if (!bookmark.isNull())
         {
             action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
-            action->setHelpText(i18n("Open all bookmarks in this folder as a new tab."));
+            action->setHelpText(i18n("Open all bookmarks in this folder as new tabs."));
             connect(action, SIGNAL(triggered(bool)), this, SLOT(slotOpenFolderInTabs()));
             parentMenu()->addAction(action);
         }
