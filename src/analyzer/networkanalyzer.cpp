@@ -168,7 +168,7 @@ void NetworkAnalyzer::showItemDetails( QTreeWidgetItem *item )
     QString details;
     
     QNetworkRequest req = _itemRequestMap[item];
-    details += QL1S("<h3>Request Details</h3>");
+    details += i18n("<h3>Request Details</h3>");
     details += QL1S("<ul>");
     foreach(const QByteArray &header, req.rawHeaderList() ) 
     {
@@ -181,7 +181,7 @@ void NetworkAnalyzer::showItemDetails( QTreeWidgetItem *item )
     details += QL1S("</ul>");
     
     QPair< QList<QByteArray>, QList<QByteArray> > replyHeaders = _itemReplyMap[item];
-    details += QL1S("<h3>Response Details</h3>");
+    details += i18n("<h3>Response Details</h3>");
     details += QL1S("<ul>");
     for ( int i = 0; i < replyHeaders.first.count(); i++ ) 
     {
