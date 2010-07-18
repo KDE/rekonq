@@ -212,6 +212,7 @@ void BookmarkContextMenu::copyToClipboard()
 void BookmarkContextMenu::deleteBookmark()
 {
     KBookmark bm = bookmark();
+    KBookmarkGroup bmg = bm.parentGroup();
     bool folder = bm.isGroup();
     QString name = QString(bm.text()).replace("&&", "&");
 
@@ -226,8 +227,8 @@ void BookmarkContextMenu::deleteBookmark()
        )
         return;
 
-    bm.parentGroup().deleteBookmark(bm);
-    manager()->emitChanged();
+    bmg.deleteBookmark(bm);
+    manager()->emitChanged(bmg);
 }
 
 
@@ -266,7 +267,7 @@ void BookmarkContextMenu::newBookmarkGroup()
             KBookmark newBk;
             newBk = dialog->createNewFolder("New folder", selected.parentGroup());
             selected.parentGroup().moveBookmark(newBk, selected);
-            manager()->emitChanged();
+            manager()->emitChanged(newBk.parentGroup());
         }
     }
     else
@@ -303,7 +304,7 @@ void BookmarkContextMenu::newSeparator()
     if (!selected.isNull())
         parent.moveBookmark(newBk, selected);
 
-    manager()->emitChanged();
+    manager()->emitChanged(newBk.parentGroup());
 }
 
 
@@ -328,6 +329,6 @@ void BookmarkContextMenu::bookmarkCurrentPage()
         parent.addBookmark(owner()->currentTitle(), KUrl(owner()->currentUrl()), "text-html");
     }
 
-    manager()->emitChanged();
+    manager()->emitChanged(parent);
 }
 

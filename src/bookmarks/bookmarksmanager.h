@@ -37,6 +37,7 @@
 // Local Includes
 #include "application.h"
 #include "urlresolver.h"
+#include "bookmarkspanel.h"
 
 // Qt Includes
 #include <QWidget>
@@ -234,6 +235,9 @@ public:
 
     QString titleForBookmarkUrl(QString url);
 
+    void registerBookmarkPanel(BookmarksPanel *panel);
+    void removeBookmarkPanel(BookmarksPanel *panel);
+
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
@@ -263,6 +267,7 @@ public slots:
 private slots:
     void triggerBookmarkMenu();
     void slotAddBookmark();
+    void slotPanelChanged();
     
 private:
     void fillBookmarkBar(KToolBar *toolBar);
@@ -272,6 +277,7 @@ private:
     BookmarkOwner *m_owner;
     KActionCollection *m_actionCollection;
     QList<KToolBar*> m_bookmarkToolBars;
+    QList<BookmarksPanel*> m_bookmarkPanels;
     AwesomeUrlCompletion *m_completion;
     
     KActionMenu *_bookmarkActionMenu;

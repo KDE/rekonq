@@ -161,6 +161,7 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
     Application::bookmarkProvider()->removeToolBar(m_bmBar);
+    Application::bookmarkProvider()->removeBookmarkPanel(m_bookmarksPanel);
     Application::instance()->removeMainWindow(this);
     
     delete m_view;
@@ -565,6 +566,8 @@ void MainWindow::setupPanels()
     connect(m_bookmarksPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
 
     addDockWidget(Qt::LeftDockWidgetArea, m_bookmarksPanel);
+
+    Application::bookmarkProvider()->registerBookmarkPanel(m_bookmarksPanel);
 
     // setup bookmarks panel action
     a = (KAction *) m_bookmarksPanel->toggleViewAction();

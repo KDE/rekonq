@@ -148,9 +148,8 @@ BookmarksTreeModel::BookmarksTreeModel(QObject *parent)
         , m_root(0)
 {
     resetModel();
-    connect(this, SIGNAL(bookmarksUpdated()), parent, SLOT(loadFoldedState()));
-    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString, QString)), this, SLOT(bookmarksChanged()));
-    connect(parent, SIGNAL(saveOnlyRequested()), this, SLOT(saveOnly()));
+    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(bookmarksChanged(const QString &)));
+    connect(this, SIGNAL(bookmarksUpdated()), parent, SLOT(startLoadFoldedState()));
 }
 
 
@@ -284,10 +283,37 @@ QVariant BookmarksTreeModel::data(const QModelIndex &index, int role) const
 }
 
 
-void BookmarksTreeModel::bookmarksChanged()
+void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
 {
-    resetModel();
-    emit bookmarksUpdated();
+    if (groupAddress.isEmpty())
+    {
+        resetModel();
+        emit bookmarksUpdated();
+    }
+    else
+    {
+        beginResetModel();
+        BtmItem *node = m_root;
+        QModelIndex nodeIndex;
+
+        QStringList indexChain( groupAddress.split( '/', QString::SkipEmptyParts) );
+        foreach( const QString &sIndex, indexChain )
+        {
+            bool ok;
+            int i = sIndex.toInt( &ok );
+            if( !ok )
+                break;
+
+            if( i < 0 || i >= node->childCount() )
+                break;
+
+            node = node->child( i );
+            nodeIndex = index( i, 0, nodeIndex );
+        }
+        populate(node, Application::bookmarkProvider()->bookmarkManager()->findByAddress(groupAddress).toGroup());
+        endResetModel();
+        emit bookmarksUpdated();
+    }
 }
 
 
@@ -299,6 +325,7 @@ void BookmarksTreeModel::resetModel()
 
 void BookmarksTreeModel::setRoot(KBookmarkGroup bmg)
 {
+    beginResetModel();
     delete m_root;
     m_root = new BtmItem(KBookmark());
 
@@ -306,7 +333,7 @@ void BookmarksTreeModel::setRoot(KBookmarkGroup bmg)
         return;
 
     populate(m_root, bmg);
-    reset();
+    endResetModel();
 }
 
 
@@ -336,20 +363,6 @@ KBookmark BookmarksTreeModel::bookmarkForIndex(const QModelIndex &index) const
 }
 
 
-void BookmarksTreeModel::saveOnly()
-{
-    disconnect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString, QString)), this, SLOT(bookmarksChanged()));
-    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString, QString)), this, SLOT(reconnectManager()));
-    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
-}
-
-
-void BookmarksTreeModel::reconnectManager()
-{
-    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString, QString)), this, SLOT(bookmarksChanged()));
-}
-
-
 Qt::DropActions BookmarksTreeModel::supportedDropActions() const
 {
     return Qt::MoveAction;
@@ -366,8 +379,8 @@ QMimeData* BookmarksTreeModel::mimeData(const QModelIndexList & indexes) const
 {
     QMimeData *mimeData = new QMimeData;
 
-    QByteArray addresse = bookmarkForIndex(indexes.first()).address().toLatin1();
-    mimeData->setData("application/rekonq-bookmark", addresse);
+    QByteArray address = bookmarkForIndex(indexes.first()).address().toLatin1();
+    mimeData->setData("application/rekonq-bookmark", address);
     bookmarkForIndex(indexes.first()).populateMimeData(mimeData);
 
     return mimeData;
@@ -395,32 +408,16 @@ bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
 
             if (!destIndex.isValid())
             {
-                if (!parent.isValid()) // Drop into a blank area
-                {
-                    Application::bookmarkProvider()->rootGroup().deleteBookmark(bookmark);
-                    Application::bookmarkProvider()->rootGroup().addBookmark(bookmark);
-                }
-                else // Drop at the last item of the group or directly on the main item of the group
-                {
-                    root.deleteBookmark(bookmark);
-                    root.addBookmark(bookmark);
-                }
+                root.deleteBookmark(bookmark);
+                root.addBookmark(bookmark);
             }
 
-            else
+            else if (row != 1)
             {
-                if (row == -1)
-                {
-                    root.deleteBookmark(bookmark);
-                    root.addBookmark(bookmark);
-                }
-                else // A classic drop
-                {
-                    root.moveBookmark(bookmark, root.previous(dropDestBookmark));
-                }
+                root.moveBookmark(bookmark, root.previous(dropDestBookmark));
             }
 
-            Application::bookmarkProvider()->bookmarkManager()->emitChanged(root);
+            Application::bookmarkProvider()->bookmarkManager()->emitChanged();
         }
     }
     return true;

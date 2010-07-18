@@ -483,3 +483,34 @@ void BookmarkProvider::slotAddBookmark()
     parentBookmark.addBookmark(bookmarkOwner()->currentTitle(), bookmarkOwner()->currentUrl());
     bookmarkManager()->emitChanged();
 }
+
+
+void BookmarkProvider::registerBookmarkPanel(BookmarksPanel *panel)
+{
+    if (panel && !m_bookmarkPanels.contains(panel))
+    {
+        m_bookmarkPanels.append(panel);
+        connect(panel, SIGNAL(expansionChanged()), this, SLOT(slotPanelChanged()));
+    }
+}
+
+
+void BookmarkProvider::removeBookmarkPanel(BookmarksPanel *panel)
+{
+    m_bookmarkPanels.removeOne(panel);
+
+    if (m_bookmarkPanels.isEmpty())
+    {
+        Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+    }
+}
+
+
+void BookmarkProvider::slotPanelChanged()
+{
+    foreach (BookmarksPanel *panel, m_bookmarkPanels)
+    {
+        if (panel && panel != sender())
+            panel->startLoadFoldedState();
+    }
+}

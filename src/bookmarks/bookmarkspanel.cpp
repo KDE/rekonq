@@ -126,7 +126,7 @@ void BookmarksPanel::setup()
     connect(m_treeView, SIGNAL(collapsed(const QModelIndex &)), this, SLOT(onCollapse(const QModelIndex &)));
     connect(m_treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(onExpand(const QModelIndex &)));
     connect(search, SIGNAL(textChanged(const QString &)), proxy, SLOT(setFilterFixedString(const QString &)));
-    loadFoldedState();
+    startLoadFoldedState();
 
     _loaded = true;
 }
@@ -152,7 +152,7 @@ void BookmarksPanel::onCollapse(const QModelIndex &index)
 
     KBookmark bookmark = bookmarkForIndex(index);
     bookmark.internalElement().setAttribute("folded", "yes");
-    emit saveOnlyRequested();
+    emit expansionChanged();
 }
 
 
@@ -163,11 +163,11 @@ void BookmarksPanel::onExpand(const QModelIndex &index)
 
     KBookmark bookmark = bookmarkForIndex(index);
     bookmark.internalElement().setAttribute("folded", "no");
-    emit saveOnlyRequested();
+    emit expansionChanged();
 }
 
 
-void BookmarksPanel::loadFoldedState()
+void BookmarksPanel::startLoadFoldedState()
 {
     m_loadingState = true;
     loadFoldedState(QModelIndex());

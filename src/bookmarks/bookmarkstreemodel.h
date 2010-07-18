@@ -84,9 +84,7 @@ public:
     virtual QMimeData *mimeData(const QModelIndexList & indexes) const;
 
 private slots:
-    void bookmarksChanged();
-    void saveOnly();
-    void reconnectManager();
+    void bookmarksChanged(const QString &groupAddress);
 
 signals:
     void bookmarksUpdated();

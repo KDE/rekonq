@@ -59,10 +59,11 @@ public:
 signals:
     void openUrl(const KUrl &, const Rekonq::OpenType &);
     void itemHovered(const QString &);
-    void saveOnlyRequested();
+    void expansionChanged();
 
 public slots:
     void showing(bool);
+    void startLoadFoldedState();
     
 private slots:
     void contextMenu(const QPoint &pos);
@@ -71,7 +72,6 @@ private slots:
     void onCollapse(const QModelIndex &index);
     void onExpand(const QModelIndex &index);
     void loadFoldedState(const QModelIndex &root);
-    void loadFoldedState();
 
 private:
     void setup();
