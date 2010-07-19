@@ -196,15 +196,20 @@ void MainWindow::setupToolbars()
     m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Forward)));
     m_mainBar->addSeparator();
     m_mainBar->addAction(actionByName( QL1S("stop_reload") ));
-    m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Home)));
+//     m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Home)));
 
     // location bar
     KAction *urlBarAction = new KAction(this);
     urlBarAction->setDefaultWidget(m_view->widgetBar());
     m_mainBar->addAction(urlBarAction);
 
-    m_mainBar->addAction(actionByName( QL1S("bookmarksActionMenu") ));
+//     m_mainBar->addAction(actionByName( QL1S("bookmarksActionMenu") ));
+    connect(actionByName(QL1S("bookmarksActionMenu")), SIGNAL(triggered()), 
+            qobject_cast<QToolButton*>(m_mainBar->widgetForAction(actionByName(QL1S("bookmarksActionMenu")))), SLOT(showMenu()));
+    
     m_mainBar->addAction(actionByName( QL1S("rekonq_tools") ));
+    connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), 
+            qobject_cast<QToolButton*>(m_mainBar->widgetForAction(actionByName(QL1S("rekonq_tools")))), SLOT(showMenu()));
 
     m_mainBar->show();  // this just to fix reopening rekonq after fullscreen close
 
@@ -448,6 +453,8 @@ void MainWindow::setupActions()
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu(this);
     bmMenu->setIcon(KIcon("bookmarks"));
     bmMenu->setDelayed(false);
+    bmMenu->setShortcutConfigurable(true);
+    bmMenu->setShortcut( KShortcut(Qt::ALT + Qt::Key_B) );
     actionCollection()->addAction(QL1S("bookmarksActionMenu"), bmMenu);
 
 
@@ -465,7 +472,9 @@ void MainWindow::setupTools()
     kDebug() << "setup tools...";
     KActionMenu *toolsMenu = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
     toolsMenu->setDelayed(false);
-
+    toolsMenu->setShortcutConfigurable(true);
+    toolsMenu->setShortcut( KShortcut(Qt::ALT + Qt::Key_T) );
+    
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Open)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
