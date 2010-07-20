@@ -185,8 +185,6 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
     }
     else
     {
-        UrlSearchItem urlSearchItem(UrlSearchItem::Bookmark, bookmark.url().prettyUrl() , bookmark.fullText(), QDateTime(), 1, bookmark.description(), QString());
-        Application::bookmarkProvider()->completionObject()->addItem(urlSearchItem);
         return  new KBookmarkAction(bookmark, owner(), this);
     }
 }
@@ -250,13 +248,9 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
         , m_manager(0)
         , m_owner(0)
         , m_actionCollection(new KActionCollection(this))
-        , m_completion(0)
         , _bookmarkActionMenu(0)
 {
     kDebug() << "Loading Bookmarks Manager...";
-    // take care of the completion object
-    m_completion = new AwesomeUrlCompletion;
-    m_completion->setOrder(KCompletion::Weighted);
 
     KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");  // share konqueror bookmarks
 
@@ -296,8 +290,6 @@ BookmarkProvider::~BookmarkProvider()
     delete m_actionCollection;
     delete m_owner;
     delete m_manager;
-
-    delete m_completion;
 }
 
 
@@ -324,8 +316,6 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
     Q_UNUSED(group)
     Q_UNUSED(caller)
 
-    m_completion->clear();
-
     foreach(KToolBar *bookmarkToolBar, m_bookmarkToolBars)
     {
         if (bookmarkToolBar)
@@ -334,7 +324,6 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
             fillBookmarkBar(bookmarkToolBar);
         }
     }
-    //TODO: also change completion object
 }
 
 
@@ -426,12 +415,6 @@ void BookmarkProvider::fillBookmarkBar(KToolBar *toolBar)
 KBookmarkGroup BookmarkProvider::rootGroup()
 {
     return m_manager->root();
-}
-
-
-AwesomeUrlCompletion *BookmarkProvider::completionObject() const
-{
-    return m_completion;
 }
 
 
