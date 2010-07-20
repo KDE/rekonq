@@ -31,6 +31,7 @@
 #include "application.h"
 #include "historymanager.h"
 #include "bookmarksmanager.h"
+#include "searchengine.h"
 
 // KDE Includes
 #include <KUriFilter>
@@ -59,7 +60,7 @@
 
 
 QRegExp UrlResolver::_browseRegexp;
-
+QRegExp UrlResolver::_searchEnginesRegexp;
 
 UrlResolver::UrlResolver(const QString &typedUrl)
         : _typedString(typedUrl.trimmed())
@@ -90,6 +91,18 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         _browseRegexp = QRegExp('(' + protocol + ")|(" + localhost + ")|(" + local + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 +')');
     }
     
+    if ( _searchEnginesRegexp.isEmpty() )
+    {
+        QString reg;
+        QString engineUrl;
+        foreach(KService::Ptr s, SearchEngine::favorites())
+        {
+            engineUrl = QRegExp::escape(s->property("Query").toString()).replace("\\\\\\{@\\}","[\\d\\w-.]+");
+            if (reg.isEmpty()) reg = "(" + engineUrl + ")";
+            else reg = reg + "|(" + engineUrl + ")";
+        }
+        _searchEnginesRegexp = QRegExp(reg);
+    }
 }
 
 
@@ -300,12 +313,17 @@ UrlSearchList UrlResolver::webSearchesResolution()
 // STEP 3 = history completion
 UrlSearchList UrlResolver::historyResolution()
 {
-    QList<HistoryHashItem> mostVisited = Application::historyManager()->findMostVisited(_typedString);
+    QList<HistoryHashItem> found = Application::historyManager()->find(_typedString);
+    qSort(found);
+    
     UrlSearchList list;
-    foreach (HistoryHashItem i, mostVisited)
+    foreach (HistoryHashItem i, found)
     {
-        UrlSearchItem gItem(UrlSearchItem::History, i.url, i.title);
-        list << gItem;
+        if (_searchEnginesRegexp.indexIn(i.url) == -1) //filter all urls that are search engine results
+        {
+            UrlSearchItem gItem(UrlSearchItem::History, i.url, i.title);
+            list << gItem;
+        }
     }
     return list;
 }

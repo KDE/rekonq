@@ -61,28 +61,24 @@ public:
     UrlSearchItem(const UrlSearchItem &item) : type(item.type),
                                                url(item.url),
                                                title(item.title),
-                                               description(item.description),
-                                               bookmarkPath(item.bookmarkPath)
+                                               description(item.description)
     {};
 
     UrlSearchItem() : type(UrlSearchItem::Undefined),
                       url(QString()),
                       title(QString()),
-                      description(QString()),
-                      bookmarkPath(QString())
+                      description(QString())
     {};
     
     UrlSearchItem(const int &_type,
                   const QString &_url,
                   const QString &_title = QString(),
-                  const QString   &description    = QString(),
-                  const QString   &bookmarkPath   = QString()
+                  const QString   &description    = QString()
                   )
                   : type(_type),
                   url(_url),
                   title(_title),
-                  description(description),
-                  bookmarkPath(bookmarkPath)
+                  description(description)
     {};
 
     inline bool operator==(const UrlSearchItem &i) const
@@ -114,6 +110,7 @@ private:
     UrlSearchItem privilegedItem(UrlSearchList* list);
      
     static QRegExp _browseRegexp;
+    static QRegExp _searchEnginesRegexp;
 };
 
 // ------------------------------------------------------------------------------

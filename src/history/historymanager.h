@@ -166,7 +166,6 @@ public:
 
     HistoryHashItem get(const QString &url);
     QList<HistoryHashItem> find(const QString &text);
-    QList<HistoryHashItem> findMostVisited(const QString &text);
 
     int historyLimit() const;
     void setHistoryLimit(int limit);

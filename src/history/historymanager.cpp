@@ -316,14 +316,6 @@ QList<HistoryHashItem> HistoryManager::find(const QString &text)
 }
 
 
-QList<HistoryHashItem> HistoryManager::findMostVisited(const QString &text)
-{
-    QList<HistoryHashItem> list = find(text);
-    qSort(list);
-    return list;
-}
-
-
 int HistoryManager::historyLimit() const
 {
     return m_historyLimit;
