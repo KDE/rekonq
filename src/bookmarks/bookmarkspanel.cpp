@@ -218,6 +218,7 @@ void BookmarksPanel::deleteBookmark()
         return;
 
     KBookmark bm = bookmarkForIndex(index);
+    KBookmarkGroup bmg = bm.parentGroup();
     bool folder = bm.isGroup();
 
     if (KMessageBox::warningContinueCancel(
@@ -232,6 +233,6 @@ void BookmarksPanel::deleteBookmark()
         return;
 
 
-    bm.parentGroup().deleteBookmark(bm);
-    Application::instance()->bookmarkProvider()->bookmarkManager()->emitChanged();
+    bmg.deleteBookmark(bm);
+    Application::instance()->bookmarkProvider()->bookmarkManager()->emitChanged(bmg);
 }
