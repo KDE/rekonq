@@ -69,11 +69,8 @@ HistoryManager::HistoryManager(QObject *parent)
         , m_historyModel(0)
         , m_historyFilterModel(0)
         , m_historyTreeModel(0)
-        , m_completion(new AwesomeUrlCompletion)
 {
     kDebug() << "Loading HistoryManager...";
-    // take care of the completion object
-    m_completion->setOrder(KCompletion::Weighted);
 
     m_expiredTimer.setSingleShot(true);
     connect(&m_expiredTimer, SIGNAL(timeout()), this, SLOT(checkForExpired()));
@@ -95,7 +92,6 @@ HistoryManager::HistoryManager(QObject *parent)
 HistoryManager::~HistoryManager()
 {
     m_saveTimer->saveIfNeccessary();
-    delete m_completion;
 
     delete m_saveTimer;
 
@@ -113,7 +109,7 @@ QList<HistoryItem> HistoryManager::history() const
 
 bool HistoryManager::historyContains(const QString &url) const
 {
-    return m_historyFilterModel->historyContains(url);
+    return m_hash.contains(url) && m_hash[url].savedCount>0;
 }
 
 
@@ -134,22 +130,24 @@ void HistoryManager::addHistoryEntry(const QString &url)
     HistoryItem item(cleanUrl.toString(), QDateTime::currentDateTime());
 
     m_history.prepend(item);
+    addHistoryHashEntry(item);
     emit entryAdded(item);
 
     if (m_history.count() == 1)
         checkForExpired();
-    
-    // Add item to completion object
-    QString _url(url);
-    _url.remove(QRegExp("^http://|/$"));
-    UrlSearchItem urlSearchItem(UrlSearchItem::History, _url, QString(), item.dateTime, 1, QString(), QString());
-    m_completion->addItem(urlSearchItem);
 }
 
 
 void HistoryManager::setHistory(const QList<HistoryItem> &history, bool loadedAndSorted)
 {
     m_history = history;
+
+    //TODO: is there a way to really memorize the visitCount instead of recount it at startup ?
+    m_hash.clear();
+    foreach(HistoryItem i, m_history) 
+    {
+        addHistoryHashEntry(i);
+    }
 
     // verify that it is sorted by date
     if (!loadedAndSorted)
@@ -222,6 +220,25 @@ void HistoryManager::checkForExpired()
 }
 
 
+void HistoryManager::addHistoryHashEntry(const HistoryItem &item)
+{
+    if (m_hash.contains(item.url))
+    {
+        m_hash[item.url].visitCount++;
+        m_hash[item.url].dateTime = item.dateTime; //store last visit date
+        if (!item.title.isEmpty())
+        {
+            m_hash[item.url].title = item.title; //store last title if not empty            
+        }
+    }
+    else
+    {
+        m_hash[item.url] = HistoryHashItem(item.url, item.dateTime, item.title);
+    }
+    m_hash[item.url].savedCount++;    
+}
+
+
 void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
 {
     for (int i = 0; i < m_history.count(); ++i)
@@ -232,6 +249,11 @@ void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
             m_saveTimer->changeOccurred();
             if (m_lastSavedUrl.isEmpty())
                 m_lastSavedUrl = m_history.at(i).url;
+            
+            if (m_hash.contains(url.url()) && !title.isEmpty())
+            {
+                m_hash[url.url()].title = title;
+            }	    
             emit entryUpdated(i);
             break;
         }
@@ -254,10 +276,29 @@ void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
             break;
         }
     }
+}
 
-    // Remove item from completion object
-    UrlSearchItem urlSearchItem(UrlSearchItem::History, item.url, item.title, item.dateTime, 0, QString(), QString());
-    m_completion->removeItem(urlSearchItem);
+
+HistoryHashItem HistoryManager::get(const QString &url)
+{
+    return m_hash[url];
+}
+
+
+QList<HistoryHashItem> HistoryManager::find(const QString &text)
+{
+    QList<HistoryHashItem> list;
+    
+    QString url;
+    foreach(url, m_hash.keys())
+    {
+        if (url.contains(text) || m_hash[url].title.contains(text))
+        {
+            list << m_hash[url];
+        }
+    }
+
+    return list;
 }
 
 
@@ -358,12 +399,6 @@ void HistoryManager::load()
 
         list.prepend(item);
         lastInsertedItem = item;
-
-        // Add item to completion object
-        //QString _url = item.url;
-        //_url.remove(QRegExp("^http://|/$"));
-        UrlSearchItem urlSearchItem(UrlSearchItem::History, item.url, item.title, item.dateTime, 1, QString(), QString());
-        m_completion->addItem(urlSearchItem);
     }
     if (needToSort)
         qSort(list.begin(), list.end());
@@ -445,16 +480,3 @@ void HistoryManager::save()
     }
     m_lastSavedUrl = m_history.value(0).url;
 }
-
-
-AwesomeUrlCompletion * HistoryManager::completionObject() const
-{
-    return m_completion;
-}
-
-
-QString HistoryManager::titleForHistoryUrl(const QString &url)
-{
-    return history().at(m_historyFilterModel->historyLocation(url)).title;
-}
-

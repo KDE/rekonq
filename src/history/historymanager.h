@@ -84,6 +84,32 @@ public:
 // ---------------------------------------------------------------------------------------------------------------
 
 
+class HistoryHashItem : public HistoryItem
+{
+public:
+    HistoryHashItem() {}
+    explicit HistoryHashItem(const QString &u
+                            ,const QDateTime &d = QDateTime()
+                            ,const QString &t = QString()
+                            )
+            : HistoryItem(u, d, t)
+            ,visitCount(1)
+            ,savedCount(0)
+    {}
+
+    inline bool operator <(const HistoryHashItem &other) const
+    {
+        return visitCount > other.visitCount;
+    }
+
+    int visitCount;
+    int savedCount;
+};
+
+
+// ---------------------------------------------------------------------------------------------------------------
+
+
 // Forward Declarations
 class AutoSaver;
 class HistoryModel;
@@ -115,7 +141,8 @@ public:
     void updateHistoryEntry(const KUrl &url, const QString &title);
     void removeHistoryEntry(const KUrl &url, const QString &title = QString());
 
-    QString titleForHistoryUrl(const QString &url);
+    HistoryHashItem get(const QString &url);
+    QList<HistoryHashItem> find(const QString &text);
 
     int historyLimit() const;
     void setHistoryLimit(int limit);
@@ -128,11 +155,6 @@ public:
     HistoryFilterModel *historyFilterModel() const;
     HistoryTreeModel *historyTreeModel() const;
 
-    /**
-    * @returns the AwesomeUrlCompletion object.
-    */
-    AwesomeUrlCompletion *completionObject() const;
-
 public slots:
     void clear();
     void loadSettings();
@@ -142,20 +164,19 @@ private slots:
     void checkForExpired();
 
 private:
+    void addHistoryHashEntry(const HistoryItem &item);
     void load();
 
     AutoSaver *m_saveTimer;
     int m_historyLimit;
     QTimer m_expiredTimer;
     QList<HistoryItem> m_history;
+    QHash<QString, HistoryHashItem> m_hash;
     QString m_lastSavedUrl;
 
     HistoryModel *m_historyModel;
     HistoryFilterModel *m_historyFilterModel;
     HistoryTreeModel *m_historyTreeModel;
-
-    // the completion object we sync with
-    AwesomeUrlCompletion *m_completion;
 };
 
 

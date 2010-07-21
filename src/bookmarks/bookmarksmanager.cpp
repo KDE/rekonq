@@ -185,8 +185,6 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
     }
     else
     {
-        UrlSearchItem urlSearchItem(UrlSearchItem::Bookmark, bookmark.url().prettyUrl() , bookmark.fullText(), QDateTime(), 1, bookmark.description(), QString());
-        Application::bookmarkProvider()->completionObject()->addItem(urlSearchItem);
         return  new KBookmarkAction(bookmark, owner(), this);
     }
 }
@@ -250,13 +248,9 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
         , m_manager(0)
         , m_owner(0)
         , m_actionCollection(new KActionCollection(this))
-        , m_completion(0)
         , _bookmarkActionMenu(0)
 {
     kDebug() << "Loading Bookmarks Manager...";
-    // take care of the completion object
-    m_completion = new AwesomeUrlCompletion;
-    m_completion->setOrder(KCompletion::Weighted);
 
     KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");  // share konqueror bookmarks
 
@@ -296,8 +290,6 @@ BookmarkProvider::~BookmarkProvider()
     delete m_actionCollection;
     delete m_owner;
     delete m_manager;
-
-    delete m_completion;
 }
 
 
@@ -324,8 +316,6 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
     Q_UNUSED(group)
     Q_UNUSED(caller)
 
-    m_completion->clear();
-
     foreach(KToolBar *bookmarkToolBar, m_bookmarkToolBars)
     {
         if (bookmarkToolBar)
@@ -334,7 +324,6 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
             fillBookmarkBar(bookmarkToolBar);
         }
     }
-    //TODO: also change completion object
 }
 
 
@@ -429,51 +418,44 @@ KBookmarkGroup BookmarkProvider::rootGroup()
 }
 
 
-AwesomeUrlCompletion *BookmarkProvider::completionObject() const
+QList<KBookmark> BookmarkProvider::find(QString text)
 {
-    return m_completion;
-}
-
-
-QString BookmarkProvider::titleForBookmarkUrl(QString url)
-{
-    QString title = "";
+    QList<KBookmark> list;
     KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
     if (bookGroup.isNull())
     {
-        return title;
+        return list;
     }
 
-    KBookmark bookmark = bookGroup.first();
-    while (!bookmark.isNull() && title.isEmpty())
+    KBookmark bookmark = bookGroup.first(); 
+    while (!bookmark.isNull())
     {
-        title = titleForBookmarkUrl(bookmark, url);
+        list = find(list, bookmark, text);
         bookmark = bookGroup.next(bookmark);
     }
 
-    return title;
+    return list;
 }
 
 
-QString BookmarkProvider::titleForBookmarkUrl(const KBookmark &bookmark, QString url)
+QList<KBookmark> BookmarkProvider::find(QList<KBookmark> list, const KBookmark &bookmark, QString text)
 {
-    QString title = "";
     if (bookmark.isGroup())
     {
         KBookmarkGroup group = bookmark.toGroup();
         KBookmark bm = group.first();
-        while (!bm.isNull() && title.isEmpty())
+        while (!bm.isNull())
         {
-            title = titleForBookmarkUrl(bm, url); // it is .bookfolder
+            list = find(list, bm, text); // it is .bookfolder
             bm = group.next(bm);
         }
     }
-    else if (!bookmark.isSeparator() && bookmark.url() == url)
+    else if (bookmark.url().url().contains(text) || bookmark.fullText().contains(text))
     {
-        title = bookmark.fullText();
+        list << bookmark;
     }
 
-    return title;
+    return list;
 }
 
 

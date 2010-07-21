@@ -228,12 +228,7 @@ public:
     
     inline BookmarkOwner *bookmarkOwner() { return m_owner; }
 
-    /**
-    * @returns the AwesomeUrlCompletion object.
-    */
-    AwesomeUrlCompletion *completionObject() const;
-
-    QString titleForBookmarkUrl(QString url);
+    QList<KBookmark> find(QString text);
 
     void registerBookmarkPanel(BookmarksPanel *panel);
     void removeBookmarkPanel(BookmarksPanel *panel);
@@ -271,14 +266,13 @@ private slots:
     
 private:
     void fillBookmarkBar(KToolBar *toolBar);
-    QString titleForBookmarkUrl(const KBookmark &bookmark, QString url);
+    QList<KBookmark> find(QList<KBookmark> list, const KBookmark &bookmark, QString text);
 
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;
     KActionCollection *m_actionCollection;
     QList<KToolBar*> m_bookmarkToolBars;
     QList<BookmarksPanel*> m_bookmarkPanels;
-    AwesomeUrlCompletion *m_completion;
     
     KActionMenu *_bookmarkActionMenu;
 };

@@ -31,6 +31,7 @@
 #include "application.h"
 #include "historymanager.h"
 #include "bookmarksmanager.h"
+#include "searchengine.h"
 
 // KDE Includes
 #include <KUriFilter>
@@ -59,7 +60,7 @@
 
 
 QRegExp UrlResolver::_browseRegexp;
-
+QRegExp UrlResolver::_searchEnginesRegexp;
 
 UrlResolver::UrlResolver(const QString &typedUrl)
         : _typedString(typedUrl.trimmed())
@@ -90,6 +91,18 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         _browseRegexp = QRegExp('(' + protocol + ")|(" + localhost + ")|(" + local + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 +')');
     }
     
+    if ( _searchEnginesRegexp.isEmpty() )
+    {
+        QString reg;
+        QString engineUrl;
+        foreach(KService::Ptr s, SearchEngine::favorites())
+        {
+            engineUrl = QRegExp::escape(s->property("Query").toString()).replace("\\\\\\{@\\}","[\\d\\w-.]+");
+            if (reg.isEmpty()) reg = "(" + engineUrl + ")";
+            else reg = reg + "|(" + engineUrl + ")";
+        }
+        _searchEnginesRegexp = QRegExp(reg);
+    }
 }
 
 
@@ -162,7 +175,7 @@ UrlSearchList UrlResolver::orderedSearchItems()
     
     UrlSearchList commonList;
     int commonResutls = 0;
-    
+
     //prefer items which are history items als well bookmarks item
     //if there are more than 1000 bookmark results, the performance impact is noticeable
     if(bookmarksResults < 1000)
@@ -300,16 +313,33 @@ UrlSearchList UrlResolver::webSearchesResolution()
 // STEP 3 = history completion
 UrlSearchList UrlResolver::historyResolution()
 {
-    AwesomeUrlCompletion *historyCompletion = Application::historyManager()->completionObject();
-    return historyCompletion->substringCompletion(_typedString);
+    QList<HistoryHashItem> found = Application::historyManager()->find(_typedString);
+    qSort(found);
+
+    UrlSearchList list;
+    foreach (HistoryHashItem i, found)
+    {
+        if (_searchEnginesRegexp.indexIn(i.url) == -1) //filter all urls that are search engine results
+        {
+            UrlSearchItem gItem(UrlSearchItem::History, i.url, i.title);
+            list << gItem;
+        }
+    }
+    return list;
 }
 
 
 // STEP 4 = bookmarks completion
 UrlSearchList UrlResolver::bookmarksResolution()
 {
-    AwesomeUrlCompletion *bookmarkCompletion = Application::bookmarkProvider()->completionObject();
-    return bookmarkCompletion->substringCompletion(_typedString);
+    UrlSearchList list;
+    QList<KBookmark> found = Application::bookmarkProvider()->find(_typedString);
+    foreach (KBookmark b, found)
+    {
+        UrlSearchItem gItem(UrlSearchItem::Bookmark, b.url().url(), b.fullText());
+        list << gItem;
+    }
+    return list;
 }
 
 
@@ -332,125 +362,4 @@ UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
         }
     }
     return UrlSearchItem();
-}
-
-// ------------------------------------------------------------------------------------------------------
-
-
-AwesomeUrlCompletion::AwesomeUrlCompletion()
-{
-    m_resetCompletion = true;
-}
-
-
-AwesomeUrlCompletion::~AwesomeUrlCompletion()
-{
-
-}
-
-
-void AwesomeUrlCompletion::addItem(const UrlSearchItem& itemToAdd)
-{
-    bool match = false;
-    QTime myTime;
-    myTime.start();
-    for(int i = 0; i < m_items.count(); i++)
-    {
-        //check if item is already in list; the items are equal if the url and the title are equal
-        if(m_items[i] == itemToAdd)
-        {
-            match = true;
-            //TODO: check what to do if comment or bookmarkPath are different
-            if(m_items[i] < itemToAdd)
-            {
-                m_items[i].visitDateTime = itemToAdd.visitDateTime;
-            }
-            m_items[i].visitCount += itemToAdd.visitCount;
-        }
-    }
-    if(!match)
-    {
-        m_items.append(itemToAdd);
-    }
-    m_resetCompletion = true;
-}
-
-
-void AwesomeUrlCompletion::removeItem(const UrlSearchItem& item)
-{
-    m_resetCompletion = m_items.removeOne(item);
-}
-
-
-void AwesomeUrlCompletion::setOrder(KCompletion::CompOrder)
-{
-    //TODO
-}
-
-
-void AwesomeUrlCompletion::updateTitle(const UrlSearchItem& item, const QString& newTitle)
-{
-    foreach(UrlSearchItem i, m_items)
-    {
-        if(i == item)
-        {
-            i.title = newTitle;
-        }
-    }
-    m_resetCompletion = true;
-}
-
-
-void AwesomeUrlCompletion::clear()
-{
-    m_items.clear();
-    m_resetCompletion = true;
-}
-
-
-UrlSearchList AwesomeUrlCompletion::substringCompletion(const QString& completionString)
-{
-    UrlSearchList* searchList;
-    UrlSearchList tempList;
-    
-    if(!m_resetCompletion)
-    {
-        if(completionString.length() <= 1)
-        {
-            m_resetCompletion = true;
-        }
-        if(!m_resetCompletion && completionString.length() < m_lastCompletionString.length())
-        {
-            m_resetCompletion = true;
-        }
-        if(!m_resetCompletion && !completionString.startsWith(m_lastCompletionString, Qt::CaseInsensitive))
-        {
-            m_resetCompletion = true;
-        }
-    }
-    
-    if(m_resetCompletion)
-    {
-        searchList = &m_items;
-        m_resetCompletion = false;
-    }
-    else
-    {
-        searchList = &m_filteredItems;
-    }
-    
-    Q_FOREACH(const UrlSearchItem &i, *searchList)
-    {
-        //TODO: split string and also search for each word if the are more than one word separated with space
-        if(    i.url.contains(completionString, Qt::CaseInsensitive) 
-            || i.title.contains(completionString, Qt::CaseInsensitive) 
-            || i.description.contains(completionString, Qt::CaseInsensitive)
-          )
-        {
-            tempList.append(i);
-        }
-    }
-    m_lastCompletionString = completionString;
-    m_filteredItems = tempList;
-    return m_filteredItems;
 }
