@@ -223,7 +223,6 @@ void MainWindow::setupToolbars()
 
         m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         m_bmBar->setIconDimensions(16);
-        m_bmBar->hide();
 
         KToolBar::setToolBarsEditable(false);
         KToolBar::setToolBarsLocked(true);
