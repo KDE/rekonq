@@ -84,7 +84,7 @@ public:
     inline bool operator==(const UrlSearchItem &i) const
     {
         return i.url == url;//TODO && i.title == title;
-    }
+    }    
 };
 
 typedef QList <UrlSearchItem> UrlSearchList;

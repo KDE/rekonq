@@ -315,7 +315,7 @@ UrlSearchList UrlResolver::historyResolution()
 {
     QList<HistoryHashItem> found = Application::historyManager()->find(_typedString);
     qSort(found);
-    
+
     UrlSearchList list;
     foreach (HistoryHashItem i, found)
     {
@@ -333,7 +333,12 @@ UrlSearchList UrlResolver::historyResolution()
 UrlSearchList UrlResolver::bookmarksResolution()
 {
     UrlSearchList list;
-    //AwesomeUrlCompletion *bookmarkCompletion = Application::bookmarkProvider()->completionObject();
+    QList<KBookmark> found = Application::bookmarkProvider()->find(_typedString);
+    foreach (KBookmark b, found)
+    {
+        UrlSearchItem gItem(UrlSearchItem::History, b.url().url(), b.fullText());
+        list << gItem;
+    }
     return list;
 }
 
