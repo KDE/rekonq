@@ -119,6 +119,10 @@ bool HistoryManager::historyContains(const QString &url) const
 
 void HistoryManager::addHistoryEntry(const QString &url)
 {
+    QWebSettings *globalSettings = QWebSettings::globalSettings();
+    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+        return;
+    
     QUrl cleanUrl(url);
 
     // don't store about: urls (home page related)
@@ -128,8 +132,13 @@ void HistoryManager::addHistoryEntry(const QString &url)
     cleanUrl.setPassword(QString());
     cleanUrl.setHost(cleanUrl.host().toLower());
     HistoryItem item(cleanUrl.toString(), QDateTime::currentDateTime());
-    addHistoryEntry(item);
 
+    m_history.prepend(item);
+    emit entryAdded(item);
+
+    if (m_history.count() == 1)
+        checkForExpired();
+    
     // Add item to completion object
     QString _url(url);
     _url.remove(QRegExp("^http://|/$"));
@@ -213,20 +222,6 @@ void HistoryManager::checkForExpired()
 }
 
 
-void HistoryManager::addHistoryEntry(const HistoryItem &item)
-{
-    QWebSettings *globalSettings = QWebSettings::globalSettings();
-    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-        return;
-
-    m_history.prepend(item);
-    emit entryAdded(item);
-
-    if (m_history.count() == 1)
-        checkForExpired();
-}
-
-
 void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
 {
     for (int i = 0; i < m_history.count(); ++i)
@@ -244,14 +239,6 @@ void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
 }
 
 
-void HistoryManager::removeHistoryEntry(const HistoryItem &item)
-{
-    m_lastSavedUrl.clear();
-    m_history.removeOne(item);
-    emit entryRemoved(item);
-}
-
-
 void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
 {
     HistoryItem item;
@@ -261,7 +248,9 @@ void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
                 && (title.isEmpty() || title == m_history.at(i).title))
         {
             item = m_history.at(i);
-            removeHistoryEntry(item);
+            m_lastSavedUrl.clear();
+            m_history.removeOne(item);
+            emit entryRemoved(item);
             break;
         }
     }
@@ -464,7 +453,7 @@ AwesomeUrlCompletion * HistoryManager::completionObject() const
 }
 
 
-QString HistoryManager::titleForHistoryUrl(QString url)
+QString HistoryManager::titleForHistoryUrl(const QString &url)
 {
     return history().at(m_historyFilterModel->historyLocation(url)).title;
 }
