@@ -336,7 +336,7 @@ UrlSearchList UrlResolver::bookmarksResolution()
     QList<KBookmark> found = Application::bookmarkProvider()->find(_typedString);
     foreach (KBookmark b, found)
     {
-        UrlSearchItem gItem(UrlSearchItem::History, b.url().url(), b.fullText());
+        UrlSearchItem gItem(UrlSearchItem::Bookmark, b.url().url(), b.fullText());
         list << gItem;
     }
     return list;
