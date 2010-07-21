@@ -56,6 +56,38 @@ class WebView;
 typedef QList< QWeakPointer<MainWindow> > MainWindowList;
 
 
+// ---------------------------------------------------------------------------------------------------------------
+
+
+#include <QDateTime>
+
+
+class DownloadItem
+{
+public:
+    DownloadItem() {}
+    explicit DownloadItem(const QString &srcUrl,
+                          const QString &destUrl,
+                          const QDateTime &d
+                         )
+            : srcUrlString(srcUrl)
+            , destUrlString(destUrl)
+            , dateTime(d)
+    {}
+
+    QString srcUrlString;
+    QString destUrlString;
+    QDateTime dateTime;
+};
+
+
+typedef QList<DownloadItem> DownloadList;
+
+
+// ---------------------------------------------------------------------------------------------------------------
+
+
+
 /**
   *
   */
@@ -79,6 +111,11 @@ public:
     static BookmarkProvider *bookmarkProvider();
     static SessionManager *sessionManager();
     static AdBlockManager *adblockManager();
+
+    // DOWNLOADS MANAGEMENT METHODS
+    void addDownload(const QString &srcUrl, const QString &destUrl);
+    DownloadList downloads();
+    bool clearDownloadsHistory();
 
 public slots:
     /**

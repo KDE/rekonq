@@ -549,7 +549,7 @@ void NewTabPage::downloadsPage()
     clearData.findFirst("span").appendInside(i18n("Clear Private Data"));
     m_root.document().findFirst("#actions").appendInside(clearData);
 
-    DownloadList list = Application::historyManager()->downloads();
+    DownloadList list = Application::instance()->downloads();
 
     if (list.isEmpty())
     {

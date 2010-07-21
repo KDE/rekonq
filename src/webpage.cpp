@@ -136,8 +136,8 @@ static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData 
     } 
     while (result == KIO::R_CANCEL && destUrl.isValid());
     
-    // Save download on history manager
-    Application::historyManager()->addDownload(srcUrl.pathOrUrl() , destUrl.pathOrUrl());
+    // Save download history
+    Application::instance()->addDownload(srcUrl.pathOrUrl() , destUrl.pathOrUrl());
 
     if (ReKonfig::kgetDownload())
     {

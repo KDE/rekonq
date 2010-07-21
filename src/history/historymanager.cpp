@@ -464,62 +464,6 @@ AwesomeUrlCompletion * HistoryManager::completionObject() const
 }
 
 
-void HistoryManager::addDownload(const QString &srcUrl, const QString &destUrl)
-{
-    QWebSettings *globalSettings = QWebSettings::globalSettings();
-    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-        return;
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
-    QFile downloadFile(downloadFilePath);
-    if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
-    {
-        kDebug() << "Unable to open download file (WRITE mode)..";
-        return;
-    }
-    QDataStream out(&downloadFile);
-    out << srcUrl;
-    out << destUrl;
-    out << QDateTime::currentDateTime();
-    downloadFile.close();
-}
-
-
-DownloadList HistoryManager::downloads()
-{
-    DownloadList list;
-
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
-    QFile downloadFile(downloadFilePath);
-    if (!downloadFile.open(QFile::ReadOnly))
-    {
-        kDebug() << "Unable to open download file (READ mode)..";
-        return list;
-    }
-
-    QDataStream in(&downloadFile);
-    while (!in.atEnd())
-    {
-        QString srcUrl;
-        in >> srcUrl;
-        QString destUrl;
-        in >> destUrl;
-        QDateTime dt;
-        in >> dt;
-        DownloadItem item(srcUrl, destUrl, dt);
-        list << item;
-    }
-    return list;
-}
-
-
-bool HistoryManager::clearDownloadsHistory()
-{
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
-    QFile downloadFile(downloadFilePath);
-    return downloadFile.remove();
-}
-
-
 QString HistoryManager::titleForHistoryUrl(QString url)
 {
     return history().at(m_historyFilterModel->historyLocation(url)).title;

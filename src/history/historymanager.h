@@ -84,30 +84,6 @@ public:
 // ---------------------------------------------------------------------------------------------------------------
 
 
-class DownloadItem
-{
-public:
-    DownloadItem() {}
-    explicit DownloadItem(const QString &srcUrl,
-                          const QString &destUrl,
-                          const QDateTime &d
-                         )
-            : srcUrlString(srcUrl)
-            , destUrlString(destUrl)
-            , dateTime(d)
-    {}
-
-    QString srcUrlString;
-    QString destUrlString;
-    QDateTime dateTime;
-};
-
-
-typedef QList<DownloadItem> DownloadList;
-
-// ---------------------------------------------------------------------------------------------------------------
-
-
 // Forward Declarations
 class AutoSaver;
 class HistoryModel;
@@ -156,10 +132,6 @@ public:
     * @returns the AwesomeUrlCompletion object.
     */
     AwesomeUrlCompletion *completionObject() const;
-
-    void addDownload(const QString &srcUrl, const QString &destUrl);
-    DownloadList downloads();
-    bool clearDownloadsHistory();
 
 public slots:
     void clear();

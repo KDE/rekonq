@@ -1206,7 +1206,7 @@ void MainWindow::clearPrivateData()
 
         if (clearWidget.clearDownloads->isChecked())
         {
-            Application::historyManager()->clearDownloadsHistory();
+            Application::instance()->clearDownloadsHistory();
         }
 
         if (clearWidget.clearCookies->isChecked())
