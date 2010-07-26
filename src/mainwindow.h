@@ -35,7 +35,7 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KMainWindow>
+#include <KXmlGuiWindow>
 #include <KActionCollection>
 #include <KToolBar>
 #include <KUrl>
@@ -61,7 +61,7 @@ class QSlider;
  * It handles the menus, toolbars, and status bars.
  *
  */
-class REKONQ_TESTS_EXPORT MainWindow : public KMainWindow
+class REKONQ_TESTS_EXPORT MainWindow : public KXmlGuiWindow
 {
     Q_OBJECT
 
@@ -70,7 +70,6 @@ public:
     ~MainWindow();
 
     inline MainView *mainView() const { return m_view; }
-    inline KActionCollection *actionCollection() const { return m_ac; }
     inline QAction *actionByName(const QString &name) { return actionCollection()->action(name); }
     
     WebTab *currentTab() const;
@@ -178,17 +177,13 @@ private:
     KMenu *m_historyBackMenu;
     KMenu *m_encodingMenu;
 
-    KToolBar *m_mainBar;
-    KToolBar *m_bmBar;
-
     QSlider *m_zoomSlider;
 
     QString m_lastSearch;
 
     KPassivePopup *m_popup;
     QTimer *m_hidePopup;
-
-    KActionCollection *m_ac;
 };
 
 #endif // MAINWINDOW_H
+    

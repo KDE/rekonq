@@ -200,6 +200,7 @@ public:
      */
     KActionMenu *bookmarkActionMenu(QWidget *parent);
 
+    KAction *bookmarkToolBarAction(KToolBar *t);
 
     /**
     * @short set the Bookmarks Toolbar Action

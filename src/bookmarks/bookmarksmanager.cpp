@@ -366,6 +366,16 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 }
 
 
+KAction* BookmarkProvider::bookmarkToolBarAction(KToolBar *t)
+{
+    KAction *bookmarkToolBarAction = new KAction(this);
+    bookmarkToolBarAction->setDefaultWidget(t);     // The ownership is transferred to action
+    bookmarkToolBarAction->setText(i18n("Bookmarks Bar"));
+    bookmarkToolBarAction->setShortcutConfigurable(false);
+    return bookmarkToolBarAction;
+}
+
+
 void BookmarkProvider::triggerBookmarkMenu()
 {
     kDebug() << "triggering Bookmarks Menu...";

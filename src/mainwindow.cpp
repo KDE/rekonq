@@ -94,7 +94,7 @@
 
 
 MainWindow::MainWindow()
-        : KMainWindow()
+        : KXmlGuiWindow()
         , m_view(new MainView(this))
         , m_findBar(new FindBar(this))
         , m_historyPanel(0)
@@ -103,16 +103,11 @@ MainWindow::MainWindow()
         , m_analyzerPanel(0)
         , m_historyBackMenu(0)
         , m_encodingMenu(new KMenu(this))
-        , m_mainBar(new KToolBar(QString("MainToolBar"), this, Qt::TopToolBarArea, true, true, true))
-        , m_bmBar(new KToolBar(QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, true))
+//         , m_mainBar(new KToolBar(QString("MainToolBar"), this, Qt::TopToolBarArea, true, true, true))
+//         , m_bmBar(new KToolBar(QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, true))
         , m_popup(new KPassivePopup(this))
         , m_hidePopup(new QTimer(this))
-        , m_ac(new KActionCollection(this))
 {
-    kDebug() << "MainWindow ctor...";
-    // enable window size "auto-save"
-    setAutoSaveSettings();
-
     // creating a centralWidget containing panel, m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
     centralWidget->setContentsMargins(0, 0, 0, 0);
@@ -142,9 +137,33 @@ MainWindow::MainWindow()
     // setting up rekonq toolbar(s)
     setupToolbars();
 
+    // a call to KXmlGuiWindow::setupGUI() populates the GUI                                                                              
+    // with actions, using KXMLGUI.                                                                                                       
+    // It also applies the saved mainwindow settings, if any, and ask the                                                                 
+    // mainwindow to automatically save settings if changed: window size,                                                                 
+    // toolbar position, icon size, etc.                                                                                                  
+    setupGUI();
+    
+    // no menu bar in rekonq: we have other plans..
+    menuBar()->setVisible(false);
+    
     // no more status bar..
     setStatusBar(0);
 
+    KToolBar *mainBar = toolBar("mainToolBar");
+    
+    QToolButton *bookmarksButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("bookmarksActionMenu") )));
+    if(bookmarksButton)
+    {
+        connect(actionByName(QL1S("bookmarksActionMenu")), SIGNAL(triggered()), bookmarksButton, SLOT(showMenu()));
+    }
+    
+    QToolButton *toolsButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("rekonq_tools") )));
+    if(toolsButton)
+    {
+        connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), toolsButton, SLOT(showMenu()));
+    }
+    
     // setting popup notification
     m_popup->setAutoDelete(false);
     connect(Application::instance(), SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
@@ -160,7 +179,8 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-    Application::bookmarkProvider()->removeToolBar(m_bmBar);
+    KToolBar *bookBar = toolBar("bookmarksToolBar");
+    Application::bookmarkProvider()->removeToolBar(bookBar);
     Application::bookmarkProvider()->removeBookmarkPanel(m_bookmarksPanel);
     Application::instance()->removeMainWindow(this);
     
@@ -175,15 +195,10 @@ MainWindow::~MainWindow()
     delete m_historyBackMenu;
     delete m_encodingMenu;
 
-    delete m_mainBar;
-    delete m_bmBar;
-
     delete m_zoomSlider;
 
     delete m_popup;
     delete m_hidePopup;
-
-    delete m_ac;
 }
 
 
@@ -191,52 +206,31 @@ void MainWindow::setupToolbars()
 {
     kDebug() << "setup toolbars...";
     
-    // ============ Main ToolBar  ================================
-    m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Back)));
-    m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Forward)));
-    m_mainBar->addSeparator();
-    m_mainBar->addAction(actionByName( QL1S("stop_reload") ));
-//     m_mainBar->addAction(actionByName(KStandardAction::name(KStandardAction::Home)));
+    KAction *a;
 
     // location bar
-    KAction *urlBarAction = new KAction(this);
-    urlBarAction->setDefaultWidget(m_view->widgetBar());
-    m_mainBar->addAction(urlBarAction);
+    a = new KAction(i18n("Location Bar"), this);
+    a->setShortcut(KShortcut(Qt::Key_F6));
+    a->setDefaultWidget(m_view->widgetBar());
+    actionCollection()->addAction( QL1S("url_bar"), a);
 
-//     m_mainBar->addAction(actionByName( QL1S("bookmarksActionMenu") ));
-    connect(actionByName(QL1S("bookmarksActionMenu")), SIGNAL(triggered()), 
-            qobject_cast<QToolButton*>(m_mainBar->widgetForAction(actionByName(QL1S("bookmarksActionMenu")))), SLOT(showMenu()));
-    
-    m_mainBar->addAction(actionByName( QL1S("rekonq_tools") ));
-    connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), 
-            qobject_cast<QToolButton*>(m_mainBar->widgetForAction(actionByName(QL1S("rekonq_tools")))), SLOT(showMenu()));
+    KToolBar *mainBar = toolBar("mainToolBar");
+    KToolBar *bookBar = toolBar("bookmarksToolBar");
+   
+    // bookmarks bar
+    KAction *bookmarkBarAction = Application::bookmarkProvider()->bookmarkToolBarAction(bookBar);
+    a = actionCollection()->addAction( QL1S("bookmarks_bar"), bookmarkBarAction);
 
-    m_mainBar->show();  // this just to fix reopening rekonq after fullscreen close
+    mainBar->show();  // this just to fix reopening rekonq after fullscreen close
 
     // =========== Bookmarks ToolBar ================================
-    m_bmBar->setAcceptDrops(true);
-    Application::bookmarkProvider()->setupBookmarkBar(m_bmBar);
-
-    if (ReKonfig::firstExecution())
-    {
-        m_mainBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-
-        m_bmBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        m_bmBar->setIconDimensions(16);
-
-        KToolBar::setToolBarsEditable(false);
-        KToolBar::setToolBarsLocked(true);
-
-        ReKonfig::setFirstExecution(false);
-    }
+    bookBar->setAcceptDrops(true);
+    Application::bookmarkProvider()->setupBookmarkBar(bookBar);
 }
 
 
 void MainWindow::postLaunch()
 {
-    // KActionCollection read settings
-    m_ac->readSettings();
-
     // notification system
     connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
     connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
@@ -411,7 +405,6 @@ void MainWindow::setupActions()
         connect(a, SIGNAL(triggered(bool)), m_view, SLOT(switchToTab()));
     }
 
-
     // ============================== Indexed Tab Actions ====================================
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
     a->setShortcuts( KStandardShortcut::close() );
@@ -434,20 +427,6 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QL1S("detach_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(detachTab()));
 
-
-    // ----------------------- Bookmarks ToolBar Action --------------------------------------
-    QAction *qa;
-
-    qa = m_mainBar->toggleViewAction();
-    qa->setText(i18n("Main Toolbar"));
-    qa->setIcon(KIcon("bookmark-toolbar"));
-    actionCollection()->addAction(QL1S("main_bar"), qa);
-
-    qa = m_bmBar->toggleViewAction();
-    qa->setText(i18n("Bookmarks Toolbar"));
-    qa->setIcon(KIcon("bookmark-toolbar"));
-    actionCollection()->addAction(QL1S("bm_bar"), qa);
-
     // Bookmark Menu
     KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu(this);
     bmMenu->setIcon(KIcon("bookmarks"));
@@ -455,7 +434,6 @@ void MainWindow::setupActions()
     bmMenu->setShortcutConfigurable(true);
     bmMenu->setShortcut( KShortcut(Qt::ALT + Qt::Key_B) );
     actionCollection()->addAction(QL1S("bookmarksActionMenu"), bmMenu);
-
 
     // ---------------- Encodings -----------------------------------
     a = new KAction(KIcon("character-set"), i18n("Set Encoding"), this);
@@ -530,7 +508,6 @@ void MainWindow::setupTools()
 
     toolsMenu->addSeparator();
 
-    toolsMenu->addAction(actionByName(QL1S("bm_bar")));
     toolsMenu->addAction(actionByName(QL1S("show_history_panel")));
     toolsMenu->addAction(actionByName(QL1S("show_bookmarks_panel")));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
@@ -915,33 +892,36 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
     static bool historyPanelFlag;
     static bool bookmarksPanelFlag;
 
+    KToolBar *mainBar = toolBar("mainToolBar");
+    KToolBar *bookBar = toolBar("bookmarksToolBar");
+    
     if (!makeVisible)
     {
         // save current state, if in windowed mode
         if (!isFullScreen())
         {
-            bookmarksToolBarFlag = m_bmBar->isHidden();
+            bookmarksToolBarFlag = bookBar->isHidden();
             historyPanelFlag = m_historyPanel->isHidden();
             bookmarksPanelFlag = m_bookmarksPanel->isHidden();
         }
 
-        m_bmBar->hide();
+        bookBar->hide();
         m_view->setTabBarHidden(true);
         m_historyPanel->hide();
         m_bookmarksPanel->hide();
 
         // hide main toolbar
-        m_mainBar->hide();
+        mainBar->hide();
     }
     else
     {
         // show main toolbar
-        m_mainBar->show();
+        mainBar->show();
         m_view->setTabBarHidden(false);
 
         // restore state of windowed mode
         if (!bookmarksToolBarFlag)
-            m_bmBar->show();
+            bookBar->show();
         if (!historyPanelFlag)
             m_historyPanel->show();
         if (!bookmarksPanelFlag)
