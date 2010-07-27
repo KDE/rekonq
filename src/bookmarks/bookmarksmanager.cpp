@@ -593,3 +593,41 @@ void BookmarkProvider::slotPanelChanged()
             panel->startLoadFoldedState();
     }
 }
+
+
+KBookmark BookmarkProvider::bookmarkForUrl(const KUrl &url)
+{
+    KBookmark found;
+
+    KBookmarkGroup root = rootGroup();
+    if (root.isNull())
+    {
+        return found;
+    }
+
+    return bookmarkForUrl(root, url);
+}
+
+
+KBookmark BookmarkProvider::bookmarkForUrl(const KBookmark &bookmark, const KUrl &url)
+{
+    KBookmark found;
+
+    if (bookmark.isGroup())
+    {
+        KBookmarkGroup group = bookmark.toGroup();
+        KBookmark bookmark = group.first();
+
+        while (!bookmark.isNull() && found.isNull())
+        {
+            found = bookmarkForUrl(bookmark, url);
+            bookmark = group.next(bookmark);
+        }
+    }
+    else if (!bookmark.isSeparator() && bookmark.url() == url)
+    {
+        found = bookmark;
+    }
+
+    return found;
+}

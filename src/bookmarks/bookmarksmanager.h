@@ -271,6 +271,8 @@ public:
     void registerBookmarkPanel(BookmarksPanel *panel);
     void removeBookmarkPanel(BookmarksPanel *panel);
 
+    KBookmark bookmarkForUrl(const KUrl &url);
+    
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
@@ -304,6 +306,9 @@ private slots:
     
 private:
     QList<KBookmark> find(QList<KBookmark> list, const KBookmark &bookmark, QString text);
+
+    QString titleForBookmarkUrl(const KBookmark &bookmark, const QString &url);
+    KBookmark bookmarkForUrl(const KBookmark &bookmark, const KUrl &url);
 
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;

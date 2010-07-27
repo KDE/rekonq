@@ -41,6 +41,8 @@
 #include "webpage.h"
 #include "webview.h"
 #include "completionwidget.h"
+#include "bookmarksmanager.h"
+#include "bookmarkwidget.h"
 
 // KDE Includes
 #include <KCompletionBox>
@@ -107,6 +109,8 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
 
+    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(onBookmarksChanged()));
+    
     // load typed urls
     connect(this, SIGNAL(returnPressed(const QString &)), this, SLOT(loadTyped(const QString &)));
 
@@ -321,12 +325,44 @@ void UrlBar::loadFinished()
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo(QPoint)));
     }
 
+    // show bookmark info
+    IconButton *bt = addRightIcon(UrlBar::BK);
+    connect(bt, SIGNAL(clicked(const QPoint &)), this, SLOT(showBookmarkInfo(const QPoint &)));
+
     // we need to update urlbar after the right icon settings
     // removing this code (where setStyleSheet automatically calls update) needs adding again 
     // an update call
     kDebug() << "resetting stylesheet";
     int rightIconWidth = 25 * (_rightIconsList.count());
     setStyleSheet(QString("UrlBar { padding: 0 %2px 0 %1px;} ").arg(_icon->sizeHint().width()).arg(rightIconWidth));
+}
+
+
+void UrlBar::showBookmarkInfo(const QPoint &pos)
+{
+    KBookmark bookmark = Application::bookmarkProvider()->bookmarkForUrl(_tab->url());
+
+    IconButton *bt = qobject_cast<IconButton *>(this->sender());
+    if (!bt)
+        return;
+
+    if (bookmark.isNull())
+    {
+        Application::bookmarkProvider()->rootGroup().addBookmark(_tab->view()->title(), _tab->url());
+        Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+    }
+    else
+    {
+        BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
+        widget->showAt(pos);
+    }
+}
+
+
+void UrlBar::onBookmarksChanged()
+{
+    clearRightIcons();
+    loadFinished();
 }
 
 
@@ -382,6 +418,16 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
     case UrlBar::SSL:
         rightIcon->setIcon(KIcon("object-locked"));
         rightIcon->setToolTip(i18n("Show SSL Info"));
+        break;
+    case UrlBar::BK:
+        if (Application::bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
+        {
+            rightIcon->setIcon(KIcon("bookmarks").pixmap(32,32, QIcon::Disabled));
+        }
+        else
+        {
+            rightIcon->setIcon(KIcon("bookmarks"));
+        }
         break;
     default:
         kDebug() << "ERROR.. default non extant case!!";

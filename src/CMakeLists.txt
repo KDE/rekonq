@@ -60,6 +60,7 @@ SET( rekonq_KDEINIT_SRCS
     urlbar/urlresolver.cpp
     urlbar/listitem.cpp
     urlbar/rsswidget.cpp
+    urlbar/bookmarkwidget.cpp
     #----------------------------------------
     analyzer/analyzerpanel.cpp
     analyzer/networkanalyzer.cpp
