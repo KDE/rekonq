@@ -219,3 +219,16 @@ bool SettingsDialog::hasChanged()
            || d->shortcutsEditor->isModified();
     ;
 }
+
+
+bool SettingsDialog::isDefault()
+{
+    bool isDef = KConfigDialog::isDefault();
+    
+    if(isDef)
+    {
+        // check our private widget values
+        isDef = d->appearanceWidg->isDefault();
+    }
+    return isDef;
+}

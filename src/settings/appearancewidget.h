@@ -47,25 +47,16 @@ public:
 
     void save();
     bool changed();
-
+    bool isDefault();
+    
 signals:
     void changed(bool);
 
 private slots:
     void hasChanged();
-    
-    void slotStandardFont(const QFont &);
-    void slotFixedFont(const QFont &);
-    void slotSerifFont(const QFont &);
-    void slotSansSerifFont(const QFont &);
-    void slotCursiveFont(const QFont &);
-    void slotFantasyFont(const QFont &);
                     
 private:
     bool _changed;
-    
-    QString reFont[6];
-    
 };
 
 #endif // APPEARANCE_WIDGET_H
