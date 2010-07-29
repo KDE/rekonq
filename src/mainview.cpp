@@ -439,15 +439,10 @@ void MainView::cloneTab(int index)
     if (index < 0 || index >= count())
         return;
 
-    WebTab *tab = newWebTab();
     KUrl url = webTab(index)->url();
-
-    // workaround against bug in webkit:
-    // only set url if it is not empty
-    // otherwise the current working directory will be used
-    if (!url.isEmpty())
-        tab->view()->setUrl(url);
-
+    
+    Application::instance()->loadUrl(url, Rekonq::NewTab);
+    
     updateTabBar();
 }
 
