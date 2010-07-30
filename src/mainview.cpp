@@ -494,7 +494,9 @@ void MainView::closeTab(int index, bool del)
             return;
     }
 
-    if (!tab->url().isEmpty())
+    if (!tab->url().isEmpty() 
+        && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled) 
+       )
     {
         QString title = tab->view()->title();
         QString url = tab->url().prettyUrl();

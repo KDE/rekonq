@@ -64,6 +64,10 @@ void SessionManager::saveSession()
     if (!m_safe)
         return;
     m_safe = false;
+    
+    if( QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled) )
+        return;
+    
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
     {
