@@ -577,8 +577,8 @@ QString WebPage::errorPage(QNetworkReply *reply)
         return QString("Couldn't open the rekonqinfo.html file");
     }
 
-    QString title = i18n("Error loading: %1", reply->url().toString());
-    QString urlString = reply->url().toString(QUrl::RemoveUserInfo | QUrl::RemoveQuery);
+    QString title = i18n("There was a problem while loading the page");
+    QString urlString = reply->url().toString(QUrl::RemoveUserInfo | QUrl::RemoveQuery | QUrl::RemovePath);
 
     QString iconPath = QString("file://") + KIconLoader::global()->iconPath("dialog-warning" , KIconLoader::Small);
     iconPath.replace(QL1S("16"), QL1S("128"));
