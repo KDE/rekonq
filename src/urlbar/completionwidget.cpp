@@ -91,7 +91,7 @@ void CompletionWidget::sizeAndPosition()
 {
     setFixedWidth(_parent->width());
 
-    int h=0;
+    int h = 0;
     for (int i = 0; i < layout()->count(); i++)
     {
         QWidget *widget = layout()->itemAt(i)->widget();
@@ -107,7 +107,6 @@ void CompletionWidget::sizeAndPosition()
 
 void CompletionWidget::popup()
 {
-    down();
     sizeAndPosition();
     if (!isVisible())
         show();
@@ -123,14 +122,27 @@ void CompletionWidget::up()
         widget->deactivate();
     }
 
-    if (_currentIndex > 0)
+    if (_currentIndex >= 0)
         _currentIndex--;
     else
         _currentIndex = layout()->count() - 1;
 
-    // activate "new" current
-    ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
-    widget->activate();
+    kDebug() << _currentIndex;
+    kDebug() << _typedString;
+    UrlBar *bar = qobject_cast<UrlBar *>(_parent);
+    if(_currentIndex != -1)
+    {
+        // activate "new" current
+        ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
+        widget->activate();
+        bar->setQUrl( widget->url() );        
+    }
+    else
+    {
+        bar->setText(_typedString);
+    }
+    bar->setFocus();
+    bar->setCursorPosition( bar->text().length() );
 }
 
 
@@ -146,11 +158,25 @@ void CompletionWidget::down()
     if (_currentIndex < _list.count() - 1)
         _currentIndex++;
     else
-        _currentIndex = 0;
+        _currentIndex = -1;
 
-    // activate "new" current
-    ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
-    widget->activate();
+ 
+    kDebug() << _currentIndex;
+    kDebug() << _typedString;
+    UrlBar *bar = qobject_cast<UrlBar *>(_parent);
+    if(_currentIndex != -1)
+    {
+        // activate "new" current
+        ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
+        widget->activate();
+        bar->setQUrl( widget->url() );
+    }
+    else
+    {
+        bar->setText(_typedString);    
+    }
+    bar->setFocus();
+    bar->setCursorPosition( bar->text().length() );
 }
 
 
@@ -166,23 +192,22 @@ void CompletionWidget::clear()
 }
 
 
-bool CompletionWidget::eventFilter(QObject *o, QEvent *e)
+bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
 {
-    int type = e->type();
-    QWidget *wid = qobject_cast<QWidget*>(o);
+    int type = ev->type();
+    QWidget *wid = qobject_cast<QWidget*>(obj);
 
-    if (o == this)
+    if (obj == this)
     {
         return false;
     }
 
-    //hide conditions of the CompletionWidget
+    // hide conditions of the CompletionWidget
     if (wid
-            && ((wid == _parent && (type == QEvent::Move || type == QEvent::Resize))
-                || ((wid->windowFlags() & Qt::Window)
-                    && (type == QEvent::Move || type == QEvent::Hide || type == QEvent::WindowDeactivate)
-                    && wid == _parent->window())
-                || (type == QEvent::MouseButtonPress && !isAncestorOf(wid)))
+        && ((wid == _parent 
+            && (type == QEvent::Move || type == QEvent::Resize)) || ((wid->windowFlags() & Qt::Window)
+            && (type == QEvent::Move || type == QEvent::Hide || type == QEvent::WindowDeactivate)
+            && wid == _parent->window()) || (type == QEvent::MouseButtonPress && !isAncestorOf(wid)))
        )
     {
         hide();
@@ -197,41 +222,43 @@ bool CompletionWidget::eventFilter(QObject *o, QEvent *e)
         
         if (type == QEvent::KeyPress)
         {
-            QKeyEvent *ev = static_cast<QKeyEvent *>(e);
-            switch (ev->key())
+            QKeyEvent *kev = static_cast<QKeyEvent *>(ev);
+            switch (kev->key())
             {
             case Qt::Key_Up:
             case Qt::Key_Backtab:
-                if (ev->modifiers() == Qt::NoButton || (ev->modifiers() & Qt::ShiftModifier))
+                if (kev->modifiers() == Qt::NoButton || (kev->modifiers() & Qt::ShiftModifier))
                 {
                     up();
-                    ev->accept();
+                    kev->accept();
                     return true;
                 }
                 break;
 
             case Qt::Key_Down:
             case Qt::Key_Tab:
-                if (ev->modifiers() == Qt::NoButton)
+                if (kev->modifiers() == Qt::NoButton)
                 {
                     down();
-                    ev->accept();
+                    kev->accept();
                     return true;
                 }
-                if (ev->modifiers() & Qt::ControlModifier)
+                if (kev->modifiers() & Qt::ControlModifier)
                 {
                     emit nextItemSubChoice();
-                    ev->accept();
+                    kev->accept();
                     return true;
                 }
                 break;
 
             case Qt::Key_Enter:
             case Qt::Key_Return:
-                w = qobject_cast<UrlBar *>(parent());               
-                if(w->text() == _typedString)
+                w = qobject_cast<UrlBar *>(parent());
+                if( _currentIndex == -1)
+                    _currentIndex = 0;
+                child = findChild<ListItem *>(QString::number(_currentIndex));
+                if(child && _typedString == w->text())
                 {
-                    child = findChild<ListItem *>(QString::number(_currentIndex));
                     emit chosenUrl(child->url(), Rekonq::CurrentTab);
                 }
                 else
@@ -239,7 +266,7 @@ bool CompletionWidget::eventFilter(QObject *o, QEvent *e)
                     // this will be used just on fast typing..
                     emit chosenUrl(KUrl(w->text()), Rekonq::CurrentTab);
                 }
-                ev->accept();
+                kev->accept();
                 hide();
                 return true;
                 
@@ -250,7 +277,7 @@ bool CompletionWidget::eventFilter(QObject *o, QEvent *e)
         }
     }
 
-    return QFrame::eventFilter(o, e);
+    return QFrame::eventFilter(obj, ev);
 }
 
 
@@ -282,6 +309,10 @@ void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::Ke
 
 void CompletionWidget::suggestUrls(const QString &text)
 {
+    if(_currentIndex != -1)
+        return;
+    
+    kDebug() << "suggesting...";
     _typedString = text;
     
     QWidget *w = qobject_cast<QWidget *>(parent());
