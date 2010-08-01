@@ -142,7 +142,6 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
                            KActionCollection* actionCollection)
         : KBookmarkMenu(manager, owner, menu, actionCollection)
 {
-    refill();
 }
 
 
@@ -152,7 +151,6 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager  *manager,
                            const QString &parentAddress)
         : KBookmarkMenu(manager, owner, parentMenu, parentAddress)
 {
-    refill();
 }
 
 
@@ -176,7 +174,8 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
     if (bookmark.isGroup())
     {
         KBookmarkActionMenu *actionMenu = new KBookmarkActionMenu(bookmark, this);
-        new BookmarkMenu(manager(), owner(), actionMenu->menu(), bookmark.address());
+        BookmarkMenu *menu = new BookmarkMenu(manager(), owner(), actionMenu->menu(), bookmark.address());
+        connect(actionMenu, SIGNAL(hovered()), menu, SLOT(slotAboutToShow()));
         return actionMenu;
     }
     else if (bookmark.isSeparator())
@@ -185,7 +184,9 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
     }
     else
     {
-        return  new KBookmarkAction(bookmark, owner(), this);
+        KBookmarkAction *action = new KBookmarkAction(bookmark, owner(), this);
+        connect(action, SIGNAL(hovered()), this, SLOT(actionHovered()));
+        return action;
     }
 }
 
@@ -240,9 +241,89 @@ void BookmarkMenu::addOpenFolderInTabs()
 }
 
 
+void BookmarkMenu::actionHovered()
+{
+    KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(sender());
+    if (action)
+        Application::instance()->mainWindow()->notifyMessage(action->bookmark().url().url());
+}
+
+
 // ------------------------------------------------------------------------------------------------------
 
 
+BookmarkToolBar::BookmarkToolBar( const QString &objectName,
+                                  QMainWindow *parentWindow,
+                                  Qt::ToolBarArea area,
+                                  bool newLine,
+                                  bool isMainToolBar,
+                                  bool readConfig
+                                )
+    : KToolBar(objectName, parentWindow, area, newLine, isMainToolBar, readConfig)
+    , m_filled(false)
+    , m_currentMenu(0)
+{
+}
+
+
+BookmarkToolBar::~BookmarkToolBar()
+{
+}
+
+
+void BookmarkToolBar::setVisible(bool visible)
+{
+    if (visible && !m_filled)
+    {
+        m_filled = true;
+        Application::bookmarkProvider()->fillBookmarkBar(this);
+    }
+    KToolBar::setVisible(visible);
+}
+
+
+void BookmarkToolBar::menuDisplayed()
+{
+    qApp->installEventFilter(this);
+    m_currentMenu = qobject_cast<KMenu*>(sender());
+}
+
+
+void BookmarkToolBar::menuHidden()
+{
+    qApp->removeEventFilter(this);
+    m_currentMenu = 0;
+}
+
+
+bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
+{
+    // To switch root folders as in a menubar
+    if (event->type() == QEvent::MouseMove && m_currentMenu)
+    {
+        KBookmarkActionMenu* act = dynamic_cast<KBookmarkActionMenu *>(this->actionAt(this->mapFromGlobal(QCursor::pos())));
+        if (act && act->menu() != m_currentMenu)
+        {
+            m_currentMenu->hide();
+            QPoint pos = mapToGlobal(widgetForAction(act)->pos());
+            act->menu()->popup(QPoint(pos.x(), pos.y() + widgetForAction(act)->height()));
+        }
+    }
+    return KToolBar::eventFilter(watched, event);
+}
+
+
+void BookmarkToolBar::actionHovered()
+{
+    KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(sender());
+    if (action)
+    Application::instance()->mainWindow()->notifyMessage(action->bookmark().url().url());
+}
+
+// ------------------------------------------------------------------------------------------------------
+
+
+        
 BookmarkProvider::BookmarkProvider(QObject *parent)
         : QObject(parent)
         , m_manager(0)
@@ -293,19 +374,20 @@ BookmarkProvider::~BookmarkProvider()
 }
 
 
-void BookmarkProvider::setupBookmarkBar(KToolBar *toolbar)
+void BookmarkProvider::setupBookmarkBar(BookmarkToolBar *toolbar)
 {
-    KToolBar *bookmarkToolBar = toolbar;
-    m_bookmarkToolBars.append(bookmarkToolBar);
-    bookmarkToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(bookmarkToolBar, SIGNAL(customContextMenuRequested(const QPoint &)),
-            this, SLOT(contextMenu(const QPoint &)));
-
+    kDebug() << "new bookmark bar...";
+    
+    m_bookmarkToolBars.append(toolbar);
+    toolbar->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(toolbar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
+    
     slotBookmarksChanged("", "");
+    kDebug() << "new bookmark bar... DONE!";
 }
 
 
-void BookmarkProvider::removeToolBar(KToolBar *toolbar)
+void BookmarkProvider::removeToolBar(BookmarkToolBar *toolbar)
 {
     m_bookmarkToolBars.removeOne(toolbar);
 }
@@ -316,7 +398,7 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
     Q_UNUSED(group)
     Q_UNUSED(caller)
 
-    foreach(KToolBar *bookmarkToolBar, m_bookmarkToolBars)
+    foreach(BookmarkToolBar *bookmarkToolBar, m_bookmarkToolBars)
     {
         if (bookmarkToolBar)
         {
@@ -356,12 +438,15 @@ void BookmarkProvider::contextMenu(const QPoint &point)
 
 KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 {
+    kDebug() << "new Bookmarks Menu...";
+    
     KMenu *menu = new KMenu(parent);
     _bookmarkActionMenu = new KActionMenu(parent);
     _bookmarkActionMenu->setMenu(menu);
     _bookmarkActionMenu->setText(i18n("&Bookmarks"));
-    connect(menu, SIGNAL(aboutToShow()), this, SLOT(triggerBookmarkMenu()));
-    
+    new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
+
+    kDebug() << "new Bookmarks Menu...DONE";
     return _bookmarkActionMenu;
 }
 
@@ -376,21 +461,7 @@ KAction* BookmarkProvider::bookmarkToolBarAction(KToolBar *t)
 }
 
 
-void BookmarkProvider::triggerBookmarkMenu()
-{
-    kDebug() << "triggering Bookmarks Menu...";
-    KMenu *menu = qobject_cast<KMenu *>(sender());
-
-    if(menu->actions().count() == 0)
-    {
-        kDebug() << "new Bookmarks Menu...";
-        new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
-        kDebug() << "new Bookmarks Menu...DONE";
-    }
-}
-
-
-void BookmarkProvider::fillBookmarkBar(KToolBar *toolBar)
+void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
 {
     KBookmarkGroup root = m_manager->toolbar();
     if (root.isNull())
@@ -403,7 +474,8 @@ void BookmarkProvider::fillBookmarkBar(KToolBar *toolBar)
             KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), this);
             menuAction->setDelayed(false);
             new BookmarkMenu(bookmarkManager(), bookmarkOwner(), menuAction->menu(), bookmark.address());
-
+            connect(menuAction->menu(), SIGNAL(aboutToShow()), toolBar, SLOT(menuDisplayed()));
+            connect(menuAction->menu(), SIGNAL(aboutToHide()), toolBar, SLOT(menuHidden()));
             toolBar->addAction(menuAction);
         }
 
@@ -414,9 +486,10 @@ void BookmarkProvider::fillBookmarkBar(KToolBar *toolBar)
 
         else
         {
-            KBookmarkAction* a = new KBookmarkAction(bookmark, m_owner, this);
-            a->setIconText(a->iconText().replace('&', "&&"));
-            toolBar->addAction(a);
+            KBookmarkAction* action = new KBookmarkAction(bookmark, m_owner, this);
+            action->setIconText(action->iconText().replace('&', "&&"));
+            connect(action, SIGNAL(hovered()), toolBar, SLOT(actionHovered()));
+            toolBar->addAction(action);
         }
     }
 }

@@ -103,8 +103,7 @@ MainWindow::MainWindow()
         , m_analyzerPanel(0)
         , m_historyBackMenu(0)
         , m_encodingMenu(new KMenu(this))
-//         , m_mainBar(new KToolBar(QString("MainToolBar"), this, Qt::TopToolBarArea, true, true, true))
-//         , m_bmBar(new KToolBar(QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, true))
+        , m_bookmarksBar(new BookmarkToolBar(QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, true))
         , m_popup(new KPassivePopup(this))
         , m_hidePopup(new QTimer(this))
 {
@@ -179,8 +178,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-    KToolBar *bookBar = toolBar("bookmarksToolBar");
-    Application::bookmarkProvider()->removeToolBar(bookBar);
+    Application::bookmarkProvider()->removeToolBar(m_bookmarksBar);
     Application::bookmarkProvider()->removeBookmarkPanel(m_bookmarksPanel);
     Application::instance()->removeMainWindow(this);
     
@@ -195,6 +193,8 @@ MainWindow::~MainWindow()
     delete m_historyBackMenu;
     delete m_encodingMenu;
 
+    delete m_bookmarksBar;
+    
     delete m_zoomSlider;
 
     delete m_popup;
@@ -215,17 +215,17 @@ void MainWindow::setupToolbars()
     actionCollection()->addAction( QL1S("url_bar"), a);
 
     KToolBar *mainBar = toolBar("mainToolBar");
-    KToolBar *bookBar = toolBar("bookmarksToolBar");
-   
+//     KToolBar *bookBar = toolBar("bookmarksToolBar");
+//    
     // bookmarks bar
-    KAction *bookmarkBarAction = Application::bookmarkProvider()->bookmarkToolBarAction(bookBar);
+    KAction *bookmarkBarAction = Application::bookmarkProvider()->bookmarkToolBarAction(m_bookmarksBar);
     a = actionCollection()->addAction( QL1S("bookmarks_bar"), bookmarkBarAction);
 
     mainBar->show();  // this just to fix reopening rekonq after fullscreen close
 
     // =========== Bookmarks ToolBar ================================
-    bookBar->setAcceptDrops(true);
-    Application::bookmarkProvider()->setupBookmarkBar(bookBar);
+    m_bookmarksBar->setAcceptDrops(true);
+    Application::bookmarkProvider()->setupBookmarkBar(m_bookmarksBar);
 }
 
 

@@ -34,6 +34,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Local Includes
+#include "bookmarksmanager.h"
+                     
 // KDE Includes
 #include <KXmlGuiWindow>
 #include <KActionCollection>
@@ -172,11 +175,13 @@ private:
     BookmarksPanel *m_bookmarksPanel;
     WebInspectorPanel *m_webInspectorPanel;
     NetworkAnalyzerPanel *m_analyzerPanel;
-    
+
     KAction *m_stopReloadAction;
     KMenu *m_historyBackMenu;
     KMenu *m_encodingMenu;
 
+    BookmarkToolBar *m_bookmarksBar;
+    
     QSlider *m_zoomSlider;
 
     QString m_lastSearch;

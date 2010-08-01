@@ -161,6 +161,9 @@ protected:
     virtual void refill();
     virtual QAction* actionForBookmark(const KBookmark &bookmark);
 
+private slots:
+    void actionHovered();
+
 private:
     void addOpenFolderInTabs();
 
@@ -169,7 +172,40 @@ private:
 
 // ------------------------------------------------------------------------------
 
+#include <KToolBar>
 
+class BookmarkToolBar : public KToolBar
+{
+    Q_OBJECT
+
+public:
+BookmarkToolBar(const QString &objectName,
+                QMainWindow *parentWindow,
+                Qt::ToolBarArea area,
+                bool newLine = false,
+                bool isMainToolBar = false,
+                bool readConfig = true);
+~BookmarkToolBar();
+
+virtual void setVisible(bool visible);
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event);
+
+private slots:
+    void actionHovered();
+    void menuDisplayed();
+    void menuHidden();
+
+private:
+    bool m_filled;
+    KMenu *m_currentMenu;
+};
+
+
+// ------------------------------------------------------------------------------
+
+        
 /**
  * This class represent the interface to rekonq bookmarks system.
  * All rekonq needs (Bookmarks Menu, Bookmarks Toolbar) is provided
@@ -205,9 +241,9 @@ public:
     /**
     * @short set the Bookmarks Toolbar Action
     */
-    void setupBookmarkBar(KToolBar *);
+    void setupBookmarkBar(BookmarkToolBar *);
 
-    void removeToolBar(KToolBar*);
+    void removeToolBar(BookmarkToolBar *);
 
     /**
      * @short Get action by name
@@ -259,20 +295,19 @@ public slots:
      * @see  KBookmarkManager::changed
      */
     void slotBookmarksChanged(const QString &group, const QString &caller);
-
+    void fillBookmarkBar(BookmarkToolBar *toolBar);
+ 
 private slots:
-    void triggerBookmarkMenu();
     void slotAddBookmark();
     void slotPanelChanged();
     
 private:
-    void fillBookmarkBar(KToolBar *toolBar);
     QList<KBookmark> find(QList<KBookmark> list, const KBookmark &bookmark, QString text);
 
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;
     KActionCollection *m_actionCollection;
-    QList<KToolBar*> m_bookmarkToolBars;
+    QList<BookmarkToolBar *> m_bookmarkToolBars;
     QList<BookmarksPanel*> m_bookmarkPanels;
     
     KActionMenu *_bookmarkActionMenu;
