@@ -189,7 +189,6 @@ void MainWindow::setupToolbars()
 
     // location bar
     a = new KAction(i18n("Location Bar"), this);
-    a->setShortcut(KShortcut(Qt::Key_F6));
     a->setDefaultWidget(m_view->widgetBar());
     actionCollection()->addAction( QL1S("url_bar"), a);
 
