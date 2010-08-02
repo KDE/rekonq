@@ -149,27 +149,6 @@ MainWindow::MainWindow()
     // no more status bar..
     setStatusBar(0);
 
-    KToolBar *mainBar = toolBar("mainToolBar");
-    
-    QToolButton *bookmarksButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("bookmarksActionMenu") )));
-    if(bookmarksButton)
-    {
-        connect(actionByName(QL1S("bookmarksActionMenu")), SIGNAL(triggered()), bookmarksButton, SLOT(showMenu()));
-    }
-    
-    QToolButton *toolsButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("rekonq_tools") )));
-    if(toolsButton)
-    {
-        connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), toolsButton, SLOT(showMenu()));
-    }
-    
-    // setting popup notification
-    m_popup->setAutoDelete(false);
-    connect(Application::instance(), SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
-    m_popup->setFrameShape(QFrame::NoFrame);
-    m_popup->setLineWidth(0);
-    connect(m_hidePopup, SIGNAL(timeout()), m_popup, SLOT(hide()));
-
     QTimer::singleShot(0, this, SLOT(postLaunch()));
 
     kDebug() << "MainWindow ctor...DONE";
@@ -215,8 +194,7 @@ void MainWindow::setupToolbars()
     actionCollection()->addAction( QL1S("url_bar"), a);
 
     KToolBar *mainBar = toolBar("mainToolBar");
-//     KToolBar *bookBar = toolBar("bookmarksToolBar");
-//    
+
     // bookmarks bar
     KAction *bookmarkBarAction = Application::bookmarkProvider()->bookmarkToolBarAction(m_bookmarksBar);
     a = actionCollection()->addAction( QL1S("bookmarks_bar"), bookmarkBarAction);
@@ -231,6 +209,27 @@ void MainWindow::setupToolbars()
 
 void MainWindow::postLaunch()
 {
+    KToolBar *mainBar = toolBar("mainToolBar");
+    
+    QToolButton *bookmarksButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("bookmarksActionMenu") )));
+    if(bookmarksButton)
+    {
+        connect(actionByName(QL1S("bookmarksActionMenu")), SIGNAL(triggered()), bookmarksButton, SLOT(showMenu()));
+    }
+    
+    QToolButton *toolsButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("rekonq_tools") )));
+    if(toolsButton)
+    {
+        connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), toolsButton, SLOT(showMenu()));
+    }
+    
+    // setting popup notification
+    m_popup->setAutoDelete(false);
+    connect(Application::instance(), SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
+    m_popup->setFrameShape(QFrame::NoFrame);
+    m_popup->setLineWidth(0);
+    connect(m_hidePopup, SIGNAL(timeout()), m_popup, SLOT(hide()));
+
     // notification system
     connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
     connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
