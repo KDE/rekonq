@@ -103,7 +103,11 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
                                                     i18ncp("%1=Number of tabs. Value is always >=8",
                                                            "You are about to open %1 tabs.\nAre you sure?",
                                                            "You are about to open %1 tabs.\nAre you sure?", 
-                                                           urlList.length())
+                                                           urlList.length()),
+                                                    "",
+                                                    KStandardGuiItem::cont(),
+                                                    KStandardGuiItem::cancel(),
+                                                    "openFolderInTabs_askAgain"
                                                  ) == KMessageBox::Continue) 
            )
             return;
@@ -263,6 +267,7 @@ BookmarkToolBar::BookmarkToolBar( const QString &objectName,
     , m_filled(false)
     , m_currentMenu(0)
 {
+    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString,QString)), this, SLOT(hideMenu()));
 }
 
 
@@ -293,6 +298,13 @@ void BookmarkToolBar::menuHidden()
 {
     qApp->removeEventFilter(this);
     m_currentMenu = 0;
+}
+
+
+void BookmarkToolBar::hideMenu()
+{
+    if(m_currentMenu)
+        m_currentMenu->hide();
 }
 
 

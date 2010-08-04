@@ -196,6 +196,7 @@ private slots:
     void actionHovered();
     void menuDisplayed();
     void menuHidden();
+    void hideMenu();
 
 private:
     bool m_filled;

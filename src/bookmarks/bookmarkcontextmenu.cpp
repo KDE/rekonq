@@ -222,7 +222,9 @@ void BookmarkContextMenu::deleteBookmark()
                 : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", name),
                 folder ? i18n("Bookmark Folder Deletion")
                 : i18n("Bookmark Deletion"),
-                KStandardGuiItem::del())
+                KStandardGuiItem::del(),
+                KStandardGuiItem::cancel(),
+                "bookmarkDeletition_askAgain")
             != KMessageBox::Continue
        )
         return;
