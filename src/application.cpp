@@ -550,8 +550,6 @@ void Application::updateConfiguration()
 }
 
 
-
-
 void Application::addDownload(const QString &srcUrl, const QString &destUrl)
 {
     QWebSettings *globalSettings = QWebSettings::globalSettings();
@@ -606,4 +604,3 @@ bool Application::clearDownloadsHistory()
     QFile downloadFile(downloadFilePath);
     return downloadFile.remove();
 }
-
