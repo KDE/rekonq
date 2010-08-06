@@ -83,7 +83,6 @@ public:
         KGet    = 0x00000001,
         RSS     = 0x00000010,
         SSL     = 0x00000100,
-        BK      = 0x00001000
     };
 
     explicit UrlBar(QWidget *parent = 0);

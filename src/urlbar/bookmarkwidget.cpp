@@ -143,8 +143,8 @@ void BookmarkWidget::reject()
 void BookmarkWidget::showAt(const QPoint &pos)
 {
     QPoint p;
-    p.setX(pos.x() - 350);
-    p.setY(pos.y() + 10);
+    p.setX(pos.x());
+    p.setY(pos.y() + 12);
     move(p);
     show();
 }
