@@ -573,7 +573,7 @@ void WebView::wheelEvent(QWheelEvent *event)
         else
             _scrollBottom = true;
 
-        setupSmoothScrolling(QApplication::wheelScrollLines() * 25);
+        setupSmoothScrolling(QApplication::wheelScrollLines() * 33);
 
         return;
     }
