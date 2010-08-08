@@ -704,7 +704,7 @@ void MainView::resizeEvent(QResizeEvent *event)
 }
 
 
-void MainView::detachTab(int index)
+void MainView::detachTab(int index, MainWindow *toWindow)
 {
     if (index < 0)
         index = currentIndex();
@@ -725,7 +725,11 @@ void MainView::detachTab(int index)
         UrlBar *bar = _widgetBar->urlBar(index);
         closeTab(index, false);
 
-        MainWindow *w = Application::instance()->newMainWindow(false);
+        MainWindow *w;
+        if( toWindow == NULL )
+            w = Application::instance()->newMainWindow(false);
+        else
+            w = toWindow;
         w->mainView()->addTab(tab, Application::icon(u), label);
         w->mainView()->widgetBar()->insertWidget(0, bar);
         w->mainView()->updateTabBar();

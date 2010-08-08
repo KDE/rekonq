@@ -129,7 +129,12 @@ public slots:
     void closeTab(int index = -1, bool del = true);
     void closeOtherTabs(int index = -1);
     void reloadTab(int index = -1);
-    void detachTab(int index = -1);
+    /**
+     * Detaches tab at @c index to a new window.
+     * If @c toWindow is not null, the tab is instead
+     * added to existing MainWindow @c toWindow.
+     */
+    void detachTab(int index = -1, MainWindow *toWindow = NULL);
     
     void reloadAllTabs();
     void nextTab();
