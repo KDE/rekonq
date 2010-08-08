@@ -541,7 +541,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
 void WebView::wheelEvent(QWheelEvent *event)
 {
-    if (!ReKonfig::smoothScrolling())
+    if (!ReKonfig::smoothScrolling() || page()->currentFrame()->hitTestContent(event->pos()).isContentEditable())
         KWebView::wheelEvent(event);
 
     // Sync with the zoom slider
@@ -560,7 +560,7 @@ void WebView::wheelEvent(QWheelEvent *event)
 
         emit zoomChanged((qreal)newFactor / 10);
     }
-    else if ( ReKonfig::smoothScrolling() )
+    else if ( ReKonfig::smoothScrolling() && !this->page()->currentFrame()->hitTestContent(event->pos()).isContentEditable())
     {
         int numDegrees = event->delta() / 8;
         int numSteps = numDegrees / 15;
@@ -573,7 +573,7 @@ void WebView::wheelEvent(QWheelEvent *event)
         else
             _scrollBottom = true;
 
-         setupSmoothScrolling(100);
+        setupSmoothScrolling(QApplication::wheelScrollLines() * 25);
 
         return;
     }
