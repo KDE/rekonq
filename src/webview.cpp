@@ -543,7 +543,7 @@ void WebView::wheelEvent(QWheelEvent *event)
         if ((zoomFactor() * 10 - newFactor) > 0.5)
             newFactor++;
 
-        emit zoomChanged((qreal)newFactor / 10);
+        emit zoomChanged(newFactor);
     }
 }
 

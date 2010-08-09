@@ -64,7 +64,7 @@ ZoomBar::ZoomBar(QWidget *parent)
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
     // label
-    QLabel *label = new QLabel(i18n("Zoom:"));
+    QLabel *label = new QLabel(i18n("Zoom :"));
     layout->addWidget(label);
 
     m_zoomSlider->setTracking(true);
@@ -77,12 +77,14 @@ ZoomBar::ZoomBar(QWidget *parent)
     m_zoomOut->setAutoRaise(true);
     m_zoomNormal->setAutoRaise(true);
 
-    layout->setSpacing(0);
-    layout->setMargin(0);
+   // layout->setSpacing(0);
+   // layout->setMargin(0);
     layout->addWidget(m_zoomOut);
     layout->addWidget(m_zoomSlider);
     layout->addWidget(m_zoomIn);
     layout->addWidget(m_zoomNormal);
+
+    layout->addStretch();
 
     setLayout(layout);
 
@@ -161,5 +163,5 @@ void ZoomBar::updateSlider(int webview)
 void ZoomBar::setValue(int value)
 {
     m_zoomSlider->setValue(value);
-    Application::instance()->mainWindow()->currentTab()->view()->setZoomFactor(QVariant(value).toReal() / 10);
+    Application::instance()->mainWindow()->currentTab()->view()->setZoomFactor(QVariant(m_zoomSlider->value()).toReal() / 10); // Don't allox max +1 values
 }
