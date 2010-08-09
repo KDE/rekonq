@@ -35,12 +35,8 @@
 // Local Includes
 #include "mainwindow.h"
 
-// KDE Includes
-#include <KLineEdit>
-
 // Qt Includes
 #include <QtGui/QWidget>
-#include <QtGui/QCheckBox>
 #include <QtGui/QSlider>
 #include <QtGui/QToolButton>
 

@@ -33,10 +33,7 @@
 #include "mainview.h"
 
 // KDE Includes
-#include <KLineEdit>
 #include <KIcon>
-#include <klocalizedstring.h>
-#include <KApplication>
 #include <KStandardAction>
 #include <KAction>
 
