@@ -293,10 +293,6 @@ void MainView::currentChanged(int index)
     else
         emit browserTabLoading(true);
 
-    // update zoom slider
-    if (!Application::instance()->mainWindowList().isEmpty())
-        Application::instance()->mainWindow()->setZoomSliderFactor(tab->view()->zoomFactor());
-
     // set focus to the current webview
     if (tab->url().scheme() == QL1S("about"))
         _widgetBar->currentWidget()->setFocus();
@@ -329,7 +325,6 @@ WebTab *MainView::newWebTab(bool focused)
     connect(tab->view(), SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
     connect(tab->view(), SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
     connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
-    connect(tab->view(), SIGNAL(zoomChanged(qreal)), m_parentWindow, SLOT(setZoomSliderFactor(qreal)));
 
     // connecting webPage signals with mainview
     connect(tab->view()->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));

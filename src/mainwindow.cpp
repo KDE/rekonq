@@ -41,6 +41,7 @@
 #include "webtab.h"
 #include "mainview.h"
 #include "findbar.h"
+#include "zoombar.h"
 #include "historypanel.h"
 #include "bookmarkspanel.h"
 #include "webinspectorpanel.h"
@@ -97,6 +98,7 @@ MainWindow::MainWindow()
         : KXmlGuiWindow()
         , m_view(new MainView(this))
         , m_findBar(new FindBar(this))
+        , m_zoomBar(new ZoomBar(this))
         , m_historyPanel(0)
         , m_bookmarksPanel(0)
         , m_webInspectorPanel(0)
@@ -116,6 +118,7 @@ MainWindow::MainWindow()
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_view);
     layout->addWidget(m_findBar);
+    layout->addWidget(m_zoomBar);
     centralWidget->setLayout(layout);
 
     // central widget
@@ -163,6 +166,7 @@ MainWindow::~MainWindow()
     
     delete m_view;
     delete m_findBar;
+    delete m_zoomBar;
 
     delete m_historyPanel;
     delete m_bookmarksPanel;
@@ -173,8 +177,6 @@ MainWindow::~MainWindow()
     delete m_encodingMenu;
 
     delete m_bookmarksBar;
-    
-    delete m_zoomSlider;
 
     delete m_popup;
     delete m_hidePopup;
@@ -251,6 +253,9 @@ void MainWindow::postLaunch()
     // Find Bar signal
     connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(find(const QString &)));
 
+    // Zoom Bar signal
+    connect(m_view, SIGNAL(currentChanged(int)), m_zoomBar, SLOT(updateSlider(int)));
+    
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
@@ -330,12 +335,8 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QL1S("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(openLocation()));
 
-
-    // ============================= Zoom Actions ===================================
-    actionCollection()->addAction(KStandardAction::ZoomIn, this, SLOT(zoomIn()));
-    a = actionCollection()->addAction(KStandardAction::ActualSize, this, SLOT(zoomNormal()));
-    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_0));
-    actionCollection()->addAction(KStandardAction::ZoomOut, this, SLOT(zoomOut()));
+    // set zoom bar actions
+    m_zoomBar->setupActions(this);
 
     // =============================== Tools Actions =================================
     a = new KAction(i18n("Page S&ource"), this);
@@ -455,39 +456,7 @@ void MainWindow::setupTools()
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
 
-    // setup zoom widget
-    QWidget *zoomWidget = new QWidget(this);
-
-    QToolButton *zoomOut = new QToolButton(zoomWidget);
-    zoomOut->setDefaultAction(actionByName(KStandardAction::name(KStandardAction::ZoomOut)));
-    zoomOut->setAutoRaise(true);
-
-    m_zoomSlider = new QSlider(Qt::Horizontal, zoomWidget);
-    m_zoomSlider->setTracking(true);
-    m_zoomSlider->setRange(1, 19);      // divide by 10 to obtain a qreal for zoomFactor()
-    m_zoomSlider->setValue(10);
-    m_zoomSlider->setPageStep(3);
-    connect(m_zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(setZoomFactor(int)));
-
-    QToolButton *zoomIn = new QToolButton(zoomWidget);
-    zoomIn->setDefaultAction(actionByName(KStandardAction::name(KStandardAction::ZoomIn)));
-    zoomIn->setAutoRaise(true);
-
-    QToolButton *zoomNormal = new QToolButton(zoomWidget);
-    zoomNormal->setDefaultAction(actionByName(KStandardAction::name(KStandardAction::ActualSize)));
-    zoomNormal->setAutoRaise(true);
-
-    QHBoxLayout* zoomWidgetLayout = new QHBoxLayout(zoomWidget);
-    zoomWidgetLayout->setSpacing(0);
-    zoomWidgetLayout->setMargin(0);
-    zoomWidgetLayout->addWidget(zoomOut);
-    zoomWidgetLayout->addWidget(m_zoomSlider);
-    zoomWidgetLayout->addWidget(zoomIn);
-    zoomWidgetLayout->addWidget(zoomNormal);
-
-    QWidgetAction *zoomAction = new QWidgetAction(this);
-    zoomAction->setDefaultWidget(zoomWidget);
-    toolsMenu->addAction(zoomAction);
+    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Zoom)));
 
     toolsMenu->addAction(actionByName(QL1S("encodings")));
 
@@ -841,38 +810,6 @@ void MainWindow::highlightAll()
 
         currentTab()->view()->findText(m_lastSearch, options);
     }
-}
-
-
-void MainWindow::zoomIn()
-{
-    m_zoomSlider->setValue(m_zoomSlider->value() + 1);
-}
-
-
-void MainWindow::zoomNormal()
-{
-    m_zoomSlider->setValue(10);
-}
-
-
-void MainWindow::zoomOut()
-{
-    m_zoomSlider->setValue(m_zoomSlider->value() - 1);
-}
-
-
-void MainWindow::setZoomFactor(int factor)
-{
-    if (!currentTab())
-        return;
-    currentTab()->view()->setZoomFactor(QVariant(factor).toReal() / 10);
-}
-
-
-void MainWindow::setZoomSliderFactor(qreal factor)
-{
-    m_zoomSlider->setValue(factor * 10);
 }
 
 
