@@ -69,9 +69,9 @@ QVariant BtmItem::data(int role) const
     {
         QString tooltip = "";
 
-        if (!m_kbm.text().isEmpty())
+        if (!m_kbm.fullText().isEmpty())
         {
-            tooltip += m_kbm.text();
+            tooltip += m_kbm.fullText();
         }
         if (m_kbm.isGroup())
         {
