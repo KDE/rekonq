@@ -472,7 +472,7 @@ void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
         KBookmarkGroup group = bookmark.toGroup();
         KBookmark bm = group.first();
         parent.appendInside(markup("h3"));
-        parent.lastChild().setPlainText(group.text());
+        parent.lastChild().setPlainText(group.fullText());
         parent.appendInside(markup(".bookfolder"));
         while (!bm.isNull())
         {
@@ -488,7 +488,7 @@ void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
     {
         parent.appendInside(markup("a"));
         parent.lastChild().setAttribute("href" , bookmark.url().prettyUrl());
-        parent.lastChild().setPlainText(bookmark.text());
+        parent.lastChild().setPlainText(bookmark.fullText());
         parent.appendInside("<br/>");
     }
 }
