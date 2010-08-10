@@ -54,7 +54,7 @@
 CompletionWidget::CompletionWidget(QWidget *parent)
         : QFrame(parent, Qt::ToolTip)
         , _parent(parent)
-        , _currentIndex(-1)
+        , _currentIndex(0)
         , _searchEngine(SearchEngine::defaultEngine())
 {
     setFrameStyle(QFrame::Panel);
@@ -107,6 +107,7 @@ void CompletionWidget::sizeAndPosition()
 
 void CompletionWidget::popup()
 {
+    findChild<ListItem *>(QString::number(0))->activate(); //activate first listitem
     sizeAndPosition();
     if (!isVisible())
         show();
@@ -116,13 +117,10 @@ void CompletionWidget::popup()
 void CompletionWidget::up()
 {
     // deactivate previous
-    if (_currentIndex != -1)
-    {
-        ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
-        widget->deactivate();
-    }
+    ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
+    widget->deactivate();
 
-    if (_currentIndex >= 0)
+    if (_currentIndex > 0)
         _currentIndex--;
     else
         _currentIndex = layout()->count() - 1;
@@ -130,17 +128,13 @@ void CompletionWidget::up()
     kDebug() << _currentIndex;
     kDebug() << _typedString;
     UrlBar *bar = qobject_cast<UrlBar *>(_parent);
-    if(_currentIndex != -1)
-    {
-        // activate "new" current
-        ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
-        widget->activate();
-        bar->setQUrl( widget->url() );        
-    }
-    else
-    {
-        bar->setText(_typedString);
-    }
+
+    // activate "new" current
+    widget = findChild<ListItem *>(QString::number(_currentIndex));
+    widget->activate();
+    bar->blockSignals(true);
+    bar->setQUrl( widget->url() );
+    bar->blockSignals(false);
     bar->setFocus();
     bar->setCursorPosition( bar->text().length() );
 }
@@ -148,33 +142,25 @@ void CompletionWidget::up()
 
 void CompletionWidget::down()
 {
-    // deactivate previous
-    if (_currentIndex != -1)
-    {
-        ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
-        widget->deactivate();
-    }
+    ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
+    widget->deactivate();
 
     if (_currentIndex < _list.count() - 1)
         _currentIndex++;
     else
-        _currentIndex = -1;
+        _currentIndex = 0;
 
  
     kDebug() << _currentIndex;
     kDebug() << _typedString;
     UrlBar *bar = qobject_cast<UrlBar *>(_parent);
-    if(_currentIndex != -1)
-    {
-        // activate "new" current
-        ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
-        widget->activate();
-        bar->setQUrl( widget->url() );
-    }
-    else
-    {
-        bar->setText(_typedString);    
-    }
+
+    // activate "new" current
+    widget = findChild<ListItem *>(QString::number(_currentIndex));
+    widget->activate();
+    bar->blockSignals(true);
+    bar->setQUrl( widget->url() );
+    bar->blockSignals(false);
     bar->setFocus();
     bar->setCursorPosition( bar->text().length() );
 }
@@ -188,7 +174,7 @@ void CompletionWidget::clear()
         delete child->widget();
         delete child;
     }
-    _currentIndex = -1;
+    _currentIndex = 0;
 }
 
 
@@ -309,10 +295,6 @@ void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::Ke
 
 void CompletionWidget::suggestUrls(const QString &text)
 {
-    if(_currentIndex != -1)
-        return;
-    
-    kDebug() << "suggesting...";
     _typedString = text;
     
     QWidget *w = qobject_cast<QWidget *>(parent());
