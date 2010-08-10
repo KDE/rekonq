@@ -25,66 +25,54 @@
 * ============================================================ */
 
 
-#ifndef WEBVIEW_H
-#define WEBVIEW_H
+#ifndef ZOOMBAR_H
+#define ZOOMBAR_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KWebView>
+// Local Includes
+#include "mainwindow.h"
+
+// Qt Includes
+#include <QtGui/QWidget>
+#include <QtGui/QSlider>
+#include <QtGui/QToolButton>
 
 // Forward Declarations
-class WebPage;
+class QString;
 
 
-class REKONQ_TESTS_EXPORT WebView : public KWebView
+class REKONQ_TESTS_EXPORT ZoomBar : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit WebView(QWidget *parent);
-    ~WebView();
+    ZoomBar(QWidget *parent);
+    ~ZoomBar();
 
-    WebPage *page();
-    
-    inline QPoint mousePos() { return _mousePos; }
-
-protected:
-    void contextMenuEvent(QContextMenuEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    void wheelEvent(QWheelEvent *event);
-
-private slots:
-    void search();
-
-    void printFrame();
-
-    void loadUrlInNewTab(const KUrl &);
-    void openLinkInNewWindow();
-    void openLinkInNewTab();
-
-    void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
-    void inspect();
-
-    void scrollFrameChanged();
+public slots:
+    void show();
+    void zoomIn();
+    void zoomOut();
+    void zoomNormal();
+    void setupActions(MainWindow *window);
+    void updateSlider(int webview);
+    void setValue(int value);
+    void toggleVisibility();
 
 signals:
-    void loadUrl(const KUrl &, const Rekonq::OpenType &);
-    void zoomChanged(int);
+    void visibilityChanged(bool);
+
+protected:
+    void setVisible(bool visible);
 
 private:
-    QPoint _mousePos;
-    QPoint _clickPos;
-
-    QTimer *_scrollTimer;
-    int _VScrollSpeed;
-    int _HScrollSpeed;
-    bool _canEnableAutoScroll;
-    bool _isAutoScrollEnabled;
+     QToolButton *m_zoomIn;
+     QToolButton *m_zoomOut;
+     QToolButton *m_zoomNormal;
+     QSlider *m_zoomSlider;
 };
 
 #endif

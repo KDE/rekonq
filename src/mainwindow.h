@@ -45,6 +45,7 @@
 
 // Forward Declarations
 class FindBar;
+class ZoomBar;
 class HistoryPanel;
 class BookmarksPanel;
 class WebInspectorPanel;
@@ -102,8 +103,6 @@ public slots:
 
     void updateActions();
 
-    void setZoomSliderFactor(qreal factor);
-
 signals:
     // switching tabs
     void ctrlTabPressed();
@@ -135,12 +134,6 @@ private slots:
     void findPrevious();
     void highlightAll();
 
-    // Zoom slots
-    void zoomIn();
-    void zoomNormal();
-    void zoomOut();
-    void setZoomFactor(int factor);
-
     // File Menu slots
     void openLocation();
     void fileOpen();
@@ -170,6 +163,7 @@ private slots:
 private:
     MainView *m_view;
     FindBar *m_findBar;
+    ZoomBar *m_zoomBar;
 
     HistoryPanel *m_historyPanel;
     BookmarksPanel *m_bookmarksPanel;
@@ -181,8 +175,6 @@ private:
     KMenu *m_encodingMenu;
 
     BookmarkToolBar *m_bookmarksBar;
-    
-    QSlider *m_zoomSlider;
 
     QString m_lastSearch;
 

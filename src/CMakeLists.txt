@@ -11,6 +11,7 @@ SET( rekonq_KDEINIT_SRCS
     clicktoflash.cpp
     filterurljob.cpp
     findbar.cpp
+    zoombar.cpp
     mainview.cpp
     mainwindow.cpp 
     networkaccessmanager.cpp
