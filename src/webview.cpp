@@ -560,7 +560,7 @@ void WebView::wheelEvent(QWheelEvent *event)
 
         emit zoomChanged((qreal)newFactor / 10);
     }
-    else if ( ReKonfig::smoothScrolling() && !this->page()->currentFrame()->hitTestContent(event->pos()).isContentEditable())
+    else if ( ReKonfig::smoothScrolling() && !page()->currentFrame()->hitTestContent(event->pos()).isContentEditable())
     {
         int numDegrees = event->delta() / 8;
         int numSteps = numDegrees / 15;
@@ -573,9 +573,8 @@ void WebView::wheelEvent(QWheelEvent *event)
         else
             _scrollBottom = true;
 
-        setupSmoothScrolling(QApplication::wheelScrollLines() * 33);
 
-        return;
+        setupSmoothScrolling(QApplication::wheelScrollLines() * abs(numSteps) * 20);
     }
 }
 
