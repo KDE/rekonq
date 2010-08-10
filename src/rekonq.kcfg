@@ -73,6 +73,9 @@
     <entry name="autoScroll" type="Bool">
         <default>true</default>
     </entry>
+    <entry name="smoothScrolling" type="Bool">
+        <default>true</default>
+    </entry>
 </group>
 
 

@@ -32,6 +32,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+//Qt Includes
+#include <QTime>
+
 // KDE Includes
 #include <KWebView>
 
@@ -71,6 +74,11 @@ private slots:
     void inspect();
 
     void scrollFrameChanged();
+    void scrollTick();
+
+    void setupSmoothScrolling(int posY);
+
+    void stopScrolling();
 
 signals:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
@@ -80,11 +88,20 @@ private:
     QPoint _mousePos;
     QPoint _clickPos;
 
-    QTimer *_scrollTimer;
+    // Auto Scroll
+    QTimer *_autoScrollTimer;
     int _VScrollSpeed;
     int _HScrollSpeed;
     bool _canEnableAutoScroll;
     bool _isAutoScrollEnabled;
+
+    // Smooth Scroll
+    QTimer *_smoothScrollTimer;
+    QTime _smoothScrollTime;
+    bool _scrollBottom;
+    bool _smoothScrolling;
+    int _dy;
+    int _smoothScrollSteps;
 };
 
 #endif
