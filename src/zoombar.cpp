@@ -163,7 +163,8 @@ void ZoomBar::updateSlider(int webview)
 void ZoomBar::setValue(int value)
 {
     m_zoomSlider->setValue(value);
-    Application::instance()->mainWindow()->currentTab()->view()->setZoomFactor(QVariant(m_zoomSlider->value()).toReal() / 10); // Don't allox max +1 values
+    // Don't allox max +1 values
+    Application::instance()->mainWindow()->currentTab()->view()->setZoomFactor(QVariant(m_zoomSlider->value()).toReal() / 10);
 }
 
 

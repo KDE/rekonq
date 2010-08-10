@@ -255,7 +255,8 @@ void MainWindow::postLaunch()
 
     // Zoom Bar signal
     connect(m_view, SIGNAL(currentChanged(int)), m_zoomBar, SLOT(updateSlider(int)));
-    connect(this->currentTab()->view(), SIGNAL(zoomChanged(int)), m_zoomBar, SLOT(setValue(int))); // Ctrl + wheel handling
+    // Ctrl + wheel handling
+    connect(this->currentTab()->view(), SIGNAL(zoomChanged(int)), m_zoomBar, SLOT(setValue(int)));
     
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
