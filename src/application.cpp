@@ -224,7 +224,8 @@ int Application::newInstance()
     
     if(isFirstLoad)
     {
-        QTimer::singleShot(0, this, SLOT(postLaunch()));
+        // give me some time to do the other things..
+        QTimer::singleShot(100, this, SLOT(postLaunch()));
     }
     
     return exitValue;

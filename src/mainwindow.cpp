@@ -152,7 +152,8 @@ MainWindow::MainWindow()
     // no more status bar..
     setStatusBar(0);
 
-    QTimer::singleShot(0, this, SLOT(postLaunch()));
+    // give me some time to do all the other stuffs...
+    QTimer::singleShot(100, this, SLOT(postLaunch()));
 
     kDebug() << "MainWindow ctor...DONE";
 }
