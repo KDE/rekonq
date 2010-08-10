@@ -60,6 +60,13 @@ public slots:
     void setupActions(MainWindow *window);
     void updateSlider(int webview);
     void setValue(int value);
+    void toggleVisibility();
+
+signals:
+    void visibilityChanged(bool);
+
+protected:
+    void setVisible(bool visible);
 
 private:
      QToolButton *m_zoomIn;

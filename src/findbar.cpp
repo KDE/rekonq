@@ -185,3 +185,16 @@ void FindBar::hide()
     QWidget::hide();
     emit(searchString(m_lineEdit->text()));
 }
+
+
+void FindBar::setVisible(bool visible)
+{
+    emit visibilityChanged(visible);
+    QWidget::setVisible(visible);
+}
+
+
+void FindBar::toggleVisibility()
+{
+    setVisible(!isVisible());
+}

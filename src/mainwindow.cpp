@@ -294,10 +294,12 @@ void MainWindow::setupActions()
     KStandardAction::print(this, SLOT(printRequested()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
 
-    a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
+    a = KStandardAction::find(m_findBar, SLOT(toggleVisibility()), actionCollection());
     KShortcut findShortcut = KStandardShortcut::find();
     findShortcut.setAlternate(Qt::Key_Slash);
     a->setShortcut(findShortcut);
+    a->setCheckable(true);
+    connect(m_findBar, SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));
 
     KStandardAction::findNext(this, SLOT(findNext()) , actionCollection());
     KStandardAction::findPrev(this, SLOT(findPrevious()) , actionCollection());
@@ -457,7 +459,10 @@ void MainWindow::setupTools()
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
 
-    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Zoom)));
+    QAction *action = actionByName(KStandardAction::name(KStandardAction::Zoom));
+    action->setCheckable(true);
+    connect (m_zoomBar, SIGNAL(visibilityChanged(bool)), action, SLOT(setChecked(bool)));
+    toolsMenu->addAction(action);
 
     toolsMenu->addAction(actionByName(QL1S("encodings")));
 

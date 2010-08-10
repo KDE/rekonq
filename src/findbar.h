@@ -58,9 +58,14 @@ public:
 public slots:
     void show();
     void hide();
+    void toggleVisibility();
 
 signals:
     void searchString(const QString &);
+    void visibilityChanged(bool);
+
+protected:
+    void setVisible(bool visible);
 
 private:
     KLineEdit *m_lineEdit;

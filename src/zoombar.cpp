@@ -100,7 +100,7 @@ void ZoomBar::setupActions(MainWindow *window)
     a = window->actionCollection()->addAction(KStandardAction::ZoomOut, this, SLOT(zoomOut()));
     a = window->actionCollection()->addAction(KStandardAction::ActualSize, this, SLOT(zoomNormal()));
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_0));
-    a = window->actionCollection()->addAction(KStandardAction::Zoom, this, SLOT(show()));
+    a = window->actionCollection()->addAction(KStandardAction::Zoom, this, SLOT(toggleVisibility()));
     a->setIcon(KIcon("page-zoom"));
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Y));
 
@@ -164,4 +164,17 @@ void ZoomBar::setValue(int value)
 {
     m_zoomSlider->setValue(value);
     Application::instance()->mainWindow()->currentTab()->view()->setZoomFactor(QVariant(m_zoomSlider->value()).toReal() / 10); // Don't allox max +1 values
+}
+
+
+void ZoomBar::setVisible(bool visible)
+{
+    emit visibilityChanged(visible);
+    QWidget::setVisible(visible);
+}
+
+
+void ZoomBar::toggleVisibility()
+{
+    setVisible(!isVisible());
 }
