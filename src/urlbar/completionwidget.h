@@ -78,16 +78,12 @@ private:
     void sizeAndPosition();
     void up();
     void down();
+    void activateCurrentListItem();
 
     QWidget *_parent;
 
     UrlSearchList _list;
 
-    /**
-     * The current index of the pointed out item
-     * 
-     * -1 means no item, so the actual typed text is considered 
-     */
     int _currentIndex;
 
     KService::Ptr _searchEngine;

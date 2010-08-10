@@ -117,49 +117,46 @@ void CompletionWidget::popup()
 void CompletionWidget::up()
 {
     // deactivate previous
-    ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
-    widget->deactivate();
+    findChild<ListItem *>(QString::number(_currentIndex))->deactivate(); // deactivate previous
 
     if (_currentIndex > 0)
         _currentIndex--;
     else
         _currentIndex = layout()->count() - 1;
 
-    kDebug() << _currentIndex;
-    kDebug() << _typedString;
-    UrlBar *bar = qobject_cast<UrlBar *>(_parent);
-
-    // activate "new" current
-    widget = findChild<ListItem *>(QString::number(_currentIndex));
-    widget->activate();
-    bar->blockSignals(true);
-    bar->setQUrl( widget->url() );
-    bar->blockSignals(false);
-    bar->setFocus();
-    bar->setCursorPosition( bar->text().length() );
+    activateCurrentListItem();
 }
 
 
 void CompletionWidget::down()
 {
-    ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
-    widget->deactivate();
+    findChild<ListItem *>(QString::number(_currentIndex))->deactivate(); // deactivate previous
 
     if (_currentIndex < _list.count() - 1)
         _currentIndex++;
     else
         _currentIndex = 0;
 
- 
+    activateCurrentListItem();
+}
+
+
+void CompletionWidget::activateCurrentListItem()
+{
     kDebug() << _currentIndex;
     kDebug() << _typedString;
     UrlBar *bar = qobject_cast<UrlBar *>(_parent);
 
     // activate "new" current
-    widget = findChild<ListItem *>(QString::number(_currentIndex));
+    ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
     widget->activate();
-    bar->blockSignals(true);
-    bar->setQUrl( widget->url() );
+
+    //update text of the url bar
+    bar->blockSignals(true); //without compute suggestions
+    if (!widget->inherits("SearchListItem"))
+        bar->setQUrl( widget->url() );
+    else
+        bar->setQUrl( _typedString );
     bar->blockSignals(false);
     bar->setFocus();
     bar->setCursorPosition( bar->text().length() );
