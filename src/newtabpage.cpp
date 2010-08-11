@@ -171,7 +171,7 @@ void NewTabPage::favoritesPage()
     add.findFirst("a").setAttribute("href", "about:preview/add");
     add.findFirst("img").setAttribute("src" , QString("file:///" +
                                       KIconLoader::global()->iconPath("list-add", KIconLoader::Small || KIconLoader::SizeSmall)));
-    add.findFirst("span").appendInside(i18n("Add Preview"));
+    add.findFirst("span").appendInside(i18n("Add Favorite"));
     m_root.document().findFirst("#actions").appendInside(add);
 
     QStringList names = ReKonfig::previewNames();
@@ -180,7 +180,7 @@ void NewTabPage::favoritesPage()
     if (urls.isEmpty())
     {
         m_root.addClass("empty");
-        m_root.setPlainText(i18n("You can add a preview by clicking the \"Add Preview\" button in the top-right corner of this page"));
+        m_root.setPlainText(i18n("You can add a favorite by clicking the \"Add Favorite\" button in the top-right corner of this page"));
         return;
     }
 
