@@ -64,7 +64,7 @@ ZoomBar::ZoomBar(QWidget *parent)
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
     // label
-    QLabel *label = new QLabel(i18n("Zoom :"));
+    QLabel *label = new QLabel(i18n("Zoom:"));
     layout->addWidget(label);
 
     m_zoomSlider->setTracking(true);
