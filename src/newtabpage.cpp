@@ -352,7 +352,7 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
     const QString spanTagString(QLatin1String("span"));
     const QString hrefAttributeString(QLatin1String("href"));
     const QString srcAttributeString(QLatin1String("src"));
-    const QString fileSchemeString(QLatin1String("file:///"));
+    const QString fileSchemeString(QLatin1String("file://"));
 
 
     // Favorites
