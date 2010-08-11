@@ -187,7 +187,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     {
         QColor loadingColor = Application::palette().color(QPalette::ToolTipBase);
 
-        QLinearGradient gradient( QPoint(0, 0), QPoint(width(), height()) );
+        QLinearGradient gradient( QPoint(0, 0), QPoint(width(), 0) );
         gradient.setColorAt(0, loadingColor);
         gradient.setColorAt(((double)progr) / 100 - .000001, loadingColor);
         gradient.setColorAt(((double)progr) / 100, backgroundColor);
