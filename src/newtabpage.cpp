@@ -338,75 +338,31 @@ void NewTabPage::removePreview(int index)
     ReKonfig::self()->writeConfig();
 }
 
-
 void NewTabPage::browsingMenu(const KUrl &currentUrl)
 {
     QList<QWebElement> navItems;
 
-    KIconLoader *loader = KIconLoader::global();
-
-    // String used for content creation
-    const QString aTagString('a');
-    const QString linkClassString(QLatin1String(".link"));
-    const QString imgTagString(QLatin1String("img"));
-    const QString spanTagString(QLatin1String("span"));
-    const QString hrefAttributeString(QLatin1String("href"));
-    const QString srcAttributeString(QLatin1String("src"));
-    const QString fileSchemeString(QLatin1String("file://"));
-
-
     // Favorites
-    QWebElement nav = markup(linkClassString);
-    nav.findFirst(aTagString).setAttribute(hrefAttributeString,
-                                           QLatin1String("about:favorites"));
-    nav.findFirst(imgTagString).setAttribute(srcAttributeString,
-                                             fileSchemeString + loader->iconPath(QLatin1String("emblem-favorite"),
-                                                                                 KIconLoader::Desktop || KIconLoader::SizeSmall));
-    nav.findFirst(spanTagString).appendInside(i18n("Favorites"));
-    navItems.append(nav);
+    navItems.append(createNavItem(i18n("Favorites"), QLatin1String("about:favorites"), QLatin1String("emblem-favorite")));
 
 
     // Closed Tabs
-    nav = markup(linkClassString);
-    nav.findFirst(aTagString).setAttribute(hrefAttributeString, QLatin1String("about:closedTabs"));
-    nav.findFirst(imgTagString).setAttribute(srcAttributeString,
-                                             fileSchemeString + loader->iconPath(QLatin1String("tab-close"),
-                                                                                 KIconLoader::Desktop || KIconLoader::SizeSmall));
-    nav.findFirst(spanTagString).appendInside(i18n("Closed Tabs"));
-    navItems.append(nav);
-
+    navItems.append(createNavItem(i18n("Closed Tabs"), QLatin1String("about:closedTabs"), QLatin1String("tab-close")));
 
     // Bookmarks
-    nav = markup(linkClassString);
-    nav.findFirst(aTagString).setAttribute(hrefAttributeString, QLatin1String("about:bookmarks"));
-    nav.findFirst(imgTagString).setAttribute(srcAttributeString,
-                                             fileSchemeString + loader->iconPath(QLatin1String("bookmarks"),
-                                                                                 KIconLoader::Desktop || KIconLoader::SizeSmall));
-    nav.findFirst(spanTagString).appendInside(i18n("Bookmarks"));
-    navItems.append(nav);
-
+    navItems.append(createNavItem(i18n("Bookmarks"), QLatin1String("about:bookmarks"), QLatin1String("bookmarks")));
 
     // History
-    nav = markup(linkClassString);
-    nav.findFirst(aTagString).setAttribute(hrefAttributeString, QLatin1String("about:history"));
-    nav.findFirst(imgTagString).setAttribute(srcAttributeString,
-                                             fileSchemeString + loader->iconPath(QLatin1String("view-history"),
-                                                                                 KIconLoader::Desktop || KIconLoader::SizeSmall));
-    nav.findFirst(spanTagString).appendInside(i18n("History"));
-    navItems.append(nav);
-
+    navItems.append(createNavItem(i18n("History"), QLatin1String("about:history"), QLatin1String("view-history")));
 
     // Downloads
-    nav = markup(linkClassString);
-    nav.findFirst(aTagString).setAttribute(hrefAttributeString, QLatin1String("about:downloads"));
-    nav.findFirst(imgTagString).setAttribute(srcAttributeString,
-                                             fileSchemeString + loader->iconPath(QLatin1String("download"),
-                                                                                 KIconLoader::Desktop || KIconLoader::SizeSmall));
-    nav.findFirst(spanTagString).appendInside(i18n("Downloads"));
-    navItems.append(nav);
+    navItems.append(createNavItem(i18n("Downloads"), QLatin1String("about:downloads"), QLatin1String("download")));
 
     foreach(QWebElement it, navItems)
     {
+        const QString aTagString('a');
+        const QString hrefAttributeString(QLatin1String("href"));
+
         if (it.findFirst(aTagString).attribute(hrefAttributeString) == currentUrl.toMimeDataString())
             it.addClass(QLatin1String("current"));
         else if (currentUrl == QLatin1String("about:home") && it.findFirst(aTagString).attribute(hrefAttributeString) == QLatin1String("about:favorites"))
@@ -619,4 +575,17 @@ void NewTabPage::downloadsPage()
         div.lastChild().setAttribute("href", file);
         div.lastChild().setPlainText(i18n("Open file"));
     }
+}
+
+QWebElement NewTabPage::createNavItem(const QString &title, const QString &urlString, const QString &iconPath) const
+{
+    const KIconLoader * const loader = KIconLoader::global();
+
+    QWebElement nav = markup(QLatin1String(".link"));
+    nav.findFirst(QString('a')).setAttribute(QLatin1String("href"), urlString);
+    nav.findFirst(QLatin1String("img")).setAttribute(QLatin1String("src"),
+                                                     QString::fromLatin1("file://") + loader->iconPath(iconPath,
+                                                                                                       KIconLoader::Desktop || KIconLoader::SizeSmall));
+    nav.findFirst(QLatin1String("span")).appendInside(title);
+    return nav;
 }

@@ -107,7 +107,7 @@ private:
      * It works for all elements defined here.
      *
      */
-    inline QWebElement markup(const QString &selector)
+    inline QWebElement markup(const QString &selector) const
     {
         return m_root.document().findFirst("#models > " + selector).clone();
     }
@@ -115,6 +115,8 @@ private:
     QString checkTitle(const QString &title);
 
 private:
+    QWebElement createNavItem(const QString &title, const QString &urlString, const QString &iconPath) const;
+
     QString m_html;
     QWebElement m_root;
 };
