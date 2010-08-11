@@ -33,6 +33,7 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
+#include <KIconLoader>
 #include <KUrl>
 
 // Qt Includes
@@ -115,7 +116,7 @@ private:
     QString checkTitle(const QString &title);
 
 private:
-    QWebElement createNavItem(const QString &title, const QString &urlString, const QString &iconPath) const;
+    QWebElement createLinkItem(const QString &title, const QString &urlString, const QString &iconPath, int groupOrSize) const;
 
     QString m_html;
     QWebElement m_root;
