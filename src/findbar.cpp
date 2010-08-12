@@ -75,6 +75,7 @@ FindBar::FindBar(QWidget *parent)
 
     // hide timer
     connect(m_hideTimer, SIGNAL(timeout()), this, SLOT(hide()));
+    m_hideTimer->setSingleShot(true);
 
     // label
     QLabel *label = new QLabel(i18n("Find:"));
