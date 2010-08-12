@@ -33,6 +33,7 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
+#include <KIconLoader>
 #include <KUrl>
 
 // Qt Includes
@@ -107,7 +108,7 @@ private:
      * It works for all elements defined here.
      *
      */
-    inline QWebElement markup(const QString &selector)
+    inline QWebElement markup(const QString &selector) const
     {
         return m_root.document().findFirst("#models > " + selector).clone();
     }
@@ -115,6 +116,8 @@ private:
     QString checkTitle(const QString &title);
 
 private:
+    QWebElement createLinkItem(const QString &title, const QString &urlString, const QString &iconPath, int groupOrSize) const;
+
     QString m_html;
     QWebElement m_root;
 };
