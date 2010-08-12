@@ -174,6 +174,18 @@ private:
 // -------------------------------------------------------------------------
 
 
+class SuggestionListItem : public ListItem
+{
+    Q_OBJECT
+
+public:
+    SuggestionListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+};
+
+
+// -------------------------------------------------------------------------
+
+
 class PreviewListItem : public ListItem
 {
     Q_OBJECT

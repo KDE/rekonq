@@ -50,6 +50,7 @@ public:
         Browse          = 0x00000010,
         History         = 0x00000100,
         Bookmark        = 0x00001000,
+        Suggestion      = 0x00010000,
     };
 
     int type;
@@ -108,7 +109,8 @@ private:
     UrlSearchList qurlFromUserInputResolution();
     UrlSearchList bookmarksResolution();
     UrlSearchItem privilegedItem(UrlSearchList* list);
-     
+    UrlSearchList suggestionResolution();
+
     static QRegExp _browseRegexp;
     static QRegExp _searchEnginesRegexp;
 };

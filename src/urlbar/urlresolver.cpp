@@ -31,7 +31,7 @@
 #include "application.h"
 #include "historymanager.h"
 #include "bookmarksmanager.h"
-#include "searchengine.h"
+#include "search/searchengine.h"
 
 // KDE Includes
 #include <KUriFilter>
@@ -243,11 +243,14 @@ UrlSearchList UrlResolver::orderedSearchItems()
         
         availableEntries -= commonList.count();
     }
+
+    UrlSearchList suggestionsList = suggestionResolution();
     
     historyResults = historyList.count();
     bookmarksResults = bookmarksList.count();
     commonResutls = commonList.count();
-    
+    //TODO: count suggestions entries
+
     //now fill the list to MAX_ELEMENTS
     if(availableEntries > 0)
     {
@@ -275,7 +278,7 @@ UrlSearchList UrlResolver::orderedSearchItems()
         }
     }
     
-    list = list + historyList + commonList + bookmarksList;
+    list = list + historyList + commonList + bookmarksList + suggestionsList;
     qWarning() << "orderedSearchItems leave: " << " elapsed: " << myTime.elapsed();
     
     return list;
@@ -339,6 +342,18 @@ UrlSearchList UrlResolver::bookmarksResolution()
         UrlSearchItem gItem(UrlSearchItem::Bookmark, b.url().url(), b.fullText());
         list << gItem;
     }
+    return list;
+}
+
+
+// STEP 4 = suggestion completion
+UrlSearchList UrlResolver::suggestionResolution()
+{
+    
+    UrlSearchList list;
+    UrlSearchItem gItem(UrlSearchItem::Suggestion, "a", "a");
+    list << gItem;
+
     return list;
 }
 

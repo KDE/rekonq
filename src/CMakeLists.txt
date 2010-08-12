@@ -29,7 +29,6 @@ SET( rekonq_KDEINIT_SRCS
     websnap.cpp
     webview.cpp
     webtab.cpp
-    searchengine.cpp
     #----------------------------------------
     history/autosaver.cpp 
     history/historymanager.cpp
@@ -63,6 +62,12 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     analyzer/analyzerpanel.cpp
     analyzer/networkanalyzer.cpp
+    #----------------------------------------
+    search/searchengine.cpp
+    search/opensearchwriter.cpp
+    search/opensearchreader.cpp
+    search/opensearchmanager.cpp
+    search/opensearchengine.cpp
 )
 
 

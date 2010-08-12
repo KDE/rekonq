@@ -34,7 +34,7 @@
 // Local Includes
 #include "application.h"
 #include "urlresolver.h"
-#include "searchengine.h"
+#include "search/searchengine.h"
 #include "urlbar.h"
 
 // KDE Includes

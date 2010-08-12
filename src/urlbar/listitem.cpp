@@ -36,7 +36,7 @@
 #include "application.h"
 #include "websnap.h"
 #include "completionwidget.h"
-#include "searchengine.h"
+#include "search/searchengine.h"
 
 // KDE Includes
 #include <KIcon>
@@ -161,6 +161,7 @@ TypeIconLabel::TypeIconLabel(int type, QWidget *parent)
     if (type & UrlSearchItem::Browse) hLayout->addWidget(getIcon("applications-internet"));
     if (type & UrlSearchItem::Bookmark) hLayout->addWidget(getIcon("rating"));
     if (type & UrlSearchItem::History) hLayout->addWidget(getIcon("view-history"));
+    if (type & UrlSearchItem::Suggestion) hLayout->addWidget(getIcon("help-hint"));
 }
 
 
@@ -390,6 +391,23 @@ void EngineBar::selectNextEngine()
 // ---------------------------------------------------------------
 
 
+SuggestionListItem::SuggestionListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
+        : ListItem(item, parent)
+{
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    hLayout->setSpacing(4);
+
+    hLayout->addWidget(new IconLabel(item.url, this));
+    hLayout->addWidget(new TextLabel(item.title, text, this));
+    hLayout->addWidget(new TypeIconLabel(item.type, this));
+
+    setLayout(hLayout);
+}
+
+
+// ---------------------------------------------------------------
+
+
 BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
         : ListItem(item, parent)
 {
@@ -427,7 +445,15 @@ ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text
         }
         else
         {
-            newItem = new PreviewListItem(item, text, parent);
+
+            if (item.type & UrlSearchItem::Suggestion)
+            {
+                newItem = new SuggestionListItem(item, text, parent);
+            }
+            else
+            {
+                newItem = new PreviewListItem(item, text, parent);
+            }
         }
     }
 
