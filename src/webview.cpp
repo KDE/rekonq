@@ -677,9 +677,9 @@ void WebView::scrollTick()
     }
 
     if (_scrollBottom)
-        page()->mainFrame()->setScrollPosition( QPoint( 0, page()->mainFrame()->scrollPosition().y() + scroll_y ) );
+        page()->currentFrame()->scroll(0, scroll_y);
     else
-        page()->mainFrame()->setScrollPosition( QPoint( 0, page()->mainFrame()->scrollPosition().y() - scroll_y ) );
+        page()->currentFrame()->scroll(0, -scroll_y);
 }
 
 
