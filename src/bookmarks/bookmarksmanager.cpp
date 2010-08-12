@@ -388,13 +388,15 @@ BookmarkProvider::~BookmarkProvider()
 
 void BookmarkProvider::setupBookmarkBar(BookmarkToolBar *toolbar)
 {
+    if (m_bookmarkToolBars.contains(toolbar))
+        return;
+
     kDebug() << "new bookmark bar...";
-    
+
     m_bookmarkToolBars.append(toolbar);
     toolbar->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(toolbar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
     
-    slotBookmarksChanged("", "");
     kDebug() << "new bookmark bar... DONE!";
 }
 
