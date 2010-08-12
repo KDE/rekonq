@@ -185,9 +185,23 @@ void UrlBar::paintEvent(QPaintEvent *event)
     }
     else
     {
-        QColor loadingColor = Application::palette().color(QPalette::ToolTipBase);
+        QColor highlight = Application::palette().color(QPalette::Highlight);
 
-        QLinearGradient gradient( QPoint(0, 0), QPoint(width(), height()) );
+        int r = (highlight.red()+2*backgroundColor.red())/3;
+        int g = (highlight.green()+2*backgroundColor.green())/3;
+        int b = (highlight.blue()+2*backgroundColor.blue())/3;
+        
+        QColor loadingColor(r, g, b);
+
+        if (abs(loadingColor.lightness() - backgroundColor.lightness()) < 20) //eg. Gaia color scheme
+        {
+            r = (2*highlight.red()+backgroundColor.red())/3;
+            g = (2*highlight.green()+backgroundColor.green())/3;
+            b = (2*highlight.blue()+backgroundColor.blue())/3;
+            loadingColor = QColor(r, g, b);
+        }
+
+        QLinearGradient gradient( QPoint(0, 0), QPoint(width(), 0) );
         gradient.setColorAt(0, loadingColor);
         gradient.setColorAt(((double)progr) / 100 - .000001, loadingColor);
         gradient.setColorAt(((double)progr) / 100, backgroundColor);
