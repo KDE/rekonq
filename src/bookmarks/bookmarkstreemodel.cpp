@@ -406,15 +406,15 @@ bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
             if (parent.isValid())
                 root = bookmarkForIndex(parent).toGroup();
 
-            if (!destIndex.isValid())
+            if (destIndex.isValid() && row != -1)
+            {
+                root.moveBookmark(bookmark, root.previous(dropDestBookmark));
+
+            }
+            else
             {
                 root.deleteBookmark(bookmark);
                 root.addBookmark(bookmark);
-            }
-
-            else if (row != 1)
-            {
-                root.moveBookmark(bookmark, root.previous(dropDestBookmark));
             }
 
             Application::bookmarkProvider()->bookmarkManager()->emitChanged();
