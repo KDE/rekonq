@@ -54,6 +54,8 @@ public:
 
 public slots:
     void show();
+    void hide();
+    
     void zoomIn();
     void zoomOut();
     void zoomNormal();
@@ -64,9 +66,6 @@ public slots:
 
 signals:
     void visibilityChanged(bool);
-
-protected:
-    void setVisible(bool visible);
 
 private:
      QToolButton *m_zoomIn;

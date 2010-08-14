@@ -124,8 +124,16 @@ void ZoomBar::show()
     // show findbar if not visible
     if (isHidden())
     {
+        emit visibilityChanged(true);
         QWidget::show();
     }
+}
+
+
+void ZoomBar::hide()
+{
+    emit visibilityChanged(false);
+    QWidget::hide();
 }
 
 
@@ -168,14 +176,7 @@ void ZoomBar::setValue(int value)
 }
 
 
-void ZoomBar::setVisible(bool visible)
-{
-    emit visibilityChanged(visible);
-    QWidget::setVisible(visible);
-}
-
-
 void ZoomBar::toggleVisibility()
 {
-    setVisible(!isVisible());
+    isVisible() ? hide() : show();
 }

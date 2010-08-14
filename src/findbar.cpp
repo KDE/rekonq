@@ -144,6 +144,7 @@ void FindBar::show()
     // show findbar if not visible
     if (isHidden())
     {
+        emit visibilityChanged(true);
         QWidget::show();
         emit searchString(m_lineEdit->text());
     }
@@ -183,19 +184,13 @@ void FindBar::notifyMatch(bool match)
 void FindBar::hide()
 {
     m_hideTimer->stop();
+    emit visibilityChanged(false);
     QWidget::hide();
     emit(searchString(m_lineEdit->text()));
 }
 
 
-void FindBar::setVisible(bool visible)
-{
-    emit visibilityChanged(visible);
-    QWidget::setVisible(visible);
-}
-
-
 void FindBar::toggleVisibility()
 {
-    setVisible(!isVisible());
+    isVisible() ? hide() : show();
 }
