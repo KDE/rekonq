@@ -350,6 +350,9 @@ void UrlBar::loadFinished()
 
 void UrlBar::showBookmarkInfo(const QPoint &pos)
 {
+    if( _tab->url().scheme() == QL1S("about") )
+        return;
+    
     KBookmark bookmark = Application::bookmarkProvider()->bookmarkForUrl(_tab->url());
 
     IconButton *bt = qobject_cast<IconButton *>(this->sender());
@@ -358,14 +361,12 @@ void UrlBar::showBookmarkInfo(const QPoint &pos)
 
     if (bookmark.isNull())
     {
-        Application::bookmarkProvider()->rootGroup().addBookmark(_tab->view()->title(), _tab->url());
+        bookmark = Application::bookmarkProvider()->rootGroup().addBookmark(_tab->view()->title(), _tab->url());
         Application::bookmarkProvider()->bookmarkManager()->emitChanged();
     }
-    else
-    {
-        BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
-        widget->showAt(pos);
-    }
+    
+    BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
+    widget->showAt(pos);
 }
 
 
