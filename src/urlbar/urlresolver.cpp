@@ -349,6 +349,11 @@ UrlSearchList UrlResolver::bookmarksResolution()
 // STEP 4 = suggestion completion
 UrlSearchList UrlResolver::suggestionResolution()
 {
+    Application::opensearchManager()->requestSuggestion();
+    while (!m_suggestionReceived) 
+    { 
+        Application->instance()->processEvents(QEventLoop::WaitForMore | QEventLoop::ExcludeUserInput); 
+    }
     
     UrlSearchList list;
     UrlSearchItem gItem(UrlSearchItem::Suggestion, "a", "a");

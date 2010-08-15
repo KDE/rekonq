@@ -93,6 +93,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/rekonqpage
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
                         ${CMAKE_CURRENT_SOURCE_DIR}/analyzer
+                        ${CMAKE_CURRENT_SOURCE_DIR}/search
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}
@@ -112,6 +113,7 @@ KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
 
 TARGET_LINK_LIBRARIES ( kdeinit_rekonq
                         ${QT_LIBRARIES} 
+                        ${QT_QTSCRIPT_LIBRARY}
                         ${QT_QTWEBKIT_LIBRARY} 
                         ${KDE4_KDEWEBKIT_LIBS}
                         ${KDE4_KUTILS_LIBS}

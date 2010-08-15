@@ -50,6 +50,7 @@ class HistoryManager;
 class MainWindow;
 class SessionManager;
 class AdBlockManager;
+class OpenSearchManager;
 class WebView;
 
 
@@ -111,6 +112,7 @@ public:
     static BookmarkProvider *bookmarkProvider();
     static SessionManager *sessionManager();
     static AdBlockManager *adblockManager();
+    static OpenSearchManager *opensearchManager();
 
     // DOWNLOADS MANAGEMENT METHODS
     void addDownload(const QString &srcUrl, const QString &destUrl);
@@ -148,6 +150,7 @@ private:
     static QWeakPointer<BookmarkProvider> s_bookmarkProvider;
     static QWeakPointer<SessionManager> s_sessionManager;
     static QWeakPointer<AdBlockManager> s_adblockManager;
+    static QWeakPointer<OpenSearchManager> s_opensearchManager;
 
     MainWindowList m_mainWindows;
 };
