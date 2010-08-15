@@ -33,6 +33,8 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+#include "opensearchmanager.h"
+
 // KDE Includes
 #include <KUniqueApplication>
 #include <KIcon>
@@ -50,7 +52,6 @@ class HistoryManager;
 class MainWindow;
 class SessionManager;
 class AdBlockManager;
-class OpenSearchManager;
 class WebView;
 
 
