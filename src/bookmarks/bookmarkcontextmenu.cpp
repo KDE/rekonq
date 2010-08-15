@@ -268,8 +268,11 @@ void BookmarkContextMenu::newBookmarkGroup()
         {
             KBookmark newBk;
             newBk = dialog->createNewFolder("New folder", selected.parentGroup());
-            selected.parentGroup().moveBookmark(newBk, selected);
-            manager()->emitChanged(newBk.parentGroup());
+            if (!newBk.isNull())
+            {
+                selected.parentGroup().moveBookmark(newBk, selected);
+                manager()->emitChanged(newBk.parentGroup());
+            }
         }
     }
     else
