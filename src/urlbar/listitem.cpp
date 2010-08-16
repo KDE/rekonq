@@ -36,7 +36,7 @@
 #include "application.h"
 #include "websnap.h"
 #include "completionwidget.h"
-#include "search/searchengine.h"
+#include "searchengine.h"
 
 // KDE Includes
 #include <KIcon>

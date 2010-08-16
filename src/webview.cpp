@@ -37,7 +37,7 @@
 #include "mainview.h"
 #include "webpage.h"
 #include "bookmarksmanager.h"
-#include "search/searchengine.h"
+#include "searchengine.h"
 #include "websnap.h"
 
 // KDE Includes

@@ -36,7 +36,7 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "webtab.h"
-#include "search/searchengine.h"
+#include "searchengine.h"
 
 // Widget Includes
 #include "adblockwidget.h"
