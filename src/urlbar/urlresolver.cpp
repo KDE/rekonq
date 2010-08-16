@@ -313,11 +313,11 @@ UrlSearchList UrlResolver::webSearchesResolution()
 // STEP 3 = history completion
 UrlSearchList UrlResolver::historyResolution()
 {
-    QList<HistoryHashItem> found = Application::historyManager()->find(_typedString);
+    QList<HistoryItem> found = Application::historyManager()->find(_typedString);
     qSort(found);
 
     UrlSearchList list;
-    foreach (HistoryHashItem i, found)
+    foreach (HistoryItem i, found)
     {
         if (_searchEnginesRegexp.indexIn(i.url) == -1) //filter all urls that are search engine results
         {
