@@ -33,9 +33,13 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QSortFilterProxyModel>
+#include <QtGui/QSortFilterProxyModel>
 
-
+/**
+ * QSortFilterProxyModel hides all children which parent doesn't
+ * match the filter. This class is used to change this behavior.
+ * If a bookmark matches the filter it'll be shown, even if it's parent doesn't match it.
+ */
 class REKONQ_TESTS_EXPORT BookmarksProxy : public QSortFilterProxyModel
 {
     Q_OBJECT
@@ -45,9 +49,9 @@ public:
     BookmarksProxy(QObject *parent = 0);
 
 protected:
-    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+    virtual bool filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const;
 
-    // returns true if any child(or children-child...) matches filter
+    // returns true if index or any of his children match the filter
     bool recursiveMatch(const QModelIndex &index) const;
 };
 

@@ -27,19 +27,18 @@
 
 // Self Includes
 #include "bookmarksproxy.h"
-#include "bookmarksproxy.moc"
 
 
 BookmarksProxy::BookmarksProxy(QObject *parent)
         : QSortFilterProxyModel(parent)
 {
+    setFilterCaseSensitivity(Qt::CaseInsensitive);
 }
 
 
-bool BookmarksProxy::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+bool BookmarksProxy::filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const
 {
-    QModelIndex idx = sourceModel()->index(source_row, 0, source_parent);
-    return recursiveMatch(idx);
+    return recursiveMatch( sourceModel()->index(source_row, 0, source_parent) );
 }
 
 
@@ -48,10 +47,12 @@ bool BookmarksProxy::recursiveMatch(const QModelIndex &index) const
     if (index.data().toString().contains(filterRegExp()))
         return true;
 
-    for (int childRow = 0; childRow < sourceModel()->rowCount(index); ++childRow)
+    int numChildren = sourceModel()->rowCount(index);
+    for (int childRow = 0; childRow < numChildren; ++childRow)
     {
         if (recursiveMatch(sourceModel()->index(childRow, 0, index)))
             return true;
     }
+
     return false;
 }
