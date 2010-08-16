@@ -77,16 +77,29 @@ void BookmarkOwner::openBookmark(const KBookmark & bookmark,
 
 bool BookmarkOwner::deleteBookmark(KBookmark &bookmark)
 {
-    KBookmarkGroup bmg = bookmark.parentGroup();
-    bool folder = bookmark.isGroup();
     QString name = QString(bookmark.fullText()).replace("&&", "&");
+    QString dialogCaption, dialogText;
+
+    if (bookmark.isGroup())
+    {
+        dialogCaption = i18n("Bookmark Folder Deletion");
+        dialogText = i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", name);
+    }
+    else if (bookmark.isSeparator())
+    {
+        dialogCaption = i18n("Separator Deletion");
+        dialogText = i18n("Are you sure you wish to remove this separator?", name);
+    }
+    else
+    {
+        dialogCaption = i18n("Bookmark Deletion");
+        dialogText = i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", name);
+    }
 
     if (KMessageBox::warningContinueCancel(
                 QApplication::activeWindow(),
-                folder ? i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", name)
-                : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", name),
-                folder ? i18n("Bookmark Folder Deletion")
-                : i18n("Bookmark Deletion"),
+                dialogText,
+                dialogCaption,
                 KStandardGuiItem::del(),
                 KStandardGuiItem::cancel(),
                 "bookmarkDeletition_askAgain")
@@ -94,6 +107,7 @@ bool BookmarkOwner::deleteBookmark(KBookmark &bookmark)
        )
         return false;
 
+    KBookmarkGroup bmg = bookmark.parentGroup();
     bmg.deleteBookmark(bookmark);
     Application::bookmarkProvider()->bookmarkManager()->emitChanged(bmg);
     return true;
