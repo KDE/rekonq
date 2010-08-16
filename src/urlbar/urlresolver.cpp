@@ -45,7 +45,7 @@
 
 // defines
 #define MAX_ELEMENTS 10
-
+#define MIN_SUGGESTIONS 3
 
 // NOTE 
 // default kurifilter plugin list (at least in my box):
@@ -63,7 +63,8 @@ QRegExp UrlResolver::_browseRegexp;
 QRegExp UrlResolver::_searchEnginesRegexp;
 
 UrlResolver::UrlResolver(const QString &typedUrl)
-        : _typedString(typedUrl.trimmed())
+        : QObject()
+        , _typedString(typedUrl.trimmed())
 {
     if ( _browseRegexp.isEmpty() )
     {
@@ -108,20 +109,9 @@ UrlResolver::UrlResolver(const QString &typedUrl)
 
 UrlSearchList UrlResolver::orderedSearchItems()
 {
-    // NOTE 
-    // the logic here is : "we wanna suggest (at least) 10 elements"
-    // so we have (more or less) 2 from first results (1 from QUrl Resolutions, 1 from
-    // search engines).
-    // There are 8 remaining: if bookmarkResults + historyResults <= 8, catch all, else
-    // catch first 4 results from the two resulting lists :)
-
-    QTime myTime;
-    myTime.start();
-    
-    UrlSearchList list;
-
     if( _typedString == QL1S("about:") )
     {
+        UrlSearchList list;
         UrlSearchItem home(UrlSearchItem::Browse, QString("about:home"),       QL1S("home") );
         list << home;
         UrlSearchItem favs(UrlSearchItem::Browse, QString("about:favorites"),  QL1S("favorites") );
@@ -134,148 +124,189 @@ UrlSearchList UrlResolver::orderedSearchItems()
         list << hist;
         UrlSearchItem down(UrlSearchItem::Browse, QString("about:downloads"),  QL1S("downloads") );
         list << down;
-
+        
         return list;
     }
     
+    _computedListsCount = 0;
+
+    //compute lists
+    computeSuggestions();
+    computeQurlFromUserInput();
+    computeWebSearches();
+    computeBookmarks();
+    computeHistory();
+
+    QTime time;
+    time.start();
+
+    while (_computedListsCount < 5 && time.msec() < 1000)
+    {
+        Application::instance()->processEvents(QEventLoop::WaitForMoreEvents | QEventLoop::ExcludeUserInputEvents); 
+    }
+
+    return orderLists();
+}
+
+
+UrlSearchList UrlResolver::orderLists()
+{
+    // NOTE 
+    // the logic here is : "we wanna suggest (at least) 10 elements"
+    // so we have (more or less) 2 from first results (1 from QUrl Resolutions, 1 from
+    // search engines).
+    // There are 8 remaining: if bookmarkResults + historyResults <= 8, catch all, else
+    // catch first 4 results from the two resulting lists :)
+
+    QTime myTime;
+    myTime.start();
+    
+    UrlSearchList list;
+    
     if(_browseRegexp.indexIn(_typedString) != -1)
     {
-        list << qurlFromUserInputResolution();
-        list << webSearchesResolution();
+        list << _qurlFromUserInput;
+        list << _webSearches;
     }
     else
     {
-        list << webSearchesResolution();
-        list << qurlFromUserInputResolution();
+        list << _webSearches;
+        list << _qurlFromUserInput;
     }
 
     //find the history items that match the typed string
-    UrlSearchList historyList = historyResolution();
-    UrlSearchItem privileged = privilegedItem(&historyList);
-    int historyResults = historyList.count();
+    UrlSearchItem privileged = privilegedItem(&_history);
+    int historyCount = _history.count();
     
     //find the bookmarks items that match the typed string
-    UrlSearchList bookmarksList = bookmarksResolution();
     if (privileged.type == UrlSearchItem::Undefined)
     {
-        privileged = privilegedItem(&bookmarksList);
+        privileged = privilegedItem(&_bookmarks);
     }
-    else if(privileged.type == UrlSearchItem::History && bookmarksList.removeOne(privileged))
+    else if(privileged.type == UrlSearchItem::History && _bookmarks.removeOne(privileged))
     {
         privileged.type |= UrlSearchItem::Bookmark;
     }
-    int bookmarksResults = bookmarksList.count();
+    int bookmarksCount = _bookmarks.count();
     
     if (privileged.type != UrlSearchItem::Undefined)
     {
         list.prepend(privileged);
     }
+
+    int availableEntries = MAX_ELEMENTS - list.count() - MIN_SUGGESTIONS;
     
-    int availableEntries = MAX_ELEMENTS - list.count();
-    
-    UrlSearchList commonList;
-    int commonResutls = 0;
+    UrlSearchList common;
+    int commonCount = 0;
 
     //prefer items which are history items als well bookmarks item
     //if there are more than 1000 bookmark results, the performance impact is noticeable
-    if(bookmarksResults < 1000)
+    if(bookmarksCount < 1000)
     {
         //add as many items to the common list as there are available entries in the dropdown list
         UrlSearchItem urlSearchItem;
-        for(int i = 0; i < historyList.count(); i++)
+        for(int i = 0; i < _history.count(); i++)
         {
-            if (bookmarksList.removeOne(historyList.at(i)))
+            if (_bookmarks.removeOne(_history.at(i)))
             {
-                urlSearchItem = historyList.takeAt(i);
+                urlSearchItem = _history.takeAt(i);
                 urlSearchItem.type |= UrlSearchItem::Bookmark;
-                commonList << urlSearchItem;
-                commonResutls++;
-                if(commonResutls >= availableEntries)
+                common << urlSearchItem;
+                commonCount++;
+                if(commonCount >= availableEntries)
                 {
                     break;
                 }
             }
         }
         
-        commonResutls = commonList.count();
-        if(commonResutls >= availableEntries)
+        commonCount = common.count();
+        if(commonCount >= availableEntries)
         {
-            commonList = commonList.mid(0, availableEntries);
-            historyList = UrlSearchList();
-            bookmarksList = UrlSearchList();
+            common = common.mid(0, availableEntries);
+            _history = UrlSearchList();
+            _bookmarks = UrlSearchList();
             availableEntries = 0;
         }
         else        //remove all items from the history and bookmarks list up to the remaining entries in the dropdown list
         {
-            availableEntries -= commonResutls;
-            if(historyResults >= availableEntries)
+            availableEntries -= commonCount;
+            if(historyCount >= availableEntries)
             {
-                historyList = historyList.mid(0, availableEntries);
+                _history = _history.mid(0, availableEntries);
             }
-            if(bookmarksResults >= availableEntries)
+            if(bookmarksCount >= availableEntries)
             {
-                bookmarksList = bookmarksList.mid(0, availableEntries);
+                _bookmarks = _bookmarks.mid(0, availableEntries);
             }
         }
     }
     else        //if there are too many bookmarks items, remove all items up to the remaining entries in the dropdown list
     {
-        
-        if(historyResults >= availableEntries)
+
+        if(historyCount >= availableEntries)
         {
-            historyList = historyList.mid(0, availableEntries);
+            _history = _history.mid(0, availableEntries);
         }
-        if(bookmarksResults >= availableEntries)
+        if(bookmarksCount >= availableEntries)
         {
-            bookmarksList = bookmarksList.mid(0, availableEntries);
+            _bookmarks = _bookmarks.mid(0, availableEntries);
         }
 
         UrlSearchItem urlSearchItem;
-        for(int i = 0; i < historyList.count(); i++)
+        for(int i = 0; i < _history.count(); i++)
         {
-            if (bookmarksList.removeOne(historyList.at(i)))
+            if (_bookmarks.removeOne(_history.at(i)))
             {
-                urlSearchItem = historyList.takeAt(i);
+                urlSearchItem = _history.takeAt(i);
                 urlSearchItem.type |= UrlSearchItem::Bookmark;
-                commonList << urlSearchItem;
+                common << urlSearchItem;
             }
         }
         
-        availableEntries -= commonList.count();
+        availableEntries -= common.count();
     }
     
-    historyResults = historyList.count();
-    bookmarksResults = bookmarksList.count();
-    commonResutls = commonList.count();
-    
+    historyCount = _history.count();
+    bookmarksCount = _bookmarks.count();
+    commonCount = common.count();
+
     //now fill the list to MAX_ELEMENTS
     if(availableEntries > 0)
     {
         int historyEntries = ((int) (availableEntries / 2)) + availableEntries % 2;
         int bookmarksEntries = availableEntries - historyEntries;
         
-        if (historyResults >= historyEntries && bookmarksResults >= bookmarksEntries)
+        if (historyCount >= historyEntries && bookmarksCount >= bookmarksEntries)
         {
-            historyList = historyList.mid(0, historyEntries);
-            bookmarksList = bookmarksList.mid(0, bookmarksEntries);
+            _history = _history.mid(0, historyEntries);
+            _bookmarks = _bookmarks.mid(0, bookmarksEntries);
         }
-        else if (historyResults < historyEntries && bookmarksResults >= bookmarksEntries)
+        else if (historyCount < historyEntries && bookmarksCount >= bookmarksEntries)
         {
-            if(historyResults + bookmarksResults > availableEntries)
+            if(historyCount + bookmarksCount > availableEntries)
             {
-                bookmarksList = bookmarksList.mid(0, availableEntries - historyResults);
+                _bookmarks = _bookmarks.mid(0, availableEntries - historyCount);
             }
         }
-        else if (historyResults >= historyEntries && bookmarksResults < bookmarksEntries)
+        else if (historyCount >= historyEntries && bookmarksCount < bookmarksEntries)
         {
-            if(historyResults + bookmarksResults > availableEntries)
+            if(historyCount + bookmarksCount > availableEntries)
             {
-                historyList = historyList.mid(0, availableEntries - bookmarksResults);
+                _history = _history.mid(0, availableEntries - bookmarksCount);
             }
         }
     }
-    
-    list = list + historyList + commonList + bookmarksList;
+
+    availableEntries -=  _history.count();
+    availableEntries -=  _bookmarks.count();
+
+    if (_suggestions.count() > availableEntries + MIN_SUGGESTIONS)
+    {
+        _suggestions = _suggestions.mid(0, availableEntries + MIN_SUGGESTIONS);
+    }
+
+    list = list + _history + common + _bookmarks + _suggestions;
     qWarning() << "orderedSearchItems leave: " << " elapsed: " << myTime.elapsed();
     
     return list;
@@ -286,60 +317,92 @@ UrlSearchList UrlResolver::orderedSearchItems()
 // PRIVATE ENGINES
 
 
-// STEP 1 = QUrl from User Input (easily the best solution... )
-UrlSearchList UrlResolver::qurlFromUserInputResolution()
+//QUrl from User Input (easily the best solution... )
+void UrlResolver::computeQurlFromUserInput()
 {
-    UrlSearchList list;
-    QString url2 = _typedString;
-    QUrl urlFromUserInput = QUrl::fromUserInput(url2);
+    QString url = _typedString;
+    QUrl urlFromUserInput = QUrl::fromUserInput(url);
     if (urlFromUserInput.isValid())
     {
         QString gTitle = i18nc("Browse a website", "Browse");
         UrlSearchItem gItem(UrlSearchItem::Browse, urlFromUserInput.toString(), gTitle);
-        list << gItem;
+        _qurlFromUserInput << gItem;
     }
 
-    return list;
+    _computedListsCount++;
 }
 
 
-// STEP 2 = Web Searches
-UrlSearchList UrlResolver::webSearchesResolution()
+//webSearches
+void UrlResolver::computeWebSearches()
 {
-    return UrlSearchList() << UrlSearchItem(UrlSearchItem::Search, QString(), QString());
+    _webSearches = (UrlSearchList() << UrlSearchItem(UrlSearchItem::Search, QString(), QString()));
+    _computedListsCount++;
 }
 
 
-// STEP 3 = history completion
-UrlSearchList UrlResolver::historyResolution()
+//history
+void UrlResolver::computeHistory()
 {
     QList<HistoryHashItem> found = Application::historyManager()->find(_typedString);
     qSort(found);
 
-    UrlSearchList list;
     foreach (HistoryHashItem i, found)
     {
         if (_searchEnginesRegexp.indexIn(i.url) == -1) //filter all urls that are search engine results
         {
             UrlSearchItem gItem(UrlSearchItem::History, i.url, i.title);
-            list << gItem;
+            _history << gItem;
         }
     }
-    return list;
+
+    _computedListsCount++;
 }
 
 
-// STEP 4 = bookmarks completion
-UrlSearchList UrlResolver::bookmarksResolution()
+// bookmarks
+void UrlResolver::computeBookmarks()
 {
-    UrlSearchList list;
     QList<KBookmark> found = Application::bookmarkProvider()->find(_typedString);
+
     foreach (KBookmark b, found)
     {
         UrlSearchItem gItem(UrlSearchItem::Bookmark, b.url().url(), b.fullText());
-        list << gItem;
+        _bookmarks << gItem;
     }
-    return list;
+
+    _computedListsCount++;
+}
+
+
+//opensearch suggestion
+void UrlResolver::computeSuggestions()
+{
+    if (Application::opensearchManager()->isSuggestionAvailable())
+    {
+        connect(Application::opensearchManager(), 
+                SIGNAL(suggestionReceived(const QStringList &)), 
+                this, 
+                SLOT(suggestionsReceived(const QStringList &)));
+
+        Application::opensearchManager()->requestSuggestion(_typedString);
+    }
+    else
+    {
+        _computedListsCount++;
+    }
+}
+
+
+void UrlResolver::suggestionsReceived(const QStringList &suggestion)
+{
+    foreach (QString s, suggestion)
+    {
+        UrlSearchItem gItem(UrlSearchItem::Suggestion, s, s);
+        _suggestions << gItem;
+    }
+
+    _computedListsCount++;
 }
 
 

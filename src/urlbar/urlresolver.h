@@ -38,6 +38,7 @@
 // Qt Includes
 #include <QString>
 #include <QList>
+#include <QStringList>
 
 class UrlSearchItem
 {
@@ -50,6 +51,7 @@ public:
         Browse          = 0x00000010,
         History         = 0x00000100,
         Bookmark        = 0x00001000,
+        Suggestion      = 0x00010000,
     };
 
     int type;
@@ -93,8 +95,10 @@ typedef QList <UrlSearchItem> UrlSearchList;
 // ----------------------------------------------------------------------
 
 
-class UrlResolver
+class UrlResolver : public QObject
 {
+    Q_OBJECT
+
 public:
     UrlResolver(const QString &typedUrl);
 
@@ -103,14 +107,29 @@ public:
 private:
     QString _typedString;
 
-    UrlSearchList webSearchesResolution();
-    UrlSearchList historyResolution();
-    UrlSearchList qurlFromUserInputResolution();
-    UrlSearchList bookmarksResolution();
+    UrlSearchList _webSearches;
+    UrlSearchList _qurlFromUserInput;
+    UrlSearchList _history;
+    UrlSearchList _bookmarks;
+    UrlSearchList _suggestions;
+    
+    void computeWebSearches();
+    void computeHistory();
+    void computeQurlFromUserInput();
+    void computeBookmarks();
+    void computeSuggestions();
+
+    int _computedListsCount;
+
     UrlSearchItem privilegedItem(UrlSearchList* list);
-     
+    UrlSearchList orderLists();
+
     static QRegExp _browseRegexp;
     static QRegExp _searchEnginesRegexp;
+    
+private slots:
+    void suggestionsReceived(const QStringList &suggestion);    
+    
 };
 
 // ------------------------------------------------------------------------------

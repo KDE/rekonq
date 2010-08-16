@@ -42,6 +42,7 @@
 #include "urlbar.h"
 #include "sessionmanager.h"
 #include "adblockmanager.h"
+#include "opensearchmanager.h"
 #include "webview.h"
 #include "filterurljob.h"
 #include "tabbar.h"
@@ -64,6 +65,7 @@ QWeakPointer<HistoryManager> Application::s_historyManager;
 QWeakPointer<BookmarkProvider> Application::s_bookmarkProvider;
 QWeakPointer<SessionManager> Application::s_sessionManager;
 QWeakPointer<AdBlockManager> Application::s_adblockManager;
+QWeakPointer<OpenSearchManager> Application::s_opensearchManager;
 
 
 Application::Application()
@@ -98,6 +100,9 @@ Application::~Application()
 
     delete s_adblockManager.data();
     s_adblockManager.clear();
+    
+    delete s_opensearchManager.data();
+    s_opensearchManager.clear();
 }
 
 
@@ -312,6 +317,17 @@ SessionManager *Application::sessionManager()
         s_sessionManager = new SessionManager(instance());
     }
     return s_sessionManager.data();
+}
+
+
+OpenSearchManager *Application::opensearchManager()
+{
+    if (s_opensearchManager.isNull())
+    {
+        s_opensearchManager = new OpenSearchManager(instance());
+        s_opensearchManager.data()->setSearchProvider("google"); //TODO: use other suggestion engines
+    }
+    return s_opensearchManager.data();
 }
 
 
