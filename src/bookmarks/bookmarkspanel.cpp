@@ -201,12 +201,12 @@ void BookmarksPanel::contextMenu(const QPoint &pos)
 
     KBookmark selected = bookmarkForIndex(index);
 
-    BookmarkContextMenu menu( selected, 
-                              Application::bookmarkProvider()->bookmarkManager(), 
-                              Application::bookmarkProvider()->bookmarkOwner(), 
+    BookmarkContextMenu menu( selected,
+                              Application::bookmarkProvider()->bookmarkManager(),
+                              Application::bookmarkProvider()->bookmarkOwner(),
                               this
                             );
-                            
+
     menu.exec(m_treeView->mapToGlobal(pos));
 }
 
@@ -218,24 +218,5 @@ void BookmarksPanel::deleteBookmark()
         return;
 
     KBookmark bm = bookmarkForIndex(index);
-    KBookmarkGroup bmg = bm.parentGroup();
-    bool folder = bm.isGroup();
-    QString name = QString(bm.fullText()).replace("&&", "&");
-
-    if (KMessageBox::warningContinueCancel(
-                QApplication::activeWindow(),
-                folder ? i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", name)
-                : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", name),
-                folder ? i18n("Bookmark Folder Deletion")
-                : i18n("Bookmark Deletion"),
-                KStandardGuiItem::del(),
-                KStandardGuiItem::cancel(),
-                "bookmarkDeletition_askAgain")
-            != KMessageBox::Continue
-       )
-        return;
-
-
-    bmg.deleteBookmark(bm);
-    Application::instance()->bookmarkProvider()->bookmarkManager()->emitChanged(bmg);
+    Application::instance()->bookmarkProvider()->bookmarkOwner()->deleteBookmark(bm);
 }
