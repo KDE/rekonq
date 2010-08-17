@@ -558,7 +558,7 @@ void WebView::wheelEvent(QWheelEvent *event)
 
         emit zoomChanged(newFactor);
     }
-    else if ( ReKonfig::smoothScrolling() && ypos != page()->currentFrame()->scrollPosition().y())
+    else if (ReKonfig::smoothScrolling() && ypos != page()->currentFrame()->scrollPosition().y())
     {
         page()->currentFrame()->setScrollPosition(QPoint(page()->currentFrame()->scrollPosition().x(), ypos));
 
