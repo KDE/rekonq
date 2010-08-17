@@ -152,21 +152,6 @@ void BookmarkWidget::showAt(const QPoint &pos)
 
 void BookmarkWidget::removeBookmark()
 {
-    bool folder = m_bookmark.isGroup();
-
-    if (KMessageBox::warningContinueCancel(
-                QApplication::activeWindow(),
-                folder ? i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", m_bookmark.text())
-                : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", m_bookmark.text()),
-                folder ? i18n("Bookmark Folder Deletion")
-                : i18n("Bookmark Deletion"),
-                KStandardGuiItem::del())
-            == KMessageBox::Continue
-       )
-    {
-        m_bookmark.parentGroup().deleteBookmark(m_bookmark);
-        Application::bookmarkProvider()->bookmarkManager()->emitChanged();
-    }
-
+    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(m_bookmark);
     reject();
 }
