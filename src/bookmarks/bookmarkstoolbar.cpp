@@ -393,7 +393,8 @@ void BookmarkToolBar::dropEvent(QDropEvent *event)
         KBookmarkActionInterface *destBookmarkAction = dynamic_cast<KBookmarkActionInterface *>(destAction);
         QWidget *widgetAction = widgetForAction(destAction);
 
-        if (!bookmark.isNull() && destBookmarkAction && !destBookmarkAction->bookmark().isNull() && widgetAction)
+        if (!bookmark.isNull() && destBookmarkAction && !destBookmarkAction->bookmark().isNull()
+            && widgetAction && bookmark.address() != destBookmarkAction->bookmark().address())
         {
             KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
             KBookmark destBookmark = destBookmarkAction->bookmark();
