@@ -36,6 +36,9 @@
 #include "mainwindow.h"
 #include "webtab.h"
 
+//KDE Includes
+#include <kstandarddirs.h>
+
 
 GeneralWidget::GeneralWidget(QWidget *parent)
         : QWidget(parent)
@@ -48,6 +51,8 @@ GeneralWidget::GeneralWidget(QWidget *parent)
     disableHomeSettings(ReKonfig::useNewTabPage());
     
     connect(kcfg_useNewTabPage, SIGNAL(toggled(bool)), this, SLOT(disableHomeSettings(bool)));
+    
+    disableKGet();
 }
 
 
@@ -82,4 +87,19 @@ void GeneralWidget::disableHomeSettings(bool b)
 {
     kcfg_homePage->setEnabled(!b);
     setHomeToCurrentPageButton->setEnabled(!b);
+}
+
+void GeneralWidget::disableKGet()
+{
+  
+        if (KStandardDirs::findExe("kget").isNull())
+        {
+	  kWarning() <<  "Install KGet to enable rekonq to use KGet as download manager";
+	  ReKonfig::setKgetDownload(false);
+	  ReKonfig::setKgetList(false);
+	  kcfg_kgetDownload->setDisabled(true);
+	  kcfg_kgetList->setDisabled(true);
+        }
+  
+  return;
 }

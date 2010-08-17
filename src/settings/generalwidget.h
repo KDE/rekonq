@@ -44,6 +44,7 @@ public:
 
     void save();
     bool changed();
+    void disableKGet();
 
 signals:
     void changed(bool);
