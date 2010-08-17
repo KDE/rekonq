@@ -34,6 +34,10 @@
 #include "mainwindow.h"
 #include "application.h"
 #include "bookmarksmanager.h"
+#include "bookmarkowner.h"
+
+// Qt Includes
+#include <QtGui/QFrame>
 
 
 BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,

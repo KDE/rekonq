@@ -38,6 +38,7 @@
 #include "settingsdialog.h"
 #include "historymanager.h"
 #include "bookmarksmanager.h"
+#include "bookmarkstoolbar.h"
 #include "webtab.h"
 #include "mainview.h"
 #include "findbar.h"
@@ -139,16 +140,16 @@ MainWindow::MainWindow()
     // setting up rekonq toolbar(s)
     setupToolbars();
 
-    // a call to KXmlGuiWindow::setupGUI() populates the GUI                                                                              
-    // with actions, using KXMLGUI.                                                                                                       
-    // It also applies the saved mainwindow settings, if any, and ask the                                                                 
-    // mainwindow to automatically save settings if changed: window size,                                                                 
-    // toolbar position, icon size, etc.                                                                                                  
+    // a call to KXmlGuiWindow::setupGUI() populates the GUI
+    // with actions, using KXMLGUI.
+    // It also applies the saved mainwindow settings, if any, and ask the
+    // mainwindow to automatically save settings if changed: window size,
+    // toolbar position, icon size, etc.
     setupGUI();
-    
+
     // no menu bar in rekonq: we have other plans..
     menuBar()->setVisible(false);
-    
+
     // no more status bar..
     setStatusBar(0);
 
@@ -164,7 +165,7 @@ MainWindow::~MainWindow()
     Application::bookmarkProvider()->removeToolBar(m_bookmarksBar);
     Application::bookmarkProvider()->removeBookmarkPanel(m_bookmarksPanel);
     Application::instance()->removeMainWindow(this);
-    
+
     delete m_view;
     delete m_findBar;
     delete m_zoomBar;
@@ -187,7 +188,7 @@ MainWindow::~MainWindow()
 void MainWindow::setupToolbars()
 {
     kDebug() << "setup toolbars...";
-    
+
     KAction *a;
 
     // location bar
@@ -212,7 +213,7 @@ void MainWindow::setupToolbars()
 void MainWindow::postLaunch()
 {
     setupBookmarksAndToolsShortcuts();
-    
+
     // setting popup notification
     m_popup->setAutoDelete(false);
     connect(Application::instance(), SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
@@ -246,7 +247,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(currentChanged(int)), m_zoomBar, SLOT(updateSlider(int)));
     // Ctrl + wheel handling
     connect(this->currentTab()->view(), SIGNAL(zoomChanged(int)), m_zoomBar, SLOT(setValue(int)));
-    
+
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
@@ -266,7 +267,7 @@ QSize MainWindow::sizeHint() const
 void MainWindow::setupActions()
 {
     kDebug() << "setup actions...";
-    
+
     // this let shortcuts work..
     actionCollection()->addAssociatedWidget(this);
 
@@ -377,7 +378,7 @@ void MainWindow::setupActions()
     a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
     actionCollection()->addAction(QL1S("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
-    
+
     a = new KAction(KIcon("tab-new"), i18n("Open Closed Tabs"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
     actionCollection()->addAction(QL1S("open_closed_tabs"), a);
@@ -443,7 +444,7 @@ void MainWindow::setupTools()
     toolsMenu->setDelayed(false);
     toolsMenu->setShortcutConfigurable(true);
     toolsMenu->setShortcut( KShortcut(Qt::ALT + Qt::Key_T) );
-    
+
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Open)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
     toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
@@ -535,7 +536,7 @@ void MainWindow::setupPanels()
 
     addDockWidget(Qt::BottomDockWidgetArea, m_webInspectorPanel);
     m_webInspectorPanel->hide();
-    
+
     // STEP 4
     // Setup Network analyzer panel
     m_analyzerPanel = new NetworkAnalyzerPanel( i18n("Network Analyzer"), this);
@@ -572,7 +573,7 @@ void MainWindow::fileSaveAs()
         srcUrl = w->url();
     }
     kDebug() << "URL to save: " << srcUrl;
-    
+
     QString name = srcUrl.fileName();
     if (name.isNull())
     {
@@ -609,7 +610,7 @@ void MainWindow::updateActions()
 {
     kDebug() << "updating actions..";
     bool rekonqPage = currentTab()->page()->isOnRekonqPage();
-    
+
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
     if( rekonqPage && currentTab()->view()->history()->count() > 0 )
         historyBackAction->setEnabled(true);
@@ -825,7 +826,7 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
 
     KToolBar *mainBar = toolBar("mainToolBar");
     KToolBar *bookBar = toolBar("bookmarksToolBar");
-    
+
     if (!makeVisible)
     {
         // save current state, if in windowed mode
@@ -873,10 +874,10 @@ void MainWindow::viewPageSource()
 
 void MainWindow::homePage(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers keyboardModifiers)
 {
-    KUrl homeUrl = ReKonfig::useNewTabPage() 
+    KUrl homeUrl = ReKonfig::useNewTabPage()
         ? KUrl( QL1S("about:home") )
         : KUrl( ReKonfig::homePage() );
-        
+
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
         Application::instance()->loadUrl( homeUrl, Rekonq::NewTab);
     else
@@ -918,7 +919,7 @@ void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifie
 {
     QWebHistory *history = currentTab()->view()->history();
     QWebHistoryItem *item = 0;
-    
+
     if (currentTab()->page()->isOnRekonqPage())
     {
         item = new QWebHistoryItem(history->currentItem());
@@ -934,7 +935,7 @@ void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifie
 
     if(!item)
         return;
-    
+
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
     {
         Application::instance()->loadUrl(item->url(), Rekonq::NewTab);
@@ -965,10 +966,10 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
             item = new QWebHistoryItem(history->forwardItem());
         }
     }
-    
+
     if(!item)
         return;
-    
+
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
     {
         Application::instance()->loadUrl(item->url(), Rekonq::NewTab);
@@ -977,7 +978,7 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
     {
         history->goToItem(*item);
     }
-    
+
     updateActions();
 }
 
@@ -1169,7 +1170,7 @@ void MainWindow::aboutToShowBackMenu()
         offset = pivot - 8;
 
     /*
-     * Need a bug report upstream. 
+     * Need a bug report upstream.
      * Seems setHtml() do some garbage in history
      * Here history->currentItem() have backItem url and currentItem (error page) title
      */
@@ -1183,7 +1184,7 @@ void MainWindow::aboutToShowBackMenu()
         action->setText(item.title());
         m_historyBackMenu->addAction(action);
     }
-         
+
     for (int i = listCount - 1; i >= 0; --i)
     {
         QWebHistoryItem item = historyList.at(i);
@@ -1224,7 +1225,7 @@ void MainWindow::setEncoding(QAction *qa)
         currentTab()->view()->reload();
         return;
     }
-    
+
     currentTab()->view()->settings()->setDefaultTextEncoding(currentCodec);
     currentTab()->view()->reload();
 }
@@ -1234,7 +1235,7 @@ void MainWindow::populateEncodingMenu()
 {
     QStringList codecs;
     QList<int> mibs = QTextCodec::availableMibs();
-    Q_FOREACH (const int &mib, mibs) 
+    Q_FOREACH (const int &mib, mibs)
     {
         QString codec = QLatin1String(QTextCodec::codecForMib(mib)->name());
         codecs.append(codec);
@@ -1249,13 +1250,13 @@ void MainWindow::populateEncodingMenu()
     KMenu *isciiMenu = new KMenu( QL1S("ISCII"), m_encodingMenu);
     KMenu *uniMenu = new KMenu( QL1S("Unicode"), m_encodingMenu);
     KMenu *otherMenu = new KMenu( i18n("Other"), m_encodingMenu);
-    
+
     QAction *a;
     bool isDefaultCodecUsed = true;
-    
+
     Q_FOREACH(const QString &codec, codecs)
     {
-        
+
         if( codec.startsWith( QL1S("ISO"), Qt::CaseInsensitive ) )
             a = isoMenu->addAction(codec);
         else if( codec.startsWith( QL1S("win") ) )
@@ -1264,9 +1265,9 @@ void MainWindow::populateEncodingMenu()
             a = isciiMenu->addAction(codec);
         else if( codec.startsWith( QL1S("UT") ) )
             a = uniMenu->addAction(codec);
-        else 
+        else
             a = otherMenu->addAction(codec);
-            
+
         a->setCheckable(true);
         if (currentCodec == codec)
         {
@@ -1274,11 +1275,11 @@ void MainWindow::populateEncodingMenu()
             isDefaultCodecUsed = false;
         }
     }
-    
+
     a = new QAction( i18nc("Default website encoding", "Default"), this);
     a->setCheckable(true);
     a->setChecked(isDefaultCodecUsed);
-            
+
     m_encodingMenu->addAction( a );
     m_encodingMenu->addMenu( isoMenu );
     m_encodingMenu->addMenu( winMenu );
@@ -1300,36 +1301,36 @@ bool MainWindow::queryClose()
     // this should fux bug 240432
     if(Application::instance()->sessionSaving())
         return true;
-    
-    if (m_view->count() > 1)                                                                                                              
+
+    if (m_view->count() > 1)
     {
-        int answer = KMessageBox::questionYesNoCancel(                                                                                    
-                        this,                                                                                                            
+        int answer = KMessageBox::questionYesNoCancel(
+                        this,
                         i18np("Are you sure you want to close the window?\n" "You have 1 tab open.",
-                         "Are you sure you want to close the window?\n" "You have %1 tabs open.", 
+                         "Are you sure you want to close the window?\n" "You have %1 tabs open.",
                         m_view->count()),
-                        i18n("Are you sure you want to close the window?"),                                                              
-                        KStandardGuiItem::quit(),                                                                                        
-                        KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),                                                        
-                        KStandardGuiItem::cancel(),                                                                                      
-                        "confirmClosingMultipleTabs"                                                                                     
-                                                        );                                                                                                                   
-                                                                                                                    
-        switch (answer)                                                                                                                   
-        {                                                                                                                                 
-            case KMessageBox::Yes:  
-                // Quit                                                                                                                         
-                return true;                                                                                                                  
-            
-            case KMessageBox::No:                                                                                                             
-                // Close only the current tab                                                                                                 
+                        i18n("Are you sure you want to close the window?"),
+                        KStandardGuiItem::quit(),
+                        KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
+                        KStandardGuiItem::cancel(),
+                        "confirmClosingMultipleTabs"
+                                                        );
+
+        switch (answer)
+        {
+            case KMessageBox::Yes:
+                // Quit
+                return true;
+
+            case KMessageBox::No:
+                // Close only the current tab
                 m_view->closeTab();
-            
-            default:                                                                                                                          
-                return false;                                                                                                                 
-        }                                                                                                                                 
-    }                                                                                                                                     
-    return true;                                                                                                                          
+
+            default:
+                return false;
+        }
+    }
+    return true;
 }
 
 
@@ -1343,16 +1344,16 @@ void MainWindow::saveNewToolbarConfig()
 void MainWindow::setupBookmarksAndToolsShortcuts()
 {
     KToolBar *mainBar = toolBar("mainToolBar");
-    
+
     QToolButton *bookmarksButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("bookmarksActionMenu") )));
     if(bookmarksButton)
     {
         connect(actionByName(QL1S("bookmarksActionMenu")), SIGNAL(triggered()), bookmarksButton, SLOT(showMenu()));
     }
-    
+
     QToolButton *toolsButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("rekonq_tools") )));
     if(toolsButton)
     {
         connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), toolsButton, SLOT(showMenu()));
-    }    
+    }
 }

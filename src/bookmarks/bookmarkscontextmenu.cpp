@@ -28,7 +28,7 @@
 #include "bookmarkscontextmenu.h"
 
 // Local Includes
-#include "bookmarksmanager.h"
+#include "bookmarkowner.h"
 
 
 BookmarksContextMenu::BookmarksContextMenu(const KBookmark &bookmark, KBookmarkManager *manager, BookmarkOwner *owner, QWidget *parent)

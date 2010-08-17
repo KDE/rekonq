@@ -34,6 +34,7 @@
 #include "bookmarkstreemodel.h"
 #include "bookmarksproxy.h"
 #include "bookmarkscontextmenu.h"
+#include "bookmarkowner.h"
 
 // Auto Includes
 #include "rekonq.h"

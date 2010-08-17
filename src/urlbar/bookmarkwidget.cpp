@@ -31,6 +31,7 @@
 // Local includes
 #include "application.h"
 #include "bookmarksmanager.h"
+#include "bookmarkowner.h"
 
 // KDE Includes
 #include <KLocalizedString>

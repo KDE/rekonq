@@ -7,13 +7,13 @@ ADD_SUBDIRECTORY( tests )
 ### ------- SETTING REKONQ FILES..
 
 SET( rekonq_KDEINIT_SRCS
-    application.cpp 
+    application.cpp
     clicktoflash.cpp
     filterurljob.cpp
     findbar.cpp
     zoombar.cpp
     mainview.cpp
-    mainwindow.cpp 
+    mainwindow.cpp
     networkaccessmanager.cpp
     newtabpage.cpp
     paneltreeview.cpp
@@ -31,7 +31,7 @@ SET( rekonq_KDEINIT_SRCS
     webtab.cpp
     searchengine.cpp
     #----------------------------------------
-    history/autosaver.cpp 
+    history/autosaver.cpp
     history/historymanager.cpp
     history/historymodels.cpp
     history/historypanel.cpp
@@ -50,6 +50,7 @@ SET( rekonq_KDEINIT_SRCS
     bookmarks/bookmarksproxy.cpp
     bookmarks/bookmarkscontextmenu.cpp
     bookmarks/bookmarkstoolbar.cpp
+    bookmarks/bookmarkowner.cpp
     #----------------------------------------
     adblock/adblockmanager.cpp
     adblock/adblocknetworkreply.cpp
@@ -110,8 +111,8 @@ KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
 ### --------------- TARGETTING LINK LIBRARIES...
 
 TARGET_LINK_LIBRARIES ( kdeinit_rekonq
-                        ${QT_LIBRARIES} 
-                        ${QT_QTWEBKIT_LIBRARY} 
+                        ${QT_LIBRARIES}
+                        ${QT_QTWEBKIT_LIBRARY}
                         ${KDE4_KDEWEBKIT_LIBS}
                         ${KDE4_KUTILS_LIBS}
                         ${KDE4_KDEUI_LIBS}
