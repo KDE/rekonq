@@ -39,7 +39,6 @@
 //KDE Includes
 #include <kstandarddirs.h>
 
-
 GeneralWidget::GeneralWidget(QWidget *parent)
         : QWidget(parent)
         , _changed(false)
@@ -91,7 +90,6 @@ void GeneralWidget::disableHomeSettings(bool b)
 
 void GeneralWidget::disableKGet()
 {
-  
         if (KStandardDirs::findExe("kget").isNull())
         {
 	  kWarning() <<  "Install KGet to enable rekonq to use KGet as download manager";
@@ -100,6 +98,4 @@ void GeneralWidget::disableKGet()
 	  kcfg_kgetDownload->setDisabled(true);
 	  kcfg_kgetList->setDisabled(true);
         }
-  
-  return;
 }
