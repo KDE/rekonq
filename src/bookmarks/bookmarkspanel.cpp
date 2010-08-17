@@ -218,5 +218,6 @@ void BookmarksPanel::deleteBookmark()
         return;
 
     KBookmark bm = bookmarkForIndex(index);
-    Application::instance()->bookmarkProvider()->bookmarkOwner()->deleteBookmark(bm);
+    Application::instance()->bookmarkProvider()->bookmarkOwner()->bookmarkSelected(bm);
+    Application::instance()->bookmarkProvider()->bookmarkOwner()->deleteBookmark();
 }

@@ -65,7 +65,7 @@ KMenu * BookmarkMenu::contextMenu(QAction *act)
     KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(act);
     if (!action)
         return 0;
-    return new BookmarksContextMenu(action->bookmark(), manager(), owner());
+    return new BookmarksContextMenu(action->bookmark(), manager(), static_cast<BookmarkOwner*>(owner()));
 }
 
 

@@ -57,12 +57,12 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     setLayout(layout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    
+
     QLabel *bookmarkIcon = new QLabel(this);
     bookmarkIcon->setPixmap(KIcon("bookmarks").pixmap(32, 32));
     hLayout->addWidget(bookmarkIcon);
     hLayout->setSpacing(10);
-    
+
     QVBoxLayout *vLayout = new QVBoxLayout();
 
     QLabel *bookmarkInfo = new QLabel(this);
@@ -70,13 +70,13 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     QFont font;
     font.setPointSize(font.pointSize() + 2);
     bookmarkInfo->setFont(font);
-    
+
     vLayout->addWidget(bookmarkInfo);
 
     QPushButton *removeButton = new QPushButton(this);
     removeButton->setText(i18n("Remove this Bookmark"));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(removeBookmark()));
-    
+
     vLayout->addWidget(removeButton);
     hLayout->addLayout(vLayout);
     layout->addItem(hLayout);
@@ -152,6 +152,7 @@ void BookmarkWidget::showAt(const QPoint &pos)
 
 void BookmarkWidget::removeBookmark()
 {
-    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(m_bookmark);
+    Application::bookmarkProvider()->bookmarkOwner()->bookmarkSelected(m_bookmark);
+    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark();
     reject();
 }

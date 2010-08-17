@@ -30,36 +30,24 @@
 // KDE Includes
 #include <KBookmarkMenu>
 
+// Forward Declarations
+class BookmarkOwner;
 
 class BookmarksContextMenu : public KBookmarkContextMenu
 {
-    Q_OBJECT
-
 public:
-    BookmarksContextMenu(const KBookmark & bk, KBookmarkManager * manager, KBookmarkOwner *owner, QWidget * parent = 0);
-    ~BookmarksContextMenu();
+    BookmarksContextMenu(const KBookmark &bookmark, KBookmarkManager *manager, BookmarkOwner *owner, QWidget *parent = 0);
+    virtual ~BookmarksContextMenu();
 
     virtual void addActions();
 
-private slots:
-    void openInCurrentTab();
-    void openInNewTab();
-    void openInNewWindow();
-    void copyToClipboard();
-    void deleteBookmark();
-    void openFolderInTabs();
-    void editBookmark();
-    void newBookmarkGroup();
-    void newSeparator();
-    void bookmarkCurrentPage();
-
 private:
-    void setupActions();
     void addFolderActions();
     void addBookmarkActions();
     void addSeparatorActions();
+    void addNullActions();
 
-    KActionCollection *m_ac;
+    BookmarkOwner *bmOwner;
 };
 
 #endif // BOOKMARKCONTEXTMENU_H

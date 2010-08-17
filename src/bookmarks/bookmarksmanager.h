@@ -67,14 +67,7 @@ class REKONQ_TESTS_EXPORT BookmarkOwner : public QObject , public KBookmarkOwner
     Q_OBJECT
 
 public:
-
-    /**
-     * @short The class constructor.
-     *
-     * @param parent the pointer parent Bookmark provider. We need it
-     *               to get pointer to MainWindow
-     */
-    BookmarkOwner(QObject *parent = 0);
+    explicit BookmarkOwner(KBookmarkManager *manager, QObject *parent = 0);
     virtual ~BookmarkOwner() {}
 
     enum BookmarkAction
@@ -109,35 +102,6 @@ public:
     virtual void openBookmark(const KBookmark &bookmark,
                               Qt::MouseButtons mouseButtons,
                               Qt::KeyboardModifiers keyboardModifiers);
-
-
-    /**
-     * Bookmarks the current page.
-     * @param position Where to insert the bookmark.
-     */
-    static void bookmarkPage(KBookmark &position);
-    /**
-     * Creates a new bookmark folder.
-     * @param position Where to insert the folder.
-     */
-    static void newBookmarkFolder(KBookmark &position);
-    /**
-     * Creates a new separator.
-     * @param position Where to insert the separator.
-     */
-    static void newSeparator(KBookmark &position);
-
-    /**
-     * Opens the edit dialog for a bookmark.
-     * @param bookmark The bookmark to edit.
-     */
-    static void editBookmark(KBookmark &bookmark);
-    /**
-     * Promps the user to delete a bookmark.
-     * @param bookmark The bookmark to delete.
-     * @return true if the bookmark was deleted, false if canceled.
-     */
-    static bool deleteBookmark(KBookmark &bookmark);
 
 
     /**
@@ -179,8 +143,25 @@ signals:
      */
     void openUrl(const KUrl &, const Rekonq::OpenType &);
 
+public slots:
+    void bookmarkSelected(const KBookmark &bookmark);
+
+    void openBookmark();
+    void openBookmarkInNewTab();
+    void openBookmarkInNewWindow();
+    void openBookmarkFolder();
+    void bookmarkCurrentPage();
+    void newBookmarkFolder();
+    void newSeparator();
+    void copyLink();
+    void editBookmark();
+    bool deleteBookmark();
+
 private:
+    KBookmarkManager *m_manager;
+
     QVector<KAction*> actions;
+    KBookmark selected;
 
     void setupActions();
     void createAction(const BookmarkAction &action,
