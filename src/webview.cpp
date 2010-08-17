@@ -536,13 +536,11 @@ void WebView::keyPressEvent(QKeyEvent *event)
 }
 
 
-
-
-
 void WebView::wheelEvent(QWheelEvent *event)
 {
-    if (!ReKonfig::smoothScrolling() || page()->currentFrame()->hitTestContent(event->pos()).isContentEditable())
-        KWebView::wheelEvent(event);
+    // To let some websites (eg: google maps) to handle wheel events
+    int ypos = page()->currentFrame()->scrollPosition().y();
+    KWebView::wheelEvent(event);
 
     // Sync with the zoom slider
     if (event->modifiers() == Qt::ControlModifier)
@@ -560,8 +558,10 @@ void WebView::wheelEvent(QWheelEvent *event)
 
         emit zoomChanged(newFactor);
     }
-    else if ( ReKonfig::smoothScrolling() && !page()->currentFrame()->hitTestContent(event->pos()).isContentEditable())
+    else if ( ReKonfig::smoothScrolling() && ypos != page()->currentFrame()->scrollPosition().y())
     {
+        page()->currentFrame()->setScrollPosition(QPoint(page()->currentFrame()->scrollPosition().x(), ypos));
+
         int numDegrees = event->delta() / 8;
         int numSteps = numDegrees / 15;
 
