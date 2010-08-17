@@ -57,7 +57,15 @@
 BookmarkOwner::BookmarkOwner(QObject *parent)
         : QObject(parent)
         , KBookmarkOwner()
+        , actions(QVector<KAction*>(NUM_ACTIONS))
 {
+    setupActions();
+}
+
+
+KAction* BookmarkOwner::action(const BookmarkAction &bmAction)
+{
+    return static_cast<KAction*>(actions.at(bmAction));
 }
 
 
@@ -274,6 +282,41 @@ QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
         bkList += item;
     }
     return bkList;
+}
+
+
+void BookmarkOwner::setupActions()
+{
+    createAction(OPEN, i18n("Open"), "tab-new",
+                 i18n("Open bookmark in current tab"), SLOT(openBookmark()));
+    createAction(OPEN_IN_TAB, i18n("Open in New Tab"), "tab-new",
+                 i18n("Open bookmark in new tab"), SLOT(openBookmarkInNewTab()));
+    createAction(OPEN_IN_WINDOW, i18n("Open in New Window"), "window-new",
+                 i18n("Open bookmark in new window"), SLOT(openBookmarkInNewWindow()));
+    createAction(OPEN_FOLDER, i18n("Open Folder in Tabs"), "tab-new",
+                 i18n("Open all the bookmarks in folder in tabs"), SLOT(openBookmarkGroup()));
+    createAction(BOOKMARK_PAGE, i18n("Add Bookmark"), "bookmark-new",
+                 i18n("Bookmark current page"), SLOT(bookmarkCurrentPage()));
+    createAction(NEW_FOLDER, i18n("New Folder"), "folder-new",
+                 i18n("Create a new bookmark folder"), SLOT(newBookmarkGroup()));
+    createAction(NEW_SEPARATOR, i18n("New Separator"), "edit-clear",
+                 i18n("Create a new bookmark separatork"), SLOT(newSeparator()));
+    createAction(COPY, i18n("Copy Link"), "edit-copy",
+                 i18n("Copy the bookmark's link address"), SLOT(copyLink()));
+    createAction(EDIT, i18n("Edit"), "configure",
+                 i18n("Edit the bookmark"), SLOT(editBookmark()));
+    createAction(DELETE, i18n("Delete"), "edit-delete",
+                 i18n("Delete the bookmark"), SLOT(deleteBookmark()));
+}
+
+
+void BookmarkOwner::createAction(const BookmarkAction &action, const QString &text,
+                                 const QString &icon, const QString &help, const char *slot)
+{
+    KAction *act = new KAction(KIcon(icon), text, this);
+    act->setHelpText(help);
+    actions[action] = act;
+    connect(act, SIGNAL(triggered()), this, slot);
 }
 
 

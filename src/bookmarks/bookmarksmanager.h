@@ -77,6 +77,26 @@ public:
     BookmarkOwner(QObject *parent = 0);
     virtual ~BookmarkOwner() {}
 
+    enum BookmarkAction
+    {
+        OPEN = 0,
+        OPEN_IN_TAB,
+        OPEN_IN_WINDOW,
+        OPEN_FOLDER,
+        BOOKMARK_PAGE,
+        NEW_FOLDER,
+        NEW_SEPARATOR,
+        COPY,
+        EDIT,
+        DELETE,
+        NUM_ACTIONS
+    };
+
+    /**
+     * @return the action or 0 if it doesn't exist.
+     */
+    KAction* action(const BookmarkAction &bmAction);
+
     /**
      * This function is called when a bookmark is selected and belongs to
      * the ancestor class.
@@ -158,6 +178,14 @@ signals:
      *
      */
     void openUrl(const KUrl &, const Rekonq::OpenType &);
+
+private:
+    QVector<KAction*> actions;
+
+    void setupActions();
+    void createAction(const BookmarkAction &action,
+                      const QString &text, const QString &icon,
+                      const QString &help, const char *slot);
 };
 
 
