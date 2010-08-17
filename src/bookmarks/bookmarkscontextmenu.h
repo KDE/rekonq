@@ -27,10 +27,7 @@
 #ifndef BOOKMARKCONTEXTMENU_H
 #define BOOKMARKCONTEXTMENU_H
 
-// Local Includes
-#include "application.h"
-
-// Qt Includes
+// KDE Includes
 #include <KBookmarkMenu>
 
 
@@ -41,7 +38,7 @@ class BookmarksContextMenu : public KBookmarkContextMenu
 public:
     BookmarksContextMenu(const KBookmark & bk, KBookmarkManager * manager, KBookmarkOwner *owner, QWidget * parent = 0);
     ~BookmarksContextMenu();
-    
+
     virtual void addActions();
 
 private slots:

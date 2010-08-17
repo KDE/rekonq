@@ -41,6 +41,7 @@
 // KDE Includes
 #include <KActionCollection>
 #include <KBookmarkAction>
+#include <KBookmarkDialog>
 #include <KBookmarkGroup>
 #include <KToolBar>
 #include <KMenu>
@@ -72,6 +73,105 @@ void BookmarkOwner::openBookmark(const KBookmark & bookmark,
     {
         emit openUrl(bookmark.url(), Rekonq::CurrentTab);
     }
+}
+
+
+void BookmarkOwner::bookmarkPage(KBookmark &position)
+{
+    BookmarkOwner *owner = Application::bookmarkProvider()->bookmarkOwner();
+    KBookmarkGroup parent = Application::bookmarkProvider()->rootGroup();
+
+    if (!position.isNull())
+    {
+        parent = position.parentGroup();
+
+        if (position.isGroup())
+            parent = position.toGroup();
+
+        KBookmark newBk = parent.addBookmark(owner->currentTitle().replace('&', "&&"), KUrl(owner->currentUrl()));
+        parent.moveBookmark(newBk, position.parentGroup().previous(position));
+    }
+
+    else
+    {
+        parent.addBookmark(owner->currentTitle(), KUrl(owner->currentUrl()));
+    }
+
+    Application::bookmarkProvider()->bookmarkManager()->emitChanged(parent);
+}
+
+
+void BookmarkOwner::newBookmarkFolder(KBookmark &position)
+{
+    BookmarkOwner *owner = Application::bookmarkProvider()->bookmarkOwner();
+    KBookmarkManager *manager = Application::bookmarkProvider()->bookmarkManager();
+
+    KBookmarkDialog *dialog = owner->bookmarkDialog(manager, QApplication::activeWindow());
+
+    if (!position.isNull())
+    {
+        if (position.isGroup())
+        {
+            dialog->createNewFolder("New folder", position);
+        }
+
+        else
+        {
+            KBookmark newBk;
+            newBk = dialog->createNewFolder("New folder", position.parentGroup());
+            if (!newBk.isNull())
+            {
+                position.parentGroup().moveBookmark(newBk, position);
+                manager->emitChanged(newBk.parentGroup());
+            }
+        }
+    }
+    else
+    {
+        dialog->createNewFolder("New folder");
+    }
+
+    delete dialog;
+}
+
+
+void BookmarkOwner::newSeparator(KBookmark &position)
+{
+    KBookmark newBk;
+
+    if (!position.isNull())
+    {
+        if (position.isGroup())
+            newBk = position.toGroup().createNewSeparator();
+        else
+            newBk = position.parentGroup().createNewSeparator();
+    }
+
+    else
+    {
+        newBk = Application::bookmarkProvider()->rootGroup().createNewSeparator();
+    }
+
+    KBookmarkGroup parent = newBk.parentGroup();
+    newBk.setIcon(("edit-clear"));
+    parent.addBookmark(newBk);
+
+    if (!position.isNull())
+        parent.moveBookmark(newBk, position);
+
+    Application::bookmarkProvider()->bookmarkManager()->emitChanged(newBk.parentGroup());
+}
+
+
+void BookmarkOwner::editBookmark(KBookmark &bookmark)
+{
+    BookmarkOwner *owner = Application::bookmarkProvider()->bookmarkOwner();
+    KBookmarkManager *manager = Application::bookmarkProvider()->bookmarkManager();
+    bookmark.setFullText(bookmark.fullText().replace("&&", "&"));
+    KBookmarkDialog *dialog = owner->bookmarkDialog(manager, QApplication::activeWindow());
+    dialog->editBookmark(bookmark);
+    bookmark.setFullText(bookmark.fullText().replace('&', "&&"));
+    delete dialog;
 }
 
 

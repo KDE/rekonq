@@ -90,6 +90,28 @@ public:
                               Qt::MouseButtons mouseButtons,
                               Qt::KeyboardModifiers keyboardModifiers);
 
+
+    /**
+     * Bookmarks the current page.
+     * @param position Where to insert the bookmark.
+     */
+    static void bookmarkPage(KBookmark &position);
+    /**
+     * Creates a new bookmark folder.
+     * @param position Where to insert the folder.
+     */
+    static void newBookmarkFolder(KBookmark &position);
+    /**
+     * Creates a new separator.
+     * @param position Where to insert the separator.
+     */
+    static void newSeparator(KBookmark &position);
+
+    /**
+     * Opens the edit dialog for a bookmark.
+     * @param bookmark The bookmark to edit.
+     */
+    static void editBookmark(KBookmark &bookmark);
     /**
      * Promps the user to delete a bookmark.
      * @param bookmark The bookmark to delete.

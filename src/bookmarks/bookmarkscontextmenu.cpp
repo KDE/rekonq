@@ -26,16 +26,12 @@
 
 // Self Includes
 #include "bookmarkscontextmenu.h"
-#include "bookmarkscontextmenu.moc"
 
 // Local Includes
-#include "application.h"
 #include "bookmarksmanager.h"
 
 // KDE Includes
-#include <KMessageBox>
 #include <KActionCollection>
-#include <KBookmarkDialog>
 
 // Qt Includes
 #include <QClipboard>
@@ -218,12 +214,8 @@ void BookmarksContextMenu::deleteBookmark()
 
 void BookmarksContextMenu::editBookmark()
 {
-    KBookmark selected = bookmark();
-    selected.setFullText(selected.fullText().replace("&&", "&"));
-    KBookmarkDialog *dialog = owner()->bookmarkDialog(manager(), QApplication::activeWindow());
-    dialog->editBookmark(selected);
-    selected.setFullText(selected.fullText().replace('&', "&&"));
-    delete dialog;
+    KBookmark bm = bookmark();
+    Application::bookmarkProvider()->bookmarkOwner()->editBookmark(bm);
 }
 
 
@@ -236,86 +228,21 @@ void BookmarksContextMenu::openFolderInTabs()
 
 void BookmarksContextMenu::newBookmarkGroup()
 {
-    KBookmark selected = bookmark();
-    KBookmarkDialog *dialog = owner()->bookmarkDialog(manager(), QApplication::activeWindow());
-
-    if (!selected.isNull())
-    {
-        if (selected.isGroup())
-        {
-            dialog->createNewFolder("New folder", selected);
-        }
-
-        else
-        {
-            KBookmark newBk;
-            newBk = dialog->createNewFolder("New folder", selected.parentGroup());
-            if (!newBk.isNull())
-            {
-                selected.parentGroup().moveBookmark(newBk, selected);
-                manager()->emitChanged(newBk.parentGroup());
-            }
-        }
-    }
-    else
-    {
-        dialog->createNewFolder("New folder");
-    }
-
-    delete dialog;
+    KBookmark bm = bookmark();
+    Application::bookmarkProvider()->bookmarkOwner()->newBookmarkFolder(bm);
 }
 
 
 void BookmarksContextMenu::newSeparator()
 {
-    KBookmark selected = bookmark();
-    KBookmark newBk;
-
-    if (!selected.isNull())
-    {
-        if (selected.isGroup())
-            newBk = selected.toGroup().createNewSeparator();
-        else
-            newBk = selected.parentGroup().createNewSeparator();
-    }
-
-    else
-    {
-        newBk = Application::bookmarkProvider()->rootGroup().createNewSeparator();
-    }
-
-    KBookmarkGroup parent = newBk.parentGroup();
-    newBk.setIcon(("edit-clear"));
-    parent.addBookmark(newBk);
-
-    if (!selected.isNull())
-        parent.moveBookmark(newBk, selected);
-
-    manager()->emitChanged(newBk.parentGroup());
+    KBookmark bm = bookmark();
+    Application::bookmarkProvider()->bookmarkOwner()->newSeparator(bm);
 }
 
 
 void BookmarksContextMenu::bookmarkCurrentPage()
 {
-    KBookmarkGroup parent = Application::bookmarkProvider()->rootGroup();
-    KBookmark selected = bookmark();
-
-    if (!selected.isNull())
-    {
-        parent = selected.parentGroup();
-
-        if (selected.isGroup())
-            parent = selected.toGroup();
-
-        KBookmark newBk = parent.addBookmark(owner()->currentTitle().replace('&', "&&"), KUrl(owner()->currentUrl()));
-        parent.moveBookmark(newBk, selected.parentGroup().previous(selected));
-    }
-
-    else
-    {
-        parent.addBookmark(owner()->currentTitle(), KUrl(owner()->currentUrl()));
-    }
-
-    manager()->emitChanged(parent);
+    KBookmark bm = bookmark();
+    Application::bookmarkProvider()->bookmarkOwner()->bookmarkPage(bm);
 }
 
