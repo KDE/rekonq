@@ -75,6 +75,45 @@ void BookmarkOwner::openBookmark(const KBookmark & bookmark,
 }
 
 
+bool BookmarkOwner::deleteBookmark(KBookmark &bookmark)
+{
+    QString name = QString(bookmark.fullText()).replace("&&", "&");
+    QString dialogCaption, dialogText;
+
+    if (bookmark.isGroup())
+    {
+        dialogCaption = i18n("Bookmark Folder Deletion");
+        dialogText = i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", name);
+    }
+    else if (bookmark.isSeparator())
+    {
+        dialogCaption = i18n("Separator Deletion");
+        dialogText = i18n("Are you sure you wish to remove this separator?", name);
+    }
+    else
+    {
+        dialogCaption = i18n("Bookmark Deletion");
+        dialogText = i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", name);
+    }
+
+    if (KMessageBox::warningContinueCancel(
+                QApplication::activeWindow(),
+                dialogText,
+                dialogCaption,
+                KStandardGuiItem::del(),
+                KStandardGuiItem::cancel(),
+                "bookmarkDeletition_askAgain")
+            != KMessageBox::Continue
+       )
+        return false;
+
+    KBookmarkGroup bmg = bookmark.parentGroup();
+    bmg.deleteBookmark(bookmark);
+    Application::bookmarkProvider()->bookmarkManager()->emitChanged(bmg);
+    return true;
+}
+
+
 bool BookmarkOwner::supportsTabs() const
 {
     return true;
@@ -99,16 +138,16 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
 
     if (urlList.length() > 8)
     {
-        if ( !(KMessageBox::warningContinueCancel(  Application::instance()->mainWindow(), 
+        if ( !(KMessageBox::warningContinueCancel(  Application::instance()->mainWindow(),
                                                     i18ncp("%1=Number of tabs. Value is always >=8",
                                                            "You are about to open %1 tabs.\nAre you sure?",
-                                                           "You are about to open %1 tabs.\nAre you sure?", 
+                                                           "You are about to open %1 tabs.\nAre you sure?",
                                                            urlList.length()),
                                                     "",
                                                     KStandardGuiItem::cont(),
                                                     KStandardGuiItem::cancel(),
                                                     "openFolderInTabs_askAgain"
-                                                 ) == KMessageBox::Continue) 
+                                                 ) == KMessageBox::Continue)
            )
             return;
     }
@@ -335,7 +374,7 @@ void BookmarkToolBar::actionHovered()
 // ------------------------------------------------------------------------------------------------------
 
 
-        
+
 BookmarkProvider::BookmarkProvider(QObject *parent)
         : QObject(parent)
         , m_manager(0)
@@ -396,7 +435,7 @@ void BookmarkProvider::setupBookmarkBar(BookmarkToolBar *toolbar)
     m_bookmarkToolBars.append(toolbar);
     toolbar->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(toolbar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
-    
+
     kDebug() << "new bookmark bar... DONE!";
 }
 
@@ -453,7 +492,7 @@ void BookmarkProvider::contextMenu(const QPoint &point)
 KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 {
     kDebug() << "new Bookmarks Menu...";
-    
+
     KMenu *menu = new KMenu(parent);
     _bookmarkActionMenu = new KActionMenu(parent);
     _bookmarkActionMenu->setMenu(menu);
@@ -524,7 +563,7 @@ QList<KBookmark> BookmarkProvider::find(QString text)
         return list;
     }
 
-    KBookmark bookmark = bookGroup.first(); 
+    KBookmark bookmark = bookGroup.first();
     while (!bookmark.isNull())
     {
         list = find(list, bookmark, text);

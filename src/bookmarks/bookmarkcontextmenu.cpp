@@ -212,25 +212,7 @@ void BookmarkContextMenu::copyToClipboard()
 void BookmarkContextMenu::deleteBookmark()
 {
     KBookmark bm = bookmark();
-    KBookmarkGroup bmg = bm.parentGroup();
-    bool folder = bm.isGroup();
-    QString name = QString(bm.fullText()).replace("&&", "&");
-
-    if (KMessageBox::warningContinueCancel(
-                QApplication::activeWindow(),
-                folder ? i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", name)
-                : i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", name),
-                folder ? i18n("Bookmark Folder Deletion")
-                : i18n("Bookmark Deletion"),
-                KStandardGuiItem::del(),
-                KStandardGuiItem::cancel(),
-                "bookmarkDeletition_askAgain")
-            != KMessageBox::Continue
-       )
-        return;
-
-    bmg.deleteBookmark(bm);
-    manager()->emitChanged(bmg);
+    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(bm);
 }
 
 

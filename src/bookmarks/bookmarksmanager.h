@@ -89,6 +89,13 @@ public:
                               Qt::MouseButtons mouseButtons,
                               Qt::KeyboardModifiers keyboardModifiers);
 
+    /**
+     * Promps the user to delete a bookmark.
+     * @param bookmark The bookmark to delete.
+     * @return true if the bookmark was deleted, false if canceled.
+     */
+    static bool deleteBookmark(KBookmark &bookmark);
+
 
     /**
      * this method, from KBookmarkOwner interface, allows to add the current page
@@ -206,7 +213,7 @@ private:
 
 // ------------------------------------------------------------------------------
 
-        
+
 /**
  * This class represent the interface to rekonq bookmarks system.
  * All rekonq needs (Bookmarks Menu, Bookmarks Toolbar) is provided
@@ -263,7 +270,7 @@ public:
     KBookmarkGroup rootGroup();
 
     inline KBookmarkManager *bookmarkManager() { return m_manager; }
-    
+
     inline BookmarkOwner *bookmarkOwner() { return m_owner; }
 
     QList<KBookmark> find(QString text);
@@ -272,7 +279,7 @@ public:
     void removeBookmarkPanel(BookmarksPanel *panel);
 
     KBookmark bookmarkForUrl(const KUrl &url);
-    
+
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
@@ -299,11 +306,11 @@ public slots:
      */
     void slotBookmarksChanged(const QString &group, const QString &caller);
     void fillBookmarkBar(BookmarkToolBar *toolBar);
- 
+
 private slots:
     void slotAddBookmark();
     void slotPanelChanged();
-    
+
 private:
     QList<KBookmark> find(QList<KBookmark> list, const KBookmark &bookmark, QString text);
 
@@ -315,7 +322,7 @@ private:
     KActionCollection *m_actionCollection;
     QList<BookmarkToolBar *> m_bookmarkToolBars;
     QList<BookmarksPanel*> m_bookmarkPanels;
-    
+
     KActionMenu *_bookmarkActionMenu;
 };
 
