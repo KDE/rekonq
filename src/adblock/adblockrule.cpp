@@ -59,38 +59,32 @@
 #include <QStringList>
 #include <QUrl>
 
+static inline bool isRegExpFilter(const QString &filter)
+{
+    return filter.startsWith(QL1C('/')) && filter.endsWith(QL1C('/'));
+}
 
 AdBlockRule::AdBlockRule(const QString &filter)
 {
-    bool isRegExpRule = false;
+    m_regExp.setCaseSensitivity(Qt::CaseInsensitive);
+    m_regExp.setPatternSyntax(QRegExp::RegExp2);
 
     QString parsedLine = filter;
 
-    if (parsedLine.startsWith(QL1C('/')) && parsedLine.endsWith(QL1C('/')))
-    {
-        parsedLine = parsedLine.mid(1);
-        parsedLine = parsedLine.left(parsedLine.size() - 1);
-        isRegExpRule = true;
-    }
-
-    int optionsNumber = parsedLine.indexOf(QL1C('$'), 0);
-    QStringList options;
-
-    if (optionsNumber >= 0)
-    {
-        options = parsedLine.mid(optionsNumber + 1).split(QL1C(','));
+    const int optionsNumber = parsedLine.lastIndexOf(QL1C('$'));
+    if (optionsNumber >= 0 && !isRegExpFilter(parsedLine)) {
+        const QStringList options(parsedLine.mid(optionsNumber + 1).split(QL1C(',')));
+        if (options.contains(QL1S("match-case")))
+            m_regExp.setCaseSensitivity(Qt::CaseSensitive);
         parsedLine = parsedLine.left(optionsNumber);
     }
 
-    if (!isRegExpRule)
+    if (isRegExpFilter(parsedLine))
+        parsedLine = parsedLine.mid(1, parsedLine.length() - 2);
+    else
         parsedLine = convertPatternToRegExp(parsedLine);
 
-    m_regExp = QRegExp(parsedLine, Qt::CaseInsensitive, QRegExp::RegExp2);
-
-    if (options.contains(QL1S("match-case")))
-    {
-        m_regExp.setCaseSensitivity(Qt::CaseSensitive);
-    }
+    m_regExp.setPattern(parsedLine);
 }
 
 
