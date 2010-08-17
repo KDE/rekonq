@@ -61,17 +61,109 @@ KAction* BookmarkOwner::action(const BookmarkAction &bmAction)
 }
 
 
-void BookmarkOwner::openBookmark(const KBookmark & bookmark,
+QString BookmarkOwner::currentTitle() const
+{
+    return Application::instance()->mainWindow()->currentTab()->view()->title();
+}
+
+
+QString BookmarkOwner::currentUrl() const
+{
+    return Application::instance()->mainWindow()->currentTab()->url().url();
+}
+
+
+bool BookmarkOwner::supportsTabs() const
+{
+    return true;
+}
+
+
+QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
+{
+    QList< QPair<QString, QString> > bkList;
+    MainView *view = Application::instance()->mainWindow()->mainView();
+    int tabNumber = view->count();
+
+    for (int i = 0; i < tabNumber; ++i)
+    {
+        QPair<QString, QString> item;
+        item.first = view->webTab(i)->view()->title();
+        item.second = view->webTab(i)->url().url();
+        bkList << item;
+    }
+
+    return bkList;
+}
+
+
+void BookmarkOwner::openBookmark(const KBookmark &bookmark,
                                  Qt::MouseButtons mouseButtons,
                                  Qt::KeyboardModifiers keyboardModifiers)
 {
-    if (keyboardModifiers & Qt::ControlModifier || mouseButtons == Qt::MidButton)
+    bookmarkSelected(bookmark);
+    if (keyboardModifiers & Qt::ControlModifier || mouseButtons & Qt::MidButton)
     {
-        emit openUrl(bookmark.url(), Rekonq::NewTab);
+        openBookmarkInNewTab();
     }
     else
     {
-        emit openUrl(bookmark.url(), Rekonq::CurrentTab);
+        openBookmark();
+    }
+}
+
+
+void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
+{
+    bookmarkSelected(bookmark);
+    openBookmarkFolder();
+}
+
+
+void BookmarkOwner::bookmarkSelected(const KBookmark &bookmark)
+{
+    selected = bookmark;
+}
+
+
+void BookmarkOwner::openBookmark()
+{
+    emit openUrl(selected.url(), Rekonq::CurrentTab);
+}
+
+
+void BookmarkOwner::openBookmarkInNewTab()
+{
+    emit openUrl(selected.url(), Rekonq::NewTab);
+}
+
+
+void BookmarkOwner::openBookmarkInNewWindow()
+{
+    emit openUrl(selected.url(), Rekonq::NewWindow);
+}
+
+
+void BookmarkOwner::openBookmarkFolder()
+{
+    if (!selected.isGroup())
+        return;
+
+    QList<KUrl> urlList = selected.toGroup().groupUrlList();
+
+    if (urlList.length() > 8)
+    {
+        if (KMessageBox::warningContinueCancel(
+                    Application::instance()->mainWindow(),
+                    i18n("You are about to open %1 tabs.\nAre you sure?", urlList.length()))
+                != KMessageBox::Continue
+           )
+            return;
+    }
+
+    foreach (KUrl url, urlList)
+    {
+        emit openUrl(url, Rekonq::NewFocusedTab);
     }
 }
 
@@ -158,6 +250,15 @@ void BookmarkOwner::newSeparator()
 }
 
 
+void BookmarkOwner::copyLink()
+{
+    if (selected.isNull())
+        return;
+
+    QApplication::clipboard()->setText(selected.url().url());
+}
+
+
 void BookmarkOwner::editBookmark()
 {
     if (selected.isNull())
@@ -190,7 +291,7 @@ bool BookmarkOwner::deleteBookmark()
     else if (selected.isSeparator())
     {
         dialogCaption = i18n("Separator Deletion");
-        dialogText = i18n("Are you sure you wish to remove this separator?", name);
+        dialogText = i18n("Are you sure you wish to remove this separator?");
     }
     else
     {
@@ -212,125 +313,6 @@ bool BookmarkOwner::deleteBookmark()
     bmg.deleteBookmark(selected);
     m_manager->emitChanged(bmg);
     return true;
-}
-
-
-bool BookmarkOwner::supportsTabs() const
-{
-    return true;
-}
-
-
-QString BookmarkOwner::currentUrl() const
-{
-    return Application::instance()->mainWindow()->currentTab()->url().url();
-}
-
-
-QString BookmarkOwner::currentTitle() const
-{
-    return Application::instance()->mainWindow()->currentTab()->view()->title();
-}
-
-
-void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
-{
-    QList<KUrl> urlList = bookmark.groupUrlList();
-
-    if (urlList.length() > 8)
-    {
-        if ( !(KMessageBox::warningContinueCancel(  Application::instance()->mainWindow(),
-                                                    i18ncp("%1=Number of tabs. Value is always >=8",
-                                                           "You are about to open %1 tabs.\nAre you sure?",
-                                                           "You are about to open %1 tabs.\nAre you sure?",
-                                                           urlList.length()),
-                                                    "",
-                                                    KStandardGuiItem::cont(),
-                                                    KStandardGuiItem::cancel(),
-                                                    "openFolderInTabs_askAgain"
-                                                 ) == KMessageBox::Continue)
-           )
-            return;
-    }
-
-    QList<KUrl>::iterator url;
-    for (url = urlList.begin(); url != urlList.end(); ++url)
-    {
-        emit openUrl(*url, Rekonq::NewFocusedTab);
-    }
-}
-
-
-QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
-{
-    QList< QPair<QString, QString> > bkList;
-    int tabNumber = Application::instance()->mainWindow()->mainView()->count();
-
-    for (int i = 0; i < tabNumber; i++)
-    {
-        QPair<QString, QString> item;
-        item.first = Application::instance()->mainWindow()->mainView()->webTab(i)->view()->title();
-        item.second = Application::instance()->mainWindow()->mainView()->webTab(i)->url().url();
-        bkList += item;
-    }
-    return bkList;
-}
-
-
-void BookmarkOwner::bookmarkSelected(const KBookmark &bookmark)
-{
-    selected = bookmark;
-}
-
-
-void BookmarkOwner::openBookmark()
-{
-    emit openUrl(selected.url(), Rekonq::CurrentTab);
-}
-
-
-void BookmarkOwner::openBookmarkInNewTab()
-{
-    emit openUrl(selected.url(), Rekonq::NewTab);
-}
-
-
-void BookmarkOwner::openBookmarkInNewWindow()
-{
-    emit openUrl(selected.url(), Rekonq::NewWindow);
-}
-
-
-void BookmarkOwner::openBookmarkFolder()
-{
-    if (!selected.isGroup())
-        return;
-
-    QList<KUrl> urlList = selected.toGroup().groupUrlList();
-
-    if (urlList.length() > 8)
-    {
-        if (KMessageBox::warningContinueCancel(
-                    Application::instance()->mainWindow(),
-                    i18n("You are about to open %1 tabs.\nAre you sure?", urlList.length()))
-                != KMessageBox::Continue
-           )
-            return;
-    }
-
-    foreach (KUrl url, urlList)
-    {
-        emit openUrl(url, Rekonq::NewFocusedTab);
-    }
-}
-
-
-void BookmarkOwner::copyLink()
-{
-    if (selected.isNull())
-        return;
-
-    QApplication::clipboard()->setText(selected.url().url());
 }
 
 

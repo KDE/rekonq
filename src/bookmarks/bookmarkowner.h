@@ -37,15 +37,14 @@
 // KDE Includes
 #include <KBookmarkOwner>
 
+// Forward Declarations
 class KAction;
-
 
 /**
  * Reimplementation of KBookmarkOwner, this class allows to manage
- * bookmarks as actions
- *
+ * bookmarks as actions.
  */
-class REKONQ_TESTS_EXPORT BookmarkOwner : public QObject , public KBookmarkOwner
+class REKONQ_TESTS_EXPORT BookmarkOwner : public QObject, public KBookmarkOwner
 {
     Q_OBJECT
 
@@ -74,6 +73,25 @@ public:
     KAction* action(const BookmarkAction &bmAction);
 
     /**
+     * @return the current page's title.
+     */
+    virtual QString currentTitle() const;
+    /**
+     * @return the current page's URL.
+     */
+    virtual QString currentUrl() const;
+
+    /**
+    * @return whether the owner supports tabs.
+    */
+    virtual bool supportsTabs() const;
+
+    /**
+    * @return list of title, URL pairs of the open tabs.
+    */
+    virtual QList< QPair<QString, QString> > currentBookmarkList() const;
+
+    /**
      * This function is called when a bookmark is selected and belongs to
      * the ancestor class.
      * This method actually emits signal to load bookmark's url.
@@ -86,28 +104,6 @@ public:
                               Qt::MouseButtons mouseButtons,
                               Qt::KeyboardModifiers keyboardModifiers);
 
-
-    /**
-     * this method, from KBookmarkOwner interface, allows to add the current page
-     * to the bookmark list, returning the URL page as QString.
-     *
-     * @return the current page's URL
-     */
-    virtual QString currentUrl() const;
-
-    /**
-     * this method, from KBookmarkOwner interface, allows to add the current page
-     * to the bookmark list, returning the title's page as QString.
-     *
-     * @return the current page's title
-     */
-    virtual QString currentTitle() const;
-
-    /**
-    * This function returns whether the owner supports tabs.
-    */
-    virtual bool supportsTabs() const;
-
     /**
     * Called if the user wants to open every bookmark in this folder in a new tab.
     * The default implementation does nothing.
@@ -115,14 +111,10 @@ public:
     */
     virtual void openFolderinTabs(const KBookmarkGroup &bookmark);
 
-    virtual QList< QPair<QString, QString> > currentBookmarkList() const;
-
 signals:
     /**
      * This signal is emitted when an url has to be loaded
-     *
      * @param url the URL to load
-     *
      */
     void openUrl(const KUrl &, const Rekonq::OpenType &);
 
