@@ -38,6 +38,7 @@
 #include "application.h"
 #include "urlresolver.h"
 #include "bookmarkspanel.h"
+#include "bookmarkstoolbar.h"
 
 // Qt Includes
 #include <QWidget>
@@ -135,79 +136,6 @@ signals:
      *
      */
     void openUrl(const KUrl &, const Rekonq::OpenType &);
-};
-
-// ------------------------------------------------------------------------------
-
-
-// KDE Includes
-#include <KBookmarkMenu>
-
-/**
- * This class represent the rekonq bookmarks menu.
- * It's just a simple class inherited from KBookmarkMenu
- *
- */
-class BookmarkMenu : public KBookmarkMenu
-{
-    Q_OBJECT
-
-public:
-    BookmarkMenu(KBookmarkManager* manager,
-                 KBookmarkOwner* owner,
-                 KMenu* menu,
-                 KActionCollection* actionCollection);
-    BookmarkMenu(KBookmarkManager  *manager,
-                 KBookmarkOwner  *owner,
-                 KMenu  *parentMenu,
-                 const QString &parentAddress);
-    ~BookmarkMenu();
-
-protected:
-    virtual KMenu * contextMenu(QAction * act);
-    virtual void refill();
-    virtual QAction* actionForBookmark(const KBookmark &bookmark);
-
-private slots:
-    void actionHovered();
-
-private:
-    void addOpenFolderInTabs();
-
-};
-
-
-// ------------------------------------------------------------------------------
-
-#include <KToolBar>
-
-class BookmarkToolBar : public KToolBar
-{
-    Q_OBJECT
-
-public:
-BookmarkToolBar(const QString &objectName,
-                QMainWindow *parentWindow,
-                Qt::ToolBarArea area,
-                bool newLine = false,
-                bool isMainToolBar = false,
-                bool readConfig = true);
-~BookmarkToolBar();
-
-virtual void setVisible(bool visible);
-
-protected:
-    bool eventFilter(QObject *watched, QEvent *event);
-
-private slots:
-    void actionHovered();
-    void menuDisplayed();
-    void menuHidden();
-    void hideMenu();
-
-private:
-    bool m_filled;
-    KMenu *m_currentMenu;
 };
 
 
