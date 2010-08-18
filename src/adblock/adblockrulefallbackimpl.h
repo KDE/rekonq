@@ -36,7 +36,7 @@ class AdBlockRuleFallbackImpl : public AdBlockRuleImpl
 {
 public:
     AdBlockRuleFallbackImpl(const QString &filter);
-    bool match(const QString &encodedUrl) const;
+    bool match(const QString &encodedUrl, const QString &encodedUrlLowerCase) const;
 
 private:
     QString convertPatternToRegExp(const QString &wildcardPattern);

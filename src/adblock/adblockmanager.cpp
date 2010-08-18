@@ -161,11 +161,14 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
         return 0;
 
     QString urlString = request.url().toString();
+    // We compute a lowercase version of the URL so each rule does not
+    // have to do it.
+    const QString urlStringLowerCase = urlString.toLower();
 
     // check white rules before :)
     foreach(const AdBlockRule &filter, _whiteList)
     {
-        if (filter.match(urlString))
+        if (filter.match(urlString, urlStringLowerCase))
         {
             kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched: ***********";
             kDebug() << "UrlString:  " << urlString;
@@ -176,7 +179,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     // then check the black ones :(
     foreach(const AdBlockRule &filter, _blackList)
     {
-        if (filter.match(urlString))
+        if (filter.match(urlString, urlStringLowerCase))
         {
             kDebug() << "****ADBLOCK: BLACK RULE Matched: ***********";
             kDebug() << "UrlString:  " << urlString;
@@ -185,7 +188,8 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
             QWebElementCollection elements = document.findAll("*");
             foreach(QWebElement el, elements)
             {
-                if (filter.match(el.attribute("src")))
+                const QString srcAttribute = el.attribute("src");
+                if (filter.match(srcAttribute, srcAttribute.toLower()))
                 {
                     kDebug() << "MATCHES ATTRIBUTE!!!!!";
                     el.setStyleProperty(QL1S("visibility"), QL1S("hidden"));

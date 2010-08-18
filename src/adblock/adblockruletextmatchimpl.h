@@ -36,7 +36,7 @@ class AdBlockRuleTextMatchImpl : public AdBlockRuleImpl
 {
 public:
     AdBlockRuleTextMatchImpl(const QString &filter);
-    bool match(const QString &encodedUrl) const;
+    bool match(const QString &encodedUrl, const QString &encodedUrlLowerCase) const;
 
     static bool isTextMatchFilter(const QString &filter);
 

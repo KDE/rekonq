@@ -70,9 +70,10 @@ class AdBlockRule
 public:
     AdBlockRule(const QString &filter);
 
-    bool match(const QString &encodedUrl) const
+    bool match(const QString &encodedUrl, const QString &encodedUrlLowerCase) const
     {
-        return m_implementation->match(encodedUrl);
+        Q_ASSERT(encodedUrl.toLower() == encodedUrlLowerCase);
+        return m_implementation->match(encodedUrl, encodedUrlLowerCase);
     }
 
 private:
