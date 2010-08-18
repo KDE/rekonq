@@ -44,7 +44,7 @@ public:
 
     void save();
     bool changed();
-    void disableKGet();
+    void checkKGetPresence();
 
 signals:
     void changed(bool);

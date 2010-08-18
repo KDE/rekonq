@@ -51,7 +51,7 @@ GeneralWidget::GeneralWidget(QWidget *parent)
     
     connect(kcfg_useNewTabPage, SIGNAL(toggled(bool)), this, SLOT(disableHomeSettings(bool)));
     
-    disableKGet();
+    checkKGetPresence();
 }
 
 
@@ -88,14 +88,20 @@ void GeneralWidget::disableHomeSettings(bool b)
     setHomeToCurrentPageButton->setEnabled(!b);
 }
 
-void GeneralWidget::disableKGet()
+void GeneralWidget::checkKGetPresence()
 {
-        if (KStandardDirs::findExe("kget").isNull())
-        {
-	  kWarning() <<  "Install KGet to enable rekonq to use KGet as download manager";
-	  ReKonfig::setKgetDownload(false);
-	  ReKonfig::setKgetList(false);
-	  kcfg_kgetDownload->setDisabled(true);
-	  kcfg_kgetList->setDisabled(true);
-        }
+    if (KStandardDirs::findExe("kget").isNull())
+    {
+        ReKonfig::setKgetDownload(false);
+        ReKonfig::setKgetList(false);
+        kcfg_kgetDownload->setDisabled(true);
+        kcfg_kgetList->setDisabled(true);
+        kcfg_kgetDownload->setToolTip(i18n("Install KGet to enable rekonq to use KGet as download manager"));
+        
+    }
+    else
+    {
+        kcfg_kgetDownload->setDisabled(false);
+        kcfg_kgetList->setDisabled(false);
+    }
 }
