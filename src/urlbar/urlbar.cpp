@@ -312,10 +312,12 @@ void UrlBar::loadFinished()
     if (Application::bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
     {
         _icon->setIcon(KIcon("bookmarks").pixmap(32,32, QIcon::Disabled));
+        _icon->setToolTip(i18n("Bookmark this page"));
     }
     else
     {
         _icon->setIcon(KIcon("bookmarks"));
+        _icon->setToolTip(i18n("Edit this bookmark"));
     }
         
     // show KGet downloads??
