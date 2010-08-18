@@ -81,6 +81,7 @@ public:
     void setWidgetsVisible(bool makeFullScreen);
 
 private:
+    void setupBookmarksAndToolsShortcuts();
     void setupActions();
     void setupTools();
     void setupToolbars();
@@ -107,6 +108,9 @@ signals:
     // switching tabs
     void ctrlTabPressed();
     void shiftCtrlTabPressed();
+
+protected slots:
+    void saveNewToolbarConfig();
 
 protected:
     /**

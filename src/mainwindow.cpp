@@ -211,19 +211,7 @@ void MainWindow::setupToolbars()
 
 void MainWindow::postLaunch()
 {
-    KToolBar *mainBar = toolBar("mainToolBar");
-    
-    QToolButton *bookmarksButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("bookmarksActionMenu") )));
-    if(bookmarksButton)
-    {
-        connect(actionByName(QL1S("bookmarksActionMenu")), SIGNAL(triggered()), bookmarksButton, SLOT(showMenu()));
-    }
-    
-    QToolButton *toolsButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("rekonq_tools") )));
-    if(toolsButton)
-    {
-        connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), toolsButton, SLOT(showMenu()));
-    }
+    setupBookmarksAndToolsShortcuts();
     
     // setting popup notification
     m_popup->setAutoDelete(false);
@@ -1342,4 +1330,29 @@ bool MainWindow::queryClose()
         }                                                                                                                                 
     }                                                                                                                                     
     return true;                                                                                                                          
+}
+
+
+void MainWindow::saveNewToolbarConfig()
+{
+    KXmlGuiWindow::saveNewToolbarConfig();
+    setupBookmarksAndToolsShortcuts();
+}
+
+
+void MainWindow::setupBookmarksAndToolsShortcuts()
+{
+    KToolBar *mainBar = toolBar("mainToolBar");
+    
+    QToolButton *bookmarksButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("bookmarksActionMenu") )));
+    if(bookmarksButton)
+    {
+        connect(actionByName(QL1S("bookmarksActionMenu")), SIGNAL(triggered()), bookmarksButton, SLOT(showMenu()));
+    }
+    
+    QToolButton *toolsButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("rekonq_tools") )));
+    if(toolsButton)
+    {
+        connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), toolsButton, SLOT(showMenu()));
+    }    
 }
