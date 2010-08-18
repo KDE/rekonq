@@ -58,25 +58,25 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Qt Includes
-#include <QtCore/QRegExp>
-#include <QtCore/QString>
+#include "adblockruleimpl.h"
+
+#include <QSharedPointer>
 
 // Forward Includes
-class QUrl;
-
+class QString;
 
 class AdBlockRule
 {
 public:
     AdBlockRule(const QString &filter);
 
-    bool match(const QString &encodedUrl) const;
+    bool match(const QString &encodedUrl) const
+    {
+        return m_implementation->match(encodedUrl);
+    }
 
 private:
-    QString convertPatternToRegExp(const QString &wildcardPattern);
-
-    QRegExp m_regExp;
+    QSharedPointer<AdBlockRuleImpl> m_implementation;
 };
 
 
