@@ -25,8 +25,8 @@
 
 
 // Self Includes
-#include "bookmarkcontextmenu.h"
-#include "bookmarkcontextmenu.moc"
+#include "bookmarkscontextmenu.h"
+#include "bookmarkscontextmenu.moc"
 
 // Local Includes
 #include "application.h"
@@ -41,7 +41,7 @@
 #include <QClipboard>
 
 
-BookmarkContextMenu::BookmarkContextMenu(const KBookmark & bookmark, KBookmarkManager *manager, KBookmarkOwner *owner, QWidget *parent)
+BookmarksContextMenu::BookmarksContextMenu(const KBookmark & bookmark, KBookmarkManager *manager, KBookmarkOwner *owner, QWidget *parent)
         : KBookmarkContextMenu(bookmark, manager, owner, parent)
         , m_ac(new KActionCollection(this))
 {
@@ -49,13 +49,13 @@ BookmarkContextMenu::BookmarkContextMenu(const KBookmark & bookmark, KBookmarkMa
 }
 
 
-BookmarkContextMenu::~BookmarkContextMenu()
+BookmarksContextMenu::~BookmarksContextMenu()
 {
     delete m_ac;
 }
 
 
-void BookmarkContextMenu::setupActions()
+void BookmarksContextMenu::setupActions()
 {
     KAction* action;
 
@@ -101,7 +101,7 @@ void BookmarkContextMenu::setupActions()
 }
 
 
-void BookmarkContextMenu::addBookmarkActions()
+void BookmarksContextMenu::addBookmarkActions()
 {
     addAction(m_ac->action("open"));
     addAction(m_ac->action("open_tab"));
@@ -124,7 +124,7 @@ void BookmarkContextMenu::addBookmarkActions()
 }
 
 
-void BookmarkContextMenu::addFolderActions()
+void BookmarksContextMenu::addFolderActions()
 {
     if (!bookmark().toGroup().first().isNull())
     {
@@ -143,7 +143,7 @@ void BookmarkContextMenu::addFolderActions()
 }
 
 
-void BookmarkContextMenu::addSeparatorActions()
+void BookmarksContextMenu::addSeparatorActions()
 {
     addAction(m_ac->action("bookmark_page"));
     addAction(m_ac->action("folder_new"));
@@ -155,7 +155,7 @@ void BookmarkContextMenu::addSeparatorActions()
 }
 
 
-void BookmarkContextMenu::addActions()
+void BookmarksContextMenu::addActions()
 {
     if (bookmark().isGroup())
     {
@@ -181,25 +181,25 @@ void BookmarkContextMenu::addActions()
 }
 
 
-void BookmarkContextMenu::openInCurrentTab()
+void BookmarksContextMenu::openInCurrentTab()
 {
     Application::instance()->loadUrl(bookmark().url());
 }
 
 
-void BookmarkContextMenu::openInNewTab()
+void BookmarksContextMenu::openInNewTab()
 {
     Application::instance()->loadUrl(bookmark().url(), Rekonq::NewTab);
 }
 
 
-void BookmarkContextMenu::openInNewWindow()
+void BookmarksContextMenu::openInNewWindow()
 {
     Application::instance()->loadUrl(bookmark().url(), Rekonq::NewWindow);
 }
 
 
-void BookmarkContextMenu::copyToClipboard()
+void BookmarksContextMenu::copyToClipboard()
 {
     if (bookmark().isNull())
         return;
@@ -209,14 +209,14 @@ void BookmarkContextMenu::copyToClipboard()
 }
 
 
-void BookmarkContextMenu::deleteBookmark()
+void BookmarksContextMenu::deleteBookmark()
 {
     KBookmark bm = bookmark();
     Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(bm);
 }
 
 
-void BookmarkContextMenu::editBookmark()
+void BookmarksContextMenu::editBookmark()
 {
     KBookmark selected = bookmark();
     selected.setFullText(selected.fullText().replace("&&", "&"));
@@ -227,14 +227,14 @@ void BookmarkContextMenu::editBookmark()
 }
 
 
-void BookmarkContextMenu::openFolderInTabs()
+void BookmarksContextMenu::openFolderInTabs()
 {
     if (bookmark().isGroup())
         owner()->openFolderinTabs(bookmark().toGroup());
 }
 
 
-void BookmarkContextMenu::newBookmarkGroup()
+void BookmarksContextMenu::newBookmarkGroup()
 {
     KBookmark selected = bookmark();
     KBookmarkDialog *dialog = owner()->bookmarkDialog(manager(), QApplication::activeWindow());
@@ -266,7 +266,7 @@ void BookmarkContextMenu::newBookmarkGroup()
 }
 
 
-void BookmarkContextMenu::newSeparator()
+void BookmarksContextMenu::newSeparator()
 {
     KBookmark selected = bookmark();
     KBookmark newBk;
@@ -295,7 +295,7 @@ void BookmarkContextMenu::newSeparator()
 }
 
 
-void BookmarkContextMenu::bookmarkCurrentPage()
+void BookmarksContextMenu::bookmarkCurrentPage()
 {
     KBookmarkGroup parent = Application::bookmarkProvider()->rootGroup();
     KBookmark selected = bookmark();

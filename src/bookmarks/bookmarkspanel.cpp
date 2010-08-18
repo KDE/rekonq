@@ -33,7 +33,7 @@
 #include "bookmarksmanager.h"
 #include "bookmarkstreemodel.h"
 #include "bookmarksproxy.h"
-#include "bookmarkcontextmenu.h"
+#include "bookmarkscontextmenu.h"
 
 // Auto Includes
 #include "rekonq.h"
@@ -201,7 +201,7 @@ void BookmarksPanel::contextMenu(const QPoint &pos)
 
     KBookmark selected = bookmarkForIndex(index);
 
-    BookmarkContextMenu menu( selected,
+    BookmarksContextMenu menu( selected,
                               Application::bookmarkProvider()->bookmarkManager(),
                               Application::bookmarkProvider()->bookmarkOwner(),
                               this

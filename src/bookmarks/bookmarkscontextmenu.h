@@ -34,13 +34,13 @@
 #include <KBookmarkMenu>
 
 
-class BookmarkContextMenu : public KBookmarkContextMenu
+class BookmarksContextMenu : public KBookmarkContextMenu
 {
     Q_OBJECT
 
 public:
-    BookmarkContextMenu(const KBookmark & bk, KBookmarkManager * manager, KBookmarkOwner *owner, QWidget * parent = 0);
-    ~BookmarkContextMenu();
+    BookmarksContextMenu(const KBookmark & bk, KBookmarkManager * manager, KBookmarkOwner *owner, QWidget * parent = 0);
+    ~BookmarksContextMenu();
     
     virtual void addActions();
 
