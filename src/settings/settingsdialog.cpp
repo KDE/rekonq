@@ -197,9 +197,7 @@ void SettingsDialog::saveSettings()
     d->shortcutsEditor->save();
     d->ebrowsingModule->save();
     
-    SearchEngine::loadDefaultWS();
-    SearchEngine::loadDelimiter();
-    SearchEngine::loadFavorites();
+    SearchEngine::reload();
 
     updateButtons();
     emit settingsChanged("ReKonfig");

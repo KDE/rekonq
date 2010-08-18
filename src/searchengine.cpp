@@ -36,40 +36,70 @@
 #include <KServiceTypeTrader>
 
 
+bool SearchEngine::m_loaded = false;
 QString SearchEngine::m_delimiter = "";
+KService::List SearchEngine::m_favorites;
+KService::Ptr SearchEngine::m_defaultEngine;
+
+
+void SearchEngine::reload()
+{
+    KConfig config("kuriikwsfilterrc"); //Shared with konqueror
+    KConfigGroup cg = config.group("General");
+
+    //load delimiter
+    m_delimiter = cg.readEntry("KeywordDelimiter", ":");
+
+    //load favorite engines
+    QStringList favoriteEngines;
+    favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
+    KService::List favorites;
+    KService::Ptr service;
+    foreach(const QString &engine, favoriteEngines)
+    {
+        service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
+        if (service)
+                favorites << service;
+    }
+    m_favorites = favorites;
+
+    //load default engine
+    QString d = cg.readEntry("DefaultSearchEngine");  
+    m_defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
+    if (!m_defaultEngine)
+    {
+        d = QL1S("google");
+        m_defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
+    }
+    
+    m_loaded = true;
+}
 
 
 QString SearchEngine::delimiter()
 {
-    if (m_delimiter == "") loadDelimiter();
+    if (!m_loaded)
+        reload();
+
     return m_delimiter;
 }
 
 
-void SearchEngine::loadDelimiter()
+KService::List SearchEngine::favorites()
 {
-    KConfig config("kuriikwsfilterrc"); //Share with konqueror
-    KConfigGroup cg = config.group("General");
-    m_delimiter = cg.readEntry("KeywordDelimiter", ":");
+    if (!m_loaded)
+        reload();
+
+    return m_favorites;
 }
 
 
-KService::Ptr SearchEngine::m_defaultWS;
-
-
-KService::Ptr SearchEngine::defaultWS()
+KService::Ptr SearchEngine::defaultEngine()
 {
-    if (!m_defaultWS) loadDefaultWS();
-    return m_defaultWS;
-}
+    if (!m_loaded)
+        reload();
 
-
-void SearchEngine::loadDefaultWS()
-{
-    KConfig config("kuriikwsfilterrc"); //Share with konqueror
-    KConfigGroup cg = config.group("General");
-    QString d = cg.readEntry("DefaultSearchEngine", "google");
-    m_defaultWS = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
+    return m_defaultEngine;
 }
 
 
@@ -106,48 +136,4 @@ QString SearchEngine::buildQuery(KService::Ptr engine, QString text)
 }
 
 
-KService::List SearchEngine::m_favorites;
 
-
-KService::List SearchEngine::favorites()
-{
-    if (m_favorites.isEmpty()) loadFavorites();
-    return m_favorites;
-}
-
-void SearchEngine::loadFavorites()
-{
-  KConfig config("kuriikwsfilterrc"); //Share with konqueror
-  KConfigGroup cg = config.group("General");
-  QStringList favoriteEngines;
-  favoriteEngines << "google"; //defaults
-  favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
-  
-  KService::List favorites;
-  KService::Ptr service;
-  foreach(const QString &engine, favoriteEngines)
-  {
-    service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-    if (service)
-      favorites << service;
-  }
-  
-  m_favorites = favorites;
-}
-
-
-KService::Ptr SearchEngine::defaultEngine()
-{
-  KConfig config("kuriikwsfilterrc"); //Share with konqueror
-  KConfigGroup cg = config.group("General");
-  QString d = cg.readEntry("DefaultSearchEngine");
-  KService::Ptr service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
-  if (!service)
-  {
-    d = QL1S("google");
-    service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
-  }
-  
-  return service;
-  
-}

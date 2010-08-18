@@ -41,22 +41,18 @@
 class SearchEngine
 {
 public:
-
+    static void reload();
     static QString delimiter();
     static KService::Ptr defaultEngine();
     static KService::List favorites();
     static KService::Ptr fromString(QString text);
     static QString buildQuery(KService::Ptr engine, QString text);
-    static KService::Ptr defaultWS();
-
-    static void loadDelimiter();
-    static void loadFavorites();
-    static void loadDefaultWS();
 
 private:
+    static bool m_loaded;
     static QString m_delimiter;
     static KService::List m_favorites;
-    static KService::Ptr m_defaultWS;
+    static KService::Ptr m_defaultEngine;
 };
 
 #endif
