@@ -168,7 +168,6 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
         if (filter.match(urlString))
         {
             kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched: ***********";
-            kDebug() << "Filter exp: " << filter.pattern();
             kDebug() << "UrlString:  " << urlString;
             return 0;
         }
@@ -180,7 +179,6 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
         if (filter.match(urlString))
         {
             kDebug() << "****ADBLOCK: BLACK RULE Matched: ***********";
-            kDebug() << "Filter exp: " << filter.pattern();
             kDebug() << "UrlString:  " << urlString;
 
             QWebElement document = page->mainFrame()->documentElement();
