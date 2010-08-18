@@ -73,8 +73,6 @@ public:
 
     bool match(const QString &encodedUrl) const;
 
-    QString pattern() const;
-
 private:
     QString convertPatternToRegExp(const QString &wildcardPattern);
 
