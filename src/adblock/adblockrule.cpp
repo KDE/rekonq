@@ -56,8 +56,12 @@
 #include "adblockrule.h"
 
 #include "adblockrulefallbackimpl.h"
+#include "adblockruletextmatchimpl.h"
 
 AdBlockRule::AdBlockRule(const QString &filter)
 {
-    m_implementation = QSharedPointer<AdBlockRuleImpl>(new AdBlockRuleFallbackImpl(filter));
+    if (AdBlockRuleTextMatchImpl::isTextMatchFilter(filter))
+        m_implementation = QSharedPointer<AdBlockRuleImpl>(new AdBlockRuleTextMatchImpl(filter));
+    else
+        m_implementation = QSharedPointer<AdBlockRuleImpl>(new AdBlockRuleFallbackImpl(filter));
 }
