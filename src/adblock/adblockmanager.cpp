@@ -150,6 +150,10 @@ void AdBlockManager::loadRules(const QStringList &rules)
             continue;
         }
 
+        // TODO implement domain-specific hiding
+        if (stringRule.contains(QL1S("##")))
+            continue;
+
         if (_hostBlackList.tryAddFilter(stringRule))
             continue;
         AdBlockRule rule(stringRule);
