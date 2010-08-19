@@ -451,12 +451,6 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
     if (view)
     {
         view->load(url);
-
-        // we are sure of the url now, let's add it to history
-        // anyway we store here just http sites because local and ftp ones are
-        // added trough the protocol handler and the other are ignored
-        if (url.protocol() == QL1S("http") || url.protocol() == QL1S("https"))
-            historyManager()->addHistoryEntry(url.prettyUrl());
     }
 }
 

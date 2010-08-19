@@ -32,6 +32,8 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+
+// Local Includes
 #include "urlresolver.h"
 
 // KDE Includes
@@ -84,35 +86,8 @@ public:
 // ---------------------------------------------------------------------------------------------------------------
 
 
-class HistoryHashItem : public HistoryItem
-{
-public:
-    HistoryHashItem() {}
-    explicit HistoryHashItem(const QString &u
-                            ,const QDateTime &d = QDateTime()
-                            ,const QString &t = QString()
-                            )
-            : HistoryItem(u, d, t)
-            ,visitCount(1)
-            ,savedCount(0)
-    {}
-
-    inline bool operator <(const HistoryHashItem &other) const
-    {
-        return visitCount > other.visitCount;
-    }
-
-    int visitCount;
-    int savedCount;
-};
-
-
-// ---------------------------------------------------------------------------------------------------------------
-
-
 // Forward Declarations
 class AutoSaver;
-class HistoryModel;
 class HistoryFilterModel;
 class HistoryTreeModel;
 
@@ -124,7 +99,6 @@ class HistoryTreeModel;
 class REKONQ_TESTS_EXPORT HistoryManager : public QWebHistoryInterface
 {
     Q_OBJECT
-    Q_PROPERTY(int historyLimit READ historyLimit WRITE setHistoryLimit)
 
 signals:
     void historyReset();
@@ -141,19 +115,14 @@ public:
     void updateHistoryEntry(const KUrl &url, const QString &title);
     void removeHistoryEntry(const KUrl &url, const QString &title = QString());
 
-    HistoryHashItem get(const QString &url);
-    QList<HistoryHashItem> find(const QString &text);
+    QList<HistoryItem> find(const QString &text);
 
-    int historyLimit() const;
-    void setHistoryLimit(int limit);
-
-    QList<HistoryItem> history() const;
+    QList<HistoryItem> history() const { return m_history; };
     void setHistory(const QList<HistoryItem> &history, bool loadedAndSorted = false);
 
     // History manager keeps around these models for use by the completer and other classes
-    HistoryModel *historyModel() const;
-    HistoryFilterModel *historyFilterModel() const;
-    HistoryTreeModel *historyTreeModel() const;
+    HistoryFilterModel *historyFilterModel() const { return m_historyFilterModel; };
+    HistoryTreeModel *historyTreeModel() const { return m_historyTreeModel; };
 
 public slots:
     void clear();
@@ -164,17 +133,13 @@ private slots:
     void checkForExpired();
 
 private:
-    void addHistoryHashEntry(const HistoryItem &item);
     void load();
 
     AutoSaver *m_saveTimer;
     int m_historyLimit;
-    QTimer m_expiredTimer;
     QList<HistoryItem> m_history;
-    QHash<QString, HistoryHashItem> m_hash;
     QString m_lastSavedUrl;
 
-    HistoryModel *m_historyModel;
     HistoryFilterModel *m_historyFilterModel;
     HistoryTreeModel *m_historyTreeModel;
 };

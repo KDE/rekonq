@@ -58,13 +58,13 @@
 
 HistoryModel::HistoryModel(HistoryManager *history, QObject *parent)
         : QAbstractTableModel(parent)
-        , m_history(history)
+        , m_historyManager(history)
 {
-    Q_ASSERT(m_history);
-    connect(m_history, SIGNAL(historyReset()), this, SLOT(historyReset()));
-    connect(m_history, SIGNAL(entryRemoved(const HistoryItem &)), this, SLOT(historyReset()));
-    connect(m_history, SIGNAL(entryAdded(const HistoryItem &)), this, SLOT(entryAdded()));
-    connect(m_history, SIGNAL(entryUpdated(int)), this, SLOT(entryUpdated(int)));
+    Q_ASSERT(m_historyManager);
+    connect(m_historyManager, SIGNAL(historyReset()), this, SLOT(historyReset()));
+    connect(m_historyManager, SIGNAL(entryRemoved(const HistoryItem &)), this, SLOT(historyReset()));
+    connect(m_historyManager, SIGNAL(entryAdded(const HistoryItem &)), this, SLOT(entryAdded()));
+    connect(m_historyManager, SIGNAL(entryUpdated(int)), this, SLOT(entryUpdated(int)));
 }
 
 
@@ -105,7 +105,7 @@ QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int 
 
 QVariant HistoryModel::data(const QModelIndex &index, int role) const
 {
-    QList<HistoryItem> lst = m_history->history();
+    QList<HistoryItem> lst = m_historyManager->history();
     if (index.row() < 0 || index.row() >= lst.size())
         return QVariant();
 
@@ -165,7 +165,7 @@ int HistoryModel::columnCount(const QModelIndex &parent) const
 
 int HistoryModel::rowCount(const QModelIndex &parent) const
 {
-    return (parent.isValid()) ? 0 : m_history->history().count();
+    return (parent.isValid()) ? 0 : m_historyManager->history().count();
 }
 
 
@@ -175,169 +175,18 @@ bool HistoryModel::removeRows(int row, int count, const QModelIndex &parent)
         return false;
     int lastRow = row + count - 1;
     beginRemoveRows(parent, row, lastRow);
-    QList<HistoryItem> lst = m_history->history();
+    QList<HistoryItem> lst = m_historyManager->history();
     for (int i = lastRow; i >= row; --i)
         lst.removeAt(i);
-    disconnect(m_history, SIGNAL(historyReset()), this, SLOT(historyReset()));
-    m_history->setHistory(lst);
-    connect(m_history, SIGNAL(historyReset()), this, SLOT(historyReset()));
+    disconnect(m_historyManager, SIGNAL(historyReset()), this, SLOT(historyReset()));
+    m_historyManager->setHistory(lst);
+    connect(m_historyManager, SIGNAL(historyReset()), this, SLOT(historyReset()));
     endRemoveRows();
     return true;
 }
 
 
-
-//  -----------------------------------------------------------------------------------------------
-
-
-#define MOVEDROWS 20
-
-
-/*
-    Maps the first bunch of items of the source model to the root
-*/
-HistoryMenuModel::HistoryMenuModel(HistoryTreeModel *sourceModel, QObject *parent)
-        : QAbstractProxyModel(parent)
-        , m_treeModel(sourceModel)
-{
-    setSourceModel(sourceModel);
-}
-
-
-int HistoryMenuModel::bumpedRows() const
-{
-    QModelIndex first = m_treeModel->index(0, 0);
-    if (!first.isValid())
-        return 0;
-    return qMin(m_treeModel->rowCount(first), MOVEDROWS);
-}
-
-
-int HistoryMenuModel::columnCount(const QModelIndex &parent) const
-{
-    return m_treeModel->columnCount(mapToSource(parent));
-}
-
-
-int HistoryMenuModel::rowCount(const QModelIndex &parent) const
-{
-    if (parent.column() > 0)
-        return 0;
-
-    if (!parent.isValid())
-    {
-        int folders = sourceModel()->rowCount();
-        int bumpedItems = bumpedRows();
-        if (bumpedItems <= MOVEDROWS
-                && bumpedItems == sourceModel()->rowCount(sourceModel()->index(0, 0)))
-            --folders;
-        return bumpedItems + folders;
-    }
-
-    if (parent.internalId() == -1)
-    {
-        if (parent.row() < bumpedRows())
-            return 0;
-    }
-
-    QModelIndex idx = mapToSource(parent);
-    int defaultCount = sourceModel()->rowCount(idx);
-    if (idx == sourceModel()->index(0, 0))
-        return defaultCount - bumpedRows();
-    return defaultCount;
-}
-
-
-QModelIndex HistoryMenuModel::mapFromSource(const QModelIndex &sourceIndex) const
-{
-    // currently not used or autotested
-    Q_ASSERT(false);
-    int sr = m_treeModel->mapToSource(sourceIndex).row();
-    return createIndex(sourceIndex.row(), sourceIndex.column(), sr);
-}
-
-
-QModelIndex HistoryMenuModel::mapToSource(const QModelIndex &proxyIndex) const
-{
-    if (!proxyIndex.isValid())
-        return QModelIndex();
-
-    if (proxyIndex.internalId() == -1)
-    {
-        int bumpedItems = bumpedRows();
-        if (proxyIndex.row() < bumpedItems)
-            return m_treeModel->index(proxyIndex.row(), proxyIndex.column(), m_treeModel->index(0, 0));
-        if (bumpedItems <= MOVEDROWS && bumpedItems == sourceModel()->rowCount(m_treeModel->index(0, 0)))
-            --bumpedItems;
-        return m_treeModel->index(proxyIndex.row() - bumpedItems, proxyIndex.column());
-    }
-
-    QModelIndex historyIndex = m_treeModel->sourceModel()->index(proxyIndex.internalId(), proxyIndex.column());
-    QModelIndex treeIndex = m_treeModel->mapFromSource(historyIndex);
-    return treeIndex;
-}
-
-
-QModelIndex HistoryMenuModel::index(int row, int column, const QModelIndex &parent) const
-{
-    if (row < 0
-            || column < 0 || column >= columnCount(parent)
-            || parent.column() > 0)
-        return QModelIndex();
-    if (!parent.isValid())
-        return createIndex(row, column, -1);
-
-    QModelIndex treeIndexParent = mapToSource(parent);
-
-    int bumpedItems = 0;
-    if (treeIndexParent == m_treeModel->index(0, 0))
-        bumpedItems = bumpedRows();
-    QModelIndex treeIndex = m_treeModel->index(row + bumpedItems, column, treeIndexParent);
-    QModelIndex historyIndex = m_treeModel->mapToSource(treeIndex);
-    int historyRow = historyIndex.row();
-    if (historyRow == -1)
-        historyRow = treeIndex.row();
-    return createIndex(row, column, historyRow);
-}
-
-
-QModelIndex HistoryMenuModel::parent(const QModelIndex &index) const
-{
-    int offset = index.internalId();
-    if (offset == -1 || !index.isValid())
-        return QModelIndex();
-
-    QModelIndex historyIndex = m_treeModel->sourceModel()->index(index.internalId(), 0);
-    QModelIndex treeIndex = m_treeModel->mapFromSource(historyIndex);
-    QModelIndex treeIndexParent = treeIndex.parent();
-
-    int sr = m_treeModel->mapToSource(treeIndexParent).row();
-    int bumpedItems = bumpedRows();
-    if (bumpedItems <= MOVEDROWS && bumpedItems == sourceModel()->rowCount(sourceModel()->index(0, 0)))
-        --bumpedItems;
-    return createIndex(bumpedItems + treeIndexParent.row(), treeIndexParent.column(), sr);
-}
-
-
-// --------------------------------------------------------------------------------------------------------------
-
-
-TreeProxyModel::TreeProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
-{
-    setSortRole(HistoryModel::DateTimeRole);
-    setFilterCaseSensitivity(Qt::CaseInsensitive);
-}
-
-
-bool TreeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
-{
-    if (!source_parent.isValid())
-        return true;
-    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-}
-
-
-// -------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 HistoryFilterModel::HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent)
@@ -559,114 +408,7 @@ bool HistoryFilterModel::removeRows(int row, int count, const QModelIndex &paren
 }
 
 
-// ------------------------------------------------------------------------------------------------------
-
-
-HistoryCompletionModel::HistoryCompletionModel(QObject *parent)
-        : QAbstractProxyModel(parent)
-{
-}
-
-
-QVariant HistoryCompletionModel::data(const QModelIndex &index, int role) const
-{
-    if (sourceModel()
-            && (role == Qt::EditRole || role == Qt::DisplayRole)
-            && index.isValid())
-    {
-        QModelIndex idx = mapToSource(index);
-        idx = idx.sibling(idx.row(), 1);
-        QString urlString = idx.data(HistoryModel::UrlStringRole).toString();
-        if (index.row() % 2)
-        {
-            QUrl url = urlString;
-            QString s = url.toString(QUrl::RemoveScheme
-                                     | QUrl::RemoveUserInfo
-                                     | QUrl::StripTrailingSlash);
-            return s.mid(2);  // strip // from the front
-        }
-        return urlString;
-    }
-    return QAbstractProxyModel::data(index, role);
-}
-
-
-int HistoryCompletionModel::rowCount(const QModelIndex &parent) const
-{
-    return (parent.isValid() || !sourceModel()) ? 0 : sourceModel()->rowCount(parent) * 2;
-}
-
-
-int HistoryCompletionModel::columnCount(const QModelIndex &parent) const
-{
-    return (parent.isValid()) ? 0 : 1;
-}
-
-
-QModelIndex HistoryCompletionModel::mapFromSource(const QModelIndex &sourceIndex) const
-{
-    int row = sourceIndex.row() * 2;
-    return index(row, sourceIndex.column());
-}
-
-
-QModelIndex HistoryCompletionModel::mapToSource(const QModelIndex &proxyIndex) const
-{
-    if (!sourceModel())
-        return QModelIndex();
-    int row = proxyIndex.row() / 2;
-    return sourceModel()->index(row, proxyIndex.column());
-}
-
-
-QModelIndex HistoryCompletionModel::index(int row, int column, const QModelIndex &parent) const
-{
-    if (row < 0 || row >= rowCount(parent)
-            || column < 0 || column >= columnCount(parent))
-        return QModelIndex();
-    return createIndex(row, column, 0);
-}
-
-
-QModelIndex HistoryCompletionModel::parent(const QModelIndex &) const
-{
-    return QModelIndex();
-}
-
-
-void HistoryCompletionModel::setSourceModel(QAbstractItemModel *newSourceModel)
-{
-    if (sourceModel())
-    {
-        disconnect(sourceModel(), SIGNAL(modelReset()), this, SLOT(sourceReset()));
-        disconnect(sourceModel(), SIGNAL(rowsInserted(const QModelIndex &, int, int)),
-                   this, SLOT(sourceReset()));
-        disconnect(sourceModel(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-                   this, SLOT(sourceReset()));
-    }
-
-    QAbstractProxyModel::setSourceModel(newSourceModel);
-
-    if (newSourceModel)
-    {
-        connect(newSourceModel, SIGNAL(modelReset()), this, SLOT(sourceReset()));
-        connect(sourceModel(), SIGNAL(rowsInserted(const QModelIndex &, int, int)),
-                this, SLOT(sourceReset()));
-        connect(sourceModel(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-                this, SLOT(sourceReset()));
-    }
-
-    reset();
-}
-
-
-void HistoryCompletionModel::sourceReset()
-{
-    reset();
-}
-
-
-// ------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------
 
 
 HistoryTreeModel::HistoryTreeModel(QAbstractItemModel *sourceModel, QObject *parent)
@@ -976,4 +718,23 @@ void HistoryTreeModel::sourceRowsRemoved(const QModelIndex &parent, int start, i
             --m_sourceRowCache[j];
         endRemoveRows();
     }
+}
+
+
+//  ------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+TreeProxyModel::TreeProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
+{
+    setSortRole(HistoryModel::DateTimeRole);
+    setFilterCaseSensitivity(Qt::CaseInsensitive);
+}
+
+
+bool TreeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    if (!source_parent.isValid())
+        return true;
+    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }

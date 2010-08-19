@@ -65,22 +65,18 @@ static const unsigned int HISTORY_VERSION = 23;
 HistoryManager::HistoryManager(QObject *parent)
         : QWebHistoryInterface(parent)
         , m_saveTimer(new AutoSaver(this))
-        , m_historyLimit(30)
-        , m_historyModel(0)
-        , m_historyFilterModel(0)
+        , m_historyLimit(0)
         , m_historyTreeModel(0)
 {
     kDebug() << "Loading HistoryManager...";
 
-    m_expiredTimer.setSingleShot(true);
-    connect(&m_expiredTimer, SIGNAL(timeout()), this, SLOT(checkForExpired()));
     connect(this, SIGNAL(entryAdded(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
     connect(this, SIGNAL(entryRemoved(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
 
     load();
 
-    m_historyModel = new HistoryModel(this, this);
-    m_historyFilterModel = new HistoryFilterModel(m_historyModel, this);
+    HistoryModel *historyModel = new HistoryModel(this, this);
+    m_historyFilterModel = new HistoryFilterModel(historyModel, this);
     m_historyTreeModel = new HistoryTreeModel(m_historyFilterModel, this);
 
     // QWebHistoryInterface will delete the history manager
@@ -92,24 +88,17 @@ HistoryManager::HistoryManager(QObject *parent)
 HistoryManager::~HistoryManager()
 {
     m_saveTimer->saveIfNeccessary();
-
-    delete m_saveTimer;
-
-    delete m_historyModel;
+        
     delete m_historyFilterModel;
     delete m_historyTreeModel;
-}
 
-
-QList<HistoryItem> HistoryManager::history() const
-{
-    return m_history;
+    delete m_saveTimer;
 }
 
 
 bool HistoryManager::historyContains(const QString &url) const
 {
-    return m_hash.contains(url) && m_hash[url].savedCount>0;
+    return m_historyFilterModel->historyContains(url);
 }
 
 
@@ -130,7 +119,6 @@ void HistoryManager::addHistoryEntry(const QString &url)
     HistoryItem item(cleanUrl.toString(), QDateTime::currentDateTime());
 
     m_history.prepend(item);
-    addHistoryHashEntry(item);
     emit entryAdded(item);
 
     if (m_history.count() == 1)
@@ -141,14 +129,7 @@ void HistoryManager::addHistoryEntry(const QString &url)
 void HistoryManager::setHistory(const QList<HistoryItem> &history, bool loadedAndSorted)
 {
     m_history = history;
-
-    //TODO: is there a way to really memorize the visitCount instead of recount it at startup ?
-    m_hash.clear();
-    foreach(HistoryItem i, m_history) 
-    {
-        addHistoryHashEntry(i);
-    }
-
+ 
     // verify that it is sorted by date
     if (!loadedAndSorted)
         qSort(m_history.begin(), m_history.end());
@@ -165,24 +146,6 @@ void HistoryManager::setHistory(const QList<HistoryItem> &history, bool loadedAn
         m_saveTimer->changeOccurred();
     }
     emit historyReset();
-}
-
-
-HistoryModel *HistoryManager::historyModel() const
-{
-    return m_historyModel;
-}
-
-
-HistoryFilterModel *HistoryManager::historyFilterModel() const
-{
-    return m_historyFilterModel;
-}
-
-
-HistoryTreeModel *HistoryManager::historyTreeModel() const
-{
-    return m_historyTreeModel;
 }
 
 
@@ -216,44 +179,32 @@ void HistoryManager::checkForExpired()
     }
 
     if (nextTimeout > 0)
-        m_expiredTimer.start(nextTimeout * 1000);
-}
-
-
-void HistoryManager::addHistoryHashEntry(const HistoryItem &item)
-{
-    if (m_hash.contains(item.url))
-    {
-        m_hash[item.url].visitCount++;
-        m_hash[item.url].dateTime = item.dateTime; //store last visit date
-        if (!item.title.isEmpty())
-        {
-            m_hash[item.url].title = item.title; //store last title if not empty            
-        }
-    }
-    else
-    {
-        m_hash[item.url] = HistoryHashItem(item.url, item.dateTime, item.title);
-    }
-    m_hash[item.url].savedCount++;    
+        QTimer::singleShot( nextTimeout * 1000, this, SLOT(checkForExpired()) );
 }
 
 
 void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
 {
+    QString urlString = url.url();
+    urlString.remove(QL1S("www."));
+    if(urlString.startsWith(QL1S("http")) && urlString.endsWith(QL1C('/')))
+        urlString.remove(urlString.length()-1,1);
+    
     for (int i = 0; i < m_history.count(); ++i)
     {
-        if (url == m_history.at(i).url)
+        QString itemUrl = m_history.at(i).url;
+        itemUrl.remove(QL1S("www."));
+        if(itemUrl.startsWith(QL1S("http")) && itemUrl.endsWith(QL1C('/')))
+            itemUrl.remove(itemUrl.length()-1,1);
+        
+        if (urlString == itemUrl)
         {
             m_history[i].title = title;
+            m_history[i].url = url.url();
             m_saveTimer->changeOccurred();
             if (m_lastSavedUrl.isEmpty())
                 m_lastSavedUrl = m_history.at(i).url;
             
-            if (m_hash.contains(url.url()) && !title.isEmpty())
-            {
-                m_hash[url.url()].title = title;
-            }	    
             emit entryUpdated(i);
             break;
         }
@@ -279,42 +230,21 @@ void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
 }
 
 
-HistoryHashItem HistoryManager::get(const QString &url)
+QList<HistoryItem> HistoryManager::find(const QString &text)
 {
-    return m_hash[url];
-}
+    QList<HistoryItem> list;
 
-
-QList<HistoryHashItem> HistoryManager::find(const QString &text)
-{
-    QList<HistoryHashItem> list;
-    
-    QString url;
-    foreach(url, m_hash.keys())
+    QStringList urlKeys = m_historyFilterModel->keys();
+    Q_FOREACH(const QString &url, urlKeys)
     {
-        if (url.contains(text) || m_hash[url].title.contains(text))
-        {
-            list << m_hash[url];
-        }
+        int index = m_historyFilterModel->historyLocation(url);
+        HistoryItem item = m_history.at(index);
+        
+        if(url.contains(text) || item.title.contains(text))
+            list << item;
     }
-
+    
     return list;
-}
-
-
-int HistoryManager::historyLimit() const
-{
-    return m_historyLimit;
-}
-
-
-void HistoryManager::setHistoryLimit(int limit)
-{
-    if (m_historyLimit == limit)
-        return;
-    m_historyLimit = limit;
-    checkForExpired();
-    m_saveTimer->changeOccurred();
 }
 
 
@@ -334,13 +264,27 @@ void HistoryManager::loadSettings()
     int days;
     switch (historyExpire)
     {
-    case 0: days = 1; break;
-    case 1: days = 7; break;
-    case 2: days = 14; break;
-    case 3: days = 30; break;
-    case 4: days = 365; break;
-    case 5: days = -1; break;
-    default: days = -1;
+    case 0: 
+        days = 1; 
+        break;
+    case 1: 
+        days = 7; 
+        break;
+    case 2: 
+        days = 14; 
+        break;
+    case 3: 
+        days = 30; 
+        break;
+    case 4: 
+        days = 365; 
+        break;
+    case 5: 
+        days = -1; 
+        break;
+    default: 
+        days = -1;
+        break;
     }
     m_historyLimit = days;
 }

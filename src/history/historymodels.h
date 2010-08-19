@@ -73,11 +73,12 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
 private:
-    HistoryManager *m_history;
+    HistoryManager *m_historyManager;
 };
 
 
 // ----------------------------------------------------------------------------------------------------
+
 
 /**
  * Proxy model that will remove any duplicate entries.
@@ -85,7 +86,6 @@ private:
  * the front of the list, but as offsets from the back.
  *
  */
-
 class REKONQ_TESTS_EXPORT HistoryFilterModel : public QAbstractProxyModel
 {
     Q_OBJECT
@@ -95,8 +95,16 @@ public:
 
     inline bool historyContains(const QString &url) const
     {
-        load(); return m_historyHash.contains(url);
+        load(); 
+        return m_historyHash.contains(url);
     }
+    
+    inline QList<QString> keys() const
+    {
+        load();
+        return m_historyHash.keys();
+    }
+    
     int historyLocation(const QString &url) const;
 
     QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
@@ -127,72 +135,11 @@ private:
 
 // ----------------------------------------------------------------------------------------------------------------------
 
-/**
- * The history menu
- * - Removes the first twenty entries and puts them as children of the top level.
- * - If there are less then twenty entries then the first folder is also removed.
- *
- * The mapping is done by knowing that HistoryTreeModel is over a table
- * We store that row offset in our index's private data.
- *
- */
-
-class HistoryMenuModel : public QAbstractProxyModel
-{
-    Q_OBJECT
-
-public:
-    explicit HistoryMenuModel(HistoryTreeModel *sourceModel, QObject *parent = 0);
-
-    int columnCount(const QModelIndex &parent) const;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex mapFromSource(const QModelIndex & sourceIndex) const;
-    QModelIndex mapToSource(const QModelIndex & proxyIndex) const;
-    QModelIndex index(int, int, const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &index = QModelIndex()) const;
-
-    int bumpedRows() const;
-
-private:
-    HistoryTreeModel *m_treeModel;
-};
-
-
-// ----------------------------------------------------------------------------------------
-
-/**
- * Proxy model for the history model that
- * exposes each url http://www.foo.com and
- * it url starting at the host www.foo.com
- *
- */
-
-class HistoryCompletionModel : public QAbstractProxyModel
-{
-    Q_OBJECT
-
-public:
-    HistoryCompletionModel(QObject *parent = 0);
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
-    QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
-    QModelIndex index(int, int, const QModelIndex& = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex& index = QModelIndex()) const;
-    void setSourceModel(QAbstractItemModel *sourceModel);
-
-private slots:
-    void sourceReset();
-
-};
-
-
-// ---------------------------------------------------------------------------------------
 
 /**
  * Proxy model for the history model that converts the list
  * into a tree, one top level node per day.
+ * 
  * Used in the HistoryDialog.
  *
  */
@@ -231,6 +178,7 @@ private:
 
 
 // -----------------------------------------------------------------------------------------------------------------
+
 
 /**
  * A modified QSortFilterProxyModel that always accepts
