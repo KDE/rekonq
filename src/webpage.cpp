@@ -139,7 +139,7 @@ static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData 
     // Save download history
     Application::instance()->addDownload(srcUrl.pathOrUrl() , destUrl.pathOrUrl());
 
-    if (ReKonfig::kgetDownload())
+    if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetDownload())
     {
         //KGet integration:
         if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
