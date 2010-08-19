@@ -67,6 +67,8 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
     _index = 0;
     _buffer.clear();
 
+    _hostWhiteList.clear();
+    _hostBlackList.clear();
     _whiteList.clear();
     _blackList.clear();
     _hideList.clear();
@@ -133,7 +135,10 @@ void AdBlockManager::loadRules(const QStringList &rules)
         // white rules
         if (stringRule.startsWith(QL1S("@@")))
         {
-            AdBlockRule rule(stringRule.mid(2));
+            const QString filter = stringRule.mid(2);
+            if (_hostWhiteList.tryAddFilter(filter))
+                continue;
+            AdBlockRule rule(filter);
             _whiteList << rule;
             continue;
         }
@@ -145,6 +150,8 @@ void AdBlockManager::loadRules(const QStringList &rules)
             continue;
         }
 
+        if (_hostBlackList.tryAddFilter(stringRule))
+            continue;
         AdBlockRule rule(stringRule);
         _blackList << rule;
     }
@@ -164,8 +171,16 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     // We compute a lowercase version of the URL so each rule does not
     // have to do it.
     const QString urlStringLowerCase = urlString.toLower();
+    const QString host = request.url().host();
 
     // check white rules before :)
+
+    if (_hostWhiteList.match(host)) {
+        kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched by host matcher: ***********";
+        kDebug() << "UrlString:  " << urlString;
+        return 0;
+    }
+
     foreach(const AdBlockRule &filter, _whiteList)
     {
         if (filter.match(urlString, urlStringLowerCase))
@@ -177,6 +192,13 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     }
 
     // then check the black ones :(
+    if (_hostBlackList.match(host)) {
+        kDebug() << "****ADBLOCK: BLACK RULE Matched by host matcher: ***********";
+        kDebug() << "UrlString:  " << urlString;
+        AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
+        return reply;
+    }
+
     foreach(const AdBlockRule &filter, _blackList)
     {
         if (filter.match(urlString, urlStringLowerCase))

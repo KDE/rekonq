@@ -108,6 +108,7 @@
 #include "rekonq_defines.h"
 
 // Local Includes
+#include "adblockhostmatcher.h"
 #include "adblockrule.h"
 
 // KDE Includes
@@ -155,6 +156,8 @@ private:
     bool _isAdblockEnabled;
     bool _isHideAdsEnabled;
 
+    AdBlockHostMatcher _hostBlackList;
+    AdBlockHostMatcher _hostWhiteList;
     AdBlockRuleList _blackList;
     AdBlockRuleList _whiteList;
     QStringList _hideList;
