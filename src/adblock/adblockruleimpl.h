@@ -33,7 +33,7 @@ class AdBlockRuleImpl
 public:
     AdBlockRuleImpl(const QString &) {}
     virtual ~AdBlockRuleImpl() {}
-    virtual bool match(const QString &encodedUrl) const = 0;
+    virtual bool match(const QString &encodedUrl, const QString &encodedUrlLowerCase) const = 0;
 };
 
 #endif // ADBLOCKRULEIMPL_H

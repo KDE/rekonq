@@ -52,6 +52,7 @@ SET( rekonq_KDEINIT_SRCS
     bookmarks/bookmarkstoolbar.cpp
     bookmarks/bookmarkowner.cpp
     #----------------------------------------
+    adblock/adblockhostmatcher.cpp
     adblock/adblockmanager.cpp
     adblock/adblocknetworkreply.cpp
     adblock/adblockrule.cpp

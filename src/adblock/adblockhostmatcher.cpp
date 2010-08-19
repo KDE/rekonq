@@ -23,25 +23,33 @@
 *
 * ============================================================ */
 
-#ifndef ADBLOCKRULETEXTMATCHIMPL_H
-#define ADBLOCKRULETEXTMATCHIMPL_H
+// Self Includes
+#include "adblockhostmatcher.h"
 
-#include "adblockruleimpl.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
-// Qt Includes
-#include <QString>
-
-// Simple rule to find a string in the URL
-class AdBlockRuleTextMatchImpl : public AdBlockRuleImpl
+bool AdBlockHostMatcher::tryAddFilter(const QString &filter)
 {
-public:
-    AdBlockRuleTextMatchImpl(const QString &filter);
-    bool match(const QString &encodedUrl, const QString &encodedUrlLowerCase) const;
+    if (filter.startsWith(QL1S("||"))) {
+        QString domain = filter.mid(2);
 
-    static bool isTextMatchFilter(const QString &filter);
+        const int indexOfFirstSeparator = domain.indexOf(QL1C('^'));
+        if (indexOfFirstSeparator < 0)
+            return false;
 
-private:
-    QString m_textToMatch;
-};
+        const int indexOfLastDollar = domain.lastIndexOf(QL1C('$'));
+        if (indexOfLastDollar >= 0 && indexOfLastDollar != indexOfFirstSeparator + 1)
+            return false;
 
-#endif // ADBLOCKRULETEXTMATCHIMPL_H
+        domain = domain.left(indexOfFirstSeparator);
+        if (domain.contains(QL1C('/')) || domain.contains(QL1C('*')))
+            return false;
+
+        domain = domain.toLower();
+        m_hostList.insert(domain);
+        m_hostList.insert(QL1S("www.") + domain);
+        return true;
+    }
+    return false;
+}

@@ -61,7 +61,7 @@ AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
     m_regExp.setPattern(parsedLine);
 }
 
-bool AdBlockRuleFallbackImpl::match(const QString &encodedUrl) const
+bool AdBlockRuleFallbackImpl::match(const QString &encodedUrl, const QString &) const
 {
     return m_regExp.indexIn(encodedUrl) != -1;
 }

@@ -23,25 +23,29 @@
 *
 * ============================================================ */
 
-#ifndef ADBLOCKRULETEXTMATCHIMPL_H
-#define ADBLOCKRULETEXTMATCHIMPL_H
+#ifndef ADBLOCKHOSTMATCHER_H
+#define ADBLOCKHOSTMATCHER_H
 
-#include "adblockruleimpl.h"
-
-// Qt Includes
+#include <QSet>
 #include <QString>
 
-// Simple rule to find a string in the URL
-class AdBlockRuleTextMatchImpl : public AdBlockRuleImpl
+class AdBlockHostMatcher
 {
 public:
-    AdBlockRuleTextMatchImpl(const QString &filter);
-    bool match(const QString &encodedUrl, const QString &encodedUrlLowerCase) const;
+    // Try to add an adblock filter to this host matcher.
+    // If the filter is not an hostname, the filter is not added
+    // and the method return false;
+    bool tryAddFilter(const QString &filter);
 
-    static bool isTextMatchFilter(const QString &filter);
+    bool match(const QString &host) const
+    {
+        return m_hostList.contains(host.toLower());
+    }
+
+    void clear() { m_hostList.clear(); }
 
 private:
-    QString m_textToMatch;
+    QSet<QString> m_hostList;
 };
 
-#endif // ADBLOCKRULETEXTMATCHIMPL_H
+#endif // ADBLOCKHOSTMATCHER_H
