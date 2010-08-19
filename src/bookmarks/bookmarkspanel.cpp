@@ -27,54 +27,51 @@
 
 // Self Includes
 #include "bookmarkspanel.h"
-#include "bookmarkspanel.moc"
 
 // Local Includes
+#include "application.h"
 #include "bookmarksmanager.h"
 #include "bookmarkstreemodel.h"
 #include "bookmarksproxy.h"
 #include "bookmarkscontextmenu.h"
 #include "bookmarkowner.h"
+#include "paneltreeview.h"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Qt includes
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QHeaderView>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QHeaderView>
 
 // KDE includes
 #include <KLineEdit>
-#include <KLocalizedString>
-#include <KMenu>
-#include <KMessageBox>
-
 
 BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
         : QDockWidget(title, parent, flags)
         , m_treeView(new PanelTreeView(this))
         , m_loadingState(false)
-        , _loaded(false)
+        , m_loaded(false)
 {
     setObjectName("bookmarksPanel");
     setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     connect(this, SIGNAL(visibilityChanged(bool)), this, SLOT(showing(bool)));
 
-    setShown(ReKonfig::showBookmarksPanel());
+    setVisible(ReKonfig::showBookmarksPanel());
 }
 
 
 BookmarksPanel::~BookmarksPanel()
 {
-    ReKonfig::setShowBookmarksPanel(!isHidden());
+    ReKonfig::setShowBookmarksPanel(false);
 }
 
 
 void BookmarksPanel::showing(bool b)
 {
-    if(b && !_loaded)
+    if(b && !m_loaded)
         setup();
 }
 
@@ -97,8 +94,6 @@ void BookmarksPanel::setup()
 
     // setup tree view
     m_treeView->setUniformRowHeights(true);
-    m_treeView->setTextElideMode(Qt::ElideMiddle);
-    m_treeView->setAlternatingRowColors(true);
     m_treeView->header()->hide();
     m_treeView->setDragEnabled(true);
     m_treeView->setAutoExpandDelay(750);
@@ -120,16 +115,20 @@ void BookmarksPanel::setup()
     proxy->setSourceModel(model);
     m_treeView->setModel(proxy);
 
+    connect(search, SIGNAL(textChanged(const QString &)), proxy, SLOT(setFilterFixedString(const QString &)));
+
+    connect(model, SIGNAL(bookmarksUpdated()), this, SLOT(startLoadFoldedState()));
+
     connect(m_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
     connect(m_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
     connect(m_treeView, SIGNAL(contextMenuEmptyRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
     connect(m_treeView, SIGNAL(delKeyPressed()), this, SLOT(deleteBookmark()));
     connect(m_treeView, SIGNAL(collapsed(const QModelIndex &)), this, SLOT(onCollapse(const QModelIndex &)));
     connect(m_treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(onExpand(const QModelIndex &)));
-    connect(search, SIGNAL(textChanged(const QString &)), proxy, SLOT(setFilterFixedString(const QString &)));
+
     startLoadFoldedState();
 
-    _loaded = true;
+    m_loaded = true;
 }
 
 
@@ -138,10 +137,10 @@ KBookmark BookmarksPanel::bookmarkForIndex(const QModelIndex &index)
     if (!index.isValid())
         return KBookmark();
 
-    const QAbstractProxyModel* proxyModel = dynamic_cast< const QAbstractProxyModel* >(index.model());
+    const BookmarksProxy *proxyModel = static_cast<const BookmarksProxy*>(index.model());
     QModelIndex originalIndex = proxyModel->mapToSource(index);
 
-    BtmItem *node = static_cast< BtmItem* >(originalIndex.internalPointer());
+    BtmItem *node = static_cast<BtmItem*>(originalIndex.internalPointer());
     return node->getBkm();
 }
 
@@ -151,8 +150,7 @@ void BookmarksPanel::onCollapse(const QModelIndex &index)
     if (m_loadingState)
         return;
 
-    KBookmark bookmark = bookmarkForIndex(index);
-    bookmark.internalElement().setAttribute("folded", "yes");
+    bookmarkForIndex(index).internalElement().setAttribute("folded", "yes");
     emit expansionChanged();
 }
 
@@ -162,8 +160,7 @@ void BookmarksPanel::onExpand(const QModelIndex &index)
     if (m_loadingState)
         return;
 
-    KBookmark bookmark = bookmarkForIndex(index);
-    bookmark.internalElement().setAttribute("folded", "no");
+    bookmarkForIndex(index).internalElement().setAttribute("folded", "no");
     emit expansionChanged();
 }
 
@@ -178,17 +175,20 @@ void BookmarksPanel::startLoadFoldedState()
 
 void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 {
-
     int count = m_treeView->model()->rowCount(root);
     QModelIndex index;
 
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < count; ++i)
     {
         index = m_treeView->model()->index(i, 0, root);
-        if (index.isValid() && bookmarkForIndex(index).isGroup())
+        if (index.isValid())
         {
-            m_treeView->setExpanded(index, bookmarkForIndex(index).toGroup().isOpen());
-            loadFoldedState(index);
+            KBookmark bm = bookmarkForIndex(index);
+            if (bm.isGroup())
+            {
+                m_treeView->setExpanded(index, bm.toGroup().isOpen());
+                loadFoldedState(index);
+            }
         }
     }
 }
@@ -196,17 +196,14 @@ void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 
 void BookmarksPanel::contextMenu(const QPoint &pos)
 {
-    QModelIndex index = m_treeView->indexAt(pos);
     if (m_loadingState)
         return;
 
-    KBookmark selected = bookmarkForIndex(index);
-
-    BookmarksContextMenu menu( selected,
+    BookmarksContextMenu menu(bookmarkForIndex( m_treeView->indexAt(pos) ),
                               Application::bookmarkProvider()->bookmarkManager(),
                               Application::bookmarkProvider()->bookmarkOwner(),
                               this
-                            );
+                             );
 
     menu.exec(m_treeView->mapToGlobal(pos));
 }
@@ -215,10 +212,9 @@ void BookmarksPanel::contextMenu(const QPoint &pos)
 void BookmarksPanel::deleteBookmark()
 {
     QModelIndex index = m_treeView->currentIndex();
-    if (!index.isValid())
+    if (m_loadingState || !index.isValid())
         return;
 
-    KBookmark bm = bookmarkForIndex(index);
-    Application::instance()->bookmarkProvider()->bookmarkOwner()->bookmarkSelected(bm);
-    Application::instance()->bookmarkProvider()->bookmarkOwner()->deleteBookmark();
+    Application::bookmarkProvider()->bookmarkOwner()->bookmarkSelected(bookmarkForIndex(index));
+    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark();
 }

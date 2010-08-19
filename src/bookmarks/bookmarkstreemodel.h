@@ -36,7 +36,7 @@
 #include <KBookmark>
 
 // Qt Includes
-#include <QAbstractItemModel>
+#include <QtCore/QAbstractItemModel>
 
 class BtmItem
 {
@@ -66,22 +66,33 @@ class REKONQ_TESTS_EXPORT BookmarksTreeModel : public QAbstractItemModel
 
 public:
     explicit BookmarksTreeModel(QObject *parent = 0);
-    ~BookmarksTreeModel();
+    virtual ~BookmarksTreeModel();
 
+    /**
+     * @return number of rows under the given parent.
+     */
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    /**
+     * @return number of columns (always 1).
+     */
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
+    /**
+     * @return index in the model specified by the given row, column and parent.
+     */
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+    /**
+     * @return parent of the given index.
+     */
     virtual QModelIndex parent(const QModelIndex &index) const;
     virtual QVariant data(const QModelIndex &index, int role) const;
 
     virtual QStringList mimeTypes() const;
-    virtual bool dropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent);
+    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
     virtual Qt::DropActions supportedDropActions() const;
-    virtual QMimeData *mimeData(const QModelIndexList & indexes) const;
+    virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
 
 private slots:
     void bookmarksChanged(const QString &groupAddress);

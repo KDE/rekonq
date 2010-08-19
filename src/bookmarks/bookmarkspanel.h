@@ -33,20 +33,13 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "application.h"
-#include "paneltreeview.h"
-
 // Qt Includes
 #include <QDockWidget>
 
-// KDE Includes
-#include <KBookmark>
-
 // Forward Declarations
-class KUrl;
+class PanelTreeView;
+class KBookmark;
 class QModelIndex;
-
 
 class REKONQ_TESTS_EXPORT BookmarksPanel : public QDockWidget
 {
@@ -54,7 +47,7 @@ class REKONQ_TESTS_EXPORT BookmarksPanel : public QDockWidget
 
 public:
     explicit BookmarksPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~BookmarksPanel();
+    virtual ~BookmarksPanel();
 
 signals:
     void openUrl(const KUrl &, const Rekonq::OpenType &);
@@ -64,7 +57,7 @@ signals:
 public slots:
     void showing(bool);
     void startLoadFoldedState();
-    
+
 private slots:
     void contextMenu(const QPoint &pos);
 
@@ -78,9 +71,7 @@ private:
     KBookmark bookmarkForIndex(const QModelIndex &index);
 
     PanelTreeView *m_treeView;
-    bool m_loadingState;
-    
-    bool _loaded;
+    bool m_loadingState, m_loaded;
 };
 
 #endif // BOOKMARKSPANEL_H

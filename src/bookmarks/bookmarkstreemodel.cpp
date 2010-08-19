@@ -27,18 +27,13 @@
 
 // Self Includes
 #include "bookmarkstreemodel.h"
-#include "bookmarkstreemodel.moc"
 
 // Local Includes
 #include "application.h"
 #include "bookmarksmanager.h"
 
 // Qt Includes
-#include <QMimeData>
-
-// KDE includes
-#include <KBookmarkGroup>
-#include <KLocalizedString>
+#include <QtCore/QMimeData>
 
 
 BtmItem::BtmItem(const KBookmark &bm)
@@ -69,9 +64,9 @@ QVariant BtmItem::data(int role) const
     {
         QString tooltip = "";
 
-        if (!m_kbm.fullText().isEmpty())
+        if (!m_kbm.text().isEmpty())
         {
-            tooltip += m_kbm.fullText();
+            tooltip += m_kbm.text();
         }
         if (m_kbm.isGroup())
         {
@@ -140,6 +135,7 @@ KBookmark BtmItem::getBkm() const
     return m_kbm;
 }
 
+
 // -------------------------------------------------------------------------------------
 
 
@@ -149,7 +145,6 @@ BookmarksTreeModel::BookmarksTreeModel(QObject *parent)
 {
     resetModel();
     connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(bookmarksChanged(const QString &)));
-    connect(this, SIGNAL(bookmarksUpdated()), parent, SLOT(startLoadFoldedState()));
 }
 
 
@@ -168,30 +163,16 @@ int BookmarksTreeModel::rowCount(const QModelIndex &parent) const
     }
     else
     {
-        parentItem = static_cast< BtmItem* >(parent.internalPointer());
+        parentItem = static_cast<BtmItem*>(parent.internalPointer());
     }
 
     return parentItem->childCount();
 }
 
 
-int BookmarksTreeModel::columnCount(const QModelIndex &parent) const
+int BookmarksTreeModel::columnCount(const QModelIndex& /*parent*/) const
 {
-    Q_UNUSED(parent)
-    // name
     return 1;
-}
-
-
-QVariant BookmarksTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (orientation == Qt::Horizontal
-            && role == Qt::DisplayRole
-            && section == 0
-       )
-        return i18n("Bookmark");
-
-    return QVariant();
 }
 
 
@@ -214,26 +195,18 @@ Qt::ItemFlags BookmarksTreeModel::flags(const QModelIndex &index) const
 QModelIndex BookmarksTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!hasIndex(row, column, parent))
-    {
         return QModelIndex();
-    }
 
     BtmItem *parentItem;
 
     if (!parent.isValid())
-    {
         parentItem = m_root;
-    }
     else
-    {
-        parentItem = static_cast< BtmItem* >(parent.internalPointer());
-    }
+        parentItem = static_cast<BtmItem*>(parent.internalPointer());
 
     BtmItem *childItem = parentItem->child(row);
     if (childItem)
-    {
         return createIndex(row, column, childItem);
-    }
 
     return QModelIndex();
 }
@@ -242,17 +215,13 @@ QModelIndex BookmarksTreeModel::index(int row, int column, const QModelIndex &pa
 QModelIndex BookmarksTreeModel::parent(const QModelIndex &index) const
 {
     if (!index.isValid())
-    {
         return QModelIndex();
-    }
 
-    BtmItem *childItem = static_cast< BtmItem* >(index.internalPointer());
+    BtmItem *childItem = static_cast<BtmItem*>(index.internalPointer());
     BtmItem *parentItem = childItem->parent();
 
     if (parentItem == m_root)
-    {
         return QModelIndex();
-    }
 
     return createIndex(parentItem->row(), 0, parentItem);
 }
@@ -261,11 +230,9 @@ QModelIndex BookmarksTreeModel::parent(const QModelIndex &index) const
 QVariant BookmarksTreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
-    {
         return QVariant();
-    }
 
-    BtmItem *node = static_cast< BtmItem* >(index.internalPointer());
+    BtmItem *node = static_cast<BtmItem*>(index.internalPointer());
     if (node && node == m_root)
     {
         if (role == Qt::DisplayRole)
@@ -288,7 +255,6 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
     if (groupAddress.isEmpty())
     {
         resetModel();
-        emit bookmarksUpdated();
     }
     else
     {
@@ -296,11 +262,12 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
         BtmItem *node = m_root;
         QModelIndex nodeIndex;
 
-        QStringList indexChain( groupAddress.split( '/', QString::SkipEmptyParts) );
-        foreach( const QString &sIndex, indexChain )
+        QStringList indexChain( groupAddress.split('/', QString::SkipEmptyParts) );
+        bool ok;
+        int i;
+        foreach (const QString &sIndex, indexChain)
         {
-            bool ok;
-            int i = sIndex.toInt( &ok );
+            i = sIndex.toInt( &ok );
             if( !ok )
                 break;
 
@@ -312,8 +279,9 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
         }
         populate(node, Application::bookmarkProvider()->bookmarkManager()->findByAddress(groupAddress).toGroup());
         endResetModel();
-        emit bookmarksUpdated();
     }
+
+    emit bookmarksUpdated();
 }
 
 
@@ -328,10 +296,6 @@ void BookmarksTreeModel::setRoot(KBookmarkGroup bmg)
     beginResetModel();
     delete m_root;
     m_root = new BtmItem(KBookmark());
-
-    if (bmg.isNull())
-        return;
-
     populate(m_root, bmg);
     endResetModel();
 }
@@ -375,7 +339,7 @@ QStringList BookmarksTreeModel::mimeTypes() const
 }
 
 
-QMimeData* BookmarksTreeModel::mimeData(const QModelIndexList & indexes) const
+QMimeData* BookmarksTreeModel::mimeData(const QModelIndexList &indexes) const
 {
     QMimeData *mimeData = new QMimeData;
 
@@ -387,38 +351,33 @@ QMimeData* BookmarksTreeModel::mimeData(const QModelIndexList & indexes) const
 }
 
 
-bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex & parent)
+bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    if (action == Qt::MoveAction)
+    if (action != Qt::MoveAction || !data->hasFormat("application/rekonq-bookmark"))
+        return false;
+
+    QByteArray addresses = data->data("application/rekonq-bookmark");
+    KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+
+    KBookmarkGroup root;
+    if (parent.isValid())
+        root = bookmarkForIndex(parent).toGroup();
+    else
+        root = Application::bookmarkProvider()->rootGroup();
+
+    QModelIndex destIndex = index(row, column, parent);
+
+    if (destIndex.isValid() && row != -1)
     {
-        if (data->hasFormat("application/rekonq-bookmark"))
-        {
-            QByteArray addresses = data->data("application/rekonq-bookmark");
-            KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
-
-            QModelIndex destIndex = index(row, column, parent);
-
-            KBookmark dropDestBookmark;
-            if (destIndex.isValid())
-                dropDestBookmark = bookmarkForIndex(destIndex);
-
-            KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
-            if (parent.isValid())
-                root = bookmarkForIndex(parent).toGroup();
-
-            if (destIndex.isValid() && row != -1)
-            {
-                root.moveBookmark(bookmark, root.previous(dropDestBookmark));
-
-            }
-            else
-            {
-                root.deleteBookmark(bookmark);
-                root.addBookmark(bookmark);
-            }
-
-            Application::bookmarkProvider()->bookmarkManager()->emitChanged();
-        }
+        root.moveBookmark(bookmark, root.previous(bookmarkForIndex(destIndex)));
     }
+    else
+    {
+        root.deleteBookmark(bookmark);
+        root.addBookmark(bookmark);
+    }
+
+    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+
     return true;
 }
