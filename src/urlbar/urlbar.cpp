@@ -46,6 +46,7 @@
 
 // KDE Includes
 #include <KCompletionBox>
+#include <KStandardDirs>
 
 // Qt Includes
 #include <QtGui/QPainter>
@@ -321,7 +322,7 @@ void UrlBar::loadFinished()
     }
         
     // show KGet downloads??
-    if (ReKonfig::kgetList())
+    if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
     {
         IconButton *bt = addRightIcon(UrlBar::KGet);
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(downloadAllContentsWithKGet(QPoint)));

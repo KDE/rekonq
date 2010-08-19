@@ -47,6 +47,7 @@
 #include <KMenu>
 #include <KActionMenu>
 #include <ktoolinvocation.h>
+#include <KStandardDirs>
 
 // Qt Includes
 #include <QtCore/QDir>
@@ -316,7 +317,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
             menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
 
-            if (ReKonfig::kgetList())
+            if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
             {
                 a = new KAction(KIcon("kget"), i18n("List All Links"), this);
                 connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
