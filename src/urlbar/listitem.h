@@ -61,7 +61,8 @@ public:
     void deactivate();
 
     KUrl url();
-
+    virtual QString text();
+    
 public slots:
     virtual void nextItemSubChoice();
 
@@ -153,6 +154,7 @@ class SearchListItem : public ListItem
 
 public:
     explicit SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+    QString text();
 
 public slots:
     virtual void nextItemSubChoice();
@@ -180,6 +182,10 @@ class SuggestionListItem : public ListItem
 
 public:
     SuggestionListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
+    QString text();
+
+private:
+    QString m_text;
 };
 
 

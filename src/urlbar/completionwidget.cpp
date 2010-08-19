@@ -153,13 +153,10 @@ void CompletionWidget::activateCurrentListItem()
 
     //update text of the url bar
     bar->blockSignals(true); //without compute suggestions
-    if (!widget->inherits("SearchListItem"))
-        bar->setQUrl( widget->url() );
-    else
-        bar->setQUrl( _typedString );
+    bar->setQUrl(widget->text());
     bar->blockSignals(false);
     bar->setFocus();
-    bar->setCursorPosition( bar->text().length() );
+    bar->setCursorPosition(bar->text().length());
 }
 
 
@@ -240,7 +237,7 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 if( _currentIndex == -1)
                     _currentIndex = 0;
                 child = findChild<ListItem *>(QString::number(_currentIndex));
-                if(child && _typedString == w->text())
+                if(child)
                 {
                     emit chosenUrl(child->url(), Rekonq::CurrentTab);
                 }

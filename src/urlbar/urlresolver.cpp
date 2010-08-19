@@ -396,6 +396,7 @@ void UrlResolver::computeSuggestions()
 
 void UrlResolver::suggestionsReceived(const QStringList &suggestion)
 {
+   
     foreach (QString s, suggestion)
     {
         UrlSearchItem gItem(UrlSearchItem::Suggestion, s, s);

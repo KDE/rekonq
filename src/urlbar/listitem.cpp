@@ -139,6 +139,12 @@ KUrl ListItem::url()
 }
 
 
+QString ListItem::text()
+{
+    return m_url.url();
+}
+
+
 void ListItem::nextItemSubChoice()
 {
     //will be override
@@ -298,6 +304,12 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
 }
 
 
+QString SearchListItem::text()
+{
+    return m_text;
+}
+
+
 QString SearchListItem::searchItemTitle(QString engine, QString text)
 {
     return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, Qt::escape(text)));
@@ -393,17 +405,36 @@ void EngineBar::selectNextEngine()
 
 SuggestionListItem::SuggestionListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
         : ListItem(item, parent)
+        , m_text(item.title)
 {
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
 
-    hLayout->addWidget(new IconLabel(item.url, this));
+    QString query = item.title;
+    KService::Ptr engine = SearchEngine::fromString(query);
+    if (engine)
+    {
+        query = query.remove(0, text.indexOf(SearchEngine::delimiter()) + 1);
+    }
+    else
+    {
+        engine = qobject_cast<CompletionWidget *>(parent)->searchEngine();
+    }
+
+    m_url = SearchEngine::buildQuery(engine, query);
+
+    hLayout->addWidget(new IconLabel(SearchEngine::buildQuery(engine, ""), this));
     hLayout->addWidget(new TextLabel(item.title, text, this));
     hLayout->addWidget(new TypeIconLabel(item.type, this));
 
     setLayout(hLayout);
 }
 
+
+QString SuggestionListItem::text()
+{
+    return m_text;
+}
 
 // ---------------------------------------------------------------
 
