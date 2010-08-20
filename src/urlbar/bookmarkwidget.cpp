@@ -30,7 +30,7 @@
 
 // Local includes
 #include "application.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "bookmarkowner.h"
 
 // KDE Includes

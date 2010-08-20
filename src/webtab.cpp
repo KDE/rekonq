@@ -36,7 +36,7 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "mainview.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "walletbar.h"
 #include "previewselectorbar.h"
 #include "rsswidget.h"
@@ -66,7 +66,7 @@ WebTab::WebTab(QWidget *parent)
         , m_progress(0)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
+
     QVBoxLayout *l = new QVBoxLayout(this);
     l->setMargin(0);
     l->setSpacing(0);
@@ -158,7 +158,7 @@ void WebTab::createPreviewSelectorBar(int index)
 {
     PreviewSelectorBar *bar = new PreviewSelectorBar(index, this);
     qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, bar);
-    
+
     connect(page(), SIGNAL(loadStarted()), bar, SLOT(loadProgress()));
     connect(page(), SIGNAL(loadProgress(int)), bar, SLOT(loadProgress()));
     connect(page(), SIGNAL(loadFinished(bool)), bar, SLOT(loadFinished()));
@@ -183,7 +183,7 @@ void WebTab::showRSSInfo(QPoint pos)
     col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
 
     QMap<KUrl, QString> map;
-    
+
     foreach(const QWebElement &el, col)
     {
         QString urlString;

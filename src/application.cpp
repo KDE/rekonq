@@ -36,7 +36,7 @@
 // Local Includes
 #include "mainwindow.h"
 #include "historymanager.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "mainview.h"
 #include "webtab.h"
 #include "urlbar.h"
@@ -100,7 +100,7 @@ Application::~Application()
 
     delete s_adblockManager.data();
     s_adblockManager.clear();
-    
+
     delete s_opensearchManager.data();
     s_opensearchManager.clear();
 }
@@ -112,7 +112,7 @@ int Application::newInstance()
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
     // not that easy, indeed
-    // We have to consider 3 variables here: 
+    // We have to consider 3 variables here:
     // 1) Is first load?
     // 2) Are there arguments?
     // 3) Is rekonq recovering from crash?
@@ -120,13 +120,13 @@ int Application::newInstance()
     bool isFirstLoad = m_mainWindows.isEmpty();
     bool areThereArguments = (args->count() > 0);
     bool isRekonqCrashed = (ReKonfig::recoverOnCrash() == 1);
-    
+
     kDebug() << "is first load? " << isFirstLoad;
     kDebug() << "are there arguments? " << areThereArguments;
     kDebug() << "is rekonq crashed? " << isRekonqCrashed;
-    
+
     int exitValue = 1 * isFirstLoad + 2 * areThereArguments + 4 * isRekonqCrashed;
-    
+
     if(isRekonqCrashed)
     {
         if( isFirstLoad  && sessionManager()->restoreSession() )
@@ -144,7 +144,7 @@ int Application::newInstance()
                 loadUrl( KUrl("about:blank"), Rekonq::NewFocusedTab);
         }
     }
-    
+
     if(areThereArguments)
     {
         KUrl::List urlList;
@@ -156,7 +156,7 @@ int Application::newInstance()
             else
                 urlList += KUrl( args->arg(i) ); // "rekonq kde.org" || "rekonq kde:kdialog" case
         }
-        
+
         if (isFirstLoad)
         {
             // No windows in the current desktop? No windows at all?
@@ -183,7 +183,7 @@ int Application::newInstance()
                 Q_FOREACH(const KUrl &u, urlList)
                     loadUrl(u, Rekonq::NewFocusedTab);
             }
-        }    
+        }
     }
     else
     {
@@ -223,16 +223,16 @@ int Application::newInstance()
                 break;
            }
 
-        }    
+        }
     }
-    
-    
+
+
     if(isFirstLoad)
     {
         // give me some time to do the other things..
         QTimer::singleShot(100, this, SLOT(postLaunch()));
     }
-    
+
     return exitValue;
 }
 
@@ -408,7 +408,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     Q_ASSERT( tabIndex != -1 );
     UrlBar *barForTab = qobject_cast<UrlBar *>(w->mainView()->widgetBar()->widget(tabIndex));
     barForTab->setQUrl(url);
-    
+
     WebView *view = tab->view();
 
     if (view)
@@ -486,16 +486,16 @@ void Application::updateConfiguration()
     {
         MainView *mv = w.data()->mainView();
         mv->updateTabBar();
-    
+
         if (b)
             mv->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
         else
             mv->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
     }
 
-    QWebSettings *defaultSettings = QWebSettings::globalSettings();    
-    
-    // =========== Fonts ==============    
+    QWebSettings *defaultSettings = QWebSettings::globalSettings();
+
+    // =========== Fonts ==============
     defaultSettings->setFontFamily(QWebSettings::StandardFont, ReKonfig::standardFontFamily() );
     defaultSettings->setFontFamily(QWebSettings::FixedFont, ReKonfig::fixedFontFamily() );
     defaultSettings->setFontFamily(QWebSettings::SerifFont, ReKonfig::serifFontFamily() );
@@ -503,15 +503,15 @@ void Application::updateConfiguration()
     defaultSettings->setFontFamily(QWebSettings::CursiveFont, ReKonfig::cursiveFontFamily());
     defaultSettings->setFontFamily(QWebSettings::FantasyFont, ReKonfig::fantasyFontFamily());
 
-    // compute font size 
+    // compute font size
     // (I have to admit I know nothing about these DPI questions..: copied from kwebkitpart, as someone suggested)
     // font size in pixels =  font size in inches × screen dpi
-    int defaultFontSize = ReKonfig::defaultFontSize();    
+    int defaultFontSize = ReKonfig::defaultFontSize();
     int minimumFontSize = ReKonfig::minFontSize();
-    
+
     int logDpiY = mainWindow()->currentTab()->view()->logicalDpiY();
     kDebug() << "Logical Dot per Inch Y: " << logDpiY;
-    
+
     float toPix = (logDpiY < 96.0)
         ? 96.0/72.0
         : logDpiY/72.0 ;
@@ -519,7 +519,7 @@ void Application::updateConfiguration()
     defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix) );
     defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix) );
 
-    
+
     // ================ WebKit ============================
     defaultSettings->setAttribute(QWebSettings::AutoLoadImages, ReKonfig::autoLoadImages());
     defaultSettings->setAttribute(QWebSettings::DnsPrefetchEnabled, ReKonfig::dnsPrefetch());

@@ -28,7 +28,7 @@
 
 
 // Self Includes
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 
 // Local Includes
 #include "application.h"

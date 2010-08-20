@@ -37,7 +37,7 @@
 // Local Includes
 #include "settingsdialog.h"
 #include "historymanager.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "bookmarkstoolbar.h"
 #include "webtab.h"
 #include "mainview.h"

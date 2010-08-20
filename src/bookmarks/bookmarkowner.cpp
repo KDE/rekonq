@@ -32,7 +32,7 @@
 
 // Local Includes
 #include "application.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "mainwindow.h"
 #include "webtab.h"
 #include "mainview.h"

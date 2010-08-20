@@ -30,7 +30,7 @@
 
 // Local Includes
 #include "application.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "bookmarkstreemodel.h"
 #include "bookmarksproxy.h"
 #include "bookmarkscontextmenu.h"

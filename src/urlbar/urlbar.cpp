@@ -41,7 +41,7 @@
 #include "webpage.h"
 #include "webview.h"
 #include "completionwidget.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "bookmarkwidget.h"
 
 // KDE Includes
@@ -105,7 +105,7 @@ UrlBar::UrlBar(QWidget *parent)
     _tab = qobject_cast<WebTab *>(parent);
 
     connect(_tab, SIGNAL(loadProgressing()), this, SLOT(update()));
-    
+
     connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
@@ -114,13 +114,13 @@ UrlBar::UrlBar(QWidget *parent)
     _icon->setIcon(KIcon("bookmarks").pixmap(32,32, QIcon::Disabled));
     connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(onBookmarksChanged()));
     connect(_icon, SIGNAL(clicked(const QPoint &)), this, SLOT(showBookmarkInfo(const QPoint &)));
-    
+
     // load typed urls
     connect(this, SIGNAL(returnPressed(const QString &)), this, SLOT(loadTyped(const QString &)));
 
     _suggestionTimer->setSingleShot(true);
     connect(_suggestionTimer, SIGNAL(timeout()), this, SLOT(suggest()));
-    
+
     activateSuggestions(true);
 }
 
@@ -163,10 +163,10 @@ void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 
 
 void UrlBar::paintEvent(QPaintEvent *event)
-{   
+{
     QColor backgroundColor;
     QColor foregroundColor;
-    
+
     if (_privateMode)
     {
         backgroundColor = QColor(220, 220, 220);  // light gray
@@ -199,7 +199,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
         int r = (highlight.red()+2*backgroundColor.red())/3;
         int g = (highlight.green()+2*backgroundColor.green())/3;
         int b = (highlight.blue()+2*backgroundColor.blue())/3;
-        
+
         QColor loadingColor(r, g, b);
 
         if (abs(loadingColor.lightness() - backgroundColor.lightness()) < 20) //eg. Gaia color scheme
@@ -320,7 +320,7 @@ void UrlBar::loadFinished()
         _icon->setIcon(KIcon("bookmarks"));
         _icon->setToolTip(i18n("Edit this bookmark"));
     }
-        
+
     // show KGet downloads??
     if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
     {
@@ -343,7 +343,7 @@ void UrlBar::loadFinished()
     }
 
     // we need to update urlbar after the right icon settings
-    // removing this code (where setStyleSheet automatically calls update) needs adding again 
+    // removing this code (where setStyleSheet automatically calls update) needs adding again
     // an update call
     kDebug() << "resetting stylesheet";
     int rightIconWidth = 25 * (_rightIconsList.count());
@@ -355,7 +355,7 @@ void UrlBar::showBookmarkInfo(const QPoint &pos)
 {
     if( _tab->url().scheme() == QL1S("about") )
         return;
-    
+
     KBookmark bookmark = Application::bookmarkProvider()->bookmarkForUrl(_tab->url());
 
     IconButton *bt = qobject_cast<IconButton *>(this->sender());
@@ -367,7 +367,7 @@ void UrlBar::showBookmarkInfo(const QPoint &pos)
         bookmark = Application::bookmarkProvider()->rootGroup().addBookmark(_tab->view()->title(), _tab->url());
         Application::bookmarkProvider()->bookmarkManager()->emitChanged();
     }
-    
+
     BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
     widget->showAt(pos);
 }
@@ -480,7 +480,7 @@ void UrlBar::detectTypedString(const QString &typed)
         QTimer::singleShot(0, this, SLOT(suggest()));
         return;
     }
-    
+
     if(_suggestionTimer->isActive())
         _suggestionTimer->stop();
     _suggestionTimer->start(50);

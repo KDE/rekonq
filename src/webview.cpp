@@ -36,7 +36,7 @@
 #include "mainwindow.h"
 #include "mainview.h"
 #include "webpage.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "searchengine.h"
 #include "websnap.h"
 
@@ -79,8 +79,8 @@ WebView::WebView(QWidget* parent)
 {
     WebPage *page = new WebPage(this);
     setPage(page);
-    
-    // // NOTE This is a lot hackish. We copied it from Arora, but using a "Windows Style" 
+
+    // // NOTE This is a lot hackish. We copied it from Arora, but using a "Windows Style"
     // // seems really a pity to me. The problem is that using a KStyle everything seems "broken"
     // // (at least with dark colors). So I think the code should be somthing like:
     // KStyle s;
@@ -93,7 +93,7 @@ WebView::WebView(QWidget* parent)
         p = s.standardPalette();
         setPalette(p);
     }
-    
+
     // download system
     connect(this, SIGNAL(linkShiftClicked(const KUrl &)), page, SLOT(downloadUrl(const KUrl &)));
     connect(page, SIGNAL(downloadRequested(const QNetworkRequest &)), page, SLOT(downloadRequest(const QNetworkRequest &)));
@@ -126,7 +126,7 @@ WebView::~WebView()
     disconnect();
 
     WebPage* p = page();
-    
+
     QPixmap preview = WebSnap::renderClosingPagePreview(*p);
     QString path = WebSnap::imagePathFromUrl(p->mainFrame()->url().toString());
     QFile::remove(path);
@@ -168,7 +168,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
-        menu.addSeparator();        
+        menu.addSeparator();
     }
 
     // is content editable && selected? Add CUT
@@ -215,7 +215,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         }
 
         menu.addSeparator();
-        
+
         menu.addAction(inspectAction);
         // TODO Add translate, show translation
     }
@@ -234,7 +234,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
         menu.addAction(pageAction(KWebPage::CopyImageToClipboard));
         menu.addSeparator();
-        
+
         menu.addAction(inspectAction);
     }
 
