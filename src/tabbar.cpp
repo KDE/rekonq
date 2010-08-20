@@ -322,6 +322,12 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
     menu.addSeparator();
     menu.addAction(mainWindow->actionByName( QL1S("reload_all_tabs") ));
 
+    KToolBar *mainBar = mainWindow->toolBar("mainToolBar");
+    if(!mainBar->isVisible())
+    {
+        menu.addAction( mainBar->toggleViewAction() );
+    }
+    
     menu.exec(pos);
 }
 
