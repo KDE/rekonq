@@ -85,7 +85,10 @@ public:
     * @short set the Bookmarks Toolbar Action
     */
     void registerBookmarkBar(BookmarkToolBar *toolbar);
-    void removeToolBar(BookmarkToolBar *toolbar);
+    void removeBookmarkBar(BookmarkToolBar *toolbar);
+
+    void registerBookmarkPanel(BookmarksPanel *panel);
+    void removeBookmarkPanel(BookmarksPanel *panel);
 
     /**
      * @short Get action by name
@@ -108,9 +111,6 @@ public:
     inline BookmarkOwner* bookmarkOwner() { return m_owner; }
 
     QList<KBookmark> find(const QString &text);
-
-    void registerBookmarkPanel(BookmarksPanel *panel);
-    void removeBookmarkPanel(BookmarksPanel *panel);
 
     KBookmark bookmarkForUrl(const KUrl &url);
 
@@ -146,7 +146,6 @@ private slots:
 private:
     void find(QList<KBookmark> *list, const KBookmark &bookmark, const QString &text);
 
-    QString titleForBookmarkUrl(const KBookmark &bookmark, const QString &url);
     KBookmark bookmarkForUrl(const KBookmark &bookmark, const KUrl &url);
 
     KBookmarkManager *m_manager;

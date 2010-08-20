@@ -85,6 +85,22 @@ BookmarkProvider::~BookmarkProvider()
 }
 
 
+KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
+{
+    kDebug() << "new Bookmarks menu...";
+
+    KMenu *menu = new KMenu(parent);
+    KActionMenu *bookmarkActionMenu = new KActionMenu(menu);
+    bookmarkActionMenu->setMenu(menu);
+    bookmarkActionMenu->setText(i18n("&Bookmarks"));
+    new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
+
+    kDebug() << "new Bookmarks menu... DONE";
+
+    return bookmarkActionMenu;
+}
+
+
 void BookmarkProvider::registerBookmarkBar(BookmarkToolBar *toolbar)
 {
     if (m_bookmarkToolBars.contains(toolbar))
@@ -100,22 +116,32 @@ void BookmarkProvider::registerBookmarkBar(BookmarkToolBar *toolbar)
 }
 
 
-void BookmarkProvider::removeToolBar(BookmarkToolBar *toolbar)
+void BookmarkProvider::removeBookmarkBar(BookmarkToolBar *toolbar)
 {
     m_bookmarkToolBars.removeOne(toolbar);
 }
 
 
-void BookmarkProvider::slotBookmarksChanged(const QString& /*groupAddress*/, const QString& /*caller*/)
+void BookmarkProvider::registerBookmarkPanel(BookmarksPanel *panel)
 {
-    foreach(BookmarkToolBar *bookmarkToolBar, m_bookmarkToolBars)
+    if (panel && !m_bookmarkPanels.contains(panel))
     {
-        if (bookmarkToolBar)
-        {
-            bookmarkToolBar->toolBar()->clear();
-            fillBookmarkBar(bookmarkToolBar);
-        }
+        m_bookmarkPanels.append(panel);
+        connect(panel, SIGNAL(expansionChanged()), this, SLOT(slotPanelChanged()));
     }
+}
+
+
+void BookmarkProvider::removeBookmarkPanel(BookmarksPanel *panel)
+{
+    if (!panel)
+        return;
+
+    m_bookmarkPanels.removeOne(panel);
+    panel->disconnect(this);
+
+    if (m_bookmarkPanels.isEmpty())
+        Application::bookmarkProvider()->bookmarkManager()->emitChanged();
 }
 
 
@@ -125,6 +151,35 @@ QAction* BookmarkProvider::actionByName(const QString &name)
     if (action)
         return action;
     return new QAction(this);
+}
+
+
+KBookmarkGroup BookmarkProvider::rootGroup()
+{
+    return m_manager->root();
+}
+
+
+QList<KBookmark> BookmarkProvider::find(const QString &text)
+{
+    QList<KBookmark> list;
+
+    KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
+    if (!root.isNull())
+        for (KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
+            find(&list, bookmark, text);
+
+    return list;
+}
+
+
+KBookmark BookmarkProvider::bookmarkForUrl(const KUrl &url)
+{
+    KBookmarkGroup root = rootGroup();
+    if (root.isNull())
+        return KBookmark();
+
+    return bookmarkForUrl(root, url);
 }
 
 
@@ -146,19 +201,16 @@ void BookmarkProvider::contextMenu(const QPoint &point)
 }
 
 
-KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
+void BookmarkProvider::slotBookmarksChanged(const QString& /*groupAddress*/, const QString& /*caller*/)
 {
-    kDebug() << "new Bookmarks menu...";
-
-    KMenu *menu = new KMenu(parent);
-    KActionMenu *bookmarkActionMenu = new KActionMenu(menu);
-    bookmarkActionMenu->setMenu(menu);
-    bookmarkActionMenu->setText(i18n("&Bookmarks"));
-    new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
-
-    kDebug() << "new Bookmarks menu... DONE";
-
-    return bookmarkActionMenu;
+    foreach(BookmarkToolBar *bookmarkToolBar, m_bookmarkToolBars)
+    {
+        if (bookmarkToolBar)
+        {
+            bookmarkToolBar->toolBar()->clear();
+            fillBookmarkBar(bookmarkToolBar);
+        }
+    }
 }
 
 
@@ -197,22 +249,20 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
 }
 
 
-KBookmarkGroup BookmarkProvider::rootGroup()
+void BookmarkProvider::slotAddBookmark()
 {
-    return m_manager->root();
+    rootGroup().addBookmark(bookmarkOwner()->currentTitle(), bookmarkOwner()->currentUrl());
+    bookmarkManager()->emitChanged();
 }
 
 
-QList<KBookmark> BookmarkProvider::find(const QString &text)
+void BookmarkProvider::slotPanelChanged()
 {
-    QList<KBookmark> list;
-
-    KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
-    if (!root.isNull())
-        for (KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
-            find(&list, bookmark, text);
-
-    return list;
+    foreach (BookmarksPanel *panel, m_bookmarkPanels)
+    {
+        if (panel && panel != sender())
+            panel->startLoadFoldedState();
+    }
 }
 
 
@@ -228,56 +278,6 @@ void BookmarkProvider::find(QList<KBookmark> *list, const KBookmark &bookmark, c
     {
         *list << bookmark;
     }
-}
-
-
-void BookmarkProvider::slotAddBookmark()
-{
-    rootGroup().addBookmark(bookmarkOwner()->currentTitle(), bookmarkOwner()->currentUrl());
-    bookmarkManager()->emitChanged();
-}
-
-
-void BookmarkProvider::registerBookmarkPanel(BookmarksPanel *panel)
-{
-    if (panel && !m_bookmarkPanels.contains(panel))
-    {
-        m_bookmarkPanels.append(panel);
-        connect(panel, SIGNAL(expansionChanged()), this, SLOT(slotPanelChanged()));
-    }
-}
-
-
-void BookmarkProvider::removeBookmarkPanel(BookmarksPanel *panel)
-{
-    if (!panel)
-        return;
-
-    m_bookmarkPanels.removeOne(panel);
-    panel->disconnect(this);
-
-    if (m_bookmarkPanels.isEmpty())
-        Application::bookmarkProvider()->bookmarkManager()->emitChanged();
-}
-
-
-void BookmarkProvider::slotPanelChanged()
-{
-    foreach (BookmarksPanel *panel, m_bookmarkPanels)
-    {
-        if (panel && panel != sender())
-            panel->startLoadFoldedState();
-    }
-}
-
-
-KBookmark BookmarkProvider::bookmarkForUrl(const KUrl &url)
-{
-    KBookmarkGroup root = rootGroup();
-    if (root.isNull())
-        return KBookmark();
-
-    return bookmarkForUrl(root, url);
 }
 
 
