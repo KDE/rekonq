@@ -167,7 +167,8 @@ private slots:
     void enableNetworkAnalysis(bool);
 
     void initBookmarkBar();
-
+    void initToolsMenu();
+    
 private:
     MainView *m_view;
     FindBar *m_findBar;
@@ -188,6 +189,8 @@ private:
 
     KPassivePopup *m_popup;
     QTimer *m_hidePopup;
+
+    KActionMenu *m_toolsMenu;
 };
 
 #endif // MAINWINDOW_H

@@ -110,6 +110,7 @@ MainWindow::MainWindow()
         , m_bookmarksBar(0)
         , m_popup(new KPassivePopup(this))
         , m_hidePopup(new QTimer(this))
+        , m_toolsMenu(0)
 {
     // creating a centralWidget containing panel, m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
@@ -216,6 +217,9 @@ void MainWindow::initBookmarkBar()
     }
     m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
     Application::bookmarkProvider()->registerBookmarkBar(m_bookmarksBar);
+
+    // To update the bookmark toolbar action
+    initToolsMenu();
 }
 
 
@@ -228,6 +232,58 @@ void MainWindow::configureToolbars()
     // The bookmark bar needs to be refill after the UI changes are finished
     connect(&dlg, SIGNAL(newToolBarConfig()), this, SLOT(initBookmarkBar()));
     dlg.exec();
+}
+
+
+void MainWindow::initToolsMenu()
+{
+    if (!m_toolsMenu)
+        return;
+
+    m_toolsMenu->menu()->clear();
+
+    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Open)));
+    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
+    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
+    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
+
+    QAction *action = actionByName(KStandardAction::name(KStandardAction::Zoom));
+    action->setCheckable(true);
+    connect (m_zoomBar, SIGNAL(visibilityChanged(bool)), action, SLOT(setChecked(bool)));
+    m_toolsMenu->addAction(action);
+
+    m_toolsMenu->addAction(actionByName(QL1S("encodings")));
+
+    m_toolsMenu->addSeparator();
+
+    m_toolsMenu->addAction(actionByName(QL1S("private_browsing")));
+    m_toolsMenu->addAction(actionByName(QL1S("clear_private_data")));
+
+    m_toolsMenu->addSeparator();
+
+    KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Development"), this);
+    webMenu->addAction(actionByName(QL1S("web_inspector")));
+    webMenu->addAction(actionByName(QL1S("page_source")));
+    webMenu->addAction(actionByName(QL1S("net_analyzer")));
+    m_toolsMenu->addAction(webMenu);
+
+    m_toolsMenu->addSeparator();
+
+    action = m_bookmarksBar->toolBar()->toggleViewAction();
+    action->setText(i18n("Bookmarks Toolbar"));
+    action->setIcon(KIcon("bookmarks-bar"));
+    m_toolsMenu->addAction(action);
+
+    m_toolsMenu->addAction(actionByName(QL1S("show_history_panel")));
+    m_toolsMenu->addAction(actionByName(QL1S("show_bookmarks_panel")));
+    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
+
+    m_toolsMenu->addSeparator();
+
+    this->setHelpMenuEnabled(true);
+    helpMenu()->setIcon(KIcon("help-browser"));
+    m_toolsMenu->addAction(helpMenu()->menuAction());
+    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
 }
 
 
@@ -464,50 +520,15 @@ void MainWindow::setupActions()
 void MainWindow::setupTools()
 {
     kDebug() << "setup tools...";
-    KActionMenu *toolsMenu = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
-    toolsMenu->setDelayed(false);
-    toolsMenu->setShortcutConfigurable(true);
-    toolsMenu->setShortcut( KShortcut(Qt::ALT + Qt::Key_T) );
-
-    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Open)));
-    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
-    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
-    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
-
-    QAction *action = actionByName(KStandardAction::name(KStandardAction::Zoom));
-    action->setCheckable(true);
-    connect (m_zoomBar, SIGNAL(visibilityChanged(bool)), action, SLOT(setChecked(bool)));
-    toolsMenu->addAction(action);
-
-    toolsMenu->addAction(actionByName(QL1S("encodings")));
-
-    toolsMenu->addSeparator();
-
-    toolsMenu->addAction(actionByName(QL1S("private_browsing")));
-    toolsMenu->addAction(actionByName(QL1S("clear_private_data")));
-
-    toolsMenu->addSeparator();
-
-    KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Development"), this);
-    webMenu->addAction(actionByName(QL1S("web_inspector")));
-    webMenu->addAction(actionByName(QL1S("page_source")));
-    webMenu->addAction(actionByName(QL1S("net_analyzer")));
-    toolsMenu->addAction(webMenu);
-
-    toolsMenu->addSeparator();
-
-    toolsMenu->addAction(actionByName(QL1S("show_history_panel")));
-    toolsMenu->addAction(actionByName(QL1S("show_bookmarks_panel")));
-    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
-
-    toolsMenu->addSeparator();
-
-    helpMenu()->setIcon(KIcon("help-browser"));
-    toolsMenu->addAction(helpMenu()->menuAction());
-    toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
+    m_toolsMenu = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
+    m_toolsMenu->setDelayed(false);
+    m_toolsMenu->setShortcutConfigurable(true);
+    m_toolsMenu->setShortcut( KShortcut(Qt::ALT + Qt::Key_T) );
 
     // adding rekonq_tools to rekonq actionCollection
-    actionCollection()->addAction(QL1S("rekonq_tools"), toolsMenu);
+    actionCollection()->addAction(QL1S("rekonq_tools"), m_toolsMenu);
+
+    // Actions are added after the call to setupGUI() to ensure the help menu works
 }
 
 
