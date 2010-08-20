@@ -234,7 +234,7 @@ bool OpenSearchEngine::operator<(const OpenSearchEngine &other) const
 
 QStringList OpenSearchEngine::parseSuggestion(const QByteArray &resp)
 {
-    QString response(resp);
+    QString response = QString::fromLocal8Bit(resp);
     response = response.trimmed();
 
     if (response.isEmpty()) 
