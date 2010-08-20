@@ -76,6 +76,81 @@ void BookmarksPanel::showing(bool b)
 }
 
 
+void BookmarksPanel::startLoadFoldedState()
+{
+    m_loadingState = true;
+    loadFoldedState(QModelIndex());
+    m_loadingState = false;
+}
+
+
+void BookmarksPanel::contextMenu(const QPoint &pos)
+{
+    if (m_loadingState)
+        return;
+
+    BookmarksContextMenu menu(bookmarkForIndex( m_treeView->indexAt(pos) ),
+                              Application::bookmarkProvider()->bookmarkManager(),
+                              Application::bookmarkProvider()->bookmarkOwner(),
+                              this
+                             );
+
+    menu.exec(m_treeView->mapToGlobal(pos));
+}
+
+
+void BookmarksPanel::deleteBookmark()
+{
+    QModelIndex index = m_treeView->currentIndex();
+    if (m_loadingState || !index.isValid())
+        return;
+
+    Application::bookmarkProvider()->bookmarkOwner()->bookmarkSelected(bookmarkForIndex(index));
+    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark();
+}
+
+
+void BookmarksPanel::onCollapse(const QModelIndex &index)
+{
+    if (m_loadingState)
+        return;
+
+    bookmarkForIndex(index).internalElement().setAttribute("folded", "yes");
+    emit expansionChanged();
+}
+
+
+void BookmarksPanel::onExpand(const QModelIndex &index)
+{
+    if (m_loadingState)
+        return;
+
+    bookmarkForIndex(index).internalElement().setAttribute("folded", "no");
+    emit expansionChanged();
+}
+
+
+void BookmarksPanel::loadFoldedState(const QModelIndex &root)
+{
+    int count = m_treeView->model()->rowCount(root);
+    QModelIndex index;
+
+    for (int i = 0; i < count; ++i)
+    {
+        index = m_treeView->model()->index(i, 0, root);
+        if (index.isValid())
+        {
+            KBookmark bm = bookmarkForIndex(index);
+            if (bm.isGroup())
+            {
+                m_treeView->setExpanded(index, bm.toGroup().isOpen());
+                loadFoldedState(index);
+            }
+        }
+    }
+}
+
+
 void BookmarksPanel::setup()
 {
     kDebug() << "Loading bookmarks panel setup...";
@@ -142,79 +217,4 @@ KBookmark BookmarksPanel::bookmarkForIndex(const QModelIndex &index)
 
     BtmItem *node = static_cast<BtmItem*>(originalIndex.internalPointer());
     return node->getBkm();
-}
-
-
-void BookmarksPanel::onCollapse(const QModelIndex &index)
-{
-    if (m_loadingState)
-        return;
-
-    bookmarkForIndex(index).internalElement().setAttribute("folded", "yes");
-    emit expansionChanged();
-}
-
-
-void BookmarksPanel::onExpand(const QModelIndex &index)
-{
-    if (m_loadingState)
-        return;
-
-    bookmarkForIndex(index).internalElement().setAttribute("folded", "no");
-    emit expansionChanged();
-}
-
-
-void BookmarksPanel::startLoadFoldedState()
-{
-    m_loadingState = true;
-    loadFoldedState(QModelIndex());
-    m_loadingState = false;
-}
-
-
-void BookmarksPanel::loadFoldedState(const QModelIndex &root)
-{
-    int count = m_treeView->model()->rowCount(root);
-    QModelIndex index;
-
-    for (int i = 0; i < count; ++i)
-    {
-        index = m_treeView->model()->index(i, 0, root);
-        if (index.isValid())
-        {
-            KBookmark bm = bookmarkForIndex(index);
-            if (bm.isGroup())
-            {
-                m_treeView->setExpanded(index, bm.toGroup().isOpen());
-                loadFoldedState(index);
-            }
-        }
-    }
-}
-
-
-void BookmarksPanel::contextMenu(const QPoint &pos)
-{
-    if (m_loadingState)
-        return;
-
-    BookmarksContextMenu menu(bookmarkForIndex( m_treeView->indexAt(pos) ),
-                              Application::bookmarkProvider()->bookmarkManager(),
-                              Application::bookmarkProvider()->bookmarkOwner(),
-                              this
-                             );
-
-    menu.exec(m_treeView->mapToGlobal(pos));
-}
-
-
-void BookmarksPanel::deleteBookmark()
-{
-    QModelIndex index = m_treeView->currentIndex();
-    if (m_loadingState || !index.isValid())
-        return;
-
-    Application::bookmarkProvider()->bookmarkOwner()->bookmarkSelected(bookmarkForIndex(index));
-    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark();
 }

@@ -43,6 +43,7 @@ class BtmItem
 public:
     BtmItem(const KBookmark &bm);
     ~BtmItem();
+
     QVariant data(int role = Qt::DisplayRole) const;
     int row() const;
     int childCount() const;

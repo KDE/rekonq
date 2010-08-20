@@ -250,6 +250,62 @@ QVariant BookmarksTreeModel::data(const QModelIndex &index, int role) const
 }
 
 
+QStringList BookmarksTreeModel::mimeTypes() const
+{
+    return KBookmark::List::mimeDataTypes();
+}
+
+
+bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    if (action != Qt::MoveAction || !data->hasFormat("application/rekonq-bookmark"))
+        return false;
+
+    QByteArray addresses = data->data("application/rekonq-bookmark");
+    KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+
+    KBookmarkGroup root;
+    if (parent.isValid())
+        root = bookmarkForIndex(parent).toGroup();
+    else
+        root = Application::bookmarkProvider()->rootGroup();
+
+    QModelIndex destIndex = index(row, column, parent);
+
+    if (destIndex.isValid() && row != -1)
+    {
+        root.moveBookmark(bookmark, root.previous(bookmarkForIndex(destIndex)));
+    }
+    else
+    {
+        root.deleteBookmark(bookmark);
+        root.addBookmark(bookmark);
+    }
+
+    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+
+    return true;
+}
+
+
+Qt::DropActions BookmarksTreeModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
+}
+
+
+QMimeData* BookmarksTreeModel::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData *mimeData = new QMimeData;
+
+    QByteArray address = bookmarkForIndex(indexes.first()).address().toLatin1();
+    mimeData->setData("application/rekonq-bookmark", address);
+    bookmarkForIndex(indexes.first()).populateMimeData(mimeData);
+
+    return mimeData;
+}
+
+
 void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
 {
     if (groupAddress.isEmpty())
@@ -324,60 +380,4 @@ void BookmarksTreeModel::populate(BtmItem *node, KBookmarkGroup bmg)
 KBookmark BookmarksTreeModel::bookmarkForIndex(const QModelIndex &index) const
 {
     return static_cast<BtmItem*>(index.internalPointer())->getBkm();
-}
-
-
-Qt::DropActions BookmarksTreeModel::supportedDropActions() const
-{
-    return Qt::MoveAction;
-}
-
-
-QStringList BookmarksTreeModel::mimeTypes() const
-{
-    return KBookmark::List::mimeDataTypes();
-}
-
-
-QMimeData* BookmarksTreeModel::mimeData(const QModelIndexList &indexes) const
-{
-    QMimeData *mimeData = new QMimeData;
-
-    QByteArray address = bookmarkForIndex(indexes.first()).address().toLatin1();
-    mimeData->setData("application/rekonq-bookmark", address);
-    bookmarkForIndex(indexes.first()).populateMimeData(mimeData);
-
-    return mimeData;
-}
-
-
-bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
-{
-    if (action != Qt::MoveAction || !data->hasFormat("application/rekonq-bookmark"))
-        return false;
-
-    QByteArray addresses = data->data("application/rekonq-bookmark");
-    KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
-
-    KBookmarkGroup root;
-    if (parent.isValid())
-        root = bookmarkForIndex(parent).toGroup();
-    else
-        root = Application::bookmarkProvider()->rootGroup();
-
-    QModelIndex destIndex = index(row, column, parent);
-
-    if (destIndex.isValid() && row != -1)
-    {
-        root.moveBookmark(bookmark, root.previous(bookmarkForIndex(destIndex)));
-    }
-    else
-    {
-        root.deleteBookmark(bookmark);
-        root.addBookmark(bookmark);
-    }
-
-    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
-
-    return true;
 }
