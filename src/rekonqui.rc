@@ -88,7 +88,6 @@
     <Separator />
     <Action name="stop_reload" />
     <Action name="url_bar" />
-    <Action name="bookmarksActionMenu" />
     <Action name="rekonq_tools" />
 </ToolBar>
 
