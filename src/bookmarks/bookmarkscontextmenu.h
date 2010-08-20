@@ -24,8 +24,8 @@
 * ============================================================ */
 
 
-#ifndef BOOKMARKCONTEXTMENU_H
-#define BOOKMARKCONTEXTMENU_H
+#ifndef BOOKMARKS_CONTEXT_MENU_H
+#define BOOKMARKS_CONTEXT_MENU_H
 
 // KDE Includes
 #include <KBookmarkMenu>
@@ -50,4 +50,4 @@ private:
     BookmarkOwner *bmOwner;
 };
 
-#endif // BOOKMARKCONTEXTMENU_H
+#endif // BOOKMARKS_CONTEXT_MENU_H

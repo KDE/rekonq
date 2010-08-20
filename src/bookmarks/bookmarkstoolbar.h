@@ -27,16 +27,9 @@
 #ifndef BOOKMARKSTOOLBAR_H
 #define BOOKMARKSTOOLBAR_H
 
-// Local Includes
-
-
-// Qt Includes
-
 
 // KDE Includes
 #include <KBookmarkMenu>
-#include <KToolBar>
-
 
 
 /**
@@ -75,7 +68,10 @@ private:
 
 // ------------------------------------------------------------------------------
 
+
+// KDE Includes
 #include <KToolBar>
+
 
 class BookmarkToolBar : public KToolBar
 {

@@ -44,7 +44,7 @@ class BookmarkWidget : public QFrame
     Q_OBJECT
 
 public:
-    BookmarkWidget(const KBookmark &bookmark, QWidget *parent = 0);
+    explicit BookmarkWidget(const KBookmark &bookmark, QWidget *parent = 0);
     ~BookmarkWidget();
 
     void showAt(const QPoint &pos);

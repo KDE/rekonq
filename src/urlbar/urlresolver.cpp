@@ -95,11 +95,13 @@ UrlResolver::UrlResolver(const QString &typedUrl)
     {
         QString reg;
         QString engineUrl;
-        foreach(KService::Ptr s, SearchEngine::favorites())
+        Q_FOREACH(KService::Ptr s, SearchEngine::favorites())
         {
             engineUrl = QRegExp::escape(s->property("Query").toString()).replace("\\\\\\{@\\}","[\\d\\w-.]+");
-            if (reg.isEmpty()) reg = "(" + engineUrl + ")";
-            else reg = reg + "|(" + engineUrl + ")";
+            if (reg.isEmpty()) 
+                reg = '(' + engineUrl + ')';
+            else 
+                reg = reg + "|(" + engineUrl + ')';
         }
         _searchEnginesRegexp = QRegExp(reg);
     }
@@ -317,7 +319,7 @@ UrlSearchList UrlResolver::historyResolution()
     qSort(found);
 
     UrlSearchList list;
-    foreach (HistoryItem i, found)
+    Q_FOREACH(const HistoryItem &i, found)
     {
         if (_searchEnginesRegexp.indexIn(i.url) == -1) //filter all urls that are search engine results
         {
@@ -334,7 +336,7 @@ UrlSearchList UrlResolver::bookmarksResolution()
 {
     UrlSearchList list;
     QList<KBookmark> found = Application::bookmarkProvider()->find(_typedString);
-    foreach (KBookmark b, found)
+    Q_FOREACH(const KBookmark &b, found)
     {
         UrlSearchItem gItem(UrlSearchItem::Bookmark, b.url().url(), b.fullText());
         list << gItem;

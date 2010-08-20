@@ -161,7 +161,7 @@ void BookmarkOwner::openBookmarkFolder()
             return;
     }
 
-    foreach (KUrl url, urlList)
+    Q_FOREACH(const KUrl &url, urlList)
     {
         emit openUrl(url, Rekonq::NewFocusedTab);
     }
