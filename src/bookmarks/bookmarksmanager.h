@@ -74,12 +74,10 @@ public:
      */
     KActionMenu *bookmarkActionMenu(QWidget *parent);
 
-    KAction *bookmarkToolBarAction(KToolBar *t);
-
     /**
     * @short set the Bookmarks Toolbar Action
     */
-    void setupBookmarkBar(BookmarkToolBar *);
+    void registerBookmarkBar(BookmarkToolBar *);
 
     void removeToolBar(BookmarkToolBar *);
 

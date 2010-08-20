@@ -105,8 +105,7 @@ void BookmarksPanel::deleteBookmark()
     if (m_loadingState || !index.isValid())
         return;
 
-    Application::bookmarkProvider()->bookmarkOwner()->bookmarkSelected(bookmarkForIndex(index));
-    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark();
+    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(bookmarkForIndex(index));
 }
 
 

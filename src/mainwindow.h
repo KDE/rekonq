@@ -104,6 +104,8 @@ public slots:
 
     void updateActions();
 
+    virtual void configureToolbars();
+
 signals:
     // switching tabs
     void ctrlTabPressed();
@@ -163,6 +165,8 @@ private slots:
     void populateEncodingMenu();
 
     void enableNetworkAnalysis(bool);
+
+    void initBookmarkBar();
     
 private:
     MainView *m_view;

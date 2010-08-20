@@ -95,7 +95,7 @@ BookmarkProvider::~BookmarkProvider()
 }
 
 
-void BookmarkProvider::setupBookmarkBar(BookmarkToolBar *toolbar)
+void BookmarkProvider::registerBookmarkBar(BookmarkToolBar *toolbar)
 {
     if (m_bookmarkToolBars.contains(toolbar))
         return;
@@ -103,8 +103,8 @@ void BookmarkProvider::setupBookmarkBar(BookmarkToolBar *toolbar)
     kDebug() << "new bookmark bar...";
 
     m_bookmarkToolBars.append(toolbar);
-    toolbar->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(toolbar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
+    toolbar->toolBar()->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(toolbar->toolBar(), SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
 
     kDebug() << "new bookmark bar... DONE!";
 }
@@ -125,7 +125,7 @@ void BookmarkProvider::slotBookmarksChanged(const QString &group, const QString 
     {
         if (bookmarkToolBar)
         {
-            bookmarkToolBar->clear();
+            bookmarkToolBar->toolBar()->clear();
             fillBookmarkBar(bookmarkToolBar);
         }
     }
@@ -146,7 +146,7 @@ void BookmarkProvider::contextMenu(const QPoint &point)
     if (m_bookmarkToolBars.isEmpty())
         return;
 
-    KToolBar *bookmarkToolBar = m_bookmarkToolBars.at(0);
+    KToolBar *bookmarkToolBar = m_bookmarkToolBars.at(0)->toolBar();
     if (!bookmarkToolBar)
         return;
 
@@ -174,16 +174,6 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 }
 
 
-KAction* BookmarkProvider::bookmarkToolBarAction(KToolBar *t)
-{
-    KAction *bookmarkToolBarAction = new KAction(this);
-    bookmarkToolBarAction->setDefaultWidget(t);     // The ownership is transferred to action
-    bookmarkToolBarAction->setText(i18n("Bookmarks Bar"));
-    bookmarkToolBarAction->setShortcutConfigurable(false);
-    return bookmarkToolBarAction;
-}
-
-
 void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
 {
     KBookmarkGroup root = m_manager->toolbar();
@@ -199,12 +189,12 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
             new BookmarkMenu(bookmarkManager(), bookmarkOwner(), menuAction->menu(), bookmark.address());
             connect(menuAction->menu(), SIGNAL(aboutToShow()), toolBar, SLOT(menuDisplayed()));
             connect(menuAction->menu(), SIGNAL(aboutToHide()), toolBar, SLOT(menuHidden()));
-            toolBar->addAction(menuAction);
+            toolBar->toolBar()->addAction(menuAction);
         }
 
         else if (bookmark.isSeparator())
         {
-            toolBar->addSeparator();
+            toolBar->toolBar()->addSeparator();
         }
 
         else
@@ -212,7 +202,8 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
             KBookmarkAction* action = new KBookmarkAction(bookmark, m_owner, this);
             action->setIconText(action->iconText().replace('&', "&&"));
             connect(action, SIGNAL(hovered()), toolBar, SLOT(actionHovered()));
-            toolBar->addAction(action);
+            toolBar->toolBar()->addAction(action);
+            toolBar->toolBar()->widgetForAction(action)->installEventFilter(toolBar);
         }
     }
 }

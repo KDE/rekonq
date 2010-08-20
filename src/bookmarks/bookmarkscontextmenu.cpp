@@ -35,7 +35,7 @@ BookmarksContextMenu::BookmarksContextMenu(const KBookmark &bookmark, KBookmarkM
         : KBookmarkContextMenu(bookmark, manager, owner, parent)
         , bmOwner(owner)
 {
-    bmOwner->bookmarkSelected(bookmark);
+    bmOwner->setCurrentBookmark(bookmark);
 }
 
 
