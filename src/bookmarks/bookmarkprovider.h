@@ -132,11 +132,11 @@ public slots:
      * @short Waits for signal that the group with the address has been modified by the caller.
      * Waits for signal that the group (or any of its children) with the address
      * @p groupAddress (e.g. "/4/5") has been modified by the caller @p caller.
-     * @param group bookmark group address
+     * @param groupAddress bookmark group address
      * @param caller caller that modified the bookmarks
      * @see  KBookmarkManager::changed
      */
-    void slotBookmarksChanged(const QString &group, const QString &caller);
+    void slotBookmarksChanged(const QString &groupAddress, const QString &caller);
     void fillBookmarkBar(BookmarkToolBar *toolBar);
 
 private slots:
@@ -144,7 +144,7 @@ private slots:
     void slotPanelChanged();
 
 private:
-    QList<KBookmark> find(QList<KBookmark> list, const KBookmark &bookmark, const QString &text);
+    void find(QList<KBookmark> *list, const KBookmark &bookmark, const QString &text);
 
     QString titleForBookmarkUrl(const KBookmark &bookmark, const QString &url);
     KBookmark bookmarkForUrl(const KBookmark &bookmark, const KUrl &url);
