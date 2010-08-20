@@ -35,8 +35,8 @@
 #include "rekonq_defines.h"
 
 // Local Includes
-#include "bookmarksmanager.h"
-                     
+#include "bookmarkprovider.h"
+
 // KDE Includes
 #include <KXmlGuiWindow>
 #include <KActionCollection>
@@ -75,7 +75,7 @@ public:
 
     inline MainView *mainView() const { return m_view; }
     inline QAction *actionByName(const QString &name) { return actionCollection()->action(name); }
-    
+
     WebTab *currentTab() const;
     virtual QSize sizeHint() const;
     void setWidgetsVisible(bool makeFullScreen);
@@ -123,7 +123,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
     bool queryClose();
-    
+
 private slots:
     void postLaunch();
     void browserLoading(bool);
@@ -167,7 +167,7 @@ private slots:
     void enableNetworkAnalysis(bool);
 
     void initBookmarkBar();
-    
+
 private:
     MainView *m_view;
     FindBar *m_findBar;

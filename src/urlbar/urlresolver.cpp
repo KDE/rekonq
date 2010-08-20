@@ -30,10 +30,11 @@
 // Local Includes
 #include "application.h"
 #include "historymanager.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "searchengine.h"
 
 // KDE Includes
+#include <KBookmark>
 #include <KUriFilter>
 #include <KCompletion>
 #include <KService>
@@ -47,7 +48,7 @@
 #define MAX_ELEMENTS 10
 #define MIN_SUGGESTIONS 3
 
-// NOTE 
+// NOTE
 // default kurifilter plugin list (at least in my box):
 // 1. "kshorturifilter"
 // 2. "kurisearchfilter"
@@ -69,18 +70,18 @@ UrlResolver::UrlResolver(const QString &typedUrl)
     if ( _browseRegexp.isEmpty() )
     {
         kDebug() << "browse regexp empty. Setting value..";
-        
+
         QString protocol = "^(http://|https://|file://|ftp://|man:|info:|apt:)";
-        
+
         QString localhost = "^localhost";
-        
+
         QString local = "^/";
-        
+
         QString ipv4 = "^0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])"\
         "\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])";
-        
+
         QString ipv6 = "^([0-9a-fA-F]{4}|0)(\\:([0-9a-fA-F]{4}|0)){7}";
-        
+
         QString address = "[\\d\\w-.]+\\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|"\
         "c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrst]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|"\
         "h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|"\
@@ -88,10 +89,10 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         "s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|"\
         "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|"\
         "pro)";
-        
+
         _browseRegexp = QRegExp('(' + protocol + ")|(" + localhost + ")|(" + local + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 +')');
     }
-    
+
     if ( _searchEnginesRegexp.isEmpty() )
     {
         QString reg;
@@ -99,9 +100,9 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         Q_FOREACH(KService::Ptr s, SearchEngine::favorites())
         {
             engineUrl = QRegExp::escape(s->property("Query").toString()).replace("\\\\\\{@\\}","[\\d\\w-.]+");
-            if (reg.isEmpty()) 
+            if (reg.isEmpty())
                 reg = '(' + engineUrl + ')';
-            else 
+            else
                 reg = reg + "|(" + engineUrl + ')';
         }
         _searchEnginesRegexp = QRegExp(reg);
@@ -126,10 +127,10 @@ UrlSearchList UrlResolver::orderedSearchItems()
         list << hist;
         UrlSearchItem down(UrlSearchItem::Browse, QString("about:downloads"),  QL1S("downloads") );
         list << down;
-        
+
         return list;
     }
-    
+
     _computedListsCount = 0;
 
     //compute lists
@@ -144,7 +145,7 @@ UrlSearchList UrlResolver::orderedSearchItems()
 
     while (_computedListsCount < 5 && time.msec() < 1000)
     {
-        Application::instance()->processEvents(QEventLoop::WaitForMoreEvents | QEventLoop::ExcludeUserInputEvents); 
+        Application::instance()->processEvents(QEventLoop::WaitForMoreEvents | QEventLoop::ExcludeUserInputEvents);
     }
 
     return orderLists();
@@ -153,7 +154,7 @@ UrlSearchList UrlResolver::orderedSearchItems()
 
 UrlSearchList UrlResolver::orderLists()
 {
-    // NOTE 
+    // NOTE
     // the logic here is : "we wanna suggest (at least) 10 elements"
     // so we have (more or less) 2 from first results (1 from QUrl Resolutions, 1 from
     // search engines).
@@ -162,9 +163,9 @@ UrlSearchList UrlResolver::orderLists()
 
     QTime myTime;
     myTime.start();
-    
+
     UrlSearchList list;
-    
+
     if(_browseRegexp.indexIn(_typedString) != -1)
     {
         list << _qurlFromUserInput;
@@ -179,7 +180,7 @@ UrlSearchList UrlResolver::orderLists()
     //find the history items that match the typed string
     UrlSearchItem privileged = privilegedItem(&_history);
     int historyCount = _history.count();
-    
+
     //find the bookmarks items that match the typed string
     if (privileged.type == UrlSearchItem::Undefined)
     {
@@ -190,14 +191,14 @@ UrlSearchList UrlResolver::orderLists()
         privileged.type |= UrlSearchItem::Bookmark;
     }
     int bookmarksCount = _bookmarks.count();
-    
+
     if (privileged.type != UrlSearchItem::Undefined)
     {
         list.prepend(privileged);
     }
 
     int availableEntries = MAX_ELEMENTS - list.count() - MIN_SUGGESTIONS;
-    
+
     UrlSearchList common;
     int commonCount = 0;
 
@@ -221,7 +222,7 @@ UrlSearchList UrlResolver::orderLists()
                 }
             }
         }
-        
+
         commonCount = common.count();
         if(commonCount >= availableEntries)
         {
@@ -265,10 +266,10 @@ UrlSearchList UrlResolver::orderLists()
                 common << urlSearchItem;
             }
         }
-        
+
         availableEntries -= common.count();
     }
-    
+
     historyCount = _history.count();
     bookmarksCount = _bookmarks.count();
     commonCount = common.count();
@@ -278,7 +279,7 @@ UrlSearchList UrlResolver::orderLists()
     {
         int historyEntries = ((int) (availableEntries / 2)) + availableEntries % 2;
         int bookmarksEntries = availableEntries - historyEntries;
-        
+
         if (historyCount >= historyEntries && bookmarksCount >= bookmarksEntries)
         {
             _history = _history.mid(0, historyEntries);
@@ -310,7 +311,7 @@ UrlSearchList UrlResolver::orderLists()
 
     list = list + _history + common + _bookmarks + _suggestions;
     qWarning() << "orderedSearchItems leave: " << " elapsed: " << myTime.elapsed();
-    
+
     return list;
 }
 
@@ -382,9 +383,9 @@ void UrlResolver::computeSuggestions()
 {
     if (Application::opensearchManager()->isSuggestionAvailable())
     {
-        connect(Application::opensearchManager(), 
-                SIGNAL(suggestionReceived(const QStringList &)), 
-                this, 
+        connect(Application::opensearchManager(),
+                SIGNAL(suggestionReceived(const QStringList &)),
+                this,
                 SLOT(suggestionsReceived(const QStringList &)));
 
         Application::opensearchManager()->requestSuggestion(_typedString);
@@ -398,7 +399,7 @@ void UrlResolver::computeSuggestions()
 
 void UrlResolver::suggestionsReceived(const QStringList &suggestion)
 {
-   
+
     foreach (QString s, suggestion)
     {
         UrlSearchItem gItem(UrlSearchItem::Suggestion, s, s);
@@ -412,10 +413,10 @@ void UrlResolver::suggestionsReceived(const QStringList &suggestion)
 UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
 {
     UrlSearchItem item;
-    QString dot = QString(QL1C('.')); 
+    QString dot = QString(QL1C('.'));
     QString test1 = QString(QL1C('/')) + _typedString + dot;
     QString test2 = dot + _typedString + dot;
-    
+
     for(int i = 0; i<list->count(); i++)
     {
         item = list->at(i);

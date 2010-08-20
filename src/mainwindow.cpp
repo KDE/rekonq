@@ -37,7 +37,7 @@
 // Local Includes
 #include "settingsdialog.h"
 #include "historymanager.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "bookmarkstoolbar.h"
 #include "webtab.h"
 #include "mainview.h"
@@ -163,7 +163,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-    Application::bookmarkProvider()->removeToolBar(m_bookmarksBar);
+    Application::bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
     Application::bookmarkProvider()->removeBookmarkPanel(m_bookmarksPanel);
     Application::instance()->removeMainWindow(this);
 
@@ -211,7 +211,7 @@ void MainWindow::initBookmarkBar()
 
     if (m_bookmarksBar)
     {
-        Application::bookmarkProvider()->removeToolBar(m_bookmarksBar);
+        Application::bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
         delete m_bookmarksBar;
     }
     m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);

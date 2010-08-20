@@ -43,7 +43,7 @@ SET( rekonq_KDEINIT_SRCS
     settings/webkitwidget.cpp
     settings/networkwidget.cpp
     #----------------------------------------
-    bookmarks/bookmarksmanager.cpp
+    bookmarks/bookmarkprovider.cpp
     bookmarks/bookmarkspanel.cpp
     bookmarks/bookmarkstreemodel.cpp
     bookmarks/bookmarksproxy.cpp
@@ -118,9 +118,9 @@ KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
 ### --------------- TARGETTING LINK LIBRARIES...
 
 TARGET_LINK_LIBRARIES ( kdeinit_rekonq
-                        ${QT_LIBRARIES} 
+                        ${QT_LIBRARIES}
                         ${QT_QTSCRIPT_LIBRARY}
-                        ${QT_QTWEBKIT_LIBRARY} 
+                        ${QT_QTWEBKIT_LIBRARY}
                         ${KDE4_KDEWEBKIT_LIBS}
                         ${KDE4_KUTILS_LIBS}
                         ${KDE4_KDEUI_LIBS}

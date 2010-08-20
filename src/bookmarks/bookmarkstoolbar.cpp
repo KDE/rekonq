@@ -33,7 +33,7 @@
 #include "bookmarkscontextmenu.h"
 #include "mainwindow.h"
 #include "application.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "bookmarkowner.h"
 
 // Qt Includes

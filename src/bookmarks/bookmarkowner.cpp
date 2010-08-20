@@ -32,13 +32,15 @@
 
 // Local Includes
 #include "application.h"
-#include "bookmarksmanager.h"
+#include "bookmarkprovider.h"
 #include "mainwindow.h"
 #include "webtab.h"
 #include "mainview.h"
 
 // KDE Includes
+#include <KAction>
 #include <KBookmarkDialog>
+#include <KLocalizedString>
 #include <KMessageBox>
 
 // Qt Includes
