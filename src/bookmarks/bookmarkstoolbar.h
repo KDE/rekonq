@@ -27,16 +27,10 @@
 #ifndef BOOKMARKSTOOLBAR_H
 #define BOOKMARKSTOOLBAR_H
 
-// Local Includes
-
-
-// Qt Includes
-
 
 // KDE Includes
 #include <KBookmarkMenu>
 #include <KToolBar>
-
 
 
 /**
@@ -75,30 +69,23 @@ private:
 
 // ------------------------------------------------------------------------------
 
-#include <KToolBar>
+/**
+ * This class manage the bookmark toolbar.
+ * Some events from the toolbar are handled to allow the drag and drop
+ */
 
-class BookmarkToolBar : public KToolBar
+class BookmarkToolBar : public QObject
 {
     Q_OBJECT
 
 public:
-BookmarkToolBar(const QString &objectName,
-                QMainWindow *parentWindow,
-                Qt::ToolBarArea area,
-                bool newLine = false,
-                bool isMainToolBar = false,
-                bool readConfig = true);
+BookmarkToolBar(KToolBar *toolBar, QObject *parent);
 ~BookmarkToolBar();
 
-virtual void setVisible(bool visible);
+KToolBar* toolBar();
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);
-    void dropEvent(QDropEvent *event);
-    void actionEvent(QActionEvent *event);
 
 private slots:
     void actionHovered();
@@ -110,11 +97,12 @@ private slots:
 private:
     void startDrag();
 
-    bool m_filled;
+    KToolBar *m_toolBar;
     KMenu *m_currentMenu;
     QPoint m_startDragPos;
     QAction *m_dragAction;
     QAction *m_dropAction;
+    bool m_filled;
 };
 
 #endif // BOOKMARKSTOOLBAR_H

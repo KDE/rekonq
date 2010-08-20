@@ -119,24 +119,24 @@ signals:
     void openUrl(const KUrl &, const Rekonq::OpenType &);
 
 public slots:
-    void bookmarkSelected(const KBookmark &bookmark);
+    void setCurrentBookmark(const KBookmark &bookmark);
 
-    void openBookmark();
-    void openBookmarkInNewTab();
-    void openBookmarkInNewWindow();
-    void openBookmarkFolder();
-    void bookmarkCurrentPage();
-    void newBookmarkFolder();
-    void newSeparator();
-    void copyLink();
-    void editBookmark();
-    bool deleteBookmark();
+    void openBookmark(const KBookmark &bookmark = KBookmark());
+    void openBookmarkInNewTab(const KBookmark &bookmark = KBookmark());
+    void openBookmarkInNewWindow(const KBookmark &bookmark = KBookmark());
+    void openBookmarkFolder(const KBookmark &bookmark = KBookmark());
+    void bookmarkCurrentPage(const KBookmark &bookmark = KBookmark());
+    void newBookmarkFolder(const KBookmark &bookmark = KBookmark());
+    void newSeparator(const KBookmark &bookmark = KBookmark());
+    void copyLink(const KBookmark &bookmark = KBookmark());
+    void editBookmark(KBookmark bookmark = KBookmark());
+    bool deleteBookmark(KBookmark bookmark = KBookmark());
 
 private:
     KBookmarkManager *m_manager;
 
-    QVector<KAction*> actions;
-    KBookmark selected;
+    QVector<KAction*> m_actions;
+    KBookmark m_currentBookmark;
 
     void setupActions();
     void createAction(const BookmarkAction &action,

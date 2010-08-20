@@ -58,6 +58,7 @@
 #include <KShortcut>
 #include <KStandardAction>
 #include <KAction>
+#include <KEditToolBar>
 #include <KToggleFullScreenAction>
 #include <KActionCollection>
 #include <KMessageBox>
@@ -106,7 +107,7 @@ MainWindow::MainWindow()
         , m_analyzerPanel(0)
         , m_historyBackMenu(0)
         , m_encodingMenu(new KMenu(this))
-        , m_bookmarksBar(new BookmarkToolBar(QString("BookmarkToolBar"), this, Qt::TopToolBarArea, true, false, true))
+        , m_bookmarksBar(0)
         , m_popup(new KPassivePopup(this))
         , m_hidePopup(new QTimer(this))
 {
@@ -198,15 +199,35 @@ void MainWindow::setupToolbars()
 
     KToolBar *mainBar = toolBar("mainToolBar");
 
-    // bookmarks bar
-    KAction *bookmarkBarAction = Application::bookmarkProvider()->bookmarkToolBarAction(m_bookmarksBar);
-    a = actionCollection()->addAction( QL1S("bookmarks_bar"), bookmarkBarAction);
-
     mainBar->show();  // this just to fix reopening rekonq after fullscreen close
+}
 
-    // =========== Bookmarks ToolBar ================================
-    m_bookmarksBar->setAcceptDrops(true);
-    Application::bookmarkProvider()->setupBookmarkBar(m_bookmarksBar);
+
+void MainWindow::initBookmarkBar()
+{
+    KToolBar *XMLGUIBkBar = toolBar("bookmarkToolBar");
+    if (!XMLGUIBkBar)
+        return;
+
+    if (m_bookmarksBar)
+    {
+        Application::bookmarkProvider()->removeToolBar(m_bookmarksBar);
+        delete m_bookmarksBar;
+    }
+    m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
+    Application::bookmarkProvider()->registerBookmarkBar(m_bookmarksBar);
+}
+
+
+void MainWindow::configureToolbars()
+{
+    if (autoSaveSettings())
+        saveAutoSaveSettings();
+
+    KEditToolBar dlg(factory(), this);
+    // The bookmark bar needs to be refill after the UI changes are finished
+    connect(&dlg, SIGNAL(newToolBarConfig()), this, SLOT(initBookmarkBar()));
+    dlg.exec();
 }
 
 
@@ -253,6 +274,9 @@ void MainWindow::postLaunch()
 
     // accept d'n'd
     setAcceptDrops(true);
+
+    // Bookmark ToolBar (needs to be setup after the call to setupGUI())
+    initBookmarkBar();
 }
 
 

@@ -153,7 +153,6 @@ void BookmarkWidget::showAt(const QPoint &pos)
 
 void BookmarkWidget::removeBookmark()
 {
-    Application::bookmarkProvider()->bookmarkOwner()->bookmarkSelected(m_bookmark);
-    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark();
+    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(m_bookmark);
     reject();
 }
