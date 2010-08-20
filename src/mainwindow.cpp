@@ -219,6 +219,7 @@ void MainWindow::initBookmarkBar()
     m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
     Application::bookmarkProvider()->registerBookmarkBar(m_bookmarksBar);
 
+    // To update the bookmark toolbar action
     initToolsMenu();
 }
 
@@ -270,7 +271,7 @@ void MainWindow::initToolsMenu()
     m_toolsMenu->addSeparator();
 
     action = m_bookmarksBar->toolBar()->toggleViewAction();
-    action->setText("Bookmark Toolbar");
+    action->setText(i18n("Bookmarks Toolbar"));
     action->setIcon(KIcon("bookmarks-bar"));
     m_toolsMenu->addAction(action);
 
