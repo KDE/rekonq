@@ -50,7 +50,7 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
         , m_manager(0)
         , m_owner(0)
         , m_actionCollection(new KActionCollection(this))
-        , _bookmarkActionMenu(0)
+        , m_bookmarkActionMenu(0)
 {
     kDebug() << "Loading Bookmarks Manager...";
 
@@ -164,13 +164,13 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
     kDebug() << "new Bookmarks Menu...";
 
     KMenu *menu = new KMenu(parent);
-    _bookmarkActionMenu = new KActionMenu(parent);
-    _bookmarkActionMenu->setMenu(menu);
-    _bookmarkActionMenu->setText(i18n("&Bookmarks"));
+    m_bookmarkActionMenu = new KActionMenu(parent);
+    m_bookmarkActionMenu->setMenu(menu);
+    m_bookmarkActionMenu->setText(i18n("&Bookmarks"));
     new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
 
     kDebug() << "new Bookmarks Menu...DONE";
-    return _bookmarkActionMenu;
+    return m_bookmarkActionMenu;
 }
 
 
@@ -215,7 +215,7 @@ KBookmarkGroup BookmarkProvider::rootGroup()
 }
 
 
-QList<KBookmark> BookmarkProvider::find(QString text)
+QList<KBookmark> BookmarkProvider::find(const QString &text)
 {
     QList<KBookmark> list;
     KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
@@ -235,7 +235,7 @@ QList<KBookmark> BookmarkProvider::find(QString text)
 }
 
 
-QList<KBookmark> BookmarkProvider::find(QList<KBookmark> list, const KBookmark &bookmark, QString text)
+QList<KBookmark> BookmarkProvider::find(QList<KBookmark> list, const KBookmark &bookmark, const QString &text)
 {
     if (bookmark.isGroup())
     {

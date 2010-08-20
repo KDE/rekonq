@@ -27,30 +27,38 @@
 * ============================================================ */
 
 
-#ifndef BOOKMARKS_H
-#define BOOKMARKS_H
+#ifndef BOOKMARKPROVIDER_H
+#define BOOKMARKPROVIDER_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KBookmarkMenu>
-#include <KToolBar>
+// Qt Includes
+#include <QObject>
 
 // Forward Declarations
 class BookmarksPanel;
 class BookmarkToolBar;
 class BookmarkOwner;
 
+class KAction;
+class KActionCollection;
+class KActionMenu;
+class KBookmark;
+class KBookmarkGroup;
+class KBookmarkManager;
+class KToolBar;
+class KUrl;
+
+class QAction;
+class QPoint;
 
 /**
  * This class represent the interface to rekonq bookmarks system.
  * All rekonq needs (Bookmarks Menu, Bookmarks Toolbar) is provided
  * from this class.
- * So it implements code to have each one
- *
- *
+ * So it implements code to have each one.
  */
 class BookmarkProvider : public QObject
 {
@@ -60,11 +68,10 @@ public:
     /**
     * @short Class constructor.
     * Connect BookmarksProvider with bookmarks source
-    * (actually konqueror's bookmarks)
-    * @param parent The MainWindow to provide bookmarks objects
-    *
+    * (actually konqueror's bookmarks).
+    * @param parent The MainWindow to provide bookmarks objects.
     */
-    BookmarkProvider(QObject* parent = 0);
+    BookmarkProvider(QObject *parent = 0);
     ~BookmarkProvider();
 
     /**
@@ -72,14 +79,13 @@ public:
      * @param the parent widget
      * @return the Bookmarks Menu
      */
-    KActionMenu *bookmarkActionMenu(QWidget *parent);
+    KActionMenu* bookmarkActionMenu(QWidget *parent);
 
     /**
     * @short set the Bookmarks Toolbar Action
     */
-    void registerBookmarkBar(BookmarkToolBar *);
-
-    void removeToolBar(BookmarkToolBar *);
+    void registerBookmarkBar(BookmarkToolBar *toolbar);
+    void removeToolBar(BookmarkToolBar *toolbar);
 
     /**
      * @short Get action by name
@@ -88,7 +94,7 @@ public:
      * @param name Name of action you want to get
      * @return It returns actions if one exists or empty object
      */
-    QAction *actionByName(const QString &name);
+    QAction* actionByName(const QString &name);
 
     /**
      * returns Bookmark Manager root group
@@ -97,11 +103,11 @@ public:
      */
     KBookmarkGroup rootGroup();
 
-    inline KBookmarkManager *bookmarkManager() { return m_manager; }
+    inline KBookmarkManager* bookmarkManager() { return m_manager; }
 
-    inline BookmarkOwner *bookmarkOwner() { return m_owner; }
+    inline BookmarkOwner* bookmarkOwner() { return m_owner; }
 
-    QList<KBookmark> find(QString text);
+    QList<KBookmark> find(const QString &text);
 
     void registerBookmarkPanel(BookmarksPanel *panel);
     void removeBookmarkPanel(BookmarksPanel *panel);
@@ -111,8 +117,6 @@ public:
 signals:
     /**
     * @short This signal is emitted when an url has to be loaded
-    *
-    * @param url the URL to load
     */
     void openUrl(const KUrl &, const Rekonq::OpenType &);
 
@@ -140,7 +144,7 @@ private slots:
     void slotPanelChanged();
 
 private:
-    QList<KBookmark> find(QList<KBookmark> list, const KBookmark &bookmark, QString text);
+    QList<KBookmark> find(QList<KBookmark> list, const KBookmark &bookmark, const QString &text);
 
     QString titleForBookmarkUrl(const KBookmark &bookmark, const QString &url);
     KBookmark bookmarkForUrl(const KBookmark &bookmark, const KUrl &url);
@@ -148,11 +152,11 @@ private:
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;
     KActionCollection *m_actionCollection;
-    QList<BookmarkToolBar *> m_bookmarkToolBars;
+    QList<BookmarkToolBar*> m_bookmarkToolBars;
     QList<BookmarksPanel*> m_bookmarkPanels;
 
-    KActionMenu *_bookmarkActionMenu;
+    KActionMenu *m_bookmarkActionMenu;
 };
 
 
-#endif
+#endif // BOOKMARKPROVIDER_H

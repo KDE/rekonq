@@ -32,6 +32,10 @@
 #include "application.h"
 #include "bookmarkprovider.h"
 
+// KDE Includes
+#include <KBookmarkManager>
+#include <KLocalizedString>
+
 // Qt Includes
 #include <QtCore/QMimeData>
 
@@ -56,28 +60,27 @@ QVariant BtmItem::data(int role) const
 
     if (role == Qt::DisplayRole)
         return m_kbm.text();
+
     if (role == Qt::DecorationRole)
         return KIcon(m_kbm.icon());
+
     if (role == Qt::UserRole)
         return m_kbm.url();
+
     if (role == Qt::ToolTipRole)
     {
-        QString tooltip = "";
-
-        if (!m_kbm.fullText().isEmpty())
-        {
-            tooltip += m_kbm.fullText();
-        }
+        QString tooltip = m_kbm.fullText();
         if (m_kbm.isGroup())
-        {
             tooltip += i18ncp("%1=Number of items in bookmark folder", " (1 item)", " (%1 items)", childCount());
-        }
-        if (!m_kbm.url().url().isEmpty())
+
+        QString url = m_kbm.url().url();
+        if (!url.isEmpty())
         {
             if (!tooltip.isEmpty())
                 tooltip += '\n';
-            tooltip += m_kbm.url().url();
+            tooltip += url;
         }
+
         return tooltip;
     }
 

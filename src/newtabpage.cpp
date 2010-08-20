@@ -47,9 +47,11 @@
 #include <KConfig>
 #include <KDialog>
 #include <KCalendarSystem>
+#include <KBookmarkManager>
 
 // Qt Includes
 #include <QtCore/QFile>
+#include <QtGui/QAction>
 
 
 NewTabPage::NewTabPage(QWebFrame *frame)

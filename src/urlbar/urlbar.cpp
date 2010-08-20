@@ -45,6 +45,7 @@
 #include "bookmarkwidget.h"
 
 // KDE Includes
+#include <KBookmarkManager>
 #include <KCompletionBox>
 #include <KStandardDirs>
 

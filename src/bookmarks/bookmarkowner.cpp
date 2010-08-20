@@ -38,7 +38,9 @@
 #include "mainview.h"
 
 // KDE Includes
+#include <KAction>
 #include <KBookmarkDialog>
+#include <KLocalizedString>
 #include <KMessageBox>
 
 // Qt Includes

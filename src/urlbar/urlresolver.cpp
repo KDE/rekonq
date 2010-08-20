@@ -34,6 +34,7 @@
 #include "searchengine.h"
 
 // KDE Includes
+#include <KBookmark>
 #include <KUriFilter>
 #include <KCompletion>
 #include <KService>

@@ -36,6 +36,7 @@
 #include <KIcon>
 #include <KStandardAction>
 #include <KAction>
+#include <KLocalizedString>
 
 // Qt Includes
 #include <QtGui/QHBoxLayout>
@@ -57,7 +58,7 @@ ZoomBar::ZoomBar(QWidget *parent)
 
     QToolButton *hideButton = new QToolButton(this);
     hideButton->setAutoRaise(true);
-    hideButton->setIcon(KIcon("dialog-close"));       
+    hideButton->setIcon(KIcon("dialog-close"));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
 
     layout->addWidget(hideButton);
