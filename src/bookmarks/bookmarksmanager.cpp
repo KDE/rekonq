@@ -306,11 +306,10 @@ void BookmarkProvider::slotPanelChanged()
 
 KBookmark BookmarkProvider::bookmarkForUrl(const KUrl &url)
 {
-    KBookmark found;
-
     KBookmarkGroup root = rootGroup();
     if (root.isNull())
     {
+        KBookmark found;
         return found;
     }
 
