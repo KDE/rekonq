@@ -74,7 +74,6 @@
 #include <KStandardDirs>
 #include <KActionCategory>
 #include <KProcess>
-#include <KActionMenu>
 
 // Qt Includes
 #include <QtCore/QTimer>
