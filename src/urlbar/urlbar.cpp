@@ -112,9 +112,7 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
 
     // bookmark icon
-    _icon->setIcon(KIcon("bookmarks").pixmap(32,32, QIcon::Disabled));
     connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(onBookmarksChanged()));
-    connect(_icon, SIGNAL(clicked(const QPoint &)), this, SLOT(showBookmarkInfo(const QPoint &)));
 
     // load typed urls
     connect(this, SIGNAL(returnPressed(const QString &)), this, SLOT(loadTyped(const QString &)));
@@ -147,8 +145,7 @@ void UrlBar::setQUrl(const QUrl& url)
         clearFocus();
         KLineEdit::setUrl(url);
         setCursorPosition(0);
-//         _icon->setIcon(Application::icon(url));
-//         updateIcon();
+        _icon->setIcon(Application::icon(url));
     }
 }
 
@@ -310,17 +307,9 @@ void UrlBar::loadFinished()
         return;
     }
 
-    // setting bookmark icon
-    if (Application::bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
-    {
-        _icon->setIcon(KIcon("bookmarks").pixmap(32,32, QIcon::Disabled));
-        _icon->setToolTip(i18n("Bookmark this page"));
-    }
-    else
-    {
-        _icon->setIcon(KIcon("bookmarks"));
-        _icon->setToolTip(i18n("Edit this bookmark"));
-    }
+    // show bookmark info
+    IconButton *bt = addRightIcon(UrlBar::BK);
+    connect(bt, SIGNAL(clicked(const QPoint &)), this, SLOT(showBookmarkInfo(const QPoint &)));
 
     // show KGet downloads??
     if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
@@ -433,6 +422,16 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
     case UrlBar::SSL:
         rightIcon->setIcon(KIcon("object-locked"));
         rightIcon->setToolTip(i18n("Show SSL Info"));
+        break;
+    case UrlBar::BK:
+        if (Application::bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
+        {
+            rightIcon->setIcon(KIcon("bookmarks").pixmap(32,32, QIcon::Disabled));
+        }
+        else
+        {
+            rightIcon->setIcon(KIcon("bookmarks"));
+        }
         break;
     default:
         kDebug() << "ERROR.. default non extant case!!";
