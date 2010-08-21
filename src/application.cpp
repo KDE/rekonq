@@ -350,6 +350,8 @@ KIcon Application::icon(const KUrl &url)
         return KIcon("bookmarks");
     if (url == KUrl("about:favorites"))
         return KIcon("emblem-favorite");
+    if (url == KUrl("about:downloads"))
+        return KIcon("download");
 
     KIcon icon = KIcon(QWebSettings::iconForUrl(url));
     if (icon.isNull())
