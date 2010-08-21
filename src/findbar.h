@@ -57,9 +57,6 @@ public:
 
     void setVisible(bool visible);
 
-public slots:
-    void toggleVisibility();
-
 signals:
     void searchString(const QString &);
     void visibilityChanged(bool);

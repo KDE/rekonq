@@ -181,8 +181,3 @@ void FindBar::notifyMatch(bool match)
     m_lineEdit->setPalette(p);
     m_hideTimer->start(60000);
 }
-
-void FindBar::toggleVisibility()
-{
-    isVisible() ? hide() : show();
-}
