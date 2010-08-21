@@ -342,6 +342,8 @@ KIcon Application::icon(const KUrl &url)
         return KIcon("text-html");
 
     // rekonq icons..
+    if (url == KUrl("about:home"))
+        return KIcon("go-home");
     if (url == KUrl("about:closedTabs"))
         return KIcon("tab-close");
     if (url == KUrl("about:history"))
