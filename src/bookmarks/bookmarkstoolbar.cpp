@@ -124,6 +124,7 @@ void BookmarkMenu::refill()
 
 void BookmarkMenu::addOpenFolderInTabs()
 {
+    // TODO: Needs to be ported to the new BookmarkOwner API
     KAction *action;
     KBookmarkGroup group = manager()->findByAddress(parentAddress()).toGroup();
 
