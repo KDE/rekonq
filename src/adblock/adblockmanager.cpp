@@ -187,7 +187,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
 
     foreach(const AdBlockRule &filter, _whiteList)
     {
-        if (filter.match(urlString, urlStringLowerCase))
+        if (filter.match(request, urlString, urlStringLowerCase))
         {
             kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched: ***********";
             kDebug() << "UrlString:  " << urlString;
@@ -205,7 +205,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
 
     foreach(const AdBlockRule &filter, _blackList)
     {
-        if (filter.match(urlString, urlStringLowerCase))
+        if (filter.match(request, urlString, urlStringLowerCase))
         {
             kDebug() << "****ADBLOCK: BLACK RULE Matched: ***********";
             kDebug() << "UrlString:  " << urlString;
@@ -215,7 +215,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
             foreach(QWebElement el, elements)
             {
                 const QString srcAttribute = el.attribute("src");
-                if (filter.match(srcAttribute, srcAttribute.toLower()))
+                if (filter.match(request, srcAttribute, srcAttribute.toLower()))
                 {
                     kDebug() << "MATCHES ATTRIBUTE!!!!!";
                     el.setStyleProperty(QL1S("visibility"), QL1S("hidden"));

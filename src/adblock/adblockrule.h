@@ -63,6 +63,7 @@
 #include <QSharedPointer>
 
 // Forward Includes
+class QNetworkRequest;
 class QString;
 
 class AdBlockRule
@@ -70,10 +71,10 @@ class AdBlockRule
 public:
     AdBlockRule(const QString &filter);
 
-    bool match(const QString &encodedUrl, const QString &encodedUrlLowerCase) const
+    bool match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const
     {
         Q_ASSERT(encodedUrl.toLower() == encodedUrlLowerCase);
-        return m_implementation->match(encodedUrl, encodedUrlLowerCase);
+        return m_implementation->match(request, encodedUrl, encodedUrlLowerCase);
     }
 
 private:

@@ -38,9 +38,10 @@ AdBlockRuleTextMatchImpl::AdBlockRuleTextMatchImpl(const QString &filter)
     m_textToMatch.remove(QL1C('*'));
 }
 
-bool AdBlockRuleTextMatchImpl::match(const QString &encodedUrl, const QString &encodedUrlLowerCase) const
+bool AdBlockRuleTextMatchImpl::match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const
 {
     Q_UNUSED(encodedUrl);
+    Q_UNUSED(request);
     // Case sensitive compare is faster, but would be incorrect with encodedUrl since
     // we do want case insensitive.
     // What we do is work on a lowercase version of m_textToMatch, and compare to the lowercase

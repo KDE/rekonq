@@ -31,17 +31,20 @@
 // Qt Includes
 #include <QRegExp>
 #include <QString>
+#include <QSet>
 
 class AdBlockRuleFallbackImpl : public AdBlockRuleImpl
 {
 public:
     AdBlockRuleFallbackImpl(const QString &filter);
-    bool match(const QString &encodedUrl, const QString &encodedUrlLowerCase) const;
+    bool match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const;
 
 private:
     QString convertPatternToRegExp(const QString &wildcardPattern);
 
     QRegExp m_regExp;
+    QSet<QString> m_whiteDomains;
+    QSet<QString> m_blackDomains;
 };
 
 #endif // ADBLOCKRULEFALLBACKIMPL_H
