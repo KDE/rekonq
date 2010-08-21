@@ -342,11 +342,12 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             }
 
             KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
-            KBookmarkActionInterface *destBookmarkAction = dynamic_cast<KBookmarkActionInterface *>(destAction);
-            QWidget *widgetAction = toolBar()->widgetForAction(destAction);
 
             if (destAction)
             {
+                KBookmarkActionInterface *destBookmarkAction = dynamic_cast<KBookmarkActionInterface *>(destAction);
+                QWidget *widgetAction = toolBar()->widgetForAction(destAction);
+
                 if (destBookmarkAction && !destBookmarkAction->bookmark().isNull()
                     && widgetAction && bookmark.address() != destBookmarkAction->bookmark().address())
                 {
@@ -367,7 +368,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             else
             {
                 root.deleteBookmark(bookmark);
-                if (QCursor::pos().x() <= toolBar()->pos().x())
+                if (QCursor::pos().x() < toolBar()->widgetForAction(toolBar()->actions().first())->pos().x())
                 {
                     root.moveBookmark(bookmark, KBookmark());
                 }
