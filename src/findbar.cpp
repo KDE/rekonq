@@ -138,24 +138,26 @@ bool FindBar::highlightAllState() const
     return m_highlightAll->isChecked();
 }
 
-
-void FindBar::show()
+void FindBar::setVisible(bool visible)
 {
-    // show findbar if not visible
-    if (isHidden())
-    {
-        emit visibilityChanged(true);
-        QWidget::show();
+    QWidget::setVisible(visible);
+
+    if (visible != isVisible())
+        emit visibilityChanged(visible);
+
+    if (visible) {
+        // show findbar if not visible
         emit searchString(m_lineEdit->text());
+
+        m_hideTimer->start(60000);
+
+        // set focus to findbar if user select showFindBar shortcut
+        m_lineEdit->setFocus();
+        m_lineEdit->selectAll();
+    } else {
+        m_hideTimer->stop();
     }
-
-    m_hideTimer->start(60000);
-
-    // set focus to findbar if user select showFindBar shortcut
-    m_lineEdit->setFocus();
-    m_lineEdit->selectAll();
 }
-
 
 void FindBar::notifyMatch(bool match)
 {
@@ -179,16 +181,6 @@ void FindBar::notifyMatch(bool match)
     m_lineEdit->setPalette(p);
     m_hideTimer->start(60000);
 }
-
-
-void FindBar::hide()
-{
-    m_hideTimer->stop();
-    emit visibilityChanged(false);
-    QWidget::hide();
-    emit(searchString(m_lineEdit->text()));
-}
-
 
 void FindBar::toggleVisibility()
 {

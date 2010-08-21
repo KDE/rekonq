@@ -370,6 +370,7 @@ void MainWindow::setupActions()
     findShortcut.setAlternate(Qt::Key_Slash);
     a->setShortcut(findShortcut);
     a->setCheckable(true);
+    a->setChecked(m_findBar->isVisible());
     connect(m_findBar, SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));
 
     KStandardAction::findNext(this, SLOT(findNext()) , actionCollection());

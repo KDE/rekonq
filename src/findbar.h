@@ -55,9 +55,9 @@ public:
     void notifyMatch(bool match);
     bool highlightAllState() const;
 
+    void setVisible(bool visible);
+
 public slots:
-    void show();
-    void hide();
     void toggleVisibility();
 
 signals:
