@@ -101,7 +101,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "");
 
     about.addAuthor(ki18n("Rohan Garg"),
-                    ki18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages"),
+                    ki18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages. And now he also started coding.."),
                     "rohan16garg@gmail.com",
                     "");
 
@@ -109,7 +109,17 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     ki18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages"),
                     "bulldog98@freenet.de",
                     "");
-                    
+
+    about.addAuthor(ki18n("Jon Ander Peñalba"),
+                    ki18n("Bookmarks code peer reviewer. A fantastic help"),
+                    "jonan88@gmail.com",
+                    "http://identi.ca/jonan");
+    
+    about.addAuthor(ki18n("Benjamin Poulain"),
+                    ki18n("The \"QtWebKit guy\". Code quality improvements"),
+                    "ikipou@gmail.com",
+                    "http://www.openyourcode.org/");
+    
     // --------------- about credits -----------------------------
     about.addCredit(ki18n("Dawit Alemayehu"),
                     ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
