@@ -80,6 +80,8 @@ public:
     virtual QSize sizeHint() const;
     void setWidgetsVisible(bool makeFullScreen);
 
+    QString selectedText() const;
+
 private:
     void setupBookmarksAndToolsShortcuts();
     void setupActions();

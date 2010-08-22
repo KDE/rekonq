@@ -41,14 +41,14 @@
 
 // Forward Declarations
 class QString;
-
+class MainWindow;
 
 class REKONQ_TESTS_EXPORT FindBar : public QWidget
 {
     Q_OBJECT
 
 public:
-    FindBar(QWidget *parent);
+    FindBar(MainWindow *parent);
     ~FindBar();
 
     bool matchCase() const;
@@ -62,6 +62,7 @@ signals:
     void visibilityChanged(bool);
 
 private:
+    MainWindow *m_mainWindow;
     KLineEdit *m_lineEdit;
     QTimer *m_hideTimer;
     QCheckBox *m_matchCase;

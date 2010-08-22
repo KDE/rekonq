@@ -907,6 +907,15 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
 }
 
 
+QString MainWindow::selectedText() const
+{
+    if (!currentTab())
+        return QString();
+
+    return currentTab()->view()->selectedText();
+}
+
+
 void MainWindow::viewPageSource()
 {
     if (!currentTab())
