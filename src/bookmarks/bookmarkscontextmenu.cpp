@@ -69,10 +69,22 @@ void BookmarksContextMenu::addBookmarkActions()
 
 void BookmarksContextMenu::addFolderActions()
 {
-    if (!bookmark().toGroup().first().isNull())
+    KBookmarkGroup group = bookmark().toGroup();
+
+    if (!group.first().isNull())
     {
-        addAction(bmOwner->action(BookmarkOwner::OPEN_FOLDER));
-        addSeparator();
+        KBookmark child = group.first();
+
+        while (child.isGroup() || child.isSeparator())
+        {
+            child = group.next(child);
+        }
+
+        if (!child.isNull())
+        {
+            addAction(bmOwner->action(BookmarkOwner::OPEN_FOLDER));
+            addSeparator();
+        }
     }
 
     addAction(bmOwner->action(BookmarkOwner::BOOKMARK_PAGE));
