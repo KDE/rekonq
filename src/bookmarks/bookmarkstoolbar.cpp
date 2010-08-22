@@ -38,7 +38,7 @@
 
 // Qt Includes
 #include <QtGui/QFrame>
-#include <QActionEvent>
+#include <QtGui/QActionEvent>
 
 
 BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
@@ -321,33 +321,38 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         else if (event->type() == QEvent::Drop)
         {
             QDropEvent *dropEvent = static_cast<QDropEvent*>(event);
-            if (dropEvent->mimeData()->hasFormat("application/rekonq-bookmark"))
+            QByteArray addresses = dropEvent->mimeData()->data("application/rekonq-bookmark");
+            KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+
+            if (!dropEvent->mimeData()->hasFormat("application/rekonq-bookmark") && !bookmark.isNull())
             {
-                QByteArray addresses = dropEvent->mimeData()->data("application/rekonq-bookmark");
-                KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+                return QObject::eventFilter(watched, event);
+            }
 
-                QAction *destAction = toolBar()->actionAt(dropEvent->pos());
-                if (destAction && destAction == m_dropAction)
+            QAction *destAction = toolBar()->actionAt(dropEvent->pos());
+            if (destAction && destAction == m_dropAction)
+            {
+                if (toolBar()->actions().indexOf(m_dropAction) > 0)
                 {
-                    if (toolBar()->actions().indexOf(m_dropAction) > 0)
-                    {
-                        destAction = toolBar()->actions().at(toolBar()->actions().indexOf(m_dropAction) - 1);
-                    }
-                    else
-                    {
-                        destAction = toolBar()->actions().at(1);
-                    }
+                    destAction = toolBar()->actions().at(toolBar()->actions().indexOf(m_dropAction) - 1);
                 }
+                else
+                {
+                    destAction = toolBar()->actions().at(1);
+                }
+            }
 
+            KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
+
+            if (destAction)
+            {
                 KBookmarkActionInterface *destBookmarkAction = dynamic_cast<KBookmarkActionInterface *>(destAction);
                 QWidget *widgetAction = toolBar()->widgetForAction(destAction);
 
-                if (!bookmark.isNull() && destBookmarkAction && !destBookmarkAction->bookmark().isNull()
+                if (destBookmarkAction && !destBookmarkAction->bookmark().isNull()
                     && widgetAction && bookmark.address() != destBookmarkAction->bookmark().address())
                 {
-                    KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
                     KBookmark destBookmark = destBookmarkAction->bookmark();
-                    // To fix an issue with panel's drags
                     root.deleteBookmark(bookmark);
 
                     if ((dropEvent->pos().x() - widgetAction->pos().x()) > (widgetAction->width() / 2))
@@ -358,18 +363,31 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                     {
                         root.moveBookmark(bookmark, destBookmark.parentGroup().previous(destBookmark));
                     }
-
                     Application::bookmarkProvider()->bookmarkManager()->emitChanged();
-                    dropEvent->accept();
                 }
             }
+            else
+            {
+                root.deleteBookmark(bookmark);
+                if (QCursor::pos().x() < toolBar()->widgetForAction(toolBar()->actions().first())->pos().x())
+                {
+                    root.moveBookmark(bookmark, KBookmark());
+                }
+                else
+                {
+                    root.addBookmark(bookmark);
+                }
+
+                Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+            }
+            dropEvent->accept();
         }
     }
     else
     {
         // Drag handling
         if (event->type() == QEvent::MouseButtonPress)
-        {//QMessageBox::information(NULL, "", "");
+        {
             QPoint pos = toolBar()->mapFromGlobal(QCursor::pos());
             KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(pos));
 
