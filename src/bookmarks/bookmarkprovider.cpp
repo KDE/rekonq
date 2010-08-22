@@ -33,7 +33,6 @@
 // Local Includes
 #include "application.h"
 #include "bookmarkspanel.h"
-#include "bookmarkscontextmenu.h"
 #include "bookmarkstoolbar.h"
 #include "bookmarkowner.h"
 
