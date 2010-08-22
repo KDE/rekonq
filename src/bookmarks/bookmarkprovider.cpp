@@ -33,7 +33,6 @@
 // Local Includes
 #include "application.h"
 #include "bookmarkspanel.h"
-#include "bookmarkscontextmenu.h"
 #include "bookmarkstoolbar.h"
 #include "bookmarkowner.h"
 
@@ -109,8 +108,6 @@ void BookmarkProvider::registerBookmarkBar(BookmarkToolBar *toolbar)
     kDebug() << "new bookmark bar...";
 
     m_bookmarkToolBars.append(toolbar);
-    toolbar->toolBar()->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(toolbar->toolBar(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(contextMenu(const QPoint&)));
 
     kDebug() << "new bookmark bar... DONE!";
 }
@@ -180,24 +177,6 @@ KBookmark BookmarkProvider::bookmarkForUrl(const KUrl &url)
         return KBookmark();
 
     return bookmarkForUrl(root, url);
-}
-
-
-void BookmarkProvider::contextMenu(const QPoint &point)
-{
-    if (m_bookmarkToolBars.isEmpty())
-        return;
-
-    KToolBar *bookmarkToolBar = m_bookmarkToolBars.at(0)->toolBar();
-    if (!bookmarkToolBar)
-        return;
-
-    KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface*>(bookmarkToolBar->actionAt(point));
-    if (!action)
-        return;
-
-    BookmarksContextMenu menu(action->bookmark(), bookmarkManager(), bookmarkOwner());
-    menu.exec(bookmarkToolBar->mapToGlobal(point));
 }
 
 

@@ -167,6 +167,8 @@ BookmarkToolBar::BookmarkToolBar(KToolBar *toolBar, QObject *parent)
     , m_dropAction(0)
     , m_filled(false)
 {
+    toolBar->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(toolBar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
     connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString, QString)), this, SLOT(hideMenu()));
     toolBar->setAcceptDrops(true);
     toolBar->installEventFilter(this);
@@ -187,6 +189,20 @@ BookmarkToolBar::~BookmarkToolBar()
 KToolBar* BookmarkToolBar::toolBar()
 {
     return m_toolBar;
+}
+
+
+void BookmarkToolBar::contextMenu(const QPoint &point)
+{
+    KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface*>(toolBar()->actionAt(point));
+    KBookmark bookmark;
+    if (action)
+        bookmark = action->bookmark();
+
+    BookmarksContextMenu menu(bookmark,
+                              Application::bookmarkProvider()->bookmarkManager(),
+                              Application::bookmarkProvider()->bookmarkOwner());
+    menu.exec(toolBar()->mapToGlobal(point));
 }
 
 

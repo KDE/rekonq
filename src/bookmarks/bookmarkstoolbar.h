@@ -91,6 +91,7 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event);
 
 private slots:
+    void contextMenu(const QPoint &);
     void actionHovered();
     void menuDisplayed();
     void menuHidden();
