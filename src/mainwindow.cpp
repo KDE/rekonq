@@ -365,11 +365,11 @@ void MainWindow::setupActions()
     KStandardAction::print(this, SLOT(printRequested()), actionCollection());
     KStandardAction::quit(this , SLOT(close()), actionCollection());
 
-    a = KStandardAction::find(m_findBar, SLOT(toggleVisibility()), actionCollection());
+    a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
     KShortcut findShortcut = KStandardShortcut::find();
     findShortcut.setAlternate(Qt::Key_Slash);
     a->setShortcut(findShortcut);
-    a->setCheckable(true);
+    a->setChecked(m_findBar->isVisible());
     connect(m_findBar, SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));
 
     KStandardAction::findNext(this, SLOT(findNext()) , actionCollection());
@@ -904,6 +904,15 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
         if (!bookmarksPanelFlag)
             m_bookmarksPanel->show();
     }
+}
+
+
+QString MainWindow::selectedText() const
+{
+    if (!currentTab())
+        return QString();
+
+    return currentTab()->view()->selectedText();
 }
 
 

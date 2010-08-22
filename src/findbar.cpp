@@ -49,16 +49,14 @@
 #include <QtCore/QTimer>
 
 
-FindBar::FindBar(QWidget *parent)
-        : QWidget(parent)
+FindBar::FindBar(MainWindow *window)
+        : QWidget(window)
+        , m_mainWindow(window)
         , m_lineEdit(new KLineEdit(this))
         , m_hideTimer(new QTimer(this))
         , m_matchCase(new QCheckBox(i18n("&Match case"), this))
         , m_highlightAll(new QCheckBox(i18n("&Highlight all"), this))
 {
-    // mainwindow pointer
-    MainWindow *window = qobject_cast<MainWindow *>(parent);
-
     QHBoxLayout *layout = new QHBoxLayout;
 
     // cosmetic
@@ -138,24 +136,32 @@ bool FindBar::highlightAllState() const
     return m_highlightAll->isChecked();
 }
 
-
-void FindBar::show()
+void FindBar::setVisible(bool visible)
 {
-    // show findbar if not visible
-    if (isHidden())
-    {
-        emit visibilityChanged(true);
-        QWidget::show();
+    QWidget::setVisible(visible);
+
+    if (visible != isVisible())
+        emit visibilityChanged(visible);
+
+    if (visible) {
+        if (!hasFocus()) {
+            const QString selectedText = m_mainWindow->selectedText();
+            if (!selectedText.isEmpty())
+                m_lineEdit->setText(selectedText);
+        }
+
+        // show findbar if not visible
         emit searchString(m_lineEdit->text());
+
+        m_hideTimer->start(60000);
+
+        // set focus to findbar if user select showFindBar shortcut
+        m_lineEdit->setFocus();
+        m_lineEdit->selectAll();
+    } else {
+        m_hideTimer->stop();
     }
-
-    m_hideTimer->start(60000);
-
-    // set focus to findbar if user select showFindBar shortcut
-    m_lineEdit->setFocus();
-    m_lineEdit->selectAll();
 }
-
 
 void FindBar::notifyMatch(bool match)
 {
@@ -178,19 +184,4 @@ void FindBar::notifyMatch(bool match)
     }
     m_lineEdit->setPalette(p);
     m_hideTimer->start(60000);
-}
-
-
-void FindBar::hide()
-{
-    m_hideTimer->stop();
-    emit visibilityChanged(false);
-    QWidget::hide();
-    emit(searchString(m_lineEdit->text()));
-}
-
-
-void FindBar::toggleVisibility()
-{
-    isVisible() ? hide() : show();
 }
