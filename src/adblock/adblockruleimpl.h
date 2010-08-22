@@ -27,13 +27,14 @@
 #define ADBLOCKRULEIMPL_H
 
 class QString;
+class QNetworkRequest;
 
 class AdBlockRuleImpl
 {
 public:
     AdBlockRuleImpl(const QString &) {}
     virtual ~AdBlockRuleImpl() {}
-    virtual bool match(const QString &encodedUrl, const QString &encodedUrlLowerCase) const = 0;
+    virtual bool match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const = 0;
 };
 
 #endif // ADBLOCKRULEIMPL_H
