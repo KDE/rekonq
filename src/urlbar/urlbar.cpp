@@ -427,10 +427,12 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         if (Application::bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
         {
             rightIcon->setIcon(KIcon("bookmarks").pixmap(32,32, QIcon::Disabled));
+            rightIcon->setToolTip(i18n("Bookmark this page"));
         }
         else
         {
             rightIcon->setIcon(KIcon("bookmarks"));
+            rightIcon->setToolTip(i18n("Edit this bookmark"));
         }
         break;
     default:
