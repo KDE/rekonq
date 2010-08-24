@@ -356,7 +356,6 @@ KIcon Application::icon(const KUrl &url)
     if (encodedUrl == QByteArray("about:downloads"))
         return KIcon("download");
 
-
     KIcon icon = KIcon(QWebSettings::iconForUrl(url));
     if (icon.isNull())
     {
