@@ -142,10 +142,10 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         return true;
     }
 
-    QByteArray encodedUrl = _url.toEncoded();
     // "about" handling
     if (_url.protocol() == QL1S("about"))
     {
+        QByteArray encodedUrl = _url.toEncoded();
         // let webkit manage the about:blank url...
         if (encodedUrl == QByteArray("about:blank"))
         {
