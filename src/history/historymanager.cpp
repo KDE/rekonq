@@ -239,8 +239,18 @@ QList<HistoryItem> HistoryManager::find(const QString &text)
     {
         int index = m_historyFilterModel->historyLocation(url);
         HistoryItem item = m_history.at(index);
-        
-        if(url.contains(text) || item.title.contains(text))
+
+        QStringList words = text.split(" ");
+        bool matches = true;
+        foreach (const QString &word, words)
+        {
+            if (!url.contains(word, Qt::CaseInsensitive)
+                && !item.title.contains(word, Qt::CaseInsensitive)) {
+                matches = false;
+                break;
+            }
+        }
+        if (matches)
             list << item;
     }
     
