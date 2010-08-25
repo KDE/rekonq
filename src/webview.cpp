@@ -540,8 +540,9 @@ void WebView::keyPressEvent(QKeyEvent *event)
 void WebView::wheelEvent(QWheelEvent *event)
 {
     // To let some websites (eg: google maps) to handle wheel events
-    int ypos = page()->currentFrame()->scrollPosition().y();
+    int prevPos = page()->currentFrame()->scrollPosition().y();
     KWebView::wheelEvent(event);
+    int newPos = page()->currentFrame()->scrollPosition().y();
 
     // Sync with the zoom slider
     if (event->modifiers() == Qt::ControlModifier)
@@ -559,23 +560,21 @@ void WebView::wheelEvent(QWheelEvent *event)
 
         emit zoomChanged(newFactor);
     }
-    else if (ReKonfig::smoothScrolling() && ypos != page()->currentFrame()->scrollPosition().y())
+    else if (ReKonfig::smoothScrolling() && prevPos != newPos)
     {
-        page()->currentFrame()->setScrollPosition(QPoint(page()->currentFrame()->scrollPosition().x(), ypos));
 
-        int numDegrees = event->delta() / 8;
-        int numSteps = numDegrees / 15;
+        page()->currentFrame()->setScrollPosition(QPoint(page()->currentFrame()->scrollPosition().x(), prevPos));
 
-        if ((numSteps > 0) != !_scrollBottom)
+        if ((event->delta() > 0) != !_scrollBottom)
             stopScrolling();
 
-        if (numSteps > 0)
+        if (event->delta() > 0)
             _scrollBottom = false;
         else
             _scrollBottom = true;
 
 
-        setupSmoothScrolling(QApplication::wheelScrollLines() * abs(numSteps) * 20);
+        setupSmoothScrolling(abs(newPos - prevPos));
     }
 }
 
