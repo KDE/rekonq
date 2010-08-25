@@ -341,18 +341,19 @@ KIcon Application::icon(const KUrl &url)
     if (url.isEmpty())
         return KIcon("text-html");
 
+    QByteArray encodedUrl = url.toEncoded();
     // rekonq icons..
-    if (url == KUrl("about:home"))
+    if (encodedUrl == QByteArray("about:home"))
         return KIcon("go-home");
-    if (url == KUrl("about:closedTabs"))
+    if (encodedUrl == QByteArray("about:closedTabs"))
         return KIcon("tab-close");
-    if (url == KUrl("about:history"))
+    if (encodedUrl == QByteArray("about:history"))
         return KIcon("view-history");
-    if (url == KUrl("about:bookmarks"))
+    if (encodedUrl == QByteArray("about:bookmarks"))
         return KIcon("bookmarks");
-    if (url == KUrl("about:favorites"))
+    if (encodedUrl == QByteArray("about:favorites"))
         return KIcon("emblem-favorite");
-    if (url == KUrl("about:downloads"))
+    if (encodedUrl == QByteArray("about:downloads"))
         return KIcon("download");
 
     KIcon icon = KIcon(QWebSettings::iconForUrl(url));

@@ -134,27 +134,28 @@ void NewTabPage::generate(const KUrl &url)
     browsingMenu(url);
 
     QString title;
-    if (url == KUrl("about:favorites"))
+    QByteArray encodedUrl = url.toEncoded();
+    if (encodedUrl == QByteArray("about:favorites"))
     {
         favoritesPage();
         title = i18n("Favorites");
     }
-    else if (url == KUrl("about:closedTabs"))
+    else if (encodedUrl == QByteArray("about:closedTabs"))
     {
         closedTabsPage();
         title = i18n("Closed Tabs");
     }
-    else if (url == KUrl("about:history"))
+    else if (encodedUrl == QByteArray("about:history"))
     {
         historyPage();
         title = i18n("History");
     }
-    else if (url == KUrl("about:bookmarks"))
+    else if (encodedUrl == QByteArray("about:bookmarks"))
     {
         bookmarksPage();
         title = i18n("Bookmarks");
     }
-    else if (url == KUrl("about:downloads"))
+    else if (encodedUrl == QByteArray("about:downloads"))
     {
         downloadsPage();
         title = i18n("Downloads");

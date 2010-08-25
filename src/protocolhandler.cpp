@@ -145,13 +145,14 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     // "about" handling
     if (_url.protocol() == QL1S("about"))
     {
+        QByteArray encodedUrl = _url.toEncoded();
         // let webkit manage the about:blank url...
-        if (_url == KUrl("about:blank"))
+        if (encodedUrl == QByteArray("about:blank"))
         {
             return false;
         }
 
-        if (_url == KUrl("about:home"))
+        if (encodedUrl == QByteArray("about:home"))
         {
             switch (ReKonfig::newTabStartPage())
             {
