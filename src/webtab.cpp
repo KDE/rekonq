@@ -92,6 +92,8 @@ WebTab::WebTab(QWidget *parent)
 
 WebTab::~WebTab()
 {
+    _walletBar.clear();
+    _previewSelectorBar.clear();
 }
 
 
@@ -131,6 +133,12 @@ void WebTab::updateProgress(int p)
 void WebTab::loadFinished(bool)
 {
     m_progress = 0;
+    if(_walletBar.isNull())
+    {
+        kDebug() << "OK, it's null";
+    }
+    else
+        kDebug() << "NO, it's NOT null";
 }
 
 
@@ -142,27 +150,35 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
     if (blackList.contains(urlString))
         return;
 
+    if(!_walletBar.isNull())
+    {
+        _walletBar.clear();
+    }
     KWebWallet *wallet = page()->wallet();
-    WalletBar *walletBar = new WalletBar(this);
-    walletBar->onSaveFormData(key, url);
-    qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, walletBar);
+    _walletBar = new WalletBar(this);
+    _walletBar.data()->onSaveFormData(key, url);
+    qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, _walletBar.data() );
 
-    connect(walletBar, SIGNAL(saveFormDataAccepted(const QString &)),
+    connect(_walletBar.data(), SIGNAL(saveFormDataAccepted(const QString &)),
             wallet, SLOT(acceptSaveFormDataRequest(const QString &)));
-    connect(walletBar, SIGNAL(saveFormDataRejected(const QString &)),
+    connect(_walletBar.data(), SIGNAL(saveFormDataRejected(const QString &)),
             wallet, SLOT(rejectSaveFormDataRequest(const QString &)));
 }
 
 
 void WebTab::createPreviewSelectorBar(int index)
 {
-    PreviewSelectorBar *bar = new PreviewSelectorBar(index, this);
-    qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, bar);
+    if(!_previewSelectorBar.isNull())
+    {
+        _previewSelectorBar.clear();
+    }
+    _previewSelectorBar = new PreviewSelectorBar(index, this);
+    qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, _previewSelectorBar.data());
 
-    connect(page(), SIGNAL(loadStarted()), bar, SLOT(loadProgress()));
-    connect(page(), SIGNAL(loadProgress(int)), bar, SLOT(loadProgress()));
-    connect(page(), SIGNAL(loadFinished(bool)), bar, SLOT(loadFinished()));
-    connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)), bar, SLOT(verifyUrl()));
+    connect(page(),             SIGNAL(loadStarted()),      _previewSelectorBar.data(), SLOT(loadProgress()));
+    connect(page(),             SIGNAL(loadProgress(int)),  _previewSelectorBar.data(), SLOT(loadProgress()));
+    connect(page(),             SIGNAL(loadFinished(bool)), _previewSelectorBar.data(), SLOT(loadFinished()));
+    connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  _previewSelectorBar.data(), SLOT(verifyUrl()));
 }
 
 

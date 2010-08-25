@@ -41,6 +41,11 @@
 
 // Qt Includes
 #include <QWidget>
+#include <QWeakPointer>
+
+// Forward Declarations
+class WalletBar;
+class PreviewSelectorBar;
 
 
 class REKONQ_TESTS_EXPORT WebTab : public QWidget
@@ -74,6 +79,9 @@ private:
     WebView *_view;
     
     int m_progress;
+
+    QWeakPointer<WalletBar> _walletBar;
+    QWeakPointer<PreviewSelectorBar> _previewSelectorBar;
 };
 
 #endif
