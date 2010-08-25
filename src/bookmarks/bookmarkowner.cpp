@@ -341,7 +341,7 @@ void BookmarkOwner::setupActions()
     createAction(NEW_FOLDER, i18n("New Folder"), "folder-new",
                  i18n("Create a new bookmark folder"), SLOT(newBookmarkFolder()));
     createAction(NEW_SEPARATOR, i18n("New Separator"), "edit-clear",
-                 i18n("Create a new bookmark separatork"), SLOT(newSeparator()));
+                 i18n("Create a new bookmark separator"), SLOT(newSeparator()));
     createAction(COPY, i18n("Copy Link"), "edit-copy",
                  i18n("Copy the bookmark's link address"), SLOT(copyLink()));
     createAction(EDIT, i18n("Edit"), "configure",
