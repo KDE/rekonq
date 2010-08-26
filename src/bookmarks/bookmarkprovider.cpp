@@ -253,9 +253,21 @@ void BookmarkProvider::find(QList<KBookmark> *list, const KBookmark &bookmark, c
         for (KBookmark bm = group.first(); !bm.isNull(); bm = group.next(bm))
             find(list, bm, text);
     }
-    else if (bookmark.url().url().contains(text) || bookmark.fullText().contains(text))
+    else
     {
-        *list << bookmark;
+        QStringList words = text.split(" ");
+        bool matches = true;
+        foreach (const QString &word, words)
+        {
+            if (!bookmark.url().url().contains(word, Qt::CaseInsensitive)
+                && !bookmark.fullText().contains(word, Qt::CaseInsensitive))
+            {
+                matches = false;
+                break;
+            }
+        }
+        if (matches)
+            *list << bookmark;
     }
 }
 
