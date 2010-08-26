@@ -200,8 +200,17 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
         : QLabel(parent)
 {
     QString t = text;
-    if (!textToPointOut.isEmpty())
-        t = t.replace(QRegExp('(' + textToPointOut + ')', Qt::CaseInsensitive), "<b>\\1</b>");
+    const bool wasItalic = t.startsWith("<i>");
+    if (wasItalic)
+        t.remove(QRegExp("<[/ib]*>"));
+    t = Qt::escape(t);
+    QStringList words = textToPointOut.split(" ");
+    foreach (const QString &wordToPointOut, words) {
+        if (!wordToPointOut.isEmpty())
+            t.replace(QRegExp('(' + wordToPointOut + ')', Qt::CaseInsensitive), "<b>\\1</b>");
+    }
+    if (wasItalic)
+        t = QL1S("<i>") + t + QL1S("</i>");
 
     setText(t);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
@@ -286,7 +295,7 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
     m_url = SearchEngine::buildQuery(engine, query);
 
     m_iconLabel = new IconLabel("edit-find", this); //TODO: get the default engine icon (will be easy in KDE SC 4.5)
-    m_titleLabel = new TextLabel(searchItemTitle(engine->name(), query), QString(), this);
+    m_titleLabel = new TextLabel(searchItemTitle(engine->name(), query), query, this);
     m_engineBar = new EngineBar(engine, parent);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
@@ -312,7 +321,7 @@ QString SearchListItem::text()
 
 QString SearchListItem::searchItemTitle(QString engine, QString text)
 {
-    return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, Qt::escape(text)));
+    return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for %2", engine, Qt::escape(text)));
 }
 
 

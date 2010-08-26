@@ -185,18 +185,7 @@ QString WebSnap::imagePathFromUrl(const KUrl &url)
 {
     QUrl temp = QUrl(url.url());
     QString name = temp.toString(QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash);
-
-    // TODO learn Regular Expressions :)
-    // and implement something better here..
-    name.remove('/');
-    name.remove('&');
-    name.remove('.');
-    name.remove('-');
-    name.remove('_');
-    name.remove('?');
-    name.remove('=');
-    name.remove('+');
-
+    name.remove(QRegExp(QL1S("[&+=_?./-]")));
     return KStandardDirs::locateLocal("cache", QString("thumbs/") + name + ".png", true);
 }
 
