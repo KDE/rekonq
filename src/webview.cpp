@@ -233,6 +233,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
         menu.addAction(pageAction(KWebPage::CopyImageToClipboard));
+
+        a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), this);
+        a->setData(result.imageUrl());
+        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
+        menu.addAction(a);
+
+        menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
         menu.addSeparator();
 
         menu.addAction(inspectAction);
@@ -443,6 +450,23 @@ void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifier
     {
         emit loadUrl(url, Rekonq::CurrentTab);
     }
+}
+
+void WebView::slotCopyImageLocation()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl imageUrl (a->data().toUrl());
+#ifndef QT_NO_MIMECLIPBOARD
+    // Set it in both the mouse selection and in the clipboard
+    QMimeData* mimeData = new QMimeData;
+    imageUrl.populateMimeData( mimeData );
+    QApplication::clipboard()->setMimeData( mimeData, QClipboard::Clipboard );
+    mimeData = new QMimeData;
+    imageUrl.populateMimeData( mimeData );
+    QApplication::clipboard()->setMimeData( mimeData, QClipboard::Selection );
+#else
+    QApplication::clipboard()->setText( imageUrl.url() ); 
+#endif
 }
 
 
