@@ -33,7 +33,7 @@ cd i18n
 # download the po files
 for lang in $LIST
 do
-  wget http://websvn.kde.org/*checkout*/trunk/l10n-kde4/$lang/messages/playground-network/rekonq.po;
+  wget http://websvn.kde.org/*checkout*/trunk/l10n-kde4/$lang/messages/extragear-network/rekonq.po;
   mv rekonq.po rekonq_$lang.po;
 done
 
