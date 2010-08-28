@@ -34,7 +34,6 @@
 
 // Qt Includes
 #include <QtCore/QTimer>
-#include <QtGui/QAction>
 #include <QtWebKit/QWebFrame>
 #include <QtWebKit/QWebSettings>
 
@@ -54,8 +53,6 @@ WebIcon::WebIcon(const KUrl& url, QObject *parent)
 
 WebIcon::~WebIcon()
 {
-    m_page.action(QWebPage::Stop)->trigger();
-    m_page.deleteLater();
 }
 
 
