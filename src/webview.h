@@ -71,6 +71,7 @@ private slots:
     void openLinkInNewTab();
 
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
+    void slotCopyImageLocation();
     void inspect();
 
     void scrollFrameChanged();
