@@ -37,6 +37,7 @@
 #include "websnap.h"
 #include "completionwidget.h"
 #include "searchengine.h"
+#include "iconmanager.h"
 
 // KDE Includes
 #include <KIcon>
@@ -187,11 +188,19 @@ QLabel *TypeIconLabel::getIcon(QString icon)
 IconLabel::IconLabel(const QString &icon, QWidget *parent)
         : QLabel(parent)
 {
-    QPixmap pixmapIcon = Application::icon(KUrl(icon)).pixmap(16);
+    QPixmap pixmapIcon = Application::iconManager()->iconForUrl(KUrl(icon)).pixmap(16);
     setFixedSize(16, 16);
     setPixmap(pixmapIcon);
 }
 
+
+IconLabel::IconLabel(const KIcon &icon, QWidget *parent)
+    : QLabel(parent)
+{
+    QPixmap pixmapIcon = icon.pixmap(16);
+    setFixedSize(16, 16);
+    setPixmap(pixmapIcon);
+}
 
 // ---------------------------------------------------------------
 
@@ -294,7 +303,8 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
 
     m_url = SearchEngine::buildQuery(engine, query);
 
-    m_iconLabel = new IconLabel("edit-find", this); //TODO: get the default engine icon (will be easy in KDE SC 4.5)
+    KIcon icon = Application::iconManager()->iconForUrl( SearchEngine::defaultEngine()->property("Query").toUrl() );
+    m_iconLabel = new IconLabel(icon, this); //TODO: get the default engine icon (will be easy in KDE SC 4.5)
     m_titleLabel = new TextLabel(searchItemTitle(engine->name(), query), query, this);
     m_engineBar = new EngineBar(engine, parent);
 
@@ -328,7 +338,7 @@ QString SearchListItem::searchItemTitle(QString engine, QString text)
 void SearchListItem::changeSearchEngine(KService::Ptr engine)
 {
     m_titleLabel->setText(searchItemTitle(engine->name(), m_text));
-    m_iconLabel->setPixmap(Application::icon(KUrl(engine->property("Query").toString())).pixmap(16));
+    m_iconLabel->setPixmap( Application::iconManager()->iconForUrl(KUrl(engine->property("Query").toString())).pixmap(16) );
     m_url = SearchEngine::buildQuery(engine, m_text);
     qobject_cast<CompletionWidget *>(parent())->setSearchEngine(engine);
 }
@@ -371,7 +381,7 @@ KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selected
     KUrl url = KUrl( u.toString( QUrl::RemovePath | QUrl::RemoveQuery ) );
     
     kDebug() << "Engine NAME: " << engine->name() << " URL: " << url;
-    KAction *a = new KAction(Application::icon(url), engine->name(), this);
+    KAction *a = new KAction(Application::iconManager()->iconForUrl(url), engine->name(), this);
     a->setCheckable(true);
     if (engine->desktopEntryName() == selectedEngine->desktopEntryName()) a->setChecked(true);
     a->setData(engine->entryPath());

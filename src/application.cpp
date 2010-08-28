@@ -43,6 +43,7 @@
 #include "sessionmanager.h"
 #include "adblockmanager.h"
 #include "opensearchmanager.h"
+#include "iconmanager.h"
 #include "webview.h"
 #include "filterurljob.h"
 #include "tabbar.h"
@@ -66,6 +67,7 @@ QWeakPointer<BookmarkProvider> Application::s_bookmarkProvider;
 QWeakPointer<SessionManager> Application::s_sessionManager;
 QWeakPointer<AdBlockManager> Application::s_adblockManager;
 QWeakPointer<OpenSearchManager> Application::s_opensearchManager;
+QWeakPointer<IconManager> Application::s_iconManager;
 
 
 Application::Application()
@@ -250,10 +252,6 @@ void Application::postLaunch()
 
     setWindowIcon(KIcon("rekonq"));
 
-    // set Icon Database Path to store "favicons" associated with web sites
-    QString directory = KStandardDirs::locateLocal("cache" , "" , true);
-    QWebSettings::setIconDatabasePath(directory);
-
     Application::historyManager();
     Application::sessionManager();
 
@@ -331,38 +329,13 @@ OpenSearchManager *Application::opensearchManager()
 }
 
 
-KIcon Application::icon(const KUrl &url)
+IconManager *Application::iconManager()
 {
-    // avoid infinite loop at startup
-    if (Application::instance()->mainWindowList().isEmpty())
-        return KIcon("text-html");
-
-    // first things first..
-    if (url.isEmpty())
-        return KIcon("text-html");
-
-    QByteArray encodedUrl = url.toEncoded();
-    // rekonq icons..
-    if (encodedUrl == QByteArray("about:home"))
-        return KIcon("go-home");
-    if (encodedUrl == QByteArray("about:closedTabs"))
-        return KIcon("tab-close");
-    if (encodedUrl == QByteArray("about:history"))
-        return KIcon("view-history");
-    if (encodedUrl == QByteArray("about:bookmarks"))
-        return KIcon("bookmarks");
-    if (encodedUrl == QByteArray("about:favorites"))
-        return KIcon("emblem-favorite");
-    if (encodedUrl == QByteArray("about:downloads"))
-        return KIcon("download");
-
-    KIcon icon = KIcon(QWebSettings::iconForUrl(url));
-    if (icon.isNull())
+    if (s_iconManager.isNull())
     {
-        kDebug() << "null icon";
-        icon = KIcon("text-html");
+        s_iconManager = new IconManager(instance());
     }
-    return icon;
+    return s_iconManager.data();
 }
 
 

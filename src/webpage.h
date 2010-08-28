@@ -83,6 +83,7 @@ private slots:
     void handleUnsupportedContent(QNetworkReply *reply);
     void manageNetworkErrors(QNetworkReply *reply);
     void loadFinished(bool);
+    void loadStarted();
     void showSSLInfo(QPoint);
     void updateImage(bool ok);
 

@@ -52,6 +52,7 @@ class HistoryManager;
 class MainWindow;
 class SessionManager;
 class AdBlockManager;
+class IconManager;
 class WebView;
 
 
@@ -107,14 +108,13 @@ public:
     MainWindow *newMainWindow(bool withTab = true);
     MainWindowList mainWindowList();
 
-    static KIcon icon(const KUrl &url);
-
     static HistoryManager *historyManager();
     static BookmarkProvider *bookmarkProvider();
     static SessionManager *sessionManager();
     static AdBlockManager *adblockManager();
     static OpenSearchManager *opensearchManager();
-
+    static IconManager *iconManager();
+    
     // DOWNLOADS MANAGEMENT METHODS
     void addDownload(const QString &srcUrl, const QString &destUrl);
     DownloadList downloads();
@@ -152,7 +152,8 @@ private:
     static QWeakPointer<SessionManager> s_sessionManager;
     static QWeakPointer<AdBlockManager> s_adblockManager;
     static QWeakPointer<OpenSearchManager> s_opensearchManager;
-
+    static QWeakPointer<IconManager> s_iconManager;
+    
     MainWindowList m_mainWindows;
 };
 

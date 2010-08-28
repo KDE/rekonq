@@ -33,6 +33,7 @@
 #include "mainwindow.h"
 #include "webtab.h"
 #include "webview.h"
+#include "iconmanager.h"
 
 // KDE Includes
 #include <KLocalizedString>
@@ -75,7 +76,7 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     m_agregators->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     m_agregators->addItem(KIcon("akregator"), QString("Akregator"));
-    m_agregators->addItem(Application::icon(KUrl("http://google.com/reader")), i18n("Google Reader"));
+    m_agregators->addItem(Application::iconManager()->iconForUrl(KUrl("http://google.com/reader")), i18n("Google Reader"));
 
     layout->addRow(agregator, m_agregators);
 

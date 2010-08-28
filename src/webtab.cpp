@@ -133,12 +133,6 @@ void WebTab::updateProgress(int p)
 void WebTab::loadFinished(bool)
 {
     m_progress = 0;
-    if(_walletBar.isNull())
-    {
-        kDebug() << "OK, it's null";
-    }
-    else
-        kDebug() << "NO, it's NOT null";
 }
 
 

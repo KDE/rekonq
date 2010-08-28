@@ -43,6 +43,7 @@
 #include "completionwidget.h"
 #include "bookmarkprovider.h"
 #include "bookmarkwidget.h"
+#include "iconmanager.h"
 
 // KDE Includes
 #include <KBookmarkManager>
@@ -110,7 +111,8 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
-
+    connect(_tab->view(), SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
+    
     // bookmark icon
     connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(onBookmarksChanged()));
 
@@ -145,7 +147,7 @@ void UrlBar::setQUrl(const QUrl& url)
         clearFocus();
         KLineEdit::setUrl(url);
         setCursorPosition(0);
-        _icon->setIcon(Application::icon(url));
+        refreshFavicon();
     }
 }
 
@@ -493,4 +495,17 @@ void UrlBar::suggest()
 {
     if(!_box.isNull())
         _box.data()->suggestUrls( text() );
+}
+
+
+void UrlBar::refreshFavicon()
+{
+    kDebug() << "------------------ REFRESH ME!!! -------------";
+//     if( u.scheme() == QL1S("about") )
+//     {
+//         kDebug() << "ABOUT SCHEME...";
+//         return;
+//     }
+    
+    _icon->setIcon(Application::iconManager()->iconForUrl(_tab->view()->url()));
 }

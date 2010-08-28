@@ -108,6 +108,8 @@ private slots:
     void showBookmarkInfo(const QPoint &pos);
     void onBookmarksChanged();
 
+    void refreshFavicon();
+    
 protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);

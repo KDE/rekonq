@@ -39,6 +39,7 @@
 #include "webtab.h"
 #include "websnap.h"
 #include "mainview.h"
+#include "iconmanager.h"
 
 // KDE Includes
 #include <KShortcut>
@@ -379,7 +380,7 @@ void TabBar::setupHistoryActions()
 
     foreach (const HistoryItem &item, mv->recentlyClosedTabs())
     {
-        KAction *a = new KAction(Application::icon(item.url), item.title, this);
+        KAction *a = new KAction(Application::iconManager()->iconForUrl(item.url), item.title, this);
         a->setData(item.url);
         connect(a, SIGNAL(triggered()), mv, SLOT(openClosedTab()));
         am->addAction(a);

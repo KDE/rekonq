@@ -38,6 +38,7 @@
 #include "tabbar.h"
 #include "urlbar.h"
 #include "sessionmanager.h"
+#include "iconmanager.h"
 
 // KDE Includes
 #include <KUrl>
@@ -322,7 +323,6 @@ WebTab *MainView::newWebTab(bool focused)
     // connecting webview with mainview
     connect(tab->view(), SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
     connect(tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
-    connect(tab->view(), SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
     connect(tab->view(), SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
     connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
 
@@ -576,7 +576,7 @@ void MainView::webViewIconChanged()
     int index = indexOf(view->parentWidget());
     if (-1 != index)
     {
-        KIcon icon = Application::icon(view->url());
+        KIcon icon = Application::iconManager()->iconForUrl(view->url());
         QLabel *label = animatedLoading(index, false);
         QMovie *movie = label->movie();
         delete movie;
@@ -725,7 +725,7 @@ void MainView::detachTab(int index, MainWindow *toWindow)
             w = Application::instance()->newMainWindow(false);
         else
             w = toWindow;
-        w->mainView()->addTab(tab, Application::icon(u), label);
+        w->mainView()->addTab(tab, Application::iconManager()->iconForUrl(u), label);
         w->mainView()->widgetBar()->insertWidget(0, bar);
         w->mainView()->updateTabBar();
     }

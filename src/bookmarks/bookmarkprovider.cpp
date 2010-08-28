@@ -39,6 +39,7 @@
 // KDE Includes
 #include <KActionCollection>
 #include <KStandardDirs>
+#include <KMimeType>
 
 // Qt Includes
 #include <QtCore/QFile>
@@ -230,7 +231,8 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
 
 void BookmarkProvider::slotAddBookmark()
 {
-    rootGroup().addBookmark(bookmarkOwner()->currentTitle(), bookmarkOwner()->currentUrl());
+    QString url = bookmarkOwner()->currentUrl();
+    rootGroup().addBookmark(bookmarkOwner()->currentTitle(), url, KMimeType::favIconForUrl( KUrl(url) ) );
     bookmarkManager()->emitChanged();
 }
 

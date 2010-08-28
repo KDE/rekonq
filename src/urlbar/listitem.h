@@ -37,6 +37,7 @@
 // KDE Includes
 #include <KToolBar>
 #include <KService>
+#include <KIcon>
 
 // Qt Includes
 #include <QWidget>
@@ -107,6 +108,7 @@ class IconLabel : public QLabel
 
 public:
     explicit IconLabel(const QString &icon, QWidget *parent = 0);
+    explicit IconLabel(const KIcon &icon, QWidget *parent = 0);
 };
 
 

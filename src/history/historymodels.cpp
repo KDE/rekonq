@@ -35,6 +35,7 @@
 
 // Local Includes
 #include "application.h"
+#include "iconmanager.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -144,7 +145,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
         if (index.column() == 0)
         {
-            return Application::icon(item.url);
+            return Application::iconManager()->iconForUrl(item.url);
         }
     case Qt::ToolTipRole:
         QString tooltip = "";

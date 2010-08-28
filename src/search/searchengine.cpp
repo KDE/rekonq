@@ -27,6 +27,8 @@
 
 //local includes
 #include "searchengine.h"
+#include "application.h"
+#include "iconmanager.h"
 
 // Auto Includes
 #include "rekonq.h"
@@ -59,7 +61,13 @@ void SearchEngine::reload()
     {
         service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
         if (service)
-                favorites << service;
+        {
+            QUrl url = service->property("Query").toUrl();
+            kDebug() << "ENGINE URL: " << url;
+            Application::iconManager()->downloadIconFromUrl(url);
+            
+            favorites << service;
+        }
     }
     m_favorites = favorites;
 

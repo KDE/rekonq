@@ -62,8 +62,11 @@ QVariant BtmItem::data(int role) const
         return m_kbm.text();
 
     if (role == Qt::DecorationRole)
+    {
+        kDebug() << "BOOKMARK ICON: " << m_kbm.icon();
         return KIcon(m_kbm.icon());
-
+    }
+    
     if (role == Qt::UserRole)
         return m_kbm.url();
 

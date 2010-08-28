@@ -11,7 +11,7 @@ SET( rekonq_KDEINIT_SRCS
     clicktoflash.cpp
     filterurljob.cpp
     findbar.cpp
-    zoombar.cpp
+    iconmanager.cpp
     mainview.cpp
     mainwindow.cpp
     networkaccessmanager.cpp
@@ -22,6 +22,7 @@ SET( rekonq_KDEINIT_SRCS
     sessionmanager.cpp
     tabbar.cpp
     walletbar.cpp
+    webicon.cpp
     webinspectorpanel.cpp
     webpage.cpp
     webpluginfactory.cpp
@@ -29,6 +30,7 @@ SET( rekonq_KDEINIT_SRCS
     websnap.cpp
     webview.cpp
     webtab.cpp
+    zoombar.cpp
     #----------------------------------------
     history/autosaver.cpp
     history/historymanager.cpp

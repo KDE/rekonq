@@ -46,7 +46,7 @@
 #include "networkaccessmanager.h"
 #include "adblockmanager.h"
 #include "urlbar.h"
-//#include "websnap.h"
+#include "iconmanager.h"
 
 #include "sslinfodialog_p.h"
 
@@ -212,9 +212,12 @@ WebPage::WebPage(QWidget *parent)
     // ----- last stuffs
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
+    connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
 
     // protocol handler signals
     connect(&_protHandler, SIGNAL(downloadUrl(const KUrl &)), this, SLOT(downloadUrl(const KUrl &)));
+    
+    connect(Application::iconManager(), SIGNAL(iconChanged()), mainFrame(), SIGNAL(iconChanged()));
 }
 
 
@@ -473,9 +476,16 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 }
 
 
+void WebPage::loadStarted()
+{
+    Application::iconManager()->provideIcon(this, _loadingUrl);
+}
+
+
 void WebPage::loadFinished(bool ok)
 {
     Q_UNUSED(ok);
+    
     
     Application::adblockManager()->applyHidingRules(this);
 
@@ -488,16 +498,6 @@ void WebPage::loadFinished(bool ok)
     {
         wallet()->fillFormData(mainFrame());
     }
-
-/* this dead code is for try WebSnap::renderVisiblePagePreview()
-    if (ok)
-    {        
-        QPixmap preview = WebSnap::renderVisiblePagePreview(*this);
-        QString path = WebSnap::imagePathFromUrl(mainFrame()->url().toString());
-        QFile::remove(path);
-        preview.save(path);
-    }
-*/
 }
 
 

@@ -108,6 +108,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
                 return false;
         }
         
+        kDebug() << "EVALUATING JAVASCRIPT...";
         QVariant result = frame->evaluateJavaScript(scriptSource);
         return true;
     }

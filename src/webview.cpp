@@ -39,6 +39,7 @@
 #include "bookmarkprovider.h"
 #include "searchengine.h"
 #include "websnap.h"
+#include "iconmanager.h"
 
 // KDE Includes
 #include <KService>
@@ -203,7 +204,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         foreach(KService::Ptr engine, SearchEngine::favorites())
         {
             a = new KAction(engine->name(), this);
-            a->setIcon(Application::icon(SearchEngine::buildQuery(engine, "")));
+            a->setIcon(Application::iconManager()->iconForUrl(SearchEngine::buildQuery(engine, "")));
             a->setData(engine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
             searchMenu->addAction(a);
