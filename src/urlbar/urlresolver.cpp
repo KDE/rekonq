@@ -133,10 +133,10 @@ UrlSearchList UrlResolver::orderedSearchItems()
 
     //compute lists
     computeSuggestions();
+    computeHistory();
     computeQurlFromUserInput();
     computeWebSearches();
     computeBookmarks();
-    computeHistory();
 
     return orderLists();
 }
@@ -263,6 +263,8 @@ UrlSearchList UrlResolver::orderLists()
     historyCount = _history.count();
     bookmarksCount = _bookmarks.count();
     commonCount = common.count();
+    
+    kDebug() << "HISTORY COUNT: " << historyCount;
 
     //now fill the list to MAX_ELEMENTS
     if(availableEntries > 0)
@@ -352,7 +354,7 @@ void UrlResolver::computeHistory()
 void UrlResolver::computeBookmarks()
 {
     QList<KBookmark> found = Application::bookmarkProvider()->find(_typedString);
-
+    kDebug() << "FOUND: " << found.count();
     Q_FOREACH(const KBookmark &b, found)
     {
         UrlSearchItem gItem(UrlSearchItem::Bookmark, b.url().url(), b.fullText());

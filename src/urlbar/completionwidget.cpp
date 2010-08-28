@@ -79,6 +79,8 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString
     int i = 0;
     foreach(const UrlSearchItem &item, _list)
     {
+        kDebug() << "ITEM URL: " << item.url;
+        kDebug() << "ITEM TYPE: " << item.type;
         ListItem *suggestion = ListItemFactory::create(item, text, this);
         suggestion->setBackgroundRole(i % 2 ? QPalette::AlternateBase : QPalette::Base);
         connect(suggestion, 
@@ -95,28 +97,29 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString
 
 void CompletionWidget::updateSearchList(const UrlSearchList &list, const QString& text)
 {
-    kDebug() << "TYPED STRING: " << _typedString;
-    kDebug() << "text from suggestion: " << text;
-    
     if(_isSuggesting || !isVisible() || _typedString != text)
         return;
     
     _isSuggesting = true;
+
+    kDebug() << "LIST COUNT: " << list.count();
+    UrlSearchList sugList = list.mid(0,4);
+    kDebug() << "SUGLIST COUNT: " << sugList.count();
     
-    // clean up eventual old suggestions
-    if(_suggestionsNumber > 0)
-    {
-        int offset = _list.count();
-        for(int i = offset; i < offset + _suggestionsNumber; ++i)
-        {
-            QLayoutItem *item = layout()->takeAt( i );
-            delete item;
-        }
-    }
+//     // clean up eventual old suggestions
+//     if(_suggestionsNumber > 0)
+//     {
+//         int offset = _list.count();
+//         for(int i = offset; i < offset + _suggestionsNumber; ++i)
+//         {
+//             QLayoutItem *item = layout()->takeAt( i );
+//             delete item;
+//         }
+//     }
 
     // add new suggestions to the list
     int i = _list.count();
-    Q_FOREACH(const UrlSearchItem &item, list)
+    Q_FOREACH(const UrlSearchItem &item, sugList)
     {
         ListItem *suggestion = ListItemFactory::create(item, text, this);
         suggestion->setBackgroundRole(i % 2 ? QPalette::AlternateBase : QPalette::Base);
@@ -129,8 +132,8 @@ void CompletionWidget::updateSearchList(const UrlSearchList &list, const QString
         suggestion->setObjectName(QString::number(i++));
         layout()->addWidget(suggestion);
     }
-    _suggestionsNumber = list.count();
-    _list.append(list);
+    _suggestionsNumber = sugList.count();
+    _list.append(sugList);
     sizeAndPosition();
     _isSuggesting = false;
 }
@@ -218,6 +221,7 @@ void CompletionWidget::clear()
         delete child;
     }
     _currentIndex = 0;
+//     _suggestionsNumber = 0;
 }
 
 
