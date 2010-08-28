@@ -56,6 +56,8 @@ CompletionWidget::CompletionWidget(QWidget *parent)
         , _parent(parent)
         , _currentIndex(0)
         , _searchEngine(SearchEngine::defaultEngine())
+        , _suggestionsNumber(0)
+        , _isSuggesting(false)
 {
     setFrameStyle(QFrame::Panel);
     setLayoutDirection(Qt::LeftToRight);
@@ -79,11 +81,58 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString
     {
         ListItem *suggestion = ListItemFactory::create(item, text, this);
         suggestion->setBackgroundRole(i % 2 ? QPalette::AlternateBase : QPalette::Base);
-        connect(suggestion, SIGNAL(itemClicked(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)), this, SLOT(itemChosen(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)));
+        connect(suggestion, 
+                SIGNAL(itemClicked(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)), 
+                this, 
+                SLOT(itemChosen(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)));
         connect(this, SIGNAL(nextItemSubChoice()), suggestion, SLOT(nextItemSubChoice()));
+        
         suggestion->setObjectName(QString::number(i++));
         layout()->addWidget(suggestion);
     }
+}
+
+
+void CompletionWidget::updateSearchList(const UrlSearchList &list, const QString& text)
+{
+    kDebug() << "TYPED STRING: " << _typedString;
+    kDebug() << "text from suggestion: " << text;
+    
+    if(_isSuggesting || !isVisible() || _typedString != text)
+        return;
+    
+    _isSuggesting = true;
+    
+    // clean up eventual old suggestions
+    if(_suggestionsNumber > 0)
+    {
+        int offset = _list.count();
+        for(int i = offset; i < offset + _suggestionsNumber; ++i)
+        {
+            QLayoutItem *item = layout()->takeAt( i );
+            delete item;
+        }
+    }
+
+    // add new suggestions to the list
+    int i = _list.count();
+    Q_FOREACH(const UrlSearchItem &item, list)
+    {
+        ListItem *suggestion = ListItemFactory::create(item, text, this);
+        suggestion->setBackgroundRole(i % 2 ? QPalette::AlternateBase : QPalette::Base);
+        connect(suggestion, 
+                SIGNAL(itemClicked(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)), 
+                this, 
+                SLOT(itemChosen(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)));
+        connect(this, SIGNAL(nextItemSubChoice()), suggestion, SLOT(nextItemSubChoice()));
+        
+        suggestion->setObjectName(QString::number(i++));
+        layout()->addWidget(suggestion);
+    }
+    _suggestionsNumber = list.count();
+    _list.append(list);
+    sizeAndPosition();
+    _isSuggesting = false;
 }
 
 
@@ -301,8 +350,9 @@ void CompletionWidget::suggestUrls(const QString &text)
         return;
     }
 
-    UrlResolver res(text);
-    UrlSearchList list = res.orderedSearchItems();
+    UrlResolver *res = new UrlResolver(text);
+    connect(res, SIGNAL(suggestionsReady(const UrlSearchList &, const QString &)), this, SLOT(updateSearchList(const UrlSearchList &, const QString &)));
+    UrlSearchList list = res->orderedSearchItems();
     if (list.count() > 0)
     {
         clear();

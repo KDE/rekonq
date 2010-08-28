@@ -134,6 +134,8 @@ void OpenSearchManager::requestSuggestion(const QString &searchText)
     }
     m_state = REQ_SUGGESTION;
 
+    _typedText = searchText;
+    
     KUrl url = m_activeEngine->suggestionsUrl(searchText);
     kDebug() << "Requesting for suggestions: " << url.url();
     m_jobData.clear();
@@ -161,7 +163,7 @@ void OpenSearchManager::jobFinished(KJob *job)
         const QStringList suggestionsList = m_activeEngine->parseSuggestion(m_jobData);
         kDebug() << "Received suggestion from " << m_activeEngine->name() << ": " << suggestionsList;
 
-        emit suggestionReceived(suggestionsList);
+        emit suggestionReceived(_typedText, suggestionsList);
         return;
     }
 

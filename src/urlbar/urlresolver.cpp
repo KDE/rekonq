@@ -131,22 +131,12 @@ UrlSearchList UrlResolver::orderedSearchItems()
         return list;
     }
 
-    _computedListsCount = 0;
-
     //compute lists
     computeSuggestions();
     computeQurlFromUserInput();
     computeWebSearches();
     computeBookmarks();
     computeHistory();
-
-    QTime time;
-    time.start();
-
-    while (_computedListsCount < 5 && time.msec() < 1000)
-    {
-        Application::instance()->processEvents(QEventLoop::WaitForMoreEvents | QEventLoop::ExcludeUserInputEvents);
-    }
 
     return orderLists();
 }
@@ -331,8 +321,6 @@ void UrlResolver::computeQurlFromUserInput()
         UrlSearchItem gItem(UrlSearchItem::Browse, urlFromUserInput.toString(), gTitle);
         _qurlFromUserInput << gItem;
     }
-
-    _computedListsCount++;
 }
 
 
@@ -340,7 +328,6 @@ void UrlResolver::computeQurlFromUserInput()
 void UrlResolver::computeWebSearches()
 {
     _webSearches = (UrlSearchList() << UrlSearchItem(UrlSearchItem::Search, QString(), QString()));
-    _computedListsCount++;
 }
 
 
@@ -358,8 +345,6 @@ void UrlResolver::computeHistory()
             _history << gItem;
         }
     }
-
-    _computedListsCount++;
 }
 
 
@@ -373,8 +358,6 @@ void UrlResolver::computeBookmarks()
         UrlSearchItem gItem(UrlSearchItem::Bookmark, b.url().url(), b.fullText());
         _bookmarks << gItem;
     }
-
-    _computedListsCount++;
 }
 
 
@@ -384,29 +367,29 @@ void UrlResolver::computeSuggestions()
     if (Application::opensearchManager()->isSuggestionAvailable())
     {
         connect(Application::opensearchManager(),
-                SIGNAL(suggestionReceived(const QStringList &)),
+                SIGNAL(suggestionReceived(const QString &, const QStringList &)),
                 this,
-                SLOT(suggestionsReceived(const QStringList &)));
+                SLOT(suggestionsReceived(const QString &, const QStringList &)));
 
         Application::opensearchManager()->requestSuggestion(_typedString);
-    }
-    else
-    {
-        _computedListsCount++;
     }
 }
 
 
-void UrlResolver::suggestionsReceived(const QStringList &suggestion)
+void UrlResolver::suggestionsReceived(const QString &text, const QStringList &suggestions)
 {
+    if(text != _typedString)
+        return;
+    
+    UrlSearchList sugList;
 
-    foreach (QString s, suggestion)
+    Q_FOREACH(const QString &s, suggestions)
     {
         UrlSearchItem gItem(UrlSearchItem::Suggestion, s, s);
-        _suggestions << gItem;
+        sugList << gItem;
     }
-
-    _computedListsCount++;
+    emit suggestionsReady(sugList, _typedString);
+    this->deleteLater();
 }
 
 
@@ -420,7 +403,6 @@ UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
     for(int i = 0; i<list->count(); i++)
     {
         item = list->at(i);
-        //kDebug() << item.url.host();
         //TODO: move this to AwesomeUrlCompletion::substringCompletion and add a priviledged flag to UrlSearchItem
         if (item.url.contains(test1) || item.url.contains(test2))
         {

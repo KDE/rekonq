@@ -82,17 +82,17 @@ public:
 public slots:
     /**
      * Ask the specific suggestion engine to request for suggestion for the search text
-     * @param searchProvider the search provider that provides the suggestion service
+     * 
      * @param searchText the text to be queried to the suggestion service
      */
-    void requestSuggestion(const QString &searchProvider);
+    void requestSuggestion(const QString &searchText);
 
 private slots:
     void dataReceived(KIO::Job *job, const QByteArray &data);
     void jobFinished(KJob *job);
 
 signals:
-    void suggestionReceived(const QStringList &suggestion);
+    void suggestionReceived(const QString &text, const QStringList &suggestion);
     void openSearchEngineAdded(const QString &name, const QString &searchUrl, const QString &fileName);
 
 private:
@@ -103,6 +103,8 @@ private:
     QMap<QString, OpenSearchEngine*> m_enginesMap;
     OpenSearchEngine *m_activeEngine;
     STATE m_state;
+    
+    QString _typedText;
 };
 
 #endif // OPENSEARCHMANAGER_H

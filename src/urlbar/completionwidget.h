@@ -65,6 +65,7 @@ public:
 
 private slots:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
+    void updateSearchList(const UrlSearchList &list, const QString& text);
 
 signals:
     void chosenUrl(const KUrl &, Rekonq::OpenType);
@@ -72,6 +73,7 @@ signals:
 
 private:
     void insertSearchList(const UrlSearchList &list, const QString& text);
+
     void popup();
     void clear();
 
@@ -89,6 +91,8 @@ private:
     KService::Ptr _searchEngine;
 
     QString _typedString;
+    int _suggestionsNumber;
+    bool _isSuggesting;
 };
 
 #endif // COMPLETION_WIDGET_H

@@ -119,8 +119,6 @@ private:
     void computeBookmarks();
     void computeSuggestions();
 
-    int _computedListsCount;
-
     UrlSearchItem privilegedItem(UrlSearchList* list);
     UrlSearchList orderLists();
 
@@ -128,7 +126,10 @@ private:
     static QRegExp _searchEnginesRegexp;
     
 private slots:
-    void suggestionsReceived(const QStringList &suggestion);    
+    void suggestionsReceived(const QString &text, const QStringList &suggestions);    
+
+Q_SIGNALS:
+    void suggestionsReady(const UrlSearchList &, const QString &);
     
 };
 
