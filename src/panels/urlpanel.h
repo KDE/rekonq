@@ -25,36 +25,52 @@
 * ============================================================ */
 
 
-#ifndef HISTORYPANEL_H
-#define HISTORYPANEL_H
+#ifndef URLPANEL_H
+#define URLPANEL_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "panels/urlpanel.h"
+// Qt Includes
+#include <QDockWidget>
+
+// Forward Declarations
+class PanelTreeView;
+
+class QAbstractItemModel;
 
 
-class REKONQ_TESTS_EXPORT HistoryPanel : public UrlPanel
+class REKONQ_TESTS_EXPORT UrlPanel : public QDockWidget
 {
     Q_OBJECT
 
 public:
-    explicit HistoryPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    virtual ~HistoryPanel();
+    explicit UrlPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    virtual ~UrlPanel();
 
-private slots:
-    virtual void contextMenuItem(const QPoint &pos);
-    virtual void contextMenuGroup(const QPoint &pos);
-    virtual void contextMenuEmpty(const QPoint &pos);
+public slots:
+    void showing(bool);
 
-    void openAll();
+signals:
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void itemHovered(const QString &);
 
-private:
+protected slots:
+    virtual void contextMenuItem(const QPoint &pos) = 0;
+    virtual void contextMenuGroup(const QPoint &pos) = 0;
+    virtual void contextMenuEmpty(const QPoint &pos) = 0;
+
+protected:
     virtual void setup();
 
-    virtual QAbstractItemModel* getModel();
+    virtual QAbstractItemModel* getModel() = 0;
+
+    PanelTreeView *m_treeView;
+
+private:
+    bool _loaded;
 };
 
-#endif // HISTORYPANEL_H
+
+#endif // URLPANEL_H

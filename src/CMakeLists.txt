@@ -33,6 +33,7 @@ SET( rekonq_KDEINIT_SRCS
     zoombar.cpp
     #----------------------------------------
     panels/urlfilterproxymodel.cpp
+    panels/urlpanel.cpp
     #----------------------------------------
     history/autosaver.cpp
     history/historymanager.cpp

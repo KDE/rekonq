@@ -28,6 +28,9 @@
 // Self Includes
 #include "bookmarkspanel.h"
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "panels/urlfilterproxymodel.h"
 #include "application.h"
@@ -37,27 +40,12 @@
 #include "bookmarkowner.h"
 #include "paneltreeview.h"
 
-// Auto Includes
-#include "rekonq.h"
-
-// Qt includes
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QHeaderView>
-
-// KDE includes
-#include <KLineEdit>
 
 BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
-        : QDockWidget(title, parent, flags)
-        , m_treeView(new PanelTreeView(this))
+        : UrlPanel(title, parent, flags)
         , m_loadingState(false)
-        , m_loaded(false)
 {
     setObjectName("bookmarksPanel");
-    setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-
-    connect(this, SIGNAL(visibilityChanged(bool)), this, SLOT(showing(bool)));
 
     setVisible(ReKonfig::showBookmarksPanel());
 }
@@ -65,14 +53,7 @@ BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::Window
 
 BookmarksPanel::~BookmarksPanel()
 {
-    ReKonfig::setShowBookmarksPanel(false);
-}
-
-
-void BookmarksPanel::showing(bool b)
-{
-    if(b && !m_loaded)
-        setup();
+    ReKonfig::setShowBookmarksPanel(!isHidden());
 }
 
 
@@ -96,6 +77,24 @@ void BookmarksPanel::contextMenu(const QPoint &pos)
                              );
 
     menu.exec(m_treeView->mapToGlobal(pos));
+}
+
+
+void BookmarksPanel::contextMenuItem(const QPoint &pos)
+{
+    contextMenu(pos);
+}
+
+
+void BookmarksPanel::contextMenuGroup(const QPoint &pos)
+{
+    contextMenu(pos);
+}
+
+
+void BookmarksPanel::contextMenuEmpty(const QPoint &pos)
+{
+    contextMenu(pos);
 }
 
 
@@ -131,12 +130,13 @@ void BookmarksPanel::onExpand(const QModelIndex &index)
 
 void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 {
-    int count = m_treeView->model()->rowCount(root);
+    QAbstractItemModel *model = m_treeView->model();
+    int count = model->rowCount(root);
     QModelIndex index;
 
     for (int i = 0; i < count; ++i)
     {
-        index = m_treeView->model()->index(i, 0, root);
+        index = model->index(i, 0, root);
         if (index.isValid())
         {
             KBookmark bm = bookmarkForIndex(index);
@@ -152,57 +152,14 @@ void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 
 void BookmarksPanel::setup()
 {
-    kDebug() << "Loading bookmarks panel setup...";
+    UrlPanel::setup();
+    kDebug() << "Bookmarks panel...";
 
-    QWidget *ui = new QWidget(this);
-
-    // setup search bar
-    QHBoxLayout *searchLayout = new QHBoxLayout;
-    searchLayout->setContentsMargins(5, 0, 0, 0);
-    QLabel *searchLabel = new QLabel(i18n("&Search:"));
-    searchLayout->addWidget(searchLabel);
-    KLineEdit *search = new KLineEdit;
-    search->setClearButtonShown(true);
-    searchLayout->addWidget(search);
-    searchLabel->setBuddy(search);
-
-    // setup tree view
-    m_treeView->setUniformRowHeights(true);
-    m_treeView->header()->hide();
-    m_treeView->setDragEnabled(true);
-    m_treeView->setAutoExpandDelay(750);
-    m_treeView->setDefaultDropAction(Qt::MoveAction);
-    m_treeView->viewport()->setAcceptDrops(true);
-
-    // put everything together
-    QVBoxLayout *vBoxLayout = new QVBoxLayout;
-    vBoxLayout->setContentsMargins(0, 0, 0, 0);
-    vBoxLayout->addLayout(searchLayout);
-    vBoxLayout->addWidget(m_treeView);
-
-    // add it to the UI
-    ui->setLayout(vBoxLayout);
-    setWidget(ui);
-
-    BookmarksTreeModel *model = new BookmarksTreeModel(this);
-    UrlFilterProxyModel *proxy = new UrlFilterProxyModel(ui);
-    proxy->setSourceModel(model);
-    m_treeView->setModel(proxy);
-
-    connect(search, SIGNAL(textChanged(const QString &)), proxy, SLOT(setFilterFixedString(const QString &)));
-
-    connect(model, SIGNAL(bookmarksUpdated()), this, SLOT(startLoadFoldedState()));
-
-    connect(m_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
-    connect(m_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
-    connect(m_treeView, SIGNAL(contextMenuEmptyRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
     connect(m_treeView, SIGNAL(delKeyPressed()), this, SLOT(deleteBookmark()));
     connect(m_treeView, SIGNAL(collapsed(const QModelIndex &)), this, SLOT(onCollapse(const QModelIndex &)));
     connect(m_treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(onExpand(const QModelIndex &)));
 
     startLoadFoldedState();
-
-    m_loaded = true;
 }
 
 
@@ -216,4 +173,12 @@ KBookmark BookmarksPanel::bookmarkForIndex(const QModelIndex &index)
 
     BtmItem *node = static_cast<BtmItem*>(originalIndex.internalPointer());
     return node->getBkm();
+}
+
+
+QAbstractItemModel* BookmarksPanel::getModel()
+{
+    BookmarksTreeModel *model = new BookmarksTreeModel(this);
+    connect(model, SIGNAL(bookmarksUpdated()), this, SLOT(startLoadFoldedState()));
+    return model;
 }
