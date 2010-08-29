@@ -29,10 +29,10 @@
 #include "bookmarkspanel.h"
 
 // Local Includes
+#include "panels/urlfilterproxymodel.h"
 #include "application.h"
 #include "bookmarkprovider.h"
 #include "bookmarkstreemodel.h"
-#include "bookmarksproxy.h"
 #include "bookmarkscontextmenu.h"
 #include "bookmarkowner.h"
 #include "paneltreeview.h"
@@ -185,7 +185,7 @@ void BookmarksPanel::setup()
     setWidget(ui);
 
     BookmarksTreeModel *model = new BookmarksTreeModel(this);
-    BookmarksProxy *proxy = new BookmarksProxy(ui);
+    UrlFilterProxyModel *proxy = new UrlFilterProxyModel(ui);
     proxy->setSourceModel(model);
     m_treeView->setModel(proxy);
 
@@ -211,7 +211,7 @@ KBookmark BookmarksPanel::bookmarkForIndex(const QModelIndex &index)
     if (!index.isValid())
         return KBookmark();
 
-    const BookmarksProxy *proxyModel = static_cast<const BookmarksProxy*>(index.model());
+    const UrlFilterProxyModel *proxyModel = static_cast<const UrlFilterProxyModel*>(index.model());
     QModelIndex originalIndex = proxyModel->mapToSource(index);
 
     BtmItem *node = static_cast<BtmItem*>(originalIndex.internalPointer());

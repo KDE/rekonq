@@ -720,22 +720,3 @@ void HistoryTreeModel::sourceRowsRemoved(const QModelIndex &parent, int start, i
         endRemoveRows();
     }
 }
-
-
-//  ------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-TreeProxyModel::TreeProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
-{
-    setSortRole(HistoryModel::DateTimeRole);
-    setFilterCaseSensitivity(Qt::CaseInsensitive);
-}
-
-
-bool TreeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
-{
-    if (!source_parent.isValid())
-        return true;
-    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-}

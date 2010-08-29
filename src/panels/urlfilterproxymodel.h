@@ -25,8 +25,8 @@
 * ============================================================ */
 
 
-#ifndef BOOKMARKSPROXY_H
-#define BOOKMARKSPROXY_H
+#ifndef URLFILTERPROXYMODEL_H
+#define URLFILTERPROXYMODEL_H
 
 
 // Rekonq Includes
@@ -38,15 +38,15 @@
 /**
  * QSortFilterProxyModel hides all children which parent doesn't
  * match the filter. This class is used to change this behavior.
- * If a bookmark matches the filter it'll be shown, even if it's parent doesn't match it.
+ * If a url matches the filter it'll be shown, even if it's parent doesn't match it.
  */
-class REKONQ_TESTS_EXPORT BookmarksProxy : public QSortFilterProxyModel
+class REKONQ_TESTS_EXPORT UrlFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    Q_DISABLE_COPY(BookmarksProxy)
+    Q_DISABLE_COPY(UrlFilterProxyModel)
 
 public:
-    BookmarksProxy(QObject *parent = 0);
+    UrlFilterProxyModel(QObject *parent = 0);
 
 protected:
     virtual bool filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const;
@@ -55,4 +55,4 @@ protected:
     bool recursiveMatch(const QModelIndex &index) const;
 };
 
-#endif // BOOKMARKSPROXY_H
+#endif // URLFILTERPROXYMODEL_H

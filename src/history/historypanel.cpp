@@ -27,13 +27,14 @@
 
 // Self Includes
 #include "historypanel.h"
-#include "historypanel.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
+#include "panels/urlfilterproxymodel.h"
 #include "application.h"
+#include "paneltreeview.h"
 #include "historymodels.h"
 
 // Qt Includes
@@ -58,9 +59,9 @@ HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlag
 {
     setObjectName("historyPanel");
     setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    
+
     connect(this, SIGNAL(visibilityChanged(bool)), this, SLOT(showing(bool)));
-    
+
     setShown(ReKonfig::showHistoryPanel());
 }
 
@@ -117,16 +118,16 @@ void HistoryPanel::setup()
     HistoryManager *historyManager = Application::historyManager();
     QAbstractItemModel *model = historyManager->historyTreeModel();
 
-    TreeProxyModel *treeProxyModel = new TreeProxyModel(this);
-    treeProxyModel->setSourceModel(model);
-    m_treeView->setModel(treeProxyModel);
-    m_treeView->setExpanded(treeProxyModel->index(0, 0), true);
+    UrlFilterProxyModel *proxy = new UrlFilterProxyModel(this);
+    proxy->setSourceModel(model);
+    m_treeView->setModel(proxy);
+    m_treeView->setExpanded(proxy->index(0, 0), true);
     m_treeView->header()->hideSection(1);
     QFontMetrics fm(font());
     int header = fm.width( QL1C('m') ) * 40;
     m_treeView->header()->resizeSection(0, header);
 
-    connect(search, SIGNAL(textChanged(QString)), treeProxyModel, SLOT(setFilterFixedString(QString)));
+    connect(search, SIGNAL(textChanged(QString)), proxy, SLOT(setFilterFixedString(QString)));
     connect(m_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenuItem(const QPoint &)));
     connect(m_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenuGroup(const QPoint &)));
 

@@ -95,16 +95,16 @@ public:
 
     inline bool historyContains(const QString &url) const
     {
-        load(); 
+        load();
         return m_historyHash.contains(url);
     }
-    
+
     inline QList<QString> keys() const
     {
         load();
         return m_historyHash.keys();
     }
-    
+
     int historyLocation(const QString &url) const;
 
     QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
@@ -139,7 +139,7 @@ private:
 /**
  * Proxy model for the history model that converts the list
  * into a tree, one top level node per day.
- * 
+ *
  * Used in the HistoryDialog.
  *
  */
@@ -174,30 +174,6 @@ private:
     int sourceDateRow(int row) const;
     mutable QList<int> m_sourceRowCache;
 
-};
-
-
-// -----------------------------------------------------------------------------------------------------------------
-
-
-/**
- * A modified QSortFilterProxyModel that always accepts
- * the root nodes in the tree
- * so filtering is only done on the children.
- *
- * Used in the HistoryDialog.
- *
- */
-
-class TreeProxyModel : public QSortFilterProxyModel
-{
-    Q_OBJECT
-
-public:
-    TreeProxyModel(QObject *parent = 0);
-
-protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
 };
 
 
