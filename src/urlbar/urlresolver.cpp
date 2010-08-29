@@ -45,7 +45,7 @@
 #include <QByteArray>
 
 // defines
-#define MAX_ELEMENTS 10
+#define MAX_ELEMENTS 8
 #define MIN_SUGGESTIONS 3
 
 // NOTE

@@ -500,12 +500,5 @@ void UrlBar::suggest()
 
 void UrlBar::refreshFavicon()
 {
-    kDebug() << "------------------ REFRESH ME!!! -------------";
-//     if( u.scheme() == QL1S("about") )
-//     {
-//         kDebug() << "ABOUT SCHEME...";
-//         return;
-//     }
-    
     _icon->setIcon(Application::iconManager()->iconForUrl(_tab->view()->url()));
 }

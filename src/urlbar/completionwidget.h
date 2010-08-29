@@ -91,8 +91,7 @@ private:
     KService::Ptr _searchEngine;
 
     QString _typedString;
-    int _suggestionsNumber;
-    bool _isSuggesting;
+    bool _hasSuggestions;
 };
 
 #endif // COMPLETION_WIDGET_H

@@ -56,8 +56,7 @@ CompletionWidget::CompletionWidget(QWidget *parent)
         , _parent(parent)
         , _currentIndex(0)
         , _searchEngine(SearchEngine::defaultEngine())
-        , _suggestionsNumber(0)
-        , _isSuggesting(false)
+        , _hasSuggestions(false)
 {
     setFrameStyle(QFrame::Panel);
     setLayoutDirection(Qt::LeftToRight);
@@ -79,8 +78,6 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString
     int i = 0;
     foreach(const UrlSearchItem &item, _list)
     {
-        kDebug() << "ITEM URL: " << item.url;
-        kDebug() << "ITEM TYPE: " << item.type;
         ListItem *suggestion = ListItemFactory::create(item, text, this);
         suggestion->setBackgroundRole(i % 2 ? QPalette::AlternateBase : QPalette::Base);
         connect(suggestion, 
@@ -97,45 +94,29 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString
 
 void CompletionWidget::updateSearchList(const UrlSearchList &list, const QString& text)
 {
-    if(_isSuggesting || !isVisible() || _typedString != text)
+    if(_hasSuggestions || _typedString != text || !isVisible())
         return;
+    _hasSuggestions = true;
     
-    _isSuggesting = true;
-
-    kDebug() << "LIST COUNT: " << list.count();
     UrlSearchList sugList = list.mid(0,4);
-    kDebug() << "SUGLIST COUNT: " << sugList.count();
-    
-//     // clean up eventual old suggestions
-//     if(_suggestionsNumber > 0)
-//     {
-//         int offset = _list.count();
-//         for(int i = offset; i < offset + _suggestionsNumber; ++i)
-//         {
-//             QLayoutItem *item = layout()->takeAt( i );
-//             delete item;
-//         }
-//     }
 
     // add new suggestions to the list
-    int i = _list.count();
+    int offset = _list.count();
     Q_FOREACH(const UrlSearchItem &item, sugList)
     {
         ListItem *suggestion = ListItemFactory::create(item, text, this);
-        suggestion->setBackgroundRole(i % 2 ? QPalette::AlternateBase : QPalette::Base);
+        suggestion->setBackgroundRole(offset % 2 ? QPalette::AlternateBase : QPalette::Base);
         connect(suggestion, 
                 SIGNAL(itemClicked(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)), 
                 this, 
                 SLOT(itemChosen(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)));
         connect(this, SIGNAL(nextItemSubChoice()), suggestion, SLOT(nextItemSubChoice()));
         
-        suggestion->setObjectName(QString::number(i++));
+        suggestion->setObjectName(QString::number(offset++));
         layout()->addWidget(suggestion);
     }
-    _suggestionsNumber = sugList.count();
     _list.append(sugList);
     sizeAndPosition();
-    _isSuggesting = false;
 }
 
 
@@ -195,8 +176,6 @@ void CompletionWidget::down()
 
 void CompletionWidget::activateCurrentListItem()
 {
-    kDebug() << _currentIndex;
-    kDebug() << _typedString;
     UrlBar *bar = qobject_cast<UrlBar *>(_parent);
 
     // activate "new" current
@@ -221,7 +200,7 @@ void CompletionWidget::clear()
         delete child;
     }
     _currentIndex = 0;
-//     _suggestionsNumber = 0;
+    _hasSuggestions = false;
 }
 
 
