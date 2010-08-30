@@ -33,43 +33,28 @@
 #include "rekonq_defines.h"
 
 // Local Includes
-#include "application.h"
-#include "paneltreeview.h"
-
-// Qt Includes
-#include <QDockWidget>
-
-// Forward Declarations
-class KUrl;
-class QWidget;
-class QModelIndex;
+#include "urlpanel.h"
 
 
-class REKONQ_TESTS_EXPORT HistoryPanel : public QDockWidget
+class REKONQ_TESTS_EXPORT HistoryPanel : public UrlPanel
 {
     Q_OBJECT
 
 public:
     explicit HistoryPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    ~HistoryPanel();
-
-public slots:
-    void showing(bool);
-    
-signals:
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
-    void itemHovered(const QString &);
+    virtual ~HistoryPanel();
 
 private slots:
-    void contextMenuItem(const QPoint &pos);
-    void contextMenuGroup(const QPoint &pos);
+    virtual void contextMenuItem(const QPoint &pos);
+    virtual void contextMenuGroup(const QPoint &pos);
+    virtual void contextMenuEmpty(const QPoint &pos);
+
     void openAll();
 
 private:
-    void setup();
-    PanelTreeView *m_treeView;
+    virtual void setup();
 
-    bool _loaded;
+    virtual QAbstractItemModel* getModel();
 };
 
 #endif // HISTORYPANEL_H

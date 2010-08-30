@@ -21,6 +21,8 @@ SET( rekonq_KDEINIT_SRCS
     protocolhandler.cpp
     sessionmanager.cpp
     tabbar.cpp
+    urlfilterproxymodel.cpp
+    urlpanel.cpp
     walletbar.cpp
     webicon.cpp
     webinspectorpanel.cpp
@@ -48,7 +50,6 @@ SET( rekonq_KDEINIT_SRCS
     bookmarks/bookmarkprovider.cpp
     bookmarks/bookmarkspanel.cpp
     bookmarks/bookmarkstreemodel.cpp
-    bookmarks/bookmarksproxy.cpp
     bookmarks/bookmarkscontextmenu.cpp
     bookmarks/bookmarkstoolbar.cpp
     bookmarks/bookmarkowner.cpp

@@ -4,7 +4,6 @@
 *
 * Copyright (C) 2009 by Nils Weigel <nehlsen at gmail dot com>
 * Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -26,52 +25,34 @@
 * ============================================================ */
 
 
-#ifndef BOOKMARKSPANEL_H
-#define BOOKMARKSPANEL_H
+#ifndef URLFILTERPROXYMODEL_H
+#define URLFILTERPROXYMODEL_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "urlpanel.h"
+// Qt Includes
+#include <QtGui/QSortFilterProxyModel>
 
-// Forward Declarations
-class KBookmark;
-class QModelIndex;
-
-class REKONQ_TESTS_EXPORT BookmarksPanel : public UrlPanel
+/**
+ * QSortFilterProxyModel hides all children which parent doesn't
+ * match the filter. This class is used to change this behavior.
+ * If a url matches the filter it'll be shown, even if it's parent doesn't match it.
+ */
+class REKONQ_TESTS_EXPORT UrlFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    Q_DISABLE_COPY(UrlFilterProxyModel)
 
 public:
-    explicit BookmarksPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    virtual ~BookmarksPanel();
+    UrlFilterProxyModel(QObject *parent = 0);
 
-signals:
-    void expansionChanged();
+protected:
+    virtual bool filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const;
 
-public slots:
-    void startLoadFoldedState();
-
-private slots:
-    void contextMenu(const QPoint &pos);
-    virtual void contextMenuItem(const QPoint &pos);
-    virtual void contextMenuGroup(const QPoint &pos);
-    virtual void contextMenuEmpty(const QPoint &pos);
-
-    void deleteBookmark();
-    void onCollapse(const QModelIndex &index);
-    void onExpand(const QModelIndex &index);
-    void loadFoldedState(const QModelIndex &root);
-
-private:
-    virtual void setup();
-    KBookmark bookmarkForIndex(const QModelIndex &index);
-
-    virtual QAbstractItemModel* getModel();
-
-    bool m_loadingState;
+    // returns true if index or any of his children match the filter
+    bool recursiveMatch(const QModelIndex &index) const;
 };
 
-#endif // BOOKMARKSPANEL_H
+#endif // URLFILTERPROXYMODEL_H

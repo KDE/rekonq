@@ -26,23 +26,23 @@
 
 
 // Self Includes
-#include "bookmarksproxy.h"
+#include "urlfilterproxymodel.h"
 
 
-BookmarksProxy::BookmarksProxy(QObject *parent)
+UrlFilterProxyModel::UrlFilterProxyModel(QObject *parent)
         : QSortFilterProxyModel(parent)
 {
     setFilterCaseSensitivity(Qt::CaseInsensitive);
 }
 
 
-bool BookmarksProxy::filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const
+bool UrlFilterProxyModel::filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const
 {
     return recursiveMatch( sourceModel()->index(source_row, 0, source_parent) );
 }
 
 
-bool BookmarksProxy::recursiveMatch(const QModelIndex &index) const
+bool UrlFilterProxyModel::recursiveMatch(const QModelIndex &index) const
 {
     if (index.data().toString().contains(filterRegExp()))
         return true;

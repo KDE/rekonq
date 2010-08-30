@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Nils Weigel <nehlsen at gmail dot com>
-* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
+* Copyright (C) 2009-2010 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,34 +25,52 @@
 * ============================================================ */
 
 
-#ifndef BOOKMARKSPROXY_H
-#define BOOKMARKSPROXY_H
+#ifndef URLPANEL_H
+#define URLPANEL_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QtGui/QSortFilterProxyModel>
+#include <QDockWidget>
 
-/**
- * QSortFilterProxyModel hides all children which parent doesn't
- * match the filter. This class is used to change this behavior.
- * If a bookmark matches the filter it'll be shown, even if it's parent doesn't match it.
- */
-class REKONQ_TESTS_EXPORT BookmarksProxy : public QSortFilterProxyModel
+// Forward Declarations
+class PanelTreeView;
+
+class QAbstractItemModel;
+
+
+class REKONQ_TESTS_EXPORT UrlPanel : public QDockWidget
 {
     Q_OBJECT
-    Q_DISABLE_COPY(BookmarksProxy)
 
 public:
-    BookmarksProxy(QObject *parent = 0);
+    explicit UrlPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    virtual ~UrlPanel();
+
+public slots:
+    void showing(bool);
+
+signals:
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void itemHovered(const QString &);
+
+protected slots:
+    virtual void contextMenuItem(const QPoint &pos) = 0;
+    virtual void contextMenuGroup(const QPoint &pos) = 0;
+    virtual void contextMenuEmpty(const QPoint &pos) = 0;
 
 protected:
-    virtual bool filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const;
+    virtual void setup();
 
-    // returns true if index or any of his children match the filter
-    bool recursiveMatch(const QModelIndex &index) const;
+    virtual QAbstractItemModel* getModel() = 0;
+
+    PanelTreeView *m_treeView;
+
+private:
+    bool _loaded;
 };
 
-#endif // BOOKMARKSPROXY_H
+
+#endif // URLPANEL_H
