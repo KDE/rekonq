@@ -35,6 +35,8 @@
 // KDE Includes
 #include <kmimetype.h>
 #include <KStandardDirs>
+#include <KFileItem>
+#include <KDirLister>
 
 // Qt Includes
 #include <QDBusInterface>
@@ -83,7 +85,12 @@ KIcon IconManager::iconForUrl(const KUrl &url)
         return KIcon(faviconDir + i);
     }
     kDebug() << "Icon NOT Found. returning text-html one";
-    
+
+    // TODO: return other mimetype icons
+    if(url.isLocalFile())
+    {
+        return KIcon("folder");
+    }
     return KIcon("text-html");
 }
 
@@ -95,6 +102,7 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
         kDebug() << "URL: " << url << ". about scheme. Aborting...";
         return;
     }
+
     QUrl u(url.url());
     QString rootUrlString = u.toString(  QUrl::RemovePassword 
                                        | QUrl::RemoveUserInfo 
