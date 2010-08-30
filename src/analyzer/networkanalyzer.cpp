@@ -79,18 +79,25 @@ void NetworkAnalyzer::addRequest( QNetworkAccessManager::Operation op, const QNe
     QStringList cols;
     switch( op ) 
     {
-    case   QNetworkAccessManager::HeadOperation:
+    case QNetworkAccessManager::HeadOperation:
         cols << QL1S("HEAD");
         break;
     case   QNetworkAccessManager::GetOperation:
         cols << QL1S("GET");
         break;
-    case   QNetworkAccessManager::PutOperation:
+    case QNetworkAccessManager::PutOperation:
         cols << QL1S("PUT");
         break;
-    case   QNetworkAccessManager::PostOperation:
+    case QNetworkAccessManager::PostOperation:
         cols << QL1S("POST");
         break;
+    case QNetworkAccessManager::DeleteOperation:
+        cols << QL1S("DELETE");
+        break;
+    case QNetworkAccessManager::CustomOperation:
+        cols << QL1S("CUSTOM");
+        break;
+
     default:
         kDebug() << "Unknown network operation";
     }

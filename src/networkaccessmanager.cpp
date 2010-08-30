@@ -88,10 +88,37 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
         break;
     }
 
-
-    if (op == QNetworkAccessManager::GetOperation)
+    switch(op)
     {
+    case QNetworkAccessManager::HeadOperation:
+        break;
+
+    case QNetworkAccessManager::GetOperation:
         reply = Application::adblockManager()->block(req, parentPage);
+        break;
+        
+    case QNetworkAccessManager::PutOperation:
+        break;
+
+    case QNetworkAccessManager::PostOperation:
+        break;
+        
+    case QNetworkAccessManager::DeleteOperation:
+        break;
+
+    case QNetworkAccessManager::CustomOperation:
+/*        {   
+            kDebug() << "CUSTOM OPERATION...";
+            QByteArray verb("*");
+            reply = sendCustomRequest(req, verb, outgoingData);
+        }
+        if(!reply)
+            kDebug() << "OOOOOOOOOOOOOOOOOOO CUSTOM REPLY NULL";*/
+        break;
+
+    default:
+        kDebug() << "NON EXTANT CASE...";
+        break;
     }
 
     if(!reply)
