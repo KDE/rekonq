@@ -112,7 +112,7 @@ UrlResolver::UrlResolver(const QString &typedUrl)
 
 UrlSearchList UrlResolver::orderedSearchItems()
 {
-    if( _typedString == QL1S("about:") )
+    if( _typedString.startsWith( QL1S("about:") ) )
     {
         UrlSearchList list;
         UrlSearchItem home(UrlSearchItem::Browse, QString("about:home"),       QL1S("home") );
