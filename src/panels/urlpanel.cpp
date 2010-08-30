@@ -64,7 +64,7 @@ UrlPanel::~UrlPanel()
 
 void UrlPanel::showing(bool b)
 {
-    if(b && !_loaded)
+    if(!_loaded && b)
     {
         setup();
         _loaded = true;

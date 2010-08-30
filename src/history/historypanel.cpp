@@ -62,18 +62,6 @@ HistoryPanel::~HistoryPanel()
 }
 
 
-void HistoryPanel::setup()
-{
-    UrlPanel::setup();
-    kDebug() << "History panel...";
-
-    m_treeView->header()->hideSection(1);
-
-    const UrlFilterProxyModel *proxy = static_cast<const UrlFilterProxyModel*>(m_treeView->model());
-    m_treeView->expand(proxy->index(0, 0));
-}
-
-
 void HistoryPanel::contextMenuItem(const QPoint &pos)
 {
     KMenu menu;
@@ -144,8 +132,19 @@ void HistoryPanel::openAll()
 }
 
 
+void HistoryPanel::setup()
+{
+    UrlPanel::setup();
+    kDebug() << "History panel...";
+
+    m_treeView->header()->hideSection(1);
+
+    const UrlFilterProxyModel *proxy = static_cast<const UrlFilterProxyModel*>(m_treeView->model());
+    m_treeView->expand(proxy->index(0, 0));
+}
+
+
 QAbstractItemModel* HistoryPanel::getModel()
 {
     return Application::historyManager()->historyTreeModel();
 }
-

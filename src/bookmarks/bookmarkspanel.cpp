@@ -46,7 +46,6 @@ BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::Window
         , m_loadingState(false)
 {
     setObjectName("bookmarksPanel");
-
     setVisible(ReKonfig::showBookmarksPanel());
 }
 
