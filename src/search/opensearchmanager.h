@@ -104,6 +104,8 @@ private:
     OpenSearchEngine *m_activeEngine;
     STATE m_state;
     
+    KIO::TransferJob *m_currentJob;
+
     QString _typedText;
 };
 

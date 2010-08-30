@@ -49,6 +49,7 @@
 OpenSearchManager::OpenSearchManager(QObject *parent)
     : QObject(parent)
     , m_activeEngine(0)
+    , m_currentJob(0)
 {
     m_state = IDLE;
 }
@@ -109,6 +110,12 @@ void OpenSearchManager::addOpenSearchEngine(const KUrl &url, const QString &titl
 {
     Q_UNUSED(title);
 
+    if (m_currentJob)
+    {
+        disconnect(m_currentJob);
+        m_currentJob->kill();
+    }
+
     m_jobData.clear();
 
     if (m_state != IDLE) 
@@ -117,9 +124,9 @@ void OpenSearchManager::addOpenSearchEngine(const KUrl &url, const QString &titl
     }
 
     m_state = REQ_DESCRIPTION;
-    KIO::TransferJob *job = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
-    connect(job, SIGNAL(data(KIO::Job *, const QByteArray &)), this, SLOT(dataReceived(KIO::Job *, const QByteArray &)));
-    connect(job, SIGNAL(result(KJob *)), this, SLOT(jobFinished(KJob *)));
+    m_currentJob = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
+    connect(m_currentJob, SIGNAL(data(KIO::Job *, const QByteArray &)), this, SLOT(dataReceived(KIO::Job *, const QByteArray &)));
+    connect(m_currentJob, SIGNAL(result(KJob *)), this, SLOT(jobFinished(KJob *)));
 }
 
 
@@ -135,14 +142,20 @@ void OpenSearchManager::requestSuggestion(const QString &searchText)
     m_state = REQ_SUGGESTION;
 
     _typedText = searchText;
-    
+
     KUrl url = m_activeEngine->suggestionsUrl(searchText);
     kDebug() << "Requesting for suggestions: " << url.url();
+
+    if (m_currentJob)
+    {
+        disconnect(m_currentJob);
+         m_currentJob->kill();
+    }
     m_jobData.clear();
-    
-    KIO::TransferJob *job = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
-    connect(job, SIGNAL(data(KIO::Job *, const QByteArray &)), this, SLOT(dataReceived(KIO::Job *, const QByteArray &)));
-    connect(job, SIGNAL(result(KJob *)), this, SLOT(jobFinished(KJob *)));
+
+    m_currentJob = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
+    connect(m_currentJob, SIGNAL(data(KIO::Job *, const QByteArray &)), this, SLOT(dataReceived(KIO::Job *, const QByteArray &)));
+    connect(m_currentJob, SIGNAL(result(KJob *)), this, SLOT(jobFinished(KJob *)));
 }
 
 
@@ -163,6 +176,7 @@ void OpenSearchManager::jobFinished(KJob *job)
         const QStringList suggestionsList = m_activeEngine->parseSuggestion(m_jobData);
         kDebug() << "Received suggestions in "<< _typedText << " from " << m_activeEngine->name() << ": " << suggestionsList;
 
+        m_currentJob = NULL;
         emit suggestionReceived(_typedText, suggestionsList);
         return;
     }
@@ -181,6 +195,7 @@ void OpenSearchManager::jobFinished(KJob *job)
             writer.write(&file, engine);
 
             QString searchUrl = OpenSearchEngine::parseTemplate("\\{@}", engine->searchUrlTemplate());
+            m_currentJob = NULL;
             emit openSearchEngineAdded(engine->name(), searchUrl, fileName);
         }
         else 
