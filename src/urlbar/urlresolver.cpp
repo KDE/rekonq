@@ -107,6 +107,8 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         }
         _searchEnginesRegexp = QRegExp(reg);
     }
+    
+    computeSuggestions();
 }
 
 
@@ -132,7 +134,6 @@ UrlSearchList UrlResolver::orderedSearchItems()
     }
 
     //compute lists
-    computeSuggestions();
     computeHistory();
     computeQurlFromUserInput();
     computeWebSearches();

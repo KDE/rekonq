@@ -161,7 +161,7 @@ void OpenSearchManager::jobFinished(KJob *job)
     if (m_state == REQ_SUGGESTION) 
     {
         const QStringList suggestionsList = m_activeEngine->parseSuggestion(m_jobData);
-        kDebug() << "Received suggestion from " << m_activeEngine->name() << ": " << suggestionsList;
+        kDebug() << "Received suggestions in "<< _typedText << " from " << m_activeEngine->name() << ": " << suggestionsList;
 
         emit suggestionReceived(_typedText, suggestionsList);
         return;

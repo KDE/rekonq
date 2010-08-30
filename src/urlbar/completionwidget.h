@@ -92,6 +92,8 @@ private:
 
     QString _typedString;
     bool _hasSuggestions;
+    
+    UrlSearchList _resList;
 };
 
 #endif // COMPLETION_WIDGET_H
