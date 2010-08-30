@@ -32,11 +32,10 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "panels/urlfilterproxymodel.h"
-
 #include "application.h"
 #include "paneltreeview.h"
 #include "historymodels.h"
+#include "urlfilterproxymodel.h"
 
 // KDE Includes
 #include <KLocalizedString>

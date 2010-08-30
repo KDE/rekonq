@@ -21,6 +21,8 @@ SET( rekonq_KDEINIT_SRCS
     protocolhandler.cpp
     sessionmanager.cpp
     tabbar.cpp
+    urlfilterproxymodel.cpp
+    urlpanel.cpp
     walletbar.cpp
     webicon.cpp
     webinspectorpanel.cpp
@@ -31,9 +33,6 @@ SET( rekonq_KDEINIT_SRCS
     webview.cpp
     webtab.cpp
     zoombar.cpp
-    #----------------------------------------
-    panels/urlfilterproxymodel.cpp
-    panels/urlpanel.cpp
     #----------------------------------------
     history/autosaver.cpp
     history/historymanager.cpp

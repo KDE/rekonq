@@ -33,7 +33,7 @@
 #include "rekonq_defines.h"
 
 // Local Includes
-#include "panels/urlpanel.h"
+#include "urlpanel.h"
 
 
 class REKONQ_TESTS_EXPORT HistoryPanel : public UrlPanel

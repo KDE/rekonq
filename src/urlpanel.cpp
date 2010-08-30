@@ -32,9 +32,8 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "panels/urlfilterproxymodel.h"
-
 #include "paneltreeview.h"
+#include "urlfilterproxymodel.h"
 
 // KDE Includes
 #include <KLineEdit>

@@ -32,13 +32,13 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "panels/urlfilterproxymodel.h"
 #include "application.h"
 #include "bookmarkprovider.h"
 #include "bookmarkstreemodel.h"
 #include "bookmarkscontextmenu.h"
 #include "bookmarkowner.h"
 #include "paneltreeview.h"
+#include "urlfilterproxymodel.h"
 
 
 BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)

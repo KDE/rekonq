@@ -34,7 +34,7 @@
 #include "rekonq_defines.h"
 
 // Local Includes
-#include "panels/urlpanel.h"
+#include "urlpanel.h"
 
 // Forward Declarations
 class KBookmark;
