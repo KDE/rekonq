@@ -104,16 +104,17 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
         break;
         
     case QNetworkAccessManager::DeleteOperation:
+        kDebug() << "DELETE OPERATION...";
+        reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
+        if(!reply)
+            kDebug() << "OOOOOOOOOOOOOOOOOOO DELETE REPLY NULL";
         break;
 
     case QNetworkAccessManager::CustomOperation:
-/*        {   
-            kDebug() << "CUSTOM OPERATION...";
-            QByteArray verb("*");
-            reply = sendCustomRequest(req, verb, outgoingData);
-        }
+        kDebug() << "CUSTOM OPERATION...";
+        reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
         if(!reply)
-            kDebug() << "OOOOOOOOOOOOOOOOOOO CUSTOM REPLY NULL";*/
+            kDebug() << "OOOOOOOOOOOOOOOOOOO CUSTOM REPLY NULL";
         break;
 
     default:
