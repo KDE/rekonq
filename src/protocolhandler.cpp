@@ -94,6 +94,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     // javascript handling
     if (_url.protocol() == QL1S("javascript"))
     {
+        kDebug() << "JAVASCRIPT URL: " << _url;
         QString scriptSource = _url.authority();
         if(scriptSource.isEmpty()) {
             // if javascript:<code here> then authority() returns

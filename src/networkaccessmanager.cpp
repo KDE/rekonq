@@ -65,7 +65,7 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     QNetworkRequest req = request;
     req.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
     req.setRawHeader("Accept-Language", _acceptLanguage);
-
+    
     KIO::CacheControl cc = KProtocolManager::cacheControl();
     switch (cc)
     {
@@ -88,6 +88,20 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
         break;
     }
 
+    // WARNING 
+    // There are actually 3 exceptions here handled with QNAM 
+    // instead of KIO that need fixes upstream before removing. They are:
+    // 1) AJAX requests handling
+    // 2) DeleteOperation
+    // 3) CustomOperation
+    
+    // this is used to handle "AJAX" requests
+    QByteArray header = req.rawHeader("x-requested-with");
+    if(!header.isNull())
+    {
+        return QNetworkAccessManager::createRequest(op, req, outgoingData);
+    }
+    
     switch(op)
     {
     case QNetworkAccessManager::HeadOperation:
@@ -107,14 +121,14 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
         kDebug() << "DELETE OPERATION...";
         reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
         if(!reply)
-            kDebug() << "OOOOOOOOOOOOOOOOOOO DELETE REPLY NULL";
+            kDebug() << "oh oh... DELETE REPLY NULL";
         break;
 
     case QNetworkAccessManager::CustomOperation:
         kDebug() << "CUSTOM OPERATION...";
         reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
         if(!reply)
-            kDebug() << "OOOOOOOOOOOOOOOOOOO CUSTOM REPLY NULL";
+            kDebug() << "oh oh... CUSTOM REPLY NULL";
         break;
 
     default:
