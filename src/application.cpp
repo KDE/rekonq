@@ -228,7 +228,6 @@ int Application::newInstance()
         }
     }
 
-
     if(isFirstLoad)
     {
         // give me some time to do the other things..
@@ -439,13 +438,13 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
     KUrl url = threadedJob->url();
     WebView *view = threadedJob->view();
 
-    // Bye and thanks :)
-    delete threadedJob;
-
     if (view)
     {
         view->load(url);
     }
+   
+    // Bye and thanks :)
+    delete threadedJob;
 }
 
 

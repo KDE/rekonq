@@ -600,6 +600,10 @@ void MainWindow::setupPanels()
 
 void MainWindow::openLocation()
 {
+    if(isFullScreen())
+    {
+        setWidgetsVisible(true);
+    }
     m_view->urlBar()->selectAll();
     m_view->urlBar()->setFocus();
 }

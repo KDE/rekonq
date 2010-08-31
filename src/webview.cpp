@@ -40,6 +40,7 @@
 #include "searchengine.h"
 #include "websnap.h"
 #include "iconmanager.h"
+#include "urlbar.h"
 
 // KDE Includes
 #include <KService>
@@ -407,15 +408,17 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    if (Application::instance()->mainWindow()->isFullScreen())
+    MainWindow *w = Application::instance()->mainWindow();
+    if (w->isFullScreen())
     {
         if (event->pos().y() >= 0 && event->pos().y() <= 4)
         {
-            Application::instance()->mainWindow()->setWidgetsVisible(true);
+            w->setWidgetsVisible(true);
         }
         else
         {
-            Application::instance()->mainWindow()->setWidgetsVisible(false);
+            if(!w->mainView()->urlBar()->hasFocus())
+                w->setWidgetsVisible(false);
         }
     }
     KWebView::mouseMoveEvent(event);
