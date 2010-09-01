@@ -31,6 +31,7 @@
 // Local Includes
 #include "application.h"
 #include "bookmarkprovider.h"
+#include "iconmanager.h"
 
 // KDE Includes
 #include <KBookmarkManager>
@@ -63,8 +64,12 @@ QVariant BtmItem::data(int role) const
 
     if (role == Qt::DecorationRole)
     {
-        kDebug() << "BOOKMARK ICON: " << m_kbm.icon();
-        return KIcon(m_kbm.icon());
+        // NOTE
+        // this should be:
+        // return KIcon(m_kbm.icon());
+        // but I cannot let it work :( 
+        // I really cannot understand how let this work properly... 
+        return Application::iconManager()->iconForUrl(KUrl(m_kbm.url()));
     }
     
     if (role == Qt::UserRole)
