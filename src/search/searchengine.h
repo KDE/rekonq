@@ -47,7 +47,8 @@ public:
     static KService::List favorites();
     static KService::Ptr fromString(QString text);
     static QString buildQuery(KService::Ptr engine, QString text);
-
+    static QString extractQuery(QString text);
+    
 private:
     static bool m_loaded;
     static QString m_delimiter;

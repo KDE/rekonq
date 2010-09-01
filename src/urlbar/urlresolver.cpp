@@ -59,6 +59,7 @@
 
 // ------------------------------------------------------------------------
 
+KService::Ptr UrlResolver::_searchEngine;
 
 QRegExp UrlResolver::_browseRegexp;
 QRegExp UrlResolver::_searchEnginesRegexp;
@@ -67,6 +68,8 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         : QObject()
         , _typedString(typedUrl.trimmed())
 {
+    if (!_searchEngine ) _searchEngine = SearchEngine::defaultEngine();
+    
     if ( _browseRegexp.isEmpty() )
     {
         kDebug() << "browse regexp empty. Setting value..";
@@ -107,7 +110,7 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         }
         _searchEnginesRegexp = QRegExp(reg);
     }
-    
+
     computeSuggestions();
 }
 
@@ -330,7 +333,15 @@ void UrlResolver::computeQurlFromUserInput()
 //webSearches
 void UrlResolver::computeWebSearches()
 {
-    _webSearches = (UrlSearchList() << UrlSearchItem(UrlSearchItem::Search, QString(), QString()));
+    QString query = _typedString;
+    KService::Ptr engine = SearchEngine::fromString(_typedString);
+    if (engine)
+    {
+        query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
+        _searchEngine = engine;
+    }
+
+    _webSearches = (UrlSearchList() << UrlSearchItem(UrlSearchItem::Search, SearchEngine::buildQuery(_searchEngine, query), _searchEngine->name()));
 }
 
 
@@ -375,7 +386,7 @@ void UrlResolver::computeSuggestions()
                 SLOT(suggestionsReceived(const QString &, const QStringList &)));
 
         Application::opensearchManager()->requestSuggestion(_typedString);
-    }
+    }    
 }
 
 

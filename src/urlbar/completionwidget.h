@@ -51,16 +51,6 @@ public:
     virtual bool eventFilter(QObject *obj, QEvent *ev);
     void setVisible(bool visible);
 
-    KService::Ptr searchEngine()
-    {
-        return _searchEngine;
-    };
-    
-    void setSearchEngine(KService::Ptr engine)
-    {
-        _searchEngine = engine;
-    };
-
     void suggestUrls(const QString &text);
 
 private slots:

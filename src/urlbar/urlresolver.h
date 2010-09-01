@@ -33,7 +33,7 @@
 
 // KDE Includes
 #include <KUrl>
-
+#include <KService>
 
 // Qt Includes
 #include <QString>
@@ -104,6 +104,16 @@ public:
 
     UrlSearchList orderedSearchItems();
 
+    static KService::Ptr searchEngine()
+    {
+        return _searchEngine;
+    };
+
+    static void setSearchEngine(KService::Ptr engine)
+    {
+        _searchEngine = engine;
+    };
+
 private:
     QString _typedString;
 
@@ -124,6 +134,8 @@ private:
 
     static QRegExp _browseRegexp;
     static QRegExp _searchEnginesRegexp;
+
+    static KService::Ptr _searchEngine;
     
 private slots:
     void suggestionsReceived(const QString &text, const QStringList &suggestions);    

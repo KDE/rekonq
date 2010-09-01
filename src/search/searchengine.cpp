@@ -136,6 +136,19 @@ KService::Ptr SearchEngine::fromString(QString text)
 }
 
 
+QString SearchEngine::extractQuery(QString text)
+{
+    QString query = text;
+    KService::Ptr engine = SearchEngine::fromString(text);
+    if (engine)
+    {
+        query = query.remove(0, text.indexOf(SearchEngine::delimiter()) + 1);
+    }
+
+    return query;
+}
+
+
 QString SearchEngine::buildQuery(KService::Ptr engine, QString text)
 {
     QString query = engine->property("Query").toString();

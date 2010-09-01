@@ -286,27 +286,14 @@ PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *p
 // ---------------------------------------------------------------
 
 
-SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
-        : ListItem(item, parent)
+SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *paren)
+        : ListItem(item, paren)
         , m_text(text)
 {
-    QString query = text;
-    KService::Ptr engine = SearchEngine::fromString(text);
-    if (engine)
-    {
-        query = query.remove(0, text.indexOf(SearchEngine::delimiter()) + 1);
-    }
-    else
-    {
-        engine = qobject_cast<CompletionWidget *>(parent)->searchEngine();
-    }
-
-    m_url = SearchEngine::buildQuery(engine, query);
-
-    KIcon icon = Application::iconManager()->iconForUrl( SearchEngine::defaultEngine()->property("Query").toUrl() );
-    m_iconLabel = new IconLabel(icon, this); //TODO: get the default engine icon (will be easy in KDE SC 4.5)
-    m_titleLabel = new TextLabel(searchItemTitle(engine->name(), query), query, this);
-    m_engineBar = new EngineBar(engine, parent);
+    m_iconLabel = new IconLabel(SearchEngine::buildQuery(UrlResolver::searchEngine(), ""), this);
+    QString query = SearchEngine::extractQuery(text);
+    m_titleLabel = new TextLabel(searchItemTitle(item.title, query), query, this);
+    m_engineBar = new EngineBar(UrlResolver::searchEngine(), paren);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
@@ -340,7 +327,7 @@ void SearchListItem::changeSearchEngine(KService::Ptr engine)
     m_titleLabel->setText(searchItemTitle(engine->name(), m_text));
     m_iconLabel->setPixmap( Application::iconManager()->iconForUrl(KUrl(engine->property("Query").toString())).pixmap(16) );
     m_url = SearchEngine::buildQuery(engine, m_text);
-    qobject_cast<CompletionWidget *>(parent())->setSearchEngine(engine);
+    UrlResolver::setSearchEngine(engine);
 }
 
 
@@ -429,21 +416,8 @@ SuggestionListItem::SuggestionListItem(const UrlSearchItem &item, const QString 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
 
-    QString query = item.title;
-    KService::Ptr engine = SearchEngine::fromString(query);
-    if (engine)
-    {
-        query = query.remove(0, text.indexOf(SearchEngine::delimiter()) + 1);
-    }
-    else
-    {
-        engine = qobject_cast<CompletionWidget *>(parent)->searchEngine();
-    }
-
-    m_url = SearchEngine::buildQuery(engine, query);
-
-    hLayout->addWidget(new IconLabel(SearchEngine::buildQuery(engine, ""), this));
-    hLayout->addWidget(new TextLabel(item.title, text, this));
+    hLayout->addWidget(new IconLabel(SearchEngine::buildQuery(UrlResolver::searchEngine(), ""), this));
+    hLayout->addWidget(new TextLabel(item.title, SearchEngine::extractQuery(text), this));
     hLayout->addWidget(new TypeIconLabel(item.type, this));
 
     setLayout(hLayout);
