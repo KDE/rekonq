@@ -53,17 +53,31 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
 {
     kDebug() << "Loading Bookmarks Manager...";
 
-    QString bookmarkFile = KStandardDirs::locate("data", "konqueror/bookmarks.xml");  // share konqueror's bookmarks
-
-    if (!QFile::exists(bookmarkFile))
+    // NOTE
+    // This hackish code is needed to continue sharing bookmarks with konqueror, 
+    // until we can (hopefully) start using an akonadi resource.
+    //
+    // The cleanest code has a subdole bug inside does not allowing people to start
+    // using rekonq and then using konqueror. So if konqueror bk file has not just been created,
+    // bk are stored in rekonq dir and then they will be lost when you start using konqi
+    
+    KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");  // share konqueror bookmarks
+    if (!QFile::exists(bookfile.path()))
     {
-        bookmarkFile = KStandardDirs::locateLocal("appdata", "bookmarks.xml", true);
-        QFile bkms( KStandardDirs::locate("appdata" , "defaultbookmarks.xbel") );
-        bkms.copy(bookmarkFile);
+        bookfile = KUrl("~/.kde4/share/apps/konqueror/bookmarks.xml");
+        if (!QFile::exists(bookfile.path()))
+        {
+            QString bookmarksDefaultPath = KStandardDirs::locate("appdata" , "defaultbookmarks.xbel");
+            QFile bkms(bookmarksDefaultPath);
+            QString bookmarksPath = KStandardDirs::locateLocal("appdata", "bookmarks.xml", true);
+            bookmarksPath.replace("rekonq", "konqueror");
+            bkms.copy(bookmarksPath);
+            bookfile = KUrl(bookmarksPath);
+        }
     }
 
-    m_manager = KBookmarkManager::managerForFile(bookmarkFile, "rekonq");
-
+    m_manager = KBookmarkManager::managerForFile(bookfile.path(), "rekonq");
+    
     connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
             this, SLOT(slotBookmarksChanged(const QString &, const QString &)));
 
