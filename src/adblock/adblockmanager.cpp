@@ -275,6 +275,12 @@ void AdBlockManager::updateNextSubscription()
         KUrl subUrl = KUrl(urlString);
 
         KIO::TransferJob* job = KIO::get(subUrl , KIO::Reload , KIO::HideProgressInfo);
+        job->metaData().insert("ssl_no_client_cert", "TRUE");
+        job->metaData().insert("ssl_no_ui", "TRUE");
+        job->metaData().insert("UseCache", "false");
+        job->metaData().insert("cookies", "none");
+        job->metaData().insert("no-auth", "true");
+
         connect(job, SIGNAL(data(KIO::Job*, const QByteArray&)), this, SLOT(subscriptionData(KIO::Job*, const QByteArray&)));
         connect(job, SIGNAL(result(KJob*)), this, SLOT(slotResult(KJob*)));
 
