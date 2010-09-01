@@ -114,6 +114,7 @@ void OpenSearchManager::addOpenSearchEngine(const KUrl &url, const QString &titl
     {
         disconnect(m_currentJob);
         m_currentJob->kill();
+	delete m_currentJob;
     }
 
     m_jobData.clear();
@@ -149,7 +150,8 @@ void OpenSearchManager::requestSuggestion(const QString &searchText)
     if (m_currentJob)
     {
         disconnect(m_currentJob);
-         m_currentJob->kill();
+        m_currentJob->kill();
+	delete m_currentJob;
     }
     m_jobData.clear();
 
