@@ -212,12 +212,11 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
     const bool wasItalic = t.startsWith("<i>");
     if (wasItalic)
         t.remove(QRegExp("<[/ib]*>"));
+
     t = Qt::escape(t);
-    QStringList words = textToPointOut.split(" ");
-    foreach (const QString &wordToPointOut, words) {
-        if (!wordToPointOut.isEmpty())
-            t.replace(QRegExp('(' + wordToPointOut + ')', Qt::CaseInsensitive), "<b>\\1</b>");
-    }
+    QString ss = Qt::escape(textToPointOut);
+    t.replace(QRegExp('(' + ss + ')', Qt::CaseInsensitive), "<b>\\1</b>");
+
     if (wasItalic)
         t = QL1S("<i>") + t + QL1S("</i>");
 
@@ -318,7 +317,7 @@ QString SearchListItem::text()
 
 QString SearchListItem::searchItemTitle(QString engine, QString text)
 {
-    return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for %2", engine, Qt::escape(text)));
+    return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for %2", engine, text));
 }
 
 
