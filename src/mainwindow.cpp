@@ -370,8 +370,6 @@ void MainWindow::setupActions()
     KShortcut findShortcut = KStandardShortcut::find();
     findShortcut.setAlternate(Qt::Key_Slash);
     a->setShortcut(findShortcut);
-    a->setChecked(m_findBar->isVisible());
-    connect(m_findBar, SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));
 
     KStandardAction::findNext(this, SLOT(findNext()) , actionCollection());
     KStandardAction::findPrev(this, SLOT(findPrevious()) , actionCollection());
@@ -781,6 +779,7 @@ void MainWindow::find(const QString & search)
         return;
     m_lastSearch = search;
 
+    updateHighlight();
     findNext();
 }
 
@@ -792,6 +791,7 @@ void MainWindow::matchCaseUpdate()
 
     currentTab()->view()->findText(m_lastSearch, QWebPage::FindBackward);
     findNext();
+    updateHighlight();
 }
 
 
@@ -800,8 +800,6 @@ void MainWindow::findNext()
     if (!currentTab())
         return;
 
-    highlightAll();
-
     if (m_findBar->isHidden())
     {
         QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
@@ -809,8 +807,6 @@ void MainWindow::findNext()
         currentTab()->view()->page()->currentFrame()->setScrollPosition(previous_position);
         return;
     }
-
-    highlightAll();
 
     QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
     if (m_findBar->matchCase())
@@ -841,7 +837,8 @@ void MainWindow::findPrevious()
     m_findBar->notifyMatch(found);
 }
 
-void MainWindow::highlightAll()
+
+void MainWindow::updateHighlight()
 {
     if (!currentTab())
         return;

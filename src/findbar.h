@@ -57,9 +57,11 @@ public:
 
     void setVisible(bool visible);
 
-signals:
+protected:
+    void keyPressEvent(QKeyEvent *event);
+
+Q_SIGNALS:
     void searchString(const QString &);
-    void visibilityChanged(bool);
 
 private:
     MainWindow *m_mainWindow;
