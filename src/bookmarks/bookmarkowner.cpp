@@ -42,7 +42,7 @@
 #include <KBookmarkDialog>
 #include <KLocalizedString>
 #include <KMessageBox>
-#include <KMimeType>
+#include "iconmanager.h"
 
 // Qt Includes
 #include <QtGui/QClipboard>
