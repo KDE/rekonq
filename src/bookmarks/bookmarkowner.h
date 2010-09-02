@@ -40,6 +40,7 @@
 // Forward Declarations
 class KAction;
 
+
 /**
  * Reimplementation of KBookmarkOwner, this class allows to manage
  * bookmarks as actions.
@@ -111,14 +112,7 @@ public:
     */
     virtual void openFolderinTabs(const KBookmarkGroup &bookmark);
 
-signals:
-    /**
-     * This signal is emitted when an url has to be loaded
-     * @param url the URL to load
-     */
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
-
-public slots:
+public Q_SLOTS:
     void setCurrentBookmark(const KBookmark &bookmark);
 
     void openBookmark(const KBookmark &bookmark = KBookmark());
@@ -132,16 +126,23 @@ public slots:
     void editBookmark(KBookmark bookmark = KBookmark());
     bool deleteBookmark(KBookmark bookmark = KBookmark());
 
+Q_SIGNALS:
+    /**
+     * This signal is emitted when an url has to be loaded
+     * @param url the URL to load
+     */
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
+
 private:
-    KBookmarkManager *m_manager;
-
-    QVector<KAction*> m_actions;
-    KBookmark m_currentBookmark;
-
     void setupActions();
     void createAction(const BookmarkAction &action,
                       const QString &text, const QString &icon,
                       const QString &help, const char *slot);
+
+    
+    KBookmarkManager *m_manager;
+    QVector<KAction*> m_actions;
+    KBookmark m_currentBookmark;
 };
 
 #endif // BOOKMARKOWNER_H

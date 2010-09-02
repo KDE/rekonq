@@ -38,6 +38,7 @@
 // Qt Includes
 #include <QtCore/QAbstractItemModel>
 
+
 class BtmItem
 {
 public:
@@ -60,10 +61,12 @@ private:
 };
 
 
+// -------------------------------------------------------------------------------------------------
+
+
 class REKONQ_TESTS_EXPORT BookmarksTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
-    Q_DISABLE_COPY(BookmarksTreeModel)
 
 public:
     explicit BookmarksTreeModel(QObject *parent = 0);
@@ -95,19 +98,19 @@ public:
     virtual Qt::DropActions supportedDropActions() const;
     virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
 
-private slots:
+private Q_SLOTS:
     void bookmarksChanged(const QString &groupAddress);
 
-signals:
+Q_SIGNALS:
     void bookmarksUpdated();
 
 private:
-    BtmItem *m_root;
-
     void resetModel();
     void setRoot(KBookmarkGroup bmg);
     void populate(BtmItem *node, KBookmarkGroup bmg);
     KBookmark bookmarkForIndex(const QModelIndex &index) const;
+
+    BtmItem *m_root;
 };
 
 #endif // BOOKMARKSTREEMODEL_H

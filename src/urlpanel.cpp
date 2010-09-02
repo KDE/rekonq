@@ -27,6 +27,7 @@
 
 // Self Includes
 #include "urlpanel.h"
+#include "urlpanel.moc"
 
 // Auto Includes
 #include "rekonq.h"
@@ -47,7 +48,7 @@
 
 UrlPanel::UrlPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
         : QDockWidget(title, parent, flags)
-        , m_treeView(new PanelTreeView(this))
+        , _treeView(new PanelTreeView(this))
         , _loaded(false)
 {
     setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -88,14 +89,14 @@ void UrlPanel::setup()
     searchLabel->setBuddy(search);
 
     // setup tree view
-    m_treeView->setUniformRowHeights(true);
-    m_treeView->header()->hide();
+    _treeView->setUniformRowHeights(true);
+    _treeView->header()->hide();
 
     // put everything together
     QVBoxLayout *vBoxLayout = new QVBoxLayout;
     vBoxLayout->setContentsMargins(0, 0, 0, 0);
     vBoxLayout->addLayout(searchLayout);
-    vBoxLayout->addWidget(m_treeView);
+    vBoxLayout->addWidget(_treeView);
 
     // add it to the UI
     ui->setLayout(vBoxLayout);
@@ -104,11 +105,11 @@ void UrlPanel::setup()
     QAbstractItemModel *model = getModel();
     UrlFilterProxyModel *proxy = new UrlFilterProxyModel(this);
     proxy->setSourceModel(model);
-    m_treeView->setModel(proxy);
+    _treeView->setModel(proxy);
 
     connect(search, SIGNAL(textChanged(QString)), proxy, SLOT(setFilterFixedString(QString)));
 
-    connect(m_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenuItem(const QPoint &)));
-    connect(m_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenuGroup(const QPoint &)));
-    connect(m_treeView, SIGNAL(contextMenuEmptyRequested(const QPoint &)), this, SLOT(contextMenuEmpty(const QPoint &)));
+    connect(_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenuItem(const QPoint &)));
+    connect(_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenuGroup(const QPoint &)));
+    connect(_treeView, SIGNAL(contextMenuEmptyRequested(const QPoint &)), this, SLOT(contextMenuEmpty(const QPoint &)));
 }

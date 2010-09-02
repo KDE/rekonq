@@ -27,6 +27,7 @@
 
 // Self Includes
 #include "urlfilterproxymodel.h"
+#include "urlfilterproxymodel.moc"
 
 
 UrlFilterProxyModel::UrlFilterProxyModel(QObject *parent)

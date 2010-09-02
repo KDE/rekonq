@@ -44,7 +44,7 @@ public:
     explicit HistoryPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
     virtual ~HistoryPanel();
 
-private slots:
+private Q_SLOTS:
     virtual void contextMenuItem(const QPoint &pos);
     virtual void contextMenuGroup(const QPoint &pos);
     virtual void contextMenuEmpty(const QPoint &pos);
@@ -53,7 +53,6 @@ private slots:
 
 private:
     virtual void setup();
-
     virtual QAbstractItemModel* getModel();
 };
 

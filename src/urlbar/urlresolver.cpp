@@ -26,6 +26,7 @@
 
 // Self Includes
 #include "urlresolver.h"
+#include "urlresolver.moc"
 
 // Local Includes
 #include "application.h"

@@ -27,6 +27,7 @@
 
 // Self Includes
 #include "bookmarkstreemodel.h"
+#include "bookmarkstreemodel.moc"
 
 // Local Includes
 #include "application.h"

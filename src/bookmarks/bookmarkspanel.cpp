@@ -27,6 +27,7 @@
 
 // Self Includes
 #include "bookmarkspanel.h"
+#include "bookmarkspanel.moc"
 
 // Auto Includes
 #include "rekonq.h"
@@ -43,12 +44,12 @@
 
 BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
         : UrlPanel(title, parent, flags)
-        , model(new BookmarksTreeModel(this))
-        , m_loadingState(false)
+        , _bkTreeModel(new BookmarksTreeModel(this))
+        , _loadingState(false)
 {
     setObjectName("bookmarksPanel");
     setVisible(ReKonfig::showBookmarksPanel());
-    connect(model, SIGNAL(bookmarksUpdated()), this, SLOT(startLoadFoldedState()));
+    connect(_bkTreeModel, SIGNAL(bookmarksUpdated()), this, SLOT(startLoadFoldedState()));
 }
 
 
@@ -60,24 +61,24 @@ BookmarksPanel::~BookmarksPanel()
 
 void BookmarksPanel::startLoadFoldedState()
 {
-    m_loadingState = true;
+    _loadingState = true;
     loadFoldedState(QModelIndex());
-    m_loadingState = false;
+    _loadingState = false;
 }
 
 
 void BookmarksPanel::contextMenu(const QPoint &pos)
 {
-    if (m_loadingState)
+    if (_loadingState)
         return;
 
-    BookmarksContextMenu menu(bookmarkForIndex( m_treeView->indexAt(pos) ),
+    BookmarksContextMenu menu(bookmarkForIndex( panelTreeView()->indexAt(pos) ),
                               Application::bookmarkProvider()->bookmarkManager(),
                               Application::bookmarkProvider()->bookmarkOwner(),
                               this
                              );
 
-    menu.exec(m_treeView->mapToGlobal(pos));
+    menu.exec(panelTreeView()->mapToGlobal(pos));
 }
 
 
@@ -101,8 +102,8 @@ void BookmarksPanel::contextMenuEmpty(const QPoint &pos)
 
 void BookmarksPanel::deleteBookmark()
 {
-    QModelIndex index = m_treeView->currentIndex();
-    if (m_loadingState || !index.isValid())
+    QModelIndex index = panelTreeView()->currentIndex();
+    if (_loadingState || !index.isValid())
         return;
 
     Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(bookmarkForIndex(index));
@@ -111,7 +112,7 @@ void BookmarksPanel::deleteBookmark()
 
 void BookmarksPanel::onCollapse(const QModelIndex &index)
 {
-    if (m_loadingState)
+    if (_loadingState)
         return;
 
     bookmarkForIndex(index).internalElement().setAttribute("folded", "yes");
@@ -121,7 +122,7 @@ void BookmarksPanel::onCollapse(const QModelIndex &index)
 
 void BookmarksPanel::onExpand(const QModelIndex &index)
 {
-    if (m_loadingState)
+    if (_loadingState)
         return;
 
     bookmarkForIndex(index).internalElement().setAttribute("folded", "no");
@@ -131,7 +132,7 @@ void BookmarksPanel::onExpand(const QModelIndex &index)
 
 void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 {
-    QAbstractItemModel *model = m_treeView->model();
+    QAbstractItemModel *model = panelTreeView()->model();
     int count = model->rowCount(root);
     QModelIndex index;
 
@@ -143,7 +144,7 @@ void BookmarksPanel::loadFoldedState(const QModelIndex &root)
             KBookmark bm = bookmarkForIndex(index);
             if (bm.isGroup())
             {
-                m_treeView->setExpanded(index, bm.toGroup().isOpen());
+                panelTreeView()->setExpanded(index, bm.toGroup().isOpen());
                 loadFoldedState(index);
             }
         }
@@ -156,9 +157,9 @@ void BookmarksPanel::setup()
     UrlPanel::setup();
     kDebug() << "Bookmarks panel...";
 
-    connect(m_treeView, SIGNAL(delKeyPressed()), this, SLOT(deleteBookmark()));
-    connect(m_treeView, SIGNAL(collapsed(const QModelIndex &)), this, SLOT(onCollapse(const QModelIndex &)));
-    connect(m_treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(onExpand(const QModelIndex &)));
+    connect(panelTreeView(), SIGNAL(delKeyPressed()), this, SLOT(deleteBookmark()));
+    connect(panelTreeView(), SIGNAL(collapsed(const QModelIndex &)), this, SLOT(onCollapse(const QModelIndex &)));
+    connect(panelTreeView(), SIGNAL(expanded(const QModelIndex &)), this, SLOT(onExpand(const QModelIndex &)));
 
     startLoadFoldedState();
 }
@@ -179,5 +180,5 @@ KBookmark BookmarksPanel::bookmarkForIndex(const QModelIndex &index)
 
 QAbstractItemModel* BookmarksPanel::getModel()
 {
-    return model;
+    return _bkTreeModel;
 }

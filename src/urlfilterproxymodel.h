@@ -35,15 +35,17 @@
 // Qt Includes
 #include <QtGui/QSortFilterProxyModel>
 
+
 /**
  * QSortFilterProxyModel hides all children which parent doesn't
  * match the filter. This class is used to change this behavior.
- * If a url matches the filter it'll be shown, even if it's parent doesn't match it.
+ * If a url matches the filter it'll be shown, 
+ * even if it's parent doesn't match it.
+ * 
  */
 class REKONQ_TESTS_EXPORT UrlFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    Q_DISABLE_COPY(UrlFilterProxyModel)
 
 public:
     UrlFilterProxyModel(QObject *parent = 0);

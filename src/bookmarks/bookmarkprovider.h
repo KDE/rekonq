@@ -114,14 +114,7 @@ public:
 
     KBookmark bookmarkForUrl(const KUrl &url);
 
-signals:
-    /**
-    * @short This signal is emitted when an url has to be loaded
-    */
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
-
-
-public slots:
+public Q_SLOTS:
     /**
      * @short Waits for signal that the group with the address has been modified by the caller.
      * Waits for signal that the group (or any of its children) with the address
@@ -133,13 +126,18 @@ public slots:
     void slotBookmarksChanged(const QString &groupAddress, const QString &caller);
     void fillBookmarkBar(BookmarkToolBar *toolBar);
 
-private slots:
+private Q_SLOTS:
     void slotAddBookmark();
     void slotPanelChanged();
+    
+Q_SIGNALS:
+    /**
+    * @short This signal is emitted when an url has to be loaded
+    */
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
 
 private:
     void find(QList<KBookmark> *list, const KBookmark &bookmark, const QString &text);
-
     KBookmark bookmarkForUrl(const KBookmark &bookmark, const KUrl &url);
 
     KBookmarkManager *m_manager;

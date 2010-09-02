@@ -40,6 +40,7 @@
 #include <QList>
 #include <QStringList>
 
+
 class UrlSearchItem
 {
 public:
@@ -123,14 +124,6 @@ Q_SIGNALS:
     void suggestionsReady(const UrlSearchList &, const QString &);
 
 private:
-    QString _typedString;
-
-    UrlSearchList _webSearches;
-    UrlSearchList _qurlFromUserInput;
-    UrlSearchList _history;
-    UrlSearchList _bookmarks;
-    UrlSearchList _suggestions;
-    
     void computeWebSearches();
     void computeHistory();
     void computeQurlFromUserInput();
@@ -139,6 +132,15 @@ private:
     UrlSearchItem privilegedItem(UrlSearchList* list);
     UrlSearchList orderLists();
 
+    
+    QString _typedString;
+
+    UrlSearchList _webSearches;
+    UrlSearchList _qurlFromUserInput;
+    UrlSearchList _history;
+    UrlSearchList _bookmarks;
+    UrlSearchList _suggestions;
+    
     static QRegExp _browseRegexp;
     static QRegExp _searchEnginesRegexp;
 

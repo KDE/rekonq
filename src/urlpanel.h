@@ -49,26 +49,26 @@ public:
     explicit UrlPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
     virtual ~UrlPanel();
 
-public slots:
+    inline PanelTreeView *panelTreeView() const { return _treeView; };
+    
+public Q_SLOTS:
     void showing(bool);
 
-signals:
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
-    void itemHovered(const QString &);
-
-protected slots:
+protected Q_SLOTS:
     virtual void contextMenuItem(const QPoint &pos) = 0;
     virtual void contextMenuGroup(const QPoint &pos) = 0;
     virtual void contextMenuEmpty(const QPoint &pos) = 0;
 
 protected:
     virtual void setup();
-
     virtual QAbstractItemModel* getModel() = 0;
 
-    PanelTreeView *m_treeView;
+Q_SIGNALS:
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void itemHovered(const QString &);
 
 private:
+    PanelTreeView *_treeView;
     bool _loaded;
 };
 

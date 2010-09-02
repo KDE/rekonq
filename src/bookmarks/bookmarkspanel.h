@@ -42,6 +42,7 @@ class BookmarksTreeModel;
 class KBookmark;
 class QModelIndex;
 
+
 class REKONQ_TESTS_EXPORT BookmarksPanel : public UrlPanel
 {
     Q_OBJECT
@@ -50,13 +51,10 @@ public:
     explicit BookmarksPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
     virtual ~BookmarksPanel();
 
-signals:
-    void expansionChanged();
-
-public slots:
+public Q_SLOTS:
     void startLoadFoldedState();
 
-private slots:
+private Q_SLOTS:
     void contextMenu(const QPoint &pos);
     virtual void contextMenuItem(const QPoint &pos);
     virtual void contextMenuGroup(const QPoint &pos);
@@ -67,14 +65,17 @@ private slots:
     void onExpand(const QModelIndex &index);
     void loadFoldedState(const QModelIndex &root);
 
+Q_SIGNALS:
+    void expansionChanged();
+
 private:
     virtual void setup();
     KBookmark bookmarkForIndex(const QModelIndex &index);
 
     virtual QAbstractItemModel* getModel();
 
-    BookmarksTreeModel *model;
-    bool m_loadingState;
+    BookmarksTreeModel *_bkTreeModel;
+    bool _loadingState;
 };
 
 #endif // BOOKMARKSPANEL_H

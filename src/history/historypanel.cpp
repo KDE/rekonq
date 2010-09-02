@@ -27,6 +27,7 @@
 
 // Self Includes
 #include "historypanel.h"
+#include "historypanel.moc"
 
 // Auto Includes
 #include "rekonq.h"
@@ -67,22 +68,22 @@ void HistoryPanel::contextMenuItem(const QPoint &pos)
     KAction* action;
 
     action = new KAction(KIcon("tab-new"), i18n("Open"), this);
-    connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInCurrentTab()));
+    connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(openInCurrentTab()));
     menu.addAction(action);
 
     action = new KAction(KIcon("tab-new"), i18n("Open in New Tab"), this);
-    connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInNewTab()));
+    connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(openInNewTab()));
     menu.addAction(action);
 
     action = new KAction(KIcon("window-new"), i18n("Open in New Window"), this);
-    connect(action, SIGNAL(triggered()), m_treeView, SLOT(openInNewWindow()));
+    connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(openInNewWindow()));
     menu.addAction(action);
 
     action = new KAction(KIcon("edit-copy"), i18n("Copy Link Address"), this);
-    connect(action, SIGNAL(triggered()), m_treeView, SLOT(copyToClipboard()));
+    connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(copyToClipboard()));
     menu.addAction(action);
 
-    menu.exec(m_treeView->mapToGlobal(pos));
+    menu.exec(panelTreeView()->mapToGlobal(pos));
 }
 
 
@@ -95,7 +96,7 @@ void HistoryPanel::contextMenuGroup(const QPoint &pos)
     connect(action, SIGNAL(triggered()), this, SLOT(openAll()));
     menu.addAction(action);
 
-    menu.exec(m_treeView->mapToGlobal(pos));
+    menu.exec(panelTreeView()->mapToGlobal(pos));
 }
 
 
@@ -106,7 +107,7 @@ void HistoryPanel::contextMenuEmpty(const QPoint& /*pos*/)
 
 void HistoryPanel::openAll()
 {
-    QModelIndex index = m_treeView->currentIndex();
+    QModelIndex index = panelTreeView()->currentIndex();
     if (!index.isValid())
         return;
 
@@ -136,10 +137,10 @@ void HistoryPanel::setup()
     UrlPanel::setup();
     kDebug() << "History panel...";
 
-    m_treeView->header()->hideSection(1);
+    panelTreeView()->header()->hideSection(1);
 
-    const UrlFilterProxyModel *proxy = static_cast<const UrlFilterProxyModel*>(m_treeView->model());
-    m_treeView->expand(proxy->index(0, 0));
+    const UrlFilterProxyModel *proxy = static_cast<const UrlFilterProxyModel*>(panelTreeView()->model());
+    panelTreeView()->expand(proxy->index(0, 0));
 }
 
 
