@@ -121,6 +121,9 @@ class TextLabel : public QLabel
 
 public:
     explicit TextLabel(const QString &text, const QString &textToPointOut = QString(), QWidget *parent = 0);
+    explicit TextLabel(QWidget *parent = 0);
+
+    void setEngineText(const QString &engine, const QString &text);
 };
 
 
@@ -165,8 +168,6 @@ private slots:
     void changeSearchEngine(KService::Ptr engine);
 
 private:
-    QString searchItemTitle(QString engine, QString text);
-
     TextLabel* m_titleLabel;
     IconLabel* m_iconLabel;
     EngineBar* m_engineBar;

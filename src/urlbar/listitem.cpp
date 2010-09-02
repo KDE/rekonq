@@ -225,6 +225,19 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
 }
 
 
+TextLabel::TextLabel(QWidget *parent)
+    : QLabel(parent)
+{
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);    
+}
+
+
+void TextLabel::setEngineText(const QString &engine, const QString &text)
+{
+    setText( i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, Qt::escape(text) ) );
+}
+
+
 //--------------------------------------------------------------------------------------------
 
 
@@ -291,7 +304,8 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
 {
     m_iconLabel = new IconLabel(SearchEngine::buildQuery(UrlResolver::searchEngine(), ""), this);
     QString query = SearchEngine::extractQuery(text);
-    m_titleLabel = new TextLabel(searchItemTitle(item.title, query), query, this);
+    m_titleLabel = new TextLabel(this);
+    m_titleLabel->setEngineText(item.title, query);
     m_engineBar = new EngineBar(UrlResolver::searchEngine(), parent);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
@@ -315,15 +329,15 @@ QString SearchListItem::text()
 }
 
 
-QString SearchListItem::searchItemTitle(QString engine, QString text)
-{
-    return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for %2", engine, text));
-}
+// QString SearchListItem::searchItemTitle(QString engine, QString text)
+// {
+//     return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for %2", engine, text));
+// }
 
 
 void SearchListItem::changeSearchEngine(KService::Ptr engine)
 {
-    m_titleLabel->setText(searchItemTitle(engine->name(), m_text));
+    m_titleLabel->setEngineText(engine->name(), m_text);
     m_iconLabel->setPixmap( Application::iconManager()->iconForUrl(KUrl(engine->property("Query").toString())).pixmap(16) );
     m_url = SearchEngine::buildQuery(engine, m_text);
     UrlResolver::setSearchEngine(engine);
