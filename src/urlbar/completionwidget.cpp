@@ -320,10 +320,15 @@ void CompletionWidget::setVisible(bool visible)
 
 void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::KeyboardModifiers modifier)
 {
-    if (button == Qt::MidButton || modifier == Qt::ControlModifier)
+    if (button == Qt::MidButton 
+        || modifier == Qt::ControlModifier)
+    {
         emit chosenUrl(item->url(), Rekonq::NewFocusedTab);
+    }
     else
+    {
         emit chosenUrl(item->url(), Rekonq::CurrentTab);
+    }
     hide();
 }
 
@@ -344,6 +349,6 @@ void CompletionWidget::suggestUrls(const QString &text)
 
     UrlResolver *res = new UrlResolver(text);
     connect(res, SIGNAL(suggestionsReady(const UrlSearchList &, const QString &)), this, SLOT(updateSearchList(const UrlSearchList &, const QString &)));
+    res->computeSuggestions();
     _resList = res->orderedSearchItems();
-    
 }

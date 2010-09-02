@@ -114,6 +114,14 @@ public:
         _searchEngine = engine;
     };
 
+    void computeSuggestions();
+
+private Q_SLOTS:
+    void suggestionsReceived(const QString &text, const QStringList &suggestions);    
+
+Q_SIGNALS:
+    void suggestionsReady(const UrlSearchList &, const QString &);
+
 private:
     QString _typedString;
 
@@ -127,7 +135,6 @@ private:
     void computeHistory();
     void computeQurlFromUserInput();
     void computeBookmarks();
-    void computeSuggestions();
 
     UrlSearchItem privilegedItem(UrlSearchList* list);
     UrlSearchList orderLists();
@@ -135,14 +142,7 @@ private:
     static QRegExp _browseRegexp;
     static QRegExp _searchEnginesRegexp;
 
-    static KService::Ptr _searchEngine;
-    
-private slots:
-    void suggestionsReceived(const QString &text, const QStringList &suggestions);    
-
-Q_SIGNALS:
-    void suggestionsReady(const UrlSearchList &, const QString &);
-    
+    static KService::Ptr _searchEngine;    
 };
 
 // ------------------------------------------------------------------------------

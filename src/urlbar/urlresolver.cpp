@@ -64,6 +64,7 @@ KService::Ptr UrlResolver::_searchEngine;
 QRegExp UrlResolver::_browseRegexp;
 QRegExp UrlResolver::_searchEnginesRegexp;
 
+
 UrlResolver::UrlResolver(const QString &typedUrl)
         : QObject()
         , _typedString(typedUrl.trimmed())
@@ -110,8 +111,6 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         }
         _searchEnginesRegexp = QRegExp(reg);
     }
-
-    computeSuggestions();
 }
 
 
@@ -378,6 +377,13 @@ void UrlResolver::computeBookmarks()
 //opensearch suggestion
 void UrlResolver::computeSuggestions()
 {
+    if(_typedString.startsWith('/'))
+    {
+        UrlSearchList list;
+        emit suggestionsReady(list, _typedString);
+        return;
+    }
+    
     if (Application::opensearchManager()->isSuggestionAvailable())
     {
         connect(Application::opensearchManager(),
