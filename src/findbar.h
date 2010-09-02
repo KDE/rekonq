@@ -60,7 +60,7 @@ public:
 protected:
     void keyPressEvent(QKeyEvent *event);
 
-signals:
+Q_SIGNALS:
     void searchString(const QString &);
 
 private:
