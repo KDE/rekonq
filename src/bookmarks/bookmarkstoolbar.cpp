@@ -30,6 +30,7 @@
 #include "bookmarkstoolbar.moc"
 
 // Local Includes
+#include "iconmanager.h"
 #include "bookmarkscontextmenu.h"
 #include "mainwindow.h"
 #include "application.h"
@@ -66,7 +67,6 @@ BookmarkMenu::~BookmarkMenu()
 
 KMenu * BookmarkMenu::contextMenu(QAction *act)
 {
-
     KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(act);
     if (!action)
         return 0;
@@ -91,6 +91,7 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
     else
     {
         KBookmarkAction *action = new KBookmarkAction(bookmark, owner(), this);
+        action->setIcon(Application::iconManager()->iconForUrl(bookmark.url()));
         connect(action, SIGNAL(hovered()), this, SLOT(actionHovered()));
         return action;
     }

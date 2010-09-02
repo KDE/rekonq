@@ -43,6 +43,7 @@
 #include <KBookmarkDialog>
 #include <KLocalizedString>
 #include <KMessageBox>
+#include "iconmanager.h"
 
 // Qt Includes
 #include <QtGui/QClipboard>
@@ -127,30 +128,36 @@ void BookmarkOwner::setCurrentBookmark(const KBookmark &bookmark)
 }
 
 
+void BookmarkOwner::unsetCurrentBookmark()
+{
+    m_currentBookmark = KBookmark();
+}
+
+
 void BookmarkOwner::openBookmark(const KBookmark &bookmark)
 {
-    KBookmark selected = bookmark.isNull() ? m_currentBookmark : bookmark;
+    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     emit openUrl(selected.url(), Rekonq::CurrentTab);
 }
 
 
 void BookmarkOwner::openBookmarkInNewTab(const KBookmark &bookmark)
 {
-    KBookmark selected = bookmark.isNull() ? m_currentBookmark : bookmark;
+    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     emit openUrl(selected.url(), Rekonq::NewTab);
 }
 
 
 void BookmarkOwner::openBookmarkInNewWindow(const KBookmark &bookmark)
 {
-    KBookmark selected = bookmark.isNull() ? m_currentBookmark : bookmark;
+    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     emit openUrl(selected.url(), Rekonq::NewWindow);
 }
 
 
 void BookmarkOwner::openBookmarkFolder(const KBookmark &bookmark)
 {
-    KBookmark selected = bookmark.isNull() ? m_currentBookmark : bookmark;
+    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     if (!selected.isGroup())
         return;
 
@@ -173,9 +180,10 @@ void BookmarkOwner::openBookmarkFolder(const KBookmark &bookmark)
 }
 
 
-void BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
+KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
 {
-    KBookmark selected = bookmark.isNull() ? m_currentBookmark : bookmark;
+    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
+    KBookmark newBk;
     KBookmarkGroup parent;
 
     if (!selected.isNull())
@@ -185,22 +193,25 @@ void BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
         else
             parent = selected.parentGroup();
 
-        KBookmark newBk = parent.addBookmark(currentTitle().replace('&', "&&"), KUrl(currentUrl()));
+        newBk = parent.addBookmark(currentTitle().replace('&', "&&"), KUrl(currentUrl()),
+                                   Application::iconManager()->iconForUrl(currentUrl()).name());
         parent.moveBookmark(newBk, selected);
     }
     else
     {
         parent = Application::bookmarkProvider()->rootGroup();
-        parent.addBookmark(currentTitle(), KUrl(currentUrl()));
+        newBk = parent.addBookmark(currentTitle(), KUrl(currentUrl()));
     }
 
     m_manager->emitChanged(parent);
+    return newBk;
 }
 
 
-void BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark)
+KBookmarkGroup BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark)
 {
-    KBookmark selected = bookmark.isNull() ? m_currentBookmark : bookmark;
+    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
+    KBookmarkGroup newBk;
     KBookmarkDialog *dialog = bookmarkDialog(m_manager, QApplication::activeWindow());
     QString folderName = i18n("New folder");
 
@@ -208,11 +219,11 @@ void BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark)
     {
         if (selected.isGroup())
         {
-            dialog->createNewFolder(folderName, selected);
+            newBk = dialog->createNewFolder(folderName, selected);
         }
         else
         {
-            KBookmark newBk = dialog->createNewFolder(folderName, selected.parentGroup());
+            newBk = dialog->createNewFolder(folderName, selected.parentGroup());
             if (!newBk.isNull())
             {
                 KBookmarkGroup parent = newBk.parentGroup();
@@ -223,16 +234,17 @@ void BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark)
     }
     else
     {
-        dialog->createNewFolder(folderName);
+        newBk = dialog->createNewFolder(folderName);
     }
 
     delete dialog;
+    return newBk;
 }
 
 
-void BookmarkOwner::newSeparator(const KBookmark &bookmark)
+KBookmark BookmarkOwner::newSeparator(const KBookmark &bookmark)
 {
-    KBookmark selected = bookmark.isNull() ? m_currentBookmark : bookmark;
+    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     KBookmark newBk;
 
     if (!selected.isNull())
@@ -255,12 +267,13 @@ void BookmarkOwner::newSeparator(const KBookmark &bookmark)
     newBk.setIcon(("edit-clear"));
 
     m_manager->emitChanged(newBk.parentGroup());
+    return newBk;
 }
 
 
 void BookmarkOwner::copyLink(const KBookmark &bookmark)
 {
-    KBookmark selected = bookmark.isNull() ? m_currentBookmark : bookmark;
+    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     if (selected.isNull())
         return;
 
@@ -270,7 +283,7 @@ void BookmarkOwner::copyLink(const KBookmark &bookmark)
 
 void BookmarkOwner::editBookmark(KBookmark bookmark)
 {
-    KBookmark selected = bookmark.isNull() ? m_currentBookmark : bookmark;
+    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     if (selected.isNull())
         return;
 
@@ -286,7 +299,7 @@ void BookmarkOwner::editBookmark(KBookmark bookmark)
 
 bool BookmarkOwner::deleteBookmark(KBookmark bookmark)
 {
-    KBookmark selected = bookmark.isNull() ? m_currentBookmark : bookmark;
+    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     if (selected.isNull())
         return false;
 

@@ -54,6 +54,7 @@ class KUrl;
 class QAction;
 class QPoint;
 
+
 /**
  * This class represent the interface to rekonq bookmarks system.
  * All rekonq needs (Bookmarks Menu, Bookmarks Toolbar) is provided
@@ -123,11 +124,10 @@ public Q_SLOTS:
      * @param caller caller that modified the bookmarks
      * @see  KBookmarkManager::changed
      */
-    void slotBookmarksChanged(const QString &groupAddress, const QString &caller);
+    void slotBookmarksChanged();
     void fillBookmarkBar(BookmarkToolBar *toolBar);
 
 private Q_SLOTS:
-    void slotAddBookmark();
     void slotPanelChanged();
     
 Q_SIGNALS:

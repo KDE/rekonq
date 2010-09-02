@@ -47,7 +47,7 @@ private:
     void addSeparatorActions();
     void addNullActions();
 
-    BookmarkOwner *bmOwner;
+    BookmarkOwner *m_bmOwner;
 };
 
 #endif // BOOKMARKS_CONTEXT_MENU_H

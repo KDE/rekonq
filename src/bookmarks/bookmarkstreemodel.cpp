@@ -70,7 +70,10 @@ QVariant BtmItem::data(int role) const
         // return KIcon(m_kbm.icon());
         // but I cannot let it work :( 
         // I really cannot understand how let this work properly... 
-        return Application::iconManager()->iconForUrl(KUrl(m_kbm.url()));
+        if (m_kbm.isGroup() || m_kbm.isSeparator())
+            return KIcon(m_kbm.icon());
+        else
+            return Application::iconManager()->iconForUrl(KUrl(m_kbm.url()));
     }
     
     if (role == Qt::UserRole)
