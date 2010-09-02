@@ -108,6 +108,11 @@ public slots:
 
     virtual void configureToolbars();
 
+    // Find Bar slots
+    void findNext();
+    void findPrevious();
+    void updateHighlight();
+
 signals:
     // switching tabs
     void ctrlTabPressed();
@@ -138,9 +143,6 @@ private slots:
     // Find Action slots
     void find(const QString &);
     void matchCaseUpdate();
-    void findNext();
-    void findPrevious();
-    void highlightAll();
 
     // File Menu slots
     void openLocation();

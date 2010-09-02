@@ -45,6 +45,7 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QLabel>
 #include <QtGui/QColor>
+#include <QtGui/QKeyEvent>
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
@@ -67,7 +68,6 @@ FindBar::FindBar(MainWindow *window)
     hideButton->setAutoRaise(true);
     hideButton->setIcon(KIcon("dialog-close"));
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
-    connect(hideButton, SIGNAL(clicked()), window, SLOT(highlightAll()));
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
 
@@ -83,7 +83,6 @@ FindBar::FindBar(MainWindow *window)
     setFocusProxy(m_lineEdit);
     m_lineEdit->setMaximumWidth(250);
     connect(m_lineEdit, SIGNAL(textChanged(const QString &)), window, SLOT(find(const QString &)));
-    connect(m_lineEdit, SIGNAL(returnPressed()), window, SLOT(findNext()));
     layout->addWidget(m_lineEdit);
 
     // buttons
@@ -103,7 +102,7 @@ FindBar::FindBar(MainWindow *window)
     // Hightlight All. On by default
     m_highlightAll->setCheckState(Qt::Checked);
     m_highlightAll->setTristate(false);
-    connect(m_highlightAll, SIGNAL(toggled(bool)), window, SLOT(highlightAll()));
+    connect(m_highlightAll, SIGNAL(toggled(bool)), window, SLOT(updateHighlight()));
     layout->addWidget(m_highlightAll);
 
     // stretching widget on the left
@@ -125,6 +124,23 @@ FindBar::~FindBar()
 }
 
 
+void FindBar::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Return)
+    {
+        if (event->modifiers() == Qt::ShiftModifier)
+        {
+            m_mainWindow->findPrevious();
+        }
+        else
+        {
+            m_mainWindow->findNext();
+        }
+    }
+    QWidget::keyPressEvent(event);
+}
+
+
 bool FindBar::matchCase() const
 {
     return m_matchCase->isChecked();
@@ -136,29 +152,37 @@ bool FindBar::highlightAllState() const
     return m_highlightAll->isChecked();
 }
 
+
 void FindBar::setVisible(bool visible)
 {
     QWidget::setVisible(visible);
 
-    if (visible != isVisible())
-        emit visibilityChanged(visible);
+    if (visible)
+    {
+        const QString selectedText = m_mainWindow->selectedText();
+        if (!hasFocus() && !selectedText.isEmpty())
+        {
+            const QString previousText = m_lineEdit->text();
+             m_lineEdit->setText(selectedText);
 
-    if (visible) {
-        if (!hasFocus()) {
-            const QString selectedText = m_mainWindow->selectedText();
-            if (!selectedText.isEmpty())
-                m_lineEdit->setText(selectedText);
+             if (m_lineEdit->text() != previousText)
+                 m_mainWindow->findPrevious();
+             else
+                 m_mainWindow->updateHighlight();;
         }
-
-        // show findbar if not visible
-        emit searchString(m_lineEdit->text());
+        else if (selectedText.isEmpty())
+        {
+            emit searchString(m_lineEdit->text());
+        }
 
         m_hideTimer->start(60000);
 
-        // set focus to findbar if user select showFindBar shortcut
         m_lineEdit->setFocus();
         m_lineEdit->selectAll();
-    } else {
+    }
+    else
+    {
+        m_mainWindow->updateHighlight();;
         m_hideTimer->stop();
     }
 }
