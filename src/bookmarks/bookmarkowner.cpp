@@ -130,7 +130,7 @@ void BookmarkOwner::setCurrentBookmark(const KBookmark &bookmark)
 
 void BookmarkOwner::unsetCurrentBookmark()
 {
-    m_currentBookmark = KBookmark();
+//    m_currentBookmark = KBookmark();
 }
 
 
