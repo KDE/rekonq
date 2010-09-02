@@ -377,6 +377,8 @@ void UrlResolver::computeBookmarks()
 //opensearch suggestion
 void UrlResolver::computeSuggestions()
 {
+    // if a string startsWith /, it is probably a local path
+    // so, no need for suggestions...
     if(_typedString.startsWith('/'))
     {
         UrlSearchList list;
