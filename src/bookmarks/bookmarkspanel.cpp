@@ -43,10 +43,12 @@
 
 BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
         : UrlPanel(title, parent, flags)
+        , model(new BookmarksTreeModel(this))
         , m_loadingState(false)
 {
     setObjectName("bookmarksPanel");
     setVisible(ReKonfig::showBookmarksPanel());
+    connect(model, SIGNAL(bookmarksUpdated()), this, SLOT(startLoadFoldedState()));
 }
 
 
@@ -177,7 +179,5 @@ KBookmark BookmarksPanel::bookmarkForIndex(const QModelIndex &index)
 
 QAbstractItemModel* BookmarksPanel::getModel()
 {
-    BookmarksTreeModel *model = new BookmarksTreeModel(this);
-    connect(model, SIGNAL(bookmarksUpdated()), this, SLOT(startLoadFoldedState()));
     return model;
 }
