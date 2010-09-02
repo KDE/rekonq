@@ -286,14 +286,14 @@ PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *p
 // ---------------------------------------------------------------
 
 
-SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *paren)
-        : ListItem(item, paren)
+SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
+        : ListItem(item, parent)
         , m_text(text)
 {
     m_iconLabel = new IconLabel(SearchEngine::buildQuery(UrlResolver::searchEngine(), ""), this);
     QString query = SearchEngine::extractQuery(text);
     m_titleLabel = new TextLabel(searchItemTitle(item.title, query), query, this);
-    m_engineBar = new EngineBar(UrlResolver::searchEngine(), paren);
+    m_engineBar = new EngineBar(UrlResolver::searchEngine(), parent);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);

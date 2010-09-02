@@ -111,7 +111,7 @@ KService::Ptr SearchEngine::defaultEngine()
 }
 
 
-KService::Ptr SearchEngine::fromString(QString text)
+KService::Ptr SearchEngine::fromString(const QString &text)
 {
     KService::List providers = KServiceTypeTrader::self()->query("SearchProvider");
     int i = 0;
@@ -136,7 +136,7 @@ KService::Ptr SearchEngine::fromString(QString text)
 }
 
 
-QString SearchEngine::extractQuery(QString text)
+QString SearchEngine::extractQuery(const QString &text)
 {
     QString query = text;
     KService::Ptr engine = SearchEngine::fromString(text);
@@ -149,12 +149,9 @@ QString SearchEngine::extractQuery(QString text)
 }
 
 
-QString SearchEngine::buildQuery(KService::Ptr engine, QString text)
+QString SearchEngine::buildQuery(KService::Ptr engine, const QString &text)
 {
     QString query = engine->property("Query").toString();
     query = query.replace("\\{@}", KUrl::toPercentEncoding(text));
     return query;
 }
-
-
-
