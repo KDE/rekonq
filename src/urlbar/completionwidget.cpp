@@ -55,7 +55,6 @@ CompletionWidget::CompletionWidget(QWidget *parent)
         : QFrame(parent, Qt::ToolTip)
         , _parent(parent)
         , _currentIndex(0)
-        , _searchEngine(SearchEngine::defaultEngine())
         , _hasSuggestions(false)
 {
     setFrameStyle(QFrame::Panel);
@@ -71,7 +70,7 @@ void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString
 {
     if (!isVisible())
     {
-        _searchEngine = SearchEngine::defaultEngine();
+        UrlResolver::setSearchEngine(SearchEngine::defaultEngine());
     }
 
     _list = list;
@@ -278,14 +277,15 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 if( _currentIndex == -1)
                     _currentIndex = 0;
                 child = findChild<ListItem *>(QString::number(_currentIndex));
-                if(child)
+                if(child && _currentIndex!=0) //the completionwidget is visible and the user had press down
                 {
+                    //we can use the url of the listitem
                     emit chosenUrl(child->url(), Rekonq::CurrentTab);
                 }
-                else
+                else //the user type too fast (completionwidget not visible or suggestion not downloaded)
                 {
-                    // this will be used just on fast typing..
-                    emit chosenUrl(KUrl(w->text()), Rekonq::CurrentTab);
+                    UrlResolver res(w->text());
+                    emit chosenUrl(res.orderedSearchItems().first().url, Rekonq::CurrentTab);
                 }
                 kev->accept();
                 hide();
