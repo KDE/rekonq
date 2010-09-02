@@ -37,6 +37,8 @@
 #include "urlpanel.h"
 
 // Forward Declarations
+class BookmarksTreeModel;
+
 class KBookmark;
 class QModelIndex;
 
@@ -71,6 +73,7 @@ private:
 
     virtual QAbstractItemModel* getModel();
 
+    BookmarksTreeModel *model;
     bool m_loadingState;
 };
 
