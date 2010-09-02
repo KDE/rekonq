@@ -20,9 +20,15 @@
  *
  */
 
+// Self Includes
 #include "websslinfo.h"
 
+// Qt Includes
+#include <QtCore/QUrl>
 #include <QtCore/QVariant>
+
+#include <QtNetwork/QHostAddress>
+#include <QtNetwork/QSslCertificate>
 
 
 class WebSslInfo::WebSslInfoPrivate

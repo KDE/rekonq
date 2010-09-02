@@ -32,11 +32,11 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-//Qt Includes
-#include <QTime>
-
 // KDE Includes
 #include <KWebView>
+
+//Qt Includes
+#include <QtCore/QTime>
 
 // Forward Declarations
 class WebPage;
@@ -51,7 +51,7 @@ public:
     ~WebView();
 
     WebPage *page();
-    
+
     inline QPoint mousePos() { return _mousePos; }
 
 protected:

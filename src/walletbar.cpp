@@ -26,20 +26,19 @@
 
 // Self Includes
 #include "walletbar.h"
-#include "walletbar.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // KDE Includes
-#include <klocalizedstring.h>
 #include <KIcon>
+#include <KLocalizedString>
 
 // Qt Includes
-#include <QToolButton>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QString>
+#include <QtGui/QGridLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
 
 
 WalletBar::WalletBar(QWidget *parent)

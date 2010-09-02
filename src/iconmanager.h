@@ -30,29 +30,28 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KUrl>
-#include <KIcon>
-#include <KIO/Job>
-
 // Qt Includes
-#include <QWebPage>
+#include <QtCore/QObject>
+
+// Forward Declarations
+class KIcon;
+class QWebPage;
 
 
 class REKONQ_TESTS_EXPORT IconManager : public QObject
 {
     Q_OBJECT
-    
+
 public:
-    IconManager(QObject *parent = 0);    
+    IconManager(QObject *parent = 0);
     virtual ~IconManager();
 
     KIcon iconForUrl(const KUrl &url);
-    
+
     void provideIcon(QWebPage *page, const KUrl &url, bool notify = true);
 
     void downloadIconFromUrl(const KUrl &url);
-    
+
 Q_SIGNALS:
     void iconChanged();
 };

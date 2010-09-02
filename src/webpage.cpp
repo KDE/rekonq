@@ -32,49 +32,44 @@
 
 // Self Includes
 #include "webpage.h"
-#include "webpage.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
-#include "application.h"
-#include "mainwindow.h"
-#include "mainview.h"
-#include "webtab.h"
-#include "webpluginfactory.h"
-#include "networkaccessmanager.h"
 #include "adblockmanager.h"
-#include "urlbar.h"
+#include "application.h"
 #include "iconmanager.h"
+#include "mainview.h"
+#include "mainwindow.h"
+#include "networkaccessmanager.h"
+#include "newtabpage.h"
+#include "urlbar.h"
+#include "webpluginfactory.h"
+#include "webtab.h"
 
 #include "sslinfodialog_p.h"
 
 // KDE Includes
+#include <KIO/Job>
+#include <KIO/RenameDialog>
 #include <KStandardDirs>
-#include <KUrl>
+#include <KFileDialog>
+#include <KJobUiDelegate>
+#include <KLocalizedString>
+#include <KMessageBox>
+#include <KMimeTypeTrader>
+#include <KService>
 #include <KToolInvocation>
-#include <KProtocolManager>
-#include <kwebwallet.h>
+#include <KWebWallet>
 
 #include <kparts/browseropenorsavequestion.h>
 
-#include <kio/renamedialog.h>
-
-#include <KDE/KMimeTypeTrader>
-#include <KDE/KRun>
-#include <KDE/KFileDialog>
-#include <KDE/KMessageBox>
-#include <KDE/KJobUiDelegate>
-
 // Qt Includes
-#include <QtGui/QContextMenuEvent>
-#include <QtGui/QWheelEvent>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
-
-#include <QtWebKit/QWebFrame>
+#include <QtCore/QFileInfo>
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusConnectionInterface>
+#include <QtDBus/QDBusInterface>
 
 
 // Returns true if the scheme and domain of the two urls match...
@@ -108,42 +103,42 @@ static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData 
                               QWidget* parent = 0, const QString& suggestedName = QString())
 {
     KUrl destUrl;
-    
+
     int result = KIO::R_OVERWRITE;
     const QUrl fileName ((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
 
-    do 
+    do
     {
         destUrl = KFileDialog::getSaveFileName(fileName, QString(), parent);
-        
+
         if(destUrl.isEmpty())
             return false;
 
-        if (destUrl.isLocalFile()) 
+        if (destUrl.isLocalFile())
         {
             QFileInfo finfo (destUrl.toLocalFile());
-            if (finfo.exists()) 
+            if (finfo.exists())
             {
                 QDateTime now = QDateTime::currentDateTime();
-                QPointer<KIO::RenameDialog> dlg = new KIO::RenameDialog( parent, 
-                                                                         i18n("Overwrite File?"), 
-                                                                         srcUrl, 
+                QPointer<KIO::RenameDialog> dlg = new KIO::RenameDialog( parent,
+                                                                         i18n("Overwrite File?"),
+                                                                         srcUrl,
                                                                          destUrl,
                                                                          KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),
-                                                                         -1, 
+                                                                         -1,
                                                                          finfo.size(),
-                                                                         now.toTime_t(), 
+                                                                         now.toTime_t(),
                                                                          finfo.created().toTime_t(),
-                                                                         now.toTime_t(), 
+                                                                         now.toTime_t(),
                                                                          finfo.lastModified().toTime_t()
                                                                         );
                 result = dlg->exec();
                 delete dlg;
             }
         }
-    } 
+    }
     while (result == KIO::R_CANCEL && destUrl.isValid());
-    
+
     // Save download history
     Application::instance()->addDownload(srcUrl.pathOrUrl() , destUrl.pathOrUrl());
 
@@ -162,7 +157,7 @@ static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData 
         }
         return false;
     }
-    
+
     KIO::Job *job = KIO::file_copy(srcUrl, destUrl, -1, KIO::Overwrite);
 
     if (!metaData.isEmpty())
@@ -172,7 +167,7 @@ static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData 
     job->addMetaData(QL1S("cache"), QL1S("cache")); // Use entry from cache if available.
     job->uiDelegate()->setAutoErrorHandlingEnabled(true);
     return true;
-    
+
 }
 
 
@@ -216,7 +211,7 @@ WebPage::WebPage(QWidget *parent)
 
     // protocol handler signals
     connect(&_protHandler, SIGNAL(downloadUrl(const KUrl &)), this, SLOT(downloadUrl(const KUrl &)));
-    
+
     connect(Application::iconManager(), SIGNAL(iconChanged()), mainFrame(), SIGNAL(iconChanged()));
 }
 
@@ -318,7 +313,7 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     Q_ASSERT (reply);
-    // NOTE: 
+    // NOTE:
     // Until kio implements a way to resume/continue a network
     // request. We must abort the reply to prevent a zombie process
     // from continuing to download the unsupported content!
@@ -330,18 +325,18 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     if (reply->error() != QNetworkReply::NoError)
         return;
-    
+
     KUrl replyUrl = reply->url();
 
     // HACK -------------------------------------------
     // This is done to fix #231204 && #212808
-    
+
     QString mimeType;
     QString suggestedFileName;
-    
+
     QString app = reply->header(QNetworkRequest::ContentTypeHeader).toString();
     QStringList headerList = app.split( ';' );
-    
+
     if(headerList.count() > 0)
     {
         mimeType = headerList.takeFirst().trimmed();
@@ -362,24 +357,24 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     {
         mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
     }
-    
+
     // NOTE
     // This part has been copied from KWebPage::downloadResponse code
-    if (reply->hasRawHeader("Content-Disposition")) 
+    if (reply->hasRawHeader("Content-Disposition"))
     {
         KIO::MetaData metaData = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
-        if (metaData.value(QL1S("content-disposition-type")).compare(QL1S("attachment"), Qt::CaseInsensitive) == 0) 
+        if (metaData.value(QL1S("content-disposition-type")).compare(QL1S("attachment"), Qt::CaseInsensitive) == 0)
         {
             suggestedFileName = metaData.value(QL1S("content-disposition-filename"));
-        } 
-        else 
+        }
+        else
         {
             const QString value = QL1S(reply->rawHeader("Content-Disposition").simplified());
-            if (value.startsWith(QL1S("attachment"), Qt::CaseInsensitive)) 
+            if (value.startsWith(QL1S("attachment"), Qt::CaseInsensitive))
             {
                 const int length = value.size();
                 int pos = value.indexOf(QL1S("filename"), 0, Qt::CaseInsensitive);
-                if (pos > -1) 
+                if (pos > -1)
                 {
                     pos += 9;
                     while (pos < length && (value.at(pos) == QL1C(' ') || value.at(pos) == QL1C('=') || value.at(pos) == QL1C('"')))
@@ -389,7 +384,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
                     while (endPos < length && value.at(endPos) != QL1C('"') && value.at(endPos) != QL1C(';'))
                         endPos++;
 
-                    if (endPos > pos) 
+                    if (endPos > pos)
                     {
                         suggestedFileName = value.mid(pos, (endPos-pos)).trimmed();
                     }
@@ -397,11 +392,11 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             }
         }
     }
-    
+
     kDebug() << "Detected MimeType = " << mimeType;
     kDebug() << "Suggested File Name = " << suggestedFileName;
     // ------------------------------------------------
-    
+
     KService::Ptr appService = KMimeTypeTrader::self()->preferredService(mimeType);
 
     bool isLocal = replyUrl.isLocalFile();
@@ -423,7 +418,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), replyUrl, mimeType);
         if(!suggestedFileName.isEmpty())
             dlg.setSuggestedFileName(suggestedFileName);
-        
+
         switch (dlg.askEmbedOrSave())
         {
         case KParts::BrowserOpenOrSaveQuestion::Save:
@@ -444,7 +439,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (partServices.count() > 0)
     {
         QString p = replyUrl.pathOrUrl();
-        
+
         // A part can handle this. Embed it!
         QString html;
         html += "<html>";
@@ -461,7 +456,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         html += "</body>";
         html += "</html>";
 
-        mainFrame()->setHtml(html);            
+        mainFrame()->setHtml(html);
         _isOnRekonqPage = true;
         Application::instance()->mainWindow()->mainView()->urlBar()->setQUrl(replyUrl);
         Application::instance()->mainWindow()->updateActions();
@@ -485,8 +480,8 @@ void WebPage::loadStarted()
 void WebPage::loadFinished(bool ok)
 {
     Q_UNUSED(ok);
-    
-    
+
+
     Application::adblockManager()->applyHidingRules(this);
 
     QStringList list = ReKonfig::walletBlackList();
@@ -534,7 +529,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     case QNetworkReply::OperationCanceledError:              // operation canceled via abort() or close() calls
         // ignore this..
         return;
-        
+
     case QNetworkReply::ContentAccessDenied:                 // access to remote content denied (similar to HTTP error 401)
         kDebug() << "We (hopefully) are managing this through the adblock :)";
         break;

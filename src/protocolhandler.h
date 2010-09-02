@@ -32,17 +32,18 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KDirLister>
+#include <KUrl>
 
 // Qt Includes
-#include <QWebFrame>
+#include <QtCore/QObject>
 
 // Forward Declarations
+class KDirLister;
+class KFileItemList;
+class KJob;
+
 class QNetworkRequest;
 class QWebFrame;
-class QString;
-class KUrl;
-class KJob;
 
 
 class REKONQ_TESTS_EXPORT ProtocolHandler : public QObject

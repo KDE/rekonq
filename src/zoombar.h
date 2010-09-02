@@ -32,16 +32,14 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "mainwindow.h"
-
 // Qt Includes
 #include <QtGui/QWidget>
-#include <QtGui/QSlider>
-#include <QtGui/QToolButton>
 
 // Forward Declarations
-class QString;
+class MainWindow;
+
+class QSlider;
+class QToolButton;
 
 
 class REKONQ_TESTS_EXPORT ZoomBar : public QWidget
@@ -55,7 +53,7 @@ public:
 public slots:
     void show();
     void hide();
-    
+
     void zoomIn();
     void zoomOut();
     void zoomNormal();

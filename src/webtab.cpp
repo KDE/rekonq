@@ -27,36 +27,20 @@
 
 // Self Includes
 #include "webtab.h"
-#include "webtab.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
-#include "application.h"
-#include "mainwindow.h"
-#include "mainview.h"
-#include "bookmarkprovider.h"
-#include "walletbar.h"
 #include "previewselectorbar.h"
 #include "rsswidget.h"
+#include "walletbar.h"
+#include "webpage.h"
 
 // KDE Includes
-#include <KService>
-#include <KUriFilterData>
-#include <KStandardShortcut>
-#include <KMenu>
-#include <KActionMenu>
-#include <KWebView>
-#include <kwebwallet.h>
-#include <KDE/KMessageBox>
+#include <KWebWallet>
 
 // Qt Includes
-#include <QtGui/QContextMenuEvent>
-#include <QtGui/QWheelEvent>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
 #include <QtGui/QVBoxLayout>
 
 

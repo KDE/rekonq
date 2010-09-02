@@ -35,10 +35,6 @@
 // KDE Includes
 #include <KWebPluginFactory>
 
-// Qt Includes
-#include <QtCore/QList>
-#include <QtGui/QWidget>
-
 
 class REKONQ_TESTS_EXPORT WebPluginFactory : public KWebPluginFactory
 {

@@ -35,7 +35,9 @@
 
 // Qt Includes
 #include <QtCore/QObject>
-#include <QtCore/QString>
+
+// Forward Declarations
+class QString;
 
 
 /**
@@ -50,7 +52,7 @@ public:
     bool restoreSession();
 
     QStringList closedSites();
-    
+
 private slots:
     void saveSession();
 

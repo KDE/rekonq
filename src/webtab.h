@@ -33,19 +33,14 @@
 #include "rekonq_defines.h"
 
 // Local Includes
-#include "webpage.h"
 #include "webview.h"
 
-// KDE Includes
-#include <KUrl>
-
 // Qt Includes
-#include <QWidget>
-#include <QWeakPointer>
+#include <QtGui/QWidget>
 
 // Forward Declarations
-class WalletBar;
 class PreviewSelectorBar;
+class WalletBar;
 
 
 class REKONQ_TESTS_EXPORT WebTab : public QWidget
@@ -59,7 +54,7 @@ public:
     inline WebView *view() { return _view; }
     inline WebPage *page() { return view()->page(); }
     inline int progress() { return m_progress; }
-    
+
     KUrl url();
     void createPreviewSelectorBar(int index);
 
@@ -74,10 +69,10 @@ private slots:
 
 signals:
     void loadProgressing();
-    
+
 private:
     WebView *_view;
-    
+
     int m_progress;
 
     QWeakPointer<WalletBar> _walletBar;

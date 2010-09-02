@@ -26,18 +26,15 @@
 
 // Self Includes
 #include "webinspectorpanel.h"
-#include "webinspectorpanel.moc"
 
 // Local Includes
-#include "webtab.h"
-#include "webview.h"
+#include "mainwindow.h"
 #include "webpage.h"
-
-// KDE Includes
-#include "KAction"
+#include "webtab.h"
 
 // Qt Includes
-#include <QWebInspector>
+#include <QtGui/QAction>
+#include <QtWebKit/QWebInspector>
 
 
 WebInspectorPanel::WebInspectorPanel(QString title, QWidget *parent)

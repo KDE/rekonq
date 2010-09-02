@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "paneltreeview.h"
-#include "paneltreeview.moc"
 
 // Local Includes
 #include "application.h"
@@ -35,9 +34,8 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QtGui/QMouseEvent>
-#include <QtGui/QKeyEvent>
 #include <QtGui/QClipboard>
+#include <QtGui/QMouseEvent>
 
 
 PanelTreeView::PanelTreeView(QWidget *parent)

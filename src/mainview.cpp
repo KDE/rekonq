@@ -29,36 +29,31 @@
 
 // Self Includes
 #include "mainview.h"
-#include "mainview.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
+#include "application.h"
+#include "iconmanager.h"
+#include "mainwindow.h"
+#include "sessionmanager.h"
+#include "stackedurlbar.h"
 #include "tabbar.h"
 #include "urlbar.h"
-#include "sessionmanager.h"
-#include "iconmanager.h"
+#include "webpage.h"
+#include "webtab.h"
 
 // KDE Includes
-#include <KUrl>
 #include <KAction>
-#include <KShortcut>
-#include <KStandardShortcut>
+#include <KLocalizedString>
 #include <KMessageBox>
 #include <KStandardDirs>
-#include <KPassivePopup>
-#include <KLocalizedString>
 
 // Qt Includes
-#include <QTimer>
-#include <QString>
-#include <QAction>
-#include <QIcon>
-#include <QLabel>
-#include <QMovie>
-#include <QWidget>
-#include <QVBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QMovie>
+#include <QtGui/QToolButton>
 
 
 MainView::MainView(MainWindow *parent)
@@ -120,7 +115,7 @@ void MainView::postLaunch()
         m_recentlyClosedTabs.removeAll(item);
         m_recentlyClosedTabs.prepend(item);
     }
-    
+
     // Session Manager
     connect(this, SIGNAL(tabsChanged()), Application::sessionManager(), SLOT(saveSession()));
     connect(this, SIGNAL(currentChanged(int)), Application::sessionManager(), SLOT(saveSession()));
@@ -412,7 +407,7 @@ void MainView::closeOtherTabs(int index)
         index = currentIndex();
     if (index < 0 || index >= count())
         return;
-    
+
     for (int i = count() - 1; i > index; --i)
     {
         closeTab(i);
@@ -435,9 +430,9 @@ void MainView::cloneTab(int index)
         return;
 
     KUrl url = webTab(index)->url();
-    
+
     Application::instance()->loadUrl(url, Rekonq::NewTab);
-    
+
     updateTabBar();
 }
 
@@ -449,10 +444,10 @@ void MainView::closeTab(int index, bool del)
     if (count() == 1)
     {
         WebView *w = currentWebTab()->view();
-        
+
         if( currentWebTab()->url().protocol() == QL1S("about") )
             return;
-        
+
         switch (ReKonfig::newTabsBehaviour())
         {
         case 0: // new tab page
@@ -489,8 +484,8 @@ void MainView::closeTab(int index, bool del)
             return;
     }
 
-    if (!tab->url().isEmpty() 
-        && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled) 
+    if (!tab->url().isEmpty()
+        && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
        )
     {
         QString title = tab->view()->title();
@@ -591,7 +586,7 @@ void MainView::webViewTitleChanged(const QString &title)
     QString viewTitle = title.isEmpty()? i18n("(Untitled)") : title;
     QString tabTitle = viewTitle;
     tabTitle.replace('&', "&&");
-    
+
     WebView *view = qobject_cast<WebView *>(sender());
     int index = indexOf(view->parentWidget());
     if (-1 != index)
@@ -650,7 +645,7 @@ void MainView::openClosedTab()
     if (action)
     {
         Application::instance()->loadUrl(action->data().toUrl(), Rekonq::NewTab);
-        
+
         QString title = action->text();
         title = title.remove('&');
         HistoryItem item(action->data().toString(), QDateTime(), title );

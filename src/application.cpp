@@ -28,47 +28,40 @@
 
 // Self Includes
 #include "application.h"
-#include "application.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
-#include "mainwindow.h"
-#include "historymanager.h"
-#include "bookmarkprovider.h"
-#include "mainview.h"
-#include "webtab.h"
-#include "urlbar.h"
-#include "sessionmanager.h"
 #include "adblockmanager.h"
-#include "opensearchmanager.h"
-#include "iconmanager.h"
-#include "webview.h"
+#include "bookmarkprovider.h"
 #include "filterurljob.h"
+#include "historymanager.h"
+#include "iconmanager.h"
+#include "mainview.h"
+#include "mainwindow.h"
+#include "opensearchmanager.h"
+#include "sessionmanager.h"
+#include "stackedurlbar.h"
 #include "tabbar.h"
+#include "urlbar.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KCmdLineArgs>
 #include <KStandardDirs>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <KUriFilter>
 #include <KMessageBox>
-#include <KUrl>
 #include <ThreadWeaver/Weaver>
 
-// Qt Includes
-#include <QtCore/QTimer>
 
-
-QWeakPointer<HistoryManager> Application::s_historyManager;
-QWeakPointer<BookmarkProvider> Application::s_bookmarkProvider;
-QWeakPointer<SessionManager> Application::s_sessionManager;
 QWeakPointer<AdBlockManager> Application::s_adblockManager;
-QWeakPointer<OpenSearchManager> Application::s_opensearchManager;
+QWeakPointer<BookmarkProvider> Application::s_bookmarkProvider;
+QWeakPointer<HistoryManager> Application::s_historyManager;
 QWeakPointer<IconManager> Application::s_iconManager;
+QWeakPointer<OpenSearchManager> Application::s_opensearchManager;
+QWeakPointer<SessionManager> Application::s_sessionManager;
 
+using namespace ThreadWeaver;
 
 Application::Application()
         : KUniqueApplication()
@@ -442,7 +435,7 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
     {
         view->load(url);
     }
-   
+
     // Bye and thanks :)
     delete threadedJob;
 }

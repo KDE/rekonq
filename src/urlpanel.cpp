@@ -29,9 +29,6 @@
 #include "urlpanel.h"
 #include "urlpanel.moc"
 
-// Auto Includes
-#include "rekonq.h"
-
 // Local Includes
 #include "paneltreeview.h"
 #include "urlfilterproxymodel.h"

@@ -33,17 +33,15 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KIconLoader>
 #include <KUrl>
 
 // Qt Includes
-#include <QObject>
-#include <QString>
-#include <QWebElement>
+#include <QtCore/QObject>
+#include <QtWebKit/QWebElement>
 
-// Forward Includes
+// Forward Declarations
 class KBookmark;
-class WebPage;
+class QWebFrame;
 
 
 class REKONQ_TESTS_EXPORT NewTabPage : public QObject

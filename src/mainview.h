@@ -35,28 +35,23 @@
 #include "rekonq_defines.h"
 
 // Local Includes
-#include "webview.h"
-#include "webpage.h"
-#include "webtab.h"
-#include "application.h"
 #include "historymanager.h"
-#include "mainwindow.h"
-#include "stackedurlbar.h"
 
 // KDE Includes
 #include <KTabWidget>
 
-// Qt Includes
-#include <QtGui/QToolButton>
-
 // Forward Declarations
-class QUrl;
-class QWebFrame;
-class QLabel;
-class QMouseEvent;
-
+class HistoryItem;
+class MainWindow;
+class StackedUrlBar;
 class TabBar;
 class UrlBar;
+class WebTab;
+
+class QLabel;
+class QToolButton;
+class QUrl;
+class QWebFrame;
 
 
 /**
@@ -135,11 +130,11 @@ public slots:
      * added to existing MainWindow @c toWindow.
      */
     void detachTab(int index = -1, MainWindow *toWindow = NULL);
-    
+
     void reloadAllTabs();
     void nextTab();
     void previousTab();
-    
+
     void openClosedTabs();
     void openClosedTab();
     void switchToTab();

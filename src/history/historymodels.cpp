@@ -40,6 +40,7 @@
 // KDE Includes
 #include <KStandardDirs>
 #include <KLocale>
+#include <KIcon>
 
 // Qt Includes
 #include <QtCore/QList>

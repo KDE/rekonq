@@ -32,16 +32,17 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KLineEdit>
-
 // Qt Includes
 #include <QtGui/QWidget>
-#include <QtGui/QCheckBox>
 
 // Forward Declarations
-class QString;
 class MainWindow;
+
+class KLineEdit;
+
+class QString;
+class QCheckBox;
+
 
 class REKONQ_TESTS_EXPORT FindBar : public QWidget
 {

@@ -38,10 +38,10 @@
 
 // Qt Includes
 #include <QtCore/QObject>
-
-#include <QtGui/QPixmap>
-
 #include <QtWebKit/QWebPage>
+
+// Forward Declarations
+class QPixmap;
 
 // Defines
 #define WIDTH  200
@@ -78,7 +78,7 @@ public:
     explicit WebSnap(const KUrl &url, QObject *parent = 0);
 
     ~WebSnap();
-    
+
     /**
      * Snaps a pixmap of size w * h from a page
      *
@@ -89,9 +89,9 @@ public:
      * @return the pixmap snapped from the page
      */
     static QPixmap renderPagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
-        
+
     // static QPixmap renderVisiblePagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT); TODO: try to make this method work => more previews for the urlbar
-    
+
     /**
      * Snaps a pixmap of size w * h from a page of a tab that is currently closing
      *
@@ -102,7 +102,7 @@ public:
      * @return the pixmap snapped from the page
      */
     static QPixmap renderClosingPagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
-    
+
     /**
      * Snaps a pixmap of size w * h from a page for tab preview
      *
@@ -112,8 +112,8 @@ public:
      *
      * @return the pixmap snapped from the page
      */
-    static QPixmap renderTabPreview(const QWebPage &page, int w, int h);   
-    
+    static QPixmap renderTabPreview(const QWebPage &page, int w, int h);
+
     /**
      * Guess the local path where the image for the url provided
      * should be
@@ -141,7 +141,7 @@ signals:
 private:
     QWebPage m_page;
     KUrl m_url;
-    
+
     //render a preview: common part of renderPagePreview() and renderTabPreview()
     static QPixmap render(const QWebPage &page, int w, int h);
 };

@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "webicon.h"
-#include "webicon.moc"
 
 // Local Includes
 #include "application.h"
@@ -35,7 +34,6 @@
 // Qt Includes
 #include <QtCore/QTimer>
 #include <QtWebKit/QWebFrame>
-#include <QtWebKit/QWebSettings>
 
 
 WebIcon::WebIcon(const KUrl& url, QObject *parent)
@@ -45,7 +43,7 @@ WebIcon::WebIcon(const KUrl& url, QObject *parent)
     m_page.settings()->setAttribute(QWebSettings::PluginsEnabled, false);
     m_page.settings()->setAttribute(QWebSettings::JavascriptEnabled, false);
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
-    
+
     connect(&m_page, SIGNAL(loadFinished(bool)), this, SLOT(saveIcon(bool)));
     QTimer::singleShot(0, this, SLOT(load()));
 }
@@ -66,6 +64,6 @@ void WebIcon::saveIcon(bool b)
 {
     if(b)
         Application::iconManager()->provideIcon(&m_page, m_url, false);
-    
+
     this->deleteLater();
 }

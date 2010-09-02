@@ -31,9 +31,6 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "mainwindow.h"
-
 // Qt Includes
 #include <QtGui/QDockWidget>
 

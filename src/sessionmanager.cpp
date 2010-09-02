@@ -28,22 +28,19 @@
 
 // Self Includes
 #include "sessionmanager.h"
-#include "sessionmanager.moc"
 
 // Local Includes
 #include "application.h"
-#include "mainwindow.h"
 #include "mainview.h"
-#include "webtab.h"
+#include "mainwindow.h"
 #include "tabbar.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KStandardDirs>
 
 // Qt Includes
 #include <QtCore/QFile>
-#include <QtCore/QTextStream>
-
 
 
 SessionManager::SessionManager(QObject *parent)
@@ -64,10 +61,10 @@ void SessionManager::saveSession()
     if (!m_safe)
         return;
     m_safe = false;
-    
+
     if( QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled) )
         return;
-    
+
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
     {
@@ -84,7 +81,7 @@ void SessionManager::saveSession()
         {
             out << mv->webTab(i)->url().toEncoded() << "\n";
         }
-        
+
         // Current Tab for window
         out << "currenttab\n";
         out << mv->tabBar()->currentIndex() << "\n";
@@ -149,7 +146,7 @@ bool SessionManager::restoreSession()
 QStringList SessionManager::closedSites()
 {
     QStringList list;
-    
+
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.exists())
         return list;

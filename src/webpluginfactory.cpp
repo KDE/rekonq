@@ -27,12 +27,10 @@
 
 // Self Includes
 #include "webpluginfactory.h"
-#include "webpluginfactory.moc"
 
 // Local Includes
 #include "rekonq.h"
-#include "application.h"
-#include "mainwindow.h"
+
 #include "clicktoflash.h"
 
 

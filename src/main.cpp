@@ -29,12 +29,10 @@
 
 // Local Includes
 #include "application.h"
-#include "sessionmanager.h"
 
 // KDE Includes
 #include <KAboutData>
 #include <KCmdLineArgs>
-#include <KDebug>
 
 
 static const char description[] =
@@ -69,7 +67,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     ki18n("Developer, Ideas, Mockups, rekonq Icon"),
                     "megabigbug@yahoo.fr",
                     "");
-    
+
     about.addAuthor(ki18n("Johannes Zellner"),
                     ki18n("Patches, Suggestions, Testing, Bugfixing"),
                     "webmaster@nebulon.de",
@@ -114,23 +112,23 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     ki18n("Bookmarks code peer reviewer. A fantastic help"),
                     "jonan88@gmail.com",
                     "http://identi.ca/jonan");
-    
+
     about.addAuthor(ki18n("Benjamin Poulain"),
                     ki18n("The \"QtWebKit guy\". Code quality improvements"),
                     "ikipou@gmail.com",
                     "http://www.openyourcode.org/");
-    
+
     // --------------- about credits -----------------------------
     about.addCredit(ki18n("Dawit Alemayehu"),
                     ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
                     "adawit@kde.org",
                     "");
-                    
+
     about.addCredit(ki18n("Lindsay Mathieson"),
                     ki18n("Provided Patches & Hints, Discovered Bugs"),
                     "lindsay.mathieson@gmail.com",
                     "");
-                    
+
     about.addCredit(ki18n("Abdurrahman AVCI"),
                     ki18n("Provided Patches & Hints"),
                     "abdurrahmanavci@gmail.com",

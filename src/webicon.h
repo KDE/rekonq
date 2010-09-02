@@ -32,10 +32,9 @@
 
 // KDE Includes
 #include <KUrl>
-#include <KIcon>
 
 // Qt Includes
-#include <QWebPage>
+#include <QtWebKit/QWebPage>
 
 
 class REKONQ_TESTS_EXPORT WebIcon : public QObject

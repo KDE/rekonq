@@ -33,8 +33,8 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QWidget>
-#include <QUrl>
+#include <QtCore/QUrl>
+#include <QtGui/QWidget>
 
 // Forward Declarations
 class QWebElement;

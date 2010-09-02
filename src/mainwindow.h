@@ -34,30 +34,25 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "bookmarkprovider.h"
-
 // KDE Includes
-#include <KXmlGuiWindow>
 #include <KActionCollection>
-#include <KToolBar>
-#include <KUrl>
+#include <KXmlGuiWindow>
 
 // Forward Declarations
-class FindBar;
-class ZoomBar;
-class HistoryPanel;
 class BookmarksPanel;
-class WebInspectorPanel;
-class WebTab;
+class BookmarkToolBar;
+class FindBar;
+class HistoryPanel;
 class MainView;
 class NetworkAnalyzerPanel;
+class WebInspectorPanel;
+class WebTab;
+class ZoomBar;
 
-class KAction;
+class KActionMenu;
 class KPassivePopup;
 
 class QWebFrame;
-class QSlider;
 
 
 /**
@@ -172,7 +167,7 @@ private slots:
 
     void initBookmarkBar();
     void initToolsMenu();
-    
+
 private:
     MainView *m_view;
     FindBar *m_findBar;

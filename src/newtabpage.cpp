@@ -27,31 +27,31 @@
 
 // Self Includes
 #include "newtabpage.h"
-#include "newtabpage.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
-#include "historymodels.h"
-#include "bookmarkprovider.h"
 #include "application.h"
-#include "mainwindow.h"
+#include "bookmarkprovider.h"
+#include "historymodels.h"
 #include "mainview.h"
+#include "mainwindow.h"
 #include "websnap.h"
-#include "previewselectorbar.h"
+#include "webpage.h"
 #include "webtab.h"
 
 // KDE Includes
-#include <KStandardDirs>
-#include <KConfig>
-#include <KDialog>
-#include <KCalendarSystem>
 #include <KBookmarkManager>
+#include <KIconLoader>
+#include <KLocale>
+#include <KMimeType>
+#include <KStandardDirs>
 
 // Qt Includes
 #include <QtCore/QFile>
 #include <QtGui/QAction>
+#include <QtWebKit/QWebFrame>
 
 
 NewTabPage::NewTabPage(QWebFrame *frame)

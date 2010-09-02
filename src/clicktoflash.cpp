@@ -27,18 +27,16 @@
 
 // Self Includes
 #include "clicktoflash.h"
-#include "clicktoflash.moc"
 
 // KDE Includes
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QWebFrame>
-#include <QWebView>
-#include <QWebElement>
-#include <QHBoxLayout>
-#include <QToolButton>
-
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QToolButton>
+#include <QtWebKit/QWebElement>
+#include <QtWebKit/QWebFrame>
+#include <QtWebKit/QWebView>
 
 
 ClickToFlash::ClickToFlash(const QUrl &pluginUrl, QWidget *parent)

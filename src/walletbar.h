@@ -32,10 +32,10 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QWidget>
-#include <QString>
-#include <QUrl>
-#include <QLabel>
+#include <QtCore/QUrl>
+#include <QtGui/QWidget>
+
+class QLabel;
 
 
 class REKONQ_TESTS_EXPORT WalletBar : public QWidget

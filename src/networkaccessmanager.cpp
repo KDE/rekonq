@@ -28,19 +28,15 @@
 
 // Self Includes
 #include "networkaccessmanager.h"
-#include "networkaccessmanager.moc"
 
 // Local Includes
-#include "application.h"
 #include "adblockmanager.h"
+#include "application.h"
 #include "webpage.h"
 
 // KDE Includes
 #include <KLocale>
 #include <KProtocolManager>
-
-// Qt Includes
-#include <QtNetwork/QNetworkReply>
 
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
@@ -65,7 +61,7 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     QNetworkRequest req = request;
     req.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
     req.setRawHeader("Accept-Language", _acceptLanguage);
-    
+
     KIO::CacheControl cc = KProtocolManager::cacheControl();
     switch (cc)
     {
@@ -88,20 +84,20 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
         break;
     }
 
-    // WARNING 
-    // There are actually 3 exceptions here handled with QNAM 
+    // WARNING
+    // There are actually 3 exceptions here handled with QNAM
     // instead of KIO that need fixes upstream before removing. They are:
     // 1) AJAX requests handling
     // 2) DeleteOperation
     // 3) CustomOperation
-    
+
     // this is used to handle "AJAX" requests
     QByteArray header = req.rawHeader("x-requested-with");
     if(!header.isNull())
     {
         return QNetworkAccessManager::createRequest(op, req, outgoingData);
     }
-    
+
     switch(op)
     {
     case QNetworkAccessManager::HeadOperation:
@@ -110,13 +106,13 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     case QNetworkAccessManager::GetOperation:
         reply = Application::adblockManager()->block(req, parentPage);
         break;
-        
+
     case QNetworkAccessManager::PutOperation:
         break;
 
     case QNetworkAccessManager::PostOperation:
         break;
-        
+
     case QNetworkAccessManager::DeleteOperation:
         kDebug() << "DELETE OPERATION...";
         reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
@@ -140,7 +136,7 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
         reply = AccessManager::createRequest(op, req, outgoingData);
 
     if(parentPage && parentPage->hasNetworkAnalyzerEnabled())
-        emit networkData( op, req, reply ); 
+        emit networkData( op, req, reply );
 
     return reply;
 }

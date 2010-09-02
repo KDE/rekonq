@@ -32,9 +32,11 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QWidget>
-#include <QPushButton>
-#include <QLabel>
+#include <QtGui/QWidget>
+
+// Forward Declarations
+class QLabel;
+class QPushButton;
 
 
 class REKONQ_TESTS_EXPORT PreviewSelectorBar : public QWidget

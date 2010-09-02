@@ -38,18 +38,10 @@
 
 // Local Includes
 #include "protocolhandler.h"
-#include "newtabpage.h"
 #include "websslinfo.h"
 
 // KDE Includes
 #include <KWebPage>
-
-// Qt Includes
-#include <QUrl>
-
-// Forward Declarations
-class QWebFrame;
-class QNetworkReply;
 
 
 class REKONQ_TESTS_EXPORT WebPage : public KWebPage
@@ -68,10 +60,10 @@ public:
 
 public slots:
     void downloadAllContentsWithKGet(QPoint);
-    
+
     virtual void downloadRequest(const QNetworkRequest &request);
     virtual void downloadUrl(const KUrl &url);
-    
+
 protected:
     WebPage *createWindow(WebWindowType type);
 
@@ -88,14 +80,14 @@ private slots:
     void updateImage(bool ok);
 
     void downloadReply(const QNetworkReply *reply, const QString &suggestedFileName = QString());
-    
-private:  
+
+private:
     QString errorPage(QNetworkReply *reply);
     QUrl _loadingUrl;
 
     ProtocolHandler _protHandler;
     WebSslInfo _sslInfo;
-    
+
     bool _networkAnalyzer;
     bool _isOnRekonqPage;
 };

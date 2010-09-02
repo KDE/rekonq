@@ -29,70 +29,60 @@
 
 // Self Includes
 #include "mainwindow.h"
-#include "mainwindow.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
-#include "settingsdialog.h"
-#include "historymanager.h"
-#include "bookmarkprovider.h"
-#include "bookmarkstoolbar.h"
-#include "webtab.h"
-#include "mainview.h"
-#include "findbar.h"
-#include "zoombar.h"
-#include "historypanel.h"
-#include "bookmarkspanel.h"
-#include "webinspectorpanel.h"
-#include "urlbar.h"
-#include "tabbar.h"
-#include "adblockmanager.h"
 #include "analyzerpanel.h"
+#include "application.h"
+#include "bookmarkprovider.h"
+#include "bookmarkspanel.h"
+#include "bookmarkstoolbar.h"
+#include "findbar.h"
+#include "historypanel.h"
 #include "iconmanager.h"
+#include "mainview.h"
+#include "settingsdialog.h"
+#include "stackedurlbar.h"
+#include "tabbar.h"
+#include "urlbar.h"
+#include "webinspectorpanel.h"
+#include "webpage.h"
+#include "webtab.h"
+#include "zoombar.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
 
 // KDE Includes
-#include <KShortcut>
-#include <KStandardAction>
+#include <KIO/Job>
+
 #include <KAction>
 #include <KEditToolBar>
-#include <KToggleFullScreenAction>
-#include <KActionCollection>
-#include <KMessageBox>
 #include <KFileDialog>
-#include <KGlobalSettings>
-#include <KPushButton>
-#include <KTemporaryFile>
-#include <KPassivePopup>
-#include <KMenuBar>
 #include <KJobUiDelegate>
-#include <kdeprintdialog.h>
-#include <KToggleAction>
-#include <KStandardDirs>
-#include <KActionCategory>
+#include <KMenu>
+#include <KMenuBar>
+#include <KMessageBox>
+#include <KPassivePopup>
 #include <KProcess>
+#include <KPushButton>
+#include <KStandardDirs>
+#include <KToggleFullScreenAction>
 
 // Qt Includes
 #include <QtCore/QTimer>
-#include <QtCore/QRect>
-#include <QtCore/QSize>
-#include <QtCore/QList>
-#include <QtCore/QWeakPointer>
-
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QFont>
-#include <QtGui/QDesktopWidget>
-#include <QtGui/QPrinter>
-#include <QtGui/QPrintDialog>
-#include <QtGui/QPrintPreviewDialog>
-#include <QtGui/QFontMetrics>
 
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusReply>
+
+#include <QtGui/QDesktopWidget>
+#include <QtGui/QLabel>
+#include <QtGui/QPrintDialog>
+#include <QtGui/QPrinter>
+#include <QtGui/QPrintPreviewDialog>
+#include <QtGui/QVBoxLayout>
 
 #include <QtWebKit/QWebHistory>
 

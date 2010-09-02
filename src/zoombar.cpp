@@ -27,21 +27,24 @@
 
 // Self Includes
 #include "zoombar.h"
-#include "zoombar.moc"
 
 // local includes
+#include "application.h"
 #include "mainview.h"
+#include "mainwindow.h"
+#include "webtab.h"
 
 // KDE Includes
-#include <KIcon>
-#include <KStandardAction>
 #include <KAction>
+#include <KIcon>
 #include <KLocalizedString>
+#include <KStandardAction>
 
 // Qt Includes
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
-#include <QtCore/QString>
+#include <QtGui/QSlider>
+#include <QtGui/QToolButton>
 
 
 ZoomBar::ZoomBar(QWidget *parent)

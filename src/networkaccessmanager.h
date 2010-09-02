@@ -32,17 +32,11 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "webpage.h"
-
 // KDE Includes
-#include <kio/accessmanager.h>
+#include <KIO/AccessManager>
 
 
-using namespace KIO::Integration;
-
-
-class REKONQ_TESTS_EXPORT NetworkAccessManager : public AccessManager
+class REKONQ_TESTS_EXPORT NetworkAccessManager : public KIO::Integration::AccessManager
 {
     Q_OBJECT
 
@@ -53,7 +47,7 @@ protected:
     virtual QNetworkReply *createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData = 0);
 
 signals:
-    void networkData(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QNetworkReply *reply); 
+    void networkData(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QNetworkReply *reply);
 
 private:
     QByteArray _acceptLanguage;

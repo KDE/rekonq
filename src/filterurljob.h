@@ -30,22 +30,20 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "webview.h"
-
 // KDE Includes
 #include <KUrl>
-#include <KUriFilter>
 #include <ThreadWeaver/Job>
 
 // Qt Includes
-#include <QString>
+#include <QtCore/QString>
+
+// Forward Declarations
+class WebView;
+
+class KUriFilter;
 
 
-using namespace ThreadWeaver;
-
-
-class REKONQ_TESTS_EXPORT FilterUrlJob : public Job
+class REKONQ_TESTS_EXPORT FilterUrlJob : public ThreadWeaver::Job
 {
 public:
     FilterUrlJob(WebView *view, const QString &urlString, QObject *parent = 0);
@@ -60,9 +58,8 @@ private:
     WebView *_view;
     QString _urlString;
     KUrl _url;
-    
-    static KUriFilter *s_uriFilter;
 
+    static KUriFilter *s_uriFilter;
 };
 
 #endif // FILTER_URL_JOB_H

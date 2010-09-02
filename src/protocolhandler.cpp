@@ -25,43 +25,33 @@
 
 // Self Includes
 #include "protocolhandler.h"
-#include "protocolhandler.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
-#include "newtabpage.h"
-#include "application.h"
-#include "mainwindow.h"
-#include "mainview.h"
-#include "urlbar.h"
-#include "webtab.h"
-#include "historymanager.h"
 #include "adblockmanager.h"
+#include "application.h"
+#include "historymanager.h"
+#include "mainview.h"
+#include "mainwindow.h"
+#include "newtabpage.h"
+#include "urlbar.h"
+#include "webpage.h"
+#include "webtab.h"
 
 // KDE Includes
-#include <klocalizedstring.h>
-#include <KUrl>
-#include <KRun>
-#include <KToolInvocation>
-#include <KStandardDirs>
-#include <KMimeType>
-#include <KIconLoader>
+#include <KIO/Job>
 #include <KDirLister>
-#include <KFileItem>
-#include <KJob>
-#include <kio/udsentry.h>
+#include <KLocalizedString>
 #include <KMessageBox>
-#include <kprocess.h>
+#include <KProcess>
+#include <KStandardDirs>
+#include <KToolInvocation>
 
 // Qt Includes
-#include <QLatin1String>
-#include <QNetworkRequest>
-#include <QWebFrame>
-#include <QDir>
-#include <QFile>
-#include <QDateTime>
+#include <QtNetwork/QNetworkRequest>
+#include <QtWebKit/QWebFrame>
 
 
 ProtocolHandler::ProtocolHandler(QObject *parent)
@@ -108,7 +98,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             if(scriptSource.isEmpty())
                 return false;
         }
-        
+
         kDebug() << "EVALUATING JAVASCRIPT...";
         QVariant result = frame->evaluateJavaScript(scriptSource);
         return true;
@@ -132,11 +122,11 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
 
       if ( KProcess::execute (apturl,host)==0)
         return true;
-      else 
+      else
         return false;
 
     }
-    
+
     // "abp" handling
     if (_url.protocol() == QL1S("abp"))
     {

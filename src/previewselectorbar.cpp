@@ -27,27 +27,25 @@
 
 // Auto Includes
 #include "previewselectorbar.h"
-#include "previewselectorbar.moc"
 
 // Self Includes
 #include "rekonq.h"
 
 // Local Include
-#include "websnap.h"
 #include "application.h"
 #include "mainwindow.h"
-#include "webtab.h"
 #include "webpage.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KIcon>
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QtCore/QString>
-
-#include <QtGui/QToolButton>
 #include <QtGui/QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
 
 
 

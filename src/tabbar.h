@@ -34,17 +34,10 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Qt Includes
-#include <QWeakPointer>
-
 // KDE Includes
 #include <KTabBar>
 
 // Forward Declarations
-class QPoint;
-class QMouseEvent;
-class QEvent;
-
 class KPassivePopup;
 
 
@@ -95,7 +88,7 @@ private slots:
 
 private:
     void setupHistoryActions();
-    
+
     friend class MainView;
 
     /**
@@ -104,7 +97,7 @@ private:
     int m_actualIndex;
 
     QWeakPointer<KPassivePopup> m_previewPopup;
-    
+
     /**
      * the index of the tab preview shown
      */

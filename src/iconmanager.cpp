@@ -26,24 +26,22 @@
 
 // Self Includes
 #include "iconmanager.h"
-#include "iconmanager.moc"
 
 // Local Includes
 #include "application.h"
 #include "webicon.h"
 
 // KDE Includes
-#include <kmimetype.h>
+#include <KIO/Job>
+
+#include <KIcon>
+#include <KMimeType>
 #include <KStandardDirs>
-#include <KFileItem>
-#include <KDirLister>
+#include <KUrl>
 
 // Qt Includes
-#include <QDBusInterface>
-#include <QDBusReply>
-#include <QWebElement>
-#include <QWebFrame>
-#include <QAction>
+#include <QtWebKit/QWebElement>
+#include <QtWebKit/QWebFrame>
 
 
 IconManager::IconManager(QObject *parent)
@@ -104,12 +102,12 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     }
 
     QUrl u(url.url());
-    QString rootUrlString = u.toString(  QUrl::RemovePassword 
-                                       | QUrl::RemoveUserInfo 
-                                       | QUrl::RemovePath 
-                                       | QUrl::RemoveQuery 
+    QString rootUrlString = u.toString(  QUrl::RemovePassword
+                                       | QUrl::RemoveUserInfo
+                                       | QUrl::RemovePath
+                                       | QUrl::RemoveQuery
                                        | QUrl::StripTrailingSlash);
-    
+
     // check if icon exists
     if(!KMimeType::favIconForUrl(url).isEmpty())
     {
@@ -118,10 +116,10 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
             emit iconChanged();
         return;
     }
-    
+
     // find ico url
     KUrl iconUrl(rootUrlString + QL1S("/favicon.ico"));
-    
+
     QWebElement root = page->mainFrame()->documentElement();
     QWebElement e = root.findFirst(QL1S("link[rel~=\"icon\"]"));
     QString relUrlString = e.attribute(QL1S("href"));
@@ -130,25 +128,25 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
         e = root.findFirst(QL1S("link[rel~=\"shortcut icon\"]"));
         relUrlString = e.attribute(QL1S("href"));
     }
-    
+
     if(!relUrlString.isEmpty())
-    { 
+    {
         iconUrl = relUrlString.startsWith("http")
-                ? KUrl(relUrlString) 
+                ? KUrl(relUrlString)
                 : KUrl(rootUrlString + relUrlString) ;
     }
-    
+
     kDebug() << "ICON URL: " << iconUrl;
-    
+
     QString faviconDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
-    
+
     int r = rootUrlString.indexOf(':');
     kDebug() << rootUrlString;
     kDebug() << r;
-    
+
     KUrl destUrl(faviconDir + rootUrlString.mid(r+3) + ".png");
     kDebug() << "DEST URL: " << destUrl;
-    
+
     // download icon
     KIO::Job *job = KIO::file_copy(iconUrl, destUrl, -1, KIO::HideProgressInfo);
     if(notify)

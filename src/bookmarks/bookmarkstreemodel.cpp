@@ -37,6 +37,7 @@
 // KDE Includes
 #include <KBookmarkManager>
 #include <KLocalizedString>
+#include <KIcon>
 
 // Qt Includes
 #include <QtCore/QMimeData>
@@ -68,14 +69,14 @@ QVariant BtmItem::data(int role) const
         // NOTE
         // this should be:
         // return KIcon(m_kbm.icon());
-        // but I cannot let it work :( 
-        // I really cannot understand how let this work properly... 
+        // but I cannot let it work :(
+        // I really cannot understand how let this work properly...
         if (m_kbm.isGroup() || m_kbm.isSeparator())
             return KIcon(m_kbm.icon());
         else
             return Application::iconManager()->iconForUrl(KUrl(m_kbm.url()));
     }
-    
+
     if (role == Qt::UserRole)
         return m_kbm.url();
 

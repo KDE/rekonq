@@ -29,34 +29,29 @@
 
 //Self Includes
 #include "tabbar.h"
-#include "tabbar.moc"
 
 // Local Includes
 #include "rekonq.h"
+
 #include "application.h"
+#include "iconmanager.h"
+#include "mainview.h"
 #include "mainwindow.h"
-#include "urlbar.h"
+#include "webpage.h"
 #include "webtab.h"
 #include "websnap.h"
-#include "mainview.h"
-#include "iconmanager.h"
 
 // KDE Includes
-#include <KShortcut>
-#include <KStandardShortcut>
-#include <KGlobalSettings>
-#include <KPassivePopup>
-#include <KMenu>
 #include <KActionMenu>
+#include <KMenu>
+#include <KPassivePopup>
+#include <KToolBar>
 
 // Qt Includes
-#include <QString>
-#include <QFont>
-#include <QToolButton>
-#include <QLabel>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QVBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QToolButton>
 
 
 #define BASE_WIDTH_DIVISOR    4
@@ -172,7 +167,7 @@ void TabBar::showTabPreview()
     // no previews during load
     if (indexedTab->progress() != 0)
         return;
-    
+
     int w = tabSizeHint(m_currentTabPreviewIndex).width();
     int h = w * ((0.0 + currentTab->height()) / currentTab->width());
 
@@ -208,7 +203,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
     }
 
     KTabBar::mouseMoveEvent(event);
-    
+
     if (ReKonfig::alwaysShowTabPreviews())
     {
         //Find the tab under the mouse
@@ -287,7 +282,7 @@ void TabBar::mousePressEvent(QMouseEvent *event)
 void TabBar::contextMenu(int tab, const QPoint &pos)
 {
     setupHistoryActions();
-    
+
     m_actualIndex = tab;
 
     KMenu menu;
@@ -313,7 +308,7 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
 void TabBar::emptyAreaContextMenu(const QPoint &pos)
 {
     setupHistoryActions();
-    
+
     KMenu menu;
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
@@ -328,7 +323,7 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
     {
         menu.addAction( mainBar->toggleViewAction() );
     }
-    
+
     menu.exec(pos);
 }
 
@@ -360,7 +355,7 @@ void TabBar::setupHistoryActions()
 {
     MainWindow *w = Application::instance()->mainWindow();
     MainView *mv = qobject_cast<MainView *>(parent());
-    
+
     QAction *openClosedTabsAction = w->actionByName( QL1S("open_closed_tabs") );
     openClosedTabsAction->setEnabled( mv->recentlyClosedTabs().size() > 0 );
 

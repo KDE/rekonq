@@ -33,36 +33,28 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-#include "opensearchmanager.h"
-
 // KDE Includes
 #include <KUniqueApplication>
-#include <KIcon>
-#include <ThreadWeaver/Job>
 
 // Qt Includes
-#include <QWeakPointer>
-#include <QList>
+#include <QtCore/QDateTime>
+#include <QtCore/QWeakPointer>
 
 // Forward Declarations
-class KIcon;
-class KUrl;
-class BookmarkProvider;
-class HistoryManager;
-class MainWindow;
-class SessionManager;
 class AdBlockManager;
+class BookmarkProvider;
+class DownloadItem;
+class HistoryManager;
 class IconManager;
-class WebView;
+class MainWindow;
+class OpenSearchManager;
+class SessionManager;
+
+namespace ThreadWeaver {class Job;}
 
 
 typedef QList< QWeakPointer<MainWindow> > MainWindowList;
-
-
-// ---------------------------------------------------------------------------------------------------------------
-
-
-#include <QDateTime>
+typedef QList<DownloadItem> DownloadList;
 
 
 class DownloadItem
@@ -84,11 +76,7 @@ public:
 };
 
 
-typedef QList<DownloadItem> DownloadList;
-
-
 // ---------------------------------------------------------------------------------------------------------------
-
 
 
 /**
@@ -114,7 +102,7 @@ public:
     static AdBlockManager *adblockManager();
     static OpenSearchManager *opensearchManager();
     static IconManager *iconManager();
-    
+
     // DOWNLOADS MANAGEMENT METHODS
     void addDownload(const QString &srcUrl, const QString &destUrl);
     DownloadList downloads();
@@ -153,7 +141,7 @@ private:
     static QWeakPointer<AdBlockManager> s_adblockManager;
     static QWeakPointer<OpenSearchManager> s_opensearchManager;
     static QWeakPointer<IconManager> s_iconManager;
-    
+
     MainWindowList m_mainWindows;
 };
 

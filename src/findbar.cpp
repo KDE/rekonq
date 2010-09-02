@@ -27,27 +27,25 @@
 
 // Self Includes
 #include "findbar.h"
-#include "findbar.moc"
 
 // Local Includes
 #include "mainwindow.h"
 
 // KDE Includes
-#include <KLineEdit>
-#include <KIcon>
-#include <KPushButton>
-#include <klocalizedstring.h>
 #include <KApplication>
+#include <KIcon>
+#include <KLineEdit>
+#include <KLocalizedString>
+#include <KPushButton>
 
 // Qt Includes
-#include <QtGui/QWidget>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QToolButton>
-#include <QtGui/QLabel>
-#include <QtGui/QColor>
-#include <QtGui/QKeyEvent>
-#include <QtCore/QString>
 #include <QtCore/QTimer>
+
+#include <QtGui/QCheckBox>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QLabel>
+#include <QtGui/QToolButton>
 
 
 FindBar::FindBar(MainWindow *window)

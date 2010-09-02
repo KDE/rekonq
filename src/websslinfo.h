@@ -22,13 +22,14 @@
 #ifndef WEBSSLINFO_H
 #define WEBSSLINFO_H
 
-#include <kdemacros.h>
-
-#include <QtCore/QUrl>
+// Qt Includes
 #include <QtCore/QList>
-#include <QtCore/QString>
-#include <QtNetwork/QHostAddress>
-#include <QtNetwork/QSslCertificate>
+
+// Forward Declarations
+class QHostAddress;
+class QSslCertificate;
+class QUrl;
+class QVariant;
 
 
 class WebSslInfo

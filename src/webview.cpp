@@ -27,44 +27,39 @@
 
 // Self Includes
 #include "webview.h"
-#include "webview.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
-#include "mainwindow.h"
-#include "mainview.h"
-#include "webpage.h"
+#include "application.h"
 #include "bookmarkprovider.h"
-#include "searchengine.h"
-#include "websnap.h"
 #include "iconmanager.h"
+#include "mainview.h"
+#include "mainwindow.h"
+#include "searchengine.h"
 #include "urlbar.h"
+#include "webpage.h"
+#include "websnap.h"
 
 // KDE Includes
-#include <KService>
-#include <KUriFilterData>
-#include <KStandardShortcut>
-#include <KMenu>
+#include <KAction>
 #include <KActionMenu>
-#include <ktoolinvocation.h>
+#include <KLocalizedString>
+#include <KMenu>
+#include <KStandardAction>
 #include <KStandardDirs>
 
 // Qt Includes
-#include <QtCore/QDir>
-#include <QtGui/QAction>
-#include <QtGui/QContextMenuEvent>
-#include <QtGui/QWheelEvent>
-#include <QtGui/QMouseEvent>
+#include <QtCore/QFile>
+#include <QtCore/QTimer>
+
 #include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QLayout>
+#include <QtGui/QContextMenuEvent>
 #include <QtGui/QWindowsStyle>
 
-#include <QtDBus/QDBusConnectionInterface>
-#include <QtDBus/QDBusInterface>
-#include <QtDBus/QDBusReply>
+#include <QtWebKit/QWebFrame>
+#include <QtWebKit/QWebHistory>
 
 
 WebView::WebView(QWidget* parent)
@@ -469,7 +464,7 @@ void WebView::slotCopyImageLocation()
     imageUrl.populateMimeData( mimeData );
     QApplication::clipboard()->setMimeData( mimeData, QClipboard::Selection );
 #else
-    QApplication::clipboard()->setText( imageUrl.url() ); 
+    QApplication::clipboard()->setText( imageUrl.url() );
 #endif
 }
 

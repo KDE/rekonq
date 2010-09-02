@@ -33,6 +33,7 @@
 #include "historymanager.h"
 #include "bookmarkprovider.h"
 #include "searchengine.h"
+#include "opensearchmanager.h"
 
 // KDE Includes
 #include <KBookmark>
@@ -71,7 +72,7 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         , _typedString(typedUrl.trimmed())
 {
     if (!_searchEngine ) _searchEngine = SearchEngine::defaultEngine();
-    
+
     if ( _browseRegexp.isEmpty() )
     {
         kDebug() << "browse regexp empty. Setting value..";
@@ -267,7 +268,7 @@ UrlSearchList UrlResolver::orderLists()
     historyCount = _history.count();
     bookmarksCount = _bookmarks.count();
     commonCount = common.count();
-    
+
     kDebug() << "HISTORY COUNT: " << historyCount;
 
     //now fill the list to MAX_ELEMENTS
@@ -386,7 +387,7 @@ void UrlResolver::computeSuggestions()
         emit suggestionsReady(list, _typedString);
         return;
     }
-    
+
     if (Application::opensearchManager()->isSuggestionAvailable())
     {
         connect(Application::opensearchManager(),
@@ -395,7 +396,7 @@ void UrlResolver::computeSuggestions()
                 SLOT(suggestionsReceived(const QString &, const QStringList &)));
 
         Application::opensearchManager()->requestSuggestion(_typedString);
-    }    
+    }
 }
 
 
@@ -403,7 +404,7 @@ void UrlResolver::suggestionsReceived(const QString &text, const QStringList &su
 {
     if(text != _typedString)
         return;
-    
+
     UrlSearchList sugList;
 
     Q_FOREACH(const QString &s, suggestions)
