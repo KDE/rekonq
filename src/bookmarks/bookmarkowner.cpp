@@ -192,7 +192,8 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
         else
             parent = selected.parentGroup();
 
-        newBk = parent.addBookmark(currentTitle().replace('&', "&&"), KUrl(currentUrl()), KMimeType::iconNameForUrl(currentUrl()));
+        newBk = parent.addBookmark(currentTitle().replace('&', "&&"), KUrl(currentUrl()),
+                                   Application::iconManager()->iconForUrl(currentUrl()).name());
         parent.moveBookmark(newBk, selected);
     }
     else
