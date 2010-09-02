@@ -130,11 +130,10 @@ public slots:
      * @param caller caller that modified the bookmarks
      * @see  KBookmarkManager::changed
      */
-    void slotBookmarksChanged(const QString &groupAddress, const QString &caller);
+    void slotBookmarksChanged();
     void fillBookmarkBar(BookmarkToolBar *toolBar);
 
 private slots:
-    void slotAddBookmark();
     void slotPanelChanged();
 
 private:

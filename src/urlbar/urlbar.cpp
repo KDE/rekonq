@@ -42,11 +42,11 @@
 #include "webview.h"
 #include "completionwidget.h"
 #include "bookmarkprovider.h"
+#include "bookmarkowner.h"
 #include "bookmarkwidget.h"
 #include "iconmanager.h"
 
 // KDE Includes
-#include <KBookmarkManager>
 #include <KCompletionBox>
 #include <KStandardDirs>
 
@@ -356,8 +356,7 @@ void UrlBar::showBookmarkInfo(const QPoint &pos)
 
     if (bookmark.isNull())
     {
-        bookmark = Application::bookmarkProvider()->rootGroup().addBookmark(_tab->view()->title(), _tab->url());
-        Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+        bookmark = Application::bookmarkProvider()->bookmarkOwner()->bookmarkCurrentPage();
     }
 
     BookmarkWidget *widget = new BookmarkWidget(bookmark, window());

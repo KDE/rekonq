@@ -35,11 +35,11 @@
 #include "bookmarkspanel.h"
 #include "bookmarkstoolbar.h"
 #include "bookmarkowner.h"
+#include <iconmanager.h>
 
 // KDE Includes
 #include <KActionCollection>
 #include <KStandardDirs>
-#include <KMimeType>
 
 // Qt Includes
 #include <QtCore/QFile>
@@ -79,14 +79,14 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
     m_manager = KBookmarkManager::managerForFile(bookfile.path(), "rekonq");
     
     connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
-            this, SLOT(slotBookmarksChanged(const QString &, const QString &)));
+            this, SLOT(slotBookmarksChanged()));
 
     // setup menu
     m_owner = new BookmarkOwner(m_manager, this);
     connect(m_owner, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
             this, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)));
 
-    KAction *a = KStandardAction::addBookmark(this, SLOT(slotAddBookmark()), this);
+    KAction *a = KStandardAction::addBookmark(bookmarkOwner(), SLOT(bookmarkCurrentPage()), this);
     m_actionCollection->addAction(QL1S("rekonq_add_bookmark"), a);
 
     kDebug() << "Loading Bookmarks Manager... DONE!";
@@ -195,7 +195,7 @@ KBookmark BookmarkProvider::bookmarkForUrl(const KUrl &url)
 }
 
 
-void BookmarkProvider::slotBookmarksChanged(const QString& /*groupAddress*/, const QString& /*caller*/)
+void BookmarkProvider::slotBookmarksChanged()
 {
     foreach(BookmarkToolBar *bookmarkToolBar, m_bookmarkToolBars)
     {
@@ -235,19 +235,12 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
         {
             KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, this);
             action->setIconText(action->iconText().replace('&', "&&"));
+            action->setIcon(KIcon(Application::iconManager()->iconForUrl(bookmark.url())));
             connect(action, SIGNAL(hovered()), toolBar, SLOT(actionHovered()));
             toolBar->toolBar()->addAction(action);
             toolBar->toolBar()->widgetForAction(action)->installEventFilter(toolBar);
         }
     }
-}
-
-
-void BookmarkProvider::slotAddBookmark()
-{
-    QString url = bookmarkOwner()->currentUrl();
-    rootGroup().addBookmark(bookmarkOwner()->currentTitle(), url, KMimeType::favIconForUrl( KUrl(url) ) );
-    bookmarkManager()->emitChanged();
 }
 
 

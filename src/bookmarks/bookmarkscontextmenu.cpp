@@ -33,37 +33,37 @@
 
 BookmarksContextMenu::BookmarksContextMenu(const KBookmark &bookmark, KBookmarkManager *manager, BookmarkOwner *owner, QWidget *parent)
         : KBookmarkContextMenu(bookmark, manager, owner, parent)
-        , bmOwner(owner)
+        , m_bmOwner(owner)
 {
-    bmOwner->setCurrentBookmark(bookmark);
+    m_bmOwner->setCurrentBookmark(bookmark);
 }
 
 
 BookmarksContextMenu::~BookmarksContextMenu()
 {
+    m_bmOwner->unsetCurrentBookmark();
 }
 
 
 void BookmarksContextMenu::addBookmarkActions()
 {
-    addAction(bmOwner->action(BookmarkOwner::OPEN));
-    addAction(bmOwner->action(BookmarkOwner::OPEN_IN_TAB));
-    addAction(bmOwner->action(BookmarkOwner::OPEN_IN_WINDOW));
+    addAction(m_bmOwner->action(BookmarkOwner::OPEN_IN_TAB));
+    addAction(m_bmOwner->action(BookmarkOwner::OPEN_IN_WINDOW));
 
     addSeparator();
 
-    addAction(bmOwner->action(BookmarkOwner::BOOKMARK_PAGE));
-    addAction(bmOwner->action(BookmarkOwner::NEW_FOLDER));
-    addAction(bmOwner->action(BookmarkOwner::NEW_SEPARATOR));
+    addAction(m_bmOwner->action(BookmarkOwner::BOOKMARK_PAGE));
+    addAction(m_bmOwner->action(BookmarkOwner::NEW_FOLDER));
+    addAction(m_bmOwner->action(BookmarkOwner::NEW_SEPARATOR));
 
     addSeparator();
 
-    addAction(bmOwner->action(BookmarkOwner::COPY));
+    addAction(m_bmOwner->action(BookmarkOwner::COPY));
 
     addSeparator();
 
-    addAction(bmOwner->action(BookmarkOwner::EDIT));
-    addAction(bmOwner->action(BookmarkOwner::DELETE));
+    addAction(m_bmOwner->action(BookmarkOwner::EDIT));
+    addAction(m_bmOwner->action(BookmarkOwner::DELETE));
 }
 
 
@@ -82,39 +82,39 @@ void BookmarksContextMenu::addFolderActions()
 
         if (!child.isNull())
         {
-            addAction(bmOwner->action(BookmarkOwner::OPEN_FOLDER));
+            addAction(m_bmOwner->action(BookmarkOwner::OPEN_FOLDER));
             addSeparator();
         }
     }
 
-    addAction(bmOwner->action(BookmarkOwner::BOOKMARK_PAGE));
-    addAction(bmOwner->action(BookmarkOwner::NEW_FOLDER));
-    addAction(bmOwner->action(BookmarkOwner::NEW_SEPARATOR));
+    addAction(m_bmOwner->action(BookmarkOwner::BOOKMARK_PAGE));
+    addAction(m_bmOwner->action(BookmarkOwner::NEW_FOLDER));
+    addAction(m_bmOwner->action(BookmarkOwner::NEW_SEPARATOR));
 
     addSeparator();
 
-    addAction(bmOwner->action(BookmarkOwner::EDIT));
-    addAction(bmOwner->action(BookmarkOwner::DELETE));
+    addAction(m_bmOwner->action(BookmarkOwner::EDIT));
+    addAction(m_bmOwner->action(BookmarkOwner::DELETE));
 }
 
 
 void BookmarksContextMenu::addSeparatorActions()
 {
-    addAction(bmOwner->action(BookmarkOwner::BOOKMARK_PAGE));
-    addAction(bmOwner->action(BookmarkOwner::NEW_FOLDER));
-    addAction(bmOwner->action(BookmarkOwner::NEW_SEPARATOR));
+    addAction(m_bmOwner->action(BookmarkOwner::BOOKMARK_PAGE));
+    addAction(m_bmOwner->action(BookmarkOwner::NEW_FOLDER));
+    addAction(m_bmOwner->action(BookmarkOwner::NEW_SEPARATOR));
 
     addSeparator();
 
-    addAction(bmOwner->action(BookmarkOwner::DELETE));
+    addAction(m_bmOwner->action(BookmarkOwner::DELETE));
 }
 
 
 void BookmarksContextMenu::addNullActions()
 {
-    addAction(bmOwner->action(BookmarkOwner::BOOKMARK_PAGE));
-    addAction(bmOwner->action(BookmarkOwner::NEW_FOLDER));
-    addAction(bmOwner->action(BookmarkOwner::NEW_SEPARATOR));
+    addAction(m_bmOwner->action(BookmarkOwner::BOOKMARK_PAGE));
+    addAction(m_bmOwner->action(BookmarkOwner::NEW_FOLDER));
+    addAction(m_bmOwner->action(BookmarkOwner::NEW_SEPARATOR));
 }
 
 

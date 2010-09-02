@@ -120,14 +120,15 @@ signals:
 
 public slots:
     void setCurrentBookmark(const KBookmark &bookmark);
+    void unsetCurrentBookmark();
 
     void openBookmark(const KBookmark &bookmark = KBookmark());
     void openBookmarkInNewTab(const KBookmark &bookmark = KBookmark());
     void openBookmarkInNewWindow(const KBookmark &bookmark = KBookmark());
     void openBookmarkFolder(const KBookmark &bookmark = KBookmark());
-    void bookmarkCurrentPage(const KBookmark &bookmark = KBookmark());
-    void newBookmarkFolder(const KBookmark &bookmark = KBookmark());
-    void newSeparator(const KBookmark &bookmark = KBookmark());
+    KBookmark bookmarkCurrentPage(const KBookmark &bookmark = KBookmark());
+    KBookmarkGroup newBookmarkFolder(const KBookmark &bookmark = KBookmark());
+    KBookmark newSeparator(const KBookmark &bookmark = KBookmark());
     void copyLink(const KBookmark &bookmark = KBookmark());
     void editBookmark(KBookmark bookmark = KBookmark());
     bool deleteBookmark(KBookmark bookmark = KBookmark());
