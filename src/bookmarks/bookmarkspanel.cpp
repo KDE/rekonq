@@ -133,6 +133,9 @@ void BookmarksPanel::onExpand(const QModelIndex &index)
 void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 {
     QAbstractItemModel *model = panelTreeView()->model();
+    if(!model)
+        return;
+    
     int count = model->rowCount(root);
     QModelIndex index;
 
