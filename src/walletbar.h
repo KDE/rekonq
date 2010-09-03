@@ -30,15 +30,14 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+#include "notificationbar.h"
 
 // Qt Includes
 #include <QtCore/QUrl>
-#include <QtGui/QWidget>
 
 class QLabel;
 
-
-class REKONQ_TESTS_EXPORT WalletBar : public QWidget
+class REKONQ_TESTS_EXPORT WalletBar : public NotificationBar
 {
     Q_OBJECT
 

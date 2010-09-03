@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
-* Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Pierre Rossi <pierre dot rossi at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,42 +23,27 @@
 *
 * ============================================================ */
 
+#ifndef NOTIFICATIONBAR_H
+#define NOTIFICATIONBAR_H
 
-#ifndef PREVIEWSELECTORBAR_H
-#define PREVIEWSELECTORBAR_H
-
-// Rekonq Includes
-#include "rekonq_defines.h"
-#include "notificationbar.h"
+// Qt Includes
+#include <QWidget>
 
 // Forward Declarations
-class QLabel;
-class QPushButton;
+class QPropertyAnimation;
+class BlinkEffect;
 
-
-class REKONQ_TESTS_EXPORT PreviewSelectorBar : public NotificationBar
+class NotificationBar : public QWidget
 {
-    Q_OBJECT
-
 public:
-    PreviewSelectorBar(int index, QWidget *parent);
-    ~PreviewSelectorBar();
+    explicit NotificationBar(QWidget *parent = 0);
 
-private slots:
-    void clicked();
-
-    void loadProgress();
-    void loadFinished();
-
-    void verifyUrl();
-
-    void destroy();
+    void notifyUser(int animationDuration = 500);
 
 private:
-    QPushButton *m_button;
-    QLabel *m_label;
+    BlinkEffect *m_blinkEffect;
+    QPropertyAnimation *m_opacityAnimation;
 
-    int m_previewIndex;
 };
 
-#endif // PREVIEWSELECTORBAR_H
+#endif // NOTIFICATIONBAR_H

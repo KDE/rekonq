@@ -16,6 +16,7 @@ SET( rekonq_KDEINIT_SRCS
     mainwindow.cpp
     networkaccessmanager.cpp
     newtabpage.cpp
+    notificationbar.cpp
     paneltreeview.cpp
     previewselectorbar.cpp
     protocolhandler.cpp

@@ -51,7 +51,7 @@
 
 
 PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
-        : QWidget(parent)
+        : NotificationBar(parent)
         , m_button(0)
         , m_label(0)
         , m_previewIndex(index)
