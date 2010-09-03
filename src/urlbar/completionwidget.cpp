@@ -273,6 +273,11 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
 
             case Qt::Key_Enter:
             case Qt::Key_Return:
+                
+                // let urlbar handle Return + Modifiers
+                if(!(kev->modifiers() & Qt::NoModifier))
+                    return false;
+                
                 w = qobject_cast<UrlBar *>(parent());
                 if( _currentIndex == -1)
                     _currentIndex = 0;

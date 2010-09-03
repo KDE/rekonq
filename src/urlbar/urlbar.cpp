@@ -263,8 +263,10 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
         {
             host += append;
             url.setHost(host);
-            setText(url.toString());
         }
+        
+        // now, load it!
+        activated(url);
     }
 
     if (event->key() == Qt::Key_Escape)
