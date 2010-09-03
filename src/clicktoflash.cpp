@@ -27,6 +27,7 @@
 
 // Self Includes
 #include "clicktoflash.h"
+#include "clicktoflash.moc"
 
 // KDE Includes
 #include <KLocalizedString>

@@ -25,6 +25,7 @@
 
 // Self Includes
 #include "protocolhandler.h"
+#include "protocolhandler.moc"
 
 // Auto Includes
 #include "rekonq.h"

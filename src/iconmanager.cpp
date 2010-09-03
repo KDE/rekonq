@@ -26,6 +26,7 @@
 
 // Self Includes
 #include "iconmanager.h"
+#include "iconmanager.moc"
 
 // Local Includes
 #include "application.h"

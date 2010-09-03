@@ -27,6 +27,7 @@
 
 // Self Includes
 #include "newtabpage.h"
+#include "newtabpage.moc"
 
 // Auto Includes
 #include "rekonq.h"

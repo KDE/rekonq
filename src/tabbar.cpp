@@ -29,6 +29,7 @@
 
 //Self Includes
 #include "tabbar.h"
+#include "tabbar.moc"
 
 // Local Includes
 #include "rekonq.h"

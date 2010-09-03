@@ -29,6 +29,7 @@
 
 // Self Includes
 #include "mainview.h"
+#include "mainview.moc"
 
 // Auto Includes
 #include "rekonq.h"

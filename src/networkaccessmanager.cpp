@@ -28,6 +28,7 @@
 
 // Self Includes
 #include "networkaccessmanager.h"
+#include "networkaccessmanager.moc"
 
 // Local Includes
 #include "adblockmanager.h"

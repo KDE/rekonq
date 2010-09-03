@@ -27,6 +27,7 @@
 
 // Self Includes
 #include "findbar.h"
+#include "findbar.moc"
 
 // Local Includes
 #include "mainwindow.h"

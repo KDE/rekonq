@@ -27,6 +27,7 @@
 
 // Auto Includes
 #include "previewselectorbar.h"
+#include "previewselectorbar.moc"
 
 // Self Includes
 #include "rekonq.h"

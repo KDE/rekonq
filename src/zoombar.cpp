@@ -27,6 +27,7 @@
 
 // Self Includes
 #include "zoombar.h"
+#include "zoombar.moc"
 
 // local includes
 #include "application.h"

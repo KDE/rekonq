@@ -26,6 +26,7 @@
 
 // Self Includes
 #include "webinspectorpanel.h"
+#include "webinspectorpanel.moc"
 
 // Local Includes
 #include "mainwindow.h"

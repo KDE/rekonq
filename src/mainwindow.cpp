@@ -29,6 +29,7 @@
 
 // Self Includes
 #include "mainwindow.h"
+#include "mainwindow.moc"
 
 // Auto Includes
 #include "rekonq.h"
