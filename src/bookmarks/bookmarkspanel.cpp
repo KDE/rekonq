@@ -49,6 +49,8 @@ BookmarksPanel::BookmarksPanel(const QString &title, QWidget *parent, Qt::Window
 {
     setObjectName("bookmarksPanel");
     setVisible(ReKonfig::showBookmarksPanel());
+    panelTreeView()->setDragEnabled(true);
+    panelTreeView()->setAcceptDrops(true);
     connect(_bkTreeModel, SIGNAL(bookmarksUpdated()), this, SLOT(startLoadFoldedState()));
 }
 
