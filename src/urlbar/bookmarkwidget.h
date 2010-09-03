@@ -30,13 +30,12 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KUrl>
-#include <KBookmark>
-#include <KLineEdit>
-
 // Qt Includes
 #include <QtGui/QFrame>
+
+// Forward Declarations
+class KBookmark;
+class KLineEdit;
 
 
 class BookmarkWidget : public QFrame
@@ -45,7 +44,7 @@ class BookmarkWidget : public QFrame
 
 public:
     explicit BookmarkWidget(const KBookmark &bookmark, QWidget *parent = 0);
-    ~BookmarkWidget();
+    virtual ~BookmarkWidget();
 
     void showAt(const QPoint &pos);
 
@@ -55,9 +54,8 @@ private slots:
     void removeBookmark();
 
 private:
-    KBookmark m_bookmark;
+    KBookmark *m_bookmark;
     KLineEdit *m_name;
-
 };
 
 #endif // BOOKMARKWIDGET_H
