@@ -43,7 +43,7 @@
 
 
 WalletBar::WalletBar(QWidget *parent)
-        : QWidget(parent)
+        : NotificationBar(parent)
         , m_label(new QLabel(this))
 {
     m_label->setWordWrap(true);
