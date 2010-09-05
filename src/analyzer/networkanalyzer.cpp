@@ -162,8 +162,7 @@ void NetworkAnalyzer::requestFinished( QObject *replyObject )
     QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
     item->setText( 4, contentType );
 
-    if ( status == 302 ) 
-    {
+    if ( status == 302 ) {
         QUrl target = reply->attribute( QNetworkRequest::RedirectionTargetAttribute ).toUrl();
         item->setText( 5, i18n("Redirect: %1", target.toString() ) );
     }
