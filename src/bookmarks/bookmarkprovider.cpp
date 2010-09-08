@@ -78,6 +78,7 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
     }
 
     m_manager = KBookmarkManager::managerForFile(bookfile.path(), "rekonq");
+    m_manager->setEditorOptions("", true);
     
     connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
             this, SLOT(slotBookmarksChanged()));
