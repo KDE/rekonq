@@ -167,7 +167,9 @@ void BookmarkOwner::openBookmarkFolder(const KBookmark &bookmark)
     {
         if (KMessageBox::warningContinueCancel(
                     Application::instance()->mainWindow(),
-                    i18n("You are about to open %1 tabs.\nAre you sure?", urlList.length()))
+                    i18ncp("%1=Number of tabs. Value is always >=8",
+                           "You are about to open %1 tabs.\nAre you sure?",
+                           "You are about to open %1 tabs.\nAre you sure?", urlList.length()))
                 != KMessageBox::Continue
            )
             return;
