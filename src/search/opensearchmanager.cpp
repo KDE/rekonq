@@ -151,7 +151,6 @@ void OpenSearchManager::requestSuggestion(const QString &searchText)
     {
         disconnect(m_currentJob);
         m_currentJob->kill();
-	delete m_currentJob;
     }
     m_jobData.clear();
 
