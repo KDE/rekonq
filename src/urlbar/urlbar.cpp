@@ -112,7 +112,7 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
     connect(_tab->view(), SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
-    
+
     // bookmark icon
     connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(onBookmarksChanged()));
 
@@ -264,7 +264,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
             host += append;
             url.setHost(host);
         }
-        
+
         // now, load it!
         activated(url);
     }
@@ -360,9 +360,11 @@ void UrlBar::showBookmarkInfo(const QPoint &pos)
     {
         bookmark = Application::bookmarkProvider()->bookmarkOwner()->bookmarkCurrentPage();
     }
-
-    BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
-    widget->showAt(pos);
+    else
+    {
+        BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
+        widget->showAt(pos);
+    }
 }
 
 
