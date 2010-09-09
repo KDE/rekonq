@@ -32,18 +32,18 @@
 bool AdBlockHostMatcher::tryAddFilter(const QString &filter)
 {
     if (filter.startsWith(QL1S("||"))) {
+        
         QString domain = filter.mid(2);
 
-        const int indexOfFirstSeparator = domain.indexOf(QL1C('^'));
-        if (indexOfFirstSeparator < 0)
+        if (!domain.endsWith(QL1C('^')))
             return false;
 
-        const int indexOfLastDollar = domain.lastIndexOf(QL1C('$'));
-        if (indexOfLastDollar >= 0 && indexOfLastDollar != indexOfFirstSeparator + 1)
+        if (domain.contains(QL1C('$')))
             return false;
 
-        domain = domain.left(indexOfFirstSeparator);
-        if (domain.contains(QL1C('/')) || domain.contains(QL1C('*')))
+        domain = domain.left(domain.size() - 1);
+
+        if (domain.contains(QL1C('/')) || domain.contains(QL1C('*')) || domain.contains(QL1C('^')))
             return false;
 
         domain = domain.toLower();
