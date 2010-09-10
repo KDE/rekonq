@@ -59,6 +59,9 @@ OpenSearchManager::~OpenSearchManager()
 {
     qDeleteAll(m_enginesMap.values());
     m_enginesMap.clear();
+    
+    if(m_currentJob)
+        m_currentJob->kill();
 }
 
 
