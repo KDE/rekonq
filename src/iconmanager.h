@@ -52,6 +52,8 @@ public:
     void provideIcon(QWebPage *page, const KUrl &url, bool notify = true);
 
     void downloadIconFromUrl(const KUrl &url);
+
+    void clearIconCache();
     
 Q_SIGNALS:
     void iconChanged();

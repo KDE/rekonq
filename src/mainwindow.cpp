@@ -1182,7 +1182,7 @@ void MainWindow::clearPrivateData()
 
         if (clearWidget.clearWebIcons->isChecked())
         {
-            QWebSettings::clearIconDatabase();
+            Application::iconManager()->clearIconCache();
         }
 
         if (clearWidget.homePageThumbs->isChecked())

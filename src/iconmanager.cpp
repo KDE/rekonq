@@ -41,6 +41,8 @@
 #include <KUrl>
 
 // Qt Includes
+#include <QtCore/QDir>
+
 #include <QtWebKit/QWebElement>
 #include <QtWebKit/QWebFrame>
 #include <QtWebKit/QWebSettings>
@@ -172,4 +174,16 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
 void IconManager::downloadIconFromUrl(const KUrl &url)
 {
     new WebIcon(url, this);
+}
+
+
+void IconManager::clearIconCache()
+{
+    QString faviconDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
+    QDir d(faviconDir);
+    QStringList favicons = d.entryList();
+    Q_FOREACH(const QString &fav, favicons)
+    {
+        d.remove(fav);
+    }
 }
