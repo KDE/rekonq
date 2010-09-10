@@ -36,6 +36,7 @@
 // Forward Declarations
 class KIcon;
 class QWebPage;
+class KJob;
 
 
 class REKONQ_TESTS_EXPORT IconManager : public QObject
@@ -51,7 +52,7 @@ public:
     void provideIcon(QWebPage *page, const KUrl &url, bool notify = true);
 
     void downloadIconFromUrl(const KUrl &url);
-
+    
 Q_SIGNALS:
     void iconChanged();
 };

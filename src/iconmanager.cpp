@@ -43,6 +43,7 @@
 // Qt Includes
 #include <QtWebKit/QWebElement>
 #include <QtWebKit/QWebFrame>
+#include <QtWebKit/QWebSettings>
 
 
 IconManager::IconManager(QObject *parent)
@@ -62,6 +63,10 @@ KIcon IconManager::iconForUrl(const KUrl &url)
     if (url.isEmpty() || Application::instance()->mainWindowList().isEmpty())
         return KIcon("text-html");
 
+    // no icons in private browsing..
+    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+        return KIcon("view-media-artist");
+    
     QByteArray encodedUrl = url.toEncoded();
     // rekonq icons..
     if (encodedUrl == QByteArray("about:home"))
@@ -96,12 +101,24 @@ KIcon IconManager::iconForUrl(const KUrl &url)
 
 void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
 {
-    if(url.scheme() == QL1S("about"))
+    // provide icons just for http/https sites
+    if( !url.scheme().startsWith(QL1S("http")) )
     {
-        kDebug() << "URL: " << url << ". about scheme. Aborting...";
+        kDebug() << "No http/https site...";
+        if(notify)
+            emit iconChanged();
         return;
     }
 
+    // no icons in private browsing..
+    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    {
+        kDebug() << "Private browsing, private icon...";
+        if(notify)
+            emit iconChanged();
+        return;
+    }
+    
     QUrl u(url.url());
     QString rootUrlString = u.toString(  QUrl::RemovePassword
                                        | QUrl::RemoveUserInfo
@@ -142,14 +159,11 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     QString faviconDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
 
     int r = rootUrlString.indexOf(':');
-    kDebug() << rootUrlString;
-    kDebug() << r;
-
     KUrl destUrl(faviconDir + rootUrlString.mid(r+3) + ".png");
     kDebug() << "DEST URL: " << destUrl;
 
     // download icon
-    KIO::Job *job = KIO::file_copy(iconUrl, destUrl, -1, KIO::HideProgressInfo);
+    KIO::FileCopyJob *job = KIO::file_copy(iconUrl, destUrl, -1, KIO::HideProgressInfo);
     if(notify)
         connect(job, SIGNAL(result(KJob*)), this, SIGNAL(iconChanged()));
 }
