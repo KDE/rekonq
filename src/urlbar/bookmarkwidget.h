@@ -27,9 +27,6 @@
 #ifndef BOOKMARKWIDGET_H
 #define BOOKMARKWIDGET_H
 
-// Rekonq Includes
-#include "rekonq_defines.h"
-
 // Qt Includes
 #include <QtGui/QMenu>
 
@@ -50,7 +47,6 @@ public:
 
 private slots:
     void accept();
-    void reject();
     void removeBookmark();
 
 private:

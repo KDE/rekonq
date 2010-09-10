@@ -64,10 +64,7 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     // Title
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     QLabel *bookmarkInfo = new QLabel(this);
-    bookmarkInfo->setText(i18n("Edit this Bookmark"));
-    QFont font;
-    font.setPointSize(font.pointSize() + 2);
-    bookmarkInfo->setFont(font);
+    bookmarkInfo->setText(i18n("<h4>Edit this Bookmark</h4>"));
     bookmarkInfo->setAlignment(Qt::AlignCenter);
     vLayout->addWidget(bookmarkInfo);
 
@@ -113,7 +110,9 @@ BookmarkWidget::~BookmarkWidget()
 
 void BookmarkWidget::showAt(const QPoint &pos)
 {
-    QPoint p(pos.x()-350, pos.y()+12);
+    adjustSize();
+
+    QPoint p(pos.x()-width(), pos.y()+10);
     move(p);
     show();
 }
@@ -126,12 +125,6 @@ void BookmarkWidget::accept()
         m_bookmark->setFullText(m_name->text());
         Application::bookmarkProvider()->bookmarkManager()->emitChanged();
     }
-    reject();
-}
-
-
-void BookmarkWidget::reject()
-{
     close();
 }
 
@@ -139,5 +132,5 @@ void BookmarkWidget::reject()
 void BookmarkWidget::removeBookmark()
 {
     Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(*m_bookmark);
-    reject();
+    close();
 }
