@@ -31,14 +31,14 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QtGui/QFrame>
+#include <QtGui/QMenu>
 
 // Forward Declarations
 class KBookmark;
 class KLineEdit;
 
 
-class BookmarkWidget : public QFrame
+class BookmarkWidget : public QMenu
 {
     Q_OBJECT
 

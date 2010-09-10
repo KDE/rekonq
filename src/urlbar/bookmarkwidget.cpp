@@ -46,12 +46,11 @@
 
 
 BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
-        : QFrame(parent, Qt::Popup)
+        : QMenu(parent)
         , m_bookmark(new KBookmark(bookmark))
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setFixedWidth(350);
-    setFrameStyle(QFrame::Panel);
 
     QFormLayout *layout = new QFormLayout(this);
 
