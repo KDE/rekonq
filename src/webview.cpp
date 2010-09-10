@@ -427,7 +427,7 @@ void WebView::search()
     KService::Ptr engine = KService::serviceByDesktopPath(a->data().toString());
     KUrl urlSearch = KUrl(SearchEngine::buildQuery(engine, selectedText()));
 
-    emit loadUrl(urlSearch, Rekonq::NewFocusedTab);
+    emit loadUrl(urlSearch, Rekonq::NewTab);
 }
 
 
