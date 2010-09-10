@@ -99,7 +99,7 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     buttonBox->addButton(addFeed, QDialogButtonBox::AcceptRole);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
 
     layout->addRow(buttonBox);
 
