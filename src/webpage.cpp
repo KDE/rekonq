@@ -208,7 +208,6 @@ WebPage::WebPage(QWidget *parent)
     // ----- last stuffs
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
-    connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
 
     // protocol handler signals
     connect(&_protHandler, SIGNAL(downloadUrl(const KUrl &)), this, SLOT(downloadUrl(const KUrl &)));
@@ -472,15 +471,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 }
 
 
-void WebPage::loadStarted()
-{
-    Application::iconManager()->provideIcon(this, _loadingUrl);
-}
-
-
 void WebPage::loadFinished(bool ok)
 {
     Q_UNUSED(ok);
+    Application::iconManager()->provideIcon(this, _loadingUrl);
 
 
     Application::adblockManager()->applyHidingRules(this);
