@@ -321,6 +321,7 @@ WebTab *MainView::newWebTab(bool focused)
     connect(tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
     connect(tab->view(), SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
     connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
+    connect(tab->view(), SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
 
     // connecting webPage signals with mainview
     connect(tab->view()->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
@@ -631,6 +632,7 @@ void MainView::previousTab()
     setCurrentIndex(next);
 }
 
+
 void MainView::openClosedTabs()
 {
     foreach (const HistoryItem &item, recentlyClosedTabs())
@@ -639,6 +641,7 @@ void MainView::openClosedTabs()
     }
     m_recentlyClosedTabs.clear();
 }
+
 
 void MainView::openClosedTab()
 {
@@ -654,6 +657,7 @@ void MainView::openClosedTab()
     }
 }
 
+
 void MainView::switchToTab()
 {
     // uses the sender to determine the tab index
@@ -664,6 +668,7 @@ void MainView::switchToTab()
         return;
     setCurrentIndex( index );
 }
+
 
 QLabel *MainView::animatedLoading(int index, bool addMovie)
 {

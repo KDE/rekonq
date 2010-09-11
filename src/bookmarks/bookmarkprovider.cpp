@@ -237,7 +237,7 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
         {
             KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, this);
             action->setIconText(action->iconText().replace('&', "&&"));
-            action->setIcon(Application::iconManager()->iconForUrl(bookmark.url()));
+            action->setIcon(Application::iconManager()->iconForUrl( KUrl(bookmark.url()) ));
             connect(action, SIGNAL(hovered()), toolBar, SLOT(actionHovered()));
             toolBar->toolBar()->addAction(action);
             toolBar->toolBar()->widgetForAction(action)->installEventFilter(toolBar);

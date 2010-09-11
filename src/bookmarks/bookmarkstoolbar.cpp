@@ -91,7 +91,7 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
     else
     {
         KBookmarkAction *action = new KBookmarkAction(bookmark, owner(), this);
-        action->setIcon(Application::iconManager()->iconForUrl(bookmark.url()));
+        action->setIcon(Application::iconManager()->iconForUrl( KUrl(bookmark.url()) ));
         connect(action, SIGNAL(hovered()), this, SLOT(actionHovered()));
         return action;
     }
