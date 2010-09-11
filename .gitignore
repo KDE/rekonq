@@ -1,4 +1,4 @@
-releases
+releases/
 src/.ctagsdb
 *.*~
 *.kdev4
@@ -8,3 +8,4 @@ build/
 qtcreator-build/
 CMakeLists.txt.user
 CMakeCache.txt
+debug.log
