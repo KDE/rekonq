@@ -149,7 +149,7 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
 
     if(!relUrlString.isEmpty())
     {
-        faviconUrl = relUrlString.startsWith("http")
+        faviconUrl = relUrlString.startsWith(QLatin1String("http"))
                     ? KUrl(relUrlString)
                     : KUrl(rootUrlString + QL1C('/') + relUrlString) ;
     }

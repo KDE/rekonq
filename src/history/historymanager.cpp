@@ -240,7 +240,7 @@ QList<HistoryItem> HistoryManager::find(const QString &text)
         int index = m_historyFilterModel->historyLocation(url);
         HistoryItem item = m_history.at(index);
 
-        QStringList words = text.split(" ");
+        QStringList words = text.split(' ');
         bool matches = true;
         foreach (const QString &word, words)
         {
