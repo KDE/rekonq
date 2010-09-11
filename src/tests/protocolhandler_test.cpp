@@ -21,12 +21,6 @@
 
 #include <qtest_kde.h>
 
-#include <QtCore>
-#include <QtGui>
-#include <QtTest>
-#include <QtNetwork>
-#include <QtWebKit>
-
 #include "protocolhandler.h"
 
 

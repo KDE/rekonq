@@ -27,10 +27,6 @@
 
 #include <qtest_kde.h>
 
-#include <QtCore>
-#include <QtGui>
-#include <QtTest>
-
 #include "mainwindow.h"
 #include "mainview.h"
 #include "webview.h"

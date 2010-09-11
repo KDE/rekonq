@@ -21,11 +21,6 @@
 
 #include <qtest_kde.h>
 
-#include <QtCore>
-#include <QtGui>
-#include <QtTest>
-#include <QtWebKit>
-
 #include "webview.h"
 #include "webtab.h"
 

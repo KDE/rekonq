@@ -20,10 +20,6 @@
 
 #include <qtest_kde.h>
 
-#include <QtTest>
-#include <QtCore>
-#include <QtGui>
-
 #include "mainwindow.h"
 #include "mainview.h"
 #include "tabbar.h"

@@ -21,7 +21,6 @@
 
 #include <qtest_kde.h>
 
-#include <QtGui>
 #include <QtTest/QtTest>
 
 #include "findbar.h"
