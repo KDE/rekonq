@@ -138,7 +138,6 @@ void UrlBar::setQUrl(const QUrl& url)
 {
     if (url.scheme() == QL1S("about"))
     {
-        _icon->setIcon(KIcon("arrow-right"));
         clear();
         setFocus();
     }
@@ -503,5 +502,10 @@ void UrlBar::suggest()
 
 void UrlBar::refreshFavicon()
 {
-    _icon->setIcon(Application::iconManager()->iconForUrl(_tab->view()->url()));
+    KUrl u = _tab->url();
+    if(u.scheme() == QL1S("about")) {
+        _icon->setIcon(KIcon("arrow-right"));
+        return;
+    }
+    _icon->setIcon(Application::iconManager()->iconForUrl(u));
 }
