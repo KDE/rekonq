@@ -266,7 +266,7 @@ void BookmarkProvider::find(QList<KBookmark> *list, const KBookmark &bookmark, c
     }
     else
     {
-        QStringList words = text.split(" ");
+        QStringList words = text.split(' ');
         bool matches = true;
         foreach (const QString &word, words)
         {

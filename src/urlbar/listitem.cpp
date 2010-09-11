@@ -209,7 +209,7 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
         : QLabel(parent)
 {
     QString t = text;
-    const bool wasItalic = t.startsWith("<i>");
+    const bool wasItalic = t.startsWith(QL1S("<i>"));
     if (wasItalic)
         t.remove(QRegExp("<[/ib]*>"));
 
