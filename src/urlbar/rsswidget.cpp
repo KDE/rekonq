@@ -30,42 +30,40 @@
 
 // Local includes
 #include "application.h"
+#include "iconmanager.h"
 #include "mainwindow.h"
 #include "webtab.h"
-#include "webview.h"
-#include "iconmanager.h"
 
 // KDE Includes
+#include <KComboBox>
 #include <KLocalizedString>
-#include <KIcon>
-#include <KProcess>
 #include <KMessageBox>
+#include <KProcess>
+#include <KUrl>
 
 // Qt Includes
-#include <QtGui/QFormLayout>
+#include <QtDBus/QDBusConnectionInterface>
+#include <QtDBus/QDBusInterface>
+
 #include <QtGui/QDialogButtonBox>
+#include <QtGui/QFormLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 
-#include <QtDBus/QDBusInterface>
-#include <QtDBus/QDBusConnectionInterface>
-
-
 
 RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
-        : QFrame(parent, Qt::Popup)
+        : QMenu(parent)
         , m_map(map)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    
-    setMinimumWidth(200);
-    setFrameStyle(Panel);
+    setMinimumWidth(250);
 
     QFormLayout *layout = new QFormLayout(this);
-    setLayout(layout);
 
+    // Title
     QLabel *title = new QLabel(this);
     title->setText(i18n("<h4>Subscribe to RSS Feeds</h4>"));
+    title->setAlignment(Qt::AlignCenter);
     layout->addRow(title);
 
     // Agregators
@@ -74,7 +72,7 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
 
     m_agregators = new KComboBox(this);
     m_agregators->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    
+
     m_agregators->addItem(KIcon("akregator"), QString("Akregator"));
     m_agregators->addItem(Application::iconManager()->iconForUrl(KUrl("http://google.com/reader")), i18n("Google Reader"));
 
@@ -91,37 +89,34 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     {
         m_feeds->addItem(title);
     }
-    
+
     layout->addRow(feed, m_feeds);
 
     // Buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel, Qt::Horizontal, this);
-    
+
     QPushButton *addFeed = new QPushButton(KIcon("list-add"), i18n("Add Feed"), buttonBox);
     buttonBox->addButton(addFeed, QDialogButtonBox::AcceptRole);
-    
+
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
 
     layout->addRow(buttonBox);
+
+    setLayout(layout);
 }
 
 
 RSSWidget::~RSSWidget()
 {
-    delete m_agregators;
-    delete m_feeds;
 }
 
 
 void RSSWidget::showAt(const QPoint &pos)
 {
     adjustSize();
-    
-    QPoint p;
-    p.setX(pos.x() - width());
-    p.setY(pos.y() + 10);
-    
+
+    QPoint p(pos.x()-width(), pos.y()+10);
     move(p);
     show();
 }
@@ -136,14 +131,7 @@ void RSSWidget::accept()
     else
         addWithGoogleReader(url);
 
-    reject();
-}
-
-
-void RSSWidget::reject()
-{
     close();
-    this->deleteLater();
 }
 
 
@@ -179,6 +167,5 @@ void RSSWidget::addWithAkregator(const QString &url)
             KMessageBox::error(0, QString(i18n("There was an error. Please verify Akregator is installed on your system.")
                                           + "<br /><br /> <a href=\"" + url + "\">" + url + "</a>"));
         }
-
     }
 }

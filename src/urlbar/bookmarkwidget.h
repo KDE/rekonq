@@ -27,37 +27,31 @@
 #ifndef BOOKMARKWIDGET_H
 #define BOOKMARKWIDGET_H
 
-// Rekonq Includes
-#include "rekonq_defines.h"
-
-// KDE Includes
-#include <KUrl>
-#include <KBookmark>
-#include <KLineEdit>
-
 // Qt Includes
-#include <QtGui/QFrame>
+#include <QtGui/QMenu>
+
+// Forward Declarations
+class KBookmark;
+class KLineEdit;
 
 
-class BookmarkWidget : public QFrame
+class BookmarkWidget : public QMenu
 {
     Q_OBJECT
 
 public:
     explicit BookmarkWidget(const KBookmark &bookmark, QWidget *parent = 0);
-    ~BookmarkWidget();
+    virtual ~BookmarkWidget();
 
     void showAt(const QPoint &pos);
 
 private slots:
     void accept();
-    void reject();
     void removeBookmark();
 
 private:
-    KBookmark m_bookmark;
+    KBookmark *m_bookmark;
     KLineEdit *m_name;
-
 };
 
 #endif // BOOKMARKWIDGET_H

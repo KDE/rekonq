@@ -27,20 +27,15 @@
 #ifndef RSSWIDGET_H
 #define RSSWIDGET_H
 
-// Rekonq Includes
-#include "rekonq_defines.h"
-
-// KDE Includes
-#include <KComboBox>
-#include <KUrl>
-
 // Qt Includes
-#include <QtCore/QMap>
+#include <QtGui/QMenu>
 
-#include <QtGui/QFrame>
+// Forward Declarations
+class KComboBox;
+class KUrl;
 
 
-class RSSWidget : public QFrame
+class RSSWidget : public QMenu
 {
     Q_OBJECT
 
@@ -48,13 +43,12 @@ public:
     // QMap< feedUrl, feedTitle>
     RSSWidget(const QMap<KUrl, QString> &map, QWidget *parent = 0);
     ~RSSWidget();
-    
+
     void showAt(const QPoint &pos);
 
 private slots:
     void accept();
-    void reject();
-    
+
 private:
     void addWithAkregator(const QString &url);
     void addWithGoogleReader(const QString &url);

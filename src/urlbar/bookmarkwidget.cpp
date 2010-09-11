@@ -35,124 +35,105 @@
 
 // KDE Includes
 #include <KLocalizedString>
+#include <KIcon>
 #include <KLineEdit>
-#include <KMessageBox>
 
 // Qt Includes
-#include <QtGui/QFormLayout>
 #include <QtGui/QDialogButtonBox>
+#include <QtGui/QFormLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 
 
-
 BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
-        : QFrame(parent, Qt::Popup)
-        , m_bookmark(bookmark)
+        : QMenu(parent)
+        , m_bookmark(new KBookmark(bookmark))
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setFixedWidth(350);
-    setFrameStyle(QFrame::Panel);
 
     QFormLayout *layout = new QFormLayout(this);
-    setLayout(layout);
 
-    QHBoxLayout *hLayout = new QHBoxLayout();
-
+    // Bookmark icon
+    QHBoxLayout *hLayout = new QHBoxLayout(this);
     QLabel *bookmarkIcon = new QLabel(this);
     bookmarkIcon->setPixmap(KIcon("bookmarks").pixmap(32, 32));
-    hLayout->addWidget(bookmarkIcon);
     hLayout->setSpacing(10);
+    hLayout->addWidget(bookmarkIcon);
 
-    QVBoxLayout *vLayout = new QVBoxLayout();
-
+    // Title
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
     QLabel *bookmarkInfo = new QLabel(this);
     bookmarkInfo->setText(i18n("Edit this Bookmark"));
     QFont font;
     font.setPointSize(font.pointSize() + 2);
     bookmarkInfo->setFont(font);
-
+    bookmarkInfo->setAlignment(Qt::AlignCenter);
     vLayout->addWidget(bookmarkInfo);
 
+    // Remove button
     QPushButton *removeButton = new QPushButton(this);
     removeButton->setText(i18n("Remove this Bookmark"));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(removeBookmark()));
-
     vLayout->addWidget(removeButton);
+
     hLayout->addLayout(vLayout);
     layout->addItem(hLayout);
 
-
+    // Bookmark name
     QLabel *nameLabel = new QLabel(this);
     nameLabel->setText(i18n("Name:"));
-
     m_name = new KLineEdit(this);
-    if (m_bookmark.isNull())
+    if (m_bookmark->isNull())
     {
         m_name->setEnabled(false);
     }
     else
     {
-        m_name->setText(m_bookmark.text());
+        m_name->setText(m_bookmark->text());
         m_name->setFocus();
     }
-
     layout->addRow(nameLabel, m_name);
 
-    QLabel *urlLabel = new QLabel(this);
-    urlLabel->setText("URL:");
-
-    KLineEdit *url = new KLineEdit(this);
-    url->setText(m_bookmark.url().url());
-    url->setEnabled(false);
-
-    layout->addRow(urlLabel, url);
-
+    // Ok & Cancel buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
-    buttonBox->button(QDialogButtonBox::Ok)->setText(i18n("Done"));
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
     layout->addWidget(buttonBox);
+
+    setLayout(layout);
 }
 
 
 BookmarkWidget::~BookmarkWidget()
 {
-    delete m_name;
-}
-
-
-void BookmarkWidget::accept()
-{
-    if (!m_bookmark.isNull() && m_name->text() != m_bookmark.fullText())
-    {
-        m_bookmark.setFullText(m_name->text());
-        Application::bookmarkProvider()->bookmarkManager()->emitChanged();
-    }
-    reject();
-}
-
-
-void BookmarkWidget::reject()
-{
-    close();
-    deleteLater();
+    delete m_bookmark;
 }
 
 
 void BookmarkWidget::showAt(const QPoint &pos)
 {
-    QPoint p;
-    p.setX(pos.x() - 350);
-    p.setY(pos.y() + 12);
+    adjustSize();
+
+    QPoint p(pos.x()-width(), pos.y()+10);
     move(p);
     show();
 }
 
 
+void BookmarkWidget::accept()
+{
+    if (!m_bookmark->isNull() && m_name->text() != m_bookmark->fullText())
+    {
+        m_bookmark->setFullText(m_name->text());
+        Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+    }
+    close();
+}
+
+
 void BookmarkWidget::removeBookmark()
 {
-    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(m_bookmark);
-    reject();
+    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(*m_bookmark);
+    close();
 }
