@@ -22,13 +22,13 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 * ============================================================ */
+#include "notificationbar.h"
+
 #include <QApplication>
 #include <QColor>
 #include <QGraphicsEffect>
 #include <QPainter>
 #include <QPropertyAnimation>
-
-#include "notificationbar.h"
 
 
 class BlinkEffect : public QGraphicsEffect
