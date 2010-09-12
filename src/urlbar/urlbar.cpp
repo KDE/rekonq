@@ -89,9 +89,6 @@ UrlBar::UrlBar(QWidget *parent)
     // doesn't show the clear button
     setClearButtonShown(false);
 
-    // trap Key_Enter & Key_Return events, while emitting the returnPressed signal
-    setTrapReturnKey(true);
-
     // insert decoded URLs
     setUrlDropsEnabled(true);
 
@@ -115,9 +112,6 @@ UrlBar::UrlBar(QWidget *parent)
 
     // bookmark icon
     connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(onBookmarksChanged()));
-
-    // load typed urls
-    connect(this, SIGNAL(returnPressed(const QString &)), this, SLOT(loadTyped(const QString &)));
 
     _suggestionTimer->setSingleShot(true);
     connect(_suggestionTimer, SIGNAL(timeout()), this, SLOT(suggest()));
@@ -241,7 +235,8 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     // this handles the Modifiers + Return key combinations
     QString currentText = text().trimmed();
     if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-            && !currentText.startsWith(QL1S("http://"), Qt::CaseInsensitive))
+            && !currentText.startsWith(QL1S("http://"), Qt::CaseInsensitive)
+            && event->modifiers() != Qt::NoModifier)
     {
         QString append;
         if (event->modifiers() == Qt::ControlModifier)
@@ -257,19 +252,28 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
             append = QL1S(".net");
         }
 
-        QUrl url(QL1S("http://www.") + currentText);
-        QString host = url.host();
-        if (!host.endsWith(append, Qt::CaseInsensitive))
+        if (!append.isEmpty())
         {
-            host += append;
-            url.setHost(host);
-        }
+            QUrl url(QL1S("http://www.") + currentText);
+            QString host = url.host();
+            if (!host.endsWith(append, Qt::CaseInsensitive))
+            {
+                host += append;
+                url.setHost(host);
+            }
 
-        // now, load it!
-        activated(url);
+            // now, load it!
+            activated(url);
+        }
     }
 
-    if (event->key() == Qt::Key_Escape)
+    else if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+                && !currentText.isEmpty())
+    {
+        loadTyped(currentText);
+    }
+
+    else if (event->key() == Qt::Key_Escape)
     {
         clearFocus();
         event->accept();
