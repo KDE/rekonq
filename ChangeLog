@@ -1,6 +1,16 @@
 Please, refer to http://techbase.kde.org/Projects/rekonq/Roadmap page
 to track all features available on new rekonq releases.
 
+0.6
+- AdBlock performance improvements
+- UrlBar Improvements
+- Suggestions
+- History Review
+- zoom slide bar
+- apt scheme support
+- bookmarks improvements
+- smooth scrolling
+
 0.5
 - Ad-Block Improvements (automatic list update, abp scheme support)
 - Awesome UrlBar (Tech Preview)
