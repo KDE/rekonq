@@ -4,7 +4,7 @@
 #
 # 1. Update the lists of the ready (about 80%) translations
 # check the situation here: http://l10n.kde.org/stats/gui/trunk-kde4/po/rekonq.po/
-LIST="pt_BR en_GB ca zh_CN cs da nl fr gl de hu it nds pl pt ru sr es sv tr uk"
+LIST="ar ast be bg bn bn_IN ca ca@valencia cs csb da de el en_GB eo es et eu fi fr fy ga gl gu he hi hr hu ia id is it ja ka kk km kn ko ku lt lv mai mk ml mr ms nb nds nl nn or pa pl pt pt_BR ro ru se si sk sl sr sv ta te tg th tr uk uz@cyrillic wa zh_CN zh_TW"
 
 # 2. run this script. It will create an i18n dir in rekonq sources ($RK_SRCS variable, set it to your source path) 
 # dir with all the listed translations (eg: italian translation = rekonq_it.po file) 
@@ -19,9 +19,6 @@ RK_SRCS=/DATI/KDE/SRC/rekonq
 
 ########################################################################################################
 
-# exit on most errors
-set -e
-
 # current dir
 CWD=$(pwd)
 
@@ -33,8 +30,37 @@ cd i18n
 # download the po files
 for lang in $LIST
 do
-  wget http://websvn.kde.org/*checkout*/trunk/l10n-kde4/$lang/messages/extragear-network/rekonq.po;
-  mv rekonq.po rekonq_$lang.po;
+    wget http://websvn.kde.org/*checkout*/trunk/l10n-kde4/$lang/messages/extragear-network/rekonq.po
+    
+    if [ -a rekonq.po ]; then
+        mv rekonq.po rekonq_$lang.po
+    
+        # retrieve the statistic string
+        STATS=$(msgfmt --statistic rekonq_$lang.po 2>&1)
+        rm messages.mo
+
+        # grep out translated & untranslated strings number
+        TRANS=$(echo $STATS | awk '{print $1}')
+        TRANS=${TRANS:-0}
+        FUZZ=$(echo $STATS | awk '{print $4}')
+        FUZZ=${FUZZ:-0}
+        UNTR=$(echo $STATS | awk '{print $7}')
+        UNTR=${UNTR:-0}
+
+        # check if perc is more than 80%
+        TOT=$[$TRANS+$FUZZ+$UNTR]
+        if [ $TOT -eq 0 ]; then
+            rm rekonq_$lang.po
+        else
+            PERC=$(echo $TRANS/$TOT | bc -l)
+
+            RESULT=$(echo $PERC '>' .80 | bc -l)
+            if [ $RESULT -eq 0 ]; then 
+                echo removing $lang...
+                rm rekonq_$lang.po
+            fi
+        fi
+    fi
 done
 
 # create the CMakeLists.txt file for the translations
