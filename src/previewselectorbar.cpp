@@ -31,6 +31,7 @@
 
 // Self Includes
 #include "rekonq.h"
+#include "websnap.h"
 
 // Local Include
 #include "application.h"
@@ -126,6 +127,11 @@ void PreviewSelectorBar::clicked()
         KUrl url = page->mainFrame()->url();
         QStringList names = ReKonfig::previewNames();
         QStringList urls = ReKonfig::previewUrls();
+        //cleanup the previous image from the cache (useful to refresh the snapshot)
+        QFile::remove(WebSnap::imagePathFromUrl(urls.at(m_previewIndex)));
+        page->mainFrame()->setScrollBarValue(Qt::Vertical, 0);
+        QPixmap preview = WebSnap::renderPagePreview(*page);
+        preview.save(WebSnap::imagePathFromUrl(url));
 
         urls.replace(m_previewIndex, url.toMimeDataString());
         names.replace(m_previewIndex, page->mainFrame()->title());
