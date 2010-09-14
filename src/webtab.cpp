@@ -129,19 +129,20 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
     if (blackList.contains(urlString))
         return;
 
+    KWebWallet *wallet = page()->wallet();
     if(_walletBar.isNull()) {
         _walletBar = new WalletBar(this);
-        KWebWallet *wallet = page()->wallet();
         _walletBar.data()->onSaveFormData(key, url);
         qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, _walletBar.data() );
-
-        connect(_walletBar.data(), SIGNAL(saveFormDataAccepted(const QString &)),
-                wallet, SLOT(acceptSaveFormDataRequest(const QString &)));
-        connect(_walletBar.data(), SIGNAL(saveFormDataRejected(const QString &)),
-                wallet, SLOT(rejectSaveFormDataRequest(const QString &)));
     } else {
+        disconnect(wallet);
         _walletBar.data()->notifyUser();
     }
+
+    connect(_walletBar.data(), SIGNAL(saveFormDataAccepted(const QString &)),
+            wallet, SLOT(acceptSaveFormDataRequest(const QString &)), Qt::UniqueConnection);
+    connect(_walletBar.data(), SIGNAL(saveFormDataRejected(const QString &)),
+            wallet, SLOT(rejectSaveFormDataRequest(const QString &)), Qt::UniqueConnection);
 }
 
 
@@ -150,14 +151,16 @@ void WebTab::createPreviewSelectorBar(int index)
     if(_previewSelectorBar.isNull()) {
         _previewSelectorBar = new PreviewSelectorBar(index, this);
         qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, _previewSelectorBar.data());
-
-        connect(page(),             SIGNAL(loadStarted()),      _previewSelectorBar.data(), SLOT(loadProgress()));
-        connect(page(),             SIGNAL(loadProgress(int)),  _previewSelectorBar.data(), SLOT(loadProgress()));
-        connect(page(),             SIGNAL(loadFinished(bool)), _previewSelectorBar.data(), SLOT(loadFinished()));
-        connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  _previewSelectorBar.data(), SLOT(verifyUrl()));
     } else {
+        disconnect(_previewSelectorBar.data());
+        _previewSelectorBar.data()->setIndex(index);
         _previewSelectorBar.data()->notifyUser();
     }
+
+    connect(page(),             SIGNAL(loadStarted()),      _previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
+    connect(page(),             SIGNAL(loadProgress(int)),  _previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
+    connect(page(),             SIGNAL(loadFinished(bool)), _previewSelectorBar.data(), SLOT(loadFinished()), Qt::UniqueConnection);
+    connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  _previewSelectorBar.data(), SLOT(verifyUrl()), Qt::UniqueConnection);
 }
 
 
