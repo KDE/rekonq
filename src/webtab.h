@@ -42,6 +42,7 @@
 class UrlBar;
 class PreviewSelectorBar;
 class WalletBar;
+class NotificationBar;
 
 
 class REKONQ_TESTS_EXPORT WebTab : public QWidget
@@ -59,6 +60,7 @@ public:
 
     KUrl url();
     void createPreviewSelectorBar(int index);
+    void insertBar(NotificationBar* bar);
 
     bool hasRSSInfo();
 

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010 by Pierre Rossi <pierre dot rossi at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -23,47 +23,56 @@
 *
 * ============================================================ */
 
-
-#ifndef WALLET_BAR_H
-#define WALLET_BAR_H
-
+#ifndef MESSAGEBAR_H
+#define MESSAGEBAR_H
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 #include "notificationbar.h"
 
 // Qt Includes
-#include <QtCore/QUrl>
+#include <QMessageBox>
 
+// Forward Declarations
 class QLabel;
+class QPushButton;
 
-class REKONQ_TESTS_EXPORT WalletBar : public NotificationBar
+
+class REKONQ_TESTS_EXPORT MessageBar : public NotificationBar
 {
     Q_OBJECT
 
+    Q_FLAGS(StandardButtons);
+
 public:
-    WalletBar(QWidget *parent);
-    ~WalletBar();
 
-private slots:
+    enum StandardButton {
+        NoButton = 0x00000000,
+        Ok       = 0x00000001,
+        Cancel   = 0x00000002,
+        Yes      = 0x00000004,
+        No       = 0x00000008,
+        Continue = 0x00000010
+    };
 
-    void rememberData();
-    void neverRememberData();
-    void notNowRememberData();
+    Q_DECLARE_FLAGS(StandardButtons, StandardButton)
 
-public slots:
-    void onSaveFormData(const QString &, const QUrl &);
+    explicit MessageBar(const QString & message, QWidget *parent
+                                , QMessageBox::Icon icon = QMessageBox::NoIcon
+                                , StandardButtons buttons = NoButton);
+    ~MessageBar();
 
-signals:
-    void saveFormDataAccepted(const QString &);
-    void saveFormDataRejected(const QString &);
+Q_SIGNALS:
+    void accepted();
+    void rejected();
 
 private:
+    QLabel *m_icon;
+    QLabel *m_text;
+    QList<QPushButton *> m_buttons;
 
-    QString m_key;
-    QUrl m_url;
-
-    QLabel *m_label;
 };
 
-#endif // WALLET_BAR_H
+Q_DECLARE_OPERATORS_FOR_FLAGS(MessageBar::StandardButtons)
+
+#endif // MESSAGEBAR_H

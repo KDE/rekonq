@@ -148,7 +148,6 @@ void UrlBar::setQUrl(const QUrl& url)
 void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 {
     activateSuggestions(false);
-
     clearFocus();
     setUrl(url);
     Application::instance()->loadUrl(url, type);

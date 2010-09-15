@@ -165,6 +165,11 @@ void WebTab::createPreviewSelectorBar(int index)
     connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  _previewSelectorBar.data(), SLOT(verifyUrl()), Qt::UniqueConnection);
 }
 
+void WebTab::insertBar(NotificationBar *bar)
+{
+    qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, bar);
+}
+
 
 bool WebTab::hasRSSInfo()
 {
