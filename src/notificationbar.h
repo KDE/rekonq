@@ -37,8 +37,9 @@ class NotificationBar : public QWidget
 {
 public:
     explicit NotificationBar(QWidget *parent = 0);
+    ~NotificationBar();
 
-    void notifyUser(int animationDuration = 500);
+    void notifyUser(int animationDuration = 400);
 
 private:
     BlinkEffect *m_blinkEffect;

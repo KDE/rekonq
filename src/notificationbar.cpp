@@ -74,6 +74,12 @@ NotificationBar::NotificationBar(QWidget *parent)
     setGraphicsEffect(m_blinkEffect);
 }
 
+NotificationBar::~NotificationBar()
+{
+    delete m_opacityAnimation;
+    delete m_blinkEffect;
+}
+
 void NotificationBar::notifyUser(int animationDuration)
 {
     m_opacityAnimation->setDuration(animationDuration);
