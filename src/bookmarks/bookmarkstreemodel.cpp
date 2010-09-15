@@ -268,7 +268,7 @@ QVariant BookmarksTreeModel::data(const QModelIndex &index, int role) const
 
 QStringList BookmarksTreeModel::mimeTypes() const
 {
-    return KBookmark::List::mimeDataTypes();
+    return QStringList("application/rekonq-bookmark");
 }
 
 
