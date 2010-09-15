@@ -58,14 +58,15 @@ KUrl FilterUrlJob::url()
 
 void FilterUrlJob::run()
 {
-    // this should let rekonq filtering URI info and supporting
-    // the beautiful KDE web browsing shortcuts
-
+    // Bookmarklets handling
     if (_urlString.startsWith("javascript:"))
     {
         _url = KUrl(_urlString);
         return;
     }
+
+    // this should let rekonq filtering URI info and supporting
+    // the beautiful KDE web browsing shortcuts
     KUriFilterData data(_urlString);
     data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
 
