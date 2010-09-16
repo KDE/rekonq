@@ -58,6 +58,13 @@ KUrl FilterUrlJob::url()
 
 void FilterUrlJob::run()
 {
+    // Bookmarklets handling
+    if (_urlString.startsWith("javascript:"))
+    {
+        _url = KUrl(_urlString);
+        return;
+    }
+
     // this should let rekonq filtering URI info and supporting
     // the beautiful KDE web browsing shortcuts
     KUriFilterData data(_urlString);

@@ -278,33 +278,25 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         else if (event->type() == QEvent::DragEnter)
         {
             QDragEnterEvent *dragEvent = static_cast<QDragEnterEvent*>(event);
-            if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark"))
+            if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark") || dragEvent->mimeData()->hasFormat("text/uri-list"))
             {
-                QByteArray addresses = dragEvent->mimeData()->data("application/rekonq-bookmark");
-                KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+                QFrame* dropIndicatorWidget = new QFrame(toolBar());
+                dropIndicatorWidget->setFrameShape(QFrame::VLine);
+                m_dropAction = toolBar()->insertWidget(toolBar()->actionAt(dragEvent->pos()), dropIndicatorWidget);
 
-                if (!bookmark.isNull())
-                {
-                    QFrame* dropIndicatorWidget = new QFrame(toolBar());
-                    dropIndicatorWidget->setFrameShape(QFrame::VLine);
-                    m_dropAction = toolBar()->insertWidget(toolBar()->actionAt(dragEvent->pos()), dropIndicatorWidget);
-
-                    dragEvent->accept();
-                }
+                dragEvent->accept();
             }
         }
         else if (event->type() == QEvent::DragMove)
         {
             QDragMoveEvent *dragEvent = static_cast<QDragMoveEvent*>(event);
-            if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark"))
+            if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark") || dragEvent->mimeData()->hasFormat("text/uri-list"))
             {
-                QByteArray addresses = dragEvent->mimeData()->data("application/rekonq-bookmark");
-                KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
                 QAction *overAction = toolBar()->actionAt(dragEvent->pos());
                 KBookmarkActionInterface *overActionBK = dynamic_cast<KBookmarkActionInterface*>(overAction);
                 QWidget *widgetAction = toolBar()->widgetForAction(overAction);
 
-                if (!bookmark.isNull() && overAction != m_dropAction && overActionBK && widgetAction && m_dropAction)
+                if (overAction != m_dropAction && overActionBK && widgetAction && m_dropAction)
                 {
                     toolBar()->removeAction(m_dropAction);
 
@@ -338,10 +330,26 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         else if (event->type() == QEvent::Drop)
         {
             QDropEvent *dropEvent = static_cast<QDropEvent*>(event);
-            QByteArray addresses = dropEvent->mimeData()->data("application/rekonq-bookmark");
-            KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+            KBookmark bookmark;
+            QUrl url;
+            QString title;
 
-            if (!dropEvent->mimeData()->hasFormat("application/rekonq-bookmark") && !bookmark.isNull())
+            if (dropEvent->mimeData()->hasFormat("application/rekonq-bookmark"))
+            {
+                QByteArray addresses = dropEvent->mimeData()->data("application/rekonq-bookmark");
+                bookmark =  Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+                if (bookmark.isNull())
+                    return QObject::eventFilter(watched, event);
+
+                url = bookmark.url();
+                title = bookmark.fullText();
+            }
+            else if (dropEvent->mimeData()->hasFormat("text/uri-list"))
+            {
+                title = dropEvent->mimeData()->text();
+                url = dropEvent->mimeData()->urls().at(0).toString();
+            }
+            else
             {
                 return QObject::eventFilter(watched, event);
             }
@@ -366,11 +374,12 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 KBookmarkActionInterface *destBookmarkAction = dynamic_cast<KBookmarkActionInterface *>(destAction);
                 QWidget *widgetAction = toolBar()->widgetForAction(destAction);
 
-                if (destBookmarkAction && !destBookmarkAction->bookmark().isNull()
-                    && widgetAction && bookmark.address() != destBookmarkAction->bookmark().address())
+                if (destBookmarkAction && !destBookmarkAction->bookmark().isNull() && widgetAction
+                    && bookmark.address() != destBookmarkAction->bookmark().address())
                 {
                     KBookmark destBookmark = destBookmarkAction->bookmark();
                     root.deleteBookmark(bookmark);
+                    bookmark = root.addBookmark(title, url);
 
                     if ((dropEvent->pos().x() - widgetAction->pos().x()) > (widgetAction->width() / 2))
                     {
@@ -380,19 +389,17 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                     {
                         root.moveBookmark(bookmark, destBookmark.parentGroup().previous(destBookmark));
                     }
+
                     Application::bookmarkProvider()->bookmarkManager()->emitChanged();
                 }
             }
             else
             {
                 root.deleteBookmark(bookmark);
-                if (QCursor::pos().x() < toolBar()->widgetForAction(toolBar()->actions().first())->pos().x())
+                bookmark = root.addBookmark(title, url);
+                if (dropEvent->pos().x() < toolBar()->widgetForAction(toolBar()->actions().first())->pos().x())
                 {
                     root.moveBookmark(bookmark, KBookmark());
-                }
-                else
-                {
-                    root.addBookmark(bookmark);
                 }
 
                 Application::bookmarkProvider()->bookmarkManager()->emitChanged();
