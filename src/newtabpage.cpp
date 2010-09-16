@@ -238,7 +238,7 @@ QWebElement NewTabPage::loadingPreview(int index, const KUrl &url)
     // 2) to "auto-destroy" snaps on tab closing :)
     QWebFrame *frame = qobject_cast<QWebFrame *>(parent());
     WebSnap *snap = new WebSnap(url, frame);
-    connect(snap, SIGNAL(snapDone(bool)), frame->page(), SLOT(updateImage(bool)));
+    connect(snap, SIGNAL(snapDone(bool)), frame->page(), SLOT(updateImage(bool)), Qt::UniqueConnection);
     return prev;
 }
 
@@ -247,7 +247,6 @@ QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &
 {
     QWebElement prev = markup(".thumbnail");
     QString previewPath = QL1S("file://") + WebSnap::imagePathFromUrl(url);
-    QString iString = QVariant(index).toString();
 
     prev.findFirst(".preview img").setAttribute("src" , previewPath);
     prev.findFirst("a").setAttribute("href", url.toMimeDataString());   // NOTE ?
@@ -256,7 +255,6 @@ QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &
 
     setupPreview(prev, index);
     showControls(prev);
-
     return prev;
 }
 

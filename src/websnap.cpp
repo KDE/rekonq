@@ -38,7 +38,6 @@
 
 // Qt Includes
 #include <QtCore/QSize>
-#include <QtCore/QTimer>
 #include <QtCore/QFile>
 
 #include <QtGui/QPainter>
@@ -61,7 +60,7 @@ WebSnap::WebSnap(const KUrl& url, QObject *parent)
 
     connect(&m_page, SIGNAL(loadFinished(bool)), this, SLOT(saveResult(bool)));
 
-    QTimer::singleShot(0, this, SLOT(load()));
+    QMetaObject::invokeMethod(this, "load", Qt::QueuedConnection);
 }
 
 
@@ -184,9 +183,9 @@ QPixmap WebSnap::renderPagePreview(const QWebPage &page, int w, int h)
 QString WebSnap::imagePathFromUrl(const KUrl &url)
 {
     QUrl temp = QUrl(url.url());
-    QString name = temp.toString(QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash);
-    name.remove(QRegExp(QL1S("[&+=_?./-]")));
-    return KStandardDirs::locateLocal("cache", QString("thumbs/") + name + ".png", true);
+    QByteArray name = temp.toEncoded(QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash);
+
+    return KStandardDirs::locateLocal("cache", QString("thumbs/") + name.toBase64() + ".png", true);
 }
 
 
@@ -194,7 +193,7 @@ void WebSnap::saveResult(bool ok)
 {
     if (ok)
     {
-        QPixmap image = renderPagePreview(m_page, WIDTH, HEIGHT);
+        QPixmap image = renderPagePreview(m_page, defaultWidth, defaultHeight);
         QString path = imagePathFromUrl(m_url);
         QFile::remove(path);
         image.save(path);

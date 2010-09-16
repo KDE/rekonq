@@ -43,11 +43,6 @@
 // Forward Declarations
 class QPixmap;
 
-// Defines
-#define WIDTH  200
-#define HEIGHT 150
-
-
 /**
  * This class is used in many classes of rekonq to produce an image
  * based on the site corresponding to the url passed as argument.
@@ -63,6 +58,7 @@ class QPixmap;
  * - NewTabPage class:      to show the favorites page "preview" (given an url, you show AND save an image)
  *
  */
+
 class REKONQ_TESTS_EXPORT WebSnap : public QObject
 {
     Q_OBJECT
@@ -88,7 +84,7 @@ public:
      *
      * @return the pixmap snapped from the page
      */
-    static QPixmap renderPagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
+    static QPixmap renderPagePreview(const QWebPage &page, int w = defaultWidth, int h = defaultHeight);
 
     // static QPixmap renderVisiblePagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT); TODO: try to make this method work => more previews for the urlbar
 
@@ -101,7 +97,7 @@ public:
      *
      * @return the pixmap snapped from the page
      */
-    static QPixmap renderClosingPagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
+    static QPixmap renderClosingPagePreview(const QWebPage &page, int w = defaultWidth, int h = defaultHeight);
 
     /**
      * Snaps a pixmap of size w * h from a page for tab preview
@@ -139,6 +135,9 @@ signals:
     void snapDone(bool ok);
 
 private:
+    // Constants
+    static const int defaultWidth = 200;
+    static const int defaultHeight = 150;
     QWebPage m_page;
     KUrl m_url;
 
