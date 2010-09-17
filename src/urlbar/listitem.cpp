@@ -204,22 +204,52 @@ IconLabel::IconLabel(const KIcon &icon, QWidget *parent)
 
 // ---------------------------------------------------------------
 
+static QString highlightWordsInText(const QString &text, const QStringList &words)
+{
+    QString ret = text;
+    QBitArray boldSections(ret.size());
+    foreach (const QString &wordToPointOut, words) {
+        int index = ret.indexOf(wordToPointOut, 0, Qt::CaseInsensitive);
+        while(index > -1) {
+            boldSections.fill(true,index + 1, index + wordToPointOut.size() + 1);
+            index = ret.indexOf(wordToPointOut, index + wordToPointOut.size(), Qt::CaseInsensitive);
+        }
+    }
+    int numSections = 0;
+    bool bold = false;
+    for(int i=0; i < boldSections.size() - 1; ++i ) {
+        if (boldSections.testBit(i) && (i == boldSections.size() || !boldSections.testBit(i+1)))
+            numSections++;
+    }
+    const int tagLength = 7; // length of "<b>" and "</b>" we're going to add for each bold section.
+    ret.reserve(ret.size() + numSections * tagLength);
+    bold = false;
+    for (int i = boldSections.size() - 1; i >= 0; --i) {
+        if (!bold && boldSections.testBit(i)) {
+            ret.insert(i, QL1S("</b>"));
+            bold = true;
+        } else if (bold && !boldSections.testBit(i)) {
+            ret.insert(i, QL1S("<b>"));
+            bold = false;
+        }
+    }
+    return ret;
+}
 
 TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget *parent)
         : QLabel(parent)
 {
+    setTextFormat(Qt::RichText);
+    setMouseTracking(false);
     QString t = text;
     const bool wasItalic = t.startsWith(QL1S("<i>"));
     if (wasItalic)
-        t.remove(QRegExp("<[/ib]*>"));
-
+        t.remove(QRegExp(QL1S("<[/ib]*>")));
     t = Qt::escape(t);
-    QString ss = Qt::escape(textToPointOut);
-    t.replace(QRegExp('(' + ss + ')', Qt::CaseInsensitive), "<b>\\1</b>");
-
+    QStringList words = Qt::escape(textToPointOut.simplified()).split(QL1C(' '));
+    t = highlightWordsInText(t, words);
     if (wasItalic)
         t = QL1S("<i>") + t + QL1S("</i>");
-
     setText(t);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 }
@@ -228,6 +258,8 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
 TextLabel::TextLabel(QWidget *parent)
     : QLabel(parent)
 {
+    setTextFormat(Qt::RichText);
+    setMouseTracking(false);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);    
 }
 

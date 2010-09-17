@@ -115,7 +115,7 @@ public:
 // -------------------------------------------------------------------------
 
 
-class TextLabel : public QLabel
+class REKONQ_TESTS_EXPORT TextLabel : public QLabel
 {
     Q_OBJECT
 
