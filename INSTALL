@@ -1,37 +1,37 @@
-===== Building rekonq from sources =====
+===== Building rekonq from source =====
 
 
 === Prerequisites ===
 
-Rekonq needs at least KDE SC 4.5.x and qt 4.7.x to build.
+rekonq needs at least KDE SC 4.5.x and Qt 4.7.x to build.
 
 Qt:
 
-  Qt should be prepackaged for all mayor linux distributions. Please see
+  Qt should be prepackaged for all major Linux distributions. Please see
   http://www.trolltech.com/products/qt for more information and installation
   instructions.
 
 KDE SC:
 
-  KDE should be prepackaged for all mayor linux distributions. Please see
+  KDE SC should be prepackaged for all major Linux distributions. Please see
   http://techbase.kde.org/Getting_Started/Build/stable_Version
   for instructions on how to build and setup a KDE4 environment to work in.
 
 
 === Building rekonq ===
 
-To build it perform the following commands after switching into the rekonq
+To build it perform the following commands after switching into the rekonq directory
 (for example ~/mainline or ~/0.4):
 
     mkdir build && cd build
     cmake ..
     make && make install
 
-To install rekonq locally, do not run the "make install" command, rekonq can
+If you want to install rekonq locally, do not run the "make install" command. rekonq can
 then be found in build/src and is executed with ./rekonq.
 
 === Getting Help ===
 
-If you need help with rekonq, you can find it in the irc-channel #rekonq on irc.freenode.net or by viewing the Handbook that comes with rekonq.
-You can view the rekonq Handbook by pressing F1 after starting rekonq.
+If you need help with rekonq, you can find it in the IRC channel #rekonq on irc.freenode.net or by viewing the handbook that comes with rekonq.
+You can view the rekonq handbook by pressing F1 after starting rekonq.
 Techbase page : http://techbase.kde.org/Projects/rekonq
