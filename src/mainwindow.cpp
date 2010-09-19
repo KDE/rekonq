@@ -449,10 +449,10 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QL1S("show_prev_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
 
-    a = new KAction(KIcon("tab-new"), i18n("Open Closed Tabs"), this);
+    a = new KAction(KIcon("tab-new"), i18n("Open Last Closed Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
-    actionCollection()->addAction(QL1S("open_closed_tabs"), a);
-    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(openClosedTabs()));
+    actionCollection()->addAction(QL1S("open_last_closed_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(openLastClosedTab()));
 
     // Closed Tabs Menu
     KActionMenu *closedTabsMenu = new KActionMenu(KIcon("tab-new"), i18n("Closed Tabs"), this);
