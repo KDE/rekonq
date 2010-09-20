@@ -34,37 +34,42 @@
 
 // Qt Includes
 #include <QtCore/QObject>
-#include <QtCore/QBasicTimer>
-#include <QtCore/QTime>
-#include <QtCore/QTimerEvent>
 
+// Forward Declarations
+class QBasicTimer;
 
 /**
- *  This class will call the save() slot on the parent object when the parent changes.
- *  It will wait several seconds after changed() to combining multiple changes and
- *  prevent continuous writing to disk.
- *
+ * This class emits the saveNeeded() signal.
+ * It will wait several seconds after changeOccurred() to combine
+ * multiple changes preventing continuous writing to disk.
  */
-
 class REKONQ_TESTS_EXPORT AutoSaver : public QObject
 {
     Q_OBJECT
 
 public:
-    AutoSaver(QObject *parent);
-    ~AutoSaver();
+    explicit AutoSaver(QObject *parent);
+    virtual ~AutoSaver();
+
+    /**
+     * Emits the saveNeeded() signal if there's been any change since we last saved.
+     */
     void saveIfNeccessary();
+
+signals:
+    void saveNeeded();
 
 public slots:
     void changeOccurred();
 
 protected:
-    void timerEvent(QTimerEvent *event);
+    virtual void timerEvent(QTimerEvent *event);
 
 private:
-    QBasicTimer m_timer;
-    QTime m_firstChange;
+    void save();
 
+    QBasicTimer *m_timer;
+    QTime *m_firstChange;
 };
 
 #endif // AUTOSAVER_H

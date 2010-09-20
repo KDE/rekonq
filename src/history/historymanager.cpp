@@ -72,6 +72,7 @@ HistoryManager::HistoryManager(QObject *parent)
 
     connect(this, SIGNAL(entryAdded(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
     connect(this, SIGNAL(entryRemoved(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
+    connect(m_saveTimer, SIGNAL(saveNeeded()), this, SLOT(save()));
 
     load();
 
@@ -88,11 +89,9 @@ HistoryManager::HistoryManager(QObject *parent)
 HistoryManager::~HistoryManager()
 {
     m_saveTimer->saveIfNeccessary();
-        
+
     delete m_historyFilterModel;
     delete m_historyTreeModel;
-
-    delete m_saveTimer;
 }
 
 
@@ -107,7 +106,7 @@ void HistoryManager::addHistoryEntry(const QString &url)
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return;
-    
+
     QUrl cleanUrl(url);
 
     // don't store about: urls (home page related)
@@ -129,7 +128,7 @@ void HistoryManager::addHistoryEntry(const QString &url)
 void HistoryManager::setHistory(const QList<HistoryItem> &history, bool loadedAndSorted)
 {
     m_history = history;
- 
+
     // verify that it is sorted by date
     if (!loadedAndSorted)
         qSort(m_history.begin(), m_history.end());
@@ -189,14 +188,14 @@ void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
     urlString.remove(QL1S("www."));
     if(urlString.startsWith(QL1S("http")) && urlString.endsWith(QL1C('/')))
         urlString.remove(urlString.length()-1,1);
-    
+
     for (int i = 0; i < m_history.count(); ++i)
     {
         QString itemUrl = m_history.at(i).url;
         itemUrl.remove(QL1S("www."));
         if(itemUrl.startsWith(QL1S("http")) && itemUrl.endsWith(QL1C('/')))
             itemUrl.remove(itemUrl.length()-1,1);
-        
+
         if (urlString == itemUrl)
         {
             m_history[i].title = title;
@@ -204,7 +203,7 @@ void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
             m_saveTimer->changeOccurred();
             if (m_lastSavedUrl.isEmpty())
                 m_lastSavedUrl = m_history.at(i).url;
-            
+
             emit entryUpdated(i);
             break;
         }
@@ -253,7 +252,7 @@ QList<HistoryItem> HistoryManager::find(const QString &text)
         if (matches)
             list << item;
     }
-    
+
     return list;
 }
 
@@ -274,25 +273,25 @@ void HistoryManager::loadSettings()
     int days;
     switch (historyExpire)
     {
-    case 0: 
-        days = 1; 
+    case 0:
+        days = 1;
         break;
-    case 1: 
-        days = 7; 
+    case 1:
+        days = 7;
         break;
-    case 2: 
-        days = 14; 
+    case 2:
+        days = 14;
         break;
-    case 3: 
-        days = 30; 
+    case 3:
+        days = 30;
         break;
-    case 4: 
-        days = 365; 
+    case 4:
+        days = 365;
         break;
-    case 5: 
-        days = -1; 
+    case 5:
+        days = -1;
         break;
-    default: 
+    default:
         days = -1;
         break;
     }

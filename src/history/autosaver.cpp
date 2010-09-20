@@ -25,73 +25,72 @@
 * ============================================================ */
 
 
-
-
 // Self Includes
 #include "autosaver.h"
 #include "autosaver.moc"
 
 // Qt Includes
 #include <QtCore/QMetaObject>
+#include <QtCore/QTimerEvent>
+#include <QtCore/QBasicTimer>
+#include <QtCore/QTime>
 
 
-#define AUTOSAVE_IN  1000 * 3  // seconds
-#define MAXWAIT      1000 * 15 // seconds
+const int AUTOSAVE_TIME  = 1000 * 3;  // seconds
+const int MAX_TIME_LIMIT = 1000 * 15; // seconds
 
 
-AutoSaver::AutoSaver(QObject *parent) : QObject(parent)
+AutoSaver::AutoSaver(QObject *parent)
+        : QObject(parent)
+        , m_timer(new QBasicTimer)
+        , m_firstChange(new QTime)
 {
-    Q_ASSERT(parent);
 }
 
 
 AutoSaver::~AutoSaver()
 {
-    if (m_timer.isActive())
-    {
+    if (m_timer->isActive())
         kDebug() << "AutoSaver: still active when destroyed, changes not saved.";
-    }
-}
 
-
-void AutoSaver::changeOccurred()
-{
-    if (m_firstChange.isNull())
-        m_firstChange.start();
-
-    if (m_firstChange.elapsed() > MAXWAIT)
-    {
-        saveIfNeccessary();
-    }
-    else
-    {
-        m_timer.start(AUTOSAVE_IN, this);
-    }
-}
-
-
-void AutoSaver::timerEvent(QTimerEvent *event)
-{
-    if (event->timerId() == m_timer.timerId())
-    {
-        saveIfNeccessary();
-    }
-    else
-    {
-        QObject::timerEvent(event);
-    }
+    delete m_firstChange;
+    delete m_timer;
 }
 
 
 void AutoSaver::saveIfNeccessary()
 {
-    if (!m_timer.isActive())
-        return;
-    m_timer.stop();
-    m_firstChange = QTime();
-    if (!QMetaObject::invokeMethod(parent(), "save", Qt::DirectConnection))
-    {
-        kDebug() << "AutoSaver: error invoking slot save() on parent";
-    }
+    if (m_timer->isActive())
+        save();
 }
 
+
+void AutoSaver::changeOccurred()
+{
+    if (m_firstChange->isNull())
+        m_firstChange->start();
+
+    if (m_firstChange->elapsed() > MAX_TIME_LIMIT)
+        save();
+    else
+        m_timer->start(AUTOSAVE_TIME, this);
+}
+
+
+void AutoSaver::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() == m_timer->timerId())
+        save();
+    else
+        QObject::timerEvent(event);
+}
+
+
+void AutoSaver::save()
+{
+    m_timer->stop();
+    delete m_firstChange;
+    m_firstChange = new QTime;
+
+    emit saveNeeded();
+}
