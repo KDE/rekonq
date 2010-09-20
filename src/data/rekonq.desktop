@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=rekonq
 Name[bg]=rekonq
+Name[ca]=rekonq
 Name[cs]=rekonq
 Name[da]=rekonq
 Name[de]=rekonq
@@ -31,6 +32,7 @@ Name[x-test]=xxrekonqxx
 Name[zh_CN]=rekonq
 Name[zh_TW]=rekonq
 GenericName=Web Browser
+GenericName[ca]=Navegador web
 GenericName[da]=Webbrowser
 GenericName[de]=Webbrowser
 GenericName[el]=Περιηγητής ιστού
