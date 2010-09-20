@@ -633,13 +633,13 @@ void MainView::previousTab()
 }
 
 
-void MainView::openClosedTabs()
+void MainView::openLastClosedTab()
 {
-    foreach (const HistoryItem &item, recentlyClosedTabs())
-    {
-        Application::instance()->loadUrl( KUrl(item.url), Rekonq::NewTab);
-    }
-    m_recentlyClosedTabs.clear();
+    if (m_recentlyClosedTabs.isEmpty())
+        return;
+
+    const HistoryItem item = m_recentlyClosedTabs.takeFirst();
+    Application::instance()->loadUrl(KUrl(item.url), Rekonq::NewTab);
 }
 
 

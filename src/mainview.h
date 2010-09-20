@@ -135,7 +135,7 @@ public slots:
     void nextTab();
     void previousTab();
 
-    void openClosedTabs();
+    void openLastClosedTab();
     void openClosedTab();
     void switchToTab();
 

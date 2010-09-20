@@ -293,7 +293,7 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
     menu.addAction(mainWindow->actionByName( QL1S("clone_tab") ));
     if (count() > 1)
         menu.addAction(mainWindow->actionByName( QL1S("detach_tab") ));
-    menu.addAction(mainWindow->actionByName( QL1S("open_closed_tabs") ));
+    menu.addAction(mainWindow->actionByName( QL1S("open_last_closed_tab") ));
     menu.addAction(mainWindow->actionByName( QL1S("closed_tab_menu") ));
     menu.addSeparator();
     menu.addAction(mainWindow->actionByName( QL1S("close_tab") ));
@@ -314,7 +314,7 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
     MainWindow *mainWindow = Application::instance()->mainWindow();
 
     menu.addAction(mainWindow->actionByName( QL1S("new_tab") ));
-    menu.addAction(mainWindow->actionByName( QL1S("open_closed_tabs") ));
+    menu.addAction(mainWindow->actionByName( QL1S("open_last_closed_tab") ));
     menu.addAction(mainWindow->actionByName( QL1S("closed_tab_menu") ));
     menu.addSeparator();
     menu.addAction(mainWindow->actionByName( QL1S("reload_all_tabs") ));
@@ -357,8 +357,8 @@ void TabBar::setupHistoryActions()
     MainWindow *w = Application::instance()->mainWindow();
     MainView *mv = qobject_cast<MainView *>(parent());
 
-    QAction *openClosedTabsAction = w->actionByName( QL1S("open_closed_tabs") );
-    openClosedTabsAction->setEnabled( mv->recentlyClosedTabs().size() > 0 );
+    QAction *openLastClosedTabAction = w->actionByName( QL1S("open_last_closed_tab") );
+    openLastClosedTabAction->setEnabled( mv->recentlyClosedTabs().size() > 0 );
 
     // update closed tabs menu
     KActionMenu *am = qobject_cast<KActionMenu *>( w->actionByName( QL1S("closed_tab_menu") ));
