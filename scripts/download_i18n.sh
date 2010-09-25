@@ -22,6 +22,9 @@ RK_SRCS=/DATI/KDE/SRC/rekonq
 # current dir
 CWD=$(pwd)
 
+# fix language
+export LANG=en_US.utf8
+
 # create the i18n dir
 cd $RK_SRCS
 mkdir -p i18n
