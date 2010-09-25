@@ -4,7 +4,7 @@
 #
 # 1. Update the lists of the ready (about 80%) translations
 # check the situation here: http://l10n.kde.org/stats/gui/trunk-kde4/po/rekonq.po/
-LIST="ar ast be bg bn bn_IN ca ca@valencia cs csb da de el en_GB eo es et eu fi fr fy ga gl gu he hi hr hu ia id is it ja ka kk km kn ko ku lt lv mai mk ml mr ms nb nds nl nn or pa pl pt pt_BR ro ru se si sk sl sr sv ta te tg th tr uk uz@cyrillic wa zh_CN zh_TW"
+LIST="af ar as ast be be@latin bg bn bn_IN br ca ca@valencia crh cs csb cy da de el en_GB eo es et eu fa fi fr fy ga gl gu ha he hi hne hr hsb hu hy ia id is it ja ka kk km kn ko ku lb lt lv mai mk ml mr ms mt nb nds ne nl nn nso oc or pa pl ps pt pt_BR ro ru rw se si sk sl sq sr sr@ijekavian sr@ijekavianlatin sr@latin sv ta te tg th tr uk uz uz@cyrillic vi wa xh zh_CN zh_HK zh_TW"
 
 # 2. run this script. It will create an i18n dir in rekonq sources ($RK_SRCS variable, set it to your source path) 
 # dir with all the listed translations (eg: italian translation = rekonq_it.po file) 
