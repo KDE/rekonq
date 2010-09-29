@@ -74,7 +74,11 @@ public:
     bool match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const
     {
         Q_ASSERT(encodedUrl.toLower() == encodedUrlLowerCase);
-        return m_implementation->match(request, encodedUrl, encodedUrlLowerCase);
+        bool b = m_implementation->match(request, encodedUrl, encodedUrlLowerCase);
+        if(b) {
+            kDebug() << m_implementation->ruleType() << ": rule string = " << m_implementation->ruleString();
+        }
+        return b;
     }
 
 private:

@@ -72,3 +72,15 @@ bool AdBlockRuleTextMatchImpl::isTextMatchFilter(const QString &filter)
     }
     return true;
 }
+
+
+QString AdBlockRuleTextMatchImpl::ruleString() const
+{
+    return m_textToMatch;
+}
+
+
+QString AdBlockRuleTextMatchImpl::ruleType() const
+{
+    return QL1S("AdBlockRuleTextMatchImpl");
+}
