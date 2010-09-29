@@ -58,7 +58,7 @@ public:
     inline bool isOnRekonqPage() const { return _isOnRekonqPage; };
     inline void setIsOnRekonqPage(bool b) { _isOnRekonqPage = b; };
 
-public slots:
+public Q_SLOTS:
     void downloadAllContentsWithKGet(QPoint);
 
     virtual void downloadRequest(const QNetworkRequest &request);
@@ -71,9 +71,10 @@ protected:
                                          const QNetworkRequest &request,
                                          NavigationType type);
 
-private slots:
+private Q_SLOTS:
     void handleUnsupportedContent(QNetworkReply *reply);
     void manageNetworkErrors(QNetworkReply *reply);
+    void loadStarted();
     void loadFinished(bool);
     void showSSLInfo(QPoint);
     void updateImage(bool ok);

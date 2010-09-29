@@ -207,6 +207,7 @@ WebPage::WebPage(QWidget *parent)
 
     // ----- last stuffs
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
+    connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 
     // protocol handler signals
@@ -471,17 +472,29 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 }
 
 
+void WebPage::loadStarted()
+{
+    // HACK: 
+    // Chinese encoding Fix. See BUG: 251264
+    // Use gb18030 instead of gb2312
+    if(settings()->defaultTextEncoding() == QL1S("gb2312"))
+    {
+        settings()->setDefaultTextEncoding( QL1S("gb18030") );
+    }    
+}
+
 void WebPage::loadFinished(bool ok)
 {
     Q_UNUSED(ok);
+
+    // Provide site icon. Can this be moved to loadStarted??
     Application::iconManager()->provideIcon(this, _loadingUrl);
 
-
+    // Apply adblock manager hiding rules
     Application::adblockManager()->applyHidingRules(this);
 
-    QStringList list = ReKonfig::walletBlackList();
-
     // KWallet Integration
+    QStringList list = ReKonfig::walletBlackList();
     if (wallet()
             && !list.contains(mainFrame()->url().toString())
        )
