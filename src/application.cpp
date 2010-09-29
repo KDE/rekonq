@@ -158,28 +158,17 @@ int Application::newInstance()
             // No windows in the current desktop? No windows at all?
             // Create a new one and load there sites...
             loadUrl(urlList.at(0), Rekonq::CurrentTab);
-            for (int i = 1; i < urlList.count(); ++i)
-                loadUrl( urlList.at(i), Rekonq::NewTab);
         }
         else
         {
-            // are there any windows there? use it
-            int index = m_mainWindows.size();
-            if (index > 0)
-            {
-                MainWindow *m = m_mainWindows.at(index - 1).data();
-                if(m->isMinimized())
-                    m->showNormal();
-                if( !m->isActiveWindow() )
-                {
-                    m->activateWindow();
-                    m->raise();
-                }
-
-                Q_FOREACH(const KUrl &u, urlList)
-                    loadUrl(u, Rekonq::NewFocusedTab);
-            }
+            if(ReKonfig::openTabNoWindow())
+                loadUrl(urlList.at(0), Rekonq::NewTab);
+            else
+                loadUrl(urlList.at(0), Rekonq::NewWindow);
         }
+        
+        for (int i = 1; i < urlList.count(); ++i)
+            loadUrl( urlList.at(i), Rekonq::NewTab);
     }
     else
     {
