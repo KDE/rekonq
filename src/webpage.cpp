@@ -459,7 +459,12 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
         mainFrame()->setHtml(html);
         _isOnRekonqPage = true;
-        Application::instance()->mainWindow()->mainView()->urlBar()->setQUrl(replyUrl);
+        
+        WebView *view = qobject_cast<WebView *>(parent());
+        WebTab *tab = qobject_cast<WebTab *>(view->parent());
+        UrlBar *bar = tab->urlBar();
+        bar->setQUrl(replyUrl);
+        
         Application::instance()->mainWindow()->updateActions();
     }
     else
@@ -561,9 +566,14 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
             frame->setHtml(errorPage(reply));
             if(isMainFrameRequest)
             {
-            _isOnRekonqPage = true;
-            Application::instance()->mainWindow()->mainView()->urlBar()->setQUrl(_loadingUrl);
-            Application::instance()->mainWindow()->updateActions();
+                _isOnRekonqPage = true;
+            
+                WebView *view = qobject_cast<WebView *>(parent());
+                WebTab *tab = qobject_cast<WebTab *>(view->parent());
+                UrlBar *bar = tab->urlBar();
+                bar->setQUrl(_loadingUrl);
+
+                Application::instance()->mainWindow()->updateActions();
             }
         }
         break;

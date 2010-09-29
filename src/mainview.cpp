@@ -313,8 +313,7 @@ WebTab *MainView::webTab(int index) const
 
 WebTab *MainView::newWebTab(bool focused)
 {
-    WebTab* tab = new WebTab(this);
-    UrlBar *bar = new UrlBar(tab);
+    WebTab *tab = new WebTab(this);
 
     // connecting webview with mainview
     connect(tab->view(), SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
@@ -324,18 +323,18 @@ WebTab *MainView::newWebTab(bool focused)
     connect(tab->view(), SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
 
     // connecting webPage signals with mainview
-    connect(tab->view()->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
-    connect(tab->view()->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
+    connect(tab->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
+    connect(tab->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
     if ( ReKonfig::openTabsNearCurrent() )
     {
         insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
-        _widgetBar->insertWidget(currentIndex() + 1, bar);
+        _widgetBar->insertWidget(currentIndex() + 1, tab->urlBar());
     }
     else
     {
         addTab(tab, i18n("(Untitled)"));
-        _widgetBar->addWidget(bar);
+        _widgetBar->addWidget(tab->urlBar());
     }
     updateTabBar();
 
@@ -471,11 +470,11 @@ void MainView::closeTab(int index, bool del)
     if (index < 0 || index >= count())
         return;
 
-    WebTab *tab = webTab(index);
-    if (!tab)
+    WebTab *tabToClose = webTab(index);
+    if (!tabToClose)
         return;
 
-    if (tab->view()->isModified())
+    if (tabToClose->view()->isModified())
     {
         int risp = KMessageBox::warningContinueCancel(this,
                    i18n("This tab contains changes that have not been submitted.\n"
@@ -486,12 +485,12 @@ void MainView::closeTab(int index, bool del)
             return;
     }
 
-    if (!tab->url().isEmpty()
+    if (!tabToClose->url().isEmpty()
         && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
        )
     {
-        QString title = tab->view()->title();
-        QString url = tab->url().prettyUrl();
+        QString title = tabToClose->view()->title();
+        QString url = tabToClose->url().prettyUrl();
         HistoryItem item(url, QDateTime(), title);
         m_recentlyClosedTabs.removeAll(item);
         m_recentlyClosedTabs.prepend(item);
@@ -500,15 +499,12 @@ void MainView::closeTab(int index, bool del)
     removeTab(index);
     updateTabBar();        // UI operation: do it ASAP!!
 
-    UrlBar *urlbar = _widgetBar->urlBar(index);
-    _widgetBar->removeWidget(urlbar);
-
+    _widgetBar->removeWidget( tabToClose->urlBar() );
     _widgetBar->setCurrentIndex(m_currentTabIndex);
 
     if (del)
     {
-        tab->deleteLater();
-        urlbar->deleteLater();
+        tabToClose->deleteLater();
     }
 
     emit tabsChanged();
@@ -718,7 +714,7 @@ void MainView::detachTab(int index, MainWindow *toWindow)
     else
     {
         QString label = tab->view()->title();
-        UrlBar *bar = _widgetBar->urlBar(index);
+        UrlBar *bar = tab->urlBar();
         closeTab(index, false);
 
         MainWindow *w;

@@ -33,6 +33,7 @@
 #include "rekonq.h"
 
 // Local Includes
+#include "urlbar.h"
 #include "previewselectorbar.h"
 #include "rsswidget.h"
 #include "walletbar.h"
@@ -48,7 +49,8 @@
 WebTab::WebTab(QWidget *parent)
         : QWidget(parent)
         , _view(new WebView(this))
-        , m_progress(0)
+        , _bar(new UrlBar(this))
+        , _progress(0)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -110,14 +112,14 @@ KUrl WebTab::url()
 
 void WebTab::updateProgress(int p)
 {
-    m_progress = p;
+    _progress = p;
     emit loadProgressing();
 }
 
 
 void WebTab::loadFinished(bool)
 {
-    m_progress = 0;
+    _progress = 0;
 }
 
 

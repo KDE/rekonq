@@ -73,11 +73,11 @@ SET( rekonq_KDEINIT_SRCS
     analyzer/analyzerpanel.cpp
     analyzer/networkanalyzer.cpp
     #----------------------------------------
-    search/searchengine.cpp
-    search/opensearchwriter.cpp
-    search/opensearchreader.cpp
-    search/opensearchmanager.cpp
-    search/opensearchengine.cpp
+    opensearch/searchengine.cpp
+    opensearch/opensearchwriter.cpp
+    opensearch/opensearchreader.cpp
+    opensearch/opensearchmanager.cpp
+    opensearch/opensearchengine.cpp
 )
 
 
@@ -103,7 +103,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/rekonqpage
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
                         ${CMAKE_CURRENT_SOURCE_DIR}/analyzer
-                        ${CMAKE_CURRENT_SOURCE_DIR}/search
+                        ${CMAKE_CURRENT_SOURCE_DIR}/opensearch
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}

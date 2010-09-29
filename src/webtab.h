@@ -39,6 +39,7 @@
 #include <QtGui/QWidget>
 
 // Forward Declarations
+class UrlBar;
 class PreviewSelectorBar;
 class WalletBar;
 
@@ -52,8 +53,9 @@ public:
     ~WebTab();
 
     inline WebView *view() { return _view; }
+    UrlBar *urlBar() { return _bar; }
     inline WebPage *page() { return view()->page(); }
-    inline int progress() { return m_progress; }
+    inline int progress() { return _progress; }
 
     KUrl url();
     void createPreviewSelectorBar(int index);
@@ -72,8 +74,9 @@ signals:
 
 private:
     WebView *_view;
-
-    int m_progress;
+    UrlBar *_bar;
+    
+    int _progress;
 
     QWeakPointer<WalletBar> _walletBar;
     QWeakPointer<PreviewSelectorBar> _previewSelectorBar;

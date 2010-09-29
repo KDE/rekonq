@@ -29,7 +29,6 @@
 #include "stackedurlbar.moc"
 
 // Local Includes
-#include "application.h"
 #include "urlbar.h"
 
 
