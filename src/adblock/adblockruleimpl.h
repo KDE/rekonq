@@ -35,6 +35,10 @@ public:
     AdBlockRuleImpl(const QString &) {}
     virtual ~AdBlockRuleImpl() {}
     virtual bool match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const = 0;
+    
+    // This are added just for debugging purposes
+    virtual QString ruleString() const = 0;
+    virtual QString ruleType() const = 0;
 };
 
 #endif // ADBLOCKRULEIMPL_H

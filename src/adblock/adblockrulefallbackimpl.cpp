@@ -139,3 +139,15 @@ QString AdBlockRuleFallbackImpl::convertPatternToRegExp(const QString &wildcardP
     // Finally, return...
     return pattern;
 }
+
+
+QString AdBlockRuleFallbackImpl::ruleString() const
+{
+    return m_regExp.pattern();
+}
+
+
+QString AdBlockRuleFallbackImpl::ruleType() const
+{
+    return QL1S("AdBlockRuleFallbackImpl");
+}
