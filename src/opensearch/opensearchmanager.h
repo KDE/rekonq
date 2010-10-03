@@ -97,7 +97,9 @@ signals:
 
 private:
     QString trimmedEngineName(const QString &engineName) const;
-
+    
+    void idleJob();
+    
     // QString substitutueSearchText(const QString &searchText, const QString &requestURL) const;
     QByteArray m_jobData;
     QMap<QString, OpenSearchEngine*> m_enginesMap;

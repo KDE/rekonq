@@ -59,9 +59,6 @@ OpenSearchManager::~OpenSearchManager()
 {
     qDeleteAll(m_enginesMap.values());
     m_enginesMap.clear();
-    
-    if(m_currentJob)
-        m_currentJob->kill();
 }
 
 
@@ -113,22 +110,13 @@ void OpenSearchManager::addOpenSearchEngine(const KUrl &url, const QString &titl
 {
     Q_UNUSED(title);
 
-    if (m_currentJob)
-    {
-        disconnect(m_currentJob);
-        m_currentJob->kill();
-	delete m_currentJob;
-    }
-
-    m_jobData.clear();
-
     if (m_state != IDLE) 
     {
-        // TODO: cancel job
+        idleJob();
     }
 
-    m_state = REQ_DESCRIPTION;
     m_currentJob = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
+    m_state = REQ_DESCRIPTION;
     connect(m_currentJob, SIGNAL(data(KIO::Job *, const QByteArray &)), this, SLOT(dataReceived(KIO::Job *, const QByteArray &)));
     connect(m_currentJob, SIGNAL(result(KJob *)), this, SLOT(jobFinished(KJob *)));
 }
@@ -141,23 +129,20 @@ void OpenSearchManager::requestSuggestion(const QString &searchText)
 
     if (m_state != IDLE) 
     {
-        // TODO: cancel job
+        // NOTE: 
+        // changing OpenSearchManager behavior
+        // using idleJob here lets opensearchmanager to start another search, while
+        // if we want in any case lets it finish its previous job we can just return here.
+        idleJob();
     }
-    m_state = REQ_SUGGESTION;
-
+    
     _typedText = searchText;
 
     KUrl url = m_activeEngine->suggestionsUrl(searchText);
     kDebug() << "Requesting for suggestions: " << url.url();
 
-    if (m_currentJob)
-    {
-        disconnect(m_currentJob);
-        m_currentJob->kill();
-    }
-    m_jobData.clear();
-
     m_currentJob = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
+    m_state = REQ_SUGGESTION;
     connect(m_currentJob, SIGNAL(data(KIO::Job *, const QByteArray &)), this, SLOT(dataReceived(KIO::Job *, const QByteArray &)));
     connect(m_currentJob, SIGNAL(result(KJob *)), this, SLOT(jobFinished(KJob *)));
 }
@@ -173,15 +158,19 @@ void OpenSearchManager::dataReceived(KIO::Job *job, const QByteArray &data)
 void OpenSearchManager::jobFinished(KJob *job)
 {
     if (job->error())
+    {
+        emit suggestionReceived(_typedText, QStringList());
+        m_state = IDLE;
         return; // just silently return
-
+    }
+    
     if (m_state == REQ_SUGGESTION) 
     {
         const QStringList suggestionsList = m_activeEngine->parseSuggestion(m_jobData);
         kDebug() << "Received suggestions in "<< _typedText << " from " << m_activeEngine->name() << ": " << suggestionsList;
 
-        m_currentJob = NULL;
         emit suggestionReceived(_typedText, suggestionsList);
+        idleJob();
         return;
     }
 
@@ -206,6 +195,8 @@ void OpenSearchManager::jobFinished(KJob *job)
         {
             kFatal() << "Error while adding new open search engine";
         }
+        
+        idleJob();
     }
 }
 
@@ -231,4 +222,17 @@ QString OpenSearchManager::trimmedEngineName(const QString &engineName) const
     }
 
     return trimmed;
+}
+
+
+void OpenSearchManager::idleJob()
+{
+    if (m_currentJob)
+    {
+        disconnect(m_currentJob);
+        m_currentJob->kill();
+    }
+    
+    m_jobData.clear();
+    m_state = IDLE;
 }
