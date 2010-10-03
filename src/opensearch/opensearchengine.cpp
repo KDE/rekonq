@@ -55,12 +55,15 @@ OpenSearchEngine::~OpenSearchEngine()
 
 QString OpenSearchEngine::parseTemplate(const QString &searchTerm, const QString &searchTemplate)
 {
+    QString language = QLocale().name();
+    // Simple conversion to RFC 3066.
+    language = language.replace(QLatin1Char('_'), QLatin1Char('-'));
+
     QString result = searchTemplate;
     result.replace(QL1S("{count}"), QL1S("20"));
     result.replace(QL1S("{startIndex}"), QL1S("0"));
     result.replace(QL1S("{startPage}"), QL1S("0"));
-    // TODO - get setting from KDE
-    result.replace(QL1S("{language}"), QL1S("en-US"));
+    result.replace(QLatin1String("{language}"), language);
     result.replace(QL1S("{inputEncoding}"), QL1S("UTF-8"));
     result.replace(QL1S("{outputEncoding}"), QL1S("UTF-8"));
     result.replace(QL1S("{searchTerms}"), searchTerm);
