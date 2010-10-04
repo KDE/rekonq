@@ -30,6 +30,8 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+#include "application.h"
+#include "opensearchmanager.h"
 
 // KDE Includes
 #include <KUrl>
@@ -38,7 +40,7 @@
 // Qt Includes
 #include <QString>
 #include <QList>
-#include <QStringList>
+#include "suggestionparser.h"
 
 
 class UrlSearchItem
@@ -113,12 +115,13 @@ public:
     static void setSearchEngine(KService::Ptr engine)
     {
         _searchEngine = engine;
+        Application::opensearchManager()->setSearchProvider(engine->desktopEntryName());
     };
 
     void computeSuggestions();
 
 private Q_SLOTS:
-    void suggestionsReceived(const QString &text, const QStringList &suggestions);    
+    void suggestionsReceived(const QString &text, const ResponseList &suggestions);    
 
 Q_SIGNALS:
     void suggestionsReady(const UrlSearchList &, const QString &);

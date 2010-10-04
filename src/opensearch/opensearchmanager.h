@@ -32,6 +32,7 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+#include "suggestionparser.h"
 
 // KDE Includes
 #include <kio/jobclasses.h>
@@ -42,7 +43,6 @@
 // Forward Declarations
 class SuggestionEngine;
 class OpenSearchEngine;
-
 
 /**
  * This class acts as a proxy between the SearchBar plugin 
@@ -92,7 +92,7 @@ private slots:
     void jobFinished(KJob *job);
 
 signals:
-    void suggestionReceived(const QString &text, const QStringList &suggestion);
+    void suggestionReceived(const QString &text, const ResponseList &suggestion);
     void openSearchEngineAdded(const QString &name, const QString &searchUrl, const QString &fileName);
 
 private:

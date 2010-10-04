@@ -29,11 +29,9 @@
 #include "urlresolver.moc"
 
 // Local Includes
-#include "application.h"
 #include "historymanager.h"
 #include "bookmarkprovider.h"
 #include "searchengine.h"
-#include "opensearchmanager.h"
 
 // KDE Includes
 #include <KBookmark>
@@ -72,7 +70,7 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         : QObject()
         , _typedString(typedUrl.trimmed())
 {
-    if (!_searchEngine ) _searchEngine = SearchEngine::defaultEngine();
+    if (!_searchEngine ) setSearchEngine(SearchEngine::defaultEngine());
 
     if ( _browseRegexp.isEmpty() )
     {
@@ -392,25 +390,29 @@ void UrlResolver::computeSuggestions()
     if (Application::opensearchManager()->isSuggestionAvailable())
     {
         connect(Application::opensearchManager(),
-                SIGNAL(suggestionReceived(const QString &, const QStringList &)),
+                SIGNAL(suggestionReceived(const QString &, const ResponseList &)),
                 this,
-                SLOT(suggestionsReceived(const QString &, const QStringList &)));
+                SLOT(suggestionsReceived(const QString &, const ResponseList &)));
 
         Application::opensearchManager()->requestSuggestion(_typedString);
     }
 }
 
 
-void UrlResolver::suggestionsReceived(const QString &text, const QStringList &suggestions)
+void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &suggestions)
 {
     if(text != _typedString)
         return;
 
     UrlSearchList sugList;
 
-    Q_FOREACH(const QString &s, suggestions)
+    Q_FOREACH(const Response &i, suggestions)
     {
+<<<<<<< HEAD
         UrlSearchItem gItem(UrlSearchItem::Suggestion, SearchEngine::buildQuery(UrlResolver::searchEngine(), s), s);
+=======
+        UrlSearchItem gItem(UrlSearchItem::Suggestion, i.title, i.title);
+>>>>>>> add an xml parser to the opensearch engine.
         sugList << gItem;
     }
     emit suggestionsReady(sugList, _typedString);

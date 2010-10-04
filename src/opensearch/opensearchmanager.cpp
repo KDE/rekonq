@@ -159,15 +159,19 @@ void OpenSearchManager::jobFinished(KJob *job)
 {
     if (job->error())
     {
-        emit suggestionReceived(_typedText, QStringList());
+        emit suggestionReceived(_typedText, ResponseList());
         m_state = IDLE;
         return; // just silently return
     }
     
     if (m_state == REQ_SUGGESTION) 
     {
-        const QStringList suggestionsList = m_activeEngine->parseSuggestion(m_jobData);
-        kDebug() << "Received suggestions in "<< _typedText << " from " << m_activeEngine->name() << ": " << suggestionsList;
+        const ResponseList suggestionsList = m_activeEngine->parseSuggestion(m_jobData);
+        kDebug() << "Received suggestions in "<< _typedText << " from " << m_activeEngine->name() << ": ";
+        foreach(Response r, suggestionsList)
+        {
+            kDebug() << r.title; 
+        }
 
         emit suggestionReceived(_typedText, suggestionsList);
         idleJob();

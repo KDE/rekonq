@@ -79,6 +79,7 @@ SET( rekonq_KDEINIT_SRCS
     opensearch/opensearchreader.cpp
     opensearch/opensearchmanager.cpp
     opensearch/opensearchengine.cpp
+    opensearch/suggestionparser.cpp
 )
 
 

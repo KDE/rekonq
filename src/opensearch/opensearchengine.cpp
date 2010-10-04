@@ -30,25 +30,22 @@
 
 // Self Includes
 #include "opensearchengine.h"
+#include "suggestionparser.h"
 
 // Qt Includes
 #include <QtCore/QRegExp>
-#include <QtCore/QStringList>
-#include <QtScript/QScriptEngine>
-#include <QtScript/QScriptValue>
-
 
 OpenSearchEngine::OpenSearchEngine(QObject *)
-    : m_scriptEngine(0)
+    : m_parser(0)
 {
 }
 
 
 OpenSearchEngine::~OpenSearchEngine()
 {
-    if (m_scriptEngine) 
+    if (m_parser) 
     {
-        delete m_scriptEngine;
+        delete m_parser;
     }
 }
 
@@ -187,6 +184,12 @@ void OpenSearchEngine::setSuggestionsParameters(const QList<Parameter> &suggesti
 }
 
 
+void OpenSearchEngine::setSuggestionParser(SuggestionParser *parser)
+{
+    m_parser = parser;
+}
+
+
 QString OpenSearchEngine::imageUrl() const
 {
     return m_imageUrl;
@@ -235,43 +238,10 @@ bool OpenSearchEngine::operator<(const OpenSearchEngine &other) const
 }
 
 
-QStringList OpenSearchEngine::parseSuggestion(const QByteArray &resp)
+ResponseList OpenSearchEngine::parseSuggestion(const QByteArray &resp)
 {
-    QString response = QString::fromLocal8Bit(resp);
-    response = response.trimmed();
+    if (!m_parser)
+        return ResponseList();
 
-    if (response.isEmpty()) 
-    {
-        return QStringList();
-    }
-
-    if (    !response.startsWith(QL1C('[')) 
-         || !response.endsWith(QL1C(']'))
-       ) 
-    {
-        return QStringList();
-    }
-
-    if (!m_scriptEngine) 
-    {
-        m_scriptEngine = new QScriptEngine();
-    }
-
-    // Evaluate the JSON response using QtScript.
-    if (!m_scriptEngine->canEvaluate(response)) 
-    {
-        return QStringList();
-    }
-
-    QScriptValue responseParts = m_scriptEngine->evaluate(response);
-
-    if (!responseParts.property(1).isArray()) 
-    {
-        return QStringList();
-    }
-
-    QStringList suggestionsList;
-    qScriptValueToSequence(responseParts.property(1), suggestionsList);
-
-    return suggestionsList;
+    return m_parser->parse(resp);
 }

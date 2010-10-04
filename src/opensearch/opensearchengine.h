@@ -33,6 +33,7 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+#include "suggestionparser.h"
 
 // KDE Includes
 #include <KUrl>
@@ -41,11 +42,10 @@
 #include <QtCore/QPair>
 #include <QtGui/QImage>
 
+
 // Forward Declarations
 class QNetworkAccessManager;
 class QNetworkReply;
-class QScriptEngine;
-
 
 class OpenSearchEngine
 {
@@ -77,6 +77,8 @@ public:
     QList<Parameter> suggestionsParameters() const;
     void setSuggestionsParameters(const QList<Parameter> &suggestionsParameters);
 
+    void setSuggestionParser(SuggestionParser *parser);
+    
     QString imageUrl() const;
     void setImageUrl(const QString &url);
 
@@ -88,7 +90,7 @@ public:
     bool operator==(const OpenSearchEngine &other) const;
     bool operator<(const OpenSearchEngine &other) const;
 
-    QStringList parseSuggestion(const QByteArray &response);
+    ResponseList parseSuggestion(const QByteArray &response);
 
     static QString parseTemplate(const QString &searchTerm, const QString &searchTemplate);
 
@@ -104,7 +106,7 @@ private:
     QList<Parameter> m_searchParameters;
     QList<Parameter> m_suggestionsParameters;
 
-    QScriptEngine *m_scriptEngine;
+    SuggestionParser *m_parser;
 };
 
 #endif // OPENSEARCHENGINE_H

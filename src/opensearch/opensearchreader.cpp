@@ -32,6 +32,7 @@
 
 // Local Includes
 #include "opensearchengine.h"
+#include "suggestionparser.h"
 
 // Qt Includes
 #include <QtCore/QIODevice>
@@ -137,15 +138,24 @@ OpenSearchEngine *OpenSearchReader::read()
                 }
             }
 
-            if (type == QL1S("application/x-suggestions+json")) 
-            {
-                engine->setSuggestionsUrlTemplate(url);
-                engine->setSuggestionsParameters(parameters);
-            }
-            else 
+            if (type == QLatin1String("text/html"))
             {
                 engine->setSearchUrlTemplate(url);
                 engine->setSearchParameters(parameters);
+            }
+            else
+            {
+                engine->setSuggestionsUrlTemplate(url);
+                engine->setSuggestionsParameters(parameters);
+
+                if (type == QL1S("application/x-suggestions+xml")) 
+                {
+                    engine->setSuggestionParser(new XMLParser());
+                }
+                else if (type == QL1S("application/x-suggestions+json")) 
+                {
+                    engine->setSuggestionParser(new JSONParser());
+                }
             }
             
             continue;
