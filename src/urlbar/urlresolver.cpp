@@ -409,7 +409,7 @@ void UrlResolver::suggestionsReceived(const QString &text, const QStringList &su
 
     Q_FOREACH(const QString &s, suggestions)
     {
-        UrlSearchItem gItem(UrlSearchItem::Suggestion, s, s);
+        UrlSearchItem gItem(UrlSearchItem::Suggestion, SearchEngine::buildQuery(UrlResolver::searchEngine(), s), s);
         sugList << gItem;
     }
     emit suggestionsReady(sugList, _typedString);

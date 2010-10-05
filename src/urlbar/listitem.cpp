@@ -429,7 +429,7 @@ SuggestionListItem::SuggestionListItem(const UrlSearchItem &item, const QString 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
 
-    hLayout->addWidget(new IconLabel(SearchEngine::buildQuery(UrlResolver::searchEngine(), ""), this));
+    hLayout->addWidget(new IconLabel(item.url, this));
     hLayout->addWidget(new TextLabel(item.title, SearchEngine::extractQuery(text), this));
     hLayout->addWidget(new TypeIconLabel(item.type, this));
 
