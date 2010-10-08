@@ -305,9 +305,6 @@ void UrlBar::dropEvent(QDropEvent *event)
 
 void UrlBar::loadFinished()
 {
-    if (_tab->progress() != 0)
-        return;
-
     if (_tab->url().scheme() == QL1S("about"))
     {
         update();
