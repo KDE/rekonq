@@ -60,29 +60,34 @@ public:
     int type;
     QString url;
     QString title;
+    QString image;
     QString description;
     QString bookmarkPath;
     
     UrlSearchItem(const UrlSearchItem &item) : type(item.type),
                                                url(item.url),
                                                title(item.title),
+                                               image(item.image),
                                                description(item.description)
     {};
 
     UrlSearchItem() : type(UrlSearchItem::Undefined),
                       url(QString()),
                       title(QString()),
+                      image(QString()),
                       description(QString())
     {};
     
     UrlSearchItem(const int &_type,
                   const QString &_url,
                   const QString &_title = QString(),
+                  const QString &_image = QString(),
                   const QString   &description    = QString()
                   )
                   : type(_type),
                   url(_url),
                   title(_title),
+                  image(_image),
                   description(description)
     {};
 

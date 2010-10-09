@@ -36,7 +36,7 @@
 #include<QByteArray>
 #include<QStringList>
 
-ResponseList SuggestionParser::parse(const QByteArray &resp)
+ResponseList SuggestionParser::parse(const QByteArray &)
 {
     return ResponseList();    
 }
@@ -70,6 +70,7 @@ ResponseList XMLParser::parse(const QByteArray &resp)
         {
             QString title;
             QString url;
+            QString image;
             QString description;
 
             while (!m_reader.isEndElement() && !m_reader.atEnd()) 
@@ -77,11 +78,12 @@ ResponseList XMLParser::parse(const QByteArray &resp)
                 m_reader.readNext();
 
                 if (m_reader.name() == QL1S("Text")) title = m_reader.readElementText();
-                if (m_reader.name() == QL1S("Url")) url = m_reader.readElementText();             
+                if (m_reader.name() == QL1S("Url")) url = m_reader.readElementText();
+                if (m_reader.name() == QL1S("Image")) image = m_reader.readElementText();
                 if (m_reader.name() == QL1S("Description")) description = m_reader.readElementText();
             }
 
-            rlist << Response(url, title, description);
+            rlist << Response(url, title, image, description);
         }
     }
     

@@ -43,22 +43,27 @@ class Response
 public:
     QString url;
     QString title;
+    QString image;
     QString description;
   
     Response(const Response &item) : url(item.url),
                                      title(item.title),
+                                     image(item.image),
                                      description(item.description)
     {};
 
     Response() : url(QString()),
                  title(QString()),
+                 image(QString()),
                  description(QString())
     {};
 
     Response(const QString &_url,
              const QString &_title = QString(),
+             const QString &_image = QString(),
              const QString   &description    = QString()) : url(_url),
                                                             title(_title),
+                                                            image(_image),
                                                             description(description)
     {};
 };
