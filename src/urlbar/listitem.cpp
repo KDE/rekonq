@@ -477,6 +477,45 @@ QString SuggestionListItem::text()
     return m_text;
 }
 
+
+// ---------------------------------------------------------------
+
+
+VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
+        : ListItem(item, parent)
+        , m_text(item.title)
+{
+
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    hLayout->setSpacing(4);
+
+    QLabel *previewLabelIcon = new QLabel(this);
+    previewLabelIcon->setFixedSize(45, 33);
+    new PreviewLabel(item.image, 38, 29, previewLabelIcon);
+    IconLabel* icon = new IconLabel(item.url, previewLabelIcon);
+    icon->move(27, 16);
+    hLayout->addWidget(previewLabelIcon);
+
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    vLayout->setMargin(0);
+
+    QString query = SearchEngine::extractQuery(text);
+    vLayout->addWidget(new TextLabel(item.title, query, this));
+    vLayout->addWidget(new TextLabel("aaa aa", query, this));
+
+    hLayout->addLayout(vLayout);
+
+    hLayout->addWidget(new TypeIconLabel(item.type, this));
+
+    setLayout(hLayout);
+}
+
+
+QString VisualSuggestionListItem::text()
+{
+    return m_text;
+}
+
 // ---------------------------------------------------------------
 
 
@@ -530,11 +569,16 @@ ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text
     
     if (item.type & UrlSearchItem::Suggestion)
     {
-        kDebug() << "Suggestion";
-        return new SuggestionListItem(item, text, parent);
+        if (item.description.isEmpty())
+        {
+            kDebug() << "Suggestion";
+            return new SuggestionListItem(item, text, parent);
+        }
+    
+        kDebug() << "Visual Suggestion";
+        return new VisualSuggestionListItem(item, text, parent);
     }
-
+    
     kDebug() << "Undefined";
     return new PreviewListItem(item, text, parent);
-    
 }
