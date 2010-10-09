@@ -100,12 +100,12 @@ void PanelTreeView::mouseReleaseEvent(QMouseEvent *event)
         return;
 
     if (event->button() == Qt::MidButton || event->modifiers() == Qt::ControlModifier)
-        validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
+        emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
 
     else if (event->button() == Qt::LeftButton)
     {
         if (model()->rowCount(index) == 0)
-            validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
+           emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
         else
             setExpanded(index, !isExpanded(index));
     }
@@ -123,7 +123,7 @@ void PanelTreeView::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Return)
     {
         if (model()->rowCount(index) == 0)
-            validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
+            openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
         else
             setExpanded(index, !isExpanded(index));
     }
@@ -132,16 +132,6 @@ void PanelTreeView::keyPressEvent(QKeyEvent *event)
     {
         emit delKeyPressed();
     }
-}
-
-
-void PanelTreeView::validOpenUrl(const KUrl &url, Rekonq::OpenType openType)
-{
-    // To workaround a crash when the url is about:blank
-    if (url.url() == "about:blank")
-        emit openUrl(KUrl("about:home"), openType);
-    else
-        emit openUrl(url, openType);
 }
 
 
@@ -164,7 +154,7 @@ void PanelTreeView::openInCurrentTab()
     if (!index.isValid())
         return;
 
-    validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
+    emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
 }
 
 
@@ -185,7 +175,7 @@ void PanelTreeView::openInNewTab()
     if (!index.isValid())
         return;
 
-    validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
+    emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
 }
 
 
@@ -195,5 +185,5 @@ void PanelTreeView::openInNewWindow()
     if (!index.isValid())
         return;
 
-    validOpenUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewWindow);
+    emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewWindow);
 }

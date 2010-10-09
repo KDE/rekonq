@@ -53,15 +53,47 @@ BookmarkOwner::BookmarkOwner(KBookmarkManager *manager, QObject *parent)
         : QObject(parent)
         , KBookmarkOwner()
         , m_manager(manager)
-        , m_actions(QVector<KAction*>(NUM_ACTIONS))
 {
-    setupActions();
 }
 
 
-KAction* BookmarkOwner::action(const BookmarkAction &bmAction)
+KAction* BookmarkOwner::action(const KBookmark &bookmark, const BookmarkAction &bmAction)
 {
-    return static_cast<KAction*>(m_actions.at(bmAction));
+    switch (bmAction)
+    {
+    case OPEN:
+        return createAction(i18n("Open"), "tab-new",
+                     i18n("Open bookmark in current tab"), SLOT(openBookmark(const KBookmark &)), bookmark);
+    case OPEN_IN_TAB:
+        return createAction(i18n("Open in New Tab"), "tab-new",
+                     i18n("Open bookmark in new tab"), SLOT(openBookmarkInNewTab(const KBookmark &)), bookmark);
+    case OPEN_IN_WINDOW:
+        return createAction(i18n("Open in New Window"), "window-new",
+                     i18n("Open bookmark in new window"), SLOT(openBookmarkInNewWindow(const KBookmark &)), bookmark);
+    case OPEN_FOLDER:
+        return createAction(i18n("Open Folder in Tabs"), "tab-new",
+                     i18n("Open all the bookmarks in folder in tabs"), SLOT(openBookmarkFolder(const KBookmark &)), bookmark);
+    case BOOKMARK_PAGE:
+        return createAction(i18n("Add Bookmark"), "bookmark-new",
+                     i18n("Bookmark current page"), SLOT(bookmarkCurrentPage(const KBookmark &)), bookmark);
+    case NEW_FOLDER:
+        return createAction(i18n("New Folder"), "folder-new",
+                     i18n("Create a new bookmark folder"), SLOT(newBookmarkFolder(const KBookmark &)), bookmark);
+    case NEW_SEPARATOR:
+        return createAction(i18n("New Separator"), "edit-clear",
+                     i18n("Create a new bookmark separator"), SLOT(newSeparator(const KBookmark &)), bookmark);
+    case COPY:
+        return createAction(i18n("Copy Link"), "edit-copy",
+                     i18n("Copy the bookmark's link address"), SLOT(copyLink(const KBookmark &)), bookmark);
+    case EDIT:
+        return createAction(i18n("Edit"), "configure",
+                     i18n("Edit the bookmark"), SLOT(editBookmark(const KBookmark &)), bookmark);
+    case DELETE:
+       return  createAction(i18n("Delete"), "edit-delete",
+                     i18n("Delete the bookmark"), SLOT(deleteBookmark(const KBookmark &)), bookmark);
+    default:
+       return 0;
+    }
 }
 
 
@@ -118,50 +150,7 @@ void BookmarkOwner::openBookmark(const KBookmark &bookmark,
 
 void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
 {
-    openBookmarkFolder(bookmark);
-}
-
-
-void BookmarkOwner::setCurrentBookmark(const KBookmark &bookmark)
-{
-    m_currentBookmark = bookmark;
-}
-
-
-void BookmarkOwner::unsetCurrentBookmark()
-{
-    m_currentBookmark = KBookmark();
-}
-
-
-void BookmarkOwner::openBookmark(const KBookmark &bookmark)
-{
-    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
-    emit openUrl(selected.url(), Rekonq::CurrentTab);
-}
-
-
-void BookmarkOwner::openBookmarkInNewTab(const KBookmark &bookmark)
-{
-    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
-    emit openUrl(selected.url(), Rekonq::NewTab);
-}
-
-
-void BookmarkOwner::openBookmarkInNewWindow(const KBookmark &bookmark)
-{
-    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
-    emit openUrl(selected.url(), Rekonq::NewWindow);
-}
-
-
-void BookmarkOwner::openBookmarkFolder(const KBookmark &bookmark)
-{
-    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
-    if (!selected.isGroup())
-        return;
-
-    QList<KUrl> urlList = selected.toGroup().groupUrlList();
+    QList<KUrl> urlList = bookmark.groupUrlList();
 
     if (urlList.length() > 8)
     {
@@ -182,21 +171,45 @@ void BookmarkOwner::openBookmarkFolder(const KBookmark &bookmark)
 }
 
 
+void BookmarkOwner::openBookmarkFolder(const KBookmark &bookmark)
+{
+    if (bookmark.isGroup())
+        openFolderinTabs(bookmark.toGroup());
+}
+
+
+void BookmarkOwner::openBookmark(const KBookmark &bookmark)
+{
+    emit openUrl(bookmark.url(), Rekonq::CurrentTab);
+}
+
+
+void BookmarkOwner::openBookmarkInNewTab(const KBookmark &bookmark)
+{
+    emit openUrl(bookmark.url(), Rekonq::NewTab);
+}
+
+
+void BookmarkOwner::openBookmarkInNewWindow(const KBookmark &bookmark)
+{
+    emit openUrl(bookmark.url(), Rekonq::NewWindow);
+}
+
+
 KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
 {
-    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     KBookmark newBk;
     KBookmarkGroup parent;
 
-    if (!selected.isNull())
+    if (!bookmark.isNull())
     {
-        if (selected.isGroup())
-            parent = selected.toGroup();
+        if (bookmark.isGroup())
+            parent = bookmark.toGroup();
         else
-            parent = selected.parentGroup();
+            parent = bookmark.parentGroup();
 
         newBk = parent.addBookmark(currentTitle().replace('&', "&&"), KUrl(currentUrl()) );
-        parent.moveBookmark(newBk, selected);
+        parent.moveBookmark(newBk, bookmark);
     }
     else
     {
@@ -211,24 +224,23 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
 
 KBookmarkGroup BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark)
 {
-    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     KBookmarkGroup newBk;
     KBookmarkDialog *dialog = bookmarkDialog(m_manager, QApplication::activeWindow());
     QString folderName = i18n("New folder");
 
-    if (!selected.isNull())
+    if (!bookmark.isNull())
     {
-        if (selected.isGroup())
+        if (bookmark.isGroup())
         {
-            newBk = dialog->createNewFolder(folderName, selected);
+            newBk = dialog->createNewFolder(folderName, bookmark);
         }
         else
         {
-            newBk = dialog->createNewFolder(folderName, selected.parentGroup());
+            newBk = dialog->createNewFolder(folderName, bookmark.parentGroup());
             if (!newBk.isNull())
             {
                 KBookmarkGroup parent = newBk.parentGroup();
-                parent.moveBookmark(newBk, selected);
+                parent.moveBookmark(newBk, bookmark);
                 m_manager->emitChanged(parent);
             }
         }
@@ -245,19 +257,18 @@ KBookmarkGroup BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark)
 
 KBookmark BookmarkOwner::newSeparator(const KBookmark &bookmark)
 {
-    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
     KBookmark newBk;
 
-    if (!selected.isNull())
+    if (!bookmark.isNull())
     {
-        if (selected.isGroup())
+        if (bookmark.isGroup())
         {
-            newBk = selected.toGroup().createNewSeparator();
+            newBk = bookmark.toGroup().createNewSeparator();
         }
         else
         {
-            newBk = selected.parentGroup().createNewSeparator();
-            newBk.parentGroup().moveBookmark(newBk, selected);
+            newBk = bookmark.parentGroup().createNewSeparator();
+            newBk.parentGroup().moveBookmark(newBk, bookmark);
         }
     }
     else
@@ -274,25 +285,23 @@ KBookmark BookmarkOwner::newSeparator(const KBookmark &bookmark)
 
 void BookmarkOwner::copyLink(const KBookmark &bookmark)
 {
-    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
-    if (selected.isNull())
+    if (bookmark.isNull())
         return;
 
-    QApplication::clipboard()->setText(selected.url().url());
+    QApplication::clipboard()->setText(bookmark.url().url());
 }
 
 
 void BookmarkOwner::editBookmark(KBookmark bookmark)
 {
-    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
-    if (selected.isNull())
+    if (bookmark.isNull())
         return;
 
-    selected.setFullText(selected.fullText().replace("&&", "&"));
+    bookmark.setFullText(bookmark.fullText().replace("&&", "&"));
     KBookmarkDialog *dialog = bookmarkDialog(m_manager, QApplication::activeWindow());
 
-    dialog->editBookmark(selected);
-    selected.setFullText(selected.fullText().replace('&', "&&"));
+    dialog->editBookmark(bookmark);
+    bookmark.setFullText(bookmark.fullText().replace('&', "&&"));
 
     delete dialog;
 }
@@ -300,20 +309,19 @@ void BookmarkOwner::editBookmark(KBookmark bookmark)
 
 bool BookmarkOwner::deleteBookmark(KBookmark bookmark)
 {
-    KBookmark selected = (bookmark.isNull() && !m_currentBookmark.isNull()) ? m_currentBookmark : bookmark;
-    if (selected.isNull())
+    if (bookmark.isNull())
         return false;
 
-    KBookmarkGroup bmg = selected.parentGroup();
-    QString name = QString(selected.fullText()).replace("&&", "&");
+    KBookmarkGroup bmg = bookmark.parentGroup();
+    QString name = QString(bookmark.fullText()).replace("&&", "&");
     QString dialogCaption, dialogText;
 
-    if (selected.isGroup())
+    if (bookmark.isGroup())
     {
         dialogCaption = i18n("Bookmark Folder Deletion");
         dialogText = i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", name);
     }
-    else if (selected.isSeparator())
+    else if (bookmark.isSeparator())
     {
         dialogCaption = i18n("Separator Deletion");
         dialogText = i18n("Are you sure you wish to remove this separator?");
@@ -335,42 +343,38 @@ bool BookmarkOwner::deleteBookmark(KBookmark bookmark)
        )
         return false;
 
-    bmg.deleteBookmark(selected);
+    bmg.deleteBookmark(bookmark);
     m_manager->emitChanged(bmg);
     return true;
 }
 
 
-void BookmarkOwner::setupActions()
+KAction* BookmarkOwner::createAction(const QString &text,
+                                 const QString &icon, const QString &help, const char *slot,
+                                 const KBookmark & bookmark)
 {
-    createAction(OPEN, i18n("Open"), "tab-new",
-                 i18n("Open bookmark in current tab"), SLOT(openBookmark()));
-    createAction(OPEN_IN_TAB, i18n("Open in New Tab"), "tab-new",
-                 i18n("Open bookmark in new tab"), SLOT(openBookmarkInNewTab()));
-    createAction(OPEN_IN_WINDOW, i18n("Open in New Window"), "window-new",
-                 i18n("Open bookmark in new window"), SLOT(openBookmarkInNewWindow()));
-    createAction(OPEN_FOLDER, i18n("Open Folder in Tabs"), "tab-new",
-                 i18n("Open all the bookmarks in folder in tabs"), SLOT(openBookmarkFolder()));
-    createAction(BOOKMARK_PAGE, i18n("Add Bookmark"), "bookmark-new",
-                 i18n("Bookmark current page"), SLOT(bookmarkCurrentPage()));
-    createAction(NEW_FOLDER, i18n("New Folder"), "folder-new",
-                 i18n("Create a new bookmark folder"), SLOT(newBookmarkFolder()));
-    createAction(NEW_SEPARATOR, i18n("New Separator"), "edit-clear",
-                 i18n("Create a new bookmark separator"), SLOT(newSeparator()));
-    createAction(COPY, i18n("Copy Link"), "edit-copy",
-                 i18n("Copy the bookmark's link address"), SLOT(copyLink()));
-    createAction(EDIT, i18n("Edit"), "configure",
-                 i18n("Edit the bookmark"), SLOT(editBookmark()));
-    createAction(DELETE, i18n("Delete"), "edit-delete",
-                 i18n("Delete the bookmark"), SLOT(deleteBookmark()));
+    CustomBookmarkAction *act = new CustomBookmarkAction(bookmark, KIcon(icon), text, this);
+    act->setHelpText(help);
+    connect(act, SIGNAL(triggered(const KBookmark &)), this, slot);
+    return act;
 }
 
 
-void BookmarkOwner::createAction(const BookmarkAction &action, const QString &text,
-                                 const QString &icon, const QString &help, const char *slot)
+// -------------------------------------------------------------------------------------------------
+
+
+CustomBookmarkAction::CustomBookmarkAction(const KBookmark &bookmark, const KIcon &icon, const QString &text, QObject *parent)
+    : KAction(icon, text, parent)
+    , m_bookmark(bookmark)
 {
-    KAction *act = new KAction(KIcon(icon), text, this);
-    act->setHelpText(help);
-    m_actions[action] = act;
-    connect(act, SIGNAL(triggered()), this, slot);
+    connect(this, SIGNAL(triggered()), this, SLOT(onActionTriggered()));
+}
+
+CustomBookmarkAction::~CustomBookmarkAction()
+{
+}
+
+void CustomBookmarkAction::onActionTriggered()
+{
+    emit triggered(m_bookmark);
 }

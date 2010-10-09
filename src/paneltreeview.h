@@ -46,7 +46,7 @@ public:
     ~PanelTreeView();
 
 signals:
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void openUrl(const KUrl &, const Rekonq::OpenType & = Rekonq::CurrentTab);
     void itemHovered(const QString &);
     void delKeyPressed();
     void contextMenuItemRequested(const QPoint &pos);
@@ -64,9 +64,6 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
-
-private:
-    void validOpenUrl(const KUrl &url, Rekonq::OpenType openType = Rekonq::CurrentTab);
 };
 
 #endif // PANELTREEVIEW_H

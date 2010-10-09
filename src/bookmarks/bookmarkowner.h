@@ -36,9 +36,8 @@
 
 // KDE Includes
 #include <KBookmarkOwner>
-
-// Forward Declarations
-class KAction;
+#include <KIcon>
+#include <KAction>
 
 
 /**
@@ -69,9 +68,9 @@ public:
     };
 
     /**
-     * @return the action or 0 if it doesn't exist.
+     * @return the action connected to the bookmark or 0 if it doesn't exist.
      */
-    KAction* action(const BookmarkAction &bmAction);
+    KAction* action(const KBookmark &bookmark, const BookmarkAction &bmAction);
 
     /**
      * @return the current page's title.
@@ -113,19 +112,16 @@ public:
     virtual void openFolderinTabs(const KBookmarkGroup &bookmark);
 
 public Q_SLOTS:
-    void setCurrentBookmark(const KBookmark &bookmark);
-    void unsetCurrentBookmark();
-
-    void openBookmark(const KBookmark &bookmark = KBookmark());
-    void openBookmarkInNewTab(const KBookmark &bookmark = KBookmark());
-    void openBookmarkInNewWindow(const KBookmark &bookmark = KBookmark());
-    void openBookmarkFolder(const KBookmark &bookmark = KBookmark());
+    void openBookmark(const KBookmark &bookmark);
+    void openBookmarkInNewTab(const KBookmark &bookmark);
+    void openBookmarkInNewWindow(const KBookmark &bookmark);
+    void openBookmarkFolder(const KBookmark &bookmark);
     KBookmark bookmarkCurrentPage(const KBookmark &bookmark = KBookmark());
     KBookmarkGroup newBookmarkFolder(const KBookmark &bookmark = KBookmark());
     KBookmark newSeparator(const KBookmark &bookmark = KBookmark());
-    void copyLink(const KBookmark &bookmark = KBookmark());
-    void editBookmark(KBookmark bookmark = KBookmark());
-    bool deleteBookmark(KBookmark bookmark = KBookmark());
+    void copyLink(const KBookmark &bookmark);
+    void editBookmark(KBookmark bookmark);
+    bool deleteBookmark(KBookmark bookmark);
 
 Q_SIGNALS:
     /**
@@ -135,15 +131,34 @@ Q_SIGNALS:
     void openUrl(const KUrl &, const Rekonq::OpenType &);
 
 private:
-    void setupActions();
-    void createAction(const BookmarkAction &action,
-                      const QString &text, const QString &icon,
-                      const QString &help, const char *slot);
+    KAction* createAction(const QString &text, const QString &icon,
+                      const QString &help, const char *slot,
+                      const KBookmark &bookmark);
 
     
     KBookmarkManager *m_manager;
-    QVector<KAction*> m_actions;
-    KBookmark m_currentBookmark;
+};
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+class CustomBookmarkAction : public KAction
+{
+    Q_OBJECT
+
+public:
+    CustomBookmarkAction(const KBookmark &bookmark, const KIcon &icon, const QString &text, QObject *parent);
+    ~CustomBookmarkAction();
+
+Q_SIGNALS:
+    void triggered(const KBookmark &);
+
+private Q_SLOTS:
+    void onActionTriggered();
+
+private:
+    KBookmark m_bookmark;
 };
 
 #endif // BOOKMARKOWNER_H

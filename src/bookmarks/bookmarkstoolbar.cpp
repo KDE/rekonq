@@ -125,8 +125,6 @@ void BookmarkMenu::refill()
 
 void BookmarkMenu::addOpenFolderInTabs()
 {
-    // TODO: Needs to be ported to the new BookmarkOwner API
-    KAction *action;
     KBookmarkGroup group = manager()->findByAddress(parentAddress()).toGroup();
 
     if (!group.first().isNull())
@@ -140,10 +138,7 @@ void BookmarkMenu::addOpenFolderInTabs()
 
         if (!bookmark.isNull())
         {
-            action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
-            action->setHelpText(i18n("Open all bookmarks in this folder as new tabs."));
-            connect(action, SIGNAL(triggered(bool)), this, SLOT(slotOpenFolderInTabs()));
-            parentMenu()->addAction(action);
+            parentMenu()->addAction(Application::bookmarkProvider()->bookmarkOwner()->action(group, BookmarkOwner::OPEN_FOLDER));
         }
     }
 }
