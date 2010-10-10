@@ -265,13 +265,32 @@ TextLabel::TextLabel(QWidget *parent)
 {
     setTextFormat(Qt::RichText);
     setMouseTracking(false);
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);    
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 }
 
 
 void TextLabel::setEngineText(const QString &engine, const QString &text)
 {
     setText( i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, Qt::escape(text) ) );
+}
+
+// ---------------------------------------------------------------
+
+
+DescriptionLabel::DescriptionLabel(const QString &text, const QString &textToPointOut, QWidget *parent)
+        : QLabel(parent)
+{
+    QString t = text;
+    const bool wasItalic = t.startsWith(QL1S("<i>"));
+    if (wasItalic)
+        t.remove(QRegExp("<[/ib]*>"));
+
+    if (wasItalic)
+        t = QL1S("<i>") + t + QL1S("</i>");
+
+    setWordWrap(false); //TODO: why setWordWrap(true) make items have a strange behavior ?
+    setText(t);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 }
 
 
@@ -354,12 +373,13 @@ void ImageLabel::slotData(KIO::Job *job, const QByteArray &data)
     m_data.append(data);
 }
 
+
 void ImageLabel::slotResult(KJob *job)
 {
     QPixmap pix;
     if (!pix.loadFromData(m_data))
         kDebug() << "error while loading image: ";
-    setPixmap(pix.scaled(m_width, m_height, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    setPixmap(pix);
 }
 
 // ---------------------------------------------------------------
@@ -520,26 +540,34 @@ VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, co
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
-
     QLabel *previewLabelIcon = new QLabel(this);
-    previewLabelIcon->setFixedSize(45, 33);
-    new ImageLabel(item.image, 38, 29, previewLabelIcon);
-    IconLabel* icon = new IconLabel(item.url, previewLabelIcon);
-    icon->move(27, 16);
-    hLayout->addWidget(previewLabelIcon);
 
+    if (!item.image.isEmpty())
+    {
+        previewLabelIcon->setFixedSize(item.image_width+10, item.image_height+10);
+        new ImageLabel(item.image, item.image_width, item.image_height, previewLabelIcon);
+        IconLabel* icon = new IconLabel(item.url, previewLabelIcon);
+        icon->move(item.image_width - 10,  item.image_height -10);
+    }
+    else
+    {
+        previewLabelIcon->setFixedSize(18, 18);
+        new IconLabel(item.url, previewLabelIcon);
+    }
+
+    hLayout->addWidget(previewLabelIcon);  
     QVBoxLayout *vLayout = new QVBoxLayout;
     vLayout->setMargin(0);
-
+    vLayout->addItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::MinimumExpanding));
     QString query = SearchEngine::extractQuery(text);
     vLayout->addWidget(new TextLabel(item.title, query, this));
-    vLayout->addWidget(new TextLabel("<i>"+item.description+"</i>", query, this));
-
+    DescriptionLabel *d = new DescriptionLabel("", query, this);
+    vLayout->addWidget(d);
+    vLayout->addItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::MinimumExpanding));
     hLayout->addLayout(vLayout);
-
     hLayout->addWidget(new TypeIconLabel(item.type, this));
-
     setLayout(hLayout);
+    d->setText("<i>"+item.description+"</i>");
 }
 
 
@@ -574,7 +602,6 @@ BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, Q
 
 ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text, QWidget *parent)
 {   
-
     if (item.type & UrlSearchItem::Search)
     {
         kDebug() << "Search";

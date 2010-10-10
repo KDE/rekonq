@@ -126,6 +126,17 @@ public:
     void setEngineText(const QString &engine, const QString &text);
 };
 
+// -------------------------------------------------------------------------
+
+
+class DescriptionLabel : public QLabel
+{
+    Q_OBJECT
+
+public:
+    explicit DescriptionLabel(const QString &text, const QString &textToPointOut = QString(), QWidget *parent = 0);
+};
+
 
 // -------------------------------------------------------------------------
 

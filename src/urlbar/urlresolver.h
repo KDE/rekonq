@@ -60,35 +60,45 @@ public:
     int type;
     QString url;
     QString title;
-    QString image;
     QString description;
+    QString image;
+    int image_width;
+    int image_height;
     QString bookmarkPath;
     
     UrlSearchItem(const UrlSearchItem &item) : type(item.type),
                                                url(item.url),
                                                title(item.title),
+                                               description(item.description),
                                                image(item.image),
-                                               description(item.description)
+                                               image_width(item.image_width),
+                                               image_height(item.image_height)
     {};
 
     UrlSearchItem() : type(UrlSearchItem::Undefined),
                       url(QString()),
                       title(QString()),
+                      description(QString()),
                       image(QString()),
-                      description(QString())
+                      image_width(0),
+                      image_height(0)
     {};
     
     UrlSearchItem(const int &_type,
                   const QString &_url,
                   const QString &_title = QString(),
+                  const QString &_description    = QString(),
                   const QString &_image = QString(),
-                  const QString   &description    = QString()
+                  const int &_image_width = 0,
+                  const int &_image_height = 0
                   )
                   : type(_type),
                   url(_url),
                   title(_title),
+                  description(_description),
                   image(_image),
-                  description(description)
+                  image_width(_image_width),
+                  image_height(_image_height)
     {};
 
     inline bool operator==(const UrlSearchItem &i) const

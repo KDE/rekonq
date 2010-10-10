@@ -63,9 +63,11 @@ ResponseList XMLParser::parse(const QByteArray &resp)
         if (m_reader.isStartElement() && m_reader.name() == QL1S("Item"))
         {
             QString title;
+            QString description;
             QString url;
             QString image;
-            QString description;
+            int image_width=0;
+            int image_height=0;
 
             m_reader.readNext();
 
@@ -75,13 +77,18 @@ ResponseList XMLParser::parse(const QByteArray &resp)
                 {
                     if (m_reader.name() == QL1S("Text")) title = m_reader.readElementText();
                     if (m_reader.name() == QL1S("Url")) url = m_reader.readElementText();
-                    if (m_reader.name() == QL1S("Image")) image = m_reader.attributes().value("source").toString();
+                    if (m_reader.name() == QL1S("Image"))
+                    {
+                        image = m_reader.attributes().value("source").toString();
+                        image_width = m_reader.attributes().value("width").toString().toInt();
+                        image_height = m_reader.attributes().value("height").toString().toInt();
+                    }
                     if (m_reader.name() == QL1S("Description")) description = m_reader.readElementText();
                 }
 
                 m_reader.readNext();
             }
-            rlist << Response(url, title, image, description);
+            rlist << Response(title, description, url, image, image_width, image_height);
         }
 
         m_reader.readNext();
@@ -127,7 +134,7 @@ ResponseList JSONParser::parse(const QByteArray &resp)
 
     foreach(QString s, responsePartsList)
     {
-        rlist << Response(QString(), s, QString());
+        rlist << Response(s);
     }
  
     return rlist;

@@ -41,30 +41,42 @@
 class Response
 {
 public:
-    QString url;
     QString title;
-    QString image;
     QString description;
-  
-    Response(const Response &item) : url(item.url),
-                                     title(item.title),
+    QString url;
+    QString image;
+    int image_width;
+    int image_height;
+
+    Response(const Response &item) : title(item.title),
+                                     description(item.description),
+                                     url(item.url),
                                      image(item.image),
-                                     description(item.description)
+                                     image_width(item.image_width),
+                                     image_height(item.image_height)
+
     {};
 
-    Response() : url(QString()),
-                 title(QString()),
+    Response() : title(QString()),
+                 description(QString()),
+                 url(QString()),
                  image(QString()),
-                 description(QString())
+                 image_width(0),
+                 image_height(0)
+
     {};
 
-    Response(const QString &_url,
-             const QString &_title = QString(),
+    Response(const QString &_title = QString(),
+             const QString &_description = QString(),
+             const QString &_url  = QString(),
              const QString &_image = QString(),
-             const QString   &description    = QString()) : url(_url),
-                                                            title(_title),
-                                                            image(_image),
-                                                            description(description)
+             const int &_image_width = 0,
+             const int &_image_height = 0) : title(_title),
+                                             description(_description),
+                                             url(_url),
+                                             image(_image),
+                                             image_width(_image_width),
+                                             image_height(_image_height)
     {};
 };
 
