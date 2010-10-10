@@ -409,10 +409,14 @@ void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &s
     Q_FOREACH(const Response &i, suggestions)
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         UrlSearchItem gItem(UrlSearchItem::Suggestion, SearchEngine::buildQuery(UrlResolver::searchEngine(), s), s);
 =======
         UrlSearchItem gItem(UrlSearchItem::Suggestion, i.title, i.title);
 >>>>>>> add an xml parser to the opensearch engine.
+=======
+        UrlSearchItem gItem(UrlSearchItem::Suggestion, i.url, i.title, i.image, i.description);
+>>>>>>> Images in visual suggestion are now displayed !!
         sugList << gItem;
     }
     emit suggestionsReady(sugList, _typedString);

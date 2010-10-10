@@ -234,6 +234,26 @@ public:
 
 // -------------------------------------------------------------------------
 
+class ImageLabel : public QLabel
+{
+    Q_OBJECT
+
+public:
+    ImageLabel(const QString &url, int width, int height, QWidget *parent);
+
+private:
+    int m_width;
+    int m_height;
+    QByteArray m_data;
+
+private slots:
+    void slotData(KIO::Job* job, const QByteArray& data);
+    void slotResult(KJob* job);
+};
+
+
+// -------------------------------------------------------------------------
+
 
 class BrowseListItem : public ListItem
 {

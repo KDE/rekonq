@@ -53,38 +53,38 @@ ResponseList XMLParser::parse(const QByteArray &resp)
     
     m_reader.clear();
     m_reader.addData(resp);
-    
-    while (!m_reader.isStartElement() && !m_reader.atEnd()) 
-    {
-        m_reader.readNext();
-    }
 
-    while (!(m_reader.isEndElement() && m_reader.name() == QL1S("SearchSuggestion")) && !m_reader.atEnd()) 
+    while (!m_reader.atEnd() && !m_reader.hasError())
     {
-        m_reader.readNext();
-        
-        if (!m_reader.isStartElement())
-            continue;
+        QXmlStreamReader::TokenType token = m_reader.readNext();
 
-        if (m_reader.name() == QL1S("Item")) 
+        if (m_reader.isStartDocument()) continue;
+
+        if (m_reader.isStartElement() && m_reader.name() == QL1S("Item"))
         {
             QString title;
             QString url;
             QString image;
             QString description;
 
-            while (!m_reader.isEndElement() && !m_reader.atEnd()) 
+            m_reader.readNext();
+
+            while(!(m_reader.isEndElement() && m_reader.name() == "Item"))
             {
+                if(m_reader.isStartElement())
+                {
+                    if (m_reader.name() == QL1S("Text")) title = m_reader.readElementText();
+                    if (m_reader.name() == QL1S("Url")) url = m_reader.readElementText();
+                    if (m_reader.name() == QL1S("Image")) image = m_reader.attributes().value("source").toString();
+                    if (m_reader.name() == QL1S("Description")) description = m_reader.readElementText();
+                }
+
                 m_reader.readNext();
-
-                if (m_reader.name() == QL1S("Text")) title = m_reader.readElementText();
-                if (m_reader.name() == QL1S("Url")) url = m_reader.readElementText();
-                if (m_reader.name() == QL1S("Image")) image = m_reader.readElementText();
-                if (m_reader.name() == QL1S("Description")) description = m_reader.readElementText();
             }
-
             rlist << Response(url, title, image, description);
         }
+
+        m_reader.readNext();
     }
     
     return rlist;
@@ -124,7 +124,7 @@ ResponseList JSONParser::parse(const QByteArray &resp)
     ResponseList rlist;
     QStringList responsePartsList;
     qScriptValueToSequence(responseParts.property(1), responsePartsList);
-    
+
     foreach(QString s, responsePartsList)
     {
         rlist << Response(QString(), s, QString());

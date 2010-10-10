@@ -42,6 +42,8 @@
 // KDE Includes
 #include <KIcon>
 #include <KAction>
+#include <kio/jobclasses.h>
+#include <kio/scheduler.h>
 
 // Qt Includes
 #include <QActionGroup>
@@ -329,6 +331,36 @@ PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *p
     }
 }
 
+// ---------------------------------------------------------------
+
+
+ImageLabel::ImageLabel(const QString &url, int width, int height, QWidget *parent)
+        : QLabel(parent),
+        m_width(width),
+        m_height(height)
+{
+    setFixedSize(width, height);
+    KIO::TransferJob *job = KIO::get(KUrl(url), KIO::NoReload, KIO::HideProgressInfo);
+    connect(job,  SIGNAL(data(KIO::Job *, const QByteArray &)),
+            this, SLOT(slotData(KIO::Job*, const QByteArray&)));
+    connect(job,  SIGNAL(result(KJob *)),
+            this, SLOT(slotResult(KJob *)));
+}
+
+
+void ImageLabel::slotData(KIO::Job *job, const QByteArray &data)
+{
+    Q_UNUSED(job);
+    m_data.append(data);
+}
+
+void ImageLabel::slotResult(KJob *job)
+{
+    QPixmap pix;
+    if (!pix.loadFromData(m_data))
+        kDebug() << "error while loading image: ";
+    setPixmap(pix.scaled(m_width, m_height, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+}
 
 // ---------------------------------------------------------------
 
@@ -491,7 +523,7 @@ VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, co
 
     QLabel *previewLabelIcon = new QLabel(this);
     previewLabelIcon->setFixedSize(45, 33);
-    new PreviewLabel(item.image, 38, 29, previewLabelIcon);
+    new ImageLabel(item.image, 38, 29, previewLabelIcon);
     IconLabel* icon = new IconLabel(item.url, previewLabelIcon);
     icon->move(27, 16);
     hLayout->addWidget(previewLabelIcon);
@@ -501,7 +533,7 @@ VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, co
 
     QString query = SearchEngine::extractQuery(text);
     vLayout->addWidget(new TextLabel(item.title, query, this));
-    vLayout->addWidget(new TextLabel("aaa aa", query, this));
+    vLayout->addWidget(new TextLabel("<i>"+item.description+"</i>", query, this));
 
     hLayout->addLayout(vLayout);
 
