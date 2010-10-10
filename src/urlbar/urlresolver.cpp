@@ -380,22 +380,19 @@ void UrlResolver::computeSuggestions()
 {
     // if a string startsWith /, it is probably a local path
     // so, no need for suggestions...
-    if(_typedString.startsWith('/'))
+    if(_typedString.startsWith('/') || !Application::opensearchManager()->isSuggestionAvailable())
     {
         UrlSearchList list;
         emit suggestionsReady(list, _typedString);
         return;
     }
 
-    if (Application::opensearchManager()->isSuggestionAvailable())
-    {
-        connect(Application::opensearchManager(),
-                SIGNAL(suggestionReceived(const QString &, const ResponseList &)),
-                this,
-                SLOT(suggestionsReceived(const QString &, const ResponseList &)));
+    connect(Application::opensearchManager(),
+            SIGNAL(suggestionReceived(const QString &, const ResponseList &)),
+            this,
+            SLOT(suggestionsReceived(const QString &, const ResponseList &)));
 
-        Application::opensearchManager()->requestSuggestion(_typedString);
-    }
+    Application::opensearchManager()->requestSuggestion(_typedString);
 }
 
 
