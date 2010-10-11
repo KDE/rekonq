@@ -41,6 +41,7 @@
 #include "iconmanager.h"
 #include "mainview.h"
 #include "mainwindow.h"
+#include "messagebar.h"
 #include "opensearchmanager.h"
 #include "sessionmanager.h"
 #include "stackedurlbar.h"
@@ -50,10 +51,13 @@
 
 // KDE Includes
 #include <KCmdLineArgs>
-#include <KStandardDirs>
+#include <KIcon>
 #include <KMessageBox>
+#include <KStandardDirs>
 #include <ThreadWeaver/Weaver>
 
+// Qt Includes
+#include <QVBoxLayout>
 
 QWeakPointer<AdBlockManager> Application::s_adblockManager;
 QWeakPointer<BookmarkProvider> Application::s_bookmarkProvider;
@@ -115,7 +119,7 @@ int Application::newInstance()
     // so, we have 8 possible cases...
     bool isFirstLoad = m_mainWindows.isEmpty();
     bool areThereArguments = (args->count() > 0);
-    bool isRekonqCrashed = (ReKonfig::recoverOnCrash() == 1);
+    bool isRekonqCrashed = ReKonfig::recoverOnCrash();
 
     kDebug() << "is first load? " << isFirstLoad;
     kDebug() << "are there arguments? " << areThereArguments;
@@ -123,26 +127,19 @@ int Application::newInstance()
 
     int exitValue = 1 * isFirstLoad + 2 * areThereArguments + 4 * isRekonqCrashed;
 
-    if(isRekonqCrashed)
-    {
-        if( isFirstLoad  && sessionManager()->restoreSession() )
-        {
-            kDebug() << "session restored from crash";
-        }
-    }
-    else
-    {
-        if( isFirstLoad && ReKonfig::startupBehaviour() == 2 )
-        {
-            sessionManager()->restoreSession();
-            kDebug() << "session restored following settings";
-            if(areThereArguments)
-                loadUrl( KUrl("about:blank"), Rekonq::NewFocusedTab);
-        }
+    if (isRekonqCrashed && isFirstLoad) {
+            loadUrl(KUrl("about:closedTabs"));
+            MessageBar *msgBar = new MessageBar(i18n("It seems rekonq wasn't closed properly, do you want "
+                                                     "to restore the last saved session ?")
+                                                , mainWindow()->currentTab()
+                                                , QMessageBox::Warning
+                                                , MessageBar::Yes | MessageBar::No );
+
+            connect(msgBar, SIGNAL(accepted()), sessionManager(), SLOT(restoreSession()));
+            mainWindow()->currentTab()->insertBar(msgBar);
     }
 
-    if(areThereArguments)
-    {
+    if (areThereArguments) {
         KUrl::List urlList;
         for(int i = 0; i < args->count(); ++i)
         {
@@ -153,8 +150,7 @@ int Application::newInstance()
                 urlList += KUrl( args->arg(i) ); // "rekonq kde.org" || "rekonq kde:kdialog" case
         }
 
-        if (isFirstLoad)
-        {
+        if (isFirstLoad && !isRekonqCrashed) {
             // No windows in the current desktop? No windows at all?
             // Create a new one and load there sites...
             loadUrl(urlList.at(0), Rekonq::CurrentTab);
@@ -169,9 +165,9 @@ int Application::newInstance()
         
         for (int i = 1; i < urlList.count(); ++i)
             loadUrl( urlList.at(i), Rekonq::NewTab);
-    }
-    else
-    {
+
+    } else if (!isRekonqCrashed) {
+
         if (isFirstLoad)  // we are starting rekonq, for the first time with no args: use startup behaviour
         {
             switch (ReKonfig::startupBehaviour())
@@ -183,7 +179,8 @@ int Application::newInstance()
                 loadUrl(KUrl("about:home"));
                 break;
             case 2: // restore session
-                // NOTE: this has just been considered
+                sessionManager()->restoreSession();
+                kDebug() << "session restored following settings";
                 break;
             default:
                 mainWindow()->homePage();
@@ -235,15 +232,14 @@ void Application::postLaunch()
     setWindowIcon(KIcon("rekonq"));
 
     Application::historyManager();
-    Application::sessionManager();
+    Application::sessionManager()->setSessionManagementEnabled(true);
 
     // bookmarks loading
     connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
             Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
 
     // crash recovering
-    int n = ReKonfig::recoverOnCrash();
-    ReKonfig::setRecoverOnCrash(++n);
+    ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
     saveConfiguration();
 }
 
@@ -367,6 +363,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     int tabIndex = w->mainView()->indexOf(tab);
     Q_ASSERT( tabIndex != -1 );
     UrlBar *barForTab = qobject_cast<UrlBar *>(w->mainView()->widgetBar()->widget(tabIndex));
+    barForTab->activateSuggestions(false);
     barForTab->setQUrl(url);
 
     WebView *view = tab->view();

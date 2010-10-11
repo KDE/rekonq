@@ -147,13 +147,3 @@ void PreviewSelectorBar::clicked()
 
     destroy();
 }
-
-
-void PreviewSelectorBar::destroy()
-{
-    if (parentWidget() && parentWidget()->layout())
-    {
-        parentWidget()->layout()->removeWidget(this);
-    }
-    this->deleteLater();
-}

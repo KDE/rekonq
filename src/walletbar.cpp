@@ -104,15 +104,6 @@ void WalletBar::notNowRememberData()
 }
 
 
-void WalletBar::destroy()
-{
-    if (parentWidget() && parentWidget()->layout())
-    {
-        parentWidget()->layout()->removeWidget(this);
-    }
-    this->deleteLater();
-}
-
 
 void WalletBar::onSaveFormData(const QString &key, const QUrl &url)
 {

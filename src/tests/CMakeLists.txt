@@ -165,4 +165,16 @@ target_link_libraries( urlbar_test
     ${QT_QTTEST_LIBRARY}
 )
 
+##### ------------- listitem test
+
+kde4_add_unit_test( listitem_test listitem_test.cpp )
+
+target_link_libraries( listitem_test
+    kdeinit_rekonq
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_KDEWEBKIT_LIBS}
+    ${QT_QTTEST_LIBRARY}
+)
+
 ############################################################

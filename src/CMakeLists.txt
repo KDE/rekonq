@@ -14,6 +14,7 @@ SET( rekonq_KDEINIT_SRCS
     iconmanager.cpp
     mainview.cpp
     mainwindow.cpp
+    messagebar.cpp
     networkaccessmanager.cpp
     newtabpage.cpp
     notificationbar.cpp

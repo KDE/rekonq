@@ -90,6 +90,7 @@ public:
     ~UrlBar();
 
     void setPrivateMode(bool on);
+    void activateSuggestions(bool);
 
 public slots:
     void setQUrl(const QUrl &url);
@@ -120,7 +121,6 @@ protected:
 
 private:
     IconButton *addRightIcon(UrlBar::icon);
-    void activateSuggestions(bool);
 
     QWeakPointer<CompletionWidget> _box;
     WebTab *_tab;

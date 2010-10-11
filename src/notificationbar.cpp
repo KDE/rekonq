@@ -22,47 +22,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 * ============================================================ */
+// Self includes
 #include "notificationbar.h"
+#include "notificationbar.moc"
 
-#include <QApplication>
-#include <QColor>
-#include <QGraphicsEffect>
-#include <QPainter>
-#include <QPropertyAnimation>
+// Qt Includes
 
-
-class BlinkEffect : public QGraphicsEffect
-{
-    Q_OBJECT
-    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
-
-public:
-    BlinkEffect(QObject *parent = 0)
-        : QGraphicsEffect(parent)
-        , m_opacity(0)
-        , m_backgroundColor(QApplication::palette().highlight().color().lighter())
-    {}
-
-    qreal opacity() const { return m_opacity; }
-    void setOpacity(qreal opacity)
-    {
-        m_opacity = opacity;
-        update();
-    }
-
-protected:
-    void draw(QPainter *painter)
-    {
-        painter->drawPixmap(QPoint(0,0), sourcePixmap());
-        painter->setOpacity(m_opacity);
-        painter->fillRect(boundingRect(), m_backgroundColor);
-    }
-
-private:
-    double m_opacity;
-    QColor m_backgroundColor;
-
-};
+#include <QLayout>
+#include <QDebug>
 
 
 NotificationBar::NotificationBar(QWidget *parent)
@@ -89,4 +56,10 @@ void NotificationBar::notifyUser(int animationDuration)
 
 }
 
-#include "notificationbar.moc"
+void NotificationBar::destroy()
+{
+    qDebug() << Q_FUNC_INFO << "deleting the bar" << this;
+    if (parentWidget() && parentWidget()->layout())
+        parentWidget()->layout()->removeWidget(this);
+    deleteLater();
+}

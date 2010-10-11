@@ -49,9 +49,12 @@ class REKONQ_TESTS_EXPORT SessionManager : public QObject
 public:
     SessionManager(QObject *parent = 0);
     ~SessionManager();
-    bool restoreSession();
+    inline void setSessionManagementEnabled(bool on) { m_safe = on; }
 
     QStringList closedSites();
+
+public slots:
+    bool restoreSession();
 
 private slots:
     void saveSession();

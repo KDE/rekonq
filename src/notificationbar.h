@@ -27,14 +27,52 @@
 #define NOTIFICATIONBAR_H
 
 // Qt Includes
+#include <QApplication>
+#include <QColor>
+#include <QGraphicsEffect>
+#include <QPainter>
+#include <QPropertyAnimation>
 #include <QWidget>
 
 // Forward Declarations
 class QPropertyAnimation;
-class BlinkEffect;
+
+class BlinkEffect : public QGraphicsEffect
+{
+    Q_OBJECT
+    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
+
+public:
+    BlinkEffect(QObject *parent = 0)
+        : QGraphicsEffect(parent)
+        , m_opacity(0)
+        , m_backgroundColor(QApplication::palette().highlight().color().lighter())
+    {}
+
+    qreal opacity() const { return m_opacity; }
+    void setOpacity(qreal opacity)
+    {
+        m_opacity = opacity;
+        update();
+    }
+
+protected:
+    void draw(QPainter *painter)
+    {
+        painter->drawPixmap(QPoint(0,0), sourcePixmap());
+        painter->setOpacity(m_opacity);
+        painter->fillRect(boundingRect(), m_backgroundColor);
+    }
+
+private:
+    double m_opacity;
+    QColor m_backgroundColor;
+
+};
 
 class NotificationBar : public QWidget
 {
+    Q_OBJECT
 public:
     explicit NotificationBar(QWidget *parent = 0);
     ~NotificationBar();
@@ -44,6 +82,8 @@ public:
 private:
     BlinkEffect *m_blinkEffect;
     QPropertyAnimation *m_opacityAnimation;
+protected slots:
+    void destroy();
 
 };
 

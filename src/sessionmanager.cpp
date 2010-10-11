@@ -46,7 +46,7 @@
 
 SessionManager::SessionManager(QObject *parent)
         : QObject(parent)
-        , m_safe(true)
+        , m_safe(false)
 {
     m_sessionFilePath = KStandardDirs::locateLocal("appdata" , "session");
 }
@@ -59,12 +59,10 @@ SessionManager::~SessionManager()
 
 void SessionManager::saveSession()
 {
-    if (!m_safe)
+    if (!m_safe || QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return;
     m_safe = false;
 
-    if( QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled) )
-        return;
 
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
@@ -106,13 +104,19 @@ bool SessionManager::restoreSession()
 
     QTextStream in(&sessionFile);
     QString line;
+    bool windowAlreadyOpen = Application::instance()->mainWindowList().count();
     do
     {
         line = in.readLine();
         if (line == QL1S("window"))
         {
             line = in.readLine();
-            Application::instance()->loadUrl( KUrl(line), Rekonq::NewWindow);
+            if (windowAlreadyOpen) {
+                Application::instance()->loadUrl( KUrl(line), Rekonq::CurrentTab);
+                windowAlreadyOpen = false;
+            } else {
+                Application::instance()->loadUrl( KUrl(line), Rekonq::NewWindow);
+            }
         }
         else
         {

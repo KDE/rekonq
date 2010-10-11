@@ -55,8 +55,6 @@ private slots:
 
     void verifyUrl();
 
-    void destroy();
-
 private:
     QPushButton *m_button;
     QLabel *m_label;
