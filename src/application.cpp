@@ -493,6 +493,9 @@ void Application::updateConfiguration()
     else
         defaultSettings->setAttribute(QWebSettings::PluginsEnabled, true);
 
+    // Enabling WebKit "Page Cache" feature: http://webkit.org/blog/427/webkit-page-cache-i-the-basics/
+    defaultSettings->setMaximumPagesInCache(3);
+    
     // ===== HTML 5 features WebKit support ======
     defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
     defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
