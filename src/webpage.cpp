@@ -68,6 +68,9 @@
 
 // Qt Includes
 #include <QtCore/QFileInfo>
+
+#include <QtGui/QTextDocument>
+
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusConnectionInterface>
 #include <QtDBus/QDBusInterface>
@@ -599,7 +602,10 @@ QString WebPage::errorPage(QNetworkReply *reply)
     }
 
     QString title = i18n("There was a problem while loading the page");
-    QString urlString = reply->url().toString(QUrl::RemoveUserInfo | QUrl::RemoveQuery | QUrl::RemovePath);
+    
+    // NOTE: 
+    // this, to be sure BUG 217464 (Universal XSS) has been fixed..
+    QString urlString = Qt::escape(reply->url().toString(QUrl::RemoveUserInfo | QUrl::RemoveQuery | QUrl::RemovePath));
 
     QString iconPath = QString("file://") + KIconLoader::global()->iconPath("dialog-warning" , KIconLoader::Small);
     iconPath.replace(QL1S("16"), QL1S("128"));
