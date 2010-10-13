@@ -23,6 +23,9 @@
 
 #include "protocolhandler.h"
 
+#include <QWebView>
+#include <QNetworkRequest>
+
 
 class ProtocolhandlerTest : public QObject
 {
