@@ -97,6 +97,7 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
 
 BookmarkProvider::~BookmarkProvider()
 {
+    qDeleteAll(m_bookmarkMenus);
     delete m_manager;
 }
 
@@ -109,8 +110,9 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
     KActionMenu *bookmarkActionMenu = new KActionMenu(menu);
     bookmarkActionMenu->setMenu(menu);
     bookmarkActionMenu->setText(i18n("&Bookmarks"));
-    new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
-
+    BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
+    m_bookmarkMenus.append(bMenu);
+    
     kDebug() << "new Bookmarks menu... DONE";
 
     return bookmarkActionMenu;
@@ -222,8 +224,9 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
         {
             KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), this);
             menuAction->setDelayed(false);
-            new BookmarkMenu(bookmarkManager(), bookmarkOwner(), menuAction->menu(), bookmark.address());
-
+            BookmarkMenu *bMenu = new BookmarkMenu(bookmarkManager(), bookmarkOwner(), menuAction->menu(), bookmark.address());
+            m_bookmarkMenus.append(bMenu);
+    
             connect(menuAction->menu(), SIGNAL(aboutToShow()), toolBar, SLOT(menuDisplayed()));
             connect(menuAction->menu(), SIGNAL(aboutToHide()), toolBar, SLOT(menuHidden()));
 

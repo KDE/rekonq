@@ -41,6 +41,7 @@
 class BookmarksPanel;
 class BookmarkToolBar;
 class BookmarkOwner;
+class BookmarkMenu;
 
 class KAction;
 class KActionCollection;
@@ -143,8 +144,9 @@ private:
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;
     KActionCollection *m_actionCollection;
-    QList<BookmarkToolBar*> m_bookmarkToolBars;
-    QList<BookmarksPanel*> m_bookmarkPanels;
+    QList<BookmarkToolBar *> m_bookmarkToolBars;
+    QList<BookmarksPanel *> m_bookmarkPanels;
+    QList<BookmarkMenu *> m_bookmarkMenus;
 };
 
 
