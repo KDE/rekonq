@@ -129,7 +129,7 @@ Private::Private(SettingsDialog *parent)
     // -- 8
     KCModuleInfo ebrowsingInfo("ebrowsing.desktop");
     ebrowsingModule = new KCModuleProxy(ebrowsingInfo, parent);
-    pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toLocal8Bit()));
+    pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toUtf8()));
     pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
 
     // WARNING 

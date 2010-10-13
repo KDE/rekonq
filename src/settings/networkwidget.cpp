@@ -52,15 +52,15 @@ NetworkWidget::NetworkWidget(QWidget *parent)
 
     KCModuleInfo cacheInfo("cache.desktop");
     _cacheModule = new KCModuleProxy(cacheInfo, parent);
-    tabWidget->addTab(_cacheModule, i18n(cacheInfo.moduleName().toLocal8Bit()));
+    tabWidget->addTab(_cacheModule, i18n(cacheInfo.moduleName().toUtf8()));
 
     KCModuleInfo cookiesInfo("cookies.desktop");
     _cookiesModule = new KCModuleProxy(cookiesInfo, parent);
-    tabWidget->addTab(_cookiesModule, i18n(cookiesInfo.moduleName().toLocal8Bit()));
+    tabWidget->addTab(_cookiesModule, i18n(cookiesInfo.moduleName().toUtf8()));
 
     KCModuleInfo proxyInfo("proxy.desktop");
     _proxyModule = new KCModuleProxy(proxyInfo, parent);
-    tabWidget->addTab(_proxyModule, i18n(proxyInfo.moduleName().toLocal8Bit()));
+    tabWidget->addTab(_proxyModule, i18n(proxyInfo.moduleName().toUtf8()));
 
     connect(_cacheModule,   SIGNAL(changed(bool)), this, SLOT(hasChanged()));
     connect(_cookiesModule, SIGNAL(changed(bool)), this, SLOT(hasChanged()));
