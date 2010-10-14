@@ -49,6 +49,8 @@
 #include <KProcess>
 #include <KStandardDirs>
 #include <KToolInvocation>
+#include <KProtocolInfo>
+#include <KRun>
 
 // Qt Includes
 #include <QtNetwork/QNetworkRequest>
@@ -74,8 +76,8 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     _url = request.url();
     _frame = frame;
 
-    // "http(s)" (fast) handling
-    if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https"))
+    // rekonq can handle http/s and file browsing easily
+    if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https") || _url.protocol() == QL1S("file"))
         return false;
 
     // relative urls
@@ -102,29 +104,6 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         kDebug() << "EVALUATING JAVASCRIPT...";
         QVariant result = frame->evaluateJavaScript(scriptSource);
         return true;
-    }
-
-    // "mailto" handling
-    if (_url.protocol() == QL1S("mailto"))
-    {
-        KToolInvocation::invokeMailer(_url);
-        return true;
-    }
-
-    // "apturl" handling
-    if (_url.protocol() == QL1S ("apt"))
-    {
-      //Declare apturl as QString
-      QString apturl="apturl";
-      //We need to convert the url to QStringList to pass as a argument to apturl
-      QStringList host;
-      host << _url.url();
-
-      if ( KProcess::execute (apturl,host)==0)
-        return true;
-      else
-        return false;
-
     }
 
     // "abp" handling
@@ -171,6 +150,20 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         p.generate(_url);
         return true;
     }
+
+    //If rekonq cant handle a protocol by itself, it will hand it over to KDE via KRun
+    if(KProtocolInfo::isKnownProtocol(_url))
+    {
+        new KRun(_url, Application::instance()->mainWindow());
+        return true; //No need to delete KRun, it autodeletes it self
+    }
+    else if(!KProtocolInfo::isKnownProtocol(_url))
+    {
+        //Error Message, for those protocols even KDE cant handle
+        KMessageBox::error( Application::instance()->mainWindow(), i18n("rekonq cannot handle this URL, please use a appropriate application to open it"));
+        return false;
+    }
+
 
     return false;
 }
