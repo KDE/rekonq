@@ -161,8 +161,8 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     {
         //Error Message, for those protocols even KDE cant handle
         KMessageBox::error( Application::instance()->mainWindow(), i18nc("@info",
-                                                                        "rekonq can not handle this URL,
-                                                                         please use an appropriate application to open it"));
+                                                                        "rekonq can not handle this URL.
+                                                                         Please use an appropriate application to open it."));
         return false;
     }
 
