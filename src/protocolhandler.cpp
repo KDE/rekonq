@@ -155,12 +155,14 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     if(KProtocolInfo::isKnownProtocol(_url))
     {
         new KRun(_url, Application::instance()->mainWindow());
-        return true; //No need to delete KRun, it autodeletes it self
+        return true; //No need to delete KRun, it autodeletes itself
     }
-    else if(!KProtocolInfo::isKnownProtocol(_url))
+    else
     {
         //Error Message, for those protocols even KDE cant handle
-        KMessageBox::error( Application::instance()->mainWindow(), i18n("rekonq cannot handle this URL, please use a appropriate application to open it"));
+        KMessageBox::error( Application::instance()->mainWindow(), i18nc("@info",
+                                                                        "rekonq can not handle this URL,
+                                                                         please use an appropriate application to open it"));
         return false;
     }
 
