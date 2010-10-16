@@ -139,7 +139,7 @@ void BookmarkMenu::addOpenFolderInTabs()
 
         if (!bookmark.isNull())
         {
-            parentMenu()->addAction(Application::bookmarkProvider()->bookmarkOwner()->action(group, BookmarkOwner::OPEN_FOLDER));
+            parentMenu()->addAction(Application::bookmarkProvider()->bookmarkOwner()->createAction(group, BookmarkOwner::OPEN_FOLDER));
         }
     }
 }

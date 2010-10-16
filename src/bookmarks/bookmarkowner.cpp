@@ -55,7 +55,7 @@ BookmarkOwner::BookmarkOwner(KBookmarkManager *manager, QObject *parent)
 }
 
 
-KAction* BookmarkOwner::action(const KBookmark &bookmark, const BookmarkAction &bmAction)
+KAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAction &bmAction)
 {
     switch (bmAction)
     {

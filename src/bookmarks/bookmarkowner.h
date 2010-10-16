@@ -66,9 +66,9 @@ public:
     };
 
     /**
-     * @return the action connected to the bookmark or 0 if it doesn't exist.
+     * @return A new action for the given bookmark.
      */
-    KAction* action(const KBookmark &bookmark, const BookmarkAction &bmAction);
+    KAction* createAction(const KBookmark &bookmark, const BookmarkAction &bmAction);
 
     // @{
     /**
