@@ -76,10 +76,14 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     _url = request.url();
     _frame = frame;
 
-    // rekonq can handle http/s and file browsing easily
+    // rekonq can handle http/s browsing easily
     if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https") || _url.protocol() == QL1S("file"))
         return false;
 
+    // rekonq can handle file & ftp schemes, if you like,,
+    if (_url.protocol() == QL1S("ftp") || _url.protocol() == QL1S("file"))
+        return false;
+    
     // relative urls
     if (_url.isRelative())
         return false;
@@ -105,6 +109,9 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         QVariant result = frame->evaluateJavaScript(scriptSource);
         return true;
     }
+
+    // NOTE
+    // handle here "custom" rekonq protocols
 
     // "abp" handling
     if (_url.protocol() == QL1S("abp"))
@@ -161,8 +168,8 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     {
         //Error Message, for those protocols even KDE cant handle
         KMessageBox::error( Application::instance()->mainWindow(), i18nc("@info",
-                                                                        "rekonq can not handle this URL.
-                                                                         Please use an appropriate application to open it."));
+                                                                        "rekonq can not handle this URL. \
+                                                                        Please use an appropriate application to open it."));
         return false;
     }
 
