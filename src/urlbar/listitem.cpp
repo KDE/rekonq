@@ -277,7 +277,7 @@ void TextLabel::setEngineText(const QString &engine, const QString &text)
 // ---------------------------------------------------------------
 
 
-DescriptionLabel::DescriptionLabel(const QString &text, const QString &textToPointOut, QWidget *parent)
+DescriptionLabel::DescriptionLabel(const QString &text, QWidget *parent)
         : QLabel(parent)
 {
     QString t = text;
@@ -374,7 +374,7 @@ void ImageLabel::slotData(KIO::Job *job, const QByteArray &data)
 }
 
 
-void ImageLabel::slotResult(KJob *job)
+void ImageLabel::slotResult(KJob *)
 {
     QPixmap pix;
     if (!pix.loadFromData(m_data))
@@ -559,9 +559,8 @@ VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, co
     QVBoxLayout *vLayout = new QVBoxLayout;
     vLayout->setMargin(0);
     vLayout->addItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::MinimumExpanding));
-    QString query = SearchEngine::extractQuery(text);
-    vLayout->addWidget(new TextLabel(item.title, query, this));
-    DescriptionLabel *d = new DescriptionLabel("", query, this);
+    vLayout->addWidget(new TextLabel(item.title, SearchEngine::extractQuery(text), this));
+    DescriptionLabel *d = new DescriptionLabel("", this);
     vLayout->addWidget(d);
     vLayout->addItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::MinimumExpanding));
     hLayout->addLayout(vLayout);

@@ -134,7 +134,7 @@ class DescriptionLabel : public QLabel
     Q_OBJECT
 
 public:
-    explicit DescriptionLabel(const QString &text, const QString &textToPointOut = QString(), QWidget *parent = 0);
+    explicit DescriptionLabel(const QString &text, QWidget *parent = 0);
 };
 
 
