@@ -245,3 +245,9 @@ ResponseList OpenSearchEngine::parseSuggestion(const QByteArray &resp)
 
     return m_parser->parse(resp);
 }
+
+
+QString OpenSearchEngine::type()
+{
+    return m_parser->type();
+}

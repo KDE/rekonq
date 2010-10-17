@@ -145,16 +145,17 @@ OpenSearchEngine *OpenSearchReader::read()
             }
             else
             {
-                engine->setSuggestionsUrlTemplate(url);
-                engine->setSuggestionsParameters(parameters);
-
-                if (type == QL1S("application/x-suggestions+xml")) 
+                if (engine->suggestionsUrlTemplate().isEmpty() && type == QL1S("application/x-suggestions+json")) //note: xml is prefered
                 {
-                    engine->setSuggestionParser(new XMLParser());
-                }
-                else if (type == QL1S("application/x-suggestions+json")) 
-                {
+                    engine->setSuggestionsUrlTemplate(url);
+                    engine->setSuggestionsParameters(parameters);
                     engine->setSuggestionParser(new JSONParser());
+                }
+                else if (type == QL1S("application/x-suggestions+xml"))
+                {
+                    engine->setSuggestionsUrlTemplate(url);
+                    engine->setSuggestionsParameters(parameters);
+                    engine->setSuggestionParser(new XMLParser());
                 }
             }
             

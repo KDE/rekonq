@@ -105,7 +105,7 @@ void OpenSearchWriter::write(OpenSearchEngine *engine)
     {
         writeStartElement(QL1S("Url"));
         writeAttribute(QL1S("method"), QL1S("get"));
-        writeAttribute(QL1S("type"), QL1S("application/x-suggestions+json"));
+        writeAttribute(QL1S("type"), engine->type());
         writeAttribute(QL1S("template"), engine->suggestionsUrlTemplate());
 
         if (!engine->suggestionsParameters().empty()) 

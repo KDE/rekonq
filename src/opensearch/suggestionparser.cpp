@@ -56,7 +56,7 @@ ResponseList XMLParser::parse(const QByteArray &resp)
 
     while (!m_reader.atEnd() && !m_reader.hasError())
     {
-        QXmlStreamReader::TokenType token = m_reader.readNext();
+        m_reader.readNext();
 
         if (m_reader.isStartDocument()) continue;
 

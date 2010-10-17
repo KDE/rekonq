@@ -88,6 +88,7 @@ class SuggestionParser
 public:
     virtual ~SuggestionParser();
     virtual ResponseList parse(const QByteArray &resp);
+    virtual QString type(){ return ""; }
 };
 
 
@@ -98,6 +99,7 @@ protected:
 
 public:
     ResponseList parse(const QByteArray &resp);
+    QString type(){ return "application/x-suggestions+xml"; }
 };
 
 class JSONParser : public SuggestionParser
@@ -107,6 +109,7 @@ private:
     
 public:
     ResponseList parse(const QByteArray &resp);
+    QString type(){ return "application/x-suggestions+json"; }
 };
 
 #endif //SUGGESTIONPARSER_H

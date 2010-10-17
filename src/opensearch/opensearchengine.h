@@ -94,6 +94,8 @@ public:
 
     static QString parseTemplate(const QString &searchTerm, const QString &searchTemplate);
 
+    QString type();
+
 private:
     QString m_name;
     QString m_description;
