@@ -32,5 +32,6 @@ INSTALL(
 INSTALL( 
     FILES 
     google.xml
+    wikipedia.xml
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/opensearch
 )
