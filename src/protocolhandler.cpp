@@ -77,7 +77,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     _frame = frame;
 
     // rekonq can handle http/s browsing easily
-    if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https") || _url.protocol() == QL1S("file"))
+    if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https"))
         return false;
 
     // rekonq can handle file & ftp schemes, if you like,,
@@ -158,22 +158,17 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         return true;
     }
 
-    //If rekonq cant handle a protocol by itself, it will hand it over to KDE via KRun
+    // If rekonq cannot handle a protocol by itself, it will hand it over to KDE via KRun
     if(KProtocolInfo::isKnownProtocol(_url))
     {
-        new KRun(_url, Application::instance()->mainWindow());
-        return true; //No need to delete KRun, it autodeletes itself
-    }
-    else
-    {
-        //Error Message, for those protocols even KDE cant handle
-        KMessageBox::error( Application::instance()->mainWindow(), i18nc("@info",
-                                                                        "rekonq can not handle this URL. \
-                                                                        Please use an appropriate application to open it."));
-        return false;
+        new KRun(_url, Application::instance()->mainWindow());  // No need to delete KRun, it autodeletes itself
+        return true;
     }
 
-
+    // Error Message, for those protocols even KDE cannot handle
+    KMessageBox::error(Application::instance()->mainWindow(), i18nc("@info",
+                                                                    "rekonq can not handle this URL. \
+                                                                    Please use an appropriate application to open it."));
     return false;
 }
 
