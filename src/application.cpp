@@ -129,8 +129,8 @@ int Application::newInstance()
 
     if (isRekonqCrashed && isFirstLoad) {
             loadUrl(KUrl("about:closedTabs"));
-            MessageBar *msgBar = new MessageBar(i18n("It seems rekonq wasn't closed properly, do you want "
-                                                     "to restore the last saved session ?")
+            MessageBar *msgBar = new MessageBar(i18n("It seems rekonq was not closed properly. Do you want "
+                                                     "to restore the last saved session?")
                                                 , mainWindow()->currentTab()
                                                 , QMessageBox::Warning
                                                 , MessageBar::Yes | MessageBar::No );
