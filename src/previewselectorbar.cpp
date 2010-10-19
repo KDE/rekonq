@@ -97,7 +97,7 @@ void PreviewSelectorBar::verifyUrl()
     else
     {
         m_button->setEnabled(false);
-        m_button->setToolTip(i18n("You can not add this webpage as favorite"));
+        m_button->setToolTip(i18n("You cannot add this webpage as favorite"));
     }
 }
 
