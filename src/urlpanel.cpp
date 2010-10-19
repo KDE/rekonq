@@ -54,11 +54,6 @@ UrlPanel::UrlPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
 }
 
 
-UrlPanel::~UrlPanel()
-{
-}
-
-
 void UrlPanel::showing(bool b)
 {
     if(!_loaded && b)

@@ -33,7 +33,7 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QDockWidget>
+#include <QtGui/QDockWidget>
 
 // Forward Declarations
 class PanelTreeView;
@@ -47,25 +47,25 @@ class REKONQ_TESTS_EXPORT UrlPanel : public QDockWidget
 
 public:
     explicit UrlPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    virtual ~UrlPanel();
+    virtual ~UrlPanel() {}
 
-    inline PanelTreeView *panelTreeView() const { return _treeView; };
-    
+Q_SIGNALS:
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void itemHovered(const QString &);
+
 public Q_SLOTS:
     void showing(bool);
-
-protected Q_SLOTS:
-    virtual void contextMenuItem(const QPoint &pos) = 0;
-    virtual void contextMenuGroup(const QPoint &pos) = 0;
-    virtual void contextMenuEmpty(const QPoint &pos) = 0;
 
 protected:
     virtual void setup();
     virtual QAbstractItemModel* getModel() = 0;
 
-Q_SIGNALS:
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
-    void itemHovered(const QString &);
+    PanelTreeView* panelTreeView() const {return _treeView;}
+
+protected Q_SLOTS:
+    virtual void contextMenuItem(const QPoint &pos) = 0;
+    virtual void contextMenuGroup(const QPoint &pos) = 0;
+    virtual void contextMenuEmpty(const QPoint &pos) = 0;
 
 private:
     PanelTreeView *_treeView;

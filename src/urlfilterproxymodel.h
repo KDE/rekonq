@@ -39,16 +39,15 @@
 /**
  * QSortFilterProxyModel hides all children which parent doesn't
  * match the filter. This class is used to change this behavior.
- * If a url matches the filter it'll be shown, 
+ * If a url matches the filter it'll be shown,
  * even if it's parent doesn't match it.
- * 
  */
 class REKONQ_TESTS_EXPORT UrlFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
 public:
-    UrlFilterProxyModel(QObject *parent = 0);
+    explicit UrlFilterProxyModel(QObject *parent = 0);
 
 protected:
     virtual bool filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const;
