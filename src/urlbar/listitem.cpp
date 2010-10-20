@@ -211,28 +211,31 @@ static QString highlightWordsInText(const QString &text, const QStringList &word
     foreach (const QString &wordToPointOut, words) {
         int index = ret.indexOf(wordToPointOut, 0, Qt::CaseInsensitive);
         while(index > -1) {
-            boldSections.fill(true,index + 1, index + wordToPointOut.size() + 1);
+            boldSections.fill(true, index, index + wordToPointOut.size());
             index = ret.indexOf(wordToPointOut, index + wordToPointOut.size(), Qt::CaseInsensitive);
         }
     }
     int numSections = 0;
-    bool bold = false;
-    for(int i=0; i < boldSections.size() - 1; ++i ) {
-        if (boldSections.testBit(i) && (i == boldSections.size() || !boldSections.testBit(i+1)))
-            numSections++;
+    for (int i = 0; i < boldSections.size() - 1; ++i){
+        if (boldSections.testBit(i) && !boldSections.testBit(i + 1))
+            ++numSections;
     }
+    if (boldSections.testBit(boldSections.size() - 1)) //last char was still part of a bold section
+        ++numSections;
     const int tagLength = 7; // length of "<b>" and "</b>" we're going to add for each bold section.
     ret.reserve(ret.size() + numSections * tagLength);
-    bold = false;
-    for (int i = boldSections.size() - 1; i >= 0; --i) {
-        if (!bold && boldSections.testBit(i)) {
-            ret.insert(i, QL1S("</b>"));
+    bool bold = false;
+    for (int i = boldSections.size() - 1; i >= 0; --i){
+        if (!bold && boldSections.testBit(i)){
+            ret.insert(i + 1, QL1S("</b>"));
             bold = true;
-        } else if (bold && !boldSections.testBit(i)) {
-            ret.insert(i, QL1S("<b>"));
+        } else if (bold && !boldSections.testBit(i)){
+            ret.insert(i + 1, QL1S("<b>"));
             bold = false;
         }
     }
+    if (bold)
+        ret.insert(0, QL1S("<b>"));
     return ret;
 }
 

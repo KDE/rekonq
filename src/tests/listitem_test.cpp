@@ -74,7 +74,8 @@ void ListItemTest::wordHighLighting_data()
     QTest::newRow("<") << "Subject < Section < Wiki" << "<" << "Subject <b>&lt;</b> Section <b>&lt;</b> Wiki";
     QTest::newRow("&") << "<i>http://www.google.com/search?q=qt test&ie=UTF-8&oe=UTF-8</i>" << "&"
             << "<i>http://www.google.com/search?q=qt test<b>&amp;</b>ie=UTF-8<b>&amp;</b>oe=UTF-8</i>";
-
+    QTest::newRow("ciao") << "ciao" << "ciao" << "<b>ciao</b>";
+    QTest::newRow("http://ciao") << "http://ciao" << "ciao" << "http://<b>ciao</b>";
 }
 
 void ListItemTest::wordHighLighting()
