@@ -166,7 +166,7 @@ void TabBar::showTabPreview()
         return;
 
     // no previews during load
-    if (indexedTab->progress() != 0)
+    if (indexedTab->isPageLoading())
         return;
 
     int w = tabSizeHint(m_currentTabPreviewIndex).width();

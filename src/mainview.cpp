@@ -284,11 +284,7 @@ void MainView::currentChanged(int index)
     emit showStatusBarMessage(QString());
 
     // notify UI to eventually switch stop/reload button
-    int progr = tab->progress();
-    if (progr == 0)
-        emit browserTabLoading(false);
-    else
-        emit browserTabLoading(true);
+    emit browserTabLoading(tab->isPageLoading());
 
     // set focus to the current webview
     if (tab->url().scheme() == QL1S("about"))

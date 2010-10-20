@@ -369,8 +369,11 @@ void UrlBar::showBookmarkInfo(const QPoint &pos)
 
 void UrlBar::onBookmarksChanged()
 {
-    clearRightIcons();
-    loadFinished();
+    if (!_tab->isPageLoading())
+    {
+        clearRightIcons();
+        loadFinished();
+    }
 }
 
 

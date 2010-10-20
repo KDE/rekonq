@@ -63,6 +63,7 @@ public:
     void insertBar(NotificationBar* bar);
 
     bool hasRSSInfo();
+    bool isPageLoading();
 
 private slots:
     void updateProgress(int progress);

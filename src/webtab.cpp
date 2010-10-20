@@ -123,6 +123,12 @@ void WebTab::loadFinished(bool)
 }
 
 
+bool WebTab::isPageLoading()
+{
+    return _progress != 0;
+}
+
+
 void WebTab::createWalletBar(const QString &key, const QUrl &url)
 {
     // check if the url is in the wallet blacklist
