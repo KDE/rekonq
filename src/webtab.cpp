@@ -84,29 +84,12 @@ WebTab::~WebTab()
 }
 
 
-// TODO:
-// Import the "about" check and the one in protocolhandler
-// in some (static?) methods in NewTabPage
 KUrl WebTab::url()
 {
-    KUrl u = KUrl(view()->url());
-    if (u.scheme() == QL1S("about"))
-    {
-        QWebElement rootElement = page()->mainFrame()->documentElement();
-        if (rootElement.document().findAll("#rekonq-newtabpage").count() == 0)
-            return u;
-        if (rootElement.findAll(".favorites").count() > 0)
-            return KUrl("about:favorites");
-        if (rootElement.findAll(".closedTabs").count() > 0)
-            return KUrl("about:closedTabs");
-        if (rootElement.findAll(".history").count() > 0)
-            return KUrl("about:history");
-        if (rootElement.findAll(".bookmarks").count() > 0)
-            return KUrl("about:bookmarks");
-        if (rootElement.findAll(".downloads").count() > 0)
-            return KUrl("about:downloads");
-    }
-    return u;
+    if(page()->isOnRekonqPage())
+        return page()->loadingUrl();
+    
+    return view()->url();
 }
 
 

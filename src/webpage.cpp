@@ -418,7 +418,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     if (!isLocal)
     {
-
         KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), replyUrl, mimeType);
         if(!suggestedFileName.isEmpty())
             dlg.setSuggestedFileName(suggestedFileName);
@@ -509,6 +508,8 @@ void WebPage::loadFinished(bool ok)
     {
         wallet()->fillFormData(mainFrame());
     }
+    kDebug() << "rekonq page: " << _isOnRekonqPage;
+    kDebug() << "loading url: " << _loadingUrl;
 }
 
 

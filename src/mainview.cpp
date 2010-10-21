@@ -562,10 +562,13 @@ void MainView::webViewLoadFinished(bool ok)
 void MainView::webViewIconChanged()
 {
     WebView *view = qobject_cast<WebView *>(sender());
-    int index = indexOf(view->parentWidget());
+    WebTab *tab = qobject_cast<WebTab *>(view->parent());
+    int index = indexOf(tab);
+    
     if (-1 != index)
     {
-        KIcon icon = Application::iconManager()->iconForUrl(view->url());
+        kDebug() << "TAB URL: " << tab->url();
+        KIcon icon = Application::iconManager()->iconForUrl(tab->url());
         QLabel *label = animatedLoading(index, false);
         QMovie *movie = label->movie();
         delete movie;

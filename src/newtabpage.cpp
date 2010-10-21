@@ -171,8 +171,8 @@ void NewTabPage::favoritesPage()
     m_root.addClass("favorites");
 
     const QWebElement add = createLinkItem(i18n("Add Favorite"),
-                                           QLatin1String("about:preview/add"),
-                                           QLatin1String("list-add"),
+                                           QL1S("about:preview/add"),
+                                           QL1S("list-add"),
                                            KIconLoader::Toolbar);
     m_root.document().findFirst("#actions").appendInside(add);
 
@@ -344,44 +344,44 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
 
     // Favorites
     navItems.append(createLinkItem(i18n("Favorites"),
-                                   QLatin1String("about:favorites"),
-                                   QLatin1String("emblem-favorite"),
+                                   QL1S("about:favorites"),
+                                   QL1S("emblem-favorite"),
                                    KIconLoader::Toolbar));
 
     // Closed Tabs
     navItems.append(createLinkItem(i18n("Closed Tabs"),
-                                   QLatin1String("about:closedTabs"),
-                                   QLatin1String("tab-close"),
+                                   QL1S("about:closedTabs"),
+                                   QL1S("tab-close"),
                                    KIconLoader::Toolbar));
 
     // Bookmarks
     navItems.append(createLinkItem(i18n("Bookmarks"),
-                                   QLatin1String("about:bookmarks"),
-                                   QLatin1String("bookmarks"),
+                                   QL1S("about:bookmarks"),
+                                   QL1S("bookmarks"),
                                    KIconLoader::Toolbar));
 
     // History
     navItems.append(createLinkItem(i18n("History"),
-                                   QLatin1String("about:history"),
-                                   QLatin1String("view-history"),
+                                   QL1S("about:history"),
+                                   QL1S("view-history"),
                                    KIconLoader::Toolbar));
 
     // Downloads
     navItems.append(createLinkItem(i18n("Downloads"),
-                                   QLatin1String("about:downloads"),
-                                   QLatin1String("download"),
+                                   QL1S("about:downloads"),
+                                   QL1S("download"),
                                    KIconLoader::Toolbar));
 
     foreach(QWebElement it, navItems)
     {
         const QString aTagString('a');
-        const QString hrefAttributeString(QLatin1String("href"));
+        const QString hrefAttributeString(QL1S("href"));
 
         if (it.findFirst(aTagString).attribute(hrefAttributeString) == currentUrl.toMimeDataString())
-            it.addClass(QLatin1String("current"));
-        else if (currentUrl == QLatin1String("about:home") && it.findFirst(aTagString).attribute(hrefAttributeString) == QLatin1String("about:favorites"))
-            it.addClass(QLatin1String("current"));
-        m_root.document().findFirst(QLatin1String("#navigation")).appendInside(it);
+            it.addClass(QL1S("current"));
+        else if (currentUrl == QL1S("about:home") && it.findFirst(aTagString).attribute(hrefAttributeString) == QL1S("about:favorites"))
+            it.addClass(QL1S("current"));
+        m_root.document().findFirst(QL1S("#navigation")).appendInside(it);
     }
 }
 
@@ -391,8 +391,8 @@ void NewTabPage::historyPage()
     m_root.addClass("history");
 
     const QWebElement clearData = createLinkItem(i18n("Clear Private Data"),
-                                                 QLatin1String("about:history/clear"),
-                                                 QLatin1String("edit-clear"),
+                                                 QL1S("about:history/clear"),
+                                                 QL1S("edit-clear"),
                                                  KIconLoader::Toolbar);
     m_root.document().findFirst("#actions").appendInside(clearData);
 
@@ -436,8 +436,8 @@ void NewTabPage::bookmarksPage()
     m_root.addClass("bookmarks");
 
     const QWebElement editBookmarks = createLinkItem(i18n("Edit Bookmarks"),
-                                                     QLatin1String("about:bookmarks/edit"),
-                                                     QLatin1String("bookmarks-organize"),
+                                                     QL1S("about:bookmarks/edit"),
+                                                     QL1S("bookmarks-organize"),
                                                      KIconLoader::Toolbar);
     m_root.document().findFirst("#actions").appendInside(editBookmarks);
 
@@ -536,8 +536,8 @@ void NewTabPage::downloadsPage()
     m_root.addClass("downloads");
 
     const QWebElement clearData = createLinkItem(i18n("Clear Private Data"),
-                                                 QLatin1String("about:downloads/clear"),
-                                                 QLatin1String("edit-clear"),
+                                                 QL1S("about:downloads/clear"),
+                                                 QL1S("edit-clear"),
                                                  KIconLoader::Toolbar);
     m_root.document().findFirst("#actions").appendInside(clearData);
 
@@ -592,10 +592,10 @@ QWebElement NewTabPage::createLinkItem(const QString &title, const QString &urlS
 {
     const KIconLoader * const loader = KIconLoader::global();
 
-    QWebElement nav = markup(QLatin1String(".link"));
-    nav.findFirst(QString('a')).setAttribute(QLatin1String("href"), urlString);
-    nav.findFirst(QLatin1String("img")).setAttribute(QLatin1String("src"),
+    QWebElement nav = markup(QL1S(".link"));
+    nav.findFirst(QString('a')).setAttribute(QL1S("href"), urlString);
+    nav.findFirst(QL1S("img")).setAttribute(QL1S("src"),
                                                      QString::fromLatin1("file://") + loader->iconPath(iconPath, groupOrSize));
-    nav.findFirst(QLatin1String("span")).appendInside(title);
+    nav.findFirst(QL1S("span")).appendInside(title);
     return nav;
 }

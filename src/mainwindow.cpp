@@ -1284,7 +1284,7 @@ void MainWindow::populateEncodingMenu()
     QList<int> mibs = QTextCodec::availableMibs();
     Q_FOREACH (const int &mib, mibs)
     {
-        QString codec = QLatin1String(QTextCodec::codecForMib(mib)->name());
+        QString codec = QL1S(QTextCodec::codecForMib(mib)->name());
         codecs.append(codec);
     }
     codecs.sort();

@@ -58,6 +58,8 @@ public:
     inline bool isOnRekonqPage() const { return _isOnRekonqPage; };
     inline void setIsOnRekonqPage(bool b) { _isOnRekonqPage = b; };
 
+    inline KUrl loadingUrl() { return _loadingUrl; };
+    
 public Q_SLOTS:
     void downloadAllContentsWithKGet(QPoint);
 

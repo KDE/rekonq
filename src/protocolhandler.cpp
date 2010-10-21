@@ -153,8 +153,12 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             }
         }
 
+        WebPage *page = qobject_cast<WebPage *>(frame->page());
+        page->setIsOnRekonqPage(true);
+        
         NewTabPage p(frame);
         p.generate(_url);
+
         return true;
     }
 
