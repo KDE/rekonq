@@ -89,7 +89,6 @@ public:
     explicit UrlBar(QWidget *parent = 0);
     ~UrlBar();
 
-    void setPrivateMode(bool on);
     void activateSuggestions(bool);
 
 public slots:
@@ -124,7 +123,6 @@ private:
 
     QWeakPointer<CompletionWidget> _box;
     WebTab *_tab;
-    bool _privateMode;
 
     IconButton *_icon;
     IconButtonPointerList _rightIconsList;
