@@ -38,11 +38,6 @@ BookmarksContextMenu::BookmarksContextMenu(const KBookmark &bookmark, KBookmarkM
 }
 
 
-BookmarksContextMenu::~BookmarksContextMenu()
-{
-}
-
-
 void BookmarksContextMenu::addBookmarkActions()
 {
     addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::OPEN_IN_TAB));
