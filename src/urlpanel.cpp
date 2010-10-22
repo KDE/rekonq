@@ -94,9 +94,8 @@ void UrlPanel::setup()
     ui->setLayout(vBoxLayout);
     setWidget(ui);
 
-    QAbstractItemModel *model = getModel();
     UrlFilterProxyModel *proxy = new UrlFilterProxyModel(this);
-    proxy->setSourceModel(model);
+    proxy->setSourceModel(model());
     _treeView->setModel(proxy);
 
     connect(search, SIGNAL(textChanged(QString)), proxy, SLOT(setFilterFixedString(QString)));

@@ -58,7 +58,7 @@ public Q_SLOTS:
 
 protected:
     virtual void setup();
-    virtual QAbstractItemModel* getModel() = 0;
+    virtual QAbstractItemModel* model() = 0;
 
     PanelTreeView* panelTreeView() const {return _treeView;}
 
