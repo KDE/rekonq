@@ -63,6 +63,7 @@ MainView::MainView(MainWindow *parent)
         , m_addTabButton(0)
         , m_currentTabIndex(0)
         , m_parentWindow(parent)
+        , _lastClosedTab(0)
 {
     // setting tabbar
     TabBar *tabBar = new TabBar(this);
@@ -100,6 +101,7 @@ MainView::~MainView()
 {
     delete _widgetBar;
     delete m_addTabButton;
+    delete _lastClosedTab;
 }
 
 
@@ -500,7 +502,10 @@ void MainView::closeTab(int index, bool del)
 
     if (del)
     {
-        tabToClose->deleteLater();
+        if(_lastClosedTab)
+            _lastClosedTab->deleteLater();
+        _lastClosedTab = tabToClose;
+//         tabToClose->deleteLater();
     }
 
     emit tabsChanged();
@@ -634,6 +639,19 @@ void MainView::openLastClosedTab()
         return;
 
     const HistoryItem item = m_recentlyClosedTabs.takeFirst();
+
+    // if there is a tab yet loaded, use it
+    if(_lastClosedTab)
+    {
+        addTab(_lastClosedTab, _lastClosedTab->view()->title() );
+        _widgetBar->addWidget(_lastClosedTab->urlBar());
+        updateTabBar();
+        emit tabsChanged();
+        
+        _lastClosedTab = 0;
+        return;
+    }
+    
     Application::instance()->loadUrl(KUrl(item.url), Rekonq::NewTab);
 }
 
