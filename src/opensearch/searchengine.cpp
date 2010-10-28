@@ -140,10 +140,12 @@ QString SearchEngine::extractQuery(const QString &text)
 {
     QString query = text;
     KService::Ptr engine = SearchEngine::fromString(text);
-    if (engine)
-    {
-        query = query.remove(0, text.indexOf(SearchEngine::delimiter()) + 1);
-    }
+
+    // WARNING: this lets rekonq hangs on kde: urlbar typing..
+//     if (engine)
+//     {
+//         query = query.remove(0, text.indexOf(SearchEngine::delimiter()) + 1);
+//     }
 
     return query;
 }

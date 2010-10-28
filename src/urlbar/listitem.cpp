@@ -465,7 +465,7 @@ SuggestionListItem::SuggestionListItem(const UrlSearchItem &item, const QString 
     hLayout->setSpacing(4);
 
     hLayout->addWidget(new IconLabel(item.url, this));
-    hLayout->addWidget(new TextLabel(item.title, SearchEngine::extractQuery(text), this));
+    hLayout->addWidget(new TextLabel(item.title, text, this));
     hLayout->addWidget(new TypeIconLabel(item.type, this));
 
     setLayout(hLayout);
@@ -502,32 +502,39 @@ BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, Q
 
 
 ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text, QWidget *parent)
-{
-    ListItem *newItem;
+{   
 
+    if (item.type & UrlSearchItem::Search)
+    {
+        kDebug() << "Search";
+        return new SearchListItem(item, text, parent);
+    }
+    
     if (item.type & UrlSearchItem::Browse)
     {
-        newItem = new BrowseListItem(item, text, parent);
+        kDebug() << "Browse";
+        return new BrowseListItem(item, text, parent);
     }
-    else
+    
+    if (item.type & UrlSearchItem::History)
     {
-        if (item.type & UrlSearchItem::Search)
-        {
-            newItem = new SearchListItem(item, text, parent);
-        }
-        else
-        {
-
-            if (item.type & UrlSearchItem::Suggestion)
-            {
-                newItem = new SuggestionListItem(item, text, parent);
-            }
-            else
-            {
-                newItem = new PreviewListItem(item, text, parent);
-            }
-        }
+        kDebug() << "History";
+        return new PreviewListItem(item, text, parent);
+    }
+    
+    if (item.type & UrlSearchItem::Bookmark)
+    {
+        kDebug() << "Bookmark";
+        return new PreviewListItem(item, text, parent);
+    }
+    
+    if (item.type & UrlSearchItem::Suggestion)
+    {
+        kDebug() << "Suggestion";
+        return new SuggestionListItem(item, text, parent);
     }
 
-    return newItem;
+    kDebug() << "Undefined";
+    return new PreviewListItem(item, text, parent);
+    
 }
