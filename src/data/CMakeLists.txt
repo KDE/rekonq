@@ -16,7 +16,7 @@ INSTALL(
 
 # .desktop file
 INSTALL( 
-    FILES rekonq.desktop 
+    PROGRAMS rekonq.desktop 
     DESTINATION ${XDG_APPS_INSTALL_DIR}
 )
 
