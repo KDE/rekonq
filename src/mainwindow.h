@@ -147,9 +147,6 @@ private slots:
     void viewPageSource();
     void viewFullScreen(bool enable);
 
-    // Tools Menu slots
-    void privateBrowsing(bool enable);
-
     // Settings Menu slot
     void preferences();
 

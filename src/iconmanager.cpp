@@ -65,10 +65,6 @@ KIcon IconManager::iconForUrl(const KUrl &url)
     // first things first.. avoid infinite loop at startup
     if (url.isEmpty() || Application::instance()->mainWindowList().isEmpty())
         return KIcon("text-html");
-
-    // no icons in private browsing..
-    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-        return KIcon("view-media-artist");
     
     QByteArray encodedUrl = url.toEncoded();
     // rekonq icons..
@@ -114,7 +110,7 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
         return;
     }
 
-    // no icons in private browsing..
+    // do not load new icons in private browsing..
     if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         kDebug() << "Private browsing, private icon...";

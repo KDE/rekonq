@@ -408,11 +408,9 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QL1S("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(viewPageSource()));
 
-    a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
-    a->setCheckable(true);
+    a = Application::instance()->privateBrowsingAction();
     actionCollection()->addAction(QL1S("private_browsing"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(privateBrowsing(bool)));
-
+    
     a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
     actionCollection()->addAction(QL1S("clear_private_data"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
@@ -725,42 +723,6 @@ void MainWindow::printRequested(QWebFrame *frame)
     connect(&previewdlg, SIGNAL(paintRequested(QPrinter *)), printFrame, SLOT(print(QPrinter *)));
 
     previewdlg.exec();
-}
-
-
-void MainWindow::privateBrowsing(bool enable)
-{
-    QWebSettings *settings = QWebSettings::globalSettings();
-    if (enable && !settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-    {
-        QString title = i18n("Are you sure you want to turn on private browsing?");
-        QString text = i18n("<b>%1</b>"
-                            "<p>When private browsing is turned on,"
-                            " web pages are not added to the history,"
-                            " new cookies are not stored, current cookies cannot be accessed,"
-                            " site icons will not be stored, the session will not be saved."
-                            " Until you close the window, you can still click the Back and Forward buttons"
-                            " to return to the web pages you have opened.</p>", title);
-
-        int button = KMessageBox::warningContinueCancel(this, text, title);
-        if (button == KMessageBox::Continue)
-        {
-            settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
-            m_view->urlBar()->setPrivateMode(true);
-        }
-        else
-        {
-            actionCollection()->action( QL1S("private_browsing") )->setChecked(false);
-        }
-    }
-    else
-    {
-        settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
-        m_view->urlBar()->setPrivateMode(false);
-
-        m_lastSearch.clear();
-        m_view->reloadAllTabs();
-    }
 }
 
 
@@ -1349,6 +1311,10 @@ bool MainWindow::queryClose()
     if(Application::instance()->sessionSaving())
         return true;
 
+    // smooth private browsing mode
+    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+        return true;
+    
     if (m_view->count() > 1)
     {
         int answer = KMessageBox::questionYesNoCancel(

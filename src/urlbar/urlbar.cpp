@@ -79,7 +79,6 @@ void IconButton::mouseReleaseEvent(QMouseEvent* event)
 UrlBar::UrlBar(QWidget *parent)
         : KLineEdit(parent)
         , _tab(0)
-        , _privateMode(false)
         , _icon(new IconButton(this))
         , _suggestionTimer(new QTimer(this))
 {
@@ -159,7 +158,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     QColor backgroundColor;
     QColor foregroundColor;
 
-    if (_privateMode)
+    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         backgroundColor = QColor(220, 220, 220);  // light gray
         foregroundColor = Qt::black;
@@ -286,12 +285,6 @@ void UrlBar::focusInEvent(QFocusEvent *event)
     activateSuggestions(true);
 
     KLineEdit::focusInEvent(event);
-}
-
-
-void UrlBar::setPrivateMode(bool on)
-{
-    _privateMode = on;
 }
 
 
@@ -505,8 +498,15 @@ void UrlBar::suggest()
 
 void UrlBar::refreshFavicon()
 {
+    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    {
+        _icon->setIcon(KIcon("view-media-artist"));
+        return;
+    }
+    
     KUrl u = _tab->url();
-    if(u.scheme() == QL1S("about")) {
+    if(u.scheme() == QL1S("about")) 
+    {
         _icon->setIcon(KIcon("arrow-right"));
         return;
     }

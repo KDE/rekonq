@@ -50,6 +50,9 @@ class MainWindow;
 class OpenSearchManager;
 class SessionManager;
 
+class KAction;
+
+
 namespace ThreadWeaver {class Job;}
 
 
@@ -107,6 +110,8 @@ public:
     void addDownload(const QString &srcUrl, const QString &destUrl);
     DownloadList downloads();
     bool clearDownloadsHistory();
+    
+    KAction *privateBrowsingAction() { return _privateBrowsingAction; };
 
 public slots:
     /**
@@ -124,7 +129,6 @@ public slots:
     void removeMainWindow(MainWindow *window);
 
 private slots:
-
     /**
      * Any actions that can be delayed until the window is visible
      */
@@ -133,6 +137,9 @@ private slots:
     void loadResolvedUrl(ThreadWeaver::Job *);
 
     void updateConfiguration();
+
+    // the general place to set private browsing
+    void setPrivateBrowsingMode(bool);  
 
 private:
     static QWeakPointer<HistoryManager> s_historyManager;
@@ -143,6 +150,8 @@ private:
     static QWeakPointer<IconManager> s_iconManager;
 
     MainWindowList m_mainWindows;
+
+    KAction *_privateBrowsingAction;
 };
 
 #endif // APPLICATION_H

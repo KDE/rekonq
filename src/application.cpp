@@ -55,9 +55,11 @@
 #include <KMessageBox>
 #include <KStandardDirs>
 #include <ThreadWeaver/Weaver>
+#include <KAction>
 
 // Qt Includes
 #include <QVBoxLayout>
+
 
 QWeakPointer<AdBlockManager> Application::s_adblockManager;
 QWeakPointer<BookmarkProvider> Application::s_bookmarkProvider;
@@ -66,13 +68,20 @@ QWeakPointer<IconManager> Application::s_iconManager;
 QWeakPointer<OpenSearchManager> Application::s_opensearchManager;
 QWeakPointer<SessionManager> Application::s_sessionManager;
 
+
 using namespace ThreadWeaver;
+
 
 Application::Application()
         : KUniqueApplication()
+        , _privateBrowsingAction(0)
 {
     connect(Weaver::instance(), SIGNAL(jobDone(ThreadWeaver::Job*)),
             this, SLOT(loadResolvedUrl(ThreadWeaver::Job*)));
+
+    _privateBrowsingAction = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
+    _privateBrowsingAction->setCheckable(true);
+    connect(_privateBrowsingAction, SIGNAL(triggered(bool)), this, SLOT(setPrivateBrowsingMode(bool)));
 }
 
 
@@ -574,4 +583,56 @@ bool Application::clearDownloadsHistory()
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
     QFile downloadFile(downloadFilePath);
     return downloadFile.remove();
+}
+
+
+void Application::setPrivateBrowsingMode(bool b)
+{
+// NOTE
+// to let work nicely Private Browsing, we need the following:
+// - enable WebKit Private Browsing mode :)
+// - treat all cookies as session cookies 
+//  (so that they do not get saved to a persistent storage). Available from KDE SC 4.5.72, see BUG: 250122
+// - favicons (fixed in rekonq 0.5.87)
+// - save actual session (to restore it when Private Mode is closed) and stop storing it
+// - disable history saving
+
+    QWebSettings *settings = QWebSettings::globalSettings();
+    bool isJustEnabled = settings->testAttribute(QWebSettings::PrivateBrowsingEnabled);
+    if(isJustEnabled == b)
+        return;     // uhm... something goes wrong...
+        
+    if (b)
+    {
+        QString caption = i18n("Are you sure you want to turn on private browsing?");
+        QString text = i18n("<b>%1</b>"
+                            "<p>rekonq will save your current tabs for when you'll stop private browsing the net..</p>", caption);
+        
+        int button = KMessageBox::warningContinueCancel(mainWindow(), text, caption, KStandardGuiItem::cont(), KStandardGuiItem::cancel(), i18n("don't ask again") );
+        if (button != KMessageBox::Continue)
+            return;
+        
+        settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
+        _privateBrowsingAction->setChecked(true);
+        
+        Q_FOREACH(const QWeakPointer<MainWindow> &w, m_mainWindows)
+        {
+            w.data()->close();
+        }
+        loadUrl( KUrl("about:home"), Rekonq::NewWindow);
+    }
+    else
+    {
+        Q_FOREACH(const QWeakPointer<MainWindow> &w, m_mainWindows)
+        {
+            w.data()->close();
+        }
+
+        settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
+        _privateBrowsingAction->setChecked(false);
+        
+        loadUrl( KUrl("about:blank"), Rekonq::NewWindow);
+        if(!sessionManager()->restoreSession())
+            loadUrl( KUrl("about:home"), Rekonq::NewWindow);
+    }
 }
