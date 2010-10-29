@@ -189,8 +189,6 @@ private:
     QList<HistoryItem> m_recentlyClosedTabs;
 
     MainWindow *m_parentWindow;
-    
-    WebTab *_lastClosedTab;
 };
 
 #endif // MAINVIEW_H
