@@ -76,6 +76,10 @@ ENDIF(KDE4_FOUND)
 
 ##### FINAL RESULTS #####
 
+# create suspance..
+MESSAGE(STATUS "")
+MESSAGE(STATUS "")
+
 IF(QT4_FOUND AND KDE4_FOUND)
     MESSAGE(STATUS " rekonq will be compiled............... YES")
     SET(REKONQ_CAN_BE_COMPILED true)
