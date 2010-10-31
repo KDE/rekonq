@@ -5,8 +5,11 @@ SET( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_BINARY_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/..
                         ${CMAKE_CURRENT_SOURCE_DIR}/../adblock
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../analyzer
                         ${CMAKE_CURRENT_SOURCE_DIR}/../bookmarks
                         ${CMAKE_CURRENT_SOURCE_DIR}/../history
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../opensearch
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../rekonqpage
                         ${CMAKE_CURRENT_SOURCE_DIR}/../settings
                         ${CMAKE_CURRENT_SOURCE_DIR}/../urlbar
                         ${KDE4_INCLUDES}
