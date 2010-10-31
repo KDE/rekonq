@@ -86,7 +86,7 @@ WebTab::~WebTab()
 
 KUrl WebTab::url()
 {
-    if(page()->isOnRekonqPage())
+    if(page() && page()->isOnRekonqPage())
         return page()->loadingUrl();
     
     return view()->url();
