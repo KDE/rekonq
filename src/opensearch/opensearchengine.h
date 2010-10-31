@@ -47,11 +47,12 @@
 class QNetworkAccessManager;
 class QNetworkReply;
 
-class OpenSearchEngine
+
+class OpenSearchEngine : public QObject
 {
 public:
     typedef QPair<QString, QString> Parameter;
-
+    
     OpenSearchEngine(QObject *parent = 0);
     ~OpenSearchEngine();
 

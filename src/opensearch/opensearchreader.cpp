@@ -34,6 +34,9 @@
 #include "opensearchengine.h"
 #include "suggestionparser.h"
 
+// KDE Includes
+#include <KLocalizedString>
+
 // Qt Includes
 #include <QtCore/QIODevice>
 
@@ -79,7 +82,7 @@ OpenSearchEngine *OpenSearchReader::read()
          || namespaceUri() != QL1S("http://a9.com/-/spec/opensearch/1.1/")
        ) 
     {
-        raiseError(QObject::tr("The file is not an OpenSearch 1.1 file."));
+        raiseError(i18n("The file is not an OpenSearch 1.1 file."));
         return engine;
     }
 
@@ -119,7 +122,10 @@ OpenSearchEngine *OpenSearchReader::read()
 
             while (!(isEndElement() && name() == QL1S("Url"))) 
             {
-                if (!isStartElement() || (name() != QL1S("Param") && name() != QL1S("Parameter"))) {
+                if (!isStartElement() 
+                    || (name() != QL1S("Param") 
+                    && name() != QL1S("Parameter"))) 
+                {
                     readNext();
                     continue;
                 }
@@ -138,14 +144,15 @@ OpenSearchEngine *OpenSearchReader::read()
                 }
             }
 
-            if (type == QLatin1String("text/html"))
+            if (type == QL1S("text/html"))
             {
                 engine->setSearchUrlTemplate(url);
                 engine->setSearchParameters(parameters);
             }
             else
             {
-                if (engine->suggestionsUrlTemplate().isEmpty() && type == QL1S("application/x-suggestions+json")) //note: xml is prefered
+                if (engine->suggestionsUrlTemplate().isEmpty() 
+                    && type == QL1S("application/x-suggestions+json")) //note: xml is prefered
                 {
                     engine->setSuggestionsUrlTemplate(url);
                     engine->setSuggestionsParameters(parameters);

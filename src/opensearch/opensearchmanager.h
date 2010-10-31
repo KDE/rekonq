@@ -79,7 +79,7 @@ public:
 
     void addOpenSearchEngine(const KUrl &url, const QString &title);
 
-public slots:
+public Q_SLOTS:
     /**
      * Ask the specific suggestion engine to request for suggestion for the search text
      * 
@@ -87,11 +87,11 @@ public slots:
      */
     void requestSuggestion(const QString &searchText);
 
-private slots:
+private Q_SLOTS:
     void dataReceived(KIO::Job *job, const QByteArray &data);
     void jobFinished(KJob *job);
 
-signals:
+Q_SIGNALS:
     void suggestionReceived(const QString &text, const ResponseList &suggestion);
     void openSearchEngineAdded(const QString &name, const QString &searchUrl, const QString &fileName);
 

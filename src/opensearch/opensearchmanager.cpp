@@ -168,7 +168,7 @@ void OpenSearchManager::jobFinished(KJob *job)
     {
         const ResponseList suggestionsList = m_activeEngine->parseSuggestion(m_jobData);
         kDebug() << "Received suggestions in "<< _typedText << " from " << m_activeEngine->name() << ": ";
-        foreach(Response r, suggestionsList)
+        Q_FOREACH(const Response &r, suggestionsList)
         {
             kDebug() << r.title; 
         }

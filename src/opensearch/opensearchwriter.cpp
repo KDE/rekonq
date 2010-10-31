@@ -32,12 +32,8 @@
 // Local Includes
 #include "opensearchengine.h"
 
-// KDE Includes
-#include <KDebug>
-
 // Qt Includes
 #include <QtCore/QIODevice>
-
 
 
 OpenSearchWriter::OpenSearchWriter()

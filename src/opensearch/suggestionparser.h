@@ -24,18 +24,19 @@
  *
  * ============================================================ */
 
+
 #ifndef SUGGESTIONPARSER_H
 #define SUGGESTIONPARSER_H
 
-// Self Includes
 
-// Local Includes
-
+// Rekonq Includes
+#include "rekonq_defines.h"
 
 // Qt Includes
-#include <QList>
-#include <QtScript/QScriptEngine>
+#include <QtCore/QList>
 #include <QtCore/QXmlStreamReader>
+
+#include <QtScript/QScriptEngine>
 
 
 class Response
@@ -80,6 +81,10 @@ public:
     {};
 };
 
+
+// -----------------------------------------------------------------
+
+
 typedef QList <Response> ResponseList;
 
 
@@ -88,7 +93,7 @@ class SuggestionParser
 public:
     virtual ~SuggestionParser();
     virtual ResponseList parse(const QByteArray &resp);
-    virtual QString type(){ return ""; }
+    virtual QString type() = 0;
 };
 
 
@@ -99,8 +104,9 @@ protected:
 
 public:
     ResponseList parse(const QByteArray &resp);
-    QString type(){ return "application/x-suggestions+xml"; }
+    inline QString type() { return QL1S("application/x-suggestions+xml"); }
 };
+
 
 class JSONParser : public SuggestionParser
 {
@@ -109,7 +115,7 @@ private:
     
 public:
     ResponseList parse(const QByteArray &resp);
-    QString type(){ return "application/x-suggestions+json"; }
+    inline QString type() { return QL1S("application/x-suggestions+json"); }
 };
 
 #endif //SUGGESTIONPARSER_H

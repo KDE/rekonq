@@ -35,8 +35,10 @@
 // Qt Includes
 #include <QtCore/QRegExp>
 
-OpenSearchEngine::OpenSearchEngine(QObject *)
-    : m_parser(0)
+
+OpenSearchEngine::OpenSearchEngine(QObject *parent)
+    : QObject(parent)
+    , m_parser(0)
 {
 }
 

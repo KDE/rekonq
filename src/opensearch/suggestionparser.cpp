@@ -24,17 +24,14 @@
  *
  * ============================================================ */
 
-#define QL1C(x) QLatin1Char(x)
-#define QL1S(x) QLatin1String(x)
 
 // Self Includes
 #include "suggestionparser.h"
 
-// Local Includes
-#include<KDebug>
 // Qt Includes
 #include<QByteArray>
 #include<QStringList>
+
 
 ResponseList SuggestionParser::parse(const QByteArray &)
 {
@@ -71,19 +68,22 @@ ResponseList XMLParser::parse(const QByteArray &resp)
 
             m_reader.readNext();
 
-            while(!(m_reader.isEndElement() && m_reader.name() == "Item"))
+            while( !(m_reader.isEndElement() && m_reader.name() == QL1S("Item")) )
             {
                 if(m_reader.isStartElement())
                 {
-                    if (m_reader.name() == QL1S("Text")) title = m_reader.readElementText();
-                    if (m_reader.name() == QL1S("Url")) url = m_reader.readElementText();
+                    if (m_reader.name() == QL1S("Text")) 
+                        title = m_reader.readElementText();
+                    if (m_reader.name() == QL1S("Url")) 
+                        url = m_reader.readElementText();
                     if (m_reader.name() == QL1S("Image"))
                     {
                         image = m_reader.attributes().value("source").toString();
                         image_width = m_reader.attributes().value("width").toString().toInt();
                         image_height = m_reader.attributes().value("height").toString().toInt();
                     }
-                    if (m_reader.name() == QL1S("Description")) description = m_reader.readElementText();
+                    if (m_reader.name() == QL1S("Description")) 
+                        description = m_reader.readElementText();
                 }
 
                 m_reader.readNext();
@@ -132,7 +132,7 @@ ResponseList JSONParser::parse(const QByteArray &resp)
     QStringList responsePartsList;
     qScriptValueToSequence(responseParts.property(1), responsePartsList);
 
-    foreach(QString s, responsePartsList)
+    Q_FOREACH(const QString &s, responsePartsList)
     {
         rlist << Response(s);
     }
