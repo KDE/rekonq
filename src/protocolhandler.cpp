@@ -57,6 +57,37 @@
 #include <QtWebKit/QWebFrame>
 
 
+static bool fileItemListLessThan(const KFileItem &s1, const KFileItem &s2)
+{
+    return s1.name().toLower() < s2.name().toLower();
+}
+
+
+static KFileItemList sortFileList(const KFileItemList &list)
+{
+    KFileItemList orderedList, dirList, fileList;
+    
+    // order dirs before files..
+    Q_FOREACH(const KFileItem &item, list)
+    {
+        if(item.isDir())
+            dirList << item;
+        else
+            fileList << item;
+    }
+    qStableSort(dirList.begin(), dirList.end(), fileItemListLessThan);
+    qStableSort(fileList.begin(), fileList.end(), fileItemListLessThan);
+
+    orderedList << dirList;
+    orderedList << fileList;
+    
+    return orderedList;
+}
+
+
+// -------------------------------------------------------------------------------------------
+
+
 ProtocolHandler::ProtocolHandler(QObject *parent)
         : QObject(parent)
         , _lister( new KDirLister(this) )
@@ -282,7 +313,8 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     msg += "<table width=\"100%\">";
     msg += "<tr><th align=\"left\">" + i18n("Name") + "</th><th>" + i18n("Size") + "</th><th>" + i18n("Last Modified") + "</th></tr>";
 
-    foreach(const KFileItem &item, list)
+    KFileItemList orderedList = sortFileList(list);
+    Q_FOREACH(const KFileItem &item, orderedList)
     {
         msg += "<tr>";
         QString fullPath = item.url().prettyUrl();
