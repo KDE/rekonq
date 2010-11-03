@@ -1105,7 +1105,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 void MainWindow::clearPrivateData()
 {
     QPointer<KDialog> dialog = new KDialog(this);
-    dialog->setCaption(i18n("Clear Private Data"));
+    dialog->setCaption(i18nc("@title:window", "Clear Private Data"));
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
 
     dialog->button(KDialog::Ok)->setIcon(KIcon("edit-clear"));
