@@ -61,7 +61,6 @@
 #include <QNetworkReply>
 
 // Forward Declarations
-class AdBlockRule;
 class QString;
 
 

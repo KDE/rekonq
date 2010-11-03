@@ -44,8 +44,6 @@
 
 
 // Forward Declarations
-class QNetworkAccessManager;
-class QNetworkReply;
 
 
 class OpenSearchEngine : public QObject

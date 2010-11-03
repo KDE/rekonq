@@ -49,11 +49,9 @@ class KActionMenu;
 class KBookmark;
 class KBookmarkGroup;
 class KBookmarkManager;
-class KToolBar;
 class KUrl;
 
 class QAction;
-class QPoint;
 
 
 /**

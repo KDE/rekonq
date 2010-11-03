@@ -41,7 +41,6 @@
 #include <QtCore/QObject>
 
 // Forward Declarations
-class SuggestionEngine;
 class OpenSearchEngine;
 
 /**

@@ -42,7 +42,6 @@
 #include <QToolButton>
 
 // Forward Declarations
-class QLinearGradient;
 class QWidget;
 class CompletionWidget;
 class WebTab;
