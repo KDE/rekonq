@@ -162,7 +162,7 @@ Its implementation is going to embrace &kde; technologies, in order to have a fu
     </menuchoice>
   </para></listitem>
   <listitem><para><keycombo action="simul">&Alt;<keycap>F2</keycap></keycombo> will open 
-        &krunner;, type rekonq (lower case) and press &Enter; to start &rekonq;</para></listitem>
+        &krunner;, type <userinput>rekonq</userinput> (lower case) and press &Enter; to start &rekonq;</para></listitem>
 </itemizedlist>
 </para>
 </sect1>
@@ -225,11 +225,11 @@ Here a List of configurable points and explanation for it:
   </varlistentry>
   <varlistentry>
     <term><guilabel>Use KGet for downloading files</guilabel></term>
-    <listitem><para>This activates the <application>&kget;</application> download integration. If this is active &rekonq; will download everything through &kget;</para></listitem>
+    <listitem><para>This activates the &kget; download integration. If this is active &rekonq; will download everything through &kget;</para></listitem>
   </varlistentry>
   <varlistentry>
     <term><guilabel>List links with KGet</guilabel></term>
-    <listitem><para>?????</para></listitem>
+    <listitem><para>If enabled, &rekonq; will display an additional context menu entry, which, when selected, lists all available links of the current website in &kget;.</para></listitem>
   </varlistentry>
 
 <!-- What does this? -->
@@ -578,7 +578,7 @@ Documentation copyright 2010 &Jonathan.Kolberg; &Jonathan.Kolberg.mail;
 <title>Compilation and Installation</title>
 <para>If you wish to compile &rekonq;, you have to install the headers of kdelibs and you need git and the build essentials installed.</para>
 
-<para>Under Debian/Ubuntu you get those through running</para>
+<para>Under Debian/&ubuntu; you get those through running</para>
 
 <para>
   <userinput><command>sudo</command> <command>apt-get</command>
@@ -594,7 +594,7 @@ Documentation copyright 2010 &Jonathan.Kolberg; &Jonathan.Kolberg.mail;
 </para>
 
 <para>
-We will be using git, as the most recent code is available on the git repository. The gitorious page for rekonq can be found <ulink url="http://gitorious.org/rekonq">here</ulink>. Stable releases, can also be downloaded <ulink url="http://sourceforge.net/projects/rekonq/files/">here</ulink> in form of tarballs. 
+We will be using git, as the most recent code is available on the git repository. The gitorious page for &rekonq; can be found <ulink url="http://gitorious.org/rekonq">here</ulink>. Stable releases, can also be downloaded <ulink url="http://sourceforge.net/projects/rekonq/files/">here</ulink> in form of tarballs. 
 </para>
 
 <para>
