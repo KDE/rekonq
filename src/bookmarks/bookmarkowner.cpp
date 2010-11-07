@@ -199,7 +199,7 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
         parent = Application::bookmarkProvider()->rootGroup();
     }
 
-    KBookmark newBk = parent.addBookmark(currentTitle().replace('&', "&&"), KUrl(currentUrl()));
+    KBookmark newBk = parent.addBookmark(currentTitle(), KUrl(currentUrl()));
     if (!bookmark.isNull())
         parent.moveBookmark(newBk, bookmark);
 
@@ -283,10 +283,8 @@ void BookmarkOwner::editBookmark(KBookmark bookmark)
     if (bookmark.isNull())
         return;
 
-    bookmark.setFullText(bookmark.fullText().replace("&&", "&"));
     KBookmarkDialog *dialog = bookmarkDialog(m_manager, 0);
     dialog->editBookmark(bookmark);
-    bookmark.setFullText(bookmark.fullText().replace('&', "&&"));
 
     delete dialog;
 }
@@ -298,13 +296,12 @@ bool BookmarkOwner::deleteBookmark(const KBookmark &bookmark)
         return false;
 
     KBookmarkGroup bmg = bookmark.parentGroup();
-    QString name = QString(bookmark.fullText()).replace("&&", "&");
     QString dialogCaption, dialogText;
 
     if (bookmark.isGroup())
     {
         dialogCaption = i18n("Bookmark Folder Deletion");
-        dialogText = i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", name);
+        dialogText = i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", bookmark.fullText());
     }
     else if (bookmark.isSeparator())
     {
@@ -314,7 +311,7 @@ bool BookmarkOwner::deleteBookmark(const KBookmark &bookmark)
     else
     {
         dialogCaption = i18n("Bookmark Deletion");
-        dialogText = i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", name);
+        dialogText = i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", bookmark.fullText());
     }
 
     if (KMessageBox::warningContinueCancel(

@@ -169,6 +169,7 @@ BookmarkToolBar::BookmarkToolBar(KToolBar *toolBar, QObject *parent)
     connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString, QString)), this, SLOT(hideMenu()));
     toolBar->setAcceptDrops(true);
     toolBar->installEventFilter(this);
+    toolBar->setShortcutEnabled(false);
 
     if (toolBar->isVisible())
     {
