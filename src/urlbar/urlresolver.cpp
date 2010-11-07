@@ -70,7 +70,8 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         : QObject()
         , _typedString(typedUrl.trimmed())
 {
-    if (!_searchEngine ) setSearchEngine(SearchEngine::defaultEngine());
+    if (!_searchEngine ) 
+        setSearchEngine(SearchEngine::defaultEngine());
 
     if ( _browseRegexp.isEmpty() )
     {
@@ -196,8 +197,8 @@ UrlSearchList UrlResolver::orderLists()
     UrlSearchList common;
     int commonCount = 0;
 
-    //prefer items which are history items als well bookmarks item
-    //if there are more than 1000 bookmark results, the performance impact is noticeable
+    // prefer items which are history items as well bookmarks item
+    // if there are more than 1000 bookmark results, the performance impact is noticeable
     if(bookmarksCount < 1000)
     {
         //add as many items to the common list as there are available entries in the dropdown list
@@ -316,7 +317,7 @@ UrlSearchList UrlResolver::orderLists()
 // PRIVATE ENGINES
 
 
-//QUrl from User Input (easily the best solution... )
+// QUrl from User Input (easily the best solution... )
 void UrlResolver::computeQurlFromUserInput()
 {
     QString url = _typedString;
@@ -330,7 +331,7 @@ void UrlResolver::computeQurlFromUserInput()
 }
 
 
-//webSearches
+// webSearches
 void UrlResolver::computeWebSearches()
 {
     QString query = _typedString;
@@ -341,11 +342,17 @@ void UrlResolver::computeWebSearches()
         _searchEngine = engine;
     }
 
-    _webSearches = (UrlSearchList() << UrlSearchItem(UrlSearchItem::Search, SearchEngine::buildQuery(_searchEngine, query), _searchEngine->name()));
+    if(_searchEngine)
+    {
+        UrlSearchItem item = UrlSearchItem(UrlSearchItem::Search, SearchEngine::buildQuery(_searchEngine, query), _searchEngine->name());
+        UrlSearchList list;
+        list << item;
+        _webSearches = list;
+    }
 }
 
 
-//history
+// history
 void UrlResolver::computeHistory()
 {
     QList<HistoryItem> found = Application::historyManager()->find(_typedString);
@@ -375,7 +382,7 @@ void UrlResolver::computeBookmarks()
 }
 
 
-//opensearch suggestion
+// opensearch suggestion
 void UrlResolver::computeSuggestions()
 {
     // if a string startsWith /, it is probably a local path
@@ -405,6 +412,7 @@ void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &s
 
     Q_FOREACH(const Response &i, suggestions)
     {
+        kDebug() << "RESPONSE URL: " << i.url;
         UrlSearchItem gItem(UrlSearchItem::Suggestion, i.url, i.title, i.description, i.image, i.image_width, i.image_height);
         sugList << gItem;
     }

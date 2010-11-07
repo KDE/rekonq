@@ -310,7 +310,6 @@ OpenSearchManager *Application::opensearchManager()
     if (s_opensearchManager.isNull())
     {
         s_opensearchManager = new OpenSearchManager(instance());
-        s_opensearchManager.data()->setSearchProvider("google"); //TODO: use other suggestion engines
     }
     return s_opensearchManager.data();
 }

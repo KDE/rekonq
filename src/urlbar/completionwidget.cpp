@@ -311,6 +311,9 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 child = findChild<ListItem *>(QString::number(_currentIndex));
                 if(child && _currentIndex!=0) //the completionwidget is visible and the user had press down
                 {
+                    kDebug() << "USING LISTITEM URL: " << child->url();
+                    kDebug() << "USING LISTITEM TITLE: " << child->text();
+                    
                     //we can use the url of the listitem
                     emit chosenUrl(child->url(), Rekonq::CurrentTab);
                 }

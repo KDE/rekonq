@@ -58,6 +58,7 @@
 #include <QFile>
 #include <QTextDocument>
 
+
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
         : QWidget(parent)
         , m_option()
@@ -79,7 +80,6 @@ ListItem::~ListItem()
 {
     disconnect();
 }
-
 
 
 void ListItem::activate()
@@ -166,11 +166,16 @@ TypeIconLabel::TypeIconLabel(int type, QWidget *parent)
     hLayout->setAlignment(Qt::AlignRight);
     setLayout(hLayout);
 
-    if (type & UrlSearchItem::Search) hLayout->addWidget(getIcon("edit-find"));
-    if (type & UrlSearchItem::Browse) hLayout->addWidget(getIcon("applications-internet"));
-    if (type & UrlSearchItem::Bookmark) hLayout->addWidget(getIcon("rating"));
-    if (type & UrlSearchItem::History) hLayout->addWidget(getIcon("view-history"));
-    if (type & UrlSearchItem::Suggestion) hLayout->addWidget(getIcon("help-hint"));
+    if (type & UrlSearchItem::Search) 
+        hLayout->addWidget(getIcon("edit-find"));
+    if (type & UrlSearchItem::Browse) 
+        hLayout->addWidget(getIcon("applications-internet"));
+    if (type & UrlSearchItem::Bookmark) 
+        hLayout->addWidget(getIcon("rating"));
+    if (type & UrlSearchItem::History) 
+        hLayout->addWidget(getIcon("view-history"));
+    if (type & UrlSearchItem::Suggestion) 
+        hLayout->addWidget(getIcon("help-hint"));
 }
 
 
@@ -204,7 +209,9 @@ IconLabel::IconLabel(const KIcon &icon, QWidget *parent)
     setPixmap(pixmapIcon);
 }
 
+
 // ---------------------------------------------------------------
+
 
 static QString highlightWordsInText(const QString &text, const QStringList &words)
 {
@@ -241,6 +248,7 @@ static QString highlightWordsInText(const QString &text, const QStringList &word
     return ret;
 }
 
+
 TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget *parent)
         : QLabel(parent)
 {
@@ -273,6 +281,7 @@ void TextLabel::setEngineText(const QString &engine, const QString &text)
 {
     setText( i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, Qt::escape(text) ) );
 }
+
 
 // ---------------------------------------------------------------
 
@@ -350,6 +359,7 @@ PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *p
     }
 }
 
+
 // ---------------------------------------------------------------
 
 
@@ -381,6 +391,7 @@ void ImageLabel::slotResult(KJob *)
         kDebug() << "error while loading image: ";
     setPixmap(pix);
 }
+
 
 // ---------------------------------------------------------------
 
@@ -414,12 +425,6 @@ QString SearchListItem::text()
 {
     return m_text;
 }
-
-
-// QString SearchListItem::searchItemTitle(QString engine, QString text)
-// {
-//     return QString(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for %2", engine, text));
-// }
 
 
 void SearchListItem::changeSearchEngine(KService::Ptr engine)
@@ -575,6 +580,7 @@ QString VisualSuggestionListItem::text()
     return m_text;
 }
 
+
 // ---------------------------------------------------------------
 
 
@@ -627,6 +633,7 @@ ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text
     
     if (item.type & UrlSearchItem::Suggestion)
     {
+        kDebug() << "ITEM URL: " << item.url;
         if (item.description.isEmpty())
         {
             kDebug() << "Suggestion";

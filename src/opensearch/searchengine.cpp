@@ -74,11 +74,11 @@ void SearchEngine::reload()
     //load default engine
     QString d = cg.readEntry("DefaultSearchEngine");  
     m_defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
-    if (!m_defaultEngine)
-    {
-        d = QL1S("google");
-        m_defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
-    }
+//     if (!m_defaultEngine)
+//     {
+//         d = QL1S("google");
+//         m_defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
+//     }
     
     m_loaded = true;
 }

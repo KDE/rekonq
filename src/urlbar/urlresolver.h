@@ -30,6 +30,8 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+
+// Locale Includes
 #include "application.h"
 #include "opensearchmanager.h"
 
@@ -87,7 +89,7 @@ public:
     UrlSearchItem(const int &_type,
                   const QString &_url,
                   const QString &_title = QString(),
-                  const QString &_description    = QString(),
+                  const QString &_description = QString(),
                   const QString &_image = QString(),
                   const int &_image_width = 0,
                   const int &_image_height = 0
@@ -130,7 +132,8 @@ public:
     static void setSearchEngine(KService::Ptr engine)
     {
         _searchEngine = engine;
-        Application::opensearchManager()->setSearchProvider(engine->desktopEntryName());
+        if(engine)
+            Application::opensearchManager()->setSearchProvider(engine->desktopEntryName());
     };
 
     void computeSuggestions();
