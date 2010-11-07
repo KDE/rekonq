@@ -153,7 +153,6 @@ private:
     UrlSearchItem privilegedItem(UrlSearchList* list);
     UrlSearchList orderLists();
 
-    
     QString _typedString;
 
     UrlSearchList _webSearches;

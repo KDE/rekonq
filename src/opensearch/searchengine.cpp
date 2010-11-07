@@ -57,7 +57,7 @@ void SearchEngine::reload()
     favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
     KService::List favorites;
     KService::Ptr service;
-    foreach(const QString &engine, favoriteEngines)
+    Q_FOREACH(const QString &engine, favoriteEngines)
     {
         service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
         if (service)
@@ -74,11 +74,6 @@ void SearchEngine::reload()
     //load default engine
     QString d = cg.readEntry("DefaultSearchEngine");  
     m_defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
-//     if (!m_defaultEngine)
-//     {
-//         d = QL1S("google");
-//         m_defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
-//     }
     
     m_loaded = true;
 }
@@ -120,7 +115,7 @@ KService::Ptr SearchEngine::fromString(const QString &text)
     while (!found && i < providers.size())
     {
         QStringList list = providers.at(i)->property("Keys").toStringList();
-        foreach(const QString &key, list)
+        Q_FOREACH(const QString &key, list)
         {
             const QString searchPrefix = key + delimiter();
             if (text.startsWith(searchPrefix))
@@ -141,18 +136,14 @@ QString SearchEngine::extractQuery(const QString &text)
     QString query = text;
     KService::Ptr engine = SearchEngine::fromString(text);
 
-    // WARNING: this lets rekonq hangs on kde: urlbar typing..
-//     if (engine)
-//     {
-//         query = query.remove(0, text.indexOf(SearchEngine::delimiter()) + 1);
-//     }
-
     return query;
 }
 
 
 QString SearchEngine::buildQuery(KService::Ptr engine, const QString &text)
 {
+    if(!engine)
+        return QString();
     QString query = engine->property("Query").toString();
     query = query.replace("\\{@}", KUrl::toPercentEncoding(text));
     return query;

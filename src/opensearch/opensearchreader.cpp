@@ -74,7 +74,8 @@ OpenSearchEngine *OpenSearchReader::read()
 {
     OpenSearchEngine *engine = new OpenSearchEngine();
 
-    while (!isStartElement() && !atEnd()) {
+    while (!isStartElement() && !atEnd()) 
+    {
         readNext();
     }
 

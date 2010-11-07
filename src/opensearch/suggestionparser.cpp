@@ -55,7 +55,8 @@ ResponseList XMLParser::parse(const QByteArray &resp)
     {
         m_reader.readNext();
 
-        if (m_reader.isStartDocument()) continue;
+        if (m_reader.isStartDocument()) 
+            continue;
 
         if (m_reader.isStartElement() && m_reader.name() == QL1S("Item"))
         {
@@ -105,6 +106,7 @@ ResponseList JSONParser::parse(const QByteArray &resp)
     
     if (response.isEmpty()) 
     {
+        kDebug() << "RESPONSE IS EMPTY";
         return ResponseList();
     }
     
@@ -112,12 +114,14 @@ ResponseList JSONParser::parse(const QByteArray &resp)
         || !response.endsWith(QL1C(']'))
     ) 
     {
+        kDebug() << "RESPONSE is NOT well FORMED";
         return ResponseList();
     }
 
     // Evaluate the JSON response using QtScript.
     if (!m_reader.canEvaluate(response)) 
     {
+        kDebug() << "m_reader cannot evaluate the response";
         return ResponseList();
     }
 
@@ -125,6 +129,7 @@ ResponseList JSONParser::parse(const QByteArray &resp)
 
     if (!responseParts.property(1).isArray()) 
     {
+        kDebug() << "RESPONSE is not an array";
         return ResponseList();
     }
 
