@@ -34,16 +34,14 @@
 // Local Includes
 #include "application.h"
 #include "bookmarkprovider.h"
+#include "mainview.h"
 #include "mainwindow.h"
 #include "webtab.h"
-#include "mainview.h"
 
 // KDE Includes
-#include <KAction>
 #include <KBookmarkDialog>
 #include <KLocalizedString>
 #include <KMessageBox>
-#include "iconmanager.h"
 
 // Qt Includes
 #include <QtGui/QClipboard>
@@ -57,7 +55,7 @@ BookmarkOwner::BookmarkOwner(KBookmarkManager *manager, QObject *parent)
 }
 
 
-KAction* BookmarkOwner::action(const KBookmark &bookmark, const BookmarkAction &bmAction)
+KAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAction &bmAction)
 {
     switch (bmAction)
     {
@@ -109,12 +107,6 @@ QString BookmarkOwner::currentUrl() const
 }
 
 
-bool BookmarkOwner::supportsTabs() const
-{
-    return true;
-}
-
-
 QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
 {
     QList< QPair<QString, QString> > bkList;
@@ -138,19 +130,15 @@ void BookmarkOwner::openBookmark(const KBookmark &bookmark,
                                  Qt::KeyboardModifiers keyboardModifiers)
 {
     if (keyboardModifiers & Qt::ControlModifier || mouseButtons & Qt::MidButton)
-    {
         openBookmarkInNewTab(bookmark);
-    }
     else
-    {
         openBookmark(bookmark);
-    }
 }
 
 
-void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
+void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bkGoup)
 {
-    QList<KUrl> urlList = bookmark.groupUrlList();
+    QList<KUrl> urlList = bkGoup.groupUrlList();
 
     if (urlList.length() > 8)
     {
@@ -168,13 +156,6 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
     {
         emit openUrl(url, Rekonq::NewFocusedTab);
     }
-}
-
-
-void BookmarkOwner::openBookmarkFolder(const KBookmark &bookmark)
-{
-    if (bookmark.isGroup())
-        openFolderinTabs(bookmark.toGroup());
 }
 
 
@@ -196,9 +177,14 @@ void BookmarkOwner::openBookmarkInNewWindow(const KBookmark &bookmark)
 }
 
 
+void BookmarkOwner::openBookmarkFolder(const KBookmarkGroup &bookmark)
+{
+    openFolderinTabs(bookmark);
+}
+
+
 KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
 {
-    KBookmark newBk;
     KBookmarkGroup parent;
 
     if (!bookmark.isNull())
@@ -207,15 +193,15 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
             parent = bookmark.toGroup();
         else
             parent = bookmark.parentGroup();
-
-        newBk = parent.addBookmark(currentTitle().replace('&', "&&"), KUrl(currentUrl()) );
-        parent.moveBookmark(newBk, bookmark);
     }
     else
     {
         parent = Application::bookmarkProvider()->rootGroup();
-        newBk = parent.addBookmark(currentTitle(), KUrl(currentUrl()));
     }
+
+    KBookmark newBk = parent.addBookmark(currentTitle(), KUrl(currentUrl()));
+    if (!bookmark.isNull())
+        parent.moveBookmark(newBk, bookmark);
 
     m_manager->emitChanged(parent);
     return newBk;
@@ -225,7 +211,7 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
 KBookmarkGroup BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark)
 {
     KBookmarkGroup newBk;
-    KBookmarkDialog *dialog = bookmarkDialog(m_manager, QApplication::activeWindow());
+    KBookmarkDialog *dialog = bookmarkDialog(m_manager, 0);
     QString folderName = i18n("New folder");
 
     if (!bookmark.isNull())
@@ -276,7 +262,7 @@ KBookmark BookmarkOwner::newSeparator(const KBookmark &bookmark)
         newBk = Application::bookmarkProvider()->rootGroup().createNewSeparator();
     }
 
-    newBk.setIcon(("edit-clear"));
+    newBk.setIcon("edit-clear");
 
     m_manager->emitChanged(newBk.parentGroup());
     return newBk;
@@ -297,29 +283,25 @@ void BookmarkOwner::editBookmark(KBookmark bookmark)
     if (bookmark.isNull())
         return;
 
-    bookmark.setFullText(bookmark.fullText().replace("&&", "&"));
-    KBookmarkDialog *dialog = bookmarkDialog(m_manager, QApplication::activeWindow());
-
+    KBookmarkDialog *dialog = bookmarkDialog(m_manager, 0);
     dialog->editBookmark(bookmark);
-    bookmark.setFullText(bookmark.fullText().replace('&', "&&"));
 
     delete dialog;
 }
 
 
-bool BookmarkOwner::deleteBookmark(KBookmark bookmark)
+bool BookmarkOwner::deleteBookmark(const KBookmark &bookmark)
 {
     if (bookmark.isNull())
         return false;
 
     KBookmarkGroup bmg = bookmark.parentGroup();
-    QString name = QString(bookmark.fullText()).replace("&&", "&");
     QString dialogCaption, dialogText;
 
     if (bookmark.isGroup())
     {
         dialogCaption = i18n("Bookmark Folder Deletion");
-        dialogText = i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", name);
+        dialogText = i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", bookmark.fullText());
     }
     else if (bookmark.isSeparator())
     {
@@ -329,11 +311,11 @@ bool BookmarkOwner::deleteBookmark(KBookmark bookmark)
     else
     {
         dialogCaption = i18n("Bookmark Deletion");
-        dialogText = i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", name);
+        dialogText = i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", bookmark.fullText());
     }
 
     if (KMessageBox::warningContinueCancel(
-                QApplication::activeWindow(),
+                0,
                 dialogText,
                 dialogCaption,
                 KStandardGuiItem::del(),
@@ -349,9 +331,9 @@ bool BookmarkOwner::deleteBookmark(KBookmark bookmark)
 }
 
 
-KAction* BookmarkOwner::createAction(const QString &text,
-                                 const QString &icon, const QString &help, const char *slot,
-                                 const KBookmark & bookmark)
+KAction* BookmarkOwner::createAction(const QString &text, const QString &icon,
+                                     const QString &help, const char *slot,
+                                     const KBookmark &bookmark)
 {
     CustomBookmarkAction *act = new CustomBookmarkAction(bookmark, KIcon(icon), text, this);
     act->setHelpText(help);
@@ -364,14 +346,10 @@ KAction* BookmarkOwner::createAction(const QString &text,
 
 
 CustomBookmarkAction::CustomBookmarkAction(const KBookmark &bookmark, const KIcon &icon, const QString &text, QObject *parent)
-    : KAction(icon, text, parent)
-    , m_bookmark(bookmark)
+        : KAction(icon, text, parent)
+        , m_bookmark(bookmark)
 {
     connect(this, SIGNAL(triggered()), this, SLOT(onActionTriggered()));
-}
-
-CustomBookmarkAction::~CustomBookmarkAction()
-{
 }
 
 void CustomBookmarkAction::onActionTriggered()

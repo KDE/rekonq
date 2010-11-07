@@ -35,14 +35,12 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KBookmarkOwner>
-#include <KIcon>
 #include <KAction>
+#include <KBookmarkOwner>
 
 
 /**
- * Reimplementation of KBookmarkOwner, this class allows to manage
- * bookmarks as actions.
+ * This class allows to manage bookmarks as actions.
  */
 class REKONQ_TESTS_EXPORT BookmarkOwner : public QObject, public KBookmarkOwner
 {
@@ -68,60 +66,44 @@ public:
     };
 
     /**
-     * @return the action connected to the bookmark or 0 if it doesn't exist.
+     * @return A new action for the given bookmark.
      */
-    KAction* action(const KBookmark &bookmark, const BookmarkAction &bmAction);
+    KAction* createAction(const KBookmark &bookmark, const BookmarkAction &bmAction);
 
+    // @{
     /**
-     * @return the current page's title.
+     * Funtions to get current information.
      */
     virtual QString currentTitle() const;
-    /**
-     * @return the current page's URL.
-     */
     virtual QString currentUrl() const;
-
-    /**
-    * @return whether the owner supports tabs.
-    */
-    virtual bool supportsTabs() const;
-
-    /**
-    * @return list of title, URL pairs of the open tabs.
-    */
     virtual QList< QPair<QString, QString> > currentBookmarkList() const;
+    // @}
 
+    virtual bool supportsTabs() const {return true;}
+
+    // @{
     /**
-     * This function is called when a bookmark is selected and belongs to
-     * the ancestor class.
-     * This method actually emits signal to load bookmark's url.
-     *
-     * @param bookmark          the bookmark to open
-     * @param mouseButtons      the mouse buttons clicked to select the bookmark
-     * @param keyboardModifiers the keyboard modifiers pushed when the bookmark was selected
+     * This functions emit signals that open the selected URLs
      */
     virtual void openBookmark(const KBookmark &bookmark,
                               Qt::MouseButtons mouseButtons,
                               Qt::KeyboardModifiers keyboardModifiers);
-
-    /**
-    * Called if the user wants to open every bookmark in this folder in a new tab.
-    * The default implementation does nothing.
-    * This is only called if supportsTabs() returns true
-    */
-    virtual void openFolderinTabs(const KBookmarkGroup &bookmark);
+    virtual void openFolderinTabs(const KBookmarkGroup &bkGoup);
+    // @}
 
 public Q_SLOTS:
     void openBookmark(const KBookmark &bookmark);
     void openBookmarkInNewTab(const KBookmark &bookmark);
     void openBookmarkInNewWindow(const KBookmark &bookmark);
-    void openBookmarkFolder(const KBookmark &bookmark);
+    void openBookmarkFolder(const KBookmarkGroup &bookmark);
+
     KBookmark bookmarkCurrentPage(const KBookmark &bookmark = KBookmark());
     KBookmarkGroup newBookmarkFolder(const KBookmark &bookmark = KBookmark());
     KBookmark newSeparator(const KBookmark &bookmark = KBookmark());
+
     void copyLink(const KBookmark &bookmark);
     void editBookmark(KBookmark bookmark);
-    bool deleteBookmark(KBookmark bookmark);
+    bool deleteBookmark(const KBookmark &bookmark);
 
 Q_SIGNALS:
     /**
@@ -132,10 +114,9 @@ Q_SIGNALS:
 
 private:
     KAction* createAction(const QString &text, const QString &icon,
-                      const QString &help, const char *slot,
-                      const KBookmark &bookmark);
+                          const QString &help, const char *slot,
+                          const KBookmark &bookmark);
 
-    
     KBookmarkManager *m_manager;
 };
 
@@ -149,7 +130,7 @@ class CustomBookmarkAction : public KAction
 
 public:
     CustomBookmarkAction(const KBookmark &bookmark, const KIcon &icon, const QString &text, QObject *parent);
-    ~CustomBookmarkAction();
+    virtual ~CustomBookmarkAction() {}
 
 Q_SIGNALS:
     void triggered(const KBookmark &);

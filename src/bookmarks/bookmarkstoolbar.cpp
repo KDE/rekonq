@@ -139,7 +139,7 @@ void BookmarkMenu::addOpenFolderInTabs()
 
         if (!bookmark.isNull())
         {
-            parentMenu()->addAction(Application::bookmarkProvider()->bookmarkOwner()->action(group, BookmarkOwner::OPEN_FOLDER));
+            parentMenu()->addAction(Application::bookmarkProvider()->bookmarkOwner()->createAction(group, BookmarkOwner::OPEN_FOLDER));
         }
     }
 }
@@ -169,6 +169,7 @@ BookmarkToolBar::BookmarkToolBar(KToolBar *toolBar, QObject *parent)
     connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString, QString)), this, SLOT(hideMenu()));
     toolBar->setAcceptDrops(true);
     toolBar->installEventFilter(this);
+    toolBar->setShortcutEnabled(false);
 
     if (toolBar->isVisible())
     {

@@ -55,13 +55,13 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
     kDebug() << "Loading Bookmarks Manager...";
 
     // NOTE
-    // This hackish code is needed to continue sharing bookmarks with konqueror, 
+    // This hackish code is needed to continue sharing bookmarks with konqueror,
     // until we can (hopefully) start using an akonadi resource.
     //
     // The cleanest code has a subdole bug inside does not allowing people to start
     // using rekonq and then using konqueror. So if konqueror bk file has not just been created,
     // bk are stored in rekonq dir and then they will be lost when you start using konqi
-    
+
     KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");  // share konqueror bookmarks
     if (!QFile::exists(bookfile.path()))
     {
@@ -79,7 +79,7 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
 
     m_manager = KBookmarkManager::managerForFile(bookfile.path(), "rekonq");
     m_manager->setEditorOptions("", true);
-    
+
     connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
             this, SLOT(slotBookmarksChanged()));
 
@@ -112,7 +112,7 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
     bookmarkActionMenu->setText(i18n("&Bookmarks"));
     BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
     m_bookmarkMenus.append(bMenu);
-    
+
     kDebug() << "new Bookmarks menu... DONE";
 
     return bookmarkActionMenu;
@@ -226,7 +226,7 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
             menuAction->setDelayed(false);
             BookmarkMenu *bMenu = new BookmarkMenu(bookmarkManager(), bookmarkOwner(), menuAction->menu(), bookmark.address());
             m_bookmarkMenus.append(bMenu);
-    
+
             connect(menuAction->menu(), SIGNAL(aboutToShow()), toolBar, SLOT(menuDisplayed()));
             connect(menuAction->menu(), SIGNAL(aboutToHide()), toolBar, SLOT(menuHidden()));
 
@@ -239,7 +239,8 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
         else
         {
             KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, this);
-            action->setIconText(action->iconText().replace('&', "&&"));
+            //action->s
+            //action->setIconText(action->iconText().replace('&', "&&&"));
             action->setIcon(Application::iconManager()->iconForUrl( KUrl(bookmark.url()) ));
             connect(action, SIGNAL(hovered()), toolBar, SLOT(actionHovered()));
             toolBar->toolBar()->addAction(action);
@@ -254,7 +255,7 @@ void BookmarkProvider::slotPanelChanged()
     foreach (BookmarksPanel *panel, m_bookmarkPanels)
     {
         if (panel && panel != sender())
-            panel->startLoadFoldedState();
+            panel->loadFoldedState();
     }
 }
 

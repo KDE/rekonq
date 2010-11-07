@@ -144,7 +144,7 @@ void HistoryPanel::setup()
 }
 
 
-QAbstractItemModel* HistoryPanel::getModel()
+QAbstractItemModel* HistoryPanel::model()
 {
     return Application::historyManager()->historyTreeModel();
 }

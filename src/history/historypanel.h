@@ -53,7 +53,7 @@ private Q_SLOTS:
 
 private:
     virtual void setup();
-    virtual QAbstractItemModel* getModel();
+    virtual QAbstractItemModel* model();
 };
 
 #endif // HISTORYPANEL_H
