@@ -88,7 +88,7 @@ public:
     virtual void openBookmark(const KBookmark &bookmark,
                               Qt::MouseButtons mouseButtons,
                               Qt::KeyboardModifiers keyboardModifiers);
-    virtual void openFolderinTabs(const KBookmarkGroup &bookmark);
+    virtual void openFolderinTabs(const KBookmarkGroup &bkGoup);
     // @}
 
 public Q_SLOTS:

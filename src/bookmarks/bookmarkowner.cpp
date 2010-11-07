@@ -136,9 +136,9 @@ void BookmarkOwner::openBookmark(const KBookmark &bookmark,
 }
 
 
-void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bookmark)
+void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bkGoup)
 {
-    QList<KUrl> urlList = bookmark.groupUrlList();
+    QList<KUrl> urlList = bkGoup.groupUrlList();
 
     if (urlList.length() > 8)
     {
