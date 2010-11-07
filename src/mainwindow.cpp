@@ -591,8 +591,8 @@ void MainWindow::openLocation()
     {
         setWidgetsVisible(true);
     }
-    m_view->urlBar()->selectAll();
-    m_view->urlBar()->setFocus();
+    m_view->currentUrlBar()->selectAll();
+    m_view->currentUrlBar()->setFocus();
 }
 
 

@@ -169,9 +169,9 @@ TabBar *MainView::tabBar() const
 }
 
 
-UrlBar *MainView::urlBar() const
+UrlBar *MainView::currentUrlBar() const
 {
-    return _widgetBar->urlBar(m_currentTabIndex);
+    return webTab(currentIndex())->urlBar();
 }
 
 
@@ -355,7 +355,7 @@ void MainView::newTab()
         w->load(KUrl("about:home"));
         break;
     case 1: // blank page
-        urlBar()->clear();
+        currentUrlBar()->clear();
         break;
     case 2: // homepage
         w->load(KUrl(ReKonfig::homePage()));
@@ -363,7 +363,7 @@ void MainView::newTab()
     default:
         break;
     }
-    urlBar()->setFocus();
+    currentUrlBar()->setFocus();
 }
 
 
@@ -450,7 +450,7 @@ void MainView::closeTab(int index, bool del)
         case 0: // new tab page
         case 1: // blank page
             w->load(KUrl("about:home"));
-            urlBar()->setFocus();
+            currentUrlBar()->setFocus();
             break;
         case 2: // homepage
             w->load(KUrl(ReKonfig::homePage()));

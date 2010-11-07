@@ -271,7 +271,7 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         _frame->setHtml(html);
         qobject_cast<WebPage *>(_frame->page())->setIsOnRekonqPage(true);
 
-        Application::instance()->mainWindow()->mainView()->urlBar()->setQUrl(_url);
+        Application::instance()->mainWindow()->mainView()->currentUrlBar()->setQUrl(_url);
         Application::instance()->mainWindow()->currentTab()->setFocus();
         Application::historyManager()->addHistoryEntry(_url.prettyUrl());
     }
