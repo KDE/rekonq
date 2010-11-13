@@ -48,9 +48,9 @@
 
 WebTab::WebTab(QWidget *parent)
         : QWidget(parent)
-        , _view(new WebView(this))
-        , _bar(new UrlBar(this))
-        , _progress(0)
+        , m_webView(new WebView(this))
+        , m_urlBar(new UrlBar(this))
+        , m_progress(0)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -58,13 +58,13 @@ WebTab::WebTab(QWidget *parent)
     l->setMargin(0);
     l->setSpacing(0);
 
-    l->addWidget(_view);
-    _view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    l->addWidget(m_webView);
+    m_webView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // fix focus handling
-    setFocusProxy(_view);
+    setFocusProxy(m_webView);
 
-    KWebWallet *wallet = _view->page()->wallet();
+    KWebWallet *wallet = m_webView->page()->wallet();
 
     if (wallet)
     {
@@ -72,15 +72,15 @@ WebTab::WebTab(QWidget *parent)
                 this, SLOT(createWalletBar(const QString &, const QUrl &)));
     }
 
-    connect(_view, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
-    connect(_view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
+    connect(m_webView, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
+    connect(m_webView, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 }
 
 
 WebTab::~WebTab()
 {
-    _walletBar.clear();
-    _previewSelectorBar.clear();
+    m_walletBar.clear();
+    m_previewSelectorBar.clear();
 }
 
 
@@ -95,20 +95,20 @@ KUrl WebTab::url()
 
 void WebTab::updateProgress(int p)
 {
-    _progress = p;
+    m_progress = p;
     emit loadProgressing();
 }
 
 
 void WebTab::loadFinished(bool)
 {
-    _progress = 0;
+    m_progress = 0;
 }
 
 
 bool WebTab::isPageLoading()
 {
-    return _progress != 0;
+    return m_progress != 0;
 }
 
 
@@ -121,37 +121,37 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
         return;
 
     KWebWallet *wallet = page()->wallet();
-    if(_walletBar.isNull()) {
-        _walletBar = new WalletBar(this);
-        _walletBar.data()->onSaveFormData(key, url);
-        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, _walletBar.data() );
+    if(m_walletBar.isNull()) {
+        m_walletBar = new WalletBar(this);
+        m_walletBar.data()->onSaveFormData(key, url);
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_walletBar.data() );
     } else {
         disconnect(wallet);
-        _walletBar.data()->notifyUser();
+        m_walletBar.data()->notifyUser();
     }
 
-    connect(_walletBar.data(), SIGNAL(saveFormDataAccepted(const QString &)),
+    connect(m_walletBar.data(), SIGNAL(saveFormDataAccepted(const QString &)),
             wallet, SLOT(acceptSaveFormDataRequest(const QString &)), Qt::UniqueConnection);
-    connect(_walletBar.data(), SIGNAL(saveFormDataRejected(const QString &)),
+    connect(m_walletBar.data(), SIGNAL(saveFormDataRejected(const QString &)),
             wallet, SLOT(rejectSaveFormDataRequest(const QString &)), Qt::UniqueConnection);
 }
 
 
 void WebTab::createPreviewSelectorBar(int index)
 {
-    if(_previewSelectorBar.isNull()) {
-        _previewSelectorBar = new PreviewSelectorBar(index, this);
-        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, _previewSelectorBar.data());
+    if(m_previewSelectorBar.isNull()) {
+        m_previewSelectorBar = new PreviewSelectorBar(index, this);
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_previewSelectorBar.data());
     } else {
-        disconnect(_previewSelectorBar.data());
-        _previewSelectorBar.data()->setIndex(index);
-        _previewSelectorBar.data()->notifyUser();
+        disconnect(m_previewSelectorBar.data());
+        m_previewSelectorBar.data()->setIndex(index);
+        m_previewSelectorBar.data()->notifyUser();
     }
 
-    connect(page(),             SIGNAL(loadStarted()),      _previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
-    connect(page(),             SIGNAL(loadProgress(int)),  _previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
-    connect(page(),             SIGNAL(loadFinished(bool)), _previewSelectorBar.data(), SLOT(loadFinished()), Qt::UniqueConnection);
-    connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  _previewSelectorBar.data(), SLOT(verifyUrl()), Qt::UniqueConnection);
+    connect(page(),             SIGNAL(loadStarted()),      m_previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
+    connect(page(),             SIGNAL(loadProgress(int)),  m_previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
+    connect(page(),             SIGNAL(loadFinished(bool)), m_previewSelectorBar.data(), SLOT(loadFinished()), Qt::UniqueConnection);
+    connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  m_previewSelectorBar.data(), SLOT(verifyUrl()), Qt::UniqueConnection);
 }
 
 void WebTab::insertBar(NotificationBar *bar)

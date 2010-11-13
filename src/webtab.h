@@ -53,10 +53,10 @@ public:
     explicit WebTab(QWidget *parent = 0);
     ~WebTab();
 
-    inline WebView *view() { return _view; }
-    UrlBar *urlBar() { return _bar; }
-    inline WebPage *page() { return view()->page(); }
-    inline int progress() { return _progress; }
+    inline WebView *view() const { return m_webView; }
+    UrlBar *urlBar() const { return m_urlBar; }
+    inline WebPage *page() const { return view()->page(); }
+    inline int progress() const { return m_progress; }
 
     KUrl url();
     void createPreviewSelectorBar(int index);
@@ -76,13 +76,13 @@ signals:
     void loadProgressing();
 
 private:
-    WebView *_view;
-    UrlBar *_bar;
+    WebView *const m_webView;
+    UrlBar *const m_urlBar;
     
-    int _progress;
+    int m_progress;
 
-    QWeakPointer<WalletBar> _walletBar;
-    QWeakPointer<PreviewSelectorBar> _previewSelectorBar;
+    QWeakPointer<WalletBar> m_walletBar;
+    QWeakPointer<PreviewSelectorBar> m_previewSelectorBar;
 };
 
 #endif
