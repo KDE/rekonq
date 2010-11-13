@@ -95,13 +95,6 @@ MainView::MainView(MainWindow *parent)
 }
 
 
-MainView::~MainView()
-{
-    delete m_widgetBar;
-    delete m_addTabButton;
-}
-
-
 void MainView::postLaunch()
 {
     QStringList list = Application::sessionManager()->closedSites();
