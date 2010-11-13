@@ -210,6 +210,7 @@ WebPage::WebPage(QWidget *parent)
 
     // ----- last stuffs
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
+    connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequest(const QNetworkRequest &)));
     connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 
