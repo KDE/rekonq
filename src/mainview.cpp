@@ -59,7 +59,7 @@
 
 MainView::MainView(MainWindow *parent)
         : KTabWidget(parent)
-        , _widgetBar(new StackedUrlBar(this))
+        , m_widgetBar(new StackedUrlBar(this))
         , m_addTabButton(0)
         , m_currentTabIndex(0)
         , m_parentWindow(parent)
@@ -87,7 +87,7 @@ MainView::MainView(MainWindow *parent)
     connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int)));
 
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)));
-    connect(tabBar, SIGNAL(tabMoved(int, int)),     _widgetBar, SLOT(moveBar(int, int)));
+    connect(tabBar, SIGNAL(tabMoved(int, int)),     m_widgetBar, SLOT(moveBar(int, int)));
 
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
@@ -98,7 +98,7 @@ MainView::MainView(MainWindow *parent)
 
 MainView::~MainView()
 {
-    delete _widgetBar;
+    delete m_widgetBar;
     delete m_addTabButton;
 }
 
@@ -171,7 +171,7 @@ TabBar *MainView::tabBar() const
 
 UrlBar *MainView::urlBar() const
 {
-    return _widgetBar->urlBar(m_currentTabIndex);
+    return m_widgetBar->urlBar(m_currentTabIndex);
 }
 
 
@@ -278,7 +278,7 @@ void MainView::currentChanged(int index)
             this, SIGNAL(linkHovered(const QString&)));
 
     emit currentTitle(tab->view()->title());
-    _widgetBar->setCurrentIndex(index);
+    m_widgetBar->setCurrentIndex(index);
 
     // clean up "status bar"
     emit showStatusBarMessage(QString());
@@ -288,7 +288,7 @@ void MainView::currentChanged(int index)
 
     // set focus to the current webview
     if (tab->url().scheme() == QL1S("about"))
-        _widgetBar->currentWidget()->setFocus();
+        m_widgetBar->currentWidget()->setFocus();
     else
         tab->view()->setFocus();
 }
@@ -325,12 +325,12 @@ WebTab *MainView::newWebTab(bool focused)
     if ( ReKonfig::openTabsNearCurrent() )
     {
         insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
-        _widgetBar->insertWidget(currentIndex() + 1, tab->urlBar());
+        m_widgetBar->insertWidget(currentIndex() + 1, tab->urlBar());
     }
     else
     {
         addTab(tab, i18n("(Untitled)"));
-        _widgetBar->addWidget(tab->urlBar());
+        m_widgetBar->addWidget(tab->urlBar());
     }
     updateTabBar();
 
@@ -495,8 +495,8 @@ void MainView::closeTab(int index, bool del)
     removeTab(index);
     updateTabBar();        // UI operation: do it ASAP!!
 
-    _widgetBar->removeWidget( tabToClose->urlBar() );
-    _widgetBar->setCurrentIndex(m_currentTabIndex);
+    m_widgetBar->removeWidget( tabToClose->urlBar() );
+    m_widgetBar->setCurrentIndex(m_currentTabIndex);
 
     if (del)
     {

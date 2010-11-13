@@ -68,7 +68,7 @@ public:
     MainView(MainWindow *parent);
     ~MainView();
 
-    inline StackedUrlBar *widgetBar() const { return _widgetBar; }
+    inline StackedUrlBar *widgetBar() const { return m_widgetBar; }
     UrlBar *urlBar() const;
     WebTab *webTab(int index) const;
 
@@ -177,7 +177,7 @@ private:
 
 // --------------------------------------------------------------------------
 
-    StackedUrlBar *_widgetBar;
+    StackedUrlBar *m_widgetBar;
 
     QString m_loadingGitPath;
 
