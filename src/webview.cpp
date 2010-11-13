@@ -114,13 +114,8 @@ WebView::WebView(QWidget* parent)
 
 WebView::~WebView()
 {
-    delete m_autoScrollTimer;
-
     if (m_smoothScrolling)
         stopScrolling();
-    delete m_smoothScrollTimer;
-
-    disconnect();
 
     WebPage* p = page();
 
