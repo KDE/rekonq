@@ -134,7 +134,8 @@ WebView::~WebView()
 
 WebPage *WebView::page()
 {
-    WebPage *page = qobject_cast<WebPage *>(KWebView::page());
+    WebPage *const page = qobject_cast<WebPage *>(KWebView::page());
+    Q_ASSERT(page);
     return page;
 }
 
