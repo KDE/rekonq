@@ -65,15 +65,15 @@
 
 WebView::WebView(QWidget* parent)
         : KWebView(parent, false)
-        , _mousePos(QPoint(0, 0))
-        , _autoScrollTimer(new QTimer(this))
-        , _VScrollSpeed(0)
-        , _HScrollSpeed(0)
-        , _canEnableAutoScroll(true)
-        , _isAutoScrollEnabled(false)
-        , _smoothScrollTimer(new QTimer(this))
-        , _smoothScrolling(false)
-        , _dy(0)
+        , m_mousePos(QPoint(0, 0))
+        , m_autoScrollTimer(new QTimer(this))
+        , m_vScrollSpeed(0)
+        , m_hScrollSpeed(0)
+        , m_canEnableAutoScroll(true)
+        , m_isAutoScrollEnabled(false)
+        , m_smoothScrollTimer(new QTimer(this))
+        , m_smoothScrolling(false)
+        , m_dy(0)
 {
     WebPage *page = new WebPage(this);
     setPage(page);
@@ -104,22 +104,22 @@ WebView::WebView(QWidget* parent)
             Application::instance(), SLOT(loadUrl(const KUrl &, const Rekonq::OpenType &)));
 
     // Auto scroll timer
-    connect(_autoScrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
-    _autoScrollTimer->setInterval(100);
+    connect(m_autoScrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
+    m_autoScrollTimer->setInterval(100);
 
     // Smooth scroll timer
-    connect(_smoothScrollTimer, SIGNAL(timeout()), this, SLOT(scrollTick()));
-    _smoothScrollTimer->setInterval(16);
+    connect(m_smoothScrollTimer, SIGNAL(timeout()), this, SLOT(scrollTick()));
+    m_smoothScrollTimer->setInterval(16);
 }
 
 
 WebView::~WebView()
 {
-    delete _autoScrollTimer;
+    delete m_autoScrollTimer;
 
-    if (_smoothScrolling)
+    if (m_smoothScrolling)
         stopScrolling();
-    delete _smoothScrollTimer;
+    delete m_smoothScrollTimer;
 
     disconnect();
 
@@ -350,18 +350,18 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
 void WebView::mousePressEvent(QMouseEvent *event)
 {
-    if (_isAutoScrollEnabled)
+    if (m_isAutoScrollEnabled)
     {
         setCursor(Qt::ArrowCursor);
-        _VScrollSpeed = 0;
-        _HScrollSpeed = 0;
-        _autoScrollTimer->stop();
-        _isAutoScrollEnabled = false;
+        m_vScrollSpeed = 0;
+        m_hScrollSpeed = 0;
+        m_autoScrollTimer->stop();
+        m_isAutoScrollEnabled = false;
         return;
     }
 
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
-    _canEnableAutoScroll = ReKonfig::autoScroll() && !result.isContentEditable()  && result.linkUrl().isEmpty();
+    m_canEnableAutoScroll = ReKonfig::autoScroll() && !result.isContentEditable()  && result.linkUrl().isEmpty();
 
     switch (event->button())
     {
@@ -374,11 +374,11 @@ void WebView::mousePressEvent(QMouseEvent *event)
         break;
 
     case Qt::MidButton:
-        if (_canEnableAutoScroll && !_isAutoScrollEnabled)
+        if (m_canEnableAutoScroll && !m_isAutoScrollEnabled)
         {
             setCursor(KIcon("transform-move").pixmap(32));
-            _clickPos = event->pos();
-            _isAutoScrollEnabled = true;
+            m_clickPos = event->pos();
+            m_isAutoScrollEnabled = true;
         }
         break;
 
@@ -391,15 +391,15 @@ void WebView::mousePressEvent(QMouseEvent *event)
 
 void WebView::mouseMoveEvent(QMouseEvent *event)
 {
-    _mousePos = event->pos();
+    m_mousePos = event->pos();
 
-    if (_isAutoScrollEnabled)
+    if (m_isAutoScrollEnabled)
     {
-        QPoint r = _mousePos - _clickPos;
-        _HScrollSpeed = r.x() / 2;  // you are too fast..
-        _VScrollSpeed = r.y() / 2;
-        if (!_autoScrollTimer->isActive())
-            _autoScrollTimer->start();
+        QPoint r = m_mousePos - m_clickPos;
+        m_hScrollSpeed = r.x() / 2;  // you are too fast..
+        m_vScrollSpeed = r.y() / 2;
+        if (!m_autoScrollTimer->isActive())
+            m_autoScrollTimer->start();
 
         return;
     }
@@ -505,7 +505,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    if (!_canEnableAutoScroll)
+    if (!m_canEnableAutoScroll)
     {
         KWebView::keyPressEvent(event);
         return;
@@ -516,44 +516,44 @@ void WebView::keyPressEvent(QKeyEvent *event)
     {
         if (event->key() == Qt::Key_Up)
         {
-            _VScrollSpeed--;
-            if (!_autoScrollTimer->isActive())
-                _autoScrollTimer->start();
+            m_vScrollSpeed--;
+            if (!m_autoScrollTimer->isActive())
+                m_autoScrollTimer->start();
             return;
         }
 
         if (event->key() == Qt::Key_Down)
         {
-            _VScrollSpeed++;
-            if (!_autoScrollTimer->isActive())
-                _autoScrollTimer->start();
+            m_vScrollSpeed++;
+            if (!m_autoScrollTimer->isActive())
+                m_autoScrollTimer->start();
             return;
         }
 
         if (event->key() == Qt::Key_Right)
         {
-            _HScrollSpeed++;
-            if (!_autoScrollTimer->isActive())
-                _autoScrollTimer->start();
+            m_hScrollSpeed++;
+            if (!m_autoScrollTimer->isActive())
+                m_autoScrollTimer->start();
             return;
         }
 
         if (event->key() == Qt::Key_Left)
         {
-            _HScrollSpeed--;
-            if (!_autoScrollTimer->isActive())
-                _autoScrollTimer->start();
+            m_hScrollSpeed--;
+            if (!m_autoScrollTimer->isActive())
+                m_autoScrollTimer->start();
             return;
         }
 
-        if (_autoScrollTimer->isActive())
+        if (m_autoScrollTimer->isActive())
         {
-            _autoScrollTimer->stop();
+            m_autoScrollTimer->stop();
         }
         else
         {
-            if (_VScrollSpeed || _HScrollSpeed)
-                _autoScrollTimer->start();
+            if (m_vScrollSpeed || m_hScrollSpeed)
+                m_autoScrollTimer->start();
         }
     }
 
@@ -589,13 +589,13 @@ void WebView::wheelEvent(QWheelEvent *event)
 
         page()->currentFrame()->setScrollPosition(QPoint(page()->currentFrame()->scrollPosition().x(), prevPos));
 
-        if ((event->delta() > 0) != !_scrollBottom)
+        if ((event->delta() > 0) != !m_scrollBottom)
             stopScrolling();
 
         if (event->delta() > 0)
-            _scrollBottom = false;
+            m_scrollBottom = false;
         else
-            _scrollBottom = true;
+            m_scrollBottom = true;
 
 
         setupSmoothScrolling(abs(newPos - prevPos));
@@ -621,46 +621,46 @@ void WebView::loadUrlInNewTab(const KUrl &url)
 void WebView::scrollFrameChanged()
 {
     // do the scrolling
-    page()->currentFrame()->scroll(_HScrollSpeed, _VScrollSpeed);
+    page()->currentFrame()->scroll(m_hScrollSpeed, m_vScrollSpeed);
 
     // check if we reached the end
     int y = page()->currentFrame()->scrollPosition().y();
     if (y == 0 || y == page()->currentFrame()->scrollBarMaximum(Qt::Vertical))
-        _VScrollSpeed = 0;
+        m_vScrollSpeed = 0;
 
     int x = page()->currentFrame()->scrollPosition().x();
     if (x == 0 || x == page()->currentFrame()->scrollBarMaximum(Qt::Horizontal))
-        _HScrollSpeed = 0;
+        m_hScrollSpeed = 0;
 }
 
 
 void WebView::setupSmoothScrolling(int posY)
 {
-    int ddy = qMax(_smoothScrollSteps ? abs(_dy)/_smoothScrollSteps : 0,3);
+    int ddy = qMax(m_smoothScrollSteps ? abs(m_dy)/m_smoothScrollSteps : 0,3);
 
-    _dy += posY;
+    m_dy += posY;
 
-    if (_dy <= 0)
+    if (m_dy <= 0)
     {
         stopScrolling();
         return;
     }
 
-    _smoothScrollSteps = 8;
+    m_smoothScrollSteps = 8;
 
-    if (_dy / _smoothScrollSteps < ddy)
+    if (m_dy / m_smoothScrollSteps < ddy)
     {
-        _smoothScrollSteps = (abs(_dy)+ddy-1)/ddy;
-        if (_smoothScrollSteps < 1)
-            _smoothScrollSteps = 1;
+        m_smoothScrollSteps = (abs(m_dy)+ddy-1)/ddy;
+        if (m_smoothScrollSteps < 1)
+            m_smoothScrollSteps = 1;
     }
 
-    _smoothScrollTime.start();
+    m_smoothScrollTime.start();
 
-    if (!_smoothScrolling)
+    if (!m_smoothScrolling)
     {
-        _smoothScrolling = true;
-        _smoothScrollTimer->start();
+        m_smoothScrolling = true;
+        m_smoothScrollTimer->start();
         scrollTick();
     }
 }
@@ -668,39 +668,39 @@ void WebView::setupSmoothScrolling(int posY)
 
 void WebView::scrollTick()
 {
-    if (_dy == 0)
+    if (m_dy == 0)
     {
         stopScrolling();
         return;
     }
 
-    if (_smoothScrollSteps < 1)
-        _smoothScrollSteps = 1;
+    if (m_smoothScrollSteps < 1)
+        m_smoothScrollSteps = 1;
 
-    int takesteps = _smoothScrollTime.restart() / 16;
+    int takesteps = m_smoothScrollTime.restart() / 16;
     int scroll_y = 0;
 
     if (takesteps < 1)
         takesteps = 1;
 
-    if (takesteps > _smoothScrollSteps)
-        takesteps = _smoothScrollSteps;
+    if (takesteps > m_smoothScrollSteps)
+        takesteps = m_smoothScrollSteps;
 
     for(int i = 0; i < takesteps; i++)
     {
-        int ddy = (_dy / (_smoothScrollSteps+1)) * 2;
+        int ddy = (m_dy / (m_smoothScrollSteps+1)) * 2;
 
         // limit step to requested scrolling distance
-        if (abs(ddy) > abs(_dy))
-            ddy = _dy;
+        if (abs(ddy) > abs(m_dy))
+            ddy = m_dy;
 
         // update remaining scroll
-        _dy -= ddy;
+        m_dy -= ddy;
         scroll_y += ddy;
-        _smoothScrollSteps--;
+        m_smoothScrollSteps--;
     }
 
-    if (_scrollBottom)
+    if (m_scrollBottom)
         page()->currentFrame()->scroll(0, scroll_y);
     else
         page()->currentFrame()->scroll(0, -scroll_y);
@@ -709,7 +709,7 @@ void WebView::scrollTick()
 
 void WebView::stopScrolling()
 {
-    _smoothScrollTimer->stop();
-    _dy = 0;
-    _smoothScrolling = false;
+    m_smoothScrollTimer->stop();
+    m_dy = 0;
+    m_smoothScrolling = false;
 }

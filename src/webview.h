@@ -52,7 +52,7 @@ public:
 
     WebPage *page();
 
-    inline QPoint mousePos() { return _mousePos; }
+    inline QPoint mousePos() { return m_mousePos; }
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
@@ -86,23 +86,23 @@ signals:
     void zoomChanged(int);
 
 private:
-    QPoint _mousePos;
-    QPoint _clickPos;
+    QPoint m_mousePos;
+    QPoint m_clickPos;
 
     // Auto Scroll
-    QTimer *_autoScrollTimer;
-    int _VScrollSpeed;
-    int _HScrollSpeed;
-    bool _canEnableAutoScroll;
-    bool _isAutoScrollEnabled;
+    QTimer *const m_autoScrollTimer;
+    int m_vScrollSpeed;
+    int m_hScrollSpeed;
+    bool m_canEnableAutoScroll;
+    bool m_isAutoScrollEnabled;
 
     // Smooth Scroll
-    QTimer *_smoothScrollTimer;
-    QTime _smoothScrollTime;
-    bool _scrollBottom;
-    bool _smoothScrolling;
-    int _dy;
-    int _smoothScrollSteps;
+    QTimer *const m_smoothScrollTimer;
+    QTime m_smoothScrollTime;
+    bool m_scrollBottom;
+    bool m_smoothScrolling;
+    int m_dy;
+    int m_smoothScrollSteps;
 };
 
 #endif
