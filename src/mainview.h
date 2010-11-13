@@ -179,8 +179,6 @@ private:
 
     StackedUrlBar *const m_widgetBar;
 
-    QString m_loadingGitPath;
-
     // the new tab button
     QToolButton *const m_addTabButton;
 
