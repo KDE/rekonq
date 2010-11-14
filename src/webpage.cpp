@@ -109,11 +109,12 @@ static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData 
     KUrl destUrl;
 
     int result = KIO::R_OVERWRITE;
-    const QUrl fileName ((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
+    const QString fileName ((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
 
     do
     {
-        destUrl = KFileDialog::getSaveFileName(fileName, QString(), parent);
+        // follow bug:184202 fixes
+        destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);
 
         if(destUrl.isEmpty())
             return false;
