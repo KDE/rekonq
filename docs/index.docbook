@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
-<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN"
-"dtd/kdex.dtd" [
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
   <!ENTITY rekonq "<application>rekonq</application>"> 
   <!ENTITY kappname "&rekonq;">
   <!ENTITY Andrea.Diamantini "<personname>
@@ -33,106 +32,44 @@
 ]>
 
 <book lang="&language;">
-
 <bookinfo>
 <title>The &rekonq; Handbook</title>
-
 <authorgroup>
 <author>&Andrea.Diamantini; &Andrea.Diamantini.mail;</author>
 <author>&Rohan.Garg; &Rohan.Garg.mail;</author>
 <author>&Jonathan.Kolberg; &Jonathan.Kolberg.mail;</author>
+<author>
+<personname>
+    <firstname>Part of this documentation was converted from the &kde; UserBase <ulink url="http://userbase.kde.org/Rekonq">Rekonq</ulink> page.</firstname>
+<surname></surname>
+</personname>
+</author>
+<author>
+<personname>
+    <firstname>Part of this documentation was converted from the &kde; UserBase <ulink url="http://userbase.kde.org/Rekonq/FAQs">Rekonq/FAQs</ulink> page.</firstname>
+<surname></surname>
+</personname>
+    </author>
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
-</authorgroup>
-
-<copyright>
-<year>2008</year>
-<holder>&Andrea.Diamantini;</holder>
-</copyright>
-<copyright>
-<year>2009</year>
-<year>2010</year>
-<holder>&Rohan.Garg;</holder>
-</copyright>
-<copyright>
-<year>2010</year>
-<holder>&Jonathan.Kolberg;</holder>
-</copyright>
-
+    </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-
-<date>2010-05-07</date>
-<releaseinfo>0.5.0</releaseinfo>
-
+<date>2010-11-13</date>
+    <releaseinfo>0.6.1 (&kde; SC 4.5)</releaseinfo>
 <abstract>
-<para>
-&rekonq; is a lightweight web browser for &kde; based on QtWebKit.
-</para>
-</abstract>
-
-<keywordset>
+<para></para>
+    </abstract>
+    <keywordset>
 <keyword>KDE</keyword>
 <keyword>browser</keyword>
 <keyword>rekonq</keyword>
 <keyword>webkit</keyword>
 </keywordset>
-
 </bookinfo>
 
-<!-- ================== CHAPTER ==================  -->
-
-<chapter id="Overview">
-
-<title>Overview</title>
-
-<para>
-&rekonq; is a lightweight web browser for &kde; based on QtWebKit. Amongst other it provides the following features: 
-<itemizedlist>
-<listitem><para>Shared bookmarks with &konqueror;</para></listitem>
-<listitem><para>Shared cookies with &konqueror;</para></listitem>
-<listitem><para>Handle tabbed browsing</para></listitem>
-<listitem><para>Display tab previews</para></listitem>
-<listitem><para>Handle support for NS plugins (eg: flash)</para></listitem>
-<listitem><para>Share General &kde; Proxy settings</para></listitem>
-<listitem><para>Browse anonymously</para></listitem>
-<listitem><para>Inspect web pages</para></listitem>
-<listitem><para>File and &FTP; protocol handling</para></listitem>
-<listitem><para>KWallet support for storing passwords</para></listitem>
-<listitem><para>Ad-Block support</para></listitem>
-<listitem><para>&kget; Download integration</para></listitem>
-</itemizedlist>
+<chapter id="introduction"><title>Introduction</title> 
+<para>Based initially on <emphasis>qtwebkit</emphasis> (and currently on <emphasis>kdewebkit</emphasis>), &rekonq; is a lightweight browser designed to use the <guilabel>WebKit</guilabel> rendering engine in combination with various &kde; technologies, allowing it to integrate seamlessly into the &kde; desktop. The name is a throwback to the venerable khtml-based <ulink url="help:/konqueror/index.html">&konqueror;</ulink> which is currently the default &kde; web browser.
 </para>
-</chapter>
-
-<!-- ================== CHAPTER ==================  -->
-
-<chapter id="Introduction">
-
-<title>Introduction</title>
-
-<para>
-&rekonq; is a lightweight web browser for &kde; based on WebKit. Its code is based on the Nokia QtDemoBrowser.
-Its implementation is going to embrace &kde; technologies, in order to have a full-featured &kde; web browser.
-</para>
-</chapter>
-<!-- ================== CHAPTER ==================  -->
-
-<chapter id="Using-rekonq">
-<title>Using &rekonq;</title>
-
-
-<para>
-<screenshot>
-<screeninfo>Here's a screenshot of &rekonq;</screeninfo>
-	<mediaobject>
-	  <imageobject>
-	    <imagedata fileref="screenshot.png" format="PNG"/>
-	  </imageobject>
-	  <textobject>
-	    <phrase>Screenshot</phrase>
-	  </textobject>
-	</mediaobject>
-
-</screenshot>
+<para>&rekonq; has already replaced &konqueror; as the default browser in Chakra, with more distributions expressing similar intent for their future releases.
 </para>
 <important><para>Like all &kde; applications, &rekonq; is highly
         configurable. This document describes how &rekonq; behaves with the normal,
@@ -167,10 +104,333 @@ Its implementation is going to embrace &kde; technologies, in order to have a fu
 </para>
 </sect1>
 </chapter>
-<!-- ================== CHAPTER ==================  -->
+<chapter id="interface"><title>Interface</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-toolbar.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; main toolbar</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; main toolbar</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>By default, the &rekonq; window uses only one toolbar. This main toolbar consists of four navigation buttons (<guilabel>back</guilabel>, <guilabel>forward</guilabel>, <guilabel>home</guilabel>, <guilabel>reload/stop</guilabel>), the URL bar and two menu/buttons, one for <guilabel>bookmarks</guilabel> and one for the <guilabel>settings</guilabel>. This minimalist approach to the main toolbar marks the most significant user-interface departure from the traditional multi-toolbar paradigm followed by most other browsers like &konqueror;.
+</para>
+<para>Further, the main toolbar offers only limited customization &ndash; <guilabel>orientation</guilabel> (locked at the top of the window, by default), <guilabel>icon size</guilabel> (medium, by default) and <guilabel>icon labels</guilabel> (not shown, by default). This helps keep the &rekonq; UI simple and puts the focus on the webpage on display.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-urlbar.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; URL bar</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; URL bar</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&rekonq; introduces a vastly improved URL bar that offers access to search engines from the drop down completion list itself. The completion list is also populated by matching items from your history and bookmarks.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-newtab.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; new tab page</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; new tab page</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>When started, &rekonq; displays the New Tab page, much of which is taken by a set of preview thumbnails of favorite webpages. These thumbnails offer a speedy way for the user to access their most frequently used webpages. There is also a pane at the top of this page allows the user to switch to previews of recently closed tabs and lists of bookmarked webpages, download and browsing histories.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-panels.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; hidden UI elements</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; hidden UI elements</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Further configuration options activate several other UI elements hidden by default. These include a toolbar for bookmarks, a panel (a panel, being a mini-window that can be resized, detached or re-docked in the main window) each for bookmarks and history and a web inspector panel (handy for web development).
+</para>
+</chapter>
+<chapter id="features"><title>Features</title> 
+<para>Under its minimalist appearance, &rekonq; packs a full set of powerful features. Some of them are described below:
+</para>
+<sect1 id="kde-integration"><title>&kde; integration</title> 
+<para>&rekonq; is designed with the aim of being a &kde; browser. And it shows this.
+</para>
+<sect2 id="appearance"><title>Appearance</title> 
+<para>It obeys your themes, fonts, window decoration, menu highlighting, and many personalization options you set for your desktop. 
+</para>
+</sect2>
+<sect2 id="applications"><title>Applications</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-okularkpart.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; opens a PDF file in an &okular; <guilabel>kpart</guilabel></phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; opens a PDF file in an &okular; <guilabel>kpart</guilabel></para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&rekonq; plays well with other applications in the &kde; family. &rekonq; will always use your chosen default applications to handle file types. PDF files, for example will open in an embedded <ulink url="help:/okular/index.html">&okular;</ulink> <guilabel>kpart</guilabel> within &rekonq; itself. Media files will open in <ulink url="help:/dragonplayer/index.html">&dragon;</ulink> (or any other designated default application for that filetype).
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Bookmarkseditor.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; shares bookmarks &etc; with &konqueror;</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; shares bookmarks &etc; with &konqueror;</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Bookmarks, web shortcuts (more on these later), cookies and authentication information are shared with &konqueror;. You will see the same set of bookmarks from either application and you can log onto a website in &konqueror; and carry on seamlessly if you decide to switch to &rekonq;. Your passwords are stored securely in <ulink url="help:/kwallet/index.html">KWallet</ulink> and can be used from either &konqueror; or &rekonq;.
+</para>
+<para>Your downloads can be optionally handled by <ulink url="help:/kget/index.html">KGet</ulink>. Feeds from websites can be saved to <guilabel>&akregator;</guilabel> (or <guilabel>Google Reader</guilabel>).
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-akregator.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; + &akregator;</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; + &akregator;</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-kget.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; + &kget;</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; + &kget;</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+</sect2>
+</sect1>
+<sect1 id="services"><title>Services</title> 
+<sect2 id="kio-support"><title>KIO support</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-ftp.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; browsing an &FTP; share</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; browsing an &FTP; share</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&rekonq; supports KIO services, including cookies, cache, proxies and network settings. <emphasis>KIO-slaves</emphasis> like file:/, ftp:/, man:/, help:/, info:/ &etc; will work in &rekonq;, too.
+</para>
+</sect2>
+<sect2 id="dialogs"><title>Dialogs</title> 
+<para>In addition to all this, &rekonq; uses &kde;'s own file dialog for opening/saving documents. This means, you have access to the <emphasis>Places</emphasis> sidebar from &dolphin; while you open or save documents.
+</para>
+<para>Thus, &rekonq; looks, feels and behaves like a part of your &kde; desktop.
+</para>
+</sect2>
+</sect1>
+</chapter>
+<chapter id="webkit-engine"><title>Webkit engine</title> 
+<para>&rekonq; uses the open source <guilabel>WebKit</guilabel> rendering engine which incidentally began life as a branch of the khtml/kjs libraries from the &kde; project. <guilabel>WebKit</guilabel> is fast, powerful and used by many other popular browsers today including <trademark class="registered">Google</trademark>'s <trademark class="registered">Chrome</trademark>, <trademark class="registered">Apple</trademark>'s <trademark class="registered">Safari</trademark> and others.
+</para>
+</chapter>
+<chapter id="auto-load-click-to-load-plugins"><title>Auto-load/click-to-load plugins</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-manualplugins-youtube.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; demonstrating the click-to-load-plugins feature on youtube.com</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; demonstrating the click-to-load-plugins feature on youtube.com</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>One of the benefits of using the <guilabel>WebKit</guilabel> engine, is that plugins can be disabled from automatically loading. This comes in handy to surf websites fast, without being bogged down by <guilabel>flash</guilabel> plugins. In the so-called <emphasis>Click-to-load</emphasis> mode, you will instead see a button that you can click on to activate the plugin.
+</para>
+</chapter>
+<chapter id="adblock-support"><title>Adblock support</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-adblock.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; blocking images on kde-apps.org</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; blocking images on kde-apps.org</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&rekonq; comes with an automatic subscription to the Easylist filter, which is updated every week. Additionally, you can set up manual filters to block loading of elements from webpages that match your criteria. You can even download and import additional published filterlists or export your list for backup.
+</para>
+</chapter>
+<chapter id="web-shortcuts-support"><title>Web shortcuts support</title> 
+<para>&rekonq; allows you to pick from an extensive list of web shortcuts &ndash; these are keywords that allow you to search the web quickly. For instance, entering <userinput>gg:&kde;</userinput> in the location bar will search <emphasis>Google</emphasis> for <quote>&kde;</quote>, while <userinput>wp:&kde;</userinput> will search <emphasis>Wikipedia</emphasis> for <quote>&kde;</quote>. There are dozens of these defined by default. You can edit these or even define custom shortcuts to search on your favorite websites.
+</para>
+</chapter>
+<chapter id="privacy-and-security-features"><title>Privacy and security features</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-privatebrowsing.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; in private browsing mode</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; in private browsing mode</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&rekonq; allows users to browse the web without retaining information about the visited pages in your history. Note that this feature does not necessarily make you anonymous on the Internet &ndash; it only prevents fresh information from being recorded on your computer. You can also delete your history, cookies and other private data anytime straight from the configuration menu button.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-sslinfo.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; URL bar showing the SSL info icon</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; URL bar showing the SSL info icon</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>When viewing webpages over a secure connection, you can also view SSL information straight from the URL bar by clicking on the <guiicon>yellow lock</guiicon> icon.
+</para>
+</chapter>
+<chapter id="advanced-tab-handling"><title>Advanced tab handling</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-tabpreview.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; showing a preview of a tab on hover</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; showing a preview of a tab on hover</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&rekonq; allows you to rearrange your tabs on the fly. Just drag a tab to the left or to the right and the other tabs will move out of your way. You can also hover over a tab to see a live preview of the webpage being displayed there.
+</para>
+<para>A <emphasis>context menu</emphasis> (right-click menu) gives access to more tab-related functions such as the ability to detach, clone, reload the tab.
+</para>
+</chapter>
+<chapter id="session-restore-feature"><title>Session restore feature</title> 
+<para>If &rekonq; crashes, it will automatically attempt to restore your session, complete with all the tabs the next time you start it. If for some reason, the browser continues to crash upon restoring the session, &rekonq; will automatically start with a fresh session the second time.
+</para>
+</chapter>
+<chapter id="full-screen-mode"><title>Full screen mode</title> 
+<para>&rekonq; supports full-screening the webpage straight from the configuration menu button or through a keyboard shortcut (<keycombo><keycap>Ctrl</keycap><keycap>Shift</keycap><keycap>F</keycap></keycombo>, by default). In the full screen view, the main toolbar will auto-hide and the webpage will be displayed over your entire screen.
+</para>
+</chapter>
+<chapter id="zoom-slider"><title>Zoom slider</title> 
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-zoom.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; showing the zoom slider in the configuration menu</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; showing the zoom slider in the configuration menu</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>&rekonq; has a slider to adjust the zoom right from the configuration menu with a handy button to restore the zoom back to default. Of course, you can still use keyboard (<keycombo><keycap>Ctrl</keycap><keycap>+/-</keycap></keycombo>) or mouse (<keycombo><keycap>Ctrl </keycap><keycap> mouse scroll up/down</keycap></keycombo>) shortcuts just the same.
+</para>
+</chapter>
 
 <chapter id="Config-rekonq">
-<title>Configure &rekonq;</title>
+<title>Detailed &rekonq; configuration</title>
 
 <sect1 id="General">
 
@@ -199,7 +459,6 @@ To open the general settings go to
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 
@@ -216,12 +475,12 @@ Here a List of configurable points and explanation for it:
     <listitem><para>You can either set your home page directly through tipping the &URL; in.</para></listitem>
   </varlistentry>
   <varlistentry>
-    <term><guibutton>Set to Current Page</guibutton></term>
-    <listitem><para>Sets your home page to the one you are visiting at the moment.</para></listitem>
+    <term><guilabel>Use the New Tab Page as home page</guilabel></term>
+    <listitem><para>Enabling this option makes an empty new page the default home page of &rekonq;.</para> </listitem>
   </varlistentry>
   <varlistentry>
-    <term><guilabel>Default search engine:</guilabel></term>
-    <listitem><para> Here you can choose the search engine you like to be searched with as default.</para> </listitem>
+    <term><guibutton>Set to Current Page</guibutton></term>
+    <listitem><para>Sets your home page to the one you are visiting at the moment.</para></listitem>
   </varlistentry>
   <varlistentry>
     <term><guilabel>Use KGet for downloading files</guilabel></term>
@@ -231,8 +490,6 @@ Here a List of configurable points and explanation for it:
     <term><guilabel>List links with KGet</guilabel></term>
     <listitem><para>If enabled, &rekonq; will display an additional context menu entry, which, when selected, lists all available links of the current website in &kget;.</para></listitem>
   </varlistentry>
-
-<!-- What does this? -->
 </variablelist>
 
 </para>
@@ -264,14 +521,20 @@ Here a List of configurable points and explanation for it:
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 
 <para>
-Here a List of configurable points and explanation for it:
+Here a list of configurable points and explanation for it:
 
 <variablelist>
+  <varlistentry>
+    <term><guilabel>New tab opens</guilabel></term>
+    <listitem><para>Here you can choose the default behavior of &rekonq; when you open the new tab.</para></listitem>
+  </varlistentry><varlistentry>
+    <term><guilabel>New Tab Page starts with</guilabel></term>
+    <listitem><para>Here you can choose the default contents for the new tabs.</para></listitem>
+  </varlistentry>
   <varlistentry>
     <term><guilabel>Open links in new tab instead of in new window</guilabel></term>
     <listitem><para>This enables the default opening of links in new tabs.</para></listitem>
@@ -302,27 +565,25 @@ Here a List of configurable points and explanation for it:
 
 </sect1>
 
-<sect1 id="Fonts">
+<sect1 id="Appearance">
 
-<title>Configure the Fonts settings</title>
+<title>Configure the Appearance settings</title>
 
 <para>
 <screenshot>
 <screeninfo>Now you should see this</screeninfo>
 	<mediaobject>
 	  <imageobject>
-	    <imagedata fileref="fonts.png" format="PNG"/>
+	    <imagedata fileref="appearance.png" format="PNG"/>
 	  </imageobject>
 	  <textobject>
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 
 <para>
-
 Following will explain the configurable things and what they do
 <variablelist>
   <varlistentry>
@@ -331,15 +592,43 @@ Following will explain the configurable things and what they do
   </varlistentry>
   <varlistentry>
     <term><guilabel>Fixed font</guilabel></term>
-    <listitem><para>Here you can set your font for &rekonq; labels. The same synopsis like Standard font.</para></listitem>
+    <listitem><para>Here you can set your font for &rekonq; labels. The same synopsis like <guilabel>Standard font</guilabel>.</para></listitem>
   </varlistentry>
   <varlistentry>
-    <term><guilabel>Font size</guilabel></term>
+    <term><guilabel>Serif font</guilabel></term>
+    <listitem><para>Here you can set your font for Serif labels. The same synopsis like <guilabel>Standard font</guilabel>.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Sans Serif font</guilabel></term>
+    <listitem><para>Here you can set your font for Sans Serif labels. The same synopsis like <guilabel>Standard font</guilabel>.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Cursive font</guilabel></term>
+    <listitem><para>Here you can set your font for Cursive labels. The same synopsis like <guilabel>Standard font</guilabel>.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Fantasy font</guilabel></term>
+    <listitem><para>Here you can set your font for Fantasy labels. The same synopsis like <guilabel>Standard font</guilabel>.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Default font size:</guilabel></term>
     <listitem><para>To configure your preferred size of font.</para></listitem>
   </varlistentry>
   <varlistentry>
     <term><guilabel>Minimal font size:</guilabel></term>
     <listitem><para>You can configure the minimal size of fonts in &rekonq;. Every smaller font will grow to that size.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>User CSS path:</guilabel></term>
+    <listitem><para>Here you can set the path to your CSS file used to format webpages.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Auto-scroll on middle-click</guilabel></term>
+    <listitem><para>Enabling this option makes contents to scroll after the &MMB; click.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><guilabel>Enable smooth scrolling</guilabel></term>
+    <listitem><para>If you enable this option &rekonq; will use smooth scrolling. Uncheck this option if the scrolling becomes choppy.</para></listitem>
   </varlistentry>
 </variablelist>
 
@@ -362,7 +651,6 @@ Following will explain the configurable things and what they do
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 
@@ -387,18 +675,19 @@ Following will explain the configurable things and what they do
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 
 <para>
-As you can see the Cookies can be configured in many ways.
+As you can see the cookies can be configured in many ways.
 </para>
 
 <para>
-&rekonq; can handle Cookies in three ways
+&rekonq; can handle cookies in three ways by default
 <itemizedlist>
-<listitem><para>"Ask for Confirmation"</para></listitem>
+<listitem><para><guilabel>Ask for confirmation</guilabel></para></listitem>
+<listitem><para><guilabel>Accept all cookies</guilabel></para></listitem>
+<listitem><para><guilabel>Reject all cookies</guilabel></para></listitem>
 </itemizedlist>
 </para>
 </sect2>
@@ -418,7 +707,6 @@ As you can see the Cookies can be configured in many ways.
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 
@@ -433,7 +721,6 @@ As you can see the Cookies can be configured in many ways.
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 </sect2>
@@ -449,13 +736,12 @@ As you can see the Cookies can be configured in many ways.
 <screeninfo>Now you should see this</screeninfo>
 	<mediaobject>
 	  <imageobject>
-	    <imagedata fileref="automatic_filters.png" format="PNG"/>
+	    <imagedata fileref="Rekonq-adblockconfiguration.png" format="PNG"/>
 	  </imageobject>
 	  <textobject>
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 
@@ -464,13 +750,12 @@ As you can see the Cookies can be configured in many ways.
 <screeninfo>Now you should see this</screeninfo>
 	<mediaobject>
 	  <imageobject>
-	    <imagedata fileref="own_filter.png" format="PNG"/>
+	    <imagedata fileref="Rekonq-adblockconfiguration-manual.png" format="PNG"/>
 	  </imageobject>
 	  <textobject>
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 
@@ -491,7 +776,6 @@ As you can see the Cookies can be configured in many ways.
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 
@@ -512,7 +796,6 @@ As you can see the Cookies can be configured in many ways.
 	    <phrase>Screenshot</phrase>
 	  </textobject>
 	</mediaobject>
-
 </screenshot>
 </para>
 
@@ -520,12 +803,166 @@ As you can see the Cookies can be configured in many ways.
 
 </chapter>
 
-<!-- ================== CHAPTER ==================  -->
+<chapter id="rekonq-faqs-tips-and-tricks"><title>rekonq FAQs, Tips and Tricks</title> 
+<sect1 id="how-do-i-set-rekonq-as-my-default-browser"><title>How do I set &rekonq; as my default browser?</title> 
+<para>Head to <menuchoice><guimenu>System Settings</guimenu><guimenuitem>Default Applications</guimenuitem></menuchoice>. Here, click on <guilabel>Web Browser</guilabel> to set your default browser. Select to open http and https URLs in the following browser and enter <userinput>rekonq %u</userinput> as the browser. Click <guilabel>Apply</guilabel>.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Defaultwebbrowser.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>Setting &rekonq; as the default web browser</phrase>
+    </textobject>
+    <caption>
+      <para>Setting &rekonq; as the default web browser</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="how-do-i-load-flash-on-demand"><title>How do I load flash on demand?</title> 
+<para>Click on the <guilabel>configuration</guilabel> menu button, and open the <guilabel>Configure rekonq</guilabel> dialog. Click on <guilabel>WebKit</guilabel> and under <guilabel>Plugin settings</guilabel>, select to <guilabel>Manually Load Plugins</guilabel>. Click <guilabel>OK</guilabel>.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-manualplugins.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>Setting &rekonq; to not automatically load plugins</phrase>
+    </textobject>
+    <caption>
+      <para>Setting &rekonq; to not automatically load plugins</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="how-do-i-make-rekonq-behave-like-chrome-chromium"><title>How do I make &rekonq; behave like chrome/chromium?</title> 
+<para>Using <ulink url="help:/kwin/index.html">KWin</ulink>'s window tabbing feature, we can make &rekonq; emulate the behavior of <guilabel>chromium</guilabel> by opening new windows instead of tabs within the same window. This will not however allow each window of &rekonq; to crash independently &ndash; all windows of &rekonq; crash as a single process. It merely emulates the look of <application>Chromium</application>, giving individual controls for each webpage you load.
+</para>
+<para>Click on the configuration menu button and open the <guilabel>Configure rekonq</guilabel> dialog. Click on <guilabel>Tabs</guilabel>. Unselect all options to disable all tab handling in &rekonq;. Now, &rekonq; will always open new windows instead of tabs.
+</para>
+<para>Now, we'll set up <guilabel>KWin</guilabel> to automatically tab all &rekonq; windows together. Head to <menuchoice><guimenu>System Settings</guimenu><guimenuitem>Window Behavior</guimenuitem></menuchoice>. Select <guilabel>Window Behavior</guilabel> on the left and go to the <guilabel>Advanced</guilabel> tab. Here, under <guilabel>Window Tabbing</guilabel>, check <guilabel>Automatically group similar windows</guilabel>. Click <guilabel>Apply</guilabel>.
+</para>
+<para>Now, &rekonq; will open windows by default which will automatically get tabbed together.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-notabs.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; configuration</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; configuration</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Systemsettings-enablewindowtabbing.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>System Settings configuration</phrase>
+    </textobject>
+    <caption>
+      <para>System Settings configuration</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-windowtabbing.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>The result</phrase>
+    </textobject>
+    <caption>
+      <para>The result</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="how-do-i-enable-adblock"><title>How do I enable Adblock?</title> 
+<para>Adblocking should already be enabled for you using the <guilabel>Easylist</guilabel> adblock subscription. You can further configure it by clicking on the configuration menu button and opening the <guilabel>Configure rekonq</guilabel> dialog. Click on <guilabel>AdBlocK Filters</guilabel>. Here, you can add custom filters using wildcard strings (e.g. <command>http://www.site.com/ads/*</command>) or regular expressions within forward slashes (e.g. <userinput>//(ads|dclk)\./</userinput>).
+</para>
+<para>Clicking <guilabel>Apply</guilabel> activates your adblock filters instantly.
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-adblockconfiguration.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; AdBlocK (automatic) configuration</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; AdBlocK (automatic) configuration</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Rekonq-adblockconfiguration-manual.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase>&rekonq; AdBlocK (manual) configuration</phrase>
+    </textobject>
+    <caption>
+      <para>&rekonq; AdBlocK (manual) configuration</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="i-have-more-questions"><title>I have more questions!</title> 
+<para>If you have &rekonq; installed, you can load up the <guilabel>Help</guilabel> document (just press <keycap>F1</keycap>) for more information.</para>
 
-<chapter id="Credits">
+<!--A user-generated manual is also available <ulink url="http://userbase.kde.org/Special:myLanguage/Rekonq/Manual">here</ulink>.--> 
+<para><ulink url="http://forum.kde.org">&kde; Forums</ulink> is always a good place to ask user-specific questions.</para>
 
+<para>The <ulink url="http://rekonq.sourceforge.net/">&rekonq; website</ulink> has release announcements for the latest stable and unstable releases along with more helpful links. You can also contact the developers on the <ulink url="irc://freenode/#rekonq">#rekonq IRC channel</ulink> or the <ulink url="mailto:rekonq@kde.org">mailing list</ulink> with more questions.
+</para>
+</sect1>
+<sect1 id="how-do-i-contribute"><title>How do I contribute?</title> 
+<para>See above for now. <inlinemediaobject>
+<imageobject>
+<imagedata fileref="Face-smile.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase>Smiley</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+</sect1>
+</chapter>
+<chapter id="credits">
 <title>Credits and License</title>
-
 <para>
 &rekonq;
 </para>
@@ -536,9 +973,7 @@ Program copyright: &underGPL;
 
 <itemizedlist>
 <title>Developers</title>
-<listitem><para>&The.rekonq.Team; &The.rekonq.Team.mail; Find more about us in the 'About &rekonq;' section</para></listitem>
-
-
+<listitem><para>&The.rekonq.Team; &The.rekonq.Team.mail;</para></listitem>
 </itemizedlist>
 
 <para>
@@ -550,14 +985,12 @@ Documentation copyright 2009-2010 &Rohan.Garg; &Rohan.Garg.mail;
 <para>
 Documentation copyright 2010 &Jonathan.Kolberg; &Jonathan.Kolberg.mail;
 </para>
-
-
-<!--TRANS:CREDIT_FOR_TRANSLATORS-->
-&underFDL;               <!-- FDL: do not remove -->
-&underGPL;        <!-- GPL License -->
-
+    <para>
+List of the UserBase contributors can be found on 
+    <ulink url="http://userbase.kde.org/index.php?title=Rekonq&amp;action=history">Rekonq</ulink> and <ulink url="http://userbase.kde.org/index.php?title=Rekonq/FAQs&amp;action=history">Rekonq/FAQs</ulink> page history.</para>  
+    <!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+&underFDL;
 </chapter>
-
 <appendix id="installation">
 <title>Installation</title>
 
@@ -649,7 +1082,5 @@ To compile the code tip in the following
 </sect1>
 
 </appendix>
-
 &documentation.index;
-
 </book>
