@@ -1004,7 +1004,7 @@ List of the UserBase contributors can be found on
 <sect1 id="requirements">
 <title>Requirements</title>
 
-<para>In order to successfully use &rekonq;, you need at least &Qt; 4.6.x and &kde; 4.4.x.</para>
+<para>In order to successfully use &rekonq;, you need at least &Qt; 4.7.x and &kde; 4.5.x.</para>
 </sect1>
 
 <sect1 id="compilation">
@@ -1027,7 +1027,7 @@ List of the UserBase contributors can be found on
 </para>
 
 <para>
-We will be using git, as the most recent code is available on the git repository. The gitorious page for &rekonq; can be found <ulink url="http://gitorious.org/rekonq">here</ulink>. Stable releases, can also be downloaded <ulink url="http://sourceforge.net/projects/rekonq/files/">here</ulink> in form of tarballs. 
+We will be using git, as the most recent code is available on the git repository. The &kde; Projects webpage for &rekonq; can be found <ulink url="https://projects.kde.org/projects/extragear/network/rekonq">here</ulink>. Stable releases, can also be downloaded <ulink url="http://sourceforge.net/projects/rekonq/files/">here</ulink> in form of tarballs. 
 </para>
 
 <para>
@@ -1036,12 +1036,12 @@ Now we need to checkout the latest code. To do so, in a terminal run:
 
 <para>
   <userinput>
-    <command>git</command> <option>clone</option> <parameter>git://gitorious.org/rekonq/mainline.git</parameter>
+    <command>git</command> <option>clone</option> <parameter>git://git.kde.org/rekonq</parameter>
   </userinput>
 </para>
 
 <para>
-To compile the code tip in the following
+To compile the code type in the following
 </para>
 
 <para>
