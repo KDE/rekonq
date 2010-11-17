@@ -100,8 +100,6 @@ UrlBar::UrlBar(QWidget *parent)
     // disable completion object (we have our own :) )
     setCompletionObject(0);
 
-    setClearButtonShown(true);
-
     _tab = qobject_cast<WebTab *>(parent);
 
     connect(_tab, SIGNAL(loadProgressing()), this, SLOT(update()));
