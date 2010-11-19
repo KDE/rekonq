@@ -35,6 +35,9 @@
 // Local Includes
 #include "webview.h"
 
+// KDE Includes
+#include <KParts/Part>
+
 // Qt Includes
 #include <QtGui/QWidget>
 
@@ -65,16 +68,20 @@ public:
     bool hasRSSInfo();
     bool isPageLoading();
 
-private slots:
+    KParts::ReadOnlyPart *part() { return _part; }
+    void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
+    
+private Q_SLOTS:
     void updateProgress(int progress);
     void loadFinished(bool);
 
     void createWalletBar(const QString &, const QUrl &);
     void showRSSInfo(QPoint pos);
 
-signals:
+Q_SIGNALS:
     void loadProgressing();
-
+    void titleChanged(const QString &);
+    
 private:
     WebView *_view;
     UrlBar *_bar;
@@ -83,6 +90,8 @@ private:
 
     QWeakPointer<WalletBar> _walletBar;
     QWeakPointer<PreviewSelectorBar> _previewSelectorBar;
+
+    KParts::ReadOnlyPart *_part;
 };
 
 #endif

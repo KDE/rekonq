@@ -72,6 +72,9 @@
 #include <KStandardDirs>
 #include <KToggleFullScreenAction>
 
+#include <KParts/Part>
+#include <KParts/BrowserExtension>
+
 // Qt Includes
 #include <QtCore/QTimer>
 
@@ -707,6 +710,25 @@ void MainWindow::printRequested(QWebFrame *frame)
     if (!currentTab())
         return;
 
+    if(currentTab()->page()->isOnRekonqPage())
+    {
+        // trigger print part action instead of ours..
+        KParts::ReadOnlyPart *p = currentTab()->part();
+        if(p)
+        {
+            KParts::BrowserExtension *ext = p->browserExtension();
+            if(ext)
+            {
+                KParts::BrowserExtension::ActionSlotMap *actionSlotMap = KParts::BrowserExtension::actionSlotMapPtr();
+
+                connect(this, SIGNAL(triggerPartPrint()), ext, actionSlotMap->value("print")); 
+                emit triggerPartPrint();
+        
+                return;
+            }
+        }
+    }
+    
     QWebFrame *printFrame = 0;
     if (frame == 0)
     {
@@ -753,6 +775,18 @@ void MainWindow::findNext()
     if (!currentTab())
         return;
 
+    if(currentTab()->page()->isOnRekonqPage())
+    {
+        // trigger part find action
+        KParts::ReadOnlyPart *p = currentTab()->part();
+        if(p)
+        {
+            connect(this, SIGNAL(triggerPartFind()), p, SLOT(slotFind()));
+            emit triggerPartFind();
+            return;
+        }
+    }
+    
     if (m_findBar->isHidden())
     {
         QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
