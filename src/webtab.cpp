@@ -51,6 +51,7 @@ WebTab::WebTab(QWidget *parent)
         , m_webView(new WebView(this))
         , m_urlBar(new UrlBar(this))
         , m_progress(0)
+        , m_part(0)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -74,6 +75,7 @@ WebTab::WebTab(QWidget *parent)
 
     connect(m_webView, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(m_webView, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
+    connect(m_webView, SIGNAL(titleChanged(const QString &)), this, SIGNAL(titleChanged(const QString &)));
 }
 
 
@@ -81,13 +83,18 @@ WebTab::~WebTab()
 {
     m_walletBar.clear();
     m_previewSelectorBar.clear();
+
+    delete m_part;
 }
 
 
 KUrl WebTab::url()
 {
     if(page() && page()->isOnRekonqPage())
+    {
+        kDebug() << "REKONQ PAGE. URL = " << page()->loadingUrl();
         return page()->loadingUrl();
+    }
     
     return view()->url();
 }
@@ -202,4 +209,29 @@ void WebTab::showRSSInfo(QPoint pos)
 
     RSSWidget *widget = new RSSWidget(map, window());
     widget->showAt(pos);
+}
+
+
+void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
+{
+    if(p)
+    {
+        // Ok, part exists. Insert & show it..
+        m_part = p;
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(1, p->widget());
+        p->openUrl(u);
+        m_webView->hide();
+
+        emit titleChanged(u.url());
+        return;
+    }
+
+    if(!m_part)
+        return;
+    
+    // Part NO more exists. Let's clean up from webtab
+    m_webView->show();
+    qobject_cast<QVBoxLayout *>(layout())->removeWidget(m_part->widget());
+    delete m_part;
+    m_part = 0;
 }

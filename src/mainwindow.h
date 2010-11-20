@@ -84,7 +84,7 @@ private:
     void setupToolbars();
     void setupPanels();
 
-public slots:
+public Q_SLOTS:
     void homePage(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
 
     /**
@@ -108,12 +108,15 @@ public slots:
     void findPrevious();
     void updateHighlight();
 
-signals:
+Q_SIGNALS:
     // switching tabs
     void ctrlTabPressed();
     void shiftCtrlTabPressed();
-
-protected slots:
+    
+    void triggerPartPrint();
+    void triggerPartFind();
+    
+protected Q_SLOTS:
     void saveNewToolbarConfig();
 
 protected:
@@ -126,7 +129,7 @@ protected:
 
     bool queryClose();
 
-private slots:
+private Q_SLOTS:
     void postLaunch();
     void browserLoading(bool);
     void updateWindowTitle(const QString &title = QString());

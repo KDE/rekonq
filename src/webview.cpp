@@ -408,7 +408,7 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
         }
         else
         {
-            if(!w->mainView()->urlBar()->hasFocus())
+            if(!w->mainView()->currentUrlBar()->hasFocus())
                 w->setWidgetsVisible(false);
         }
     }

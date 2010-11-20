@@ -109,11 +109,12 @@ static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData 
     KUrl destUrl;
 
     int result = KIO::R_OVERWRITE;
-    const QUrl fileName ((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
+    const QString fileName ((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
 
     do
     {
-        destUrl = KFileDialog::getSaveFileName(fileName, QString(), parent);
+        // follow bug:184202 fixes
+        destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);
 
         if(destUrl.isEmpty())
             return false;
@@ -229,7 +230,13 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
-    _isOnRekonqPage = false;
+    if(_isOnRekonqPage)
+    {
+        WebView *view = qobject_cast<WebView *>(parent());
+        WebTab *tab = qobject_cast<WebTab *>(view->parent());
+        _isOnRekonqPage = false;
+        tab->setPart(0, KUrl());     // re-enable the view page
+    }
     _loadingUrl = request.url();
 
     KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
@@ -439,32 +446,15 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     }
 
     // case KParts::BrowserRun::Embed
-    KService::List partServices = KMimeTypeTrader::self()->query(mimeType, QL1S("KParts/ReadOnlyPart"));
-    if (partServices.count() > 0)
+    KParts::ReadOnlyPart *pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(mimeType, view(), this, QString());
+    if (pa)
     {
-        QString p = replyUrl.pathOrUrl();
-
-        // A part can handle this. Embed it!
-        QString html;
-        html += "<html>";
-        html += "<head>";
-        html += "<title>";
-        html += p;
-        html += "</title>";
-        html += "<style type=\"text/css\">";
-        html += "* { border: 0; padding: 0; margin: 0; }";
-        html += "</style>";
-        html += "</head>";
-        html += "<body>";
-        html += "<object type=\"" + mimeType + "\" data=\"" + p + "\" width=\"100%\" height=\"100%\" />";
-        html += "</body>";
-        html += "</html>";
-
-        mainFrame()->setHtml(html);
         _isOnRekonqPage = true;
-        
+
         WebView *view = qobject_cast<WebView *>(parent());
         WebTab *tab = qobject_cast<WebTab *>(view->parent());
+        tab->setPart(pa,replyUrl);
+
         UrlBar *bar = tab->urlBar();
         bar->setQUrl(replyUrl);
         

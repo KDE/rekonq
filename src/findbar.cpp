@@ -31,6 +31,8 @@
 
 // Local Includes
 #include "mainwindow.h"
+#include "webtab.h"
+#include "webpage.h"
 
 // KDE Includes
 #include <KApplication>
@@ -154,6 +156,13 @@ bool FindBar::highlightAllState() const
 
 void FindBar::setVisible(bool visible)
 {
+    if (visible && m_mainWindow->currentTab()->page()->isOnRekonqPage() && m_mainWindow->currentTab()->part() != 0)
+    {
+        // findNext is the slot containing part integration code
+        m_mainWindow->findNext();
+        return;
+    }
+    
     QWidget::setVisible(visible);
 
     if (visible)

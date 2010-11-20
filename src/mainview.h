@@ -68,11 +68,13 @@ public:
     MainView(MainWindow *parent);
 
     inline StackedUrlBar *widgetBar() const { return m_widgetBar; }
-    UrlBar *urlBar() const;
-    WebTab *webTab(int index) const;
 
     TabBar *tabBar() const;
+
     WebTab *currentWebTab() const;
+    UrlBar *currentUrlBar() const;
+
+    WebTab *webTab(int index) const;
 
     /**
      * show and hide TabBar if user doesn't choose
@@ -96,7 +98,7 @@ public:
 
     inline QList<HistoryItem> recentlyClosedTabs() { return m_recentlyClosedTabs; }
 
-signals:
+Q_SIGNALS:
     // tab widget signals
     void tabsChanged();
     void lastTabClosed();
@@ -109,7 +111,7 @@ signals:
 
     void printRequested(QWebFrame *frame);
 
-public slots:
+public Q_SLOTS:
     /**
      * Core browser slot. This create a new tab with a WebView inside
      * for browsing and follows rekonq settings about opening there a
@@ -142,7 +144,7 @@ public slots:
     void webReload();
     void webStop();
 
-private slots:
+private Q_SLOTS:
     void currentChanged(int index);
 
     void webViewLoadStarted();

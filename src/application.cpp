@@ -439,7 +439,7 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
 void Application::newWindow()
 {
     loadUrl(KUrl("about:home"), Rekonq::NewWindow);
-    mainWindow()->mainView()->urlBar()->setFocus();
+    mainWindow()->mainView()->currentUrlBar()->setFocus();
 }
 
 

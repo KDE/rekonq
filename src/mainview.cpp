@@ -161,9 +161,9 @@ TabBar *MainView::tabBar() const
 }
 
 
-UrlBar *MainView::urlBar() const
+UrlBar *MainView::currentUrlBar() const
 {
-    return m_widgetBar->urlBar(m_currentTabIndex);
+    return webTab(currentIndex())->urlBar();
 }
 
 
@@ -306,7 +306,7 @@ WebTab *MainView::newWebTab(bool focused)
     // connecting webview with mainview
     connect(tab->view(), SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
     connect(tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
-    connect(tab->view(), SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
+    connect(tab, SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
     connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
     connect(tab->view(), SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
 
@@ -347,7 +347,7 @@ void MainView::newTab()
         w->load(KUrl("about:home"));
         break;
     case 1: // blank page
-        urlBar()->clear();
+        currentUrlBar()->clear();
         break;
     case 2: // homepage
         w->load(KUrl(ReKonfig::homePage()));
@@ -355,7 +355,7 @@ void MainView::newTab()
     default:
         break;
     }
-    urlBar()->setFocus();
+    currentUrlBar()->setFocus();
 }
 
 
@@ -442,7 +442,7 @@ void MainView::closeTab(int index, bool del)
         case 0: // new tab page
         case 1: // blank page
             w->load(KUrl("about:home"));
-            urlBar()->setFocus();
+            currentUrlBar()->setFocus();
             break;
         case 2: // homepage
             w->load(KUrl(ReKonfig::homePage()));
@@ -576,8 +576,8 @@ void MainView::webViewTitleChanged(const QString &title)
     QString tabTitle = viewTitle;
     tabTitle.replace('&', "&&");
 
-    WebView *view = qobject_cast<WebView *>(sender());
-    int index = indexOf(view->parentWidget());
+    WebTab *tab = qobject_cast<WebTab *>(sender());
+    int index = indexOf(tab);
     if (-1 != index)
     {
         setTabText(index, tabTitle);
@@ -586,7 +586,7 @@ void MainView::webViewTitleChanged(const QString &title)
     {
         emit currentTitle(viewTitle);
     }
-    Application::historyManager()->updateHistoryEntry(view->url(), tabTitle);
+    Application::historyManager()->updateHistoryEntry(tab->url(), tabTitle);
 }
 
 
