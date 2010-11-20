@@ -441,11 +441,8 @@ You want to configure the general behavior of &rekonq;? You found the right plac
 </para>
 
 <para>
-To open the general settings go to
-<menuchoice>
-<guimenuitem>Toolbutton</guimenuitem>
-<guisubmenu>Configure rekonq</guisubmenu>
-</menuchoice>
+To open the general settings click on the <guiicon>Tool</guiicon> icon
+and select <guisubmenu>Configure rekonq</guisubmenu>.
 </para>
 
 <para>
@@ -502,9 +499,8 @@ Here a List of configurable points and explanation for it:
 
 <para>Here you learn how to change the settings for tabs.</para>
 
-<para>To come to the dialog open 
+<para>To come to the dialog click on the <guiicon>Tool</guiicon> icon and open 
 <menuchoice>
-<guimenuitem>Toolbutton</guimenuitem>
 <guisubmenu>Configure rekonq</guisubmenu>
 <guimenuitem>Tabs</guimenuitem>
 </menuchoice>
