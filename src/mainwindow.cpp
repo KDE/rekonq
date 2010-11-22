@@ -413,8 +413,9 @@ void MainWindow::setupActions()
 
     a = Application::instance()->privateBrowsingAction();
     actionCollection()->addAction(QL1S("private_browsing"), a);
-    
+
     a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
+    a->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_Delete);
     actionCollection()->addAction(QL1S("clear_private_data"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
 
