@@ -49,7 +49,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                      KAboutData::License_GPL_V3,
                      ki18n("(C) 2008-2010 Andrea Diamantini"),
                      KLocalizedString(),
-                     "http://rekonq.sourceforge.net"
+                     "http://rekonq.kde.org"
                     );
 
     // --------------- about authors -----------------------------
@@ -118,6 +118,11 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "ikipou@gmail.com",
                     "http://www.openyourcode.org/");
 
+    about.addAuthor(ki18n("Pierre Rossi"),
+                ki18n("Urlbar, tests, new tab page, bars... and more"),
+                "pierre.rossi@gmail.com",
+                "");
+    
     // --------------- about credits -----------------------------
     about.addCredit(ki18n("Dawit Alemayehu"),
                     ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
