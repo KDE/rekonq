@@ -63,12 +63,13 @@ const QString loadingGifPath = KStandardDirs::locate("appdata" , "pics/loading.m
 MainView::MainView(MainWindow *parent)
         : KTabWidget(parent)
         , m_widgetBar(new StackedUrlBar(this))
-        , m_addTabButton(new QToolButton(this))
+        , m_addTabButton(0)
         , m_currentTabIndex(0)
         , m_parentWindow(parent)
 {
     // setting tabbar
     TabBar *tabBar = new TabBar(this);
+    m_addTabButton = new QToolButton(this);
     setTabBar(tabBar);
 
     // set mouse tracking for tab previews

@@ -178,16 +178,16 @@ private:
 
 // --------------------------------------------------------------------------
 
-    StackedUrlBar *const m_widgetBar;
+    StackedUrlBar *m_widgetBar;
 
     // the new tab button
-    QToolButton *const m_addTabButton;
+    QToolButton *m_addTabButton;
 
     int m_currentTabIndex;
 
     QList<HistoryItem> m_recentlyClosedTabs;
 
-    MainWindow *const m_parentWindow;
+    MainWindow *m_parentWindow;
 };
 
 #endif // MAINVIEW_H
