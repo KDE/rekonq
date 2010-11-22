@@ -180,6 +180,8 @@ private:
 
     StackedUrlBar *m_widgetBar;
 
+    QString m_loadingGitPath;
+
     // the new tab button
     QToolButton *m_addTabButton;
 

@@ -57,9 +57,6 @@
 #include <QtGui/QToolButton>
 
 
-// loading pixmap path
-const QString loadingGifPath = KStandardDirs::locate("appdata" , "pics/loading.mng");
-
 MainView::MainView(MainWindow *parent)
         : KTabWidget(parent)
         , m_widgetBar(new StackedUrlBar(this))
@@ -74,6 +71,9 @@ MainView::MainView(MainWindow *parent)
 
     // set mouse tracking for tab previews
     setMouseTracking(true);
+
+    // loading pixmap path
+    m_loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.mng");
 
     // connecting tabbar signals
     connect(tabBar, SIGNAL(closeTab(int)),          this,   SLOT(closeTab(int)));
@@ -670,7 +670,7 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
     }
     if (addMovie && !label->movie())
     {
-        QMovie *movie = new QMovie(loadingGifPath, QByteArray(), label);
+        QMovie *movie = new QMovie(m_loadingGitPath, QByteArray(), label);
         movie->setSpeed(50);
         label->setMovie(movie);
         movie->start();
