@@ -63,6 +63,7 @@ GenericName[sr@latin]=Veb pregledač
 GenericName[sv]=Webbläsare
 GenericName[uk]=Переглядач Інтернету
 GenericName[x-test]=xxWeb Browserxx
+GenericName[zh_TW]=網頁瀏覽器
 Icon=rekonq
 Type=Application
 Exec=rekonq %u
