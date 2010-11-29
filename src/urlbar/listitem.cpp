@@ -454,6 +454,8 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
     m_engineGroup = new QActionGroup(this);
     m_engineGroup->setExclusive(true);
 
+    if (SearchEngine::defaultEngine().isNull())
+        return;
     m_engineGroup->addAction(newEngineAction(SearchEngine::defaultEngine(), selectedEngine));
     foreach(KService::Ptr engine, SearchEngine::favorites())
     {
