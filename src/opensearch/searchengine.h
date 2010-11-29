@@ -38,22 +38,15 @@
 #include <QString>
 
 
-class SearchEngine
+namespace SearchEngine
 {
-public:
-    static void reload();
-    static QString delimiter();
-    static KService::Ptr defaultEngine();
-    static KService::List favorites();
-    static KService::Ptr fromString(const QString &text);
-    static QString buildQuery(KService::Ptr engine, const QString &text);
-    static QString extractQuery(const QString &text);
-    
-private:
-    static bool m_loaded;
-    static QString m_delimiter;
-    static KService::List m_favorites;
-    static KService::Ptr m_defaultEngine;
+void reload();
+QString delimiter();
+KService::Ptr defaultEngine();
+KService::List favorites();
+KService::Ptr fromString(const QString &text);
+QString buildQuery(KService::Ptr engine, const QString &text);
+QString extractQuery(const QString &text);
 };
 
 #endif

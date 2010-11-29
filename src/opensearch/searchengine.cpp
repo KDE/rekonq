@@ -37,12 +37,16 @@
 #include <KConfigGroup>
 #include <KServiceTypeTrader>
 
+struct SearchEnginePrivate
+{
+    SearchEnginePrivate() : isLoaded(false) {}
+    bool isLoaded;
+    QString delimiter;
+    KService::List favorites;
+    KService::Ptr defaultEngine;
+};
 
-bool SearchEngine::m_loaded = false;
-QString SearchEngine::m_delimiter = "";
-KService::List SearchEngine::m_favorites;
-KService::Ptr SearchEngine::m_defaultEngine;
-
+K_GLOBAL_STATIC(SearchEnginePrivate, d)
 
 void SearchEngine::reload()
 {
@@ -50,7 +54,7 @@ void SearchEngine::reload()
     KConfigGroup cg = config.group("General");
 
     //load delimiter
-    m_delimiter = cg.readEntry("KeywordDelimiter", ":");
+    d->delimiter = cg.readEntry("KeywordDelimiter", ":");
 
     //load favorite engines
     QStringList favoriteEngines;
@@ -65,44 +69,44 @@ void SearchEngine::reload()
             QUrl url = service->property("Query").toUrl();
             kDebug() << "ENGINE URL: " << url;
             Application::iconManager()->downloadIconFromUrl(url);
-            
+
             favorites << service;
         }
     }
-    m_favorites = favorites;
+    d->favorites = favorites;
 
     //load default engine
-    QString d = cg.readEntry("DefaultSearchEngine");  
-    m_defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(d));
-    
-    m_loaded = true;
+    QString dse = cg.readEntry("DefaultSearchEngine");
+    d->defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(dse));
+
+    d->isLoaded = true;
 }
 
 
 QString SearchEngine::delimiter()
 {
-    if (!m_loaded)
+    if (!d->isLoaded)
         reload();
 
-    return m_delimiter;
+    return d->delimiter;
 }
 
 
 KService::List SearchEngine::favorites()
 {
-    if (!m_loaded)
+    if (!d->isLoaded)
         reload();
 
-    return m_favorites;
+    return d->favorites;
 }
 
 
 KService::Ptr SearchEngine::defaultEngine()
 {
-    if (!m_loaded)
+    if (!d->isLoaded)
         reload();
 
-    return m_defaultEngine;
+    return d->defaultEngine;
 }
 
 
