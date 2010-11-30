@@ -51,8 +51,8 @@ class REKONQ_TESTS_EXPORT TabBar : public KTabBar
     Q_OBJECT
 
 public:
-    TabBar(QWidget *parent);
-    ~TabBar();
+    explicit TabBar(QWidget *parent);
+    virtual ~TabBar() {}
 
 signals:
     void cloneTab(int index);
@@ -68,6 +68,8 @@ protected:
      */
     virtual QSize tabSizeHint(int index) const;
 
+    virtual void hideEvent(QHideEvent *event);
+    virtual void showEvent(QShowEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);

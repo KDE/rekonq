@@ -99,7 +99,7 @@ MainView::MainView(MainWindow *parent)
 void MainView::postLaunch()
 {
     QStringList list = Application::sessionManager()->closedSites();
-    foreach(const QString &line, list)
+    Q_FOREACH(const QString &line, list)
     {
         if(line.startsWith( QL1S("about") ))
             break;
@@ -176,41 +176,17 @@ WebTab *MainView::currentWebTab() const
 
 void MainView::updateTabBar()
 {
-    if (ReKonfig::alwaysShowTabBar())
-    {
-        if (!isTabBarHidden())
-        {
-            if (tabBar()->isHidden())
-            {
-                tabBar()->show();
-                m_addTabButton->show();
-            }
-            updateTabButtonPosition();
-        }
-        return;
-    }
-
-    if (tabBar()->count() == 1)
-    {
-        tabBar()->hide();
-        m_addTabButton->hide();
-    }
-    else if (!isTabBarHidden())
+    if (ReKonfig::alwaysShowTabBar() || tabBar()->count() > 1)
     {
         if (tabBar()->isHidden())
-        {
             tabBar()->show();
-            m_addTabButton->show();
-        }
-        updateTabButtonPosition();
     }
-}
+    else
+    {
+        tabBar()->hide();
+    }
 
-
-void MainView::setTabBarHidden(bool hide)
-{
-    m_addTabButton->setVisible(!hide);
-    KTabWidget::setTabBarHidden(hide);
+    updateTabButtonPosition();
 }
 
 
@@ -557,7 +533,7 @@ void MainView::webViewIconChanged()
     WebView *view = qobject_cast<WebView *>(sender());
     WebTab *tab = qobject_cast<WebTab *>(view->parent());
     int index = indexOf(tab);
-    
+
     if (-1 != index)
     {
         kDebug() << "TAB URL: " << tab->url();

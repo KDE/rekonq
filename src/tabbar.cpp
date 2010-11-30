@@ -77,11 +77,6 @@ TabBar::TabBar(QWidget *parent)
 }
 
 
-TabBar::~TabBar()
-{
-}
-
-
 QSize TabBar::tabSizeHint(int index) const
 {
     MainView *view = qobject_cast<MainView *>(parent());
@@ -186,6 +181,26 @@ void TabBar::showTabPreview()
 
     QPoint pos(tabRect(m_currentTabPreviewIndex).x() , tabRect(m_currentTabPreviewIndex).y() + tabRect(m_currentTabPreviewIndex).height());
     m_previewPopup.data()->show(mapToGlobal(pos));
+}
+
+
+void TabBar::hideEvent(QHideEvent *event)
+{
+    if (!event->spontaneous())
+    {
+        qobject_cast<MainView *>(parent())->addTabButton()->hide();
+    }
+    QTabBar::hideEvent(event);
+}
+
+
+void TabBar::showEvent(QShowEvent *event)
+{
+    QTabBar::showEvent(event);
+    if (!event->spontaneous())
+    {
+        qobject_cast<MainView *>(parent())->addTabButton()->show();
+    }
 }
 
 
@@ -338,9 +353,8 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
-void TabBar::tabRemoved(int index)
+void TabBar::tabRemoved(int /*index*/)
 {
-    Q_UNUSED(index)
     if (ReKonfig::alwaysShowTabPreviews())
     {
         if (!m_previewPopup.isNull())
@@ -374,7 +388,7 @@ void TabBar::setupHistoryActions()
     if(!isEnabled)
         return;
 
-    foreach (const HistoryItem &item, mv->recentlyClosedTabs())
+    Q_FOREACH(const HistoryItem &item, mv->recentlyClosedTabs())
     {
         KAction *a = new KAction(Application::iconManager()->iconForUrl(item.url), item.title, this);
         a->setData(item.url);

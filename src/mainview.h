@@ -83,8 +83,6 @@ public:
      */
     void updateTabBar();
 
-    void setTabBarHidden(bool hide);
-
     inline QToolButton *addTabButton() const { return m_addTabButton; }
 
     /**
