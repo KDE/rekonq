@@ -74,6 +74,7 @@ WebView::WebView(QWidget* parent)
         , m_smoothScrollTimer(new QTimer(this))
         , m_smoothScrolling(false)
         , m_dy(0)
+        , m_smoothScrollSteps(0)
 {
     WebPage *page = new WebPage(this);
     setPage(page);
