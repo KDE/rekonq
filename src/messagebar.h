@@ -42,7 +42,7 @@ class REKONQ_TESTS_EXPORT MessageBar : public NotificationBar
 {
     Q_OBJECT
 
-    Q_FLAGS(StandardButtons);
+    Q_FLAGS(StandardButtons)
 
 public:
 
