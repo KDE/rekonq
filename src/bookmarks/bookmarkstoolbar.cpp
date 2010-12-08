@@ -227,7 +227,7 @@ void BookmarkToolBar::hideMenu()
 
 bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
 {
-    if (m_currentMenu && m_currentMenu->isVisible())
+    if (m_currentMenu && m_currentMenu->isVisible() && !m_currentMenu->rect().contains(m_currentMenu->mapFromGlobal(QCursor::pos())))
     {
         // To switch root folders as in a menubar
         KBookmarkActionMenu* act = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(toolBar()->mapFromGlobal(QCursor::pos())));
