@@ -47,7 +47,6 @@
 #include <QtGui/QSlider>
 #include <QtGui/QToolButton>
 
-
 ZoomBar::ZoomBar(QWidget *parent)
         : QWidget(parent)
         ,m_zoomIn(new QToolButton(this))
@@ -72,6 +71,9 @@ ZoomBar::ZoomBar(QWidget *parent)
     QLabel *label = new QLabel(i18n("Zoom:"));
     layout->addWidget(label);
 
+    //Show the current zoom percentage of the page
+    m_percentage = new QLabel(i18nc("percentage of the website zoom", "100%"), this);
+
     m_zoomSlider->setTracking(true);
     m_zoomSlider->setRange(1, 19);      // divide by 10 to obtain a qreal for zoomFactor()
     m_zoomSlider->setValue(10);
@@ -85,9 +87,10 @@ ZoomBar::ZoomBar(QWidget *parent)
    // layout->setSpacing(0);
    // layout->setMargin(0);
     layout->addWidget(m_zoomOut);
-    layout->addWidget(m_zoomSlider);
+    layout->addWidget(m_zoomSlider, 8);
     layout->addWidget(m_zoomIn);
     layout->addWidget(m_zoomNormal);
+    layout->addWidget(m_percentage, 5);
 
     layout->addStretch();
 
@@ -131,6 +134,7 @@ void ZoomBar::show()
     {
         emit visibilityChanged(true);
         QWidget::show();
+	m_zoomSlider->setValue(Application::instance()->mainWindow()->currentTab()->view()->zoomFactor()*10);
     }
 }
 
@@ -176,6 +180,7 @@ void ZoomBar::updateSlider(int webview)
 void ZoomBar::setValue(int value)
 {
     m_zoomSlider->setValue(value);
+    m_percentage->setText(i18nc("percentage of the website zoom", "%1%", QString::number(value*10)));
     // Don't allox max +1 values
     Application::instance()->mainWindow()->currentTab()->view()->setZoomFactor(QVariant(m_zoomSlider->value()).toReal() / 10);
 }

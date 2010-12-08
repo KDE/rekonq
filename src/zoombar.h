@@ -34,6 +34,7 @@
 
 // Qt Includes
 #include <QtGui/QWidget>
+#include <QLabel>
 
 // Forward Declarations
 class MainWindow;
@@ -70,6 +71,7 @@ private:
      QToolButton *m_zoomOut;
      QToolButton *m_zoomNormal;
      QSlider *m_zoomSlider;
+     QLabel *m_percentage;
 };
 
 #endif
