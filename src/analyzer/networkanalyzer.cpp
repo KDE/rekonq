@@ -30,7 +30,10 @@
 #include "networkanalyzer.moc"
 
 // KDE Includes
+#include <KAction>
 #include <klocalizedstring.h>
+#include <KMenu>
+#include <KIcon>
 #include <KPassivePopup>
 
 // Qt Includes
@@ -38,9 +41,9 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
-
+#include <QApplication>
 #include <QSignalMapper>
-
+#include <QClipboard>
 
 NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
     : QWidget(parent)
@@ -61,10 +64,11 @@ NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
     
     QVBoxLayout *lay = new QVBoxLayout(this);
     lay->addWidget( _requestList );
-    
-    connect( _mapper, SIGNAL(mapped(QObject *)), this, SLOT(requestFinished(QObject *)) );
 
+    _requestList->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect( _mapper, SIGNAL(mapped(QObject *)), this, SLOT(requestFinished(QObject *)) );
     connect( _requestList, SIGNAL(itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( showItemDetails( QTreeWidgetItem *) ) );
+    connect( _requestList, SIGNAL(customContextMenuRequested(QPoint) ), this, SLOT( popupContextMenu(QPoint)));
 }
 
 
@@ -72,6 +76,24 @@ NetworkAnalyzer::~NetworkAnalyzer()
 {
 }
 
+void NetworkAnalyzer::popupContextMenu(const QPoint& pos)
+{
+    if(_requestList->topLevelItemCount() >= 1)
+    {
+        KMenu menu(_requestList);
+        KAction *copy;
+        copy = new KAction(KIcon("edit-copy"),i18n("Copy URL"), this);
+        connect(copy,SIGNAL(triggered(bool)),this,SLOT(copyURL()));
+        menu.addAction(copy);
+        menu.exec(mapToGlobal(pos));
+    }
+}
+
+void NetworkAnalyzer::copyURL()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(_requestList->currentItem()->text(1));
+}
 
 void NetworkAnalyzer::addRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QNetworkReply *reply )
 {

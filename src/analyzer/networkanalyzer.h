@@ -42,6 +42,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
+#include <QPoint>
 
 // Forward Declarations
 class QTreeWidgetItem;
@@ -63,6 +64,8 @@ private slots:
     void clear();
     void requestFinished( QObject *replyObject );
     void showItemDetails( QTreeWidgetItem *item );
+    void copyURL();
+    void popupContextMenu(const QPoint &pos);
 
 private:
     QMap<QNetworkReply *, QNetworkRequest> _requestMap;
