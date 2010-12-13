@@ -406,8 +406,9 @@ void MainWindow::setupActions()
     m_zoomBar->setupActions(this);
 
     // =============================== Tools Actions =================================
-    a = new KAction(i18n("Page S&ource"), this);
+    a = new KAction(i18n("View Page S&ource"), this);
     a->setIcon(KIcon("application-xhtml+xml"));
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_U));
     actionCollection()->addAction(QL1S("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(viewPageSource()));
 
