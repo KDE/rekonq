@@ -143,6 +143,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     KMenu menu(this);
     QAction *a;
 
+    if(result.pixmap().isNull())
+    {
+	a = mainwindow->actionByName(KStandardAction::name(KStandardAction::Find));
+	menu.addAction(a);
+    }
     KAction *inspectAction = new KAction(KIcon("layer-visible-on"), i18n("Inspect Element"), this);
     connect(inspectAction, SIGNAL(triggered(bool)), this, SLOT(inspect()));
 
@@ -181,6 +186,34 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         else
             a->setText(i18n("Copy"));
         menu.addAction(a);
+        if(selectedText().contains('.') && selectedText().indexOf('.') < selectedText().length() && !selectedText().trimmed().contains(" "))
+        {
+            QString text = selectedText();
+            text = text.trimmed();
+            KUrl urlLikeText(text);
+            if(urlLikeText.isValid())
+            {
+                QString truncatedUrl = text;
+                const int maxTextSize = 18;
+                if (truncatedUrl.length() > maxTextSize)
+                {
+                    const int truncateSize = 15;
+                    truncatedUrl.truncate(truncateSize);
+                    truncatedUrl += QL1S("...");
+                }
+                //open selected text url in a new tab
+                QAction * const openInNewTabAction = new KAction(KIcon("tab-new"), i18n("Open '%1' in New Tab", truncatedUrl), this);
+                openInNewTabAction->setData(urlLikeText);
+                connect(openInNewTabAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
+                menu.addAction(openInNewTabAction);
+                //open selected text url in a new window
+                QAction * const openInNewWindowAction = new KAction(KIcon("window-new"), i18n("Open '%1' in New Window", truncatedUrl), this);
+                openInNewWindowAction->setData(urlLikeText);
+                connect(openInNewWindowAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
+                menu.addAction(openInNewWindowAction);
+                menu.addSeparator();
+            }
+        }
     }
 
     // is content editable? Add PASTE
@@ -188,7 +221,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         menu.addAction(pageAction(KWebPage::Paste));
     }
-
+    a = mainwindow->actionByName(KStandardAction::name(KStandardAction::Print));
+    menu.addAction(a);
     // is content selected? Add SEARCH actions
     if (result.isContentSelected())
     {
