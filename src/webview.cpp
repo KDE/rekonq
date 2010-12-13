@@ -143,11 +143,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     KMenu menu(this);
     QAction *a;
 
-    if(result.pixmap().isNull())
-    {
-	a = mainwindow->actionByName(KStandardAction::name(KStandardAction::Find));
-	menu.addAction(a);
-    }
     KAction *inspectAction = new KAction(KIcon("layer-visible-on"), i18n("Inspect Element"), this);
     connect(inspectAction, SIGNAL(triggered(bool)), this, SLOT(inspect()));
 
@@ -170,6 +165,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
     }
 
+    // add find action.
+    if(result.pixmap().isNull())
+    {
+        a = mainwindow->actionByName(KStandardAction::name(KStandardAction::Find));
+        menu.addAction(a);
+    }
+    
     // is content editable && selected? Add CUT
     if (result.isContentEditable() && result.isContentSelected())
     {
