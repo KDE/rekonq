@@ -231,6 +231,13 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 {
     // this handles the Modifiers + Return key combinations
     QString currentText = text().trimmed();
+    if(event->modifiers() == Qt::AltModifier)
+    {
+        if(event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+        {
+            activated(currentText, Rekonq::NewFocusedTab);
+        }
+    }
     if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
             && !currentText.startsWith(QL1S("http://"), Qt::CaseInsensitive)
             && event->modifiers() != Qt::NoModifier)

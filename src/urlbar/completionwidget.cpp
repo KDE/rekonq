@@ -274,6 +274,13 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
             case Qt::Key_Enter:
             case Qt::Key_Return:
                 w = qobject_cast<UrlBar *>(parent());
+                if(kev->modifiers() == Qt::AltModifier)
+                {
+                    if(kev->key() == Qt::Key_Return || kev->key() == Qt::Key_Enter)
+                    {
+                        emit chosenUrl(w->text(), Rekonq::NewFocusedTab);
+                    }
+                }
 
                 if (!w->text().startsWith(QL1S("http://"), Qt::CaseInsensitive))
                 {
