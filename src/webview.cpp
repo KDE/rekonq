@@ -35,6 +35,7 @@
 // Local Includes
 #include "application.h"
 #include "bookmarkprovider.h"
+#include "bookmarkowner.h"
 #include "iconmanager.h"
 #include "mainview.h"
 #include "mainwindow.h"
@@ -452,6 +453,27 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
     KWebView::mouseMoveEvent(event);
 }
 
+
+void WebView::dropEvent(QDropEvent *event)
+{
+    if (event->mimeData()->hasFormat("application/rekonq-bookmark"))
+    {
+        QByteArray addresses = event->mimeData()->data("application/rekonq-bookmark");
+        KBookmark bookmark =  Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+        if (bookmark.isGroup())
+        {
+            Application::bookmarkProvider()->bookmarkOwner()->openFolderinTabs(bookmark.toGroup());
+        }
+        else
+        {
+            emit loadUrl(bookmark.url(), Rekonq::CurrentTab);
+        }
+    }
+    else
+    {
+        KWebView::dropEvent(event);
+    }
+}
 
 void WebView::search()
 {

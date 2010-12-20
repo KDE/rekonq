@@ -328,27 +328,24 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         {
             QDropEvent *dropEvent = static_cast<QDropEvent*>(event);
             KBookmark bookmark;
-            QUrl url;
-            QString title;
+            KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
 
             if (dropEvent->mimeData()->hasFormat("application/rekonq-bookmark"))
             {
                 QByteArray addresses = dropEvent->mimeData()->data("application/rekonq-bookmark");
                 bookmark =  Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
                 if (bookmark.isNull())
-                    return QObject::eventFilter(watched, event);
-
-                url = bookmark.url();
-                title = bookmark.fullText();
+                    return false;
             }
             else if (dropEvent->mimeData()->hasFormat("text/uri-list"))
             {
-                title = dropEvent->mimeData()->text();
-                url = dropEvent->mimeData()->urls().at(0).toString();
+                QString title = dropEvent->mimeData()->text();
+                QString url = dropEvent->mimeData()->urls().at(0).toString();
+                bookmark = root.addBookmark(title, url);
             }
             else
             {
-                return QObject::eventFilter(watched, event);
+                return false;
             }
 
             QAction *destAction = toolBar()->actionAt(dropEvent->pos());
@@ -364,8 +361,6 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 }
             }
 
-            KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
-
             if (destAction)
             {
                 KBookmarkActionInterface *destBookmarkAction = dynamic_cast<KBookmarkActionInterface *>(destAction);
@@ -375,8 +370,6 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                     && bookmark.address() != destBookmarkAction->bookmark().address())
                 {
                     KBookmark destBookmark = destBookmarkAction->bookmark();
-                    root.deleteBookmark(bookmark);
-                    bookmark = root.addBookmark(title, url);
 
                     if ((dropEvent->pos().x() - widgetAction->pos().x()) > (widgetAction->width() / 2))
                     {
@@ -393,7 +386,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             else
             {
                 root.deleteBookmark(bookmark);
-                bookmark = root.addBookmark(title, url);
+                bookmark = root.addBookmark(bookmark);
                 if (dropEvent->pos().x() < toolBar()->widgetForAction(toolBar()->actions().first())->pos().x())
                 {
                     root.moveBookmark(bookmark, KBookmark());
@@ -410,20 +403,36 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         if (event->type() == QEvent::MouseButtonPress)
         {
             QPoint pos = toolBar()->mapFromGlobal(QCursor::pos());
-            KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(pos));
+            KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(pos));
 
-            if (action && !action->bookmark().isGroup())
+            if (action)
             {
                 m_dragAction = toolBar()->actionAt(pos);
                 m_startDragPos = pos;
+
+                // The menu is displayed only when the mouse button is released
+                if (action->bookmark().isGroup())
+                    return true;
             }
         }
         else if (event->type() == QEvent::MouseMove)
         {
             int distance = (toolBar()->mapFromGlobal(QCursor::pos()) - m_startDragPos).manhattanLength();
-            if (distance >= QApplication::startDragDistance())
+            if (!m_currentMenu && distance >= QApplication::startDragDistance())
             {
                 startDrag();
+            }
+        }
+        else if (event->type() == QEvent::MouseButtonRelease)
+        {
+            int distance = (toolBar()->mapFromGlobal(QCursor::pos()) - m_startDragPos).manhattanLength();
+            KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(m_startDragPos));
+
+            if (action && action->bookmark().isGroup() && distance < QApplication::startDragDistance())
+            {
+               KBookmarkActionMenu *menu = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(m_startDragPos));
+               QPoint actionPos = toolBar()->mapToGlobal(toolBar()->widgetForAction(menu)->pos());
+               menu->menu()->popup(QPoint(actionPos.x(), actionPos.y() + toolBar()->widgetForAction(menu)->height()));
             }
         }
     }
@@ -443,17 +452,26 @@ void BookmarkToolBar::actionHovered()
 void BookmarkToolBar::startDrag()
 {
     KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(m_dragAction);
-    if (action && !action->bookmark().isGroup())
+    if (action)
     {
         QMimeData *mimeData = new QMimeData;
+        KBookmark bookmark = action->bookmark();
 
-        QByteArray address = action->bookmark().address().toLatin1();
+        QByteArray address = bookmark.address().toLatin1();
         mimeData->setData("application/rekonq-bookmark", address);
-        action->bookmark().populateMimeData(mimeData);
+        bookmark.populateMimeData(mimeData);
 
         QDrag *drag = new QDrag(toolBar());
         drag->setMimeData(mimeData);
-        drag->setPixmap(KIcon(action->bookmark().icon()).pixmap(24, 24));
+
+        if (bookmark.isGroup())
+        {
+            drag->setPixmap(KIcon(bookmark.icon()).pixmap(24, 24));
+        }
+        else
+        {
+            drag->setPixmap(Application::iconManager()->iconForUrl(action->bookmark().url()).pixmap(24, 24));
+        }
 
         drag->start(Qt::MoveAction);
         connect(drag, SIGNAL(destroyed()), this, SLOT(dragDestroyed()));

@@ -231,6 +231,7 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
             connect(menuAction->menu(), SIGNAL(aboutToHide()), toolBar, SLOT(menuHidden()));
 
             toolBar->toolBar()->addAction(menuAction);
+            toolBar->toolBar()->widgetForAction(menuAction)->installEventFilter(toolBar);
         }
         else if (bookmark.isSeparator())
         {
@@ -239,8 +240,6 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
         else
         {
             KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, this);
-            //action->s
-            //action->setIconText(action->iconText().replace('&', "&&&"));
             action->setIcon(Application::iconManager()->iconForUrl( KUrl(bookmark.url()) ));
             connect(action, SIGNAL(hovered()), toolBar, SLOT(actionHovered()));
             toolBar->toolBar()->addAction(action);

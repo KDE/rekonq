@@ -60,6 +60,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
+    void dropEvent(QDropEvent *event);
 
 private slots:
     void search();
