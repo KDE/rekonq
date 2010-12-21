@@ -39,7 +39,7 @@
         <default>KDE Homepage,UserBase,rekonq site</default>
     </entry>
     <entry name="previewUrls" type="StringList">
-        <default>http://www.kde.org,http://userbase.kde.org,http://rekonq.sourceforge.net</default>
+        <default>http://www.kde.org,http://userbase.kde.org,http://rekonq.kde.org</default>
     </entry>
 </group>
 

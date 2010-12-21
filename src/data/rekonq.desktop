@@ -77,4 +77,5 @@ Categories=Qt;KDE;Network;WebBrowser;
 Terminal=false
 MimeType=text/html;application/xhtml+xml;application/xml;
 X-DBUS-StartupType=Unique
-X-DBUS-ServiceName=net.sourceforge.rekonq
+X-DBUS-ServiceName=org.kde.rekonq
+

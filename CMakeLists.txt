@@ -11,7 +11,7 @@ SET(REKONQ_VERSION "0.6.55" )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/version.h )
 
-SET(REKONQ_SITE "http://rekonq.sourceforge.net")
+SET(REKONQ_SITE "http://rekonq.kde.org")
 
 # ==================================================================================
 # minimum cmake required

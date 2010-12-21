@@ -942,7 +942,7 @@ As you can see the cookies can be configured in many ways.
 <!--A user-generated manual is also available <ulink url="http://userbase.kde.org/Special:myLanguage/Rekonq/Manual">here</ulink>.--> 
 <para><ulink url="http://forum.kde.org">&kde; Forums</ulink> is always a good place to ask user-specific questions.</para>
 
-<para>The <ulink url="http://rekonq.sourceforge.net/">&rekonq; website</ulink> has release announcements for the latest stable and unstable releases along with more helpful links. You can also contact the developers on the <ulink url="irc://freenode/#rekonq">#rekonq IRC channel</ulink> or the <ulink url="mailto:rekonq@kde.org">mailing list</ulink> with more questions.
+<para>The <ulink url="http://rekonq.kde.org/">&rekonq; website</ulink> has release announcements for the latest stable and unstable releases along with more helpful links. You can also contact the developers on the <ulink url="irc://freenode/#rekonq">#rekonq IRC channel</ulink> or the <ulink url="mailto:rekonq@kde.org">mailing list</ulink> with more questions.
 </para>
 </sect1>
 <sect1 id="how-do-i-contribute"><title>How do I contribute?</title> 
