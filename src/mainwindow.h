@@ -157,7 +157,9 @@ private Q_SLOTS:
     void clearPrivateData();
 
     void aboutToShowBackMenu();
+    void aboutToShowTabListMenu();
     void openActionUrl(QAction *action);
+    void openActionTab(QAction *action);
 
     // encodings
     void setEncoding(QAction *);
@@ -181,6 +183,7 @@ private:
     KAction *m_stopReloadAction;
     KMenu *m_historyBackMenu;
     KMenu *m_encodingMenu;
+    KMenu *m_tabListMenu;
 
     BookmarkToolBar *m_bookmarksBar;
 

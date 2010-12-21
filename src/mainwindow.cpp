@@ -404,6 +404,17 @@ void MainWindow::setupActions()
 
     // set zoom bar actions
     m_zoomBar->setupActions(this);
+    
+    // tab list
+    m_tabListMenu = new KMenu();
+    m_tabListMenu->addAction("hack"); // necessary to show the menu on the right side the first time
+    connect(m_tabListMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowTabListMenu()));
+    connect(m_tabListMenu, SIGNAL(triggered(QAction*)), this, SLOT(openActionTab(QAction*)));
+    KActionMenu *tabAction = new KActionMenu(i18n("Tab List"), this);
+    tabAction->setMenu(m_tabListMenu);
+    tabAction->setIcon(KIcon("document-multiple"));
+    tabAction->setDelayed(false);
+    actionCollection()->addAction(QL1S("tab_list"), tabAction);
 
     // =============================== Tools Actions =================================
     a = new KAction(i18n("View Page S&ource"), this);
@@ -1243,6 +1254,18 @@ void MainWindow::aboutToShowBackMenu()
     }
 }
 
+void MainWindow::aboutToShowTabListMenu()
+{
+    m_tabListMenu->clear();
+    for( int i = 0; i < m_view->count(); ++i ){
+        KAction *action = new KAction(m_view->tabText(i), this);
+        action->setIcon(Application::iconManager()->iconForUrl(m_view->webTab(i)->url()).pixmap(16, 16));
+        action->setData(i);
+        m_tabListMenu->addAction(action);
+    }
+    m_tabListMenu->adjustSize();
+}
+
 
 void MainWindow::openActionUrl(QAction *action)
 {
@@ -1256,6 +1279,17 @@ void MainWindow::openActionUrl(QAction *action)
     }
 
     history->goToItem(history->itemAt(index));
+}
+
+void MainWindow::openActionTab(QAction* action)
+{
+    int index = action->data().toInt();
+    if(index < 0 || index >= m_view->count())
+    {
+        kDebug() << "Invalid Index!: " << index;
+        return;
+    }
+    m_view->setCurrentIndex(index);
 }
 
 
