@@ -28,7 +28,6 @@
 // Self Includes
 #include "webtab.h"
 #include "webtab.moc"
-
 // Auto Includes
 #include "rekonq.h"
 
@@ -38,13 +37,21 @@
 #include "rsswidget.h"
 #include "walletbar.h"
 #include "webpage.h"
+#include "webshortcutwidget.h"
+#include "application.h"
+#include "opensearchmanager.h"
 
 // KDE Includes
 #include <KWebWallet>
+#include <KStandardShortcut>
+#include <KMenu>
+#include <KActionMenu>
+#include <KWebView>
+#include <KDebug>
+#include <KBuildSycocaProgressDialog>
 
 // Qt Includes
 #include <QtGui/QVBoxLayout>
-
 
 WebTab::WebTab(QWidget *parent)
         : QWidget(parent)
@@ -95,7 +102,7 @@ KUrl WebTab::url()
         kDebug() << "REKONQ PAGE. URL = " << page()->loadingUrl();
         return page()->loadingUrl();
     }
-    
+
     return view()->url();
 }
 
@@ -178,7 +185,7 @@ bool WebTab::hasRSSInfo()
 }
 
 
-void WebTab::showRSSInfo(QPoint pos)
+void WebTab::showRSSInfo(const QPoint &pos)
 {
     QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
     col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
@@ -228,10 +235,64 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
 
     if(!m_part)
         return;
-    
+
     // Part NO more exists. Let's clean up from webtab
     m_webView->show();
     qobject_cast<QVBoxLayout *>(layout())->removeWidget(m_part->widget());
     delete m_part;
     m_part = 0;
+}
+
+
+KUrl WebTab::extractOpensearchUrl(QWebElement e)
+{
+    QString href = e.attribute(QLatin1String("href"));
+    KUrl url = KUrl(href);
+    if (!href.contains(":"))
+    {
+        KUrl docUrl = m_webView->url();
+        QString host = docUrl.scheme() + "://" + docUrl.host();
+        if (docUrl.port() != -1)
+        {
+            host += ":" + QString::number(docUrl.port());
+        }
+        url = KUrl(docUrl, href);
+    }
+    return url;
+}
+
+
+bool WebTab::hasNewSearchEngine()
+{
+    QWebElement e = page()->mainFrame()->findFirstElement(QLatin1String("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
+    return !e.isNull() && !Application::opensearchManager()->engineExists(extractOpensearchUrl(e));
+}
+
+
+void WebTab::showSearchEngine(const QPoint &pos)
+{
+    QWebElement e = page()->mainFrame()->findFirstElement(QLatin1String("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
+    QString title = e.attribute(QLatin1String("title"));
+    if (!title.isEmpty())
+    {
+        WebShortcutWidget *widget = new WebShortcutWidget(window());
+        widget->setWindowFlags(Qt::Popup);
+
+        connect(widget, SIGNAL(webShortcutSet(const KUrl &, const QString &, const QString &)),
+                Application::opensearchManager(), SLOT(addOpenSearchEngine(const KUrl &, const QString &, const QString &)));
+        connect(Application::opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)), 
+            this, SLOT(openSearchEngineAdded()));
+
+        widget->show(extractOpensearchUrl(e), title, pos);
+    }
+}
+
+
+void WebTab::openSearchEngineAdded()
+{
+    // If the providers changed, tell sycoca to rebuild its database...
+    KBuildSycocaProgressDialog::rebuildKSycoca(this);
+
+    disconnect(Application::opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
+            this, SLOT(openSearchEngineAdded()));
 }

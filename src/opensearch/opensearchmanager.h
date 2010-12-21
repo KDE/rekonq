@@ -39,6 +39,7 @@
 
 // Qt Includes
 #include <QtCore/QObject>
+#include <QFile>
 
 // Forward Declarations
 class OpenSearchEngine;
@@ -59,7 +60,7 @@ class OpenSearchManager : public QObject
         REQ_DESCRIPTION,
         IDLE
     };
-    
+
 public:
     /**
      * Constructor
@@ -76,7 +77,7 @@ public:
      */
     bool isSuggestionAvailable();
 
-    void addOpenSearchEngine(const KUrl &url, const QString &title);
+    bool engineExists(const KUrl &url);
 
 public Q_SLOTS:
     /**
@@ -85,6 +86,8 @@ public Q_SLOTS:
      * @param searchText the text to be queried to the suggestion service
      */
     void requestSuggestion(const QString &searchText);
+    void addOpenSearchEngine(const KUrl &url, const QString &title, const QString &shortcut);
+    void removeDeletedEngines();
 
 private Q_SLOTS:
     void dataReceived(KIO::Job *job, const QByteArray &data);
@@ -96,18 +99,23 @@ Q_SIGNALS:
 
 private:
     QString trimmedEngineName(const QString &engineName) const;
-    
+    void loadEngines();
+    void saveEngines();
     void idleJob();
-    
+
     // QString substitutueSearchText(const QString &searchText, const QString &requestURL) const;
     QByteArray m_jobData;
-    QMap<QString, OpenSearchEngine*> m_enginesMap;
+    QMap<QString, OpenSearchEngine*> m_engineCache;
+    QMap<KUrl, QString> m_engines;
+
     OpenSearchEngine *m_activeEngine;
     STATE m_state;
-    
+
     KIO::TransferJob *m_currentJob;
+    KUrl m_jobUrl;
 
     QString _typedText;
+    QString m_shortcut;
 };
 
 #endif // OPENSEARCHMANAGER_H

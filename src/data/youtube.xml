@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+    <ShortName>Recherche de vidéos YouTube</ShortName>
+    <Description>Recherche de vidéos sur YouTube</Description>
+    <Url method="get" template="http://www.youtube.com/results?search_query={searchTerms}&amp;page={startPage?}&amp;utm_source=opensearch"/>
+    <Image>http://www.youtube.com/favicon.ico</Image>
+</OpenSearchDescription>

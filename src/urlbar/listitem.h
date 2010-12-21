@@ -63,7 +63,7 @@ public:
 
     KUrl url();
     virtual QString text();
-    
+
 public slots:
     virtual void nextItemSubChoice();
 

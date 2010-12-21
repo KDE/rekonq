@@ -79,10 +79,11 @@ public:
 
     enum icon
     {
-        KGet    = 0x00000001,
-        RSS     = 0x00000010,
-        SSL     = 0x00000100,
-        BK      = 0x00001000
+        KGet         = 0x00000001,
+        RSS          = 0x00000010,
+        SSL          = 0x00000100,
+        BK           = 0x00001000,
+        SearchEngine = 0x00010000
     };
 
     explicit UrlBar(QWidget *parent = 0);
@@ -100,15 +101,15 @@ private slots:
     void loadTyped(const QString &);
 
     void clearRightIcons();
-    
+    void updateRightIcons();
+
     void detectTypedString(const QString &);
     void suggest();
 
     void showBookmarkInfo(const QPoint &pos);
-    void onBookmarksChanged();
 
     void refreshFavicon();
-    
+
 protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);

@@ -412,16 +412,12 @@ void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &s
 
     Q_FOREACH(const Response &i, suggestions)
     {
-        QString urlString = i.url;
-        if(urlString.isEmpty())
+        QString url = i.url;
+        if (url.isEmpty())
         {
-            QStringList list;
-            list << QL1S("kuriikwsfilter"); 
-            urlString = KUriFilter::self()->filteredUri(i.title, list);  
+            url = SearchEngine::buildQuery(searchEngine(), i.title);
         }
-        kDebug() << "RESPONSE URL: " << i.url;
-        
-        UrlSearchItem gItem(UrlSearchItem::Suggestion, urlString, i.title, i.description, i.image, i.image_width, i.image_height);
+        UrlSearchItem gItem(UrlSearchItem::Suggestion, url, i.title, i.description, i.image, i.image_width, i.image_height);
         sugList << gItem;
     }
     emit suggestionsReady(sugList, _typedString);

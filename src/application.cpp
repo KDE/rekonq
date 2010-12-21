@@ -503,7 +503,7 @@ void Application::updateConfiguration()
 
     // Enabling WebKit "Page Cache" feature: http://webkit.org/blog/427/webkit-page-cache-i-the-basics/
     defaultSettings->setMaximumPagesInCache(3);
-    
+
     // ===== HTML 5 features WebKit support ======
     defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
     defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
@@ -600,20 +600,20 @@ void Application::setPrivateBrowsingMode(bool b)
     bool isJustEnabled = settings->testAttribute(QWebSettings::PrivateBrowsingEnabled);
     if(isJustEnabled == b)
         return;     // uhm... something goes wrong...
-        
+
     if (b)
     {
         QString caption = i18n("Are you sure you want to turn on private browsing?");
         QString text = i18n("<b>%1</b>"
                             "<p>rekonq will save your current tabs for when you'll stop private browsing the net..</p>", caption);
-        
+
         int button = KMessageBox::warningContinueCancel(mainWindow(), text, caption, KStandardGuiItem::cont(), KStandardGuiItem::cancel(), i18n("don't ask again") );
         if (button != KMessageBox::Continue)
             return;
-        
+
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
         _privateBrowsingAction->setChecked(true);
-        
+
         Q_FOREACH(const QWeakPointer<MainWindow> &w, m_mainWindows)
         {
             w.data()->close();
@@ -629,7 +629,7 @@ void Application::setPrivateBrowsingMode(bool b)
 
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
         _privateBrowsingAction->setChecked(false);
-        
+
         loadUrl( KUrl("about:blank"), Rekonq::NewWindow);
         if(!sessionManager()->restoreSession())
             loadUrl( KUrl("about:home"), Rekonq::NewWindow);

@@ -737,12 +737,12 @@ void MainWindow::printRequested(QWebFrame *frame)
 
                 connect(this, SIGNAL(triggerPartPrint()), ext, actionSlotMap->value("print")); 
                 emit triggerPartPrint();
-        
+
                 return;
             }
         }
     }
-    
+
     QWebFrame *printFrame = 0;
     if (frame == 0)
     {
@@ -800,7 +800,7 @@ void MainWindow::findNext()
             return;
         }
     }
-    
+
     if (m_findBar->isHidden())
     {
         QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
@@ -1385,7 +1385,7 @@ bool MainWindow::queryClose()
     // smooth private browsing mode
     if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return true;
-    
+
     if (m_view->count() > 1)
     {
         int answer = KMessageBox::questionYesNoCancel(

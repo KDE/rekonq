@@ -35,7 +35,7 @@
 
 ResponseList SuggestionParser::parse(const QByteArray &)
 {
-    return ResponseList();    
+    return ResponseList();
 }
 
 
@@ -47,7 +47,7 @@ SuggestionParser::~SuggestionParser()
 ResponseList XMLParser::parse(const QByteArray &resp)
 {
     ResponseList rlist;
-    
+
     m_reader.clear();
     m_reader.addData(resp);
 
@@ -73,16 +73,19 @@ ResponseList XMLParser::parse(const QByteArray &resp)
             {
                 if(m_reader.isStartElement())
                 {
+
                     if (m_reader.name() == QL1S("Text")) 
                         title = m_reader.readElementText();
                     if (m_reader.name() == QL1S("Url")) 
                         url = m_reader.readElementText();
+
                     if (m_reader.name() == QL1S("Image"))
                     {
                         image = m_reader.attributes().value("source").toString();
                         image_width = m_reader.attributes().value("width").toString().toInt();
                         image_height = m_reader.attributes().value("height").toString().toInt();
                     }
+
                     if (m_reader.name() == QL1S("Description")) 
                         description = m_reader.readElementText();
                 }
@@ -94,7 +97,7 @@ ResponseList XMLParser::parse(const QByteArray &resp)
 
         m_reader.readNext();
     }
-    
+
     return rlist;
 }
 
@@ -103,23 +106,23 @@ ResponseList JSONParser::parse(const QByteArray &resp)
 {
     QString response = QString::fromLocal8Bit(resp);
     response = response.trimmed();
-    
-    if (response.isEmpty()) 
+
+    if (response.isEmpty())
     {
         kDebug() << "RESPONSE IS EMPTY";
         return ResponseList();
     }
-    
-    if (!response.startsWith(QL1C('[')) 
+
+    if (!response.startsWith(QL1C('['))
         || !response.endsWith(QL1C(']'))
-    ) 
+    )
     {
         kDebug() << "RESPONSE is NOT well FORMED";
         return ResponseList();
     }
 
     // Evaluate the JSON response using QtScript.
-    if (!m_reader.canEvaluate(response)) 
+    if (!m_reader.canEvaluate(response))
     {
         kDebug() << "m_reader cannot evaluate the response";
         return ResponseList();
@@ -127,7 +130,7 @@ ResponseList JSONParser::parse(const QByteArray &resp)
 
     QScriptValue responseParts = m_reader.evaluate(response);
 
-    if (!responseParts.property(1).isArray()) 
+    if (!responseParts.property(1).isArray())
     {
         kDebug() << "RESPONSE is not an array";
         return ResponseList();
@@ -141,6 +144,6 @@ ResponseList JSONParser::parse(const QByteArray &resp)
     {
         rlist << Response(s);
     }
- 
+
     return rlist;
 }

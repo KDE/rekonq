@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+    <ShortName>Portail Lexical - CNRTL</ShortName>
+    <Description>Cherche dans le TLF sur le portail lexical du CNRTL</Description>
+    <Url method="get" template="http://www.cnrtl.fr/definition/{searchTerms}"/>
+    <Url method="get" type="application/x-suggestions+json" template="http://www.cnrtl.fr/utilities/OPEN?query={searchTerms}"/>
+    <Image>http://www.cnrtl.fr/favicon.ico</Image>
+</OpenSearchDescription>

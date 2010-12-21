@@ -57,12 +57,18 @@ QString OpenSearchEngine::parseTemplate(const QString &searchTerm, const QString
     QString language = QLocale().name();
     // Simple conversion to RFC 3066.
     language = language.replace(QL1C('_'), QL1C('-'));
+    QString country = language;
+    country = (country.replace(0, country.indexOf("-")+1, "")).toLower();
+    const int firstDashPosition = country.indexOf(QL1C('-'));
+    if (firstDashPosition >= 0)
+        country = country.mid(firstDashPosition+1);
 
     QString result = searchTemplate;
     result.replace(QL1S("{count}"), QL1S("20"));
     result.replace(QL1S("{startIndex}"), QL1S("0"));
     result.replace(QL1S("{startPage}"), QL1S("0"));
     result.replace(QL1S("{language}"), language);
+    result.replace(QL1S("{country}"), country.toLower());
     result.replace(QL1S("{inputEncoding}"), QL1S("UTF-8"));
     result.replace(QL1S("{outputEncoding}"), QL1S("UTF-8"));
     result.replace(QL1S("{searchTerms}"), searchTerm);

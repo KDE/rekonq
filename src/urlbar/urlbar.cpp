@@ -110,7 +110,10 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
 
     // bookmark icon
-    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(onBookmarksChanged()));
+    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(updateRightIcons()));
+
+    // search icon
+    connect(Application::opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)), this, SLOT(updateRightIcons()));
 
     _suggestionTimer->setSingleShot(true);
     connect(_suggestionTimer, SIGNAL(timeout()), this, SLOT(suggest()));
@@ -335,6 +338,13 @@ void UrlBar::loadFinished()
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo(QPoint)));
     }
 
+    // show add search engine
+    if (_tab->hasNewSearchEngine())
+    {
+        IconButton *bt = addRightIcon(UrlBar::SearchEngine);
+        connect(bt, SIGNAL(clicked(QPoint)), _tab, SLOT(showSearchEngine(QPoint)));
+    }
+
     // we need to update urlbar after the right icon settings
     // removing this code (where setStyleSheet automatically calls update) needs adding again
     // an update call
@@ -367,7 +377,7 @@ void UrlBar::showBookmarkInfo(const QPoint &pos)
 }
 
 
-void UrlBar::onBookmarksChanged()
+void UrlBar::updateRightIcons()
 {
     if (!_tab->isPageLoading())
     {
@@ -441,6 +451,10 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
             rightIcon->setIcon(KIcon("bookmarks"));
             rightIcon->setToolTip(i18n("Edit this bookmark"));
         }
+        break;
+    case UrlBar::SearchEngine:
+        rightIcon->setIcon(KIcon("preferences-web-browser-shortcuts"));
+        rightIcon->setToolTip(i18n("Add search engine"));
         break;
     default:
         kDebug() << "ERROR.. default non extant case!!";

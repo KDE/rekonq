@@ -63,9 +63,9 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
         : QWidget(parent)
         , m_option()
         , m_url(item.url)
-{    
+{
     m_option.initFrom(this);
-    m_option.direction = Qt::LeftToRight;   
+    m_option.direction = Qt::LeftToRight;
 
     // use the same application palette (hence, the same colors)
     // Qt docs says that using this cctor is possible & fast (qt:qpalette)
@@ -98,7 +98,7 @@ void ListItem::deactivate()
 
 void ListItem::paintEvent(QPaintEvent *event)
 {
-    Q_UNUSED(event);   
+    Q_UNUSED(event);
 
     QWidget::paintEvent(event);
     QPainter painter(this);
@@ -473,7 +473,7 @@ KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selected
 {
     QUrl u = engine->property("Query").toUrl();
     KUrl url = KUrl( u.toString( QUrl::RemovePath | QUrl::RemoveQuery ) );
-    
+
     kDebug() << "Engine NAME: " << engine->name() << " URL: " << url;
     KAction *a = new KAction(Application::iconManager()->iconForUrl(url), engine->name(), this);
     a->setCheckable(true);
@@ -562,7 +562,7 @@ VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, co
         new IconLabel(item.url, previewLabelIcon);
     }
 
-    hLayout->addWidget(previewLabelIcon);  
+    hLayout->addWidget(previewLabelIcon);
     QVBoxLayout *vLayout = new QVBoxLayout;
     vLayout->setMargin(0);
     vLayout->addItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::MinimumExpanding));
@@ -608,31 +608,31 @@ BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, Q
 
 
 ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text, QWidget *parent)
-{   
+{
     if (item.type & UrlSearchItem::Search)
     {
         kDebug() << "Search";
         return new SearchListItem(item, text, parent);
     }
-    
+
     if (item.type & UrlSearchItem::Browse)
     {
         kDebug() << "Browse";
         return new BrowseListItem(item, text, parent);
     }
-    
+
     if (item.type & UrlSearchItem::History)
     {
         kDebug() << "History";
         return new PreviewListItem(item, text, parent);
     }
-    
+
     if (item.type & UrlSearchItem::Bookmark)
     {
         kDebug() << "Bookmark";
         return new PreviewListItem(item, text, parent);
     }
-    
+
     if (item.type & UrlSearchItem::Suggestion)
     {
         kDebug() << "ITEM URL: " << item.url;
@@ -641,11 +641,11 @@ ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text
             kDebug() << "Suggestion";
             return new SuggestionListItem(item, text, parent);
         }
-    
+
         kDebug() << "Visual Suggestion";
         return new VisualSuggestionListItem(item, text, parent);
     }
-    
+
     kDebug() << "Undefined";
     return new PreviewListItem(item, text, parent);
 }

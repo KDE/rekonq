@@ -48,9 +48,9 @@ GeneralWidget::GeneralWidget(QWidget *parent)
     connect(setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
 
     disableHomeSettings(ReKonfig::useNewTabPage());
-    
+
     connect(kcfg_useNewTabPage, SIGNAL(toggled(bool)), this, SLOT(disableHomeSettings(bool)));
-    
+
     checkKGetPresence();
 }
 

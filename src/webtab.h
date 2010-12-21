@@ -33,6 +33,7 @@
 #include "rekonq_defines.h"
 
 // Local Includes
+#include "webpage.h"
 #include "webview.h"
 
 // KDE Includes
@@ -46,6 +47,7 @@ class UrlBar;
 class PreviewSelectorBar;
 class WalletBar;
 class NotificationBar;
+class QPoint;
 
 
 class REKONQ_TESTS_EXPORT WebTab : public QWidget
@@ -66,26 +68,32 @@ public:
     void insertBar(NotificationBar* bar);
 
     bool hasRSSInfo();
+
     bool isPageLoading();
+    bool hasNewSearchEngine();
 
     KParts::ReadOnlyPart *part() { return m_part; }
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
-    
+
 private Q_SLOTS:
     void updateProgress(int progress);
     void loadFinished(bool);
 
     void createWalletBar(const QString &, const QUrl &);
-    void showRSSInfo(QPoint pos);
+    void showRSSInfo(const QPoint &pos);
+    void showSearchEngine(const QPoint &pos);
+    void openSearchEngineAdded();
 
 Q_SIGNALS:
     void loadProgressing();
     void titleChanged(const QString &);
-    
+
 private:
+    KUrl extractOpensearchUrl(QWebElement e);
+
     WebView *const m_webView;
     UrlBar *const m_urlBar;
-    
+
     int m_progress;
 
     QWeakPointer<WalletBar> m_walletBar;

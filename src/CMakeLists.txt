@@ -70,6 +70,7 @@ SET( rekonq_KDEINIT_SRCS
     urlbar/listitem.cpp
     urlbar/rsswidget.cpp
     urlbar/bookmarkwidget.cpp
+    urlbar/webshortcutwidget.cpp
     #----------------------------------------
     analyzer/analyzerpanel.cpp
     analyzer/networkanalyzer.cpp

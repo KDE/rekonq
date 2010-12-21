@@ -37,6 +37,7 @@
 #include "mainwindow.h"
 #include "webtab.h"
 #include "searchengine.h"
+#include "opensearchmanager.h"
 
 // Widget Includes
 #include "adblockwidget.h"
@@ -70,7 +71,7 @@ private:
     WebKitWidget *webkitWidg;
     NetworkWidget *networkWidg;
     AdBlockWidget *adBlockWidg;
-    
+
     KCModuleProxy *ebrowsingModule;
 
     KShortcutsEditor *shortcutsEditor;
@@ -94,13 +95,13 @@ Private::Private(SettingsDialog *parent)
     tabsWidg->layout()->setMargin(0);
     pageItem = parent->addPage(tabsWidg, i18n("Tabs"));
     pageItem->setIcon(KIcon("tab-duplicate"));
-    
+
     // -- 3
     appearanceWidg = new AppearanceWidget(parent);
     appearanceWidg->layout()->setMargin(0);
     pageItem = parent->addPage(appearanceWidg, i18n("Appearance"));
     pageItem->setIcon(KIcon("preferences-desktop-font"));
-    
+
     // -- 4
     webkitWidg = new WebKitWidget(parent);
     webkitWidg->layout()->setMargin(0);
@@ -108,7 +109,7 @@ Private::Private(SettingsDialog *parent)
     QString webkitIconPath = KStandardDirs::locate("appdata", "pics/webkit-icon.png");
     KIcon webkitIcon = KIcon(QIcon(webkitIconPath));
     pageItem->setIcon(webkitIcon);
-    
+
     // -- 5
     networkWidg = new NetworkWidget(parent);
     networkWidg->layout()->setMargin(0);
@@ -151,7 +152,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     setModal(true);
 
     readConfig();
-    
+
     // update buttons
     connect(d->generalWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->tabsWidg,        SIGNAL(changed(bool)), this, SLOT(updateButtons()));
@@ -187,7 +188,7 @@ void SettingsDialog::saveSettings()
         return;
 
     ReKonfig::self()->writeConfig();
-    
+
     d->generalWidg->save();
     d->tabsWidg->save();
     d->appearanceWidg->save();
@@ -196,8 +197,9 @@ void SettingsDialog::saveSettings()
     d->adBlockWidg->save();
     d->shortcutsEditor->save();
     d->ebrowsingModule->save();
-    
+
     SearchEngine::reload();
+    Application::opensearchManager()->removeDeletedEngines();
 
     updateButtons();
     emit settingsChanged("ReKonfig");
