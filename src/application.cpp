@@ -54,6 +54,7 @@
 #include <KIcon>
 #include <KMessageBox>
 #include <KStandardDirs>
+#include <KStartupInfo>
 #include <ThreadWeaver/Weaver>
 #include <KAction>
 
@@ -174,6 +175,8 @@ int Application::newInstance()
         
         for (int i = 1; i < urlList.count(); ++i)
             loadUrl( urlList.at(i), Rekonq::NewTab);
+
+        KStartupInfo::appStarted();
 
     } else if (!isRekonqCrashed) {
 
