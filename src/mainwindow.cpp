@@ -1261,6 +1261,12 @@ void MainWindow::aboutToShowTabListMenu()
         KAction *action = new KAction(m_view->tabText(i), this);
         action->setIcon(Application::iconManager()->iconForUrl(m_view->webTab(i)->url()).pixmap(16, 16));
         action->setData(i);
+        if(mainView()->tabBar()->currentIndex() == i)
+        {
+            QFont font;
+            font.setBold(true);
+            action->setFont(font);
+        }
         m_tabListMenu->addAction(action);
     }
     m_tabListMenu->adjustSize();
