@@ -94,7 +94,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "");
 
     about.addAuthor(ki18n("Nikhil Marathe"),
-                    ki18n("Bugfixing, Working on Extensions support (not yet available)"),
+                    ki18n("Bugfixing"),
                     "nsm.nikhil@gmail.com",
                     "");
 
