@@ -1263,7 +1263,7 @@ void MainWindow::aboutToShowTabListMenu()
         action->setData(i);
         if(mainView()->tabBar()->currentIndex() == i)
         {
-            QFont font;
+            QFont font = action->font();
             font.setBold(true);
             action->setFont(font);
         }
