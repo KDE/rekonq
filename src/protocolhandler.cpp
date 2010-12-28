@@ -114,6 +114,10 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     // rekonq can handle file & ftp schemes, if you like,,
     if (_url.protocol() == QL1S("ftp") || _url.protocol() == QL1S("file"))
         return false;
+
+    // rekonq can handle kde documentation protocol
+    if (_url.protocol() == QL1S("man") || _url.protocol() == QL1S("help") || _url.protocol() == QL1S("info"))
+        return false;
     
     // relative urls
     if (_url.isRelative())
