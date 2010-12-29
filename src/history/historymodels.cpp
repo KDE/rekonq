@@ -192,8 +192,8 @@ bool HistoryModel::removeRows(int row, int count, const QModelIndex &parent)
 
 
 HistoryFilterModel::HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent)
-        : QAbstractProxyModel(parent),
-        m_loaded(false)
+        : QAbstractProxyModel(parent)
+        , m_loaded(false)
 {
     setSourceModel(sourceModel);
 }

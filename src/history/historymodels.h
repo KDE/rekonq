@@ -50,11 +50,6 @@ class REKONQ_TESTS_EXPORT HistoryModel : public QAbstractTableModel
 {
     Q_OBJECT
 
-public slots:
-    void historyReset();
-    void entryAdded();
-    void entryUpdated(int offset);
-
 public:
     enum Roles
     {
@@ -66,12 +61,18 @@ public:
 
     explicit HistoryModel(HistoryManager *history, QObject *parent = 0);
 
+public Q_SLOTS:
+    void historyReset();
+    void entryAdded();
+    void entryUpdated(int offset);
+    
+public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
-
+    
 private:
     HistoryManager *m_historyManager;
 };
@@ -118,7 +119,7 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-private slots:
+private Q_SLOTS:
     void sourceReset();
     void sourceDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void sourceRowsInserted(const QModelIndex &parent, int start, int end);
@@ -165,7 +166,7 @@ public:
 
     void setSourceModel(QAbstractItemModel *sourceModel);
 
-private slots:
+private Q_SLOTS:
     void sourceReset();
     void sourceRowsInserted(const QModelIndex &parent, int start, int end);
     void sourceRowsRemoved(const QModelIndex &parent, int start, int end);

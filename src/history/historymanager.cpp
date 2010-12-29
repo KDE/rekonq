@@ -59,7 +59,7 @@
 #include <QtAlgorithms>
 
 
-static const unsigned int HISTORY_VERSION = 23;
+static const unsigned int HISTORY_VERSION = 24;
 
 
 HistoryManager::HistoryManager(QObject *parent)
@@ -68,8 +68,6 @@ HistoryManager::HistoryManager(QObject *parent)
         , m_historyLimit(0)
         , m_historyTreeModel(0)
 {
-    kDebug() << "Loading HistoryManager...";
-
     connect(this, SIGNAL(entryAdded(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
     connect(this, SIGNAL(entryRemoved(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
     connect(m_saveTimer, SIGNAL(saveNeeded()), this, SLOT(save()));
@@ -82,7 +80,6 @@ HistoryManager::HistoryManager(QObject *parent)
 
     // QWebHistoryInterface will delete the history manager
     QWebHistoryInterface::setDefaultInterface(this);
-    kDebug() << "Loading HistoryManager... DONE";
 }
 
 
@@ -115,11 +112,31 @@ void HistoryManager::addHistoryEntry(const QString &url)
 
     cleanUrl.setPassword(QString());
     cleanUrl.setHost(cleanUrl.host().toLower());
-    HistoryItem item(cleanUrl.toString(), QDateTime::currentDateTime());
+    QString checkUrlString = cleanUrl.toString();
 
+    HistoryItem item;
+    
+    // NOTE
+    // check if the url has just been visited.
+    // if so, remove previous entry from history, update and prepend it
+    if(historyContains(checkUrlString))
+    {
+        int index = m_historyFilterModel->historyLocation(checkUrlString);
+        item = m_history.at(index);
+        m_history.removeOne(item);
+        emit entryRemoved(item);
+        
+        item.dateTime = QDateTime::currentDateTime();
+        item.visitCount++;
+    }
+    else
+    {
+        item = HistoryItem(checkUrlString, QDateTime::currentDateTime());
+    }
+    
     m_history.prepend(item);
     emit entryAdded(item);
-
+    
     if (m_history.count() == 1)
         checkForExpired();
 }
@@ -328,15 +345,31 @@ void HistoryManager::load()
         buffer.close();
         buffer.setBuffer(&data);
         buffer.open(QIODevice::ReadOnly);
-        quint32 ver;
-        stream >> ver;
-        if (ver != HISTORY_VERSION)
-            continue;
+        quint32 version;
+        stream >> version;
+        
         HistoryItem item;
-        stream >> item.url;
-        stream >> item.dateTime;
-        stream >> item.title;
+        
+        switch (version)
+        {
+        case HISTORY_VERSION:   // default case
+            stream >> item.url;
+            stream >> item.dateTime;
+            stream >> item.title;
+            stream >> item.visitCount;
+            break;
 
+        case 23:    // this will be used to upgrade previous structure...
+            stream >> item.url;
+            stream >> item.dateTime;
+            stream >> item.title;
+            item.visitCount = 1;
+            break;
+            
+        default:
+            continue;
+        };
+        
         if (!item.dateTime.isValid())
             continue;
 
@@ -415,7 +448,7 @@ void HistoryManager::save()
         QByteArray data;
         QDataStream stream(&data, QIODevice::WriteOnly);
         HistoryItem item = m_history.at(i);
-        stream << HISTORY_VERSION << item.url << item.dateTime << item.title;
+        stream << HISTORY_VERSION << item.url << item.dateTime << item.title << item.visitCount;
         out << data;
     }
     tempFile.close();

@@ -61,14 +61,16 @@ public:
                          const QString &t = QString()
                         )
             : title(t)
-            , url(u),
-            dateTime(d)
+            , url(u)
+            , dateTime(d)
+            , visitCount(1)
     {}
 
     inline bool operator==(const HistoryItem &other) const
     {
         return other.title == title
-               && other.url == url && other.dateTime == dateTime;
+               && other.url == url 
+               && other.dateTime == dateTime;
     }
 
     // history is sorted in reverse
@@ -80,6 +82,7 @@ public:
     QString title;
     QString url;
     QDateTime dateTime;
+    int visitCount;
 };
 
 
@@ -100,12 +103,6 @@ class REKONQ_TESTS_EXPORT HistoryManager : public QWebHistoryInterface
 {
     Q_OBJECT
 
-signals:
-    void historyReset();
-    void entryAdded(const HistoryItem &item);
-    void entryRemoved(const HistoryItem &item);
-    void entryUpdated(int offset);
-
 public:
     HistoryManager(QObject *parent = 0);
     ~HistoryManager();
@@ -123,12 +120,18 @@ public:
     // History manager keeps around these models for use by the completer and other classes
     HistoryFilterModel *historyFilterModel() const { return m_historyFilterModel; };
     HistoryTreeModel *historyTreeModel() const { return m_historyTreeModel; };
+    
+Q_SIGNALS:
+    void historyReset();
+    void entryAdded(const HistoryItem &item);
+    void entryRemoved(const HistoryItem &item);
+    void entryUpdated(int offset);
 
-public slots:
+public Q_SLOTS:
     void clear();
     void loadSettings();
 
-private slots:
+private Q_SLOTS:
     void save();
     void checkForExpired();
 
