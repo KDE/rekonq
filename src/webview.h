@@ -85,6 +85,8 @@ private slots:
 signals:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
     void zoomChanged(int);
+    void openPreviousInHistory();
+    void openNextInHistory();
 
 private:
     QPoint m_mousePos;

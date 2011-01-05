@@ -617,42 +617,56 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
 void WebView::wheelEvent(QWheelEvent *event)
 {
-    // To let some websites (eg: google maps) to handle wheel events
-    int prevPos = page()->currentFrame()->scrollPosition().y();
-    KWebView::wheelEvent(event);
-    int newPos = page()->currentFrame()->scrollPosition().y();
-
-    // Sync with the zoom slider
-    if (event->modifiers() == Qt::ControlModifier)
+    if( event->orientation() == Qt::Vertical || !ReKonfig::hScrollWheelHistory() )
     {
-        // Limits of the slider
-        if (zoomFactor() > 1.9)
-            setZoomFactor(1.9);
-        else if (zoomFactor() < 0.1)
-            setZoomFactor(0.1);
-
-        // Round the factor (Fix slider's end value)
-        int newFactor = zoomFactor() * 10;
-        if ((zoomFactor() * 10 - newFactor) > 0.5)
-            newFactor++;
-
-        emit zoomChanged(newFactor);
+        // To let some websites (eg: google maps) to handle wheel events
+        int prevPos = page()->currentFrame()->scrollPosition().y();
+        KWebView::wheelEvent(event);
+        int newPos = page()->currentFrame()->scrollPosition().y();
+        
+        // Sync with the zoom slider
+        if (event->modifiers() == Qt::ControlModifier)
+        {
+            // Limits of the slider
+            if (zoomFactor() > 1.9)
+                setZoomFactor(1.9);
+            else if (zoomFactor() < 0.1)
+                setZoomFactor(0.1);
+            
+            // Round the factor (Fix slider's end value)
+            int newFactor = zoomFactor() * 10;
+            if ((zoomFactor() * 10 - newFactor) > 0.5)
+                newFactor++;
+            
+            emit zoomChanged(newFactor);
+        }
+        else if (ReKonfig::smoothScrolling() && prevPos != newPos)
+        {
+            
+            page()->currentFrame()->setScrollPosition(QPoint(page()->currentFrame()->scrollPosition().x(), prevPos));
+            
+            if ((event->delta() > 0) != !m_scrollBottom)
+                stopScrolling();
+            
+            if (event->delta() > 0)
+                m_scrollBottom = false;
+            else
+                m_scrollBottom = true;
+            
+            
+            setupSmoothScrolling(abs(newPos - prevPos));
+        }
     }
-    else if (ReKonfig::smoothScrolling() && prevPos != newPos)
-    {
-
-        page()->currentFrame()->setScrollPosition(QPoint(page()->currentFrame()->scrollPosition().x(), prevPos));
-
-        if ((event->delta() > 0) != !m_scrollBottom)
-            stopScrolling();
-
-        if (event->delta() > 0)
-            m_scrollBottom = false;
-        else
-            m_scrollBottom = true;
-
-
-        setupSmoothScrolling(abs(newPos - prevPos));
+    // use horizontal wheel events to go back and forward in tab history
+    else {
+        // left -> go to previous page
+        if( event->delta() > 0 ){
+            emit openPreviousInHistory();
+        }
+        // right -> go to next page
+        if( event->delta() < 0 ){
+            emit openNextInHistory();
+        }
     }
 }
 

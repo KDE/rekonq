@@ -286,6 +286,8 @@ WebTab *MainView::newWebTab(bool focused)
     connect(tab, SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
     connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
     connect(tab->view(), SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
+    connect(tab->view(), SIGNAL(openPreviousInHistory()), this, SIGNAL(openPreviousInHistory()));
+    connect(tab->view(), SIGNAL(openNextInHistory()), this, SIGNAL(openNextInHistory()));
 
     // connecting webPage signals with mainview
     connect(tab->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));

@@ -106,6 +106,8 @@ Q_SIGNALS:
     void showStatusBarMessage(const QString &message, Rekonq::Notify status = Rekonq::Info);
     void linkHovered(const QString &link);
     void browserTabLoading(bool);
+    void openPreviousInHistory();
+    void openNextInHistory();
 
     void printRequested(QWebFrame *frame);
 

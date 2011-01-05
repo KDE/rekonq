@@ -304,6 +304,10 @@ void MainWindow::postLaunch()
     // (shift +) ctrl + tab switching
     connect(this, SIGNAL(ctrlTabPressed()), m_view, SLOT(nextTab()));
     connect(this, SIGNAL(shiftCtrlTabPressed()), m_view, SLOT(previousTab()));
+    
+    // wheel history navigation
+    connect(m_view, SIGNAL(openPreviousInHistory()), this, SLOT(openPrevious()));
+    connect(m_view, SIGNAL(openNextInHistory()), this, SLOT(openNext()));
 
     // update toolbar actions signals
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(updateActions()));
