@@ -407,7 +407,10 @@ void WebView::mousePressEvent(QMouseEvent *event)
         break;
 
     case Qt::MidButton:
-        if (m_canEnableAutoScroll && !m_isAutoScrollEnabled)
+        if (m_canEnableAutoScroll
+            && !m_isAutoScrollEnabled
+            && !page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).contains(event->pos())
+            && !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).contains(event->pos()))
         {
             setCursor(KIcon("transform-move").pixmap(32));
             m_clickPos = event->pos();
