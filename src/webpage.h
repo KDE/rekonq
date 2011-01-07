@@ -59,6 +59,7 @@ public:
     inline void setIsOnRekonqPage(bool b) { _isOnRekonqPage = b; };
 
     inline KUrl loadingUrl() { return _loadingUrl; };
+    inline QString suggestedFileName() { return _suggestedFileName; };
     
 public Q_SLOTS:
     void downloadAllContentsWithKGet(QPoint);
@@ -81,15 +82,21 @@ private Q_SLOTS:
     void showSSLInfo(QPoint);
     void updateImage(bool ok);
 
+    void copyToTempFileResult(KJob*);
+    
+private:
     void downloadReply(const QNetworkReply *reply, const QString &suggestedFileName = QString());
 
 private:
     QString errorPage(QNetworkReply *reply);
-    QUrl _loadingUrl;
+    KUrl _loadingUrl;
 
     ProtocolHandler _protHandler;
     WebSslInfo _sslInfo;
 
+    QString _mimeType;
+    QString _suggestedFileName;
+    
     bool _networkAnalyzer;
     bool _isOnRekonqPage;
 };

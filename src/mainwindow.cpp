@@ -619,26 +619,28 @@ void MainWindow::openLocation()
 
 void MainWindow::fileSaveAs()
 {
-    KUrl srcUrl;
     WebTab *w = currentTab();
-    if (w->page()->isOnRekonqPage())
-    {
-        QWebElement el = w->page()->mainFrame()->documentElement();
-        srcUrl = KUrl( el.findFirst("object").attribute("data") );
-    }
-    else
-    {
-        srcUrl = w->url();
-    }
-    kDebug() << "URL to save: " << srcUrl;
+    KUrl srcUrl = w->url();
+    
+    // First, try with suggested file name...
+    QString name = w->page()->suggestedFileName();
 
-    QString name = srcUrl.fileName();
-    if (name.isNull())
+    // Second, with KUrl fileName...
+    if (name.isEmpty())
+    {
+        name = srcUrl.fileName();
+    }
+    
+    // Last chance...
+    if(name.isEmpty())
     {
         name = srcUrl.host() + QString(".html");
     }
+    
     const QString destUrl = KFileDialog::getSaveFileName(name, QString(), this);
-    if (destUrl.isEmpty()) return;
+    if (destUrl.isEmpty()) 
+        return;
+    
     KIO::Job *job = KIO::file_copy(srcUrl, KUrl(destUrl), -1, KIO::Overwrite);
     job->addMetaData("MaxCacheSize", "0");  // Don't store in http cache.
     job->addMetaData("cache", "cache");     // Use entry from cache if available.
@@ -984,7 +986,6 @@ void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifie
     if (currentTab()->page()->isOnRekonqPage())
     {
         item = new QWebHistoryItem(history->currentItem());
-        currentTab()->view()->page()->setIsOnRekonqPage(false);
     }
     else
     {
@@ -1018,7 +1019,6 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
     if (currentTab()->view()->page()->isOnRekonqPage())
     {
         item = new QWebHistoryItem(history->currentItem());
-        currentTab()->view()->page()->setIsOnRekonqPage(false);
     }
     else
     {

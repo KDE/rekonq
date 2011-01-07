@@ -54,6 +54,9 @@
 // KDE Includes
 #include <KIO/Job>
 #include <KIO/RenameDialog>
+#include <KIO/JobUiDelegate>
+
+#include <KTemporaryFile>
 #include <KStandardDirs>
 #include <KFileDialog>
 #include <KJobUiDelegate>
@@ -65,6 +68,8 @@
 #include <KWebWallet>
 
 #include <kparts/browseropenorsavequestion.h>
+
+#include <kio/scheduler.h>
 
 // Qt Includes
 #include <QtCore/QFileInfo>
@@ -99,10 +104,67 @@ static bool domainSchemeMatch(const QUrl& u1, const QUrl& u2)
 
 
 // NOTE
-// This is heavily based on the one from KdeWebKit and
-// extended to provide the extra functionality we need:
+// These 2 functions have been copied from the KWebPage class to implement a local version of the downloadResponse method.
+// In this way, we can easily provide the extra functionality we need:
 // 1. KGet Integration
 // 2. Save downloads history
+static void extractSuggestedFileName(const QNetworkReply* reply, QString& fileName)
+{
+    fileName.clear();
+    const KIO::MetaData& metaData = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
+    if (metaData.value(QL1S("content-disposition-type")).compare(QL1S("attachment"), Qt::CaseInsensitive) == 0)
+         fileName = metaData.value(QL1S("content-disposition-filename"));
+
+    if (!fileName.isEmpty())
+        return;
+
+    if (!reply->hasRawHeader("Content-Disposition"))
+        return;    
+
+    const QString value (QL1S(reply->rawHeader("Content-Disposition").simplified().constData()));
+    if (value.startsWith(QL1S("attachment"), Qt::CaseInsensitive) || value.startsWith(QL1S("inline"), Qt::CaseInsensitive)) 
+    {
+        const int length = value.size();
+        int pos = value.indexOf(QL1S("filename"), 0, Qt::CaseInsensitive);
+        if (pos > -1) 
+        {
+            pos += 9;
+            while (pos < length && (value.at(pos) == QL1C(' ') || value.at(pos) == QL1C('=') || value.at(pos) == QL1C('"')))
+                pos++;
+
+            int endPos = pos;
+            while (endPos < length && value.at(endPos) != QL1C('"') && value.at(endPos) != QL1C(';'))
+                endPos++;
+
+            if (endPos > pos)
+                fileName = value.mid(pos, (endPos-pos)).trimmed();
+        }
+    }
+}
+
+
+static void extractMimeType(const QNetworkReply* reply, QString& mimeType)
+{
+    mimeType.clear();
+    const KIO::MetaData& metaData = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
+    if (metaData.contains(QL1S("content-type")))
+        mimeType = metaData.value(QL1S("content-type"));
+
+    if (!mimeType.isEmpty())
+        return;
+
+    if (!reply->hasRawHeader("Content-Type"))
+        return;
+
+    const QString value (QL1S(reply->rawHeader("Content-Type").simplified().constData()));
+    const int index = value.indexOf(QL1C(';'));
+    if (index == -1)
+       mimeType = value;
+    else
+       mimeType = value.left(index);
+}
+
+
 static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData = KIO::MetaData(),
                               QWidget* parent = 0, const QString& suggestedName = QString())
 {
@@ -237,6 +299,9 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         _isOnRekonqPage = false;
         tab->setPart(0, KUrl());     // re-enable the view page
     }
+    
+    // reset webpage values
+    _suggestedFileName.clear();
     _loadingUrl = request.url();
 
     KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
@@ -289,15 +354,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         default:
             break;
         }
-
-        if (frame == mainFrame())
-        {
-            setRequestMetaData("main_frame_request", "TRUE");
-        }
-        else
-        {
-            setRequestMetaData("main_frame_request", "FALSE");
-        }
     }
     return KWebPage::acceptNavigationRequest(frame, request, type);
 }
@@ -325,11 +381,10 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     Q_ASSERT (reply);
-    // NOTE:
-    // Until kio implements a way to resume/continue a network
-    // request. We must abort the reply to prevent a zombie process
-    // from continuing to download the unsupported content!
-    reply->abort();
+
+    // Put the job on hold...
+    kDebug() << "PUT REPLY ON HOLD...";
+    KIO::Integration::AccessManager::putReplyOnHold(reply);
 
     // This is probably needed just in ONE stupid case..
     if (_protHandler.postHandling(reply->request(), mainFrame()))
@@ -338,78 +393,24 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
         return;
 
+    // get reply url...
     KUrl replyUrl = reply->url();
 
-    // HACK -------------------------------------------
-    // This is done to fix #231204 && #212808
+    // Get suggested file name...
+    extractSuggestedFileName(reply, _suggestedFileName);
 
-    QString mimeType;
-    QString suggestedFileName;
-
-    QString app = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-    QStringList headerList = app.split( ';' );
-
-    if(headerList.count() > 0)
-    {
-        mimeType = headerList.takeFirst().trimmed();
-        Q_FOREACH(const QString &head, headerList)
-        {
-            if( head.contains( QL1S("name") ) )
-            {
-                // this is not so sure.. :)
-                suggestedFileName = head;
-                suggestedFileName = suggestedFileName.remove( QL1S("name=") );
-                suggestedFileName = suggestedFileName.remove( '"' );
-                suggestedFileName = suggestedFileName.trimmed();
-                break;
-            }
-        }
-    }
-    else
-    {
-        mimeType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-    }
-
-    // NOTE
-    // This part has been copied from KWebPage::downloadResponse code
-    if (reply->hasRawHeader("Content-Disposition"))
-    {
-        KIO::MetaData metaData = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
-        if (metaData.value(QL1S("content-disposition-type")).compare(QL1S("attachment"), Qt::CaseInsensitive) == 0)
-        {
-            suggestedFileName = metaData.value(QL1S("content-disposition-filename"));
-        }
-        else
-        {
-            const QString value = QL1S(reply->rawHeader("Content-Disposition").simplified());
-            if (value.startsWith(QL1S("attachment"), Qt::CaseInsensitive))
-            {
-                const int length = value.size();
-                int pos = value.indexOf(QL1S("filename"), 0, Qt::CaseInsensitive);
-                if (pos > -1)
-                {
-                    pos += 9;
-                    while (pos < length && (value.at(pos) == QL1C(' ') || value.at(pos) == QL1C('=') || value.at(pos) == QL1C('"')))
-                        pos++;
-
-                    int endPos = pos;
-                    while (endPos < length && value.at(endPos) != QL1C('"') && value.at(endPos) != QL1C(';'))
-                        endPos++;
-
-                    if (endPos > pos)
-                    {
-                        suggestedFileName = value.mid(pos, (endPos-pos)).trimmed();
-                    }
-                }
-            }
-        }
-    }
-
-    kDebug() << "Detected MimeType = " << mimeType;
-    kDebug() << "Suggested File Name = " << suggestedFileName;
+    // Get mimeType...
+    extractMimeType(reply, _mimeType);
+    
+    // Convert executable text files to plain text...
+    if (KParts::BrowserRun::isTextExecutable(_mimeType))
+        _mimeType = QL1S("text/plain");
+        
+    kDebug() << "Detected MimeType = " << _mimeType;
+    kDebug() << "Suggested File Name = " << _suggestedFileName;
     // ------------------------------------------------
 
-    KService::Ptr appService = KMimeTypeTrader::self()->preferredService(mimeType);
+    KService::Ptr appService = KMimeTypeTrader::self()->preferredService(_mimeType);
 
     bool isLocal = replyUrl.isLocalFile();
 
@@ -419,22 +420,22 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
         isLocal
         ? KMessageBox::sorry(view(), i18n("No service can handle this file."))
-        : downloadReply(reply, suggestedFileName);
+        : downloadReply(reply, _suggestedFileName);
 
         return;
     }
 
     if (!isLocal)
     {
-        KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), replyUrl, mimeType);
-        if(!suggestedFileName.isEmpty())
-            dlg.setSuggestedFileName(suggestedFileName);
+        KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), replyUrl, _mimeType);
+        if(!_suggestedFileName.isEmpty())
+            dlg.setSuggestedFileName(_suggestedFileName);
 
         switch (dlg.askEmbedOrSave())
         {
         case KParts::BrowserOpenOrSaveQuestion::Save:
             kDebug() << "user choice: no services, just download!";
-            downloadReply(reply, suggestedFileName);
+            downloadReply(reply, _suggestedFileName);
             return;
 
         case KParts::BrowserOpenOrSaveQuestion::Cancel:
@@ -445,10 +446,46 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         }
     }
 
+    // Handle Post operations that return content...
+    if (reply->operation() == QNetworkAccessManager::PostOperation) 
+    {
+        kDebug() << "POST OPERATION: downloading file...";
+        QFileInfo finfo (_suggestedFileName.isEmpty() ? _loadingUrl.fileName() : _suggestedFileName);
+        KTemporaryFile tempFile;
+        tempFile.setSuffix(QL1C('.') + finfo.suffix());
+        tempFile.setAutoRemove(false);
+        tempFile.open();
+        KUrl destUrl;
+        destUrl.setPath(tempFile.fileName());
+        kDebug() << "First save content to" << destUrl;
+        KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
+        job->ui()->setWindow(Application::instance()->mainWindow());
+        connect(job, SIGNAL(result(KJob *)), this, SLOT(copyToTempFileResult(KJob*)));
+        return;
+    }
+
+    // HACK: The check below is necessary to break an infinite
+    // recursion that occurs whenever this function is called as a result
+    // of receiving content that can be rendered by the app using this engine.
+    // For example a text/html header that containing a content-disposition
+    // header is received by the app using this class.
+    const QString& appName = QCoreApplication::applicationName();
+
+    if (appName == appService->desktopEntryName() || appService->exec().trimmed().startsWith(appName))
+    {
+        kDebug() << "SELF...";
+        QNetworkRequest req (reply->request());
+        req.setRawHeader("x-kdewebkit-ignore-disposition", "true");
+        currentFrame()->load(req);
+        return;
+    }
+
     // case KParts::BrowserRun::Embed
-    KParts::ReadOnlyPart *pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(mimeType, view(), this, QString());
+    KParts::ReadOnlyPart *pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(_mimeType, view(), this, QString());
     if (pa)
     {
+        kDebug() << "EMBEDDING CONTENT...";
+        
         _isOnRekonqPage = true;
 
         WebView *view = qobject_cast<WebView *>(parent());
@@ -463,9 +500,21 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     else
     {
         // No parts, just app services. Load it!
-        KRun::run(*appService, replyUrl, 0);
+        // If the app is a KDE one, publish the slave on hold to let it use it.
+        // Otherwise, run the app and remove it (the io slave...)
+        if (appService->categories().contains(QL1S("KDE"), Qt::CaseInsensitive)) 
+        {
+            KIO::Scheduler::publishSlaveOnHold();
+            KRun::run(*appService, replyUrl, 0, false, _suggestedFileName);
+            return;
+        }
+        KRun::run(*appService, replyUrl, 0, false, _suggestedFileName);
     }
 
+    // Remove any ioslave that was put on hold...
+    kDebug() << "REMOVE SLAVES ON HOLD...";
+    KIO::Scheduler::removeSlaveOnHold();
+    
     return;
 }
 
@@ -499,8 +548,6 @@ void WebPage::loadFinished(bool ok)
     {
         wallet()->fillFormData(mainFrame());
     }
-    kDebug() << "rekonq page: " << _isOnRekonqPage;
-    kDebug() << "loading url: " << _loadingUrl;
 }
 
 
@@ -508,6 +555,10 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 {
     Q_ASSERT(reply);
 
+    // check suggested file name
+    if(_suggestedFileName.isEmpty())
+        extractSuggestedFileName(reply, _suggestedFileName);
+    
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
 
@@ -724,4 +775,13 @@ void WebPage::updateImage(bool ok)
         NewTabPage p(mainFrame());
         p.snapFinished();
     }
+}
+
+
+void WebPage::copyToTempFileResult(KJob* job)
+{
+    if ( job->error() )
+        job->uiDelegate()->showErrorMessage();
+    else 
+        (void)KRun::runUrl(static_cast<KIO::FileCopyJob *>(job)->destUrl(), _mimeType, Application::instance()->mainWindow());
 }
