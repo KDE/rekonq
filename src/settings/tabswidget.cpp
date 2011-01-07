@@ -41,7 +41,6 @@ void TabsWidget::save()
 {
 }
 
-
 bool TabsWidget::changed()
 {
     return _changed;

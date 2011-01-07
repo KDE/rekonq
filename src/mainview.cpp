@@ -566,6 +566,8 @@ void MainView::webViewTitleChanged(const QString &title)
         emit currentTitle(viewTitle);
     }
     Application::historyManager()->updateHistoryEntry(tab->url(), tabTitle);
+    if (ReKonfig::hoveringTabOption() == 1)
+        tabBar()->setTabToolTip(index, tabTitle.remove('&'));
 }
 
 
@@ -577,6 +579,8 @@ void MainView::webViewUrlChanged(const QUrl &url)
     {
         tabBar()->setTabData(index, url);
     }
+    if (ReKonfig::hoveringTabOption() == 2)
+        tabBar()->setTabToolTip(index, webTab(index)->url().toMimeDataString());
     emit tabsChanged();
 }
 

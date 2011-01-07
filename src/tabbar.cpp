@@ -54,7 +54,6 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QToolButton>
 
-
 #define BASE_WIDTH_DIVISOR    4
 #define MIN_WIDTH_DIVISOR     8
 
@@ -220,7 +219,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
 
     KTabBar::mouseMoveEvent(event);
 
-    if (ReKonfig::alwaysShowTabPreviews())
+    if (ReKonfig::hoveringTabOption() == 0)
     {
         //Find the tab under the mouse
         int i = 0;
@@ -262,7 +261,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
 
 void TabBar::leaveEvent(QEvent *event)
 {
-    if (ReKonfig::alwaysShowTabPreviews())
+    if (ReKonfig::hoveringTabOption() == 0)
     {
         //if leave tabwidget then hide previous tab preview
         if (!m_previewPopup.isNull())
@@ -278,7 +277,7 @@ void TabBar::leaveEvent(QEvent *event)
 
 void TabBar::mousePressEvent(QMouseEvent *event)
 {
-    if (ReKonfig::alwaysShowTabPreviews())
+    if (ReKonfig::hoveringTabOption() == 0)
     {
         if (!m_previewPopup.isNull())
         {
@@ -355,7 +354,7 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
 
 void TabBar::tabRemoved(int /*index*/)
 {
-    if (ReKonfig::alwaysShowTabPreviews())
+    if (ReKonfig::hoveringTabOption() == 0)
     {
         if (!m_previewPopup.isNull())
         {

@@ -20,6 +20,9 @@
       <string>New Tab Behavior</string>
      </property>
      <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::ExpandingFieldsGrow</enum>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label_4">
         <property name="minimumSize">
@@ -126,18 +129,64 @@
      <property name="title">
       <string>Tabbed Browsing</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>When hovering tab show:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="KComboBox" name="kcfg_hoveringTabOption">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <item>
+           <property name="text">
+            <string>Tab Previews</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Title Tooltip</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Url Tooltip</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string comment="@item:inlistbox">Nothing</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item>
        <widget class="QCheckBox" name="kcfg_openTabNoWindow">
         <property name="text">
          <string>Open links in new tab instead of in new window</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_alwaysShowTabBar">
-        <property name="text">
-         <string>Always show tab bar</string>
         </property>
        </widget>
       </item>
@@ -152,16 +201,6 @@
        <widget class="QCheckBox" name="kcfg_openTabsNearCurrent">
         <property name="text">
          <string>Open new tabs after currently active one</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_alwaysShowTabPreviews">
-        <property name="text">
-         <string>Show preview when hovering tab</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
         </property>
        </widget>
       </item>

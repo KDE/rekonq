@@ -528,6 +528,35 @@ void Application::updateConfiguration()
     Application::historyManager()->loadSettings();
     Application::adblockManager()->loadSettings();
 
+    // hovering unfocused tabs options
+    switch(ReKonfig::hoveringTabOption())
+    {
+    case 0: // tab previews
+    case 3: // nothing
+        for (int i = 0; i < mainWindow()->mainView()->tabBar()->count(); i++)
+        {
+            mainWindow()->mainView()->tabBar()->setTabToolTip(i, "");
+        }
+        break;
+
+    case 1: // title previews
+        for (int i = 0; i < mainWindow()->mainView()->tabBar()->count(); i++)
+        {
+            mainWindow()->mainView()->tabBar()->setTabToolTip(i, mainWindow()->mainView()->tabText(i).remove('&'));
+        }
+        break;
+
+    case 2: // url previews
+        for (int i = 0; i < mainWindow()->mainView()->tabBar()->count(); i++)
+        {
+            mainWindow()->mainView()->tabBar()->setTabToolTip(i, mainWindow()->mainView()->webTab(i)->url().toMimeDataString());
+        }
+        break;
+
+    default: // non extant case
+        break;
+    }
+
     defaultSettings = 0;
 }
 

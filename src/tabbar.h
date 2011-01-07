@@ -90,7 +90,6 @@ private slots:
 
 private:
     void setupHistoryActions();
-
     friend class MainView;
 
     /**
