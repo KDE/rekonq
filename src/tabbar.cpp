@@ -222,18 +222,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
     if (ReKonfig::hoveringTabOption() == 0)
     {
         //Find the tab under the mouse
-        int i = 0;
-        int tabIndex = -1;
-        while (i < count()
-                && tabIndex == -1
-              )
-        {
-            if (tabRect(i).contains(event->pos()))
-            {
-                tabIndex = i;
-            }
-            i++;
-        }
+        const int tabIndex = tabAt(event->pos());
 
         // if found and not the current tab then show tab preview
         if (tabIndex != -1
