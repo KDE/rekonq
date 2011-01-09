@@ -179,11 +179,15 @@ void MainView::updateTabBar()
     if (ReKonfig::alwaysShowTabBar() || tabBar()->count() > 1)
     {
         if (tabBar()->isHidden())
+        {
             tabBar()->show();
+            m_addTabButton->show();
+        }
     }
     else
     {
         tabBar()->hide();
+        m_addTabButton->hide();
     }
 
     updateTabButtonPosition();
