@@ -412,9 +412,13 @@ void WebView::mousePressEvent(QMouseEvent *event)
             && !page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).contains(event->pos())
             && !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).contains(event->pos()))
         {
-            setCursor(KIcon("transform-move").pixmap(32));
-            m_clickPos = event->pos();
-            m_isAutoScrollEnabled = true;
+            if (!page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).isNull()
+                    || !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).isNull())
+            {
+                setCursor(KIcon("transform-move").pixmap(32));
+                m_clickPos = event->pos();
+                m_isAutoScrollEnabled = true;
+            }
         }
         break;
 
