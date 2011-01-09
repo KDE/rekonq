@@ -69,6 +69,7 @@ QRegExp UrlResolver::_searchEnginesRegexp;
 UrlResolver::UrlResolver(const QString &typedUrl)
         : QObject()
         , _typedString(typedUrl.trimmed())
+        , _typedQuery()
 {
     if (!_searchEngine ) 
         setSearchEngine(SearchEngine::defaultEngine());
@@ -339,12 +340,12 @@ void UrlResolver::computeWebSearches()
     if (engine)
     {
         query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
-        _searchEngine = engine;
+        setSearchEngine(engine);
     }
 
     if(_searchEngine)
     {
-        UrlSearchItem item = UrlSearchItem(UrlSearchItem::Search, SearchEngine::buildQuery(_searchEngine, query), _searchEngine->name());
+        UrlSearchItem item = UrlSearchItem(UrlSearchItem::Search, SearchEngine::buildQuery(_searchEngine, query), query);
         UrlSearchList list;
         list << item;
         _webSearches = list;
@@ -394,30 +395,40 @@ void UrlResolver::computeSuggestions()
         return;
     }
 
+    QString query = _typedString;
+    KService::Ptr engine = SearchEngine::fromString(_typedString);
+    if (engine)
+    {
+        query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
+        setSearchEngine(engine);
+    }
+
     connect(Application::opensearchManager(),
-            SIGNAL(suggestionReceived(const QString &, const ResponseList &)),
+            SIGNAL(suggestionsReceived(const QString &, const ResponseList &)),
             this,
             SLOT(suggestionsReceived(const QString &, const ResponseList &)));
 
-    Application::opensearchManager()->requestSuggestion(_typedString);
+    _typedQuery = query;
+    Application::opensearchManager()->requestSuggestion(query);
 }
 
 
 void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &suggestions)
 {
-    if(text != _typedString)
+    if(text != _typedQuery)
         return;
 
     UrlSearchList sugList;
-
+    QString urlString;
     Q_FOREACH(const Response &i, suggestions)
     {
-        QString url = i.url;
-        if (url.isEmpty())
+        urlString = i.url;
+        if (urlString.isEmpty())
         {
-            url = SearchEngine::buildQuery(searchEngine(), i.title);
+            urlString = SearchEngine::buildQuery(UrlResolver::searchEngine(),i.title);
         }
-        UrlSearchItem gItem(UrlSearchItem::Suggestion, url, i.title, i.description, i.image, i.image_width, i.image_height);
+
+        UrlSearchItem gItem(UrlSearchItem::Suggestion, urlString, i.title, i.description, i.image, i.image_width, i.image_height);
         sugList << gItem;
     }
     emit suggestionsReady(sugList, _typedString);

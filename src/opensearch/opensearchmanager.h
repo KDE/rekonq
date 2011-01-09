@@ -94,7 +94,7 @@ private Q_SLOTS:
     void jobFinished(KJob *job);
 
 Q_SIGNALS:
-    void suggestionReceived(const QString &text, const ResponseList &suggestion);
+    void suggestionsReceived(const QString &text, const ResponseList &suggestion);
     void openSearchEngineAdded(const QString &name, const QString &searchUrl, const QString &fileName);
 
 private:

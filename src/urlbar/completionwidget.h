@@ -56,13 +56,14 @@ public:
 private slots:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
     void updateSearchList(const UrlSearchList &list, const QString& text);
+    void updateList();
 
 signals:
     void chosenUrl(const KUrl &, Rekonq::OpenType);
     void nextItemSubChoice();
 
 private:
-    void insertSearchList(const UrlSearchList &list, const QString& text);
+    void insertItems(const UrlSearchList &list, const QString& text, int offset = 0);
 
     void popup();
     void clear();

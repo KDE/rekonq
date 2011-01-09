@@ -135,15 +135,6 @@ KService::Ptr SearchEngine::fromString(const QString &text)
 }
 
 
-QString SearchEngine::extractQuery(const QString &text)
-{
-    QString query = text;
-    KService::Ptr engine = SearchEngine::fromString(text);
-
-    return query;
-}
-
-
 QString SearchEngine::buildQuery(KService::Ptr engine, const QString &text)
 {
     if(!engine)

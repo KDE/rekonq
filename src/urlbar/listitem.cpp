@@ -401,9 +401,8 @@ SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, Q
         , m_text(text)
 {
     m_iconLabel = new IconLabel(SearchEngine::buildQuery(UrlResolver::searchEngine(), ""), this);
-    QString query = SearchEngine::extractQuery(text);
     m_titleLabel = new TextLabel(this);
-    m_titleLabel->setEngineText(item.title, query);
+    m_titleLabel->setEngineText(UrlResolver::searchEngine()->name(), item.title);
     m_engineBar = new EngineBar(UrlResolver::searchEngine(), parent);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
@@ -429,10 +428,8 @@ QString SearchListItem::text()
 
 void SearchListItem::changeSearchEngine(KService::Ptr engine)
 {
-    m_titleLabel->setEngineText(engine->name(), m_text);
-    m_iconLabel->setPixmap( Application::iconManager()->iconForUrl(KUrl(engine->property("Query").toString())).pixmap(16) );
-    m_url = SearchEngine::buildQuery(engine, m_text);
     UrlResolver::setSearchEngine(engine);
+    emit updateList();
 }
 
 
@@ -548,7 +545,7 @@ VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, co
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
     QLabel *previewLabelIcon = new QLabel(this);
-
+ 
     if (!item.image.isEmpty())
     {
         previewLabelIcon->setFixedSize(item.image_width+10, item.image_height+10);
@@ -566,7 +563,7 @@ VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, co
     QVBoxLayout *vLayout = new QVBoxLayout;
     vLayout->setMargin(0);
     vLayout->addItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::MinimumExpanding));
-    vLayout->addWidget(new TextLabel(item.title, SearchEngine::extractQuery(text), this));
+    vLayout->addWidget(new TextLabel(item.title, text, this));
     DescriptionLabel *d = new DescriptionLabel("", this);
     vLayout->addWidget(d);
     vLayout->addItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::MinimumExpanding));

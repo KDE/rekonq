@@ -171,7 +171,7 @@ void OpenSearchManager::jobFinished(KJob *job)
 {
     if (job->error())
     {
-        emit suggestionReceived(_typedText, ResponseList());
+        emit suggestionsReceived(_typedText, ResponseList());
         m_state = IDLE;
         return; // just silently return
     }
@@ -185,7 +185,7 @@ void OpenSearchManager::jobFinished(KJob *job)
             kDebug() << r.title; 
         }
 
-        emit suggestionReceived(_typedText, suggestionsList);
+        emit suggestionsReceived(_typedText, suggestionsList);
         idleJob();
         return;
     }

@@ -67,7 +67,7 @@ public:
     int image_width;
     int image_height;
     QString bookmarkPath;
-    
+
     UrlSearchItem(const UrlSearchItem &item) : type(item.type),
                                                url(item.url),
                                                title(item.title),
@@ -85,7 +85,7 @@ public:
                       image_width(0),
                       image_height(0)
     {};
-    
+
     UrlSearchItem(const int &_type,
                   const QString &_url,
                   const QString &_title = QString(),
@@ -106,7 +106,7 @@ public:
     inline bool operator==(const UrlSearchItem &i) const
     {
         return i.url == url;//TODO && i.title == title;
-    }    
+    }
 };
 
 typedef QList <UrlSearchItem> UrlSearchList;
@@ -154,13 +154,14 @@ private:
     UrlSearchList orderLists();
 
     QString _typedString;
+    QString _typedQuery;
 
     UrlSearchList _webSearches;
     UrlSearchList _qurlFromUserInput;
     UrlSearchList _history;
     UrlSearchList _bookmarks;
     UrlSearchList _suggestions;
-    
+
     static QRegExp _browseRegexp;
     static QRegExp _searchEnginesRegexp;
 

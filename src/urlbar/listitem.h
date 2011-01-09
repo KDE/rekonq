@@ -69,6 +69,7 @@ public slots:
 
 signals:
     void itemClicked(ListItem *item, Qt::MouseButton, Qt::KeyboardModifiers);
+    void updateList();
 
 protected:
     virtual void paintEvent(QPaintEvent *event);

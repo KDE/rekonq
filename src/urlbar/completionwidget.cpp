@@ -66,26 +66,20 @@ CompletionWidget::CompletionWidget(QWidget *parent)
 }
 
 
-void CompletionWidget::insertSearchList(const UrlSearchList &list, const QString& text)
+void CompletionWidget::insertItems(const UrlSearchList &list, const QString& text, int offset)
 {
-    if (!isVisible())
-    {
-        UrlResolver::setSearchEngine(SearchEngine::defaultEngine());
-    }
-
-    _list = list;
-    int i = 0;
-    foreach(const UrlSearchItem &item, _list)
+    Q_FOREACH(const UrlSearchItem &item, list)
     {
         ListItem *suggestion = ListItemFactory::create(item, text, this);
-        suggestion->setBackgroundRole(i % 2 ? QPalette::AlternateBase : QPalette::Base);
-        connect(suggestion, 
-                SIGNAL(itemClicked(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)), 
-                this, 
+        suggestion->setBackgroundRole(offset % 2 ? QPalette::AlternateBase : QPalette::Base);
+        connect(suggestion,
+                SIGNAL(itemClicked(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)),
+                this,
                 SLOT(itemChosen(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)));
+        connect(suggestion, SIGNAL(updateList()), this, SLOT(updateList()));
         connect(this, SIGNAL(nextItemSubChoice()), suggestion, SLOT(nextItemSubChoice()));
-        
-        suggestion->setObjectName(QString::number(i++));
+
+        suggestion->setObjectName(QString::number(offset++));
         layout()->addWidget(suggestion);
     }
 }
@@ -99,29 +93,16 @@ void CompletionWidget::updateSearchList(const UrlSearchList &list, const QString
     if(_hasSuggestions || _typedString != text)
         return;
     _hasSuggestions = true;
-    
+
     if (_resList.count() > 0)
     {
         clear();
-        insertSearchList(_resList, text);
-    
-        UrlSearchList sugList = list.mid(0,4);
 
-        // add new suggestions to the list
-        int offset = _list.count();
-        Q_FOREACH(const UrlSearchItem &item, sugList)
-        {
-            ListItem *suggestion = ListItemFactory::create(item, text, this);
-            suggestion->setBackgroundRole(offset % 2 ? QPalette::AlternateBase : QPalette::Base);
-            connect(suggestion, 
-                    SIGNAL(itemClicked(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)), 
-                    this, 
-                    SLOT(itemChosen(ListItem *, Qt::MouseButton, Qt::KeyboardModifiers)));
-            connect(this, SIGNAL(nextItemSubChoice()), suggestion, SLOT(nextItemSubChoice()));
-            
-            suggestion->setObjectName(QString::number(offset++));
-            layout()->addWidget(suggestion);
-        }
+        insertItems(_resList, text);
+        _list = _resList;
+
+        UrlSearchList sugList = list.mid(0,4);
+        insertItems(sugList, text, _list.count());
         _list.append(sugList);
         popup();
     }
@@ -239,7 +220,7 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
     {
         ListItem *child;
         UrlBar *w;
-        
+
         if (type == QEvent::KeyPress)
         {
             QKeyEvent *kev = static_cast<QKeyEvent *>(ev);
@@ -307,12 +288,12 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                             host += append;
                             url.setHost(host);
                         }
-                        
+
                         emit chosenUrl(url, Rekonq::CurrentTab);
                     }
                 }
 
-                
+
                 if( _currentIndex == -1)
                     _currentIndex = 0;
                 child = findChild<ListItem *>(QString::number(_currentIndex));
@@ -320,7 +301,7 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 {
                     kDebug() << "USING LISTITEM URL: " << child->url();
                     kDebug() << "USING LISTITEM TITLE: " << child->text();
-                    
+
                     //we can use the url of the listitem
                     emit chosenUrl(child->url(), Rekonq::CurrentTab);
                 }
@@ -332,7 +313,7 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 kev->accept();
                 hide();
                 return true;
-                
+
             case Qt::Key_Escape:
                 hide();
                 return true;
@@ -375,10 +356,16 @@ void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::Ke
 }
 
 
+void CompletionWidget::updateList()
+{
+    suggestUrls(_typedString);
+}
+
+
 void CompletionWidget::suggestUrls(const QString &text)
 {
     _typedString = text;
-    
+
     QWidget *w = qobject_cast<QWidget *>(parent());
     if (!w->hasFocus())
         return;
@@ -387,6 +374,11 @@ void CompletionWidget::suggestUrls(const QString &text)
     {
         hide();
         return;
+    }
+
+    if (!isVisible())
+    {
+        UrlResolver::setSearchEngine(SearchEngine::defaultEngine());
     }
 
     UrlResolver *res = new UrlResolver(text);
