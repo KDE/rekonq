@@ -383,9 +383,13 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     Q_ASSERT (reply);
 
     // Put the job on hold...
-    kDebug() << "PUT REPLY ON HOLD...";
-    KIO::Integration::AccessManager::putReplyOnHold(reply);
-
+    #if KDE_IS_VERSION( 4, 5, 96)
+        kDebug() << "PUT REPLY ON HOLD...";
+        KIO::Integration::AccessManager::putReplyOnHold(reply);
+    #elseif
+        reply->abort();
+    #endif
+    
     // This is probably needed just in ONE stupid case..
     if (_protHandler.postHandling(reply->request(), mainFrame()))
         return;
@@ -504,7 +508,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         // Otherwise, run the app and remove it (the io slave...)
         if (appService->categories().contains(QL1S("KDE"), Qt::CaseInsensitive)) 
         {
-            KIO::Scheduler::publishSlaveOnHold();
+            #if KDE_IS_VERSION( 4, 5, 96)
+                KIO::Scheduler::publishSlaveOnHold();
+            #endif
             KRun::run(*appService, replyUrl, 0, false, _suggestedFileName);
             return;
         }
@@ -512,9 +518,11 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     }
 
     // Remove any ioslave that was put on hold...
-    kDebug() << "REMOVE SLAVES ON HOLD...";
-    KIO::Scheduler::removeSlaveOnHold();
-    
+    #if KDE_IS_VERSION( 4, 5, 96)
+        kDebug() << "REMOVE SLAVES ON HOLD...";
+        KIO::Scheduler::removeSlaveOnHold();
+    #endif
+            
     return;
 }
 
