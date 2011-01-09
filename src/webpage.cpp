@@ -386,7 +386,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     #if KDE_IS_VERSION( 4, 5, 96)
         kDebug() << "PUT REPLY ON HOLD...";
         KIO::Integration::AccessManager::putReplyOnHold(reply);
-    #elseif
+    #else
         reply->abort();
     #endif
     
