@@ -388,7 +388,7 @@ void MainWindow::setupActions()
     a->setShortcut(reloadShortcut);
 
     a = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
-    a->setShortcut(KShortcut(Qt::Key_Escape));
+    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Period));
     actionCollection()->addAction(QL1S("stop"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(webStop()));
 
