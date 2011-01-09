@@ -99,8 +99,14 @@ void UrlPanel::setup()
     _treeView->setModel(proxy);
 
     connect(search, SIGNAL(textChanged(QString)), proxy, SLOT(setFilterFixedString(QString)));
+    connect(search, SIGNAL(textChanged(QString)), this, SLOT(expandTreeView()));
 
     connect(_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenuItem(const QPoint &)));
     connect(_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenuGroup(const QPoint &)));
     connect(_treeView, SIGNAL(contextMenuEmptyRequested(const QPoint &)), this, SLOT(contextMenuEmpty(const QPoint &)));
+}
+
+void UrlPanel::expandTreeView()
+{
+    _treeView->expandAll();
 }

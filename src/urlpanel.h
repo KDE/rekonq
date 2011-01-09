@@ -70,6 +70,9 @@ protected Q_SLOTS:
 private:
     PanelTreeView *_treeView;
     bool _loaded;
+
+private slots:
+    void expandTreeView();
 };
 
 
