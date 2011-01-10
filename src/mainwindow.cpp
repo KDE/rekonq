@@ -863,6 +863,12 @@ void MainWindow::updateHighlight()
     }
 }
 
+void MainWindow::findSelectedText()
+{
+    // FindBar::setVisible() gets the selected text by itself
+    m_findBar->show();
+}
+
 
 void MainWindow::viewFullScreen(bool makeFullScreen)
 {

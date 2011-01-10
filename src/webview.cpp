@@ -166,13 +166,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
     }
 
-    // add find action.
-    if(result.pixmap().isNull())
-    {
-        a = mainwindow->actionByName(KStandardAction::name(KStandardAction::Find));
-        menu.addAction(a);
-    }
-    
     // is content editable && selected? Add CUT
     if (result.isContentEditable() && result.isContentSelected())
     {
@@ -224,8 +217,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         menu.addAction(pageAction(KWebPage::Paste));
     }
-    a = mainwindow->actionByName(KStandardAction::name(KStandardAction::Print));
-    menu.addAction(a);
+
     // is content selected? Add SEARCH actions
     if (result.isContentSelected())
     {
@@ -240,6 +232,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             searchMenu->addAction(a);
         }
 
+        a = new KAction(KIcon("edit-find"), i18n("On Current Page"), this);
+        connect(a, SIGNAL(triggered()), Application::instance()->mainWindow(), SLOT(findSelectedText()));
+        searchMenu->addAction(a);
+
         if (!searchMenu->menu()->isEmpty())
         {
             menu.addAction(searchMenu);
@@ -247,7 +243,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addSeparator();
 
-        menu.addAction(inspectAction);
+        if (ReKonfig::showDeveloperTools())
+            menu.addAction(inspectAction);
         // TODO Add translate, show translation
     }
 
@@ -273,7 +270,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
         menu.addSeparator();
 
-        menu.addAction(inspectAction);
+        if (ReKonfig::showDeveloperTools())
+            menu.addAction(inspectAction);
     }
 
     // Open url text in new tab/window
@@ -332,7 +330,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         {
             menu.addSeparator();
 
-            menu.addAction(mainwindow->actionByName("new_tab"));
+            if (!ReKonfig::alwaysShowTabBar() && mainwindow->mainView()->count() == 1)
+                menu.addAction(mainwindow->actionByName("new_tab"));
+
             menu.addAction(mainwindow->actionByName("new_window"));
 
             menu.addSeparator();
@@ -362,9 +362,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                 menu.addAction(a);
             }
 
-            menu.addAction(mainwindow->actionByName("page_source"));
-
-            menu.addAction(inspectAction);
+            if (ReKonfig::showDeveloperTools())
+            {
+                menu.addAction(mainwindow->actionByName("page_source"));
+                menu.addAction(inspectAction);
+            }
 
             a = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
             menu.addAction(a);

@@ -107,6 +107,7 @@ public Q_SLOTS:
     void findNext();
     void findPrevious();
     void updateHighlight();
+    void findSelectedText();
 
 Q_SIGNALS:
     // switching tabs
