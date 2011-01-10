@@ -95,7 +95,7 @@ public Q_SLOTS:
     void openBookmark(const KBookmark &bookmark);
     void openBookmarkInNewTab(const KBookmark &bookmark);
     void openBookmarkInNewWindow(const KBookmark &bookmark);
-    void openBookmarkFolder(const KBookmarkGroup &bookmark);
+    void openBookmarkFolder(const KBookmark &bookmark);
 
     KBookmark bookmarkCurrentPage(const KBookmark &bookmark = KBookmark());
     KBookmarkGroup newBookmarkFolder(const KBookmark &bookmark = KBookmark());

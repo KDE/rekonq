@@ -177,9 +177,10 @@ void BookmarkOwner::openBookmarkInNewWindow(const KBookmark &bookmark)
 }
 
 
-void BookmarkOwner::openBookmarkFolder(const KBookmarkGroup &bookmark)
+void BookmarkOwner::openBookmarkFolder(const KBookmark &bookmark)
 {
-    openFolderinTabs(bookmark);
+    Q_ASSERT(bookmark.isGroup());
+    openFolderinTabs(bookmark.toGroup());
 }
 
 
