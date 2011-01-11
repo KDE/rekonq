@@ -141,7 +141,7 @@
            </size>
           </property>
           <property name="text">
-           <string>When hovering tab show:</string>
+           <string>When hovering a tab show:</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -161,17 +161,17 @@
           </property>
           <item>
            <property name="text">
-            <string>Tab Previews</string>
+            <string>Tab Preview</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Title Tooltip</string>
+            <string>Tab's Title in a Tooltip</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Url Tooltip</string>
+            <string>Tab's URL in a Tooltip</string>
            </property>
           </item>
           <item>
