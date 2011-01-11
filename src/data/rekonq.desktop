@@ -2,6 +2,7 @@
 Name=rekonq
 Name[bg]=rekonq
 Name[ca]=rekonq
+Name[ca@valencia]=rekonq
 Name[cs]=rekonq
 Name[da]=rekonq
 Name[de]=rekonq
@@ -38,6 +39,7 @@ Name[zh_CN]=rekonq
 Name[zh_TW]=rekonq
 GenericName=Web Browser
 GenericName[ca]=Navegador web
+GenericName[ca@valencia]=Navegador web
 GenericName[cs]=Webový prohlížeč
 GenericName[da]=Webbrowser
 GenericName[de]=Webbrowser
