@@ -18,6 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "rekonq_defines.h"
 #include "webshortcutwidget.h"
 
 #include <QtCore/QTimer>
@@ -138,11 +139,11 @@ void WebShortcutWidget::cancelClicked()
 void WebShortcutWidget::shortcutsChanged(const QString& newShorthands)
 {
     int savedCursorPosition = m_wsLineEdit->cursorPosition();
-    QString normalizedShorthands = QString(newShorthands).replace(" ", ",");
+    QString normalizedShorthands = QString(newShorthands).replace(QL1C(' '), QL1C(','));
     m_wsLineEdit->setText(normalizedShorthands);
     m_wsLineEdit->setCursorPosition(savedCursorPosition);
 
-    QSet<QString> shorthands = normalizedShorthands.split(",").toSet();
+    QSet<QString> shorthands = normalizedShorthands.split(QL1C(',')).toSet();
     QString contenderName = "";
     QString contenderWS = "";
 

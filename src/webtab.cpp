@@ -26,6 +26,7 @@
 
 
 // Self Includes
+#include "rekonq_defines.h"
 #include "webtab.h"
 #include "webtab.moc"
 // Auto Includes
@@ -254,7 +255,7 @@ KUrl WebTab::extractOpensearchUrl(QWebElement e)
         QString host = docUrl.scheme() + "://" + docUrl.host();
         if (docUrl.port() != -1)
         {
-            host += ":" + QString::number(docUrl.port());
+            host += QL1C(':') + QString::number(docUrl.port());
         }
         url = KUrl(docUrl, href);
     }

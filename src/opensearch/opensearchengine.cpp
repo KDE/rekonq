@@ -58,7 +58,7 @@ QString OpenSearchEngine::parseTemplate(const QString &searchTerm, const QString
     // Simple conversion to RFC 3066.
     language = language.replace(QL1C('_'), QL1C('-'));
     QString country = language;
-    country = (country.replace(0, country.indexOf("-")+1, "")).toLower();
+    country = (country.remove(0, country.indexOf(QL1C('-'))+1)).toLower();
     const int firstDashPosition = country.indexOf(QL1C('-'));
     if (firstDashPosition >= 0)
         country = country.mid(firstDashPosition+1);
