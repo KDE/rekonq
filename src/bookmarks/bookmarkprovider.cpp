@@ -37,6 +37,8 @@
 #include "bookmarkstoolbar.h"
 #include "bookmarkowner.h"
 #include "iconmanager.h"
+#include "mainwindow.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KActionCollection>
@@ -209,6 +211,8 @@ void BookmarkProvider::slotBookmarksChanged()
             fillBookmarkBar(bookmarkToolBar);
         }
     }
+    if(Application::instance()->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+        Application::instance()->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 
 
@@ -256,6 +260,8 @@ void BookmarkProvider::slotPanelChanged()
         if (panel && panel != sender())
             panel->loadFoldedState();
     }
+    if(Application::instance()->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+        Application::instance()->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 
 
