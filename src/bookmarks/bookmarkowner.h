@@ -72,7 +72,7 @@ public:
 
     // @{
     /**
-     * Funtions to get current information.
+     * Functions to get current information.
      */
     virtual QString currentTitle() const;
     virtual QString currentUrl() const;

@@ -48,6 +48,8 @@
 
 class OpenSearchEngine : public QObject
 {
+ Q_OBJECT
+
 public:
     typedef QPair<QString, QString> Parameter;
     

@@ -153,7 +153,7 @@ OpenSearchEngine *OpenSearchReader::read()
             else
             {
                 if (engine->suggestionsUrlTemplate().isEmpty() 
-                    && type == QL1S("application/x-suggestions+json")) //note: xml is prefered
+                    && type == QL1S("application/x-suggestions+json")) //note: xml is preferred
                 {
                     engine->setSuggestionsUrlTemplate(url);
                     engine->setSuggestionsParameters(parameters);

@@ -59,7 +59,7 @@ KUrl FilterUrlJob::url()
 void FilterUrlJob::run()
 {
     // Bookmarklets handling
-    if (_urlString.startsWith("javascript:"))
+    if (_urlString.startsWith(QL1S("javascript:")))
     {
         _url = KUrl(_urlString);
         return;
