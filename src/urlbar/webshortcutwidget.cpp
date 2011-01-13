@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "rekonq_defines.h"
 #include "webshortcutwidget.h"
+#include "rekonq_defines.h"
 
 #include <QtCore/QTimer>
 #include <QtCore/QSet>

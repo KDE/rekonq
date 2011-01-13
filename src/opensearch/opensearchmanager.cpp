@@ -43,7 +43,6 @@
 #include <KUrl>
 #include <kio/scheduler.h>
 #include <KService>
-#include <KStandardDirs>
 #include <KDE/KMessageBox>
 #include <KUriFilterData>
 #include <KConfigGroup>
