@@ -637,7 +637,7 @@ void Application::setPrivateBrowsingMode(bool b)
     {
         QString caption = i18n("Are you sure you want to turn on private browsing?");
         QString text = i18n("<b>%1</b>"
-                            "<p>rekonq will save your current tabs for when you'll stop private browsing the net..</p>", caption);
+                            "<p>rekonq will save your current tabs for when you'll stop private browsing the net.</p>", caption);
 
         int button = KMessageBox::warningContinueCancel(mainWindow(), text, caption, KStandardGuiItem::cont(), KStandardGuiItem::cancel(), i18n("don't ask again") );
         if (button != KMessageBox::Continue)
