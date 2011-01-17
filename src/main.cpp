@@ -114,13 +114,18 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "http://identi.ca/jonan");
 
     about.addAuthor(ki18n("Benjamin Poulain"),
-                    ki18n("The \"QtWebKit guy\". Code quality improvements"),
+                    ki18n("The \"QtWebKit guy\". Adblock (new) implementation. Code quality improvements"),
                     "ikipou@gmail.com",
                     "http://www.openyourcode.org/");
 
     about.addAuthor(ki18n("Pierre Rossi"),
                 ki18n("Urlbar, tests, new tab page, bars... and more"),
                 "pierre.rossi@gmail.com",
+                "");
+    
+    about.addAuthor(ki18n("Furkan Uzumcu"),
+                ki18n("A lot of improvements, expecially on usability"),
+                "furkanuzumcu@gmail.com",
                 "");
     
     // --------------- about credits -----------------------------
