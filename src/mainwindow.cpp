@@ -1172,12 +1172,26 @@ void MainWindow::clearPrivateData()
     Ui::ClearDataWidget clearWidget;
     QWidget widget;
     clearWidget.setupUi(&widget);
+    clearWidget.clearHistory->setChecked(ReKonfig::clearHistory());
+    clearWidget.clearDownloads->setChecked(ReKonfig::clearDownloads());
+    clearWidget.clearCookies->setChecked(ReKonfig::clearCookies());
+    clearWidget.clearCachedPages->setChecked(ReKonfig::clearCachedPages());
+    clearWidget.clearWebIcons->setChecked(ReKonfig::clearWebIcons());
+    clearWidget.homePageThumbs->setChecked(ReKonfig::clearHomePageThumbs());
 
     dialog->setMainWidget(&widget);
     dialog->exec();
 
     if (dialog->result() == QDialog::Accepted)
     {
+        //Save current state
+        ReKonfig::setClearHistory(clearWidget.clearHistory->isChecked());
+        ReKonfig::setClearDownloads(clearWidget.clearDownloads->isChecked());
+        ReKonfig::setClearCookies(clearWidget.clearDownloads->isChecked());
+        ReKonfig::setClearCachedPages(clearWidget.clearCachedPages->isChecked());
+        ReKonfig::setClearWebIcons(clearWidget.clearWebIcons->isChecked());
+        ReKonfig::setClearHomePageThumbs(clearWidget.homePageThumbs->isChecked());
+
         if (clearWidget.clearHistory->isChecked())
         {
             Application::historyManager()->clear();
@@ -1221,7 +1235,6 @@ void MainWindow::clearPrivateData()
 
     dialog->deleteLater();
 }
-
 
 void MainWindow::aboutToShowBackMenu()
 {

@@ -82,6 +82,24 @@
     <entry name="hScrollWheelHistory" type="Bool">
         <default>false</default>
     </entry>
+    <entry name="clearHistory" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="clearDownloads" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="clearCookies" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="clearCachedPages" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="clearWebIcons" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="clearHomePageThumbs" type="Bool">
+        <default>true</default>
+    </entry>
 </group>
 
 
