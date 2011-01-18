@@ -169,7 +169,7 @@ private Q_SLOTS:
     void enableNetworkAnalysis(bool);
 
     void initBookmarkBar();
-    void initToolsMenu();
+    void updateToolsMenu();
 
 private:
     MainView *m_view;
@@ -193,7 +193,8 @@ private:
     KPassivePopup *m_popup;
     QTimer *m_hidePopup;
 
-    KActionMenu *m_toolsMenu;
+    KMenu *m_toolsMenu;
+    KActionMenu *m_developerMenu;
 };
 
 #endif // MAINWINDOW_H

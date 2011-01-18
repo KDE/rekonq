@@ -106,6 +106,7 @@ MainWindow::MainWindow()
         , m_popup(new KPassivePopup(this))
         , m_hidePopup(new QTimer(this))
         , m_toolsMenu(0)
+        , m_developerMenu(0)
 {
     // creating a centralWidget containing panel, m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
@@ -212,9 +213,6 @@ void MainWindow::initBookmarkBar()
     }
     m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
     Application::bookmarkProvider()->registerBookmarkBar(m_bookmarksBar);
-
-    // To update the bookmark toolbar action
-    initToolsMenu();
 }
 
 
@@ -230,55 +228,58 @@ void MainWindow::configureToolbars()
 }
 
 
-void MainWindow::initToolsMenu()
+void MainWindow::updateToolsMenu()
 {
-    if (!m_toolsMenu)
-        return;
+    if( m_toolsMenu->isEmpty() )
+    {
+        m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Open)));
+        m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
+        m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
+        m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
 
-    m_toolsMenu->menu()->clear();
+        QAction *action = actionByName(KStandardAction::name(KStandardAction::Zoom));
+        action->setCheckable(true);
+        connect (m_zoomBar, SIGNAL(visibilityChanged(bool)), action, SLOT(setChecked(bool)));
+        m_toolsMenu->addAction(action);
 
-    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Open)));
-    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
-    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
-    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
+        m_toolsMenu->addAction(actionByName(QL1S("encodings")));
 
-    QAction *action = actionByName(KStandardAction::name(KStandardAction::Zoom));
-    action->setCheckable(true);
-    connect (m_zoomBar, SIGNAL(visibilityChanged(bool)), action, SLOT(setChecked(bool)));
-    m_toolsMenu->addAction(action);
+        m_toolsMenu->addSeparator();
 
-    m_toolsMenu->addAction(actionByName(QL1S("encodings")));
+        m_toolsMenu->addAction(actionByName(QL1S("private_browsing")));
+        m_toolsMenu->addAction(actionByName(QL1S("clear_private_data")));
 
-    m_toolsMenu->addSeparator();
+        m_toolsMenu->addSeparator();
 
-    m_toolsMenu->addAction(actionByName(QL1S("private_browsing")));
-    m_toolsMenu->addAction(actionByName(QL1S("clear_private_data")));
+        m_developerMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Development"), this);
+        m_developerMenu->addAction(actionByName(QL1S("web_inspector")));
+        m_developerMenu->addAction(actionByName(QL1S("page_source")));
+        m_developerMenu->addAction(actionByName(QL1S("net_analyzer")));
 
-    m_toolsMenu->addSeparator();
+        m_toolsMenu->addAction(m_developerMenu);
+        if(!ReKonfig::showDeveloperTools())
+            m_developerMenu->setVisible(false);
 
-    KActionMenu *webMenu = new KActionMenu(KIcon("applications-development-web"), i18n("Development"), this);
-    webMenu->addAction(actionByName(QL1S("web_inspector")));
-    webMenu->addAction(actionByName(QL1S("page_source")));
-    webMenu->addAction(actionByName(QL1S("net_analyzer")));
-    m_toolsMenu->addAction(webMenu);
+        m_toolsMenu->addSeparator();
 
-    m_toolsMenu->addSeparator();
+        action = m_bookmarksBar->toolBar()->toggleViewAction();
+        action->setText(i18n("Bookmarks Toolbar"));
+        action->setIcon(KIcon("bookmarks-bar"));
+        m_toolsMenu->addAction(action);
 
-    action = m_bookmarksBar->toolBar()->toggleViewAction();
-    action->setText(i18n("Bookmarks Toolbar"));
-    action->setIcon(KIcon("bookmarks-bar"));
-    m_toolsMenu->addAction(action);
+        m_toolsMenu->addAction(actionByName(QL1S("show_history_panel")));
+        m_toolsMenu->addAction(actionByName(QL1S("show_bookmarks_panel")));
+        m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
 
-    m_toolsMenu->addAction(actionByName(QL1S("show_history_panel")));
-    m_toolsMenu->addAction(actionByName(QL1S("show_bookmarks_panel")));
-    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
+        m_toolsMenu->addSeparator();
 
-    m_toolsMenu->addSeparator();
+        this->setHelpMenuEnabled(true);
+        helpMenu()->setIcon(KIcon("help-browser"));
+        m_toolsMenu->addAction(helpMenu()->menuAction());
+        m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
+    }
 
-    this->setHelpMenuEnabled(true);
-    helpMenu()->setIcon(KIcon("help-browser"));
-    m_toolsMenu->addAction(helpMenu()->menuAction());
-    m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
+    m_developerMenu->setVisible(ReKonfig::showDeveloperTools());
 }
 
 
@@ -529,13 +530,16 @@ void MainWindow::setupActions()
 void MainWindow::setupTools()
 {
     kDebug() << "setup tools...";
-    m_toolsMenu = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
-    m_toolsMenu->setDelayed(false);
-    m_toolsMenu->setShortcutConfigurable(true);
-    m_toolsMenu->setShortcut( KShortcut(Qt::ALT + Qt::Key_T) );
+    KActionMenu *toolsAction = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
+    toolsAction->setDelayed(false);
+    toolsAction->setShortcutConfigurable(true);
+    toolsAction->setShortcut( KShortcut(Qt::ALT + Qt::Key_T) );
+    m_toolsMenu = new KMenu(this);
+    toolsAction->setMenu(m_toolsMenu); // dummy menu to have the dropdown arrow
+    connect( m_toolsMenu, SIGNAL(aboutToShow()), this, SLOT(updateToolsMenu()) );
 
     // adding rekonq_tools to rekonq actionCollection
-    actionCollection()->addAction(QL1S("rekonq_tools"), m_toolsMenu);
+    actionCollection()->addAction(QL1S("rekonq_tools"), toolsAction);
 
     // Actions are added after the call to setupGUI() to ensure the help menu works
 }
