@@ -69,7 +69,7 @@
 <chapter id="introduction"><title>Introduction</title> 
 <para>Based initially on <emphasis>qtwebkit</emphasis> (and currently on <emphasis>kdewebkit</emphasis>), &rekonq; is a lightweight browser designed to use the <guilabel>WebKit</guilabel> rendering engine in combination with various &kde; technologies, allowing it to integrate seamlessly into the &kde; desktop. The name is a throwback to the venerable khtml-based <ulink url="help:/konqueror/index.html">&konqueror;</ulink> which is currently the default &kde; web browser.
 </para>
-<para>&rekonq; has already replaced &konqueror; as the default browser in Chakra, with more distributions expressing similar intent for their future releases.
+<para>&rekonq; has already replaced &konqueror; as the default browser in Chakra and Kubuntu, with more distributions expressing similar intent for their future releases.
 </para>
 <important><para>Like all &kde; applications, &rekonq; is highly
         configurable. This document describes how &rekonq; behaves with the normal,
