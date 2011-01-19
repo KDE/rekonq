@@ -140,7 +140,9 @@ void MainView::updateTabButtonPosition()
         if (ButtonInCorner)
         {
             setCornerWidget(0);
-            m_addTabButton->show();
+            // new window problem
+            if(count()>1)
+                m_addTabButton->show();
             ButtonInCorner = false;
         }
 
