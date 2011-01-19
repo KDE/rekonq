@@ -124,7 +124,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                 "");
     
     about.addAuthor(ki18n("Furkan Uzumcu"),
-                ki18n("A lot of improvements, expecially on usability"),
+                ki18n("A lot of improvements, especially on usability"),
                 "furkanuzumcu@gmail.com",
                 "");
     
