@@ -365,15 +365,23 @@ PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *p
 
 ImageLabel::ImageLabel(const QString &url, int width, int height, QWidget *parent)
         : QLabel(parent),
-        m_width(width),
-        m_height(height)
+        m_url(url)
 {
     setFixedSize(width, height);
-    KIO::TransferJob *job = KIO::get(KUrl(url), KIO::NoReload, KIO::HideProgressInfo);
-    connect(job,  SIGNAL(data(KIO::Job *, const QByteArray &)),
-            this, SLOT(slotData(KIO::Job*, const QByteArray&)));
-    connect(job,  SIGNAL(result(KJob *)),
-            this, SLOT(slotResult(KJob *)));
+    if (WebSnap::existsImage(KUrl(url)))
+    {
+        QPixmap pix;
+        pix.load(WebSnap::imagePathFromUrl(url));
+        setPixmap(pix);
+    }
+    else
+    {
+        KIO::TransferJob *job = KIO::get(KUrl(url), KIO::NoReload, KIO::HideProgressInfo);
+        connect(job,  SIGNAL(data(KIO::Job *, const QByteArray &)),
+                this, SLOT(slotData(KIO::Job*, const QByteArray&)));
+        connect(job,  SIGNAL(result(KJob *)),
+                this, SLOT(slotResult(KJob *)));
+    }
 }
 
 
@@ -390,6 +398,7 @@ void ImageLabel::slotResult(KJob *)
     if (!pix.loadFromData(m_data))
         kDebug() << "error while loading image: ";
     setPixmap(pix);
+    pix.save(WebSnap::imagePathFromUrl(m_url), "PNG");
 }
 
 

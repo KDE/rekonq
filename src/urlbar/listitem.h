@@ -254,8 +254,7 @@ public:
     ImageLabel(const QString &url, int width, int height, QWidget *parent);
 
 private:
-    int m_width;
-    int m_height;
+    QString m_url;
     QByteArray m_data;
 
 private slots:
