@@ -103,6 +103,7 @@ private:
      * the index of the tab preview shown
      */
     int m_currentTabPreviewIndex;
+    bool m_isFirstTimeOnTab;
 };
 
 #endif

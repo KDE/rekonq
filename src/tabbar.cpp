@@ -54,6 +54,7 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QToolButton>
 
+
 #define BASE_WIDTH_DIVISOR    4
 #define MIN_WIDTH_DIVISOR     8
 
@@ -62,6 +63,7 @@ TabBar::TabBar(QWidget *parent)
         : KTabBar(parent)
         , m_actualIndex(-1)
         , m_currentTabPreviewIndex(-1)
+        , m_isFirstTimeOnTab(true)
 {
     setElideMode(Qt::ElideRight);
 
@@ -146,6 +148,9 @@ void TabBar::detachTab()
 
 void TabBar::showTabPreview()
 {
+    if(m_isFirstTimeOnTab)
+        m_isFirstTimeOnTab = false;
+    
     //delete previous tab preview
     delete m_previewPopup.data();
     m_previewPopup.clear();
@@ -232,7 +237,11 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
            )
         {
             m_currentTabPreviewIndex = tabIndex;
-            QTimer::singleShot(200, this, SLOT( showTabPreview() ) );
+            
+            // if first time over tab, apply a small delay. If not, show it now!
+            m_isFirstTimeOnTab
+                ? QTimer::singleShot(200, this, SLOT(showTabPreview()))
+                : showTabPreview();
         }
 
         // if current tab or not found then hide previous tab preview
@@ -258,6 +267,7 @@ void TabBar::leaveEvent(QEvent *event)
             m_previewPopup.data()->hide();
         }
         m_currentTabPreviewIndex = -1;
+        m_isFirstTimeOnTab = true;
     }
 
     KTabBar::leaveEvent(event);
