@@ -34,6 +34,10 @@
 
 // Qt Includes
 #include <QtCore/QRegExp>
+#include <QtCore/QFile>
+
+// KDE Includes
+#include <KStandardDirs>
 
 
 OpenSearchEngine::OpenSearchEngine(QObject *parent)
@@ -246,6 +250,19 @@ bool OpenSearchEngine::operator<(const OpenSearchEngine &other) const
 }
 
 
+ResponseList OpenSearchEngine::parseSuggestion(const QString &searchTerm, const QByteArray &resp)
+{
+    QFile file(suggestionPathFor(searchTerm));
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        file.write(resp, resp.size());
+        file.close();
+    }
+
+    return parseSuggestion(resp);
+}
+
+
 ResponseList OpenSearchEngine::parseSuggestion(const QByteArray &resp)
 {
     if (!m_parser)
@@ -258,4 +275,31 @@ ResponseList OpenSearchEngine::parseSuggestion(const QByteArray &resp)
 QString OpenSearchEngine::type()
 {
     return m_parser->type();
+}
+
+
+QString OpenSearchEngine::suggestionPathFor(const QString &searchTerm)
+{
+    return KStandardDirs::locateLocal("cache", QString("opensearch/") + m_name + QString("/") + searchTerm, true);
+}
+
+
+bool OpenSearchEngine::hasCachedSuggestionsFor(const QString &searchTerm)
+{
+    return QFile::exists(suggestionPathFor(searchTerm));
+}
+
+
+ResponseList OpenSearchEngine::cachedSuggestionsFor(const QString &searchTerm)
+{
+    QFile file(suggestionPathFor(searchTerm));
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return ResponseList();
+
+    QByteArray resp;
+    while (!file.atEnd())
+    {
+        resp += file.readLine();
+    }
+    return parseSuggestion(resp);
 }

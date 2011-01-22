@@ -52,7 +52,7 @@ class OpenSearchEngine : public QObject
 
 public:
     typedef QPair<QString, QString> Parameter;
-    
+
     OpenSearchEngine(QObject *parent = 0);
     ~OpenSearchEngine();
 
@@ -79,7 +79,7 @@ public:
     void setSuggestionsParameters(const QList<Parameter> &suggestionsParameters);
 
     void setSuggestionParser(SuggestionParser *parser);
-    
+
     QString imageUrl() const;
     void setImageUrl(const QString &url);
 
@@ -91,11 +91,15 @@ public:
     bool operator==(const OpenSearchEngine &other) const;
     bool operator<(const OpenSearchEngine &other) const;
 
-    ResponseList parseSuggestion(const QByteArray &response);
+    ResponseList parseSuggestion(const QString &searchTerm, const QByteArray &response);
 
     static QString parseTemplate(const QString &searchTerm, const QString &searchTemplate);
 
     QString type();
+
+    bool hasCachedSuggestionsFor(const QString &searchTerm);
+
+    ResponseList cachedSuggestionsFor(const QString &searchTerm);
 
 private:
     QString m_name;
@@ -110,6 +114,10 @@ private:
     QList<Parameter> m_suggestionsParameters;
 
     SuggestionParser *m_parser;
+
+    QString suggestionPathFor(const QString &searchTerm);
+
+    ResponseList parseSuggestion(const QByteArray &resp);
 };
 
 #endif // OPENSEARCHENGINE_H

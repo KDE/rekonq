@@ -147,15 +147,20 @@ void OpenSearchManager::requestSuggestion(const QString &searchText)
         idleJob();
     }
 
-    _typedText = searchText;
-
-    KUrl url = m_activeEngine->suggestionsUrl(searchText);
-    kDebug() << "Requesting for suggestions: " << url.url();
-
-    m_currentJob = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
-    m_state = REQ_SUGGESTION;
-    connect(m_currentJob, SIGNAL(data(KIO::Job *, const QByteArray &)), this, SLOT(dataReceived(KIO::Job *, const QByteArray &)));
-    connect(m_currentJob, SIGNAL(result(KJob *)), this, SLOT(jobFinished(KJob *)));
+    if (m_activeEngine->hasCachedSuggestionsFor(searchText))
+    {
+        emit suggestionsReceived(searchText, m_activeEngine->cachedSuggestionsFor(searchText));
+    }
+    else
+    {
+        KUrl url = m_activeEngine->suggestionsUrl(searchText);
+        kDebug() << "Requesting for suggestions: " << url.url();
+        _typedText = searchText;
+        m_currentJob = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
+        m_state = REQ_SUGGESTION;
+        connect(m_currentJob, SIGNAL(data(KIO::Job *, const QByteArray &)), this, SLOT(dataReceived(KIO::Job *, const QByteArray &)));
+        connect(m_currentJob, SIGNAL(result(KJob *)), this, SLOT(jobFinished(KJob *)));
+    }
 }
 
 
@@ -177,13 +182,12 @@ void OpenSearchManager::jobFinished(KJob *job)
 
     if (m_state == REQ_SUGGESTION) 
     {
-        const ResponseList suggestionsList = m_activeEngine->parseSuggestion(m_jobData);
+        const ResponseList suggestionsList = m_activeEngine->parseSuggestion(_typedText, m_jobData);
         kDebug() << "Received suggestions in "<< _typedText << " from " << m_activeEngine->name() << ": ";
         Q_FOREACH(const Response &r, suggestionsList)
         {
             kDebug() << r.title; 
         }
-
         emit suggestionsReceived(_typedText, suggestionsList);
         idleJob();
         return;
