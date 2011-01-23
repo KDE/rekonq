@@ -47,6 +47,7 @@
 #include <QSortFilterProxyModel>
 #include <QWebHistoryInterface>
 
+#include <math.h>
 
 /**
  * Elements in this class represent an history item
@@ -73,10 +74,15 @@ public:
                && other.dateTime == dateTime;
     }
 
+    inline qreal relevance() const
+    {
+        return log(visitCount) - log(dateTime.daysTo(QDateTime::currentDateTime()) + 1);
+    }
+
     // history is sorted in reverse
     inline bool operator <(const HistoryItem &other) const
     {
-        return dateTime > other.dateTime;
+        return relevance() > other.relevance();
     }
 
     QString title;
