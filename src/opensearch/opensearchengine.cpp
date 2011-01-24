@@ -35,6 +35,8 @@
 // Qt Includes
 #include <QtCore/QRegExp>
 #include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDateTime>
 
 // KDE Includes
 #include <KStandardDirs>
@@ -286,7 +288,8 @@ QString OpenSearchEngine::suggestionPathFor(const QString &searchTerm)
 
 bool OpenSearchEngine::hasCachedSuggestionsFor(const QString &searchTerm)
 {
-    return QFile::exists(suggestionPathFor(searchTerm));
+    QFileInfo info(suggestionPathFor(searchTerm));
+    return info.exists() && info.lastModified().daysTo(QDateTime::currentDateTime()) < 7;
 }
 
 
