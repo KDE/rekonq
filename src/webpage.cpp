@@ -392,8 +392,11 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     
     // This is probably needed just in ONE stupid case..
     if (_protHandler.postHandling(reply->request(), mainFrame()))
+    {
+        kDebug() << "POST HANDLING the unsupported...";
         return;
-
+    }
+    
     if (reply->error() != QNetworkReply::NoError)
         return;
 
@@ -655,9 +658,9 @@ QString WebPage::errorPage(QNetworkReply *reply)
     QString title = i18n("There was a problem while loading the page");
     
     // NOTE: 
-    // this, to be sure BUG 217464 (Universal XSS) has been fixed..
-    QString urlString = Qt::escape(reply->url().toString(QUrl::RemoveUserInfo | QUrl::RemoveQuery | QUrl::RemovePath));
-
+    // this, to take care about XSS (see BUG 217464)...
+    QString urlString = Qt::escape(reply->url().toString());
+    
     QString iconPath = QString("file://") + KIconLoader::global()->iconPath("dialog-warning" , KIconLoader::Small);
     iconPath.replace(QL1S("16"), QL1S("128"));
 
