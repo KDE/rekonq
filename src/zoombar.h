@@ -34,7 +34,7 @@
 
 // Qt Includes
 #include <QtGui/QWidget>
-#include <QLabel>
+#include <QtGui/QLabel>
 
 // Forward Declarations
 class MainWindow;
@@ -51,7 +51,7 @@ public:
     ZoomBar(QWidget *parent);
     ~ZoomBar();
 
-public slots:
+public Q_SLOTS:
     void show();
     void hide();
 
@@ -63,15 +63,18 @@ public slots:
     void setValue(int value);
     void toggleVisibility();
 
-signals:
+private:
+    void saveZoomValue(const QString &, int);
+
+Q_SIGNALS:
     void visibilityChanged(bool);
 
 private:
-     QToolButton *m_zoomIn;
-     QToolButton *m_zoomOut;
-     QToolButton *m_zoomNormal;
-     QSlider *m_zoomSlider;
-     QLabel *m_percentage;
+    QToolButton *m_zoomIn;
+    QToolButton *m_zoomOut;
+    QToolButton *m_zoomNormal;
+    QSlider *m_zoomSlider;
+    QLabel *m_percentage;
 };
 
 #endif

@@ -532,7 +532,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
 void WebPage::loadStarted()
 {
-    // HACK: 
+    // HACK:
     // Chinese encoding Fix. See BUG: 251264
     // Use gb18030 instead of gb2312
     if(settings()->defaultTextEncoding() == QL1S("gb2312"))
@@ -544,6 +544,16 @@ void WebPage::loadStarted()
 void WebPage::loadFinished(bool ok)
 {
     Q_UNUSED(ok);
+
+    // set zoom factor
+    QString val;
+    KSharedConfig::Ptr config = KGlobal::config();
+    KConfigGroup group( config, "Zoom" );
+    val = group.readEntry(_loadingUrl.host(), QString("10"));
+
+    int value = val.toInt();
+    kDebug() << "ZOOM VALUE: " << _loadingUrl.host() << value;
+    mainFrame()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values
 
     // Provide site icon. Can this be moved to loadStarted??
     Application::iconManager()->provideIcon(this, _loadingUrl);

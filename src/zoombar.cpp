@@ -40,12 +40,15 @@
 #include <KIcon>
 #include <KLocalizedString>
 #include <KStandardAction>
+#include <KConfig>
+#include <KConfigGroup>
 
 // Qt Includes
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QSlider>
 #include <QtGui/QToolButton>
+
 
 ZoomBar::ZoomBar(QWidget *parent)
         : QWidget(parent)
@@ -84,8 +87,6 @@ ZoomBar::ZoomBar(QWidget *parent)
     m_zoomOut->setAutoRaise(true);
     m_zoomNormal->setAutoRaise(true);
 
-   // layout->setSpacing(0);
-   // layout->setMargin(0);
     layout->addWidget(m_zoomOut);
     layout->addWidget(m_zoomSlider, 8);
     layout->addWidget(m_zoomIn);
@@ -98,6 +99,15 @@ ZoomBar::ZoomBar(QWidget *parent)
 
     // we start off hidden
     hide();
+}
+
+
+ZoomBar::~ZoomBar()
+{
+    delete m_zoomIn;
+    delete m_zoomOut;
+    delete m_zoomNormal;
+    delete m_zoomSlider;
 }
 
 
@@ -118,15 +128,6 @@ void ZoomBar::setupActions(MainWindow *window)
 }
 
 
-ZoomBar::~ZoomBar()
-{
-    delete m_zoomIn;
-    delete m_zoomOut;
-    delete m_zoomNormal;
-    delete m_zoomSlider;
-}
-
-
 void ZoomBar::show()
 {
     // show findbar if not visible
@@ -134,7 +135,7 @@ void ZoomBar::show()
     {
         emit visibilityChanged(true);
         QWidget::show();
-	m_zoomSlider->setValue(Application::instance()->mainWindow()->currentTab()->view()->zoomFactor()*10);
+        m_zoomSlider->setValue(Application::instance()->mainWindow()->currentTab()->view()->zoomFactor()*10);
     }
 }
 
@@ -168,7 +169,7 @@ void ZoomBar::updateSlider(int webview)
 {
     WebTab *tab = 0;
     if (!Application::instance()->mainWindowList().isEmpty())
-          tab = Application::instance()->mainWindow()->mainView()->webTab(webview);
+        tab = Application::instance()->mainWindow()->mainView()->webTab(webview);
 
     if (!tab)
         return;
@@ -181,12 +182,23 @@ void ZoomBar::setValue(int value)
 {
     m_zoomSlider->setValue(value);
     m_percentage->setText(i18nc("percentage of the website zoom", "%1%", QString::number(value*10)));
-    // Don't allox max +1 values
-    Application::instance()->mainWindow()->currentTab()->view()->setZoomFactor(QVariant(m_zoomSlider->value()).toReal() / 10);
+
+    WebTab *tab = Application::instance()->mainWindow()->currentTab();
+    saveZoomValue(tab->url().host(), value);
+    tab->view()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values
 }
 
 
 void ZoomBar::toggleVisibility()
 {
     isVisible() ? hide() : show();
+}
+
+
+void ZoomBar::saveZoomValue(const QString &host, int value)
+{
+    KSharedConfig::Ptr config = KGlobal::config();
+    KConfigGroup group( config, "Zoom" );
+    group.writeEntry(host, QString::number(value) );
+    config->sync();
 }

@@ -54,6 +54,7 @@
 // Qt Includes
 #include <QtGui/QVBoxLayout>
 
+
 WebTab::WebTab(QWidget *parent)
         : QWidget(parent)
         , m_webView(new WebView(this))
@@ -168,6 +169,7 @@ void WebTab::createPreviewSelectorBar(int index)
     connect(page(),             SIGNAL(loadFinished(bool)), m_previewSelectorBar.data(), SLOT(loadFinished()), Qt::UniqueConnection);
     connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  m_previewSelectorBar.data(), SLOT(verifyUrl()), Qt::UniqueConnection);
 }
+
 
 void WebTab::insertBar(NotificationBar *bar)
 {
