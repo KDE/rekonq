@@ -104,6 +104,7 @@ MainWindow::MainWindow()
         , m_webInspectorPanel(0)
         , m_analyzerPanel(0)
         , m_historyBackMenu(0)
+        , m_historyForwardMenu(0)
         , m_encodingMenu(new KMenu(this))
         , m_userAgentMenu(new KMenu(this))
         , m_bookmarksBar(0)
@@ -178,6 +179,7 @@ MainWindow::~MainWindow()
 
     delete m_stopReloadAction;
     delete m_historyBackMenu;
+    delete m_historyForwardMenu;
     delete m_encodingMenu;
 
     delete m_bookmarksBar;
@@ -454,6 +456,11 @@ void MainWindow::setupActions()
     a = actionCollection()->addAction(KStandardAction::Forward);
     connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(openNext(Qt::MouseButtons, Qt::KeyboardModifiers)));
 
+    m_historyForwardMenu = new KMenu(this);
+    a->setMenu(m_historyForwardMenu);
+    connect(m_historyForwardMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowForwardMenu()));
+    connect(m_historyForwardMenu, SIGNAL(triggered(QAction *)), this, SLOT(openActionUrl(QAction*)));
+    
     // ============================== General Tab Actions ====================================
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
@@ -1263,16 +1270,12 @@ void MainWindow::aboutToShowBackMenu()
     QWebHistory *history = currentTab()->view()->history();
     int pivot = history->currentItemIndex();
     int offset = 0;
-    QList<QWebHistoryItem> historyList = history->backItems(8); //no more than 8 elements!
+    const int maxItemNumber = 8;  // no more than 8 elements in the Back History Menu!
+    QList<QWebHistoryItem> historyList = history->backItems(maxItemNumber);
     int listCount = historyList.count();
-    if (pivot >= 8)
-        offset = pivot - 8;
+    if (pivot >= maxItemNumber)
+        offset = pivot - maxItemNumber;
 
-    /*
-     * Need a bug report upstream.
-     * Seems setHtml() do some garbage in history
-     * Here history->currentItem() have backItem url and currentItem (error page) title
-     */
     if (currentTab()->view()->page()->isOnRekonqPage())
     {
         QWebHistoryItem item = history->currentItem();
@@ -1295,6 +1298,48 @@ void MainWindow::aboutToShowBackMenu()
         m_historyBackMenu->addAction(action);
     }
 }
+
+
+void MainWindow::aboutToShowForwardMenu()
+{
+    m_historyForwardMenu->clear();
+
+    if (!currentTab())
+        return;
+
+    QWebHistory *history = currentTab()->view()->history();
+    const int pivot = history->currentItemIndex();
+    int offset = 0;
+    const int maxItemNumber = 8;  // no more than 8 elements in the Forward History Menu!
+    QList<QWebHistoryItem> historyList = history->forwardItems(maxItemNumber);
+    int listCount = historyList.count();
+
+    if (pivot >= maxItemNumber)
+        offset = pivot - maxItemNumber;
+
+    if (currentTab()->view()->page()->isOnRekonqPage())
+    {
+        QWebHistoryItem item = history->currentItem();
+        KAction *action = new KAction(this);
+        action->setData(listCount + offset++);
+        KIcon icon = Application::iconManager()->iconForUrl(item.url());
+        action->setIcon(icon);
+        action->setText(item.title());
+        m_historyForwardMenu->addAction(action);
+    }
+
+    for (int i = 1; i <= listCount; i++)
+    {
+        QWebHistoryItem item = historyList.at(i - 1);
+        KAction *action = new KAction(this);
+        action->setData(pivot +i + offset);
+        KIcon icon = Application::iconManager()->iconForUrl(item.url());
+        action->setIcon(icon);
+        action->setText(item.title());
+        m_historyForwardMenu->addAction(action);
+    }
+}
+
 
 void MainWindow::aboutToShowTabListMenu()
 {
