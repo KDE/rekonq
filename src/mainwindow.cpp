@@ -52,6 +52,8 @@
 #include "webpage.h"
 #include "webtab.h"
 #include "zoombar.h"
+#include "useragentinfo.h"
+#include "useragentwidget.h"
 
 // Ui Includes
 #include "ui_cleardata.h"
@@ -71,6 +73,7 @@
 #include <KPushButton>
 #include <KStandardDirs>
 #include <KToggleFullScreenAction>
+#include <KProtocolManager>
 
 #include <KParts/Part>
 #include <KParts/BrowserExtension>
@@ -102,6 +105,7 @@ MainWindow::MainWindow()
         , m_analyzerPanel(0)
         , m_historyBackMenu(0)
         , m_encodingMenu(new KMenu(this))
+        , m_userAgentMenu(new KMenu(this))
         , m_bookmarksBar(0)
         , m_popup(new KPassivePopup(this))
         , m_hidePopup(new QTimer(this))
@@ -243,6 +247,7 @@ void MainWindow::updateToolsMenu()
         m_toolsMenu->addAction(action);
 
         m_toolsMenu->addAction(actionByName(QL1S("encodings")));
+        m_toolsMenu->addAction(actionByName(QL1S("useragent")));
 
         m_toolsMenu->addSeparator();
 
@@ -524,6 +529,16 @@ void MainWindow::setupActions()
     a->setMenu(m_encodingMenu);
     connect(m_encodingMenu, SIGNAL(aboutToShow()), this, SLOT(populateEncodingMenu()));
     connect(m_encodingMenu, SIGNAL(triggered(QAction *)), this, SLOT(setEncoding(QAction *)));
+
+    // --- User Agent
+    a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
+    actionCollection()->addAction(QL1S("useragent"), a);
+    a->setMenu(m_userAgentMenu);
+    connect(m_userAgentMenu, SIGNAL(aboutToShow()), this, SLOT(populateUserAgentMenu()));
+    
+    a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
+    actionCollection()->addAction(QL1S("UserAgentSettings"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(showUserAgentSettings()));
 }
 
 
@@ -1344,6 +1359,22 @@ void MainWindow::setEncoding(QAction *qa)
 }
 
 
+void MainWindow::setUserAgent()
+{
+    QAction *sender = static_cast<QAction *>(QObject::sender());
+
+    QString info;
+    QString desc = sender->text();
+    int uaIndex = sender->data().toInt();
+    
+    KUrl url = currentTab()->url();
+    UserAgentInfo uaInfo;
+    kDebug() << "SETTING USER AGENT";
+    uaInfo.setUserAgentForHost(uaIndex, url.host());
+    currentTab()->page()->triggerAction(QWebPage::Reload);
+}
+
+
 void MainWindow::populateEncodingMenu()
 {
     QStringList codecs;
@@ -1399,6 +1430,51 @@ void MainWindow::populateEncodingMenu()
     m_encodingMenu->addMenu( isciiMenu );
     m_encodingMenu->addMenu( uniMenu );
     m_encodingMenu->addMenu( otherMenu );
+}
+
+
+void MainWindow::populateUserAgentMenu()
+{
+    kDebug() << "populating user agent menu...";
+    bool defaultUA = true;
+    KUrl url = currentTab()->url();
+    
+    QAction *a, *defaultAction;
+    
+    m_userAgentMenu->clear();
+    
+    defaultAction = new QAction( i18nc("Default rekonq user agent", "Default"), this);
+    defaultAction->setData(-1);
+    defaultAction->setCheckable(true);
+    connect(defaultAction, SIGNAL(triggered(bool)), this, SLOT(setUserAgent()));
+    
+    m_userAgentMenu->addAction(defaultAction);
+    m_userAgentMenu->addSeparator();
+    
+    UserAgentInfo uaInfo;
+    QStringList UAlist = uaInfo.availableUserAgents();
+    int uaIndex = uaInfo.uaIndexForHost(currentTab()->url().host());
+    
+    for (int i = 0; i < UAlist.count(); ++i)
+    {
+        QString uaDesc = UAlist.at(i);
+        
+        a = new QAction(uaDesc, this);
+        a->setData(i);
+        a->setCheckable(true);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(setUserAgent()));    
+        
+        if(i == uaIndex)
+        {
+            a->setChecked(true);
+            defaultUA = false;
+        }
+        m_userAgentMenu->addAction(a);
+    }
+    defaultAction->setChecked(defaultUA);
+    
+    m_userAgentMenu->addSeparator();
+    m_userAgentMenu->addAction( actionByName("UserAgentSettings") );
 }
 
 
@@ -1473,4 +1549,18 @@ void MainWindow::setupBookmarksAndToolsShortcuts()
     {
         connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), toolsButton, SLOT(showMenu()));
     }
+}
+
+
+void MainWindow::showUserAgentSettings()
+{
+    QPointer<KDialog> dialog = new KDialog(this);
+    dialog->setCaption(i18nc("@title:window", "User Agent Settings"));
+    dialog->setButtons(KDialog::Ok);
+
+    UserAgentWidget widget;
+    dialog->setMainWidget(&widget);
+    dialog->exec();
+    
+    dialog->deleteLater();
 }

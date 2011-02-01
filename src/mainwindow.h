@@ -166,6 +166,11 @@ private Q_SLOTS:
     void setEncoding(QAction *);
     void populateEncodingMenu();
 
+    // user agent
+    void setUserAgent();
+    void populateUserAgentMenu();
+    void showUserAgentSettings();
+
     void enableNetworkAnalysis(bool);
 
     void initBookmarkBar();
@@ -186,6 +191,8 @@ private:
     KMenu *m_encodingMenu;
     KMenu *m_tabListMenu;
 
+    KMenu *m_userAgentMenu;
+    
     BookmarkToolBar *m_bookmarksBar;
 
     QString m_lastSearch;

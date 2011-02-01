@@ -81,6 +81,9 @@ SET( rekonq_KDEINIT_SRCS
     opensearch/opensearchmanager.cpp
     opensearch/opensearchengine.cpp
     opensearch/suggestionparser.cpp
+    #----------------------------------------
+    useragent/useragentinfo.cpp
+    useragent/useragentwidget.cpp
 )
 
 
@@ -91,6 +94,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_webkit.ui
     settings/settings_adblock.ui
     cleardata.ui
+    useragent/useragentsettings.ui
  )
 
 KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
@@ -107,6 +111,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/rekonqpage
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
                         ${CMAKE_CURRENT_SOURCE_DIR}/urlbar
+                        ${CMAKE_CURRENT_SOURCE_DIR}/useragent
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}

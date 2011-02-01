@@ -249,7 +249,7 @@ void Application::postLaunch()
     // bookmarks loading
     connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
             Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
-
+ 
     // crash recovering
     ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
     saveConfiguration();
