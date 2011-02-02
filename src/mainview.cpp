@@ -462,10 +462,13 @@ void MainView::closeTab(int index, bool del)
         && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
        )
     {
+        const int recentlyClosedTabsLimit = 10;
         QString title = tabToClose->view()->title();
         QString url = tabToClose->url().prettyUrl();
         HistoryItem item(url, QDateTime(), title);
         m_recentlyClosedTabs.removeAll(item);
+        if (m_recentlyClosedTabs.count() == recentlyClosedTabsLimit)
+            m_recentlyClosedTabs.removeLast();
         m_recentlyClosedTabs.prepend(item);
     }
 
