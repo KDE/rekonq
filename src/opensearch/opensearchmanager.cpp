@@ -277,7 +277,7 @@ void OpenSearchManager::loadEngines()
 
 void OpenSearchManager::saveEngines()
 {
-    QFile file(KStandardDirs::locate("appdata", "opensearch/db_opensearch.json"));
+    QFile file(KStandardDirs::locateLocal("appdata", "opensearch/db_opensearch.json"));
     if (!file.open(QIODevice::WriteOnly))
     {
          kDebug() << "opensearch db cannot be writen";
@@ -309,7 +309,7 @@ void  OpenSearchManager::removeDeletedEngines()
         service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(m_engines.value(url)));
         if (!service)
         {
-            QString path = KStandardDirs::locate("appdata", "opensearch/" + trimmedEngineName(m_engines.value(url)) + ".xml");
+            QString path = KStandardDirs::locateLocal("appdata", "opensearch/" + trimmedEngineName(m_engines.value(url)) + ".xml");
             QFile::remove(path + trimmedEngineName(m_engines.value(url)) + ".xml");
             m_engines.remove(url);
         }
