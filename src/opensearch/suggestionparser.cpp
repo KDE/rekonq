@@ -94,8 +94,6 @@ ResponseList XMLParser::parse(const QByteArray &resp)
             }
             rlist << Response(title, description, url, image, image_width, image_height);
         }
-
-        m_reader.readNext();
     }
 
     return rlist;
