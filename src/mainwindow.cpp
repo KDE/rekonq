@@ -321,6 +321,9 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(tabsChanged()), this, SLOT(updateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(updateActions()));
 
+    //Change window icon according to tab icon
+    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(changeWindowIcon(int)));
+
     // launch it manually. Just the first time...
     updateActions();
 
@@ -350,6 +353,15 @@ QSize MainWindow::sizeHint() const
     return size;
 }
 
+void MainWindow::changeWindowIcon(int index)
+{
+    if (ReKonfig::useFavicon())
+    {
+        KUrl url = mainView()->webTab(index)->url();
+        QIcon icon = Application::iconManager()->iconForUrl(url).pixmap(QSize(32,32));
+        setWindowIcon(icon);
+    }
+}
 
 void MainWindow::setupActions()
 {
@@ -630,7 +642,6 @@ void MainWindow::setupPanels()
     addDockWidget(Qt::BottomDockWidgetArea, m_analyzerPanel);
     m_analyzerPanel->hide();
 }
-
 
 void MainWindow::openLocation()
 {

@@ -81,6 +81,7 @@ private slots:
     void setupSmoothScrolling(int posY);
 
     void stopScrolling();
+    void changeWindowIcon();
 
 signals:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);

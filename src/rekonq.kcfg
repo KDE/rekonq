@@ -123,6 +123,9 @@
     <entry name="closeTabSelectPrevious" type="Bool">
         <default>false</default>
     </entry>
+    <entry name="useFavicon" type="Bool">
+        <default>false</default>
+    </entry>
 </group>
 
 

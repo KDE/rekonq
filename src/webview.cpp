@@ -43,6 +43,7 @@
 #include "urlbar.h"
 #include "webpage.h"
 #include "websnap.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KAction>
@@ -111,6 +112,8 @@ WebView::WebView(QWidget* parent)
     // Smooth scroll timer
     connect(m_smoothScrollTimer, SIGNAL(timeout()), this, SLOT(scrollTick()));
     m_smoothScrollTimer->setInterval(16);
+
+    connect(this, SIGNAL(iconChanged()), this, SLOT(changeWindowIcon()));
 }
 
 
@@ -127,6 +130,18 @@ WebView::~WebView()
     preview.save(path);
 }
 
+void WebView::changeWindowIcon()
+{
+    if (ReKonfig::useFavicon())
+    {
+        MainWindow *const mainWindow = Application::instance()->mainWindow();
+        if (url() == mainWindow->currentTab()->url())
+        {
+            const int index = mainWindow->mainView()->currentIndex();
+            mainWindow->changeWindowIcon(index);
+        }
+    }
+}
 
 WebPage *WebView::page()
 {

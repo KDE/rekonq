@@ -253,7 +253,14 @@
          <bool>true</bool>
         </property>
        </widget>
-      </item>
+      </item>      
+    <item>
+    <widget class="QCheckBox" name="kcfg_useFavicon">
+    <property name="text">
+    <string>Use favicon of the open website</string>
+    </property>
+    </widget>
+    </item>
      </layout>
     </widget>
    </item>

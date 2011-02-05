@@ -527,6 +527,10 @@ void Application::updateConfiguration()
     // ====== load Settings on main classes
     Application::historyManager()->loadSettings();
     Application::adblockManager()->loadSettings();
+    if(!ReKonfig::useFavicon())
+        mainWindow()->setWindowIcon(KIcon("rekonq"));
+    else
+        mainWindow()->changeWindowIcon(mainWindow()->mainView()->currentIndex());
 
     // hovering unfocused tabs options
     switch(ReKonfig::hoveringTabOption())

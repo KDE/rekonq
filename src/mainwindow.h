@@ -109,14 +109,16 @@ public Q_SLOTS:
     void updateHighlight();
     void findSelectedText();
 
+    void changeWindowIcon(int index);
+
 Q_SIGNALS:
     // switching tabs
     void ctrlTabPressed();
     void shiftCtrlTabPressed();
-    
+
     void triggerPartPrint();
     void triggerPartFind();
-    
+
 protected Q_SLOTS:
     void saveNewToolbarConfig();
 
