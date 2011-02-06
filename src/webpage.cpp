@@ -311,7 +311,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     if (metaData.contains(QL1S("ssl_in_use")))
     {
         WebSslInfo info;
-        info.fromMetaData(metaData.toVariant());
+        info.restoreFrom(metaData.toVariant(), request.url());
         info.setUrl(request.url());
         _sslInfo = info;
     }
@@ -601,7 +601,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         if (isMainFrameRequest && !_sslInfo.isValid())
         {
             // Obtain and set the SSL information if any...
-            _sslInfo.fromMetaData(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)));
+            _sslInfo.restoreFrom(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)), reply->url());
             _sslInfo.setUrl(reply->url());
         }
         break;

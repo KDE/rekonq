@@ -22,15 +22,13 @@
 #ifndef WEBSSLINFO_H
 #define WEBSSLINFO_H
 
-// Qt Includes
+#include <kdemacros.h>
+
+#include <QtCore/QUrl>
 #include <QtCore/QList>
-
-// Forward Declarations
-class QHostAddress;
-class QSslCertificate;
-class QUrl;
-class QVariant;
-
+#include <QtCore/QString>
+#include <QtNetwork/QHostAddress>
+#include <QtNetwork/QSslCertificate>
 
 class WebSslInfo
 {
@@ -46,14 +44,14 @@ public:
     QString ciphers() const;
     QString protocol() const;
     QString certificateErrors() const;
-    int supportedChiperBits() const;
-    int usedChiperBits() const;
+    int supportedChiperBits () const;
+    int usedChiperBits () const;
     QList<QSslCertificate> certificateChain() const;
 
-    QVariant toMetaData() const;
-    void fromMetaData(const QVariant &);
+    bool saveTo(QMap<QString, QVariant>&) const;
+    void restoreFrom(const QVariant &, const QUrl& = QUrl());
 
-    void setUrl(const QUrl &url);
+    void setUrl (const QUrl &url);
     WebSslInfo& operator = (const WebSslInfo&);
 
 protected:
