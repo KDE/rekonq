@@ -129,7 +129,7 @@ protected:
     * Filters out ESC key to show/hide the search bar
     */
     void keyPressEvent(QKeyEvent *event);
-
+    bool event(QEvent *event);
     bool queryClose();
 
 private Q_SLOTS:

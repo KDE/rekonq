@@ -1089,14 +1089,6 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    // hide findbar
-    if (event->key() == Qt::Key_Escape)
-    {
-        m_findBar->hide();
-        currentTab()->setFocus();   // give focus to web pages
-        return;
-    }
-
     // ctrl + tab action
     if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Tab))
     {
@@ -1112,6 +1104,37 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 
     KMainWindow::keyPressEvent(event);
+}
+
+
+bool MainWindow::event(QEvent *event)
+{
+    // Avoid a conflict with window-global actions
+    if (event->type() == QEvent::ShortcutOverride || event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *kev = static_cast<QKeyEvent *>(event);
+        if (kev->key() == Qt::Key_Escape)
+        {
+            // if zoombar is visible, hide it
+            if (m_zoomBar->isVisible())
+            {
+                m_zoomBar->hide();
+                event->accept();
+                currentTab()->setFocus();
+                return true;
+            }
+ 
+            // if findbar is visible, hide it
+            if (m_findBar->isVisible())
+            {
+                m_findBar->hide();
+                event->accept();
+                currentTab()->setFocus();
+                return true;
+            }
+        }
+    }
+    return KMainWindow::event(event);
 }
 
 
