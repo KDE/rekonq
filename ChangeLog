@@ -1,6 +1,18 @@
 Please, refer to http://techbase.kde.org/Projects/rekonq/Roadmap page
 to track all features available on new rekonq releases.
 
+0.7
+- General Cleanup
+- OpenSearch support (XML & JSON parsers)
+- Better cache management (WebKit Page Cache feature support)
+- enhanced Private Browsing mode (needs KDE SC 4.6)
+- new restore session notification system
+- Images in visual suggestions
+- Various improvements in bookmarks management
+- Optional tab list menu entry
+- User Agent switch support
+- Save zoom settings per host
+
 0.6
 - AdBlock performance improvements
 - UrlBar Improvements
