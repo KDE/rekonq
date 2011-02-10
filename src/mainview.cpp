@@ -266,8 +266,6 @@ void MainView::currentChanged(int index)
         m_widgetBar->currentWidget()->setFocus();
     else
         tab->view()->setFocus();
-
-    tabBar()->setTabHighlighted(index, false);
 }
 
 
@@ -575,10 +573,6 @@ void MainView::webViewTitleChanged(const QString &title)
     if (currentIndex() == index)
     {
         emit currentTitle(viewTitle);
-    }
-    else
-    {
-        tabBar()->setTabHighlighted(index, true);
     }
     Application::historyManager()->updateHistoryEntry(tab->url(), tabTitle);
     if (ReKonfig::hoveringTabOption() == 1)
