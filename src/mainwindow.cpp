@@ -1206,7 +1206,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     int bottomLeftY = webViewOrigin.y() + tab->page()->viewportSize().height() - labelSize.height() - scrollbarSize;
 
     // setting popup in bottom-left position
-    int x = geometry().x();
+    int x = mapToGlobal(QPoint(0, 0)).x();
     int y = bottomLeftY;
 
     QPoint mousePos = tab->mapToGlobal(tab->view()->mousePos());
