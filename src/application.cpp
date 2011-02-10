@@ -57,6 +57,7 @@
 #include <KStartupInfo>
 #include <ThreadWeaver/Weaver>
 #include <KAction>
+#include <KWindowSystem>
 
 // Qt Includes
 #include <QVBoxLayout>
@@ -167,8 +168,11 @@ int Application::newInstance()
         }
         else
         {
-            if(ReKonfig::openTabNoWindow())
+            if(ReKonfig::openTabNoWindow()) {
                 loadUrl(urlList.at(0), Rekonq::NewTab);
+                if( !mainWindow()->isActiveWindow() )
+                    KWindowSystem::demandAttention(mainWindow()->winId(), true);
+            }
             else
                 loadUrl(urlList.at(0), Rekonq::NewWindow);
         }
