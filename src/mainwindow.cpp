@@ -1008,6 +1008,7 @@ void MainWindow::browserLoading(bool v)
         m_stopReloadAction->setToolTip(i18n("Stop loading the current page"));
         m_stopReloadAction->setText(i18n("Stop"));
         connect(m_stopReloadAction, SIGNAL(triggered(bool)), stop, SIGNAL(triggered(bool)));
+        stop->setEnabled(true);
     }
     else
     {
@@ -1016,7 +1017,7 @@ void MainWindow::browserLoading(bool v)
         m_stopReloadAction->setToolTip(i18n("Reload the current page"));
         m_stopReloadAction->setText(i18n("Reload"));
         connect(m_stopReloadAction, SIGNAL(triggered(bool)), reload, SIGNAL(triggered(bool)));
-
+        stop->setEnabled(false);
     }
 }
 
