@@ -39,6 +39,7 @@
 
 // Forward Declarations
 class KPassivePopup;
+class TabHighlightEffect;
 
 
 /**
@@ -53,6 +54,9 @@ class REKONQ_TESTS_EXPORT TabBar : public KTabBar
 public:
     explicit TabBar(QWidget *parent);
     virtual ~TabBar() {}
+
+    void setTabHighlighted(int index, bool highlighted);
+    QRect tabTextRect(int index);
 
 signals:
     void cloneTab(int index);
@@ -74,7 +78,7 @@ protected:
     virtual void leaveEvent(QEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
-    virtual void tabRemoved(int);
+    virtual void tabRemoved(int index);
 
 private slots:
     void cloneTab();
@@ -104,6 +108,7 @@ private:
      */
     int m_currentTabPreviewIndex;
     bool m_isFirstTimeOnTab;
+    TabHighlightEffect *m_tabHighlightEffect;
 };
 
 #endif

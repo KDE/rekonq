@@ -41,18 +41,22 @@
 #include "webpage.h"
 #include "webtab.h"
 #include "websnap.h"
+#include "tabhighlighteffect.h"
 
 // KDE Includes
 #include <KActionMenu>
 #include <KMenu>
 #include <KPassivePopup>
 #include <KToolBar>
+#include <KColorScheme>
 
 // Qt Includes
 #include <QtGui/QLabel>
 #include <QtGui/QLayout>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QToolButton>
+#include <QPropertyAnimation>
+#include <QStyleOptionFrameV3>
 
 
 #define BASE_WIDTH_DIVISOR    4
@@ -64,6 +68,7 @@ TabBar::TabBar(QWidget *parent)
         , m_actualIndex(-1)
         , m_currentTabPreviewIndex(-1)
         , m_isFirstTimeOnTab(true)
+        , m_tabHighlightEffect(new TabHighlightEffect(this))
 {
     setElideMode(Qt::ElideRight);
 
@@ -75,6 +80,8 @@ TabBar::TabBar(QWidget *parent)
 
     connect(this, SIGNAL(contextMenu(int, const QPoint &)), this, SLOT(contextMenu(int, const QPoint &)));
     connect(this, SIGNAL(emptyAreaContextMenu(const QPoint &)), this, SLOT(emptyAreaContextMenu(const QPoint &)));
+
+    setGraphicsEffect(m_tabHighlightEffect);
 }
 
 
@@ -351,7 +358,7 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
-void TabBar::tabRemoved(int /*index*/)
+void TabBar::tabRemoved(int index)
 {
     if (ReKonfig::hoveringTabOption() == 0)
     {
@@ -361,6 +368,9 @@ void TabBar::tabRemoved(int /*index*/)
         }
         m_currentTabPreviewIndex = -1;
     }
+
+    QString propertyName = QString("hAnim").append(QString::number(index));
+    setProperty(propertyName.toAscii(), QVariant()); //destroy property
 }
 
 
@@ -392,5 +402,38 @@ void TabBar::setupHistoryActions()
         a->setData(item.url);
         connect(a, SIGNAL(triggered()), mv, SLOT(openClosedTab()));
         am->addAction(a);
+    }
+}
+
+
+QRect TabBar::tabTextRect(int index)
+{
+   QStyleOptionTabV3 option;
+   initStyleOption(&option, index);
+   return style()->subElementRect(QStyle::SE_TabBarTabText, &option, this);
+}
+
+
+void TabBar::setTabHighlighted(int index, bool highlighted)
+{
+    QString propertyName = QString("hAnim").append(QString::number(index));
+    if (highlighted)
+    {
+        m_tabHighlightEffect->setProperty(propertyName.toAscii(), qreal(0.9));
+        QPropertyAnimation *highlightAnimation = new QPropertyAnimation(m_tabHighlightEffect, propertyName.toAscii());
+ 
+        //setup the animation
+        highlightAnimation->setStartValue(0.9);
+        highlightAnimation->setEndValue(0.0);
+        highlightAnimation->setDuration(500);
+        highlightAnimation->setLoopCount(2);
+        highlightAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+
+        setTabTextColor(index, KColorScheme(QPalette::Active, KColorScheme::Window).foreground(KColorScheme::PositiveText).color());
+    }
+    else
+    {
+        m_tabHighlightEffect->setProperty(propertyName.toAscii(), QVariant()); //destroy the property
+        setTabTextColor(index, QApplication::palette().text().color());
     }
 }
