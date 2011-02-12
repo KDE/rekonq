@@ -478,6 +478,15 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 }
 
 
+void WebView::enterEvent(QEvent *event)
+{
+    if(m_isAutoScrollEnabled)
+        setCursor(KIcon("transform-move").pixmap(32));
+
+    KWebView::enterEvent(event);
+}
+
+
 void WebView::dropEvent(QDropEvent *event)
 {
     if (event->mimeData()->hasFormat("application/rekonq-bookmark"))
