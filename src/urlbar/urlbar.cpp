@@ -453,9 +453,16 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         }
         break;
     case UrlBar::SearchEngine:
-        rightIcon->setIcon(KIcon("preferences-web-browser-shortcuts"));
+    {
+        KIcon wsIcon("edit-web-search");
+        if (wsIcon.isNull())
+        {
+            wsIcon = KIcon("preferences-web-browser-shortcuts");
+        }
+        rightIcon->setIcon(wsIcon);
         rightIcon->setToolTip(i18n("Add search engine"));
         break;
+    }
     default:
         kDebug() << "ERROR.. default non extant case!!";
         break;

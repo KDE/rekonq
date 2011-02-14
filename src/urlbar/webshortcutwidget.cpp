@@ -42,7 +42,13 @@ WebShortcutWidget::WebShortcutWidget(QWidget *parent)
     QHBoxLayout *titleLayout = new QHBoxLayout();
     mainLayout->addLayout(titleLayout);
     QLabel *iconLabel = new QLabel(this);
-    KIcon wsIcon("preferences-web-browser-shortcuts");
+
+    KIcon wsIcon("edit-web-search");
+    if (wsIcon.isNull())
+    {
+        wsIcon = KIcon("preferences-web-browser-shortcuts");
+    }
+
     iconLabel->setPixmap(wsIcon.pixmap(22, 22));
     titleLayout->addWidget(iconLabel);
     m_searchTitleLabel = new QLabel(i18n("Add Search Engine"), this);

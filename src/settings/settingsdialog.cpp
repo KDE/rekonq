@@ -130,8 +130,13 @@ Private::Private(SettingsDialog *parent)
     // -- 8
     KCModuleInfo ebrowsingInfo("ebrowsing.desktop");
     ebrowsingModule = new KCModuleProxy(ebrowsingInfo, parent);
-    pageItem = parent->addPage(ebrowsingModule, i18n(ebrowsingInfo.moduleName().toUtf8()));
-    pageItem->setIcon(KIcon(ebrowsingInfo.icon()));
+    pageItem = parent->addPage(ebrowsingModule, i18n("Search engines"));
+    KIcon wsIcon("edit-web-search");
+    if (wsIcon.isNull())
+    {
+        wsIcon = KIcon("preferences-web-browser-shortcuts");
+    }
+    pageItem->setIcon(wsIcon);
 
     // WARNING 
     // remember wheh changing here that the smallest netbooks
