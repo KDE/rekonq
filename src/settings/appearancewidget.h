@@ -48,14 +48,17 @@ public:
     void save();
     bool changed();
     bool isDefault();
-    
-signals:
+
+Q_SIGNALS:
     void changed(bool);
 
-private slots:
+private Q_SLOTS:
     void hasChanged();
-                    
+    void setEncoding(const QString &);
+
 private:
+    void populateEncodingMenu();
+
     bool _changed;
 };
 

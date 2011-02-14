@@ -532,13 +532,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
 void WebPage::loadStarted()
 {
-    // HACK:
-    // Chinese encoding Fix. See BUG: 251264
-    // Use gb18030 instead of gb2312
-    if(settings()->defaultTextEncoding() == QL1S("gb2312"))
-    {
-        settings()->setDefaultTextEncoding( QL1S("gb18030") );
-    }    
 }
 
 void WebPage::loadFinished(bool ok)

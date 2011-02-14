@@ -166,10 +166,6 @@ private Q_SLOTS:
     void openActionUrl(QAction *action);
     void openActionTab(QAction *action);
 
-    // encodings
-    void setEncoding(QAction *);
-    void populateEncodingMenu();
-
     // user agent
     void setUserAgent();
     void populateUserAgentMenu();
@@ -195,7 +191,6 @@ private:
     KMenu *m_historyBackMenu;
     KMenu *m_historyForwardMenu;
     
-    KMenu *m_encodingMenu;
     KMenu *m_tabListMenu;
 
     KMenu *m_userAgentMenu;

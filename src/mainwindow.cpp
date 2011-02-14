@@ -105,7 +105,6 @@ MainWindow::MainWindow()
         , m_analyzerPanel(0)
         , m_historyBackMenu(0)
         , m_historyForwardMenu(0)
-        , m_encodingMenu(new KMenu(this))
         , m_userAgentMenu(new KMenu(this))
         , m_bookmarksBar(0)
         , m_popup(new KPassivePopup(this))
@@ -180,7 +179,6 @@ MainWindow::~MainWindow()
     delete m_stopReloadAction;
     delete m_historyBackMenu;
     delete m_historyForwardMenu;
-    delete m_encodingMenu;
 
     delete m_bookmarksBar;
 
@@ -248,7 +246,6 @@ void MainWindow::updateToolsMenu()
         connect (m_zoomBar, SIGNAL(visibilityChanged(bool)), action, SLOT(setChecked(bool)));
         m_toolsMenu->addAction(action);
 
-        m_toolsMenu->addAction(actionByName(QL1S("encodings")));
         m_toolsMenu->addAction(actionByName(QL1S("useragent")));
 
         m_toolsMenu->addSeparator();
@@ -541,13 +538,6 @@ void MainWindow::setupActions()
     bmMenu->setShortcutConfigurable(true);
     bmMenu->setShortcut( KShortcut(Qt::ALT + Qt::Key_B) );
     actionCollection()->addAction(QL1S("bookmarksActionMenu"), bmMenu);
-
-    // ---------------- Encodings -----------------------------------
-    a = new KAction(KIcon("character-set"), i18n("Set Encoding"), this);
-    actionCollection()->addAction(QL1S("encodings"), a);
-    a->setMenu(m_encodingMenu);
-    connect(m_encodingMenu, SIGNAL(aboutToShow()), this, SLOT(populateEncodingMenu()));
-    connect(m_encodingMenu, SIGNAL(triggered(QAction *)), this, SLOT(setEncoding(QAction *)));
 
     // --- User Agent
     a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
@@ -1421,24 +1411,6 @@ void MainWindow::openActionTab(QAction* action)
 }
 
 
-void MainWindow::setEncoding(QAction *qa)
-{
-    QString currentCodec = qa->text().toLatin1();
-    currentCodec = currentCodec.remove('&');
-    kDebug() << "Setting codec: " << currentCodec;
-    if(currentCodec == QL1S("Default") )
-    {
-        kDebug() << "QWebSettings::globalSettings()->defaultTextEncoding() = " << QWebSettings::globalSettings()->defaultTextEncoding();
-        currentTab()->view()->settings()->setDefaultTextEncoding( QWebSettings::globalSettings()->defaultTextEncoding() );
-        currentTab()->view()->reload();
-        return;
-    }
-
-    currentTab()->view()->settings()->setDefaultTextEncoding(currentCodec);
-    currentTab()->view()->reload();
-}
-
-
 void MainWindow::setUserAgent()
 {
     QAction *sender = static_cast<QAction *>(QObject::sender());
@@ -1452,64 +1424,6 @@ void MainWindow::setUserAgent()
     kDebug() << "SETTING USER AGENT";
     uaInfo.setUserAgentForHost(uaIndex, url.host());
     currentTab()->page()->triggerAction(QWebPage::Reload);
-}
-
-
-void MainWindow::populateEncodingMenu()
-{
-    QStringList codecs;
-    QList<int> mibs = QTextCodec::availableMibs();
-    Q_FOREACH (const int &mib, mibs)
-    {
-        QString codec = QL1S(QTextCodec::codecForMib(mib)->name());
-        codecs.append(codec);
-    }
-    codecs.sort();
-
-    QString currentCodec = currentTab()->page()->settings()->defaultTextEncoding();
-
-    m_encodingMenu->clear();
-    KMenu *isoMenu = new KMenu( QL1S("ISO"), m_encodingMenu);
-    KMenu *winMenu = new KMenu( QL1S("Windows"), m_encodingMenu);
-    KMenu *isciiMenu = new KMenu( QL1S("ISCII"), m_encodingMenu);
-    KMenu *uniMenu = new KMenu( QL1S("Unicode"), m_encodingMenu);
-    KMenu *otherMenu = new KMenu( i18n("Other"), m_encodingMenu);
-
-    QAction *a;
-    bool isDefaultCodecUsed = true;
-
-    Q_FOREACH(const QString &codec, codecs)
-    {
-
-        if( codec.startsWith( QL1S("ISO"), Qt::CaseInsensitive ) )
-            a = isoMenu->addAction(codec);
-        else if( codec.startsWith( QL1S("win") ) )
-            a = winMenu->addAction(codec);
-        else if( codec.startsWith( QL1S("Iscii") ) )
-            a = isciiMenu->addAction(codec);
-        else if( codec.startsWith( QL1S("UT") ) )
-            a = uniMenu->addAction(codec);
-        else
-            a = otherMenu->addAction(codec);
-
-        a->setCheckable(true);
-        if (currentCodec == codec)
-        {
-            a->setChecked(true);
-            isDefaultCodecUsed = false;
-        }
-    }
-
-    a = new QAction( i18nc("Default website encoding", "Default"), this);
-    a->setCheckable(true);
-    a->setChecked(isDefaultCodecUsed);
-
-    m_encodingMenu->addAction( a );
-    m_encodingMenu->addMenu( isoMenu );
-    m_encodingMenu->addMenu( winMenu );
-    m_encodingMenu->addMenu( isciiMenu );
-    m_encodingMenu->addMenu( uniMenu );
-    m_encodingMenu->addMenu( otherMenu );
 }
 
 

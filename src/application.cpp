@@ -58,6 +58,8 @@
 #include <ThreadWeaver/Weaver>
 #include <KAction>
 #include <KWindowSystem>
+#include <KGlobal>
+#include <KCharsets>
 
 // Qt Includes
 #include <QVBoxLayout>
@@ -491,6 +493,9 @@ void Application::updateConfiguration()
     defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix) );
     defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix) );
 
+    // encodings
+    QString enc = ReKonfig::defaultEncoding();
+    defaultSettings->setDefaultTextEncoding(enc);
 
     // ================ WebKit ============================
     defaultSettings->setAttribute(QWebSettings::AutoLoadImages, ReKonfig::autoLoadImages());

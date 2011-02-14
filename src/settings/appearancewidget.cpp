@@ -31,6 +31,9 @@
 // Auto Includes
 #include "rekonq.h"
 
+// KDE Includes
+#include <KGlobal>
+#include <KCharsets>
 
 AppearanceWidget::AppearanceWidget(QWidget *parent)
         : QWidget(parent)
@@ -53,6 +56,8 @@ AppearanceWidget::AppearanceWidget(QWidget *parent)
     connect(sansSerifFontChooser,   SIGNAL(currentFontChanged(const QFont &)), this, SLOT( hasChanged() ));
     connect(cursiveFontChooser,     SIGNAL(currentFontChanged(const QFont &)), this, SLOT( hasChanged() ));
     connect(fantasyFontChooser,     SIGNAL(currentFontChanged(const QFont &)), this, SLOT( hasChanged() ));
+
+    populateEncodingMenu();
 }
 
 
@@ -83,8 +88,32 @@ void AppearanceWidget::hasChanged()
 bool AppearanceWidget::isDefault()
 {
     bool def = true;
-    
+
     // TODO: implement me!!
-    
+
     return def;
+}
+
+
+void AppearanceWidget::populateEncodingMenu()
+{
+    encodingCombo->setEditable(false);
+    QStringList encodings = KGlobal::charsets()->availableEncodingNames();
+    encodingCombo->addItems(encodings);
+
+    encodingCombo->setWhatsThis( i18n( "Select the default encoding to be used; normally, you will be fine with 'Use language encoding' "
+               "and should not have to change this.") );
+
+    connect(encodingCombo, SIGNAL(activated(const QString &)), this, SLOT(setEncoding(const QString &)));
+    connect(encodingCombo, SIGNAL(activated(const QString &)), this, SLOT(hasChanged()));
+
+    QString enc = ReKonfig::defaultEncoding();
+    int indexOfEnc = encodings.indexOf(enc);
+    encodingCombo->setCurrentIndex(indexOfEnc);
+}
+
+
+void AppearanceWidget::setEncoding(const QString &enc)
+{
+    ReKonfig::setDefaultEncoding(enc);
 }

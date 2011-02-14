@@ -155,6 +155,9 @@
     <entry name="minFontSize" type="Int">
         <default>7</default>
     </entry>
+    <entry name="defaultEncoding" type="String">
+        <default>ISO 8859-1</default>
+    </entry>
 </group>
 
 
