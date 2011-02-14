@@ -179,6 +179,11 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "jondeandres@gmail.com",
                     "");
 
+    about.addCredit(ki18n("Johannes Troscher"),
+                    ki18n("QGraphicsEffect expert. Tabbar highlight animation"),
+                    "fritz_van_tomas@hotmail.com",
+                    "");
+
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
 
