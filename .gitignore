@@ -9,3 +9,4 @@ qtcreator-build/
 CMakeLists.txt.user
 CMakeCache.txt
 debug.log
+.gdb_history
