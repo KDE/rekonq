@@ -37,8 +37,13 @@
 // KDE Includes
 #include <KTabBar>
 
+//Qt Includes
+#include <QSignalMapper>
+
 // Forward Declarations
 class KPassivePopup;
+class TabHighlightEffect;
+class QPropertyAnimation;
 
 
 /**
@@ -53,6 +58,10 @@ class REKONQ_TESTS_EXPORT TabBar : public KTabBar
 public:
     explicit TabBar(QWidget *parent);
     virtual ~TabBar() {}
+
+    void setTabHighlighted(int index);
+    void resetTabHighlighted(int index);
+    QRect tabTextRect(int index);
 
 signals:
     void cloneTab(int index);
@@ -74,7 +83,7 @@ protected:
     virtual void leaveEvent(QEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
-    virtual void tabRemoved(int);
+    virtual void tabRemoved(int index);
 
 private slots:
     void cloneTab();
@@ -87,6 +96,8 @@ private slots:
     void emptyAreaContextMenu(const QPoint &);
 
     void showTabPreview();
+
+    void removeAnimation(int index);
 
 private:
     void setupHistoryActions();
@@ -104,6 +115,11 @@ private:
      */
     int m_currentTabPreviewIndex;
     bool m_isFirstTimeOnTab;
+
+    //highlightAnimation
+    TabHighlightEffect *m_tabHighlightEffect;
+    QHash<QByteArray, QPropertyAnimation*> m_highlightAnimation;
+    QSignalMapper *m_animationMapper;
 };
 
 #endif

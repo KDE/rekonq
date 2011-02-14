@@ -41,22 +41,32 @@
 #include "webpage.h"
 #include "webtab.h"
 #include "websnap.h"
+#include "tabhighlighteffect.h"
 
 // KDE Includes
 #include <KActionMenu>
 #include <KMenu>
 #include <KPassivePopup>
 #include <KToolBar>
+#include <KColorScheme>
 
 // Qt Includes
 #include <QtGui/QLabel>
 #include <QtGui/QLayout>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QToolButton>
+#include <QPropertyAnimation>
+#include <QStyleOptionFrameV3>
 
 
 #define BASE_WIDTH_DIVISOR    4
 #define MIN_WIDTH_DIVISOR     8
+
+
+static inline QByteArray highlightPropertyName(int index)
+{
+    return QByteArray("hAnim").append(QByteArray::number(index));
+}
 
 
 TabBar::TabBar(QWidget *parent)
@@ -64,6 +74,8 @@ TabBar::TabBar(QWidget *parent)
         , m_actualIndex(-1)
         , m_currentTabPreviewIndex(-1)
         , m_isFirstTimeOnTab(true)
+        , m_tabHighlightEffect(new TabHighlightEffect(this))
+        , m_animationMapper(new QSignalMapper(this))
 {
     setElideMode(Qt::ElideRight);
 
@@ -75,6 +87,9 @@ TabBar::TabBar(QWidget *parent)
 
     connect(this, SIGNAL(contextMenu(int, const QPoint &)), this, SLOT(contextMenu(int, const QPoint &)));
     connect(this, SIGNAL(emptyAreaContextMenu(const QPoint &)), this, SLOT(emptyAreaContextMenu(const QPoint &)));
+
+    connect(m_animationMapper, SIGNAL(mapped(int)), this, SLOT(removeAnimation(int)));
+    setGraphicsEffect(m_tabHighlightEffect);
 }
 
 
@@ -351,7 +366,7 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
-void TabBar::tabRemoved(int /*index*/)
+void TabBar::tabRemoved(int index)
 {
     if (ReKonfig::hoveringTabOption() == 0)
     {
@@ -361,6 +376,8 @@ void TabBar::tabRemoved(int /*index*/)
         }
         m_currentTabPreviewIndex = -1;
     }
+
+    removeAnimation(index);
 }
 
 
@@ -394,3 +411,55 @@ void TabBar::setupHistoryActions()
         am->addAction(a);
     }
 }
+
+
+QRect TabBar::tabTextRect(int index)
+{
+   QStyleOptionTabV3 option;
+   initStyleOption(&option, index);
+   return style()->subElementRect(QStyle::SE_TabBarTabText, &option, this);
+}
+
+
+void TabBar::setTabHighlighted(int index)
+{
+    const QByteArray propertyName = highlightPropertyName(index);
+    const QColor highlightColor = KColorScheme(QPalette::Active, KColorScheme::Window).foreground(KColorScheme::PositiveText).color();
+
+    if (tabTextColor(index) != highlightColor)
+    {
+        m_tabHighlightEffect->setProperty(propertyName, qreal(0.9));
+        QPropertyAnimation *anim = new QPropertyAnimation(m_tabHighlightEffect, propertyName);
+        m_highlightAnimation.insert(propertyName, anim);
+
+        //setup the animation
+        anim->setStartValue(0.9);
+        anim->setEndValue(0.0);
+        anim->setDuration(500);
+        anim->setLoopCount(2);
+        anim->start(QAbstractAnimation::DeleteWhenStopped);
+
+        m_animationMapper->setMapping(anim, index);
+        connect(anim, SIGNAL(finished()), m_animationMapper, SLOT(map()));
+        setTabTextColor(index, highlightColor);
+    }
+}
+
+
+void TabBar::resetTabHighlighted(int index)
+{
+    removeAnimation(index);
+    setTabTextColor(index, palette().text().color());
+}
+
+
+void TabBar::removeAnimation(int index)
+{
+    const QByteArray propertyName = highlightPropertyName(index);
+    m_tabHighlightEffect->setProperty(propertyName, QVariant()); //destroy the property
+
+    QPropertyAnimation *anim = m_highlightAnimation.take(propertyName);
+    m_animationMapper->removeMappings(anim);
+    delete anim;
+}
+
