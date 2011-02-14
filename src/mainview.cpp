@@ -153,6 +153,7 @@ void MainView::updateTabButtonPosition()
             newPosX = tabWidgetWidth - m_addTabButton->width();
 
         m_addTabButton->move(newPosX, 0);
+        m_addTabButton->show();
     }
 }
 
