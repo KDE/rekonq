@@ -101,7 +101,6 @@ KUrl WebTab::url()
 {
     if(page() && page()->isOnRekonqPage())
     {
-        kDebug() << "REKONQ PAGE. URL = " << page()->loadingUrl();
         return page()->loadingUrl();
     }
 

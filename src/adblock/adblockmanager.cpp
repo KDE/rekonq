@@ -116,7 +116,6 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
 
 void AdBlockManager::loadRules(const QStringList &rules)
 {
-    kDebug() << "LOADING RULES LIST...";
     foreach(const QString &stringRule, rules)
     {
         // ! rules are comments

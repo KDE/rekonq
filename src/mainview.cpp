@@ -550,7 +550,6 @@ void MainView::webViewIconChanged()
 
     if (-1 != index)
     {
-        kDebug() << "TAB URL: " << tab->url();
         KIcon icon = Application::iconManager()->iconForUrl(tab->url());
         QLabel *label = animatedLoading(index, false);
         QMovie *movie = label->movie();

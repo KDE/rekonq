@@ -157,8 +157,6 @@ MainWindow::MainWindow()
 
     // give me some time to do all the other stuffs...
     QTimer::singleShot(100, this, SLOT(postLaunch()));
-
-    kDebug() << "MainWindow ctor...DONE";
 }
 
 
@@ -189,8 +187,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupToolbars()
 {
-    kDebug() << "setup toolbars...";
-
     KAction *a;
 
     // location bar
@@ -362,8 +358,6 @@ void MainWindow::changeWindowIcon(int index)
 
 void MainWindow::setupActions()
 {
-    kDebug() << "setup actions...";
-
     // this let shortcuts work..
     actionCollection()->addAssociatedWidget(this);
 
@@ -553,7 +547,6 @@ void MainWindow::setupActions()
 
 void MainWindow::setupTools()
 {
-    kDebug() << "setup tools...";
     KActionMenu *toolsAction = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
     toolsAction->setDelayed(false);
     toolsAction->setShortcutConfigurable(true);
@@ -571,7 +564,6 @@ void MainWindow::setupTools()
 
 void MainWindow::setupPanels()
 {
-    kDebug() << "setup panels...";
     KAction* a;
 
     // STEP 1

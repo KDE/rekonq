@@ -54,8 +54,6 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
         , m_owner(0)
         , m_actionCollection(new KActionCollection(this))
 {
-    kDebug() << "Loading Bookmarks Manager...";
-
     // NOTE
     // This hackish code is needed to continue sharing bookmarks with konqueror,
     // until we can (hopefully) start using an akonadi resource.
@@ -92,8 +90,6 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
 
     KAction *a = KStandardAction::addBookmark(bookmarkOwner(), SLOT(bookmarkCurrentPage()), this);
     m_actionCollection->addAction(QL1S("rekonq_add_bookmark"), a);
-
-    kDebug() << "Loading Bookmarks Manager... DONE!";
 }
 
 
@@ -106,16 +102,12 @@ BookmarkProvider::~BookmarkProvider()
 
 KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 {
-    kDebug() << "new Bookmarks menu...";
-
     KMenu *menu = new KMenu(parent);
     KActionMenu *bookmarkActionMenu = new KActionMenu(menu);
     bookmarkActionMenu->setMenu(menu);
     bookmarkActionMenu->setText(i18n("&Bookmarks"));
     BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
     m_bookmarkMenus.append(bMenu);
-
-    kDebug() << "new Bookmarks menu... DONE";
 
     return bookmarkActionMenu;
 }
@@ -126,11 +118,7 @@ void BookmarkProvider::registerBookmarkBar(BookmarkToolBar *toolbar)
     if (m_bookmarkToolBars.contains(toolbar))
         return;
 
-    kDebug() << "new bookmark bar...";
-
     m_bookmarkToolBars.append(toolbar);
-
-    kDebug() << "new bookmark bar... DONE!";
 }
 
 
