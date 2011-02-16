@@ -22,8 +22,11 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 * ============================================================ */
+
+
 #ifndef TABHIGHLIGHTEFFECT_H
 #define TABHIGHLIGHTEFFECT_H
+
 
 // Qt Includes
 #include <QGraphicsEffect>
@@ -32,6 +35,7 @@
 
 // Forward Declarations
 class TabBar;
+
 
 class TabHighlightEffect : public QGraphicsEffect
 {
@@ -43,9 +47,10 @@ public:
 protected:
     virtual void draw(QPainter *painter);
     virtual bool event(QEvent *event);
+
 private:
-    QColor m_highlightColor;
     TabBar * const m_tabBar;
+    QColor m_highlightColor;
 };
 
 #endif // TABHIGHLIGHTEFFECT_H

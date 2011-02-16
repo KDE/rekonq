@@ -23,6 +23,7 @@
 *
 * ============================================================ */
 
+
 //Self Includes
 #include "tabhighlighteffect.h"
 #include "tabhighlighteffect.moc"
@@ -31,7 +32,9 @@
 #include <QVariant>
 #include <tabbar.h>
 
+
 const QByteArray prep("hAnim");
+
 
 TabHighlightEffect::TabHighlightEffect(TabBar *tabBar)
     : QGraphicsEffect(tabBar)
@@ -63,6 +66,7 @@ void TabHighlightEffect::draw(QPainter *painter)
         painter->drawText(textRect, Qt::AlignCenter | Qt::TextShowMnemonic, tabText);
      }
 }
+
 
 bool TabHighlightEffect::event(QEvent* event)
 {
