@@ -97,7 +97,11 @@ public:
     inline QList<HistoryItem> recentlyClosedTabs() { return m_recentlyClosedTabs; }
 
 Q_SIGNALS:
-    // tab widget signals
+    // tabs change when:
+    // - current tab change 
+    // - one tab is closed
+    // - one tab is added
+    // - one tab is updated (eg: changes url)
     void tabsChanged();
 
     // current tab signals

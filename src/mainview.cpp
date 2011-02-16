@@ -112,7 +112,6 @@ void MainView::postLaunch()
 
     // Session Manager
     connect(this, SIGNAL(tabsChanged()), Application::sessionManager(), SLOT(saveSession()));
-    connect(this, SIGNAL(currentChanged(int)), Application::sessionManager(), SLOT(saveSession()));
 
     m_addTabButton->setDefaultAction(m_parentWindow->actionByName("new_tab"));
 
@@ -267,6 +266,8 @@ void MainView::currentChanged(int index)
         tab->view()->setFocus();
 
     tabBar()->resetTabHighlighted(index);
+    
+    emit tabsChanged();
 }
 
 
@@ -316,9 +317,13 @@ WebTab *MainView::newWebTab(bool focused)
     {
         setCurrentWidget(tab);
     }
-
-    emit tabsChanged();
-
+    else
+    {
+        // if tab is not focused, 
+        // current index doesn't change...
+        emit tabsChanged();
+    }
+    
     return tab;
 }
 
@@ -484,7 +489,9 @@ void MainView::closeTab(int index, bool del)
         tabToClose->deleteLater();
     }
 
-    emit tabsChanged();
+    // if tab was not focused, current index does not change...
+    if(index != currentIndex())
+        emit tabsChanged();
 }
 
 
@@ -594,6 +601,7 @@ void MainView::webViewUrlChanged(const QUrl &url)
     }
     if (ReKonfig::hoveringTabOption() == 2)
         tabBar()->setTabToolTip(index, webTab(index)->url().toMimeDataString());
+
     emit tabsChanged();
 }
 

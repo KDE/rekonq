@@ -311,7 +311,6 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(openNextInHistory()), this, SLOT(openNext()));
 
     // update toolbar actions signals
-    connect(m_view, SIGNAL(tabsChanged()), this, SLOT(updateActions()));
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(updateActions()));
 
     //Change window icon according to tab icon
@@ -408,7 +407,6 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QL1S("stop_reload") , m_stopReloadAction);
     m_stopReloadAction->setShortcutConfigurable(false);
     connect(m_view, SIGNAL(browserTabLoading(bool)), this, SLOT(browserLoading(bool)));
-    browserLoading(false); //first init for blank start page
 
     a = new KAction(i18n("Open Location"), this);
     KShortcut openLocationShortcut(Qt::CTRL + Qt::Key_L);
@@ -981,6 +979,7 @@ WebTab *MainWindow::currentTab() const
 
 void MainWindow::browserLoading(bool v)
 {
+    kDebug() << "-------------------------------------------------------------------";
     QAction *stop = actionCollection()->action( QL1S("stop") );
     QAction *reload = actionCollection()->action( QL1S("view_redisplay") );
     if (v)
@@ -1000,6 +999,8 @@ void MainWindow::browserLoading(bool v)
         m_stopReloadAction->setText(i18n("Reload"));
         connect(m_stopReloadAction, SIGNAL(triggered(bool)), reload, SIGNAL(triggered(bool)));
         stop->setEnabled(false);
+        
+        updateActions();
     }
 }
 
