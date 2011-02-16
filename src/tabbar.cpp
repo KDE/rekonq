@@ -70,12 +70,12 @@ static inline QByteArray highlightPropertyName(int index)
 
 
 TabBar::TabBar(QWidget *parent)
-        : KTabBar(parent)
-        , m_actualIndex(-1)
-        , m_currentTabPreviewIndex(-1)
-        , m_isFirstTimeOnTab(true)
-        , m_tabHighlightEffect(new TabHighlightEffect(this))
-        , m_animationMapper(new QSignalMapper(this))
+    : KTabBar(parent)
+    , m_actualIndex(-1)
+    , m_currentTabPreviewIndex(-1)
+    , m_isFirstTimeOnTab(true)
+    , m_tabHighlightEffect(new TabHighlightEffect(this))
+    , m_animationMapper(new QSignalMapper(this))
 {
     setElideMode(Qt::ElideRight);
 
@@ -230,13 +230,6 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    if (event->buttons() & Qt::LeftButton)
-    {
-        // hide addNewTabButton when moving tabs
-        MainView *view = qobject_cast<MainView *>(parent());
-        QTimer::singleShot(200, view->addTabButton(), SLOT(hide()));
-    }
-
     KTabBar::mouseMoveEvent(event);
 
     if (ReKonfig::hoveringTabOption() == 0)
@@ -357,15 +350,6 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
 }
 
 
-void TabBar::mouseReleaseEvent(QMouseEvent *event)
-{
-    MainView *mv = qobject_cast<MainView *>(parent());
-    QTimer::singleShot(200, mv->addTabButton(), SLOT(show()));
-
-    KTabBar::mouseReleaseEvent(event);
-}
-
-
 void TabBar::tabRemoved(int index)
 {
     if (ReKonfig::hoveringTabOption() == 0)
@@ -462,4 +446,3 @@ void TabBar::removeAnimation(int index)
     m_animationMapper->removeMappings(anim);
     delete anim;
 }
-

@@ -58,11 +58,11 @@
 
 
 MainView::MainView(MainWindow *parent)
-        : KTabWidget(parent)
-        , m_widgetBar(new StackedUrlBar(this))
-        , m_addTabButton(0)
-        , m_currentTabIndex(0)
-        , m_parentWindow(parent)
+    : KTabWidget(parent)
+    , m_widgetBar(new StackedUrlBar(this))
+    , m_addTabButton(0)
+    , m_currentTabIndex(0)
+    , m_parentWindow(parent)
 {
     // setting tabbar
     TabBar *tabBar = new TabBar(this);
@@ -121,43 +121,6 @@ void MainView::postLaunch()
 }
 
 
-void MainView::updateTabButtonPosition()
-{
-    static bool ButtonInCorner = false;
-
-    int tabWidgetWidth = frameSize().width();
-    int tabBarWidth = tabBar()->tabSizeHint(0).width() * tabBar()->count();
-
-    if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
-    {
-        if (ButtonInCorner)
-            return;
-        setCornerWidget(m_addTabButton);
-        ButtonInCorner = true;
-    }
-    else
-    {
-        if (ButtonInCorner)
-        {
-            setCornerWidget(0);
-            // new window problem
-            if(count()>1)
-                m_addTabButton->show();
-            ButtonInCorner = false;
-        }
-
-        // detecting X position
-        int newPosX = tabBarWidth;
-        int tabWidthHint = tabBar()->tabSizeHint(0).width();
-        if (tabWidthHint < sizeHint().width() / 4)
-            newPosX = tabWidgetWidth - m_addTabButton->width();
-
-        m_addTabButton->move(newPosX, 0);
-        m_addTabButton->show();
-    }
-}
-
-
 TabBar *MainView::tabBar() const
 {
     TabBar *tabBar = qobject_cast<TabBar *>(KTabWidget::tabBar());
@@ -179,21 +142,56 @@ WebTab *MainView::currentWebTab() const
 
 void MainView::updateTabBar()
 {
-    if (ReKonfig::alwaysShowTabBar() || tabBar()->count() > 1)
+    if (ReKonfig::alwaysShowTabBar() || count() > 1)
     {
         if (tabBar()->isHidden())
         {
             tabBar()->show();
+        }
+        
+        // this to ensure tab button visibility also on new window creation
+        if(m_addTabButton->isHidden())
+        {
             m_addTabButton->show();
         }
+
     }
     else
     {
         tabBar()->hide();
         m_addTabButton->hide();
+        return;
     }
 
-    updateTabButtonPosition();
+    // update tab button position
+    static bool ButtonInCorner = false;
+
+    int tabWidgetWidth = frameSize().width();
+    int tabBarWidth = tabBar()->tabSizeHint(0).width() * tabBar()->count();
+
+    if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
+    {
+        if (ButtonInCorner)
+            return;
+        setCornerWidget(m_addTabButton);
+        ButtonInCorner = true;
+    }
+    else
+    {
+        if (ButtonInCorner)
+        {
+            setCornerWidget(0);
+            ButtonInCorner = false;
+        }
+
+        // detecting X position
+        int newPosX = tabBarWidth;
+        int tabWidthHint = tabBar()->tabSizeHint(0).width();
+        if (tabWidthHint < sizeHint().width() / 4)
+            newPosX = tabWidgetWidth - m_addTabButton->width();
+
+        m_addTabButton->move(newPosX, 0);
+    }
 }
 
 

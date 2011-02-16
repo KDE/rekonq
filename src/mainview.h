@@ -161,8 +161,6 @@ protected:
     virtual void resizeEvent(QResizeEvent *event);
 
 private:
-    void updateTabButtonPosition();
-
     /**
      * This function creates (if not exists) and returns a QLabel
      * with a loading QMovie.
