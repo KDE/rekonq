@@ -137,6 +137,7 @@ void AdBlockManager::loadRules(const QStringList &rules)
             const QString filter = stringRule.mid(2);
             if (_hostWhiteList.tryAddFilter(filter))
                 continue;
+            
             AdBlockRule rule(filter);
             _whiteList << rule;
             continue;
@@ -155,6 +156,7 @@ void AdBlockManager::loadRules(const QStringList &rules)
 
         if (_hostBlackList.tryAddFilter(stringRule))
             continue;
+
         AdBlockRule rule(stringRule);
         _blackList << rule;
     }

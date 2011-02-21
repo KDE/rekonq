@@ -23,11 +23,13 @@
 *
 * ============================================================ */
 
+
 // Self Includes
 #include "adblockruletextmatchimpl.h"
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+
 
 AdBlockRuleTextMatchImpl::AdBlockRuleTextMatchImpl(const QString &filter)
     : AdBlockRuleImpl(filter)
@@ -37,6 +39,7 @@ AdBlockRuleTextMatchImpl::AdBlockRuleTextMatchImpl(const QString &filter)
     m_textToMatch = filter.toLower();
     m_textToMatch.remove(QL1C('*'));
 }
+
 
 bool AdBlockRuleTextMatchImpl::match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const
 {
@@ -48,6 +51,7 @@ bool AdBlockRuleTextMatchImpl::match(const QNetworkRequest &request, const QStri
     // version of encodedUrl.
     return encodedUrlLowerCase.contains(m_textToMatch, Qt::CaseSensitive);
 }
+
 
 bool AdBlockRuleTextMatchImpl::isTextMatchFilter(const QString &filter)
 {

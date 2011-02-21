@@ -55,13 +55,39 @@
 // Self Includes
 #include "adblockrule.h"
 
+// Local Includes
 #include "adblockrulefallbackimpl.h"
+#include "adblockrulenullimpl.h"
 #include "adblockruletextmatchimpl.h"
+
 
 AdBlockRule::AdBlockRule(const QString &filter)
 {
-    if (AdBlockRuleTextMatchImpl::isTextMatchFilter(filter))
+    switch( AdBlockRule::ruleType(filter) )
+    {
+    case TextRule:
         m_implementation = QSharedPointer<AdBlockRuleImpl>(new AdBlockRuleTextMatchImpl(filter));
-    else
+        break;
+
+    case FallbackRule:
         m_implementation = QSharedPointer<AdBlockRuleImpl>(new AdBlockRuleFallbackImpl(filter));
+        break;
+
+    case NullRule:
+    default:
+        m_implementation = QSharedPointer<AdBlockRuleImpl>(new AdBlockRuleNullImpl(filter));
+        break;
+    }
+}
+
+
+RuleTypes AdBlockRule::ruleType(const QString &filter)
+{
+    if( AdBlockRuleTextMatchImpl::isTextMatchFilter(filter) )
+        return TextRule;
+
+    if( AdBlockRuleNullImpl::isNullFilter(filter) )
+        return NullRule;
+
+    return FallbackRule;
 }

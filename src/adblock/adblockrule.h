@@ -66,6 +66,15 @@
 class QNetworkRequest;
 class QString;
 
+
+enum RuleTypes
+{
+    TextRule,
+    FallbackRule,
+    NullRule
+};
+
+
 class AdBlockRule
 {
 public:
@@ -80,6 +89,8 @@ public:
         }
         return b;
     }
+
+    static RuleTypes ruleType(const QString &filter);
 
 private:
     QSharedPointer<AdBlockRuleImpl> m_implementation;
