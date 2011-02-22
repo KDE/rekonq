@@ -133,4 +133,6 @@ void BookmarkWidget::removeBookmark()
 {
     Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(*m_bookmark);
     close();
+
+    emit updateIcon();
 }

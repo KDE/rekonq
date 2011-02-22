@@ -45,7 +45,10 @@ public:
 
     void showAt(const QPoint &pos);
 
-private slots:
+Q_SIGNALS:
+    void updateIcon();
+
+private Q_SLOTS:
     void accept();
     void removeBookmark();
 

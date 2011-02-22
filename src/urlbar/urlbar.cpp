@@ -109,9 +109,6 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
     connect(_tab->view(), SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
 
-    // bookmark icon
-    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(updateRightIcons()));
-
     // search icon
     connect(Application::opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)), this, SLOT(updateRightIcons()));
 
@@ -368,10 +365,15 @@ void UrlBar::showBookmarkInfo(const QPoint &pos)
     if (bookmark.isNull())
     {
         bookmark = Application::bookmarkProvider()->bookmarkOwner()->bookmarkCurrentPage();
+
+        // set bk icon
+        bt->setIcon(KIcon("bookmarks"));
+        bt->setToolTip(i18n("Edit this bookmark"));
     }
     else
     {
         BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
+        connect(widget, SIGNAL(updateIcon()), this, SLOT(updateRightIcons()));
         widget->showAt(pos);
     }
 }
