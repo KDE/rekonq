@@ -271,7 +271,6 @@ HistoryManager *Application::historyManager()
     if (m_historyManager.isNull())
     {
         m_historyManager = new HistoryManager(instance());
-        QWebHistoryInterface::setDefaultInterface(m_historyManager.data());
     }
     return m_historyManager.data();
 }

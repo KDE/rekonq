@@ -30,7 +30,7 @@
 
 // Self Includes
 #include "opensearchengine.h"
-#include "suggestionparser.h"
+#include "opensearchengine.moc"
 
 // Qt Includes
 #include <QtCore/QRegExp>

@@ -33,6 +33,8 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+
+// Local Includes
 #include "suggestionparser.h"
 
 // KDE Includes
@@ -41,9 +43,6 @@
 // Qt Includes
 #include <QtCore/QPair>
 #include <QtGui/QImage>
-
-
-// Forward Declarations
 
 
 class OpenSearchEngine : public QObject

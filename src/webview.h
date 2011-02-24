@@ -66,7 +66,7 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void dropEvent(QDropEvent *event);
 
-private slots:
+private Q_SLOTS:
     void search();
 
     void printFrame();
@@ -87,7 +87,7 @@ private slots:
     void stopScrolling();
     void changeWindowIcon();
 
-signals:
+Q_SIGNALS:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
     void zoomChanged(int);
     void openPreviousInHistory();

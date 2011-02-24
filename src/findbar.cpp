@@ -118,10 +118,6 @@ FindBar::FindBar(MainWindow *window)
 
 FindBar::~FindBar()
 {
-    delete m_lineEdit;
-    delete m_hideTimer;
-    delete m_matchCase;
-    delete m_highlightAll;
 }
 
 

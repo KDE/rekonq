@@ -45,6 +45,7 @@
 #include <QSignalMapper>
 #include <QClipboard>
 
+
 NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
         : QWidget(parent)
         , _mapper(new QSignalMapper(this))
@@ -75,6 +76,7 @@ NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
 NetworkAnalyzer::~NetworkAnalyzer()
 {
 }
+
 
 void NetworkAnalyzer::popupContextMenu(const QPoint& pos)
 {

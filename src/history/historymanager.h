@@ -56,7 +56,9 @@
 class HistoryItem
 {
 public:
-    HistoryItem() {}
+    HistoryItem()
+    {}
+
     explicit HistoryItem(const QString &u,
                          const QDateTime &d = QDateTime(),
                          const QString &t = QString()
