@@ -103,7 +103,7 @@ WebView::WebView(QWidget* parent)
 
     // loadUrl signal
     connect(this, SIGNAL(loadUrl(const KUrl &, const Rekonq::OpenType &)),
-            Application::instance(), SLOT(loadUrl(const KUrl &, const Rekonq::OpenType &)));
+            rApp, SLOT(loadUrl(const KUrl &, const Rekonq::OpenType &)));
 
     // Auto scroll timer
     connect(m_autoScrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
@@ -134,7 +134,7 @@ void WebView::changeWindowIcon()
 {
     if (ReKonfig::useFavicon())
     {
-        MainWindow *const mainWindow = Application::instance()->mainWindow();
+        MainWindow *const mainWindow = rApp->mainWindow();
         if (url() == mainWindow->currentTab()->url())
         {
             const int index = mainWindow->mainView()->currentIndex();
@@ -154,7 +154,7 @@ WebPage *WebView::page()
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
-    MainWindow *mainwindow = Application::instance()->mainWindow();
+    MainWindow *mainwindow = rApp->mainWindow();
 
     KMenu menu(this);
     QAction *a;
@@ -241,14 +241,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         foreach(KService::Ptr engine, SearchEngine::favorites())
         {
             a = new KAction(engine->name(), this);
-            a->setIcon(Application::iconManager()->iconForUrl(SearchEngine::buildQuery(engine, "")));
+            a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(engine, "")));
             a->setData(engine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
             searchMenu->addAction(a);
         }
 
         a = new KAction(KIcon("edit-find"), i18n("On Current Page"), this);
-        connect(a, SIGNAL(triggered()), Application::instance()->mainWindow(), SLOT(findSelectedText()));
+        connect(a, SIGNAL(triggered()), rApp->mainWindow(), SLOT(findSelectedText()));
         searchMenu->addAction(a);
 
         if (!searchMenu->menu()->isEmpty())
@@ -383,7 +383,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                 menu.addAction(inspectAction);
             }
 
-            a = Application::bookmarkProvider()->actionByName("rekonq_add_bookmark");
+            a = rApp->bookmarkProvider()->actionByName("rekonq_add_bookmark");
             menu.addAction(a);
         }
 
@@ -461,7 +461,7 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    MainWindow *w = Application::instance()->mainWindow();
+    MainWindow *w = rApp->mainWindow();
     if (w->isFullScreen())
     {
         if (event->pos().y() >= 0 && event->pos().y() <= 4)
@@ -492,10 +492,10 @@ void WebView::dropEvent(QDropEvent *event)
     if (event->mimeData()->hasFormat("application/rekonq-bookmark"))
     {
         QByteArray addresses = event->mimeData()->data("application/rekonq-bookmark");
-        KBookmark bookmark =  Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+        KBookmark bookmark =  rApp->bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
         if (bookmark.isGroup())
         {
-            Application::bookmarkProvider()->bookmarkOwner()->openFolderinTabs(bookmark.toGroup());
+            rApp->bookmarkProvider()->bookmarkOwner()->openFolderinTabs(bookmark.toGroup());
         }
         else
         {
@@ -520,7 +520,7 @@ void WebView::search()
 
 void WebView::printFrame()
 {
-    Application::instance()->mainWindow()->printRequested(page()->currentFrame());
+    rApp->mainWindow()->printRequested(page()->currentFrame());
 }
 
 
@@ -706,7 +706,7 @@ void WebView::wheelEvent(QWheelEvent *event)
 
 void WebView::inspect()
 {
-    QAction *a = Application::instance()->mainWindow()->actionByName("web_inspector");
+    QAction *a = rApp->mainWindow()->actionByName("web_inspector");
     if (a && !a->isChecked())
         a->trigger();
     pageAction(QWebPage::InspectElement)->trigger();

@@ -123,7 +123,7 @@ void BookmarkWidget::accept()
     if (!m_bookmark->isNull() && m_name->text() != m_bookmark->fullText())
     {
         m_bookmark->setFullText(m_name->text());
-        Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+        rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
     }
     close();
 }
@@ -131,7 +131,7 @@ void BookmarkWidget::accept()
 
 void BookmarkWidget::removeBookmark()
 {
-    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(*m_bookmark);
+    rApp->bookmarkProvider()->bookmarkOwner()->deleteBookmark(*m_bookmark);
     close();
 
     emit updateIcon();

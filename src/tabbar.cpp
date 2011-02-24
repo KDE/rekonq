@@ -308,7 +308,7 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
     m_actualIndex = tab;
 
     KMenu menu;
-    MainWindow *mainWindow = Application::instance()->mainWindow();
+    MainWindow *mainWindow = rApp->mainWindow();
 
     menu.addAction(mainWindow->actionByName( QL1S("new_tab") ));
     menu.addAction(mainWindow->actionByName( QL1S("clone_tab") ));
@@ -332,7 +332,7 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
     setupHistoryActions();
 
     KMenu menu;
-    MainWindow *mainWindow = Application::instance()->mainWindow();
+    MainWindow *mainWindow = rApp->mainWindow();
 
     menu.addAction(mainWindow->actionByName( QL1S("new_tab") ));
     menu.addAction(mainWindow->actionByName( QL1S("open_last_closed_tab") ));
@@ -367,7 +367,7 @@ void TabBar::tabRemoved(int index)
 
 void TabBar::setupHistoryActions()
 {
-    MainWindow *w = Application::instance()->mainWindow();
+    MainWindow *w = rApp->mainWindow();
     MainView *mv = qobject_cast<MainView *>(parent());
 
     QAction *openLastClosedTabAction = w->actionByName( QL1S("open_last_closed_tab") );
@@ -389,7 +389,7 @@ void TabBar::setupHistoryActions()
 
     Q_FOREACH(const HistoryItem &item, mv->recentlyClosedTabs())
     {
-        KAction *a = new KAction(Application::iconManager()->iconForUrl(item.url), item.title, this);
+        KAction *a = new KAction(rApp->iconManager()->iconForUrl(item.url), item.title, this);
         a->setData(item.url);
         connect(a, SIGNAL(triggered()), mv, SLOT(openClosedTab()));
         am->addAction(a);

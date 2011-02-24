@@ -74,7 +74,7 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     m_agregators->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     m_agregators->addItem(KIcon("akregator"), QString("Akregator"));
-    m_agregators->addItem(Application::iconManager()->iconForUrl(KUrl("http://google.com/reader")), i18n("Google Reader"));
+    m_agregators->addItem(rApp->iconManager()->iconForUrl(KUrl("http://google.com/reader")), i18n("Google Reader"));
 
     layout->addRow(agregator, m_agregators);
 
@@ -138,7 +138,7 @@ void RSSWidget::accept()
 void RSSWidget::addWithGoogleReader(const QString &url)
 {
     KUrl toLoad = KUrl("http://www.google.com/ig/add?feedurl=" + url);
-    Application::instance()->mainWindow()->currentTab()->view()->load(toLoad);
+    rApp->mainWindow()->currentTab()->view()->load(toLoad);
 }
 
 

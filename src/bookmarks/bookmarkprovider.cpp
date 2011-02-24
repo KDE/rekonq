@@ -147,7 +147,7 @@ void BookmarkProvider::removeBookmarkPanel(BookmarksPanel *panel)
     panel->disconnect(this);
 
     if (m_bookmarkPanels.isEmpty())
-        Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+        rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
 }
 
 
@@ -170,7 +170,7 @@ QList<KBookmark> BookmarkProvider::find(const QString &text)
 {
     QList<KBookmark> list;
 
-    KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
+    KBookmarkGroup root = rApp->bookmarkProvider()->rootGroup();
     if (!root.isNull())
         for (KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
             find(&list, bookmark, text);
@@ -199,8 +199,8 @@ void BookmarkProvider::slotBookmarksChanged()
             fillBookmarkBar(bookmarkToolBar);
         }
     }
-    if(Application::instance()->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
-        Application::instance()->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
+    if(rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+        rApp->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 
 
@@ -232,7 +232,7 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
         else
         {
             KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, this);
-            action->setIcon(Application::iconManager()->iconForUrl( KUrl(bookmark.url()) ));
+            action->setIcon(rApp->iconManager()->iconForUrl( KUrl(bookmark.url()) ));
             connect(action, SIGNAL(hovered()), toolBar, SLOT(actionHovered()));
             toolBar->toolBar()->addAction(action);
             toolBar->toolBar()->widgetForAction(action)->installEventFilter(toolBar);
@@ -248,8 +248,8 @@ void BookmarkProvider::slotPanelChanged()
         if (panel && panel != sender())
             panel->loadFoldedState();
     }
-    if(Application::instance()->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
-        Application::instance()->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
+    if(rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+        rApp->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 
 

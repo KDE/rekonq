@@ -98,7 +98,7 @@ MainView::MainView(MainWindow *parent)
 
 void MainView::postLaunch()
 {
-    QStringList list = Application::sessionManager()->closedSites();
+    QStringList list = rApp->sessionManager()->closedSites();
     Q_FOREACH(const QString &line, list)
     {
         if(line.startsWith( QL1S("about") ))
@@ -111,7 +111,7 @@ void MainView::postLaunch()
     }
 
     // Session Manager
-    connect(this, SIGNAL(tabsChanged()), Application::sessionManager(), SLOT(saveSession()));
+    connect(this, SIGNAL(tabsChanged()), rApp->sessionManager(), SLOT(saveSession()));
 
     m_addTabButton->setDefaultAction(m_parentWindow->actionByName("new_tab"));
 
@@ -411,7 +411,7 @@ void MainView::cloneTab(int index)
 
     KUrl url = webTab(index)->url();
 
-    Application::instance()->loadUrl(url, Rekonq::NewTab);
+    rApp->loadUrl(url, Rekonq::NewTab);
 
     updateTabBar();
 }
@@ -555,7 +555,7 @@ void MainView::webViewIconChanged()
 
     if (-1 != index)
     {
-        KIcon icon = Application::iconManager()->iconForUrl(tab->url());
+        KIcon icon = rApp->iconManager()->iconForUrl(tab->url());
         QLabel *label = animatedLoading(index, false);
         QMovie *movie = label->movie();
         delete movie;
@@ -585,7 +585,7 @@ void MainView::webViewTitleChanged(const QString &title)
     {
         tabBar()->setTabHighlighted(index);
     }
-    Application::historyManager()->updateHistoryEntry(tab->url(), tabTitle);
+    rApp->historyManager()->updateHistoryEntry(tab->url(), tabTitle);
     if (ReKonfig::hoveringTabOption() == 1)
         tabBar()->setTabToolTip(index, tabTitle.remove('&'));
 }
@@ -630,7 +630,7 @@ void MainView::openLastClosedTab()
         return;
 
     const HistoryItem item = m_recentlyClosedTabs.takeFirst();
-    Application::instance()->loadUrl(KUrl(item.url), Rekonq::NewTab);
+    rApp->loadUrl(KUrl(item.url), Rekonq::NewTab);
 }
 
 
@@ -639,7 +639,7 @@ void MainView::openClosedTab()
     KAction *action = qobject_cast<KAction *>(sender());
     if (action)
     {
-        Application::instance()->loadUrl(action->data().toUrl(), Rekonq::NewTab);
+        rApp->loadUrl(action->data().toUrl(), Rekonq::NewTab);
 
         QString title = action->text();
         title = title.remove('&');
@@ -704,7 +704,7 @@ void MainView::detachTab(int index, MainWindow *toWindow)
     if (u.scheme() == QL1S("about"))
     {
         closeTab(index);
-        Application::instance()->loadUrl(u, Rekonq::NewWindow);
+        rApp->loadUrl(u, Rekonq::NewWindow);
     }
     else
     {
@@ -714,10 +714,10 @@ void MainView::detachTab(int index, MainWindow *toWindow)
 
         MainWindow *w;
         if( toWindow == NULL )
-            w = Application::instance()->newMainWindow(false);
+            w = rApp->newMainWindow(false);
         else
             w = toWindow;
-        w->mainView()->addTab(tab, Application::iconManager()->iconForUrl(u), label);
+        w->mainView()->addTab(tab, rApp->iconManager()->iconForUrl(u), label);
         w->mainView()->widgetBar()->insertWidget(0, bar);
         w->mainView()->updateTabBar();
     }

@@ -65,14 +65,6 @@
 #include <QVBoxLayout>
 
 
-QWeakPointer<AdBlockManager> Application::s_adblockManager;
-QWeakPointer<BookmarkProvider> Application::s_bookmarkProvider;
-QWeakPointer<HistoryManager> Application::s_historyManager;
-QWeakPointer<IconManager> Application::s_iconManager;
-QWeakPointer<OpenSearchManager> Application::s_opensearchManager;
-QWeakPointer<SessionManager> Application::s_sessionManager;
-
-
 using namespace ThreadWeaver;
 
 
@@ -96,26 +88,11 @@ Application::~Application()
     ReKonfig::setRecoverOnCrash(0);
     saveConfiguration();
 
-    foreach(QWeakPointer<MainWindow> window, m_mainWindows)
+    Q_FOREACH(QWeakPointer<MainWindow> window, m_mainWindows)
     {
         delete window.data();
         window.clear();
     }
-
-    delete s_bookmarkProvider.data();
-    s_bookmarkProvider.clear();
-
-    delete s_historyManager.data();
-    s_historyManager.clear();
-
-    delete s_sessionManager.data();
-    s_sessionManager.clear();
-
-    delete s_adblockManager.data();
-    s_adblockManager.clear();
-
-    delete s_opensearchManager.data();
-    s_opensearchManager.clear();
 }
 
 
@@ -249,12 +226,12 @@ void Application::postLaunch()
 
     setWindowIcon(KIcon("rekonq"));
 
-    Application::historyManager();
-    Application::sessionManager()->setSessionManagementEnabled(true);
+    historyManager();
+    sessionManager()->setSessionManagementEnabled(true);
 
     // bookmarks loading
-    connect(Application::bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
-            Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
+    connect(bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
+            instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
  
     // crash recovering
     ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
@@ -285,52 +262,52 @@ MainWindow *Application::mainWindow()
 
 HistoryManager *Application::historyManager()
 {
-    if (s_historyManager.isNull())
+    if (m_historyManager.isNull())
     {
-        s_historyManager = new HistoryManager();
-        QWebHistoryInterface::setDefaultInterface(s_historyManager.data());
+        m_historyManager = new HistoryManager(instance());
+        QWebHistoryInterface::setDefaultInterface(m_historyManager.data());
     }
-    return s_historyManager.data();
+    return m_historyManager.data();
 }
 
 
 BookmarkProvider *Application::bookmarkProvider()
 {
-    if (s_bookmarkProvider.isNull())
+    if (m_bookmarkProvider.isNull())
     {
-        s_bookmarkProvider = new BookmarkProvider(instance());
+        m_bookmarkProvider = new BookmarkProvider(instance());
     }
-    return s_bookmarkProvider.data();
+    return m_bookmarkProvider.data();
 }
 
 
 SessionManager *Application::sessionManager()
 {
-    if (s_sessionManager.isNull())
+    if (m_sessionManager.isNull())
     {
-        s_sessionManager = new SessionManager(instance());
+        m_sessionManager = new SessionManager(instance());
     }
-    return s_sessionManager.data();
+    return m_sessionManager.data();
 }
 
 
 OpenSearchManager *Application::opensearchManager()
 {
-    if (s_opensearchManager.isNull())
+    if (m_opensearchManager.isNull())
     {
-        s_opensearchManager = new OpenSearchManager(instance());
+        m_opensearchManager = new OpenSearchManager(instance());
     }
-    return s_opensearchManager.data();
+    return m_opensearchManager.data();
 }
 
 
 IconManager *Application::iconManager()
 {
-    if (s_iconManager.isNull())
+    if (m_iconManager.isNull())
     {
-        s_iconManager = new IconManager(instance());
+        m_iconManager = new IconManager(instance());
     }
-    return s_iconManager.data();
+    return m_iconManager.data();
 }
 
 
@@ -421,11 +398,11 @@ MainWindowList Application::mainWindowList()
 
 AdBlockManager *Application::adblockManager()
 {
-    if (s_adblockManager.isNull())
+    if (m_adblockManager.isNull())
     {
-        s_adblockManager = new AdBlockManager(instance());
+        m_adblockManager = new AdBlockManager(instance());
     }
-    return s_adblockManager.data();
+    return m_adblockManager.data();
 }
 
 
@@ -534,8 +511,8 @@ void Application::updateConfiguration()
         defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
 
     // ====== load Settings on main classes
-    Application::historyManager()->loadSettings();
-    Application::adblockManager()->loadSettings();
+    historyManager()->loadSettings();
+    adblockManager()->loadSettings();
     if(!ReKonfig::useFavicon())
         mainWindow()->setWindowIcon(KIcon("rekonq"));
     else

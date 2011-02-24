@@ -133,7 +133,7 @@ public:
     {
         _searchEngine = engine;
         if(engine)
-            Application::opensearchManager()->setSearchProvider(engine->desktopEntryName());
+            rApp->opensearchManager()->setSearchProvider(engine->desktopEntryName());
     };
 
     void computeSuggestions();

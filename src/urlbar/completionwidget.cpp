@@ -329,11 +329,11 @@ void CompletionWidget::setVisible(bool visible)
 {
     if (visible)
     {
-        Application::instance()->installEventFilter(this);
+        rApp->installEventFilter(this);
     }
     else
     {
-        Application::instance()->removeEventFilter(this);
+        rApp->removeEventFilter(this);
     }
 
 

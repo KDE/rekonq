@@ -356,7 +356,7 @@ void UrlResolver::computeWebSearches()
 // history
 void UrlResolver::computeHistory()
 {
-    QList<HistoryItem> found = Application::historyManager()->find(_typedString);
+    QList<HistoryItem> found = rApp->historyManager()->find(_typedString);
     qSort(found);
 
     Q_FOREACH(const HistoryItem &i, found)
@@ -373,7 +373,7 @@ void UrlResolver::computeHistory()
 // bookmarks
 void UrlResolver::computeBookmarks()
 {
-    QList<KBookmark> found = Application::bookmarkProvider()->find(_typedString);
+    QList<KBookmark> found = rApp->bookmarkProvider()->find(_typedString);
     kDebug() << "FOUND: " << found.count();
     Q_FOREACH(const KBookmark &b, found)
     {
@@ -388,7 +388,7 @@ void UrlResolver::computeSuggestions()
 {
     // if a string startsWith /, it is probably a local path
     // so, no need for suggestions...
-    if(_typedString.startsWith('/') || !Application::opensearchManager()->isSuggestionAvailable())
+    if(_typedString.startsWith('/') || !rApp->opensearchManager()->isSuggestionAvailable())
     {
         UrlSearchList list;
         emit suggestionsReady(list, _typedString);
@@ -403,13 +403,13 @@ void UrlResolver::computeSuggestions()
         setSearchEngine(engine);
     }
 
-    connect(Application::opensearchManager(),
+    connect(rApp->opensearchManager(),
             SIGNAL(suggestionsReceived(const QString &, const ResponseList &)),
             this,
             SLOT(suggestionsReceived(const QString &, const ResponseList &)));
 
     _typedQuery = query;
-    Application::opensearchManager()->requestSuggestion(query);
+    rApp->opensearchManager()->requestSuggestion(query);
 }
 
 

@@ -92,7 +92,7 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
     else
     {
         KBookmarkAction *action = new KBookmarkAction(bookmark, owner(), this);
-        action->setIcon(Application::iconManager()->iconForUrl( KUrl(bookmark.url()) ));
+        action->setIcon(rApp->iconManager()->iconForUrl( KUrl(bookmark.url()) ));
         connect(action, SIGNAL(hovered()), this, SLOT(actionHovered()));
         return action;
     }
@@ -139,7 +139,7 @@ void BookmarkMenu::addOpenFolderInTabs()
 
         if (!bookmark.isNull())
         {
-            parentMenu()->addAction(Application::bookmarkProvider()->bookmarkOwner()->createAction(group, BookmarkOwner::OPEN_FOLDER));
+            parentMenu()->addAction(rApp->bookmarkProvider()->bookmarkOwner()->createAction(group, BookmarkOwner::OPEN_FOLDER));
         }
     }
 }
@@ -149,7 +149,7 @@ void BookmarkMenu::actionHovered()
 {
     KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(sender());
     if (action)
-        Application::instance()->mainWindow()->notifyMessage(action->bookmark().url().url());
+        rApp->mainWindow()->notifyMessage(action->bookmark().url().url());
 }
 
 
@@ -166,14 +166,14 @@ BookmarkToolBar::BookmarkToolBar(KToolBar *toolBar, QObject *parent)
 {
     toolBar->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(toolBar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
-    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString, QString)), this, SLOT(hideMenu()));
+    connect(rApp->bookmarkProvider()->bookmarkManager(), SIGNAL(changed(QString, QString)), this, SLOT(hideMenu()));
     toolBar->setAcceptDrops(true);
     toolBar->installEventFilter(this);
     toolBar->setShortcutEnabled(false);
 
     if (toolBar->isVisible())
     {
-        Application::bookmarkProvider()->fillBookmarkBar(this);
+        rApp->bookmarkProvider()->fillBookmarkBar(this);
         m_filled = true;
     }
 }
@@ -198,8 +198,8 @@ void BookmarkToolBar::contextMenu(const QPoint &point)
         bookmark = action->bookmark();
 
     BookmarksContextMenu menu(bookmark,
-                              Application::bookmarkProvider()->bookmarkManager(),
-                              Application::bookmarkProvider()->bookmarkOwner());
+                              rApp->bookmarkProvider()->bookmarkManager(),
+                              rApp->bookmarkProvider()->bookmarkOwner());
     menu.exec(toolBar()->mapToGlobal(point));
 }
 
@@ -244,7 +244,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         {
             if (!m_filled)
             {
-                Application::bookmarkProvider()->fillBookmarkBar(this);
+                rApp->bookmarkProvider()->fillBookmarkBar(this);
                 m_filled = true;
             }
         }
@@ -328,12 +328,12 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         {
             QDropEvent *dropEvent = static_cast<QDropEvent*>(event);
             KBookmark bookmark;
-            KBookmarkGroup root = Application::bookmarkProvider()->rootGroup();
+            KBookmarkGroup root = rApp->bookmarkProvider()->rootGroup();
 
             if (dropEvent->mimeData()->hasFormat("application/rekonq-bookmark"))
             {
                 QByteArray addresses = dropEvent->mimeData()->data("application/rekonq-bookmark");
-                bookmark =  Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+                bookmark =  rApp->bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
                 if (bookmark.isNull())
                     return false;
             }
@@ -380,7 +380,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                         root.moveBookmark(bookmark, destBookmark.parentGroup().previous(destBookmark));
                     }
 
-                    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+                    rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
                 }
             }
             else
@@ -392,7 +392,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                     root.moveBookmark(bookmark, KBookmark());
                 }
 
-                Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+                rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
             }
             dropEvent->accept();
         }
@@ -445,7 +445,7 @@ void BookmarkToolBar::actionHovered()
 {
     KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(sender());
     if (action)
-        Application::instance()->mainWindow()->notifyMessage(action->bookmark().url().url());
+        rApp->mainWindow()->notifyMessage(action->bookmark().url().url());
 }
 
 
@@ -470,7 +470,7 @@ void BookmarkToolBar::startDrag()
         }
         else
         {
-            drag->setPixmap(Application::iconManager()->iconForUrl(action->bookmark().url()).pixmap(24, 24));
+            drag->setPixmap(rApp->iconManager()->iconForUrl(action->bookmark().url()).pixmap(24, 24));
         }
 
         drag->start(Qt::MoveAction);

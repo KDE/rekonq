@@ -267,7 +267,7 @@ KUrl WebTab::extractOpensearchUrl(QWebElement e)
 bool WebTab::hasNewSearchEngine()
 {
     QWebElement e = page()->mainFrame()->findFirstElement(QLatin1String("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
-    return !e.isNull() && !Application::opensearchManager()->engineExists(extractOpensearchUrl(e));
+    return !e.isNull() && !rApp->opensearchManager()->engineExists(extractOpensearchUrl(e));
 }
 
 
@@ -281,8 +281,8 @@ void WebTab::showSearchEngine(const QPoint &pos)
         widget->setWindowFlags(Qt::Popup);
 
         connect(widget, SIGNAL(webShortcutSet(const KUrl &, const QString &, const QString &)),
-                Application::opensearchManager(), SLOT(addOpenSearchEngine(const KUrl &, const QString &, const QString &)));
-        connect(Application::opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)), 
+                rApp->opensearchManager(), SLOT(addOpenSearchEngine(const KUrl &, const QString &, const QString &)));
+        connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
             this, SLOT(openSearchEngineAdded()));
 
         widget->show(extractOpensearchUrl(e), title, pos);
@@ -295,6 +295,6 @@ void WebTab::openSearchEngineAdded()
     // If the providers changed, tell sycoca to rebuild its database...
     KBuildSycocaProgressDialog::rebuildKSycoca(this);
 
-    disconnect(Application::opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
+    disconnect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
             this, SLOT(openSearchEngineAdded()));
 }

@@ -110,7 +110,7 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
 
     // search icon
-    connect(Application::opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)), this, SLOT(updateRightIcons()));
+    connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)), this, SLOT(updateRightIcons()));
 
     _suggestionTimer->setSingleShot(true);
     connect(_suggestionTimer, SIGNAL(timeout()), this, SLOT(suggest()));
@@ -149,7 +149,7 @@ void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
     activateSuggestions(false);
     clearFocus();
     setUrl(url);
-    Application::instance()->loadUrl(url, type);
+    rApp->loadUrl(url, type);
 }
 
 
@@ -165,8 +165,8 @@ void UrlBar::paintEvent(QPaintEvent *event)
     }
     else
     {
-        backgroundColor = Application::palette().color(QPalette::Base);
-        foregroundColor = Application::palette().color(QPalette::Text);
+        backgroundColor = rApp->palette().color(QPalette::Base);
+        foregroundColor = rApp->palette().color(QPalette::Text);
     }
 
     // set background color of UrlBar
@@ -185,7 +185,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     }
     else
     {
-        QColor highlight = Application::palette().color(QPalette::Highlight);
+        QColor highlight = rApp->palette().color(QPalette::Highlight);
 
         int r = (highlight.red()+2*backgroundColor.red())/3;
         int g = (highlight.green()+2*backgroundColor.green())/3;
@@ -356,7 +356,7 @@ void UrlBar::showBookmarkInfo(const QPoint &pos)
     if( _tab->url().scheme() == QL1S("about") )
         return;
 
-    KBookmark bookmark = Application::bookmarkProvider()->bookmarkForUrl(_tab->url());
+    KBookmark bookmark = rApp->bookmarkProvider()->bookmarkForUrl(_tab->url());
 
     IconButton *bt = qobject_cast<IconButton *>(this->sender());
     if (!bt)
@@ -364,7 +364,7 @@ void UrlBar::showBookmarkInfo(const QPoint &pos)
 
     if (bookmark.isNull())
     {
-        bookmark = Application::bookmarkProvider()->bookmarkOwner()->bookmarkCurrentPage();
+        bookmark = rApp->bookmarkProvider()->bookmarkOwner()->bookmarkCurrentPage();
 
         // set bk icon
         bt->setIcon(KIcon("bookmarks"));
@@ -443,7 +443,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         rightIcon->setToolTip(i18n("Show SSL Info"));
         break;
     case UrlBar::BK:
-        if (Application::bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
+        if (rApp->bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
         {
             rightIcon->setIcon(KIcon("bookmarks").pixmap(32,32, QIcon::Disabled));
             rightIcon->setToolTip(i18n("Bookmark this page"));
@@ -540,5 +540,5 @@ void UrlBar::refreshFavicon()
         _icon->setIcon(KIcon("arrow-right"));
         return;
     }
-    _icon->setIcon(Application::iconManager()->iconForUrl(u));
+    _icon->setIcon(rApp->iconManager()->iconForUrl(u));
 }

@@ -71,7 +71,7 @@ void SessionManager::saveSession()
         return;
     }
     QTextStream out(&sessionFile);
-    MainWindowList wl = Application::instance()->mainWindowList();
+    MainWindowList wl = rApp->mainWindowList();
     Q_FOREACH(const QWeakPointer<MainWindow> &w, wl)
     {
         out << "window\n";
@@ -104,7 +104,7 @@ bool SessionManager::restoreSession()
 
     QTextStream in(&sessionFile);
     QString line;
-    bool windowAlreadyOpen = Application::instance()->mainWindowList().count();
+    bool windowAlreadyOpen = rApp->mainWindowList().count();
     do
     {
         line = in.readLine();
@@ -112,10 +112,10 @@ bool SessionManager::restoreSession()
         {
             line = in.readLine();
             if (windowAlreadyOpen) {
-                Application::instance()->loadUrl( KUrl(line), Rekonq::CurrentTab);
+                rApp->loadUrl( KUrl(line), Rekonq::CurrentTab);
                 windowAlreadyOpen = false;
             } else {
-                Application::instance()->loadUrl( KUrl(line), Rekonq::NewWindow);
+                rApp->loadUrl( KUrl(line), Rekonq::NewWindow);
             }
         }
         else
@@ -128,7 +128,7 @@ bool SessionManager::restoreSession()
                 if (ok)
                 {
                     // Get last mainwindow created which will be first one in mainwindow list
-                    MainWindowList wl = Application::instance()->mainWindowList();
+                    MainWindowList wl = rApp->mainWindowList();
                     if (wl.count() > 0)
                     {
                         MainView *mv = wl[0].data()->mainView();
@@ -138,7 +138,7 @@ bool SessionManager::restoreSession()
             }
             else
             {
-                Application::instance()->loadUrl( KUrl(line), Rekonq::NewFocusedTab);
+                rApp->loadUrl( KUrl(line), Rekonq::NewFocusedTab);
             }
         }
     }

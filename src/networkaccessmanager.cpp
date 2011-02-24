@@ -97,7 +97,7 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
         break;
 
     case QNetworkAccessManager::GetOperation:
-        reply = Application::adblockManager()->block(req, parentPage);
+        reply = rApp->adblockManager()->block(req, parentPage);
         break;
 
     case QNetworkAccessManager::PutOperation:

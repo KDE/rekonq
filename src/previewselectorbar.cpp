@@ -89,7 +89,7 @@ PreviewSelectorBar::~PreviewSelectorBar()
 void PreviewSelectorBar::verifyUrl()
 {
 
-    if (Application::instance()->mainWindow()->currentTab()->page()->mainFrame()->url().scheme() != "about")
+    if (rApp->mainWindow()->currentTab()->page()->mainFrame()->url().scheme() != "about")
     {
         m_button->setEnabled(true);
         m_button->setToolTip("");
@@ -120,7 +120,7 @@ void PreviewSelectorBar::loadFinished()
 
 void PreviewSelectorBar::clicked()
 {
-    WebPage *page = Application::instance()->mainWindow()->currentTab()->page();
+    WebPage *page = rApp->mainWindow()->currentTab()->page();
 
     if (page)
     {

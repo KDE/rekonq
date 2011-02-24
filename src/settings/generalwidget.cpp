@@ -73,7 +73,7 @@ void GeneralWidget::hasChanged()
 
 void GeneralWidget::setHomeToCurrentPage()
 {
-    MainWindow *mw = Application::instance()->mainWindow();
+    MainWindow *mw = rApp->mainWindow();
     WebTab *webTab = mw->currentTab();
     if (webTab)
     {

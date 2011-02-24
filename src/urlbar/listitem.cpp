@@ -69,7 +69,7 @@ ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
 
     // use the same application palette (hence, the same colors)
     // Qt docs says that using this cctor is possible & fast (qt:qpalette)
-    QPalette p(Application::palette());
+    QPalette p(rApp->palette());
     setPalette(p);
 
     deactivate();
@@ -195,7 +195,7 @@ QLabel *TypeIconLabel::getIcon(QString icon)
 IconLabel::IconLabel(const QString &icon, QWidget *parent)
         : QLabel(parent)
 {
-    QPixmap pixmapIcon = Application::iconManager()->iconForUrl(KUrl(icon)).pixmap(16);
+    QPixmap pixmapIcon = rApp->iconManager()->iconForUrl(KUrl(icon)).pixmap(16);
     setFixedSize(16, 16);
     setPixmap(pixmapIcon);
 }
@@ -481,7 +481,7 @@ KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selected
     KUrl url = KUrl( u.toString( QUrl::RemovePath | QUrl::RemoveQuery ) );
 
     kDebug() << "Engine NAME: " << engine->name() << " URL: " << url;
-    KAction *a = new KAction(Application::iconManager()->iconForUrl(url), engine->name(), this);
+    KAction *a = new KAction(rApp->iconManager()->iconForUrl(url), engine->name(), this);
     a->setCheckable(true);
     if (engine->desktopEntryName() == selectedEngine->desktopEntryName()) a->setChecked(true);
     a->setData(engine->entryPath());

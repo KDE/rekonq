@@ -207,7 +207,7 @@ static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData 
     while (result == KIO::R_CANCEL && destUrl.isValid());
 
     // Save download history
-    Application::instance()->addDownload(srcUrl.pathOrUrl() , destUrl.pathOrUrl());
+    rApp->addDownload(srcUrl.pathOrUrl() , destUrl.pathOrUrl());
 
     if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetDownload())
     {
@@ -280,7 +280,7 @@ WebPage::WebPage(QWidget *parent)
     // protocol handler signals
     connect(&_protHandler, SIGNAL(downloadUrl(const KUrl &)), this, SLOT(downloadUrl(const KUrl &)));
 
-    connect(Application::iconManager(), SIGNAL(iconChanged()), mainFrame(), SIGNAL(iconChanged()));
+    connect(rApp->iconManager(), SIGNAL(iconChanged()), mainFrame(), SIGNAL(iconChanged()));
 }
 
 
@@ -368,11 +368,11 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     WebTab *w = 0;
     if (ReKonfig::openTabNoWindow())
     {
-        w = Application::instance()->mainWindow()->mainView()->newWebTab( !ReKonfig::openTabsBack() );
+        w = rApp->mainWindow()->mainView()->newWebTab( !ReKonfig::openTabsBack() );
     }
     else
     {
-        w = Application::instance()->newMainWindow()->mainView()->currentWebTab();
+        w = rApp->newMainWindow()->mainView()->currentWebTab();
     }
     return w->page();
 }
@@ -434,7 +434,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     if (!isLocal)
     {
-        KParts::BrowserOpenOrSaveQuestion dlg(Application::instance()->mainWindow(), replyUrl, _mimeType);
+        KParts::BrowserOpenOrSaveQuestion dlg(rApp->mainWindow(), replyUrl, _mimeType);
         if(!_suggestedFileName.isEmpty())
             dlg.setSuggestedFileName(_suggestedFileName);
 
@@ -466,7 +466,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         destUrl.setPath(tempFile.fileName());
         kDebug() << "First save content to" << destUrl;
         KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
-        job->ui()->setWindow(Application::instance()->mainWindow());
+        job->ui()->setWindow(rApp->mainWindow());
         connect(job, SIGNAL(result(KJob *)), this, SLOT(copyToTempFileResult(KJob*)));
         return;
     }
@@ -502,7 +502,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         UrlBar *bar = tab->urlBar();
         bar->setQUrl(replyUrl);
         
-        Application::instance()->mainWindow()->updateActions();
+        rApp->mainWindow()->updateActions();
     }
     else
     {
@@ -549,10 +549,10 @@ void WebPage::loadFinished(bool ok)
     mainFrame()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values
 
     // Provide site icon. Can this be moved to loadStarted??
-    Application::iconManager()->provideIcon(this, _loadingUrl);
+    rApp->iconManager()->provideIcon(this, _loadingUrl);
 
     // Apply adblock manager hiding rules
-    Application::adblockManager()->applyHidingRules(this);
+    rApp->adblockManager()->applyHidingRules(this);
 
     // KWallet Integration
     QStringList list = ReKonfig::walletBlackList();
@@ -633,7 +633,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
                 UrlBar *bar = tab->urlBar();
                 bar->setQUrl(_loadingUrl);
 
-                Application::instance()->mainWindow()->updateActions();
+                rApp->mainWindow()->updateActions();
             }
         }
         break;
@@ -797,5 +797,5 @@ void WebPage::copyToTempFileResult(KJob* job)
     if ( job->error() )
         job->uiDelegate()->showErrorMessage();
     else 
-        (void)KRun::runUrl(static_cast<KIO::FileCopyJob *>(job)->destUrl(), _mimeType, Application::instance()->mainWindow());
+        (void)KRun::runUrl(static_cast<KIO::FileCopyJob *>(job)->destUrl(), _mimeType, rApp->mainWindow());
 }

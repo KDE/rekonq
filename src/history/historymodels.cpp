@@ -146,7 +146,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
         if (index.column() == 0)
         {
-            return Application::iconManager()->iconForUrl(item.url);
+            return rApp->iconManager()->iconForUrl(item.url);
         }
     case Qt::ToolTipRole:
         QString tooltip = "";

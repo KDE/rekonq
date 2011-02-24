@@ -97,20 +97,20 @@ KAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAc
 
 QString BookmarkOwner::currentTitle() const
 {
-    return Application::instance()->mainWindow()->currentTab()->view()->title();
+    return rApp->mainWindow()->currentTab()->view()->title();
 }
 
 
 QString BookmarkOwner::currentUrl() const
 {
-    return Application::instance()->mainWindow()->currentTab()->url().url();
+    return rApp->mainWindow()->currentTab()->url().url();
 }
 
 
 QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
 {
     QList< QPair<QString, QString> > bkList;
-    MainView *view = Application::instance()->mainWindow()->mainView();
+    MainView *view = rApp->mainWindow()->mainView();
     int tabNumber = view->count();
 
     for (int i = 0; i < tabNumber; ++i)
@@ -143,7 +143,7 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bkGoup)
     if (urlList.length() > 8)
     {
         if (KMessageBox::warningContinueCancel(
-                    Application::instance()->mainWindow(),
+                    rApp->mainWindow(),
                     i18ncp("%1=Number of tabs. Value is always >=8",
                            "You are about to open %1 tabs.\nAre you sure?",
                            "You are about to open %1 tabs.\nAre you sure?", urlList.length()))
@@ -197,7 +197,7 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
     }
     else
     {
-        parent = Application::bookmarkProvider()->rootGroup();
+        parent = rApp->bookmarkProvider()->rootGroup();
     }
 
     KBookmark newBk = parent.addBookmark(currentTitle(), KUrl(currentUrl()));
@@ -260,7 +260,7 @@ KBookmark BookmarkOwner::newSeparator(const KBookmark &bookmark)
     }
     else
     {
-        newBk = Application::bookmarkProvider()->rootGroup().createNewSeparator();
+        newBk = rApp->bookmarkProvider()->rootGroup().createNewSeparator();
     }
 
     newBk.setIcon("edit-clear");

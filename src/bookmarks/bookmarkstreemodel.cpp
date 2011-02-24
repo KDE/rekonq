@@ -74,7 +74,7 @@ QVariant BtmItem::data(int role) const
         if (m_kbm.isGroup() || m_kbm.isSeparator())
             return KIcon(m_kbm.icon());
         else
-            return Application::iconManager()->iconForUrl(KUrl(m_kbm.url()));
+            return rApp->iconManager()->iconForUrl(KUrl(m_kbm.url()));
     }
 
     if (role == Qt::UserRole)
@@ -160,7 +160,7 @@ BookmarksTreeModel::BookmarksTreeModel(QObject *parent)
         , m_root(0)
 {
     resetModel();
-    connect(Application::bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(bookmarksChanged(const QString &)));
+    connect(rApp->bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(bookmarksChanged(const QString &)));
 }
 
 
@@ -278,13 +278,13 @@ bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
         return false;
 
     QByteArray addresses = data->data("application/rekonq-bookmark");
-    KBookmark bookmark = Application::bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+    KBookmark bookmark = rApp->bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
 
     KBookmarkGroup root;
     if (parent.isValid())
         root = bookmarkForIndex(parent).toGroup();
     else
-        root = Application::bookmarkProvider()->rootGroup();
+        root = rApp->bookmarkProvider()->rootGroup();
 
     QModelIndex destIndex = index(row, column, parent);
 
@@ -298,7 +298,7 @@ bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
         root.addBookmark(bookmark);
     }
 
-    Application::bookmarkProvider()->bookmarkManager()->emitChanged();
+    rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
 
     return true;
 }
@@ -349,7 +349,7 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
             node = node->child( i );
             nodeIndex = index( i, 0, nodeIndex );
         }
-        populate(node, Application::bookmarkProvider()->bookmarkManager()->findByAddress(groupAddress).toGroup());
+        populate(node, rApp->bookmarkProvider()->bookmarkManager()->findByAddress(groupAddress).toGroup());
         endResetModel();
     }
 
@@ -359,7 +359,7 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
 
 void BookmarksTreeModel::resetModel()
 {
-    setRoot(Application::bookmarkProvider()->rootGroup());
+    setRoot(rApp->bookmarkProvider()->rootGroup());
 }
 
 

@@ -162,9 +162,9 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-    Application::bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
-    Application::bookmarkProvider()->removeBookmarkPanel(m_bookmarksPanel);
-    Application::instance()->removeMainWindow(this);
+    rApp->bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
+    rApp->bookmarkProvider()->removeBookmarkPanel(m_bookmarksPanel);
+    rApp->removeMainWindow(this);
 
     delete m_view;
     delete m_findBar;
@@ -208,11 +208,11 @@ void MainWindow::initBookmarkBar()
 
     if (m_bookmarksBar)
     {
-        Application::bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
+        rApp->bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
         delete m_bookmarksBar;
     }
     m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
-    Application::bookmarkProvider()->registerBookmarkBar(m_bookmarksBar);
+    rApp->bookmarkProvider()->registerBookmarkBar(m_bookmarksBar);
 }
 
 
@@ -289,7 +289,7 @@ void MainWindow::postLaunch()
 
     // setting popup notification
     m_popup->setAutoDelete(false);
-    connect(Application::instance(), SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
+    connect(rApp, SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
     m_popup->setFrameShape(QFrame::NoFrame);
     m_popup->setLineWidth(0);
     connect(m_hidePopup, SIGNAL(timeout()), m_popup, SLOT(hide()));
@@ -350,7 +350,7 @@ void MainWindow::changeWindowIcon(int index)
     if (ReKonfig::useFavicon())
     {
         KUrl url = mainView()->webTab(index)->url();
-        QIcon icon = Application::iconManager()->iconForUrl(url).pixmap(QSize(32,32));
+        QIcon icon = rApp->iconManager()->iconForUrl(url).pixmap(QSize(32,32));
         setWindowIcon(icon);
     }
 }
@@ -366,7 +366,7 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
     actionCollection()->addAction(QL1S("new_window"), a);
-    connect(a, SIGNAL(triggered(bool)), Application::instance(), SLOT(newWindow()));
+    connect(a, SIGNAL(triggered(bool)), rApp, SLOT(newWindow()));
 
     // Standard Actions
     KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
@@ -436,7 +436,7 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QL1S("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(viewPageSource()));
 
-    a = Application::instance()->privateBrowsingAction();
+    a = rApp->privateBrowsingAction();
     a->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_P);
     actionCollection()->addAction(QL1S("private_browsing"), a);
 
@@ -524,7 +524,7 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(detachTab()));
 
     // Bookmark Menu
-    KActionMenu *bmMenu = Application::bookmarkProvider()->bookmarkActionMenu(this);
+    KActionMenu *bmMenu = rApp->bookmarkProvider()->bookmarkActionMenu(this);
     bmMenu->setIcon(KIcon("bookmarks"));
     bmMenu->setDelayed(false);
     bmMenu->setShortcutConfigurable(true);
@@ -567,9 +567,9 @@ void MainWindow::setupPanels()
     // STEP 1
     // Setup history panel
     m_historyPanel = new HistoryPanel(i18n("History Panel"), this);
-    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
+    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), rApp, SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
     connect(m_historyPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
-    connect(m_historyPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
+    connect(m_historyPanel, SIGNAL(destroyed()), rApp, SLOT(saveConfiguration()));
 
     addDockWidget(Qt::LeftDockWidgetArea, m_historyPanel);
 
@@ -582,13 +582,13 @@ void MainWindow::setupPanels()
     // STEP 2
     // Setup bookmarks panel
     m_bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
-    connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), Application::instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
+    connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), rApp, SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
     connect(m_bookmarksPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
-    connect(m_bookmarksPanel, SIGNAL(destroyed()), Application::instance(), SLOT(saveConfiguration()));
+    connect(m_bookmarksPanel, SIGNAL(destroyed()), rApp, SLOT(saveConfiguration()));
 
     addDockWidget(Qt::LeftDockWidgetArea, m_bookmarksPanel);
 
-    Application::bookmarkProvider()->registerBookmarkPanel(m_bookmarksPanel);
+    rApp->bookmarkProvider()->registerBookmarkPanel(m_bookmarksPanel);
 
     // setup bookmarks panel action
     a = (KAction *) m_bookmarksPanel->toggleViewAction();
@@ -676,7 +676,7 @@ void MainWindow::preferences()
     QPointer<SettingsDialog> s = new SettingsDialog(this);
 
     // keep us informed when the user changes settings
-    connect(s, SIGNAL(settingsChanged(const QString&)), Application::instance(), SLOT(updateConfiguration()));
+    connect(s, SIGNAL(settingsChanged(const QString&)), rApp, SLOT(updateConfiguration()));
 
     s->exec();
     delete s;
@@ -738,7 +738,7 @@ void MainWindow::fileOpen()
     if (filePath.isEmpty())
         return;
 
-    Application::instance()->loadUrl(filePath);
+    rApp->loadUrl(filePath);
 }
 
 
@@ -965,7 +965,7 @@ void MainWindow::homePage(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
         : KUrl( ReKonfig::homePage() );
 
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
-        Application::instance()->loadUrl( homeUrl, Rekonq::NewTab);
+        rApp->loadUrl( homeUrl, Rekonq::NewTab);
     else
         currentTab()->view()->load( homeUrl );
 }
@@ -979,7 +979,6 @@ WebTab *MainWindow::currentTab() const
 
 void MainWindow::browserLoading(bool v)
 {
-    kDebug() << "-------------------------------------------------------------------";
     QAction *stop = actionCollection()->action( QL1S("stop") );
     QAction *reload = actionCollection()->action( QL1S("view_redisplay") );
     if (v)
@@ -1027,7 +1026,7 @@ void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifie
 
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
     {
-        Application::instance()->loadUrl(item->url(), Rekonq::NewTab);
+        rApp->loadUrl(item->url(), Rekonq::NewTab);
     }
     else
     {
@@ -1060,7 +1059,7 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
 
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
     {
-        Application::instance()->loadUrl(item->url(), Rekonq::NewTab);
+        rApp->loadUrl(item->url(), Rekonq::NewTab);
     }
     else
     {
@@ -1238,12 +1237,12 @@ void MainWindow::clearPrivateData()
 
         if (clearWidget.clearHistory->isChecked())
         {
-            Application::historyManager()->clear();
+            rApp->historyManager()->clear();
         }
 
         if (clearWidget.clearDownloads->isChecked())
         {
-            Application::instance()->clearDownloadsHistory();
+            rApp->clearDownloadsHistory();
         }
 
         if (clearWidget.clearCookies->isChecked())
@@ -1260,7 +1259,7 @@ void MainWindow::clearPrivateData()
 
         if (clearWidget.clearWebIcons->isChecked())
         {
-            Application::iconManager()->clearIconCache();
+            rApp->iconManager()->clearIconCache();
         }
 
         if (clearWidget.homePageThumbs->isChecked())
@@ -1299,7 +1298,7 @@ void MainWindow::aboutToShowBackMenu()
         QWebHistoryItem item = history->currentItem();
         KAction *action = new KAction(this);
         action->setData(listCount + offset++);
-        KIcon icon = Application::iconManager()->iconForUrl(item.url());
+        KIcon icon = rApp->iconManager()->iconForUrl(item.url());
         action->setIcon(icon);
         action->setText(item.title());
         m_historyBackMenu->addAction(action);
@@ -1310,7 +1309,7 @@ void MainWindow::aboutToShowBackMenu()
         QWebHistoryItem item = historyList.at(i);
         KAction *action = new KAction(this);
         action->setData(i + offset);
-        KIcon icon = Application::iconManager()->iconForUrl(item.url());
+        KIcon icon = rApp->iconManager()->iconForUrl(item.url());
         action->setIcon(icon);
         action->setText(item.title());
         m_historyBackMenu->addAction(action);
@@ -1340,7 +1339,7 @@ void MainWindow::aboutToShowForwardMenu()
         QWebHistoryItem item = history->currentItem();
         KAction *action = new KAction(this);
         action->setData(listCount + offset++);
-        KIcon icon = Application::iconManager()->iconForUrl(item.url());
+        KIcon icon = rApp->iconManager()->iconForUrl(item.url());
         action->setIcon(icon);
         action->setText(item.title());
         m_historyForwardMenu->addAction(action);
@@ -1351,7 +1350,7 @@ void MainWindow::aboutToShowForwardMenu()
         QWebHistoryItem item = historyList.at(i - 1);
         KAction *action = new KAction(this);
         action->setData(pivot +i + offset);
-        KIcon icon = Application::iconManager()->iconForUrl(item.url());
+        KIcon icon = rApp->iconManager()->iconForUrl(item.url());
         action->setIcon(icon);
         action->setText(item.title());
         m_historyForwardMenu->addAction(action);
@@ -1364,7 +1363,7 @@ void MainWindow::aboutToShowTabListMenu()
     m_tabListMenu->clear();
     for( int i = 0; i < m_view->count(); ++i ){
         KAction *action = new KAction(m_view->tabText(i), this);
-        action->setIcon(Application::iconManager()->iconForUrl(m_view->webTab(i)->url()).pixmap(16, 16));
+        action->setIcon(rApp->iconManager()->iconForUrl(m_view->webTab(i)->url()).pixmap(16, 16));
         action->setData(i);
         if(mainView()->tabBar()->currentIndex() == i)
         {
@@ -1475,7 +1474,7 @@ void MainWindow::enableNetworkAnalysis(bool b)
 bool MainWindow::queryClose()
 {
     // this should fux bug 240432
-    if(Application::instance()->sessionSaving())
+    if(rApp->sessionSaving())
         return true;
 
     // smooth private browsing mode

@@ -135,7 +135,7 @@ void ZoomBar::show()
     {
         emit visibilityChanged(true);
         QWidget::show();
-        m_zoomSlider->setValue(Application::instance()->mainWindow()->currentTab()->view()->zoomFactor()*10);
+        m_zoomSlider->setValue(rApp->mainWindow()->currentTab()->view()->zoomFactor()*10);
     }
 }
 
@@ -168,8 +168,8 @@ void ZoomBar::zoomNormal()
 void ZoomBar::updateSlider(int webview)
 {
     WebTab *tab = 0;
-    if (!Application::instance()->mainWindowList().isEmpty())
-        tab = Application::instance()->mainWindow()->mainView()->webTab(webview);
+    if (!rApp->mainWindowList().isEmpty())
+        tab = rApp->mainWindow()->mainView()->webTab(webview);
 
     if (!tab)
         return;
@@ -183,7 +183,7 @@ void ZoomBar::setValue(int value)
     m_zoomSlider->setValue(value);
     m_percentage->setText(i18nc("percentage of the website zoom", "%1%", QString::number(value*10)));
 
-    WebTab *tab = Application::instance()->mainWindow()->currentTab();
+    WebTab *tab = rApp->mainWindow()->currentTab();
     saveZoomValue(tab->url().host(), value);
     tab->view()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values
 }

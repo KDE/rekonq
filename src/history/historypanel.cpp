@@ -146,5 +146,5 @@ void HistoryPanel::setup()
 
 QAbstractItemModel* HistoryPanel::model()
 {
-    return Application::historyManager()->historyTreeModel();
+    return rApp->historyManager()->historyTreeModel();
 }

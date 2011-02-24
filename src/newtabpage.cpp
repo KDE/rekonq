@@ -110,19 +110,19 @@ void NewTabPage::generate(const KUrl &url)
         if (url.directory() == QL1S("preview/modify"))
         {
             int index = url.fileName().toInt();
-            Application::instance()->mainWindow()->currentTab()->createPreviewSelectorBar(index);
+            rApp->mainWindow()->currentTab()->createPreviewSelectorBar(index);
             return;
         }
     }
     if (url.fileName() == QL1S("clear"))
     {
-        Application::instance()->mainWindow()->actionByName("clear_private_data")->trigger();
+        rApp->mainWindow()->actionByName("clear_private_data")->trigger();
         generate( QL1S("about:") + url.directory() );
         return;
     }
     if (url == KUrl("about:bookmarks/edit"))
     {
-        Application::bookmarkProvider()->bookmarkManager()->slotEditBookmarks();
+        rApp->bookmarkProvider()->bookmarkManager()->slotEditBookmarks();
         return;
     }
 
@@ -396,7 +396,7 @@ void NewTabPage::historyPage()
                                                  KIconLoader::Toolbar);
     m_root.document().findFirst( QL1S("#actions") ).appendInside(clearData);
 
-    HistoryTreeModel *model = Application::historyManager()->historyTreeModel();
+    HistoryTreeModel *model = rApp->historyManager()->historyTreeModel();
 
     if (model->rowCount() == 0)
     {
@@ -454,7 +454,7 @@ void NewTabPage::bookmarksPage()
                                                      KIconLoader::Toolbar);
     m_root.document().findFirst( QL1S("#actions") ).appendInside(editBookmarks);
 
-    KBookmarkGroup bookGroup = Application::bookmarkProvider()->rootGroup();
+    KBookmarkGroup bookGroup = rApp->bookmarkProvider()->rootGroup();
     if (bookGroup.isNull())
     {
         m_root.addClass( QL1S("empty") );
@@ -515,7 +515,7 @@ void NewTabPage::closedTabsPage()
 {
     m_root.addClass( QL1S("closedTabs") );
 
-    QList<HistoryItem> links = Application::instance()->mainWindow()->mainView()->recentlyClosedTabs();
+    QList<HistoryItem> links = rApp->mainWindow()->mainView()->recentlyClosedTabs();
 
     if (links.isEmpty())
     {
@@ -565,7 +565,7 @@ void NewTabPage::downloadsPage()
                                                  KIconLoader::Toolbar);
     m_root.document().findFirst( QL1S("#actions") ).appendInside(clearData);
 
-    DownloadList list = Application::instance()->downloads();
+    DownloadList list = rApp->downloads();
 
     if (list.isEmpty())
     {

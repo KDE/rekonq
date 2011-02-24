@@ -164,7 +164,7 @@ void PanelTreeView::copyToClipboard()
     if (!index.isValid())
         return;
 
-    QClipboard *cb = Application::clipboard();
+    QClipboard *cb = QApplication::clipboard();
     cb->setText(qVariantValue< KUrl >(index.data(Qt::UserRole)).url());
 }
 

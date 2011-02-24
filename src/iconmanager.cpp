@@ -63,7 +63,7 @@ IconManager::~IconManager()
 KIcon IconManager::iconForUrl(const KUrl &url)
 {
     // first things first.. avoid infinite loop at startup
-    if (url.isEmpty() || Application::instance()->mainWindowList().isEmpty())
+    if (url.isEmpty() || rApp->mainWindowList().isEmpty())
         return KIcon("text-html");
     
     QByteArray encodedUrl = url.toEncoded();

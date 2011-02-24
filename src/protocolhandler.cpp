@@ -200,12 +200,12 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     // If rekonq cannot handle a protocol by itself, it will hand it over to KDE via KRun
     if(KProtocolInfo::isKnownProtocol(_url))
     {
-        new KRun(_url, Application::instance()->mainWindow());  // No need to delete KRun, it autodeletes itself
+        new KRun(_url, rApp->mainWindow());  // No need to delete KRun, it autodeletes itself
         return true;
     }
 
     // Error Message, for those protocols even KDE cannot handle
-    KMessageBox::error(Application::instance()->mainWindow(), i18nc("@info",
+    KMessageBox::error(rApp->mainWindow(), i18nc("@info",
                                                                     "rekonq cannot handle this URL. \
                                                                     Please use an appropriate application to open it."));
     return false;
@@ -275,9 +275,9 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         _frame->setHtml(html);
         qobject_cast<WebPage *>(_frame->page())->setIsOnRekonqPage(true);
 
-        Application::instance()->mainWindow()->mainView()->currentUrlBar()->setQUrl(_url);
-        Application::instance()->mainWindow()->currentTab()->setFocus();
-        Application::historyManager()->addHistoryEntry(_url.prettyUrl());
+        rApp->mainWindow()->mainView()->currentUrlBar()->setQUrl(_url);
+        rApp->mainWindow()->currentTab()->setFocus();
+        rApp->historyManager()->addHistoryEntry(_url.prettyUrl());
     }
 }
 
@@ -419,9 +419,9 @@ void ProtocolHandler::abpHandling()
     {
         if (!requireslocation.isEmpty() && !requirestitle.isEmpty())
         {
-            Application::adblockManager()->addSubscription(requirestitle, requireslocation);
+            rApp->adblockManager()->addSubscription(requirestitle, requireslocation);
         }
-        Application::adblockManager()->addSubscription(title, location);
-        Application::adblockManager()->loadSettings(false);
+        rApp->adblockManager()->addSubscription(title, location);
+        rApp->adblockManager()->loadSettings(false);
     }
 }

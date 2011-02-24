@@ -52,7 +52,6 @@ class SessionManager;
 
 class KAction;
 
-
 namespace ThreadWeaver {class Job;}
 
 
@@ -81,6 +80,7 @@ public:
 
 // ---------------------------------------------------------------------------------------------------------------
 
+#define rApp Application::instance()
 
 /**
   *
@@ -99,12 +99,12 @@ public:
     MainWindow *newMainWindow(bool withTab = true);
     MainWindowList mainWindowList();
 
-    static HistoryManager *historyManager();
-    static BookmarkProvider *bookmarkProvider();
-    static SessionManager *sessionManager();
-    static AdBlockManager *adblockManager();
-    static OpenSearchManager *opensearchManager();
-    static IconManager *iconManager();
+    HistoryManager *historyManager();
+    BookmarkProvider *bookmarkProvider();
+    SessionManager *sessionManager();
+    AdBlockManager *adblockManager();
+    OpenSearchManager *opensearchManager();
+    IconManager *iconManager();
 
     // DOWNLOADS MANAGEMENT METHODS
     void addDownload(const QString &srcUrl, const QString &destUrl);
@@ -142,12 +142,12 @@ private slots:
     void setPrivateBrowsingMode(bool);  
 
 private:
-    static QWeakPointer<HistoryManager> s_historyManager;
-    static QWeakPointer<BookmarkProvider> s_bookmarkProvider;
-    static QWeakPointer<SessionManager> s_sessionManager;
-    static QWeakPointer<AdBlockManager> s_adblockManager;
-    static QWeakPointer<OpenSearchManager> s_opensearchManager;
-    static QWeakPointer<IconManager> s_iconManager;
+    QWeakPointer<HistoryManager> m_historyManager;
+    QWeakPointer<BookmarkProvider> m_bookmarkProvider;
+    QWeakPointer<SessionManager> m_sessionManager;
+    QWeakPointer<AdBlockManager> m_adblockManager;
+    QWeakPointer<OpenSearchManager> m_opensearchManager;
+    QWeakPointer<IconManager> m_iconManager;
 
     MainWindowList m_mainWindows;
 

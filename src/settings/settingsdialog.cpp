@@ -123,7 +123,7 @@ Private::Private(SettingsDialog *parent)
     pageItem->setIcon(KIcon("preferences-web-browser-adblock"));
 
     // -- 7
-    shortcutsEditor = new KShortcutsEditor(Application::instance()->mainWindow()->actionCollection(), parent);
+    shortcutsEditor = new KShortcutsEditor(rApp->mainWindow()->actionCollection(), parent);
     pageItem = parent->addPage(shortcutsEditor , i18n("Shortcuts"));
     pageItem->setIcon(KIcon("configure-shortcuts"));
 
@@ -204,7 +204,7 @@ void SettingsDialog::saveSettings()
     d->ebrowsingModule->save();
 
     SearchEngine::reload();
-    Application::opensearchManager()->removeDeletedEngines();
+    rApp->opensearchManager()->removeDeletedEngines();
 
     updateButtons();
     emit settingsChanged("ReKonfig");

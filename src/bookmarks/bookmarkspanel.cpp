@@ -75,8 +75,8 @@ void BookmarksPanel::contextMenu(const QPoint &pos)
         return;
 
     BookmarksContextMenu menu(bookmarkForIndex( panelTreeView()->indexAt(pos) ),
-                              Application::bookmarkProvider()->bookmarkManager(),
-                              Application::bookmarkProvider()->bookmarkOwner()
+                              rApp->bookmarkProvider()->bookmarkManager(),
+                              rApp->bookmarkProvider()->bookmarkOwner()
                              );
 
     menu.exec(panelTreeView()->mapToGlobal(pos));
@@ -89,7 +89,7 @@ void BookmarksPanel::deleteBookmark()
     if (_loadingState || !index.isValid())
         return;
 
-    Application::bookmarkProvider()->bookmarkOwner()->deleteBookmark(bookmarkForIndex(index));
+    rApp->bookmarkProvider()->bookmarkOwner()->deleteBookmark(bookmarkForIndex(index));
 }
 
 
