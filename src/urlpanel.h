@@ -60,7 +60,10 @@ protected:
     virtual void setup();
     virtual QAbstractItemModel* model() = 0;
 
-    PanelTreeView* panelTreeView() const {return _treeView;}
+    PanelTreeView* panelTreeView() const
+    {
+        return _treeView;
+    }
 
 protected Q_SLOTS:
     virtual void contextMenuItem(const QPoint &pos) = 0;

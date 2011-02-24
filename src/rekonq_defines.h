@@ -58,32 +58,32 @@
 
 namespace Rekonq
 {
-    /**
-    * @short notifying message status
-    * Different message status
-    */
+/**
+* @short notifying message status
+* Different message status
+*/
 
-    enum Notify
-    {
-        Success,    ///< url successfully (down)loaded
-        Error,      ///< url failed to (down)load
-        Download,   ///< downloading url
-        Info,       ///< information
-        Url         ///< url string shown (default)
-    };
+enum Notify
+{
+    Success,    ///< url successfully (down)loaded
+    Error,      ///< url failed to (down)load
+    Download,   ///< downloading url
+    Info,       ///< information
+    Url         ///< url string shown (default)
+};
 
-    /**
-    * @short Open link options
-    * Different modes of opening new tab
-    */
-    enum OpenType
-    {
-        CurrentTab,     ///< open url in current tab
-        NewTab,         ///< open url according to users settings
-        NewFocusedTab,  ///< open url in new tab and focus it
-        NewBackTab,     ///< open url in new tab in background
-        NewWindow       ///< open url in new window
-    };
+/**
+* @short Open link options
+* Different modes of opening new tab
+*/
+enum OpenType
+{
+    CurrentTab,     ///< open url in current tab
+    NewTab,         ///< open url according to users settings
+    NewFocusedTab,  ///< open url in new tab and focus it
+    NewBackTab,     ///< open url in new tab in background
+    NewWindow       ///< open url in new window
+};
 }
 
 

@@ -1,5 +1,5 @@
 /* ============================================================
- * 
+ *
  * This file is a part of the rekonq project
  *
  * Copyright (C) 2010-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
@@ -50,20 +50,20 @@ public:
     int image_height;
 
     Response(const Response &item) : title(item.title),
-                                     description(item.description),
-                                     url(item.url),
-                                     image(item.image),
-                                     image_width(item.image_width),
-                                     image_height(item.image_height)
+            description(item.description),
+            url(item.url),
+            image(item.image),
+            image_width(item.image_width),
+            image_height(item.image_height)
 
     {};
 
     Response() : title(QString()),
-                 description(QString()),
-                 url(QString()),
-                 image(QString()),
-                 image_width(0),
-                 image_height(0)
+            description(QString()),
+            url(QString()),
+            image(QString()),
+            image_width(0),
+            image_height(0)
 
     {};
 
@@ -73,11 +73,11 @@ public:
              const QString &_image = QString(),
              const int &_image_width = 0,
              const int &_image_height = 0) : title(_title),
-                                             description(_description),
-                                             url(_url),
-                                             image(_image),
-                                             image_width(_image_width),
-                                             image_height(_image_height)
+            description(_description),
+            url(_url),
+            image(_image),
+            image_width(_image_width),
+            image_height(_image_height)
     {};
 };
 
@@ -98,13 +98,16 @@ public:
 
 
 class XMLParser : public SuggestionParser
-{   
+{
 protected:
     QXmlStreamReader m_reader;
 
 public:
     ResponseList parse(const QByteArray &resp);
-    inline QString type() { return QL1S("application/x-suggestions+xml"); }
+    inline QString type()
+    {
+        return QL1S("application/x-suggestions+xml");
+    }
 };
 
 
@@ -112,10 +115,13 @@ class JSONParser : public SuggestionParser
 {
 private:
     QScriptEngine m_reader;
-    
+
 public:
     ResponseList parse(const QByteArray &resp);
-    inline QString type() { return QL1S("application/x-suggestions+json"); }
+    inline QString type()
+    {
+        return QL1S("application/x-suggestions+json");
+    }
 };
 
 #endif //SUGGESTIONPARSER_H

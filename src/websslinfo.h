@@ -44,14 +44,14 @@ public:
     QString ciphers() const;
     QString protocol() const;
     QString certificateErrors() const;
-    int supportedChiperBits () const;
-    int usedChiperBits () const;
+    int supportedChiperBits() const;
+    int usedChiperBits() const;
     QList<QSslCertificate> certificateChain() const;
 
     bool saveTo(QMap<QString, QVariant>&) const;
     void restoreFrom(const QVariant &, const QUrl& = QUrl());
 
-    void setUrl (const QUrl &url);
+    void setUrl(const QUrl &url);
     WebSslInfo& operator = (const WebSslInfo&);
 
 protected:

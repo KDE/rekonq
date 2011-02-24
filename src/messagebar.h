@@ -46,7 +46,8 @@ class REKONQ_TESTS_EXPORT MessageBar : public NotificationBar
 
 public:
 
-    enum StandardButton {
+    enum StandardButton
+    {
         NoButton = 0x00000000,
         Ok       = 0x00000001,
         Cancel   = 0x00000002,
@@ -58,8 +59,8 @@ public:
     Q_DECLARE_FLAGS(StandardButtons, StandardButton)
 
     explicit MessageBar(const QString & message, QWidget *parent
-                                , QMessageBox::Icon icon = QMessageBox::NoIcon
-                                , StandardButtons buttons = NoButton);
+                        , QMessageBox::Icon icon = QMessageBox::NoIcon
+                                                   , StandardButtons buttons = NoButton);
     ~MessageBar();
 
 Q_SIGNALS:

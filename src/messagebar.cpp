@@ -39,9 +39,9 @@
 #include <QToolButton>
 
 MessageBar::MessageBar(const QString &message, QWidget *parent, QMessageBox::Icon icon, StandardButtons buttons)
-    : NotificationBar(parent)
-    , m_icon(0)
-    , m_text(0)
+        : NotificationBar(parent)
+        , m_icon(0)
+        , m_text(0)
 {
     QToolButton *closeButton = new QToolButton(this);
     closeButton->setAutoRaise(true);
@@ -53,7 +53,8 @@ MessageBar::MessageBar(const QString &message, QWidget *parent, QMessageBox::Ico
 
     m_icon = new QLabel;
     QString icon_name;
-    switch (icon) {
+    switch (icon)
+    {
     case QMessageBox::NoIcon:
         break;
     case QMessageBox::Information:
@@ -72,31 +73,36 @@ MessageBar::MessageBar(const QString &message, QWidget *parent, QMessageBox::Ico
         m_icon->setPixmap(KIcon(icon_name).pixmap(int(KIconLoader::SizeSmallMedium)));
 
     QPushButton *button;
-    if (buttons & Ok) {
+    if (buttons & Ok)
+    {
         button = new QPushButton(KIcon("dialog-ok"), i18n("Ok"));
         connect(button, SIGNAL(clicked()), this, SIGNAL(accepted()));
         connect(button, SIGNAL(clicked()), this, SLOT(destroy()));
         m_buttons.append(button);
     }
-    if (buttons & Cancel) {
+    if (buttons & Cancel)
+    {
         button = new QPushButton(KIcon("dialog-cancel"), i18n("Cancel"));
         connect(button, SIGNAL(clicked()), this, SIGNAL(rejected()));
         connect(button, SIGNAL(clicked()), this, SLOT(destroy()));
         m_buttons.append(button);
     }
-    if (buttons & Yes) {
+    if (buttons & Yes)
+    {
         button = new QPushButton(i18n("Yes"));
         connect(button, SIGNAL(clicked()), this, SIGNAL(accepted()));
         connect(button, SIGNAL(clicked()), this, SLOT(destroy()));
         m_buttons.append(button);
     }
-    if (buttons & No) {
+    if (buttons & No)
+    {
         button = new QPushButton(i18n("No"));
         connect(button, SIGNAL(clicked()), this, SIGNAL(rejected()));
         connect(button, SIGNAL(clicked()), this, SLOT(destroy()));
         m_buttons.append(button);
     }
-    if (buttons & Continue) {
+    if (buttons & Continue)
+    {
         button = new QPushButton(i18n("Continue"));
         connect(button, SIGNAL(clicked()), this, SIGNAL(accepted()));
         connect(button, SIGNAL(clicked()), this, SLOT(destroy()));
@@ -109,8 +115,8 @@ MessageBar::MessageBar(const QString &message, QWidget *parent, QMessageBox::Ico
     layout->addWidget(m_icon);
     layout->addWidget(m_text);
     foreach(QPushButton *button, m_buttons)
-        layout->addWidget(button, 2);
-    layout->setStretch(2,20);
+    layout->addWidget(button, 2);
+    layout->setStretch(2, 20);
 
     setLayout(layout);
 

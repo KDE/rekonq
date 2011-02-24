@@ -44,8 +44,8 @@
 
 UserAgentInfo::UserAgentInfo()
 {
-/*    KService::List m_providers = KServiceTypeTrader::self()->query("UserAgentStrings");*/
-    
+    /*    KService::List m_providers = KServiceTypeTrader::self()->query("UserAgentStrings");*/
+
     // NOTE: limiting User Agent Numbers
     m_providers << KService::serviceByDesktopName("firefox36oncurrent");
     m_providers << KService::serviceByDesktopName("ie70onwinnt51");
@@ -61,76 +61,76 @@ UserAgentInfo::UserAgentInfo()
 
 QString UserAgentInfo::userAgentString(int i)
 {
-    if(i<0)
+    if (i < 0)
     {
         kDebug() << "oh oh... negative index on the user agent choice!";
         return QL1S("Default");
     }
-    
-    QString tmp = m_providers.at(i)->property("X-KDE-UA-FULL").toString();
-    
-    struct utsname utsn;
-    uname( &utsn );
 
-    tmp.replace( QL1S("appSysName"), QString(utsn.sysname) );
-    tmp.replace( QL1S("appSysRelease"), QString(utsn.release) );
-    tmp.replace( QL1S("appMachineType"), QString(utsn.machine) );
+    QString tmp = m_providers.at(i)->property("X-KDE-UA-FULL").toString();
+
+    struct utsname utsn;
+    uname(&utsn);
+
+    tmp.replace(QL1S("appSysName"), QString(utsn.sysname));
+    tmp.replace(QL1S("appSysRelease"), QString(utsn.release));
+    tmp.replace(QL1S("appMachineType"), QString(utsn.machine));
 
     QStringList languageList = KGlobal::locale()->languageList();
-    if ( languageList.count() )
+    if (languageList.count())
     {
-        int ind = languageList.indexOf( QL1S("C") );
-        if( ind >= 0 )
+        int ind = languageList.indexOf(QL1S("C"));
+        if (ind >= 0)
         {
-            if( languageList.contains( QL1S("en") ) )
-                languageList.removeAt( ind );
+            if (languageList.contains(QL1S("en")))
+                languageList.removeAt(ind);
             else
                 languageList.value(ind) = QL1S("en");
         }
     }
 
-    tmp.replace( QL1S("appLanguage"), QString("%1").arg(languageList.join(", ")) );
-    tmp.replace( QL1S("appPlatform"), QL1S("X11") );
-    
+    tmp.replace(QL1S("appLanguage"), QString("%1").arg(languageList.join(", ")));
+    tmp.replace(QL1S("appPlatform"), QL1S("X11"));
+
     return tmp;
 }
 
 
 QString UserAgentInfo::userAgentName(int i)
 {
-    if(i<0)
+    if (i < 0)
     {
         kDebug() << "oh oh... negative index on the user agent choice!";
         return QL1S("Default");
     }
-    
+
     return m_providers.at(i)->property("X-KDE-UA-NAME").toString();
 }
 
 
 QString UserAgentInfo::userAgentVersion(int i)
 {
-    if(i<0)
+    if (i < 0)
     {
         kDebug() << "oh oh... negative index on the user agent choice!";
         return QL1S("Default");
     }
-    
+
     return m_providers.at(i)->property("X-KDE-UA-VERSION").toString();
 }
 
 
 QString UserAgentInfo::userAgentDescription(int i)
 {
-    if(i<0)
+    if (i < 0)
     {
         kDebug() << "oh oh... negative index on the user agent choice!";
         return QL1S("Default");
     }
-    
+
     QString tmp = m_providers.at(i)->property("Name").toString();
-    tmp.remove( QL1S("UADescription (") );
-    tmp.remove( QL1C(')') );
+    tmp.remove(QL1S("UADescription ("));
+    tmp.remove(QL1C(')'));
     return tmp;
 }
 
@@ -139,7 +139,7 @@ QStringList UserAgentInfo::availableUserAgents()
 {
     QStringList UAs;
     int n = m_providers.count();
-    for(int i = 0; i<n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         UAs << userAgentDescription(i);
     }
@@ -150,13 +150,13 @@ QStringList UserAgentInfo::availableUserAgents()
 bool UserAgentInfo::setUserAgentForHost(int uaIndex, const QString &host)
 {
     KConfig config("kio_httprc", KConfig::NoGlobals);
-    
+
     QStringList modifiedHosts = config.groupList();
     KConfigGroup hostGroup(&config, host);
-    
-    if(uaIndex == -1)
+
+    if (uaIndex == -1)
     {
-        if(!hostGroup.exists())
+        if (!hostGroup.exists())
         {
             kDebug() << "Host does NOT exists!";
             return false;
@@ -165,9 +165,9 @@ bool UserAgentInfo::setUserAgentForHost(int uaIndex, const QString &host)
         KProtocolManager::reparseConfiguration();
         return true;
     }
-    
-    hostGroup.writeEntry( QL1S("UserAgent"), userAgentString(uaIndex));
-    
+
+    hostGroup.writeEntry(QL1S("UserAgent"), userAgentString(uaIndex));
+
     KProtocolManager::reparseConfiguration();
     return true;
 }
@@ -176,12 +176,12 @@ bool UserAgentInfo::setUserAgentForHost(int uaIndex, const QString &host)
 int UserAgentInfo::uaIndexForHost(const QString &host)
 {
     QString KDEUserAgent = KProtocolManager::userAgentForHost(host);
-    
+
     int n = m_providers.count();
-    for(int i=0; i<n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         QString rekonqUserAgent = userAgentString(i);
-        if(KDEUserAgent == rekonqUserAgent)
+        if (KDEUserAgent == rekonqUserAgent)
             return i;
     }
     return -1;

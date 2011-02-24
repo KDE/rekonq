@@ -32,7 +32,7 @@
 
 
 AdBlockRuleTextMatchImpl::AdBlockRuleTextMatchImpl(const QString &filter)
-    : AdBlockRuleImpl(filter)
+        : AdBlockRuleImpl(filter)
 {
     Q_ASSERT(AdBlockRuleTextMatchImpl::isTextMatchFilter(filter));
 
@@ -69,7 +69,8 @@ bool AdBlockRuleTextMatchImpl::isTextMatchFilter(const QString &filter)
 
     // We only handle * at the beginning or the end
     int starPosition = filter.indexOf(QL1C('*'));
-    while (starPosition >= 0) {
+    while (starPosition >= 0)
+    {
         if (starPosition != 0 && starPosition != (filter.length() - 1))
             return false;
         starPosition = filter.indexOf(QL1C('*'), starPosition + 1);

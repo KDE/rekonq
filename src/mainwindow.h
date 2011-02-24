@@ -68,8 +68,14 @@ public:
     MainWindow();
     ~MainWindow();
 
-    inline MainView *mainView() const { return m_view; }
-    inline QAction *actionByName(const QString &name) { return actionCollection()->action(name); }
+    inline MainView *mainView() const
+    {
+        return m_view;
+    }
+    inline QAction *actionByName(const QString &name)
+    {
+        return actionCollection()->action(name);
+    }
 
     WebTab *currentTab() const;
     virtual QSize sizeHint() const;
@@ -161,7 +167,7 @@ private Q_SLOTS:
 
     void aboutToShowBackMenu();
     void aboutToShowForwardMenu();
-    
+
     void aboutToShowTabListMenu();
     void openActionUrl(QAction *action);
     void openActionTab(QAction *action);
@@ -187,14 +193,14 @@ private:
     NetworkAnalyzerPanel *m_analyzerPanel;
 
     KAction *m_stopReloadAction;
-    
+
     KMenu *m_historyBackMenu;
     KMenu *m_historyForwardMenu;
-    
+
     KMenu *m_tabListMenu;
 
     KMenu *m_userAgentMenu;
-    
+
     BookmarkToolBar *m_bookmarksBar;
 
     QString m_lastSearch;

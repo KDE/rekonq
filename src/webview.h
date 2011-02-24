@@ -52,7 +52,10 @@ public:
 
     WebPage *page();
 
-    inline QPoint mousePos() { return m_mousePos; }
+    inline QPoint mousePos()
+    {
+        return m_mousePos;
+    }
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);

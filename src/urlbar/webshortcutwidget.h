@@ -1,8 +1,8 @@
 /* This file is part of the KDE project
- * 
+ *
  * Copyright (C) 2009 by Fredy Yanardi <fyanardi@gmail.com>
  * Copyright (C) 2010-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either

@@ -35,7 +35,7 @@
 
 
 AdBlockRuleNullImpl::AdBlockRuleNullImpl(const QString &filter)
-    : AdBlockRuleImpl(filter)
+        : AdBlockRuleImpl(filter)
 {
 }
 
@@ -69,11 +69,11 @@ bool AdBlockRuleNullImpl::isNullFilter(const QString &filter)
         // background
         if (option == QL1S("background"))
             return true;
-        
+
         // stylesheet
         if (option == QL1S("stylesheet"))
             return true;
-        
+
         // object
         if (option == QL1S("object"))
             return true;

@@ -99,7 +99,7 @@ WebTab::~WebTab()
 
 KUrl WebTab::url()
 {
-    if(page() && page()->isOnRekonqPage())
+    if (page() && page()->isOnRekonqPage())
     {
         return page()->loadingUrl();
     }
@@ -136,11 +136,14 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
         return;
 
     KWebWallet *wallet = page()->wallet();
-    if(m_walletBar.isNull()) {
+    if (m_walletBar.isNull())
+    {
         m_walletBar = new WalletBar(this);
         m_walletBar.data()->onSaveFormData(key, url);
-        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_walletBar.data() );
-    } else {
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_walletBar.data());
+    }
+    else
+    {
         disconnect(wallet);
         m_walletBar.data()->notifyUser();
     }
@@ -154,10 +157,13 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
 
 void WebTab::createPreviewSelectorBar(int index)
 {
-    if(m_previewSelectorBar.isNull()) {
+    if (m_previewSelectorBar.isNull())
+    {
         m_previewSelectorBar = new PreviewSelectorBar(index, this);
         qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_previewSelectorBar.data());
-    } else {
+    }
+    else
+    {
         disconnect(m_previewSelectorBar.data());
         m_previewSelectorBar.data()->setIndex(index);
         m_previewSelectorBar.data()->notifyUser();
@@ -223,7 +229,7 @@ void WebTab::showRSSInfo(const QPoint &pos)
 
 void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
 {
-    if(p)
+    if (p)
     {
         // Ok, part exists. Insert & show it..
         m_part = p;
@@ -235,7 +241,7 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
         return;
     }
 
-    if(!m_part)
+    if (!m_part)
         return;
 
     // Part NO more exists. Let's clean up from webtab
@@ -283,7 +289,7 @@ void WebTab::showSearchEngine(const QPoint &pos)
         connect(widget, SIGNAL(webShortcutSet(const KUrl &, const QString &, const QString &)),
                 rApp->opensearchManager(), SLOT(addOpenSearchEngine(const KUrl &, const QString &, const QString &)));
         connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
-            this, SLOT(openSearchEngineAdded()));
+                this, SLOT(openSearchEngineAdded()));
 
         widget->show(extractOpensearchUrl(e), title, pos);
     }
@@ -296,5 +302,5 @@ void WebTab::openSearchEngineAdded()
     KBuildSycocaProgressDialog::rebuildKSycoca(this);
 
     disconnect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
-            this, SLOT(openSearchEngineAdded()));
+               this, SLOT(openSearchEngineAdded()));
 }

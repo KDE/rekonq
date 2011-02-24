@@ -40,26 +40,26 @@
 #include <QString>
 
 
-class UserAgentInfo 
+class UserAgentInfo
 {
 public:
     UserAgentInfo();
-    
+
     /**
      * Lists all available User Agents
-     * 
+     *
      * @returns the list of the UA descriptions
      */
     QStringList availableUserAgents();
-    
+
     /**
      * Set User Agent for host
-     * 
+     *
      * @param uaIndex   the index of the UA description. @see availableUserAgents()
      * @param host      the host to se the UA
      */
     bool setUserAgentForHost(int uaIndex, const QString &host);
-    
+
     /**
      * @returns the index of the UA set for the @p host
      */

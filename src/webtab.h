@@ -58,10 +58,22 @@ public:
     explicit WebTab(QWidget *parent = 0);
     ~WebTab();
 
-    inline WebView *view() const { return m_webView; }
-    UrlBar *urlBar() const { return m_urlBar; }
-    inline WebPage *page() const { return view()->page(); }
-    inline int progress() const { return m_progress; }
+    inline WebView *view() const
+    {
+        return m_webView;
+    }
+    UrlBar *urlBar() const
+    {
+        return m_urlBar;
+    }
+    inline WebPage *page() const
+    {
+        return view()->page();
+    }
+    inline int progress() const
+    {
+        return m_progress;
+    }
 
     KUrl url();
     void createPreviewSelectorBar(int index);
@@ -72,7 +84,10 @@ public:
     bool isPageLoading();
     bool hasNewSearchEngine();
 
-    KParts::ReadOnlyPart *part() { return m_part; }
+    KParts::ReadOnlyPart *part()
+    {
+        return m_part;
+    }
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
 
 private Q_SLOTS:

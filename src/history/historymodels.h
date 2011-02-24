@@ -65,14 +65,14 @@ public Q_SLOTS:
     void historyReset();
     void entryAdded();
     void entryUpdated(int offset);
-    
+
 public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
-    
+
 private:
     HistoryManager *m_historyManager;
 };

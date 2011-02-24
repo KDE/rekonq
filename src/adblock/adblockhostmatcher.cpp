@@ -31,8 +31,9 @@
 
 bool AdBlockHostMatcher::tryAddFilter(const QString &filter)
 {
-    if (filter.startsWith(QL1S("||"))) {
-        
+    if (filter.startsWith(QL1S("||")))
+    {
+
         QString domain = filter.mid(2);
 
         if (!domain.endsWith(QL1C('^')))

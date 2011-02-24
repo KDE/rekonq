@@ -137,7 +137,7 @@ KService::Ptr SearchEngine::fromString(const QString &text)
 
 QString SearchEngine::buildQuery(KService::Ptr engine, const QString &text)
 {
-    if(!engine)
+    if (!engine)
         return QString();
     QString query = engine->property("Query").toString();
     query = query.replace("\\{@}", KUrl::toPercentEncoding(text));

@@ -33,7 +33,7 @@
 
 
 UserAgentWidget::UserAgentWidget(QWidget *parent)
-    : QWidget(parent)
+        : QWidget(parent)
 {
     setupUi(this);
 
@@ -48,9 +48,9 @@ UserAgentWidget::UserAgentWidget(QWidget *parent)
     {
         QStringList tmp;
         tmp << host;
-        
+
         KConfigGroup hostGroup(&config, host);
-        tmp <<  hostGroup.readEntry( QL1S("UserAgent"), QString());
+        tmp <<  hostGroup.readEntry(QL1S("UserAgent"), QString());
 
         kDebug() << "TMP: " << tmp;
         QTreeWidgetItem *item = new QTreeWidgetItem(sitePolicyTreeWidget, tmp);
@@ -62,17 +62,17 @@ UserAgentWidget::UserAgentWidget(QWidget *parent)
 void UserAgentWidget::deleteUserAgent()
 {
     QTreeWidgetItem *item = sitePolicyTreeWidget->currentItem();
-    if(!item)
+    if (!item)
         return;
-    
-    sitePolicyTreeWidget->takeTopLevelItem( sitePolicyTreeWidget->indexOfTopLevelItem(item) );
-    
+
+    sitePolicyTreeWidget->takeTopLevelItem(sitePolicyTreeWidget->indexOfTopLevelItem(item));
+
     QString host = item->text(0);
     kDebug() << "HOST: " << host;
-    
+
     KConfig config("kio_httprc", KConfig::NoGlobals);
     KConfigGroup group(&config, host);
-    if(group.exists())
+    if (group.exists())
     {
         group.deleteGroup();
         KProtocolManager::reparseConfiguration();
@@ -83,16 +83,16 @@ void UserAgentWidget::deleteUserAgent()
 void UserAgentWidget::deleteAll()
 {
     sitePolicyTreeWidget->clear();
-    
+
     KConfig config("kio_httprc", KConfig::NoGlobals);
-    
+
     QStringList list = config.groupList();
     Q_FOREACH(const QString &groupName, list)
     {
-    kDebug() << "HOST: " << groupName;
-        
+        kDebug() << "HOST: " << groupName;
+
         KConfigGroup group(&config, groupName);
-        group.deleteGroup();    
+        group.deleteGroup();
     }
     KConfigGroup group(&config, QString());
     group.deleteGroup();

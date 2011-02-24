@@ -39,7 +39,7 @@ FilterUrlJob::FilterUrlJob(WebView *view, const QString &urlString, QObject *par
         , _view(view)
         , _urlString(urlString)
 {
-    if(!s_uriFilter)
+    if (!s_uriFilter)
         s_uriFilter = KUriFilter::self();
 }
 

@@ -1,5 +1,5 @@
 /* This file is part of the KDE project
- * 
+ *
  * Copyright (C) 2009 by Fredy Yanardi <fyanardi@gmail.com>
  * Copyright (C) 2010-2011 by  Lionel Chauvin <megabigbug@yahoo.fr>
  *
@@ -30,14 +30,14 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QFormLayout>
 
- 
+
 #include <KGlobalSettings>
 #include <KIcon>
 #include <KLocale>
 #include <KServiceTypeTrader>
 
 WebShortcutWidget::WebShortcutWidget(QWidget *parent)
-    : QDialog(parent)
+        : QDialog(parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout();
     QHBoxLayout *titleLayout = new QHBoxLayout();
@@ -100,7 +100,7 @@ WebShortcutWidget::WebShortcutWidget(QWidget *parent)
 
     setLayout(mainLayout);
 
-    setMinimumWidth (250);
+    setMinimumWidth(250);
 
     m_providers = KServiceTypeTrader::self()->query("SearchProvider");
 
@@ -154,11 +154,11 @@ void WebShortcutWidget::shortcutsChanged(const QString& newShorthands)
     QString contenderName = "";
     QString contenderWS = "";
 
-    Q_FOREACH (const QString &shorthand, shorthands)
+    Q_FOREACH(const QString &shorthand, shorthands)
     {
-        Q_FOREACH (KService::Ptr provider, m_providers)
+        Q_FOREACH(KService::Ptr provider, m_providers)
         {
-            if(provider->property("Keys").toStringList().contains(shorthand))
+            if (provider->property("Keys").toStringList().contains(shorthand))
             {
                 contenderName = provider->property("Name").toString();
                 contenderWS = shorthand;
@@ -172,7 +172,7 @@ void WebShortcutWidget::shortcutsChanged(const QString& newShorthands)
         m_okButton->setEnabled(false);
         m_noteLabel->setText(i18n("The shortcut \"%1\" is already assigned to \"%2\".", contenderWS, contenderName));
         m_noteLabel->setVisible(true);
-        resize(minimumSize().width(), minimumSizeHint().height()+15);
+        resize(minimumSize().width(), minimumSizeHint().height() + 15);
     }
     else
     {
@@ -189,4 +189,4 @@ void WebShortcutWidget::shortcutsChanged(const QString& newShorthands)
 
 #include "webshortcutwidget.moc"
 
- 
+

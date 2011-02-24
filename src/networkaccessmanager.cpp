@@ -91,7 +91,7 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     // 1) DeleteOperation
     // 2) CustomOperation
 
-    switch(op)
+    switch (op)
     {
     case QNetworkAccessManager::HeadOperation:
         break;
@@ -106,35 +106,35 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     case QNetworkAccessManager::PostOperation:
         break;
 
-    // This particular issue has been solved for KDE Version 4.5.96,
-    // so we can safely disable this piece of code
-    #if !KDE_IS_VERSION( 4, 5, 96)
+        // This particular issue has been solved for KDE Version 4.5.96,
+        // so we can safely disable this piece of code
+#if !KDE_IS_VERSION( 4, 5, 96)
 
     case QNetworkAccessManager::DeleteOperation:
         kDebug() << "DELETE OPERATION...";
         reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
-        if(!reply)
+        if (!reply)
             kDebug() << "OOOOOOOOOOOOOOOOOOO DELETE REPLY NULL";
         break;
 
     case QNetworkAccessManager::CustomOperation:
         kDebug() << "CUSTOM OPERATION...";
         reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
-        if(!reply)
+        if (!reply)
             kDebug() << "OOOOOOOOOOOOOOOOOOO CUSTOM REPLY NULL";
         break;
 
-    #endif
+#endif
     default:
         kDebug() << "NON EXTANT CASE...";
         break;
     }
 
-    if(!reply)
+    if (!reply)
         reply = AccessManager::createRequest(op, req, outgoingData);
 
-    if(parentPage && parentPage->hasNetworkAnalyzerEnabled())
-        emit networkData( op, req, reply );
+    if (parentPage && parentPage->hasNetworkAnalyzerEnabled())
+        emit networkData(op, req, reply);
 
     return reply;
 }

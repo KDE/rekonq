@@ -58,10 +58,10 @@ public:
 private Q_SLOTS:
     void doLastStuffs(KJob *);
     void notifyLastStuffs(KJob *);
-        
+
 Q_SIGNALS:
     void iconChanged();
-    
+
 private:
     bool existsIconForUrl(const KUrl &url);
 

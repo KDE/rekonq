@@ -42,7 +42,7 @@
 
 
 OpenSearchReader::OpenSearchReader()
-    : QXmlStreamReader()
+        : QXmlStreamReader()
 {
 }
 
@@ -60,7 +60,7 @@ OpenSearchEngine *OpenSearchReader::read(QIODevice *device)
 {
     clear();
 
-    if (!device->isOpen()) 
+    if (!device->isOpen())
     {
         device->open(QIODevice::ReadOnly);
     }
@@ -74,20 +74,20 @@ OpenSearchEngine *OpenSearchReader::read()
 {
     OpenSearchEngine *engine = new OpenSearchEngine();
 
-    while (!isStartElement() && !atEnd()) 
+    while (!isStartElement() && !atEnd())
     {
         readNext();
     }
 
-    if (    name() != QL1S("OpenSearchDescription")
-         || namespaceUri() != QL1S("http://a9.com/-/spec/opensearch/1.1/")
-       ) 
+    if (name() != QL1S("OpenSearchDescription")
+            || namespaceUri() != QL1S("http://a9.com/-/spec/opensearch/1.1/")
+       )
     {
         raiseError(i18n("The file is not an OpenSearch 1.1 file."));
         return engine;
     }
 
-    while (!(isEndElement() && name() == QL1S("OpenSearchDescription")) && !atEnd()) 
+    while (!(isEndElement() && name() == QL1S("OpenSearchDescription")) && !atEnd())
     {
         readNext();
 
@@ -95,21 +95,21 @@ OpenSearchEngine *OpenSearchReader::read()
             continue;
 
         // ShortName
-        if (name() == QL1S("ShortName")) 
+        if (name() == QL1S("ShortName"))
         {
             engine->setName(readElementText());
             continue;
         }
-        
+
         // Description
-        if (name() == QL1S("Description")) 
+        if (name() == QL1S("Description"))
         {
             engine->setDescription(readElementText());
             continue;
         }
-        
+
         // Url
-        if (name() == QL1S("Url")) 
+        if (name() == QL1S("Url"))
         {
             QString type = attributes().value(QL1S("type")).toString();
             QString url = attributes().value(QL1S("template")).toString();
@@ -121,11 +121,11 @@ OpenSearchEngine *OpenSearchReader::read()
 
             readNext();
 
-            while (!(isEndElement() && name() == QL1S("Url"))) 
+            while (!(isEndElement() && name() == QL1S("Url")))
             {
-                if (!isStartElement() 
-                    || (name() != QL1S("Param") 
-                    && name() != QL1S("Parameter"))) 
+                if (!isStartElement()
+                        || (name() != QL1S("Param")
+                            && name() != QL1S("Parameter")))
                 {
                     readNext();
                     continue;
@@ -134,12 +134,12 @@ OpenSearchEngine *OpenSearchReader::read()
                 QString key = attributes().value(QL1S("name")).toString();
                 QString value = attributes().value(QL1S("value")).toString();
 
-                if (!key.isEmpty() && !value.isEmpty()) 
+                if (!key.isEmpty() && !value.isEmpty())
                 {
                     parameters.append(OpenSearchEngine::Parameter(key, value));
                 }
 
-                while (!isEndElement()) 
+                while (!isEndElement())
                 {
                     readNext();
                 }
@@ -152,8 +152,8 @@ OpenSearchEngine *OpenSearchReader::read()
             }
             else
             {
-                if (engine->suggestionsUrlTemplate().isEmpty() 
-                    && type == QL1S("application/x-suggestions+json")) //note: xml is preferred
+                if (engine->suggestionsUrlTemplate().isEmpty()
+                        && type == QL1S("application/x-suggestions+json")) //note: xml is preferred
                 {
                     engine->setSuggestionsUrlTemplate(url);
                     engine->setSuggestionsParameters(parameters);
@@ -166,24 +166,24 @@ OpenSearchEngine *OpenSearchReader::read()
                     engine->setSuggestionParser(new XMLParser());
                 }
             }
-            
+
             continue;
         }
-        
+
         // Image
-        if (name() == QL1S("Image")) 
+        if (name() == QL1S("Image"))
         {
-             engine->setImageUrl(readElementText());
-             continue;
+            engine->setImageUrl(readElementText());
+            continue;
         }
 
         // Engine check
-        if (    !engine->name().isEmpty()
-             && !engine->description().isEmpty()
-             && !engine->suggestionsUrlTemplate().isEmpty()
-             && !engine->searchUrlTemplate().isEmpty()
-             && !engine->imageUrl().isEmpty()
-           ) 
+        if (!engine->name().isEmpty()
+                && !engine->description().isEmpty()
+                && !engine->suggestionsUrlTemplate().isEmpty()
+                && !engine->searchUrlTemplate().isEmpty()
+                && !engine->imageUrl().isEmpty()
+           )
         {
             break;
         }

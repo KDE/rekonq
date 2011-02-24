@@ -89,7 +89,7 @@ QPixmap WebSnap::render(const QWebPage &page, int w, int h)
     QPainter p(&pageImage);
     page.mainFrame()->render(&p, QWebFrame::ContentsLayer);
     p.end();
-    
+
     return pageImage;
 }
 
@@ -98,10 +98,10 @@ QPixmap WebSnap::renderTabPreview(const QWebPage &page, int w, int h)
 {
     QSize oldSize = page.viewportSize();
     int width = page.mainFrame()->contentsSize().width();
-    page.setViewportSize(QSize(width, width * ((0.0 + h) / w)));   
+    page.setViewportSize(QSize(width, width * ((0.0 + h) / w)));
     QPixmap pageImage = WebSnap::render(page, page.viewportSize().width(), page.viewportSize().height());
     page.setViewportSize(oldSize);
-    return pageImage.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  
+    return pageImage.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }
 
 /*
@@ -116,10 +116,10 @@ QPixmap WebSnap::renderVisiblePagePreview(const QWebPage &page, int w, int h)
     // save page settings
     QSize oldSize = page.viewportSize();
     QPoint oldScrollPosition = page.mainFrame()->scrollPosition();
-    
+
     // minimum width
     int width = 640;
-    
+
     // find best width
     QSize size;
     while(page.mainFrame()->scrollBarMaximum(Qt::Horizontal) && width<1920)
@@ -131,7 +131,7 @@ QPixmap WebSnap::renderVisiblePagePreview(const QWebPage &page, int w, int h)
 
     // scroll to top
     page.mainFrame()->setScrollBarValue(Qt::Vertical, 0);
-    
+
     // render
     QPixmap pageImage = WebSnap::render(page, page.viewportSize().width(), page.viewportSize().height());
 
@@ -142,7 +142,7 @@ QPixmap WebSnap::renderVisiblePagePreview(const QWebPage &page, int w, int h)
     // resize image
     pageImage = pageImage.copy(0, 0, width - scrollbarWidth, size.height() - scrollbarHeight);
     pageImage = pageImage.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
-    
+
     // restore page settings
     page.setViewportSize(oldSize);
     page.mainFrame()->setScrollPosition(oldScrollPosition);
@@ -152,12 +152,12 @@ QPixmap WebSnap::renderVisiblePagePreview(const QWebPage &page, int w, int h)
 */
 
 QPixmap WebSnap::renderClosingPagePreview(const QWebPage &page, int w, int h)
-{   
+{
     //scroll to top
     page.mainFrame()->setScrollBarValue(Qt::Vertical, 0);
 
     // reduce as much as possible
-    page.setViewportSize(QSize(10, 10)); 
+    page.setViewportSize(QSize(10, 10));
 
     return renderPagePreview(page, w, h);
 }
@@ -168,7 +168,7 @@ QPixmap WebSnap::renderPagePreview(const QWebPage &page, int w, int h)
     //prepare page
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
     int width = page.mainFrame()->contentsSize().width();
-    page.setViewportSize(QSize(width, width * ((0.0 + h) / w)));        
+    page.setViewportSize(QSize(width, width * ((0.0 + h) / w)));
 
     //render
     QPixmap pageImage = WebSnap::render(page, page.viewportSize().width(), page.viewportSize().height());

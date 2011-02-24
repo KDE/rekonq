@@ -105,7 +105,7 @@ void PanelTreeView::mouseReleaseEvent(QMouseEvent *event)
     else if (event->button() == Qt::LeftButton)
     {
         if (model()->rowCount(index) == 0)
-           emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
+            emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
         else
             setExpanded(index, !isExpanded(index));
     }

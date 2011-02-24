@@ -67,7 +67,10 @@ class REKONQ_TESTS_EXPORT MainView : public KTabWidget
 public:
     MainView(MainWindow *parent);
 
-    inline StackedUrlBar *widgetBar() const { return m_widgetBar; }
+    inline StackedUrlBar *widgetBar() const
+    {
+        return m_widgetBar;
+    }
 
     TabBar *tabBar() const;
 
@@ -83,7 +86,10 @@ public:
      */
     void updateTabBar();
 
-    inline QToolButton *addTabButton() const { return m_addTabButton; }
+    inline QToolButton *addTabButton() const
+    {
+        return m_addTabButton;
+    }
 
     /**
      * This function creates a new empty tab
@@ -94,11 +100,14 @@ public:
      */
     WebTab *newWebTab(bool focused = true);
 
-    inline QList<HistoryItem> recentlyClosedTabs() { return m_recentlyClosedTabs; }
+    inline QList<HistoryItem> recentlyClosedTabs()
+    {
+        return m_recentlyClosedTabs;
+    }
 
 Q_SIGNALS:
     // tabs change when:
-    // - current tab change 
+    // - current tab change
     // - one tab is closed
     // - one tab is added
     // - one tab is updated (eg: changes url)

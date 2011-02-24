@@ -58,11 +58,11 @@
 
 
 MainView::MainView(MainWindow *parent)
-    : KTabWidget(parent)
-    , m_widgetBar(new StackedUrlBar(this))
-    , m_addTabButton(0)
-    , m_currentTabIndex(0)
-    , m_parentWindow(parent)
+        : KTabWidget(parent)
+        , m_widgetBar(new StackedUrlBar(this))
+        , m_addTabButton(0)
+        , m_currentTabIndex(0)
+        , m_parentWindow(parent)
 {
     // setting tabbar
     TabBar *tabBar = new TabBar(this);
@@ -101,7 +101,7 @@ void MainView::postLaunch()
     QStringList list = rApp->sessionManager()->closedSites();
     Q_FOREACH(const QString &line, list)
     {
-        if(line.startsWith( QL1S("about") ))
+        if (line.startsWith(QL1S("about")))
             break;
         QString title = line;
         QString url = title;
@@ -147,9 +147,9 @@ void MainView::updateTabBar()
         {
             tabBar()->show();
         }
-        
+
         // this to ensure tab button visibility also on new window creation
-        if(m_addTabButton->isHidden())
+        if (m_addTabButton->isHidden())
         {
             m_addTabButton->show();
         }
@@ -266,7 +266,7 @@ void MainView::currentChanged(int index)
         tab->view()->setFocus();
 
     tabBar()->resetTabHighlighted(index);
-    
+
     emit tabsChanged();
 }
 
@@ -301,7 +301,7 @@ WebTab *MainView::newWebTab(bool focused)
     connect(tab->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
     connect(tab->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
-    if ( ReKonfig::openTabsNearCurrent() )
+    if (ReKonfig::openTabsNearCurrent())
     {
         insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
         m_widgetBar->insertWidget(currentIndex() + 1, tab->urlBar());
@@ -319,11 +319,11 @@ WebTab *MainView::newWebTab(bool focused)
     }
     else
     {
-        // if tab is not focused, 
+        // if tab is not focused,
         // current index doesn't change...
         emit tabsChanged();
     }
-    
+
     return tab;
 }
 
@@ -425,7 +425,7 @@ void MainView::closeTab(int index, bool del)
     {
         WebView *w = currentWebTab()->view();
 
-        if( currentWebTab()->url().protocol() == QL1S("about") )
+        if (currentWebTab()->url().protocol() == QL1S("about"))
             return;
 
         switch (ReKonfig::newTabsBehaviour())
@@ -465,7 +465,7 @@ void MainView::closeTab(int index, bool del)
     }
 
     if (!tabToClose->url().isEmpty()
-        && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
+            && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
        )
     {
         const int recentlyClosedTabsLimit = 10;
@@ -481,7 +481,7 @@ void MainView::closeTab(int index, bool del)
     removeTab(index);
     updateTabBar();        // UI operation: do it ASAP!!
 
-    m_widgetBar->removeWidget( tabToClose->urlBar() );
+    m_widgetBar->removeWidget(tabToClose->urlBar());
     m_widgetBar->setCurrentIndex(m_currentTabIndex);
 
     if (del)
@@ -490,7 +490,7 @@ void MainView::closeTab(int index, bool del)
     }
 
     // if tab was not focused, current index does not change...
-    if(index != currentIndex())
+    if (index != currentIndex())
         emit tabsChanged();
 }
 
@@ -567,7 +567,7 @@ void MainView::webViewIconChanged()
 
 void MainView::webViewTitleChanged(const QString &title)
 {
-    QString viewTitle = title.isEmpty()? i18n("(Untitled)") : title;
+    QString viewTitle = title.isEmpty() ? i18n("(Untitled)") : title;
     QString tabTitle = viewTitle;
     tabTitle.replace('&', "&&");
 
@@ -643,7 +643,7 @@ void MainView::openClosedTab()
 
         QString title = action->text();
         title = title.remove('&');
-        HistoryItem item(action->data().toString(), QDateTime(), title );
+        HistoryItem item(action->data().toString(), QDateTime(), title);
         m_recentlyClosedTabs.removeAll(item);
     }
 }
@@ -655,9 +655,9 @@ void MainView::switchToTab()
     QAction *sender = static_cast<QAction*>(QObject::sender());
     int index = sender->data().toInt();
     index -= 1; // to compensate for off by 1 presented to the user
-    if( index < 0 || index >= count() )
+    if (index < 0 || index >= count())
         return;
-    setCurrentIndex( index );
+    setCurrentIndex(index);
 }
 
 
@@ -713,7 +713,7 @@ void MainView::detachTab(int index, MainWindow *toWindow)
         closeTab(index, false);
 
         MainWindow *w;
-        if( toWindow == NULL )
+        if (toWindow == NULL)
             w = rApp->newMainWindow(false);
         else
             w = toWindow;

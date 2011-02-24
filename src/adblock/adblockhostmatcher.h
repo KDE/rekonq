@@ -42,7 +42,10 @@ public:
         return m_hostList.contains(host.toLower());
     }
 
-    void clear() { m_hostList.clear(); }
+    void clear()
+    {
+        m_hostList.clear();
+    }
 
 private:
     QSet<QString> m_hostList;

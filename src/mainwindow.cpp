@@ -192,7 +192,7 @@ void MainWindow::setupToolbars()
     // location bar
     a = new KAction(i18n("Location Bar"), this);
     a->setDefaultWidget(m_view->widgetBar());
-    actionCollection()->addAction( QL1S("url_bar"), a);
+    actionCollection()->addAction(QL1S("url_bar"), a);
 
     KToolBar *mainBar = toolBar("mainToolBar");
 
@@ -230,7 +230,7 @@ void MainWindow::configureToolbars()
 
 void MainWindow::updateToolsMenu()
 {
-    if( m_toolsMenu->isEmpty() )
+    if (m_toolsMenu->isEmpty())
     {
         m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Open)));
         m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
@@ -239,7 +239,7 @@ void MainWindow::updateToolsMenu()
 
         QAction *action = actionByName(KStandardAction::name(KStandardAction::Zoom));
         action->setCheckable(true);
-        connect (m_zoomBar, SIGNAL(visibilityChanged(bool)), action, SLOT(setChecked(bool)));
+        connect(m_zoomBar, SIGNAL(visibilityChanged(bool)), action, SLOT(setChecked(bool)));
         m_toolsMenu->addAction(action);
 
         m_toolsMenu->addAction(actionByName(QL1S("useragent")));
@@ -257,7 +257,7 @@ void MainWindow::updateToolsMenu()
         m_developerMenu->addAction(actionByName(QL1S("net_analyzer")));
 
         m_toolsMenu->addAction(m_developerMenu);
-        if(!ReKonfig::showDeveloperTools())
+        if (!ReKonfig::showDeveloperTools())
             m_developerMenu->setVisible(false);
 
         m_toolsMenu->addSeparator();
@@ -305,7 +305,7 @@ void MainWindow::postLaunch()
     // (shift +) ctrl + tab switching
     connect(this, SIGNAL(ctrlTabPressed()), m_view, SLOT(nextTab()));
     connect(this, SIGNAL(shiftCtrlTabPressed()), m_view, SLOT(previousTab()));
-    
+
     // wheel history navigation
     connect(m_view, SIGNAL(openPreviousInHistory()), this, SLOT(openPrevious()));
     connect(m_view, SIGNAL(openNextInHistory()), this, SLOT(openNext()));
@@ -350,7 +350,7 @@ void MainWindow::changeWindowIcon(int index)
     if (ReKonfig::useFavicon())
     {
         KUrl url = mainView()->webTab(index)->url();
-        QIcon icon = rApp->iconManager()->iconForUrl(url).pixmap(QSize(32,32));
+        QIcon icon = rApp->iconManager()->iconForUrl(url).pixmap(QSize(32, 32));
         setWindowIcon(icon);
     }
 }
@@ -417,7 +417,7 @@ void MainWindow::setupActions()
 
     // set zoom bar actions
     m_zoomBar->setupActions(this);
-    
+
     // tab list
     m_tabListMenu = new KMenu();
     m_tabListMenu->addAction("hack"); // necessary to show the menu on the right side the first time
@@ -461,7 +461,7 @@ void MainWindow::setupActions()
     a->setMenu(m_historyForwardMenu);
     connect(m_historyForwardMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowForwardMenu()));
     connect(m_historyForwardMenu, SIGNAL(triggered(QAction *)), this, SLOT(openActionUrl(QAction*)));
-    
+
     // ============================== General Tab Actions ====================================
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
@@ -493,17 +493,18 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QL1S("closed_tab_menu"), closedTabsMenu);
 
     // shortcuts for quickly switching to a tab
-    for( int i = 1; i <= 9; i++ ) {
+    for (int i = 1; i <= 9; i++)
+    {
         a = new KAction(i18n("Switch to Tab %1", i), this);
-        a->setShortcut(KShortcut( QString("Alt+%1").arg(i) ));
-        a->setData( QVariant(i) );
+        a->setShortcut(KShortcut(QString("Alt+%1").arg(i)));
+        a->setData(QVariant(i));
         actionCollection()->addAction(QL1S(("switch_tab_" + QString::number(i)).toAscii()), a);
         connect(a, SIGNAL(triggered(bool)), m_view, SLOT(switchToTab()));
     }
 
     // ============================== Indexed Tab Actions ====================================
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
-    a->setShortcuts( KStandardShortcut::close() );
+    a->setShortcuts(KStandardShortcut::close());
     actionCollection()->addAction(QL1S("close_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(closeTab()));
 
@@ -528,7 +529,7 @@ void MainWindow::setupActions()
     bmMenu->setIcon(KIcon("bookmarks"));
     bmMenu->setDelayed(false);
     bmMenu->setShortcutConfigurable(true);
-    bmMenu->setShortcut( KShortcut(Qt::ALT + Qt::Key_B) );
+    bmMenu->setShortcut(KShortcut(Qt::ALT + Qt::Key_B));
     actionCollection()->addAction(QL1S("bookmarksActionMenu"), bmMenu);
 
     // --- User Agent
@@ -536,7 +537,7 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QL1S("useragent"), a);
     a->setMenu(m_userAgentMenu);
     connect(m_userAgentMenu, SIGNAL(aboutToShow()), this, SLOT(populateUserAgentMenu()));
-    
+
     a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
     actionCollection()->addAction(QL1S("UserAgentSettings"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(showUserAgentSettings()));
@@ -548,10 +549,10 @@ void MainWindow::setupTools()
     KActionMenu *toolsAction = new KActionMenu(KIcon("configure"), i18n("&Tools"), this);
     toolsAction->setDelayed(false);
     toolsAction->setShortcutConfigurable(true);
-    toolsAction->setShortcut( KShortcut(Qt::ALT + Qt::Key_T) );
+    toolsAction->setShortcut(KShortcut(Qt::ALT + Qt::Key_T));
     m_toolsMenu = new KMenu(this);
     toolsAction->setMenu(m_toolsMenu); // dummy menu to have the dropdown arrow
-    connect( m_toolsMenu, SIGNAL(aboutToShow()), this, SLOT(updateToolsMenu()) );
+    connect(m_toolsMenu, SIGNAL(aboutToShow()), this, SLOT(updateToolsMenu()));
 
     // adding rekonq_tools to rekonq actionCollection
     actionCollection()->addAction(QL1S("rekonq_tools"), toolsAction);
@@ -611,7 +612,7 @@ void MainWindow::setupPanels()
 
     // STEP 4
     // Setup Network analyzer panel
-    m_analyzerPanel = new NetworkAnalyzerPanel( i18n("Network Analyzer"), this);
+    m_analyzerPanel = new NetworkAnalyzerPanel(i18n("Network Analyzer"), this);
     connect(mainView(), SIGNAL(currentChanged(int)), m_analyzerPanel, SLOT(changeCurrentPage()));
 
     a = new KAction(KIcon("document-edit-decrypt-verify"), i18n("Network Analyzer"), this);
@@ -625,7 +626,7 @@ void MainWindow::setupPanels()
 
 void MainWindow::openLocation()
 {
-    if(isFullScreen())
+    if (isFullScreen())
     {
         setWidgetsVisible(true);
     }
@@ -638,7 +639,7 @@ void MainWindow::fileSaveAs()
 {
     WebTab *w = currentTab();
     KUrl srcUrl = w->url();
-    
+
     // First, try with suggested file name...
     QString name = w->page()->suggestedFileName();
 
@@ -647,17 +648,17 @@ void MainWindow::fileSaveAs()
     {
         name = srcUrl.fileName();
     }
-    
+
     // Last chance...
-    if(name.isEmpty())
+    if (name.isEmpty())
     {
         name = srcUrl.host() + QString(".html");
     }
-    
+
     const QString destUrl = KFileDialog::getSaveFileName(name, QString(), this);
-    if (destUrl.isEmpty()) 
+    if (destUrl.isEmpty())
         return;
-    
+
     KIO::Job *job = KIO::file_copy(srcUrl, KUrl(destUrl), -1, KIO::Overwrite);
     job->addMetaData("MaxCacheSize", "0");  // Don't store in http cache.
     job->addMetaData("cache", "cache");     // Use entry from cache if available.
@@ -689,7 +690,7 @@ void MainWindow::updateActions()
     bool rekonqPage = currentTab()->page()->isOnRekonqPage();
 
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
-    if( rekonqPage && currentTab()->view()->history()->count() > 0 )
+    if (rekonqPage && currentTab()->view()->history()->count() > 0)
         historyBackAction->setEnabled(true);
     else
         historyBackAction->setEnabled(currentTab()->view()->history()->canGoBack());
@@ -747,18 +748,18 @@ void MainWindow::printRequested(QWebFrame *frame)
     if (!currentTab())
         return;
 
-    if(currentTab()->page()->isOnRekonqPage())
+    if (currentTab()->page()->isOnRekonqPage())
     {
         // trigger print part action instead of ours..
         KParts::ReadOnlyPart *p = currentTab()->part();
-        if(p)
+        if (p)
         {
             KParts::BrowserExtension *ext = p->browserExtension();
-            if(ext)
+            if (ext)
             {
                 KParts::BrowserExtension::ActionSlotMap *actionSlotMap = KParts::BrowserExtension::actionSlotMapPtr();
 
-                connect(this, SIGNAL(triggerPartPrint()), ext, actionSlotMap->value("print")); 
+                connect(this, SIGNAL(triggerPartPrint()), ext, actionSlotMap->value("print"));
                 emit triggerPartPrint();
 
                 return;
@@ -812,11 +813,11 @@ void MainWindow::findNext()
     if (!currentTab())
         return;
 
-    if(currentTab()->page()->isOnRekonqPage())
+    if (currentTab()->page()->isOnRekonqPage())
     {
         // trigger part find action
         KParts::ReadOnlyPart *p = currentTab()->part();
-        if(p)
+        if (p)
         {
             connect(this, SIGNAL(triggerPartFind()), p, SLOT(slotFind()));
             emit triggerPartFind();
@@ -961,13 +962,13 @@ void MainWindow::viewPageSource()
 void MainWindow::homePage(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers keyboardModifiers)
 {
     KUrl homeUrl = ReKonfig::useNewTabPage()
-        ? KUrl( QL1S("about:home") )
-        : KUrl( ReKonfig::homePage() );
+                   ? KUrl(QL1S("about:home"))
+                   : KUrl(ReKonfig::homePage());
 
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
-        rApp->loadUrl( homeUrl, Rekonq::NewTab);
+        rApp->loadUrl(homeUrl, Rekonq::NewTab);
     else
-        currentTab()->view()->load( homeUrl );
+        currentTab()->view()->load(homeUrl);
 }
 
 
@@ -979,8 +980,8 @@ WebTab *MainWindow::currentTab() const
 
 void MainWindow::browserLoading(bool v)
 {
-    QAction *stop = actionCollection()->action( QL1S("stop") );
-    QAction *reload = actionCollection()->action( QL1S("view_redisplay") );
+    QAction *stop = actionCollection()->action(QL1S("stop"));
+    QAction *reload = actionCollection()->action(QL1S("view_redisplay"));
     if (v)
     {
         disconnect(m_stopReloadAction, SIGNAL(triggered(bool)), reload , SIGNAL(triggered(bool)));
@@ -998,7 +999,7 @@ void MainWindow::browserLoading(bool v)
         m_stopReloadAction->setText(i18n("Reload"));
         connect(m_stopReloadAction, SIGNAL(triggered(bool)), reload, SIGNAL(triggered(bool)));
         stop->setEnabled(false);
-        
+
         updateActions();
     }
 }
@@ -1021,7 +1022,7 @@ void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifie
         }
     }
 
-    if(!item)
+    if (!item)
         return;
 
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
@@ -1054,7 +1055,7 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
         }
     }
 
-    if(!item)
+    if (!item)
         return;
 
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
@@ -1106,7 +1107,7 @@ bool MainWindow::event(QEvent *event)
                 currentTab()->setFocus();
                 return true;
             }
- 
+
             // if findbar is visible, hide it
             if (m_findBar->isVisible())
             {
@@ -1349,7 +1350,7 @@ void MainWindow::aboutToShowForwardMenu()
     {
         QWebHistoryItem item = historyList.at(i - 1);
         KAction *action = new KAction(this);
-        action->setData(pivot +i + offset);
+        action->setData(pivot + i + offset);
         KIcon icon = rApp->iconManager()->iconForUrl(item.url());
         action->setIcon(icon);
         action->setText(item.title());
@@ -1361,11 +1362,12 @@ void MainWindow::aboutToShowForwardMenu()
 void MainWindow::aboutToShowTabListMenu()
 {
     m_tabListMenu->clear();
-    for( int i = 0; i < m_view->count(); ++i ){
+    for (int i = 0; i < m_view->count(); ++i)
+    {
         KAction *action = new KAction(m_view->tabText(i), this);
         action->setIcon(rApp->iconManager()->iconForUrl(m_view->webTab(i)->url()).pixmap(16, 16));
         action->setData(i);
-        if(mainView()->tabBar()->currentIndex() == i)
+        if (mainView()->tabBar()->currentIndex() == i)
         {
             QFont font = action->font();
             font.setBold(true);
@@ -1394,7 +1396,7 @@ void MainWindow::openActionUrl(QAction *action)
 void MainWindow::openActionTab(QAction* action)
 {
     int index = action->data().toInt();
-    if(index < 0 || index >= m_view->count())
+    if (index < 0 || index >= m_view->count())
     {
         kDebug() << "Invalid Index!: " << index;
         return;
@@ -1410,7 +1412,7 @@ void MainWindow::setUserAgent()
     QString info;
     QString desc = sender->text();
     int uaIndex = sender->data().toInt();
-    
+
     KUrl url = currentTab()->url();
     UserAgentInfo uaInfo;
     kDebug() << "SETTING USER AGENT";
@@ -1424,33 +1426,33 @@ void MainWindow::populateUserAgentMenu()
     kDebug() << "populating user agent menu...";
     bool defaultUA = true;
     KUrl url = currentTab()->url();
-    
+
     QAction *a, *defaultAction;
-    
+
     m_userAgentMenu->clear();
-    
-    defaultAction = new QAction( i18nc("Default rekonq user agent", "Default"), this);
+
+    defaultAction = new QAction(i18nc("Default rekonq user agent", "Default"), this);
     defaultAction->setData(-1);
     defaultAction->setCheckable(true);
     connect(defaultAction, SIGNAL(triggered(bool)), this, SLOT(setUserAgent()));
-    
+
     m_userAgentMenu->addAction(defaultAction);
     m_userAgentMenu->addSeparator();
-    
+
     UserAgentInfo uaInfo;
     QStringList UAlist = uaInfo.availableUserAgents();
     int uaIndex = uaInfo.uaIndexForHost(currentTab()->url().host());
-    
+
     for (int i = 0; i < UAlist.count(); ++i)
     {
         QString uaDesc = UAlist.at(i);
-        
+
         a = new QAction(uaDesc, this);
         a->setData(i);
         a->setCheckable(true);
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(setUserAgent()));    
-        
-        if(i == uaIndex)
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(setUserAgent()));
+
+        if (i == uaIndex)
         {
             a->setChecked(true);
             defaultUA = false;
@@ -1458,9 +1460,9 @@ void MainWindow::populateUserAgentMenu()
         m_userAgentMenu->addAction(a);
     }
     defaultAction->setChecked(defaultUA);
-    
+
     m_userAgentMenu->addSeparator();
-    m_userAgentMenu->addAction( actionByName("UserAgentSettings") );
+    m_userAgentMenu->addAction(actionByName("UserAgentSettings"));
 }
 
 
@@ -1474,39 +1476,39 @@ void MainWindow::enableNetworkAnalysis(bool b)
 bool MainWindow::queryClose()
 {
     // this should fux bug 240432
-    if(rApp->sessionSaving())
+    if (rApp->sessionSaving())
         return true;
 
     // smooth private browsing mode
-    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return true;
 
     if (m_view->count() > 1)
     {
         int answer = KMessageBox::questionYesNoCancel(
-                        this,
-                        i18np("Are you sure you want to close the window?\n" "You have 1 tab open.",
-                         "Are you sure you want to close the window?\n" "You have %1 tabs open.",
-                        m_view->count()),
-                        i18n("Are you sure you want to close the window?"),
-                        KStandardGuiItem::quit(),
-                        KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
-                        KStandardGuiItem::cancel(),
-                        "confirmClosingMultipleTabs"
-                                                        );
+                         this,
+                         i18np("Are you sure you want to close the window?\n" "You have 1 tab open.",
+                               "Are you sure you want to close the window?\n" "You have %1 tabs open.",
+                               m_view->count()),
+                         i18n("Are you sure you want to close the window?"),
+                         KStandardGuiItem::quit(),
+                         KGuiItem(i18n("C&lose Current Tab"), KIcon("tab-close")),
+                         KStandardGuiItem::cancel(),
+                         "confirmClosingMultipleTabs"
+                     );
 
         switch (answer)
         {
-            case KMessageBox::Yes:
-                // Quit
-                return true;
+        case KMessageBox::Yes:
+            // Quit
+            return true;
 
-            case KMessageBox::No:
-                // Close only the current tab
-                m_view->closeTab();
+        case KMessageBox::No:
+            // Close only the current tab
+            m_view->closeTab();
 
-            default:
-                return false;
+        default:
+            return false;
         }
     }
     return true;
@@ -1524,14 +1526,14 @@ void MainWindow::setupBookmarksAndToolsShortcuts()
 {
     KToolBar *mainBar = toolBar("mainToolBar");
 
-    QToolButton *bookmarksButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("bookmarksActionMenu") )));
-    if(bookmarksButton)
+    QToolButton *bookmarksButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName(QL1S("bookmarksActionMenu"))));
+    if (bookmarksButton)
     {
         connect(actionByName(QL1S("bookmarksActionMenu")), SIGNAL(triggered()), bookmarksButton, SLOT(showMenu()));
     }
 
-    QToolButton *toolsButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName( QL1S("rekonq_tools") )));
-    if(toolsButton)
+    QToolButton *toolsButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName(QL1S("rekonq_tools"))));
+    if (toolsButton)
     {
         connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), toolsButton, SLOT(showMenu()));
     }
@@ -1547,6 +1549,6 @@ void MainWindow::showUserAgentSettings()
     UserAgentWidget widget;
     dialog->setMainWidget(&widget);
     dialog->exec();
-    
+
     dialog->deleteLater();
 }

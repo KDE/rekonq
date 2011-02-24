@@ -106,9 +106,15 @@ public:
      */
     KBookmarkGroup rootGroup();
 
-    inline KBookmarkManager* bookmarkManager() { return m_manager; }
+    inline KBookmarkManager* bookmarkManager()
+    {
+        return m_manager;
+    }
 
-    inline BookmarkOwner* bookmarkOwner() { return m_owner; }
+    inline BookmarkOwner* bookmarkOwner()
+    {
+        return m_owner;
+    }
 
     QList<KBookmark> find(const QString &text);
 
@@ -128,7 +134,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void slotPanelChanged();
-    
+
 Q_SIGNALS:
     /**
     * @short This signal is emitted when an url has to be loaded

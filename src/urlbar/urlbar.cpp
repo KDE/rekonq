@@ -187,21 +187,21 @@ void UrlBar::paintEvent(QPaintEvent *event)
     {
         QColor highlight = rApp->palette().color(QPalette::Highlight);
 
-        int r = (highlight.red()+2*backgroundColor.red())/3;
-        int g = (highlight.green()+2*backgroundColor.green())/3;
-        int b = (highlight.blue()+2*backgroundColor.blue())/3;
+        int r = (highlight.red() + 2 * backgroundColor.red()) / 3;
+        int g = (highlight.green() + 2 * backgroundColor.green()) / 3;
+        int b = (highlight.blue() + 2 * backgroundColor.blue()) / 3;
 
         QColor loadingColor(r, g, b);
 
         if (abs(loadingColor.lightness() - backgroundColor.lightness()) < 20) //eg. Gaia color scheme
         {
-            r = (2*highlight.red()+backgroundColor.red())/3;
-            g = (2*highlight.green()+backgroundColor.green())/3;
-            b = (2*highlight.blue()+backgroundColor.blue())/3;
+            r = (2 * highlight.red() + backgroundColor.red()) / 3;
+            g = (2 * highlight.green() + backgroundColor.green()) / 3;
+            b = (2 * highlight.blue() + backgroundColor.blue()) / 3;
             loadingColor = QColor(r, g, b);
         }
 
-        QLinearGradient gradient( QPoint(0, 0), QPoint(width(), 0) );
+        QLinearGradient gradient(QPoint(0, 0), QPoint(width(), 0));
         gradient.setColorAt(0, loadingColor);
         gradient.setColorAt(((double)progr) / 100 - .000001, loadingColor);
         gradient.setColorAt(((double)progr) / 100, backgroundColor);
@@ -212,7 +212,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     // you need this before our code to draw inside the line edit..
     KLineEdit::paintEvent(event);
 
-    if( text().isEmpty() && progr == 0 )
+    if (text().isEmpty() && progr == 0)
     {
         QStyleOptionFrame option;
         initStyleOption(&option);
@@ -231,9 +231,9 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 {
     // this handles the Modifiers + Return key combinations
     QString currentText = text().trimmed();
-    if(event->modifiers() == Qt::AltModifier)
+    if (event->modifiers() == Qt::AltModifier)
     {
-        if(event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+        if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
         {
             activated(currentText, Rekonq::NewFocusedTab);
         }
@@ -272,7 +272,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     }
 
     else if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-                && !currentText.isEmpty())
+             && !currentText.isEmpty())
     {
         loadTyped(currentText);
     }
@@ -353,7 +353,7 @@ void UrlBar::loadFinished()
 
 void UrlBar::showBookmarkInfo(const QPoint &pos)
 {
-    if( _tab->url().scheme() == QL1S("about") )
+    if (_tab->url().scheme() == QL1S("about"))
         return;
 
     KBookmark bookmark = rApp->bookmarkProvider()->bookmarkForUrl(_tab->url());
@@ -391,7 +391,7 @@ void UrlBar::updateRightIcons()
 
 void UrlBar::loadTyped(const QString &text)
 {
-    activated( KUrl(text) );
+    activated(KUrl(text));
 }
 
 
@@ -445,7 +445,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
     case UrlBar::BK:
         if (rApp->bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
         {
-            rightIcon->setIcon(KIcon("bookmarks").pixmap(32,32, QIcon::Disabled));
+            rightIcon->setIcon(KIcon("bookmarks").pixmap(32, 32, QIcon::Disabled));
             rightIcon->setToolTip(i18n("Bookmark this page"));
         }
         else
@@ -507,13 +507,13 @@ void UrlBar::resizeEvent(QResizeEvent *event)
 
 void UrlBar::detectTypedString(const QString &typed)
 {
-    if(typed.count() == 1)
+    if (typed.count() == 1)
     {
         QTimer::singleShot(0, this, SLOT(suggest()));
         return;
     }
 
-    if(_suggestionTimer->isActive())
+    if (_suggestionTimer->isActive())
         _suggestionTimer->stop();
     _suggestionTimer->start(50);
 }
@@ -521,21 +521,21 @@ void UrlBar::detectTypedString(const QString &typed)
 
 void UrlBar::suggest()
 {
-    if(!_box.isNull())
-        _box.data()->suggestUrls( text() );
+    if (!_box.isNull())
+        _box.data()->suggestUrls(text());
 }
 
 
 void UrlBar::refreshFavicon()
 {
-    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         _icon->setIcon(KIcon("view-media-artist"));
         return;
     }
-    
+
     KUrl u = _tab->url();
-    if(u.scheme() == QL1S("about")) 
+    if (u.scheme() == QL1S("about"))
     {
         _icon->setIcon(KIcon("arrow-right"));
         return;

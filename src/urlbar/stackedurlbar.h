@@ -48,7 +48,7 @@ public:
 
     UrlBar *currentUrlBar();
     UrlBar *urlBar(int index);
-    
+
 private slots:
     void moveBar(int, int);
 };

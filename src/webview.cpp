@@ -89,7 +89,8 @@ WebView::WebView(QWidget* parent)
     // // But it doesn't work :(
     // // We'll see in next KDE releases...
     QPalette p;
-    if (p.color(QPalette::ButtonText).lightness() > 50) { //if it is a dark theme
+    if (p.color(QPalette::ButtonText).lightness() > 50)   //if it is a dark theme
+    {
         QWindowsStyle s;
         p = s.standardPalette();
         setPalette(p);
@@ -197,12 +198,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         else
             a->setText(i18n("Copy"));
         menu.addAction(a);
-        if(selectedText().contains('.') && selectedText().indexOf('.') < selectedText().length() && !selectedText().trimmed().contains(" "))
+        if (selectedText().contains('.') && selectedText().indexOf('.') < selectedText().length() && !selectedText().trimmed().contains(" "))
         {
             QString text = selectedText();
             text = text.trimmed();
             KUrl urlLikeText(text);
-            if(urlLikeText.isValid())
+            if (urlLikeText.isValid())
             {
                 QString truncatedUrl = text;
                 const int maxTextSize = 18;
@@ -425,9 +426,9 @@ void WebView::mousePressEvent(QMouseEvent *event)
 
     case Qt::MidButton:
         if (m_canEnableAutoScroll
-            && !m_isAutoScrollEnabled
-            && !page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).contains(event->pos())
-            && !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).contains(event->pos()))
+                && !m_isAutoScrollEnabled
+                && !page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).contains(event->pos())
+                && !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).contains(event->pos()))
         {
             if (!page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).isNull()
                     || !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).isNull())
@@ -470,7 +471,7 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
         }
         else
         {
-            if(!w->mainView()->currentUrlBar()->hasFocus())
+            if (!w->mainView()->currentUrlBar()->hasFocus())
                 w->setWidgetsVisible(false);
         }
     }
@@ -480,7 +481,7 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 
 void WebView::enterEvent(QEvent *event)
 {
-    if(m_isAutoScrollEnabled)
+    if (m_isAutoScrollEnabled)
         setCursor(KIcon("transform-move").pixmap(32));
 
     KWebView::enterEvent(event);
@@ -542,17 +543,17 @@ void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifier
 void WebView::slotCopyImageLocation()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    KUrl imageUrl (a->data().toUrl());
+    KUrl imageUrl(a->data().toUrl());
 #ifndef QT_NO_MIMECLIPBOARD
     // Set it in both the mouse selection and in the clipboard
     QMimeData* mimeData = new QMimeData;
-    imageUrl.populateMimeData( mimeData );
-    QApplication::clipboard()->setMimeData( mimeData, QClipboard::Clipboard );
+    imageUrl.populateMimeData(mimeData);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
     mimeData = new QMimeData;
-    imageUrl.populateMimeData( mimeData );
-    QApplication::clipboard()->setMimeData( mimeData, QClipboard::Selection );
+    imageUrl.populateMimeData(mimeData);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Selection);
 #else
-    QApplication::clipboard()->setText( imageUrl.url() );
+    QApplication::clipboard()->setText(imageUrl.url());
 #endif
 }
 
@@ -650,13 +651,13 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
 void WebView::wheelEvent(QWheelEvent *event)
 {
-    if( event->orientation() == Qt::Vertical || !ReKonfig::hScrollWheelHistory() )
+    if (event->orientation() == Qt::Vertical || !ReKonfig::hScrollWheelHistory())
     {
         // To let some websites (eg: google maps) to handle wheel events
         int prevPos = page()->currentFrame()->scrollPosition().y();
         KWebView::wheelEvent(event);
         int newPos = page()->currentFrame()->scrollPosition().y();
-        
+
         // Sync with the zoom slider
         if (event->modifiers() == Qt::ControlModifier)
         {
@@ -665,39 +666,42 @@ void WebView::wheelEvent(QWheelEvent *event)
                 setZoomFactor(1.9);
             else if (zoomFactor() < 0.1)
                 setZoomFactor(0.1);
-            
+
             // Round the factor (Fix slider's end value)
             int newFactor = zoomFactor() * 10;
             if ((zoomFactor() * 10 - newFactor) > 0.5)
                 newFactor++;
-            
+
             emit zoomChanged(newFactor);
         }
         else if (ReKonfig::smoothScrolling() && prevPos != newPos)
         {
-            
+
             page()->currentFrame()->setScrollPosition(QPoint(page()->currentFrame()->scrollPosition().x(), prevPos));
-            
+
             if ((event->delta() > 0) != !m_scrollBottom)
                 stopScrolling();
-            
+
             if (event->delta() > 0)
                 m_scrollBottom = false;
             else
                 m_scrollBottom = true;
-            
-            
+
+
             setupSmoothScrolling(abs(newPos - prevPos));
         }
     }
     // use horizontal wheel events to go back and forward in tab history
-    else {
+    else
+    {
         // left -> go to previous page
-        if( event->delta() > 0 ){
+        if (event->delta() > 0)
+        {
             emit openPreviousInHistory();
         }
         // right -> go to next page
-        if( event->delta() < 0 ){
+        if (event->delta() < 0)
+        {
             emit openNextInHistory();
         }
     }
@@ -737,7 +741,7 @@ void WebView::scrollFrameChanged()
 
 void WebView::setupSmoothScrolling(int posY)
 {
-    int ddy = qMax(m_smoothScrollSteps ? abs(m_dy)/m_smoothScrollSteps : 0,3);
+    int ddy = qMax(m_smoothScrollSteps ? abs(m_dy) / m_smoothScrollSteps : 0, 3);
 
     m_dy += posY;
 
@@ -751,7 +755,7 @@ void WebView::setupSmoothScrolling(int posY)
 
     if (m_dy / m_smoothScrollSteps < ddy)
     {
-        m_smoothScrollSteps = (abs(m_dy)+ddy-1)/ddy;
+        m_smoothScrollSteps = (abs(m_dy) + ddy - 1) / ddy;
         if (m_smoothScrollSteps < 1)
             m_smoothScrollSteps = 1;
     }
@@ -787,9 +791,9 @@ void WebView::scrollTick()
     if (takesteps > m_smoothScrollSteps)
         takesteps = m_smoothScrollSteps;
 
-    for(int i = 0; i < takesteps; i++)
+    for (int i = 0; i < takesteps; i++)
     {
-        int ddy = (m_dy / (m_smoothScrollSteps+1)) * 2;
+        int ddy = (m_dy / (m_smoothScrollSteps + 1)) * 2;
 
         // limit step to requested scrolling distance
         if (abs(ddy) > abs(m_dy))

@@ -37,9 +37,9 @@ const QByteArray prep("hAnim");
 
 
 TabHighlightEffect::TabHighlightEffect(TabBar *tabBar)
-    : QGraphicsEffect(tabBar)
-    , m_tabBar(tabBar)
-    , m_highlightColor(tabBar->palette().highlight().color().lighter())
+        : QGraphicsEffect(tabBar)
+        , m_tabBar(tabBar)
+        , m_highlightColor(tabBar->palette().highlight().color().lighter())
 {
     Q_ASSERT(m_tabBar);
 }
@@ -47,7 +47,7 @@ TabHighlightEffect::TabHighlightEffect(TabBar *tabBar)
 
 void TabHighlightEffect::draw(QPainter *painter)
 {
-    painter->drawPixmap(QPoint(0,0), sourcePixmap());
+    painter->drawPixmap(QPoint(0, 0), sourcePixmap());
 
     Q_FOREACH(const QByteArray &propertyName, dynamicPropertyNames())
     {
@@ -59,12 +59,12 @@ void TabHighlightEffect::draw(QPainter *painter)
         QRect textRect =  m_tabBar->tabTextRect(index);
 
         QString tabText = m_tabBar->fontMetrics().elidedText(m_tabBar->tabText(index), Qt::ElideRight,
-                                                             textRect.width(), Qt::TextShowMnemonic);
+                          textRect.width(), Qt::TextShowMnemonic);
 
         painter->setOpacity(opacity);
         painter->setPen(m_highlightColor);
         painter->drawText(textRect, Qt::AlignCenter | Qt::TextShowMnemonic, tabText);
-     }
+    }
 }
 
 

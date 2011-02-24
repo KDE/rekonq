@@ -113,20 +113,20 @@ static void extractSuggestedFileName(const QNetworkReply* reply, QString& fileNa
     fileName.clear();
     const KIO::MetaData& metaData = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
     if (metaData.value(QL1S("content-disposition-type")).compare(QL1S("attachment"), Qt::CaseInsensitive) == 0)
-         fileName = metaData.value(QL1S("content-disposition-filename"));
+        fileName = metaData.value(QL1S("content-disposition-filename"));
 
     if (!fileName.isEmpty())
         return;
 
     if (!reply->hasRawHeader("Content-Disposition"))
-        return;    
+        return;
 
-    const QString value (QL1S(reply->rawHeader("Content-Disposition").simplified().constData()));
-    if (value.startsWith(QL1S("attachment"), Qt::CaseInsensitive) || value.startsWith(QL1S("inline"), Qt::CaseInsensitive)) 
+    const QString value(QL1S(reply->rawHeader("Content-Disposition").simplified().constData()));
+    if (value.startsWith(QL1S("attachment"), Qt::CaseInsensitive) || value.startsWith(QL1S("inline"), Qt::CaseInsensitive))
     {
         const int length = value.size();
         int pos = value.indexOf(QL1S("filename"), 0, Qt::CaseInsensitive);
-        if (pos > -1) 
+        if (pos > -1)
         {
             pos += 9;
             while (pos < length && (value.at(pos) == QL1C(' ') || value.at(pos) == QL1C('=') || value.at(pos) == QL1C('"')))
@@ -137,7 +137,7 @@ static void extractSuggestedFileName(const QNetworkReply* reply, QString& fileNa
                 endPos++;
 
             if (endPos > pos)
-                fileName = value.mid(pos, (endPos-pos)).trimmed();
+                fileName = value.mid(pos, (endPos - pos)).trimmed();
         }
     }
 }
@@ -156,49 +156,49 @@ static void extractMimeType(const QNetworkReply* reply, QString& mimeType)
     if (!reply->hasRawHeader("Content-Type"))
         return;
 
-    const QString value (QL1S(reply->rawHeader("Content-Type").simplified().constData()));
+    const QString value(QL1S(reply->rawHeader("Content-Type").simplified().constData()));
     const int index = value.indexOf(QL1C(';'));
     if (index == -1)
-       mimeType = value;
+        mimeType = value;
     else
-       mimeType = value.left(index);
+        mimeType = value.left(index);
 }
 
 
-static bool downloadResource (const KUrl& srcUrl, const KIO::MetaData& metaData = KIO::MetaData(),
-                              QWidget* parent = 0, const QString& suggestedName = QString())
+static bool downloadResource(const KUrl& srcUrl, const KIO::MetaData& metaData = KIO::MetaData(),
+                             QWidget * parent = 0, const QString & suggestedName = QString())
 {
     KUrl destUrl;
 
     int result = KIO::R_OVERWRITE;
-    const QString fileName ((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
+    const QString fileName((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
 
     do
     {
         // follow bug:184202 fixes
         destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);
 
-        if(destUrl.isEmpty())
+        if (destUrl.isEmpty())
             return false;
 
         if (destUrl.isLocalFile())
         {
-            QFileInfo finfo (destUrl.toLocalFile());
+            QFileInfo finfo(destUrl.toLocalFile());
             if (finfo.exists())
             {
                 QDateTime now = QDateTime::currentDateTime();
-                QPointer<KIO::RenameDialog> dlg = new KIO::RenameDialog( parent,
-                                                                         i18n("Overwrite File?"),
-                                                                         srcUrl,
-                                                                         destUrl,
-                                                                         KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),
-                                                                         -1,
-                                                                         finfo.size(),
-                                                                         now.toTime_t(),
-                                                                         finfo.created().toTime_t(),
-                                                                         now.toTime_t(),
-                                                                         finfo.lastModified().toTime_t()
-                                                                        );
+                QPointer<KIO::RenameDialog> dlg = new KIO::RenameDialog(parent,
+                        i18n("Overwrite File?"),
+                        srcUrl,
+                        destUrl,
+                        KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),
+                        -1,
+                        finfo.size(),
+                        now.toTime_t(),
+                        finfo.created().toTime_t(),
+                        now.toTime_t(),
+                        finfo.lastModified().toTime_t()
+                                                                       );
                 result = dlg->exec();
                 delete dlg;
             }
@@ -292,14 +292,14 @@ WebPage::~WebPage()
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
-    if(_isOnRekonqPage)
+    if (_isOnRekonqPage)
     {
         WebView *view = qobject_cast<WebView *>(parent());
         WebTab *tab = qobject_cast<WebTab *>(view->parent());
         _isOnRekonqPage = false;
         tab->setPart(0, KUrl());     // re-enable the view page
     }
-    
+
     // reset webpage values
     _suggestedFileName.clear();
     _loadingUrl = request.url();
@@ -368,7 +368,7 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     WebTab *w = 0;
     if (ReKonfig::openTabNoWindow())
     {
-        w = rApp->mainWindow()->mainView()->newWebTab( !ReKonfig::openTabsBack() );
+        w = rApp->mainWindow()->mainView()->newWebTab(!ReKonfig::openTabsBack());
     }
     else
     {
@@ -380,23 +380,23 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 
 void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
-    Q_ASSERT (reply);
+    Q_ASSERT(reply);
 
     // Put the job on hold...
-    #if KDE_IS_VERSION( 4, 5, 96)
-        kDebug() << "PUT REPLY ON HOLD...";
-        KIO::Integration::AccessManager::putReplyOnHold(reply);
-    #else
-        reply->abort();
-    #endif
-    
+#if KDE_IS_VERSION( 4, 5, 96)
+    kDebug() << "PUT REPLY ON HOLD...";
+    KIO::Integration::AccessManager::putReplyOnHold(reply);
+#else
+    reply->abort();
+#endif
+
     // This is probably needed just in ONE stupid case..
     if (_protHandler.postHandling(reply->request(), mainFrame()))
     {
         kDebug() << "POST HANDLING the unsupported...";
         return;
     }
-    
+
     if (reply->error() != QNetworkReply::NoError)
         return;
 
@@ -408,11 +408,11 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     // Get mimeType...
     extractMimeType(reply, _mimeType);
-    
+
     // Convert executable text files to plain text...
     if (KParts::BrowserRun::isTextExecutable(_mimeType))
         _mimeType = QL1S("text/plain");
-        
+
     kDebug() << "Detected MimeType = " << _mimeType;
     kDebug() << "Suggested File Name = " << _suggestedFileName;
     // ------------------------------------------------
@@ -435,7 +435,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (!isLocal)
     {
         KParts::BrowserOpenOrSaveQuestion dlg(rApp->mainWindow(), replyUrl, _mimeType);
-        if(!_suggestedFileName.isEmpty())
+        if (!_suggestedFileName.isEmpty())
             dlg.setSuggestedFileName(_suggestedFileName);
 
         switch (dlg.askEmbedOrSave())
@@ -454,10 +454,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     }
 
     // Handle Post operations that return content...
-    if (reply->operation() == QNetworkAccessManager::PostOperation) 
+    if (reply->operation() == QNetworkAccessManager::PostOperation)
     {
         kDebug() << "POST OPERATION: downloading file...";
-        QFileInfo finfo (_suggestedFileName.isEmpty() ? _loadingUrl.fileName() : _suggestedFileName);
+        QFileInfo finfo(_suggestedFileName.isEmpty() ? _loadingUrl.fileName() : _suggestedFileName);
         KTemporaryFile tempFile;
         tempFile.setSuffix(QL1C('.') + finfo.suffix());
         tempFile.setAutoRemove(false);
@@ -481,7 +481,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (appName == appService->desktopEntryName() || appService->exec().trimmed().startsWith(appName))
     {
         kDebug() << "SELF...";
-        QNetworkRequest req (reply->request());
+        QNetworkRequest req(reply->request());
         req.setRawHeader("x-kdewebkit-ignore-disposition", "true");
         currentFrame()->load(req);
         return;
@@ -492,16 +492,16 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (pa)
     {
         kDebug() << "EMBEDDING CONTENT...";
-        
+
         _isOnRekonqPage = true;
 
         WebView *view = qobject_cast<WebView *>(parent());
         WebTab *tab = qobject_cast<WebTab *>(view->parent());
-        tab->setPart(pa,replyUrl);
+        tab->setPart(pa, replyUrl);
 
         UrlBar *bar = tab->urlBar();
         bar->setQUrl(replyUrl);
-        
+
         rApp->mainWindow()->updateActions();
     }
     else
@@ -509,11 +509,11 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         // No parts, just app services. Load it!
         // If the app is a KDE one, publish the slave on hold to let it use it.
         // Otherwise, run the app and remove it (the io slave...)
-        if (appService->categories().contains(QL1S("KDE"), Qt::CaseInsensitive)) 
+        if (appService->categories().contains(QL1S("KDE"), Qt::CaseInsensitive))
         {
-            #if KDE_IS_VERSION( 4, 5, 96)
-                KIO::Scheduler::publishSlaveOnHold();
-            #endif
+#if KDE_IS_VERSION( 4, 5, 96)
+            KIO::Scheduler::publishSlaveOnHold();
+#endif
             KRun::run(*appService, replyUrl, 0, false, _suggestedFileName);
             return;
         }
@@ -521,11 +521,11 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     }
 
     // Remove any ioslave that was put on hold...
-    #if KDE_IS_VERSION( 4, 5, 96)
-        kDebug() << "REMOVE SLAVES ON HOLD...";
-        KIO::Scheduler::removeSlaveOnHold();
-    #endif
-            
+#if KDE_IS_VERSION( 4, 5, 96)
+    kDebug() << "REMOVE SLAVES ON HOLD...";
+    KIO::Scheduler::removeSlaveOnHold();
+#endif
+
     return;
 }
 
@@ -541,7 +541,7 @@ void WebPage::loadFinished(bool ok)
     // set zoom factor
     QString val;
     KSharedConfig::Ptr config = KGlobal::config();
-    KConfigGroup group( config, "Zoom" );
+    KConfigGroup group(config, "Zoom");
     val = group.readEntry(_loadingUrl.host(), QString("10"));
 
     int value = val.toInt();
@@ -570,9 +570,9 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     Q_ASSERT(reply);
 
     // check suggested file name
-    if(_suggestedFileName.isEmpty())
+    if (_suggestedFileName.isEmpty())
         extractSuggestedFileName(reply, _suggestedFileName);
-    
+
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
 
@@ -624,10 +624,10 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         if (reply->url() == _loadingUrl)
         {
             frame->setHtml(errorPage(reply));
-            if(isMainFrameRequest)
+            if (isMainFrameRequest)
             {
                 _isOnRekonqPage = true;
-            
+
                 WebView *view = qobject_cast<WebView *>(parent());
                 WebTab *tab = qobject_cast<WebTab *>(view->parent());
                 UrlBar *bar = tab->urlBar();
@@ -659,11 +659,11 @@ QString WebPage::errorPage(QNetworkReply *reply)
     }
 
     QString title = i18n("There was a problem while loading the page");
-    
-    // NOTE: 
+
+    // NOTE:
     // this, to take care about XSS (see BUG 217464)...
     QString urlString = Qt::escape(reply->url().toString());
-    
+
     QString iconPath = QString("file://") + KIconLoader::global()->iconPath("dialog-warning" , KIconLoader::Small);
     iconPath.replace(QL1S("16"), QL1S("128"));
 
@@ -694,7 +694,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
 
 void WebPage::downloadReply(const QNetworkReply *reply, const QString &suggestedFileName)
 {
-    downloadResource( reply->url(), KIO::MetaData(), view(), suggestedFileName);
+    downloadResource(reply->url(), KIO::MetaData(), view(), suggestedFileName);
 }
 
 
@@ -708,7 +708,7 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
 
 void WebPage::downloadUrl(const KUrl &url)
 {
-    downloadResource( url, KIO::MetaData(), view() );
+    downloadResource(url, KIO::MetaData(), view());
 }
 
 
@@ -794,8 +794,8 @@ void WebPage::updateImage(bool ok)
 
 void WebPage::copyToTempFileResult(KJob* job)
 {
-    if ( job->error() )
+    if (job->error())
         job->uiDelegate()->showErrorMessage();
-    else 
+    else
         (void)KRun::runUrl(static_cast<KIO::FileCopyJob *>(job)->destUrl(), _mimeType, rApp->mainWindow());
 }

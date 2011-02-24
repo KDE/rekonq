@@ -40,22 +40,22 @@ AppearanceWidget::AppearanceWidget(QWidget *parent)
         , _changed(false)
 {
     setupUi(this);
-    
+
     fixedFontChooser->setOnlyFixed(true);
-    
-    standardFontChooser->setCurrentFont( QFont( ReKonfig::standardFontFamily() ) );
-    fixedFontChooser->setCurrentFont( QFont( ReKonfig::fixedFontFamily() ) );
-    serifFontChooser->setCurrentFont( QFont( ReKonfig::serifFontFamily() ) );
-    sansSerifFontChooser->setCurrentFont( QFont( ReKonfig::sansSerifFontFamily() ) );
-    cursiveFontChooser->setCurrentFont( QFont( ReKonfig::cursiveFontFamily() ) );
-    fantasyFontChooser->setCurrentFont( QFont( ReKonfig::fantasyFontFamily() ) );
-                        
-    connect(standardFontChooser,    SIGNAL(currentFontChanged(const QFont &)), this, SLOT( hasChanged() ));
-    connect(fixedFontChooser,       SIGNAL(currentFontChanged(const QFont &)), this, SLOT( hasChanged() ));
-    connect(serifFontChooser,       SIGNAL(currentFontChanged(const QFont &)), this, SLOT( hasChanged() ));
-    connect(sansSerifFontChooser,   SIGNAL(currentFontChanged(const QFont &)), this, SLOT( hasChanged() ));
-    connect(cursiveFontChooser,     SIGNAL(currentFontChanged(const QFont &)), this, SLOT( hasChanged() ));
-    connect(fantasyFontChooser,     SIGNAL(currentFontChanged(const QFont &)), this, SLOT( hasChanged() ));
+
+    standardFontChooser->setCurrentFont(QFont(ReKonfig::standardFontFamily()));
+    fixedFontChooser->setCurrentFont(QFont(ReKonfig::fixedFontFamily()));
+    serifFontChooser->setCurrentFont(QFont(ReKonfig::serifFontFamily()));
+    sansSerifFontChooser->setCurrentFont(QFont(ReKonfig::sansSerifFontFamily()));
+    cursiveFontChooser->setCurrentFont(QFont(ReKonfig::cursiveFontFamily()));
+    fantasyFontChooser->setCurrentFont(QFont(ReKonfig::fantasyFontFamily()));
+
+    connect(standardFontChooser,    SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
+    connect(fixedFontChooser,       SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
+    connect(serifFontChooser,       SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
+    connect(sansSerifFontChooser,   SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
+    connect(cursiveFontChooser,     SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
+    connect(fantasyFontChooser,     SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
 
     populateEncodingMenu();
 }
@@ -63,12 +63,12 @@ AppearanceWidget::AppearanceWidget(QWidget *parent)
 
 void AppearanceWidget::save()
 {
-    ReKonfig::setStandardFontFamily(    standardFontChooser->currentFont().family() );
-    ReKonfig::setFixedFontFamily(       fixedFontChooser->currentFont().family() );
-    ReKonfig::setSerifFontFamily(       serifFontChooser->currentFont().family() );
-    ReKonfig::setSansSerifFontFamily(   sansSerifFontChooser->currentFont().family() );
-    ReKonfig::setCursiveFontFamily(     cursiveFontChooser->currentFont().family() );
-    ReKonfig::setFantasyFontFamily(     fantasyFontChooser->currentFont().family() );
+    ReKonfig::setStandardFontFamily(standardFontChooser->currentFont().family());
+    ReKonfig::setFixedFontFamily(fixedFontChooser->currentFont().family());
+    ReKonfig::setSerifFontFamily(serifFontChooser->currentFont().family());
+    ReKonfig::setSansSerifFontFamily(sansSerifFontChooser->currentFont().family());
+    ReKonfig::setCursiveFontFamily(cursiveFontChooser->currentFont().family());
+    ReKonfig::setFantasyFontFamily(fantasyFontChooser->currentFont().family());
 }
 
 
@@ -101,8 +101,8 @@ void AppearanceWidget::populateEncodingMenu()
     QStringList encodings = KGlobal::charsets()->availableEncodingNames();
     encodingCombo->addItems(encodings);
 
-    encodingCombo->setWhatsThis( i18n( "Select the default encoding to be used; normally, you will be fine with 'Use language encoding' "
-               "and should not have to change this.") );
+    encodingCombo->setWhatsThis(i18n("Select the default encoding to be used; normally, you will be fine with 'Use language encoding' "
+                                     "and should not have to change this."));
 
     connect(encodingCombo, SIGNAL(activated(const QString &)), this, SLOT(setEncoding(const QString &)));
     connect(encodingCombo, SIGNAL(activated(const QString &)), this, SLOT(hasChanged()));

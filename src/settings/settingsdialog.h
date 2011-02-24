@@ -52,7 +52,7 @@ public:
 
 protected:
     virtual bool isDefault();
-    
+
 private:
     Private* const d;
 

@@ -83,7 +83,7 @@ private:
 
     QString _typedString;
     bool _hasSuggestions;
-    
+
     UrlSearchList _resList;
 };
 

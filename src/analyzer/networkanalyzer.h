@@ -59,11 +59,11 @@ public:
     ~NetworkAnalyzer();
 
 private slots:
-    void addRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QNetworkReply *reply );
+    void addRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &req, QNetworkReply *reply);
 
     void clear();
-    void requestFinished( QObject *replyObject );
-    void showItemDetails( QTreeWidgetItem *item );
+    void requestFinished(QObject *replyObject);
+    void showItemDetails(QTreeWidgetItem *item);
     void copyURL();
     void popupContextMenu(const QPoint &pos);
 

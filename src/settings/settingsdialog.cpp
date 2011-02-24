@@ -138,7 +138,7 @@ Private::Private(SettingsDialog *parent)
     }
     pageItem->setIcon(wsIcon);
 
-    // WARNING 
+    // WARNING
     // remember wheh changing here that the smallest netbooks
     // have a 1024x576 resolution. So DON'T bother that limits!!
     parent->setMinimumSize(700, 525);
@@ -229,8 +229,8 @@ bool SettingsDialog::hasChanged()
 bool SettingsDialog::isDefault()
 {
     bool isDef = KConfigDialog::isDefault();
-    
-    if(isDef)
+
+    if (isDef)
     {
         // check our private widget values
         isDef = d->appearanceWidg->isDefault();

@@ -115,17 +115,17 @@ void HistoryManager::addHistoryEntry(const QString &url)
     QString checkUrlString = cleanUrl.toString();
 
     HistoryItem item;
-    
+
     // NOTE
     // check if the url has just been visited.
     // if so, remove previous entry from history, update and prepend it
-    if(historyContains(checkUrlString))
+    if (historyContains(checkUrlString))
     {
         int index = m_historyFilterModel->historyLocation(checkUrlString);
         item = m_history.at(index);
         m_history.removeOne(item);
         emit entryRemoved(item);
-        
+
         item.dateTime = QDateTime::currentDateTime();
         item.visitCount++;
     }
@@ -133,10 +133,10 @@ void HistoryManager::addHistoryEntry(const QString &url)
     {
         item = HistoryItem(checkUrlString, QDateTime::currentDateTime());
     }
-    
+
     m_history.prepend(item);
     emit entryAdded(item);
-    
+
     if (m_history.count() == 1)
         checkForExpired();
 }
@@ -195,7 +195,7 @@ void HistoryManager::checkForExpired()
     }
 
     if (nextTimeout > 0)
-        QTimer::singleShot( nextTimeout * 1000, this, SLOT(checkForExpired()) );
+        QTimer::singleShot(nextTimeout * 1000, this, SLOT(checkForExpired()));
 }
 
 
@@ -203,15 +203,15 @@ void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
 {
     QString urlString = url.url();
     urlString.remove(QL1S("www."));
-    if(urlString.startsWith(QL1S("http")) && urlString.endsWith(QL1C('/')))
-        urlString.remove(urlString.length()-1,1);
+    if (urlString.startsWith(QL1S("http")) && urlString.endsWith(QL1C('/')))
+        urlString.remove(urlString.length() - 1, 1);
 
     for (int i = 0; i < m_history.count(); ++i)
     {
         QString itemUrl = m_history.at(i).url;
         itemUrl.remove(QL1S("www."));
-        if(itemUrl.startsWith(QL1S("http")) && itemUrl.endsWith(QL1C('/')))
-            itemUrl.remove(itemUrl.length()-1,1);
+        if (itemUrl.startsWith(QL1S("http")) && itemUrl.endsWith(QL1C('/')))
+            itemUrl.remove(itemUrl.length() - 1, 1);
 
         if (urlString == itemUrl)
         {
@@ -258,10 +258,11 @@ QList<HistoryItem> HistoryManager::find(const QString &text)
 
         QStringList words = text.split(' ');
         bool matches = true;
-        foreach (const QString &word, words)
+        foreach(const QString &word, words)
         {
             if (!url.contains(word, Qt::CaseInsensitive)
-                && !item.title.contains(word, Qt::CaseInsensitive)) {
+                    && !item.title.contains(word, Qt::CaseInsensitive))
+            {
                 matches = false;
                 break;
             }
@@ -347,9 +348,9 @@ void HistoryManager::load()
         buffer.open(QIODevice::ReadOnly);
         quint32 version;
         stream >> version;
-        
+
         HistoryItem item;
-        
+
         switch (version)
         {
         case HISTORY_VERSION:   // default case
@@ -365,11 +366,11 @@ void HistoryManager::load()
             stream >> item.title;
             item.visitCount = 1;
             break;
-            
+
         default:
             continue;
         };
-        
+
         if (!item.dateTime.isValid())
             continue;
 

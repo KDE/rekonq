@@ -92,7 +92,7 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
     else
     {
         KBookmarkAction *action = new KBookmarkAction(bookmark, owner(), this);
-        action->setIcon(rApp->iconManager()->iconForUrl( KUrl(bookmark.url()) ));
+        action->setIcon(rApp->iconManager()->iconForUrl(KUrl(bookmark.url())));
         connect(action, SIGNAL(hovered()), this, SLOT(actionHovered()));
         return action;
     }
@@ -157,12 +157,12 @@ void BookmarkMenu::actionHovered()
 
 
 BookmarkToolBar::BookmarkToolBar(KToolBar *toolBar, QObject *parent)
-    : QObject(parent)
-    , m_toolBar(toolBar)
-    , m_currentMenu(0)
-    , m_dragAction(0)
-    , m_dropAction(0)
-    , m_filled(false)
+        : QObject(parent)
+        , m_toolBar(toolBar)
+        , m_currentMenu(0)
+        , m_dragAction(0)
+        , m_dropAction(0)
+        , m_filled(false)
 {
     toolBar->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(toolBar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
@@ -220,7 +220,7 @@ void BookmarkToolBar::menuHidden()
 
 void BookmarkToolBar::hideMenu()
 {
-    if(m_currentMenu)
+    if (m_currentMenu)
         m_currentMenu->hide();
 }
 
@@ -367,7 +367,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 QWidget *widgetAction = toolBar()->widgetForAction(destAction);
 
                 if (destBookmarkAction && !destBookmarkAction->bookmark().isNull() && widgetAction
-                    && bookmark.address() != destBookmarkAction->bookmark().address())
+                        && bookmark.address() != destBookmarkAction->bookmark().address())
                 {
                     KBookmark destBookmark = destBookmarkAction->bookmark();
 
@@ -430,9 +430,9 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
 
             if (action && action->bookmark().isGroup() && distance < QApplication::startDragDistance())
             {
-               KBookmarkActionMenu *menu = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(m_startDragPos));
-               QPoint actionPos = toolBar()->mapToGlobal(toolBar()->widgetForAction(menu)->pos());
-               menu->menu()->popup(QPoint(actionPos.x(), actionPos.y() + toolBar()->widgetForAction(menu)->height()));
+                KBookmarkActionMenu *menu = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(m_startDragPos));
+                QPoint actionPos = toolBar()->mapToGlobal(toolBar()->widgetForAction(menu)->pos());
+                menu->menu()->popup(QPoint(actionPos.x(), actionPos.y() + toolBar()->widgetForAction(menu)->height()));
             }
         }
     }

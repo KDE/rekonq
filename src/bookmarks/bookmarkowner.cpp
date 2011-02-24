@@ -61,36 +61,36 @@ KAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAc
     {
     case OPEN:
         return createAction(i18n("Open"), "tab-new",
-                     i18n("Open bookmark in current tab"), SLOT(openBookmark(const KBookmark &)), bookmark);
+                            i18n("Open bookmark in current tab"), SLOT(openBookmark(const KBookmark &)), bookmark);
     case OPEN_IN_TAB:
         return createAction(i18n("Open in New Tab"), "tab-new",
-                     i18n("Open bookmark in new tab"), SLOT(openBookmarkInNewTab(const KBookmark &)), bookmark);
+                            i18n("Open bookmark in new tab"), SLOT(openBookmarkInNewTab(const KBookmark &)), bookmark);
     case OPEN_IN_WINDOW:
         return createAction(i18n("Open in New Window"), "window-new",
-                     i18n("Open bookmark in new window"), SLOT(openBookmarkInNewWindow(const KBookmark &)), bookmark);
+                            i18n("Open bookmark in new window"), SLOT(openBookmarkInNewWindow(const KBookmark &)), bookmark);
     case OPEN_FOLDER:
         return createAction(i18n("Open Folder in Tabs"), "tab-new",
-                     i18n("Open all the bookmarks in folder in tabs"), SLOT(openBookmarkFolder(const KBookmark &)), bookmark);
+                            i18n("Open all the bookmarks in folder in tabs"), SLOT(openBookmarkFolder(const KBookmark &)), bookmark);
     case BOOKMARK_PAGE:
         return createAction(i18n("Add Bookmark"), "bookmark-new",
-                     i18n("Bookmark current page"), SLOT(bookmarkCurrentPage(const KBookmark &)), bookmark);
+                            i18n("Bookmark current page"), SLOT(bookmarkCurrentPage(const KBookmark &)), bookmark);
     case NEW_FOLDER:
         return createAction(i18n("New Folder"), "folder-new",
-                     i18n("Create a new bookmark folder"), SLOT(newBookmarkFolder(const KBookmark &)), bookmark);
+                            i18n("Create a new bookmark folder"), SLOT(newBookmarkFolder(const KBookmark &)), bookmark);
     case NEW_SEPARATOR:
         return createAction(i18n("New Separator"), "edit-clear",
-                     i18n("Create a new bookmark separator"), SLOT(newSeparator(const KBookmark &)), bookmark);
+                            i18n("Create a new bookmark separator"), SLOT(newSeparator(const KBookmark &)), bookmark);
     case COPY:
         return createAction(i18n("Copy Link"), "edit-copy",
-                     i18n("Copy the bookmark's link address"), SLOT(copyLink(const KBookmark &)), bookmark);
+                            i18n("Copy the bookmark's link address"), SLOT(copyLink(const KBookmark &)), bookmark);
     case EDIT:
         return createAction(i18n("Edit"), "configure",
-                     i18n("Edit the bookmark"), SLOT(editBookmark(const KBookmark &)), bookmark);
+                            i18n("Edit the bookmark"), SLOT(editBookmark(const KBookmark &)), bookmark);
     case DELETE:
-       return  createAction(i18n("Delete"), "edit-delete",
-                     i18n("Delete the bookmark"), SLOT(deleteBookmark(const KBookmark &)), bookmark);
+        return  createAction(i18n("Delete"), "edit-delete",
+                             i18n("Delete the bookmark"), SLOT(deleteBookmark(const KBookmark &)), bookmark);
     default:
-       return 0;
+        return 0;
     }
 }
 

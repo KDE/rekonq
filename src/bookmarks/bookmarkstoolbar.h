@@ -85,10 +85,10 @@ class BookmarkToolBar : public QObject
     Q_OBJECT
 
 public:
-BookmarkToolBar(KToolBar *toolBar, QObject *parent);
-~BookmarkToolBar();
+    BookmarkToolBar(KToolBar *toolBar, QObject *parent);
+    ~BookmarkToolBar();
 
-KToolBar* toolBar();
+    KToolBar* toolBar();
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event);

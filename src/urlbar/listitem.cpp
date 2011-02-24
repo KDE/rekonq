@@ -166,15 +166,15 @@ TypeIconLabel::TypeIconLabel(int type, QWidget *parent)
     hLayout->setAlignment(Qt::AlignRight);
     setLayout(hLayout);
 
-    if (type & UrlSearchItem::Search) 
+    if (type & UrlSearchItem::Search)
         hLayout->addWidget(getIcon("edit-find"));
-    if (type & UrlSearchItem::Browse) 
+    if (type & UrlSearchItem::Browse)
         hLayout->addWidget(getIcon("applications-internet"));
-    if (type & UrlSearchItem::Bookmark) 
+    if (type & UrlSearchItem::Bookmark)
         hLayout->addWidget(getIcon("rating"));
-    if (type & UrlSearchItem::History) 
+    if (type & UrlSearchItem::History)
         hLayout->addWidget(getIcon("view-history"));
-    if (type & UrlSearchItem::Suggestion) 
+    if (type & UrlSearchItem::Suggestion)
         hLayout->addWidget(getIcon("help-hint"));
 }
 
@@ -202,7 +202,7 @@ IconLabel::IconLabel(const QString &icon, QWidget *parent)
 
 
 IconLabel::IconLabel(const KIcon &icon, QWidget *parent)
-    : QLabel(parent)
+        : QLabel(parent)
 {
     QPixmap pixmapIcon = icon.pixmap(16);
     setFixedSize(16, 16);
@@ -217,15 +217,18 @@ static QString highlightWordsInText(const QString &text, const QStringList &word
 {
     QString ret = text;
     QBitArray boldSections(ret.size());
-    foreach (const QString &wordToPointOut, words) {
+    foreach(const QString &wordToPointOut, words)
+    {
         int index = ret.indexOf(wordToPointOut, 0, Qt::CaseInsensitive);
-        while(index > -1) {
+        while (index > -1)
+        {
             boldSections.fill(true, index, index + wordToPointOut.size());
             index = ret.indexOf(wordToPointOut, index + wordToPointOut.size(), Qt::CaseInsensitive);
         }
     }
     int numSections = 0;
-    for (int i = 0; i < boldSections.size() - 1; ++i){
+    for (int i = 0; i < boldSections.size() - 1; ++i)
+    {
         if (boldSections.testBit(i) && !boldSections.testBit(i + 1))
             ++numSections;
     }
@@ -234,11 +237,15 @@ static QString highlightWordsInText(const QString &text, const QStringList &word
     const int tagLength = 7; // length of "<b>" and "</b>" we're going to add for each bold section.
     ret.reserve(ret.size() + numSections * tagLength);
     bool bold = false;
-    for (int i = boldSections.size() - 1; i >= 0; --i){
-        if (!bold && boldSections.testBit(i)){
+    for (int i = boldSections.size() - 1; i >= 0; --i)
+    {
+        if (!bold && boldSections.testBit(i))
+        {
             ret.insert(i + 1, QL1S("</b>"));
             bold = true;
-        } else if (bold && !boldSections.testBit(i)){
+        }
+        else if (bold && !boldSections.testBit(i))
+        {
             ret.insert(i + 1, QL1S("<b>"));
             bold = false;
         }
@@ -269,7 +276,7 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
 
 
 TextLabel::TextLabel(QWidget *parent)
-    : QLabel(parent)
+        : QLabel(parent)
 {
     setTextFormat(Qt::RichText);
     setMouseTracking(false);
@@ -279,7 +286,7 @@ TextLabel::TextLabel(QWidget *parent)
 
 void TextLabel::setEngineText(const QString &engine, const QString &text)
 {
-    setText( i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, Qt::escape(text) ) );
+    setText(i18nc("%1=search engine, e.g. Google, Wikipedia %2=text to search for", "Search %1 for <b>%2</b>", engine, Qt::escape(text)));
 }
 
 
@@ -478,7 +485,7 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
 KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine)
 {
     QUrl u = engine->property("Query").toUrl();
-    KUrl url = KUrl( u.toString( QUrl::RemovePath | QUrl::RemoveQuery ) );
+    KUrl url = KUrl(u.toString(QUrl::RemovePath | QUrl::RemoveQuery));
 
     kDebug() << "Engine NAME: " << engine->name() << " URL: " << url;
     KAction *a = new KAction(rApp->iconManager()->iconForUrl(url), engine->name(), this);
@@ -554,13 +561,13 @@ VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, co
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
     QLabel *previewLabelIcon = new QLabel(this);
- 
+
     if (!item.image.isEmpty())
     {
-        previewLabelIcon->setFixedSize(item.image_width+10, item.image_height+10);
+        previewLabelIcon->setFixedSize(item.image_width + 10, item.image_height + 10);
         new ImageLabel(item.image, item.image_width, item.image_height, previewLabelIcon);
         IconLabel* icon = new IconLabel(item.url, previewLabelIcon);
-        icon->move(item.image_width - 10,  item.image_height -10);
+        icon->move(item.image_width - 10,  item.image_height - 10);
     }
     else
     {
@@ -571,15 +578,15 @@ VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, co
     hLayout->addWidget(previewLabelIcon);
     QVBoxLayout *vLayout = new QVBoxLayout;
     vLayout->setMargin(0);
-    vLayout->addItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::MinimumExpanding));
+    vLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
     vLayout->addWidget(new TextLabel(item.title, text, this));
     DescriptionLabel *d = new DescriptionLabel("", this);
     vLayout->addWidget(d);
-    vLayout->addItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::MinimumExpanding));
+    vLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
     hLayout->addLayout(vLayout);
     hLayout->addWidget(new TypeIconLabel(item.type, this));
     setLayout(hLayout);
-    d->setText("<i>"+item.description+"</i>");
+    d->setText("<i>" + item.description + "</i>");
 }
 
 

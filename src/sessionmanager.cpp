@@ -111,11 +111,14 @@ bool SessionManager::restoreSession()
         if (line == QL1S("window"))
         {
             line = in.readLine();
-            if (windowAlreadyOpen) {
-                rApp->loadUrl( KUrl(line), Rekonq::CurrentTab);
+            if (windowAlreadyOpen)
+            {
+                rApp->loadUrl(KUrl(line), Rekonq::CurrentTab);
                 windowAlreadyOpen = false;
-            } else {
-                rApp->loadUrl( KUrl(line), Rekonq::NewWindow);
+            }
+            else
+            {
+                rApp->loadUrl(KUrl(line), Rekonq::NewWindow);
             }
         }
         else
@@ -138,7 +141,7 @@ bool SessionManager::restoreSession()
             }
             else
             {
-                rApp->loadUrl( KUrl(line), Rekonq::NewFocusedTab);
+                rApp->loadUrl(KUrl(line), Rekonq::NewFocusedTab);
             }
         }
     }
@@ -168,7 +171,7 @@ QStringList SessionManager::closedSites()
         line = in.readLine();
         if (line != QL1S("window"))
         {
-            if(line == QL1S("currenttab"))
+            if (line == QL1S("currenttab"))
             {
                 in.readLine();  // drop out the next field, containing the index of the current tab..
             }

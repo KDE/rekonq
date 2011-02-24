@@ -79,7 +79,10 @@ public:
     virtual QList< QPair<QString, QString> > currentBookmarkList() const;
     // @}
 
-    virtual bool supportsTabs() const {return true;}
+    virtual bool supportsTabs() const
+    {
+        return true;
+    }
 
     // @{
     /**

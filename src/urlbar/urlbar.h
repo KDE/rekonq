@@ -54,7 +54,7 @@ class IconButton : public QToolButton
 
 public:
     IconButton(QWidget *parent = 0);
-    
+
 signals:
     void clicked(QPoint);
 

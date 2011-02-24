@@ -334,20 +334,20 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
         BtmItem *node = m_root;
         QModelIndex nodeIndex;
 
-        QStringList indexChain( groupAddress.split('/', QString::SkipEmptyParts) );
+        QStringList indexChain(groupAddress.split('/', QString::SkipEmptyParts));
         bool ok;
         int i;
-        foreach (const QString &sIndex, indexChain)
+        foreach(const QString &sIndex, indexChain)
         {
-            i = sIndex.toInt( &ok );
-            if( !ok )
+            i = sIndex.toInt(&ok);
+            if (!ok)
                 break;
 
-            if( i < 0 || i >= node->childCount() )
+            if (i < 0 || i >= node->childCount())
                 break;
 
-            node = node->child( i );
-            nodeIndex = index( i, 0, nodeIndex );
+            node = node->child(i);
+            nodeIndex = index(i, 0, nodeIndex);
         }
         populate(node, rApp->bookmarkProvider()->bookmarkManager()->findByAddress(groupAddress).toGroup());
         endResetModel();

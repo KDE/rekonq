@@ -76,7 +76,7 @@ private slots:
 private:
     QString dirHandling(const KFileItemList &list);
     void abpHandling();
-    
+
     KDirLister *_lister;
     QWebFrame *_frame;
     KUrl _url;

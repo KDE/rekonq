@@ -117,7 +117,7 @@ void NewTabPage::generate(const KUrl &url)
     if (url.fileName() == QL1S("clear"))
     {
         rApp->mainWindow()->actionByName("clear_private_data")->trigger();
-        generate( QL1S("about:") + url.directory() );
+        generate(QL1S("about:") + url.directory());
         return;
     }
     if (url == KUrl("about:bookmarks/edit"))
@@ -130,7 +130,7 @@ void NewTabPage::generate(const KUrl &url)
     page->mainFrame()->setHtml(m_html);
     page->setIsOnRekonqPage(true);
 
-    m_root = page->mainFrame()->documentElement().findFirst( QL1S("#content") );
+    m_root = page->mainFrame()->documentElement().findFirst(QL1S("#content"));
 
     browsingMenu(url);
 
@@ -162,13 +162,13 @@ void NewTabPage::generate(const KUrl &url)
         title = i18n("Downloads");
     }
 
-    m_root.document().findFirst( QL1S("title") ).setPlainText(title);
+    m_root.document().findFirst(QL1S("title")).setPlainText(title);
 }
 
 
 void NewTabPage::favoritesPage()
 {
-    m_root.addClass( QL1S("favorites") );
+    m_root.addClass(QL1S("favorites"));
 
     const QWebElement add = createLinkItem(i18n("Add Favorite"),
                                            QL1S("about:preview/add"),
@@ -181,7 +181,7 @@ void NewTabPage::favoritesPage()
 
     if (urls.isEmpty())
     {
-        m_root.addClass( QL1S("empty") );
+        m_root.addClass(QL1S("empty"));
         m_root.setPlainText(i18n("You can add a favorite by clicking the \"Add Favorite\" button in the top-right corner of this page"));
         return;
     }
@@ -207,13 +207,13 @@ void NewTabPage::favoritesPage()
 
 QWebElement NewTabPage::emptyPreview(int index)
 {
-    QWebElement prev = markup( QL1S(".thumbnail") );
+    QWebElement prev = markup(QL1S(".thumbnail"));
 
-    prev.findFirst( QL1S(".preview img") ).setAttribute( QL1S("src") , 
-                                                         QL1S("file:///") + KIconLoader::global()->iconPath("insert-image", KIconLoader::Desktop));
-    prev.findFirst( QL1S("span a") ).setPlainText(i18n("Set a Preview..."));
-    prev.findFirst( QL1S("a") ).setAttribute( QL1S("href"), 
-                                              QL1S("about:preview/modify/") + QVariant(index).toString());
+    prev.findFirst(QL1S(".preview img")).setAttribute(QL1S("src") ,
+            QL1S("file:///") + KIconLoader::global()->iconPath("insert-image", KIconLoader::Desktop));
+    prev.findFirst(QL1S("span a")).setPlainText(i18n("Set a Preview..."));
+    prev.findFirst(QL1S("a")).setAttribute(QL1S("href"),
+                                           QL1S("about:preview/modify/") + QVariant(index).toString());
 
     setupPreview(prev, index);
     //hideControls(prev);
@@ -224,12 +224,12 @@ QWebElement NewTabPage::emptyPreview(int index)
 
 QWebElement NewTabPage::loadingPreview(int index, const KUrl &url)
 {
-    QWebElement prev = markup( QL1S(".thumbnail") );
+    QWebElement prev = markup(QL1S(".thumbnail"));
 
-    prev.findFirst( QL1S(".preview img") ).setAttribute( QL1S("src"), 
-                                                         QL1S("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
-    prev.findFirst( QL1S("span a") ).setPlainText(i18n("Loading Preview..."));
-    prev.findFirst( QL1S("a") ).setAttribute( QL1S("href"), url.toMimeDataString());
+    prev.findFirst(QL1S(".preview img")).setAttribute(QL1S("src"),
+            QL1S("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
+    prev.findFirst(QL1S("span a")).setPlainText(i18n("Loading Preview..."));
+    prev.findFirst(QL1S("a")).setAttribute(QL1S("href"), url.toMimeDataString());
 
     setupPreview(prev, index);
     showControls(prev);
@@ -246,13 +246,13 @@ QWebElement NewTabPage::loadingPreview(int index, const KUrl &url)
 
 QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &title)
 {
-    QWebElement prev = markup( QL1S(".thumbnail") );
+    QWebElement prev = markup(QL1S(".thumbnail"));
     QString previewPath = QL1S("file://") + WebSnap::imagePathFromUrl(url);
 
-    prev.findFirst( QL1S(".preview img") ).setAttribute( QL1S("src") , previewPath);
-    prev.findFirst( QL1S("a") ).setAttribute( QL1S("href"), url.toMimeDataString());
-    prev.findFirst( QL1S("span a") ).setAttribute( QL1S("href"), url.toMimeDataString());
-    prev.findFirst( QL1S("span a") ).setPlainText(checkTitle(title));
+    prev.findFirst(QL1S(".preview img")).setAttribute(QL1S("src") , previewPath);
+    prev.findFirst(QL1S("a")).setAttribute(QL1S("href"), url.toMimeDataString());
+    prev.findFirst(QL1S("span a")).setAttribute(QL1S("href"), url.toMimeDataString());
+    prev.findFirst(QL1S("span a")).setPlainText(checkTitle(title));
 
     setupPreview(prev, index);
     showControls(prev);
@@ -262,38 +262,38 @@ QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &
 
 void NewTabPage::hideControls(QWebElement e)
 {
-    e.findFirst( QL1S(".remove") ).setStyleProperty( QL1S("visibility"), QL1S("hidden") );
-    e.findFirst( QL1S(".modify") ).setStyleProperty( QL1S("visibility"), QL1S("hidden") );
+    e.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+    e.findFirst(QL1S(".modify")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
 }
 
 
 void NewTabPage::showControls(QWebElement e)
 {
-    e.findFirst( QL1S(".remove") ).setStyleProperty( QL1S("visibility"), QL1S("visible") );
-    e.findFirst( QL1S(".modify") ).setStyleProperty( QL1S("visibility"), QL1S("visible") );
+    e.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
+    e.findFirst(QL1S(".modify")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
 }
 
 
 void NewTabPage::setupPreview(QWebElement e, int index)
 {
-    e.findFirst( QL1S(".remove img") ).setAttribute( QL1S("src"), QL1S("file:///") + KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
-    e.findFirst( QL1S(".remove") ).setAttribute( QL1S("title"), QL1S("Remove favorite"));
-    e.findFirst( QL1S(".modify img") ).setAttribute(  QL1S("src"), QL1S("file:///") + KIconLoader::global()->iconPath("insert-image", KIconLoader::DefaultState));
-    e.findFirst( QL1S(".modify") ).setAttribute(  QL1S("title"), QL1S("Set new favorite"));
+    e.findFirst(QL1S(".remove img")).setAttribute(QL1S("src"), QL1S("file:///") + KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
+    e.findFirst(QL1S(".remove")).setAttribute(QL1S("title"), QL1S("Remove favorite"));
+    e.findFirst(QL1S(".modify img")).setAttribute(QL1S("src"), QL1S("file:///") + KIconLoader::global()->iconPath("insert-image", KIconLoader::DefaultState));
+    e.findFirst(QL1S(".modify")).setAttribute(QL1S("title"), QL1S("Set new favorite"));
 
-    e.findFirst( QL1S(".modify") ).setAttribute( QL1S("href"), QL1S("about:preview/modify/") + QVariant(index).toString() );
-    e.findFirst( QL1S(".remove") ).setAttribute( QL1S("href"), QL1S("about:preview/remove/") + QVariant(index).toString() );
+    e.findFirst(QL1S(".modify")).setAttribute(QL1S("href"), QL1S("about:preview/modify/") + QVariant(index).toString());
+    e.findFirst(QL1S(".remove")).setAttribute(QL1S("href"), QL1S("about:preview/remove/") + QVariant(index).toString());
 
-    e.setAttribute( QL1S("id"), QL1S("preview") + QVariant(index).toString());
+    e.setAttribute(QL1S("id"), QL1S("preview") + QVariant(index).toString());
 }
 
 
 void NewTabPage::snapFinished()
 {
     // Update page, but only if open
-    if (m_root.document().findAll( QL1S("#rekonq-newtabpage") ).count() == 0)
+    if (m_root.document().findAll(QL1S("#rekonq-newtabpage")).count() == 0)
         return;
-    if (m_root.findAll( QL1S(".favorites") ).count() == 0 && m_root.findAll( QL1S(".closedTabs") ).count() == 0)
+    if (m_root.findAll(QL1S(".favorites")).count() == 0 && m_root.findAll(QL1S(".closedTabs")).count() == 0)
         return;
 
     QStringList urls = ReKonfig::previewUrls();
@@ -306,12 +306,12 @@ void NewTabPage::snapFinished()
 
         if (WebSnap::existsImage(url))
         {
-            QWebElement prev = m_root.findFirst( QL1S("#preview") + QVariant(i).toString());
-            if (KUrl(prev.findFirst("a").attribute( QL1S("href") )) == url)
+            QWebElement prev = m_root.findFirst(QL1S("#preview") + QVariant(i).toString());
+            if (KUrl(prev.findFirst("a").attribute(QL1S("href"))) == url)
             {
                 QWebElement newPrev = validPreview(i, url, title);
 
-                if (m_root.findAll( QL1S(".closedTabs") ).count() != 0)
+                if (m_root.findAll(QL1S(".closedTabs")).count() != 0)
                     hideControls(newPrev);
 
                 prev.replace(newPrev);
@@ -374,33 +374,33 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
 
     foreach(QWebElement it, navItems)
     {
-        const QString aTagString( QL1C('a') );
+        const QString aTagString(QL1C('a'));
         const QString hrefAttributeString(QL1S("href"));
 
         if (it.findFirst(aTagString).attribute(hrefAttributeString) == currentUrl.toMimeDataString())
-            it.addClass( QL1S("current") );
+            it.addClass(QL1S("current"));
         else if (currentUrl == QL1S("about:home") && it.findFirst(aTagString).attribute(hrefAttributeString) == QL1S("about:favorites"))
-            it.addClass( QL1S("current") );
-        m_root.document().findFirst( QL1S("#navigation") ).appendInside(it);
+            it.addClass(QL1S("current"));
+        m_root.document().findFirst(QL1S("#navigation")).appendInside(it);
     }
 }
 
 
 void NewTabPage::historyPage()
 {
-    m_root.addClass( QL1S("history") );
+    m_root.addClass(QL1S("history"));
 
     const QWebElement clearData = createLinkItem(i18n("Clear Private Data"),
-                                                 QL1S("about:history/clear"),
-                                                 QL1S("edit-clear"),
-                                                 KIconLoader::Toolbar);
-    m_root.document().findFirst( QL1S("#actions") ).appendInside(clearData);
+                                  QL1S("about:history/clear"),
+                                  QL1S("edit-clear"),
+                                  KIconLoader::Toolbar);
+    m_root.document().findFirst(QL1S("#actions")).appendInside(clearData);
 
     HistoryTreeModel *model = rApp->historyManager()->historyTreeModel();
 
     if (model->rowCount() == 0)
     {
-        m_root.addClass( QL1S("empty") );
+        m_root.addClass(QL1S("empty"));
         m_root.setPlainText(i18n("Your browsing history is empty"));
         return;
     }
@@ -413,29 +413,29 @@ void NewTabPage::historyPage()
         QModelIndex index = model->index(i, 0, QModelIndex());
         if (model->hasChildren(index))
         {
-            m_root.appendInside(markup( QL1S("h3") ));
+            m_root.appendInside(markup(QL1S("h3")));
             m_root.lastChild().setPlainText(index.data().toString());
 
             for (int j = 0; j < model->rowCount(index); ++j)
-            {                
+            {
                 QModelIndex son = model->index(j, 0, index);
                 KUrl u = son.data(HistoryModel::UrlStringRole).toUrl();
 
                 QString b = faviconsDir + u.host() + QL1S(".png");
-                if( QFile::exists(b) )
+                if (QFile::exists(b))
                     icon = QL1S("file://") + b;
-                
+
                 m_root.appendInside(son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm"));
-                m_root.appendInside( QL1S("  ") );
-                m_root.appendInside(markup( QL1S("img") ));
-                m_root.lastChild().setAttribute( QL1S("src"), icon);
-                m_root.lastChild().setAttribute( QL1S("width"), QL1S("16"));
-                m_root.lastChild().setAttribute( QL1S("height"), QL1S("16"));
-                m_root.appendInside( QL1S(" ") );
-                m_root.appendInside(markup( QL1S("a") ));
-                m_root.lastChild().setAttribute( QL1S("href") , u.url());
+                m_root.appendInside(QL1S("  "));
+                m_root.appendInside(markup(QL1S("img")));
+                m_root.lastChild().setAttribute(QL1S("src"), icon);
+                m_root.lastChild().setAttribute(QL1S("width"), QL1S("16"));
+                m_root.lastChild().setAttribute(QL1S("height"), QL1S("16"));
+                m_root.appendInside(QL1S(" "));
+                m_root.appendInside(markup(QL1S("a")));
+                m_root.lastChild().setAttribute(QL1S("href") , u.url());
                 m_root.lastChild().appendInside(son.data().toString());
-                m_root.appendInside( QL1S("<br />") );
+                m_root.appendInside(QL1S("<br />"));
             }
         }
         i++;
@@ -446,18 +446,18 @@ void NewTabPage::historyPage()
 
 void NewTabPage::bookmarksPage()
 {
-    m_root.addClass( QL1S("bookmarks") );
+    m_root.addClass(QL1S("bookmarks"));
 
     const QWebElement editBookmarks = createLinkItem(i18n("Edit Bookmarks"),
-                                                     QL1S("about:bookmarks/edit"),
-                                                     QL1S("bookmarks-organize"),
-                                                     KIconLoader::Toolbar);
-    m_root.document().findFirst( QL1S("#actions") ).appendInside(editBookmarks);
+                                      QL1S("about:bookmarks/edit"),
+                                      QL1S("bookmarks-organize"),
+                                      KIconLoader::Toolbar);
+    m_root.document().findFirst(QL1S("#actions")).appendInside(editBookmarks);
 
     KBookmarkGroup bookGroup = rApp->bookmarkProvider()->rootGroup();
     if (bookGroup.isNull())
     {
-        m_root.addClass( QL1S("empty") );
+        m_root.addClass(QL1S("empty"));
         m_root.setPlainText(i18n("You have no bookmarks"));
         return;
     }
@@ -479,9 +479,9 @@ void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
     {
         KBookmarkGroup group = bookmark.toGroup();
         KBookmark bm = group.first();
-        parent.appendInside(markup( QL1S("h3") ));
+        parent.appendInside(markup(QL1S("h3")));
         parent.lastChild().setPlainText(group.fullText());
-        parent.appendInside(markup( QL1S(".bookfolder") ));
+        parent.appendInside(markup(QL1S(".bookfolder")));
         while (!bm.isNull())
         {
             createBookItem(bm, parent.lastChild()); // it is .bookfolder
@@ -490,36 +490,36 @@ void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
     }
     else if (bookmark.isSeparator())
     {
-        parent.appendInside( QL1S("<hr />") );
+        parent.appendInside(QL1S("<hr />"));
     }
     else
     {
         QString b = bookmark.icon();
-        if(b.contains( QL1S("favicons") ))
+        if (b.contains(QL1S("favicons")))
             icon = cacheDir + bookmark.icon() + QL1S(".png");
-        
-        parent.appendInside(markup( QL1S("img") ));
-        parent.lastChild().setAttribute( QL1S("src") , icon);
-        parent.lastChild().setAttribute( QL1S("width") , QL1S("16"));
-        parent.lastChild().setAttribute( QL1S("height") , QL1S("16"));
-        parent.appendInside( QL1S(" ") );
-        parent.appendInside(markup( QL1S("a") ));
-        parent.lastChild().setAttribute( QL1S("href") , bookmark.url().prettyUrl());
+
+        parent.appendInside(markup(QL1S("img")));
+        parent.lastChild().setAttribute(QL1S("src") , icon);
+        parent.lastChild().setAttribute(QL1S("width") , QL1S("16"));
+        parent.lastChild().setAttribute(QL1S("height") , QL1S("16"));
+        parent.appendInside(QL1S(" "));
+        parent.appendInside(markup(QL1S("a")));
+        parent.lastChild().setAttribute(QL1S("href") , bookmark.url().prettyUrl());
         parent.lastChild().setPlainText(bookmark.fullText());
-        parent.appendInside( QL1S("<br />") );
+        parent.appendInside(QL1S("<br />"));
     }
 }
 
 
 void NewTabPage::closedTabsPage()
 {
-    m_root.addClass( QL1S("closedTabs") );
+    m_root.addClass(QL1S("closedTabs"));
 
     QList<HistoryItem> links = rApp->mainWindow()->mainView()->recentlyClosedTabs();
 
     if (links.isEmpty())
     {
-        m_root.addClass( QL1S("empty") );
+        m_root.addClass(QL1S("empty"));
         m_root.setPlainText(i18n("There are no recently closed tabs"));
         return;
     }
@@ -536,7 +536,7 @@ void NewTabPage::closedTabsPage()
                ? validPreview(i, item.url, item.title)
                : loadingPreview(i, item.url);
 
-        prev.setAttribute( QL1S("id"),  QL1S("preview") + QVariant(i).toString());
+        prev.setAttribute(QL1S("id"),  QL1S("preview") + QVariant(i).toString());
         hideControls(prev);
         m_root.appendInside(prev);
     }
@@ -557,29 +557,29 @@ QString NewTabPage::checkTitle(const QString &title)
 
 void NewTabPage::downloadsPage()
 {
-    m_root.addClass( QL1S("downloads") );
+    m_root.addClass(QL1S("downloads"));
 
     const QWebElement clearData = createLinkItem(i18n("Clear Private Data"),
-                                                 QL1S("about:downloads/clear"),
-                                                 QL1S("edit-clear"),
-                                                 KIconLoader::Toolbar);
-    m_root.document().findFirst( QL1S("#actions") ).appendInside(clearData);
+                                  QL1S("about:downloads/clear"),
+                                  QL1S("edit-clear"),
+                                  KIconLoader::Toolbar);
+    m_root.document().findFirst(QL1S("#actions")).appendInside(clearData);
 
     DownloadList list = rApp->downloads();
 
     if (list.isEmpty())
     {
-        m_root.addClass( QL1S("empty") );
+        m_root.addClass(QL1S("empty"));
         m_root.setPlainText(i18n("There are no recently downloaded files to show"));
         return;
     }
 
     foreach(const DownloadItem &item, list)
     {
-        m_root.prependInside(markup( QL1S("div") ));
+        m_root.prependInside(markup(QL1S("div")));
 
         QWebElement div = m_root.firstChild();
-        div.addClass( QL1S("download") );
+        div.addClass(QL1S("download"));
 
         KUrl u = KUrl(item.destUrlString);
         QString fName = u.fileName();
@@ -589,25 +589,25 @@ void NewTabPage::downloadsPage()
         KIconLoader *loader = KIconLoader::global();
         QString iconPath = QL1S("file://") + loader->iconPath(KMimeType::iconNameForUrl(u), KIconLoader::Desktop);
 
-        div.appendInside(markup( QL1S("img") ));
-        div.lastChild().setAttribute( QL1S("src"), iconPath);
+        div.appendInside(markup(QL1S("img")));
+        div.lastChild().setAttribute(QL1S("src"), iconPath);
 
-        div.appendInside( QL1S("<strong>") + fName +  QL1S("</strong>") );
-        div.appendInside( QL1S(" - ") );
+        div.appendInside(QL1S("<strong>") + fName +  QL1S("</strong>"));
+        div.appendInside(QL1S(" - "));
         QString date = KGlobal::locale()->formatDateTime(item.dateTime, KLocale::FancyLongDate);
-        div.appendInside( QL1S("<em>") + date +  QL1S("</em>") );
-        div.appendInside( QL1S("<br />") );
+        div.appendInside(QL1S("<em>") + date +  QL1S("</em>"));
+        div.appendInside(QL1S("<br />"));
 
-        div.appendInside( QL1S("<a href=") + item.srcUrlString +  QL1C('>') + item.srcUrlString +  QL1S("</a>") );
-        div.appendInside( QL1S("<br />") );
+        div.appendInside(QL1S("<a href=") + item.srcUrlString +  QL1C('>') + item.srcUrlString +  QL1S("</a>"));
+        div.appendInside(QL1S("<br />"));
 
-        div.appendInside(markup( QL1S("a") ));
-        div.lastChild().setAttribute( QL1S("href"), dir);
+        div.appendInside(markup(QL1S("a")));
+        div.lastChild().setAttribute(QL1S("href"), dir);
         div.lastChild().setPlainText(i18n("Open directory"));
 
-        div.appendInside( QL1S(" - ") );
-        div.appendInside(markup( QL1S("a") ));
-        div.lastChild().setAttribute( QL1S("href"), file);
+        div.appendInside(QL1S(" - "));
+        div.appendInside(markup(QL1S("a")));
+        div.lastChild().setAttribute(QL1S("href"), file);
         div.lastChild().setPlainText(i18n("Open file"));
     }
 }
@@ -617,9 +617,9 @@ QWebElement NewTabPage::createLinkItem(const QString &title, const QString &urlS
 {
     const KIconLoader * const loader = KIconLoader::global();
 
-    QWebElement nav = markup( QL1S(".link") );
-    nav.findFirst(  QL1S("a") ).setAttribute( QL1S("href"), urlString);
-    nav.findFirst( QL1S("img") ).setAttribute( QL1S("src"), QL1S("file://") + loader->iconPath(iconPath, groupOrSize));
-    nav.findFirst( QL1S("span") ).appendInside(title);
+    QWebElement nav = markup(QL1S(".link"));
+    nav.findFirst(QL1S("a")).setAttribute(QL1S("href"), urlString);
+    nav.findFirst(QL1S("img")).setAttribute(QL1S("src"), QL1S("file://") + loader->iconPath(iconPath, groupOrSize));
+    nav.findFirst(QL1S("span")).appendInside(title);
     return nav;
 }

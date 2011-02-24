@@ -44,12 +44,15 @@ class BlinkEffect : public QGraphicsEffect
 
 public:
     BlinkEffect(QObject *parent = 0)
-        : QGraphicsEffect(parent)
-        , m_opacity(0)
-        , m_backgroundColor(QApplication::palette().highlight().color().lighter())
+            : QGraphicsEffect(parent)
+            , m_opacity(0)
+            , m_backgroundColor(QApplication::palette().highlight().color().lighter())
     {}
 
-    qreal opacity() const { return m_opacity; }
+    qreal opacity() const
+    {
+        return m_opacity;
+    }
     void setOpacity(qreal opacity)
     {
         m_opacity = opacity;
@@ -59,7 +62,7 @@ public:
 protected:
     void draw(QPainter *painter)
     {
-        painter->drawPixmap(QPoint(0,0), sourcePixmap());
+        painter->drawPixmap(QPoint(0, 0), sourcePixmap());
         painter->setOpacity(m_opacity);
         painter->fillRect(boundingRect(), m_backgroundColor);
     }

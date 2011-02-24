@@ -72,22 +72,22 @@ void NetworkAnalyzerPanel::toggle(bool enable)
     mainWindow()->actionByName("net_analyzer")->setChecked(enable);
     WebPage *page = mainWindow()->currentTab()->page();
     NetworkAccessManager *manager = qobject_cast<NetworkAccessManager *>(page->networkAccessManager());
-    
+
     page->enableNetworkAnalyzer(enable);
-    
+
     if (enable)
     {
-         connect(page, SIGNAL(loadStarted()), _viewer, SLOT(clear()));
+        connect(page, SIGNAL(loadStarted()), _viewer, SLOT(clear()));
         connect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)),
-                    _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *) ) );
+                _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)));
 
-         show();
+        show();
     }
     else
     {
         disconnect(page, SIGNAL(loadStarted()), _viewer, SLOT(clear()));
         disconnect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)),
-                    _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *) ) );
+                   _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)));
 
         hide();
     }

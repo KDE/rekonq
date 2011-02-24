@@ -117,51 +117,57 @@ int Application::newInstance()
 
     int exitValue = 1 * isFirstLoad + 2 * areThereArguments + 4 * isRekonqCrashed;
 
-    if (isRekonqCrashed && isFirstLoad) {
-            loadUrl(KUrl("about:closedTabs"));
-            MessageBar *msgBar = new MessageBar(i18n("It seems rekonq was not closed properly. Do you want "
-                                                     "to restore the last saved session?")
-                                                , mainWindow()->currentTab()
-                                                , QMessageBox::Warning
-                                                , MessageBar::Yes | MessageBar::No );
+    if (isRekonqCrashed && isFirstLoad)
+    {
+        loadUrl(KUrl("about:closedTabs"));
+        MessageBar *msgBar = new MessageBar(i18n("It seems rekonq was not closed properly. Do you want "
+                                            "to restore the last saved session?")
+                                            , mainWindow()->currentTab()
+                                            , QMessageBox::Warning
+                                            , MessageBar::Yes | MessageBar::No);
 
-            connect(msgBar, SIGNAL(accepted()), sessionManager(), SLOT(restoreSession()));
-            mainWindow()->currentTab()->insertBar(msgBar);
+        connect(msgBar, SIGNAL(accepted()), sessionManager(), SLOT(restoreSession()));
+        mainWindow()->currentTab()->insertBar(msgBar);
     }
 
-    if (areThereArguments) {
+    if (areThereArguments)
+    {
         KUrl::List urlList;
-        for(int i = 0; i < args->count(); ++i)
+        for (int i = 0; i < args->count(); ++i)
         {
             const KUrl u = args->url(i);
             if (u.isLocalFile() && QFile::exists(u.toLocalFile())) // "rekonq somefile.html" case
                 urlList += u;
             else
-                urlList += KUrl( args->arg(i) ); // "rekonq kde.org" || "rekonq kde:kdialog" case
+                urlList += KUrl(args->arg(i));   // "rekonq kde.org" || "rekonq kde:kdialog" case
         }
 
-        if (isFirstLoad && !isRekonqCrashed) {
+        if (isFirstLoad && !isRekonqCrashed)
+        {
             // No windows in the current desktop? No windows at all?
             // Create a new one and load there sites...
             loadUrl(urlList.at(0), Rekonq::CurrentTab);
         }
         else
         {
-            if(ReKonfig::openTabNoWindow()) {
+            if (ReKonfig::openTabNoWindow())
+            {
                 loadUrl(urlList.at(0), Rekonq::NewTab);
-                if( !mainWindow()->isActiveWindow() )
+                if (!mainWindow()->isActiveWindow())
                     KWindowSystem::demandAttention(mainWindow()->winId(), true);
             }
             else
                 loadUrl(urlList.at(0), Rekonq::NewWindow);
         }
-        
+
         for (int i = 1; i < urlList.count(); ++i)
-            loadUrl( urlList.at(i), Rekonq::NewTab);
+            loadUrl(urlList.at(i), Rekonq::NewTab);
 
         KStartupInfo::appStarted();
 
-    } else if (!isRekonqCrashed) {
+    }
+    else if (!isRekonqCrashed)
+    {
 
         if (isFirstLoad)  // we are starting rekonq, for the first time with no args: use startup behaviour
         {
@@ -195,15 +201,15 @@ int Application::newInstance()
             case 2: // homepage
                 loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
                 break;
-           default:
+            default:
                 loadUrl(KUrl("about:blank") , Rekonq::NewWindow);
                 break;
-           }
+            }
 
         }
     }
 
-    if(isFirstLoad)
+    if (isFirstLoad)
     {
         // give me some time to do the other things..
         QTimer::singleShot(100, this, SLOT(postLaunch()));
@@ -232,7 +238,7 @@ void Application::postLaunch()
     // bookmarks loading
     connect(bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
             instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
- 
+
     // crash recovering
     ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
     saveConfiguration();
@@ -332,8 +338,8 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     switch (type)
     {
     case Rekonq::NewTab:
-        if( ReKonfig::openTabNoWindow() )
-            tab = w->mainView()->newWebTab( !ReKonfig::openTabsBack() );
+        if (ReKonfig::openTabNoWindow())
+            tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack());
         else
         {
             w = newMainWindow();
@@ -355,7 +361,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
     // rapidly show first loading url..
     int tabIndex = w->mainView()->indexOf(tab);
-    Q_ASSERT( tabIndex != -1 );
+    Q_ASSERT(tabIndex != -1);
     UrlBar *barForTab = qobject_cast<UrlBar *>(w->mainView()->widgetBar()->widget(tabIndex));
     barForTab->activateSuggestions(false);
     barForTab->setQUrl(url);
@@ -447,10 +453,10 @@ void Application::updateConfiguration()
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
 
     // =========== Fonts ==============
-    defaultSettings->setFontFamily(QWebSettings::StandardFont, ReKonfig::standardFontFamily() );
-    defaultSettings->setFontFamily(QWebSettings::FixedFont, ReKonfig::fixedFontFamily() );
-    defaultSettings->setFontFamily(QWebSettings::SerifFont, ReKonfig::serifFontFamily() );
-    defaultSettings->setFontFamily(QWebSettings::SansSerifFont, ReKonfig::sansSerifFontFamily() );
+    defaultSettings->setFontFamily(QWebSettings::StandardFont, ReKonfig::standardFontFamily());
+    defaultSettings->setFontFamily(QWebSettings::FixedFont, ReKonfig::fixedFontFamily());
+    defaultSettings->setFontFamily(QWebSettings::SerifFont, ReKonfig::serifFontFamily());
+    defaultSettings->setFontFamily(QWebSettings::SansSerifFont, ReKonfig::sansSerifFontFamily());
     defaultSettings->setFontFamily(QWebSettings::CursiveFont, ReKonfig::cursiveFontFamily());
     defaultSettings->setFontFamily(QWebSettings::FantasyFont, ReKonfig::fantasyFontFamily());
 
@@ -464,11 +470,11 @@ void Application::updateConfiguration()
     kDebug() << "Logical Dot per Inch Y: " << logDpiY;
 
     float toPix = (logDpiY < 96.0)
-        ? 96.0/72.0
-        : logDpiY/72.0 ;
+                  ? 96.0 / 72.0
+                  : logDpiY / 72.0 ;
 
-    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix) );
-    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix) );
+    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix));
+    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix));
 
     // encodings
     QString enc = ReKonfig::defaultEncoding();
@@ -513,13 +519,13 @@ void Application::updateConfiguration()
     // ====== load Settings on main classes
     historyManager()->loadSettings();
     adblockManager()->loadSettings();
-    if(!ReKonfig::useFavicon())
+    if (!ReKonfig::useFavicon())
         mainWindow()->setWindowIcon(KIcon("rekonq"));
     else
         mainWindow()->changeWindowIcon(mainWindow()->mainView()->currentIndex());
 
     // hovering unfocused tabs options
-    switch(ReKonfig::hoveringTabOption())
+    switch (ReKonfig::hoveringTabOption())
     {
     case 0: // tab previews
     case 3: // nothing
@@ -612,7 +618,7 @@ void Application::setPrivateBrowsingMode(bool b)
 // NOTE
 // to let work nicely Private Browsing, we need the following:
 // - enable WebKit Private Browsing mode :)
-// - treat all cookies as session cookies 
+// - treat all cookies as session cookies
 //  (so that they do not get saved to a persistent storage). Available from KDE SC 4.5.72, see BUG: 250122
 // - favicons (fixed in rekonq 0.5.87)
 // - save actual session (to restore it when Private Mode is closed) and stop storing it
@@ -620,7 +626,7 @@ void Application::setPrivateBrowsingMode(bool b)
 
     QWebSettings *settings = QWebSettings::globalSettings();
     bool isJustEnabled = settings->testAttribute(QWebSettings::PrivateBrowsingEnabled);
-    if(isJustEnabled == b)
+    if (isJustEnabled == b)
         return;     // uhm... something goes wrong...
 
     if (b)
@@ -629,7 +635,7 @@ void Application::setPrivateBrowsingMode(bool b)
         QString text = i18n("<b>%1</b>"
                             "<p>rekonq will save your current tabs for when you'll stop private browsing the net.</p>", caption);
 
-        int button = KMessageBox::warningContinueCancel(mainWindow(), text, caption, KStandardGuiItem::cont(), KStandardGuiItem::cancel(), i18n("don't ask again") );
+        int button = KMessageBox::warningContinueCancel(mainWindow(), text, caption, KStandardGuiItem::cont(), KStandardGuiItem::cancel(), i18n("don't ask again"));
         if (button != KMessageBox::Continue)
             return;
 
@@ -640,7 +646,7 @@ void Application::setPrivateBrowsingMode(bool b)
         {
             w.data()->close();
         }
-        loadUrl( KUrl("about:home"), Rekonq::NewWindow);
+        loadUrl(KUrl("about:home"), Rekonq::NewWindow);
     }
     else
     {
@@ -652,8 +658,8 @@ void Application::setPrivateBrowsingMode(bool b)
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
         _privateBrowsingAction->setChecked(false);
 
-        loadUrl( KUrl("about:blank"), Rekonq::NewWindow);
-        if(!sessionManager()->restoreSession())
-            loadUrl( KUrl("about:home"), Rekonq::NewWindow);
+        loadUrl(KUrl("about:blank"), Rekonq::NewWindow);
+        if (!sessionManager()->restoreSession())
+            loadUrl(KUrl("about:home"), Rekonq::NewWindow);
     }
 }

@@ -90,7 +90,7 @@ void CompletionWidget::updateSearchList(const UrlSearchList &list, const QString
     static int counter = 0;
     counter++;
     kDebug() << counter;
-    if(_hasSuggestions || _typedString != text)
+    if (_hasSuggestions || _typedString != text)
         return;
     _hasSuggestions = true;
 
@@ -101,7 +101,7 @@ void CompletionWidget::updateSearchList(const UrlSearchList &list, const QString
         insertItems(_resList, text);
         _list = _resList;
 
-        UrlSearchList sugList = list.mid(0,4);
+        UrlSearchList sugList = list.mid(0, 4);
         insertItems(sugList, text, _list.count());
         _list.append(sugList);
         popup();
@@ -119,7 +119,7 @@ void CompletionWidget::sizeAndPosition()
         QWidget *widget = layout()->itemAt(i)->widget();
         h += widget->sizeHint().height();
     }
-    setFixedSize(_parent->width(),h+5);
+    setFixedSize(_parent->width(), h + 5);
 
     // position
     QPoint p = _parent->mapToGlobal(QPoint(0, 0));
@@ -205,10 +205,10 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
 
     // hide conditions of the CompletionWidget
     if (wid
-        && ((wid == _parent 
-            && (type == QEvent::Move || type == QEvent::Resize)) || ((wid->windowFlags() & Qt::Window)
-            && (type == QEvent::Move || type == QEvent::Hide || type == QEvent::WindowDeactivate)
-            && wid == _parent->window()) || (type == QEvent::MouseButtonPress && !isAncestorOf(wid)))
+            && ((wid == _parent
+                 && (type == QEvent::Move || type == QEvent::Resize)) || ((wid->windowFlags() & Qt::Window)
+                         && (type == QEvent::Move || type == QEvent::Hide || type == QEvent::WindowDeactivate)
+                         && wid == _parent->window()) || (type == QEvent::MouseButtonPress && !isAncestorOf(wid)))
        )
     {
         hide();
@@ -255,9 +255,9 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
             case Qt::Key_Enter:
             case Qt::Key_Return:
                 w = qobject_cast<UrlBar *>(parent());
-                if(kev->modifiers() == Qt::AltModifier)
+                if (kev->modifiers() == Qt::AltModifier)
                 {
-                    if(kev->key() == Qt::Key_Return || kev->key() == Qt::Key_Enter)
+                    if (kev->key() == Qt::Key_Return || kev->key() == Qt::Key_Enter)
                     {
                         emit chosenUrl(w->text(), Rekonq::NewFocusedTab);
                     }
@@ -294,10 +294,10 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 }
 
 
-                if( _currentIndex == -1)
+                if (_currentIndex == -1)
                     _currentIndex = 0;
                 child = findChild<ListItem *>(QString::number(_currentIndex));
-                if(child && _currentIndex!=0) //the completionwidget is visible and the user had press down
+                if (child && _currentIndex != 0) //the completionwidget is visible and the user had press down
                 {
                     kDebug() << "USING LISTITEM URL: " << child->url();
                     kDebug() << "USING LISTITEM TITLE: " << child->text();
@@ -343,8 +343,8 @@ void CompletionWidget::setVisible(bool visible)
 
 void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::KeyboardModifiers modifier)
 {
-    if (button == Qt::MidButton 
-        || modifier == Qt::ControlModifier)
+    if (button == Qt::MidButton
+            || modifier == Qt::ControlModifier)
     {
         emit chosenUrl(item->url(), Rekonq::NewFocusedTab);
     }

@@ -37,7 +37,7 @@
 
 class AdBlockRuleNullImpl : public AdBlockRuleImpl
 {
-    
+
 public:
     AdBlockRuleNullImpl(const QString &filter);
     bool match(const QNetworkRequest &, const QString &, const QString &) const;

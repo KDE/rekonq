@@ -82,7 +82,7 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
 
     // just to be sure..
     _isHideAdsEnabled = ReKonfig::hideAdsEnabled();
-    
+
     // read settings
     KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup rulesGroup(config, "rules");
@@ -137,7 +137,7 @@ void AdBlockManager::loadRules(const QStringList &rules)
             const QString filter = stringRule.mid(2);
             if (_hostWhiteList.tryAddFilter(filter))
                 continue;
-            
+
             AdBlockRule rule(filter);
             _whiteList << rule;
             continue;
@@ -180,7 +180,8 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
 
     // check white rules before :)
 
-    if (_hostWhiteList.match(host)) {
+    if (_hostWhiteList.match(host))
+    {
         kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched by host matcher: ***********";
         kDebug() << "UrlString:  " << urlString;
         return 0;
@@ -197,7 +198,8 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     }
 
     // then check the black ones :(
-    if (_hostBlackList.match(host)) {
+    if (_hostBlackList.match(host))
+    {
         kDebug() << "****ADBLOCK: BLACK RULE Matched by host matcher: ***********";
         kDebug() << "UrlString:  " << urlString;
         AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);

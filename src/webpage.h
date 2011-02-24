@@ -52,15 +52,33 @@ public:
     explicit WebPage(QWidget *parent = 0);
     ~WebPage();
 
-    inline bool hasNetworkAnalyzerEnabled() const { return _networkAnalyzer; };
-    inline void enableNetworkAnalyzer(bool b) { _networkAnalyzer = b; };
+    inline bool hasNetworkAnalyzerEnabled() const
+    {
+        return _networkAnalyzer;
+    };
+    inline void enableNetworkAnalyzer(bool b)
+    {
+        _networkAnalyzer = b;
+    };
 
-    inline bool isOnRekonqPage() const { return _isOnRekonqPage; };
-    inline void setIsOnRekonqPage(bool b) { _isOnRekonqPage = b; };
+    inline bool isOnRekonqPage() const
+    {
+        return _isOnRekonqPage;
+    };
+    inline void setIsOnRekonqPage(bool b)
+    {
+        _isOnRekonqPage = b;
+    };
 
-    inline KUrl loadingUrl() { return _loadingUrl; };
-    inline QString suggestedFileName() { return _suggestedFileName; };
-    
+    inline KUrl loadingUrl()
+    {
+        return _loadingUrl;
+    };
+    inline QString suggestedFileName()
+    {
+        return _suggestedFileName;
+    };
+
 public Q_SLOTS:
     void downloadAllContentsWithKGet(QPoint);
 
@@ -83,7 +101,7 @@ private Q_SLOTS:
     void updateImage(bool ok);
 
     void copyToTempFileResult(KJob*);
-    
+
 private:
     void downloadReply(const QNetworkReply *reply, const QString &suggestedFileName = QString());
 
@@ -96,7 +114,7 @@ private:
 
     QString _mimeType;
     QString _suggestedFileName;
-    
+
     bool _networkAnalyzer;
     bool _isOnRekonqPage;
 };

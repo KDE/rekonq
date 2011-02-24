@@ -66,11 +66,11 @@ static bool fileItemListLessThan(const KFileItem &s1, const KFileItem &s2)
 static KFileItemList sortFileList(const KFileItemList &list)
 {
     KFileItemList orderedList, dirList, fileList;
-    
+
     // order dirs before files..
     Q_FOREACH(const KFileItem &item, list)
     {
-        if(item.isDir())
+        if (item.isDir())
             dirList << item;
         else
             fileList << item;
@@ -80,7 +80,7 @@ static KFileItemList sortFileList(const KFileItemList &list)
 
     orderedList << dirList;
     orderedList << fileList;
-    
+
     return orderedList;
 }
 
@@ -90,7 +90,7 @@ static KFileItemList sortFileList(const KFileItemList &list)
 
 ProtocolHandler::ProtocolHandler(QObject *parent)
         : QObject(parent)
-        , _lister( new KDirLister(this) )
+        , _lister(new KDirLister(this))
         , _frame(0)
 {
 }
@@ -118,7 +118,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     // rekonq can handle kde documentation protocol
     if (_url.protocol() == QL1S("man") || _url.protocol() == QL1S("help") || _url.protocol() == QL1S("info"))
         return false;
-    
+
     // relative urls
     if (_url.isRelative())
         return false;
@@ -127,7 +127,8 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     if (_url.protocol() == QL1S("javascript"))
     {
         QString scriptSource = _url.authority();
-        if(scriptSource.isEmpty()) {
+        if (scriptSource.isEmpty())
+        {
             // if javascript:<code here> then authority() returns
             // an empty string. Extract the source manually
             // Use the prettyUrl() since that is unencoded
@@ -136,7 +137,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             // fromPercentEncoding() is used to decode all the % encoded
             // characters to normal, so that it is treated as valid javascript
             scriptSource = QUrl::fromPercentEncoding(_url.url().mid(11).toAscii());
-            if(scriptSource.isEmpty())
+            if (scriptSource.isEmpty())
                 return false;
         }
 
@@ -190,7 +191,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
 
         WebPage *page = qobject_cast<WebPage *>(frame->page());
         page->setIsOnRekonqPage(true);
-        
+
         NewTabPage p(frame);
         p.generate(_url);
 
@@ -198,7 +199,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     }
 
     // If rekonq cannot handle a protocol by itself, it will hand it over to KDE via KRun
-    if(KProtocolInfo::isKnownProtocol(_url))
+    if (KProtocolInfo::isKnownProtocol(_url))
     {
         new KRun(_url, rApp->mainWindow());  // No need to delete KRun, it autodeletes itself
         return true;
@@ -206,7 +207,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
 
     // Error Message, for those protocols even KDE cannot handle
     KMessageBox::error(rApp->mainWindow(), i18nc("@info",
-                                                                    "rekonq cannot handle this URL. \
+                       "rekonq cannot handle this URL. \
                                                                     Please use an appropriate application to open it."));
     return false;
 }

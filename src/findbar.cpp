@@ -162,7 +162,7 @@ void FindBar::setVisible(bool visible)
         m_mainWindow->findNext();
         return;
     }
-    
+
     QWidget::setVisible(visible);
 
     if (visible)
@@ -171,12 +171,12 @@ void FindBar::setVisible(bool visible)
         if (!hasFocus() && !selectedText.isEmpty())
         {
             const QString previousText = m_lineEdit->text();
-             m_lineEdit->setText(selectedText);
+            m_lineEdit->setText(selectedText);
 
-             if (m_lineEdit->text() != previousText)
-                 m_mainWindow->findPrevious();
-             else
-                 m_mainWindow->updateHighlight();;
+            if (m_lineEdit->text() != previousText)
+                m_mainWindow->findPrevious();
+            else
+                m_mainWindow->updateHighlight();;
         }
         else if (selectedText.isEmpty())
         {

@@ -52,7 +52,10 @@ class SessionManager;
 
 class KAction;
 
-namespace ThreadWeaver {class Job;}
+namespace ThreadWeaver
+{
+class Job;
+}
 
 
 typedef QList< QWeakPointer<MainWindow> > MainWindowList;
@@ -110,8 +113,11 @@ public:
     void addDownload(const QString &srcUrl, const QString &destUrl);
     DownloadList downloads();
     bool clearDownloadsHistory();
-    
-    KAction *privateBrowsingAction() { return _privateBrowsingAction; };
+
+    KAction *privateBrowsingAction()
+    {
+        return _privateBrowsingAction;
+    };
 
 public slots:
     /**
@@ -139,7 +145,7 @@ private slots:
     void updateConfiguration();
 
     // the general place to set private browsing
-    void setPrivateBrowsingMode(bool);  
+    void setPrivateBrowsingMode(bool);
 
 private:
     QWeakPointer<HistoryManager> m_historyManager;

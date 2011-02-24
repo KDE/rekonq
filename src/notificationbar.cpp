@@ -33,9 +33,9 @@
 
 
 NotificationBar::NotificationBar(QWidget *parent)
-    : QWidget(parent)
-    , m_blinkEffect(new BlinkEffect(this))
-    , m_opacityAnimation(new QPropertyAnimation(m_blinkEffect, "opacity"))
+        : QWidget(parent)
+        , m_blinkEffect(new BlinkEffect(this))
+        , m_opacityAnimation(new QPropertyAnimation(m_blinkEffect, "opacity"))
 {
     m_blinkEffect->setOpacity(0);
     setGraphicsEffect(m_blinkEffect);

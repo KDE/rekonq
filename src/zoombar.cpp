@@ -52,10 +52,10 @@
 
 ZoomBar::ZoomBar(QWidget *parent)
         : QWidget(parent)
-        ,m_zoomIn(new QToolButton(this))
-        ,m_zoomOut(new QToolButton(this))
-        ,m_zoomNormal(new QToolButton(this))
-        ,m_zoomSlider(new QSlider(Qt::Horizontal, this))
+        , m_zoomIn(new QToolButton(this))
+        , m_zoomOut(new QToolButton(this))
+        , m_zoomNormal(new QToolButton(this))
+        , m_zoomSlider(new QSlider(Qt::Horizontal, this))
 {
     QHBoxLayout *layout = new QHBoxLayout;
 
@@ -198,7 +198,7 @@ void ZoomBar::toggleVisibility()
 void ZoomBar::saveZoomValue(const QString &host, int value)
 {
     KSharedConfig::Ptr config = KGlobal::config();
-    KConfigGroup group( config, "Zoom" );
-    group.writeEntry(host, QString::number(value) );
+    KConfigGroup group(config, "Zoom");
+    group.writeEntry(host, QString::number(value));
     config->sync();
 }

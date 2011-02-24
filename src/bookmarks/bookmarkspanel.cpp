@@ -74,7 +74,7 @@ void BookmarksPanel::contextMenu(const QPoint &pos)
     if (_loadingState)
         return;
 
-    BookmarksContextMenu menu(bookmarkForIndex( panelTreeView()->indexAt(pos) ),
+    BookmarksContextMenu menu(bookmarkForIndex(panelTreeView()->indexAt(pos)),
                               rApp->bookmarkProvider()->bookmarkManager(),
                               rApp->bookmarkProvider()->bookmarkOwner()
                              );
@@ -129,7 +129,7 @@ void BookmarksPanel::setup()
 void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 {
     QAbstractItemModel *model = panelTreeView()->model();
-    if(!model)
+    if (!model)
         return;
 
     int count = model->rowCount(root);

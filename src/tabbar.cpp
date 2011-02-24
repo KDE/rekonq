@@ -70,12 +70,12 @@ static inline QByteArray highlightPropertyName(int index)
 
 
 TabBar::TabBar(QWidget *parent)
-    : KTabBar(parent)
-    , m_actualIndex(-1)
-    , m_currentTabPreviewIndex(-1)
-    , m_isFirstTimeOnTab(true)
-    , m_tabHighlightEffect(new TabHighlightEffect(this))
-    , m_animationMapper(new QSignalMapper(this))
+        : KTabBar(parent)
+        , m_actualIndex(-1)
+        , m_currentTabPreviewIndex(-1)
+        , m_isFirstTimeOnTab(true)
+        , m_tabHighlightEffect(new TabHighlightEffect(this))
+        , m_animationMapper(new QSignalMapper(this))
 {
     setElideMode(Qt::ElideRight);
 
@@ -163,9 +163,9 @@ void TabBar::detachTab()
 
 void TabBar::showTabPreview()
 {
-    if(m_isFirstTimeOnTab)
+    if (m_isFirstTimeOnTab)
         m_isFirstTimeOnTab = false;
-    
+
     //delete previous tab preview
     delete m_previewPopup.data();
     m_previewPopup.clear();
@@ -192,7 +192,7 @@ void TabBar::showTabPreview()
     m_previewPopup.data()->setFixedSize(w, h);
 
     QLabel *l = new QLabel();
-    l->setPixmap( WebSnap::renderTabPreview(*indexedTab->page(), w, h) );
+    l->setPixmap(WebSnap::renderTabPreview(*indexedTab->page(), w, h));
 
     m_previewPopup.data()->setView(l);
     m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);
@@ -245,11 +245,11 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
            )
         {
             m_currentTabPreviewIndex = tabIndex;
-            
+
             // if first time over tab, apply a small delay. If not, show it now!
             m_isFirstTimeOnTab
-                ? QTimer::singleShot(200, this, SLOT(showTabPreview()))
-                : showTabPreview();
+            ? QTimer::singleShot(200, this, SLOT(showTabPreview()))
+            : showTabPreview();
         }
 
         // if current tab or not found then hide previous tab preview
@@ -310,18 +310,18 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
     KMenu menu;
     MainWindow *mainWindow = rApp->mainWindow();
 
-    menu.addAction(mainWindow->actionByName( QL1S("new_tab") ));
-    menu.addAction(mainWindow->actionByName( QL1S("clone_tab") ));
+    menu.addAction(mainWindow->actionByName(QL1S("new_tab")));
+    menu.addAction(mainWindow->actionByName(QL1S("clone_tab")));
     if (count() > 1)
-        menu.addAction(mainWindow->actionByName( QL1S("detach_tab") ));
-    menu.addAction(mainWindow->actionByName( QL1S("open_last_closed_tab") ));
-    menu.addAction(mainWindow->actionByName( QL1S("closed_tab_menu") ));
+        menu.addAction(mainWindow->actionByName(QL1S("detach_tab")));
+    menu.addAction(mainWindow->actionByName(QL1S("open_last_closed_tab")));
+    menu.addAction(mainWindow->actionByName(QL1S("closed_tab_menu")));
     menu.addSeparator();
-    menu.addAction(mainWindow->actionByName( QL1S("close_tab") ));
-    menu.addAction(mainWindow->actionByName( QL1S("close_other_tabs") ));
+    menu.addAction(mainWindow->actionByName(QL1S("close_tab")));
+    menu.addAction(mainWindow->actionByName(QL1S("close_other_tabs")));
     menu.addSeparator();
-    menu.addAction(mainWindow->actionByName( QL1S("reload_tab") ));
-    menu.addAction(mainWindow->actionByName( QL1S("reload_all_tabs") ));
+    menu.addAction(mainWindow->actionByName(QL1S("reload_tab")));
+    menu.addAction(mainWindow->actionByName(QL1S("reload_all_tabs")));
 
     menu.exec(pos);
 }
@@ -334,16 +334,16 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
     KMenu menu;
     MainWindow *mainWindow = rApp->mainWindow();
 
-    menu.addAction(mainWindow->actionByName( QL1S("new_tab") ));
-    menu.addAction(mainWindow->actionByName( QL1S("open_last_closed_tab") ));
-    menu.addAction(mainWindow->actionByName( QL1S("closed_tab_menu") ));
+    menu.addAction(mainWindow->actionByName(QL1S("new_tab")));
+    menu.addAction(mainWindow->actionByName(QL1S("open_last_closed_tab")));
+    menu.addAction(mainWindow->actionByName(QL1S("closed_tab_menu")));
     menu.addSeparator();
-    menu.addAction(mainWindow->actionByName( QL1S("reload_all_tabs") ));
+    menu.addAction(mainWindow->actionByName(QL1S("reload_all_tabs")));
 
     KToolBar *mainBar = mainWindow->toolBar("mainToolBar");
-    if(!mainBar->isVisible())
+    if (!mainBar->isVisible())
     {
-        menu.addAction( mainBar->toggleViewAction() );
+        menu.addAction(mainBar->toggleViewAction());
     }
 
     menu.exec(pos);
@@ -370,21 +370,21 @@ void TabBar::setupHistoryActions()
     MainWindow *w = rApp->mainWindow();
     MainView *mv = qobject_cast<MainView *>(parent());
 
-    QAction *openLastClosedTabAction = w->actionByName( QL1S("open_last_closed_tab") );
-    openLastClosedTabAction->setEnabled( mv->recentlyClosedTabs().size() > 0 );
+    QAction *openLastClosedTabAction = w->actionByName(QL1S("open_last_closed_tab"));
+    openLastClosedTabAction->setEnabled(mv->recentlyClosedTabs().size() > 0);
 
     // update closed tabs menu
-    KActionMenu *am = qobject_cast<KActionMenu *>( w->actionByName( QL1S("closed_tab_menu") ));
+    KActionMenu *am = qobject_cast<KActionMenu *>(w->actionByName(QL1S("closed_tab_menu")));
     if (!am)
         return;
 
-    bool isEnabled = ( mv->recentlyClosedTabs().size() > 0 );
+    bool isEnabled = (mv->recentlyClosedTabs().size() > 0);
     am->setEnabled(isEnabled);
 
     if (am->menu())
         am->menu()->clear();
 
-    if(!isEnabled)
+    if (!isEnabled)
         return;
 
     Q_FOREACH(const HistoryItem &item, mv->recentlyClosedTabs())
@@ -399,9 +399,9 @@ void TabBar::setupHistoryActions()
 
 QRect TabBar::tabTextRect(int index)
 {
-   QStyleOptionTabV3 option;
-   initStyleOption(&option, index);
-   return style()->subElementRect(QStyle::SE_TabBarTabText, &option, this);
+    QStyleOptionTabV3 option;
+    initStyleOption(&option, index);
+    return style()->subElementRect(QStyle::SE_TabBarTabText, &option, this);
 }
 
 

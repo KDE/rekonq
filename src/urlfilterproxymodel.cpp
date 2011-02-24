@@ -39,7 +39,7 @@ UrlFilterProxyModel::UrlFilterProxyModel(QObject *parent)
 
 bool UrlFilterProxyModel::filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const
 {
-    return recursiveMatch( sourceModel()->index(source_row, 0, source_parent) );
+    return recursiveMatch(sourceModel()->index(source_row, 0, source_parent));
 }
 
 

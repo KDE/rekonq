@@ -1,5 +1,5 @@
 /* ============================================================
- * 
+ *
  * This file is a part of the rekonq project
  *
  * Copyright (C) 2010-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
@@ -55,7 +55,7 @@ ResponseList XMLParser::parse(const QByteArray &resp)
     {
         m_reader.readNext();
 
-        if (m_reader.isStartDocument()) 
+        if (m_reader.isStartDocument())
             continue;
 
         if (m_reader.isStartElement() && m_reader.name() == QL1S("Item"))
@@ -64,19 +64,19 @@ ResponseList XMLParser::parse(const QByteArray &resp)
             QString description;
             QString url;
             QString image;
-            int image_width=0;
-            int image_height=0;
+            int image_width = 0;
+            int image_height = 0;
 
             m_reader.readNext();
 
-            while( !(m_reader.isEndElement() && m_reader.name() == QL1S("Item")) )
+            while (!(m_reader.isEndElement() && m_reader.name() == QL1S("Item")))
             {
-                if(m_reader.isStartElement())
+                if (m_reader.isStartElement())
                 {
 
-                    if (m_reader.name() == QL1S("Text")) 
+                    if (m_reader.name() == QL1S("Text"))
                         title = m_reader.readElementText();
-                    if (m_reader.name() == QL1S("Url")) 
+                    if (m_reader.name() == QL1S("Url"))
                         url = m_reader.readElementText();
 
                     if (m_reader.name() == QL1S("Image"))
@@ -86,7 +86,7 @@ ResponseList XMLParser::parse(const QByteArray &resp)
                         image_height = m_reader.attributes().value("height").toString().toInt();
                     }
 
-                    if (m_reader.name() == QL1S("Description")) 
+                    if (m_reader.name() == QL1S("Description"))
                         description = m_reader.readElementText();
                 }
 
@@ -112,8 +112,8 @@ ResponseList JSONParser::parse(const QByteArray &resp)
     }
 
     if (!response.startsWith(QL1C('['))
-        || !response.endsWith(QL1C(']'))
-    )
+            || !response.endsWith(QL1C(']'))
+       )
     {
         kDebug() << "RESPONSE is NOT well FORMED";
         return ResponseList();

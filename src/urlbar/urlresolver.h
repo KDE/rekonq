@@ -69,21 +69,21 @@ public:
     QString bookmarkPath;
 
     UrlSearchItem(const UrlSearchItem &item) : type(item.type),
-                                               url(item.url),
-                                               title(item.title),
-                                               description(item.description),
-                                               image(item.image),
-                                               image_width(item.image_width),
-                                               image_height(item.image_height)
+            url(item.url),
+            title(item.title),
+            description(item.description),
+            image(item.image),
+            image_width(item.image_width),
+            image_height(item.image_height)
     {};
 
     UrlSearchItem() : type(UrlSearchItem::Undefined),
-                      url(QString()),
-                      title(QString()),
-                      description(QString()),
-                      image(QString()),
-                      image_width(0),
-                      image_height(0)
+            url(QString()),
+            title(QString()),
+            description(QString()),
+            image(QString()),
+            image_width(0),
+            image_height(0)
     {};
 
     UrlSearchItem(const int &_type,
@@ -93,14 +93,14 @@ public:
                   const QString &_image = QString(),
                   const int &_image_width = 0,
                   const int &_image_height = 0
-                  )
-                  : type(_type),
-                  url(_url),
-                  title(_title),
-                  description(_description),
-                  image(_image),
-                  image_width(_image_width),
-                  image_height(_image_height)
+                 )
+            : type(_type),
+            url(_url),
+            title(_title),
+            description(_description),
+            image(_image),
+            image_width(_image_width),
+            image_height(_image_height)
     {};
 
     inline bool operator==(const UrlSearchItem &i) const
@@ -132,14 +132,14 @@ public:
     static void setSearchEngine(KService::Ptr engine)
     {
         _searchEngine = engine;
-        if(engine)
+        if (engine)
             rApp->opensearchManager()->setSearchProvider(engine->desktopEntryName());
     };
 
     void computeSuggestions();
 
 private Q_SLOTS:
-    void suggestionsReceived(const QString &text, const ResponseList &suggestions);    
+    void suggestionsReceived(const QString &text, const ResponseList &suggestions);
 
 Q_SIGNALS:
     void suggestionsReady(const UrlSearchList &, const QString &);
@@ -165,7 +165,7 @@ private:
     static QRegExp _browseRegexp;
     static QRegExp _searchEnginesRegexp;
 
-    static KService::Ptr _searchEngine;    
+    static KService::Ptr _searchEngine;
 };
 
 // ------------------------------------------------------------------------------

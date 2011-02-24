@@ -199,7 +199,7 @@ void BookmarkProvider::slotBookmarksChanged()
             fillBookmarkBar(bookmarkToolBar);
         }
     }
-    if(rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+    if (rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
         rApp->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 
@@ -232,7 +232,7 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
         else
         {
             KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, this);
-            action->setIcon(rApp->iconManager()->iconForUrl( KUrl(bookmark.url()) ));
+            action->setIcon(rApp->iconManager()->iconForUrl(KUrl(bookmark.url())));
             connect(action, SIGNAL(hovered()), toolBar, SLOT(actionHovered()));
             toolBar->toolBar()->addAction(action);
             toolBar->toolBar()->widgetForAction(action)->installEventFilter(toolBar);
@@ -243,12 +243,12 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
 
 void BookmarkProvider::slotPanelChanged()
 {
-    foreach (BookmarksPanel *panel, m_bookmarkPanels)
+    foreach(BookmarksPanel *panel, m_bookmarkPanels)
     {
         if (panel && panel != sender())
             panel->loadFoldedState();
     }
-    if(rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+    if (rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
         rApp->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 
@@ -265,10 +265,10 @@ void BookmarkProvider::find(QList<KBookmark> *list, const KBookmark &bookmark, c
     {
         QStringList words = text.split(' ');
         bool matches = true;
-        foreach (const QString &word, words)
+        foreach(const QString &word, words)
         {
             if (!bookmark.url().url().contains(word, Qt::CaseInsensitive)
-                && !bookmark.fullText().contains(word, Qt::CaseInsensitive))
+                    && !bookmark.fullText().contains(word, Qt::CaseInsensitive))
             {
                 matches = false;
                 break;

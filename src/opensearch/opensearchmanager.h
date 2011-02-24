@@ -45,16 +45,16 @@
 class OpenSearchEngine;
 
 /**
- * This class acts as a proxy between the SearchBar plugin 
+ * This class acts as a proxy between the SearchBar plugin
  * and the individual suggestion engine.
- * This class has a map of all available engines, 
+ * This class has a map of all available engines,
  * and route the suggestion request to the correct engine.
  */
 class OpenSearchManager : public QObject
 {
     Q_OBJECT
 
-    enum STATE 
+    enum STATE
     {
         REQ_SUGGESTION,
         REQ_DESCRIPTION,
@@ -82,7 +82,7 @@ public:
 public Q_SLOTS:
     /**
      * Ask the specific suggestion engine to request for suggestion for the search text
-     * 
+     *
      * @param searchText the text to be queried to the suggestion service
      */
     void requestSuggestion(const QString &searchText);

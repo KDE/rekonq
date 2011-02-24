@@ -45,7 +45,10 @@ public:
     PreviewSelectorBar(int index, QWidget *parent);
     ~PreviewSelectorBar();
 
-    inline void setIndex(int index) { m_previewIndex = index; }
+    inline void setIndex(int index)
+    {
+        m_previewIndex = index;
+    }
 
 private slots:
     void clicked();

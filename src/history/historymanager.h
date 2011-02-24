@@ -70,7 +70,7 @@ public:
     inline bool operator==(const HistoryItem &other) const
     {
         return other.title == title
-               && other.url == url 
+               && other.url == url
                && other.dateTime == dateTime;
     }
 
@@ -120,13 +120,22 @@ public:
 
     QList<HistoryItem> find(const QString &text);
 
-    QList<HistoryItem> history() const { return m_history; };
+    QList<HistoryItem> history() const
+    {
+        return m_history;
+    };
     void setHistory(const QList<HistoryItem> &history, bool loadedAndSorted = false);
 
     // History manager keeps around these models for use by the completer and other classes
-    HistoryFilterModel *historyFilterModel() const { return m_historyFilterModel; };
-    HistoryTreeModel *historyTreeModel() const { return m_historyTreeModel; };
-    
+    HistoryFilterModel *historyFilterModel() const
+    {
+        return m_historyFilterModel;
+    };
+    HistoryTreeModel *historyTreeModel() const
+    {
+        return m_historyTreeModel;
+    };
+
 Q_SIGNALS:
     void historyReset();
     void entryAdded(const HistoryItem &item);

@@ -41,7 +41,7 @@ public:
     bool match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const;
 
     static bool isTextMatchFilter(const QString &filter);
-    
+
     QString ruleString() const;
     QString ruleType() const;
 

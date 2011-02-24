@@ -42,7 +42,7 @@ class TabHighlightEffect : public QGraphicsEffect
     Q_OBJECT
 
 public:
-    explicit TabHighlightEffect (TabBar *tabBar = 0);
+    explicit TabHighlightEffect(TabBar *tabBar = 0);
 
 protected:
     virtual void draw(QPainter *painter);

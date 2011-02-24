@@ -60,9 +60,18 @@ Q_SIGNALS:
 private Q_SLOTS:
     void contextMenu(const QPoint &pos);
 
-    virtual void contextMenuItem  (const QPoint &pos) {contextMenu(pos);}
-    virtual void contextMenuGroup (const QPoint &pos) {contextMenu(pos);}
-    virtual void contextMenuEmpty (const QPoint &pos) {contextMenu(pos);}
+    virtual void contextMenuItem(const QPoint &pos)
+    {
+        contextMenu(pos);
+    }
+    virtual void contextMenuGroup(const QPoint &pos)
+    {
+        contextMenu(pos);
+    }
+    virtual void contextMenuEmpty(const QPoint &pos)
+    {
+        contextMenu(pos);
+    }
 
     void deleteBookmark();
     void onCollapse(const QModelIndex &index);
