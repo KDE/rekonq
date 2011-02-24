@@ -163,6 +163,11 @@ void NetworkAnalyzer::requestFinished(QObject *replyObject)
     }
 
     QTreeWidgetItem *item = _itemMap[reply];
+    if(!item)
+    {
+        kDebug() << "No Item mapped. Returning...";
+        return;
+    }
 
     // Record the reply headers
     QList<QByteArray> headerValues;
