@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010 by Pierre Rossi <pierre dot rossi at gmail dot com>
+* Copyright (C) 2010-2011 by Pierre Rossi <pierre dot rossi at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or

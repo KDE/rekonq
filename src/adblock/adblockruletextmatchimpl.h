@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010 by Benjamin Poulain <ikipou at gmail dot com>
+* Copyright (C) 2010-2011 by Benjamin Poulain <ikipou at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -23,6 +23,7 @@
 *
 * ============================================================ */
 
+
 #ifndef ADBLOCKRULETEXTMATCHIMPL_H
 #define ADBLOCKRULETEXTMATCHIMPL_H
 
@@ -30,6 +31,7 @@
 
 // Qt Includes
 #include <QString>
+
 
 // Simple rule to find a string in the URL
 class AdBlockRuleTextMatchImpl : public AdBlockRuleImpl

@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2007 David Faure <faure@kde.org>
-* Copyright (C) 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
