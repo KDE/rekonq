@@ -130,7 +130,7 @@ Private::Private(SettingsDialog *parent)
     // -- 8
     KCModuleInfo ebrowsingInfo("ebrowsing.desktop");
     ebrowsingModule = new KCModuleProxy(ebrowsingInfo, parent);
-    pageItem = parent->addPage(ebrowsingModule, i18n("Search engines"));
+    pageItem = parent->addPage(ebrowsingModule, i18n("Search Engines"));
     KIcon wsIcon("edit-web-search");
     if (wsIcon.isNull())
     {

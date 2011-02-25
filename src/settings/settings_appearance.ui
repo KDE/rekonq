@@ -201,13 +201,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
-          <string>Encodings</string>
+          <string>Character Encoding</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QLabel" name="label_10">
             <property name="text">
-             <string>Default Encodings</string>
+             <string>Default character encoding:</string>
             </property>
            </widget>
           </item>
@@ -240,7 +240,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>User Style Sheet</string>
+          <string>Custom Style Sheet</string>
          </property>
          <layout class="QFormLayout" name="formLayout_3">
           <property name="fieldGrowthPolicy">
@@ -255,7 +255,7 @@
              </size>
             </property>
             <property name="text">
-             <string>User CSS path:</string>
+             <string>Path to custom CSS file:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -321,7 +321,7 @@
        <item>
         <widget class="QCheckBox" name="kcfg_useFavicon">
          <property name="text">
-          <string>Use favicon of the open website</string>
+          <string>Use favicon of the current website as window icon</string>
          </property>
         </widget>
        </item>
