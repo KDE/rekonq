@@ -205,6 +205,11 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
         return 0;
     }
 
+#if defined(Q_WS_X11)
+    // On X11, the raster engine gives better performance than native.
+    QApplication::setGraphicsSystem(QL1S("raster"));
+#endif
+
     Application app;
 
     return app.exec();
