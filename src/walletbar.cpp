@@ -74,11 +74,6 @@ WalletBar::WalletBar(QWidget *parent)
 }
 
 
-WalletBar::~WalletBar()
-{
-}
-
-
 void WalletBar::rememberData()
 {
     emit saveFormDataAccepted(m_key);

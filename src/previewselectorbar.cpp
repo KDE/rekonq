@@ -81,11 +81,6 @@ PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
 }
 
 
-PreviewSelectorBar::~PreviewSelectorBar()
-{
-}
-
-
 void PreviewSelectorBar::verifyUrl()
 {
 

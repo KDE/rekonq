@@ -50,7 +50,6 @@ class REKONQ_TESTS_EXPORT FindBar : public QWidget
 
 public:
     FindBar(MainWindow *parent);
-    ~FindBar();
 
     bool matchCase() const;
     void notifyMatch(bool match);

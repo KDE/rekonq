@@ -74,6 +74,7 @@ public:
     {
         return _loadingUrl;
     };
+    
     inline QString suggestedFileName()
     {
         return _suggestedFileName;

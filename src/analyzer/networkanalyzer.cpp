@@ -73,11 +73,6 @@ NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
 }
 
 
-NetworkAnalyzer::~NetworkAnalyzer()
-{
-}
-
-
 void NetworkAnalyzer::popupContextMenu(const QPoint& pos)
 {
     if (_requestList->topLevelItemCount() >= 1)

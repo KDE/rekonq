@@ -47,7 +47,6 @@ class REKONQ_TESTS_EXPORT UrlPanel : public QDockWidget
 
 public:
     explicit UrlPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    virtual ~UrlPanel() {}
 
 Q_SIGNALS:
     void openUrl(const KUrl &, const Rekonq::OpenType &);

@@ -48,7 +48,6 @@ class REKONQ_TESTS_EXPORT BookmarkOwner : public QObject, public KBookmarkOwner
 
 public:
     explicit BookmarkOwner(KBookmarkManager *manager, QObject *parent = 0);
-    virtual ~BookmarkOwner() {}
 
     enum BookmarkAction
     {
@@ -133,7 +132,6 @@ class CustomBookmarkAction : public KAction
 
 public:
     CustomBookmarkAction(const KBookmark &bookmark, const KIcon &icon, const QString &text, QObject *parent);
-    virtual ~CustomBookmarkAction() {}
 
 Q_SIGNALS:
     void triggered(const KBookmark &);

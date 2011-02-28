@@ -49,11 +49,6 @@ PanelTreeView::PanelTreeView(QWidget *parent)
 }
 
 
-PanelTreeView::~PanelTreeView()
-{
-}
-
-
 void PanelTreeView::mousePressEvent(QMouseEvent *event)
 {
     const QModelIndex index = indexAt(event->pos());

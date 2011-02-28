@@ -52,7 +52,6 @@ class REKONQ_TESTS_EXPORT ProtocolHandler : public QObject
 
 public:
     ProtocolHandler(QObject *parent = 0);
-    ~ProtocolHandler();
 
     /**
      * This function handles all the protocols that have to be handled before

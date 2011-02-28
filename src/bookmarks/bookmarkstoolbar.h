@@ -86,7 +86,6 @@ class BookmarkToolBar : public QObject
 
 public:
     BookmarkToolBar(KToolBar *toolBar, QObject *parent);
-    ~BookmarkToolBar();
 
     KToolBar* toolBar();
 

@@ -43,7 +43,6 @@ class REKONQ_TESTS_EXPORT WebIcon : public QObject
 
 public:
     explicit WebIcon(const KUrl &url, QObject *parent = 0);
-    ~WebIcon();
 
 private slots:
     void load();

@@ -55,11 +55,6 @@ IconManager::IconManager(QObject *parent)
 }
 
 
-IconManager::~IconManager()
-{
-}
-
-
 KIcon IconManager::iconForUrl(const KUrl &url)
 {
     // first things first.. avoid infinite loop at startup

@@ -44,7 +44,6 @@ class REKONQ_TESTS_EXPORT StackedUrlBar : public QStackedWidget
 
 public:
     StackedUrlBar(QWidget *parent = 0);
-    ~StackedUrlBar();
 
     UrlBar *currentUrlBar();
     UrlBar *urlBar(int index);

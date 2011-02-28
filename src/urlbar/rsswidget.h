@@ -42,7 +42,6 @@ class RSSWidget : public QMenu
 public:
     // QMap< feedUrl, feedTitle>
     RSSWidget(const QMap<KUrl, QString> &map, QWidget *parent = 0);
-    ~RSSWidget();
 
     void showAt(const QPoint &pos);
 

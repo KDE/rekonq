@@ -48,7 +48,7 @@ class REKONQ_TESTS_EXPORT SessionManager : public QObject
     Q_OBJECT
 public:
     SessionManager(QObject *parent = 0);
-    ~SessionManager();
+
     inline void setSessionManagementEnabled(bool on)
     {
         m_safe = on;

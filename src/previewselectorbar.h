@@ -43,7 +43,6 @@ class REKONQ_TESTS_EXPORT PreviewSelectorBar : public NotificationBar
 
 public:
     PreviewSelectorBar(int index, QWidget *parent);
-    ~PreviewSelectorBar();
 
     inline void setIndex(int index)
     {

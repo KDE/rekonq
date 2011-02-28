@@ -43,7 +43,6 @@ class REKONQ_TESTS_EXPORT WalletBar : public NotificationBar
 
 public:
     WalletBar(QWidget *parent);
-    ~WalletBar();
 
 private slots:
 

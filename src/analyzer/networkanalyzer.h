@@ -56,7 +56,6 @@ class NetworkAnalyzer : public QWidget
 
 public:
     NetworkAnalyzer(QWidget *parent = 0);
-    ~NetworkAnalyzer();
 
 private slots:
     void addRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &req, QNetworkReply *reply);

@@ -50,11 +50,6 @@ WebIcon::WebIcon(const KUrl& url, QObject *parent)
 }
 
 
-WebIcon::~WebIcon()
-{
-}
-
-
 void WebIcon::load()
 {
     m_page.mainFrame()->load(m_url);

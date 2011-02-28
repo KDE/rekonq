@@ -50,7 +50,6 @@ class REKONQ_TESTS_EXPORT NewTabPage : public QObject
 
 public:
     NewTabPage(QWebFrame *frame);
-    ~NewTabPage();
 
     /**
      * This method takes an about: url and loads

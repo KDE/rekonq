@@ -116,11 +116,6 @@ FindBar::FindBar(MainWindow *window)
 }
 
 
-FindBar::~FindBar()
-{
-}
-
-
 void FindBar::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Return)

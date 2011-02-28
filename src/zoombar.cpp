@@ -102,15 +102,6 @@ ZoomBar::ZoomBar(QWidget *parent)
 }
 
 
-ZoomBar::~ZoomBar()
-{
-    delete m_zoomIn;
-    delete m_zoomOut;
-    delete m_zoomNormal;
-    delete m_zoomSlider;
-}
-
-
 void ZoomBar::setupActions(MainWindow *window)
 {
     KAction *a;

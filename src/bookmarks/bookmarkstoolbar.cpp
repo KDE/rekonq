@@ -179,11 +179,6 @@ BookmarkToolBar::BookmarkToolBar(KToolBar *toolBar, QObject *parent)
 }
 
 
-BookmarkToolBar::~BookmarkToolBar()
-{
-}
-
-
 KToolBar* BookmarkToolBar::toolBar()
 {
     return m_toolBar;

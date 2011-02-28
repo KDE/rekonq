@@ -22,6 +22,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 * ============================================================ */
+
+
 // Self includes
 #include "notificationbar.h"
 #include "notificationbar.moc"
@@ -35,17 +37,12 @@
 NotificationBar::NotificationBar(QWidget *parent)
         : QWidget(parent)
         , m_blinkEffect(new BlinkEffect(this))
-        , m_opacityAnimation(new QPropertyAnimation(m_blinkEffect, "opacity"))
+        , m_opacityAnimation(new QPropertyAnimation(m_blinkEffect, "opacity", this))
 {
     m_blinkEffect->setOpacity(0);
     setGraphicsEffect(m_blinkEffect);
 }
 
-NotificationBar::~NotificationBar()
-{
-    delete m_opacityAnimation;
-    delete m_blinkEffect;
-}
 
 void NotificationBar::notifyUser(int animationDuration)
 {
@@ -55,6 +52,7 @@ void NotificationBar::notifyUser(int animationDuration)
     m_opacityAnimation->start();
 
 }
+
 
 void NotificationBar::destroy()
 {

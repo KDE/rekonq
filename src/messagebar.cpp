@@ -23,6 +23,7 @@
 *
 * ============================================================ */
 
+
 // Self Includes
 #include "messagebar.h"
 #include "messagebar.moc"
@@ -37,6 +38,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QToolButton>
+
 
 MessageBar::MessageBar(const QString &message, QWidget *parent, QMessageBox::Icon icon, StandardButtons buttons)
         : NotificationBar(parent)

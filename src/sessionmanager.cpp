@@ -52,11 +52,6 @@ SessionManager::SessionManager(QObject *parent)
 }
 
 
-SessionManager::~SessionManager()
-{
-}
-
-
 void SessionManager::saveSession()
 {
     if (!m_safe || QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))

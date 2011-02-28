@@ -86,9 +86,6 @@ HistoryManager::HistoryManager(QObject *parent)
 HistoryManager::~HistoryManager()
 {
     m_saveTimer->saveIfNeccessary();
-
-    delete m_historyFilterModel;
-    delete m_historyTreeModel;
 }
 
 

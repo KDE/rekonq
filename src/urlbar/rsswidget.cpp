@@ -107,11 +107,6 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
 }
 
 
-RSSWidget::~RSSWidget()
-{
-}
-
-
 void RSSWidget::showAt(const QPoint &pos)
 {
     adjustSize();

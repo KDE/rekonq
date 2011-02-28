@@ -51,7 +51,6 @@ class REKONQ_TESTS_EXPORT NetworkAnalyzerPanel : public QDockWidget
 
 public:
     NetworkAnalyzerPanel(const QString &title, QWidget *parent);
-    ~NetworkAnalyzerPanel();
 
 public slots:
     void toggle(bool enable);

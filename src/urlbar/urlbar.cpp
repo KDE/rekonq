@@ -122,7 +122,6 @@ UrlBar::UrlBar(QWidget *parent)
 UrlBar::~UrlBar()
 {
     activateSuggestions(false);
-    delete _icon;
     _box.clear();
 }
 

@@ -23,6 +23,7 @@
 *
 * ============================================================ */
 
+
 #ifndef NOTIFICATIONBAR_H
 #define NOTIFICATIONBAR_H
 
@@ -36,6 +37,7 @@
 
 // Forward Declarations
 class QPropertyAnimation;
+
 
 class BlinkEffect : public QGraphicsEffect
 {
@@ -73,12 +75,15 @@ private:
 
 };
 
+
+// ------------------------------------------------------------------------------------------
+
+
 class NotificationBar : public QWidget
 {
     Q_OBJECT
 public:
     explicit NotificationBar(QWidget *parent = 0);
-    ~NotificationBar();
 
     void notifyUser(int animationDuration = 400);
 

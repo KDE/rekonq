@@ -43,7 +43,6 @@ class REKONQ_TESTS_EXPORT PanelTreeView : public QTreeView
 
 public:
     PanelTreeView(QWidget *parent = 0);
-    ~PanelTreeView();
 
 signals:
     void openUrl(const KUrl &, const Rekonq::OpenType & = Rekonq::CurrentTab);

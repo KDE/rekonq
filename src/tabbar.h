@@ -57,7 +57,6 @@ class REKONQ_TESTS_EXPORT TabBar : public KTabBar
 
 public:
     explicit TabBar(QWidget *parent);
-    virtual ~TabBar() {}
 
     void setTabHighlighted(int index);
     void resetTabHighlighted(int index);

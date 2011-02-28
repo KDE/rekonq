@@ -165,23 +165,6 @@ MainWindow::~MainWindow()
     rApp->bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
     rApp->bookmarkProvider()->removeBookmarkPanel(m_bookmarksPanel);
     rApp->removeMainWindow(this);
-
-    delete m_view;
-    delete m_findBar;
-    delete m_zoomBar;
-
-    delete m_historyPanel;
-    delete m_bookmarksPanel;
-    delete m_webInspectorPanel;
-
-    delete m_stopReloadAction;
-    delete m_historyBackMenu;
-    delete m_historyForwardMenu;
-
-    delete m_bookmarksBar;
-
-    delete m_popup;
-    delete m_hidePopup;
 }
 
 

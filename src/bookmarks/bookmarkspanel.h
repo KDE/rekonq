@@ -49,7 +49,7 @@ class REKONQ_TESTS_EXPORT BookmarksPanel : public UrlPanel
 
 public:
     explicit BookmarksPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
-    virtual ~BookmarksPanel();
+    ~BookmarksPanel();
 
 public Q_SLOTS:
     void loadFoldedState();

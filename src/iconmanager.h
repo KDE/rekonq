@@ -45,7 +45,6 @@ class REKONQ_TESTS_EXPORT IconManager : public QObject
 
 public:
     IconManager(QObject *parent = 0);
-    virtual ~IconManager();
 
     KIcon iconForUrl(const KUrl &url);
 

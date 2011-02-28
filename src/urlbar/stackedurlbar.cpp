@@ -42,11 +42,6 @@ StackedUrlBar::StackedUrlBar(QWidget *parent)
 }
 
 
-StackedUrlBar::~StackedUrlBar()
-{
-}
-
-
 UrlBar *StackedUrlBar::currentUrlBar()
 {
     return urlBar(currentIndex());

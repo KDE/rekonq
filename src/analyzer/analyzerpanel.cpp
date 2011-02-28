@@ -48,12 +48,6 @@ NetworkAnalyzerPanel::NetworkAnalyzerPanel(const QString &title, QWidget *parent
 }
 
 
-NetworkAnalyzerPanel::~NetworkAnalyzerPanel()
-{
-    delete _viewer;
-}
-
-
 void NetworkAnalyzerPanel::closeEvent(QCloseEvent *event)
 {
     Q_UNUSED(event);

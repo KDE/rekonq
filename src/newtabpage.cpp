@@ -76,11 +76,6 @@ NewTabPage::NewTabPage(QWebFrame *frame)
 }
 
 
-NewTabPage::~NewTabPage()
-{
-}
-
-
 void NewTabPage::generate(const KUrl &url)
 {
     if (KUrl("about:preview").isParentOf(url))

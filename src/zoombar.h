@@ -49,7 +49,6 @@ class REKONQ_TESTS_EXPORT ZoomBar : public QWidget
 
 public:
     ZoomBar(QWidget *parent);
-    ~ZoomBar();
 
 public Q_SLOTS:
     void show();

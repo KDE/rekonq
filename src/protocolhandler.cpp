@@ -89,16 +89,10 @@ static KFileItemList sortFileList(const KFileItemList &list)
 
 
 ProtocolHandler::ProtocolHandler(QObject *parent)
-        : QObject(parent)
-        , _lister(new KDirLister(this))
-        , _frame(0)
+    : QObject(parent)
+    , _lister(new KDirLister(this))
+    , _frame(0)
 {
-}
-
-
-ProtocolHandler::~ProtocolHandler()
-{
-    delete _lister;
 }
 
 
