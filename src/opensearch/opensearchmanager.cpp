@@ -173,7 +173,8 @@ void OpenSearchManager::dataReceived(KIO::Job *job, const QByteArray &data)
 
 void OpenSearchManager::jobFinished(KJob *job)
 {
-    if (job->error())
+    // Do NOT parse if job had same errors or the typed string is empty
+    if (job->error() || _typedText.isEmpty())
     {
         emit suggestionsReceived(_typedText, ResponseList());
         m_state = IDLE;
