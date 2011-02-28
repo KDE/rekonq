@@ -61,9 +61,9 @@ UserAgentInfo::UserAgentInfo()
 
 QString UserAgentInfo::userAgentString(int i)
 {
-    if (i < 0)
+    if (i < 0 || !providerExists(i))
     {
-        kDebug() << "oh oh... negative index on the user agent choice!";
+        kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
     }
 
@@ -98,9 +98,9 @@ QString UserAgentInfo::userAgentString(int i)
 
 QString UserAgentInfo::userAgentName(int i)
 {
-    if (i < 0)
+    if (i < 0 || !providerExists(i))
     {
-        kDebug() << "oh oh... negative index on the user agent choice!";
+        kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
     }
 
@@ -110,9 +110,9 @@ QString UserAgentInfo::userAgentName(int i)
 
 QString UserAgentInfo::userAgentVersion(int i)
 {
-    if (i < 0)
+    if (i < 0 || !providerExists(i))
     {
-        kDebug() << "oh oh... negative index on the user agent choice!";
+        kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
     }
 
@@ -122,9 +122,9 @@ QString UserAgentInfo::userAgentVersion(int i)
 
 QString UserAgentInfo::userAgentDescription(int i)
 {
-    if (i < 0)
+    if (i < 0 || !providerExists(i))
     {
-        kDebug() << "oh oh... negative index on the user agent choice!";
+        kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
     }
 
@@ -185,4 +185,16 @@ int UserAgentInfo::uaIndexForHost(const QString &host)
             return i;
     }
     return -1;
+}
+
+
+bool UserAgentInfo::providerExists(int i)
+{
+    KService::Ptr s = m_providers.at(i);
+    if(s.isNull())
+    {
+        //FIXME Add me when string freeze has been reopened: KMessageBox::error(...)
+        return false;
+    }
+    return true;
 }

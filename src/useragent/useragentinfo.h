@@ -71,6 +71,8 @@ private:
     QString userAgentVersion(int);
     QString userAgentDescription(int);
 
+    bool providerExists(int);
+    
 private:
     KService::List m_providers;
 };
