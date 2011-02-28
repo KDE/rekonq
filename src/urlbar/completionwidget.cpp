@@ -308,7 +308,16 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 else //the user type too fast (completionwidget not visible or suggestion not downloaded)
                 {
                     UrlResolver res(w->text());
-                    emit chosenUrl(res.orderedSearchItems().first().url, Rekonq::CurrentTab);
+                    UrlSearchList list = res.orderedSearchItems();
+                    if(list.isEmpty())
+                    {
+                        kDebug() << "Url Search List EMPTY!!!";
+                        emit chosenUrl(KUrl(_typedString), Rekonq::CurrentTab);
+                    }
+                    else
+                    {
+                        emit chosenUrl(list.first().url, Rekonq::CurrentTab);
+                    }
                 }
                 kev->accept();
                 hide();
