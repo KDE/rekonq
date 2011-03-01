@@ -209,13 +209,13 @@ void TabBar::hideEvent(QHideEvent *event)
     {
         qobject_cast<MainView *>(parent())->addTabButton()->hide();
     }
-    QTabBar::hideEvent(event);
+    KTabBar::hideEvent(event);
 }
 
 
 void TabBar::showEvent(QShowEvent *event)
 {
-    QTabBar::showEvent(event);
+    KTabBar::showEvent(event);
     if (!event->spontaneous())
     {
         qobject_cast<MainView *>(parent())->addTabButton()->show();
