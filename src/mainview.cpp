@@ -129,13 +129,19 @@ TabBar *MainView::tabBar() const
 
 UrlBar *MainView::currentUrlBar() const
 {
-    return webTab(currentIndex())->urlBar();
+    return currentWebTab()->urlBar();
 }
 
 
 WebTab *MainView::currentWebTab() const
 {
-    return webTab(currentIndex());
+    int i = currentIndex();
+    WebTab *b = webTab(i);
+    if(b)
+        return b;
+
+    kDebug() << "We failed to find the current tab!!! Let's go sure with the first one...";
+    return webTab(0);
 }
 
 
@@ -229,10 +235,10 @@ void MainView::currentChanged(int index)
     WebTab *tab = this->webTab(index);
     if (!tab)
         return;
-
+    
     // retrieve the old webview (that where we move from)
     WebTab *oldTab = this->webTab(m_currentTabIndex);
-
+    
     // set current index
     m_currentTabIndex = index;
 
