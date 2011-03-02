@@ -354,10 +354,18 @@ void HistoryFilterModel::load() const
 
 void HistoryFilterModel::sourceRowsInserted(const QModelIndex &parent, int start, int end)
 {
-    Q_ASSERT(start == end && start == 0);
+    //Q_ASSERT(start == end && start == 0);
     Q_UNUSED(end);
+    
+    if(start != 0)
+    {
+        kDebug() << "STARTING from a NON zero position...";
+        return;
+    }
+    
     if (!m_loaded)
         return;
+    
     QModelIndex idx = sourceModel()->index(start, 0, parent);
     QString url = idx.data(HistoryModel::UrlStringRole).toString();
     if (m_historyHash.contains(url))
