@@ -93,6 +93,8 @@ Application::~Application()
         delete window.data();
         window.clear();
     }
+    
+    delete bookmarkProvider();
 }
 
 
