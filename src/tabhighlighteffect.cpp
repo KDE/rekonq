@@ -47,7 +47,12 @@ TabHighlightEffect::TabHighlightEffect(TabBar *tabBar)
 
 void TabHighlightEffect::draw(QPainter *painter)
 {
-    painter->drawPixmap(QPoint(0, 0), sourcePixmap());
+    const QPixmap &pixmap = sourcePixmap();
+    
+    if (pixmap.isNull())
+        return;
+    
+    painter->drawPixmap(QPoint(0, 0), pixmap);
 
     Q_FOREACH(const QByteArray &propertyName, dynamicPropertyNames())
     {
