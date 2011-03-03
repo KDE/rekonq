@@ -66,6 +66,8 @@
 #include <KService>
 #include <KToolInvocation>
 #include <KWebWallet>
+#include <KProtocolInfo>
+#include <KRun>
 
 #include <kparts/browseropenorsavequestion.h>
 
@@ -403,6 +405,14 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     // get reply url...
     KUrl replyUrl = reply->url();
 
+    bool isLocal = replyUrl.isLocalFile();
+    if(isLocal && KProtocolInfo::isKnownProtocol(replyUrl))
+    {
+        kDebug() << "WARNING: launching a new app...";
+        new KRun(replyUrl, rApp->mainWindow());  // No need to delete KRun, it autodeletes itself
+        return;
+    }
+
     // Get suggested file name...
     extractSuggestedFileName(reply, _suggestedFileName);
 
@@ -418,8 +428,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     // ------------------------------------------------
 
     KService::Ptr appService = KMimeTypeTrader::self()->preferredService(_mimeType);
-
-    bool isLocal = replyUrl.isLocalFile();
 
     if (appService.isNull())  // no service can handle this. We can just download it..
     {
@@ -468,22 +476,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
         job->ui()->setWindow(rApp->mainWindow());
         connect(job, SIGNAL(result(KJob *)), this, SLOT(copyToTempFileResult(KJob*)));
-        return;
-    }
-
-    // HACK: The check below is necessary to break an infinite
-    // recursion that occurs whenever this function is called as a result
-    // of receiving content that can be rendered by the app using this engine.
-    // For example a text/html header that containing a content-disposition
-    // header is received by the app using this class.
-    const QString& appName = QCoreApplication::applicationName();
-
-    if (appName == appService->desktopEntryName() || appService->exec().trimmed().startsWith(appName))
-    {
-        kDebug() << "SELF...";
-        QNetworkRequest req(reply->request());
-        req.setRawHeader("x-kdewebkit-ignore-disposition", "true");
-        currentFrame()->load(req);
         return;
     }
 

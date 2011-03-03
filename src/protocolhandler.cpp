@@ -101,22 +101,6 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     _url = request.url();
     _frame = frame;
 
-    // rekonq can handle http/s browsing easily
-    if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https"))
-        return false;
-
-    // rekonq can handle file & ftp schemes, if you like,,
-    if (_url.protocol() == QL1S("ftp") || _url.protocol() == QL1S("file"))
-        return false;
-
-    // rekonq can handle kde documentation protocol
-    if (_url.protocol() == QL1S("man") || _url.protocol() == QL1S("help") || _url.protocol() == QL1S("info"))
-        return false;
-
-    // relative urls
-    if (_url.isRelative())
-        return false;
-
     // javascript handling
     if (_url.protocol() == QL1S("javascript"))
     {
@@ -139,9 +123,6 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         QVariant result = frame->evaluateJavaScript(scriptSource);
         return true;
     }
-
-    // NOTE
-    // handle here "custom" rekonq protocols
 
     // "abp" handling
     if (_url.protocol() == QL1S("abp"))
@@ -192,18 +173,17 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         return true;
     }
 
-    // If rekonq cannot handle a protocol by itself, it will hand it over to KDE via KRun
+    // let webkit try to load a known (or missing) protocol...
     if (KProtocolInfo::isKnownProtocol(_url))
-    {
-        new KRun(_url, rApp->mainWindow());  // No need to delete KRun, it autodeletes itself
-        return true;
-    }
-
-    // Error Message, for those protocols even KDE cannot handle
+        return false;
+    
+    // Error Message, for those protocols we cannot handle
+        // FIXME change this sentence AFTER STRING FREEZE to: "rekonq doesn't know how to handle this protocol: _url.protocol()" 
     KMessageBox::error(rApp->mainWindow(), i18nc("@info",
                        "rekonq cannot handle this URL. \
-                                                                    Please use an appropriate application to open it."));
-    return false;
+                        Please use an appropriate application to open it."));
+
+    return true;
 }
 
 
