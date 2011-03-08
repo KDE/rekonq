@@ -174,17 +174,17 @@ int Application::newInstance()
             switch (ReKonfig::startupBehaviour())
             {
             case 0: // open home page
-                mainWindow()->homePage();
+                newMainWindow()->homePage();
                 break;
             case 1: // open new tab page
-                loadUrl(KUrl("about:home"));
+                loadUrl(KUrl("about:home"), Rekonq::NewWindow);
                 break;
             case 2: // restore session
                 sessionManager()->restoreSession();
                 kDebug() << "session restored following settings";
                 break;
             default:
-                mainWindow()->homePage();
+                newMainWindow()->homePage();
                 break;
             }
         }
@@ -253,13 +253,13 @@ void Application::saveConfiguration() const
 
 MainWindow *Application::mainWindow()
 {
-    if (m_mainWindows.isEmpty())
-        return newMainWindow();
-
     MainWindow *active = qobject_cast<MainWindow*>(QApplication::activeWindow());
 
     if (!active)
     {
+        if(m_mainWindows.isEmpty())
+            return 0;
+
         return m_mainWindows.at(0).data();
     }
     return active;
