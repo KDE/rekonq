@@ -270,6 +270,9 @@ ResponseList OpenSearchEngine::parseSuggestion(const QByteArray &resp)
     if (!m_parser)
         return ResponseList();
 
+    if(resp.isEmpty())
+        return ResponseList();
+    
     return m_parser->parse(resp);
 }
 
@@ -282,7 +285,7 @@ QString OpenSearchEngine::type()
 
 QString OpenSearchEngine::suggestionPathFor(const QString &searchTerm)
 {
-    return KStandardDirs::locateLocal("cache", QString("opensearch/") + m_name + QString("/") + searchTerm, true);
+    return KStandardDirs::locateLocal("cache", QL1S("opensearch/") + m_name + QL1S("/") + searchTerm, true);
 }
 
 
