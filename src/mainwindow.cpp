@@ -142,6 +142,9 @@ MainWindow::MainWindow()
     // setting up rekonq toolbar(s)
     setupToolbars();
 
+    // disable help menu, as we'll load it on our own...
+    setHelpMenuEnabled(false);
+        
     // a call to KXmlGuiWindow::setupGUI() populates the GUI
     // with actions, using KXMLGUI.
     // It also applies the saved mainwindow settings, if any, and ask the
@@ -256,7 +259,6 @@ void MainWindow::updateToolsMenu()
 
         m_toolsMenu->addSeparator();
 
-        this->setHelpMenuEnabled(true);
         helpMenu()->setIcon(KIcon("help-browser"));
         m_toolsMenu->addAction(helpMenu()->menuAction());
         m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
