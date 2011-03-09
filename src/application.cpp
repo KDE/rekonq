@@ -146,7 +146,7 @@ int Application::newInstance()
         {
             // No windows in the current desktop? No windows at all?
             // Create a new one and load there sites...
-            loadUrl(urlList.at(0), Rekonq::CurrentTab);
+            loadUrl(urlList.at(0), Rekonq::NewWindow);
         }
         else
         {
