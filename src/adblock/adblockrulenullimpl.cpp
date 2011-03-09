@@ -117,6 +117,10 @@ bool AdBlockRuleNullImpl::isNullFilter(const QString &filter)
         // collapse
         if (option == QL1S("collapse"))
             return true;
+
+        // Ignore null mimetypes
+        if (option == QL1S(""))
+            return false;
     }
 
     return false;
