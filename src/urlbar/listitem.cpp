@@ -226,6 +226,11 @@ static QString highlightWordsInText(const QString &text, const QStringList &word
             index = ret.indexOf(wordToPointOut, index + wordToPointOut.size(), Qt::CaseInsensitive);
         }
     }
+
+    
+    if (boldSections.isEmpty())
+        return ret;
+    
     int numSections = 0;
     for (int i = 0; i < boldSections.size() - 1; ++i)
     {
