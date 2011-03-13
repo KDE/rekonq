@@ -81,7 +81,9 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
+
     virtual void tabRemoved(int index);
+    virtual void tabInserted(int index);
 
 private slots:
     void cloneTab();

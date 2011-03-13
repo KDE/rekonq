@@ -362,6 +362,14 @@ void TabBar::tabRemoved(int index)
     }
 
     removeAnimation(index);
+    m_tabHighlightEffect->update();
+}
+
+
+void TabBar::tabInserted(int index)
+{
+    Q_UNUSED(index);
+    m_tabHighlightEffect->update();
 }
 
 
