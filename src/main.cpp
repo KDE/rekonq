@@ -47,7 +47,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                      REKONQ_VERSION,
                      ki18n(description),
                      KAboutData::License_GPL_V3,
-                     ki18n("(C) 2008-2010 Andrea Diamantini"),
+                     ki18n("(C) 2008-2011 Andrea Diamantini"),
                      KLocalizedString(),
                      "http://rekonq.kde.org"
                     );
