@@ -61,6 +61,7 @@ public:
     void setTabHighlighted(int index);
     void resetTabHighlighted(int index);
     QRect tabTextRect(int index);
+    void setAnimatedTabHighlighting(bool enabled);
 
 signals:
     void cloneTab(int index);

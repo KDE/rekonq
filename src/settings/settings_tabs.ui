@@ -221,6 +221,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_animatedTabHighlighting">
+        <property name="text">
+         <string>Animated tab highlighting</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

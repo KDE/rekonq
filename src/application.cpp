@@ -443,6 +443,8 @@ void Application::updateConfiguration()
         MainView *mv = w.data()->mainView();
         mv->updateTabBar();
 
+        mv->tabBar()->setAnimatedTabHighlighting( ReKonfig::animatedTabHighlighting() );
+
         if (b)
             mv->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
         else

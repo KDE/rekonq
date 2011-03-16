@@ -70,12 +70,12 @@ static inline QByteArray highlightPropertyName(int index)
 
 
 TabBar::TabBar(QWidget *parent)
-        : KTabBar(parent)
-        , m_actualIndex(-1)
-        , m_currentTabPreviewIndex(-1)
-        , m_isFirstTimeOnTab(true)
-        , m_tabHighlightEffect(new TabHighlightEffect(this))
-        , m_animationMapper(new QSignalMapper(this))
+    : KTabBar(parent)
+    , m_actualIndex(-1)
+    , m_currentTabPreviewIndex(-1)
+    , m_isFirstTimeOnTab(true)
+    , m_tabHighlightEffect(new TabHighlightEffect(this))
+    , m_animationMapper(new QSignalMapper(this))
 {
     setElideMode(Qt::ElideRight);
 
@@ -90,6 +90,8 @@ TabBar::TabBar(QWidget *parent)
 
     connect(m_animationMapper, SIGNAL(mapped(int)), this, SLOT(removeAnimation(int)));
     setGraphicsEffect(m_tabHighlightEffect);
+
+    setAnimatedTabHighlighting( ReKonfig::animatedTabHighlighting() );
 }
 
 
@@ -361,7 +363,9 @@ void TabBar::tabRemoved(int index)
         m_currentTabPreviewIndex = -1;
     }
 
-    removeAnimation(index);
+    if (ReKonfig::animatedTabHighlighting())
+        removeAnimation(index);
+
     m_tabHighlightEffect->update();
 }
 
@@ -420,19 +424,23 @@ void TabBar::setTabHighlighted(int index)
 
     if (tabTextColor(index) != highlightColor)
     {
-        m_tabHighlightEffect->setProperty(propertyName, qreal(0.9));
-        QPropertyAnimation *anim = new QPropertyAnimation(m_tabHighlightEffect, propertyName);
-        m_highlightAnimation.insert(propertyName, anim);
+        if (ReKonfig::animatedTabHighlighting)
+        {
+            m_tabHighlightEffect->setProperty(propertyName, qreal(0.9));
+            QPropertyAnimation *anim = new QPropertyAnimation(m_tabHighlightEffect, propertyName);
+            m_highlightAnimation.insert(propertyName, anim);
 
-        //setup the animation
-        anim->setStartValue(0.9);
-        anim->setEndValue(0.0);
-        anim->setDuration(500);
-        anim->setLoopCount(2);
-        anim->start(QAbstractAnimation::DeleteWhenStopped);
+            //setup the animation
+            anim->setStartValue(0.9);
+            anim->setEndValue(0.0);
+            anim->setDuration(500);
+            anim->setLoopCount(2);
+            anim->start(QAbstractAnimation::DeleteWhenStopped);
 
-        m_animationMapper->setMapping(anim, index);
-        connect(anim, SIGNAL(finished()), m_animationMapper, SLOT(map()));
+            m_animationMapper->setMapping(anim, index);
+            connect(anim, SIGNAL(finished()), m_animationMapper, SLOT(map()));
+        }
+ 
         setTabTextColor(index, highlightColor);
     }
 }
@@ -440,7 +448,9 @@ void TabBar::setTabHighlighted(int index)
 
 void TabBar::resetTabHighlighted(int index)
 {
-    removeAnimation(index);
+    if (ReKonfig::animatedTabHighlighting())
+        removeAnimation(index);
+
     setTabTextColor(index, palette().text().color());
 }
 
@@ -453,4 +463,27 @@ void TabBar::removeAnimation(int index)
     QPropertyAnimation *anim = m_highlightAnimation.take(propertyName);
     m_animationMapper->removeMappings(anim);
     delete anim;
+}
+
+
+void TabBar::setAnimatedTabHighlighting(bool enabled)
+{
+    if (enabled)
+        m_tabHighlightEffect->setEnabled(true);
+    else
+    {
+        m_tabHighlightEffect->setEnabled(false);
+
+        //cleanup
+        QHashIterator<QByteArray, QPropertyAnimation*> i(m_highlightAnimation);
+        while (i.hasNext())
+        {
+            i.next();
+            m_tabHighlightEffect->setProperty(i.key(), QVariant()); //destroy the property
+
+            QPropertyAnimation *anim = m_highlightAnimation.take(i.key());
+            m_animationMapper->removeMappings(anim);
+            delete anim;
+        }
+    }
 }
