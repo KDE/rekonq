@@ -108,7 +108,7 @@ MainWindow::MainWindow()
         , m_userAgentMenu(new KMenu(this))
         , m_bookmarksBar(0)
         , m_popup(new KPassivePopup(this))
-        , m_hidePopup(new QTimer(this))
+        , m_hidePopupTimer(new QTimer(this))
         , m_toolsMenu(0)
         , m_developerMenu(0)
 {
@@ -277,7 +277,7 @@ void MainWindow::postLaunch()
     connect(rApp, SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
     m_popup->setFrameShape(QFrame::NoFrame);
     m_popup->setLineWidth(0);
-    connect(m_hidePopup, SIGNAL(timeout()), m_popup, SLOT(hide()));
+    connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
 
     // notification system
     connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
@@ -1117,11 +1117,11 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     // deleting popus if empty msgs
     if (msg.isEmpty())
     {
-        m_hidePopup->start(250);
+        m_hidePopupTimer->start(250);
         return;
     }
 
-    m_hidePopup->stop();
+    m_hidePopupTimer->stop();
 
 
     switch (status)
@@ -1129,7 +1129,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     case Rekonq::Url:
         break;
     case Rekonq::Info:
-        m_hidePopup->start(500);
+        m_hidePopupTimer->start(500);
         break;
     case Rekonq::Success:
         break;
@@ -1536,4 +1536,26 @@ void MainWindow::showUserAgentSettings()
     dialog->exec();
 
     dialog->deleteLater();
+}
+
+
+void MainWindow::moveEvent(QMoveEvent *event)
+{
+    if (m_hidePopupTimer)
+        m_hidePopupTimer->stop();
+    if (m_popup)
+        m_popup->hide();
+
+    KMainWindow::moveEvent(event);
+}
+
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    if (m_hidePopupTimer)
+        m_hidePopupTimer->stop();
+    if (m_popup)
+        m_popup->hide();
+
+    KMainWindow::resizeEvent(event);
 }

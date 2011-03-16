@@ -135,6 +135,8 @@ protected:
     * Filters out ESC key to show/hide the search bar
     */
     void keyPressEvent(QKeyEvent *event);
+    void moveEvent(QMoveEvent *event);
+    void resizeEvent(QResizeEvent *event);
     bool event(QEvent *event);
     bool queryClose();
 
@@ -206,7 +208,7 @@ private:
     QString m_lastSearch;
 
     KPassivePopup *m_popup;
-    QTimer *m_hidePopup;
+    QTimer *m_hidePopupTimer;
 
     KMenu *m_toolsMenu;
     KActionMenu *m_developerMenu;
