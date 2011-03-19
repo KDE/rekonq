@@ -201,7 +201,7 @@ void BookmarkProvider::slotBookmarksChanged()
             fillBookmarkBar(bookmarkToolBar);
         }
     }
-    if (rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+    if (rApp->mainWindow() && rApp->mainWindow()->currentTab() && rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
         rApp->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 
@@ -250,7 +250,7 @@ void BookmarkProvider::slotPanelChanged()
         if (panel && panel != sender())
             panel->loadFoldedState();
     }
-    if (rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+    if (rApp->mainWindow() && rApp->mainWindow()->currentTab() && rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
         rApp->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 
