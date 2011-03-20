@@ -901,7 +901,7 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
         }
 
         bookBar->hide();
-        m_view->setTabBarHidden(true);
+        m_view->tabBar()->hide();
         m_historyPanel->hide();
         m_bookmarksPanel->hide();
 
@@ -912,7 +912,7 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
     {
         // show main toolbar
         mainBar->show();
-        m_view->setTabBarHidden(false);
+        m_view->tabBar()->show();
 
         // restore state of windowed mode
         if (!bookmarksToolBarFlag)
