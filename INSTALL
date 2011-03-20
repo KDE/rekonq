@@ -14,7 +14,7 @@ Qt:
 KDE SC:
 
   KDE SC should be prepackaged for all major Linux distributions. Please see
-  http://techbase.kde.org/Getting_Started/Build/stable_Version
+  http://techbase.kde.org/Getting_Started#Building_and_Running_KDE_Software_From_Source
   for instructions on how to build and setup a KDE4 environment to work in.
 
 
@@ -25,13 +25,23 @@ To build it perform the following commands after switching into the rekonq direc
 
     mkdir build && cd build
     cmake ..
-    make && make install
+    make && sudo make install
 
 If you want to install rekonq locally, do not run the "make install" command. rekonq can
 then be found in build/src and is executed with ./rekonq.
 
 === Getting Help ===
 
-If you need help with rekonq, you can find it in the IRC channel #rekonq on irc.freenode.net or by viewing the handbook that comes with rekonq.
-You can view the rekonq handbook by pressing F1 after starting rekonq.
-Techbase page : http://techbase.kde.org/Projects/rekonq
+If you need help with rekonq, you can find it in the IRC channel #rekonq on irc.freenode.net 
+or by viewing the handbook that comes with rekonq.
+You can also view the rekonq handbook by pressing F1 after starting rekonq.
+
+
+=== rekonq useful links ===
+
+rekonq site:        http://rekonq.kde.org
+Techbase page :     http://techbase.kde.org/Projects/rekonq
+KDE Projects page:  http://projects.kde.org/rekonq
+
+Enjoy rekonq :D
+
