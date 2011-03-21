@@ -63,6 +63,9 @@ void TabHighlightEffect::draw(QPainter *painter)
         qreal opacity = property(propertyName).toReal();
         QRect textRect =  m_tabBar->tabTextRect(index);
 
+        if (!boundingRect().contains(textRect))
+            continue;
+
         QString tabText = m_tabBar->fontMetrics().elidedText(m_tabBar->tabText(index), Qt::ElideRight,
                           textRect.width(), Qt::TextShowMnemonic);
 
