@@ -365,15 +365,6 @@ void TabBar::tabRemoved(int index)
 
     if (ReKonfig::animatedTabHighlighting())
         removeAnimation(index);
-
-    m_tabHighlightEffect->update();
-}
-
-
-void TabBar::tabInserted(int index)
-{
-    Q_UNUSED(index);
-    m_tabHighlightEffect->update();
 }
 
 
@@ -424,8 +415,9 @@ void TabBar::setTabHighlighted(int index)
 
     if (tabTextColor(index) != highlightColor)
     {
-        if (ReKonfig::animatedTabHighlighting)
+        if (ReKonfig::animatedTabHighlighting())
         {
+            m_tabHighlightEffect->setEnabled(true);
             m_tabHighlightEffect->setProperty(propertyName, qreal(0.9));
             QPropertyAnimation *anim = new QPropertyAnimation(m_tabHighlightEffect, propertyName);
             m_highlightAnimation.insert(propertyName, anim);
@@ -463,6 +455,9 @@ void TabBar::removeAnimation(int index)
     QPropertyAnimation *anim = m_highlightAnimation.take(propertyName);
     m_animationMapper->removeMappings(anim);
     delete anim;
+
+    if (m_highlightAnimation.isEmpty())
+        m_tabHighlightEffect->setEnabled(false);
 }
 
 
