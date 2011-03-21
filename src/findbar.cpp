@@ -40,6 +40,7 @@
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KPushButton>
+#include <KColorScheme>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -189,20 +190,21 @@ void FindBar::setVisible(bool visible)
 void FindBar::notifyMatch(bool match)
 {
     QPalette p = m_lineEdit->palette();
+    KColorScheme colorScheme(p.currentColorGroup());
 
     if (m_lineEdit->text().isEmpty())
     {
-        p.setColor(QPalette::Base, QColor(KApplication::palette().color(QPalette::Active, QPalette::Base)));
+        p.setColor(QPalette::Base, colorScheme.background(KColorScheme::NormalBackground).color());
     }
     else
     {
         if (match)
         {
-            p.setColor(QPalette::Base, QColor(186, 249, 206));
+            p.setColor(QPalette::Base, colorScheme.background(KColorScheme::PositiveBackground).color());
         }
         else
         {
-            p.setColor(QPalette::Base, QColor(247, 130, 130)); // previous were 247, 230, 230
+            p.setColor(QPalette::Base, colorScheme.background(KColorScheme::NegativeBackground).color()); // previous were 247, 230, 230
         }
     }
     m_lineEdit->setPalette(p);

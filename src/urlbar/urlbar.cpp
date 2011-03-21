@@ -49,6 +49,7 @@
 // KDE Includes
 #include <KCompletionBox>
 #include <KStandardDirs>
+#include <KColorScheme>
 
 // Qt Includes
 #include <QtGui/QPainter>
@@ -154,6 +155,7 @@ void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
 
 void UrlBar::paintEvent(QPaintEvent *event)
 {
+    KColorScheme colorScheme(palette().currentColorGroup());
     QColor backgroundColor;
     QColor foregroundColor;
 
@@ -176,8 +178,8 @@ void UrlBar::paintEvent(QPaintEvent *event)
     {
         if (_tab->url().scheme() == QL1S("https"))
         {
-            backgroundColor = QColor(255, 255, 171);  // light yellow
-            foregroundColor = Qt::black;
+            backgroundColor = colorScheme.background(KColorScheme::NeutralBackground).color();  // light yellow
+            foregroundColor = colorScheme.foreground(KColorScheme::NormalText).color();
         }
         p.setBrush(QPalette::Base, backgroundColor);
         p.setBrush(QPalette::Text, foregroundColor);
