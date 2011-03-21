@@ -110,6 +110,8 @@ int Application::newInstance()
     bool isFirstLoad = m_mainWindows.isEmpty();
     bool areThereArguments = (args->count() > 0);
     bool isRekonqCrashed = ReKonfig::recoverOnCrash();
+    // note that isRekonqCrashed is always true if it is not the first load
+    // !isFirstLoad -> isRekonqCrashed
 
     kDebug() << "is first load? " << isFirstLoad;
     kDebug() << "are there arguments? " << areThereArguments;
@@ -166,10 +168,10 @@ int Application::newInstance()
         KStartupInfo::appStarted();
 
     }
-    else if (!isRekonqCrashed)
+    else
     {
 
-        if (isFirstLoad)  // we are starting rekonq, for the first time with no args: use startup behaviour
+        if (isFirstLoad && !isRekonqCrashed)  // we are starting rekonq, for the first time with no args: use startup behaviour
         {
             switch (ReKonfig::startupBehaviour())
             {
