@@ -190,7 +190,7 @@ int Application::newInstance()
                 break;
             }
         }
-        else    // rekonq has just been started. Just open a new window
+        else if (!isFirstLoad)   // rekonq has just been started. Just open a new window
         {
             switch (ReKonfig::newTabsBehaviour())
             {
