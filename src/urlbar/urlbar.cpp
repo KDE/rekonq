@@ -122,6 +122,7 @@ UrlBar::UrlBar(QWidget *parent)
 
 UrlBar::~UrlBar()
 {
+    _suggestionTimer->stop();
     activateSuggestions(false);
     _box.clear();
 }

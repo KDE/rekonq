@@ -165,6 +165,8 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+    m_hidePopupTimer->stop();
+    
     rApp->bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
     rApp->bookmarkProvider()->removeBookmarkPanel(m_bookmarksPanel);
     rApp->removeMainWindow(this);
