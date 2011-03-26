@@ -152,6 +152,7 @@ WebPage *WebView::page()
 }
 
 
+// TODO: refactor me!
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
@@ -177,6 +178,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
+        menu.addSeparator();
         menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
         menu.addSeparator();
@@ -283,46 +285,26 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
         menu.addAction(a);
 
-        menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
         menu.addSeparator();
 
         if (ReKonfig::showDeveloperTools())
             menu.addAction(inspectAction);
     }
 
-    // Open url text in new tab/window
-    if (result.linkUrl().isEmpty())
-    {
+// TODO: REMOVE ME!
+// These actions are here just to NOT remove strings until stable release.
+// Just remove the lines here after that.
+if (result.linkUrl().isEmpty())
+{
+    QString truncatedURL;
 
-        QString text = selectedText();
-        text = text.trimmed();
-        if (text.startsWith(QL1S("http://"))
-                || text.startsWith(QL1S("https://"))
-                || text.startsWith(QL1S("www."))
-           )
-        {
-            QString truncatedURL = text;
-            if (text.length() > 18)
-            {
-                truncatedURL.truncate(15);
-                truncatedURL += "...";
-            }
+    //open selected text url in a new tab
+    a = new KAction(KIcon("tab-new"), i18n("Open '%1' in New Tab", truncatedURL), this);
 
-            //open selected text url in a new tab
-            a = new KAction(KIcon("tab-new"), i18n("Open '%1' in New Tab", truncatedURL), this);
-            a->setData(QUrl(text));
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
-            menu.addAction(a);
-
-            //open selected text url in a new window
-            a = new KAction(KIcon("window-new"), i18n("Open '%1' in New Window", truncatedURL), this);
-            a->setData(QUrl(text));
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
-            menu.addAction(a);
-
-            menu.addSeparator();
-        }
-    }
+    //open selected text url in a new window
+    a = new KAction(KIcon("window-new"), i18n("Open '%1' in New Window", truncatedURL), this);
+}
+// TODO: ----------- END REMOVE
 
     // page actions
     if (!result.isContentSelected() && result.linkUrl().isEmpty())
