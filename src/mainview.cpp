@@ -205,7 +205,7 @@ void MainView::updateTabBar()
 void MainView::webReload()
 {
     WebTab *webTab = currentWebTab();
-    if (webTab->url().scheme() != QL1S("about"))
+    if (webTab->view()->url().scheme() != QL1S("about"))
     {
         QAction *action = webTab->view()->page()->action(QWebPage::Reload);
         action->trigger();
