@@ -294,7 +294,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 // TODO: REMOVE ME!
 // These actions are here just to NOT remove strings until stable release.
 // Just remove the lines here after that.
-if (result.linkUrl().isEmpty())
+if (false)
 {
     QString truncatedURL;
 
