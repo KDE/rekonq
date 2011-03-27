@@ -49,10 +49,10 @@
 
 
 BookmarkProvider::BookmarkProvider(QObject *parent)
-        : QObject(parent)
-        , m_manager(0)
-        , m_owner(0)
-        , m_actionCollection(new KActionCollection(this))
+    : QObject(parent)
+    , m_manager(0)
+    , m_owner(0)
+    , m_actionCollection(new KActionCollection(this))
 {
     // NOTE
     // This hackish code is needed to continue sharing bookmarks with konqueror,
@@ -95,7 +95,6 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
 
 BookmarkProvider::~BookmarkProvider()
 {
-    qDeleteAll(m_bookmarkMenus);
     delete m_manager;
 }
 
@@ -109,8 +108,8 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
     bookmarkActionMenu->setMenu(menu);
     bookmarkActionMenu->setText(i18n("&Bookmarks"));
     BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
-    m_bookmarkMenus.append(bMenu);
-
+    bMenu->setParent(menu);
+    
     return bookmarkActionMenu;
 }
 
@@ -219,8 +218,8 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
             KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), this);
             menuAction->setDelayed(false);
             BookmarkMenu *bMenu = new BookmarkMenu(bookmarkManager(), bookmarkOwner(), menuAction->menu(), bookmark.address());
-            m_bookmarkMenus.append(bMenu);
-
+            bMenu->setParent(menuAction->menu());
+            
             connect(menuAction->menu(), SIGNAL(aboutToShow()), toolBar, SLOT(menuDisplayed()));
             connect(menuAction->menu(), SIGNAL(aboutToHide()), toolBar, SLOT(menuHidden()));
 

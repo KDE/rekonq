@@ -150,7 +150,6 @@ private:
     KActionCollection *m_actionCollection;
     QList<BookmarkToolBar *> m_bookmarkToolBars;
     QList<BookmarksPanel *> m_bookmarkPanels;
-    QList<BookmarkMenu *> m_bookmarkMenus;
 };
 
 
