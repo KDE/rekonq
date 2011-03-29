@@ -89,6 +89,9 @@ UrlBar::UrlBar(QWidget *parent)
     // doesn't show the clear button
     setClearButtonShown(false);
 
+    // enable dragging
+    setDragEnabled(true);
+
     // insert decoded URLs
     setUrlDropsEnabled(true);
 
