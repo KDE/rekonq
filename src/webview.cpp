@@ -472,6 +472,7 @@ void WebView::enterEvent(QEvent *event)
 
 void WebView::dropEvent(QDropEvent *event)
 {
+    bool isEditable = page()->frameAt(event->pos())->hitTestContent(event->pos()).isContentEditable();
     if (event->mimeData()->hasFormat("application/rekonq-bookmark"))
     {
         QByteArray addresses = event->mimeData()->data("application/rekonq-bookmark");
@@ -484,6 +485,20 @@ void WebView::dropEvent(QDropEvent *event)
         {
             emit loadUrl(bookmark.url(), Rekonq::CurrentTab);
         }
+    }
+    else if (event->mimeData()->hasUrls() && event->source() != this && !isEditable) //dropped links
+    {
+        Q_FOREACH (const QUrl &url, event->mimeData()->urls())
+        {
+            emit loadUrl(url, Rekonq::NewFocusedTab);
+        }
+    }
+    else if (event->mimeData()->hasFormat("text/plain") && event->source() != this && !isEditable) //dropped plain text with url format
+    {
+        QUrl url = QUrl::fromUserInput(event->mimeData()->data("text/plain"));
+
+        if (url.isValid())
+            emit loadUrl(url, Rekonq::NewFocusedTab);
     }
     else
     {
@@ -799,4 +814,22 @@ void WebView::stopScrolling()
     m_smoothScrollTimer->stop();
     m_dy = 0;
     m_smoothScrolling = false;
+}
+
+
+void WebView::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls() || event->mimeData()->hasText())
+        event->acceptProposedAction();
+    else
+        KWebView::dragEnterEvent(event);
+}
+
+
+void WebView::dragMoveEvent(QDragMoveEvent *event)
+{
+    if (event->mimeData()->hasUrls() || event->mimeData()->hasText())
+        event->acceptProposedAction();
+    else
+        KWebView::dragMoveEvent(event);
 }
