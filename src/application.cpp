@@ -514,10 +514,11 @@ void Application::updateConfiguration()
         QWebSettings::setOfflineStorageDefaultQuota(50000);
     }
 
-    // Applies user defined CSS to all open webpages. If there no longer is a
-    // user defined CSS removes it from all open webpages.
-    if (!ReKonfig::userCSS().isEmpty())
-        defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
+    // Applies user/system defined CSS to all open webpages.
+    ReKonfig::userCSS().isEmpty()
+        ? defaultSettings->setUserStyleSheetUrl(KUrl(KStandardDirs::locate("appdata" , "default_rekonq.css")))
+        : defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS())
+    ;
 
     // ====== load Settings on main classes
     historyManager()->loadSettings();

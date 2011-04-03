@@ -59,7 +59,6 @@
 
 #include <QtGui/QClipboard>
 #include <QtGui/QContextMenuEvent>
-#include <QtGui/QWindowsStyle>
 
 #include <QtWebKit/QWebFrame>
 #include <QtWebKit/QWebHistory>
@@ -80,21 +79,6 @@ WebView::WebView(QWidget* parent)
 {
     WebPage *page = new WebPage(this);
     setPage(page);
-
-    // // NOTE This is a lot hackish. We copied it from Arora, but using a "Windows Style"
-    // // seems really a pity to me. The problem is that using a KStyle everything seems "broken"
-    // // (at least with dark colors). So I think the code should be somthing like:
-    // KStyle s;
-    // setPalette( s.standardPalette() );
-    // // But it doesn't work :(
-    // // We'll see in next KDE releases...
-    QPalette p;
-    if (p.color(QPalette::ButtonText).lightness() > 50)   //if it is a dark theme
-    {
-        QWindowsStyle s;
-        p = s.standardPalette();
-        setPalette(p);
-    }
 
     // download system
     connect(this, SIGNAL(linkShiftClicked(const KUrl &)), page, SLOT(downloadUrl(const KUrl &)));

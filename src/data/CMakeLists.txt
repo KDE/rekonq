@@ -11,6 +11,7 @@ INSTALL(
 INSTALL(
     FILES
     defaultbookmarks.xbel
+    default_rekonq.css
     DESTINATION ${DATA_INSTALL_DIR}/rekonq
 )
 
