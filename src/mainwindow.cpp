@@ -1149,7 +1149,11 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     QLabel *label = new QLabel(msg);
     m_popup->setView(label);
     QSize labelSize(label->fontMetrics().width(msg) + 2*margin, label->fontMetrics().height() + 2*margin);
-    if (labelSize.width() > width()) labelSize.setWidth(width());
+    if (labelSize.width() > width())
+    {
+        labelSize.setWidth(width());
+        label->setText(label->fontMetrics().elidedText(msg, Qt::ElideMiddle, width()));
+    }
     m_popup->setFixedSize(labelSize);
     m_popup->layout()->setAlignment(Qt::AlignTop);
     m_popup->layout()->setMargin(margin);
