@@ -38,7 +38,7 @@ StackedUrlBar::StackedUrlBar(QWidget *parent)
     // cosmetic
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setMinimumWidth(200);
-    setMinimumHeight(26);   // FIXME in Qt 4.7 we can probably move using MinimumWidth 20
+    setMinimumHeight(20);
 }
 
 
