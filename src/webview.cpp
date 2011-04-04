@@ -275,21 +275,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             menu.addAction(inspectAction);
     }
 
-// TODO: REMOVE ME!
-// These actions are here just to NOT remove strings until stable release.
-// Just remove the lines here after that.
-if (false)
-{
-    QString truncatedURL;
-
-    //open selected text url in a new tab
-    a = new KAction(KIcon("tab-new"), i18n("Open '%1' in New Tab", truncatedURL), this);
-
-    //open selected text url in a new window
-    a = new KAction(KIcon("window-new"), i18n("Open '%1' in New Window", truncatedURL), this);
-}
-// TODO: ----------- END REMOVE
-
     // page actions
     if (!result.isContentSelected() && result.linkUrl().isEmpty())
     {
