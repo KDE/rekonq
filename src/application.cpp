@@ -58,6 +58,7 @@
 #include <ThreadWeaver/Weaver>
 #include <KAction>
 #include <KWindowSystem>
+#include <KWindowInfo>
 #include <KGlobal>
 #include <KCharsets>
 
@@ -293,6 +294,11 @@ MainWindow *Application::mainWindow()
         if(m_mainWindows.isEmpty())
             return 0;
 
+        Q_FOREACH (const QWeakPointer<MainWindow> &pointer, m_mainWindows)
+        {
+            if (KWindowInfo(pointer.data()->effectiveWinId(),NET::WMDesktop,0).isOnCurrentDesktop())
+                return pointer.data();
+        }
         return m_mainWindows.at(0).data();
     }
     return active;
@@ -411,6 +417,8 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 MainWindow *Application::newMainWindow(bool withTab)
 {
     MainWindow *w = new MainWindow();
+    // This is used to track which window was activated most recently
+    w->installEventFilter(this);
 
     if (withTab)
         w->mainView()->newWebTab();    // remember using newWebTab and NOT newTab here!!
@@ -464,6 +472,28 @@ void Application::newWindow()
 {
     loadUrl(KUrl("about:home"), Rekonq::NewWindow);
     mainWindow()->mainView()->currentUrlBar()->setFocus();
+}
+
+
+bool Application::eventFilter( QObject* watched, QEvent* event )
+{
+    // Track which window was activated most recently to prefer it on window choosing
+    // (e.g. when another application opens a link)
+    if (event->type() == QEvent::WindowActivate)
+    {
+        MainWindow *window = qobject_cast<MainWindow*>(watched);
+        if (window)
+        {
+            if (m_mainWindows.at(0).data() != window)
+            {
+                int index = m_mainWindows.indexOf(QWeakPointer<MainWindow>(window));
+                Q_ASSERT(index != -1);
+                m_mainWindows.prepend(m_mainWindows.takeAt(index));
+            }
+        }
+    }
+
+    return QObject::eventFilter( watched, event );
 }
 
 
