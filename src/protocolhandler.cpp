@@ -178,7 +178,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         return false;
     
     // Error Message, for those protocols we cannot handle
-    KMessageBox::error(rApp->mainWindow(), i18nc("@info", "rekonq doesn't know how to handle this protocol: %1", _url.protocol()));
+    KMessageBox::error(rApp->mainWindow(), i18nc("@info", "rekonq does not know how to handle this protocol: %1", _url.protocol()));
 
     return true;
 }
