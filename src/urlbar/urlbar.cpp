@@ -302,6 +302,20 @@ void UrlBar::focusInEvent(QFocusEvent *event)
 
 void UrlBar::dropEvent(QDropEvent *event)
 {
+    //handles only plain-text with url format
+    if (event->mimeData()->hasFormat("text/plain") && event->source() != this)
+    {
+        QUrl url = QUrl::fromUserInput(event->mimeData()->data("text/plain"));
+
+        if (url.isValid())
+        {
+            setQUrl(url);
+            activated(text());
+            return;
+        }
+    }
+
+    //handles everything else
     KLineEdit::dropEvent(event);
     activated(text());
 }
