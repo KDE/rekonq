@@ -178,10 +178,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         return false;
     
     // Error Message, for those protocols we cannot handle
-        // FIXME change this sentence AFTER STRING FREEZE to: "rekonq doesn't know how to handle this protocol: _url.protocol()" 
-    KMessageBox::error(rApp->mainWindow(), i18nc("@info",
-                       "rekonq cannot handle this URL. \
-                        Please use an appropriate application to open it."));
+    KMessageBox::error(rApp->mainWindow(), i18nc("@info", "rekonq doesn't know how to handle this protocol: %1", _url.protocol()));
 
     return true;
 }
