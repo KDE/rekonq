@@ -36,6 +36,7 @@
 #include "application.h"
 #include "bookmarkprovider.h"
 #include "bookmarkowner.h"
+#include "webtab.h"
 
 // Qt Includes
 #include <QtGui/QFrame>
@@ -232,10 +233,16 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             QPoint pos = toolBar()->mapToGlobal(toolBar()->widgetForAction(act)->pos());
             act->menu()->popup(QPoint(pos.x(), pos.y() + toolBar()->widgetForAction(act)->height()));
         }
+        
+        return QObject::eventFilter(watched, event);
     }
-    else if (watched == toolBar())
+    
+    if (watched != toolBar())
+        return QObject::eventFilter(watched, event);
+
+    switch (event->type())
     {
-        if (event->type() == QEvent::Show)
+        case QEvent::Show:
         {
             if (!m_filled)
             {
@@ -243,7 +250,9 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 m_filled = true;
             }
         }
-        if (event->type() == QEvent::ActionRemoved)
+            break;
+
+        case QEvent::ActionRemoved:
         {
             QActionEvent *actionEvent = static_cast<QActionEvent*>(event);
             if (actionEvent && actionEvent->action() != m_dropAction)
@@ -255,7 +264,9 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 }
             }
         }
-        else if (event->type() == QEvent::ParentChange)
+            break;
+
+        case QEvent::ParentChange:
         {
             QActionEvent *actionEvent = static_cast<QActionEvent*>(event);
             if (actionEvent && actionEvent->action() != m_dropAction)
@@ -267,10 +278,12 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 }
             }
         }
-        else if (event->type() == QEvent::DragEnter)
+            break;
+
+        case QEvent::DragEnter:
         {
             QDragEnterEvent *dragEvent = static_cast<QDragEnterEvent*>(event);
-            if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark") || dragEvent->mimeData()->hasFormat("text/uri-list"))
+            if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark") || dragEvent->mimeData()->hasFormat("text/uri-list") || dragEvent->mimeData()->hasFormat("text/plain"))
             {
                 QFrame* dropIndicatorWidget = new QFrame(toolBar());
                 dropIndicatorWidget->setFrameShape(QFrame::VLine);
@@ -279,10 +292,12 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 dragEvent->accept();
             }
         }
-        else if (event->type() == QEvent::DragMove)
+            break;
+        
+        case QEvent::DragMove:
         {
             QDragMoveEvent *dragEvent = static_cast<QDragMoveEvent*>(event);
-            if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark") || dragEvent->mimeData()->hasFormat("text/uri-list"))
+            if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark") || dragEvent->mimeData()->hasFormat("text/uri-list") || dragEvent->mimeData()->hasFormat("text/plain"))
             {
                 QAction *overAction = toolBar()->actionAt(dragEvent->pos());
                 KBookmarkActionInterface *overActionBK = dynamic_cast<KBookmarkActionInterface*>(overAction);
@@ -312,14 +327,18 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 }
             }
         }
-        else if (event->type() == QEvent::DragLeave)
+            break;
+
+        case QEvent::DragLeave:
         {
             QDragLeaveEvent *dragEvent = static_cast<QDragLeaveEvent*>(event);
             delete m_dropAction;
             m_dropAction = 0;
             dragEvent->accept();
         }
-        else if (event->type() == QEvent::Drop)
+            break;
+
+        case QEvent::Drop:
         {
             QDropEvent *dropEvent = static_cast<QDropEvent*>(event);
             KBookmark bookmark;
@@ -334,9 +353,25 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             }
             else if (dropEvent->mimeData()->hasFormat("text/uri-list"))
             {
-                QString title = dropEvent->mimeData()->text();
+                kDebug() << "DROP is URL";
                 QString url = dropEvent->mimeData()->urls().at(0).toString();
+                QString title = url.contains( rApp->mainWindow()->currentTab()->url().url() )
+                    ? rApp->mainWindow()->currentTab()->view()->title()
+                    : url;
                 bookmark = root.addBookmark(title, url);
+            }
+            else if (dropEvent->mimeData()->hasFormat("text/plain"))
+            {
+                kDebug() << "DROP is TEXT";
+                QString url = dropEvent->mimeData()->text();
+                KUrl u(url);
+                if (u.isValid())
+                {
+                    QString title = url.contains( rApp->mainWindow()->currentTab()->url().url() )
+                        ? rApp->mainWindow()->currentTab()->view()->title()
+                        : url;
+                    bookmark = root.addBookmark(title, url);
+                }
             }
             else
             {
@@ -391,11 +426,9 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             }
             dropEvent->accept();
         }
-    }
-    else
-    {
-        // Drag handling
-        if (event->type() == QEvent::MouseButtonPress)
+            break;
+
+        case QEvent::MouseButtonPress: // drag handling
         {
             QPoint pos = toolBar()->mapFromGlobal(QCursor::pos());
             KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(pos));
@@ -410,7 +443,9 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                     return true;
             }
         }
-        else if (event->type() == QEvent::MouseMove)
+            break;
+
+        case QEvent::MouseMove:
         {
             int distance = (toolBar()->mapFromGlobal(QCursor::pos()) - m_startDragPos).manhattanLength();
             if (!m_currentMenu && distance >= QApplication::startDragDistance())
@@ -418,7 +453,9 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 startDrag();
             }
         }
-        else if (event->type() == QEvent::MouseButtonRelease)
+            break;
+
+        case QEvent::MouseButtonRelease:
         {
             int distance = (toolBar()->mapFromGlobal(QCursor::pos()) - m_startDragPos).manhattanLength();
             KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(m_startDragPos));
@@ -430,6 +467,10 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 menu->menu()->popup(QPoint(actionPos.x(), actionPos.y() + toolBar()->widgetForAction(menu)->height()));
             }
         }
+            break;
+
+        default:
+            break;
     }
 
     return QObject::eventFilter(watched, event);
