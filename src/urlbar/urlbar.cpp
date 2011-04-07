@@ -285,6 +285,9 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     else if (event->key() == Qt::Key_Escape)
     {
         clearFocus();
+        if (text() != rApp->mainWindow()->currentTab()->view()->url().toString()
+            && !rApp->mainWindow()->currentTab()->view()->url().toString().startsWith("about"))
+            setText(rApp->mainWindow()->currentTab()->view()->url().toString());
         event->accept();
     }
 
