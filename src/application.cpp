@@ -93,6 +93,37 @@ Application::~Application()
         delete window.data();
         window.clear();
     }
+
+    if (!m_historyManager.isNull()) {
+        delete m_historyManager.data();
+        m_historyManager.clear();
+    }
+
+    if (!m_bookmarkProvider.isNull()) {
+        delete m_bookmarkProvider.data();
+        m_bookmarkProvider.clear();
+    }
+
+    if (!m_sessionManager.isNull()) {
+        delete m_sessionManager.data();
+        m_sessionManager.clear();
+    }
+
+    if (!m_opensearchManager.isNull()) {
+        delete m_opensearchManager.data();
+        m_opensearchManager.clear();
+    }
+
+    if (!m_iconManager.isNull()) {
+        delete m_iconManager.data();
+        m_iconManager.clear();
+    }
+
+    if (!m_adblockManager.isNull()) {
+        delete m_adblockManager.data();
+        m_adblockManager.clear();
+    }
+
 }
 
 
@@ -272,7 +303,7 @@ HistoryManager *Application::historyManager()
 {
     if (m_historyManager.isNull())
     {
-        m_historyManager = new HistoryManager(instance());
+        m_historyManager = new HistoryManager;
     }
     return m_historyManager.data();
 }
@@ -282,7 +313,7 @@ BookmarkProvider *Application::bookmarkProvider()
 {
     if (m_bookmarkProvider.isNull())
     {
-        m_bookmarkProvider = new BookmarkProvider(instance());
+        m_bookmarkProvider = new BookmarkProvider;
     }
     return m_bookmarkProvider.data();
 }
@@ -292,7 +323,7 @@ SessionManager *Application::sessionManager()
 {
     if (m_sessionManager.isNull())
     {
-        m_sessionManager = new SessionManager(instance());
+        m_sessionManager = new SessionManager;
     }
     return m_sessionManager.data();
 }
@@ -302,7 +333,7 @@ OpenSearchManager *Application::opensearchManager()
 {
     if (m_opensearchManager.isNull())
     {
-        m_opensearchManager = new OpenSearchManager(instance());
+        m_opensearchManager = new OpenSearchManager;
     }
     return m_opensearchManager.data();
 }
@@ -312,7 +343,7 @@ IconManager *Application::iconManager()
 {
     if (m_iconManager.isNull())
     {
-        m_iconManager = new IconManager(instance());
+        m_iconManager = new IconManager;
     }
     return m_iconManager.data();
 }
@@ -407,7 +438,7 @@ AdBlockManager *Application::adblockManager()
 {
     if (m_adblockManager.isNull())
     {
-        m_adblockManager = new AdBlockManager(instance());
+        m_adblockManager = new AdBlockManager;
     }
     return m_adblockManager.data();
 }
