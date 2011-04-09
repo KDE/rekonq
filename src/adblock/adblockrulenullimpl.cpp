@@ -110,9 +110,9 @@ bool AdBlockRuleNullImpl::isNullFilter(const QString &filter)
         if (option == QL1S("other"))
             return true;
 
-        // third_party
+        // third_party: managed inside adblockrulefallbackimpl
         if (option == QL1S("third-party"))
-            return true;
+            return false;
 
         // collapse
         if (option == QL1S("collapse"))

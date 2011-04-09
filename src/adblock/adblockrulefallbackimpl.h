@@ -48,6 +48,8 @@ private:
     QRegExp m_regExp;
     QSet<QString> m_whiteDomains;
     QSet<QString> m_blackDomains;
+
+    bool m_thirdPartyOption;
 };
 
 #endif // ADBLOCKRULEFALLBACKIMPL_H

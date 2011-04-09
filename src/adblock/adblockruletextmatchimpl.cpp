@@ -30,6 +30,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Qt Includes
+#include <QNetworkRequest>
+
 
 AdBlockRuleTextMatchImpl::AdBlockRuleTextMatchImpl(const QString &filter)
         : AdBlockRuleImpl(filter)
@@ -43,8 +46,11 @@ AdBlockRuleTextMatchImpl::AdBlockRuleTextMatchImpl(const QString &filter)
 
 bool AdBlockRuleTextMatchImpl::match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const
 {
+    // this basically lets the "first request" to pass... 
+    if(!request.hasRawHeader("referer"))
+        return false;
+    
     Q_UNUSED(encodedUrl);
-    Q_UNUSED(request);
     // Case sensitive compare is faster, but would be incorrect with encodedUrl since
     // we do want case insensitive.
     // What we do is work on a lowercase version of m_textToMatch, and compare to the lowercase

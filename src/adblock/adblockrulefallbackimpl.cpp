@@ -35,13 +35,16 @@
 #include <QStringList>
 
 
+
 static inline bool isRegExpFilter(const QString &filter)
 {
     return filter.startsWith(QL1C('/')) && filter.endsWith(QL1C('/'));
 }
 
+
 AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
-        : AdBlockRuleImpl(filter)
+    : AdBlockRuleImpl(filter)
+    , m_thirdPartyOption(false)
 {
     m_regExp.setCaseSensitivity(Qt::CaseInsensitive);
     m_regExp.setPatternSyntax(QRegExp::RegExp2);
@@ -56,6 +59,9 @@ AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
 
         if (options.contains(QL1S("match-case")))
             m_regExp.setCaseSensitivity(Qt::CaseSensitive);
+
+        if(options.contains(QL1S("third-party")))
+            m_thirdPartyOption = true;
 
         foreach(const QString &option, options)
         {
@@ -83,10 +89,24 @@ AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
     m_regExp.setPattern(parsedLine);
 }
 
+
 bool AdBlockRuleFallbackImpl::match(const QNetworkRequest &request, const QString &encodedUrl, const QString &) const
 {
-    const bool regexpMatch = m_regExp.indexIn(encodedUrl) != -1;
+    if(!request.hasRawHeader("referer"))
+        return false;
+    
+    if (m_thirdPartyOption)
+    {
+        const QString referer = request.rawHeader("referer");
+        const QString host = request.url().host();
+        bool isThirdParty = !referer.contains(host);
 
+        if(!isThirdParty)
+            return false;
+    }
+
+    const bool regexpMatch = m_regExp.indexIn(encodedUrl) != -1;
+    
     if (regexpMatch && (!m_whiteDomains.isEmpty() || !m_blackDomains.isEmpty()))
     {
         Q_ASSERT(qobject_cast<QWebFrame*>(request.originatingObject()));
@@ -109,6 +129,7 @@ bool AdBlockRuleFallbackImpl::match(const QNetworkRequest &request, const QStrin
     }
     return regexpMatch;
 }
+
 
 QString AdBlockRuleFallbackImpl::convertPatternToRegExp(const QString &wildcardPattern)
 {
