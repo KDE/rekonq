@@ -84,7 +84,7 @@ public:
     // history is sorted in reverse
     inline bool operator <(const HistoryItem &other) const
     {
-        return relevance() > other.relevance();
+        return dateTime > other.dateTime;
     }
 
     QString title;

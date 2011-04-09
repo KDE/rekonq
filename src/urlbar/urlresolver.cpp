@@ -47,7 +47,7 @@
 
 // defines
 #define MAX_ELEMENTS 8
-#define MIN_SUGGESTIONS 3
+#define MIN_SUGGESTIONS 2
 
 // NOTE
 // default kurifilter plugin list (at least in my box):
@@ -173,25 +173,8 @@ UrlSearchList UrlResolver::orderLists()
         list << _qurlFromUserInput;
     }
 
-    //find the history items that match the typed string
-    UrlSearchItem privileged = privilegedItem(&_history);
     int historyCount = _history.count();
-
-    //find the bookmarks items that match the typed string
-    if (privileged.type == UrlSearchItem::Undefined)
-    {
-        privileged = privilegedItem(&_bookmarks);
-    }
-    else if (privileged.type == UrlSearchItem::History && _bookmarks.removeOne(privileged))
-    {
-        privileged.type |= UrlSearchItem::Bookmark;
-    }
     int bookmarksCount = _bookmarks.count();
-
-    if (privileged.type != UrlSearchItem::Undefined)
-    {
-        list.prepend(privileged);
-    }
 
     int availableEntries = MAX_ELEMENTS - list.count() - MIN_SUGGESTIONS;
 
@@ -436,22 +419,22 @@ void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &s
 }
 
 
-UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
-{
-    UrlSearchItem item;
-    QString dot = QString(QL1C('.'));
-    QString test1 = QString(QL1C('/')) + _typedString + dot;
-    QString test2 = dot + _typedString + dot;
-
-    for (int i = 0; i < list->count(); i++)
-    {
-        item = list->at(i);
-        //TODO: move this to AwesomeUrlCompletion::substringCompletion and add a priviledged flag to UrlSearchItem
-        if (item.url.contains(test1) || item.url.contains(test2))
-        {
-            list->removeAt(i);
-            return item;
-        }
-    }
-    return UrlSearchItem();
-}
+// UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
+// {
+//     UrlSearchItem item;
+//     QString dot = QString(QL1C('.'));
+//     QString test1 = QString(QL1C('/')) + _typedString + dot;
+//     QString test2 = dot + _typedString + dot;
+// 
+//     for (int i = 0; i < list->count(); i++)
+//     {
+//         item = list->at(i);
+//         //TODO: move this to AwesomeUrlCompletion::substringCompletion and add a priviledged flag to UrlSearchItem
+//         if (item.url.contains(test1) || item.url.contains(test2))
+//         {
+//             list->removeAt(i);
+//             return item;
+//         }
+//     }
+//     return UrlSearchItem();
+// }
