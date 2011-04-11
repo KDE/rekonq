@@ -61,12 +61,12 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-    void enterEvent(QEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
     void dropEvent(QDropEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent * event);
+    void paintEvent(QPaintEvent *event);
 
 private Q_SLOTS:
     void search();
@@ -105,6 +105,7 @@ private:
     int m_hScrollSpeed;
     bool m_canEnableAutoScroll;
     bool m_isAutoScrollEnabled;
+    QPixmap m_autoScrollIndicator;
 
     // Smooth Scroll
     QTimer *const m_smoothScrollTimer;

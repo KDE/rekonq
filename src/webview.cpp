@@ -72,6 +72,7 @@ WebView::WebView(QWidget* parent)
         , m_hScrollSpeed(0)
         , m_canEnableAutoScroll(true)
         , m_isAutoScrollEnabled(false)
+        , m_autoScrollIndicator(QPixmap(KStandardDirs::locate("appdata" , "pics/autoscroll.png")))
         , m_smoothScrollTimer(new QTimer(this))
         , m_smoothScrolling(false)
         , m_dy(0)
@@ -354,11 +355,11 @@ void WebView::mousePressEvent(QMouseEvent *event)
 {
     if (m_isAutoScrollEnabled)
     {
-        setCursor(Qt::ArrowCursor);
         m_vScrollSpeed = 0;
         m_hScrollSpeed = 0;
         m_autoScrollTimer->stop();
         m_isAutoScrollEnabled = false;
+        update();
         return;
     }
 
@@ -384,9 +385,9 @@ void WebView::mousePressEvent(QMouseEvent *event)
             if (!page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).isNull()
                     || !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).isNull())
             {
-                setCursor(KIcon("transform-move").pixmap(32));
                 m_clickPos = event->pos();
                 m_isAutoScrollEnabled = true;
+                update();
             }
         }
         break;
@@ -430,15 +431,6 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 }
 
 
-void WebView::enterEvent(QEvent *event)
-{
-    if (m_isAutoScrollEnabled)
-        setCursor(KIcon("transform-move").pixmap(32));
-
-    KWebView::enterEvent(event);
-}
-
-
 void WebView::dropEvent(QDropEvent *event)
 {
     bool isEditable = page()->frameAt(event->pos())->hitTestContent(event->pos()).isContentEditable();
@@ -474,6 +466,24 @@ void WebView::dropEvent(QDropEvent *event)
         KWebView::dropEvent(event);
     }
 }
+
+
+void WebView::paintEvent(QPaintEvent* event)
+{
+    KWebView::paintEvent(event);
+
+    if (m_isAutoScrollEnabled)
+    {
+        QPoint centeredPoint = m_clickPos;
+        centeredPoint.setX(centeredPoint.x() - m_autoScrollIndicator.width() / 2);
+        centeredPoint.setY(centeredPoint.y() - m_autoScrollIndicator.height() / 2);
+
+        QPainter painter(this);
+        painter.setOpacity(0.8);
+        painter.drawPixmap(centeredPoint, m_autoScrollIndicator);
+    }
+}
+
 
 void WebView::search()
 {
