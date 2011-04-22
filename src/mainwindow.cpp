@@ -1145,7 +1145,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
     int margin = 4;
 
-    // setting the popup
+    // setting popup size
     QLabel *label = new QLabel(msg);
     m_popup->setView(label);
     QSize labelSize(label->fontMetrics().width(msg) + 2*margin, label->fontMetrics().height() + 2*margin);
@@ -1162,35 +1162,35 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     WebTab *tab = m_view->currentWebTab();
 
     // fix crash on window close
-    if (!tab)
+    if (!tab || !tab->page())
         return;
 
-    // fix crash on window close
-    if (!tab->page())
-        return;
+    bool horizontalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
+    bool verticalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
 
-    bool scrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
-    int scrollbarSize = 0;
-    if (scrollbarIsVisible)
-    {
-        //TODO: detect QStyle size
-        scrollbarSize = 17;
-    }
-
+    //TODO: detect QStyle sizeHint, instead of fixed 17
+    int hScrollbarSize = horizontalScrollbarIsVisible ? 17 : 0;
+    int vScrollbarSize = verticalScrollbarIsVisible ? 17 : 0;
+    
     QPoint webViewOrigin = tab->view()->mapToGlobal(QPoint(0, 0));
-    int bottomLeftY = webViewOrigin.y() + tab->page()->viewportSize().height() - labelSize.height() - scrollbarSize;
+    QPoint mousePos = tab->mapToGlobal(tab->view()->mousePos());
 
     // setting popup in bottom-left position
     int x = mapToGlobal(QPoint(0, 0)).x();
-    int y = bottomLeftY;
+    int y = webViewOrigin.y() + tab->page()->viewportSize().height() - labelSize.height() - hScrollbarSize;
 
-    QPoint mousePos = tab->mapToGlobal(tab->view()->mousePos());
-    if (QRect(webViewOrigin.x() , bottomLeftY , labelSize.width() , labelSize.height()).contains(mousePos))
+    if ( QRect(x, y, labelSize.width() , labelSize.height() ).contains(mousePos) )
     {
-        // setting popup above the mouse
-        y = bottomLeftY - labelSize.height();
+        // settings popup on the right
+        x = mapToGlobal(QPoint(- labelSize.width() + tab->page()->viewportSize().width(), 0)).x() - vScrollbarSize;
     }
 
+    if (QRect(x , y , labelSize.width() , labelSize.height()).contains(mousePos))
+    {
+        // setting popup above the mouse
+        y -= labelSize.height();
+    }
+    
     m_popup->show(QPoint(x, y));
 }
 
