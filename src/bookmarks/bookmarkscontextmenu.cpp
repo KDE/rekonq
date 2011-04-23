@@ -36,9 +36,10 @@
 #include <KBookmarkManager>
 
 
-BookmarksContextMenu::BookmarksContextMenu(const KBookmark &bookmark, KBookmarkManager *manager, BookmarkOwner *owner, QWidget *parent)
+BookmarksContextMenu::BookmarksContextMenu(const KBookmark &bookmark, KBookmarkManager *manager, BookmarkOwner *owner, bool nullForced, QWidget *parent)
         : KBookmarkContextMenu(bookmark, manager, owner, parent)
         , m_bmOwner(owner)
+        , m_nullForced(nullForced)
 {
 }
 
@@ -132,17 +133,17 @@ void BookmarksContextMenu::addNullActions()
 
 void BookmarksContextMenu::addActions()
 {
-    if (bookmark().isGroup())
+    if (bookmark().isNull() || m_nullForced)
     {
-        addFolderActions();
+        addNullActions();
     }
     else if (bookmark().isSeparator())
     {
         addSeparatorActions();
     }
-    else if (bookmark().isNull())
+    else if (bookmark().isGroup())
     {
-        addNullActions();
+        addFolderActions();
     }
     else
     {

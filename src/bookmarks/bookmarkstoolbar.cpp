@@ -189,13 +189,18 @@ KToolBar* BookmarkToolBar::toolBar()
 void BookmarkToolBar::contextMenu(const QPoint &point)
 {
     KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface*>(toolBar()->actionAt(point));
-    KBookmark bookmark;
+    KBookmark bookmark = rApp->bookmarkProvider()->bookmarkManager()->toolbar();
+    bool nullAction = true;
     if (action)
+    {
         bookmark = action->bookmark();
+        nullAction = false;
+    }
 
     BookmarksContextMenu menu(bookmark,
                               rApp->bookmarkProvider()->bookmarkManager(),
-                              rApp->bookmarkProvider()->bookmarkOwner());
+                              rApp->bookmarkProvider()->bookmarkOwner(),
+                              nullAction);
     menu.exec(toolBar()->mapToGlobal(point));
 }
 
