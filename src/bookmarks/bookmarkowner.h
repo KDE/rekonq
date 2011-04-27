@@ -61,7 +61,9 @@ public:
         COPY,
         EDIT,
         DELETE,
-        NUM_ACTIONS
+        NUM_ACTIONS,
+        SET_TOOLBAR_FOLDER,
+        UNSET_TOOLBAR_FOLDER
     };
 
     /**
@@ -106,6 +108,8 @@ public Q_SLOTS:
     void copyLink(const KBookmark &bookmark);
     void editBookmark(KBookmark bookmark);
     bool deleteBookmark(const KBookmark &bookmark);
+    void setToolBarFolder(KBookmark bookmark = KBookmark());
+    void unsetToolBarFolder();
 
 Q_SIGNALS:
     /**

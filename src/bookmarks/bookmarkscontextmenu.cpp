@@ -29,6 +29,11 @@
 
 // Local Includes
 #include "bookmarkowner.h"
+#include "bookmarkprovider.h"
+#include "application.h"
+
+// KDE Includes
+#include <KBookmarkManager>
 
 
 BookmarksContextMenu::BookmarksContextMenu(const KBookmark &bookmark, KBookmarkManager *manager, BookmarkOwner *owner, QWidget *parent)
@@ -63,6 +68,15 @@ void BookmarksContextMenu::addBookmarkActions()
 void BookmarksContextMenu::addFolderActions()
 {
     KBookmarkGroup group = bookmark().toGroup();
+
+    if (bookmark().internalElement().attributeNode("toolbar").value() == "yes")
+    {
+        addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::UNSET_TOOLBAR_FOLDER));
+    }
+    else
+    {
+        addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::SET_TOOLBAR_FOLDER));
+    }
 
     if (!group.first().isNull())
     {
@@ -105,6 +119,11 @@ void BookmarksContextMenu::addSeparatorActions()
 
 void BookmarksContextMenu::addNullActions()
 {
+    KBookmarkManager *manager = rApp->bookmarkProvider()->bookmarkManager();
+    if (manager->toolbar().hasParent())
+    {
+        addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::UNSET_TOOLBAR_FOLDER));
+    }
     addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::BOOKMARK_PAGE));
     addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::NEW_FOLDER));
     addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::NEW_SEPARATOR));

@@ -89,6 +89,12 @@ KAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAc
     case DELETE:
         return  createAction(i18n("Delete"), "edit-delete",
                              i18n("Delete the bookmark"), SLOT(deleteBookmark(const KBookmark &)), bookmark);
+    case SET_TOOLBAR_FOLDER:
+        return  createAction(i18n("Set as toolbar folder"), "bookmark-toolbar",
+                             "", SLOT(setToolBarFolder(KBookmark)), bookmark);
+    case UNSET_TOOLBAR_FOLDER:
+        return  createAction(i18n("Unset this folder as the toolbar folder"), "bookmark-toolbar",
+                             "", SLOT(unsetToolBarFolder()), bookmark);
     default:
         return 0;
     }
@@ -329,6 +335,31 @@ bool BookmarkOwner::deleteBookmark(const KBookmark &bookmark)
     bmg.deleteBookmark(bookmark);
     m_manager->emitChanged(bmg);
     return true;
+}
+
+
+void BookmarkOwner::setToolBarFolder(KBookmark bookmark)
+{
+    if (!bookmark.isGroup())
+        return;
+
+    unsetToolBarFolder();
+    bookmark.internalElement().setAttribute("toolbar", "yes");
+    bookmark.setIcon("bookmark-toolbar");
+
+    m_manager->emitChanged();
+}
+
+
+void BookmarkOwner::unsetToolBarFolder()
+{
+    KBookmarkGroup toolbar = m_manager->toolbar();
+    if (!toolbar.isNull())
+    {
+        toolbar.internalElement().setAttribute("toolbar", "no");
+        toolbar.setIcon("");
+    }
+    m_manager->emitChanged();
 }
 
 

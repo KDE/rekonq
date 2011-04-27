@@ -223,11 +223,12 @@ void BookmarkToolBar::hideMenu()
 
 bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
 {
-    if (m_currentMenu && m_currentMenu->isVisible() && !m_currentMenu->rect().contains(m_currentMenu->mapFromGlobal(QCursor::pos())))
+    // To switch root folders as in a menubar
+    if (m_currentMenu && m_currentMenu->isVisible() && event->type() == QEvent::MouseMove
+            && !m_currentMenu->rect().contains(m_currentMenu->mapFromGlobal(QCursor::pos())))
     {
-        // To switch root folders as in a menubar
         KBookmarkActionMenu* act = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(toolBar()->mapFromGlobal(QCursor::pos())));
-        if (event->type() == QEvent::MouseMove && act && m_currentMenu && act->menu() != m_currentMenu)
+        if (act && act->menu() != m_currentMenu)
         {
             m_currentMenu->hide();
             QPoint pos = toolBar()->mapToGlobal(toolBar()->widgetForAction(act)->pos());
@@ -237,9 +238,6 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         return QObject::eventFilter(watched, event);
     }
     
-    if (watched != toolBar())
-        return QObject::eventFilter(watched, event);
-
     switch (event->type())
     {
         case QEvent::Show:
@@ -342,7 +340,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         {
             QDropEvent *dropEvent = static_cast<QDropEvent*>(event);
             KBookmark bookmark;
-            KBookmarkGroup root = rApp->bookmarkProvider()->rootGroup();
+            KBookmarkGroup root = rApp->bookmarkProvider()->bookmarkManager()->toolbar();
 
             if (dropEvent->mimeData()->hasFormat("application/rekonq-bookmark"))
             {
@@ -428,49 +426,59 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         }
             break;
 
-        case QEvent::MouseButtonPress: // drag handling
-        {
-            QPoint pos = toolBar()->mapFromGlobal(QCursor::pos());
-            KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(pos));
-
-            if (action)
-            {
-                m_dragAction = toolBar()->actionAt(pos);
-                m_startDragPos = pos;
-
-                // The menu is displayed only when the mouse button is released
-                if (action->bookmark().isGroup())
-                    return true;
-            }
-        }
-            break;
-
-        case QEvent::MouseMove:
-        {
-            int distance = (toolBar()->mapFromGlobal(QCursor::pos()) - m_startDragPos).manhattanLength();
-            if (!m_currentMenu && distance >= QApplication::startDragDistance())
-            {
-                startDrag();
-            }
-        }
-            break;
-
-        case QEvent::MouseButtonRelease:
-        {
-            int distance = (toolBar()->mapFromGlobal(QCursor::pos()) - m_startDragPos).manhattanLength();
-            KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(m_startDragPos));
-
-            if (action && action->bookmark().isGroup() && distance < QApplication::startDragDistance())
-            {
-                KBookmarkActionMenu *menu = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(m_startDragPos));
-                QPoint actionPos = toolBar()->mapToGlobal(toolBar()->widgetForAction(menu)->pos());
-                menu->menu()->popup(QPoint(actionPos.x(), actionPos.y() + toolBar()->widgetForAction(menu)->height()));
-            }
-        }
-            break;
-
         default:
             break;
+    }
+
+    // These events need to be handled only for Bookmark actions and not the bar
+    if (watched != toolBar())
+    {
+        switch (event->type())
+        {
+            case QEvent::MouseButtonPress: // drag handling
+            {
+                QPoint pos = toolBar()->mapFromGlobal(QCursor::pos());
+                KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(pos));
+
+                if (action)
+                {
+                    m_dragAction = toolBar()->actionAt(pos);
+                    m_startDragPos = pos;
+
+                    // The menu is displayed only when the mouse button is released
+                    if (action->bookmark().isGroup())
+                        return true;
+                }
+            }
+                break;
+
+            case QEvent::MouseMove:
+            {
+                int distance = (toolBar()->mapFromGlobal(QCursor::pos()) - m_startDragPos).manhattanLength();
+                if (!m_currentMenu && distance >= QApplication::startDragDistance())
+                {
+                    startDrag();
+                }
+            }
+                break;
+
+            case QEvent::MouseButtonRelease:
+            {
+                int distance = (toolBar()->mapFromGlobal(QCursor::pos()) - m_startDragPos).manhattanLength();
+                KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(m_startDragPos));
+
+                if (action && action->bookmark().isGroup() && distance < QApplication::startDragDistance())
+                {
+                    KBookmarkActionMenu *menu = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(m_startDragPos));
+                    QPoint actionPos = toolBar()->mapToGlobal(toolBar()->widgetForAction(menu)->pos());
+                    menu->menu()->popup(QPoint(actionPos.x(), actionPos.y() + toolBar()->widgetForAction(menu)->height()));
+                }
+            }
+                break;
+
+            default:
+                break;
+        }
     }
 
     return QObject::eventFilter(watched, event);
