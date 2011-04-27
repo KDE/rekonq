@@ -152,6 +152,7 @@ public Q_SLOTS:
     void openLastClosedTab();
     void openClosedTab();
     void switchToTab();
+    void loadFavorite(const int index);
 
     // WEB slot actions
     void webReload();

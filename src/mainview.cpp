@@ -679,6 +679,16 @@ void MainView::switchToTab()
 }
 
 
+void MainView::loadFavorite(const int index)
+{
+    QStringList urls = ReKonfig::previewUrls();
+    if (index < 0 || index > urls.length())
+        return;
+    KUrl url = KUrl(urls.at(index-1));
+    rApp->loadUrl(url);
+}
+
+
 QLabel *MainView::animatedLoading(int index, bool addMovie)
 {
     if (index == -1)

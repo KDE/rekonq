@@ -93,6 +93,8 @@
 
 #include <QtWebKit/QWebHistory>
 
+#include <QSignalMapper>
+
 
 MainWindow::MainWindow()
         : KXmlGuiWindow()
@@ -488,6 +490,19 @@ void MainWindow::setupActions()
         actionCollection()->addAction(QL1S(("switch_tab_" + QString::number(i)).toAscii()), a);
         connect(a, SIGNAL(triggered(bool)), m_view, SLOT(switchToTab()));
     }
+
+    // shortcuts for loading favorite pages
+    QSignalMapper *signalMapper = new QSignalMapper(this);
+    for (int i = 1; i <= 9; ++i)
+    {
+        a = new KAction(i18n("Switch to Favorite Page %1", i), this);
+        a->setShortcut(KShortcut(QString("Ctrl+%1").arg(i)));
+        a->setData(QVariant(i));
+        actionCollection()->addAction(QL1S(("switch_favorite_" + QString::number(i)).toAscii()), a);
+        connect(a, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
+        signalMapper->setMapping(a, i);
+    }
+    connect(signalMapper, SIGNAL(mapped(const int)), m_view, SLOT(loadFavorite(const int)));
 
     // ============================== Indexed Tab Actions ====================================
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
