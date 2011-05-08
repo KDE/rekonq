@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=rekonq
 Name[bg]=rekonq
+Name[bs]=rekonq
 Name[ca]=rekonq
 Name[ca@valencia]=rekonq
 Name[cs]=rekonq
@@ -39,6 +40,7 @@ Name[x-test]=xxrekonqxx
 Name[zh_CN]=rekonq
 Name[zh_TW]=rekonq
 GenericName=Web Browser
+GenericName[bs]=Pregled Internet WWW stranica
 GenericName[ca]=Navegador web
 GenericName[ca@valencia]=Navegador web
 GenericName[cs]=Webový prohlížeč
