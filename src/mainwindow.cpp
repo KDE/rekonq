@@ -481,28 +481,29 @@ void MainWindow::setupActions()
     closedTabsMenu->setDelayed(false);
     actionCollection()->addAction(QL1S("closed_tab_menu"), closedTabsMenu);
 
+    QSignalMapper *tabSignalMapper = new QSignalMapper(this);
     // shortcuts for quickly switching to a tab
     for (int i = 1; i <= 9; i++)
     {
         a = new KAction(i18n("Switch to Tab %1", i), this);
         a->setShortcut(KShortcut(QString("Alt+%1").arg(i)));
-        a->setData(QVariant(i));
         actionCollection()->addAction(QL1S(("switch_tab_" + QString::number(i)).toAscii()), a);
-        connect(a, SIGNAL(triggered(bool)), m_view, SLOT(switchToTab()));
+        connect(a, SIGNAL(triggered(bool)), tabSignalMapper, SLOT(map()));
+        tabSignalMapper->setMapping(a, i);
     }
+    connect(tabSignalMapper, SIGNAL(mapped(const int)), m_view, SLOT(switchToTab(const int)));
 
     // shortcuts for loading favorite pages
-    QSignalMapper *signalMapper = new QSignalMapper(this);
+    QSignalMapper *favoritesSignalMapper = new QSignalMapper(this);
     for (int i = 1; i <= 9; ++i)
     {
         a = new KAction(i18n("Switch to Favorite Page %1", i), this);
         a->setShortcut(KShortcut(QString("Ctrl+%1").arg(i)));
-        a->setData(QVariant(i));
         actionCollection()->addAction(QL1S(("switch_favorite_" + QString::number(i)).toAscii()), a);
-        connect(a, SIGNAL(triggered(bool)), signalMapper, SLOT(map()));
-        signalMapper->setMapping(a, i);
+        connect(a, SIGNAL(triggered(bool)), favoritesSignalMapper, SLOT(map()));
+        favoritesSignalMapper->setMapping(a, i);
     }
-    connect(signalMapper, SIGNAL(mapped(const int)), m_view, SLOT(loadFavorite(const int)));
+    connect(favoritesSignalMapper, SIGNAL(mapped(const int)), m_view, SLOT(loadFavorite(const int)));
 
     // ============================== Indexed Tab Actions ====================================
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
