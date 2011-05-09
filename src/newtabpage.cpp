@@ -191,7 +191,7 @@ void NewTabPage::favoritesPage()
         else if (!WebSnap::existsImage(url))
             prev = loadingPreview(i, url);
         else
-            prev = validPreview(i, url, names.at(i));
+            prev = validPreview(i, url, QString::number(i+1) + " - " + names.at(i));
 
         setupPreview(prev, i);
 
