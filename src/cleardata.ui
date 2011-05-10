@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string extracomment="@title:window">Clear Private Data</string>
+   <string comment="@title:window">Clear Private Data</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
