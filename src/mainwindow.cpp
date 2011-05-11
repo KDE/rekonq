@@ -245,6 +245,7 @@ void MainWindow::updateToolsMenu()
         m_developerMenu->addAction(actionByName(QL1S("web_inspector")));
         m_developerMenu->addAction(actionByName(QL1S("page_source")));
         m_developerMenu->addAction(actionByName(QL1S("net_analyzer")));
+        m_developerMenu->addAction(actionByName(QL1S("set_editable")));
 
         m_toolsMenu->addAction(m_developerMenu);
         if (!ReKonfig::showDeveloperTools())
@@ -544,6 +545,11 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
     actionCollection()->addAction(QL1S("UserAgentSettings"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(showUserAgentSettings()));
+
+    a = new KAction(KIcon(""), i18n("set editable"), this);
+    a->setCheckable(true);
+    actionCollection()->addAction(QL1S("set_editable"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(setEditable(bool)));
 }
 
 
@@ -1577,4 +1583,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         m_popup->hide();
 
     KMainWindow::resizeEvent(event);
+}
+
+
+void MainWindow::setEditable(bool on)
+{
+    currentTab()->page()->setContentEditable(on);
 }

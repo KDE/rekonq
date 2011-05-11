@@ -180,7 +180,8 @@ private Q_SLOTS:
     void showUserAgentSettings();
 
     void enableNetworkAnalysis(bool);
-
+    void setEditable(bool);
+    
     void initBookmarkBar();
     void updateToolsMenu();
 
