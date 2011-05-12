@@ -74,6 +74,7 @@
 #include <KStandardDirs>
 #include <KToggleFullScreenAction>
 #include <KProtocolManager>
+#include <KTemporaryFile>
 
 #include <KParts/Part>
 #include <KParts/BrowserExtension>
@@ -668,6 +669,19 @@ void MainWindow::fileSaveAs()
     if (destUrl.isEmpty())
         return;
 
+    if (w->page()->isContentEditable())
+    {
+        QString code = w->page()->mainFrame()->toHtml();
+        QFile file(destUrl);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+            return;
+
+        QTextStream out(&file);
+        out << code;
+
+        return;
+    }
+    
     KIO::Job *job = KIO::file_copy(srcUrl, KUrl(destUrl), -1, KIO::Overwrite);
     job->addMetaData("MaxCacheSize", "0");  // Don't store in http cache.
     job->addMetaData("cache", "cache");     // Use entry from cache if available.
@@ -960,11 +974,30 @@ QString MainWindow::selectedText() const
 
 void MainWindow::viewPageSource()
 {
-    if (!currentTab())
+    WebTab * w = currentTab();
+    
+    if (!w)
         return;
 
-    KUrl url = currentTab()->url();
-    KRun::runUrl(url, QL1S("text/plain"), this, false);
+    KUrl url = w->url();
+
+    QString code = w->page()->mainFrame()->toHtml();
+
+    // find a safe file name...
+    QUrl tempUrl = QUrl(url.url());
+    QByteArray name = tempUrl.toEncoded(QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash);
+    QString filePath = KStandardDirs::locateLocal("tmp", QString("code/") + name.toBase64(), true);
+
+    QFile temp(filePath);
+
+    if (temp.open(QFile::WriteOnly | QFile::Truncate))
+    {
+        QTextStream out(&temp);
+        out << code;
+    }
+
+    KRun::runUrl(QL1S("file://") + temp.fileName(), QL1S("text/plain"), this, false);
+    return;
 }
 
 
