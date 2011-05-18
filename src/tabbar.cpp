@@ -59,10 +59,6 @@
 #include <QStyleOptionFrameV3>
 
 
-#define BASE_WIDTH_DIVISOR    4
-#define MIN_WIDTH_DIVISOR     8
-
-
 static inline QByteArray highlightPropertyName(int index)
 {
     return QByteArray("hAnim").append(QByteArray::number(index));
@@ -102,8 +98,8 @@ QSize TabBar::tabSizeHint(int index) const
 
     int buttonSize = view->addTabButton()->size().width();
     int tabBarWidth = view->size().width() - buttonSize;
-    int baseWidth =  view->sizeHint().width() / BASE_WIDTH_DIVISOR;
-    int minWidth =  view->sizeHint().width() / MIN_WIDTH_DIVISOR;
+    int baseWidth =  view->sizeHint().width() / baseWidthDivisor;
+    int minWidth =  view->sizeHint().width() / minWidthDivisor;
 
     int w;
     if (baseWidth*count() < tabBarWidth)
@@ -186,22 +182,61 @@ void TabBar::showTabPreview()
     if (indexedTab->isPageLoading())
         return;
 
-    int w = tabSizeHint(m_currentTabPreviewIndex).width();
-    int h = w * ((0.0 + currentTab->height()) / currentTab->width());
+    int w = (mv->sizeHint().width() / baseWidthDivisor);
+    int h = w * 0.75;
 
     m_previewPopup = new KPassivePopup(this);
     m_previewPopup.data()->setFrameShape(QFrame::StyledPanel);
     m_previewPopup.data()->setFrameShadow(QFrame::Plain);
-    m_previewPopup.data()->setFixedSize(w, h);
 
-    QLabel *l = new QLabel();
-    l->setPixmap(WebSnap::renderTabPreview(*indexedTab->page(), w, h));
+    QWidget *widget = new QWidget();
+    QLabel *thumbnail = new QLabel(widget);
+    QLabel *title = new QLabel(widget);
+    QLabel *url = new QLabel(widget);
+    thumbnail->setPixmap(WebSnap::renderTabPreview(*indexedTab->page(), w, h));
+    thumbnail->setAlignment(Qt::AlignHCenter);
 
-    m_previewPopup.data()->setView(l);
+    QString text = indexedTab->view()->title();
+    if (text.length() > 20)
+    {
+        text = text.left(17) + "...";
+    }
+
+    title->setText(text);
+    title->setAlignment(Qt::AlignHCenter);
+
+    text = indexedTab->url().prettyUrl();
+    if (text.length() > 20)
+    {
+        text = text.left(17) + "...";
+    }
+
+    url->setText(text);
+    url->setAlignment(Qt::AlignHCenter);
+    QVBoxLayout *vb = new QVBoxLayout(widget);
+    vb->addWidget(title);
+    vb->addWidget(thumbnail);
+    vb->addWidget(url);
+    widget->setLayout(vb);
+
+    m_previewPopup.data()->setFixedSize(w, h + url->heightForWidth(w) + title->heightForWidth(w));
+    m_previewPopup.data()->setView(widget);
     m_previewPopup.data()->layout()->setAlignment(Qt::AlignTop);
     m_previewPopup.data()->layout()->setMargin(0);
 
-    QPoint pos(tabRect(m_currentTabPreviewIndex).x() , tabRect(m_currentTabPreviewIndex).y() + tabRect(m_currentTabPreviewIndex).height());
+    int tabBarWidth = mv->size().width();
+    int leftIndex = tabRect(m_currentTabPreviewIndex).x() + (tabRect(m_currentTabPreviewIndex).width() - w)/2;
+
+    if (leftIndex < 0)
+    {
+        leftIndex = 0;
+    }
+    else if (leftIndex + w > tabBarWidth)
+    {
+        leftIndex = tabBarWidth - w;
+    }
+
+    QPoint pos(leftIndex, tabRect(m_currentTabPreviewIndex).y() + tabRect(m_currentTabPreviewIndex).height());
     m_previewPopup.data()->show(mapToGlobal(pos));
 }
 
