@@ -144,6 +144,7 @@ Q_SIGNALS:
 private:
     void find(QList<KBookmark> *list, const KBookmark &bookmark, const QString &text);
     KBookmark bookmarkForUrl(const KBookmark &bookmark, const KUrl &url);
+    void copyBookmarkGroup(const KBookmarkGroup &groupToCopy, KBookmarkGroup destGroup);
 
     KBookmarkManager *m_manager;
     BookmarkOwner *m_owner;

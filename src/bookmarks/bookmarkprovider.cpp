@@ -54,31 +54,20 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
     , m_owner(0)
     , m_actionCollection(new KActionCollection(this))
 {
-    // NOTE
-    // This hackish code is needed to continue sharing bookmarks with konqueror,
-    // until we can (hopefully) start using an akonadi resource.
-    //
-    // The cleanest code has a subdole bug inside does not allowing people to start
-    // using rekonq and then using konqueror. So if konqueror bk file has not just been created,
-    // bk are stored in rekonq dir and then they will be lost when you start using konqi
+    m_manager = KBookmarkManager::userBookmarksManager();
+    const QString bookmarksFile = KStandardDirs::locateLocal("data", QString::fromLatin1("konqueror/bookmarks.xml"));
 
-    KUrl bookfile = KUrl("~/.kde/share/apps/konqueror/bookmarks.xml");  // share konqueror bookmarks
-    if (!QFile::exists(bookfile.path()))
+    if (!QFile::exists(bookmarksFile))
     {
-        bookfile = KUrl("~/.kde4/share/apps/konqueror/bookmarks.xml");
-        if (!QFile::exists(bookfile.path()))
-        {
-            QString bookmarksDefaultPath = KStandardDirs::locate("appdata" , "defaultbookmarks.xbel");
-            QFile bkms(bookmarksDefaultPath);
-            QString bookmarksPath = KStandardDirs::locateLocal("appdata", "bookmarks.xml", true);
-            bookmarksPath.replace("rekonq", "konqueror");
-            bkms.copy(bookmarksPath);
-            bookfile = KUrl(bookmarksPath);
-        }
-    }
+        kDebug() << "copying of defaultbookmarks.xbel ...";
 
-    m_manager = KBookmarkManager::managerForFile(bookfile.path(), "rekonq");
-    m_manager->setEditorOptions("", true);
+        QString bookmarksDefaultPath = KStandardDirs::locate("appdata" , "defaultbookmarks.xbel");
+        KBookmarkManager *tempManager = KBookmarkManager::managerForExternalFile(bookmarksDefaultPath);
+
+        copyBookmarkGroup(tempManager->root(), rootGroup());
+        m_manager->emitChanged();
+        delete tempManager;
+    }
 
     connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
             this, SLOT(slotBookmarksChanged()));
@@ -302,4 +291,32 @@ KBookmark BookmarkProvider::bookmarkForUrl(const KBookmark &bookmark, const KUrl
     }
 
     return found;
+}
+
+
+void BookmarkProvider::copyBookmarkGroup(const KBookmarkGroup &groupToCopy, KBookmarkGroup destGroup)
+{
+    KBookmark bookmark = groupToCopy.first();
+    while (!bookmark.isNull())
+    {
+        if (bookmark.isGroup())
+        {
+            KBookmarkGroup newDestGroup = destGroup.createNewFolder(bookmark.text());
+            if (bookmark.toGroup().isToolbarGroup())
+            {
+                newDestGroup.internalElement().setAttribute("toolbar", "yes");
+                newDestGroup.setIcon("bookmark-toolbar");
+            }
+            copyBookmarkGroup(bookmark.toGroup(), newDestGroup);
+        }
+        else if (bookmark.isSeparator())
+        {
+            destGroup.createNewSeparator();
+        }
+        else
+        {
+            destGroup.addBookmark(bookmark.text(), bookmark.url());
+        }
+        bookmark = groupToCopy.next(bookmark);
+    }
 }
