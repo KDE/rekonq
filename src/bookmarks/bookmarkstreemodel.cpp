@@ -94,6 +94,13 @@ QVariant BtmItem::data(int role) const
             tooltip += url;
         }
 
+        if (!m_kbm.description().isEmpty())
+        {
+            if (!tooltip.isEmpty())
+                tooltip += '\n';
+            tooltip += m_kbm.description();
+        }
+
         return tooltip;
     }
 

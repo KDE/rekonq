@@ -36,8 +36,11 @@ class BookmarkOwner;
 class BookmarksContextMenu : public KBookmarkContextMenu
 {
 public:
-    BookmarksContextMenu(const KBookmark &bookmark, KBookmarkManager *manager, BookmarkOwner *owner, QWidget *parent = 0);
-
+    BookmarksContextMenu(const KBookmark &bookmark,
+                         KBookmarkManager *manager,
+                         BookmarkOwner *owner,
+                         bool nullForced = false,
+                         QWidget *parent = 0);
     virtual void addActions();
 
 private:
@@ -47,6 +50,7 @@ private:
     void addNullActions();
 
     BookmarkOwner *m_bmOwner;
+    bool m_nullForced;
 };
 
 #endif // BOOKMARKS_CONTEXT_MENU_H
