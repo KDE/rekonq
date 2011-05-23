@@ -349,6 +349,8 @@ void MainView::newTab()
 {
     WebView *w = newWebTab()->view();
 
+    currentUrlBar()->setFocus();
+
     switch (ReKonfig::newTabsBehaviour())
     {
     case 0: // new tab page
@@ -363,7 +365,6 @@ void MainView::newTab()
     default:
         break;
     }
-    currentUrlBar()->setFocus();
 }
 
 
@@ -530,6 +531,11 @@ void MainView::webViewLoadStarted()
 
     emit browserTabLoading(true);
     emit showStatusBarMessage(i18n("Loading..."), Rekonq::Info);
+    
+    if (view == currentWebTab()->view() && view->url().scheme() != QL1S("about"))
+    {
+        view->setFocus();
+    }
 }
 
 
