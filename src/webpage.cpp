@@ -40,6 +40,7 @@
 // Local Includes
 #include "adblockmanager.h"
 #include "application.h"
+#include "downloadmanager.h"
 #include "iconmanager.h"
 #include "mainview.h"
 #include "mainwindow.h"
@@ -209,7 +210,7 @@ static bool downloadResource(const KUrl& srcUrl, const KIO::MetaData& metaData =
     while (result == KIO::R_CANCEL && destUrl.isValid());
 
     // Save download history
-    rApp->addDownload(srcUrl.pathOrUrl() , destUrl.pathOrUrl());
+    DownloadItem *item = rApp->downloadManager()->addDownload(srcUrl.pathOrUrl(), destUrl.pathOrUrl());
 
     if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetDownload())
     {
@@ -219,16 +220,25 @@ static bool downloadResource(const KUrl& srcUrl, const KIO::MetaData& metaData =
             KToolInvocation::kdeinitExecWait("kget");
         }
         QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-        if (kget.isValid())
-        {
-            kget.call("addTransfer", srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
+        if (!kget.isValid())
+            return false;
+
+        QDBusMessage transfer = kget.call(QL1S("addTransfer"), srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
+        if (transfer.arguments().isEmpty())
             return true;
-        }
-        return false;
+        
+        const QString transferPath = transfer.arguments().first().toString();
+        item->setKGetTransferDbusPath(transferPath);
+        return true;
     }
 
     KIO::Job *job = KIO::file_copy(srcUrl, destUrl, -1, KIO::Overwrite);
-
+    if (item)
+    {
+        QObject::connect(job, SIGNAL(percent(KJob *,unsigned long)), item, SLOT(updateProgress(KJob *,unsigned long)));
+        QObject::connect(job, SIGNAL(finished(KJob *)), item, SLOT(onFinished(KJob*)));
+    }
+    
     if (!metaData.isEmpty())
         job->setMetaData(metaData);
 
@@ -236,7 +246,6 @@ static bool downloadResource(const KUrl& srcUrl, const KIO::MetaData& metaData =
     job->addMetaData(QL1S("cache"), QL1S("cache")); // Use entry from cache if available.
     job->uiDelegate()->setAutoErrorHandlingEnabled(true);
     return true;
-
 }
 
 

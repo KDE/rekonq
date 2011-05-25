@@ -36,6 +36,7 @@
 // Local Includes
 #include "adblockmanager.h"
 #include "bookmarkprovider.h"
+#include "downloadmanager.h"
 #include "filterurljob.h"
 #include "historymanager.h"
 #include "iconmanager.h"
@@ -355,6 +356,16 @@ IconManager *Application::iconManager()
 }
 
 
+DownloadManager *Application::downloadManager()
+{
+    if (m_downloadManager.isNull())
+    {
+        m_downloadManager = new DownloadManager(instance());
+    }
+    return m_downloadManager.data();
+}
+
+
 void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 {
     if (url.isEmpty())
@@ -619,62 +630,6 @@ void Application::updateConfiguration()
     }
 
     defaultSettings = 0;
-}
-
-
-void Application::addDownload(const QString &srcUrl, const QString &destUrl)
-{
-    QWebSettings *globalSettings = QWebSettings::globalSettings();
-    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-        return;
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
-    QFile downloadFile(downloadFilePath);
-    if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
-    {
-        kDebug() << "Unable to open download file (WRITE mode)..";
-        return;
-    }
-    QDataStream out(&downloadFile);
-    out << srcUrl;
-    out << destUrl;
-    out << QDateTime::currentDateTime();
-    downloadFile.close();
-}
-
-
-DownloadList Application::downloads()
-{
-    DownloadList list;
-
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
-    QFile downloadFile(downloadFilePath);
-    if (!downloadFile.open(QFile::ReadOnly))
-    {
-        kDebug() << "Unable to open download file (READ mode)..";
-        return list;
-    }
-
-    QDataStream in(&downloadFile);
-    while (!in.atEnd())
-    {
-        QString srcUrl;
-        in >> srcUrl;
-        QString destUrl;
-        in >> destUrl;
-        QDateTime dt;
-        in >> dt;
-        DownloadItem item(srcUrl, destUrl, dt);
-        list << item;
-    }
-    return list;
-}
-
-
-bool Application::clearDownloadsHistory()
-{
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
-    QFile downloadFile(downloadFilePath);
-    return downloadFile.remove();
 }
 
 

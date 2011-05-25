@@ -9,6 +9,8 @@ ADD_SUBDIRECTORY( tests )
 SET( rekonq_KDEINIT_SRCS
     application.cpp
     clicktoflash.cpp
+    downloaditem.cpp
+    downloadmanager.cpp
     filterurljob.cpp
     findbar.cpp
     iconmanager.cpp

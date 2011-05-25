@@ -33,6 +33,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Local Includes
+#include "downloaditem.h"
+
 // KDE Includes
 #include <KUniqueApplication>
 
@@ -43,7 +46,7 @@
 // Forward Declarations
 class AdBlockManager;
 class BookmarkProvider;
-class DownloadItem;
+class DownloadManager;
 class HistoryManager;
 class IconManager;
 class MainWindow;
@@ -54,39 +57,20 @@ class KAction;
 
 namespace ThreadWeaver
 {
-class Job;
+    class Job;
 }
 
 
 typedef QList< QWeakPointer<MainWindow> > MainWindowList;
-typedef QList<DownloadItem> DownloadList;
-
-
-class DownloadItem
-{
-public:
-    DownloadItem() {}
-    explicit DownloadItem(const QString &srcUrl,
-                          const QString &destUrl,
-                          const QDateTime &d
-                         )
-            : srcUrlString(srcUrl)
-            , destUrlString(destUrl)
-            , dateTime(d)
-    {}
-
-    QString srcUrlString;
-    QString destUrlString;
-    QDateTime dateTime;
-};
 
 
 // ---------------------------------------------------------------------------------------------------------------
 
+
 #define rApp Application::instance()
 
 /**
-  *
+  * Rekonq Application class
   */
 class REKONQ_TESTS_EXPORT Application : public KUniqueApplication
 {
@@ -108,12 +92,8 @@ public:
     AdBlockManager *adblockManager();
     OpenSearchManager *opensearchManager();
     IconManager *iconManager();
-
-    // DOWNLOADS MANAGEMENT METHODS
-    void addDownload(const QString &srcUrl, const QString &destUrl);
-    DownloadList downloads();
-    bool clearDownloadsHistory();
-
+    DownloadManager *downloadManager();
+    
     KAction *privateBrowsingAction()
     {
         return _privateBrowsingAction;
@@ -158,6 +138,7 @@ private:
     QWeakPointer<AdBlockManager> m_adblockManager;
     QWeakPointer<OpenSearchManager> m_opensearchManager;
     QWeakPointer<IconManager> m_iconManager;
+    QWeakPointer<DownloadManager> m_downloadManager;
 
     MainWindowList m_mainWindows;
 
