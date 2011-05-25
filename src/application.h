@@ -79,6 +79,7 @@ class REKONQ_TESTS_EXPORT Application : public KUniqueApplication
 public:
     Application();
     ~Application();
+
     int newInstance();
     static Application *instance();
 

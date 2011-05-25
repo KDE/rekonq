@@ -126,6 +126,14 @@ Application::~Application()
         m_adblockManager.clear();
     }
 
+    // TODO:
+    // add a check to NOT close rekonq
+    // until last download is finished
+
+    if (!m_downloadManager.isNull()) {
+        delete m_adblockManager.data();
+        m_adblockManager.clear();
+    }
 }
 
 
