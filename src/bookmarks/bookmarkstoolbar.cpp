@@ -163,6 +163,7 @@ BookmarkToolBar::BookmarkToolBar(KToolBar *toolBar, QObject *parent)
         , m_currentMenu(0)
         , m_dragAction(0)
         , m_dropAction(0)
+        , m_checkedAction(0)
         , m_filled(false)
 {
     toolBar->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -228,16 +229,23 @@ void BookmarkToolBar::hideMenu()
 
 bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
 {
-    // To switch root folders as in a menubar
-    if (m_currentMenu && m_currentMenu->isVisible() && event->type() == QEvent::MouseMove
-            && !m_currentMenu->rect().contains(m_currentMenu->mapFromGlobal(QCursor::pos())))
+    if (m_currentMenu && m_currentMenu->isVisible()
+        && !m_currentMenu->rect().contains(m_currentMenu->mapFromGlobal(QCursor::pos())))
     {
-        KBookmarkActionMenu* act = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(toolBar()->mapFromGlobal(QCursor::pos())));
-        if (act && act->menu() != m_currentMenu)
+        // To switch root folders as in a menubar
+        if (event->type() == QEvent::MouseMove)
+        {
+            KBookmarkActionMenu* act = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(toolBar()->mapFromGlobal(QCursor::pos())));
+            if (act && act->menu() != m_currentMenu)
+            {
+                m_currentMenu->hide();
+                QPoint pos = toolBar()->mapToGlobal(toolBar()->widgetForAction(act)->pos());
+                act->menu()->popup(QPoint(pos.x(), pos.y() + toolBar()->widgetForAction(act)->height()));
+            }
+        }
+        else if (event->type() == QEvent::MouseButtonPress)
         {
             m_currentMenu->hide();
-            QPoint pos = toolBar()->mapToGlobal(toolBar()->widgetForAction(act)->pos());
-            act->menu()->popup(QPoint(pos.x(), pos.y() + toolBar()->widgetForAction(act)->height()));
         }
         
         return QObject::eventFilter(watched, event);
@@ -296,7 +304,23 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             }
         }
             break;
-        
+
+        case QEvent::DragLeave:
+        {
+            QDragLeaveEvent *dragEvent = static_cast<QDragLeaveEvent*>(event);
+
+            if (m_checkedAction)
+            {
+                m_checkedAction->setCheckable(false);
+                m_checkedAction->setChecked(false);
+            }
+
+            delete m_dropAction;
+            m_dropAction = 0;
+            dragEvent->accept();
+        }
+            break;
+
         case QEvent::DragMove:
         {
             QDragMoveEvent *dragEvent = static_cast<QDragMoveEvent*>(event);
@@ -309,21 +333,53 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 if (overAction != m_dropAction && overActionBK && widgetAction && m_dropAction)
                 {
                     toolBar()->removeAction(m_dropAction);
-
-                    if ((dragEvent->pos().x() - widgetAction->pos().x()) > (widgetAction->width() / 2))
+                    if (m_checkedAction)
                     {
-                        if (toolBar()->actions().count() >  toolBar()->actions().indexOf(overAction) + 1)
+                        m_checkedAction->setCheckable(false);
+                        m_checkedAction->setChecked(false);
+                    }
+
+                    if (!overActionBK->bookmark().isGroup())
+                    {
+                        if ((dragEvent->pos().x() - widgetAction->pos().x()) > (widgetAction->width() / 2))
                         {
-                            toolBar()->insertAction(toolBar()->actions().at(toolBar()->actions().indexOf(overAction) + 1), m_dropAction);
+                            if (toolBar()->actions().count() >  toolBar()->actions().indexOf(overAction) + 1)
+                            {
+                                toolBar()->insertAction(toolBar()->actions().at(toolBar()->actions().indexOf(overAction) + 1), m_dropAction);
+                            }
+                            else
+                            {
+                                toolBar()->addAction(m_dropAction);
+                            }
                         }
                         else
                         {
-                            toolBar()->addAction(m_dropAction);
+                            toolBar()->insertAction(overAction, m_dropAction);
                         }
                     }
                     else
                     {
-                        toolBar()->insertAction(overAction, m_dropAction);
+                        if ((dragEvent->pos().x() - widgetAction->pos().x()) >= (widgetAction->width() * 0.75))
+                        {
+                            if (toolBar()->actions().count() >  toolBar()->actions().indexOf(overAction) + 1)
+                            {
+                                toolBar()->insertAction(toolBar()->actions().at(toolBar()->actions().indexOf(overAction) + 1), m_dropAction);
+                            }
+                            else
+                            {
+                                toolBar()->addAction(m_dropAction);
+                            }
+                        }
+                        else if ((dragEvent->pos().x() - widgetAction->pos().x()) <= (widgetAction->width() * 0.25))
+                        {
+                            toolBar()->insertAction(overAction, m_dropAction);
+                        }
+                        else
+                        {
+                            overAction->setCheckable(true);
+                            overAction->setChecked(true);
+                            m_checkedAction = overAction;
+                        }
                     }
 
                     dragEvent->accept();
@@ -332,14 +388,6 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         }
             break;
 
-        case QEvent::DragLeave:
-        {
-            QDragLeaveEvent *dragEvent = static_cast<QDragLeaveEvent*>(event);
-            delete m_dropAction;
-            m_dropAction = 0;
-            dragEvent->accept();
-        }
-            break;
 
         case QEvent::Drop:
         {
@@ -404,14 +452,33 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
                 {
                     KBookmark destBookmark = destBookmarkAction->bookmark();
 
-                    if ((dropEvent->pos().x() - widgetAction->pos().x()) > (widgetAction->width() / 2))
+                    if (!destBookmark.isGroup())
                     {
-                        root.moveBookmark(bookmark, destBookmark);
+                        if ((dropEvent->pos().x() - widgetAction->pos().x()) >= (widgetAction->width() / 2))
+                        {
+                            root.moveBookmark(bookmark, destBookmark);
+                        }
+                        else
+                        {
+                            root.moveBookmark(bookmark, destBookmark.parentGroup().previous(destBookmark));
+                        }
                     }
                     else
                     {
-                        root.moveBookmark(bookmark, destBookmark.parentGroup().previous(destBookmark));
+                        if ((dropEvent->pos().x() - widgetAction->pos().x()) >= (widgetAction->width() * 0.75))
+                        {
+                            root.moveBookmark(bookmark, destBookmark);
+                        }
+                        else if ((dropEvent->pos().x() - widgetAction->pos().x()) <= (widgetAction->width() * 0.25))
+                        {
+                            root.moveBookmark(bookmark, destBookmark.parentGroup().previous(destBookmark));
+                        }
+                        else
+                        {
+                            destBookmark.toGroup().addBookmark(bookmark);
+                        }
                     }
+
 
                     rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
                 }

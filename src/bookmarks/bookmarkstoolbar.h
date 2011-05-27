@@ -108,6 +108,7 @@ private:
     QPoint m_startDragPos;
     QAction *m_dragAction;
     QAction *m_dropAction;
+    QAction *m_checkedAction;
     bool m_filled;
 };
 
