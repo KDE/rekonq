@@ -65,7 +65,7 @@ OpenSearchManager::OpenSearchManager(QObject *parent)
 
 OpenSearchManager::~OpenSearchManager()
 {
-    qDeleteAll(m_engineCache.values());
+    qDeleteAll(m_engineCache);
     m_engineCache.clear();
     m_engines.clear();
 }

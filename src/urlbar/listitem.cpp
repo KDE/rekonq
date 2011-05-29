@@ -475,7 +475,7 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
     if (SearchEngine::defaultEngine().isNull())
         return;
     m_engineGroup->addAction(newEngineAction(SearchEngine::defaultEngine(), selectedEngine));
-    foreach(KService::Ptr engine, SearchEngine::favorites())
+    foreach(const KService::Ptr &engine, SearchEngine::favorites())
     {
         if (engine->desktopEntryName() != SearchEngine::defaultEngine()->desktopEntryName())
         {
