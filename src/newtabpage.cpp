@@ -35,6 +35,7 @@
 // Local Includes
 #include "application.h"
 #include "bookmarkprovider.h"
+#include "downloadmanager.h"
 #include "historymodels.h"
 #include "mainview.h"
 #include "mainwindow.h"
@@ -560,7 +561,7 @@ void NewTabPage::downloadsPage()
                                   KIconLoader::Toolbar);
     m_root.document().findFirst(QL1S("#actions")).appendInside(clearData);
 
-    DownloadList list = rApp->downloads();
+    DownloadList list = rApp->downloadManager()->downloads();
 
     if (list.isEmpty())
     {
@@ -569,14 +570,14 @@ void NewTabPage::downloadsPage()
         return;
     }
 
-    foreach(const DownloadItem &item, list)
+    foreach(DownloadItem *item, list)
     {
         m_root.prependInside(markup(QL1S("div")));
 
         QWebElement div = m_root.firstChild();
         div.addClass(QL1S("download"));
 
-        KUrl u = KUrl(item.destUrlString);
+        KUrl u = KUrl(item->destinationUrl());
         QString fName = u.fileName();
         QString dir = QL1S("file://") + u.directory();
         QString file = dir +  QL1C('/') + fName;
@@ -589,11 +590,11 @@ void NewTabPage::downloadsPage()
 
         div.appendInside(QL1S("<strong>") + fName +  QL1S("</strong>"));
         div.appendInside(QL1S(" - "));
-        QString date = KGlobal::locale()->formatDateTime(item.dateTime, KLocale::FancyLongDate);
+        QString date = KGlobal::locale()->formatDateTime(item->dateTime(), KLocale::FancyLongDate);
         div.appendInside(QL1S("<em>") + date +  QL1S("</em>"));
         div.appendInside(QL1S("<br />"));
 
-        div.appendInside(QL1S("<a href=") + item.srcUrlString +  QL1C('>') + item.srcUrlString +  QL1S("</a>"));
+        div.appendInside(QL1S("<a href=") + item->originUrl() +  QL1C('>') + item->originUrl() +  QL1S("</a>"));
         div.appendInside(QL1S("<br />"));
 
         div.appendInside(markup(QL1S("a")));
