@@ -233,17 +233,16 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         && !m_currentMenu->rect().contains(m_currentMenu->mapFromGlobal(QCursor::pos())))
     {
         // To switch root folders as in a menubar
-        if (event->type() == QEvent::MouseMove)
+
+        KBookmarkActionMenu* act = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(toolBar()->mapFromGlobal(QCursor::pos())));
+
+        if (event->type() == QEvent::MouseMove && act && act->menu() != m_currentMenu)
         {
-            KBookmarkActionMenu* act = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(toolBar()->mapFromGlobal(QCursor::pos())));
-            if (act && act->menu() != m_currentMenu)
-            {
                 m_currentMenu->hide();
                 QPoint pos = toolBar()->mapToGlobal(toolBar()->widgetForAction(act)->pos());
                 act->menu()->popup(QPoint(pos.x(), pos.y() + toolBar()->widgetForAction(act)->height()));
-            }
         }
-        else if (event->type() == QEvent::MouseButtonPress)
+        else if (event->type() == QEvent::MouseButtonPress && act)
         {
             m_currentMenu->hide();
         }
