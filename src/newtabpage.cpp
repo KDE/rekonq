@@ -113,7 +113,7 @@ void NewTabPage::generate(const KUrl &url)
     if (url.fileName() == QL1S("clear"))
     {
         rApp->mainWindow()->actionByName("clear_private_data")->trigger();
-        generate(QL1S("about:") + url.directory());
+        generate(QString(QL1S("about:") + url.directory()));
         return;
     }
     if (url == KUrl("about:bookmarks/edit"))

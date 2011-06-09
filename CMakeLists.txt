@@ -28,6 +28,8 @@ INCLUDE(MacroOptionalFindPackage)
 INCLUDE(FindPackageHandleStandardArgs)
 INCLUDE(KDE4Defaults)
 INCLUDE(MacroLibrary)
+ADD_DEFINITIONS(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
+
 
 # ==================================================================================
 # Log messages
