@@ -263,27 +263,28 @@ WebPage::WebPage(QWidget *parent)
 
     // ----- rekonq Network Manager
     NetworkAccessManager *manager = new NetworkAccessManager(this);
-    manager->setCache(0);   // disable QtWebKit cache to just use KIO one..
 
-    // set cookieJar window ID..
+    // disable QtWebKit cache to just use KIO one..
+    manager->setCache(0);
+
+    // set cookieJar window..
     if (parent && parent->window())
-        manager->setCookieJarWindowId(parent->window()->winId());
-
+        manager->setWindow(parent->window());
+    
+    // set network reply object to emit readyRead when it receives meta data
+    manager->setEmitReadyReadOnMetaDataChange(true);
+    
     setNetworkAccessManager(manager);
 
     // activate ssl warnings
-    setSessionMetaData("ssl_activate_warnings", "TRUE");
-
-    // Override the 'Accept' header sent by QtWebKit which favors XML over HTML!
-    // Setting the accept meta-data to null will force kio_http to use its own
-    // default settings for this header.
-    setSessionMetaData(QL1S("accept"), QString());
+    setSessionMetaData( QL1S("ssl_activate_warnings"), QL1S("TRUE") );
 
     // ----- Web Plugin Factory
     setPluginFactory(new WebPluginFactory(this));
 
     // ----- last stuffs
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
+    
     connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequest(const QNetworkRequest &)));
     connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
@@ -393,15 +394,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     Q_ASSERT(reply);
 
-    // Put the job on hold...
-#if KDE_IS_VERSION( 4, 5, 96)
-    kDebug() << "PUT REPLY ON HOLD...";
-    KIO::Integration::AccessManager::putReplyOnHold(reply);
-#else
-    reply->abort();
-#endif
+    if (!reply)
+        return;
 
-    // This is probably needed just in ONE stupid case..
+    // handle protocols WebKit cannot handle...
     if (_protHandler.postHandling(reply->request(), mainFrame()))
     {
         kDebug() << "POST HANDLING the unsupported...";
@@ -411,6 +407,8 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
         return;
 
+    KIO::Integration::AccessManager::putReplyOnHold(reply);
+
     // get reply url...
     KUrl replyUrl = reply->url();
 
@@ -418,7 +416,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if(isLocal && KProtocolInfo::isKnownProtocol(replyUrl))
     {
         kDebug() << "WARNING: launching a new app...";
-        new KRun(replyUrl, rApp->mainWindow());  // No need to delete KRun, it autodeletes itself
+        (void)new KRun(replyUrl, rApp->mainWindow(), 0, replyUrl.isLocalFile());
         return;
     }
 
@@ -510,22 +508,8 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         // No parts, just app services. Load it!
         // If the app is a KDE one, publish the slave on hold to let it use it.
         // Otherwise, run the app and remove it (the io slave...)
-        if (appService->categories().contains(QL1S("KDE"), Qt::CaseInsensitive))
-        {
-#if KDE_IS_VERSION( 4, 5, 96)
-            KIO::Scheduler::publishSlaveOnHold();
-#endif
-            KRun::run(*appService, replyUrl, 0, false, _suggestedFileName);
-            return;
-        }
         KRun::run(*appService, replyUrl, 0, false, _suggestedFileName);
     }
-
-    // Remove any ioslave that was put on hold...
-#if KDE_IS_VERSION( 4, 5, 96)
-    kDebug() << "REMOVE SLAVES ON HOLD...";
-    KIO::Scheduler::removeSlaveOnHold();
-#endif
 
     return;
 }
@@ -609,6 +593,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         break;
 
     case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
+        kDebug() << "------------------ DO WE REALLY NEED THIS??? --------------------";
         _protHandler.postHandling(reply->request(), frame);
         return;
 

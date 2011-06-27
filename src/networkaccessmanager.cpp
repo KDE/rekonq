@@ -84,52 +84,12 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
         break;
     }
-
-    // WARNING
-    // There are actually 2 exceptions here handled with QNAM
-    // instead of KIO that need fixes upstream before removing. They are:
-    // 1) DeleteOperation
-    // 2) CustomOperation
-
-    switch (op)
-    {
-    case QNetworkAccessManager::HeadOperation:
-        break;
-
-    case QNetworkAccessManager::GetOperation:
+    
+    // Handle GET operations with AdBlock
+    if (op == QNetworkAccessManager::GetOperation)
         reply = rApp->adblockManager()->block(req, parentPage);
-        break;
 
-    case QNetworkAccessManager::PutOperation:
-        break;
-
-    case QNetworkAccessManager::PostOperation:
-        break;
-
-        // This particular issue has been solved for KDE Version 4.5.96,
-        // so we can safely disable this piece of code
-#if !KDE_IS_VERSION( 4, 5, 96)
-
-    case QNetworkAccessManager::DeleteOperation:
-        kDebug() << "DELETE OPERATION...";
-        reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
-        if (!reply)
-            kDebug() << "OOOOOOOOOOOOOOOOOOO DELETE REPLY NULL";
-        break;
-
-    case QNetworkAccessManager::CustomOperation:
-        kDebug() << "CUSTOM OPERATION...";
-        reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
-        if (!reply)
-            kDebug() << "OOOOOOOOOOOOOOOOOOO CUSTOM REPLY NULL";
-        break;
-
-#endif
-    default:
-        kDebug() << "NON EXTANT CASE...";
-        break;
-    }
-
+    
     if (!reply)
         reply = AccessManager::createRequest(op, req, outgoingData);
 
