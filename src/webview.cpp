@@ -621,6 +621,27 @@ void WebView::keyPressEvent(QKeyEvent *event)
         }
     }
 
+    if (event->key() == Qt::Key_J && event->modifiers() == Qt::NoModifier)
+    {
+        QKeyEvent event1(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
+        event = &event1;
+    }
+    if (event->key() == Qt::Key_K && event->modifiers() == Qt::NoModifier)
+    {
+        QKeyEvent event1(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier);
+        event = &event1;
+    }
+    if (event->key() == Qt::Key_L && event->modifiers() == Qt::NoModifier)
+    {
+        QKeyEvent event1(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
+        event = &event1;
+    }
+    if (event->key() == Qt::Key_H && event->modifiers() == Qt::NoModifier)
+    {
+        QKeyEvent event1(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
+        event = &event1;
+    }
+
     KWebView::keyPressEvent(event);
 }
 
