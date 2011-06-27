@@ -409,17 +409,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     KIO::Integration::AccessManager::putReplyOnHold(reply);
 
-    // get reply url...
-    KUrl replyUrl = reply->url();
-
-    bool isLocal = replyUrl.isLocalFile();
-    if(isLocal && KProtocolInfo::isKnownProtocol(replyUrl))
-    {
-        kDebug() << "WARNING: launching a new app...";
-        (void)new KRun(replyUrl, rApp->mainWindow(), 0, replyUrl.isLocalFile());
-        return;
-    }
-
     // Get suggested file name...
     extractSuggestedFileName(reply, _suggestedFileName);
 
@@ -436,6 +425,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     KService::Ptr appService = KMimeTypeTrader::self()->preferredService(_mimeType);
 
+    KUrl replyUrl = reply->url();
+    bool isLocal = replyUrl.isLocalFile();
+    
     if (appService.isNull())  // no service can handle this. We can just download it..
     {
         kDebug() << "no service can handle this. We can just download it..";
@@ -518,6 +510,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 void WebPage::loadStarted()
 {
 }
+
 
 void WebPage::loadFinished(bool ok)
 {

@@ -190,7 +190,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     _frame = frame;
 
     kDebug() << "URL PROTOCOL: " << _url;
-
+    
     // "http(s)" (fast) handling
     if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https"))
         return false;
@@ -226,6 +226,15 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
 
             return true;
         }
+    }
+
+    // we cannot handle this protocol in any way.
+    // Try KRunning it...
+    if (KProtocolInfo::isKnownProtocol(_url))
+    {
+        kDebug() << "WARNING: launching a new app...";
+        (void)new KRun(_url, rApp->mainWindow(), 0, _url.isLocalFile());
+        return true;
     }
 
     return false;
