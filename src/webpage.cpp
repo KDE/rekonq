@@ -265,10 +265,11 @@ WebPage::WebPage(QWidget *parent)
     NetworkAccessManager *manager = new NetworkAccessManager(this);
     manager->setCache(0);   // disable QtWebKit cache to just use KIO one..
 
-    // set cookieJar window ID..
+    // set cookieJar window..
     if (parent && parent->window())
-        manager->setCookieJarWindowId(parent->window()->winId());
-
+        manager->setWindow(parent->window());
+    
+    manager->setEmitReadyReadOnMetaDataChange(true);
     setNetworkAccessManager(manager);
 
     // activate ssl warnings
