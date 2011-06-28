@@ -621,25 +621,26 @@ void WebView::keyPressEvent(QKeyEvent *event)
         }
     }
 
+    // vi-like navigation
     if (event->key() == Qt::Key_J && event->modifiers() == Qt::NoModifier)
     {
-        QKeyEvent event1(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
-        event = &event1;
+        event->accept();
+        event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
     }
-    if (event->key() == Qt::Key_K && event->modifiers() == Qt::NoModifier)
+    else if (event->key() == Qt::Key_K && event->modifiers() == Qt::NoModifier)
     {
-        QKeyEvent event1(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier);
-        event = &event1;
+        event->accept();
+        event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier);
     }
-    if (event->key() == Qt::Key_L && event->modifiers() == Qt::NoModifier)
+    else if (event->key() == Qt::Key_L && event->modifiers() == Qt::NoModifier)
     {
-        QKeyEvent event1(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
-        event = &event1;
+        event->accept();
+        event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
     }
-    if (event->key() == Qt::Key_H && event->modifiers() == Qt::NoModifier)
+    else if (event->key() == Qt::Key_H && event->modifiers() == Qt::NoModifier)
     {
-        QKeyEvent event1(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
-        event = &event1;
+        event->accept();
+        event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
     }
 
     KWebView::keyPressEvent(event);
