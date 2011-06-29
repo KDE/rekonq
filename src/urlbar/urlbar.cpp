@@ -52,6 +52,7 @@
 #include <KColorScheme>
 
 // Qt Includes
+#include <QtCore/QTimer>
 #include <QtGui/QPainter>
 #include <QtGui/QPaintEvent>
 #include <QtGui/QPalette>
