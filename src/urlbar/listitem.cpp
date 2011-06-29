@@ -46,18 +46,17 @@
 #include <kio/scheduler.h>
 
 // Qt Includes
-#include <QtCore/QBitArray>
-#include <QtCore/QFile>
-#include <QtGui/QActionGroup>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPixmap>
-#include <QtGui/QSizePolicy>
-#include <QtGui/QStylePainter>
-#include <QtGui/QTextDocument>
-#include <QtGui/QVBoxLayout>
-#include <QtWebKit/QWebSettings>
+#include <QActionGroup>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QSizePolicy>
+#include <QPixmap>
+#include <QStylePainter>
+#include <QMouseEvent>
+#include <QWebSettings>
+#include <QFile>
+#include <QTextDocument>
 
 
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)

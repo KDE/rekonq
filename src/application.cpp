@@ -64,8 +64,7 @@
 #include <KCharsets>
 
 // Qt Includes
-#include <QtCore/QDir>
-#include <QtGui/QVBoxLayout>
+#include <QVBoxLayout>
 
 
 using namespace ThreadWeaver;

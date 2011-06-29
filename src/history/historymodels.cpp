@@ -49,7 +49,6 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QString>
 #include <QtCore/QFile>
-#include <QtCore/QFileInfo>
 #include <QtCore/QDataStream>
 #include <QtCore/QBuffer>
 
