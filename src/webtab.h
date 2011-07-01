@@ -77,7 +77,6 @@ public:
 
     KUrl url();
     void createPreviewSelectorBar(int index);
-    void insertBar(NotificationBar* bar);
 
     bool hasRSSInfo();
 

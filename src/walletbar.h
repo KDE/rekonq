@@ -30,39 +30,36 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
-#include "notificationbar.h"
+
+// KDE Includes
+#include <KMessageWidget>
 
 // Qt Includes
-#include <QtCore/QUrl>
+#include <QUrl>
 
-class QLabel;
 
-class REKONQ_TESTS_EXPORT WalletBar : public NotificationBar
+class REKONQ_TESTS_EXPORT WalletBar : public KMessageWidget
 {
     Q_OBJECT
 
 public:
     WalletBar(QWidget *parent);
-
-private slots:
-
+    
+private Q_SLOTS:
     void rememberData();
     void neverRememberData();
     void notNowRememberData();
 
-public slots:
+public Q_SLOTS:
     void onSaveFormData(const QString &, const QUrl &);
 
-signals:
+Q_SIGNALS:
     void saveFormDataAccepted(const QString &);
     void saveFormDataRejected(const QString &);
 
 private:
-
     QString m_key;
     QUrl m_url;
-
-    QLabel *m_label;
 };
 
 #endif // WALLET_BAR_H

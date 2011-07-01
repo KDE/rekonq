@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010-2011 by Pierre Rossi <pierre dot rossi at gmail dot com>
+* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -23,57 +24,31 @@
 *
 * ============================================================ */
 
+
 #ifndef MESSAGEBAR_H
 #define MESSAGEBAR_H
 
 // Rekonq Includes
 #include "rekonq_defines.h"
-#include "notificationbar.h"
 
-// Qt Includes
-#include <QMessageBox>
-
-// Forward Declarations
-class QLabel;
-class QPushButton;
+// KDE Includes
+#include <KMessageWidget>
 
 
-class REKONQ_TESTS_EXPORT MessageBar : public NotificationBar
+class REKONQ_TESTS_EXPORT MessageBar : public KMessageWidget
 {
     Q_OBJECT
 
-    Q_FLAGS(StandardButtons)
-
 public:
+    explicit MessageBar(const QString & message, QWidget *parent);
 
-    enum StandardButton
-    {
-        NoButton = 0x00000000,
-        Ok       = 0x00000001,
-        Cancel   = 0x00000002,
-        Yes      = 0x00000004,
-        No       = 0x00000008,
-        Continue = 0x00000010
-    };
-
-    Q_DECLARE_FLAGS(StandardButtons, StandardButton)
-
-    explicit MessageBar(const QString & message, QWidget *parent
-                        , QMessageBox::Icon icon = QMessageBox::NoIcon
-                                                   , StandardButtons buttons = NoButton);
-    ~MessageBar();
-
+private Q_SLOTS:
+    void hideAndDelete();
+    
 Q_SIGNALS:
     void accepted();
     void rejected();
-
-private:
-    QLabel *m_icon;
-    QLabel *m_text;
-    QList<QPushButton *> m_buttons;
-
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(MessageBar::StandardButtons)
 
 #endif // MESSAGEBAR_H

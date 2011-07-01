@@ -36,48 +36,40 @@
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QtGui/QGridLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QToolButton>
+#include <QAction>
 
 
 WalletBar::WalletBar(QWidget *parent)
-        : NotificationBar(parent)
-        , m_label(new QLabel(this))
+    : KMessageWidget(parent)
 {
-    m_label->setWordWrap(true);
-
-    QToolButton *closeButton = new QToolButton(this);
-    closeButton->setAutoRaise(true);
-    closeButton->setIcon(KIcon("dialog-close"));
-
-    QPushButton *rememberButton = new QPushButton(KIcon("document-save"), i18n("Remember"), this);
-    QPushButton *neverHereButton = new QPushButton(KIcon("process-stop"), i18n("Never for This Site"), this);
-    QPushButton *notNowButton = new QPushButton(KIcon("dialog-cancel"), i18n("Not Now"), this);
-
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(notNowRememberData()));
-    connect(rememberButton, SIGNAL(clicked()), this, SLOT(rememberData()));
-    connect(neverHereButton, SIGNAL(clicked()), this, SLOT(neverRememberData()));
-    connect(notNowButton, SIGNAL(clicked()), this, SLOT(notNowRememberData()));
-
-    // layout
-    QGridLayout *layout = new QGridLayout(this);
-    layout->addWidget(closeButton, 0, 0);
-    layout->addWidget(m_label, 0, 1);
-    layout->addWidget(rememberButton, 0, 2);
-    layout->addWidget(neverHereButton, 0, 3);
-    layout->addWidget(notNowButton, 0, 4);
-    layout->setColumnStretch(1, 100);
-
-    setLayout(layout);
+    setMessageType(KMessageWidget::Warning);
+    
+    QSize sz = size();
+    sz.setWidth( qobject_cast<QWidget *>(parent)->size().width() );
+    resize(sz);
+    
+    setCloseButtonVisible(false);
+    
+    QAction *rememberAction = new QAction(KIcon("document-save"), i18n("Remember"), this);
+    connect(rememberAction, SIGNAL(triggered(bool)), this, SLOT(rememberData()));
+    addAction(rememberAction);
+    
+    QAction *neverHereAction = new QAction(KIcon("process-stop"), i18n("Never for This Site"), this);
+    connect(neverHereAction, SIGNAL(triggered(bool)), this, SLOT(neverRememberData()));
+    addAction(neverHereAction);
+    
+    QAction *notNowAction = new QAction(KIcon("dialog-cancel"), i18n("Not Now"), this);
+    connect(notNowAction, SIGNAL(triggered(bool)), this, SLOT(notNowRememberData()));
+    addAction(notNowAction);    
 }
 
 
 void WalletBar::rememberData()
 {
     emit saveFormDataAccepted(m_key);
-    destroy();
+    
+    animatedHide();
+    deleteLater();
 }
 
 
@@ -95,14 +87,16 @@ void WalletBar::neverRememberData()
 void WalletBar::notNowRememberData()
 {
     emit saveFormDataRejected(m_key);
-    destroy();
+    
+    animatedHide();
+    deleteLater();
 }
 
 
 
 void WalletBar::onSaveFormData(const QString &key, const QUrl &url)
 {
-    m_label->setText(i18n("Do you want rekonq to remember the password on %1?", url.host()));
+    setText(i18n("Do you want rekonq to remember the password on %1?", url.host()));
 
     m_key = key;
     m_url = url;

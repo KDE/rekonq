@@ -29,8 +29,10 @@
 #include "previewselectorbar.h"
 #include "previewselectorbar.moc"
 
-// Self Includes
+// Auto Includes
 #include "rekonq.h"
+
+// Self Includes
 #include "websnap.h"
 
 // Local Include
@@ -44,40 +46,27 @@
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QToolButton>
-
+#include <QAction>
 
 
 PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
-        : NotificationBar(parent)
-        , m_button(0)
-        , m_label(0)
-        , m_previewIndex(index)
+    : KMessageWidget(parent)
+    , m_previewIndex(index)
+    , m_insertAction(0)
 {
-    m_label = new QLabel(i18n("Please open up the webpage you want to add as favorite"), this);
-    m_label->setWordWrap(true);
-
-    QToolButton *closeButton = new QToolButton(this);
-    closeButton->setAutoRaise(true);
-    closeButton->setIcon(KIcon("dialog-close"));
-    connect(closeButton, SIGNAL(clicked(bool)), this, SLOT(destroy()));
-
-    m_button = new QPushButton(KIcon("insert-image"), i18n("Set to This Page"), this);
-    m_button->setMaximumWidth(250);
-    connect(m_button, SIGNAL(clicked(bool)), this, SLOT(clicked()));
-
-    // layout
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->addWidget(closeButton);
-    layout->addWidget(m_label);
-    layout->addWidget(m_button);
-
-    layout->setContentsMargins(2, 0, 2, 0);
-
-    setLayout(layout);
+    setMessageType(KMessageWidget::Warning);
+    
+    QSize sz = size();
+    sz.setWidth( qobject_cast<QWidget *>(parent)->size().width() );
+    resize(sz);
+    
+    setCloseButtonVisible(false);
+    
+    setText( i18n("Please open up the webpage you want to add as favorite") );
+    
+    m_insertAction = new QAction(KIcon("insert-image"), i18n("Set to This Page"), this);
+    connect(m_insertAction, SIGNAL(triggered(bool)), this, SLOT(clicked()));
+    addAction(m_insertAction);
 }
 
 
@@ -86,28 +75,28 @@ void PreviewSelectorBar::verifyUrl()
 
     if (rApp->mainWindow()->currentTab()->page()->mainFrame()->url().scheme() != "about")
     {
-        m_button->setEnabled(true);
-        m_button->setToolTip("");
+        m_insertAction->setEnabled(true);
+        m_insertAction->setToolTip("");
     }
     else
     {
-        m_button->setEnabled(false);
-        m_button->setToolTip(i18n("You cannot add this webpage as favorite"));
+        m_insertAction->setEnabled(false);
+        m_insertAction->setToolTip(i18n("You cannot add this webpage as favorite"));
     }
 }
 
 
 void PreviewSelectorBar::loadProgress()
 {
-    m_button->setEnabled(false);
-    m_button->setToolTip(i18n("Page is loading..."));
+    m_insertAction->setEnabled(false);
+    m_insertAction->setToolTip(i18n("Page is loading..."));
 }
 
 
 void PreviewSelectorBar::loadFinished()
 {
-    m_button->setEnabled(true);
-    m_button->setToolTip("");
+    m_insertAction->setEnabled(true);
+    m_insertAction->setToolTip("");
 
     verifyUrl();
 }
@@ -122,6 +111,7 @@ void PreviewSelectorBar::clicked()
         KUrl url = page->mainFrame()->url();
         QStringList names = ReKonfig::previewNames();
         QStringList urls = ReKonfig::previewUrls();
+        
         //cleanup the previous image from the cache (useful to refresh the snapshot)
         QFile::remove(WebSnap::imagePathFromUrl(urls.at(m_previewIndex)));
         page->mainFrame()->setScrollBarValue(Qt::Vertical, 0);
@@ -140,5 +130,6 @@ void PreviewSelectorBar::clicked()
         page->mainFrame()->load(KUrl("about:favorites"));
     }
 
-    destroy();
+    animatedHide();
+    deleteLater();
 }

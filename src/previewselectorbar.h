@@ -28,16 +28,18 @@
 #ifndef PREVIEWSELECTORBAR_H
 #define PREVIEWSELECTORBAR_H
 
+
 // Rekonq Includes
 #include "rekonq_defines.h"
-#include "notificationbar.h"
+
+// KDE Includes
+#include <KMessageWidget>
 
 // Forward Declarations
-class QLabel;
-class QPushButton;
+class QAction;
 
 
-class REKONQ_TESTS_EXPORT PreviewSelectorBar : public NotificationBar
+class REKONQ_TESTS_EXPORT PreviewSelectorBar : public KMessageWidget
 {
     Q_OBJECT
 
@@ -49,7 +51,7 @@ public:
         m_previewIndex = index;
     }
 
-private slots:
+private Q_SLOTS:
     void clicked();
 
     void loadProgress();
@@ -58,10 +60,8 @@ private slots:
     void verifyUrl();
 
 private:
-    QPushButton *m_button;
-    QLabel *m_label;
-
     int m_previewIndex;
+    QAction *m_insertAction;
 };
 
 #endif // PREVIEWSELECTORBAR_H

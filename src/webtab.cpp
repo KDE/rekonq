@@ -27,8 +27,8 @@
 
 // Self Includes
 #include "webtab.h"
-#include "rekonq_defines.h"
 #include "webtab.moc"
+
 // Auto Includes
 #include "rekonq.h"
 
@@ -140,12 +140,12 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
     {
         m_walletBar = new WalletBar(this);
         m_walletBar.data()->onSaveFormData(key, url);
-        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_walletBar.data());
+        m_walletBar.data()->animatedShow();
     }
     else
     {
         disconnect(wallet);
-        m_walletBar.data()->notifyUser();
+        m_walletBar.data()->animatedShow();
     }
 
     connect(m_walletBar.data(), SIGNAL(saveFormDataAccepted(const QString &)),
@@ -160,25 +160,19 @@ void WebTab::createPreviewSelectorBar(int index)
     if (m_previewSelectorBar.isNull())
     {
         m_previewSelectorBar = new PreviewSelectorBar(index, this);
-        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_previewSelectorBar.data());
+        m_previewSelectorBar.data()->animatedShow();
     }
     else
     {
         disconnect(m_previewSelectorBar.data());
         m_previewSelectorBar.data()->setIndex(index);
-        m_previewSelectorBar.data()->notifyUser();
+        m_previewSelectorBar.data()->animatedHide();
     }
 
     connect(page(),             SIGNAL(loadStarted()),      m_previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
     connect(page(),             SIGNAL(loadProgress(int)),  m_previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
     connect(page(),             SIGNAL(loadFinished(bool)), m_previewSelectorBar.data(), SLOT(loadFinished()), Qt::UniqueConnection);
     connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  m_previewSelectorBar.data(), SLOT(verifyUrl()), Qt::UniqueConnection);
-}
-
-
-void WebTab::insertBar(NotificationBar *bar)
-{
-    qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, bar);
 }
 
 
@@ -254,7 +248,7 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
 
 KUrl WebTab::extractOpensearchUrl(QWebElement e)
 {
-    QString href = e.attribute(QLatin1String("href"));
+    QString href = e.attribute(QL1S("href"));
     KUrl url = KUrl(href);
     if (!href.contains(":"))
     {
@@ -272,15 +266,15 @@ KUrl WebTab::extractOpensearchUrl(QWebElement e)
 
 bool WebTab::hasNewSearchEngine()
 {
-    QWebElement e = page()->mainFrame()->findFirstElement(QLatin1String("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
+    QWebElement e = page()->mainFrame()->findFirstElement(QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
     return !e.isNull() && !rApp->opensearchManager()->engineExists(extractOpensearchUrl(e));
 }
 
 
 void WebTab::showSearchEngine(const QPoint &pos)
 {
-    QWebElement e = page()->mainFrame()->findFirstElement(QLatin1String("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
-    QString title = e.attribute(QLatin1String("title"));
+    QWebElement e = page()->mainFrame()->findFirstElement(QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
+    QString title = e.attribute(QL1S("title"));
     if (!title.isEmpty())
     {
         WebShortcutWidget *widget = new WebShortcutWidget(window());

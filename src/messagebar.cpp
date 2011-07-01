@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010-2011 by Pierre Rossi <pierre dot rossi at gmail dot com>
+* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -34,97 +35,39 @@
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QToolButton>
+#include <QAction>
 
 
-MessageBar::MessageBar(const QString &message, QWidget *parent, QMessageBox::Icon icon, StandardButtons buttons)
-        : NotificationBar(parent)
-        , m_icon(0)
-        , m_text(0)
+MessageBar::MessageBar(const QString &message, QWidget *parent)
+    : KMessageWidget(parent)
 {
-    QToolButton *closeButton = new QToolButton(this);
-    closeButton->setAutoRaise(true);
-    closeButton->setIcon(KIcon("dialog-close"));
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(destroy()));
+    connect(this, SIGNAL(accepted()), this, SLOT(hideAndDelete()));
+    connect(this, SIGNAL(rejected()), this, SLOT(hideAndDelete()));
+    
+    setMessageType(KMessageWidget::Error);
+    
+    QSize sz = size();
+    sz.setWidth( qobject_cast<QWidget *>(parent)->size().width() );
+    resize(sz);
+    
+    setCloseButtonVisible(false);
+    
+    setText( message );
 
-    m_text = new QLabel(message, this);
-    m_text->setWordWrap(true);
+    QAction *acceptAction = new QAction( i18n("Yes"), this );
+    connect(acceptAction, SIGNAL(triggered(bool)), this, SIGNAL(accepted()));
+    addAction(acceptAction);
 
-    m_icon = new QLabel;
-    QString icon_name;
-    switch (icon)
-    {
-    case QMessageBox::NoIcon:
-        break;
-    case QMessageBox::Information:
-        icon_name = "dialog-information";
-        break;
-    case QMessageBox::Warning:
-        icon_name = "dialog-warning";
-        break;
-    case QMessageBox::Critical:
-        icon_name = "dialog-error";
-        break;
-    default:
-        break;
-    }
-    if (!icon_name.isEmpty())
-        m_icon->setPixmap(KIcon(icon_name).pixmap(int(KIconLoader::SizeSmallMedium)));
-
-    QPushButton *button;
-    if (buttons & Ok)
-    {
-        button = new QPushButton(KIcon("dialog-ok"), i18n("Ok"));
-        connect(button, SIGNAL(clicked()), this, SIGNAL(accepted()));
-        connect(button, SIGNAL(clicked()), this, SLOT(destroy()));
-        m_buttons.append(button);
-    }
-    if (buttons & Cancel)
-    {
-        button = new QPushButton(KIcon("dialog-cancel"), i18n("Cancel"));
-        connect(button, SIGNAL(clicked()), this, SIGNAL(rejected()));
-        connect(button, SIGNAL(clicked()), this, SLOT(destroy()));
-        m_buttons.append(button);
-    }
-    if (buttons & Yes)
-    {
-        button = new QPushButton(i18n("Yes"));
-        connect(button, SIGNAL(clicked()), this, SIGNAL(accepted()));
-        connect(button, SIGNAL(clicked()), this, SLOT(destroy()));
-        m_buttons.append(button);
-    }
-    if (buttons & No)
-    {
-        button = new QPushButton(i18n("No"));
-        connect(button, SIGNAL(clicked()), this, SIGNAL(rejected()));
-        connect(button, SIGNAL(clicked()), this, SLOT(destroy()));
-        m_buttons.append(button);
-    }
-    if (buttons & Continue)
-    {
-        button = new QPushButton(i18n("Continue"));
-        connect(button, SIGNAL(clicked()), this, SIGNAL(accepted()));
-        connect(button, SIGNAL(clicked()), this, SLOT(destroy()));
-        m_buttons.append(button);
-    }
-
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(2, 0, 2, 0);
-    layout->addWidget(closeButton);
-    layout->addWidget(m_icon);
-    layout->addWidget(m_text);
-    foreach(QPushButton *button, m_buttons)
-    layout->addWidget(button, 2);
-    layout->setStretch(2, 20);
-
-    setLayout(layout);
-
+    QAction *rejectAction = new QAction( i18n("No"), this );
+    connect(rejectAction, SIGNAL(triggered(bool)), this, SIGNAL(rejected()));
+    addAction(rejectAction);
 }
 
-MessageBar::~MessageBar()
+
+void MessageBar::hideAndDelete()
 {
-    qDeleteAll(m_buttons);
+    animatedHide();
+    deleteLater();
 }
+
+    

@@ -165,12 +165,10 @@ int Application::newInstance()
         loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
         MessageBar *msgBar = new MessageBar(i18n("It seems rekonq was not closed properly. Do you want "
                                             "to restore the last saved session?")
-                                            , mainWindow()->currentTab()
-                                            , QMessageBox::Warning
-                                            , MessageBar::Yes | MessageBar::No);
-
+                                            , mainWindow()->currentTab());
+        
         connect(msgBar, SIGNAL(accepted()), sessionManager(), SLOT(restoreSession()));
-        mainWindow()->currentTab()->insertBar(msgBar);
+        msgBar->animatedShow();
     }
 
     if (areThereArguments)
