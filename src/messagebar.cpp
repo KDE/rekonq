@@ -69,5 +69,3 @@ void MessageBar::hideAndDelete()
     animatedHide();
     deleteLater();
 }
-
-    

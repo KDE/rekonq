@@ -86,7 +86,8 @@ public:
      */
     static QPixmap renderPagePreview(const QWebPage &page, int w = defaultWidth, int h = defaultHeight);
 
-    // static QPixmap renderVisiblePagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT); TODO: try to make this method work => more previews for the urlbar
+    // static QPixmap renderVisiblePagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT); 
+    // TODO: try to make this method work => more previews for the urlbar
 
     /**
      * Snaps a pixmap of size w * h from a page of a tab that is currently closing

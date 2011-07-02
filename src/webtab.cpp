@@ -58,11 +58,11 @@
 
 
 WebTab::WebTab(QWidget *parent)
-        : QWidget(parent)
-        , m_webView(new WebView(this))
-        , m_urlBar(new UrlBar(this))
-        , m_progress(0)
-        , m_part(0)
+    : QWidget(parent)
+    , m_webView(new WebView(this))
+    , m_urlBar(new UrlBar(this))
+    , m_progress(0)
+    , m_part(0)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
