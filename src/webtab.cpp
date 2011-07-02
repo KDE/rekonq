@@ -40,7 +40,9 @@
 #include "webpage.h"
 #include "webshortcutwidget.h"
 #include "application.h"
+#include "sessionmanager.h"
 #include "opensearchmanager.h"
+#include "messagebar.h"
 
 // KDE Includes
 #include <KWebWallet>
@@ -140,11 +142,13 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
     {
         m_walletBar = new WalletBar(this);
         m_walletBar.data()->onSaveFormData(key, url);
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_walletBar.data());
         m_walletBar.data()->animatedShow();
     }
     else
     {
         disconnect(wallet);
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_walletBar.data());
         m_walletBar.data()->animatedShow();
     }
 
@@ -160,6 +164,7 @@ void WebTab::createPreviewSelectorBar(int index)
     if (m_previewSelectorBar.isNull())
     {
         m_previewSelectorBar = new PreviewSelectorBar(index, this);
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_previewSelectorBar.data());
         m_previewSelectorBar.data()->animatedShow();
     }
     else
@@ -172,7 +177,7 @@ void WebTab::createPreviewSelectorBar(int index)
     connect(page(),             SIGNAL(loadStarted()),      m_previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
     connect(page(),             SIGNAL(loadProgress(int)),  m_previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
     connect(page(),             SIGNAL(loadFinished(bool)), m_previewSelectorBar.data(), SLOT(loadFinished()), Qt::UniqueConnection);
-    connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  m_previewSelectorBar.data(), SLOT(verifyUrl()), Qt::UniqueConnection);
+    connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  m_previewSelectorBar.data(), SLOT(verifyUrl()),    Qt::UniqueConnection);
 }
 
 
@@ -297,4 +302,17 @@ void WebTab::openSearchEngineAdded()
 
     disconnect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
                this, SLOT(openSearchEngineAdded()));
+}
+
+
+void WebTab::showMessageBar()
+{
+    MessageBar *msgBar = new MessageBar(i18n("It seems rekonq was not closed properly. Do you want "
+                                        "to restore the last saved session?")
+                                        , this);
+    
+    qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, msgBar);
+    msgBar->animatedShow();
+
+    connect(msgBar, SIGNAL(accepted()), rApp->sessionManager(), SLOT(restoreSession()));
 }

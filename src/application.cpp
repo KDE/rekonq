@@ -42,7 +42,6 @@
 #include "iconmanager.h"
 #include "mainview.h"
 #include "mainwindow.h"
-#include "messagebar.h"
 #include "opensearchmanager.h"
 #include "sessionmanager.h"
 #include "stackedurlbar.h"
@@ -163,12 +162,7 @@ int Application::newInstance()
     if (isRekonqCrashed && isFirstLoad)
     {
         loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
-        MessageBar *msgBar = new MessageBar(i18n("It seems rekonq was not closed properly. Do you want "
-                                            "to restore the last saved session?")
-                                            , mainWindow()->currentTab());
-        
-        connect(msgBar, SIGNAL(accepted()), sessionManager(), SLOT(restoreSession()));
-        msgBar->animatedShow();
+        mainWindow()->currentTab()->showMessageBar();
     }
 
     if (areThereArguments)
