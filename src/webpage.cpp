@@ -49,8 +49,7 @@
 #include "urlbar.h"
 #include "webpluginfactory.h"
 #include "webtab.h"
-
-#include "sslinfodialog_p.h"
+#include "sslwidget.h"
 
 // KDE Includes
 #include <KIO/Job>
@@ -553,8 +552,13 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
-
-    if(isMainFrameRequest
+    const bool isUrlFrameLoading = (_loadingUrl == frame->url());
+    kDebug() << "FRAME URL : " << frame->url();
+    kDebug() << "IS MAIN FRAME? " << isMainFrameRequest;
+    kDebug() << "LOADING URL: " << _loadingUrl;
+    kDebug() << "IS URL FRAME LOADING " << isUrlFrameLoading;
+    
+    if (isMainFrameRequest
             && _sslInfo.isValid()
             && !domainSchemeMatch(reply->url(), _sslInfo.url())
       )
@@ -571,6 +575,8 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     case QNetworkReply::NoError:                             // no error. Simple :)
         if(isMainFrameRequest && !_sslInfo.isValid())
         {
+            kDebug() << " ---------------------------- ";
+            kDebug() << "Setting SSL INFOS per URL = " << reply->url();
             // Obtain and set the SSL information if any...
             _sslInfo.restoreFrom(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)), reply->url());
             _sslInfo.setUrl(reply->url());
@@ -723,8 +729,9 @@ void WebPage::downloadAllContentsWithKGet(QPoint)
 }
 
 
-void WebPage::showSSLInfo(QPoint)
+void WebPage::showSSLInfo(QPoint pos)
 {
+<<<<<<< HEAD
     if(_sslInfo.isValid())
     {
         QPointer<KSslInfoDialog> dlg = new KSslInfoDialog(view());
@@ -745,11 +752,31 @@ void WebPage::showSSLInfo(QPoint)
     }
 
     if(mainFrame()->url().scheme() == QL1S("https"))
+=======
+//     if (_sslInfo.isValid())
+//     {
+//         QPointer<KSslInfoDialog> dlg = new KSslInfoDialog(view());
+//         dlg->setSslInfo(_sslInfo.certificateChain(),
+//                         _sslInfo.peerAddress().toString(),
+//                         mainFrame()->url().host(),
+//                         _sslInfo.protocol(),
+//                         _sslInfo.ciphers(),
+//                         _sslInfo.usedChiperBits(),
+//                         _sslInfo.supportedChiperBits(),
+//                         KSslInfoDialog::errorsFromString(_sslInfo.certificateErrors())
+//                        );
+// 
+//         dlg->exec();
+//         delete dlg;
+// 
+//         return;
+//     }
+// 
+    if (mainFrame()->url().scheme() == QL1S("https"))
+>>>>>>> Added SSL Widget, first version
     {
-        KMessageBox::error(view(),
-                           i18n("The SSL information for this site appears to be corrupt."),
-                           i18nc("Secure Sockets Layer", "SSL")
-                          );
+        SSLWidget *widget = new SSLWidget(mainFrame()->url(), _sslInfo, view());
+        widget->showAt(pos);    
     }
     else
     {

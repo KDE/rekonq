@@ -73,6 +73,7 @@ SET( rekonq_KDEINIT_SRCS
     urlbar/urlresolver.cpp
     urlbar/listitem.cpp
     urlbar/rsswidget.cpp
+    urlbar/sslwidget.cpp
     urlbar/bookmarkwidget.cpp
     urlbar/webshortcutwidget.cpp
     #----------------------------------------
