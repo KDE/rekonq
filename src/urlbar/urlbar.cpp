@@ -182,7 +182,10 @@ void UrlBar::paintEvent(QPaintEvent *event)
     {
         if(_tab->url().scheme() == QL1S("https"))
         {
-            backgroundColor = colorScheme.background(KColorScheme::NeutralBackground).color();  // light yellow
+            backgroundColor = _tab->page()->hasSslValid()
+                ? colorScheme.background(KColorScheme::PositiveBackground).color()
+                : colorScheme.background(KColorScheme::NegativeBackground).color();
+
             foregroundColor = colorScheme.foreground(KColorScheme::NormalText).color();
         }
         p.setBrush(QPalette::Base, backgroundColor);
@@ -461,7 +464,9 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         rightIcon->setToolTip(i18n("List all available RSS feeds"));
         break;
     case UrlBar::SSL:
-        rightIcon->setIcon(KIcon("object-locked"));
+        _tab->page()->hasSslValid()
+            ? rightIcon->setIcon(KIcon("security-high"))
+            : rightIcon->setIcon(KIcon("security-low"));
         rightIcon->setToolTip(i18n("Show SSL Info"));
         break;
     case UrlBar::BK:

@@ -79,6 +79,11 @@ public:
     {
         return _suggestedFileName;
     };
+    
+    inline bool hasSslValid()
+    {
+        return _sslInfo.isValid();
+    }
 
 public Q_SLOTS:
     void downloadAllContentsWithKGet(QPoint);
