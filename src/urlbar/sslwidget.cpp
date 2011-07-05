@@ -30,9 +30,7 @@
 
 // Local includes
 #include "application.h"
-#include "iconmanager.h"
-#include "mainwindow.h"
-#include "webtab.h"
+#include "historymanager.h"
 
 // KDE Includes
 
@@ -47,75 +45,122 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     : QMenu(parent)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    setMinimumWidth(500);
-
-    QFormLayout *layout = new QFormLayout(this);
-
-    QLabel *l;
-    
-    // Title
-    QLabel *title = new QLabel(this);
-    title->setText( QL1S("<h4>") + url.toString() + QL1S("</h4>") );
-    title->setAlignment(Qt::AlignCenter);
-    layout->addRow(title);
-
-    QLabel *u = new QLabel(this);
-    u->setText( info.url().toString() );
-    layout->addRow(u);
-    
-    QLabel *hAdd = new QLabel(this);
-    hAdd->setText( QL1S("Peer Address: ") + info.peerAddress().toString() );
-    layout->addRow(hAdd);
-
-    QLabel *pAdd = new QLabel(this);
-    pAdd->setText( QL1S("Parent Address: ") + info.parentAddress().toString() );
-    layout->addRow(pAdd);
-
-    QLabel *cip = new QLabel(this);
-    cip->setText( QL1S("Cipher: ") + info.ciphers() );
-    layout->addRow(cip);
-
-    QLabel *pr = new QLabel(this);
-    pr->setText( QL1S("Protocol: ") + info.protocol() );
-    layout->addRow(pr);
-
-    QLabel *epr = new QLabel(this);
-    epr->setText( QL1S("CA errors: ") + info.certificateErrors() );
-    layout->addRow(epr);
+    setMinimumWidth(400);
 
     QList<QSslCertificate> caList = info.certificateChain();
-    Q_FOREACH(const QSslCertificate &cert, caList)
-    {
-        QLabel *a = new QLabel(this);
-        a->setText( QL1S("ORGANIZATION: ") + cert.issuerInfo(QSslCertificate::Organization) );
-        layout->addRow(a);
-        
-        QLabel *b = new QLabel(this);
-        b->setText( QL1S("CN: ") + cert.issuerInfo(QSslCertificate::CommonName) );
-        layout->addRow(b);
-        
-        QLabel *c = new QLabel(this);
-        c->setText( QL1S("LOCALITY NAME: ") + cert.issuerInfo(QSslCertificate::LocalityName) );
-        layout->addRow(c);
-        
-        QLabel *d = new QLabel(this);
-        d->setText( QL1S("ORGANIZATION UNIT NAME: ") + cert.issuerInfo(QSslCertificate::OrganizationalUnitName) );
-        layout->addRow(d);
-        
-        QLabel *e = new QLabel(this);
-        e->setText( QL1S("COUNTRY NAME: ") + cert.issuerInfo(QSslCertificate::CountryName) );
-        layout->addRow(e);
-        
-        QLabel *f = new QLabel(this);
-        f->setText( QL1S("STATE OR PROVINCE NAME: ") + cert.issuerInfo(QSslCertificate::StateOrProvinceName) );
-        layout->addRow(f);
-    }
-
-// ----------------------------------------------------------------
-    l = new QLabel(this);
-    l->setText( QL1S("<h4>") + i18n("Site Information") + QL1S("</h4>") );
-    layout->addRow(l);
+    QSslCertificate firstCA = caList.first();
     
+    QFormLayout *layout = new QFormLayout(this);
+
+    QLabel *label;
+    
+    label = new QLabel(this);
+    label->setText( QL1S("<h4>") + url.host() + QL1S("</h4>") );
+    layout->addRow(label);
+
+    if (firstCA.isNull())
+    {
+        label = new QLabel(this);
+        label->setText( i18n("Warning: this site is carrying a NULL certificate") );
+        layout->addRow(label);
+    }
+    else
+    {
+        if (firstCA.isValid())
+        {
+            label = new QLabel(this);
+            label->setText( i18n("This certificate for this site is Valid and has been verified by ") 
+                            + firstCA.subjectInfo(QSslCertificate::CommonName) );
+            layout->addRow(label);
+        }
+        else
+        {
+            label = new QLabel(this);
+            label->setText( i18n("Warning: The certificate for this site is NOT valid!") );
+            layout->addRow(label);
+        }
+        
+        label = new QLabel(this);
+        label->setText( QL1S("<hr /><h4>") + i18n("Issued to") + QL1S("</h4>") ); // ----------------------------------------------- //
+        layout->addRow(label);
+
+            label = new QLabel(this);
+            label->setText( QL1S("COMMON NAME: ") + firstCA.subjectInfo(QSslCertificate::CommonName) );
+            layout->addRow(label);
+
+            label = new QLabel(this);
+            label->setText( QL1S("ORGANIZATION: ") + firstCA.subjectInfo(QSslCertificate::Organization) );
+            layout->addRow(label);
+            
+            label = new QLabel(this);
+            label->setText( QL1S("ORGANIZATION UNIT: ") + firstCA.subjectInfo(QSslCertificate::OrganizationalUnitName) );
+            layout->addRow(label);
+            
+            label = new QLabel(this);
+            label->setText( QL1S("SERIAL NUMBER: ") + QL1S( firstCA.serialNumber().toHex() ) );
+            layout->addRow(label);        
+            
+        label = new QLabel(this);
+        label->setText( QL1S("<h4>") + i18n("Issued by") + QL1S("</h4>") );
+        layout->addRow(label);
+
+            label = new QLabel(this);
+            label->setText( QL1S("COMMON NAME: ") + firstCA.issuerInfo(QSslCertificate::CommonName) );
+            layout->addRow(label);
+
+            label = new QLabel(this);
+            label->setText( QL1S("ORGANIZATION: ") + firstCA.issuerInfo(QSslCertificate::Organization) );
+            layout->addRow(label);
+            
+            label = new QLabel(this);
+            label->setText( QL1S("ORGANIZATION UNIT: ") + firstCA.issuerInfo(QSslCertificate::OrganizationalUnitName) );
+            layout->addRow(label);
+            
+        label = new QLabel(this);
+        label->setText( QL1S("<h4>") + i18n("Validity Period") + QL1S("</h4>") );
+        layout->addRow(label);
+
+            label = new QLabel(this);
+            label->setText( i18n("Issued on: ") + firstCA.effectiveDate().date().toString(Qt::SystemLocaleShortDate) );
+            layout->addRow(label);
+
+            label = new QLabel(this);
+            label->setText( i18n("Expires on: ") + firstCA.expiryDate().date().toString(Qt::SystemLocaleShortDate) );
+            layout->addRow(label);
+
+            
+        label = new QLabel(this);
+        label->setText( QL1S("<h4>") + i18n("FingerPrints") + QL1S("</h4>") );
+        layout->addRow(label);
+        
+            label = new QLabel(this);
+            label->setText( QL1S("SHA1 FingerPrint: ") + QL1S( firstCA.digest(QCryptographicHash::Sha1).toHex() ) );
+            layout->addRow(label);
+
+            label = new QLabel(this);
+            label->setText( QL1S("MD5 FingerPrint: ") + QL1S( firstCA.digest(QCryptographicHash::Md5).toHex() ) );
+            layout->addRow(label);
+
+    }
+    
+    // ------------------------------------------------------------------------------------------------------------------
+    label = new QLabel(this);
+    label->setText( QL1S("<hr /><h4>") + i18n("Site Information") + QL1S("</h4>") );
+    layout->addRow(label);
+
+        label = new QLabel(this);
+
+        if (rApp->historyManager()->historyContains(url.toString())) //FIXME change with visit count > 1
+        {
+            label->setText( i18n("You just visited this site") );
+        }
+        else
+        {
+            label->setText( i18n("It's your first time visiting this site") );            
+        }
+        layout->addRow(label);
+
+    // -----------------------------------------------------------------------------------
     setLayout(layout);
 }
 
