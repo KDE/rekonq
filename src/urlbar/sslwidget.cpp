@@ -31,6 +31,7 @@
 // Local includes
 #include "application.h"
 #include "historymanager.h"
+#include "sslinfodialog.h"
 
 // KDE Includes
 
@@ -43,6 +44,8 @@
 
 SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     : QMenu(parent)
+    , m_url(url)
+    , m_info(info)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setMinimumWidth(400);
@@ -54,8 +57,9 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
 
     QLabel *label;
     
+    // ------------------------------------------------------------------------------------------------------------------
     label = new QLabel(this);
-    label->setText( QL1S("<h4>") + url.host() + QL1S("</h4>") );
+    label->setText( i18n("<h4>Identity</h4>") );
     layout->addRow(label);
 
     if (firstCA.isNull())
@@ -81,7 +85,13 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
         }
         
         label = new QLabel(this);
-        label->setText( QL1S("<hr /><h4>") + i18n("Issued to") + QL1S("</h4>") ); // ----------------------------------------------- //
+        label->setText("<a href=\"moresslinfos\">Certificate Information</a>");
+        connect(label, SIGNAL(linkActivated(const QString &)), this, SLOT(showMoreSslInfos(const QString &)));
+        layout->addRow(label);
+        
+        // ------------------------------------------------------------------------------------------------------------------
+        label = new QLabel(this);
+        label->setText( QL1S("<hr /><h4>Encryption</h4>") ); // ----------------------------------------------- //
         layout->addRow(label);
 
             label = new QLabel(this);
@@ -145,7 +155,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     
     // ------------------------------------------------------------------------------------------------------------------
     label = new QLabel(this);
-    label->setText( QL1S("<hr /><h4>") + i18n("Site Information") + QL1S("</h4>") );
+    label->setText( i18n("<hr /><h4>Site Information</h4>") );
     layout->addRow(label);
 
         label = new QLabel(this);
@@ -179,4 +189,28 @@ void SSLWidget::accept()
 {
 
     close();
+}
+
+
+void SSLWidget::showMoreSslInfos(const QString &)
+{
+    // FIXME: show it every time???
+    if (m_info.isValid())
+    {
+        QPointer<SslInfoDialog> dlg = new SslInfoDialog(m_url.host(), m_info, this);
+//         dlg->setSslInfo(m_info.certificateChain(),
+//                         m_info.peerAddress().toString(),
+//                         m_host,
+//                         m_info.protocol(),
+//                         m_info.ciphers(),
+//                         m_info.usedChiperBits(),
+//                         m_info.supportedChiperBits()
+//                        );
+
+        dlg->exec();
+        delete dlg;
+
+        return;
+    }
+    
 }

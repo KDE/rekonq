@@ -23,6 +23,7 @@ SET( rekonq_KDEINIT_SRCS
     previewselectorbar.cpp
     protocolhandler.cpp
     sessionmanager.cpp
+    sslinfodialog.cpp
     tabpreviewpopup.cpp
     tabbar.cpp
     tabhighlighteffect.cpp
@@ -99,6 +100,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_webkit.ui
     settings/settings_adblock.ui
     cleardata.ui
+    sslinfo.ui
     useragent/useragentsettings.ui
  )
 

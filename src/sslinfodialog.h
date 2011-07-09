@@ -24,34 +24,48 @@
 * ============================================================ */
 
 
-#ifndef SSL_WIDGET_H
-#define SSL_WIDGET_H
+#ifndef SSL_INFO_DIALOG_H
+#define SSL_INFO_DIALOG_H
 
+#include "rekonq_defines.h"
 
-// Local Includes
 #include "websslinfo.h"
 
-// Qt Includes
-#include <QtGui/QMenu>
-#include <QtCore/QUrl>
+// Ui Includes
+#include "ui_sslinfo.h"
 
+#include <KDE/KDialog>
 
-class SSLWidget : public QMenu
+#include <QList>
+
+class QSslCertificate;
+class QString;
+
+/**
+ * Rekonq SSL Information Dialog
+ *
+ * This class creates a dialog that can be used to display information about
+ * an SSL session.
+ *
+ */
+class SslInfoDialog : public KDialog
 {
     Q_OBJECT
 
 public:
-    SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent = 0);
-
-    void showAt(const QPoint &pos);
+    explicit SslInfoDialog(const QString &host, const WebSslInfo &info, QWidget *parent = 0);
 
 private Q_SLOTS:
-    void showMoreSslInfos(const QString &);
-    void accept();
-    
+    void displayFromChain(int);
+    void exportCert();
+
 private:
-    QUrl m_url;
+    void showCertificateInfo(QSslCertificate);
+    
+    QString m_host;
     WebSslInfo m_info;
+
+    Ui::SslInfo ui;
 };
 
-#endif // SSL_WIDGET_H
+#endif // SSL_INFO_DIALOG_H
