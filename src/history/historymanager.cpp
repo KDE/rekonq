@@ -59,7 +59,7 @@
 #include <QtAlgorithms>
 
 
-static const unsigned int HISTORY_VERSION = 24;
+static const unsigned int HISTORY_VERSION = 25;
 
 
 HistoryManager::HistoryManager(QObject *parent)
@@ -123,7 +123,7 @@ void HistoryManager::addHistoryEntry(const QString &url)
         m_history.removeOne(item);
         emit entryRemoved(item);
 
-        item.dateTime = QDateTime::currentDateTime();
+        item.lastDateTimeVisit = QDateTime::currentDateTime();
         item.visitCount++;
     }
     else
@@ -172,7 +172,7 @@ void HistoryManager::checkForExpired()
 
     while(!m_history.isEmpty())
     {
-        QDateTime checkForExpired = m_history.last().dateTime;
+        QDateTime checkForExpired = m_history.last().lastDateTimeVisit;
         checkForExpired.setDate(checkForExpired.date().addDays(m_historyLimit));
         if(now.daysTo(checkForExpired) > 7)
         {
@@ -352,23 +352,33 @@ void HistoryManager::load()
         {
         case HISTORY_VERSION:   // default case
             stream >> item.url;
-            stream >> item.dateTime;
+            stream >> item.firstDateTimeVisit;
+            stream >> item.lastDateTimeVisit;
             stream >> item.title;
             stream >> item.visitCount;
             break;
 
-        case 23:    // this will be used to upgrade previous structure...
+        case 24:                // this was history structure for rekonq < 0.8
             stream >> item.url;
-            stream >> item.dateTime;
+            stream >> item.lastDateTimeVisit;
+            stream >> item.title;
+            stream >> item.visitCount;
+            item.firstDateTimeVisit = item.lastDateTimeVisit;
+            break;
+
+        case 23:                // this will be used to upgrade previous structure...
+            stream >> item.url;
+            stream >> item.lastDateTimeVisit;
             stream >> item.title;
             item.visitCount = 1;
+            item.firstDateTimeVisit = item.lastDateTimeVisit;
             break;
 
         default:
             continue;
         };
 
-        if(!item.dateTime.isValid())
+        if (!item.lastDateTimeVisit.isValid())
             continue;
 
         if(item == lastInsertedItem)
@@ -446,7 +456,7 @@ void HistoryManager::save()
         QByteArray data;
         QDataStream stream(&data, QIODevice::WriteOnly);
         HistoryItem item = m_history.at(i);
-        stream << HISTORY_VERSION << item.url << item.dateTime << item.title << item.visitCount;
+        stream << HISTORY_VERSION << item.url << item.firstDateTimeVisit << item.lastDateTimeVisit << item.title << item.visitCount;
         out << data;
     }
     tempFile.close();

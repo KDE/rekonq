@@ -56,7 +56,8 @@ public:
         DateRole = Qt::UserRole + 1,
         DateTimeRole = Qt::UserRole + 2,
         UrlRole = Qt::UserRole + 3,
-        UrlStringRole = Qt::UserRole + 4
+        UrlStringRole = Qt::UserRole + 4,
+        FirstDateTimeVisitRole = Qt::UserRole + 5
     };
 
     explicit HistoryModel(HistoryManager *history, QObject *parent = 0);

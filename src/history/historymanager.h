@@ -65,7 +65,8 @@ public:
                         )
         : title(t)
         , url(u)
-        , dateTime(d)
+        , firstDateTimeVisit(d)
+        , lastDateTimeVisit(d)
         , visitCount(1)
     {}
 
@@ -73,23 +74,25 @@ public:
     {
         return other.title == title
                && other.url == url
-               && other.dateTime == dateTime;
+               && other.firstDateTimeVisit == firstDateTimeVisit
+               && other.lastDateTimeVisit == lastDateTimeVisit;
     }
 
     inline qreal relevance() const
     {
-        return log(visitCount) - log(dateTime.daysTo(QDateTime::currentDateTime()) + 1);
+        return log(visitCount) - log(lastDateTimeVisit.daysTo(QDateTime::currentDateTime()) + 1);
     }
 
     // history is sorted in reverse
     inline bool operator <(const HistoryItem &other) const
     {
-        return dateTime > other.dateTime;
+        return lastDateTimeVisit > other.lastDateTimeVisit;
     }
 
     QString title;
     QString url;
-    QDateTime dateTime;
+    QDateTime firstDateTimeVisit;
+    QDateTime lastDateTimeVisit;
     int visitCount;
 };
 

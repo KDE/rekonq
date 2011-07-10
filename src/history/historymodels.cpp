@@ -115,9 +115,11 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     switch(role)
     {
     case DateTimeRole:
-        return item.dateTime;
+        return item.lastDateTimeVisit;
     case DateRole:
-        return item.dateTime.date();
+        return item.lastDateTimeVisit.date();
+    case FirstDateTimeVisitRole:
+        return item.firstDateTimeVisit;
     case UrlRole:
         return QUrl(item.url);
     case Qt::UserRole:
@@ -152,7 +154,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
         QString tooltip = "";
         if(!item.title.isEmpty())
             tooltip = item.title + '\n';
-        tooltip += item.dateTime.toString(Qt::SystemLocaleShortDate) + '\n' + item.url;
+        tooltip += item.lastDateTimeVisit.toString(Qt::SystemLocaleShortDate) + '\n' + item.url;
         return tooltip;
     }
     return QVariant();
@@ -188,7 +190,7 @@ bool HistoryModel::removeRows(int row, int count, const QModelIndex &parent)
 }
 
 
-// -------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------
 
 
 HistoryFilterModel::HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent)
@@ -436,7 +438,7 @@ QVariant HistoryTreeModel::headerData(int section, Qt::Orientation orientation, 
 
 QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
 {
-    if((role == Qt::EditRole || role == Qt::DisplayRole))
+    if (role == Qt::EditRole || role == Qt::DisplayRole)
     {
         int start = index.internalId();
         if(start == 0)
@@ -456,13 +458,22 @@ QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
             }
         }
     }
-    if(role == Qt::DecorationRole && index.column() == 0 && !index.parent().isValid())
+    
+    if (role == Qt::DecorationRole && index.column() == 0 && !index.parent().isValid())
         return KIcon("view-history");
-    if(role == HistoryModel::DateRole && index.column() == 0 && index.internalId() == 0)
+    
+    if (role == HistoryModel::DateRole && index.column() == 0 && index.internalId() == 0)
     {
         int offset = sourceDateRow(index.row());
         QModelIndex idx = sourceModel()->index(offset, 0);
         return idx.data(HistoryModel::DateRole);
+    }
+
+    if (role == HistoryModel::FirstDateTimeVisitRole && index.column() == 0 && index.internalId() == 0)
+    {
+        int offset = sourceDateRow(index.row());
+        QModelIndex idx = sourceModel()->index(offset, 0);
+        return idx.data(HistoryModel::FirstDateTimeVisitRole);
     }
 
     return QAbstractProxyModel::data(index, role);

@@ -100,28 +100,37 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     label->setText( QL1S("<hr /><h4>Encryption</h4>") ); // ----------------------------------------------- //
     layout->addRow(label);
 
-    label = new QLabel(this);
-    label->setWordWrap(true);
-    label->setText( i18n("Your connection to %1 is encrypted with %2 encryption\n\n", m_url.host(), m_info.supportedChiperBits()) );
-    layout->addRow(label);
-    
-    QString sslVersion = QL1S("SSLv") + cert.version();
-    label = new QLabel(this);
-    label->setWordWrap(true);
-    label->setText( i18n("The connection uses %1\n\n", sslVersion) );
-    layout->addRow(label);
-    
-    const QStringList cipherInfo = m_info.ciphers().split('\n', QString::SkipEmptyParts);
-    label = new QLabel(this);
-    label->setWordWrap(true);
-    label->setText( i18n("The connection is encrypted using %1 at %2 bits with %3 for message authentication and %4 as the key exchange mechanism.\n\n",
-        cipherInfo[0],
-        m_info.usedChiperBits(),
-        cipherInfo[3],
-        cipherInfo[1])
-                         
-    );
-    layout->addRow(label);
+    if (cert.isNull())
+    {
+        label = new QLabel(this);
+        label->setWordWrap(true);
+        label->setText( i18n("Your connection to %1 is NOT encrypted!!\n\n", m_url.host()) );
+        layout->addRow(label);        
+    }
+    else
+    {
+        label = new QLabel(this);
+        label->setWordWrap(true);
+        label->setText( i18n("Your connection to %1 is encrypted with %2 encryption\n\n", m_url.host(), m_info.supportedChiperBits()) );
+        layout->addRow(label);
+        
+        QString sslVersion = QL1S("SSLv") + cert.version();
+        label = new QLabel(this);
+        label->setWordWrap(true);
+        label->setText( i18n("The connection uses %1\n\n", sslVersion) );
+        layout->addRow(label);
+        
+        const QStringList cipherInfo = m_info.ciphers().split('\n', QString::SkipEmptyParts);
+        label = new QLabel(this);
+        label->setWordWrap(true);
+        label->setText( 
+            i18n("The connection is encrypted using %1 at %2 bits with %3 for message authentication and %4 as the key exchange mechanism.\n\n",
+            cipherInfo[0],
+            m_info.usedChiperBits(),
+            cipherInfo[3],
+            cipherInfo[1]) );
+        layout->addRow(label);
+    }
     
     // ------------------------------------------------------------------------------------------------------------------
     label = new QLabel(this);
@@ -132,13 +141,15 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     label = new QLabel(this);
     label->setWordWrap(true);
 
-    if (rApp->historyManager()->historyContains(url.toString())) //FIXME change with visit count > 1
+    HistoryItem firstVisit = rApp->historyManager()->find(url.toString()).first();
+
+    if (firstVisit.visitCount == 1)
     {
-        label->setText( i18n("You just visited this site") );
+        label->setText( i18n("It's your first time visiting this site") );            
     }
     else
     {
-        label->setText( i18n("It's your first time visiting this site") );            
+        label->setText( i18n("You just visited this site!\nYour first visit was on %1", firstVisit.firstDateTimeVisit.toString()) );
     }
     layout->addRow(label);
 
