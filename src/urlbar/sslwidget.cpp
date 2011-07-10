@@ -50,8 +50,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
     setMinimumWidth(400);
 
-    QList<QSslCertificate> caList = info.certificateChain();
-    QSslCertificate firstCA = caList.first();
+    QSslCertificate cert = info.certificateChain().first();
     
     QFormLayout *layout = new QFormLayout(this);
 
@@ -59,116 +58,89 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     
     // ------------------------------------------------------------------------------------------------------------------
     label = new QLabel(this);
+    label->setWordWrap(true);
     label->setText( i18n("<h4>Identity</h4>") );
     layout->addRow(label);
 
-    if (firstCA.isNull())
+    if (cert.isNull())
     {
         label = new QLabel(this);
+        label->setWordWrap(true);
         label->setText( i18n("Warning: this site is carrying a NULL certificate") );
         layout->addRow(label);
     }
     else
     {
-        if (firstCA.isValid())
+        if (cert.isValid())
         {
             label = new QLabel(this);
+            label->setWordWrap(true);
             label->setText( i18n("This certificate for this site is Valid and has been verified by ") 
-                            + firstCA.subjectInfo(QSslCertificate::CommonName) );
+                            + cert.issuerInfo(QSslCertificate::CommonName) );
             layout->addRow(label);
         }
         else
         {
             label = new QLabel(this);
+            label->setWordWrap(true);
             label->setText( i18n("Warning: The certificate for this site is NOT valid!") );
             layout->addRow(label);
         }
-        
-        label = new QLabel(this);
-        label->setText("<a href=\"moresslinfos\">Certificate Information</a>");
-        connect(label, SIGNAL(linkActivated(const QString &)), this, SLOT(showMoreSslInfos(const QString &)));
-        layout->addRow(label);
-        
-        // ------------------------------------------------------------------------------------------------------------------
-        label = new QLabel(this);
-        label->setText( QL1S("<hr /><h4>Encryption</h4>") ); // ----------------------------------------------- //
-        layout->addRow(label);
-
-            label = new QLabel(this);
-            label->setText( QL1S("COMMON NAME: ") + firstCA.subjectInfo(QSslCertificate::CommonName) );
-            layout->addRow(label);
-
-            label = new QLabel(this);
-            label->setText( QL1S("ORGANIZATION: ") + firstCA.subjectInfo(QSslCertificate::Organization) );
-            layout->addRow(label);
-            
-            label = new QLabel(this);
-            label->setText( QL1S("ORGANIZATION UNIT: ") + firstCA.subjectInfo(QSslCertificate::OrganizationalUnitName) );
-            layout->addRow(label);
-            
-            label = new QLabel(this);
-            label->setText( QL1S("SERIAL NUMBER: ") + QL1S( firstCA.serialNumber().toHex() ) );
-            layout->addRow(label);        
-            
-        label = new QLabel(this);
-        label->setText( QL1S("<h4>") + i18n("Issued by") + QL1S("</h4>") );
-        layout->addRow(label);
-
-            label = new QLabel(this);
-            label->setText( QL1S("COMMON NAME: ") + firstCA.issuerInfo(QSslCertificate::CommonName) );
-            layout->addRow(label);
-
-            label = new QLabel(this);
-            label->setText( QL1S("ORGANIZATION: ") + firstCA.issuerInfo(QSslCertificate::Organization) );
-            layout->addRow(label);
-            
-            label = new QLabel(this);
-            label->setText( QL1S("ORGANIZATION UNIT: ") + firstCA.issuerInfo(QSslCertificate::OrganizationalUnitName) );
-            layout->addRow(label);
-            
-        label = new QLabel(this);
-        label->setText( QL1S("<h4>") + i18n("Validity Period") + QL1S("</h4>") );
-        layout->addRow(label);
-
-            label = new QLabel(this);
-            label->setText( i18n("Issued on: ") + firstCA.effectiveDate().date().toString(Qt::SystemLocaleShortDate) );
-            layout->addRow(label);
-
-            label = new QLabel(this);
-            label->setText( i18n("Expires on: ") + firstCA.expiryDate().date().toString(Qt::SystemLocaleShortDate) );
-            layout->addRow(label);
-
-            
-        label = new QLabel(this);
-        label->setText( QL1S("<h4>") + i18n("FingerPrints") + QL1S("</h4>") );
-        layout->addRow(label);
-        
-            label = new QLabel(this);
-            label->setText( QL1S("SHA1 FingerPrint: ") + QL1S( firstCA.digest(QCryptographicHash::Sha1).toHex() ) );
-            layout->addRow(label);
-
-            label = new QLabel(this);
-            label->setText( QL1S("MD5 FingerPrint: ") + QL1S( firstCA.digest(QCryptographicHash::Md5).toHex() ) );
-            layout->addRow(label);
-
     }
+    
+    label = new QLabel(this);
+    label->setWordWrap(true);
+    label->setText("<a href=\"moresslinfos\">Certificate Information</a>");
+    connect(label, SIGNAL(linkActivated(const QString &)), this, SLOT(showMoreSslInfos(const QString &)));
+    layout->addRow(label);
     
     // ------------------------------------------------------------------------------------------------------------------
     label = new QLabel(this);
+    label->setWordWrap(true);
+    label->setText( QL1S("<hr /><h4>Encryption</h4>") ); // ----------------------------------------------- //
+    layout->addRow(label);
+
+    label = new QLabel(this);
+    label->setWordWrap(true);
+    label->setText( i18n("Your connection to %1 is encrypted with %2 encryption\n\n", m_url.host(), m_info.supportedChiperBits()) );
+    layout->addRow(label);
+    
+    QString sslVersion = QL1S("SSLv") + cert.version();
+    label = new QLabel(this);
+    label->setWordWrap(true);
+    label->setText( i18n("The connection uses %1\n\n", sslVersion) );
+    layout->addRow(label);
+    
+    const QStringList cipherInfo = m_info.ciphers().split('\n', QString::SkipEmptyParts);
+    label = new QLabel(this);
+    label->setWordWrap(true);
+    label->setText( i18n("The connection is encrypted using %1 at %2 bits with %3 for message authentication and %4 as the key exchange mechanism.\n\n",
+        cipherInfo[0],
+        m_info.usedChiperBits(),
+        cipherInfo[3],
+        cipherInfo[1])
+                         
+    );
+    layout->addRow(label);
+    
+    // ------------------------------------------------------------------------------------------------------------------
+    label = new QLabel(this);
+    label->setWordWrap(true);
     label->setText( i18n("<hr /><h4>Site Information</h4>") );
     layout->addRow(label);
 
-        label = new QLabel(this);
+    label = new QLabel(this);
+    label->setWordWrap(true);
 
-        if (rApp->historyManager()->historyContains(url.toString())) //FIXME change with visit count > 1
-        {
-            label->setText( i18n("You just visited this site") );
-        }
-        else
-        {
-            label->setText( i18n("It's your first time visiting this site") );            
-        }
-        layout->addRow(label);
+    if (rApp->historyManager()->historyContains(url.toString())) //FIXME change with visit count > 1
+    {
+        label->setText( i18n("You just visited this site") );
+    }
+    else
+    {
+        label->setText( i18n("It's your first time visiting this site") );            
+    }
+    layout->addRow(label);
 
     // -----------------------------------------------------------------------------------
     setLayout(layout);
@@ -187,30 +159,15 @@ void SSLWidget::showAt(const QPoint &pos)
 
 void SSLWidget::accept()
 {
-
     close();
 }
 
 
 void SSLWidget::showMoreSslInfos(const QString &)
 {
-    // FIXME: show it every time???
-    if (m_info.isValid())
-    {
-        QPointer<SslInfoDialog> dlg = new SslInfoDialog(m_url.host(), m_info, this);
-//         dlg->setSslInfo(m_info.certificateChain(),
-//                         m_info.peerAddress().toString(),
-//                         m_host,
-//                         m_info.protocol(),
-//                         m_info.ciphers(),
-//                         m_info.usedChiperBits(),
-//                         m_info.supportedChiperBits()
-//                        );
+    QPointer<SslInfoDialog> dlg = new SslInfoDialog(m_url.host(), m_info, this);
+    dlg->exec();
+    delete dlg;
 
-        dlg->exec();
-        delete dlg;
-
-        return;
-    }
-    
+    return;
 }

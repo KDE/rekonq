@@ -731,49 +731,7 @@ void WebPage::downloadAllContentsWithKGet(QPoint)
 
 void WebPage::showSSLInfo(QPoint pos)
 {
-<<<<<<< HEAD
-    if(_sslInfo.isValid())
-    {
-        QPointer<KSslInfoDialog> dlg = new KSslInfoDialog(view());
-        dlg->setSslInfo(_sslInfo.certificateChain(),
-                        _sslInfo.peerAddress().toString(),
-                        mainFrame()->url().host(),
-                        _sslInfo.protocol(),
-                        _sslInfo.ciphers(),
-                        _sslInfo.usedChiperBits(),
-                        _sslInfo.supportedChiperBits(),
-                        KSslInfoDialog::errorsFromString(_sslInfo.certificateErrors())
-                       );
-
-        dlg->exec();
-        delete dlg;
-
-        return;
-    }
-
-    if(mainFrame()->url().scheme() == QL1S("https"))
-=======
-//     if (_sslInfo.isValid())
-//     {
-//         QPointer<KSslInfoDialog> dlg = new KSslInfoDialog(view());
-//         dlg->setSslInfo(_sslInfo.certificateChain(),
-//                         _sslInfo.peerAddress().toString(),
-//                         mainFrame()->url().host(),
-//                         _sslInfo.protocol(),
-//                         _sslInfo.ciphers(),
-//                         _sslInfo.usedChiperBits(),
-//                         _sslInfo.supportedChiperBits(),
-//                         KSslInfoDialog::errorsFromString(_sslInfo.certificateErrors())
-//                        );
-// 
-//         dlg->exec();
-//         delete dlg;
-// 
-//         return;
-//     }
-// 
     if (mainFrame()->url().scheme() == QL1S("https"))
->>>>>>> Added SSL Widget, first version
     {
         SSLWidget *widget = new SSLWidget(mainFrame()->url(), _sslInfo, view());
         widget->showAt(pos);    

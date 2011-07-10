@@ -81,7 +81,7 @@ void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert)
     ui.subjectCN->setText( subjectCert.subjectInfo(QSslCertificate::CommonName) );
     ui.subjectO->setText( subjectCert.subjectInfo(QSslCertificate::Organization) );
     ui.subjectOU->setText( subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName) );
-    ui.subjectSN->setText( subjectCert.serialNumber().toHex() );
+    ui.subjectSN->setText( subjectCert.serialNumber() );
     
     ui.issuerCN->setText( subjectCert.issuerInfo(QSslCertificate::CommonName) );
     ui.issuerO->setText( subjectCert.issuerInfo(QSslCertificate::Organization) );
