@@ -37,6 +37,7 @@
 #include <QtGui/QLayout>
 #include <QtCore/Q_PID>
 #include <QtNetwork/QSslCertificate>
+#include <QtNetwork/QSslError>
 
 #include <QFormLayout>
 
@@ -72,12 +73,30 @@ SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidge
         
     QSslCertificate subjectCert = caList.first();
     
-    showCertificateInfo(subjectCert);
+    if (subjectCert.isValid())
+        showCertificateInfo(subjectCert, i18n("The Certificate is Valid!") );
+    else
+    {
+        QString errors;
+        QStringList sl = info.certificateErrors().split("\t", QString::SkipEmptyParts);
+        Q_FOREACH(const QString &s, sl)
+        {
+            bool didConvert;
+            QSslError::SslError error = static_cast<QSslError::SslError>(s.trimmed().toInt(&didConvert));
+            if (didConvert) 
+            {
+                errors += QSslError(error).errorString() + QL1S("\n");
+            }
+        }
+        showCertificateInfo(subjectCert, i18n("The certificate for this site is NOT valid for the following reasons:\n%1", errors) );
+    }
 }
 
 
-void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert)
+void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert, const QString &certErrors)
 {
+    ui.certInfoLabel->setText(certErrors);
+    
     ui.subjectCN->setText( subjectCert.subjectInfo(QSslCertificate::CommonName) );
     ui.subjectO->setText( subjectCert.subjectInfo(QSslCertificate::Organization) );
     ui.subjectOU->setText( subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName) );
@@ -99,7 +118,7 @@ void SslInfoDialog::displayFromChain(int i)
 {
     QList<QSslCertificate> caList = m_info.certificateChain();
     QSslCertificate cert = caList.at(i);
-    showCertificateInfo(cert);
+    showCertificateInfo(cert, QString());
 }
 
 

@@ -356,6 +356,7 @@ void UrlBar::loadFinished()
     // show SSL
     if(_tab->url().scheme() == QL1S("https"))
     {
+        // NOTE: the choice for the right SSL icon is done in the addRightIcon method
         IconButton *bt = addRightIcon(UrlBar::SSL);
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo(QPoint)));
     }
@@ -465,8 +466,8 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         break;
     case UrlBar::SSL:
         _tab->page()->hasSslValid()
-            ? rightIcon->setIcon(KIcon("security-high"))
-            : rightIcon->setIcon(KIcon("security-low"));
+            ? rightIcon->setIcon(KIcon("object-locked"))
+            : rightIcon->setIcon(KIcon("object-unlocked"));
         rightIcon->setToolTip(i18n("Show SSL Info"));
         break;
     case UrlBar::BK:

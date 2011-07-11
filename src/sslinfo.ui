@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>SslInfo</class>
- <widget class="QWidget" name="Form">
+ <widget class="QWidget" name="SslInfo">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -29,6 +29,13 @@
    </item>
    <item>
     <widget class="QComboBox" name="comboBox"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="certInfoLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox">

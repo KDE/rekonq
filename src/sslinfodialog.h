@@ -60,7 +60,7 @@ private Q_SLOTS:
     void exportCert();
 
 private:
-    void showCertificateInfo(QSslCertificate);
+    void showCertificateInfo(QSslCertificate, const QString &certErrors);
     
     QString m_host;
     WebSslInfo m_info;

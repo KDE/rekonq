@@ -763,3 +763,15 @@ void WebPage::copyToTempFileResult(KJob* job)
     else
         (void)KRun::runUrl(static_cast<KIO::FileCopyJob *>(job)->destUrl(), _mimeType, rApp->mainWindow());
 }
+
+
+bool WebPage::hasSslValid()
+{
+    bool v = true;
+    QList<QSslCertificate> certList = _sslInfo.certificateChain();
+    Q_FOREACH(const QSslCertificate &cert, certList)
+    {
+        v &= cert.isValid();
+    }
+    return v;
+}
