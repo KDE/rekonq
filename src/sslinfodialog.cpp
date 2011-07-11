@@ -70,32 +70,22 @@ SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidge
         ui.comboBox->addItem( cert.subjectInfo(QSslCertificate::CommonName) );
     }
     connect(ui.comboBox, SIGNAL(activated(int)), this, SLOT(displayFromChain(int)));
-        
-    QSslCertificate subjectCert = caList.first();
-    
-    if (subjectCert.isValid())
-        showCertificateInfo(subjectCert, i18n("The Certificate is Valid!") );
-    else
-    {
-        QString errors;
-        QStringList sl = info.certificateErrors().split("\t", QString::SkipEmptyParts);
-        Q_FOREACH(const QString &s, sl)
-        {
-            bool didConvert;
-            QSslError::SslError error = static_cast<QSslError::SslError>(s.trimmed().toInt(&didConvert));
-            if (didConvert) 
-            {
-                errors += QSslError(error).errorString() + QL1S("\n");
-            }
-        }
-        showCertificateInfo(subjectCert, i18n("The certificate for this site is NOT valid for the following reasons:\n%1", errors) );
-    }
+
+    displayFromChain(0);
 }
 
 
-void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert, const QString &certErrors)
+void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert, const QStringList &certErrors)
 {
-    ui.certInfoLabel->setText(certErrors);
+    QStringList sl = certErrors;
+    QString c = sl.takeFirst();
+    c += QL1S("<ul>");
+    Q_FOREACH(const QString &s, sl)
+    {
+        c += QL1S("<li>") + s + QL1S("</li>");
+    }
+    c += QL1S("</ul>");
+    ui.certInfoLabel->setText(c);
     
     ui.subjectCN->setText( subjectCert.subjectInfo(QSslCertificate::CommonName) );
     ui.subjectO->setText( subjectCert.subjectInfo(QSslCertificate::Organization) );
@@ -118,7 +108,19 @@ void SslInfoDialog::displayFromChain(int i)
 {
     QList<QSslCertificate> caList = m_info.certificateChain();
     QSslCertificate cert = caList.at(i);
-    showCertificateInfo(cert, QString());
+
+    if (cert.isValid())
+    {
+        QStringList certInfo;
+        certInfo << i18n("The Certificate is Valid!");
+        showCertificateInfo(cert, certInfo );
+    }
+    else
+    {
+        QStringList errors = SslInfoDialog::errorsFromString(m_info.certificateErrors()).at(i);
+        errors.prepend( i18n("The certificate for this site is NOT valid for the following reasons:") );
+        showCertificateInfo(cert, errors );
+    }
 }
 
 
@@ -138,4 +140,30 @@ void SslInfoDialog::exportCert()
 
      QTextStream out(&file);
      out << cert.toPem();
+}
+
+
+// static -------------------------------------------------------------------------------------------
+QList<QStringList> SslInfoDialog::errorsFromString(const QString &s)
+{
+    QList<QStringList> resultList;
+    
+    QStringList sl1 = s.split('\n', QString::KeepEmptyParts);
+
+    Q_FOREACH(const QString &certErrors, sl1)
+    {
+        QStringList errors;
+        QStringList sl = certErrors.split("\t", QString::SkipEmptyParts);
+        Q_FOREACH(const QString &s, sl)
+        {
+            bool didConvert;
+            QSslError::SslError error = static_cast<QSslError::SslError>(s.trimmed().toInt(&didConvert));
+            if (didConvert) 
+            {
+                errors << QSslError(error).errorString();
+            }
+        }
+        resultList << errors;
+    }
+    return resultList;
 }

@@ -33,9 +33,6 @@
 #include "historymanager.h"
 #include "sslinfodialog.h"
 
-// KDE Includes
-#include <QSslError>
-
 // Qt Includes
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QGridLayout>
@@ -90,22 +87,29 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
         }
         else
         {
-            QString errors;
-            QStringList sl = m_info.certificateErrors().split("\t", QString::SkipEmptyParts);
-            Q_FOREACH(const QString &s, sl)
-            {
-                bool didConvert;
-                QSslError::SslError error = static_cast<QSslError::SslError>(s.trimmed().toInt(&didConvert));
-                if (didConvert) 
-                {
-                    errors += QSslError(error).errorString() + QL1S("\n");
-                }
-            }
             label = new QLabel(this);
             label->setWordWrap(true);
-            label->setText( i18n("The certificate for this site is NOT valid for the following reasons:\n%1", errors) );
-            
-            imageLabel->setPixmap(KIcon("security-medium").pixmap(32));
+
+            QList<QStringList> errorList = SslInfoDialog::errorsFromString(m_info.certificateErrors());
+            if (errorList.at(0).isEmpty())
+            {
+                label->setText( i18n("The certificate for this site is valid, but some on the certificate chain are not!") );
+                imageLabel->setPixmap(KIcon("security-medium").pixmap(32));
+            }
+            else
+            {
+                QStringList sl = errorList.at(0);
+                QString c = QL1S("<ul>");
+                Q_FOREACH(const QString &s, sl)
+                {
+                    c += QL1S("<li>") + s + QL1S("</li>");
+                }
+                c += QL1S("</ul>");
+
+                label->setText( i18n("The certificate for this site is NOT valid, for the following reasons:\n%1", c) );
+                label->setTextFormat(Qt::RichText);
+                imageLabel->setPixmap(KIcon("security-low").pixmap(32));                
+            }
         }
     }
 

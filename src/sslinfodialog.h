@@ -55,12 +55,14 @@ class SslInfoDialog : public KDialog
 public:
     explicit SslInfoDialog(const QString &host, const WebSslInfo &info, QWidget *parent = 0);
 
+    static QList<QStringList> errorsFromString(const QString &s);
+
 private Q_SLOTS:
     void displayFromChain(int);
     void exportCert();
-
+    
 private:
-    void showCertificateInfo(QSslCertificate, const QString &certErrors);
+    void showCertificateInfo(QSslCertificate, const QStringList &certErrors);
     
     QString m_host;
     WebSslInfo m_info;
