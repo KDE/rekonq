@@ -54,7 +54,7 @@ PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
     , m_previewIndex(index)
     , m_insertAction(0)
 {
-    setMessageType(KMessageWidget::Warning);
+    setMessageType(KMessageWidget::Information);
     
     QSize sz = size();
     sz.setWidth( qobject_cast<QWidget *>(parent)->size().width() );
