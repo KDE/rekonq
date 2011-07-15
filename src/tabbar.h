@@ -41,7 +41,7 @@
 #include <QSignalMapper>
 
 // Forward Declarations
-class KPassivePopup;
+class TabPreviewPopup;
 class TabHighlightEffect;
 class QPropertyAnimation;
 
@@ -62,6 +62,10 @@ public:
     void resetTabHighlighted(int index);
     QRect tabTextRect(int index);
     void setAnimatedTabHighlighting(bool enabled);
+
+    //constants
+    static const int baseWidthDivisor = 4;
+    static const int minWidthDivisor = 8;
 
 signals:
     void cloneTab(int index);
@@ -101,10 +105,6 @@ private slots:
     void removeAnimation(int index);
 
 private:
-    //constants
-    static const int baseWidthDivisor = 4;
-    static const int minWidthDivisor = 8;
-
     void setupHistoryActions();
     friend class MainView;
 
@@ -113,7 +113,7 @@ private:
      */
     int m_actualIndex;
 
-    QWeakPointer<KPassivePopup> m_previewPopup;
+    QWeakPointer<TabPreviewPopup> m_previewPopup;
 
     /**
      * the index of the tab preview shown
