@@ -55,15 +55,15 @@ PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
     , m_insertAction(0)
 {
     setMessageType(KMessageWidget::Information);
-    
+
     QSize sz = size();
-    sz.setWidth( qobject_cast<QWidget *>(parent)->size().width() );
+    sz.setWidth(qobject_cast<QWidget *>(parent)->size().width());
     resize(sz);
-    
+
     setCloseButtonVisible(false);
-    
-    setText( i18n("Please open up the webpage you want to add as favorite") );
-    
+
+    setText(i18n("Please open up the webpage you want to add as favorite"));
+
     m_insertAction = new QAction(KIcon("insert-image"), i18n("Set to This Page"), this);
     connect(m_insertAction, SIGNAL(triggered(bool)), this, SLOT(clicked()));
     addAction(m_insertAction);
@@ -73,7 +73,7 @@ PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
 void PreviewSelectorBar::verifyUrl()
 {
 
-    if (rApp->mainWindow()->currentTab()->page()->mainFrame()->url().scheme() != "about")
+    if(rApp->mainWindow()->currentTab()->page()->mainFrame()->url().scheme() != "about")
     {
         m_insertAction->setEnabled(true);
         m_insertAction->setToolTip("");
@@ -106,12 +106,12 @@ void PreviewSelectorBar::clicked()
 {
     WebPage *page = rApp->mainWindow()->currentTab()->page();
 
-    if (page)
+    if(page)
     {
         KUrl url = page->mainFrame()->url();
         QStringList names = ReKonfig::previewNames();
         QStringList urls = ReKonfig::previewUrls();
-        
+
         //cleanup the previous image from the cache (useful to refresh the snapshot)
         QFile::remove(WebSnap::imagePathFromUrl(urls.at(m_previewIndex)));
         page->mainFrame()->setScrollBarValue(Qt::Vertical, 0);

@@ -51,14 +51,14 @@ void DownloadManager::init()
 {
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
     QFile downloadFile(downloadFilePath);
-    if (!downloadFile.open(QFile::ReadOnly))
+    if(!downloadFile.open(QFile::ReadOnly))
     {
         kDebug() << "Unable to open download file (READ mode)..";
         return;
     }
 
     QDataStream in(&downloadFile);
-    while (!in.atEnd())
+    while(!in.atEnd())
     {
         QString srcUrl;
         in >> srcUrl;
@@ -75,11 +75,11 @@ void DownloadManager::init()
 DownloadItem* DownloadManager::addDownload(const QString &srcUrl, const QString &destUrl)
 {
     QWebSettings *globalSettings = QWebSettings::globalSettings();
-    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if(globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return 0;
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
     QFile downloadFile(downloadFilePath);
-    if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
+    if(!downloadFile.open(QFile::WriteOnly | QFile::Append))
     {
         kDebug() << "Unable to open download file (WRITE mode)..";
         return 0;

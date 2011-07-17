@@ -90,7 +90,7 @@ public:
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
 
     void showMessageBar();
-    
+
 private Q_SLOTS:
     void updateProgress(int progress);
     void loadFinished(bool);

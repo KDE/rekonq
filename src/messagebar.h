@@ -44,7 +44,7 @@ public:
 
 private Q_SLOTS:
     void hideAndDelete();
-    
+
 Q_SIGNALS:
     void accepted();
     void rejected();

@@ -48,7 +48,7 @@ public:
     **/
     explicit TabPreviewPopup(WebTab *tab, QWidget *parent = 0);
     virtual ~TabPreviewPopup();
-    
+
 
 private:
     QLabel *m_thumbnail;

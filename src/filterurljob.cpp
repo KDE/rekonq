@@ -35,11 +35,11 @@ KUriFilter *FilterUrlJob::s_uriFilter;
 
 
 FilterUrlJob::FilterUrlJob(WebView *view, const QString &urlString, QObject *parent)
-        : Job(parent)
-        , _view(view)
-        , _urlString(urlString)
+    : Job(parent)
+    , _view(view)
+    , _urlString(urlString)
 {
-    if (!s_uriFilter)
+    if(!s_uriFilter)
         s_uriFilter = KUriFilter::self();
 }
 
@@ -59,7 +59,7 @@ KUrl FilterUrlJob::url()
 void FilterUrlJob::run()
 {
     // Bookmarklets handling
-    if (_urlString.startsWith(QL1S("javascript:")))
+    if(_urlString.startsWith(QL1S("javascript:")))
     {
         _url = KUrl(_urlString);
         return;
@@ -70,7 +70,7 @@ void FilterUrlJob::run()
     KUriFilterData data(_urlString);
     data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
 
-    if (s_uriFilter->filterUri(data) && data.uriType() != KUriFilterData::Error)
+    if(s_uriFilter->filterUri(data) && data.uriType() != KUriFilterData::Error)
     {
         QString tempUrlString = data.uri().url();
         _url = KUrl(tempUrlString);

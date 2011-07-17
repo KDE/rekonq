@@ -51,11 +51,11 @@
 
 
 ZoomBar::ZoomBar(QWidget *parent)
-        : QWidget(parent)
-        , m_zoomIn(new QToolButton(this))
-        , m_zoomOut(new QToolButton(this))
-        , m_zoomNormal(new QToolButton(this))
-        , m_zoomSlider(new QSlider(Qt::Horizontal, this))
+    : QWidget(parent)
+    , m_zoomIn(new QToolButton(this))
+    , m_zoomOut(new QToolButton(this))
+    , m_zoomNormal(new QToolButton(this))
+    , m_zoomSlider(new QSlider(Qt::Horizontal, this))
 {
     QHBoxLayout *layout = new QHBoxLayout;
 
@@ -122,11 +122,11 @@ void ZoomBar::setupActions(MainWindow *window)
 void ZoomBar::show()
 {
     // show findbar if not visible
-    if (isHidden())
+    if(isHidden())
     {
         emit visibilityChanged(true);
         QWidget::show();
-        m_zoomSlider->setValue(rApp->mainWindow()->currentTab()->view()->zoomFactor()*10);
+        m_zoomSlider->setValue(rApp->mainWindow()->currentTab()->view()->zoomFactor() * 10);
     }
 }
 
@@ -159,10 +159,10 @@ void ZoomBar::zoomNormal()
 void ZoomBar::updateSlider(int webview)
 {
     WebTab *tab = 0;
-    if (!rApp->mainWindowList().isEmpty())
+    if(!rApp->mainWindowList().isEmpty())
         tab = rApp->mainWindow()->mainView()->webTab(webview);
 
-    if (!tab)
+    if(!tab)
         return;
 
     m_zoomSlider->setValue(tab->view()->zoomFactor() * 10);
@@ -172,7 +172,7 @@ void ZoomBar::updateSlider(int webview)
 void ZoomBar::setValue(int value)
 {
     m_zoomSlider->setValue(value);
-    m_percentage->setText(i18nc("percentage of the website zoom", "%1%", QString::number(value*10)));
+    m_percentage->setText(i18nc("percentage of the website zoom", "%1%", QString::number(value * 10)));
 
     WebTab *tab = rApp->mainWindow()->currentTab();
     saveZoomValue(tab->url().host(), value);

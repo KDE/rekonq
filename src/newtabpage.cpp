@@ -57,15 +57,15 @@
 
 
 NewTabPage::NewTabPage(QWebFrame *frame)
-        : QObject(frame)
-        , m_root(frame->documentElement())
+    : QObject(frame)
+    , m_root(frame->documentElement())
 {
     QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
     QString imagesPath = QL1S("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QL1S("rekonq/pics");
 
     QFile file(htmlFilePath);
     bool isOpened = file.open(QIODevice::ReadOnly);
-    if (!isOpened)
+    if(!isOpened)
     {
         kDebug() << "Couldn't open the home.html file";
     }
@@ -79,9 +79,9 @@ NewTabPage::NewTabPage(QWebFrame *frame)
 
 void NewTabPage::generate(const KUrl &url)
 {
-    if (KUrl("about:preview").isParentOf(url))
+    if(KUrl("about:preview").isParentOf(url))
     {
-        if (url.fileName() == QL1S("add"))
+        if(url.fileName() == QL1S("add"))
         {
             QStringList names = ReKonfig::previewNames();
             QStringList urls = ReKonfig::previewUrls();
@@ -98,25 +98,25 @@ void NewTabPage::generate(const KUrl &url)
             generate(KUrl("about:favorites"));
             return;
         }
-        if (url.directory() == QL1S("preview/remove"))
+        if(url.directory() == QL1S("preview/remove"))
         {
             removePreview(url.fileName().toInt());
             return;
         }
-        if (url.directory() == QL1S("preview/modify"))
+        if(url.directory() == QL1S("preview/modify"))
         {
             int index = url.fileName().toInt();
             rApp->mainWindow()->currentTab()->createPreviewSelectorBar(index);
             return;
         }
     }
-    if (url.fileName() == QL1S("clear"))
+    if(url.fileName() == QL1S("clear"))
     {
         rApp->mainWindow()->actionByName("clear_private_data")->trigger();
         generate(QString(QL1S("about:") + url.directory()));
         return;
     }
-    if (url == KUrl("about:bookmarks/edit"))
+    if(url == KUrl("about:bookmarks/edit"))
     {
         rApp->bookmarkProvider()->bookmarkManager()->slotEditBookmarks();
         return;
@@ -132,27 +132,27 @@ void NewTabPage::generate(const KUrl &url)
 
     QString title;
     QByteArray encodedUrl = url.toEncoded();
-    if (encodedUrl == QByteArray("about:favorites"))
+    if(encodedUrl == QByteArray("about:favorites"))
     {
         favoritesPage();
         title = i18n("Favorites");
     }
-    else if (encodedUrl == QByteArray("about:closedTabs"))
+    else if(encodedUrl == QByteArray("about:closedTabs"))
     {
         closedTabsPage();
         title = i18n("Closed Tabs");
     }
-    else if (encodedUrl == QByteArray("about:history"))
+    else if(encodedUrl == QByteArray("about:history"))
     {
         historyPage();
         title = i18n("History");
     }
-    else if (encodedUrl == QByteArray("about:bookmarks"))
+    else if(encodedUrl == QByteArray("about:bookmarks"))
     {
         bookmarksPage();
         title = i18n("Bookmarks");
     }
-    else if (encodedUrl == QByteArray("about:downloads"))
+    else if(encodedUrl == QByteArray("about:downloads"))
     {
         downloadsPage();
         title = i18n("Downloads");
@@ -175,24 +175,24 @@ void NewTabPage::favoritesPage()
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
-    if (urls.isEmpty())
+    if(urls.isEmpty())
     {
         m_root.addClass(QL1S("empty"));
         m_root.setPlainText(i18n("You can add a favorite by clicking the \"Add Favorite\" button in the top-right corner of this page"));
         return;
     }
 
-    for (int i = 0; i < urls.count() ; ++i)
+    for(int i = 0; i < urls.count() ; ++i)
     {
         KUrl url = KUrl(urls.at(i));
         QWebElement prev;
 
-        if (url.isEmpty())
+        if(url.isEmpty())
             prev = emptyPreview(i);
-        else if (!WebSnap::existsImage(url))
+        else if(!WebSnap::existsImage(url))
             prev = loadingPreview(i, url);
         else
-            prev = validPreview(i, url, QString::number(i+1) + " - " + names.at(i));
+            prev = validPreview(i, url, QString::number(i + 1) + " - " + names.at(i));
 
         setupPreview(prev, i);
 
@@ -287,27 +287,27 @@ void NewTabPage::setupPreview(QWebElement e, int index)
 void NewTabPage::snapFinished()
 {
     // Update page, but only if open
-    if (m_root.document().findAll(QL1S("#rekonq-newtabpage")).count() == 0)
+    if(m_root.document().findAll(QL1S("#rekonq-newtabpage")).count() == 0)
         return;
-    if (m_root.findAll(QL1S(".favorites")).count() == 0 && m_root.findAll(QL1S(".closedTabs")).count() == 0)
+    if(m_root.findAll(QL1S(".favorites")).count() == 0 && m_root.findAll(QL1S(".closedTabs")).count() == 0)
         return;
 
     QStringList urls = ReKonfig::previewUrls();
     QStringList names = ReKonfig::previewNames();
 
-    for (int i = 0; i < urls.count(); i++)
+    for(int i = 0; i < urls.count(); i++)
     {
         KUrl url = KUrl(urls.at(i));
         QString title = names.at(i);
 
-        if (WebSnap::existsImage(url))
+        if(WebSnap::existsImage(url))
         {
             QWebElement prev = m_root.findFirst(QL1S("#preview") + QVariant(i).toString());
-            if (KUrl(prev.findFirst("a").attribute(QL1S("href"))) == url)
+            if(KUrl(prev.findFirst("a").attribute(QL1S("href"))) == url)
             {
                 QWebElement newPrev = validPreview(i, url, title);
 
-                if (m_root.findAll(QL1S(".closedTabs")).count() != 0)
+                if(m_root.findAll(QL1S(".closedTabs")).count() != 0)
                     hideControls(newPrev);
 
                 prev.replace(newPrev);
@@ -373,9 +373,9 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
         const QString aTagString(QL1C('a'));
         const QString hrefAttributeString(QL1S("href"));
 
-        if (it.findFirst(aTagString).attribute(hrefAttributeString) == currentUrl.toMimeDataString())
+        if(it.findFirst(aTagString).attribute(hrefAttributeString) == currentUrl.toMimeDataString())
             it.addClass(QL1S("current"));
-        else if (currentUrl == QL1S("about:home") && it.findFirst(aTagString).attribute(hrefAttributeString) == QL1S("about:favorites"))
+        else if(currentUrl == QL1S("about:home") && it.findFirst(aTagString).attribute(hrefAttributeString) == QL1S("about:favorites"))
             it.addClass(QL1S("current"));
         m_root.document().findFirst(QL1S("#navigation")).appendInside(it);
     }
@@ -394,7 +394,7 @@ void NewTabPage::historyPage()
 
     HistoryTreeModel *model = rApp->historyManager()->historyTreeModel();
 
-    if (model->rowCount() == 0)
+    if(model->rowCount() == 0)
     {
         m_root.addClass(QL1S("empty"));
         m_root.setPlainText(i18n("Your browsing history is empty"));
@@ -407,18 +407,18 @@ void NewTabPage::historyPage()
     do
     {
         QModelIndex index = model->index(i, 0, QModelIndex());
-        if (model->hasChildren(index))
+        if(model->hasChildren(index))
         {
             m_root.appendInside(markup(QL1S("h3")));
             m_root.lastChild().setPlainText(index.data().toString());
 
-            for (int j = 0; j < model->rowCount(index); ++j)
+            for(int j = 0; j < model->rowCount(index); ++j)
             {
                 QModelIndex son = model->index(j, 0, index);
                 KUrl u = son.data(HistoryModel::UrlStringRole).toUrl();
 
                 QString b = faviconsDir + u.host() + QL1S(".png");
-                if (QFile::exists(b))
+                if(QFile::exists(b))
                     icon = QL1S("file://") + b;
 
                 m_root.appendInside(son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm"));
@@ -436,7 +436,7 @@ void NewTabPage::historyPage()
         }
         i++;
     }
-    while (model->hasIndex(i , 0 , QModelIndex()));
+    while(model->hasIndex(i , 0 , QModelIndex()));
 }
 
 
@@ -451,7 +451,7 @@ void NewTabPage::bookmarksPage()
     m_root.document().findFirst(QL1S("#actions")).appendInside(editBookmarks);
 
     KBookmarkGroup bookGroup = rApp->bookmarkProvider()->rootGroup();
-    if (bookGroup.isNull())
+    if(bookGroup.isNull())
     {
         m_root.addClass(QL1S("empty"));
         m_root.setPlainText(i18n("You have no bookmarks"));
@@ -459,7 +459,7 @@ void NewTabPage::bookmarksPage()
     }
 
     KBookmark bookmark = bookGroup.first();
-    while (!bookmark.isNull())
+    while(!bookmark.isNull())
     {
         createBookItem(bookmark, m_root);
         bookmark = bookGroup.next(bookmark);
@@ -471,27 +471,27 @@ void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
 {
     QString cacheDir = QL1S("file://") + KStandardDirs::locateLocal("cache" , "" , true);
     QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/mimetypes/text-html.png");
-    if (bookmark.isGroup())
+    if(bookmark.isGroup())
     {
         KBookmarkGroup group = bookmark.toGroup();
         KBookmark bm = group.first();
         parent.appendInside(markup(QL1S("h3")));
         parent.lastChild().setPlainText(group.fullText());
         parent.appendInside(markup(QL1S(".bookfolder")));
-        while (!bm.isNull())
+        while(!bm.isNull())
         {
             createBookItem(bm, parent.lastChild()); // it is .bookfolder
             bm = group.next(bm);
         }
     }
-    else if (bookmark.isSeparator())
+    else if(bookmark.isSeparator())
     {
         parent.appendInside(QL1S("<hr />"));
     }
     else
     {
         QString b = bookmark.icon();
-        if (b.contains(QL1S("favicons")))
+        if(b.contains(QL1S("favicons")))
             icon = cacheDir + bookmark.icon() + QL1S(".png");
 
         parent.appendInside(markup(QL1S("img")));
@@ -513,19 +513,19 @@ void NewTabPage::closedTabsPage()
 
     QList<HistoryItem> links = rApp->mainWindow()->mainView()->recentlyClosedTabs();
 
-    if (links.isEmpty())
+    if(links.isEmpty())
     {
         m_root.addClass(QL1S("empty"));
         m_root.setPlainText(i18n("There are no recently closed tabs"));
         return;
     }
 
-    for (int i = 0; i < links.count(); ++i)
+    for(int i = 0; i < links.count(); ++i)
     {
         HistoryItem item = links.at(i);
         QWebElement prev;
 
-        if (item.url.isEmpty())
+        if(item.url.isEmpty())
             continue;
 
         prev = WebSnap::existsImage(KUrl(item.url))
@@ -542,7 +542,7 @@ void NewTabPage::closedTabsPage()
 QString NewTabPage::checkTitle(const QString &title)
 {
     QString t(title);
-    if (t.length() > 23)
+    if(t.length() > 23)
     {
         t.truncate(20);
         t +=  QL1S("...");
@@ -563,14 +563,14 @@ void NewTabPage::downloadsPage()
 
     DownloadList list = rApp->downloadManager()->downloads();
 
-    if (list.isEmpty())
+    if(list.isEmpty())
     {
         m_root.addClass(QL1S("empty"));
         m_root.setPlainText(i18n("There are no recently downloaded files to show"));
         return;
     }
 
-    foreach(DownloadItem *item, list)
+    foreach(DownloadItem * item, list)
     {
         m_root.prependInside(markup(QL1S("div")));
 

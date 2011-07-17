@@ -38,8 +38,8 @@
 
 
 WebIcon::WebIcon(const KUrl& url, QObject *parent)
-        : QObject(parent)
-        , m_url(url)
+    : QObject(parent)
+    , m_url(url)
 {
     m_page.settings()->setAttribute(QWebSettings::PluginsEnabled, false);
     m_page.settings()->setAttribute(QWebSettings::JavascriptEnabled, false);
@@ -58,7 +58,7 @@ void WebIcon::load()
 
 void WebIcon::saveIcon(bool b)
 {
-    if (b)
+    if(b)
         rApp->iconManager()->provideIcon(&m_page, m_url, false);
 
     this->deleteLater();

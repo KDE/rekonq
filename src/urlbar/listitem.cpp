@@ -60,9 +60,9 @@
 
 
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
-        : QWidget(parent)
-        , m_option()
-        , m_url(item.url)
+    : QWidget(parent)
+    , m_option()
+    , m_url(item.url)
 {
     m_option.initFrom(this);
     m_option.direction = Qt::LeftToRight;
@@ -105,7 +105,7 @@ void ListItem::paintEvent(QPaintEvent *event)
     m_option.rect = QRect(QPoint(), size());
     painter.fillRect(m_option.rect, palette().brush(backgroundRole()));
 
-    if (m_option.state.testFlag(QStyle::State_Selected) ||  m_option.state.testFlag(QStyle::State_MouseOver))
+    if(m_option.state.testFlag(QStyle::State_Selected) ||  m_option.state.testFlag(QStyle::State_MouseOver))
     {
         style()->drawPrimitive(QStyle::PE_PanelItemViewItem, &m_option, &painter, this);
     }
@@ -158,7 +158,7 @@ void ListItem::nextItemSubChoice()
 
 
 TypeIconLabel::TypeIconLabel(int type, QWidget *parent)
-        : QLabel(parent)
+    : QLabel(parent)
 {
     setMinimumWidth(40);
     QHBoxLayout *hLayout = new QHBoxLayout;
@@ -166,15 +166,15 @@ TypeIconLabel::TypeIconLabel(int type, QWidget *parent)
     hLayout->setAlignment(Qt::AlignRight);
     setLayout(hLayout);
 
-    if (type & UrlSearchItem::Search)
+    if(type & UrlSearchItem::Search)
         hLayout->addWidget(getIcon("edit-find"));
-    if (type & UrlSearchItem::Browse)
+    if(type & UrlSearchItem::Browse)
         hLayout->addWidget(getIcon("applications-internet"));
-    if (type & UrlSearchItem::Bookmark)
+    if(type & UrlSearchItem::Bookmark)
         hLayout->addWidget(getIcon("rating"));
-    if (type & UrlSearchItem::History)
+    if(type & UrlSearchItem::History)
         hLayout->addWidget(getIcon("view-history"));
-    if (type & UrlSearchItem::Suggestion)
+    if(type & UrlSearchItem::Suggestion)
         hLayout->addWidget(getIcon("help-hint"));
 }
 
@@ -193,7 +193,7 @@ QLabel *TypeIconLabel::getIcon(QString icon)
 
 
 IconLabel::IconLabel(const QString &icon, QWidget *parent)
-        : QLabel(parent)
+    : QLabel(parent)
 {
     QPixmap pixmapIcon = rApp->iconManager()->iconForUrl(KUrl(icon)).pixmap(16);
     setFixedSize(16, 16);
@@ -202,7 +202,7 @@ IconLabel::IconLabel(const QString &icon, QWidget *parent)
 
 
 IconLabel::IconLabel(const KIcon &icon, QWidget *parent)
-        : QLabel(parent)
+    : QLabel(parent)
 {
     QPixmap pixmapIcon = icon.pixmap(16);
     setFixedSize(16, 16);
@@ -217,63 +217,63 @@ static QString highlightWordsInText(const QString &text, const QStringList &word
 {
     QString ret = text;
     QBitArray boldSections(ret.size());
-    foreach(const QString &wordToPointOut, words)
+    foreach(const QString & wordToPointOut, words)
     {
         int index = ret.indexOf(wordToPointOut, 0, Qt::CaseInsensitive);
-        while (index > -1)
+        while(index > -1)
         {
             boldSections.fill(true, index, index + wordToPointOut.size());
             index = ret.indexOf(wordToPointOut, index + wordToPointOut.size(), Qt::CaseInsensitive);
         }
     }
 
-    
-    if (boldSections.isEmpty())
+
+    if(boldSections.isEmpty())
         return ret;
-    
+
     int numSections = 0;
-    for (int i = 0; i < boldSections.size() - 1; ++i)
+    for(int i = 0; i < boldSections.size() - 1; ++i)
     {
-        if (boldSections.testBit(i) && !boldSections.testBit(i + 1))
+        if(boldSections.testBit(i) && !boldSections.testBit(i + 1))
             ++numSections;
     }
-    if (boldSections.testBit(boldSections.size() - 1)) //last char was still part of a bold section
+    if(boldSections.testBit(boldSections.size() - 1))  //last char was still part of a bold section
         ++numSections;
     const int tagLength = 7; // length of "<b>" and "</b>" we're going to add for each bold section.
     ret.reserve(ret.size() + numSections * tagLength);
     bool bold = false;
-    for (int i = boldSections.size() - 1; i >= 0; --i)
+    for(int i = boldSections.size() - 1; i >= 0; --i)
     {
-        if (!bold && boldSections.testBit(i))
+        if(!bold && boldSections.testBit(i))
         {
             ret.insert(i + 1, QL1S("</b>"));
             bold = true;
         }
-        else if (bold && !boldSections.testBit(i))
+        else if(bold && !boldSections.testBit(i))
         {
             ret.insert(i + 1, QL1S("<b>"));
             bold = false;
         }
     }
-    if (bold)
+    if(bold)
         ret.insert(0, QL1S("<b>"));
     return ret;
 }
 
 
 TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget *parent)
-        : QLabel(parent)
+    : QLabel(parent)
 {
     setTextFormat(Qt::RichText);
     setMouseTracking(false);
     QString t = text;
     const bool wasItalic = t.startsWith(QL1S("<i>"));
-    if (wasItalic)
+    if(wasItalic)
         t.remove(QRegExp(QL1S("<[/ib]*>")));
     t = Qt::escape(t);
     QStringList words = Qt::escape(textToPointOut.simplified()).split(QL1C(' '));
     t = highlightWordsInText(t, words);
-    if (wasItalic)
+    if(wasItalic)
         t = QL1S("<i>") + t + QL1S("</i>");
     setText(t);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
@@ -281,7 +281,7 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
 
 
 TextLabel::TextLabel(QWidget *parent)
-        : QLabel(parent)
+    : QLabel(parent)
 {
     setTextFormat(Qt::RichText);
     setMouseTracking(false);
@@ -299,14 +299,14 @@ void TextLabel::setEngineText(const QString &engine, const QString &text)
 
 
 DescriptionLabel::DescriptionLabel(const QString &text, QWidget *parent)
-        : QLabel(parent)
+    : QLabel(parent)
 {
     QString t = text;
     const bool wasItalic = t.startsWith(QL1S("<i>"));
-    if (wasItalic)
+    if(wasItalic)
         t.remove(QRegExp("<[/ib]*>"));
 
-    if (wasItalic)
+    if(wasItalic)
         t = QL1S("<i>") + t + QL1S("</i>");
 
     setWordWrap(false); //TODO: why setWordWrap(true) make items have a strange behavior ?
@@ -319,7 +319,7 @@ DescriptionLabel::DescriptionLabel(const QString &text, QWidget *parent)
 
 
 PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
-        : ListItem(item, parent)
+    : ListItem(item, parent)
 {
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
@@ -335,7 +335,7 @@ PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text,
     vLayout->setMargin(0);
 
     QString title = item.title;
-    if (title.isEmpty())
+    if(title.isEmpty())
     {
         title = item.url;
         title = title.remove("http://");
@@ -357,13 +357,13 @@ PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text,
 
 
 PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *parent)
-        : QLabel(parent)
+    : QLabel(parent)
 {
     setFixedSize(width, height);
     setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
 
     KUrl u = KUrl(url);
-    if (WebSnap::existsImage(KUrl(u)))
+    if(WebSnap::existsImage(KUrl(u)))
     {
         QPixmap preview;
         preview.load(WebSnap::imagePathFromUrl(u));
@@ -376,11 +376,11 @@ PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *p
 
 
 ImageLabel::ImageLabel(const QString &url, int width, int height, QWidget *parent)
-        : QLabel(parent),
-        m_url(url)
+    : QLabel(parent),
+      m_url(url)
 {
     setFixedSize(width, height);
-    if (WebSnap::existsImage(KUrl(url)))
+    if(WebSnap::existsImage(KUrl(url)))
     {
         QPixmap pix;
         pix.load(WebSnap::imagePathFromUrl(url));
@@ -407,7 +407,7 @@ void ImageLabel::slotData(KIO::Job *job, const QByteArray &data)
 void ImageLabel::slotResult(KJob *)
 {
     QPixmap pix;
-    if (!pix.loadFromData(m_data))
+    if(!pix.loadFromData(m_data))
         kDebug() << "error while loading image: ";
     setPixmap(pix);
     pix.save(WebSnap::imagePathFromUrl(m_url), "PNG");
@@ -418,8 +418,8 @@ void ImageLabel::slotResult(KJob *)
 
 
 SearchListItem::SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
-        : ListItem(item, parent)
-        , m_text(text)
+    : ListItem(item, parent)
+    , m_text(text)
 {
     m_iconLabel = new IconLabel(SearchEngine::buildQuery(UrlResolver::searchEngine(), ""), this);
     m_titleLabel = new TextLabel(this);
@@ -464,7 +464,7 @@ void SearchListItem::nextItemSubChoice()
 
 
 EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
-        : KToolBar(parent)
+    : KToolBar(parent)
 {
     setIconSize(QSize(16, 16));
     setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -472,12 +472,12 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
     m_engineGroup = new QActionGroup(this);
     m_engineGroup->setExclusive(true);
 
-    if (SearchEngine::defaultEngine().isNull())
+    if(SearchEngine::defaultEngine().isNull())
         return;
     m_engineGroup->addAction(newEngineAction(SearchEngine::defaultEngine(), selectedEngine));
-    foreach(const KService::Ptr &engine, SearchEngine::favorites())
+    foreach(const KService::Ptr & engine, SearchEngine::favorites())
     {
-        if (engine->desktopEntryName() != SearchEngine::defaultEngine()->desktopEntryName())
+        if(engine->desktopEntryName() != SearchEngine::defaultEngine()->desktopEntryName())
         {
             m_engineGroup->addAction(newEngineAction(engine, selectedEngine));
         }
@@ -495,7 +495,7 @@ KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selected
     kDebug() << "Engine NAME: " << engine->name() << " URL: " << url;
     KAction *a = new KAction(rApp->iconManager()->iconForUrl(url), engine->name(), this);
     a->setCheckable(true);
-    if (engine->desktopEntryName() == selectedEngine->desktopEntryName()) a->setChecked(true);
+    if(engine->desktopEntryName() == selectedEngine->desktopEntryName()) a->setChecked(true);
     a->setData(engine->entryPath());
     connect(a, SIGNAL(triggered(bool)), this, SLOT(changeSearchEngine()));
     return a;
@@ -513,12 +513,12 @@ void EngineBar::selectNextEngine()
 {
     QList<QAction *> e = m_engineGroup->actions();
     int i = 0;
-    while (i < e.count() && !e.at(i)->isChecked())
+    while(i < e.count() && !e.at(i)->isChecked())
     {
         i++;
     }
 
-    if (i + 1 == e.count())
+    if(i + 1 == e.count())
     {
         e.at(0)->setChecked(true);
         e.at(0)->trigger();
@@ -535,8 +535,8 @@ void EngineBar::selectNextEngine()
 
 
 SuggestionListItem::SuggestionListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
-        : ListItem(item, parent)
-        , m_text(item.title)
+    : ListItem(item, parent)
+    , m_text(item.title)
 {
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
@@ -559,15 +559,15 @@ QString SuggestionListItem::text()
 
 
 VisualSuggestionListItem::VisualSuggestionListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
-        : ListItem(item, parent)
-        , m_text(item.title)
+    : ListItem(item, parent)
+    , m_text(item.title)
 {
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
     QLabel *previewLabelIcon = new QLabel(this);
 
-    if (!item.image.isEmpty())
+    if(!item.image.isEmpty())
     {
         previewLabelIcon->setFixedSize(item.image_width + 10, item.image_height + 10);
         new ImageLabel(item.image, item.image_width, item.image_height, previewLabelIcon);
@@ -605,7 +605,7 @@ QString VisualSuggestionListItem::text()
 
 
 BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
-        : ListItem(item, parent)
+    : ListItem(item, parent)
 {
     QString url = text;
 
@@ -627,34 +627,34 @@ BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, Q
 
 ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text, QWidget *parent)
 {
-    if (item.type & UrlSearchItem::Search)
+    if(item.type & UrlSearchItem::Search)
     {
         kDebug() << "Search";
         return new SearchListItem(item, text, parent);
     }
 
-    if (item.type & UrlSearchItem::Browse)
+    if(item.type & UrlSearchItem::Browse)
     {
         kDebug() << "Browse";
         return new BrowseListItem(item, text, parent);
     }
 
-    if (item.type & UrlSearchItem::History)
+    if(item.type & UrlSearchItem::History)
     {
         kDebug() << "History";
         return new PreviewListItem(item, text, parent);
     }
 
-    if (item.type & UrlSearchItem::Bookmark)
+    if(item.type & UrlSearchItem::Bookmark)
     {
         kDebug() << "Bookmark";
         return new PreviewListItem(item, text, parent);
     }
 
-    if (item.type & UrlSearchItem::Suggestion)
+    if(item.type & UrlSearchItem::Suggestion)
     {
         kDebug() << "ITEM URL: " << item.url;
-        if (item.description.isEmpty())
+        if(item.description.isEmpty())
         {
             kDebug() << "Suggestion";
             return new SuggestionListItem(item, text, parent);

@@ -63,10 +63,10 @@ public:
                          const QDateTime &d = QDateTime(),
                          const QString &t = QString()
                         )
-            : title(t)
-            , url(u)
-            , dateTime(d)
-            , visitCount(1)
+        : title(t)
+        , url(u)
+        , dateTime(d)
+        , visitCount(1)
     {}
 
     inline bool operator==(const HistoryItem &other) const

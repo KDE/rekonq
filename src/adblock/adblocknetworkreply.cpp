@@ -40,7 +40,7 @@
 
 
 AdBlockNetworkReply::AdBlockNetworkReply(const QNetworkRequest &request, const QString &urlString, QObject *parent)
-        : QNetworkReply(parent)
+    : QNetworkReply(parent)
 {
     setOperation(QNetworkAccessManager::GetOperation);
     setRequest(request);

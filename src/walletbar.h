@@ -44,7 +44,7 @@ class REKONQ_TESTS_EXPORT WalletBar : public KMessageWidget
 
 public:
     WalletBar(QWidget *parent);
-    
+
 private Q_SLOTS:
     void rememberData();
     void neverRememberData();

@@ -57,7 +57,7 @@ class KAction;
 
 namespace ThreadWeaver
 {
-    class Job;
+class Job;
 }
 
 
@@ -94,7 +94,7 @@ public:
     OpenSearchManager *opensearchManager();
     IconManager *iconManager();
     DownloadManager *downloadManager();
-    
+
     KAction *privateBrowsingAction()
     {
         return _privateBrowsingAction;

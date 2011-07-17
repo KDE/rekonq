@@ -44,9 +44,9 @@
 
 
 UrlPanel::UrlPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
-        : QDockWidget(title, parent, flags)
-        , _treeView(new PanelTreeView(this))
-        , _loaded(false)
+    : QDockWidget(title, parent, flags)
+    , _treeView(new PanelTreeView(this))
+    , _loaded(false)
 {
     setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
@@ -56,7 +56,7 @@ UrlPanel::UrlPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
 
 void UrlPanel::showing(bool b)
 {
-    if (!_loaded && b)
+    if(!_loaded && b)
     {
         setup();
         _loaded = true;

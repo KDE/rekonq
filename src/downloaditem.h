@@ -58,16 +58,28 @@ class DownloadItem : public QObject
 public:
     explicit DownloadItem(const QString &srcUrl, const QString &destUrl, const QDateTime &d, QObject *parent = 0);
 
-    inline QDateTime dateTime() const { return m_dateTime; }
-    inline QString originUrl() const { return m_srcUrlString; }
+    inline QDateTime dateTime() const
+    {
+        return m_dateTime;
+    }
+    inline QString originUrl() const
+    {
+        return m_srcUrlString;
+    }
     QString destinationUrl() const;
     QString fileName() const;
     QString fileDirectory() const;
     QString icon() const;
 
     // Necessary to provide i18nized strings to javascript.
-    Q_INVOKABLE QString i18nOpenDir() const { return i18n("Open directory"); }
-    Q_INVOKABLE QString i18nOpenFile() const { return i18n("Open file"); }
+    Q_INVOKABLE QString i18nOpenDir() const
+    {
+        return i18n("Open directory");
+    }
+    Q_INVOKABLE QString i18nOpenFile() const
+    {
+        return i18n("Open file");
+    }
 
     // For transfer control and notification
     void setKGetTransferDbusPath(const QString &path);

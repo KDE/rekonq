@@ -30,8 +30,8 @@
 
 
 WebKitWidget::WebKitWidget(QWidget *parent)
-        : QWidget(parent)
-        , _changed(false)
+    : QWidget(parent)
+    , _changed(false)
 {
     setupUi(this);
 }

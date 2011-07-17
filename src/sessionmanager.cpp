@@ -45,8 +45,8 @@
 
 
 SessionManager::SessionManager(QObject *parent)
-        : QObject(parent)
-        , m_safe(false)
+    : QObject(parent)
+    , m_safe(false)
 {
     m_sessionFilePath = KStandardDirs::locateLocal("appdata" , "session");
 }
@@ -54,13 +54,13 @@ SessionManager::SessionManager(QObject *parent)
 
 void SessionManager::saveSession()
 {
-    if (!m_safe || QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if(!m_safe || QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return;
     m_safe = false;
 
 
     QFile sessionFile(m_sessionFilePath);
-    if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
+    if(!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
     {
         kDebug() << "Unable to open session file" << sessionFile.fileName();
         return;
@@ -71,7 +71,7 @@ void SessionManager::saveSession()
     {
         out << "window\n";
         MainView *mv = w.data()->mainView();
-        for (int i = 0 ; i < mv->count() ; i++)
+        for(int i = 0 ; i < mv->count() ; i++)
         {
             out << mv->webTab(i)->url().toEncoded() << "\n";
         }
@@ -89,9 +89,9 @@ void SessionManager::saveSession()
 bool SessionManager::restoreSession()
 {
     QFile sessionFile(m_sessionFilePath);
-    if (!sessionFile.exists())
+    if(!sessionFile.exists())
         return false;
-    if (!sessionFile.open(QFile::ReadOnly))
+    if(!sessionFile.open(QFile::ReadOnly))
     {
         kDebug() << "Unable to open session file" << sessionFile.fileName();
         return false;
@@ -103,10 +103,10 @@ bool SessionManager::restoreSession()
     do
     {
         line = in.readLine();
-        if (line == QL1S("window"))
+        if(line == QL1S("window"))
         {
             line = in.readLine();
-            if (windowAlreadyOpen)
+            if(windowAlreadyOpen)
             {
                 rApp->loadUrl(KUrl(line), Rekonq::CurrentTab);
                 windowAlreadyOpen = false;
@@ -118,16 +118,16 @@ bool SessionManager::restoreSession()
         }
         else
         {
-            if (line == QL1S("currenttab"))
+            if(line == QL1S("currenttab"))
             {
                 line = in.readLine();
                 bool ok;
                 int idx = line.toInt(&ok);
-                if (ok)
+                if(ok)
                 {
                     // Get last mainwindow created which will be first one in mainwindow list
                     MainWindowList wl = rApp->mainWindowList();
-                    if (wl.count() > 0)
+                    if(wl.count() > 0)
                     {
                         MainView *mv = wl[0].data()->mainView();
                         emit mv->tabBar()->setCurrentIndex(idx);
@@ -140,7 +140,7 @@ bool SessionManager::restoreSession()
             }
         }
     }
-    while (!line.isEmpty());
+    while(!line.isEmpty());
 
     return true;
 }
@@ -151,9 +151,9 @@ QStringList SessionManager::closedSites()
     QStringList list;
 
     QFile sessionFile(m_sessionFilePath);
-    if (!sessionFile.exists())
+    if(!sessionFile.exists())
         return list;
-    if (!sessionFile.open(QFile::ReadOnly))
+    if(!sessionFile.open(QFile::ReadOnly))
     {
         kDebug() << "Unable to open session file" << sessionFile.fileName();
         return list;
@@ -164,9 +164,9 @@ QStringList SessionManager::closedSites()
     do
     {
         line = in.readLine();
-        if (line != QL1S("window"))
+        if(line != QL1S("window"))
         {
-            if (line == QL1S("currenttab"))
+            if(line == QL1S("currenttab"))
             {
                 in.readLine();  // drop out the next field, containing the index of the current tab..
             }
@@ -176,7 +176,7 @@ QStringList SessionManager::closedSites()
             }
         }
     }
-    while (!line.isEmpty());
+    while(!line.isEmpty());
 
     return list;
 }

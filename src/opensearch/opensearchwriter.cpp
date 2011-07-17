@@ -37,7 +37,7 @@
 
 
 OpenSearchWriter::OpenSearchWriter()
-        : QXmlStreamWriter()
+    : QXmlStreamWriter()
 {
     setAutoFormatting(true);
 }
@@ -45,10 +45,10 @@ OpenSearchWriter::OpenSearchWriter()
 
 bool OpenSearchWriter::write(QIODevice *device, OpenSearchEngine *engine)
 {
-    if (!engine)
+    if(!engine)
         return false;
 
-    if (!device->isOpen())
+    if(!device->isOpen())
         device->open(QIODevice::WriteOnly);
 
     setDevice(device);
@@ -63,29 +63,29 @@ void OpenSearchWriter::write(OpenSearchEngine *engine)
     writeStartElement(QL1S("OpenSearchDescription"));
     writeDefaultNamespace(QL1S("http://a9.com/-/spec/opensearch/1.1/"));
 
-    if (!engine->name().isEmpty())
+    if(!engine->name().isEmpty())
     {
         writeTextElement(QL1S("ShortName"), engine->name());
     }
 
-    if (!engine->description().isEmpty())
+    if(!engine->description().isEmpty())
     {
         writeTextElement(QL1S("Description"), engine->description());
     }
 
-    if (!engine->searchUrlTemplate().isEmpty())
+    if(!engine->searchUrlTemplate().isEmpty())
     {
         writeStartElement(QL1S("Url"));
         writeAttribute(QL1S("method"), QL1S("get"));
         writeAttribute(QL1S("template"), engine->searchUrlTemplate());
 
-        if (!engine->searchParameters().empty())
+        if(!engine->searchParameters().empty())
         {
             writeNamespace(QL1S("http://a9.com/-/spec/opensearch/extensions/parameters/1.0/"), QL1S("p"));
 
             QList<OpenSearchEngine::Parameter>::const_iterator end = engine->searchParameters().constEnd();
             QList<OpenSearchEngine::Parameter>::const_iterator i = engine->searchParameters().constBegin();
-            for (; i != end; ++i)
+            for(; i != end; ++i)
             {
                 writeStartElement(QL1S("p:Parameter"));
                 writeAttribute(QL1S("name"), i->first);
@@ -97,20 +97,20 @@ void OpenSearchWriter::write(OpenSearchEngine *engine)
         writeEndElement();
     }
 
-    if (!engine->suggestionsUrlTemplate().isEmpty())
+    if(!engine->suggestionsUrlTemplate().isEmpty())
     {
         writeStartElement(QL1S("Url"));
         writeAttribute(QL1S("method"), QL1S("get"));
         writeAttribute(QL1S("type"), engine->type());
         writeAttribute(QL1S("template"), engine->suggestionsUrlTemplate());
 
-        if (!engine->suggestionsParameters().empty())
+        if(!engine->suggestionsParameters().empty())
         {
             writeNamespace(QL1S("http://a9.com/-/spec/opensearch/extensions/parameters/1.0/"), QL1S("p"));
 
             QList<OpenSearchEngine::Parameter>::const_iterator end = engine->suggestionsParameters().constEnd();
             QList<OpenSearchEngine::Parameter>::const_iterator i = engine->suggestionsParameters().constBegin();
-            for (; i != end; ++i)
+            for(; i != end; ++i)
             {
                 writeStartElement(QL1S("p:Parameter"));
                 writeAttribute(QL1S("name"), i->first);
@@ -122,7 +122,7 @@ void OpenSearchWriter::write(OpenSearchEngine *engine)
         writeEndElement();
     }
 
-    if (!engine->imageUrl().isEmpty())
+    if(!engine->imageUrl().isEmpty())
         writeTextElement(QL1S("Image"), engine->imageUrl());
 
     writeEndElement();

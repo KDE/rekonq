@@ -36,8 +36,8 @@
 
 
 WebPluginFactory::WebPluginFactory(QObject *parent)
-        : KWebPluginFactory(parent)
-        , _loadClickToFlash(false)
+    : KWebPluginFactory(parent)
+    , _loadClickToFlash(false)
 {
     connect(this, SIGNAL(signalLoadClickToFlash(bool)), SLOT(setLoadClickToFlash(bool)));
 }
@@ -56,17 +56,17 @@ QObject *WebPluginFactory::create(const QString &mimeType,
 {
     kDebug() << "loading mimeType: " << mimeType;
 
-    switch (ReKonfig::pluginsEnabled())
+    switch(ReKonfig::pluginsEnabled())
     {
     case 0:
         kDebug() << "No plugins found for" << mimeType << ". Falling back to KDEWebKit ones...";
         return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
 
     case 1:
-        if (mimeType != QString("application/x-shockwave-flash"))
+        if(mimeType != QString("application/x-shockwave-flash"))
             break;
 
-        if (_loadClickToFlash)
+        if(_loadClickToFlash)
         {
             emit signalLoadClickToFlash(false);
             return 0; //KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);

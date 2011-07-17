@@ -78,7 +78,7 @@ WebTab::WebTab(QWidget *parent)
 
     KWebWallet *wallet = m_webView->page()->wallet();
 
-    if (wallet)
+    if(wallet)
     {
         connect(wallet, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)),
                 this, SLOT(createWalletBar(const QString &, const QUrl &)));
@@ -101,7 +101,7 @@ WebTab::~WebTab()
 
 KUrl WebTab::url()
 {
-    if (page() && page()->isOnRekonqPage())
+    if(page() && page()->isOnRekonqPage())
     {
         return page()->loadingUrl();
     }
@@ -134,11 +134,11 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
     // check if the url is in the wallet blacklist
     QString urlString = url.toString();
     QStringList blackList = ReKonfig::walletBlackList();
-    if (blackList.contains(urlString))
+    if(blackList.contains(urlString))
         return;
 
     KWebWallet *wallet = page()->wallet();
-    if (m_walletBar.isNull())
+    if(m_walletBar.isNull())
     {
         m_walletBar = new WalletBar(this);
         m_walletBar.data()->onSaveFormData(key, url);
@@ -161,7 +161,7 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
 
 void WebTab::createPreviewSelectorBar(int index)
 {
-    if (m_previewSelectorBar.isNull())
+    if(m_previewSelectorBar.isNull())
     {
         m_previewSelectorBar = new PreviewSelectorBar(index, this);
         qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, m_previewSelectorBar.data());
@@ -185,7 +185,7 @@ bool WebTab::hasRSSInfo()
 {
     QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
     col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
-    if (col.count() != 0)
+    if(col.count() != 0)
         return true;
 
     return false;
@@ -199,10 +199,10 @@ void WebTab::showRSSInfo(const QPoint &pos)
 
     QMap<KUrl, QString> map;
 
-    foreach(const QWebElement &el, col)
+    foreach(const QWebElement & el, col)
     {
         QString urlString;
-        if (el.attribute("href").startsWith(QL1S("http")))
+        if(el.attribute("href").startsWith(QL1S("http")))
             urlString = el.attribute("href");
         else
         {
@@ -210,12 +210,12 @@ void WebTab::showRSSInfo(const QPoint &pos)
             // NOTE
             // cd() is probably better than setPath() here,
             // for all those url sites just having a path
-            if (u.cd(el.attribute("href")))
+            if(u.cd(el.attribute("href")))
                 urlString = u.toMimeDataString();
         }
 
         QString title = el.attribute("title");
-        if (title.isEmpty())
+        if(title.isEmpty())
             title = el.attribute("href");
 
         map.insert(KUrl(urlString), title);
@@ -228,7 +228,7 @@ void WebTab::showRSSInfo(const QPoint &pos)
 
 void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
 {
-    if (p)
+    if(p)
     {
         // Ok, part exists. Insert & show it..
         m_part = p;
@@ -240,7 +240,7 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
         return;
     }
 
-    if (!m_part)
+    if(!m_part)
         return;
 
     // Part NO more exists. Let's clean up from webtab
@@ -255,11 +255,11 @@ KUrl WebTab::extractOpensearchUrl(QWebElement e)
 {
     QString href = e.attribute(QL1S("href"));
     KUrl url = KUrl(href);
-    if (!href.contains(":"))
+    if(!href.contains(":"))
     {
         KUrl docUrl = m_webView->url();
         QString host = docUrl.scheme() + "://" + docUrl.host();
-        if (docUrl.port() != -1)
+        if(docUrl.port() != -1)
         {
             host += QL1C(':') + QString::number(docUrl.port());
         }
@@ -280,7 +280,7 @@ void WebTab::showSearchEngine(const QPoint &pos)
 {
     QWebElement e = page()->mainFrame()->findFirstElement(QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
     QString title = e.attribute(QL1S("title"));
-    if (!title.isEmpty())
+    if(!title.isEmpty())
     {
         WebShortcutWidget *widget = new WebShortcutWidget(window());
         widget->setWindowFlags(Qt::Popup);
@@ -310,7 +310,7 @@ void WebTab::showMessageBar()
     MessageBar *msgBar = new MessageBar(i18n("It seems rekonq was not closed properly. Do you want "
                                         "to restore the last saved session?")
                                         , this);
-    
+
     qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, msgBar);
     msgBar->animatedShow();
 

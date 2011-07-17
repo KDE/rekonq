@@ -59,8 +59,8 @@
 
 
 HistoryModel::HistoryModel(HistoryManager *history, QObject *parent)
-        : QAbstractTableModel(parent)
-        , m_historyManager(history)
+    : QAbstractTableModel(parent)
+    , m_historyManager(history)
 {
     Q_ASSERT(m_historyManager);
     connect(m_historyManager, SIGNAL(historyReset()), this, SLOT(historyReset()));
@@ -92,10 +92,10 @@ void HistoryModel::entryUpdated(int offset)
 
 QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation == Qt::Horizontal
+    if(orientation == Qt::Horizontal
             && role == Qt::DisplayRole)
     {
-        switch (section)
+        switch(section)
         {
         case 0: return i18n("Title");
         case 1: return i18n("Address");
@@ -108,11 +108,11 @@ QVariant HistoryModel::headerData(int section, Qt::Orientation orientation, int 
 QVariant HistoryModel::data(const QModelIndex &index, int role) const
 {
     QList<HistoryItem> lst = m_historyManager->history();
-    if (index.row() < 0 || index.row() >= lst.size())
+    if(index.row() < 0 || index.row() >= lst.size())
         return QVariant();
 
     const HistoryItem &item = lst.at(index.row());
-    switch (role)
+    switch(role)
     {
     case DateTimeRole:
         return item.dateTime;
@@ -127,14 +127,14 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
     case Qt::EditRole:
     {
-        switch (index.column())
+        switch(index.column())
         {
         case 0:
             // when there is no title try to generate one from the url
-            if (item.title.isEmpty())
+            if(item.title.isEmpty())
             {
                 QString page = QFileInfo(QUrl(item.url).path()).fileName();
-                if (!page.isEmpty())
+                if(!page.isEmpty())
                     return page;
                 return item.url;
             }
@@ -144,13 +144,13 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
         }
     }
     case Qt::DecorationRole:
-        if (index.column() == 0)
+        if(index.column() == 0)
         {
             return rApp->iconManager()->iconForUrl(item.url);
         }
     case Qt::ToolTipRole:
         QString tooltip = "";
-        if (!item.title.isEmpty())
+        if(!item.title.isEmpty())
             tooltip = item.title + '\n';
         tooltip += item.dateTime.toString(Qt::SystemLocaleShortDate) + '\n' + item.url;
         return tooltip;
@@ -173,12 +173,12 @@ int HistoryModel::rowCount(const QModelIndex &parent) const
 
 bool HistoryModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    if (parent.isValid())
+    if(parent.isValid())
         return false;
     int lastRow = row + count - 1;
     beginRemoveRows(parent, row, lastRow);
     QList<HistoryItem> lst = m_historyManager->history();
-    for (int i = lastRow; i >= row; --i)
+    for(int i = lastRow; i >= row; --i)
         lst.removeAt(i);
     disconnect(m_historyManager, SIGNAL(historyReset()), this, SLOT(historyReset()));
     m_historyManager->setHistory(lst);
@@ -192,8 +192,8 @@ bool HistoryModel::removeRows(int row, int count, const QModelIndex &parent)
 
 
 HistoryFilterModel::HistoryFilterModel(QAbstractItemModel *sourceModel, QObject *parent)
-        : QAbstractProxyModel(parent)
-        , m_loaded(false)
+    : QAbstractProxyModel(parent)
+    , m_loaded(false)
 {
     setSourceModel(sourceModel);
 }
@@ -202,7 +202,7 @@ HistoryFilterModel::HistoryFilterModel(QAbstractItemModel *sourceModel, QObject 
 int HistoryFilterModel::historyLocation(const QString &url) const
 {
     load();
-    if (!m_historyHash.contains(url))
+    if(!m_historyHash.contains(url))
         return 0;
     return sourceModel()->rowCount() - m_historyHash.value(url);
 }
@@ -216,7 +216,7 @@ QVariant HistoryFilterModel::data(const QModelIndex &index, int role) const
 
 void HistoryFilterModel::setSourceModel(QAbstractItemModel *newSourceModel)
 {
-    if (sourceModel())
+    if(sourceModel())
     {
         disconnect(sourceModel(), SIGNAL(modelReset()), this, SLOT(sourceReset()));
         disconnect(sourceModel(), SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
@@ -229,7 +229,7 @@ void HistoryFilterModel::setSourceModel(QAbstractItemModel *newSourceModel)
 
     QAbstractProxyModel::setSourceModel(newSourceModel);
 
-    if (sourceModel())
+    if(sourceModel())
     {
         m_loaded = false;
         connect(sourceModel(), SIGNAL(modelReset()), this, SLOT(sourceReset()));
@@ -265,7 +265,7 @@ void HistoryFilterModel::sourceReset()
 int HistoryFilterModel::rowCount(const QModelIndex &parent) const
 {
     load();
-    if (parent.isValid())
+    if(parent.isValid())
         return 0;
     return m_historyHash.count();
 }
@@ -289,7 +289,7 @@ QModelIndex HistoryFilterModel::mapFromSource(const QModelIndex &sourceIndex) co
 {
     load();
     QString url = sourceIndex.data(HistoryModel::UrlStringRole).toString();
-    if (!m_historyHash.contains(url))
+    if(!m_historyHash.contains(url))
         return QModelIndex();
 
     // This can be done in a binary search, but we can't use qBinary find
@@ -299,15 +299,15 @@ QModelIndex HistoryFilterModel::mapFromSource(const QModelIndex &sourceIndex) co
     int realRow = -1;
     int sourceModelRow = sourceModel()->rowCount() - sourceIndex.row();
 
-    for (int i = 0; i < m_sourceRow.count(); ++i)
+    for(int i = 0; i < m_sourceRow.count(); ++i)
     {
-        if (m_sourceRow.at(i) == sourceModelRow)
+        if(m_sourceRow.at(i) == sourceModelRow)
         {
             realRow = i;
             break;
         }
     }
-    if (realRow == -1)
+    if(realRow == -1)
         return QModelIndex();
 
     return createIndex(realRow, sourceIndex.column(), sourceModel()->rowCount() - sourceIndex.row());
@@ -317,7 +317,7 @@ QModelIndex HistoryFilterModel::mapFromSource(const QModelIndex &sourceIndex) co
 QModelIndex HistoryFilterModel::index(int row, int column, const QModelIndex &parent) const
 {
     load();
-    if (row < 0 || row >= rowCount(parent)
+    if(row < 0 || row >= rowCount(parent)
             || column < 0 || column >= columnCount(parent))
         return QModelIndex();
 
@@ -333,16 +333,16 @@ QModelIndex HistoryFilterModel::parent(const QModelIndex &) const
 
 void HistoryFilterModel::load() const
 {
-    if (m_loaded)
+    if(m_loaded)
         return;
     m_sourceRow.clear();
     m_historyHash.clear();
     m_historyHash.reserve(sourceModel()->rowCount());
-    for (int i = 0; i < sourceModel()->rowCount(); ++i)
+    for(int i = 0; i < sourceModel()->rowCount(); ++i)
     {
         QModelIndex idx = sourceModel()->index(i, 0);
         QString url = idx.data(HistoryModel::UrlStringRole).toString();
-        if (!m_historyHash.contains(url))
+        if(!m_historyHash.contains(url))
         {
             m_sourceRow.append(sourceModel()->rowCount() - i);
             m_historyHash[url] = sourceModel()->rowCount() - i;
@@ -356,19 +356,19 @@ void HistoryFilterModel::sourceRowsInserted(const QModelIndex &parent, int start
 {
     //Q_ASSERT(start == end && start == 0);
     Q_UNUSED(end);
-    
+
     if(start != 0)
     {
         kDebug() << "STARTING from a NON zero position...";
         return;
     }
-    
-    if (!m_loaded)
+
+    if(!m_loaded)
         return;
-    
+
     QModelIndex idx = sourceModel()->index(start, 0, parent);
     QString url = idx.data(HistoryModel::UrlStringRole).toString();
-    if (m_historyHash.contains(url))
+    if(m_historyHash.contains(url))
     {
         int sourceRow = sourceModel()->rowCount() - m_historyHash[url];
         int realRow = mapFromSource(sourceModel()->index(sourceRow, 0)).row();
@@ -398,7 +398,7 @@ void HistoryFilterModel::sourceRowsRemoved(const QModelIndex &, int start, int e
 */
 bool HistoryFilterModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    if (row < 0 || count <= 0 || row + count > rowCount(parent) || parent.isValid())
+    if(row < 0 || count <= 0 || row + count > rowCount(parent) || parent.isValid())
         return false;
     int lastRow = row + count - 1;
     disconnect(sourceModel(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
@@ -412,7 +412,7 @@ bool HistoryFilterModel::removeRows(int row, int count, const QModelIndex &paren
     connect(sourceModel(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
             this, SLOT(sourceRowsRemoved(const QModelIndex &, int, int)));
     m_loaded = false;
-    if (oldCount - count != rowCount())
+    if(oldCount - count != rowCount())
         reset();
     return true;
 }
@@ -422,7 +422,7 @@ bool HistoryFilterModel::removeRows(int row, int count, const QModelIndex &paren
 
 
 HistoryTreeModel::HistoryTreeModel(QAbstractItemModel *sourceModel, QObject *parent)
-        : QAbstractProxyModel(parent)
+    : QAbstractProxyModel(parent)
 {
     setSourceModel(sourceModel);
 }
@@ -436,29 +436,29 @@ QVariant HistoryTreeModel::headerData(int section, Qt::Orientation orientation, 
 
 QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
 {
-    if ((role == Qt::EditRole || role == Qt::DisplayRole))
+    if((role == Qt::EditRole || role == Qt::DisplayRole))
     {
         int start = index.internalId();
-        if (start == 0)
+        if(start == 0)
         {
             int offset = sourceDateRow(index.row());
-            if (index.column() == 0)
+            if(index.column() == 0)
             {
                 QModelIndex idx = sourceModel()->index(offset, 0);
                 QDate date = idx.data(HistoryModel::DateRole).toDate();
-                if (date == QDate::currentDate())
+                if(date == QDate::currentDate())
                     return i18n("Earlier Today");
                 return date.toString(QL1S("dddd, MMMM d, yyyy"));
             }
-            if (index.column() == 1)
+            if(index.column() == 1)
             {
                 return i18np("1 item", "%1 items", rowCount(index.sibling(index.row(), 0)));
             }
         }
     }
-    if (role == Qt::DecorationRole && index.column() == 0 && !index.parent().isValid())
+    if(role == Qt::DecorationRole && index.column() == 0 && !index.parent().isValid())
         return KIcon("view-history");
-    if (role == HistoryModel::DateRole && index.column() == 0 && index.internalId() == 0)
+    if(role == HistoryModel::DateRole && index.column() == 0 && index.internalId() == 0)
     {
         int offset = sourceDateRow(index.row());
         QModelIndex idx = sourceModel()->index(offset, 0);
@@ -477,24 +477,24 @@ int HistoryTreeModel::columnCount(const QModelIndex &parent) const
 
 int HistoryTreeModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.internalId() != 0
+    if(parent.internalId() != 0
             || parent.column() > 0
             || !sourceModel())
         return 0;
 
     // row count OF dates
-    if (!parent.isValid())
+    if(!parent.isValid())
     {
-        if (!m_sourceRowCache.isEmpty())
+        if(!m_sourceRowCache.isEmpty())
             return m_sourceRowCache.count();
         QDate currentDate;
         int rows = 0;
         int totalRows = sourceModel()->rowCount();
 
-        for (int i = 0; i < totalRows; ++i)
+        for(int i = 0; i < totalRows; ++i)
         {
             QDate rowDate = sourceModel()->index(i, 0).data(HistoryModel::DateRole).toDate();
-            if (rowDate != currentDate)
+            if(rowDate != currentDate)
             {
                 m_sourceRowCache.append(i);
                 currentDate = rowDate;
@@ -515,15 +515,15 @@ int HistoryTreeModel::rowCount(const QModelIndex &parent) const
 // Translate the top level date row into the offset where that date starts
 int HistoryTreeModel::sourceDateRow(int row) const
 {
-    if (row <= 0)
+    if(row <= 0)
         return 0;
 
-    if (m_sourceRowCache.isEmpty())
+    if(m_sourceRowCache.isEmpty())
         rowCount(QModelIndex());
 
-    if (row >= m_sourceRowCache.count())
+    if(row >= m_sourceRowCache.count())
     {
-        if (!sourceModel())
+        if(!sourceModel())
             return 0;
         return sourceModel()->rowCount();
     }
@@ -534,7 +534,7 @@ int HistoryTreeModel::sourceDateRow(int row) const
 QModelIndex HistoryTreeModel::mapToSource(const QModelIndex &proxyIndex) const
 {
     int offset = proxyIndex.internalId();
-    if (offset == 0)
+    if(offset == 0)
         return QModelIndex();
     int startDateRow = sourceDateRow(offset - 1);
     return sourceModel()->index(startDateRow + proxyIndex.row(), proxyIndex.column());
@@ -543,12 +543,12 @@ QModelIndex HistoryTreeModel::mapToSource(const QModelIndex &proxyIndex) const
 
 QModelIndex HistoryTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
-    if (row < 0
+    if(row < 0
             || column < 0 || column >= columnCount(parent)
             || parent.column() > 0)
         return QModelIndex();
 
-    if (!parent.isValid())
+    if(!parent.isValid())
         return createIndex(row, column, 0);
     return createIndex(row, column, parent.row() + 1);
 }
@@ -557,7 +557,7 @@ QModelIndex HistoryTreeModel::index(int row, int column, const QModelIndex &pare
 QModelIndex HistoryTreeModel::parent(const QModelIndex &index) const
 {
     int offset = index.internalId();
-    if (offset == 0 || !index.isValid())
+    if(offset == 0 || !index.isValid())
         return QModelIndex();
     return createIndex(offset - 1, 0, 0);
 }
@@ -566,7 +566,7 @@ QModelIndex HistoryTreeModel::parent(const QModelIndex &index) const
 bool HistoryTreeModel::hasChildren(const QModelIndex &parent) const
 {
     QModelIndex grandparent = parent.parent();
-    if (!grandparent.isValid())
+    if(!grandparent.isValid())
         return true;
     return false;
 }
@@ -574,7 +574,7 @@ bool HistoryTreeModel::hasChildren(const QModelIndex &parent) const
 
 Qt::ItemFlags HistoryTreeModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    if(!index.isValid())
         return Qt::NoItemFlags;
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled;
 }
@@ -582,10 +582,10 @@ Qt::ItemFlags HistoryTreeModel::flags(const QModelIndex &index) const
 
 bool HistoryTreeModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    if (row < 0 || count <= 0 || row + count > rowCount(parent))
+    if(row < 0 || count <= 0 || row + count > rowCount(parent))
         return false;
 
-    if (parent.isValid())
+    if(parent.isValid())
     {
         // removing pages
         int offset = sourceDateRow(parent.row());
@@ -594,11 +594,11 @@ bool HistoryTreeModel::removeRows(int row, int count, const QModelIndex &parent)
     else
     {
         // removing whole dates
-        for (int i = row + count - 1; i >= row; --i)
+        for(int i = row + count - 1; i >= row; --i)
         {
             QModelIndex dateParent = index(i, 0);
             int offset = sourceDateRow(dateParent.row());
-            if (!sourceModel()->removeRows(offset, rowCount(dateParent)))
+            if(!sourceModel()->removeRows(offset, rowCount(dateParent)))
                 return false;
         }
     }
@@ -608,7 +608,7 @@ bool HistoryTreeModel::removeRows(int row, int count, const QModelIndex &parent)
 
 void HistoryTreeModel::setSourceModel(QAbstractItemModel *newSourceModel)
 {
-    if (sourceModel())
+    if(sourceModel())
     {
         disconnect(sourceModel(), SIGNAL(modelReset()), this, SLOT(sourceReset()));
         disconnect(sourceModel(), SIGNAL(layoutChanged()), this, SLOT(sourceReset()));
@@ -620,7 +620,7 @@ void HistoryTreeModel::setSourceModel(QAbstractItemModel *newSourceModel)
 
     QAbstractProxyModel::setSourceModel(newSourceModel);
 
-    if (newSourceModel)
+    if(newSourceModel)
     {
         connect(sourceModel(), SIGNAL(modelReset()), this, SLOT(sourceReset()));
         connect(sourceModel(), SIGNAL(layoutChanged()), this, SLOT(sourceReset()));
@@ -645,7 +645,7 @@ void HistoryTreeModel::sourceRowsInserted(const QModelIndex &parent, int start, 
 {
     Q_UNUSED(parent); // Avoid warnings when compiling release
     Q_ASSERT(!parent.isValid());
-    if (start != 0 || start != end)
+    if(start != 0 || start != end)
     {
         m_sourceRowCache.clear();
         reset();
@@ -655,7 +655,7 @@ void HistoryTreeModel::sourceRowsInserted(const QModelIndex &parent, int start, 
     m_sourceRowCache.clear();
     QModelIndex treeIndex = mapFromSource(sourceModel()->index(start, 0));
     QModelIndex treeParent = treeIndex.parent();
-    if (rowCount(treeParent) == 1)
+    if(rowCount(treeParent) == 1)
     {
         beginInsertRows(QModelIndex(), 0, 0);
         endInsertRows();
@@ -670,15 +670,15 @@ void HistoryTreeModel::sourceRowsInserted(const QModelIndex &parent, int start, 
 
 QModelIndex HistoryTreeModel::mapFromSource(const QModelIndex &sourceIndex) const
 {
-    if (!sourceIndex.isValid())
+    if(!sourceIndex.isValid())
         return QModelIndex();
 
-    if (m_sourceRowCache.isEmpty())
+    if(m_sourceRowCache.isEmpty())
         rowCount(QModelIndex());
 
     QList<int>::iterator it;
     it = qLowerBound(m_sourceRowCache.begin(), m_sourceRowCache.end(), sourceIndex.row());
-    if (*it != sourceIndex.row())
+    if(*it != sourceIndex.row())
         --it;
 
     int dateRow = qMax(0, it - m_sourceRowCache.begin());
@@ -691,28 +691,28 @@ void HistoryTreeModel::sourceRowsRemoved(const QModelIndex &parent, int start, i
 {
     Q_UNUSED(parent); // Avoid warnings when compiling release
     Q_ASSERT(!parent.isValid());
-    if (m_sourceRowCache.isEmpty())
+    if(m_sourceRowCache.isEmpty())
         return;
-    for (int i = end; i >= start;)
+    for(int i = end; i >= start;)
     {
         QList<int>::iterator it;
         it = qLowerBound(m_sourceRowCache.begin(), m_sourceRowCache.end(), i);
         // playing it safe
-        if (it == m_sourceRowCache.end())
+        if(it == m_sourceRowCache.end())
         {
             m_sourceRowCache.clear();
             reset();
             return;
         }
 
-        if (*it != i)
+        if(*it != i)
             --it;
         int row = qMax(0, it - m_sourceRowCache.begin());
         int offset = m_sourceRowCache[row];
         QModelIndex dateParent = index(row, 0);
         // If we can remove all the rows in the date do that and skip over them
         int rc = rowCount(dateParent);
-        if (i - rc + 1 == offset && start <= i - rc + 1)
+        if(i - rc + 1 == offset && start <= i - rc + 1)
         {
             beginRemoveRows(QModelIndex(), row, row);
             m_sourceRowCache.removeAt(row);
@@ -724,7 +724,7 @@ void HistoryTreeModel::sourceRowsRemoved(const QModelIndex &parent, int start, i
             ++row;
             --i;
         }
-        for (int j = row; j < m_sourceRowCache.count(); ++j)
+        for(int j = row; j < m_sourceRowCache.count(); ++j)
             --m_sourceRowCache[j];
         endRemoveRows();
     }

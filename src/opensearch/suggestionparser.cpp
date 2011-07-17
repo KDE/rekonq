@@ -51,14 +51,14 @@ ResponseList XMLParser::parse(const QByteArray &resp)
     m_reader.clear();
     m_reader.addData(resp);
 
-    while (!m_reader.atEnd() && !m_reader.hasError())
+    while(!m_reader.atEnd() && !m_reader.hasError())
     {
         m_reader.readNext();
 
-        if (m_reader.isStartDocument())
+        if(m_reader.isStartDocument())
             continue;
 
-        if (m_reader.isStartElement() && m_reader.name() == QL1S("Item"))
+        if(m_reader.isStartElement() && m_reader.name() == QL1S("Item"))
         {
             QString title;
             QString description;
@@ -69,24 +69,24 @@ ResponseList XMLParser::parse(const QByteArray &resp)
 
             m_reader.readNext();
 
-            while (!(m_reader.isEndElement() && m_reader.name() == QL1S("Item")))
+            while(!(m_reader.isEndElement() && m_reader.name() == QL1S("Item")))
             {
-                if (m_reader.isStartElement())
+                if(m_reader.isStartElement())
                 {
 
-                    if (m_reader.name() == QL1S("Text"))
+                    if(m_reader.name() == QL1S("Text"))
                         title = m_reader.readElementText();
-                    if (m_reader.name() == QL1S("Url"))
+                    if(m_reader.name() == QL1S("Url"))
                         url = m_reader.readElementText();
 
-                    if (m_reader.name() == QL1S("Image"))
+                    if(m_reader.name() == QL1S("Image"))
                     {
                         image = m_reader.attributes().value("source").toString();
                         image_width = m_reader.attributes().value("width").toString().toInt();
                         image_height = m_reader.attributes().value("height").toString().toInt();
                     }
 
-                    if (m_reader.name() == QL1S("Description"))
+                    if(m_reader.name() == QL1S("Description"))
                         description = m_reader.readElementText();
                 }
 
@@ -105,22 +105,22 @@ ResponseList JSONParser::parse(const QByteArray &resp)
     QString response = QString::fromLocal8Bit(resp);
     response = response.trimmed();
 
-    if (response.isEmpty())
+    if(response.isEmpty())
     {
         kDebug() << "RESPONSE IS EMPTY";
         return ResponseList();
     }
 
-    if (!response.startsWith(QL1C('['))
+    if(!response.startsWith(QL1C('['))
             || !response.endsWith(QL1C(']'))
-       )
+      )
     {
         kDebug() << "RESPONSE is NOT well FORMED";
         return ResponseList();
     }
 
     // Evaluate the JSON response using QtScript.
-    if (!m_reader.canEvaluate(response))
+    if(!m_reader.canEvaluate(response))
     {
         kDebug() << "m_reader cannot evaluate the response";
         return ResponseList();
@@ -128,7 +128,7 @@ ResponseList JSONParser::parse(const QByteArray &resp)
 
     QScriptValue responseParts = m_reader.evaluate(response);
 
-    if (!responseParts.property(1).isArray())
+    if(!responseParts.property(1).isArray())
     {
         kDebug() << "RESPONSE is not an array";
         return ResponseList();
@@ -138,7 +138,7 @@ ResponseList JSONParser::parse(const QByteArray &resp)
     QStringList responsePartsList;
     qScriptValueToSequence(responseParts.property(1), responsePartsList);
 
-    Q_FOREACH(const QString &s, responsePartsList)
+    Q_FOREACH(const QString & s, responsePartsList)
     {
         rlist << Response(s);
     }

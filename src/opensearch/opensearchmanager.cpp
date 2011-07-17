@@ -54,9 +54,9 @@
 #include <QDBusConnection>
 
 OpenSearchManager::OpenSearchManager(QObject *parent)
-        : QObject(parent)
-        , m_activeEngine(0)
-        , m_currentJob(0)
+    : QObject(parent)
+    , m_activeEngine(0)
+    , m_currentJob(0)
 {
     m_state = IDLE;
     loadEngines();
@@ -75,18 +75,18 @@ void OpenSearchManager::setSearchProvider(const QString &searchProvider)
 {
     m_activeEngine = 0;
 
-    if (!m_engineCache.contains(searchProvider))
+    if(!m_engineCache.contains(searchProvider))
     {
         const QString fileName = KGlobal::dirs()->findResource("data", "rekonq/opensearch/" + trimmedEngineName(searchProvider) + ".xml");
         kDebug() << searchProvider << " trimmed name: "  << trimmedEngineName(searchProvider) << " file name path: " << fileName;
-        if (fileName.isEmpty())
+        if(fileName.isEmpty())
         {
             kDebug() << "OpenSearch file name empty";
             return;
         }
         QFile file(fileName);
 
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
             kDebug() << "Cannot open opensearch description file: " + fileName;
             return;
@@ -95,7 +95,7 @@ void OpenSearchManager::setSearchProvider(const QString &searchProvider)
         OpenSearchReader reader;
         OpenSearchEngine *engine = reader.read(&file);
 
-        if (engine)
+        if(engine)
         {
             m_engineCache.insert(searchProvider, engine);
         }
@@ -121,7 +121,7 @@ void OpenSearchManager::addOpenSearchEngine(const KUrl &url, const QString &titl
 
     m_shortcut = shortcut;
 
-    if (m_state != IDLE)
+    if(m_state != IDLE)
     {
         idleJob();
     }
@@ -135,10 +135,10 @@ void OpenSearchManager::addOpenSearchEngine(const KUrl &url, const QString &titl
 
 void OpenSearchManager::requestSuggestion(const QString &searchText)
 {
-    if (!m_activeEngine)
+    if(!m_activeEngine)
         return;
 
-    if (m_state != IDLE)
+    if(m_state != IDLE)
     {
         // NOTE:
         // changing OpenSearchManager behavior
@@ -147,7 +147,7 @@ void OpenSearchManager::requestSuggestion(const QString &searchText)
         idleJob();
     }
 
-    if (m_activeEngine->hasCachedSuggestionsFor(searchText))
+    if(m_activeEngine->hasCachedSuggestionsFor(searchText))
     {
         emit suggestionsReceived(searchText, m_activeEngine->cachedSuggestionsFor(searchText));
     }
@@ -174,18 +174,18 @@ void OpenSearchManager::dataReceived(KIO::Job *job, const QByteArray &data)
 void OpenSearchManager::jobFinished(KJob *job)
 {
     // Do NOT parse if job had same errors or the typed string is empty
-    if (job->error() || _typedText.isEmpty())
+    if(job->error() || _typedText.isEmpty())
     {
         emit suggestionsReceived(_typedText, ResponseList());
         m_state = IDLE;
         return; // just silently return
     }
 
-    if (m_state == REQ_SUGGESTION)
+    if(m_state == REQ_SUGGESTION)
     {
         const ResponseList suggestionsList = m_activeEngine->parseSuggestion(_typedText, m_jobData);
         kDebug() << "Received suggestions in " << _typedText << " from " << m_activeEngine->name() << ": ";
-        Q_FOREACH(const Response &r, suggestionsList)
+        Q_FOREACH(const Response & r, suggestionsList)
         {
             kDebug() << r.title;
         }
@@ -194,18 +194,18 @@ void OpenSearchManager::jobFinished(KJob *job)
         return;
     }
 
-    if (m_state == REQ_DESCRIPTION)
+    if(m_state == REQ_DESCRIPTION)
     {
         OpenSearchReader reader;
         OpenSearchEngine *engine = reader.read(m_jobData);
-        if (engine)
+        if(engine)
         {
             m_engineCache.insert(engine->name(), engine);
             m_engines.insert(m_jobUrl, trimmedEngineName(engine->name()));
             saveEngines();
 
             QString path;
-            if (engine->providesSuggestions()) //save opensearch description only if it provides suggestions
+            if(engine->providesSuggestions())  //save opensearch description only if it provides suggestions
             {
                 OpenSearchWriter writer;
                 path = KGlobal::dirs()->findResource("data", "rekonq/opensearch/");
@@ -249,7 +249,7 @@ void OpenSearchManager::jobFinished(KJob *job)
 void OpenSearchManager::loadEngines()
 {
     QFile file(KStandardDirs::locate("appdata", "opensearch/db_opensearch.json"));
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         kDebug() << "opensearch db cannot be read";
         return;
@@ -257,7 +257,7 @@ void OpenSearchManager::loadEngines()
 
     QString fileContent = QString::fromUtf8(file.readAll());
     QScriptEngine reader;
-    if (!reader.canEvaluate(fileContent))
+    if(!reader.canEvaluate(fileContent))
     {
         kDebug() << "opensearch db cannot be read";
         return;
@@ -267,7 +267,7 @@ void OpenSearchManager::loadEngines()
     QVariantList list;
     qScriptValueToSequence(responseParts, list);
     QStringList l;
-    Q_FOREACH(const QVariant &e, list)
+    Q_FOREACH(const QVariant & e, list)
     {
         l = e.toStringList();
         m_engines.insert(KUrl(l.first()), l.last());
@@ -279,7 +279,7 @@ void OpenSearchManager::loadEngines()
 void OpenSearchManager::saveEngines()
 {
     QFile file(KStandardDirs::locateLocal("appdata", "opensearch/db_opensearch.json"));
-    if (!file.open(QIODevice::WriteOnly))
+    if(!file.open(QIODevice::WriteOnly))
     {
         kDebug() << "opensearch db cannot be writen";
         return;
@@ -288,11 +288,11 @@ void OpenSearchManager::saveEngines()
     out << "[";
     int i = 0;
     QList<KUrl> urls = m_engines.keys();
-    Q_FOREACH(const KUrl &url, urls)
+    Q_FOREACH(const KUrl & url, urls)
     {
         out << "[\"" << url.url() << "\",\"" << m_engines.value(url) << "\"]";
         i++;
-        if (i != urls.size())
+        if(i != urls.size())
         {
             out << ",\n";
         }
@@ -305,10 +305,10 @@ void OpenSearchManager::saveEngines()
 void  OpenSearchManager::removeDeletedEngines()
 {
     KService::Ptr service;
-    Q_FOREACH(const KUrl &url, m_engines.keys())
+    Q_FOREACH(const KUrl & url, m_engines.keys())
     {
         service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(m_engines.value(url)));
-        if (!service)
+        if(!service)
         {
             QString path = KStandardDirs::locateLocal("appdata", "opensearch/" + trimmedEngineName(m_engines.value(url)) + ".xml");
             QFile::remove(path + trimmedEngineName(m_engines.value(url)) + ".xml");
@@ -329,15 +329,15 @@ QString OpenSearchManager::trimmedEngineName(const QString &engineName) const
 {
     QString trimmed;
     QString::ConstIterator constIter = engineName.constBegin();
-    while (constIter != engineName.constEnd())
+    while(constIter != engineName.constEnd())
     {
-        if (constIter->isSpace())
+        if(constIter->isSpace())
         {
             trimmed.append('_');
         }
         else
         {
-            if (*constIter != '.')
+            if(*constIter != '.')
             {
                 trimmed.append(constIter->toLower());
             }
@@ -351,7 +351,7 @@ QString OpenSearchManager::trimmedEngineName(const QString &engineName) const
 
 void OpenSearchManager::idleJob()
 {
-    if (m_currentJob)
+    if(m_currentJob)
     {
         disconnect(m_currentJob);
         m_currentJob->kill();

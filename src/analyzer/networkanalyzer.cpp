@@ -47,9 +47,9 @@
 
 
 NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
-        : QWidget(parent)
-        , _mapper(new QSignalMapper(this))
-        , _requestList(new QTreeWidget(this))
+    : QWidget(parent)
+    , _mapper(new QSignalMapper(this))
+    , _requestList(new QTreeWidget(this))
 {
     QStringList headers;
     headers << i18n("Method") << i18n("URL") << i18n("Response") << i18n("Length") << i18n("Content Type") << i18n("Info");
@@ -75,7 +75,7 @@ NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
 
 void NetworkAnalyzer::popupContextMenu(const QPoint& pos)
 {
-    if (_requestList->topLevelItemCount() >= 1)
+    if(_requestList->topLevelItemCount() >= 1)
     {
         KMenu menu(_requestList);
         KAction *copy;
@@ -96,7 +96,7 @@ void NetworkAnalyzer::addRequest(QNetworkAccessManager::Operation op, const QNet
 {
     // Add to list of requests
     QStringList cols;
-    switch (op)
+    switch(op)
     {
     case QNetworkAccessManager::HeadOperation:
         cols << QL1S("HEAD");
@@ -151,7 +151,7 @@ void NetworkAnalyzer::clear()
 void NetworkAnalyzer::requestFinished(QObject *replyObject)
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(replyObject);
-    if (!reply)
+    if(!reply)
     {
         kDebug() << "Failed to downcast reply";
         return;
@@ -166,7 +166,7 @@ void NetworkAnalyzer::requestFinished(QObject *replyObject)
 
     // Record the reply headers
     QList<QByteArray> headerValues;
-    foreach(const QByteArray &header, reply->rawHeaderList())
+    foreach(const QByteArray & header, reply->rawHeaderList())
     {
         headerValues += reply->rawHeader(header);
     }
@@ -187,7 +187,7 @@ void NetworkAnalyzer::requestFinished(QObject *replyObject)
     QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
     item->setText(4, contentType);
 
-    if (status == 302)
+    if(status == 302)
     {
         QUrl target = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
         item->setText(5, i18n("Redirect: %1", target.toString()));
@@ -203,7 +203,7 @@ void NetworkAnalyzer::showItemDetails(QTreeWidgetItem *item)
     QNetworkRequest req = _itemRequestMap[item];
     details += i18n("<h3>Request Details</h3>");
     details += QL1S("<ul>");
-    foreach(const QByteArray &header, req.rawHeaderList())
+    foreach(const QByteArray & header, req.rawHeaderList())
     {
         details += QL1S("<li>");
         details += QL1S(header);
@@ -216,7 +216,7 @@ void NetworkAnalyzer::showItemDetails(QTreeWidgetItem *item)
     QPair< QList<QByteArray>, QList<QByteArray> > replyHeaders = _itemReplyMap[item];
     details += i18n("<h3>Response Details</h3>");
     details += QL1S("<ul>");
-    for (int i = 0; i < replyHeaders.first.count(); i++)
+    for(int i = 0; i < replyHeaders.first.count(); i++)
     {
         details += QL1S("<li>");
         details += QL1S(replyHeaders.first[i]);

@@ -57,7 +57,7 @@ public:
     {
         Q_ASSERT(encodedUrl.toLower() == encodedUrlLowerCase);
         bool b = m_implementation->match(request, encodedUrl, encodedUrlLowerCase);
-        if (b)
+        if(b)
         {
             kDebug() << m_implementation->ruleType() << ": rule string = " << m_implementation->ruleString();
         }

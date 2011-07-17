@@ -37,11 +37,11 @@
 
 
 NetworkWidget::NetworkWidget(QWidget *parent)
-        : QWidget(parent)
-        , _cacheModule(0)
-        , _cookiesModule(0)
-        , _proxyModule(0)
-        , _changed(false)
+    : QWidget(parent)
+    , _cacheModule(0)
+    , _cookiesModule(0)
+    , _proxyModule(0)
+    , _changed(false)
 {
     QVBoxLayout *l = new QVBoxLayout(this);
     l->setMargin(0);

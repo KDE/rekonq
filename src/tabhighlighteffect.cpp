@@ -37,9 +37,9 @@ const QByteArray prep("hAnim");
 
 
 TabHighlightEffect::TabHighlightEffect(TabBar *tabBar)
-        : QGraphicsEffect(tabBar)
-        , m_tabBar(tabBar)
-        , m_highlightColor(tabBar->palette().highlight().color().lighter())
+    : QGraphicsEffect(tabBar)
+    , m_tabBar(tabBar)
+    , m_highlightColor(tabBar->palette().highlight().color().lighter())
 {
     Q_ASSERT(m_tabBar);
 }
@@ -48,22 +48,22 @@ TabHighlightEffect::TabHighlightEffect(TabBar *tabBar)
 void TabHighlightEffect::draw(QPainter *painter)
 {
     const QPixmap &pixmap = sourcePixmap();
-    
-    if (pixmap.isNull())
+
+    if(pixmap.isNull())
         return;
-    
+
     painter->drawPixmap(QPoint(0, 0), pixmap);
 
-    Q_FOREACH(const QByteArray &propertyName, dynamicPropertyNames())
+    Q_FOREACH(const QByteArray & propertyName, dynamicPropertyNames())
     {
-        if (!propertyName.startsWith(prep))
+        if(!propertyName.startsWith(prep))
             continue;
 
         int index = propertyName.right(propertyName.size() - prep.size()).toInt();
         qreal opacity = property(propertyName).toReal();
         QRect textRect =  m_tabBar->tabTextRect(index);
 
-        if (!boundingRect().contains(textRect))
+        if(!boundingRect().contains(textRect))
             continue;
 
         QString tabText = m_tabBar->fontMetrics().elidedText(m_tabBar->tabText(index), Qt::ElideRight,
@@ -78,11 +78,11 @@ void TabHighlightEffect::draw(QPainter *painter)
 
 bool TabHighlightEffect::event(QEvent* event)
 {
-    if (event->type() == QEvent::DynamicPropertyChange)
+    if(event->type() == QEvent::DynamicPropertyChange)
     {
         QDynamicPropertyChangeEvent *pChangeEv = dynamic_cast<QDynamicPropertyChangeEvent*>(event);
 
-        if (pChangeEv->propertyName().startsWith(prep))
+        if(pChangeEv->propertyName().startsWith(prep))
         {
             update();
             return true;

@@ -86,7 +86,7 @@ public:
      */
     static QPixmap renderPagePreview(const QWebPage &page, int w = defaultWidth, int h = defaultHeight);
 
-    // static QPixmap renderVisiblePagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT); 
+    // static QPixmap renderVisiblePagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
     // TODO: try to make this method work => more previews for the urlbar
 
     /**

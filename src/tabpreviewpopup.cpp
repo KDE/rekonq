@@ -41,10 +41,10 @@
 #include <QPoint>
 
 
-TabPreviewPopup::TabPreviewPopup(WebTab* tab,QWidget* parent)
-  : KPassivePopup(parent),
-    m_thumbnail(new QLabel(this)),
-    m_url(new QLabel(this))
+TabPreviewPopup::TabPreviewPopup(WebTab* tab, QWidget* parent)
+    : KPassivePopup(parent),
+      m_thumbnail(new QLabel(this)),
+      m_url(new QLabel(this))
 {
     m_thumbnail->setAlignment(Qt::AlignHCenter);
     m_url->setAlignment(Qt::AlignHCenter);
@@ -95,14 +95,14 @@ void TabPreviewPopup::setUrl(const QString& text)
 
 void TabPreviewPopup::setFixedSize(int w, int h)
 {
-    KPassivePopup::setFixedSize(w,h);
-    m_url->setText(m_url->fontMetrics().elidedText(m_url->text(),Qt::ElideMiddle,this->width() - this->borderRadius));
+    KPassivePopup::setFixedSize(w, h);
+    m_url->setText(m_url->fontMetrics().elidedText(m_url->text(), Qt::ElideMiddle, this->width() - this->borderRadius));
 
     QPixmap pixmap(size());
     QPainter painter(&pixmap);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.fillRect(pixmap.rect(), Qt::red);
     painter.setBrush(QBrush(Qt::black));
-    painter.drawRoundRect(borderSpacing,borderSpacing,pixmap.width()-borderSpacing*2,pixmap.height()-borderSpacing*2, borderRadius, borderRadius);
+    painter.drawRoundRect(borderSpacing, borderSpacing, pixmap.width() - borderSpacing * 2, pixmap.height() - borderSpacing * 2, borderRadius, borderRadius);
     setMask(pixmap.createMaskFromColor(Qt::red));
 }

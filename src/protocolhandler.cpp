@@ -68,9 +68,9 @@ static KFileItemList sortFileList(const KFileItemList &list)
     KFileItemList orderedList, dirList, fileList;
 
     // order dirs before files..
-    Q_FOREACH(const KFileItem &item, list)
+    Q_FOREACH(const KFileItem & item, list)
     {
-        if (item.isDir())
+        if(item.isDir())
             dirList << item;
         else
             fileList << item;
@@ -102,10 +102,10 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     _frame = frame;
 
     // javascript handling
-    if (_url.protocol() == QL1S("javascript"))
+    if(_url.protocol() == QL1S("javascript"))
     {
         QString scriptSource = _url.authority();
-        if (scriptSource.isEmpty())
+        if(scriptSource.isEmpty())
         {
             // if javascript:<code here> then authority() returns
             // an empty string. Extract the source manually
@@ -115,7 +115,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             // fromPercentEncoding() is used to decode all the % encoded
             // characters to normal, so that it is treated as valid javascript
             scriptSource = QUrl::fromPercentEncoding(_url.url().mid(11).toAscii());
-            if (scriptSource.isEmpty())
+            if(scriptSource.isEmpty())
                 return false;
         }
 
@@ -125,25 +125,25 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     }
 
     // "abp" handling
-    if (_url.protocol() == QL1S("abp"))
+    if(_url.protocol() == QL1S("abp"))
     {
         abpHandling();
         return true;
     }
 
     // "about" handling
-    if (_url.protocol() == QL1S("about"))
+    if(_url.protocol() == QL1S("about"))
     {
         QByteArray encodedUrl = _url.toEncoded();
         // let webkit manage the about:blank url...
-        if (encodedUrl == QByteArray("about:blank"))
+        if(encodedUrl == QByteArray("about:blank"))
         {
             return false;
         }
 
-        if (encodedUrl == QByteArray("about:home"))
+        if(encodedUrl == QByteArray("about:home"))
         {
-            switch (ReKonfig::newTabStartPage())
+            switch(ReKonfig::newTabStartPage())
             {
             case 0: // favorites
                 _url = KUrl("about:favorites");
@@ -174,9 +174,9 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     }
 
     // let webkit try to load a known (or missing) protocol...
-    if (KProtocolInfo::isKnownProtocol(_url))
+    if(KProtocolInfo::isKnownProtocol(_url))
         return false;
-    
+
     // Error Message, for those protocols we cannot handle
     KMessageBox::error(rApp->mainWindow(), i18nc("@info", "rekonq does not know how to handle this protocol: %1", _url.protocol()));
 
@@ -190,14 +190,14 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     _frame = frame;
 
     kDebug() << "URL PROTOCOL: " << _url;
-    
+
     // "http(s)" (fast) handling
-    if (_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https"))
+    if(_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https"))
         return false;
 
     // "mailto" handling: It needs to be handled both here(mail links clicked)
     // and in prehandling (mail url launched)
-    if (_url.protocol() == QL1S("mailto"))
+    if(_url.protocol() == QL1S("mailto"))
     {
         KToolInvocation::invokeMailer(_url);
         return true;
@@ -208,7 +208,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     // My idea is: webkit cannot handle in any way ftp. So we have surely to return true here.
     // We start trying to guess what the url represent: it's a dir? show its contents (and download them).
     // it's a file? download it. It's another thing? beat me, but I don't know what to do...
-    if (_url.protocol() == QL1S("ftp"))
+    if(_url.protocol() == QL1S("ftp"))
     {
         KIO::StatJob *job = KIO::stat(_url);
         connect(job, SIGNAL(result(KJob*)), this, SLOT(slotMostLocalUrlResult(KJob*)));
@@ -216,10 +216,10 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     }
 
     // "file" handling. This is quite trivial :)
-    if (_url.protocol() == QL1S("file"))
+    if(_url.protocol() == QL1S("file"))
     {
         QFileInfo fileInfo(_url.path());
-        if (fileInfo.isDir())
+        if(fileInfo.isDir())
         {
             connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
@@ -230,7 +230,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
 
     // we cannot handle this protocol in any way.
     // Try KRunning it...
-    if (KProtocolInfo::isKnownProtocol(_url))
+    if(KProtocolInfo::isKnownProtocol(_url))
     {
         kDebug() << "WARNING: launching a new app...";
         (void)new KRun(_url, rApp->mainWindow(), 0, _url.isLocalFile());
@@ -246,7 +246,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
 
 void ProtocolHandler::showResults(const KFileItemList &list)
 {
-    if (!_lister->rootItem().isNull() && _lister->rootItem().isReadable() && _lister->rootItem().isFile())
+    if(!_lister->rootItem().isNull() && _lister->rootItem().isReadable() && _lister->rootItem().isFile())
     {
         emit downloadUrl(_lister->rootItem().url());
     }
@@ -265,7 +265,7 @@ void ProtocolHandler::showResults(const KFileItemList &list)
 
 QString ProtocolHandler::dirHandling(const KFileItemList &list)
 {
-    if (!_lister)
+    if(!_lister)
     {
         return QString("rekonq error, sorry :(");
     }
@@ -278,7 +278,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     QFile file(infoFilePath);
 
     bool isOpened = file.open(QIODevice::ReadOnly);
-    if (!isOpened)
+    if(!isOpened)
     {
         return QString("rekonq error, sorry :(");
     }
@@ -287,7 +287,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     QString msg = i18nc("%1=an URL", "<h1>Index of %1</h1>", _url.prettyUrl());
 
 
-    if (rootUrl.cd(".."))
+    if(rootUrl.cd(".."))
     {
         QString path = rootUrl.prettyUrl();
         QString uparrow = KIconLoader::global()->iconPath("arrow-up", KIconLoader::Small);
@@ -299,7 +299,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     msg += "<tr><th align=\"left\">" + i18n("Name") + "</th><th>" + i18n("Size") + "</th><th>" + i18n("Last Modified") + "</th></tr>";
 
     KFileItemList orderedList = sortFileList(list);
-    Q_FOREACH(const KFileItem &item, orderedList)
+    Q_FOREACH(const KFileItem & item, orderedList)
     {
         msg += "<tr>";
         QString fullPath = item.url().prettyUrl();
@@ -313,7 +313,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
         msg += "</td>";
 
         msg += "<td align=\"right\">";
-        if (item.isFile())
+        if(item.isFile())
         {
             msg += QString::number(item.size() / 1024) + " KB";
         }
@@ -339,7 +339,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
 
 void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
 {
-    if (job->error())
+    if(job->error())
     {
         // TODO
         kDebug() << "error";
@@ -348,7 +348,7 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
     {
         KIO::StatJob *statJob = static_cast<KIO::StatJob*>(job);
         KIO::UDSEntry entry = statJob->statResult();
-        if (entry.isDir())
+        if(entry.isDir())
         {
             connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
             _lister->openUrl(_url);
@@ -370,7 +370,7 @@ void ProtocolHandler::abpHandling()
     kDebug() << "handling abp url: " << _url;
 
     QString path = _url.path();
-    if (path != QL1S("subscribe"))
+    if(path != QL1S("subscribe"))
         return;
 
     QMap<QString, QString> map = _url.queryItems(KUrl::CaseInsensitiveKeys);
@@ -381,7 +381,7 @@ void ProtocolHandler::abpHandling()
     QString requirestitle = map.value(QL1S("requirestitle"));
 
     QString info;
-    if (requirestitle.isEmpty() || requireslocation.isEmpty())
+    if(requirestitle.isEmpty() || requireslocation.isEmpty())
     {
         info = title;
     }
@@ -390,15 +390,15 @@ void ProtocolHandler::abpHandling()
         info = i18n("\n %1,\n %2 (required by %3)\n", title, requirestitle, title);
     }
 
-    if (KMessageBox::questionYesNo(0,
-                                   i18n("Do you want to add the following subscriptions to your adblock settings?\n") + info,
-                                   i18n("Add automatic subscription to the adblock"),
-                                   KGuiItem(i18n("Add")),
-                                   KGuiItem(i18n("Discard"))
-                                  )
-       )
+    if(KMessageBox::questionYesNo(0,
+                                  i18n("Do you want to add the following subscriptions to your adblock settings?\n") + info,
+                                  i18n("Add automatic subscription to the adblock"),
+                                  KGuiItem(i18n("Add")),
+                                  KGuiItem(i18n("Discard"))
+                                 )
+      )
     {
-        if (!requireslocation.isEmpty() && !requirestitle.isEmpty())
+        if(!requireslocation.isEmpty() && !requirestitle.isEmpty())
         {
             rApp->adblockManager()->addSubscription(requirestitle, requireslocation);
         }

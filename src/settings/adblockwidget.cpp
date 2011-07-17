@@ -43,8 +43,8 @@
 
 
 AdBlockWidget::AdBlockWidget(QWidget *parent)
-        : QWidget(parent)
-        , _changed(false)
+    : QWidget(parent)
+    , _changed(false)
 {
     setupUi(this);
 
@@ -92,7 +92,7 @@ void AdBlockWidget::slotInfoLinkActivated(const QString &url)
 void AdBlockWidget::insertRule()
 {
     QString rule = addFilterLineEdit->text();
-    if (rule.isEmpty())
+    if(rule.isEmpty())
         return;
 
     listWidget->addItem(rule);
@@ -123,7 +123,7 @@ void AdBlockWidget::load()
     QStringList subscriptions = ReKonfig::subscriptionTitles();
 
     // load automatic rules
-    foreach(const QString &sub, subscriptions)
+    foreach(const QString & sub, subscriptions)
     {
         QTreeWidgetItem *subItem = new QTreeWidgetItem(treeWidget);
         subItem->setText(0, sub);
@@ -134,7 +134,7 @@ void AdBlockWidget::load()
     KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup localGroup(config, "rules");
     QStringList rules = localGroup.readEntry("local-rules" , QStringList());
-    foreach(const QString &rule, rules)
+    foreach(const QString & rule, rules)
     {
         listWidget->addItem(rule);
     }
@@ -149,7 +149,7 @@ void AdBlockWidget::loadRules(QTreeWidgetItem *item)
     QString str = item->text(0) + "-rules";
     QStringList rules = localGroup.readEntry(str , QStringList());
 
-    foreach(const QString &rule, rules)
+    foreach(const QString & rule, rules)
     {
         QTreeWidgetItem *subItem = new QTreeWidgetItem(item);
         subItem->setText(0, rule);
@@ -168,7 +168,7 @@ void AdBlockWidget::save()
     QStringList localRules;
 
     n = listWidget->count();
-    for (int i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
     {
         QListWidgetItem *item = listWidget->item(i);
         localRules << item->text();

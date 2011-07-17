@@ -60,11 +60,11 @@
 QString temporaryUglyHackString = "";
 
 MainView::MainView(MainWindow *parent)
-        : KTabWidget(parent)
-        , m_widgetBar(new StackedUrlBar(this))
-        , m_addTabButton(0)
-        , m_currentTabIndex(0)
-        , m_parentWindow(parent)
+    : KTabWidget(parent)
+    , m_widgetBar(new StackedUrlBar(this))
+    , m_addTabButton(0)
+    , m_currentTabIndex(0)
+    , m_parentWindow(parent)
 {
     // setting tabbar
     TabBar *tabBar = new TabBar(this);
@@ -101,9 +101,9 @@ MainView::MainView(MainWindow *parent)
 void MainView::postLaunch()
 {
     QStringList list = rApp->sessionManager()->closedSites();
-    Q_FOREACH(const QString &line, list)
+    Q_FOREACH(const QString & line, list)
     {
-        if (line.startsWith(QL1S("about")))
+        if(line.startsWith(QL1S("about")))
             break;
         QString title = line;
         QString url = title;
@@ -149,15 +149,15 @@ WebTab *MainView::currentWebTab() const
 
 void MainView::updateTabBar()
 {
-    if (ReKonfig::alwaysShowTabBar() || count() > 1)
+    if(ReKonfig::alwaysShowTabBar() || count() > 1)
     {
-        if (tabBar()->isHidden())
+        if(tabBar()->isHidden())
         {
             tabBar()->show();
         }
 
         // this to ensure tab button visibility also on new window creation
-        if (m_addTabButton->isHidden())
+        if(m_addTabButton->isHidden())
         {
             m_addTabButton->show();
         }
@@ -176,16 +176,16 @@ void MainView::updateTabBar()
     int tabWidgetWidth = frameSize().width();
     int tabBarWidth = tabBar()->tabSizeHint(0).width() * tabBar()->count();
 
-    if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
+    if(tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
     {
-        if (ButtonInCorner)
+        if(ButtonInCorner)
             return;
         setCornerWidget(m_addTabButton);
         ButtonInCorner = true;
     }
     else
     {
-        if (ButtonInCorner)
+        if(ButtonInCorner)
         {
             setCornerWidget(0);
             ButtonInCorner = false;
@@ -194,7 +194,7 @@ void MainView::updateTabBar()
         // detecting X position
         int newPosX = tabBarWidth;
         int tabWidthHint = tabBar()->tabSizeHint(0).width();
-        if (tabWidthHint < sizeHint().width() / 4)
+        if(tabWidthHint < sizeHint().width() / 4)
             newPosX = tabWidgetWidth - m_addTabButton->width();
 
         m_addTabButton->move(newPosX, 0);
@@ -205,7 +205,7 @@ void MainView::updateTabBar()
 void MainView::webReload()
 {
     WebTab *webTab = currentWebTab();
-    if (webTab->view()->url().scheme() != QL1S("about"))
+    if(webTab->view()->url().scheme() != QL1S("about"))
     {
         QAction *action = webTab->view()->page()->action(QWebPage::Reload);
         action->trigger();
@@ -228,9 +228,9 @@ void MainView::webStop()
 // When index is -1 index chooses the current tab
 void MainView::reloadTab(int index)
 {
-    if (index < 0)
+    if(index < 0)
         index = currentIndex();
-    if (index < 0 || index >= count())
+    if(index < 0 || index >= count())
         return;
 
     webTab(index)->view()->reload();
@@ -242,16 +242,16 @@ void MainView::currentChanged(int index)
 {
     // retrieve the webview related to the index
     WebTab *tab = this->webTab(index);
-    if (!tab)
+    if(!tab)
         return;
-    
+
     // retrieve the old webview (that where we move from)
     WebTab *oldTab = this->webTab(m_currentTabIndex);
-    
+
     // set current index
     m_currentTabIndex = index;
 
-    if (oldTab)
+    if(oldTab)
     {
         // disconnecting webpage from mainview
         disconnect(oldTab->page(), SIGNAL(statusBarMessage(const QString&)),
@@ -275,7 +275,7 @@ void MainView::currentChanged(int index)
     emit browserTabLoading(tab->isPageLoading());
 
     // set focus to the current webview
-    if (tab->url().scheme() == QL1S("about"))
+    if(tab->url().scheme() == QL1S("about"))
         m_widgetBar->currentWidget()->setFocus();
     else
         tab->view()->setFocus();
@@ -289,7 +289,7 @@ void MainView::currentChanged(int index)
 WebTab *MainView::webTab(int index) const
 {
     WebTab *tab = qobject_cast<WebTab *>(this->widget(index));
-    if (tab)
+    if(tab)
     {
         return tab;
     }
@@ -316,7 +316,7 @@ WebTab *MainView::newWebTab(bool focused)
     connect(tab->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
     connect(tab->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
-    if (ReKonfig::openTabsNearCurrent())
+    if(ReKonfig::openTabsNearCurrent())
     {
         insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
         temporaryUglyHackString = tabText(currentIndex() + 1);
@@ -330,7 +330,7 @@ WebTab *MainView::newWebTab(bool focused)
     }
     updateTabBar();
 
-    if (focused)
+    if(focused)
     {
         setCurrentWidget(tab);
     }
@@ -351,7 +351,7 @@ void MainView::newTab()
 
     currentUrlBar()->setFocus();
 
-    switch (ReKonfig::newTabsBehaviour())
+    switch(ReKonfig::newTabsBehaviour())
     {
     case 0: // new tab page
         w->load(KUrl("about:home"));
@@ -370,7 +370,7 @@ void MainView::newTab()
 
 void MainView::reloadAllTabs()
 {
-    for (int i = 0; i < count(); ++i)
+    for(int i = 0; i < count(); ++i)
     {
         webTab(i)->view()->reload();
     }
@@ -383,9 +383,9 @@ void MainView::windowCloseRequested()
     WebView *view = qobject_cast<WebView *>(page->view());
     int index = indexOf(view->parentWidget());
 
-    if (index >= 0)
+    if(index >= 0)
     {
-        if (count() == 1)
+        if(count() == 1)
         {
             m_parentWindow->close();
         }
@@ -401,17 +401,17 @@ void MainView::windowCloseRequested()
 
 void MainView::closeOtherTabs(int index)
 {
-    if (index < 0)
+    if(index < 0)
         index = currentIndex();
-    if (index < 0 || index >= count())
+    if(index < 0 || index >= count())
         return;
 
-    for (int i = count() - 1; i > index; --i)
+    for(int i = count() - 1; i > index; --i)
     {
         closeTab(i);
     }
 
-    for (int i = index - 1; i >= 0; --i)
+    for(int i = index - 1; i >= 0; --i)
     {
         closeTab(i);
     }
@@ -422,9 +422,9 @@ void MainView::closeOtherTabs(int index)
 
 void MainView::cloneTab(int index)
 {
-    if (index < 0)
+    if(index < 0)
         index = currentIndex();
-    if (index < 0 || index >= count())
+    if(index < 0 || index >= count())
         return;
 
     KUrl url = webTab(index)->url();
@@ -439,14 +439,14 @@ void MainView::cloneTab(int index)
 void MainView::closeTab(int index, bool del)
 {
     // open default homePage if just one tab is opened
-    if (count() == 1)
+    if(count() == 1)
     {
         WebView *w = currentWebTab()->view();
 
-        if (currentWebTab()->url().protocol() == QL1S("about"))
+        if(currentWebTab()->url().protocol() == QL1S("about"))
             return;
 
-        switch (ReKonfig::newTabsBehaviour())
+        switch(ReKonfig::newTabsBehaviour())
         {
         case 0: // new tab page
         case 1: // blank page
@@ -462,36 +462,36 @@ void MainView::closeTab(int index, bool del)
         return;
     }
 
-    if (index < 0)
+    if(index < 0)
         index = currentIndex();
-    if (index < 0 || index >= count())
+    if(index < 0 || index >= count())
         return;
 
     WebTab *tabToClose = webTab(index);
-    if (!tabToClose)
+    if(!tabToClose)
         return;
 
-    if (tabToClose->view()->isModified())
+    if(tabToClose->view()->isModified())
     {
         int risp = KMessageBox::warningContinueCancel(this,
                    i18n("This tab contains changes that have not been submitted.\n"
                         "Closing the tab will discard these changes.\n"
                         "Do you really want to close this tab?\n"),
                    i18n("Closing Modified Tab"), KGuiItem(i18n("Close &Tab"), "tab-close"), KStandardGuiItem::cancel());
-        if (risp != KMessageBox::Continue)
+        if(risp != KMessageBox::Continue)
             return;
     }
 
-    if (!tabToClose->url().isEmpty()
+    if(!tabToClose->url().isEmpty()
             && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
-       )
+      )
     {
         const int recentlyClosedTabsLimit = 10;
         QString title = tabToClose->view()->title();
         QString url = tabToClose->url().prettyUrl();
         HistoryItem item(url, QDateTime(), title);
         m_recentlyClosedTabs.removeAll(item);
-        if (m_recentlyClosedTabs.count() == recentlyClosedTabsLimit)
+        if(m_recentlyClosedTabs.count() == recentlyClosedTabsLimit)
             m_recentlyClosedTabs.removeLast();
         m_recentlyClosedTabs.prepend(item);
     }
@@ -502,13 +502,13 @@ void MainView::closeTab(int index, bool del)
     m_widgetBar->removeWidget(tabToClose->urlBar());
     m_widgetBar->setCurrentIndex(m_currentTabIndex);
 
-    if (del)
+    if(del)
     {
         tabToClose->deleteLater();
     }
 
     // if tab was not focused, current index does not change...
-    if (index != currentIndex())
+    if(index != currentIndex())
         emit tabsChanged();
 }
 
@@ -517,22 +517,22 @@ void MainView::webViewLoadStarted()
 {
     WebView *view = qobject_cast<WebView *>(sender());
     int index = indexOf(view->parentWidget());
-    if (-1 != index)
+    if(-1 != index)
     {
         QLabel *label = animatedLoading(index, true);
-        if (label->movie())
+        if(label->movie())
         {
             label->movie()->start();
         }
     }
 
-    if (index != currentIndex())
+    if(index != currentIndex())
         return;
 
     emit browserTabLoading(true);
     emit showStatusBarMessage(i18n("Loading..."), Rekonq::Info);
-    
-    if (view == currentWebTab()->view() && view->url().scheme() != QL1S("about"))
+
+    if(view == currentWebTab()->view() && view->url().scheme() != QL1S("about"))
     {
         view->setFocus();
     }
@@ -543,14 +543,14 @@ void MainView::webViewLoadFinished(bool ok)
 {
     WebView *view = qobject_cast<WebView *>(sender());
     int index = -1;
-    if (view)
+    if(view)
         index = indexOf(view->parentWidget());
 
-    if (-1 != index)
+    if(-1 != index)
     {
         QLabel *label = animatedLoading(index, true);
         QMovie *movie = label->movie();
-        if (movie)
+        if(movie)
             movie->stop();
     }
 
@@ -558,12 +558,12 @@ void MainView::webViewLoadFinished(bool ok)
     emit browserTabLoading(false);
 
     // don't display messages for background tabs
-    if (index != currentIndex())
+    if(index != currentIndex())
     {
         return;
     }
 
-    if (ok)
+    if(ok)
         emit showStatusBarMessage(i18n("Done"), Rekonq::Info);
 //     else
 //         emit showStatusBarMessage(i18n("Failed to load"), Rekonq::Error);
@@ -576,7 +576,7 @@ void MainView::webViewIconChanged()
     WebTab *tab = qobject_cast<WebTab *>(view->parent());
     int index = indexOf(tab);
 
-    if (-1 != index)
+    if(-1 != index)
     {
         KIcon icon = rApp->iconManager()->iconForUrl(tab->url());
         QLabel *label = animatedLoading(index, false);
@@ -596,21 +596,21 @@ void MainView::webViewTitleChanged(const QString &title)
 
     WebTab *tab = qobject_cast<WebTab *>(sender());
     int index = indexOf(tab);
-    if (-1 != index)
+    if(-1 != index)
     {
         setTabText(index, tabTitle);
     }
-    if (currentIndex() == index)
+    if(currentIndex() == index)
     {
         emit currentTitle(viewTitle);
     }
     else
     {
-        if (tabTitle != temporaryUglyHackString)
+        if(tabTitle != temporaryUglyHackString)
             tabBar()->setTabHighlighted(index);
     }
     rApp->historyManager()->updateHistoryEntry(tab->url(), tabTitle);
-    if (ReKonfig::hoveringTabOption() == 1)
+    if(ReKonfig::hoveringTabOption() == 1)
         tabBar()->setTabToolTip(index, tabTitle.remove('&'));
 }
 
@@ -619,11 +619,11 @@ void MainView::webViewUrlChanged(const QUrl &url)
 {
     WebView *view = qobject_cast<WebView *>(sender());
     int index = indexOf(view->parentWidget());
-    if (-1 != index)
+    if(-1 != index)
     {
         tabBar()->setTabData(index, url);
     }
-    if (ReKonfig::hoveringTabOption() == 2)
+    if(ReKonfig::hoveringTabOption() == 2)
         tabBar()->setTabToolTip(index, webTab(index)->url().toMimeDataString());
 
     emit tabsChanged();
@@ -633,7 +633,7 @@ void MainView::webViewUrlChanged(const QUrl &url)
 void MainView::nextTab()
 {
     int next = currentIndex() + 1;
-    if (next == count())
+    if(next == count())
         next = 0;
     setCurrentIndex(next);
 }
@@ -642,7 +642,7 @@ void MainView::nextTab()
 void MainView::previousTab()
 {
     int next = currentIndex() - 1;
-    if (next < 0)
+    if(next < 0)
         next = count() - 1;
     setCurrentIndex(next);
 }
@@ -650,7 +650,7 @@ void MainView::previousTab()
 
 void MainView::openLastClosedTab()
 {
-    if (m_recentlyClosedTabs.isEmpty())
+    if(m_recentlyClosedTabs.isEmpty())
         return;
 
     const HistoryItem item = m_recentlyClosedTabs.takeFirst();
@@ -661,7 +661,7 @@ void MainView::openLastClosedTab()
 void MainView::openClosedTab()
 {
     KAction *action = qobject_cast<KAction *>(sender());
-    if (action)
+    if(action)
     {
         rApp->loadUrl(action->data().toUrl(), Rekonq::NewTab);
 
@@ -675,33 +675,33 @@ void MainView::openClosedTab()
 
 void MainView::switchToTab(const int index)
 {
-    if (index <= 0 || index > count())
+    if(index <= 0 || index > count())
         return;
-    setCurrentIndex(index-1);
+    setCurrentIndex(index - 1);
 }
 
 
 void MainView::loadFavorite(const int index)
 {
     QStringList urls = ReKonfig::previewUrls();
-    if (index < 0 || index > urls.length())
+    if(index < 0 || index > urls.length())
         return;
-    KUrl url = KUrl(urls.at(index-1));
+    KUrl url = KUrl(urls.at(index - 1));
     rApp->loadUrl(url);
 }
 
 
 QLabel *MainView::animatedLoading(int index, bool addMovie)
 {
-    if (index == -1)
+    if(index == -1)
         return 0;
 
     QLabel *label = qobject_cast<QLabel* >(tabBar()->tabButton(index, QTabBar::LeftSide));
-    if (!label)
+    if(!label)
     {
         label = new QLabel(this);
     }
-    if (addMovie && !label->movie())
+    if(addMovie && !label->movie())
     {
         QMovie *movie = new QMovie(m_loadingGitPath, QByteArray(), label);
         movie->setSpeed(50);
@@ -723,15 +723,15 @@ void MainView::resizeEvent(QResizeEvent *event)
 
 void MainView::detachTab(int index, MainWindow *toWindow)
 {
-    if (index < 0)
+    if(index < 0)
         index = currentIndex();
-    if (index < 0 || index >= count())
+    if(index < 0 || index >= count())
         return;
 
     WebTab *tab = webTab(index);
     KUrl u = tab->url();
     kDebug() << "detaching tab with url: " << u;
-    if (u.scheme() == QL1S("about"))
+    if(u.scheme() == QL1S("about"))
     {
         closeTab(index);
         rApp->loadUrl(u, Rekonq::NewWindow);
@@ -743,7 +743,7 @@ void MainView::detachTab(int index, MainWindow *toWindow)
         closeTab(index, false);
 
         MainWindow *w;
-        if (toWindow == NULL)
+        if(toWindow == NULL)
             w = rApp->newMainWindow(false);
         else
             w = toWindow;

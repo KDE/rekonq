@@ -48,8 +48,8 @@
 
 
 WebSnap::WebSnap(const KUrl& url, QObject *parent)
-        : QObject(parent)
-        , m_url(url)
+    : QObject(parent)
+    , m_url(url)
 {
     // this to not register websnap history
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
@@ -191,7 +191,7 @@ QString WebSnap::imagePathFromUrl(const KUrl &url)
 
 void WebSnap::saveResult(bool ok)
 {
-    if (ok)
+    if(ok)
     {
         QPixmap image = renderPagePreview(m_page, defaultWidth, defaultHeight);
         QString path = imagePathFromUrl(m_url);

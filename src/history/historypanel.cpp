@@ -49,7 +49,7 @@
 
 
 HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)
-        : UrlPanel(title, parent, flags)
+    : UrlPanel(title, parent, flags)
 {
     setObjectName("historyPanel");
     setVisible(ReKonfig::showHistoryPanel());
@@ -108,26 +108,26 @@ void HistoryPanel::contextMenuEmpty(const QPoint& /*pos*/)
 void HistoryPanel::openAll()
 {
     QModelIndex index = panelTreeView()->currentIndex();
-    if (!index.isValid())
+    if(!index.isValid())
         return;
 
     QList<KUrl> allChild;
 
-    for (int i = 0; i < index.model()->rowCount(index); i++)
+    for(int i = 0; i < index.model()->rowCount(index); i++)
         allChild << qVariantValue<KUrl>(index.child(i, 0).data(Qt::UserRole));
 
-    if (allChild.length() > 8)
+    if(allChild.length() > 8)
     {
-        if (!(KMessageBox::warningContinueCancel(this,
-                i18ncp("%1=Number of tabs. Value is always >=8",
-                       "You are about to open %1 tabs.\nAre you sure?",
-                       "You are about to open %1 tabs.\nAre you sure?",
-                       allChild.length())) == KMessageBox::Continue)
-           )
+        if(!(KMessageBox::warningContinueCancel(this,
+                                                i18ncp("%1=Number of tabs. Value is always >=8",
+                                                        "You are about to open %1 tabs.\nAre you sure?",
+                                                        "You are about to open %1 tabs.\nAre you sure?",
+                                                        allChild.length())) == KMessageBox::Continue)
+          )
             return;
     }
 
-    for (int i = 0; i < allChild.length(); i++)
+    for(int i = 0; i < allChild.length(); i++)
         emit openUrl(allChild.at(i).url(), Rekonq::NewTab);
 }
 

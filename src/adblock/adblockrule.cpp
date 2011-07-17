@@ -37,7 +37,7 @@
 
 AdBlockRule::AdBlockRule(const QString &filter)
 {
-    switch (AdBlockRule::ruleType(filter))
+    switch(AdBlockRule::ruleType(filter))
     {
     case TextRule:
         m_implementation = QSharedPointer<AdBlockRuleImpl>(new AdBlockRuleTextMatchImpl(filter));
@@ -57,10 +57,10 @@ AdBlockRule::AdBlockRule(const QString &filter)
 
 RuleTypes AdBlockRule::ruleType(const QString &filter)
 {
-    if (AdBlockRuleTextMatchImpl::isTextMatchFilter(filter))
+    if(AdBlockRuleTextMatchImpl::isTextMatchFilter(filter))
         return TextRule;
 
-    if (AdBlockRuleNullImpl::isNullFilter(filter))
+    if(AdBlockRuleNullImpl::isNullFilter(filter))
         return NullRule;
 
     return FallbackRule;

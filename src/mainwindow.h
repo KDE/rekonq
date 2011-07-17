@@ -181,7 +181,7 @@ private Q_SLOTS:
 
     void enableNetworkAnalysis(bool);
     void setEditable(bool);
-    
+
     void initBookmarkBar();
     void updateToolsMenu();
 

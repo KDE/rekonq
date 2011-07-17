@@ -40,8 +40,8 @@
 #include <kstandarddirs.h>
 
 GeneralWidget::GeneralWidget(QWidget *parent)
-        : QWidget(parent)
-        , _changed(false)
+    : QWidget(parent)
+    , _changed(false)
 {
     setupUi(this);
 
@@ -75,7 +75,7 @@ void GeneralWidget::setHomeToCurrentPage()
 {
     MainWindow *mw = rApp->mainWindow();
     WebTab *webTab = mw->currentTab();
-    if (webTab)
+    if(webTab)
     {
         kcfg_homePage->setText(webTab->url().prettyUrl());
     }
@@ -90,7 +90,7 @@ void GeneralWidget::disableHomeSettings(bool b)
 
 void GeneralWidget::checkKGetPresence()
 {
-    if (KStandardDirs::findExe("kget").isNull())
+    if(KStandardDirs::findExe("kget").isNull())
     {
         kcfg_kgetDownload->setDisabled(true);
         kcfg_kgetList->setDisabled(true);

@@ -34,9 +34,9 @@ astyle \
 --indent=spaces=4 \
 --brackets=break \
 --indent-labels \
---pad=oper \
---unpad=paren \
---one-line=keep-statements \
+--pad-oper \
+--unpad-paren \
+--keep-one-line-statements \
 --convert-tabs \
 --indent-preprocessor \
 `find -type f -name '*.cpp'` `find -type f -name '*.h'`

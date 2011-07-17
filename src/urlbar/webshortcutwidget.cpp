@@ -37,7 +37,7 @@
 #include <KServiceTypeTrader>
 
 WebShortcutWidget::WebShortcutWidget(QWidget *parent)
-        : QDialog(parent)
+    : QDialog(parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout();
     QHBoxLayout *titleLayout = new QHBoxLayout();
@@ -45,7 +45,7 @@ WebShortcutWidget::WebShortcutWidget(QWidget *parent)
     QLabel *iconLabel = new QLabel(this);
 
     KIcon wsIcon("edit-web-search");
-    if (wsIcon.isNull())
+    if(wsIcon.isNull())
     {
         wsIcon = KIcon("preferences-web-browser-shortcuts");
     }
@@ -154,11 +154,11 @@ void WebShortcutWidget::shortcutsChanged(const QString& newShorthands)
     QString contenderName = "";
     QString contenderWS = "";
 
-    Q_FOREACH(const QString &shorthand, shorthands)
+    Q_FOREACH(const QString & shorthand, shorthands)
     {
         Q_FOREACH(KService::Ptr provider, m_providers)
         {
-            if (provider->property("Keys").toStringList().contains(shorthand))
+            if(provider->property("Keys").toStringList().contains(shorthand))
             {
                 contenderName = provider->property("Name").toString();
                 contenderWS = shorthand;
@@ -167,7 +167,7 @@ void WebShortcutWidget::shortcutsChanged(const QString& newShorthands)
         }
     }
 
-    if (!contenderName.isEmpty())
+    if(!contenderName.isEmpty())
     {
         m_okButton->setEnabled(false);
         m_noteLabel->setText(i18n("The shortcut \"%1\" is already assigned to \"%2\".", contenderWS, contenderName));
@@ -180,7 +180,7 @@ void WebShortcutWidget::shortcutsChanged(const QString& newShorthands)
         m_noteLabel->clear();
         bool noteIsVisible = m_noteLabel->isVisible();
         m_noteLabel->setVisible(false);
-        if (noteIsVisible)
+        if(noteIsVisible)
         {
             resize(minimumSize());
         }

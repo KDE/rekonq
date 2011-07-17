@@ -49,7 +49,10 @@ class REKONQ_TESTS_EXPORT DownloadManager : public QObject
 public:
     DownloadManager(QObject *parent = 0);
 
-    DownloadList downloads() const { return m_downloadList; }
+    DownloadList downloads() const
+    {
+        return m_downloadList;
+    }
     DownloadItem* addDownload(const QString &srcUrl, const QString &destUrl);
     bool clearDownloadsHistory();
 

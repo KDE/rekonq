@@ -52,8 +52,8 @@
 
 
 RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
-        : QMenu(parent)
-        , m_map(map)
+    : QMenu(parent)
+    , m_map(map)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setMinimumWidth(250);
@@ -85,7 +85,7 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     m_feeds = new KComboBox(this);
     m_feeds->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    foreach(const QString &title, m_map)
+    foreach(const QString & title, m_map)
     {
         m_feeds->addItem(title);
     }
@@ -121,7 +121,7 @@ void RSSWidget::accept()
 {
     QString url = m_map.key(m_feeds->currentText()).toMimeDataString();
 
-    if (m_agregators->currentIndex() == 0)
+    if(m_agregators->currentIndex() == 0)
         addWithAkregator(url);
     else
         addWithGoogleReader(url);
@@ -140,12 +140,12 @@ void RSSWidget::addWithGoogleReader(const QString &url)
 void RSSWidget::addWithAkregator(const QString &url)
 {
     // Akregator is running
-    if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.akregator"))
+    if(QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.akregator"))
     {
         QDBusInterface akregator("org.kde.akregator", "/Akregator", "org.kde.akregator.part");
         QDBusReply<void> reply = akregator.call("addFeedsToGroup", QStringList(url) , i18n("Imported Feeds"));
 
-        if (!reply.isValid())
+        if(!reply.isValid())
         {
             KMessageBox::error(0, QString(i18n("Could not add feed to Akregator. Please add it manually:")
                                           + "<br /><br /> <a href=\"" + url + "\">" + url + "</a>"));
@@ -157,7 +157,7 @@ void RSSWidget::addWithAkregator(const QString &url)
         KProcess proc;
         proc << "akregator" << "-g" << i18n("Imported Feeds");
         proc << "-a" << url;
-        if (proc.startDetached() == 0)
+        if(proc.startDetached() == 0)
         {
             KMessageBox::error(0, QString(i18n("There was an error. Please verify Akregator is installed on your system.")
                                           + "<br /><br /> <a href=\"" + url + "\">" + url + "</a>"));

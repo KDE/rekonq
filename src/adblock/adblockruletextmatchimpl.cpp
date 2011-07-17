@@ -35,7 +35,7 @@
 
 
 AdBlockRuleTextMatchImpl::AdBlockRuleTextMatchImpl(const QString &filter)
-        : AdBlockRuleImpl(filter)
+    : AdBlockRuleImpl(filter)
 {
     Q_ASSERT(AdBlockRuleTextMatchImpl::isTextMatchFilter(filter));
 
@@ -46,10 +46,10 @@ AdBlockRuleTextMatchImpl::AdBlockRuleTextMatchImpl(const QString &filter)
 
 bool AdBlockRuleTextMatchImpl::match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const
 {
-    // this basically lets the "first request" to pass... 
+    // this basically lets the "first request" to pass...
     if(!request.hasRawHeader("referer"))
         return false;
-    
+
     Q_UNUSED(encodedUrl);
     // Case sensitive compare is faster, but would be incorrect with encodedUrl since
     // we do want case insensitive.
@@ -62,22 +62,22 @@ bool AdBlockRuleTextMatchImpl::match(const QNetworkRequest &request, const QStri
 bool AdBlockRuleTextMatchImpl::isTextMatchFilter(const QString &filter)
 {
     // We don't deal with options just yet
-    if (filter.contains(QL1C('$')))
+    if(filter.contains(QL1C('$')))
         return false;
 
     // We don't deal with element matching
-    if (filter.contains(QL1S("##")))
+    if(filter.contains(QL1S("##")))
         return false;
 
     // We don't deal with the begin-end matching
-    if (filter.startsWith(QL1C('|')) || filter.endsWith(QL1C('|')))
+    if(filter.startsWith(QL1C('|')) || filter.endsWith(QL1C('|')))
         return false;
 
     // We only handle * at the beginning or the end
     int starPosition = filter.indexOf(QL1C('*'));
-    while (starPosition >= 0)
+    while(starPosition >= 0)
     {
-        if (starPosition != 0 && starPosition != (filter.length() - 1))
+        if(starPosition != 0 && starPosition != (filter.length() - 1))
             return false;
         starPosition = filter.indexOf(QL1C('*'), starPosition + 1);
     }

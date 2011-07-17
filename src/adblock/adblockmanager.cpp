@@ -46,10 +46,10 @@
 
 
 AdBlockManager::AdBlockManager(QObject *parent)
-        : QObject(parent)
-        , _isAdblockEnabled(false)
-        , _isHideAdsEnabled(false)
-        , _index(0)
+    : QObject(parent)
+    , _isAdblockEnabled(false)
+    , _isHideAdsEnabled(false)
+    , _index(0)
 {
 }
 
@@ -77,7 +77,7 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
     kDebug() << "ADBLOCK ENABLED = " << _isAdblockEnabled;
 
     // no need to load filters if adblock is not enabled :)
-    if (!_isAdblockEnabled)
+    if(!_isAdblockEnabled)
         return;
 
     // just to be sure..
@@ -96,7 +96,7 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
     QDateTime lastUpdate = ReKonfig::lastUpdate();  //  the day of the implementation.. :)
     int days = ReKonfig::updateInterval();
 
-    if (!checkUpdateDate || today > lastUpdate.addDays(days))
+    if(!checkUpdateDate || today > lastUpdate.addDays(days))
     {
         ReKonfig::setLastUpdate(today);
 
@@ -106,7 +106,7 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
 
     // else
     QStringList titles = ReKonfig::subscriptionTitles();
-    foreach(const QString &title, titles)
+    foreach(const QString & title, titles)
     {
         rules = rulesGroup.readEntry(title + "-rules" , QStringList());
         loadRules(rules);
@@ -116,26 +116,26 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
 
 void AdBlockManager::loadRules(const QStringList &rules)
 {
-    foreach(const QString &stringRule, rules)
+    foreach(const QString & stringRule, rules)
     {
         // ! rules are comments
-        if (stringRule.startsWith('!'))
+        if(stringRule.startsWith('!'))
             continue;
 
         // [ rules are ABP info
-        if (stringRule.startsWith('['))
+        if(stringRule.startsWith('['))
             continue;
 
         // empty rules are just dangerous..
         // (an empty rule in whitelist allows all, in blacklist blocks all..)
-        if (stringRule.isEmpty())
+        if(stringRule.isEmpty())
             continue;
 
         // white rules
-        if (stringRule.startsWith(QL1S("@@")))
+        if(stringRule.startsWith(QL1S("@@")))
         {
             const QString filter = stringRule.mid(2);
-            if (_hostWhiteList.tryAddFilter(filter))
+            if(_hostWhiteList.tryAddFilter(filter))
                 continue;
 
             AdBlockRule rule(filter);
@@ -144,17 +144,17 @@ void AdBlockManager::loadRules(const QStringList &rules)
         }
 
         // hide (CSS) rules
-        if (stringRule.startsWith(QL1S("##")))
+        if(stringRule.startsWith(QL1S("##")))
         {
             _hideList << stringRule.mid(2);
             continue;
         }
 
         // TODO implement domain-specific hiding
-        if (stringRule.contains(QL1S("##")))
+        if(stringRule.contains(QL1S("##")))
             continue;
 
-        if (_hostBlackList.tryAddFilter(stringRule))
+        if(_hostBlackList.tryAddFilter(stringRule))
             continue;
 
         AdBlockRule rule(stringRule);
@@ -165,11 +165,11 @@ void AdBlockManager::loadRules(const QStringList &rules)
 
 QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *page)
 {
-    if (!_isAdblockEnabled)
+    if(!_isAdblockEnabled)
         return 0;
 
     // we (ad)block just http traffic
-    if (request.url().scheme() != QL1S("http"))
+    if(request.url().scheme() != QL1S("http"))
         return 0;
 
     QString urlString = request.url().toString();
@@ -180,16 +180,16 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
 
     // check white rules before :)
 
-    if (_hostWhiteList.match(host))
+    if(_hostWhiteList.match(host))
     {
         kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched by host matcher: ***********";
         kDebug() << "UrlString:  " << urlString;
         return 0;
     }
 
-    foreach(const AdBlockRule &filter, _whiteList)
+    foreach(const AdBlockRule & filter, _whiteList)
     {
-        if (filter.match(request, urlString, urlStringLowerCase))
+        if(filter.match(request, urlString, urlStringLowerCase))
         {
             kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched: ***********";
             kDebug() << "UrlString:  " << urlString;
@@ -198,7 +198,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     }
 
     // then check the black ones :(
-    if (_hostBlackList.match(host))
+    if(_hostBlackList.match(host))
     {
         kDebug() << "****ADBLOCK: BLACK RULE Matched by host matcher: ***********";
         kDebug() << "UrlString:  " << urlString;
@@ -206,9 +206,9 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
         return reply;
     }
 
-    foreach(const AdBlockRule &filter, _blackList)
+    foreach(const AdBlockRule & filter, _blackList)
     {
-        if (filter.match(request, urlString, urlStringLowerCase))
+        if(filter.match(request, urlString, urlStringLowerCase))
         {
             kDebug() << "****ADBLOCK: BLACK RULE Matched: ***********";
             kDebug() << "UrlString:  " << urlString;
@@ -218,7 +218,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
             foreach(QWebElement el, elements)
             {
                 const QString srcAttribute = el.attribute("src");
-                if (filter.match(request, srcAttribute, srcAttribute.toLower()))
+                if(filter.match(request, srcAttribute, srcAttribute.toLower()))
                 {
                     kDebug() << "MATCHES ATTRIBUTE!!!!!";
                     el.setStyleProperty(QL1S("visibility"), QL1S("hidden"));
@@ -239,25 +239,25 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
 
 void AdBlockManager::applyHidingRules(WebPage *page)
 {
-    if (!page)
+    if(!page)
         return;
 
-    if (!_isAdblockEnabled)
+    if(!_isAdblockEnabled)
         return;
 
-    if (!_isHideAdsEnabled)
+    if(!_isHideAdsEnabled)
         return;
 
     QWebElement document = page->mainFrame()->documentElement();
 
     // HIDE RULES
-    foreach(const QString &filter, _hideList)
+    foreach(const QString & filter, _hideList)
     {
         QWebElementCollection elements = document.findAll(filter);
 
         foreach(QWebElement el, elements)
         {
-            if (el.isNull())
+            if(el.isNull())
                 continue;
             kDebug() << "Hide element: " << el.localName();
             el.setStyleProperty(QL1S("visibility"), QL1S("hidden"));
@@ -271,7 +271,7 @@ void AdBlockManager::updateNextSubscription()
 {
     QStringList locations = ReKonfig::subscriptionLocations();
 
-    if (_index < locations.size())
+    if(_index < locations.size())
     {
         QString urlString = locations.at(_index);
         kDebug() << "DOWNLOADING FROM " << urlString;
@@ -297,13 +297,13 @@ void AdBlockManager::updateNextSubscription()
 
 void AdBlockManager::slotResult(KJob *job)
 {
-    if (job->error())
+    if(job->error())
         return;
 
     kDebug() << "SAVING RULES..";
     QList<QByteArray> list = _buffer.split('\n');
     QStringList ruleList;
-    foreach(const QByteArray &ba, list)
+    foreach(const QByteArray & ba, list)
     {
         ruleList << QString(ba);
     }
@@ -321,7 +321,7 @@ void AdBlockManager::subscriptionData(KIO::Job* job, const QByteArray& data)
 {
     Q_UNUSED(job)
 
-    if (data.isEmpty())
+    if(data.isEmpty())
         return;
 
     int oldSize = _buffer.size();
@@ -333,9 +333,9 @@ void AdBlockManager::subscriptionData(KIO::Job* job, const QByteArray& data)
 void AdBlockManager::saveRules(const QStringList &rules)
 {
     QStringList cleanedRules;
-    foreach(const QString &r, rules)
+    foreach(const QString & r, rules)
     {
-        if (!r.startsWith('!') && !r.startsWith('[') && !r.isEmpty())
+        if(!r.startsWith('!') && !r.startsWith('[') && !r.isEmpty())
             cleanedRules << r;
     }
 
@@ -351,11 +351,11 @@ void AdBlockManager::saveRules(const QStringList &rules)
 void AdBlockManager::addSubscription(const QString &title, const QString &location)
 {
     QStringList titles = ReKonfig::subscriptionTitles();
-    if (titles.contains(title))
+    if(titles.contains(title))
         return;
 
     QStringList locations = ReKonfig::subscriptionLocations();
-    if (locations.contains(location))
+    if(locations.contains(location))
         return;
 
     titles << title;

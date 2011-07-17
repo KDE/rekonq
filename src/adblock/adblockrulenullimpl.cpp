@@ -35,7 +35,7 @@
 
 
 AdBlockRuleNullImpl::AdBlockRuleNullImpl(const QString &filter)
-        : AdBlockRuleImpl(filter)
+    : AdBlockRuleImpl(filter)
 {
 }
 
@@ -51,71 +51,71 @@ bool AdBlockRuleNullImpl::isNullFilter(const QString &filter)
     QString parsedLine = filter;
 
     const int optionsNumber = parsedLine.lastIndexOf(QL1C('$'));
-    if (optionsNumber == 0)
+    if(optionsNumber == 0)
         return false;
 
     const QStringList options(parsedLine.mid(optionsNumber + 1).split(QL1C(',')));
 
-    Q_FOREACH(const QString &option, options)
+    Q_FOREACH(const QString & option, options)
     {
         // script
-        if (option == QL1S("script"))
+        if(option == QL1S("script"))
             return true;
 
         // image
-        if (option == QL1S("image"))
+        if(option == QL1S("image"))
             return true;
 
         // background
-        if (option == QL1S("background"))
+        if(option == QL1S("background"))
             return true;
 
         // stylesheet
-        if (option == QL1S("stylesheet"))
+        if(option == QL1S("stylesheet"))
             return true;
 
         // object
-        if (option == QL1S("object"))
+        if(option == QL1S("object"))
             return true;
 
         // xbl
-        if (option == QL1S("xbl"))
+        if(option == QL1S("xbl"))
             return true;
 
         // ping
-        if (option == QL1S("ping"))
+        if(option == QL1S("ping"))
             return true;
 
         // xmlhttprequest
-        if (option == QL1S("xmlhttprequest"))
+        if(option == QL1S("xmlhttprequest"))
             return true;
 
         // object_subrequest
-        if (option == QL1S("object-subrequest"))
+        if(option == QL1S("object-subrequest"))
             return true;
 
         // dtd
-        if (option == QL1S("dtd"))
+        if(option == QL1S("dtd"))
             return true;
 
         // subdocument
-        if (option == QL1S("subdocument"))
+        if(option == QL1S("subdocument"))
             return true;
 
         // document
-        if (option == QL1S("document"))
+        if(option == QL1S("document"))
             return true;
 
         // other
-        if (option == QL1S("other"))
+        if(option == QL1S("other"))
             return true;
 
         // third_party: managed inside adblockrulefallbackimpl
-        if (option == QL1S("third-party"))
+        if(option == QL1S("third-party"))
             return false;
 
         // collapse
-        if (option == QL1S("collapse"))
+        if(option == QL1S("collapse"))
             return true;
     }
 

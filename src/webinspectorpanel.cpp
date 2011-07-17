@@ -39,8 +39,8 @@
 
 
 WebInspectorPanel::WebInspectorPanel(QString title, QWidget *parent)
-        : QDockWidget(title, parent)
-        , _inspector(0)
+    : QDockWidget(title, parent)
+    , _inspector(0)
 {
     setObjectName("webInspectorDock");
 }
@@ -57,10 +57,10 @@ void WebInspectorPanel::toggle(bool enable)
 {
     MainWindow *w = qobject_cast<MainWindow *>(parent());
     w->actionByName(QL1S("web_inspector"))->setChecked(enable);
-    if (enable)
+    if(enable)
     {
         w->currentTab()->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-        if (!_inspector)
+        if(!_inspector)
         {
             _inspector = new QWebInspector(this);
             _inspector->setPage(w->currentTab()->page());

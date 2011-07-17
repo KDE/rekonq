@@ -43,31 +43,31 @@ WalletBar::WalletBar(QWidget *parent)
     : KMessageWidget(parent)
 {
     setMessageType(KMessageWidget::Warning);
-    
+
     QSize sz = size();
-    sz.setWidth( qobject_cast<QWidget *>(parent)->size().width() );
+    sz.setWidth(qobject_cast<QWidget *>(parent)->size().width());
     resize(sz);
-    
+
     setCloseButtonVisible(false);
-    
+
     QAction *rememberAction = new QAction(KIcon("document-save"), i18n("Remember"), this);
     connect(rememberAction, SIGNAL(triggered(bool)), this, SLOT(rememberData()));
     addAction(rememberAction);
-    
+
     QAction *neverHereAction = new QAction(KIcon("process-stop"), i18n("Never for This Site"), this);
     connect(neverHereAction, SIGNAL(triggered(bool)), this, SLOT(neverRememberData()));
     addAction(neverHereAction);
-    
+
     QAction *notNowAction = new QAction(KIcon("dialog-cancel"), i18n("Not Now"), this);
     connect(notNowAction, SIGNAL(triggered(bool)), this, SLOT(notNowRememberData()));
-    addAction(notNowAction);    
+    addAction(notNowAction);
 }
 
 
 void WalletBar::rememberData()
 {
     emit saveFormDataAccepted(m_key);
-    
+
     animatedHide();
     deleteLater();
 }
@@ -87,7 +87,7 @@ void WalletBar::neverRememberData()
 void WalletBar::notNowRememberData()
 {
     emit saveFormDataRejected(m_key);
-    
+
     animatedHide();
     deleteLater();
 }

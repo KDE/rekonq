@@ -43,22 +43,22 @@ MessageBar::MessageBar(const QString &message, QWidget *parent)
 {
     connect(this, SIGNAL(accepted()), this, SLOT(hideAndDelete()));
     connect(this, SIGNAL(rejected()), this, SLOT(hideAndDelete()));
-    
-    setMessageType(KMessageWidget::Warning);
-    
-    QSize sz = size();
-    sz.setWidth( qobject_cast<QWidget *>(parent)->size().width() );
-    resize(sz);
-    
-    setCloseButtonVisible(false);
-    
-    setText( message );
 
-    QAction *acceptAction = new QAction( i18n("Yes"), this );
+    setMessageType(KMessageWidget::Warning);
+
+    QSize sz = size();
+    sz.setWidth(qobject_cast<QWidget *>(parent)->size().width());
+    resize(sz);
+
+    setCloseButtonVisible(false);
+
+    setText(message);
+
+    QAction *acceptAction = new QAction(i18n("Yes"), this);
     connect(acceptAction, SIGNAL(triggered(bool)), this, SIGNAL(accepted()));
     addAction(acceptAction);
 
-    QAction *rejectAction = new QAction( i18n("No"), this );
+    QAction *rejectAction = new QAction(i18n("No"), this);
     connect(rejectAction, SIGNAL(triggered(bool)), this, SIGNAL(rejected()));
     addAction(rejectAction);
 }
