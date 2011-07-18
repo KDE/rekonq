@@ -54,20 +54,20 @@ SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidge
     setAttribute(Qt::WA_DeleteOnClose);
 
     setMinimumWidth(300);
-    
+
     setButtons(KDialog::User1 | KDialog::Close);
-    
-    setButtonGuiItem(User1, KGuiItem(i18n("Export"), "view-certificate-export") );
+
+    setButtonGuiItem(User1, KGuiItem(i18n("Export"), "view-certificate-export"));
     connect(this, SIGNAL(user1Clicked()), this, SLOT(exportCert()));
-    
+
     ui.setupUi(mainWidget());
 
     // ------------------------------------------------
     QList<QSslCertificate> caList = m_info.certificateChain();
-    
-    Q_FOREACH(const QSslCertificate &cert, caList)
+
+    Q_FOREACH(const QSslCertificate & cert, caList)
     {
-        ui.comboBox->addItem( cert.subjectInfo(QSslCertificate::CommonName) );
+        ui.comboBox->addItem(cert.subjectInfo(QSslCertificate::CommonName));
     }
     connect(ui.comboBox, SIGNAL(activated(int)), this, SLOT(displayFromChain(int)));
 
@@ -80,27 +80,27 @@ void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert, const QStri
     QStringList sl = certErrors;
     QString c = sl.takeFirst();
     c += QL1S("<ul>");
-    Q_FOREACH(const QString &s, sl)
+    Q_FOREACH(const QString & s, sl)
     {
         c += QL1S("<li>") + s + QL1S("</li>");
     }
     c += QL1S("</ul>");
     ui.certInfoLabel->setText(c);
-    
-    ui.subjectCN->setText( subjectCert.subjectInfo(QSslCertificate::CommonName) );
-    ui.subjectO->setText( subjectCert.subjectInfo(QSslCertificate::Organization) );
-    ui.subjectOU->setText( subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName) );
-    ui.subjectSN->setText( subjectCert.serialNumber() );
-    
-    ui.issuerCN->setText( subjectCert.issuerInfo(QSslCertificate::CommonName) );
-    ui.issuerO->setText( subjectCert.issuerInfo(QSslCertificate::Organization) );
-    ui.issuerOU->setText( subjectCert.issuerInfo(QSslCertificate::OrganizationalUnitName) );
-    
-    ui.issuedOn->setText( subjectCert.effectiveDate().date().toString(Qt::SystemLocaleShortDate) );
-    ui.expiresOn->setText( subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate) );
-    ui.sha256->setText( subjectCert.digest(QCryptographicHash::Md5).toHex() );
-    ui.sha1->setText( subjectCert.digest(QCryptographicHash::Sha1).toHex() );
-    
+
+    ui.subjectCN->setText(subjectCert.subjectInfo(QSslCertificate::CommonName));
+    ui.subjectO->setText(subjectCert.subjectInfo(QSslCertificate::Organization));
+    ui.subjectOU->setText(subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName));
+    ui.subjectSN->setText(subjectCert.serialNumber());
+
+    ui.issuerCN->setText(subjectCert.issuerInfo(QSslCertificate::CommonName));
+    ui.issuerO->setText(subjectCert.issuerInfo(QSslCertificate::Organization));
+    ui.issuerOU->setText(subjectCert.issuerInfo(QSslCertificate::OrganizationalUnitName));
+
+    ui.issuedOn->setText(subjectCert.effectiveDate().date().toString(Qt::SystemLocaleShortDate));
+    ui.expiresOn->setText(subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate));
+    ui.sha256->setText(subjectCert.digest(QCryptographicHash::Md5).toHex());
+    ui.sha1->setText(subjectCert.digest(QCryptographicHash::Sha1).toHex());
+
 }
 
 
@@ -109,37 +109,37 @@ void SslInfoDialog::displayFromChain(int i)
     QList<QSslCertificate> caList = m_info.certificateChain();
     QSslCertificate cert = caList.at(i);
 
-    if (cert.isValid())
+    if(cert.isValid())
     {
         QStringList certInfo;
         certInfo << i18n("The Certificate is Valid!");
-        showCertificateInfo(cert, certInfo );
+        showCertificateInfo(cert, certInfo);
     }
     else
     {
         QStringList errors = SslInfoDialog::errorsFromString(m_info.certificateErrors()).at(i);
-        errors.prepend( i18n("The certificate for this site is NOT valid for the following reasons:") );
-        showCertificateInfo(cert, errors );
+        errors.prepend(i18n("The certificate for this site is NOT valid for the following reasons:"));
+        showCertificateInfo(cert, errors);
     }
 }
 
 
 void SslInfoDialog::exportCert()
 {
-    QSslCertificate cert = m_info.certificateChain().at( ui.comboBox->currentIndex() );
+    QSslCertificate cert = m_info.certificateChain().at(ui.comboBox->currentIndex());
 
     QString name = cert.subjectInfo(QSslCertificate::CommonName) + QL1S(".pem");
-    
+
     QString certPath = KFileDialog::getSaveFileName(name, QString(), this);
 
     kDebug() << certPath;
-    
+
     QFile file(certPath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
 
-     QTextStream out(&file);
-     out << cert.toPem();
+    QTextStream out(&file);
+    out << cert.toPem();
 }
 
 
@@ -147,18 +147,18 @@ void SslInfoDialog::exportCert()
 QList<QStringList> SslInfoDialog::errorsFromString(const QString &s)
 {
     QList<QStringList> resultList;
-    
+
     QStringList sl1 = s.split('\n', QString::KeepEmptyParts);
 
-    Q_FOREACH(const QString &certErrors, sl1)
+    Q_FOREACH(const QString & certErrors, sl1)
     {
         QStringList errors;
         QStringList sl = certErrors.split("\t", QString::SkipEmptyParts);
-        Q_FOREACH(const QString &s, sl)
+        Q_FOREACH(const QString & s, sl)
         {
             bool didConvert;
             QSslError::SslError error = static_cast<QSslError::SslError>(s.trimmed().toInt(&didConvert));
-            if (didConvert) 
+            if(didConvert)
             {
                 errors << QSslError(error).errorString();
             }

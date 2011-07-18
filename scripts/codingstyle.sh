@@ -32,7 +32,7 @@ cd src
 echo "Applying astyle rules..."
 astyle \
 --indent=spaces=4 \
---brackets=break \
+--style=allman \
 --indent-labels \
 --pad-oper \
 --unpad-paren \

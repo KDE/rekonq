@@ -438,7 +438,7 @@ QVariant HistoryTreeModel::headerData(int section, Qt::Orientation orientation, 
 
 QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::EditRole || role == Qt::DisplayRole)
+    if(role == Qt::EditRole || role == Qt::DisplayRole)
     {
         int start = index.internalId();
         if(start == 0)
@@ -458,18 +458,18 @@ QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
             }
         }
     }
-    
-    if (role == Qt::DecorationRole && index.column() == 0 && !index.parent().isValid())
+
+    if(role == Qt::DecorationRole && index.column() == 0 && !index.parent().isValid())
         return KIcon("view-history");
-    
-    if (role == HistoryModel::DateRole && index.column() == 0 && index.internalId() == 0)
+
+    if(role == HistoryModel::DateRole && index.column() == 0 && index.internalId() == 0)
     {
         int offset = sourceDateRow(index.row());
         QModelIndex idx = sourceModel()->index(offset, 0);
         return idx.data(HistoryModel::DateRole);
     }
 
-    if (role == HistoryModel::FirstDateTimeVisitRole && index.column() == 0 && index.internalId() == 0)
+    if(role == HistoryModel::FirstDateTimeVisitRole && index.column() == 0 && index.internalId() == 0)
     {
         int offset = sourceDateRow(index.row());
         QModelIndex idx = sourceModel()->index(offset, 0);

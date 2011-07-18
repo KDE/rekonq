@@ -79,7 +79,7 @@ public:
     {
         return _suggestedFileName;
     };
-    
+
     bool hasSslValid();
 
 public Q_SLOTS:

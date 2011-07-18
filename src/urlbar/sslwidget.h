@@ -48,7 +48,7 @@ public:
 private Q_SLOTS:
     void showMoreSslInfos(const QString &);
     void accept();
-    
+
 private:
     QUrl m_url;
     WebSslInfo m_info;

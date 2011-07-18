@@ -557,8 +557,8 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     kDebug() << "IS MAIN FRAME? " << isMainFrameRequest;
     kDebug() << "LOADING URL: " << _loadingUrl;
     kDebug() << "IS URL FRAME LOADING " << isUrlFrameLoading;
-    
-    if (isMainFrameRequest
+
+    if(isMainFrameRequest
             && _sslInfo.isValid()
             && !domainSchemeMatch(reply->url(), _sslInfo.url())
       )
@@ -731,10 +731,10 @@ void WebPage::downloadAllContentsWithKGet(QPoint)
 
 void WebPage::showSSLInfo(QPoint pos)
 {
-    if (mainFrame()->url().scheme() == QL1S("https"))
+    if(mainFrame()->url().scheme() == QL1S("https"))
     {
         SSLWidget *widget = new SSLWidget(mainFrame()->url(), _sslInfo, view());
-        widget->showAt(pos);    
+        widget->showAt(pos);
     }
     else
     {
@@ -769,7 +769,7 @@ bool WebPage::hasSslValid()
 {
     bool v = true;
     QList<QSslCertificate> certList = _sslInfo.certificateChain();
-    Q_FOREACH(const QSslCertificate &cert, certList)
+    Q_FOREACH(const QSslCertificate & cert, certList)
     {
         v &= cert.isValid();
     }

@@ -183,8 +183,8 @@ void UrlBar::paintEvent(QPaintEvent *event)
         if(_tab->url().scheme() == QL1S("https"))
         {
             backgroundColor = _tab->page()->hasSslValid()
-                ? colorScheme.background(KColorScheme::PositiveBackground).color()
-                : colorScheme.background(KColorScheme::NegativeBackground).color();
+                              ? colorScheme.background(KColorScheme::PositiveBackground).color()
+                              : colorScheme.background(KColorScheme::NegativeBackground).color();
 
             foregroundColor = colorScheme.foreground(KColorScheme::NormalText).color();
         }
@@ -466,8 +466,8 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         break;
     case UrlBar::SSL:
         _tab->page()->hasSslValid()
-            ? rightIcon->setIcon(KIcon("object-locked"))
-            : rightIcon->setIcon(KIcon("object-unlocked"));
+        ? rightIcon->setIcon(KIcon("object-locked"))
+        : rightIcon->setIcon(KIcon("object-unlocked"));
         rightIcon->setToolTip(i18n("Show SSL Info"));
         break;
     case UrlBar::BK:

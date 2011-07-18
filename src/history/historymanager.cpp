@@ -378,7 +378,7 @@ void HistoryManager::load()
             continue;
         };
 
-        if (!item.lastDateTimeVisit.isValid())
+        if(!item.lastDateTimeVisit.isValid())
             continue;
 
         if(item == lastInsertedItem)

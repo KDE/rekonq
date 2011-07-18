@@ -60,10 +60,10 @@ public:
 private Q_SLOTS:
     void displayFromChain(int);
     void exportCert();
-    
+
 private:
     void showCertificateInfo(QSslCertificate, const QStringList &certErrors);
-    
+
     QString m_host;
     WebSslInfo m_info;
 
