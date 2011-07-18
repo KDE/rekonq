@@ -49,7 +49,6 @@ public:
     explicit TabPreviewPopup(WebTab *tab, QWidget *parent = 0);
     virtual ~TabPreviewPopup();
 
-
 private:
     QLabel *m_thumbnail;
     QLabel *m_url;
@@ -58,9 +57,6 @@ private:
     void setUrl(const QString& text);
     void setThumbnail(const QPixmap& pixmap);
     void setFixedSize(int w, int h);
-    static const int borderRadius = 5;
-    static const int borderSpacing = 2;
-    static const double transparency = 0.90;
 };
 
 #endif // TABPREVIEWPOPUP_H

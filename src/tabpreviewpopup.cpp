@@ -40,6 +40,11 @@
 #include <QBitmap>
 #include <QPoint>
 
+// static
+static const int borderRadius = 5;
+static const int borderSpacing = 2;
+static const int transparency = 0.90;
+
 
 TabPreviewPopup::TabPreviewPopup(WebTab* tab, QWidget* parent)
     : KPassivePopup(parent),
@@ -96,7 +101,7 @@ void TabPreviewPopup::setUrl(const QString& text)
 void TabPreviewPopup::setFixedSize(int w, int h)
 {
     KPassivePopup::setFixedSize(w, h);
-    m_url->setText(m_url->fontMetrics().elidedText(m_url->text(), Qt::ElideMiddle, this->width() - this->borderRadius));
+    m_url->setText(m_url->fontMetrics().elidedText(m_url->text(), Qt::ElideMiddle, this->width() - borderRadius));
 
     QPixmap pixmap(size());
     QPainter painter(&pixmap);

@@ -106,7 +106,7 @@ private:
 };
 
 
-Q_DECLARE_METATYPE(DownloadItem*);
+Q_DECLARE_METATYPE(DownloadItem*)
 
 
 typedef QList<DownloadItem*> DownloadList;
