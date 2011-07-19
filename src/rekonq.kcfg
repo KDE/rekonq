@@ -13,7 +13,7 @@
 
 <kcfgfile name="rekonqrc" />
 
-<!-- Miscellaneuos (not config UI) settins -->
+<!-- Miscellaneuos (not config UI) settings -->
 <group name="misc">
     <entry name="FirstExecution" type="Bool">
         <default>true</default>
