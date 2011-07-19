@@ -98,7 +98,7 @@ void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert, const QStri
 
     ui.issuedOn->setText(subjectCert.effectiveDate().date().toString(Qt::SystemLocaleShortDate));
     ui.expiresOn->setText(subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate));
-    ui.sha256->setText(subjectCert.digest(QCryptographicHash::Md5).toHex());
+    ui.md5->setText(subjectCert.digest(QCryptographicHash::Md5).toHex());
     ui.sha1->setText(subjectCert.digest(QCryptographicHash::Sha1).toHex());
 
 }
