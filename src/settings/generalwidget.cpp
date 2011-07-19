@@ -65,7 +65,6 @@ void GeneralWidget::save()
     KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
     cg.writeEntry("DoNotTrack", doNotTrackCheckBox->isChecked());
     cg.sync();
-    kDebug() << "-------------------------------------" << doNotTrackCheckBox->isChecked();
 }
 
 

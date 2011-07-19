@@ -150,7 +150,6 @@ private:
     void computeQurlFromUserInput();
     void computeBookmarks();
 
-//     UrlSearchItem privilegedItem(UrlSearchList* list);
     UrlSearchList orderLists();
 
     QString _typedString;

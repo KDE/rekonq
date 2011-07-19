@@ -66,7 +66,6 @@ WebSnap::WebSnap(const KUrl& url, QObject *parent)
 
 WebSnap::~WebSnap()
 {
-    kDebug() << "oh oh..";
     m_page.action(QWebPage::Stop)->trigger();
     m_page.deleteLater();
 }
@@ -104,52 +103,6 @@ QPixmap WebSnap::renderTabPreview(const QWebPage &page, int w, int h)
     return pageImage.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }
 
-/*
-// This code is an attempt to render a page currently displayed in a tab without alterate it.
-// It currently does not work but can give ideas:
-// - activate/disable scrollbars of a webview causes problems => this method try to not do that
-// - the viewport and the scroll position must be modified an restored
-// - page.setViewportSize(size); does not seem to work when the page is currently displayed in a webview
-
-QPixmap WebSnap::renderVisiblePagePreview(const QWebPage &page, int w, int h)
-{
-    // save page settings
-    QSize oldSize = page.viewportSize();
-    QPoint oldScrollPosition = page.mainFrame()->scrollPosition();
-
-    // minimum width
-    int width = 640;
-
-    // find best width
-    QSize size;
-    while(page.mainFrame()->scrollBarMaximum(Qt::Horizontal) && width<1920)
-    {
-        width+=5;
-        size = QSize(width, width * ((0.0 + h) / w));
-        page.setViewportSize(size);
-    }
-
-    // scroll to top
-    page.mainFrame()->setScrollBarValue(Qt::Vertical, 0);
-
-    // render
-    QPixmap pageImage = WebSnap::render(page, page.viewportSize().width(), page.viewportSize().height());
-
-    // detect scrollbar size
-    int scrollbarWidth = (page.mainFrame()->scrollBarMaximum(Qt::Horizontal) ? 17  : 0); //TODO: detect QStyle size for scrollbars
-    int scrollbarHeight = (page.mainFrame()->scrollBarMaximum(Qt::Vertical) ? 17 : 0);
-
-    // resize image
-    pageImage = pageImage.copy(0, 0, width - scrollbarWidth, size.height() - scrollbarHeight);
-    pageImage = pageImage.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
-
-    // restore page settings
-    page.setViewportSize(oldSize);
-    page.mainFrame()->setScrollPosition(oldScrollPosition);
-
-    return pageImage;
-}
-*/
 
 QPixmap WebSnap::renderClosingPagePreview(const QWebPage &page, int w, int h)
 {
@@ -200,7 +153,6 @@ void WebSnap::saveResult(bool ok)
     }
 
     emit snapDone(ok);
-    kDebug() << "SAVE RESULTS: " << ok << " URL: " << m_url;
 
     this->deleteLater();
 }

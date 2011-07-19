@@ -150,7 +150,7 @@ QString ListItem::text()
 
 void ListItem::nextItemSubChoice()
 {
-    //will be override
+    // will be override
 }
 
 
@@ -629,41 +629,33 @@ ListItem *ListItemFactory::create(const UrlSearchItem &item, const QString &text
 {
     if(item.type & UrlSearchItem::Search)
     {
-        kDebug() << "Search";
         return new SearchListItem(item, text, parent);
     }
 
     if(item.type & UrlSearchItem::Browse)
     {
-        kDebug() << "Browse";
         return new BrowseListItem(item, text, parent);
     }
 
     if(item.type & UrlSearchItem::History)
     {
-        kDebug() << "History";
         return new PreviewListItem(item, text, parent);
     }
 
     if(item.type & UrlSearchItem::Bookmark)
     {
-        kDebug() << "Bookmark";
         return new PreviewListItem(item, text, parent);
     }
 
     if(item.type & UrlSearchItem::Suggestion)
     {
-        kDebug() << "ITEM URL: " << item.url;
         if(item.description.isEmpty())
         {
-            kDebug() << "Suggestion";
             return new SuggestionListItem(item, text, parent);
         }
 
-        kDebug() << "Visual Suggestion";
         return new VisualSuggestionListItem(item, text, parent);
     }
 
-    kDebug() << "Undefined";
     return new PreviewListItem(item, text, parent);
 }

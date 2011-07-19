@@ -76,8 +76,8 @@ UrlResolver::UrlResolver(const QString &typedUrl)
 
     if(_browseRegexp.isEmpty())
     {
-        kDebug() << "browse regexp empty. Setting value..";
-
+        // FIXME move to use QL1S here!!!
+        
         QString protocol = QString("^(%1)").arg(KProtocolInfo::protocols().join("|"));
 
         QString localhost = "^localhost";
@@ -253,8 +253,6 @@ UrlSearchList UrlResolver::orderLists()
     bookmarksCount = _bookmarks.count();
     commonCount = common.count();
 
-    kDebug() << "HISTORY COUNT: " << historyCount;
-
     //now fill the list to MAX_ELEMENTS
     if(availableEntries > 0)
     {
@@ -291,8 +289,6 @@ UrlSearchList UrlResolver::orderLists()
     }
 
     list = list + _history + common + _bookmarks + _suggestions;
-    qWarning() << "orderedSearchItems leave: " << " elapsed: " << myTime.elapsed();
-
     return list;
 }
 
@@ -357,7 +353,6 @@ void UrlResolver::computeHistory()
 void UrlResolver::computeBookmarks()
 {
     QList<KBookmark> found = rApp->bookmarkProvider()->find(_typedString);
-    kDebug() << "FOUND: " << found.count();
     Q_FOREACH(const KBookmark & b, found)
     {
         UrlSearchItem gItem(UrlSearchItem::Bookmark, b.url().url(), b.fullText());
@@ -417,24 +412,3 @@ void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &s
     emit suggestionsReady(sugList, _typedString);
     this->deleteLater();
 }
-
-
-// UrlSearchItem UrlResolver::privilegedItem(UrlSearchList* list)
-// {
-//     UrlSearchItem item;
-//     QString dot = QString(QL1C('.'));
-//     QString test1 = QString(QL1C('/')) + _typedString + dot;
-//     QString test2 = dot + _typedString + dot;
-//
-//     for (int i = 0; i < list->count(); i++)
-//     {
-//         item = list->at(i);
-//         //TODO: move this to AwesomeUrlCompletion::substringCompletion and add a priviledged flag to UrlSearchItem
-//         if (item.url.contains(test1) || item.url.contains(test2))
-//         {
-//             list->removeAt(i);
-//             return item;
-//         }
-//     }
-//     return UrlSearchItem();
-// }

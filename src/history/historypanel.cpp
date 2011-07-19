@@ -135,7 +135,6 @@ void HistoryPanel::openAll()
 void HistoryPanel::setup()
 {
     UrlPanel::setup();
-    kDebug() << "History panel...";
 
     panelTreeView()->header()->hideSection(1);
 

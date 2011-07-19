@@ -274,7 +274,6 @@ void AdBlockManager::updateNextSubscription()
     if(_index < locations.size())
     {
         QString urlString = locations.at(_index);
-        kDebug() << "DOWNLOADING FROM " << urlString;
         KUrl subUrl = KUrl(urlString);
 
         KIO::TransferJob* job = KIO::get(subUrl , KIO::Reload , KIO::HideProgressInfo);
@@ -300,7 +299,6 @@ void AdBlockManager::slotResult(KJob *job)
     if(job->error())
         return;
 
-    kDebug() << "SAVING RULES..";
     QList<QByteArray> list = _buffer.split('\n');
     QStringList ruleList;
     foreach(const QByteArray & ba, list)

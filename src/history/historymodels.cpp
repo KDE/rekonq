@@ -356,7 +356,6 @@ void HistoryFilterModel::load() const
 
 void HistoryFilterModel::sourceRowsInserted(const QModelIndex &parent, int start, int end)
 {
-    //Q_ASSERT(start == end && start == 0);
     Q_UNUSED(end);
 
     if(start != 0)
@@ -420,7 +419,7 @@ bool HistoryFilterModel::removeRows(int row, int count, const QModelIndex &paren
 }
 
 
-// -------------------------------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------
 
 
 HistoryTreeModel::HistoryTreeModel(QAbstractItemModel *sourceModel, QObject *parent)

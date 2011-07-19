@@ -403,7 +403,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         }
         else if(dropEvent->mimeData()->hasFormat("text/uri-list"))
         {
-            kDebug() << "DROP is URL";
+            // DROP is URL
             QString url = dropEvent->mimeData()->urls().at(0).toString();
             QString title = url.contains(rApp->mainWindow()->currentTab()->url().url())
                             ? rApp->mainWindow()->currentTab()->view()->title()
@@ -412,7 +412,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         }
         else if(dropEvent->mimeData()->hasFormat("text/plain"))
         {
-            kDebug() << "DROP is TEXT";
+            // DROP is TEXT
             QString url = dropEvent->mimeData()->text();
             KUrl u(url);
             if(u.isValid())

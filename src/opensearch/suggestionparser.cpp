@@ -107,7 +107,7 @@ ResponseList JSONParser::parse(const QByteArray &resp)
 
     if(response.isEmpty())
     {
-        kDebug() << "RESPONSE IS EMPTY";
+        // RESPONSE IS EMPTY
         return ResponseList();
     }
 
@@ -115,14 +115,14 @@ ResponseList JSONParser::parse(const QByteArray &resp)
             || !response.endsWith(QL1C(']'))
       )
     {
-        kDebug() << "RESPONSE is NOT well FORMED";
+        // RESPONSE is NOT well FORMED
         return ResponseList();
     }
 
     // Evaluate the JSON response using QtScript.
     if(!m_reader.canEvaluate(response))
     {
-        kDebug() << "m_reader cannot evaluate the response";
+        // m_reader cannot evaluate the response
         return ResponseList();
     }
 
@@ -130,7 +130,7 @@ ResponseList JSONParser::parse(const QByteArray &resp)
 
     if(!responseParts.property(1).isArray())
     {
-        kDebug() << "RESPONSE is not an array";
+        // RESPONSE is not an array
         return ResponseList();
     }
 

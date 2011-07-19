@@ -223,7 +223,6 @@ int Application::newInstance()
                 break;
             case 2: // restore session
                 sessionManager()->restoreSession();
-                kDebug() << "session restored following settings";
                 break;
             default:
                 newMainWindow()->homePage();
@@ -549,8 +548,6 @@ void Application::updateConfiguration()
     int minimumFontSize = ReKonfig::minFontSize();
 
     int logDpiY = mainWindow()->currentTab()->view()->logicalDpiY();
-    kDebug() << "Logical Dot per Inch Y: " << logDpiY;
-
     float toPix = (logDpiY < 96.0)
                   ? 96.0 / 72.0
                   : logDpiY / 72.0 ;

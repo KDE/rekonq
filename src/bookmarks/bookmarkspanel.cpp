@@ -116,7 +116,6 @@ void BookmarksPanel::onExpand(const QModelIndex &index)
 void BookmarksPanel::setup()
 {
     UrlPanel::setup();
-    kDebug() << "Bookmarks panel...";
 
     connect(panelTreeView(), SIGNAL(delKeyPressed()), this, SLOT(deleteBookmark()));
     connect(panelTreeView(), SIGNAL(collapsed(const QModelIndex &)), this, SLOT(onCollapse(const QModelIndex &)));

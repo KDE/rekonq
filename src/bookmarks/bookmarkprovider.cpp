@@ -90,8 +90,6 @@ BookmarkProvider::~BookmarkProvider()
 
 KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 {
-    kDebug() << "creating a bookmarks action menu...";
-
     KMenu *menu = new KMenu(parent);
     KActionMenu *bookmarkActionMenu = new KActionMenu(menu);
     bookmarkActionMenu->setMenu(menu);

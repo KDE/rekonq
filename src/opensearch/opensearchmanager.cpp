@@ -53,6 +53,7 @@
 #include <QDBusMessage>
 #include <QDBusConnection>
 
+
 OpenSearchManager::OpenSearchManager(QObject *parent)
     : QObject(parent)
     , m_activeEngine(0)
@@ -81,14 +82,12 @@ void OpenSearchManager::setSearchProvider(const QString &searchProvider)
         kDebug() << searchProvider << " trimmed name: "  << trimmedEngineName(searchProvider) << " file name path: " << fileName;
         if(fileName.isEmpty())
         {
-            kDebug() << "OpenSearch file name empty";
             return;
         }
         QFile file(fileName);
 
         if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            kDebug() << "Cannot open opensearch description file: " + fileName;
             return;
         }
 
@@ -154,7 +153,6 @@ void OpenSearchManager::requestSuggestion(const QString &searchText)
     else
     {
         KUrl url = m_activeEngine->suggestionsUrl(searchText);
-        kDebug() << "Requesting for suggestions: " << url.url();
         _typedText = searchText;
         m_currentJob = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
         m_state = REQ_SUGGESTION;
@@ -184,7 +182,6 @@ void OpenSearchManager::jobFinished(KJob *job)
     if(m_state == REQ_SUGGESTION)
     {
         const ResponseList suggestionsList = m_activeEngine->parseSuggestion(_typedText, m_jobData);
-        kDebug() << "Received suggestions in " << _typedText << " from " << m_activeEngine->name() << ": ";
         Q_FOREACH(const Response & r, suggestionsList)
         {
             kDebug() << r.title;
@@ -251,7 +248,6 @@ void OpenSearchManager::loadEngines()
     QFile file(KStandardDirs::locate("appdata", "opensearch/db_opensearch.json"));
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        kDebug() << "opensearch db cannot be read";
         return;
     }
 
@@ -259,7 +255,6 @@ void OpenSearchManager::loadEngines()
     QScriptEngine reader;
     if(!reader.canEvaluate(fileContent))
     {
-        kDebug() << "opensearch db cannot be read";
         return;
     }
 
@@ -281,7 +276,6 @@ void OpenSearchManager::saveEngines()
     QFile file(KStandardDirs::locateLocal("appdata", "opensearch/db_opensearch.json"));
     if(!file.open(QIODevice::WriteOnly))
     {
-        kDebug() << "opensearch db cannot be writen";
         return;
     }
     QTextStream out(&file);

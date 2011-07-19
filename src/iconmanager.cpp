@@ -99,7 +99,6 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     // provide icons just for http/https sites
     if(!url.scheme().startsWith(QL1S("http")))
     {
-        kDebug() << "No http/https site...";
         if(notify)
             emit iconChanged();
         return;
@@ -108,7 +107,6 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     // do not load new icons in private browsing..
     if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
-        kDebug() << "Private browsing, private icon...";
         if(notify)
             emit iconChanged();
         return;
@@ -117,7 +115,6 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     // check if icon exists
     if(!KMimeType::favIconForUrl(url).isEmpty())
     {
-        kDebug() << "icon JUST present. Aborting...";
         if(notify)
             emit iconChanged();
         return;
@@ -145,11 +142,8 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
                      : KUrl(rootUrlString + QL1C('/') + relUrlString) ;
     }
 
-    kDebug() << "ICON URL: " << faviconUrl;
-
     // dest url
     KUrl destUrl(_faviconsDir + url.host() + QL1S(".png"));
-    kDebug() << "DEST URL: " << destUrl;
 
     // download icon
     KIO::FileCopyJob *job = KIO::file_copy(faviconUrl, destUrl, -1, KIO::HideProgressInfo);

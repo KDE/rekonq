@@ -43,7 +43,6 @@ UserAgentWidget::UserAgentWidget(QWidget *parent)
     KConfig config("kio_httprc", KConfig::NoGlobals);
 
     QStringList hosts = config.groupList();
-    kDebug() << "HOSTS" << hosts;
     Q_FOREACH(const QString & host, hosts)
     {
         QStringList tmp;
@@ -52,7 +51,6 @@ UserAgentWidget::UserAgentWidget(QWidget *parent)
         KConfigGroup hostGroup(&config, host);
         tmp <<  hostGroup.readEntry(QL1S("UserAgent"), QString());
 
-        kDebug() << "TMP: " << tmp;
         QTreeWidgetItem *item = new QTreeWidgetItem(sitePolicyTreeWidget, tmp);
         sitePolicyTreeWidget->addTopLevelItem(item);
     }
@@ -68,7 +66,6 @@ void UserAgentWidget::deleteUserAgent()
     sitePolicyTreeWidget->takeTopLevelItem(sitePolicyTreeWidget->indexOfTopLevelItem(item));
 
     QString host = item->text(0);
-    kDebug() << "HOST: " << host;
 
     KConfig config("kio_httprc", KConfig::NoGlobals);
     KConfigGroup group(&config, host);
@@ -89,8 +86,6 @@ void UserAgentWidget::deleteAll()
     QStringList list = config.groupList();
     Q_FOREACH(const QString & groupName, list)
     {
-        kDebug() << "HOST: " << groupName;
-
         KConfigGroup group(&config, groupName);
         group.deleteGroup();
     }

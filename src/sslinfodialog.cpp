@@ -132,8 +132,6 @@ void SslInfoDialog::exportCert()
 
     QString certPath = KFileDialog::getSaveFileName(name, QString(), this);
 
-    kDebug() << certPath;
-
     QFile file(certPath);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;

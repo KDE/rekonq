@@ -395,7 +395,6 @@ void MainView::windowCloseRequested()
         }
         return;
     }
-    kDebug() << "Invalid tab index" << "line:" << __LINE__;
 }
 
 
@@ -730,7 +729,6 @@ void MainView::detachTab(int index, MainWindow *toWindow)
 
     WebTab *tab = webTab(index);
     KUrl u = tab->url();
-    kDebug() << "detaching tab with url: " << u;
     if(u.scheme() == QL1S("about"))
     {
         closeTab(index);

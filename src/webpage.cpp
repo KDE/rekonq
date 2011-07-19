@@ -399,7 +399,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     // handle protocols WebKit cannot handle...
     if(_protHandler.postHandling(reply->request(), mainFrame()))
     {
-        kDebug() << "POST HANDLING the unsupported...";
         return;
     }
 
@@ -429,8 +428,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     if(appService.isNull())   // no service can handle this. We can just download it..
     {
-        kDebug() << "no service can handle this. We can just download it..";
-
         isLocal
         ? KMessageBox::sorry(view(), i18n("No service can handle this file."))
         : downloadReply(reply, _suggestedFileName);
@@ -447,7 +444,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         switch(dlg.askEmbedOrSave())
         {
         case KParts::BrowserOpenOrSaveQuestion::Save:
-            kDebug() << "user choice: no services, just download!";
             downloadReply(reply, _suggestedFileName);
             return;
 
@@ -470,7 +466,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         tempFile.open();
         KUrl destUrl;
         destUrl.setPath(tempFile.fileName());
-        kDebug() << "First save content to" << destUrl;
         KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
         job->ui()->setWindow(rApp->mainWindow());
         connect(job, SIGNAL(result(KJob *)), this, SLOT(copyToTempFileResult(KJob*)));
@@ -481,8 +476,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     KParts::ReadOnlyPart *pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(_mimeType, view(), this, QString());
     if(pa)
     {
-        kDebug() << "EMBEDDING CONTENT...";
-
         _isOnRekonqPage = true;
 
         WebView *view = qobject_cast<WebView *>(parent());
@@ -522,7 +515,6 @@ void WebPage::loadFinished(bool ok)
     val = group.readEntry(_loadingUrl.host(), QString("10"));
 
     int value = val.toInt();
-    kDebug() << "ZOOM VALUE: " << _loadingUrl.host() << value;
     mainFrame()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values
 
     // Provide site icon. Can this be moved to loadStarted??
@@ -552,11 +544,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
-    const bool isUrlFrameLoading = (_loadingUrl == frame->url());
-    kDebug() << "FRAME URL : " << frame->url();
-    kDebug() << "IS MAIN FRAME? " << isMainFrameRequest;
-    kDebug() << "LOADING URL: " << _loadingUrl;
-    kDebug() << "IS URL FRAME LOADING " << isUrlFrameLoading;
+    //const bool isUrlFrameLoading = (_loadingUrl == frame->url());
 
     if(isMainFrameRequest
             && _sslInfo.isValid()
@@ -575,8 +563,6 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     case QNetworkReply::NoError:                             // no error. Simple :)
         if(isMainFrameRequest && !_sslInfo.isValid())
         {
-            kDebug() << " ---------------------------- ";
-            kDebug() << "Setting SSL INFOS per URL = " << reply->url();
             // Obtain and set the SSL information if any...
             _sslInfo.restoreFrom(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)), reply->url());
             _sslInfo.setUrl(reply->url());

@@ -710,7 +710,6 @@ void MainWindow::preferences()
 
 void MainWindow::updateActions()
 {
-    kDebug() << "updating actions..";
     bool rekonqPage = currentTab()->page()->isOnRekonqPage();
 
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
@@ -1462,7 +1461,6 @@ void MainWindow::setUserAgent()
 
     KUrl url = currentTab()->url();
     UserAgentInfo uaInfo;
-    kDebug() << "SETTING USER AGENT";
     uaInfo.setUserAgentForHost(uaIndex, url.host());
     currentTab()->page()->triggerAction(QWebPage::Reload);
 }
@@ -1470,7 +1468,6 @@ void MainWindow::setUserAgent()
 
 void MainWindow::populateUserAgentMenu()
 {
-    kDebug() << "populating user agent menu...";
     bool defaultUA = true;
     KUrl url = currentTab()->url();
 

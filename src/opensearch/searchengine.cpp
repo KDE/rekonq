@@ -67,7 +67,6 @@ void SearchEngine::reload()
         if(service)
         {
             QUrl url = service->property("Query").toUrl();
-            kDebug() << "ENGINE URL: " << url;
             rApp->iconManager()->downloadIconFromUrl(url);
 
             favorites << service;

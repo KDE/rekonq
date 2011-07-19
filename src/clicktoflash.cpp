@@ -106,10 +106,6 @@ void ClickToFlash::load()
 
 bool ClickToFlash::checkElement(QWebElement el)
 {
-    // check these two values..
-    kDebug() << "src: " << QUrl(el.attribute("src"));
-    kDebug() << "url: " << m_url;
-
     QString checkString;
     QString urlString;
 

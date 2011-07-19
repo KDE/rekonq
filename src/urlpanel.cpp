@@ -66,8 +66,6 @@ void UrlPanel::showing(bool b)
 
 void UrlPanel::setup()
 {
-    kDebug() << "Loading panel setup...";
-
     QWidget *ui = new QWidget(this);
 
     // setup search bar

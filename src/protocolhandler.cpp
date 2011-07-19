@@ -119,7 +119,6 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
                 return false;
         }
 
-        kDebug() << "EVALUATING JAVASCRIPT...";
         QVariant result = frame->evaluateJavaScript(scriptSource);
         return true;
     }
@@ -189,8 +188,6 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     _url = request.url();
     _frame = frame;
 
-    kDebug() << "URL PROTOCOL: " << _url;
-
     // "http(s)" (fast) handling
     if(_url.protocol() == QL1S("http") || _url.protocol() == QL1S("https"))
         return false;
@@ -232,7 +229,6 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     // Try KRunning it...
     if(KProtocolInfo::isKnownProtocol(_url))
     {
-        kDebug() << "WARNING: launching a new app...";
         (void)new KRun(_url, rApp->mainWindow(), 0, _url.isLocalFile());
         return true;
     }
@@ -342,7 +338,6 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
     if(job->error())
     {
         // TODO
-        kDebug() << "error";
     }
     else
     {
@@ -367,8 +362,6 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
  */
 void ProtocolHandler::abpHandling()
 {
-    kDebug() << "handling abp url: " << _url;
-
     QString path = _url.path();
     if(path != QL1S("subscribe"))
         return;
