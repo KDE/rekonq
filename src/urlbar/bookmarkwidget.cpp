@@ -55,11 +55,8 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     QFormLayout *layout = new QFormLayout(this);
 
     // Bookmark icon
-    QHBoxLayout *hLayout = new QHBoxLayout(this);
     QLabel *bookmarkIcon = new QLabel(this);
     bookmarkIcon->setPixmap(KIcon("bookmarks").pixmap(32, 32));
-    hLayout->setSpacing(10);
-    hLayout->addWidget(bookmarkIcon);
 
     // Title
     QVBoxLayout *vLayout = new QVBoxLayout(this);
@@ -74,8 +71,7 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     connect(removeButton, SIGNAL(clicked()), this, SLOT(removeBookmark()));
     vLayout->addWidget(removeButton);
 
-    hLayout->addLayout(vLayout);
-    layout->addItem(hLayout);
+    layout->addRow(bookmarkIcon, vLayout);
 
     // Bookmark name
     QLabel *nameLabel = new QLabel(this);
