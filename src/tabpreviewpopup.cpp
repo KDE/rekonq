@@ -43,7 +43,7 @@
 // static
 static const int borderRadius = 5;
 static const int borderSpacing = 2;
-static const int transparency = 0.90;
+static const double transparency = 0.90;
 
 
 TabPreviewPopup::TabPreviewPopup(WebTab* tab, QWidget* parent)
