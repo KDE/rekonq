@@ -52,11 +52,20 @@ GeneralWidget::GeneralWidget(QWidget *parent)
     connect(kcfg_useNewTabPage, SIGNAL(toggled(bool)), this, SLOT(disableHomeSettings(bool)));
 
     checkKGetPresence();
+
+    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
+    doNotTrackCheckBox->setChecked( cg.readEntry("DoNotTrack", false) );
+
+    connect(doNotTrackCheckBox, SIGNAL(clicked()), this, SLOT(hasChanged()));
 }
 
 
 void GeneralWidget::save()
 {
+    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
+    cg.writeEntry("DoNotTrack", doNotTrackCheckBox->isChecked());
+    cg.sync();
+    kDebug() << "-------------------------------------" << doNotTrackCheckBox->isChecked();
 }
 
 
@@ -68,6 +77,8 @@ bool GeneralWidget::changed()
 
 void GeneralWidget::hasChanged()
 {
+    _changed = true;
+    emit changed(true);
 }
 
 
@@ -87,6 +98,7 @@ void GeneralWidget::disableHomeSettings(bool b)
     kcfg_homePage->setEnabled(!b);
     setHomeToCurrentPageButton->setEnabled(!b);
 }
+
 
 void GeneralWidget::checkKGetPresence()
 {
