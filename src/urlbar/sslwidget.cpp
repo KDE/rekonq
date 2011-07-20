@@ -48,8 +48,9 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
     setMinimumWidth(400);
 
-    QSslCertificate cert = info.certificateChain().first();
-
+    QSslCertificate cert = m_info.certificateChain().first();
+    QStringList errorList = SslInfoDialog::errorsFromString(m_info.certificateErrors()).first();
+    
     QGridLayout *layout = new QGridLayout(this);
 
     QLabel *label;
@@ -75,10 +76,11 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     }
     else
     {
-        if(cert.isValid())
+        if(cert.isValid() && errorList.isEmpty())
         {
             label = new QLabel(this);
             label->setWordWrap(true);
+            label->setTextFormat(Qt::PlainText);
             label->setText(i18n("This certificate for this site is valid and has been verified by:\n%1.",
                                 cert.issuerInfo(QSslCertificate::CommonName)));
 
@@ -134,7 +136,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     {
         label = new QLabel(this);
         label->setWordWrap(true);
-        label->setText(i18n("Your connection to %1 is NOT encrypted!!\n\n", m_url.host()));
+        label->setText(i18n("Your connection to %1 is NOT encrypted!!\n", m_url.host()));
         layout->addWidget(label, rows++ , 1);
 
         imageLabel->setPixmap(KIcon("security-low").pixmap(32));
@@ -143,7 +145,8 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     {
         label = new QLabel(this);
         label->setWordWrap(true);
-        label->setText(i18n("Your connection to %1 is encrypted with %2-bit encryption.\n\n", m_url.host(), m_info.supportedChiperBits()));
+        label->setTextFormat(Qt::PlainText);
+        label->setText(i18n("Your connection to %1 is encrypted with %2-bit encryption.\n", m_url.host(), m_info.supportedChiperBits()));
         layout->addWidget(label, rows++, 1);
 
         int vers = cert.version().toInt();
@@ -170,12 +173,13 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
 
         label = new QLabel(this);
         label->setWordWrap(true);
-        label->setText(i18n("The connection uses %1.\n\n", sslVersion));
+        label->setText(i18n("The connection uses %1.\n", sslVersion));
         layout->addWidget(label, rows++, 1);
 
         const QStringList cipherInfo = m_info.ciphers().split('\n', QString::SkipEmptyParts);
         label = new QLabel(this);
         label->setWordWrap(true);
+        label->setTextFormat(Qt::PlainText);
         label->setText(
             i18n("The connection is encrypted using %1 at %2 bits with %3 for message authentication and %4 as the key exchange mechanism.\n\n",
                  cipherInfo[0],

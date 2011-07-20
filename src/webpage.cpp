@@ -50,6 +50,7 @@
 #include "webpluginfactory.h"
 #include "webtab.h"
 #include "sslwidget.h"
+#include "sslinfodialog.h"
 
 // KDE Includes
 #include <KIO/Job>
@@ -755,9 +756,20 @@ bool WebPage::hasSslValid()
 {
     bool v = true;
     QList<QSslCertificate> certList = _sslInfo.certificateChain();
+
+    if (certList.isEmpty())
+        return false;
+
     Q_FOREACH(const QSslCertificate & cert, certList)
     {
         v &= cert.isValid();
     }
+
+    QList<QStringList> errorsList = SslInfoDialog::errorsFromString(_sslInfo.certificateErrors());
+    Q_FOREACH(const QStringList & err, errorsList)
+    {
+        v &= err.isEmpty();
+    }
+    
     return v;
 }

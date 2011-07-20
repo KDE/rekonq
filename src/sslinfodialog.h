@@ -56,7 +56,7 @@ public:
     explicit SslInfoDialog(const QString &host, const WebSslInfo &info, QWidget *parent = 0);
 
     static QList<QStringList> errorsFromString(const QString &s);
-
+    
 private Q_SLOTS:
     void displayFromChain(int);
     void exportCert();

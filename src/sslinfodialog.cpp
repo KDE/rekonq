@@ -28,6 +28,7 @@
 #include "sslinfodialog.h"
 #include "sslinfodialog.moc"
 
+
 #include <KFileDialog>
 
 #include <QtGui/QFrame>
@@ -37,12 +38,12 @@
 #include <QtGui/QLayout>
 #include <QtCore/Q_PID>
 #include <QtNetwork/QSslCertificate>
-#include <QtNetwork/QSslError>
 
 #include <QFormLayout>
 
 #include <kglobal.h>
 #include <klocale.h>
+#include <ktcpsocket.h>
 
 
 SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidget *parent)
@@ -87,20 +88,39 @@ void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert, const QStri
     c += QL1S("</ul>");
     ui.certInfoLabel->setText(c);
 
+    // WARNING (Security Issue): set these labels to use PlainText!
     ui.subjectCN->setText(subjectCert.subjectInfo(QSslCertificate::CommonName));
+    ui.subjectCN->setTextFormat(Qt::PlainText);
+    
     ui.subjectO->setText(subjectCert.subjectInfo(QSslCertificate::Organization));
+    ui.subjectO->setTextFormat(Qt::PlainText);
+
     ui.subjectOU->setText(subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName));
+    ui.subjectOU->setTextFormat(Qt::PlainText);
+
     ui.subjectSN->setText(subjectCert.serialNumber());
+    ui.subjectSN->setTextFormat(Qt::PlainText);
 
     ui.issuerCN->setText(subjectCert.issuerInfo(QSslCertificate::CommonName));
+    ui.issuerCN->setTextFormat(Qt::PlainText);
+
     ui.issuerO->setText(subjectCert.issuerInfo(QSslCertificate::Organization));
+    ui.issuerO->setTextFormat(Qt::PlainText);
+
     ui.issuerOU->setText(subjectCert.issuerInfo(QSslCertificate::OrganizationalUnitName));
+    ui.issuerOU->setTextFormat(Qt::PlainText);
 
     ui.issuedOn->setText(subjectCert.effectiveDate().date().toString(Qt::SystemLocaleShortDate));
-    ui.expiresOn->setText(subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate));
-    ui.md5->setText(subjectCert.digest(QCryptographicHash::Md5).toHex());
-    ui.sha1->setText(subjectCert.digest(QCryptographicHash::Sha1).toHex());
+    ui.issuedOn->setTextFormat(Qt::PlainText);
 
+    ui.expiresOn->setText(subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate));
+    ui.expiresOn->setTextFormat(Qt::PlainText);
+
+    ui.md5->setText(subjectCert.digest(QCryptographicHash::Md5).toHex());
+    ui.md5->setTextFormat(Qt::PlainText);
+
+    ui.sha1->setText(subjectCert.digest(QCryptographicHash::Sha1).toHex());
+    ui.sha1->setTextFormat(Qt::PlainText);
 }
 
 
@@ -109,7 +129,9 @@ void SslInfoDialog::displayFromChain(int i)
     QList<QSslCertificate> caList = m_info.certificateChain();
     QSslCertificate cert = caList.at(i);
 
-    if(cert.isValid())
+    QStringList errors = SslInfoDialog::errorsFromString(m_info.certificateErrors()).at(i);
+
+    if(cert.isValid() && errors.isEmpty())
     {
         QStringList certInfo;
         certInfo << i18n("The Certificate is Valid!");
@@ -117,7 +139,6 @@ void SslInfoDialog::displayFromChain(int i)
     }
     else
     {
-        QStringList errors = SslInfoDialog::errorsFromString(m_info.certificateErrors()).at(i);
         errors.prepend(i18n("The certificate for this site is NOT valid for the following reasons:"));
         showCertificateInfo(cert, errors);
     }
@@ -155,10 +176,10 @@ QList<QStringList> SslInfoDialog::errorsFromString(const QString &s)
         Q_FOREACH(const QString & s, sl)
         {
             bool didConvert;
-            QSslError::SslError error = static_cast<QSslError::SslError>(s.trimmed().toInt(&didConvert));
+            KSslError::Error error = static_cast<KSslError::Error>(s.trimmed().toInt(&didConvert));
             if(didConvert)
             {
-                errors << QSslError(error).errorString();
+                errors << KSslError(error).errorString();
             }
         }
         resultList << errors;
