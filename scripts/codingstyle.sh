@@ -35,6 +35,7 @@ astyle \
 --style=allman \
 --indent-labels \
 --pad-oper \
+--pad-header \
 --unpad-paren \
 --keep-one-line-statements \
 --convert-tabs \
