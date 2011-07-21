@@ -311,7 +311,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
         msg += "<td align=\"right\">";
         if(item.isFile())
         {
-            msg += i18n("%1 KB", QString::number(item.size() / 1024) );
+            msg += KGlobal::locale()->formatByteSize(item.size(), 1);
         }
         msg += "</td>";
 
