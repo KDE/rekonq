@@ -62,7 +62,10 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
 
     // Title
     QLabel *title = new QLabel(this);
-    title->setText(i18n("<h4>Subscribe to RSS Feeds</h4>"));
+    title->setText(i18n("Subscribe to RSS Feeds"));
+    QFont f = title->font();
+    f.setBold(true);
+    title->setFont(f);
     title->setAlignment(Qt::AlignCenter);
     layout->addRow(title);
 

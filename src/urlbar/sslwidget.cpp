@@ -38,6 +38,7 @@
 #include <QtGui/QGridLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
+#include <QtGui/QTextDocument>
 
 
 SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
@@ -49,7 +50,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     setMinimumWidth(400);
 
     QSslCertificate cert = m_info.certificateChain().first();
-    QStringList errorList = SslInfoDialog::errorsFromString(m_info.certificateErrors()).first();
+    QStringList firstCertErrorList = SslInfoDialog::errorsFromString(m_info.certificateErrors()).first();
     
     QGridLayout *layout = new QGridLayout(this);
 
@@ -63,55 +64,41 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
 
     label = new QLabel(this);
     label->setWordWrap(true);
-    label->setText(i18n("<h4>Identity</h4>"));
+    label->setText(i18n("Identity"));
+    QFont f1 = label->font();
+    f1.setBold(true);
+    label->setFont(f1);
     layout->addWidget(label, rows++, 1);
 
+    label = new QLabel(this);
+    label->setWordWrap(true);
     if(cert.isNull())
     {
-        label = new QLabel(this);
-        label->setWordWrap(true);
-        label->setText(i18n("Warning: this site is carrying a NULL certificate!"));
+        label->setText(i18n("Warning: this site is NOT carrying a certificate!"));
 
         imageLabel->setPixmap(KIcon("security-low").pixmap(32));
     }
     else
     {
-        if(cert.isValid() && errorList.isEmpty())
+        if(cert.isValid() && firstCertErrorList.isEmpty())
         {
-            label = new QLabel(this);
-            label->setWordWrap(true);
-            label->setTextFormat(Qt::PlainText);
             label->setText(i18n("This certificate for this site is valid and has been verified by:\n%1.",
-                                cert.issuerInfo(QSslCertificate::CommonName)));
-
+                                Qt::escape(cert.issuerInfo(QSslCertificate::CommonName)) ));
 
             imageLabel->setPixmap(KIcon("security-high").pixmap(32));
         }
         else
         {
-            label = new QLabel(this);
-            label->setWordWrap(true);
-
-            QList<QStringList> errorList = SslInfoDialog::errorsFromString(m_info.certificateErrors());
-            if(errorList.at(0).isEmpty())
+            QString c = QL1S("<ul>");
+            Q_FOREACH(const QString & s, firstCertErrorList)
             {
-                label->setText(i18n("The certificate for this site is valid, but some on the certificate chain are not!"));
-                imageLabel->setPixmap(KIcon("security-medium").pixmap(32));
+                c += QL1S("<li>") + s + QL1S("</li>");
             }
-            else
-            {
-                QStringList sl = errorList.at(0);
-                QString c = QL1S("<ul>");
-                Q_FOREACH(const QString & s, sl)
-                {
-                    c += QL1S("<li>") + s + QL1S("</li>");
-                }
-                c += QL1S("</ul>");
+            c += QL1S("</ul>");
 
-                label->setText(i18n("The certificate for this site is NOT valid, for the following reasons:\n%1", c));
-                label->setTextFormat(Qt::RichText);
-                imageLabel->setPixmap(KIcon("security-low").pixmap(32));
-            }
+            label->setText(i18n("The certificate for this site is NOT valid, for the following reasons:\n%1", c));
+            label->setTextFormat(Qt::RichText);
+            imageLabel->setPixmap(KIcon("security-low").pixmap(32));
         }
     }
 
@@ -126,13 +113,17 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     // ------------------------------------------------------------------------------------------------------------------
     label = new QLabel(this);
     label->setWordWrap(true);
-    label->setText(QL1S("<h4>Encryption</h4>"));   // ----------------------------------------------- //
+    label->setText(i18n("Encryption"));
+    QFont f2 = label->font();
+    f2.setBold(true);
+    label->setFont(f2);
     layout->addWidget(label, rows, 1);
 
     imageLabel = new QLabel(this);
     layout->addWidget(imageLabel, rows++ , 0, Qt::AlignCenter);
 
-    if(cert.isNull())
+    QString ciph = m_info.ciphers();
+    if (ciph.isEmpty())   // NOTE: Can I verify encryption in another (better?) way?
     {
         label = new QLabel(this);
         label->setWordWrap(true);
@@ -145,47 +136,48 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     {
         label = new QLabel(this);
         label->setWordWrap(true);
-        label->setTextFormat(Qt::PlainText);
-        label->setText(i18n("Your connection to %1 is encrypted with %2-bit encryption.\n", m_url.host(), m_info.supportedChiperBits()));
+        label->setText( i18n("Your connection to \"%1\" is encrypted!\n", m_url.host()) );
         layout->addWidget(label, rows++, 1);
 
-        int vers = cert.version().toInt();
+        QString vers = m_info.protocol();
         QString sslVersion;
-        switch(vers)
+        if (vers == QL1S("SSLv3"))
         {
-        case 0:
             sslVersion = QL1S("SSL 3.0");
             imageLabel->setPixmap(KIcon("security-high").pixmap(32));
-            break;
-        case 1:
+        }
+        else if (vers == QL1S("SSLv2"))
+        {
             sslVersion = QL1S("SSL 2.0");
-            imageLabel->setPixmap(KIcon("security-medium").pixmap(32));
-            break;
-        case 2:
-        case 3:
+            imageLabel->setPixmap(KIcon("security-low").pixmap(32));
+        }
+        else if (vers == QL1S("TLSv1"))
+        {
             sslVersion = QL1S("TLS 1.0");
             imageLabel->setPixmap(KIcon("security-high").pixmap(32));
-            break;
-        default:
-            sslVersion = QL1S("Unknown");
-            imageLabel->setPixmap(KIcon("security-medium").pixmap(32));
+        }
+        else
+        {
+            sslVersion = i18n("Unknown");
+            imageLabel->setPixmap(KIcon("security-low").pixmap(32));
         }
 
         label = new QLabel(this);
         label->setWordWrap(true);
-        label->setText(i18n("The connection uses %1.\n", sslVersion));
+        label->setText( i18n("It uses protocol: %1.\n", sslVersion) );
         layout->addWidget(label, rows++, 1);
 
         const QStringList cipherInfo = m_info.ciphers().split('\n', QString::SkipEmptyParts);
         label = new QLabel(this);
         label->setWordWrap(true);
-        label->setTextFormat(Qt::PlainText);
         label->setText(
-            i18n("The connection is encrypted using %1 at %2 bits with %3 for message authentication and %4 as the key exchange mechanism.\n\n",
+            i18n("It is encrypted using %1 at %2 bits\nMessage authentication: %3\nKey exchange mechanism: %4, with Auth %5.\n\n",
                  cipherInfo[0],
                  m_info.usedChiperBits(),
                  cipherInfo[3],
-                 cipherInfo[1]));
+                 cipherInfo[2],
+                 cipherInfo[1])
+                      );
         layout->addWidget(label, rows++, 1);
 
     }
@@ -196,7 +188,10 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
 
     label = new QLabel(this);
     label->setWordWrap(true);
-    label->setText(i18n("<h4>Site Information</h4>"));
+    label->setText(i18n("Site Information"));
+    QFont f3 = label->font();
+    f3.setBold(true);
+    label->setFont(f3);
     layout->addWidget(label, rows++, 1);
 
     label = new QLabel(this);
@@ -206,7 +201,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
 
     if(firstVisit.visitCount == 1)
     {
-        label->setText(i18n("It's your first time visiting this site!"));
+        label->setText(i18n("It is your first time visiting this site!"));
         imageLabel->setPixmap(KIcon("security-medium").pixmap(32));
     }
     else

@@ -61,7 +61,10 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     // Title
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     QLabel *bookmarkInfo = new QLabel(this);
-    bookmarkInfo->setText(i18n("<h4>Edit this Bookmark</h4>"));
+    bookmarkInfo->setText(i18n("Edit this Bookmark"));
+    QFont f = bookmarkInfo->font();
+    f.setBold(true);
+    bookmarkInfo->setFont(f);
     bookmarkInfo->setAlignment(Qt::AlignCenter);
     vLayout->addWidget(bookmarkInfo);
 

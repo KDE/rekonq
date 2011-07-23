@@ -545,10 +545,11 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
-    //const bool isUrlFrameLoading = (_loadingUrl == frame->url());
+    const bool isLoadingUrlReply = (_loadingUrl == reply->url());
 
     if(isMainFrameRequest
             && _sslInfo.isValid()
+            && isLoadingUrlReply
             && !domainSchemeMatch(reply->url(), _sslInfo.url())
       )
     {
@@ -562,7 +563,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     {
 
     case QNetworkReply::NoError:                             // no error. Simple :)
-        if(isMainFrameRequest && !_sslInfo.isValid())
+        if(isMainFrameRequest && isLoadingUrlReply && !_sslInfo.isValid())
         {
             // Obtain and set the SSL information if any...
             _sslInfo.restoreFrom(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)), reply->url());
@@ -754,22 +755,15 @@ void WebPage::copyToTempFileResult(KJob* job)
 
 bool WebPage::hasSslValid()
 {
-    bool v = true;
     QList<QSslCertificate> certList = _sslInfo.certificateChain();
 
     if (certList.isEmpty())
         return false;
 
-    Q_FOREACH(const QSslCertificate & cert, certList)
-    {
-        v &= cert.isValid();
-    }
+    QSslCertificate firstCert = certList.at(0);
+    if (!firstCert.isValid())
+        return false;
 
-    QList<QStringList> errorsList = SslInfoDialog::errorsFromString(_sslInfo.certificateErrors());
-    Q_FOREACH(const QStringList & err, errorsList)
-    {
-        v &= err.isEmpty();
-    }
-    
-    return v;
+    QStringList firstCertErrorsList = SslInfoDialog::errorsFromString(_sslInfo.certificateErrors()).at(0);
+    return firstCertErrorsList.isEmpty();
 }

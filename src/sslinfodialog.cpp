@@ -31,15 +31,13 @@
 
 #include <KFileDialog>
 
-#include <QtGui/QFrame>
 #include <QtCore/QDate>
 #include <QtCore/QFile>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtCore/Q_PID>
-#include <QtNetwork/QSslCertificate>
 
-#include <QFormLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QTextDocument>
+
+#include <QtNetwork/QSslCertificate>
 
 #include <kglobal.h>
 #include <klocale.h>
@@ -58,7 +56,7 @@ SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidge
 
     setButtons(KDialog::User1 | KDialog::Close);
 
-    setButtonGuiItem(User1, KGuiItem(i18n("Export"), "view-certificate-export"));
+    setButtonGuiItem(User1, KGuiItem(i18n("Export"), QL1S("view-certificate-export")));
     connect(this, SIGNAL(user1Clicked()), this, SLOT(exportCert()));
 
     ui.setupUi(mainWidget());
@@ -88,39 +86,20 @@ void SslInfoDialog::showCertificateInfo(QSslCertificate subjectCert, const QStri
     c += QL1S("</ul>");
     ui.certInfoLabel->setText(c);
 
-    // WARNING (Security Issue): set these labels to use PlainText!
-    ui.subjectCN->setText(subjectCert.subjectInfo(QSslCertificate::CommonName));
-    ui.subjectCN->setTextFormat(Qt::PlainText);
-    
-    ui.subjectO->setText(subjectCert.subjectInfo(QSslCertificate::Organization));
-    ui.subjectO->setTextFormat(Qt::PlainText);
+    ui.subjectCN->setText( Qt::escape(subjectCert.subjectInfo(QSslCertificate::CommonName)) );
+    ui.subjectO->setText( Qt::escape(subjectCert.subjectInfo(QSslCertificate::Organization)) );
+    ui.subjectOU->setText( Qt::escape(subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName)) );
+    ui.subjectSN->setText( Qt::escape(subjectCert.serialNumber()) );
 
-    ui.subjectOU->setText(subjectCert.subjectInfo(QSslCertificate::OrganizationalUnitName));
-    ui.subjectOU->setTextFormat(Qt::PlainText);
+    ui.issuerCN->setText( Qt::escape(subjectCert.issuerInfo(QSslCertificate::CommonName)) );
+    ui.issuerO->setText( Qt::escape(subjectCert.issuerInfo(QSslCertificate::Organization)) );
+    ui.issuerOU->setText( Qt::escape(subjectCert.issuerInfo(QSslCertificate::OrganizationalUnitName)) );
 
-    ui.subjectSN->setText(subjectCert.serialNumber());
-    ui.subjectSN->setTextFormat(Qt::PlainText);
+    ui.issuedOn->setText( Qt::escape(subjectCert.effectiveDate().date().toString(Qt::SystemLocaleShortDate)) );
+    ui.expiresOn->setText( Qt::escape(subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate)) );
 
-    ui.issuerCN->setText(subjectCert.issuerInfo(QSslCertificate::CommonName));
-    ui.issuerCN->setTextFormat(Qt::PlainText);
-
-    ui.issuerO->setText(subjectCert.issuerInfo(QSslCertificate::Organization));
-    ui.issuerO->setTextFormat(Qt::PlainText);
-
-    ui.issuerOU->setText(subjectCert.issuerInfo(QSslCertificate::OrganizationalUnitName));
-    ui.issuerOU->setTextFormat(Qt::PlainText);
-
-    ui.issuedOn->setText(subjectCert.effectiveDate().date().toString(Qt::SystemLocaleShortDate));
-    ui.issuedOn->setTextFormat(Qt::PlainText);
-
-    ui.expiresOn->setText(subjectCert.expiryDate().date().toString(Qt::SystemLocaleShortDate));
-    ui.expiresOn->setTextFormat(Qt::PlainText);
-
-    ui.md5->setText(subjectCert.digest(QCryptographicHash::Md5).toHex());
-    ui.md5->setTextFormat(Qt::PlainText);
-
-    ui.sha1->setText(subjectCert.digest(QCryptographicHash::Sha1).toHex());
-    ui.sha1->setTextFormat(Qt::PlainText);
+    ui.md5->setText( Qt::escape(subjectCert.digest(QCryptographicHash::Md5).toHex()) );
+    ui.sha1->setText( Qt::escape(subjectCert.digest(QCryptographicHash::Sha1).toHex()) );
 }
 
 
@@ -149,7 +128,10 @@ void SslInfoDialog::exportCert()
 {
     QSslCertificate cert = m_info.certificateChain().at(ui.comboBox->currentIndex());
 
-    QString name = cert.subjectInfo(QSslCertificate::CommonName) + QL1S(".pem");
+    if (cert.isNull())
+        return;
+
+    QString name = m_host + QL1S(".pem");
 
     QString certPath = KFileDialog::getSaveFileName(name, QString(), this);
 
