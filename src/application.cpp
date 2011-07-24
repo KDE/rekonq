@@ -222,8 +222,10 @@ int Application::newInstance()
                 loadUrl(KUrl("about:home"), Rekonq::NewWindow);
                 break;
             case 2: // restore session
-                sessionManager()->restoreSession();
-                break;
+                if (sessionManager()->restoreSession())
+                {
+                    break;
+                }
             default:
                 newMainWindow()->homePage();
                 break;
