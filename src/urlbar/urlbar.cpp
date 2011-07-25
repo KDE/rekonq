@@ -45,11 +45,13 @@
 #include "bookmarkowner.h"
 #include "bookmarkwidget.h"
 #include "iconmanager.h"
+#include "favoritewidget.h"
 
 // KDE Includes
 #include <KCompletionBox>
 #include <KStandardDirs>
 #include <KColorScheme>
+#include <KMenu>
 
 // Qt Includes
 #include <QtGui/QPainter>
@@ -114,7 +116,8 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
 
     // search icon
-    connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)), this, SLOT(updateRightIcons()));
+    connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
+            this, SLOT(updateRightIcons()));
 
     _suggestionTimer->setSingleShot(true);
     connect(_suggestionTimer, SIGNAL(timeout()), this, SLOT(suggest()));
@@ -335,9 +338,19 @@ void UrlBar::loadFinished()
         return;
     }
 
+    kDebug() << ReKonfig::previewUrls();
+    kDebug() << _tab->url().url();
+
+    // show Favorite Icon
+    if(ReKonfig::previewUrls().contains(_tab->url().url()))
+    {
+        IconButton *bt = addRightIcon(UrlBar::Favorite);
+        connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(showFavoriteDialog(QPoint)));
+    }
+
     // show bookmark info
     IconButton *bt = addRightIcon(UrlBar::BK);
-    connect(bt, SIGNAL(clicked(const QPoint &)), this, SLOT(showBookmarkInfo(const QPoint &)));
+    connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(showBookmarkInfo(QPoint)));
 
     // show KGet downloads??
     if(!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
@@ -376,24 +389,23 @@ void UrlBar::loadFinished()
 }
 
 
-void UrlBar::showBookmarkInfo(const QPoint &pos)
+void UrlBar::showBookmarkDialog()
+{
+    showBookmarkInfo(QCursor::pos());
+}
+
+
+void UrlBar::showBookmarkInfo(QPoint pos)
 {
     if(_tab->url().scheme() == QL1S("about"))
         return;
 
     KBookmark bookmark = rApp->bookmarkProvider()->bookmarkForUrl(_tab->url());
 
-    IconButton *bt = qobject_cast<IconButton *>(this->sender());
-    if(!bt)
-        return;
-
     if(bookmark.isNull())
     {
         bookmark = rApp->bookmarkProvider()->bookmarkOwner()->bookmarkCurrentPage();
-
-        // set bk icon
-        bt->setIcon(KIcon("bookmarks"));
-        bt->setToolTip(i18n("Edit this bookmark"));
+        updateRightIcons();
     }
     else
     {
@@ -443,8 +455,10 @@ void UrlBar::activateSuggestions(bool b)
 }
 
 
-void UrlBar::mouseDoubleClickEvent(QMouseEvent *)
+void UrlBar::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event);
+
     selectAll();
 }
 
@@ -480,6 +494,8 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
             rightIcon->setIcon(KIcon("bookmarks"));
             rightIcon->setToolTip(i18n("Edit this bookmark"));
         }
+        rightIcon->setContextMenuPolicy(Qt::CustomContextMenu);
+        connect(rightIcon, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(bookmarkContextMenu(QPoint)));
         break;
     case UrlBar::SearchEngine:
     {
@@ -492,6 +508,10 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         rightIcon->setToolTip(i18n("Add search engine"));
         break;
     }
+    case UrlBar::Favorite:
+        rightIcon->setIcon(KIcon("emblem-favorite"));
+        rightIcon->setToolTip(i18n("Remove from favorite"));
+        break;
     default:
         kDebug() << "ERROR.. default non extant case!!";
         break;
@@ -568,4 +588,62 @@ void UrlBar::refreshFavicon()
         return;
     }
     _icon->setIcon(rApp->iconManager()->iconForUrl(u));
+}
+
+
+void UrlBar::showFavoriteDialog(QPoint pos)
+{
+    if(_tab->url().scheme() == QL1S("about"))
+        return;
+
+    IconButton *bt = qobject_cast<IconButton *>(this->sender());
+    if(!bt)
+        return;
+
+    FavoriteWidget *widget = new FavoriteWidget(_tab, window());
+    connect(widget, SIGNAL(updateIcon()), this, SLOT(updateRightIcons()));
+    widget->showAt(pos);
+}
+
+
+void UrlBar::bookmarkContextMenu(QPoint pos)
+{
+    Q_UNUSED(pos);
+
+    KMenu menu(this);
+    QAction *qa;
+
+    if(!rApp->bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
+    {
+        qa = new KAction(KIcon("bookmarks"), i18n("Edit Bookmark"), this);
+        connect(qa, SIGNAL(triggered(bool)), this, SLOT(showBookmarkDialog()));
+        menu.addAction(qa);
+    }
+
+    if(!ReKonfig::previewUrls().contains(_tab->url().url()))
+    {
+        qa = new KAction(KIcon("emblem-favorite"), i18n("Add to favorite"), this);
+        connect(qa, SIGNAL(triggered(bool)), this, SLOT(addFavorite()));
+        menu.addAction(qa);
+    }
+
+    menu.exec(QCursor::pos());
+}
+
+
+
+void UrlBar::addFavorite()
+{
+    if(ReKonfig::previewUrls().contains(_tab->url().url()))
+        return;
+
+    QStringList urls = ReKonfig::previewUrls();
+    urls << _tab->url().url();
+    ReKonfig::setPreviewUrls(urls);
+
+    QStringList titles = ReKonfig::previewNames();
+    titles << _tab->view()->title();
+    ReKonfig::setPreviewNames(titles);
+
+    updateRightIcons();
 }

@@ -55,12 +55,11 @@ class IconButton : public QToolButton
 public:
     IconButton(QWidget *parent = 0);
 
-signals:
+Q_SIGNALS:
     void clicked(QPoint);
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
-
 };
 
 
@@ -83,7 +82,8 @@ public:
         RSS          = 0x00000010,
         SSL          = 0x00000100,
         BK           = 0x00001000,
-        SearchEngine = 0x00010000
+        SearchEngine = 0x00010000,
+        Favorite     = 0x00100000
     };
 
     explicit UrlBar(QWidget *parent = 0);
@@ -91,10 +91,10 @@ public:
 
     void activateSuggestions(bool);
 
-public slots:
+public Q_SLOTS:
     void setQUrl(const QUrl &url);
 
-private slots:
+private Q_SLOTS:
     void activated(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
 
     void loadFinished();
@@ -106,7 +106,12 @@ private slots:
     void detectTypedString(const QString &);
     void suggest();
 
-    void showBookmarkInfo(const QPoint &pos);
+    void showBookmarkInfo(QPoint);
+    void showBookmarkDialog();
+
+    void showFavoriteDialog(QPoint);
+    void bookmarkContextMenu(QPoint);
+    void addFavorite();
 
     void refreshFavicon();
 

@@ -77,6 +77,7 @@ SET( rekonq_KDEINIT_SRCS
     urlbar/sslwidget.cpp
     urlbar/bookmarkwidget.cpp
     urlbar/webshortcutwidget.cpp
+    urlbar/favoritewidget.cpp
     #----------------------------------------
     analyzer/analyzerpanel.cpp
     analyzer/networkanalyzer.cpp
