@@ -545,7 +545,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
-    const bool isLoadingUrlReply = (_loadingUrl == reply->url());
+    const bool isLoadingUrlReply = (mainFrame()->url() == reply->url());
 
     if(isMainFrameRequest
             && _sslInfo.isValid()
@@ -753,17 +753,24 @@ void WebPage::copyToTempFileResult(KJob* job)
 }
 
 
-bool WebPage::hasSslValid()
+bool WebPage::hasSslValid() const
 {
     QList<QSslCertificate> certList = _sslInfo.certificateChain();
 
     if (certList.isEmpty())
         return false;
 
-    QSslCertificate firstCert = certList.at(0);
-    if (!firstCert.isValid())
-        return false;
+    Q_FOREACH(const QSslCertificate &cert, certList)
+    {
+        if (!cert.isValid())
+            return false;
+    }
 
-    QStringList firstCertErrorsList = SslInfoDialog::errorsFromString(_sslInfo.certificateErrors()).at(0);
-    return firstCertErrorsList.isEmpty();
+    QList<QStringList> errorList = SslInfoDialog::errorsFromString(_sslInfo.certificateErrors());
+    Q_FOREACH(const QStringList & list, errorList)
+    {
+        if (!list.isEmpty())
+            return false;
+    }
+    return true;
 }

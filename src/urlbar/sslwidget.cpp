@@ -49,8 +49,15 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
     setMinimumWidth(400);
 
-    QSslCertificate cert = m_info.certificateChain().first();
-    QStringList firstCertErrorList = SslInfoDialog::errorsFromString(m_info.certificateErrors()).first();
+    QList<QSslCertificate> certList = m_info.certificateChain();
+    QSslCertificate cert;
+    if (!certList.isEmpty())
+         cert = certList.first();
+
+    QList<QStringList> certErrorList = SslInfoDialog::errorsFromString(m_info.certificateErrors());
+    QStringList firstCertErrorList;
+    if (!certErrorList.isEmpty())
+        firstCertErrorList = certErrorList.first();
     
     QGridLayout *layout = new QGridLayout(this);
 
@@ -77,12 +84,14 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
         label->setText(i18n("Warning: this site is NOT carrying a certificate!"));
 
         imageLabel->setPixmap(KIcon("security-low").pixmap(32));
+
+        layout->addWidget(label, rows++, 1);
     }
     else
     {
         if(cert.isValid() && firstCertErrorList.isEmpty())
         {
-            label->setText(i18n("This certificate for this site is valid and has been verified by:\n%1.",
+            label->setText(i18n("The certificate for this site is valid and has been verified by:\n%1.",
                                 Qt::escape(cert.issuerInfo(QSslCertificate::CommonName)) ));
 
             imageLabel->setPixmap(KIcon("security-high").pixmap(32));
@@ -100,15 +109,15 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
             label->setTextFormat(Qt::RichText);
             imageLabel->setPixmap(KIcon("security-low").pixmap(32));
         }
+
+        layout->addWidget(label, rows++, 1);
+
+        label = new QLabel(this);
+        label->setWordWrap(true);
+        label->setText("<a href=\"moresslinfos\">Certificate Information</a>");
+        connect(label, SIGNAL(linkActivated(const QString &)), this, SLOT(showMoreSslInfos(const QString &)));
+        layout->addWidget(label, rows++, 1);
     }
-
-    layout->addWidget(label, rows++, 1);
-
-    label = new QLabel(this);
-    label->setWordWrap(true);
-    label->setText("<a href=\"moresslinfos\">Certificate Information</a>");
-    connect(label, SIGNAL(linkActivated(const QString &)), this, SLOT(showMoreSslInfos(const QString &)));
-    layout->addWidget(label, rows++, 1);
 
     // ------------------------------------------------------------------------------------------------------------------
     label = new QLabel(this);
@@ -171,7 +180,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
         label = new QLabel(this);
         label->setWordWrap(true);
         label->setText(
-            i18n("It is encrypted using %1 at %2 bits\nMessage authentication: %3\nKey exchange mechanism: %4, with Auth %5.\n\n",
+            i18n("It is encrypted using %1 at %2 bits, with %3 for message authentication and %4 with Auth %5 as key exchange mechanism.\n\n",
                  cipherInfo[0],
                  m_info.usedChiperBits(),
                  cipherInfo[3],

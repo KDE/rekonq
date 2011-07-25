@@ -338,9 +338,6 @@ void UrlBar::loadFinished()
         return;
     }
 
-    kDebug() << ReKonfig::previewUrls();
-    kDebug() << _tab->url().url();
-
     // show Favorite Icon
     if(ReKonfig::previewUrls().contains(_tab->url().url()))
     {
