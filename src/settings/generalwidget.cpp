@@ -54,7 +54,7 @@ GeneralWidget::GeneralWidget(QWidget *parent)
     checkKGetPresence();
 
     KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
-    doNotTrackCheckBox->setChecked( cg.readEntry("DoNotTrack", false) );
+    doNotTrackCheckBox->setChecked(cg.readEntry("DoNotTrack", false));
 
     connect(doNotTrackCheckBox, SIGNAL(clicked()), this, SLOT(hasChanged()));
 }
@@ -85,7 +85,7 @@ void GeneralWidget::setHomeToCurrentPage()
 {
     MainWindow *mw = rApp->mainWindow();
     WebTab *webTab = mw->currentTab();
-    if(webTab)
+    if (webTab)
     {
         kcfg_homePage->setText(webTab->url().prettyUrl());
     }
@@ -101,7 +101,7 @@ void GeneralWidget::disableHomeSettings(bool b)
 
 void GeneralWidget::checkKGetPresence()
 {
-    if(KStandardDirs::findExe("kget").isNull())
+    if (KStandardDirs::findExe("kget").isNull())
     {
         kcfg_kgetDownload->setDisabled(true);
         kcfg_kgetList->setDisabled(true);

@@ -136,7 +136,7 @@ UrlBar::~UrlBar()
 
 void UrlBar::setQUrl(const QUrl& url)
 {
-    if(url.scheme() == QL1S("about"))
+    if (url.scheme() == QL1S("about"))
     {
         clear();
         setFocus();
@@ -166,7 +166,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     QColor backgroundColor;
     QColor foregroundColor;
 
-    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         backgroundColor = QColor(220, 220, 220);  // light gray
         foregroundColor = Qt::black;
@@ -181,9 +181,9 @@ void UrlBar::paintEvent(QPaintEvent *event)
     QPalette p = palette();
 
     int progr = _tab->progress();
-    if(progr == 0)
+    if (progr == 0)
     {
-        if(_tab->url().scheme() == QL1S("https"))
+        if (_tab->url().scheme() == QL1S("https"))
         {
             backgroundColor = _tab->page()->hasSslValid()
                               ? colorScheme.background(KColorScheme::PositiveBackground).color()
@@ -204,7 +204,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
 
         QColor loadingColor(r, g, b);
 
-        if(abs(loadingColor.lightness() - backgroundColor.lightness()) < 20)  //eg. Gaia color scheme
+        if (abs(loadingColor.lightness() - backgroundColor.lightness()) < 20) //eg. Gaia color scheme
         {
             r = (2 * highlight.red() + backgroundColor.red()) / 3;
             g = (2 * highlight.green() + backgroundColor.green()) / 3;
@@ -223,7 +223,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     // you need this before our code to draw inside the line edit..
     KLineEdit::paintEvent(event);
 
-    if(text().isEmpty() && progr == 0)
+    if (text().isEmpty() && progr == 0)
     {
         QStyleOptionFrame option;
         initStyleOption(&option);
@@ -242,36 +242,36 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 {
     // this handles the Modifiers + Return key combinations
     QString currentText = text().trimmed();
-    if(event->modifiers() == Qt::AltModifier)
+    if (event->modifiers() == Qt::AltModifier)
     {
-        if(event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+        if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
         {
             activated(currentText, Rekonq::NewFocusedTab);
         }
     }
-    if((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+    if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
             && !currentText.startsWith(QL1S("http://"), Qt::CaseInsensitive)
             && event->modifiers() != Qt::NoModifier)
     {
         QString append;
-        if(event->modifiers() == Qt::ControlModifier)
+        if (event->modifiers() == Qt::ControlModifier)
         {
             append = QL1S(".com");
         }
-        else if(event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
+        else if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
         {
             append = QL1S(".org");
         }
-        else if(event->modifiers() == Qt::ShiftModifier)
+        else if (event->modifiers() == Qt::ShiftModifier)
         {
             append = QL1S(".net");
         }
 
-        if(!append.isEmpty())
+        if (!append.isEmpty())
         {
             QUrl url(QL1S("http://www.") + currentText);
             QString host = url.host();
-            if(!host.endsWith(append, Qt::CaseInsensitive))
+            if (!host.endsWith(append, Qt::CaseInsensitive))
             {
                 host += append;
                 url.setHost(host);
@@ -282,16 +282,16 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    else if((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-            && !currentText.isEmpty())
+    else if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+             && !currentText.isEmpty())
     {
         loadTyped(currentText);
     }
 
-    else if(event->key() == Qt::Key_Escape)
+    else if (event->key() == Qt::Key_Escape)
     {
         clearFocus();
-        if(text() != rApp->mainWindow()->currentTab()->view()->url().toString()
+        if (text() != rApp->mainWindow()->currentTab()->view()->url().toString()
                 && !rApp->mainWindow()->currentTab()->view()->url().toString().startsWith("about"))
             setText(rApp->mainWindow()->currentTab()->view()->url().toString());
         event->accept();
@@ -312,11 +312,11 @@ void UrlBar::focusInEvent(QFocusEvent *event)
 void UrlBar::dropEvent(QDropEvent *event)
 {
     // handles only plain-text with url format
-    if(event->mimeData()->hasFormat("text/plain") && event->source() != this)
+    if (event->mimeData()->hasFormat("text/plain") && event->source() != this)
     {
         QUrl url = QUrl::fromUserInput(event->mimeData()->data("text/plain"));
 
-        if(url.isValid())
+        if (url.isValid())
         {
             setQUrl(url);
             activated(text());
@@ -332,14 +332,14 @@ void UrlBar::dropEvent(QDropEvent *event)
 
 void UrlBar::loadFinished()
 {
-    if(_tab->url().scheme() == QL1S("about"))
+    if (_tab->url().scheme() == QL1S("about"))
     {
         update();
         return;
     }
 
     // show Favorite Icon
-    if(ReKonfig::previewUrls().contains(_tab->url().url()))
+    if (ReKonfig::previewUrls().contains(_tab->url().url()))
     {
         IconButton *bt = addRightIcon(UrlBar::Favorite);
         connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(showFavoriteDialog(QPoint)));
@@ -350,21 +350,21 @@ void UrlBar::loadFinished()
     connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(showBookmarkInfo(QPoint)));
 
     // show KGet downloads??
-    if(!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
+    if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
     {
         IconButton *bt = addRightIcon(UrlBar::KGet);
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(downloadAllContentsWithKGet(QPoint)));
     }
 
     // show RSS
-    if(_tab->hasRSSInfo())
+    if (_tab->hasRSSInfo())
     {
         IconButton *bt = addRightIcon(UrlBar::RSS);
         connect(bt, SIGNAL(clicked(QPoint)), _tab, SLOT(showRSSInfo(QPoint)));
     }
 
     // show SSL
-    if(_tab->url().scheme() == QL1S("https"))
+    if (_tab->url().scheme() == QL1S("https"))
     {
         // NOTE: the choice for the right SSL icon is done in the addRightIcon method
         IconButton *bt = addRightIcon(UrlBar::SSL);
@@ -372,7 +372,7 @@ void UrlBar::loadFinished()
     }
 
     // show add search engine
-    if(_tab->hasNewSearchEngine())
+    if (_tab->hasNewSearchEngine())
     {
         IconButton *bt = addRightIcon(UrlBar::SearchEngine);
         connect(bt, SIGNAL(clicked(QPoint)), _tab, SLOT(showSearchEngine(QPoint)));
@@ -394,12 +394,12 @@ void UrlBar::showBookmarkDialog()
 
 void UrlBar::showBookmarkInfo(QPoint pos)
 {
-    if(_tab->url().scheme() == QL1S("about"))
+    if (_tab->url().scheme() == QL1S("about"))
         return;
 
     KBookmark bookmark = rApp->bookmarkProvider()->bookmarkForUrl(_tab->url());
 
-    if(bookmark.isNull())
+    if (bookmark.isNull())
     {
         bookmark = rApp->bookmarkProvider()->bookmarkOwner()->bookmarkCurrentPage();
         updateRightIcons();
@@ -415,7 +415,7 @@ void UrlBar::showBookmarkInfo(QPoint pos)
 
 void UrlBar::updateRightIcons()
 {
-    if(!_tab->isPageLoading())
+    if (!_tab->isPageLoading())
     {
         clearRightIcons();
         loadFinished();
@@ -431,9 +431,9 @@ void UrlBar::loadTyped(const QString &text)
 
 void UrlBar::activateSuggestions(bool b)
 {
-    if(b)
+    if (b)
     {
-        if(_box.isNull())
+        if (_box.isNull())
         {
             _box = new CompletionWidget(this);
             installEventFilter(_box.data());
@@ -464,7 +464,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
 {
     IconButton *rightIcon = new IconButton(this);
 
-    switch(ic)
+    switch (ic)
     {
     case UrlBar::KGet:
         rightIcon->setIcon(KIcon("download"));
@@ -481,7 +481,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         rightIcon->setToolTip(i18n("Show SSL Info"));
         break;
     case UrlBar::BK:
-        if(rApp->bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
+        if (rApp->bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
         {
             rightIcon->setIcon(KIcon("bookmarks").pixmap(32, 32, QIcon::Disabled));
             rightIcon->setToolTip(i18n("Bookmark this page"));
@@ -497,7 +497,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
     case UrlBar::SearchEngine:
     {
         KIcon wsIcon("edit-web-search");
-        if(wsIcon.isNull())
+        if (wsIcon.isNull())
         {
             wsIcon = KIcon("preferences-web-browser-shortcuts");
         }
@@ -539,7 +539,7 @@ void UrlBar::resizeEvent(QResizeEvent *event)
     int iconsCount = _rightIconsList.count();
     int w = width();
 
-    for(int i = 0; i < iconsCount; ++i)
+    for (int i = 0; i < iconsCount; ++i)
     {
         IconButton *bt = _rightIconsList.at(i);
         bt->move(w - 25 * (i + 1), newHeight);
@@ -551,13 +551,13 @@ void UrlBar::resizeEvent(QResizeEvent *event)
 
 void UrlBar::detectTypedString(const QString &typed)
 {
-    if(typed.count() == 1)
+    if (typed.count() == 1)
     {
         QTimer::singleShot(0, this, SLOT(suggest()));
         return;
     }
 
-    if(_suggestionTimer->isActive())
+    if (_suggestionTimer->isActive())
         _suggestionTimer->stop();
     _suggestionTimer->start(50);
 }
@@ -565,21 +565,21 @@ void UrlBar::detectTypedString(const QString &typed)
 
 void UrlBar::suggest()
 {
-    if(!_box.isNull())
+    if (!_box.isNull())
         _box.data()->suggestUrls(text());
 }
 
 
 void UrlBar::refreshFavicon()
 {
-    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         _icon->setIcon(KIcon("view-media-artist"));
         return;
     }
 
     KUrl u = _tab->url();
-    if(u.scheme() == QL1S("about"))
+    if (u.scheme() == QL1S("about"))
     {
         _icon->setIcon(KIcon("arrow-right"));
         return;
@@ -590,11 +590,11 @@ void UrlBar::refreshFavicon()
 
 void UrlBar::showFavoriteDialog(QPoint pos)
 {
-    if(_tab->url().scheme() == QL1S("about"))
+    if (_tab->url().scheme() == QL1S("about"))
         return;
 
     IconButton *bt = qobject_cast<IconButton *>(this->sender());
-    if(!bt)
+    if (!bt)
         return;
 
     FavoriteWidget *widget = new FavoriteWidget(_tab, window());
@@ -610,14 +610,14 @@ void UrlBar::bookmarkContextMenu(QPoint pos)
     KMenu menu(this);
     QAction *qa;
 
-    if(!rApp->bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
+    if (!rApp->bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
     {
         qa = new KAction(KIcon("bookmarks"), i18n("Edit Bookmark"), this);
         connect(qa, SIGNAL(triggered(bool)), this, SLOT(showBookmarkDialog()));
         menu.addAction(qa);
     }
 
-    if(!ReKonfig::previewUrls().contains(_tab->url().url()))
+    if (!ReKonfig::previewUrls().contains(_tab->url().url()))
     {
         qa = new KAction(KIcon("emblem-favorite"), i18n("Add to favorite"), this);
         connect(qa, SIGNAL(triggered(bool)), this, SLOT(addFavorite()));
@@ -631,7 +631,7 @@ void UrlBar::bookmarkContextMenu(QPoint pos)
 
 void UrlBar::addFavorite()
 {
-    if(ReKonfig::previewUrls().contains(_tab->url().url()))
+    if (ReKonfig::previewUrls().contains(_tab->url().url()))
         return;
 
     QStringList urls = ReKonfig::previewUrls();

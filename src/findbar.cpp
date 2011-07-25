@@ -119,9 +119,9 @@ FindBar::FindBar(MainWindow *window)
 
 void FindBar::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Return)
+    if (event->key() == Qt::Key_Return)
     {
-        if(event->modifiers() == Qt::ShiftModifier)
+        if (event->modifiers() == Qt::ShiftModifier)
         {
             m_mainWindow->findPrevious();
         }
@@ -148,7 +148,7 @@ bool FindBar::highlightAllState() const
 
 void FindBar::setVisible(bool visible)
 {
-    if(visible && m_mainWindow->currentTab()->page()->isOnRekonqPage() && m_mainWindow->currentTab()->part() != 0)
+    if (visible && m_mainWindow->currentTab()->page()->isOnRekonqPage() && m_mainWindow->currentTab()->part() != 0)
     {
         // findNext is the slot containing part integration code
         m_mainWindow->findNext();
@@ -157,20 +157,20 @@ void FindBar::setVisible(bool visible)
 
     QWidget::setVisible(visible);
 
-    if(visible)
+    if (visible)
     {
         const QString selectedText = m_mainWindow->selectedText();
-        if(!hasFocus() && !selectedText.isEmpty())
+        if (!hasFocus() && !selectedText.isEmpty())
         {
             const QString previousText = m_lineEdit->text();
             m_lineEdit->setText(selectedText);
 
-            if(m_lineEdit->text() != previousText)
+            if (m_lineEdit->text() != previousText)
                 m_mainWindow->findPrevious();
             else
                 m_mainWindow->updateHighlight();;
         }
-        else if(selectedText.isEmpty())
+        else if (selectedText.isEmpty())
         {
             emit searchString(m_lineEdit->text());
         }
@@ -192,13 +192,13 @@ void FindBar::notifyMatch(bool match)
     QPalette p = m_lineEdit->palette();
     KColorScheme colorScheme(p.currentColorGroup());
 
-    if(m_lineEdit->text().isEmpty())
+    if (m_lineEdit->text().isEmpty())
     {
         p.setColor(QPalette::Base, colorScheme.background(KColorScheme::NormalBackground).color());
     }
     else
     {
-        if(match)
+        if (match)
         {
             p.setColor(QPalette::Base, colorScheme.background(KColorScheme::PositiveBackground).color());
         }

@@ -132,7 +132,7 @@ Private::Private(SettingsDialog *parent)
     ebrowsingModule = new KCModuleProxy(ebrowsingInfo, parent);
     pageItem = parent->addPage(ebrowsingModule, i18n("Search Engines"));
     KIcon wsIcon("edit-web-search");
-    if(wsIcon.isNull())
+    if (wsIcon.isNull())
     {
         wsIcon = KIcon("preferences-web-browser-shortcuts");
     }
@@ -189,7 +189,7 @@ void SettingsDialog::readConfig()
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
-    if(!hasChanged())
+    if (!hasChanged())
         return;
 
     ReKonfig::self()->writeConfig();
@@ -230,7 +230,7 @@ bool SettingsDialog::isDefault()
 {
     bool isDef = KConfigDialog::isDefault();
 
-    if(isDef)
+    if (isDef)
     {
         // check our private widget values
         isDef = d->appearanceWidg->isDefault();

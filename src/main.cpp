@@ -199,7 +199,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     // Add options from Application class
     Application::addCmdLineOptions();
 
-    if(!Application::start())
+    if (!Application::start())
     {
         kWarning() << "rekonq is already running!";
         return 0;

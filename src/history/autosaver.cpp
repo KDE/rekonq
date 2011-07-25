@@ -50,7 +50,7 @@ AutoSaver::AutoSaver(QObject *parent)
 
 AutoSaver::~AutoSaver()
 {
-    if(m_timer->isActive())
+    if (m_timer->isActive())
         kDebug() << "AutoSaver: still active when destroyed, changes not saved.";
 
     delete m_firstChange;
@@ -60,17 +60,17 @@ AutoSaver::~AutoSaver()
 
 void AutoSaver::saveIfNeccessary()
 {
-    if(m_timer->isActive())
+    if (m_timer->isActive())
         save();
 }
 
 
 void AutoSaver::changeOccurred()
 {
-    if(m_firstChange->isNull())
+    if (m_firstChange->isNull())
         m_firstChange->start();
 
-    if(m_firstChange->elapsed() > MAX_TIME_LIMIT)
+    if (m_firstChange->elapsed() > MAX_TIME_LIMIT)
         save();
     else
         m_timer->start(AUTOSAVE_TIME, this);
@@ -79,7 +79,7 @@ void AutoSaver::changeOccurred()
 
 void AutoSaver::timerEvent(QTimerEvent *event)
 {
-    if(event->timerId() == m_timer->timerId())
+    if (event->timerId() == m_timer->timerId())
         save();
     else
         QObject::timerEvent(event);

@@ -105,7 +105,7 @@ WebView::WebView(QWidget* parent)
 
 WebView::~WebView()
 {
-    if(m_smoothScrolling)
+    if (m_smoothScrolling)
         stopScrolling();
 
     WebPage* p = page();
@@ -118,10 +118,10 @@ WebView::~WebView()
 
 void WebView::changeWindowIcon()
 {
-    if(ReKonfig::useFavicon())
+    if (ReKonfig::useFavicon())
     {
         MainWindow *const mainWindow = rApp->mainWindow();
-        if(url() == mainWindow->currentTab()->url())
+        if (url() == mainWindow->currentTab()->url())
         {
             const int index = mainWindow->mainView()->currentIndex();
             mainWindow->changeWindowIcon(index);
@@ -150,7 +150,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     connect(inspectAction, SIGNAL(triggered(bool)), this, SLOT(inspect()));
 
     // is a link?
-    if(!result.linkUrl().isEmpty())
+    if (!result.linkUrl().isEmpty())
     {
         // link actions
         a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
@@ -170,31 +170,31 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
 
     // is content editable && selected? Add CUT
-    if(result.isContentEditable() && result.isContentSelected())
+    if (result.isContentEditable() && result.isContentSelected())
     {
         // actions for text selected in field
         menu.addAction(pageAction(KWebPage::Cut));
     }
 
     // is content selected) Add COPY
-    if(result.isContentSelected())
+    if (result.isContentSelected())
     {
         a = pageAction(KWebPage::Copy);
-        if(!result.linkUrl().isEmpty())
+        if (!result.linkUrl().isEmpty())
             a->setText(i18n("Copy Text")); //for link
         else
             a->setText(i18n("Copy"));
         menu.addAction(a);
-        if(selectedText().contains('.') && selectedText().indexOf('.') < selectedText().length() && !selectedText().trimmed().contains(" "))
+        if (selectedText().contains('.') && selectedText().indexOf('.') < selectedText().length() && !selectedText().trimmed().contains(" "))
         {
             QString text = selectedText();
             text = text.trimmed();
             KUrl urlLikeText(text);
-            if(urlLikeText.isValid())
+            if (urlLikeText.isValid())
             {
                 QString truncatedUrl = text;
                 const int maxTextSize = 18;
-                if(truncatedUrl.length() > maxTextSize)
+                if (truncatedUrl.length() > maxTextSize)
                 {
                     const int truncateSize = 15;
                     truncatedUrl.truncate(truncateSize);
@@ -216,13 +216,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
 
     // is content editable? Add PASTE
-    if(result.isContentEditable())
+    if (result.isContentEditable())
     {
         menu.addAction(pageAction(KWebPage::Paste));
     }
 
     // is content selected? Add SEARCH actions
-    if(result.isContentSelected())
+    if (result.isContentSelected())
     {
         KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18n("Search with"), this);
 
@@ -239,20 +239,20 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered()), rApp->mainWindow(), SLOT(findSelectedText()));
         searchMenu->addAction(a);
 
-        if(!searchMenu->menu()->isEmpty())
+        if (!searchMenu->menu()->isEmpty())
         {
             menu.addAction(searchMenu);
         }
 
         menu.addSeparator();
 
-        if(ReKonfig::showDeveloperTools())
+        if (ReKonfig::showDeveloperTools())
             menu.addAction(inspectAction);
         // TODO Add translate, show translation
     }
 
     // is an image?
-    if(!result.pixmap().isNull())
+    if (!result.pixmap().isNull())
     {
         menu.addSeparator();
 
@@ -272,33 +272,33 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addSeparator();
 
-        if(ReKonfig::showDeveloperTools())
+        if (ReKonfig::showDeveloperTools())
             menu.addAction(inspectAction);
     }
 
     // page actions
-    if(!result.isContentSelected() && result.linkUrl().isEmpty())
+    if (!result.isContentSelected() && result.linkUrl().isEmpty())
     {
 
         // navigation
         QWebHistory *history = page()->history();
-        if(history->canGoBack())
+        if (history->canGoBack())
         {
             menu.addAction(pageAction(KWebPage::Back));
         }
 
-        if(history->canGoForward())
+        if (history->canGoForward())
         {
             menu.addAction(pageAction(KWebPage::Forward));
         }
 
         menu.addAction(mainwindow->actionByName("view_redisplay"));
 
-        if(result.pixmap().isNull())
+        if (result.pixmap().isNull())
         {
             menu.addSeparator();
 
-            if(!ReKonfig::alwaysShowTabBar() && mainwindow->mainView()->count() == 1)
+            if (!ReKonfig::alwaysShowTabBar() && mainwindow->mainView()->count() == 1)
                 menu.addAction(mainwindow->actionByName("new_tab"));
 
             menu.addAction(mainwindow->actionByName("new_window"));
@@ -323,14 +323,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
             menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
 
-            if(!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
+            if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
             {
                 a = new KAction(KIcon("kget"), i18n("List All Links"), this);
                 connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
                 menu.addAction(a);
             }
 
-            if(ReKonfig::showDeveloperTools())
+            if (ReKonfig::showDeveloperTools())
             {
                 menu.addAction(mainwindow->actionByName("page_source"));
                 menu.addAction(inspectAction);
@@ -340,7 +340,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             menu.addAction(a);
         }
 
-        if(mainwindow->isFullScreen())
+        if (mainwindow->isFullScreen())
         {
             menu.addSeparator();
             menu.addAction(mainwindow->actionByName("fullscreen"));
@@ -353,7 +353,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
 void WebView::mousePressEvent(QMouseEvent *event)
 {
-    if(m_isAutoScrollEnabled)
+    if (m_isAutoScrollEnabled)
     {
         m_vScrollSpeed = 0;
         m_hScrollSpeed = 0;
@@ -366,7 +366,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
     m_canEnableAutoScroll = ReKonfig::autoScroll() && !result.isContentEditable()  && result.linkUrl().isEmpty();
 
-    switch(event->button())
+    switch (event->button())
     {
     case Qt::XButton1:
         triggerPageAction(KWebPage::Back);
@@ -377,12 +377,12 @@ void WebView::mousePressEvent(QMouseEvent *event)
         break;
 
     case Qt::MidButton:
-        if(m_canEnableAutoScroll
+        if (m_canEnableAutoScroll
                 && !m_isAutoScrollEnabled
                 && !page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).contains(event->pos())
                 && !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).contains(event->pos()))
         {
-            if(!page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).isNull()
+            if (!page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).isNull()
                     || !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).isNull())
             {
                 m_clickPos = event->pos();
@@ -403,27 +403,27 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 {
     m_mousePos = event->pos();
 
-    if(m_isAutoScrollEnabled)
+    if (m_isAutoScrollEnabled)
     {
         QPoint r = m_mousePos - m_clickPos;
         m_hScrollSpeed = r.x() / 2;  // you are too fast..
         m_vScrollSpeed = r.y() / 2;
-        if(!m_autoScrollTimer->isActive())
+        if (!m_autoScrollTimer->isActive())
             m_autoScrollTimer->start();
 
         return;
     }
 
     MainWindow *w = rApp->mainWindow();
-    if(w->isFullScreen())
+    if (w->isFullScreen())
     {
-        if(event->pos().y() >= 0 && event->pos().y() <= 4)
+        if (event->pos().y() >= 0 && event->pos().y() <= 4)
         {
             w->setWidgetsVisible(true);
         }
         else
         {
-            if(!w->mainView()->currentUrlBar()->hasFocus())
+            if (!w->mainView()->currentUrlBar()->hasFocus())
                 w->setWidgetsVisible(false);
         }
     }
@@ -434,11 +434,11 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 void WebView::dropEvent(QDropEvent *event)
 {
     bool isEditable = page()->frameAt(event->pos())->hitTestContent(event->pos()).isContentEditable();
-    if(event->mimeData()->hasFormat("application/rekonq-bookmark"))
+    if (event->mimeData()->hasFormat("application/rekonq-bookmark"))
     {
         QByteArray addresses = event->mimeData()->data("application/rekonq-bookmark");
         KBookmark bookmark =  rApp->bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
-        if(bookmark.isGroup())
+        if (bookmark.isGroup())
         {
             rApp->bookmarkProvider()->bookmarkOwner()->openFolderinTabs(bookmark.toGroup());
         }
@@ -447,18 +447,18 @@ void WebView::dropEvent(QDropEvent *event)
             emit loadUrl(bookmark.url(), Rekonq::CurrentTab);
         }
     }
-    else if(event->mimeData()->hasUrls() && event->source() != this && !isEditable)  //dropped links
+    else if (event->mimeData()->hasUrls() && event->source() != this && !isEditable) //dropped links
     {
         Q_FOREACH(const QUrl & url, event->mimeData()->urls())
         {
             emit loadUrl(url, Rekonq::NewFocusedTab);
         }
     }
-    else if(event->mimeData()->hasFormat("text/plain") && event->source() != this && !isEditable)  //dropped plain text with url format
+    else if (event->mimeData()->hasFormat("text/plain") && event->source() != this && !isEditable) //dropped plain text with url format
     {
         QUrl url = QUrl::fromUserInput(event->mimeData()->data("text/plain"));
 
-        if(url.isValid())
+        if (url.isValid())
             emit loadUrl(url, Rekonq::NewFocusedTab);
     }
     else
@@ -472,7 +472,7 @@ void WebView::paintEvent(QPaintEvent* event)
 {
     KWebView::paintEvent(event);
 
-    if(m_isAutoScrollEnabled)
+    if (m_isAutoScrollEnabled)
     {
         QPoint centeredPoint = m_clickPos;
         centeredPoint.setX(centeredPoint.x() - m_autoScrollIndicator.width() / 2);
@@ -506,7 +506,7 @@ void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifier
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
 
-    if(modifiers & Qt::ControlModifier || buttons == Qt::MidButton)
+    if (modifiers & Qt::ControlModifier || buttons == Qt::MidButton)
     {
         emit loadUrl(url, Rekonq::NewTab);
     }
@@ -554,90 +554,90 @@ void WebView::openLinkInNewTab()
 
 void WebView::keyPressEvent(QKeyEvent *event)
 {
-    if(event->modifiers() == Qt::ControlModifier)
+    if (event->modifiers() == Qt::ControlModifier)
     {
-        if(event->key() == Qt::Key_C)
+        if (event->key() == Qt::Key_C)
         {
             triggerPageAction(KWebPage::Copy);
             return;
         }
 
-        if(event->key() == Qt::Key_A)
+        if (event->key() == Qt::Key_A)
         {
             triggerPageAction(KWebPage::SelectAll);
             return;
         }
     }
 
-    if(!m_canEnableAutoScroll)
+    if (!m_canEnableAutoScroll)
     {
         KWebView::keyPressEvent(event);
         return;
     }
 
     // Auto Scrolling
-    if(event->modifiers() == Qt::ShiftModifier)
+    if (event->modifiers() == Qt::ShiftModifier)
     {
-        if(event->key() == Qt::Key_Up)
+        if (event->key() == Qt::Key_Up)
         {
             m_vScrollSpeed--;
-            if(!m_autoScrollTimer->isActive())
+            if (!m_autoScrollTimer->isActive())
                 m_autoScrollTimer->start();
             return;
         }
 
-        if(event->key() == Qt::Key_Down)
+        if (event->key() == Qt::Key_Down)
         {
             m_vScrollSpeed++;
-            if(!m_autoScrollTimer->isActive())
+            if (!m_autoScrollTimer->isActive())
                 m_autoScrollTimer->start();
             return;
         }
 
-        if(event->key() == Qt::Key_Right)
+        if (event->key() == Qt::Key_Right)
         {
             m_hScrollSpeed++;
-            if(!m_autoScrollTimer->isActive())
+            if (!m_autoScrollTimer->isActive())
                 m_autoScrollTimer->start();
             return;
         }
 
-        if(event->key() == Qt::Key_Left)
+        if (event->key() == Qt::Key_Left)
         {
             m_hScrollSpeed--;
-            if(!m_autoScrollTimer->isActive())
+            if (!m_autoScrollTimer->isActive())
                 m_autoScrollTimer->start();
             return;
         }
 
-        if(m_autoScrollTimer->isActive())
+        if (m_autoScrollTimer->isActive())
         {
             m_autoScrollTimer->stop();
         }
         else
         {
-            if(m_vScrollSpeed || m_hScrollSpeed)
+            if (m_vScrollSpeed || m_hScrollSpeed)
                 m_autoScrollTimer->start();
         }
     }
 
     // vi-like navigation
-    if(event->key() == Qt::Key_J && event->modifiers() == Qt::NoModifier)
+    if (event->key() == Qt::Key_J && event->modifiers() == Qt::NoModifier)
     {
         event->accept();
         event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
     }
-    else if(event->key() == Qt::Key_K && event->modifiers() == Qt::NoModifier)
+    else if (event->key() == Qt::Key_K && event->modifiers() == Qt::NoModifier)
     {
         event->accept();
         event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier);
     }
-    else if(event->key() == Qt::Key_L && event->modifiers() == Qt::NoModifier)
+    else if (event->key() == Qt::Key_L && event->modifiers() == Qt::NoModifier)
     {
         event->accept();
         event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
     }
-    else if(event->key() == Qt::Key_H && event->modifiers() == Qt::NoModifier)
+    else if (event->key() == Qt::Key_H && event->modifiers() == Qt::NoModifier)
     {
         event->accept();
         event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
@@ -649,7 +649,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
 
 void WebView::wheelEvent(QWheelEvent *event)
 {
-    if(event->orientation() == Qt::Vertical || !ReKonfig::hScrollWheelHistory())
+    if (event->orientation() == Qt::Vertical || !ReKonfig::hScrollWheelHistory())
     {
         // To let some websites (eg: google maps) to handle wheel events
         int prevPos = page()->currentFrame()->scrollPosition().y();
@@ -657,30 +657,30 @@ void WebView::wheelEvent(QWheelEvent *event)
         int newPos = page()->currentFrame()->scrollPosition().y();
 
         // Sync with the zoom slider
-        if(event->modifiers() == Qt::ControlModifier)
+        if (event->modifiers() == Qt::ControlModifier)
         {
             // Limits of the slider
-            if(zoomFactor() > 1.9)
+            if (zoomFactor() > 1.9)
                 setZoomFactor(1.9);
-            else if(zoomFactor() < 0.1)
+            else if (zoomFactor() < 0.1)
                 setZoomFactor(0.1);
 
             // Round the factor (Fix slider's end value)
             int newFactor = zoomFactor() * 10;
-            if((zoomFactor() * 10 - newFactor) > 0.5)
+            if ((zoomFactor() * 10 - newFactor) > 0.5)
                 newFactor++;
 
             emit zoomChanged(newFactor);
         }
-        else if(ReKonfig::smoothScrolling() && prevPos != newPos)
+        else if (ReKonfig::smoothScrolling() && prevPos != newPos)
         {
 
             page()->currentFrame()->setScrollPosition(QPoint(page()->currentFrame()->scrollPosition().x(), prevPos));
 
-            if((event->delta() > 0) != !m_scrollBottom)
+            if ((event->delta() > 0) != !m_scrollBottom)
                 stopScrolling();
 
-            if(event->delta() > 0)
+            if (event->delta() > 0)
                 m_scrollBottom = false;
             else
                 m_scrollBottom = true;
@@ -693,12 +693,12 @@ void WebView::wheelEvent(QWheelEvent *event)
     else
     {
         // left -> go to previous page
-        if(event->delta() > 0)
+        if (event->delta() > 0)
         {
             emit openPreviousInHistory();
         }
         // right -> go to next page
-        if(event->delta() < 0)
+        if (event->delta() < 0)
         {
             emit openNextInHistory();
         }
@@ -709,7 +709,7 @@ void WebView::wheelEvent(QWheelEvent *event)
 void WebView::inspect()
 {
     QAction *a = rApp->mainWindow()->actionByName("web_inspector");
-    if(a && !a->isChecked())
+    if (a && !a->isChecked())
         a->trigger();
     pageAction(QWebPage::InspectElement)->trigger();
 }
@@ -728,11 +728,11 @@ void WebView::scrollFrameChanged()
 
     // check if we reached the end
     int y = page()->currentFrame()->scrollPosition().y();
-    if(y == 0 || y == page()->currentFrame()->scrollBarMaximum(Qt::Vertical))
+    if (y == 0 || y == page()->currentFrame()->scrollBarMaximum(Qt::Vertical))
         m_vScrollSpeed = 0;
 
     int x = page()->currentFrame()->scrollPosition().x();
-    if(x == 0 || x == page()->currentFrame()->scrollBarMaximum(Qt::Horizontal))
+    if (x == 0 || x == page()->currentFrame()->scrollBarMaximum(Qt::Horizontal))
         m_hScrollSpeed = 0;
 }
 
@@ -743,7 +743,7 @@ void WebView::setupSmoothScrolling(int posY)
 
     m_dy += posY;
 
-    if(m_dy <= 0)
+    if (m_dy <= 0)
     {
         stopScrolling();
         return;
@@ -751,16 +751,16 @@ void WebView::setupSmoothScrolling(int posY)
 
     m_smoothScrollSteps = 8;
 
-    if(m_dy / m_smoothScrollSteps < ddy)
+    if (m_dy / m_smoothScrollSteps < ddy)
     {
         m_smoothScrollSteps = (abs(m_dy) + ddy - 1) / ddy;
-        if(m_smoothScrollSteps < 1)
+        if (m_smoothScrollSteps < 1)
             m_smoothScrollSteps = 1;
     }
 
     m_smoothScrollTime.start();
 
-    if(!m_smoothScrolling)
+    if (!m_smoothScrolling)
     {
         m_smoothScrolling = true;
         m_smoothScrollTimer->start();
@@ -771,30 +771,30 @@ void WebView::setupSmoothScrolling(int posY)
 
 void WebView::scrollTick()
 {
-    if(m_dy == 0)
+    if (m_dy == 0)
     {
         stopScrolling();
         return;
     }
 
-    if(m_smoothScrollSteps < 1)
+    if (m_smoothScrollSteps < 1)
         m_smoothScrollSteps = 1;
 
     int takesteps = m_smoothScrollTime.restart() / 16;
     int scroll_y = 0;
 
-    if(takesteps < 1)
+    if (takesteps < 1)
         takesteps = 1;
 
-    if(takesteps > m_smoothScrollSteps)
+    if (takesteps > m_smoothScrollSteps)
         takesteps = m_smoothScrollSteps;
 
-    for(int i = 0; i < takesteps; i++)
+    for (int i = 0; i < takesteps; i++)
     {
         int ddy = (m_dy / (m_smoothScrollSteps + 1)) * 2;
 
         // limit step to requested scrolling distance
-        if(abs(ddy) > abs(m_dy))
+        if (abs(ddy) > abs(m_dy))
             ddy = m_dy;
 
         // update remaining scroll
@@ -803,7 +803,7 @@ void WebView::scrollTick()
         m_smoothScrollSteps--;
     }
 
-    if(m_scrollBottom)
+    if (m_scrollBottom)
         page()->currentFrame()->scroll(0, scroll_y);
     else
         page()->currentFrame()->scroll(0, -scroll_y);
@@ -820,7 +820,7 @@ void WebView::stopScrolling()
 
 void WebView::dragEnterEvent(QDragEnterEvent *event)
 {
-    if(event->mimeData()->hasUrls() || event->mimeData()->hasText())
+    if (event->mimeData()->hasUrls() || event->mimeData()->hasText())
         event->acceptProposedAction();
     else
         KWebView::dragEnterEvent(event);
@@ -829,7 +829,7 @@ void WebView::dragEnterEvent(QDragEnterEvent *event)
 
 void WebView::dragMoveEvent(QDragMoveEvent *event)
 {
-    if(event->mimeData()->hasUrls() || event->mimeData()->hasText())
+    if (event->mimeData()->hasUrls() || event->mimeData()->hasText())
         event->acceptProposedAction();
     else
         KWebView::dragMoveEvent(event);

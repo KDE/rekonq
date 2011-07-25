@@ -52,27 +52,27 @@ AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
     QString parsedLine = filter;
 
     const int optionsNumber = parsedLine.lastIndexOf(QL1C('$'));
-    if(optionsNumber >= 0 && !isRegExpFilter(parsedLine))
+    if (optionsNumber >= 0 && !isRegExpFilter(parsedLine))
     {
         const QStringList options(parsedLine.mid(optionsNumber + 1).split(QL1C(',')));
         parsedLine = parsedLine.left(optionsNumber);
 
-        if(options.contains(QL1S("match-case")))
+        if (options.contains(QL1S("match-case")))
             m_regExp.setCaseSensitivity(Qt::CaseSensitive);
 
-        if(options.contains(QL1S("third-party")))
+        if (options.contains(QL1S("third-party")))
             m_thirdPartyOption = true;
 
         foreach(const QString & option, options)
         {
             // Domain restricted filter
             const QString domainKeyword(QL1S("domain="));
-            if(option.startsWith(domainKeyword))
+            if (option.startsWith(domainKeyword))
             {
                 QStringList domainList = option.mid(domainKeyword.length()).split(QL1C('|'));
                 foreach(const QString & domain, domainList)
                 {
-                    if(domain.startsWith(QL1C('~')))
+                    if (domain.startsWith(QL1C('~')))
                         m_whiteDomains.insert(domain.toLower());
                     else
                         m_blackDomains.insert(domain.toLower());
@@ -81,7 +81,7 @@ AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
         }
     }
 
-    if(isRegExpFilter(parsedLine))
+    if (isRegExpFilter(parsedLine))
         parsedLine = parsedLine.mid(1, parsedLine.length() - 2);
     else
         parsedLine = convertPatternToRegExp(parsedLine);
@@ -92,36 +92,36 @@ AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
 
 bool AdBlockRuleFallbackImpl::match(const QNetworkRequest &request, const QString &encodedUrl, const QString &) const
 {
-    if(!request.hasRawHeader("referer"))
+    if (!request.hasRawHeader("referer"))
         return false;
 
-    if(m_thirdPartyOption)
+    if (m_thirdPartyOption)
     {
         const QString referer = request.rawHeader("referer");
         const QString host = request.url().host();
         bool isThirdParty = !referer.contains(host);
 
-        if(!isThirdParty)
+        if (!isThirdParty)
             return false;
     }
 
     const bool regexpMatch = m_regExp.indexIn(encodedUrl) != -1;
 
-    if(regexpMatch && (!m_whiteDomains.isEmpty() || !m_blackDomains.isEmpty()))
+    if (regexpMatch && (!m_whiteDomains.isEmpty() || !m_blackDomains.isEmpty()))
     {
         Q_ASSERT(qobject_cast<QWebFrame*>(request.originatingObject()));
         const QWebFrame *const origin = static_cast<QWebFrame * const>(request.originatingObject());
 
         const QString originDomain = origin->url().host();
 
-        if(!m_whiteDomains.isEmpty())
+        if (!m_whiteDomains.isEmpty())
         {
             // In this context, white domains means we block anything but what is in the list.
-            if(m_whiteDomains.contains(originDomain))
+            if (m_whiteDomains.contains(originDomain))
                 return false;
             return true;
         }
-        else if(m_blackDomains.contains(originDomain))
+        else if (m_blackDomains.contains(originDomain))
         {
             return true;
         }

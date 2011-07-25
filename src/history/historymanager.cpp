@@ -98,13 +98,13 @@ bool HistoryManager::historyContains(const QString &url) const
 void HistoryManager::addHistoryEntry(const QString &url)
 {
     QWebSettings *globalSettings = QWebSettings::globalSettings();
-    if(globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return;
 
     QUrl cleanUrl(url);
 
     // don't store about: urls (home page related)
-    if(cleanUrl.scheme() == QString("about"))
+    if (cleanUrl.scheme() == QString("about"))
         return;
 
     cleanUrl.setPassword(QString());
@@ -116,7 +116,7 @@ void HistoryManager::addHistoryEntry(const QString &url)
     // NOTE
     // check if the url has just been visited.
     // if so, remove previous entry from history, update and prepend it
-    if(historyContains(checkUrlString))
+    if (historyContains(checkUrlString))
     {
         int index = m_historyFilterModel->historyLocation(checkUrlString);
         item = m_history.at(index);
@@ -134,7 +134,7 @@ void HistoryManager::addHistoryEntry(const QString &url)
     m_history.prepend(item);
     emit entryAdded(item);
 
-    if(m_history.count() == 1)
+    if (m_history.count() == 1)
         checkForExpired();
 }
 
@@ -144,12 +144,12 @@ void HistoryManager::setHistory(const QList<HistoryItem> &history, bool loadedAn
     m_history = history;
 
     // verify that it is sorted by date
-    if(!loadedAndSorted)
+    if (!loadedAndSorted)
         qSort(m_history.begin(), m_history.end());
 
     checkForExpired();
 
-    if(loadedAndSorted)
+    if (loadedAndSorted)
     {
         m_lastSavedUrl = m_history.value(0).url;
     }
@@ -164,17 +164,17 @@ void HistoryManager::setHistory(const QList<HistoryItem> &history, bool loadedAn
 
 void HistoryManager::checkForExpired()
 {
-    if(m_historyLimit < 0 || m_history.isEmpty())
+    if (m_historyLimit < 0 || m_history.isEmpty())
         return;
 
     QDateTime now = QDateTime::currentDateTime();
     int nextTimeout = 0;
 
-    while(!m_history.isEmpty())
+    while (!m_history.isEmpty())
     {
         QDateTime checkForExpired = m_history.last().lastDateTimeVisit;
         checkForExpired.setDate(checkForExpired.date().addDays(m_historyLimit));
-        if(now.daysTo(checkForExpired) > 7)
+        if (now.daysTo(checkForExpired) > 7)
         {
             // check at most in a week to prevent int overflows on the timer
             nextTimeout = 7 * 86400;
@@ -183,7 +183,7 @@ void HistoryManager::checkForExpired()
         {
             nextTimeout = now.secsTo(checkForExpired);
         }
-        if(nextTimeout > 0)
+        if (nextTimeout > 0)
             break;
         HistoryItem item = m_history.takeLast();
         // remove from saved file also
@@ -191,7 +191,7 @@ void HistoryManager::checkForExpired()
         emit entryRemoved(item);
     }
 
-    if(nextTimeout > 0)
+    if (nextTimeout > 0)
         QTimer::singleShot(nextTimeout * 1000, this, SLOT(checkForExpired()));
 }
 
@@ -200,22 +200,22 @@ void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
 {
     QString urlString = url.url();
     urlString.remove(QL1S("www."));
-    if(urlString.startsWith(QL1S("http")) && urlString.endsWith(QL1C('/')))
+    if (urlString.startsWith(QL1S("http")) && urlString.endsWith(QL1C('/')))
         urlString.remove(urlString.length() - 1, 1);
 
-    for(int i = 0; i < m_history.count(); ++i)
+    for (int i = 0; i < m_history.count(); ++i)
     {
         QString itemUrl = m_history.at(i).url;
         itemUrl.remove(QL1S("www."));
-        if(itemUrl.startsWith(QL1S("http")) && itemUrl.endsWith(QL1C('/')))
+        if (itemUrl.startsWith(QL1S("http")) && itemUrl.endsWith(QL1C('/')))
             itemUrl.remove(itemUrl.length() - 1, 1);
 
-        if(urlString == itemUrl)
+        if (urlString == itemUrl)
         {
             m_history[i].title = title;
             m_history[i].url = url.url();
             m_saveTimer->changeOccurred();
-            if(m_lastSavedUrl.isEmpty())
+            if (m_lastSavedUrl.isEmpty())
                 m_lastSavedUrl = m_history.at(i).url;
 
             emit entryUpdated(i);
@@ -228,9 +228,9 @@ void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
 void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
 {
     HistoryItem item;
-    for(int i = 0; i < m_history.count(); ++i)
+    for (int i = 0; i < m_history.count(); ++i)
     {
-        if(url == m_history.at(i).url
+        if (url == m_history.at(i).url
                 && (title.isEmpty() || title == m_history.at(i).title))
         {
             item = m_history.at(i);
@@ -257,14 +257,14 @@ QList<HistoryItem> HistoryManager::find(const QString &text)
         bool matches = true;
         foreach(const QString & word, words)
         {
-            if(!url.contains(word, Qt::CaseInsensitive)
+            if (!url.contains(word, Qt::CaseInsensitive)
                     && !item.title.contains(word, Qt::CaseInsensitive))
             {
                 matches = false;
                 break;
             }
         }
-        if(matches)
+        if (matches)
             list << item;
     }
 
@@ -286,7 +286,7 @@ void HistoryManager::loadSettings()
 {
     int historyExpire = ReKonfig::expireHistory();
     int days;
-    switch(historyExpire)
+    switch (historyExpire)
     {
     case 0:
         days = 1;
@@ -320,9 +320,9 @@ void HistoryManager::load()
 
     QString historyFilePath = KStandardDirs::locateLocal("appdata" , "history");
     QFile historyFile(historyFilePath);
-    if(!historyFile.exists())
+    if (!historyFile.exists())
         return;
-    if(!historyFile.open(QFile::ReadOnly))
+    if (!historyFile.open(QFile::ReadOnly))
     {
         kDebug() << "Unable to open history file" << historyFile.fileName();
         return;
@@ -337,7 +337,7 @@ void HistoryManager::load()
     QDataStream stream;
     QBuffer buffer;
     stream.setDevice(&buffer);
-    while(!historyFile.atEnd())
+    while (!historyFile.atEnd())
     {
         in >> data;
         buffer.close();
@@ -348,7 +348,7 @@ void HistoryManager::load()
 
         HistoryItem item;
 
-        switch(version)
+        switch (version)
         {
         case HISTORY_VERSION:   // default case
             stream >> item.url;
@@ -378,29 +378,29 @@ void HistoryManager::load()
             continue;
         };
 
-        if(!item.lastDateTimeVisit.isValid())
+        if (!item.lastDateTimeVisit.isValid())
             continue;
 
-        if(item == lastInsertedItem)
+        if (item == lastInsertedItem)
         {
-            if(lastInsertedItem.title.isEmpty() && !list.isEmpty())
+            if (lastInsertedItem.title.isEmpty() && !list.isEmpty())
                 list[0].title = item.title;
             continue;
         }
 
-        if(!needToSort && !list.isEmpty() && lastInsertedItem < item)
+        if (!needToSort && !list.isEmpty() && lastInsertedItem < item)
             needToSort = true;
 
         list.prepend(item);
         lastInsertedItem = item;
     }
-    if(needToSort)
+    if (needToSort)
         qSort(list.begin(), list.end());
 
     setHistory(list, true);
 
     // If we had to sort re-write the whole history sorted
-    if(needToSort)
+    if (needToSort)
     {
         m_lastSavedUrl.clear();
         m_saveTimer->changeOccurred();
@@ -412,19 +412,19 @@ void HistoryManager::save()
 {
     bool saveAll = m_lastSavedUrl.isEmpty();
     int first = m_history.count() - 1;
-    if(!saveAll)
+    if (!saveAll)
     {
         // find the first one to save
-        for(int i = 0; i < m_history.count(); ++i)
+        for (int i = 0; i < m_history.count(); ++i)
         {
-            if(m_history.at(i).url == m_lastSavedUrl)
+            if (m_history.at(i).url == m_lastSavedUrl)
             {
                 first = i - 1;
                 break;
             }
         }
     }
-    if(first == m_history.count() - 1)
+    if (first == m_history.count() - 1)
         saveAll = true;
 
     QString historyFilePath = KStandardDirs::locateLocal("appdata" , "history");
@@ -434,7 +434,7 @@ void HistoryManager::save()
     QTemporaryFile tempFile;
     tempFile.setAutoRemove(false);
     bool open = false;
-    if(saveAll)
+    if (saveAll)
     {
         open = tempFile.open();
     }
@@ -443,7 +443,7 @@ void HistoryManager::save()
         open = historyFile.open(QFile::Append);
     }
 
-    if(!open)
+    if (!open)
     {
         kDebug() << "Unable to open history file for saving"
                  << (saveAll ? tempFile.fileName() : historyFile.fileName());
@@ -451,7 +451,7 @@ void HistoryManager::save()
     }
 
     QDataStream out(saveAll ? &tempFile : &historyFile);
-    for(int i = first; i >= 0; --i)
+    for (int i = first; i >= 0; --i)
     {
         QByteArray data;
         QDataStream stream(&data, QIODevice::WriteOnly);
@@ -461,13 +461,13 @@ void HistoryManager::save()
     }
     tempFile.close();
 
-    if(saveAll)
+    if (saveAll)
     {
-        if(historyFile.exists() && !historyFile.remove())
+        if (historyFile.exists() && !historyFile.remove())
         {
             kDebug() << "History: error removing old history." << historyFile.errorString();
         }
-        if(!tempFile.rename(historyFile.fileName()))
+        if (!tempFile.rename(historyFile.fileName()))
         {
             kDebug() << "History: error moving new history over old." << tempFile.errorString() << historyFile.fileName();
         }

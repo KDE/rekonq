@@ -122,7 +122,7 @@ void ZoomBar::setupActions(MainWindow *window)
 void ZoomBar::show()
 {
     // show findbar if not visible
-    if(isHidden())
+    if (isHidden())
     {
         emit visibilityChanged(true);
         QWidget::show();
@@ -159,10 +159,10 @@ void ZoomBar::zoomNormal()
 void ZoomBar::updateSlider(int webview)
 {
     WebTab *tab = 0;
-    if(!rApp->mainWindowList().isEmpty())
+    if (!rApp->mainWindowList().isEmpty())
         tab = rApp->mainWindow()->mainView()->webTab(webview);
 
-    if(!tab)
+    if (!tab)
         return;
 
     m_zoomSlider->setValue(tab->view()->zoomFactor() * 10);

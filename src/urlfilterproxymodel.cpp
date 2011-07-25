@@ -45,13 +45,13 @@ bool UrlFilterProxyModel::filterAcceptsRow(const int source_row, const QModelInd
 
 bool UrlFilterProxyModel::recursiveMatch(const QModelIndex &index) const
 {
-    if(index.data().toString().contains(filterRegExp()))
+    if (index.data().toString().contains(filterRegExp()))
         return true;
 
     int numChildren = sourceModel()->rowCount(index);
-    for(int childRow = 0; childRow < numChildren; ++childRow)
+    for (int childRow = 0; childRow < numChildren; ++childRow)
     {
-        if(recursiveMatch(sourceModel()->index(childRow, 0, index)))
+        if (recursiveMatch(sourceModel()->index(childRow, 0, index)))
             return true;
     }
 

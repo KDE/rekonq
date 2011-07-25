@@ -58,22 +58,22 @@ void PanelTreeView::mousePressEvent(QMouseEvent *event)
 
     // A change of an item expansion is handle by mouseReleaseEvent()
     // So toggle again the item
-    if(expanded != isExpanded(index))
+    if (expanded != isExpanded(index))
         setExpanded(index, !isExpanded(index));
 
-    if(!index.isValid())
+    if (!index.isValid())
     {
         clearSelection();
         setCurrentIndex(QModelIndex());
 
-        if(event->button() == Qt::RightButton)
+        if (event->button() == Qt::RightButton)
             emit contextMenuEmptyRequested(event->pos());
         return;
     }
 
-    if(event->button() == Qt::RightButton)
+    if (event->button() == Qt::RightButton)
     {
-        if(model()->rowCount(index) == 0)
+        if (model()->rowCount(index) == 0)
         {
             // An empty group needs to be handle by the panels
             emit contextMenuItemRequested(event->pos());
@@ -91,15 +91,15 @@ void PanelTreeView::mouseReleaseEvent(QMouseEvent *event)
     QTreeView::mouseReleaseEvent(event);
 
     const QModelIndex index = indexAt(event->pos());
-    if(!index.isValid())
+    if (!index.isValid())
         return;
 
-    if(event->button() == Qt::MidButton || event->modifiers() == Qt::ControlModifier)
+    if (event->button() == Qt::MidButton || event->modifiers() == Qt::ControlModifier)
         emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
 
-    else if(event->button() == Qt::LeftButton)
+    else if (event->button() == Qt::LeftButton)
     {
-        if(model()->rowCount(index) == 0)
+        if (model()->rowCount(index) == 0)
             emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
         else
             setExpanded(index, !isExpanded(index));
@@ -112,18 +112,18 @@ void PanelTreeView::keyPressEvent(QKeyEvent *event)
     QTreeView::keyPressEvent(event);
     QModelIndex index = currentIndex();
 
-    if(!index.isValid())
+    if (!index.isValid())
         return;
 
-    if(event->key() == Qt::Key_Return)
+    if (event->key() == Qt::Key_Return)
     {
-        if(model()->rowCount(index) == 0)
+        if (model()->rowCount(index) == 0)
             openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
         else
             setExpanded(index, !isExpanded(index));
     }
 
-    else if(event->key() == Qt::Key_Delete)
+    else if (event->key() == Qt::Key_Delete)
     {
         emit delKeyPressed();
     }
@@ -134,7 +134,7 @@ void PanelTreeView::mouseMoveEvent(QMouseEvent *event)
 {
     QTreeView::mouseMoveEvent(event);
     const QModelIndex index = indexAt(event->pos());
-    if(!index.isValid())
+    if (!index.isValid())
     {
         emit itemHovered("");
         return;
@@ -146,7 +146,7 @@ void PanelTreeView::mouseMoveEvent(QMouseEvent *event)
 void PanelTreeView::openInCurrentTab()
 {
     QModelIndex index = currentIndex();
-    if(!index.isValid())
+    if (!index.isValid())
         return;
 
     emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
@@ -156,7 +156,7 @@ void PanelTreeView::openInCurrentTab()
 void PanelTreeView::copyToClipboard()
 {
     QModelIndex index = currentIndex();
-    if(!index.isValid())
+    if (!index.isValid())
         return;
 
     QClipboard *cb = QApplication::clipboard();
@@ -167,7 +167,7 @@ void PanelTreeView::copyToClipboard()
 void PanelTreeView::openInNewTab()
 {
     QModelIndex index = currentIndex();
-    if(!index.isValid())
+    if (!index.isValid())
         return;
 
     emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
@@ -177,7 +177,7 @@ void PanelTreeView::openInNewTab()
 void PanelTreeView::openInNewWindow()
 {
     QModelIndex index = currentIndex();
-    if(!index.isValid())
+    if (!index.isValid())
         return;
 
     emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewWindow);

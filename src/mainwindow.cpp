@@ -195,10 +195,10 @@ void MainWindow::setupToolbars()
 void MainWindow::initBookmarkBar()
 {
     KToolBar *XMLGUIBkBar = toolBar("bookmarkToolBar");
-    if(!XMLGUIBkBar)
+    if (!XMLGUIBkBar)
         return;
 
-    if(m_bookmarksBar)
+    if (m_bookmarksBar)
     {
         rApp->bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
         delete m_bookmarksBar;
@@ -210,7 +210,7 @@ void MainWindow::initBookmarkBar()
 
 void MainWindow::configureToolbars()
 {
-    if(autoSaveSettings())
+    if (autoSaveSettings())
         saveAutoSaveSettings();
 
     KEditToolBar dlg(factory(), this);
@@ -222,7 +222,7 @@ void MainWindow::configureToolbars()
 
 void MainWindow::updateToolsMenu()
 {
-    if(m_toolsMenu->isEmpty())
+    if (m_toolsMenu->isEmpty())
     {
         m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Open)));
         m_toolsMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
@@ -250,7 +250,7 @@ void MainWindow::updateToolsMenu()
         m_developerMenu->addAction(actionByName(QL1S("set_editable")));
 
         m_toolsMenu->addAction(m_developerMenu);
-        if(!ReKonfig::showDeveloperTools())
+        if (!ReKonfig::showDeveloperTools())
             m_developerMenu->setVisible(false);
 
         m_toolsMenu->addSeparator();
@@ -339,7 +339,7 @@ QSize MainWindow::sizeHint() const
 
 void MainWindow::changeWindowIcon(int index)
 {
-    if(ReKonfig::useFavicon())
+    if (ReKonfig::useFavicon())
     {
         KUrl url = mainView()->webTab(index)->url();
         QIcon icon = rApp->iconManager()->iconForUrl(url).pixmap(QSize(32, 32));
@@ -486,7 +486,7 @@ void MainWindow::setupActions()
 
     QSignalMapper *tabSignalMapper = new QSignalMapper(this);
     // shortcuts for quickly switching to a tab
-    for(int i = 1; i <= 9; i++)
+    for (int i = 1; i <= 9; i++)
     {
         a = new KAction(i18n("Switch to Tab %1", i), this);
         a->setShortcut(KShortcut(QString("Alt+%1").arg(i)));
@@ -498,7 +498,7 @@ void MainWindow::setupActions()
 
     // shortcuts for loading favorite pages
     QSignalMapper *favoritesSignalMapper = new QSignalMapper(this);
-    for(int i = 1; i <= 9; ++i)
+    for (int i = 1; i <= 9; ++i)
     {
         a = new KAction(i18n("Switch to Favorite Page %1", i), this);
         a->setShortcut(KShortcut(QString("Ctrl+%1").arg(i)));
@@ -637,7 +637,7 @@ void MainWindow::setupPanels()
 
 void MainWindow::openLocation()
 {
-    if(isFullScreen())
+    if (isFullScreen())
     {
         setWidgetsVisible(true);
     }
@@ -655,26 +655,26 @@ void MainWindow::fileSaveAs()
     QString name = w->page()->suggestedFileName();
 
     // Second, with KUrl fileName...
-    if(name.isEmpty())
+    if (name.isEmpty())
     {
         name = srcUrl.fileName();
     }
 
     // Last chance...
-    if(name.isEmpty())
+    if (name.isEmpty())
     {
         name = srcUrl.host() + QString(".html");
     }
 
     const QString destUrl = KFileDialog::getSaveFileName(name, QString(), this);
-    if(destUrl.isEmpty())
+    if (destUrl.isEmpty())
         return;
 
-    if(w->page()->isContentEditable())
+    if (w->page()->isContentEditable())
     {
         QString code = w->page()->mainFrame()->toHtml();
         QFile file(destUrl);
-        if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             return;
 
         QTextStream out(&file);
@@ -694,7 +694,7 @@ void MainWindow::preferences()
 {
     // an instance the dialog could be already created and could be cached,
     // in which case you want to display the cached dialog
-    if(SettingsDialog::showDialog("rekonfig"))
+    if (SettingsDialog::showDialog("rekonfig"))
         return;
 
     // we didn't find an instance of this dialog, so lets create it
@@ -713,7 +713,7 @@ void MainWindow::updateActions()
     bool rekonqPage = currentTab()->page()->isOnRekonqPage();
 
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));
-    if(rekonqPage && currentTab()->view()->history()->count() > 0)
+    if (rekonqPage && currentTab()->view()->history()->count() > 0)
         historyBackAction->setEnabled(true);
     else
         historyBackAction->setEnabled(currentTab()->view()->history()->canGoBack());
@@ -726,9 +726,9 @@ void MainWindow::updateActions()
 void MainWindow::updateWindowTitle(const QString &title)
 {
     QWebSettings *settings = QWebSettings::globalSettings();
-    if(title.isEmpty())
+    if (title.isEmpty())
     {
-        if(settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+        if (settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         {
             setWindowTitle(i18nc("Window title when private browsing is activated", "rekonq (Private Browsing)"));
         }
@@ -739,7 +739,7 @@ void MainWindow::updateWindowTitle(const QString &title)
     }
     else
     {
-        if(settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+        if (settings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         {
             setWindowTitle(i18nc("window title, %1 = title of the active website", "%1 – rekonq (Private Browsing)", title));
         }
@@ -759,7 +759,7 @@ void MainWindow::fileOpen()
                        this,
                        i18n("Open Web Resource"));
 
-    if(filePath.isEmpty())
+    if (filePath.isEmpty())
         return;
 
     rApp->loadUrl(filePath);
@@ -768,17 +768,17 @@ void MainWindow::fileOpen()
 
 void MainWindow::printRequested(QWebFrame *frame)
 {
-    if(!currentTab())
+    if (!currentTab())
         return;
 
-    if(currentTab()->page()->isOnRekonqPage())
+    if (currentTab()->page()->isOnRekonqPage())
     {
         // trigger print part action instead of ours..
         KParts::ReadOnlyPart *p = currentTab()->part();
-        if(p)
+        if (p)
         {
             KParts::BrowserExtension *ext = p->browserExtension();
-            if(ext)
+            if (ext)
             {
                 KParts::BrowserExtension::ActionSlotMap *actionSlotMap = KParts::BrowserExtension::actionSlotMapPtr();
 
@@ -791,7 +791,7 @@ void MainWindow::printRequested(QWebFrame *frame)
     }
 
     QWebFrame *printFrame = 0;
-    if(frame == 0)
+    if (frame == 0)
     {
         printFrame = currentTab()->page()->mainFrame();
     }
@@ -811,7 +811,7 @@ void MainWindow::printRequested(QWebFrame *frame)
 
 void MainWindow::find(const QString & search)
 {
-    if(!currentTab())
+    if (!currentTab())
         return;
     m_lastSearch = search;
 
@@ -822,7 +822,7 @@ void MainWindow::find(const QString & search)
 
 void MainWindow::matchCaseUpdate()
 {
-    if(!currentTab())
+    if (!currentTab())
         return;
 
     currentTab()->view()->findText(m_lastSearch, QWebPage::FindBackward);
@@ -833,14 +833,14 @@ void MainWindow::matchCaseUpdate()
 
 void MainWindow::findNext()
 {
-    if(!currentTab())
+    if (!currentTab())
         return;
 
-    if(currentTab()->page()->isOnRekonqPage())
+    if (currentTab()->page()->isOnRekonqPage())
     {
         // trigger part find action
         KParts::ReadOnlyPart *p = currentTab()->part();
-        if(p)
+        if (p)
         {
             connect(this, SIGNAL(triggerPartFind()), p, SLOT(slotFind()));
             emit triggerPartFind();
@@ -848,7 +848,7 @@ void MainWindow::findNext()
         }
     }
 
-    if(m_findBar->isHidden())
+    if (m_findBar->isHidden())
     {
         QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
         currentTab()->view()->page()->focusNextPrevChild(true);
@@ -857,13 +857,13 @@ void MainWindow::findNext()
     }
 
     QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
-    if(m_findBar->matchCase())
+    if (m_findBar->matchCase())
         options |= QWebPage::FindCaseSensitively;
 
     bool found = currentTab()->view()->findText(m_lastSearch, options);
     m_findBar->notifyMatch(found);
 
-    if(!found)
+    if (!found)
     {
         QPoint previous_position = currentTab()->view()->page()->currentFrame()->scrollPosition();
         currentTab()->view()->page()->focusNextPrevChild(true);
@@ -874,11 +874,11 @@ void MainWindow::findNext()
 
 void MainWindow::findPrevious()
 {
-    if(!currentTab())
+    if (!currentTab())
         return;
 
     QWebPage::FindFlags options = QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument;
-    if(m_findBar->matchCase())
+    if (m_findBar->matchCase())
         options |= QWebPage::FindCaseSensitively;
 
     bool found = currentTab()->view()->findText(m_lastSearch, options);
@@ -888,16 +888,16 @@ void MainWindow::findPrevious()
 
 void MainWindow::updateHighlight()
 {
-    if(!currentTab())
+    if (!currentTab())
         return;
 
     QWebPage::FindFlags options = QWebPage::HighlightAllOccurrences;
 
     currentTab()->view()->findText("", options); //Clear an existing highlight
 
-    if(m_findBar->highlightAllState() && !m_findBar->isHidden())
+    if (m_findBar->highlightAllState() && !m_findBar->isHidden())
     {
-        if(m_findBar->matchCase())
+        if (m_findBar->matchCase())
             options |= QWebPage::FindCaseSensitively;
 
         currentTab()->view()->findText(m_lastSearch, options);
@@ -928,10 +928,10 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
     KToolBar *mainBar = toolBar("mainToolBar");
     KToolBar *bookBar = toolBar("bookmarksToolBar");
 
-    if(!makeVisible)
+    if (!makeVisible)
     {
         // save current state, if in windowed mode
-        if(!isFullScreen())
+        if (!isFullScreen())
         {
             bookmarksToolBarFlag = bookBar->isHidden();
             historyPanelFlag = m_historyPanel->isHidden();
@@ -953,11 +953,11 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
         m_view->tabBar()->show();
 
         // restore state of windowed mode
-        if(!bookmarksToolBarFlag)
+        if (!bookmarksToolBarFlag)
             bookBar->show();
-        if(!historyPanelFlag)
+        if (!historyPanelFlag)
             m_historyPanel->show();
-        if(!bookmarksPanelFlag)
+        if (!bookmarksPanelFlag)
             m_bookmarksPanel->show();
     }
 }
@@ -965,7 +965,7 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
 
 QString MainWindow::selectedText() const
 {
-    if(!currentTab())
+    if (!currentTab())
         return QString();
 
     return currentTab()->view()->selectedText();
@@ -976,7 +976,7 @@ void MainWindow::viewPageSource()
 {
     WebTab * w = currentTab();
 
-    if(!w)
+    if (!w)
         return;
 
     KUrl url = w->url();
@@ -990,7 +990,7 @@ void MainWindow::viewPageSource()
 
     QFile temp(filePath);
 
-    if(temp.open(QFile::WriteOnly | QFile::Truncate))
+    if (temp.open(QFile::WriteOnly | QFile::Truncate))
     {
         QTextStream out(&temp);
         out << code;
@@ -1007,7 +1007,7 @@ void MainWindow::homePage(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
                    ? KUrl(QL1S("about:home"))
                    : KUrl(ReKonfig::homePage());
 
-    if(mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
+    if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
         rApp->loadUrl(homeUrl, Rekonq::NewTab);
     else
         currentTab()->view()->load(homeUrl);
@@ -1024,7 +1024,7 @@ void MainWindow::browserLoading(bool v)
 {
     QAction *stop = actionCollection()->action(QL1S("stop"));
     QAction *reload = actionCollection()->action(QL1S("view_redisplay"));
-    if(v)
+    if (v)
     {
         disconnect(m_stopReloadAction, SIGNAL(triggered(bool)), reload , SIGNAL(triggered(bool)));
         m_stopReloadAction->setIcon(KIcon("process-stop"));
@@ -1052,22 +1052,22 @@ void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifie
     QWebHistory *history = currentTab()->view()->history();
     QWebHistoryItem *item = 0;
 
-    if(currentTab()->page()->isOnRekonqPage())
+    if (currentTab()->page()->isOnRekonqPage())
     {
         item = new QWebHistoryItem(history->currentItem());
     }
     else
     {
-        if(history->canGoBack())
+        if (history->canGoBack())
         {
             item = new QWebHistoryItem(history->backItem());
         }
     }
 
-    if(!item)
+    if (!item)
         return;
 
-    if(mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
+    if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
     {
         rApp->loadUrl(item->url(), Rekonq::NewTab);
     }
@@ -1085,22 +1085,22 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
     QWebHistory *history = currentTab()->view()->history();
     QWebHistoryItem *item = 0;
 
-    if(currentTab()->view()->page()->isOnRekonqPage())
+    if (currentTab()->view()->page()->isOnRekonqPage())
     {
         item = new QWebHistoryItem(history->currentItem());
     }
     else
     {
-        if(history->canGoForward())
+        if (history->canGoForward())
         {
             item = new QWebHistoryItem(history->forwardItem());
         }
     }
 
-    if(!item)
+    if (!item)
         return;
 
-    if(mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
+    if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
     {
         rApp->loadUrl(item->url(), Rekonq::NewTab);
     }
@@ -1116,14 +1116,14 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     // ctrl + tab action
-    if((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Tab))
+    if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Tab))
     {
         emit ctrlTabPressed();
         return;
     }
 
     // shift + ctrl + tab action
-    if((event->modifiers() == Qt::ControlModifier + Qt::ShiftModifier) && (event->key() == Qt::Key_Backtab))
+    if ((event->modifiers() == Qt::ControlModifier + Qt::ShiftModifier) && (event->key() == Qt::Key_Backtab))
     {
         emit shiftCtrlTabPressed();
         return;
@@ -1136,13 +1136,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 bool MainWindow::event(QEvent *event)
 {
     // Avoid a conflict with window-global actions
-    if(event->type() == QEvent::ShortcutOverride || event->type() == QEvent::KeyPress)
+    if (event->type() == QEvent::ShortcutOverride || event->type() == QEvent::KeyPress)
     {
         QKeyEvent *kev = static_cast<QKeyEvent *>(event);
-        if(kev->key() == Qt::Key_Escape)
+        if (kev->key() == Qt::Key_Escape)
         {
             // if zoombar is visible, hide it
-            if(m_zoomBar->isVisible())
+            if (m_zoomBar->isVisible())
             {
                 m_zoomBar->hide();
                 event->accept();
@@ -1151,7 +1151,7 @@ bool MainWindow::event(QEvent *event)
             }
 
             // if findbar is visible, hide it
-            if(m_findBar->isVisible())
+            if (m_findBar->isVisible())
             {
                 m_findBar->hide();
                 event->accept();
@@ -1166,13 +1166,13 @@ bool MainWindow::event(QEvent *event)
 
 void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 {
-    if(this != QApplication::activeWindow())
+    if (this != QApplication::activeWindow())
     {
         return;
     }
 
     // deleting popus if empty msgs
-    if(msg.isEmpty())
+    if (msg.isEmpty())
     {
         m_hidePopupTimer->start(250);
         return;
@@ -1181,7 +1181,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     m_hidePopupTimer->stop();
 
 
-    switch(status)
+    switch (status)
     {
     case Rekonq::Url:
         break;
@@ -1204,7 +1204,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     QLabel *label = new QLabel(msg);
     m_popup->setView(label);
     QSize labelSize(label->fontMetrics().width(msg) + 2 * margin, label->fontMetrics().height() + 2 * margin);
-    if(labelSize.width() > width())
+    if (labelSize.width() > width())
     {
         labelSize.setWidth(width());
         label->setText(label->fontMetrics().elidedText(msg, Qt::ElideMiddle, width()));
@@ -1217,7 +1217,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     WebTab *tab = m_view->currentWebTab();
 
     // fix crash on window close
-    if(!tab || !tab->page())
+    if (!tab || !tab->page())
         return;
 
     bool horizontalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
@@ -1234,13 +1234,13 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     int x = mapToGlobal(QPoint(0, 0)).x();
     int y = webViewOrigin.y() + tab->page()->viewportSize().height() - labelSize.height() - hScrollbarSize;
 
-    if(QRect(x, y, labelSize.width() , labelSize.height()).contains(mousePos))
+    if (QRect(x, y, labelSize.width() , labelSize.height()).contains(mousePos))
     {
         // settings popup on the right
         x = mapToGlobal(QPoint(- labelSize.width() + tab->page()->viewportSize().width(), 0)).x() - vScrollbarSize;
     }
 
-    if(QRect(x , y , labelSize.width() , labelSize.height()).contains(mousePos))
+    if (QRect(x , y , labelSize.width() , labelSize.height()).contains(mousePos))
     {
         // setting popup above the mouse
         y -= labelSize.height();
@@ -1272,7 +1272,7 @@ void MainWindow::clearPrivateData()
     dialog->setMainWidget(&widget);
     dialog->exec();
 
-    if(dialog->result() == QDialog::Accepted)
+    if (dialog->result() == QDialog::Accepted)
     {
         //Save current state
         ReKonfig::setClearHistory(clearWidget.clearHistory->isChecked());
@@ -1282,34 +1282,34 @@ void MainWindow::clearPrivateData()
         ReKonfig::setClearWebIcons(clearWidget.clearWebIcons->isChecked());
         ReKonfig::setClearHomePageThumbs(clearWidget.homePageThumbs->isChecked());
 
-        if(clearWidget.clearHistory->isChecked())
+        if (clearWidget.clearHistory->isChecked())
         {
             rApp->historyManager()->clear();
         }
 
-        if(clearWidget.clearDownloads->isChecked())
+        if (clearWidget.clearDownloads->isChecked())
         {
             rApp->downloadManager()->clearDownloadsHistory();
         }
 
-        if(clearWidget.clearCookies->isChecked())
+        if (clearWidget.clearCookies->isChecked())
         {
             QDBusInterface kcookiejar("org.kde.kded", "/modules/kcookiejar", "org.kde.KCookieServer");
             QDBusReply<void> reply = kcookiejar.call("deleteAllCookies");
         }
 
-        if(clearWidget.clearCachedPages->isChecked())
+        if (clearWidget.clearCachedPages->isChecked())
         {
             KProcess::startDetached(KStandardDirs::findExe("kio_http_cache_cleaner"),
                                     QStringList(QL1S("--clear-all")));
         }
 
-        if(clearWidget.clearWebIcons->isChecked())
+        if (clearWidget.clearWebIcons->isChecked())
         {
             rApp->iconManager()->clearIconCache();
         }
 
-        if(clearWidget.homePageThumbs->isChecked())
+        if (clearWidget.homePageThumbs->isChecked())
         {
             QString path = KStandardDirs::locateLocal("cache", QString("thumbs/rekonq"), true);
             path.remove("rekonq");
@@ -1329,7 +1329,7 @@ void MainWindow::clearPrivateData()
 void MainWindow::aboutToShowBackMenu()
 {
     m_historyBackMenu->clear();
-    if(!currentTab())
+    if (!currentTab())
         return;
     QWebHistory *history = currentTab()->view()->history();
     int pivot = history->currentItemIndex();
@@ -1337,10 +1337,10 @@ void MainWindow::aboutToShowBackMenu()
     const int maxItemNumber = 8;  // no more than 8 elements in the Back History Menu!
     QList<QWebHistoryItem> historyList = history->backItems(maxItemNumber);
     int listCount = historyList.count();
-    if(pivot >= maxItemNumber)
+    if (pivot >= maxItemNumber)
         offset = pivot - maxItemNumber;
 
-    if(currentTab()->view()->page()->isOnRekonqPage())
+    if (currentTab()->view()->page()->isOnRekonqPage())
     {
         QWebHistoryItem item = history->currentItem();
         KAction *action = new KAction(this);
@@ -1351,7 +1351,7 @@ void MainWindow::aboutToShowBackMenu()
         m_historyBackMenu->addAction(action);
     }
 
-    for(int i = listCount - 1; i >= 0; --i)
+    for (int i = listCount - 1; i >= 0; --i)
     {
         QWebHistoryItem item = historyList.at(i);
         KAction *action = new KAction(this);
@@ -1368,7 +1368,7 @@ void MainWindow::aboutToShowForwardMenu()
 {
     m_historyForwardMenu->clear();
 
-    if(!currentTab())
+    if (!currentTab())
         return;
 
     QWebHistory *history = currentTab()->view()->history();
@@ -1378,10 +1378,10 @@ void MainWindow::aboutToShowForwardMenu()
     QList<QWebHistoryItem> historyList = history->forwardItems(maxItemNumber);
     int listCount = historyList.count();
 
-    if(pivot >= maxItemNumber)
+    if (pivot >= maxItemNumber)
         offset = pivot - maxItemNumber;
 
-    if(currentTab()->view()->page()->isOnRekonqPage())
+    if (currentTab()->view()->page()->isOnRekonqPage())
     {
         QWebHistoryItem item = history->currentItem();
         KAction *action = new KAction(this);
@@ -1392,7 +1392,7 @@ void MainWindow::aboutToShowForwardMenu()
         m_historyForwardMenu->addAction(action);
     }
 
-    for(int i = 1; i <= listCount; i++)
+    for (int i = 1; i <= listCount; i++)
     {
         QWebHistoryItem item = historyList.at(i - 1);
         KAction *action = new KAction(this);
@@ -1408,12 +1408,12 @@ void MainWindow::aboutToShowForwardMenu()
 void MainWindow::aboutToShowTabListMenu()
 {
     m_tabListMenu->clear();
-    for(int i = 0; i < m_view->count(); ++i)
+    for (int i = 0; i < m_view->count(); ++i)
     {
         KAction *action = new KAction(m_view->tabText(i), this);
         action->setIcon(rApp->iconManager()->iconForUrl(m_view->webTab(i)->url()).pixmap(16, 16));
         action->setData(i);
-        if(mainView()->tabBar()->currentIndex() == i)
+        if (mainView()->tabBar()->currentIndex() == i)
         {
             QFont font = action->font();
             font.setBold(true);
@@ -1430,7 +1430,7 @@ void MainWindow::openActionUrl(QAction *action)
     int index = action->data().toInt();
 
     QWebHistory *history = currentTab()->view()->history();
-    if(!history->itemAt(index).isValid())
+    if (!history->itemAt(index).isValid())
     {
         kDebug() << "Invalid Index!: " << index;
         return;
@@ -1442,7 +1442,7 @@ void MainWindow::openActionUrl(QAction *action)
 void MainWindow::openActionTab(QAction* action)
 {
     int index = action->data().toInt();
-    if(index < 0 || index >= m_view->count())
+    if (index < 0 || index >= m_view->count())
     {
         kDebug() << "Invalid Index!: " << index;
         return;
@@ -1487,7 +1487,7 @@ void MainWindow::populateUserAgentMenu()
     QStringList UAlist = uaInfo.availableUserAgents();
     int uaIndex = uaInfo.uaIndexForHost(currentTab()->url().host());
 
-    for(int i = 0; i < UAlist.count(); ++i)
+    for (int i = 0; i < UAlist.count(); ++i)
     {
         QString uaDesc = UAlist.at(i);
 
@@ -1496,7 +1496,7 @@ void MainWindow::populateUserAgentMenu()
         a->setCheckable(true);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(setUserAgent()));
 
-        if(i == uaIndex)
+        if (i == uaIndex)
         {
             a->setChecked(true);
             defaultUA = false;
@@ -1520,14 +1520,14 @@ void MainWindow::enableNetworkAnalysis(bool b)
 bool MainWindow::queryClose()
 {
     // this should fux bug 240432
-    if(rApp->sessionSaving())
+    if (rApp->sessionSaving())
         return true;
 
     // smooth private browsing mode
-    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return true;
 
-    if(rApp->mainWindowList().count() > 1)
+    if (rApp->mainWindowList().count() > 1)
     {
         int answer = KMessageBox::questionYesNoCancel(
                          this,
@@ -1539,7 +1539,7 @@ bool MainWindow::queryClose()
                          "confirmClosingMultipleWindows"
                      );
 
-        switch(answer)
+        switch (answer)
         {
         case KMessageBox::Yes:
             return true;
@@ -1568,13 +1568,13 @@ void MainWindow::setupBookmarksAndToolsShortcuts()
     KToolBar *mainBar = toolBar("mainToolBar");
 
     QToolButton *bookmarksButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName(QL1S("bookmarksActionMenu"))));
-    if(bookmarksButton)
+    if (bookmarksButton)
     {
         connect(actionByName(QL1S("bookmarksActionMenu")), SIGNAL(triggered()), bookmarksButton, SLOT(showMenu()));
     }
 
     QToolButton *toolsButton = qobject_cast<QToolButton*>(mainBar->widgetForAction(actionByName(QL1S("rekonq_tools"))));
-    if(toolsButton)
+    if (toolsButton)
     {
         connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), toolsButton, SLOT(showMenu()));
     }
@@ -1597,9 +1597,9 @@ void MainWindow::showUserAgentSettings()
 
 void MainWindow::moveEvent(QMoveEvent *event)
 {
-    if(m_hidePopupTimer)
+    if (m_hidePopupTimer)
         m_hidePopupTimer->stop();
-    if(m_popup)
+    if (m_popup)
         m_popup->hide();
 
     KMainWindow::moveEvent(event);
@@ -1608,9 +1608,9 @@ void MainWindow::moveEvent(QMoveEvent *event)
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    if(m_hidePopupTimer)
+    if (m_hidePopupTimer)
         m_hidePopupTimer->stop();
-    if(m_popup)
+    if (m_popup)
         m_popup->hide();
 
     KMainWindow::resizeEvent(event);

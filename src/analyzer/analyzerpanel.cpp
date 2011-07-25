@@ -69,7 +69,7 @@ void NetworkAnalyzerPanel::toggle(bool enable)
 
     page->enableNetworkAnalyzer(enable);
 
-    if(enable)
+    if (enable)
     {
         connect(page, SIGNAL(loadStarted()), _viewer, SLOT(clear()));
         connect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)),

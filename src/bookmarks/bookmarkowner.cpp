@@ -57,7 +57,7 @@ BookmarkOwner::BookmarkOwner(KBookmarkManager *manager, QObject *parent)
 
 KAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAction &bmAction)
 {
-    switch(bmAction)
+    switch (bmAction)
     {
     case OPEN:
         return createAction(i18n("Open"), "tab-new",
@@ -119,7 +119,7 @@ QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
     MainView *view = rApp->mainWindow()->mainView();
     int tabNumber = view->count();
 
-    for(int i = 0; i < tabNumber; ++i)
+    for (int i = 0; i < tabNumber; ++i)
     {
         QPair<QString, QString> item;
         item.first = view->webTab(i)->view()->title();
@@ -135,7 +135,7 @@ void BookmarkOwner::openBookmark(const KBookmark &bookmark,
                                  Qt::MouseButtons mouseButtons,
                                  Qt::KeyboardModifiers keyboardModifiers)
 {
-    if(keyboardModifiers & Qt::ControlModifier || mouseButtons & Qt::MidButton)
+    if (keyboardModifiers & Qt::ControlModifier || mouseButtons & Qt::MidButton)
         openBookmarkInNewTab(bookmark);
     else
         openBookmark(bookmark);
@@ -146,15 +146,15 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bkGoup)
 {
     QList<KUrl> urlList = bkGoup.groupUrlList();
 
-    if(urlList.length() > 8)
+    if (urlList.length() > 8)
     {
-        if(KMessageBox::warningContinueCancel(
+        if (KMessageBox::warningContinueCancel(
                     rApp->mainWindow(),
                     i18ncp("%1=Number of tabs. Value is always >=8",
                            "You are about to open %1 tabs.\nAre you sure?",
                            "You are about to open %1 tabs.\nAre you sure?", urlList.length()))
                 != KMessageBox::Continue
-          )
+           )
             return;
     }
 
@@ -194,9 +194,9 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
 {
     KBookmarkGroup parent;
 
-    if(!bookmark.isNull())
+    if (!bookmark.isNull())
     {
-        if(bookmark.isGroup())
+        if (bookmark.isGroup())
             parent = bookmark.toGroup();
         else
             parent = bookmark.parentGroup();
@@ -207,7 +207,7 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
     }
 
     KBookmark newBk = parent.addBookmark(currentTitle(), KUrl(currentUrl()));
-    if(!bookmark.isNull())
+    if (!bookmark.isNull())
         parent.moveBookmark(newBk, bookmark);
 
     m_manager->emitChanged(parent);
@@ -221,16 +221,16 @@ KBookmarkGroup BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark)
     KBookmarkDialog *dialog = bookmarkDialog(m_manager, 0);
     QString folderName = i18n("New folder");
 
-    if(!bookmark.isNull())
+    if (!bookmark.isNull())
     {
-        if(bookmark.isGroup())
+        if (bookmark.isGroup())
         {
             newBk = dialog->createNewFolder(folderName, bookmark);
         }
         else
         {
             newBk = dialog->createNewFolder(folderName, bookmark.parentGroup());
-            if(!newBk.isNull())
+            if (!newBk.isNull())
             {
                 KBookmarkGroup parent = newBk.parentGroup();
                 parent.moveBookmark(newBk, bookmark);
@@ -252,9 +252,9 @@ KBookmark BookmarkOwner::newSeparator(const KBookmark &bookmark)
 {
     KBookmark newBk;
 
-    if(!bookmark.isNull())
+    if (!bookmark.isNull())
     {
-        if(bookmark.isGroup())
+        if (bookmark.isGroup())
         {
             newBk = bookmark.toGroup().createNewSeparator();
         }
@@ -278,7 +278,7 @@ KBookmark BookmarkOwner::newSeparator(const KBookmark &bookmark)
 
 void BookmarkOwner::copyLink(const KBookmark &bookmark)
 {
-    if(bookmark.isNull())
+    if (bookmark.isNull())
         return;
 
     QApplication::clipboard()->setText(bookmark.url().url());
@@ -287,7 +287,7 @@ void BookmarkOwner::copyLink(const KBookmark &bookmark)
 
 void BookmarkOwner::editBookmark(KBookmark bookmark)
 {
-    if(bookmark.isNull())
+    if (bookmark.isNull())
         return;
 
     KBookmarkDialog *dialog = bookmarkDialog(m_manager, 0);
@@ -299,18 +299,18 @@ void BookmarkOwner::editBookmark(KBookmark bookmark)
 
 bool BookmarkOwner::deleteBookmark(const KBookmark &bookmark)
 {
-    if(bookmark.isNull())
+    if (bookmark.isNull())
         return false;
 
     KBookmarkGroup bmg = bookmark.parentGroup();
     QString dialogCaption, dialogText;
 
-    if(bookmark.isGroup())
+    if (bookmark.isGroup())
     {
         dialogCaption = i18n("Bookmark Folder Deletion");
         dialogText = i18n("Are you sure you wish to remove the bookmark folder\n\"%1\"?", bookmark.fullText());
     }
-    else if(bookmark.isSeparator())
+    else if (bookmark.isSeparator())
     {
         dialogCaption = i18n("Separator Deletion");
         dialogText = i18n("Are you sure you wish to remove this separator?");
@@ -321,7 +321,7 @@ bool BookmarkOwner::deleteBookmark(const KBookmark &bookmark)
         dialogText = i18n("Are you sure you wish to remove the bookmark\n\"%1\"?", bookmark.fullText());
     }
 
-    if(KMessageBox::warningContinueCancel(
+    if (KMessageBox::warningContinueCancel(
                 0,
                 dialogText,
                 dialogCaption,
@@ -329,7 +329,7 @@ bool BookmarkOwner::deleteBookmark(const KBookmark &bookmark)
                 KStandardGuiItem::cancel(),
                 "bookmarkDeletition_askAgain")
             != KMessageBox::Continue
-      )
+       )
         return false;
 
     bmg.deleteBookmark(bookmark);
@@ -340,7 +340,7 @@ bool BookmarkOwner::deleteBookmark(const KBookmark &bookmark)
 
 void BookmarkOwner::setToolBarFolder(KBookmark bookmark)
 {
-    if(!bookmark.isGroup())
+    if (!bookmark.isGroup())
         return;
 
     unsetToolBarFolder();
@@ -354,7 +354,7 @@ void BookmarkOwner::setToolBarFolder(KBookmark bookmark)
 void BookmarkOwner::unsetToolBarFolder()
 {
     KBookmarkGroup toolbar = m_manager->toolbar();
-    if(!toolbar.isNull())
+    if (!toolbar.isNull())
     {
         toolbar.internalElement().setAttribute("toolbar", "no");
         toolbar.setIcon("");

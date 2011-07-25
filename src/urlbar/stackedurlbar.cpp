@@ -51,7 +51,7 @@ UrlBar *StackedUrlBar::currentUrlBar()
 UrlBar *StackedUrlBar::urlBar(int index)
 {
     UrlBar *urlBar = qobject_cast<UrlBar*>(QStackedWidget::widget(index));
-    if(!urlBar)
+    if (!urlBar)
     {
         kWarning() << "URL bar with index" << index << "not found. Returning NULL.  line:" << __LINE__;
     }

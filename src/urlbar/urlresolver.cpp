@@ -71,13 +71,13 @@ UrlResolver::UrlResolver(const QString &typedUrl)
     , _typedString(typedUrl.trimmed())
     , _typedQuery()
 {
-    if(!_searchEngine)
+    if (!_searchEngine)
         setSearchEngine(SearchEngine::defaultEngine());
 
-    if(_browseRegexp.isEmpty())
+    if (_browseRegexp.isEmpty())
     {
         // FIXME move to use QL1S here!!!
-        
+
         QString protocol = QString("^(%1)").arg(KProtocolInfo::protocols().join("|"));
 
         QString localhost = "^localhost";
@@ -100,14 +100,14 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         _browseRegexp = QRegExp('(' + protocol + ")|(" + localhost + ")|(" + local + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 + ')');
     }
 
-    if(_searchEnginesRegexp.isEmpty())
+    if (_searchEnginesRegexp.isEmpty())
     {
         QString reg;
         QString engineUrl;
         Q_FOREACH(KService::Ptr s, SearchEngine::favorites())
         {
             engineUrl = QRegExp::escape(s->property("Query").toString()).replace("\\\\\\{@\\}", "[\\d\\w-.]+");
-            if(reg.isEmpty())
+            if (reg.isEmpty())
                 reg = '(' + engineUrl + ')';
             else
                 reg = reg + "|(" + engineUrl + ')';
@@ -119,7 +119,7 @@ UrlResolver::UrlResolver(const QString &typedUrl)
 
 UrlSearchList UrlResolver::orderedSearchItems()
 {
-    if(_typedString.startsWith(QL1S("about:")))
+    if (_typedString.startsWith(QL1S("about:")))
     {
         UrlSearchList list;
         UrlSearchItem home(UrlSearchItem::Browse, QString("about:home"),       QL1S("home"));
@@ -162,7 +162,7 @@ UrlSearchList UrlResolver::orderLists()
 
     UrlSearchList list;
 
-    if(_browseRegexp.indexIn(_typedString) != -1)
+    if (_browseRegexp.indexIn(_typedString) != -1)
     {
         list << _qurlFromUserInput;
         list << _webSearches;
@@ -183,19 +183,19 @@ UrlSearchList UrlResolver::orderLists()
 
     // prefer items which are history items as well bookmarks item
     // if there are more than 1000 bookmark results, the performance impact is noticeable
-    if(bookmarksCount < 1000)
+    if (bookmarksCount < 1000)
     {
         //add as many items to the common list as there are available entries in the dropdown list
         UrlSearchItem urlSearchItem;
-        for(int i = 0; i < _history.count(); i++)
+        for (int i = 0; i < _history.count(); i++)
         {
-            if(_bookmarks.removeOne(_history.at(i)))
+            if (_bookmarks.removeOne(_history.at(i)))
             {
                 urlSearchItem = _history.takeAt(i);
                 urlSearchItem.type |= UrlSearchItem::Bookmark;
                 common << urlSearchItem;
                 commonCount++;
-                if(commonCount >= availableEntries)
+                if (commonCount >= availableEntries)
                 {
                     break;
                 }
@@ -203,7 +203,7 @@ UrlSearchList UrlResolver::orderLists()
         }
 
         commonCount = common.count();
-        if(commonCount >= availableEntries)
+        if (commonCount >= availableEntries)
         {
             common = common.mid(0, availableEntries);
             _history = UrlSearchList();
@@ -213,11 +213,11 @@ UrlSearchList UrlResolver::orderLists()
         else        //remove all items from the history and bookmarks list up to the remaining entries in the dropdown list
         {
             availableEntries -= commonCount;
-            if(historyCount >= availableEntries)
+            if (historyCount >= availableEntries)
             {
                 _history = _history.mid(0, availableEntries);
             }
-            if(bookmarksCount >= availableEntries)
+            if (bookmarksCount >= availableEntries)
             {
                 _bookmarks = _bookmarks.mid(0, availableEntries);
             }
@@ -226,19 +226,19 @@ UrlSearchList UrlResolver::orderLists()
     else        //if there are too many bookmarks items, remove all items up to the remaining entries in the dropdown list
     {
 
-        if(historyCount >= availableEntries)
+        if (historyCount >= availableEntries)
         {
             _history = _history.mid(0, availableEntries);
         }
-        if(bookmarksCount >= availableEntries)
+        if (bookmarksCount >= availableEntries)
         {
             _bookmarks = _bookmarks.mid(0, availableEntries);
         }
 
         UrlSearchItem urlSearchItem;
-        for(int i = 0; i < _history.count(); i++)
+        for (int i = 0; i < _history.count(); i++)
         {
-            if(_bookmarks.removeOne(_history.at(i)))
+            if (_bookmarks.removeOne(_history.at(i)))
             {
                 urlSearchItem = _history.takeAt(i);
                 urlSearchItem.type |= UrlSearchItem::Bookmark;
@@ -254,26 +254,26 @@ UrlSearchList UrlResolver::orderLists()
     commonCount = common.count();
 
     //now fill the list to MAX_ELEMENTS
-    if(availableEntries > 0)
+    if (availableEntries > 0)
     {
         int historyEntries = ((int)(availableEntries / 2)) + availableEntries % 2;
         int bookmarksEntries = availableEntries - historyEntries;
 
-        if(historyCount >= historyEntries && bookmarksCount >= bookmarksEntries)
+        if (historyCount >= historyEntries && bookmarksCount >= bookmarksEntries)
         {
             _history = _history.mid(0, historyEntries);
             _bookmarks = _bookmarks.mid(0, bookmarksEntries);
         }
-        else if(historyCount < historyEntries && bookmarksCount >= bookmarksEntries)
+        else if (historyCount < historyEntries && bookmarksCount >= bookmarksEntries)
         {
-            if(historyCount + bookmarksCount > availableEntries)
+            if (historyCount + bookmarksCount > availableEntries)
             {
                 _bookmarks = _bookmarks.mid(0, availableEntries - historyCount);
             }
         }
-        else if(historyCount >= historyEntries && bookmarksCount < bookmarksEntries)
+        else if (historyCount >= historyEntries && bookmarksCount < bookmarksEntries)
         {
-            if(historyCount + bookmarksCount > availableEntries)
+            if (historyCount + bookmarksCount > availableEntries)
             {
                 _history = _history.mid(0, availableEntries - bookmarksCount);
             }
@@ -283,7 +283,7 @@ UrlSearchList UrlResolver::orderLists()
     availableEntries -=  _history.count();
     availableEntries -=  _bookmarks.count();
 
-    if(_suggestions.count() > availableEntries + MIN_SUGGESTIONS)
+    if (_suggestions.count() > availableEntries + MIN_SUGGESTIONS)
     {
         _suggestions = _suggestions.mid(0, availableEntries + MIN_SUGGESTIONS);
     }
@@ -302,7 +302,7 @@ void UrlResolver::computeQurlFromUserInput()
 {
     QString url = _typedString;
     QUrl urlFromUserInput = QUrl::fromUserInput(url);
-    if(urlFromUserInput.isValid())
+    if (urlFromUserInput.isValid())
     {
         QString gTitle = i18nc("Browse a website", "Browse");
         UrlSearchItem gItem(UrlSearchItem::Browse, urlFromUserInput.toString(), gTitle);
@@ -316,13 +316,13 @@ void UrlResolver::computeWebSearches()
 {
     QString query = _typedString;
     KService::Ptr engine = SearchEngine::fromString(_typedString);
-    if(engine)
+    if (engine)
     {
         query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
         setSearchEngine(engine);
     }
 
-    if(_searchEngine)
+    if (_searchEngine)
     {
         UrlSearchItem item = UrlSearchItem(UrlSearchItem::Search, SearchEngine::buildQuery(_searchEngine, query), query);
         UrlSearchList list;
@@ -340,7 +340,7 @@ void UrlResolver::computeHistory()
 
     Q_FOREACH(const HistoryItem & i, found)
     {
-        if(_searchEnginesRegexp.indexIn(i.url) == -1)  //filter all urls that are search engine results
+        if (_searchEnginesRegexp.indexIn(i.url) == -1) //filter all urls that are search engine results
         {
             UrlSearchItem gItem(UrlSearchItem::History, i.url, i.title);
             _history << gItem;
@@ -366,7 +366,7 @@ void UrlResolver::computeSuggestions()
 {
     // if a string startsWith /, it is probably a local path
     // so, no need for suggestions...
-    if(_typedString.startsWith('/') || !rApp->opensearchManager()->isSuggestionAvailable())
+    if (_typedString.startsWith('/') || !rApp->opensearchManager()->isSuggestionAvailable())
     {
         UrlSearchList list;
         emit suggestionsReady(list, _typedString);
@@ -375,7 +375,7 @@ void UrlResolver::computeSuggestions()
 
     QString query = _typedString;
     KService::Ptr engine = SearchEngine::fromString(_typedString);
-    if(engine)
+    if (engine)
     {
         query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
         setSearchEngine(engine);
@@ -393,7 +393,7 @@ void UrlResolver::computeSuggestions()
 
 void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &suggestions)
 {
-    if(text != _typedQuery)
+    if (text != _typedQuery)
         return;
 
     UrlSearchList sugList;
@@ -401,7 +401,7 @@ void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &s
     Q_FOREACH(const Response & i, suggestions)
     {
         urlString = i.url;
-        if(urlString.isEmpty())
+        if (urlString.isEmpty())
         {
             urlString = SearchEngine::buildQuery(UrlResolver::searchEngine(), i.title);
         }

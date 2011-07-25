@@ -95,37 +95,37 @@ Application::~Application()
         window.clear();
     }
 
-    if(!m_historyManager.isNull())
+    if (!m_historyManager.isNull())
     {
         delete m_historyManager.data();
         m_historyManager.clear();
     }
 
-    if(!m_bookmarkProvider.isNull())
+    if (!m_bookmarkProvider.isNull())
     {
         delete m_bookmarkProvider.data();
         m_bookmarkProvider.clear();
     }
 
-    if(!m_sessionManager.isNull())
+    if (!m_sessionManager.isNull())
     {
         delete m_sessionManager.data();
         m_sessionManager.clear();
     }
 
-    if(!m_opensearchManager.isNull())
+    if (!m_opensearchManager.isNull())
     {
         delete m_opensearchManager.data();
         m_opensearchManager.clear();
     }
 
-    if(!m_iconManager.isNull())
+    if (!m_iconManager.isNull())
     {
         delete m_iconManager.data();
         m_iconManager.clear();
     }
 
-    if(!m_adblockManager.isNull())
+    if (!m_adblockManager.isNull())
     {
         delete m_adblockManager.data();
         m_adblockManager.clear();
@@ -135,7 +135,7 @@ Application::~Application()
     // add a check to NOT close rekonq
     // until last download is finished
 
-    if(!m_downloadManager.isNull())
+    if (!m_downloadManager.isNull())
     {
         delete m_adblockManager.data();
         m_adblockManager.clear();
@@ -166,25 +166,25 @@ int Application::newInstance()
 
     int exitValue = 1 * isFirstLoad + 2 * areThereArguments + 4 * isRekonqCrashed;
 
-    if(isRekonqCrashed && isFirstLoad)
+    if (isRekonqCrashed && isFirstLoad)
     {
         loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
         mainWindow()->currentTab()->showMessageBar();
     }
 
-    if(areThereArguments)
+    if (areThereArguments)
     {
         KUrl::List urlList;
-        for(int i = 0; i < args->count(); ++i)
+        for (int i = 0; i < args->count(); ++i)
         {
             const KUrl u = args->url(i);
-            if(u.isLocalFile() && QFile::exists(u.toLocalFile()))  // "rekonq somefile.html" case
+            if (u.isLocalFile() && QFile::exists(u.toLocalFile())) // "rekonq somefile.html" case
                 urlList += u;
             else
                 urlList += KUrl(args->arg(i));   // "rekonq kde.org" || "rekonq kde:kdialog" case
         }
 
-        if(isFirstLoad && !isRekonqCrashed)
+        if (isFirstLoad && !isRekonqCrashed)
         {
             // No windows in the current desktop? No windows at all?
             // Create a new one and load there sites...
@@ -192,17 +192,17 @@ int Application::newInstance()
         }
         else
         {
-            if(ReKonfig::openTabNoWindow())
+            if (ReKonfig::openTabNoWindow())
             {
                 loadUrl(urlList.at(0), Rekonq::NewTab);
-                if(!mainWindow()->isActiveWindow())
+                if (!mainWindow()->isActiveWindow())
                     KWindowSystem::demandAttention(mainWindow()->winId(), true);
             }
             else
                 loadUrl(urlList.at(0), Rekonq::NewWindow);
         }
 
-        for(int i = 1; i < urlList.count(); ++i)
+        for (int i = 1; i < urlList.count(); ++i)
             loadUrl(urlList.at(i), Rekonq::NewTab);
 
         KStartupInfo::appStarted();
@@ -211,9 +211,9 @@ int Application::newInstance()
     else
     {
 
-        if(isFirstLoad && !isRekonqCrashed)   // we are starting rekonq, for the first time with no args: use startup behaviour
+        if (isFirstLoad && !isRekonqCrashed)  // we are starting rekonq, for the first time with no args: use startup behaviour
         {
-            switch(ReKonfig::startupBehaviour())
+            switch (ReKonfig::startupBehaviour())
             {
             case 0: // open home page
                 newMainWindow()->homePage();
@@ -231,9 +231,9 @@ int Application::newInstance()
                 break;
             }
         }
-        else if(!isFirstLoad)    // rekonq has just been started. Just open a new window
+        else if (!isFirstLoad)   // rekonq has just been started. Just open a new window
         {
-            switch(ReKonfig::newTabsBehaviour())
+            switch (ReKonfig::newTabsBehaviour())
             {
             case 0: // new tab page
                 loadUrl(KUrl("about:home") , Rekonq::NewWindow);
@@ -252,7 +252,7 @@ int Application::newInstance()
         }
     }
 
-    if(isFirstLoad)
+    if (isFirstLoad)
     {
         // give me some time to do the other things..
         QTimer::singleShot(100, this, SLOT(postLaunch()));
@@ -298,14 +298,14 @@ MainWindow *Application::mainWindow()
 {
     MainWindow *active = qobject_cast<MainWindow*>(QApplication::activeWindow());
 
-    if(!active)
+    if (!active)
     {
-        if(m_mainWindows.isEmpty())
+        if (m_mainWindows.isEmpty())
             return 0;
 
         Q_FOREACH(const QWeakPointer<MainWindow> &pointer, m_mainWindows)
         {
-            if(KWindowInfo(pointer.data()->effectiveWinId(), NET::WMDesktop, 0).isOnCurrentDesktop())
+            if (KWindowInfo(pointer.data()->effectiveWinId(), NET::WMDesktop, 0).isOnCurrentDesktop())
                 return pointer.data();
         }
         return m_mainWindows.at(0).data();
@@ -316,7 +316,7 @@ MainWindow *Application::mainWindow()
 
 HistoryManager *Application::historyManager()
 {
-    if(m_historyManager.isNull())
+    if (m_historyManager.isNull())
     {
         m_historyManager = new HistoryManager;
     }
@@ -326,7 +326,7 @@ HistoryManager *Application::historyManager()
 
 BookmarkProvider *Application::bookmarkProvider()
 {
-    if(m_bookmarkProvider.isNull())
+    if (m_bookmarkProvider.isNull())
     {
         m_bookmarkProvider = new BookmarkProvider;
     }
@@ -336,7 +336,7 @@ BookmarkProvider *Application::bookmarkProvider()
 
 SessionManager *Application::sessionManager()
 {
-    if(m_sessionManager.isNull())
+    if (m_sessionManager.isNull())
     {
         m_sessionManager = new SessionManager;
     }
@@ -346,7 +346,7 @@ SessionManager *Application::sessionManager()
 
 OpenSearchManager *Application::opensearchManager()
 {
-    if(m_opensearchManager.isNull())
+    if (m_opensearchManager.isNull())
     {
         m_opensearchManager = new OpenSearchManager;
     }
@@ -356,7 +356,7 @@ OpenSearchManager *Application::opensearchManager()
 
 IconManager *Application::iconManager()
 {
-    if(m_iconManager.isNull())
+    if (m_iconManager.isNull())
     {
         m_iconManager = new IconManager;
     }
@@ -366,7 +366,7 @@ IconManager *Application::iconManager()
 
 DownloadManager *Application::downloadManager()
 {
-    if(m_downloadManager.isNull())
+    if (m_downloadManager.isNull())
     {
         m_downloadManager = new DownloadManager(instance());
     }
@@ -376,10 +376,10 @@ DownloadManager *Application::downloadManager()
 
 void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 {
-    if(url.isEmpty())
+    if (url.isEmpty())
         return;
 
-    if(!url.isValid())
+    if (!url.isValid())
     {
         KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url(KUrl::RemoveTrailingSlash)));
         return;
@@ -392,10 +392,10 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         ? newMainWindow()
         : mainWindow();
 
-    switch(type)
+    switch (type)
     {
     case Rekonq::NewTab:
-        if(ReKonfig::openTabNoWindow())
+        if (ReKonfig::openTabNoWindow())
             tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack());
         else
         {
@@ -425,7 +425,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
     WebView *view = tab->view();
 
-    if(view)
+    if (view)
     {
         FilterUrlJob *job = new FilterUrlJob(view, url.pathOrUrl(), this);
         Weaver::instance()->enqueue(job);
@@ -439,7 +439,7 @@ MainWindow *Application::newMainWindow(bool withTab)
     // This is used to track which window was activated most recently
     w->installEventFilter(this);
 
-    if(withTab)
+    if (withTab)
         w->mainView()->newWebTab();    // remember using newWebTab and NOT newTab here!!
 
     m_mainWindows.prepend(w);
@@ -463,7 +463,7 @@ MainWindowList Application::mainWindowList()
 
 AdBlockManager *Application::adblockManager()
 {
-    if(m_adblockManager.isNull())
+    if (m_adblockManager.isNull())
     {
         m_adblockManager = new AdBlockManager;
     }
@@ -477,7 +477,7 @@ void Application::loadResolvedUrl(ThreadWeaver::Job *job)
     KUrl url = threadedJob->url();
     WebView *view = threadedJob->view();
 
-    if(view)
+    if (view)
     {
         view->load(url);
     }
@@ -498,12 +498,12 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
 {
     // Track which window was activated most recently to prefer it on window choosing
     // (e.g. when another application opens a link)
-    if(event->type() == QEvent::WindowActivate)
+    if (event->type() == QEvent::WindowActivate)
     {
         MainWindow *window = qobject_cast<MainWindow*>(watched);
-        if(window)
+        if (window)
         {
-            if(m_mainWindows.at(0).data() != window)
+            if (m_mainWindows.at(0).data() != window)
             {
                 int index = m_mainWindows.indexOf(QWeakPointer<MainWindow>(window));
                 Q_ASSERT(index != -1);
@@ -527,7 +527,7 @@ void Application::updateConfiguration()
 
         mv->tabBar()->setAnimatedTabHighlighting(ReKonfig::animatedTabHighlighting());
 
-        if(b)
+        if (b)
             mv->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
         else
             mv->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
@@ -572,7 +572,7 @@ void Application::updateConfiguration()
     defaultSettings->setAttribute(QWebSettings::ZoomTextOnly, ReKonfig::zoomTextOnly());
     defaultSettings->setAttribute(QWebSettings::PrintElementBackgrounds, ReKonfig::printElementBackgrounds());
 
-    if(ReKonfig::pluginsEnabled() == 2)
+    if (ReKonfig::pluginsEnabled() == 2)
         defaultSettings->setAttribute(QWebSettings::PluginsEnabled, false);
     else
         defaultSettings->setAttribute(QWebSettings::PluginsEnabled, true);
@@ -584,7 +584,7 @@ void Application::updateConfiguration()
     defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
     defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
     defaultSettings->setAttribute(QWebSettings::LocalStorageEnabled, ReKonfig::localStorageEnabled());
-    if(ReKonfig::localStorageEnabled())
+    if (ReKonfig::localStorageEnabled())
     {
         QString path = KStandardDirs::locateLocal("cache", QString("WebkitLocalStorage/rekonq"), true);
         path.remove("rekonq");
@@ -601,31 +601,31 @@ void Application::updateConfiguration()
     // ====== load Settings on main classes
     historyManager()->loadSettings();
     adblockManager()->loadSettings();
-    if(!ReKonfig::useFavicon())
+    if (!ReKonfig::useFavicon())
         mainWindow()->setWindowIcon(KIcon("rekonq"));
     else
         mainWindow()->changeWindowIcon(mainWindow()->mainView()->currentIndex());
 
     // hovering unfocused tabs options
-    switch(ReKonfig::hoveringTabOption())
+    switch (ReKonfig::hoveringTabOption())
     {
     case 0: // tab previews
     case 3: // nothing
-        for(int i = 0; i < mainWindow()->mainView()->tabBar()->count(); i++)
+        for (int i = 0; i < mainWindow()->mainView()->tabBar()->count(); i++)
         {
             mainWindow()->mainView()->tabBar()->setTabToolTip(i, "");
         }
         break;
 
     case 1: // title previews
-        for(int i = 0; i < mainWindow()->mainView()->tabBar()->count(); i++)
+        for (int i = 0; i < mainWindow()->mainView()->tabBar()->count(); i++)
         {
             mainWindow()->mainView()->tabBar()->setTabToolTip(i, mainWindow()->mainView()->tabText(i).remove('&'));
         }
         break;
 
     case 2: // url previews
-        for(int i = 0; i < mainWindow()->mainView()->tabBar()->count(); i++)
+        for (int i = 0; i < mainWindow()->mainView()->tabBar()->count(); i++)
         {
             mainWindow()->mainView()->tabBar()->setTabToolTip(i, mainWindow()->mainView()->webTab(i)->url().toMimeDataString());
         }
@@ -652,17 +652,17 @@ void Application::setPrivateBrowsingMode(bool b)
 
     QWebSettings *settings = QWebSettings::globalSettings();
     bool isJustEnabled = settings->testAttribute(QWebSettings::PrivateBrowsingEnabled);
-    if(isJustEnabled == b)
+    if (isJustEnabled == b)
         return;     // uhm... something goes wrong...
 
-    if(b)
+    if (b)
     {
         QString caption = i18n("Are you sure you want to turn on private browsing?");
         QString text = i18n("<b>%1</b>"
                             "<p>rekonq will save your current tabs for when you'll stop private browsing the net.</p>", caption);
 
         int button = KMessageBox::warningContinueCancel(mainWindow(), text, caption, KStandardGuiItem::cont(), KStandardGuiItem::cancel(), i18n("don't ask again"));
-        if(button != KMessageBox::Continue)
+        if (button != KMessageBox::Continue)
             return;
 
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
@@ -685,7 +685,7 @@ void Application::setPrivateBrowsingMode(bool b)
         _privateBrowsingAction->setChecked(false);
 
         loadUrl(KUrl("about:blank"), Rekonq::NewWindow);
-        if(!sessionManager()->restoreSession())
+        if (!sessionManager()->restoreSession())
             loadUrl(KUrl("about:home"), Rekonq::NewWindow);
     }
 }

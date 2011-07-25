@@ -44,9 +44,9 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
     : AccessManager(parent)
 {
     QString c = KGlobal::locale()->country();
-    if(c == QL1S("C"))
+    if (c == QL1S("C"))
         c = QL1S("en_US");
-    if(c != QL1S("en_US"))
+    if (c != QL1S("en_US"))
         c.append(QL1S(", en_US"));
 
     _acceptLanguage = c.toLatin1();
@@ -64,7 +64,7 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     req.setRawHeader("Accept-Language", _acceptLanguage);
 
     KIO::CacheControl cc = KProtocolManager::cacheControl();
-    switch(cc)
+    switch (cc)
     {
     case KIO::CC_CacheOnly:      // Fail request if not in cache.
         req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
@@ -86,14 +86,14 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     }
 
     // Handle GET operations with AdBlock
-    if(op == QNetworkAccessManager::GetOperation)
+    if (op == QNetworkAccessManager::GetOperation)
         reply = rApp->adblockManager()->block(req, parentPage);
 
 
-    if(!reply)
+    if (!reply)
         reply = AccessManager::createRequest(op, req, outgoingData);
 
-    if(parentPage && parentPage->hasNetworkAnalyzerEnabled())
+    if (parentPage && parentPage->hasNetworkAnalyzerEnabled())
         emit networkData(op, req, reply);
 
     return reply;

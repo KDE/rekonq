@@ -71,7 +71,7 @@ void BookmarksPanel::loadFoldedState()
 
 void BookmarksPanel::contextMenu(const QPoint &pos)
 {
-    if(_loadingState)
+    if (_loadingState)
         return;
 
     BookmarksContextMenu menu(bookmarkForIndex(panelTreeView()->indexAt(pos)),
@@ -86,7 +86,7 @@ void BookmarksPanel::contextMenu(const QPoint &pos)
 void BookmarksPanel::deleteBookmark()
 {
     QModelIndex index = panelTreeView()->currentIndex();
-    if(_loadingState || !index.isValid())
+    if (_loadingState || !index.isValid())
         return;
 
     rApp->bookmarkProvider()->bookmarkOwner()->deleteBookmark(bookmarkForIndex(index));
@@ -95,7 +95,7 @@ void BookmarksPanel::deleteBookmark()
 
 void BookmarksPanel::onCollapse(const QModelIndex &index)
 {
-    if(_loadingState)
+    if (_loadingState)
         return;
 
     bookmarkForIndex(index).internalElement().setAttribute("folded", "yes");
@@ -105,7 +105,7 @@ void BookmarksPanel::onCollapse(const QModelIndex &index)
 
 void BookmarksPanel::onExpand(const QModelIndex &index)
 {
-    if(_loadingState)
+    if (_loadingState)
         return;
 
     bookmarkForIndex(index).internalElement().setAttribute("folded", "no");
@@ -128,19 +128,19 @@ void BookmarksPanel::setup()
 void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 {
     QAbstractItemModel *model = panelTreeView()->model();
-    if(!model)
+    if (!model)
         return;
 
     int count = model->rowCount(root);
     QModelIndex index;
 
-    for(int i = 0; i < count; ++i)
+    for (int i = 0; i < count; ++i)
     {
         index = model->index(i, 0, root);
-        if(index.isValid())
+        if (index.isValid())
         {
             KBookmark bm = bookmarkForIndex(index);
-            if(bm.isGroup())
+            if (bm.isGroup())
             {
                 panelTreeView()->setExpanded(index, bm.toGroup().isOpen());
                 loadFoldedState(index);
@@ -152,7 +152,7 @@ void BookmarksPanel::loadFoldedState(const QModelIndex &root)
 
 KBookmark BookmarksPanel::bookmarkForIndex(const QModelIndex &index)
 {
-    if(!index.isValid())
+    if (!index.isValid())
         return KBookmark();
 
     const UrlFilterProxyModel *proxyModel = static_cast<const UrlFilterProxyModel*>(index.model());

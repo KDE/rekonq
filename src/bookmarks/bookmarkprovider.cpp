@@ -57,7 +57,7 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
     m_manager = KBookmarkManager::userBookmarksManager();
     const QString bookmarksFile = KStandardDirs::locateLocal("data", QString::fromLatin1("konqueror/bookmarks.xml"));
 
-    if(!QFile::exists(bookmarksFile))
+    if (!QFile::exists(bookmarksFile))
     {
         kDebug() << "copying of defaultbookmarks.xbel ...";
 
@@ -103,7 +103,7 @@ KActionMenu* BookmarkProvider::bookmarkActionMenu(QWidget *parent)
 
 void BookmarkProvider::registerBookmarkBar(BookmarkToolBar *toolbar)
 {
-    if(m_bookmarkToolBars.contains(toolbar))
+    if (m_bookmarkToolBars.contains(toolbar))
         return;
 
     m_bookmarkToolBars.append(toolbar);
@@ -118,7 +118,7 @@ void BookmarkProvider::removeBookmarkBar(BookmarkToolBar *toolbar)
 
 void BookmarkProvider::registerBookmarkPanel(BookmarksPanel *panel)
 {
-    if(panel && !m_bookmarkPanels.contains(panel))
+    if (panel && !m_bookmarkPanels.contains(panel))
     {
         m_bookmarkPanels.append(panel);
         connect(panel, SIGNAL(expansionChanged()), this, SLOT(slotPanelChanged()));
@@ -128,13 +128,13 @@ void BookmarkProvider::registerBookmarkPanel(BookmarksPanel *panel)
 
 void BookmarkProvider::removeBookmarkPanel(BookmarksPanel *panel)
 {
-    if(!panel)
+    if (!panel)
         return;
 
     m_bookmarkPanels.removeOne(panel);
     panel->disconnect(this);
 
-    if(m_bookmarkPanels.isEmpty())
+    if (m_bookmarkPanels.isEmpty())
         rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
 }
 
@@ -142,7 +142,7 @@ void BookmarkProvider::removeBookmarkPanel(BookmarksPanel *panel)
 QAction* BookmarkProvider::actionByName(const QString &name)
 {
     QAction *action = m_actionCollection->action(name);
-    if(action)
+    if (action)
         return action;
     return new QAction(this);
 }
@@ -159,8 +159,8 @@ QList<KBookmark> BookmarkProvider::find(const QString &text)
     QList<KBookmark> list;
 
     KBookmarkGroup root = rApp->bookmarkProvider()->rootGroup();
-    if(!root.isNull())
-        for(KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
+    if (!root.isNull())
+        for (KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
             find(&list, bookmark, text);
 
     return list;
@@ -170,7 +170,7 @@ QList<KBookmark> BookmarkProvider::find(const QString &text)
 KBookmark BookmarkProvider::bookmarkForUrl(const KUrl &url)
 {
     KBookmarkGroup root = rootGroup();
-    if(root.isNull())
+    if (root.isNull())
         return KBookmark();
 
     return bookmarkForUrl(root, url);
@@ -181,13 +181,13 @@ void BookmarkProvider::slotBookmarksChanged()
 {
     foreach(BookmarkToolBar * bookmarkToolBar, m_bookmarkToolBars)
     {
-        if(bookmarkToolBar)
+        if (bookmarkToolBar)
         {
             bookmarkToolBar->toolBar()->clear();
             fillBookmarkBar(bookmarkToolBar);
         }
     }
-    if(rApp->mainWindow() && rApp->mainWindow()->currentTab() && rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+    if (rApp->mainWindow() && rApp->mainWindow()->currentTab() && rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
         rApp->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 
@@ -195,12 +195,12 @@ void BookmarkProvider::slotBookmarksChanged()
 void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
 {
     KBookmarkGroup root = m_manager->toolbar();
-    if(root.isNull())
+    if (root.isNull())
         return;
 
-    for(KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
+    for (KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
     {
-        if(bookmark.isGroup())
+        if (bookmark.isGroup())
         {
             KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), this);
             menuAction->setDelayed(false);
@@ -213,7 +213,7 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
             toolBar->toolBar()->addAction(menuAction);
             toolBar->toolBar()->widgetForAction(menuAction)->installEventFilter(toolBar);
         }
-        else if(bookmark.isSeparator())
+        else if (bookmark.isSeparator())
         {
             toolBar->toolBar()->addSeparator();
         }
@@ -233,20 +233,20 @@ void BookmarkProvider::slotPanelChanged()
 {
     foreach(BookmarksPanel * panel, m_bookmarkPanels)
     {
-        if(panel && panel != sender())
+        if (panel && panel != sender())
             panel->loadFoldedState();
     }
-    if(rApp->mainWindow() && rApp->mainWindow()->currentTab() && rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+    if (rApp->mainWindow() && rApp->mainWindow()->currentTab() && rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
         rApp->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 
 
 void BookmarkProvider::find(QList<KBookmark> *list, const KBookmark &bookmark, const QString &text)
 {
-    if(bookmark.isGroup())
+    if (bookmark.isGroup())
     {
         KBookmarkGroup group = bookmark.toGroup();
-        for(KBookmark bm = group.first(); !bm.isNull(); bm = group.next(bm))
+        for (KBookmark bm = group.first(); !bm.isNull(); bm = group.next(bm))
             find(list, bm, text);
     }
     else
@@ -255,14 +255,14 @@ void BookmarkProvider::find(QList<KBookmark> *list, const KBookmark &bookmark, c
         bool matches = true;
         foreach(const QString & word, words)
         {
-            if(!bookmark.url().url().contains(word, Qt::CaseInsensitive)
+            if (!bookmark.url().url().contains(word, Qt::CaseInsensitive)
                     && !bookmark.fullText().contains(word, Qt::CaseInsensitive))
             {
                 matches = false;
                 break;
             }
         }
-        if(matches)
+        if (matches)
             *list << bookmark;
     }
 }
@@ -272,18 +272,18 @@ KBookmark BookmarkProvider::bookmarkForUrl(const KBookmark &bookmark, const KUrl
 {
     KBookmark found;
 
-    if(bookmark.isGroup())
+    if (bookmark.isGroup())
     {
         KBookmarkGroup group = bookmark.toGroup();
         KBookmark bookmark = group.first();
 
-        while(!bookmark.isNull() && found.isNull())
+        while (!bookmark.isNull() && found.isNull())
         {
             found = bookmarkForUrl(bookmark, url);
             bookmark = group.next(bookmark);
         }
     }
-    else if(!bookmark.isSeparator() && bookmark.url() == url)
+    else if (!bookmark.isSeparator() && bookmark.url() == url)
     {
         found = bookmark;
     }
@@ -295,19 +295,19 @@ KBookmark BookmarkProvider::bookmarkForUrl(const KBookmark &bookmark, const KUrl
 void BookmarkProvider::copyBookmarkGroup(const KBookmarkGroup &groupToCopy, KBookmarkGroup destGroup)
 {
     KBookmark bookmark = groupToCopy.first();
-    while(!bookmark.isNull())
+    while (!bookmark.isNull())
     {
-        if(bookmark.isGroup())
+        if (bookmark.isGroup())
         {
             KBookmarkGroup newDestGroup = destGroup.createNewFolder(bookmark.text());
-            if(bookmark.toGroup().isToolbarGroup())
+            if (bookmark.toGroup().isToolbarGroup())
             {
                 newDestGroup.internalElement().setAttribute("toolbar", "yes");
                 newDestGroup.setIcon("bookmark-toolbar");
             }
             copyBookmarkGroup(bookmark.toGroup(), newDestGroup);
         }
-        else if(bookmark.isSeparator())
+        else if (bookmark.isSeparator())
         {
             destGroup.createNewSeparator();
         }

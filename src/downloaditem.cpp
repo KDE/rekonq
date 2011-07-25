@@ -79,7 +79,7 @@ QString DownloadItem::icon() const
 // update progress for the plain KIO::Job backend
 void DownloadItem::updateProgress(KJob *job, unsigned long value)
 {
-    if(m_shouldAbort)
+    if (m_shouldAbort)
         job->kill(KJob::EmitResult);
     emit downloadProgress(value);
 }
@@ -88,7 +88,7 @@ void DownloadItem::updateProgress(KJob *job, unsigned long value)
 // emit downloadFinished signal in KJob case
 void DownloadItem::onFinished(KJob *job)
 {
-    if(!job->error())
+    if (!job->error())
         emit downloadProgress(100);
     emit downloadFinished(!job->error());
 }
@@ -117,35 +117,35 @@ void DownloadItem::setKGetTransferDbusPath(const QString &path)
 */
 void DownloadItem::updateProgress()
 {
-    if(m_kGetPath.isEmpty())
+    if (m_kGetPath.isEmpty())
         return;
     QDBusInterface kgetTransfer(QL1S("org.kde.kget"), m_kGetPath, QL1S("org.kde.kget.transfer"));
-    if(!kgetTransfer.isValid())
+    if (!kgetTransfer.isValid())
         return;
     // Fetch percent from DBus
     QDBusMessage percentRes = kgetTransfer.call(QL1S("percent"));
-    if(percentRes.arguments().isEmpty())
+    if (percentRes.arguments().isEmpty())
         return;
     bool ok = false;
     const int percent = percentRes.arguments().first().toInt(&ok);
-    if(!ok)
+    if (!ok)
         return;
     // Fetch status from DBus
     QDBusMessage statusRes = kgetTransfer.call(QL1S("status"));
-    if(statusRes.arguments().isEmpty())
+    if (statusRes.arguments().isEmpty())
         return;
     ok = false;
     const int status = statusRes.arguments().first().toInt(&ok);
-    if(!ok)
+    if (!ok)
         return;
     emit downloadProgress(percent);
     // TODO: expose resume if stopped
     // special case for status 2 will come later when we have a way to support resume.
-    if(percent == 100 || status == 4 || status == 2)
+    if (percent == 100 || status == 4 || status == 2)
     {
         emit downloadFinished(true);
         QTimer *timer = qobject_cast<QTimer *>(sender());
-        if(timer)
+        if (timer)
             timer->stop();
     }
 }
@@ -153,10 +153,10 @@ void DownloadItem::updateProgress()
 
 void DownloadItem::abort() const
 {
-    if(!m_kGetPath.isEmpty())
+    if (!m_kGetPath.isEmpty())
     {
         QDBusInterface kgetTransfer(QL1S("org.kde.kget"), m_kGetPath, QL1S("org.kde.kget.transfer"));
-        if(kgetTransfer.isValid())
+        if (kgetTransfer.isValid())
             kgetTransfer.call(QL1S("stop"));
     }
     else

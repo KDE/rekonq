@@ -58,32 +58,32 @@ IconManager::IconManager(QObject *parent)
 KIcon IconManager::iconForUrl(const KUrl &url)
 {
     // first things first.. avoid infinite loop at startup
-    if(url.isEmpty() || rApp->mainWindowList().isEmpty())
+    if (url.isEmpty() || rApp->mainWindowList().isEmpty())
         return KIcon("text-html");
 
     QByteArray encodedUrl = url.toEncoded();
     // rekonq icons..
-    if(encodedUrl == QByteArray("about:home"))
+    if (encodedUrl == QByteArray("about:home"))
         return KIcon("go-home");
-    if(encodedUrl == QByteArray("about:closedTabs"))
+    if (encodedUrl == QByteArray("about:closedTabs"))
         return KIcon("tab-close");
-    if(encodedUrl == QByteArray("about:history"))
+    if (encodedUrl == QByteArray("about:history"))
         return KIcon("view-history");
-    if(encodedUrl == QByteArray("about:bookmarks"))
+    if (encodedUrl == QByteArray("about:bookmarks"))
         return KIcon("bookmarks");
-    if(encodedUrl == QByteArray("about:favorites"))
+    if (encodedUrl == QByteArray("about:favorites"))
         return KIcon("emblem-favorite");
-    if(encodedUrl == QByteArray("about:downloads"))
+    if (encodedUrl == QByteArray("about:downloads"))
         return KIcon("download");
 
     // TODO: return other mimetype icons
-    if(url.isLocalFile())
+    if (url.isLocalFile())
     {
         return KIcon("folder");
     }
 
     QString i = KMimeType::favIconForUrl(url);
-    if(!i.isEmpty())
+    if (!i.isEmpty())
     {
         QString faviconDir = KStandardDirs::locateLocal("cache" , "" , true);
         return KIcon(faviconDir + i);
@@ -97,25 +97,25 @@ KIcon IconManager::iconForUrl(const KUrl &url)
 void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
 {
     // provide icons just for http/https sites
-    if(!url.scheme().startsWith(QL1S("http")))
+    if (!url.scheme().startsWith(QL1S("http")))
     {
-        if(notify)
+        if (notify)
             emit iconChanged();
         return;
     }
 
     // do not load new icons in private browsing..
-    if(QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
-        if(notify)
+        if (notify)
             emit iconChanged();
         return;
     }
 
     // check if icon exists
-    if(!KMimeType::favIconForUrl(url).isEmpty())
+    if (!KMimeType::favIconForUrl(url).isEmpty())
     {
-        if(notify)
+        if (notify)
             emit iconChanged();
         return;
     }
@@ -129,13 +129,13 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     QWebElement root = page->mainFrame()->documentElement();
     QWebElement e = root.findFirst(QL1S("link[rel~=\"icon\"]"));
     QString relUrlString = e.attribute(QL1S("href"));
-    if(relUrlString.isEmpty())
+    if (relUrlString.isEmpty())
     {
         e = root.findFirst(QL1S("link[rel~=\"shortcut icon\"]"));
         relUrlString = e.attribute(QL1S("href"));
     }
 
-    if(!relUrlString.isEmpty())
+    if (!relUrlString.isEmpty())
     {
         faviconUrl = relUrlString.startsWith(QL1S("http"))
                      ? KUrl(relUrlString)
@@ -147,7 +147,7 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
 
     // download icon
     KIO::FileCopyJob *job = KIO::file_copy(faviconUrl, destUrl, -1, KIO::HideProgressInfo);
-    if(notify)
+    if (notify)
         connect(job, SIGNAL(result(KJob*)), this, SLOT(notifyLastStuffs(KJob *)));
     else
         connect(job, SIGNAL(result(KJob*)), this, SLOT(doLastStuffs(KJob *)));
@@ -173,7 +173,7 @@ void IconManager::clearIconCache()
 
 void IconManager::doLastStuffs(KJob *j)
 {
-    if(j->error())
+    if (j->error())
     {
         kDebug() << "FAVICON JOB ERROR";
         return;
@@ -184,14 +184,14 @@ void IconManager::doLastStuffs(KJob *j)
 
     QString s = dest.url().remove(QL1S("file://"));
     QFile fav(s);
-    if(!fav.exists())
+    if (!fav.exists())
     {
         kDebug() << "FAVICON DOES NOT EXISTS";
         fav.remove();
         return;
     }
 
-    if(fav.size() == 0)
+    if (fav.size() == 0)
     {
         kDebug() << "SIZE ZERO FAVICON";
         fav.remove();
@@ -199,13 +199,13 @@ void IconManager::doLastStuffs(KJob *j)
     }
 
     QPixmap px;
-    if(!px.load(s))
+    if (!px.load(s))
     {
         kDebug() << "PIXMAP NOT LOADED";
         return;
     }
 
-    if(px.isNull())
+    if (px.isNull())
     {
         kDebug() << "PIXMAP IS NULL";
         fav.remove();
@@ -213,7 +213,7 @@ void IconManager::doLastStuffs(KJob *j)
     }
 
     px = px.scaled(16, 16);
-    if(!px.save(s))
+    if (!px.save(s))
     {
         kDebug() << "PIXMAP NOT SAVED";
         return;

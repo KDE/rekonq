@@ -80,7 +80,7 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     QLabel *nameLabel = new QLabel(this);
     nameLabel->setText(i18n("Name:"));
     m_name = new KLineEdit(this);
-    if(m_bookmark->isNull())
+    if (m_bookmark->isNull())
     {
         m_name->setEnabled(false);
     }
@@ -119,7 +119,7 @@ void BookmarkWidget::showAt(const QPoint &pos)
 
 void BookmarkWidget::accept()
 {
-    if(!m_bookmark->isNull() && m_name->text() != m_bookmark->fullText())
+    if (!m_bookmark->isNull() && m_name->text() != m_bookmark->fullText())
     {
         m_bookmark->setFullText(m_name->text());
         rApp->bookmarkProvider()->bookmarkManager()->emitChanged();

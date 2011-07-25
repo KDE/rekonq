@@ -92,7 +92,7 @@ void AdBlockWidget::slotInfoLinkActivated(const QString &url)
 void AdBlockWidget::insertRule()
 {
     QString rule = addFilterLineEdit->text();
-    if(rule.isEmpty())
+    if (rule.isEmpty())
         return;
 
     listWidget->addItem(rule);
@@ -168,7 +168,7 @@ void AdBlockWidget::save()
     QStringList localRules;
 
     n = listWidget->count();
-    for(int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         QListWidgetItem *item = listWidget->item(i);
         localRules << item->text();

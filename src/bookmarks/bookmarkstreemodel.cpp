@@ -58,45 +58,45 @@ BtmItem::~BtmItem()
 
 QVariant BtmItem::data(int role) const
 {
-    if(m_kbm.isNull())
+    if (m_kbm.isNull())
         return QVariant();  // should only happen for root item
 
-    if(role == Qt::DisplayRole)
+    if (role == Qt::DisplayRole)
         return m_kbm.text();
 
-    if(role == Qt::DecorationRole)
+    if (role == Qt::DecorationRole)
     {
         // NOTE
         // this should be:
         // return KIcon(m_kbm.icon());
         // but I cannot let it work :(
         // I really cannot understand how let this work properly...
-        if(m_kbm.isGroup() || m_kbm.isSeparator())
+        if (m_kbm.isGroup() || m_kbm.isSeparator())
             return KIcon(m_kbm.icon());
         else
             return rApp->iconManager()->iconForUrl(KUrl(m_kbm.url()));
     }
 
-    if(role == Qt::UserRole)
+    if (role == Qt::UserRole)
         return m_kbm.url();
 
-    if(role == Qt::ToolTipRole)
+    if (role == Qt::ToolTipRole)
     {
         QString tooltip = m_kbm.fullText();
-        if(m_kbm.isGroup())
+        if (m_kbm.isGroup())
             tooltip += i18ncp("%1=Number of items in bookmark folder", " (1 item)", " (%1 items)", childCount());
 
         QString url = m_kbm.url().url();
-        if(!url.isEmpty())
+        if (!url.isEmpty())
         {
-            if(!tooltip.isEmpty())
+            if (!tooltip.isEmpty())
                 tooltip += '\n';
             tooltip += url;
         }
 
-        if(!m_kbm.description().isEmpty())
+        if (!m_kbm.description().isEmpty())
         {
-            if(!tooltip.isEmpty())
+            if (!tooltip.isEmpty())
                 tooltip += '\n';
             tooltip += m_kbm.description();
         }
@@ -110,7 +110,7 @@ QVariant BtmItem::data(int role) const
 
 int BtmItem::row() const
 {
-    if(m_parent)
+    if (m_parent)
         return m_parent->m_children.indexOf(const_cast< BtmItem* >(this));
     return 0;
 }
@@ -139,7 +139,7 @@ BtmItem* BtmItem::parent() const
 
 void BtmItem::appendChild(BtmItem *child)
 {
-    if(!child)
+    if (!child)
         return;
 
     child->m_parent = this;
@@ -180,7 +180,7 @@ BookmarksTreeModel::~BookmarksTreeModel()
 int BookmarksTreeModel::rowCount(const QModelIndex &parent) const
 {
     BtmItem *parentItem = 0;
-    if(!parent.isValid())
+    if (!parent.isValid())
     {
         parentItem = m_root;
     }
@@ -203,12 +203,12 @@ Qt::ItemFlags BookmarksTreeModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags = QAbstractItemModel::flags(index);
 
-    if(!index.isValid())
+    if (!index.isValid())
         return flags | Qt::ItemIsDropEnabled;
 
     flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
-    if(bookmarkForIndex(index).isGroup())
+    if (bookmarkForIndex(index).isGroup())
         flags |= Qt::ItemIsDropEnabled;
 
     return flags;
@@ -217,18 +217,18 @@ Qt::ItemFlags BookmarksTreeModel::flags(const QModelIndex &index) const
 
 QModelIndex BookmarksTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
-    if(!hasIndex(row, column, parent))
+    if (!hasIndex(row, column, parent))
         return QModelIndex();
 
     BtmItem *parentItem;
 
-    if(!parent.isValid())
+    if (!parent.isValid())
         parentItem = m_root;
     else
         parentItem = static_cast<BtmItem*>(parent.internalPointer());
 
     BtmItem *childItem = parentItem->child(row);
-    if(childItem)
+    if (childItem)
         return createIndex(row, column, childItem);
 
     return QModelIndex();
@@ -237,13 +237,13 @@ QModelIndex BookmarksTreeModel::index(int row, int column, const QModelIndex &pa
 
 QModelIndex BookmarksTreeModel::parent(const QModelIndex &index) const
 {
-    if(!index.isValid())
+    if (!index.isValid())
         return QModelIndex();
 
     BtmItem *childItem = static_cast<BtmItem*>(index.internalPointer());
     BtmItem *parentItem = childItem->parent();
 
-    if(parentItem == m_root)
+    if (parentItem == m_root)
         return QModelIndex();
 
     return createIndex(parentItem->row(), 0, parentItem);
@@ -252,20 +252,20 @@ QModelIndex BookmarksTreeModel::parent(const QModelIndex &index) const
 
 QVariant BookmarksTreeModel::data(const QModelIndex &index, int role) const
 {
-    if(!index.isValid())
+    if (!index.isValid())
         return QVariant();
 
     BtmItem *node = static_cast<BtmItem*>(index.internalPointer());
-    if(node && node == m_root)
+    if (node && node == m_root)
     {
-        if(role == Qt::DisplayRole)
+        if (role == Qt::DisplayRole)
             return i18n("Bookmarks");
-        if(role == Qt::DecorationRole)
+        if (role == Qt::DecorationRole)
             return KIcon("bookmarks");
     }
     else
     {
-        if(node)
+        if (node)
             return node->data(role);
     }
 
@@ -281,21 +281,21 @@ QStringList BookmarksTreeModel::mimeTypes() const
 
 bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    if(action != Qt::MoveAction || !data->hasFormat("application/rekonq-bookmark"))
+    if (action != Qt::MoveAction || !data->hasFormat("application/rekonq-bookmark"))
         return false;
 
     QByteArray addresses = data->data("application/rekonq-bookmark");
     KBookmark bookmark = rApp->bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
 
     KBookmarkGroup root;
-    if(parent.isValid())
+    if (parent.isValid())
         root = bookmarkForIndex(parent).toGroup();
     else
         root = rApp->bookmarkProvider()->rootGroup();
 
     QModelIndex destIndex = index(row, column, parent);
 
-    if(destIndex.isValid() && row != -1)
+    if (destIndex.isValid() && row != -1)
     {
         root.moveBookmark(bookmark, root.previous(bookmarkForIndex(destIndex)));
     }
@@ -331,7 +331,7 @@ QMimeData* BookmarksTreeModel::mimeData(const QModelIndexList &indexes) const
 
 void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
 {
-    if(groupAddress.isEmpty())
+    if (groupAddress.isEmpty())
     {
         resetModel();
     }
@@ -347,10 +347,10 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
         foreach(const QString & sIndex, indexChain)
         {
             i = sIndex.toInt(&ok);
-            if(!ok)
+            if (!ok)
                 break;
 
-            if(i < 0 || i >= node->childCount())
+            if (i < 0 || i >= node->childCount())
                 break;
 
             node = node->child(i);
@@ -384,14 +384,14 @@ void BookmarksTreeModel::populate(BtmItem *node, KBookmarkGroup bmg)
 {
     node->clear();
 
-    if(bmg.isNull())
+    if (bmg.isNull())
         return;
 
     KBookmark bm = bmg.first();
-    while(!bm.isNull())
+    while (!bm.isNull())
     {
         BtmItem *newChild = new BtmItem(bm);
-        if(bm.isGroup())
+        if (bm.isGroup())
             populate(newChild, bm.toGroup());
 
         node->appendChild(newChild);

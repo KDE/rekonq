@@ -73,7 +73,7 @@ PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
 void PreviewSelectorBar::verifyUrl()
 {
 
-    if(rApp->mainWindow()->currentTab()->page()->mainFrame()->url().scheme() != "about")
+    if (rApp->mainWindow()->currentTab()->page()->mainFrame()->url().scheme() != "about")
     {
         m_insertAction->setEnabled(true);
         m_insertAction->setToolTip("");
@@ -106,7 +106,7 @@ void PreviewSelectorBar::clicked()
 {
     WebPage *page = rApp->mainWindow()->currentTab()->page();
 
-    if(page)
+    if (page)
     {
         KUrl url = page->mainFrame()->url();
         QStringList names = ReKonfig::previewNames();

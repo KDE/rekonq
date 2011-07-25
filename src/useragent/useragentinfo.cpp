@@ -61,7 +61,7 @@ UserAgentInfo::UserAgentInfo()
 
 QString UserAgentInfo::userAgentString(int i)
 {
-    if(i < 0 || !providerExists(i))
+    if (i < 0 || !providerExists(i))
     {
         kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
@@ -77,12 +77,12 @@ QString UserAgentInfo::userAgentString(int i)
     tmp.replace(QL1S("appMachineType"), QString(utsn.machine));
 
     QStringList languageList = KGlobal::locale()->languageList();
-    if(languageList.count())
+    if (languageList.count())
     {
         int ind = languageList.indexOf(QL1S("C"));
-        if(ind >= 0)
+        if (ind >= 0)
         {
-            if(languageList.contains(QL1S("en")))
+            if (languageList.contains(QL1S("en")))
                 languageList.removeAt(ind);
             else
                 languageList.value(ind) = QL1S("en");
@@ -98,7 +98,7 @@ QString UserAgentInfo::userAgentString(int i)
 
 QString UserAgentInfo::userAgentName(int i)
 {
-    if(i < 0 || !providerExists(i))
+    if (i < 0 || !providerExists(i))
     {
         kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
@@ -110,7 +110,7 @@ QString UserAgentInfo::userAgentName(int i)
 
 QString UserAgentInfo::userAgentVersion(int i)
 {
-    if(i < 0 || !providerExists(i))
+    if (i < 0 || !providerExists(i))
     {
         kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
@@ -122,7 +122,7 @@ QString UserAgentInfo::userAgentVersion(int i)
 
 QString UserAgentInfo::userAgentDescription(int i)
 {
-    if(i < 0 || !providerExists(i))
+    if (i < 0 || !providerExists(i))
     {
         kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
@@ -139,7 +139,7 @@ QStringList UserAgentInfo::availableUserAgents()
 {
     QStringList UAs;
     int n = m_providers.count();
-    for(int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         UAs << userAgentDescription(i);
     }
@@ -154,9 +154,9 @@ bool UserAgentInfo::setUserAgentForHost(int uaIndex, const QString &host)
     QStringList modifiedHosts = config.groupList();
     KConfigGroup hostGroup(&config, host);
 
-    if(uaIndex == -1)
+    if (uaIndex == -1)
     {
-        if(!hostGroup.exists())
+        if (!hostGroup.exists())
         {
             kDebug() << "Host does NOT exists!";
             return false;
@@ -178,10 +178,10 @@ int UserAgentInfo::uaIndexForHost(const QString &host)
     QString KDEUserAgent = KProtocolManager::userAgentForHost(host);
 
     int n = m_providers.count();
-    for(int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         QString rekonqUserAgent = userAgentString(i);
-        if(KDEUserAgent == rekonqUserAgent)
+        if (KDEUserAgent == rekonqUserAgent)
             return i;
     }
     return -1;
@@ -191,7 +191,7 @@ int UserAgentInfo::uaIndexForHost(const QString &host)
 bool UserAgentInfo::providerExists(int i)
 {
     KService::Ptr s = m_providers.at(i);
-    if(s.isNull())
+    if (s.isNull())
     {
         //FIXME Add me when string freeze has been reopened: KMessageBox::error(...)
         return false;

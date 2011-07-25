@@ -144,7 +144,7 @@ QString WebSnap::imagePathFromUrl(const KUrl &url)
 
 void WebSnap::saveResult(bool ok)
 {
-    if(ok)
+    if (ok)
     {
         QPixmap image = renderPagePreview(m_page, defaultWidth, defaultHeight);
         QString path = imagePathFromUrl(m_url);

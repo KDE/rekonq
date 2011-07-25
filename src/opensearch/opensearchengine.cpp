@@ -51,7 +51,7 @@ OpenSearchEngine::OpenSearchEngine(QObject *parent)
 
 OpenSearchEngine::~OpenSearchEngine()
 {
-    if(m_parser)
+    if (m_parser)
     {
         delete m_parser;
     }
@@ -66,7 +66,7 @@ QString OpenSearchEngine::parseTemplate(const QString &searchTerm, const QString
     QString country = language;
     country = (country.remove(0, country.indexOf(QL1C('-')) + 1)).toLower();
     const int firstDashPosition = country.indexOf(QL1C('-'));
-    if(firstDashPosition >= 0)
+    if (firstDashPosition >= 0)
         country = country.mid(firstDashPosition + 1);
 
     QString result = searchTemplate;
@@ -121,7 +121,7 @@ void OpenSearchEngine::setSearchUrlTemplate(const QString &searchUrlTemplate)
 
 KUrl OpenSearchEngine::searchUrl(const QString &searchTerm) const
 {
-    if(m_searchUrlTemplate.isEmpty())
+    if (m_searchUrlTemplate.isEmpty())
     {
         return KUrl();
     }
@@ -129,7 +129,7 @@ KUrl OpenSearchEngine::searchUrl(const QString &searchTerm) const
     KUrl retVal = KUrl::fromEncoded(parseTemplate(searchTerm, m_searchUrlTemplate).toUtf8());
 
     QList<Parameter>::const_iterator i;
-    for(i = m_searchParameters.constBegin(); i != m_searchParameters.constEnd(); ++i)
+    for (i = m_searchParameters.constBegin(); i != m_searchParameters.constEnd(); ++i)
     {
         retVal.addQueryItem(i->first, parseTemplate(searchTerm, i->second));
     }
@@ -158,7 +158,7 @@ void OpenSearchEngine::setSuggestionsUrlTemplate(const QString &suggestionsUrlTe
 
 KUrl OpenSearchEngine::suggestionsUrl(const QString &searchTerm) const
 {
-    if(m_suggestionsUrlTemplate.isEmpty())
+    if (m_suggestionsUrlTemplate.isEmpty())
     {
         return KUrl();
     }
@@ -166,7 +166,7 @@ KUrl OpenSearchEngine::suggestionsUrl(const QString &searchTerm) const
     KUrl retVal = KUrl::fromEncoded(parseTemplate(searchTerm, m_suggestionsUrlTemplate).toUtf8());
 
     QList<Parameter>::const_iterator i;
-    for(i = m_suggestionsParameters.constBegin(); i != m_suggestionsParameters.constEnd(); ++i)
+    for (i = m_suggestionsParameters.constBegin(); i != m_suggestionsParameters.constEnd(); ++i)
     {
         retVal.addQueryItem(i->first, parseTemplate(searchTerm, i->second));
     }
@@ -255,7 +255,7 @@ bool OpenSearchEngine::operator<(const OpenSearchEngine &other) const
 ResponseList OpenSearchEngine::parseSuggestion(const QString &searchTerm, const QByteArray &resp)
 {
     QFile file(suggestionPathFor(searchTerm));
-    if(file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         file.write(resp, resp.size());
         file.close();
@@ -267,10 +267,10 @@ ResponseList OpenSearchEngine::parseSuggestion(const QString &searchTerm, const 
 
 ResponseList OpenSearchEngine::parseSuggestion(const QByteArray &resp)
 {
-    if(!m_parser)
+    if (!m_parser)
         return ResponseList();
 
-    if(resp.isEmpty())
+    if (resp.isEmpty())
         return ResponseList();
 
     return m_parser->parse(resp);
@@ -299,11 +299,11 @@ bool OpenSearchEngine::hasCachedSuggestionsFor(const QString &searchTerm)
 ResponseList OpenSearchEngine::cachedSuggestionsFor(const QString &searchTerm)
 {
     QFile file(suggestionPathFor(searchTerm));
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return ResponseList();
 
     QByteArray resp;
-    while(!file.atEnd())
+    while (!file.atEnd())
     {
         resp += file.readLine();
     }

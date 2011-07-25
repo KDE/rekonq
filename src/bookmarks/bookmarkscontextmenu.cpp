@@ -70,7 +70,7 @@ void BookmarksContextMenu::addFolderActions()
 {
     KBookmarkGroup group = bookmark().toGroup();
 
-    if(bookmark().internalElement().attributeNode("toolbar").value() == "yes")
+    if (bookmark().internalElement().attributeNode("toolbar").value() == "yes")
     {
         addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::UNSET_TOOLBAR_FOLDER));
     }
@@ -79,16 +79,16 @@ void BookmarksContextMenu::addFolderActions()
         addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::SET_TOOLBAR_FOLDER));
     }
 
-    if(!group.first().isNull())
+    if (!group.first().isNull())
     {
         KBookmark child = group.first();
 
-        while(child.isGroup() || child.isSeparator())
+        while (child.isGroup() || child.isSeparator())
         {
             child = group.next(child);
         }
 
-        if(!child.isNull())
+        if (!child.isNull())
         {
             addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::OPEN_FOLDER));
             addSeparator();
@@ -121,7 +121,7 @@ void BookmarksContextMenu::addSeparatorActions()
 void BookmarksContextMenu::addNullActions()
 {
     KBookmarkManager *manager = rApp->bookmarkProvider()->bookmarkManager();
-    if(manager->toolbar().hasParent())
+    if (manager->toolbar().hasParent())
     {
         addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::UNSET_TOOLBAR_FOLDER));
     }
@@ -133,15 +133,15 @@ void BookmarksContextMenu::addNullActions()
 
 void BookmarksContextMenu::addActions()
 {
-    if(bookmark().isNull() || m_nullForced)
+    if (bookmark().isNull() || m_nullForced)
     {
         addNullActions();
     }
-    else if(bookmark().isSeparator())
+    else if (bookmark().isSeparator())
     {
         addSeparatorActions();
     }
-    else if(bookmark().isGroup())
+    else if (bookmark().isGroup())
     {
         addFolderActions();
     }

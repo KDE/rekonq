@@ -64,7 +64,7 @@ void SearchEngine::reload()
     Q_FOREACH(const QString & engine, favoriteEngines)
     {
         service = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(engine));
-        if(service)
+        if (service)
         {
             QUrl url = service->property("Query").toUrl();
             rApp->iconManager()->downloadIconFromUrl(url);
@@ -84,7 +84,7 @@ void SearchEngine::reload()
 
 QString SearchEngine::delimiter()
 {
-    if(!d->isLoaded)
+    if (!d->isLoaded)
         reload();
 
     return d->delimiter;
@@ -93,7 +93,7 @@ QString SearchEngine::delimiter()
 
 KService::List SearchEngine::favorites()
 {
-    if(!d->isLoaded)
+    if (!d->isLoaded)
         reload();
 
     return d->favorites;
@@ -102,7 +102,7 @@ KService::List SearchEngine::favorites()
 
 KService::Ptr SearchEngine::defaultEngine()
 {
-    if(!d->isLoaded)
+    if (!d->isLoaded)
         reload();
 
     return d->defaultEngine;
@@ -115,13 +115,13 @@ KService::Ptr SearchEngine::fromString(const QString &text)
     int i = 0;
     bool found = false;
     KService::Ptr service;
-    while(!found && i < providers.size())
+    while (!found && i < providers.size())
     {
         QStringList list = providers.at(i)->property("Keys").toStringList();
         Q_FOREACH(const QString & key, list)
         {
             const QString searchPrefix = key + delimiter();
-            if(text.startsWith(searchPrefix))
+            if (text.startsWith(searchPrefix))
             {
                 service = providers.at(i);
                 found = true;
@@ -136,7 +136,7 @@ KService::Ptr SearchEngine::fromString(const QString &text)
 
 QString SearchEngine::buildQuery(KService::Ptr engine, const QString &text)
 {
-    if(!engine)
+    if (!engine)
         return QString();
     QString query = engine->property("Query").toString();
     query = query.replace("\\{@}", KUrl::toPercentEncoding(text));

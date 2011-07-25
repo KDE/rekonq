@@ -75,7 +75,7 @@ NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
 
 void NetworkAnalyzer::popupContextMenu(const QPoint& pos)
 {
-    if(_requestList->topLevelItemCount() >= 1)
+    if (_requestList->topLevelItemCount() >= 1)
     {
         KMenu menu(_requestList);
         KAction *copy;
@@ -96,7 +96,7 @@ void NetworkAnalyzer::addRequest(QNetworkAccessManager::Operation op, const QNet
 {
     // Add to list of requests
     QStringList cols;
-    switch(op)
+    switch (op)
     {
     case QNetworkAccessManager::HeadOperation:
         cols << QL1S("HEAD");
@@ -151,14 +151,14 @@ void NetworkAnalyzer::clear()
 void NetworkAnalyzer::requestFinished(QObject *replyObject)
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(replyObject);
-    if(!reply)
+    if (!reply)
     {
         kDebug() << "Failed to downcast reply";
         return;
     }
 
     QTreeWidgetItem *item = _itemMap[reply];
-    if(!item)
+    if (!item)
     {
         kDebug() << "No Item mapped. Returning...";
         return;
@@ -187,7 +187,7 @@ void NetworkAnalyzer::requestFinished(QObject *replyObject)
     QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
     item->setText(4, contentType);
 
-    if(status == 302)
+    if (status == 302)
     {
         QUrl target = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
         item->setText(5, i18n("Redirect: %1", target.toString()));
@@ -216,7 +216,7 @@ void NetworkAnalyzer::showItemDetails(QTreeWidgetItem *item)
     QPair< QList<QByteArray>, QList<QByteArray> > replyHeaders = _itemReplyMap[item];
     details += i18n("<h3>Response Details</h3>");
     details += QL1S("<ul>");
-    for(int i = 0; i < replyHeaders.first.count(); i++)
+    for (int i = 0; i < replyHeaders.first.count(); i++)
     {
         details += QL1S("<li>");
         details += QL1S(replyHeaders.first[i]);

@@ -60,7 +60,7 @@ UserAgentWidget::UserAgentWidget(QWidget *parent)
 void UserAgentWidget::deleteUserAgent()
 {
     QTreeWidgetItem *item = sitePolicyTreeWidget->currentItem();
-    if(!item)
+    if (!item)
         return;
 
     sitePolicyTreeWidget->takeTopLevelItem(sitePolicyTreeWidget->indexOfTopLevelItem(item));
@@ -69,7 +69,7 @@ void UserAgentWidget::deleteUserAgent()
 
     KConfig config("kio_httprc", KConfig::NoGlobals);
     KConfigGroup group(&config, host);
-    if(group.exists())
+    if (group.exists())
     {
         group.deleteGroup();
         KProtocolManager::reparseConfiguration();

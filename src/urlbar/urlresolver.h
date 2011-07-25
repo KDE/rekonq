@@ -132,7 +132,7 @@ public:
     static void setSearchEngine(KService::Ptr engine)
     {
         _searchEngine = engine;
-        if(engine)
+        if (engine)
             rApp->opensearchManager()->setSearchProvider(engine->desktopEntryName());
     };
 

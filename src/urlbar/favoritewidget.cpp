@@ -107,7 +107,7 @@ void FavoriteWidget::showAt(const QPoint &pos)
 void FavoriteWidget::accept()
 {
     QStringList urls = ReKonfig::previewUrls();
-    if(urls.removeOne(m_tab->url().url()))
+    if (urls.removeOne(m_tab->url().url()))
     {
         ReKonfig::setPreviewUrls(urls);
         QStringList titles = ReKonfig::previewNames();
