@@ -979,25 +979,19 @@ void MainWindow::viewPageSource()
     if (!w)
         return;
 
-    KUrl url = w->url();
-
     QString code = w->page()->mainFrame()->toHtml();
 
-    // find a safe file name...
-    QUrl tempUrl = QUrl(url.url());
-    QByteArray name = tempUrl.toEncoded(QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash);
-    QString filePath = KStandardDirs::locateLocal("tmp", QString("code/") + name.toBase64(), true);
+    KTemporaryFile tmpFile;
+    tmpFile.setAutoRemove(false);
+    if (!tmpFile.open())
+        return;
 
-    QFile temp(filePath);
+    QTextStream out(&tmpFile);
+    out << code;
+    tmpFile.close();
+    KUrl tmpUrl(tmpFile.fileName());
 
-    if (temp.open(QFile::WriteOnly | QFile::Truncate))
-    {
-        QTextStream out(&temp);
-        out << code;
-    }
-
-    KRun::runUrl(QString(QL1S("file://") + temp.fileName()), QL1S("text/plain"), this, false);
-    return;
+    KRun::runUrl(tmpUrl, QL1S("text/plain"), this, false);
 }
 
 
