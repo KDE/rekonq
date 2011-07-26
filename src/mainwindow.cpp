@@ -79,6 +79,7 @@
 
 #include <KParts/Part>
 #include <KParts/BrowserExtension>
+#include <KMimeTypeTrader>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -979,6 +980,7 @@ void MainWindow::viewPageSource()
     if (!w)
         return;
 
+    KUrl url = w->url();
     QString code = w->page()->mainFrame()->toHtml();
 
     KTemporaryFile tmpFile;
@@ -991,7 +993,18 @@ void MainWindow::viewPageSource()
     tmpFile.close();
     KUrl tmpUrl(tmpFile.fileName());
 
-    KRun::runUrl(tmpUrl, QL1S("text/plain"), this, false);
+    KParts::ReadOnlyPart *pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(QL1S("text/plain"), w, this, QString());
+    if (pa)
+    {
+        WebTab *srcTab = m_view->newWebTab(true);
+        srcTab->page()->setIsOnRekonqPage(true);
+        srcTab->setPart(pa, tmpUrl);
+        srcTab->urlBar()->setQUrl(url.pathOrUrl());
+        m_view->setTabText(m_view->currentIndex(), i18n("Source of: ") + url.prettyUrl());
+        updateActions();
+    }
+    else
+        KRun::runUrl(tmpUrl, QL1S("text/plain"), this, false);
 }
 
 
