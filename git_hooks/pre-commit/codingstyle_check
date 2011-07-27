@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# Copyright (c) 2010, Benjamin C. Meyer <ben@meyerhome.net>
+# Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
+#
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of
+# the License or (at your option) version 3 or any later version
+# accepted by the membership of KDE e.V. (or its successor approved
+# by the membership of KDE e.V.), which shall act as a proxy
+# defined in Section 14 of version 3 of the license.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#######################################################################
+
+function test_file {
+    file="${1}"
+    echo ""
+    echo "------- Checking style on .cpp files"
+    tempfoo=`basename $0`
+    newfile=`mktemp /tmp/${tempfoo}.XXXXXX` || exit 1
+    astyle \
+    --indent=spaces=4 \
+    --style=allman \
+    --indent-labels \
+    --pad-oper \
+    --pad-header \
+    --unpad-paren \
+    --keep-one-line-statements \
+    --convert-tabs \
+    --indent-preprocessor < $file > $newfile 2>> /dev/null
+    diff "${file}" "${newfile}"
+    r=$?
+    rm "${newfile}"
+    if [ $r != 0 ] ; then
+        echo "Code style error in $file, please fix before commiting."
+        exit 1
+    fi
+    echo "------- Style check PASSED"
+    echo ""
+}
+
+case "${1}" in
+    --about )
+        echo "Check that the code follows a consistent code style."
+        ;;
+    * )
+        for file in `git diff-index --cached --name-only HEAD | grep .cpp` ; do
+            test_file "${file}"
+        done
+        ;;
+esac
