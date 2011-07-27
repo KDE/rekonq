@@ -1,0 +1,8 @@
+These git hooks have been copied and adjusted from Arora code.
+
+Many thanks to Benjamin "icefox" Meyer for providing them.
+
+--------------
+They are managed using the git-hooks tool (Available here http://github.com/icefox/git-hooks)
+
+To enable them run "git hooks --install"
