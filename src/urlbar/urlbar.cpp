@@ -510,7 +510,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         rightIcon->setToolTip(i18n("Remove from favorite"));
         break;
     default:
-        kDebug() << "ERROR.. default non extant case!!";
+        ASSERT_NOT_REACHED("ERROR.. default non extant case!!");
         break;
     }
 

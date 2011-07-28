@@ -1190,17 +1190,13 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
     switch (status)
     {
-    case Rekonq::Url:
-        break;
     case Rekonq::Info:
         m_hidePopupTimer->start(500);
         break;
+    case Rekonq::Url:
     case Rekonq::Success:
-        break;
     case Rekonq::Error:
-        break;
     case Rekonq::Download:
-        break;
     default:
         break;
     }

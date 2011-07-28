@@ -304,8 +304,6 @@ void HistoryManager::loadSettings()
         days = 365;
         break;
     case 5:
-        days = -1;
-        break;
     default:
         days = -1;
         break;

@@ -364,6 +364,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             break;
 
         default:
+            ASSERT_NOT_REACHED();
             break;
         }
     }
@@ -452,6 +453,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
             return;
 
         default: // non extant case
+            ASSERT_NOT_REACHED();
             break;
         }
     }

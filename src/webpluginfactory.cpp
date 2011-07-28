@@ -83,7 +83,7 @@ QObject *WebPluginFactory::create(const QString &mimeType,
         return 0;
 
     default:
-        kDebug() << "oh oh.. this should NEVER happen..";
+        ASSERT_NOT_REACHED("oh oh.. this should NEVER happen..");
         break;
     }
 

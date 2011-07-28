@@ -238,12 +238,10 @@ int Application::newInstance()
             case 0: // new tab page
                 loadUrl(KUrl("about:home") , Rekonq::NewWindow);
                 break;
-            case 1: // blank page
-                loadUrl(KUrl("about:blank") , Rekonq::NewWindow);
-                break;
             case 2: // homepage
                 loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
                 break;
+            case 1: // blank page
             default:
                 loadUrl(KUrl("about:blank") , Rekonq::NewWindow);
                 break;
@@ -632,6 +630,7 @@ void Application::updateConfiguration()
         break;
 
     default: // non extant case
+        ASSERT_NOT_REACHED();
         break;
     }
 
