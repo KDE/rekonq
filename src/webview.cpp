@@ -163,6 +163,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
+        a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark this Link"), this);
+        a->setData(result.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
+        menu.addAction(a);
+
         menu.addSeparator();
         menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
@@ -549,6 +554,16 @@ void WebView::openLinkInNewTab()
     KUrl url(a->data().toUrl());
 
     emit loadUrl(url, Rekonq::NewTab);
+}
+
+
+void WebView::bookmarkLink()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl url(a->data().toUrl());
+
+    rApp->bookmarkProvider()->rootGroup().addBookmark(url.prettyUrl(), url);
+    rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
 }
 
 

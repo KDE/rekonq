@@ -76,6 +76,7 @@ private Q_SLOTS:
     void loadUrlInNewTab(const KUrl &);
     void openLinkInNewWindow();
     void openLinkInNewTab();
+    void bookmarkLink();
 
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
     void slotCopyImageLocation();
