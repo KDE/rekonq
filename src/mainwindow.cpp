@@ -1226,9 +1226,9 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     bool horizontalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
     bool verticalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
 
-    //TODO: detect QStyle sizeHint, instead of fixed 17
-    int hScrollbarSize = horizontalScrollbarIsVisible ? 17 : 0;
-    int vScrollbarSize = verticalScrollbarIsVisible ? 17 : 0;
+    const int scrollbarExtent = style()->pixelMetric(QStyle::PM_ScrollBarExtent);
+    const int hScrollbarSize = horizontalScrollbarIsVisible ? scrollbarExtent : 0;
+    const int vScrollbarSize = verticalScrollbarIsVisible ? scrollbarExtent : 0;
 
     QPoint webViewOrigin = tab->view()->mapToGlobal(QPoint(0, 0));
     QPoint mousePos = tab->mapToGlobal(tab->view()->mousePos());
