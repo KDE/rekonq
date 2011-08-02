@@ -636,28 +636,6 @@ void WebView::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    // vi-like navigation
-    if (event->key() == Qt::Key_J && event->modifiers() == Qt::NoModifier)
-    {
-        event->accept();
-        event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
-    }
-    else if (event->key() == Qt::Key_K && event->modifiers() == Qt::NoModifier)
-    {
-        event->accept();
-        event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier);
-    }
-    else if (event->key() == Qt::Key_L && event->modifiers() == Qt::NoModifier)
-    {
-        event->accept();
-        event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
-    }
-    else if (event->key() == Qt::Key_H && event->modifiers() == Qt::NoModifier)
-    {
-        event->accept();
-        event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
-    }
-
     KWebView::keyPressEvent(event);
 }
 
