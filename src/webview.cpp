@@ -229,6 +229,18 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // is content selected? Add SEARCH actions
     if (result.isContentSelected())
     {
+        //Default SearchEngine
+        KService::Ptr defaultEngine = SearchEngine::defaultEngine();
+        if (defaultEngine) // check if a default engine is set
+        {
+            a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1", defaultEngine->name()), this);
+            a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
+            a->setData(defaultEngine->entryPath());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
+            menu.addAction(a);
+        }
+
+        //All favourite ones
         KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18n("Search with"), this);
 
         foreach(const KService::Ptr & engine, SearchEngine::favorites())
