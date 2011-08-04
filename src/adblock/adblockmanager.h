@@ -142,6 +142,7 @@ public:
 
 public slots:
     void loadSettings(bool checkUpdateDate = true);
+    void showSettings();
 
 private:
     void updateNextSubscription();

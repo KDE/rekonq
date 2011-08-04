@@ -263,8 +263,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addSeparator();
 
-        if (ReKonfig::showDeveloperTools())
-            menu.addAction(inspectAction);
+        menu.addAction(inspectAction);
         // TODO Add translate, show translation
     }
 
@@ -289,8 +288,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addSeparator();
 
-        if (ReKonfig::showDeveloperTools())
-            menu.addAction(inspectAction);
+        menu.addAction(inspectAction);
     }
 
     // page actions
@@ -347,11 +345,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                 menu.addAction(a);
             }
 
-            if (ReKonfig::showDeveloperTools())
-            {
-                menu.addAction(mainwindow->actionByName("page_source"));
-                menu.addAction(inspectAction);
-            }
+            menu.addAction(mainwindow->actionByName("page_source"));
+            menu.addAction(inspectAction);
 
             a = rApp->bookmarkProvider()->actionByName("rekonq_add_bookmark");
             menu.addAction(a);

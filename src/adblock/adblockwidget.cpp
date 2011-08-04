@@ -175,7 +175,7 @@ void AdBlockWidget::save()
     }
     localGroup.writeEntry("local-rules" , localRules);
 
-    ReKonfig::setAdBlockEnabled(checkEnableAdblock->isChecked()); // TODO: REMOVE ME!!!!
+    ReKonfig::setAdBlockEnabled(checkEnableAdblock->isChecked());
     ReKonfig::setHideAdsEnabled(checkHideAds->isChecked());
     ReKonfig::setUpdateInterval(spinBox->value());
 

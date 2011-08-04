@@ -40,7 +40,6 @@
 #include "opensearchmanager.h"
 
 // Widget Includes
-#include "adblockwidget.h"
 #include "networkwidget.h"
 #include "generalwidget.h"
 #include "appearancewidget.h"
@@ -70,7 +69,6 @@ private:
     AppearanceWidget *appearanceWidg;
     WebKitWidget *webkitWidg;
     NetworkWidget *networkWidg;
-    AdBlockWidget *adBlockWidg;
 
     KCModuleProxy *ebrowsingModule;
 
@@ -116,12 +114,6 @@ Private::Private(SettingsDialog *parent)
     pageItem = parent->addPage(networkWidg , i18n("Network"));
     pageItem->setIcon(KIcon("preferences-system-network"));
 
-    // -- 6
-    adBlockWidg = new AdBlockWidget(parent);
-    adBlockWidg->layout()->setMargin(0);
-    pageItem = parent->addPage(adBlockWidg , i18n("Ad Block"));
-    pageItem->setIcon(KIcon("preferences-web-browser-adblock"));
-
     // -- 7
     shortcutsEditor = new KShortcutsEditor(rApp->mainWindow()->actionCollection(), parent);
     pageItem = parent->addPage(shortcutsEditor , i18n("Shortcuts"));
@@ -164,7 +156,6 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->appearanceWidg,  SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->webkitWidg,      SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->networkWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    connect(d->adBlockWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->shortcutsEditor, SIGNAL(keyChange()),   this, SLOT(updateButtons()));
 
@@ -199,7 +190,6 @@ void SettingsDialog::saveSettings()
     d->appearanceWidg->save();
     d->webkitWidg->save();
     d->networkWidg->save();
-    d->adBlockWidg->save();
     d->shortcutsEditor->save();
     d->ebrowsingModule->save();
 
@@ -219,7 +209,6 @@ bool SettingsDialog::hasChanged()
            || d->appearanceWidg->changed()
            || d->webkitWidg->changed()
            || d->networkWidg->changed()
-           || d->adBlockWidg->changed()
            || d->ebrowsingModule->changed()
            || d->shortcutsEditor->isModified();
     ;

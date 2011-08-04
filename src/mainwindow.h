@@ -211,8 +211,8 @@ private:
     KPassivePopup *m_popup;
     QTimer *m_hidePopupTimer;
 
-    KMenu *m_toolsMenu;
-    KActionMenu *m_developerMenu;
+    KMenu *m_rekonqMenu;
+    KActionMenu *m_toolsActionMenu;
 };
 
 #endif // MAINWINDOW_H

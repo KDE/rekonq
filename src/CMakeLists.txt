@@ -46,7 +46,6 @@ SET( rekonq_KDEINIT_SRCS
     history/historypanel.cpp
     #----------------------------------------
     settings/settingsdialog.cpp
-    settings/adblockwidget.cpp
     settings/appearancewidget.cpp
     settings/generalwidget.cpp
     settings/tabswidget.cpp
@@ -67,6 +66,7 @@ SET( rekonq_KDEINIT_SRCS
     adblock/adblockrulefallbackimpl.cpp
     adblock/adblockrulenullimpl.cpp
     adblock/adblockruletextmatchimpl.cpp
+    adblock/adblockwidget.cpp
     #----------------------------------------
     urlbar/stackedurlbar.cpp
     urlbar/urlbar.cpp
@@ -99,7 +99,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_tabs.ui
     settings/settings_appearance.ui
     settings/settings_webkit.ui
-    settings/settings_adblock.ui
+    adblock/settings_adblock.ui
     cleardata.ui
     sslinfo.ui
     useragent/useragentsettings.ui
