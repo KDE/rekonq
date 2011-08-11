@@ -125,6 +125,8 @@ Q_SIGNALS:
     void triggerPartPrint();
     void triggerPartFind();
 
+    void lastWindowClosed();
+
 protected Q_SLOTS:
     void saveNewToolbarConfig();
 

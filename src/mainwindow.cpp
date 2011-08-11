@@ -46,6 +46,7 @@
 #include "historypanel.h"
 #include "iconmanager.h"
 #include "mainview.h"
+#include "sessionmanager.h"
 #include "settingsdialog.h"
 #include "stackedurlbar.h"
 #include "tabbar.h"
@@ -321,6 +322,9 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(currentChanged(int)), m_zoomBar, SLOT(updateSlider(int)));
     // Ctrl + wheel handling
     connect(this->currentTab()->view(), SIGNAL(zoomChanged(int)), m_zoomBar, SLOT(setValue(int)));
+
+    // Save session when last window is closed
+    connect(this, SIGNAL(lastWindowClosed()), rApp->sessionManager(), SLOT(saveSession()));
 
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -1563,6 +1567,7 @@ bool MainWindow::queryClose()
             return false;
         }
     }
+    emit lastWindowClosed();
     return true;
 }
 
