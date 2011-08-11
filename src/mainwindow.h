@@ -50,9 +50,9 @@ class WebTab;
 class ZoomBar;
 
 class KActionMenu;
-class KPassivePopup;
 
 class QWebFrame;
+class QLabel;
 
 
 /**
@@ -210,7 +210,7 @@ private:
 
     QString m_lastSearch;
 
-    KPassivePopup *m_popup;
+    QLabel *m_popup;
     QTimer *m_hidePopupTimer;
 
     KMenu *m_rekonqMenu;

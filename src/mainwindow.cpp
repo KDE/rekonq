@@ -71,7 +71,6 @@
 #include <KMenu>
 #include <KMenuBar>
 #include <KMessageBox>
-#include <KPassivePopup>
 #include <KProcess>
 #include <KPushButton>
 #include <KStandardDirs>
@@ -114,7 +113,7 @@ MainWindow::MainWindow()
     , m_historyForwardMenu(0)
     , m_userAgentMenu(new KMenu(this))
     , m_bookmarksBar(0)
-    , m_popup(new KPassivePopup(this))
+    , m_popup(new QLabel(this))
     , m_hidePopupTimer(new QTimer(this))
     , m_rekonqMenu(0)
     , m_toolsActionMenu(0)
@@ -284,10 +283,10 @@ void MainWindow::postLaunch()
     setupBookmarksAndToolsShortcuts();
 
     // setting popup notification
-    m_popup->setAutoDelete(false);
     connect(rApp, SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
-    m_popup->setFrameShape(QFrame::NoFrame);
-    m_popup->setLineWidth(0);
+    m_popup->setAutoFillBackground(true);
+    m_popup->raise();
+    m_popup->hide();
     connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
 
     // notification system
@@ -1185,11 +1184,6 @@ bool MainWindow::event(QEvent *event)
 
 void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 {
-    if (this != QApplication::activeWindow())
-    {
-        return;
-    }
-
     // deleting popus if empty msgs
     if (msg.isEmpty())
     {
@@ -1198,7 +1192,6 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     }
 
     m_hidePopupTimer->stop();
-
 
     switch (status)
     {
@@ -1213,27 +1206,25 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
         break;
     }
 
-    int margin = 4;
-
-    // setting popup size
-    QLabel *label = new QLabel(msg);
-    m_popup->setView(label);
-    QSize labelSize(label->fontMetrics().width(msg) + 2 * margin, label->fontMetrics().height() + 2 * margin);
-    if (labelSize.width() > width())
-    {
-        labelSize.setWidth(width());
-        label->setText(label->fontMetrics().elidedText(msg, Qt::ElideMiddle, width()));
-    }
-    m_popup->setFixedSize(labelSize);
-    m_popup->layout()->setAlignment(Qt::AlignTop);
-    m_popup->layout()->setMargin(margin);
-
     // useful values
     WebTab *tab = m_view->currentWebTab();
 
     // fix crash on window close
     if (!tab || !tab->page())
         return;
+
+    const int margin = 4;
+    const int halfWidth = width() / 2;
+
+    // Set Popup size
+    QFontMetrics fm = m_popup->fontMetrics();
+    QSize labelSize(fm.width(msg) + 2 * margin, fm.height() + 2 * margin);
+
+    if (labelSize.width() > halfWidth)
+        labelSize.setWidth(halfWidth);
+
+    m_popup->setFixedSize(labelSize);
+    m_popup->setText(fm.elidedText(msg, Qt::ElideMiddle, labelSize.width()));
 
     bool horizontalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
     bool verticalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
@@ -1242,26 +1233,14 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     const int hScrollbarSize = horizontalScrollbarIsVisible ? scrollbarExtent : 0;
     const int vScrollbarSize = verticalScrollbarIsVisible ? scrollbarExtent : 0;
 
-    QPoint webViewOrigin = tab->view()->mapToGlobal(QPoint(0, 0));
-    QPoint mousePos = tab->mapToGlobal(tab->view()->mousePos());
+    const QPoint mousePos = mapFromGlobal(QCursor::pos());
+    int y = height() - m_popup->height() - hScrollbarSize;
+    int x = QRect(QPoint(0, y), labelSize).contains(mousePos)
+          ? width() - labelSize.width() - vScrollbarSize
+          : 0;
 
-    // setting popup in bottom-left position
-    int x = mapToGlobal(QPoint(0, 0)).x();
-    int y = webViewOrigin.y() + tab->page()->viewportSize().height() - labelSize.height() - hScrollbarSize;
-
-    if (QRect(x, y, labelSize.width() , labelSize.height()).contains(mousePos))
-    {
-        // settings popup on the right
-        x = mapToGlobal(QPoint(- labelSize.width() + tab->page()->viewportSize().width(), 0)).x() - vScrollbarSize;
-    }
-
-    if (QRect(x , y , labelSize.width() , labelSize.height()).contains(mousePos))
-    {
-        // setting popup above the mouse
-        y -= labelSize.height();
-    }
-
-    m_popup->show(QPoint(x, y));
+    m_popup->move(x, y);
+    m_popup->show();
 }
 
 
