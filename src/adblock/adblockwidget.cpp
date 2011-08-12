@@ -108,19 +108,19 @@ void AdBlockWidget::removeRule()
 
 void AdBlockWidget::load()
 {
-    bool isAdBlockEnabled = ReKonfig::adBlockEnabled();
+    const bool isAdBlockEnabled = ReKonfig::adBlockEnabled();
     checkEnableAdblock->setChecked(isAdBlockEnabled);
     // update enabled status
     checkHideAds->setEnabled(checkEnableAdblock->isChecked());
     tabWidget->setEnabled(checkEnableAdblock->isChecked());
 
-    bool areImageFiltered = ReKonfig::hideAdsEnabled();
+    const bool areImageFiltered = ReKonfig::hideAdsEnabled();
     checkHideAds->setChecked(areImageFiltered);
 
-    int days = ReKonfig::updateInterval();
+    const int days = ReKonfig::updateInterval();
     spinBox->setValue(days);
 
-    QStringList subscriptions = ReKonfig::subscriptionTitles();
+    const QStringList subscriptions = ReKonfig::subscriptionTitles();
 
     // load automatic rules
     foreach(const QString & sub, subscriptions)
@@ -133,7 +133,7 @@ void AdBlockWidget::load()
     // load local rules
     KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup localGroup(config, "rules");
-    QStringList rules = localGroup.readEntry("local-rules" , QStringList());
+    const QStringList rules = localGroup.readEntry("local-rules" , QStringList());
     foreach(const QString & rule, rules)
     {
         listWidget->addItem(rule);
@@ -159,15 +159,13 @@ void AdBlockWidget::loadRules(QTreeWidgetItem *item)
 
 void AdBlockWidget::save()
 {
-    int n;
-
     // local rules
     KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup localGroup(config , "rules");
 
     QStringList localRules;
 
-    n = listWidget->count();
+    const int n = listWidget->count();
     for (int i = 0; i < n; ++i)
     {
         QListWidgetItem *item = listWidget->item(i);
