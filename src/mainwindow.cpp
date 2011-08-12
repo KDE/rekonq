@@ -73,10 +73,11 @@
 #include <KMessageBox>
 #include <KProcess>
 #include <KPushButton>
-#include <KStandardDirs>
-#include <KToggleFullScreenAction>
 #include <KProtocolManager>
+#include <KStandardDirs>
 #include <KTemporaryFile>
+#include <KToggleFullScreenAction>
+#include <KXMLGUIFactory>
 
 #include <KParts/Part>
 #include <KParts/BrowserExtension>
@@ -116,7 +117,6 @@ MainWindow::MainWindow()
     , m_popup(new QLabel(this))
     , m_hidePopupTimer(new QTimer(this))
     , m_rekonqMenu(0)
-    , m_toolsActionMenu(0)
 {
     // creating a centralWidget containing panel, m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
@@ -147,9 +147,6 @@ MainWindow::MainWindow()
 
     // setting up rekonq toolbar(s)
     setupToolbars();
-
-    // disable help menu, as we'll load it on our own...
-    setHelpMenuEnabled(false);
 
     // a call to KXmlGuiWindow::setupGUI() populates the GUI
     // with actions, using KXMLGUI.
@@ -207,6 +204,16 @@ void MainWindow::initBookmarkBar()
     }
     m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
     rApp->bookmarkProvider()->registerBookmarkBar(m_bookmarksBar);
+    QAction *a = actionByName(QL1S("show_bookmarks_toolbar"));
+    a->setChecked(XMLGUIBkBar->isVisible());
+    connect(a, SIGNAL(toggled(bool)), this, SLOT(toggleBookmarkBarVisible(bool)));
+}
+
+
+void MainWindow::toggleBookmarkBarVisible(bool visible)
+{
+    if (m_bookmarksBar)
+        m_bookmarksBar->toolBar()->setVisible(visible);
 }
 
 
@@ -219,62 +226,6 @@ void MainWindow::configureToolbars()
     // The bookmark bar needs to be refill after the UI changes are finished
     connect(&dlg, SIGNAL(newToolBarConfig()), this, SLOT(initBookmarkBar()));
     dlg.exec();
-}
-
-
-void MainWindow::updateToolsMenu()
-{
-    if (m_rekonqMenu->isEmpty())
-    {
-        m_rekonqMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Open)));
-        m_rekonqMenu->addAction(actionByName(KStandardAction::name(KStandardAction::SaveAs)));
-        m_rekonqMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Print)));
-        m_rekonqMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Find)));
-
-        QAction *action = actionByName(KStandardAction::name(KStandardAction::Zoom));
-        action->setCheckable(true);
-        connect(m_zoomBar, SIGNAL(visibilityChanged(bool)), action, SLOT(setChecked(bool)));
-        m_rekonqMenu->addAction(action);
-
-        m_rekonqMenu->addSeparator();
-
-        m_rekonqMenu->addAction(actionByName(QL1S("private_browsing")));
-        m_rekonqMenu->addAction(actionByName(QL1S("clear_private_data")));
-
-        m_rekonqMenu->addSeparator();
-
-        // tools Action Menu
-        m_toolsActionMenu = new KActionMenu(KIcon("preferences-other"), i18n("Tools"), this);
-        m_toolsActionMenu->addAction(actionByName(QL1S("web_inspector")));
-        m_toolsActionMenu->addAction(actionByName(QL1S("page_source")));
-        m_toolsActionMenu->addAction(actionByName(QL1S("net_analyzer")));
-        m_toolsActionMenu->addAction(actionByName(QL1S("set_editable")));
-
-        m_toolsActionMenu->addSeparator();
-
-        m_toolsActionMenu->addAction(actionByName(QL1S("useragent")));
-        m_toolsActionMenu->addAction(actionByName(QL1S("adblock")));
-
-        m_rekonqMenu->addAction(m_toolsActionMenu);
-        // -----------------------------------------------------------------------------------------
-
-        m_rekonqMenu->addSeparator();
-
-        action = m_bookmarksBar->toolBar()->toggleViewAction();
-        action->setText(i18n("Bookmarks Toolbar"));
-        action->setIcon(KIcon("bookmarks-bar"));
-        m_rekonqMenu->addAction(action);
-
-        m_rekonqMenu->addAction(actionByName(QL1S("show_history_panel")));
-        m_rekonqMenu->addAction(actionByName(QL1S("show_bookmarks_panel")));
-        m_rekonqMenu->addAction(actionByName(KStandardAction::name(KStandardAction::FullScreen)));
-
-        m_rekonqMenu->addSeparator();
-
-        helpMenu()->setIcon(KIcon("help-browser"));
-        m_rekonqMenu->addAction(helpMenu()->menuAction());
-        m_rekonqMenu->addAction(actionByName(KStandardAction::name(KStandardAction::Preferences)));
-    }
 }
 
 
@@ -293,7 +244,7 @@ void MainWindow::postLaunch()
     connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
     connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
 
-    // --------- connect signals and slots
+    // connect signals and slots
     connect(m_view, SIGNAL(currentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
 
@@ -308,7 +259,7 @@ void MainWindow::postLaunch()
     // update toolbar actions signals
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(updateActions()));
 
-    //Change window icon according to tab icon
+    // Change window icon according to tab icon
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(changeWindowIcon(int)));
 
     // launch it manually. Just the first time...
@@ -319,6 +270,7 @@ void MainWindow::postLaunch()
 
     // Zoom Bar signal
     connect(m_view, SIGNAL(currentChanged(int)), m_zoomBar, SLOT(updateSlider(int)));
+
     // Ctrl + wheel handling
     connect(this->currentTab()->view(), SIGNAL(zoomChanged(int)), m_zoomBar, SLOT(setValue(int)));
 
@@ -445,7 +397,8 @@ void MainWindow::setupActions()
 
     // ========================= History related actions ==============================
     a = actionCollection()->addAction(KStandardAction::Back);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(openPrevious(Qt::MouseButtons, Qt::KeyboardModifiers)));
+    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
+            this, SLOT(openPrevious(Qt::MouseButtons, Qt::KeyboardModifiers)));
 
     m_historyBackMenu = new KMenu(this);
     a->setMenu(m_historyBackMenu);
@@ -453,7 +406,8 @@ void MainWindow::setupActions()
     connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(openActionUrl(QAction *)));
 
     a = actionCollection()->addAction(KStandardAction::Forward);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(openNext(Qt::MouseButtons, Qt::KeyboardModifiers)));
+    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
+            this, SLOT(openNext(Qt::MouseButtons, Qt::KeyboardModifiers)));
 
     m_historyForwardMenu = new KMenu(this);
     a->setMenu(m_historyForwardMenu);
@@ -544,7 +498,12 @@ void MainWindow::setupActions()
     bmMenu->setShortcut(KShortcut(Qt::ALT + Qt::Key_B));
     actionCollection()->addAction(QL1S("bookmarksActionMenu"), bmMenu);
 
-    // --- User Agent
+    // Bookmark Toolbar
+    a = new KAction(KIcon("bookmarks-bar"), i18n("Bookmarks Toolbar"), this);
+    a->setCheckable(true);
+    actionCollection()->addAction(QL1S("show_bookmarks_toolbar"), a);
+
+    // User Agent
     a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
     actionCollection()->addAction(QL1S("useragent"), a);
     a->setMenu(m_userAgentMenu);
@@ -575,12 +534,9 @@ void MainWindow::setupTools()
     toolsAction->setShortcut(KShortcut(Qt::ALT + Qt::Key_T));
     m_rekonqMenu = new KMenu(this);
     toolsAction->setMenu(m_rekonqMenu); // dummy menu to have the dropdown arrow
-    connect(m_rekonqMenu, SIGNAL(aboutToShow()), this, SLOT(updateToolsMenu()));
 
     // adding rekonq_tools to rekonq actionCollection
     actionCollection()->addAction(QL1S("rekonq_tools"), toolsAction);
-
-    // Actions are added after the call to setupGUI() to ensure the help menu works
 }
 
 
@@ -591,7 +547,8 @@ void MainWindow::setupPanels()
     // STEP 1
     // Setup history panel
     m_historyPanel = new HistoryPanel(i18n("History Panel"), this);
-    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), rApp, SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
+    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)),
+            rApp, SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
     connect(m_historyPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
     connect(m_historyPanel, SIGNAL(destroyed()), rApp, SLOT(saveConfiguration()));
 
@@ -606,7 +563,8 @@ void MainWindow::setupPanels()
     // STEP 2
     // Setup bookmarks panel
     m_bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
-    connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)), rApp, SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
+    connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)),
+            rApp, SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
     connect(m_bookmarksPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
     connect(m_bookmarksPanel, SIGNAL(destroyed()), rApp, SLOT(saveConfiguration()));
 
@@ -646,6 +604,16 @@ void MainWindow::setupPanels()
     addDockWidget(Qt::BottomDockWidgetArea, m_analyzerPanel);
     m_analyzerPanel->hide();
 }
+
+
+void MainWindow::finalizeGUI(KXMLGUIClient* client)
+{
+    KXmlGuiWindow::finalizeGUI(client);
+    //update rekonqMenu when GUI has changed
+    KMenu *m = qobject_cast<KMenu*>(factory()->container("rekonqMenu", this));
+    m_rekonqMenu->addActions(m->actions());
+}
+
 
 void MainWindow::openLocation()
 {
@@ -1236,8 +1204,8 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     const QPoint mousePos = mapFromGlobal(QCursor::pos());
     int y = height() - m_popup->height() - hScrollbarSize;
     int x = QRect(QPoint(0, y), labelSize).contains(mousePos)
-          ? width() - labelSize.width() - vScrollbarSize
-          : 0;
+            ? width() - labelSize.width() - vScrollbarSize
+            : 0;
 
     m_popup->move(x, y);
     m_popup->show();

@@ -1,83 +1,129 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="53">
+<gui name="rekonq" version="54">
 
-<MenuBar>
-
-<!--  ============ FILE menu =========== -->
-<Menu name="file" noMerge="1"><text>&amp;File</text>
+<!--- =========== Rekonq Menu ============= -->
+<Menu name="rekonqMenu" noMerge="1">
     <Action name="file_open" />
-    <Action name="open_location" />
-    <Separator/>
-    <Action name="new_tab" />
-    <Action name="close_tab" />
-    <Separator/>
     <Action name="file_save_as" />
-    <Separator/>
-    <Action name="file_print_preview" />
     <Action name="file_print" />
-    <Separator/>
-    <Action name="file_quit" />
-</Menu>
-
-<!--  ============ EDIT menu =========== -->
-<Menu name="edit" noMerge="1"><text>&amp;Edit</text>
-    <Action name="edit_undo" />
-    <Action name="edit_redo" />
-    <Separator/>
-    <Action name="edit_cut" />
-    <Action name="edit_copy" />
-    <Action name="edit_paste" />
-    <Separator/>
     <Action name="edit_find" />
-    <Action name="edit_find_next" />
-    <Action name="edit_find_prev" />
-</Menu>
-
-<!--  ============ VIEW menu =========== -->
-<Menu name="view" noMerge="1"><text>&amp;View</text>
-    <Action name="view_redisplay" />
-    <Action name="go_home" />
+    <Action name="view_zoom" />
     <Separator/>
-    <Action name="bigger_font" />
-    <Action name="normal_font" />
-    <Action name="smaller_font" />
-    <Separator/>
-    <Action name="page_source" />
-</Menu>
-
-<!--  ============ GO menu =========== -->
-<Menu name="go" deleted="true">
-</Menu>
-
-<!--  ============ HISTORY menu =========== -->
-<Action name="history" ><text>Hi&amp;story</text>
-</Action>
-
-<!--  ============ BOOKMARKS menu =========== -->
-<Action name="bookmarksActionMenu" ><text>&amp;Bookmarks</text>
-</Action>
-
-<!--  ============ TOOLS menu =========== -->
-<Menu name="tools" noMerge="1"><text>&amp;Tools</text>
-    <Action name="web_inspector" />
     <Action name="private_browsing" />
     <Action name="clear_private_data" />
-</Menu>
-
-<!--  ============ SETTINGS menu =========== -->
-<Menu name="settings" noMerge="1"><text>&amp;Settings</text>
-    <Action name="options_show_menubar" />
-    <Merge name="StandardToolBarMenuHandler" />
-    <Merge/>
     <Separator/>
+
+    <Menu name="toolsMenu" icon="preferences-other" noMerge="1">
+        <text>&amp;Tools</text>
+        <Action name="web_inspector" />
+        <Action name="page_source" />
+        <Action name="net_analyter" />
+        <Action name="set_editable" />
+        <Separator/>
+        <Action name="useragent" />
+        <Action name="adblock" />
+    </Menu>
+
+    <Separator/>
+    <Action name="show_history_panel" />
+    <Action name="show_bookmarks_toolbar" />
+    <Action name="show_bookmarks_panel" />
     <Action name="fullscreen" />
     <Separator/>
-    <Action name="options_configure_keybinding" />
-    <Action name="options_configure_toolbars" />
+
+    <Menu name="help" icon="help-browser">
+        <text>&amp;Help</text>
+        <Action name="help_contents"/>
+        <Action name="help_whats_this"/>
+        <Separator weakSeparator="1"/>
+        <Action name="help_report_bug"/>
+        <Separator weakSeparator="1"/>
+        <Action name="switch_application_language"/>
+        <Separator weakSeparator="1"/>
+        <Action name="help_about_app"/>
+        <Action name="help_about_kde"/>
+    </Menu>
+
     <Action name="options_configure" />
 </Menu>
+<!--- --------------------------------------- -->
 
+
+<MenuBar>
+    <!--  ============ FILE menu =========== -->
+    <Menu name="file" noMerge="1"><text>&amp;File</text>
+        <Action name="file_open" />
+        <Action name="open_location" />
+        <Separator/>
+        <Action name="new_tab" />
+        <Action name="close_tab" />
+        <Separator/>
+        <Action name="file_save_as" />
+        <Separator/>
+        <Action name="file_print_preview" />
+        <Action name="file_print" />
+        <Separator/>
+        <Action name="file_quit" />
+    </Menu>
+
+    <!--  ============ EDIT menu =========== -->
+    <Menu name="edit" noMerge="1"><text>&amp;Edit</text>
+        <Action name="edit_undo" />
+        <Action name="edit_redo" />
+        <Separator/>
+        <Action name="edit_cut" />
+        <Action name="edit_copy" />
+        <Action name="edit_paste" />
+        <Separator/>
+        <Action name="edit_find" />
+        <Action name="edit_find_next" />
+        <Action name="edit_find_prev" />
+    </Menu>
+
+    <!--  ============ VIEW menu =========== -->
+    <Menu name="view" noMerge="1"><text>&amp;View</text>
+        <Action name="view_redisplay" />
+        <Action name="go_home" />
+        <Separator/>
+        <Action name="bigger_font" />
+        <Action name="normal_font" />
+        <Action name="smaller_font" />
+        <Separator/>
+        <Action name="page_source" />
+    </Menu>
+
+    <!--  ============ GO menu =========== -->
+    <Menu name="go" deleted="true">
+    </Menu>
+
+    <!--  ============ HISTORY menu =========== -->
+    <Action name="history" ><text>Hi&amp;story</text>
+    </Action>
+
+    <!--  ============ BOOKMARKS menu =========== -->
+    <Action name="bookmarksActionMenu" ><text>&amp;Bookmarks</text>
+    </Action>
+
+    <!--  ============ TOOLS menu =========== -->
+    <Menu name="tools" noMerge="1"><text>&amp;Tools</text>
+        <Action name="web_inspector" />
+        <Action name="private_browsing" />
+        <Action name="clear_private_data" />
+    </Menu>
+
+    <!--  ============ SETTINGS menu =========== -->
+    <Menu name="settings" noMerge="1"><text>&amp;Settings</text>
+        <Action name="options_show_menubar" />
+        <Merge name="StandardToolBarMenuHandler" />
+        <Merge/>
+        <Separator/>
+        <Action name="fullscreen" />
+        <Separator/>
+        <Action name="options_configure_keybinding" />
+        <Action name="options_configure_toolbars" />
+        <Action name="options_configure" />
+    </Menu>
 </MenuBar>
 
 <!--  ============ Main ToolBar =========== -->

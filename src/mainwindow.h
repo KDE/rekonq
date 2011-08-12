@@ -49,8 +49,6 @@ class WebInspectorPanel;
 class WebTab;
 class ZoomBar;
 
-class KActionMenu;
-
 class QWebFrame;
 class QLabel;
 
@@ -141,6 +139,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
     bool event(QEvent *event);
     bool queryClose();
+    void finalizeGUI(KXMLGUIClient *client);
 
 private Q_SLOTS:
     void postLaunch();
@@ -185,7 +184,7 @@ private Q_SLOTS:
     void setEditable(bool);
 
     void initBookmarkBar();
-    void updateToolsMenu();
+    void toggleBookmarkBarVisible(bool);
 
 private:
     MainView *m_view;
@@ -214,7 +213,6 @@ private:
     QTimer *m_hidePopupTimer;
 
     KMenu *m_rekonqMenu;
-    KActionMenu *m_toolsActionMenu;
 };
 
 #endif // MAINWINDOW_H
