@@ -322,7 +322,7 @@ void MainWindow::setupActions()
     KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
     KStandardAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
     KStandardAction::print(this, SLOT(printRequested()), actionCollection());
-    KStandardAction::quit(rApp, SLOT(quit()), actionCollection());
+    KStandardAction::quit(this , SLOT(close()), actionCollection());
 
     a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
     KShortcut findShortcut = KStandardShortcut::find();
