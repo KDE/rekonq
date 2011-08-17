@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="54">
+<gui name="rekonq" version="55">
 
 <!--- =========== Rekonq Menu ============= -->
 <Menu name="rekonqMenu" noMerge="1">
@@ -47,7 +47,7 @@
 
     <Action name="options_configure" />
 </Menu>
-<!--- --------------------------------------- -->
+<!--- ====================================== -->
 
 
 <MenuBar>
