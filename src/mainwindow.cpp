@@ -1202,7 +1202,9 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     const int vScrollbarSize = verticalScrollbarIsVisible ? scrollbarExtent : 0;
 
     const QPoint mousePos = mapFromGlobal(QCursor::pos());
-    int y = height() - m_popup->height() - hScrollbarSize;
+    const QPoint bottomPoint = m_view->mapTo(this, m_view->geometry().bottomLeft());
+    // +1 because bottom() returns top() + height() - 1 , see QRect doku
+    int y = bottomPoint.y() + 1 - m_popup->height() - hScrollbarSize;
     int x = QRect(QPoint(0, y), labelSize).contains(mousePos)
             ? width() - labelSize.width() - vScrollbarSize
             : 0;
