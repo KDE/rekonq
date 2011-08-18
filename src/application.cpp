@@ -598,7 +598,6 @@ void Application::updateConfiguration()
 
     // ====== load Settings on main classes
     historyManager()->loadSettings();
-    adblockManager()->loadSettings();
     if (!ReKonfig::useFavicon())
         mainWindow()->setWindowIcon(KIcon("rekonq"));
     else

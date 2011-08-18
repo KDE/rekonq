@@ -159,6 +159,9 @@ void AdBlockWidget::loadRules(QTreeWidgetItem *item)
 
 void AdBlockWidget::save()
 {
+    if (!_changed)
+        return;
+
     // local rules
     KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup localGroup(config , "rules");

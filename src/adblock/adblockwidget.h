@@ -43,11 +43,13 @@ class AdBlockWidget : public QWidget, private Ui::adblock
 public:
     AdBlockWidget(QWidget *parent = 0);
 
-    void save();
     bool changed();
 
 signals:
     void changed(bool);
+
+public slots:
+    void save();
 
 private slots:
     void hasChanged();

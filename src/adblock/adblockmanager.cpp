@@ -52,6 +52,7 @@ AdBlockManager::AdBlockManager(QObject *parent)
     , _isHideAdsEnabled(false)
     , _index(0)
 {
+    loadSettings();
 }
 
 
@@ -180,7 +181,6 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     const QString host = request.url().host();
 
     // check white rules before :)
-
     if (_hostWhiteList.match(host))
     {
         kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched by host matcher: ***********";
@@ -369,10 +369,12 @@ void AdBlockManager::showSettings()
 {
     QPointer<KDialog> dialog = new KDialog();
     dialog->setCaption(i18nc("@title:window", "Ad Block Settings"));
-    dialog->setButtons(KDialog::Ok);
+    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
 
     AdBlockWidget widget;
     dialog->setMainWidget(&widget);
+    connect(dialog, SIGNAL(okClicked()), &widget, SLOT(save()));
+    connect(dialog, SIGNAL(okClicked()), this, SLOT(loadSettings()));
     dialog->exec();
 
     dialog->deleteLater();
