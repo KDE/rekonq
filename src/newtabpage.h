@@ -112,6 +112,8 @@ private:
 
     QString checkTitle(const QString &title);
 
+    void updateWindowIcon();
+
 private:
     QWebElement createLinkItem(const QString &title, const QString &urlString, const QString &iconPath, int groupOrSize) const;
 

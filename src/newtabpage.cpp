@@ -135,26 +135,31 @@ void NewTabPage::generate(const KUrl &url)
     if (encodedUrl == QByteArray("about:favorites"))
     {
         favoritesPage();
+        updateWindowIcon();
         title = i18n("Favorites");
     }
     else if (encodedUrl == QByteArray("about:closedTabs"))
     {
         closedTabsPage();
+        updateWindowIcon();
         title = i18n("Closed Tabs");
     }
     else if (encodedUrl == QByteArray("about:history"))
     {
         historyPage();
+        updateWindowIcon();
         title = i18n("History");
     }
     else if (encodedUrl == QByteArray("about:bookmarks"))
     {
         bookmarksPage();
+        updateWindowIcon();
         title = i18n("Bookmarks");
     }
     else if (encodedUrl == QByteArray("about:downloads"))
     {
         downloadsPage();
+        updateWindowIcon();
         title = i18n("Downloads");
     }
 
@@ -618,4 +623,10 @@ QWebElement NewTabPage::createLinkItem(const QString &title, const QString &urlS
     nav.findFirst(QL1S("img")).setAttribute(QL1S("src"), QL1S("file://") + loader->iconPath(iconPath, groupOrSize));
     nav.findFirst(QL1S("span")).appendInside(title);
     return nav;
+}
+
+void NewTabPage::updateWindowIcon()
+{
+    int currentIndex = rApp->mainWindow()->mainView()->currentIndex();
+    rApp->mainWindow()->changeWindowIcon(currentIndex);
 }
