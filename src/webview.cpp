@@ -643,6 +643,35 @@ void WebView::keyPressEvent(QKeyEvent *event)
         }
     }
 
+    // vi-like navigation
+    if (ReKonfig::enableViShortcuts())
+    {
+        const QString tagName = page()->mainFrame()->evaluateJavaScript("document.activeElement.tagName").toString();
+        if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && event->modifiers() == Qt::NoModifier)
+        {
+            switch (event->key())
+            {
+            case Qt::Key_J:
+                event->accept();
+                event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
+                break;
+            case Qt::Key_K:
+                event->accept();
+                event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier);
+                break;
+            case Qt::Key_L:
+                event->accept();
+                event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
+                break;
+            case Qt::Key_H:
+                event->accept();
+                event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
+                break;
+            default:
+                break;
+            }
+        }
+    }
     KWebView::keyPressEvent(event);
 }
 
