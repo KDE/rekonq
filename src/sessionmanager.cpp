@@ -65,21 +65,37 @@ void SessionManager::saveSession()
         kDebug() << "Unable to open session file" << sessionFile.fileName();
         return;
     }
-    QTextStream out(&sessionFile);
     MainWindowList wl = rApp->mainWindowList();
+    QDomDocument document("session");
+    QDomElement session = document.createElement("session");
+    document.appendChild(session);
+
     Q_FOREACH(const QWeakPointer<MainWindow> &w, wl)
     {
-        out << "window\n";
         MainView *mv = w.data()->mainView();
-        for (int i = 0 ; i < mv->count() ; i++)
+        QDomElement window = document.createElement("window");
+        for (signed int tabNo = 0; tabNo < mv->count(); tabNo++)
         {
-            out << mv->webTab(i)->url().toEncoded() << "\n";
-        }
+            QDomElement tab = document.createElement("tab");
+            tab.setAttribute("title", mv->webTab(tabNo)->view()->title()); // redundant, but needed for closedSites()
+            // as there's not way to read out the historyData
+            tab.setAttribute("url", mv->webTab(tabNo)->view()->url().toString());
+            if (mv->tabBar()->currentIndex() == tabNo)
+            {
+                tab.setAttribute("currentTab", 1);
+            }
+            QByteArray history;
+            QDataStream historyStream(&history, QIODevice::ReadWrite);
+            historyStream << *(mv->webTab(tabNo)->view()->history());
+            QDomCDATASection historySection = document.createCDATASection(history.toBase64());
 
-        // Current Tab for window
-        out << "currenttab\n";
-        out << mv->tabBar()->currentIndex() << "\n";
+            tab.appendChild(historySection);
+            window.appendChild(tab);
+        }
+        session.appendChild(window);
     }
+    QTextStream TextStream(&sessionFile);
+    document.save(TextStream, 2);
     sessionFile.close();
     m_safe = true;
     return;
@@ -97,58 +113,56 @@ bool SessionManager::restoreSession()
         return false;
     }
 
-    QTextStream in(&sessionFile);
-    QString line;
     bool windowAlreadyOpen = rApp->mainWindowList().count();
-    do
+    MainWindowList wl;
+
+    QDomDocument document("session");
+    if (!document.setContent(&sessionFile, false))
     {
-        line = in.readLine();
-        if (line == QL1S("window"))
-        {
-            line = in.readLine();
-            if (windowAlreadyOpen)
-            {
-                rApp->loadUrl(KUrl(line), Rekonq::CurrentTab);
-                windowAlreadyOpen = false;
-            }
-            else
-            {
-                rApp->loadUrl(KUrl(line), Rekonq::NewWindow);
-            }
-        }
-        else
-        {
-            if (line == QL1S("currenttab"))
-            {
-                line = in.readLine();
-                bool ok;
-                int idx = line.toInt(&ok);
-                if (ok)
-                {
-                    // Get last mainwindow created which will be first one in mainwindow list
-                    MainWindowList wl = rApp->mainWindowList();
-                    if (wl.count() > 0)
-                    {
-                        MainView *mv = wl[0].data()->mainView();
-                        emit mv->tabBar()->setCurrentIndex(idx);
-                    }
-                }
-            }
-            else
-            {
-                rApp->loadUrl(KUrl(line), Rekonq::NewFocusedTab);
-            }
-        }
+        kDebug() << "Unable to parse session file" << sessionFile.fileName();
+        return false;
     }
-    while (!line.isEmpty());
+
+    for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
+    {
+        QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
+        int currentTab = 0;
+
+        if (windowAlreadyOpen)
+            windowAlreadyOpen = false;
+        else
+            rApp->newMainWindow(false);
+
+        wl = rApp->mainWindowList(); //get the latest windowlist
+        if (wl.count() == 0)
+            continue;
+        MainView *mv = wl.at(0).data()->mainView(); //last mainwindow created will be first one in mainwindow list
+
+        for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
+        {
+            QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
+            if (tab.hasAttribute("currentTab"))
+                currentTab = tabNo;
+
+            WebView *view = mv->newWebTab()->view();
+
+            QDomCDATASection historySection = tab.firstChild().toCDATASection();
+            QByteArray history = QByteArray::fromBase64(historySection.data().toAscii());
+
+            QDataStream readingStream(&history, QIODevice::ReadOnly);
+            readingStream >> *(view->history());
+        }
+
+        mv->tabBar()->setCurrentIndex(currentTab);
+    }
 
     return true;
 }
 
 
-QStringList SessionManager::closedSites()
+QList<TabHistory> SessionManager::closedSites()
 {
-    QStringList list;
+    QList<TabHistory> list;
 
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.exists())
@@ -159,24 +173,27 @@ QStringList SessionManager::closedSites()
         return list;
     }
 
-    QTextStream in(&sessionFile);
-    QString line;
-    do
+    QDomDocument document("session");
+    if (!document.setContent(&sessionFile, false))
     {
-        line = in.readLine();
-        if (line != QL1S("window"))
-        {
-            if (line == QL1S("currenttab"))
-            {
-                in.readLine();  // drop out the next field, containing the index of the current tab..
-            }
-            else
-            {
-                list << QString(line);
-            }
-        }
+        kDebug() << "Unable to parse session file" << sessionFile.fileName();
+        return list;
     }
-    while (!line.isEmpty());
+
+    for (unsigned int tabNo = 0; tabNo < document.elementsByTagName("tab").length(); tabNo++)
+    {
+        QDomElement tab = document.elementsByTagName("tab").at(tabNo).toElement();
+
+        TabHistory tabHistory;
+
+        tabHistory.title = tab.attribute("title");
+        tabHistory.url = tab.attribute("url");
+
+        QDomCDATASection historySection = tab.firstChild().toCDATASection();
+        tabHistory.history = QByteArray::fromBase64(historySection.data().toAscii());
+
+        list << tabHistory;
+    }
 
     return list;
 }

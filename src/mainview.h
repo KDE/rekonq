@@ -100,7 +100,7 @@ public:
      */
     WebTab *newWebTab(bool focused = true);
 
-    inline QList<HistoryItem> recentlyClosedTabs()
+    inline QList<TabHistory> recentlyClosedTabs()
     {
         return m_recentlyClosedTabs;
     }
@@ -199,7 +199,7 @@ private:
 
     int m_currentTabIndex;
 
-    QList<HistoryItem> m_recentlyClosedTabs;
+    QList<TabHistory> m_recentlyClosedTabs;
 
     MainWindow *m_parentWindow;
 };

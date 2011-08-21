@@ -395,10 +395,10 @@ void TabBar::setupHistoryActions()
     if (!isEnabled)
         return;
 
-    Q_FOREACH(const HistoryItem & item, mv->recentlyClosedTabs())
+    Q_FOREACH(const TabHistory & item, mv->recentlyClosedTabs())
     {
         KAction *a = new KAction(rApp->iconManager()->iconForUrl(item.url), item.title, this);
-        a->setData(item.url);
+        a->setData(item.history);
         connect(a, SIGNAL(triggered()), mv, SLOT(openClosedTab()));
         am->addAction(a);
     }

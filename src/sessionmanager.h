@@ -38,6 +38,7 @@
 
 // Forward Declarations
 class QString;
+class TabHistory;
 
 
 /**
@@ -54,7 +55,7 @@ public:
         m_safe = on;
     }
 
-    QStringList closedSites();
+    QList<TabHistory> closedSites();
 
 public slots:
     bool restoreSession();

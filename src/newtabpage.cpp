@@ -511,7 +511,7 @@ void NewTabPage::closedTabsPage()
 {
     m_root.addClass(QL1S("closedTabs"));
 
-    QList<HistoryItem> links = rApp->mainWindow()->mainView()->recentlyClosedTabs();
+    QList<TabHistory> links = rApp->mainWindow()->mainView()->recentlyClosedTabs();
 
     if (links.isEmpty())
     {
@@ -522,7 +522,7 @@ void NewTabPage::closedTabsPage()
 
     for (int i = 0; i < links.count(); ++i)
     {
-        HistoryItem item = links.at(i);
+        TabHistory item = links.at(i);
         QWebElement prev;
 
         if (item.url.isEmpty())

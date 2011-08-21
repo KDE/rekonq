@@ -46,6 +46,7 @@
 #include <QTimer>
 #include <QSortFilterProxyModel>
 #include <QWebHistoryInterface>
+#include <QWebHistory>
 
 #include <math.h>
 
@@ -96,6 +97,41 @@ public:
     int visitCount;
 };
 
+
+// ---------------------------------------------------------------------------------------------------------------
+
+class TabHistory
+{
+public:
+    explicit TabHistory(QWebHistory *h = 0)
+    {
+        if (h)
+        {
+            title = h->currentItem().title();
+            url = h->currentItem().url().toString();
+            QDataStream stream(&history, QIODevice::ReadWrite);
+            stream << *h;
+        }
+    }
+
+    inline bool operator ==(const TabHistory &other) const
+    {
+        return history == other.history;
+    }
+
+    void applyHistory(QWebHistory *h)
+    {
+        if (h)
+        {
+            QDataStream stream(&history, QIODevice::ReadOnly);
+            stream >> *h;
+        }
+    }
+
+    QString title;
+    QString url;
+    QByteArray history;
+};
 
 // ---------------------------------------------------------------------------------------------------------------
 

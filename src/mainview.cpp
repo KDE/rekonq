@@ -100,16 +100,13 @@ MainView::MainView(MainWindow *parent)
 
 void MainView::postLaunch()
 {
-    QStringList list = rApp->sessionManager()->closedSites();
-    Q_FOREACH(const QString & line, list)
+    QList<TabHistory> list = rApp->sessionManager()->closedSites();
+    Q_FOREACH(const TabHistory & tab, list)
     {
-        if (line.startsWith(QL1S("about")))
-            break;
-        QString title = line;
-        QString url = title;
-        HistoryItem item(url, QDateTime(), title);
-        m_recentlyClosedTabs.removeAll(item);
-        m_recentlyClosedTabs.prepend(item);
+        if (tab.url.startsWith(QL1S("about")))
+            continue;
+        m_recentlyClosedTabs.removeAll(tab);
+        m_recentlyClosedTabs.prepend(tab);
     }
 
     // Session Manager
@@ -486,13 +483,12 @@ void MainView::closeTab(int index, bool del)
        )
     {
         const int recentlyClosedTabsLimit = 10;
-        QString title = tabToClose->view()->title();
-        QString url = tabToClose->url().prettyUrl();
-        HistoryItem item(url, QDateTime(), title);
-        m_recentlyClosedTabs.removeAll(item);
+        TabHistory history(tabToClose->view()->history());
+
+        m_recentlyClosedTabs.removeAll(history);
         if (m_recentlyClosedTabs.count() == recentlyClosedTabsLimit)
             m_recentlyClosedTabs.removeLast();
-        m_recentlyClosedTabs.prepend(item);
+        m_recentlyClosedTabs.prepend(history);
     }
 
     removeTab(index);
@@ -652,8 +648,10 @@ void MainView::openLastClosedTab()
     if (m_recentlyClosedTabs.isEmpty())
         return;
 
-    const HistoryItem item = m_recentlyClosedTabs.takeFirst();
-    rApp->loadUrl(KUrl(item.url), Rekonq::NewTab);
+    TabHistory history = m_recentlyClosedTabs.takeFirst();
+    WebView *view = rApp->mainWindow()->mainView()->newWebTab()->view();
+
+    history.applyHistory(view->history());
 }
 
 
@@ -662,12 +660,19 @@ void MainView::openClosedTab()
     KAction *action = qobject_cast<KAction *>(sender());
     if (action)
     {
-        rApp->loadUrl(action->data().toUrl(), Rekonq::NewTab);
+        WebView *view = rApp->mainWindow()->mainView()->newWebTab()->view();
+        TabHistory history;
+        Q_FOREACH(TabHistory item, m_recentlyClosedTabs)
+        {
+            if (item.history == action->data().toByteArray())
+            {
+                history = item;
+                break;
+            }
+        }
+        history.applyHistory(view->history());
 
-        QString title = action->text();
-        title = title.remove('&');
-        HistoryItem item(action->data().toString(), QDateTime(), title);
-        m_recentlyClosedTabs.removeAll(item);
+        m_recentlyClosedTabs.removeAll(history);
     }
 }
 
