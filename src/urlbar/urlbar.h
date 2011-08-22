@@ -115,12 +115,16 @@ private Q_SLOTS:
 
     void refreshFavicon();
 
+    void pasteAndGo();
+    void delSlot();
+
 protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void focusInEvent(QFocusEvent *event);
     void dropEvent(QDropEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *);
+    void contextMenuEvent(QContextMenuEvent *event);
     void resizeEvent(QResizeEvent *);
 
 private:

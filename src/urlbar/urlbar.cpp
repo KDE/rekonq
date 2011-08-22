@@ -58,6 +58,7 @@
 #include <QtGui/QPaintEvent>
 #include <QtGui/QPalette>
 #include <QtGui/QVBoxLayout>
+#include <QClipboard>
 
 
 
@@ -460,6 +461,49 @@ void UrlBar::mouseDoubleClickEvent(QMouseEvent *event)
 }
 
 
+void UrlBar::contextMenuEvent(QContextMenuEvent* event)
+{
+    KMenu menu;
+    const bool clipboardFilled = !rApp->clipboard()->text().isEmpty();
+
+    // Cut
+    KAction *a = KStandardAction::cut(this, SLOT(cut()), this);
+    a->setEnabled(hasSelectedText());
+    menu.addAction(a);
+
+    // Copy
+    a = KStandardAction::copy(this, SLOT(copy()), this);
+    a->setEnabled(hasSelectedText());
+    menu.addAction(a);
+
+    // Paste
+    a = KStandardAction::paste(this, SLOT(paste()), this);
+    a->setEnabled(clipboardFilled);
+    menu.addAction(a);
+
+    // Paste & Go
+    a = new KAction(i18n("Paste && Go"), this);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(pasteAndGo()));
+    a->setEnabled(clipboardFilled);
+    menu.addAction(a);
+
+    // Delete
+    a = new KAction(KIcon("edit-delete"), i18n("Delete"), this);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(delSlot()));
+    a->setEnabled(hasSelectedText());
+    menu.addAction(a);
+
+    menu.addSeparator();
+
+    // Select All
+    a = KStandardAction::selectAll(this, SLOT(selectAll()), this);
+    a->setEnabled(!text().isEmpty());
+    menu.addAction(a);
+
+    menu.exec(event->globalPos());
+}
+
+
 IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
 {
     IconButton *rightIcon = new IconButton(this);
@@ -643,4 +687,16 @@ void UrlBar::addFavorite()
     ReKonfig::setPreviewNames(titles);
 
     updateRightIcons();
+}
+
+
+void UrlBar::pasteAndGo()
+{
+    activated(rApp->clipboard()->text());
+}
+
+
+void UrlBar::delSlot()
+{
+    del();
 }
