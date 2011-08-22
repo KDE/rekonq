@@ -514,7 +514,7 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), this, SLOT(showUserAgentSettings()));
 
     // Editable Page
-    a = new KAction(KIcon(""), i18n("set editable"), this);
+    a = new KAction(KIcon("document-edit"), i18n("Set Editable"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QL1S("set_editable"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(setEditable(bool)));
