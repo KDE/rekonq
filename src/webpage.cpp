@@ -452,8 +452,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         case KParts::BrowserOpenOrSaveQuestion::Cancel:
             return;
 
-        default: // non extant case
-            ASSERT_NOT_REACHED();
+        default: // Can happen when "Open with.." is set and "don't ask again" is checked
             break;
         }
     }
