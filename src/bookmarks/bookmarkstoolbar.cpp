@@ -110,17 +110,13 @@ void BookmarkMenu::refill()
 
     if (isRoot())
     {
-        addAddBookmark();
         addAddBookmarksList();
-        addNewFolder();
         addEditBookmarks();
     }
     else
     {
         addOpenFolderInTabs();
-        addAddBookmark();
         addAddBookmarksList();
-        addNewFolder();
     }
 }
 
