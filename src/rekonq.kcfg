@@ -108,6 +108,9 @@
     <entry name="openTabNoWindow" type="Bool">
         <default>true</default>
     </entry>
+    <entry name="lastTabClosesWindow" type="Bool">
+        <default>false</default>
+    </entry>
     <entry name="alwaysShowTabBar" type="Bool">
         <default>true</default>
     </entry>

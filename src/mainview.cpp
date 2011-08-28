@@ -434,9 +434,21 @@ void MainView::cloneTab(int index)
 // When index is -1 index chooses the current tab
 void MainView::closeTab(int index, bool del)
 {
-    // open default homePage if just one tab is opened
+    if (index < 0)
+        index = currentIndex();
+    if (index < 0 || index >= count())
+        return;
+
     if (count() == 1)
     {
+        if (ReKonfig::lastTabClosesWindow())
+        {
+            // closing window...
+            m_parentWindow->close();
+            return;
+        }
+
+        // open default homePage if just one tab is opened
         WebView *w = currentWebTab()->view();
 
         if (currentWebTab()->url().protocol() == QL1S("about"))
@@ -457,11 +469,6 @@ void MainView::closeTab(int index, bool del)
         }
         return;
     }
-
-    if (index < 0)
-        index = currentIndex();
-    if (index < 0 || index >= count())
-        return;
 
     WebTab *tabToClose = webTab(index);
     if (!tabToClose)
@@ -505,8 +512,8 @@ void MainView::closeTab(int index, bool del)
     // if tab was not focused, current index does not change...
     if (index != currentIndex())
         emit tabsChanged();
-}
 
+}
 
 void MainView::webViewLoadStarted()
 {
