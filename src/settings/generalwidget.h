@@ -53,6 +53,7 @@ private slots:
     void hasChanged();
     void setHomeToCurrentPage();
     void disableHomeSettings(bool);
+    void fixHomePageURL();
 
 private:
     bool _changed;

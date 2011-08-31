@@ -57,6 +57,7 @@ GeneralWidget::GeneralWidget(QWidget *parent)
     doNotTrackCheckBox->setChecked(cg.readEntry("DoNotTrack", false));
 
     connect(doNotTrackCheckBox, SIGNAL(clicked()), this, SLOT(hasChanged()));
+    connect(kcfg_homePage, SIGNAL(editingFinished()), this, SLOT(fixHomePageURL()));
 }
 
 
@@ -113,4 +114,11 @@ void GeneralWidget::checkKGetPresence()
         kcfg_kgetDownload->setDisabled(false);
         kcfg_kgetList->setDisabled(false);
     }
+}
+
+
+void GeneralWidget::fixHomePageURL()
+{
+    QString fixedURL = QUrl::fromUserInput(kcfg_homePage->text()).toString();
+    kcfg_homePage->setText(fixedURL);
 }
