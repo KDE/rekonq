@@ -58,14 +58,13 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     QStringList firstCertErrorList;
     if (!certErrorList.isEmpty())
         firstCertErrorList = certErrorList.first();
-
     QGridLayout *layout = new QGridLayout(this);
 
     QLabel *label;
     QLabel *imageLabel;
 
     int rows = 0;
-    // ------------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------------
     imageLabel = new QLabel(this);
     layout->addWidget(imageLabel, rows , 0, Qt::AlignCenter);
 
@@ -82,9 +81,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     if (cert.isNull())
     {
         label->setText(i18n("Warning: this site is NOT carrying a certificate!"));
-
         imageLabel->setPixmap(KIcon("security-low").pixmap(32));
-
         layout->addWidget(label, rows++, 1);
     }
     else
@@ -119,7 +116,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
         layout->addWidget(label, rows++, 1);
     }
 
-    // ------------------------------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------------------------
     label = new QLabel(this);
     label->setWordWrap(true);
     label->setText(i18n("Encryption"));
@@ -206,7 +203,10 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     label = new QLabel(this);
     label->setWordWrap(true);
 
-    HistoryItem firstVisit = rApp->historyManager()->find(url.toString()).first();
+    QList<HistoryItem> hList = rApp->historyManager()->find(url.toString());
+    HistoryItem firstVisit = hList.isEmpty() ?
+                             HistoryItem() :
+                             hList.first() ;
 
     if (firstVisit.visitCount == 1)
     {
