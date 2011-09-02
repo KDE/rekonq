@@ -201,16 +201,7 @@ void MainView::updateTabBar()
 
 void MainView::webReload()
 {
-    WebTab *webTab = currentWebTab();
-    if (webTab->view()->url().scheme() != QL1S("about"))
-    {
-        QAction *action = webTab->view()->page()->action(QWebPage::Reload);
-        action->trigger();
-    }
-    else
-    {
-        webTab->view()->setUrl(webTab->page()->loadingUrl());
-    }
+    reloadTab(currentIndex());
 }
 
 
@@ -230,7 +221,16 @@ void MainView::reloadTab(int index)
     if (index < 0 || index >= count())
         return;
 
-    webTab(index)->view()->reload();
+    WebTab *reloadingTab = webTab(index);
+    if (reloadingTab->view()->url().scheme() != QL1S("about"))
+    {
+        QAction *action = reloadingTab->view()->page()->action(QWebPage::Reload);
+        action->trigger();
+    }
+    else
+    {
+        reloadingTab->view()->setUrl(reloadingTab->page()->loadingUrl());
+    }
 }
 
 
@@ -369,7 +369,7 @@ void MainView::reloadAllTabs()
 {
     for (int i = 0; i < count(); ++i)
     {
-        webTab(i)->view()->reload();
+        reloadTab(i);
     }
 }
 
