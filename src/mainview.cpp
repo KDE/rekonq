@@ -207,8 +207,8 @@ void MainView::webReload()
 
 void MainView::webStop()
 {
-    WebTab *webTab = currentWebTab();
-    QAction *action = webTab->view()->page()->action(QWebPage::Stop);
+    WebTab *tabToStop = currentWebTab();
+    QAction *action = tabToStop->view()->page()->action(QWebPage::Stop);
     action->trigger();
 }
 
