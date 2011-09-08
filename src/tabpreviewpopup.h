@@ -57,6 +57,9 @@ private:
     void setUrl(const QString& text);
     void setThumbnail(const QPixmap& pixmap);
     void setFixedSize(int w, int h);
+
+protected:
+    void paintEvent(QPaintEvent *event);
 };
 
 #endif // TABPREVIEWPOPUP_H

@@ -39,10 +39,12 @@
 #include <QPalette>
 #include <QBitmap>
 #include <QPoint>
+#include <QPaintEvent>
+#include <QStylePainter>
+#include <QStyleOptionFrame>
 
 // static
 static const int borderRadius = 5;
-static const int borderSpacing = 2;
 static const double transparency = 0.90;
 
 
@@ -62,8 +64,18 @@ TabPreviewPopup::TabPreviewPopup(WebTab* tab, QWidget* parent)
     layout()->setAlignment(Qt::AlignTop);
     layout()->setMargin(0);
 
-    setFrameShape(QFrame::StyledPanel);
-    setFrameShadow(QFrame::Raised);
+    setPopupStyle(KPassivePopup::CustomStyle + 1);
+
+    QPalette p;
+
+    // adjust background color to use tooltip colors
+    p.setColor(backgroundRole(), p.color(QPalette::ToolTipBase));
+    p.setColor(QPalette::Base, p.color(QPalette::ToolTipBase));
+
+    // adjust foreground color to use tooltip colors
+    p.setColor(foregroundRole(), p.color(QPalette::ToolTipText));
+    p.setColor(QPalette::Text, p.color(QPalette::ToolTipText));
+    setPalette(p);
     setWindowOpacity(transparency);
 
     setWebTab(tab);
@@ -103,11 +115,22 @@ void TabPreviewPopup::setFixedSize(int w, int h)
     KPassivePopup::setFixedSize(w, h);
     m_url->setText(m_url->fontMetrics().elidedText(m_url->text(), Qt::ElideMiddle, this->width() - borderRadius));
 
-    QPixmap pixmap(size());
-    QPainter painter(&pixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.fillRect(pixmap.rect(), Qt::red);
-    painter.setBrush(QBrush(Qt::black));
-    painter.drawRoundRect(borderSpacing, borderSpacing, pixmap.width() - borderSpacing * 2, pixmap.height() - borderSpacing * 2, borderRadius, borderRadius);
-    setMask(pixmap.createMaskFromColor(Qt::red));
+    //calculate mask
+    QStyleOptionFrame opt;
+    opt.init(this);
+
+    QStyleHintReturnMask mask;
+    style()->styleHint(QStyle::SH_ToolTip_Mask, &opt, this, &mask);
+    setMask(mask.region);
+}
+
+
+void TabPreviewPopup::paintEvent(QPaintEvent* event)
+{
+    QStyleOptionFrame opt;
+    opt.init(this);
+
+    QStylePainter painter(this);
+    painter.setClipRegion(event->region());
+    painter.drawPrimitive(QStyle::PE_PanelTipLabel, opt);
 }
