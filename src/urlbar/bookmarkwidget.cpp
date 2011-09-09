@@ -65,7 +65,6 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     QFont f = bookmarkInfo->font();
     f.setBold(true);
     bookmarkInfo->setFont(f);
-    bookmarkInfo->setAlignment(Qt::AlignCenter);
     vLayout->addWidget(bookmarkInfo);
 
     // Remove button
