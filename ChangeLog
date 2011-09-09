@@ -1,6 +1,23 @@
 Please, refer to http://techbase.kde.org/Projects/rekonq/Roadmap page
 to track all features available on new rekonq releases.
 
+0.8
+- AdBlock: Third Party rules support
+- custom urlbar context menu (paste & go action, ...)
+- set editable
+- restore tab's history
+- UI changes (in rekonq menu)
+- quit closes app (and added option to close window by closing last tab)
+- use KParts to view page source
+- "click" mechanism to manage favorites
+- SSL UIs rewamped
+- "Do Not Track" feature
+- history, time first visit added
+- Tab messages using KMessageWidget
+- improved drag'n'drop
+- vi style navigation (optional)
+- ctrl + number favorites shortcuts
+
 0.7
 - General Cleanup
 - OpenSearch support (XML & JSON parsers)
