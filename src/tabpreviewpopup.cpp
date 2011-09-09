@@ -43,10 +43,6 @@
 #include <QStylePainter>
 #include <QStyleOptionFrame>
 
-// static
-static const int borderRadius = 5;
-static const double transparency = 0.90;
-
 
 TabPreviewPopup::TabPreviewPopup(WebTab* tab, QWidget* parent)
     : KPassivePopup(parent),
@@ -66,6 +62,7 @@ TabPreviewPopup::TabPreviewPopup(WebTab* tab, QWidget* parent)
 
     setPopupStyle(KPassivePopup::CustomStyle + 1);
 
+    // use ToolTip appearance
     QPalette p;
 
     // adjust background color to use tooltip colors
@@ -77,8 +74,15 @@ TabPreviewPopup::TabPreviewPopup(WebTab* tab, QWidget* parent)
     p.setColor(QPalette::Text, p.color(QPalette::ToolTipText));
 
     setPalette(p);
-    setWindowOpacity(transparency);
+
+    // window flags and attributes
     setWindowFlags(Qt::ToolTip);
+    setAttribute(Qt::WA_TranslucentBackground);
+    setWindowOpacity(style()->styleHint(QStyle::SH_ToolTipLabel_Opacity, 0, this) / 255.0);
+
+    // margins
+    const int margin = 1 + style()->pixelMetric(QStyle::PM_ToolTipLabelFrameWidth, 0, this);
+    setContentsMargins(margin, margin, margin, margin);
 
     setWebTab(tab);
 }
@@ -115,7 +119,8 @@ void TabPreviewPopup::setUrl(const QString& text)
 void TabPreviewPopup::setFixedSize(int w, int h)
 {
     KPassivePopup::setFixedSize(w, h);
-    m_url->setText(m_url->fontMetrics().elidedText(m_url->text(), Qt::ElideMiddle, this->width() - borderRadius));
+    const int margin = 1 + style()->pixelMetric(QStyle::PM_ToolTipLabelFrameWidth, 0, this);
+    m_url->setText(m_url->fontMetrics().elidedText(m_url->text(), Qt::ElideMiddle, this->width() - margin * 2));
 
     //calculate mask
     QStyleOptionFrame opt;
