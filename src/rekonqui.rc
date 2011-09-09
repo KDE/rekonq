@@ -18,7 +18,7 @@
         <text>&amp;Tools</text>
         <Action name="web_inspector" />
         <Action name="page_source" />
-        <Action name="net_analyter" />
+        <Action name="net_analyzer" />
         <Action name="set_editable" />
         <Separator/>
         <Action name="useragent" />
