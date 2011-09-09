@@ -75,8 +75,10 @@ TabPreviewPopup::TabPreviewPopup(WebTab* tab, QWidget* parent)
     // adjust foreground color to use tooltip colors
     p.setColor(foregroundRole(), p.color(QPalette::ToolTipText));
     p.setColor(QPalette::Text, p.color(QPalette::ToolTipText));
+
     setPalette(p);
     setWindowOpacity(transparency);
+    setWindowFlags(Qt::ToolTip);
 
     setWebTab(tab);
 }
