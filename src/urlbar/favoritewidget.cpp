@@ -55,21 +55,17 @@ FavoriteWidget::FavoriteWidget(WebTab *tab, QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
     setFixedWidth(350);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
-
-    // Title
-    QLabel *favoriteInfo = new QLabel(this);
-    favoriteInfo->setText(i18n("<h4>Remove this favorite?</h4>"));
-    layout->addWidget(favoriteInfo, 0, Qt::AlignCenter);
-
-    QHBoxLayout *hLay = new QHBoxLayout(this);
+    QFormLayout *layout = new QFormLayout(this);
+    QVBoxLayout *vLay = new QVBoxLayout(this);
 
     // Favorite icon
     QLabel *bookmarkIcon = new QLabel(this);
     bookmarkIcon->setPixmap(KIcon("emblem-favorite").pixmap(32, 32));
-    hLay->addWidget(bookmarkIcon);
 
-    QVBoxLayout *vLay = new QVBoxLayout(this);
+    // Title
+    QLabel *favoriteInfo = new QLabel(this);
+    favoriteInfo->setText(i18n("<h4>Remove this favorite?</h4>"));
+    vLay->addWidget(favoriteInfo);
 
     // Favorite name
     QLabel *nameLabel = new QLabel(this);
@@ -81,8 +77,7 @@ FavoriteWidget::FavoriteWidget(WebTab *tab, QWidget *parent)
     urlLabel->setText(i18n("URL: %1", m_tab->url().url()));
     vLay->addWidget(urlLabel);
 
-    hLay->addLayout(vLay);
-    layout->addLayout(hLay);
+    layout->addRow(bookmarkIcon, vLay);
 
     // Ok & Cancel buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
