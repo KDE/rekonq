@@ -22,35 +22,33 @@
 #ifndef WEBSHORTCUTWIDGET_H
 #define WEBSHORTCUTWIDGET_H
 
-#include <QtGui/QDialog>
+#include <QMenu>
 #include <KUrl>
 #include <KService>
 
 class QLabel;
 class QLineEdit;
+class QPushButton;
 
-class WebShortcutWidget : public QDialog
+class WebShortcutWidget : public QMenu
 {
     Q_OBJECT
 public:
-    explicit WebShortcutWidget(QWidget *parent = 0);
+    WebShortcutWidget(QWidget *parent = 0);
 
     void show(const KUrl &url, const QString &openSearchName, const QPoint &pos);
 
 private slots:
-    void okClicked();
-    void cancelClicked();
+    void accept();
     void shortcutsChanged(const QString& newShorthands);
 
 signals:
     void webShortcutSet(const KUrl &url, const QString &openSearchName, const QString &webShortcut);
 
 private:
-    QLabel *m_searchTitleLabel;
     QLineEdit *m_wsLineEdit;
     QLineEdit *m_nameLineEdit;
     QLabel *m_noteLabel;
-    QPushButton *m_okButton;
 
     KService::List m_providers;
     KUrl m_url;

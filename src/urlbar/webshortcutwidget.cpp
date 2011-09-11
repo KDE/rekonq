@@ -19,92 +19,70 @@
  * Boston, MA 02110-1301, USA.
  */
 
+// Self Includes
 #include "webshortcutwidget.h"
 #include "rekonq_defines.h"
 
-#include <QtCore/QTimer>
-#include <QtCore/QSet>
-#include <QtGui/QBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QFormLayout>
-
-
+// KDE Includes
 #include <KGlobalSettings>
 #include <KIcon>
 #include <KLocale>
 #include <KServiceTypeTrader>
 
+// Qt Includes
+#include <QSet>
+#include <QLabel>
+#include <QLineEdit>
+#include <QDialogButtonBox>
+#include <QFormLayout>
+
 WebShortcutWidget::WebShortcutWidget(QWidget *parent)
-    : QDialog(parent)
+    : QMenu(parent)
+    , m_nameLineEdit(new QLineEdit(this))
+    , m_wsLineEdit(new QLineEdit(this))
+    , m_noteLabel(new QLabel(this))
 {
-    QVBoxLayout *mainLayout = new QVBoxLayout();
-    QHBoxLayout *titleLayout = new QHBoxLayout();
-    mainLayout->addLayout(titleLayout);
-    QLabel *iconLabel = new QLabel(this);
+    setAttribute(Qt::WA_DeleteOnClose);
+    setFixedWidth(350);
 
-    KIcon wsIcon("edit-web-search");
-    if (wsIcon.isNull())
-    {
-        wsIcon = KIcon("preferences-web-browser-shortcuts");
-    }
+    QFormLayout *layout = new QFormLayout(this);
+    QVBoxLayout *vLay = new QVBoxLayout(this);
 
-    iconLabel->setPixmap(wsIcon.pixmap(22, 22));
-    titleLayout->addWidget(iconLabel);
-    m_searchTitleLabel = new QLabel(i18n("Add Search Engine"), this);
-    QFont boldFont = KGlobalSettings::generalFont();
-    boldFont.setBold(true);
-    m_searchTitleLabel->setFont(boldFont);
-    titleLayout->addWidget(m_searchTitleLabel);
-    titleLayout->addStretch();
+    // Web Search Icon
+    QLabel *webSearchIcon = new QLabel(this);
+    webSearchIcon->setPixmap(KIcon("edit-web-search").pixmap(32, 32));
 
-    QFormLayout *formLayout = new QFormLayout();
-    mainLayout->addLayout(formLayout);
+    // Title 
+    QLabel *titleLabel = new QLabel(this);
+    titleLabel->setText("<h4>" + i18n("Add Search Engine") + "</h4>");
+    vLay->addWidget(titleLabel);
 
-    QFont smallFont = KGlobalSettings::smallestReadableFont();
-    m_nameLineEdit = new QLineEdit(this);
-    m_nameLineEdit->setEnabled(false);
-    m_nameLineEdit->setFont(smallFont);
-    QLabel *nameLabel = new QLabel(i18n("Name:"), this);
-    nameLabel->setFont(smallFont);
-    formLayout->addRow(nameLabel, m_nameLineEdit);
+    // Name
+    vLay->addWidget(m_nameLineEdit);
 
+    layout->addRow(webSearchIcon, vLay);
+
+    // Shortcuts
     QLabel *shortcutsLabel = new QLabel(i18n("Shortcuts:"), this);
-    shortcutsLabel->setFont(smallFont);
-    m_wsLineEdit = new QLineEdit(this);
-    m_wsLineEdit->setMinimumWidth(100);
-    m_wsLineEdit->setFont(smallFont);
-    formLayout->addRow(shortcutsLabel, m_wsLineEdit);
+    layout->addRow(shortcutsLabel, m_wsLineEdit);
     connect(m_wsLineEdit,  SIGNAL(textChanged(QString)), SLOT(shortcutsChanged(const QString&)));
 
-    m_noteLabel = new QLabel(this);
-    m_noteLabel->setFont(boldFont);
+    // Note
     m_noteLabel->setWordWrap(true);
-    formLayout->addRow(m_noteLabel);
-    m_noteLabel->setVisible(false);
+    layout->addRow(m_noteLabel);
+    m_noteLabel->hide();
 
-    mainLayout->addStretch();
+    // Ok & Cancel buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+    layout->addWidget(buttonBox);
 
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    mainLayout->addLayout(buttonLayout);
-    buttonLayout->addStretch();
-    m_okButton = new QPushButton(i18n("Ok"), this);
-    m_okButton->setDefault(true);
-    buttonLayout->addWidget(m_okButton);
-    connect(m_okButton, SIGNAL(clicked()), this, SLOT(okClicked()));
-
-    QPushButton *cancelButton = new QPushButton(i18n("Cancel"), this);
-    buttonLayout->addWidget(cancelButton);
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
-
-    setLayout(mainLayout);
-
-    setMinimumWidth(250);
+    setLayout(layout);
 
     m_providers = KServiceTypeTrader::self()->query("SearchProvider");
 
-    QTimer::singleShot(0, m_wsLineEdit, SLOT(setFocus()));
+    m_wsLineEdit->setFocus();
 }
 
 
@@ -112,12 +90,9 @@ void WebShortcutWidget::showAt(const QPoint &pos)
 {
     adjustSize();
 
-    QPoint p;
-    p.setX(pos.x() - width());
-    p.setY(pos.y() + 10);
-
+    QPoint p(pos.x() - width(), pos.y() + 10);
     move(p);
-    QDialog::show();
+    exec();
 }
 
 
@@ -130,16 +105,10 @@ void WebShortcutWidget::show(const KUrl &url, const QString &openSearchName, con
 }
 
 
-void WebShortcutWidget::okClicked()
+void WebShortcutWidget::accept()
 {
-    hide();
     emit webShortcutSet(m_url, m_nameLineEdit->text(), m_wsLineEdit->text());
-}
-
-
-void WebShortcutWidget::cancelClicked()
-{
-    hide();
+    close();
 }
 
 
@@ -169,14 +138,12 @@ void WebShortcutWidget::shortcutsChanged(const QString& newShorthands)
 
     if (!contenderName.isEmpty())
     {
-        m_okButton->setEnabled(false);
         m_noteLabel->setText(i18n("The shortcut \"%1\" is already assigned to \"%2\".", contenderWS, contenderName));
         m_noteLabel->setVisible(true);
         resize(minimumSize().width(), minimumSizeHint().height() + 15);
     }
     else
     {
-        m_okButton->setEnabled(true);
         m_noteLabel->clear();
         bool noteIsVisible = m_noteLabel->isVisible();
         m_noteLabel->setVisible(false);
