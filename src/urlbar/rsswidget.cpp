@@ -56,7 +56,7 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     , m_map(map)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    setMinimumWidth(250);
+    setFixedWidth(350);
 
     QFormLayout *layout = new QFormLayout(this);
 
@@ -66,7 +66,6 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     QFont f = title->font();
     f.setBold(true);
     title->setFont(f);
-    title->setAlignment(Qt::AlignCenter);
     layout->addRow(title);
 
     // Agregators
