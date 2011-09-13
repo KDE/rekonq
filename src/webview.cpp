@@ -402,6 +402,23 @@ void WebView::mousePressEvent(QMouseEvent *event)
                 update();
             }
         }
+
+        if (!ReKonfig::autoScroll())
+        {
+            const QString clipboardContent = rApp->clipboard()->text();
+
+            if (clipboardContent.isEmpty())
+                break;
+
+            if (QUrl::fromUserInput(clipboardContent).isValid())
+                loadUrl(clipboardContent, Rekonq::CurrentTab);
+            else // Search with default Engine
+            {
+                KService::Ptr defaultEngine = SearchEngine::defaultEngine();
+                if (defaultEngine) // check if a default engine is set
+                    loadUrl(KUrl(SearchEngine::buildQuery(defaultEngine, clipboardContent)), Rekonq::CurrentTab);
+            }
+        }
         break;
 
     default:
