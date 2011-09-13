@@ -132,6 +132,8 @@ private slots:
     // the general place to set private browsing
     void setPrivateBrowsingMode(bool);
 
+    void queryQuit();
+
 private:
     QWeakPointer<HistoryManager> m_historyManager;
     QWeakPointer<BookmarkProvider> m_bookmarkProvider;

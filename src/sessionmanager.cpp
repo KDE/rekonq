@@ -58,6 +58,7 @@ void SessionManager::saveSession()
         return;
     m_safe = false;
 
+    kDebug() << "SAVING SESSION...";
 
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))

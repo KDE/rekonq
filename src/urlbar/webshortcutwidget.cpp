@@ -38,8 +38,8 @@
 
 WebShortcutWidget::WebShortcutWidget(QWidget *parent)
     : QMenu(parent)
-    , m_nameLineEdit(new QLineEdit(this))
     , m_wsLineEdit(new QLineEdit(this))
+    , m_nameLineEdit(new QLineEdit(this))
     , m_noteLabel(new QLabel(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
@@ -52,7 +52,7 @@ WebShortcutWidget::WebShortcutWidget(QWidget *parent)
     QLabel *webSearchIcon = new QLabel(this);
     webSearchIcon->setPixmap(KIcon("edit-web-search").pixmap(32, 32));
 
-    // Title 
+    // Title
     QLabel *titleLabel = new QLabel(this);
     titleLabel->setText("<h4>" + i18n("Add Search Engine") + "</h4>");
     vLay->addWidget(titleLabel);
