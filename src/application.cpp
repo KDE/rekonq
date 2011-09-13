@@ -61,6 +61,7 @@
 #include <KWindowInfo>
 #include <KGlobal>
 #include <KCharsets>
+#include <KMessageBox>
 
 // Qt Includes
 #include <QVBoxLayout>
@@ -686,4 +687,38 @@ void Application::setPrivateBrowsingMode(bool b)
         if (!sessionManager()->restoreSession())
             loadUrl(KUrl("about:home"), Rekonq::NewWindow);
     }
+}
+
+
+void Application::queryQuit()
+{
+    if (mainWindowList().count() > 1)
+    {
+        int answer = KMessageBox::questionYesNoCancel(
+                         mainWindow(),
+                         i18n("Wanna close the window or the whole app?"),
+                         i18n("Application/Window closing..."),
+                         KGuiItem(i18n("C&lose Current Window"),
+                                  KIcon("window-close")),
+                         KStandardGuiItem::quit(),
+                         KStandardGuiItem::cancel(),
+                         "confirmClosingMultipleWindows"
+                     );
+
+        switch (answer)
+        {
+        case KMessageBox::Yes:
+            mainWindow()->close();
+            return;
+
+        case KMessageBox::No:
+            break;
+
+        default:
+            return;
+        }
+    }
+
+    // in case of just one window...
+    quit();
 }

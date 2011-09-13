@@ -106,13 +106,6 @@ public:
     }
 
 Q_SIGNALS:
-    // tabs change when:
-    // - current tab change
-    // - one tab is closed
-    // - one tab is added
-    // - one tab is updated (eg: changes url)
-    void tabsChanged();
-
     // current tab signals
     void currentTitle(const QString &url);
     void showStatusBarMessage(const QString &message, Rekonq::Notify status = Rekonq::Info);

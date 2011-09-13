@@ -115,6 +115,8 @@ public Q_SLOTS:
 
     void changeWindowIcon(int index);
 
+    bool close();
+
 Q_SIGNALS:
     // switching tabs
     void ctrlTabPressed();
@@ -123,7 +125,7 @@ Q_SIGNALS:
     void triggerPartPrint();
     void triggerPartFind();
 
-    void lastWindowClosed();
+    void windowClosing();
 
 protected Q_SLOTS:
     void saveNewToolbarConfig();
@@ -138,7 +140,6 @@ protected:
     void moveEvent(QMoveEvent *event);
     void resizeEvent(QResizeEvent *event);
     bool event(QEvent *event);
-    bool queryClose();
     void finalizeGUI(KXMLGUIClient *client);
 
 private Q_SLOTS:

@@ -58,6 +58,7 @@ void SessionManager::saveSession()
         return;
     m_safe = false;
 
+    kDebug() << "SAVING SESSION...";
 
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
@@ -79,7 +80,7 @@ void SessionManager::saveSession()
             QDomElement tab = document.createElement("tab");
             tab.setAttribute("title", mv->webTab(tabNo)->view()->title()); // redundant, but needed for closedSites()
             // as there's not way to read out the historyData
-            tab.setAttribute("url", mv->webTab(tabNo)->view()->url().toString());
+            tab.setAttribute("url", mv->webTab(tabNo)->url().url()); // Use WebTab's instead of WebView's url() to fix about links
             if (mv->tabBar()->currentIndex() == tabNo)
             {
                 tab.setAttribute("currentTab", 1);
@@ -151,6 +152,11 @@ bool SessionManager::restoreSession()
 
             QDataStream readingStream(&history, QIODevice::ReadOnly);
             readingStream >> *(view->history());
+
+            // Get sure about urls are loaded
+            KUrl u = KUrl(tab.attribute("url"));
+            if (u.protocol() == QL1S("about"))
+                view->load(u);
         }
 
         mv->tabBar()->setCurrentIndex(currentTab);

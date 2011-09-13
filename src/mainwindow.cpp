@@ -274,8 +274,8 @@ void MainWindow::postLaunch()
     // Ctrl + wheel handling
     connect(this->currentTab()->view(), SIGNAL(zoomChanged(int)), m_zoomBar, SLOT(setValue(int)));
 
-    // Save session when last window is closed
-    connect(this, SIGNAL(lastWindowClosed()), rApp->sessionManager(), SLOT(saveSession()));
+    // Save session on window closing
+    connect(this, SIGNAL(windowClosing()), rApp->sessionManager(), SLOT(saveSession()));
 
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -295,6 +295,7 @@ QSize MainWindow::sizeHint() const
     return size;
 }
 
+
 void MainWindow::changeWindowIcon(int index)
 {
     if (ReKonfig::useFavicon())
@@ -304,6 +305,7 @@ void MainWindow::changeWindowIcon(int index)
         setWindowIcon(icon);
     }
 }
+
 
 void MainWindow::setupActions()
 {
@@ -322,7 +324,7 @@ void MainWindow::setupActions()
     KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
     KStandardAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
     KStandardAction::print(this, SLOT(printRequested()), actionCollection());
-    KStandardAction::quit(rApp, SLOT(quit()), actionCollection());
+    KStandardAction::quit(rApp, SLOT(queryQuit()), actionCollection());
 
     a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
     KShortcut findShortcut = KStandardShortcut::find();
@@ -1290,6 +1292,7 @@ void MainWindow::clearPrivateData()
     dialog->deleteLater();
 }
 
+
 void MainWindow::aboutToShowBackMenu()
 {
     m_historyBackMenu->clear();
@@ -1403,6 +1406,7 @@ void MainWindow::openActionUrl(QAction *action)
     history->goToItem(history->itemAt(index));
 }
 
+
 void MainWindow::openActionTab(QAction* action)
 {
     int index = action->data().toInt();
@@ -1481,46 +1485,6 @@ void MainWindow::enableNetworkAnalysis(bool b)
 }
 
 
-bool MainWindow::queryClose()
-{
-    // this should fux bug 240432
-    if (rApp->sessionSaving())
-        return true;
-
-    // smooth private browsing mode
-    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-        return true;
-
-    if (rApp->mainWindowList().count() > 1)
-    {
-        int answer = KMessageBox::questionYesNoCancel(
-                         this,
-                         i18n("Wanna close the window or the whole app?"),
-                         i18n("Application/Window closing..."),
-                         KGuiItem(i18n("C&lose Current Window"), KIcon("window-close")),
-                         KStandardGuiItem::quit(),
-                         KStandardGuiItem::cancel(),
-                         "confirmClosingMultipleWindows"
-                     );
-
-        switch (answer)
-        {
-        case KMessageBox::Yes:
-            return true;
-
-        case KMessageBox::No:
-            rApp->quit();
-            return true;
-
-        default:
-            return false;
-        }
-    }
-    emit lastWindowClosed();
-    return true;
-}
-
-
 void MainWindow::saveNewToolbarConfig()
 {
     KXmlGuiWindow::saveNewToolbarConfig();
@@ -1585,4 +1549,11 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::setEditable(bool on)
 {
     currentTab()->page()->setContentEditable(on);
+}
+
+
+bool MainWindow::close()
+{
+    emit windowClosing();
+    return KMainWindow::close();
 }
