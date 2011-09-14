@@ -58,6 +58,10 @@ bool AdBlockRuleNullImpl::isNullFilter(const QString &filter)
 
     Q_FOREACH(const QString & option, options)
     {
+        // third_party: managed inside adblockrulefallbackimpl
+        if (option == QL1S("third-party"))
+            return false;
+
         // script
         if (option == QL1S("script"))
             return true;
@@ -109,10 +113,6 @@ bool AdBlockRuleNullImpl::isNullFilter(const QString &filter)
         // other
         if (option == QL1S("other"))
             return true;
-
-        // third_party: managed inside adblockrulefallbackimpl
-        if (option == QL1S("third-party"))
-            return false;
 
         // collapse
         if (option == QL1S("collapse"))

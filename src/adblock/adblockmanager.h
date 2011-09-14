@@ -61,6 +61,10 @@
 //
 // ### Filter Options
 //
+// There are 3 kind of filter options:
+//
+// --- ### TYPE OPTIONS
+// 
 // You can also specify a number of options to modify the behavior of a filter.
 // You list these options separated with commas after a dollar sign ($) at the end of the filter
 //
@@ -81,14 +85,27 @@
 // $document           the page itself (only exception rules can be applied to the page)
 // $other              types of requests not covered in the list above
 //
+//
+// --- ### INVERSE TYPE OPTIONS
+// 
 // Inverse type options are allowed through the ~ sign, for example:
 //
 // RULE=*/ads/*~$script,match-case
 //
+//
+// --- ### THIRD-PARTY OPTIONS
+//
+// If "third-party" option is specified, filter is applied just to requests coming from a different
+// origin than the currently viewed page.
+// In the same way, the "~third-party" option restricts the filter to the requests coming from the
+// same origin as the currently viewed page.
+//
+//
 // ### Regular expressions
 //
 // They usually allow to check for (a lot of) sites, using just one rule, but be careful:
-// BASIC FILTERS ARE PROCESSED FASTER THAN REGULAR EXPRESSIONS (In ADP! In rekonq, I don't know...)
+// BASIC FILTERS ARE PROCESSED FASTER THAN REGULAR EXPRESSIONS
+// (That's true at least in ABP! In rekonq, I don't know...)
 //
 //
 // ### ELEMENT HIDING (##)
