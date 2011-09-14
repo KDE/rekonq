@@ -182,7 +182,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     QPalette p = palette();
 
     int progr = _tab->progress();
-    if (progr == 0)
+    if (progr == 0 || progr == 100)
     {
         if (_tab->url().scheme() == QL1S("https"))
         {
