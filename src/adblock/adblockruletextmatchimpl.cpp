@@ -46,10 +46,7 @@ AdBlockRuleTextMatchImpl::AdBlockRuleTextMatchImpl(const QString &filter)
 
 bool AdBlockRuleTextMatchImpl::match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const
 {
-    // this basically lets the "first request" to pass...
-    if (!request.hasRawHeader("referer"))
-        return false;
-
+    Q_UNUSED(request);
     Q_UNUSED(encodedUrl);
     // Case sensitive compare is faster, but would be incorrect with encodedUrl since
     // we do want case insensitive.

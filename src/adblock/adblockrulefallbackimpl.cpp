@@ -23,6 +23,7 @@
 *
 * ============================================================ */
 
+
 // Self Includes
 #include "adblockrulefallbackimpl.h"
 
@@ -92,16 +93,12 @@ AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
 
 bool AdBlockRuleFallbackImpl::match(const QNetworkRequest &request, const QString &encodedUrl, const QString &) const
 {
-    if (!request.hasRawHeader("referer"))
-        return false;
-
     if (m_thirdPartyOption)
     {
         const QString referer = request.rawHeader("referer");
         const QString host = request.url().host();
-        bool isThirdParty = !referer.contains(host);
 
-        if (!isThirdParty)
+        if (referer.contains(host)) // is NOT third party
             return false;
     }
 
