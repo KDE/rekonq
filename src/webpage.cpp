@@ -49,6 +49,7 @@
 #include "urlbar.h"
 #include "webpluginfactory.h"
 #include "webtab.h"
+#include "searchengine.h"
 #include "sslwidget.h"
 #include "sslinfodialog.h"
 
@@ -657,6 +658,16 @@ QString WebPage::errorPage(QNetworkReply *reply)
     msg += QL1S("</li></ul><br/><br/>");
     msg += QL1S("<input type=\"button\" id=\"reloadButton\" onClick=\"document.location.href='") + urlString + QL1S("';\" value=\"");
     msg += i18n("Try Again") + QL1S("\" />");
+
+    //Default SearchEngine
+    KService::Ptr defaultEngine = SearchEngine::defaultEngine();
+
+    if (defaultEngine)
+    {
+        msg += i18n("or");
+        msg += QL1S(" <a href=\"") + SearchEngine::buildQuery(defaultEngine, urlString) + QL1S("\">");
+        msg += i18n("Search with %1", defaultEngine->name()) + QL1S("</a>");
+    }
 
     QString html = QString(QL1S(file.readAll()))
                    .arg(title)
