@@ -545,16 +545,19 @@ void Application::updateConfiguration()
     // compute font size
     // (I have to admit I know nothing about these DPI questions..: copied from kwebkitpart, as someone suggested)
     // font size in pixels =  font size in inches × screen dpi
-    int defaultFontSize = ReKonfig::defaultFontSize();
-    int minimumFontSize = ReKonfig::minFontSize();
+    if (mainWindow() && mainWindow()->currentTab())
+    {
+        int logDpiY = mainWindow()->currentTab()->view()->logicalDpiY();
+        float toPix = (logDpiY < 96.0)
+                      ? 96.0 / 72.0
+                      : logDpiY / 72.0 ;
 
-    int logDpiY = mainWindow()->currentTab()->view()->logicalDpiY();
-    float toPix = (logDpiY < 96.0)
-                  ? 96.0 / 72.0
-                  : logDpiY / 72.0 ;
+        int defaultFontSize = ReKonfig::defaultFontSize();
+        int minimumFontSize = ReKonfig::minFontSize();
 
-    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix));
-    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix));
+        defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix));
+        defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix));
+    }
 
     // encodings
     QString enc = ReKonfig::defaultEncoding();
@@ -599,6 +602,12 @@ void Application::updateConfiguration()
 
     // ====== load Settings on main classes
     historyManager()->loadSettings();
+
+    defaultSettings = 0;
+
+    if (!mainWindow())
+        return;
+
     if (!ReKonfig::useFavicon())
         mainWindow()->setWindowIcon(KIcon("rekonq"));
     else
@@ -634,7 +643,6 @@ void Application::updateConfiguration()
         break;
     }
 
-    defaultSettings = 0;
 }
 
 

@@ -64,7 +64,7 @@
 // There are 3 kind of filter options:
 //
 // --- ### TYPE OPTIONS
-// 
+//
 // You can also specify a number of options to modify the behavior of a filter.
 // You list these options separated with commas after a dollar sign ($) at the end of the filter
 //
@@ -87,7 +87,7 @@
 //
 //
 // --- ### INVERSE TYPE OPTIONS
-// 
+//
 // Inverse type options are allowed through the ~ sign, for example:
 //
 // RULE=*/ads/*~$script,match-case
