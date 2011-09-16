@@ -69,7 +69,7 @@ QObject *WebPluginFactory::create(const QString &mimeType,
         if (_loadClickToFlash)
         {
             emit signalLoadClickToFlash(false);
-            return 0; //KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
+            return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
         }
         else
         {
