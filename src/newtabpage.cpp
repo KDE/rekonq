@@ -122,6 +122,9 @@ void NewTabPage::generate(const KUrl &url)
         return;
     }
 
+    // webFrame can be null. See bug:282092
+    if (!m_root.webFrame())
+        return;
     WebPage *page = qobject_cast <WebPage *>(m_root.webFrame()->page());
     page->mainFrame()->setHtml(m_html);
     page->setIsOnRekonqPage(true);
