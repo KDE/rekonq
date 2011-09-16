@@ -207,6 +207,10 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
         return reply;
     }
 
+    // get sure page is extant to perform elements check. bug:282012
+    if (!page)
+        return 0;
+
     foreach(const AdBlockRule & filter, _blackList)
     {
         if (filter.match(request, urlString, urlStringLowerCase))
