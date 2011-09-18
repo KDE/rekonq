@@ -116,7 +116,9 @@ private Q_SLOTS:
     void refreshFavicon();
 
     void pasteAndGo();
+    void pasteAndSearch();
     void delSlot();
+    bool isValidURL(QString url);
 
 protected:
     void paintEvent(QPaintEvent *event);

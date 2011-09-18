@@ -46,6 +46,7 @@
 #include "bookmarkwidget.h"
 #include "iconmanager.h"
 #include "favoritewidget.h"
+#include "searchengine.h"
 
 // KDE Includes
 #include <KCompletionBox>
@@ -482,8 +483,17 @@ void UrlBar::contextMenuEvent(QContextMenuEvent* event)
     menu.addAction(a);
 
     // Paste & Go
-    a = new KAction(i18n("Paste && Go"), this);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(pasteAndGo()));
+    const QString clipboardText = rApp->clipboard()->text();
+    if (isValidURL(clipboardText) || clipboardText.isEmpty())
+    {
+        a = new KAction(i18n("Paste && Go"), this);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(pasteAndGo()));
+    }
+    else
+    {
+        a = new KAction(i18n("Paste && Search"), this);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(pasteAndSearch()));
+    }
     a->setEnabled(clipboardFilled);
     menu.addAction(a);
 
@@ -501,6 +511,17 @@ void UrlBar::contextMenuEvent(QContextMenuEvent* event)
     menu.addAction(a);
 
     menu.exec(event->globalPos());
+}
+
+
+bool UrlBar::isValidURL(QString url)
+{
+    bool isValid = false;
+    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("ftp://"))
+        url = url.remove(QRegExp("(http|https|ftp)://"));
+    if (url.contains('.') && url.indexOf('.') > 0 && url.indexOf('.') < url.length() && !url.trimmed().contains(" ") && QUrl::fromUserInput(url).isValid())
+        isValid = true;
+    return isValid;
 }
 
 
@@ -693,6 +714,14 @@ void UrlBar::addFavorite()
 void UrlBar::pasteAndGo()
 {
     activated(rApp->clipboard()->text());
+}
+
+
+void UrlBar::pasteAndSearch()
+{
+    KService::Ptr defaultEngine = SearchEngine::defaultEngine();
+    if (defaultEngine)
+        activated(KUrl(SearchEngine::buildQuery(defaultEngine, rApp->clipboard()->text())));
 }
 
 
