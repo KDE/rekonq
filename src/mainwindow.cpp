@@ -1196,8 +1196,9 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     m_popup->setFixedSize(labelSize);
     m_popup->setText(fm.elidedText(msg, Qt::ElideMiddle, labelSize.width()));
 
-    bool horizontalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
-    bool verticalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
+    const bool horizontalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
+    const bool verticalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
+    const bool actionBarsVisible = m_findBar->isVisible() || m_zoomBar->isVisible();
 
     const int scrollbarExtent = style()->pixelMetric(QStyle::PM_ScrollBarExtent);
     const int hScrollbarSize = horizontalScrollbarIsVisible ? scrollbarExtent : 0;
@@ -1207,7 +1208,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     const QPoint bottomPoint = m_view->mapTo(this, m_view->geometry().bottomLeft());
     // +1 because bottom() returns top() + height() - 1 , see QRect doku
     int y = bottomPoint.y() + 1 - m_popup->height() - hScrollbarSize;
-    int x = QRect(QPoint(0, y), labelSize).contains(mousePos)
+    int x = QRect(QPoint(0, y), labelSize).contains(mousePos) || actionBarsVisible
             ? width() - labelSize.width() - vScrollbarSize
             : 0;
 
