@@ -403,7 +403,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
             }
         }
 
-        if (ReKonfig::middleClickAction() == 1 && result.linkUrl().isEmpty())
+        if (ReKonfig::middleClickAction() == 1 && result.linkUrl().isEmpty() && !result.isContentEditable())
         {
             const QString clipboardContent = rApp->clipboard()->text();
 
