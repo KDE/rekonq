@@ -433,24 +433,22 @@ void UrlBar::loadTyped(const QString &text)
 
 void UrlBar::activateSuggestions(bool b)
 {
-    if (b)
+    if (b && _box.isNull())
     {
-        if (_box.isNull())
-        {
-            _box = new CompletionWidget(this);
-            installEventFilter(_box.data());
-            connect(_box.data(), SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), this, SLOT(activated(const KUrl &, Rekonq::OpenType)));
+        _box = new CompletionWidget(this);
+        installEventFilter(_box.data());
+        connect(_box.data(), SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), this, SLOT(activated(const KUrl &, Rekonq::OpenType)));
 
-            // activate suggestions on edit text
-            connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(detectTypedString(const QString &)));
-        }
+        // activate suggestions on edit text
+        connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(detectTypedString(const QString &)));
+
+        return;
     }
-    else
-    {
-        disconnect(this, SIGNAL(textChanged(const QString &)), this, SLOT(detectTypedString(const QString &)));
-        removeEventFilter(_box.data());
+
+    disconnect(this, SIGNAL(textChanged(const QString &)), this, SLOT(detectTypedString(const QString &)));
+    removeEventFilter(_box.data());
+    if (!_box.isNull())
         _box.data()->deleteLater();
-    }
 }
 
 
