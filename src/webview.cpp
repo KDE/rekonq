@@ -376,7 +376,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
     }
 
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
-    m_canEnableAutoScroll = ReKonfig::autoScroll() && !result.isContentEditable()  && result.linkUrl().isEmpty();
+    m_canEnableAutoScroll = ReKonfig::middleClickAction() == 0 && !result.isContentEditable()  && result.linkUrl().isEmpty();
 
     switch (event->button())
     {
@@ -403,7 +403,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
             }
         }
 
-        if (!ReKonfig::autoScroll())
+        if (ReKonfig::middleClickAction() == 1 && result.linkUrl().isEmpty())
         {
             const QString clipboardContent = rApp->clipboard()->text();
 
