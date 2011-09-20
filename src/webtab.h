@@ -93,7 +93,6 @@ public:
 
 private Q_SLOTS:
     void updateProgress(int progress);
-    void loadFinished(bool);
 
     void createWalletBar(const QString &, const QUrl &);
     void showRSSInfo(const QPoint &pos);

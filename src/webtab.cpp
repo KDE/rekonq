@@ -85,7 +85,6 @@ WebTab::WebTab(QWidget *parent)
     }
 
     connect(m_webView, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
-    connect(m_webView, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
     connect(m_webView, SIGNAL(titleChanged(const QString &)), this, SIGNAL(titleChanged(const QString &)));
 
     // Session Manager
@@ -120,15 +119,9 @@ void WebTab::updateProgress(int p)
 }
 
 
-void WebTab::loadFinished(bool)
-{
-    m_progress = 0;
-}
-
-
 bool WebTab::isPageLoading()
 {
-    return m_progress != 0;
+    return m_progress != 0 && m_progress != 100;
 }
 
 
