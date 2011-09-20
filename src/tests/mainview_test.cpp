@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright 2008 Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright 2009 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008 by Benjamin C. Meyer <ben@meyerhome.net>
+* Copyright (C) 2009-2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
