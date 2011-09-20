@@ -105,6 +105,8 @@ public:
         return m_recentlyClosedTabs;
     }
 
+    int originalWidthHint() const;
+
 Q_SIGNALS:
     // current tab signals
     void currentTitle(const QString &url);
@@ -186,6 +188,9 @@ private:
     StackedUrlBar *m_widgetBar;
 
     QString m_loadingGitPath;
+
+    // The original width hint of the mainview for tabs width
+    int m_originalWidthHint;
 
     // the new tab button
     QToolButton *m_addTabButton;

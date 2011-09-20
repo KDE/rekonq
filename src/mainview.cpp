@@ -62,6 +62,7 @@ QString temporaryUglyHackString = "";
 MainView::MainView(MainWindow *parent)
     : KTabWidget(parent)
     , m_widgetBar(new StackedUrlBar(this))
+    , m_originalWidthHint(0)
     , m_addTabButton(0)
     , m_currentTabIndex(0)
     , m_parentWindow(parent)
@@ -114,6 +115,7 @@ void MainView::postLaunch()
 
     m_addTabButton->setAutoRaise(true);
     m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    m_originalWidthHint = sizeHint().width();
 }
 
 
@@ -186,13 +188,7 @@ void MainView::updateTabBar()
             ButtonInCorner = false;
         }
 
-        // detecting X position
-        int newPosX = tabBarWidth;
-        int tabWidthHint = tabBar()->tabSizeHint(0).width();
-        if (tabWidthHint < sizeHint().width() / 4)
-            newPosX = tabWidgetWidth - m_addTabButton->width();
-
-        m_addTabButton->move(newPosX, 0);
+        m_addTabButton->move(tabBarWidth, 0);
     }
 }
 
@@ -329,6 +325,12 @@ WebTab *MainView::newWebTab(bool focused)
     }
 
     return tab;
+}
+
+
+int MainView::originalWidthHint() const
+{
+    return m_originalWidthHint;
 }
 
 
