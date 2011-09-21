@@ -128,6 +128,11 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "furkanuzumcu@gmail.com",
                     "");
 
+    about.addAuthor(ki18n("Johannes Tröscher"),
+                    ki18n("QGraphicsEffect expert. Tabbar highlight animation"),
+                    "fritz_van_tom@hotmail.com",
+                    "");
+
     // --------------- about credits -----------------------------
     about.addCredit(ki18n("Dawit Alemayehu"),
                     ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
@@ -177,11 +182,6 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     about.addCredit(ki18n("Jon de Andrés Frías"),
                     ki18n("First awesome bar implementation"),
                     "jondeandres@gmail.com",
-                    "");
-
-    about.addCredit(ki18n("Johannes Troscher"),
-                    ki18n("QGraphicsEffect expert. Tabbar highlight animation"),
-                    "fritz_van_tomas@hotmail.com",
                     "");
 
     // Initialize command line args
