@@ -236,6 +236,7 @@ void MainWindow::postLaunch()
     // setting popup notification
     connect(rApp, SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
     m_popup->setAutoFillBackground(true);
+    m_popup->setMargin(4);
     m_popup->raise();
     m_popup->hide();
     connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
@@ -1194,7 +1195,7 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
         labelSize.setWidth(halfWidth);
 
     m_popup->setFixedSize(labelSize);
-    m_popup->setText(fm.elidedText(msg, Qt::ElideMiddle, labelSize.width()));
+    m_popup->setText(fm.elidedText(msg, Qt::ElideMiddle, labelSize.width() - 2 * margin));
 
     const bool horizontalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
     const bool verticalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
