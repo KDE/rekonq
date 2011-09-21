@@ -614,7 +614,11 @@ void MainWindow::finalizeGUI(KXMLGUIClient* client)
     KXmlGuiWindow::finalizeGUI(client);
     //update rekonqMenu when GUI has changed
     KMenu *m = qobject_cast<KMenu*>(factory()->container("rekonqMenu", this));
-    m_rekonqMenu->addActions(m->actions());
+    if (m)
+        m_rekonqMenu->addActions(m->actions());
+    else
+        kDebug() << "Could not get the rekonqMenu menu. Maybe the rekonqui.rc file wasn't found. Was"
+                 << "rekonq installed correctly?";
 }
 
 
