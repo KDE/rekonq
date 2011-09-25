@@ -180,7 +180,7 @@ static bool downloadResource(const KUrl& srcUrl, const KIO::MetaData& metaData =
     do
     {
         // follow bug:184202 fixes
-        destUrl = KFileDialog::getSaveFileName(KUrl(KGlobalSettings::downloadPath().append(fileName)), QString(), parent);
+        destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);
 
         if (destUrl.isEmpty())
             return false;
