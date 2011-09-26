@@ -684,6 +684,7 @@ void MainView::loadFavorite(const int index)
         return;
     KUrl url = KUrl(urls.at(index - 1));
     rApp->loadUrl(url);
+    currentWebTab()->setFocus();
 }
 
 
