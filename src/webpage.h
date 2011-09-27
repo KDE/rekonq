@@ -83,7 +83,7 @@ public:
     bool hasSslValid() const;
 
 public Q_SLOTS:
-    void downloadAllContentsWithKGet(QPoint);
+    void downloadAllContentsWithKGet();
 
     virtual void downloadRequest(const QNetworkRequest &request);
     virtual void downloadUrl(const KUrl &url);

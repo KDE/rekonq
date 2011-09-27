@@ -355,7 +355,7 @@ void UrlBar::loadFinished()
     if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
     {
         IconButton *bt = addRightIcon(UrlBar::KGet);
-        connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(downloadAllContentsWithKGet(QPoint)));
+        connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(downloadAllContentsWithKGet()));
     }
 
     // show RSS

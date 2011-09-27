@@ -697,7 +697,7 @@ void WebPage::downloadUrl(const KUrl &url)
 }
 
 
-void WebPage::downloadAllContentsWithKGet(QPoint)
+void WebPage::downloadAllContentsWithKGet()
 {
     QSet<QString> contents;
     KUrl baseUrl(currentFrame()->url());
