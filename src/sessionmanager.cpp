@@ -103,7 +103,7 @@ void SessionManager::saveSession()
 }
 
 
-bool SessionManager::restoreSession()
+bool SessionManager::restoreSessionFromScratch()
 {
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.exists())
@@ -163,6 +163,65 @@ bool SessionManager::restoreSession()
     }
 
     return true;
+}
+
+
+void SessionManager::restoreCrashedSession()
+{
+    setSessionManagementEnabled(true);
+
+    QFile sessionFile(m_sessionFilePath);
+    if (!sessionFile.exists())
+    {
+        kDebug() << "Unable to find session file" << sessionFile.fileName();
+        return;
+    }
+
+    if (!sessionFile.open(QFile::ReadOnly))
+    {
+        kDebug() << "Unable to open session file" << sessionFile.fileName();
+        return;
+    }
+
+    QDomDocument document("session");
+    if (!document.setContent(&sessionFile, false))
+    {
+        kDebug() << "Unable to parse session file" << sessionFile.fileName();
+        return;
+    }
+
+    setSessionManagementEnabled(false);
+
+    for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
+    {
+        QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
+        int currentTab = 0;
+
+        MainView *mv = (winNo == 0) ? rApp->mainWindow()->mainView() : rApp->newMainWindow()->mainView();
+
+        for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
+        {
+            QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
+            if (tab.hasAttribute("currentTab"))
+                currentTab = tabNo;
+
+            WebView *view = (tabNo == 0) ? mv->webTab(0)->view() : mv->newWebTab()->view();
+
+            QDomCDATASection historySection = tab.firstChild().toCDATASection();
+            QByteArray history = QByteArray::fromBase64(historySection.data().toAscii());
+
+            QDataStream readingStream(&history, QIODevice::ReadOnly);
+            readingStream >> *(view->history());
+
+            // Get sure about urls are loaded
+            KUrl u = KUrl(tab.attribute("url"));
+            if (u.protocol() == QL1S("about"))
+                view->load(u);
+        }
+        mv->tabBar()->setCurrentIndex(currentTab);
+    }
+
+    setSessionManagementEnabled(true);
 }
 
 

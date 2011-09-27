@@ -310,5 +310,5 @@ void WebTab::showMessageBar()
     qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, msgBar);
     msgBar->animatedShow();
 
-    connect(msgBar, SIGNAL(accepted()), rApp->sessionManager(), SLOT(restoreSession()));
+    connect(msgBar, SIGNAL(accepted()), rApp->sessionManager(), SLOT(restoreCrashedSession()));
 }

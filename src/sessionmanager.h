@@ -57,11 +57,12 @@ public:
 
     QList<TabHistory> closedSites();
 
-public slots:
-    bool restoreSession();
+public Q_SLOTS:
+    bool restoreSessionFromScratch();
 
-private slots:
+private Q_SLOTS:
     void saveSession();
+    void restoreCrashedSession();
 
 private:
     QString m_sessionFilePath;

@@ -223,7 +223,7 @@ int Application::newInstance()
                 loadUrl(KUrl("about:home"), Rekonq::NewWindow);
                 break;
             case 2: // restore session
-                if (sessionManager()->restoreSession())
+                if (sessionManager()->restoreSessionFromScratch())
                 {
                     break;
                 }
@@ -251,6 +251,11 @@ int Application::newInstance()
         }
     }
 
+    if (!isRekonqCrashed)
+    {
+        sessionManager()->setSessionManagementEnabled(true);
+    }
+
     if (isFirstLoad)
     {
         // give me some time to do the other things..
@@ -275,7 +280,6 @@ void Application::postLaunch()
     setWindowIcon(KIcon("rekonq"));
 
     historyManager();
-    sessionManager()->setSessionManagementEnabled(true);
 
     // bookmarks loading
     connect(bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
@@ -668,7 +672,9 @@ void Application::setPrivateBrowsingMode(bool b)
         QString text = i18n("<b>%1</b>"
                             "<p>rekonq will save your current tabs for when you'll stop private browsing the net.</p>", caption);
 
-        int button = KMessageBox::warningContinueCancel(mainWindow(), text, caption, KStandardGuiItem::cont(), KStandardGuiItem::cancel(), i18n("don't ask again"));
+        int button = KMessageBox::warningContinueCancel(mainWindow(),
+                     text, caption, KStandardGuiItem::cont(), KStandardGuiItem::cancel(),
+                     i18n("don't ask again"));
         if (button != KMessageBox::Continue)
             return;
 
@@ -691,8 +697,7 @@ void Application::setPrivateBrowsingMode(bool b)
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
         _privateBrowsingAction->setChecked(false);
 
-        loadUrl(KUrl("about:blank"), Rekonq::NewWindow);
-        if (!sessionManager()->restoreSession())
+        if (!sessionManager()->restoreSessionFromScratch())
             loadUrl(KUrl("about:home"), Rekonq::NewWindow);
     }
 }
