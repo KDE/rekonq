@@ -56,7 +56,7 @@ FavoriteWidget::FavoriteWidget(WebTab *tab, QWidget *parent)
     setFixedWidth(350);
 
     QFormLayout *layout = new QFormLayout(this);
-    QVBoxLayout *vLay = new QVBoxLayout(this);
+    QVBoxLayout *vLay = new QVBoxLayout;
 
     // Favorite icon
     QLabel *bookmarkIcon = new QLabel(this);
@@ -84,8 +84,6 @@ FavoriteWidget::FavoriteWidget(WebTab *tab, QWidget *parent)
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
     layout->addWidget(buttonBox);
-
-    setLayout(layout);
 }
 
 

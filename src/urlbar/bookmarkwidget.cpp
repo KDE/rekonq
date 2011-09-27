@@ -59,7 +59,7 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     bookmarkIcon->setPixmap(KIcon("bookmarks").pixmap(32, 32));
 
     // Title
-    QVBoxLayout *vLayout = new QVBoxLayout(this);
+    QVBoxLayout *vLayout = new QVBoxLayout;
     QLabel *bookmarkInfo = new QLabel(this);
     bookmarkInfo->setText(i18n("Edit this Bookmark"));
     QFont f = bookmarkInfo->font();
@@ -95,8 +95,6 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
     layout->addWidget(buttonBox);
-
-    setLayout(layout);
 }
 
 

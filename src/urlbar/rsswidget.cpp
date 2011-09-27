@@ -104,8 +104,6 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
 
     layout->addRow(buttonBox);
-
-    setLayout(layout);
 }
 
 

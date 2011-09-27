@@ -58,6 +58,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     QStringList firstCertErrorList;
     if (!certErrorList.isEmpty())
         firstCertErrorList = certErrorList.first();
+
     QGridLayout *layout = new QGridLayout(this);
 
     QLabel *label;
@@ -220,8 +221,6 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     }
     layout->addWidget(label, rows++, 1);
 
-    // -----------------------------------------------------------------------------------
-    setLayout(layout);
 }
 
 

@@ -52,7 +52,7 @@ WebShortcutWidget::WebShortcutWidget(QWidget *parent)
     setFixedWidth(350);
 
     QFormLayout *layout = new QFormLayout(this);
-    QVBoxLayout *vLay = new QVBoxLayout(this);
+    QVBoxLayout *vLay = new QVBoxLayout;
 
     // Web Search Icon
     QLabel *webSearchIcon = new QLabel(this);
@@ -83,8 +83,6 @@ WebShortcutWidget::WebShortcutWidget(QWidget *parent)
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
     layout->addWidget(buttonBox);
-
-    setLayout(layout);
 
     m_providers = KServiceTypeTrader::self()->query("SearchProvider");
 
