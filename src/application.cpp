@@ -676,7 +676,11 @@ void Application::setPrivateBrowsingMode(bool b)
                      text, caption, KStandardGuiItem::cont(), KStandardGuiItem::cancel(),
                      i18n("don't ask again"));
         if (button != KMessageBox::Continue)
+        {
+            // The user canceled so we should uncheck the box
+            _privateBrowsingAction->setChecked(false);
             return;
+        }
 
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
         _privateBrowsingAction->setChecked(true);
