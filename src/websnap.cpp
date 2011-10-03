@@ -40,6 +40,8 @@
 #include <QtCore/QSize>
 #include <QtCore/QFile>
 
+#include <QCryptographicHash>
+
 #include <QtGui/QPainter>
 #include <QtGui/QAction>
 
@@ -138,7 +140,9 @@ QString WebSnap::imagePathFromUrl(const KUrl &url)
     QUrl temp = QUrl(url.url());
     QByteArray name = temp.toEncoded(QUrl::RemoveScheme | QUrl::RemoveUserInfo | QUrl::StripTrailingSlash);
 
-    return KStandardDirs::locateLocal("cache", QString("thumbs/") + name.toBase64() + ".png", true);
+    QByteArray hashedName = QCryptographicHash::hash(name, QCryptographicHash::Md5).toHex();
+
+    return KStandardDirs::locateLocal("cache", QString("thumbs/") + hashedName + ".png", true);
 }
 
 
