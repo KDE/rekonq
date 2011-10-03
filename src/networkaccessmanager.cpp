@@ -43,11 +43,14 @@
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
     : AccessManager(parent)
 {
-    QString c = KGlobal::locale()->country();
+    QString c = KGlobal::locale()->language();
+
     if (c == QL1S("C"))
-        c = QL1S("en_US");
-    if (c != QL1S("en_US"))
-        c.append(QL1S(", en_US"));
+        c = QL1S("en-US");
+    else
+        c = c.replace(QL1C('_') , QL1C('-'));
+
+    c.append(QL1S(", en-US; q=0.8, en; q=0.6"));
 
     _acceptLanguage = c.toLatin1();
 }
