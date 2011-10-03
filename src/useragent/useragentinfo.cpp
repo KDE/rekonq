@@ -41,6 +41,8 @@
 
 #include <KProtocolManager>
 
+// Qt includes
+#include <QStringBuilder>
 
 UserAgentInfo::UserAgentInfo()
 {
@@ -128,10 +130,17 @@ QString UserAgentInfo::userAgentDescription(int i)
         return QL1S("Default");
     }
 
-    QString tmp = m_providers.at(i)->property("Name").toString();
-    tmp.remove(QL1S("UADescription ("));
-    tmp.remove(QL1C(')'));
-    return tmp;
+    QString systemName = m_providers.at(i)->property("X-KDE-UA-SYSNAME").toString();
+    QString systemRelease = m_providers.at(i)->property("X-KDE-UA-SYSRELEASE").toString();
+    QString systemSummary = QL1S("");
+
+    if (!systemName.isEmpty() && !systemRelease.isEmpty())
+    {
+        // FIXME: needs a proper translation after stable release
+        systemSummary = " " % QL1S("on") % " " % systemName % " " % systemRelease;
+    }
+
+    return userAgentName(i) % " " % userAgentVersion(i) % systemSummary;
 }
 
 
