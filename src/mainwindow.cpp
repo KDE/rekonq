@@ -638,6 +638,17 @@ void MainWindow::fileSaveAs()
     WebTab *w = currentTab();
     KUrl srcUrl = w->url();
 
+    if (currentTab()->page()->isOnRekonqPage())
+    {
+        KParts::ReadOnlyPart *p = currentTab()->part();
+        if (p)
+        {
+            // if this is a KParts document then the w->url() will be empty and the srcUrl
+            // must be set to the document url
+            srcUrl = p->url();
+        }
+    }
+
     // First, try with suggested file name...
     QString name = w->page()->suggestedFileName();
 
