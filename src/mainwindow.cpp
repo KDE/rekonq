@@ -118,6 +118,10 @@ MainWindow::MainWindow()
     , m_hidePopupTimer(new QTimer(this))
     , m_rekonqMenu(0)
 {
+    // Setting attributes (just to be sure...)
+    setAttribute(Qt::WA_DeleteOnClose, true);
+    setAttribute(Qt::WA_QuitOnClose, false);
+
     // creating a centralWidget containing panel, m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
     centralWidget->setContentsMargins(0, 0, 0, 0);
@@ -1569,8 +1573,9 @@ void MainWindow::setEditable(bool on)
 }
 
 
-bool MainWindow::close()
+void MainWindow::closeEvent(QCloseEvent *event)
 {
     emit windowClosing();
-    return KMainWindow::close();
+    kDebug() << "CLOSING WINDOW...";
+    KXmlGuiWindow::closeEvent(event);
 }

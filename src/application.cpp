@@ -92,42 +92,49 @@ Application::~Application()
 
     Q_FOREACH(QWeakPointer<MainWindow> window, m_mainWindows)
     {
+        kDebug() << "deleting windows...";
         delete window.data();
         window.clear();
     }
 
     if (!m_historyManager.isNull())
     {
+        kDebug() << "deleting history manager";
         delete m_historyManager.data();
         m_historyManager.clear();
     }
 
     if (!m_bookmarkProvider.isNull())
     {
+        kDebug() << "deleting bookmark Provider";
         delete m_bookmarkProvider.data();
         m_bookmarkProvider.clear();
     }
 
     if (!m_sessionManager.isNull())
     {
+        kDebug() << "deleting session manager";
         delete m_sessionManager.data();
         m_sessionManager.clear();
     }
 
     if (!m_opensearchManager.isNull())
     {
+        kDebug() << "deleting opensearch manager";
         delete m_opensearchManager.data();
         m_opensearchManager.clear();
     }
 
     if (!m_iconManager.isNull())
     {
+        kDebug() << "deleting icon manager";
         delete m_iconManager.data();
         m_iconManager.clear();
     }
 
     if (!m_adblockManager.isNull())
     {
+        kDebug() << "deleting adblock manager";
         delete m_adblockManager.data();
         m_adblockManager.clear();
     }
@@ -135,12 +142,14 @@ Application::~Application()
     // TODO:
     // add a check to NOT close rekonq
     // until last download is finished
-
     if (!m_downloadManager.isNull())
     {
-        delete m_adblockManager.data();
-        m_adblockManager.clear();
+        kDebug() << "deleting download manager";
+        delete m_downloadManager.data();
+        m_downloadManager.clear();
     }
+
+    kDebug() << "Bye bye...";
 }
 
 
