@@ -98,7 +98,6 @@ private slots:
 
     void contextMenu(int, const QPoint &);
     void emptyAreaContextMenu(const QPoint &);
-    void tabMoved(int, int);
 
     void showTabPreview();
 

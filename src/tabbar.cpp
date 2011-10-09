@@ -83,7 +83,6 @@ TabBar::TabBar(QWidget *parent)
 
     connect(this, SIGNAL(contextMenu(int, const QPoint &)), this, SLOT(contextMenu(int, const QPoint &)));
     connect(this, SIGNAL(emptyAreaContextMenu(const QPoint &)), this, SLOT(emptyAreaContextMenu(const QPoint &)));
-    connect(this, SIGNAL(tabMoved(int, int)), this, SLOT(tabMoved(int, int)));
 
     connect(m_animationMapper, SIGNAL(mapped(int)), this, SLOT(removeAnimation(int)));
     setGraphicsEffect(m_tabHighlightEffect);
@@ -298,13 +297,6 @@ void TabBar::mousePressEvent(QMouseEvent *event)
         return;
 
     KTabBar::mousePressEvent(event);
-}
-
-
-void TabBar::tabMoved(int, int)
-{
-    MainView *mv = qobject_cast<MainView *>(parent());
-    QTimer::singleShot(200, mv, SIGNAL(tabsChanged()));
 }
 
 
