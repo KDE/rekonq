@@ -328,12 +328,6 @@ WebTab *MainView::newWebTab(bool focused)
 }
 
 
-int MainView::originalWidthHint() const
-{
-    return m_originalWidthHint;
-}
-
-
 void MainView::newTab()
 {
     WebView *w = newWebTab()->view();
@@ -403,8 +397,6 @@ void MainView::closeOtherTabs(int index)
     {
         closeTab(i);
     }
-
-    updateTabBar();
 }
 
 
@@ -418,8 +410,6 @@ void MainView::cloneTab(int index)
     KUrl url = webTab(index)->url();
 
     rApp->loadUrl(url, Rekonq::NewTab);
-
-    updateTabBar();
 }
 
 

@@ -105,7 +105,7 @@ public:
         return m_recentlyClosedTabs;
     }
 
-    int originalWidthHint() const;
+    inline int originalWidthHint() const { return m_originalWidthHint; };
 
 Q_SIGNALS:
     // current tab signals
