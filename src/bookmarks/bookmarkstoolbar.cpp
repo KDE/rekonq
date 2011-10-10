@@ -390,6 +390,12 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         KBookmark bookmark;
         KBookmarkGroup root = rApp->bookmarkProvider()->bookmarkManager()->toolbar();
 
+        if (m_checkedAction)
+        {
+            m_checkedAction->setCheckable(false);
+            m_checkedAction->setChecked(false);
+        }
+
         if (dropEvent->mimeData()->hasFormat("application/rekonq-bookmark"))
         {
             QByteArray addresses = dropEvent->mimeData()->data("application/rekonq-bookmark");
