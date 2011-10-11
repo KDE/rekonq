@@ -89,7 +89,7 @@ KIcon IconManager::iconForUrl(const KUrl &url)
         return KIcon(faviconDir + i);
     }
 
-    kDebug() << "Icon NOT Found for url: " << url;
+    // Not found icon. Return default one.
     return KIcon("text-html");
 }
 

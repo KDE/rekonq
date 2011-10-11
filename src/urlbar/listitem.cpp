@@ -607,10 +607,6 @@ QString VisualSuggestionListItem::text()
 BrowseListItem::BrowseListItem(const UrlSearchItem &item, const QString &text, QWidget *parent)
     : ListItem(item, parent)
 {
-    QString url = text;
-
-    kDebug() << text;
-
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
 

@@ -37,7 +37,6 @@
 #include "application.h"
 
 // KDE Includes
-#include <KDebug>
 #include <KGlobal>
 #include <KStandardDirs>
 #include <KUrl>
@@ -182,10 +181,6 @@ void OpenSearchManager::jobFinished(KJob *job)
     if (m_state == REQ_SUGGESTION)
     {
         const ResponseList suggestionsList = m_activeEngine->parseSuggestion(_typedText, m_jobData);
-        Q_FOREACH(const Response & r, suggestionsList)
-        {
-            kDebug() << r.title;
-        }
         emit suggestionsReceived(_typedText, suggestionsList);
         idleJob();
         return;

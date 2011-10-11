@@ -578,11 +578,10 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         return;
 
     case QNetworkReply::ContentAccessDenied:                 // access to remote content denied (similar to HTTP error 401)
-        kDebug() << "We (hopefully) are managing this through the adblock :)";
         break;
 
     case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
-        kDebug() << "------------------ DO WE REALLY NEED THIS??? --------------------";
+        // FIXME: DO WE REALLY NEED THIS???
         _protHandler.postHandling(reply->request(), frame);
         return;
 

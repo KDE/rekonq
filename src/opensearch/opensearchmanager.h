@@ -32,6 +32,8 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+
+// Local Includes
 #include "suggestionparser.h"
 
 // KDE Includes

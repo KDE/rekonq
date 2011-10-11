@@ -183,8 +183,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     // check white rules before :)
     if (_hostWhiteList.match(host))
     {
-        kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched by host matcher: ***********";
-        kDebug() << "UrlString:  " << urlString;
+        kDebug() << "ADBLOCK: WHITE RULE (@@) Matched by string: " << urlString;
         return 0;
     }
 
@@ -192,8 +191,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     {
         if (filter.match(request, urlString, urlStringLowerCase))
         {
-            kDebug() << "****ADBLOCK: WHITE RULE (@@) Matched: ***********";
-            kDebug() << "UrlString:  " << urlString;
+            kDebug() << "ADBLOCK: WHITE RULE (@@) Matched by string: " << urlString;
             return 0;
         }
     }
@@ -201,8 +199,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     // then check the black ones :(
     if (_hostBlackList.match(host))
     {
-        kDebug() << "****ADBLOCK: BLACK RULE Matched by host matcher: ***********";
-        kDebug() << "UrlString:  " << urlString;
+        kDebug() << "ADBLOCK: BLACK RULE Matched by string: " << urlString;
         AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
         return reply;
     }
@@ -215,8 +212,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     {
         if (filter.match(request, urlString, urlStringLowerCase))
         {
-            kDebug() << "****ADBLOCK: BLACK RULE Matched: ***********";
-            kDebug() << "UrlString:  " << urlString;
+            kDebug() << "ADBLOCK: BLACK RULE Matched by string: " << urlString;
 
             QWebElement document = page->mainFrame()->documentElement();
             QWebElementCollection elements = document.findAll("*");
@@ -225,7 +221,6 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
                 const QString srcAttribute = el.attribute("src");
                 if (filter.match(request, srcAttribute, srcAttribute.toLower()))
                 {
-                    kDebug() << "MATCHES ATTRIBUTE!!!!!";
                     el.setStyleProperty(QL1S("visibility"), QL1S("hidden"));
                     el.setStyleProperty(QL1S("width"), QL1S("0"));
                     el.setStyleProperty(QL1S("height"), QL1S("0"));
