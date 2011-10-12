@@ -42,7 +42,7 @@ class TabHistory;
 
 
 /**
-  * Session Management
+  * Session Management: Needs clean up :)
   */
 class REKONQ_TESTS_EXPORT SessionManager : public QObject
 {
@@ -52,21 +52,32 @@ public:
 
     inline void setSessionManagementEnabled(bool on)
     {
-        m_safe = on;
+        m_isSessionEnabled = on;
     }
 
     QList<TabHistory> closedSites();
 
+    // This method restores session
+    // while turning back from Private mode
+    int restoreSavedSession();
+
 public Q_SLOTS:
+    // This method restores session
+    // on restart when restore at startup is chosen
     bool restoreSessionFromScratch();
 
 private Q_SLOTS:
     void saveSession();
+
+    // This method restores session
+    // after a crash
     void restoreCrashedSession();
 
 private:
     QString m_sessionFilePath;
+
     bool m_safe;
+    bool m_isSessionEnabled;
 };
 
 

@@ -691,27 +691,38 @@ void Application::setPrivateBrowsingMode(bool b)
             return;
         }
 
+        sessionManager()->setSessionManagementEnabled(false);
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
         _privateBrowsingAction->setChecked(true);
 
+        loadUrl(KUrl("about:home"), Rekonq::NewWindow);
+
+        MainWindow *activeOne = m_mainWindows.at(0).data();
+
         Q_FOREACH(const QWeakPointer<MainWindow> &w, m_mainWindows)
         {
-            w.data()->close();
+            if (w.data() != activeOne)
+                w.data()->close();
         }
-        loadUrl(KUrl("about:home"), Rekonq::NewWindow);
     }
     else
     {
-        Q_FOREACH(const QWeakPointer<MainWindow> &w, m_mainWindows)
-        {
-            w.data()->close();
-        }
-
         settings->setAttribute(QWebSettings::PrivateBrowsingEnabled, false);
         _privateBrowsingAction->setChecked(false);
 
-        if (!sessionManager()->restoreSessionFromScratch())
+        int newWindows = sessionManager()->restoreSavedSession();
+        if (newWindows == 0)
+        {
             loadUrl(KUrl("about:home"), Rekonq::NewWindow);
+            newWindows++;
+        }
+
+        for (int i = newWindows; i < m_mainWindows.count(); ++i)
+        {
+            m_mainWindows.at(i).data()->close();
+        }
+
+        sessionManager()->setSessionManagementEnabled(true);
     }
 }
 

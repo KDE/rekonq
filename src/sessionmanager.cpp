@@ -46,7 +46,8 @@
 
 SessionManager::SessionManager(QObject *parent)
     : QObject(parent)
-    , m_safe(false)
+    , m_safe(true)
+    , m_isSessionEnabled(false)
 {
     m_sessionFilePath = KStandardDirs::locateLocal("appdata" , "session");
 }
@@ -54,8 +55,9 @@ SessionManager::SessionManager(QObject *parent)
 
 void SessionManager::saveSession()
 {
-    if (!m_safe || QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (!m_isSessionEnabled || !m_safe)
         return;
+
     m_safe = false;
 
     kDebug() << "SAVING SESSION...";
@@ -95,9 +97,11 @@ void SessionManager::saveSession()
         }
         session.appendChild(window);
     }
+
     QTextStream TextStream(&sessionFile);
     document.save(TextStream, 2);
     sessionFile.close();
+
     m_safe = true;
     return;
 }
@@ -114,8 +118,9 @@ bool SessionManager::restoreSessionFromScratch()
         return false;
     }
 
-    bool windowAlreadyOpen = rApp->mainWindowList().count();
-    MainWindowList wl;
+    bool windowAlreadyOpen = (rApp->mainWindowList().count() == 0) ? false : true;
+    if (!windowAlreadyOpen)
+        rApp->newMainWindow(false);
 
     QDomDocument document("session");
     if (!document.setContent(&sessionFile, false))
@@ -129,15 +134,7 @@ bool SessionManager::restoreSessionFromScratch()
         QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
         int currentTab = 0;
 
-        if (windowAlreadyOpen)
-            windowAlreadyOpen = false;
-        else
-            rApp->newMainWindow(false);
-
-        wl = rApp->mainWindowList(); //get the latest windowlist
-        if (wl.count() == 0)
-            continue;
-        MainView *mv = wl.at(0).data()->mainView(); //last mainwindow created will be first one in mainwindow list
+        MainView *mv = rApp->mainWindowList().at(0).data()->mainView(); //last mainwindow created will be first one in mainwindow list
 
         for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
         {
@@ -168,8 +165,6 @@ bool SessionManager::restoreSessionFromScratch()
 
 void SessionManager::restoreCrashedSession()
 {
-    setSessionManagementEnabled(true);
-
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.exists())
     {
@@ -189,8 +184,6 @@ void SessionManager::restoreCrashedSession()
         kDebug() << "Unable to parse session file" << sessionFile.fileName();
         return;
     }
-
-    setSessionManagementEnabled(false);
 
     for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
     {
@@ -222,6 +215,63 @@ void SessionManager::restoreCrashedSession()
     }
 
     setSessionManagementEnabled(true);
+}
+
+
+int SessionManager::restoreSavedSession()
+{
+    QFile sessionFile(m_sessionFilePath);
+    if (!sessionFile.exists())
+    {
+        kDebug() << "Unable to find session file" << sessionFile.fileName();
+        return 0;
+    }
+
+    if (!sessionFile.open(QFile::ReadOnly))
+    {
+        kDebug() << "Unable to open session file" << sessionFile.fileName();
+        return 0;
+    }
+
+    QDomDocument document("session");
+    if (!document.setContent(&sessionFile, false))
+    {
+        kDebug() << "Unable to parse session file" << sessionFile.fileName();
+        return 0;
+    }
+
+    unsigned int winNo;
+
+    for (winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
+    {
+        QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
+        int currentTab = 0;
+
+        MainView *mv = rApp->newMainWindow()->mainView();
+
+        for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
+        {
+            QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
+            if (tab.hasAttribute("currentTab"))
+                currentTab = tabNo;
+
+            WebView *view = (tabNo == 0) ? mv->webTab(0)->view() : mv->newWebTab()->view();
+
+            QDomCDATASection historySection = tab.firstChild().toCDATASection();
+            QByteArray history = QByteArray::fromBase64(historySection.data().toAscii());
+
+            QDataStream readingStream(&history, QIODevice::ReadOnly);
+            readingStream >> *(view->history());
+
+            // Get sure about urls are loaded
+            KUrl u = KUrl(tab.attribute("url"));
+            if (u.protocol() == QL1S("about"))
+                view->load(u);
+        }
+        mv->tabBar()->setCurrentIndex(currentTab);
+    }
+
+    return winNo;
 }
 
 

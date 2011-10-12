@@ -492,7 +492,6 @@ KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selected
     QUrl u = engine->property("Query").toUrl();
     KUrl url = KUrl(u.toString(QUrl::RemovePath | QUrl::RemoveQuery));
 
-    kDebug() << "Engine NAME: " << engine->name() << " URL: " << url;
     KAction *a = new KAction(rApp->iconManager()->iconForUrl(url), engine->name(), this);
     a->setCheckable(true);
     if (engine->desktopEntryName() == selectedEngine->desktopEntryName()) a->setChecked(true);
