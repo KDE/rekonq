@@ -3,7 +3,7 @@
 
 === Prerequisites ===
 
-rekonq needs at least KDE SC 4.5.x and Qt 4.7.x to build.
+rekonq needs at least KDE SC 4.6.90 and Qt 4.7.x to build.
 
 Qt:
 
