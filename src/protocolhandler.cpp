@@ -55,6 +55,7 @@
 // Qt Includes
 #include <QtNetwork/QNetworkRequest>
 #include <QtWebKit/QWebFrame>
+#include <QTextDocument>
 
 
 static bool fileItemListLessThan(const KFileItem &s1, const KFileItem &s2)
@@ -298,14 +299,14 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     Q_FOREACH(const KFileItem & item, orderedList)
     {
         msg += "<tr>";
-        QString fullPath = item.url().prettyUrl();
+        QString fullPath = Qt::escape(item.url().prettyUrl());
 
         QString iconName = item.iconName();
         QString icon = QString("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);
 
         msg += "<td width=\"70%\">";
         msg += "<img src=\"" + icon + "\" alt=\"" + iconName + "\" /> ";
-        msg += "<a href=\"" + fullPath + "\">" + item.name() + "</a>";
+        msg += "<a href=\"" + fullPath + "\">" + Qt::escape(item.name()) + "</a>";
         msg += "</td>";
 
         msg += "<td align=\"right\">";
