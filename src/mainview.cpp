@@ -644,7 +644,7 @@ void MainView::openClosedTab()
     {
         WebView *view = rApp->mainWindow()->mainView()->newWebTab()->view();
         TabHistory history;
-        Q_FOREACH(TabHistory item, m_recentlyClosedTabs)
+        Q_FOREACH(const TabHistory & item, m_recentlyClosedTabs)
         {
             if (item.history == action->data().toByteArray())
             {

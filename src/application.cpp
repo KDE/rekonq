@@ -61,7 +61,6 @@
 #include <KWindowInfo>
 #include <KGlobal>
 #include <KCharsets>
-#include <KMessageBox>
 
 // Qt Includes
 #include <QVBoxLayout>
