@@ -110,6 +110,12 @@
         <Action name="web_inspector" />
         <Action name="private_browsing" />
         <Action name="clear_private_data" />
+        <Action name="page_source" />
+        <Action name="net_analyzer" />
+        <Action name="set_editable" />
+        <Separator/>
+        <Action name="useragent" />
+        <Action name="adblock" />
     </Menu>
 
     <!--  ============ SETTINGS menu =========== -->
