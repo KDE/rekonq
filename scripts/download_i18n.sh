@@ -4,7 +4,15 @@
 #
 # 1. Update the lists of the ready (about 80%) translations
 # check the situation here: http://l10n.kde.org/stats/gui/trunk-kde4/po/rekonq.po/
-LIST="af ar as ast be be@latin bg bn bn_IN br ca ca@valencia crh cs csb cy da de el en_GB eo es et eu fa fi fr fy ga gl gu ha he hi hne hr hsb hu hy ia id is it ja ka kk km kn ko ku lb lt lv mai mk ml mr ms mt nb nds ne nl nn nso oc or pa pl ps pt pt_BR ro ru rw se si sk sl sq sr sr@ijekavian sr@ijekavianlatin sr@latin sv ta te tg th tr uk uz uz@cyrillic vi wa xh zh_CN zh_HK zh_TW"
+LIST="af ar as ast az be be@latin bg bn bn_IN bo br bs ca ca@valencia crh cs csb
+cy da de el en_GB eo es et eu fa fi fo fr fy ga gl gu ha he hi hne hr hsb hu hy
+ia id is it ja ka kk km kn ko ku lb lo lt lv mai mi mk ml mn mr ms mt nb nds ne
+nl nn nso oc or pa pl ps pt pt_BR ro ru rw se si sk sl sq sr sr@ijekavian
+sr@ijekavianlatin sr@latin ss sv ta te tg th tr tt ug uk uz uz@cyrillic ven vi
+wa xh zh_CN zh_HK zh_TW zu"
+
+# translation percentual
+TRxCENT=80
 
 # 2. run this script. It will create an i18n dir in rekonq sources ($RK_SRCS variable, set it to your source path) 
 # dir with all the listed translations (eg: italian translation = rekonq_it.po file) 
@@ -57,7 +65,7 @@ do
         else
             PERC=$(echo $TRANS/$TOT | bc -l)
 
-            RESULT=$(echo $PERC '>' .80 | bc -l)
+            RESULT=$(echo $PERC '>' .$TRxCENT | bc -l)
             if [ $RESULT -eq 0 ]; then 
                 echo removing $lang...
                 rm rekonq_$lang.po
