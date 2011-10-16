@@ -732,7 +732,7 @@ void Application::queryQuit()
     {
         int answer = KMessageBox::questionYesNoCancel(
                          mainWindow(),
-                         i18n("Wanna close the window or the whole app?"),
+                         i18n("Do you want to close the window or the whole application?"),
                          i18n("Application/Window closing..."),
                          KGuiItem(i18n("C&lose Current Window"),
                                   KIcon("window-close")),
