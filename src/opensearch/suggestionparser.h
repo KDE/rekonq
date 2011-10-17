@@ -67,12 +67,12 @@ public:
 
     {};
 
-    Response(const QString &_title = QString(),
-             const QString &_description = QString(),
-             const QString &_url  = QString(),
-             const QString &_image = QString(),
-             const int &_image_width = 0,
-             const int &_image_height = 0) : title(_title),
+    explicit Response(const QString &_title = QString(),
+                      const QString &_description = QString(),
+                      const QString &_url  = QString(),
+                      const QString &_image = QString(),
+                      const int &_image_width = 0,
+                      const int &_image_height = 0) : title(_title),
         description(_description),
         url(_url),
         image(_image),

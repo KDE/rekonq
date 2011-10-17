@@ -294,7 +294,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     {
         clearFocus();
         if (text() != rApp->mainWindow()->currentTab()->view()->url().toString()
-                && !rApp->mainWindow()->currentTab()->view()->url().toString().startsWith("about"))
+                && !rApp->mainWindow()->currentTab()->view()->url().toString().startsWith(QL1S("about")))
             setText(rApp->mainWindow()->currentTab()->view()->url().toString());
         event->accept();
     }
@@ -518,10 +518,20 @@ void UrlBar::contextMenuEvent(QContextMenuEvent* event)
 bool UrlBar::isValidURL(QString url)
 {
     bool isValid = false;
-    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("ftp://"))
+    if (url.startsWith(QL1S("http://"))
+            || url.startsWith(QL1S("https://"))
+            || url.startsWith(QL1S("ftp://"))
+       )
         url = url.remove(QRegExp("(http|https|ftp)://"));
-    if (url.contains('.') && url.indexOf('.') > 0 && url.indexOf('.') < url.length() && !url.trimmed().contains(" ") && QUrl::fromUserInput(url).isValid())
+
+    if (url.contains(QL1C('.'))
+            && url.indexOf(QL1C('.')) > 0
+            && url.indexOf(QL1C('.')) < url.length()
+            && !url.trimmed().contains(QL1C(' '))
+            && QUrl::fromUserInput(url).isValid()
+       )
         isValid = true;
+
     return isValid;
 }
 

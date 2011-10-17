@@ -137,10 +137,10 @@ QString UserAgentInfo::userAgentDescription(int i)
     if (!systemName.isEmpty() && !systemRelease.isEmpty())
     {
         // FIXME: needs a proper translation after stable release
-        systemSummary = " " % QL1S("on") % " " % systemName % " " % systemRelease;
+        systemSummary = QL1C(' ') % QL1S("on") % QL1C(' ') % systemName % QL1C(' ') % systemRelease;
     }
 
-    return userAgentName(i) % " " % userAgentVersion(i) % systemSummary;
+    return userAgentName(i) % QL1C(' ') % userAgentVersion(i) % systemSummary;
 }
 
 

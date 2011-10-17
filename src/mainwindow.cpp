@@ -99,6 +99,7 @@
 #include <QtWebKit/QWebHistory>
 
 #include <QSignalMapper>
+#include <QTextDocument>
 
 
 MainWindow::MainWindow()
@@ -1196,6 +1197,8 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
         break;
     }
 
+    QString msgToShow = Qt::escape(msg);
+
     // useful values
     WebTab *tab = m_view->currentWebTab();
 
@@ -1208,13 +1211,13 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
 
     // Set Popup size
     QFontMetrics fm = m_popup->fontMetrics();
-    QSize labelSize(fm.width(msg) + 2 * margin, fm.height() + 2 * margin);
+    QSize labelSize(fm.width(msgToShow) + 2 * margin, fm.height() + 2 * margin);
 
     if (labelSize.width() > halfWidth)
         labelSize.setWidth(halfWidth);
 
     m_popup->setFixedSize(labelSize);
-    m_popup->setText(fm.elidedText(msg, Qt::ElideMiddle, labelSize.width() - 2 * margin));
+    m_popup->setText(fm.elidedText(msgToShow, Qt::ElideMiddle, labelSize.width() - 2 * margin));
 
     const bool horizontalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
     const bool verticalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
