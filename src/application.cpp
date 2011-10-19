@@ -178,7 +178,6 @@ int Application::newInstance()
     if (isRekonqCrashed && isFirstLoad)
     {
         loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
-        mainWindow()->currentTab()->showMessageBar();
     }
 
     if (areThereArguments)
@@ -294,6 +293,10 @@ void Application::postLaunch()
             instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
 
     // crash recovering
+    if (ReKonfig::recoverOnCrash())
+    {
+        mainWindow()->currentTab()->showMessageBar();
+    }
     ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
     saveConfiguration();
 }
