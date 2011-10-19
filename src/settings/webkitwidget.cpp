@@ -34,6 +34,7 @@ WebKitWidget::WebKitWidget(QWidget *parent)
     , _changed(false)
 {
     setupUi(this);
+    setWebSettingsToolTips();
 }
 
 
