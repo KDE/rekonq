@@ -506,7 +506,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
     QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
 
     // These events need to be handled only for Bookmark actions and not the bar
-    if (watched != toolBar() && mouseEvent && mouseEvent->button() == Qt::LeftButton)
+    if (watched != toolBar() && mouseEvent && mouseEvent->button() != Qt::MidButton)
     {
         switch (event->type())
         {
