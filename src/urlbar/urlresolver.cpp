@@ -400,6 +400,9 @@ void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &s
     QString urlString;
     Q_FOREACH(const Response & i, suggestions)
     {
+        if (text == i.title)
+            continue;
+        
         urlString = i.url;
         if (urlString.isEmpty())
         {
