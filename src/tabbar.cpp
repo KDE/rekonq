@@ -43,6 +43,7 @@
 #include "websnap.h"
 #include "tabhighlighteffect.h"
 #include "tabpreviewpopup.h"
+#include "searchengine.h"
 
 // KDE Includes
 #include <KActionMenu>
@@ -88,6 +89,7 @@ TabBar::TabBar(QWidget *parent)
     setGraphicsEffect(m_tabHighlightEffect);
 
     setAnimatedTabHighlighting(ReKonfig::animatedTabHighlighting());
+    setAcceptDrops(true);
 }
 
 
@@ -478,4 +480,52 @@ void TabBar::setAnimatedTabHighlighting(bool enabled)
             delete anim;
         }
     }
+}
+
+void TabBar::dropEvent(QDropEvent* event)
+{
+    if (event->mimeData()->hasUrls())
+    {
+        int urlCount = event->mimeData()->urls().count();
+        if (urlCount > 1)
+        {
+            Q_FOREACH (const QUrl url, event->mimeData()->urls())
+                rApp->loadUrl(url, Rekonq::NewTab);
+        }
+        else
+            rApp->loadUrl(event->mimeData()->urls().first(), Rekonq::NewFocusedTab);
+    }
+    else if (event->mimeData()->hasText())
+    {
+        //In case the text is a valid URL
+        if (isURLValid(event->mimeData()->text()))
+            rApp->loadUrl(KUrl(event->mimeData()->text()), Rekonq::NewFocusedTab);
+        else
+        {
+            KService::Ptr defaultSearchEngine = SearchEngine::defaultEngine();
+            if (defaultSearchEngine)
+                rApp->loadUrl(KUrl(SearchEngine::buildQuery(defaultSearchEngine, event->mimeData()->text())), Rekonq::NewFocusedTab);
+        }
+    }
+    KTabBar::dropEvent(event);
+}
+
+void TabBar::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasUrls() || event->mimeData()->hasText())
+        event->acceptProposedAction();
+    else
+        KTabBar::dragEnterEvent(event);
+}
+
+bool TabBar::isURLValid(const QString &url)
+{
+    QString editedURL = url;
+    bool isValid = false;
+    if (editedURL.startsWith("http://") || editedURL.startsWith("https://") || editedURL.startsWith("ftp://"))
+        editedURL = editedURL.remove(QRegExp("(http|https|ftp)://"));
+    if (editedURL.contains('.') && editedURL.indexOf('.') > 0 && editedURL.indexOf('.') < editedURL.length() && !editedURL.trimmed().contains(" ")
+        && QUrl::fromUserInput(editedURL).isValid())
+        isValid = true;
+    return isValid;
 }

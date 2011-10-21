@@ -88,6 +88,8 @@ protected:
     virtual void mousePressEvent(QMouseEvent *event);
 
     virtual void tabRemoved(int index);
+    void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
 
 private slots:
     void cloneTab();
@@ -102,6 +104,7 @@ private slots:
     void showTabPreview();
 
     void removeAnimation(int index);
+    bool isURLValid(const QString &url);
 
 private:
     void setupHistoryActions();
