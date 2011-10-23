@@ -579,15 +579,14 @@ void Application::updateConfiguration()
     defaultSettings->setDefaultTextEncoding(enc);
 
     // ================ WebKit ============================
-    defaultSettings->setAttribute(QWebSettings::AutoLoadImages, ReKonfig::autoLoadImages());
     defaultSettings->setAttribute(QWebSettings::DnsPrefetchEnabled, ReKonfig::dnsPrefetch());
+    defaultSettings->setAttribute(QWebSettings::PrintElementBackgrounds, ReKonfig::printElementBackgrounds());
+
     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, ReKonfig::javascriptEnabled());
-    defaultSettings->setAttribute(QWebSettings::JavaEnabled, ReKonfig::javaEnabled());
     defaultSettings->setAttribute(QWebSettings::JavascriptCanOpenWindows, ReKonfig::javascriptCanOpenWindows());
     defaultSettings->setAttribute(QWebSettings::JavascriptCanAccessClipboard, ReKonfig::javascriptCanAccessClipboard());
-    defaultSettings->setAttribute(QWebSettings::LinksIncludedInFocusChain, ReKonfig::linksIncludedInFocusChain());
-    defaultSettings->setAttribute(QWebSettings::ZoomTextOnly, ReKonfig::zoomTextOnly());
-    defaultSettings->setAttribute(QWebSettings::PrintElementBackgrounds, ReKonfig::printElementBackgrounds());
+
+    defaultSettings->setAttribute(QWebSettings::JavaEnabled, ReKonfig::javaEnabled());
 
     if (ReKonfig::pluginsEnabled() == 2)
         defaultSettings->setAttribute(QWebSettings::PluginsEnabled, false);

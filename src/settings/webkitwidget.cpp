@@ -28,12 +28,19 @@
 #include "webkitwidget.h"
 #include "webkitwidget.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 
 WebKitWidget::WebKitWidget(QWidget *parent)
     : QWidget(parent)
     , _changed(false)
 {
     setupUi(this);
+    setWebSettingsToolTips();
+
+    updateJavascriptSettings(ReKonfig::javascriptEnabled());
+    connect(kcfg_javascriptEnabled, SIGNAL(clicked(bool)), this, SLOT(updateJavascriptSettings(bool)));
 }
 
 
@@ -50,22 +57,30 @@ bool WebKitWidget::changed()
 
 void WebKitWidget::hasChanged()
 {
+    _changed = true;
+    emit changed(true);
 }
 
 
 void WebKitWidget::setWebSettingsToolTips()
 {
-    kcfg_autoLoadImages->setToolTip(i18n("Specifies whether images are automatically loaded in web pages."));
+    kcfg_webGL->setToolTip(i18n("Enables WebGL technology"));
+    kcfg_spatialNavigation->setToolTip(i18n("Lets you navigating between focusable elements using arrow keys."));
+    kcfg_frameFlattening->setToolTip(i18n("Flatten all the frames to become one scrollable page."));
     kcfg_dnsPrefetch->setToolTip(i18n("Specifies whether WebKit will try to prefetch DNS entries to speed up browsing."));
+    kcfg_printElementBackgrounds->setToolTip(i18n("If enabled, background colors and images are also drawn when the page is printed."));
     kcfg_javascriptEnabled->setToolTip(i18n("Enables the execution of JavaScript programs."));
-    kcfg_javaEnabled->setToolTip(i18n("Enables support for Java applets."));
-    kcfg_pluginsEnabled->setToolTip(i18n("Enables support for plugins in web pages."));
     kcfg_javascriptCanOpenWindows->setToolTip(i18n("If enabled, JavaScript programs are allowed to open new windows."));
     kcfg_javascriptCanAccessClipboard->setToolTip(i18n("If enabled, JavaScript programs are allowed to read from and to write to the clipboard."));
-    kcfg_linksIncludedInFocusChain->setToolTip(i18n("If enabled, hyperlinks are included in the keyboard focus chain."));
-    kcfg_zoomTextOnly->setToolTip(i18n("If enabled, the zoom factor on a frame is only applied to the text."));
-    kcfg_printElementBackgrounds->setToolTip(i18n("If enabled, background colors and images are also drawn when the page is printed."));
+    kcfg_javaEnabled->setToolTip(i18n("Enables support for Java applets."));
     kcfg_offlineStorageDatabaseEnabled->setToolTip(i18n("Enables support for the HTML 5 offline storage feature."));
     kcfg_offlineWebApplicationCacheEnabled->setToolTip(i18n("Enables support for the HTML 5 web application cache feature."));
     kcfg_localStorageEnabled->setToolTip(i18n("Enables support for the HTML 5 local storage feature."));
+}
+
+
+void WebKitWidget::updateJavascriptSettings(bool b)
+{
+    kcfg_javascriptCanAccessClipboard->setEnabled(b);
+    kcfg_javascriptCanOpenWindows->setEnabled(b);
 }

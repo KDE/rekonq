@@ -21,7 +21,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
 # ==================================================================================
 
 
-FIND_PACKAGE(Qt4 4.7.0 COMPONENTS QtCore QtGui QtNetwork QtWebKit REQUIRED)
+FIND_PACKAGE(Qt4 4.8.0 COMPONENTS QtCore QtGui QtNetwork QtWebKit REQUIRED)
 FIND_PACKAGE(KDE4 4.6.90 REQUIRED)
 
 INCLUDE(MacroOptionalFindPackage)
