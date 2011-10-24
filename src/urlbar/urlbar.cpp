@@ -81,6 +81,21 @@ void IconButton::mouseReleaseEvent(QMouseEvent* event)
 // -----------------------------------------------------------------------------------------------------------
 
 
+QString guessUrlWithCustomFirstLevel(const QString &str1, const QString &str2)
+{
+    QUrl url(QL1S("http://www.") + str1);
+    QString host = url.host().toLower();
+    if (!host.endsWith(str2, Qt::CaseInsensitive))
+    {
+        host += str2;
+        url.setHost(host);
+    }
+    return url.toString();
+}
+
+// -----------------------------------------------------------------------------------------------------------
+
+
 UrlBar::UrlBar(QWidget *parent)
     : KLineEdit(parent)
     , _tab(0)
@@ -153,7 +168,7 @@ void UrlBar::setQUrl(const QUrl& url)
 }
 
 
-void UrlBar::activated(const KUrl& url, Rekonq::OpenType type)
+void UrlBar::loadRequestedUrl(const KUrl& url, Rekonq::OpenType type)
 {
     activateSuggestions(false);
     clearFocus();
@@ -242,60 +257,43 @@ void UrlBar::paintEvent(QPaintEvent *event)
 
 void UrlBar::keyPressEvent(QKeyEvent *event)
 {
-    // this handles the Modifiers + Return key combinations
     QString currentText = text().trimmed();
-    if (event->modifiers() == Qt::AltModifier)
-    {
-        if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
-        {
-            activated(currentText, Rekonq::NewFocusedTab);
-        }
-    }
-    if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-            && !currentText.startsWith(QL1S("http://"), Qt::CaseInsensitive)
-            && event->modifiers() != Qt::NoModifier)
-    {
-        QString append;
-        if (event->modifiers() == Qt::ControlModifier)
-        {
-            append = QL1S(".com");
-        }
-        else if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
-        {
-            append = QL1S(".org");
-        }
-        else if (event->modifiers() == Qt::ShiftModifier)
-        {
-            append = QL1S(".net");
-        }
 
-        if (!append.isEmpty())
+    if (currentText.isEmpty())
+        return KLineEdit::keyPressEvent(event);
+    
+    // this handles the Modifiers + Return key combinations
+    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+    {
+        switch(event->modifiers())
         {
-            QUrl url(QL1S("http://www.") + currentText);
-            QString host = url.host();
-            if (!host.endsWith(append, Qt::CaseInsensitive))
-            {
-                host += append;
-                url.setHost(host);
-            }
-
-            // now, load it!
-            activated(url);
+        case Qt::AltModifier:
+            loadRequestedUrl(currentText, Rekonq::NewFocusedTab);
+            break;
+            
+        case Qt::ControlModifier:
+            loadRequestedUrl(guessUrlWithCustomFirstLevel(currentText, QL1S(".com")));
+            break;
+            
+        case 0x06000000: // Qt::ControlModifier | Qt::ShiftModifier:
+            loadRequestedUrl(guessUrlWithCustomFirstLevel(currentText, QL1S(".org")));
+            break;
+            
+        case Qt::ShiftModifier:
+            loadRequestedUrl(guessUrlWithCustomFirstLevel(currentText, QL1S(".net")));
+            break;
+            
+        default:
+            loadRequestedUrl(currentText);
+            break;
         }
     }
 
-    else if ((event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-             && !currentText.isEmpty())
-    {
-        loadTyped(currentText);
-    }
-
-    else if (event->key() == Qt::Key_Escape)
+    if (event->key() == Qt::Key_Escape)
     {
         clearFocus();
-        if (text() != rApp->mainWindow()->currentTab()->view()->url().toString()
-                && !rApp->mainWindow()->currentTab()->view()->url().toString().startsWith(QL1S("about")))
-            setText(rApp->mainWindow()->currentTab()->view()->url().toString());
+        if (!(_tab->url().protocol() == QL1S("about")))
+            setText(_tab->url().url());
         event->accept();
     }
 
@@ -321,14 +319,14 @@ void UrlBar::dropEvent(QDropEvent *event)
         if (url.isValid())
         {
             setQUrl(url);
-            activated(text());
+            loadRequestedUrl(text());
             return;
         }
     }
 
     // handles everything else
     KLineEdit::dropEvent(event);
-    activated(text());
+    loadRequestedUrl(text());
 }
 
 
@@ -425,12 +423,6 @@ void UrlBar::updateRightIcons()
 }
 
 
-void UrlBar::loadTyped(const QString &text)
-{
-    activated(KUrl(text));
-}
-
-
 void UrlBar::activateSuggestions(bool b)
 {
     if (b)
@@ -439,7 +431,7 @@ void UrlBar::activateSuggestions(bool b)
         {
             _box = new CompletionWidget(this);
             installEventFilter(_box.data());
-            connect(_box.data(), SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), this, SLOT(activated(const KUrl &, Rekonq::OpenType)));
+            connect(_box.data(), SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), this, SLOT(loadRequestedUrl(const KUrl &, Rekonq::OpenType)));
 
             // activate suggestions on edit text
             connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(detectTypedString(const QString &)));
@@ -724,7 +716,7 @@ void UrlBar::addFavorite()
 
 void UrlBar::pasteAndGo()
 {
-    activated(rApp->clipboard()->text());
+    loadRequestedUrl(rApp->clipboard()->text());
 }
 
 
@@ -732,7 +724,7 @@ void UrlBar::pasteAndSearch()
 {
     KService::Ptr defaultEngine = SearchEngine::defaultEngine();
     if (defaultEngine)
-        activated(KUrl(SearchEngine::buildQuery(defaultEngine, rApp->clipboard()->text())));
+        loadRequestedUrl(KUrl(SearchEngine::buildQuery(defaultEngine, rApp->clipboard()->text())));
 }
 
 

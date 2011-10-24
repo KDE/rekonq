@@ -95,10 +95,9 @@ public Q_SLOTS:
     void setQUrl(const QUrl &url);
 
 private Q_SLOTS:
-    void activated(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
+    void loadRequestedUrl(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
 
     void loadFinished();
-    void loadTyped(const QString &);
 
     void clearRightIcons();
     void updateRightIcons();
