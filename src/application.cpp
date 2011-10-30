@@ -608,6 +608,10 @@ void Application::updateConfiguration()
         QWebSettings::setOfflineStorageDefaultQuota(50000);
     }
 
+    // ================= WebGl ===================
+    defaultSettings->setAttribute(QWebSettings::WebGLEnabled, ReKonfig::webGL());
+    defaultSettings->setAttribute(QWebSettings::AcceleratedCompositingEnabled, ReKonfig::webGL());
+
     // Applies user/system defined CSS to all open webpages.
     ReKonfig::userCSS().isEmpty()
     ? defaultSettings->setUserStyleSheetUrl(KUrl(KStandardDirs::locate("appdata" , "default_rekonq.css")))
