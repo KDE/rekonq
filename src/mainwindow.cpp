@@ -669,14 +669,14 @@ void MainWindow::fileSaveAs()
         name = srcUrl.host() + QString(".html");
     }
 
-    const QString destUrl = KFileDialog::getSaveFileName(name, QString(), this);
+    const KUrl destUrl = KFileDialog::getSaveUrl(name, QString(), this);
     if (destUrl.isEmpty())
         return;
 
     if (w->page()->isContentEditable())
     {
         QString code = w->page()->mainFrame()->toHtml();
-        QFile file(destUrl);
+        QFile file(destUrl.url());
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             return;
 
@@ -686,7 +686,7 @@ void MainWindow::fileSaveAs()
         return;
     }
 
-    KIO::Job *job = KIO::file_copy(srcUrl, KUrl(destUrl), -1, KIO::Overwrite);
+    KIO::Job *job = KIO::file_copy(srcUrl, destUrl, -1, KIO::Overwrite);
     job->addMetaData("MaxCacheSize", "0");  // Don't store in http cache.
     job->addMetaData("cache", "cache");     // Use entry from cache if available.
     job->uiDelegate()->setAutoErrorHandlingEnabled(true);
