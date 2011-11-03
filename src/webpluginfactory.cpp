@@ -64,7 +64,7 @@ QObject *WebPluginFactory::create(const QString &mimeType,
 
     case 1:
         if (mimeType != QString("application/x-shockwave-flash")
-            || mimeType != QString("application/futuresplash"))
+                || mimeType != QString("application/futuresplash"))
             break;
 
         if (_loadClickToFlash)

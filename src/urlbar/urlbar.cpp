@@ -261,28 +261,28 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 
     if (currentText.isEmpty())
         return KLineEdit::keyPressEvent(event);
-    
+
     // this handles the Modifiers + Return key combinations
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
     {
-        switch(event->modifiers())
+        switch (event->modifiers())
         {
         case Qt::AltModifier:
             loadRequestedUrl(currentText, Rekonq::NewFocusedTab);
             break;
-            
+
         case Qt::ControlModifier:
             loadRequestedUrl(guessUrlWithCustomFirstLevel(currentText, QL1S(".com")));
             break;
-            
+
         case 0x06000000: // Qt::ControlModifier | Qt::ShiftModifier:
             loadRequestedUrl(guessUrlWithCustomFirstLevel(currentText, QL1S(".org")));
             break;
-            
+
         case Qt::ShiftModifier:
             loadRequestedUrl(guessUrlWithCustomFirstLevel(currentText, QL1S(".net")));
             break;
-            
+
         default:
             loadRequestedUrl(currentText);
             break;

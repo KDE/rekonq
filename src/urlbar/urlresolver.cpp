@@ -402,7 +402,7 @@ void UrlResolver::suggestionsReceived(const QString &text, const ResponseList &s
     {
         if (text == i.title)
             continue;
-        
+
         urlString = i.url;
         if (urlString.isEmpty())
         {

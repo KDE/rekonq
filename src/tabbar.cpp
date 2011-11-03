@@ -489,8 +489,8 @@ void TabBar::dropEvent(QDropEvent* event)
         int urlCount = event->mimeData()->urls().count();
         if (urlCount > 1)
         {
-            Q_FOREACH (const QUrl url, event->mimeData()->urls())
-                rApp->loadUrl(url, Rekonq::NewTab);
+            Q_FOREACH(const QUrl url, event->mimeData()->urls())
+            rApp->loadUrl(url, Rekonq::NewTab);
         }
         else
             rApp->loadUrl(event->mimeData()->urls().first(), Rekonq::NewFocusedTab);
@@ -525,7 +525,7 @@ bool TabBar::isURLValid(const QString &url)
     if (editedURL.startsWith("http://") || editedURL.startsWith("https://") || editedURL.startsWith("ftp://"))
         editedURL = editedURL.remove(QRegExp("(http|https|ftp)://"));
     if (editedURL.contains('.') && editedURL.indexOf('.') > 0 && editedURL.indexOf('.') < editedURL.length() && !editedURL.trimmed().contains(" ")
-        && QUrl::fromUserInput(editedURL).isValid())
+            && QUrl::fromUserInput(editedURL).isValid())
         isValid = true;
     return isValid;
 }

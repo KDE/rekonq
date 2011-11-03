@@ -51,7 +51,7 @@ signals:
 private slots:
     void hasChanged();
     void updateJavascriptSettings(bool);
-    
+
 private:
     void setWebSettingsToolTips();
 
