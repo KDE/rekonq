@@ -144,8 +144,8 @@ MainWindow::MainWindow()
     // then, setup our actions
     setupActions();
 
-    // BEFORE setupGUI!!
-    m_view->addNewTabButton();
+    // BEFORE setupGUI, AFTER setupActions!!
+    m_view->addNewTabButton(actionByName("new_tab"));
 
     // setting Panels
     setupPanels();
