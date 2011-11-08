@@ -254,11 +254,14 @@ bool OpenSearchEngine::operator<(const OpenSearchEngine &other) const
 
 ResponseList OpenSearchEngine::parseSuggestion(const QString &searchTerm, const QByteArray &resp)
 {
-    QFile file(suggestionPathFor(searchTerm));
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!searchTerm.isEmpty() && !resp.isEmpty())
     {
-        file.write(resp, resp.size());
-        file.close();
+        QFile file(suggestionPathFor(searchTerm));
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            file.write(resp, resp.size());
+            file.close();
+        }
     }
 
     return parseSuggestion(resp);
