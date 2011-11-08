@@ -59,12 +59,11 @@
 //Hack:
 QString temporaryUglyHackString = "";
 
-MainView::MainView(MainWindow *parent)
+MainView::MainView(QWidget *parent)
     : KTabWidget(parent)
     , m_widgetBar(new StackedUrlBar(this))
     , m_addTabButton(0)
     , m_currentTabIndex(0)
-    , m_parentWindow(parent)
 {
     // setting tabbar
     TabBar *tabBar = new TabBar(this);
@@ -107,9 +106,9 @@ MainView::MainView(MainWindow *parent)
 }
 
 
-void MainView::addNewTabButton()
+void MainView::addNewTabButton(QAction *newTabAction)
 {
-    m_addTabButton->setDefaultAction(m_parentWindow->actionByName("new_tab"));
+    m_addTabButton->setDefaultAction(newTabAction);
 
     m_addTabButton->setAutoRaise(true);
     m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -367,7 +366,8 @@ void MainView::windowCloseRequested()
     {
         if (count() == 1)
         {
-            m_parentWindow->close();
+            MainWindow *w = qobject_cast<MainWindow *>(parent());
+            w->close();
         }
         else
         {
@@ -423,7 +423,8 @@ void MainView::closeTab(int index, bool del)
         if (ReKonfig::lastTabClosesWindow())
         {
             // closing window...
-            m_parentWindow->close();
+            MainWindow *w = qobject_cast<MainWindow *>(parent());
+            w->close();
             return;
         }
 

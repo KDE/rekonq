@@ -42,7 +42,6 @@
 
 // Forward Declarations
 class HistoryItem;
-class MainWindow;
 class StackedUrlBar;
 class TabBar;
 class UrlBar;
@@ -65,7 +64,7 @@ class REKONQ_TESTS_EXPORT MainView : public KTabWidget
     Q_OBJECT
 
 public:
-    MainView(MainWindow *parent);
+    MainView(QWidget *parent);
 
     inline StackedUrlBar *widgetBar() const
     {
@@ -79,7 +78,7 @@ public:
 
     WebTab *webTab(int index) const;
 
-    void addNewTabButton();
+    void addNewTabButton(QAction *);
 
     /**
      * show and hide TabBar if user doesn't choose
@@ -196,8 +195,6 @@ private:
     int m_currentTabIndex;
 
     QList<TabHistory> m_recentlyClosedTabs;
-
-    MainWindow *m_parentWindow;
 };
 
 #endif // MAINVIEW_H
