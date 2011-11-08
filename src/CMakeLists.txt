@@ -102,6 +102,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     adblock/settings_adblock.ui
     cleardata.ui
     sslinfo.ui
+    webappcreation.ui
     useragent/useragentsettings.ui
  )
 

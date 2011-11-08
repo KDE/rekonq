@@ -33,6 +33,9 @@
 // Auto Includes
 #include "rekonq.h"
 
+// Ui Includes
+#include "ui_webappcreation.h"
+
 // Local Includes
 #include "adblockmanager.h"
 #include "bookmarkprovider.h"
@@ -61,6 +64,7 @@
 #include <KWindowInfo>
 #include <KGlobal>
 #include <KCharsets>
+#include <KPushButton>
 
 // Qt Includes
 #include <QVBoxLayout>
@@ -771,28 +775,77 @@ void Application::createWebAppShortcut()
     KUrl u = mainWindow()->currentTab()->url();
     QString h = u.host();
 
-    QString desktop = KGlobalSettings::desktopPath();
-    QFile wAppFile(desktop + QL1C('/') + h + QL1S(".desktop"));
+    QPointer<KDialog> dialog = new KDialog(mainWindow());
+    dialog->setCaption(i18nc("@title:window", "Create Application Shortcut"));
+    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
+    dialog->button(KDialog::Ok)->setText(i18n("Create"));
 
-    if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    Ui::webAppCreation wAppWidget;
+    QWidget widget;
+    wAppWidget.setupUi(&widget);
+
+    wAppWidget.iconLabel->setPixmap(iconManager()->iconForUrl(u).pixmap(32));
+    wAppWidget.titleLabel->setText(h);
+    wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());
+    wAppWidget.kcfg_createMenuAppShortcut->setChecked(ReKonfig::createMenuAppShortcut());
+
+    dialog->setMainWidget(&widget);
+    dialog->exec();
+
+    if (dialog->result() == QDialog::Accepted)
     {
-        kDebug() << "oops! " << wAppFile.errorString();
-        return;
+        ReKonfig::setCreateDesktopAppShortcut(wAppWidget.kcfg_createDesktopAppShortcut->isChecked());
+        ReKonfig::setCreateMenuAppShortcut(wAppWidget.kcfg_createMenuAppShortcut->isChecked());
+
+        iconManager()->saveDesktopIconForUrl(u);
+        QString iconPath = KStandardDirs::locateLocal("cache" , "favicons/" , true) + h + QL1S("_WEBAPPICON.png");
+
+        QString shortcutString = QL1S("#!/usr/bin/env xdg-open\n")
+                                 + QL1S("[Desktop Entry]\n")
+                                 + QL1S("name=kwebapp\n")
+                                 + QL1S("Icon=") + iconPath + QL1S("\n")
+                                 + QL1S("Exec=kwebapp ") + u.url() + QL1S("\n")
+                                 + QL1S("Type=Application\n")
+                                 + QL1S("Categories=Application;Network;WebBrowser\n")
+                                 ;
+
+        if (ReKonfig::createDesktopAppShortcut())
+        {
+            QString desktop = KGlobalSettings::desktopPath();
+            QFile wAppFile(desktop + QL1C('/') + h + QL1S(".desktop"));
+
+            if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                kDebug() << "Unable to open file: " << wAppFile.errorString();
+                return;
+            }
+
+            QTextStream out(&wAppFile);
+            out.setCodec("UTF-8");
+            out << shortcutString;
+
+            wAppFile.close();
+        }
+
+        if (ReKonfig::createMenuAppShortcut())
+        {
+            QString appMenuDir = KStandardDirs::locateLocal("xdgdata-apps", QString());
+            QFile wAppFile(appMenuDir + QL1C('/') + h + QL1S(".desktop"));
+
+            if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                kDebug() << "Unable to open file: " << wAppFile.errorString();
+                return;
+            }
+
+            QTextStream out(&wAppFile);
+            out.setCodec("UTF-8");
+            out << shortcutString;
+
+            wAppFile.close();
+        }
+
     }
 
-    iconManager()->saveDesktopIconForUrl(u);
-
-    QString iconPath = KStandardDirs::locateLocal("cache" , "favicons/" , true) + h + QL1S("_WEBAPPICON.png");
-
-    QTextStream out(&wAppFile);
-    out.setCodec("UTF-8");
-
-    out << QL1S("[Desktop Entry]\n");
-    out << QL1S("name=kwebapp\n");
-    out << QL1S("Icon=") << iconPath << QL1S("\n");
-    out << QL1S("Exec=kwebapp ") << u.url() << QL1S("\n");
-    out << QL1S("Type=Application\n");
-    out << QL1S("Categories=Application;\n");
-
-    wAppFile.close();
+    dialog->deleteLater();
 }
