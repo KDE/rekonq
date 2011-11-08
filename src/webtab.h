@@ -58,7 +58,7 @@ public:
     explicit WebTab(QWidget *parent = 0);
     ~WebTab();
 
-    inline WebView *view() const
+    WebView *view() const
     {
         return m_webView;
     }
@@ -66,10 +66,11 @@ public:
     {
         return m_urlBar;
     }
-    inline WebPage *page() const
+    WebPage *page() const
     {
         return view()->page();
     }
+
     inline int progress() const
     {
         return m_progress;
@@ -102,6 +103,7 @@ private Q_SLOTS:
 Q_SIGNALS:
     void loadProgressing();
     void titleChanged(const QString &);
+    void zoomChanged(int);
 
 private:
     KUrl extractOpensearchUrl(QWebElement e);

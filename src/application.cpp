@@ -269,8 +269,24 @@ int Application::newInstance()
 
     if (isFirstLoad)
     {
-        // give me some time to do the other things..
-        QTimer::singleShot(100, this, SLOT(postLaunch()));
+        // updating rekonq configuration
+        updateConfiguration();
+
+        setWindowIcon(KIcon("rekonq"));
+
+        historyManager();
+
+        // bookmarks loading
+        connect(bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
+                instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
+
+        // crash recovering
+        if (ReKonfig::recoverOnCrash())
+        {
+            mainWindow()->currentTab()->showMessageBar();
+        }
+        ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
+        saveConfiguration();
     }
 
     return exitValue;
@@ -280,29 +296,6 @@ int Application::newInstance()
 Application *Application::instance()
 {
     return (qobject_cast<Application *>(QCoreApplication::instance()));
-}
-
-
-void Application::postLaunch()
-{
-    // updating rekonq configuration
-    updateConfiguration();
-
-    setWindowIcon(KIcon("rekonq"));
-
-    historyManager();
-
-    // bookmarks loading
-    connect(bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
-            instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
-
-    // crash recovering
-    if (ReKonfig::recoverOnCrash())
-    {
-        mainWindow()->currentTab()->showMessageBar();
-    }
-    ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
-    saveConfiguration();
 }
 
 
@@ -442,7 +435,6 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     barForTab->setQUrl(url);
 
     WebView *view = tab->view();
-
     if (view)
     {
         FilterUrlJob *job = new FilterUrlJob(view, url.pathOrUrl(), this);

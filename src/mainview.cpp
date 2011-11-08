@@ -62,7 +62,6 @@ QString temporaryUglyHackString = "";
 MainView::MainView(MainWindow *parent)
     : KTabWidget(parent)
     , m_widgetBar(new StackedUrlBar(this))
-    , m_originalWidthHint(0)
     , m_addTabButton(0)
     , m_currentTabIndex(0)
     , m_parentWindow(parent)
@@ -72,6 +71,7 @@ MainView::MainView(MainWindow *parent)
     m_addTabButton = new QToolButton(this);
     setTabBar(tabBar);
 
+    tabBar->show();
     // set mouse tracking for tab previews
     setMouseTracking(true);
 
@@ -96,12 +96,6 @@ MainView::MainView(MainWindow *parent)
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
     connect(this, SIGNAL(currentChanged(int)), rApp->sessionManager(), SLOT(saveSession()));
 
-    QTimer::singleShot(0, this, SLOT(postLaunch()));
-}
-
-
-void MainView::postLaunch()
-{
     QList<TabHistory> list = rApp->sessionManager()->closedSites();
     Q_FOREACH(const TabHistory & tab, list)
     {
@@ -110,12 +104,15 @@ void MainView::postLaunch()
         m_recentlyClosedTabs.removeAll(tab);
         m_recentlyClosedTabs.prepend(tab);
     }
+}
 
+
+void MainView::addNewTabButton()
+{
     m_addTabButton->setDefaultAction(m_parentWindow->actionByName("new_tab"));
 
     m_addTabButton->setAutoRaise(true);
     m_addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    m_originalWidthHint = sizeHint().width();
 }
 
 
