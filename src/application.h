@@ -134,6 +134,8 @@ private slots:
 
     void queryQuit();
 
+    void createWebAppShortcut();
+
 private:
     QWeakPointer<HistoryManager> m_historyManager;
     QWeakPointer<BookmarkProvider> m_bookmarkProvider;

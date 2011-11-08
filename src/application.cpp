@@ -764,3 +764,35 @@ void Application::queryQuit()
     // in case of just one window...
     quit();
 }
+
+
+void Application::createWebAppShortcut()
+{
+    KUrl u = mainWindow()->currentTab()->url();
+    QString h = u.host();
+
+    QString desktop = KGlobalSettings::desktopPath();
+    QFile wAppFile(desktop + QL1C('/') + h + QL1S(".desktop"));
+
+    if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        kDebug() << "oops! " << wAppFile.errorString();
+        return;
+    }
+
+    iconManager()->saveDesktopIconForUrl(u);
+
+    QString iconPath = KStandardDirs::locateLocal("cache" , "favicons/" , true) + h + QL1S("_WEBAPPICON.png");
+
+    QTextStream out(&wAppFile);
+    out.setCodec("UTF-8");
+
+    out << QL1S("[Desktop Entry]\n");
+    out << QL1S("name=kwebapp\n");
+    out << QL1S("Icon=") << iconPath << QL1S("\n");
+    out << QL1S("Exec=kwebapp ") << u.url() << QL1S("\n");
+    out << QL1S("Type=Application\n");
+    out << QL1S("Categories=Application;\n");
+
+    wAppFile.close();
+}

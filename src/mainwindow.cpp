@@ -531,6 +531,11 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("preferences-web-browser-adblock"), i18n("Ad Block"), this);
     actionCollection()->addAction(QL1S("adblock"), a);
     connect(a, SIGNAL(triggered(bool)), rApp->adblockManager(), SLOT(showSettings()));
+
+    // Web Applications
+    a = new KAction(KIcon("applications-internet"), i18n("Create application shortcut"), this);
+    actionCollection()->addAction(QL1S("webapp_shortcut"), a);
+    connect(a, SIGNAL(triggered(bool)), rApp, SLOT(createWebAppShortcut()));
 }
 
 

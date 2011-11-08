@@ -54,6 +54,8 @@ public:
 
     void clearIconCache();
 
+    void saveDesktopIconForUrl(const KUrl &u);
+
 private Q_SLOTS:
     void doLastStuffs(KJob *);
     void notifyLastStuffs(KJob *);

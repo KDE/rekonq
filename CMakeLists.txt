@@ -113,6 +113,8 @@ IF(REKONQ_CAN_BE_COMPILED)
     ADD_SUBDIRECTORY( docs )
 #    ADD_SUBDIRECTORY( i18n )
 
+    ADD_SUBDIRECTORY( kwebapp )
+
 ENDIF(REKONQ_CAN_BE_COMPILED)
 
 # ================================================================================

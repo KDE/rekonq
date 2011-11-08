@@ -225,3 +225,16 @@ void IconManager::notifyLastStuffs(KJob *j)
     doLastStuffs(j);
     emit iconChanged();
 }
+
+
+void IconManager::saveDesktopIconForUrl(const KUrl &u)
+{
+    KIcon icon = iconForUrl(u);
+    QString destPath = _faviconsDir + u.host() + QL1S("_WEBAPPICON.png");
+
+    QPixmap pix = icon.pixmap(16, 16);
+    int s = KIconLoader::global()->currentSize(KIconLoader::Desktop);
+    pix = pix.scaled(s, s);
+
+    pix.save(destPath);
+}
