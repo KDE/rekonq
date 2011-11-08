@@ -144,6 +144,9 @@ MainWindow::MainWindow()
     // then, setup our actions
     setupActions();
 
+    // BEFORE setupGUI!!
+    m_view->addNewTabButton();
+
     // setting Panels
     setupPanels();
 
@@ -166,8 +169,58 @@ MainWindow::MainWindow()
     // no more status bar..
     setStatusBar(0);
 
-    // give me some time to do all the other stuffs...
-    QTimer::singleShot(100, this, SLOT(postLaunch()));
+    setupBookmarksAndToolsShortcuts();
+
+    // setting popup notification
+    connect(rApp, SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
+    m_popup->setAutoFillBackground(true);
+    m_popup->setMargin(4);
+    m_popup->raise();
+    m_popup->hide();
+    connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
+
+    // notification system
+    connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
+    connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
+
+    // connect signals and slots
+    connect(m_view, SIGNAL(currentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
+    connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
+
+    // (shift +) ctrl + tab switching
+    connect(this, SIGNAL(ctrlTabPressed()), m_view, SLOT(nextTab()));
+    connect(this, SIGNAL(shiftCtrlTabPressed()), m_view, SLOT(previousTab()));
+
+    // wheel history navigation
+    connect(m_view, SIGNAL(openPreviousInHistory()), this, SLOT(openPrevious()));
+    connect(m_view, SIGNAL(openNextInHistory()), this, SLOT(openNext()));
+
+    // update toolbar actions signals
+    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(updateActions()));
+
+    // Change window icon according to tab icon
+    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(changeWindowIcon(int)));
+
+    // Find Bar signal
+    connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(find(const QString &)));
+
+    // Zoom Bar signal
+    connect(m_view, SIGNAL(currentChanged(int)), m_zoomBar, SLOT(updateSlider(int)));
+
+    // Ctrl + wheel handling
+    connect(currentTab(), SIGNAL(zoomChanged(int)), m_zoomBar, SLOT(setValue(int)));
+
+    // Save session on window closing
+    connect(this, SIGNAL(windowClosing()), rApp->sessionManager(), SLOT(saveSession()));
+
+    // setting up toolbars to NOT have context menu enabled
+    setContextMenuPolicy(Qt::DefaultContextMenu);
+
+    // accept d'n'd
+    setAcceptDrops(true);
+
+    // Bookmark ToolBar (needs to be setup after the call to setupGUI())
+    initBookmarkBar();
 }
 
 
@@ -231,66 +284,6 @@ void MainWindow::configureToolbars()
     // The bookmark bar needs to be refill after the UI changes are finished
     connect(&dlg, SIGNAL(newToolBarConfig()), this, SLOT(initBookmarkBar()));
     dlg.exec();
-}
-
-
-void MainWindow::postLaunch()
-{
-    setupBookmarksAndToolsShortcuts();
-
-    // setting popup notification
-    connect(rApp, SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
-    m_popup->setAutoFillBackground(true);
-    m_popup->setMargin(4);
-    m_popup->raise();
-    m_popup->hide();
-    connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
-
-    // notification system
-    connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
-    connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
-
-    // connect signals and slots
-    connect(m_view, SIGNAL(currentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
-    connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
-
-    // (shift +) ctrl + tab switching
-    connect(this, SIGNAL(ctrlTabPressed()), m_view, SLOT(nextTab()));
-    connect(this, SIGNAL(shiftCtrlTabPressed()), m_view, SLOT(previousTab()));
-
-    // wheel history navigation
-    connect(m_view, SIGNAL(openPreviousInHistory()), this, SLOT(openPrevious()));
-    connect(m_view, SIGNAL(openNextInHistory()), this, SLOT(openNext()));
-
-    // update toolbar actions signals
-    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(updateActions()));
-
-    // Change window icon according to tab icon
-    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(changeWindowIcon(int)));
-
-    // launch it manually. Just the first time...
-    updateActions();
-
-    // Find Bar signal
-    connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(find(const QString &)));
-
-    // Zoom Bar signal
-    connect(m_view, SIGNAL(currentChanged(int)), m_zoomBar, SLOT(updateSlider(int)));
-
-    // Ctrl + wheel handling
-    connect(this->currentTab()->view(), SIGNAL(zoomChanged(int)), m_zoomBar, SLOT(setValue(int)));
-
-    // Save session on window closing
-    connect(this, SIGNAL(windowClosing()), rApp->sessionManager(), SLOT(saveSession()));
-
-    // setting up toolbars to NOT have context menu enabled
-    setContextMenuPolicy(Qt::DefaultContextMenu);
-
-    // accept d'n'd
-    setAcceptDrops(true);
-
-    // Bookmark ToolBar (needs to be setup after the call to setupGUI())
-    initBookmarkBar();
 }
 
 

@@ -97,8 +97,8 @@ QSize TabBar::tabSizeHint(int index) const
 
     int buttonSize = view->addTabButton()->size().width();
     int tabBarWidth = view->size().width() - buttonSize;
-    int baseWidth =  view->originalWidthHint() / baseWidthDivisor;
-    int minWidth =  view->originalWidthHint() / minWidthDivisor;
+    int baseWidth =  view->sizeHint().width() / baseWidthDivisor;
+    int minWidth =  view->sizeHint().width() / minWidthDivisor;
 
     int w;
     if (baseWidth * count() < tabBarWidth)

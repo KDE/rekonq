@@ -144,7 +144,6 @@ protected:
     void finalizeGUI(KXMLGUIClient *client);
 
 private Q_SLOTS:
-    void postLaunch();
     void browserLoading(bool);
     void updateWindowTitle(const QString &title = QString());
 

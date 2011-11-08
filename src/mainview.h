@@ -79,6 +79,8 @@ public:
 
     WebTab *webTab(int index) const;
 
+    void addNewTabButton();
+
     /**
      * show and hide TabBar if user doesn't choose
      * "Always Show TabBar" option
@@ -104,11 +106,6 @@ public:
     {
         return m_recentlyClosedTabs;
     }
-
-    inline int originalWidthHint() const
-    {
-        return m_originalWidthHint;
-    };
 
 Q_SIGNALS:
     // current tab signals
@@ -166,8 +163,6 @@ private Q_SLOTS:
     void webViewUrlChanged(const QUrl &url);
 
     void windowCloseRequested();
-
-    void postLaunch();
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);

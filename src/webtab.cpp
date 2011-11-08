@@ -86,6 +86,7 @@ WebTab::WebTab(QWidget *parent)
 
     connect(m_webView, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(m_webView, SIGNAL(titleChanged(const QString &)), this, SIGNAL(titleChanged(const QString &)));
+    connect(m_webView, SIGNAL(zoomChanged(int)), this, SLOT(zoomChanged(int)));
 
     // Session Manager
     connect(m_webView, SIGNAL(loadFinished(bool)), rApp->sessionManager(), SLOT(saveSession()));

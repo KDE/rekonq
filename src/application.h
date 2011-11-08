@@ -120,11 +120,6 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event);
 
 private slots:
-    /**
-     * Any actions that can be delayed until the window is visible
-     */
-    void postLaunch();
-
     void loadResolvedUrl(ThreadWeaver::Job *);
 
     void updateConfiguration();
