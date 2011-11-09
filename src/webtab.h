@@ -103,7 +103,6 @@ private Q_SLOTS:
 Q_SIGNALS:
     void loadProgressing();
     void titleChanged(const QString &);
-    void zoomChanged(int);
 
 private:
     KUrl extractOpensearchUrl(QWebElement e);

@@ -207,9 +207,6 @@ MainWindow::MainWindow()
     // Zoom Bar signal
     connect(m_view, SIGNAL(currentChanged(int)), m_zoomBar, SLOT(updateSlider(int)));
 
-    // Ctrl + wheel handling
-    connect(currentTab(), SIGNAL(zoomChanged(int)), m_zoomBar, SLOT(setValue(int)));
-
     // Save session on window closing
     connect(this, SIGNAL(windowClosing()), rApp->sessionManager(), SLOT(saveSession()));
 
