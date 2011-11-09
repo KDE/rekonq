@@ -166,6 +166,7 @@ void ZoomBar::updateSlider(int webview)
         return;
 
     m_zoomSlider->setValue(tab->view()->zoomFactor() * 10);
+    connect(tab->view(), SIGNAL(zoomChanged(int)), this, SLOT(setValue(int)));
 }
 
 
