@@ -470,6 +470,13 @@ MainWindow *Application::newMainWindow(bool withTab)
 void Application::removeMainWindow(MainWindow *window)
 {
     m_mainWindows.removeOne(window);
+
+    // QApplication should quit as soon we have no mainwindow
+    // But QtWebkit seems to create windows without Qt::WA_QuitOnClose attribute,
+    // making rekonq keep running after last window is closed
+    if ( m_mainWindows.length() == 0 )
+        QCoreApplication::quit ();
+
 }
 
 
