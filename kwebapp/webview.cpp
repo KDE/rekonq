@@ -46,21 +46,27 @@
 #include <QPointer>
 
 
-WebView::WebView(QWidget *parent)
+WebView::WebView(const QUrl &url, QWidget *parent)
     : KWebView(parent)
 {
     page()->setForwardUnsupportedContent(true);
     connect(page(), SIGNAL(unsupportedContent(QNetworkReply *)), page(), SLOT(downloadResponse(QNetworkReply *)));
     connect(page(), SIGNAL(downloadRequested(const QNetworkRequest &)), page(), SLOT(downloadRequest(const QNetworkRequest &)));
     connect(this, SIGNAL(linkShiftClicked(const KUrl &)), page(), SLOT(downloadUrl(const KUrl &)));
-    
-    QWebSettings::setIconDatabasePath( KStandardDirs::locateLocal("cache","kwebapp.favicons") );
-    
+
+    QWebSettings::setIconDatabasePath(KStandardDirs::locateLocal("cache", "kwebapp.favicons"));
+
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(this, SIGNAL(titleChanged(const QString &)), this, SLOT(setTitle(const QString &)));
     connect(this, SIGNAL(iconChanged()), this, SLOT(setIcon()));
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(menuRequested(const QPoint &)));
+
+    const QString iconPath = KStandardDirs::locateLocal("cache" , "favicons/" , true) + url.host() + "_WEBAPPICON.png";
+    setWindowIcon(QIcon(iconPath));
+
+    // last...
+    load(url);
 }
 
 
@@ -72,7 +78,7 @@ void WebView::setTitle(const QString &t)
 
 void WebView::setIcon()
 {
-    setWindowIcon(icon());    
+    setWindowIcon(icon());
 }
 
 
@@ -95,13 +101,13 @@ void WebView::menuRequested(const QPoint &pos)
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
         menu.addSeparator();
     }
-    
-    if(history()->canGoBack())
+
+    if (history()->canGoBack())
     {
         menu.addAction(pageAction(KWebPage::Back));
     }
 
-    if(history()->canGoBack())
+    if (history()->canGoBack())
     {
         menu.addAction(pageAction(KWebPage::Forward));
     }

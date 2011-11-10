@@ -55,9 +55,8 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    WebView *widg = new WebView;
+    WebView *widg = new WebView(QUrl::fromUserInput(args->arg(0)));
     widg->show();
-    widg->load(QUrl::fromUserInput(args->arg(0)));
     args->clear();
 
     return app.exec();

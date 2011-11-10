@@ -27,13 +27,16 @@
 // KDE Includes
 #include <KWebView>
 
+// Qt Includes
+#include <QUrl>
+
 
 class WebView : public KWebView
 {
     Q_OBJECT
     
 public:
-    WebView(QWidget *parent = 0);
+    WebView(const QUrl &url, QWidget *parent = 0);
 
 private Q_SLOTS:
     void setTitle(const QString &);
