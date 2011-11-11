@@ -92,6 +92,9 @@ SET( rekonq_KDEINIT_SRCS
     useragent/useragentinfo.cpp
     useragent/useragentmanager.cpp
     useragent/useragentwidget.cpp
+    #----------------------------------------
+    sync/syncmanager.cpp
+    sync/syncwidget.cpp
 )
 
 
@@ -105,6 +108,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     sslinfo.ui
     webappcreation.ui
     useragent/useragentsettings.ui
+    sync/settings_sync.ui
  )
 
 KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
@@ -119,6 +123,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/opensearch
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
+                        ${CMAKE_CURRENT_SOURCE_DIR}/sync
                         ${CMAKE_CURRENT_SOURCE_DIR}/urlbar
                         ${CMAKE_CURRENT_SOURCE_DIR}/useragent
                         ${CMAKE_CURRENT_BINARY_DIR}

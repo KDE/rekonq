@@ -256,4 +256,32 @@
     </entry>
 </group>
 
+<!-- Sync Settings -->
+<group name="Sync">
+    <entry name="syncEnabled" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="syncBookmarks" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="syncHistory" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="syncPasswords" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="syncHost" type="String">
+        <default></default>
+    </entry>
+    <entry name="syncUser" type="String">
+        <default></default>
+    </entry>
+    <entry name="syncPass" type="String">
+        <default></default>
+    </entry>
+    <entry name="lastSyncDateTime" type="DateTime">
+        <default></default>
+    </entry>
+</group>
+
 </kcfg>

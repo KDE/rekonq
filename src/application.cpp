@@ -47,6 +47,7 @@
 #include "mainwindow.h"
 #include "opensearchmanager.h"
 #include "sessionmanager.h"
+#include "syncmanager.h"
 #include "stackedurlbar.h"
 #include "tabbar.h"
 #include "urlbar.h"
@@ -148,6 +149,13 @@ Application::~Application()
         kDebug() << "deleting user agent manager";
         delete m_userAgentManager.data();
         m_userAgentManager.clear();
+    }
+
+    if (!m_syncManager.isNull())
+    {
+        kDebug() << "deleting sync manager";
+        delete m_syncManager.data();
+        m_syncManager.clear();
     }
 
     // TODO:
@@ -400,6 +408,16 @@ UserAgentManager *Application::userAgentManager()
         m_userAgentManager = new UserAgentManager(instance());
     }
     return m_userAgentManager.data();
+}
+
+
+SyncManager *Application::syncManager()
+{
+    if (m_syncManager.isNull())
+    {
+        m_syncManager = new SyncManager(instance());
+    }
+    return m_syncManager.data();
 }
 
 
