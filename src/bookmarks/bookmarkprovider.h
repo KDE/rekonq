@@ -140,6 +140,7 @@ Q_SIGNALS:
     * @short This signal is emitted when an url has to be loaded
     */
     void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void emitChanged();
 
 private:
     void find(QList<KBookmark> *list, const KBookmark &bookmark, const QString &text);

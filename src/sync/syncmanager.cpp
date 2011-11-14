@@ -32,6 +32,9 @@
 #include "rekonq.h"
 
 // Local Includes
+#include "application.h"
+#include "bookmarkprovider.h"
+#include "historymanager.h"
 #include "syncwidget.h"
 
 // KDE Includes
@@ -46,7 +49,6 @@
 SyncManager::SyncManager(QObject *parent)
     : QObject(parent)
     , _firstTimeSynced(false)
-    , _syncTimer(0)
 {
     loadSettings();
 }
@@ -62,20 +64,27 @@ void SyncManager::loadSettings()
 {
     if (ReKonfig::syncEnabled())
     {
-        if (_syncTimer)
-            return;
+        firstTimeSync();
 
-        _syncTimer = new QTimer(this);
-        connect(_syncTimer, SIGNAL(timeout()), this, SLOT(sync()));
-        _syncTimer->start(60 * 1000);   // sync every minute
+        // bookmarks
+        ReKonfig::syncBookmarks()
+        ? connect(rApp->bookmarkProvider(), SIGNAL(changed()), this, SLOT(syncBookmarks()))
+        : disconnect(rApp->bookmarkProvider(), SIGNAL(changed()), this, SLOT(syncBookmarks()))
+        ;
+
+        // history
+        ReKonfig::syncHistory()
+        ? connect(rApp->historyManager(), SIGNAL(historySaved()), this, SLOT(syncHistory()))
+        : disconnect(rApp->historyManager(), SIGNAL(historySaved()), this, SLOT(syncHistory()))
+        ;
     }
     else
     {
-        if (_syncTimer)
-        {
-            _syncTimer->stop();
-            delete _syncTimer;
-        }
+        // bookmarks
+        disconnect(rApp->bookmarkProvider(), SIGNAL(changed()), this, SLOT(syncBookmarks()));
+
+        // history
+        disconnect(rApp->historyManager(), SIGNAL(historySaved()), this, SLOT(syncHistory()));
     }
 }
 

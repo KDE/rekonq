@@ -471,4 +471,6 @@ void HistoryManager::save()
         }
     }
     m_lastSavedUrl = m_history.value(0).url;
+
+    emit historySaved();
 }

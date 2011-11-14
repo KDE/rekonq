@@ -183,6 +183,8 @@ Q_SIGNALS:
     void entryRemoved(const HistoryItem &item);
     void entryUpdated(int offset);
 
+    void historySaved();
+
 public Q_SLOTS:
     void clear();
     void loadSettings();

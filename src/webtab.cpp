@@ -41,6 +41,7 @@
 #include "webshortcutwidget.h"
 #include "application.h"
 #include "sessionmanager.h"
+#include "syncmanager.h"
 #include "opensearchmanager.h"
 #include "messagebar.h"
 
@@ -152,6 +153,10 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
             wallet, SLOT(acceptSaveFormDataRequest(const QString &)), Qt::UniqueConnection);
     connect(m_walletBar.data(), SIGNAL(saveFormDataRejected(const QString &)),
             wallet, SLOT(rejectSaveFormDataRequest(const QString &)), Qt::UniqueConnection);
+
+    // sync passwords
+    connect(m_walletBar.data(), SIGNAL(saveFormDataAccepted(const QString &)),
+            rApp->syncManager(), SLOT(syncPasswords()), Qt::UniqueConnection);
 }
 
 

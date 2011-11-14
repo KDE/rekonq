@@ -69,8 +69,8 @@ BookmarkProvider::BookmarkProvider(QObject *parent)
         delete tempManager;
     }
 
-    connect(m_manager, SIGNAL(changed(const QString &, const QString &)),
-            this, SLOT(slotBookmarksChanged()));
+    connect(m_manager, SIGNAL(changed(const QString &, const QString &)), this, SLOT(slotBookmarksChanged()));
+    connect(m_manager, SIGNAL(changed(const QString &, const QString &)), this, SIGNAL(changed()));
 
     // setup menu
     m_owner = new BookmarkOwner(m_manager, this);
@@ -187,7 +187,10 @@ void BookmarkProvider::slotBookmarksChanged()
             fillBookmarkBar(bookmarkToolBar);
         }
     }
-    if (rApp->mainWindow() && rApp->mainWindow()->currentTab() && rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks"))
+    if (rApp->mainWindow()
+            && rApp->mainWindow()->currentTab()
+            && rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks")
+       )
         rApp->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
 }
 

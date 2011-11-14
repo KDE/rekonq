@@ -39,7 +39,6 @@
 
 // Forward Declarations
 class KJob;
-class QTimer;
 
 
 class REKONQ_TESTS_EXPORT SyncManager : public QObject
@@ -84,8 +83,6 @@ private:
 
     QUrl _remotePasswordsUrl;
     KUrl _localPasswordsUrl;
-
-    QTimer *_syncTimer;
 };
 
 #endif // SYNC_MANAGER_H
