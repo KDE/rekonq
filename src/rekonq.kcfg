@@ -231,10 +231,10 @@
 <!-- AdBlock Settings -->
 <group name="AdBlock">
     <entry name="adBlockEnabled" type="Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry name="hideAdsEnabled" type="Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry name="subscriptionTitles" type="StringList">
         <default>EasyList</default>
