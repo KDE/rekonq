@@ -31,7 +31,7 @@
 
 // Local Includes
 #include "application.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "iconmanager.h"
 
 // KDE Includes
@@ -167,7 +167,8 @@ BookmarksTreeModel::BookmarksTreeModel(QObject *parent)
     , m_root(0)
 {
     resetModel();
-    connect(rApp->bookmarkProvider()->bookmarkManager(), SIGNAL(changed(const QString &, const QString &)), this, SLOT(bookmarksChanged(const QString &)));
+    connect(rApp->bookmarkManager()->manager(), SIGNAL(changed(const QString &, const QString &)),
+            this, SLOT(bookmarksChanged(const QString &)));
 }
 
 
@@ -285,13 +286,13 @@ bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
         return false;
 
     QByteArray addresses = data->data("application/rekonq-bookmark");
-    KBookmark bookmark = rApp->bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+    KBookmark bookmark = rApp->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
 
     KBookmarkGroup root;
     if (parent.isValid())
         root = bookmarkForIndex(parent).toGroup();
     else
-        root = rApp->bookmarkProvider()->rootGroup();
+        root = rApp->bookmarkManager()->rootGroup();
 
     QModelIndex destIndex = index(row, column, parent);
 
@@ -305,7 +306,7 @@ bool BookmarksTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
         root.addBookmark(bookmark);
     }
 
-    rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
+    rApp->bookmarkManager()->emitChanged();
 
     return true;
 }
@@ -356,7 +357,7 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
             node = node->child(i);
             nodeIndex = index(i, 0, nodeIndex);
         }
-        populate(node, rApp->bookmarkProvider()->bookmarkManager()->findByAddress(groupAddress).toGroup());
+        populate(node, rApp->bookmarkManager()->findByAddress(groupAddress).toGroup());
         endResetModel();
     }
 
@@ -366,7 +367,7 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
 
 void BookmarksTreeModel::resetModel()
 {
-    setRoot(rApp->bookmarkProvider()->rootGroup());
+    setRoot(rApp->bookmarkManager()->rootGroup());
 }
 
 

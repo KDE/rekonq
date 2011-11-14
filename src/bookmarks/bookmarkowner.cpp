@@ -33,7 +33,7 @@
 
 // Local Includes
 #include "application.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "mainview.h"
 #include "mainwindow.h"
 #include "webtab.h"
@@ -204,7 +204,7 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
     }
     else
     {
-        parent = rApp->bookmarkProvider()->rootGroup();
+        parent = rApp->bookmarkManager()->rootGroup();
     }
 
     KBookmark newBk = parent.addBookmark(currentTitle(), KUrl(currentUrl()));
@@ -267,7 +267,7 @@ KBookmark BookmarkOwner::newSeparator(const KBookmark &bookmark)
     }
     else
     {
-        newBk = rApp->bookmarkProvider()->rootGroup().createNewSeparator();
+        newBk = rApp->bookmarkManager()->rootGroup().createNewSeparator();
     }
 
     newBk.setIcon("edit-clear");

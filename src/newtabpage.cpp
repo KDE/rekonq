@@ -34,7 +34,7 @@
 
 // Local Includes
 #include "application.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "downloadmanager.h"
 #include "historymodels.h"
 #include "mainview.h"
@@ -124,7 +124,7 @@ void NewTabPage::generate(const KUrl &url)
     }
     if (url == KUrl("about:bookmarks/edit"))
     {
-        rApp->bookmarkProvider()->bookmarkManager()->slotEditBookmarks();
+        rApp->bookmarkManager()->slotEditBookmarks();
         return;
     }
 
@@ -464,7 +464,7 @@ void NewTabPage::bookmarksPage()
                                       KIconLoader::Toolbar);
     m_root.document().findFirst(QL1S("#actions")).appendInside(editBookmarks);
 
-    KBookmarkGroup bookGroup = rApp->bookmarkProvider()->rootGroup();
+    KBookmarkGroup bookGroup = rApp->bookmarkManager()->rootGroup();
     if (bookGroup.isNull())
     {
         m_root.addClass(QL1S("empty"));

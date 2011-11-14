@@ -52,7 +52,7 @@ SET( rekonq_KDEINIT_SRCS
     settings/webkitwidget.cpp
     settings/networkwidget.cpp
     #----------------------------------------
-    bookmarks/bookmarkprovider.cpp
+    bookmarks/bookmarkmanager.cpp
     bookmarks/bookmarkspanel.cpp
     bookmarks/bookmarkstreemodel.cpp
     bookmarks/bookmarkscontextmenu.cpp

@@ -30,7 +30,7 @@
 
 // Local includes
 #include "application.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "bookmarkowner.h"
 
 // KDE Includes
@@ -119,7 +119,7 @@ void BookmarkWidget::accept()
     if (!m_bookmark->isNull() && m_name->text() != m_bookmark->fullText())
     {
         m_bookmark->setFullText(m_name->text());
-        rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
+        rApp->bookmarkManager()->emitChanged();
     }
     close();
 }
@@ -127,7 +127,7 @@ void BookmarkWidget::accept()
 
 void BookmarkWidget::removeBookmark()
 {
-    rApp->bookmarkProvider()->bookmarkOwner()->deleteBookmark(*m_bookmark);
+    rApp->bookmarkManager()->owner()->deleteBookmark(*m_bookmark);
     close();
 
     emit updateIcon();

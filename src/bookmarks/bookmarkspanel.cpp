@@ -34,7 +34,7 @@
 
 // Local Includes
 #include "application.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "bookmarkstreemodel.h"
 #include "bookmarkscontextmenu.h"
 #include "bookmarkowner.h"
@@ -75,8 +75,8 @@ void BookmarksPanel::contextMenu(const QPoint &pos)
         return;
 
     BookmarksContextMenu menu(bookmarkForIndex(panelTreeView()->indexAt(pos)),
-                              rApp->bookmarkProvider()->bookmarkManager(),
-                              rApp->bookmarkProvider()->bookmarkOwner()
+                              rApp->bookmarkManager()->manager(),
+                              rApp->bookmarkManager()->owner()
                              );
 
     menu.exec(panelTreeView()->mapToGlobal(pos));
@@ -89,7 +89,7 @@ void BookmarksPanel::deleteBookmark()
     if (_loadingState || !index.isValid())
         return;
 
-    rApp->bookmarkProvider()->bookmarkOwner()->deleteBookmark(bookmarkForIndex(index));
+    rApp->bookmarkManager()->owner()->deleteBookmark(bookmarkForIndex(index));
 }
 
 

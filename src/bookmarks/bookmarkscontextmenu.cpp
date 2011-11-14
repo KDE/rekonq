@@ -29,14 +29,19 @@
 
 // Local Includes
 #include "bookmarkowner.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "application.h"
 
 // KDE Includes
 #include <KBookmarkManager>
 
 
-BookmarksContextMenu::BookmarksContextMenu(const KBookmark &bookmark, KBookmarkManager *manager, BookmarkOwner *owner, bool nullForced, QWidget *parent)
+BookmarksContextMenu::BookmarksContextMenu(const KBookmark &bookmark,
+        KBookmarkManager *manager,
+        BookmarkOwner *owner,
+        bool nullForced,
+        QWidget *parent
+                                          )
     : KBookmarkContextMenu(bookmark, manager, owner, parent)
     , m_bmOwner(owner)
     , m_nullForced(nullForced)
@@ -120,8 +125,8 @@ void BookmarksContextMenu::addSeparatorActions()
 
 void BookmarksContextMenu::addNullActions()
 {
-    KBookmarkManager *manager = rApp->bookmarkProvider()->bookmarkManager();
-    if (manager->toolbar().hasParent())
+    KBookmarkManager *mngr = rApp->bookmarkManager()->manager();
+    if (mngr->toolbar().hasParent())
     {
         addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::UNSET_TOOLBAR_FOLDER));
     }

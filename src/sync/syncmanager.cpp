@@ -33,7 +33,7 @@
 
 // Local Includes
 #include "application.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "historymanager.h"
 #include "syncwidget.h"
 
@@ -68,8 +68,8 @@ void SyncManager::loadSettings()
 
         // bookmarks
         ReKonfig::syncBookmarks()
-        ? connect(rApp->bookmarkProvider(), SIGNAL(changed()), this, SLOT(syncBookmarks()))
-        : disconnect(rApp->bookmarkProvider(), SIGNAL(changed()), this, SLOT(syncBookmarks()))
+        ? connect(rApp->bookmarkManager(), SIGNAL(changed()), this, SLOT(syncBookmarks()))
+        : disconnect(rApp->bookmarkManager(), SIGNAL(changed()), this, SLOT(syncBookmarks()))
         ;
 
         // history
@@ -81,7 +81,7 @@ void SyncManager::loadSettings()
     else
     {
         // bookmarks
-        disconnect(rApp->bookmarkProvider(), SIGNAL(changed()), this, SLOT(syncBookmarks()));
+        disconnect(rApp->bookmarkManager(), SIGNAL(changed()), this, SLOT(syncBookmarks()));
 
         // history
         disconnect(rApp->historyManager(), SIGNAL(historySaved()), this, SLOT(syncHistory()));

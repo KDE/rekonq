@@ -38,7 +38,7 @@
 #include "adblockmanager.h"
 #include "analyzerpanel.h"
 #include "application.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "bookmarkspanel.h"
 #include "bookmarkstoolbar.h"
 #include "downloadmanager.h"
@@ -226,8 +226,8 @@ MainWindow::~MainWindow()
 {
     m_hidePopupTimer->stop();
 
-    rApp->bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
-    rApp->bookmarkProvider()->removeBookmarkPanel(m_bookmarksPanel);
+    rApp->bookmarkManager()->removeBookmarkBar(m_bookmarksBar);
+    rApp->bookmarkManager()->removeBookmarkPanel(m_bookmarksPanel);
     rApp->removeMainWindow(this);
 }
 
@@ -255,7 +255,7 @@ void MainWindow::initBookmarkBar()
 
     if (m_bookmarksBar)
     {
-        rApp->bookmarkProvider()->removeBookmarkBar(m_bookmarksBar);
+        rApp->bookmarkManager()->removeBookmarkBar(m_bookmarksBar);
         delete m_bookmarksBar;
     }
     m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
@@ -495,7 +495,7 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), m_view->tabBar(), SLOT(detachTab()));
 
     // Bookmark Menu
-    KActionMenu *bmMenu = rApp->bookmarkProvider()->bookmarkActionMenu(this);
+    KActionMenu *bmMenu = rApp->bookmarkManager()->bookmarkActionMenu(this);
     bmMenu->setIcon(KIcon("bookmarks"));
     bmMenu->setDelayed(false);
     bmMenu->setShortcutConfigurable(true);
@@ -582,7 +582,7 @@ void MainWindow::setupPanels()
 
     addDockWidget(Qt::LeftDockWidgetArea, m_bookmarksPanel);
 
-    rApp->bookmarkProvider()->registerBookmarkPanel(m_bookmarksPanel);
+    rApp->bookmarkManager()->registerBookmarkPanel(m_bookmarksPanel);
 
     // setup bookmarks panel action
     a = (KAction *) m_bookmarksPanel->toggleViewAction();

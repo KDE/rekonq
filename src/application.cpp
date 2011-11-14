@@ -38,7 +38,7 @@
 
 // Local Includes
 #include "adblockmanager.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "downloadmanager.h"
 #include "filterurljob.h"
 #include "historymanager.h"
@@ -109,11 +109,11 @@ Application::~Application()
         m_historyManager.clear();
     }
 
-    if (!m_bookmarkProvider.isNull())
+    if (!m_bookmarkManager.isNull())
     {
-        kDebug() << "deleting bookmark Provider";
-        delete m_bookmarkProvider.data();
-        m_bookmarkProvider.clear();
+        kDebug() << "deleting bookmark Manager";
+        delete m_bookmarkManager.data();
+        m_bookmarkManager.clear();
     }
 
     if (!m_sessionManager.isNull())
@@ -293,7 +293,7 @@ int Application::newInstance()
         historyManager();
 
         // bookmarks loading
-        connect(bookmarkProvider(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
+        connect(bookmarkManager(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
                 instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
 
         // crash recovering
@@ -351,13 +351,13 @@ HistoryManager *Application::historyManager()
 }
 
 
-BookmarkProvider *Application::bookmarkProvider()
+BookmarkManager *Application::bookmarkManager()
 {
-    if (m_bookmarkProvider.isNull())
+    if (m_bookmarkManager.isNull())
     {
-        m_bookmarkProvider = new BookmarkProvider;
+        m_bookmarkManager = new BookmarkManager;
     }
-    return m_bookmarkProvider.data();
+    return m_bookmarkManager.data();
 }
 
 

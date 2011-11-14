@@ -45,7 +45,7 @@
 
 // Forward Declarations
 class AdBlockManager;
-class BookmarkProvider;
+class BookmarkManager;
 class DownloadManager;
 class HistoryManager;
 class IconManager;
@@ -90,7 +90,7 @@ public:
     MainWindowList mainWindowList();
 
     HistoryManager *historyManager();
-    BookmarkProvider *bookmarkProvider();
+    BookmarkManager *bookmarkManager();
     SessionManager *sessionManager();
     AdBlockManager *adblockManager();
     OpenSearchManager *opensearchManager();
@@ -137,7 +137,7 @@ private Q_SLOTS:
 
 private:
     QWeakPointer<HistoryManager> m_historyManager;
-    QWeakPointer<BookmarkProvider> m_bookmarkProvider;
+    QWeakPointer<BookmarkManager> m_bookmarkManager;
     QWeakPointer<SessionManager> m_sessionManager;
     QWeakPointer<AdBlockManager> m_adblockManager;
     QWeakPointer<OpenSearchManager> m_opensearchManager;

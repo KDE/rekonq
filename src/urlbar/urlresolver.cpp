@@ -30,7 +30,7 @@
 
 // Local Includes
 #include "historymanager.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "searchengine.h"
 
 // KDE Includes
@@ -352,7 +352,7 @@ void UrlResolver::computeHistory()
 // bookmarks
 void UrlResolver::computeBookmarks()
 {
-    QList<KBookmark> found = rApp->bookmarkProvider()->find(_typedString);
+    QList<KBookmark> found = rApp->bookmarkManager()->find(_typedString);
     Q_FOREACH(const KBookmark & b, found)
     {
         UrlSearchItem gItem(UrlSearchItem::Bookmark, b.url().url(), b.fullText());

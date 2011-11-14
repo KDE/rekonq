@@ -34,8 +34,7 @@
 
 // Local Includes
 #include "application.h"
-#include "bookmarkprovider.h"
-#include "bookmarkowner.h"
+#include "bookmarkmanager.h"
 #include "iconmanager.h"
 #include "mainview.h"
 #include "mainwindow.h"
@@ -117,6 +116,7 @@ WebView::~WebView()
     preview.save(path);
 }
 
+
 void WebView::changeWindowIcon()
 {
     if (ReKonfig::useFavicon())
@@ -129,6 +129,7 @@ void WebView::changeWindowIcon()
         }
     }
 }
+
 
 WebPage *WebView::page()
 {
@@ -483,10 +484,10 @@ void WebView::dropEvent(QDropEvent *event)
     if (event->mimeData()->hasFormat("application/rekonq-bookmark"))
     {
         QByteArray addresses = event->mimeData()->data("application/rekonq-bookmark");
-        KBookmark bookmark =  rApp->bookmarkProvider()->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+        KBookmark bookmark =  rApp->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
         if (bookmark.isGroup())
         {
-            rApp->bookmarkProvider()->bookmarkOwner()->openFolderinTabs(bookmark.toGroup());
+            rApp->bookmarkManager()->openFolderinTabs(bookmark.toGroup());
         }
         else
         {
@@ -603,8 +604,8 @@ void WebView::bookmarkLink()
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
 
-    rApp->bookmarkProvider()->rootGroup().addBookmark(url.prettyUrl(), url);
-    rApp->bookmarkProvider()->bookmarkManager()->emitChanged();
+    rApp->bookmarkManager()->rootGroup().addBookmark(url.prettyUrl(), url);
+    rApp->bookmarkManager()->emitChanged();
 }
 
 

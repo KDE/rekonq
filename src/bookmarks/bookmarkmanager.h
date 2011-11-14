@@ -27,12 +27,15 @@
 * ============================================================ */
 
 
-#ifndef BOOKMARKPROVIDER_H
-#define BOOKMARKPROVIDER_H
+#ifndef BOOKMARK_MANAGER_H
+#define BOOKMARK_MANAGER_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+
+// KDE Includes
+#include <KBookmark>
 
 // Qt Includes
 #include <QObject>
@@ -46,7 +49,6 @@ class BookmarkMenu;
 class KAction;
 class KActionCollection;
 class KActionMenu;
-class KBookmark;
 class KBookmarkGroup;
 class KBookmarkManager;
 class KUrl;
@@ -60,7 +62,7 @@ class QAction;
  * from this class.
  * So it implements code to have each one.
  */
-class BookmarkProvider : public QObject
+class BookmarkManager : public QObject
 {
     Q_OBJECT
 
@@ -71,8 +73,8 @@ public:
     * (actually konqueror's bookmarks).
     * @param parent The MainWindow to provide bookmarks objects.
     */
-    BookmarkProvider(QObject *parent = 0);
-    ~BookmarkProvider();
+    BookmarkManager(QObject *parent = 0);
+    ~BookmarkManager();
 
     /**
      * @short Get the Bookmarks Menu Action
@@ -106,12 +108,12 @@ public:
      */
     KBookmarkGroup rootGroup();
 
-    inline KBookmarkManager* bookmarkManager()
+    inline KBookmarkManager* manager()
     {
         return m_manager;
     }
 
-    inline BookmarkOwner* bookmarkOwner()
+    inline BookmarkOwner* owner()
     {
         return m_owner;
     }
@@ -119,6 +121,10 @@ public:
     QList<KBookmark> find(const QString &text);
 
     KBookmark bookmarkForUrl(const KUrl &url);
+
+    KBookmark findByAddress(const QString &);
+    void openFolderinTabs(const KBookmarkGroup &bm);
+    void emitChanged();
 
 public Q_SLOTS:
     /**
@@ -132,6 +138,8 @@ public Q_SLOTS:
     void slotBookmarksChanged();
     void fillBookmarkBar(BookmarkToolBar *toolBar);
 
+    void slotEditBookmarks();
+
 private Q_SLOTS:
     void slotPanelChanged();
 
@@ -140,7 +148,6 @@ Q_SIGNALS:
     * @short This signal is emitted when an url has to be loaded
     */
     void openUrl(const KUrl &, const Rekonq::OpenType &);
-    void emitChanged();
 
 private:
     void find(QList<KBookmark> *list, const KBookmark &bookmark, const QString &text);
@@ -155,4 +162,4 @@ private:
 };
 
 
-#endif // BOOKMARKPROVIDER_H
+#endif // BOOKMARK_MANAGER_H

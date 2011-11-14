@@ -41,7 +41,7 @@
 #include "webpage.h"
 #include "webview.h"
 #include "completionwidget.h"
-#include "bookmarkprovider.h"
+#include "bookmarkmanager.h"
 #include "bookmarkowner.h"
 #include "bookmarkwidget.h"
 #include "iconmanager.h"
@@ -397,11 +397,11 @@ void UrlBar::showBookmarkInfo(QPoint pos)
     if (_tab->url().scheme() == QL1S("about"))
         return;
 
-    KBookmark bookmark = rApp->bookmarkProvider()->bookmarkForUrl(_tab->url());
+    KBookmark bookmark = rApp->bookmarkManager()->bookmarkForUrl(_tab->url());
 
     if (bookmark.isNull())
     {
-        bookmark = rApp->bookmarkProvider()->bookmarkOwner()->bookmarkCurrentPage();
+        bookmark = rApp->bookmarkManager()->owner()->bookmarkCurrentPage();
         updateRightIcons();
     }
     else
@@ -549,7 +549,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         rightIcon->setToolTip(i18n("Show SSL Info"));
         break;
     case UrlBar::BK:
-        if (rApp->bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
+        if (rApp->bookmarkManager()->bookmarkForUrl(_tab->url()).isNull())
         {
             rightIcon->setIcon(KIcon("bookmarks").pixmap(32, 32, QIcon::Disabled));
             rightIcon->setToolTip(i18n("Bookmark this page"));
@@ -678,7 +678,7 @@ void UrlBar::bookmarkContextMenu(QPoint pos)
     KMenu menu(this);
     QAction *qa;
 
-    if (!rApp->bookmarkProvider()->bookmarkForUrl(_tab->url()).isNull())
+    if (!rApp->bookmarkManager()->bookmarkForUrl(_tab->url()).isNull())
     {
         qa = new KAction(KIcon("bookmarks"), i18n("Edit Bookmark"), this);
         connect(qa, SIGNAL(triggered(bool)), this, SLOT(showBookmarkDialog()));
