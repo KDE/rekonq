@@ -49,6 +49,7 @@
 #include "sessionmanager.h"
 #include "settingsdialog.h"
 #include "stackedurlbar.h"
+#include "syncmanager.h"
 #include "tabbar.h"
 #include "urlbar.h"
 #include "webinspectorpanel.h"
@@ -447,8 +448,8 @@ void MainWindow::setupActions()
     closedTabsMenu->setDelayed(false);
     actionCollection()->addAction(QL1S("closed_tab_menu"), closedTabsMenu);
 
-    QSignalMapper *tabSignalMapper = new QSignalMapper(this);
     // shortcuts for quickly switching to a tab
+    QSignalMapper *tabSignalMapper = new QSignalMapper(this);
     for (int i = 1; i <= 9; i++)
     {
         a = new KAction(i18n("Switch to Tab %1", i), this);
@@ -529,6 +530,11 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("applications-internet"), i18n("Create application shortcut"), this);
     actionCollection()->addAction(QL1S("webapp_shortcut"), a);
     connect(a, SIGNAL(triggered(bool)), rApp, SLOT(createWebAppShortcut()));
+
+    // Sync action
+    a = new KAction(KIcon("tools-wizard"), i18n("Sync"), this); // FIXME sync icon!!
+    actionCollection()->addAction(QL1S("sync"), a);
+    connect(a, SIGNAL(triggered(bool)), rApp->syncManager(), SLOT(showSettings()));
 }
 
 

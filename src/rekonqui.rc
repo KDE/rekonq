@@ -26,6 +26,7 @@
         <Action name="set_editable" />
         <Separator/>
         <Action name="useragent" />
+        <Action name="sync" />
         <Action name="adblock" />
     </Menu>
 

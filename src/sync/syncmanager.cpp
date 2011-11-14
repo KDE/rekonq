@@ -31,6 +31,9 @@
 // Auto Includes
 #include "rekonq.h"
 
+// Local Includes
+#include "syncwidget.h"
+
 // KDE Includes
 #include <KStandardDirs>
 #include <KMessageBox>
@@ -43,20 +46,53 @@
 SyncManager::SyncManager(QObject *parent)
     : QObject(parent)
     , _firstTimeSynced(false)
+    , _syncTimer(0)
 {
-    if (ReKonfig::syncEnabled())
-    {
-        // sync every minute
-        QTimer *timer = new QTimer(this);
-        connect(timer, SIGNAL(timeout()), this, SLOT(sync()));
-        timer->start(60 * 1000);
-    }
+    loadSettings();
 }
 
 
 SyncManager::~SyncManager()
 {
     sync();
+}
+
+
+void SyncManager::loadSettings()
+{
+    if (ReKonfig::syncEnabled())
+    {
+        if (_syncTimer)
+            return;
+
+        _syncTimer = new QTimer(this);
+        connect(_syncTimer, SIGNAL(timeout()), this, SLOT(sync()));
+        _syncTimer->start(60 * 1000);   // sync every minute
+    }
+    else
+    {
+        if (_syncTimer)
+        {
+            _syncTimer->stop();
+            delete _syncTimer;
+        }
+    }
+}
+
+
+void SyncManager::showSettings()
+{
+    QPointer<KDialog> dialog = new KDialog();
+    dialog->setCaption(i18nc("@title:window", "Sync Settings"));
+    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
+
+    SyncWidget widget;
+    dialog->setMainWidget(&widget);
+    connect(dialog, SIGNAL(okClicked()), &widget, SLOT(save()));
+    connect(dialog, SIGNAL(okClicked()), this, SLOT(loadSettings()));
+    dialog->exec();
+
+    dialog->deleteLater();
 }
 
 

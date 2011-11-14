@@ -39,6 +39,7 @@
 
 // Forward Declarations
 class KJob;
+class QTimer;
 
 
 class REKONQ_TESTS_EXPORT SyncManager : public QObject
@@ -55,6 +56,9 @@ public Q_SLOTS:
     void sync();
 
 private Q_SLOTS:
+    void loadSettings();
+    void showSettings();
+
     void onBookmarksSyncFinished(KJob *);
     void onBookmarksStatFinished(KJob *);
 
@@ -80,6 +84,8 @@ private:
 
     QUrl _remotePasswordsUrl;
     KUrl _localPasswordsUrl;
+
+    QTimer *_syncTimer;
 };
 
 #endif // SYNC_MANAGER_H

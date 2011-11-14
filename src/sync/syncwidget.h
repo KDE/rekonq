@@ -45,13 +45,13 @@ class SyncWidget : public QWidget, private Ui::Sync
 public:
     SyncWidget(QWidget *parent = 0);
 
-    void save();
     bool changed();
 
 Q_SIGNALS:
     void changed(bool);
 
 private Q_SLOTS:
+    void save();
     void hasChanged();
     void syncNow();
 
