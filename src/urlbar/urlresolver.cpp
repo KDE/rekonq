@@ -336,7 +336,7 @@ void UrlResolver::computeWebSearches()
 void UrlResolver::computeHistory()
 {
     QList<HistoryItem> found = rApp->historyManager()->find(_typedString);
-    qSort(found);
+    qSort(found.begin(), found.end(), isHistoryItemRelevant);
 
     Q_FOREACH(const HistoryItem & i, found)
     {
@@ -388,6 +388,12 @@ void UrlResolver::computeSuggestions()
 
     _typedQuery = query;
     rApp->opensearchManager()->requestSuggestion(query);
+}
+
+
+bool UrlResolver::isHistoryItemRelevant(const HistoryItem &a, const HistoryItem &b)
+{
+    return a.relevance() > b.relevance();
 }
 
 

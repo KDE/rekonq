@@ -114,6 +114,7 @@ typedef QList <UrlSearchItem> UrlSearchList;
 
 // ----------------------------------------------------------------------
 
+class HistoryItem;
 
 class UrlResolver : public QObject
 {
@@ -137,6 +138,8 @@ public:
     };
 
     void computeSuggestions();
+
+    static bool isHistoryItemRelevant(const HistoryItem &a, const HistoryItem &b);
 
 private Q_SLOTS:
     void suggestionsReceived(const QString &text, const ResponseList &suggestions);
