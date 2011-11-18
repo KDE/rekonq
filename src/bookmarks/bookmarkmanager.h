@@ -149,6 +149,8 @@ Q_SIGNALS:
     */
     void openUrl(const KUrl &, const Rekonq::OpenType &);
 
+    void bookmarksUpdated();
+
 private:
     void find(QList<KBookmark> *list, const KBookmark &bookmark, const QString &text);
     KBookmark bookmarkForUrl(const KBookmark &bookmark, const KUrl &url);

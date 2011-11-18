@@ -54,12 +54,6 @@ SyncManager::SyncManager(QObject *parent)
 }
 
 
-SyncManager::~SyncManager()
-{
-    sync();
-}
-
-
 void SyncManager::loadSettings()
 {
     if (ReKonfig::syncEnabled())
@@ -68,8 +62,8 @@ void SyncManager::loadSettings()
 
         // bookmarks
         ReKonfig::syncBookmarks()
-        ? connect(rApp->bookmarkManager(), SIGNAL(changed()), this, SLOT(syncBookmarks()))
-        : disconnect(rApp->bookmarkManager(), SIGNAL(changed()), this, SLOT(syncBookmarks()))
+        ? connect(rApp->bookmarkManager(), SIGNAL(bookmarksUpdated()), this, SLOT(syncBookmarks()))
+        : disconnect(rApp->bookmarkManager(), SIGNAL(bookmarksUpdated()), this, SLOT(syncBookmarks()))
         ;
 
         // history
@@ -81,7 +75,7 @@ void SyncManager::loadSettings()
     else
     {
         // bookmarks
-        disconnect(rApp->bookmarkManager(), SIGNAL(changed()), this, SLOT(syncBookmarks()));
+        disconnect(rApp->bookmarkManager(), SIGNAL(bookmarksUpdated()), this, SLOT(syncBookmarks()));
 
         // history
         disconnect(rApp->historyManager(), SIGNAL(historySaved()), this, SLOT(syncHistory()));
@@ -110,7 +104,7 @@ void SyncManager::firstTimeSync()
     // Bookmarks
     if (ReKonfig::syncBookmarks())
     {
-        _remoteBookmarksUrl = QUrl(ReKonfig::syncHost());
+        _remoteBookmarksUrl = QUrl::fromUserInput(ReKonfig::syncUrl());
         _remoteBookmarksUrl.setUserName(ReKonfig::syncUser());
         _remoteBookmarksUrl.setPassword(ReKonfig::syncPass());
         _remoteBookmarksUrl.setPath(QL1S("/data/") + ReKonfig::syncUser() + QL1S("/files/bookmarks.xml"));
@@ -129,7 +123,7 @@ void SyncManager::firstTimeSync()
     // History
     if (ReKonfig::syncHistory())
     {
-        _remoteHistoryUrl = QUrl(ReKonfig::syncHost());
+        _remoteHistoryUrl = QUrl::fromUserInput(ReKonfig::syncUrl());
         _remoteHistoryUrl.setUserName(ReKonfig::syncUser());
         _remoteHistoryUrl.setPassword(ReKonfig::syncPass());
         _remoteHistoryUrl.setPath(QL1S("/data/") + ReKonfig::syncUser() + QL1S("/files/history"));
@@ -148,7 +142,7 @@ void SyncManager::firstTimeSync()
     // Passwords
     if (ReKonfig::syncPasswords())
     {
-        _remotePasswordsUrl = QUrl(ReKonfig::syncHost());
+        _remotePasswordsUrl = QUrl::fromUserInput(ReKonfig::syncUrl());
         _remotePasswordsUrl.setUserName(ReKonfig::syncUser());
         _remotePasswordsUrl.setPassword(ReKonfig::syncPass());
         _remotePasswordsUrl.setPath(QL1S("/data/") + ReKonfig::syncUser() + QL1S("/files/kdewallet.kwl"));
@@ -166,44 +160,35 @@ void SyncManager::firstTimeSync()
 }
 
 
-void SyncManager::sync()
+bool SyncManager::syncRelativeEnabled(bool check)
 {
-    kDebug() << "syncing now...";
-
     if (!ReKonfig::syncEnabled())
-        return;
+        return false;
 
     if (!_firstTimeSynced)
     {
         kDebug() << "need to sync for the first time...";
         firstTimeSync();
-        return;
+        return false;
     }
 
-    // Bookmarks
-    if (ReKonfig::syncBookmarks())
-    {
-        KIO::Job *job = KIO::file_copy(_localBookmarksUrl, _remoteBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
-    }
-
-    // History
-    if (ReKonfig::syncHistory())
-    {
-        KIO::Job *job = KIO::file_copy(_localHistoryUrl, _remoteHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
-    }
-
-    // Passwords
-    if (ReKonfig::syncPasswords())
-    {
-        KIO::Job *job = KIO::file_copy(_localPasswordsUrl, _remotePasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
-    }
+    return check;
 }
 
 
 // ---------------------------------------------------------------------------------------
+
+
+void SyncManager::syncBookmarks()
+{
+    kDebug() << "syncing now...";
+
+    if (!syncRelativeEnabled(ReKonfig::syncBookmarks()))
+        return;
+
+    KIO::Job *job = KIO::file_copy(_localBookmarksUrl, _remoteBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
+    connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
+}
 
 
 void SyncManager::onBookmarksStatFinished(KJob *job)
@@ -246,6 +231,18 @@ void SyncManager::onBookmarksSyncFinished(KJob *job)
 // ---------------------------------------------------------------------------------------
 
 
+void SyncManager::syncHistory()
+{
+    kDebug() << "syncing now...";
+
+    if (!syncRelativeEnabled(ReKonfig::syncHistory()))
+        return;
+
+    KIO::Job *job = KIO::file_copy(_localHistoryUrl, _remoteHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
+    connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
+}
+
+
 void SyncManager::onHistoryStatFinished(KJob *job)
 {
     if (job->error() ||
@@ -284,6 +281,18 @@ void SyncManager::onHistorySyncFinished(KJob *job)
 
 
 // ---------------------------------------------------------------------------------------
+
+
+void SyncManager::syncPasswords()
+{
+    kDebug() << "syncing now...";
+
+    if (!syncRelativeEnabled(ReKonfig::syncPasswords()))
+        return;
+
+    KIO::Job *job = KIO::file_copy(_localPasswordsUrl, _remotePasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
+    connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
+}
 
 
 void SyncManager::onPasswordsStatFinished(KJob *job)

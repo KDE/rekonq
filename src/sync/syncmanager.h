@@ -47,12 +47,13 @@ class REKONQ_TESTS_EXPORT SyncManager : public QObject
 
 public:
     SyncManager(QObject *parent = 0);
-    ~SyncManager();
 
     void firstTimeSync();
 
 public Q_SLOTS:
-    void sync();
+    void syncBookmarks();
+    void syncHistory();
+    void syncPasswords();
 
 private Q_SLOTS:
     void loadSettings();
@@ -73,6 +74,8 @@ Q_SIGNALS:
     void syncPasswordsFinished(bool);
 
 private:
+    bool syncRelativeEnabled(bool);
+
     bool _firstTimeSynced;
 
     QUrl _remoteBookmarksUrl;

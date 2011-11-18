@@ -186,11 +186,15 @@ void BookmarkManager::slotBookmarksChanged()
             fillBookmarkBar(bookmarkToolBar);
         }
     }
+
+    // this update about:bookmarks page...
     if (rApp->mainWindow()
             && rApp->mainWindow()->currentTab()
             && rApp->mainWindow()->currentTab()->url().toMimeDataString().contains("about:bookmarks")
        )
         rApp->loadUrl(KUrl("about:bookmarks"), Rekonq::CurrentTab);
+
+    emit bookmarksUpdated();
 }
 
 

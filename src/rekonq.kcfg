@@ -270,7 +270,7 @@
     <entry name="syncPasswords" type="Bool">
         <default>false</default>
     </entry>
-    <entry name="syncHost" type="String">
+    <entry name="syncUrl" type="String">
         <default></default>
     </entry>
     <entry name="syncUser" type="String">
