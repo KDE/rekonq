@@ -39,7 +39,6 @@
 
 // KDE Includes
 #include <KStandardDirs>
-#include <KMessageBox>
 #include <klocalizedstring.h>
 
 #include <KIO/Job>
@@ -107,7 +106,7 @@ void SyncManager::firstTimeSync()
         _remoteBookmarksUrl = QUrl::fromUserInput(ReKonfig::syncUrl());
         _remoteBookmarksUrl.setUserName(ReKonfig::syncUser());
         _remoteBookmarksUrl.setPassword(ReKonfig::syncPass());
-        _remoteBookmarksUrl.setPath(QL1S("/data/") + ReKonfig::syncUser() + QL1S("/files/bookmarks.xml"));
+        _remoteBookmarksUrl.setPath(QL1S("/home/") + ReKonfig::syncUser() + QL1S("/bookmarks.xml"));
         kDebug() << "REMOTE BK URL: " << _remoteBookmarksUrl;
 
         const QString bookmarksFilePath = KStandardDirs::locateLocal("data", QL1S("konqueror/bookmarks.xml"));
@@ -126,7 +125,7 @@ void SyncManager::firstTimeSync()
         _remoteHistoryUrl = QUrl::fromUserInput(ReKonfig::syncUrl());
         _remoteHistoryUrl.setUserName(ReKonfig::syncUser());
         _remoteHistoryUrl.setPassword(ReKonfig::syncPass());
-        _remoteHistoryUrl.setPath(QL1S("/data/") + ReKonfig::syncUser() + QL1S("/files/history"));
+        _remoteHistoryUrl.setPath(QL1S("/home/") + ReKonfig::syncUser() + QL1S("/history"));
         kDebug() << "REMOTE HISTORY URL: " << _remoteHistoryUrl;
 
         const QString historyFilePath = KStandardDirs::locateLocal("appdata", "history");
@@ -145,7 +144,7 @@ void SyncManager::firstTimeSync()
         _remotePasswordsUrl = QUrl::fromUserInput(ReKonfig::syncUrl());
         _remotePasswordsUrl.setUserName(ReKonfig::syncUser());
         _remotePasswordsUrl.setPassword(ReKonfig::syncPass());
-        _remotePasswordsUrl.setPath(QL1S("/data/") + ReKonfig::syncUser() + QL1S("/files/kdewallet.kwl"));
+        _remotePasswordsUrl.setPath(QL1S("/home/") + ReKonfig::syncUser() + QL1S("/kdewallet.kwl"));
         kDebug() << "REMOTE PSWD URL: " << _remotePasswordsUrl;
 
         const QString passwordsFilePath = KStandardDirs::locateLocal("data", QL1S("kwallet/kdewallet.kwl"));
@@ -193,14 +192,7 @@ void SyncManager::syncBookmarks()
 
 void SyncManager::onBookmarksStatFinished(KJob *job)
 {
-    if (job->error() ||
-            KMessageBox::questionYesNo(0,
-                                       i18n("A remote bookmarks file has just present in your remote server."),
-                                       i18n("Server notification"),
-                                       KGuiItem(i18n("Overwrite it")),
-                                       KGuiItem(i18n("Copy it locally"))
-                                      )
-       )
+    if (job->error())
     {
         KIO::Job *job = KIO::file_copy(_localBookmarksUrl, _remoteBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
         connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
@@ -245,14 +237,7 @@ void SyncManager::syncHistory()
 
 void SyncManager::onHistoryStatFinished(KJob *job)
 {
-    if (job->error() ||
-            KMessageBox::questionYesNo(0,
-                                       i18n("A remote history file has just present in your remote server."),
-                                       i18n("Server notification"),
-                                       KGuiItem(i18n("Overwrite it")),
-                                       KGuiItem(i18n("Copy it locally"))
-                                      )
-       )
+    if (job->error())
     {
         KIO::Job *job = KIO::file_copy(_localHistoryUrl, _remoteHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
         connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
@@ -297,14 +282,7 @@ void SyncManager::syncPasswords()
 
 void SyncManager::onPasswordsStatFinished(KJob *job)
 {
-    if (job->error() ||
-            KMessageBox::questionYesNo(0,
-                                       i18n("A remote passwords file has just present in your remote server."),
-                                       i18n("Server notification"),
-                                       KGuiItem(i18n("Overwrite it")),
-                                       KGuiItem(i18n("Copy it locally"))
-                                      )
-       )
+    if (job->error())
     {
         KIO::Job *job = KIO::file_copy(_localPasswordsUrl, _remotePasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
         connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
