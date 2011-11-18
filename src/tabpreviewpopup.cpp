@@ -99,7 +99,15 @@ void TabPreviewPopup::setWebTab(WebTab* tab)
     int w = (tab->parentWidget()->sizeHint().width() / TabBar::baseWidthDivisor);
     int h = w * rApp->mainWindow()->size().height() / rApp->mainWindow()->size().width();
 
-    setThumbnail(WebSnap::renderTabPreview(*tab->page(), w, h));
+    if (!tab->part())
+        setThumbnail(WebSnap::renderTabPreview(*tab->page(), w, h));
+    else
+    {
+        QWidget *part = tab->part()->widget();
+        QPixmap partThumb(part->size());
+        part->render(&partThumb);
+        setThumbnail(partThumb.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    }
     setUrl(tab->url().prettyUrl());
 
     setFixedSize(w, h + m_url->heightForWidth(w));
