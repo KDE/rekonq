@@ -103,10 +103,13 @@ void SyncManager::firstTimeSync()
     // Bookmarks
     if (ReKonfig::syncBookmarks())
     {
-        _remoteBookmarksUrl = QUrl::fromUserInput(ReKonfig::syncUrl());
+        _remoteBookmarksUrl = QUrl();
+        _remoteBookmarksUrl.setHost(ReKonfig::syncHost());
+        _remoteBookmarksUrl.setScheme("ftp");
         _remoteBookmarksUrl.setUserName(ReKonfig::syncUser());
         _remoteBookmarksUrl.setPassword(ReKonfig::syncPass());
-        _remoteBookmarksUrl.setPath(QL1S("/home/") + ReKonfig::syncUser() + QL1S("/bookmarks.xml"));
+        _remoteBookmarksUrl.setPort(ReKonfig::syncPort());
+        _remoteBookmarksUrl.setPath(ReKonfig::syncPath() + QL1S("/bookmarks.xml"));
         kDebug() << "REMOTE BK URL: " << _remoteBookmarksUrl;
 
         const QString bookmarksFilePath = KStandardDirs::locateLocal("data", QL1S("konqueror/bookmarks.xml"));
@@ -122,10 +125,13 @@ void SyncManager::firstTimeSync()
     // History
     if (ReKonfig::syncHistory())
     {
-        _remoteHistoryUrl = QUrl::fromUserInput(ReKonfig::syncUrl());
+        _remoteHistoryUrl = QUrl();
+        _remoteHistoryUrl.setHost(ReKonfig::syncHost());
+        _remoteHistoryUrl.setScheme("ftp");
         _remoteHistoryUrl.setUserName(ReKonfig::syncUser());
         _remoteHistoryUrl.setPassword(ReKonfig::syncPass());
-        _remoteHistoryUrl.setPath(QL1S("/home/") + ReKonfig::syncUser() + QL1S("/history"));
+        _remoteHistoryUrl.setPort(ReKonfig::syncPort());
+        _remoteHistoryUrl.setPath(ReKonfig::syncPath() + QL1S("/history"));
         kDebug() << "REMOTE HISTORY URL: " << _remoteHistoryUrl;
 
         const QString historyFilePath = KStandardDirs::locateLocal("appdata", "history");
@@ -141,10 +147,13 @@ void SyncManager::firstTimeSync()
     // Passwords
     if (ReKonfig::syncPasswords())
     {
-        _remotePasswordsUrl = QUrl::fromUserInput(ReKonfig::syncUrl());
+        _remotePasswordsUrl = QUrl();
+        _remotePasswordsUrl.setHost(ReKonfig::syncHost());
+        _remotePasswordsUrl.setScheme("ftp");
         _remotePasswordsUrl.setUserName(ReKonfig::syncUser());
         _remotePasswordsUrl.setPassword(ReKonfig::syncPass());
-        _remotePasswordsUrl.setPath(QL1S("/home/") + ReKonfig::syncUser() + QL1S("/kdewallet.kwl"));
+        _remotePasswordsUrl.setPort(ReKonfig::syncPort());
+        _remotePasswordsUrl.setPath(ReKonfig::syncPath() + QL1S("/kdewallet.kwl"));
         kDebug() << "REMOTE PSWD URL: " << _remotePasswordsUrl;
 
         const QString passwordsFilePath = KStandardDirs::locateLocal("data", QL1S("kwallet/kdewallet.kwl"));

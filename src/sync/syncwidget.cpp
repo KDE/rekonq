@@ -43,12 +43,16 @@ SyncWidget::SyncWidget(QWidget *parent)
     setupUi(this);
 
     kcfg_syncEnabled->setChecked(ReKonfig::syncEnabled());
+
     kcfg_syncBookmarks->setChecked(ReKonfig::syncBookmarks());
     kcfg_syncHistory->setChecked(ReKonfig::syncHistory());
     kcfg_syncPasswords->setChecked(ReKonfig::syncPasswords());
-    kcfg_syncUrl->setText(ReKonfig::syncUrl());
+
+    kcfg_syncHost->setText(ReKonfig::syncHost());
     kcfg_syncUser->setText(ReKonfig::syncUser());
     kcfg_syncPass->setText(ReKonfig::syncPass());
+    kcfg_syncPath->setText(ReKonfig::syncPath());
+    kcfg_syncPort->setValue(ReKonfig::syncPort());
 
     bool isSyncEnabled = ReKonfig::syncEnabled();
     enablewidgets(isSyncEnabled);
@@ -65,12 +69,16 @@ SyncWidget::SyncWidget(QWidget *parent)
 void SyncWidget::save()
 {
     ReKonfig::setSyncEnabled(kcfg_syncEnabled->isChecked());
+
     ReKonfig::setSyncBookmarks(kcfg_syncBookmarks->isChecked());
     ReKonfig::setSyncHistory(kcfg_syncHistory->isChecked());
     ReKonfig::setSyncPasswords(kcfg_syncPasswords->isChecked());
-    ReKonfig::setSyncUrl(kcfg_syncUrl->text());
+
+    ReKonfig::setSyncHost(kcfg_syncHost->text());
     ReKonfig::setSyncUser(kcfg_syncUser->text());
     ReKonfig::setSyncPass(kcfg_syncPass->text());
+    ReKonfig::setSyncPath(kcfg_syncPath->text());
+    ReKonfig::setSyncPort(kcfg_syncPort->value());
 
     rApp->syncManager()->firstTimeSync();
 }
@@ -114,4 +122,3 @@ void SyncWidget::syncNow()
 
     // TODO do something in the sync UI...
 }
-

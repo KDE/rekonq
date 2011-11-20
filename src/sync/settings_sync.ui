@@ -63,17 +63,17 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>URL:</string>
+         <string>Server:</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="KLineEdit" name="kcfg_syncUrl"/>
+       <widget class="KLineEdit" name="kcfg_syncHost"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>username:</string>
+         <string>Username:</string>
         </property>
        </widget>
       </item>
@@ -83,12 +83,32 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>password:</string>
+         <string>Password:</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
        <widget class="KLineEdit" name="kcfg_syncPass"/>
+      </item>
+      <item row="3" column="1">
+       <widget class="KLineEdit" name="kcfg_syncPath"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Path:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="KIntNumInput" name="kcfg_syncPort"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Port:</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -131,6 +151,11 @@
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KIntNumInput</class>
+   <extends>QWidget</extends>
+   <header>knuminput.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
