@@ -466,8 +466,8 @@ void Application::removeMainWindow(MainWindow *window)
     // QApplication should quit as soon we have no mainwindow
     // But QtWebkit seems to create windows without Qt::WA_QuitOnClose attribute,
     // making rekonq keep running after last window is closed
-    if ( m_mainWindows.length() == 0 )
-        QCoreApplication::quit ();
+    if (m_mainWindows.length() == 0)
+        QCoreApplication::quit();
 
 }
 
@@ -783,8 +783,9 @@ void Application::createWebAppShortcut()
     QWidget widget;
     wAppWidget.setupUi(&widget);
 
+    const QString title = mainWindow()->currentTab()->view()->title().remove("&");
     wAppWidget.iconLabel->setPixmap(iconManager()->iconForUrl(u).pixmap(32));
-    wAppWidget.titleLabel->setText(h);
+    wAppWidget.titleLabel->setText(title);
     wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());
     wAppWidget.kcfg_createMenuAppShortcut->setChecked(ReKonfig::createMenuAppShortcut());
 
@@ -811,7 +812,7 @@ void Application::createWebAppShortcut()
         if (ReKonfig::createDesktopAppShortcut())
         {
             QString desktop = KGlobalSettings::desktopPath();
-            QFile wAppFile(desktop + QL1C('/') + h + QL1S(".desktop"));
+            QFile wAppFile(desktop + QL1C('/') + title + QL1S(".desktop"));
 
             if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
             {
@@ -829,7 +830,7 @@ void Application::createWebAppShortcut()
         if (ReKonfig::createMenuAppShortcut())
         {
             QString appMenuDir = KStandardDirs::locateLocal("xdgdata-apps", QString());
-            QFile wAppFile(appMenuDir + QL1C('/') + h + QL1S(".desktop"));
+            QFile wAppFile(appMenuDir + QL1C('/') + title + QL1S(".desktop"));
 
             if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
             {
