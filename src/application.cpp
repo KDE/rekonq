@@ -641,7 +641,7 @@ void Application::updateConfiguration()
     case 3: // nothing
         for (int i = 0; i < mainWindow()->mainView()->tabBar()->count(); i++)
         {
-            mainWindow()->mainView()->tabBar()->setTabToolTip(i, "");
+            mainWindow()->mainView()->tabBar()->setTabToolTip(i, QL1S(""));
         }
         break;
 

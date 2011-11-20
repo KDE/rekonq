@@ -596,12 +596,8 @@ void MainView::webViewUrlChanged(const QUrl &url)
 {
     WebView *view = qobject_cast<WebView *>(sender());
     int index = indexOf(view->parentWidget());
-    if (-1 != index)
-    {
-        tabBar()->setTabData(index, url);
-    }
     if (ReKonfig::hoveringTabOption() == 2)
-        tabBar()->setTabToolTip(index, webTab(index)->url().toMimeDataString());
+        tabBar()->setTabToolTip(index, url.toString());
 }
 
 
