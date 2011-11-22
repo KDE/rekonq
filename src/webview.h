@@ -86,6 +86,7 @@ private Q_SLOTS:
     void openLinkInNewWindow();
     void openLinkInNewTab();
     void bookmarkLink();
+    void sendByMail();
 
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
     void slotCopyImageLocation();

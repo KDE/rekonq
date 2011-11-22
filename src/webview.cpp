@@ -52,6 +52,7 @@
 #include <KMenu>
 #include <KStandardAction>
 #include <KStandardDirs>
+#include <KToolInvocation>
 
 // Qt Includes
 #include <QtCore/QFile>
@@ -148,6 +149,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     KAction *inspectAction = new KAction(KIcon("layer-visible-on"), i18n("Inspect Element"), this);
     connect(inspectAction, SIGNAL(triggered(bool)), this, SLOT(inspect()));
 
+    KAction *sendByMailAction = new KAction(this);
+    sendByMailAction->setIcon(KIcon("mail-send"));
+    connect(sendByMailAction, SIGNAL(triggered(bool)), this, SLOT(sendByMail()));
+
     // Choose right context
     int resultHit = 0;
     if (result.linkUrl().isEmpty())
@@ -174,6 +179,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // EMPTY PAGE ACTIONS -------------------------------------------------------------------------
     if (resultHit == WebView::EmptySelection)
     {
+        // send by mail: page url
+        sendByMailAction->setData(page()->currentFrame()->url());
+        sendByMailAction->setText(i18n("Share page url"));
+
         // navigation
         QWebHistory *history = page()->history();
         if (history->canGoBack())
@@ -241,6 +250,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // LINK ACTIONS -------------------------------------------------------------------------------
     if (resultHit & WebView::LinkSelection)
     {
+        // send by mail: link url
+        sendByMailAction->setData(result.linkUrl());
+        sendByMailAction->setText(i18n("Share link"));
+
         a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
         a->setData(result.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
@@ -265,6 +278,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // IMAGE ACTIONS ------------------------------------------------------------------------------
     if (resultHit & WebView::ImageSelection)
     {
+        // send by mail: image url
+        sendByMailAction->setData(result.imageUrl());
+        sendByMailAction->setText(i18n("Share image link"));
+
         // TODO remove copy_this_image action
         a = new KAction(KIcon("view-media-visualization"), i18n("&View Image"), this);
         a->setData(result.imageUrl());
@@ -362,6 +379,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     // DEFAULT ACTIONs (on the bottom) ---------------------------------------------------
     menu.addSeparator();
+    menu.addAction(sendByMailAction);
     menu.addAction(inspectAction);
 
     // finally launch the menu...
@@ -885,4 +903,14 @@ void WebView::dragMoveEvent(QDragMoveEvent *event)
         event->acceptProposedAction();
     else
         KWebView::dragMoveEvent(event);
+}
+
+
+void WebView::sendByMail()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    QString url = a->data().toString();
+    kDebug() << "URL " << url;
+
+    KToolInvocation::invokeMailer("", "", "", "", url);
 }
