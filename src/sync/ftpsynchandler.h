@@ -24,42 +24,61 @@
 * ============================================================ */
 
 
-#ifndef SYNC_MANAGER_H
-#define SYNC_MANAGER_H
+#ifndef FTP_SYNC_HANDLER_H
+#define FTP_SYNC_HANDLER_H
 
-
-// Rekonq Includes
-#include "rekonq_defines.h"
 
 // Local Includes
 #include "synchandler.h"
 
-// Qt Includes
-#include <QObject>
-#include <QWeakPointer>
+// KDE Includes
+#include <KUrl>
+
+// Forward Declarations
+class KJob;
 
 
-class REKONQ_TESTS_EXPORT SyncManager : public QObject
+class FTPSyncHandler : public SyncHandler
 {
     Q_OBJECT
-
-public:
-    SyncManager(QObject *parent = 0);
-    ~SyncManager();
     
-    void resetSyncer();
+public:
+    FTPSyncHandler(QObject *parent = 0);
 
-public Q_SLOTS:
-    void syncBookmarks();
     void syncHistory();
+    void syncBookmarks();
     void syncPasswords();
 
+    void firstTimeSync();
+    
 private Q_SLOTS:
-    void loadSettings();
-    void showSettings();
+    void onBookmarksSyncFinished(KJob *);
+    void onBookmarksStatFinished(KJob *);
+
+    void onHistorySyncFinished(KJob *);
+    void onHistoryStatFinished(KJob *);
+
+    void onPasswordsSyncFinished(KJob *);
+    void onPasswordsStatFinished(KJob *);
+
+Q_SIGNALS:
+    void syncBookmarksFinished(bool);
+    void syncHistoryFinished(bool);
+    void syncPasswordsFinished(bool);
 
 private:
-    QWeakPointer<SyncHandler> _syncImplementation;
+    bool syncRelativeEnabled(bool);
+
+    QUrl _remoteBookmarksUrl;
+    KUrl _localBookmarksUrl;
+
+    QUrl _remoteHistoryUrl;
+    KUrl _localHistoryUrl;
+
+    QUrl _remotePasswordsUrl;
+    KUrl _localPasswordsUrl;
+
+    bool _firstTimeSynced;
 };
 
-#endif // SYNC_MANAGER_H
+#endif // FTP_SYNC_HANDLER_H

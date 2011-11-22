@@ -80,7 +80,7 @@ void SyncWidget::save()
     ReKonfig::setSyncPath(kcfg_syncPath->text());
     ReKonfig::setSyncPort(kcfg_syncPort->value());
 
-    rApp->syncManager()->firstTimeSync();
+    rApp->syncManager()->resetSyncer();
 }
 
 
@@ -118,7 +118,7 @@ void SyncWidget::setSyncLabel(const QDateTime &dt)
 
 void SyncWidget::syncNow()
 {
-    rApp->syncManager()->firstTimeSync();
+    rApp->syncManager()->resetSyncer();
 
     // TODO do something in the sync UI...
 }

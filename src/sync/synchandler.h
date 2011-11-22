@@ -24,42 +24,29 @@
 * ============================================================ */
 
 
-#ifndef SYNC_MANAGER_H
-#define SYNC_MANAGER_H
+#ifndef SYNC_HANDLER_H
+#define SYNC_HANDLER_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "synchandler.h"
-
 // Qt Includes
 #include <QObject>
-#include <QWeakPointer>
 
 
-class REKONQ_TESTS_EXPORT SyncManager : public QObject
+class SyncHandler : public QObject
 {
-    Q_OBJECT
-
-public:
-    SyncManager(QObject *parent = 0);
-    ~SyncManager();
     
-    void resetSyncer();
+public:
+    SyncHandler(QObject *parent = 0) : QObject(parent) {}
+    virtual ~SyncHandler() {}
+    
+    virtual void syncHistory() = 0;
+    virtual void syncBookmarks() = 0;
+    virtual void syncPasswords() = 0;
 
-public Q_SLOTS:
-    void syncBookmarks();
-    void syncHistory();
-    void syncPasswords();
-
-private Q_SLOTS:
-    void loadSettings();
-    void showSettings();
-
-private:
-    QWeakPointer<SyncHandler> _syncImplementation;
+    virtual void firstTimeSync() = 0;
 };
 
-#endif // SYNC_MANAGER_H
+#endif // SYNC_HANDLER_H

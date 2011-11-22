@@ -36,20 +36,26 @@
 #include "bookmarkmanager.h"
 #include "historymanager.h"
 #include "syncwidget.h"
+#include "ftpsynchandler.h"
 
 // KDE Includes
-#include <KStandardDirs>
 #include <klocalizedstring.h>
-
-#include <KIO/Job>
-#include <KIO/JobUiDelegate>
 
 
 SyncManager::SyncManager(QObject *parent)
     : QObject(parent)
-    , _firstTimeSynced(false)
 {
     loadSettings();
+}
+
+
+SyncManager::~SyncManager()
+{
+    if (!_syncImplementation.isNull())
+    {
+        delete _syncImplementation.data();
+        _syncImplementation.clear();
+    }
 }
 
 
@@ -57,7 +63,7 @@ void SyncManager::loadSettings()
 {
     if (ReKonfig::syncEnabled())
     {
-        firstTimeSync();
+        resetSyncer();
 
         // bookmarks
         ReKonfig::syncBookmarks()
@@ -70,6 +76,8 @@ void SyncManager::loadSettings()
         ? connect(rApp->historyManager(), SIGNAL(historySaved()), this, SLOT(syncHistory()))
         : disconnect(rApp->historyManager(), SIGNAL(historySaved()), this, SLOT(syncHistory()))
         ;
+
+        // NOTE: password sync will be called just on save
     }
     else
     {
@@ -98,89 +106,15 @@ void SyncManager::showSettings()
 }
 
 
-void SyncManager::firstTimeSync()
+void SyncManager::resetSyncer()
 {
-    // Bookmarks
-    if (ReKonfig::syncBookmarks())
+    if (_syncImplementation.isNull())
     {
-        _remoteBookmarksUrl = QUrl();
-        _remoteBookmarksUrl.setHost(ReKonfig::syncHost());
-        _remoteBookmarksUrl.setScheme("ftp");
-        _remoteBookmarksUrl.setUserName(ReKonfig::syncUser());
-        _remoteBookmarksUrl.setPassword(ReKonfig::syncPass());
-        _remoteBookmarksUrl.setPort(ReKonfig::syncPort());
-        _remoteBookmarksUrl.setPath(ReKonfig::syncPath() + QL1S("/bookmarks.xml"));
-        kDebug() << "REMOTE BK URL: " << _remoteBookmarksUrl;
-
-        const QString bookmarksFilePath = KStandardDirs::locateLocal("data", QL1S("konqueror/bookmarks.xml"));
-        _localBookmarksUrl = KUrl(bookmarksFilePath);
-        kDebug() << "LOCAL BK URL: " << _localBookmarksUrl;
-
-        KIO::StatJob *job = KIO::stat(_remoteBookmarksUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksStatFinished(KJob *)));
-
-        _firstTimeSynced = true;
+        // actually we have just FTP handler...
+        _syncImplementation = new FTPSyncHandler(this);
     }
 
-    // History
-    if (ReKonfig::syncHistory())
-    {
-        _remoteHistoryUrl = QUrl();
-        _remoteHistoryUrl.setHost(ReKonfig::syncHost());
-        _remoteHistoryUrl.setScheme("ftp");
-        _remoteHistoryUrl.setUserName(ReKonfig::syncUser());
-        _remoteHistoryUrl.setPassword(ReKonfig::syncPass());
-        _remoteHistoryUrl.setPort(ReKonfig::syncPort());
-        _remoteHistoryUrl.setPath(ReKonfig::syncPath() + QL1S("/history"));
-        kDebug() << "REMOTE HISTORY URL: " << _remoteHistoryUrl;
-
-        const QString historyFilePath = KStandardDirs::locateLocal("appdata", "history");
-        _localHistoryUrl = KUrl(historyFilePath);
-        kDebug() << "LOCAL HISTORY URL: " << _localHistoryUrl;
-
-        KIO::StatJob *job = KIO::stat(_remoteHistoryUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistoryStatFinished(KJob *)));
-
-        _firstTimeSynced = true;
-    }
-
-    // Passwords
-    if (ReKonfig::syncPasswords())
-    {
-        _remotePasswordsUrl = QUrl();
-        _remotePasswordsUrl.setHost(ReKonfig::syncHost());
-        _remotePasswordsUrl.setScheme("ftp");
-        _remotePasswordsUrl.setUserName(ReKonfig::syncUser());
-        _remotePasswordsUrl.setPassword(ReKonfig::syncPass());
-        _remotePasswordsUrl.setPort(ReKonfig::syncPort());
-        _remotePasswordsUrl.setPath(ReKonfig::syncPath() + QL1S("/kdewallet.kwl"));
-        kDebug() << "REMOTE PSWD URL: " << _remotePasswordsUrl;
-
-        const QString passwordsFilePath = KStandardDirs::locateLocal("data", QL1S("kwallet/kdewallet.kwl"));
-        _localPasswordsUrl = KUrl(passwordsFilePath);
-        kDebug() << "LOCAL PSWD URL: " << _localPasswordsUrl;
-
-        KIO::StatJob *job = KIO::stat(_remotePasswordsUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsStatFinished(KJob *)));
-
-        _firstTimeSynced = true;
-    }
-}
-
-
-bool SyncManager::syncRelativeEnabled(bool check)
-{
-    if (!ReKonfig::syncEnabled())
-        return false;
-
-    if (!_firstTimeSynced)
-    {
-        kDebug() << "need to sync for the first time...";
-        firstTimeSync();
-        return false;
-    }
-
-    return check;
+    _syncImplementation.data()->firstTimeSync();
 }
 
 
@@ -189,131 +123,17 @@ bool SyncManager::syncRelativeEnabled(bool check)
 
 void SyncManager::syncBookmarks()
 {
-    kDebug() << "syncing now...";
-
-    if (!syncRelativeEnabled(ReKonfig::syncBookmarks()))
-        return;
-
-    KIO::Job *job = KIO::file_copy(_localBookmarksUrl, _remoteBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-    connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
+    _syncImplementation.data()->syncBookmarks();
 }
-
-
-void SyncManager::onBookmarksStatFinished(KJob *job)
-{
-    if (job->error())
-    {
-        KIO::Job *job = KIO::file_copy(_localBookmarksUrl, _remoteBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
-    }
-    else
-    {
-        KIO::Job *job = KIO::file_copy(_remoteBookmarksUrl, _localBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
-    }
-}
-
-
-void SyncManager::onBookmarksSyncFinished(KJob *job)
-{
-    if (job->error())
-    {
-        job->uiDelegate()->showErrorMessage();
-        emit syncBookmarksFinished(false);
-        return;
-    }
-
-    QDateTime now = QDateTime::currentDateTime();
-    ReKonfig::setLastSyncDateTime(now);
-    emit syncBookmarksFinished(true);
-}
-
-
-// ---------------------------------------------------------------------------------------
 
 
 void SyncManager::syncHistory()
 {
-    kDebug() << "syncing now...";
-
-    if (!syncRelativeEnabled(ReKonfig::syncHistory()))
-        return;
-
-    KIO::Job *job = KIO::file_copy(_localHistoryUrl, _remoteHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-    connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
+    _syncImplementation.data()->syncHistory();
 }
-
-
-void SyncManager::onHistoryStatFinished(KJob *job)
-{
-    if (job->error())
-    {
-        KIO::Job *job = KIO::file_copy(_localHistoryUrl, _remoteHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
-    }
-    else
-    {
-        KIO::Job *job = KIO::file_copy(_remoteHistoryUrl, _localHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
-    }
-}
-
-
-void SyncManager::onHistorySyncFinished(KJob *job)
-{
-    if (job->error())
-    {
-        job->uiDelegate()->showErrorMessage();
-        emit syncHistoryFinished(false);
-        return;
-    }
-
-    QDateTime now = QDateTime::currentDateTime();
-    ReKonfig::setLastSyncDateTime(now);
-    emit syncHistoryFinished(true);
-}
-
-
-// ---------------------------------------------------------------------------------------
 
 
 void SyncManager::syncPasswords()
 {
-    kDebug() << "syncing now...";
-
-    if (!syncRelativeEnabled(ReKonfig::syncPasswords()))
-        return;
-
-    KIO::Job *job = KIO::file_copy(_localPasswordsUrl, _remotePasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-    connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
-}
-
-
-void SyncManager::onPasswordsStatFinished(KJob *job)
-{
-    if (job->error())
-    {
-        KIO::Job *job = KIO::file_copy(_localPasswordsUrl, _remotePasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
-    }
-    else
-    {
-        KIO::Job *job = KIO::file_copy(_remotePasswordsUrl, _localPasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
-    }
-}
-
-
-void SyncManager::onPasswordsSyncFinished(KJob *job)
-{
-    if (job->error())
-    {
-        job->uiDelegate()->showErrorMessage();
-        emit syncPasswordsFinished(false);
-        return;
-    }
-
-    QDateTime now = QDateTime::currentDateTime();
-    ReKonfig::setLastSyncDateTime(now);
-    emit syncPasswordsFinished(true);
+    _syncImplementation.data()->syncPasswords();
 }

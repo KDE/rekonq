@@ -95,6 +95,7 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     sync/syncmanager.cpp
     sync/syncwidget.cpp
+    sync/ftpsynchandler.cpp
 )
 
 
