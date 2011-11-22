@@ -21,11 +21,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
 # ==================================================================================
 
 
-FIND_PACKAGE(Qt4 4.7.0 COMPONENTS QtCore QtGui QtNetwork QtWebKit REQUIRED)
+FIND_PACKAGE(Qt4 4.7.0 COMPONENTS QtCore QtGui QtNetwork REQUIRED)
 
-# Ensure we have QtWebKit >=2.2.0
+# Ensure we have QtWebKit >= 2.2.0
 FIND_PACKAGE(PkgConfig REQUIRED)
-PKG_CHECK_MODULES(PC_QTWEBKIT QUIET QtWebKit>=4.9.0)
+PKG_CHECK_MODULES(PC_QTWEBKIT REQUIRED QtWebKit>=4.8.0)
 IF(NOT PC_QTWEBKIT_FOUND)
   MESSAGE(FATAL_ERROR "QtWebkit 2.2.0 is required for this version of Rekonq")
 ELSE()
