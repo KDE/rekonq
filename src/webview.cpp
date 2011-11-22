@@ -137,7 +137,6 @@ WebPage *WebView::page()
 }
 
 
-// TODO: refactor me!
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
@@ -149,152 +148,32 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     KAction *inspectAction = new KAction(KIcon("layer-visible-on"), i18n("Inspect Element"), this);
     connect(inspectAction, SIGNAL(triggered(bool)), this, SLOT(inspect()));
 
-    // is a link?
-    if (!result.linkUrl().isEmpty())
-    {
-        // link actions
-        a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
-        a->setData(result.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
-        menu.addAction(a);
+    // Choose right context
+    int resultHit = 0;
+    if (result.linkUrl().isEmpty())
+        resultHit = WebView::EmptySelection;
+    else
+        resultHit = WebView::LinkSelection;
 
-        a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), this);
-        a->setData(result.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
-        menu.addAction(a);
+    if (!result.pixmap().isNull())
+        resultHit |= WebView::ImageSelection;
 
-        a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark this Link"), this);
-        a->setData(result.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
-        menu.addAction(a);
-
-        menu.addSeparator();
-        menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
-        menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
-        menu.addSeparator();
-    }
-
-    // is content editable && selected? Add CUT
-    if (result.isContentEditable() && result.isContentSelected())
-    {
-        // actions for text selected in field
-        menu.addAction(pageAction(KWebPage::Cut));
-    }
-
-    // is content selected) Add COPY
     if (result.isContentSelected())
-    {
-        a = pageAction(KWebPage::Copy);
-        if (!result.linkUrl().isEmpty())
-            a->setText(i18n("Copy Text")); //for link
-        else
-            a->setText(i18n("Copy"));
-        menu.addAction(a);
-        if (selectedText().contains('.') && selectedText().indexOf('.') < selectedText().length() && !selectedText().trimmed().contains(" "))
-        {
-            QString text = selectedText();
-            text = text.trimmed();
-            KUrl urlLikeText(text);
-            if (urlLikeText.isValid())
-            {
-                QString truncatedUrl = text;
-                const int maxTextSize = 18;
-                if (truncatedUrl.length() > maxTextSize)
-                {
-                    const int truncateSize = 15;
-                    truncatedUrl.truncate(truncateSize);
-                    truncatedUrl += QL1S("...");
-                }
-                //open selected text url in a new tab
-                QAction * const openInNewTabAction = new KAction(KIcon("tab-new"), i18n("Open '%1' in New Tab", truncatedUrl), this);
-                openInNewTabAction->setData(QUrl(urlLikeText));
-                connect(openInNewTabAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
-                menu.addAction(openInNewTabAction);
-                //open selected text url in a new window
-                QAction * const openInNewWindowAction = new KAction(KIcon("window-new"), i18n("Open '%1' in New Window", truncatedUrl), this);
-                openInNewWindowAction->setData(QUrl(urlLikeText));
-                connect(openInNewWindowAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
-                menu.addAction(openInNewWindowAction);
-                menu.addSeparator();
-            }
-        }
-    }
+        resultHit = WebView::TextSelection;
+
+    // --------------------------------------------------------------------------------------------
+    // Ok, let's start filling up the menu...
 
     // is content editable? Add PASTE
     if (result.isContentEditable())
     {
         menu.addAction(pageAction(KWebPage::Paste));
+        menu.addSeparator();
     }
 
-    // is content selected? Add SEARCH actions
-    if (result.isContentSelected())
+    // EMPTY PAGE ACTIONS -------------------------------------------------------------------------
+    if (resultHit == WebView::EmptySelection)
     {
-        //Default SearchEngine
-        KService::Ptr defaultEngine = SearchEngine::defaultEngine();
-        if (defaultEngine) // check if a default engine is set
-        {
-            a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1", defaultEngine->name()), this);
-            a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
-            a->setData(defaultEngine->entryPath());
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
-            menu.addAction(a);
-        }
-
-        //All favourite ones
-        KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18n("Search with"), this);
-
-        foreach(const KService::Ptr & engine, SearchEngine::favorites())
-        {
-            a = new KAction(engine->name(), this);
-            a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(engine, "")));
-            a->setData(engine->entryPath());
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
-            searchMenu->addAction(a);
-        }
-
-        a = new KAction(KIcon("edit-find"), i18n("On Current Page"), this);
-        connect(a, SIGNAL(triggered()), rApp->mainWindow(), SLOT(findSelectedText()));
-        searchMenu->addAction(a);
-
-        if (!searchMenu->menu()->isEmpty())
-        {
-            menu.addAction(searchMenu);
-        }
-
-        menu.addSeparator();
-
-        menu.addAction(inspectAction);
-        // TODO Add translate, show translation
-    }
-
-    // is an image?
-    if (!result.pixmap().isNull())
-    {
-        menu.addSeparator();
-
-        // TODO remove copy_this_image action
-        a = new KAction(KIcon("view-media-visualization"), i18n("&View Image"), this);
-        a->setData(result.imageUrl());
-        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
-        menu.addAction(a);
-
-        menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
-        menu.addAction(pageAction(KWebPage::CopyImageToClipboard));
-
-        a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), this);
-        a->setData(result.imageUrl());
-        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
-        menu.addAction(a);
-
-        menu.addSeparator();
-
-        menu.addAction(inspectAction);
-    }
-
-    // page actions
-    if (!result.isContentSelected() && result.linkUrl().isEmpty())
-    {
-
         // navigation
         QWebHistory *history = page()->history();
         if (history->canGoBack())
@@ -359,6 +238,133 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         }
     }
 
+    // LINK ACTIONS -------------------------------------------------------------------------------
+    if (resultHit & WebView::LinkSelection)
+    {
+        a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
+        a->setData(result.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
+        menu.addAction(a);
+
+        a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), this);
+        a->setData(result.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
+        menu.addAction(a);
+
+        a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark this Link"), this);
+        a->setData(result.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
+        menu.addAction(a);
+
+        menu.addSeparator();
+        menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
+        menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
+        menu.addSeparator();
+    }
+
+    // IMAGE ACTIONS ------------------------------------------------------------------------------
+    if (resultHit & WebView::ImageSelection)
+    {
+        // TODO remove copy_this_image action
+        a = new KAction(KIcon("view-media-visualization"), i18n("&View Image"), this);
+        a->setData(result.imageUrl());
+        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
+        menu.addAction(a);
+
+        menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
+        menu.addAction(pageAction(KWebPage::CopyImageToClipboard));
+
+        a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), this);
+        a->setData(result.imageUrl());
+        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
+        menu.addAction(a);
+    }
+
+    // ACTIONS FOR TEXT SELECTION -----------------------------------------------------------------
+    if (resultHit & WebView::TextSelection)
+    {
+        if (result.isContentEditable())
+        {
+            // actions for text selected in field
+            menu.addAction(pageAction(KWebPage::Cut));
+        }
+
+        a = pageAction(KWebPage::Copy);
+        if (!result.linkUrl().isEmpty())
+            a->setText(i18n("Copy Text")); //for link
+        else
+            a->setText(i18n("Copy"));
+        menu.addAction(a);
+
+        if (selectedText().contains('.') && selectedText().indexOf('.') < selectedText().length()
+                && !selectedText().trimmed().contains(" ")
+           )
+        {
+            QString text = selectedText();
+            text = text.trimmed();
+            KUrl urlLikeText(text);
+            if (urlLikeText.isValid())
+            {
+                QString truncatedUrl = text;
+                const int maxTextSize = 18;
+                if (truncatedUrl.length() > maxTextSize)
+                {
+                    const int truncateSize = 15;
+                    truncatedUrl.truncate(truncateSize);
+                    truncatedUrl += QL1S("...");
+                }
+                //open selected text url in a new tab
+                QAction * const openInNewTabAction = new KAction(KIcon("tab-new"), i18n("Open '%1' in New Tab", truncatedUrl), this);
+                openInNewTabAction->setData(QUrl(urlLikeText));
+                connect(openInNewTabAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
+                menu.addAction(openInNewTabAction);
+                //open selected text url in a new window
+                QAction * const openInNewWindowAction = new KAction(KIcon("window-new"), i18n("Open '%1' in New Window", truncatedUrl), this);
+                openInNewWindowAction->setData(QUrl(urlLikeText));
+                connect(openInNewWindowAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
+                menu.addAction(openInNewWindowAction);
+                menu.addSeparator();
+            }
+        }
+
+        //Default SearchEngine
+        KService::Ptr defaultEngine = SearchEngine::defaultEngine();
+        if (defaultEngine) // check if a default engine is set
+        {
+            a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1", defaultEngine->name()), this);
+            a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
+            a->setData(defaultEngine->entryPath());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
+            menu.addAction(a);
+        }
+
+        //All favourite ones
+        KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18n("Search with"), this);
+
+        foreach(const KService::Ptr & engine, SearchEngine::favorites())
+        {
+            a = new KAction(engine->name(), this);
+            a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(engine, "")));
+            a->setData(engine->entryPath());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
+            searchMenu->addAction(a);
+        }
+
+        a = new KAction(KIcon("edit-find"), i18n("On Current Page"), this);
+        connect(a, SIGNAL(triggered()), rApp->mainWindow(), SLOT(findSelectedText()));
+        searchMenu->addAction(a);
+
+        if (!searchMenu->menu()->isEmpty())
+        {
+            menu.addAction(searchMenu);
+        }
+    }
+
+    // DEFAULT ACTIONs (on the bottom) ---------------------------------------------------
+    menu.addSeparator();
+    menu.addAction(inspectAction);
+
+    // finally launch the menu...
     menu.exec(mapToGlobal(event->pos()));
 }
 

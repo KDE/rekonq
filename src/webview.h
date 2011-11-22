@@ -47,6 +47,15 @@ class REKONQ_TESTS_EXPORT WebView : public KWebView
     Q_OBJECT
 
 public:
+
+    enum ContextType
+    {
+        EmptySelection  = 0x00000000,
+        LinkSelection   = 0x00000001,
+        ImageSelection  = 0x00000010,
+        TextSelection   = 0x00000100
+    };
+
     explicit WebView(QWidget *parent);
     ~WebView();
 
