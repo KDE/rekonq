@@ -176,11 +176,6 @@ private Q_SLOTS:
     void openActionUrl(QAction *action);
     void openActionTab(QAction *action);
 
-    // user agent
-    void setUserAgent();
-    void populateUserAgentMenu();
-    void showUserAgentSettings();
-
     void enableNetworkAnalysis(bool);
     void setEditable(bool);
 
@@ -203,8 +198,6 @@ private:
     KMenu *m_historyForwardMenu;
 
     KMenu *m_tabListMenu;
-
-    KMenu *m_userAgentMenu;
 
     BookmarkToolBar *m_bookmarksBar;
 

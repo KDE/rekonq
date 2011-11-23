@@ -52,6 +52,7 @@ class IconManager;
 class MainWindow;
 class OpenSearchManager;
 class SessionManager;
+class UserAgentManager;
 
 class KAction;
 
@@ -94,6 +95,7 @@ public:
     OpenSearchManager *opensearchManager();
     IconManager *iconManager();
     DownloadManager *downloadManager();
+    UserAgentManager *userAgentManager();
 
     KAction *privateBrowsingAction()
     {
@@ -139,6 +141,7 @@ private:
     QWeakPointer<OpenSearchManager> m_opensearchManager;
     QWeakPointer<IconManager> m_iconManager;
     QWeakPointer<DownloadManager> m_downloadManager;
+    QWeakPointer<UserAgentManager> m_userAgentManager;
 
     MainWindowList m_mainWindows;
 

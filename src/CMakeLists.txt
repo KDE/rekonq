@@ -90,6 +90,7 @@ SET( rekonq_KDEINIT_SRCS
     opensearch/suggestionparser.cpp
     #----------------------------------------
     useragent/useragentinfo.cpp
+    useragent/useragentmanager.cpp
     useragent/useragentwidget.cpp
 )
 

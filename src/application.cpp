@@ -50,6 +50,7 @@
 #include "stackedurlbar.h"
 #include "tabbar.h"
 #include "urlbar.h"
+#include "useragentmanager.h"
 #include "webtab.h"
 
 // KDE Includes
@@ -140,6 +141,13 @@ Application::~Application()
         kDebug() << "deleting adblock manager";
         delete m_adblockManager.data();
         m_adblockManager.clear();
+    }
+
+    if (!m_userAgentManager.isNull())
+    {
+        kDebug() << "deleting user agent manager";
+        delete m_userAgentManager.data();
+        m_userAgentManager.clear();
     }
 
     // TODO:
@@ -382,6 +390,16 @@ DownloadManager *Application::downloadManager()
         m_downloadManager = new DownloadManager(instance());
     }
     return m_downloadManager.data();
+}
+
+
+UserAgentManager *Application::userAgentManager()
+{
+    if (m_userAgentManager.isNull())
+    {
+        m_userAgentManager = new UserAgentManager(instance());
+    }
+    return m_userAgentManager.data();
 }
 
 
