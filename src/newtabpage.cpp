@@ -110,10 +110,16 @@ void NewTabPage::generate(const KUrl &url)
             return;
         }
     }
-    if (url.fileName() == QL1S("clear"))
+    if (url == KUrl("about:downloads/clear"))
     {
-        rApp->mainWindow()->actionByName("clear_private_data")->trigger();
-        generate(QString(QL1S("about:") + url.directory()));
+        rApp->downloadManager()->clearDownloadsHistory();
+        generate(KUrl("about:downloads"));
+        return;
+    }
+    if (url == KUrl("about:history/clear"))
+    {
+        rApp->historyManager()->clear();
+        generate(KUrl("about:history"));
         return;
     }
     if (url == KUrl("about:bookmarks/edit"))
@@ -394,11 +400,11 @@ void NewTabPage::historyPage()
 {
     m_root.addClass(QL1S("history"));
 
-    const QWebElement clearData = createLinkItem(i18n("Clear Private Data"),
-                                  QL1S("about:history/clear"),
-                                  QL1S("edit-clear"),
-                                  KIconLoader::Toolbar);
-    m_root.document().findFirst(QL1S("#actions")).appendInside(clearData);
+    const QWebElement clearHistory = createLinkItem(i18n("Clear History"),
+                                     QL1S("about:history/clear"),
+                                     QL1S("edit-clear"),
+                                     KIconLoader::Toolbar);
+    m_root.document().findFirst(QL1S("#actions")).appendInside(clearHistory);
 
     HistoryTreeModel *model = rApp->historyManager()->historyTreeModel();
 
@@ -563,11 +569,11 @@ void NewTabPage::downloadsPage()
 {
     m_root.addClass(QL1S("downloads"));
 
-    const QWebElement clearData = createLinkItem(i18n("Clear Private Data"),
-                                  QL1S("about:downloads/clear"),
-                                  QL1S("edit-clear"),
-                                  KIconLoader::Toolbar);
-    m_root.document().findFirst(QL1S("#actions")).appendInside(clearData);
+    const QWebElement clearDownloads = createLinkItem(i18n("Clear Downloads"),
+                                       QL1S("about:downloads/clear"),
+                                       QL1S("edit-clear"),
+                                       KIconLoader::Toolbar);
+    m_root.document().findFirst(QL1S("#actions")).appendInside(clearDownloads);
 
     DownloadList list = rApp->downloadManager()->downloads();
 
