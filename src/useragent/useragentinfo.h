@@ -46,6 +46,12 @@ public:
     UserAgentInfo();
 
     /**
+     * Lists all available providers
+     *
+     */
+    KService::List availableProviders() const;
+
+    /**
      * Lists all available User Agents
      *
      * @returns the list of the UA descriptions

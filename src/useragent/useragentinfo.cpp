@@ -46,18 +46,13 @@
 
 UserAgentInfo::UserAgentInfo()
 {
-    /*    KService::List m_providers = KServiceTypeTrader::self()->query("UserAgentStrings");*/
+    m_providers = KServiceTypeTrader::self()->query("UserAgentStrings");
+}
 
-    // NOTE: limiting User Agent Numbers
-    m_providers << KService::serviceByDesktopName("firefox36oncurrent");
-    m_providers << KService::serviceByDesktopName("ie70onwinnt51");
-    m_providers << KService::serviceByDesktopName("ie60oncurrent");
-    m_providers << KService::serviceByDesktopName("chrome50oncurrent");
-    m_providers << KService::serviceByDesktopName("safari40");
-    m_providers << KService::serviceByDesktopName("op962oncurrent");
-    m_providers << KService::serviceByDesktopName("ns71oncurrent");
-    m_providers << KService::serviceByDesktopName("android10");
-    m_providers << KService::serviceByDesktopName("googlebot");
+
+KService::List UserAgentInfo::availableProviders() const
+{
+    return m_providers;
 }
 
 

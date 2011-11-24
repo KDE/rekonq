@@ -53,8 +53,8 @@ Q_SIGNALS:
     void reloadTab();
 
 private:
-    KAction *_uaSettingsAction;
-    WebTab *_uaTab;
+    KAction *m_uaSettingsAction;
+    WebTab *m_uaTab;
 };
 
 #endif  // USER_AGENT_MANAGER_H

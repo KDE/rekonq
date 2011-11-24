@@ -42,17 +42,17 @@
 
 UserAgentManager::UserAgentManager(QObject *parent)
     : QObject(parent)
-    , _uaSettingsAction(0)
-    , _uaTab(0)
+    , m_uaSettingsAction(0)
+    , m_uaTab(0)
 {
-    _uaSettingsAction = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
-    connect(_uaSettingsAction, SIGNAL(triggered(bool)), this, SLOT(showSettings()));
+    m_uaSettingsAction = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
+    connect(m_uaSettingsAction, SIGNAL(triggered(bool)), this, SLOT(showSettings()));
 }
 
 
 void UserAgentManager::showSettings()
 {
-    QPointer<KDialog> dialog = new KDialog(_uaTab);
+    QPointer<KDialog> dialog = new KDialog(m_uaTab);
     dialog->setCaption(i18nc("@title:window", "User Agent Settings"));
     dialog->setButtons(KDialog::Ok);
 
@@ -66,11 +66,11 @@ void UserAgentManager::showSettings()
 
 void UserAgentManager::populateUAMenuForTabUrl(KMenu *uaMenu, WebTab *uaTab)
 {
-    if (_uaTab)
-        disconnect(this, SIGNAL(reloadTab()), _uaTab->view(), SLOT(reload()));
+    if (m_uaTab)
+        disconnect(this, SIGNAL(reloadTab()), m_uaTab->view(), SLOT(reload()));
 
-    _uaTab = uaTab;
-    connect(this, SIGNAL(reloadTab()), _uaTab->view(), SLOT(reload()));
+    m_uaTab = uaTab;
+    connect(this, SIGNAL(reloadTab()), m_uaTab->view(), SLOT(reload()));
 
     bool defaultUA = true;
 
@@ -87,9 +87,29 @@ void UserAgentManager::populateUAMenuForTabUrl(KMenu *uaMenu, WebTab *uaTab)
     uaMenu->addAction(defaultAction);
     uaMenu->addSeparator();
 
+    // Main Browsers Menus
+    KMenu *ffMenu = new KMenu(i18n("Firefox"), uaMenu);
+    uaMenu->addMenu(ffMenu);
+
+    KMenu *ieMenu = new KMenu(i18n("Internet Explorer"), uaMenu);
+    uaMenu->addMenu(ieMenu);
+
+    KMenu *nsMenu = new KMenu(i18n("Netscape"), uaMenu);
+    uaMenu->addMenu(nsMenu);
+
+    KMenu *opMenu = new KMenu(i18n("Opera"), uaMenu);
+    uaMenu->addMenu(opMenu);
+
+    KMenu *sfMenu = new KMenu(i18n("Safari"), uaMenu);
+    uaMenu->addMenu(sfMenu);
+
+    KMenu *otMenu = new KMenu(i18n("Other"), uaMenu);
+    uaMenu->addMenu(otMenu);
+
     UserAgentInfo uaInfo;
     QStringList UAlist = uaInfo.availableUserAgents();
-    int uaIndex = uaInfo.uaIndexForHost(_uaTab->url().host());
+    const KService::List providers = uaInfo.availableProviders();
+    int uaIndex = uaInfo.uaIndexForHost(m_uaTab->url().host());
 
     for (int i = 0; i < UAlist.count(); ++i)
     {
@@ -105,12 +125,37 @@ void UserAgentManager::populateUAMenuForTabUrl(KMenu *uaMenu, WebTab *uaTab)
             a->setChecked(true);
             defaultUA = false;
         }
-        uaMenu->addAction(a);
+
+        QString tag = providers.at(i)->property("X-KDE-UA-TAG").toString();
+        if (tag == QL1S("FF"))
+        {
+            ffMenu->addAction(a);
+        }
+        else if (tag == QL1S("IE"))
+        {
+            ieMenu->addAction(a);
+        }
+        else if (tag == QL1S("NN"))
+        {
+            nsMenu->addAction(a);
+        }
+        else if (tag == QL1S("OPR"))
+        {
+            opMenu->addAction(a);
+        }
+        else if (tag == QL1S("SAF"))
+        {
+            sfMenu->addAction(a);
+        }
+        else    // OTHERs
+        {
+            otMenu->addAction(a);
+        }
     }
     defaultAction->setChecked(defaultUA);
 
     uaMenu->addSeparator();
-    uaMenu->addAction(_uaSettingsAction);
+    uaMenu->addAction(m_uaSettingsAction);
 }
 
 
@@ -118,10 +163,9 @@ void UserAgentManager::setUserAgent()
 {
     QAction *sender = static_cast<QAction *>(QObject::sender());
 
-    QString desc = sender->text();
     int uaIndex = sender->data().toInt();
 
     UserAgentInfo uaInfo;
-    uaInfo.setUserAgentForHost(uaIndex, _uaTab->url().host());
+    uaInfo.setUserAgentForHost(uaIndex, m_uaTab->url().host());
     emit reloadTab();
 }
