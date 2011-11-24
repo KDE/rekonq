@@ -30,8 +30,11 @@
 
 #include <QObject>
 
+class WebTab;
+
 class KAction;
 class KMenu;
+
 
 class UserAgentManager : public QObject
 {
@@ -39,18 +42,19 @@ class UserAgentManager : public QObject
 
 public:
     UserAgentManager(QObject *parent = 0);
-    ~UserAgentManager();
 
-    KMenu *userAgentMenu();
+    void populateUAMenuForTabUrl(KMenu *, WebTab *);
 
 private Q_SLOTS:
     void showSettings();
     void setUserAgent();
-    void populateUserAgentMenu();
+
+Q_SIGNALS:
+    void reloadTab();
 
 private:
     KAction *_uaSettingsAction;
-    KMenu *_uaMenu;
+    WebTab *_uaTab;
 };
 
 #endif  // USER_AGENT_MANAGER_H

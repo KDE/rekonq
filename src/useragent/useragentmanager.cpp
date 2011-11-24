@@ -31,9 +31,8 @@
 // Local Includes
 #include "useragentinfo.h"
 #include "useragentwidget.h"
-#include "application.h"
-#include "mainwindow.h"
 #include "webtab.h"
+#include "webview.h"
 
 // KDE Includes
 #include <KAction>
@@ -44,30 +43,16 @@
 UserAgentManager::UserAgentManager(QObject *parent)
     : QObject(parent)
     , _uaSettingsAction(0)
-    , _uaMenu(new KMenu)
+    , _uaTab(0)
 {
     _uaSettingsAction = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
     connect(_uaSettingsAction, SIGNAL(triggered(bool)), this, SLOT(showSettings()));
-
-    connect(_uaMenu, SIGNAL(aboutToShow()), this, SLOT(populateUserAgentMenu()));
-}
-
-
-UserAgentManager::~UserAgentManager()
-{
-    delete _uaMenu;
-}
-
-
-KMenu *UserAgentManager::userAgentMenu()
-{
-    return _uaMenu;
 }
 
 
 void UserAgentManager::showSettings()
 {
-    QPointer<KDialog> dialog = new KDialog;
+    QPointer<KDialog> dialog = new KDialog(_uaTab);
     dialog->setCaption(i18nc("@title:window", "User Agent Settings"));
     dialog->setButtons(KDialog::Ok);
 
@@ -79,33 +64,38 @@ void UserAgentManager::showSettings()
 }
 
 
-void UserAgentManager::populateUserAgentMenu()
+void UserAgentManager::populateUAMenuForTabUrl(KMenu *uaMenu, WebTab *uaTab)
 {
+    if (_uaTab)
+        disconnect(this, SIGNAL(reloadTab()), _uaTab->view(), SLOT(reload()));
+
+    _uaTab = uaTab;
+    connect(this, SIGNAL(reloadTab()), _uaTab->view(), SLOT(reload()));
+
     bool defaultUA = true;
-    KUrl url = rApp->mainWindow()->currentTab()->url();
 
     QAction *a, *defaultAction;
 
     // just to be sure...
-    _uaMenu->clear();
+    uaMenu->clear();
 
-    defaultAction = new QAction(i18nc("Default rekonq user agent", "Default"), this);
+    defaultAction = new QAction(i18nc("Default rekonq user agent", "Default"), uaMenu);
     defaultAction->setData(-1);
     defaultAction->setCheckable(true);
     connect(defaultAction, SIGNAL(triggered(bool)), this, SLOT(setUserAgent()));
 
-    _uaMenu->addAction(defaultAction);
-    _uaMenu->addSeparator();
+    uaMenu->addAction(defaultAction);
+    uaMenu->addSeparator();
 
     UserAgentInfo uaInfo;
     QStringList UAlist = uaInfo.availableUserAgents();
-    int uaIndex = uaInfo.uaIndexForHost(url.host());
+    int uaIndex = uaInfo.uaIndexForHost(_uaTab->url().host());
 
     for (int i = 0; i < UAlist.count(); ++i)
     {
         QString uaDesc = UAlist.at(i);
 
-        a = new QAction(uaDesc, this);
+        a = new QAction(uaDesc, uaMenu);
         a->setData(i);
         a->setCheckable(true);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(setUserAgent()));
@@ -115,12 +105,12 @@ void UserAgentManager::populateUserAgentMenu()
             a->setChecked(true);
             defaultUA = false;
         }
-        _uaMenu->addAction(a);
+        uaMenu->addAction(a);
     }
     defaultAction->setChecked(defaultUA);
 
-    _uaMenu->addSeparator();
-    _uaMenu->addAction(_uaSettingsAction);
+    uaMenu->addSeparator();
+    uaMenu->addAction(_uaSettingsAction);
 }
 
 
@@ -131,8 +121,7 @@ void UserAgentManager::setUserAgent()
     QString desc = sender->text();
     int uaIndex = sender->data().toInt();
 
-    KUrl url = rApp->mainWindow()->currentTab()->url();
     UserAgentInfo uaInfo;
-    uaInfo.setUserAgentForHost(uaIndex, url.host());
-    rApp->mainWindow()->currentTab()->page()->triggerAction(QWebPage::Reload);
+    uaInfo.setUserAgentForHost(uaIndex, _uaTab->url().host());
+    emit reloadTab();
 }

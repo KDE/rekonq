@@ -502,7 +502,9 @@ void MainWindow::setupActions()
     // User Agent
     a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
     actionCollection()->addAction(QL1S("useragent"), a);
-    a->setMenu(rApp->userAgentManager()->userAgentMenu());
+    KMenu *uaMenu = new KMenu(this);
+    a->setMenu(uaMenu);
+    connect(uaMenu, SIGNAL(aboutToShow()), this, SLOT(populateUserAgentMenu()));
 
     // Editable Page
     a = new KAction(KIcon("document-edit"), i18n("Set Editable"), this);
@@ -1496,4 +1498,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
     emit windowClosing();
     kDebug() << "CLOSING WINDOW...";
     KXmlGuiWindow::closeEvent(event);
+}
+
+
+void MainWindow::populateUserAgentMenu()
+{
+    KMenu *uaMenu = static_cast<KMenu *>(QObject::sender());
+    rApp->userAgentManager()->populateUAMenuForTabUrl(uaMenu, currentTab());
 }

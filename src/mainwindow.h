@@ -176,6 +176,8 @@ private Q_SLOTS:
     void openActionUrl(QAction *action);
     void openActionTab(QAction *action);
 
+    void populateUserAgentMenu();
+
     void enableNetworkAnalysis(bool);
     void setEditable(bool);
 
