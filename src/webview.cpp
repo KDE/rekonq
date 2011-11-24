@@ -197,48 +197,34 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addAction(mainwindow->actionByName("view_redisplay"));
 
-        if (result.pixmap().isNull())
+        menu.addSeparator();
+
+        //Frame
+        KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
+        frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
+
+        a = new KAction(KIcon("document-print-frame"), i18n("Print Frame"), this);
+        connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
+        frameMenu->addAction(a);
+
+        menu.addAction(frameMenu);
+
+        menu.addSeparator();
+
+        // Page Actions
+        menu.addAction(pageAction(KWebPage::SelectAll));
+
+        menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
+
+        if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
         {
-            menu.addSeparator();
-
-            if (!ReKonfig::alwaysShowTabBar() && mainwindow->mainView()->count() == 1)
-                menu.addAction(mainwindow->actionByName("new_tab"));
-
-            menu.addAction(mainwindow->actionByName("new_window"));
-
-            menu.addSeparator();
-
-            //Frame
-            KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
-
-            frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
-
-            a = new KAction(KIcon("document-print-frame"), i18n("Print Frame"), this);
-            connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
-            frameMenu->addAction(a);
-
-            menu.addAction(frameMenu);
-
-            menu.addSeparator();
-
-            // Page Actions
-            menu.addAction(pageAction(KWebPage::SelectAll));
-
-            menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
-
-            if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
-            {
-                a = new KAction(KIcon("kget"), i18n("List All Links"), this);
-                connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
-                menu.addAction(a);
-            }
-
-            menu.addAction(mainwindow->actionByName("page_source"));
-            menu.addAction(inspectAction);
-
-            a = rApp->bookmarkProvider()->actionByName("rekonq_add_bookmark");
+            a = new KAction(KIcon("kget"), i18n("List All Links"), this);
+            connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
             menu.addAction(a);
         }
+
+        menu.addAction(mainwindow->actionByName("page_source"));
+        menu.addAction(inspectAction);
 
         if (mainwindow->isFullScreen())
         {
@@ -264,15 +250,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
-        a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark this Link"), this);
-        a->setData(result.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
-        menu.addAction(a);
-
         menu.addSeparator();
         menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
-        menu.addSeparator();
     }
 
     // IMAGE ACTIONS ------------------------------------------------------------------------------
@@ -282,14 +262,15 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         sendByMailAction->setData(result.imageUrl());
         sendByMailAction->setText(i18n("Share image link"));
 
-        // TODO remove copy_this_image action
-        a = new KAction(KIcon("view-media-visualization"), i18n("&View Image"), this);
+        menu.addSeparator();
+
+        a = new KAction(KIcon("view-preview"), i18n("&View Image"), this);
         a->setData(result.imageUrl());
-        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
+        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
+                this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
         menu.addAction(a);
 
         menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
-        menu.addAction(pageAction(KWebPage::CopyImageToClipboard));
 
         a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), this);
         a->setData(result.imageUrl());
@@ -379,6 +360,18 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     // DEFAULT ACTIONs (on the bottom) ---------------------------------------------------
     menu.addSeparator();
+    if (resultHit & WebView::LinkSelection)
+    {
+        a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark link"), this);
+        a->setData(result.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
+        menu.addAction(a);
+    }
+    else
+    {
+        a = rApp->bookmarkProvider()->actionByName("rekonq_add_bookmark");
+        menu.addAction(a);
+    }
     menu.addAction(sendByMailAction);
     menu.addAction(inspectAction);
 
