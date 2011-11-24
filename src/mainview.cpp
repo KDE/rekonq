@@ -422,9 +422,10 @@ void MainView::closeTab(int index, bool del)
     {
         if (ReKonfig::lastTabClosesWindow())
         {
-            // closing window...
-            MainWindow *w = qobject_cast<MainWindow *>(parent());
-            w->close();
+            emit closeWindow();
+//             // closing window...
+//             MainWindow *w = qobject_cast<MainWindow *>(parent());
+//             w->close();
             return;
         }
 

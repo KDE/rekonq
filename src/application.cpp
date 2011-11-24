@@ -458,6 +458,7 @@ MainWindow *Application::newMainWindow(bool withTab)
 void Application::removeMainWindow(MainWindow *window)
 {
     m_mainWindows.removeOne(window);
+    kDebug() << "Removing Window from app window list...";
 }
 
 
