@@ -114,6 +114,7 @@ Q_SIGNALS:
     void browserTabLoading(bool);
     void openPreviousInHistory();
     void openNextInHistory();
+    void closeWindow();
 
     void printRequested(QWebFrame *frame);
 

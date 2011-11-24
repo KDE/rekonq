@@ -121,7 +121,6 @@ MainWindow::MainWindow()
 {
     // Setting attributes (just to be sure...)
     setAttribute(Qt::WA_DeleteOnClose, true);
-    setAttribute(Qt::WA_QuitOnClose, false);
 
     // creating a centralWidget containing panel, m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
@@ -186,6 +185,7 @@ MainWindow::MainWindow()
     // connect signals and slots
     connect(m_view, SIGNAL(currentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
     connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
+    connect(m_view, SIGNAL(closeWindow()), this, SLOT(close()));
 
     // (shift +) ctrl + tab switching
     connect(this, SIGNAL(ctrlTabPressed()), m_view, SLOT(nextTab()));
