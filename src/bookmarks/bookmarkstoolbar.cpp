@@ -506,7 +506,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
     QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
 
     // These events need to be handled only for Bookmark actions and not the bar
-    if (watched != toolBar() && mouseEvent && mouseEvent->button() != Qt::MidButton)
+    if (watched != toolBar() && mouseEvent)
     {
         switch (event->type())
         {
@@ -515,7 +515,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             QPoint pos = toolBar()->mapFromGlobal(QCursor::pos());
             KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(pos));
 
-            if (action)
+            if (action && mouseEvent->button() != Qt::MidButton)
             {
                 m_dragAction = toolBar()->actionAt(pos);
                 m_startDragPos = pos;
@@ -539,14 +539,22 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
 
         case QEvent::MouseButtonRelease:
         {
-            int distance = (toolBar()->mapFromGlobal(QCursor::pos()) - m_startDragPos).manhattanLength();
-            KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(m_startDragPos));
+            QPoint destPos = toolBar()->mapFromGlobal(QCursor::pos());
+            int distance = (destPos - m_startDragPos).manhattanLength();
+            KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(toolBar()->actionAt(destPos));
 
-            if (action && action->bookmark().isGroup() && distance < QApplication::startDragDistance())
+            if (action && action->bookmark().isGroup())
             {
-                KBookmarkActionMenu *menu = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(m_startDragPos));
-                QPoint actionPos = toolBar()->mapToGlobal(toolBar()->widgetForAction(menu)->pos());
-                menu->menu()->popup(QPoint(actionPos.x(), actionPos.y() + toolBar()->widgetForAction(menu)->height()));
+                if (mouseEvent->button() == Qt::MidButton)
+                {
+                    rApp->bookmarkProvider()->bookmarkOwner()->openBookmarkFolder(action->bookmark());
+                }
+                else if (distance < QApplication::startDragDistance())
+                {
+                    KBookmarkActionMenu *menu = dynamic_cast<KBookmarkActionMenu *>(toolBar()->actionAt(m_startDragPos));
+                    QPoint actionPos = toolBar()->mapToGlobal(toolBar()->widgetForAction(menu)->pos());
+                    menu->menu()->popup(QPoint(actionPos.x(), actionPos.y() + toolBar()->widgetForAction(menu)->height()));
+                }
             }
         }
         break;
