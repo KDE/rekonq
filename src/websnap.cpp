@@ -30,9 +30,6 @@
 #include "websnap.h"
 #include "websnap.moc"
 
-// Local Includes
-#include "newtabpage.h"
-
 // KDE Includes
 #include <KStandardDirs>
 
