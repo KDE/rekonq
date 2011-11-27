@@ -3,7 +3,7 @@
  * This file is a part of the rekonq project
  *
  * Copyright (c) 2009 by Benjamin C. Meyer <ben@meyerhome.net>
- * Copyright (C) 2010 by Andrea Diamantini <adjam7 at gmail dot com>
+ * Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
  * This program is free software; you can redistribute it and/or
@@ -50,7 +50,7 @@ public:
 protected:
     qint64 readData(char *data, qint64 maxSize);
 
-private slots:
+private Q_SLOTS:
     void delayedFinished();
 
 };

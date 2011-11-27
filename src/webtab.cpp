@@ -195,7 +195,7 @@ void WebTab::showRSSInfo(const QPoint &pos)
 
     QMap<KUrl, QString> map;
 
-    foreach(const QWebElement & el, col)
+    Q_FOREACH(const QWebElement & el, col)
     {
         QString urlString;
         if (el.attribute("href").startsWith(QL1S("http")))

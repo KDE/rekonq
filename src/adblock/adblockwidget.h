@@ -45,13 +45,13 @@ public:
 
     bool changed();
 
-signals:
+Q_SIGNALS:
     void changed(bool);
 
-public slots:
+public Q_SLOTS:
     void save();
 
-private slots:
+private Q_SLOTS:
     void hasChanged();
 
     void slotInfoLinkActivated(const QString &);

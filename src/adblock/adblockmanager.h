@@ -157,7 +157,7 @@ public:
     void applyHidingRules(WebPage *page);
     void addSubscription(const QString &title, const QString &location);
 
-public slots:
+public Q_SLOTS:
     void loadSettings(bool checkUpdateDate = true);
     void showSettings();
 
@@ -166,7 +166,7 @@ private:
     void saveRules(const QStringList &);
     void loadRules(const QStringList &);
 
-private slots:
+private Q_SLOTS:
     void slotResult(KJob *);
     void subscriptionData(KIO::Job*, const QByteArray&);
 

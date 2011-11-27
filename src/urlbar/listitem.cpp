@@ -217,7 +217,7 @@ static QString highlightWordsInText(const QString &text, const QStringList &word
 {
     QString ret = text;
     QBitArray boldSections(ret.size());
-    foreach(const QString & wordToPointOut, words)
+    Q_FOREACH(const QString & wordToPointOut, words)
     {
         int index = ret.indexOf(wordToPointOut, 0, Qt::CaseInsensitive);
         while (index > -1)
@@ -475,7 +475,7 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
     if (SearchEngine::defaultEngine().isNull())
         return;
     m_engineGroup->addAction(newEngineAction(SearchEngine::defaultEngine(), selectedEngine));
-    foreach(const KService::Ptr & engine, SearchEngine::favorites())
+    Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
     {
         if (engine->desktopEntryName() != SearchEngine::defaultEngine()->desktopEntryName())
         {

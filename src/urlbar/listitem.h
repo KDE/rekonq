@@ -64,10 +64,10 @@ public:
     KUrl url();
     virtual QString text();
 
-public slots:
+public Q_SLOTS:
     virtual void nextItemSubChoice();
 
-signals:
+Q_SIGNALS:
     void itemClicked(ListItem *item, Qt::MouseButton, Qt::KeyboardModifiers);
     void updateList();
 
@@ -150,10 +150,10 @@ public:
     explicit EngineBar(KService::Ptr selectedEngine, QWidget *parent = 0);
     void selectNextEngine();
 
-signals:
+Q_SIGNALS:
     void searchEngineChanged(KService::Ptr engine);
 
-private slots:
+private Q_SLOTS:
     void changeSearchEngine();
 
 private:
@@ -173,10 +173,10 @@ public:
     explicit SearchListItem(const UrlSearchItem &item, const QString &text, QWidget *parent = 0);
     QString text();
 
-public slots:
+public Q_SLOTS:
     virtual void nextItemSubChoice();
 
-private slots:
+private Q_SLOTS:
     void changeSearchEngine(KService::Ptr engine);
 
 private:
@@ -257,7 +257,7 @@ private:
     QString m_url;
     QByteArray m_data;
 
-private slots:
+private Q_SLOTS:
     void slotData(KIO::Job* job, const QByteArray& data);
     void slotResult(KJob* job);
 };

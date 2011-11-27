@@ -102,7 +102,7 @@ public:
         return _privateBrowsingAction;
     };
 
-public slots:
+public Q_SLOTS:
     /**
      * Save application's configuration
      *
@@ -121,7 +121,7 @@ protected:
     // This is used to track which window was activated most recently
     bool eventFilter(QObject *watched, QEvent *event);
 
-private slots:
+private Q_SLOTS:
     void loadResolvedUrl(ThreadWeaver::Job *);
 
     void updateConfiguration();

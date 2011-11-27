@@ -56,7 +56,7 @@ protected:
 private:
     Private* const d;
 
-private slots:
+private Q_SLOTS:
     void readConfig();
     void saveSettings();
 };

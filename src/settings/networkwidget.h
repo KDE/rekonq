@@ -46,10 +46,10 @@ public:
     void save();
     bool changed();
 
-signals:
+Q_SIGNALS:
     void changed(bool);
 
-private slots:
+private Q_SLOTS:
     void hasChanged();
 
 private:

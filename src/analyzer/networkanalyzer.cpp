@@ -166,7 +166,7 @@ void NetworkAnalyzer::requestFinished(QObject *replyObject)
 
     // Record the reply headers
     QList<QByteArray> headerValues;
-    foreach(const QByteArray & header, reply->rawHeaderList())
+    Q_FOREACH(const QByteArray & header, reply->rawHeaderList())
     {
         headerValues += reply->rawHeader(header);
     }
@@ -203,7 +203,7 @@ void NetworkAnalyzer::showItemDetails(QTreeWidgetItem *item)
     QNetworkRequest req = _itemRequestMap[item];
     details += i18n("<h3>Request Details</h3>");
     details += QL1S("<ul>");
-    foreach(const QByteArray & header, req.rawHeaderList())
+    Q_FOREACH(const QByteArray & header, req.rawHeaderList())
     {
         details += QL1S("<li>");
         details += QL1S(header);

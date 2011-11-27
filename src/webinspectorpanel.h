@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
+* Copyright (C) 2010-2011 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -48,7 +48,7 @@ class REKONQ_TESTS_EXPORT WebInspectorPanel : public QDockWidget
 public:
     WebInspectorPanel(QString title, QWidget *parent);
 
-public slots:
+public Q_SLOTS:
     void toggle(bool enable);
     void changeCurrentPage();
 

@@ -73,7 +73,7 @@ private:
     PanelTreeView *_treeView;
     bool _loaded;
 
-private slots:
+private Q_SLOTS:
     void expandTreeView();
 };
 

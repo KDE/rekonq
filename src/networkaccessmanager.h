@@ -46,7 +46,7 @@ public:
 protected:
     virtual QNetworkReply *createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData = 0);
 
-signals:
+Q_SIGNALS:
     void networkData(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QNetworkReply *reply);
 
 private:

@@ -108,7 +108,7 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
 
     // else
     QStringList titles = ReKonfig::subscriptionTitles();
-    foreach(const QString & title, titles)
+    Q_FOREACH(const QString & title, titles)
     {
         rules = rulesGroup.readEntry(title + "-rules" , QStringList());
         loadRules(rules);
@@ -118,7 +118,7 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
 
 void AdBlockManager::loadRules(const QStringList &rules)
 {
-    foreach(const QString & stringRule, rules)
+    Q_FOREACH(const QString & stringRule, rules)
     {
         // ! rules are comments
         if (stringRule.startsWith('!'))
@@ -187,7 +187,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
         return 0;
     }
 
-    foreach(const AdBlockRule & filter, _whiteList)
+    Q_FOREACH(const AdBlockRule & filter, _whiteList)
     {
         if (filter.match(request, urlString, urlStringLowerCase))
         {
@@ -208,7 +208,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     if (!page)
         return 0;
 
-    foreach(const AdBlockRule & filter, _blackList)
+    Q_FOREACH(const AdBlockRule & filter, _blackList)
     {
         if (filter.match(request, urlString, urlStringLowerCase))
         {
@@ -216,7 +216,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
 
             QWebElement document = page->mainFrame()->documentElement();
             QWebElementCollection elements = document.findAll("*");
-            foreach(QWebElement el, elements)
+            Q_FOREACH(QWebElement el, elements)
             {
                 const QString srcAttribute = el.attribute("src");
                 if (filter.match(request, srcAttribute, srcAttribute.toLower()))
@@ -251,11 +251,11 @@ void AdBlockManager::applyHidingRules(WebPage *page)
     QWebElement document = page->mainFrame()->documentElement();
 
     // HIDE RULES
-    foreach(const QString & filter, _hideList)
+    Q_FOREACH(const QString & filter, _hideList)
     {
         QWebElementCollection elements = document.findAll(filter);
 
-        foreach(QWebElement el, elements)
+        Q_FOREACH(QWebElement el, elements)
         {
             if (el.isNull())
                 continue;
@@ -301,7 +301,7 @@ void AdBlockManager::slotResult(KJob *job)
 
     QList<QByteArray> list = _buffer.split('\n');
     QStringList ruleList;
-    foreach(const QByteArray & ba, list)
+    Q_FOREACH(const QByteArray & ba, list)
     {
         ruleList << QString(ba);
     }
@@ -331,7 +331,7 @@ void AdBlockManager::subscriptionData(KIO::Job* job, const QByteArray& data)
 void AdBlockManager::saveRules(const QStringList &rules)
 {
     QStringList cleanedRules;
-    foreach(const QString & r, rules)
+    Q_FOREACH(const QString & r, rules)
     {
         if (!r.startsWith('!') && !r.startsWith('[') && !r.isEmpty())
             cleanedRules << r;

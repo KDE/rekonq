@@ -255,7 +255,7 @@ QList<HistoryItem> HistoryManager::find(const QString &text)
 
         QStringList words = text.split(' ');
         bool matches = true;
-        foreach(const QString & word, words)
+        Q_FOREACH(const QString & word, words)
         {
             if (!url.contains(word, Qt::CaseInsensitive)
                     && !item.title.contains(word, Qt::CaseInsensitive))

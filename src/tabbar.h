@@ -67,7 +67,7 @@ public:
     static const int baseWidthDivisor = 4;
     static const int minWidthDivisor = 8;
 
-signals:
+Q_SIGNALS:
     void cloneTab(int index);
     void closeTab(int index);
     void closeOtherTabs(int index);
@@ -91,7 +91,7 @@ protected:
     void dropEvent(QDropEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
 
-private slots:
+private Q_SLOTS:
     void cloneTab();
     void closeTab();
     void closeOtherTabs();

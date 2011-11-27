@@ -59,7 +59,7 @@ protected:
     virtual void refill();
     virtual QAction* actionForBookmark(const KBookmark &bookmark);
 
-private slots:
+private Q_SLOTS:
     void actionHovered();
 
 private:
@@ -92,7 +92,7 @@ public:
 protected:
     bool eventFilter(QObject *watched, QEvent *event);
 
-private slots:
+private Q_SLOTS:
     void contextMenu(const QPoint &);
     void actionHovered();
     void menuDisplayed();

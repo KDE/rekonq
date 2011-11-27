@@ -46,10 +46,10 @@ public:
     bool changed();
     void checkKGetPresence();
 
-signals:
+Q_SIGNALS:
     void changed(bool);
 
-private slots:
+private Q_SLOTS:
     void hasChanged();
     void setHomeToCurrentPage();
     void disableHomeSettings(bool);

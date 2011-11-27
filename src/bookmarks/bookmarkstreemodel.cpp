@@ -344,7 +344,7 @@ void BookmarksTreeModel::bookmarksChanged(const QString &groupAddress)
         QStringList indexChain(groupAddress.split('/', QString::SkipEmptyParts));
         bool ok;
         int i;
-        foreach(const QString & sIndex, indexChain)
+        Q_FOREACH(const QString & sIndex, indexChain)
         {
             i = sIndex.toInt(&ok);
             if (!ok)

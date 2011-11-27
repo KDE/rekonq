@@ -128,11 +128,11 @@ public:
     static bool existsImage(const KUrl &url);
 
 
-private slots:
+private Q_SLOTS:
     void saveResult(bool ok = true);
     void load();
 
-signals:
+Q_SIGNALS:
     void snapDone(bool ok);
 
 private:

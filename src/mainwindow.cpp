@@ -1295,7 +1295,7 @@ void MainWindow::clearPrivateData()
             path.remove("rekonq");
             QDir cacheDir(path);
             QStringList fileList = cacheDir.entryList();
-            foreach(const QString & str, fileList)
+            Q_FOREACH(const QString & str, fileList)
             {
                 QFile file(path + str);
                 file.remove();

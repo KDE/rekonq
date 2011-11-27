@@ -382,7 +382,7 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
                                    QL1S("download"),
                                    KIconLoader::Toolbar));
 
-    foreach(QWebElement it, navItems)
+    Q_FOREACH(QWebElement it, navItems)
     {
         const QString aTagString(QL1C('a'));
         const QString hrefAttributeString(QL1S("href"));
@@ -584,7 +584,7 @@ void NewTabPage::downloadsPage()
         return;
     }
 
-    foreach(DownloadItem * item, list)
+    Q_FOREACH(DownloadItem * item, list)
     {
         m_root.prependInside(markup(QL1S("div")));
 

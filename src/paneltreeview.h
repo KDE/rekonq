@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
+* Copyright (C) 2010-2011 by Yoann Laissus <yoann dot laissus at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -44,7 +44,7 @@ class REKONQ_TESTS_EXPORT PanelTreeView : public QTreeView
 public:
     PanelTreeView(QWidget *parent = 0);
 
-signals:
+Q_SIGNALS:
     void openUrl(const KUrl &, const Rekonq::OpenType & = Rekonq::CurrentTab);
     void itemHovered(const QString &);
     void delKeyPressed();
@@ -52,7 +52,7 @@ signals:
     void contextMenuGroupRequested(const QPoint &pos);
     void contextMenuEmptyRequested(const QPoint &pos);
 
-public slots:
+public Q_SLOTS:
     void copyToClipboard();
     void openInCurrentTab();
     void openInNewTab();

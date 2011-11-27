@@ -56,10 +56,10 @@ public:
      */
     void saveIfNeccessary();
 
-signals:
+Q_SIGNALS:
     void saveNeeded();
 
-public slots:
+public Q_SLOTS:
     void changeOccurred();
 
 protected:

@@ -179,7 +179,7 @@ KBookmark BookmarkProvider::bookmarkForUrl(const KUrl &url)
 
 void BookmarkProvider::slotBookmarksChanged()
 {
-    foreach(BookmarkToolBar * bookmarkToolBar, m_bookmarkToolBars)
+    Q_FOREACH(BookmarkToolBar * bookmarkToolBar, m_bookmarkToolBars)
     {
         if (bookmarkToolBar)
         {
@@ -231,7 +231,7 @@ void BookmarkProvider::fillBookmarkBar(BookmarkToolBar *toolBar)
 
 void BookmarkProvider::slotPanelChanged()
 {
-    foreach(BookmarksPanel * panel, m_bookmarkPanels)
+    Q_FOREACH(BookmarksPanel * panel, m_bookmarkPanels)
     {
         if (panel && panel != sender())
             panel->loadFoldedState();
@@ -253,7 +253,7 @@ void BookmarkProvider::find(QList<KBookmark> *list, const KBookmark &bookmark, c
     {
         QStringList words = text.split(' ');
         bool matches = true;
-        foreach(const QString & word, words)
+        Q_FOREACH(const QString & word, words)
         {
             if (!bookmark.url().url().contains(word, Qt::CaseInsensitive)
                     && !bookmark.fullText().contains(word, Qt::CaseInsensitive))

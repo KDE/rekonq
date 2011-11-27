@@ -123,7 +123,7 @@ void AdBlockWidget::load()
     const QStringList subscriptions = ReKonfig::subscriptionTitles();
 
     // load automatic rules
-    foreach(const QString & sub, subscriptions)
+    Q_FOREACH(const QString & sub, subscriptions)
     {
         QTreeWidgetItem *subItem = new QTreeWidgetItem(treeWidget);
         subItem->setText(0, sub);
@@ -134,7 +134,7 @@ void AdBlockWidget::load()
     KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup localGroup(config, "rules");
     const QStringList rules = localGroup.readEntry("local-rules" , QStringList());
-    foreach(const QString & rule, rules)
+    Q_FOREACH(const QString & rule, rules)
     {
         listWidget->addItem(rule);
     }
@@ -149,7 +149,7 @@ void AdBlockWidget::loadRules(QTreeWidgetItem *item)
     QString str = item->text(0) + "-rules";
     QStringList rules = localGroup.readEntry(str , QStringList());
 
-    foreach(const QString & rule, rules)
+    Q_FOREACH(const QString & rule, rules)
     {
         QTreeWidgetItem *subItem = new QTreeWidgetItem(item);
         subItem->setText(0, rule);

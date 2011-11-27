@@ -65,10 +65,10 @@ public:
      */
     bool postHandling(const QNetworkRequest &request, QWebFrame *frame);
 
-signals:
+Q_SIGNALS:
     void downloadUrl(const KUrl &);
 
-private slots:
+private Q_SLOTS:
     void showResults(const KFileItemList &);
     void slotMostLocalUrlResult(KJob *);
 

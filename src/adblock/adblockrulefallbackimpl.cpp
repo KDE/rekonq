@@ -64,14 +64,14 @@ AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
         if (options.contains(QL1S("third-party")))
             m_thirdPartyOption = true;
 
-        foreach(const QString & option, options)
+        Q_FOREACH(const QString & option, options)
         {
             // Domain restricted filter
             const QString domainKeyword(QL1S("domain="));
             if (option.startsWith(domainKeyword))
             {
                 QStringList domainList = option.mid(domainKeyword.length()).split(QL1C('|'));
-                foreach(const QString & domain, domainList)
+                Q_FOREACH(const QString & domain, domainList)
                 {
                     if (domain.startsWith(QL1C('~')))
                         m_whiteDomains.insert(domain.toLower());

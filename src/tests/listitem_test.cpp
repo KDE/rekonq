@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Pierre Rossi <pierre.rossi@gmail.com>
+ * Copyright 2010-2011 Pierre Rossi <pierre.rossi@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,11 +28,11 @@ class ListItemTest : public QObject
 {
     Q_OBJECT
 
-public slots:
+public Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
-private slots:
+private Q_SLOTS:
 
     void wordHighLighting_data();
     void wordHighLighting();

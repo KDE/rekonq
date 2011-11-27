@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright (C) 2010 by Matthieu Gicquel <matgic78@gmail.com>
+* Copyright (C) 2010-2011 by Matthieu Gicquel <matgic78@gmail.com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -88,7 +88,7 @@ void ClickToFlash::load()
         elements.append(docElement.findAll(selector.arg(QL1S("object"))));
         elements.append(docElement.findAll(selector.arg(QL1S("embed"))));
 
-        foreach(QWebElement element, elements)
+        Q_FOREACH(QWebElement element, elements)
         {
             if (checkElement(element))
             {

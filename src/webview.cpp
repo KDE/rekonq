@@ -339,7 +339,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         //All favourite ones
         KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18nc("@title:menu", "Search"), this);
 
-        foreach(const KService::Ptr & engine, SearchEngine::favorites())
+        Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
         {
             a = new KAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), this);
             a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(engine, "")));

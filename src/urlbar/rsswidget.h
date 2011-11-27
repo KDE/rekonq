@@ -45,7 +45,7 @@ public:
 
     void showAt(const QPoint &pos);
 
-private slots:
+private Q_SLOTS:
     void accept();
 
 private:

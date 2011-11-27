@@ -33,11 +33,11 @@ class WalletBarTest : public QObject
 {
     Q_OBJECT
 
-public slots:
+public Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
-private slots:
+private Q_SLOTS:
 
 private:
     WalletBar *bar;

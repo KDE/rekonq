@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright (C) 2010 by Matthieu Gicquel <matgic78@gmail.com>
+* Copyright (C) 2010-2011 by Matthieu Gicquel <matgic78@gmail.com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -47,10 +47,10 @@ class REKONQ_TESTS_EXPORT ClickToFlash : public QWidget
 public:
     explicit ClickToFlash(const QUrl &pluginUrl, QWidget *parent = 0);
 
-signals:
+Q_SIGNALS:
     void signalLoadClickToFlash(bool);
 
-private slots:
+private Q_SLOTS:
     void load();
 
 private:

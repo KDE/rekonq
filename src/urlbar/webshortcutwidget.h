@@ -44,11 +44,11 @@ public:
 
     void show(const KUrl &url, const QString &openSearchName, const QPoint &pos);
 
-private slots:
+private Q_SLOTS:
     void accept();
     void shortcutsChanged(const QString& newShorthands);
 
-signals:
+Q_SIGNALS:
     void webShortcutSet(const KUrl &url, const QString &openSearchName, const QString &webShortcut);
 
 private:

@@ -36,11 +36,11 @@ class FindBarTest : public QObject
 {
     Q_OBJECT
 
-public slots:
+public Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
-private slots:
+private Q_SLOTS:
     void matchCase();
     void notifyMatch();
 

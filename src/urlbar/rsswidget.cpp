@@ -87,7 +87,7 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     m_feeds = new KComboBox(this);
     m_feeds->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    foreach(const QString & title, m_map)
+    Q_FOREACH(const QString & title, m_map)
     {
         m_feeds->addItem(title);
     }

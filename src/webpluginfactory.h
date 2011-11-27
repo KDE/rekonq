@@ -48,10 +48,10 @@ public:
                             const QStringList &argumentNames,
                             const QStringList &argumentValues) const;
 
-signals:
+Q_SIGNALS:
     void signalLoadClickToFlash(bool) const;
 
-public slots:
+public Q_SLOTS:
     void setLoadClickToFlash(bool load);
 
 private:

@@ -44,7 +44,7 @@ class REKONQ_TESTS_EXPORT WebIcon : public QObject
 public:
     explicit WebIcon(const KUrl &url, QObject *parent = 0);
 
-private slots:
+private Q_SLOTS:
     void load();
     void saveIcon(bool);
 
