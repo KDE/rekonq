@@ -38,6 +38,8 @@
 
 //KDE Includes
 #include <kstandarddirs.h>
+#include <KUrlRequester>
+
 
 GeneralWidget::GeneralWidget(QWidget *parent)
     : QWidget(parent)
@@ -58,11 +60,21 @@ GeneralWidget::GeneralWidget(QWidget *parent)
 
     connect(doNotTrackCheckBox, SIGNAL(clicked()), this, SLOT(hasChanged()));
     connect(kcfg_homePage, SIGNAL(editingFinished()), this, SLOT(fixHomePageURL()));
+
+    kcfg_downloadPath->setMode(KFile::Directory);
+
+    askDownloadYes->setChecked(ReKonfig::askDownloadPath());
+    askDownloadNo->setChecked(!ReKonfig::askDownloadPath());
+
+    kcfg_downloadPath->setEnabled(!ReKonfig::askDownloadPath());
+    connect(askDownloadNo, SIGNAL(toggled(bool)), kcfg_downloadPath, SLOT(setEnabled(bool)));
 }
 
 
 void GeneralWidget::save()
 {
+    ReKonfig::setAskDownloadPath(askDownloadYes->isChecked());
+
     KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
     cg.writeEntry("DoNotTrack", doNotTrackCheckBox->isChecked());
     cg.sync();
