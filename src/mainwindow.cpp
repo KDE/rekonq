@@ -375,6 +375,12 @@ void MainWindow::setupActions()
     tabAction->setDelayed(false);
     actionCollection()->addAction(QL1S("tab_list"), tabAction);
 
+    //================================Download========================================
+    a = new KAction(KIcon("download"), i18n("Downloads"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_J));
+    actionCollection()->addAction(QL1S("openDownloadsPage"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(openDownloadsPage()));
+
     // =============================== Tools Actions =================================
     a = new KAction(i18n("View Page S&ource"), this);
     a->setIcon(KIcon("application-xhtml+xml"));
@@ -910,6 +916,10 @@ void MainWindow::viewFullScreen(bool makeFullScreen)
     KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
 }
 
+void MainWindow::openDownloadsPage()
+{
+    rApp->loadUrl(KUrl("about:downloads"), Rekonq::NewFocusedTab);
+}
 
 void MainWindow::setWidgetsVisible(bool makeVisible)
 {

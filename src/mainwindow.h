@@ -89,6 +89,7 @@ private:
     void setupPanels();
 
 public Q_SLOTS:
+    void openDownloadsPage();
     void homePage(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
 
     /**
