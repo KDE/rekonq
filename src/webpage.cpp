@@ -54,35 +54,23 @@
 #include "sslinfodialog.h"
 
 // KDE Includes
-#include <KIO/Job>
-#include <KIO/RenameDialog>
-#include <KIO/JobUiDelegate>
-
 #include <KTemporaryFile>
 #include <KStandardDirs>
-#include <KFileDialog>
 #include <KJobUiDelegate>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KMimeTypeTrader>
 #include <KService>
-#include <KToolInvocation>
 #include <KWebWallet>
 #include <KProtocolInfo>
 #include <KRun>
 
+#include <KIO/JobUiDelegate>
+
 #include <kparts/browseropenorsavequestion.h>
 
-#include <kio/scheduler.h>
-
 // Qt Includes
-#include <QtCore/QFileInfo>
-
 #include <QtGui/QTextDocument>
-
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusConnectionInterface>
-#include <QtDBus/QDBusInterface>
 
 
 // Returns true if the scheme and domain of the two urls match...
@@ -107,46 +95,6 @@ static bool domainSchemeMatch(const QUrl& u1, const QUrl& u2)
 }
 
 
-// NOTE
-// These 2 functions have been copied from the KWebPage class to implement a local version of the downloadResponse method.
-// In this way, we can easily provide the extra functionality we need:
-// 1. KGet Integration
-// 2. Save downloads history
-static void extractSuggestedFileName(const QNetworkReply* reply, QString& fileName)
-{
-    fileName.clear();
-    const KIO::MetaData& metaData = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
-    if (metaData.value(QL1S("content-disposition-type")).compare(QL1S("attachment"), Qt::CaseInsensitive) == 0)
-        fileName = metaData.value(QL1S("content-disposition-filename"));
-
-    if (!fileName.isEmpty())
-        return;
-
-    if (!reply->hasRawHeader("Content-Disposition"))
-        return;
-
-    const QString value(QL1S(reply->rawHeader("Content-Disposition").simplified().constData()));
-    if (value.startsWith(QL1S("attachment"), Qt::CaseInsensitive) || value.startsWith(QL1S("inline"), Qt::CaseInsensitive))
-    {
-        const int length = value.size();
-        int pos = value.indexOf(QL1S("filename"), 0, Qt::CaseInsensitive);
-        if (pos > -1)
-        {
-            pos += 9;
-            while (pos < length && (value.at(pos) == QL1C(' ') || value.at(pos) == QL1C('=') || value.at(pos) == QL1C('"')))
-                pos++;
-
-            int endPos = pos;
-            while (endPos < length && value.at(endPos) != QL1C('"') && value.at(endPos) != QL1C(';'))
-                endPos++;
-
-            if (endPos > pos)
-                fileName = value.mid(pos, (endPos - pos)).trimmed();
-        }
-    }
-}
-
-
 static void extractMimeType(const QNetworkReply* reply, QString& mimeType)
 {
     mimeType.clear();
@@ -166,87 +114,6 @@ static void extractMimeType(const QNetworkReply* reply, QString& mimeType)
         mimeType = value;
     else
         mimeType = value.left(index);
-}
-
-
-static bool downloadResource(const KUrl& srcUrl, const KIO::MetaData& metaData = KIO::MetaData(),
-                             QWidget * parent = 0, const QString & suggestedName = QString())
-{
-    KUrl destUrl;
-
-    int result = KIO::R_OVERWRITE;
-    const QString fileName((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
-
-    do
-    {
-        // follow bug:184202 fixes
-        destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);
-
-        if (destUrl.isEmpty())
-            return false;
-
-        if (destUrl.isLocalFile())
-        {
-            QFileInfo finfo(destUrl.toLocalFile());
-            if (finfo.exists())
-            {
-                QDateTime now = QDateTime::currentDateTime();
-                QPointer<KIO::RenameDialog> dlg = new KIO::RenameDialog(parent,
-                        i18n("Overwrite File?"),
-                        srcUrl,
-                        destUrl,
-                        KIO::RenameDialog_Mode(KIO::M_OVERWRITE | KIO::M_SKIP),
-                        -1,
-                        finfo.size(),
-                        now.toTime_t(),
-                        finfo.created().toTime_t(),
-                        now.toTime_t(),
-                        finfo.lastModified().toTime_t()
-                                                                       );
-                result = dlg->exec();
-                delete dlg;
-            }
-        }
-    }
-    while (result == KIO::R_CANCEL && destUrl.isValid());
-
-    // Save download history
-    DownloadItem *item = rApp->downloadManager()->addDownload(srcUrl.pathOrUrl(), destUrl.pathOrUrl());
-
-    if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetDownload())
-    {
-        //KGet integration:
-        if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
-        {
-            KToolInvocation::kdeinitExecWait("kget");
-        }
-        QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-        if (!kget.isValid())
-            return false;
-
-        QDBusMessage transfer = kget.call(QL1S("addTransfer"), srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
-        if (transfer.arguments().isEmpty())
-            return true;
-
-        const QString transferPath = transfer.arguments().first().toString();
-        item->setKGetTransferDbusPath(transferPath);
-        return true;
-    }
-
-    KIO::Job *job = KIO::file_copy(srcUrl, destUrl, -1, KIO::Overwrite);
-    if (item)
-    {
-        QObject::connect(job, SIGNAL(percent(KJob *, unsigned long)), item, SLOT(updateProgress(KJob *, unsigned long)));
-        QObject::connect(job, SIGNAL(finished(KJob *)), item, SLOT(onFinished(KJob*)));
-    }
-
-    if (!metaData.isEmpty())
-        job->setMetaData(metaData);
-
-    job->addMetaData(QL1S("MaxCacheSize"), QL1S("0")); // Don't store in http cache.
-    job->addMetaData(QL1S("cache"), QL1S("cache")); // Use entry from cache if available.
-    job->uiDelegate()->setAutoErrorHandlingEnabled(true);
-    return true;
 }
 
 
@@ -410,9 +277,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     KIO::Integration::AccessManager::putReplyOnHold(reply);
 
-    // Get suggested file name...
-    extractSuggestedFileName(reply, _suggestedFileName);
-
     // Get mimeType...
     extractMimeType(reply, _mimeType);
 
@@ -441,6 +305,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (!isLocal)
     {
         KParts::BrowserOpenOrSaveQuestion dlg(rApp->mainWindow(), replyUrl, _mimeType);
+
+        // Get suggested file name...
+        DownloadManager::extractSuggestedFileName(reply, _suggestedFileName);
         if (!_suggestedFileName.isEmpty())
             dlg.setSuggestedFileName(_suggestedFileName);
 
@@ -543,7 +410,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 
     // check suggested file name
     if (_suggestedFileName.isEmpty())
-        extractSuggestedFileName(reply, _suggestedFileName);
+        DownloadManager::extractSuggestedFileName(reply, _suggestedFileName);
 
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
@@ -678,21 +545,21 @@ QString WebPage::errorPage(QNetworkReply *reply)
 
 void WebPage::downloadReply(const QNetworkReply *reply, const QString &suggestedFileName)
 {
-    downloadResource(reply->url(), KIO::MetaData(), view(), suggestedFileName);
+    rApp->downloadManager()->downloadResource(reply->url(), KIO::MetaData(), view(), suggestedFileName);
 }
 
 
 void WebPage::downloadRequest(const QNetworkRequest &request)
 {
-    downloadResource(request.url(),
-                     request.attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap(),
-                     view());
+    rApp->downloadManager()->downloadResource(request.url(),
+            request.attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap(),
+            view());
 }
 
 
 void WebPage::downloadUrl(const KUrl &url)
 {
-    downloadResource(url, KIO::MetaData(), view());
+    rApp->downloadManager()->downloadResource(url, KIO::MetaData(), view());
 }
 
 
@@ -716,15 +583,7 @@ void WebPage::downloadAllContentsWithKGet()
         contents << baseUrl.resolved(relativeUrl).toString();
     }
 
-    if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
-    {
-        KToolInvocation::kdeinitExecWait("kget");
-    }
-    QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-    if (kget.isValid())
-    {
-        kget.call("importLinks", QVariant(contents.toList()));
-    }
+    rApp->downloadManager()->downloadLinksWithKGet(QVariant(contents.toList()));
 }
 
 

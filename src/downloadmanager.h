@@ -34,12 +34,16 @@
 // Local Includes
 #include "downloaditem.h"
 
+// KDE Includes
+#include <kio/accessmanager.h>
+
 // Qt Includes
 #include <QObject>
+#include <QWidget>
 
-
-
-// ---------------------------------------------------------------------------------
+// Forward Includes
+class KUrl;
+class QNetworkReply;
 
 
 class REKONQ_TESTS_EXPORT DownloadManager : public QObject
@@ -53,16 +57,24 @@ public:
     {
         return m_downloadList;
     }
-    DownloadItem* addDownload(const QString &srcUrl, const QString &destUrl);
     bool clearDownloadsHistory();
+
+    bool downloadResource(const KUrl &url, const KIO::MetaData &metaData = KIO::MetaData(),
+                          QWidget *parent = 0, const QString &suggestedName = QString());
+
+    void downloadLinksWithKGet(const QVariant &contentList);
+
+    static void extractSuggestedFileName(const QNetworkReply* reply, QString& fileName);
 
 Q_SIGNALS:
     void newDownloadAdded(QObject *item);
+    void notifyDownload(const QString&, Rekonq::Notify = Rekonq::Download);
 
 private:
-    DownloadList m_downloadList;
-
     void init();
+    DownloadItem* addDownload(const QString &srcUrl, const QString &destUrl);
+
+    DownloadList m_downloadList;
 };
 
 #endif // DOWNLOADMANAGER_H

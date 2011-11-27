@@ -179,6 +179,8 @@ MainWindow::MainWindow()
     // notification system
     connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
     connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
+    connect(rApp->downloadManager(), SIGNAL(notifyDownload(const QString&, Rekonq::Notify)),
+            this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
 
     // connect signals and slots
     connect(m_view, SIGNAL(currentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
@@ -1193,6 +1195,8 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     case Rekonq::Success:
     case Rekonq::Error:
     case Rekonq::Download:
+        m_hidePopupTimer->start(3000);
+        break;
     default:
         break;
     }

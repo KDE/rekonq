@@ -29,15 +29,32 @@
 #include "downloadmanager.h"
 #include "downloadmanager.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 // KDE Includes
 #include <KStandardDirs>
+#include <KToolInvocation>
+#include <KFileDialog>
+
+#include <kio/scheduler.h>
+
+#include <KIO/Job>
+#include <KIO/CopyJob>
+#include <KIO/JobUiDelegate>
 
 // Qt Includes
 #include <QDataStream>
 #include <QDateTime>
 #include <QFile>
+#include <QFileInfo>
 #include <QString>
 #include <QWebSettings>
+#include <QNetworkReply>
+
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusConnectionInterface>
+#include <QtDBus/QDBusInterface>
 
 
 DownloadManager::DownloadManager(QObject *parent)
@@ -103,3 +120,130 @@ bool DownloadManager::clearDownloadsHistory()
     QFile downloadFile(downloadFilePath);
     return downloadFile.remove();
 }
+
+
+void DownloadManager::downloadLinksWithKGet(const QVariant &contentList)
+{
+    if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
+    {
+        KToolInvocation::kdeinitExecWait("kget");
+    }
+    QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
+    if (kget.isValid())
+    {
+        kget.call("importLinks", contentList);
+    }
+}
+
+
+// NOTE
+// These 2 functions have been copied from the KWebPage class to implement a local version of the downloadResponse method.
+// In this way, we can easily provide the extra functionality we need:
+// 1. KGet Integration
+// 2. Save downloads history
+bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &metaData, QWidget *parent, const QString &suggestedName)
+{
+    KUrl destUrl;
+
+    int result = KIO::R_OVERWRITE;
+    const QString fileName((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
+
+    do
+    {
+        if (ReKonfig::askDownloadPath())
+        {
+            // follow bug:184202 fixes
+            destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);
+        }
+        else
+        {
+            destUrl = KUrl(ReKonfig::downloadPath().path() + QL1C('/') + fileName);
+        }
+
+        kDebug() << "DEST URL: " << destUrl;
+
+        if (destUrl.isEmpty())
+            return false;
+
+    }
+    while (result == KIO::R_CANCEL && destUrl.isValid());
+
+    // Save download history
+    DownloadItem *item = addDownload(srcUrl.pathOrUrl(), destUrl.pathOrUrl());
+    emit notifyDownload(fileName);
+
+    if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetDownload())
+    {
+        //KGet integration:
+        if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
+        {
+            KToolInvocation::kdeinitExecWait("kget");
+        }
+        QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
+        if (!kget.isValid())
+            return false;
+
+        QDBusMessage transfer = kget.call(QL1S("addTransfer"), srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
+        if (transfer.arguments().isEmpty())
+            return true;
+
+        const QString transferPath = transfer.arguments().first().toString();
+        item->setKGetTransferDbusPath(transferPath);
+        return true;
+    }
+
+    KIO::Job *job = KIO::copy(srcUrl, destUrl, KIO::Overwrite);
+    if (item)
+    {
+        QObject::connect(job, SIGNAL(percent(KJob *, unsigned long)), item, SLOT(updateProgress(KJob *, unsigned long)));
+        QObject::connect(job, SIGNAL(finished(KJob *)), item, SLOT(onFinished(KJob*)));
+    }
+
+    if (!metaData.isEmpty())
+        job->setMetaData(metaData);
+
+    job->addMetaData(QL1S("MaxCacheSize"), QL1S("0")); // Don't store in http cache.
+    job->addMetaData(QL1S("cache"), QL1S("cache")); // Use entry from cache if available.
+    job->uiDelegate()->setAutoErrorHandlingEnabled(true);
+    return true;
+}
+
+
+// -------------------------------------------------------------------------------------------------------------------
+
+
+// STATIC
+void DownloadManager::extractSuggestedFileName(const QNetworkReply* reply, QString& fileName)
+{
+    fileName.clear();
+    const KIO::MetaData& metaData = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
+    if (metaData.value(QL1S("content-disposition-type")).compare(QL1S("attachment"), Qt::CaseInsensitive) == 0)
+        fileName = metaData.value(QL1S("content-disposition-filename"));
+
+    if (!fileName.isEmpty())
+        return;
+
+    if (!reply->hasRawHeader("Content-Disposition"))
+        return;
+
+    const QString value(QL1S(reply->rawHeader("Content-Disposition").simplified().constData()));
+    if (value.startsWith(QL1S("attachment"), Qt::CaseInsensitive) || value.startsWith(QL1S("inline"), Qt::CaseInsensitive))
+    {
+        const int length = value.size();
+        int pos = value.indexOf(QL1S("filename"), 0, Qt::CaseInsensitive);
+        if (pos > -1)
+        {
+            pos += 9;
+            while (pos < length && (value.at(pos) == QL1C(' ') || value.at(pos) == QL1C('=') || value.at(pos) == QL1C('"')))
+                pos++;
+
+            int endPos = pos;
+            while (endPos < length && value.at(endPos) != QL1C('"') && value.at(endPos) != QL1C(';'))
+                endPos++;
+
+            if (endPos > pos)
+                fileName = value.mid(pos, (endPos - pos)).trimmed();
+        }
+    }
+}
+
