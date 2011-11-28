@@ -153,8 +153,17 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     case Qt::ToolTipRole:
         QString tooltip = "";
         if (!item.title.isEmpty())
-            tooltip = item.title + '\n';
-        tooltip += item.lastDateTimeVisit.toString(Qt::SystemLocaleShortDate) + '\n' + item.url;
+            tooltip = item.title + "<br/>";
+
+        QString lastVisit = item.firstDateTimeVisit.toString(Qt::SystemLocaleDate);
+        QString firstVisit = item.lastDateTimeVisit.toString(Qt::SystemLocaleDate);
+        int visitCount = item.visitCount;
+        tooltip += "<center> <b>" + item.url + "</b> </center>";
+        tooltip += "<hr/>";
+        tooltip += i18n("First Visit: ") + firstVisit + "<br/>";
+        tooltip += i18n("Last Visit: ") + lastVisit + "<br/>";
+        tooltip += i18n("Number of Visits: ") + QString::number(visitCount);
+
         return tooltip;
     }
     return QVariant();
