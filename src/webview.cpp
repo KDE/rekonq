@@ -370,7 +370,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
     else
     {
-        a = rApp->bookmarkProvider()->actionByName("rekonq_add_bookmark");
+        a = rApp->bookmarkManager()->actionByName("rekonq_add_bookmark");
         menu.addAction(a);
     }
     menu.addAction(sendByMailAction);

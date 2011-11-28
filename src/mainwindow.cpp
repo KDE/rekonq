@@ -259,7 +259,7 @@ void MainWindow::initBookmarkBar()
         delete m_bookmarksBar;
     }
     m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
-    rApp->bookmarkProvider()->registerBookmarkBar(m_bookmarksBar);
+    rApp->bookmarkManager()->registerBookmarkBar(m_bookmarksBar);
 
     QAction *a = actionByName(QL1S("show_bookmarks_toolbar"));
     a->setChecked(XMLGUIBkBar->isVisible());

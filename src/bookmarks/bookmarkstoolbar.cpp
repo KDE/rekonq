@@ -547,7 +547,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             {
                 if (mouseEvent->button() == Qt::MidButton)
                 {
-                    rApp->bookmarkProvider()->bookmarkOwner()->openBookmarkFolder(action->bookmark());
+                    rApp->bookmarkManager()->owner()->openBookmarkFolder(action->bookmark());
                 }
                 else if (distance < QApplication::startDragDistance())
                 {
