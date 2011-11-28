@@ -414,18 +414,25 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
+    Rekonq::OpenType newType = type;
+    // Don't open useless tabs or windows for actions in about: pages
+    if(url.url().contains("about:") && url.url().contains("/"))
+        newType = Rekonq::CurrentTab;
+
     // first, create the webview(s) to not let hangs UI..
     WebTab *tab = 0;
     MainWindow *w = 0;
-    w = (type == Rekonq::NewWindow)
+    w = (newType == Rekonq::NewWindow)
         ? newMainWindow()
         : mainWindow();
 
-    switch (type)
+    switch (newType)
     {
     case Rekonq::NewTab:
         if (ReKonfig::openTabNoWindow())
+        {
             tab = w->mainView()->newWebTab(!ReKonfig::openTabsBack());
+        }
         else
         {
             w = newMainWindow();
