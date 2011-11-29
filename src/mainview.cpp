@@ -56,8 +56,6 @@
 #include <QtGui/QMovie>
 #include <QtGui/QToolButton>
 
-//Hack:
-QString temporaryUglyHackString = "";
 
 MainView::MainView(QWidget *parent)
     : KTabWidget(parent)
@@ -304,13 +302,11 @@ WebTab *MainView::newWebTab(bool focused)
     if (ReKonfig::openTabsNearCurrent())
     {
         insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
-        temporaryUglyHackString = tabText(currentIndex() + 1);
         m_widgetBar->insertWidget(currentIndex() + 1, tab->urlBar());
     }
     else
     {
         addTab(tab, i18n("(Untitled)"));
-        temporaryUglyHackString = tabText(count() - 1);
         m_widgetBar->addWidget(tab->urlBar());
     }
     updateTabBar();
@@ -584,7 +580,7 @@ void MainView::webViewTitleChanged(const QString &title)
     }
     else
     {
-        if (tabTitle != temporaryUglyHackString)
+        if (tabTitle != i18n("(Untitled)"))
             tabBar()->setTabHighlighted(index);
     }
     rApp->historyManager()->updateHistoryEntry(tab->url(), tabTitle);
