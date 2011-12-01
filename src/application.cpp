@@ -416,7 +416,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
     Rekonq::OpenType newType = type;
     // Don't open useless tabs or windows for actions in about: pages
-    if(url.url().contains("about:") && url.url().contains("/"))
+    if (url.url().contains("about:") && url.url().contains("/"))
         newType = Rekonq::CurrentTab;
 
     // first, create the webview(s) to not let hangs UI..

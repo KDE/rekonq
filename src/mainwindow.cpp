@@ -217,7 +217,7 @@ MainWindow::MainWindow()
     setAcceptDrops(true);
 
     // Bookmark ToolBar (needs to be setup after the call to setupGUI())
-    initBookmarkBar();
+    QTimer::singleShot(1, this, SLOT(initBookmarkBar()));
 }
 
 
@@ -259,9 +259,9 @@ void MainWindow::initBookmarkBar()
     }
     m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
     rApp->bookmarkProvider()->registerBookmarkBar(m_bookmarksBar);
+
     QAction *a = actionByName(QL1S("show_bookmarks_toolbar"));
     a->setChecked(XMLGUIBkBar->isVisible());
-    connect(a, SIGNAL(toggled(bool)), this, SLOT(toggleBookmarkBarVisible(bool)));
 }
 
 
@@ -505,6 +505,7 @@ void MainWindow::setupActions()
     a = new KAction(KIcon("bookmarks-bar"), i18n("Bookmarks Toolbar"), this);
     a->setCheckable(true);
     actionCollection()->addAction(QL1S("show_bookmarks_toolbar"), a);
+    connect(a, SIGNAL(toggled(bool)), this, SLOT(toggleBookmarkBarVisible(bool)));
 
     // User Agent
     a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
@@ -614,13 +615,16 @@ void MainWindow::setupPanels()
 void MainWindow::finalizeGUI(KXMLGUIClient* client)
 {
     KXmlGuiWindow::finalizeGUI(client);
-    //update rekonqMenu when GUI has changed
+
+    // update rekonqMenu when GUI has changed
     KMenu *m = qobject_cast<KMenu*>(factory()->container("rekonqMenu", this));
     if (m)
         m_rekonqMenu->addActions(m->actions());
     else
-        kDebug() << "Could not get the rekonqMenu menu. Maybe the rekonqui.rc file wasn't found. Was"
-                 << "rekonq installed correctly?";
+        kDebug() << " ====================== "
+                 << "Could not get the rekonqMenu menu. Maybe the rekonqui.rc file wasn't found."
+                 << "Was rekonq installed correctly?"
+                 << " ====================== ";
 }
 
 
