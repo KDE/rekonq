@@ -302,7 +302,12 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         return;
     }
 
-    if (!isLocal)
+    if (isLocal)
+    {
+        // Load outside local files
+        KRun::run(*appService, replyUrl, 0, false, _suggestedFileName);
+    }
+    else
     {
         KParts::BrowserOpenOrSaveQuestion dlg(rApp->mainWindow(), replyUrl, _mimeType);
 
