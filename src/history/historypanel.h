@@ -50,10 +50,14 @@ private Q_SLOTS:
     virtual void contextMenuEmpty(const QPoint &pos);
 
     void openAll();
+    void deleteEntry();
+    void deleteGroup();
+    void forgetSite();
 
 private:
     virtual void setup();
     virtual QAbstractItemModel* model();
+    int removedFolderIndex;
 };
 
 #endif // HISTORYPANEL_H

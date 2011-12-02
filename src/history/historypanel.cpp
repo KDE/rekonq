@@ -83,6 +83,14 @@ void HistoryPanel::contextMenuItem(const QPoint &pos)
     connect(action, SIGNAL(triggered()), panelTreeView(), SLOT(copyToClipboard()));
     menu.addAction(action);
 
+    action = new KAction(KIcon("edit-clear"), i18n("Remove Entry"), this);
+    connect(action,SIGNAL(triggered()),this,SLOT(deleteEntry()));
+    menu.addAction(action);
+
+    action = new KAction(KIcon("edit-clear"), i18n("Remove all occurences"), this);
+    connect(action,SIGNAL(triggered()),this,SLOT(forgetSite()));
+    menu.addAction(action);
+
     menu.exec(panelTreeView()->mapToGlobal(pos));
 }
 
@@ -94,6 +102,10 @@ void HistoryPanel::contextMenuGroup(const QPoint &pos)
 
     action = new KAction(KIcon("tab-new"), i18n("Open Folder in Tabs"), this);
     connect(action, SIGNAL(triggered()), this, SLOT(openAll()));
+    menu.addAction(action);
+
+    action = new KAction(KIcon("edit-clear"), i18n("Remove Folder"), this);
+    connect(action, SIGNAL(triggered()), this, SLOT(deleteGroup()));
     menu.addAction(action);
 
     menu.exec(panelTreeView()->mapToGlobal(pos));
@@ -131,6 +143,21 @@ void HistoryPanel::openAll()
         emit openUrl(allChild.at(i).url(), Rekonq::NewTab);
 }
 
+void HistoryPanel::deleteGroup()
+{
+    QModelIndex index = panelTreeView()->currentIndex();
+    if (!index.isValid())
+        return;
+
+	//Getting all URLs of sub items.
+    QList<KUrl> allChild;
+    for (int i = 0; i < index.model()->rowCount(index); i++)
+        allChild << qVariantValue<KUrl>(index.child(i, 0).data(Qt::UserRole));
+
+    for (int i = 0; i < allChild.length(); i++)
+        rApp->historyManager()->removeHistoryEntry(allChild.at(i));
+
+}
 
 void HistoryPanel::setup()
 {
@@ -141,6 +168,40 @@ void HistoryPanel::setup()
     const UrlFilterProxyModel *proxy = static_cast<const UrlFilterProxyModel*>(panelTreeView()->model());
     panelTreeView()->expand(proxy->index(0, 0));
 }
+
+void HistoryPanel::deleteEntry()
+{
+    QModelIndex index = panelTreeView()->currentIndex();
+    if(!index.isValid())
+        return;
+    removedFolderIndex=index.parent().row();
+
+    rApp->historyManager()->removeHistoryEntry(qVariantValue< KUrl >(index.data(Qt::UserRole)));
+
+    QModelIndex expandItem = panelTreeView()->model()->index(removedFolderIndex, 0);
+    if (expandItem.isValid())
+        panelTreeView()->expand(expandItem);
+}
+
+void HistoryPanel::forgetSite()
+{
+    QModelIndex index = panelTreeView()->currentIndex();
+    if(!index.isValid())
+        return;
+    removedFolderIndex=index.row();
+
+    QString site = qVariantValue< KUrl >(index.data(Qt::UserRole)).host();
+    QList<HistoryItem> toRemove = rApp->historyManager()->find(site);
+    for(int i = 0; i < toRemove.length(); i++)
+    {
+        rApp->historyManager()->removeHistoryEntry(KUrl(toRemove.at(i).url));
+    }
+
+    QModelIndex expandItem = panelTreeView()->model()->index(removedFolderIndex, 0);
+    if (expandItem.isValid())
+        panelTreeView()->expand(expandItem);
+}
+
 
 
 QAbstractItemModel* HistoryPanel::model()
