@@ -87,7 +87,7 @@ void HistoryPanel::contextMenuItem(const QPoint &pos)
     connect(action,SIGNAL(triggered()),this,SLOT(deleteEntry()));
     menu.addAction(action);
 
-    action = new KAction(KIcon("edit-clear"), i18n("Remove all occurences"), this);
+    action = new KAction(KIcon("edit-clear"), i18n("Remove all occurrences"), this);
     connect(action,SIGNAL(triggered()),this,SLOT(forgetSite()));
     menu.addAction(action);
 
