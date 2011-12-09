@@ -7,7 +7,7 @@ PROJECT( rekonq )
 # Informations to update before to release this package.
 
 # rekonq info
-SET(REKONQ_VERSION "0.8.0" )
+SET(REKONQ_VERSION "0.8.1" )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/version.h )
 
@@ -100,9 +100,15 @@ IF(REKONQ_CAN_BE_COMPILED)
 
     ADD_SUBDIRECTORY( src )
     ADD_SUBDIRECTORY( icons )
-    ADD_SUBDIRECTORY( doc )
-#    ADD_SUBDIRECTORY( i18n )
 
 ENDIF(REKONQ_CAN_BE_COMPILED)
 
 # ================================================================================
+
+# doc & translations
+set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS 1)
+
+# Do not remove or modify these.  
+# The release script substitutes in for these comments with appropriate doc and translation directories.
+#PO_SUBDIR
+#DOC_SUBDIR
