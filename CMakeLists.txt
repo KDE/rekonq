@@ -110,11 +110,16 @@ IF(REKONQ_CAN_BE_COMPILED)
 
     ADD_SUBDIRECTORY( src )
     ADD_SUBDIRECTORY( icons )
-    ADD_SUBDIRECTORY( docs )
-#    ADD_SUBDIRECTORY( i18n )
-
     ADD_SUBDIRECTORY( kwebapp )
 
 ENDIF(REKONQ_CAN_BE_COMPILED)
 
 # ================================================================================
+
+# doc & translations
+set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS 1)
+
+# Do not remove or modify these.
+# The release script substitutes in for these comments with appropriate doc and translation directories.
+#PO_SUBDIR
+#DOC_SUBDIR
