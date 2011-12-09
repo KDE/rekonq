@@ -64,11 +64,11 @@
 
 namespace Rekonq
 {
+
 /**
 * @short notifying message status
 * Different message status
 */
-
 enum Notify
 {
     Success,    ///< url successfully (down)loaded
@@ -90,6 +90,18 @@ enum OpenType
     NewBackTab,     ///< open url in new tab in background
     NewWindow       ///< open url in new window
 };
+
+/**
+* @short data to be synced
+* Different data we can sync
+*/
+enum SyncData
+{
+    Bookmarks,
+    History,
+    Passwords
+};
+
 }
 
 

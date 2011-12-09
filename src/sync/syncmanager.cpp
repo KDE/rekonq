@@ -35,7 +35,8 @@
 #include "application.h"
 #include "bookmarkmanager.h"
 #include "historymanager.h"
-#include "syncwidget.h"
+
+#include "syncassistant.h"
 #include "ftpsynchandler.h"
 
 // KDE Includes
@@ -63,7 +64,16 @@ void SyncManager::loadSettings()
 {
     if (ReKonfig::syncEnabled())
     {
-        resetSyncer();
+        // reset syncer
+        if (_syncImplementation.isNull())
+        {
+            // actually we have just FTP handler...
+            _syncImplementation = new FTPSyncHandler(this);
+        }
+
+        _syncImplementation.data()->initialLoadAndCheck();
+
+        // --- Connect syncmanager to bookmarks & history manager
 
         // bookmarks
         ReKonfig::syncBookmarks()
@@ -92,29 +102,10 @@ void SyncManager::loadSettings()
 
 void SyncManager::showSettings()
 {
-    QPointer<KDialog> dialog = new KDialog();
-    dialog->setCaption(i18nc("@title:window", "Sync Settings"));
-    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
-
-    SyncWidget widget;
-    dialog->setMainWidget(&widget);
-    connect(dialog, SIGNAL(okClicked()), &widget, SLOT(save()));
-    connect(dialog, SIGNAL(okClicked()), this, SLOT(loadSettings()));
+    QPointer<SyncAssistant> dialog = new SyncAssistant();
     dialog->exec();
 
     dialog->deleteLater();
-}
-
-
-void SyncManager::resetSyncer()
-{
-    if (_syncImplementation.isNull())
-    {
-        // actually we have just FTP handler...
-        _syncImplementation = new FTPSyncHandler(this);
-    }
-
-    _syncImplementation.data()->firstTimeSync();
 }
 
 

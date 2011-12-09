@@ -24,59 +24,41 @@
 * ============================================================ */
 
 
-#ifndef FTP_SYNC_HANDLER_H
-#define FTP_SYNC_HANDLER_H
+// Self Includes
+#include "synchosttypewidget.h"
+#include "synchosttypewidget.moc"
 
+// Auto Includes
+#include "rekonq.h"
 
 // Local Includes
-#include "synchandler.h"
-
-// KDE Includes
-#include <KUrl>
-
-// Forward Declarations
-class KJob;
+#include "syncassistant.h"
 
 
-class FTPSyncHandler : public SyncHandler
+SyncHostTypeWidget::SyncHostTypeWidget(QWidget *parent)
+    : QWizardPage(parent)
 {
-    Q_OBJECT
+    setupUi(this);
 
-public:
-    FTPSyncHandler(QObject *parent = 0);
+    if (ReKonfig::syncType() == 0)
+        ftpRadioButton->setChecked(true);
+    else
+        nullRadioButton->setChecked(true);
+}
 
-    void syncHistory();
-    void syncBookmarks();
-    void syncPasswords();
 
-    void initialLoadAndCheck();
+int SyncHostTypeWidget::nextId() const
+{
+    // save
+    if (ftpRadioButton->isChecked())
+    {
+        ReKonfig::setSyncType(0);
+        return SyncAssistant::Page_FTP_Settings;
+    }
+    else
+    {
+        ReKonfig::setSyncType(1);
+        return SyncAssistant::Page_Check;
+    }
 
-private Q_SLOTS:
-    void onBookmarksSyncFinished(KJob *);
-    void onBookmarksStatFinished(KJob *);
-
-    void onHistorySyncFinished(KJob *);
-    void onHistoryStatFinished(KJob *);
-
-    void onPasswordsSyncFinished(KJob *);
-    void onPasswordsStatFinished(KJob *);
-
-Q_SIGNALS:
-    void syncBookmarksFinished(bool);
-    void syncHistoryFinished(bool);
-    void syncPasswordsFinished(bool);
-
-private:
-    bool syncRelativeEnabled(bool);
-
-    QUrl _remoteBookmarksUrl;
-    KUrl _localBookmarksUrl;
-
-    QUrl _remoteHistoryUrl;
-    KUrl _localHistoryUrl;
-
-    QUrl _remotePasswordsUrl;
-    KUrl _localPasswordsUrl;
-};
-
-#endif // FTP_SYNC_HANDLER_H
+}

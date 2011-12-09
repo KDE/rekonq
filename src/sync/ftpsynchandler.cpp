@@ -36,18 +36,22 @@
 #include <klocalizedstring.h>
 
 #include <KIO/Job>
-#include <KIO/JobUiDelegate>
 
 
 FTPSyncHandler::FTPSyncHandler(QObject *parent)
     : SyncHandler(parent)
-    , _firstTimeSynced(false)
 {
 }
 
 
-void FTPSyncHandler::firstTimeSync()
+void FTPSyncHandler::initialLoadAndCheck()
 {
+    if (!ReKonfig::syncEnabled())
+    {
+        _firstTimeSynced = false;
+        return;
+    }
+
     // Bookmarks
     if (ReKonfig::syncBookmarks())
     {
@@ -66,8 +70,6 @@ void FTPSyncHandler::firstTimeSync()
 
         KIO::StatJob *job = KIO::stat(_remoteBookmarksUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
         connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksStatFinished(KJob *)));
-
-        _firstTimeSynced = true;
     }
 
     // History
@@ -88,8 +90,6 @@ void FTPSyncHandler::firstTimeSync()
 
         KIO::StatJob *job = KIO::stat(_remoteHistoryUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
         connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistoryStatFinished(KJob *)));
-
-        _firstTimeSynced = true;
     }
 
     // Passwords
@@ -110,8 +110,6 @@ void FTPSyncHandler::firstTimeSync()
 
         KIO::StatJob *job = KIO::stat(_remotePasswordsUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
         connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsStatFinished(KJob *)));
-
-        _firstTimeSynced = true;
     }
 }
 
@@ -122,11 +120,7 @@ bool FTPSyncHandler::syncRelativeEnabled(bool check)
         return false;
 
     if (!_firstTimeSynced)
-    {
-        kDebug() << "need to sync for the first time...";
-        firstTimeSync();
         return false;
-    }
 
     return check;
 }
@@ -151,13 +145,26 @@ void FTPSyncHandler::onBookmarksStatFinished(KJob *job)
 {
     if (job->error())
     {
-        KIO::Job *job = KIO::file_copy(_localBookmarksUrl, _remoteBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
+        if (job->error() == KIO::ERR_DOES_NOT_EXIST)
+        {
+            KIO::Job *job = KIO::file_copy(_localBookmarksUrl, _remoteBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
+            connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
+
+            emit syncStatus(Rekonq::Bookmarks, true, i18n("Remote bookmarks file does NOT exists. Exporting local copy..."));
+            _firstTimeSynced = true;
+        }
+        else
+        {
+            emit syncStatus(Rekonq::Bookmarks, false, job->errorString());
+        }
     }
     else
     {
         KIO::Job *job = KIO::file_copy(_remoteBookmarksUrl, _localBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
         connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
+
+        emit syncStatus(Rekonq::Bookmarks, true, i18n("Remote bookmarks file exists! Syncing local copy..."));
+        _firstTimeSynced = true;
     }
 }
 
@@ -166,13 +173,11 @@ void FTPSyncHandler::onBookmarksSyncFinished(KJob *job)
 {
     if (job->error())
     {
-        job->uiDelegate()->showErrorMessage();
+        emit syncStatus(Rekonq::Bookmarks, false, job->errorString());
         emit syncBookmarksFinished(false);
         return;
     }
 
-    QDateTime now = QDateTime::currentDateTime();
-    ReKonfig::setLastSyncDateTime(now);
     emit syncBookmarksFinished(true);
 }
 
@@ -196,13 +201,26 @@ void FTPSyncHandler::onHistoryStatFinished(KJob *job)
 {
     if (job->error())
     {
-        KIO::Job *job = KIO::file_copy(_localHistoryUrl, _remoteHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
+        if (job->error() == KIO::ERR_DOES_NOT_EXIST)
+        {
+            KIO::Job *job = KIO::file_copy(_localHistoryUrl, _remoteHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
+            connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
+
+            emit syncStatus(Rekonq::History, true, i18n("Remote history file does NOT exists. Exporting local copy..."));
+            _firstTimeSynced = true;
+        }
+        else
+        {
+            emit syncStatus(Rekonq::History, false, job->errorString());
+        }
     }
     else
     {
         KIO::Job *job = KIO::file_copy(_remoteHistoryUrl, _localHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
         connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
+
+        emit syncStatus(Rekonq::History, true, i18n("Remote history file exists! Syncing local copy..."));
+        _firstTimeSynced = true;
     }
 }
 
@@ -211,13 +229,11 @@ void FTPSyncHandler::onHistorySyncFinished(KJob *job)
 {
     if (job->error())
     {
-        job->uiDelegate()->showErrorMessage();
+        emit syncStatus(Rekonq::History, false, job->errorString());
         emit syncHistoryFinished(false);
         return;
     }
 
-    QDateTime now = QDateTime::currentDateTime();
-    ReKonfig::setLastSyncDateTime(now);
     emit syncHistoryFinished(true);
 }
 
@@ -241,13 +257,26 @@ void FTPSyncHandler::onPasswordsStatFinished(KJob *job)
 {
     if (job->error())
     {
-        KIO::Job *job = KIO::file_copy(_localPasswordsUrl, _remotePasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
+        if (job->error() == KIO::ERR_DOES_NOT_EXIST)
+        {
+            KIO::Job *job = KIO::file_copy(_localPasswordsUrl, _remotePasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
+            connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
+
+            emit syncStatus(Rekonq::Passwords, true, i18n("Remote passwords file does NOT exists. Exporting local copy..."));
+            _firstTimeSynced = true;
+        }
+        else
+        {
+            emit syncStatus(Rekonq::Passwords, false, job->errorString());
+        }
     }
     else
     {
         KIO::Job *job = KIO::file_copy(_remotePasswordsUrl, _localPasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
         connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
+
+        emit syncStatus(Rekonq::Passwords, true, i18n("Remote passwords file exists! Syncing local copy..."));
+        _firstTimeSynced = true;
     }
 }
 
@@ -256,12 +285,10 @@ void FTPSyncHandler::onPasswordsSyncFinished(KJob *job)
 {
     if (job->error())
     {
-        job->uiDelegate()->showErrorMessage();
+        emit syncStatus(Rekonq::Passwords, false, job->errorString());
         emit syncPasswordsFinished(false);
         return;
     }
 
-    QDateTime now = QDateTime::currentDateTime();
-    ReKonfig::setLastSyncDateTime(now);
     emit syncPasswordsFinished(true);
 }

@@ -24,59 +24,25 @@
 * ============================================================ */
 
 
-#ifndef FTP_SYNC_HANDLER_H
-#define FTP_SYNC_HANDLER_H
-
+// Self Includes
+#include "syncassistant.h"
+#include "syncassistant.moc"
 
 // Local Includes
-#include "synchandler.h"
+#include "synccheckwidget.h"
+#include "syncdatawidget.h"
+#include "synchosttypewidget.h"
 
-// KDE Includes
-#include <KUrl>
-
-// Forward Declarations
-class KJob;
+#include "syncftpsettingswidget.h"
 
 
-class FTPSyncHandler : public SyncHandler
+SyncAssistant::SyncAssistant(QWidget *parent)
+    : QWizard(parent)
 {
-    Q_OBJECT
+    setWindowTitle(i18n("sync assistant"));
 
-public:
-    FTPSyncHandler(QObject *parent = 0);
-
-    void syncHistory();
-    void syncBookmarks();
-    void syncPasswords();
-
-    void initialLoadAndCheck();
-
-private Q_SLOTS:
-    void onBookmarksSyncFinished(KJob *);
-    void onBookmarksStatFinished(KJob *);
-
-    void onHistorySyncFinished(KJob *);
-    void onHistoryStatFinished(KJob *);
-
-    void onPasswordsSyncFinished(KJob *);
-    void onPasswordsStatFinished(KJob *);
-
-Q_SIGNALS:
-    void syncBookmarksFinished(bool);
-    void syncHistoryFinished(bool);
-    void syncPasswordsFinished(bool);
-
-private:
-    bool syncRelativeEnabled(bool);
-
-    QUrl _remoteBookmarksUrl;
-    KUrl _localBookmarksUrl;
-
-    QUrl _remoteHistoryUrl;
-    KUrl _localHistoryUrl;
-
-    QUrl _remotePasswordsUrl;
-    KUrl _localPasswordsUrl;
-};
-
-#endif // FTP_SYNC_HANDLER_H
+    setPage(Page_Data, new SyncDataWidget(this));
+    setPage(Page_Type, new SyncHostTypeWidget(this));
+    setPage(Page_FTP_Settings, new SyncFTPSettingsWidget(this));
+    setPage(Page_Check, new SyncCheckWidget(this));
+}

@@ -37,16 +37,25 @@
 
 class SyncHandler : public QObject
 {
-    
+    Q_OBJECT
+
 public:
-    SyncHandler(QObject *parent = 0) : QObject(parent) {}
-    virtual ~SyncHandler() {}
-    
+    SyncHandler(QObject *parent = 0);
+    virtual ~SyncHandler();
+
     virtual void syncHistory() = 0;
     virtual void syncBookmarks() = 0;
     virtual void syncPasswords() = 0;
 
-    virtual void firstTimeSync() = 0;
+    virtual void initialLoadAndCheck() = 0;
+
+Q_SIGNALS:
+    void syncStatus(Rekonq::SyncData type, bool syncDone, QString message);
+
+protected:
+    bool _firstTimeSynced;
+
+
 };
 
 #endif // SYNC_HANDLER_H

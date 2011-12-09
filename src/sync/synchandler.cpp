@@ -24,59 +24,18 @@
 * ============================================================ */
 
 
-#ifndef FTP_SYNC_HANDLER_H
-#define FTP_SYNC_HANDLER_H
-
-
-// Local Includes
+// Self Includes
 #include "synchandler.h"
-
-// KDE Includes
-#include <KUrl>
-
-// Forward Declarations
-class KJob;
+#include "synchandler.moc"
 
 
-class FTPSyncHandler : public SyncHandler
+SyncHandler::SyncHandler(QObject *parent)
+    : QObject(parent)
+    , _firstTimeSynced(false)
 {
-    Q_OBJECT
+}
 
-public:
-    FTPSyncHandler(QObject *parent = 0);
 
-    void syncHistory();
-    void syncBookmarks();
-    void syncPasswords();
-
-    void initialLoadAndCheck();
-
-private Q_SLOTS:
-    void onBookmarksSyncFinished(KJob *);
-    void onBookmarksStatFinished(KJob *);
-
-    void onHistorySyncFinished(KJob *);
-    void onHistoryStatFinished(KJob *);
-
-    void onPasswordsSyncFinished(KJob *);
-    void onPasswordsStatFinished(KJob *);
-
-Q_SIGNALS:
-    void syncBookmarksFinished(bool);
-    void syncHistoryFinished(bool);
-    void syncPasswordsFinished(bool);
-
-private:
-    bool syncRelativeEnabled(bool);
-
-    QUrl _remoteBookmarksUrl;
-    KUrl _localBookmarksUrl;
-
-    QUrl _remoteHistoryUrl;
-    KUrl _localHistoryUrl;
-
-    QUrl _remotePasswordsUrl;
-    KUrl _localPasswordsUrl;
-};
-
-#endif // FTP_SYNC_HANDLER_H
+SyncHandler::~SyncHandler()
+{
+}

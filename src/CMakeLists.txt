@@ -93,9 +93,15 @@ SET( rekonq_KDEINIT_SRCS
     useragent/useragentmanager.cpp
     useragent/useragentwidget.cpp
     #----------------------------------------
-    sync/syncmanager.cpp
-    sync/syncwidget.cpp
     sync/ftpsynchandler.cpp
+    sync/syncassistant.cpp
+    sync/synchandler.cpp
+    sync/syncmanager.cpp
+    #
+    sync/synccheckwidget.cpp
+    sync/syncdatawidget.cpp
+    sync/synchosttypewidget.cpp
+    sync/syncftpsettingswidget.cpp
 )
 
 
@@ -109,7 +115,11 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     sslinfo.ui
     webappcreation.ui
     useragent/useragentsettings.ui
-    sync/settings_sync.ui
+    # ----------------------------------------
+    sync/sync_check.ui
+    sync/sync_data.ui
+    sync/sync_ftp_settings.ui
+    sync/sync_host_type.ui
  )
 
 KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )

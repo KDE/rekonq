@@ -46,15 +46,17 @@ class REKONQ_TESTS_EXPORT SyncManager : public QObject
 public:
     SyncManager(QObject *parent = 0);
     ~SyncManager();
-    
-    void resetSyncer();
+
+    SyncHandler *handler() const
+    {
+        return _syncImplementation.data();
+    };
 
 public Q_SLOTS:
     void syncBookmarks();
     void syncHistory();
     void syncPasswords();
 
-private Q_SLOTS:
     void loadSettings();
     void showSettings();
 

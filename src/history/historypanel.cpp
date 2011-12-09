@@ -84,11 +84,11 @@ void HistoryPanel::contextMenuItem(const QPoint &pos)
     menu.addAction(action);
 
     action = new KAction(KIcon("edit-clear"), i18n("Remove Entry"), this);
-    connect(action,SIGNAL(triggered()),this,SLOT(deleteEntry()));
+    connect(action, SIGNAL(triggered()), this, SLOT(deleteEntry()));
     menu.addAction(action);
 
     action = new KAction(KIcon("edit-clear"), i18n("Remove all occurrences"), this);
-    connect(action,SIGNAL(triggered()),this,SLOT(forgetSite()));
+    connect(action, SIGNAL(triggered()), this, SLOT(forgetSite()));
     menu.addAction(action);
 
     menu.exec(panelTreeView()->mapToGlobal(pos));
@@ -149,7 +149,7 @@ void HistoryPanel::deleteGroup()
     if (!index.isValid())
         return;
 
-	//Getting all URLs of sub items.
+    //Getting all URLs of sub items.
     QList<KUrl> allChild;
     for (int i = 0; i < index.model()->rowCount(index); i++)
         allChild << qVariantValue<KUrl>(index.child(i, 0).data(Qt::UserRole));
@@ -172,9 +172,9 @@ void HistoryPanel::setup()
 void HistoryPanel::deleteEntry()
 {
     QModelIndex index = panelTreeView()->currentIndex();
-    if(!index.isValid())
+    if (!index.isValid())
         return;
-    removedFolderIndex=index.parent().row();
+    removedFolderIndex = index.parent().row();
 
     rApp->historyManager()->removeHistoryEntry(qVariantValue< KUrl >(index.data(Qt::UserRole)));
 
@@ -186,13 +186,13 @@ void HistoryPanel::deleteEntry()
 void HistoryPanel::forgetSite()
 {
     QModelIndex index = panelTreeView()->currentIndex();
-    if(!index.isValid())
+    if (!index.isValid())
         return;
-    removedFolderIndex=index.row();
+    removedFolderIndex = index.row();
 
     QString site = qVariantValue< KUrl >(index.data(Qt::UserRole)).host();
     QList<HistoryItem> toRemove = rApp->historyManager()->find(site);
-    for(int i = 0; i < toRemove.length(); i++)
+    for (int i = 0; i < toRemove.length(); i++)
     {
         rApp->historyManager()->removeHistoryEntry(KUrl(toRemove.at(i).url));
     }

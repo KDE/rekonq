@@ -43,6 +43,7 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QWeakPointer>
 
+
 // Forward Declarations
 class AdBlockManager;
 class BookmarkManager;

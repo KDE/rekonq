@@ -25,28 +25,20 @@
 
 
 // Self Includes
-#include "syncwidget.h"
-#include "syncwidget.moc"
+#include "syncftpsettingswidget.h"
+#include "syncftpsettingswidget.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
-#include "syncmanager.h"
-#include "application.h"
+#include "syncassistant.h"
 
 
-SyncWidget::SyncWidget(QWidget *parent)
-    : QWidget(parent)
-    , _changed(false)
+SyncFTPSettingsWidget::SyncFTPSettingsWidget(QWidget *parent)
+    : QWizardPage(parent)
 {
     setupUi(this);
-
-    kcfg_syncEnabled->setChecked(ReKonfig::syncEnabled());
-
-    kcfg_syncBookmarks->setChecked(ReKonfig::syncBookmarks());
-    kcfg_syncHistory->setChecked(ReKonfig::syncHistory());
-    kcfg_syncPasswords->setChecked(ReKonfig::syncPasswords());
 
     kcfg_syncHost->setText(ReKonfig::syncHost());
     kcfg_syncUser->setText(ReKonfig::syncUser());
@@ -54,71 +46,18 @@ SyncWidget::SyncWidget(QWidget *parent)
     kcfg_syncPath->setText(ReKonfig::syncPath());
     kcfg_syncPort->setValue(ReKonfig::syncPort());
 
-    bool isSyncEnabled = ReKonfig::syncEnabled();
-    enablewidgets(isSyncEnabled);
-
     kcfg_syncPass->setPasswordMode(true);
-
-    connect(kcfg_syncEnabled, SIGNAL(clicked()), this, SLOT(hasChanged()));
-    connect(syncNowButton, SIGNAL(clicked()), this, SLOT(syncNow()));
-
-    setSyncLabel(ReKonfig::lastSyncDateTime());
 }
 
 
-void SyncWidget::save()
+int SyncFTPSettingsWidget::nextId() const
 {
-    ReKonfig::setSyncEnabled(kcfg_syncEnabled->isChecked());
-
-    ReKonfig::setSyncBookmarks(kcfg_syncBookmarks->isChecked());
-    ReKonfig::setSyncHistory(kcfg_syncHistory->isChecked());
-    ReKonfig::setSyncPasswords(kcfg_syncPasswords->isChecked());
-
+    // save
     ReKonfig::setSyncHost(kcfg_syncHost->text());
     ReKonfig::setSyncUser(kcfg_syncUser->text());
     ReKonfig::setSyncPass(kcfg_syncPass->text());
     ReKonfig::setSyncPath(kcfg_syncPath->text());
     ReKonfig::setSyncPort(kcfg_syncPort->value());
 
-    rApp->syncManager()->resetSyncer();
-}
-
-
-bool SyncWidget::changed()
-{
-    return _changed;
-}
-
-
-void SyncWidget::hasChanged()
-{
-    enablewidgets(kcfg_syncEnabled->isChecked());
-
-    _changed = true;
-    emit changed(true);
-}
-
-
-void SyncWidget::enablewidgets(bool b)
-{
-    syncGroupBox->setEnabled(b);
-    ownCloudGroupBox->setEnabled(b);
-    syncNowButton->setEnabled(b);
-}
-
-
-void SyncWidget::setSyncLabel(const QDateTime &dt)
-{
-    if (dt.isNull())
-        lastSyncTimeLabel->setText(i18n("Last Sync: NEVER!"));
-    else
-        lastSyncTimeLabel->setText(i18n("Last Sync: %1", dt.toString(Qt::DefaultLocaleShortDate)));
-}
-
-
-void SyncWidget::syncNow()
-{
-    rApp->syncManager()->resetSyncer();
-
-    // TODO do something in the sync UI...
+    return SyncAssistant::Page_Check;
 }

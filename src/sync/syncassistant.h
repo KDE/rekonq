@@ -24,42 +24,28 @@
 * ============================================================ */
 
 
-#ifndef SYNC_WIDGET_H
-#define SYNC_WIDGET_H
+#ifndef SYNC_ASSISTANT_H
+#define SYNC_ASSISTANT_H
 
 
-// Rekonq Includes
-#include "rekonq_defines.h"
-
-// Ui Includes
-#include "ui_settings_sync.h"
-
-// Qt Includes
-#include <QtGui/QWidget>
+// KDE Includes
+#include <QWizard>
 
 
-class SyncWidget : public QWidget, private Ui::Sync
+class SyncAssistant : public QWizard
 {
     Q_OBJECT
 
 public:
-    SyncWidget(QWidget *parent = 0);
+    enum
+    {
+        Page_Data,
+        Page_Type,
+        Page_FTP_Settings,
+        Page_Check
+    };
 
-    bool changed();
-
-Q_SIGNALS:
-    void changed(bool);
-
-private Q_SLOTS:
-    void save();
-    void hasChanged();
-    void syncNow();
-
-private:
-    void enablewidgets(bool);
-    void setSyncLabel(const QDateTime &);
-
-    bool _changed;
+    SyncAssistant(QWidget *parent = 0);
 };
 
-#endif // SYNC_WIDGET_H
+#endif

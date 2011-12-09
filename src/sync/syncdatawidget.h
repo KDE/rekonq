@@ -24,59 +24,41 @@
 * ============================================================ */
 
 
-#ifndef FTP_SYNC_HANDLER_H
-#define FTP_SYNC_HANDLER_H
+#ifndef SYNC_DATA_WIDGET_H
+#define SYNC_DATA_WIDGET_H
 
 
-// Local Includes
-#include "synchandler.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
-// KDE Includes
-#include <KUrl>
+// Ui Includes
+#include "ui_sync_data.h"
 
-// Forward Declarations
-class KJob;
+// Qt Includes
+#include <QWizardPage>
 
 
-class FTPSyncHandler : public SyncHandler
+class SyncDataWidget : public QWizardPage, private Ui::SyncData
 {
     Q_OBJECT
 
 public:
-    FTPSyncHandler(QObject *parent = 0);
+    SyncDataWidget(QWidget *parent = 0);
 
-    void syncHistory();
-    void syncBookmarks();
-    void syncPasswords();
+    int nextId() const;
 
-    void initialLoadAndCheck();
-
-private Q_SLOTS:
-    void onBookmarksSyncFinished(KJob *);
-    void onBookmarksStatFinished(KJob *);
-
-    void onHistorySyncFinished(KJob *);
-    void onHistoryStatFinished(KJob *);
-
-    void onPasswordsSyncFinished(KJob *);
-    void onPasswordsStatFinished(KJob *);
+    bool changed();
 
 Q_SIGNALS:
-    void syncBookmarksFinished(bool);
-    void syncHistoryFinished(bool);
-    void syncPasswordsFinished(bool);
+    void changed(bool);
+
+private Q_SLOTS:
+    void hasChanged();
 
 private:
-    bool syncRelativeEnabled(bool);
+    void enablewidgets(bool);
 
-    QUrl _remoteBookmarksUrl;
-    KUrl _localBookmarksUrl;
-
-    QUrl _remoteHistoryUrl;
-    KUrl _localHistoryUrl;
-
-    QUrl _remotePasswordsUrl;
-    KUrl _localPasswordsUrl;
+    bool _changed;
 };
 
-#endif // FTP_SYNC_HANDLER_H
+#endif // SYNC_WIDGET_H
