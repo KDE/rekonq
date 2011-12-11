@@ -145,28 +145,22 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
 {
     KUrl destUrl;
 
-    int result = KIO::R_OVERWRITE;
     const QString fileName((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
 
-    do
+    if (ReKonfig::askDownloadPath())
     {
-        if (ReKonfig::askDownloadPath())
-        {
-            // follow bug:184202 fixes
-            destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);
-        }
-        else
-        {
-            destUrl = KUrl(ReKonfig::downloadPath().path() + QL1C('/') + fileName);
-        }
-
-        kDebug() << "DEST URL: " << destUrl;
-
-        if (destUrl.isEmpty())
-            return false;
-
+        // follow bug:184202 fixes
+        destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);
     }
-    while (result == KIO::R_CANCEL && destUrl.isValid());
+    else
+    {
+        destUrl = KUrl(ReKonfig::downloadPath().path() + QL1C('/') + fileName);
+    }
+
+    kDebug() << "DEST URL: " << destUrl;
+
+    if (!destUrl.isValid())
+        return false;
 
     // Save download history
     DownloadItem *item = addDownload(srcUrl.pathOrUrl(), destUrl.pathOrUrl());
