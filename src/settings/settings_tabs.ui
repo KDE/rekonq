@@ -198,6 +198,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="kcfg_openExternalLinksInNewWindow">
+        <property name="text">
+         <string>Open external links in a new window</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="kcfg_lastTabClosesWindow">
         <property name="text">
          <string>Closing last tab closes window</string>

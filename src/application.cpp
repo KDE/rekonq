@@ -212,6 +212,7 @@ int Application::newInstance()
                 urlList += KUrl(args->arg(i));   // "rekonq kde.org" || "rekonq kde:kdialog" case
         }
 
+        // first argument: 99% of the time we have just that...
         if (isFirstLoad && !isRekonqCrashed)
         {
             // No windows in the current desktop? No windows at all?
@@ -220,26 +221,37 @@ int Application::newInstance()
         }
         else
         {
-            if (ReKonfig::openTabNoWindow())
+            if (!ReKonfig::openExternalLinksInNewWindow())
             {
                 loadUrl(urlList.at(0), Rekonq::NewTab);
-                if (!mainWindow()->isActiveWindow())
-                    KWindowSystem::demandAttention(mainWindow()->winId(), true);
             }
             else
+            {
                 loadUrl(urlList.at(0), Rekonq::NewWindow);
+            }
+
+            if (!mainWindow()->isActiveWindow())
+                KWindowSystem::demandAttention(mainWindow()->winId(), true);
         }
 
-        for (int i = 1; i < urlList.count(); ++i)
-            loadUrl(urlList.at(i), Rekonq::NewTab);
+        // following arguments: what's best behavior here? I'm pretty sure no one has real opinion here
+        if (!ReKonfig::openExternalLinksInNewWindow())
+        {
+            for (int i = 1; i < urlList.count(); ++i)
+                loadUrl(urlList.at(i), Rekonq::NewTab);
+        }
+        else
+        {
+            for (int i = 1; i < urlList.count(); ++i)
+                loadUrl(urlList.at(i), Rekonq::NewWindow);
+        }
 
         KStartupInfo::appStarted();
-
     }
     else
     {
-
-        if (isFirstLoad && !isRekonqCrashed)  // we are starting rekonq, for the first time with no args: use startup behaviour
+        // we are starting rekonq, for the first time with no args: use startup behaviour
+        if (isFirstLoad && !isRekonqCrashed)
         {
             switch (ReKonfig::startupBehaviour())
             {
