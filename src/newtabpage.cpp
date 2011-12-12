@@ -418,6 +418,8 @@ void NewTabPage::historyPage()
     int i = 0;
     QString faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
     QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/mimetypes/text-html.png");
+    const int maxTextSize = 103;
+    const int truncateSize = 100;
     do
     {
         QModelIndex index = model->index(i, 0, QModelIndex());
@@ -426,6 +428,8 @@ void NewTabPage::historyPage()
             m_root.appendInside(markup(QL1S("h3")));
             m_root.lastChild().setPlainText(index.data().toString());
 
+            m_root.appendInside(markup(QL1S(".folder")));
+            QWebElement little = m_root.lastChild();
             for (int j = 0; j < model->rowCount(index); ++j)
             {
                 QModelIndex son = model->index(j, 0, index);
@@ -435,17 +439,25 @@ void NewTabPage::historyPage()
                 if (QFile::exists(b))
                     icon = QL1S("file://") + b;
 
-                m_root.appendInside(son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm"));
-                m_root.appendInside(QL1S("  "));
-                m_root.appendInside(markup(QL1S("img")));
-                m_root.lastChild().setAttribute(QL1S("src"), icon);
-                m_root.lastChild().setAttribute(QL1S("width"), QL1S("16"));
-                m_root.lastChild().setAttribute(QL1S("height"), QL1S("16"));
-                m_root.appendInside(QL1S(" "));
-                m_root.appendInside(markup(QL1S("a")));
-                m_root.lastChild().setAttribute(QL1S("href") , u.url());
-                m_root.lastChild().appendInside(son.data().toString());
-                m_root.appendInside(QL1S("<br />"));
+                little.appendInside(son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm"));
+                little.appendInside(QL1S("&nbsp;&nbsp;"));
+                little.appendInside(markup(QL1S("img")));
+                little.lastChild().setAttribute(QL1S("src"), icon);
+                little.lastChild().setAttribute(QL1S("width"), QL1S("16"));
+                little.lastChild().setAttribute(QL1S("height"), QL1S("16"));
+                little.appendInside(QL1S("&nbsp;&nbsp;"));
+                little.appendInside(markup(QL1S("a")));
+                little.lastChild().setAttribute(QL1S("href") , u.url());
+
+                QString shownUrl = son.data().toString();
+                if (shownUrl.length() > maxTextSize)
+                {
+                    shownUrl.truncate(truncateSize);
+                    shownUrl += QL1S("...");
+                }
+                little.lastChild().appendInside(shownUrl);
+
+                little.appendInside(QL1S("<br />"));
             }
         }
         i++;
@@ -491,10 +503,10 @@ void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
         KBookmark bm = group.first();
         parent.appendInside(markup(QL1S("h3")));
         parent.lastChild().setPlainText(group.fullText());
-        parent.appendInside(markup(QL1S(".bookfolder")));
+        parent.appendInside(markup(QL1S(".folder")));
         while (!bm.isNull())
         {
-            createBookItem(bm, parent.lastChild()); // it is .bookfolder
+            createBookItem(bm, parent.lastChild()); // it is .folder
             bm = group.next(bm);
         }
     }
