@@ -76,28 +76,34 @@ UrlResolver::UrlResolver(const QString &typedUrl)
 
     if (_browseRegexp.isEmpty())
     {
-        // FIXME move to use QL1S here!!!
-
         QString protocol = QString("^(%1)").arg(KProtocolInfo::protocols().join("|"));
 
-        QString localhost = "^localhost";
+        QString localhost = QL1S("^localhost");
 
-        QString local = "^/";
+        QString local = QL1S("^/");
 
-        QString ipv4 = "^0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])"\
-                       "\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])";
+        QString ipv4 = QL1S("^0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])"\
+                            "\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.0*([1-9]?\\d|1\\d\\d|2[0-4]\\d|25[0-5])");
 
-        QString ipv6 = "^([0-9a-fA-F]{4}|0)(\\:([0-9a-fA-F]{4}|0)){7}";
+        QString ipv6 = QL1S("^([0-9a-fA-F]{4}|0)(\\:([0-9a-fA-F]{4}|0)){7}");
 
-        QString address = "[\\d\\w-.]+\\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|"\
-                          "c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrstu]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|"\
-                          "h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|"\
-                          "m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|"\
-                          "s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|"\
-                          "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|local|mil|museum|name|net|org|"\
-                          "pro)";
+        QString address = QL1S("[\\d\\w-.]+\\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|"\
+                               "c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrstu]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|"\
+                               "h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|"\
+                               "m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|"\
+                               "s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|"\
+                               "y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|local|mil|museum|name|net|org|"\
+                               "pro)");
 
-        _browseRegexp = QRegExp('(' + protocol + ")|(" + localhost + ")|(" + local + ")|(" + address + ")|(" + ipv6 + ")|(" + ipv4 + ')');
+        QString joiner = QL1S(")|(");
+        _browseRegexp = QRegExp(QL1C('(') +
+                                protocol + joiner +
+                                localhost + joiner +
+                                local + joiner +
+                                address + joiner +
+                                ipv6 + joiner +
+                                ipv4 + QL1C(')')
+                               );
     }
 
     if (_searchEnginesRegexp.isEmpty())
@@ -106,11 +112,11 @@ UrlResolver::UrlResolver(const QString &typedUrl)
         QString engineUrl;
         Q_FOREACH(KService::Ptr s, SearchEngine::favorites())
         {
-            engineUrl = QRegExp::escape(s->property("Query").toString()).replace("\\\\\\{@\\}", "[\\d\\w-.]+");
+            engineUrl = QRegExp::escape(s->property("Query").toString()).replace(QL1S("\\\\\\{@\\}"), QL1S("[\\d\\w-.]+"));
             if (reg.isEmpty())
-                reg = '(' + engineUrl + ')';
+                reg = QL1C('(') + engineUrl + QL1C(')');
             else
-                reg = reg + "|(" + engineUrl + ')';
+                reg = reg + QL1S("|(") + engineUrl + QL1C(')');
         }
         _searchEnginesRegexp = QRegExp(reg);
     }
@@ -122,17 +128,17 @@ UrlSearchList UrlResolver::orderedSearchItems()
     if (_typedString.startsWith(QL1S("about:")))
     {
         UrlSearchList list;
-        UrlSearchItem home(UrlSearchItem::Browse, QString("about:home"),       QL1S("home"));
+        UrlSearchItem home(UrlSearchItem::Browse, QL1S("about:home"),       QL1S("home"));
         list << home;
-        UrlSearchItem favs(UrlSearchItem::Browse, QString("about:favorites"),  QL1S("favorites"));
+        UrlSearchItem favs(UrlSearchItem::Browse, QL1S("about:favorites"),  QL1S("favorites"));
         list << favs;
-        UrlSearchItem clos(UrlSearchItem::Browse, QString("about:closedTabs"), QL1S("closed tabs"));
+        UrlSearchItem clos(UrlSearchItem::Browse, QL1S("about:closedTabs"), QL1S("closed tabs"));
         list << clos;
-        UrlSearchItem book(UrlSearchItem::Browse, QString("about:bookmarks"),  QL1S("bookmarks"));
+        UrlSearchItem book(UrlSearchItem::Browse, QL1S("about:bookmarks"),  QL1S("bookmarks"));
         list << book;
-        UrlSearchItem hist(UrlSearchItem::Browse, QString("about:history"),    QL1S("history"));
+        UrlSearchItem hist(UrlSearchItem::Browse, QL1S("about:history"),    QL1S("history"));
         list << hist;
-        UrlSearchItem down(UrlSearchItem::Browse, QString("about:downloads"),  QL1S("downloads"));
+        UrlSearchItem down(UrlSearchItem::Browse, QL1S("about:downloads"),  QL1S("downloads"));
         list << down;
 
         return list;
@@ -340,7 +346,7 @@ void UrlResolver::computeHistory()
 
     Q_FOREACH(const HistoryItem & i, found)
     {
-        if (_searchEnginesRegexp.indexIn(i.url) == -1) //filter all urls that are search engine results
+        if (_searchEnginesRegexp.isEmpty() || _searchEnginesRegexp.indexIn(i.url) == -1) //filter all urls that are search engine results
         {
             UrlSearchItem gItem(UrlSearchItem::History, i.url, i.title);
             _history << gItem;
