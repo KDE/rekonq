@@ -182,8 +182,13 @@ private Q_SLOTS:
     void enableNetworkAnalysis(bool);
     void setEditable(bool);
 
-    void initBookmarkBar();
     void toggleBookmarkBarVisible(bool);
+
+    /**
+     * This is for the things to do ABSOLUTELY AFTER ctor launch:
+     * the less, the better.
+     */
+    void postLaunch();
 
 private:
     MainView *m_view;

@@ -217,8 +217,8 @@ MainWindow::MainWindow()
     // accept d'n'd
     setAcceptDrops(true);
 
-    // Bookmark ToolBar (needs to be setup after the call to setupGUI())
-    QTimer::singleShot(1, this, SLOT(initBookmarkBar()));
+    // Things that need to be setup after the call to setupGUI() and after ctor call
+    QTimer::singleShot(1, this, SLOT(postLaunch()));
 }
 
 
@@ -247,8 +247,9 @@ void MainWindow::setupToolbars()
 }
 
 
-void MainWindow::initBookmarkBar()
+void MainWindow::postLaunch()
 {
+    // Bookmarks Bar
     KToolBar *XMLGUIBkBar = toolBar("bookmarkToolBar");
     if (!XMLGUIBkBar)
         return;
@@ -261,8 +262,19 @@ void MainWindow::initBookmarkBar()
     m_bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
     rApp->bookmarkManager()->registerBookmarkBar(m_bookmarksBar);
 
-    QAction *a = actionByName(QL1S("show_bookmarks_toolbar"));
+    QAction *a;
+
+    // Bookmarks bar action
+    a = actionByName(QL1S("show_bookmarks_toolbar"));
     a->setChecked(XMLGUIBkBar->isVisible());
+
+    // History panel action
+    a = actionByName(QL1S("show_history_panel"));
+    a->setChecked(m_historyPanel->isVisible());
+
+    // Bookmarks panel action
+    a = actionByName(QL1S("show_bookmarks_panel"));
+    a->setChecked(m_bookmarksPanel->isVisible());
 }
 
 
@@ -558,7 +570,8 @@ void MainWindow::setupPanels()
 
     // STEP 1
     // Setup history panel
-    m_historyPanel = new HistoryPanel(i18n("History Panel"), this);
+    const QString historyTitle = i18n("History Panel");
+    m_historyPanel = new HistoryPanel(historyTitle, this);
     connect(m_historyPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)),
             rApp, SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
     connect(m_historyPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
@@ -567,14 +580,16 @@ void MainWindow::setupPanels()
     addDockWidget(Qt::LeftDockWidgetArea, m_historyPanel);
 
     // setup history panel action
-    a = (KAction *) m_historyPanel->toggleViewAction();
+    a = new KAction(KIcon("view-history"), historyTitle, this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
-    a->setIcon(KIcon("view-history"));
     actionCollection()->addAction(QL1S("show_history_panel"), a);
+    a->setCheckable(true);
+    connect(a, SIGNAL(triggered(bool)), m_historyPanel, SLOT(setVisible(bool)));
 
     // STEP 2
     // Setup bookmarks panel
-    m_bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
+    const QString bookmarksTitle = i18n("Bookmarks Panel");
+    m_bookmarksPanel = new BookmarksPanel(bookmarksTitle, this);
     connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)),
             rApp, SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
     connect(m_bookmarksPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
@@ -585,10 +600,11 @@ void MainWindow::setupPanels()
     rApp->bookmarkManager()->registerBookmarkPanel(m_bookmarksPanel);
 
     // setup bookmarks panel action
-    a = (KAction *) m_bookmarksPanel->toggleViewAction();
+    a = new KAction(KIcon("bookmarks-organize"), bookmarksTitle, this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
-    a->setIcon(KIcon("bookmarks-organize"));
     actionCollection()->addAction(QL1S("show_bookmarks_panel"), a);
+    a->setCheckable(true);
+    connect(a, SIGNAL(triggered(bool)), m_bookmarksPanel, SLOT(setVisible(bool)));
 
     // STEP 3
     // Setup webinspector panel
