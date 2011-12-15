@@ -41,6 +41,7 @@
 FTPSyncHandler::FTPSyncHandler(QObject *parent)
     : SyncHandler(parent)
 {
+    kDebug() << "creating FTP handler...";
 }
 
 
