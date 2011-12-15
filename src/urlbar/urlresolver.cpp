@@ -346,7 +346,7 @@ void UrlResolver::computeHistory()
 
     Q_FOREACH(const HistoryItem & i, found)
     {
-        if (_searchEnginesRegexp.indexIn(i.url) == -1) //filter all urls that are search engine results
+        if (_searchEnginesRegexp.isEmpty() || _searchEnginesRegexp.indexIn(i.url) == -1) //filter all urls that are search engine results
         {
             UrlSearchItem gItem(UrlSearchItem::History, i.url, i.title);
             _history << gItem;
