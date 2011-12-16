@@ -90,7 +90,7 @@ private:
 
 public Q_SLOTS:
     void openDownloadsPage();
-    void homePage(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
+    void homePage();
 
     /**
      * Notifies a message in a popup

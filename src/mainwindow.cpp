@@ -348,7 +348,7 @@ void MainWindow::setupActions()
     a->setShortcut(fullScreenShortcut);
 
     a = actionCollection()->addAction(KStandardAction::Home);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(homePage(Qt::MouseButtons, Qt::KeyboardModifiers)));
+    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(homePage()));
     KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
 
     a = KStandardAction::redisplay(m_view, SLOT(webReload()), actionCollection());
@@ -1037,16 +1037,13 @@ void MainWindow::viewPageSource()
 }
 
 
-void MainWindow::homePage(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers keyboardModifiers)
+void MainWindow::homePage()
 {
     KUrl homeUrl = ReKonfig::useNewTabPage()
                    ? KUrl(QL1S("about:home"))
                    : KUrl(ReKonfig::homePage());
 
-    if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
-        rApp->loadUrl(homeUrl, Rekonq::NewTab);
-    else
-        currentTab()->view()->load(homeUrl);
+    currentTab()->view()->load(homeUrl);
 }
 
 
