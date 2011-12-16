@@ -606,7 +606,7 @@ void NewTabPage::downloadsPage()
         KUrl u = KUrl(item->destinationUrl());
         QString fName = u.fileName();
         QString dir = QL1S("file://") + u.directory();
-        QString file = dir +  QL1C('/') + fName;
+        QString file = dir + fName;
 
         KIconLoader *loader = KIconLoader::global();
         QString iconPath = QL1S("file://") + loader->iconPath(KMimeType::iconNameForUrl(u), KIconLoader::Desktop);
@@ -623,14 +623,21 @@ void NewTabPage::downloadsPage()
         div.appendInside(QL1S("<a href=") + item->originUrl() +  QL1C('>') + item->originUrl() +  QL1S("</a>"));
         div.appendInside(QL1S("<br />"));
 
-        div.appendInside(markup(QL1S("a")));
-        div.lastChild().setAttribute(QL1S("href"), dir);
-        div.lastChild().setPlainText(i18n("Open directory"));
+        if (QFile::exists(file))
+        {
+            div.appendInside(markup(QL1S("a")));
+            div.lastChild().setAttribute(QL1S("href"), dir);
+            div.lastChild().setPlainText(i18n("Open directory"));
 
-        div.appendInside(QL1S(" - "));
-        div.appendInside(markup(QL1S("a")));
-        div.lastChild().setAttribute(QL1S("href"), file);
-        div.lastChild().setPlainText(i18n("Open file"));
+            div.appendInside(QL1S(" - "));
+            div.appendInside(markup(QL1S("a")));
+            div.lastChild().setAttribute(QL1S("href"), file);
+            div.lastChild().setPlainText(i18n("Open file"));
+        }
+        else
+        {
+            div.appendInside(QL1S("<em>") + QL1S("Removed") +  QL1S("</em>"));
+        }
     }
 }
 
