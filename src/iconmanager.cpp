@@ -34,6 +34,7 @@
 
 // KDE Includes
 #include <KIO/Job>
+#include <kio/copyjob.h>
 
 #include <KIcon>
 #include <KMimeType>
@@ -124,7 +125,7 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     const QString rootUrlString = url.scheme() + QL1S("://") + url.host();
 
     // find favicon url
-    KUrl faviconUrl(rootUrlString + QL1S("/favicon.ico"));
+    KUrl faviconUrl;
 
     QWebElement root = page->mainFrame()->documentElement();
     QWebElement e = root.findFirst(QL1S("link[rel~=\"icon\"]"));
@@ -139,14 +140,18 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     {
         faviconUrl = relUrlString.startsWith(QL1S("http"))
                      ? KUrl(relUrlString)
-                     : KUrl(rootUrlString + QL1C('/') + relUrlString) ;
+                     : KUrl(rootUrlString + QL1C('/') + relUrlString);
     }
+
+    kDebug() << "Favicon URL: " << faviconUrl;
+    if (faviconUrl.isEmpty())
+        return;
 
     // dest url
     KUrl destUrl(_faviconsDir + url.host() + QL1S(".png"));
 
     // download icon
-    KIO::FileCopyJob *job = KIO::file_copy(faviconUrl, destUrl, -1, KIO::HideProgressInfo);
+    KIO::CopyJob *job = KIO::copy(faviconUrl, destUrl, KIO::HideProgressInfo);
     if (notify)
         connect(job, SIGNAL(result(KJob*)), this, SLOT(notifyLastStuffs(KJob *)));
     else
@@ -179,7 +184,7 @@ void IconManager::doLastStuffs(KJob *j)
         return;
     }
 
-    KIO::FileCopyJob *job = static_cast<KIO::FileCopyJob *>(j);
+    KIO::CopyJob *job = static_cast<KIO::CopyJob *>(j);
     KUrl dest = job->destUrl();
 
     QString s = dest.url().remove(QL1S("file://"));
