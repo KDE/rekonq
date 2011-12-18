@@ -56,6 +56,7 @@ public:
     {
         return _networkAnalyzer;
     };
+    
     inline void enableNetworkAnalyzer(bool b)
     {
         _networkAnalyzer = b;
@@ -65,6 +66,7 @@ public:
     {
         return _isOnRekonqPage;
     };
+
     inline void setIsOnRekonqPage(bool b)
     {
         _isOnRekonqPage = b;

@@ -48,6 +48,7 @@
 #include "newtabpage.h"
 #include "urlbar.h"
 #include "webpluginfactory.h"
+#include "websnap.h"
 #include "webtab.h"
 #include "searchengine.h"
 #include "sslwidget.h"
@@ -167,6 +168,11 @@ WebPage::WebPage(QWidget *parent)
 WebPage::~WebPage()
 {
     disconnect();
+
+    QPixmap preview = WebSnap::renderClosingPagePreview(*this);
+    QString path = WebSnap::imagePathFromUrl(mainFrame()->url().toString());
+    QFile::remove(path);
+    preview.save(path);
 }
 
 

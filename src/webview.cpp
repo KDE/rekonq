@@ -41,7 +41,6 @@
 #include "searchengine.h"
 #include "urlbar.h"
 #include "webpage.h"
-#include "websnap.h"
 #include "webtab.h"
 
 // KDE Includes
@@ -107,13 +106,6 @@ WebView::~WebView()
 {
     if (m_smoothScrolling)
         stopScrolling();
-
-    WebPage* p = page();
-
-    QPixmap preview = WebSnap::renderClosingPagePreview(*p);
-    QString path = WebSnap::imagePathFromUrl(p->mainFrame()->url().toString());
-    QFile::remove(path);
-    preview.save(path);
 }
 
 
