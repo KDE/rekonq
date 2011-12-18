@@ -34,7 +34,6 @@
 
 // KDE Includes
 #include <KIO/Job>
-#include <kio/copyjob.h>
 
 #include <KIcon>
 #include <KMimeType>
@@ -151,7 +150,7 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     KUrl destUrl(_faviconsDir + url.host() + QL1S(".png"));
 
     // download icon
-    KIO::CopyJob *job = KIO::copy(faviconUrl, destUrl, KIO::HideProgressInfo);
+    KIO::FileCopyJob *job = KIO::file_copy(faviconUrl, destUrl, -1, KIO::HideProgressInfo);
     if (notify)
         connect(job, SIGNAL(result(KJob*)), this, SLOT(notifyLastStuffs(KJob *)));
     else
@@ -184,7 +183,7 @@ void IconManager::doLastStuffs(KJob *j)
         return;
     }
 
-    KIO::CopyJob *job = static_cast<KIO::CopyJob *>(j);
+    KIO::FileCopyJob *job = static_cast<KIO::FileCopyJob *>(j);
     KUrl dest = job->destUrl();
 
     QString s = dest.url().remove(QL1S("file://"));
