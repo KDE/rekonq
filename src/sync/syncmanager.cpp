@@ -114,17 +114,27 @@ void SyncManager::showSettings()
 
 void SyncManager::syncBookmarks()
 {
-    _syncImplementation.data()->syncBookmarks();
+    if (!_syncImplementation.isNull())
+    {
+        _syncImplementation.data()->syncBookmarks();
+    }
 }
 
 
 void SyncManager::syncHistory()
 {
-    _syncImplementation.data()->syncHistory();
+    if (!_syncImplementation.isNull())
+    {
+        _syncImplementation.data()->syncHistory();
+    }
 }
 
 
 void SyncManager::syncPasswords()
 {
-    _syncImplementation.data()->syncPasswords();
+    if (!_syncImplementation.isNull())
+    {
+        _syncImplementation.data()->syncPasswords();
+    }
 }
+
