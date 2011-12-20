@@ -223,7 +223,7 @@ int Application::newInstance()
         {
             if (!ReKonfig::openExternalLinksInNewWindow())
             {
-                loadUrl(urlList.at(0), Rekonq::NewTab);
+                loadUrl(urlList.at(0), Rekonq::NewFocusedTab);
             }
             else
             {
@@ -238,7 +238,7 @@ int Application::newInstance()
         if (!ReKonfig::openExternalLinksInNewWindow())
         {
             for (int i = 1; i < urlList.count(); ++i)
-                loadUrl(urlList.at(i), Rekonq::NewTab);
+                loadUrl(urlList.at(i), Rekonq::NewFocusedTab);
         }
         else
         {
