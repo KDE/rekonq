@@ -103,7 +103,7 @@ UrlBar::UrlBar(QWidget *parent)
     , _suggestionTimer(new QTimer(this))
 {
     // initial style
-    setStyleSheet(QString("UrlBar { padding: 0 0 0 %1px;} ").arg(_icon->sizeHint().width()));
+    setStyleSheet(QString("UrlBar { padding: 2px 0 2px %1px;} ").arg(_icon->sizeHint().width()));
 
     // doesn't show the clear button
     setClearButtonShown(false);
@@ -382,7 +382,7 @@ void UrlBar::loadFinished()
     // removing this code (where setStyleSheet automatically calls update) needs adding again
     // an update call
     int rightIconWidth = 25 * (_rightIconsList.count());
-    setStyleSheet(QString("UrlBar { padding: 0 %2px 0 %1px;} ").arg(_icon->sizeHint().width()).arg(rightIconWidth));
+    setStyleSheet(QString("UrlBar { padding: 2px %2px 2px %1px;} ").arg(_icon->sizeHint().width()).arg(rightIconWidth));
 }
 
 
