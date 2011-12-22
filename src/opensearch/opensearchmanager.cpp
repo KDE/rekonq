@@ -180,7 +180,11 @@ void OpenSearchManager::jobFinished(KJob *job)
 
     if (m_state == REQ_SUGGESTION)
     {
-        const ResponseList suggestionsList = m_activeEngine->parseSuggestion(_typedText, m_jobData);
+        ResponseList suggestionsList;
+        if (isSuggestionAvailable())
+        {
+            suggestionsList = m_activeEngine->parseSuggestion(_typedText, m_jobData);
+        }
         emit suggestionsReceived(_typedText, suggestionsList);
         idleJob();
         return;
