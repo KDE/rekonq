@@ -56,7 +56,7 @@ public:
     {
         return _networkAnalyzer;
     };
-    
+
     inline void enableNetworkAnalyzer(bool b)
     {
         _networkAnalyzer = b;

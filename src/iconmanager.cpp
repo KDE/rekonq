@@ -36,7 +36,6 @@
 #include <KIO/Job>
 
 #include <KIcon>
-#include <KMimeType>
 #include <KStandardDirs>
 #include <KUrl>
 
@@ -82,11 +81,10 @@ KIcon IconManager::iconForUrl(const KUrl &url)
         return KIcon("folder");
     }
 
-    QString i = KMimeType::favIconForUrl(url);
+    QString i = favIconForUrl(url);
     if (!i.isEmpty())
     {
-        QString faviconDir = KStandardDirs::locateLocal("cache" , "" , true);
-        return KIcon(faviconDir + i);
+        return KIcon(QIcon(_faviconsDir + i));
     }
 
     // Not found icon. Return default one.
@@ -113,7 +111,7 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     }
 
     // check if icon exists
-    if (!KMimeType::favIconForUrl(url).isEmpty())
+    if (!favIconForUrl(url).isEmpty())
     {
         if (notify)
             emit iconChanged();
@@ -142,12 +140,11 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
                      : KUrl(rootUrlString + QL1C('/') + relUrlString);
     }
 
-    kDebug() << "Favicon URL: " << faviconUrl;
     if (faviconUrl.isEmpty())
         return;
 
     // dest url
-    KUrl destUrl(_faviconsDir + url.host() + QL1S(".png"));
+    KUrl destUrl(_faviconsDir + url.host());
 
     // download icon
     KIO::FileCopyJob *job = KIO::file_copy(faviconUrl, destUrl, -1, KIO::HideProgressInfo);
@@ -217,12 +214,14 @@ void IconManager::doLastStuffs(KJob *j)
     }
 
     px = px.scaled(16, 16);
-    if (!px.save(s))
+    if (!px.save(s + QL1S(".png"), "PNG"))
     {
         kDebug() << "PIXMAP NOT SAVED";
         return;
     }
+    QFile::remove(s);
 }
+
 
 void IconManager::notifyLastStuffs(KJob *j)
 {
@@ -241,4 +240,80 @@ void IconManager::saveDesktopIconForUrl(const KUrl &u)
     pix = pix.scaled(s, s);
 
     pix.save(destPath);
+}
+
+
+// NOTE: this function is builded "around" the iconForurl one. It basically returns the same things
+// with an important difference: this one returns paths while the other one returns KIcons
+QString IconManager::iconPathForUrl(const KUrl &url)
+{
+    // first things first.. avoid infinite loop at startup
+    if (url.isEmpty() || rApp->mainWindowList().isEmpty())
+    {
+        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/mimetypes/text-html.png");
+        return icon;
+    }
+
+    QByteArray encodedUrl = url.toEncoded();
+    // rekonq icons..
+    if (encodedUrl == QByteArray("about:home"))
+    {
+        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/go-home.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("about:closedTabs"))
+    {
+        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/tab-close.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("about:history"))
+    {
+        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/view-history.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("about:bookmarks"))
+    {
+        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/places/bookmarks.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("about:favorites"))
+    {
+        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/emblems/emblem-favorite.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("about:downloads"))
+    {
+        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/download.png");
+        return icon;
+    }
+
+    // TODO: return other mimetype icons
+    if (url.isLocalFile())
+    {
+        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/places/folder.png");
+        return icon;
+    }
+
+    QString i = favIconForUrl(url);
+    if (!i.isEmpty())
+    {
+        return QL1S("file://") + _faviconsDir + i;
+    }
+
+    // Not found icon. Return default one.
+    QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/mimetypes/text-html.png");
+    return icon;
+}
+
+
+QString IconManager::favIconForUrl(const KUrl &url)
+{
+    if (url.isLocalFile()
+            || !url.protocol().startsWith(QL1S("http")))
+        return QString();
+
+    if (QFile::exists(_faviconsDir + url.host() + QL1S(".png")))
+        return url.host() + QL1S(".png");
+    else
+        return QString();
 }

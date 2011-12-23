@@ -47,6 +47,7 @@ public:
     IconManager(QObject *parent = 0);
 
     KIcon iconForUrl(const KUrl &url);
+    QString iconPathForUrl(const KUrl &url);
 
     void provideIcon(QWebPage *page, const KUrl &url, bool notify = true);
 
@@ -65,6 +66,7 @@ Q_SIGNALS:
 
 private:
     bool existsIconForUrl(const KUrl &url);
+    QString favIconForUrl(const KUrl &url);
 
     QString _faviconsDir;
 };

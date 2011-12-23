@@ -678,10 +678,10 @@ void Application::updateConfiguration()
     if (!mainWindow())
         return;
 
-    if (!ReKonfig::useFavicon())
-        mainWindow()->setWindowIcon(KIcon("rekonq"));
-    else
-        mainWindow()->changeWindowIcon(mainWindow()->mainView()->currentIndex());
+    ReKonfig::useFavicon()
+    ? mainWindow()->changeWindowIcon(mainWindow()->mainView()->currentIndex())
+    : mainWindow()->setWindowIcon(KIcon("rekonq"))
+    ;
 
     // hovering unfocused tabs options
     switch (ReKonfig::hoveringTabOption())

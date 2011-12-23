@@ -548,7 +548,7 @@ void MainView::webViewIconChanged()
 {
     WebView *view = qobject_cast<WebView *>(sender());
     WebTab *tab = qobject_cast<WebTab *>(view->parent());
-    int index = indexOf(tab);
+    const int index = indexOf(tab);
 
     if (-1 != index)
     {

@@ -36,6 +36,7 @@
 #include "application.h"
 #include "bookmarkmanager.h"
 #include "downloadmanager.h"
+#include "iconmanager.h"
 #include "historymodels.h"
 #include "mainview.h"
 #include "mainwindow.h"
@@ -416,8 +417,6 @@ void NewTabPage::historyPage()
     }
 
     int i = 0;
-    QString faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
-    QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/mimetypes/text-html.png");
     const int maxTextSize = 103;
     const int truncateSize = 100;
     do
@@ -435,14 +434,10 @@ void NewTabPage::historyPage()
                 QModelIndex son = model->index(j, 0, index);
                 KUrl u = son.data(HistoryModel::UrlStringRole).toUrl();
 
-                QString b = faviconsDir + u.host() + QL1S(".png");
-                if (QFile::exists(b))
-                    icon = QL1S("file://") + b;
-
                 little.appendInside(son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm"));
                 little.appendInside(QL1S("&nbsp;&nbsp;"));
                 little.appendInside(markup(QL1S("img")));
-                little.lastChild().setAttribute(QL1S("src"), icon);
+                little.lastChild().setAttribute(QL1S("src"), rApp->iconManager()->iconPathForUrl(u));
                 little.lastChild().setAttribute(QL1S("width"), QL1S("16"));
                 little.lastChild().setAttribute(QL1S("height"), QL1S("16"));
                 little.appendInside(QL1S("&nbsp;&nbsp;"));
@@ -652,6 +647,7 @@ QWebElement NewTabPage::createLinkItem(const QString &title, const QString &urlS
     nav.findFirst(QL1S("span")).appendInside(title);
     return nav;
 }
+
 
 void NewTabPage::updateWindowIcon()
 {
