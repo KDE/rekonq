@@ -35,7 +35,7 @@
 
 // Forward Declarations
 class KIcon;
-class QWebPage;
+class QWebFrame;
 class KJob;
 
 
@@ -49,7 +49,7 @@ public:
     KIcon iconForUrl(const KUrl &url);
     QString iconPathForUrl(const KUrl &url);
 
-    void provideIcon(QWebPage *page, const KUrl &url, bool notify = true);
+    void provideIcon(QWebFrame *mFrame, const KUrl &url, bool notify = true);
 
     void downloadIconFromUrl(const KUrl &url);
 

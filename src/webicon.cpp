@@ -59,7 +59,7 @@ void WebIcon::load()
 void WebIcon::saveIcon(bool b)
 {
     if (b)
-        rApp->iconManager()->provideIcon(&m_page, m_url, false);
+        rApp->iconManager()->provideIcon(m_page.mainFrame(), m_url, false);
 
     this->deleteLater();
 }

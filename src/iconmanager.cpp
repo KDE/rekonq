@@ -92,7 +92,7 @@ KIcon IconManager::iconForUrl(const KUrl &url)
 }
 
 
-void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
+void IconManager::provideIcon(QWebFrame *mFrame, const KUrl &url, bool notify)
 {
     // provide icons just for http/https sites
     if (!url.scheme().startsWith(QL1S("http")))
@@ -124,7 +124,7 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     // find favicon url
     KUrl faviconUrl;
 
-    QWebElement root = page->mainFrame()->documentElement();
+    QWebElement root = mFrame->documentElement();
     QWebElement e = root.findFirst(QL1S("link[rel~=\"icon\"]"));
     QString relUrlString = e.attribute(QL1S("href"));
     if (relUrlString.isEmpty())
@@ -147,7 +147,7 @@ void IconManager::provideIcon(QWebPage *page, const KUrl &url, bool notify)
     KUrl destUrl(_faviconsDir + url.host());
 
     // download icon
-    KIO::FileCopyJob *job = KIO::file_copy(faviconUrl, destUrl, -1, KIO::HideProgressInfo);
+    KIO::FileCopyJob *job = KIO::file_copy(faviconUrl, destUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
     if (notify)
         connect(job, SIGNAL(result(KJob*)), this, SLOT(notifyLastStuffs(KJob *)));
     else

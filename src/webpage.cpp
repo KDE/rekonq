@@ -399,7 +399,7 @@ void WebPage::loadFinished(bool ok)
     mainFrame()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values
 
     // Provide site icon. Can this be moved to loadStarted??
-    rApp->iconManager()->provideIcon(this, _loadingUrl);
+    rApp->iconManager()->provideIcon(mainFrame(), _loadingUrl);
 
     // Apply adblock manager hiding rules
     rApp->adblockManager()->applyHidingRules(this);
