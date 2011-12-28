@@ -185,7 +185,7 @@ int Application::newInstance()
     // so, we have 8 possible cases...
     bool isFirstLoad = m_mainWindows.isEmpty();
     bool areThereArguments = (args->count() > 0);
-    bool isRekonqCrashed = ReKonfig::recoverOnCrash();
+    bool isRekonqCrashed = (ReKonfig::recoverOnCrash() > 0);
     // note that isRekonqCrashed is always true if it is not the first load
     // !isFirstLoad -> isRekonqCrashed
 
@@ -198,6 +198,7 @@ int Application::newInstance()
     if (isRekonqCrashed && isFirstLoad)
     {
         loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
+        mainWindow()->currentTab()->showMessageBar();
     }
 
     if (areThereArguments)
@@ -213,7 +214,7 @@ int Application::newInstance()
         }
 
         // first argument: 99% of the time we have just that...
-        if (isFirstLoad && !isRekonqCrashed)
+        if (isFirstLoad)
         {
             // No windows in the current desktop? No windows at all?
             // Create a new one and load there sites...
@@ -245,8 +246,6 @@ int Application::newInstance()
             for (int i = 1; i < urlList.count(); ++i)
                 loadUrl(urlList.at(i), Rekonq::NewWindow);
         }
-
-        KStartupInfo::appStarted();
     }
     else
     {
@@ -308,15 +307,11 @@ int Application::newInstance()
         connect(bookmarkManager(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
                 instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
 
-        // crash recovering
-        if (ReKonfig::recoverOnCrash())
-        {
-            mainWindow()->currentTab()->showMessageBar();
-        }
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();
     }
 
+    KStartupInfo::appStarted();
     return exitValue;
 }
 

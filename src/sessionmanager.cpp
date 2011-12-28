@@ -77,12 +77,19 @@ void SessionManager::saveSession()
     {
         MainView *mv = w.data()->mainView();
         QDomElement window = document.createElement("window");
+        int tabInserted = 0;
         for (signed int tabNo = 0; tabNo < mv->count(); tabNo++)
         {
+            // IGNORE about urls
+            KUrl u = mv->webTab(tabNo)->url();
+            if (u.protocol() == QL1S("about"))
+                continue;
+
+            tabInserted++;
             QDomElement tab = document.createElement("tab");
             tab.setAttribute("title", mv->webTab(tabNo)->view()->title()); // redundant, but needed for closedSites()
             // as there's not way to read out the historyData
-            tab.setAttribute("url", mv->webTab(tabNo)->url().url()); // Use WebTab's instead of WebView's url() to fix about links
+            tab.setAttribute("url", u.url());
             if (mv->tabBar()->currentIndex() == tabNo)
             {
                 tab.setAttribute("currentTab", 1);
@@ -95,7 +102,8 @@ void SessionManager::saveSession()
             tab.appendChild(historySection);
             window.appendChild(tab);
         }
-        session.appendChild(window);
+        if (tabInserted > 0)
+            session.appendChild(window);
     }
 
     QTextStream TextStream(&sessionFile);
@@ -118,10 +126,6 @@ bool SessionManager::restoreSessionFromScratch()
         return false;
     }
 
-    bool windowAlreadyOpen = (rApp->mainWindowList().count() == 0) ? false : true;
-    if (!windowAlreadyOpen)
-        rApp->newMainWindow(false);
-
     QDomDocument document("session");
     if (!document.setContent(&sessionFile, false))
     {
@@ -134,7 +138,7 @@ bool SessionManager::restoreSessionFromScratch()
         QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
         int currentTab = 0;
 
-        MainView *mv = rApp->mainWindowList().at(0).data()->mainView(); //last mainwindow created will be first one in mainwindow list
+        MainView *mv = rApp->newMainWindow(false)->mainView();
 
         for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
         {
@@ -150,10 +154,10 @@ bool SessionManager::restoreSessionFromScratch()
             QDataStream readingStream(&history, QIODevice::ReadOnly);
             readingStream >> *(view->history());
 
-            // Get sure about urls are loaded
+            // IGNORE "eventual" about urls
             KUrl u = KUrl(tab.attribute("url"));
             if (u.protocol() == QL1S("about"))
-                view->load(u);
+                continue;
         }
 
         mv->tabBar()->setCurrentIndex(currentTab);
