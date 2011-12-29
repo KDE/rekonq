@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
+* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -57,6 +58,7 @@ void WebInspectorPanel::toggle(bool enable)
 {
     MainWindow *w = qobject_cast<MainWindow *>(parent());
     w->actionByName(QL1S("web_inspector"))->setChecked(enable);
+
     if (enable)
     {
         w->currentTab()->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
@@ -66,15 +68,13 @@ void WebInspectorPanel::toggle(bool enable)
             _inspector->setPage(w->currentTab()->page());
             setWidget(_inspector);
         }
-        show();
     }
     else
     {
         w->currentTab()->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);
-        delete _inspector;
-        _inspector = 0;
-        hide();
     }
+
+    setVisible(enable);
 }
 
 

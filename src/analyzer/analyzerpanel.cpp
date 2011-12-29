@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010-2011 by Matthieu Gicquel <matgic78 at gmail dot com>
+* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -74,17 +75,15 @@ void NetworkAnalyzerPanel::toggle(bool enable)
         connect(page, SIGNAL(loadStarted()), _viewer, SLOT(clear()));
         connect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)),
                 _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)));
-
-        show();
     }
     else
     {
         disconnect(page, SIGNAL(loadStarted()), _viewer, SLOT(clear()));
         disconnect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)),
                    _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, const QNetworkRequest &, QNetworkReply *)));
-
-        hide();
     }
+
+    setVisible(enable);
 }
 
 
