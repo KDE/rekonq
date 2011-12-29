@@ -142,17 +142,21 @@ void MainView::updateTabBar()
 {
     if (ReKonfig::alwaysShowTabBar() || count() > 1)
     {
-        if (tabBar()->isHidden())
+        // Get sure tabbar is well shown (and hided) during fullscreen navigation
+        MainWindow *w = qobject_cast<MainWindow *>(parent());
+        if (w && !w->isFullScreen())
         {
-            tabBar()->show();
-        }
+            if (tabBar()->isHidden())
+            {
+                tabBar()->show();
+            }
 
-        // this to ensure tab button visibility also on new window creation
-        if (m_addTabButton->isHidden())
-        {
-            m_addTabButton->show();
+            // this to ensure tab button visibility also on new window creation
+            if (m_addTabButton->isHidden())
+            {
+                m_addTabButton->show();
+            }
         }
-
     }
     else
     {

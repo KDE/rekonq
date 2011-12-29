@@ -930,6 +930,7 @@ void MainWindow::updateHighlight()
     }
 }
 
+
 void MainWindow::findSelectedText()
 {
     // FindBar::setVisible() gets the selected text by itself
@@ -943,10 +944,12 @@ void MainWindow::viewFullScreen(bool makeFullScreen)
     KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
 }
 
+
 void MainWindow::openDownloadsPage()
 {
     rApp->loadUrl(KUrl("about:downloads"), Rekonq::NewFocusedTab);
 }
+
 
 void MainWindow::setWidgetsVisible(bool makeVisible)
 {
