@@ -79,6 +79,8 @@ public:
     KUrl url();
     void createPreviewSelectorBar(int index);
 
+    void hideSelectorBar();
+
     bool hasRSSInfo();
 
     bool isPageLoading();

@@ -226,6 +226,11 @@ void WebTab::showRSSInfo(const QPoint &pos)
     widget->showAt(pos);
 }
 
+void WebTab::hideSelectorBar()
+{
+    m_previewSelectorBar.data()->animatedHide();
+}
+
 
 void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
 {

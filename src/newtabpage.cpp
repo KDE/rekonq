@@ -40,6 +40,7 @@
 #include "historymodels.h"
 #include "mainview.h"
 #include "mainwindow.h"
+#include "previewselectorbar.h"
 #include "websnap.h"
 #include "webpage.h"
 #include "webtab.h"
@@ -336,6 +337,10 @@ void NewTabPage::removePreview(int index)
 {
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
+
+    if (urls.at(index).isEmpty()
+            || names.at(index).isEmpty())
+        rApp->mainWindow()->currentTab()->hideSelectorBar();
 
     urls.removeAt(index);
     names.removeAt(index);
