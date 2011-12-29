@@ -1245,6 +1245,11 @@ void MainWindow::notifyMessage(const QString &msg, Rekonq::Notify status)
     m_popup->setFixedSize(labelSize);
     m_popup->setText(fm.elidedText(msgToShow, Qt::ElideMiddle, labelSize.width() - 2 * margin));
 
+    // NOTE: while currentFrame should NEVER be null
+    // we are checking here its existence cause of bug:264187
+    if (!tab->page()->currentFrame())
+        return;
+
     const bool horizontalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
     const bool verticalScrollbarIsVisible = tab->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
     const bool actionBarsVisible = m_findBar->isVisible() || m_zoomBar->isVisible();
