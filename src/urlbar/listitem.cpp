@@ -160,7 +160,7 @@ void ListItem::nextItemSubChoice()
 TypeIconLabel::TypeIconLabel(int type, QWidget *parent)
     : QLabel(parent)
 {
-    setMinimumWidth(40);
+    setMinimumWidth(16);
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setMargin(0);
     hLayout->setAlignment(Qt::AlignRight);
@@ -324,13 +324,10 @@ PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text,
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
 
-    QLabel *previewLabelIcon = new QLabel(this);
-    previewLabelIcon->setFixedSize(45, 33);
-    new PreviewLabel(item.url, 38, 29, previewLabelIcon);
-    IconLabel* icon = new IconLabel(item.url, previewLabelIcon);
-    icon->move(27, 16);
-    hLayout->addWidget(previewLabelIcon);
+    // icon
+    hLayout->addWidget(new TypeIconLabel(item.type, this));
 
+    // url + text
     QVBoxLayout *vLayout = new QVBoxLayout;
     vLayout->setMargin(0);
 
@@ -344,10 +341,15 @@ PreviewListItem::PreviewListItem(const UrlSearchItem &item, const QString &text,
 
     vLayout->addWidget(new TextLabel(title, text, this));
     vLayout->addWidget(new TextLabel("<i>" + item.url + "</i>", text, this));
-
     hLayout->addLayout(vLayout);
 
-    hLayout->addWidget(new TypeIconLabel(item.type, this));
+    // preview label icon
+    QLabel *previewLabelIcon = new QLabel(this);
+    previewLabelIcon->setFixedSize(45, 33);
+    new PreviewLabel(item.url, 38, 29, previewLabelIcon);
+    IconLabel* icon = new IconLabel(item.url, previewLabelIcon);
+    icon->move(27, 16);
+    hLayout->addWidget(previewLabelIcon);
 
     setLayout(hLayout);
 }
