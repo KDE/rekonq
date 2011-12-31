@@ -45,9 +45,6 @@
 // Qt Includes
 #include <QByteArray>
 
-// defines
-#define MAX_ELEMENTS 8
-#define MIN_SUGGESTIONS 2
 
 // NOTE
 // default kurifilter plugin list (at least in my box):
@@ -157,144 +154,85 @@ UrlSearchList UrlResolver::orderedSearchItems()
 UrlSearchList UrlResolver::orderLists()
 {
     // NOTE
-    // the logic here is : "we wanna suggest (at least) 10 elements"
-    // so we have (more or less) 2 from first results (1 from QUrl Resolutions, 1 from
-    // search engines).
-    // There are 8 remaining: if bookmarkResults + historyResults <= 8, catch all, else
-    // catch first 4 results from the two resulting lists :)
+    // The const int here decides the number of proper suggestions, taken from history & bookmarks
+    // You have to add here the "browse & search" options, always available.
+    const int availableEntries = 8;
 
-    QTime myTime;
-    myTime.start();
-
-    UrlSearchList list;
-
+    // Browse & Search results
+    UrlSearchList browseSearch;
     if (_browseRegexp.indexIn(_typedString) != -1)
     {
-        list << _qurlFromUserInput;
-        list << _webSearches;
+        browseSearch << _qurlFromUserInput;
+        browseSearch << _webSearches;
     }
     else
     {
-        list << _webSearches;
-        list << _qurlFromUserInput;
+        browseSearch << _webSearches;
+        browseSearch << _qurlFromUserInput;
     }
 
+
+    // find relevant items (the one you are more probably searching...)
+    UrlSearchList relevant;
+
+    // history
+    Q_FOREACH(const UrlSearchItem & item, _history)
+    {
+        QString hst = KUrl(item.url).host();
+        if (item.url.startsWith(_typedString)
+                || hst.startsWith(_typedString)
+                || hst.remove("www.").startsWith(_typedString))
+        {
+            relevant << item;
+            _history.removeOne(item);
+            break;
+        }
+    }
+
+    // bookmarks
+    Q_FOREACH(const UrlSearchItem & item, _bookmarks)
+    {
+        QString hst = KUrl(item.url).host();
+        if (item.url.startsWith(_typedString)
+                || hst.startsWith(_typedString)
+                || hst.remove("www.").startsWith(_typedString))
+        {
+            relevant << item;
+            _bookmarks.removeOne(item);
+            break;
+        }
+    }
+
+    // decide history & bookmarks number
     int historyCount = _history.count();
     int bookmarksCount = _bookmarks.count();
+    int relevantCount = relevant.count();
 
-    int availableEntries = MAX_ELEMENTS - list.count() - MIN_SUGGESTIONS;
+    const int historyEntries = (availableEntries - relevantCount) / 2;
+    const int bookmarksEntries = availableEntries - relevantCount - historyEntries;
 
-    UrlSearchList common;
-    int commonCount = 0;
-
-    // prefer items which are history items as well bookmarks item
-    // if there are more than 1000 bookmark results, the performance impact is noticeable
-    if (bookmarksCount < 1000)
+    if (historyCount >= historyEntries && bookmarksCount >= bookmarksEntries)
     {
-        //add as many items to the common list as there are available entries in the dropdown list
-        UrlSearchItem urlSearchItem;
-        for (int i = 0; i < _history.count(); i++)
+        _history = _history.mid(0, historyEntries);
+        _bookmarks = _bookmarks.mid(0, bookmarksEntries);
+    }
+    else if (historyCount < historyEntries && bookmarksCount >= bookmarksEntries)
+    {
+        if (historyCount + bookmarksCount > availableEntries)
         {
-            if (_bookmarks.removeOne(_history.at(i)))
-            {
-                urlSearchItem = _history.takeAt(i);
-                urlSearchItem.type |= UrlSearchItem::Bookmark;
-                common << urlSearchItem;
-                commonCount++;
-                if (commonCount >= availableEntries)
-                {
-                    break;
-                }
-            }
-        }
-
-        commonCount = common.count();
-        if (commonCount >= availableEntries)
-        {
-            common = common.mid(0, availableEntries);
-            _history = UrlSearchList();
-            _bookmarks = UrlSearchList();
-            availableEntries = 0;
-        }
-        else        //remove all items from the history and bookmarks list up to the remaining entries in the dropdown list
-        {
-            availableEntries -= commonCount;
-            if (historyCount >= availableEntries)
-            {
-                _history = _history.mid(0, availableEntries);
-            }
-            if (bookmarksCount >= availableEntries)
-            {
-                _bookmarks = _bookmarks.mid(0, availableEntries);
-            }
+            _bookmarks = _bookmarks.mid(0, availableEntries - historyCount);
         }
     }
-    else        //if there are too many bookmarks items, remove all items up to the remaining entries in the dropdown list
+    else if (historyCount >= historyEntries && bookmarksCount < bookmarksEntries)
     {
-
-        if (historyCount >= availableEntries)
+        if (historyCount + bookmarksCount > availableEntries)
         {
-            _history = _history.mid(0, availableEntries);
-        }
-        if (bookmarksCount >= availableEntries)
-        {
-            _bookmarks = _bookmarks.mid(0, availableEntries);
-        }
-
-        UrlSearchItem urlSearchItem;
-        for (int i = 0; i < _history.count(); i++)
-        {
-            if (_bookmarks.removeOne(_history.at(i)))
-            {
-                urlSearchItem = _history.takeAt(i);
-                urlSearchItem.type |= UrlSearchItem::Bookmark;
-                common << urlSearchItem;
-            }
-        }
-
-        availableEntries -= common.count();
-    }
-
-    historyCount = _history.count();
-    bookmarksCount = _bookmarks.count();
-    commonCount = common.count();
-
-    //now fill the list to MAX_ELEMENTS
-    if (availableEntries > 0)
-    {
-        int historyEntries = ((int)(availableEntries / 2)) + availableEntries % 2;
-        int bookmarksEntries = availableEntries - historyEntries;
-
-        if (historyCount >= historyEntries && bookmarksCount >= bookmarksEntries)
-        {
-            _history = _history.mid(0, historyEntries);
-            _bookmarks = _bookmarks.mid(0, bookmarksEntries);
-        }
-        else if (historyCount < historyEntries && bookmarksCount >= bookmarksEntries)
-        {
-            if (historyCount + bookmarksCount > availableEntries)
-            {
-                _bookmarks = _bookmarks.mid(0, availableEntries - historyCount);
-            }
-        }
-        else if (historyCount >= historyEntries && bookmarksCount < bookmarksEntries)
-        {
-            if (historyCount + bookmarksCount > availableEntries)
-            {
-                _history = _history.mid(0, availableEntries - bookmarksCount);
-            }
+            _history = _history.mid(0, availableEntries - bookmarksCount);
         }
     }
 
-    availableEntries -=  _history.count();
-    availableEntries -=  _bookmarks.count();
-
-    if (_suggestions.count() > availableEntries + MIN_SUGGESTIONS)
-    {
-        _suggestions = _suggestions.mid(0, availableEntries + MIN_SUGGESTIONS);
-    }
-
-    list = list + _history + common + _bookmarks + _suggestions;
+    // and finally, results
+    UrlSearchList list = relevant + browseSearch + _history + _bookmarks;
     return list;
 }
 
