@@ -370,30 +370,36 @@ void UrlResolver::computeBookmarks()
 // opensearch suggestion
 void UrlResolver::computeSuggestions()
 {
-    // if a string startsWith /, it is probably a local path
-    // so, no need for suggestions...
-    if (_typedString.startsWith('/') || !rApp->opensearchManager()->isSuggestionAvailable())
-    {
-        UrlSearchList list;
-        emit suggestionsReady(list, _typedString);
-        return;
-    }
+    // NOTE
+    // This attempt basically cuts out open search suggestions.
+    UrlSearchList list;
+    emit suggestionsReady(list, _typedString);
+    return;
 
-    QString query = _typedString;
-    KService::Ptr engine = SearchEngine::fromString(_typedString);
-    if (engine)
-    {
-        query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
-        setSearchEngine(engine);
-    }
-
-    connect(rApp->opensearchManager(),
-            SIGNAL(suggestionsReceived(const QString &, const ResponseList &)),
-            this,
-            SLOT(suggestionsReceived(const QString &, const ResponseList &)));
-
-    _typedQuery = query;
-    rApp->opensearchManager()->requestSuggestion(query);
+//     // if a string startsWith /, it is probably a local path
+//     // so, no need for suggestions...
+//     if (_typedString.startsWith('/') || !rApp->opensearchManager()->isSuggestionAvailable())
+//     {
+//         UrlSearchList list;
+//         emit suggestionsReady(list, _typedString);
+//         return;
+//     }
+//
+//     QString query = _typedString;
+//     KService::Ptr engine = SearchEngine::fromString(_typedString);
+//     if (engine)
+//     {
+//         query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
+//         setSearchEngine(engine);
+//     }
+//
+//     connect(rApp->opensearchManager(),
+//             SIGNAL(suggestionsReceived(const QString &, const ResponseList &)),
+//             this,
+//             SLOT(suggestionsReceived(const QString &, const ResponseList &)));
+//
+//     _typedQuery = query;
+//     rApp->opensearchManager()->requestSuggestion(query);
 }
 
 

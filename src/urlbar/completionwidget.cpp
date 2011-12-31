@@ -384,7 +384,8 @@ void CompletionWidget::suggestUrls(const QString &text)
     }
 
     UrlResolver *res = new UrlResolver(text);
-    connect(res, SIGNAL(suggestionsReady(const UrlSearchList &, const QString &)), this, SLOT(updateSearchList(const UrlSearchList &, const QString &)));
+    connect(res, SIGNAL(suggestionsReady(const UrlSearchList &, const QString &)),
+            this, SLOT(updateSearchList(const UrlSearchList &, const QString &)));
     _resList = res->orderedSearchItems();
 
     // NOTE: It's important to call this AFTER orderedSearchItems() to let everything work
