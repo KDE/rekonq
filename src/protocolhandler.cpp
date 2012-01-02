@@ -159,6 +159,9 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
                 break;
             case 4: // downloads
                 _url = KUrl("about:downloads");
+                break;
+            case 5: // tabs
+                _url = KUrl("about:tabs");
             default: // unuseful
                 break;
             }

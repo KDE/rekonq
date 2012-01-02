@@ -620,7 +620,7 @@ void WebPage::updateImage(bool ok)
     if (ok)
     {
         NewTabPage p(mainFrame());
-        p.snapFinished();
+        p.updateThumbs();
     }
 }
 

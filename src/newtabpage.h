@@ -61,7 +61,7 @@ public:
      * This method updates thumbs, removing loading previews
      * and providing a real picture
      */
-    void snapFinished();
+    void updateThumbs();
 
 private:
     // these are the "high-level" functions to build the new tab page.
@@ -74,6 +74,7 @@ private:
     void bookmarksPage();
     void closedTabsPage();
     void downloadsPage();
+    void tabsPage();
 
     // --------------------------------------------------------------------------
     // "low-level" functions
@@ -83,6 +84,7 @@ private:
     QWebElement emptyPreview(int index);
     QWebElement loadingPreview(int index, const KUrl &url);
     QWebElement validPreview(int index, const KUrl &url, const QString &title);
+    QWebElement tabPreview(int winIndex, int tabIndex, const KUrl &url, const QString &title);
 
     void removePreview(int index);
 
@@ -94,6 +96,7 @@ private:
     void hideControls(QWebElement e);
     void showControls(QWebElement e);
     void setupPreview(QWebElement e, int index);
+    void setupTabPreview(QWebElement e, int winIndex, int tabIndex);
 
     void createBookItem(const KBookmark &bookmark, QWebElement parent);
 

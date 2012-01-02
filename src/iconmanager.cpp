@@ -74,6 +74,8 @@ KIcon IconManager::iconForUrl(const KUrl &url)
         return KIcon("emblem-favorite");
     if (encodedUrl == QByteArray("about:downloads"))
         return KIcon("download");
+    if (encodedUrl == QByteArray("about:tabs"))
+        return KIcon("tab-duplicate");
 
     // TODO: return other mimetype icons
     if (url.isLocalFile())
@@ -284,6 +286,11 @@ QString IconManager::iconPathForUrl(const KUrl &url)
     if (encodedUrl == QByteArray("about:downloads"))
     {
         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/download.png");
+        return icon;
+    }
+    if (encodedUrl == QByteArray("about:tabs"))
+    {
+        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/tab-duplicate.png");
         return icon;
     }
 
