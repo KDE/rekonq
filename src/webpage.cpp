@@ -6,7 +6,7 @@
 * Copyright (C) 2008 Dirk Mueller <mueller@kde.org>
 * Copyright (C) 2008 Urs Wolfer <uwolfer @ kde.org>
 * Copyright (C) 2008 Michael Howell <mhowell123@gmail.com>
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 * Copyright (C) 2009-2010 Dawit Alemayehu <adawit at kde dot org>
 *
@@ -45,7 +45,6 @@
 #include "mainview.h"
 #include "mainwindow.h"
 #include "networkaccessmanager.h"
-#include "newtabpage.h"
 #include "urlbar.h"
 #include "webpluginfactory.h"
 #include "websnap.h"
@@ -611,16 +610,6 @@ void WebPage::showSSLInfo(QPoint pos)
                                  i18n("This site does not contain SSL information."),
                                  i18nc("Secure Sockets Layer", "SSL")
                                 );
-    }
-}
-
-
-void WebPage::updateImage(bool ok)
-{
-    if (ok)
-    {
-        NewTabPage p(mainFrame());
-        p.updateThumbs();
     }
 }
 

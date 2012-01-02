@@ -6,7 +6,7 @@
 * Copyright (C) 2008 Dirk Mueller <mueller@kde.org>
 * Copyright (C) 2008 Urs Wolfer <uwolfer @ kde.org>
 * Copyright (C) 2008 Michael Howell <mhowell123@gmail.com>
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
@@ -103,7 +103,6 @@ private Q_SLOTS:
     void loadStarted();
     void loadFinished(bool);
     void showSSLInfo(QPoint);
-    void updateImage(bool ok);
 
     void copyToTempFileResult(KJob*);
 

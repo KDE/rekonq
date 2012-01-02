@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
@@ -300,14 +300,10 @@ void NewTabPage::favoritesPage()
     for (int i = 0; i < urls.count() ; ++i)
     {
         KUrl url = KUrl(urls.at(i));
-        QWebElement prev;
 
-        if (url.isEmpty())
-            prev = emptyPreview(i);
-        else if (!WebSnap::existsImage(url))
-            prev = loadingPreview(i, url);
-        else
-            prev = validPreview(i, url, QString::number(i + 1) + " - " + names.at(i));
+        QWebElement prev = url.isEmpty()
+                           ? emptyPreview(i)
+                           : validPreview(i, url, QString::number(i + 1) + " - " + names.at(i));
 
         m_root.appendInside(prev);
     }
@@ -426,9 +422,7 @@ void NewTabPage::closedTabsPage()
         if (item.url.isEmpty())
             continue;
 
-        prev = WebSnap::existsImage(KUrl(item.url))
-               ? validPreview(i, item.url, item.title)
-               : loadingPreview(i, item.url);
+        prev = validPreview(i, item.url, item.title);
 
         prev.setAttribute(QL1S("id"),  QL1S("preview") + QVariant(i).toString());
         hideControls(prev);
@@ -555,32 +549,37 @@ QWebElement NewTabPage::emptyPreview(int index)
 }
 
 
-QWebElement NewTabPage::loadingPreview(int index, const KUrl &url)
-{
-    QWebElement prev = markup(QL1S(".thumbnail"));
-
-    prev.findFirst(QL1S(".preview img")).setAttribute(QL1S("src"),
-            QL1S("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
-    prev.findFirst(QL1S("span a")).setPlainText(i18n("Loading Preview..."));
-    prev.findFirst(QL1S("a")).setAttribute(QL1S("href"), url.toMimeDataString());
-
-    setupPreview(prev, index);
-    showControls(prev);
-
-    // NOTE: we need the page frame for two reasons
-    // 1) to link to the WebPage calling the snapFinished slot
-    // 2) to "auto-destroy" snaps on tab closing :)
-    QWebFrame *frame = qobject_cast<QWebFrame *>(parent());
-    WebSnap *snap = new WebSnap(url, frame);
-    connect(snap, SIGNAL(snapDone(bool)), frame->page(), SLOT(updateImage(bool)), Qt::UniqueConnection);
-    return prev;
-}
+// NOTE: comment this out WITHOUT really deleting. May be of inspiration...
+// QWebElement NewTabPage::loadingPreview(int index, const KUrl &url)
+// {
+//     QWebElement prev = markup(QL1S(".thumbnail"));
+//
+//     prev.findFirst(QL1S(".preview img")).setAttribute(QL1S("src"),
+//             QL1S("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
+//     prev.findFirst(QL1S("span a")).setPlainText(i18n("Loading Preview..."));
+//     prev.findFirst(QL1S("a")).setAttribute(QL1S("href"), url.toMimeDataString());
+//
+//     setupPreview(prev, index);
+//     showControls(prev);
+//
+//     // NOTE: we need the page frame for two reasons
+//     // 1) to link to the WebPage calling the snapFinished slot
+//     // 2) to "auto-destroy" snaps on tab closing :)
+//     QWebFrame *frame = qobject_cast<QWebFrame *>(parent());
+//     WebSnap *snap = new WebSnap(url, frame);
+//     connect(snap, SIGNAL(snapDone(bool)), frame->page(), SLOT(updateImage(bool)), Qt::UniqueConnection);
+//     return prev;
+// }
 
 
 QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &title)
 {
     QWebElement prev = markup(QL1S(".thumbnail"));
-    QString previewPath = QL1S("file://") + WebSnap::imagePathFromUrl(url);
+
+    QString previewPath = WebSnap::existsImage(url)
+                          ? QL1S("file://") + WebSnap::imagePathFromUrl(url)
+                          : rApp->iconManager()->iconPathForUrl(url)
+                          ;
 
     prev.findFirst(QL1S(".preview img")).setAttribute(QL1S("src") , previewPath);
     prev.findFirst(QL1S("a")).setAttribute(QL1S("href"), url.toMimeDataString());
