@@ -143,7 +143,10 @@ void MainView::updateTabBar()
     if (ReKonfig::alwaysShowTabBar() || count() > 1)
     {
         // Get sure tabbar is well shown (and hided) during fullscreen navigation
-        MainWindow *w = qobject_cast<MainWindow *>(parent());
+        // NOTE: don't ask me why, but it seems that using code like:
+        // MainWindow *w = qobject_cast<MainWindow *>(parent());
+        // does NOT work here. So, I'm asking you: WHY???
+        MainWindow *w = rApp->mainWindow();
         if (w && !w->isFullScreen())
         {
             if (tabBar()->isHidden())
