@@ -55,17 +55,11 @@
     <entry name="startupBehaviour" type="Int">
         <default>1</default>
     </entry>
-    <entry name="newTabsBehaviour" type="Int">
-        <default>0</default>
-    </entry>
-    <entry name="newTabStartPage" type="Int">
-        <default>0</default>
+    <entry name="useNewTabPage" type="Bool">
+        <default>false</default>
     </entry>
     <entry name="homePage" type="String">
         <default>http://www.kde.org/</default>
-    </entry>
-    <entry name="useNewTabPage" type="Bool">
-        <default>false</default>
     </entry>
     <entry name="downloadPath" type="Url">
         <default code="true">KGlobalSettings::downloadPath()</default>
@@ -79,32 +73,8 @@
     <entry name="kgetList" type="Bool">
         <default>false</default>
     </entry>
-    <entry name="searchEngine" type="Int">
-        <default>0</default>
-    </entry>
-    <entry name="smoothScrolling" type="Bool">
-        <default>true</default>
-    </entry>
     <entry name="hScrollWheelHistory" type="Bool">
         <default>false</default>
-    </entry>
-    <entry name="clearHistory" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="clearDownloads" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="clearCookies" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="clearCachedPages" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="clearWebIcons" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="clearHomePageThumbs" type="Bool">
-        <default>true</default>
     </entry>
     <entry name="enableViShortcuts" type="Bool">
         <default>false</default>
@@ -114,8 +84,23 @@
 
 <!-- Tabs Settings -->
 <group name="Tabs">
-    <entry name="openTabNoWindow" type="Bool">
+    <!-- xxx -->
+    <entry name="newTabsBehaviour" type="Int">
+        <default>0</default>
+    </entry>
+    <entry name="newTabStartPage" type="Int">
+        <default>0</default>
+    </entry>
+    <!-- xxx -->
+    <entry name="hoveringTabOption" type="Int">
+        <default>0</default>
+    </entry>
+    <!-- xxx -->
+    <entry name="alwaysShowTabBar" type="Bool">
         <default>true</default>
+    </entry>
+    <entry name="openLinksInNewWindow" type="Bool">
+        <default>false</default>
     </entry>
     <entry name="openExternalLinksInNewWindow" type="Bool">
         <default>false</default>
@@ -123,29 +108,34 @@
     <entry name="lastTabClosesWindow" type="Bool">
         <default>false</default>
     </entry>
-    <entry name="alwaysShowTabBar" type="Bool">
+    <entry name="openNewTabsInBackground" type="Bool">
         <default>true</default>
     </entry>
-    <entry name="openTabsBack" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="openTabsNearCurrent" type="Bool">
+    <entry name="openNewTabsNearCurrent" type="Bool">
         <default>false</default>
-    </entry>
-    <entry name="hoveringTabOption" type="Int">
-        <default>0</default>
     </entry>
     <entry name="closeTabSelectPrevious" type="Bool">
-        <default>false</default>
+        <default>true</default>
+    </entry>
+    <entry name="animatedTabHighlighting" type="Bool">
+        <default>true</default>
+    </entry>
+</group>
+
+
+<!-- Appearance Settings -->
+<group name="Appearance">
+    <entry name="userCSS" type="Url">
+        <default></default>
+    </entry>
+    <entry name="smoothScrolling" type="Bool">
+        <default>true</default>
     </entry>
     <entry name="useFavicon" type="Bool">
         <default>false</default>
     </entry>
     <entry name="middleClickAction" type="Int">
         <default>2</default>
-    </entry>
-    <entry name="animatedTabHighlighting" type="Bool">
-        <default>true</default>
     </entry>
 </group>
 
@@ -187,13 +177,56 @@
     <entry name="expireHistory" type="Int">
         <default>1</default>
     </entry>
+    <entry name="clearHistory" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="clearDownloads" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="clearCookies" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="clearCachedPages" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="clearWebIcons" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="clearHomePageThumbs" type="Bool">
+        <default>true</default>
+    </entry>
 </group>
 
 
 <!-- WebKit Settings -->
 <group name="Webkit">
+    <!-- xxx -->
+    <entry name="javascriptEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="javascriptCanOpenWindows" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="javascriptCanAccessClipboard" type="Bool">
+        <default>false</default>
+    </entry>
+    <!-- xxx -->
     <entry name="pluginsEnabled" type="Int">
         <default>0</default>
+    </entry>
+    <!-- xxx -->
+    <entry name="offlineStorageDatabaseEnabled" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="offlineWebApplicationCacheEnabled" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="localStorageEnabled" type="Bool">
+        <default>false</default>
+    </entry>
+    <!-- xxx -->
+    <entry name="javaEnabled" type="Bool">
+        <default>true</default>
     </entry>
     <entry name="webGL" type="Bool">
         <default>false</default>
@@ -209,30 +242,6 @@
     </entry>
     <entry name="printElementBackgrounds" type="Bool">
         <default>true</default>
-    </entry>
-    <entry name="javascriptEnabled" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="javascriptCanOpenWindows" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="javascriptCanAccessClipboard" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="javaEnabled" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="offlineStorageDatabaseEnabled" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="offlineWebApplicationCacheEnabled" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="localStorageEnabled" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="userCSS" type="Url">
-        <default></default>
     </entry>
 </group>
 
@@ -258,6 +267,7 @@
         <default>7</default>
     </entry>
 </group>
+
 
 <!-- Sync Settings -->
 <group name="Sync">

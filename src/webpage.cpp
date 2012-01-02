@@ -253,13 +253,13 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
         kDebug() << "Modal Dialog";
 
     WebTab *w = 0;
-    if (ReKonfig::openTabNoWindow())
+    if (ReKonfig::openLinksInNewWindow())
     {
-        w = rApp->mainWindow()->mainView()->newWebTab(!ReKonfig::openTabsBack());
+        w = rApp->newMainWindow()->mainView()->currentWebTab();
     }
     else
     {
-        w = rApp->newMainWindow()->mainView()->currentWebTab();
+        w = rApp->mainWindow()->mainView()->newWebTab(!ReKonfig::openNewTabsInBackground());
     }
     return w->page();
 }
