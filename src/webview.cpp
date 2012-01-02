@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
@@ -274,6 +274,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // ACTIONS FOR TEXT SELECTION -----------------------------------------------------------------
     if (resultHit & WebView::TextSelection)
     {
+        // send by mail: text
+        sendByMailAction->setData(selectedText());
+        sendByMailAction->setText(i18n("Share selected text"));
+
         if (result.isContentEditable())
         {
             // actions for text selected in field
