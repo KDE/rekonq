@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
@@ -421,14 +421,45 @@ void MainView::closeTab(int index, bool del)
     if (index < 0 || index >= count())
         return;
 
+    WebTab *tabToClose = webTab(index);
+    if (!tabToClose)
+        return;
+
+    if (tabToClose->view()->isModified())
+    {
+        int risp = KMessageBox::warningContinueCancel(this,
+                   i18n("This tab contains changes that have not been submitted.\n"
+                        "Closing the tab will discard these changes.\n"
+                        "Do you really want to close this tab?\n"),
+                   i18n("Closing Modified Tab"), KGuiItem(i18n("Close &Tab"), "tab-close"), KStandardGuiItem::cancel());
+        if (risp != KMessageBox::Continue)
+            return;
+    }
+
+    kDebug() << "URL: " << tabToClose->url();
+    kDebug() << "rekonq page: " << tabToClose->page()->isOnRekonqPage();
+
+    if (!tabToClose->url().isEmpty()
+            && tabToClose->url().scheme() != QL1S("about")
+            && !tabToClose->page()->isOnRekonqPage()
+            && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
+       )
+    {
+        const int recentlyClosedTabsLimit = 8;
+        TabHistory history(tabToClose->view()->history());
+
+        m_recentlyClosedTabs.removeAll(history);
+        if (m_recentlyClosedTabs.count() == recentlyClosedTabsLimit)
+            m_recentlyClosedTabs.removeLast();
+        m_recentlyClosedTabs.prepend(history);
+    }
+
+    // what to do if there is just one tab...
     if (count() == 1)
     {
         if (ReKonfig::lastTabClosesWindow())
         {
             emit closeWindow();
-//             // closing window...
-//             MainWindow *w = qobject_cast<MainWindow *>(parent());
-//             w->close();
             return;
         }
 
@@ -453,34 +484,7 @@ void MainView::closeTab(int index, bool del)
         }
         return;
     }
-
-    WebTab *tabToClose = webTab(index);
-    if (!tabToClose)
-        return;
-
-    if (tabToClose->view()->isModified())
-    {
-        int risp = KMessageBox::warningContinueCancel(this,
-                   i18n("This tab contains changes that have not been submitted.\n"
-                        "Closing the tab will discard these changes.\n"
-                        "Do you really want to close this tab?\n"),
-                   i18n("Closing Modified Tab"), KGuiItem(i18n("Close &Tab"), "tab-close"), KStandardGuiItem::cancel());
-        if (risp != KMessageBox::Continue)
-            return;
-    }
-
-    if (!tabToClose->url().isEmpty()
-            && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
-       )
-    {
-        const int recentlyClosedTabsLimit = 10;
-        TabHistory history(tabToClose->view()->history());
-
-        m_recentlyClosedTabs.removeAll(history);
-        if (m_recentlyClosedTabs.count() == recentlyClosedTabsLimit)
-            m_recentlyClosedTabs.removeLast();
-        m_recentlyClosedTabs.prepend(history);
-    }
+    // else...
 
     removeTab(index);
     updateTabBar();        // UI operation: do it ASAP!!
@@ -493,6 +497,7 @@ void MainView::closeTab(int index, bool del)
         tabToClose->deleteLater();
     }
 }
+
 
 void MainView::webViewLoadStarted()
 {
@@ -623,37 +628,34 @@ void MainView::previousTab()
 }
 
 
-void MainView::openLastClosedTab()
+void MainView::openClosedTab()
+{
+    KAction *action = qobject_cast<KAction *>(sender());
+    if (!action)
+        return;
+
+    int index = action->data().toInt();
+    kDebug() << "TAB INDEX TO RESTORE:" << index;
+    restoreClosedTab(index);
+}
+
+
+void MainView::restoreClosedTab(int i, bool inNewTab)
 {
     if (m_recentlyClosedTabs.isEmpty())
         return;
 
-    TabHistory history = m_recentlyClosedTabs.takeFirst();
-    WebView *view = rApp->mainWindow()->mainView()->newWebTab()->view();
+    TabHistory history = m_recentlyClosedTabs.takeAt(i);
+
+    WebView *view = inNewTab
+                    ? newWebTab()->view()
+                    : currentWebTab()->view()
+                    ;
 
     history.applyHistory(view->history());
-}
 
-
-void MainView::openClosedTab()
-{
-    KAction *action = qobject_cast<KAction *>(sender());
-    if (action)
-    {
-        WebView *view = rApp->mainWindow()->mainView()->newWebTab()->view();
-        TabHistory history;
-        Q_FOREACH(const TabHistory & item, m_recentlyClosedTabs)
-        {
-            if (item.history == action->data().toByteArray())
-            {
-                history = item;
-                break;
-            }
-        }
-        history.applyHistory(view->history());
-
-        m_recentlyClosedTabs.removeAll(history);
-    }
+    // just to get sure...
+    m_recentlyClosedTabs.removeAll(history);
 }
 
 

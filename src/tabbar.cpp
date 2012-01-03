@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
@@ -380,26 +380,28 @@ void TabBar::setupHistoryActions()
     MainView *mv = qobject_cast<MainView *>(parent());
 
     QAction *openLastClosedTabAction = w->actionByName(QL1S("open_last_closed_tab"));
-    openLastClosedTabAction->setEnabled(mv->recentlyClosedTabs().size() > 0);
+
+    bool closedTabsAvailable = (mv->recentlyClosedTabs().size() > 0);
+    openLastClosedTabAction->setEnabled(closedTabsAvailable);
 
     // update closed tabs menu
     KActionMenu *am = qobject_cast<KActionMenu *>(w->actionByName(QL1S("closed_tab_menu")));
     if (!am)
         return;
 
-    bool isEnabled = (mv->recentlyClosedTabs().size() > 0);
-    am->setEnabled(isEnabled);
+    am->setEnabled(closedTabsAvailable);
 
     if (am->menu())
         am->menu()->clear();
 
-    if (!isEnabled)
+    if (!closedTabsAvailable)
         return;
 
-    Q_FOREACH(const TabHistory & item, mv->recentlyClosedTabs())
+    for (int i = 0; i < mv->recentlyClosedTabs().count(); ++i)
     {
+        TabHistory item = mv->recentlyClosedTabs().at(i);
         KAction *a = new KAction(rApp->iconManager()->iconForUrl(item.url), item.title, this);
-        a->setData(item.history);
+        a->setData(i);
         connect(a, SIGNAL(triggered()), mv, SLOT(openClosedTab()));
         am->addAction(a);
     }

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
@@ -90,6 +90,7 @@ public:
     {
         return m_part;
     }
+
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
 
     void showMessageBar();

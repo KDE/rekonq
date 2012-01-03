@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
@@ -106,6 +106,8 @@ public:
         return m_recentlyClosedTabs;
     }
 
+    void restoreClosedTab(int i, bool inNewTab = true);
+
 Q_SIGNALS:
     // current tab signals
     void currentTitle(const QString &url);
@@ -144,8 +146,6 @@ public Q_SLOTS:
     void nextTab();
     void previousTab();
 
-    void openLastClosedTab();
-    void openClosedTab();
     void switchToTab(const int index);
     void loadFavorite(const int index);
 
@@ -163,6 +163,8 @@ private Q_SLOTS:
     void webViewUrlChanged(const QUrl &url);
 
     void windowCloseRequested();
+
+    void openClosedTab();
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);

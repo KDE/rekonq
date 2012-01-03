@@ -57,12 +57,6 @@ public:
      */
     void generate(const KUrl &url = KUrl("about:home"));
 
-    /**
-     * This method updates thumbs, removing loading previews
-     * and providing a real picture
-     */
-    void updateThumbs();
-
 private:
     // these are the "high-level" functions to build the new tab page.
     // Basically, you call browsingMenu + one of the *Page methods
@@ -84,6 +78,7 @@ private:
     QWebElement emptyPreview(int index);
     QWebElement validPreview(int index, const KUrl &url, const QString &title);
     QWebElement tabPreview(int winIndex, int tabIndex, const KUrl &url, const QString &title);
+    QWebElement closedTabPreview(int index, const KUrl &url, const QString &title);
 
     void removePreview(int index);
 

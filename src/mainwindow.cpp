@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
@@ -451,9 +451,10 @@ void MainWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(previousTab()));
 
     a = new KAction(KIcon("tab-new"), i18n("Open Last Closed Tab"), this);
+    a->setData(0);  // last tab has always index = 0
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
     actionCollection()->addAction(QL1S("open_last_closed_tab"), a);
-    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(openLastClosedTab()));
+    connect(a, SIGNAL(triggered(bool)), m_view, SLOT(openClosedTab()));
 
     // Closed Tabs Menu
     KActionMenu *closedTabsMenu = new KActionMenu(KIcon("tab-new"), i18n("Closed Tabs"), this);

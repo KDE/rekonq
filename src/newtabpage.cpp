@@ -81,6 +81,7 @@ NewTabPage::NewTabPage(QWebFrame *frame)
 
 void NewTabPage::generate(const KUrl &url)
 {
+    // about:preview links
     if (KUrl("about:preview").isParentOf(url))
     {
         if (url.fileName() == QL1S("add"))
@@ -113,6 +114,7 @@ void NewTabPage::generate(const KUrl &url)
         }
     }
 
+    // about:tabs links
     if (KUrl("about:tabs").isParentOf(url))
     {
         if (url.fileName() == QL1S("show"))
@@ -133,6 +135,7 @@ void NewTabPage::generate(const KUrl &url)
                 w->raise();
             return;
         }
+
         if (url.fileName() == QL1S("remove"))
         {
             const int winIndex = url.queryItem(QL1S("win")).toInt();
@@ -143,6 +146,19 @@ void NewTabPage::generate(const KUrl &url)
             MainWindow *w = rApp->mainWindowList().at(winIndex).data();
             w->mainView()->closeTab(tabIndex);
             generate(KUrl("about:tabs"));
+            return;
+        }
+    }
+
+    // about:closedTabs links
+    if (KUrl("about:closedTabs").isParentOf(url))
+    {
+        if (url.fileName() == QL1S("restore"))
+        {
+            const int tabIndex = url.queryItem(QL1S("tab")).toInt();
+            kDebug() << "tab = " << tabIndex;
+
+            rApp->mainWindow()->mainView()->restoreClosedTab(tabIndex, false);
             return;
         }
     }
@@ -407,6 +423,7 @@ void NewTabPage::closedTabsPage()
 
     QList<TabHistory> links = rApp->mainWindow()->mainView()->recentlyClosedTabs();
 
+    kDebug() << "CLOSED TABS: " << links.count();
     if (links.isEmpty())
     {
         m_root.addClass(QL1S("empty"));
@@ -417,12 +434,13 @@ void NewTabPage::closedTabsPage()
     for (int i = 0; i < links.count(); ++i)
     {
         TabHistory item = links.at(i);
+        kDebug() << "URL " << i << " : " << item.url;
         QWebElement prev;
 
         if (item.url.isEmpty())
             continue;
 
-        prev = validPreview(i, item.url, item.title);
+        prev = closedTabPreview(i, item.url, item.title);
 
         prev.setAttribute(QL1S("id"),  QL1S("preview") + QVariant(i).toString());
         hideControls(prev);
@@ -543,7 +561,6 @@ QWebElement NewTabPage::emptyPreview(int index)
                                            QL1S("about:preview/modify/") + QVariant(index).toString());
 
     setupPreview(prev, index);
-    //hideControls(prev);
 
     return prev;
 }
@@ -569,6 +586,39 @@ QWebElement NewTabPage::emptyPreview(int index)
 //     WebSnap *snap = new WebSnap(url, frame);
 //     connect(snap, SIGNAL(snapDone(bool)), frame->page(), SLOT(updateImage(bool)), Qt::UniqueConnection);
 //     return prev;
+// }
+//
+//
+// void NewTabPage::updateThumbs()
+// {
+//     // Update page, but only if open
+//     if (m_root.document().findAll(QL1S("#rekonq-newtabpage")).count() == 0)
+//         return;
+//     if (m_root.findAll(QL1S(".favorites")).count() == 0 && m_root.findAll(QL1S(".closedTabs")).count() == 0)
+//         return;
+//
+//     QStringList urls = ReKonfig::previewUrls();
+//     QStringList names = ReKonfig::previewNames();
+//
+//     for (int i = 0; i < urls.count(); i++)
+//     {
+//         KUrl url = KUrl(urls.at(i));
+//         QString title = names.at(i);
+//
+//         if (WebSnap::existsImage(url))
+//         {
+//             QWebElement prev = m_root.findFirst(QL1S("#preview") + QVariant(i).toString());
+//             if (KUrl(prev.findFirst("a").attribute(QL1S("href"))) == url)
+//             {
+//                 QWebElement newPrev = validPreview(i, url, title);
+//
+//                 if (m_root.findAll(QL1S(".closedTabs")).count() != 0)
+//                     hideControls(newPrev);
+//
+//                 prev.replace(newPrev);
+//             }
+//         }
+//     }
 // }
 
 
@@ -611,6 +661,28 @@ QWebElement NewTabPage::tabPreview(int winIndex, int tabIndex, const KUrl &url, 
 }
 
 
+QWebElement NewTabPage::closedTabPreview(int index, const KUrl &url, const QString &title)
+{
+    QWebElement prev = markup(QL1S(".thumbnail"));
+
+    QString previewPath = WebSnap::existsImage(url)
+                          ? QL1S("file://") + WebSnap::imagePathFromUrl(url)
+                          : rApp->iconManager()->iconPathForUrl(url)
+                          ;
+
+    QString href = QL1S("about:closedTabs/restore?tab=") + QString::number(index);
+
+    prev.findFirst(QL1S(".preview img")).setAttribute(QL1S("src") , previewPath);
+    prev.findFirst(QL1S("a")).setAttribute(QL1S("href"), href);
+    prev.findFirst(QL1S("span a")).setAttribute(QL1S("href"), href);
+    prev.findFirst(QL1S("span a")).setPlainText(checkTitle(title));
+
+    setupPreview(prev, index);
+    showControls(prev);
+    return prev;
+}
+
+
 void NewTabPage::hideControls(QWebElement e)
 {
     e.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
@@ -648,39 +720,6 @@ void NewTabPage::setupTabPreview(QWebElement e, int winIndex, int tabIndex)
     e.findFirst(QL1S(".remove")).setAttribute(QL1S("href"), href);
 
     e.setAttribute(QL1S("id"), QL1S("win") + QString::number(winIndex) + QL1S("tab") + QString::number(tabIndex));
-}
-
-
-void NewTabPage::updateThumbs()
-{
-    // Update page, but only if open
-    if (m_root.document().findAll(QL1S("#rekonq-newtabpage")).count() == 0)
-        return;
-    if (m_root.findAll(QL1S(".favorites")).count() == 0 && m_root.findAll(QL1S(".closedTabs")).count() == 0)
-        return;
-
-    QStringList urls = ReKonfig::previewUrls();
-    QStringList names = ReKonfig::previewNames();
-
-    for (int i = 0; i < urls.count(); i++)
-    {
-        KUrl url = KUrl(urls.at(i));
-        QString title = names.at(i);
-
-        if (WebSnap::existsImage(url))
-        {
-            QWebElement prev = m_root.findFirst(QL1S("#preview") + QVariant(i).toString());
-            if (KUrl(prev.findFirst("a").attribute(QL1S("href"))) == url)
-            {
-                QWebElement newPrev = validPreview(i, url, title);
-
-                if (m_root.findAll(QL1S(".closedTabs")).count() != 0)
-                    hideControls(newPrev);
-
-                prev.replace(newPrev);
-            }
-        }
-    }
 }
 
 
