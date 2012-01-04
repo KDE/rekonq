@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
@@ -659,11 +659,8 @@ void Application::updateConfiguration()
     defaultSettings->setAttribute(QWebSettings::WebGLEnabled, ReKonfig::webGL());
     defaultSettings->setAttribute(QWebSettings::AcceleratedCompositingEnabled, ReKonfig::webGL());
 
-    // Applies user/system defined CSS to all open webpages.
-    ReKonfig::userCSS().isEmpty()
-    ? defaultSettings->setUserStyleSheetUrl(KUrl(KStandardDirs::locate("appdata" , "default_rekonq.css")))
-    : defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS())
-    ;
+    // Applies user defined CSS to all open webpages.
+    defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
 
     // ====== load Settings on main classes
     historyManager()->loadSettings();
