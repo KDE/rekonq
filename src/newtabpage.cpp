@@ -182,13 +182,16 @@ void NewTabPage::generate(const KUrl &url)
     }
 
     // webFrame can be null. See bug:282092
-    if (!m_root.webFrame())
+    QWebFrame *parentFrame = qobject_cast<QWebFrame *>(parent());
+    if (!parentFrame)
+    {
+        kDebug() << "NULL PARENT FRAME: PAGE NOT LOADED";
         return;
-    WebPage *page = qobject_cast <WebPage *>(m_root.webFrame()->page());
-    page->mainFrame()->setHtml(m_html);
-    page->setIsOnRekonqPage(true);
+    }
 
-    m_root = page->mainFrame()->documentElement().findFirst(QL1S("#content"));
+    parentFrame->setHtml(m_html);
+
+    m_root = parentFrame->documentElement().findFirst(QL1S("#content"));
 
     browsingMenu(url);
 
