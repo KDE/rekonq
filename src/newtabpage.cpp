@@ -480,7 +480,7 @@ void NewTabPage::downloadsPage()
 
         KUrl u = KUrl(item->destinationUrl());
         QString fName = u.fileName();
-        QString dir = QL1S("file://") + u.directory();
+        QString dir = u.directory();
         QString file = dir + fName;
 
         KIconLoader *loader = KIconLoader::global();
