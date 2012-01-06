@@ -34,6 +34,7 @@
 #include "bookmarkowner.h"
 
 // KDE Includes
+#include <KComboBox>
 #include <KLocalizedString>
 #include <KIcon>
 #include <KLineEdit>
@@ -74,6 +75,14 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     vLayout->addWidget(removeButton);
 
     layout->addRow(bookmarkIcon, vLayout);
+
+    //Bookmark Folder
+    QLabel *folderLabel = new QLabel(this);
+    folderLabel->setText(i18n("Folder:"));
+
+    m_folder = new KComboBox(this);
+    layout->addRow(folderLabel, m_folder);
+    setupFolderComboBox();
 
     // Bookmark name
     QLabel *nameLabel = new QLabel(this);
@@ -121,7 +130,59 @@ void BookmarkWidget::accept()
         m_bookmark->setFullText(m_name->text());
         rApp->bookmarkManager()->emitChanged();
     }
+
+    QString folderAddress = m_folder->itemData(m_folder->currentIndex()).toString();
+    KBookmarkGroup a = rApp->bookmarkManager()->manager()->findByAddress(folderAddress).toGroup();
+
+    KBookmarkGroup parent = m_bookmark->parentGroup();
+    parent.deleteBookmark(*m_bookmark);
+    a.addBookmark(*m_bookmark);
+    rApp->bookmarkManager()->manager()->emitChanged(a);
+
     close();
+}
+
+
+void BookmarkWidget::setupFolderComboBox()
+{
+    KBookmarkGroup root = rApp->bookmarkManager()->manager()->toolbar();
+
+    if (rApp->bookmarkManager()->manager()->toolbar().address() == rApp->bookmarkManager()->manager()->root().address())
+    {
+        m_folder->addItem(i18n("Bookmark Toolbar"),
+                          rApp->bookmarkManager()->manager()->toolbar().address());
+    }
+    else
+    {
+        m_folder->addItem(rApp->bookmarkManager()->manager()->toolbar().text(),
+                          rApp->bookmarkManager()->manager()->toolbar().address());
+    }
+    m_folder->insertSeparator(1);
+
+    if (m_bookmark->parentGroup().address() != rApp->bookmarkManager()->manager()->toolbar().address())
+    {
+        m_folder->addItem(m_bookmark->parentGroup().text(),
+                          m_bookmark->parentGroup().address());
+        m_folder->insertSeparator(3);
+    }
+
+    for (KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
+    {
+        if(bookmark.isGroup())
+        {
+            m_folder->addItem(bookmark.text(), bookmark.address());
+        }
+    }
+
+    if (m_bookmark->parentGroup().address() == root.address())
+    {
+        m_folder->setCurrentIndex(0);
+    }
+    else
+    {
+        int index = m_folder->findText(m_bookmark->parentGroup().text());
+        m_folder->setCurrentIndex(index);
+    }
 }
 
 

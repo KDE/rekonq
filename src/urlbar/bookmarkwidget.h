@@ -33,6 +33,7 @@
 // Forward Declarations
 class KBookmark;
 class KLineEdit;
+class KComboBox;
 
 
 class BookmarkWidget : public QMenu
@@ -55,6 +56,9 @@ private Q_SLOTS:
 private:
     KBookmark *m_bookmark;
     KLineEdit *m_name;
+    KComboBox *m_folder;
+
+    void setupFolderComboBox();
 };
 
 #endif // BOOKMARKWIDGET_H
