@@ -115,7 +115,7 @@ private:
     int m_vScrollSpeed;
     int m_hScrollSpeed;
     bool m_canEnableAutoScroll;
-    bool m_isAutoScrollEnabled;
+    bool m_isViewAutoScrolling;
     QPixmap m_autoScrollIndicator;
 
     // Smooth Scroll

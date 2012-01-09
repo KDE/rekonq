@@ -70,7 +70,7 @@ WebView::WebView(QWidget* parent)
     , m_vScrollSpeed(0)
     , m_hScrollSpeed(0)
     , m_canEnableAutoScroll(true)
-    , m_isAutoScrollEnabled(false)
+    , m_isViewAutoScrolling(false)
     , m_autoScrollIndicator(QPixmap(KStandardDirs::locate("appdata" , "pics/autoscroll.png")))
     , m_smoothScrollTimer(new QTimer(this))
     , m_smoothScrolling(false)
@@ -379,12 +379,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
 void WebView::mousePressEvent(QMouseEvent *event)
 {
-    if (m_isAutoScrollEnabled)
+    if (m_isViewAutoScrolling)
     {
         m_vScrollSpeed = 0;
         m_hScrollSpeed = 0;
         m_autoScrollTimer->stop();
-        m_isAutoScrollEnabled = false;
+        m_isViewAutoScrolling = false;
+        m_canEnableAutoScroll = true;
         update();
         return;
     }
@@ -404,7 +405,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
 
     case Qt::MidButton:
         if (m_canEnableAutoScroll
-                && !m_isAutoScrollEnabled
+                && !m_isViewAutoScrolling
                 && !page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).contains(event->pos())
                 && !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).contains(event->pos()))
         {
@@ -412,7 +413,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
                     || !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).isNull())
             {
                 m_clickPos = event->pos();
-                m_isAutoScrollEnabled = true;
+                m_isViewAutoScrolling = true;
                 update();
             }
         }
@@ -436,6 +437,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
         break;
 
     default:
+        m_canEnableAutoScroll = true;
         break;
     };
     KWebView::mousePressEvent(event);
@@ -446,7 +448,7 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 {
     m_mousePos = event->pos();
 
-    if (m_isAutoScrollEnabled)
+    if (m_isViewAutoScrolling)
     {
         QPoint r = m_mousePos - m_clickPos;
         m_hScrollSpeed = r.x() / 2;  // you are too fast..
@@ -515,7 +517,7 @@ void WebView::paintEvent(QPaintEvent* event)
 {
     KWebView::paintEvent(event);
 
-    if (m_isAutoScrollEnabled)
+    if (m_isViewAutoScrolling)
     {
         QPoint centeredPoint = m_clickPos;
         centeredPoint.setX(centeredPoint.x() - m_autoScrollIndicator.width() / 2);
