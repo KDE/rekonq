@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -158,11 +158,12 @@ UrlSearchList UrlResolver::orderLists()
     // You have to add here the "browse & search" options, always available.
     const int availableEntries = 8;
 
+    bool webSearchFirst = false;
     // Browse & Search results
     UrlSearchList browseSearch;
     if (_browseRegexp.indexIn(_typedString) != -1)
     {
-        browseSearch << _qurlFromUserInput;
+        webSearchFirst = true;
         browseSearch << _webSearches;
     }
     else
@@ -232,7 +233,11 @@ UrlSearchList UrlResolver::orderLists()
     }
 
     // and finally, results
-    UrlSearchList list = relevant + browseSearch + _history + _bookmarks;
+    UrlSearchList list;
+
+    if (webSearchFirst)
+        list << _qurlFromUserInput;
+    list += relevant + browseSearch + _history + _bookmarks;
     return list;
 }
 
