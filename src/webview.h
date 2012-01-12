@@ -37,6 +37,8 @@
 
 //Qt Includes
 #include <QtCore/QTime>
+#include <QLabel>
+#include <QToolTip>
 
 // Forward Declarations
 class WebPage;
@@ -100,11 +102,21 @@ private Q_SLOTS:
     void stopScrolling();
     void changeWindowIcon();
 
+    void accessKeyShortcut();
+    void hideAccessKeys();
+
+    void loadStarted();
+    
 Q_SIGNALS:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
     void zoomChanged(int);
     void openPreviousInHistory();
     void openNextInHistory();
+
+private:
+    bool checkForAccessKey(QKeyEvent *event);
+    void showAccessKeys();
+    void makeAccessKeyLabel(const QChar &accessKey, const QWebElement &element);
 
 private:
     QPoint m_mousePos;
@@ -125,6 +137,11 @@ private:
     bool m_smoothScrolling;
     int m_dy;
     int m_smoothScrollSteps;
+
+    // Access Keys
+    QList<QLabel*> m_accessKeyLabels;
+    QHash<QChar, QWebElement> m_accessKeyNodes;
+    bool m_accessKeysPressed;
 };
 
 #endif

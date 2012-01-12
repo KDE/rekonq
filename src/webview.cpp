@@ -76,6 +76,7 @@ WebView::WebView(QWidget* parent)
     , m_smoothScrolling(false)
     , m_dy(0)
     , m_smoothScrollSteps(0)
+    , m_accessKeysPressed(false)
 {
     WebPage *page = new WebPage(this);
     setPage(page);
@@ -99,6 +100,7 @@ WebView::WebView(QWidget* parent)
     m_smoothScrollTimer->setInterval(16);
 
     connect(this, SIGNAL(iconChanged()), this, SLOT(changeWindowIcon()));
+    connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
 }
 
 
@@ -106,6 +108,12 @@ WebView::~WebView()
 {
     if (m_smoothScrolling)
         stopScrolling();
+}
+
+
+void WebView::loadStarted()
+{
+    hideAccessKeys();
 }
 
 
@@ -159,7 +167,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if (result.isContentSelected())
         resultHit = WebView::TextSelection;
 
-    // --------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------
     // Ok, let's start filling up the menu...
 
     // is content editable? Add PASTE
@@ -169,7 +177,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
     }
 
-    // EMPTY PAGE ACTIONS -------------------------------------------------------------------------
+    // EMPTY PAGE ACTIONS -------------------------------------------------------------
     if (resultHit == WebView::EmptySelection)
     {
         // send by mail: page url
@@ -226,7 +234,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         }
     }
 
-    // LINK ACTIONS -------------------------------------------------------------------------------
+    // LINK ACTIONS -------------------------------------------------------------------
     if (resultHit & WebView::LinkSelection)
     {
         // send by mail: link url
@@ -248,7 +256,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
     }
 
-    // IMAGE ACTIONS ------------------------------------------------------------------------------
+    // IMAGE ACTIONS ------------------------------------------------------------------
     if (resultHit & WebView::ImageSelection)
     {
         // send by mail: image url
@@ -271,7 +279,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(a);
     }
 
-    // ACTIONS FOR TEXT SELECTION -----------------------------------------------------------------
+    // ACTIONS FOR TEXT SELECTION -----------------------------------------------------
     if (resultHit & WebView::TextSelection)
     {
         // send by mail: text
@@ -355,7 +363,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         }
     }
 
-    // DEFAULT ACTIONs (on the bottom) ---------------------------------------------------
+    // DEFAULT ACTIONs (on the bottom) ------------------------------------------------
     menu.addSeparator();
     if (resultHit & WebView::LinkSelection)
     {
@@ -561,6 +569,7 @@ void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifier
     }
 }
 
+
 void WebView::slotCopyImageLocation()
 {
     KAction *a = qobject_cast<KAction*>(sender());
@@ -609,6 +618,26 @@ void WebView::bookmarkLink()
 
 void WebView::keyPressEvent(QKeyEvent *event)
 {
+    if (ReKonfig::accessKeysEnabled())
+    {
+        m_accessKeysPressed = (event->modifiers() == Qt::ControlModifier
+                               && event->key() == Qt::Key_Control);
+        if (!m_accessKeysPressed)
+        {
+            if (checkForAccessKey(event))
+            {
+                hideAccessKeys();
+                event->accept();
+                return;
+            }
+            hideAccessKeys();
+        }
+        else
+        {
+            QTimer::singleShot(200, this, SLOT(accessKeyShortcut()));
+        }
+    }
+
     if (event->modifiers() == Qt::ControlModifier)
     {
         if (event->key() == Qt::Key_C)
@@ -898,6 +927,179 @@ void WebView::dragMoveEvent(QDragMoveEvent *event)
 }
 
 
+void WebView::hideAccessKeys()
+{
+    if (!m_accessKeyLabels.isEmpty())
+    {
+        for (int i = 0; i < m_accessKeyLabels.count(); ++i)
+        {
+            QLabel *label = m_accessKeyLabels[i];
+            label->hide();
+            label->deleteLater();
+        }
+        m_accessKeyLabels.clear();
+        m_accessKeyNodes.clear();
+        update();
+    }
+}
+
+
+void WebView::showAccessKeys()
+{
+    QStringList supportedElement;
+    supportedElement << QLatin1String("a")
+                     << QLatin1String("input")
+                     << QLatin1String("area")
+                     << QLatin1String("button")
+                     << QLatin1String("label")
+                     << QLatin1String("legend")
+                     << QLatin1String("textarea");
+
+    QList<QChar> unusedKeys;
+    for (char c = 'A'; c <= 'Z'; ++c)
+        unusedKeys << QLatin1Char(c);
+    for (char c = '0'; c <= '9'; ++c)
+        unusedKeys << QLatin1Char(c);
+
+    QRect viewport = QRect(page()->mainFrame()->scrollPosition(), page()->viewportSize());
+    // Priority first goes to elements with accesskey attributes
+    QList<QWebElement> alreadyLabeled;
+    Q_FOREACH(const QString & elementType, supportedElement)
+    {
+        QList<QWebElement> result = page()->mainFrame()->findAllElements(elementType).toList();
+        Q_FOREACH(const QWebElement & element, result)
+        {
+            const QRect geometry = element.geometry();
+            if (geometry.size().isEmpty()
+                    || !viewport.contains(geometry.topLeft()))
+            {
+                continue;
+            }
+            QString accessKeyAttribute = element.attribute(QLatin1String("accesskey")).toUpper();
+            if (accessKeyAttribute.isEmpty())
+                continue;
+            QChar accessKey;
+            for (int i = 0; i < accessKeyAttribute.count(); i += 2)
+            {
+                const QChar &possibleAccessKey = accessKeyAttribute[i];
+                if (unusedKeys.contains(possibleAccessKey))
+                {
+                    accessKey = possibleAccessKey;
+                    break;
+                }
+            }
+            if (accessKey.isNull())
+            {
+                continue;
+            }
+            unusedKeys.removeOne(accessKey);
+            makeAccessKeyLabel(accessKey, element);
+            alreadyLabeled.append(element);
+        }
+    }
+
+    // Pick an access key first from the letters in the text and then from the
+    // list of unused access keys
+    Q_FOREACH(const QString & elementType, supportedElement)
+    {
+        QWebElementCollection result = page()->mainFrame()->findAllElements(elementType);
+        Q_FOREACH(const QWebElement & element, result)
+        {
+            const QRect geometry = element.geometry();
+            if (unusedKeys.isEmpty()
+                    || alreadyLabeled.contains(element)
+                    || geometry.size().isEmpty())
+            {
+                continue;
+            }
+            QChar accessKey;
+            QString text = element.toPlainText().toUpper();
+            for (int i = 0; i < text.count(); ++i)
+            {
+                const QChar &c = text.at(i);
+                if (unusedKeys.contains(c))
+                {
+                    accessKey = c;
+                    break;
+                }
+            }
+            if (accessKey.isNull())
+                accessKey = unusedKeys.takeFirst();
+            unusedKeys.removeOne(accessKey);
+            makeAccessKeyLabel(accessKey, element);
+        }
+    }
+}
+
+
+void WebView::makeAccessKeyLabel(const QChar &accessKey, const QWebElement &element)
+{
+    QLabel *label = new QLabel(this);
+    label->setText(QString(QLatin1String("<qt><b>%1</b>")).arg(accessKey));
+
+    label->setAutoFillBackground(true);
+    label->setFrameStyle(QFrame::Box | QFrame::Plain);
+    QPoint point = element.geometry().center();
+    point -= page()->mainFrame()->scrollPosition();
+    label->move(point);
+    label->show();
+    point.setX(point.x() - label->width() / 2);
+    label->move(point);
+    m_accessKeyLabels.append(label);
+    m_accessKeyNodes[accessKey] = element;
+}
+
+
+bool WebView::checkForAccessKey(QKeyEvent *event)
+{
+    if (m_accessKeyLabels.isEmpty())
+        return false;
+
+    QString text = event->text();
+    if (text.isEmpty())
+        return false;
+    QChar key = text.at(0).toUpper();
+    bool handled = false;
+    if (m_accessKeyNodes.contains(key))
+    {
+        QWebElement element = m_accessKeyNodes[key];
+        QPoint p = element.geometry().center();
+        QWebFrame *frame = element.webFrame();
+        Q_ASSERT(frame);
+        do
+        {
+            p -= frame->scrollPosition();
+            frame = frame->parentFrame();
+        }
+        while (frame && frame != page()->mainFrame());
+        QMouseEvent pevent(QEvent::MouseButtonPress, p, Qt::LeftButton, 0, 0);
+        rApp->sendEvent(this, &pevent);
+        QMouseEvent revent(QEvent::MouseButtonRelease, p, Qt::LeftButton, 0, 0);
+        rApp->sendEvent(this, &revent);
+        handled = true;
+    }
+    return handled;
+}
+
+
+void WebView::accessKeyShortcut()
+{
+    if (!hasFocus()
+            || !m_accessKeysPressed
+            || !ReKonfig::accessKeysEnabled())
+        return;
+    if (m_accessKeyLabels.isEmpty())
+    {
+        showAccessKeys();
+    }
+    else
+    {
+        hideAccessKeys();
+    }
+    m_accessKeysPressed = false;
+}
+
+
 void WebView::sendByMail()
 {
     KAction *a = qobject_cast<KAction*>(sender());
@@ -906,3 +1108,4 @@ void WebView::sendByMail()
 
     KToolInvocation::invokeMailer("", "", "", "", url);
 }
+

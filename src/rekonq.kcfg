@@ -79,6 +79,9 @@
     <entry name="enableViShortcuts" type="Bool">
         <default>false</default>
     </entry>
+    <entry name="accessKeysEnabled" type="Bool">
+        <default>false</default>
+    </entry>
 </group>
 
 

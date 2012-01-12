@@ -257,6 +257,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_accessKeysEnabled">
+        <property name="text">
+         <string>Enable keyboard navigation using the Ctrl key</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
