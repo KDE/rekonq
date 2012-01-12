@@ -118,7 +118,7 @@
         <default>false</default>
     </entry>
     <entry name="closeTabSelectPrevious" type="Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry name="animatedTabHighlighting" type="Bool">
         <default>true</default>
