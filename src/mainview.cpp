@@ -306,7 +306,10 @@ WebTab *MainView::newWebTab(bool focused)
     connect(tab->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
     connect(tab->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
 
-    if (ReKonfig::openNewTabsNearCurrent())
+    bool openNearCurrent = true;
+    if (sender())
+        openNearCurrent = sender()->objectName() != "new_tab" ? true : false;
+    if (ReKonfig::openNewTabsNearCurrent() && openNearCurrent)
     {
         insertTab(currentIndex() + 1, tab, i18n("(Untitled)"));
         m_widgetBar->insertWidget(currentIndex() + 1, tab->urlBar());
