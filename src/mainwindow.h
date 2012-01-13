@@ -142,6 +142,7 @@ protected:
 
     bool event(QEvent *event);
 
+    void readProperties(const KConfigGroup & config);
     void finalizeGUI(KXMLGUIClient *client);
 
 private Q_SLOTS:

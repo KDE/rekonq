@@ -183,7 +183,7 @@ int Application::newInstance()
     // 2) Are there arguments?
     // 3) Is rekonq recovering from crash?
     // so, we have 8 possible cases...
-    bool isFirstLoad = m_mainWindows.isEmpty();
+    static bool isFirstLoad = true;
     bool areThereArguments = (args->count() > 0);
     bool isRekonqCrashed = (ReKonfig::recoverOnCrash() > 0);
     // note that isRekonqCrashed is always true if it is not the first load
@@ -194,6 +194,13 @@ int Application::newInstance()
     kDebug() << "is rekonq crashed? " << isRekonqCrashed;
 
     int exitValue = 1 * isFirstLoad + 2 * areThereArguments + 4 * isRekonqCrashed;
+
+    if (isFirstLoad && isSessionRestored())
+    {
+        isFirstLoad = false;
+
+        return exitValue;
+    }
 
     if (isRekonqCrashed && isFirstLoad)
     {
@@ -312,6 +319,8 @@ int Application::newInstance()
     }
 
     KStartupInfo::appStarted();
+    isFirstLoad = false;
+
     return exitValue;
 }
 

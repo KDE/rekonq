@@ -29,6 +29,7 @@
 
 // Local Includes
 #include "application.h"
+#include "mainwindow.h"
 
 // KDE Includes
 #include <KAboutData>
@@ -211,6 +212,10 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
 #endif
 
     Application app;
+
+    if (app.isSessionRestored())
+        for (int i = 1; MainWindow::canBeRestored(i); i++)
+            app.newMainWindow()->restore(i);
 
     return app.exec();
 }

@@ -650,6 +650,12 @@ void MainWindow::finalizeGUI(KXMLGUIClient* client)
                  << " ====================== ";
 }
 
+void MainWindow::readProperties(const KConfigGroup& config)
+{
+    Q_UNUSED(config)
+
+    Application::instance()->sessionManager()->restoreMainWindow(this);
+}
 
 void MainWindow::openLocation()
 {

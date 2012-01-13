@@ -39,7 +39,7 @@
 // Forward Declarations
 class QString;
 class TabHistory;
-
+class MainWindow;
 
 /**
   * Session Management: Needs clean up :)
@@ -60,6 +60,9 @@ public:
     // This method restores session
     // while turning back from Private mode
     int restoreSavedSession();
+
+    // This method restores a single MainWindow
+    bool restoreMainWindow(MainWindow * window);
 
 public Q_SLOTS:
     // This method restores session
