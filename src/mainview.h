@@ -113,12 +113,19 @@ Q_SIGNALS:
     void currentTitle(const QString &url);
     void showStatusBarMessage(const QString &message, Rekonq::Notify status = Rekonq::Info);
     void linkHovered(const QString &link);
-    void browserTabLoading(bool);
     void openPreviousInHistory();
     void openNextInHistory();
     void closeWindow();
 
     void printRequested(QWebFrame *frame);
+
+    /**
+     * Current tab state changed:
+     *  1. tab is loading
+     *  2. tab finished loading
+     *  3. tab urlbar got focus
+     */
+    void currentTabStateChanged();
 
 public Q_SLOTS:
     /**

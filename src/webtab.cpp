@@ -86,6 +86,7 @@ WebTab::WebTab(QWidget *parent)
     }
 
     connect(m_webView, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
+    connect(m_webView, SIGNAL(loadStarted()), this, SLOT(resetProgress()));
     connect(m_webView, SIGNAL(titleChanged(const QString &)), this, SIGNAL(titleChanged(const QString &)));
 
     // Session Manager
@@ -117,6 +118,12 @@ void WebTab::updateProgress(int p)
 {
     m_progress = p;
     emit loadProgressing();
+}
+
+
+void WebTab::resetProgress()
+{
+    m_progress = 1;
 }
 
 

@@ -111,6 +111,7 @@ MainWindow::MainWindow()
     , m_bookmarksPanel(0)
     , m_webInspectorPanel(0)
     , m_analyzerPanel(0)
+    , m_loadStopReloadAction(0)
     , m_historyBackMenu(0)
     , m_historyForwardMenu(0)
     , m_bookmarksBar(0)
@@ -196,8 +197,9 @@ MainWindow::MainWindow()
     connect(m_view, SIGNAL(openPreviousInHistory()), this, SLOT(openPrevious()));
     connect(m_view, SIGNAL(openNextInHistory()), this, SLOT(openNext()));
 
-    // update toolbar actions signals
-    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(updateActions()));
+    // update actions
+    connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(updateHistoryActions()));
+    connect(m_view, SIGNAL(currentTabStateChanged()), this, SLOT(updateTabActions()));
 
     // Change window icon according to tab icon
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(changeWindowIcon(int)));
@@ -362,12 +364,12 @@ void MainWindow::setupActions()
     actionCollection()->addAction(QL1S("stop"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(webStop()));
 
-    // stop reload Action
-    m_stopReloadAction = new KAction(this);
-    actionCollection()->addAction(QL1S("stop_reload") , m_stopReloadAction);
-    m_stopReloadAction->setShortcutConfigurable(false);
-    connect(m_view, SIGNAL(browserTabLoading(bool)), this, SLOT(browserLoading(bool)));
+    // load stop reload Action
+    m_loadStopReloadAction = new KAction(this);
+    actionCollection()->addAction(QL1S("load_stop_reload") , m_loadStopReloadAction);
+    m_loadStopReloadAction->setShortcutConfigurable(false);
 
+    // Open location action
     a = new KAction(i18n("Open Location"), this);
     KShortcut openLocationShortcut(Qt::CTRL + Qt::Key_L);
     openLocationShortcut.setAlternate(Qt::Key_F6);
@@ -741,7 +743,7 @@ void MainWindow::preferences()
 }
 
 
-void MainWindow::updateActions()
+void MainWindow::updateHistoryActions()
 {
     bool rekonqPage = currentTab()->page()->isOnRekonqPage();
 
@@ -1040,7 +1042,7 @@ void MainWindow::viewPageSource()
         srcTab->setPart(pa, tmpUrl);
         srcTab->urlBar()->setQUrl(url.pathOrUrl());
         m_view->setTabText(m_view->currentIndex(), i18n("Source of: ") + url.prettyUrl());
-        updateActions();
+        updateHistoryActions();
     }
     else
         KRun::runUrl(tmpUrl, QL1S("text/plain"), this, false);
@@ -1063,29 +1065,42 @@ WebTab *MainWindow::currentTab() const
 }
 
 
-void MainWindow::browserLoading(bool v)
+void MainWindow::updateTabActions()
 {
+    m_loadStopReloadAction->disconnect();
+
+    if (m_view->currentUrlBar()->hasFocus())
+    {
+        m_loadStopReloadAction->disconnect();
+
+        m_loadStopReloadAction->setIcon(KIcon("go-jump-locationbar"));
+        m_loadStopReloadAction->setToolTip(i18n("Load typed url"));
+        m_loadStopReloadAction->setText(i18n("Load"));
+
+        connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), m_view->currentUrlBar(), SLOT(loadDigitedUrl()));
+        return;
+    }
+
     QAction *stop = actionCollection()->action(QL1S("stop"));
     QAction *reload = actionCollection()->action(QL1S("view_redisplay"));
-    if (v)
+
+    if (currentTab()->isPageLoading())
     {
-        disconnect(m_stopReloadAction, SIGNAL(triggered(bool)), reload , SIGNAL(triggered(bool)));
-        m_stopReloadAction->setIcon(KIcon("process-stop"));
-        m_stopReloadAction->setToolTip(i18n("Stop loading the current page"));
-        m_stopReloadAction->setText(i18n("Stop"));
-        connect(m_stopReloadAction, SIGNAL(triggered(bool)), stop, SIGNAL(triggered(bool)));
+        m_loadStopReloadAction->setIcon(KIcon("process-stop"));
+        m_loadStopReloadAction->setToolTip(i18n("Stop loading the current page"));
+        m_loadStopReloadAction->setText(i18n("Stop"));
+        connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), stop, SIGNAL(triggered(bool)));
         stop->setEnabled(true);
     }
     else
     {
-        disconnect(m_stopReloadAction, SIGNAL(triggered(bool)), stop , SIGNAL(triggered(bool)));
-        m_stopReloadAction->setIcon(KIcon("view-refresh"));
-        m_stopReloadAction->setToolTip(i18n("Reload the current page"));
-        m_stopReloadAction->setText(i18n("Reload"));
-        connect(m_stopReloadAction, SIGNAL(triggered(bool)), reload, SIGNAL(triggered(bool)));
+        m_loadStopReloadAction->setIcon(KIcon("view-refresh"));
+        m_loadStopReloadAction->setToolTip(i18n("Reload the current page"));
+        m_loadStopReloadAction->setText(i18n("Reload"));
+        connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), reload, SIGNAL(triggered(bool)));
         stop->setEnabled(false);
 
-        updateActions();
+        updateHistoryActions();
     }
 }
 
@@ -1119,7 +1134,7 @@ void MainWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifie
         history->goToItem(*item);
     }
 
-    updateActions();
+    updateHistoryActions();
 }
 
 
@@ -1152,7 +1167,7 @@ void MainWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers k
         history->goToItem(*item);
     }
 
-    updateActions();
+    updateHistoryActions();
 }
 
 

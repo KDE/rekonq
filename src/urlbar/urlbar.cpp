@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
@@ -177,6 +177,21 @@ void UrlBar::loadRequestedUrl(const KUrl& url, Rekonq::OpenType type)
 }
 
 
+void UrlBar::loadDigitedUrl()
+{
+    UrlResolver res(text());
+    UrlSearchList list = res.orderedSearchItems();
+    if (list.isEmpty())
+    {
+        loadRequestedUrl(KUrl(text()));
+    }
+    else
+    {
+        loadRequestedUrl(list.first().url);
+    }
+}
+
+
 void UrlBar::paintEvent(QPaintEvent *event)
 {
     KColorScheme colorScheme(palette().currentColorGroup());
@@ -304,6 +319,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 void UrlBar::focusInEvent(QFocusEvent *event)
 {
     activateSuggestions(true);
+    rApp->mainWindow()->updateTabActions();
 
     KLineEdit::focusInEvent(event);
 }

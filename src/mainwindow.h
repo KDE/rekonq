@@ -104,7 +104,8 @@ public Q_SLOTS:
 
     void printRequested(QWebFrame *frame = 0);
 
-    void updateActions();
+    void updateHistoryActions();
+    void updateTabActions();
 
     virtual void configureToolbars();
 
@@ -146,7 +147,6 @@ protected:
     void finalizeGUI(KXMLGUIClient *client);
 
 private Q_SLOTS:
-    void browserLoading(bool);
     void updateWindowTitle(const QString &title = QString());
 
     // history related
@@ -201,7 +201,7 @@ private:
     WebInspectorPanel *m_webInspectorPanel;
     NetworkAnalyzerPanel *m_analyzerPanel;
 
-    KAction *m_stopReloadAction;
+    KAction *m_loadStopReloadAction;
 
     KMenu *m_historyBackMenu;
     KMenu *m_historyForwardMenu;

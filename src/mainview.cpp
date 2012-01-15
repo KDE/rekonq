@@ -264,7 +264,7 @@ void MainView::currentChanged(int index)
     emit showStatusBarMessage(QString());
 
     // notify UI to eventually switch stop/reload button
-    emit browserTabLoading(tab->isPageLoading());
+    emit currentTabStateChanged();
 
     // set focus to the current webview
     if (tab->url().scheme() == QL1S("about"))
@@ -518,7 +518,7 @@ void MainView::webViewLoadStarted()
     if (index != currentIndex())
         return;
 
-    emit browserTabLoading(true);
+    emit currentTabStateChanged();
     emit showStatusBarMessage(i18n("Loading..."), Rekonq::Info);
 
     if (view == currentWebTab()->view() && view->url().scheme() != QL1S("about"))
@@ -544,7 +544,7 @@ void MainView::webViewLoadFinished(bool ok)
     }
 
     webViewIconChanged();
-    emit browserTabLoading(false);
+    emit currentTabStateChanged();
 
     // don't display messages for background tabs
     if (index != currentIndex())

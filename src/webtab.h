@@ -97,7 +97,8 @@ public:
 
 private Q_SLOTS:
     void updateProgress(int progress);
-
+    void resetProgress();
+    
     void createWalletBar(const QString &, const QUrl &);
     void showRSSInfo(const QPoint &pos);
     void showSearchEngine(const QPoint &pos);

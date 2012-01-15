@@ -365,7 +365,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         UrlBar *bar = tab->urlBar();
         bar->setQUrl(replyUrl);
 
-        rApp->mainWindow()->updateActions();
+        rApp->mainWindow()->updateHistoryActions();
     }
     else
     {
@@ -484,7 +484,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
                 UrlBar *bar = tab->urlBar();
                 bar->setQUrl(_loadingUrl);
 
-                rApp->mainWindow()->updateActions();
+                rApp->mainWindow()->updateHistoryActions();
             }
         }
         break;
