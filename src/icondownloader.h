@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,48 +24,35 @@
 * ============================================================ */
 
 
-#ifndef ICON_MANAGER_H
-#define ICON_MANAGER_H
+#ifndef ICON_DOWNLOADER_H
+#define ICON_DOWNLOADER_H
 
-// Rekonq Includes
+// rekonq includes
 #include "rekonq_defines.h"
 
-// Qt Includes
-#include <QtCore/QObject>
+#include <QObject>
 
-// Forward Declarations
-class KIcon;
-class QWebFrame;
-class KJob;
+#include <KUrl>
+
+class QNetworkReply;
 
 
-class REKONQ_TESTS_EXPORT IconManager : public QObject
+class IconDownloader : public QObject
 {
     Q_OBJECT
 
 public:
-    IconManager(QObject *parent = 0);
+    IconDownloader(const KUrl &srcUrl, const KUrl &destUrl, QObject *parent = 0);
 
-    KIcon iconForUrl(const KUrl &url);
-    QString iconPathForUrl(const KUrl &url);
-
-    void provideIcon(QWebFrame *mFrame, const KUrl &url, bool notify = true);
-
-    void downloadIconFromUrl(const KUrl &url);
-
-    void clearIconCache();
-
-    void saveDesktopIconForUrl(const KUrl &u);
+private Q_SLOTS:
+    void replyFinished(QNetworkReply *);
 
 Q_SIGNALS:
-    void iconChanged();
+    void iconReady();
 
 private:
-    bool existsIconForUrl(const KUrl &url);
-    QString favIconForUrl(const KUrl &url);
-
-    QString _faviconsDir;
+    KUrl m_srcUrl;
+    KUrl m_destUrl;
 };
 
-
-#endif // ICON_MANAGER_H
+#endif // ICON_DOWNLOADER_H

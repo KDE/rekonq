@@ -13,6 +13,7 @@ SET( rekonq_KDEINIT_SRCS
     downloadmanager.cpp
     filterurljob.cpp
     findbar.cpp
+    icondownloader.cpp
     iconmanager.cpp
     mainview.cpp
     mainwindow.cpp

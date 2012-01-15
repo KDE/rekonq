@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -31,6 +31,7 @@
 // Local Includes
 #include "application.h"
 #include "webicon.h"
+#include "icondownloader.h"
 
 // KDE Includes
 #include <KIO/Job>
@@ -124,7 +125,8 @@ void IconManager::provideIcon(QWebFrame *mFrame, const KUrl &url, bool notify)
     const QString rootUrlString = url.scheme() + QL1S("://") + url.host();
 
     // find favicon url
-    KUrl faviconUrl;
+    KUrl faviconUrl(rootUrlString + QL1S("/favicon.ico"));
+
 
     QWebElement root = mFrame->documentElement();
     QWebElement e = root.findFirst(QL1S("link[rel~=\"icon\"]"));
@@ -142,18 +144,12 @@ void IconManager::provideIcon(QWebFrame *mFrame, const KUrl &url, bool notify)
                      : KUrl(rootUrlString + QL1C('/') + relUrlString);
     }
 
-    if (faviconUrl.isEmpty())
-        return;
-
     // dest url
     KUrl destUrl(_faviconsDir + url.host());
 
-    // download icon
-    KIO::FileCopyJob *job = KIO::file_copy(faviconUrl, destUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
+    IconDownloader *id = new IconDownloader(faviconUrl, destUrl, this);
     if (notify)
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(notifyLastStuffs(KJob *)));
-    else
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(doLastStuffs(KJob *)));
+        connect(id, SIGNAL(iconReady()), this, SIGNAL(iconChanged()));
 }
 
 
@@ -171,64 +167,6 @@ void IconManager::clearIconCache()
     {
         d.remove(fav);
     }
-}
-
-
-void IconManager::doLastStuffs(KJob *j)
-{
-    if (j->error())
-    {
-        kDebug() << "FAVICON JOB ERROR";
-        return;
-    }
-
-    KIO::FileCopyJob *job = static_cast<KIO::FileCopyJob *>(j);
-    KUrl dest = job->destUrl();
-
-    QString s = dest.url().remove(QL1S("file://"));
-    QFile fav(s);
-    if (!fav.exists())
-    {
-        kDebug() << "FAVICON DOES NOT EXISTS";
-        fav.remove();
-        return;
-    }
-
-    if (fav.size() == 0)
-    {
-        kDebug() << "SIZE ZERO FAVICON";
-        fav.remove();
-        return;
-    }
-
-    QPixmap px;
-    if (!px.load(s))
-    {
-        kDebug() << "PIXMAP NOT LOADED";
-        return;
-    }
-
-    if (px.isNull())
-    {
-        kDebug() << "PIXMAP IS NULL";
-        fav.remove();
-        return;
-    }
-
-    px = px.scaled(16, 16);
-    if (!px.save(s + QL1S(".png"), "PNG"))
-    {
-        kDebug() << "PIXMAP NOT SAVED";
-        return;
-    }
-    QFile::remove(s);
-}
-
-
-void IconManager::notifyLastStuffs(KJob *j)
-{
-    doLastStuffs(j);
-    emit iconChanged();
 }
 
 

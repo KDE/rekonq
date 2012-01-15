@@ -106,7 +106,7 @@ private Q_SLOTS:
     void hideAccessKeys();
 
     void loadStarted();
-    
+
 Q_SIGNALS:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
     void zoomChanged(int);

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Yoram Bar-Haim <<yoram.b at zend dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
@@ -311,7 +311,7 @@ bool SessionManager::restoreMainWindow(MainWindow* window)
         int currentTab = 0;
 
         if (window->objectName() != savedWindowElement.attribute("name", ""))
-          continue;
+            continue;
 
         MainView *mv = window->mainView();
 
