@@ -1008,7 +1008,8 @@ void WebView::showAccessKeys()
             const QRect geometry = element.geometry();
             if (unusedKeys.isEmpty()
                     || alreadyLabeled.contains(element)
-                    || geometry.size().isEmpty())
+                    || geometry.size().isEmpty()
+                    || !viewport.contains(geometry.topLeft()))
             {
                 continue;
             }
