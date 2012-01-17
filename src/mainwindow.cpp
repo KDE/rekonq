@@ -295,7 +295,7 @@ void MainWindow::configureToolbars()
 
     KEditToolBar dlg(factory(), this);
     // The bookmark bar needs to be refill after the UI changes are finished
-    connect(&dlg, SIGNAL(newToolBarConfig()), this, SLOT(initBookmarkBar()));
+    connect(&dlg, SIGNAL(newToolBarConfig()), this, SLOT(postLaunch()));
     dlg.exec();
 }
 
