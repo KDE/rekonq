@@ -365,6 +365,9 @@ void MainView::reloadAllTabs()
 void MainView::windowCloseRequested()
 {
     WebPage *page = qobject_cast<WebPage *>(sender());
+    if (!page)
+        return;
+
     WebView *view = qobject_cast<WebView *>(page->view());
     int index = indexOf(view->parentWidget());
 
@@ -505,6 +508,9 @@ void MainView::closeTab(int index, bool del)
 void MainView::webViewLoadStarted()
 {
     WebView *view = qobject_cast<WebView *>(sender());
+    if (!view)
+        return;
+
     int index = indexOf(view->parentWidget());
     if (-1 != index)
     {
@@ -562,6 +568,9 @@ void MainView::webViewLoadFinished(bool ok)
 void MainView::webViewIconChanged()
 {
     WebView *view = qobject_cast<WebView *>(sender());
+    if (!view)
+        return;
+
     WebTab *tab = qobject_cast<WebTab *>(view->parent());
     const int index = indexOf(tab);
 
@@ -584,11 +593,15 @@ void MainView::webViewTitleChanged(const QString &title)
     tabTitle.replace('&', "&&");
 
     WebTab *tab = qobject_cast<WebTab *>(sender());
+    if (!tab)
+        return;
+
     int index = indexOf(tab);
     if (-1 != index)
     {
         setTabText(index, tabTitle);
     }
+
     if (currentIndex() == index)
     {
         emit currentTitle(viewTitle);
@@ -598,6 +611,7 @@ void MainView::webViewTitleChanged(const QString &title)
         if (tabTitle != i18n("(Untitled)"))
             tabBar()->setTabHighlighted(index);
     }
+
     rApp->historyManager()->updateHistoryEntry(tab->url(), tabTitle);
     if (ReKonfig::hoveringTabOption() == 1)
         tabBar()->setTabToolTip(index, tabTitle.remove('&'));
@@ -607,6 +621,9 @@ void MainView::webViewTitleChanged(const QString &title)
 void MainView::webViewUrlChanged(const QUrl &url)
 {
     WebView *view = qobject_cast<WebView *>(sender());
+    if (!view)
+        return;
+
     int index = indexOf(view->parentWidget());
     if (ReKonfig::hoveringTabOption() == 2)
         tabBar()->setTabToolTip(index, url.toString());
