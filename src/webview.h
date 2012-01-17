@@ -70,13 +70,19 @@ public:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
+
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+
     void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+
     void wheelEvent(QWheelEvent *event);
+
     void dropEvent(QDropEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent * event);
+
     void paintEvent(QPaintEvent *event);
 
 private Q_SLOTS:

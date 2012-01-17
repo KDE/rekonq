@@ -618,26 +618,6 @@ void WebView::bookmarkLink()
 
 void WebView::keyPressEvent(QKeyEvent *event)
 {
-    if (ReKonfig::accessKeysEnabled())
-    {
-        m_accessKeysPressed = (event->modifiers() == Qt::ControlModifier
-                               && event->key() == Qt::Key_Control);
-        if (!m_accessKeysPressed)
-        {
-            if (checkForAccessKey(event))
-            {
-                hideAccessKeys();
-                event->accept();
-                return;
-            }
-            hideAccessKeys();
-        }
-        else
-        {
-            QTimer::singleShot(200, this, SLOT(accessKeyShortcut()));
-        }
-    }
-
     if (event->modifiers() == Qt::ControlModifier)
     {
         if (event->key() == Qt::Key_C)
@@ -662,6 +642,8 @@ void WebView::keyPressEvent(QKeyEvent *event)
     // Auto Scrolling
     if (event->modifiers() == Qt::ShiftModifier)
     {
+        kDebug() << "AutoScrolling: " << event->key();
+
         if (event->key() == Qt::Key_Up)
         {
             m_vScrollSpeed--;
@@ -711,6 +693,8 @@ void WebView::keyPressEvent(QKeyEvent *event)
         const QString tagName = page()->mainFrame()->evaluateJavaScript("document.activeElement.tagName").toString();
         if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && event->modifiers() == Qt::NoModifier)
         {
+            kDebug() << "Using VI-LIKE modifiers: " << event->key();
+
             switch (event->key())
             {
             case Qt::Key_J:
@@ -734,7 +718,36 @@ void WebView::keyPressEvent(QKeyEvent *event)
             }
         }
     }
+
     KWebView::keyPressEvent(event);
+}
+
+
+void WebView::keyReleaseEvent(QKeyEvent *event)
+{
+    // access keys management
+    if (ReKonfig::accessKeysEnabled())
+    {
+        m_accessKeysPressed = (event->key() == Qt::Key_Control);
+
+        if (!m_accessKeysPressed)
+        {
+            if (checkForAccessKey(event))
+            {
+                hideAccessKeys();
+                event->accept();
+                return;
+            }
+            hideAccessKeys();
+        }
+        else
+        {
+            kDebug() << "Shotting access keys";
+            QTimer::singleShot(200, this, SLOT(accessKeyShortcut()));
+        }
+    }
+
+    KWebView::keyReleaseEvent(event);
 }
 
 
