@@ -114,6 +114,7 @@ MainWindow::MainWindow()
     , m_loadStopReloadAction(0)
     , m_historyBackMenu(0)
     , m_historyForwardMenu(0)
+    , m_tabListMenu(0)
     , m_bookmarksBar(0)
     , m_popup(new QLabel(this))
     , m_hidePopupTimer(new QTimer(this))
@@ -457,11 +458,6 @@ void MainWindow::setupActions()
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
     actionCollection()->addAction(QL1S("open_last_closed_tab"), a);
     connect(a, SIGNAL(triggered(bool)), m_view, SLOT(openClosedTab()));
-
-    // Closed Tabs Menu
-    KActionMenu *closedTabsMenu = new KActionMenu(KIcon("tab-new"), i18n("Closed Tabs"), this);
-    closedTabsMenu->setDelayed(false);
-    actionCollection()->addAction(QL1S("closed_tab_menu"), closedTabsMenu);
 
     // shortcuts for quickly switching to a tab
     QSignalMapper *tabSignalMapper = new QSignalMapper(this);

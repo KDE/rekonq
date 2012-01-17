@@ -43,6 +43,9 @@
 // Forward Declarations
 class TabPreviewPopup;
 class TabHighlightEffect;
+
+class KActionMenu;
+
 class QPropertyAnimation;
 
 
@@ -107,7 +110,8 @@ private Q_SLOTS:
     bool isURLValid(const QString &url);
 
 private:
-    void setupHistoryActions();
+    KActionMenu *setupHistoryActions();
+
     friend class MainView;
 
     /**

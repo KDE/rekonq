@@ -304,7 +304,7 @@ void TabBar::mousePressEvent(QMouseEvent *event)
 
 void TabBar::contextMenu(int tab, const QPoint &pos)
 {
-    setupHistoryActions();
+    KActionMenu *closedTabsMenu = setupHistoryActions();
 
     m_actualIndex = tab;
 
@@ -318,7 +318,7 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
         menu.addAction(mainWindow->actionByName(QL1S("detach_tab")));
     }
     menu.addAction(mainWindow->actionByName(QL1S("open_last_closed_tab")));
-    menu.addAction(mainWindow->actionByName(QL1S("closed_tab_menu")));
+    menu.addAction(closedTabsMenu);
     menu.addSeparator();
     menu.addAction(mainWindow->actionByName(QL1S("close_tab")));
     if (count() > 1)
@@ -337,14 +337,14 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
 
 void TabBar::emptyAreaContextMenu(const QPoint &pos)
 {
-    setupHistoryActions();
+    KActionMenu *closedTabsMenu = setupHistoryActions();
 
     KMenu menu;
     MainWindow *mainWindow = rApp->mainWindow();
 
     menu.addAction(mainWindow->actionByName(QL1S("new_tab")));
     menu.addAction(mainWindow->actionByName(QL1S("open_last_closed_tab")));
-    menu.addAction(mainWindow->actionByName(QL1S("closed_tab_menu")));
+    menu.addAction(closedTabsMenu);
     menu.addSeparator();
     menu.addAction(mainWindow->actionByName(QL1S("reload_all_tabs")));
 
@@ -374,7 +374,7 @@ void TabBar::tabRemoved(int index)
 }
 
 
-void TabBar::setupHistoryActions()
+KActionMenu *TabBar::setupHistoryActions()
 {
     MainWindow *w = rApp->mainWindow();
     MainView *mv = qobject_cast<MainView *>(parent());
@@ -384,18 +384,15 @@ void TabBar::setupHistoryActions()
     bool closedTabsAvailable = (mv->recentlyClosedTabs().size() > 0);
     openLastClosedTabAction->setEnabled(closedTabsAvailable);
 
-    // update closed tabs menu
-    KActionMenu *am = qobject_cast<KActionMenu *>(w->actionByName(QL1S("closed_tab_menu")));
-    if (!am)
-        return;
-
+    KActionMenu *am = new KActionMenu(KIcon("tab-new"), i18n("Closed Tabs"), this);
+    am->setDelayed(false);
     am->setEnabled(closedTabsAvailable);
 
     if (am->menu())
         am->menu()->clear();
 
     if (!closedTabsAvailable)
-        return;
+        return am;
 
     for (int i = 0; i < mv->recentlyClosedTabs().count(); ++i)
     {
@@ -405,6 +402,8 @@ void TabBar::setupHistoryActions()
         connect(a, SIGNAL(triggered()), mv, SLOT(openClosedTab()));
         am->addAction(a);
     }
+
+    return am;
 }
 
 
@@ -491,6 +490,7 @@ void TabBar::setAnimatedTabHighlighting(bool enabled)
     }
 }
 
+
 void TabBar::dropEvent(QDropEvent* event)
 {
     if (event->mimeData()->hasUrls())
@@ -519,6 +519,7 @@ void TabBar::dropEvent(QDropEvent* event)
     KTabBar::dropEvent(event);
 }
 
+
 void TabBar::dragEnterEvent(QDragEnterEvent* event)
 {
     if (event->mimeData()->hasUrls() || event->mimeData()->hasText())
@@ -526,6 +527,7 @@ void TabBar::dragEnterEvent(QDragEnterEvent* event)
     else
         KTabBar::dragEnterEvent(event);
 }
+
 
 bool TabBar::isURLValid(const QString &url)
 {
