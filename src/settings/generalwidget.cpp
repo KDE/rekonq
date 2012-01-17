@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -68,6 +68,7 @@ GeneralWidget::GeneralWidget(QWidget *parent)
 
     kcfg_downloadPath->setEnabled(!ReKonfig::askDownloadPath());
     connect(askDownloadNo, SIGNAL(toggled(bool)), kcfg_downloadPath, SLOT(setEnabled(bool)));
+    connect(askDownloadNo, SIGNAL(toggled(bool)), this, SLOT(hasChanged()));
 }
 
 
@@ -78,6 +79,8 @@ void GeneralWidget::save()
     KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
     cg.writeEntry("DoNotTrack", doNotTrackCheckBox->isChecked());
     cg.sync();
+
+    _changed = false;
 }
 
 
