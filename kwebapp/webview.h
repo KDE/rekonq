@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011 by Andrea Diamantini <adjam7@gmail.com>                            *
+ *   Copyright (C) 2011-2012 by Andrea Diamantini <adjam7@gmail.com>                            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -36,7 +36,7 @@ class WebView : public KWebView
     Q_OBJECT
     
 public:
-    WebView(const QUrl &url, QWidget *parent = 0);
+    explicit WebView(const QUrl &url, QWidget *parent = 0);
 
 private Q_SLOTS:
     void setTitle(const QString &);

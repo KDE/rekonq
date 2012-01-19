@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Nils Weigel <nehlsen at gmail dot com>
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -167,8 +167,8 @@ BookmarksTreeModel::BookmarksTreeModel(QObject *parent)
     , m_root(0)
 {
     resetModel();
-    connect(rApp->bookmarkManager()->manager(), SIGNAL(changed(const QString &, const QString &)),
-            this, SLOT(bookmarksChanged(const QString &)));
+    connect(rApp->bookmarkManager()->manager(), SIGNAL(changed(QString, QString)),
+            this, SLOT(bookmarksChanged(QString)));
 }
 
 

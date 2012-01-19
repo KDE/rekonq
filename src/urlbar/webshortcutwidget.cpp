@@ -71,7 +71,7 @@ WebShortcutWidget::WebShortcutWidget(QWidget *parent)
     // Shortcuts
     QLabel *shortcutsLabel = new QLabel(i18n("Shortcuts:"), this);
     layout->addRow(shortcutsLabel, m_wsLineEdit);
-    connect(m_wsLineEdit,  SIGNAL(textChanged(QString)), SLOT(shortcutsChanged(const QString&)));
+    connect(m_wsLineEdit,  SIGNAL(textChanged(QString)), SLOT(shortcutsChanged(QString)));
 
     // Note
     m_noteLabel->setWordWrap(true);

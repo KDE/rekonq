@@ -113,7 +113,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
         label = new QLabel(this);
         label->setWordWrap(true);
         label->setText(QL1S("\"<a href=\"moresslinfos\">") + i18n("Certificate Information") + QL1S("</a>"));
-        connect(label, SIGNAL(linkActivated(const QString &)), this, SLOT(showMoreSslInfos(const QString &)));
+        connect(label, SIGNAL(linkActivated(QString)), this, SLOT(showMoreSslInfos(QString)));
         layout->addWidget(label, rows++, 1);
     }
 

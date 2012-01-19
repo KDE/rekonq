@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2011 by Andrea Diamantini <adjam7@gmail.com>                            *
+ *   Copyright (C) 2011-2012 by Andrea Diamantini <adjam7@gmail.com>                            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -50,17 +50,17 @@ WebView::WebView(const QUrl &url, QWidget *parent)
     : KWebView(parent)
 {
     page()->setForwardUnsupportedContent(true);
-    connect(page(), SIGNAL(unsupportedContent(QNetworkReply *)), page(), SLOT(downloadResponse(QNetworkReply *)));
-    connect(page(), SIGNAL(downloadRequested(const QNetworkRequest &)), page(), SLOT(downloadRequest(const QNetworkRequest &)));
-    connect(this, SIGNAL(linkShiftClicked(const KUrl &)), page(), SLOT(downloadUrl(const KUrl &)));
+    connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)), page(), SLOT(downloadResponse(QNetworkReply*)));
+    connect(page(), SIGNAL(downloadRequested(QNetworkRequest)), page(), SLOT(downloadRequest(QNetworkRequest)));
+    connect(this, SIGNAL(linkShiftClicked(KUrl)), page(), SLOT(downloadUrl(KUrl)));
 
     QWebSettings::setIconDatabasePath(KStandardDirs::locateLocal("cache", "kwebapp.favicons"));
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(this, SIGNAL(titleChanged(const QString &)), this, SLOT(setTitle(const QString &)));
+    connect(this, SIGNAL(titleChanged(QString)), this, SLOT(setTitle(QString)));
     connect(this, SIGNAL(iconChanged()), this, SLOT(setIcon()));
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(menuRequested(const QPoint &)));
+    connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(menuRequested(QPoint)));
 
     const QString iconPath = KStandardDirs::locateLocal("cache" , "favicons/" , true) + url.host() + "_WEBAPPICON.png";
     setWindowIcon(QIcon(iconPath));

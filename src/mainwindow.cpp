@@ -180,14 +180,14 @@ MainWindow::MainWindow()
     connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
 
     // notification system
-    connect(m_view, SIGNAL(showStatusBarMessage(const QString&, Rekonq::Notify)), this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
-    connect(m_view, SIGNAL(linkHovered(const QString&)), this, SLOT(notifyMessage(const QString&)));
-    connect(rApp->downloadManager(), SIGNAL(notifyDownload(const QString&, Rekonq::Notify)),
-            this, SLOT(notifyMessage(const QString&, Rekonq::Notify)));
+    connect(m_view, SIGNAL(showStatusBarMessage(QString, Rekonq::Notify)), this, SLOT(notifyMessage(QString, Rekonq::Notify)));
+    connect(m_view, SIGNAL(linkHovered(QString)), this, SLOT(notifyMessage(QString)));
+    connect(rApp->downloadManager(), SIGNAL(notifyDownload(QString, Rekonq::Notify)),
+            this, SLOT(notifyMessage(QString, Rekonq::Notify)));
 
     // connect signals and slots
-    connect(m_view, SIGNAL(currentTitle(const QString &)), this, SLOT(updateWindowTitle(const QString &)));
-    connect(m_view, SIGNAL(printRequested(QWebFrame *)), this, SLOT(printRequested(QWebFrame *)));
+    connect(m_view, SIGNAL(currentTitle(QString)), this, SLOT(updateWindowTitle(QString)));
+    connect(m_view, SIGNAL(printRequested(QWebFrame*)), this, SLOT(printRequested(QWebFrame*)));
     connect(m_view, SIGNAL(closeWindow()), this, SLOT(close()));
 
     // (shift +) ctrl + tab switching
@@ -206,7 +206,7 @@ MainWindow::MainWindow()
     connect(m_view, SIGNAL(currentChanged(int)), this, SLOT(changeWindowIcon(int)));
 
     // Find Bar signal
-    connect(m_findBar, SIGNAL(searchString(const QString &)), this, SLOT(find(const QString &)));
+    connect(m_findBar, SIGNAL(searchString(QString)), this, SLOT(find(QString)));
 
     // Zoom Bar signal
     connect(m_view, SIGNAL(currentChanged(int)), m_zoomBar, SLOT(updateSlider(int)));
@@ -422,7 +422,7 @@ void MainWindow::setupActions()
     m_historyBackMenu = new KMenu(this);
     a->setMenu(m_historyBackMenu);
     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowBackMenu()));
-    connect(m_historyBackMenu, SIGNAL(triggered(QAction *)), this, SLOT(openActionUrl(QAction *)));
+    connect(m_historyBackMenu, SIGNAL(triggered(QAction*)), this, SLOT(openActionUrl(QAction*)));
 
     a = actionCollection()->addAction(KStandardAction::Forward);
     connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
@@ -431,7 +431,7 @@ void MainWindow::setupActions()
     m_historyForwardMenu = new KMenu(this);
     a->setMenu(m_historyForwardMenu);
     connect(m_historyForwardMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowForwardMenu()));
-    connect(m_historyForwardMenu, SIGNAL(triggered(QAction *)), this, SLOT(openActionUrl(QAction*)));
+    connect(m_historyForwardMenu, SIGNAL(triggered(QAction*)), this, SLOT(openActionUrl(QAction*)));
 
     // ============================== General Tab Actions ====================================
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
@@ -469,7 +469,7 @@ void MainWindow::setupActions()
         connect(a, SIGNAL(triggered(bool)), tabSignalMapper, SLOT(map()));
         tabSignalMapper->setMapping(a, i);
     }
-    connect(tabSignalMapper, SIGNAL(mapped(const int)), m_view, SLOT(switchToTab(const int)));
+    connect(tabSignalMapper, SIGNAL(mapped(int)), m_view, SLOT(switchToTab(int)));
 
     // shortcuts for loading favorite pages
     QSignalMapper *favoritesSignalMapper = new QSignalMapper(this);
@@ -481,7 +481,7 @@ void MainWindow::setupActions()
         connect(a, SIGNAL(triggered(bool)), favoritesSignalMapper, SLOT(map()));
         favoritesSignalMapper->setMapping(a, i);
     }
-    connect(favoritesSignalMapper, SIGNAL(mapped(const int)), m_view, SLOT(loadFavorite(const int)));
+    connect(favoritesSignalMapper, SIGNAL(mapped(int)), m_view, SLOT(loadFavorite(int)));
 
     // ============================== Indexed Tab Actions ====================================
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
@@ -571,8 +571,8 @@ void MainWindow::setupPanels()
     // Setup history panel
     const QString historyTitle = i18n("History Panel");
     m_historyPanel = new HistoryPanel(historyTitle, this);
-    connect(m_historyPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)),
-            rApp, SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
+    connect(m_historyPanel, SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
+            rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
     connect(m_historyPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
     connect(m_historyPanel, SIGNAL(destroyed()), rApp, SLOT(saveConfiguration()));
 
@@ -589,8 +589,8 @@ void MainWindow::setupPanels()
     // Setup bookmarks panel
     const QString bookmarksTitle = i18n("Bookmarks Panel");
     m_bookmarksPanel = new BookmarksPanel(bookmarksTitle, this);
-    connect(m_bookmarksPanel, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType &)),
-            rApp, SLOT(loadUrl(const KUrl&, const Rekonq::OpenType &)));
+    connect(m_bookmarksPanel, SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
+            rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
     connect(m_bookmarksPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
     connect(m_bookmarksPanel, SIGNAL(destroyed()), rApp, SLOT(saveConfiguration()));
 
@@ -732,7 +732,7 @@ void MainWindow::preferences()
     QPointer<SettingsDialog> s = new SettingsDialog(this);
 
     // keep us informed when the user changes settings
-    connect(s, SIGNAL(settingsChanged(const QString&)), rApp, SLOT(updateConfiguration()));
+    connect(s, SIGNAL(settingsChanged(QString)), rApp, SLOT(updateConfiguration()));
 
     s->exec();
     delete s;
@@ -834,7 +834,7 @@ void MainWindow::printRequested(QWebFrame *frame)
     QPrinter printer;
     QPrintPreviewDialog previewdlg(&printer, this);
 
-    connect(&previewdlg, SIGNAL(paintRequested(QPrinter *)), printFrame, SLOT(print(QPrinter *)));
+    connect(&previewdlg, SIGNAL(paintRequested(QPrinter*)), printFrame, SLOT(print(QPrinter*)));
 
     previewdlg.exec();
 }

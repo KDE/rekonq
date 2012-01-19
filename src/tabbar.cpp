@@ -82,8 +82,8 @@ TabBar::TabBar(QWidget *parent)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(this, SIGNAL(contextMenu(int, const QPoint &)), this, SLOT(contextMenu(int, const QPoint &)));
-    connect(this, SIGNAL(emptyAreaContextMenu(const QPoint &)), this, SLOT(emptyAreaContextMenu(const QPoint &)));
+    connect(this, SIGNAL(contextMenu(int, QPoint)), this, SLOT(contextMenu(int, QPoint)));
+    connect(this, SIGNAL(emptyAreaContextMenu(QPoint)), this, SLOT(emptyAreaContextMenu(QPoint)));
 
     connect(m_animationMapper, SIGNAL(mapped(int)), this, SLOT(removeAnimation(int)));
     setGraphicsEffect(m_tabHighlightEffect);
@@ -498,7 +498,7 @@ void TabBar::dropEvent(QDropEvent* event)
         int urlCount = event->mimeData()->urls().count();
         if (urlCount > 1)
         {
-            Q_FOREACH(const QUrl url, event->mimeData()->urls())
+            Q_FOREACH(const QUrl & url, event->mimeData()->urls())
             rApp->loadUrl(url, Rekonq::NewTab);
         }
         else
@@ -533,9 +533,9 @@ bool TabBar::isURLValid(const QString &url)
 {
     QString editedURL = url;
     bool isValid = false;
-    if (editedURL.startsWith("http://") || editedURL.startsWith("https://") || editedURL.startsWith("ftp://"))
+    if (editedURL.startsWith(QL1S("http://")) || editedURL.startsWith(QL1S("https://")) || editedURL.startsWith(QL1S("ftp://")))
         editedURL = editedURL.remove(QRegExp("(http|https|ftp)://"));
-    if (editedURL.contains('.') && editedURL.indexOf('.') > 0 && editedURL.indexOf('.') < editedURL.length() && !editedURL.trimmed().contains(" ")
+    if (editedURL.contains(QL1C('.')) && editedURL.indexOf(QL1C('.')) > 0 && editedURL.indexOf(QL1C('.')) < editedURL.length() && !editedURL.trimmed().contains(QL1C(' '))
             && QUrl::fromUserInput(editedURL).isValid())
         isValid = true;
     return isValid;

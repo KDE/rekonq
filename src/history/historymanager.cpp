@@ -4,7 +4,7 @@
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
 * Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -68,8 +68,8 @@ HistoryManager::HistoryManager(QObject *parent)
     , m_historyLimit(0)
     , m_historyTreeModel(0)
 {
-    connect(this, SIGNAL(entryAdded(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
-    connect(this, SIGNAL(entryRemoved(const HistoryItem &)), m_saveTimer, SLOT(changeOccurred()));
+    connect(this, SIGNAL(entryAdded(HistoryItem)), m_saveTimer, SLOT(changeOccurred()));
+    connect(this, SIGNAL(entryRemoved(HistoryItem)), m_saveTimer, SLOT(changeOccurred()));
     connect(m_saveTimer, SIGNAL(saveNeeded()), this, SLOT(save()));
 
     load();

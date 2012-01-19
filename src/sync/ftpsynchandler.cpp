@@ -70,7 +70,7 @@ void FTPSyncHandler::initialLoadAndCheck()
         kDebug() << "LOCAL BK URL: " << _localBookmarksUrl;
 
         KIO::StatJob *job = KIO::stat(_remoteBookmarksUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksStatFinished(KJob *)));
+        connect(job, SIGNAL(finished(KJob*)), this, SLOT(onBookmarksStatFinished(KJob*)));
     }
 
     // History
@@ -90,7 +90,7 @@ void FTPSyncHandler::initialLoadAndCheck()
         kDebug() << "LOCAL HISTORY URL: " << _localHistoryUrl;
 
         KIO::StatJob *job = KIO::stat(_remoteHistoryUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistoryStatFinished(KJob *)));
+        connect(job, SIGNAL(finished(KJob*)), this, SLOT(onHistoryStatFinished(KJob*)));
     }
 
     // Passwords
@@ -110,7 +110,7 @@ void FTPSyncHandler::initialLoadAndCheck()
         kDebug() << "LOCAL PSWD URL: " << _localPasswordsUrl;
 
         KIO::StatJob *job = KIO::stat(_remotePasswordsUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsStatFinished(KJob *)));
+        connect(job, SIGNAL(finished(KJob*)), this, SLOT(onPasswordsStatFinished(KJob*)));
     }
 }
 
@@ -138,7 +138,7 @@ void FTPSyncHandler::syncBookmarks()
         return;
 
     KIO::Job *job = KIO::file_copy(_localBookmarksUrl, _remoteBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-    connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
+    connect(job, SIGNAL(finished(KJob*)), this, SLOT(onBookmarksSyncFinished(KJob*)));
 }
 
 
@@ -149,7 +149,7 @@ void FTPSyncHandler::onBookmarksStatFinished(KJob *job)
         if (job->error() == KIO::ERR_DOES_NOT_EXIST)
         {
             KIO::Job *job = KIO::file_copy(_localBookmarksUrl, _remoteBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-            connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
+            connect(job, SIGNAL(finished(KJob*)), this, SLOT(onBookmarksSyncFinished(KJob*)));
 
             emit syncStatus(Rekonq::Bookmarks, true, i18n("Remote bookmarks file does NOT exists. Exporting local copy..."));
             _firstTimeSynced = true;
@@ -162,7 +162,7 @@ void FTPSyncHandler::onBookmarksStatFinished(KJob *job)
     else
     {
         KIO::Job *job = KIO::file_copy(_remoteBookmarksUrl, _localBookmarksUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onBookmarksSyncFinished(KJob *)));
+        connect(job, SIGNAL(finished(KJob*)), this, SLOT(onBookmarksSyncFinished(KJob*)));
 
         emit syncStatus(Rekonq::Bookmarks, true, i18n("Remote bookmarks file exists! Syncing local copy..."));
         _firstTimeSynced = true;
@@ -194,7 +194,7 @@ void FTPSyncHandler::syncHistory()
         return;
 
     KIO::Job *job = KIO::file_copy(_localHistoryUrl, _remoteHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-    connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
+    connect(job, SIGNAL(finished(KJob*)), this, SLOT(onHistorySyncFinished(KJob*)));
 }
 
 
@@ -205,7 +205,7 @@ void FTPSyncHandler::onHistoryStatFinished(KJob *job)
         if (job->error() == KIO::ERR_DOES_NOT_EXIST)
         {
             KIO::Job *job = KIO::file_copy(_localHistoryUrl, _remoteHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-            connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
+            connect(job, SIGNAL(finished(KJob*)), this, SLOT(onHistorySyncFinished(KJob*)));
 
             emit syncStatus(Rekonq::History, true, i18n("Remote history file does NOT exists. Exporting local copy..."));
             _firstTimeSynced = true;
@@ -218,7 +218,7 @@ void FTPSyncHandler::onHistoryStatFinished(KJob *job)
     else
     {
         KIO::Job *job = KIO::file_copy(_remoteHistoryUrl, _localHistoryUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onHistorySyncFinished(KJob *)));
+        connect(job, SIGNAL(finished(KJob*)), this, SLOT(onHistorySyncFinished(KJob*)));
 
         emit syncStatus(Rekonq::History, true, i18n("Remote history file exists! Syncing local copy..."));
         _firstTimeSynced = true;
@@ -250,7 +250,7 @@ void FTPSyncHandler::syncPasswords()
         return;
 
     KIO::Job *job = KIO::file_copy(_localPasswordsUrl, _remotePasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-    connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
+    connect(job, SIGNAL(finished(KJob*)), this, SLOT(onPasswordsSyncFinished(KJob*)));
 }
 
 
@@ -261,7 +261,7 @@ void FTPSyncHandler::onPasswordsStatFinished(KJob *job)
         if (job->error() == KIO::ERR_DOES_NOT_EXIST)
         {
             KIO::Job *job = KIO::file_copy(_localPasswordsUrl, _remotePasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-            connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
+            connect(job, SIGNAL(finished(KJob*)), this, SLOT(onPasswordsSyncFinished(KJob*)));
 
             emit syncStatus(Rekonq::Passwords, true, i18n("Remote passwords file does NOT exists. Exporting local copy..."));
             _firstTimeSynced = true;
@@ -274,7 +274,7 @@ void FTPSyncHandler::onPasswordsStatFinished(KJob *job)
     else
     {
         KIO::Job *job = KIO::file_copy(_remotePasswordsUrl, _localPasswordsUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
-        connect(job, SIGNAL(finished(KJob *)), this, SLOT(onPasswordsSyncFinished(KJob *)));
+        connect(job, SIGNAL(finished(KJob*)), this, SLOT(onPasswordsSyncFinished(KJob*)));
 
         emit syncStatus(Rekonq::Passwords, true, i18n("Remote passwords file exists! Syncing local copy..."));
         _firstTimeSynced = true;

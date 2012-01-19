@@ -246,16 +246,16 @@ void MainView::currentChanged(int index)
     if (oldTab)
     {
         // disconnecting webpage from mainview
-        disconnect(oldTab->page(), SIGNAL(statusBarMessage(const QString&)),
-                   this, SIGNAL(showStatusBarMessage(const QString&)));
-        disconnect(oldTab->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
-                   this, SIGNAL(linkHovered(const QString&)));
+        disconnect(oldTab->page(), SIGNAL(statusBarMessage(QString)),
+                   this, SIGNAL(showStatusBarMessage(QString)));
+        disconnect(oldTab->page(), SIGNAL(linkHovered(QString, QString, QString)),
+                   this, SIGNAL(linkHovered(QString)));
     }
 
-    connect(tab->page(), SIGNAL(statusBarMessage(const QString&)),
-            this, SIGNAL(showStatusBarMessage(const QString&)));
-    connect(tab->page(), SIGNAL(linkHovered(const QString&, const QString&, const QString&)),
-            this, SIGNAL(linkHovered(const QString&)));
+    connect(tab->page(), SIGNAL(statusBarMessage(QString)),
+            this, SIGNAL(showStatusBarMessage(QString)));
+    connect(tab->page(), SIGNAL(linkHovered(QString, QString, QString)),
+            this, SIGNAL(linkHovered(QString)));
 
     emit currentTitle(tab->view()->title());
     m_widgetBar->setCurrentIndex(index);
@@ -296,15 +296,15 @@ WebTab *MainView::newWebTab(bool focused)
     // connecting webview with mainview
     connect(tab->view(), SIGNAL(loadStarted()), this, SLOT(webViewLoadStarted()));
     connect(tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(webViewLoadFinished(bool)));
-    connect(tab, SIGNAL(titleChanged(const QString &)), this, SLOT(webViewTitleChanged(const QString &)));
-    connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(webViewUrlChanged(const QUrl &)));
+    connect(tab, SIGNAL(titleChanged(QString)), this, SLOT(webViewTitleChanged(QString)));
+    connect(tab->view(), SIGNAL(urlChanged(QUrl)), this, SLOT(webViewUrlChanged(QUrl)));
     connect(tab->view(), SIGNAL(iconChanged()), this, SLOT(webViewIconChanged()));
     connect(tab->view(), SIGNAL(openPreviousInHistory()), this, SIGNAL(openPreviousInHistory()));
     connect(tab->view(), SIGNAL(openNextInHistory()), this, SIGNAL(openNextInHistory()));
 
     // connecting webPage signals with mainview
     connect(tab->page(), SIGNAL(windowCloseRequested()), this, SLOT(windowCloseRequested()));
-    connect(tab->page(), SIGNAL(printRequested(QWebFrame *)), this, SIGNAL(printRequested(QWebFrame *)));
+    connect(tab->page(), SIGNAL(printRequested(QWebFrame*)), this, SIGNAL(printRequested(QWebFrame*)));
 
     bool openNearCurrent = true;
     if (sender())

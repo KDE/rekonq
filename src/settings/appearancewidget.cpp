@@ -50,12 +50,12 @@ AppearanceWidget::AppearanceWidget(QWidget *parent)
     cursiveFontChooser->setCurrentFont(QFont(ReKonfig::cursiveFontFamily()));
     fantasyFontChooser->setCurrentFont(QFont(ReKonfig::fantasyFontFamily()));
 
-    connect(standardFontChooser,    SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
-    connect(fixedFontChooser,       SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
-    connect(serifFontChooser,       SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
-    connect(sansSerifFontChooser,   SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
-    connect(cursiveFontChooser,     SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
-    connect(fantasyFontChooser,     SIGNAL(currentFontChanged(const QFont &)), this, SLOT(hasChanged()));
+    connect(standardFontChooser,    SIGNAL(currentFontChanged(QFont)), this, SLOT(hasChanged()));
+    connect(fixedFontChooser,       SIGNAL(currentFontChanged(QFont)), this, SLOT(hasChanged()));
+    connect(serifFontChooser,       SIGNAL(currentFontChanged(QFont)), this, SLOT(hasChanged()));
+    connect(sansSerifFontChooser,   SIGNAL(currentFontChanged(QFont)), this, SLOT(hasChanged()));
+    connect(cursiveFontChooser,     SIGNAL(currentFontChanged(QFont)), this, SLOT(hasChanged()));
+    connect(fantasyFontChooser,     SIGNAL(currentFontChanged(QFont)), this, SLOT(hasChanged()));
 
     populateEncodingMenu();
 }
@@ -104,8 +104,8 @@ void AppearanceWidget::populateEncodingMenu()
     encodingCombo->setWhatsThis(i18n("Select the default encoding to be used; normally, you will be fine with 'Use language encoding' "
                                      "and should not have to change this."));
 
-    connect(encodingCombo, SIGNAL(activated(const QString &)), this, SLOT(setEncoding(const QString &)));
-    connect(encodingCombo, SIGNAL(activated(const QString &)), this, SLOT(hasChanged()));
+    connect(encodingCombo, SIGNAL(activated(QString)), this, SLOT(setEncoding(QString)));
+    connect(encodingCombo, SIGNAL(activated(QString)), this, SLOT(hasChanged()));
 
     QString enc = ReKonfig::defaultEncoding();
     int indexOfEnc = encodings.indexOf(enc);

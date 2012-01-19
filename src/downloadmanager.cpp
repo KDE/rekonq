@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2011 by Pierre Rossi <pierre dot rossi at gmail dot com>
 *
 *
@@ -189,8 +189,8 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
     KIO::Job *job = KIO::copy(srcUrl, destUrl, KIO::Overwrite);
     if (item)
     {
-        QObject::connect(job, SIGNAL(percent(KJob *, unsigned long)), item, SLOT(updateProgress(KJob *, unsigned long)));
-        QObject::connect(job, SIGNAL(finished(KJob *)), item, SLOT(onFinished(KJob*)));
+        QObject::connect(job, SIGNAL(percent(KJob*, ulong)), item, SLOT(updateProgress(KJob*, ulong)));
+        QObject::connect(job, SIGNAL(finished(KJob*)), item, SLOT(onFinished(KJob*)));
     }
 
     if (!metaData.isEmpty())

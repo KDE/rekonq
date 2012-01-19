@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009 by Paweł Prażak <pawelprazak at gmail dot com>
 * Copyright (C) 2009-2010 by Lionel Chauvin <megabigbug@yahoo.fr>
 * Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
@@ -69,12 +69,12 @@ BookmarkManager::BookmarkManager(QObject *parent)
         delete tempManager;
     }
 
-    connect(m_manager, SIGNAL(changed(const QString &, const QString &)), this, SLOT(slotBookmarksChanged()));
+    connect(m_manager, SIGNAL(changed(QString, QString)), this, SLOT(slotBookmarksChanged()));
 
     // setup menu
     m_owner = new BookmarkOwner(m_manager, this);
-    connect(m_owner, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
-            this, SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)));
+    connect(m_owner, SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
+            this, SIGNAL(openUrl(KUrl, Rekonq::OpenType)));
 
     KAction *a = KStandardAction::addBookmark(m_owner, SLOT(bookmarkCurrentPage()), this);
     m_actionCollection->addAction(QL1S("rekonq_add_bookmark"), a);

@@ -283,7 +283,7 @@ void AdBlockManager::updateNextSubscription()
         job->metaData().insert("cookies", "none");
         job->metaData().insert("no-auth", "true");
 
-        connect(job, SIGNAL(data(KIO::Job*, const QByteArray&)), this, SLOT(subscriptionData(KIO::Job*, const QByteArray&)));
+        connect(job, SIGNAL(data(KIO::Job*, QByteArray)), this, SLOT(subscriptionData(KIO::Job*, QByteArray)));
         connect(job, SIGNAL(result(KJob*)), this, SLOT(slotResult(KJob*)));
 
         return;

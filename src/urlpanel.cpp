@@ -99,9 +99,9 @@ void UrlPanel::setup()
     connect(search, SIGNAL(textChanged(QString)), proxy, SLOT(setFilterFixedString(QString)));
     connect(search, SIGNAL(textChanged(QString)), this, SLOT(expandTreeView()));
 
-    connect(_treeView, SIGNAL(contextMenuItemRequested(const QPoint &)), this, SLOT(contextMenuItem(const QPoint &)));
-    connect(_treeView, SIGNAL(contextMenuGroupRequested(const QPoint &)), this, SLOT(contextMenuGroup(const QPoint &)));
-    connect(_treeView, SIGNAL(contextMenuEmptyRequested(const QPoint &)), this, SLOT(contextMenuEmpty(const QPoint &)));
+    connect(_treeView, SIGNAL(contextMenuItemRequested(QPoint)), this, SLOT(contextMenuItem(QPoint)));
+    connect(_treeView, SIGNAL(contextMenuGroupRequested(QPoint)), this, SLOT(contextMenuGroup(QPoint)));
+    connect(_treeView, SIGNAL(contextMenuEmptyRequested(QPoint)), this, SLOT(contextMenuEmpty(QPoint)));
 }
 
 void UrlPanel::expandTreeView()

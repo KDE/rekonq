@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
 *
 *
@@ -163,7 +163,7 @@ BookmarkToolBar::BookmarkToolBar(KToolBar *toolBar, QObject *parent)
     , m_filled(false)
 {
     toolBar->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(toolBar, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
+    connect(toolBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenu(QPoint)));
     connect(rApp->bookmarkManager()->manager(), SIGNAL(changed(QString, QString)), this, SLOT(hideMenu()));
     toolBar->setAcceptDrops(true);
     toolBar->installEventFilter(this);

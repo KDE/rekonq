@@ -337,9 +337,9 @@ void UrlResolver::computeSuggestions()
 //     }
 //
 //     connect(rApp->opensearchManager(),
-//             SIGNAL(suggestionsReceived(const QString &, const ResponseList &)),
+//             SIGNAL(suggestionsReceived(QString,ResponseList)),
 //             this,
-//             SLOT(suggestionsReceived(const QString &, const ResponseList &)));
+//             SLOT(suggestionsReceived(QString,ResponseList)));
 //
 //     _typedQuery = query;
 //     rApp->opensearchManager()->requestSuggestion(query);

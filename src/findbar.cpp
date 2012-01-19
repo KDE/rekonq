@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
@@ -84,7 +84,7 @@ FindBar::FindBar(MainWindow *window)
     // lineEdit, focusProxy
     setFocusProxy(m_lineEdit);
     m_lineEdit->setMaximumWidth(250);
-    connect(m_lineEdit, SIGNAL(textChanged(const QString &)), window, SLOT(find(const QString &)));
+    connect(m_lineEdit, SIGNAL(textChanged(QString)), window, SLOT(find(QString)));
     layout->addWidget(m_lineEdit);
 
     // buttons

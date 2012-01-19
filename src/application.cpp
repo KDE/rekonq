@@ -311,8 +311,8 @@ int Application::newInstance()
         historyManager();
 
         // bookmarks loading
-        connect(bookmarkManager(), SIGNAL(openUrl(const KUrl&, const Rekonq::OpenType&)),
-                instance(), SLOT(loadUrl(const KUrl&, const Rekonq::OpenType&)));
+        connect(bookmarkManager(), SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
+                instance(), SLOT(loadUrl(KUrl, Rekonq::OpenType)));
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();

@@ -4,7 +4,7 @@
 *
 * Copyright (C) 2009 by Fredy Yanardi <fyanardi@gmail.com>
 * Copyright (C) 2010-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -127,8 +127,8 @@ void OpenSearchManager::addOpenSearchEngine(const KUrl &url, const QString &titl
     m_currentJob = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
     m_jobUrl = url;
     m_state = REQ_DESCRIPTION;
-    connect(m_currentJob, SIGNAL(data(KIO::Job *, const QByteArray &)), this, SLOT(dataReceived(KIO::Job *, const QByteArray &)));
-    connect(m_currentJob, SIGNAL(result(KJob *)), this, SLOT(jobFinished(KJob *)));
+    connect(m_currentJob, SIGNAL(data(KIO::Job*, QByteArray)), this, SLOT(dataReceived(KIO::Job*, QByteArray)));
+    connect(m_currentJob, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
 }
 
 void OpenSearchManager::requestSuggestion(const QString &searchText)
@@ -155,8 +155,8 @@ void OpenSearchManager::requestSuggestion(const QString &searchText)
         _typedText = searchText;
         m_currentJob = KIO::get(url, KIO::NoReload, KIO::HideProgressInfo);
         m_state = REQ_SUGGESTION;
-        connect(m_currentJob, SIGNAL(data(KIO::Job *, const QByteArray &)), this, SLOT(dataReceived(KIO::Job *, const QByteArray &)));
-        connect(m_currentJob, SIGNAL(result(KJob *)), this, SLOT(jobFinished(KJob *)));
+        connect(m_currentJob, SIGNAL(data(KIO::Job*, QByteArray)), this, SLOT(dataReceived(KIO::Job*, QByteArray)));
+        connect(m_currentJob, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
     }
 }
 

@@ -81,13 +81,13 @@ WebTab::WebTab(QWidget *parent)
 
     if (wallet)
     {
-        connect(wallet, SIGNAL(saveFormDataRequested(const QString &, const QUrl &)),
-                this, SLOT(createWalletBar(const QString &, const QUrl &)));
+        connect(wallet, SIGNAL(saveFormDataRequested(QString, QUrl)),
+                this, SLOT(createWalletBar(QString, QUrl)));
     }
 
     connect(m_webView, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(m_webView, SIGNAL(loadStarted()), this, SLOT(resetProgress()));
-    connect(m_webView, SIGNAL(titleChanged(const QString &)), this, SIGNAL(titleChanged(const QString &)));
+    connect(m_webView, SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
 
     // Session Manager
     connect(m_webView, SIGNAL(loadFinished(bool)), rApp->sessionManager(), SLOT(saveSession()));
@@ -156,13 +156,13 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
         m_walletBar.data()->animatedShow();
     }
 
-    connect(m_walletBar.data(), SIGNAL(saveFormDataAccepted(const QString &)),
-            wallet, SLOT(acceptSaveFormDataRequest(const QString &)), Qt::UniqueConnection);
-    connect(m_walletBar.data(), SIGNAL(saveFormDataRejected(const QString &)),
-            wallet, SLOT(rejectSaveFormDataRequest(const QString &)), Qt::UniqueConnection);
+    connect(m_walletBar.data(), SIGNAL(saveFormDataAccepted(QString)),
+            wallet, SLOT(acceptSaveFormDataRequest(QString)), Qt::UniqueConnection);
+    connect(m_walletBar.data(), SIGNAL(saveFormDataRejected(QString)),
+            wallet, SLOT(rejectSaveFormDataRequest(QString)), Qt::UniqueConnection);
 
     // sync passwords
-    connect(m_walletBar.data(), SIGNAL(saveFormDataAccepted(const QString &)),
+    connect(m_walletBar.data(), SIGNAL(saveFormDataAccepted(QString)),
             rApp->syncManager(), SLOT(syncPasswords()), Qt::UniqueConnection);
 }
 
@@ -298,9 +298,9 @@ void WebTab::showSearchEngine(const QPoint &pos)
         WebShortcutWidget *widget = new WebShortcutWidget(window());
         widget->setWindowFlags(Qt::Popup);
 
-        connect(widget, SIGNAL(webShortcutSet(const KUrl &, const QString &, const QString &)),
-                rApp->opensearchManager(), SLOT(addOpenSearchEngine(const KUrl &, const QString &, const QString &)));
-        connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
+        connect(widget, SIGNAL(webShortcutSet(KUrl, QString, QString)),
+                rApp->opensearchManager(), SLOT(addOpenSearchEngine(KUrl, QString, QString)));
+        connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString, QString, QString)),
                 this, SLOT(openSearchEngineAdded()));
 
         widget->show(extractOpensearchUrl(e), title, pos);
@@ -313,7 +313,7 @@ void WebTab::openSearchEngineAdded()
     // If the providers changed, tell sycoca to rebuild its database...
     KBuildSycocaProgressDialog::rebuildKSycoca(this);
 
-    disconnect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
+    disconnect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString, QString, QString)),
                this, SLOT(openSearchEngineAdded()));
 }
 

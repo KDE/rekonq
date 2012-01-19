@@ -154,7 +154,7 @@ QList<QStringList> SslInfoDialog::errorsFromString(const QString &s)
     Q_FOREACH(const QString & certErrors, sl1)
     {
         QStringList errors;
-        QStringList sl = certErrors.split("\t", QString::SkipEmptyParts);
+        QStringList sl = certErrors.split('\t', QString::SkipEmptyParts);
         Q_FOREACH(const QString & s, sl)
         {
             bool didConvert;

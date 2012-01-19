@@ -127,13 +127,13 @@ UrlBar::UrlBar(QWidget *parent)
 
     connect(_tab, SIGNAL(loadProgressing()), this, SLOT(update()));
 
-    connect(_tab->view(), SIGNAL(urlChanged(const QUrl &)), this, SLOT(setQUrl(const QUrl &)));
+    connect(_tab->view(), SIGNAL(urlChanged(QUrl)), this, SLOT(setQUrl(QUrl)));
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
     connect(_tab->view(), SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
 
     // search icon
-    connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(const QString &, const QString &, const QString &)),
+    connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString, QString, QString)),
             this, SLOT(updateRightIcons()));
 
     _suggestionTimer->setSingleShot(true);
@@ -447,15 +447,15 @@ void UrlBar::activateSuggestions(bool b)
         {
             _box = new CompletionWidget(this);
             installEventFilter(_box.data());
-            connect(_box.data(), SIGNAL(chosenUrl(const KUrl &, Rekonq::OpenType)), this, SLOT(loadRequestedUrl(const KUrl &, Rekonq::OpenType)));
+            connect(_box.data(), SIGNAL(chosenUrl(KUrl, Rekonq::OpenType)), this, SLOT(loadRequestedUrl(KUrl, Rekonq::OpenType)));
 
             // activate suggestions on edit text
-            connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(detectTypedString(const QString &)));
+            connect(this, SIGNAL(textChanged(QString)), this, SLOT(detectTypedString(QString)));
         }
     }
     else
     {
-        disconnect(this, SIGNAL(textChanged(const QString &)), this, SLOT(detectTypedString(const QString &)));
+        disconnect(this, SIGNAL(textChanged(QString)), this, SLOT(detectTypedString(QString)));
         removeEventFilter(_box.data());
         if (!_box.isNull())
             _box.data()->deleteLater();

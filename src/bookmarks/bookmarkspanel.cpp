@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 by Nils Weigel <nehlsen at gmail dot com>
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
 *
 * This program is free software; you can redistribute it and/or
@@ -118,8 +118,8 @@ void BookmarksPanel::setup()
     UrlPanel::setup();
 
     connect(panelTreeView(), SIGNAL(delKeyPressed()), this, SLOT(deleteBookmark()));
-    connect(panelTreeView(), SIGNAL(collapsed(const QModelIndex &)), this, SLOT(onCollapse(const QModelIndex &)));
-    connect(panelTreeView(), SIGNAL(expanded(const QModelIndex &)), this, SLOT(onExpand(const QModelIndex &)));
+    connect(panelTreeView(), SIGNAL(collapsed(QModelIndex)), this, SLOT(onCollapse(QModelIndex)));
+    connect(panelTreeView(), SIGNAL(expanded(QModelIndex)), this, SLOT(onExpand(QModelIndex)));
 
     loadFoldedState();
 }

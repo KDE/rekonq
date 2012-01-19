@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -49,7 +49,7 @@ AdBlockWidget::AdBlockWidget(QWidget *parent)
     setupUi(this);
 
     hintLabel->setText(i18n("<qt>Filter expression (e.g. <tt>http://www.example.com/ad/*</tt>, <a href=\"filterhelp\">more information</a>):"));
-    connect(hintLabel, SIGNAL(linkActivated(const QString &)), this, SLOT(slotInfoLinkActivated(const QString &)));
+    connect(hintLabel, SIGNAL(linkActivated(QString)), this, SLOT(slotInfoLinkActivated(QString)));
 
     listWidget->setSortingEnabled(true);
     listWidget->setSelectionMode(QAbstractItemView::SingleSelection);

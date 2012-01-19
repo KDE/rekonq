@@ -82,14 +82,14 @@ WebView::WebView(QWidget* parent)
     setPage(page);
 
     // download system
-    connect(this, SIGNAL(linkShiftClicked(const KUrl &)), page, SLOT(downloadUrl(const KUrl &)));
+    connect(this, SIGNAL(linkShiftClicked(KUrl)), page, SLOT(downloadUrl(KUrl)));
 
     // middle click || ctrl + click signal
-    connect(this, SIGNAL(linkMiddleOrCtrlClicked(const KUrl &)), this, SLOT(loadUrlInNewTab(const KUrl &)));
+    connect(this, SIGNAL(linkMiddleOrCtrlClicked(KUrl)), this, SLOT(loadUrlInNewTab(KUrl)));
 
     // loadUrl signal
-    connect(this, SIGNAL(loadUrl(const KUrl &, const Rekonq::OpenType &)),
-            rApp, SLOT(loadUrl(const KUrl &, const Rekonq::OpenType &)));
+    connect(this, SIGNAL(loadUrl(KUrl, Rekonq::OpenType)),
+            rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
 
     // Auto scroll timer
     connect(m_autoScrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));

@@ -222,7 +222,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
         QFileInfo fileInfo(_url.path());
         if (fileInfo.isDir())
         {
-            connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
+            connect(_lister, SIGNAL(newItems(KFileItemList)), this, SLOT(showResults(KFileItemList)));
             _lister->openUrl(_url);
 
             return true;
@@ -349,7 +349,7 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
         KIO::UDSEntry entry = statJob->statResult();
         if (entry.isDir())
         {
-            connect(_lister, SIGNAL(newItems(const KFileItemList &)), this, SLOT(showResults(const KFileItemList &)));
+            connect(_lister, SIGNAL(newItems(KFileItemList)), this, SLOT(showResults(KFileItemList)));
             _lister->openUrl(_url);
         }
         else

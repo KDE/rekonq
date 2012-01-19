@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -42,8 +43,8 @@
 PanelTreeView::PanelTreeView(QWidget *parent)
     : QTreeView(parent)
 {
-    connect(this, SIGNAL(itemHovered(const QString &)), parent, SIGNAL(itemHovered(const QString &)));
-    connect(this, SIGNAL(openUrl(const KUrl &, Rekonq::OpenType)), parent, SIGNAL(openUrl(const KUrl &, Rekonq::OpenType)));
+    connect(this, SIGNAL(itemHovered(QString)), parent, SIGNAL(itemHovered(QString)));
+    connect(this, SIGNAL(openUrl(KUrl, Rekonq::OpenType)), parent, SIGNAL(openUrl(KUrl, Rekonq::OpenType)));
     setMouseTracking(true);
     setExpandsOnDoubleClick(false);
 }

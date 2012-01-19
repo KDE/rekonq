@@ -127,7 +127,7 @@ WebPage::WebPage(QWidget *parent)
 {
     // ----- handling unsupported content...
     setForwardUnsupportedContent(true);
-    connect(this, SIGNAL(unsupportedContent(QNetworkReply *)), this, SLOT(handleUnsupportedContent(QNetworkReply *)));
+    connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(handleUnsupportedContent(QNetworkReply*)));
 
     // ----- rekonq Network Manager
     NetworkAccessManager *manager = new NetworkAccessManager(this);
@@ -153,12 +153,12 @@ WebPage::WebPage(QWidget *parent)
     // ----- last stuffs
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
 
-    connect(this, SIGNAL(downloadRequested(const QNetworkRequest &)), this, SLOT(downloadRequest(const QNetworkRequest &)));
+    connect(this, SIGNAL(downloadRequested(QNetworkRequest)), this, SLOT(downloadRequest(QNetworkRequest)));
     connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 
     // protocol handler signals
-    connect(&_protHandler, SIGNAL(downloadUrl(const KUrl &)), this, SLOT(downloadUrl(const KUrl &)));
+    connect(&_protHandler, SIGNAL(downloadUrl(KUrl)), this, SLOT(downloadUrl(KUrl)));
 
     connect(rApp->iconManager(), SIGNAL(iconChanged()), mainFrame(), SIGNAL(iconChanged()));
 }
@@ -348,7 +348,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         destUrl.setPath(tempFile.fileName());
         KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
         job->ui()->setWindow(rApp->mainWindow());
-        connect(job, SIGNAL(result(KJob *)), this, SLOT(copyToTempFileResult(KJob*)));
+        connect(job, SIGNAL(result(KJob*)), this, SLOT(copyToTempFileResult(KJob*)));
         return;
     }
 

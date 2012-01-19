@@ -128,8 +128,8 @@ void MainViewTest::closeTab()
 {
 //     QFETCH(int, index);
 //
-//     QSignalSpy spy1(view, SIGNAL(linkHovered(const QString &)));
-//     QSignalSpy spy2(view, SIGNAL(setCurrentTitle(const QString &)));
+//     QSignalSpy spy1(view, SIGNAL(linkHovered(QString)));
+//     QSignalSpy spy2(view, SIGNAL(setCurrentTitle(QString)));
 //     QSignalSpy spy3(view, SIGNAL(tabsChanged()));
 //     QSignalSpy spy4(view, SIGNAL(lastTabClosed()));
 //
@@ -162,10 +162,10 @@ void MainViewTest::currentWebView()
 
     SubMainView widget;
 
-    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(QString)));
     QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(QString)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(QString)));
     QSignalSpy spy5(view, SIGNAL(tabsChanged()));
     QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
@@ -194,9 +194,9 @@ void MainViewTest::newTab()
 {
 //     QFETCH(int, foo);
 //
-//     QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
-//     QSignalSpy spy1(view, SIGNAL(setCurrentTitle(const QString &)));
-//     QSignalSpy spy2(view, SIGNAL(showStatusBarMessage(const QString &)));
+//     QSignalSpy spy0(view, SIGNAL(linkHovered(QString)));
+//     QSignalSpy spy1(view, SIGNAL(setCurrentTitle(QString)));
+//     QSignalSpy spy2(view, SIGNAL(showStatusBarMessage(QString)));
 //     QSignalSpy spy3(view, SIGNAL(tabsChanged()));
 //     QSignalSpy spy4(view, SIGNAL(lastTabClosed()));
 //
@@ -225,10 +225,10 @@ void MainViewTest::nextTab()
 
     SubMainView widget;
 
-    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(QString)));
     QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(QString)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(QString)));
     QSignalSpy spy5(view, SIGNAL(tabsChanged()));
     QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
@@ -261,10 +261,10 @@ void MainViewTest::previousTab()
 
     SubMainView widget;
 
-    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(QString)));
     QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(QString)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(QString)));
     QSignalSpy spy5(view, SIGNAL(tabsChanged()));
     QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
@@ -291,10 +291,10 @@ void MainViewTest::recentlyClosedTabs()
     /*
     SubMainView widget;
 
-    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(QString)));
     QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(QString)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(QString)));
     QSignalSpy spy5(view, SIGNAL(tabsChanged()));
     QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
@@ -324,10 +324,10 @@ void MainViewTest::setCurrentTitle(const QString &)
 
     SubMainView widget;
 
-    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(QString)));
     QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(QString)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(QString)));
     QSignalSpy spy5(view, SIGNAL(tabsChanged()));
     QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
@@ -359,10 +359,10 @@ void MainViewTest::showStatusBarMessage(const QString &)
 
     SubMainView widget;
 
-    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(QString)));
     QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(QString)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(QString)));
     QSignalSpy spy5(view, SIGNAL(tabsChanged()));
     QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 
@@ -393,10 +393,10 @@ void MainViewTest::currentChanged()
 
     SubMainView widget;
 
-    QSignalSpy spy0(view, SIGNAL(linkHovered(const QString &)));
+    QSignalSpy spy0(view, SIGNAL(linkHovered(QString)));
     QSignalSpy spy2(view, SIGNAL(loadProgress(int)));
-    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(const QString &)));
-    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(const QString &)));
+    QSignalSpy spy3(view, SIGNAL(setCurrentTitle(QString)));
+    QSignalSpy spy4(view, SIGNAL(showStatusBarMessage(QString)));
     QSignalSpy spy5(view, SIGNAL(tabsChanged()));
     QSignalSpy spy6(view, SIGNAL(lastTabClosed()));
 

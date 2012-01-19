@@ -4,7 +4,7 @@
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
 * Copyright (C) 2008 Benjamin C. Meyer <ben@meyerhome.net>
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -64,8 +64,8 @@ HistoryModel::HistoryModel(HistoryManager *history, QObject *parent)
 {
     Q_ASSERT(m_historyManager);
     connect(m_historyManager, SIGNAL(historyReset()), this, SLOT(historyReset()));
-    connect(m_historyManager, SIGNAL(entryRemoved(const HistoryItem &)), this, SLOT(historyReset()));
-    connect(m_historyManager, SIGNAL(entryAdded(const HistoryItem &)), this, SLOT(entryAdded()));
+    connect(m_historyManager, SIGNAL(entryRemoved(HistoryItem)), this, SLOT(historyReset()));
+    connect(m_historyManager, SIGNAL(entryAdded(HistoryItem)), this, SLOT(entryAdded()));
     connect(m_historyManager, SIGNAL(entryUpdated(int)), this, SLOT(entryUpdated(int)));
 }
 
@@ -230,12 +230,12 @@ void HistoryFilterModel::setSourceModel(QAbstractItemModel *newSourceModel)
     if (sourceModel())
     {
         disconnect(sourceModel(), SIGNAL(modelReset()), this, SLOT(sourceReset()));
-        disconnect(sourceModel(), SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
-                   this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
-        disconnect(sourceModel(), SIGNAL(rowsInserted(const QModelIndex &, int, int)),
-                   this, SLOT(sourceRowsInserted(const QModelIndex &, int, int)));
-        disconnect(sourceModel(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-                   this, SLOT(sourceRowsRemoved(const QModelIndex &, int, int)));
+        disconnect(sourceModel(), SIGNAL(dataChanged(QModelIndex, QModelIndex)),
+                   this, SLOT(dataChanged(QModelIndex, QModelIndex)));
+        disconnect(sourceModel(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+                   this, SLOT(sourceRowsInserted(QModelIndex, int, int)));
+        disconnect(sourceModel(), SIGNAL(rowsRemoved(QModelIndex, int, int)),
+                   this, SLOT(sourceRowsRemoved(QModelIndex, int, int)));
     }
 
     QAbstractProxyModel::setSourceModel(newSourceModel);
@@ -244,12 +244,12 @@ void HistoryFilterModel::setSourceModel(QAbstractItemModel *newSourceModel)
     {
         m_loaded = false;
         connect(sourceModel(), SIGNAL(modelReset()), this, SLOT(sourceReset()));
-        connect(sourceModel(), SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
-                this, SLOT(sourceDataChanged(const QModelIndex &, const QModelIndex &)));
-        connect(sourceModel(), SIGNAL(rowsInserted(const QModelIndex &, int, int)),
-                this, SLOT(sourceRowsInserted(const QModelIndex &, int, int)));
-        connect(sourceModel(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-                this, SLOT(sourceRowsRemoved(const QModelIndex &, int, int)));
+        connect(sourceModel(), SIGNAL(dataChanged(QModelIndex, QModelIndex)),
+                this, SLOT(sourceDataChanged(QModelIndex, QModelIndex)));
+        connect(sourceModel(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+                this, SLOT(sourceRowsInserted(QModelIndex, int, int)));
+        connect(sourceModel(), SIGNAL(rowsRemoved(QModelIndex, int, int)),
+                this, SLOT(sourceRowsRemoved(QModelIndex, int, int)));
     }
 }
 
@@ -411,16 +411,16 @@ bool HistoryFilterModel::removeRows(int row, int count, const QModelIndex &paren
     if (row < 0 || count <= 0 || row + count > rowCount(parent) || parent.isValid())
         return false;
     int lastRow = row + count - 1;
-    disconnect(sourceModel(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-               this, SLOT(sourceRowsRemoved(const QModelIndex &, int, int)));
+    disconnect(sourceModel(), SIGNAL(rowsRemoved(QModelIndex, int, int)),
+               this, SLOT(sourceRowsRemoved(QModelIndex, int, int)));
     beginRemoveRows(parent, row, lastRow);
     int oldCount = rowCount();
     int start = sourceModel()->rowCount() - m_sourceRow.value(row);
     int end = sourceModel()->rowCount() - m_sourceRow.value(lastRow);
     sourceModel()->removeRows(start, end - start + 1);
     endRemoveRows();
-    connect(sourceModel(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-            this, SLOT(sourceRowsRemoved(const QModelIndex &, int, int)));
+    connect(sourceModel(), SIGNAL(rowsRemoved(QModelIndex, int, int)),
+            this, SLOT(sourceRowsRemoved(QModelIndex, int, int)));
     m_loaded = false;
     if (oldCount - count != rowCount())
         reset();
@@ -631,10 +631,10 @@ void HistoryTreeModel::setSourceModel(QAbstractItemModel *newSourceModel)
     {
         disconnect(sourceModel(), SIGNAL(modelReset()), this, SLOT(sourceReset()));
         disconnect(sourceModel(), SIGNAL(layoutChanged()), this, SLOT(sourceReset()));
-        disconnect(sourceModel(), SIGNAL(rowsInserted(const QModelIndex &, int, int)),
-                   this, SLOT(sourceRowsInserted(const QModelIndex &, int, int)));
-        disconnect(sourceModel(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-                   this, SLOT(sourceRowsRemoved(const QModelIndex &, int, int)));
+        disconnect(sourceModel(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+                   this, SLOT(sourceRowsInserted(QModelIndex, int, int)));
+        disconnect(sourceModel(), SIGNAL(rowsRemoved(QModelIndex, int, int)),
+                   this, SLOT(sourceRowsRemoved(QModelIndex, int, int)));
     }
 
     QAbstractProxyModel::setSourceModel(newSourceModel);
@@ -643,10 +643,10 @@ void HistoryTreeModel::setSourceModel(QAbstractItemModel *newSourceModel)
     {
         connect(sourceModel(), SIGNAL(modelReset()), this, SLOT(sourceReset()));
         connect(sourceModel(), SIGNAL(layoutChanged()), this, SLOT(sourceReset()));
-        connect(sourceModel(), SIGNAL(rowsInserted(const QModelIndex &, int, int)),
-                this, SLOT(sourceRowsInserted(const QModelIndex &, int, int)));
-        connect(sourceModel(), SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-                this, SLOT(sourceRowsRemoved(const QModelIndex &, int, int)));
+        connect(sourceModel(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+                this, SLOT(sourceRowsInserted(QModelIndex, int, int)));
+        connect(sourceModel(), SIGNAL(rowsRemoved(QModelIndex, int, int)),
+                this, SLOT(sourceRowsRemoved(QModelIndex, int, int)));
     }
 
     reset();
