@@ -43,6 +43,28 @@
 // Qt Includes
 #include <QtCore/QFile>
 
+// Only used internally
+bool readSessionDocument(QDomDocument & document, const QString & m_sessionFilePath)
+{
+    QFile sessionFile(m_sessionFilePath);
+
+    if (!sessionFile.exists())
+        return false;
+
+    if (!sessionFile.open(QFile::ReadOnly))
+    {
+        kDebug() << "Unable to open session file" << sessionFile.fileName();
+        return false;
+    }
+
+    if (!document.setContent(&sessionFile, false))
+    {
+        kDebug() << "Unable to parse session file" << sessionFile.fileName();
+        return false;
+    }
+
+    return true;
+}
 
 SessionManager::SessionManager(QObject *parent)
     : QObject(parent)
@@ -120,21 +142,10 @@ void SessionManager::saveSession()
 
 bool SessionManager::restoreSessionFromScratch()
 {
-    QFile sessionFile(m_sessionFilePath);
-    if (!sessionFile.exists())
-        return false;
-    if (!sessionFile.open(QFile::ReadOnly))
-    {
-        kDebug() << "Unable to open session file" << sessionFile.fileName();
-        return false;
-    }
-
     QDomDocument document("session");
-    if (!document.setContent(&sessionFile, false))
-    {
-        kDebug() << "Unable to parse session file" << sessionFile.fileName();
-        return false;
-    }
+    
+    if(!readSessionDocument(document, m_sessionFilePath))
+      return false;
 
     for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
     {
@@ -172,25 +183,10 @@ bool SessionManager::restoreSessionFromScratch()
 
 void SessionManager::restoreCrashedSession()
 {
-    QFile sessionFile(m_sessionFilePath);
-    if (!sessionFile.exists())
-    {
-        kDebug() << "Unable to find session file" << sessionFile.fileName();
-        return;
-    }
-
-    if (!sessionFile.open(QFile::ReadOnly))
-    {
-        kDebug() << "Unable to open session file" << sessionFile.fileName();
-        return;
-    }
-
     QDomDocument document("session");
-    if (!document.setContent(&sessionFile, false))
-    {
-        kDebug() << "Unable to parse session file" << sessionFile.fileName();
+
+    if (!readSessionDocument(document, m_sessionFilePath))
         return;
-    }
 
     for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
     {
@@ -227,25 +223,10 @@ void SessionManager::restoreCrashedSession()
 
 int SessionManager::restoreSavedSession()
 {
-    QFile sessionFile(m_sessionFilePath);
-    if (!sessionFile.exists())
-    {
-        kDebug() << "Unable to find session file" << sessionFile.fileName();
-        return 0;
-    }
-
-    if (!sessionFile.open(QFile::ReadOnly))
-    {
-        kDebug() << "Unable to open session file" << sessionFile.fileName();
-        return 0;
-    }
-
     QDomDocument document("session");
-    if (!document.setContent(&sessionFile, false))
-    {
-        kDebug() << "Unable to parse session file" << sessionFile.fileName();
+
+    if (!readSessionDocument(document, m_sessionFilePath))
         return 0;
-    }
 
     unsigned int winNo;
 
@@ -283,25 +264,10 @@ int SessionManager::restoreSavedSession()
 
 bool SessionManager::restoreMainWindow(MainWindow* window)
 {
-    QFile sessionFile(m_sessionFilePath);
-    if (!sessionFile.exists())
-    {
-        kDebug() << "Unable to find session file" << sessionFile.fileName();
-        return 0;
-    }
-
-    if (!sessionFile.open(QFile::ReadOnly))
-    {
-        kDebug() << "Unable to open session file" << sessionFile.fileName();
-        return 0;
-    }
-
     QDomDocument document("session");
-    if (!document.setContent(&sessionFile, false))
-    {
-        kDebug() << "Unable to parse session file" << sessionFile.fileName();
-        return 0;
-    }
+
+    if (!readSessionDocument(document, m_sessionFilePath))
+        return false;
 
     unsigned int winNo;
 
@@ -346,22 +312,10 @@ bool SessionManager::restoreMainWindow(MainWindow* window)
 QList<TabHistory> SessionManager::closedSites()
 {
     QList<TabHistory> list;
-
-    QFile sessionFile(m_sessionFilePath);
-    if (!sessionFile.exists())
-        return list;
-    if (!sessionFile.open(QFile::ReadOnly))
-    {
-        kDebug() << "Unable to open session file" << sessionFile.fileName();
-        return list;
-    }
-
     QDomDocument document("session");
-    if (!document.setContent(&sessionFile, false))
-    {
-        kDebug() << "Unable to parse session file" << sessionFile.fileName();
+
+    if (!readSessionDocument(document, m_sessionFilePath))
         return list;
-    }
 
     for (unsigned int tabNo = 0; tabNo < document.elementsByTagName("tab").length(); tabNo++)
     {
