@@ -126,7 +126,6 @@ private:
     QTimer *const m_autoScrollTimer;
     int m_verticalAutoScrollSpeed;
     int m_horizontalAutoScrollSpeed;
-    bool m_canEnableAutoScroll;
     bool m_isViewAutoScrolling;
     QPixmap m_autoScrollIndicator;
 

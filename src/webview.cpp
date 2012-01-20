@@ -68,7 +68,6 @@ WebView::WebView(QWidget* parent)
     , m_autoScrollTimer(new QTimer(this))
     , m_verticalAutoScrollSpeed(0)
     , m_horizontalAutoScrollSpeed(0)
-    , m_canEnableAutoScroll(true)
     , m_isViewAutoScrolling(false)
     , m_autoScrollIndicator(QPixmap(KStandardDirs::locate("appdata" , "pics/autoscroll.png")))
     , m_smoothScrollTimer(new QTimer(this))
@@ -392,13 +391,12 @@ void WebView::mousePressEvent(QMouseEvent *event)
         m_horizontalAutoScrollSpeed = 0;
         m_autoScrollTimer->stop();
         m_isViewAutoScrolling = false;
-        m_canEnableAutoScroll = true;
         update();
         return;
     }
 
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
-    m_canEnableAutoScroll = ReKonfig::middleClickAction() == 0 && !result.isContentEditable()  && result.linkUrl().isEmpty();
+    bool weCanDoMiddleClickActions = !result.isContentEditable()  && result.linkUrl().isEmpty();
 
     switch (event->button())
     {
@@ -411,40 +409,49 @@ void WebView::mousePressEvent(QMouseEvent *event)
         break;
 
     case Qt::MidButton:
-        if (m_canEnableAutoScroll
-                && !m_isViewAutoScrolling
-                && !page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).contains(event->pos())
-                && !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).contains(event->pos()))
+        switch (ReKonfig::middleClickAction())
         {
-            if (!page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).isNull()
-                    || !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).isNull())
+        case 0: // AutoScroll
+            if (weCanDoMiddleClickActions
+                    && !m_isViewAutoScrolling
+                    && !page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).contains(event->pos())
+                    && !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).contains(event->pos()))
             {
-                m_clickPos = event->pos();
-                m_isViewAutoScrolling = true;
-                update();
+                if (!page()->currentFrame()->scrollBarGeometry(Qt::Horizontal).isNull()
+                        || !page()->currentFrame()->scrollBarGeometry(Qt::Vertical).isNull())
+                {
+                    m_clickPos = event->pos();
+                    m_isViewAutoScrolling = true;
+                    update();
+                }
             }
-        }
+            break;
 
-        if (ReKonfig::middleClickAction() == 1 && result.linkUrl().isEmpty() && !result.isContentEditable())
-        {
-            const QString clipboardContent = rApp->clipboard()->text();
-
-            if (clipboardContent.isEmpty())
-                break;
-
-            if (QUrl::fromUserInput(clipboardContent).isValid())
-                loadUrl(clipboardContent, Rekonq::CurrentTab);
-            else // Search with default Engine
+        case 1: // Load Clipboard URL
+            if (weCanDoMiddleClickActions)
             {
-                KService::Ptr defaultEngine = SearchEngine::defaultEngine();
-                if (defaultEngine) // check if a default engine is set
-                    loadUrl(KUrl(SearchEngine::buildQuery(defaultEngine, clipboardContent)), Rekonq::CurrentTab);
+                const QString clipboardContent = rApp->clipboard()->text();
+
+                if (clipboardContent.isEmpty())
+                    break;
+
+                if (QUrl::fromUserInput(clipboardContent).isValid())
+                    loadUrl(clipboardContent, Rekonq::CurrentTab);
+                else // Search with default Engine
+                {
+                    KService::Ptr defaultEngine = SearchEngine::defaultEngine();
+                    if (defaultEngine) // check if a default engine is set
+                        loadUrl(KUrl(SearchEngine::buildQuery(defaultEngine, clipboardContent)), Rekonq::CurrentTab);
+                }
             }
+            break;
+
+        default: // Do Nothing
+            break;
         }
         break;
 
     default:
-        m_canEnableAutoScroll = true;
         break;
     };
     KWebView::mousePressEvent(event);
@@ -630,12 +637,6 @@ void WebView::keyPressEvent(QKeyEvent *event)
             triggerPageAction(KWebPage::SelectAll);
             return;
         }
-    }
-
-    if (!m_canEnableAutoScroll)
-    {
-        KWebView::keyPressEvent(event);
-        return;
     }
 
     const QString tagName = page()->mainFrame()->evaluateJavaScript("document.activeElement.tagName").toString();
