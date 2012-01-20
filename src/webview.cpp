@@ -65,7 +65,6 @@
 
 WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
-    , m_mousePos(QPoint(0, 0))
     , m_autoScrollTimer(new QTimer(this))
     , m_vScrollSpeed(0)
     , m_hScrollSpeed(0)
@@ -454,11 +453,11 @@ void WebView::mousePressEvent(QMouseEvent *event)
 
 void WebView::mouseMoveEvent(QMouseEvent *event)
 {
-    m_mousePos = event->pos();
+    QPoint mousePos = event->pos();
 
     if (m_isViewAutoScrolling)
     {
-        QPoint r = m_mousePos - m_clickPos;
+        QPoint r = mousePos - m_clickPos;
         m_hScrollSpeed = r.x() / 2;  // you are too fast..
         m_vScrollSpeed = r.y() / 2;
         if (!m_autoScrollTimer->isActive())

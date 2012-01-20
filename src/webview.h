@@ -63,11 +63,6 @@ public:
 
     WebPage *page();
 
-    inline QPoint mousePos()
-    {
-        return m_mousePos;
-    }
-
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
 
@@ -125,7 +120,6 @@ private:
     void makeAccessKeyLabel(const QChar &accessKey, const QWebElement &element);
 
 private:
-    QPoint m_mousePos;
     QPoint m_clickPos;
 
     // Auto Scroll
