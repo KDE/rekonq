@@ -100,7 +100,7 @@ private Q_SLOTS:
 
     void setupSmoothScrolling(int posY);
 
-    void stopScrolling();
+    void stopSmoothScrolling();
     void changeWindowIcon();
 
     void accessKeyShortcut();
@@ -124,8 +124,8 @@ private:
 
     // Auto Scroll
     QTimer *const m_autoScrollTimer;
-    int m_vScrollSpeed;
-    int m_hScrollSpeed;
+    int m_verticalAutoScrollSpeed;
+    int m_horizontalAutoScrollSpeed;
     bool m_canEnableAutoScroll;
     bool m_isViewAutoScrolling;
     QPixmap m_autoScrollIndicator;
@@ -133,10 +133,10 @@ private:
     // Smooth Scroll
     QTimer *const m_smoothScrollTimer;
     QTime m_smoothScrollTime;
-    bool m_scrollBottom;
-    bool m_smoothScrolling;
+    bool m_smoothScrollBottomReached;
     int m_dy;
     int m_smoothScrollSteps;
+    bool m_isViewSmoothScrolling;
 
     // Access Keys
     QList<QLabel*> m_accessKeyLabels;
