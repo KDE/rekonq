@@ -640,9 +640,10 @@ void WebView::keyPressEvent(QKeyEvent *event)
     }
 
     const QString tagName = page()->mainFrame()->evaluateJavaScript("document.activeElement.tagName").toString();
-
+    bool isContentEditable = page()->mainFrame()->evaluateJavaScript("document.activeElement.isContentEditable").toBool();
+    kDebug() << "DIT? " << isContentEditable;
     // Auto Scrolling
-    if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && event->modifiers() == Qt::ShiftModifier)
+    if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && !isContentEditable && event->modifiers() == Qt::ShiftModifier)
     {
         kDebug() << "AutoScrolling: " << event->key();
 
@@ -703,7 +704,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
     // vi-like navigation
     if (ReKonfig::enableViShortcuts())
     {
-        if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && event->modifiers() == Qt::NoModifier)
+        if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && !isContentEditable && event->modifiers() == Qt::NoModifier)
         {
             kDebug() << "Using VI-LIKE modifiers: " << event->key();
 
