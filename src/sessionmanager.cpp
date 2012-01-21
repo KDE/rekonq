@@ -44,9 +44,9 @@
 #include <QtCore/QFile>
 
 // Only used internally
-bool readSessionDocument(QDomDocument & document, const QString & m_sessionFilePath)
+bool readSessionDocument(QDomDocument & document, const QString & sessionFilePath)
 {
-    QFile sessionFile(m_sessionFilePath);
+    QFile sessionFile(sessionFilePath);
 
     if (!sessionFile.exists())
         return false;
