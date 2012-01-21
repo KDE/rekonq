@@ -639,8 +639,10 @@ void WebView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
+    const QString tagName = page()->mainFrame()->evaluateJavaScript("document.activeElement.tagName").toString();
+
     // Auto Scrolling
-    if (event->modifiers() == Qt::ShiftModifier)
+    if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && event->modifiers() == Qt::ShiftModifier)
     {
         kDebug() << "AutoScrolling: " << event->key();
 
@@ -649,6 +651,8 @@ void WebView::keyPressEvent(QKeyEvent *event)
             m_vScrollSpeed--;
             if (!m_autoScrollTimer->isActive())
                 m_autoScrollTimer->start();
+
+            event->accept();
             return;
         }
 
@@ -657,6 +661,8 @@ void WebView::keyPressEvent(QKeyEvent *event)
             m_vScrollSpeed++;
             if (!m_autoScrollTimer->isActive())
                 m_autoScrollTimer->start();
+
+            event->accept();
             return;
         }
 
@@ -665,6 +671,8 @@ void WebView::keyPressEvent(QKeyEvent *event)
             m_hScrollSpeed++;
             if (!m_autoScrollTimer->isActive())
                 m_autoScrollTimer->start();
+
+            event->accept();
             return;
         }
 
@@ -673,6 +681,8 @@ void WebView::keyPressEvent(QKeyEvent *event)
             m_hScrollSpeed--;
             if (!m_autoScrollTimer->isActive())
                 m_autoScrollTimer->start();
+
+            event->accept();
             return;
         }
 
@@ -685,12 +695,14 @@ void WebView::keyPressEvent(QKeyEvent *event)
             if (m_vScrollSpeed || m_hScrollSpeed)
                 m_autoScrollTimer->start();
         }
+
+        event->accept();
+        return;
     }
 
     // vi-like navigation
     if (ReKonfig::enableViShortcuts())
     {
-        const QString tagName = page()->mainFrame()->evaluateJavaScript("document.activeElement.tagName").toString();
         if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && event->modifiers() == Qt::NoModifier)
         {
             kDebug() << "Using VI-LIKE modifiers: " << event->key();
