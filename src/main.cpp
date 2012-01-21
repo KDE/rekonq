@@ -215,7 +215,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
 
     if (app.isSessionRestored())
         for (int i = 1; MainWindow::canBeRestored(i); i++)
-            app.newMainWindow()->restore(i);
+            app.newMainWindow(false)->restore(i);
 
     return app.exec();
 }
