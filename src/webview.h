@@ -141,6 +141,7 @@ private:
     QList<QLabel*> m_accessKeyLabels;
     QHash<QChar, QWebElement> m_accessKeyNodes;
     bool m_accessKeysPressed;
+    bool m_accessKeysActive;
 };
 
 #endif

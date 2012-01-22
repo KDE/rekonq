@@ -75,6 +75,7 @@ WebView::WebView(QWidget* parent)
     , m_smoothScrollSteps(0)
     , m_isViewSmoothScrolling(false)
     , m_accessKeysPressed(false)
+    , m_accessKeysActive(false)
 {
     WebPage *page = new WebPage(this);
     setPage(page);
@@ -624,26 +625,44 @@ void WebView::bookmarkLink()
 
 void WebView::keyPressEvent(QKeyEvent *event)
 {
+    // If CTRL was hit, be prepared for access keys
+    if (ReKonfig::accessKeysEnabled()
+            && !m_accessKeysActive
+            && event->key() == Qt::Key_Control
+            && !(event->modifiers() & ~Qt::ControlModifier)
+       )
+    {
+        m_accessKeysPressed = true;
+        event->accept();
+        return;
+    }
+
     if (event->modifiers() == Qt::ControlModifier)
     {
         if (event->key() == Qt::Key_C)
         {
             triggerPageAction(KWebPage::Copy);
+            event->accept();
             return;
         }
 
         if (event->key() == Qt::Key_A)
         {
             triggerPageAction(KWebPage::SelectAll);
+            event->accept();
             return;
         }
     }
 
     const QString tagName = page()->mainFrame()->evaluateJavaScript("document.activeElement.tagName").toString();
     bool isContentEditable = page()->mainFrame()->evaluateJavaScript("document.activeElement.isContentEditable").toBool();
-    kDebug() << "DIT? " << isContentEditable;
+
     // Auto Scrolling
-    if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && !isContentEditable && event->modifiers() == Qt::ShiftModifier)
+    if (event->modifiers() == Qt::ShiftModifier
+            && tagName != QL1S("INPUT")
+            && tagName != QL1S("TEXTAREA")
+            && !isContentEditable
+       )
     {
         kDebug() << "AutoScrolling: " << event->key();
 
@@ -690,13 +709,25 @@ void WebView::keyPressEvent(QKeyEvent *event)
         if (m_autoScrollTimer->isActive())
         {
             m_autoScrollTimer->stop();
+            event->accept();
+            return;
         }
         else
         {
             if (m_verticalAutoScrollSpeed || m_horizontalAutoScrollSpeed)
+            {
                 m_autoScrollTimer->start();
+                event->accept();
+                return;
+            }
         }
 
+        // if you arrived here, it means SHIFT has been pressed NOT for autoscroll management...
+    }
+
+    if (ReKonfig::accessKeysEnabled() && m_accessKeysActive)
+    {
+        hideAccessKeys();
         event->accept();
         return;
     }
@@ -706,8 +737,6 @@ void WebView::keyPressEvent(QKeyEvent *event)
     {
         if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && !isContentEditable && event->modifiers() == Qt::NoModifier)
         {
-            kDebug() << "Using VI-LIKE modifiers: " << event->key();
-
             switch (event->key())
             {
             case Qt::Key_J:

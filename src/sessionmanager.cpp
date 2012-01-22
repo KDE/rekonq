@@ -143,9 +143,9 @@ void SessionManager::saveSession()
 bool SessionManager::restoreSessionFromScratch()
 {
     QDomDocument document("session");
-    
-    if(!readSessionDocument(document, m_sessionFilePath))
-      return false;
+
+    if (!readSessionDocument(document, m_sessionFilePath))
+        return false;
 
     for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
     {
