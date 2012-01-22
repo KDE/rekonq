@@ -3,19 +3,15 @@
 
 === Prerequisites ===
 
-rekonq needs at least KDE SC 4.6.90 and Qt 4.7.x to build.
+To build, rekonq needs at least:
 
-Qt:
+- Qt 4.7.x:
+- QtWebkit 2.2.x
+- kdelibs 4.7.x
 
-  Qt should be prepackaged for all major Linux distributions. Please see
-  http://www.trolltech.com/products/qt for more information and installation
-  instructions.
-
-KDE SC:
-
-  KDE SC should be prepackaged for all major Linux distributions. Please see
-  http://techbase.kde.org/Getting_Started#Building_and_Running_KDE_Software_From_Source
-  for instructions on how to build and setup a KDE4 environment to work in.
+This software should be prepackaged for all major Linux distributions.
+Please see http://techbase.kde.org/Getting_Started#Building_and_Running_KDE_Software_From_Source
+for instructions on how to build and setup a KDE4 environment to work in.
 
 
 === Building rekonq ===
