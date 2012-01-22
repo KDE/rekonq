@@ -1,6 +1,21 @@
 Please, refer to http://techbase.kde.org/Projects/rekonq/Roadmap page
 to track all features available on new rekonq releases.
 
+0.9
+- urlbar suggestions improvements
+- enable url or text drops in the tabbar
+- improved rekonq webkit settings (based on QtWebkit 2.2 features)
+- bookmarks toolbar usability improvements
+- Applications shortcut (desktop links)
+- Many changes in default settings
+- Share URL/Text/link by mail
+- Usability work on rekonq pages
+- new rekonq tabs page (letting you easiily manage tabs)
+- let users choose a "default" download dir
+- SYNC feature: general infrastucture + ftp sync
+- access keys navigation
+- (User) session restore
+
 0.8
 - AdBlock: Third Party rules support
 - custom urlbar context menu (paste & go action, ...)
