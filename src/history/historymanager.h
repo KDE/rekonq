@@ -57,7 +57,7 @@
 class HistoryItem
 {
 public:
-    HistoryItem()
+    HistoryItem() : visitCount(1)
     {}
 
     explicit HistoryItem(const QString &u,

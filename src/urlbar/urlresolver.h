@@ -68,22 +68,24 @@ public:
     int image_height;
     QString bookmarkPath;
 
-    UrlSearchItem(const UrlSearchItem &item) : type(item.type),
-        url(item.url),
-        title(item.title),
-        description(item.description),
-        image(item.image),
-        image_width(item.image_width),
-        image_height(item.image_height)
+    UrlSearchItem(const UrlSearchItem &item) 
+        : type(item.type)
+        , url(item.url)
+        , title(item.title)
+        , description(item.description)
+        , image(item.image)
+        , image_width(item.image_width)
+        , image_height(item.image_height)
     {};
 
-    UrlSearchItem() : type(UrlSearchItem::Undefined),
-        url(QString()),
-        title(QString()),
-        description(QString()),
-        image(QString()),
-        image_width(0),
-        image_height(0)
+    UrlSearchItem() 
+        : type(UrlSearchItem::Undefined)
+        , url(QString())
+        , title(QString())
+        , description(QString())
+        , image(QString())
+        , image_width(0)
+        , image_height(0)
     {};
 
     UrlSearchItem(const int &_type,
@@ -94,13 +96,13 @@ public:
                   const int &_image_width = 0,
                   const int &_image_height = 0
                  )
-        : type(_type),
-          url(_url),
-          title(_title),
-          description(_description),
-          image(_image),
-          image_width(_image_width),
-          image_height(_image_height)
+        : type(_type)
+        , url(_url)
+        , title(_title)
+        , description(_description)
+        , image(_image)
+        , image_width(_image_width)
+        , image_height(_image_height)
     {};
 
     inline bool operator==(const UrlSearchItem &i) const
