@@ -1,37 +1,37 @@
-INSPIRED FROM AMAROK ONE
+THINGS TO DO TO RELEASE IT SMOOTHLY...
 
---------------------------------------------------------------------------------
 
 SECTION 1: Preparation
 
-* Update CHANGELOG file
+* Update CHANGELOG file (or just check it!!!)
+* Update INSTALL file (usually just new dependencies)
+* Update src/main.cpp. Check AUTHORS and CREDITS
 * Bump Version Number (in the CMakeLists.txt file)
-* Commit the source to GIT
+* Commit the source to GIT and ccmail: rekonq@kde.org
+* tag it : git tag -s $VERSION
 
 --------------------------------------------------------------------------------
 
 SECTION 2: Creating and Testing the Tarball
 
-* Run the "release_script.sh"
-    VERSION=qualcosina
-    git tag -s $VERSION
-    git archive --prefix=rekonq-$VERSION/ $VERSION | bzip2 > releases/rekonq-$VERSION.tar.bz2
+* Use releaseme script to create the tarball:
+  - if you need download it somewhere: git clone kde:releaseme
+  - update rekonqrc file with choices and version number
+  - launch ./rekonqrb script
 
-* Test package with current KDE version:
-* Optionally add docs and translations.
+* Test package with current KDE version
 * Test package with docs AND translations added
-* Check it works OK without any rekonq files in ~/.kde
+* Test it resetting rekonq files in ~/.kde4 (or in your local environment)
 
 --------------------------------------------------------------------------------
 
-SECTION 4: The Release Day
+SECTION 3: The Release Day
 
 * Add new version to Bugzilla
 * Push tarball to sf repository
-* Update sf rekonq site
+* Update rekonq site: http://rekonq.kde.org
 * Update kde-apps.org
 * Update IRC channel topic
-* Announce on mailing list
 * Blog about!
 
 --------------------------------------------------------------------------------
