@@ -373,7 +373,7 @@ void MainWindow::setupActions()
     // Open location action
     a = new KAction(i18n("Open Location"), this);
     KShortcut openLocationShortcut(Qt::CTRL + Qt::Key_L);
-    openLocationShortcut.setAlternate(Qt::Key_F6);
+    openLocationShortcut.setAlternate(Qt::ALT + Qt::Key_D);
     a->setShortcut(openLocationShortcut);
     actionCollection()->addAction(QL1S("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(openLocation()));
