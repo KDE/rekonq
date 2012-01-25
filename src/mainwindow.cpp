@@ -1173,6 +1173,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Tab))
     {
         emit ctrlTabPressed();
+        event->accept();
         return;
     }
 
@@ -1180,6 +1181,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if ((event->modifiers() == Qt::ControlModifier + Qt::ShiftModifier) && (event->key() == Qt::Key_Backtab))
     {
         emit shiftCtrlTabPressed();
+        event->accept();
         return;
     }
 
@@ -1214,6 +1216,7 @@ bool MainWindow::event(QEvent *event)
             }
         }
     }
+
     return KMainWindow::event(event);
 }
 

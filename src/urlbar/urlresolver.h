@@ -68,7 +68,7 @@ public:
     int image_height;
     QString bookmarkPath;
 
-    UrlSearchItem(const UrlSearchItem &item) 
+    UrlSearchItem(const UrlSearchItem &item)
         : type(item.type)
         , url(item.url)
         , title(item.title)
@@ -78,7 +78,7 @@ public:
         , image_height(item.image_height)
     {};
 
-    UrlSearchItem() 
+    UrlSearchItem()
         : type(UrlSearchItem::Undefined)
         , url(QString())
         , title(QString())
