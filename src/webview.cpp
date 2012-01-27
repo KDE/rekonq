@@ -637,6 +637,8 @@ void WebView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
+    const QString tagName = page()->mainFrame()->evaluateJavaScript("document.activeElement.tagName").toString();
+
     if (event->modifiers() == Qt::ControlModifier)
     {
         if (event->key() == Qt::Key_C)
@@ -652,9 +654,17 @@ void WebView::keyPressEvent(QKeyEvent *event)
             event->accept();
             return;
         }
+
+        // CTRL + RETURN: open link into another tab
+        if (event->key() == Qt::Key_Return && tagName == QL1S("A"))
+        {
+            KUrl u = KUrl(page()->mainFrame()->evaluateJavaScript("document.activeElement.attributes[\"href\"].value").toString());
+            emit loadUrl(u, Rekonq::NewTab);
+            event->accept();
+            return;
+        }
     }
 
-    const QString tagName = page()->mainFrame()->evaluateJavaScript("document.activeElement.tagName").toString();
     bool isContentEditable = page()->mainFrame()->evaluateJavaScript("document.activeElement.isContentEditable").toBool();
 
     // Auto Scrolling
