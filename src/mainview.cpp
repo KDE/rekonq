@@ -527,7 +527,9 @@ void MainView::webViewLoadStarted()
     emit currentTabStateChanged();
     emit showStatusBarMessage(i18n("Loading..."), Rekonq::Info);
 
-    if (view == currentWebTab()->view() && view->url().scheme() != QL1S("about"))
+    if (view == currentWebTab()->view()
+            && !currentUrlBar()->hasFocus()
+            && view->url().scheme() != QL1S("about"))
     {
         view->setFocus();
     }
