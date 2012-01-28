@@ -287,7 +287,7 @@ bool SessionManager::restoreMainWindow(MainWindow* window)
             if (tab.hasAttribute("currentTab"))
                 currentTab = tabNo;
 
-            WebView *view = (tabNo == 0) ? mv->webTab(0)->view() : mv->newWebTab()->view();
+            WebView *view = mv->newWebTab()->view();
 
             QDomCDATASection historySection = tab.firstChild().toCDATASection();
             QByteArray history = QByteArray::fromBase64(historySection.data().toAscii());
