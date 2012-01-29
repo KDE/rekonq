@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -114,7 +114,6 @@ void PreviewSelectorBar::clicked()
 
         //cleanup the previous image from the cache (useful to refresh the snapshot)
         QFile::remove(WebSnap::imagePathFromUrl(urls.at(m_previewIndex)));
-        page->mainFrame()->setScrollBarValue(Qt::Vertical, 0);
         QPixmap preview = WebSnap::renderPagePreview(*page);
         preview.save(WebSnap::imagePathFromUrl(url));
 

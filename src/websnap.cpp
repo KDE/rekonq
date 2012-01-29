@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2009 Nokia Corporation <qt-info@nokia.com>
-* Copyright (C) 2009-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
@@ -117,8 +117,10 @@ QPixmap WebSnap::renderClosingPagePreview(const QWebPage &page, int w, int h)
 
 QPixmap WebSnap::renderPagePreview(const QWebPage &page, int w, int h)
 {
-    //prepare page
+    // remove temporarily scrollbars
     page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+
+    // prepare page
     int width = page.mainFrame()->contentsSize().width();
     page.setViewportSize(QSize(width, width * ((0.0 + h) / w)));
 
@@ -127,6 +129,9 @@ QPixmap WebSnap::renderPagePreview(const QWebPage &page, int w, int h)
 
     // resize image
     pageImage = pageImage.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+
+    // restore scrollbars
+    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
 
     return pageImage;
 }
