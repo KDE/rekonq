@@ -89,6 +89,8 @@ void NewTabPage::generate(const KUrl &url)
             QStringList names = ReKonfig::previewNames();
             QStringList urls = ReKonfig::previewUrls();
 
+            int index = urls.count();
+
             names.append("");
             urls.append("");
 
@@ -97,8 +99,10 @@ void NewTabPage::generate(const KUrl &url)
 
             // Why doesn't it work well ?
             // m_root.appendInside(emptyPreview(names.length() - 1));
-            // Replacing with this :
+            // Replacing with this:
             generate(KUrl("about:favorites"));
+
+            rApp->mainWindow()->currentTab()->createPreviewSelectorBar(index);
             return;
         }
         if (url.directory() == QL1S("preview/remove"))
