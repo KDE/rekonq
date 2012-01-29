@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -278,7 +278,7 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
 
                     if (!append.isEmpty())
                     {
-                        QUrl url(QL1S("http://www.") + w->text());
+                        QUrl url(QL1S("http://") + w->text());
                         QString host = url.host();
                         if (!host.endsWith(append, Qt::CaseInsensitive))
                         {
