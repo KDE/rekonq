@@ -210,14 +210,28 @@ int Application::newInstance()
 
     if (areThereArguments)
     {
+        // prepare URLS to load
         KUrl::List urlList;
         for (int i = 0; i < args->count(); ++i)
         {
             const KUrl u = args->url(i);
+
             if (u.isLocalFile() && QFile::exists(u.toLocalFile())) // "rekonq somefile.html" case
                 urlList += u;
             else
-                urlList += KUrl(args->arg(i));   // "rekonq kde.org" || "rekonq kde:kdialog" case
+            {
+                // "rekonq kde.org" || "rekonq kde:kdialog" case
+                UrlResolver res(args->arg(i));
+                UrlSearchList list = res.orderedSearchItems();
+                if (list.isEmpty())
+                {
+                    urlList += u;
+                }
+                else
+                {
+                    urlList += list.first().url;
+                }
+            }
         }
 
         // first argument: 99% of the time we have just that...
