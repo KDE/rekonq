@@ -137,6 +137,8 @@ UrlSearchList UrlResolver::orderedSearchItems()
         list << hist;
         UrlSearchItem down(UrlSearchItem::Browse, QL1S("about:downloads"),  QL1S("downloads"));
         list << down;
+        UrlSearchItem tabs(UrlSearchItem::Browse, QL1S("about:tabs"),  QL1S("tabs"));
+        list << tabs;
 
         return list;
     }
