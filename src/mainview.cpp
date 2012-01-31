@@ -755,8 +755,38 @@ void MainView::detachTab(int index, MainWindow *toWindow)
             w = rApp->newMainWindow(false);
         else
             w = toWindow;
-        w->mainView()->addTab(tab, rApp->iconManager()->iconForUrl(u), label);
+
+        w->mainView()->addTab(tab, label);
         w->mainView()->widgetBar()->insertWidget(0, bar);
         w->mainView()->updateTabBar();
+
+        // reconnect signals to the new mainview
+        // Code copied from newWebTab(), any new changes there should be applied here
+
+        // disconnecting webview with old mainview
+        disconnect(tab->view(), SIGNAL(loadStarted()));
+        disconnect(tab->view(), SIGNAL(loadFinished(bool)));
+        disconnect(tab, SIGNAL(titleChanged(const QString &)));
+        disconnect(tab->view(), SIGNAL(urlChanged(const QUrl &)));
+        disconnect(tab->view(), SIGNAL(iconChanged()));
+        disconnect(tab->view(), SIGNAL(openPreviousInHistory()));
+        disconnect(tab->view(), SIGNAL(openNextInHistory()));
+
+        // disconnecting webPage signals with old mainview
+        disconnect(tab->page(), SIGNAL(windowCloseRequested()));
+        disconnect(tab->page(), SIGNAL(printRequested(QWebFrame *)));
+
+        // connecting webview with new mainview
+        connect(tab->view(), SIGNAL(loadStarted()), w->mainView(), SLOT(webViewLoadStarted()));
+        connect(tab->view(), SIGNAL(loadFinished(bool)), w->mainView(), SLOT(webViewLoadFinished(bool)));
+        connect(tab, SIGNAL(titleChanged(const QString &)), w->mainView(), SLOT(webViewTitleChanged(const QString &)));
+        connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), w->mainView(), SLOT(webViewUrlChanged(const QUrl &)));
+        connect(tab->view(), SIGNAL(iconChanged()), w->mainView(), SLOT(webViewIconChanged()));
+        connect(tab->view(), SIGNAL(openPreviousInHistory()), w->mainView(), SIGNAL(openPreviousInHistory()));
+        connect(tab->view(), SIGNAL(openNextInHistory()), w->mainView(), SIGNAL(openNextInHistory()));
+
+        // connecting webPage signals with new mainview
+        connect(tab->page(), SIGNAL(windowCloseRequested()), w->mainView(), SLOT(windowCloseRequested()));
+        connect(tab->page(), SIGNAL(printRequested(QWebFrame *)), w->mainView(), SIGNAL(printRequested(QWebFrame *)));
     }
 }
