@@ -792,6 +792,8 @@ void WebView::keyReleaseEvent(QKeyEvent *event)
         }
         else
         {
+            checkForAccessKey(event);
+            kDebug() << "Hiding access keys";
             hideAccessKeys();
             event->accept();
             return;
@@ -1142,6 +1144,8 @@ bool WebView::checkForAccessKey(QKeyEvent *event)
         rApp->sendEvent(this, &revent);
         handled = true;
     }
+
+    kDebug() << "checking for access keys: " << handled;
     return handled;
 }
 
