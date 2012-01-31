@@ -255,7 +255,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     // you need this before our code to draw inside the line edit..
     KLineEdit::paintEvent(event);
 
-    if (text().isEmpty() && progr == 0)
+    if (text().isEmpty() && (progr == 0 || progr == 100))
     {
         QStyleOptionFrame option;
         initStyleOption(&option);
