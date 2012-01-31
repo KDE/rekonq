@@ -964,7 +964,7 @@ void MainWindow::setWidgetsVisible(bool makeVisible)
     static bool bookmarksPanelFlag;
 
     KToolBar *mainBar = toolBar("mainToolBar");
-    KToolBar *bookBar = toolBar("bookmarksToolBar");
+    KToolBar *bookBar = toolBar("bookmarkToolBar");
 
     if (!makeVisible)
     {
