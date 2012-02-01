@@ -778,29 +778,25 @@ void WebView::keyPressEvent(QKeyEvent *event)
 void WebView::keyReleaseEvent(QKeyEvent *event)
 {
     // access keys management
-    if (ReKonfig::accessKeysEnabled() && m_accessKeysPressed)
+    if (ReKonfig::accessKeysEnabled())
     {
-        if (event->key() != Qt::Key_Control)
-        {
+        if (m_accessKeysPressed && event->key() != Qt::Key_Control)
             m_accessKeysPressed = false;
+
+        if (m_accessKeysPressed && !(event->modifiers() & Qt::ControlModifier))
+        {
+            kDebug() << "Shotting access keys";
+            QTimer::singleShot(200, this, SLOT(accessKeyShortcut()));
+            event->accept();
+            return;
         }
         else
         {
-            if ((event->modifiers() & Qt::ControlModifier))
-            {
-                checkForAccessKey(event);
-                kDebug() << "Hiding access keys";
-                hideAccessKeys();
-                event->accept();
-                return;
-            }
-            else
-            {
-                kDebug() << "Shotting access keys";
-                QTimer::singleShot(200, this, SLOT(accessKeyShortcut()));
-                event->accept();
-                return;
-            }
+            checkForAccessKey(event);
+            kDebug() << "Hiding access keys";
+            hideAccessKeys();
+            event->accept();
+            return;
         }
     }
 
