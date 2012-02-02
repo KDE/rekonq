@@ -540,6 +540,13 @@ void NewTabPage::tabsPage()
             if (url.protocol() == QL1S("about"))
                 continue;
 
+            if (!WebSnap::existsImage(url))
+            {
+                kDebug() << "image doesn't exist for url: " << url;
+                QPixmap preview = WebSnap::renderPagePreview(*w->mainView()->webTab(i)->page());
+                QString path = WebSnap::imagePathFromUrl(url.url());
+                preview.save(path);
+            }
             QString name = w->mainView()->webTab(i)->view()->title();
             QWebElement prev;
 

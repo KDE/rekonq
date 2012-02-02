@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2011 by Vyacheslav Blinov <blinov dot vyacheslav at gmail dot com>
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -22,6 +23,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 * ============================================================ */
+
 
 //Self Includes
 #include "tabpreviewpopup.h"
@@ -87,6 +89,7 @@ TabPreviewPopup::TabPreviewPopup(WebTab* tab, QWidget* parent)
     setWebTab(tab);
 }
 
+
 TabPreviewPopup::~TabPreviewPopup()
 {
     delete m_thumbnail;
@@ -100,7 +103,7 @@ void TabPreviewPopup::setWebTab(WebTab* tab)
     int h = w * rApp->mainWindow()->size().height() / rApp->mainWindow()->size().width();
 
     if (!tab->part())
-        setThumbnail(WebSnap::renderTabPreview(*tab->page(), w, h));
+        setThumbnail(WebSnap::renderPagePreview(*tab->page(), w, h));
     else
     {
         QWidget *part = tab->part()->widget();
@@ -119,10 +122,12 @@ void TabPreviewPopup::setThumbnail(const QPixmap& pixmap)
     m_thumbnail->setPixmap(pixmap);
 }
 
+
 void TabPreviewPopup::setUrl(const QString& text)
 {
     m_url->setText(text);
 }
+
 
 void TabPreviewPopup::setFixedSize(int w, int h)
 {

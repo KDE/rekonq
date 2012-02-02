@@ -34,16 +34,16 @@
 #include <KStandardDirs>
 
 // Qt Includes
-#include <QtCore/QSize>
-#include <QtCore/QFile>
+#include <QSize>
+#include <QFile>
 
 #include <QCryptographicHash>
 
-#include <QtGui/QPainter>
-#include <QtGui/QAction>
+#include <QPainter>
+#include <QAction>
 
-#include <QtWebKit/QWebFrame>
-#include <QtWebKit/QWebSettings>
+#include <QWebFrame>
+#include <QWebSettings>
 
 
 WebSnap::WebSnap(const KUrl& url, QObject *parent)
@@ -92,34 +92,37 @@ QPixmap WebSnap::render(const QWebPage &page, int w, int h)
 }
 
 
-QPixmap WebSnap::renderTabPreview(const QWebPage &page, int w, int h)
-{
-    QSize oldSize = page.viewportSize();
-    int width = page.mainFrame()->contentsSize().width();
-    page.setViewportSize(QSize(width, width * ((0.0 + h) / w)));
-    QPixmap pageImage = WebSnap::render(page, page.viewportSize().width(), page.viewportSize().height());
-    page.setViewportSize(oldSize);
-    return pageImage.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-}
-
-
+// NOTE
+// to render page preview in a safe way, you CANNOT work with scrollbars!
+// In fact, disabling temporarily them DOES NOT work without reloading a page
+// that is something we CANNOT do.
 QPixmap WebSnap::renderPagePreview(const QWebPage &page, int w, int h)
 {
-    // remove temporarily scrollbars
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+    // store actual viewportsize
+    QSize oldSize = page.viewportSize();
 
     // prepare page
-    int width = page.mainFrame()->contentsSize().width();
-    page.setViewportSize(QSize(width, width * ((0.0 + h) / w)));
+    int renderWidth = page.mainFrame()->contentsSize().width();
+    int renderHeight = renderWidth * ((0.0 + h) / w);
 
-    // render
-    QPixmap pageImage = WebSnap::render(page, page.viewportSize().width(), page.viewportSize().height());
+    page.setViewportSize(QSize(renderWidth, renderHeight));
+
+    // consider scrollbars and render the page
+    bool verticalScrollBarActive = !page.mainFrame()->scrollBarGeometry(Qt::Vertical).isEmpty();
+    if (verticalScrollBarActive)
+        renderWidth -= 15;
+
+    bool horizontalScrollBarActive = !page.mainFrame()->scrollBarGeometry(Qt::Horizontal).isEmpty();
+    if (horizontalScrollBarActive)
+        renderHeight -= 15;
+
+    QPixmap pageImage = WebSnap::render(page, renderWidth, renderHeight);
 
     // resize image
     pageImage = pageImage.scaled(w, h, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
-    // restore scrollbars
-    page.mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+    // restore page state
+    page.setViewportSize(oldSize);
 
     return pageImage;
 }

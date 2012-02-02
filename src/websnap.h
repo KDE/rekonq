@@ -86,20 +86,6 @@ public:
      */
     static QPixmap renderPagePreview(const QWebPage &page, int w = defaultWidth, int h = defaultHeight);
 
-    // static QPixmap renderVisiblePagePreview(const QWebPage &page, int w = WIDTH, int h = HEIGHT);
-    // TODO: try to make this method work => more previews for the urlbar
-
-    /**
-     * Snaps a pixmap of size w * h from a page for tab preview
-     *
-     * @param page the page to snap
-     * @param w the image width
-     * @param h the image height
-     *
-     * @return the pixmap snapped from the page
-     */
-    static QPixmap renderTabPreview(const QWebPage &page, int w, int h);
-
     /**
      * Guess the local path where the image for the url provided
      * should be

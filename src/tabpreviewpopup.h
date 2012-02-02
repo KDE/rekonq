@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2011 by Vyacheslav Blinov <blinov dot vyacheslav at gmail dot com>
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -23,6 +24,7 @@
 *
 * ============================================================ */
 
+
 #ifndef TABPREVIEWPOPUP_H
 #define TABPREVIEWPOPUP_H
 
@@ -35,6 +37,7 @@
 // forward declatrations
 class WebTab;
 class QLabel;
+
 
 class REKONQ_TESTS_EXPORT TabPreviewPopup : public KPassivePopup
 {
