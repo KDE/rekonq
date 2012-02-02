@@ -168,7 +168,7 @@ WebPage::~WebPage()
 {
     disconnect();
 
-    QPixmap preview = WebSnap::renderClosingPagePreview(*this);
+    QPixmap preview = WebSnap::renderPagePreview(*this);
     QString path = WebSnap::imagePathFromUrl(mainFrame()->url().toString());
     QFile::remove(path);
     preview.save(path);

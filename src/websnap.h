@@ -90,17 +90,6 @@ public:
     // TODO: try to make this method work => more previews for the urlbar
 
     /**
-     * Snaps a pixmap of size w * h from a page of a tab that is currently closing
-     *
-     * @param page the page to snap
-     * @param w the image width
-     * @param h the image height
-     *
-     * @return the pixmap snapped from the page
-     */
-    static QPixmap renderClosingPagePreview(const QWebPage &page, int w = defaultWidth, int h = defaultHeight);
-
-    /**
      * Snaps a pixmap of size w * h from a page for tab preview
      *
      * @param page the page to snap
