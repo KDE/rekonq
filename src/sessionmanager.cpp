@@ -172,6 +172,9 @@ bool SessionManager::restoreSessionFromScratch()
             KUrl u = KUrl(tab.attribute("url"));
             if (u.protocol() == QL1S("about"))
                 continue;
+
+            // This is needed for particular URLs, eg pdfs
+            view->load(u);
         }
 
         mv->tabBar()->setCurrentIndex(currentTab);
@@ -209,10 +212,9 @@ void SessionManager::restoreCrashedSession()
             QDataStream readingStream(&history, QIODevice::ReadOnly);
             readingStream >> *(view->history());
 
-            // Get sure about urls are loaded
+            // Get sure about urls and/or pdf are loaded
             KUrl u = KUrl(tab.attribute("url"));
-            if (u.protocol() == QL1S("about"))
-                view->load(u);
+            view->load(u);
         }
         mv->tabBar()->setCurrentIndex(currentTab);
     }
@@ -251,10 +253,9 @@ int SessionManager::restoreSavedSession()
             QDataStream readingStream(&history, QIODevice::ReadOnly);
             readingStream >> *(view->history());
 
-            // Get sure about urls are loaded
+            // Get sure about urls and/or pdfs are loaded
             KUrl u = KUrl(tab.attribute("url"));
-            if (u.protocol() == QL1S("about"))
-                view->load(u);
+            view->load(u);
         }
         mv->tabBar()->setCurrentIndex(currentTab);
     }
