@@ -289,6 +289,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (KParts::BrowserRun::isTextExecutable(_mimeType))
         _mimeType = QL1S("text/plain");
 
+    // Get suggested file name...
+    const KIO::MetaData& data = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
+    _suggestedFileName = data.value(QL1S("content-disposition-filename"));
+
     kDebug() << "Detected MimeType = " << _mimeType;
     kDebug() << "Suggested File Name = " << _suggestedFileName;
     // ------------------------------------------------
@@ -316,8 +320,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     {
         KParts::BrowserOpenOrSaveQuestion dlg(rApp->mainWindow(), replyUrl, _mimeType);
 
-        // Get suggested file name...
-        DownloadManager::extractSuggestedFileName(reply, _suggestedFileName);
         if (!_suggestedFileName.isEmpty())
             dlg.setSuggestedFileName(_suggestedFileName);
 
@@ -417,10 +419,6 @@ void WebPage::loadFinished(bool ok)
 void WebPage::manageNetworkErrors(QNetworkReply *reply)
 {
     Q_ASSERT(reply);
-
-    // check suggested file name
-    if (_suggestedFileName.isEmpty())
-        DownloadManager::extractSuggestedFileName(reply, _suggestedFileName);
 
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
