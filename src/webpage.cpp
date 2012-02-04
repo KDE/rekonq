@@ -454,14 +454,11 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         // ignore this..
         return;
 
-    case QNetworkReply::ContentAccessDenied:                 // access to remote content denied (similar to HTTP error 401)
+        // WARNING: This is also typical adblocked element error: IGNORE THIS!
+    case QNetworkReply::ContentAccessDenied:                 // access to remote content denied
         break;
 
     case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
-        // FIXME: DO WE REALLY NEED THIS???
-        _protHandler.postHandling(reply->request(), frame);
-        return;
-
     case QNetworkReply::ConnectionRefusedError:              // remote server refused connection
     case QNetworkReply::HostNotFoundError:                   // invalid hostname
     case QNetworkReply::TimeoutError:                        // connection time out
@@ -470,7 +467,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     case QNetworkReply::ContentNotFoundError:                // remote content not found on server (similar to HTTP error 404)
     case QNetworkReply::ProtocolUnknownError:                // Unknown protocol
     case QNetworkReply::ProtocolInvalidOperationError:       // requested operation is invalid for this protocol
-
+    default:
         kDebug() << "ERROR " << reply->error() << ": " << reply->errorString();
         if (reply->url() == _loadingUrl)
         {
@@ -487,10 +484,6 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
                 rApp->mainWindow()->updateHistoryActions();
             }
         }
-        break;
-
-    default:
-        // Nothing to do here..
         break;
 
     }
