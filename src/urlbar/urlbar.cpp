@@ -354,6 +354,9 @@ void UrlBar::loadFinished()
         return;
     }
 
+    // Make sure icons aren't duplicated
+    clearRightIcons();
+
     // show Favorite Icon
     if (ReKonfig::previewUrls().contains(_tab->url().url()))
     {
@@ -433,7 +436,6 @@ void UrlBar::updateRightIcons()
 {
     if (!_tab->isPageLoading())
     {
-        clearRightIcons();
         loadFinished();
     }
 }
