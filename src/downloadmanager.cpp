@@ -141,13 +141,14 @@ void DownloadManager::downloadLinksWithKGet(const QVariant &contentList)
 // In this way, we can easily provide the extra functionality we need:
 // 1. KGet Integration
 // 2. Save downloads history
-bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &metaData, QWidget *parent, const QString &suggestedName)
+bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &metaData,
+                                       QWidget *parent, bool forceDirRequest, const QString &suggestedName)
 {
     KUrl destUrl;
 
     const QString fileName((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
 
-    if (ReKonfig::askDownloadPath())
+    if (forceDirRequest || ReKonfig::askDownloadPath())
     {
         // follow bug:184202 fixes
         destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);

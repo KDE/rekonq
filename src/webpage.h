@@ -107,9 +107,6 @@ private Q_SLOTS:
     void copyToTempFileResult(KJob*);
 
 private:
-    void downloadReply(const QNetworkReply *reply, const QString &suggestedFileName = QString());
-
-private:
     QString errorPage(QNetworkReply *reply);
     KUrl _loadingUrl;
 

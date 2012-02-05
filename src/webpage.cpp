@@ -306,7 +306,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     {
         isLocal
         ? KMessageBox::sorry(view(), i18n("No service can handle this file."))
-        : downloadReply(reply, _suggestedFileName);
+        : downloadUrl(reply->url());
 
         return;
     }
@@ -323,10 +323,17 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         if (!_suggestedFileName.isEmpty())
             dlg.setSuggestedFileName(_suggestedFileName);
 
+        // read askEmbedOrSave preferences. If we don't have to show dialog and rekonq settings are
+        // to automatically choose download dir, we won't show local dir choose dialog
+        KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("filetypesrc", KConfig::NoGlobals), QL1S("Notification Messages"));
+        bool hideDialog = cg.readEntry(QL1S("askEmbedOrSave") + _mimeType, false);
+
+        kDebug() << "Hide dialog for " << _mimeType << "? " << hideDialog;
+
         switch (dlg.askEmbedOrSave())
         {
         case KParts::BrowserOpenOrSaveQuestion::Save:
-            downloadReply(reply, _suggestedFileName);
+            rApp->downloadManager()->downloadResource(reply->url(), KIO::MetaData(), view(), !hideDialog, _suggestedFileName);
             return;
 
         case KParts::BrowserOpenOrSaveQuestion::Cancel:
@@ -541,12 +548,6 @@ QString WebPage::errorPage(QNetworkReply *reply)
                    .arg(msg)
                    ;
     return html;
-}
-
-
-void WebPage::downloadReply(const QNetworkReply *reply, const QString &suggestedFileName)
-{
-    rApp->downloadManager()->downloadResource(reply->url(), KIO::MetaData(), view(), suggestedFileName);
 }
 
 
