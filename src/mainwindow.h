@@ -45,6 +45,7 @@ class FindBar;
 class HistoryPanel;
 class MainView;
 class NetworkAnalyzerPanel;
+class RekonqMenu;
 class WebInspectorPanel;
 class WebTab;
 class ZoomBar;
@@ -215,7 +216,7 @@ private:
     QLabel *m_popup;
     QTimer *m_hidePopupTimer;
 
-    KMenu *m_rekonqMenu;
+    RekonqMenu *m_rekonqMenu;
 };
 
 #endif // MAINWINDOW_H
