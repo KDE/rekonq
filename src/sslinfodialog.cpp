@@ -66,7 +66,12 @@ SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidge
 
     Q_FOREACH(const QSslCertificate & cert, caList)
     {
-        ui.comboBox->addItem(cert.subjectInfo(QSslCertificate::CommonName));
+        QString name = cert.subjectInfo(QSslCertificate::CommonName);
+        if (name.isEmpty())
+            name = cert.subjectInfo(QSslCertificate::Organization);
+        if (name.isEmpty())
+            name = cert.serialNumber();
+        ui.comboBox->addItem(name);
     }
     connect(ui.comboBox, SIGNAL(activated(int)), this, SLOT(displayFromChain(int)));
 
