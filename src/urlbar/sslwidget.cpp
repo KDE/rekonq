@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -112,7 +112,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
 
         label = new QLabel(this);
         label->setWordWrap(true);
-        label->setText(QL1S("\"<a href=\"moresslinfos\">") + i18n("Certificate Information") + QL1S("</a>"));
+        label->setText(QL1S("<a href=\"moresslinfos\">") + i18n("Certificate Information") + QL1S("</a>"));
         connect(label, SIGNAL(linkActivated(QString)), this, SLOT(showMoreSslInfos(QString)));
         layout->addWidget(label, rows++, 1);
     }
