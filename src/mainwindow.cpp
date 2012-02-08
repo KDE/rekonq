@@ -79,6 +79,7 @@
 #include <KTemporaryFile>
 #include <KToggleFullScreenAction>
 #include <KXMLGUIFactory>
+#include <kdeprintdialog.h>
 
 #include <KParts/Part>
 #include <KParts/BrowserExtension>
@@ -94,7 +95,6 @@
 #include <QtGui/QLabel>
 #include <QtGui/QPrintDialog>
 #include <QtGui/QPrinter>
-#include <QtGui/QPrintPreviewDialog>
 #include <QtGui/QVBoxLayout>
 
 #include <QtWebKit/QWebHistory>
@@ -833,11 +833,16 @@ void MainWindow::printRequested(QWebFrame *frame)
     }
 
     QPrinter printer;
-    QPrintPreviewDialog previewdlg(&printer, this);
+    printer.setDocName(printFrame->title());
+    QPrintDialog *printDialog = KdePrint::createPrintDialog(&printer, this);
 
-    connect(&previewdlg, SIGNAL(paintRequested(QPrinter*)), printFrame, SLOT(print(QPrinter*)));
+    if (printDialog) //check if the Dialog was created
+    {
+        if (printDialog->exec())
+            printFrame->print(&printer);
 
-    previewdlg.exec();
+        delete printDialog;
+    }
 }
 
 
