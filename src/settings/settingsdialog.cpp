@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
@@ -133,7 +133,7 @@ Private::Private(SettingsDialog *parent)
     // WARNING
     // remember wheh changing here that the smallest netbooks
     // have a 1024x576 resolution. So DON'T bother that limits!!
-    parent->setMinimumSize(700, 525);
+    parent->setMinimumSize(700, 576);
 }
 
 
