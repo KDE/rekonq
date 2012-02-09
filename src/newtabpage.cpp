@@ -537,8 +537,6 @@ void NewTabPage::tabsPage()
         for (int i = 0; i < tabCount; ++i)
         {
             KUrl url = w->mainView()->webTab(i)->url();
-            if (url.protocol() == QL1S("about"))
-                continue;
 
             if (!WebSnap::existsImage(url))
             {
