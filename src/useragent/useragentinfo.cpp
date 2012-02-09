@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (c) 2001 by Dawit Alemayehu <adawit@kde.org>
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -127,12 +127,11 @@ QString UserAgentInfo::userAgentDescription(int i)
 
     QString systemName = m_providers.at(i)->property("X-KDE-UA-SYSNAME").toString();
     QString systemRelease = m_providers.at(i)->property("X-KDE-UA-SYSRELEASE").toString();
-    QString systemSummary = QL1S("");
+    QString systemSummary;
 
     if (!systemName.isEmpty() && !systemRelease.isEmpty())
     {
-        // FIXME: needs a proper translation after stable release
-        systemSummary = QL1C(' ') % QL1S("on") % QL1C(' ') % systemName % QL1C(' ') % systemRelease;
+        systemSummary = i18nc("describe UA platform, eg: firefox 3.1 \"on Windows XP\"", " on %1 %2", systemName, systemRelease);
     }
 
     return userAgentName(i) % QL1C(' ') % userAgentVersion(i) % systemSummary;
@@ -197,7 +196,6 @@ bool UserAgentInfo::providerExists(int i)
     KService::Ptr s = m_providers.at(i);
     if (s.isNull())
     {
-        //FIXME Add me when string freeze has been reopened: KMessageBox::error(...)
         return false;
     }
     return true;

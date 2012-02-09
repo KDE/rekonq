@@ -474,6 +474,10 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         ? newMainWindow()
         : mainWindow();
 
+    // be SURE window exists
+    if (!w)
+        w = newMainWindow();
+
     switch (newType)
     {
     case Rekonq::NewTab:

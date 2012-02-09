@@ -46,6 +46,7 @@
 #include "historypanel.h"
 #include "iconmanager.h"
 #include "mainview.h"
+#include "rekonqmenu.h"
 #include "sessionmanager.h"
 #include "settingsdialog.h"
 #include "stackedurlbar.h"
@@ -78,6 +79,7 @@
 #include <KTemporaryFile>
 #include <KToggleFullScreenAction>
 #include <KXMLGUIFactory>
+#include <kdeprintdialog.h>
 
 #include <KParts/Part>
 #include <KParts/BrowserExtension>
@@ -93,7 +95,6 @@
 #include <QtGui/QLabel>
 #include <QtGui/QPrintDialog>
 #include <QtGui/QPrinter>
-#include <QtGui/QPrintPreviewDialog>
 #include <QtGui/QVBoxLayout>
 
 #include <QtWebKit/QWebHistory>
@@ -555,7 +556,7 @@ void MainWindow::setupTools()
     toolsAction->setDelayed(false);
     toolsAction->setShortcutConfigurable(true);
     toolsAction->setShortcut(KShortcut(Qt::ALT + Qt::Key_T));
-    m_rekonqMenu = new KMenu(this);
+    m_rekonqMenu = new RekonqMenu(this);
     toolsAction->setMenu(m_rekonqMenu); // dummy menu to have the dropdown arrow
 
     // adding rekonq_tools to rekonq actionCollection
@@ -832,11 +833,16 @@ void MainWindow::printRequested(QWebFrame *frame)
     }
 
     QPrinter printer;
-    QPrintPreviewDialog previewdlg(&printer, this);
+    printer.setDocName(printFrame->title());
+    QPrintDialog *printDialog = KdePrint::createPrintDialog(&printer, this);
 
-    connect(&previewdlg, SIGNAL(paintRequested(QPrinter*)), printFrame, SLOT(print(QPrinter*)));
+    if (printDialog) //check if the Dialog was created
+    {
+        if (printDialog->exec())
+            printFrame->print(&printer);
 
-    previewdlg.exec();
+        delete printDialog;
+    }
 }
 
 
@@ -1526,6 +1532,9 @@ void MainWindow::setupBookmarksAndToolsShortcuts()
     if (toolsButton)
     {
         connect(actionByName(QL1S("rekonq_tools")), SIGNAL(triggered()), toolsButton, SLOT(showMenu()));
+
+        // HACK: set button widget in rekonq menu
+        m_rekonqMenu->setButtonWidget(toolsButton);
     }
 }
 

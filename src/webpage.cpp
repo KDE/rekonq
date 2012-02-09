@@ -289,6 +289,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (KParts::BrowserRun::isTextExecutable(_mimeType))
         _mimeType = QL1S("text/plain");
 
+    // Get suggested file name...
+    const KIO::MetaData& data = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
+    _suggestedFileName = data.value(QL1S("content-disposition-filename"));
+
     kDebug() << "Detected MimeType = " << _mimeType;
     kDebug() << "Suggested File Name = " << _suggestedFileName;
     // ------------------------------------------------
@@ -302,7 +306,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     {
         isLocal
         ? KMessageBox::sorry(view(), i18n("No service can handle this file."))
-        : downloadReply(reply, _suggestedFileName);
+        : downloadUrl(reply->url());
 
         return;
     }
@@ -316,15 +320,20 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     {
         KParts::BrowserOpenOrSaveQuestion dlg(rApp->mainWindow(), replyUrl, _mimeType);
 
-        // Get suggested file name...
-        DownloadManager::extractSuggestedFileName(reply, _suggestedFileName);
         if (!_suggestedFileName.isEmpty())
             dlg.setSuggestedFileName(_suggestedFileName);
+
+        // read askEmbedOrSave preferences. If we don't have to show dialog and rekonq settings are
+        // to automatically choose download dir, we won't show local dir choose dialog
+        KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("filetypesrc", KConfig::NoGlobals), QL1S("Notification Messages"));
+        bool hideDialog = cg.readEntry(QL1S("askEmbedOrSave") + _mimeType, false);
+
+        kDebug() << "Hide dialog for " << _mimeType << "? " << hideDialog;
 
         switch (dlg.askEmbedOrSave())
         {
         case KParts::BrowserOpenOrSaveQuestion::Save:
-            downloadReply(reply, _suggestedFileName);
+            rApp->downloadManager()->downloadResource(reply->url(), KIO::MetaData(), view(), !hideDialog, _suggestedFileName);
             return;
 
         case KParts::BrowserOpenOrSaveQuestion::Cancel:
@@ -418,10 +427,6 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 {
     Q_ASSERT(reply);
 
-    // check suggested file name
-    if (_suggestedFileName.isEmpty())
-        DownloadManager::extractSuggestedFileName(reply, _suggestedFileName);
-
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     const bool isMainFrameRequest = (frame == mainFrame());
     const bool isLoadingUrlReply = (mainFrame()->url() == reply->url());
@@ -454,14 +459,11 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         // ignore this..
         return;
 
-    case QNetworkReply::ContentAccessDenied:                 // access to remote content denied (similar to HTTP error 401)
+        // WARNING: This is also typical adblocked element error: IGNORE THIS!
+    case QNetworkReply::ContentAccessDenied:                 // access to remote content denied
         break;
 
     case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
-        // FIXME: DO WE REALLY NEED THIS???
-        _protHandler.postHandling(reply->request(), frame);
-        return;
-
     case QNetworkReply::ConnectionRefusedError:              // remote server refused connection
     case QNetworkReply::HostNotFoundError:                   // invalid hostname
     case QNetworkReply::TimeoutError:                        // connection time out
@@ -470,7 +472,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     case QNetworkReply::ContentNotFoundError:                // remote content not found on server (similar to HTTP error 404)
     case QNetworkReply::ProtocolUnknownError:                // Unknown protocol
     case QNetworkReply::ProtocolInvalidOperationError:       // requested operation is invalid for this protocol
-
+    default:
         kDebug() << "ERROR " << reply->error() << ": " << reply->errorString();
         if (reply->url() == _loadingUrl)
         {
@@ -487,10 +489,6 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
                 rApp->mainWindow()->updateHistoryActions();
             }
         }
-        break;
-
-    default:
-        // Nothing to do here..
         break;
 
     }
@@ -550,12 +548,6 @@ QString WebPage::errorPage(QNetworkReply *reply)
                    .arg(msg)
                    ;
     return html;
-}
-
-
-void WebPage::downloadReply(const QNetworkReply *reply, const QString &suggestedFileName)
-{
-    rApp->downloadManager()->downloadResource(reply->url(), KIO::MetaData(), view(), suggestedFileName);
 }
 
 

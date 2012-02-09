@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -309,7 +309,7 @@ DescriptionLabel::DescriptionLabel(const QString &text, QWidget *parent)
     if (wasItalic)
         t = QL1S("<i>") + t + QL1S("</i>");
 
-    setWordWrap(false); //TODO: why setWordWrap(true) make items have a strange behavior ?
+    setWordWrap(false); //NOTE: why setWordWrap(true) make items have a strange behavior ?
     setText(t);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 }
@@ -451,8 +451,11 @@ QString SearchListItem::text()
 
 void SearchListItem::changeSearchEngine(KService::Ptr engine)
 {
-    UrlResolver::setSearchEngine(engine);
-    emit updateList();
+    // NOTE: This to let rekonq loading text typed in the requested engine on click.
+    // There probably is a better way to do it. I just cannot see it now...
+    UrlSearchItem item = UrlSearchItem(UrlSearchItem::Search, SearchEngine::buildQuery(engine, m_text), m_text);
+    SearchListItem sItem(item, m_text, this);
+    emit itemClicked(&sItem, Qt::LeftButton, Qt::NoModifier);
 }
 
 

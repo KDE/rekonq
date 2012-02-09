@@ -141,13 +141,14 @@ void DownloadManager::downloadLinksWithKGet(const QVariant &contentList)
 // In this way, we can easily provide the extra functionality we need:
 // 1. KGet Integration
 // 2. Save downloads history
-bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &metaData, QWidget *parent, const QString &suggestedName)
+bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &metaData,
+                                       QWidget *parent, bool forceDirRequest, const QString &suggestedName)
 {
     KUrl destUrl;
 
     const QString fileName((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
 
-    if (ReKonfig::askDownloadPath())
+    if (forceDirRequest || ReKonfig::askDownloadPath())
     {
         // follow bug:184202 fixes
         destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);
@@ -201,43 +202,3 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
     job->uiDelegate()->setAutoErrorHandlingEnabled(true);
     return true;
 }
-
-
-// -------------------------------------------------------------------------------------------------------------------
-
-
-// STATIC
-void DownloadManager::extractSuggestedFileName(const QNetworkReply* reply, QString& fileName)
-{
-    fileName.clear();
-    const KIO::MetaData& metaData = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
-    if (metaData.value(QL1S("content-disposition-type")).compare(QL1S("attachment"), Qt::CaseInsensitive) == 0)
-        fileName = metaData.value(QL1S("content-disposition-filename"));
-
-    if (!fileName.isEmpty())
-        return;
-
-    if (!reply->hasRawHeader("Content-Disposition"))
-        return;
-
-    const QString value(QL1S(reply->rawHeader("Content-Disposition").simplified().constData()));
-    if (value.startsWith(QL1S("attachment"), Qt::CaseInsensitive) || value.startsWith(QL1S("inline"), Qt::CaseInsensitive))
-    {
-        const int length = value.size();
-        int pos = value.indexOf(QL1S("filename"), 0, Qt::CaseInsensitive);
-        if (pos > -1)
-        {
-            pos += 9;
-            while (pos < length && (value.at(pos) == QL1C(' ') || value.at(pos) == QL1C('=') || value.at(pos) == QL1C('"')))
-                pos++;
-
-            int endPos = pos;
-            while (endPos < length && value.at(endPos) != QL1C('"') && value.at(endPos) != QL1C(';'))
-                endPos++;
-
-            if (endPos > pos)
-                fileName = value.mid(pos, (endPos - pos)).trimmed();
-        }
-    }
-}
-

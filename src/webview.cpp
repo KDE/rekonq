@@ -665,74 +665,76 @@ void WebView::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    bool isContentEditable = page()->mainFrame()->evaluateJavaScript("document.activeElement.isContentEditable").toBool();
-
     // Auto Scrolling
     if (event->modifiers() == Qt::ShiftModifier
             && tagName != QL1S("INPUT")
             && tagName != QL1S("TEXTAREA")
-            && !isContentEditable
        )
     {
-        kDebug() << "AutoScrolling: " << event->key();
+        // NOTE: I'm doing this check here to prevent this to be done EVERYTIME
+        // we'll do it just when SHIFT has been pressed in an element NOT usually editable
+        bool isContentEditable = page()->mainFrame()->hitTestContent(QCursor::pos()).isContentEditable();
 
-        if (event->key() == Qt::Key_Up)
+        if (!isContentEditable)
         {
-            m_verticalAutoScrollSpeed--;
-            if (!m_autoScrollTimer->isActive())
-                m_autoScrollTimer->start();
-
-            event->accept();
-            return;
-        }
-
-        if (event->key() == Qt::Key_Down)
-        {
-            m_verticalAutoScrollSpeed++;
-            if (!m_autoScrollTimer->isActive())
-                m_autoScrollTimer->start();
-
-            event->accept();
-            return;
-        }
-
-        if (event->key() == Qt::Key_Right)
-        {
-            m_horizontalAutoScrollSpeed++;
-            if (!m_autoScrollTimer->isActive())
-                m_autoScrollTimer->start();
-
-            event->accept();
-            return;
-        }
-
-        if (event->key() == Qt::Key_Left)
-        {
-            m_horizontalAutoScrollSpeed--;
-            if (!m_autoScrollTimer->isActive())
-                m_autoScrollTimer->start();
-
-            event->accept();
-            return;
-        }
-
-        if (m_autoScrollTimer->isActive())
-        {
-            m_autoScrollTimer->stop();
-            event->accept();
-            return;
-        }
-        else
-        {
-            if (m_verticalAutoScrollSpeed || m_horizontalAutoScrollSpeed)
+            if (event->key() == Qt::Key_Up)
             {
-                m_autoScrollTimer->start();
+                m_verticalAutoScrollSpeed--;
+                if (!m_autoScrollTimer->isActive())
+                    m_autoScrollTimer->start();
+
                 event->accept();
                 return;
             }
+
+            if (event->key() == Qt::Key_Down)
+            {
+                m_verticalAutoScrollSpeed++;
+                if (!m_autoScrollTimer->isActive())
+                    m_autoScrollTimer->start();
+
+                event->accept();
+                return;
+            }
+
+            if (event->key() == Qt::Key_Right)
+            {
+                m_horizontalAutoScrollSpeed++;
+                if (!m_autoScrollTimer->isActive())
+                    m_autoScrollTimer->start();
+
+                event->accept();
+                return;
+            }
+
+            if (event->key() == Qt::Key_Left)
+            {
+                m_horizontalAutoScrollSpeed--;
+                if (!m_autoScrollTimer->isActive())
+                    m_autoScrollTimer->start();
+
+                event->accept();
+                return;
+            }
+
+            if (m_autoScrollTimer->isActive())
+            {
+                m_autoScrollTimer->stop();
+                event->accept();
+                return;
+            }
+            else
+            {
+                if (m_verticalAutoScrollSpeed || m_horizontalAutoScrollSpeed)
+                {
+                    m_autoScrollTimer->start();
+                    event->accept();
+                    return;
+                }
+            }
         }
 
-        // if you arrived here, it means SHIFT has been pressed NOT for autoscroll management...
+        // if you arrived here, I hope it means SHIFT has been pressed NOT for autoscroll management...
     }
 
     if (ReKonfig::accessKeysEnabled() && m_accessKeysActive)
@@ -745,28 +747,36 @@ void WebView::keyPressEvent(QKeyEvent *event)
     // vi-like navigation
     if (ReKonfig::enableViShortcuts())
     {
-        if (tagName != QL1S("INPUT") && tagName != QL1S("TEXTAREA") && !isContentEditable && event->modifiers() == Qt::NoModifier)
+        if (event->modifiers() == Qt::NoModifier
+                && tagName != QL1S("INPUT")
+                && tagName != QL1S("TEXTAREA")
+           )
         {
-            switch (event->key())
+            bool isContentEditable = page()->mainFrame()->hitTestContent(QCursor::pos()).isContentEditable();
+
+            if (!isContentEditable)
             {
-            case Qt::Key_J:
-                event->accept();
-                event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
-                break;
-            case Qt::Key_K:
-                event->accept();
-                event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier);
-                break;
-            case Qt::Key_L:
-                event->accept();
-                event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
-                break;
-            case Qt::Key_H:
-                event->accept();
-                event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
-                break;
-            default:
-                break;
+                switch (event->key())
+                {
+                case Qt::Key_J:
+                    event->accept();
+                    event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier);
+                    break;
+                case Qt::Key_K:
+                    event->accept();
+                    event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier);
+                    break;
+                case Qt::Key_L:
+                    event->accept();
+                    event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
+                    break;
+                case Qt::Key_H:
+                    event->accept();
+                    event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
+                    break;
+                default:
+                    break;
+                }
             }
         }
     }

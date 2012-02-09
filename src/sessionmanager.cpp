@@ -43,6 +43,7 @@
 // Qt Includes
 #include <QtCore/QFile>
 
+
 // Only used internally
 bool readSessionDocument(QDomDocument & document, const QString & sessionFilePath)
 {
@@ -65,6 +66,41 @@ bool readSessionDocument(QDomDocument & document, const QString & sessionFilePat
 
     return true;
 }
+
+
+int loadViewTabs(MainView *mv, QDomElement & window, bool checkViewExists)
+{
+    int currentTab = 0;
+
+    for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
+    {
+        QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
+        if (tab.hasAttribute("currentTab"))
+            currentTab = tabNo;
+
+        WebView * view = 0;
+        if (tabNo == 0 && checkViewExists)
+            view = mv->webTab(0)->view();
+        else
+            view = mv->newWebTab()->view();
+
+        QDomCDATASection historySection = tab.firstChild().toCDATASection();
+        QByteArray history = QByteArray::fromBase64(historySection.data().toAscii());
+
+        QDataStream readingStream(&history, QIODevice::ReadOnly);
+        readingStream >> *(view->history());
+
+        // Get sure about urls and/or pdf are loaded
+        KUrl u = KUrl(tab.attribute("url"));
+        view->load(u);
+    }
+
+    return currentTab;
+}
+
+
+// ---------------------------------------------------------------------
+
 
 SessionManager::SessionManager(QObject *parent)
     : QObject(parent)
@@ -105,10 +141,7 @@ void SessionManager::saveSession()
 
         for (signed int tabNo = 0; tabNo < mv->count(); tabNo++)
         {
-            // IGNORE about urls
             KUrl u = mv->webTab(tabNo)->url();
-            if (u.protocol() == QL1S("about"))
-                continue;
 
             tabInserted++;
             QDomElement tab = document.createElement("tab");
@@ -150,32 +183,10 @@ bool SessionManager::restoreSessionFromScratch()
     for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
     {
         QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
-        int currentTab = 0;
 
         MainView *mv = rApp->newMainWindow(false)->mainView();
 
-        for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
-        {
-            QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
-            if (tab.hasAttribute("currentTab"))
-                currentTab = tabNo;
-
-            WebView *view = mv->newWebTab()->view();
-
-            QDomCDATASection historySection = tab.firstChild().toCDATASection();
-            QByteArray history = QByteArray::fromBase64(historySection.data().toAscii());
-
-            QDataStream readingStream(&history, QIODevice::ReadOnly);
-            readingStream >> *(view->history());
-
-            // IGNORE "eventual" about urls
-            KUrl u = KUrl(tab.attribute("url"));
-            if (u.protocol() == QL1S("about"))
-                continue;
-
-            // This is needed for particular URLs, eg pdfs
-            view->load(u);
-        }
+        int currentTab = loadViewTabs(mv, window, false);
 
         mv->tabBar()->setCurrentIndex(currentTab);
     }
@@ -194,28 +205,11 @@ void SessionManager::restoreCrashedSession()
     for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
     {
         QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
-        int currentTab = 0;
 
         MainView *mv = (winNo == 0) ? rApp->mainWindow()->mainView() : rApp->newMainWindow()->mainView();
 
-        for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
-        {
-            QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
-            if (tab.hasAttribute("currentTab"))
-                currentTab = tabNo;
+        int currentTab = loadViewTabs(mv, window, true);
 
-            WebView *view = (tabNo == 0) ? mv->webTab(0)->view() : mv->newWebTab()->view();
-
-            QDomCDATASection historySection = tab.firstChild().toCDATASection();
-            QByteArray history = QByteArray::fromBase64(historySection.data().toAscii());
-
-            QDataStream readingStream(&history, QIODevice::ReadOnly);
-            readingStream >> *(view->history());
-
-            // Get sure about urls and/or pdf are loaded
-            KUrl u = KUrl(tab.attribute("url"));
-            view->load(u);
-        }
         mv->tabBar()->setCurrentIndex(currentTab);
     }
 
@@ -235,33 +229,17 @@ int SessionManager::restoreSavedSession()
     for (winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
     {
         QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
-        int currentTab = 0;
 
         MainView *mv = rApp->newMainWindow()->mainView();
 
-        for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
-        {
-            QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
-            if (tab.hasAttribute("currentTab"))
-                currentTab = tabNo;
+        int currentTab = loadViewTabs(mv, window, true);
 
-            WebView *view = (tabNo == 0) ? mv->webTab(0)->view() : mv->newWebTab()->view();
-
-            QDomCDATASection historySection = tab.firstChild().toCDATASection();
-            QByteArray history = QByteArray::fromBase64(historySection.data().toAscii());
-
-            QDataStream readingStream(&history, QIODevice::ReadOnly);
-            readingStream >> *(view->history());
-
-            // Get sure about urls and/or pdfs are loaded
-            KUrl u = KUrl(tab.attribute("url"));
-            view->load(u);
-        }
         mv->tabBar()->setCurrentIndex(currentTab);
     }
 
     return winNo;
 }
+
 
 bool SessionManager::restoreMainWindow(MainWindow* window)
 {
@@ -275,32 +253,13 @@ bool SessionManager::restoreMainWindow(MainWindow* window)
     for (winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
     {
         QDomElement savedWindowElement = document.elementsByTagName("window").at(winNo).toElement();
-        int currentTab = 0;
 
         if (window->objectName() != savedWindowElement.attribute("name", ""))
             continue;
 
         MainView *mv = window->mainView();
 
-        for (unsigned int tabNo = 0; tabNo < savedWindowElement.elementsByTagName("tab").length(); tabNo++)
-        {
-            QDomElement tab = savedWindowElement.elementsByTagName("tab").at(tabNo).toElement();
-            if (tab.hasAttribute("currentTab"))
-                currentTab = tabNo;
-
-            WebView *view = mv->newWebTab()->view();
-
-            QDomCDATASection historySection = tab.firstChild().toCDATASection();
-            QByteArray history = QByteArray::fromBase64(historySection.data().toAscii());
-
-            QDataStream readingStream(&history, QIODevice::ReadOnly);
-            readingStream >> *(view->history());
-
-            // Get sure about urls are loaded
-            KUrl u = KUrl(tab.attribute("url"));
-            if (u.protocol() == QL1S("about"))
-                view->load(u);
-        }
+        int currentTab = loadViewTabs(mv, savedWindowElement, false);
 
         mv->tabBar()->setCurrentIndex(currentTab);
 
@@ -309,6 +268,7 @@ bool SessionManager::restoreMainWindow(MainWindow* window)
 
     return false;
 }
+
 
 QList<TabHistory> SessionManager::closedSites()
 {

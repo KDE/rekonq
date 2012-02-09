@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -66,7 +66,12 @@ SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidge
 
     Q_FOREACH(const QSslCertificate & cert, caList)
     {
-        ui.comboBox->addItem(cert.subjectInfo(QSslCertificate::CommonName));
+        QString name = cert.subjectInfo(QSslCertificate::CommonName);
+        if (name.isEmpty())
+            name = cert.subjectInfo(QSslCertificate::Organization);
+        if (name.isEmpty())
+            name = cert.serialNumber();
+        ui.comboBox->addItem(name);
     }
     connect(ui.comboBox, SIGNAL(activated(int)), this, SLOT(displayFromChain(int)));
 

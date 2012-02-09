@@ -2,7 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011 by Peter Penz <peter.penz19@gmail.com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,50 +25,37 @@
 * ============================================================ */
 
 
-#ifndef SSL_INFO_DIALOG_H
-#define SSL_INFO_DIALOG_H
 
+#ifndef REKONQ_MENU_H
+#define REKONQ_MENU_H
+
+
+// Rekonq Includes
 #include "rekonq_defines.h"
 
-#include "websslinfo.h"
+// KDE Includes
+#include <KMenu>
 
-// Ui Includes
-#include "ui_sslinfo.h"
-
-#include <KDE/KDialog>
-
-#include <QList>
-
-class QSslCertificate;
-class QString;
 
 /**
- * Rekonq SSL Information Dialog
- *
- * This class creates a dialog that can be used to display information about
- * an SSL session.
+ * Menu shown inside rekonq window.
+ * Inspired by Dolphin solution.
  *
  */
-class SslInfoDialog : public KDialog
+class REKONQ_TESTS_EXPORT RekonqMenu : public KMenu
 {
     Q_OBJECT
 
 public:
-    explicit SslInfoDialog(const QString &host, const WebSslInfo &info, QWidget *parent = 0);
+    RekonqMenu(QWidget *parent);
 
-    static QList<QStringList> errorsFromString(const QString &s);
+    void setButtonWidget(QWidget *);
 
-private Q_SLOTS:
-    void displayFromChain(int);
-    void exportCert();
+protected:
+    virtual void showEvent(QShowEvent* event);
 
 private:
-    void showCertificateInfo(QSslCertificate, const QStringList &certErrors);
-
-    QString m_host;
-    WebSslInfo m_info;
-
-    Ui::SslInfo ui;
+    QWidget *m_button;
 };
 
-#endif // SSL_INFO_DIALOG_H
+#endif // REKONQ_MENU_H
