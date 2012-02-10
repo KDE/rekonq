@@ -671,11 +671,14 @@ void WebView::keyPressEvent(QKeyEvent *event)
             && tagName != QL1S("TEXTAREA")
        )
     {
-        // NOTE: I'm doing this check here to prevent this to be done EVERYTIME
-        // we'll do it just when SHIFT has been pressed in an element NOT usually editable
-        bool isContentEditable = page()->mainFrame()->hitTestContent(QCursor::pos()).isContentEditable();
+        // NOTE and FIXME
+        // This check is doabled because it presents strange behavior: QtWebKit check works well in pages like gmail
+        // and fails on sites like g+. The opposite is true for javascript check.
+        // Please, help me finding the right way to check this EVERY TIME.
+        bool isContentEditableQW = page()->mainFrame()->hitTestContent(QCursor::pos()).isContentEditable();
+        bool isContentEditableJS = page()->mainFrame()->evaluateJavaScript("document.activeElement.isContentEditable").toBool();
 
-        if (!isContentEditable)
+        if (!isContentEditableQW && !isContentEditableJS)
         {
             if (event->key() == Qt::Key_Up)
             {
@@ -752,9 +755,11 @@ void WebView::keyPressEvent(QKeyEvent *event)
                 && tagName != QL1S("TEXTAREA")
            )
         {
-            bool isContentEditable = page()->mainFrame()->hitTestContent(QCursor::pos()).isContentEditable();
+            // See note up!
+            bool isContentEditableQW = page()->mainFrame()->hitTestContent(QCursor::pos()).isContentEditable();
+            bool isContentEditableJS = page()->mainFrame()->evaluateJavaScript("document.activeElement.isContentEditable").toBool();
 
-            if (!isContentEditable)
+            if (!isContentEditableQW && !isContentEditableJS)
             {
                 switch (event->key())
                 {
