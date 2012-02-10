@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -58,64 +58,68 @@ bool AdBlockRuleNullImpl::isNullFilter(const QString &filter)
 
     Q_FOREACH(const QString & option, options)
     {
+        // NOTE:
+        // I moved the check from option == QL1S to option.endsWith()
+        // to check option && ~option. Hope it will NOT be a problem...
+
         // third_party: managed inside adblockrulefallbackimpl
-        if (option == QL1S("third-party"))
+        if (option.endsWith(QL1S("third-party")))
             return false;
 
         // script
-        if (option == QL1S("script"))
+        if (option.endsWith(QL1S("script")))
             return true;
 
         // image
-        if (option == QL1S("image"))
+        if (option.endsWith(QL1S("image")))
             return true;
 
         // background
-        if (option == QL1S("background"))
+        if (option.endsWith(QL1S("background")))
             return true;
 
         // stylesheet
-        if (option == QL1S("stylesheet"))
+        if (option.endsWith(QL1S("stylesheet")))
             return true;
 
         // object
-        if (option == QL1S("object"))
+        if (option.endsWith(QL1S("object")))
             return true;
 
         // xbl
-        if (option == QL1S("xbl"))
+        if (option.endsWith(QL1S("xbl")))
             return true;
 
         // ping
-        if (option == QL1S("ping"))
+        if (option.endsWith(QL1S("ping")))
             return true;
 
         // xmlhttprequest
-        if (option == QL1S("xmlhttprequest"))
+        if (option.endsWith(QL1S("xmlhttprequest")))
             return true;
 
         // object_subrequest
-        if (option == QL1S("object-subrequest"))
+        if (option.endsWith(QL1S("object-subrequest")))
             return true;
 
         // dtd
-        if (option == QL1S("dtd"))
+        if (option.endsWith(QL1S("dtd")))
             return true;
 
         // subdocument
-        if (option == QL1S("subdocument"))
+        if (option.endsWith(QL1S("subdocument")))
             return true;
 
         // document
-        if (option == QL1S("document"))
+        if (option.endsWith(QL1S("document")))
             return true;
 
         // other
-        if (option == QL1S("other"))
+        if (option.endsWith(QL1S("other")))
             return true;
 
         // collapse
-        if (option == QL1S("collapse"))
+        if (option.endsWith(QL1S("collapse")))
             return true;
     }
 
