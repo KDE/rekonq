@@ -102,7 +102,12 @@ QPixmap WebSnap::renderPagePreview(const QWebPage &page, int w, int h)
     QSize oldSize = page.viewportSize();
 
     // prepare page
+    // NOTE: I saw some sites with strange CMS and with absurd content size width (eg: 8584553)
+    // This usually leads setViewportSize to crash :(
+    // So, ensure renderWidth is no more than 2000.
     int renderWidth = page.mainFrame()->contentsSize().width();
+    if (renderWidth > 2000)
+        renderWidth = 2000;
     int renderHeight = renderWidth * ((0.0 + h) / w);
 
     page.setViewportSize(QSize(renderWidth, renderHeight));
