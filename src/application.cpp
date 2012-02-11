@@ -205,7 +205,7 @@ int Application::newInstance()
     if (isRekonqCrashed && isFirstLoad)
     {
         loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
-        mainWindow()->currentTab()->showMessageBar();
+        QTimer::singleShot(1000, mainWindow()->currentTab(), SLOT(showMessageBar()));
     }
 
     if (areThereArguments)

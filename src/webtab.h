@@ -93,7 +93,6 @@ public:
 
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
 
-    void showMessageBar();
 
 private Q_SLOTS:
     void updateProgress(int progress);
@@ -103,6 +102,8 @@ private Q_SLOTS:
     void showRSSInfo(const QPoint &pos);
     void showSearchEngine(const QPoint &pos);
     void openSearchEngineAdded();
+    
+    void showMessageBar();
 
 Q_SIGNALS:
     void loadProgressing();
