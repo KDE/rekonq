@@ -74,7 +74,6 @@ private Q_SLOTS:
 
 private:
     QString dirHandling(const KFileItemList &list);
-    void abpHandling();
 
     KDirLister *_lister;
     QWebFrame *_frame;

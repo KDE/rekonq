@@ -155,10 +155,9 @@ public:
 
     QNetworkReply *block(const QNetworkRequest &request, WebPage *page);
     void applyHidingRules(WebPage *page);
-    void addSubscription(const QString &title, const QString &location);
 
 public Q_SLOTS:
-    void loadSettings(bool checkUpdateDate = true);
+    void loadSettings();
     void showSettings();
 
 private:

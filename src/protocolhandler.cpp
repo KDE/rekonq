@@ -31,7 +31,6 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "adblockmanager.h"
 #include "application.h"
 #include "historymanager.h"
 #include "mainview.h"
@@ -121,13 +120,6 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         }
 
         QVariant result = frame->evaluateJavaScript(scriptSource);
-        return true;
-    }
-
-    // "abp" handling
-    if (_url.protocol() == QL1S("abp"))
-    {
-        abpHandling();
         return true;
     }
 
@@ -356,50 +348,5 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
         {
             emit downloadUrl(_url);
         }
-    }
-}
-
-
-/**
- * abp scheme (easy) explanation
- *
- */
-void ProtocolHandler::abpHandling()
-{
-    QString path = _url.path();
-    if (path != QL1S("subscribe"))
-        return;
-
-    QMap<QString, QString> map = _url.queryItems(KUrl::CaseInsensitiveKeys);
-
-    QString location = map.value(QL1S("location"));
-    QString title = map.value(QL1S("title"));
-    QString requireslocation = map.value(QL1S("requireslocation"));
-    QString requirestitle = map.value(QL1S("requirestitle"));
-
-    QString info;
-    if (requirestitle.isEmpty() || requireslocation.isEmpty())
-    {
-        info = title;
-    }
-    else
-    {
-        info = i18n("\n %1,\n %2 (required by %3)\n", title, requirestitle, title);
-    }
-
-    if (KMessageBox::questionYesNo(0,
-                                   i18n("Do you want to add the following subscriptions to your adblock settings?\n") + info,
-                                   i18n("Add automatic subscription to the adblock"),
-                                   KGuiItem(i18n("Add")),
-                                   KGuiItem(i18n("Discard"))
-                                  )
-       )
-    {
-        if (!requireslocation.isEmpty() && !requirestitle.isEmpty())
-        {
-            rApp->adblockManager()->addSubscription(requirestitle, requireslocation);
-        }
-        rApp->adblockManager()->addSubscription(title, location);
-        rApp->adblockManager()->loadSettings(false);
     }
 }

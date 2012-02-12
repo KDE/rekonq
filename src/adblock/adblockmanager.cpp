@@ -64,7 +64,7 @@ AdBlockManager::~AdBlockManager()
 }
 
 
-void AdBlockManager::loadSettings(bool checkUpdateDate)
+void AdBlockManager::loadSettings()
 {
     _index = 0;
     _buffer.clear();
@@ -98,7 +98,7 @@ void AdBlockManager::loadSettings(bool checkUpdateDate)
     QDateTime lastUpdate = ReKonfig::lastUpdate();  //  the day of the implementation.. :)
     int days = ReKonfig::updateInterval();
 
-    if (!checkUpdateDate || today > lastUpdate.addDays(days))
+    if (today > lastUpdate.addDays(days))
     {
         ReKonfig::setLastUpdate(today);
 
@@ -343,24 +343,6 @@ void AdBlockManager::saveRules(const QStringList &rules)
     KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
     KConfigGroup cg(config , "rules");
     cg.writeEntry(title, cleanedRules);
-}
-
-
-void AdBlockManager::addSubscription(const QString &title, const QString &location)
-{
-    QStringList titles = ReKonfig::subscriptionTitles();
-    if (titles.contains(title))
-        return;
-
-    QStringList locations = ReKonfig::subscriptionLocations();
-    if (locations.contains(location))
-        return;
-
-    titles << title;
-    locations << location;
-
-    ReKonfig::setSubscriptionTitles(titles);
-    ReKonfig::setSubscriptionLocations(locations);
 }
 
 
