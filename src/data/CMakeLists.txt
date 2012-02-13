@@ -28,6 +28,13 @@ INSTALL(
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/htmls
 )
 
+# adblock default settings
+INSTALL(
+    FILES
+    adblockrc
+    DESTINATION ${DATA_INSTALL_DIR}/rekonq
+)
+
 # opensearch engines
 INSTALL(
     FILES

@@ -130,6 +130,7 @@
 
 // KDE Includes
 #include <KIO/Job>
+#include <KSharedConfig>
 
 // Qt Includes
 #include <QObject>
@@ -161,13 +162,10 @@ public Q_SLOTS:
     void showSettings();
 
 private:
-    void updateNextSubscription();
-    void saveRules(const QStringList &);
-    void loadRules(const QStringList &);
+    void updateSubscriptions();
+    void loadRules(const QString &);
 
-private Q_SLOTS:
-    void slotResult(KJob *);
-    void subscriptionData(KIO::Job*, const QByteArray&);
+    KSharedConfig::Ptr config();
 
 private:
     bool _isAdblockEnabled;
@@ -179,8 +177,7 @@ private:
     AdBlockRuleList _whiteList;
     QStringList _hideList;
 
-    int _index;
-    QByteArray _buffer;
+    KSharedConfig::Ptr _adblockConfig;
 };
 
 #endif

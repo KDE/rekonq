@@ -249,29 +249,6 @@
 </group>
 
 
-<!-- AdBlock Settings -->
-<group name="AdBlock">
-    <entry name="adBlockEnabled" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="hideAdsEnabled" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="subscriptionTitles" type="StringList">
-        <default>EasyList</default>
-    </entry>
-    <entry name="subscriptionLocations" type="StringList">
-        <default>https://easylist-downloads.adblockplus.org/easylist.txt</default>
-    </entry>
-    <entry name="lastUpdate" type="DateTime">
-        <default code="true">QDateTime(QDate(2009,03,13))</default>
-    </entry>
-    <entry name="updateInterval" type="Int">
-        <default>7</default>
-    </entry>
-</group>
-
-
 <!-- Sync Settings -->
 <group name="Sync">
     <entry name="syncEnabled" type="Bool">

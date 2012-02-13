@@ -37,9 +37,8 @@
 #include "webpage.h"
 
 // KDE Includes
-#include <KSharedConfig>
-#include <KConfigGroup>
-#include <KIO/TransferJob>
+#include <KIO/FileCopyJob>
+#include <KStandardDirs>
 
 // Qt Includes
 #include <QUrl>
@@ -50,7 +49,6 @@ AdBlockManager::AdBlockManager(QObject *parent)
     : QObject(parent)
     , _isAdblockEnabled(false)
     , _isHideAdsEnabled(false)
-    , _index(0)
 {
     loadSettings();
 }
@@ -66,8 +64,21 @@ AdBlockManager::~AdBlockManager()
 
 void AdBlockManager::loadSettings()
 {
-    _index = 0;
-    _buffer.clear();
+    // first, check this...
+    QString adblockFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrc"));
+    if (!QFile::exists(adblockFilePath))
+    {
+        QString generalAdblockFilePath = KStandardDirs::locate("appdata" , QL1S("adblockrc"));
+        QFile adblockFile(generalAdblockFilePath);
+        bool copied = adblockFile.copy(adblockFilePath);
+        if (!copied)
+        {
+            kDebug() << "oh oh... Problems copying default adblock file";
+            return;
+        }
+    }
+    _adblockConfig = KSharedConfig::openConfig("adblockrc", KConfig::SimpleConfig, "appdata");
+    // ----------------
 
     _hostWhiteList.clear();
     _hostBlackList.clear();
@@ -75,7 +86,8 @@ void AdBlockManager::loadSettings()
     _blackList.clear();
     _hideList.clear();
 
-    _isAdblockEnabled = ReKonfig::adBlockEnabled();
+    KConfigGroup settingsGroup(_adblockConfig, "Settings");
+    _isAdblockEnabled = settingsGroup.readEntry("adBlockEnabled", false);
     kDebug() << "ADBLOCK ENABLED = " << _isAdblockEnabled;
 
     // no need to load filters if adblock is not enabled :)
@@ -83,43 +95,51 @@ void AdBlockManager::loadSettings()
         return;
 
     // just to be sure..
-    _isHideAdsEnabled = ReKonfig::hideAdsEnabled();
-
-    // read settings
-    KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
-    KConfigGroup rulesGroup(config, "rules");
-    QStringList rules;
-    rules = rulesGroup.readEntry("local-rules" , QStringList());
-    loadRules(rules);
+    _isHideAdsEnabled = settingsGroup.readEntry("hideAdsEnabled", false);
 
     // ----------------------------------------------------------
 
     QDateTime today = QDateTime::currentDateTime();
-    QDateTime lastUpdate = ReKonfig::lastUpdate();  //  the day of the implementation.. :)
-    int days = ReKonfig::updateInterval();
+    QDateTime lastUpdate = QDateTime::fromString(settingsGroup.readEntry("lastUpdate", QString()));
+    int days = settingsGroup.readEntry("updateInterval", 7);
 
     if (today > lastUpdate.addDays(days))
     {
-        ReKonfig::setLastUpdate(today);
+        settingsGroup.writeEntry("lastUpdate", today.toString());
 
-        updateNextSubscription();
+        updateSubscriptions();
         return;
     }
 
     // else
-    QStringList titles = ReKonfig::subscriptionTitles();
-    Q_FOREACH(const QString & title, titles)
+    KConfigGroup filtersGroup(_adblockConfig, "FiltersList");
+    for (int i = 1; i <= 60; ++i)
     {
-        rules = rulesGroup.readEntry(title + "-rules" , QStringList());
-        loadRules(rules);
+        QString n = QString::number(i);
+        bool filterActive = filtersGroup.readEntry("FilterEnabled-" + n, false);
+        if (filterActive)
+        {
+            QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
+            loadRules(rulesFilePath);
+        }
     }
 }
 
 
-void AdBlockManager::loadRules(const QStringList &rules)
+void AdBlockManager::loadRules(const QString &rulesFilePath)
 {
-    Q_FOREACH(const QString & stringRule, rules)
+    QFile ruleFile(rulesFilePath);
+    if (!ruleFile.open(QFile::ReadOnly | QFile::Text))
     {
+        kDebug() << "Unable to open rule file" << rulesFilePath;
+        return;
+    }
+
+    QTextStream in(&ruleFile);
+    while (!in.atEnd())
+    {
+        QString stringRule = in.readLine();
+
         // ! rules are comments
         if (stringRule.startsWith('!'))
             continue;
@@ -267,82 +287,38 @@ void AdBlockManager::applyHidingRules(WebPage *page)
 }
 
 
-void AdBlockManager::updateNextSubscription()
+void AdBlockManager::updateSubscriptions()
 {
-    QStringList locations = ReKonfig::subscriptionLocations();
+    KConfigGroup filtersGroup(_adblockConfig, "FiltersList");
 
-    if (_index < locations.size())
+    int i = 1;
+    QString n = QString::number(i);
+
+    while (filtersGroup.hasKey("FilterName-" + n))
     {
-        QString urlString = locations.at(_index);
-        KUrl subUrl = KUrl(urlString);
+        bool isFilterEnabled = filtersGroup.readEntry("FilterEnabled-" + n, false);
+        if (isFilterEnabled)
+        {
+            QString fUrl = filtersGroup.readEntry("FilterURL-" + n, QString());
+            KUrl subUrl = KUrl(fUrl);
 
-        KIO::TransferJob* job = KIO::get(subUrl , KIO::Reload , KIO::HideProgressInfo);
-        job->metaData().insert("ssl_no_client_cert", "TRUE");
-        job->metaData().insert("ssl_no_ui", "TRUE");
-        job->metaData().insert("UseCache", "false");
-        job->metaData().insert("cookies", "none");
-        job->metaData().insert("no-auth", "true");
+            kDebug() << "Filter ENABLED: " << fUrl;
+            QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
+            KUrl destUrl = KUrl(rulesFilePath);
 
-        connect(job, SIGNAL(data(KIO::Job*,QByteArray)), this, SLOT(subscriptionData(KIO::Job*,QByteArray)));
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(slotResult(KJob*)));
+            KIO::FileCopyJob* job = KIO::file_copy(subUrl , destUrl, -1, KIO::HideProgressInfo);
+            job->metaData().insert("ssl_no_client_cert", "TRUE");
+            job->metaData().insert("ssl_no_ui", "TRUE");
+            job->metaData().insert("UseCache", "false");
+            job->metaData().insert("cookies", "none");
+            job->metaData().insert("no-auth", "true");
+        }
 
-        return;
+        i++;
+        n = QString::number(i);
     }
 
-    _index = 0;
-    _buffer.clear();
-}
-
-
-void AdBlockManager::slotResult(KJob *job)
-{
-    if (job->error())
-        return;
-
-    QList<QByteArray> list = _buffer.split('\n');
-    QStringList ruleList;
-    Q_FOREACH(const QByteArray & ba, list)
-    {
-        ruleList << QString(ba);
-    }
-    loadRules(ruleList);
-    saveRules(ruleList);
-
-    _index++;
-
-    // last..
-    updateNextSubscription();
-}
-
-
-void AdBlockManager::subscriptionData(KIO::Job* job, const QByteArray& data)
-{
-    Q_UNUSED(job)
-
-    if (data.isEmpty())
-        return;
-
-    int oldSize = _buffer.size();
-    _buffer.resize(_buffer.size() + data.size());
-    memcpy(_buffer.data() + oldSize, data.data(), data.size());
-}
-
-
-void AdBlockManager::saveRules(const QStringList &rules)
-{
-    QStringList cleanedRules;
-    Q_FOREACH(const QString & r, rules)
-    {
-        if (!r.startsWith('!') && !r.startsWith('[') && !r.isEmpty())
-            cleanedRules << r;
-    }
-
-    QStringList titles = ReKonfig::subscriptionTitles();
-    QString title = titles.at(_index) + "-rules";
-
-    KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
-    KConfigGroup cg(config , "rules");
-    cg.writeEntry(title, cleanedRules);
+    loadSettings();
 }
 
 
