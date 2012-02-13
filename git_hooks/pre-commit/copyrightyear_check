@@ -41,10 +41,10 @@ case "${1}" in
         echo "Check the files that are being committed for a copyright with a proper year."
         ;;
     * )
-        for file in `git diff-index --cached --name-only HEAD | /bin/grep  \.h$` ; do
+        for file in `git diff-index --cached --name-only HEAD | grep  \.h$` ; do
             test_file "${file}"
         done
-        for file in `git diff-index --cached --name-only HEAD | /bin/grep \.cpp$` ; do
+        for file in `git diff-index --cached --name-only HEAD | grep \.cpp$` ; do
             test_file "${file}"
         done
         ;;
