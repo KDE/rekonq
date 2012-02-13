@@ -112,6 +112,7 @@ void AdBlockManager::loadSettings()
     }
 
     // else
+    // load automatic and local rules
     KConfigGroup filtersGroup(_adblockConfig, "FiltersList");
     for (int i = 1; i <= 60; ++i)
     {
@@ -123,6 +124,10 @@ void AdBlockManager::loadSettings()
             loadRules(rulesFilePath);
         }
     }
+
+    // load local rules
+    QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
+    loadRules(localRulesFilePath);
 }
 
 
@@ -328,7 +333,7 @@ void AdBlockManager::showSettings()
     dialog->setCaption(i18nc("@title:window", "Ad Block Settings"));
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
 
-    AdBlockWidget widget;
+    AdBlockWidget widget(_adblockConfig);
     dialog->setMainWidget(&widget);
     connect(dialog, SIGNAL(okClicked()), &widget, SLOT(save()));
     connect(dialog, SIGNAL(okClicked()), this, SLOT(loadSettings()));

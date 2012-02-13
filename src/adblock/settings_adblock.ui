@@ -39,26 +39,14 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QTreeWidget" name="treeWidget">
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string notr="true">1</string>
-          </property>
-         </column>
-        </widget>
+        <widget class="QListWidget" name="automaticFiltersListWidget"/>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Update automatic filters every:</string>
+            <string>Update enabled automatic filters every:</string>
            </property>
           </widget>
          </item>
@@ -75,6 +63,13 @@
            </property>
            <property name="value">
             <number>7</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>days</string>
            </property>
           </widget>
          </item>
@@ -115,7 +110,7 @@
         </layout>
        </item>
        <item>
-        <widget class="KListWidget" name="listWidget"/>
+        <widget class="KListWidget" name="manualFiltersListWidget"/>
        </item>
        <item>
         <widget class="QLabel" name="hintLabel">
@@ -159,14 +154,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KListWidget</class>
-   <extends>QListWidget</extends>
-   <header>klistwidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KIntSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>knuminput.h</header>
+   <class>KListWidgetSearchLine</class>
+   <extends>KLineEdit</extends>
+   <header>klistwidgetsearchline.h</header>
   </customwidget>
   <customwidget>
    <class>KLineEdit</class>
@@ -174,15 +164,20 @@
    <header>klineedit.h</header>
   </customwidget>
   <customwidget>
+   <class>KIntSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>knuminput.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KListWidget</class>
+   <extends>QListWidget</extends>
+   <header>klistwidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>KTabWidget</class>
    <extends>QTabWidget</extends>
    <header>ktabwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>KListWidgetSearchLine</class>
-   <extends>KLineEdit</extends>
-   <header>klistwidgetsearchline.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

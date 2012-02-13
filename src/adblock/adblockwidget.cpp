@@ -33,8 +33,8 @@
 
 // KDE Includes
 #include <KSharedConfig>
+#include <KStandardDirs>
 #include <KIcon>
-#include <KDebug>
 
 // Qt Includes
 #include <QString>
@@ -42,19 +42,20 @@
 #include <QListWidgetItem>
 
 
-AdBlockWidget::AdBlockWidget(QWidget *parent)
+AdBlockWidget::AdBlockWidget(KSharedConfig::Ptr config, QWidget *parent)
     : QWidget(parent)
     , _changed(false)
+    , _adblockConfig(config)
 {
     setupUi(this);
 
     hintLabel->setText(i18n("<qt>Filter expression (e.g. <tt>http://www.example.com/ad/*</tt>, <a href=\"filterhelp\">more information</a>):"));
     connect(hintLabel, SIGNAL(linkActivated(QString)), this, SLOT(slotInfoLinkActivated(QString)));
 
-    listWidget->setSortingEnabled(true);
-    listWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    manualFiltersListWidget->setSortingEnabled(true);
+    manualFiltersListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    searchLine->setListWidget(listWidget);
+    searchLine->setListWidget(manualFiltersListWidget);
 
     insertButton->setIcon(KIcon("list-add"));
     connect(insertButton, SIGNAL(clicked()), this, SLOT(insertRule()));
@@ -72,6 +73,8 @@ AdBlockWidget::AdBlockWidget(QWidget *parent)
     connect(checkEnableAdblock, SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
     connect(checkHideAds,       SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
     connect(spinBox,            SIGNAL(valueChanged(int)),   this, SLOT(hasChanged()));
+
+    connect(automaticFiltersListWidget, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(hasChanged()));
 }
 
 
@@ -80,8 +83,10 @@ void AdBlockWidget::slotInfoLinkActivated(const QString &url)
     Q_UNUSED(url)
 
     QString hintHelpString = i18n("<qt><p>Enter an expression to filter. Filters can be defined as either:"
-                                  "<ul><li>a shell-style wildcard, e.g. <tt>http://www.example.com/ads*</tt>, the wildcards <tt>*?[]</tt> may be used</li>"
-                                  "<li>a full regular expression by surrounding the string with '<tt>/</tt>', e.g. <tt>/\\/(ad|banner)\\./</tt></li></ul>"
+                                  "<ul><li>a shell-style wildcard, e.g. <tt>http://www.example.com/ads*</tt>, "
+                                  "the wildcards <tt>*?[]</tt> may be used</li>"
+                                  "<li>a full regular expression by surrounding the string with '<tt>/</tt>', "
+                                  "e.g. <tt>/\\/(ad|banner)\\./</tt></li></ul>"
                                   "<p>Any filter string can be preceded by '<tt>@@</tt>' to whitelist (allow) any matching URL, "
                                   "which takes priority over any blacklist (blocking) filter.");
 
@@ -95,64 +100,79 @@ void AdBlockWidget::insertRule()
     if (rule.isEmpty())
         return;
 
-    listWidget->addItem(rule);
+    manualFiltersListWidget->addItem(rule);
     addFilterLineEdit->clear();
 }
 
 
 void AdBlockWidget::removeRule()
 {
-    listWidget->takeItem(listWidget->currentRow());
+    manualFiltersListWidget->takeItem(manualFiltersListWidget->currentRow());
 }
 
 
 void AdBlockWidget::load()
 {
-//     const bool isAdBlockEnabled = ReKonfig::adBlockEnabled();
-//     checkEnableAdblock->setChecked(isAdBlockEnabled);
-//     // update enabled status
-//     checkHideAds->setEnabled(checkEnableAdblock->isChecked());
-//     tabWidget->setEnabled(checkEnableAdblock->isChecked());
-//
-//     const bool areImageFiltered = ReKonfig::hideAdsEnabled();
-//     checkHideAds->setChecked(areImageFiltered);
-//
-//     const int days = ReKonfig::updateInterval();
-//     spinBox->setValue(days);
-//
-//     const QStringList subscriptions = ReKonfig::subscriptionTitles();
-//
-//     // load automatic rules
-//     Q_FOREACH(const QString & sub, subscriptions)
-//     {
-//         QTreeWidgetItem *subItem = new QTreeWidgetItem(treeWidget);
-//         subItem->setText(0, sub);
-//         loadRules(subItem);
-//     }
-//
-//     // load local rules
-//     KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
-//     KConfigGroup localGroup(config, "rules");
-//     const QStringList rules = localGroup.readEntry("local-rules" , QStringList());
-//     Q_FOREACH(const QString & rule, rules)
-//     {
-//         listWidget->addItem(rule);
-//     }
-}
+    // General settings
+    KConfigGroup settingsGroup(_adblockConfig, "Settings");
 
+    const bool isAdBlockEnabled = settingsGroup.readEntry("adBlockEnabled", false);
+    checkEnableAdblock->setChecked(isAdBlockEnabled);
 
-void AdBlockWidget::loadRules(QTreeWidgetItem *item)
-{
-    KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
-    KConfigGroup localGroup(config, "rules");
+    // update enabled status
+    checkHideAds->setEnabled(isAdBlockEnabled);
+    tabWidget->setEnabled(isAdBlockEnabled);
 
-    QString str = item->text(0) + "-rules";
-    QStringList rules = localGroup.readEntry(str , QStringList());
+    const bool areImageFiltered = settingsGroup.readEntry("hideAdsEnabled", false);
+    checkHideAds->setChecked(areImageFiltered);
 
-    Q_FOREACH(const QString & rule, rules)
+    const int days = settingsGroup.readEntry("updateInterval", 7);
+    spinBox->setValue(days);
+
+    // ------------------------------------------------------------------------------
+
+    // automatic filters
+    KConfigGroup autoFiltersGroup(_adblockConfig, "FiltersList");
+
+    int i = 1;
+    QString n = QString::number(i);
+
+    while (autoFiltersGroup.hasKey("FilterName-" + n))
     {
-        QTreeWidgetItem *subItem = new QTreeWidgetItem(item);
-        subItem->setText(0, rule);
+        bool filterEnabled = autoFiltersGroup.readEntry("FilterEnabled-" + n, false);
+        QString filterName = autoFiltersGroup.readEntry("FilterName-" + n, QString());
+
+        QListWidgetItem *subItem = new QListWidgetItem(automaticFiltersListWidget);
+        subItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
+        if (filterEnabled)
+            subItem->setCheckState(Qt::Checked);
+        else
+            subItem->setCheckState(Qt::Unchecked);
+
+        subItem->setText(filterName);
+
+        i++;
+        n = QString::number(i);
+    }
+
+    // ------------------------------------------------------------------------------
+
+    // local filters
+    QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
+
+    QFile ruleFile(localRulesFilePath);
+    if (!ruleFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        kDebug() << "Unable to open rule file" << localRulesFilePath;
+        return;
+    }
+
+    QTextStream in(&ruleFile);
+    while (!in.atEnd())
+    {
+        QString stringRule = in.readLine();
+        QListWidgetItem *subItem = new QListWidgetItem(manualFiltersListWidget);
+        subItem->setText(stringRule);
     }
 }
 
@@ -162,24 +182,45 @@ void AdBlockWidget::save()
     if (!_changed)
         return;
 
-    // local rules
-    KSharedConfig::Ptr config = KSharedConfig::openConfig("adblock", KConfig::SimpleConfig, "appdata");
-    KConfigGroup localGroup(config , "rules");
+    // General settings
+    KConfigGroup settingsGroup(_adblockConfig, "Settings");
 
-    QStringList localRules;
+    settingsGroup.writeEntry("adBlockEnabled", checkEnableAdblock->isChecked());
+    settingsGroup.writeEntry("hideAdsEnabled", checkHideAds->isChecked());
+    settingsGroup.writeEntry("updateInterval", spinBox->value());
 
-    const int n = listWidget->count();
-    for (int i = 0; i < n; ++i)
+    // automatic filters
+    KConfigGroup autoFiltersGroup(_adblockConfig, "FiltersList");
+    for (int i = 0; i < automaticFiltersListWidget->count(); i++)
     {
-        QListWidgetItem *item = listWidget->item(i);
-        localRules << item->text();
+        QListWidgetItem *subItem = automaticFiltersListWidget->item(i);
+        bool active = true;
+        if (subItem->checkState() == Qt::Unchecked)
+            active = false;
+
+        QString n = QString::number(i + 1);
+        autoFiltersGroup.writeEntry("FilterEnabled-" + n, active);
     }
-    localGroup.writeEntry("local-rules" , localRules);
 
-//     ReKonfig::setAdBlockEnabled(checkEnableAdblock->isChecked());
-//     ReKonfig::setHideAdsEnabled(checkHideAds->isChecked());
-//     ReKonfig::setUpdateInterval(spinBox->value());
+    // local filters
+    QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
 
+    QFile ruleFile(localRulesFilePath);
+    if (!ruleFile.open(QFile::WriteOnly | QFile::Text))
+    {
+        kDebug() << "Unable to open rule file" << localRulesFilePath;
+        return;
+    }
+
+    QTextStream out(&ruleFile);
+    for (int i = 0; i < manualFiltersListWidget->count(); i++)
+    {
+        QListWidgetItem *subItem = manualFiltersListWidget->item(i);
+        QString stringRule = subItem->text();
+        out << stringRule << '\n';
+    }
+
+    // -------------------------------------------------------------------------------
     _changed = false;
     emit changed(false);
 }

@@ -165,8 +165,6 @@ private:
     void updateSubscriptions();
     void loadRules(const QString &);
 
-    KSharedConfig::Ptr config();
-
 private:
     bool _isAdblockEnabled;
     bool _isHideAdsEnabled;

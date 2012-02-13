@@ -28,12 +28,18 @@
 #define ADBLOCK_WIDGET_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Ui Includes
 #include "ui_settings_adblock.h"
 
+// KDE Includes
+#include <KSharedConfig>
+
 // Qt Includes
-#include <QtGui/QWidget>
-#include <QtGui/QTreeWidgetItem>
+#include <QWidget>
+#include <QTreeWidgetItem>
 
 
 class AdBlockWidget : public QWidget, private Ui::adblock
@@ -41,7 +47,7 @@ class AdBlockWidget : public QWidget, private Ui::adblock
     Q_OBJECT
 
 public:
-    AdBlockWidget(QWidget *parent = 0);
+    AdBlockWidget(KSharedConfig::Ptr config, QWidget *parent = 0);
 
     bool changed();
 
@@ -60,9 +66,9 @@ private Q_SLOTS:
 
 private:
     void load();
-    void loadRules(QTreeWidgetItem *item);
 
     bool _changed;
+    KSharedConfig::Ptr _adblockConfig;
 };
 
 #endif // ADBLOCK_WIDGET_H
