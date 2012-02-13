@@ -402,6 +402,12 @@ void UrlBar::loadFinished()
         connect(bt, SIGNAL(clicked(QPoint)), _tab, SLOT(showSearchEngine(QPoint)));
     }
 
+    if (_tab->hasAdBlockedElements())
+    {
+        IconButton *bt = addRightIcon(UrlBar::AdBlock);
+        connect(bt, SIGNAL(clicked(QPoint)), (QObject *) rApp->adblockManager(), SLOT(showBlockedItems()));
+    }
+
     // we need to update urlbar after the right icon settings
     // removing this code (where setStyleSheet automatically calls update) needs adding again
     // an update call
@@ -598,6 +604,10 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
     case UrlBar::Favorite:
         rightIcon->setIcon(KIcon("emblem-favorite"));
         rightIcon->setToolTip(i18n("Remove from favorite"));
+        break;
+    case UrlBar::AdBlock:
+        rightIcon->setIcon(KIcon("preferences-web-browser-adblock"));
+        rightIcon->setToolTip(i18n("There are elements blocked by AdBlock"));
         break;
     default:
         ASSERT_NOT_REACHED("ERROR.. default non extant case!!");

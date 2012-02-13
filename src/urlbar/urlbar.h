@@ -83,7 +83,8 @@ public:
         SSL          = 0x00000100,
         BK           = 0x00001000,
         SearchEngine = 0x00010000,
-        Favorite     = 0x00100000
+        Favorite     = 0x00100000,
+        AdBlock      = 0x01000000
     };
 
     explicit UrlBar(QWidget *parent = 0);

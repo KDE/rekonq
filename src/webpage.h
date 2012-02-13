@@ -62,6 +62,16 @@ public:
 
     QString suggestedFileName();
 
+    inline bool hasAdBlockedElements() const
+    {
+        return _hasAdBlockedElements;
+    };
+
+    inline void setHasAdBlockedElements(bool b)
+    {
+        _hasAdBlockedElements = b;
+    };
+
     bool hasSslValid() const;
 
 public Q_SLOTS:
@@ -98,6 +108,7 @@ private:
 
     bool _networkAnalyzer;
     bool _isOnRekonqPage;
+    bool _hasAdBlockedElements;
 };
 
 #endif

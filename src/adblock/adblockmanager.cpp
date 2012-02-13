@@ -226,6 +226,8 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     {
         kDebug() << "ADBLOCK: BLACK RULE Matched by string: " << urlString;
         AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
+        // TODO: add it to blocked list
+        page->setHasAdBlockedElements(true);
         return reply;
     }
 
@@ -253,6 +255,8 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
             }
 
             AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
+            // TODO: add it to blocked list
+            page->setHasAdBlockedElements(true);
             return reply;
         }
     }
@@ -287,6 +291,8 @@ void AdBlockManager::applyHidingRules(WebPage *page)
             kDebug() << "Hide element: " << el.localName();
             el.setStyleProperty(QL1S("visibility"), QL1S("hidden"));
             el.removeFromDocument();
+            // TODO: add it to hided list
+            page->setHasAdBlockedElements(true);
         }
     }
 }

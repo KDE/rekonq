@@ -347,3 +347,9 @@ void WebTab::showMessageBar()
 
     connect(msgBar, SIGNAL(accepted()), rApp->sessionManager(), SLOT(restoreCrashedSession()));
 }
+
+
+bool WebTab::hasAdBlockedElements()
+{
+    return page()->hasAdBlockedElements();
+}

@@ -89,6 +89,8 @@ public:
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
 
 
+    bool hasAdBlockedElements();
+
 private Q_SLOTS:
     void updateProgress(int progress);
     void resetProgress();
