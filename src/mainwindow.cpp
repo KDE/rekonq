@@ -1076,8 +1076,8 @@ void MainWindow::updateTabActions()
         m_loadStopReloadAction->disconnect();
 
         m_loadStopReloadAction->setIcon(KIcon("go-jump-locationbar"));
-        m_loadStopReloadAction->setToolTip(i18n("Load typed url"));
-        m_loadStopReloadAction->setText(i18n("Load"));
+        m_loadStopReloadAction->setToolTip(i18n("Go"));
+        m_loadStopReloadAction->setText(i18n("Go"));
 
         connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), m_view->currentUrlBar(), SLOT(loadDigitedUrl()));
         return;
