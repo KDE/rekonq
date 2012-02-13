@@ -108,6 +108,9 @@ private Q_SLOTS:
 
     void loadStarted();
 
+    void blockImage();
+
+
 Q_SIGNALS:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
     void zoomChanged(int);

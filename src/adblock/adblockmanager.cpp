@@ -62,6 +62,12 @@ AdBlockManager::~AdBlockManager()
 }
 
 
+bool AdBlockManager::isEnabled()
+{
+    return _isAdblockEnabled;
+}
+
+
 void AdBlockManager::loadSettings()
 {
     // first, check this...
@@ -346,4 +352,27 @@ void AdBlockManager::showSettings()
     dialog->exec();
 
     dialog->deleteLater();
+}
+
+
+void AdBlockManager::addCustomRule(const QString &stringRule)
+{
+    // save rule in local filters
+    QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
+
+    QFile ruleFile(localRulesFilePath);
+    if (!ruleFile.open(QFile::WriteOnly | QFile::Text))
+    {
+        kDebug() << "Unable to open rule file" << localRulesFilePath;
+        return;
+    }
+
+    QTextStream out(&ruleFile);
+    out << stringRule << '\n';
+
+    // load it
+    AdBlockRule rule(stringRule);
+    _blackList << rule;
+
+    // TODO: update page?
 }

@@ -34,6 +34,7 @@
 
 // Local Includes
 #include "application.h"
+#include "adblockmanager.h"
 #include "bookmarkmanager.h"
 #include "iconmanager.h"
 #include "mainview.h"
@@ -285,6 +286,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setData(result.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
         menu.addAction(a);
+
+        if (rApp->adblockManager()->isEnabled())
+        {
+            a = new KAction(KIcon("preferences-web-browser-adblock"), i18n("Block image"), this);
+            a->setData(result.imageUrl());
+            connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(blockImage()));
+            menu.addAction(a);
+        }
     }
 
     // ACTIONS FOR TEXT SELECTION -----------------------------------------------------
@@ -1213,3 +1222,13 @@ void WebView::sendByMail()
     KToolInvocation::invokeMailer("", "", "", "", url);
 }
 
+
+void WebView::blockImage()
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+    if (!action)
+        return;
+
+    QString imageUrl = action->data().toString();
+    rApp->adblockManager()->addCustomRule(imageUrl);
+}

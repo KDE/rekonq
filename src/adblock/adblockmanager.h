@@ -154,8 +154,12 @@ public:
     AdBlockManager(QObject *parent = 0);
     ~AdBlockManager();
 
+    bool isEnabled();
+
     QNetworkReply *block(const QNetworkRequest &request, WebPage *page);
     void applyHidingRules(WebPage *page);
+
+    void addCustomRule(const QString &);
 
 public Q_SLOTS:
     void loadSettings();
