@@ -164,13 +164,17 @@ public:
     void clearElementsLists();
 
 private:
-    void updateSubscriptions();
+    void updateSubscription(int);
+    bool subscriptionFileExists(int);
+
     void loadRules(const QString &);
 
 private Q_SLOTS:
     void loadSettings();
     void showSettings();
     void showBlockedItemDialog();
+
+    void slotFinished(KJob *);
 
 Q_SIGNALS:
     void reloadCurrentPage();

@@ -120,22 +120,31 @@ void AdBlockManager::loadSettings()
     QDateTime lastUpdate = QDateTime::fromString(settingsGroup.readEntry("lastUpdate", QString()));
     int days = settingsGroup.readEntry("updateInterval", 7);
 
-    if (today > lastUpdate.addDays(days))
+    bool allSubscriptionsNeedUpdate = (today > lastUpdate.addDays(days));
+    if (allSubscriptionsNeedUpdate)
     {
         settingsGroup.writeEntry("lastUpdate", today.toString());
-
-        updateSubscriptions();
-        return;
     }
 
-    // else
-    // load automatic and local rules
+    // (Eventually) update and load automatic rules
     KConfigGroup filtersGroup(_adblockConfig, "FiltersList");
-    for (int i = 1; i <= 60; ++i)
+    for (int i = 0; i < 60; i++)
     {
-        QString n = QString::number(i);
-        bool filterActive = filtersGroup.readEntry("FilterEnabled-" + n, false);
-        if (filterActive)
+        QString n = QString::number(i + 1);
+        if (!filtersGroup.hasKey("FilterEnabled-" + n))
+            continue;
+
+        bool isFilterEnabled = filtersGroup.readEntry("FilterEnabled-" + n, false);
+        if (!isFilterEnabled)
+            continue;
+
+        bool fileExists = subscriptionFileExists(i);
+        if (allSubscriptionsNeedUpdate || !fileExists)
+        {
+            kDebug() << "FILE SHOULDN'T EXIST. updating subscription";
+            updateSubscription(i);
+        }
+        else
         {
             QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
             loadRules(rulesFilePath);
@@ -315,38 +324,46 @@ void AdBlockManager::applyHidingRules(WebPage *page)
 }
 
 
-void AdBlockManager::updateSubscriptions()
+void AdBlockManager::updateSubscription(int i)
 {
     KConfigGroup filtersGroup(_adblockConfig, "FiltersList");
+    QString n = QString::number(i + 1);
 
-    int i = 1;
-    QString n = QString::number(i);
+    QString fUrl = filtersGroup.readEntry("FilterURL-" + n, QString());
+    KUrl subUrl = KUrl(fUrl);
 
-    while (filtersGroup.hasKey("FilterName-" + n))
-    {
-        bool isFilterEnabled = filtersGroup.readEntry("FilterEnabled-" + n, false);
-        if (isFilterEnabled)
-        {
-            QString fUrl = filtersGroup.readEntry("FilterURL-" + n, QString());
-            KUrl subUrl = KUrl(fUrl);
+    QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
+    KUrl destUrl = KUrl(rulesFilePath);
 
-            kDebug() << "Filter ENABLED: " << fUrl;
-            QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
-            KUrl destUrl = KUrl(rulesFilePath);
+    KIO::FileCopyJob* job = KIO::file_copy(subUrl , destUrl, -1, KIO::HideProgressInfo);
+    job->metaData().insert("ssl_no_client_cert", "TRUE");
+    job->metaData().insert("ssl_no_ui", "TRUE");
+    job->metaData().insert("UseCache", "false");
+    job->metaData().insert("cookies", "none");
+    job->metaData().insert("no-auth", "true");
 
-            KIO::FileCopyJob* job = KIO::file_copy(subUrl , destUrl, -1, KIO::HideProgressInfo);
-            job->metaData().insert("ssl_no_client_cert", "TRUE");
-            job->metaData().insert("ssl_no_ui", "TRUE");
-            job->metaData().insert("UseCache", "false");
-            job->metaData().insert("cookies", "none");
-            job->metaData().insert("no-auth", "true");
-        }
+    connect(job, SIGNAL(finished(KJob *)), this, SLOT(slotFinished(KJob *)));
+}
 
-        i++;
-        n = QString::number(i);
-    }
 
-    loadSettings();
+void AdBlockManager::slotFinished(KJob *job)
+{
+    if (job->error())
+        return;
+
+    KIO::FileCopyJob *fJob = qobject_cast<KIO::FileCopyJob *>(job);
+    KUrl url = fJob->destUrl();
+    url.setProtocol(QString()); // this is needed to load local url well :(
+    loadRules(url.url());
+}
+
+
+bool AdBlockManager::subscriptionFileExists(int i)
+{
+    QString n = QString::number(i + 1);
+
+    QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
+    return QFile::exists(rulesFilePath);
 }
 
 
