@@ -34,6 +34,8 @@
 // Local Includes
 #include "adblocknetworkreply.h"
 #include "adblockwidget.h"
+#include "blockedelementswidget.h"
+
 #include "webpage.h"
 
 // KDE Includes
@@ -68,6 +70,12 @@ bool AdBlockManager::isEnabled()
 }
 
 
+bool AdBlockManager::isHidingElements()
+{
+    return _isHideAdsEnabled;
+}
+
+
 void AdBlockManager::loadSettings()
 {
     // first, check this...
@@ -88,9 +96,12 @@ void AdBlockManager::loadSettings()
 
     _hostWhiteList.clear();
     _hostBlackList.clear();
+
     _whiteList.clear();
     _blackList.clear();
     _hideList.clear();
+
+    clearElementsLists();
 
     KConfigGroup settingsGroup(_adblockConfig, "Settings");
     _isAdblockEnabled = settingsGroup.readEntry("adBlockEnabled", false);
@@ -232,7 +243,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
     {
         kDebug() << "ADBLOCK: BLACK RULE Matched by string: " << urlString;
         AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
-        // TODO: add it to blocked list
+        _blockedElements << request.url().toString();
         page->setHasAdBlockedElements(true);
         return reply;
     }
@@ -261,7 +272,7 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
             }
 
             AdBlockNetworkReply *reply = new AdBlockNetworkReply(request, urlString, this);
-            // TODO: add it to blocked list
+            _blockedElements << request.url().toString();
             page->setHasAdBlockedElements(true);
             return reply;
         }
@@ -297,7 +308,7 @@ void AdBlockManager::applyHidingRules(WebPage *page)
             kDebug() << "Hide element: " << el.localName();
             el.setStyleProperty(QL1S("visibility"), QL1S("hidden"));
             el.removeFromDocument();
-            // TODO: add it to hided list
+            _hidedElements++;
             page->setHasAdBlockedElements(true);
         }
     }
@@ -374,5 +385,29 @@ void AdBlockManager::addCustomRule(const QString &stringRule)
     AdBlockRule rule(stringRule);
     _blackList << rule;
 
-    // TODO: update page?
+    emit reloadCurrentPage();
+}
+
+
+void AdBlockManager::showBlockedItemDialog()
+{
+    QPointer<KDialog> dialog = new KDialog();
+    dialog->setCaption(i18nc("@title:window", "Blocked & hided elements"));
+    dialog->setButtons(KDialog::Ok);
+
+    BlockedElementsWidget widget(this);
+    widget.setBlockedElements(_blockedElements);
+    widget.setHidedElements(_hidedElements);
+
+    dialog->setMainWidget(&widget);
+    dialog->exec();
+
+    dialog->deleteLater();
+}
+
+
+void AdBlockManager::clearElementsLists()
+{
+    _blockedElements.clear();
+    _hidedElements = 0;
 }

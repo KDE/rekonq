@@ -69,6 +69,7 @@ SET( rekonq_KDEINIT_SRCS
     adblock/adblockrulenullimpl.cpp
     adblock/adblockruletextmatchimpl.cpp
     adblock/adblockwidget.cpp
+    adblock/blockedelementswidget.cpp
     #----------------------------------------
     urlbar/stackedurlbar.cpp
     urlbar/urlbar.cpp
@@ -112,7 +113,10 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_tabs.ui
     settings/settings_appearance.ui
     settings/settings_webkit.ui
+    # ----------------------------------------
     adblock/settings_adblock.ui
+    adblock/blocked_elements.ui
+    # ----------------------------------------
     cleardata.ui
     sslinfo.ui
     webappcreation.ui

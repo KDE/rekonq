@@ -213,6 +213,9 @@ MainWindow::MainWindow()
     // Save session on window closing
     connect(this, SIGNAL(windowClosing()), rApp->sessionManager(), SLOT(saveSession()));
 
+    // Adblock Manager changed rules. Reload current page
+    connect(rApp->adblockManager(), SIGNAL(reloadCurrentPage()), m_view, SLOT(webReload()));
+
     // setting up toolbars to NOT have context menu enabled
     setContextMenuPolicy(Qt::DefaultContextMenu);
 

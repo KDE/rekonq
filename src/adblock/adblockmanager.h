@@ -155,19 +155,25 @@ public:
     ~AdBlockManager();
 
     bool isEnabled();
+    bool isHidingElements();
 
     QNetworkReply *block(const QNetworkRequest &request, WebPage *page);
     void applyHidingRules(WebPage *page);
 
     void addCustomRule(const QString &);
-
-public Q_SLOTS:
-    void loadSettings();
-    void showSettings();
+    void clearElementsLists();
 
 private:
     void updateSubscriptions();
     void loadRules(const QString &);
+
+private Q_SLOTS:
+    void loadSettings();
+    void showSettings();
+    void showBlockedItemDialog();
+
+Q_SIGNALS:
+    void reloadCurrentPage();
 
 private:
     bool _isAdblockEnabled;
@@ -178,6 +184,9 @@ private:
     AdBlockRuleList _blackList;
     AdBlockRuleList _whiteList;
     QStringList _hideList;
+
+    QStringList _blockedElements;
+    int _hidedElements;
 
     KSharedConfig::Ptr _adblockConfig;
 };

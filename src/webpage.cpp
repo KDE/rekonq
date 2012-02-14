@@ -445,6 +445,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 void WebPage::loadStarted()
 {
     _hasAdBlockedElements = false;
+    rApp->adblockManager()->clearElementsLists();
 }
 
 

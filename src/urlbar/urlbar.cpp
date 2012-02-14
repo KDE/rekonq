@@ -405,7 +405,7 @@ void UrlBar::loadFinished()
     if (_tab->hasAdBlockedElements())
     {
         IconButton *bt = addRightIcon(UrlBar::AdBlock);
-        connect(bt, SIGNAL(clicked(QPoint)), (QObject *) rApp->adblockManager(), SLOT(showBlockedItems()));
+        connect(bt, SIGNAL(clicked(QPoint)), (QObject *) rApp->adblockManager(), SLOT(showBlockedItemDialog()));
     }
 
     // we need to update urlbar after the right icon settings
