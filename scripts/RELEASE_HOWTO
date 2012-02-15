@@ -7,7 +7,7 @@ SECTION 1: Preparation
 * Update INSTALL file (usually just new dependencies)
 * Update src/main.cpp. Check AUTHORS and CREDITS
 * Bump Version Number (in the CMakeLists.txt file)
-* Commit the source to GIT and ccmail: rekonq@kde.org
+* Commit the source to GIT and ccmail: rekonq@kde.org,kde-i18n-doc@kde.org
 * tag it : git tag -s $VERSION
 
 --------------------------------------------------------------------------------
