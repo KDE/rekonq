@@ -45,7 +45,6 @@
 #include <QObject>
 #include <QTimer>
 #include <QSortFilterProxyModel>
-#include <QWebHistoryInterface>
 #include <QWebHistory>
 
 #include <math.h>
@@ -146,7 +145,7 @@ class HistoryTreeModel;
  * It manages rekonq history
  *
  */
-class REKONQ_TESTS_EXPORT HistoryManager : public QWebHistoryInterface
+class REKONQ_TESTS_EXPORT HistoryManager : public QObject
 {
     Q_OBJECT
 
@@ -155,8 +154,7 @@ public:
     ~HistoryManager();
 
     bool historyContains(const QString &url) const;
-    void addHistoryEntry(const QString &url);
-    void updateHistoryEntry(const KUrl &url, const QString &title);
+    void addHistoryEntry(const KUrl &url, const QString &title);
     void removeHistoryEntry(const KUrl &url, const QString &title = QString());
 
     QList<HistoryItem> find(const QString &text);
@@ -181,7 +179,6 @@ Q_SIGNALS:
     void historyReset();
     void entryAdded(const HistoryItem &item);
     void entryRemoved(const HistoryItem &item);
-    void entryUpdated(int offset);
 
     void historySaved();
 

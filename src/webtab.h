@@ -72,6 +72,7 @@ public:
     }
 
     KUrl url();
+
     void createPreviewSelectorBar(int index);
 
     void hideSelectorBar();
@@ -79,6 +80,7 @@ public:
     bool hasRSSInfo();
 
     bool isPageLoading();
+
     bool hasNewSearchEngine();
 
     KParts::ReadOnlyPart *part()
@@ -101,6 +103,7 @@ private Q_SLOTS:
     void openSearchEngineAdded();
 
     void showMessageBar();
+    void loadFinished();
 
 private:
     KUrl extractOpensearchUrl(QWebElement e);

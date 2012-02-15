@@ -63,7 +63,7 @@ static const unsigned int HISTORY_VERSION = 25;
 
 
 HistoryManager::HistoryManager(QObject *parent)
-    : QWebHistoryInterface(parent)
+    : QObject(parent)
     , m_saveTimer(new AutoSaver(this))
     , m_historyLimit(0)
     , m_historyTreeModel(0)
@@ -77,9 +77,6 @@ HistoryManager::HistoryManager(QObject *parent)
     HistoryModel *historyModel = new HistoryModel(this, this);
     m_historyFilterModel = new HistoryFilterModel(historyModel, this);
     m_historyTreeModel = new HistoryTreeModel(m_historyFilterModel, this);
-
-    // QWebHistoryInterface will delete the history manager
-    QWebHistoryInterface::setDefaultInterface(this);
 }
 
 
@@ -95,30 +92,33 @@ bool HistoryManager::historyContains(const QString &url) const
 }
 
 
-void HistoryManager::addHistoryEntry(const QString &url)
+void HistoryManager::addHistoryEntry(const KUrl &url, const QString &title)
 {
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return;
 
-    QUrl cleanUrl(url);
-
-    // don't store about: urls (home page related)
-    if (cleanUrl.scheme() == QString("about"))
+    if (url.isEmpty())
         return;
 
-    cleanUrl.setPassword(QString());
-    cleanUrl.setHost(cleanUrl.host().toLower());
-    QString checkUrlString = cleanUrl.toString();
+    QUrl urlToClean(url);
+
+    // don't store about: urls (home page related)
+    if (urlToClean.scheme() == QString("about"))
+        return;
+
+    urlToClean.setPassword(QString());
+    urlToClean.setHost(urlToClean.host().toLower());
+    QString urlString = urlToClean.toString();
 
     HistoryItem item;
 
     // NOTE
     // check if the url has just been visited.
     // if so, remove previous entry from history, update and prepend it
-    if (historyContains(checkUrlString))
+    if (historyContains(urlString))
     {
-        int index = m_historyFilterModel->historyLocation(checkUrlString);
+        int index = m_historyFilterModel->historyLocation(urlString);
         item = m_history.at(index);
         m_history.removeOne(item);
         emit entryRemoved(item);
@@ -128,7 +128,7 @@ void HistoryManager::addHistoryEntry(const QString &url)
     }
     else
     {
-        item = HistoryItem(checkUrlString, QDateTime::currentDateTime());
+        item = HistoryItem(urlString, QDateTime::currentDateTime(), title);
     }
 
     m_history.prepend(item);
@@ -193,35 +193,6 @@ void HistoryManager::checkForExpired()
 
     if (nextTimeout > 0)
         QTimer::singleShot(nextTimeout * 1000, this, SLOT(checkForExpired()));
-}
-
-
-void HistoryManager::updateHistoryEntry(const KUrl &url, const QString &title)
-{
-    QString urlString = url.url();
-    urlString.remove(QL1S("www."));
-    if (urlString.startsWith(QL1S("http")) && urlString.endsWith(QL1C('/')))
-        urlString.remove(urlString.length() - 1, 1);
-
-    for (int i = 0; i < m_history.count(); ++i)
-    {
-        QString itemUrl = m_history.at(i).url;
-        itemUrl.remove(QL1S("www."));
-        if (itemUrl.startsWith(QL1S("http")) && itemUrl.endsWith(QL1C('/')))
-            itemUrl.remove(itemUrl.length() - 1, 1);
-
-        if (urlString == itemUrl)
-        {
-            m_history[i].title = title;
-            m_history[i].url = url.url();
-            m_saveTimer->changeOccurred();
-            if (m_lastSavedUrl.isEmpty())
-                m_lastSavedUrl = m_history.at(i).url;
-
-            emit entryUpdated(i);
-            break;
-        }
-    }
 }
 
 

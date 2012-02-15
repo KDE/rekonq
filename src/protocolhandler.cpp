@@ -250,7 +250,7 @@ void ProtocolHandler::showResults(const KFileItemList &list)
 
         rApp->mainWindow()->mainView()->currentUrlBar()->setQUrl(_url);
         rApp->mainWindow()->currentTab()->setFocus();
-        rApp->historyManager()->addHistoryEntry(_url.prettyUrl());
+        rApp->historyManager()->addHistoryEntry(_url, _url.prettyUrl());
     }
 }
 

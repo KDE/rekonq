@@ -65,7 +65,6 @@ public:
 public Q_SLOTS:
     void historyReset();
     void entryAdded();
-    void entryUpdated(int offset);
 
 public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;

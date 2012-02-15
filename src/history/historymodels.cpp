@@ -66,7 +66,6 @@ HistoryModel::HistoryModel(HistoryManager *history, QObject *parent)
     connect(m_historyManager, SIGNAL(historyReset()), this, SLOT(historyReset()));
     connect(m_historyManager, SIGNAL(entryRemoved(HistoryItem)), this, SLOT(historyReset()));
     connect(m_historyManager, SIGNAL(entryAdded(HistoryItem)), this, SLOT(entryAdded()));
-    connect(m_historyManager, SIGNAL(entryUpdated(int)), this, SLOT(entryUpdated(int)));
 }
 
 
@@ -80,13 +79,6 @@ void HistoryModel::entryAdded()
 {
     beginInsertRows(QModelIndex(), 0, 0);
     endInsertRows();
-}
-
-
-void HistoryModel::entryUpdated(int offset)
-{
-    QModelIndex idx = index(offset, 0);
-    emit dataChanged(idx, idx);
 }
 
 

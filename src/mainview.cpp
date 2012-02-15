@@ -615,7 +615,6 @@ void MainView::webViewTitleChanged(const QString &title)
             tabBar()->setTabHighlighted(index);
     }
 
-    rApp->historyManager()->updateHistoryEntry(tab->url(), tabTitle);
     if (ReKonfig::hoveringTabOption() == 1)
         tabBar()->setTabToolTip(index, tabTitle.remove('&'));
 }

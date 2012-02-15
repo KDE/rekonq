@@ -33,17 +33,18 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "urlbar.h"
+#include "application.h"
+#include "historymanager.h"
+#include "messagebar.h"
+#include "opensearchmanager.h"
 #include "previewselectorbar.h"
 #include "rsswidget.h"
+#include "sessionmanager.h"
+#include "syncmanager.h"
+#include "urlbar.h"
 #include "walletbar.h"
 #include "webpage.h"
 #include "webshortcutwidget.h"
-#include "application.h"
-#include "sessionmanager.h"
-#include "syncmanager.h"
-#include "opensearchmanager.h"
-#include "messagebar.h"
 
 // KDE Includes
 #include <KWebWallet>
@@ -55,7 +56,7 @@
 #include <KBuildSycocaProgressDialog>
 
 // Qt Includes
-#include <QtGui/QVBoxLayout>
+#include <QVBoxLayout>
 
 
 WebTab::WebTab(QWidget *parent)
@@ -88,6 +89,7 @@ WebTab::WebTab(QWidget *parent)
     connect(view(), SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(view(), SIGNAL(loadStarted()), this, SLOT(resetProgress()));
     connect(view(), SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
+    connect(view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
 
     // Session Manager
     connect(view(), SIGNAL(loadFinished(bool)), rApp->sessionManager(), SLOT(saveSession()));
@@ -352,4 +354,12 @@ void WebTab::showMessageBar()
 bool WebTab::hasAdBlockedElements()
 {
     return page()->hasAdBlockedElements();
+}
+
+
+void WebTab::loadFinished()
+{
+    // add page to history
+    QString pageTitle = (page() && page()->isOnRekonqPage()) ? url().url() : m_webView->title();
+    rApp->historyManager()->addHistoryEntry(url(), pageTitle);
 }
