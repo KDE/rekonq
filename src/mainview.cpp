@@ -87,7 +87,7 @@ MainView::MainView(QWidget *parent)
     connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int)));
 
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)));
-    connect(tabBar, SIGNAL(tabMoved(int, int)),     m_widgetBar, SLOT(moveBar(int, int)));
+    connect(tabBar, SIGNAL(tabMoved(int,int)),     m_widgetBar, SLOT(moveBar(int,int)));
 
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
@@ -248,13 +248,13 @@ void MainView::currentChanged(int index)
         // disconnecting webpage from mainview
         disconnect(oldTab->page(), SIGNAL(statusBarMessage(QString)),
                    this, SIGNAL(showStatusBarMessage(QString)));
-        disconnect(oldTab->page(), SIGNAL(linkHovered(QString, QString, QString)),
+        disconnect(oldTab->page(), SIGNAL(linkHovered(QString,QString,QString)),
                    this, SIGNAL(linkHovered(QString)));
     }
 
     connect(tab->page(), SIGNAL(statusBarMessage(QString)),
             this, SIGNAL(showStatusBarMessage(QString)));
-    connect(tab->page(), SIGNAL(linkHovered(QString, QString, QString)),
+    connect(tab->page(), SIGNAL(linkHovered(QString,QString,QString)),
             this, SIGNAL(linkHovered(QString)));
 
     emit currentTitle(tab->view()->title());
@@ -766,27 +766,27 @@ void MainView::detachTab(int index, MainWindow *toWindow)
         // disconnecting webview with old mainview
         disconnect(tab->view(), SIGNAL(loadStarted()));
         disconnect(tab->view(), SIGNAL(loadFinished(bool)));
-        disconnect(tab, SIGNAL(titleChanged(const QString &)));
-        disconnect(tab->view(), SIGNAL(urlChanged(const QUrl &)));
+        disconnect(tab, SIGNAL(titleChanged(QString)));
+        disconnect(tab->view(), SIGNAL(urlChanged(QUrl)));
         disconnect(tab->view(), SIGNAL(iconChanged()));
         disconnect(tab->view(), SIGNAL(openPreviousInHistory()));
         disconnect(tab->view(), SIGNAL(openNextInHistory()));
 
         // disconnecting webPage signals with old mainview
         disconnect(tab->page(), SIGNAL(windowCloseRequested()));
-        disconnect(tab->page(), SIGNAL(printRequested(QWebFrame *)));
+        disconnect(tab->page(), SIGNAL(printRequested(QWebFrame*)));
 
         // connecting webview with new mainview
         connect(tab->view(), SIGNAL(loadStarted()), w->mainView(), SLOT(webViewLoadStarted()));
         connect(tab->view(), SIGNAL(loadFinished(bool)), w->mainView(), SLOT(webViewLoadFinished(bool)));
-        connect(tab, SIGNAL(titleChanged(const QString &)), w->mainView(), SLOT(webViewTitleChanged(const QString &)));
-        connect(tab->view(), SIGNAL(urlChanged(const QUrl &)), w->mainView(), SLOT(webViewUrlChanged(const QUrl &)));
+        connect(tab, SIGNAL(titleChanged(QString)), w->mainView(), SLOT(webViewTitleChanged(QString)));
+        connect(tab->view(), SIGNAL(urlChanged(QUrl)), w->mainView(), SLOT(webViewUrlChanged(QUrl)));
         connect(tab->view(), SIGNAL(iconChanged()), w->mainView(), SLOT(webViewIconChanged()));
         connect(tab->view(), SIGNAL(openPreviousInHistory()), w->mainView(), SIGNAL(openPreviousInHistory()));
         connect(tab->view(), SIGNAL(openNextInHistory()), w->mainView(), SIGNAL(openNextInHistory()));
 
         // connecting webPage signals with new mainview
         connect(tab->page(), SIGNAL(windowCloseRequested()), w->mainView(), SLOT(windowCloseRequested()));
-        connect(tab->page(), SIGNAL(printRequested(QWebFrame *)), w->mainView(), SIGNAL(printRequested(QWebFrame *)));
+        connect(tab->page(), SIGNAL(printRequested(QWebFrame*)), w->mainView(), SIGNAL(printRequested(QWebFrame*)));
     }
 }

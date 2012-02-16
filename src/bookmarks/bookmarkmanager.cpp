@@ -69,12 +69,12 @@ BookmarkManager::BookmarkManager(QObject *parent)
         delete tempManager;
     }
 
-    connect(m_manager, SIGNAL(changed(QString, QString)), this, SLOT(slotBookmarksChanged()));
+    connect(m_manager, SIGNAL(changed(QString,QString)), this, SLOT(slotBookmarksChanged()));
 
     // setup menu
     m_owner = new BookmarkOwner(m_manager, this);
-    connect(m_owner, SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
-            this, SIGNAL(openUrl(KUrl, Rekonq::OpenType)));
+    connect(m_owner, SIGNAL(openUrl(KUrl,Rekonq::OpenType)),
+            this, SIGNAL(openUrl(KUrl,Rekonq::OpenType)));
 
     KAction *a = KStandardAction::addBookmark(m_owner, SLOT(bookmarkCurrentPage()), this);
     m_actionCollection->addAction(QL1S("rekonq_add_bookmark"), a);

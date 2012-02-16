@@ -133,7 +133,7 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
 
     // search icon
-    connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString, QString, QString)),
+    connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString,QString,QString)),
             this, SLOT(updateRightIcons()));
 
     _suggestionTimer->setSingleShot(true);
@@ -449,7 +449,7 @@ void UrlBar::activateSuggestions(bool b)
         {
             _box = new CompletionWidget(this);
             installEventFilter(_box.data());
-            connect(_box.data(), SIGNAL(chosenUrl(KUrl, Rekonq::OpenType)), this, SLOT(loadRequestedUrl(KUrl, Rekonq::OpenType)));
+            connect(_box.data(), SIGNAL(chosenUrl(KUrl,Rekonq::OpenType)), this, SLOT(loadRequestedUrl(KUrl,Rekonq::OpenType)));
 
             // activate suggestions on edit text
             connect(this, SIGNAL(textChanged(QString)), this, SLOT(detectTypedString(QString)));

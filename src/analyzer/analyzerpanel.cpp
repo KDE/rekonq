@@ -73,14 +73,14 @@ void NetworkAnalyzerPanel::toggle(bool enable)
     if (enable)
     {
         connect(page, SIGNAL(loadStarted()), _viewer, SLOT(clear()));
-        connect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation, QNetworkRequest, QNetworkReply*)),
-                _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, QNetworkRequest, QNetworkReply*)));
+        connect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation,QNetworkRequest,QNetworkReply*)),
+                _viewer, SLOT(addRequest(QNetworkAccessManager::Operation,QNetworkRequest,QNetworkReply*)));
     }
     else
     {
         disconnect(page, SIGNAL(loadStarted()), _viewer, SLOT(clear()));
-        disconnect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation, QNetworkRequest, QNetworkReply*)),
-                   _viewer, SLOT(addRequest(QNetworkAccessManager::Operation, QNetworkRequest, QNetworkReply*)));
+        disconnect(manager, SIGNAL(networkData(QNetworkAccessManager::Operation,QNetworkRequest,QNetworkReply*)),
+                   _viewer, SLOT(addRequest(QNetworkAccessManager::Operation,QNetworkRequest,QNetworkReply*)));
     }
 
     setVisible(enable);

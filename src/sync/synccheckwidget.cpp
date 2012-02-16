@@ -125,7 +125,7 @@ void SyncCheckWidget::initializePage()
     rApp->syncManager()->loadSettings();
 
     SyncHandler *h = rApp->syncManager()->handler();
-    connect(h, SIGNAL(syncStatus(Rekonq::SyncData, bool, QString)), this, SLOT(updateWidget(Rekonq::SyncData, bool, QString)));
+    connect(h, SIGNAL(syncStatus(Rekonq::SyncData,bool,QString)), this, SLOT(updateWidget(Rekonq::SyncData,bool,QString)));
 }
 
 

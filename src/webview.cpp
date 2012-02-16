@@ -87,8 +87,8 @@ WebView::WebView(QWidget* parent)
     connect(this, SIGNAL(linkMiddleOrCtrlClicked(KUrl)), this, SLOT(loadUrlInNewTab(KUrl)));
 
     // loadUrl signal
-    connect(this, SIGNAL(loadUrl(KUrl, Rekonq::OpenType)),
-            rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
+    connect(this, SIGNAL(loadUrl(KUrl,Rekonq::OpenType)),
+            rApp, SLOT(loadUrl(KUrl,Rekonq::OpenType)));
 
     // Auto scroll timer
     connect(m_autoScrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
@@ -266,15 +266,15 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         a = new KAction(KIcon("view-preview"), i18n("&View Image"), this);
         a->setData(result.imageUrl());
-        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
-                this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
+        connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                this, SLOT(viewImage(Qt::MouseButtons,Qt::KeyboardModifiers)));
         menu.addAction(a);
 
         menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
 
         a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), this);
         a->setData(result.imageUrl());
-        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
+        connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
         menu.addAction(a);
     }
 

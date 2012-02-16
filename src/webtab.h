@@ -102,7 +102,7 @@ private Q_SLOTS:
     void showRSSInfo(const QPoint &pos);
     void showSearchEngine(const QPoint &pos);
     void openSearchEngineAdded();
-    
+
     void showMessageBar();
 
 Q_SIGNALS:
