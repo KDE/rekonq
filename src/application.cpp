@@ -325,8 +325,8 @@ int Application::newInstance()
         historyManager();
 
         // bookmarks loading
-        connect(bookmarkManager(), SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
-                instance(), SLOT(loadUrl(KUrl, Rekonq::OpenType)));
+        connect(bookmarkManager(), SIGNAL(openUrl(KUrl,Rekonq::OpenType)),
+                instance(), SLOT(loadUrl(KUrl,Rekonq::OpenType)));
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();
@@ -851,7 +851,7 @@ void Application::createWebAppShortcut()
     QWidget widget;
     wAppWidget.setupUi(&widget);
 
-    const QString title = mainWindow()->currentTab()->view()->title().remove("&");
+    const QString title = mainWindow()->currentTab()->view()->title().remove('&');
     wAppWidget.iconLabel->setPixmap(iconManager()->iconForUrl(u).pixmap(32));
     wAppWidget.titleLabel->setText(title);
     wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());

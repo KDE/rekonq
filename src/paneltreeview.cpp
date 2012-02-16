@@ -44,7 +44,7 @@ PanelTreeView::PanelTreeView(QWidget *parent)
     : QTreeView(parent)
 {
     connect(this, SIGNAL(itemHovered(QString)), parent, SIGNAL(itemHovered(QString)));
-    connect(this, SIGNAL(openUrl(KUrl, Rekonq::OpenType)), parent, SIGNAL(openUrl(KUrl, Rekonq::OpenType)));
+    connect(this, SIGNAL(openUrl(KUrl,Rekonq::OpenType)), parent, SIGNAL(openUrl(KUrl,Rekonq::OpenType)));
     setMouseTracking(true);
     setExpandsOnDoubleClick(false);
 }

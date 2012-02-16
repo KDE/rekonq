@@ -173,7 +173,7 @@ MainWindow::MainWindow()
     setupBookmarksAndToolsShortcuts();
 
     // setting popup notification
-    connect(rApp, SIGNAL(focusChanged(QWidget*, QWidget*)), m_popup, SLOT(hide()));
+    connect(rApp, SIGNAL(focusChanged(QWidget*,QWidget*)), m_popup, SLOT(hide()));
     m_popup->setAutoFillBackground(true);
     m_popup->setMargin(4);
     m_popup->raise();
@@ -181,10 +181,10 @@ MainWindow::MainWindow()
     connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
 
     // notification system
-    connect(m_view, SIGNAL(showStatusBarMessage(QString, Rekonq::Notify)), this, SLOT(notifyMessage(QString, Rekonq::Notify)));
+    connect(m_view, SIGNAL(showStatusBarMessage(QString,Rekonq::Notify)), this, SLOT(notifyMessage(QString,Rekonq::Notify)));
     connect(m_view, SIGNAL(linkHovered(QString)), this, SLOT(notifyMessage(QString)));
-    connect(rApp->downloadManager(), SIGNAL(notifyDownload(QString, Rekonq::Notify)),
-            this, SLOT(notifyMessage(QString, Rekonq::Notify)));
+    connect(rApp->downloadManager(), SIGNAL(notifyDownload(QString,Rekonq::Notify)),
+            this, SLOT(notifyMessage(QString,Rekonq::Notify)));
 
     // connect signals and slots
     connect(m_view, SIGNAL(currentTitle(QString)), this, SLOT(updateWindowTitle(QString)));
@@ -352,7 +352,7 @@ void MainWindow::setupActions()
     a->setShortcut(fullScreenShortcut);
 
     a = actionCollection()->addAction(KStandardAction::Home);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(homePage()));
+    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(homePage()));
     KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
 
     a = KStandardAction::redisplay(m_view, SLOT(webReload()), actionCollection());
@@ -417,8 +417,8 @@ void MainWindow::setupActions()
 
     // ========================= History related actions ==============================
     a = actionCollection()->addAction(KStandardAction::Back);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
-            this, SLOT(openPrevious(Qt::MouseButtons, Qt::KeyboardModifiers)));
+    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+            this, SLOT(openPrevious(Qt::MouseButtons,Qt::KeyboardModifiers)));
 
     m_historyBackMenu = new KMenu(this);
     a->setMenu(m_historyBackMenu);
@@ -426,8 +426,8 @@ void MainWindow::setupActions()
     connect(m_historyBackMenu, SIGNAL(triggered(QAction*)), this, SLOT(openActionUrl(QAction*)));
 
     a = actionCollection()->addAction(KStandardAction::Forward);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
-            this, SLOT(openNext(Qt::MouseButtons, Qt::KeyboardModifiers)));
+    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+            this, SLOT(openNext(Qt::MouseButtons,Qt::KeyboardModifiers)));
 
     m_historyForwardMenu = new KMenu(this);
     a->setMenu(m_historyForwardMenu);
@@ -572,8 +572,8 @@ void MainWindow::setupPanels()
     // Setup history panel
     const QString historyTitle = i18n("History Panel");
     m_historyPanel = new HistoryPanel(historyTitle, this);
-    connect(m_historyPanel, SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
-            rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
+    connect(m_historyPanel, SIGNAL(openUrl(KUrl,Rekonq::OpenType)),
+            rApp, SLOT(loadUrl(KUrl,Rekonq::OpenType)));
     connect(m_historyPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
     connect(m_historyPanel, SIGNAL(destroyed()), rApp, SLOT(saveConfiguration()));
 
@@ -590,8 +590,8 @@ void MainWindow::setupPanels()
     // Setup bookmarks panel
     const QString bookmarksTitle = i18n("Bookmarks Panel");
     m_bookmarksPanel = new BookmarksPanel(bookmarksTitle, this);
-    connect(m_bookmarksPanel, SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
-            rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
+    connect(m_bookmarksPanel, SIGNAL(openUrl(KUrl,Rekonq::OpenType)),
+            rApp, SLOT(loadUrl(KUrl,Rekonq::OpenType)));
     connect(m_bookmarksPanel, SIGNAL(itemHovered(QString)), this, SLOT(notifyMessage(QString)));
     connect(m_bookmarksPanel, SIGNAL(destroyed()), rApp, SLOT(saveConfiguration()));
 

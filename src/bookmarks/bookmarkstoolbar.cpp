@@ -164,7 +164,7 @@ BookmarkToolBar::BookmarkToolBar(KToolBar *toolBar, QObject *parent)
 {
     toolBar->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(toolBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenu(QPoint)));
-    connect(rApp->bookmarkManager()->manager(), SIGNAL(changed(QString, QString)), this, SLOT(hideMenu()));
+    connect(rApp->bookmarkManager()->manager(), SIGNAL(changed(QString,QString)), this, SLOT(hideMenu()));
     toolBar->setAcceptDrops(true);
     toolBar->installEventFilter(this);
     toolBar->setShortcutEnabled(false);

@@ -190,7 +190,7 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
     KIO::Job *job = KIO::copy(srcUrl, destUrl, KIO::Overwrite);
     if (item)
     {
-        QObject::connect(job, SIGNAL(percent(KJob*, ulong)), item, SLOT(updateProgress(KJob*, ulong)));
+        QObject::connect(job, SIGNAL(percent(KJob*,ulong)), item, SLOT(updateProgress(KJob*,ulong)));
         QObject::connect(job, SIGNAL(finished(KJob*)), item, SLOT(onFinished(KJob*)));
     }
 

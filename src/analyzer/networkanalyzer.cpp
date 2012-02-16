@@ -68,7 +68,7 @@ NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)
 
     _requestList->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(_mapper, SIGNAL(mapped(QObject*)), this, SLOT(requestFinished(QObject*)));
-    connect(_requestList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), this, SLOT(showItemDetails(QTreeWidgetItem*)));
+    connect(_requestList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(showItemDetails(QTreeWidgetItem*)));
     connect(_requestList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(popupContextMenu(QPoint)));
 }
 
