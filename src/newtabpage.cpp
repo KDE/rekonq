@@ -485,7 +485,7 @@ void NewTabPage::downloadsPage()
         KUrl u = KUrl(item->destinationUrl());
         QString fName = u.fileName();
         QString dir = u.directory();
-        QString file = dir + fName;
+        QString file = dir + QL1C('/') + fName;
 
         KIconLoader *loader = KIconLoader::global();
         QString iconPath = QL1S("file://") + loader->iconPath(KMimeType::iconNameForUrl(u), KIconLoader::Desktop);
@@ -505,12 +505,12 @@ void NewTabPage::downloadsPage()
         if (QFile::exists(file))
         {
             div.appendInside(markup(QL1S("a")));
-            div.lastChild().setAttribute(QL1S("href"), dir);
+            div.lastChild().setAttribute(QL1S("href"), QL1S("file://") + dir);
             div.lastChild().setPlainText(i18n("Open directory"));
 
             div.appendInside(QL1S(" - "));
             div.appendInside(markup(QL1S("a")));
-            div.lastChild().setAttribute(QL1S("href"), file);
+            div.lastChild().setAttribute(QL1S("href"), QL1S("file://") + file);
             div.lastChild().setPlainText(i18n("Open file"));
         }
         else
