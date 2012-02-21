@@ -629,6 +629,8 @@ void MainView::webViewUrlChanged(const QUrl &url)
     int index = indexOf(view->parentWidget());
     if (ReKonfig::hoveringTabOption() == 2)
         tabBar()->setTabToolTip(index, url.toString());
+    
+    rApp->mainWindow()->updateHistoryActions();
 }
 
 
