@@ -136,6 +136,9 @@ UrlBar::UrlBar(QWidget *parent)
     connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString,QString,QString)),
             this, SLOT(updateRightIcons()));
 
+    // bookmark icon
+    connect(rApp->bookmarkManager(), SIGNAL(bookmarksUpdated()),this, SLOT(updateRightIcons()));
+
     _suggestionTimer->setSingleShot(true);
     connect(_suggestionTimer, SIGNAL(timeout()), this, SLOT(suggest()));
 
@@ -421,7 +424,6 @@ void UrlBar::showBookmarkInfo(QPoint pos)
     if (bookmark.isNull())
     {
         bookmark = rApp->bookmarkManager()->owner()->bookmarkCurrentPage();
-        updateRightIcons();
     }
     else
     {
