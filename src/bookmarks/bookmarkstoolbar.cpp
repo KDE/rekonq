@@ -289,7 +289,9 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
     case QEvent::DragEnter:
     {
         QDragEnterEvent *dragEvent = static_cast<QDragEnterEvent*>(event);
-        if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark") || dragEvent->mimeData()->hasFormat("text/uri-list") || dragEvent->mimeData()->hasFormat("text/plain"))
+        if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark")
+            || dragEvent->mimeData()->hasFormat("text/uri-list")
+            || dragEvent->mimeData()->hasFormat("text/plain"))
         {
             QFrame* dropIndicatorWidget = new QFrame(toolBar());
             dropIndicatorWidget->setFrameShape(QFrame::VLine);
@@ -319,7 +321,9 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
     case QEvent::DragMove:
     {
         QDragMoveEvent *dragEvent = static_cast<QDragMoveEvent*>(event);
-        if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark") || dragEvent->mimeData()->hasFormat("text/uri-list") || dragEvent->mimeData()->hasFormat("text/plain"))
+        if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark")
+            || dragEvent->mimeData()->hasFormat("text/uri-list")
+            || dragEvent->mimeData()->hasFormat("text/plain"))
         {
             QAction *overAction = toolBar()->actionAt(dragEvent->pos());
             KBookmarkActionInterface *overActionBK = dynamic_cast<KBookmarkActionInterface*>(overAction);
