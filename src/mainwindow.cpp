@@ -271,6 +271,7 @@ void MainWindow::postLaunch()
     // Bookmarks bar action
     a = actionByName(QL1S("show_bookmarks_toolbar"));
     a->setChecked(XMLGUIBkBar->isVisible());
+    connect(XMLGUIBkBar, SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));
 
     // History panel action
     a = actionByName(QL1S("show_history_panel"));
