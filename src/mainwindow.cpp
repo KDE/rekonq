@@ -244,15 +244,15 @@ void MainWindow::setupToolbars()
     a = new KAction(i18n("Location Bar"), this);
     a->setDefaultWidget(m_view->widgetBar());
     actionCollection()->addAction(QL1S("url_bar"), a);
-
-    KToolBar *mainBar = toolBar("mainToolBar");
-
-    mainBar->show();  // this just to fix reopening rekonq after fullscreen close
 }
 
 
 void MainWindow::postLaunch()
 {
+    // this just to fix reopening rekonq after fullscreen close
+    KToolBar *mainBar = toolBar("mainToolBar");
+    mainBar->show();  
+    
     // Bookmarks Bar
     KToolBar *XMLGUIBkBar = toolBar("bookmarkToolBar");
     if (!XMLGUIBkBar)
@@ -585,6 +585,7 @@ void MainWindow::setupPanels()
     actionCollection()->addAction(QL1S("show_history_panel"), a);
     a->setCheckable(true);
     connect(a, SIGNAL(triggered(bool)), m_historyPanel, SLOT(setVisible(bool)));
+    connect(m_historyPanel, SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));
 
     // STEP 2
     // Setup bookmarks panel
@@ -605,6 +606,7 @@ void MainWindow::setupPanels()
     actionCollection()->addAction(QL1S("show_bookmarks_panel"), a);
     a->setCheckable(true);
     connect(a, SIGNAL(triggered(bool)), m_bookmarksPanel, SLOT(setVisible(bool)));
+    connect(m_bookmarksPanel, SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));
 
     // STEP 3
     // Setup webinspector panel
