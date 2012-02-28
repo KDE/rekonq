@@ -189,17 +189,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     _suggestedFileName.clear();
     _loadingUrl = request.url();
 
-    KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
-    KIO::MetaData metaData = manager->requestMetaData();
-
-    // Get the SSL information sent, if any...
-    if (metaData.contains(QL1S("ssl_in_use")))
-    {
-        WebSslInfo info;
-        info.restoreFrom(metaData.toVariant(), request.url());
-        info.setUrl(request.url());
-        _sslInfo = info;
-    }
+    const bool isMainFrameRequest = (frame == mainFrame());
 
     if (frame)
     {
@@ -232,6 +222,9 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             break;
 
         case QWebPage::NavigationTypeReload:
+            setRequestMetaData( QL1S("cache"), QL1S("reload") );
+            break;
+            
         case QWebPage::NavigationTypeBackOrForward:
         case QWebPage::NavigationTypeOther:
             break;
@@ -241,6 +234,31 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             break;
         }
     }
+
+    // Get the SSL information sent, if any...
+    KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
+    KIO::MetaData metaData = manager->requestMetaData();
+    if (metaData.contains(QL1S("ssl_in_use")))
+    {
+        WebSslInfo info;
+        info.restoreFrom(metaData.toVariant(), request.url());
+        info.setUrl(request.url());
+        _sslInfo = info;
+    }
+
+    if (isMainFrameRequest)
+    {
+        setRequestMetaData(QL1S("main_frame_request"), QL1S("TRUE"));
+        if (_sslInfo.isValid() && !domainSchemeMatch(request.url(), _sslInfo.url()))
+        {
+            _sslInfo = WebSslInfo();
+        }
+    }
+    else
+    {
+        setRequestMetaData(QL1S("main_frame_request"), QL1S("FALSE"));
+    }
+
     return KWebPage::acceptNavigationRequest(frame, request, type);
 }
 
@@ -428,26 +446,31 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     Q_ASSERT(reply);
 
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
+    if (!frame)
+        return;
+    
     const bool isMainFrameRequest = (frame == mainFrame());
-    const bool isLoadingUrlReply = (mainFrame()->url() == reply->url());
 
-    if (isMainFrameRequest
-            && _sslInfo.isValid()
-            && isLoadingUrlReply
-            && !domainSchemeMatch(reply->url(), _sslInfo.url())
-       )
+    // Only deal with non-redirect responses...
+    const QVariant redirectVar = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+    if (redirectVar.isValid())
     {
-        // Reseting cached SSL info...
-        _sslInfo = WebSslInfo();
+        _sslInfo.restoreFrom(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)),
+                              reply->url());
+        return;
     }
-
+    
+    // We are just managing loading URLs errors
+    if (reply->request().url() != _loadingUrl)
+        return;
+    
     // NOTE: These are not all networkreply errors,
     // but just that supported directly by KIO
     switch (reply->error())
     {
 
     case QNetworkReply::NoError:                             // no error. Simple :)
-        if (isMainFrameRequest && isLoadingUrlReply && !_sslInfo.isValid())
+        if (isMainFrameRequest)
         {
             // Obtain and set the SSL information if any...
             _sslInfo.restoreFrom(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)), reply->url());
@@ -459,7 +482,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         // ignore this..
         return;
 
-        // WARNING: This is also typical adblocked element error: IGNORE THIS!
+    // WARNING: This is also typical adblocked element error: IGNORE THIS!
     case QNetworkReply::ContentAccessDenied:                 // access to remote content denied
         break;
 
