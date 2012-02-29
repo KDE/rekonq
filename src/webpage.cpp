@@ -455,8 +455,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     const QVariant redirectVar = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
     if (redirectVar.isValid())
     {
-        _sslInfo.restoreFrom(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)),
-                              reply->url());
+        _sslInfo.restoreFrom(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)), reply->url());
         return;
     }
     

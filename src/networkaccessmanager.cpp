@@ -62,36 +62,13 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
 
     QNetworkReply *reply = 0;
 
+    // set our "nice" accept-language header...
     QNetworkRequest req = request;
-    req.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
     req.setRawHeader("Accept-Language", _acceptLanguage);
-
-    KIO::CacheControl cc = KProtocolManager::cacheControl();
-    switch (cc)
-    {
-    case KIO::CC_CacheOnly:      // Fail request if not in cache.
-        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysCache);
-        break;
-
-    case KIO::CC_Refresh:        // Always validate cached entry with remote site.
-        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork);
-        break;
-
-    case KIO::CC_Reload:         // Always fetch from remote site
-        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-        break;
-
-    case KIO::CC_Cache:          // Use cached entry if available.
-    case KIO::CC_Verify:         // Validate cached entry with remote site if expired.
-    default:
-        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
-        break;
-    }
 
     // Handle GET operations with AdBlock
     if (op == QNetworkAccessManager::GetOperation)
         reply = rApp->adblockManager()->block(req, parentPage);
-
 
     if (!reply)
         reply = AccessManager::createRequest(op, req, outgoingData);
