@@ -450,7 +450,7 @@ void TabBar::resetTabHighlighted(int index)
     if (ReKonfig::animatedTabHighlighting())
         removeAnimation(index);
 
-    setTabTextColor(index, palette().text().color());
+    setTabTextColor(index, KColorScheme(QPalette::Active, KColorScheme::Window).foreground(KColorScheme::NormalText).color());
 }
 
 
