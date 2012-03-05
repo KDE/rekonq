@@ -170,8 +170,6 @@ MainWindow::MainWindow()
     // no more status bar..
     setStatusBar(0);
 
-    setupBookmarksAndToolsShortcuts();
-
     // setting popup notification
     connect(rApp, SIGNAL(focusChanged(QWidget*,QWidget*)), m_popup, SLOT(hide()));
     m_popup->setAutoFillBackground(true);
@@ -249,6 +247,8 @@ void MainWindow::setupToolbars()
 
 void MainWindow::postLaunch()
 {
+    setupBookmarksAndToolsShortcuts();
+    
     // this just to fix reopening rekonq after fullscreen close
     KToolBar *mainBar = toolBar("mainToolBar");
     mainBar->show();  
@@ -1538,7 +1538,10 @@ void MainWindow::setupBookmarksAndToolsShortcuts()
 
         // HACK: set button widget in rekonq menu
         m_rekonqMenu->setButtonWidget(toolsButton);
+        return;
     }
+    
+    kWarning() << "oh oh, something went wrong with rekonq tools button...";
 }
 
 
