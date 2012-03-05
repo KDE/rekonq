@@ -251,7 +251,15 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(a);
 
         menu.addSeparator();
-        menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
+
+        // Don't show dots if we are NOT going to ask for download path
+        a = pageAction(KWebPage::DownloadLinkToDisk);
+        if (ReKonfig::askDownloadPath())
+            a->setText(i18n("Save Link..."));
+        else
+            a->setText(i18n("Save Link"));
+
+        menu.addAction(a);
         menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
     }
 
