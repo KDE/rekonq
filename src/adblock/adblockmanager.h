@@ -160,14 +160,18 @@ public:
     QNetworkReply *block(const QNetworkRequest &request, WebPage *page);
     void applyHidingRules(WebPage *page);
 
-    void addCustomRule(const QString &);
+    void addCustomRule(const QString &, bool reloadPage = true);
     void clearElementsLists();
 
 private:
     void updateSubscription(int);
     bool subscriptionFileExists(int);
 
-    void loadRules(const QString &);
+    // load a file rule, given a path
+    void loadRules(const QString &rulesFilePath);
+
+    // load a single rule
+    void loadRuleString(const QString &stringRule);
 
 private Q_SLOTS:
     void loadSettings();

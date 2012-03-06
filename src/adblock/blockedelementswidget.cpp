@@ -40,6 +40,7 @@
 BlockedElementsWidget::BlockedElementsWidget(QObject *manager, QWidget *parent)
     : QWidget(parent)
     , _manager(manager)
+    , _reloadPage(false)
 {
     setupUi(this);
 }
@@ -102,5 +103,7 @@ void BlockedElementsWidget::unblockElement()
     buttonClicked->setIcon(KIcon("dialog-ok"));
 
     AdBlockManager *m = qobject_cast<AdBlockManager *>(_manager);
-    m->addCustomRule("@@" + urlString);
+    m->addCustomRule(QL1S("@@") + urlString, false);
+
+    _reloadPage = true;
 }

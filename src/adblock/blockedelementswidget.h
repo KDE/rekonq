@@ -48,11 +48,14 @@ public:
     void setBlockedElements(const QStringList &);
     void setHidedElements(int);
 
+    bool pageNeedsReload() { return _reloadPage; };
+    
 private Q_SLOTS:
     void unblockElement();
 
 private:
     QObject *_manager;
+    bool _reloadPage;
 };
 
 #endif // BLOCKED_ELEMENTS_WIDGET_H

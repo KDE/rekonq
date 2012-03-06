@@ -101,8 +101,6 @@ void AdBlockManager::loadSettings()
     _blackList.clear();
     _hideList.clear();
 
-    clearElementsLists();
-
     KConfigGroup settingsGroup(_adblockConfig, "Settings");
     _isAdblockEnabled = settingsGroup.readEntry("adBlockEnabled", false);
     kDebug() << "ADBLOCK ENABLED = " << _isAdblockEnabled;
@@ -170,52 +168,57 @@ void AdBlockManager::loadRules(const QString &rulesFilePath)
     while (!in.atEnd())
     {
         QString stringRule = in.readLine();
-
-        // ! rules are comments
-        if (stringRule.startsWith('!'))
-            continue;
-
-        // [ rules are ABP info
-        if (stringRule.startsWith('['))
-            continue;
-
-        // empty rules are just dangerous..
-        // (an empty rule in whitelist allows all, in blacklist blocks all..)
-        if (stringRule.isEmpty())
-            continue;
-
-        // white rules
-        if (stringRule.startsWith(QL1S("@@")))
-        {
-            const QString filter = stringRule.mid(2);
-            if (_hostWhiteList.tryAddFilter(filter))
-                continue;
-
-            AdBlockRule rule(filter);
-            _whiteList << rule;
-            continue;
-        }
-
-        // hide (CSS) rules
-        if (stringRule.startsWith(QL1S("##")))
-        {
-            _hideList << stringRule.mid(2);
-            continue;
-        }
-
-        // TODO implement domain-specific hiding
-        if (stringRule.contains(QL1S("##")))
-            continue;
-
-        if (_hostBlackList.tryAddFilter(stringRule))
-            continue;
-
-        AdBlockRule rule(stringRule);
-        _blackList << rule;
+        loadRuleString(stringRule);
     }
 }
 
 
+void AdBlockManager::loadRuleString(const QString &stringRule)
+{
+    // ! rules are comments
+    if (stringRule.startsWith('!'))
+        return;
+
+    // [ rules are ABP info
+    if (stringRule.startsWith('['))
+        return;
+
+    // empty rules are just dangerous..
+    // (an empty rule in whitelist allows all, in blacklist blocks all..)
+    if (stringRule.isEmpty())
+        return;
+
+    // white rules
+    if (stringRule.startsWith(QL1S("@@")))
+    {
+        const QString filter = stringRule.mid(2);
+        if (_hostWhiteList.tryAddFilter(filter))
+            return;
+
+        AdBlockRule rule(filter);
+        _whiteList << rule;
+        return;
+    }
+
+    // hide (CSS) rules
+    if (stringRule.startsWith(QL1S("##")))
+    {
+        _hideList << stringRule.mid(2);
+        return;
+    }
+
+    // TODO implement domain-specific hiding
+    if (stringRule.contains(QL1S("##")))
+        return;
+
+    if (_hostBlackList.tryAddFilter(stringRule))
+        return;
+
+    AdBlockRule rule(stringRule);
+    _blackList << rule;
+}
+
+    
 QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *page)
 {
     if (!_isAdblockEnabled)
@@ -383,13 +386,13 @@ void AdBlockManager::showSettings()
 }
 
 
-void AdBlockManager::addCustomRule(const QString &stringRule)
+void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
 {
     // save rule in local filters
     QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
 
     QFile ruleFile(localRulesFilePath);
-    if (!ruleFile.open(QFile::WriteOnly | QFile::Text))
+    if (!ruleFile.open(QFile::WriteOnly | QFile::Append))
     {
         kDebug() << "Unable to open rule file" << localRulesFilePath;
         return;
@@ -398,18 +401,21 @@ void AdBlockManager::addCustomRule(const QString &stringRule)
     QTextStream out(&ruleFile);
     out << stringRule << '\n';
 
+    ruleFile.close();
+    
     // load it
-    AdBlockRule rule(stringRule);
-    _blackList << rule;
+    loadRuleString(stringRule);
 
-    emit reloadCurrentPage();
+    // eventually reload page
+    if (reloadPage)
+        emit reloadCurrentPage();
 }
 
 
 void AdBlockManager::showBlockedItemDialog()
 {
     QPointer<KDialog> dialog = new KDialog();
-    dialog->setCaption(i18nc("@title:window", "Blocked & hided elements"));
+    dialog->setCaption(i18nc("@title:window", "Blocked elements"));
     dialog->setButtons(KDialog::Ok);
 
     BlockedElementsWidget widget(this);
@@ -419,6 +425,9 @@ void AdBlockManager::showBlockedItemDialog()
     dialog->setMainWidget(&widget);
     dialog->exec();
 
+    if (widget.pageNeedsReload())
+        emit reloadCurrentPage();
+    
     dialog->deleteLater();
 }
 
