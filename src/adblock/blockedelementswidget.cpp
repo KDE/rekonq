@@ -92,18 +92,25 @@ void BlockedElementsWidget::unblockElement()
     if (!buttonClicked)
         return;
 
-    QString newText = i18n("Unblocked");
-    if (buttonClicked->text() == newText)
-        return;
-
-    QString urlString = buttonClicked->property("URLTOUNBLOCK").toString();
+    QString urlString = QL1S("@@") + buttonClicked->property("URLTOUNBLOCK").toString();
     kDebug() << "urlString: " << urlString;
 
-    buttonClicked->setText(newText);
-    buttonClicked->setIcon(KIcon("dialog-ok"));
+    QString newText = i18n("Unblocked");
+    QString buttonText = buttonClicked->text().remove('&');
+    if (buttonText == newText)
+    {
+        buttonClicked->setText(i18n("Unblock"));
+        buttonClicked->setIcon(KIcon("dialog-ok-apply"));
 
-    AdBlockManager *m = qobject_cast<AdBlockManager *>(_manager);
-    m->addCustomRule(QL1S("@@") + urlString, false);
+        _rulesToAdd.removeOne(urlString);
+    }
+    else
+    {
+        buttonClicked->setText(newText);
+        buttonClicked->setIcon(KIcon("dialog-ok"));
 
+        _rulesToAdd << urlString;
+    }
+    
     _reloadPage = true;
 }

@@ -425,6 +425,11 @@ void AdBlockManager::showBlockedItemDialog()
     dialog->setMainWidget(&widget);
     dialog->exec();
 
+    Q_FOREACH(const QString &r, widget.rulesToAdd())
+    {
+        addCustomRule(r);
+    }
+    
     if (widget.pageNeedsReload())
         emit reloadCurrentPage();
     

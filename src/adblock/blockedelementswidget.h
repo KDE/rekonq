@@ -49,13 +49,17 @@ public:
     void setHidedElements(int);
 
     bool pageNeedsReload() { return _reloadPage; };
+
+    QStringList rulesToAdd() { return _rulesToAdd; };
     
 private Q_SLOTS:
     void unblockElement();
 
 private:
     QObject *_manager;
+
     bool _reloadPage;
+    QStringList _rulesToAdd;
 };
 
 #endif // BLOCKED_ELEMENTS_WIDGET_H
