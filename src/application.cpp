@@ -450,16 +450,15 @@ SyncManager *Application::syncManager()
     return m_syncManager.data();
 }
 
-
-void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
+WebTab* Application::loadUrl(const KUrl& url, QWebHistory* webHistory, const Rekonq::OpenType& type)
 {
     if (url.isEmpty())
-        return;
+        return 0;
 
     if (!url.isValid())
     {
         KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url(KUrl::RemoveTrailingSlash)));
-        return;
+        return 0;
     }
 
     Rekonq::OpenType newType = type;
@@ -517,6 +516,24 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         FilterUrlJob *job = new FilterUrlJob(view, url.pathOrUrl(), this);
         Weaver::instance()->enqueue(job);
     }
+    
+    if (webHistory)
+    {
+        QByteArray historyBytes;
+        QDataStream historyStream(&historyBytes, QIODevice::ReadWrite);        
+        
+        historyStream << *webHistory;
+        historyStream.device()->seek(0);
+        historyStream >> *(view->history());
+    }
+    
+    return tab;
+}
+
+
+void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
+{
+    Q_UNUSED(loadUrl(url, 0, type));
 }
 
 

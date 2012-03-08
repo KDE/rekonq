@@ -43,6 +43,7 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QWeakPointer>
 
+class QWebHistory;
 
 // Forward Declarations
 class AdBlockManager;
@@ -55,6 +56,7 @@ class OpenSearchManager;
 class SessionManager;
 class UserAgentManager;
 class SyncManager;
+class WebTab;
 
 class KAction;
 
@@ -104,6 +106,8 @@ public:
     {
         return _privateBrowsingAction;
     };
+    
+    WebTab *loadUrl(const KUrl& url, QWebHistory *webHistory, const Rekonq::OpenType& type = Rekonq::CurrentTab);
 
 public Q_SLOTS:
     /**
