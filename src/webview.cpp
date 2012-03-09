@@ -894,9 +894,21 @@ void WebView::inspect()
 }
 
 
-void WebView::loadUrlInNewTab(const KUrl &url)
+void WebView::loadUrlInNewTab(const KUrl &u)
 {
-    emit loadUrl(url, Rekonq::NewTab);
+    QNetworkRequest req(u);
+    req.setRawHeader(QByteArray("Referer"), url().toEncoded());
+    
+    WebTab *w = 0;
+    if (ReKonfig::openLinksInNewWindow())
+    {
+        w = rApp->newMainWindow()->mainView()->currentWebTab();
+    }
+    else
+    {
+        w = rApp->mainWindow()->mainView()->newWebTab(!ReKonfig::openNewTabsInBackground());
+    }
+    w->view()->load(req);
 }
 
 
