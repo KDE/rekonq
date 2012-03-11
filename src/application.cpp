@@ -199,7 +199,8 @@ int Application::newInstance()
     {
         isFirstLoad = false;
 
-        return exitValue;
+        kDebug() << "EXIT VALUE: " << exitValue;
+        return 0;
     }
 
     if (isRekonqCrashed && isFirstLoad)
@@ -335,7 +336,8 @@ int Application::newInstance()
     KStartupInfo::appStarted();
     isFirstLoad = false;
 
-    return exitValue;
+    kDebug() << "EXIT VALUE: " << exitValue;
+    return 0;
 }
 
 
