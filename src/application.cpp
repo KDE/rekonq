@@ -46,6 +46,7 @@
 #include "mainview.h"
 #include "mainwindow.h"
 #include "opensearchmanager.h"
+#include "searchengine.h"
 #include "sessionmanager.h"
 #include "syncmanager.h"
 #include "stackedurlbar.h"
@@ -318,6 +319,9 @@ int Application::newInstance()
 
     if (isFirstLoad)
     {
+        if (ReKonfig::checkDefaultSearchEngine() && !isRekonqCrashed && SearchEngine::defaultEngine().isNull())
+            QTimer::singleShot(2000, mainWindow()->currentTab(), SLOT(showSearchEngineBar()));
+
         // updating rekonq configuration
         updateConfiguration();
 

@@ -37,6 +37,7 @@
 #include <KConfigGroup>
 #include <KServiceTypeTrader>
 
+
 struct SearchEnginePrivate
 {
     SearchEnginePrivate() : isLoaded(false) {}
@@ -46,7 +47,9 @@ struct SearchEnginePrivate
     KService::Ptr defaultEngine;
 };
 
+
 K_GLOBAL_STATIC(SearchEnginePrivate, d)
+
 
 void SearchEngine::reload()
 {

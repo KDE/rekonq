@@ -24,6 +24,7 @@ SET( rekonq_KDEINIT_SRCS
     previewselectorbar.cpp
     protocolhandler.cpp
     rekonqmenu.cpp
+    searchenginebar.cpp
     sessionmanager.cpp
     sslinfodialog.cpp
     tabpreviewpopup.cpp

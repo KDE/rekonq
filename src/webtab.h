@@ -104,6 +104,8 @@ private Q_SLOTS:
 
     void showMessageBar();
     void loadFinished();
+    
+    void showSearchEngineBar();
 
 private:
     KUrl extractOpensearchUrl(QWebElement e);

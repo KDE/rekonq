@@ -39,6 +39,7 @@
 #include "opensearchmanager.h"
 #include "previewselectorbar.h"
 #include "rsswidget.h"
+#include "searchenginebar.h"
 #include "sessionmanager.h"
 #include "syncmanager.h"
 #include "urlbar.h"
@@ -253,6 +254,7 @@ void WebTab::showRSSInfo(const QPoint &pos)
     widget->showAt(pos);
 }
 
+
 void WebTab::hideSelectorBar()
 {
     m_previewSelectorBar.data()->animatedHide();
@@ -341,8 +343,7 @@ void WebTab::openSearchEngineAdded()
 void WebTab::showMessageBar()
 {
     MessageBar *msgBar = new MessageBar(i18n("It seems rekonq was not closed properly. Do you want "
-                                        "to restore the last saved session?")
-                                        , this);
+                                        "to restore the last saved session?"), this);
 
     qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, msgBar);
     msgBar->animatedShow();
@@ -362,4 +363,13 @@ void WebTab::loadFinished()
     // add page to history
     QString pageTitle = (page() && page()->isOnRekonqPage()) ? url().url() : m_webView->title();
     rApp->historyManager()->addHistoryEntry(url(), pageTitle);
+}
+
+
+void WebTab::showSearchEngineBar()
+{
+    SearchEngineBar *seBar = new SearchEngineBar(this);
+
+    qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, seBar);
+    seBar->animatedShow();
 }

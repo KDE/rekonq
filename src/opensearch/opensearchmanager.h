@@ -46,6 +46,7 @@
 // Forward Declarations
 class OpenSearchEngine;
 
+
 /**
  * This class acts as a proxy between the SearchBar plugin
  * and the individual suggestion engine.

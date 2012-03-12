@@ -131,6 +131,7 @@ void OpenSearchManager::addOpenSearchEngine(const KUrl &url, const QString &titl
     connect(m_currentJob, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
 }
 
+
 void OpenSearchManager::requestSuggestion(const QString &searchText)
 {
     if (!m_activeEngine)

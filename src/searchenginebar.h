@@ -2,8 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,35 +24,32 @@
 * ============================================================ */
 
 
-#ifndef SEARCHENGINE_H
-#define SEARCHENGINE_H
-
+#ifndef SEARCH_ENGINE_BAR_H
+#define SEARCH_ENGINE_BAR_H
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KService>
-
-//Qt Includes
-#include <QString>
+#include <KMessageWidget>
 
 
-namespace SearchEngine
+class REKONQ_TESTS_EXPORT SearchEngineBar : public KMessageWidget
 {
-    void reload();
+    Q_OBJECT
+
+public:
+    explicit SearchEngineBar(QWidget *parent);
+
+private Q_SLOTS:
+    void hideAndDelete();
+    void slotAccepted();
+    void slotRejected();
     
-    QString delimiter();
+Q_SIGNALS:
+    void accepted();
+    void rejected();
+};
 
-    KService::Ptr defaultEngine();
 
-    KService::List favorites();
-
-    KService::Ptr fromString(const QString &text);
-
-    QString buildQuery(KService::Ptr engine, const QString &text);
-
-    QString extractQuery(const QString &text);
-}
-
-#endif
+#endif // SEARCH_ENGINE_BAR_H
