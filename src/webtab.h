@@ -58,17 +58,12 @@ public:
     explicit WebTab(QWidget *parent = 0);
     ~WebTab();
 
-    WebView *view() const
-    {
-        return m_webView;
-    }
-    UrlBar *urlBar() const
+    WebView *view();
+    WebPage *page();
+    
+    inline UrlBar *urlBar() const
     {
         return m_urlBar;
-    }
-    WebPage *page() const
-    {
-        return view()->page();
     }
 
     inline int progress() const
@@ -105,15 +100,17 @@ private Q_SLOTS:
 
     void showMessageBar();
 
+private:
+    KUrl extractOpensearchUrl(QWebElement e);
+
 Q_SIGNALS:
     void loadProgressing();
     void titleChanged(const QString &);
 
 private:
-    KUrl extractOpensearchUrl(QWebElement e);
+    WebView *m_webView;
 
-    WebView *const m_webView;
-    UrlBar *const m_urlBar;
+    UrlBar *m_urlBar;
 
     int m_progress;
 

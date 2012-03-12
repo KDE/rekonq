@@ -60,7 +60,7 @@
 
 WebTab::WebTab(QWidget *parent)
     : QWidget(parent)
-    , m_webView(new WebView(this))
+    , m_webView(0)
     , m_urlBar(new UrlBar(this))
     , m_progress(0)
     , m_part(0)
@@ -71,13 +71,13 @@ WebTab::WebTab(QWidget *parent)
     l->setMargin(0);
     l->setSpacing(0);
 
-    l->addWidget(m_webView);
-    m_webView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    l->addWidget(view());
+    view()->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // fix focus handling
-    setFocusProxy(m_webView);
+    setFocusProxy(view());
 
-    KWebWallet *wallet = m_webView->page()->wallet();
+    KWebWallet *wallet = page()->wallet();
 
     if (wallet)
     {
@@ -85,12 +85,12 @@ WebTab::WebTab(QWidget *parent)
                 this, SLOT(createWalletBar(QString,QUrl)));
     }
 
-    connect(m_webView, SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
-    connect(m_webView, SIGNAL(loadStarted()), this, SLOT(resetProgress()));
-    connect(m_webView, SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
+    connect(view(), SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
+    connect(view(), SIGNAL(loadStarted()), this, SLOT(resetProgress()));
+    connect(view(), SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
 
     // Session Manager
-    connect(m_webView, SIGNAL(loadFinished(bool)), rApp->sessionManager(), SLOT(saveSession()));
+    connect(view(), SIGNAL(loadFinished(bool)), rApp->sessionManager(), SLOT(saveSession()));
 }
 
 
@@ -100,6 +100,24 @@ WebTab::~WebTab()
     m_previewSelectorBar.clear();
 
     delete m_part;
+    delete m_urlBar;
+    delete m_webView;
+}
+
+
+WebView *WebTab::view()
+{
+    if (!m_webView)
+    {
+        m_webView = new WebView(this);
+    }
+    return m_webView;
+}
+
+
+WebPage *WebTab::page()
+{
+    return view()->page();
 }
 
 

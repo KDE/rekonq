@@ -65,6 +65,7 @@
 
 WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
+    , m_page(0)
     , m_autoScrollTimer(new QTimer(this))
     , m_verticalAutoScrollSpeed(0)
     , m_horizontalAutoScrollSpeed(0)
@@ -77,11 +78,8 @@ WebView::WebView(QWidget* parent)
     , m_accessKeysPressed(false)
     , m_accessKeysActive(false)
 {
-    WebPage *page = new WebPage(this);
-    setPage(page);
-
     // download system
-    connect(this, SIGNAL(linkShiftClicked(KUrl)), page, SLOT(downloadUrl(KUrl)));
+    connect(this, SIGNAL(linkShiftClicked(KUrl)), page(), SLOT(downloadUrl(KUrl)));
 
     // middle click || ctrl + click signal
     connect(this, SIGNAL(linkMiddleOrCtrlClicked(KUrl)), this, SLOT(loadUrlInNewTab(KUrl)));
@@ -132,9 +130,12 @@ void WebView::changeWindowIcon()
 
 WebPage *WebView::page()
 {
-    WebPage *const page = qobject_cast<WebPage *>(KWebView::page());
-    Q_ASSERT(page);
-    return page;
+    if (!m_page)
+    {
+        m_page = new WebPage(this);
+        setPage(m_page);
+    }
+    return m_page;
 }
 
 

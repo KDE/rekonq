@@ -52,35 +52,15 @@ public:
     explicit WebPage(QWidget *parent = 0);
     ~WebPage();
 
-    inline bool hasNetworkAnalyzerEnabled() const
-    {
-        return _networkAnalyzer;
-    };
+    bool hasNetworkAnalyzerEnabled() const;
+    void enableNetworkAnalyzer(bool b);
 
-    inline void enableNetworkAnalyzer(bool b)
-    {
-        _networkAnalyzer = b;
-    };
+    bool isOnRekonqPage() const;
+    void setIsOnRekonqPage(bool b);
 
-    inline bool isOnRekonqPage() const
-    {
-        return _isOnRekonqPage;
-    };
+    KUrl loadingUrl();
 
-    inline void setIsOnRekonqPage(bool b)
-    {
-        _isOnRekonqPage = b;
-    };
-
-    inline KUrl loadingUrl()
-    {
-        return _loadingUrl;
-    };
-
-    inline QString suggestedFileName()
-    {
-        return _suggestedFileName;
-    };
+    QString suggestedFileName();
 
     bool hasSslValid() const;
 
