@@ -137,7 +137,7 @@ UrlBar::UrlBar(QWidget *parent)
             this, SLOT(updateRightIcons()));
 
     // bookmark icon
-    connect(rApp->bookmarkManager(), SIGNAL(bookmarksUpdated()),this, SLOT(updateRightIcons()));
+    connect(rApp->bookmarkManager(), SIGNAL(bookmarksUpdated()), this, SLOT(updateRightIcons()));
 
     _suggestionTimer->setSingleShot(true);
     connect(_suggestionTimer, SIGNAL(timeout()), this, SLOT(suggest()));
@@ -151,6 +151,8 @@ UrlBar::~UrlBar()
     _suggestionTimer->stop();
     activateSuggestions(false);
     _box.clear();
+
+    disconnect();
 }
 
 
@@ -428,7 +430,7 @@ void UrlBar::showBookmarkInfo(QPoint pos)
     else
     {
         BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
-        connect(widget, SIGNAL(updateIcon()), this, SLOT(updateRightIcons()));
+//         connect(widget, SIGNAL(updateIcon()), this, SLOT(updateRightIcons()));
         widget->showAt(pos);
     }
 }

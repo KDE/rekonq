@@ -175,6 +175,42 @@ WebPage::~WebPage()
 }
 
 
+bool WebPage::hasNetworkAnalyzerEnabled() const
+{
+    return _networkAnalyzer;
+};
+
+
+void WebPage::enableNetworkAnalyzer(bool b)
+{
+    _networkAnalyzer = b;
+};
+
+
+bool WebPage::isOnRekonqPage() const
+{
+    return _isOnRekonqPage;
+};
+
+
+void WebPage::setIsOnRekonqPage(bool b)
+{
+    _isOnRekonqPage = b;
+};
+
+
+KUrl WebPage::loadingUrl()
+{
+    return _loadingUrl;
+};
+
+
+QString WebPage::suggestedFileName()
+{
+    return _suggestedFileName;
+};
+
+    
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
     if (_isOnRekonqPage)
