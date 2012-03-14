@@ -101,7 +101,7 @@
    <item>
     <widget class="QLabel" name="HidedLabel">
      <property name="text">
-      <string>&lt;b&gt;Hided elements&lt;/b&gt;</string>
+      <string>&lt;b&gt;Hidden elements&lt;/b&gt;</string>
      </property>
     </widget>
    </item>

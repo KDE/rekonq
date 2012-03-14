@@ -80,7 +80,7 @@ void BlockedElementsWidget::setHidedElements(int n)
 {
     AdBlockManager *m = qobject_cast<AdBlockManager *>(_manager);
     if (m->isHidingElements())
-        label->setText(i18n("In this page there are %1 hided elements.", QString::number(n)));
+        label->setText(i18np("There is %1 hidden element in this page.", "There are %1 hidden elements in this page.", QString::number(n)));
     else
         label->setText(i18n("Hiding elements is disabled."));
 }
