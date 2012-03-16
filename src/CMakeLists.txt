@@ -11,7 +11,6 @@ SET( rekonq_KDEINIT_SRCS
     clicktoflash.cpp
     downloaditem.cpp
     downloadmanager.cpp
-    filterurljob.cpp
     findbar.cpp
     icondownloader.cpp
     iconmanager.cpp
@@ -170,7 +169,6 @@ TARGET_LINK_LIBRARIES ( kdeinit_rekonq
                         ${KDE4_KDEUI_LIBS}
                         ${KDE4_KIO_LIBS}
                         ${KDE4_KPARTS_LIBS}
-                        ${KDE4_THREADWEAVER_LIBRARIES}
 )
 
 

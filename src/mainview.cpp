@@ -414,9 +414,9 @@ void MainView::cloneTab(int index)
         return;
 
     KUrl url = webTab(index)->url();
-    QWebHistory * history = webTab(index)->view()->history();
+    QWebHistory* history = webTab(index)->view()->history();
 
-    rApp->loadUrl(url, history, Rekonq::NewTab);
+    rApp->mainWindow()->loadUrl(url, Rekonq::NewTab, history);
 }
 
 

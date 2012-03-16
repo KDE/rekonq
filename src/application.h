@@ -60,11 +60,6 @@ class WebTab;
 
 class KAction;
 
-namespace ThreadWeaver
-{
-class Job;
-}
-
 
 typedef QList< QWeakPointer<MainWindow> > MainWindowList;
 
@@ -107,8 +102,6 @@ public:
         return _privateBrowsingAction;
     };
     
-    WebTab *loadUrl(const KUrl& url, QWebHistory *webHistory, const Rekonq::OpenType& type = Rekonq::CurrentTab);
-
 public Q_SLOTS:
     /**
      * Save application's configuration
@@ -117,6 +110,12 @@ public Q_SLOTS:
      */
     void saveConfiguration() const;
 
+    /**
+     * @short load url
+     *
+     * @param url The url to load
+     * @param type the type where loading the url. @see Rekonq::OpenType
+     */
     void loadUrl(const KUrl& url,
                  const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );
@@ -129,8 +128,6 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event);
 
 private Q_SLOTS:
-    void loadResolvedUrl(ThreadWeaver::Job *);
-
     void updateConfiguration();
 
     // the general place to set private browsing

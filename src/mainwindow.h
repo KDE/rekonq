@@ -50,7 +50,10 @@ class WebInspectorPanel;
 class WebTab;
 class ZoomBar;
 
+class KUriFilter;
+
 class QWebFrame;
+class QWebHistory;
 class QLabel;
 
 
@@ -67,6 +70,11 @@ public:
     MainWindow();
     ~MainWindow();
 
+    
+    static KUriFilter *s_uriFilter;
+    static KUrl filterUrlToLoad(const KUrl &url);
+    
+
     inline MainView *mainView() const
     {
         return m_view;
@@ -82,6 +90,10 @@ public:
 
     QString selectedText() const;
 
+    void loadCheckedUrl(const KUrl& url,
+                    const Rekonq::OpenType& type = Rekonq::CurrentTab,
+                    QWebHistory *webHistory = 0
+                    );
 private:
     void setupBookmarksAndToolsShortcuts();
     void setupActions();
@@ -90,6 +102,11 @@ private:
     void setupPanels();
 
 public Q_SLOTS:
+    void loadUrl(const KUrl& url,
+                 const Rekonq::OpenType& type = Rekonq::CurrentTab,
+                 QWebHistory *webHistory = 0
+                );
+
     void openDownloadsPage();
     void homePage();
 

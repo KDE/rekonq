@@ -40,7 +40,6 @@
 #include "adblockmanager.h"
 #include "bookmarkmanager.h"
 #include "downloadmanager.h"
-#include "filterurljob.h"
 #include "historymanager.h"
 #include "iconmanager.h"
 #include "mainview.h"
@@ -80,9 +79,6 @@ Application::Application()
     : KUniqueApplication()
     , _privateBrowsingAction(0)
 {
-    connect(Weaver::instance(), SIGNAL(jobDone(ThreadWeaver::Job*)),
-            this, SLOT(loadResolvedUrl(ThreadWeaver::Job*)));
-
     _privateBrowsingAction = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
     _privateBrowsingAction->setCheckable(true);
     connect(_privateBrowsingAction, SIGNAL(triggered(bool)), this, SLOT(setPrivateBrowsingMode(bool)));
@@ -456,15 +452,16 @@ SyncManager *Application::syncManager()
     return m_syncManager.data();
 }
 
-WebTab* Application::loadUrl(const KUrl& url, QWebHistory* webHistory, const Rekonq::OpenType& type)
+
+void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 {
     if (url.isEmpty())
-        return 0;
+        return;
 
     if (!url.isValid())
     {
         KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url(KUrl::RemoveTrailingSlash)));
-        return 0;
+        return;
     }
 
     Rekonq::OpenType newType = type;
@@ -472,74 +469,23 @@ WebTab* Application::loadUrl(const KUrl& url, QWebHistory* webHistory, const Rek
     if (url.url().contains("about:") && url.url().contains("/"))
         newType = Rekonq::CurrentTab;
 
-    // first, create the webview(s) to not let hangs UI..
-    WebTab *tab = 0;
     MainWindow *w = 0;
-    w = (newType == Rekonq::NewWindow)
-        ? newMainWindow()
-        : mainWindow();
+    if (newType == Rekonq::NewWindow
+        || (newType == Rekonq::NewTab && ReKonfig::openLinksInNewWindow()))
+    {
+        w = newMainWindow();
+        newType = Rekonq::CurrentTab;
+    }
+    else
+    {
+        w = mainWindow();
+    }
 
     // be SURE window exists
     if (!w)
         w = newMainWindow();
 
-    switch (newType)
-    {
-    case Rekonq::NewTab:
-        if (ReKonfig::openLinksInNewWindow())
-        {
-            w = newMainWindow();
-            tab = w->mainView()->currentWebTab();
-        }
-        else
-        {
-            tab = w->mainView()->newWebTab(!ReKonfig::openNewTabsInBackground());
-        }
-        break;
-    case Rekonq::NewFocusedTab:
-        tab = w->mainView()->newWebTab(true);
-        break;
-    case Rekonq::NewBackTab:
-        tab = w->mainView()->newWebTab(false);
-        break;
-    case Rekonq::NewWindow:
-    case Rekonq::CurrentTab:
-        tab = w->mainView()->currentWebTab();
-        break;
-    };
-
-
-    // rapidly show first loading url..
-    int tabIndex = w->mainView()->indexOf(tab);
-    Q_ASSERT(tabIndex != -1);
-    UrlBar *barForTab = qobject_cast<UrlBar *>(w->mainView()->widgetBar()->widget(tabIndex));
-    barForTab->activateSuggestions(false);
-    barForTab->setQUrl(url);
-
-    WebView *view = tab->view();
-    if (view)
-    {
-        FilterUrlJob *job = new FilterUrlJob(view, url.pathOrUrl(), this);
-        Weaver::instance()->enqueue(job);
-    }
-    
-    if (webHistory)
-    {
-        QByteArray historyBytes;
-        QDataStream historyStream(&historyBytes, QIODevice::ReadWrite);        
-        
-        historyStream << *webHistory;
-        historyStream.device()->seek(0);
-        historyStream >> *(view->history());
-    }
-    
-    return tab;
-}
-
-
-void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
-{
-    Q_UNUSED(loadUrl(url, 0, type));
+    w->loadCheckedUrl(url, newType);
 }
 
 
@@ -579,22 +525,6 @@ AdBlockManager *Application::adblockManager()
         m_adblockManager = new AdBlockManager;
     }
     return m_adblockManager.data();
-}
-
-
-void Application::loadResolvedUrl(ThreadWeaver::Job *job)
-{
-    FilterUrlJob *threadedJob = static_cast<FilterUrlJob *>(job);
-    KUrl url = threadedJob->url();
-    WebView *view = threadedJob->view();
-
-    if (view)
-    {
-        view->load(url);
-    }
-
-    // Bye and thanks :)
-    delete threadedJob;
 }
 
 
