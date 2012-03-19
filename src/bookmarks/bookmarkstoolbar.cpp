@@ -289,7 +289,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
     case QEvent::DragEnter:
     {
         QDragEnterEvent *dragEvent = static_cast<QDragEnterEvent*>(event);
-        if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark")
+        if (dragEvent->mimeData()->hasFormat(BookmarkManager::bookmark_mime_type())
             || dragEvent->mimeData()->hasFormat("text/uri-list")
             || dragEvent->mimeData()->hasFormat("text/plain"))
         {
@@ -321,7 +321,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
     case QEvent::DragMove:
     {
         QDragMoveEvent *dragEvent = static_cast<QDragMoveEvent*>(event);
-        if (dragEvent->mimeData()->hasFormat("application/rekonq-bookmark")
+        if (dragEvent->mimeData()->hasFormat(BookmarkManager::bookmark_mime_type())
             || dragEvent->mimeData()->hasFormat("text/uri-list")
             || dragEvent->mimeData()->hasFormat("text/plain"))
         {
@@ -400,9 +400,9 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             m_checkedAction->setChecked(false);
         }
 
-        if (dropEvent->mimeData()->hasFormat("application/rekonq-bookmark"))
+        if (dropEvent->mimeData()->hasFormat(BookmarkManager::bookmark_mime_type()))
         {
-            QByteArray addresses = dropEvent->mimeData()->data("application/rekonq-bookmark");
+            QByteArray addresses = dropEvent->mimeData()->data(BookmarkManager::bookmark_mime_type());
             bookmark =  rApp->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
             if (bookmark.isNull())
                 return false;
@@ -589,7 +589,7 @@ void BookmarkToolBar::startDrag()
         KBookmark bookmark = action->bookmark();
 
         QByteArray address = bookmark.address().toLatin1();
-        mimeData->setData("application/rekonq-bookmark", address);
+        mimeData->setData(BookmarkManager::bookmark_mime_type(), address);
         bookmark.populateMimeData(mimeData);
 
         QDrag *drag = new QDrag(toolBar());

@@ -126,6 +126,11 @@ public:
     void openFolderinTabs(const KBookmarkGroup &bm);
     void emitChanged();
 
+    static inline QString bookmark_mime_type()
+    {
+        return QL1S("application/x-rekonq-bookmark");
+    }
+
 public Q_SLOTS:
     /**
      * @short Waits for signal that the group with the address has been modified by the caller.

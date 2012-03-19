@@ -512,9 +512,9 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 void WebView::dropEvent(QDropEvent *event)
 {
     bool isEditable = page()->frameAt(event->pos())->hitTestContent(event->pos()).isContentEditable();
-    if (event->mimeData()->hasFormat("application/rekonq-bookmark"))
+    if (event->mimeData()->hasFormat(BookmarkManager::bookmark_mime_type()))
     {
-        QByteArray addresses = event->mimeData()->data("application/rekonq-bookmark");
+        QByteArray addresses = event->mimeData()->data(BookmarkManager::bookmark_mime_type());
         KBookmark bookmark =  rApp->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
         if (bookmark.isGroup())
         {
