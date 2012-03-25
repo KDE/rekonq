@@ -748,9 +748,9 @@ void MainWindow::preferences()
 
     // keep us informed when the user changes settings
     connect(s, SIGNAL(settingsChanged(QString)), rApp, SLOT(updateConfiguration()));
-
-    s->exec();
-    delete s;
+    connect(s, SIGNAL(finished(int)), s, SLOT(deleteLater()));
+    
+    s->show();
 }
 
 
