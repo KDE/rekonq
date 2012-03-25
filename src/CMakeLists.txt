@@ -54,6 +54,7 @@ SET( rekonq_KDEINIT_SRCS
     settings/privacywidget.cpp
     settings/tabswidget.cpp
     settings/webkitwidget.cpp
+    settings/passexceptionswidget.cpp
     #----------------------------------------
     bookmarks/bookmarkmanager.cpp
     bookmarks/bookmarkspanel.cpp
@@ -116,6 +117,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_webkit.ui
     settings/settings_advanced.ui
     settings/settings_privacy.ui
+    settings/password_exceptions.ui
     # ----------------------------------------
     adblock/settings_adblock.ui
     adblock/blocked_elements.ui

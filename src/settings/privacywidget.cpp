@@ -24,12 +24,19 @@
 * ============================================================ */
 
 
-// Local Includes
+// Self Includes
 #include "privacywidget.h"
 #include "privacywidget.moc"
 
+// Local Includes
+#include "passexceptionswidget.h"
+
 // Auto Includes
 #include "rekonq.h"
+
+// KDE Includes
+#include <KDialog>
+#include <KPushButton>
 
 // Qt Includes
 #include <QProcess>
@@ -118,5 +125,6 @@ void PrivacyWidget::launchCookieSettings()
 
 void PrivacyWidget::showPassExceptions()
 {
-    kDebug() << "PASS EXCEPTIONS";
+    PassExWidget *widg = new PassExWidget;
+    widg->show();
 }
