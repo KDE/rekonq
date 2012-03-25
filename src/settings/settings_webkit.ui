@@ -12,11 +12,11 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Javascript</string>
+      <string>General</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QCheckBox" name="kcfg_javascriptEnabled">
         <property name="sizePolicy">
@@ -31,16 +31,44 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="kcfg_javascriptCanOpenWindows">
+       <widget class="QCheckBox" name="kcfg_javaEnabled">
         <property name="text">
-         <string>Let Javascript open new windows</string>
+         <string>load java applets</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="kcfg_javascriptCanAccessClipboard">
+       <widget class="QCheckBox" name="kcfg_webGL">
         <property name="text">
-         <string>Let Javascript access clipboard</string>
+         <string>WebGL</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_spatialNavigation">
+        <property name="text">
+         <string>Spatial Navigation</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_frameFlattening">
+        <property name="text">
+         <string>Frame Flattening</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_dnsPrefetch">
+        <property name="text">
+         <string>Prefetch DNS entries</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_printElementBackgrounds">
+        <property name="text">
+         <string>Print element backgrounds</string>
         </property>
        </widget>
       </item>
@@ -139,57 +167,6 @@
        <widget class="QCheckBox" name="kcfg_localStorageEnabled">
         <property name="text">
          <string>Local Storage</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Misc</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QCheckBox" name="kcfg_javaEnabled">
-        <property name="text">
-         <string>load java applets</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_webGL">
-        <property name="text">
-         <string>WebGL</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_spatialNavigation">
-        <property name="text">
-         <string>Spatial Navigation</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_frameFlattening">
-        <property name="text">
-         <string>Frame Flattening</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_dnsPrefetch">
-        <property name="text">
-         <string>Prefetch DNS entries</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_printElementBackgrounds">
-        <property name="text">
-         <string>Print element backgrounds</string>
         </property>
        </widget>
       </item>

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,23 +24,23 @@
 * ============================================================ */
 
 
-#ifndef WEBKIT_WIDGET_H
-#define WEBKIT_WIDGET_H
+#ifndef ADVANCED_WIDGET_H
+#define ADVANCED_WIDGET_H
 
 
 // Ui Includes
-#include "ui_settings_webkit.h"
+#include "ui_settings_advanced.h"
 
 // Qt Includes
-#include <QtGui/QWidget>
+#include <QWidget>
 
 
-class WebKitWidget : public QWidget, private Ui::webkit
+class AdvancedWidget : public QWidget, private Ui::advanced
 {
     Q_OBJECT
 
 public:
-    WebKitWidget(QWidget *parent = 0);
+    AdvancedWidget(QWidget *parent = 0);
 
     void save();
     bool changed();
@@ -50,11 +50,10 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void hasChanged();
+    void launchProxySettings();
 
 private:
-    void setWebSettingsToolTips();
-
     bool _changed;
 };
 
-#endif // WEBKIT_WIDGET_H
+#endif // ADVANCED_WIDGET_H

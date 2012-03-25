@@ -76,15 +76,6 @@
     <entry name="kgetList" type="Bool">
         <default>false</default>
     </entry>
-    <entry name="hScrollWheelHistory" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="enableViShortcuts" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="accessKeysEnabled" type="Bool">
-        <default>false</default>
-    </entry>
 </group>
 
 
@@ -129,25 +120,8 @@
 </group>
 
 
-<!-- Appearance Settings -->
-<group name="Appearance">
-    <entry name="userCSS" type="Url">
-        <default></default>
-    </entry>
-    <entry name="smoothScrolling" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="useFavicon" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="middleClickAction" type="Int">
-        <default>2</default>
-    </entry>
-</group>
-
-
 <!-- Fonts Settings -->
-<group name="Fonts">
+<group name="Appearance">
     <entry name="standardFontFamily" type="String">
         <default code="true">KGlobalSettings::generalFont().family()</default>
     </entry>
@@ -175,11 +149,20 @@
     <entry name="defaultEncoding" type="String">
         <default>ISO 8859-1</default>
     </entry>
+    <entry name="userCSS" type="Url">
+        <default></default>
+    </entry>
 </group>
 
 
 <!-- Privacy Settings -->
 <group name="Privacy">
+    <entry name="javascriptCanOpenWindows" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="javascriptCanAccessClipboard" type="Bool">
+        <default>false</default>
+    </entry>
     <entry name="expireHistory" type="Int">
         <default>1</default>
     </entry>
@@ -209,12 +192,6 @@
     <!-- xxx -->
     <entry name="javascriptEnabled" type="Bool">
         <default>true</default>
-    </entry>
-    <entry name="javascriptCanOpenWindows" type="Bool">
-        <default>false</default>
-    </entry>
-    <entry name="javascriptCanAccessClipboard" type="Bool">
-        <default>false</default>
     </entry>
     <!-- xxx -->
     <entry name="pluginsEnabled" type="Int">
@@ -248,6 +225,63 @@
     </entry>
     <entry name="printElementBackgrounds" type="Bool">
         <default>true</default>
+    </entry>
+</group>
+
+
+<!-- Privacy Settings -->
+<group name="Privacy">
+    <entry name="historyMaintainingPeriod" type="Int">
+        <default>0</default>
+    </entry>
+    <entry name="passwordSavingEnabled" type="Bool">
+        <default>true</default>
+    </entry>
+</group>
+
+
+<!-- Advanced Settings -->
+<group name="Advanced">
+    <entry name="hScrollWheelHistory" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="enableViShortcuts" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="accessKeysEnabled" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="smoothScrolling" type="Bool">
+        <default>true</default>
+    </entry>
+    <entry name="useFavicon" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="middleClickAction" type="Int">
+        <default>2</default>
+    </entry>
+</group>
+
+    
+<!-- AdBlock Settings -->
+<group name="AdBlock">
+    <entry name="adBlockEnabled" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="hideAdsEnabled" type="Bool">
+        <default>false</default>
+    </entry>
+    <entry name="subscriptionTitles" type="StringList">
+        <default>EasyList</default>
+    </entry>
+    <entry name="subscriptionLocations" type="StringList">
+        <default>https://easylist-downloads.adblockplus.org/easylist.txt</default>
+    </entry>
+    <entry name="lastUpdate" type="DateTime">
+        <default code="true">QDateTime(QDate(2009,03,13))</default>
+    </entry>
+    <entry name="updateInterval" type="Int">
+        <default>7</default>
     </entry>
 </group>
 

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,37 +24,40 @@
 * ============================================================ */
 
 
-#ifndef WEBKIT_WIDGET_H
-#define WEBKIT_WIDGET_H
+#ifndef PRIVACY_WIDGET_H
+#define PRIVACY_WIDGET_H
 
 
 // Ui Includes
-#include "ui_settings_webkit.h"
+#include "ui_settings_privacy.h"
 
 // Qt Includes
-#include <QtGui/QWidget>
+#include <QWidget>
 
 
-class WebKitWidget : public QWidget, private Ui::webkit
+class PrivacyWidget : public QWidget, private Ui::privacy
 {
     Q_OBJECT
 
 public:
-    WebKitWidget(QWidget *parent = 0);
+    PrivacyWidget(QWidget *parent = 0);
 
     void save();
     bool changed();
 
 Q_SIGNALS:
     void changed(bool);
-
+    
 private Q_SLOTS:
     void hasChanged();
+    void updateJavascriptSettings(bool);
+    
+    void launchCacheSettings();
+    void launchCookieSettings();
+    void showPassExceptions();
 
 private:
-    void setWebSettingsToolTips();
-
     bool _changed;
 };
 
-#endif // WEBKIT_WIDGET_H
+#endif // PRIVACY_WIDGET_H

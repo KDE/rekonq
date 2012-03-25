@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,37 +24,41 @@
 * ============================================================ */
 
 
-#ifndef WEBKIT_WIDGET_H
-#define WEBKIT_WIDGET_H
+// Local Includes
+#include "advancedwidget.h"
+#include "advancedwidget.moc"
+
+// KDE Includes
+#include <KDebug>
 
 
-// Ui Includes
-#include "ui_settings_webkit.h"
-
-// Qt Includes
-#include <QtGui/QWidget>
-
-
-class WebKitWidget : public QWidget, private Ui::webkit
+AdvancedWidget::AdvancedWidget(QWidget *parent)
+    : QWidget(parent)
+    , _changed(false)
 {
-    Q_OBJECT
+    setupUi(this);
 
-public:
-    WebKitWidget(QWidget *parent = 0);
+    connect(proxyButton, SIGNAL(clicked()), this, SLOT(launchProxySettings()));
+}
 
-    void save();
-    bool changed();
 
-Q_SIGNALS:
-    void changed(bool);
+void AdvancedWidget::save()
+{
+}
 
-private Q_SLOTS:
-    void hasChanged();
 
-private:
-    void setWebSettingsToolTips();
+bool AdvancedWidget::changed()
+{
+    return _changed;
+}
 
-    bool _changed;
-};
 
-#endif // WEBKIT_WIDGET_H
+void AdvancedWidget::hasChanged()
+{
+}
+
+
+void AdvancedWidget::launchProxySettings()
+{
+    kDebug() << "PROXY";
+}

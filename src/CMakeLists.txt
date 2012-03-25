@@ -49,10 +49,11 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     settings/settingsdialog.cpp
     settings/appearancewidget.cpp
+    settings/advancedwidget.cpp
     settings/generalwidget.cpp
+    settings/privacywidget.cpp
     settings/tabswidget.cpp
     settings/webkitwidget.cpp
-    settings/networkwidget.cpp
     #----------------------------------------
     bookmarks/bookmarkmanager.cpp
     bookmarks/bookmarkspanel.cpp
@@ -113,6 +114,8 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_tabs.ui
     settings/settings_appearance.ui
     settings/settings_webkit.ui
+    settings/settings_advanced.ui
+    settings/settings_privacy.ui
     # ----------------------------------------
     adblock/settings_adblock.ui
     adblock/blocked_elements.ui

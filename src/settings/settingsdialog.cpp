@@ -40,11 +40,12 @@
 #include "opensearchmanager.h"
 
 // Widget Includes
-#include "networkwidget.h"
-#include "generalwidget.h"
+#include "advancedwidget.h"
 #include "appearancewidget.h"
-#include "webkitwidget.h"
+#include "generalwidget.h"
+#include "privacywidget.h"
 #include "tabswidget.h"
+#include "webkitwidget.h"
 
 // KDE Includes
 #include <KConfig>
@@ -68,8 +69,9 @@ private:
     TabsWidget *tabsWidg;
     AppearanceWidget *appearanceWidg;
     WebKitWidget *webkitWidg;
-    NetworkWidget *networkWidg;
-
+    PrivacyWidget *privacyWidg;
+    AdvancedWidget *advancedWidg;
+    
     KCModuleProxy *ebrowsingModule;
 
     KShortcutsEditor *shortcutsEditor;
@@ -109,10 +111,16 @@ Private::Private(SettingsDialog *parent)
     pageItem->setIcon(webkitIcon);
 
     // -- 5
-    networkWidg = new NetworkWidget(parent);
-    networkWidg->layout()->setMargin(0);
-    pageItem = parent->addPage(networkWidg , i18n("Network"));
-    pageItem->setIcon(KIcon("preferences-system-network"));
+    privacyWidg = new PrivacyWidget(parent);
+    privacyWidg->layout()->setMargin(0);
+    pageItem = parent->addPage(privacyWidg, i18n("Privacy"));
+    pageItem->setIcon(KIcon("view-media-artist"));
+
+    // -- 6
+    advancedWidg = new AdvancedWidget(parent);
+    advancedWidg->layout()->setMargin(0);
+    pageItem = parent->addPage(advancedWidg, i18n("Advanced"));
+    pageItem->setIcon(KIcon("applications-system"));
 
     // -- 7
     shortcutsEditor = new KShortcutsEditor(rApp->mainWindow()->actionCollection(), parent);
@@ -155,8 +163,10 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->tabsWidg,        SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->appearanceWidg,  SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->webkitWidg,      SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    connect(d->networkWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->advancedWidg,    SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    connect(d->privacyWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
+    
     connect(d->shortcutsEditor, SIGNAL(keyChange()),   this, SLOT(updateButtons()));
 
     // save settings
@@ -189,7 +199,8 @@ void SettingsDialog::saveSettings()
     d->tabsWidg->save();
     d->appearanceWidg->save();
     d->webkitWidg->save();
-    d->networkWidg->save();
+    d->advancedWidg->save();
+    d->privacyWidg->save();
     d->shortcutsEditor->save();
     d->ebrowsingModule->save();
 
@@ -208,7 +219,8 @@ bool SettingsDialog::hasChanged()
            || d->tabsWidg->changed()
            || d->appearanceWidg->changed()
            || d->webkitWidg->changed()
-           || d->networkWidg->changed()
+           || d->advancedWidg->changed()
+           || d->privacyWidg->changed()
            || d->ebrowsingModule->changed()
            || d->shortcutsEditor->isModified();
     ;

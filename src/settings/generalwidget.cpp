@@ -55,10 +55,6 @@ GeneralWidget::GeneralWidget(QWidget *parent)
 
     checkKGetPresence();
 
-    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
-    doNotTrackCheckBox->setChecked(cg.readEntry("DoNotTrack", false));
-
-    connect(doNotTrackCheckBox, SIGNAL(clicked()), this, SLOT(hasChanged()));
     connect(kcfg_homePage, SIGNAL(editingFinished()), this, SLOT(fixHomePageURL()));
 
     kcfg_downloadPath->setMode(KFile::Directory);
@@ -75,10 +71,6 @@ GeneralWidget::GeneralWidget(QWidget *parent)
 void GeneralWidget::save()
 {
     ReKonfig::setAskDownloadPath(askDownloadYes->isChecked());
-
-    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
-    cg.writeEntry("DoNotTrack", doNotTrackCheckBox->isChecked());
-    cg.sync();
 
     _changed = false;
 }
