@@ -43,7 +43,7 @@
       <item>
        <widget class="QCheckBox" name="doNotTrackCheckBox">
         <property name="text">
-         <string>Send DNT headers to tell websites you don't want to be tracked</string>
+         <string>Tell websites you do not want to be tracked</string>
         </property>
        </widget>
       </item>
