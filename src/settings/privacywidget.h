@@ -28,6 +28,9 @@
 #define PRIVACY_WIDGET_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Ui Includes
 #include "ui_settings_privacy.h"
 

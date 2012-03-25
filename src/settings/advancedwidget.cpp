@@ -28,8 +28,8 @@
 #include "advancedwidget.h"
 #include "advancedwidget.moc"
 
-// KDE Includes
-#include <KDebug>
+// Qt Includes
+#include <QProcess>
 
 
 AdvancedWidget::AdvancedWidget(QWidget *parent)
@@ -60,5 +60,9 @@ void AdvancedWidget::hasChanged()
 
 void AdvancedWidget::launchProxySettings()
 {
-    kDebug() << "PROXY";
+    QString program = QL1S("kcmshell4");
+    QStringList arguments;
+    arguments << QL1S("proxy");
+    QProcess *proc = new QProcess(this);
+    proc->start(program, arguments);
 }

@@ -31,8 +31,8 @@
 // Auto Includes
 #include "rekonq.h"
 
-// KDE Includes
-#include <KDebug>
+// Qt Includes
+#include <QProcess>
 
 
 PrivacyWidget::PrivacyWidget(QWidget *parent)
@@ -98,13 +98,21 @@ void PrivacyWidget::updateJavascriptSettings(bool b)
 
 void PrivacyWidget::launchCacheSettings()
 {
-    kDebug() << "CACHE";
+    QString program = QL1S("kcmshell4");
+    QStringList arguments;
+    arguments << QL1S("cache");
+    QProcess *proc = new QProcess(this);
+    proc->start(program, arguments);
 }
 
 
 void PrivacyWidget::launchCookieSettings()
 {
-    kDebug() << "COOKIES";
+    QString program = QL1S("kcmshell4");
+    QStringList arguments;
+    arguments << QL1S("cookies");
+    QProcess *proc = new QProcess(this);
+    proc->start(program, arguments);
 }
 
 
