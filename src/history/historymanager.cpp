@@ -82,6 +82,12 @@ HistoryManager::HistoryManager(QObject *parent)
 
 HistoryManager::~HistoryManager()
 {
+    if (ReKonfig::expireHistory() == 4)
+    {
+        m_history.clear();
+        save();
+        return;
+    }
     m_saveTimer->saveIfNeccessary();
 }
 
@@ -94,6 +100,9 @@ bool HistoryManager::historyContains(const QString &url) const
 
 void HistoryManager::addHistoryEntry(const KUrl &url, const QString &title)
 {
+    if (ReKonfig::expireHistory() == 5)  // DON'T STORE HISTORY!
+        return;
+    
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return;
@@ -259,21 +268,17 @@ void HistoryManager::loadSettings()
     int days;
     switch (historyExpire)
     {
-    case 0:
-        days = 1;
-        break;
     case 1:
-        days = 7;
+        days = 90;
         break;
     case 2:
-        days = 14;
-        break;
-    case 3:
         days = 30;
         break;
-    case 4:
-        days = 365;
+    case 3:
+        days = 1;
         break;
+    case 0:
+    case 4:
     case 5:
     default:
         days = -1;

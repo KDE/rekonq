@@ -141,7 +141,7 @@ Private::Private(SettingsDialog *parent)
     // WARNING
     // remember wheh changing here that the smallest netbooks
     // have a 1024x576 resolution. So DON'T bother that limits!!
-    parent->setMinimumSize(700, 576);
+    parent->setMinimumSize(700, 525);
 }
 
 

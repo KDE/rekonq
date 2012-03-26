@@ -66,25 +66,10 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="kcfg_historyMaintainingPeriod">
+         <widget class="QComboBox" name="kcfg_expireHistory">
           <item>
            <property name="text">
-            <string>don't even store them</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>at application exit</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>every day</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>every month</string>
+            <string>never</string>
            </property>
           </item>
           <item>
@@ -94,7 +79,22 @@
           </item>
           <item>
            <property name="text">
-            <string>never</string>
+            <string>every month</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>every day</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>at application exit</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>don't even store them</string>
            </property>
           </item>
          </widget>
