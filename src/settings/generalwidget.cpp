@@ -113,8 +113,7 @@ void GeneralWidget::checkKGetPresence()
     {
         kcfg_kgetDownload->setDisabled(true);
         kcfg_kgetList->setDisabled(true);
-        kcfg_kgetDownload->setToolTip(i18n("Install KGet to enable rekonq to use KGet as download manager"));
-
+        kcfg_kgetDownload->setToolTip(i18n("Install KGet to enable rekonq to use it as download manager"));
     }
     else
     {

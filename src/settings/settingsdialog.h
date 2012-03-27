@@ -57,7 +57,6 @@ private:
     Private* const d;
 
 private Q_SLOTS:
-    void readConfig();
     void saveSettings();
 };
 

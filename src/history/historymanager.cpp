@@ -167,6 +167,7 @@ void HistoryManager::setHistory(const QList<HistoryItem> &history, bool loadedAn
         m_lastSavedUrl.clear();
         m_saveTimer->changeOccurred();
     }
+    
     emit historyReset();
 }
 

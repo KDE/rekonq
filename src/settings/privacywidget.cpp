@@ -48,8 +48,7 @@ PrivacyWidget::PrivacyWidget(QWidget *parent)
 {
     setupUi(this);
 
-    // JAVASCRIPT
-    updateJavascriptSettings(ReKonfig::javascriptEnabled());
+    reload();
     
     // DO NOT TRACK
     KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
@@ -70,22 +69,15 @@ void PrivacyWidget::save()
     KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
     cg.writeEntry("DoNotTrack", doNotTrackCheckBox->isChecked());
     cg.sync();
+
+    reload();
 }
 
 
-bool PrivacyWidget::changed()
+void PrivacyWidget::reload()
 {
-    return _changed;
-}
-
-
-void PrivacyWidget::hasChanged()
-{
-}
-
-
-void PrivacyWidget::updateJavascriptSettings(bool b)
-{
+    bool b = ReKonfig::javascriptEnabled();
+    
     kcfg_javascriptCanAccessClipboard->setEnabled(b);
     kcfg_javascriptCanOpenWindows->setEnabled(b);
 
@@ -100,6 +92,19 @@ void PrivacyWidget::updateJavascriptSettings(bool b)
         kcfg_javascriptCanOpenWindows->setToolTip(str);
         kcfg_javascriptCanAccessClipboard->setToolTip(str);
     }
+}
+
+
+bool PrivacyWidget::changed()
+{
+    return _changed;
+}
+
+
+void PrivacyWidget::hasChanged()
+{
+    _changed = true;
+    emit changed(true);
 }
 
 

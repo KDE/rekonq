@@ -46,6 +46,8 @@ public:
     PrivacyWidget(QWidget *parent = 0);
 
     void save();
+    void reload();
+
     bool changed();
 
 Q_SIGNALS:
@@ -53,7 +55,6 @@ Q_SIGNALS:
     
 private Q_SLOTS:
     void hasChanged();
-    void updateJavascriptSettings(bool);
     
     void launchCacheSettings();
     void launchCookieSettings();

@@ -155,8 +155,6 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     showButtonSeparator(false);
     setWindowTitle(i18nc("Window title of the settings dialog", "Configure – rekonq"));
 
-    readConfig();
-
     // update buttons
     connect(d->generalWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->tabsWidg,        SIGNAL(changed(bool)), this, SLOT(updateButtons()));
@@ -181,18 +179,9 @@ SettingsDialog::~SettingsDialog()
 }
 
 
-// we need this function to UPDATE the config widget data..
-void SettingsDialog::readConfig()
-{
-}
-
-
 // we need this function to SAVE settings in rc file..
 void SettingsDialog::saveSettings()
 {
-    if (!hasChanged())
-        return;
-
     ReKonfig::self()->writeConfig();
 
     d->generalWidg->save();
@@ -204,6 +193,8 @@ void SettingsDialog::saveSettings()
     d->shortcutsEditor->save();
     d->ebrowsingModule->save();
 
+    d->privacyWidg->reload();
+    
     SearchEngine::reload();
     rApp->opensearchManager()->removeDeletedEngines();
 

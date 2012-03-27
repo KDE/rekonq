@@ -55,6 +55,8 @@ bool AdvancedWidget::changed()
 
 void AdvancedWidget::hasChanged()
 {
+    _changed = true;
+    emit changed(true);
 }
 
 
