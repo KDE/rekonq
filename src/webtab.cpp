@@ -156,9 +156,6 @@ bool WebTab::isPageLoading()
 
 void WebTab::createWalletBar(const QString &key, const QUrl &url)
 {
-    if (!ReKonfig::passwordSavingEnabled())
-        return;
-    
     // check if the url is in the wallet blacklist
     QString urlString = url.toString();
     QStringList blackList = ReKonfig::walletBlackList();
@@ -166,6 +163,13 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
         return;
 
     KWebWallet *wallet = page()->wallet();
+
+    if (!ReKonfig::passwordSavingEnabled())
+    {
+        wallet->rejectSaveFormDataRequest(key);
+        return;
+    }
+
     if (m_walletBar.isNull())
     {
         m_walletBar = new WalletBar(this);
