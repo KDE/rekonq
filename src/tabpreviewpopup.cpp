@@ -31,7 +31,6 @@
 // Rekonq Includes
 #include "webtab.h"
 #include "tabbar.h"
-#include "websnap.h"
 #include "application.h"
 #include "mainwindow.h"
 
@@ -99,21 +98,14 @@ TabPreviewPopup::~TabPreviewPopup()
 
 void TabPreviewPopup::setWebTab(WebTab* tab)
 {
-    int w = (tab->parentWidget()->sizeHint().width() / TabBar::baseWidthDivisor);
-    int h = w * rApp->mainWindow()->size().height() / rApp->mainWindow()->size().width();
+    const QPixmap preview = tab->tabPreview();
 
-    if (!tab->part())
-        setThumbnail(WebSnap::renderPagePreview(*tab->page(), w, h));
-    else
+    if (!preview.isNull())
     {
-        QWidget *part = tab->part()->widget();
-        QPixmap partThumb(part->size());
-        part->render(&partThumb);
-        setThumbnail(partThumb.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        setThumbnail(preview);
+        setUrl(tab->url().prettyUrl());
+        setFixedSize(preview.width(), preview.height() + m_url->heightForWidth(preview.width()));
     }
-    setUrl(tab->url().prettyUrl());
-
-    setFixedSize(w, h + m_url->heightForWidth(w));
 }
 
 

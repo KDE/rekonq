@@ -90,8 +90,9 @@ public:
 
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
 
-
     bool hasAdBlockedElements();
+
+    QPixmap tabPreview();
 
 private Q_SLOTS:
     void updateProgress(int progress);

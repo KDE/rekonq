@@ -36,15 +36,18 @@
 #include "application.h"
 #include "historymanager.h"
 #include "messagebar.h"
+#include "mainwindow.h"
 #include "opensearchmanager.h"
 #include "previewselectorbar.h"
 #include "rsswidget.h"
 #include "searchenginebar.h"
 #include "sessionmanager.h"
 #include "syncmanager.h"
+#include "tabbar.h"
 #include "urlbar.h"
 #include "walletbar.h"
 #include "webpage.h"
+#include "websnap.h"
 #include "webshortcutwidget.h"
 
 // KDE Includes
@@ -362,6 +365,33 @@ void WebTab::showMessageBar()
 bool WebTab::hasAdBlockedElements()
 {
     return page()->hasAdBlockedElements();
+}
+
+
+QPixmap WebTab::tabPreview()
+{
+    if (isPageLoading())
+    {
+        // no previews during load
+        return QPixmap();
+    }
+
+    int w = (parentWidget()->sizeHint().width() / TabBar::baseWidthDivisor);
+    int h = w * rApp->mainWindow()->size().height() / rApp->mainWindow()->size().width();
+
+    if (!part())
+    {
+        return WebSnap::renderPagePreview(*page(), w, h);
+    }
+    else
+    {
+        QWidget *partWidget = part()->widget();
+        QPixmap partThumb(partWidget->size());
+
+        partWidget->render(&partThumb);
+
+        return partThumb.scaled(w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    }
 }
 
 
