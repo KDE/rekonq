@@ -163,7 +163,8 @@ UrlSearchList UrlResolver::orderLists()
     bool webSearchFirst = false;
     // Browse & Search results
     UrlSearchList browseSearch;
-    if (_browseRegexp.indexIn(_typedString) != -1)
+    QString lowerTypedString = _typedString.toLower();
+    if (_browseRegexp.indexIn(lowerTypedString) != -1)
     {
         webSearchFirst = true;
         browseSearch << _webSearches;
@@ -251,7 +252,7 @@ UrlSearchList UrlResolver::orderLists()
 // QUrl from User Input (easily the best solution... )
 void UrlResolver::computeQurlFromUserInput()
 {
-    QString url = _typedString;
+    QString url = _typedString.toLower();
     QUrl urlFromUserInput = QUrl::fromUserInput(url);
     if (urlFromUserInput.isValid())
     {
