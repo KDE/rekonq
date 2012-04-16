@@ -252,12 +252,15 @@ UrlSearchList UrlResolver::orderLists()
 // QUrl from User Input (easily the best solution... )
 void UrlResolver::computeQurlFromUserInput()
 {
-    QString url = _typedString.toLower();
+    QString url = _typedString;
     QUrl urlFromUserInput = QUrl::fromUserInput(url);
     if (urlFromUserInput.isValid())
     {
+        QString urlString = urlFromUserInput.toString();
+        if (!urlFromUserInput.isLocalFile())
+            urlString = urlString.toLower();
         QString gTitle = i18nc("Browse a website", "Browse");
-        UrlSearchItem gItem(UrlSearchItem::Browse, urlFromUserInput.toString(), gTitle);
+        UrlSearchItem gItem(UrlSearchItem::Browse, urlString, gTitle);
         _qurlFromUserInput << gItem;
     }
 }
