@@ -92,7 +92,7 @@ public:
 
     bool hasAdBlockedElements();
 
-    QPixmap tabPreview();
+    QPixmap tabPreview(int width, int height);
 
 private Q_SLOTS:
     void updateProgress(int progress);
