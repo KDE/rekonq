@@ -5,7 +5,7 @@
 
 To build, rekonq needs at least:
 
-- Qt 4.7.x:
+- Qt 4.8.x:
 - QtWebkit 2.2.x
 - kdelibs 4.7.x
 
