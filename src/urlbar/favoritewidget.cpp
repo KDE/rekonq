@@ -35,6 +35,7 @@
 #include "application.h"
 #include "bookmarkmanager.h"
 #include "bookmarkowner.h"
+#include "webtab.h"
 
 // KDE Includes
 #include <KLocalizedString>
@@ -42,10 +43,10 @@
 #include <KLineEdit>
 
 // Qt Includes
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QFormLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
+#include <QDialogButtonBox>
+#include <QFormLayout>
+#include <QLabel>
+#include <QPushButton>
 
 
 FavoriteWidget::FavoriteWidget(WebTab *tab, QWidget *parent)

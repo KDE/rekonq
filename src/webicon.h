@@ -34,7 +34,7 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QtWebKit/QWebPage>
+#include <QWebPage>
 
 
 class REKONQ_TESTS_EXPORT WebIcon : public QObject

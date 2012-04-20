@@ -35,13 +35,16 @@
 // KDE Includes
 #include <KWebView>
 
-//Qt Includes
-#include <QtCore/QTime>
-#include <QLabel>
-#include <QToolTip>
+// Qt Includes
+#include <QTime>
+#include <QPoint>
+#include <QPixmap>
 
 // Forward Declarations
 class WebPage;
+
+class QLabel;
+class QTimer;
 
 
 class REKONQ_TESTS_EXPORT WebView : public KWebView

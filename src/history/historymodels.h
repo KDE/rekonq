@@ -33,17 +33,16 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "historymanager.h"
-
 // KDE Includes
 #include <KUrl>
 
 // Qt Includes
 #include <QHash>
-#include <QObject>
-#include <QSortFilterProxyModel>
-#include <QWebHistoryInterface>
+#include <QAbstractTableModel>
+#include <QAbstractProxyModel>
+
+// Forward Declarations
+class HistoryManager;
 
 
 class REKONQ_TESTS_EXPORT HistoryModel : public QAbstractTableModel
@@ -174,7 +173,6 @@ private Q_SLOTS:
 private:
     int sourceDateRow(int row) const;
     mutable QList<int> m_sourceRowCache;
-
 };
 
 

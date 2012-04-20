@@ -33,12 +33,12 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QtGui/QWidget>
-#include <QtGui/QLabel>
+#include <QWidget>
 
 // Forward Declarations
 class MainWindow;
 
+class QLabel;
 class QSlider;
 class QToolButton;
 

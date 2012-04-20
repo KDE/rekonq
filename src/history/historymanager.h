@@ -33,9 +33,6 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "urlresolver.h"
-
 // KDE Includes
 #include <KUrl>
 
@@ -43,11 +40,17 @@
 #include <QDateTime>
 #include <QHash>
 #include <QObject>
-#include <QTimer>
-#include <QSortFilterProxyModel>
 #include <QWebHistory>
 
 #include <math.h>
+
+// Forward Declarations
+class AutoSaver;
+class HistoryFilterModel;
+class HistoryTreeModel;
+
+class QWebHistory;
+
 
 /**
  * Elements in this class represent an history item
@@ -99,6 +102,7 @@ public:
 
 // ---------------------------------------------------------------------------------------------------------------
 
+
 class TabHistory
 {
 public:
@@ -132,13 +136,9 @@ public:
     QByteArray history;
 };
 
+
 // ---------------------------------------------------------------------------------------------------------------
 
-
-// Forward Declarations
-class AutoSaver;
-class HistoryFilterModel;
-class HistoryTreeModel;
 
 /**
  * THE History Manager:

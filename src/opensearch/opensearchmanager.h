@@ -40,8 +40,7 @@
 #include <kio/jobclasses.h>
 
 // Qt Includes
-#include <QtCore/QObject>
-#include <QFile>
+#include <QObject>
 
 // Forward Declarations
 class OpenSearchEngine;

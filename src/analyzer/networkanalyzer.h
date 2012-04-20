@@ -34,20 +34,20 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QtCore/QMap>
-#include <QtCore/QList>
+#include <QWidget>
 
-#include <QtGui/QWidget>
+#include <QMap>
+#include <QList>
 
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
-#include <QPoint>
+#include <QNetworkAccessManager>
 
 // Forward Declarations
 class QTreeWidgetItem;
 class QSignalMapper;
 class QTreeWidget;
+
+class QNetworkReply;
+class QNetworkRequest;
 
 
 class NetworkAnalyzer : public QWidget

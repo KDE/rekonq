@@ -39,7 +39,6 @@
 
 // Qt Includes
 #include <QWidget>
-#include <QTreeWidgetItem>
 
 
 class AdBlockWidget : public QWidget, private Ui::adblock

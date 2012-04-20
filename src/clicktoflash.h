@@ -33,8 +33,8 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QtCore/QUrl>
-#include <QtGui/QWidget>
+#include <QUrl>
+#include <QWidget>
 
 // Forward Declarations
 class QWebElement;
@@ -63,4 +63,3 @@ private:
 };
 
 #endif // CLICKTOFLASH_H
-

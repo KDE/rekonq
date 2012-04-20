@@ -30,6 +30,7 @@
 #include "analyzerpanel.moc"
 
 // Local Includes
+#include "mainwindow.h"
 #include "networkanalyzer.h"
 #include "networkaccessmanager.h"
 #include "webtab.h"

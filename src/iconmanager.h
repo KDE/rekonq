@@ -31,7 +31,8 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QtCore/QObject>
+#include <QObject>
+#include <QString>
 
 // Forward Declarations
 class KIcon;

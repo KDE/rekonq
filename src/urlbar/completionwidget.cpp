@@ -33,7 +33,7 @@
 
 // Local Includes
 #include "application.h"
-#include "urlresolver.h"
+#include "listitem.h"
 #include "searchengine.h"
 #include "urlbar.h"
 
@@ -42,12 +42,12 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QtCore/QPoint>
-#include <QtCore/QSize>
-#include <QtCore/QEvent>
+#include <QPoint>
+#include <QSize>
+#include <QEvent>
 
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QKeyEvent>
+#include <QVBoxLayout>
+#include <QKeyEvent>
 
 
 

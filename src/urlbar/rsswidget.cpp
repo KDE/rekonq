@@ -42,13 +42,13 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QtDBus/QDBusConnectionInterface>
-#include <QtDBus/QDBusInterface>
+#include <QDBusConnectionInterface>
+#include <QDBusInterface>
 
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QFormLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
+#include <QDialogButtonBox>
+#include <QFormLayout>
+#include <QLabel>
+#include <QPushButton>
 
 
 RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)

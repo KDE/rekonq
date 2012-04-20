@@ -42,6 +42,9 @@
 // KDE Includes
 #include <klocalizedstring.h>
 
+// Qt Includes
+#include <QPointer>
+
 
 SyncManager::SyncManager(QObject *parent)
     : QObject(parent)
