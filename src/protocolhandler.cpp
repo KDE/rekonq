@@ -168,6 +168,15 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         return true;
     }
 
+    // "apt" handling
+    // NOTE: this is a stupid workaround to ensure apt protocol works
+    if (_url.protocol() == QL1S("apt"))
+    {
+        kDebug() << "APT URL: " << _url;
+        (void)new KRun(_url, rApp->mainWindow(), 0, _url.isLocalFile());
+        return true;
+    }
+    
     // let webkit try to load a known (or missing) protocol...
     if (KProtocolInfo::isKnownProtocol(_url))
         return false;
