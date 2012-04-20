@@ -42,6 +42,7 @@
 #include <QDialogButtonBox>
 #include <QFormLayout>
 
+
 WebShortcutWidget::WebShortcutWidget(QWidget *parent)
     : QMenu(parent)
     , m_wsLineEdit(new QLineEdit(this))

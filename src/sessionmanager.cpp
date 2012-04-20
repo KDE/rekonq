@@ -32,16 +32,16 @@
 
 // Local Includes
 #include "application.h"
+#include "historymanager.h"
 #include "mainview.h"
 #include "mainwindow.h"
-#include "tabbar.h"
 #include "webtab.h"
 
 // KDE Includes
 #include <KStandardDirs>
 
 // Qt Includes
-#include <QtCore/QFile>
+#include <QFile>
 
 
 // Only used internally
@@ -148,7 +148,7 @@ void SessionManager::saveSession()
             tab.setAttribute("title", mv->webTab(tabNo)->view()->title()); // redundant, but needed for closedSites()
             // as there's not way to read out the historyData
             tab.setAttribute("url", u.url());
-            if (mv->tabBar()->currentIndex() == tabNo)
+            if (mv->currentIndex() == tabNo)
             {
                 tab.setAttribute("currentTab", 1);
             }
@@ -188,7 +188,7 @@ bool SessionManager::restoreSessionFromScratch()
 
         int currentTab = loadViewTabs(mv, window, false);
 
-        mv->tabBar()->setCurrentIndex(currentTab);
+        mv->setCurrentIndex(currentTab);
     }
 
     return true;
@@ -210,7 +210,7 @@ void SessionManager::restoreCrashedSession()
 
         int currentTab = loadViewTabs(mv, window, true);
 
-        mv->tabBar()->setCurrentIndex(currentTab);
+        mv->setCurrentIndex(currentTab);
     }
 
     setSessionManagementEnabled(true);
@@ -234,7 +234,7 @@ int SessionManager::restoreSavedSession()
 
         int currentTab = loadViewTabs(mv, window, true);
 
-        mv->tabBar()->setCurrentIndex(currentTab);
+        mv->setCurrentIndex(currentTab);
     }
 
     return winNo;
@@ -261,7 +261,7 @@ bool SessionManager::restoreMainWindow(MainWindow* window)
 
         int currentTab = loadViewTabs(mv, savedWindowElement, false);
 
-        mv->tabBar()->setCurrentIndex(currentTab);
+        mv->setCurrentIndex(currentTab);
 
         return true;
     }

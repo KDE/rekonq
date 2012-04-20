@@ -35,6 +35,7 @@
 
 // Local Includes
 #include "application.h"
+#include "historymanager.h"
 #include "iconmanager.h"
 
 // KDE Includes
@@ -43,16 +44,17 @@
 #include <KIcon>
 
 // Qt Includes
-#include <QtCore/QList>
-#include <QtCore/QUrl>
-#include <QtCore/QDate>
-#include <QtCore/QDateTime>
-#include <QtCore/QString>
-#include <QtCore/QFile>
-#include <QtCore/QDataStream>
-#include <QtCore/QBuffer>
+#include <QList>
+#include <QUrl>
+#include <QDate>
+#include <QDateTime>
+#include <QString>
+#include <QFile>
+#include <QDataStream>
+#include <QBuffer>
 
-#include <QtGui/QClipboard>
+#include <QClipboard>
+#include <QFileInfo>
 
 // generic algorithms
 #include <QtAlgorithms>

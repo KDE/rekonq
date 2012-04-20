@@ -41,6 +41,7 @@
 #include "adblockmanager.h"
 #include "application.h"
 #include "downloadmanager.h"
+#include "historymanager.h"
 #include "iconmanager.h"
 #include "mainview.h"
 #include "mainwindow.h"
@@ -70,7 +71,9 @@
 #include <kparts/browseropenorsavequestion.h>
 
 // Qt Includes
-#include <QtGui/QTextDocument>
+#include <QTextDocument>
+#include <QFileInfo>
+#include <QNetworkReply>
 
 
 // Returns true if the scheme and domain of the two urls match...

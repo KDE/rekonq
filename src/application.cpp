@@ -51,6 +51,7 @@
 #include "stackedurlbar.h"
 #include "tabbar.h"
 #include "urlbar.h"
+#include "urlresolver.h"
 #include "useragentmanager.h"
 #include "webtab.h"
 
@@ -70,6 +71,8 @@
 
 // Qt Includes
 #include <QVBoxLayout>
+#include <QDir>
+#include <QTimer>
 
 
 using namespace ThreadWeaver;

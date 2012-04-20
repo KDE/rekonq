@@ -34,6 +34,7 @@
 // Locale Includes
 #include "application.h"
 #include "opensearchmanager.h"
+#include "suggestionparser.h"
 
 // KDE Includes
 #include <KUrl>
@@ -42,7 +43,6 @@
 // Qt Includes
 #include <QString>
 #include <QList>
-#include "suggestionparser.h"
 
 
 class UrlSearchItem

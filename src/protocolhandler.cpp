@@ -44,6 +44,7 @@
 // KDE Includes
 #include <KIO/Job>
 #include <KDirLister>
+#include <KLocale>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KProcess>
@@ -53,8 +54,8 @@
 #include <KRun>
 
 // Qt Includes
-#include <QtNetwork/QNetworkRequest>
-#include <QtWebKit/QWebFrame>
+#include <QNetworkRequest>
+#include <QWebFrame>
 #include <QTextDocument>
 
 

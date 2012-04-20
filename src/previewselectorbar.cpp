@@ -25,21 +25,19 @@
 * ============================================================ */
 
 
-// Auto Includes
+// Self Includes
 #include "previewselectorbar.h"
 #include "previewselectorbar.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
-// Self Includes
-#include "websnap.h"
-
 // Local Include
 #include "application.h"
 #include "mainwindow.h"
 #include "webpage.h"
 #include "webtab.h"
+#include "websnap.h"
 
 // KDE Includes
 #include <KIcon>

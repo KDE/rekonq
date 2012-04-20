@@ -52,9 +52,9 @@
 #include <QWebSettings>
 #include <QNetworkReply>
 
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusConnectionInterface>
-#include <QtDBus/QDBusInterface>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
+#include <QDBusInterface>
 
 
 DownloadManager::DownloadManager(QObject *parent)

@@ -36,6 +36,7 @@
 
 // Local Includes
 #include "application.h"
+#include "historymanager.h"
 #include "iconmanager.h"
 #include "mainwindow.h"
 #include "sessionmanager.h"
@@ -135,6 +136,12 @@ WebTab *MainView::currentWebTab() const
 
     kDebug() << "We failed to find the current tab!!! Let's go sure with the first one...";
     return webTab(0);
+}
+
+
+QList<TabHistory> MainView::recentlyClosedTabs()
+{
+    return m_recentlyClosedTabs;
 }
 
 

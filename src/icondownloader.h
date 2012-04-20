@@ -27,13 +27,16 @@
 #ifndef ICON_DOWNLOADER_H
 #define ICON_DOWNLOADER_H
 
-// rekonq includes
+// rekonq Includes
 #include "rekonq_defines.h"
 
+// Qt Includes
 #include <QObject>
 
+// KDE Includes
 #include <KUrl>
 
+// Forward Declarations
 class QNetworkReply;
 
 

@@ -35,8 +35,8 @@
 #include "webtab.h"
 
 // Qt Includes
-#include <QtGui/QAction>
-#include <QtWebKit/QWebInspector>
+#include <QAction>
+#include <QWebInspector>
 
 
 WebInspectorPanel::WebInspectorPanel(QString title, QWidget *parent)

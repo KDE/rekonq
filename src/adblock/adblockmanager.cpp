@@ -44,6 +44,8 @@
 // Qt Includes
 #include <QUrl>
 #include <QWebElement>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 
 AdBlockManager::AdBlockManager(QObject *parent)

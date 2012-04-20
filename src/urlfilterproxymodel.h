@@ -33,7 +33,7 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QtGui/QSortFilterProxyModel>
+#include <QSortFilterProxyModel>
 
 
 /**

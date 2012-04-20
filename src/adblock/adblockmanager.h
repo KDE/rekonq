@@ -133,11 +133,11 @@
 
 // Qt Includes
 #include <QObject>
-#include <QNetworkReply>
 #include <QStringList>
 #include <QByteArray>
 
 // Forward Includes
+class QNetworkReply;
 class QNetworkRequest;
 class WebPage;
 

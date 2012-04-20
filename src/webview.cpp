@@ -53,14 +53,16 @@
 #include <KToolInvocation>
 
 // Qt Includes
-#include <QtCore/QFile>
-#include <QtCore/QTimer>
+#include <QFile>
+#include <QTimer>
 
-#include <QtGui/QClipboard>
-#include <QtGui/QContextMenuEvent>
+#include <QClipboard>
+#include <QContextMenuEvent>
+#include <QLabel>
 
-#include <QtWebKit/QWebFrame>
-#include <QtWebKit/QWebHistory>
+#include <QWebFrame>
+#include <QWebHistory>
+#include <QNetworkRequest>
 
 
 WebView::WebView(QWidget* parent)

@@ -29,11 +29,10 @@
 #include "tabpreviewpopup.h"
 
 // Rekonq Includes
-#include "webtab.h"
-#include "tabbar.h"
-#include "websnap.h"
 #include "application.h"
 #include "mainwindow.h"
+#include "tabbar.h"
+#include "webtab.h"
 
 //Qt Includes
 #include <QLabel>

@@ -33,7 +33,7 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QtGui/QWidget>
+#include <QWidget>
 
 // Forward Declarations
 class MainWindow;

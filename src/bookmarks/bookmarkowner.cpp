@@ -44,7 +44,7 @@
 #include <KMessageBox>
 
 // Qt Includes
-#include <QtGui/QClipboard>
+#include <QClipboard>
 
 
 BookmarkOwner::BookmarkOwner(KBookmarkManager *manager, QObject *parent)

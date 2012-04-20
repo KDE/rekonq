@@ -55,11 +55,12 @@
 #include <KMenu>
 
 // Qt Includes
-#include <QtGui/QPainter>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QPalette>
-#include <QtGui/QVBoxLayout>
+#include <QPainter>
+#include <QPaintEvent>
+#include <QPalette>
+#include <QVBoxLayout>
 #include <QClipboard>
+#include <QTimer>
 
 
 

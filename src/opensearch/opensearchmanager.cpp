@@ -31,10 +31,10 @@
 #include "opensearchmanager.moc"
 
 // Local Includes
+#include "application.h"
 #include "opensearchengine.h"
 #include "opensearchreader.h"
 #include "opensearchwriter.h"
-#include "application.h"
 
 // KDE Includes
 #include <KGlobal>
@@ -47,8 +47,8 @@
 #include <KConfigGroup>
 
 // Qt Includes
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
+#include <QFile>
+#include <QFileInfo>
 #include <QDBusMessage>
 #include <QDBusConnection>
 

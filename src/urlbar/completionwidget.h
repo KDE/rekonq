@@ -32,13 +32,16 @@
 #include "rekonq_defines.h"
 
 // Local Includes
-#include "listitem.h"
+#include "urlresolver.h"
 
 // KDE Includes
 #include <KService>
 
 // Qt Includes
 #include <QFrame>
+
+// Forward Declarations
+class ListItem;
 
 
 class CompletionWidget : public QFrame

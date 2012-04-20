@@ -29,9 +29,10 @@
 #include "webpluginfactory.h"
 #include "webpluginfactory.moc"
 
-// Local Includes
+// Auto Includes
 #include "rekonq.h"
 
+// Local Includes
 #include "clicktoflash.h"
 
 

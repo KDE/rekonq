@@ -43,13 +43,13 @@
 #include <KColorScheme>
 
 // Qt Includes
-#include <QtCore/QTimer>
+#include <QTimer>
 
-#include <QtGui/QCheckBox>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QLabel>
-#include <QtGui/QToolButton>
+#include <QCheckBox>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QToolButton>
 
 
 FindBar::FindBar(MainWindow *window)

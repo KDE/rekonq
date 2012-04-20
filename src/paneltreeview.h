@@ -32,7 +32,7 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QtGui/QTreeView>
+#include <QTreeView>
 
 // Forward Declarations
 class KUrl;

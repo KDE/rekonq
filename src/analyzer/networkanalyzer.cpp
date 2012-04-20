@@ -37,13 +37,16 @@
 #include <KPassivePopup>
 
 // Qt Includes
-#include <QtGui/QTreeWidget>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
 #include <QApplication>
 #include <QSignalMapper>
 #include <QClipboard>
+
+#include <QNetworkReply>
+#include  <QNetworkRequest>
 
 
 NetworkAnalyzer::NetworkAnalyzer(QWidget *parent)

@@ -37,9 +37,6 @@
 // KDE Includes
 #include <KTabBar>
 
-//Qt Includes
-#include <QSignalMapper>
-
 // Forward Declarations
 class TabPreviewPopup;
 class TabHighlightEffect;
@@ -47,7 +44,7 @@ class TabHighlightEffect;
 class KActionMenu;
 
 class QPropertyAnimation;
-
+class QSignalMapper;
 
 /**
  * Tab bar with a few more features such as

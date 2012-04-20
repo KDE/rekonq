@@ -24,9 +24,11 @@
 * ============================================================ */
 
 
+// Self Includes
 #include "icondownloader.h"
 #include "icondownloader.moc"
 
+// Qt Includes
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
