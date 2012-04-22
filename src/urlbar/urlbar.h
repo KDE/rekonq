@@ -106,13 +106,9 @@ private Q_SLOTS:
     void detectTypedString(const QString &);
     void suggest();
 
-    void showBookmarkInfo(QPoint);
-    void showBookmarkDialog();
-
-    void showFavoriteDialog(QPoint);
-    void bookmarkContextMenu(QPoint);
-    void addFavorite();
-
+    void manageBookmarks(QPoint);
+    void manageFavorites(QPoint);
+    
     void refreshFavicon();
 
     void pasteAndGo();
