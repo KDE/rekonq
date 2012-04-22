@@ -60,6 +60,11 @@ void SyncCheckWidget::initializePage()
         syncLabel->setText(i18n("FTP"));
         hostLabel->setText(ReKonfig::syncHost());
     }
+    else if (ReKonfig::syncType() == 1)
+    {
+        syncLabel->setText(i18n("Google"));
+        hostLabel->setText(ReKonfig::syncHost());
+    }
     else
     {
         syncLabel->setText(i18n("No sync"));
@@ -127,6 +132,8 @@ void SyncCheckWidget::initializePage()
     SyncHandler *h = rApp->syncManager()->handler();
     connect(h, SIGNAL(syncStatus(Rekonq::SyncData,bool,QString)), this, SLOT(updateWidget(Rekonq::SyncData,bool,QString)));
 }
+
+
 
 
 void SyncCheckWidget::updateWidget(Rekonq::SyncData type, bool done, QString msg)

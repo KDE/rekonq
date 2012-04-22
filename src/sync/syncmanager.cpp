@@ -38,6 +38,7 @@
 
 #include "syncassistant.h"
 #include "ftpsynchandler.h"
+#include "googlesynchandler.h"
 
 // KDE Includes
 #include <klocalizedstring.h>
@@ -68,10 +69,23 @@ void SyncManager::loadSettings()
     if (ReKonfig::syncEnabled())
     {
         // reset syncer
-        if (_syncImplementation.isNull())
+        if (!_syncImplementation.isNull())
         {
-            // actually we have just FTP handler...
+            delete _syncImplementation.data();
+            _syncImplementation.clear();
+        }
+        
+        switch(ReKonfig::syncType())
+        {
+        case 0:
             _syncImplementation = new FTPSyncHandler(this);
+            break;
+        case 1:
+            _syncImplementation = new GoogleSyncHandler(this);
+            break;
+        default:
+            kDebug() << "/dev/null";
+            return;
         }
 
         _syncImplementation.data()->initialLoadAndCheck();

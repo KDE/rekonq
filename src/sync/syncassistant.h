@@ -42,6 +42,7 @@ public:
         Page_Data,
         Page_Type,
         Page_FTP_Settings,
+	Page_Google_Settings,
         Page_Check
     };
 

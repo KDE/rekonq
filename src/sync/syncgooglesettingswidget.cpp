@@ -1,7 +1,7 @@
 /* ============================================================
 *
 * This file is a part of the rekonq project
-*
+* Copyright (C) 2012 by Siteshwar Vashisht <siteshwar at gmail dot com>
 * Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
@@ -25,25 +25,36 @@
 
 
 // Self Includes
-#include "syncassistant.h"
-#include "syncassistant.moc"
+#include "syncgooglesettingswidget.h"
+#include "syncgooglesettingswidget.moc"
+
+// Auto Includes
+#include "rekonq.h"
 
 // Local Includes
-#include "synccheckwidget.h"
-#include "syncdatawidget.h"
-#include "synchosttypewidget.h"
+#include "syncassistant.h"
 
-#include "syncftpsettingswidget.h"
-#include "syncgooglesettingswidget.h"
 
-SyncAssistant::SyncAssistant(QWidget *parent)
-    : QWizard(parent)
+SyncGoogleSettingsWidget::SyncGoogleSettingsWidget(QWidget *parent)
+    : QWizardPage(parent)
 {
-    setWindowTitle(i18n("sync assistant"));
+    setupUi(this);
+    kcfg_syncUser->setText(ReKonfig::syncUser());
+    kcfg_syncPass->setText(ReKonfig::syncPass());
 
-    setPage(Page_Data, new SyncDataWidget(this));
-    setPage(Page_Type, new SyncHostTypeWidget(this));
-    setPage(Page_FTP_Settings, new SyncFTPSettingsWidget(this));
-    setPage(Page_Google_Settings, new SyncGoogleSettingsWidget(this));
-    setPage(Page_Check, new SyncCheckWidget(this));
+    kcfg_syncPass->setPasswordMode(true);
+}
+
+
+int SyncGoogleSettingsWidget::nextId() const
+{
+    // save
+    ReKonfig::setSyncHost("http://bookmarks.google.com/");
+    ReKonfig::setSyncUser(kcfg_syncUser->text());
+    ReKonfig::setSyncPass(kcfg_syncPass->text());
+
+    ReKonfig::setSyncHistory(false);
+    ReKonfig::setSyncPasswords(false);
+
+    return SyncAssistant::Page_Check;
 }

@@ -99,6 +99,7 @@ SET( rekonq_KDEINIT_SRCS
     useragent/useragentwidget.cpp
     #----------------------------------------
     sync/ftpsynchandler.cpp
+    sync/googlesynchandler.cpp
     sync/syncassistant.cpp
     sync/synchandler.cpp
     sync/syncmanager.cpp
@@ -107,6 +108,7 @@ SET( rekonq_KDEINIT_SRCS
     sync/syncdatawidget.cpp
     sync/synchosttypewidget.cpp
     sync/syncftpsettingswidget.cpp
+    sync/syncgooglesettingswidget.cpp
 )
 
 
@@ -130,6 +132,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     sync/sync_check.ui
     sync/sync_data.ui
     sync/sync_ftp_settings.ui
+    sync/sync_google_settings.ui
     sync/sync_host_type.ui
  )
 

@@ -25,6 +25,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QRadioButton" name="googleRadioButton">
+        <property name="text">
+         <string>Google Bookmarks</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QRadioButton" name="nullRadioButton">
         <property name="text">
          <string>/dev/null</string>

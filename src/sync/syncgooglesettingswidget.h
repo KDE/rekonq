@@ -2,6 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
+* Copyright (C) 2011 by Siteshwar Vashisht <siteshwar AT gmail.com> 
 * Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
@@ -24,26 +25,28 @@
 * ============================================================ */
 
 
-// Self Includes
-#include "syncassistant.h"
-#include "syncassistant.moc"
+#ifndef SYNC_GOOGLE_SETTINGS_WIDGET_H
+#define SYNC_GOOGLE_SETTINGS_WIDGET_H
 
-// Local Includes
-#include "synccheckwidget.h"
-#include "syncdatawidget.h"
-#include "synchosttypewidget.h"
 
-#include "syncftpsettingswidget.h"
-#include "syncgooglesettingswidget.h"
+// Rekonq Includes
+#include "rekonq_defines.h"
 
-SyncAssistant::SyncAssistant(QWidget *parent)
-    : QWizard(parent)
+// Ui Includes
+#include "ui_sync_google_settings.h"
+
+// Qt Includes
+#include <QWizardPage>
+
+
+class SyncGoogleSettingsWidget : public QWizardPage, private Ui::SyncGoogleSettings
 {
-    setWindowTitle(i18n("sync assistant"));
+    Q_OBJECT
 
-    setPage(Page_Data, new SyncDataWidget(this));
-    setPage(Page_Type, new SyncHostTypeWidget(this));
-    setPage(Page_FTP_Settings, new SyncFTPSettingsWidget(this));
-    setPage(Page_Google_Settings, new SyncGoogleSettingsWidget(this));
-    setPage(Page_Check, new SyncCheckWidget(this));
-}
+public:
+    SyncGoogleSettingsWidget(QWidget *parent = 0);
+
+    int nextId() const;
+};
+
+#endif // SYNC_GOOGLE_SETTINGS_WIDGET_H
