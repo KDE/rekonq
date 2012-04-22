@@ -29,6 +29,7 @@
 #include "tabpreviewpopup.h"
 
 // Rekonq Includes
+#include "webpage.h"
 #include "webtab.h"
 #include "tabbar.h"
 #include "websnap.h"

@@ -115,9 +115,8 @@ bool OpenSearchManager::isSuggestionAvailable()
 
 void OpenSearchManager::addOpenSearchEngine(const KUrl &url, const QString &title, const QString &shortcut)
 {
-    Q_UNUSED(title);
-
     m_shortcut = shortcut;
+    m_title = trimmedEngineName(title);
 
     if (m_state != IDLE)
     {
@@ -170,6 +169,59 @@ void OpenSearchManager::dataReceived(KIO::Job *job, const QByteArray &data)
 
 void OpenSearchManager::jobFinished(KJob *job)
 {
+    if (!job->error() && m_state == REQ_DESCRIPTION)
+    {
+        OpenSearchReader reader;
+        OpenSearchEngine *engine = reader.read(m_jobData);
+        if (engine)
+        {
+            m_engineCache.insert(m_title, engine);
+            m_engines.insert(m_jobUrl, m_shortcut);
+            saveEngines();
+
+            QString path;
+            if (engine->providesSuggestions())
+            {
+                // save opensearch description only if it provides suggestions
+                OpenSearchWriter writer;
+                path = KGlobal::dirs()->findResource("data", "rekonq/opensearch/");
+                QFile file(path + trimmedEngineName(engine->name()) + ".xml");
+                writer.write(&file, engine);
+
+                // save desktop file here
+                QString searchUrl = OpenSearchEngine::parseTemplate("\\{@}", engine->searchUrlTemplate());
+                m_currentJob = NULL;
+
+                path = KGlobal::mainComponent().dirs()->saveLocation("services", "searchproviders/");
+                KConfig _service(path +  m_title + ".desktop", KConfig::SimpleConfig);
+                KConfigGroup service(&_service, "Desktop Entry");
+                service.writeEntry("Type", "Service");
+                service.writeEntry("ServiceTypes", "SearchProvider");
+                service.writeEntry("Name", m_title);
+                service.writeEntry("Query", searchUrl);
+                service.writeEntry("Keys", m_shortcut);
+                // TODO charset
+                service.writeEntry("Charset", "" /* provider->charset() */);
+                // we might be overwriting a hidden entry
+                service.writeEntry("Hidden", false);
+                service.sync();
+
+                // Update filters in running applications...
+                QDBusMessage msg = QDBusMessage::createSignal("/", "org.kde.KUriFilterPlugin", "configure");
+                QDBusConnection::sessionBus().send(msg);
+
+                emit openSearchEngineAdded(engine->name());
+            }
+        }
+        else
+        {
+            kFatal() << "Error while adding new open search engine";
+        }
+
+        idleJob();
+        return;
+    }
+    
     // Do NOT parse if job had same errors or the typed string is empty
     if (job->error() || _typedText.isEmpty())
     {
@@ -188,56 +240,6 @@ void OpenSearchManager::jobFinished(KJob *job)
         emit suggestionsReceived(_typedText, suggestionsList);
         idleJob();
         return;
-    }
-
-    if (m_state == REQ_DESCRIPTION)
-    {
-        OpenSearchReader reader;
-        OpenSearchEngine *engine = reader.read(m_jobData);
-        if (engine)
-        {
-            m_engineCache.insert(engine->name(), engine);
-            m_engines.insert(m_jobUrl, trimmedEngineName(engine->name()));
-            saveEngines();
-
-            QString path;
-            if (engine->providesSuggestions()) //save opensearch description only if it provides suggestions
-            {
-                OpenSearchWriter writer;
-                path = KGlobal::dirs()->findResource("data", "rekonq/opensearch/");
-                QFile file(path + trimmedEngineName(engine->name()) + ".xml");
-                writer.write(&file, engine);
-            }
-
-            QString searchUrl = OpenSearchEngine::parseTemplate("\\{@}", engine->searchUrlTemplate());
-            m_currentJob = NULL;
-
-            path = KGlobal::mainComponent().dirs()->saveLocation("services", "searchproviders/");
-            KConfig _service(path +  trimmedEngineName(engine->name()) + ".desktop", KConfig::SimpleConfig);
-            KConfigGroup service(&_service, "Desktop Entry");
-            service.writeEntry("Type", "Service");
-            service.writeEntry("ServiceTypes", "SearchProvider");
-            service.writeEntry("Name", engine->name());
-            service.writeEntry("Query", searchUrl);
-            service.writeEntry("Keys", m_shortcut);
-            // TODO charset
-            service.writeEntry("Charset", "" /* provider->charset() */);
-            // we might be overwriting a hidden entry
-            service.writeEntry("Hidden", false);
-            service.sync();
-
-            // Update filters in running applications...
-            QDBusMessage msg = QDBusMessage::createSignal("/", "org.kde.KUriFilterPlugin", "configure");
-            QDBusConnection::sessionBus().send(msg);
-
-            emit openSearchEngineAdded(engine->name(), searchUrl, m_shortcut);
-        }
-        else
-        {
-            kFatal() << "Error while adding new open search engine";
-        }
-
-        idleJob();
     }
 }
 

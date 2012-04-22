@@ -4,6 +4,7 @@
 *
 * Copyright (C) 2009 by Fredy Yanardi <fyanardi@gmail.com>
 * Copyright (C) 2010-2011 by  Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -27,7 +28,7 @@
 
 // Self Includes
 #include "webshortcutwidget.h"
-#include "rekonq_defines.h"
+#include "webshortcutwidget.moc"
 
 // KDE Includes
 #include <KGlobalSettings>
@@ -112,6 +113,8 @@ void WebShortcutWidget::show(const KUrl &url, const QString &openSearchName, con
 void WebShortcutWidget::accept()
 {
     emit webShortcutSet(m_url, m_nameLineEdit->text(), m_wsLineEdit->text());
+
+    // close widget (and destroy it)
     close();
 }
 
@@ -157,7 +160,3 @@ void WebShortcutWidget::shortcutsChanged(const QString& newShorthands)
         }
     }
 }
-
-#include "webshortcutwidget.moc"
-
-
