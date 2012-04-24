@@ -94,6 +94,7 @@ ProtocolHandler::ProtocolHandler(QObject *parent)
     , _lister(new KDirLister(this))
     , _frame(0)
 {
+    _lister->setMainWindow(rApp->mainWindow());
 }
 
 
@@ -168,7 +169,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
 
         return true;
     }
-
+    
     // "apt" handling
     // NOTE: this is a stupid workaround to ensure apt protocol works
     if (_url.protocol() == QL1S("apt"))
@@ -343,6 +344,7 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
 {
     if (job->error())
     {
+        kDebug() << "JOB ERROR: " << job->errorString();
         // TODO
     }
     else
