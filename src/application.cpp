@@ -203,12 +203,6 @@ int Application::newInstance()
         return 0;
     }
 
-    if (isFirstLoad && isRekonqCrashed)
-    {
-        loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
-        QTimer::singleShot(1000, mainWindow()->currentTab(), SLOT(showMessageBar()));
-    }
-
     if (areThereArguments)
     {
         // prepare URLS to load
@@ -271,28 +265,34 @@ int Application::newInstance()
     }
     else
     {
-        // we are starting rekonq, for the first time with no args: use startup behaviour
-        if (isFirstLoad && !isRekonqCrashed)
+        if (isFirstLoad)
         {
-            switch (ReKonfig::startupBehaviour())
+            if (isRekonqCrashed)
             {
-            case 0: // open home page
-                newMainWindow()->homePage();
-                break;
-            case 1: // open new tab page
-                loadUrl(KUrl("about:home"), Rekonq::NewWindow);
-                break;
-            case 2: // restore session
-                if (sessionManager()->restoreSessionFromScratch())
+                loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
+            }
+            else
+            {
+                switch (ReKonfig::startupBehaviour())
                 {
+                case 0: // open home page
+                    newMainWindow()->homePage();
+                    break;
+                case 1: // open new tab page
+                    loadUrl(KUrl("about:home"), Rekonq::NewWindow);
+                    break;
+                case 2: // restore session
+                    if (sessionManager()->restoreSessionFromScratch())
+                    {
+                        break;
+                    }
+                default:
+                    newMainWindow()->homePage();
                     break;
                 }
-            default:
-                newMainWindow()->homePage();
-                break;
             }
         }
-        else if (!isFirstLoad)   // rekonq has just been started. Just open a new window
+        else
         {
             switch (ReKonfig::newTabsBehaviour())
             {
@@ -307,11 +307,14 @@ int Application::newInstance()
                 loadUrl(KUrl("about:blank") , Rekonq::NewWindow);
                 break;
             }
-
         }
     }
 
-    if (!isRekonqCrashed)
+    if (isRekonqCrashed)
+    {
+        QTimer::singleShot(1000, mainWindow()->currentTab(), SLOT(showMessageBar()));        
+    }
+    else
     {
         sessionManager()->setSessionManagementEnabled(true);
     }
