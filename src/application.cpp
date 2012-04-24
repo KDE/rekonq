@@ -310,17 +310,17 @@ int Application::newInstance()
         }
     }
 
-    if (isRekonqCrashed)
-    {
-        QTimer::singleShot(1000, mainWindow()->currentTab(), SLOT(showMessageBar()));        
-    }
-    else
-    {
-        sessionManager()->setSessionManagementEnabled(true);
-    }
-
     if (isFirstLoad)
     {
+        if (isRekonqCrashed)
+        {
+            QTimer::singleShot(1000, mainWindow()->currentTab(), SLOT(showMessageBar()));
+        }
+        else
+        {
+            sessionManager()->setSessionManagementEnabled(true);
+        }
+
         if (ReKonfig::checkDefaultSearchEngine() && !isRekonqCrashed && SearchEngine::defaultEngine().isNull())
             QTimer::singleShot(2000, mainWindow()->currentTab(), SLOT(showSearchEngineBar()));
 
