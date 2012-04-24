@@ -50,8 +50,6 @@ class WebInspectorPanel;
 class WebTab;
 class ZoomBar;
 
-class KUriFilter;
-
 class QWebFrame;
 class QWebHistory;
 class QLabel;
@@ -69,11 +67,6 @@ class REKONQ_TESTS_EXPORT MainWindow : public KXmlGuiWindow
 public:
     MainWindow();
     ~MainWindow();
-
-    
-    static KUriFilter *s_uriFilter;
-    static KUrl filterUrlToLoad(const KUrl &url);
-    
 
     inline MainView *mainView() const
     {

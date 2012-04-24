@@ -35,11 +35,7 @@
 
 // KDE Includes
 #include <KBookmark>
-#include <KUriFilter>
-#include <KCompletion>
 #include <KService>
-#include <KConfig>
-#include <KConfigGroup>
 #include <KProtocolInfo>
 
 // Qt Includes
@@ -256,9 +252,14 @@ void UrlResolver::computeQurlFromUserInput()
     QUrl urlFromUserInput = QUrl::fromUserInput(url);
     if (urlFromUserInput.isValid())
     {
+        // ensure http(s) hosts are lower cases
+        if (urlFromUserInput.scheme().startsWith("http"))
+        {
+            QString hst = urlFromUserInput.host();
+            urlFromUserInput.setHost(hst.toLower());
+        }
+        
         QString urlString = urlFromUserInput.toString();
-        if (!urlFromUserInput.isLocalFile())
-            urlString = urlString.toLower();
         QString gTitle = i18nc("Browse a website", "Browse");
         UrlSearchItem gItem(UrlSearchItem::Browse, urlString, gTitle);
         _qurlFromUserInput << gItem;

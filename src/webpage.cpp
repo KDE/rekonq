@@ -527,6 +527,10 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         break;
 
     case QNetworkReply::UnknownNetworkError:                 // unknown network-related error detected
+        // last chance for the strange things (eg: FTP, custom schemes, etc...)
+        if (_protHandler.postHandling(reply->request(), mainFrame()))
+            return;
+        
     case QNetworkReply::ConnectionRefusedError:              // remote server refused connection
     case QNetworkReply::HostNotFoundError:                   // invalid hostname
     case QNetworkReply::TimeoutError:                        // connection time out

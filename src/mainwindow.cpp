@@ -86,7 +86,6 @@
 #include <KParts/BrowserExtension>
 #include <KMimeTypeTrader>
 
-#include <KUriFilterData>
 
 // Qt Includes
 #include <QtCore/QTimer>
@@ -104,9 +103,6 @@
 
 #include <QSignalMapper>
 #include <QTextDocument>
-
-
-KUriFilter *MainWindow::s_uriFilter;
 
 
 MainWindow::MainWindow()
@@ -228,9 +224,6 @@ MainWindow::MainWindow()
     // accept d'n'd
     setAcceptDrops(true);
 
-    if (!s_uriFilter)
-        s_uriFilter = KUriFilter::self();
-        
     // Things that need to be setup after the call to setupGUI() and after ctor call
     QTimer::singleShot(1, this, SLOT(postLaunch()));
 }
@@ -1625,9 +1618,9 @@ void MainWindow::loadUrl(const KUrl& url,
 
 void MainWindow::loadCheckedUrl(const KUrl& url, const Rekonq::OpenType& type, QWebHistory *webHistory)
 {
-    // First, calculate url
-    KUrl urlToLoad = filterUrlToLoad(url);
-
+    // NOTE: At this point, url should just be resolved via urlresolver.
+    // No need to check it twice
+    
     WebTab *tab = 0;
     switch (type)
     {
@@ -1656,7 +1649,7 @@ void MainWindow::loadCheckedUrl(const KUrl& url, const Rekonq::OpenType& type, Q
     WebView *view = tab->view();
     if (view)
     {
-        view->load(urlToLoad);
+        view->load(url);
 
         if (webHistory)
         {
@@ -1668,30 +1661,4 @@ void MainWindow::loadCheckedUrl(const KUrl& url, const Rekonq::OpenType& type, Q
             historyStream >> *(view->history());
         }
     }
-}
-
-
-// ------------------------------------------------------------------------------------------
-
-
-KUrl MainWindow::filterUrlToLoad(const KUrl &url)
-{
-    QString urlString = url.pathOrUrl();
-    // Bookmarklets handling
-    if (urlString.startsWith(QL1S("javascript:")))
-    {
-        return KUrl(urlString);
-    }
-
-    // this should let rekonq filtering URI info and supporting
-    // the beautiful KDE web browsing shortcuts
-    KUriFilterData data(urlString);
-    data.setCheckForExecutables(false); // if true, queries like "rekonq" or "dolphin" are considered as executables
-
-    if (s_uriFilter->filterUri(data) && data.uriType() != KUriFilterData::Error)
-    {
-        return data.uri();
-    }
-
-    return QUrl::fromUserInput(urlString);
 }
