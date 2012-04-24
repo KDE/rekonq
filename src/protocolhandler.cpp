@@ -176,7 +176,15 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
 
         return true;
     }
-    
+
+    // "mailto" handling: It needs to be handled both in preHandling (mail url launched)
+    // and in postHandling (mail links clicked)
+    if (_url.protocol() == QL1S("mailto"))
+    {
+        KToolInvocation::invokeMailer(_url);
+        return true;
+    }
+
     // "apt" handling
     // NOTE: this is a stupid workaround to ensure apt protocol works
     if (_url.protocol() == QL1S("apt"))
