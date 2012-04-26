@@ -44,10 +44,10 @@
 #include <KConfigGroup>
 
 // Qt Includes
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QSlider>
-#include <QToolButton>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QSlider>
+#include <QtGui/QToolButton>
 
 
 ZoomBar::ZoomBar(QWidget *parent)

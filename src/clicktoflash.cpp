@@ -33,12 +33,11 @@
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QHBoxLayout>
-#include <QToolButton>
-
-#include <QWebElement>
-#include <QWebFrame>
-#include <QWebView>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QToolButton>
+#include <QtWebKit/QWebElement>
+#include <QtWebKit/QWebFrame>
+#include <QtWebKit/QWebView>
 
 
 ClickToFlash::ClickToFlash(const QUrl &pluginUrl, QWidget *parent)

@@ -30,8 +30,8 @@
 
 // Local Includes
 #include "application.h"
-#include "icondownloader.h"
 #include "webicon.h"
+#include "icondownloader.h"
 
 // KDE Includes
 #include <KIO/Job>
@@ -41,11 +41,11 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QDir>
+#include <QtCore/QDir>
 
-#include <QWebElement>
-#include <QWebFrame>
-#include <QWebSettings>
+#include <QtWebKit/QWebElement>
+#include <QtWebKit/QWebFrame>
+#include <QtWebKit/QWebSettings>
 
 
 IconManager::IconManager(QObject *parent)

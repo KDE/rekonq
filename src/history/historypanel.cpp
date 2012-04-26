@@ -35,7 +35,6 @@
 // Local Includes
 #include "application.h"
 #include "paneltreeview.h"
-#include "historymanager.h"
 #include "historymodels.h"
 #include "urlfilterproxymodel.h"
 
@@ -46,7 +45,7 @@
 #include <KMessageBox>
 
 // Qt Includes
-#include <QHeaderView>
+#include <QtGui/QHeaderView>
 
 
 HistoryPanel::HistoryPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)

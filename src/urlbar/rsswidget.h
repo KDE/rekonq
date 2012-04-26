@@ -28,7 +28,7 @@
 #define RSSWIDGET_H
 
 // Qt Includes
-#include <QMenu>
+#include <QtGui/QMenu>
 
 // Forward Declarations
 class KComboBox;

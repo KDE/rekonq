@@ -38,7 +38,7 @@
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QIODevice>
+#include <QtCore/QIODevice>
 
 
 OpenSearchReader::OpenSearchReader()

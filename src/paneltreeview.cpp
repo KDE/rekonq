@@ -36,8 +36,8 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QClipboard>
-#include <QMouseEvent>
+#include <QtGui/QClipboard>
+#include <QtGui/QMouseEvent>
 
 
 PanelTreeView::PanelTreeView(QWidget *parent)

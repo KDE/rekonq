@@ -28,21 +28,20 @@
 #include "sslinfodialog.h"
 #include "sslinfodialog.moc"
 
-// KDE Includes
+
 #include <KFileDialog>
+
+#include <QtCore/QDate>
+#include <QtCore/QFile>
+
+#include <QtGui/QLabel>
+#include <QtGui/QTextDocument>
+
+#include <QtNetwork/QSslCertificate>
 
 #include <kglobal.h>
 #include <klocale.h>
 #include <ktcpsocket.h>
-
-// Qt Includes
-#include <QDate>
-#include <QFile>
-
-#include <QLabel>
-#include <QTextDocument>
-
-#include <QSslCertificate>
 
 
 SslInfoDialog::SslInfoDialog(const QString &host, const WebSslInfo &info, QWidget *parent)

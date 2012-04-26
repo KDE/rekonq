@@ -37,7 +37,6 @@
 #include "bookmarkmanager.h"
 #include "downloadmanager.h"
 #include "iconmanager.h"
-#include "historymanager.h"
 #include "historymodels.h"
 #include "mainview.h"
 #include "mainwindow.h"

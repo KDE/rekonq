@@ -31,25 +31,22 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Local Includes
+#include "urlresolver.h"
+
 // KDE Includes
 #include <KToolBar>
 #include <KService>
-#include <KUrl>
+#include <KIcon>
 
 // Qt Includes
 #include <QWidget>
-#include <QLabel>
 #include <QStyleOptionViewItemV4>
-#include <QString>
-#include <QByteArray>
+#include <QLabel>
 
 // Forward Declarations
 class UrlSearchItem;
-
 class KAction;
-class KIcon;
-class KJob;
-
 class QActionGroup;
 
 
@@ -261,7 +258,7 @@ private:
     QByteArray m_data;
 
 private Q_SLOTS:
-    void slotData(KJob* job, const QByteArray& data);
+    void slotData(KIO::Job* job, const QByteArray& data);
     void slotResult(KJob* job);
 };
 

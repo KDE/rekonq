@@ -27,25 +27,19 @@
 #ifndef SSL_INFO_DIALOG_H
 #define SSL_INFO_DIALOG_H
 
-
-// Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
 #include "websslinfo.h"
 
 // Ui Includes
 #include "ui_sslinfo.h"
 
-// KDE Includes
-#include <KDialog>
+#include <KDE/KDialog>
 
-// Qt Includes
-#include <QString>
+#include <QList>
 
-// Forward Declarations
 class QSslCertificate;
-
+class QString;
 
 /**
  * Rekonq SSL Information Dialog

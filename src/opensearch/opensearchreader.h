@@ -34,7 +34,7 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QXmlStreamReader>
+#include <QtCore/QXmlStreamReader>
 
 // Forward Declarations
 class OpenSearchEngine;

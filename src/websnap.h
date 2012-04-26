@@ -37,8 +37,8 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QObject>
-#include <QWebPage>
+#include <QtCore/QObject>
+#include <QtWebKit/QWebPage>
 
 // Forward Declarations
 class QPixmap;

@@ -32,9 +32,8 @@
 #include "websslinfo.h"
 
 // Qt Includes
-#include <QMenu>
-
-#include <QUrl>
+#include <QtGui/QMenu>
+#include <QtCore/QUrl>
 
 
 class SSLWidget : public QMenu

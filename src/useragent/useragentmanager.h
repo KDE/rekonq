@@ -28,10 +28,8 @@
 #define USER_AGENT_MANAGER_H
 
 
-// Qt Includes
 #include <QObject>
 
-// Forward Declarations
 class WebTab;
 
 class KAction;

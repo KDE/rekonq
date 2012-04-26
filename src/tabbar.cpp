@@ -35,7 +35,6 @@
 #include "rekonq.h"
 
 #include "application.h"
-#include "historymanager.h"
 #include "iconmanager.h"
 #include "mainview.h"
 #include "mainwindow.h"
@@ -53,23 +52,18 @@
 #include <KColorScheme>
 
 // Qt Includes
-#include <QLabel>
-#include <QLayout>
-#include <QMouseEvent>
-#include <QToolButton>
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QToolButton>
 #include <QPropertyAnimation>
 #include <QStyleOptionFrameV3>
-#include <QSignalMapper>
-#include <QTimer>
 
 
 static inline QByteArray highlightPropertyName(int index)
 {
     return QByteArray("hAnim").append(QByteArray::number(index));
 }
-
-
-// ----------------------------------------------
 
 
 TabBar::TabBar(QWidget *parent)

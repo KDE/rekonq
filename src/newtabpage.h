@@ -36,9 +36,8 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QObject>
-#include <QString>
-#include <QWebElement>
+#include <QtCore/QObject>
+#include <QtWebKit/QWebElement>
 
 // Forward Declarations
 class KBookmark;

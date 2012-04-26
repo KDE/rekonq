@@ -41,10 +41,10 @@
 #include <KLineEdit>
 
 // Qt Includes
-#include <QDialogButtonBox>
-#include <QFormLayout>
-#include <QLabel>
-#include <QPushButton>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QFormLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 
 
 BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)

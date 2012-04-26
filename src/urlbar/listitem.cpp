@@ -49,6 +49,7 @@
 #include <QActionGroup>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QLabel>
 #include <QSizePolicy>
 #include <QPixmap>
 #include <QStylePainter>
@@ -56,7 +57,6 @@
 #include <QWebSettings>
 #include <QFile>
 #include <QTextDocument>
-#include <QBitArray>
 
 
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
@@ -392,14 +392,14 @@ ImageLabel::ImageLabel(const QString &url, int width, int height, QWidget *paren
     {
         KIO::TransferJob *job = KIO::get(KUrl(url), KIO::NoReload, KIO::HideProgressInfo);
         connect(job,  SIGNAL(data(KIO::Job*,QByteArray)),
-                this, SLOT(slotData(KJob*,QByteArray)));
+                this, SLOT(slotData(KIO::Job*,QByteArray)));
         connect(job,  SIGNAL(result(KJob*)),
                 this, SLOT(slotResult(KJob*)));
     }
 }
 
 
-void ImageLabel::slotData(KJob *job, const QByteArray &data)
+void ImageLabel::slotData(KIO::Job *job, const QByteArray &data)
 {
     Q_UNUSED(job);
     m_data.append(data);

@@ -29,11 +29,11 @@
 
 
 // Qt Includes
-#include <QMenu>
-#include <QCheckBox>
+#include <QtGui/QMenu>
+#include <QtGui/QCheckBox>
 
-// Forward Declarations
-class WebTab;
+// Local Includes
+#include "webtab.h"
 
 
 class FavoriteWidget : public QMenu

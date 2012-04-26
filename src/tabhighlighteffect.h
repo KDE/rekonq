@@ -30,13 +30,11 @@
 
 // Qt Includes
 #include <QGraphicsEffect>
-#include <QColor>
+#include <QPainter>
+#include <QEvent>
 
 // Forward Declarations
 class TabBar;
-
-class QEvent;
-class QPainter;
 
 
 class TabHighlightEffect : public QGraphicsEffect

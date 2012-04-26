@@ -33,7 +33,6 @@
 // Forward Declarations
 class BookmarkOwner;
 
-
 class BookmarksContextMenu : public KBookmarkContextMenu
 {
 public:

@@ -43,7 +43,6 @@
 #include "bookmarkstoolbar.h"
 #include "downloadmanager.h"
 #include "findbar.h"
-#include "historymanager.h"
 #include "historypanel.h"
 #include "iconmanager.h"
 #include "mainview.h"

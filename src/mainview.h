@@ -34,15 +34,16 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Local Includes
+#include "historymanager.h"
+
 // KDE Includes
 #include <KTabWidget>
 
 // Forward Declarations
 class HistoryItem;
-class MainWindow;
 class StackedUrlBar;
 class TabBar;
-class TabHistory;
 class UrlBar;
 class WebTab;
 
@@ -100,7 +101,10 @@ public:
      */
     WebTab *newWebTab(bool focused = true);
 
-    QList<TabHistory> recentlyClosedTabs();
+    inline QList<TabHistory> recentlyClosedTabs()
+    {
+        return m_recentlyClosedTabs;
+    }
 
     void restoreClosedTab(int i, bool inNewTab = true);
 

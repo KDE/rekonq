@@ -53,6 +53,9 @@ public:
     virtual ~TabPreviewPopup();
 
 private:
+    QLabel *m_thumbnail;
+    QLabel *m_url;
+
     void setWebTab(WebTab *tab = 0);
     void setUrl(const QString& text);
     void setThumbnail(const QPixmap& pixmap);
@@ -60,10 +63,6 @@ private:
 
 protected:
     void paintEvent(QPaintEvent *event);
-
-private:
-    QLabel *m_thumbnail;
-    QLabel *m_url;
 };
 
 #endif // TABPREVIEWPOPUP_H

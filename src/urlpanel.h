@@ -33,7 +33,7 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QDockWidget>
+#include <QtGui/QDockWidget>
 
 // Forward Declarations
 class PanelTreeView;
@@ -69,12 +69,12 @@ protected Q_SLOTS:
     virtual void contextMenuGroup(const QPoint &pos) = 0;
     virtual void contextMenuEmpty(const QPoint &pos) = 0;
 
-private Q_SLOTS:
-    void expandTreeView();
-
 private:
     PanelTreeView *_treeView;
     bool _loaded;
+
+private Q_SLOTS:
+    void expandTreeView();
 };
 
 

@@ -34,13 +34,11 @@
 #include "sslinfodialog.h"
 
 // Qt Includes
-#include <QPointer>
-
-#include <QDialogButtonBox>
-#include <QGridLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QTextDocument>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QGridLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QtGui/QTextDocument>
 
 
 SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)

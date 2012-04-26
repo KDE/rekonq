@@ -36,9 +36,6 @@
 // KDE Includes
 #include <KMenu>
 
-// Forward Declarations
-class QWidget;
-
 
 /**
  * Menu shown inside rekonq window.

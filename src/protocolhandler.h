@@ -35,7 +35,7 @@
 #include <KUrl>
 
 // Qt Includes
-#include <QObject>
+#include <QtCore/QObject>
 
 // Forward Declarations
 class KDirLister;

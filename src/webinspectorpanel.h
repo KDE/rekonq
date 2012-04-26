@@ -33,16 +33,16 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QDockWidget>
+#include <QtGui/QDockWidget>
 
 // Forward
 class QWebInspector;
 
 
 /**
- *  Docked web inspector
- *  behaviour : hide/show by tab, not globally
-**/
+    Docked web inspector
+    behaviour : hide/show by tab, not globally
+*/
 class REKONQ_TESTS_EXPORT WebInspectorPanel : public QDockWidget
 {
     Q_OBJECT

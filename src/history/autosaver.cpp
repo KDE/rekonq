@@ -30,10 +30,10 @@
 #include "autosaver.moc"
 
 // Qt Includes
-#include <QMetaObject>
-#include <QTimerEvent>
-#include <QBasicTimer>
-#include <QTime>
+#include <QtCore/QMetaObject>
+#include <QtCore/QTimerEvent>
+#include <QtCore/QBasicTimer>
+#include <QtCore/QTime>
 
 
 const int AUTOSAVE_TIME  = 1000 * 3;  // seconds

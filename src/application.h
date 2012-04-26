@@ -40,12 +40,11 @@
 #include <KUniqueApplication>
 
 // Qt Includes
-#include <QWeakPointer>
+#include <QtCore/QDateTime>
+#include <QtCore/QWeakPointer>
+
 
 // Forward Declarations
-class KAction;
-
-
 class AdBlockManager;
 class BookmarkManager;
 class DownloadManager;
@@ -56,6 +55,13 @@ class OpenSearchManager;
 class SessionManager;
 class UserAgentManager;
 class SyncManager;
+
+class KAction;
+
+namespace ThreadWeaver
+{
+class Job;
+}
 
 
 typedef QList< QWeakPointer<MainWindow> > MainWindowList;

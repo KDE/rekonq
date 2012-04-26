@@ -24,23 +24,16 @@
 * ============================================================ */
 
 
-// Self Includes
+//Self Includes
 #include "tabhighlighteffect.h"
 #include "tabhighlighteffect.moc"
 
-// Local Includes
-#include "tabbar.h"
-
-// Qt Includes
-#include <QEvent>
-#include <QPainter>
+//Qt Includes
 #include <QVariant>
+#include <tabbar.h>
 
 
 const QByteArray prep("hAnim");
-
-
-// ---------------------------------------------------------------------------
 
 
 TabHighlightEffect::TabHighlightEffect(TabBar *tabBar)

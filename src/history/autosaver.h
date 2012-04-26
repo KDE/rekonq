@@ -33,7 +33,7 @@
 #include "rekonq_defines.h"
 
 // Qt Includes
-#include <QObject>
+#include <QtCore/QObject>
 
 // Forward Declarations
 class QBasicTimer;

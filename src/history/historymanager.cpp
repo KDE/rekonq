@@ -44,18 +44,16 @@
 #include <KCompletion>
 
 // Qt Includes
-#include <QList>
-#include <QUrl>
-#include <QDate>
-#include <QDateTime>
-#include <QString>
-#include <QFile>
-#include <QDataStream>
-#include <QBuffer>
-#include <QTemporaryFile>
-#include <QTimer>
+#include <QtCore/QList>
+#include <QtCore/QUrl>
+#include <QtCore/QDate>
+#include <QtCore/QDateTime>
+#include <QtCore/QString>
+#include <QtCore/QFile>
+#include <QtCore/QDataStream>
+#include <QtCore/QBuffer>
 
-#include <QClipboard>
+#include <QtGui/QClipboard>
 
 // generic algorithms
 #include <QtAlgorithms>

@@ -38,9 +38,9 @@
 #include <KLocalizedString>
 
 // Qt Includes
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QHeaderView>
+#include <QtGui/QLabel>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QHeaderView>
 
 
 UrlPanel::UrlPanel(const QString &title, QWidget *parent, Qt::WindowFlags flags)

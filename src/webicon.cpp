@@ -33,8 +33,8 @@
 #include "iconmanager.h"
 
 // Qt Includes
-#include <QTimer>
-#include <QWebFrame>
+#include <QtCore/QTimer>
+#include <QtWebKit/QWebFrame>
 
 
 WebIcon::WebIcon(const KUrl& url, QObject *parent)

@@ -35,9 +35,6 @@
 // KDE Includes
 #include <KIO/AccessManager>
 
-// Qt Includes
-#include <QByteArray>
-
 
 class REKONQ_TESTS_EXPORT NetworkAccessManager : public KIO::Integration::AccessManager
 {

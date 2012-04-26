@@ -36,7 +36,6 @@
 
 // Qt Includes
 #include <QUrl>
-#include <QString>
 
 
 class REKONQ_TESTS_EXPORT WalletBar : public KMessageWidget

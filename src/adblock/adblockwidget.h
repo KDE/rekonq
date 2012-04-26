@@ -32,7 +32,8 @@
 #include "ui_settings_adblock.h"
 
 // Qt Includes
-#include <QWidget>
+#include <QtGui/QWidget>
+#include <QtGui/QTreeWidgetItem>
 
 
 class AdBlockWidget : public QWidget, private Ui::adblock
