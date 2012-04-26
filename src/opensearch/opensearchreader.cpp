@@ -83,7 +83,6 @@ OpenSearchEngine *OpenSearchReader::read()
             || namespaceUri() != QL1S("http://a9.com/-/spec/opensearch/1.1/")
        )
     {
-        kDebug() << "The file is not an OpenSearch 1.1 file: " << name();
         raiseError(i18n("The file is not an OpenSearch 1.1 file."));
         return engine;
     }

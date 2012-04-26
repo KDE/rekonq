@@ -134,7 +134,8 @@ UrlBar::UrlBar(QWidget *parent)
     connect(_tab->view(), SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
 
     // search icon
-    connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString)), this, SLOT(updateRightIcons()));
+    connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString,QString,QString)),
+            this, SLOT(updateRightIcons()));
 
     // bookmark icon
     connect(rApp->bookmarkManager(), SIGNAL(bookmarksUpdated()), this, SLOT(updateRightIcons()));

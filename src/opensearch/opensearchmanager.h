@@ -96,7 +96,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void suggestionsReceived(const QString &text, const ResponseList &suggestion);
-    void openSearchEngineAdded(const QString &name);
+    void openSearchEngineAdded(const QString &name, const QString &searchUrl, const QString &fileName);
 
 private:
     QString trimmedEngineName(const QString &engineName) const;
@@ -116,9 +116,7 @@ private:
     KUrl m_jobUrl;
 
     QString _typedText;
-
     QString m_shortcut;
-    QString m_title;
 };
 
 #endif // OPENSEARCHMANAGER_H

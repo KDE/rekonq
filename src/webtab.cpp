@@ -318,7 +318,7 @@ void WebTab::showSearchEngine(const QPoint &pos)
 
         connect(widget, SIGNAL(webShortcutSet(KUrl,QString,QString)),
                 rApp->opensearchManager(), SLOT(addOpenSearchEngine(KUrl,QString,QString)));
-        connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString)),
+        connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString,QString,QString)),
                 this, SLOT(openSearchEngineAdded()));
 
         widget->show(extractOpensearchUrl(e), title, pos);

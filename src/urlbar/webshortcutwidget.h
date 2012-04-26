@@ -4,7 +4,6 @@
 *
 * Copyright (C) 2009 by Fredy Yanardi <fyanardi@gmail.com>
 * Copyright (C) 2010-2011 by  Lionel Chauvin <megabigbug@yahoo.fr>
-* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -29,24 +28,15 @@
 #ifndef WEBSHORTCUTWIDGET_H
 #define WEBSHORTCUTWIDGET_H
 
-
-// Rekonq Includes
-#include "rekonq_defines.h"
-
-// KDE Includes
+#include <QMenu>
 #include <KUrl>
 #include <KService>
 
-// Qt Includes
-#include <QMenu>
-
-// Forward Declarations
 class QLabel;
 class QLineEdit;
 class QPushButton;
 
-
-class REKONQ_TESTS_EXPORT WebShortcutWidget : public QMenu
+class WebShortcutWidget : public QMenu
 {
     Q_OBJECT
 public:

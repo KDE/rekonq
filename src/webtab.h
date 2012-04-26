@@ -33,21 +33,21 @@
 #include "rekonq_defines.h"
 
 // Local Includes
+#include "webpage.h"
 #include "webview.h"
 
 // KDE Includes
 #include <KParts/Part>
 
 // Qt Includes
-#include <QWidget>
+#include <QtGui/QWidget>
 
 // Forward Declarations
-class NotificationBar;
-class PreviewSelectorBar;
-class QPoint;
 class UrlBar;
+class PreviewSelectorBar;
 class WalletBar;
-class WebPage;
+class NotificationBar;
+class QPoint;
 
 
 class REKONQ_TESTS_EXPORT WebTab : public QWidget
@@ -97,7 +97,7 @@ private Q_SLOTS:
     void showRSSInfo(const QPoint &pos);
     void showSearchEngine(const QPoint &pos);
     void openSearchEngineAdded();
-    
+
     void showMessageBar();
 
 private:
