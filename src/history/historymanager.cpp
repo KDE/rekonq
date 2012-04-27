@@ -52,6 +52,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QDataStream>
 #include <QtCore/QBuffer>
+#include <QTemporaryFile>
 
 #include <QtGui/QClipboard>
 

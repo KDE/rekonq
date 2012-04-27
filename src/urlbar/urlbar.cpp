@@ -60,6 +60,7 @@
 #include <QtGui/QPalette>
 #include <QtGui/QVBoxLayout>
 #include <QClipboard>
+#include <QTimer>
 
 
 

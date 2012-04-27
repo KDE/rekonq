@@ -70,7 +70,8 @@
 #include <kparts/browseropenorsavequestion.h>
 
 // Qt Includes
-#include <QtGui/QTextDocument>
+#include <QTextDocument>
+#include <QFileInfo>
 
 
 // Returns true if the scheme and domain of the two urls match...

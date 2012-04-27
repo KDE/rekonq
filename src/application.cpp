@@ -70,6 +70,7 @@
 
 // Qt Includes
 #include <QVBoxLayout>
+#include <QDir>
 
 
 using namespace ThreadWeaver;

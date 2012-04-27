@@ -57,6 +57,7 @@
 #include <QWebSettings>
 #include <QFile>
 #include <QTextDocument>
+#include <QBitArray>
 
 
 ListItem::ListItem(const UrlSearchItem &item, QWidget *parent)
