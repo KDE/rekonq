@@ -120,21 +120,36 @@ UrlSearchList UrlResolver::orderedSearchItems()
 {
     if (_typedString.startsWith(QL1S("about:")))
     {
+        QStringList aboutUrlList;
+        aboutUrlList
+        << QL1S("about:home")
+        << QL1S("about:favorites")
+        << QL1S("about:closedTabs")
+        << QL1S("about:bookmarks")
+        << QL1S("about:history")
+        << QL1S("about:downloads")
+        << QL1S("about:tabs")
+        << QL1S("about:info");
+
+        QStringList aboutUrlResults = aboutUrlList.filter(_typedString, Qt::CaseInsensitive);
+
         UrlSearchList list;
-        UrlSearchItem home(UrlSearchItem::Browse, QL1S("about:home"),       QL1S("home"));
-        list << home;
-        UrlSearchItem favs(UrlSearchItem::Browse, QL1S("about:favorites"),  QL1S("favorites"));
-        list << favs;
-        UrlSearchItem clos(UrlSearchItem::Browse, QL1S("about:closedTabs"), QL1S("closed tabs"));
-        list << clos;
-        UrlSearchItem book(UrlSearchItem::Browse, QL1S("about:bookmarks"),  QL1S("bookmarks"));
-        list << book;
-        UrlSearchItem hist(UrlSearchItem::Browse, QL1S("about:history"),    QL1S("history"));
-        list << hist;
-        UrlSearchItem down(UrlSearchItem::Browse, QL1S("about:downloads"),  QL1S("downloads"));
-        list << down;
-        UrlSearchItem tabs(UrlSearchItem::Browse, QL1S("about:tabs"),  QL1S("tabs"));
-        list << tabs;
+        
+        if (aboutUrlResults.isEmpty())
+        {
+            UrlSearchItem info(UrlSearchItem::Browse, QL1S("about:info"),  QL1S("info"));
+            list << info;
+
+            return list;
+        }
+
+        Q_FOREACH(const QString & urlResult, aboutUrlResults)
+        {
+            QString name = urlResult;
+            name.remove(0,6);
+            UrlSearchItem item(UrlSearchItem::Browse, urlResult, name);
+            list << item;
+        }
 
         return list;
     }
