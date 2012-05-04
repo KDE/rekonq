@@ -32,6 +32,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QRadioButton" name="operaRadioButton">
+        <property name="text">
+         <string>Opera Bookmarks</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QRadioButton" name="nullRadioButton">
         <property name="text">
          <string>/dev/null</string>

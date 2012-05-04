@@ -65,6 +65,11 @@ void SyncCheckWidget::initializePage()
         syncLabel->setText(i18n("Google"));
         hostLabel->setText(ReKonfig::syncHost());
     }
+    else if (ReKonfig::syncType() == 2)
+    {
+        syncLabel->setText(i18n("Opera"));
+        hostLabel->setText(ReKonfig::syncHost());
+    }
     else
     {
         syncLabel->setText(i18n("No sync"));

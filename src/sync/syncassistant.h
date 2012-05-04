@@ -43,6 +43,7 @@ public:
         Page_Type,
         Page_FTP_Settings,
         Page_Google_Settings,
+        Page_Opera_Settings,
         Page_Check
     };
 

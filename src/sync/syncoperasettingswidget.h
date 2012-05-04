@@ -2,7 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011 by Siteshwar Vashisht <siteshwar AT gmail.com> 
+* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,29 +25,28 @@
 * ============================================================ */
 
 
-// Self Includes
-#include "syncassistant.h"
-#include "syncassistant.moc"
-
-// Local Includes
-#include "synccheckwidget.h"
-#include "syncdatawidget.h"
-#include "synchosttypewidget.h"
-
-#include "syncftpsettingswidget.h"
-#include "syncgooglesettingswidget.h"
-#include "syncoperasettingswidget.h"
+#ifndef SYNC_OPERA_SETTINGS_WIDGET_H
+#define SYNC_OPERA_SETTINGS_WIDGET_H
 
 
-SyncAssistant::SyncAssistant(QWidget *parent)
-    : QWizard(parent)
+// Rekonq Includes
+#include "rekonq_defines.h"
+
+// Ui Includes
+#include "ui_sync_opera_settings.h"
+
+// Qt Includes
+#include <QWizardPage>
+
+
+class SyncOperaSettingsWidget : public QWizardPage, private Ui::SyncOperaSettings
 {
-    setWindowTitle(i18n("sync assistant"));
+    Q_OBJECT
 
-    setPage(Page_Data, new SyncDataWidget(this));
-    setPage(Page_Type, new SyncHostTypeWidget(this));
-    setPage(Page_FTP_Settings, new SyncFTPSettingsWidget(this));
-    setPage(Page_Google_Settings, new SyncGoogleSettingsWidget(this));
-    setPage(Page_Opera_Settings, new SyncOperaSettingsWidget(this));
-    setPage(Page_Check, new SyncCheckWidget(this));
-}
+public:
+    SyncOperaSettingsWidget(QWidget *parent = 0);
+
+    int nextId() const;
+};
+
+#endif // SYNC_OPERA_SETTINGS_WIDGET_H

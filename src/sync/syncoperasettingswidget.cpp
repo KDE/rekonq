@@ -1,8 +1,8 @@
 /* ============================================================
 *
 * This file is a part of the rekonq project
-*
-* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2012 by Siteshwar Vashisht <siteshwar at gmail dot com>
+* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,28 +25,36 @@
 
 
 // Self Includes
-#include "syncassistant.h"
-#include "syncassistant.moc"
+#include "syncoperasettingswidget.h"
+#include "syncoperasettingswidget.moc"
+
+// Auto Includes
+#include "rekonq.h"
 
 // Local Includes
-#include "synccheckwidget.h"
-#include "syncdatawidget.h"
-#include "synchosttypewidget.h"
-
-#include "syncftpsettingswidget.h"
-#include "syncgooglesettingswidget.h"
-#include "syncoperasettingswidget.h"
+#include "syncassistant.h"
 
 
-SyncAssistant::SyncAssistant(QWidget *parent)
-    : QWizard(parent)
+SyncOperaSettingsWidget::SyncOperaSettingsWidget(QWidget *parent)
+    : QWizardPage(parent)
 {
-    setWindowTitle(i18n("sync assistant"));
+    setupUi(this);
+    kcfg_syncUser->setText(ReKonfig::syncUser());
+    kcfg_syncPass->setText(ReKonfig::syncPass());
 
-    setPage(Page_Data, new SyncDataWidget(this));
-    setPage(Page_Type, new SyncHostTypeWidget(this));
-    setPage(Page_FTP_Settings, new SyncFTPSettingsWidget(this));
-    setPage(Page_Google_Settings, new SyncGoogleSettingsWidget(this));
-    setPage(Page_Opera_Settings, new SyncOperaSettingsWidget(this));
-    setPage(Page_Check, new SyncCheckWidget(this));
+    kcfg_syncPass->setPasswordMode(true);
+}
+
+
+int SyncOperaSettingsWidget::nextId() const
+{
+    // save
+    ReKonfig::setSyncHost("http://link.opera.com/");
+    ReKonfig::setSyncUser(kcfg_syncUser->text());
+    ReKonfig::setSyncPass(kcfg_syncPass->text());
+
+    ReKonfig::setSyncHistory(false);
+    ReKonfig::setSyncPasswords(false);
+
+    return SyncAssistant::Page_Check;
 }

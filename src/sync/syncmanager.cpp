@@ -39,6 +39,7 @@
 #include "syncassistant.h"
 #include "ftpsynchandler.h"
 #include "googlesynchandler.h"
+#include "operasynchandler.h"
 
 // KDE Includes
 #include <klocalizedstring.h>
@@ -82,6 +83,9 @@ void SyncManager::loadSettings()
             break;
         case 1:
             _syncImplementation = new GoogleSyncHandler(this);
+            break;
+        case 2:
+            _syncImplementation = new OperaSyncHandler(this);
             break;
         default:
             kDebug() << "/dev/null";

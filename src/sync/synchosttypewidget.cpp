@@ -42,8 +42,10 @@ SyncHostTypeWidget::SyncHostTypeWidget(QWidget *parent)
 
     if (ReKonfig::syncType() == 0)
         ftpRadioButton->setChecked(true);
-    else if (ReKonfig::syncType() == 1)
+    else if(ReKonfig::syncType() == 1)
         googleRadioButton->setChecked(true);
+    else if(ReKonfig::syncType() == 2)
+        operaRadioButton->setChecked(true);
     else
         nullRadioButton->setChecked(true);
 }
@@ -57,14 +59,19 @@ int SyncHostTypeWidget::nextId() const
         ReKonfig::setSyncType(0);
         return SyncAssistant::Page_FTP_Settings;
     }
-    else if (googleRadioButton->isChecked())
+	else if (googleRadioButton->isChecked())
+	{
+		ReKonfig::setSyncType(1);
+		return SyncAssistant::Page_Google_Settings;
+	}
+    else if (operaRadioButton->isChecked())
     {
-        ReKonfig::setSyncType(1);
-        return SyncAssistant::Page_Google_Settings;
+        ReKonfig::setSyncType(2);
+        return SyncAssistant::Page_Opera_Settings;
     }
     else
     {
-        ReKonfig::setSyncType(2);
+        ReKonfig::setSyncType(3);
         return SyncAssistant::Page_Check;
     }
 

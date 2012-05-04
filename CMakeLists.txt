@@ -20,6 +20,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
 
 # ==================================================================================
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_MODULE_PATH})
 
 FIND_PACKAGE(Qt4 4.8.0 COMPONENTS QtCore QtGui QtNetwork QtWebKit REQUIRED)
 
@@ -48,6 +49,10 @@ MACRO_OPTIONAL_FIND_PACKAGE(Nepomuk)
 MACRO_BOOL_TO_01(Nepomuk_FOUND HAVE_NEPOMUK)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-nepomuk.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-nepomuk.h )
+
+FIND_PACKAGE(QCA2 REQUIRED)
+
+FIND_PACKAGE(QtOAuth REQUIRED)
 
 # ==================================================================================
 # Log messages

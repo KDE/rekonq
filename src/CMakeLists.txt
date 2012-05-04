@@ -101,6 +101,7 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     sync/ftpsynchandler.cpp
     sync/googlesynchandler.cpp
+    sync/operasynchandler.cpp
     sync/syncassistant.cpp
     sync/synchandler.cpp
     sync/syncmanager.cpp
@@ -110,6 +111,7 @@ SET( rekonq_KDEINIT_SRCS
     sync/synchosttypewidget.cpp
     sync/syncftpsettingswidget.cpp
     sync/syncgooglesettingswidget.cpp
+    sync/syncoperasettingswidget.cpp
 )
 
 IF(HAVE_NEPOMUK)
@@ -141,6 +143,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     sync/sync_data.ui
     sync/sync_ftp_settings.ui
     sync/sync_google_settings.ui
+    sync/sync_opera_settings.ui
     sync/sync_host_type.ui
  )
 
@@ -165,6 +168,8 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}
+                        ${QCA2_INCLUDE_DIR}
+                        ${QTOAUTH_INCLUDE_DIR}
 )
 
 IF(HAVE_NEPOMUK)
@@ -197,6 +202,8 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             ${KDE4_KDEUI_LIBS}
                             ${KDE4_KIO_LIBS}
                             ${KDE4_KPARTS_LIBS}
+                        ${QCA2_LIBRARY}
+                        ${QTOAUTH_LIBRARY}
 )
 
 IF(HAVE_NEPOMUK)
