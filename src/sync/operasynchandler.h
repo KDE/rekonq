@@ -61,17 +61,18 @@ public:
 
 private Q_SLOTS:
     void loadFinished(bool);
-/*    void fetchingBookmarksFinished();
-    void updateBookmarkFinished();
-*/
-    void dataSlot(KIO::Job*, QByteArray);
-    void resultSlot(KJob*);
 
-    void bookmarkDataSlot(KIO::Job*, QByteArray);
-    void bookmarkResultSlot(KJob*);
+    void fetchBookmarksDataSlot(KIO::Job*, QByteArray);
+    void fetchBookmarksResultSlot(KJob*);
 
-    void bookmarkFolderDataSlot(KIO::Job*, QByteArray);
-    void bookmarkFolderResultSlot(KJob*);
+    void createBookmarkDataSlot(KIO::Job*, QByteArray);
+    void createBookmarkResultSlot(KJob*);
+
+    void createBookmarkFolderDataSlot(KIO::Job*, QByteArray);
+    void createBookmarkFolderResultSlot(KJob*);
+
+    void deleteResourceDataSlot(KIO::Job*, QByteArray);
+    void deleteResourceResultSlot(KJob*);
 
 Q_SIGNALS:
     void syncBookmarksFinished(bool);
@@ -80,16 +81,16 @@ Q_SIGNALS:
 
 private:
     enum {SEND_CHANGES, RECEIVE_CHANGES} _mode;
-    enum BookmarkType {BOOKMARK, BOOKMARK_FOLDER};
 
     bool syncRelativeEnabled(bool);
     void startLogin();
     void getBookmarks();
+
     void handleBookmark(const QDomElement &item, KBookmarkGroup root);
     void handleBookmarkFolder(const QDomElement &item, KBookmarkGroup &root);
     void handleResource(const QDomNode &item, KBookmarkGroup &root);
+    void handleResponse(const QDomNodeList &responseList, KBookmarkGroup &root);
 
-//    void handleLocalBookmark(const KBookmarkGroup &root, const QDomElement &item);
     void handleLocalGroup(const KBookmarkGroup &root, const QDomElement &item, QString parentId);
 
     void addBookmarkOnServer(QString, QString, QString parent = QString());
@@ -108,35 +109,25 @@ private:
     static QDomElement findOperaFolder(const QDomElement &root, const QString &name);
     static QDomElement findOperaBookmark(const QDomElement &root, const KUrl &url);
 
-/*    void checkToAddGB(const KBookmarkGroup &root, const QDomNodeList &);
-    void checkToDeleteGB(BookmarkManager *, const QDomNodeList &);
-    QString getChildElement(const QDomNode &node, QString name);
-    void checkRequestCount();*/
+    void decreaseRequestCount();
 
 
-    //    QUrl _remoteBookmarksUrl;
     bool _doLogin;
 
     QWebPage _webPage;
-/*    QNetworkReply *_reply;
-    QSet<KUrl> _bookmarksToAdd;
-    QSet<QString> _bookmarksToDelete;
-    unsigned int _requestCount;*/
+
+    int _requestCount;
 
     bool _isSyncing;
 
-    QOAuth::Interface *qoauth;
-    QOAuth::ParamMap requestParam, resultParam, authParams;
-    QByteArray requestToken, requestTokenSecret;
-    QByteArray authToken, authTokenSecret;
+    QOAuth::Interface _qoauth;
 
-    QUrl url;
-//    QSslSocket *socket;
-    QByteArray urlParams;
-    QWebView *webView;
-    QByteArray xmlData;
-    QMap<KJob*, QByteArray> jobToResponseMap;
-    QMap<KJob*, KBookmarkGroup> jobToGroupMap;
+    QByteArray _requestToken, _requestTokenSecret;
+    QByteArray _authToken, _authTokenSecret;
+
+    QByteArray _xmlData;
+    QMap<KJob*, QByteArray> _jobToResponseMap;
+    QMap<KJob*, KBookmarkGroup> _jobToGroupMap;
 };
 
 #endif // OPERA_SYNC_HANDLER_H
