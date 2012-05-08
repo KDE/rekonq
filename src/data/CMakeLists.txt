@@ -1,11 +1,24 @@
 # image files
 INSTALL(
     FILES
-    bg2.png bg.png tile.gif category.png button.png
-    busywidget.gif loading.mng
-    webkit-icon.png autoscroll.png
+    bg2.png
+    bg.png
+    tile.gif
+    category.png
+    button.png
+    busywidget.gif
+    loading.mng
+    webkit-icon.png
+    autoscroll.png
     background.jpg
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
+)
+
+# fonts files
+INSTALL(
+    FILES
+    Nunito-Regular.ttf
+    DESTINATION ${DATA_INSTALL_DIR}/rekonq/fonts
 )
 
 # default bookmarks

@@ -64,8 +64,10 @@ NewTabPage::NewTabPage(QWebFrame *frame)
     , m_root(frame->documentElement())
 {
     QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
-    QString imagesPath = QL1S("file://") + KGlobal::dirs()->findResourceDir("data", "rekonq/pics/bg.png") + QL1S("rekonq/pics");
-
+    QString dataPath = QL1S("file://") + htmlFilePath;
+    dataPath.remove(QL1S("/htmls/home.html"));
+    kDebug() << "data path: " << dataPath;
+    
     QFile file(htmlFilePath);
     bool isOpened = file.open(QIODevice::ReadOnly);
     if (!isOpened)
@@ -75,7 +77,7 @@ NewTabPage::NewTabPage(QWebFrame *frame)
     else
     {
         m_html = file.readAll();
-        m_html.replace(QL1S("%2"), imagesPath);
+        m_html.replace(QL1S("%2"), dataPath);
     }
 }
 
@@ -198,6 +200,7 @@ void NewTabPage::generate(const KUrl &url)
 
     m_root = parentFrame->documentElement().findFirst(QL1S("#content"));
 
+    kDebug() << "is null? " << m_root.isNull();
     browsingMenu(url);
 
     QString title;
@@ -240,6 +243,7 @@ void NewTabPage::generate(const KUrl &url)
     }
 
     m_root.document().findFirst(QL1S("title")).setPlainText(title);
+    kDebug() << "is null find title? " << m_root.document().findFirst(QL1S("title")).isNull();
 }
 
 
@@ -297,6 +301,7 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
         else if (currentUrl == QL1S("about:home") && it.findFirst(aTagString).attribute(hrefAttributeString) == QL1S("about:favorites"))
             it.addClass(QL1S("current"));
         m_root.document().findFirst(QL1S("#navigation")).appendInside(it);
+        kDebug() << "is null find nav? " << m_root.document().findFirst(QL1S("#navigation")).isNull();
     }
 }
 
@@ -310,7 +315,7 @@ void NewTabPage::favoritesPage()
                                            QL1S("list-add"),
                                            KIconLoader::Toolbar);
     m_root.document().findFirst("#actions").appendInside(add);
-
+    
     QStringList names = ReKonfig::previewNames();
     QStringList urls = ReKonfig::previewUrls();
 
