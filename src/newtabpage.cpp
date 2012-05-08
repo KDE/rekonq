@@ -62,6 +62,7 @@
 NewTabPage::NewTabPage(QWebFrame *frame)
     : QObject(frame)
     , m_root(frame->documentElement())
+    , m_showFullHistory(false)
 {
     QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
     QString dataPath = QL1S("file://") + htmlFilePath;
@@ -100,10 +101,7 @@ void NewTabPage::generate(const KUrl &url)
             ReKonfig::setPreviewNames(names);
             ReKonfig::setPreviewUrls(urls);
 
-            // Why doesn't it work well ?
-            // m_root.appendInside(emptyPreview(names.length() - 1));
-            // Replacing with this:
-            generate(KUrl("about:favorites"));
+            loadPageForUrl(KUrl("about:favorites"));
 
             rApp->mainWindow()->currentTab()->createPreviewSelectorBar(index);
             return;
@@ -152,7 +150,7 @@ void NewTabPage::generate(const KUrl &url)
 
             MainWindow *w = rApp->mainWindowList().at(winIndex).data();
             w->mainView()->closeTab(tabIndex);
-            generate(KUrl("about:tabs"));
+            loadPageForUrl(KUrl("about:tabs"));
             return;
         }
     }
@@ -170,24 +168,43 @@ void NewTabPage::generate(const KUrl &url)
         }
     }
 
+    // about:history links
+    if (KUrl("about:history").isParentOf(url))
+    {
+        if (url.fileName() == QL1S("clear"))
+        {
+            rApp->historyManager()->clear();
+            loadPageForUrl(KUrl("about:history"));
+            return;
+        }
+
+        if (url.fileName() == QL1S("showAllItems"))
+        {
+            m_showFullHistory = true;
+            loadPageForUrl(KUrl("about:history"));
+            return;
+        }
+    }
+
     if (url == KUrl("about:downloads/clear"))
     {
         rApp->downloadManager()->clearDownloadsHistory();
-        generate(KUrl("about:downloads"));
+        loadPageForUrl(KUrl("about:downloads"));
         return;
     }
-    if (url == KUrl("about:history/clear"))
-    {
-        rApp->historyManager()->clear();
-        generate(KUrl("about:history"));
-        return;
-    }
+
     if (url == KUrl("about:bookmarks/edit"))
     {
         rApp->bookmarkManager()->slotEditBookmarks();
         return;
     }
 
+    loadPageForUrl(url);
+}
+
+
+void NewTabPage::loadPageForUrl(const KUrl &url)
+{
     // webFrame can be null. See bug:282092
     QWebFrame *parentFrame = qobject_cast<QWebFrame *>(parent());
     if (!parentFrame)
@@ -199,8 +216,8 @@ void NewTabPage::generate(const KUrl &url)
     parentFrame->setHtml(m_html);
 
     m_root = parentFrame->documentElement().findFirst(QL1S("#content"));
-
-    kDebug() << "is null? " << m_root.isNull();
+kDebug() << "IS NULL? " << m_root.isNull();
+kDebug() << "URL: " << url;
     browsingMenu(url);
 
     QString title;
@@ -243,7 +260,6 @@ void NewTabPage::generate(const KUrl &url)
     }
 
     m_root.document().findFirst(QL1S("title")).setPlainText(title);
-    kDebug() << "is null find title? " << m_root.document().findFirst(QL1S("title")).isNull();
 }
 
 
@@ -398,8 +414,18 @@ void NewTabPage::historyPage()
             }
         }
         i++;
+        if (m_showFullHistory == false && (i == 2))
+        {
+            m_root.appendInside(markup(QL1S("a")));
+            m_root.lastChild().setAttribute(QL1S("class") , QL1S("greybox"));
+            m_root.lastChild().setAttribute(QL1S("href") , QL1S("about:history/showAllItems"));
+            m_root.lastChild().setPlainText(i18n("Show full History"));
+            return;
+        }
     }
     while (model->hasIndex(i , 0 , QModelIndex()));
+
+    m_showFullHistory = false;
 }
 
 
@@ -755,7 +781,7 @@ void NewTabPage::removePreview(int index)
     ReKonfig::setPreviewNames(names);
     ReKonfig::setPreviewUrls(urls);
 
-    generate(KUrl("about:favorites"));
+    loadPageForUrl(KUrl("about:favorites"));
 
     ReKonfig::self()->writeConfig();
 }

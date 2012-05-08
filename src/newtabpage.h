@@ -71,6 +71,8 @@ private:
     void downloadsPage();
     void tabsPage();
 
+    void loadPageForUrl(const KUrl &url);
+
     // --------------------------------------------------------------------------
     // "low-level" functions
     // we use these to create the pages over
@@ -117,6 +119,8 @@ private:
 
     QString m_html;
     QWebElement m_root;
+
+    bool m_showFullHistory;
 };
 
 #endif // REKONQ_NEW_TAB_PAGE
