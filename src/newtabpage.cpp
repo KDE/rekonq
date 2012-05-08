@@ -511,11 +511,14 @@ void NewTabPage::downloadsPage()
         if (QFile::exists(file))
         {
             div.appendInside(markup(QL1S("a")));
+            div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
             div.lastChild().setAttribute(QL1S("href"), QL1S("file://") + dir);
             div.lastChild().setPlainText(i18n("Open directory"));
 
             div.appendInside(QL1S(" - "));
+            
             div.appendInside(markup(QL1S("a")));
+            div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
             div.lastChild().setAttribute(QL1S("href"), QL1S("file://") + file);
             div.lastChild().setPlainText(i18n("Open file"));
         }
