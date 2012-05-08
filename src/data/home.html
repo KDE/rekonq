@@ -75,9 +75,9 @@ width: 15%;
 }
 
 #navigation {
--webkit-border-image: url(%2/pics/bg2.png) 12 12 12 12  stretch stretch;
+/* -webkit-border-image: url(%2/pics/bg2.png) 12 12 12 12  stretch stretch; */
 display: table;
-border-width: 5px;
+/* border-width: 5px; */
 margin-left: auto;
 margin-right: auto;
 }
@@ -98,7 +98,8 @@ opacity: 0.6;
 }
 
 .link img, .link span {
-vertical-align: middle; display: inline-block; 
+vertical-align: middle; display: inline-block;
+margin:0 10px;
 }
 .link a, .link span {
 color: black;
@@ -217,17 +218,9 @@ text-align: center;
 <body>
 
 <div id="rekonq-newtabpage">
-    <div id="top">
-       <div class="topSide"></div>
-       <div class="topMiddle">
-            <div id="navigation"></div>
-       </div>
-       <div class="topSide">
-            <div id="actions"></div>
-        </div>
-    </div>
-    <div id="content">
-    </div>
+    <div id="navigation"></div>
+    <div id="actions"></div>
+    <div id="content"></div>
 </div>
 
 <div id="models" style="display:none">
