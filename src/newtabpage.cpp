@@ -67,7 +67,6 @@ NewTabPage::NewTabPage(QWebFrame *frame)
     QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
     QString dataPath = QL1S("file://") + htmlFilePath;
     dataPath.remove(QL1S("/htmls/home.html"));
-    kDebug() << "data path: " << dataPath;
     
     QFile file(htmlFilePath);
     bool isOpened = file.open(QIODevice::ReadOnly);
@@ -126,8 +125,6 @@ void NewTabPage::generate(const KUrl &url)
         {
             const int winIndex = url.queryItem(QL1S("win")).toInt();
             const int tabIndex = url.queryItem(QL1S("tab")).toInt();
-            kDebug() << "win = " << winIndex;
-            kDebug() << "tab = " << tabIndex;
 
             MainWindow *w = rApp->mainWindowList().at(winIndex).data();
 
@@ -145,8 +142,6 @@ void NewTabPage::generate(const KUrl &url)
         {
             const int winIndex = url.queryItem(QL1S("win")).toInt();
             const int tabIndex = url.queryItem(QL1S("tab")).toInt();
-            kDebug() << "win = " << winIndex;
-            kDebug() << "tab = " << tabIndex;
 
             MainWindow *w = rApp->mainWindowList().at(winIndex).data();
             w->mainView()->closeTab(tabIndex);
@@ -161,7 +156,6 @@ void NewTabPage::generate(const KUrl &url)
         if (url.fileName() == QL1S("restore"))
         {
             const int tabIndex = url.queryItem(QL1S("tab")).toInt();
-            kDebug() << "tab = " << tabIndex;
 
             rApp->mainWindow()->mainView()->restoreClosedTab(tabIndex, false);
             return;
@@ -216,8 +210,7 @@ void NewTabPage::loadPageForUrl(const KUrl &url)
     parentFrame->setHtml(m_html);
 
     m_root = parentFrame->documentElement().findFirst(QL1S("#content"));
-kDebug() << "IS NULL? " << m_root.isNull();
-kDebug() << "URL: " << url;
+
     browsingMenu(url);
 
     QString title;
@@ -317,7 +310,6 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
         else if (currentUrl == QL1S("about:home") && it.findFirst(aTagString).attribute(hrefAttributeString) == QL1S("about:favorites"))
             it.addClass(QL1S("current"));
         m_root.document().findFirst(QL1S("#navigation")).appendInside(it);
-        kDebug() << "is null find nav? " << m_root.document().findFirst(QL1S("#navigation")).isNull();
     }
 }
 
@@ -462,7 +454,6 @@ void NewTabPage::closedTabsPage()
 
     QList<TabHistory> links = rApp->mainWindow()->mainView()->recentlyClosedTabs();
 
-    kDebug() << "CLOSED TABS: " << links.count();
     if (links.isEmpty())
     {
         m_root.addClass(QL1S("empty"));
@@ -473,7 +464,6 @@ void NewTabPage::closedTabsPage()
     for (int i = 0; i < links.count(); ++i)
     {
         TabHistory item = links.at(i);
-        kDebug() << "URL " << i << " : " << item.url;
         QWebElement prev;
 
         if (item.url.isEmpty())
