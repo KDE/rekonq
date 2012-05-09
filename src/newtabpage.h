@@ -83,6 +83,7 @@ private:
     QWebElement tabPreview(int winIndex, int tabIndex, const KUrl &url, const QString &title);
     QWebElement closedTabPreview(int index, const KUrl &url, const QString &title);
 
+    void reloadPreview(int index);
     void removePreview(int index);
 
     /**

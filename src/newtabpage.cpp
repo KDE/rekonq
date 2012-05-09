@@ -105,15 +105,25 @@ void NewTabPage::generate(const KUrl &url)
             rApp->mainWindow()->currentTab()->createPreviewSelectorBar(index);
             return;
         }
+
         if (url.directory() == QL1S("preview/remove"))
         {
-            removePreview(url.fileName().toInt());
+            int index = url.fileName().toInt();
+            removePreview(index);
             return;
         }
+
         if (url.directory() == QL1S("preview/modify"))
         {
             int index = url.fileName().toInt();
             rApp->mainWindow()->currentTab()->createPreviewSelectorBar(index);
+            return;
+        }
+
+        if (url.directory() == QL1S("preview/reload"))
+        {
+            int index = url.fileName().toInt();
+            reloadPreview(index);
             return;
         }
     }
@@ -603,6 +613,26 @@ QWebElement NewTabPage::emptyPreview(int index)
 }
 
 
+void NewTabPage::reloadPreview(int index)
+{
+    QString id = QL1S("#preview") + QString::number(index);
+    QWebElement thumb = m_root.document().findFirst(id);
+
+    // Set loading animation
+    thumb.findFirst(QL1S(".preview img")).setAttribute(QL1S("src"), QL1S("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
+    thumb.findFirst(QL1S("span a")).setPlainText(i18n("Loading Preview..."));
+    
+    QString urlString = ReKonfig::previewUrls().at(index);
+    QString nameString = ReKonfig::previewNames().at(index);
+
+    kDebug() << "URL: " << urlString;
+    kDebug() << "NAME: " << nameString;
+
+    // Load URL
+    QWebFrame *frame = qobject_cast<QWebFrame *>(parent());
+    WebSnap *snap = new WebSnap(KUrl(urlString), frame);
+}
+
 // NOTE: comment this out WITHOUT really deleting. May be of inspiration...
 // QWebElement NewTabPage::loadingPreview(int index, const KUrl &url)
 // {
@@ -693,7 +723,7 @@ QWebElement NewTabPage::tabPreview(int winIndex, int tabIndex, const KUrl &url, 
 
     setupTabPreview(prev, winIndex, tabIndex);
     prev.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
-    prev.findFirst(QL1S(".modify")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+    prev.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
     return prev;
 }
 
@@ -723,25 +753,25 @@ QWebElement NewTabPage::closedTabPreview(int index, const KUrl &url, const QStri
 void NewTabPage::hideControls(QWebElement e)
 {
     e.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
-    e.findFirst(QL1S(".modify")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+    e.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
 }
 
 
 void NewTabPage::showControls(QWebElement e)
 {
     e.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
-    e.findFirst(QL1S(".modify")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
+    e.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
 }
 
 
 void NewTabPage::setupPreview(QWebElement e, int index)
 {
     e.findFirst(QL1S(".remove img")).setAttribute(QL1S("src"), QL1S("file:///") + KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
-    e.findFirst(QL1S(".remove")).setAttribute(QL1S("title"), QL1S("Remove favorite"));
-    e.findFirst(QL1S(".modify img")).setAttribute(QL1S("src"), QL1S("file:///") + KIconLoader::global()->iconPath("insert-image", KIconLoader::DefaultState));
-    e.findFirst(QL1S(".modify")).setAttribute(QL1S("title"), QL1S("Set new favorite"));
+    e.findFirst(QL1S(".remove")).setAttribute(QL1S("title"), i18n("Remove favorite"));
+    e.findFirst(QL1S(".reload img")).setAttribute(QL1S("src"), QL1S("file:///") + KIconLoader::global()->iconPath("view-refresh", KIconLoader::DefaultState));
+    e.findFirst(QL1S(".reload")).setAttribute(QL1S("title"), i18n("Set new favorite"));
 
-    e.findFirst(QL1S(".modify")).setAttribute(QL1S("href"), QL1S("about:preview/modify/") + QVariant(index).toString());
+    e.findFirst(QL1S(".reload")).setAttribute(QL1S("href"), QL1S("about:preview/reload/") + QVariant(index).toString());
     e.findFirst(QL1S(".remove")).setAttribute(QL1S("href"), QL1S("about:preview/remove/") + QVariant(index).toString());
 
     e.setAttribute(QL1S("id"), QL1S("preview") + QVariant(index).toString());
