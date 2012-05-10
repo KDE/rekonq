@@ -29,6 +29,7 @@ SET( rekonq_KDEINIT_SRCS
     tabpreviewpopup.cpp
     tabbar.cpp
     tabhighlighteffect.cpp
+    thumbupdater.cpp
     urlfilterproxymodel.cpp
     urlpanel.cpp
     walletbar.cpp

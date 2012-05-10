@@ -42,6 +42,7 @@
 #include "mainview.h"
 #include "mainwindow.h"
 #include "previewselectorbar.h"
+#include "thumbupdater.h"
 #include "websnap.h"
 #include "webpage.h"
 #include "webtab.h"
@@ -618,75 +619,15 @@ void NewTabPage::reloadPreview(int index)
     QString id = QL1S("#preview") + QString::number(index);
     QWebElement thumb = m_root.document().findFirst(id);
 
-    // Set loading animation
-    thumb.findFirst(QL1S(".preview img")).setAttribute(QL1S("src"), QL1S("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
-    thumb.findFirst(QL1S("span a")).setPlainText(i18n("Loading Preview..."));
-    
     QString urlString = ReKonfig::previewUrls().at(index);
     QString nameString = ReKonfig::previewNames().at(index);
 
     kDebug() << "URL: " << urlString;
     kDebug() << "NAME: " << nameString;
 
-    // Load URL
-    QWebFrame *frame = qobject_cast<QWebFrame *>(parent());
-    WebSnap *snap = new WebSnap(KUrl(urlString), frame);
+    ThumbUpdater *t = new ThumbUpdater(thumb, urlString, nameString);
+    t->updateThumb();
 }
-
-// NOTE: comment this out WITHOUT really deleting. May be of inspiration...
-// QWebElement NewTabPage::loadingPreview(int index, const KUrl &url)
-// {
-//     QWebElement prev = markup(QL1S(".thumbnail"));
-//
-//     prev.findFirst(QL1S(".preview img")).setAttribute(QL1S("src"),
-//             QL1S("file:///") + KStandardDirs::locate("appdata", "pics/busywidget.gif"));
-//     prev.findFirst(QL1S("span a")).setPlainText(i18n("Loading Preview..."));
-//     prev.findFirst(QL1S("a")).setAttribute(QL1S("href"), url.toMimeDataString());
-//
-//     setupPreview(prev, index);
-//     showControls(prev);
-//
-//     // NOTE: we need the page frame for two reasons
-//     // 1) to link to the WebPage calling the snapFinished slot
-//     // 2) to "auto-destroy" snaps on tab closing :)
-//     QWebFrame *frame = qobject_cast<QWebFrame *>(parent());
-//     WebSnap *snap = new WebSnap(url, frame);
-//     connect(snap, SIGNAL(snapDone(bool)), frame->page(), SLOT(updateImage(bool)), Qt::UniqueConnection);
-//     return prev;
-// }
-//
-//
-// void NewTabPage::updateThumbs()
-// {
-//     // Update page, but only if open
-//     if (m_root.document().findAll(QL1S("#rekonq-newtabpage")).count() == 0)
-//         return;
-//     if (m_root.findAll(QL1S(".favorites")).count() == 0 && m_root.findAll(QL1S(".closedTabs")).count() == 0)
-//         return;
-//
-//     QStringList urls = ReKonfig::previewUrls();
-//     QStringList names = ReKonfig::previewNames();
-//
-//     for (int i = 0; i < urls.count(); i++)
-//     {
-//         KUrl url = KUrl(urls.at(i));
-//         QString title = names.at(i);
-//
-//         if (WebSnap::existsImage(url))
-//         {
-//             QWebElement prev = m_root.findFirst(QL1S("#preview") + QVariant(i).toString());
-//             if (KUrl(prev.findFirst("a").attribute(QL1S("href"))) == url)
-//             {
-//                 QWebElement newPrev = validPreview(i, url, title);
-//
-//                 if (m_root.findAll(QL1S(".closedTabs")).count() != 0)
-//                     hideControls(newPrev);
-//
-//                 prev.replace(newPrev);
-//             }
-//         }
-//     }
-// }
 
 
 QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &title)
