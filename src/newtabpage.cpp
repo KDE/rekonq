@@ -43,6 +43,7 @@
 #include "mainwindow.h"
 #include "previewselectorbar.h"
 #include "thumbupdater.h"
+#include "urlfilterproxymodel.h"
 #include "websnap.h"
 #include "webpage.h"
 #include "webtab.h"
@@ -189,6 +190,14 @@ void NewTabPage::generate(const KUrl &url)
             loadPageForUrl(KUrl("about:history"));
             return;
         }
+
+        if (url.fileName() == QL1S("search"))
+        {
+            QString value = url.queryItemValue( QL1S("q") );
+            loadPageForUrl(KUrl("about:history"), value);
+            return;
+        }
+
     }
 
     if (url == KUrl("about:downloads/clear"))
@@ -208,7 +217,7 @@ void NewTabPage::generate(const KUrl &url)
 }
 
 
-void NewTabPage::loadPageForUrl(const KUrl &url)
+void NewTabPage::loadPageForUrl(const KUrl &url, const QString & filter)
 {
     // webFrame can be null. See bug:282092
     QWebFrame *parentFrame = qobject_cast<QWebFrame *>(parent());
@@ -240,7 +249,7 @@ void NewTabPage::loadPageForUrl(const KUrl &url)
     }
     else if (encodedUrl == QByteArray("about:history"))
     {
-        historyPage();
+        historyPage(filter);
         updateWindowIcon();
         title = i18n("History");
     }
@@ -358,10 +367,13 @@ void NewTabPage::favoritesPage()
 }
 
 
-void NewTabPage::historyPage()
+void NewTabPage::historyPage(const QString & filter)
 {
     m_root.addClass(QL1S("history"));
 
+    const QWebElement searchForm = createFormItem(i18n("Search History"), QL1S("about:history/search"));
+    m_root.document().findFirst(QL1S("#actions")).appendInside(searchForm);
+    
     const QWebElement clearHistory = createLinkItem(i18n("Clear History"),
                                      QL1S("about:history/clear"),
                                      QL1S("edit-clear"),
@@ -369,11 +381,26 @@ void NewTabPage::historyPage()
     m_root.document().findFirst(QL1S("#actions")).appendInside(clearHistory);
 
     HistoryTreeModel *model = rApp->historyManager()->historyTreeModel();
+    UrlFilterProxyModel *proxy = new UrlFilterProxyModel(this);
+    proxy->setSourceModel(model);
 
-    if (model->rowCount() == 0)
+    bool filterIsEmpty = filter.isEmpty();
+    
+    if (!filterIsEmpty)
+        proxy->setFilterFixedString(filter);
+
+    if (proxy->rowCount() == 0)
     {
-        m_root.addClass(QL1S("empty"));
-        m_root.setPlainText(i18n("Your browsing history is empty"));
+        if (filterIsEmpty)
+        {
+            m_root.addClass(QL1S("empty"));
+            m_root.setPlainText(i18n("Your browsing history is empty"));
+        }
+        else
+        {
+            m_root.addClass(QL1S("empty"));
+            m_root.setPlainText(i18n("No matches for string %1 in history", filter));
+        }
         return;
     }
 
@@ -382,17 +409,17 @@ void NewTabPage::historyPage()
     const int truncateSize = 100;
     do
     {
-        QModelIndex index = model->index(i, 0, QModelIndex());
-        if (model->hasChildren(index))
+        QModelIndex index = proxy->index(i, 0, QModelIndex());
+        if (proxy->hasChildren(index))
         {
             m_root.appendInside(markup(QL1S("h3")));
             m_root.lastChild().setPlainText(index.data().toString());
 
             m_root.appendInside(markup(QL1S(".folder")));
             QWebElement little = m_root.lastChild();
-            for (int j = 0; j < model->rowCount(index); ++j)
+            for (int j = 0; j < proxy->rowCount(index); ++j)
             {
-                QModelIndex son = model->index(j, 0, index);
+                QModelIndex son = proxy->index(j, 0, index);
                 KUrl u = son.data(HistoryModel::UrlStringRole).toUrl();
 
                 little.appendInside(son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm"));
@@ -417,7 +444,7 @@ void NewTabPage::historyPage()
             }
         }
         i++;
-        if (m_showFullHistory == false && (i == 2))
+        if (filterIsEmpty && m_showFullHistory == false && (i == 2))
         {
             m_root.appendInside(markup(QL1S("a")));
             m_root.lastChild().setAttribute(QL1S("class") , QL1S("greybox"));
@@ -426,7 +453,7 @@ void NewTabPage::historyPage()
             return;
         }
     }
-    while (model->hasIndex(i , 0 , QModelIndex()));
+    while (proxy->hasIndex(i , 0 , QModelIndex()));
 
     m_showFullHistory = false;
 }
@@ -436,6 +463,9 @@ void NewTabPage::bookmarksPage()
 {
     m_root.addClass(QL1S("bookmarks"));
 
+    const QWebElement searchForm = createFormItem(i18n("Search Bookmarks"), QL1S("about:bookmarks/search"));
+    m_root.document().findFirst(QL1S("#actions")).appendInside(searchForm);
+    
     const QWebElement editBookmarks = createLinkItem(i18n("Edit Bookmarks"),
                                       QL1S("about:bookmarks/edit"),
                                       QL1S("bookmarks-organize"),
@@ -492,6 +522,9 @@ void NewTabPage::closedTabsPage()
 void NewTabPage::downloadsPage()
 {
     m_root.addClass(QL1S("downloads"));
+
+    const QWebElement searchForm = createFormItem(i18n("Search Downloads"), QL1S("about:download/search"));
+    m_root.document().findFirst(QL1S("#actions")).appendInside(searchForm);
 
     const QWebElement clearDownloads = createLinkItem(i18n("Clear Downloads"),
                                        QL1S("about:downloads/clear"),
@@ -809,6 +842,25 @@ QWebElement NewTabPage::createLinkItem(const QString &title, const QString &urlS
     nav.findFirst(QL1S("img")).setAttribute(QL1S("src"), QL1S("file://") + loader->iconPath(iconPath, groupOrSize));
     nav.findFirst(QL1S("span")).appendInside(title);
     return nav;
+}
+
+
+QWebElement NewTabPage::createFormItem(const QString &title, const QString &urlString) const
+{
+    QWebElement form = markup(QL1S("form"));
+
+    form.setAttribute(QL1S("method"), QL1S("GET"));
+    form.setAttribute(QL1S("action"), urlString);
+
+    form.appendInside(markup(QL1S("input")));
+    form.lastChild().setAttribute(QL1S("type"), QL1S("text"));
+    form.lastChild().setAttribute(QL1S("name"), QL1S("q"));
+    
+    form.appendInside(markup(QL1S("input")));
+    form.lastChild().setAttribute(QL1S("type"), QL1S("submit"));
+    form.lastChild().setAttribute(QL1S("value"), title);
+    
+    return form;
 }
 
 

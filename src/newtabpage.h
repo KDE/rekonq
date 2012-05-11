@@ -65,13 +65,13 @@ private:
     void browsingMenu(const KUrl &currentUrl);
 
     void favoritesPage();
-    void historyPage();
+    void historyPage(const QString & filter = QString());
     void bookmarksPage();
     void closedTabsPage();
     void downloadsPage();
     void tabsPage();
 
-    void loadPageForUrl(const KUrl &url);
+    void loadPageForUrl(const KUrl &url, const QString & filter = QString());
 
     // --------------------------------------------------------------------------
     // "low-level" functions
@@ -117,6 +117,8 @@ private:
 
 private:
     QWebElement createLinkItem(const QString &title, const QString &urlString, const QString &iconPath, int groupOrSize) const;
+
+    QWebElement createFormItem(const QString &title, const QString &urlString) const;
 
     QString m_html;
     QWebElement m_root;
