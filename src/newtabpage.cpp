@@ -200,13 +200,25 @@ void NewTabPage::generate(const KUrl &url)
 
     }
 
-    if (url == KUrl("about:downloads/clear"))
+    // about:downloads links
+    if (KUrl("about:downloads").isParentOf(url))
     {
-        rApp->downloadManager()->clearDownloadsHistory();
-        loadPageForUrl(KUrl("about:downloads"));
-        return;
-    }
+        if (url.fileName() == QL1S("clear"))
+        {
+            rApp->downloadManager()->clearDownloadsHistory();
+            loadPageForUrl(KUrl("about:downloads"));
+            return;
+        }
 
+        if (url.fileName() == QL1S("search"))
+        {
+            QString value = url.queryItemValue( QL1S("q") );
+            loadPageForUrl(KUrl("about:downloads"), value);
+            return;
+        }
+
+    }
+    
     if (url == KUrl("about:bookmarks/edit"))
     {
         rApp->bookmarkManager()->slotEditBookmarks();
@@ -261,7 +273,7 @@ void NewTabPage::loadPageForUrl(const KUrl &url, const QString & filter)
     }
     else if (encodedUrl == QByteArray("about:downloads"))
     {
-        downloadsPage();
+        downloadsPage(filter);
         updateWindowIcon();
         title = i18n("Downloads");
     }
@@ -463,9 +475,6 @@ void NewTabPage::bookmarksPage()
 {
     m_root.addClass(QL1S("bookmarks"));
 
-    const QWebElement searchForm = createFormItem(i18n("Search Bookmarks"), QL1S("about:bookmarks/search"));
-    m_root.document().findFirst(QL1S("#actions")).appendInside(searchForm);
-    
     const QWebElement editBookmarks = createLinkItem(i18n("Edit Bookmarks"),
                                       QL1S("about:bookmarks/edit"),
                                       QL1S("bookmarks-organize"),
@@ -519,11 +528,11 @@ void NewTabPage::closedTabsPage()
 }
 
 
-void NewTabPage::downloadsPage()
+void NewTabPage::downloadsPage(const QString & filter)
 {
     m_root.addClass(QL1S("downloads"));
 
-    const QWebElement searchForm = createFormItem(i18n("Search Downloads"), QL1S("about:download/search"));
+    const QWebElement searchForm = createFormItem(i18n("Search Downloads"), QL1S("about:downloads/search"));
     m_root.document().findFirst(QL1S("#actions")).appendInside(searchForm);
 
     const QWebElement clearDownloads = createLinkItem(i18n("Clear Downloads"),
@@ -534,6 +543,8 @@ void NewTabPage::downloadsPage()
 
     DownloadList list = rApp->downloadManager()->downloads();
 
+    bool filterIsEmpty = filter.isEmpty();
+    
     if (list.isEmpty())
     {
         m_root.addClass(QL1S("empty"));
@@ -543,13 +554,22 @@ void NewTabPage::downloadsPage()
 
     Q_FOREACH(DownloadItem * item, list)
     {
+        KUrl u = KUrl(item->destinationUrl());
+        QString fName = u.fileName();
+
+        QString srcUrl = item->originUrl();
+        
+        if (!filterIsEmpty)
+        {
+            if (!fName.contains(filter, Qt::CaseInsensitive) && !srcUrl.contains(filter, Qt::CaseInsensitive))
+                continue;
+        }
+        
         m_root.prependInside(markup(QL1S("div")));
 
         QWebElement div = m_root.firstChild();
         div.addClass(QL1S("download"));
 
-        KUrl u = KUrl(item->destinationUrl());
-        QString fName = u.fileName();
         QString dir = u.directory();
         QString file = dir + QL1C('/') + fName;
 
@@ -565,7 +585,7 @@ void NewTabPage::downloadsPage()
         div.appendInside(QL1S("<em>") + date +  QL1S("</em>"));
         div.appendInside(QL1S("<br />"));
 
-        div.appendInside(QL1S("<a href=") + item->originUrl() +  QL1C('>') + item->originUrl() +  QL1S("</a>"));
+        div.appendInside(QL1S("<a href=") + srcUrl +  QL1C('>') + srcUrl +  QL1S("</a>"));
         div.appendInside(QL1S("<br />"));
 
         if (QFile::exists(file))

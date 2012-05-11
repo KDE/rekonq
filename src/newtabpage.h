@@ -68,7 +68,7 @@ private:
     void historyPage(const QString & filter = QString());
     void bookmarksPage();
     void closedTabsPage();
-    void downloadsPage();
+    void downloadsPage(const QString & filter = QString());
     void tabsPage();
 
     void loadPageForUrl(const KUrl &url, const QString & filter = QString());
