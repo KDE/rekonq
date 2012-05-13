@@ -12,221 +12,225 @@
 /* -------------------------------------------------------- */
 /* generic styles */
 
-* {
-border: 0; padding: 0; margin: 0;
-}
-
 @font-face {
     font-family: 'Nunito';
     src: url(%2/fonts/Nunito-Regular.ttf);
     font-weight: normal;
     font-style: normal;
-
 }
 
 body {
-background: url(%2/pics/background.jpg) repeat-y #fff;
-font-family: 'Nunito', sans-serif;
-font-size: 0.9em;
-}
-
-#rekonq-newtabpage {
-width: 96%;
-text-align: center; /* center #navigation */
-margin: 0 2%;
-}
-
-#content {
-text-align: left;
-margin: 0 1% 2% 1%;
+    background: url(%2/pics/background.jpg) repeat-y #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9em;
+    border: 0;
+    padding: 0;
+    margin: 0;
 }
 
 h3 {
-padding: 0.2em;
-margin: 1.5em 0 0.5em;
-font: normal bold 1em;
+    padding: 0.2em;
+    margin: 1.5em 0 0.5em;
+    font: normal bold 1em;
 }
 
 h4 {
-padding: 0.2em;
-margin: 1em 0 0.5em;
-font: normal bold 1em;
-border-bottom: 1px solid black;
+    padding: 0.2em;
+    margin: 1em 0 0.5em;
+    font: normal bold 1em;
+    border-bottom: 1px solid black;
 }
 
 a {
-color: #3F7AB7;
-text-decoration: none;
--webkit-transition: color 0.5s ease;
+    color: #3F7AB7;
+    text-decoration: none;
+    -webkit-transition: color 0.5s ease;
 }
+
 a:hover {
-color: black;
+    color: black;
 }
+
+input {
+    min-width: 180px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8em;
+}
+
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+/* -------------------------------------------------------- */
+/* content div */
+
+
+#rekonq-newtabpage {
+    width: 90%;
+    text-align: center; /* center #navigation */
+    margin: 0 5%;
+}
+
+#navigation {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#actions {
+    display: table;
+    margin: 20px auto;
+    width: 100%;
+}
+
+#content {
+    text-align: left;
+    margin: 0;
+}
+
 
 /* -------------------------------------------------------- */
 /* Top bar */
 
-#top {
-margin: 20px;
-display:table;
-width: 95%;
-}
-
-.topSide, .topMiddle {
-display:table-cell;
-}
-
-.topSide {
-width: 15%;
-}
-
-#navigation {
-display: table;
-margin-left: auto;
-margin-right: auto;
-}
-
-
-#actions {
-display: table;
-width:auto;
-}
-
 .link {
-display: table-cell;
-/*display:inline-block;*/
--webkit-transition: opacity 0.5s ease;
+    display: table-cell;
+    /*display:inline-block;*/
+    -webkit-transition: opacity 0.5s ease;
 }
 
 .link:not(.current):hover {
-opacity: 0.6;
+    opacity: 0.6;
 }
 
 .link img, .link span {
-vertical-align: middle; display: inline-block;
-margin:0 10px;
+    vertical-align: middle; display: inline-block;
+    margin:0 10px;
 }
 
 .link a, .link span {
-color: black;
+    color: black;
 }
 
 #actions .link img {
-margin-right: 3px; width: 16px;
+    margin-right: 3px; width: 16px;
 }
 
 .current {
-border-width: 6px;
--webkit-border-image: url(%2/pics/button.png) 6 stretch stretch;
+    border-width: 6px;
+    -webkit-border-image: url(%2/pics/button.png) 6 stretch stretch;
 }
 
 .link:not(.current){
-margin: 0 10px;
-padding:3px;
+    margin: 0 10px;
+    padding:3px;
 }
 
 /* -------------------------------------------------------- */
 /* Previews */
 
-#content.favorites, #content.closedTabs {
-text-align: center;
+#content.favorites, #content.closedTabs, #content.bookmarks {
+    text-align: center;
 }
 
 .thumbnail {
-display: inline-block;
-width: 25%; min-width: 240px;
-height: 170px;
-margin: 3% 0 3% 0;
+    display: inline-block;
+    width: 25%; min-width: 240px;
+    height: 170px;
+    margin: 3% 0 3% 0;
 }
 
 .thumb-inner {
-width: 232px; /* 200 + 16*2 */
-margin: auto;
+    width: 232px; /* 200 + 16*2 */
+    margin: auto;
 }
 
 .preview {
-display: table-cell; vertical-align: middle;
-width: 200px; height: 150px;
-padding: 14px 16px 12px;
-background: url(%2/pics/bg.png) no-repeat;
--webkit-background-size: 100% 100%; 
+    display: table-cell;
+    vertical-align: middle;
+    width: 200px;
+    height: 150px;
+    padding: 14px 16px 12px;
+    background: url(%2/pics/bg.png) no-repeat;
+    -webkit-background-size: 100% 100%; 
 }
 
 .title {
-padding: 0 12px;
+    padding: 0 12px;
 }
 
 .button img {
-display: inline-block;
-width: 16px;
-height: 16px;
-opacity: 0;
-}
-
-.remove {
-float: right;
-}
-.reload {
-float: left;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    opacity: 0;
 }
 
 .button img, .preview {
--webkit-transition: opacity 0.8s ease-in-out;
+    -webkit-transition: opacity 0.8s ease-in-out;
 }
+
 .thumb-inner:hover .preview {
-opacity: 0.6;
+    opacity: 0.6;
 }
+
 .thumb-inner:hover .button img {
-opacity: 0.4;
--webkit-transition: opacity 0.8s ease-out;
+    opacity: 0.4;
+    -webkit-transition: opacity 0.8s ease-out;
 }
+
 .thumb-inner .button img:hover {
-opacity: 1;
+    opacity: 1;
 }
+
 .thumbnail a:hover {
-color:#3F7AB7;
+    color:#3F7AB7;
 }
 
 /* -------------------------------------------------------- */
 /* Bookmarks page */
 
 .bookmarkfolder {
-display: inline-block;
-background: #BBB;
-border-radius: 15px;
-padding: 0px 15px 15px 15px;
-float:left;
-margin: 1em;
-width: 28%;
+    background: #CCC;
+    border-radius: 15px;
+    padding: 0px 15px 15px 15px;
+    float:left;
+    margin: 1em;
+    width: 28%;
+    text-align: left;
 }
 
 /* -------------------------------------------------------- */
 /* Downloads page */
 
 .download {
-margin: 2em 5em;
+    margin: 2em 0;
 }
 
 .download img {
-float: left;
-margin-right: 5px;
+    float: left;
+    margin-right: 5px;
 }
 
 .download a.greylink {
-color:grey;
+    color:grey;
 }
 
 /* -------------------------------------------------------- */
 /* History page */
 
 .greybox {
-background: #CCC;
-padding: 5px 10px;
+    background: #CCC;
+    padding: 5px 10px;
 }
 
 .historyfolder {
-margin-left: 4em;
-margin-bottom: 1em;
+    margin-left: 4em;
+    margin-bottom: 1em;
 }
 
 
@@ -234,10 +238,9 @@ margin-bottom: 1em;
 /* Empty pages : in the end : need to overwrite */
 
 #content.empty {
-margin-top: 10%;
-text-align: center;
+    margin-top: 10%;
+    text-align: center;
 }
-
 
 </style>
 </head>
@@ -273,9 +276,9 @@ elements creation, cloning one of these.
                 </div>
             </a>
             <div class="title">
-                <a class="button reload"><img /></a>
+                <a class="button left"><img /></a>
                 <span><a></a></span>
-                <a class="button remove"><img /></a>
+                <a class="button right"><img /></a>
             </div>
         </div>
     </div>
@@ -284,8 +287,8 @@ elements creation, cloning one of these.
     <a></a>
     <br />
     <img />
-    <p class="historyfolder"></p>
-    <p class="bookmarkfolder"></p>
+    <div class="historyfolder"></div>
+    <div class="bookmarkfolder"></div>
 </div>
 
 </body>

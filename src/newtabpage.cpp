@@ -365,11 +365,12 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
 void NewTabPage::favoritesPage()
 {
     m_root.addClass(QL1S("favorites"));
-
-    const QWebElement add = createLinkItem(i18n("Add Favorite"),
-                                           QL1S("about:preview/add"),
-                                           QL1S("list-add"),
-                                           KIconLoader::Toolbar);
+    
+    QWebElement add = createLinkItem(i18n("Add Favorite"),
+                                    QL1S("about:preview/add"),
+                                    QL1S("list-add"),
+                                    KIconLoader::Toolbar);
+    add.setAttribute(QL1S("class"), QL1S("right"));
     m_root.document().findFirst("#actions").appendInside(add);
     
     QStringList names = ReKonfig::previewNames();
@@ -399,13 +400,16 @@ void NewTabPage::historyPage(const QString & filter)
 {
     m_root.addClass(QL1S("history"));
 
-    const QWebElement searchForm = createFormItem(i18n("Search History"), QL1S("about:history/search"));
+    QWebElement searchForm = createFormItem(i18n("Search History"), QL1S("about:history/search"));
+    searchForm.setAttribute(QL1S("class"), QL1S("left"));
+        
     m_root.document().findFirst(QL1S("#actions")).appendInside(searchForm);
     
-    const QWebElement clearHistory = createLinkItem(i18n("Clear History"),
+    QWebElement clearHistory = createLinkItem(i18n("Clear History"),
                                      QL1S("about:history/clear"),
                                      QL1S("edit-clear"),
                                      KIconLoader::Toolbar);
+    clearHistory.setAttribute(QL1S("class"), QL1S("right"));
     m_root.document().findFirst(QL1S("#actions")).appendInside(clearHistory);
 
     HistoryTreeModel *model = rApp->historyManager()->historyTreeModel();
@@ -491,10 +495,11 @@ void NewTabPage::bookmarksPage()
 {
     m_root.addClass(QL1S("bookmarks"));
 
-    const QWebElement editBookmarks = createLinkItem(i18n("Edit Bookmarks"),
-                                      QL1S("about:bookmarks/edit"),
-                                      QL1S("bookmarks-organize"),
-                                      KIconLoader::Toolbar);
+    QWebElement editBookmarks = createLinkItem(i18n("Edit Bookmarks"),
+                                                QL1S("about:bookmarks/edit"),
+                                                QL1S("bookmarks-organize"),
+                                                KIconLoader::Toolbar);
+    editBookmarks.setAttribute(QL1S("class"), QL1S("right"));
     m_root.document().findFirst(QL1S("#actions")).appendInside(editBookmarks);
 
     KBookmarkGroup bookGroup = rApp->bookmarkManager()->rootGroup();
@@ -510,7 +515,7 @@ void NewTabPage::bookmarksPage()
     m_root.appendInside(markup(QL1S(".bookmarkfolder")));
     QWebElement rootFolder = m_root.lastChild();
     rootFolder.appendInside(markup(QL1S("h4")));
-    rootFolder.lastChild().setPlainText(i18n("ROOT"));
+    rootFolder.lastChild().setPlainText(i18n("Unsorted"));
     
     while (!bookmark.isNull())
     {
@@ -546,8 +551,8 @@ void NewTabPage::closedTabsPage()
         prev.setAttribute(QL1S("id"),  QL1S("preview") + QVariant(i).toString());
 
         // hide controls
-        prev.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
-        prev.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+        prev.findFirst(QL1S(".right")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+        prev.findFirst(QL1S(".left")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
 
         m_root.appendInside(prev);
     }
@@ -558,13 +563,15 @@ void NewTabPage::downloadsPage(const QString & filter)
 {
     m_root.addClass(QL1S("downloads"));
 
-    const QWebElement searchForm = createFormItem(i18n("Search Downloads"), QL1S("about:downloads/search"));
+    QWebElement searchForm = createFormItem(i18n("Search Downloads"), QL1S("about:downloads/search"));
+    searchForm.setAttribute(QL1S("class"), QL1S("left"));
     m_root.document().findFirst(QL1S("#actions")).appendInside(searchForm);
 
-    const QWebElement clearDownloads = createLinkItem(i18n("Clear Downloads"),
-                                       QL1S("about:downloads/clear"),
-                                       QL1S("edit-clear"),
-                                       KIconLoader::Toolbar);
+    QWebElement clearDownloads = createLinkItem(i18n("Clear Downloads"),
+                                                QL1S("about:downloads/clear"),
+                                                QL1S("edit-clear"),
+                                                KIconLoader::Toolbar);
+    clearDownloads.setAttribute(QL1S("class"), QL1S("right"));
     m_root.document().findFirst(QL1S("#actions")).appendInside(clearDownloads);
 
     DownloadList list = rApp->downloadManager()->downloads();
@@ -753,8 +760,8 @@ QWebElement NewTabPage::tabPreview(int winIndex, int tabIndex, const KUrl &url, 
 
     setupTabPreview(prev, winIndex, tabIndex);
     
-    prev.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
-    prev.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+    prev.findFirst(QL1S(".right")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
+    prev.findFirst(QL1S(".left")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
 
     return prev;
 }
@@ -783,36 +790,37 @@ QWebElement NewTabPage::closedTabPreview(int index, const KUrl &url, const QStri
 
 void NewTabPage::setupPreview(QWebElement e, int index, bool showControls)
 {
-    e.findFirst(QL1S(".remove img")).setAttribute(QL1S("src"),
+    e.findFirst(QL1S(".right img")).setAttribute(QL1S("src"),
                 QL1S("file:///") + KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
 
-    e.findFirst(QL1S(".remove")).setAttribute(QL1S("title"), i18n("Remove favorite"));
+    e.findFirst(QL1S(".right")).setAttribute(QL1S("title"), i18n("Remove favorite"));
 
-    e.findFirst(QL1S(".reload img")).setAttribute(QL1S("src"),
+    e.findFirst(QL1S(".left img")).setAttribute(QL1S("src"),
                 QL1S("file:///") + KIconLoader::global()->iconPath("view-refresh", KIconLoader::DefaultState));
 
-    e.findFirst(QL1S(".reload")).setAttribute(QL1S("title"), i18n("Set new favorite"));
+    e.findFirst(QL1S(".left")).setAttribute(QL1S("title"), i18n("Set new favorite"));
 
-    e.findFirst(QL1S(".reload")).setAttribute(QL1S("href"), QL1S("about:preview/reload/") + QVariant(index).toString());
-    e.findFirst(QL1S(".remove")).setAttribute(QL1S("href"), QL1S("about:preview/remove/") + QVariant(index).toString());
+    e.findFirst(QL1S(".left")).setAttribute(QL1S("href"), QL1S("about:preview/reload/") + QVariant(index).toString());
+    e.findFirst(QL1S(".right")).setAttribute(QL1S("href"), QL1S("about:preview/remove/") + QVariant(index).toString());
 
     e.setAttribute(QL1S("id"), QL1S("preview") + QVariant(index).toString());
 
     if (showControls)
     {
-        e.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
-        e.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
+        e.findFirst(QL1S(".right")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
+        e.findFirst(QL1S(".left")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
     }
 }
 
 
 void NewTabPage::setupTabPreview(QWebElement e, int winIndex, int tabIndex)
 {
-    e.findFirst(QL1S(".remove img")).setAttribute(QL1S("src"), QL1S("file:///") + KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
-    e.findFirst(QL1S(".remove")).setAttribute(QL1S("title"), QL1S("Close Tab"));
+    e.findFirst(QL1S(".right img")).setAttribute(QL1S("src"),
+                QL1S("file:///") + KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
+    e.findFirst(QL1S(".right")).setAttribute(QL1S("title"), QL1S("Close Tab"));
 
     QString href = QL1S("about:tabs/remove?win=") + QString::number(winIndex) + QL1S("&tab=") + QString::number(tabIndex);
-    e.findFirst(QL1S(".remove")).setAttribute(QL1S("href"), href);
+    e.findFirst(QL1S(".right")).setAttribute(QL1S("href"), href);
 
     e.setAttribute(QL1S("id"), QL1S("win") + QString::number(winIndex) + QL1S("tab") + QString::number(tabIndex));
 }
@@ -849,7 +857,7 @@ void NewTabPage::createBookmarkGroup(const KBookmark &bookmark, QWebElement pare
     {
         createBookmarkItem(bm, folder);
         bm = group.next(bm);
-    }    
+    }
 }
 
 
