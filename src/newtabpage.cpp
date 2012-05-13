@@ -528,7 +528,11 @@ void NewTabPage::closedTabsPage()
         prev = closedTabPreview(i, item.url, item.title);
 
         prev.setAttribute(QL1S("id"),  QL1S("preview") + QVariant(i).toString());
-        hideControls(prev);
+
+        // hide controls
+        prev.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+        prev.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+
         m_root.appendInside(prev);
     }
 }
@@ -667,7 +671,7 @@ QWebElement NewTabPage::emptyPreview(int index)
     prev.findFirst(QL1S("a")).setAttribute(QL1S("href"),
                                            QL1S("about:preview/modify/") + QVariant(index).toString());
 
-    setupPreview(prev, index);
+    setupPreview(prev, index, false);
 
     return prev;
 }
@@ -703,8 +707,7 @@ QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &
     prev.findFirst(QL1S("span a")).setAttribute(QL1S("href"), url.toMimeDataString());
     prev.findFirst(QL1S("span a")).setPlainText(checkTitle(title));
 
-    setupPreview(prev, index);
-    showControls(prev);
+    setupPreview(prev, index, true);
     return prev;
 }
 
@@ -722,8 +725,10 @@ QWebElement NewTabPage::tabPreview(int winIndex, int tabIndex, const KUrl &url, 
     prev.findFirst(QL1S("span a")).setPlainText(checkTitle(title));
 
     setupTabPreview(prev, winIndex, tabIndex);
+    
     prev.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
     prev.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+
     return prev;
 }
 
@@ -744,37 +749,33 @@ QWebElement NewTabPage::closedTabPreview(int index, const KUrl &url, const QStri
     prev.findFirst(QL1S("span a")).setAttribute(QL1S("href"), href);
     prev.findFirst(QL1S("span a")).setPlainText(checkTitle(title));
 
-    setupPreview(prev, index);
-    showControls(prev);
+    setupPreview(prev, index, true);
     return prev;
 }
 
 
-void NewTabPage::hideControls(QWebElement e)
+void NewTabPage::setupPreview(QWebElement e, int index, bool showControls)
 {
-    e.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
-    e.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
-}
+    e.findFirst(QL1S(".remove img")).setAttribute(QL1S("src"),
+                QL1S("file:///") + KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
 
-
-void NewTabPage::showControls(QWebElement e)
-{
-    e.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
-    e.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
-}
-
-
-void NewTabPage::setupPreview(QWebElement e, int index)
-{
-    e.findFirst(QL1S(".remove img")).setAttribute(QL1S("src"), QL1S("file:///") + KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
     e.findFirst(QL1S(".remove")).setAttribute(QL1S("title"), i18n("Remove favorite"));
-    e.findFirst(QL1S(".reload img")).setAttribute(QL1S("src"), QL1S("file:///") + KIconLoader::global()->iconPath("view-refresh", KIconLoader::DefaultState));
+
+    e.findFirst(QL1S(".reload img")).setAttribute(QL1S("src"),
+                QL1S("file:///") + KIconLoader::global()->iconPath("view-refresh", KIconLoader::DefaultState));
+
     e.findFirst(QL1S(".reload")).setAttribute(QL1S("title"), i18n("Set new favorite"));
 
     e.findFirst(QL1S(".reload")).setAttribute(QL1S("href"), QL1S("about:preview/reload/") + QVariant(index).toString());
     e.findFirst(QL1S(".remove")).setAttribute(QL1S("href"), QL1S("about:preview/remove/") + QVariant(index).toString());
 
     e.setAttribute(QL1S("id"), QL1S("preview") + QVariant(index).toString());
+
+    if (showControls)
+    {
+        e.findFirst(QL1S(".remove")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
+        e.findFirst(QL1S(".reload")).setStyleProperty(QL1S("visibility"), QL1S("visible"));
+    }
 }
 
 

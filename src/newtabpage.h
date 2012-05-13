@@ -86,14 +86,7 @@ private:
     void reloadPreview(int index);
     void removePreview(int index);
 
-    /**
-     * This function takes a QwebElement with the .thumbnail structure,
-     * hiding the "remove" and "modify" buttons
-     *
-     */
-    void hideControls(QWebElement e);
-    void showControls(QWebElement e);
-    void setupPreview(QWebElement e, int index);
+    void setupPreview(QWebElement e, int index, bool showControls);
     void setupTabPreview(QWebElement e, int winIndex, int tabIndex);
 
     void createBookmarkItem(const KBookmark &bookmark, QWebElement parent);
