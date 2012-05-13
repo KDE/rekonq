@@ -53,6 +53,7 @@
 #include <KIconLoader>
 #include <KLocale>
 #include <KMimeType>
+#include <KRun>
 #include <KStandardDirs>
 
 // Qt Includes
@@ -217,6 +218,21 @@ void NewTabPage::generate(const KUrl &url)
             return;
         }
 
+        if (url.fileName() == QL1S("opendir"))
+        {
+            QString value = url.queryItemValue( QL1S("q") );
+            KUrl dirUrl = KUrl(value);
+            (void)new KRun(dirUrl, rApp->mainWindow(), 0, dirUrl.isLocalFile());
+            return;
+        }
+
+        if (url.fileName() == QL1S("removeItem"))
+        {
+            int value = url.queryItemValue( QL1S("item") ).toInt();
+            rApp->downloadManager()->removeDownloadItem(value);
+            loadPageForUrl(KUrl("about:downloads"));
+            return;
+        }
     }
     
     if (url == KUrl("about:bookmarks/edit"))
@@ -562,6 +578,8 @@ void NewTabPage::downloadsPage(const QString & filter)
         return;
     }
 
+    int i = 0;
+    
     Q_FOREACH(DownloadItem * item, list)
     {
         KUrl u = KUrl(item->destinationUrl());
@@ -602,7 +620,7 @@ void NewTabPage::downloadsPage(const QString & filter)
         {
             div.appendInside(markup(QL1S("a")));
             div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
-            div.lastChild().setAttribute(QL1S("href"), QL1S("file://") + dir);
+            div.lastChild().setAttribute(QL1S("href"), QL1S("about:downloads/opendir?q=") + QL1S("file://") + dir);
             div.lastChild().setPlainText(i18n("Open directory"));
 
             div.appendInside(QL1S(" - "));
@@ -616,6 +634,15 @@ void NewTabPage::downloadsPage(const QString & filter)
         {
             div.appendInside(QL1S("<em>") + QL1S("Removed") +  QL1S("</em>"));
         }
+
+        div.appendInside(QL1S(" - "));
+
+        div.appendInside(markup(QL1S("a")));
+        div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
+        div.lastChild().setAttribute(QL1S("href"), QL1S("about:downloads/removeItem?item=") + QString::number(i));
+        div.lastChild().setPlainText(i18n("Remove from list"));
+
+        i++;
     }
 }
 

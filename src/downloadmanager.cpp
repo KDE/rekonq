@@ -59,11 +59,38 @@
 
 DownloadManager::DownloadManager(QObject *parent)
     : QObject(parent)
+    , m_needToSave(false)
 {
     init();
 }
 
 
+DownloadManager::~DownloadManager()
+{
+    if (!m_needToSave)
+        return;
+
+    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QFile downloadFile(downloadFilePath);
+
+    if (!downloadFile.open(QFile::WriteOnly))
+    {
+        kDebug() << "Unable to open download file (WRITE mode)..";
+        return;
+    }
+
+    QDataStream out(&downloadFile);
+    Q_FOREACH(DownloadItem * item, m_downloadList)
+    {
+        out << item->originUrl();
+        out << item->destinationUrl();
+        out << item->dateTime();
+    }
+    
+    downloadFile.close();
+}
+
+    
 void DownloadManager::init()
 {
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
@@ -133,6 +160,15 @@ void DownloadManager::downloadLinksWithKGet(const QVariant &contentList)
     {
         kget.call("importLinks", contentList);
     }
+}
+
+
+void DownloadManager::removeDownloadItem(int index)
+{
+    DownloadItem *item = m_downloadList.takeAt(index);
+    delete item;
+
+    m_needToSave = true;
 }
 
 
