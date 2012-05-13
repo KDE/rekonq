@@ -47,6 +47,13 @@ margin: 1.5em 0 0.5em;
 font: normal bold 1em;
 }
 
+h4 {
+padding: 0.2em;
+margin: 1em 0 0.5em;
+font: normal bold 1em;
+border-bottom: 1px solid black;
+}
+
 a {
 color: #3F7AB7;
 text-decoration: none;
@@ -181,11 +188,16 @@ color:#3F7AB7;
 }
 
 /* -------------------------------------------------------- */
-/* General */
+/* Bookmarks page */
 
-.folder {
-margin-left: 4em;
-margin-bottom: 1em;
+.bookmarkfolder {
+display: inline-block;
+background: #BBB;
+border-radius: 15px;
+padding: 0px 15px 15px 15px;
+float:left;
+margin: 1em;
+width: 28%;
 }
 
 /* -------------------------------------------------------- */
@@ -212,8 +224,15 @@ background: #CCC;
 padding: 5px 10px;
 }
 
+.historyfolder {
+margin-left: 4em;
+margin-bottom: 1em;
+}
+
+
 /* -------------------------------------------------------- */
 /* Empty pages : in the end : need to overwrite */
+
 #content.empty {
 margin-top: 10%;
 text-align: center;
@@ -231,6 +250,11 @@ text-align: center;
     <div id="content"></div>
 </div>
 
+<!--
+NOTE: These models are NOT directly shown inside the page.
+They are just used inside NewTabPage::markup function to ease
+elements creation, cloning one of these.
+-->
 <div id="models" style="display:none">
     <form></form>
     <input></input>
@@ -256,10 +280,12 @@ text-align: center;
         </div>
     </div>
     <h3></h3>
+    <h4></h4>
     <a></a>
     <br />
     <img />
-    <p class="folder"></p>
+    <p class="historyfolder"></p>
+    <p class="bookmarkfolder"></p>
 </div>
 
 </body>

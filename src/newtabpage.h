@@ -96,8 +96,12 @@ private:
     void setupPreview(QWebElement e, int index);
     void setupTabPreview(QWebElement e, int winIndex, int tabIndex);
 
-    void createBookItem(const KBookmark &bookmark, QWebElement parent);
+    void createBookmarkItem(const KBookmark &bookmark, QWebElement parent);
+    void createBookmarkGroup(const KBookmark &bookmark, QWebElement parent);
 
+    QWebElement createLinkItem(const QString &title, const QString &urlString, const QString &iconPath, int groupOrSize) const;
+    QWebElement createFormItem(const QString &title, const QString &urlString) const;
+    
     /**
      * This function helps to get faster a new markup of one type,
      * it isn't easy to create one with QWebElement.
@@ -111,15 +115,11 @@ private:
         return m_root.document().findFirst("#models > " + selector).clone();
     }
 
-    QString checkTitle(const QString &title);
+    QString checkTitle(const QString &title, int max = 23);
 
     void updateWindowIcon();
 
 private:
-    QWebElement createLinkItem(const QString &title, const QString &urlString, const QString &iconPath, int groupOrSize) const;
-
-    QWebElement createFormItem(const QString &title, const QString &urlString) const;
-
     QString m_html;
     QWebElement m_root;
 

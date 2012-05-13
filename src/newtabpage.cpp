@@ -427,7 +427,7 @@ void NewTabPage::historyPage(const QString & filter)
             m_root.appendInside(markup(QL1S("h3")));
             m_root.lastChild().setPlainText(index.data().toString());
 
-            m_root.appendInside(markup(QL1S(".folder")));
+            m_root.appendInside(markup(QL1S(".historyfolder")));
             QWebElement little = m_root.lastChild();
             for (int j = 0; j < proxy->rowCount(index); ++j)
             {
@@ -490,9 +490,15 @@ void NewTabPage::bookmarksPage()
     }
 
     KBookmark bookmark = bookGroup.first();
+
+    m_root.appendInside(markup(QL1S(".bookmarkfolder")));
+    QWebElement rootFolder = m_root.lastChild();
+    rootFolder.appendInside(markup(QL1S("h4")));
+    rootFolder.lastChild().setPlainText(i18n("ROOT"));
+    
     while (!bookmark.isNull())
     {
-        createBookItem(bookmark, m_root);
+        createBookmarkItem(bookmark, rootFolder);
         bookmark = bookGroup.next(bookmark);
     }
 }
@@ -801,25 +807,37 @@ void NewTabPage::removePreview(int index)
 }
 
 
-void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
+void NewTabPage::createBookmarkGroup(const KBookmark &bookmark, QWebElement parent)
+{
+    KBookmarkGroup group = bookmark.toGroup();
+    KBookmark bm = group.first();
+
+    parent.appendInside(markup(QL1S(".bookmarkfolder")));
+    QWebElement folder = parent.lastChild();
+    folder.appendInside(markup(QL1S("h4")));
+    folder.lastChild().setPlainText(group.fullText());
+
+    while (!bm.isNull())
+    {
+        createBookmarkItem(bm, folder);
+        bm = group.next(bm);
+    }    
+}
+
+
+void NewTabPage::createBookmarkItem(const KBookmark &bookmark, QWebElement parent)
 {
     QString cacheDir = QL1S("file://") + KStandardDirs::locateLocal("cache" , "" , true);
     QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/mimetypes/text-html.png");
+
     if (bookmark.isGroup())
     {
-        KBookmarkGroup group = bookmark.toGroup();
-        KBookmark bm = group.first();
-        parent.appendInside(markup(QL1S("h3")));
-        parent.lastChild().setPlainText(group.fullText());
-        parent.appendInside(markup(QL1S(".folder")));
-        while (!bm.isNull())
-        {
-            createBookItem(bm, parent.lastChild()); // it is .folder
-            bm = group.next(bm);
-        }
+        createBookmarkGroup(bookmark, m_root);
+        return;
     }
     else if (bookmark.isSeparator())
     {
+        kDebug() << "SEPARATOR";
         parent.appendInside(QL1S("<hr />"));
     }
     else
@@ -835,18 +853,18 @@ void NewTabPage::createBookItem(const KBookmark &bookmark, QWebElement parent)
         parent.appendInside(QL1S(" "));
         parent.appendInside(markup(QL1S("a")));
         parent.lastChild().setAttribute(QL1S("href") , bookmark.url().prettyUrl());
-        parent.lastChild().setPlainText(bookmark.fullText());
+        parent.lastChild().setPlainText( checkTitle(bookmark.fullText(), 40) );
         parent.appendInside(QL1S("<br />"));
     }
 }
 
 
-QString NewTabPage::checkTitle(const QString &title)
+QString NewTabPage::checkTitle(const QString &title, int max)
 {
     QString t(title);
-    if (t.length() > 23)
+    if (t.length() > max)
     {
-        t.truncate(20);
+        t.truncate(max - 3);
         t +=  QL1S("...");
     }
     return t;
