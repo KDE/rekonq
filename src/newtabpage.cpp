@@ -651,6 +651,12 @@ void NewTabPage::downloadsPage(const QString & filter)
 
         i++;
     }
+
+    if (i==0)
+    {
+        m_root.addClass(QL1S("empty"));
+        m_root.setPlainText(i18n("No matches for string %1 in downloads", filter));
+    }
 }
 
 
