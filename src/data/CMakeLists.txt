@@ -39,6 +39,8 @@ INSTALL(
     FILES
     rekonqinfo.html
     home.html
+    jquery-1.7.2.min.js
+    jquery-ui-1.8.20.custom.min.js
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/htmls
 )
 

@@ -1,9 +1,20 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
+
+<!-- NOTE
+
+This page is the "skeleton" of rekonq pages.
+To let it work you need to set also some variables
+about (prepend a $ to actually use them):
+
+DEFAULT_PATH = rekonq default installation files path
+...
+
+-->
 
 <head>
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <title></title>
 
@@ -14,13 +25,13 @@
 
 @font-face {
     font-family: 'Nunito';
-    src: url(%2/fonts/Nunito-Regular.ttf);
+    src: url($DEFAULT_PATH/fonts/Nunito-Regular.ttf);
     font-weight: normal;
     font-style: normal;
 }
 
 body {
-    background: url(%2/pics/background.jpg) repeat-y #fff;
+    background: url($DEFAULT_PATH/pics/background.jpg) repeat-y #fff;
     font-family: 'Nunito', sans-serif;
     font-size: 0.9em;
     border: 0;
@@ -122,7 +133,7 @@ input {
 
 .current {
     border-width: 6px;
-    -webkit-border-image: url(%2/pics/button.png) 6 stretch stretch;
+    -webkit-border-image: url($DEFAULT_PATH/pics/button.png) 6 stretch stretch;
 }
 
 .link:not(.current){
@@ -141,7 +152,7 @@ input {
     display: inline-block;
     width: 25%; min-width: 240px;
     height: 170px;
-    margin: 3% 0 3% 0;
+    margin: 30px 0;
 }
 
 .thumb-inner {
@@ -155,7 +166,7 @@ input {
     width: 200px;
     height: 150px;
     padding: 14px 16px 12px;
-    background: url(%2/pics/bg.png) no-repeat;
+    background: url($DEFAULT_PATH/pics/bg.png) no-repeat;
     -webkit-background-size: 100% 100%; 
 }
 
@@ -243,9 +254,11 @@ input {
 }
 
 </style>
+
 </head>
 
 <body>
+
 
 <div id="rekonq-newtabpage">
     <div id="navigation"></div>

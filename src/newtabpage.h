@@ -112,6 +112,9 @@ private:
 
     void updateWindowIcon();
 
+    void initJS();
+    void saveFavorites();
+    
 private:
     QString m_html;
     QWebElement m_root;

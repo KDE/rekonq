@@ -80,7 +80,7 @@ NewTabPage::NewTabPage(QWebFrame *frame)
     else
     {
         m_html = file.readAll();
-        m_html.replace(QL1S("%2"), dataPath);
+        m_html.replace(QL1S("$DEFAULT_PATH"), dataPath);
     }
 }
 
@@ -241,6 +241,14 @@ void NewTabPage::generate(const KUrl &url)
         return;
     }
 
+
+    if (url == KUrl("about:favorites/save"))
+    {
+        saveFavorites();
+        return;
+    }
+
+    
     loadPageForUrl(url);
 }
 
@@ -268,6 +276,9 @@ void NewTabPage::loadPageForUrl(const KUrl &url, const QString & filter)
         favoritesPage();
         updateWindowIcon();
         title = i18n("Favorites");
+        m_root.document().findFirst(QL1S("title")).setPlainText(title);
+        initJS();
+        return;
     }
     else if (encodedUrl == QByteArray("about:closedTabs"))
     {
@@ -948,4 +959,77 @@ void NewTabPage::updateWindowIcon()
 {
     int currentIndex = rApp->mainWindow()->mainView()->currentIndex();
     rApp->mainWindow()->changeWindowIcon(currentIndex);
+}
+
+
+void NewTabPage::initJS()
+{
+    QWebFrame *parentFrame = qobject_cast<QWebFrame *>(parent());
+    QString oldHTML = parentFrame->toHtml();
+    
+    QString includes;
+    includes += QL1S("<head>");
+    includes += QL1S("<script src=\"$DEFAULT_PATH/htmls/jquery-1.7.2.min.js\" type=\"text/javascript\"></script>");
+    includes += QL1S("<script src=\"$DEFAULT_PATH/htmls/jquery-ui-1.8.20.custom.min.js\" type=\"text/javascript\"></script>");
+
+    QString htmlFilePath = KStandardDirs::locate("data", "rekonq/htmls/home.html");
+    QString dataPath = QL1S("file://") + htmlFilePath;
+    dataPath.remove(QL1S("/htmls/home.html"));
+
+    includes.replace(QL1S("$DEFAULT_PATH"), dataPath);
+
+    oldHTML.replace(QL1S("<head>"), includes);
+
+    QString javascript;
+    javascript += QL1S("<body>");
+    javascript += QL1S("<script>");
+    javascript += QL1S("$(function() {");
+    javascript += QL1S("    $( \"#content\" ).sortable({");
+    javascript += QL1S("        revert: true,");
+    javascript += QL1S("        cursor: \"move\",");
+    javascript += QL1S("        distance: 30,");
+    javascript += QL1S("        update: function(event, ui) { window.location.href = \"about:favorites/save\"; }");
+    javascript += QL1S("    });");
+    javascript += QL1S("    $( \".thumbnail\" ).disableSelection();");
+    javascript += QL1S("});");
+    javascript += QL1S("</script>");
+
+    oldHTML.replace(QL1S("<body>"), javascript);
+
+    parentFrame->setHtml(oldHTML);
+}
+
+
+void NewTabPage::saveFavorites()
+{
+    QStringList names = ReKonfig::previewNames();
+    QStringList urls = ReKonfig::previewUrls();
+
+    QStringList newNames = names;
+    QStringList newUrls = urls;
+
+    QWebElementCollection coll = m_root.document().findAll( QL1S(".thumbnail") );
+    QList<QWebElement> list = coll.toList();
+
+    int i = 0;
+    
+    Q_FOREACH(QWebElement e, list)
+    {
+        if (!e.hasAttribute(QL1S("id")))
+            continue;
+
+        QString id = e.attribute(QL1S("id"));
+        kDebug() << "id: " << id;
+        int index = id.remove(QL1S("preview")).toInt();
+        kDebug() << "INDEX: " << index;
+
+        newNames.replace(i, names.at(index));
+        newUrls.replace(i, urls.at(index));
+        i++;
+    }
+
+    ReKonfig::setPreviewNames(newNames);
+    ReKonfig::setPreviewUrls(newUrls);
+
+    loadPageForUrl(KUrl("about:favorites"));
 }
