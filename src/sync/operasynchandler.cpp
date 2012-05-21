@@ -313,73 +313,73 @@ void OperaSyncHandler::fetchBookmarksResultSlot(KJob* job)
     {
         handleResponse(responseList, root);
         emit syncStatus(Rekonq::Bookmarks, true, i18n("Done!"));
-        _isSyncing = false;
+//        _isSyncing = false;
+        _mode = SEND_CHANGES;
     }
-    else
+
+    handleResponse(responseList, root);
+
+    QDomElement item = responseList.at(0).toElement();
+    KBookmark current = root.first();
+
+    while(!current.isNull())
     {
-        handleResponse(responseList, root);
-
-        QDomElement item = responseList.at(0).toElement();
-        KBookmark current = root.first();
-
-        while(!current.isNull())
+        if (current.isGroup())
         {
-            if (current.isGroup())
+            QString groupName = current.fullText();
+            QDomElement child = findOperaFolder(item, groupName);
+
+            if (child.isNull())
             {
-                QString groupName = current.fullText();
-                QDomElement child = findOperaFolder(item, groupName);
-
-                if (child.isNull())
-                {
-                    //Add Opera group here
-                    kDebug() << "Add group " << groupName;
-                    KJob *job = addBookmarkFolderOnServer(current.fullText());
-                    _jobToGroupMap.insert(job, current.toGroup());
-                }
-                else
-                {
-                    kDebug() << "Handling group " << groupName;
-                    QDomElement grandChild = getChildElement(child, "children");
-
-                    QString id = getChildString(child, "id");
-
-                    kDebug() << grandChild.tagName() << id;
-
-                    if (grandChild.isNull())
-                    {
-                        kDebug() << "Grand child is null";
-                        handleLocalGroup(current.toGroup(), grandChild, id);
-                    }
-                    else{
-                        //kDebug() << "Grand child " << getTitleFromResourceProperties(grandChild);
-                        handleLocalGroup(current.toGroup(), grandChild, id);
-                    }
-                }
+                //Add Opera group here
+                kDebug() << "Add group " << groupName;
+                KJob *job = addBookmarkFolderOnServer(current.fullText());
+                _jobToGroupMap.insert(job, current.toGroup());
             }
-
             else
             {
-                KUrl url = current.url();
+                kDebug() << "Handling group " << groupName;
+                QDomElement grandChild = getChildElement(child, "children");
 
-                QDomElement child = findOperaBookmark(item, url);
+                QString id = getChildString(child, "id");
 
-                if (child.isNull())
+                kDebug() << grandChild.tagName() << id;
+
+                if (grandChild.isNull())
                 {
-                    //Add bookmark on server
-                    kDebug() << "Add bookmark :" << url;
-                    addBookmarkOnServer(current.fullText(), current.url().url());
+                    kDebug() << "Grand child is null";
+                    handleLocalGroup(current.toGroup(), grandChild, id);
                 }
-                else
-                {
-                    kDebug() << "Bookmark exists :" << url;
+                else{
+                    //kDebug() << "Grand child " << getTitleFromResourceProperties(grandChild);
+                    handleLocalGroup(current.toGroup(), grandChild, id);
                 }
             }
-
-            current = root.next(current);
         }
 
-        decreaseRequestCount();
+        else
+        {
+            KUrl url = current.url();
+
+            QDomElement child = findOperaBookmark(item, url);
+
+            if (child.isNull())
+            {
+                //Add bookmark on server
+                kDebug() << "Add bookmark :" << url;
+                addBookmarkOnServer(current.fullText(), current.url().url());
+            }
+            else
+            {
+                kDebug() << "Bookmark exists :" << url;
+            }
+        }
+
+        current = root.next(current);
     }
+
+    decreaseRequestCount();
+
 
     _xmlData = "";
 }
