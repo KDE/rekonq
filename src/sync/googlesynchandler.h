@@ -80,7 +80,7 @@ private:
     QNetworkReply *_reply;
     QSet<KUrl> _bookmarksToAdd;
     QSet<QString> _bookmarksToDelete;
-    unsigned int _requestCount;
+    int _requestCount;
 };
 
 #endif // GOOGLE_SYNC_HANDLER_H
