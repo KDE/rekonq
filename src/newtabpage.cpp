@@ -400,7 +400,7 @@ void NewTabPage::favoritesPage()
 
         QWebElement prev = url.isEmpty()
                            ? emptyPreview(i)
-                           : validPreview(i, url, QString::number(i + 1) + " - " + names.at(i));
+                           : validPreview(i, url, QString::number(i + 1) + QL1S(" - ") + names.at(i));
 
         m_root.appendInside(prev);
     }
@@ -736,10 +736,9 @@ void NewTabPage::reloadPreview(int index)
     QString urlString = ReKonfig::previewUrls().at(index);
     QString nameString = ReKonfig::previewNames().at(index);
 
-    kDebug() << "URL: " << urlString;
-    kDebug() << "NAME: " << nameString;
-
-    ThumbUpdater *t = new ThumbUpdater(thumb, urlString, nameString);
+    QString title = checkTitle(QString::number(index + 1) + QL1S(" - ") + nameString);
+    
+    ThumbUpdater *t = new ThumbUpdater(thumb, urlString, title);
     t->updateThumb();
 }
 
