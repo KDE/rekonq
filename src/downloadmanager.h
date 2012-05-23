@@ -37,6 +37,7 @@
 
 // KDE Includes
 #include <kio/accessmanager.h>
+#include <KIO/CopyJob>
 
 // Qt Includes
 #include <QObject>
@@ -72,8 +73,9 @@ public:
 private:
     void init();
 
-    DownloadItem* addDownload(const QString &srcUrl, const QString &destUrl);
-
+    DownloadItem* addDownload(KIO::CopyJob *job);
+    DownloadItem* addKGetDownload(const QString &srcUrl, const QString &destUrl);
+    
 Q_SIGNALS:
     void newDownloadAdded(QObject *item);
     void notifyDownload(const QString&, Rekonq::Notify = Rekonq::Download);

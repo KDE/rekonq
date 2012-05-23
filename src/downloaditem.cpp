@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2011 by Pierre Rossi <pierre dot rossi at gmail dot com>
 *
 *
@@ -45,42 +45,79 @@ DownloadItem::DownloadItem(const QString &srcUrl, const QString &destUrl, const 
     , m_srcUrlString(srcUrl)
     , m_destUrl(KUrl(destUrl))
     , m_dateTime(d)
-    , m_shouldAbort(false)
+    , m_job(0)
+    , m_state(0)
 {
+}
+
+
+DownloadItem::DownloadItem(KIO::CopyJob *job, const QDateTime &d, QObject *parent)
+    : QObject(parent)
+    , m_srcUrlString(job->srcUrls().at(0).url())
+    , m_destUrl(job->destUrl())
+    , m_dateTime(d)
+    , m_job(job)
+    , m_state(0)
+{
+    QObject::connect(job, SIGNAL(percent(KJob*,ulong)), this, SLOT(updateProgress(KJob*,ulong)));
+    QObject::connect(job, SIGNAL(finished(KJob*)), this, SLOT(onFinished(KJob*)));
+    QObject::connect(job, SIGNAL(suspended(KJob*)), this, SLOT(onSuspended(KJob*)));
+}
+
+
+KUrl DownloadItem::destUrl() const
+{
+    return m_destUrl;
+}
+
+
+QString DownloadItem::originUrl() const
+{
+    return m_srcUrlString;
 }
 
 
 QString DownloadItem::fileDirectory() const
 {
-    return (QL1S("file://") + m_destUrl.directory());
+    KUrl u = destUrl();
+    return (QL1S("file://") + u.directory());
 }
 
 
 QString DownloadItem::fileName() const
 {
-    return m_destUrl.fileName();
+    return destUrl().fileName();
 }
 
 
-QString DownloadItem::destinationUrl() const
+QString DownloadItem::destinationUrlString() const
 {
-    return m_destUrl.url(KUrl::RemoveTrailingSlash);
+    return destUrl().url(KUrl::RemoveTrailingSlash);
 }
 
 
 QString DownloadItem::icon() const
 {
     KIconLoader *loader = KIconLoader::global();
-    QString iconForMimeType = KMimeType::iconNameForUrl(m_destUrl);
+    QString iconForMimeType = KMimeType::iconNameForUrl(destUrl());
     return (QL1S("file://") + loader->iconPath(iconForMimeType, KIconLoader::Desktop));
+}
+
+
+void DownloadItem::setIsKGetDownload()
+{
+    m_state = KGetManaged;
 }
 
 
 // update progress for the plain KIO::Job backend
 void DownloadItem::updateProgress(KJob *job, unsigned long value)
 {
-    if (m_shouldAbort)
-        job->kill(KJob::EmitResult);
+    Q_UNUSED(job);
+    
+    if (value > 0 && value < 100)
+        m_state = Downloading;
+    
     emit downloadProgress(value);
 }
 
@@ -88,82 +125,33 @@ void DownloadItem::updateProgress(KJob *job, unsigned long value)
 // emit downloadFinished signal in KJob case
 void DownloadItem::onFinished(KJob *job)
 {
-    if (!job->error())
+    if (job->error())
+    {
+        m_state = Errors;
+        m_errorString = job->errorString();
+    }
+    else
+    {
+        m_state = Done;
         emit downloadProgress(100);
+    }
+
     emit downloadFinished(!job->error());
 }
 
 
-// sets up progress handling for the KGet backend
-void DownloadItem::setKGetTransferDbusPath(const QString &path)
+void DownloadItem::onSuspended(KJob *job)
 {
-    m_kGetPath = path;
-    QTimer *updateTimer = new QTimer(this);
-    updateTimer->setInterval(300);
-    updateTimer->setSingleShot(false);
-    connect(updateTimer, SIGNAL(timeout()), SLOT(updateProgress()));
-    updateTimer->start();
+    Q_UNUSED(job);
+    
+    m_state = Suspended;
+
+    // TODO: 
+    // connect to job->resume() to let rekonq resume it
 }
 
 
-/*
-* update progress (polling in KGet case)
-*
-* Notes for KGet dbus interface:
-* status values:
-*  - 0 running
-*  - 2 stopped
-*  - 4 finished
-*/
-void DownloadItem::updateProgress()
+QString DownloadItem::errorString() const
 {
-    if (m_kGetPath.isEmpty())
-        return;
-    QDBusInterface kgetTransfer(QL1S("org.kde.kget"), m_kGetPath, QL1S("org.kde.kget.transfer"));
-    if (!kgetTransfer.isValid())
-        return;
-    // Fetch percent from DBus
-    QDBusMessage percentRes = kgetTransfer.call(QL1S("percent"));
-    if (percentRes.arguments().isEmpty())
-        return;
-    bool ok = false;
-    const int percent = percentRes.arguments().first().toInt(&ok);
-    if (!ok)
-        return;
-    // Fetch status from DBus
-    QDBusMessage statusRes = kgetTransfer.call(QL1S("status"));
-    if (statusRes.arguments().isEmpty())
-        return;
-    ok = false;
-    const int status = statusRes.arguments().first().toInt(&ok);
-    if (!ok)
-        return;
-    emit downloadProgress(percent);
-    // TODO: expose resume if stopped
-    // special case for status 2 will come later when we have a way to support resume.
-    if (percent == 100 || status == 4 || status == 2)
-    {
-        emit downloadFinished(true);
-        QTimer *timer = qobject_cast<QTimer *>(sender());
-        if (timer)
-            timer->stop();
-    }
+    return m_errorString;
 }
-
-
-void DownloadItem::abort() const
-{
-    if (!m_kGetPath.isEmpty())
-    {
-        QDBusInterface kgetTransfer(QL1S("org.kde.kget"), m_kGetPath, QL1S("org.kde.kget.transfer"));
-        if (kgetTransfer.isValid())
-            kgetTransfer.call(QL1S("stop"));
-    }
-    else
-    {
-        // using KIO::JOB, kill at the next update :)
-        m_shouldAbort = true;
-    }
-}
-
-// TODO: ability to remove single items from the page...

@@ -83,7 +83,7 @@ DownloadManager::~DownloadManager()
     Q_FOREACH(DownloadItem * item, m_downloadList)
     {
         out << item->originUrl();
-        out << item->destinationUrl();
+        out << item->destinationUrlString();
         out << item->dateTime();
     }
     
@@ -116,11 +116,39 @@ void DownloadManager::init()
 }
 
 
-DownloadItem* DownloadManager::addDownload(const QString &srcUrl, const QString &destUrl)
+DownloadItem* DownloadManager::addDownload(KIO::CopyJob *job)
 {
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return 0;
+
+    KIO::CopyJob *cJob = qobject_cast<KIO::CopyJob *>(job);
+    
+    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
+    QFile downloadFile(downloadFilePath);
+    if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
+    {
+        kDebug() << "Unable to open download file (WRITE mode)..";
+        return 0;
+    }
+    QDataStream out(&downloadFile);
+    out << cJob->srcUrls().at(0).url();
+    out << cJob->destUrl().url();
+    out << QDateTime::currentDateTime();
+    downloadFile.close();
+    DownloadItem *item = new DownloadItem(job, QDateTime::currentDateTime(), this);
+    m_downloadList.append(item);
+    emit newDownloadAdded(item);
+    return item;    
+}
+
+
+DownloadItem* DownloadManager::addKGetDownload(const QString &srcUrl, const QString &destUrl)
+{
+    QWebSettings *globalSettings = QWebSettings::globalSettings();
+    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+        return 0;
+    
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
     QFile downloadFile(downloadFilePath);
     if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
@@ -134,6 +162,7 @@ DownloadItem* DownloadManager::addDownload(const QString &srcUrl, const QString 
     out << QDateTime::currentDateTime();
     downloadFile.close();
     DownloadItem *item = new DownloadItem(srcUrl, destUrl, QDateTime::currentDateTime(), this);
+    item->setIsKGetDownload();
     m_downloadList.append(item);
     emit newDownloadAdded(item);
     return item;
@@ -199,11 +228,8 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
     if (!destUrl.isValid())
         return false;
 
-    // Save download history
-    DownloadItem *item = addDownload(srcUrl.pathOrUrl(), destUrl.pathOrUrl());
-    emit notifyDownload(fileName);
-
-    if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetDownload())
+    // manage downloads with KGet if found
+    if (ReKonfig::kgetDownload() && !KStandardDirs::findExe("kget").isNull())
     {
         //KGet integration:
         if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
@@ -215,26 +241,22 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
             return false;
 
         QDBusMessage transfer = kget.call(QL1S("addTransfer"), srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
-        if (transfer.arguments().isEmpty())
-            return true;
 
-        const QString transferPath = transfer.arguments().first().toString();
-        item->setKGetTransferDbusPath(transferPath);
+        addKGetDownload(srcUrl.pathOrUrl(), destUrl.pathOrUrl());
+        emit notifyDownload(fileName);
         return true;
     }
 
-    KIO::Job *job = KIO::copy(srcUrl, destUrl, KIO::Overwrite);
-    if (item)
-    {
-        QObject::connect(job, SIGNAL(percent(KJob*,ulong)), item, SLOT(updateProgress(KJob*,ulong)));
-        QObject::connect(job, SIGNAL(finished(KJob*)), item, SLOT(onFinished(KJob*)));
-    }
+    KIO::CopyJob *job = KIO::copy(srcUrl, destUrl, KIO::Overwrite);
 
     if (!metaData.isEmpty())
         job->setMetaData(metaData);
 
-    job->addMetaData(QL1S("MaxCacheSize"), QL1S("0")); // Don't store in http cache.
-    job->addMetaData(QL1S("cache"), QL1S("cache")); // Use entry from cache if available.
+    job->addMetaData(QL1S("MaxCacheSize"), QL1S("0"));      // Don't store in http cache.
+    job->addMetaData(QL1S("cache"), QL1S("cache"));         // Use entry from cache if available.
     job->uiDelegate()->setAutoErrorHandlingEnabled(true);
+
+    addDownload(job);
+    emit notifyDownload(fileName);
     return true;
 }

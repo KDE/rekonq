@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2010 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2011 by Pierre Rossi <pierre dot rossi at gmail dot com>
 *
 *
@@ -40,51 +40,52 @@
 // KDE Includes
 #include <KLocalizedString>
 #include <KUrl>
-
-// Forward Declarations
-class KJob;
+#include <KIO/CopyJob>
 
 
 class DownloadItem : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString destinationUrl READ destinationUrl)
-    Q_PROPERTY(QString originUrl READ originUrl)
-    Q_PROPERTY(QString fileName READ fileName)
-    Q_PROPERTY(QString fileDirectory READ fileDirectory)
-    Q_PROPERTY(QDateTime date READ dateTime())
-    Q_PROPERTY(QString iconFile READ icon)
 
 public:
+
+    enum JobState
+    {
+        Done            = 0,
+        Downloading     = 1,
+        Errors          = 2,
+        Suspended       = 3,
+        KGetManaged     = 4
+    };
+
     explicit DownloadItem(const QString &srcUrl, const QString &destUrl, const QDateTime &d, QObject *parent = 0);
 
+    // This is used to add a DownloadItem managed with KIO
+    explicit DownloadItem(KIO::CopyJob *job, const QDateTime &d, QObject *parent = 0);
+
+    
     inline QDateTime dateTime() const
     {
         return m_dateTime;
     }
-    inline QString originUrl() const
-    {
-        return m_srcUrlString;
-    }
-    QString destinationUrl() const;
+
+    KUrl destUrl() const;
+    
+    QString originUrl() const;
+    QString destinationUrlString() const;
     QString fileName() const;
     QString fileDirectory() const;
     QString icon() const;
-
-    // Necessary to provide i18nized strings to javascript.
-    Q_INVOKABLE QString i18nOpenDir() const
+    QString errorString() const;
+    
+    inline int state() const
     {
-        return i18n("Open directory");
-    }
-    Q_INVOKABLE QString i18nOpenFile() const
-    {
-        return i18n("Open file");
+        return m_state;
     }
 
-    // For transfer control and notification
-    void setKGetTransferDbusPath(const QString &path);
-    Q_INVOKABLE void abort() const;
-
+    void setIsKGetDownload();
+    
+    
 Q_SIGNALS:
     void downloadProgress(int percent);
     void downloadFinished(bool success);
@@ -92,17 +93,18 @@ Q_SIGNALS:
 public Q_SLOTS:
     void updateProgress(KJob *job, unsigned long value);
     void onFinished(KJob *job);
-
-private Q_SLOTS:
-    void updateProgress();
+    void onSuspended(KJob*);
 
 private:
     QString m_srcUrlString;
     KUrl m_destUrl;
+
     QDateTime m_dateTime;
-    QString m_kGetPath;
-    mutable bool m_shouldAbort;
-    KJob *m_job;
+    
+    KIO::CopyJob *m_job;
+    int m_state;
+
+    QString m_errorString;
 };
 
 

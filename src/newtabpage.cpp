@@ -600,7 +600,7 @@ void NewTabPage::downloadsPage(const QString & filter)
     
     Q_FOREACH(DownloadItem * item, list)
     {
-        KUrl u = KUrl(item->destinationUrl());
+        KUrl u = item->destUrl();
         QString fName = u.fileName();
 
         QString srcUrl = item->originUrl();
@@ -634,31 +634,54 @@ void NewTabPage::downloadsPage(const QString & filter)
         div.appendInside(QL1S("<a href=") + srcUrl +  QL1C('>') + srcUrl +  QL1S("</a>"));
         div.appendInside(QL1S("<br />"));
 
-        if (QFile::exists(file))
+        switch (item->state())
         {
-            div.appendInside(markup(QL1S("a")));
-            div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
-            div.lastChild().setAttribute(QL1S("href"), QL1S("about:downloads/opendir?q=") + QL1S("file://") + dir);
-            div.lastChild().setPlainText(i18n("Open directory"));
+        case DownloadItem::KGetManaged:
+            div.appendInside(QL1S("<em>") + i18n("This download is managed by KGet. Check it to grab information about its state") +  QL1S("</em>"));
+            break;
+
+        case DownloadItem::Suspended:
+            div.appendInside(QL1S("<em>") + i18n("Suspended") +  QL1S("</em>"));
+            break;
+
+        case DownloadItem::Downloading:
+            div.appendInside(QL1S("<em>") + i18n("Downloading now...") +  QL1S("</em>"));
+            break;
+
+        case DownloadItem::Errors:
+            div.appendInside(QL1S("<em>") + i18nc("%1 = Error description", "Error: %1", item->errorString()) +  QL1S("</em>"));
+            break;
+
+        case DownloadItem::Done:        
+        default:
+            if (QFile::exists(file))
+            {
+                div.appendInside(markup(QL1S("a")));
+                div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
+                div.lastChild().setAttribute(QL1S("href"), QL1S("about:downloads/opendir?q=") + QL1S("file://") + dir);
+                div.lastChild().setPlainText(i18n("Open directory"));
+
+                div.appendInside(QL1S(" - "));
+
+                div.appendInside(markup(QL1S("a")));
+                div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
+                div.lastChild().setAttribute(QL1S("href"), QL1S("file://") + file);
+                div.lastChild().setPlainText(i18n("Open file"));
+            }
+            else
+            {
+                div.appendInside(QL1S("<em>") + QL1S("Removed") +  QL1S("</em>"));
+            }
 
             div.appendInside(QL1S(" - "));
-            
+
             div.appendInside(markup(QL1S("a")));
             div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
-            div.lastChild().setAttribute(QL1S("href"), QL1S("file://") + file);
-            div.lastChild().setPlainText(i18n("Open file"));
+            div.lastChild().setAttribute(QL1S("href"), QL1S("about:downloads/removeItem?item=") + QString::number(i));
+            div.lastChild().setPlainText(i18n("Remove from list"));
+                
+            break;
         }
-        else
-        {
-            div.appendInside(QL1S("<em>") + QL1S("Removed") +  QL1S("</em>"));
-        }
-
-        div.appendInside(QL1S(" - "));
-
-        div.appendInside(markup(QL1S("a")));
-        div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
-        div.lastChild().setAttribute(QL1S("href"), QL1S("about:downloads/removeItem?item=") + QString::number(i));
-        div.lastChild().setPlainText(i18n("Remove from list"));
 
         i++;
     }
