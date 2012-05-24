@@ -37,9 +37,12 @@
 
 SyncHostTypeWidget::SyncHostTypeWidget(QWidget *parent)
     : QWizardPage(parent)
+    , _changed(false)
 {
     setupUi(this);
+    connect(kcfg_syncEnabled, SIGNAL(clicked()), this, SLOT(hasChanged()));
 
+    kcfg_syncEnabled->setChecked(ReKonfig::syncEnabled());
     if (ReKonfig::syncType() == 0)
         ftpRadioButton->setChecked(true);
     else if(ReKonfig::syncType() == 1)
@@ -48,11 +51,32 @@ SyncHostTypeWidget::SyncHostTypeWidget(QWidget *parent)
         operaRadioButton->setChecked(true);
     else
         nullRadioButton->setChecked(true);
+
+    enablewidgets(ReKonfig::syncEnabled());
 }
 
 
+bool SyncHostTypeWidget::changed()
+{
+    return _changed;
+}
+
+
+void SyncHostTypeWidget::hasChanged()
+{
+    enablewidgets(kcfg_syncEnabled->isChecked());
+
+    _changed = true;
+    emit changed(true);
+}
+
 int SyncHostTypeWidget::nextId() const
 {
+    ReKonfig::setSyncEnabled(kcfg_syncEnabled->isChecked());
+
+    if (!ReKonfig::syncEnabled())
+        return SyncAssistant::Page_Check;
+
     // save
     if (ftpRadioButton->isChecked())
     {
@@ -75,4 +99,9 @@ int SyncHostTypeWidget::nextId() const
         return SyncAssistant::Page_Check;
     }
 
+}
+
+void SyncHostTypeWidget::enablewidgets(bool b)
+{
+    hostGroupBox->setEnabled(b);
 }

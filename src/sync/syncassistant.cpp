@@ -43,10 +43,10 @@ SyncAssistant::SyncAssistant(QWidget *parent)
 {
     setWindowTitle(i18n("sync assistant"));
 
-    setPage(Page_Data, new SyncDataWidget(this));
     setPage(Page_Type, new SyncHostTypeWidget(this));
     setPage(Page_FTP_Settings, new SyncFTPSettingsWidget(this));
     setPage(Page_Google_Settings, new SyncGoogleSettingsWidget(this));
     setPage(Page_Opera_Settings, new SyncOperaSettingsWidget(this));
+    setPage(Page_Data, new SyncDataWidget(this));
     setPage(Page_Check, new SyncCheckWidget(this));
 }

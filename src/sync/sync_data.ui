@@ -18,13 +18,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QCheckBox" name="kcfg_syncEnabled">
-     <property name="text">
-      <string>Activate sync</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="syncGroupBox">
      <property name="title">
       <string>sync</string>
@@ -32,6 +25,9 @@
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QCheckBox" name="kcfg_syncBookmarks">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>bookmarks</string>
         </property>
@@ -39,6 +35,9 @@
       </item>
       <item>
        <widget class="QCheckBox" name="kcfg_syncHistory">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>history</string>
         </property>
@@ -46,6 +45,9 @@
       </item>
       <item>
        <widget class="QCheckBox" name="kcfg_syncPasswords">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>passwords</string>
         </property>

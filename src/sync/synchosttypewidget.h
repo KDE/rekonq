@@ -46,6 +46,18 @@ public:
     SyncHostTypeWidget(QWidget *parent = 0);
 
     int nextId() const;
+    bool changed();
+
+Q_SIGNALS:
+    void changed(bool);
+
+private Q_SLOTS:
+    void hasChanged();
+
+private:
+    void enablewidgets(bool b);
+    bool _changed;
+
 };
 
 #endif // SYNC_HOST_TYPE_WIDGET_H

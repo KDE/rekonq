@@ -92,7 +92,6 @@ void SyncManager::loadSettings()
             return;
         }
 
-        _syncImplementation.data()->initialLoadAndCheck();
 
         // --- Connect syncmanager to bookmarks & history manager
 
@@ -108,6 +107,7 @@ void SyncManager::loadSettings()
         : disconnect(rApp->historyManager(), SIGNAL(historySaved()), this, SLOT(syncHistory()))
         ;
 
+        _syncImplementation.data()->initialLoadAndCheck();
         // NOTE: password sync will be called just on save
     }
     else

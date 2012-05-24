@@ -39,11 +39,11 @@ class SyncAssistant : public QWizard
 public:
     enum
     {
-        Page_Data,
         Page_Type,
         Page_FTP_Settings,
         Page_Google_Settings,
         Page_Opera_Settings,
+        Page_Data,
         Page_Check
     };
 

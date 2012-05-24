@@ -38,55 +38,49 @@
 
 SyncDataWidget::SyncDataWidget(QWidget *parent)
     : QWizardPage(parent)
-    , _changed(false)
 {
     setupUi(this);
+}
 
-    kcfg_syncEnabled->setChecked(ReKonfig::syncEnabled());
+void SyncDataWidget::initializePage()
+{
+
+    kcfg_syncBookmarks->setDisabled(true);
+    kcfg_syncHistory->setDisabled(true);
+    kcfg_syncPasswords->setDisabled(true);
+
+    switch(ReKonfig::syncType())
+    {
+    //Ftp Sync Handler
+    case 0:
+        kcfg_syncBookmarks->setEnabled(true);
+        kcfg_syncHistory->setEnabled(true);
+        kcfg_syncPasswords->setEnabled(true);
+        break;
+    //Google Sync Handler
+    case 1:
+    //Opera Sync Handler
+    case 2:
+        kcfg_syncBookmarks->setEnabled(true);
+        break;
+    default:
+        kDebug() << "Unknown sync type!";
+    }
 
     kcfg_syncBookmarks->setChecked(ReKonfig::syncBookmarks());
     kcfg_syncHistory->setChecked(ReKonfig::syncHistory());
     kcfg_syncPasswords->setChecked(ReKonfig::syncPasswords());
 
-    bool isSyncEnabled = ReKonfig::syncEnabled();
-    enablewidgets(isSyncEnabled);
-
-    connect(kcfg_syncEnabled, SIGNAL(clicked()), this, SLOT(hasChanged()));
-}
-
-
-bool SyncDataWidget::changed()
-{
-    return _changed;
-}
-
-
-void SyncDataWidget::hasChanged()
-{
-    enablewidgets(kcfg_syncEnabled->isChecked());
-
-    _changed = true;
-    emit changed(true);
-}
-
-
-void SyncDataWidget::enablewidgets(bool b)
-{
-    syncGroupBox->setEnabled(b);
 }
 
 
 int SyncDataWidget::nextId() const
 {
     // save
-    ReKonfig::setSyncEnabled(kcfg_syncEnabled->isChecked());
 
     ReKonfig::setSyncBookmarks(kcfg_syncBookmarks->isChecked());
     ReKonfig::setSyncHistory(kcfg_syncHistory->isChecked());
     ReKonfig::setSyncPasswords(kcfg_syncPasswords->isChecked());
 
-    if (ReKonfig::syncEnabled())
-        return SyncAssistant::Page_Type;
-    else
-        return SyncAssistant::Page_Check;
+    return SyncAssistant::Page_Check;
 }

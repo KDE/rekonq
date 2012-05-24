@@ -169,6 +169,7 @@ void OperaSyncHandler::startLogin()
         if (_qoauth.error() != QOAuth::NoError)
         {
             kDebug() << "Error occured while fetching request tokens. Error code is : " << _qoauth.error();
+            emit syncStatus(Rekonq::Bookmarks, false, i18n("OAuth : Error fetching request token."));
             _isSyncing = false;
             return;
         }
@@ -228,8 +229,8 @@ void OperaSyncHandler::loadFinished(bool ok)
             password.setAttribute("value", ReKonfig::syncPass());
 
             button.evaluateJavaScript("this.click();");
-
             emit syncStatus(Rekonq::Bookmarks, true, i18n("Signing in..."));
+
             _doLogin = false;
         }
         else if (html.contains("verifier"))
@@ -240,11 +241,14 @@ void OperaSyncHandler::loadFinished(bool ok)
 
             kDebug() << "OAuth verifier code is : " << verifier;
             authParams.insert("oauth_verifier", verifier);
+
+            emit syncStatus(Rekonq::Bookmarks, true, i18n("OAuth : Sending verification code."));
             QOAuth::ParamMap resultParam = _qoauth.accessToken("https://auth.opera.com/service/oauth/access_token", QOAuth::POST, _requestToken, _requestTokenSecret, QOAuth::HMAC_SHA1, authParams);
 
             if (_qoauth.error() != QOAuth::NoError)
             {
                 kDebug() << "Error occured while fetching access tokens. Error code is : " << _qoauth.error();
+                emit syncStatus(Rekonq::Bookmarks, false, i18n("OAuth : Error fetching access token."));
                 _isSyncing = false;
                 return;
             }
@@ -265,6 +269,11 @@ void OperaSyncHandler::loadFinished(bool ok)
             //Login failed
             emit syncStatus(Rekonq::Bookmarks, false, i18n("Login failed!"));
             kDebug() << "Login failed!";
+            _isSyncing = false;
+        }
+        else
+        {
+            kDebug() << "Unknown page : " << _webPage.mainFrame()->url();
             _isSyncing = false;
         }
     }

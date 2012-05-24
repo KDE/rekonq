@@ -47,18 +47,8 @@ public:
 
     int nextId() const;
 
-    bool changed();
+    void initializePage();
 
-Q_SIGNALS:
-    void changed(bool);
-
-private Q_SLOTS:
-    void hasChanged();
-
-private:
-    void enablewidgets(bool);
-
-    bool _changed;
 };
 
 #endif // SYNC_WIDGET_H

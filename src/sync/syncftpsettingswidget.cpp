@@ -59,5 +59,5 @@ int SyncFTPSettingsWidget::nextId() const
     ReKonfig::setSyncPath(kcfg_syncPath->text());
     ReKonfig::setSyncPort(kcfg_syncPort->value());
 
-    return SyncAssistant::Page_Check;
+    return SyncAssistant::Page_Data;
 }

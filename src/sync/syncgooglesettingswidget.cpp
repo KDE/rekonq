@@ -57,5 +57,5 @@ int SyncGoogleSettingsWidget::nextId() const
     ReKonfig::setSyncHistory(false);
     ReKonfig::setSyncPasswords(false);
 
-    return SyncAssistant::Page_Check;
+    return SyncAssistant::Page_Data;
 }
