@@ -302,7 +302,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     QString title = _url.prettyUrl();
 
     // 3. main content
-    QString msg = i18nc("%1=an URL", "<h1>Index of %1</h1>", _url.prettyUrl());
+    QString msg = i18nc("%1=an URL", "<h2>Index of %1</h2>", _url.prettyUrl());
 
 
     if (rootUrl.cd(".."))
@@ -313,7 +313,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
         msg += "<a href=\"" + path + "\">" + i18n("Up to higher level directory") + "</a><br /><br />";
     }
 
-    msg += QL1S("<table width=\"100%\">");
+    msg += QL1S("<table width=\"95%\" align=\"center\">");
     msg += QL1S("<tr>");
     msg += QL1S("<th align=\"left\">") + i18n("Name") + QL1S("</th>");
     msg += QL1S("<th align=\"center\">") + i18n("Size") + QL1S("</th>");

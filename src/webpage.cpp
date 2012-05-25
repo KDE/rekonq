@@ -574,16 +574,16 @@ QString WebPage::errorPage(QNetworkReply *reply)
         return QString("Couldn't open the rekonqinfo.html file");
     }
 
+    // NOTE:
+    // this, to take care about XSS (see BUG 217464)...
+    QString urlString = Qt::escape(reply->url().toString());
+
     // 1. data path
     QString dataPath = QL1S("file://") + notfoundFilePath;
     dataPath.remove(QL1S("/htmls/rekonqinfo.html"));
 
     // 2. title
     QString title = i18n("There was a problem while loading the page");
-
-    // NOTE:
-    // this, to take care about XSS (see BUG 217464)...
-    QString urlString = Qt::escape(reply->url().toString());
 
     QString iconPath = QString("file://") + KIconLoader::global()->iconPath("dialog-warning" , KIconLoader::Small);
     iconPath.replace(QL1S("16"), QL1S("128"));
