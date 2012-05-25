@@ -294,7 +294,14 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
         return QString("rekonq error, sorry :(");
     }
 
+    // 1. default data path
+    QString dataPath = QL1S("file://") + infoFilePath;
+    dataPath.remove(QL1S("/htmls/rekonqinfo.html"));
+    
+    // 2. title
     QString title = _url.prettyUrl();
+
+    // 3. main content
     QString msg = i18nc("%1=an URL", "<h1>Index of %1</h1>", _url.prettyUrl());
 
 
@@ -338,11 +345,12 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     }
     msg += "</table>";
 
+    // done. Replace variables and show it
+    QString html = QL1S(file.readAll());
 
-    QString html = QString(QL1S(file.readAll()))
-                   .arg(title)
-                   .arg(msg)
-                   ;
+    html.replace(QL1S("$DEFAULT_PATH"), dataPath);
+    html.replace(QL1S("$PAGE_TITLE"), title);
+    html.replace(QL1S("$MAIN_CONTENT"), msg);
 
     return html;
 }

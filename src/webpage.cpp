@@ -574,6 +574,11 @@ QString WebPage::errorPage(QNetworkReply *reply)
         return QString("Couldn't open the rekonqinfo.html file");
     }
 
+    // 1. data path
+    QString dataPath = QL1S("file://") + notfoundFilePath;
+    dataPath.remove(QL1S("/htmls/rekonqinfo.html"));
+
+    // 2. title
     QString title = i18n("There was a problem while loading the page");
 
     // NOTE:
@@ -583,6 +588,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     QString iconPath = QString("file://") + KIconLoader::global()->iconPath("dialog-warning" , KIconLoader::Small);
     iconPath.replace(QL1S("16"), QL1S("128"));
 
+    // 3. main content
     QString msg;
     msg += QL1S("<table>");
     msg += QL1S("<tr><td>");
@@ -610,10 +616,13 @@ QString WebPage::errorPage(QNetworkReply *reply)
         msg += i18n("Search with %1", defaultEngine->name()) + QL1S("</a>");
     }
 
-    QString html = QString(QL1S(file.readAll()))
-                   .arg(title)
-                   .arg(msg)
-                   ;
+    // done. Replace variables and show it
+    QString html = QL1S(file.readAll());
+
+    html.replace(QL1S("$DEFAULT_PATH"), dataPath);
+    html.replace(QL1S("$PAGE_TITLE"), title);
+    html.replace(QL1S("$MAIN_CONTENT"), msg);
+
     return html;
 }
 
