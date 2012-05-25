@@ -34,14 +34,14 @@
       <item>
        <widget class="QRadioButton" name="googleRadioButton">
         <property name="text">
-         <string>Google Bookmarks</string>
+         <string>Google Sync</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QRadioButton" name="operaRadioButton">
         <property name="text">
-         <string>Opera Bookmarks</string>
+         <string>Opera Sync</string>
         </property>
        </widget>
       </item>
