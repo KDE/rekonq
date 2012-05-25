@@ -585,36 +585,81 @@ QString WebPage::errorPage(QNetworkReply *reply)
     // 2. title
     QString title = i18n("There was a problem while loading the page");
 
-    QString iconPath = QString("file://") + KIconLoader::global()->iconPath("dialog-warning" , KIconLoader::Small);
-    iconPath.replace(QL1S("16"), QL1S("128"));
-
     // 3. main content
     QString msg;
+
+    msg += i18n("<h1>Oops! Rekonq cannot load <em>%1</em></h1>", urlString);
+
+    
+    msg += i18n("<h2>Wrong digited?</h2>");
+    
     msg += QL1S("<table>");
     msg += QL1S("<tr><td>");
-    msg += QL1S("<img src=\"") + iconPath + QL1S("\" />");
+
+    msg += i18n("<p>");
+    msg += i18n("We tried to load url: %1.<br />", urlString);
+    msg += i18n("Check your address for errors like <em>ww.kde.org</em> instead of <em>www.kde.org</em>.<br />");
+    msg += i18n("If you digited it right, just try to <a href=\"%1\">reload it</a>.<br />", urlString);
+    msg += i18n("Otherwise, just take attention on next attempt.");
+    msg += i18n("</p>");
+
+    QString laughIconPath = QString("file://") + KIconLoader::global()->iconPath("face-laugh" , -KIconLoader::SizeHuge, false);
     msg += QL1S("</td><td>");
-    msg += QL1S("<h1>") + reply->errorString() + QL1S("</h1>");
-    msg += QL1S("<h2>") + i18nc("%1=an URL, e.g.'kde.org'", "When connecting to: <b>%1</b>", urlString) + QL1S("</h2>");
+    msg += QL1S("<img src=\"") + laughIconPath + QL1S("\" />");
     msg += QL1S("</td></tr></table>");
 
-    msg += QL1S("<ul><li>") + i18n("Check the address for errors such as <b>ww</b>.kde.org instead of <b>www</b>.kde.org");
-    msg += QL1S("</li><li>") + i18n("If the address is correct, try to check the network connection.") + QL1S("</li><li>") ;
-    msg += i18n("If your computer or network is protected by a firewall or proxy, make sure that rekonq is permitted to access the network.");
-    msg += QL1S("</li><li>") + i18n("Of course, if rekonq does not work properly, you can always say it is a programmer error ;)");
-    msg += QL1S("</li></ul><br/><br/>");
-    msg += QL1S("<input type=\"button\" id=\"reloadButton\" onClick=\"document.location.href='") + urlString + QL1S("';\" value=\"");
-    msg += i18n("Try Again") + QL1S("\" />");
 
-    //Default SearchEngine
+    msg += i18n("<h2>Network problems?</h2>");
+
+    QString faceIconPath = QString("file://") + KIconLoader::global()->iconPath("face-surprise" , -KIconLoader::SizeHuge, false);
+    msg += QL1S("<table>");
+    msg += QL1S("<tr><td width=\"100px\">");
+    msg += QL1S("<img src=\"") + faceIconPath + QL1S("\" />");
+    msg += QL1S("</td><td>");
+
+    msg += i18n("<p>");
+    msg += i18n("Maybe you are having some problems with your network.<br />");
+    msg += i18n("Try checking your <a href=\"%1\">network connections</a>", QL1S("about:settings/network"));
+    msg += i18n(", your <a href=\"%1\">proxy settings</a> ", QL1S("about:settings/proxy"));
+    msg += i18n("and your <a href=\"%1\">firewall</a>.<br />", QL1S("about:settings/firewall"));
+    msg += i18n("Then try again.<br />");
+    msg += i18n("</p>");
+
+    msg += QL1S("</td></tr></table>");
+
+
+    msg += i18n("<h2>Suggestions</h2>");
+
+    msg += QL1S("<table>");
+    msg += QL1S("<tr><td>");
+
+    msg += i18n("<p>");
+
+    // Default SearchEngine
     KService::Ptr defaultEngine = SearchEngine::defaultEngine();
 
     if (defaultEngine)
     {
-        msg += i18n("or");
+        msg += i18n("Consult your default search engine about:");
         msg += QL1S(" <a href=\"") + SearchEngine::buildQuery(defaultEngine, urlString) + QL1S("\">");
-        msg += i18n("Search with %1", defaultEngine->name()) + QL1S("</a>");
+        msg += i18n("search with %1", defaultEngine->name());
+        msg += QL1S("</a>!<br />");
     }
+    else
+    {
+        msg += i18n("You don't have a default search engine set. We won't suggest you one.");
+    }
+
+    msg += i18n("At least, you can consult a cached snapshot of the site: <br />");
+    msg += i18n("Try checking the <a href=\"%1\">Wayback Machine</a>", QL1S("http://wayback.archive.org/web/*/") + urlString);
+    msg += i18n(" or the <a href=\"%1\">Google Cache</a>.", QL1S("http://google.com/search?q=cache:") + urlString);
+    msg += i18n("</p>");
+
+    QString winkIconPath = QString("file://") + KIconLoader::global()->iconPath("face-wink" , -KIconLoader::SizeHuge, false);
+    msg += QL1S("</td><td>");
+    msg += QL1S("<img src=\"") + winkIconPath + QL1S("\" />");
+    msg += QL1S("</td></tr></table>");
+
 
     // done. Replace variables and show it
     QString html = QL1S(file.readAll());

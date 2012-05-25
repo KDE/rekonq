@@ -60,6 +60,7 @@
 #include <QFile>
 #include <QAction>
 #include <QWebFrame>
+#include <QProcess>
 
 
 NewTabPage::NewTabPage(QWebFrame *frame)
@@ -87,6 +88,40 @@ NewTabPage::NewTabPage(QWebFrame *frame)
 
 void NewTabPage::generate(const KUrl &url)
 {
+    // about:preview links
+    if (KUrl("about:settings").isParentOf(url))
+    {
+        if (url.fileName() == QL1S("network"))
+        {
+            QString program = QL1S("kcmshell4");
+            QStringList arguments;
+            arguments << QL1S("kcm_networkmanagement");
+            QProcess *proc = new QProcess(parent());
+            proc->start(program, arguments);
+            return;
+        }
+
+        if (url.fileName() == QL1S("proxy"))
+        {
+            QString program = QL1S("kcmshell4");
+            QStringList arguments;
+            arguments << QL1S("proxy");
+            QProcess *proc = new QProcess(parent());
+            proc->start(program, arguments);
+            return;
+        }
+
+        if (url.fileName() == QL1S("firewall"))
+        {
+            QString program = QL1S("kcmshell4");
+            QStringList arguments;
+            arguments << QL1S("kcm-ufw");
+            QProcess *proc = new QProcess(parent());
+            proc->start(program, arguments);
+            return;
+        }
+    }
+
     // about:preview links
     if (KUrl("about:preview").isParentOf(url))
     {
