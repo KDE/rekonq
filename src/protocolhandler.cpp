@@ -313,37 +313,41 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
         msg += "<a href=\"" + path + "\">" + i18n("Up to higher level directory") + "</a><br /><br />";
     }
 
-    msg += "<table width=\"100%\">";
-    msg += "<tr><th align=\"left\">" + i18n("Name") + "</th><th>" + i18n("Size") + "</th><th>" + i18n("Last Modified") + "</th></tr>";
+    msg += QL1S("<table width=\"100%\">");
+    msg += QL1S("<tr>");
+    msg += QL1S("<th align=\"left\">") + i18n("Name") + QL1S("</th>");
+    msg += QL1S("<th align=\"center\">") + i18n("Size") + QL1S("</th>");
+    msg += QL1S("<th align=\"right\">") + i18n("Last Modified") + QL1S("</th>");
+    msg += QL1S("</tr>");
 
     KFileItemList orderedList = sortFileList(list);
     Q_FOREACH(const KFileItem & item, orderedList)
     {
-        msg += "<tr>";
+        msg += QL1S("<tr>");
         QString fullPath = Qt::escape(item.url().prettyUrl());
 
         QString iconName = item.iconName();
         QString icon = QString("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);
 
-        msg += "<td width=\"70%\">";
-        msg += "<img src=\"" + icon + "\" alt=\"" + iconName + "\" /> ";
-        msg += "<a href=\"" + fullPath + "\">" + Qt::escape(item.name()) + "</a>";
-        msg += "</td>";
+        msg += QL1S("<td width=\"70%\">");
+        msg += QL1S("<img src=\"") + icon + QL1S("\" alt=\"") + iconName + QL1S("\" /> ");
+        msg += QL1S("<a href=\"") + fullPath + QL1S("\">") + Qt::escape(item.name()) + QL1S("</a>");
+        msg += QL1S("</td>");
 
-        msg += "<td align=\"right\">";
+        msg += QL1S("<td align=\"right\">");
         if (item.isFile())
         {
             msg += KGlobal::locale()->formatByteSize(item.size(), 1);
         }
-        msg += "</td>";
+        msg += QL1S("</td>");
 
-        msg += "<td align=\"right\">";
+        msg += QL1S("<td align=\"right\">");
         msg += item.timeString();
-        msg += "</td>";
+        msg += QL1S("</td>");
 
-        msg += "</tr>";
+        msg += QL1S("</tr>");
     }
-    msg += "</table>";
+    msg += QL1S("</table>");
 
     // done. Replace variables and show it
     QString html = QL1S(file.readAll());
