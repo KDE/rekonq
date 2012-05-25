@@ -305,7 +305,8 @@ void OperaSyncHandler::getBookmarks()
 
 void OperaSyncHandler::fetchBookmarksDataSlot(KIO::Job* job, QByteArray data)
 {
-//    kDebug() << data;
+    Q_UNUSED(job);
+
     _xmlData += data;
 }
 
@@ -411,7 +412,10 @@ void OperaSyncHandler::fetchBookmarksResultSlot(KJob* job)
 
 void OperaSyncHandler::createBookmarkDataSlot(KIO::Job* job, QByteArray data)
 {
-//    kDebug() << data;
+    Q_UNUSED(job);
+    Q_UNUSED(data);
+
+    //    kDebug() << data;
 //    _xmlData += data;
 }
 
@@ -484,6 +488,7 @@ void OperaSyncHandler::deleteResourceResultSlot(KJob* job)
 //This function is here just for debugging purpose. We don't need it's output.
 void OperaSyncHandler::deleteResourceDataSlot(KIO::Job* job, QByteArray data)
 {
+    Q_UNUSED(job);
     kDebug() << data;
 }
 
