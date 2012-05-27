@@ -68,6 +68,7 @@
 #include <KGlobal>
 #include <KCharsets>
 #include <KPushButton>
+#include <KMimeType>
 
 // Qt Includes
 #include <QVBoxLayout>
@@ -805,6 +806,7 @@ void Application::createWebAppShortcut()
     dialog->setCaption(i18nc("@title:window", "Create Application Shortcut"));
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
     dialog->button(KDialog::Ok)->setText(i18n("Create"));
+    dialog->setMinimumSize(400,50);
 
     Ui::webAppCreation wAppWidget;
     QWidget widget;
@@ -833,13 +835,13 @@ void Application::createWebAppShortcut()
                                  + QL1S("Icon=") + iconPath + QL1S("\n")
                                  + QL1S("Exec=kwebapp ") + u.url() + QL1S("\n")
                                  + QL1S("Type=Application\n")
-                                 + QL1S("Categories=Application;Network;WebBrowser\n")
+                                 + QL1S("Categories=Application;Network\n")
                                  ;
 
         if (ReKonfig::createDesktopAppShortcut())
         {
             QString desktop = KGlobalSettings::desktopPath();
-            QFile wAppFile(desktop + QL1C('/') + title + QL1S(".desktop"));
+            QFile wAppFile(desktop + QL1C('/') + title);
 
             if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
             {
@@ -851,6 +853,7 @@ void Application::createWebAppShortcut()
             out.setCodec("UTF-8");
             out << shortcutString;
 
+            wAppFile.setPermissions(QFile::ReadUser|QFile::WriteUser|QFile::ExeUser|QFile::ReadGroup|QFile::ReadOther);
             wAppFile.close();
         }
 
