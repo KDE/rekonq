@@ -42,12 +42,14 @@
 #include <KRatingWidget>
 
 // Qt Includes
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QFormLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
+#include <QDialogButtonBox>
+#include <QFormLayout>
+#include <QLabel>
+#include <QPushButton>
 #include <QCompleter>
 #include <QTextCursor>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
 
 // Nepomuk config include
 #include "../config-nepomuk.h"
@@ -71,6 +73,8 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
 
 #ifdef HAVE_NEPOMUK
     m_nfoResource = (QUrl)m_bookmark->url();
+    m_isNepomukEnabled = QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.NepomukServer");
+    kDebug() << "IS NEPOMUK ACTUALLY RUNNING? " << m_isNepomukEnabled;
 #endif
     
     QFormLayout *layout = new QFormLayout(this);
@@ -118,50 +122,66 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     layout->addRow(nameLabel, m_name);
 
 #ifdef HAVE_NEPOMUK
-    QLabel* rateLabel = new QLabel(this);
-    rateLabel->setText( i18n( "Rate:" ) );
-    KRatingWidget *ratingWidget = new KRatingWidget( this );
-    if( m_nfoResource.rating() != NULL ) {
-        ratingWidget->setRating( m_nfoResource.rating() );
+
+    if (m_isNepomukEnabled)
+    {
+        QLabel* rateLabel = new QLabel(this);
+        rateLabel->setText( i18n( "Rate:" ) );
+        KRatingWidget *ratingWidget = new KRatingWidget( this );
+        if ( m_nfoResource.rating() != NULL )
+        {
+            ratingWidget->setRating( m_nfoResource.rating() );
+        }
+        connect( ratingWidget, SIGNAL( ratingChanged( int ) ), this, SLOT( setRatingSlot( int ) ) );
+        ratingWidget->setToolTip( i18n( "Rate this page" ) );
+        layout->addRow( rateLabel,ratingWidget );
+
+        //Add comments
+        QLabel *commentLabel = new QLabel( this );
+        commentLabel->setText( i18n( "Describe:" ) );
+        commentLabel->setAlignment( Qt::AlignCenter );
+        m_commentEdit = new QPlainTextEdit( this );
+        if ( !m_nfoResource.description().isEmpty() )
+        {
+            m_commentEdit->setPlainText( m_nfoResource.description() );
+        }
+        connect( m_commentEdit, SIGNAL(textChanged()), this, SLOT(addCommentSlot()) );
+        layout->addRow( commentLabel, m_commentEdit );
+
+        // Create tags
+        QLabel *tagLabel = new QLabel( this );
+        tagLabel->setText( i18n( "Tags:" ) );
+        tagLabel->setAlignment( Qt::AlignLeft );
+        m_tagLine = new KLineEdit( this );
+        m_tagLine->setPlaceholderText( i18n( "add tags(comma separated)" ) );
+
+
+        QList<Nepomuk::Tag> tagList = Nepomuk::Tag::allTags();
+        Q_FOREACH(Nepomuk::Tag t,tagList)
+        {
+            m_tList.append(t.label());
+        }
+        QCompleter *completeTag = new QCompleter( m_tList );
+        completeTag->setCompletionMode(QCompleter::PopupCompletion);
+        m_tagLine->setCompleter(completeTag);
+        loadTags();
+
+        layout->addRow(tagLabel,m_tagLine);
+
+        QPushButton *linkToResource = new QPushButton( this );
+        linkToResource->setText( i18n( "Link Resources" ) );
+        connect(linkToResource, SIGNAL(clicked()), this, SLOT( linkToResourceSlot() ) );
+        layout->addWidget(linkToResource);
     }
-    connect( ratingWidget, SIGNAL( ratingChanged( int ) ), this, SLOT( setRatingSlot( int ) ) );
-    ratingWidget->setToolTip( i18n( "Rate this page" ) );
-    layout->addRow( rateLabel,ratingWidget );
-
-    //Add comments
-    QLabel *commentLabel = new QLabel( this );
-    commentLabel->setText( i18n( "Describe:" ) );
-    commentLabel->setAlignment( Qt::AlignCenter );
-    m_commentEdit = new QPlainTextEdit( this );
-    if( !m_nfoResource.description().isEmpty() ) {
-        m_commentEdit->setPlainText( m_nfoResource.description() );
+    else
+    {
+        QLabel *nepomukLabel = new QLabel(this);
+        QPalette p = nepomukLabel->palette();
+        p.setColor(QPalette::WindowText, Qt::red);
+        nepomukLabel->setPalette(p);
+        nepomukLabel->setText(i18n("Nepomuk is actually disabled."));
+        layout->addWidget(nepomukLabel);
     }
-    connect( m_commentEdit, SIGNAL(textChanged()), this, SLOT(addCommentSlot()) );
-    layout->addRow( commentLabel, m_commentEdit );
-
-    // Create tags
-    QLabel *tagLabel = new QLabel( this );
-    tagLabel->setText( i18n( "Tags:" ) );
-    tagLabel->setAlignment( Qt::AlignLeft );
-    m_tagLine = new KLineEdit( this );
-    m_tagLine->setPlaceholderText( i18n( "add tags(comma separated)" ) );
-
-
-    QList<Nepomuk::Tag> tagList = Nepomuk::Tag::allTags();
-    Q_FOREACH(Nepomuk::Tag t,tagList) {
-        m_tList.append(t.label());
-    }
-    QCompleter *completeTag = new QCompleter( m_tList );
-    completeTag->setCompletionMode(QCompleter::PopupCompletion);
-    m_tagLine->setCompleter(completeTag);
-    loadTags();
-
-    layout->addRow(tagLabel,m_tagLine);
-
-    QPushButton *linkToResource = new QPushButton( this );
-    linkToResource->setText( i18n( "Link Resources" ) );
-    connect(linkToResource, SIGNAL(clicked()), this, SLOT( linkToResourceSlot() ) );
-    layout->addWidget(linkToResource);
 #endif
     
     // Ok & Cancel buttons
@@ -204,7 +224,10 @@ void BookmarkWidget::accept()
     rApp->bookmarkManager()->manager()->emitChanged(a);
 
 #ifdef HAVE_NEPOMUK
-    parseTags();
+    if (m_isNepomukEnabled)
+    {
+        parseTags();
+    }
 #endif
     
     close();

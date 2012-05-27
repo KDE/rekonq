@@ -91,6 +91,7 @@ private:
 
 #ifdef HAVE_NEPOMUK    
     Nepomuk::Resource m_nfoResource;
+    bool m_isNepomukEnabled;
 #endif
 };
 
