@@ -84,8 +84,6 @@ SET( rekonq_KDEINIT_SRCS
     urlbar/bookmarkwidget.cpp
     urlbar/webshortcutwidget.cpp
     urlbar/favoritewidget.cpp
-    urlbar/resourcelinkdialog.cpp
-    urlbar/newresourcedialog.cpp
     #----------------------------------------
     analyzer/analyzerpanel.cpp
     analyzer/networkanalyzer.cpp
@@ -114,6 +112,13 @@ SET( rekonq_KDEINIT_SRCS
     sync/syncgooglesettingswidget.cpp
 )
 
+IF(HAVE_NEPOMUK)
+    SET( rekonq_KDEINIT_SRCS
+            ${rekonq_KDEINIT_SRCS}
+            urlbar/resourcelinkdialog.cpp
+            urlbar/newresourcedialog.cpp
+    )
+ENDIF(HAVE_NEPOMUK)
 
 KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_general.ui
@@ -140,10 +145,10 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
  )
 
 KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
-find_package(KDE4 REQUIRED)
-find_package(Nepomuk REQUIRED)
-include(SopranoAddOntology)
-include (KDE4Defaults)
+
+IF(HAVE_NEPOMUK)
+    INCLUDE(SopranoAddOntology)
+ENDIF(HAVE_NEPOMUK)
 
 ### ------------- INCLUDING DIRECTORIES...
 
@@ -160,11 +165,13 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}
-			${SOPRANO_INCLUDE_DIR}
-  			${CMAKE_SOURCE_DIR}
-  			${NEPOMUK_INCLUDE_DIR}
 )
 
+IF(HAVE_NEPOMUK)
+    INCLUDE_DIRECTORIES(${SOPRANO_INCLUDE_DIR}
+                        ${NEPOMUK_INCLUDE_DIR}
+    )
+ENDIF(HAVE_NEPOMUK)
 
 ### -------------- ADDING DEFINITIONS...
 
@@ -181,20 +188,24 @@ KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
 
 ### --------------- TARGETTING LINK LIBRARIES...
 
-TARGET_LINK_LIBRARIES ( kdeinit_rekonq
-                        ${QT_LIBRARIES}
-                        ${QT_QTSCRIPT_LIBRARY}
-                        ${QT_QTWEBKIT_LIBRARY}
-                        ${KDE4_KDEWEBKIT_LIBS}
-                        ${KDE4_KUTILS_LIBS}
-                        ${KDE4_KDEUI_LIBS}
-                        ${KDE4_KIO_LIBS}
-                        ${KDE4_KPARTS_LIBS}
-			${NEPOMUK_LIBRARIES}
-  			${NEPOMUK_QUERY_LIBRARIES}
-  			${SOPRANO_LIBRARIES}
+TARGET_LINK_LIBRARIES (     kdeinit_rekonq
+                            ${QT_LIBRARIES}
+                            ${QT_QTSCRIPT_LIBRARY}
+                            ${QT_QTWEBKIT_LIBRARY}
+                            ${KDE4_KDEWEBKIT_LIBS}
+                            ${KDE4_KUTILS_LIBS}
+                            ${KDE4_KDEUI_LIBS}
+                            ${KDE4_KIO_LIBS}
+                            ${KDE4_KPARTS_LIBS}
 )
 
+IF(HAVE_NEPOMUK)
+    TARGET_LINK_LIBRARIES(  kdeinit_rekonq
+                            ${NEPOMUK_LIBRARIES}
+                            ${NEPOMUK_QUERY_LIBRARIES}
+                            ${SOPRANO_LIBRARIES}
+    )
+ENDIF(HAVE_NEPOMUK)
 
 ### ------------ INSTALL FILES...
 

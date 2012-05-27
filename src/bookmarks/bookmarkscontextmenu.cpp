@@ -27,6 +27,9 @@
 // Self Includes
 #include "bookmarkscontextmenu.h"
 
+// Nepomuk config include
+#include "../config-nepomuk.h"
+
 // Local Includes
 #include "bookmarkowner.h"
 #include "bookmarkmanager.h"
@@ -67,7 +70,9 @@ void BookmarksContextMenu::addBookmarkActions()
     addSeparator();
 
     addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::EDIT));
+#ifdef HAVE_NEPOMUK
     addAction(m_bmOwner->createAction(bookmark(),BookmarkOwner::FANCYBOOKMARK));
+#endif
     addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::DELETE));
 }
 

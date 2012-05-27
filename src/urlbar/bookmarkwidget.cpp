@@ -33,7 +33,6 @@
 #include "application.h"
 #include "bookmarkmanager.h"
 #include "bookmarkowner.h"
-#include "resourcelinkdialog.h"
 
 // KDE Includes
 #include <KComboBox>
@@ -50,8 +49,16 @@
 #include <QCompleter>
 #include <QTextCursor>
 
-//Nepomuk Includes
-#include <Soprano/Vocabulary/NAO>
+// Nepomuk config include
+#include "../config-nepomuk.h"
+
+#ifdef HAVE_NEPOMUK
+    // Local Nepomuk Includes
+    #include "resourcelinkdialog.h"
+
+    //Nepomuk Includes
+    #include <Soprano/Vocabulary/NAO>
+#endif
 
 
 
@@ -62,13 +69,12 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
     setFixedWidth(320);
 
+#ifdef HAVE_NEPOMUK
     m_nfoResource = (QUrl)m_bookmark->url();
-
+#endif
+    
     QFormLayout *layout = new QFormLayout(this);
     layout->setHorizontalSpacing(20);
-    // Bookmark icon
-//    QLabel *bookmarkIcon = new QLabel(this);
-//    bookmarkIcon->setPixmap(KIcon("bookmarks").pixmap(32, 32));
 
     // Title
     QHBoxLayout *hLayout = new QHBoxLayout;
@@ -77,7 +83,6 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     QFont f = bookmarkInfo->font();
     f.setBold(true);
     bookmarkInfo->setFont(f);
-
 
     // Remove button
     QLabel *removeLabel = new QLabel( this );
@@ -88,14 +93,6 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     layout->addRow(hLayout);
 
     connect(removeLabel, SIGNAL( linkActivated(QString) ), this, SLOT( removeBookmark() ));
-
-    /*
-    QPushButton *removeButton = new QPushButton(this);
-    removeButton->setText(i18n("Remove this Bookmark"));
-    connect(removeButton, SIGNAL(clicked()), this, SLOT(removeBookmark()));
-    vLayout->addWidget(removeButton);
-*/
-    //layout->addRow(bookmarkIcon, vLayout);
 
     //Bookmark Folder
     QLabel *folderLabel = new QLabel(this);
@@ -120,6 +117,7 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     }
     layout->addRow(nameLabel, m_name);
 
+#ifdef HAVE_NEPOMUK
     QLabel* rateLabel = new QLabel(this);
     rateLabel->setText( i18n( "Rate:" ) );
     KRatingWidget *ratingWidget = new KRatingWidget( this );
@@ -141,14 +139,13 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     connect( m_commentEdit, SIGNAL(textChanged()), this, SLOT(addCommentSlot()) );
     layout->addRow( commentLabel, m_commentEdit );
 
-    //Create tags
+    // Create tags
     QLabel *tagLabel = new QLabel( this );
     tagLabel->setText( i18n( "Tags:" ) );
     tagLabel->setAlignment( Qt::AlignLeft );
     m_tagLine = new KLineEdit( this );
     m_tagLine->setPlaceholderText( i18n( "add tags(comma separated)" ) );
 
-    //m_tagList = new QGridLayout( this );
 
     QList<Nepomuk::Tag> tagList = Nepomuk::Tag::allTags();
     Q_FOREACH(Nepomuk::Tag t,tagList) {
@@ -159,14 +156,14 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     m_tagLine->setCompleter(completeTag);
     loadTags();
 
-   // connect( m_tagLine,SIGNAL( textEdited(QString) ),this,SLOT( tagListSlot() ) );
     layout->addRow(tagLabel,m_tagLine);
-//  layout->addRow(m_tagList);
 
     QPushButton *linkToResource = new QPushButton( this );
     linkToResource->setText( i18n( "Link Resources" ) );
     connect(linkToResource, SIGNAL(clicked()), this, SLOT( linkToResourceSlot() ) );
     layout->addWidget(linkToResource);
+#endif
+    
     // Ok & Cancel buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -205,8 +202,11 @@ void BookmarkWidget::accept()
     parent.deleteBookmark(*m_bookmark);
     a.addBookmark(*m_bookmark);
     rApp->bookmarkManager()->manager()->emitChanged(a);
-    parseTags();
 
+#ifdef HAVE_NEPOMUK
+    parseTags();
+#endif
+    
     close();
 }
 
@@ -263,67 +263,78 @@ void BookmarkWidget::removeBookmark()
 }
 
 
-
-void BookmarkWidget::addTags(QList<Nepomuk::Tag> tagList)
-{
-    foreach( const Nepomuk::Tag &tag,tagList) {
-        if(!m_nfoResource.tags().contains(tag)) {
-            m_nfoResource.addTag(tag);
-        }
-    }
-    foreach( Nepomuk::Tag tag,m_nfoResource.tags()) {
-        if(!tagList.contains(tag)) {
-            tag.remove();
-        }
-    }
-}
-
-void BookmarkWidget::parseTags()
-{
-    QList<Nepomuk::Tag> tagList;
-    if(m_tagLine->text().contains(',')) {
-        QString text = m_tagLine->text();
-        QStringList tagStringList = text.split( QChar::fromAscii(',') );
-
-        foreach( const QString &tag, tagStringList ) {
-            QString trimmedTag = tag.trimmed();
-            if( !trimmedTag.isEmpty() )
-                tagList << trimmedTag;
+#ifdef HAVE_NEPOMUK
+    void BookmarkWidget::addTags(QList<Nepomuk::Tag> tagList)
+    {
+        foreach ( const Nepomuk::Tag &tag,tagList)
+        {
+            if (!m_nfoResource.tags().contains(tag))
+            {
+                m_nfoResource.addTag(tag);
             }
-     }
-    else {
-        tagList<<m_tagLine->text().trimmed();
+        }
+        foreach ( Nepomuk::Tag tag,m_nfoResource.tags())
+        {
+            if (!tagList.contains(tag))
+            {
+                tag.remove();
+            }
+        }
     }
-    addTags(tagList);
-}
 
-void BookmarkWidget::loadTags() {
+    void BookmarkWidget::parseTags()
+    {
+        QList<Nepomuk::Tag> tagList;
+        if(m_tagLine->text().contains(','))
+        {
+            QString text = m_tagLine->text();
+            QStringList tagStringList = text.split( QChar::fromAscii(',') );
 
-   QString list;
-   if(!m_nfoResource.tags().isEmpty()) {
-       foreach( const Nepomuk::Tag &tag, m_nfoResource.tags() ) {
-           list.append(tag.genericLabel());
-           list.append(",");
-       }
-     m_tagLine->setText(list);
-   }
+            foreach( const QString &tag, tagStringList )
+            {
+                QString trimmedTag = tag.trimmed();
+                if (!trimmedTag.isEmpty())
+                    tagList << trimmedTag;
+                }
+        }
+        else
+        {
+            tagList << m_tagLine->text().trimmed();
+        }
+        addTags(tagList);
+    }
 
-}
+    
+    void BookmarkWidget::loadTags()
+    {
+        QString list;
+        if(!m_nfoResource.tags().isEmpty())
+        {
+            foreach( const Nepomuk::Tag &tag, m_nfoResource.tags() )
+            {
+                list.append(tag.genericLabel());
+                list.append(",");
+            }
+            m_tagLine->setText(list);
+        }
+    }
 
-void BookmarkWidget::setRatingSlot( int rate )
-{
-    m_nfoResource.setRating(rate);
-}
-void BookmarkWidget::addCommentSlot()
-{
-    m_nfoResource.setDescription(m_commentEdit->toPlainText());
-}
+    
+    void BookmarkWidget::setRatingSlot( int rate )
+    {
+        m_nfoResource.setRating(rate);
+    }
+
+    
+    void BookmarkWidget::addCommentSlot()
+    {
+        m_nfoResource.setDescription(m_commentEdit->toPlainText());
+    }
 
 
-void BookmarkWidget::linkToResourceSlot()
-{
-    Nepomuk::ResourceLinkDialog r( m_nfoResource );
-    r.exec();
-}
-
-
+    void BookmarkWidget::linkToResourceSlot()
+    {
+        Nepomuk::ResourceLinkDialog r( m_nfoResource );
+        r.exec();
+    }
+#endif

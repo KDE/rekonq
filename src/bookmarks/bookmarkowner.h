@@ -34,6 +34,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Nepomuk config include
+#include "../config-nepomuk.h"
+
 // KDE Includes
 #include <KAction>
 #include <KBookmarkOwner>
@@ -60,7 +63,9 @@ public:
         NEW_SEPARATOR,
         COPY,
         EDIT,
+#ifdef HAVE_NEPOMUK
         FANCYBOOKMARK,
+#endif
         DELETE,
         NUM_ACTIONS,
         SET_TOOLBAR_FOLDER,
@@ -108,7 +113,9 @@ public Q_SLOTS:
 
     void copyLink(const KBookmark &bookmark);
     void editBookmark(KBookmark bookmark);
+#ifdef HAVE_NEPOMUK
     void fancyBookmark(KBookmark bookmark);
+#endif
     bool deleteBookmark(const KBookmark &bookmark);
     void setToolBarFolder(KBookmark bookmark = KBookmark());
     void unsetToolBarFolder();

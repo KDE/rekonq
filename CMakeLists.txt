@@ -34,12 +34,20 @@ FIND_PACKAGE(Qt4 4.8.0 COMPONENTS QtCore QtGui QtNetwork QtWebKit REQUIRED)
 
 FIND_PACKAGE(KDE4 4.7.0 REQUIRED)
 
+
 INCLUDE(MacroOptionalFindPackage)
 INCLUDE(FindPackageHandleStandardArgs)
 INCLUDE(KDE4Defaults)
 INCLUDE(MacroLibrary)
 ADD_DEFINITIONS(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
+# ==================================================================================
+# optional nepomuk requirements
+
+MACRO_OPTIONAL_FIND_PACKAGE(Nepomuk)
+MACRO_BOOL_TO_01(Nepomuk_FOUND HAVE_NEPOMUK)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-nepomuk.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-nepomuk.h )
 
 # ==================================================================================
 # Log messages
@@ -85,6 +93,22 @@ ELSE(KDE4_FOUND)
     MESSAGE(STATUS "")
 ENDIF(KDE4_FOUND)
 
+
+# ----------------------- Optional Deps --------------------------------------
+MESSAGE(STATUS "")
+MESSAGE(STATUS "")
+MESSAGE(STATUS " rekonq ${REKONQ_VERSION} OPTIONAL dependencies")
+MESSAGE(STATUS "")
+
+# Nepomuk
+
+IF(HAVE_NEPOMUK)
+    MESSAGE(STATUS " Nepomuk Libraries..................... YES")
+    MESSAGE(STATUS " Rekonq will be compiled with support for bookmarks nepomuk tagging")
+ELSE(HAVE_NEPOMUK)
+    MESSAGE(STATUS " Nepomuk Libraries..................... NO")
+    MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for bookmarks tagging")
+ENDIF(HAVE_NEPOMUK)
 
 ##### FINAL RESULTS #####
 

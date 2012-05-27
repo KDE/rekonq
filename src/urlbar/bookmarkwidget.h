@@ -29,13 +29,19 @@
 #define BOOKMARKWIDGET_H
 
 // Qt Includes
-#include <QtGui/QMenu>
-#include <QtGui/QGridLayout>
-#include <QtGui/QPlainTextEdit>
+#include <QMenu>
+#include <QGridLayout>
+#include <QPlainTextEdit>
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/Tag>
-#include <Nepomuk/Vocabulary/NFO>
+// Nepomuk config include
+#include "../config-nepomuk.h"
+
+#ifdef HAVE_NEPOMUK
+    // Nepomuk Includes
+    #include <Nepomuk/Resource>
+    #include <Nepomuk/Tag>
+    #include <Nepomuk/Vocabulary/NFO>
+#endif
 
 // Forward Declarations
 class KBookmark;
@@ -52,34 +58,40 @@ public:
     virtual ~BookmarkWidget();
 
     void showAt(const QPoint &pos);
+
+#ifdef HAVE_NEPOMUK    
     void addTags(QList<Nepomuk::Tag>);
     void parseTags();
     void loadTags();
-
+#endif
+    
 Q_SIGNALS:
     void updateIcon();
 
-
+private:
+    void setupFolderComboBox();
+    
 private Q_SLOTS:
     void accept();
     void removeBookmark();
+
+#ifdef HAVE_NEPOMUK
     void setRatingSlot( int rate );
     void addCommentSlot();
     void linkToResourceSlot();
-    //void tagListSlot();
-
+#endif
+    
 private:
     KBookmark *m_bookmark;
     KLineEdit *m_name;
     KComboBox *m_folder;
     KLineEdit *m_tagLine;
     QPlainTextEdit *m_commentEdit;
-    //QGridLayout* m_tagList;
-    Nepomuk::Resource m_nfoResource;
     QStringList m_tList;
 
-
-    void setupFolderComboBox();
+#ifdef HAVE_NEPOMUK    
+    Nepomuk::Resource m_nfoResource;
+#endif
 };
 
 #endif
