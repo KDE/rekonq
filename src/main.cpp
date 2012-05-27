@@ -110,6 +110,11 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "pano_90@gmx.net",
                     "");
 
+    about.addCredit(ki18n("Phaneendra Hedge"),
+                    ki18n("Nepomuk fancy bookmarking"),
+                    "pnh.pes@gmail.com",
+                    "");
+
     about.addCredit(ki18n("Jonathan Raphael Joachim Kolberg"),
                     ki18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages"),
                     "bulldog98@freenet.de",
