@@ -33,16 +33,15 @@
 
 // Rekonq Includes
 #include "rekonq_defines.h"
+#include "historymanager.h"
 
 // KDE Includes
 #include <KTabWidget>
 
 // Forward Declarations
-class HistoryItem;
 class MainWindow;
 class StackedUrlBar;
 class TabBar;
-class TabHistory;
 class UrlBar;
 class WebTab;
 
