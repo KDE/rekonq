@@ -58,15 +58,6 @@ public:
 
     {};
 
-    Response() : title(QString()),
-        description(QString()),
-        url(QString()),
-        image(QString()),
-        image_width(0),
-        image_height(0)
-
-    {};
-
     explicit Response(const QString &_title = QString(),
                       const QString &_description = QString(),
                       const QString &_url  = QString(),
