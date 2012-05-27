@@ -269,7 +269,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             break;
 
         default:
-            ASSERT_NOT_REACHED();
+            ASSERT_NOT_REACHED(unknown NavigationType);
             break;
         }
     }

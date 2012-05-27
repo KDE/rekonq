@@ -688,7 +688,7 @@ void Application::updateConfiguration()
         break;
 
     default: // non extant case
-        ASSERT_NOT_REACHED();
+        ASSERT_NOT_REACHED(unknown hoveringTabOption);
         break;
     }
 

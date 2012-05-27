@@ -96,7 +96,7 @@ KAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAc
         return  createAction(i18n("Unset this folder as the toolbar folder"), "bookmark-toolbar",
                              "", SLOT(unsetToolBarFolder()), bookmark);
     default:
-        ASSERT_NOT_REACHED();
+        ASSERT_NOT_REACHED(unknown BookmarkAction);
         return 0;
     }
 }
