@@ -29,7 +29,13 @@
 #define BOOKMARKWIDGET_H
 
 // Qt Includes
-#include <QMenu>
+#include <QtGui/QMenu>
+#include <QtGui/QGridLayout>
+#include <QtGui/QPlainTextEdit>
+
+#include <Nepomuk/Resource>
+#include <Nepomuk/Tag>
+#include <Nepomuk/Vocabulary/NFO>
 
 // Forward Declarations
 class KBookmark;
@@ -46,20 +52,34 @@ public:
     virtual ~BookmarkWidget();
 
     void showAt(const QPoint &pos);
+    void addTags(QList<Nepomuk::Tag>);
+    void parseTags();
+    void loadTags();
 
 Q_SIGNALS:
     void updateIcon();
 
+
 private Q_SLOTS:
     void accept();
     void removeBookmark();
+    void setRatingSlot( int rate );
+    void addCommentSlot();
+    void linkToResourceSlot();
+    //void tagListSlot();
 
 private:
     KBookmark *m_bookmark;
     KLineEdit *m_name;
     KComboBox *m_folder;
+    KLineEdit *m_tagLine;
+    QPlainTextEdit *m_commentEdit;
+    //QGridLayout* m_tagList;
+    Nepomuk::Resource m_nfoResource;
+    QStringList m_tList;
+
 
     void setupFolderComboBox();
 };
 
-#endif // BOOKMARKWIDGET_H
+#endif

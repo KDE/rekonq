@@ -33,18 +33,26 @@
 #include "application.h"
 #include "bookmarkmanager.h"
 #include "bookmarkowner.h"
+#include "resourcelinkdialog.h"
 
 // KDE Includes
 #include <KComboBox>
 #include <KLocalizedString>
 #include <KIcon>
 #include <KLineEdit>
+#include <KRatingWidget>
 
 // Qt Includes
-#include <QDialogButtonBox>
-#include <QFormLayout>
-#include <QLabel>
-#include <QPushButton>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QFormLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QCompleter>
+#include <QTextCursor>
+
+//Nepomuk Includes
+#include <Soprano/Vocabulary/NAO>
+
 
 
 BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
@@ -52,30 +60,42 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     , m_bookmark(new KBookmark(bookmark))
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    setFixedWidth(350);
+    setFixedWidth(320);
+
+    m_nfoResource = (QUrl)m_bookmark->url();
 
     QFormLayout *layout = new QFormLayout(this);
-
+    layout->setHorizontalSpacing(20);
     // Bookmark icon
-    QLabel *bookmarkIcon = new QLabel(this);
-    bookmarkIcon->setPixmap(KIcon("bookmarks").pixmap(32, 32));
+//    QLabel *bookmarkIcon = new QLabel(this);
+//    bookmarkIcon->setPixmap(KIcon("bookmarks").pixmap(32, 32));
 
     // Title
-    QVBoxLayout *vLayout = new QVBoxLayout;
+    QHBoxLayout *hLayout = new QHBoxLayout;
     QLabel *bookmarkInfo = new QLabel(this);
-    bookmarkInfo->setText(i18n("Edit this Bookmark"));
+    bookmarkInfo->setText(i18n(" Bookmark"));
     QFont f = bookmarkInfo->font();
     f.setBold(true);
     bookmarkInfo->setFont(f);
-    vLayout->addWidget(bookmarkInfo);
+
 
     // Remove button
+    QLabel *removeLabel = new QLabel( this );
+    removeLabel->setText( i18n( "<a href='Remove'>Remove</a>" ) );
+    removeLabel->setAlignment( Qt::AlignRight );
+    hLayout->addWidget(bookmarkInfo);
+    hLayout->addWidget(removeLabel);
+    layout->addRow(hLayout);
+
+    connect(removeLabel, SIGNAL( linkActivated(QString) ), this, SLOT( removeBookmark() ));
+
+    /*
     QPushButton *removeButton = new QPushButton(this);
     removeButton->setText(i18n("Remove this Bookmark"));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(removeBookmark()));
     vLayout->addWidget(removeButton);
-
-    layout->addRow(bookmarkIcon, vLayout);
+*/
+    //layout->addRow(bookmarkIcon, vLayout);
 
     //Bookmark Folder
     QLabel *folderLabel = new QLabel(this);
@@ -100,6 +120,53 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     }
     layout->addRow(nameLabel, m_name);
 
+    QLabel* rateLabel = new QLabel(this);
+    rateLabel->setText( i18n( "Rate:" ) );
+    KRatingWidget *ratingWidget = new KRatingWidget( this );
+    if( m_nfoResource.rating() != NULL ) {
+        ratingWidget->setRating( m_nfoResource.rating() );
+    }
+    connect( ratingWidget, SIGNAL( ratingChanged( int ) ), this, SLOT( setRatingSlot( int ) ) );
+    ratingWidget->setToolTip( i18n( "Rate this page" ) );
+    layout->addRow( rateLabel,ratingWidget );
+
+    //Add comments
+    QLabel *commentLabel = new QLabel( this );
+    commentLabel->setText( i18n( "Describe:" ) );
+    commentLabel->setAlignment( Qt::AlignCenter );
+    m_commentEdit = new QPlainTextEdit( this );
+    if( !m_nfoResource.description().isEmpty() ) {
+        m_commentEdit->setPlainText( m_nfoResource.description() );
+    }
+    connect( m_commentEdit, SIGNAL(textChanged()), this, SLOT(addCommentSlot()) );
+    layout->addRow( commentLabel, m_commentEdit );
+
+    //Create tags
+    QLabel *tagLabel = new QLabel( this );
+    tagLabel->setText( i18n( "Tags:" ) );
+    tagLabel->setAlignment( Qt::AlignLeft );
+    m_tagLine = new KLineEdit( this );
+    m_tagLine->setPlaceholderText( i18n( "add tags(comma separated)" ) );
+
+    //m_tagList = new QGridLayout( this );
+
+    QList<Nepomuk::Tag> tagList = Nepomuk::Tag::allTags();
+    Q_FOREACH(Nepomuk::Tag t,tagList) {
+        m_tList.append(t.label());
+    }
+    QCompleter *completeTag = new QCompleter( m_tList );
+    completeTag->setCompletionMode(QCompleter::PopupCompletion);
+    m_tagLine->setCompleter(completeTag);
+    loadTags();
+
+   // connect( m_tagLine,SIGNAL( textEdited(QString) ),this,SLOT( tagListSlot() ) );
+    layout->addRow(tagLabel,m_tagLine);
+//  layout->addRow(m_tagList);
+
+    QPushButton *linkToResource = new QPushButton( this );
+    linkToResource->setText( i18n( "Link Resources" ) );
+    connect(linkToResource, SIGNAL(clicked()), this, SLOT( linkToResourceSlot() ) );
+    layout->addWidget(linkToResource);
     // Ok & Cancel buttons
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -131,7 +198,6 @@ void BookmarkWidget::accept()
         m_bookmark->setFullText(m_name->text());
         rApp->bookmarkManager()->emitChanged();
     }
-
     QString folderAddress = m_folder->itemData(m_folder->currentIndex()).toString();
     KBookmarkGroup a = rApp->bookmarkManager()->manager()->findByAddress(folderAddress).toGroup();
 
@@ -139,6 +205,7 @@ void BookmarkWidget::accept()
     parent.deleteBookmark(*m_bookmark);
     a.addBookmark(*m_bookmark);
     rApp->bookmarkManager()->manager()->emitChanged(a);
+    parseTags();
 
     close();
 }
@@ -194,3 +261,69 @@ void BookmarkWidget::removeBookmark()
 
     emit updateIcon();
 }
+
+
+
+void BookmarkWidget::addTags(QList<Nepomuk::Tag> tagList)
+{
+    foreach( const Nepomuk::Tag &tag,tagList) {
+        if(!m_nfoResource.tags().contains(tag)) {
+            m_nfoResource.addTag(tag);
+        }
+    }
+    foreach( Nepomuk::Tag tag,m_nfoResource.tags()) {
+        if(!tagList.contains(tag)) {
+            tag.remove();
+        }
+    }
+}
+
+void BookmarkWidget::parseTags()
+{
+    QList<Nepomuk::Tag> tagList;
+    if(m_tagLine->text().contains(',')) {
+        QString text = m_tagLine->text();
+        QStringList tagStringList = text.split( QChar::fromAscii(',') );
+
+        foreach( const QString &tag, tagStringList ) {
+            QString trimmedTag = tag.trimmed();
+            if( !trimmedTag.isEmpty() )
+                tagList << trimmedTag;
+            }
+     }
+    else {
+        tagList<<m_tagLine->text().trimmed();
+    }
+    addTags(tagList);
+}
+
+void BookmarkWidget::loadTags() {
+
+   QString list;
+   if(!m_nfoResource.tags().isEmpty()) {
+       foreach( const Nepomuk::Tag &tag, m_nfoResource.tags() ) {
+           list.append(tag.genericLabel());
+           list.append(",");
+       }
+     m_tagLine->setText(list);
+   }
+
+}
+
+void BookmarkWidget::setRatingSlot( int rate )
+{
+    m_nfoResource.setRating(rate);
+}
+void BookmarkWidget::addCommentSlot()
+{
+    m_nfoResource.setDescription(m_commentEdit->toPlainText());
+}
+
+
+void BookmarkWidget::linkToResourceSlot()
+{
+    Nepomuk::ResourceLinkDialog r( m_nfoResource );
+    r.exec();
+}
+
+

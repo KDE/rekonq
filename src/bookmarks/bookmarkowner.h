@@ -60,6 +60,7 @@ public:
         NEW_SEPARATOR,
         COPY,
         EDIT,
+        FANCYBOOKMARK,
         DELETE,
         NUM_ACTIONS,
         SET_TOOLBAR_FOLDER,
@@ -107,6 +108,7 @@ public Q_SLOTS:
 
     void copyLink(const KBookmark &bookmark);
     void editBookmark(KBookmark bookmark);
+    void fancyBookmark(KBookmark bookmark);
     bool deleteBookmark(const KBookmark &bookmark);
     void setToolBarFolder(KBookmark bookmark = KBookmark());
     void unsetToolBarFolder();

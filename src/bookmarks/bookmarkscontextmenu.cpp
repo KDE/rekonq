@@ -67,6 +67,7 @@ void BookmarksContextMenu::addBookmarkActions()
     addSeparator();
 
     addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::EDIT));
+    addAction(m_bmOwner->createAction(bookmark(),BookmarkOwner::FANCYBOOKMARK));
     addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::DELETE));
 }
 

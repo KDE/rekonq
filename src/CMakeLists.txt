@@ -84,6 +84,8 @@ SET( rekonq_KDEINIT_SRCS
     urlbar/bookmarkwidget.cpp
     urlbar/webshortcutwidget.cpp
     urlbar/favoritewidget.cpp
+    urlbar/resourcelinkdialog.cpp
+    urlbar/newresourcedialog.cpp
     #----------------------------------------
     analyzer/analyzerpanel.cpp
     analyzer/networkanalyzer.cpp
@@ -138,7 +140,10 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
  )
 
 KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
-
+find_package(KDE4 REQUIRED)
+find_package(Nepomuk REQUIRED)
+include(SopranoAddOntology)
+include (KDE4Defaults)
 
 ### ------------- INCLUDING DIRECTORIES...
 
@@ -155,6 +160,9 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}
+			${SOPRANO_INCLUDE_DIR}
+  			${CMAKE_SOURCE_DIR}
+  			${NEPOMUK_INCLUDE_DIR}
 )
 
 
@@ -182,6 +190,9 @@ TARGET_LINK_LIBRARIES ( kdeinit_rekonq
                         ${KDE4_KDEUI_LIBS}
                         ${KDE4_KIO_LIBS}
                         ${KDE4_KPARTS_LIBS}
+			${NEPOMUK_LIBRARIES}
+  			${NEPOMUK_QUERY_LIBRARIES}
+  			${SOPRANO_LIBRARIES}
 )
 
 
