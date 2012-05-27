@@ -49,7 +49,7 @@ PrivacyWidget::PrivacyWidget(QWidget *parent)
     setupUi(this);
 
     reload();
-    
+
     // DO NOT TRACK
     KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("kioslaverc", KConfig::NoGlobals), QString());
     doNotTrackCheckBox->setChecked(cg.readEntry("DoNotTrack", false));
@@ -77,7 +77,7 @@ void PrivacyWidget::save()
 void PrivacyWidget::reload()
 {
     bool b = ReKonfig::javascriptEnabled();
-    
+
     kcfg_javascriptCanAccessClipboard->setEnabled(b);
     kcfg_javascriptCanOpenWindows->setEnabled(b);
 

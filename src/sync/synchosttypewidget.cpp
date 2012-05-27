@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -42,8 +42,8 @@ SyncHostTypeWidget::SyncHostTypeWidget(QWidget *parent)
 
     if (ReKonfig::syncType() == 0)
         ftpRadioButton->setChecked(true);
-    else if(ReKonfig::syncType() == 1)
-        googleRadioButton->setChecked(true);	
+    else if (ReKonfig::syncType() == 1)
+        googleRadioButton->setChecked(true);
     else
         nullRadioButton->setChecked(true);
 }
@@ -57,11 +57,11 @@ int SyncHostTypeWidget::nextId() const
         ReKonfig::setSyncType(0);
         return SyncAssistant::Page_FTP_Settings;
     }
-	else if (googleRadioButton->isChecked())
-	{
-		ReKonfig::setSyncType(1);
-		return SyncAssistant::Page_Google_Settings;
-	}
+    else if (googleRadioButton->isChecked())
+    {
+        ReKonfig::setSyncType(1);
+        return SyncAssistant::Page_Google_Settings;
+    }
     else
     {
         ReKonfig::setSyncType(2);

@@ -52,10 +52,10 @@ public:
 
 Q_SIGNALS:
     void changed(bool);
-    
+
 private Q_SLOTS:
     void hasChanged();
-    
+
     void launchCacheSettings();
     void launchCookieSettings();
     void showPassExceptions();

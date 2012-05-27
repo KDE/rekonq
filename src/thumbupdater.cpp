@@ -70,8 +70,8 @@ void ThumbUpdater::updateImage(bool ok)
     KUrl u(_url);
 
     QString previewPath = ok
-                            ? QL1S("file://") + WebSnap::imagePathFromUrl(u)
-                            : rApp->iconManager()->iconPathForUrl(u)
+                          ? QL1S("file://") + WebSnap::imagePathFromUrl(u)
+                          : rApp->iconManager()->iconPathForUrl(u)
                           ;
 
     _thumb.findFirst(QL1S(".preview img")).setAttribute(QL1S("src"), previewPath);

@@ -104,7 +104,7 @@ void HistoryManager::addHistoryEntry(const KUrl &url, const QString &title)
 {
     if (ReKonfig::expireHistory() == 5)  // DON'T STORE HISTORY!
         return;
-    
+
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return;
@@ -169,7 +169,7 @@ void HistoryManager::setHistory(const QList<HistoryItem> &history, bool loadedAn
         m_lastSavedUrl.clear();
         m_saveTimer->changeOccurred();
     }
-    
+
     emit historyReset();
 }
 

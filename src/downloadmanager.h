@@ -55,7 +55,7 @@ class REKONQ_TESTS_EXPORT DownloadManager : public QObject
 public:
     DownloadManager(QObject *parent = 0);
     ~DownloadManager();
-    
+
     DownloadList downloads() const
     {
         return m_downloadList;
@@ -69,13 +69,13 @@ public:
     void downloadLinksWithKGet(const QVariant &contentList);
 
     void removeDownloadItem(int index);
-    
+
 private:
     void init();
 
     DownloadItem* addDownload(KIO::CopyJob *job);
     DownloadItem* addKGetDownload(const QString &srcUrl, const QString &destUrl);
-    
+
 Q_SIGNALS:
     void newDownloadAdded(QObject *item);
     void notifyDownload(const QString&, Rekonq::Notify = Rekonq::Download);

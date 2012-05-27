@@ -59,7 +59,7 @@ DownloadItem::DownloadItem(KIO::CopyJob *job, const QDateTime &d, QObject *paren
     , m_job(job)
     , m_state(0)
 {
-    QObject::connect(job, SIGNAL(percent(KJob*,ulong)), this, SLOT(updateProgress(KJob*,ulong)));
+    QObject::connect(job, SIGNAL(percent(KJob*, ulong)), this, SLOT(updateProgress(KJob*, ulong)));
     QObject::connect(job, SIGNAL(finished(KJob*)), this, SLOT(onFinished(KJob*)));
     QObject::connect(job, SIGNAL(suspended(KJob*)), this, SLOT(onSuspended(KJob*)));
 }
@@ -114,10 +114,10 @@ void DownloadItem::setIsKGetDownload()
 void DownloadItem::updateProgress(KJob *job, unsigned long value)
 {
     Q_UNUSED(job);
-    
+
     if (value > 0 && value < 100)
         m_state = Downloading;
-    
+
     emit downloadProgress(value);
 }
 
@@ -143,10 +143,10 @@ void DownloadItem::onFinished(KJob *job)
 void DownloadItem::onSuspended(KJob *job)
 {
     Q_UNUSED(job);
-    
+
     m_state = Suspended;
 
-    // TODO: 
+    // TODO:
     // connect to job->resume() to let rekonq resume it
 }
 

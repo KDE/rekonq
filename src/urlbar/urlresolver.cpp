@@ -122,19 +122,19 @@ UrlSearchList UrlResolver::orderedSearchItems()
     {
         QStringList aboutUrlList;
         aboutUrlList
-        << QL1S("about:home")
-        << QL1S("about:favorites")
-        << QL1S("about:closedTabs")
-        << QL1S("about:bookmarks")
-        << QL1S("about:history")
-        << QL1S("about:downloads")
-        << QL1S("about:tabs")
-        << QL1S("about:info");
+                << QL1S("about:home")
+                << QL1S("about:favorites")
+                << QL1S("about:closedTabs")
+                << QL1S("about:bookmarks")
+                << QL1S("about:history")
+                << QL1S("about:downloads")
+                << QL1S("about:tabs")
+                << QL1S("about:info");
 
         QStringList aboutUrlResults = aboutUrlList.filter(_typedString, Qt::CaseInsensitive);
 
         UrlSearchList list;
-        
+
         if (aboutUrlResults.isEmpty())
         {
             UrlSearchItem info(UrlSearchItem::Browse, QL1S("about:info"),  QL1S("info"));
@@ -146,7 +146,7 @@ UrlSearchList UrlResolver::orderedSearchItems()
         Q_FOREACH(const QString & urlResult, aboutUrlResults)
         {
             QString name = urlResult;
-            name.remove(0,6);
+            name.remove(0, 6);
             UrlSearchItem item(UrlSearchItem::Browse, urlResult, name);
             list << item;
         }
@@ -273,7 +273,7 @@ void UrlResolver::computeQurlFromUserInput()
             QString hst = urlFromUserInput.host();
             urlFromUserInput.setHost(hst.toLower());
         }
-        
+
         QString urlString = urlFromUserInput.toString();
         QString gTitle = i18nc("Browse a website", "Browse");
         UrlSearchItem gItem(UrlSearchItem::Browse, urlString, gTitle);

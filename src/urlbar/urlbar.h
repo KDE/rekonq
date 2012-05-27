@@ -108,7 +108,7 @@ private Q_SLOTS:
 
     void manageBookmarks(QPoint);
     void manageFavorites(QPoint);
-    
+
     void refreshFavicon();
 
     void pasteAndGo();

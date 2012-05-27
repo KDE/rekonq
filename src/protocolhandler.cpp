@@ -186,7 +186,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         (void)new KRun(_url, rApp->mainWindow(), 0, _url.isLocalFile());
         return true;
     }
-    
+
     // let webkit try to load a known (or missing) protocol...
     if (KProtocolInfo::isKnownProtocol(_url))
         return false;
@@ -297,7 +297,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     // 1. default data path
     QString dataPath = QL1S("file://") + infoFilePath;
     dataPath.remove(QL1S("/htmls/rekonqinfo.html"));
-    
+
     // 2. title
     QString title = _url.prettyUrl();
 

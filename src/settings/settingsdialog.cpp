@@ -71,7 +71,7 @@ private:
     WebKitWidget *webkitWidg;
     PrivacyWidget *privacyWidg;
     AdvancedWidget *advancedWidg;
-    
+
     KCModuleProxy *ebrowsingModule;
 
     KShortcutsEditor *shortcutsEditor;
@@ -163,7 +163,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->ebrowsingModule, SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->advancedWidg,    SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->privacyWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
-    
+
     connect(d->shortcutsEditor, SIGNAL(keyChange()),   this, SLOT(updateButtons()));
 
     // save settings
@@ -194,7 +194,7 @@ void SettingsDialog::saveSettings()
     d->ebrowsingModule->save();
 
     d->privacyWidg->reload();
-    
+
     SearchEngine::reload();
     rApp->opensearchManager()->removeDeletedEngines();
 

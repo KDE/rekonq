@@ -84,9 +84,9 @@ public:
     QString selectedText() const;
 
     void loadCheckedUrl(const KUrl& url,
-                    const Rekonq::OpenType& type = Rekonq::CurrentTab,
-                    QWebHistory *webHistory = 0
-                    );
+                        const Rekonq::OpenType& type = Rekonq::CurrentTab,
+                        QWebHistory *webHistory = 0
+                       );
 private:
     void setupBookmarksAndToolsShortcuts();
     void setupActions();

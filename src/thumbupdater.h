@@ -45,10 +45,10 @@ public:
     ~ThumbUpdater();
 
     void updateThumb();
-    
+
 private Q_SLOTS:
     void updateImage(bool);
-    
+
 private:
     QWebElement _thumb;
     QString _url;

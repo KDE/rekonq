@@ -111,6 +111,6 @@ void BlockedElementsWidget::unblockElement()
 
         _rulesToAdd << urlString;
     }
-    
+
     _reloadPage = true;
 }

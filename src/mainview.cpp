@@ -88,7 +88,7 @@ MainView::MainView(QWidget *parent)
     connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int)));
 
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)));
-    connect(tabBar, SIGNAL(tabMoved(int,int)),     m_widgetBar, SLOT(moveBar(int,int)));
+    connect(tabBar, SIGNAL(tabMoved(int, int)),     m_widgetBar, SLOT(moveBar(int, int)));
 
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
@@ -255,13 +255,13 @@ void MainView::currentChanged(int index)
         // disconnecting webpage from mainview
         disconnect(oldTab->page(), SIGNAL(statusBarMessage(QString)),
                    this, SIGNAL(showStatusBarMessage(QString)));
-        disconnect(oldTab->page(), SIGNAL(linkHovered(QString,QString,QString)),
+        disconnect(oldTab->page(), SIGNAL(linkHovered(QString, QString, QString)),
                    this, SIGNAL(linkHovered(QString)));
     }
 
     connect(tab->page(), SIGNAL(statusBarMessage(QString)),
             this, SIGNAL(showStatusBarMessage(QString)));
-    connect(tab->page(), SIGNAL(linkHovered(QString,QString,QString)),
+    connect(tab->page(), SIGNAL(linkHovered(QString, QString, QString)),
             this, SIGNAL(linkHovered(QString)));
 
     emit currentTitle(tab->view()->title());
@@ -636,7 +636,7 @@ void MainView::webViewUrlChanged(const QUrl &url)
     int index = indexOf(view->parentWidget());
     if (ReKonfig::hoveringTabOption() == 2)
         tabBar()->setTabToolTip(index, url.toString());
-    
+
     rApp->mainWindow()->updateHistoryActions();
 }
 

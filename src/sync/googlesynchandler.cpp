@@ -162,7 +162,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
     if (!ok)
     {
         kDebug() << "Error loading: " << _webPage.mainFrame()->url();
-        emit syncStatus(Rekonq::Bookmarks, false, i18n( "Error loading: " + _webPage.mainFrame()->url().toEncoded()));
+        emit syncStatus(Rekonq::Bookmarks, false, i18n("Error loading: " + _webPage.mainFrame()->url().toEncoded()));
 
         _isSyncing = false;
         return;
@@ -184,8 +184,8 @@ void GoogleSyncHandler::loadFinished(bool ok)
 
 
 
-        email.setAttribute("value",ReKonfig::syncUser());
-        passwd.setAttribute("value",ReKonfig::syncPass());
+        email.setAttribute("value", ReKonfig::syncUser());
+        passwd.setAttribute("value", ReKonfig::syncPass());
         form.evaluateJavaScript("this.submit();");
         emit syncStatus(Rekonq::Bookmarks, true, i18n("Signing in..."));
 
@@ -219,7 +219,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
         if (!_bookmarksToDelete.isEmpty())
         {
 
-            for (QSet<QString>::const_iterator iter=_bookmarksToDelete.constBegin(); iter != _bookmarksToDelete.end(); ++iter)
+            for (QSet<QString>::const_iterator iter = _bookmarksToDelete.constBegin(); iter != _bookmarksToDelete.end(); ++iter)
             {
                 QNetworkRequest request;
                 request.setUrl(QUrl("https://www.google.com/bookmarks/mark?dlq=" + *iter + "&sig=" + sigKey));
@@ -234,7 +234,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
         if (!_bookmarksToAdd.isEmpty())
         {
             emit syncStatus(Rekonq::Bookmarks, true, i18n("Adding bookmarks on server..."));
-            for (QSet<KUrl>::const_iterator iter=_bookmarksToAdd.constBegin(); iter != _bookmarksToAdd.end(); ++iter)
+            for (QSet<KUrl>::const_iterator iter = _bookmarksToAdd.constBegin(); iter != _bookmarksToAdd.end(); ++iter)
             {
                 KBookmark bookmark = rApp->bookmarkManager()->bookmarkForUrl(*iter);
                 QByteArray postData;
@@ -246,7 +246,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
                 postData.append("&sig=" + sigKey.toUtf8());
 
                 QNetworkRequest request;
-                request.setUrl(QUrl("https://www.google.com/bookmarks/mark?sig=" + sigKey +"&btnA"));
+                request.setUrl(QUrl("https://www.google.com/bookmarks/mark?sig=" + sigKey + "&btnA"));
                 request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
                 kDebug() << "Url: " << request.url();
                 kDebug() << "Post data is :" << postData;
@@ -293,11 +293,11 @@ void GoogleSyncHandler::fetchingBookmarksFinished()
     if (_mode == RECEIVE_CHANGES)
     {
 
-        for (int i=0; i<bookmarksOnServer.size(); ++i)
+        for (int i = 0; i < bookmarksOnServer.size(); ++i)
         {
 
-            QString title = getChildElement(bookmarksOnServer.at(i),"title");
-            QString url = getChildElement(bookmarksOnServer.at(i),"url");
+            QString title = getChildElement(bookmarksOnServer.at(i), "title");
+            QString url = getChildElement(bookmarksOnServer.at(i), "url");
 
             KBookmark bookmark = manager->bookmarkForUrl(KUrl(url));
             if (bookmark.isNull())
@@ -350,7 +350,7 @@ QString GoogleSyncHandler::getChildElement(const QDomNode &node, QString name)
 {
     QDomNodeList nodes = node.childNodes();
 
-    for (int j=0; j<nodes.size(); ++j)
+    for (int j = 0; j < nodes.size(); ++j)
     {
         QDomElement element = nodes.at(j).toElement();
 
@@ -372,7 +372,7 @@ void GoogleSyncHandler::checkToAddGB(const KBookmarkGroup &root, const QDomNodeL
     {
         kDebug() << "Checking Url to add on Google Bookmarks: " << current.url();
         bool found = false;
-        for (int i=0; i < bookmarksOnServer.count(); ++i)
+        for (int i = 0; i < bookmarksOnServer.count(); ++i)
         {
             if (current.isGroup())
             {
@@ -382,7 +382,7 @@ void GoogleSyncHandler::checkToAddGB(const KBookmarkGroup &root, const QDomNodeL
                 found = true;
                 break;
             }
-            else if (current.url().url() == getChildElement(bookmarksOnServer.at(i),"url"))
+            else if (current.url().url() == getChildElement(bookmarksOnServer.at(i), "url"))
             {
                 found = true;
             }
@@ -401,15 +401,15 @@ void GoogleSyncHandler::checkToAddGB(const KBookmarkGroup &root, const QDomNodeL
 void GoogleSyncHandler::checkToDeleteGB(BookmarkManager *manager, const QDomNodeList &bookmarksOnServer)
 {
 
-    for (int i=0; i < bookmarksOnServer.count(); ++i)
+    for (int i = 0; i < bookmarksOnServer.count(); ++i)
     {
-        QString url = getChildElement(bookmarksOnServer.at(i),"url");
+        QString url = getChildElement(bookmarksOnServer.at(i), "url");
 
         KBookmark result = manager->bookmarkForUrl(KUrl(url));
         if (result.isNull())
         {
             kDebug() <<  "Deleting from Google Bookmarks: " << url;
-            _bookmarksToDelete.insert(getChildElement(bookmarksOnServer.at(i),"id"));
+            _bookmarksToDelete.insert(getChildElement(bookmarksOnServer.at(i), "id"));
         }
     }
 

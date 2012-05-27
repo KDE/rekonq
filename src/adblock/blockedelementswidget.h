@@ -48,10 +48,16 @@ public:
     void setBlockedElements(const QStringList &);
     void setHidedElements(int);
 
-    bool pageNeedsReload() { return _reloadPage; };
+    bool pageNeedsReload()
+    {
+        return _reloadPage;
+    };
 
-    QStringList rulesToAdd() { return _rulesToAdd; };
-    
+    QStringList rulesToAdd()
+    {
+        return _rulesToAdd;
+    };
+
 private Q_SLOTS:
     void unblockElement();
 

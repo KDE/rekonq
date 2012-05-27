@@ -4,6 +4,7 @@
 *
 * Copyright (C) 2010-2011 by Yoann Laissus <yoann dot laissus at gmail dot com>
 * Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (c) 2011-2012 by Phaneendra Hegde <pnh.pes@gmail.com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -37,10 +38,12 @@
 #include "../config-nepomuk.h"
 
 #ifdef HAVE_NEPOMUK
-    // Nepomuk Includes
-    #include <Nepomuk/Resource>
-    #include <Nepomuk/Tag>
-    #include <Nepomuk/Vocabulary/NFO>
+
+// Nepomuk Includes
+#include <Nepomuk/Resource>
+#include <Nepomuk/Tag>
+#include <Nepomuk/Vocabulary/NFO>
+
 #endif
 
 // Forward Declarations
@@ -59,28 +62,28 @@ public:
 
     void showAt(const QPoint &pos);
 
-#ifdef HAVE_NEPOMUK    
+#ifdef HAVE_NEPOMUK
     void addTags(QList<Nepomuk::Tag>);
     void parseTags();
     void loadTags();
 #endif
-    
+
 Q_SIGNALS:
     void updateIcon();
 
 private:
     void setupFolderComboBox();
-    
+
 private Q_SLOTS:
     void accept();
     void removeBookmark();
 
 #ifdef HAVE_NEPOMUK
-    void setRatingSlot( int rate );
+    void setRatingSlot(int rate);
     void addCommentSlot();
     void linkToResourceSlot();
 #endif
-    
+
 private:
     KBookmark *m_bookmark;
     KLineEdit *m_name;
@@ -89,7 +92,7 @@ private:
     QPlainTextEdit *m_commentEdit;
     QStringList m_tList;
 
-#ifdef HAVE_NEPOMUK    
+#ifdef HAVE_NEPOMUK
     Nepomuk::Resource m_nfoResource;
     bool m_isNepomukEnabled;
 #endif

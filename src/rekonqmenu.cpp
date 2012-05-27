@@ -53,7 +53,7 @@ void RekonqMenu::showEvent(QShowEvent* event)
 
     if (!m_button)
         return;
-    
+
     // Adjust the position of the menu to be shown within the
     // rekonq window to reduce the cases that sub-menus might overlap
     // the right screen border.

@@ -63,29 +63,29 @@ public:
     // This is used to add a DownloadItem managed with KIO
     explicit DownloadItem(KIO::CopyJob *job, const QDateTime &d, QObject *parent = 0);
 
-    
+
     inline QDateTime dateTime() const
     {
         return m_dateTime;
     }
 
     KUrl destUrl() const;
-    
+
     QString originUrl() const;
     QString destinationUrlString() const;
     QString fileName() const;
     QString fileDirectory() const;
     QString icon() const;
     QString errorString() const;
-    
+
     inline int state() const
     {
         return m_state;
     }
 
     void setIsKGetDownload();
-    
-    
+
+
 Q_SIGNALS:
     void downloadProgress(int percent);
     void downloadFinished(bool success);
@@ -100,7 +100,7 @@ private:
     KUrl m_destUrl;
 
     QDateTime m_dateTime;
-    
+
     KIO::CopyJob *m_job;
     int m_state;
 

@@ -38,12 +38,12 @@ PassExWidget::PassExWidget(QWidget *parent)
     setupUi(this);
 
     setAttribute(Qt::WA_DeleteOnClose, true);
-    
+
     connect(removeOneButton, SIGNAL(clicked()), this, SLOT(removeOne()));
     connect(removeAllButton, SIGNAL(clicked()), this, SLOT(removeAll()));
 
     QStringList exList = ReKonfig::walletBlackList();
-    Q_FOREACH(const QString &str, exList)
+    Q_FOREACH(const QString & str, exList)
     {
         QListWidgetItem *item = new QListWidgetItem(str, listWidget);
         listWidget->addItem(item);
@@ -54,7 +54,7 @@ PassExWidget::PassExWidget(QWidget *parent)
 void PassExWidget::removeOne()
 {
     QString item = listWidget->takeItem(listWidget->currentRow())->text();
-    
+
     QStringList exList = ReKonfig::walletBlackList();
     exList.removeOne(item);
     ReKonfig::setWalletBlackList(exList);
@@ -64,7 +64,7 @@ void PassExWidget::removeOne()
 void PassExWidget::removeAll()
 {
     listWidget->clear();
-    
+
     QStringList clearList;
     ReKonfig::setWalletBlackList(clearList);
 }

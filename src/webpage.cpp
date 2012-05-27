@@ -213,7 +213,7 @@ QString WebPage::suggestedFileName()
     return _suggestedFileName;
 };
 
-    
+
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
     if (_isOnRekonqPage)
@@ -261,9 +261,9 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
             break;
 
         case QWebPage::NavigationTypeReload:
-            setRequestMetaData( QL1S("cache"), QL1S("reload") );
+            setRequestMetaData(QL1S("cache"), QL1S("reload"));
             break;
-            
+
         case QWebPage::NavigationTypeBackOrForward:
         case QWebPage::NavigationTypeOther:
             break;
@@ -489,7 +489,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     QWebFrame* frame = qobject_cast<QWebFrame *>(reply->request().originatingObject());
     if (!frame)
         return;
-    
+
     const bool isMainFrameRequest = (frame == mainFrame());
 
     // Only deal with non-redirect responses...
@@ -499,11 +499,11 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         _sslInfo.restoreFrom(reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)), reply->url());
         return;
     }
-    
+
     // We are just managing loading URLs errors
     if (reply->request().url() != _loadingUrl)
         return;
-    
+
     // NOTE: These are not all networkreply errors,
     // but just that supported directly by KIO
     switch (reply->error())
@@ -522,7 +522,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         // ignore this..
         return;
 
-    // WARNING: This is also typical adblocked element error: IGNORE THIS!
+        // WARNING: This is also typical adblocked element error: IGNORE THIS!
     case QNetworkReply::ContentAccessDenied:                 // access to remote content denied
         break;
 
@@ -530,7 +530,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         // last chance for the strange things (eg: FTP, custom schemes, etc...)
         if (_protHandler.postHandling(reply->request(), mainFrame()))
             return;
-        
+
     case QNetworkReply::ConnectionRefusedError:              // remote server refused connection
     case QNetworkReply::HostNotFoundError:                   // invalid hostname
     case QNetworkReply::TimeoutError:                        // connection time out
@@ -590,9 +590,9 @@ QString WebPage::errorPage(QNetworkReply *reply)
 
     msg += i18n("<h1>Oops! Rekonq cannot load <em>%1</em></h1>", urlString);
 
-    
+
     msg += i18n("<h2>Wrong digited?</h2>");
-    
+
     msg += QL1S("<table>");
     msg += QL1S("<tr><td>");
 

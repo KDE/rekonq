@@ -86,11 +86,11 @@ DownloadManager::~DownloadManager()
         out << item->destinationUrlString();
         out << item->dateTime();
     }
-    
+
     downloadFile.close();
 }
 
-    
+
 void DownloadManager::init()
 {
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
@@ -123,7 +123,7 @@ DownloadItem* DownloadManager::addDownload(KIO::CopyJob *job)
         return 0;
 
     KIO::CopyJob *cJob = qobject_cast<KIO::CopyJob *>(job);
-    
+
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
     QFile downloadFile(downloadFilePath);
     if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
@@ -139,7 +139,7 @@ DownloadItem* DownloadManager::addDownload(KIO::CopyJob *job)
     DownloadItem *item = new DownloadItem(job, QDateTime::currentDateTime(), this);
     m_downloadList.append(item);
     emit newDownloadAdded(item);
-    return item;    
+    return item;
 }
 
 
@@ -148,7 +148,7 @@ DownloadItem* DownloadManager::addKGetDownload(const QString &srcUrl, const QStr
     QWebSettings *globalSettings = QWebSettings::globalSettings();
     if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return 0;
-    
+
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
     QFile downloadFile(downloadFilePath);
     if (!downloadFile.open(QFile::WriteOnly | QFile::Append))

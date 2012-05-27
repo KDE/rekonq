@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -74,8 +74,8 @@ void SyncManager::loadSettings()
             delete _syncImplementation.data();
             _syncImplementation.clear();
         }
-        
-        switch(ReKonfig::syncType())
+
+        switch (ReKonfig::syncType())
         {
         case 0:
             _syncImplementation = new FTPSyncHandler(this);

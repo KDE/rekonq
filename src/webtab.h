@@ -60,7 +60,7 @@ public:
 
     WebView *view();
     WebPage *page();
-    
+
     inline UrlBar *urlBar() const
     {
         return m_urlBar;
@@ -102,10 +102,10 @@ private Q_SLOTS:
     void showRSSInfo(const QPoint &pos);
     void showSearchEngine(const QPoint &pos);
     void openSearchEngineAdded();
-    
+
     void showMessageBar();
     void loadFinished();
-    
+
     void showSearchEngineBar();
 
 private:

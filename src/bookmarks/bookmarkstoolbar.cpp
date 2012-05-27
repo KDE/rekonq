@@ -164,7 +164,7 @@ BookmarkToolBar::BookmarkToolBar(KToolBar *toolBar, QObject *parent)
 {
     toolBar->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(toolBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenu(QPoint)));
-    connect(rApp->bookmarkManager()->manager(), SIGNAL(changed(QString,QString)), this, SLOT(hideMenu()));
+    connect(rApp->bookmarkManager()->manager(), SIGNAL(changed(QString, QString)), this, SLOT(hideMenu()));
     toolBar->setAcceptDrops(true);
     toolBar->installEventFilter(this);
     toolBar->setShortcutEnabled(false);
@@ -290,8 +290,8 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
     {
         QDragEnterEvent *dragEvent = static_cast<QDragEnterEvent*>(event);
         if (dragEvent->mimeData()->hasFormat(BookmarkManager::bookmark_mime_type())
-            || dragEvent->mimeData()->hasFormat("text/uri-list")
-            || dragEvent->mimeData()->hasFormat("text/plain"))
+                || dragEvent->mimeData()->hasFormat("text/uri-list")
+                || dragEvent->mimeData()->hasFormat("text/plain"))
         {
             QFrame* dropIndicatorWidget = new QFrame(toolBar());
             dropIndicatorWidget->setFrameShape(QFrame::VLine);
@@ -322,8 +322,8 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
     {
         QDragMoveEvent *dragEvent = static_cast<QDragMoveEvent*>(event);
         if (dragEvent->mimeData()->hasFormat(BookmarkManager::bookmark_mime_type())
-            || dragEvent->mimeData()->hasFormat("text/uri-list")
-            || dragEvent->mimeData()->hasFormat("text/plain"))
+                || dragEvent->mimeData()->hasFormat("text/uri-list")
+                || dragEvent->mimeData()->hasFormat("text/plain"))
         {
             QAction *overAction = toolBar()->actionAt(dragEvent->pos());
             KBookmarkActionInterface *overActionBK = dynamic_cast<KBookmarkActionInterface*>(overAction);

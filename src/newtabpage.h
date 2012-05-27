@@ -94,7 +94,7 @@ private:
 
     QWebElement createLinkItem(const QString &title, const QString &urlString, const QString &iconPath, int groupOrSize) const;
     QWebElement createFormItem(const QString &title, const QString &urlString) const;
-    
+
     /**
      * This function helps to get faster a new markup of one type,
      * it isn't easy to create one with QWebElement.
@@ -114,7 +114,7 @@ private:
 
     void initJS();
     void saveFavorites();
-    
+
 private:
     QString m_html;
     QWebElement m_root;

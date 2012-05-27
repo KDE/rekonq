@@ -46,7 +46,7 @@ SearchEngineBar::SearchEngineBar(QWidget *parent)
 {
     connect(this, SIGNAL(accepted()), this, SLOT(hideAndDelete()));
     connect(this, SIGNAL(accepted()), this, SLOT(slotAccepted()));
-    
+
     connect(this, SIGNAL(rejected()), this, SLOT(hideAndDelete()));
     connect(this, SIGNAL(rejected()), this, SLOT(slotRejected()));
 

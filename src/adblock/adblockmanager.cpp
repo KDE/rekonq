@@ -220,7 +220,7 @@ void AdBlockManager::loadRuleString(const QString &stringRule)
     _blackList << rule;
 }
 
-    
+
 QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *page)
 {
     if (!_isAdblockEnabled)
@@ -404,7 +404,7 @@ void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
     out << stringRule << '\n';
 
     ruleFile.close();
-    
+
     // load it
     loadRuleString(stringRule);
 
@@ -427,14 +427,14 @@ void AdBlockManager::showBlockedItemDialog()
     dialog->setMainWidget(&widget);
     dialog->exec();
 
-    Q_FOREACH(const QString &r, widget.rulesToAdd())
+    Q_FOREACH(const QString & r, widget.rulesToAdd())
     {
         addCustomRule(r);
     }
-    
+
     if (widget.pageNeedsReload())
         emit reloadCurrentPage();
-    
+
     dialog->deleteLater();
 }
 

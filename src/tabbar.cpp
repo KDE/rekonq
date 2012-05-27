@@ -88,7 +88,7 @@ TabBar::TabBar(QWidget *parent)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(this, SIGNAL(contextMenu(int,QPoint)), this, SLOT(contextMenu(int,QPoint)));
+    connect(this, SIGNAL(contextMenu(int, QPoint)), this, SLOT(contextMenu(int, QPoint)));
     connect(this, SIGNAL(emptyAreaContextMenu(QPoint)), this, SLOT(emptyAreaContextMenu(QPoint)));
 
     connect(m_animationMapper, SIGNAL(mapped(int)), this, SLOT(removeAnimation(int)));

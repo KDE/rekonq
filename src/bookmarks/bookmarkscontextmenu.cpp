@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
+* Copyright (c) 2011-2012 by Phaneendra Hegde <pnh.pes@gmail.com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -71,7 +72,7 @@ void BookmarksContextMenu::addBookmarkActions()
 
     addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::EDIT));
 #ifdef HAVE_NEPOMUK
-    addAction(m_bmOwner->createAction(bookmark(),BookmarkOwner::FANCYBOOKMARK));
+    addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::FANCYBOOKMARK));
 #endif
     addAction(m_bmOwner->createAction(bookmark(), BookmarkOwner::DELETE));
 }

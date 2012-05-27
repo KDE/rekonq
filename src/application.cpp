@@ -333,8 +333,8 @@ int Application::newInstance()
         historyManager();
 
         // bookmarks loading
-        connect(bookmarkManager(), SIGNAL(openUrl(KUrl,Rekonq::OpenType)),
-                instance(), SLOT(loadUrl(KUrl,Rekonq::OpenType)));
+        connect(bookmarkManager(), SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
+                instance(), SLOT(loadUrl(KUrl, Rekonq::OpenType)));
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();
@@ -478,7 +478,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
     MainWindow *w = 0;
     if (newType == Rekonq::NewWindow
-        || (newType == Rekonq::NewTab && ReKonfig::openLinksInNewWindow()))
+            || (newType == Rekonq::NewTab && ReKonfig::openLinksInNewWindow()))
     {
         w = newMainWindow();
         newType = Rekonq::CurrentTab;
@@ -806,7 +806,7 @@ void Application::createWebAppShortcut()
     dialog->setCaption(i18nc("@title:window", "Create Application Shortcut"));
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
     dialog->button(KDialog::Ok)->setText(i18n("Create"));
-    dialog->setMinimumSize(400,50);
+    dialog->setMinimumSize(400, 50);
 
     Ui::webAppCreation wAppWidget;
     QWidget widget;
@@ -853,7 +853,7 @@ void Application::createWebAppShortcut()
             out.setCodec("UTF-8");
             out << shortcutString;
 
-            wAppFile.setPermissions(QFile::ReadUser|QFile::WriteUser|QFile::ExeUser|QFile::ReadGroup|QFile::ReadOther);
+            wAppFile.setPermissions(QFile::ReadUser | QFile::WriteUser | QFile::ExeUser | QFile::ReadGroup | QFile::ReadOther);
             wAppFile.close();
         }
 

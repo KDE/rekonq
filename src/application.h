@@ -100,7 +100,7 @@ public:
     {
         return _privateBrowsingAction;
     };
-    
+
 public Q_SLOTS:
     /**
      * Save application's configuration
