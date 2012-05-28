@@ -92,6 +92,22 @@ void SyncCheckWidget::initializePage()
 
     QString loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.mng");
 
+    // Now, load syncManager settings...
+    rApp->syncManager()->loadSettings();
+
+    SyncHandler *h = rApp->syncManager()->handler();
+
+    if (!h)
+    {
+        bkLabel->setPixmap(notSyncedIcon.pixmap(16));
+        hsLabel->setPixmap(notSyncedIcon.pixmap(16));
+        psLabel->setPixmap(notSyncedIcon.pixmap(16));
+        return;
+    }
+
+    connect(h, SIGNAL(syncStatus(Rekonq::SyncData, bool, QString)), this, SLOT(updateWidget(Rekonq::SyncData, bool, QString)));
+
+
     // bookmarks
     if (ReKonfig::syncBookmarks())
     {
@@ -130,12 +146,6 @@ void SyncCheckWidget::initializePage()
     {
         psLabel->setPixmap(notSyncedIcon.pixmap(16));
     }
-
-    // Now, load syncManager settings...
-    rApp->syncManager()->loadSettings();
-
-    SyncHandler *h = rApp->syncManager()->handler();
-    connect(h, SIGNAL(syncStatus(Rekonq::SyncData, bool, QString)), this, SLOT(updateWidget(Rekonq::SyncData, bool, QString)));
 }
 
 

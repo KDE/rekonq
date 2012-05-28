@@ -47,7 +47,7 @@
 #include <QClipboard>
 
 // Nepomuk config include
-#include "../config-nepomuk.h"
+#include "config-nepomuk.h"
 
 #ifdef HAVE_NEPOMUK
 // Local Nepomuk Includes

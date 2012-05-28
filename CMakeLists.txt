@@ -9,7 +9,7 @@ PROJECT( rekonq )
 # rekonq info
 SET(REKONQ_VERSION "0.9.60" )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/version.h )
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-version.h )
 
 SET(REKONQ_SITE "http://rekonq.kde.org")
 
@@ -18,9 +18,11 @@ SET(REKONQ_SITE "http://rekonq.kde.org")
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
 
+
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+
 # ==================================================================================
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_MODULE_PATH})
 
 FIND_PACKAGE(Qt4 4.8.0 COMPONENTS QtCore QtGui QtNetwork QtWebKit REQUIRED)
 
@@ -40,7 +42,9 @@ INCLUDE(MacroOptionalFindPackage)
 INCLUDE(FindPackageHandleStandardArgs)
 INCLUDE(KDE4Defaults)
 INCLUDE(MacroLibrary)
+
 ADD_DEFINITIONS(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
+
 
 # ==================================================================================
 # optional nepomuk requirements
@@ -48,11 +52,23 @@ ADD_DEFINITIONS(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 MACRO_OPTIONAL_FIND_PACKAGE(Nepomuk)
 MACRO_BOOL_TO_01(Nepomuk_FOUND HAVE_NEPOMUK)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-nepomuk.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-nepomuk.h )
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-nepomuk.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-nepomuk.h )
 
-FIND_PACKAGE(QCA2 REQUIRED)
 
-FIND_PACKAGE(QtOAuth REQUIRED)
+# ==================================================================================
+# optional QCA2 & QtOAuth requirements
+
+MACRO_OPTIONAL_FIND_PACKAGE(QCA2)
+MACRO_BOOL_TO_01(QCA2_FOUND HAVE_QCA2)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-qca2.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-qca2.h )
+
+
+MACRO_OPTIONAL_FIND_PACKAGE(QtOAuth)
+MACRO_BOOL_TO_01(QTOAUTH_FOUND HAVE_QTOAUTH)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-qtoauth.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-qtoauth.h )
+
 
 # ==================================================================================
 # Log messages
@@ -98,23 +114,6 @@ ELSE(KDE4_FOUND)
     MESSAGE(STATUS "")
 ENDIF(KDE4_FOUND)
 
-
-# ----------------------- Optional Deps --------------------------------------
-MESSAGE(STATUS "")
-MESSAGE(STATUS "")
-MESSAGE(STATUS " rekonq ${REKONQ_VERSION} OPTIONAL dependencies")
-MESSAGE(STATUS "")
-
-# Nepomuk
-
-IF(HAVE_NEPOMUK)
-    MESSAGE(STATUS " Nepomuk Libraries..................... YES")
-    MESSAGE(STATUS " Rekonq will be compiled with support for bookmarks nepomuk tagging")
-ELSE(HAVE_NEPOMUK)
-    MESSAGE(STATUS " Nepomuk Libraries..................... NO")
-    MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for bookmarks tagging")
-ENDIF(HAVE_NEPOMUK)
-
 ##### FINAL RESULTS #####
 
 # create suspance..
@@ -129,9 +128,55 @@ ELSE(QT4_FOUND AND KDE4_FOUND)
     SET(REKONQ_CAN_BE_COMPILED false)
 ENDIF(QT4_FOUND AND KDE4_FOUND)
 
-MESSAGE(STATUS "")
-MESSAGE(STATUS "-----------------------------------------------------------------------")
-MESSAGE(STATUS "")
+# ----------------------- Optional Deps --------------------------------------
+
+IF(REKONQ_CAN_BE_COMPILED)
+    MESSAGE(STATUS "")
+    MESSAGE(STATUS "")
+    MESSAGE(STATUS " ----- Optional Features")
+    MESSAGE(STATUS "")
+
+    # Nepomuk
+
+    IF(HAVE_NEPOMUK)
+        MESSAGE(STATUS " Nepomuk Libraries..................... YES")
+        MESSAGE(STATUS " Rekonq will be compiled with support for bookmarks nepomuk tagging")
+    ELSE(HAVE_NEPOMUK)
+        MESSAGE(STATUS " Nepomuk Libraries..................... NO")
+        MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for bookmarks tagging")
+    ENDIF(HAVE_NEPOMUK)
+
+    MESSAGE(STATUS "")
+
+    # QCA2
+
+    IF(HAVE_QCA2)
+        MESSAGE(STATUS " QCA2 Libraries........................ YES")
+    ELSE(HAVE_QCA2)
+        MESSAGE(STATUS " QCA2 Libraries........................ NO")
+    ENDIF(HAVE_QCA2)
+
+    # QTOAUTH
+
+    IF(HAVE_QTOAUTH)
+        MESSAGE(STATUS " QtOAuth Libraries..................... YES")
+    ELSE(HAVE_QTOAUTH)
+        MESSAGE(STATUS " QtOAuth Libraries..................... NO")
+    ENDIF(HAVE_QTOAUTH)
+
+
+    IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+        MESSAGE(STATUS " Rekonq will be compiled with support for opera sync handler")
+    ELSE(HAVE_QCA2 AND HAVE_QTOAUTH)
+        MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for opera sync handler")
+    ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
+
+
+    MESSAGE(STATUS "")
+    MESSAGE(STATUS "-----------------------------------------------------------------------")
+    MESSAGE(STATUS "")
+
+ENDIF(REKONQ_CAN_BE_COMPILED)
 
 # ===============================================================================
 

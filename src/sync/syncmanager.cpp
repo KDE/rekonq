@@ -31,6 +31,10 @@
 // Auto Includes
 #include "rekonq.h"
 
+// Config Includes
+#include "config-qca2.h"
+#include "config-qtoauth.h"
+
 // Local Includes
 #include "application.h"
 #include "bookmarkmanager.h"
@@ -39,7 +43,10 @@
 #include "syncassistant.h"
 #include "ftpsynchandler.h"
 #include "googlesynchandler.h"
+
+#if (defined HAVE_QCA2 && defined HAVE_QTOAUTH)
 #include "operasynchandler.h"
+#endif
 
 // KDE Includes
 #include <klocalizedstring.h>
@@ -84,9 +91,11 @@ void SyncManager::loadSettings()
         case 1:
             _syncImplementation = new GoogleSyncHandler(this);
             break;
+#if (defined HAVE_QCA2 && defined HAVE_QTOAUTH)
         case 2:
             _syncImplementation = new OperaSyncHandler(this);
             break;
+#endif
         default:
             kDebug() << "/dev/null";
             return;

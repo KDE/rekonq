@@ -1,7 +1,7 @@
 /* ============================================================
 *
 * This is a part of the GSoC project 2011 - Fancy Bookmarking
-* 
+*
 * Copyright (c) 2011-2012 by Phaneendra Hegde <pnh.pes@gmail.com>
 *
 *
@@ -38,36 +38,36 @@
 
 namespace Nepomuk
 {
-    class Resource;
+class Resource;
 
-    namespace Query
-    {
-        class Query;
-    }
+namespace Query
+{
+class Query;
+}
 
-    class ResourceLinkDialog : public KDialog
-    {
-        Q_OBJECT
+class ResourceLinkDialog : public KDialog
+{
+    Q_OBJECT
 
-    public:
-        explicit ResourceLinkDialog(Nepomuk::Resource& nfoResource, QWidget* parent = 0);
-        virtual ~ResourceLinkDialog();
-        void setRelatedResources();
+public:
+    explicit ResourceLinkDialog(Nepomuk::Resource& nfoResource, QWidget* parent = 0);
+    virtual ~ResourceLinkDialog();
+    void setRelatedResources();
 
-    private Q_SLOTS:
-        void dynamicSearchingSlot();
-        void resourceSelectedSlot(int);
-        void linkResourceSlot();
-        void unlinkResourceSlot();
-        void createNewResourceSlot();
-        void showContextMenu(const QPoint&);
+private Q_SLOTS:
+    void dynamicSearchingSlot();
+    void resourceSelectedSlot(int);
+    void linkResourceSlot();
+    void unlinkResourceSlot();
+    void createNewResourceSlot();
+    void showContextMenu(const QPoint&);
 
 
-    private:
-        class Private;
-        Private* const d;
+private:
+    class Private;
+    Private* const d;
 
-    };
+};
 }
 
 #endif // RESOURCELINKDIALOG_H

@@ -101,7 +101,6 @@ SET( rekonq_KDEINIT_SRCS
     #----------------------------------------
     sync/ftpsynchandler.cpp
     sync/googlesynchandler.cpp
-    sync/operasynchandler.cpp
     sync/syncassistant.cpp
     sync/synchandler.cpp
     sync/syncmanager.cpp
@@ -114,6 +113,7 @@ SET( rekonq_KDEINIT_SRCS
     sync/syncoperasettingswidget.cpp
 )
 
+# Nepomuk OPTIONAL src files
 IF(HAVE_NEPOMUK)
     SET( rekonq_KDEINIT_SRCS
             ${rekonq_KDEINIT_SRCS}
@@ -121,6 +121,16 @@ IF(HAVE_NEPOMUK)
             urlbar/newresourcedialog.cpp
     )
 ENDIF(HAVE_NEPOMUK)
+
+
+# Opera sync optional src files
+IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+    SET( rekonq_KDEINIT_SRCS
+            ${rekonq_KDEINIT_SRCS}
+            sync/operasynchandler.cpp
+    )
+ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
+
 
 KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_general.ui
@@ -168,23 +178,32 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}
-                        ${QCA2_INCLUDE_DIR}
-                        ${QTOAUTH_INCLUDE_DIR}
 )
 
+# Nepomuk optional include directories
 IF(HAVE_NEPOMUK)
     INCLUDE_DIRECTORIES(${SOPRANO_INCLUDE_DIR}
                         ${NEPOMUK_INCLUDE_DIR}
     )
 ENDIF(HAVE_NEPOMUK)
 
+# Opera sync optional include directories
+IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+    INCLUDE_DIRECTORIES(${QCA2_INCLUDE_DIR}
+                        ${QTOAUTH_INCLUDE_DIR}
+    )
+ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
+
+
 ### -------------- ADDING DEFINITIONS...
 
 ADD_DEFINITIONS ( ${KDE4_DEFINITIONS} )
 
+
 ### -------------- ADDING APPLICATION ICON...
 
 KDE4_ADD_APP_ICON( rekonq_KDEINIT_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../icons/hi*-app-rekonq.png )
+
 
 ### --------------- ADDING EXECUTABLE...
 
@@ -202,10 +221,10 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             ${KDE4_KDEUI_LIBS}
                             ${KDE4_KIO_LIBS}
                             ${KDE4_KPARTS_LIBS}
-                        ${QCA2_LIBRARY}
-                        ${QTOAUTH_LIBRARY}
 )
 
+
+# Nepomuk optional target link libraries
 IF(HAVE_NEPOMUK)
     TARGET_LINK_LIBRARIES(  kdeinit_rekonq
                             ${NEPOMUK_LIBRARIES}
@@ -213,6 +232,15 @@ IF(HAVE_NEPOMUK)
                             ${SOPRANO_LIBRARIES}
     )
 ENDIF(HAVE_NEPOMUK)
+
+# Opera sync optional link libraries
+IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+    TARGET_LINK_LIBRARIES(  kdeinit_rekonq
+                            ${QCA2_LIBRARY}
+                            ${QTOAUTH_LIBRARY}
+    )
+ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
+
 
 ### ------------ INSTALL FILES...
 

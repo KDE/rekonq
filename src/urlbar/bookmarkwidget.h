@@ -35,7 +35,7 @@
 #include <QPlainTextEdit>
 
 // Nepomuk config include
-#include "../config-nepomuk.h"
+#include "config-nepomuk.h"
 
 #ifdef HAVE_NEPOMUK
 

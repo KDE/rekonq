@@ -49,17 +49,17 @@ void SyncDataWidget::initializePage()
     kcfg_syncHistory->setDisabled(true);
     kcfg_syncPasswords->setDisabled(true);
 
-    switch(ReKonfig::syncType())
+    switch (ReKonfig::syncType())
     {
-    //Ftp Sync Handler
+        //Ftp Sync Handler
     case 0:
         kcfg_syncBookmarks->setEnabled(true);
         kcfg_syncHistory->setEnabled(true);
         kcfg_syncPasswords->setEnabled(true);
         break;
-    //Google Sync Handler
+        //Google Sync Handler
     case 1:
-    //Opera Sync Handler
+        //Opera Sync Handler
     case 2:
         kcfg_syncBookmarks->setEnabled(true);
         break;

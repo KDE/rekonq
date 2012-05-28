@@ -37,21 +37,21 @@
 
 namespace Nepomuk
 {
-    class NewResourceDialog : public KDialog
-    {
-        Q_OBJECT
+class NewResourceDialog : public KDialog
+{
+    Q_OBJECT
 
-    public:
-        explicit NewResourceDialog(int index, Nepomuk::Resource& nfoResource, QWidget* parent = 0);
-        virtual ~NewResourceDialog();
+public:
+    explicit NewResourceDialog(int index, Nepomuk::Resource& nfoResource, QWidget* parent = 0);
+    virtual ~NewResourceDialog();
 
-    private Q_SLOTS:
-        void newResourceSlot();
+private Q_SLOTS:
+    void newResourceSlot();
 
-    private:
-        class Private;
-        Private* const d;
-    };
+private:
+    class Private;
+    Private* const d;
+};
 }
 
 #endif // NEWRESOURCEDIALOG_H

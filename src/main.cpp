@@ -25,7 +25,7 @@
 
 
 // version include
-#include "../version.h"
+#include "config-version.h"
 
 // Local Includes
 #include "application.h"

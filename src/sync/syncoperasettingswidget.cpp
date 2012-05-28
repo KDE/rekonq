@@ -1,8 +1,9 @@
 /* ============================================================
 *
 * This file is a part of the rekonq project
+*
 * Copyright (C) 2012 by Siteshwar Vashisht <siteshwar at gmail dot com>
-* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -31,6 +32,10 @@
 // Auto Includes
 #include "rekonq.h"
 
+// Config Includes
+#include "config-qca2.h"
+#include "config-qtoauth.h"
+
 // Local Includes
 #include "syncassistant.h"
 
@@ -39,15 +44,29 @@ SyncOperaSettingsWidget::SyncOperaSettingsWidget(QWidget *parent)
     : QWizardPage(parent)
 {
     setupUi(this);
+
+#if (defined HAVE_QCA2 && defined HAVE_QTOAUTH)
+
     kcfg_syncUser->setText(ReKonfig::syncUser());
     kcfg_syncPass->setText(ReKonfig::syncPass());
 
     kcfg_syncPass->setPasswordMode(true);
+
+#else
+
+    kcfg_syncUser->setEnabled(false);
+    kcfg_syncPass->setEnabled(false);
+
+    infoLabel->setText(i18n("Rekonq has been compiled without support for Opera Sync"));
+
+#endif
 }
 
 
 int SyncOperaSettingsWidget::nextId() const
 {
+#if (defined HAVE_QCA2 && defined HAVE_QTOAUTH)
+
     // save
     ReKonfig::setSyncHost("http://link.opera.com/");
     ReKonfig::setSyncUser(kcfg_syncUser->text());
@@ -57,4 +76,10 @@ int SyncOperaSettingsWidget::nextId() const
     ReKonfig::setSyncPasswords(false);
 
     return SyncAssistant::Page_Data;
+
+#else
+
+    return SyncAssistant::Page_Check;
+
+#endif
 }
