@@ -14,6 +14,20 @@ Please see http://techbase.kde.org/Getting_Started#Building_and_Running_KDE_Soft
 for instructions on how to build and setup a KDE4 environment to work in.
 
 
+=== Optional dependencies ===
+
+Since 1.0, Rekonq can use optional libraries to provide extra features. These are:
+
+- Nepomuk (www.kde.org) & soprano (soprano.sf.net) libraries: 
+needed to provide nepomuk bookmarks tagging
+
+- QtOAuth (github.com/ayoy/qoauth) & QCA2 (delta.affinix.com/qca/) libraries:
+needed to provide Opera Link sync handler
+
+NOTE: to let Opera sync handler work, you need also qca2-ossl package as runtime dep.
+
+
+
 === Building rekonq ===
 
 To build it perform the following commands after switching into the rekonq directory

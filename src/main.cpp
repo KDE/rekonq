@@ -94,6 +94,11 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "megabigbug@yahoo.fr",
                     "");
 
+    about.addAuthor(ki18n("Siteshwar Vashisht"),
+                    ki18n("Code, Ideas, sync... and IRC chats!"),
+                    "siteshwar@gmail.com",
+                    "");
+
     // --------------- about credits -----------------------------
     about.addCredit(ki18n("Dawit Alemayehu"),
                     ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
