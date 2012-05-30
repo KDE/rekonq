@@ -591,7 +591,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     msg += i18n("<h1>Oops! Rekonq cannot load <em>%1</em></h1>", urlString);
 
 
-    msg += i18n("<h2>Wrong digited?</h2>");
+    msg += i18n("<h2>Wrongly typed?</h2>");
 
     msg += QL1S("<table>");
     msg += QL1S("<tr><td>");
@@ -599,8 +599,8 @@ QString WebPage::errorPage(QNetworkReply *reply)
     msg += i18n("<p>");
     msg += i18n("We tried to load url: %1.<br />", urlString);
     msg += i18n("Check your address for errors like <em>ww.kde.org</em> instead of <em>www.kde.org</em>.<br />");
-    msg += i18n("If you digited it right, just try to <a href=\"%1\">reload it</a>.<br />", urlString);
-    msg += i18n("Otherwise, just take attention on next attempt.");
+    msg += i18n("If you spelled right, just try to <a href=\"%1\">reload it</a>.<br />", urlString);
+    msg += i18n("Otherwise, just be careful the next time around.");
     msg += i18n("</p>");
 
     QString laughIconPath = QString("file://") + KIconLoader::global()->iconPath("face-laugh" , -KIconLoader::SizeHuge, false);
@@ -618,7 +618,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     msg += QL1S("</td><td>");
 
     msg += i18n("<p>");
-    msg += i18n("Maybe you are having some problems with your network.<br />");
+    msg += i18n("Maybe you are having problems with your network.<br />");
     msg += i18n("Try checking your <a href=\"%1\">network connections</a>", QL1S("about:settings/network"));
     msg += i18n(", your <a href=\"%1\">proxy settings</a> ", QL1S("about:settings/proxy"));
     msg += i18n("and your <a href=\"%1\">firewall</a>.<br />", QL1S("about:settings/firewall"));
