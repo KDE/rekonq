@@ -53,7 +53,10 @@ PassExWidget::PassExWidget(QWidget *parent)
 
 void PassExWidget::removeOne()
 {
-    QString item = listWidget->takeItem(listWidget->currentRow())->text();
+    const int currentRow(listWidget->currentRow());
+    if(currentRow==-1)
+      return;
+    QString item = listWidget->takeItem(currentRow)->text();
 
     QStringList exList = ReKonfig::walletBlackList();
     exList.removeOne(item);
