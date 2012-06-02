@@ -53,8 +53,8 @@
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
     </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-<date>2012-04-07</date>
-    <releaseinfo>0.9.0 (&kde; SC 4.8)</releaseinfo>
+<date>2012-06-02</date>
+    <releaseinfo>0.9.61 (&kde; SC 4.8)</releaseinfo>
 <abstract>
 <para></para>
     </abstract>
@@ -121,7 +121,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>By default, the &rekonq; window uses only one toolbar. This main toolbar consists of four navigation buttons (<guilabel>back</guilabel>, <guilabel>forward</guilabel>, <guilabel>home</guilabel>, <guilabel>reload/stop</guilabel>), the URL bar and two menu/buttons, one for <guilabel>bookmarks</guilabel> and one for the <guilabel>settings</guilabel>. This minimalist approach to the main toolbar marks the most significant user-interface departure from the traditional multi-toolbar paradigm followed by most other browsers like &konqueror;.
+<para>By default, the &rekonq; window uses only one toolbar. This main toolbar consists of four navigation buttons (<guilabel>back</guilabel>, <guilabel>forward</guilabel>, <guilabel>reload/stop</guilabel>), the URL bar and a menu/button <guilabel>settings</guilabel>. This minimalist approach to the main toolbar marks the most significant user-interface departure from the traditional multi-toolbar paradigm followed by most other browsers like &konqueror;.
 </para>
 <para>Further, the main toolbar offers only limited customization &ndash; <guilabel>orientation</guilabel> (locked at the top of the window, by default), <guilabel>icon size</guilabel> (medium, by default) and <guilabel>icon labels</guilabel> (not shown, by default). This helps keep the &rekonq; UI simple and puts the focus on the webpage on display.
 </para>
@@ -408,7 +408,6 @@
 <para>&rekonq; supports full-screening the webpage straight from the configuration menu button or through a keyboard shortcut (<keycombo>&Ctrl;&Shift;<keycap>F</keycap></keycombo>, by default). In the full screen view, the main toolbar will auto-hide and the webpage will be displayed over your entire screen.
 </para>
 </chapter>
-<!--
 <chapter id="zoom-slider"><title>Zoom slider</title>
 <para>
 <screenshot>
@@ -418,18 +417,19 @@
       <imagedata fileref="Rekonq-zoom.png" format="PNG"/>
     </imageobject>
     <textobject>
-      <phrase>&rekonq; showing the zoom slider in the configuration menu</phrase>
+      <phrase>&rekonq; showing the zoom slider at the bottom of the window</phrase>
     </textobject>
     <caption>
-      <para>&rekonq; showing the zoom slider in the configuration menu</para>
+      <para>&rekonq; showing the zoom slider at the bottom of the window</para>
     </caption>
   </mediaobject>
 </screenshot>
 </para>
 <para>&rekonq; has a slider to adjust the zoom right from the configuration menu with a handy button to restore the zoom back to default. Of course, you can still use keyboard (<keycombo>&Ctrl;<keycap>+/-</keycap></keycombo>) or mouse (<keycombo>&Ctrl;<keycap> mouse scroll up/down</keycap></keycombo>) shortcuts just the same.
 </para>
+<para>The zoom slider can be enabled (or disabled) with <keycombo>&Ctrl;<keycap>Y</keycap></keycombo> or with <guimenuitem>Zoom...</guimenuitem> from <guilabel>settings</guilabel> menu.
+</para>
 </chapter>
--->
 <chapter id="Config-rekonq">
 <title>Detailed &rekonq; configuration</title>
 
@@ -577,7 +577,7 @@ Here a list of configurable points and explanation for it:
 </para>
 
 <para>
-  Following will explain the configurable things and what they do on <guilabel>Fonts</guilabel> tab.
+  Following will explain the configurable things and what they do on the <guilabel>Fonts</guilabel> pane.
 </para>
 <variablelist>
   <varlistentry>
@@ -613,21 +613,17 @@ Here a list of configurable points and explanation for it:
     <listitem><para>You can configure the minimal size of fonts in &rekonq;. Every smaller font will grow to that size.</para></listitem>
   </varlistentry>
 </variablelist>
-<para>On <guilabel>Stylesheets</guilabel> tab:</para>
 
-<para>
-<screenshot>
-<screeninfo>Now you should see this</screeninfo>
-	<mediaobject>
-	  <imageobject>
-	    <imagedata fileref="appearance_stylesheets.png" format="PNG"/>
-	  </imageobject>
-	  <textobject>
-	    <phrase>Screenshot</phrase>
-	  </textobject>
-	</mediaobject>
-</screenshot>
-</para>
+<para>On the <guilabel>Character Encoding</guilabel> pane:</para>
+
+<variablelist>
+  <varlistentry>
+    <term><guilabel>Default character encoding:</guilabel></term>
+    <listitem><para>Here you can explicitly set the encoding for the pages without prescribed encoding. Use the common encoding of your native language.</para></listitem>
+  </varlistentry>
+</variablelist>
+
+<para>On the <guilabel>Custom Style Sheet</guilabel> pane:</para>
 
 <variablelist>
   <varlistentry>
@@ -635,29 +631,6 @@ Here a list of configurable points and explanation for it:
     <listitem><para>Here you can set the path to your CSS file used to format webpages.</para></listitem>
   </varlistentry>
 </variablelist>
-<para>On <guilabel>Misc</guilabel> tab:</para>
-
-<para>
-<screenshot>
-<screeninfo>Now you should see this</screeninfo>
-	<mediaobject>
-	  <imageobject>
-	    <imagedata fileref="appearance_misc.png" format="PNG"/>
-	  </imageobject>
-	  <textobject>
-	    <phrase>Screenshot</phrase>
-	  </textobject>
-	</mediaobject>
-</screenshot>
-</para>
-
-<variablelist>
-  <varlistentry>
-    <term><guilabel>Enable smooth scrolling</guilabel></term>
-    <listitem><para>If you enable this option &rekonq; will use smooth scrolling. Uncheck this option if the scrolling becomes choppy.</para></listitem>
-  </varlistentry>
-</variablelist>
-
 </sect1>
 
 <sect1 id="Webkit">
@@ -680,52 +653,16 @@ Here a list of configurable points and explanation for it:
 
 </sect1>
 
-<sect1 id="Network">
+<sect1 id="Privacy">
 
-<title>Network configuration</title>
-
-<sect2 id="Cookies">
-
-<title>Handling of Cookies with &rekonq;</title>
-
-<para>
-<screenshot>
-<screeninfo>This is a screenshot of the cookie settings dialog</screeninfo>
-	<mediaobject>
-	  <imageobject>
-	    <imagedata fileref="cookies.png" format="PNG"/>
-	  </imageobject>
-	  <textobject>
-	    <phrase>Screenshot</phrase>
-	  </textobject>
-	</mediaobject>
-</screenshot>
-</para>
-
-<para>
-As you can see the cookies can be configured in many ways.
-</para>
-
-<para>
-&rekonq; can handle cookies in three ways by default
-<itemizedlist>
-<listitem><para><guilabel>Ask for confirmation</guilabel></para></listitem>
-<listitem><para><guilabel>Accept all cookies</guilabel></para></listitem>
-<listitem><para><guilabel>Reject all cookies</guilabel></para></listitem>
-</itemizedlist>
-</para>
-</sect2>
-
-<sect2 id="Rest">
-
-<title>Rest</title>
+<title>Privacy configuration</title>
 
 <para>
 <screenshot>
 <screeninfo>Now you should see this</screeninfo>
 	<mediaobject>
 	  <imageobject>
-	    <imagedata fileref="cache.png" format="PNG"/>
+	    <imagedata fileref="privacy.png" format="PNG"/>
 	  </imageobject>
 	  <textobject>
 	    <phrase>Screenshot</phrase>
@@ -735,11 +672,20 @@ As you can see the cookies can be configured in many ways.
 </para>
 
 <para>
+  As you can see using this page you can control Javascript, tracking, history, passwords, <ulink url="help:kcontrol/cookies">cookies</ulink>, and <ulink url="help:kcontrol/cache">cache</ulink> settings of &rekonq;.
+</para>
+
+</sect1>
+
+<sect1 id="Advanced">
+<title>Advanced configuration</title>
+
+<para>
 <screenshot>
 <screeninfo>Now you should see this</screeninfo>
 	<mediaobject>
 	  <imageobject>
-	    <imagedata fileref="proxy.png" format="PNG"/>
+	    <imagedata fileref="advanced.png" format="PNG"/>
 	  </imageobject>
 	  <textobject>
 	    <phrase>Screenshot</phrase>
@@ -747,13 +693,24 @@ As you can see the cookies can be configured in many ways.
 	</mediaobject>
 </screenshot>
 </para>
-</sect2>
 
+ <para>Using <guilabel>Proxy</guilabel> pane you can access the system wide proxy server settings. Just press <guibutton>Change them!</guibutton> to open the <ulink url="help:kcontrol/proxy">corresponding &systemsettings; module</ulink>.</para>
+
+<para>On the <guilabel>Misc</guilabel> pane you can configure various aspects controlling the browser.</para>
+
+<variablelist>
+  <varlistentry>
+    <term><guilabel>Enable smooth scrolling</guilabel></term>
+    <listitem><para>If you enable this option &rekonq; will use smooth scrolling. Uncheck this option if the scrolling becomes choppy.</para></listitem>
+  </varlistentry>
+</variablelist>
 </sect1>
 
 <sect1 id="Shortcut">
 
 <title>Configure the Shortcut settings</title>
+
+ <!-- Add the link to KDE fundamentals on shortcuts configuration here later on! -->
 
 <para>
 <screenshot>
@@ -895,7 +852,7 @@ As you can see the cookies can be configured in many ways.
 <sect1 id="how-do-i-enable-adblock"><title>How do I enable Adblock?</title>
 <para>Adblocking should already be enabled for you using the <guilabel>Easylist</guilabel> adblock subscription. You can further configure it by clicking on the configuration menu button and choosing <menuchoice><guisubmenu>Tools</guisubmenu> <guimenuitem>Ad Block</guimenuitem> </menuchoice> to open <guilabel>Ad Block Settings</guilabel> dialog. Click on <guilabel>AdBlocK Filters</guilabel>. Here, you can add custom filters using wildcard strings (e.g. <command>http://www.site.com/ads/*</command>) or regular expressions within forward slashes (e.g. <userinput>//(ads|dclk)\./</userinput>).
 </para>
-<para>Clicking <guilabel>Apply</guilabel> activates your adblock filters instantly.
+<para>Clicking <guilabel>OK</guilabel> activates your adblock filters instantly.
 </para>
 <para>
 <screenshot>
