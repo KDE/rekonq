@@ -951,7 +951,7 @@ List of the UserBase contributors can be found on
 <sect1 id="requirements">
 <title>Requirements</title>
 
-<para>In order to successfully use &rekonq;, you need at least &Qt; 4.7.x and &kde; 4.5.x.</para>
+<para>In order to successfully use &rekonq;, you need at least &Qt; 4.8.x and &kde; 4.7.x.</para>
 </sect1>
 
 <sect1 id="compilation">
