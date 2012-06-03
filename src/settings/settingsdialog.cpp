@@ -169,6 +169,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     // save settings
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
     connect(this, SIGNAL(okClicked()),    this, SLOT(saveSettings()));
+    setHelp("Config-rekonq","rekonq");
 }
 
 
