@@ -121,7 +121,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>By default, the &rekonq; window uses only one toolbar. This main toolbar consists of four navigation buttons (<guilabel>back</guilabel>, <guilabel>forward</guilabel>, <guilabel>reload/stop</guilabel>), the URL bar and a menu/button <guilabel>settings</guilabel>. This minimalist approach to the main toolbar marks the most significant user-interface departure from the traditional multi-toolbar paradigm followed by most other browsers like &konqueror;.
+<para>By default, the &rekonq; window uses only one toolbar. This main toolbar consists of four navigation buttons (<guilabel>back</guilabel>, <guilabel>forward</guilabel>, <guilabel>reload/stop</guilabel>), the URL bar and a menu/button <guilabel>Tools</guilabel>. This minimalist approach to the main toolbar marks the most significant user-interface departure from the traditional multi-toolbar paradigm followed by most other browsers like &konqueror;.
 </para>
 <para>Further, the main toolbar offers only limited customization &ndash; <guilabel>orientation</guilabel> (locked at the top of the window, by default), <guilabel>icon size</guilabel> (medium, by default) and <guilabel>icon labels</guilabel> (not shown, by default). This helps keep the &rekonq; UI simple and puts the focus on the webpage on display.
 </para>
@@ -427,7 +427,7 @@
 </para>
 <para>&rekonq; has a slider to adjust the zoom at the bottom of the window with a handy button to restore the zoom back to default. Of course, you can still use keyboard (<keycombo>&Ctrl;<keycap>+/-</keycap></keycombo>) or mouse (<keycombo>&Ctrl;<keycap> mouse scroll up/down</keycap></keycombo>) shortcuts just the same.
 </para>
-<para>The zoom slider can be enabled (or disabled) with <keycombo>&Ctrl;<keycap>Y</keycap></keycombo> or with <guimenuitem>Zoom...</guimenuitem> from <guilabel>settings</guilabel> menu.
+<para>The zoom slider can be enabled (or disabled) with <keycombo>&Ctrl;<keycap>Y</keycap></keycombo> or with <guimenuitem>Zoom...</guimenuitem> from <guilabel>Tools</guilabel> menu.
 </para>
 </chapter>
 <chapter id="Config-rekonq">
