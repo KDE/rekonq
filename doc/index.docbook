@@ -442,7 +442,7 @@ You want to configure the general behavior of &rekonq;? You found the right plac
 </para>
 
 <para>
-To open the general settings click on the <guiicon>Tool</guiicon> icon
+To open the general settings click on the <guiicon>Tools</guiicon> icon
 and select <guisubmenu>Configure rekonq</guisubmenu>.
 </para>
 
@@ -500,7 +500,7 @@ Here a List of configurable points and explanation for it:
 
 <para>Here you learn how to change the settings for tabs.</para>
 
-<para>To come to the dialog click on the <guiicon>Tool</guiicon> icon and open
+<para>To come to the dialog click on the <guiicon>Tools</guiicon> icon and open
 <menuchoice>
 <guisubmenu>Configure rekonq</guisubmenu>
 <guimenuitem>Tabs</guimenuitem>
@@ -772,7 +772,7 @@ Here a list of configurable points and explanation for it:
 </para>
 </sect1>
 <sect1 id="how-do-i-load-flash-on-demand"><title>How do I load flash on demand?</title>
-<para>Click on the <guilabel>configuration</guilabel> menu button, and open the <guilabel>Configure rekonq</guilabel> dialog. Click on <guilabel>WebKit</guilabel> and under <guilabel>Plugin settings</guilabel>, select to <guilabel>Manually Load Plugins</guilabel>. Click <guilabel>OK</guilabel>.
+<para>Click on the <guilabel>Tools</guilabel> menu button, and open the <guilabel>Configure rekonq</guilabel> dialog. Click on <guilabel>WebKit</guilabel> and under <guilabel>Plugin settings</guilabel>, select to <guilabel>Manually Load Plugins</guilabel>. Click <guilabel>OK</guilabel>.
 </para>
 <para>
 <screenshot>
@@ -794,7 +794,7 @@ Here a list of configurable points and explanation for it:
 <sect1 id="how-do-i-make-rekonq-behave-like-chrome-chromium"><title>How do I make &rekonq; behave like chrome/chromium?</title>
 <para>Using <ulink url="help:/kwin/index.html">KWin</ulink>'s window tabbing feature, we can make &rekonq; emulate the behavior of <guilabel>chromium</guilabel> by opening new windows instead of tabs within the same window. This will not however allow each window of &rekonq; to crash independently &ndash; all windows of &rekonq; crash as a single process. It merely emulates the look of <application>Chromium</application>, giving individual controls for each webpage you load.
 </para>
-<para>Click on the configuration menu button and open the <guilabel>Configure rekonq</guilabel> dialog. Click on <guilabel>Tabs</guilabel>. Unselect all options to disable all tab handling in &rekonq;. Now, &rekonq; will always open new windows instead of tabs.
+<para>Click on the <guilabel>Tools</guilabel> menu button and open the <guilabel>Configure rekonq</guilabel> dialog. Click on <guilabel>Tabs</guilabel>. Unselect all options to disable all tab handling in &rekonq;. Now, &rekonq; will always open new windows instead of tabs.
 </para>
 <para>Now, we'll set up <guilabel>KWin</guilabel> to automatically tab all &rekonq; windows together. Head to <menuchoice><guimenu>System Settings</guimenu><guimenuitem>Window Behavior</guimenuitem></menuchoice>. Select <guilabel>Window Behavior</guilabel> on the left and go to the <guilabel>Advanced</guilabel> tab. Here, under <guilabel>Window Tabbing</guilabel>, check <guilabel>Automatically group similar windows</guilabel>. Click <guilabel>Apply</guilabel>.
 </para>
