@@ -425,7 +425,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>&rekonq; has a slider to adjust the zoom right from the configuration menu with a handy button to restore the zoom back to default. Of course, you can still use keyboard (<keycombo>&Ctrl;<keycap>+/-</keycap></keycombo>) or mouse (<keycombo>&Ctrl;<keycap> mouse scroll up/down</keycap></keycombo>) shortcuts just the same.
+<para>&rekonq; has a slider to adjust the zoom at the bottom of the window with a handy button to restore the zoom back to default. Of course, you can still use keyboard (<keycombo>&Ctrl;<keycap>+/-</keycap></keycombo>) or mouse (<keycombo>&Ctrl;<keycap> mouse scroll up/down</keycap></keycombo>) shortcuts just the same.
 </para>
 <para>The zoom slider can be enabled (or disabled) with <keycombo>&Ctrl;<keycap>Y</keycap></keycombo> or with <guimenuitem>Zoom...</guimenuitem> from <guilabel>settings</guilabel> menu.
 </para>
