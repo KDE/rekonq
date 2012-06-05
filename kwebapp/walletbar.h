@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,32 +24,40 @@
 * ============================================================ */
 
 
-#ifndef _WEB_PAGE_H
-#define _WEB_PAGE_H
+#ifndef WALLET_BAR_H
+#define WALLET_BAR_H
 
 
 // KDE Includes
-#include <KWebPage>
+#include <KMessageWidget>
+
+// Qt Includes
+#include <QUrl>
+#include <QString>
 
 
-class WebPage : public KWebPage
+class WalletBar : public KMessageWidget
 {
     Q_OBJECT
 
 public:
-    WebPage(QObject *parent = 0);
-
-    void setSelfLoadingEnabled(bool);
+    WalletBar(QWidget *parent);
 
 private Q_SLOTS:
-    void disableSelfLoading();
+    void rememberData();
+    void neverRememberData();
+    void notNowRememberData();
 
-protected:
-    virtual bool acceptNavigationRequest(QWebFrame *, const QNetworkRequest &, NavigationType);
+public Q_SLOTS:
+    void onSaveFormData(const QString &, const QUrl &);
+
+Q_SIGNALS:
+    void saveFormDataAccepted(const QString &);
+    void saveFormDataRejected(const QString &);
 
 private:
-    bool _selfLoading;
-
+    QString m_key;
+    QUrl m_url;
 };
 
-#endif // _WEB_PAGE_H
+#endif // WALLET_BAR_H

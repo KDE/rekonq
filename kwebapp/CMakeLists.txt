@@ -1,14 +1,17 @@
 set( kwebapp_SRCS
+    rekonqview.cpp
+    walletbar.cpp
     webview.cpp
     webpage.cpp
+    websnap.cpp
     kwebmain.cpp
  )
 
-include_directories (   ${CMAKE_CURRENT_SOURCE_DIR}
-			${CMAKE_CURRENT_BINARY_DIR}
-			${QT4_INCLUDES}
-			${KDE4_INCLUDES}
-
+include_directories (
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${QT4_INCLUDES}
+    ${KDE4_INCLUDES}
 )
 
 

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,32 +24,60 @@
 * ============================================================ */
 
 
-#ifndef _WEB_PAGE_H
-#define _WEB_PAGE_H
+#ifndef REKONQ_VIEW_H
+#define REKONQ_VIEW_H
 
 
-// KDE Includes
-#include <KWebPage>
+// Local Includes
+#include "webview.h"
+
+// Qt Includes
+#include <QWidget>
+
+// Forward Declarations
+class WalletBar;
+
+class WebPage;
+
+class QLabel;
+class QTimer;
 
 
-class WebPage : public KWebPage
+class RekonqView : public QWidget
 {
     Q_OBJECT
 
 public:
-    WebPage(QObject *parent = 0);
+    explicit RekonqView(QWidget *parent = 0);
+    ~RekonqView();
 
-    void setSelfLoadingEnabled(bool);
+    WebView *view();
+    WebPage *page();
+
+    KUrl url();
+
+    bool hasRSSInfo();
+
+public Q_SLOTS:
+    void loadUrl(const KUrl& url);
 
 private Q_SLOTS:
-    void disableSelfLoading();
+    void setTitle(const QString &);
+    void setIcon();
 
-protected:
-    virtual bool acceptNavigationRequest(QWebFrame *, const QNetworkRequest &, NavigationType);
+    void createWalletBar(const QString &, const QUrl &);
+    void notifyMessage(const QString &msg);
+
+Q_SIGNALS:
+    void loadProgressing();
 
 private:
-    bool _selfLoading;
+    WebView *m_webView;
 
+    QWeakPointer<WalletBar> m_walletBar;
+
+    QLabel *m_popup;
+    QTimer *m_hidePopupTimer;
 };
 
-#endif // _WEB_PAGE_H
+#endif

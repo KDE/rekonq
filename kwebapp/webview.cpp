@@ -1,21 +1,27 @@
-/***************************************************************************
- *   Copyright (C) 2011-2012 by Andrea Diamantini <adjam7@gmail.com>                            *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
- ***************************************************************************/
+/* ============================================================
+*
+* This file is a part of the rekonq project
+*
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+*
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as
+* published by the Free Software Foundation; either version 2 of
+* the License or (at your option) version 3 or any later version
+* accepted by the membership of KDE e.V. (or its successor approved
+* by the membership of KDE e.V.), which shall act as a proxy
+* defined in Section 14 of version 3 of the license.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+* ============================================================ */
 
 
 // Self Includes
@@ -36,6 +42,8 @@
 #include <KAction>
 #include <KUrl>
 #include <KRun>
+#include <KToolInvocation>
+#include <KActionMenu>
 
 // Qt Includes
 #include <QUrl>
@@ -45,40 +53,31 @@
 #include <QNetworkRequest>
 #include <QPointer>
 
+// Defines
+#define QL1S(x) QLatin1String(x)
 
-WebView::WebView(const QUrl &url, QWidget *parent)
+
+WebView::WebView(QWidget *parent)
     : KWebView(parent)
+    , m_page(0)
 {
     page()->setForwardUnsupportedContent(true);
-    connect(page(), SIGNAL(unsupportedContent(QNetworkReply*)), page(), SLOT(downloadResponse(QNetworkReply*)));
-    connect(page(), SIGNAL(downloadRequested(QNetworkRequest)), page(), SLOT(downloadRequest(QNetworkRequest)));
     connect(this, SIGNAL(linkShiftClicked(KUrl)), page(), SLOT(downloadUrl(KUrl)));
-
-    QWebSettings::setIconDatabasePath(KStandardDirs::locateLocal("cache", "kwebapp.favicons"));
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(this, SIGNAL(titleChanged(QString)), this, SLOT(setTitle(QString)));
-    connect(this, SIGNAL(iconChanged()), this, SLOT(setIcon()));
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(menuRequested(QPoint)));
-
-    const QString iconPath = KStandardDirs::locateLocal("cache" , "favicons/" , true) + url.host() + "_WEBAPPICON.png";
-    setWindowIcon(QIcon(iconPath));
-
-    // last...
-    load(url);
 }
 
 
-void WebView::setTitle(const QString &t)
+WebPage *WebView::page()
 {
-    setWindowTitle(t);
-}
-
-
-void WebView::setIcon()
-{
-    setWindowIcon(icon());
+    if (!m_page)
+    {
+        m_page = new WebPage(this);
+        setPage(m_page);
+    }
+    return m_page;
 }
 
 
@@ -89,30 +88,203 @@ void WebView::menuRequested(const QPoint &pos)
     KMenu menu(this);
     QAction *a;
 
-    // is a link?
-    if (!result.linkUrl().isEmpty())
-    {
-        a = new KAction(KIcon("window-new"), i18n("Open in default browser"), this);
-        a->setData(result.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInDefaultBrowser()));
-        menu.addAction(a);
+    KAction *sendByMailAction = new KAction(this);
+    sendByMailAction->setIcon(KIcon("mail-send"));
+    connect(sendByMailAction, SIGNAL(triggered(bool)), this, SLOT(sendByMail()));
 
-        menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
-        menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
+    KAction *openInDefaultBrowserAction = new KAction(KIcon("window-new"), i18n("Open in default browser"), this);
+    connect(openInDefaultBrowserAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInDefaultBrowser()));
+
+    // Choose right context
+    int resultHit = 0;
+    if (result.linkUrl().isEmpty())
+        resultHit = WebView::EmptySelection;
+    else
+        resultHit = WebView::LinkSelection;
+
+    if (!result.pixmap().isNull())
+        resultHit |= WebView::ImageSelection;
+
+    if (result.isContentSelected())
+        resultHit = WebView::TextSelection;
+
+    // -----------------------------------------------------------
+    // Ok, let's start filling up the menu...
+
+    // is content editable? Add PASTE
+    if (result.isContentEditable())
+    {
+        menu.addAction(pageAction(KWebPage::Paste));
         menu.addSeparator();
     }
 
-    if (history()->canGoBack())
+
+    // EMPTY PAGE ACTIONS ----------------------------------------
+    if (resultHit == WebView::EmptySelection)
     {
-        menu.addAction(pageAction(KWebPage::Back));
+        // send by mail: page url
+        sendByMailAction->setData(page()->currentFrame()->url());
+        sendByMailAction->setText(i18n("Share page url"));
+
+        // navigation
+        QWebHistory *history = page()->history();
+        if (history->canGoBack())
+        {
+            menu.addAction(pageAction(KWebPage::Back));
+        }
+
+        if (history->canGoForward())
+        {
+            menu.addAction(pageAction(KWebPage::Forward));
+        }
+
+        menu.addAction(pageAction(KWebPage::Reload));
+
+        menu.addSeparator();
+
+        // Page Actions
+        menu.addAction(pageAction(KWebPage::SelectAll));
+
+        menu.addAction(pageAction(KWebPage::DownloadLinkToDisk));
+
     }
 
-    if (history()->canGoBack())
+    // LINK ACTIONS ------------------------------------------
+    if (resultHit & WebView::LinkSelection)
     {
-        menu.addAction(pageAction(KWebPage::Forward));
+        // send by mail: link url
+        sendByMailAction->setData(result.linkUrl());
+        sendByMailAction->setText(i18n("Share link"));
+
+        openInDefaultBrowserAction->setData(result.linkUrl());
+        menu.addAction(openInDefaultBrowserAction);
+
+        menu.addSeparator();
+
+        a = pageAction(KWebPage::DownloadLinkToDisk);
+        menu.addAction(a);
+        menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
     }
 
-    menu.addAction(pageAction(KWebPage::Reload));
+    // IMAGE ACTION -----------------------------------------
+    if (resultHit & WebView::ImageSelection)
+    {
+        // send by mail: image url
+        sendByMailAction->setData(result.imageUrl());
+        sendByMailAction->setText(i18n("Share image link"));
+
+        menu.addSeparator();
+
+        a = new KAction(KIcon("view-preview"), i18n("&View Image"), this);
+        a->setData(result.imageUrl());
+        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
+                this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
+        menu.addAction(a);
+
+        menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
+
+        a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), this);
+        a->setData(result.imageUrl());
+        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
+        menu.addAction(a);
+
+    }
+
+    // ACTIONS FOR TEXT SELECTION ----------------------------
+    if (resultHit & WebView::TextSelection)
+    {
+        // send by mail: text
+        sendByMailAction->setData(selectedText());
+        sendByMailAction->setText(i18n("Share selected text"));
+
+        if (result.isContentEditable())
+        {
+            // actions for text selected in field
+            menu.addAction(pageAction(KWebPage::Cut));
+        }
+
+        a = pageAction(KWebPage::Copy);
+        if (!result.linkUrl().isEmpty())
+            a->setText(i18n("Copy Text")); //for link
+        else
+            a->setText(i18n("Copy"));
+        menu.addAction(a);
+
+        if (selectedText().contains('.') && selectedText().indexOf('.') < selectedText().length()
+                && !selectedText().trimmed().contains(" ")
+           )
+        {
+            QString text = selectedText();
+            text = text.trimmed();
+            KUrl urlLikeText(text);
+            if (urlLikeText.isValid())
+            {
+                QString truncatedUrl = text;
+                const int maxTextSize = 18;
+                if (truncatedUrl.length() > maxTextSize)
+                {
+                    const int truncateSize = 15;
+                    truncatedUrl.truncate(truncateSize);
+                    truncatedUrl += QL1S("...");
+                }
+
+                openInDefaultBrowserAction->setData(QUrl(urlLikeText));
+                menu.addAction(openInDefaultBrowserAction);
+
+                menu.addSeparator();
+            }
+        }
+
+//         // Default SearchEngine
+//         KService::Ptr defaultEngine = SearchEngine::defaultEngine();
+//         if (defaultEngine) // check if a default engine is set
+//         {
+//             a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1", defaultEngine->name()), this);
+//             a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
+//             a->setData(defaultEngine->entryPath());
+//             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
+//             menu.addAction(a);
+//         }
+
+        // All favourite ones
+        KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18nc("@title:menu", "Search"), this);
+
+//         Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
+//         {
+//             a = new KAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), this);
+//             a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(engine, "")));
+//             a->setData(engine->entryPath());
+//             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
+//             searchMenu->addAction(a);
+//         }
+
+//         a = new KAction(KIcon("edit-find"), i18n("On Current Page"), this);
+//         connect(a, SIGNAL(triggered()), rApp->mainWindow(), SLOT(findSelectedText()));
+//         searchMenu->addAction(a);
+
+        if (!searchMenu->menu()->isEmpty())
+        {
+            menu.addAction(searchMenu);
+        }
+    }
+
+    // DEFAULT ACTIONs (on the bottom) -----------------------
+    menu.addSeparator();
+    if (resultHit & WebView::LinkSelection)
+    {
+        a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark link"), this);
+        a->setData(result.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
+        menu.addAction(a);
+    }
+    else
+    {
+        a = new KAction(KIcon("bookmark-new"), i18n("&Add Bookmark"), this);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkCurrentPage()));
+        menu.addAction(a);
+    }
+    menu.addAction(sendByMailAction);
+
 
     menu.exec(mapToGlobal(pos));
 }
@@ -125,3 +297,13 @@ void WebView::openLinkInDefaultBrowser()
 
     (void)new KRun(u, this, 0);
 }
+
+
+void WebView::sendByMail()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    QString url = a->data().toString();
+
+    KToolInvocation::invokeMailer("", "", "", "", url);
+}
+
