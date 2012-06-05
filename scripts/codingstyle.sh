@@ -27,7 +27,6 @@ PWD=$(pwd)
 
 cd $PWD
 cd ..
-cd src
 
 echo "Applying astyle rules..."
 astyle \

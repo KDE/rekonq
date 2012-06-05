@@ -59,7 +59,7 @@ int main(int argc, char **argv)
     KApplication app;
 
     QWebSettings::setIconDatabasePath(KStandardDirs::locateLocal("cache", "kwebapp.favicons/"));
-    qDebug() << "ICON PATH: " << KStandardDirs::locateLocal("cache", "kwebapp.favicons/");
+    
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
     if (args->count() != 1)
     {

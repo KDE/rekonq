@@ -2,7 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,51 +25,32 @@
 * ============================================================ */
 
 
-#ifndef WEB_VIEW_H
-#define WEB_VIEW_H
+#ifndef SEARCHENGINE_H
+#define SEARCHENGINE_H
 
-
-// Local Includes
-#include "webpage.h"
 
 // KDE Includes
-#include <KWebView>
+#include <KService>
 
-// Qt Includes
-#include <QUrl>
+//Qt Includes
+#include <QString>
 
 
-class WebView : public KWebView
+namespace SearchEngine
 {
-    Q_OBJECT
+void reload();
 
-public:
+QString delimiter();
 
-    enum ContextType
-    {
-        EmptySelection  = 0x00000000,
-        LinkSelection   = 0x00000001,
-        ImageSelection  = 0x00000010,
-        TextSelection   = 0x00000100
-    };
+KService::Ptr defaultEngine();
 
-    explicit WebView(QWidget *parent = 0);
+KService::List favorites();
 
-    WebPage *page();
+KService::Ptr fromString(const QString &text);
 
-private Q_SLOTS:
-    void menuRequested(const QPoint &);
-    void openLinkInDefaultBrowser();
+QString buildQuery(KService::Ptr engine, const QString &text);
 
-    void sendByMail();
-    void findSelectedText();
-    void search();
+QString extractQuery(const QString &text);
+}
 
-    void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
-    void slotCopyImageLocation();
-
-private:
-    WebPage *m_page;
-};
-
-#endif // WEB_VIEW_H
+#endif

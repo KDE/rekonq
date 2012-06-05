@@ -28,6 +28,9 @@
 #include "webview.h"
 #include "webview.moc"
 
+// Local Includes
+#include "searchengine.h"
+
 // KDE Includes
 #include <KIO/Job>
 #include <KIO/RenameDialog>
@@ -52,6 +55,10 @@
 #include <QWebHistory>
 #include <QNetworkRequest>
 #include <QPointer>
+#include <QWebSettings>
+#include <QApplication>
+#include <QMimeData>
+#include <QClipboard>
 
 // Defines
 #define QL1S(x) QLatin1String(x)
@@ -235,32 +242,32 @@ void WebView::menuRequested(const QPoint &pos)
             }
         }
 
-//         // Default SearchEngine
-//         KService::Ptr defaultEngine = SearchEngine::defaultEngine();
-//         if (defaultEngine) // check if a default engine is set
-//         {
-//             a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1", defaultEngine->name()), this);
-//             a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
-//             a->setData(defaultEngine->entryPath());
-//             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
-//             menu.addAction(a);
-//         }
+        // Default SearchEngine
+        KService::Ptr defaultEngine = SearchEngine::defaultEngine();
+        if (defaultEngine) // check if a default engine is set
+        {
+            a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1", defaultEngine->name()), this);
+            a->setIcon(QWebSettings::iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
+            a->setData(defaultEngine->entryPath());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
+            menu.addAction(a);
+        }
 
         // All favourite ones
         KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18nc("@title:menu", "Search"), this);
 
-//         Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
-//         {
-//             a = new KAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), this);
-//             a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(engine, "")));
-//             a->setData(engine->entryPath());
-//             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
-//             searchMenu->addAction(a);
-//         }
+        Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
+        {
+            a = new KAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), this);
+            a->setIcon(QWebSettings::iconForUrl(SearchEngine::buildQuery(engine, "")));
+            a->setData(engine->entryPath());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
+            searchMenu->addAction(a);
+        }
 
-//         a = new KAction(KIcon("edit-find"), i18n("On Current Page"), this);
-//         connect(a, SIGNAL(triggered()), rApp->mainWindow(), SLOT(findSelectedText()));
-//         searchMenu->addAction(a);
+        a = new KAction(KIcon("edit-find"), i18n("On Current Page"), this);
+        connect(a, SIGNAL(triggered()), this, SLOT(findSelectedText()));
+        searchMenu->addAction(a);
 
         if (!searchMenu->menu()->isEmpty())
         {
@@ -270,19 +277,21 @@ void WebView::menuRequested(const QPoint &pos)
 
     // DEFAULT ACTIONs (on the bottom) -----------------------
     menu.addSeparator();
-    if (resultHit & WebView::LinkSelection)
-    {
-        a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark link"), this);
-        a->setData(result.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
-        menu.addAction(a);
-    }
-    else
-    {
-        a = new KAction(KIcon("bookmark-new"), i18n("&Add Bookmark"), this);
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkCurrentPage()));
-        menu.addAction(a);
-    }
+
+    // FIXME: bookmarks management
+//     if (resultHit & WebView::LinkSelection)
+//     {
+//         a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark link"), this);
+//         a->setData(result.linkUrl());
+//         connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
+//         menu.addAction(a);
+//     }
+//     else
+//     {
+//         a = new KAction(KIcon("bookmark-new"), i18n("&Add Bookmark"), this);
+//         connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkCurrentPage()));
+//         menu.addAction(a);
+//     }
     menu.addAction(sendByMailAction);
 
 
@@ -307,3 +316,50 @@ void WebView::sendByMail()
     KToolInvocation::invokeMailer("", "", "", "", url);
 }
 
+
+void WebView::findSelectedText()
+{
+    QWebPage::FindFlags options = QWebPage::FindWrapsAroundDocument;
+
+    findText(selectedText(), options);
+}
+
+
+void WebView::search()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KService::Ptr engine = KService::serviceByDesktopPath(a->data().toString());
+    KUrl urlSearch = KUrl(SearchEngine::buildQuery(engine, selectedText()));
+
+    load(urlSearch);
+}
+
+
+void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+{
+    Q_UNUSED(buttons);
+    Q_UNUSED(modifiers);
+
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl url(a->data().toUrl());
+
+    load(url);
+}
+
+
+void WebView::slotCopyImageLocation()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl imageUrl(a->data().toUrl());
+#ifndef QT_NO_MIMECLIPBOARD
+    // Set it in both the mouse selection and in the clipboard
+    QMimeData* mimeData = new QMimeData;
+    imageUrl.populateMimeData(mimeData);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
+    mimeData = new QMimeData;
+    imageUrl.populateMimeData(mimeData);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Selection);
+#else
+    QApplication::clipboard()->setText(imageUrl.url());
+#endif
+}
