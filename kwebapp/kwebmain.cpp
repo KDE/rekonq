@@ -26,6 +26,7 @@
 
 // Local Includes
 #include "rekonqview.h"
+#include "urlresolver.h"
 
 // KDE Includes
 #include <KApplication>
@@ -68,7 +69,7 @@ int main(int argc, char **argv)
     }
 
     RekonqView *widg = new RekonqView();
-    widg->loadUrl(KUrl(QUrl::fromUserInput(args->arg(0))));
+    widg->loadUrl( UrlResolver::urlFromTextTyped(args->arg(0)) );
     widg->show();
     args->clear();
 

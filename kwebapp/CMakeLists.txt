@@ -1,6 +1,7 @@
 set( kwebapp_SRCS
     rekonqview.cpp
     searchengine.cpp
+    urlresolver.cpp
     walletbar.cpp
     webview.cpp
     webpage.cpp

@@ -28,19 +28,32 @@
 #include "webpage.h"
 #include "webpage.moc"
 
+// Local Includes
+#include "urlresolver.h"
+
 // KDE Includes
 #include <KRun>
+#include <KToolInvocation>
+#include <KProtocolInfo>
+#include <KDebug>
 
 // Qt Includes
 #include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QWebFrame>
+
+// Defines
+#define QL1S(x) QLatin1String(x)
 
 
 WebPage::WebPage(QObject *parent)
     : KWebPage(parent)
-    , _selfLoading(true)
 {
-    connect(this, SIGNAL(loadFinished(bool)), this, SLOT(disableSelfLoading()));
+    // ----- handling unsupported content...
+    setForwardUnsupportedContent(true);
+    connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(handleUnsupportedContent(QNetworkReply*)));
 
+    // downloads
     connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(downloadResponse(QNetworkReply*)));
     connect(this, SIGNAL(downloadRequested(QNetworkRequest)), this, SLOT(downloadRequest(QNetworkRequest)));
 }
@@ -48,21 +61,69 @@ WebPage::WebPage(QObject *parent)
 
 bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type)
 {
+    QUrl reqUrl = request.url();
+    QString protocol = reqUrl.scheme();
+    
+    // javascript handling
+    if (protocol == QL1S("javascript"))
+    {
+        QString scriptSource = QUrl::fromPercentEncoding(reqUrl.toString().mid(11).toUtf8());
+        mainFrame()->evaluateJavaScript(scriptSource);
+        return false;
+    }
+
+    // "mailto" handling: It needs to be handled both here (mail url launched)
+    // and in handleUnsupportedContent (mail links clicked)
+    if (protocol == QL1S("mailto"))
+    {
+        KToolInvocation::invokeMailer(reqUrl);
+        return false;
+    }
+
+    if (frame && UrlResolver::isKDEUrl(reqUrl.toString()))
+    {
+        QUrl newReqUrl = UrlResolver::urlFromTextTyped(reqUrl.toString());
+        frame->load(newReqUrl);
+        return false;
+    }
+
+    // don't let webkit try to load an unknown (or missing) protocol...
+    if (!KProtocolInfo::isKnownProtocol(protocol))
+    {
+        kDebug() << "UNKNOWN PROTOCOL: " << protocol;
+        return false;
+    }
+
     return KWebPage::acceptNavigationRequest(frame, request, type);
-
-    // FIXME
-//     (void)new KRun(request.url(), view(), 0);
-//     return false;
 }
 
 
-void WebPage::setSelfLoadingEnabled(bool b)
+void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
-    _selfLoading = b;
-}
+    Q_ASSERT(reply);
 
+    if (!reply)
+    {
+        kDebug() << "NO REPLY. Why????";
+        return;
+    }
 
-void WebPage::disableSelfLoading()
-{
-    _selfLoading = false;
+    QUrl replyUrl = reply->url();
+    QString protocol = replyUrl.scheme();
+
+    // "http(s)" (fast) handling
+    if (protocol == QL1S("http") || protocol == QL1S("https"))
+    {
+        kDebug() << "Error: " << protocol;
+        return;
+    }
+    
+    // "mailto" handling.
+    if (protocol == QL1S("mailto"))
+    {
+        KToolInvocation::invokeMailer(replyUrl);
+        return;
+    }
+
+    return;
 }

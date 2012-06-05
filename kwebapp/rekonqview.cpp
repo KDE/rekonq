@@ -227,7 +227,7 @@ void RekonqView::notifyMessage(const QString &msg)
     }
 
     m_hidePopupTimer->stop();
-    m_hidePopupTimer->start(500);
+    m_hidePopupTimer->start(3000);
 
     QString msgToShow = Qt::escape(msg);
 

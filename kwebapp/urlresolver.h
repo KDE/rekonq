@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,26 +24,23 @@
 * ============================================================ */
 
 
-#ifndef _WEB_PAGE_H
-#define _WEB_PAGE_H
+#ifndef URL_RESOLVER_H
+#define URL_RESOLVER_H
 
 
 // KDE Includes
-#include <KWebPage>
+#include <KUrl>
+
+// Qt Includes
+#include <QString>
 
 
-class WebPage : public KWebPage
+namespace UrlResolver
 {
-    Q_OBJECT
+    KUrl urlFromTextTyped(const QString &);
 
-public:
-    WebPage(QObject *parent = 0);
+    bool isKDEUrl(const QString &);
+}
 
-protected:
-    virtual bool acceptNavigationRequest(QWebFrame *, const QNetworkRequest &, NavigationType);
 
-private Q_SLOTS:
-    void handleUnsupportedContent(QNetworkReply *);
-};
-
-#endif // _WEB_PAGE_H
+#endif // URL_RESOLVER_H
