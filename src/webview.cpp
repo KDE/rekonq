@@ -104,6 +104,25 @@ WebView::~WebView()
 }
 
 
+void WebView::load (const QUrl &url)
+{
+    load(QNetworkRequest(url));
+}
+
+
+void WebView::load (const QNetworkRequest &req, QNetworkAccessManager::Operation op, const QByteArray &body)
+{
+    QNetworkRequest request = req;
+    const QUrl &reqUrl = request.url();
+    if (reqUrl.host() == url().host())
+    {
+        request.setRawHeader(QByteArray("Referer"), url().toEncoded());
+    }
+
+    KWebView::load(request, op, body);
+}
+
+
 void WebView::loadStarted()
 {
     hideAccessKeys();
