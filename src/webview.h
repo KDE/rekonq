@@ -69,8 +69,9 @@ public:
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
 
-    void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
@@ -88,7 +89,6 @@ private Q_SLOTS:
 
     void printFrame();
 
-    void loadUrlInNewTab(const KUrl &);
     void openLinkInNewWindow();
     void openLinkInNewTab();
     void bookmarkLink();

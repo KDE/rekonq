@@ -1630,6 +1630,9 @@ void MainWindow::loadCheckedUrl(const KUrl& url, const Rekonq::OpenType& type, Q
     case Rekonq::NewFocusedTab:
         tab = mainView()->newWebTab(true);
         break;
+    case Rekonq::NewBackGroundTab:
+        tab = mainView()->newWebTab(false);
+        break;
     case Rekonq::NewWindow:
         rApp->loadUrl(url, type);
         return;

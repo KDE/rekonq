@@ -81,15 +81,8 @@ WebView::WebView(QWidget* parent)
     , m_accessKeysPressed(false)
     , m_accessKeysActive(false)
 {
-    // download system
-    connect(this, SIGNAL(linkShiftClicked(KUrl)), page(), SLOT(downloadUrl(KUrl)));
-
-    // middle click || ctrl + click signal
-    connect(this, SIGNAL(linkMiddleOrCtrlClicked(KUrl)), this, SLOT(loadUrlInNewTab(KUrl)));
-
     // loadUrl signal
-    connect(this, SIGNAL(loadUrl(KUrl, Rekonq::OpenType)),
-            rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
+    connect(this, SIGNAL(loadUrl(KUrl, Rekonq::OpenType)), rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
 
     // Auto scroll timer
     connect(m_autoScrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
@@ -475,6 +468,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
     default:
         break;
     };
+    
     KWebView::mousePressEvent(event);
 }
 
@@ -906,24 +900,6 @@ void WebView::inspect()
 }
 
 
-void WebView::loadUrlInNewTab(const KUrl &u)
-{
-    QNetworkRequest req(u);
-    req.setRawHeader(QByteArray("Referer"), url().toEncoded());
-
-    WebTab *w = 0;
-    if (ReKonfig::openLinksInNewWindow())
-    {
-        w = rApp->newMainWindow()->mainView()->currentWebTab();
-    }
-    else
-    {
-        w = rApp->mainWindow()->mainView()->newWebTab(!ReKonfig::openNewTabsInBackground());
-    }
-    w->view()->load(req);
-}
-
-
 void WebView::scrollFrameChanged()
 {
     // do the scrolling
@@ -1233,4 +1209,47 @@ void WebView::blockImage()
 
     QString imageUrl = action->data().toString();
     rApp->adblockManager()->addCustomRule(imageUrl);
+}
+
+
+void WebView::mouseReleaseEvent(QMouseEvent *event)
+{
+    QWebHitTestResult hitTest = page()->mainFrame()->hitTestContent(event->pos());
+    const QUrl url = hitTest.linkUrl();
+
+    if (!url.isEmpty())
+    {
+        if (event->button() & Qt::MidButton)
+        {
+            if (event->modifiers() & Qt::ShiftModifier)
+            {
+                if (ReKonfig::openNewTabsInBackground())
+                    emit loadUrl(url, Rekonq::NewFocusedTab);
+                else
+                    emit loadUrl(url, Rekonq::NewBackGroundTab);
+                event->accept();
+                return;
+            }
+            
+            emit loadUrl(url, Rekonq::NewTab);
+            event->accept();
+            return;
+        }
+
+        if ((event->button() & Qt::LeftButton) && (event->modifiers() & Qt::ControlModifier))
+        {
+            emit loadUrl(url, Rekonq::NewTab);
+            event->accept();
+            return;
+        }
+
+        if ((event->button() & Qt::LeftButton) && (event->modifiers() & Qt::ShiftModifier))
+        {
+            page()->downloadUrl(url);
+            event->accept();
+            return;
+        }
+    }
+
+    QWebView::mouseReleaseEvent(event);
 }
