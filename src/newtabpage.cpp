@@ -737,7 +737,7 @@ void NewTabPage::tabsPage()
     Q_FOREACH(const QWeakPointer<MainWindow> &wPointer, rApp->mainWindowList())
     {
         m_root.appendInside(markup(QL1S("h3")));
-        m_root.lastChild().setPlainText("Window");
+        m_root.lastChild().setPlainText(i18n("Window"));
 
         MainWindow *w = wPointer.data();
 
