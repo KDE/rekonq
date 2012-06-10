@@ -633,11 +633,16 @@ void MainView::webViewUrlChanged(const QUrl &url)
     if (!view)
         return;
 
-    int index = indexOf(view->parentWidget());
+    WebTab *tab = qobject_cast<WebTab *>(view->parentWidget());
+    if (!tab)
+        return;
+
+    int index = indexOf(tab);
     if (ReKonfig::hoveringTabOption() == 2)
         tabBar()->setTabToolTip(index, url.toString());
 
-    rApp->mainWindow()->updateHistoryActions();
+    if (tab == rApp->mainWindow()->currentTab())
+        rApp->mainWindow()->updateHistoryActions();
 }
 
 
