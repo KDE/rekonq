@@ -105,8 +105,10 @@ UrlBar::UrlBar(QWidget *parent)
     , _icon(new IconButton(this))
     , _suggestionTimer(new QTimer(this))
 {
+    setLayoutDirection(Qt::LeftToRight);
+
     // initial style
-    setStyleSheet(QString("UrlBar { padding: 2px 0 2px %1px;} ").arg(_icon->sizeHint().width()));
+    setStyleSheet(QString("UrlBar { padding: 2px 0 2px %1px; height: %1px } ").arg(_icon->sizeHint().width()));
 
     // doesn't show the clear button
     setClearButtonShown(false);
@@ -404,14 +406,16 @@ void UrlBar::loadFinished()
     if (_tab->hasAdBlockedElements())
     {
         IconButton *bt = addRightIcon(UrlBar::AdBlock);
+        
         connect(bt, SIGNAL(clicked(QPoint)), (QObject *) rApp->adblockManager(), SLOT(showBlockedItemDialog()));
     }
 
     // we need to update urlbar after the right icon settings
     // removing this code (where setStyleSheet automatically calls update) needs adding again
     // an update call
-    int rightIconWidth = 25 * (_rightIconsList.count());
-    setStyleSheet(QString("UrlBar { padding: 2px %2px 2px %1px;} ").arg(_icon->sizeHint().width()).arg(rightIconWidth));
+    int oneIconWidth = _icon->sizeHint().width();
+    int rightIconWidth = (oneIconWidth + 4) * (_rightIconsList.count());
+    setStyleSheet(QString("UrlBar { padding: 2px %2px 2px %1px; height: %1px } ").arg(oneIconWidth).arg(rightIconWidth));
 }
 
 
@@ -594,11 +598,17 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
     }
 
     _rightIconsList << rightIcon;
-    int iconsCount = _rightIconsList.count();
-    int iconHeight = (height() - 18) / 2;
-    rightIcon->move(width() - 23 * iconsCount, iconHeight);
-    rightIcon->show();
 
+    int iw = _icon->width();
+    int ih = _icon->height();
+    int iconsCount = _rightIconsList.count();   
+
+    int iconWidth = width() - ((iw + 4) * iconsCount);
+    int iconHeight = (height() - ih) / 2;
+    
+    rightIcon->move(iconWidth, iconHeight);
+    rightIcon->show();
+    
     return rightIcon;
 }
 
@@ -612,16 +622,20 @@ void UrlBar::clearRightIcons()
 
 void UrlBar::resizeEvent(QResizeEvent *event)
 {
-    int newHeight = (height() - 18) / 2;
-    _icon->move(4, newHeight);
-
+    int iw = _icon->width();
+    int ih = _icon->height();
     int iconsCount = _rightIconsList.count();
+
+    int iconHeight = (height() - ih) / 2;  
+
+    _icon->move(4, iconHeight);
+
     int w = width();
 
     for (int i = 0; i < iconsCount; ++i)
     {
         IconButton *bt = _rightIconsList.at(i);
-        bt->move(w - 25 * (i + 1), newHeight);
+        bt->move(w - (iw + 4) * (i + 1), iconHeight);
     }
 
     KLineEdit::resizeEvent(event);
