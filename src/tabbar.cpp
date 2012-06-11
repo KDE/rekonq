@@ -101,6 +101,8 @@ TabBar::TabBar(QWidget *parent)
 
 QSize TabBar::tabSizeHint(int index) const
 {
+    Q_UNUSED(index);
+    
     MainView *view = qobject_cast<MainView *>(parent());
 
     int buttonSize = view->addTabButton()->size().width();
@@ -125,7 +127,7 @@ QSize TabBar::tabSizeHint(int index) const
         }
     }
 
-    int h = KTabBar::tabSizeHint(index).height();
+    int h = view->addTabButton()->height() + 6;
 
     QSize ts = QSize(w, h);
     return ts;
