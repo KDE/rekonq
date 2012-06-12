@@ -62,6 +62,8 @@
 #include <QClipboard>
 #include <QTimer>
 
+// const values
+const int c_iconMargin = 4;
 
 
 IconButton::IconButton(QWidget *parent)
@@ -414,7 +416,7 @@ void UrlBar::loadFinished()
     // removing this code (where setStyleSheet automatically calls update) needs adding again
     // an update call
     int oneIconWidth = _icon->sizeHint().width();
-    int rightIconWidth = (oneIconWidth + 4) * (_rightIconsList.count());
+    int rightIconWidth = (oneIconWidth + c_iconMargin) * (_rightIconsList.count());
     setStyleSheet(QString("UrlBar { padding: 2px %2px 2px %1px; height: %1px } ").arg(oneIconWidth).arg(rightIconWidth));
 }
 
@@ -599,14 +601,9 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
 
     _rightIconsList << rightIcon;
 
-    int iw = _icon->width();
-    int ih = _icon->height();
-    int iconsCount = _rightIconsList.count();   
+    int iconsCount = _rightIconsList.count();
+    updateRightIconPosition(rightIcon, iconsCount);
 
-    int iconWidth = width() - ((iw + 4) * iconsCount);
-    int iconHeight = (height() - ih) / 2;
-    
-    rightIcon->move(iconWidth, iconHeight);
     rightIcon->show();
     
     return rightIcon;
@@ -622,20 +619,16 @@ void UrlBar::clearRightIcons()
 
 void UrlBar::resizeEvent(QResizeEvent *event)
 {
-    int iw = _icon->width();
     int ih = _icon->height();
     int iconsCount = _rightIconsList.count();
-
     int iconHeight = (height() - ih) / 2;  
 
-    _icon->move(4, iconHeight);
-
-    int w = width();
+    _icon->move(c_iconMargin, iconHeight);
 
     for (int i = 0; i < iconsCount; ++i)
     {
         IconButton *bt = _rightIconsList.at(i);
-        bt->move(w - (iw + 4) * (i + 1), iconHeight);
+        updateRightIconPosition(bt, i + 1);
     }
 
     KLineEdit::resizeEvent(event);
@@ -752,4 +745,16 @@ void UrlBar::manageFavorites(QPoint pos)
     ReKonfig::setPreviewNames(titles);
 
     updateRightIcons();
+}
+
+
+void UrlBar::updateRightIconPosition(IconButton *icon, int iconsCount)
+{
+    int iw = _icon->width();
+    int ih = _icon->height();
+
+    int iconWidth = width() - ((iw + c_iconMargin) * iconsCount);
+    int iconHeight = (height() - ih) / 2;
+
+    icon->move(iconWidth, iconHeight);
 }

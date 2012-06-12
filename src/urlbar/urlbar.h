@@ -131,6 +131,11 @@ protected:
     void resizeEvent(QResizeEvent *);
 
 private:
+    /**
+     * Updates right icon position, given its number in the right icons list
+     * and considering rekonq window position/dimension
+     */
+    void updateRightIconPosition(IconButton *, int);
     IconButton *addRightIcon(UrlBar::icon);
 
     QWeakPointer<CompletionWidget> _box;
