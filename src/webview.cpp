@@ -1214,7 +1214,6 @@ void WebView::sendByMail()
 {
     KAction *a = qobject_cast<KAction*>(sender());
     QString url = a->data().toString();
-    kDebug() << "URL " << url;
 
     KToolInvocation::invokeMailer("", "", "", "", url);
 }

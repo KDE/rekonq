@@ -200,7 +200,6 @@ int Application::newInstance()
     {
         isFirstLoad = false;
 
-        kDebug() << "EXIT VALUE: " << exitValue;
         return 0;
     }
 
@@ -343,7 +342,6 @@ int Application::newInstance()
     KStartupInfo::appStarted();
     isFirstLoad = false;
 
-    kDebug() << "EXIT VALUE: " << exitValue;
     return 0;
 }
 

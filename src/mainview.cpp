@@ -450,9 +450,6 @@ void MainView::closeTab(int index, bool del)
             return;
     }
 
-    kDebug() << "URL: " << tabToClose->url();
-    kDebug() << "rekonq page: " << tabToClose->page()->isOnRekonqPage();
-
     if (!tabToClose->url().isEmpty()
             && tabToClose->url().scheme() != QL1S("about")
             && !tabToClose->page()->isOnRekonqPage()

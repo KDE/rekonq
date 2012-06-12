@@ -109,6 +109,9 @@ UrlBar::UrlBar(QWidget *parent)
 {
     setLayoutDirection(Qt::LeftToRight);
 
+    // set initial icon
+    _icon->setIcon(KIcon("arrow-right"));
+    
     // initial style
     setStyleSheet(QString("UrlBar { padding: 2px 0 2px %1px; height: %1px } ").arg(_icon->sizeHint().width()));
 
@@ -619,7 +622,7 @@ void UrlBar::clearRightIcons()
 
 void UrlBar::resizeEvent(QResizeEvent *event)
 {
-    int ih = _icon->height();
+    int ih = _icon->sizeHint().height();
     int iconsCount = _rightIconsList.count();
     int iconHeight = (height() - ih) / 2;  
 

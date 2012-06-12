@@ -105,7 +105,6 @@ void AdBlockManager::loadSettings()
 
     KConfigGroup settingsGroup(_adblockConfig, "Settings");
     _isAdblockEnabled = settingsGroup.readEntry("adBlockEnabled", false);
-    kDebug() << "ADBLOCK ENABLED = " << _isAdblockEnabled;
 
     // no need to load filters if adblock is not enabled :)
     if (!_isAdblockEnabled)

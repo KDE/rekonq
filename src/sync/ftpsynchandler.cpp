@@ -63,11 +63,9 @@ void FTPSyncHandler::initialLoadAndCheck()
         _remoteBookmarksUrl.setPassword(ReKonfig::syncPass());
         _remoteBookmarksUrl.setPort(ReKonfig::syncPort());
         _remoteBookmarksUrl.setPath(ReKonfig::syncPath() + QL1S("/bookmarks.xml"));
-        kDebug() << "REMOTE BK URL: " << _remoteBookmarksUrl;
 
         const QString bookmarksFilePath = KStandardDirs::locateLocal("data", QL1S("konqueror/bookmarks.xml"));
         _localBookmarksUrl = KUrl(bookmarksFilePath);
-        kDebug() << "LOCAL BK URL: " << _localBookmarksUrl;
 
         KIO::StatJob *job = KIO::stat(_remoteBookmarksUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(onBookmarksStatFinished(KJob*)));
@@ -83,11 +81,9 @@ void FTPSyncHandler::initialLoadAndCheck()
         _remoteHistoryUrl.setPassword(ReKonfig::syncPass());
         _remoteHistoryUrl.setPort(ReKonfig::syncPort());
         _remoteHistoryUrl.setPath(ReKonfig::syncPath() + QL1S("/history"));
-        kDebug() << "REMOTE HISTORY URL: " << _remoteHistoryUrl;
 
         const QString historyFilePath = KStandardDirs::locateLocal("appdata", "history");
         _localHistoryUrl = KUrl(historyFilePath);
-        kDebug() << "LOCAL HISTORY URL: " << _localHistoryUrl;
 
         KIO::StatJob *job = KIO::stat(_remoteHistoryUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(onHistoryStatFinished(KJob*)));
@@ -103,11 +99,9 @@ void FTPSyncHandler::initialLoadAndCheck()
         _remotePasswordsUrl.setPassword(ReKonfig::syncPass());
         _remotePasswordsUrl.setPort(ReKonfig::syncPort());
         _remotePasswordsUrl.setPath(ReKonfig::syncPath() + QL1S("/kdewallet.kwl"));
-        kDebug() << "REMOTE PSWD URL: " << _remotePasswordsUrl;
 
         const QString passwordsFilePath = KStandardDirs::locateLocal("data", QL1S("kwallet/kdewallet.kwl"));
         _localPasswordsUrl = KUrl(passwordsFilePath);
-        kDebug() << "LOCAL PSWD URL: " << _localPasswordsUrl;
 
         KIO::StatJob *job = KIO::stat(_remotePasswordsUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(onPasswordsStatFinished(KJob*)));
