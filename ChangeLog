@@ -1,6 +1,21 @@
 Please, refer to http://techbase.kde.org/Projects/rekonq/Roadmap page
 to track all features available on new rekonq releases.
 
+1.0
+- sync: sync bookmarks (just them for now) with google and with opera services.
+- Fancy bookmarking: store (and share) infos about bookmarks via nepomuk.
+- rekonq pages visual improvements
+- Favorites page: drag & drop added (as requested), ability to reload preview (down left button changed)
+- Bookmarks page: rewamped
+- History page: faster load showing just 2 days as default + history search feature in the page
+- Downloads page: initial notifications on what is happening to the downloaded file + search feature
+- Settings improvements: added "privacy" and "advanced" widgets + options about.
+- Default search engine check. If user has not a default search engine set, rekonq inform him.
+- Included tab history when cloning a tab via the "clone tab" action
+- adblock improvements: better adblock settings widget, letting users decide with 1 click what adblock subscriptions use
+- adblock icon in the urlbar triggering a new dialog letting users to unblock/show blocked/hided elements
+- new action to block (and hide) images
+
 0.9
 - urlbar suggestions improvements
 - enable url or text drops in the tabbar
