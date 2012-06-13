@@ -51,6 +51,7 @@
 #include <KMenu>
 #include <KToolBar>
 #include <KColorScheme>
+#include <KAcceleratorManager>
 
 // Qt Includes
 #include <QLabel>
@@ -88,6 +89,9 @@ TabBar::TabBar(QWidget *parent)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
+    // avoid ambiguos shortcuts. See BUG:275858
+    KAcceleratorManager::setNoAccel(this);
+    
     connect(this, SIGNAL(contextMenu(int, QPoint)), this, SLOT(contextMenu(int, QPoint)));
     connect(this, SIGNAL(emptyAreaContextMenu(QPoint)), this, SLOT(emptyAreaContextMenu(QPoint)));
 
