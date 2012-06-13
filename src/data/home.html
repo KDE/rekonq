@@ -31,7 +31,7 @@ DEFAULT_PATH = rekonq default installation files path
 }
 
 body {
-    background: url($DEFAULT_PATH/pics/background.jpg) repeat-y #fff;
+    background: url($DEFAULT_PATH/pics/background.jpg) repeat-y  center #fff;
     font-family: 'Nunito', sans-serif;
     font-size: 0.9em;
     border: 0;
@@ -47,19 +47,19 @@ h3 {
 
 h4 {
     padding: 0.2em;
-    margin: 1em 0 0.5em;
+    margin: 0.5em 0;
     font: normal bold 1em;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #aaa;
+    color:#666;
 }
 
 a {
-    color: #3F7AB7;
+    color: black;
     text-decoration: none;
-    -webkit-transition: color 0.5s ease;
 }
 
 a:hover {
-    color: black;
+    opacity:0.6;
 }
 
 input {
@@ -71,10 +71,26 @@ input {
 
 .right {
     float: right;
+    line-height:28px;
+}
+
+.right a {
+    display:block;
+}
+
+.right img {
+    float: left;
+    margin-right: 5px;
 }
 
 .left {
     float: left;
+}
+
+.preview, .bookmarkfolder {
+    background-image: -webkit-radial-gradient(top, 50% 100%, rgba(255,255,255,0.7) 0%, rgba(208,208,208,0.7) 100%);
+    border-radius: 5px;
+    box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.9), 0px 0px 2px 0px rgba(0,0,0,0.9), 0px 0px 14px 0px #555;
 }
 
 /* -------------------------------------------------------- */
@@ -156,7 +172,7 @@ input {
 }
 
 .thumb-inner {
-    width: 232px; /* 200 + 16*2 */
+    width: 216px; /* 200 + 8*2 */
     margin: auto;
 }
 
@@ -165,13 +181,12 @@ input {
     vertical-align: middle;
     width: 200px;
     height: 150px;
-    padding: 14px 16px 12px;
-    background: url($DEFAULT_PATH/pics/bg.png) no-repeat;
-    -webkit-background-size: 100% 100%; 
+    padding: 6px 8px 4px;
 }
 
 .title {
     padding: 0 12px;
+    margin-top:5px;
 }
 
 .button img {
@@ -198,21 +213,43 @@ input {
     opacity: 1;
 }
 
-.thumbnail a:hover {
+.thumb-inner a {
     color:#3F7AB7;
+    -webkit-transition: opacity 0.8s ease-in-out;
+}
+
+.thumb-inner:hover a {
+    opacity:0.6;
 }
 
 /* -------------------------------------------------------- */
 /* Bookmarks page */
 
 .bookmarkfolder {
-    background: #CCC;
-    border-radius: 15px;
-    padding: 0px 15px 15px 15px;
+    padding: 0px 15px 10px 5px;
     float:left;
     margin: 1em;
     width: 28%;
     text-align: left;
+}
+
+.bookmark {
+    border-radius: 5px;
+    width: 100%;
+    display:block;
+    padding:3px;
+    margin:2px;
+    line-height:16px;
+}
+
+.bookmark img {
+    float: left;
+    margin-right: 5px;
+}
+
+.bookmark:hover {
+    background-color: rgba(255,255,255,0.3);
+    box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.9), 0px 0px 6px 0px #888;
 }
 
 /* -------------------------------------------------------- */

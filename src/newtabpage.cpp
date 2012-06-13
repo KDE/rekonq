@@ -956,15 +956,17 @@ void NewTabPage::createBookmarkItem(const KBookmark &bookmark, QWebElement paren
         if (b.contains(QL1S("favicons")))
             icon = cacheDir + bookmark.icon() + QL1S(".png");
 
-        parent.appendInside(markup(QL1S("img")));
-        parent.lastChild().setAttribute(QL1S("src") , icon);
-        parent.lastChild().setAttribute(QL1S("width") , QL1S("16"));
-        parent.lastChild().setAttribute(QL1S("height") , QL1S("16"));
-        parent.appendInside(QL1S(" "));
         parent.appendInside(markup(QL1S("a")));
-        parent.lastChild().setAttribute(QL1S("href") , bookmark.url().prettyUrl());
-        parent.lastChild().setPlainText(checkTitle(bookmark.fullText(), 40));
-        parent.appendInside(QL1S("<br />"));
+        QWebElement bookmarkElement = parent.lastChild();
+        bookmarkElement.setAttribute(QL1S("href") , bookmark.url().prettyUrl());
+        bookmarkElement.addClass("bookmark");
+
+        bookmarkElement.appendInside(markup(QL1S("img")));
+        bookmarkElement.lastChild().setAttribute(QL1S("src") , icon);
+        bookmarkElement.lastChild().setAttribute(QL1S("width") , QL1S("16"));
+        bookmarkElement.lastChild().setAttribute(QL1S("height") , QL1S("16"));
+        bookmarkElement.appendInside(QL1S(" "));
+        bookmarkElement.appendInside( checkTitle(bookmark.fullText(), 40) );
     }
 }
 

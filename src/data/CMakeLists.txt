@@ -2,7 +2,6 @@
 INSTALL(
     FILES
     bg2.png
-    bg.png
     tile.gif
     category.png
     button.png
