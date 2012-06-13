@@ -186,15 +186,13 @@ int Application::newInstance()
     // so, we have 8 possible cases...
     static bool isFirstLoad = true;
     bool areThereArguments = (args->count() > 0);
-    bool isRekonqCrashed = (ReKonfig::recoverOnCrash() > 0);
-    // note that isRekonqCrashed is always true if it is not the first load
-    // !isFirstLoad -> isRekonqCrashed
+    bool hasToBeRecovered = (ReKonfig::recoverOnCrash() > 0);
+    // note that hasToBeRecovered is always true if it is not the first load
+    // !isFirstLoad -> hasToBeRecovered
 
     kDebug() << "is first load? " << isFirstLoad;
     kDebug() << "are there arguments? " << areThereArguments;
-    kDebug() << "is rekonq crashed? " << isRekonqCrashed;
-
-    int exitValue = 1 * isFirstLoad + 2 * areThereArguments + 4 * isRekonqCrashed;
+    kDebug() << "is rekonq crashed? " << hasToBeRecovered;
 
     if (isFirstLoad && isSessionRestored())
     {
@@ -267,7 +265,7 @@ int Application::newInstance()
     {
         if (isFirstLoad)
         {
-            if (isRekonqCrashed)
+            if (hasToBeRecovered)
             {
                 loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
             }
@@ -312,7 +310,7 @@ int Application::newInstance()
 
     if (isFirstLoad)
     {
-        if (isRekonqCrashed)
+        if (hasToBeRecovered)
         {
             QTimer::singleShot(1000, mainWindow()->currentTab(), SLOT(showMessageBar()));
         }
@@ -321,7 +319,7 @@ int Application::newInstance()
             sessionManager()->setSessionManagementEnabled(true);
         }
 
-        if (ReKonfig::checkDefaultSearchEngine() && !isRekonqCrashed && SearchEngine::defaultEngine().isNull())
+        if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecovered && SearchEngine::defaultEngine().isNull())
             QTimer::singleShot(2000, mainWindow()->currentTab(), SLOT(showSearchEngineBar()));
 
         // updating rekonq configuration
