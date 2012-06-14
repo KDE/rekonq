@@ -9,7 +9,7 @@ INSTALL(
     loading.mng
     webkit-icon.png
     autoscroll.png
-    background.jpg
+    background.png
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
 )
 

@@ -35,7 +35,7 @@ html{
 }
 
 body{
-    background: #AAA;
+    background: url($DEFAULT_PATH/pics/background.png) repeat-y center #bbb;
     margin:0;
     padding:0;
     font-family: 'Nunito', sans-serif;
@@ -43,13 +43,13 @@ body{
 }
 
 #block {
-    background: #fff;
-    border: 2px solid #d9d9d9;
+    background: rgba(255,255,255,0.75);
     padding: 30px;
     width: 800px;
     margin: 30px auto;
     color: #444;
-    -webkit-border-radius: 15px
+    -webkit-border-radius: 15px;
+    box-shadow: 0px 0px 0px 1px rgba(255,255,255,0.9), 0px 0px 2px 0px rgba(0,0,0,0.9), 0px 0px 14px 0px #555;
 }
 
 h1{
