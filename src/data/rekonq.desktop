@@ -1,5 +1,10 @@
 [Desktop Entry]
 Name=Rekonq
+Name[nl]=Rekonq
+Name[pt_BR]=Rekonq
+Name[sv]=Rekonq
+Name[uk]=Rekonq
+Name[x-test]=xxRekonqxx
 GenericName=Web Browser
 GenericName[bg]=Уеб-браузър
 GenericName[bs]=Pregled Internet WWW stranica
