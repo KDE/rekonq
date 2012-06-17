@@ -53,6 +53,7 @@
 #include <KStandardDirs>
 #include <KColorScheme>
 #include <KMenu>
+#include <KIconLoader>
 
 // Qt Includes
 #include <QPainter>
@@ -753,11 +754,13 @@ void UrlBar::manageFavorites(QPoint pos)
 
 void UrlBar::updateRightIconPosition(IconButton *icon, int iconsCount)
 {
-    int iw = _icon->width();
-    int ih = _icon->height();
+    // NOTE: cannot show a (let's say) 16x16 icon in a 16x16 square.
+    // It needs some margin. It usually is 3, but using 4 (default rekonq icon margin)
+    // seems NOT a big problem and let's us using just one const ;)
+    int iconSize = IconSize(KIconLoader::Small) + c_iconMargin;
 
-    int iconWidth = width() - ((iw + c_iconMargin) * iconsCount);
-    int iconHeight = (height() - ih) / 2;
+    int iconWidth = width() - ((iconSize + c_iconMargin) * iconsCount);
+    int iconHeight = (height() - iconSize) / 2;
 
     icon->move(iconWidth, iconHeight);
 }
