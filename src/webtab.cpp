@@ -121,7 +121,10 @@ WebView *WebTab::view()
 
 WebPage *WebTab::page()
 {
-    return view()->page();
+    if (view())
+        return view()->page();
+
+    return 0;
 }
 
 
@@ -132,7 +135,11 @@ KUrl WebTab::url()
         return page()->loadingUrl();
     }
 
-    return view()->url();
+    if (view())
+        return view()->url();
+
+    kDebug() << "OOPS... NO web classes survived! Returning an empty url...";
+    return KUrl();
 }
 
 
