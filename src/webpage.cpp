@@ -449,21 +449,22 @@ void WebPage::loadStarted()
 {
     _hasAdBlockedElements = false;
     rApp->adblockManager()->clearElementsLists();
-}
-
-
-void WebPage::loadFinished(bool ok)
-{
-    Q_UNUSED(ok);
 
     // set zoom factor
     QString val;
     KSharedConfig::Ptr config = KGlobal::config();
     KConfigGroup group(config, "Zoom");
     val = group.readEntry(_loadingUrl.host(), QString("10"));
-
+    
     int value = val.toInt();
-    mainFrame()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values
+    if (value != 10)
+        mainFrame()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values
+}
+
+
+void WebPage::loadFinished(bool ok)
+{
+    Q_UNUSED(ok);
 
     // Provide site icon. Can this be moved to loadStarted??
     rApp->iconManager()->provideIcon(mainFrame(), _loadingUrl);
