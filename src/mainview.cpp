@@ -452,13 +452,14 @@ void MainView::closeTab(int index, bool del)
 
     if (!tabToClose->url().isEmpty()
             && tabToClose->url().scheme() != QL1S("about")
-            && !tabToClose->page()->isOnRekonqPage()
             && !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
        )
     {
         const int recentlyClosedTabsLimit = 8;
         TabHistory history(tabToClose->view()->history());
-
+        history.title = tabToClose->view()->title();
+        history.url = tabToClose->url().url();
+        
         m_recentlyClosedTabs.removeAll(history);
         if (m_recentlyClosedTabs.count() == recentlyClosedTabsLimit)
             m_recentlyClosedTabs.removeLast();
@@ -686,7 +687,8 @@ void MainView::restoreClosedTab(int i, bool inNewTab)
                     ;
 
     history.applyHistory(view->history());
-
+    view->load(KUrl(history.url));
+    
     // just to get sure...
     m_recentlyClosedTabs.removeAll(history);
 }
