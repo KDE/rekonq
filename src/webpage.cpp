@@ -744,17 +744,17 @@ bool WebPage::hasSslValid() const
     if (certList.isEmpty())
         return false;
 
-    Q_FOREACH(const QSslCertificate & cert, certList)
-    {
-        if (!cert.isValid())
-            return false;
-    }
+    const QSslCertificate cert = certList.at(0);
+    if (!cert.isValid())
+        return false;
 
     QList<QStringList> errorList = SslInfoDialog::errorsFromString(_sslInfo.certificateErrors());
-    Q_FOREACH(const QStringList & list, errorList)
+    if (!errorList.isEmpty())
     {
+        QStringList list = errorList.at(0);
         if (!list.isEmpty())
             return false;
     }
+
     return true;
 }
