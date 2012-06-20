@@ -197,8 +197,6 @@ int Application::newInstance()
     if (isFirstLoad && isSessionRestored())
     {
         isFirstLoad = false;
-
-        return 0;
     }
 
     if (areThereArguments)
@@ -227,6 +225,11 @@ int Application::newInstance()
             }
         }
 
+        if (isFirstLoad && (ReKonfig::startupBehaviour() == 2) && sessionManager()->restoreSessionFromScratch())
+        {
+            isFirstLoad = false;
+        }
+
         // first argument: 99% of the time we have just that...
         if (isFirstLoad)
         {
@@ -249,7 +252,8 @@ int Application::newInstance()
                 KWindowSystem::demandAttention(mainWindow()->winId(), true);
         }
 
-        // following arguments: what's best behavior here? I'm pretty sure no one has real opinion here
+        // following arguments: what's best behavior here?
+        // I'm pretty sure no one has real opinion about...
         if (!ReKonfig::openExternalLinksInNewWindow())
         {
             for (int i = 1; i < urlList.count(); ++i)
