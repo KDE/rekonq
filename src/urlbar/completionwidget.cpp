@@ -135,26 +135,26 @@ void CompletionWidget::popup()
 
 void CompletionWidget::up()
 {
-    // deactivate previous
-    findChild<ListItem *>(QString::number(_currentIndex))->deactivate(); // deactivate previous
-
-    if (_currentIndex > 0)
-        _currentIndex--;
-    else
-        _currentIndex = layout()->count() - 1;
-
+    if (_currentIndex >= 0)
+        findChild<ListItem *>(QString::number(_currentIndex))->deactivate(); // deactivate previous
+    
+    --_currentIndex;
+    if (_currentIndex < -1) {
+        _currentIndex = _list.count() - 1;
+    }
+    
     activateCurrentListItem();
 }
 
 
 void CompletionWidget::down()
 {
-    findChild<ListItem *>(QString::number(_currentIndex))->deactivate(); // deactivate previous
+    if(_currentIndex >= 0)
+        findChild<ListItem *>(QString::number(_currentIndex))->deactivate(); // deactivate previous
 
-    if (_currentIndex < _list.count() - 1)
-        _currentIndex++;
-    else
-        _currentIndex = 0;
+    ++_currentIndex;
+    if (_currentIndex == _list.count())
+        _currentIndex = -1;
 
     activateCurrentListItem();
 }
@@ -166,11 +166,18 @@ void CompletionWidget::activateCurrentListItem()
 
     // activate "new" current
     ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
-    widget->activate();
-
-    //update text of the url bar
-    bar->blockSignals(true); //without compute suggestions
-    bar->setQUrl(widget->text());
+    
+    // update text of the url bar
+    bar->blockSignals(true); // without compute suggestions
+    if (widget)
+    {
+        widget->activate();
+        bar->setQUrl(widget->text());
+    }
+    else
+    {
+        bar->setText(_typedString);
+    }
     bar->blockSignals(false);
     bar->setFocus();
     bar->setCursorPosition(bar->text().length());
@@ -290,11 +297,12 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                     }
                 }
 
-
+                kDebug() << "Suggestion INDEX chosen: " << _currentIndex;
                 if (_currentIndex == -1)
                     _currentIndex = 0;
                 child = findChild<ListItem *>(QString::number(_currentIndex));
-                if (child && _currentIndex != 0) //the completionwidget is visible and the user had press down
+
+                if (child) //the completionwidget is visible and the user had press down
                 {
                     //we can use the url of the listitem
                     emit chosenUrl(child->url(), Rekonq::CurrentTab);
