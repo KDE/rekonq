@@ -128,12 +128,15 @@ WebPage::WebPage(QWidget *parent)
     , _networkAnalyzer(false)
     , _isOnRekonqPage(false)
 {
-    // ----- handling unsupported content...
+    // handling unsupported content...
     setForwardUnsupportedContent(true);
     connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(handleUnsupportedContent(QNetworkReply*)));
 
-    // ----- rekonq Network Manager
+    // rekonq Network Manager
     NetworkAccessManager *manager = new NetworkAccessManager(this);
+
+    // set network reply object to emit readyRead when it receives meta data
+    manager->setEmitReadyReadOnMetaDataChange(true);
 
     // disable QtWebKit cache to just use KIO one..
     manager->setCache(0);
@@ -141,9 +144,6 @@ WebPage::WebPage(QWidget *parent)
     // set cookieJar window..
     if (parent && parent->window())
         manager->setWindow(parent->window());
-
-    // set network reply object to emit readyRead when it receives meta data
-    manager->setEmitReadyReadOnMetaDataChange(true);
 
     setNetworkAccessManager(manager);
 

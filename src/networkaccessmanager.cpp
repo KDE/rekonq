@@ -39,6 +39,36 @@
 #include <KLocale>
 #include <KProtocolManager>
 
+// Qt Includes
+#include <QNetworkReply>
+#include <QTimer>
+
+
+class NullNetworkReply : public QNetworkReply
+{
+public:
+    NullNetworkReply(const QNetworkRequest &req, QObject* parent = 0)
+        :QNetworkReply(parent)
+    {
+        setRequest(req);
+        setUrl(req.url());
+        setHeader(QNetworkRequest::ContentLengthHeader, 0);
+        setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
+        setError(QNetworkReply::ContentAccessDenied, i18n("Null reply"));
+        setAttribute(QNetworkRequest::User, QNetworkReply::ContentAccessDenied);
+        QTimer::singleShot(0, this, SIGNAL(finished()));
+    }
+
+    virtual void abort() {}
+    virtual qint64 bytesAvailable() const { return 0; }
+
+protected:
+    virtual qint64 readData(char*, qint64) {return -1;}
+};
+
+
+// ----------------------------------------------------------------------------------------------
+
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
     : AccessManager(parent)
@@ -60,6 +90,10 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
 {
     WebPage *parentPage = qobject_cast<WebPage *>(parent());
 
+    // NOTE: This to get sure we are NOT serving unused requests
+    if (!parentPage)
+        return new NullNetworkReply(request, this);
+
     QNetworkReply *reply = 0;
 
     // set our "nice" accept-language header...
@@ -73,7 +107,7 @@ QNetworkReply *NetworkAccessManager::createRequest(QNetworkAccessManager::Operat
     if (!reply)
         reply = AccessManager::createRequest(op, req, outgoingData);
 
-    if (parentPage && parentPage->hasNetworkAnalyzerEnabled())
+    if (parentPage->hasNetworkAnalyzerEnabled())
         emit networkData(op, req, reply);
 
     return reply;
