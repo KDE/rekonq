@@ -506,7 +506,7 @@ void MainView::closeTab(int index, bool del)
 
     if (del)
     {
-        delete tabToClose;
+        tabToClose->deleteLater();
     }
 }
 
