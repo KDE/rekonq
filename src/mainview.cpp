@@ -105,6 +105,16 @@ MainView::MainView(QWidget *parent)
 }
 
 
+MainView::~MainView()
+{
+    // NOTE
+    // we wanna delete m_widgetBar later to get sure
+    // all its children (i.e. the urlbars) got deleted in
+    // WebTab dtor.
+    m_widgetBar->deleteLater();
+}
+
+
 void MainView::addNewTabButton(QAction *newTabAction)
 {
     m_addTabButton->setDefaultAction(newTabAction);

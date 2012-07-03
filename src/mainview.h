@@ -63,7 +63,8 @@ class REKONQ_TESTS_EXPORT MainView : public KTabWidget
 
 public:
     MainView(QWidget *parent);
-
+    ~MainView();
+    
     inline StackedUrlBar *widgetBar() const
     {
         return m_widgetBar;

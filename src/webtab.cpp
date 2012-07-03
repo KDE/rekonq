@@ -103,9 +103,14 @@ WebTab::~WebTab()
     m_walletBar.clear();
     m_previewSelectorBar.clear();
 
+    // NOTE:
+    // Urlbar is reparented when inserted in StackedUrlBar, so we need
+    // to get sure it will be deleted. Deleting it later to ensure everything
+    // will be finished before ;)
+    m_urlBar->deleteLater();
+
+    // Get sure m_part will be deleted
     delete m_part;
-    delete m_urlBar;
-    delete m_webView;
 }
 
 
