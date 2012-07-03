@@ -369,9 +369,6 @@ void UrlBar::loadFinished()
         return;
     }
 
-    // Make sure icons aren't duplicated
-    clearRightIcons();
-
     // show bookmark info
     IconButton *bt = addRightIcon(UrlBar::BK);
     connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(manageBookmarks(QPoint)));
