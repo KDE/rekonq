@@ -368,6 +368,19 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         return;
     }
 
+    // NOTE
+    // This is needed in case rekonq has been associated with something it cannot
+    // properly handle (eg: xbel files, see BUG:299056). This way we break an eventual
+    // "recall" loop.
+    if (appService->exec().trimmed().startsWith() == QL1S("rekonq"))
+    {
+        isLocal
+        ? KMessageBox::sorry(view(), i18n("rekonq cannot properly handle this, sorry"))
+        : downloadUrl(reply->url());
+
+        return;
+    }
+
     if (isLocal)
     {
         // Load outside local files

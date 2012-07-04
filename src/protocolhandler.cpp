@@ -238,6 +238,8 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
 
             return true;
         }
+
+        return false;
     }
 
     // we cannot handle this protocol in any way.
