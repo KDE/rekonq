@@ -112,7 +112,7 @@ UrlBar::UrlBar(QWidget *parent)
 
     // set initial icon
     _icon->setIcon(KIcon("arrow-right"));
-    
+
     // initial style
     setStyleSheet(QString("UrlBar { padding: 2px 0 2px %1px; height: %1px } ").arg(_icon->sizeHint().width()));
 
@@ -409,7 +409,7 @@ void UrlBar::loadFinished()
     if (_tab->hasAdBlockedElements())
     {
         IconButton *bt = addRightIcon(UrlBar::AdBlock);
-        
+
         connect(bt, SIGNAL(clicked(QPoint)), (QObject *) rApp->adblockManager(), SLOT(showBlockedItemDialog()));
     }
 
@@ -606,7 +606,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
     updateRightIconPosition(rightIcon, iconsCount);
 
     rightIcon->show();
-    
+
     return rightIcon;
 }
 
@@ -622,7 +622,7 @@ void UrlBar::resizeEvent(QResizeEvent *event)
 {
     int ih = _icon->sizeHint().height();
     int iconsCount = _rightIconsList.count();
-    int iconHeight = (height() - ih) / 2;  
+    int iconHeight = (height() - ih) / 2;
 
     _icon->move(c_iconMargin, iconHeight);
 

@@ -468,7 +468,7 @@ void WebPage::loadStarted()
     KSharedConfig::Ptr config = KGlobal::config();
     KConfigGroup group(config, "Zoom");
     val = group.readEntry(_loadingUrl.host(), QString("10"));
-    
+
     int value = val.toInt();
     if (value != 10)
         mainFrame()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values

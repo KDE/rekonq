@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -48,7 +48,7 @@ class NullNetworkReply : public QNetworkReply
 {
 public:
     NullNetworkReply(const QNetworkRequest &req, QObject* parent = 0)
-        :QNetworkReply(parent)
+        : QNetworkReply(parent)
     {
         setRequest(req);
         setUrl(req.url());
@@ -60,10 +60,16 @@ public:
     }
 
     virtual void abort() {}
-    virtual qint64 bytesAvailable() const { return 0; }
+    virtual qint64 bytesAvailable() const
+    {
+        return 0;
+    }
 
 protected:
-    virtual qint64 readData(char*, qint64) {return -1;}
+    virtual qint64 readData(char*, qint64)
+    {
+        return -1;
+    }
 };
 
 

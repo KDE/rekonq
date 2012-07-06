@@ -37,9 +37,9 @@
 
 namespace UrlResolver
 {
-    KUrl urlFromTextTyped(const QString &);
+KUrl urlFromTextTyped(const QString &);
 
-    bool isKDEUrl(const QString &);
+bool isKDEUrl(const QString &);
 }
 
 

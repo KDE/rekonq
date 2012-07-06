@@ -104,13 +104,13 @@ WebView::~WebView()
 }
 
 
-void WebView::load (const QUrl &url)
+void WebView::load(const QUrl &url)
 {
     load(QNetworkRequest(url));
 }
 
 
-void WebView::load (const QNetworkRequest &req, QNetworkAccessManager::Operation op, const QByteArray &body)
+void WebView::load(const QNetworkRequest &req, QNetworkAccessManager::Operation op, const QByteArray &body)
 {
     QNetworkRequest request = req;
     const QUrl &reqUrl = request.url();
@@ -487,7 +487,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
     default:
         break;
     };
-    
+
     KWebView::mousePressEvent(event);
 }
 
@@ -1248,7 +1248,7 @@ void WebView::mouseReleaseEvent(QMouseEvent *event)
                 event->accept();
                 return;
             }
-            
+
             emit loadUrl(url, Rekonq::NewTab);
             event->accept();
             return;

@@ -66,10 +66,10 @@ public:
 
     WebPage *page();
 
-    void load (const QUrl &url);
-    void load (const QNetworkRequest &req,
-               QNetworkAccessManager::Operation op = QNetworkAccessManager::GetOperation,
-               const QByteArray & body = QByteArray() );
+    void load(const QUrl &url);
+    void load(const QNetworkRequest &req,
+              QNetworkAccessManager::Operation op = QNetworkAccessManager::GetOperation,
+              const QByteArray & body = QByteArray());
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);

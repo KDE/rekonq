@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     KApplication app;
 
     QWebSettings::setIconDatabasePath(KStandardDirs::locateLocal("cache", "kwebapp.favicons/"));
-    
+
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
     if (args->count() != 1)
     {
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
     }
 
     RekonqView *widg = new RekonqView();
-    widg->loadUrl( UrlResolver::urlFromTextTyped(args->arg(0)) );
+    widg->loadUrl(UrlResolver::urlFromTextTyped(args->arg(0)));
     widg->show();
     args->clear();
 

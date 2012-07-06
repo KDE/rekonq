@@ -63,7 +63,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 {
     QUrl reqUrl = request.url();
     QString protocol = reqUrl.scheme();
-    
+
     // javascript handling
     if (protocol == QL1S("javascript"))
     {
@@ -117,7 +117,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         kDebug() << "Error: " << protocol;
         return;
     }
-    
+
     // "mailto" handling.
     if (protocol == QL1S("mailto"))
     {

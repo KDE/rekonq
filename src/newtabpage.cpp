@@ -966,7 +966,7 @@ void NewTabPage::createBookmarkItem(const KBookmark &bookmark, QWebElement paren
         bookmarkElement.lastChild().setAttribute(QL1S("width") , QL1S("16"));
         bookmarkElement.lastChild().setAttribute(QL1S("height") , QL1S("16"));
         bookmarkElement.appendInside(QL1S(" "));
-        bookmarkElement.appendInside( checkTitle(bookmark.fullText(), 40) );
+        bookmarkElement.appendInside(checkTitle(bookmark.fullText(), 40));
     }
 }
 

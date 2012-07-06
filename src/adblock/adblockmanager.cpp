@@ -275,7 +275,13 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
             QWebElementCollection elements = document.findAll("*");
             Q_FOREACH(QWebElement el, elements)
             {
-                const QString srcAttribute = el.attribute("src");
+                QString srcAttribute = el.attribute("src");
+                if (srcAttribute.isEmpty())
+                    continue;
+
+                if (!srcAttribute.startsWith(QL1S("http")))
+                    srcAttribute = host + srcAttribute;
+
                 if (filter.match(request, srcAttribute, srcAttribute.toLower()))
                 {
                     el.setStyleProperty(QL1S("visibility"), QL1S("hidden"));

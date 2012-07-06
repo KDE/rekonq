@@ -186,7 +186,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     // set application data
     QCoreApplication::setApplicationName(QL1S("rekonq"));
     QCoreApplication::setApplicationVersion(REKONQ_VERSION);
-    
+
     if (app.isSessionRestored())
         for (int i = 1; MainWindow::canBeRestored(i); i++)
             app.newMainWindow(false)->restore(i);

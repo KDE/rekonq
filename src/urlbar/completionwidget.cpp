@@ -137,19 +137,20 @@ void CompletionWidget::up()
 {
     if (_currentIndex >= 0)
         findChild<ListItem *>(QString::number(_currentIndex))->deactivate(); // deactivate previous
-    
+
     --_currentIndex;
-    if (_currentIndex < -1) {
+    if (_currentIndex < -1)
+    {
         _currentIndex = _list.count() - 1;
     }
-    
+
     activateCurrentListItem();
 }
 
 
 void CompletionWidget::down()
 {
-    if(_currentIndex >= 0)
+    if (_currentIndex >= 0)
         findChild<ListItem *>(QString::number(_currentIndex))->deactivate(); // deactivate previous
 
     ++_currentIndex;
@@ -166,7 +167,7 @@ void CompletionWidget::activateCurrentListItem()
 
     // activate "new" current
     ListItem *widget = findChild<ListItem *>(QString::number(_currentIndex));
-    
+
     // update text of the url bar
     bar->blockSignals(true); // without compute suggestions
     if (widget)

@@ -91,7 +91,7 @@ TabBar::TabBar(QWidget *parent)
 
     // avoid ambiguos shortcuts. See BUG:275858
     KAcceleratorManager::setNoAccel(this);
-    
+
     connect(this, SIGNAL(contextMenu(int, QPoint)), this, SLOT(contextMenu(int, QPoint)));
     connect(this, SIGNAL(emptyAreaContextMenu(QPoint)), this, SLOT(emptyAreaContextMenu(QPoint)));
 
@@ -106,7 +106,7 @@ TabBar::TabBar(QWidget *parent)
 QSize TabBar::tabSizeHint(int index) const
 {
     Q_UNUSED(index);
-    
+
     MainView *view = qobject_cast<MainView *>(parent());
 
     int buttonSize = view->addTabButton()->size().width();
