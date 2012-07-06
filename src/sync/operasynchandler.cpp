@@ -621,6 +621,7 @@ void OperaSyncHandler::handleLocalGroup(const KBookmarkGroup &root, const QDomEl
 
                 QString id = getChildString(child, "id");
 
+                // FIXME: What about here???
                 if (grandChild.isNull())
                 {
                     handleLocalGroup(current.toGroup(), grandChild, id);
