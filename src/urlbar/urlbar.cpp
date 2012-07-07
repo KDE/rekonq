@@ -426,6 +426,7 @@ void UrlBar::updateRightIcons()
 {
     if (!_tab->isPageLoading())
     {
+        clearRightIcons();
         loadFinished();
     }
 }
