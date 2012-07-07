@@ -872,7 +872,7 @@ void NewTabPage::setupPreview(QWebElement e, int index, bool showControls)
     e.findFirst(QL1S(".left img")).setAttribute(QL1S("src"),
             QL1S("file:///") + KIconLoader::global()->iconPath("view-refresh", KIconLoader::DefaultState));
 
-    e.findFirst(QL1S(".left")).setAttribute(QL1S("title"), i18n("Set new favorite"));
+    e.findFirst(QL1S(".left")).setAttribute(QL1S("title"), i18n("Reload thumbnail"));
 
     e.findFirst(QL1S(".left")).setAttribute(QL1S("href"), QL1S("about:preview/reload/") + QVariant(index).toString());
     e.findFirst(QL1S(".right")).setAttribute(QL1S("href"), QL1S("about:preview/remove/") + QVariant(index).toString());
