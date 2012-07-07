@@ -159,12 +159,13 @@ void OperaSyncHandler::startLogin()
 
     if (_authToken.isEmpty() || _authTokenSecret.isEmpty())
     {
-        //If we have not yet logged into server, we need to fetch OAuth access token and secret from server.
+        // If we have not yet logged into server, we need to fetch OAuth access token and secret from server.
         kDebug() << "Loading login page...";
         QOAuth::ParamMap requestMap;
         requestMap.insert("oauth_callback", "oob");
 
-        QOAuth::ParamMap requestParam = _qoauth.requestToken("https://auth.opera.com/service/oauth/request_token", QOAuth::POST, QOAuth::HMAC_SHA1, requestMap);
+        QOAuth::ParamMap requestParam = _qoauth.requestToken("https://auth.opera.com/service/oauth/request_token", QOAuth::POST,
+                                        QOAuth::HMAC_SHA1, requestMap);
 
         if (_qoauth.error() != QOAuth::NoError)
         {
@@ -179,20 +180,20 @@ void OperaSyncHandler::startLogin()
 
         kDebug() << "OAuth Request Token : " << _requestToken;
         kDebug() << "OAuth Request Token Secret : " << _requestTokenSecret;
-
-
         kDebug() << QUrl("https://auth.opera.com/service/oauth/authorize?oauth_token=" + QString(_requestToken) + "&oauth_callback=oob");
 
-        _webPage.mainFrame()->load(QUrl("https://auth.opera.com/service/oauth/authorize?oauth_token=" + QString(_requestToken) + "&oauth_callback=oob"));
+        QString u = QL1S("https://auth.opera.com/service/oauth/authorize?oauth_token=") + QString(_requestToken) + QL1S("&oauth_callback=oob");
+        _webPage.mainFrame()->load(QUrl(u));
     }
     else
     {
-        //We already have OAuth access token and secret, let's fetch bookmarks from server directly.
+        // We already have OAuth access token and secret, let's fetch bookmarks from server directly.
         getBookmarks();
     }
 }
 
-//Loading a webpage finished, what action to take is decided based on url we have loaded.
+
+// Loading a webpage finished, what action to take is decided based on url we have loaded.
 void OperaSyncHandler::loadFinished(bool ok)
 {
     kDebug() << "Load Finished" << ok;
@@ -243,11 +244,12 @@ void OperaSyncHandler::loadFinished(bool ok)
             authParams.insert("oauth_verifier", verifier);
 
             emit syncStatus(Rekonq::Bookmarks, true, i18n("OAuth : Sending verification code."));
-            QOAuth::ParamMap resultParam = _qoauth.accessToken("https://auth.opera.com/service/oauth/access_token", QOAuth::POST, _requestToken, _requestTokenSecret, QOAuth::HMAC_SHA1, authParams);
+            QOAuth::ParamMap resultParam = _qoauth.accessToken("https://auth.opera.com/service/oauth/access_token", QOAuth::POST,
+                                           _requestToken, _requestTokenSecret, QOAuth::HMAC_SHA1, authParams);
 
             if (_qoauth.error() != QOAuth::NoError)
             {
-                kDebug() << "Error occured while fetching access tokens. Error code is : " << _qoauth.error();
+                kDebug() << "Error occurred while fetching access tokens. Error code is : " << _qoauth.error();
                 emit syncStatus(Rekonq::Bookmarks, false, i18n("OAuth : Error fetching access token."));
                 _isSyncing = false;
                 return;
@@ -416,11 +418,12 @@ void OperaSyncHandler::createBookmarkDataSlot(KIO::Job* job, QByteArray data)
     Q_UNUSED(job);
     Q_UNUSED(data);
 
-    //    kDebug() << data;
-//    _xmlData += data;
+    // kDebug() << data;
+    // _xmlData += data;
 }
 
-//Check whether bookmark creation was succesful on server
+
+// Check whether bookmark creation was successful on server
 void OperaSyncHandler::createBookmarkResultSlot(KJob* job)
 {
     decreaseRequestCount();
@@ -432,18 +435,18 @@ void OperaSyncHandler::createBookmarkResultSlot(KJob* job)
     }
 }
 
+
 void OperaSyncHandler::createBookmarkFolderDataSlot(KIO::Job* job, QByteArray data)
 {
-//    kDebug() << data;
-
     QByteArray &value = _jobToResponseMap[job];
     value.append(data);
 }
 
-//If bookmark folder (it's empty) was creted succesfully on server, we need to add all it's children (which exists in local bookmarks) on server.
+
+// If bookmark folder (it's empty) was creted successfully on server,
+// we need to add all it's children (which exists in local bookmarks) on server.
 void OperaSyncHandler::createBookmarkFolderResultSlot(KJob* job)
 {
-
     QByteArray value = _jobToResponseMap[job];
     KBookmarkGroup root = _jobToGroupMap[job];
 
@@ -474,26 +477,29 @@ void OperaSyncHandler::createBookmarkFolderResultSlot(KJob* job)
     decreaseRequestCount();
 }
 
-//Check whether we deleted a resource on server succesfully.
+
+// Check whether we deleted a resource on server successfully.
 void OperaSyncHandler::deleteResourceResultSlot(KJob* job)
 {
     decreaseRequestCount();
 
     if (job->error() != 160)
     {
-        kDebug() << "Error occured while deleting resource on server. Error code : " << job->error();
+        kDebug() << "Error occurred while deleting resource on server. Error code : " << job->error();
         return;
     }
 }
 
-//This function is here just for debugging purpose. We don't need it's output.
+
+// This function is here just for debugging purpose. We don't need it's output.
 void OperaSyncHandler::deleteResourceDataSlot(KIO::Job* job, QByteArray data)
 {
     Q_UNUSED(job);
     kDebug() << data;
 }
 
-//Checks whether a bookmark exists locally or not, and either add it locally or delete from server
+
+// Checks whether a bookmark exists locally or not, and either add it locally or delete from server
 void OperaSyncHandler::handleBookmark(const QDomElement &item, KBookmarkGroup root)
 {
     QString url = getUrlFromResourceProperties(item);

@@ -46,6 +46,7 @@ class QNetworkReply;
 class BookmarkManager;
 class QWebView;
 
+
 class OperaSyncHandler : public SyncHandler
 {
     Q_OBJECT

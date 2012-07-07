@@ -194,7 +194,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
     }
     else if (path == "/bookmarks/")
     {
-        //We get to this page after succesful login, let's fetch the bookmark list in Xml format.
+        // We get to this page after successful login, let's fetch the bookmark list in Xml format.
         QNetworkAccessManager *qnam = _webPage.networkAccessManager();
         QNetworkRequest request;
         request.setUrl(QUrl("http://www.google.com/bookmarks/?output=xml"));

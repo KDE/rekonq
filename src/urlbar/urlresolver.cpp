@@ -268,7 +268,7 @@ void UrlResolver::computeQurlFromUserInput()
     if (urlFromUserInput.isValid())
     {
         // ensure http(s) hosts are lower cases
-        if (urlFromUserInput.scheme().startsWith("http"))
+        if (urlFromUserInput.scheme().startsWith(QL1S("http")))
         {
             QString hst = urlFromUserInput.host();
             urlFromUserInput.setHost(hst.toLower());

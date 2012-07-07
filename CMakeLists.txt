@@ -4,7 +4,7 @@
 PROJECT( rekonq )
 
 # ==================================================================================
-# Informations to update before to release this package.
+# Information to update before to release this package.
 
 # rekonq info
 SET(REKONQ_VERSION "0.9.82" )

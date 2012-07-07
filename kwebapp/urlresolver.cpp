@@ -35,6 +35,11 @@
 #include <KProtocolInfo>
 #include <KDebug>
 
+// Qt Includes
+#include <QLatin1String>
+
+#define QL1S(x) QLatin1String(x)
+
 
 // NOTE
 // default kurifilter plugin list (at least in my box):
@@ -67,7 +72,7 @@ KUrl UrlResolver::urlFromTextTyped(const QString &typedText)
     if (urlFromUserInput.isValid())
     {
         // ensure http(s) hosts are lower cases
-        if (urlFromUserInput.scheme().startsWith("http"))
+        if (urlFromUserInput.scheme().startsWith(QL1S("http")))
         {
             QString hst = urlFromUserInput.host();
             urlFromUserInput.setHost(hst.toLower());
