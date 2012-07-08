@@ -125,6 +125,7 @@ MainWindow::MainWindow()
 {
     // Setting attributes (just to be sure...)
     setAttribute(Qt::WA_DeleteOnClose, true);
+    setAttribute(Qt::WA_QuitOnClose, true);
 
     // creating a centralWidget containing panel, m_view and the hidden findbar
     QWidget *centralWidget = new QWidget;
@@ -235,6 +236,7 @@ MainWindow::~MainWindow()
 
     rApp->bookmarkManager()->removeBookmarkBar(m_bookmarksBar);
     rApp->bookmarkManager()->removeBookmarkPanel(m_bookmarksPanel);
+
     rApp->removeMainWindow(this);
 }
 
@@ -657,12 +659,14 @@ void MainWindow::finalizeGUI(KXMLGUIClient* client)
                  << " ====================== ";
 }
 
+
 void MainWindow::readProperties(const KConfigGroup& config)
 {
     Q_UNUSED(config)
 
     Application::instance()->sessionManager()->restoreMainWindow(this);
 }
+
 
 void MainWindow::openLocation()
 {

@@ -516,6 +516,10 @@ void Application::removeMainWindow(MainWindow *window)
 {
     m_mainWindows.removeOne(window);
     kDebug() << "Removing Window from app window list...";
+
+    // bye bye...
+    if (m_mainWindows.count() == 0)
+        quit();
 }
 
 
