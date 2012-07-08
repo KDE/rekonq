@@ -711,11 +711,9 @@ void UrlBar::manageBookmarks(QPoint pos)
     {
         bookmark = rApp->bookmarkManager()->owner()->bookmarkCurrentPage();
     }
-    else
-    {
-        BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
-        widget->showAt(pos);
-    }
+
+    BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
+    widget->showAt(pos);
 }
 
 
