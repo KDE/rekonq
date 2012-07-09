@@ -12,7 +12,7 @@ to track all features available on new rekonq releases.
 - Settings improvements: added "privacy" and "advanced" widgets + options about.
 - Default search engine check. If user has not a default search engine set, rekonq inform him.
 - Included tab history when cloning a tab via the "clone tab" action
-- adblock improvements: better adblock settings widget, letting users decide with 1 click what adblock subscriptions use
+- adblock: better settings widget, letting users decide with 1 click what adblock subscriptions use
 - adblock icon in the urlbar triggering a new dialog letting users to unblock/show blocked/hided elements
 - new action to block (and hide) images
 
