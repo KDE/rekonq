@@ -76,6 +76,9 @@ BookmarkManager::BookmarkManager(QObject *parent)
     connect(m_owner, SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
             this, SIGNAL(openUrl(KUrl, Rekonq::OpenType)));
 
+    // bookmarks loading
+    connect(this, SIGNAL(openUrl(KUrl, Rekonq::OpenType)), rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
+
     KAction *a = KStandardAction::addBookmark(m_owner, SLOT(bookmarkCurrentPage()), this);
     m_actionCollection->addAction(QL1S("rekonq_add_bookmark"), a);
 }

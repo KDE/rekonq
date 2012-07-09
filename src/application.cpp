@@ -194,120 +194,119 @@ int Application::newInstance()
     kDebug() << "are there arguments? " << areThereArguments;
     kDebug() << "is rekonq crashed? " << hasToBeRecovered;
 
-    if (isFirstLoad && isSessionRestored())
-    {
-        isFirstLoad = false;
-    }
 
-    if (areThereArguments)
+    if (!isSessionRestored())
     {
-        // prepare URLS to load
-        KUrl::List urlList;
-        for (int i = 0; i < args->count(); ++i)
+        if (areThereArguments)
         {
-            const KUrl u = args->url(i);
+            // prepare URLS to load
+            KUrl::List urlList;
+            for (int i = 0; i < args->count(); ++i)
+            {
+                const KUrl u = args->url(i);
 
-            if (u.isLocalFile() && QFile::exists(u.toLocalFile())) // "rekonq somefile.html" case
-                urlList += u;
+                if (u.isLocalFile() && QFile::exists(u.toLocalFile())) // "rekonq somefile.html" case
+                    urlList += u;
+                else
+                {
+                    // "rekonq kde.org" || "rekonq kde:kdialog" case
+                    UrlResolver res(args->arg(i));
+                    UrlSearchList list = res.orderedSearchItems();
+                    if (list.isEmpty())
+                    {
+                        urlList += u;
+                    }
+                    else
+                    {
+                        urlList += list.first().url;
+                    }
+                }
+            }
+
+            if (isFirstLoad && (ReKonfig::startupBehaviour() == 2) && sessionManager()->restoreSessionFromScratch())
+            {
+                isFirstLoad = false;
+            }
+
+            // first argument: 99% of the time we have just that...
+            if (isFirstLoad)
+            {
+                // No windows in the current desktop? No windows at all?
+                // Create a new one and load there sites...
+                loadUrl(urlList.at(0), Rekonq::NewWindow);
+            }
             else
             {
-                // "rekonq kde.org" || "rekonq kde:kdialog" case
-                UrlResolver res(args->arg(i));
-                UrlSearchList list = res.orderedSearchItems();
-                if (list.isEmpty())
+                if (!ReKonfig::openExternalLinksInNewWindow())
                 {
-                    urlList += u;
+                    loadUrl(urlList.at(0), Rekonq::NewFocusedTab);
                 }
                 else
                 {
-                    urlList += list.first().url;
+                    loadUrl(urlList.at(0), Rekonq::NewWindow);
                 }
+
+                if (!mainWindow()->isActiveWindow())
+                    KWindowSystem::demandAttention(mainWindow()->winId(), true);
             }
-        }
 
-        if (isFirstLoad && (ReKonfig::startupBehaviour() == 2) && sessionManager()->restoreSessionFromScratch())
-        {
-            isFirstLoad = false;
-        }
-
-        // first argument: 99% of the time we have just that...
-        if (isFirstLoad)
-        {
-            // No windows in the current desktop? No windows at all?
-            // Create a new one and load there sites...
-            loadUrl(urlList.at(0), Rekonq::NewWindow);
-        }
-        else
-        {
+            // following arguments: what's best behavior here?
+            // I'm pretty sure no one has real opinion about...
             if (!ReKonfig::openExternalLinksInNewWindow())
             {
-                loadUrl(urlList.at(0), Rekonq::NewFocusedTab);
+                for (int i = 1; i < urlList.count(); ++i)
+                    loadUrl(urlList.at(i), Rekonq::NewFocusedTab);
             }
             else
             {
-                loadUrl(urlList.at(0), Rekonq::NewWindow);
+                for (int i = 1; i < urlList.count(); ++i)
+                    loadUrl(urlList.at(i), Rekonq::NewWindow);
             }
-
-            if (!mainWindow()->isActiveWindow())
-                KWindowSystem::demandAttention(mainWindow()->winId(), true);
-        }
-
-        // following arguments: what's best behavior here?
-        // I'm pretty sure no one has real opinion about...
-        if (!ReKonfig::openExternalLinksInNewWindow())
-        {
-            for (int i = 1; i < urlList.count(); ++i)
-                loadUrl(urlList.at(i), Rekonq::NewFocusedTab);
         }
         else
         {
-            for (int i = 1; i < urlList.count(); ++i)
-                loadUrl(urlList.at(i), Rekonq::NewWindow);
-        }
-    }
-    else
-    {
-        if (isFirstLoad)
-        {
-            if (hasToBeRecovered)
+            if (isFirstLoad)
             {
-                loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
-            }
-            else
-            {
-                switch (ReKonfig::startupBehaviour())
+                if (hasToBeRecovered)
                 {
-                case 0: // open home page
-                    newMainWindow()->homePage();
-                    break;
-                case 1: // open new tab page
-                    loadUrl(KUrl("about:home"), Rekonq::NewWindow);
-                    break;
-                case 2: // restore session
-                    if (sessionManager()->restoreSessionFromScratch())
+                    loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
+                }
+                else
+                {
+                    switch (ReKonfig::startupBehaviour())
                     {
+                    case 0: // open home page
+                        newMainWindow()->homePage();
+                        break;
+                    case 1: // open new tab page
+                        loadUrl(KUrl("about:home"), Rekonq::NewWindow);
+                        break;
+                    case 2: // restore session
+                        if (sessionManager()->restoreSessionFromScratch())
+                        {
+                            break;
+                        }
+                    default:
+                        newMainWindow()->homePage();
                         break;
                     }
-                default:
-                    newMainWindow()->homePage();
-                    break;
                 }
             }
-        }
-        else
-        {
-            switch (ReKonfig::newTabsBehaviour())
+            else
             {
-            case 0: // new tab page
-                loadUrl(KUrl("about:home") , Rekonq::NewWindow);
-                break;
-            case 2: // homepage
-                loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
-                break;
-            case 1: // blank page
-            default:
-                loadUrl(KUrl("about:blank") , Rekonq::NewWindow);
-                break;
+                switch (ReKonfig::newTabsBehaviour())
+                {
+                case 0: // new tab page
+                    loadUrl(KUrl("about:home") , Rekonq::NewWindow);
+                    break;
+                case 2: // homepage
+                    loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
+                    break;
+                case 1: // blank page
+                default:
+                    loadUrl(KUrl("about:blank") , Rekonq::NewWindow);
+                    break;
+                }
             }
         }
     }
@@ -332,10 +331,6 @@ int Application::newInstance()
         setWindowIcon(KIcon("rekonq"));
 
         historyManager();
-
-        // bookmarks loading
-        connect(bookmarkManager(), SIGNAL(openUrl(KUrl, Rekonq::OpenType)),
-                instance(), SLOT(loadUrl(KUrl, Rekonq::OpenType)));
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();
