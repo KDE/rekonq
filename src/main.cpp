@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -99,10 +99,20 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "siteshwar@gmail.com",
                     "");
 
+    about.addAuthor(ki18n("Tirtha Chatterjee"),
+                    ki18n("A lot of nice work, here and there in the code :)"),
+                    "tirtha.p.chatterjee@gmail.com",
+                    "");
+
     // --------------- about credits -----------------------------
     about.addCredit(ki18n("Dawit Alemayehu"),
                     ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
                     "adawit@kde.org",
+                    "");
+
+    about.addCredit(ki18n("Jekyll Wu"),
+                    ki18n("Bug triaging. Impressive job about..."),
+                    "adaptee@gmail.com",
                     "");
 
     about.addCredit(ki18n("Lindsay Mathieson"),
@@ -131,7 +141,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "http://www.openyourcode.org/");
 
     about.addCredit(ki18n("Rohan Garg"),
-                    ki18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages. And now he also started coding.."),
+                    ki18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages."),
                     "rohan16garg@gmail.com",
                     "");
 
@@ -148,6 +158,21 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     about.addCredit(ki18n("Marc Deop"),
                     ki18n("Access Keys Navigation"),
                     "damnshock@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Yuri Chornoivan"),
+                    ki18n("Checking rekonq strings, helping with docs"),
+                    "yurchor@ukr.net",
+                    "");
+
+    about.addCredit(ki18n("Burhard Luck"),
+                    ki18n("Checking rekonq strings, helping with docs"),
+                    "luech@hube-lueck.de",
+                    "");
+
+    about.addCredit(ki18n("Andrius da Costa Ribas"),
+                    ki18n("Helped letting rekonq compile on Windows/MSVC and Mac OS X"),
+                    "andriusmao@gmail.com",
                     "");
 
     about.addCredit(ki18n("Pino Toscano"),
