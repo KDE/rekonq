@@ -167,7 +167,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
 
     about.addCredit(ki18n("Burkhard Lück"),
                     ki18n("Checking rekonq strings, helping with docs"),
-                    "luech@hube-lueck.de",
+                    "lueck@hube-lueck.de",
                     "");
 
     about.addCredit(ki18n("Andrius da Costa Ribas"),
