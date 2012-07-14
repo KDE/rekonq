@@ -47,6 +47,7 @@
 #include "iconmanager.h"
 #include "favoritewidget.h"
 #include "searchengine.h"
+#include "websnap.h"
 
 // KDE Includes
 #include <KCompletionBox>
@@ -743,6 +744,9 @@ void UrlBar::manageFavorites(QPoint pos)
     QStringList titles = ReKonfig::previewNames();
     titles << _tab->view()->title();
     ReKonfig::setPreviewNames(titles);
+
+    // also, save a site snapshot
+    WebSnap *snap = new WebSnap(_tab->url(), this);
 
     updateRightIcons();
 }
