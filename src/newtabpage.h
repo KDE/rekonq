@@ -108,7 +108,7 @@ private:
         return m_root.document().findFirst("#models > " + selector).clone();
     }
 
-    QString checkTitle(const QString &title, int max = 23);
+    QString checkTitle(const QString &title, int max = 20);
 
     void updateWindowIcon();
 
