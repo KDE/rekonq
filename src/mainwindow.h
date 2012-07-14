@@ -196,6 +196,9 @@ private Q_SLOTS:
 
     void toggleBookmarkBarVisible(bool);
 
+    // add bookmark
+    void bookmarkCurrentPage();
+
     /**
      * This is for the things to do ABSOLUTELY AFTER ctor launch:
      * the less, the better.

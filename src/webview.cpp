@@ -405,7 +405,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
     else
     {
-        a = rApp->bookmarkManager()->actionByName("rekonq_add_bookmark");
+        a = mainwindow->actionByName(KStandardAction::name(KStandardAction::AddBookmark));
         menu.addAction(a);
     }
     menu.addAction(sendByMailAction);

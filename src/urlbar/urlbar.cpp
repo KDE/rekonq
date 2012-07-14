@@ -372,7 +372,7 @@ void UrlBar::loadFinished()
 
     // show bookmark info
     IconButton *bt = addRightIcon(UrlBar::BK);
-    connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(manageBookmarks(QPoint)));
+    connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(manageBookmarks()));
 
     // show favorite icon
     IconButton *fbt = addRightIcon(UrlBar::Favorite);
@@ -697,12 +697,8 @@ void UrlBar::delSlot()
 }
 
 
-void UrlBar::manageBookmarks(QPoint pos)
+void UrlBar::manageBookmarks()
 {
-    IconButton *bt = qobject_cast<IconButton *>(this->sender());
-    if (!bt)
-        return;
-
     if (_tab->url().scheme() == QL1S("about"))
         return;
 
@@ -713,8 +709,19 @@ void UrlBar::manageBookmarks(QPoint pos)
         bookmark = rApp->bookmarkManager()->owner()->bookmarkCurrentPage();
     }
 
+    // calculate position
+    int iconSize = IconSize(KIconLoader::Small) + c_iconMargin;
+
+    // Add a generic 10 to move it a bit below and right.
+    // No need to be precise...
+    int iconWidth = 10 + width() - ((iconSize + c_iconMargin));
+    int iconHeight = 10 + (height() - iconSize) / 2;
+
+    QPoint p = mapToGlobal(QPoint(iconWidth, iconHeight));
+
+    // show bookmark widget
     BookmarkWidget *widget = new BookmarkWidget(bookmark, window());
-    widget->showAt(pos);
+    widget->showAt(p);
 }
 
 

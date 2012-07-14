@@ -95,6 +95,12 @@ public:
 public Q_SLOTS:
     void setQUrl(const QUrl &url);
 
+    /**
+     * Let us add bookmarks as the major browsers do
+     *
+     */
+    void manageBookmarks();
+
 private Q_SLOTS:
     void loadRequestedUrl(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
 
@@ -106,7 +112,6 @@ private Q_SLOTS:
     void detectTypedString(const QString &);
     void suggest();
 
-    void manageBookmarks(QPoint);
     void manageFavorites(QPoint);
 
     void refreshFavicon();

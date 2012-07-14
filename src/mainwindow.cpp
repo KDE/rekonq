@@ -401,6 +401,11 @@ void MainWindow::setupActions()
     tabAction->setDelayed(false);
     actionCollection()->addAction(QL1S("tab_list"), tabAction);
 
+    // ============================== Bookmark =======================================
+    a = KStandardAction::addBookmark(this, SLOT(bookmarkCurrentPage()), actionCollection());
+    KShortcut bkShortcut(Qt::CTRL + Qt::Key_D);
+    a->setShortcut(bkShortcut);
+
     //================================Download========================================
     a = new KAction(KIcon("download"), i18n("Downloads"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_J));
@@ -1668,4 +1673,10 @@ void MainWindow::loadCheckedUrl(const KUrl& url, const Rekonq::OpenType& type, Q
             historyStream >> *(view->history());
         }
     }
+}
+
+
+void MainWindow::bookmarkCurrentPage()
+{
+    currentTab()->urlBar()->manageBookmarks();
 }
