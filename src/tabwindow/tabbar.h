@@ -34,7 +34,7 @@ public:
     TabBar(QWidget *parent);
 
     static const int genericTabNumber = 6;
-    
+
 protected:
     virtual QSize tabSizeHint(int index) const;
 
@@ -45,7 +45,7 @@ Q_SIGNALS:
     void reloadTab(int);
     void detachTab(int);
     void restoreClosedTab(int);
-    
+
 private Q_SLOTS:
     void cloneTab();
     void closeTab();

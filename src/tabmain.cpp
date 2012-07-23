@@ -34,19 +34,19 @@
 static const char description[] =
     I18N_NOOP("A lightweight Web Browser for KDE based on WebKit");
 
-    
+
 extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
 {
     KAboutData about("rekonq",
-                    0,
-                    ki18n("rekonq"),
-                    REKONQ_VERSION,
-                    ki18n(description),
-                    KAboutData::License_GPL_V3,
-                    ki18n("(C) 2008-2012 Andrea Diamantini"),
-                    KLocalizedString(),
-                    "http://rekonq.kde.org"
-                );
+                     0,
+                     ki18n("rekonq"),
+                     REKONQ_VERSION,
+                     ki18n(description),
+                     KAboutData::License_GPL_V3,
+                     ki18n("(C) 2008-2012 Andrea Diamantini"),
+                     KLocalizedString(),
+                     "http://rekonq.kde.org"
+                    );
 
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
@@ -63,9 +63,9 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     KApplication app;
 
     QWebSettings::setIconDatabasePath("/tmp/iconcache");
-    
+
     TabWindow *w = new TabWindow;
-    
+
     // no session.. just start up normally
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
     if (args->count() == 0)

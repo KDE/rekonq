@@ -43,7 +43,7 @@ public:
     void load(const QUrl &);
 
     WebPage *page();
-    
+
     QUrl url() const;
     QString title() const;
     QIcon icon() const;
@@ -60,7 +60,7 @@ Q_SIGNALS:
     void loadFinished(bool);
 
     void pageCreated(WebPage *);
-    
+
 private:
     QWebView *_view;
     QLineEdit *_edit;

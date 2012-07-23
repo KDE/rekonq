@@ -84,13 +84,13 @@ TabWindow::TabWindow(QWidget *parent)
     connect(_addTabButton, SIGNAL(triggered(QAction *)), this, SLOT(newCleanTab()));
 
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
-    
+
     // FIXME: Manage sizes...
     kDebug() << "SIZE: " << size();
     kDebug() << "SIZE HINT: " << sizeHint();
 
     resize(sizeHint());
-    
+
 }
 
 
@@ -135,7 +135,7 @@ WebWindow *TabWindow::prepareNewTab(WebPage *page)
         tab = new WebWindow(page, this);
     else
         tab = new WebWindow(this);
-    
+
     connect(tab, SIGNAL(titleChanged(QString)), this, SLOT(tabTitleChanged(QString)));
 
     connect(tab, SIGNAL(loadStarted()), this, SLOT(tabLoadStarted()));
@@ -157,12 +157,12 @@ void TabWindow::loadUrlInNewTab(const QUrl &url, TabHistory *history)
     tab->load(url);
 
     setCurrentWidget(tab);
-    
+
     if (history)
     {
         history->applyHistory(tab->page()->history());
     }
-    
+
     updateTabBar();
 }
 
@@ -227,7 +227,7 @@ void TabWindow::updateTabBar()
 
         _addTabButton->move(tabBarWidth, 0);
         _addTabButton->show();
-    }    
+    }
 }
 
 
@@ -295,13 +295,13 @@ void TabWindow::tabLoadProgress(int p)
 void TabWindow::tabLoadFinished(bool ok)
 {
     Q_UNUSED(ok);
-    
+
     WebWindow *tab = qobject_cast<WebWindow *>(sender());
     if (!tab)
         return;
 
     int index = indexOf(tab);
-    
+
     if (-1 != index)
     {
         QLabel *label = qobject_cast<QLabel* >(tabBar()->tabButton(index, QTabBar::LeftSide));
@@ -326,7 +326,7 @@ void TabWindow::cloneTab(int index)
     QUrl u = webWindow(index)->url();
     QWebHistory* history = webWindow(index)->page()->history();
     TabHistory tHistory(history);
-        
+
     loadUrlInNewTab(u, &tHistory);
 }
 
@@ -366,7 +366,7 @@ void TabWindow::closeTab(int index, bool del)
             m_recentlyClosedTabs.removeLast();
         m_recentlyClosedTabs.prepend(history);
     }
-    
+
     removeTab(index);
     updateTabBar();        // UI operation: do it ASAP!!
 

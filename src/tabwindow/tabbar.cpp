@@ -38,7 +38,7 @@ TabBar::TabBar(QWidget *parent)
     setTabsClosable(true);
     setMovable(true);
     setAcceptDrops(true);
-    
+
     // avoid ambiguos shortcuts. See BUG:275858
     KAcceleratorManager::setNoAccel(this);
 
@@ -144,9 +144,9 @@ void TabBar::reopenLastClosedTab()
 void TabBar::contextMenu(int tab, const QPoint &pos)
 {
     TabWindow *w = qobject_cast<TabWindow *>(parent());
-    
+
     KAction *a;
-    
+
     KMenu menu;
 
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
@@ -187,7 +187,7 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
         a->setData(tab);
         menu.addAction(a);
     }
-    
+
     menu.addSeparator();
 
 
@@ -206,7 +206,7 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
         a = new KAction(KIcon("bookmark-new"), i18n("Bookmark"), this);
         menu.addAction(a);
     }
-    
+
     menu.exec(pos);
 }
 

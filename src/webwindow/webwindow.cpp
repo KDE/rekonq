@@ -36,7 +36,7 @@ WebWindow::WebWindow(QWidget *parent)
 {
     WebPage *p = new WebPage(_view);
     _view->setPage(p);
-    
+
     // layout
     QVBoxLayout *l = new QVBoxLayout;
     l->addWidget(_edit);
@@ -44,7 +44,7 @@ WebWindow::WebWindow(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
 
-    setContentsMargins(0,0,0,0);
+    setContentsMargins(0, 0, 0, 0);
 
     // line edit signals
     connect(_edit, SIGNAL(returnPressed()), this, SLOT(checkLoadUrl()));
@@ -72,7 +72,7 @@ WebWindow::WebWindow(WebPage *page, QWidget *parent)
 {
     _view->setPage(page);
     page->setParent(_view);
-    
+
     // layout
     QVBoxLayout *l = new QVBoxLayout;
     l->addWidget(_edit);
@@ -80,7 +80,7 @@ WebWindow::WebWindow(WebPage *page, QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
 
-    setContentsMargins(0,0,0,0);
+    setContentsMargins(0, 0, 0, 0);
 
     // line edit signals
     connect(_edit, SIGNAL(returnPressed()), this, SLOT(checkLoadUrl()));
@@ -98,7 +98,7 @@ WebWindow::WebWindow(WebPage *page, QWidget *parent)
 
     // page signals
     connect(page, SIGNAL(pageCreated(WebPage *)), this, SIGNAL(pageCreated(WebPage *)));
-    
+
 }
 
 
@@ -112,7 +112,7 @@ WebPage *WebWindow::page()
 {
     if (!_view)
         return 0;
-    
+
     WebPage *p = qobject_cast<WebPage *>(_view->page());
     return p;
 }

@@ -50,7 +50,7 @@ public:
     WebWindow* webWindow(int index) const;
 
     TabBar* tabBar() const;
-    
+
 public Q_SLOTS:
     void loadUrlInNewTab(const QUrl &, TabHistory *history = 0);
     void newCleanTab();
@@ -65,7 +65,7 @@ private:
      * Prepares the new WebWindow to be open
      */
     WebWindow *prepareNewTab(WebPage *page = 0);
-    
+
 private Q_SLOTS:
     void tabTitleChanged(const QString &);
 
@@ -84,7 +84,7 @@ private Q_SLOTS:
     void reloadTab(int index = -1);
     void reloadAllTabs();
     void restoreClosedTab(int i);
-    
+
 protected:
     virtual void resizeEvent(QResizeEvent *);
 
