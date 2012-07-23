@@ -7,7 +7,7 @@ PROJECT( rekonq )
 # Information to update before to release this package.
 
 # rekonq info
-SET(REKONQ_VERSION "1.0" )
+SET(REKONQ_VERSION "1.50" )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-version.h )
 
@@ -184,7 +184,6 @@ IF(REKONQ_CAN_BE_COMPILED)
 
     ADD_SUBDIRECTORY( src )
     ADD_SUBDIRECTORY( icons )
-    ADD_SUBDIRECTORY( kwebapp )
     ADD_SUBDIRECTORY( doc )
 
 ENDIF(REKONQ_CAN_BE_COMPILED)
