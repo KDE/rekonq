@@ -23,6 +23,8 @@
 
 #include "tabwindow.h"
 #include "tabhighlighteffect.h"
+#include "tabpreviewpopup.h"
+#include "webwindow.h"
 
 #include <KDebug>
 #include <KAcceleratorManager>
@@ -34,6 +36,9 @@
 #include <QPropertyAnimation>
 #include <QSignalMapper>
 #include <QStyleOptionFrameV3>
+#include <QMouseEvent>
+#include <QTimer>
+#include <QUrl>
 
 
 static inline QByteArray highlightPropertyName(int index)
@@ -85,7 +90,7 @@ QSize TabBar::tabSizeHint(int index) const
     int minTabWidth =  p->sizeHint().width() / genericTabNumber;
 
     int w = baseTabWidth;
-    if (count() >= genericTabNumber)
+    if (count() > genericTabNumber)
     {
         w = minTabWidth;
     }
@@ -270,7 +275,6 @@ void TabBar::setTabHighlighted(int index, bool b)
     {
         removeAnimation(index);
         setTabTextColor(index, KColorScheme(QPalette::Active, KColorScheme::Window).foreground(KColorScheme::NormalText).color());
-
         return;
     }
 
@@ -318,4 +322,122 @@ void TabBar::removeAnimation(int index)
 
     if (m_highlightAnimation.isEmpty())
         m_tabHighlightEffect->setEnabled(false);
+}
+
+
+void TabBar::tabRemoved(int index)
+{
+    hideTabPreview();
+    removeAnimation(index);
+}
+
+
+void TabBar::mouseMoveEvent(QMouseEvent *event)
+{
+    KTabBar::mouseMoveEvent(event);
+
+    if (count() == 1)
+    {
+        return;
+    }
+
+    // Find the tab under the mouse
+    const int tabIndex = tabAt(event->pos());
+
+    // if found and not the current tab then show tab preview
+    if (tabIndex != -1
+            && tabIndex != currentIndex()
+            && m_currentTabPreviewIndex != tabIndex
+            && event->buttons() == Qt::NoButton
+        )
+    {
+        m_currentTabPreviewIndex = tabIndex;
+
+        // if first time over tab, apply a small delay. If not, show it now!
+        m_isFirstTimeOnTab
+        ? QTimer::singleShot(200, this, SLOT(showTabPreview()))
+        : showTabPreview();
+    }
+
+    // if current tab or not found then hide previous tab preview
+    if (tabIndex == currentIndex() || tabIndex == -1)
+    {
+        hideTabPreview();
+    }
+}
+
+
+void TabBar::leaveEvent(QEvent *event)
+{
+    hideTabPreview();
+    m_isFirstTimeOnTab = true;
+
+    KTabBar::leaveEvent(event);
+}
+
+
+void TabBar::mousePressEvent(QMouseEvent *event)
+{
+    hideTabPreview();
+    
+    // just close tab on middle mouse click
+    if (event->button() == Qt::MidButton)
+        return;
+
+    KTabBar::mousePressEvent(event);
+}
+
+
+void TabBar::showTabPreview()
+{
+    if (m_isFirstTimeOnTab)
+        m_isFirstTimeOnTab = false;
+
+    //delete previous tab preview
+    delete m_previewPopup.data();
+    m_previewPopup.clear();
+
+    TabWindow *tabW = qobject_cast<TabWindow *>(parent());
+
+    WebWindow *indexedTab = tabW->webWindow(m_currentTabPreviewIndex);
+    WebWindow *currentTab = tabW->webWindow(currentIndex());
+
+    // check if view && currentView exist before using them :)
+    if (!currentTab || !indexedTab)
+        return;
+
+    // no previews during load
+    if (indexedTab->isLoading())
+        return;
+
+    int w = tabSizeHint(0).width();
+    int h = w * tabW->size().height() / tabW->size().width();
+    
+    m_previewPopup = new TabPreviewPopup(indexedTab->tabPreview(w,h), indexedTab->url().toString() , this);
+
+    int tabBarWidth = tabW->size().width();
+    int leftIndex = tabRect(m_currentTabPreviewIndex).x() + (tabRect(m_currentTabPreviewIndex).width() - w) / 2;
+
+    if (leftIndex < 0)
+    {
+        leftIndex = 0;
+    }
+    else if (leftIndex + w > tabBarWidth)
+    {
+        leftIndex = tabBarWidth - w;
+    }
+
+    QPoint pos(leftIndex, tabRect(m_currentTabPreviewIndex).y() + tabRect(m_currentTabPreviewIndex).height());
+    m_previewPopup.data()->show(mapToGlobal(pos));
+}
+
+
+void TabBar::hideTabPreview()
+{
+    if (!m_previewPopup.isNull())
+    {
+        m_previewPopup.data()->hide();
+    }
+    m_currentTabPreviewIndex = -1;
+
 }

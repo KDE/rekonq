@@ -51,9 +51,16 @@ public:
     
     QPixmap tabPreview(int width, int height);
 
+    bool isLoading();
+
+private:
+    void init();
+    
 private Q_SLOTS:
     void checkLoadUrl();
     void setUrlText(const QUrl &);
+
+    void checkLoadProgress(int);
 
 Q_SIGNALS:
     void titleChanged(QString);
@@ -65,6 +72,8 @@ Q_SIGNALS:
     void pageCreated(WebPage *);
 
 private:
+    int _progress;
+
     QWebView *_view;
     QLineEdit *_edit;
 };

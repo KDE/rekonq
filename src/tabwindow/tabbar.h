@@ -28,6 +28,7 @@
 #include <QPropertyAnimation>
 
 // Forward Declarations
+class TabPreviewPopup;
 class TabHighlightEffect;
 
 class QSignalMapper;
@@ -47,6 +48,12 @@ public:
 
 protected:
     virtual QSize tabSizeHint(int index) const;
+
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void leaveEvent(QEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
+
+    virtual void tabRemoved(int index);
 
 Q_SIGNALS:
     void cloneTab(int);
@@ -69,11 +76,19 @@ private Q_SLOTS:
 
     void removeAnimation(int index);
 
+    void showTabPreview();
+    void hideTabPreview();
+
 private:
     // highlightAnimation
     TabHighlightEffect *m_tabHighlightEffect;
     QHash<QByteArray, QPropertyAnimation*> m_highlightAnimation;
     QSignalMapper *m_animationMapper;
+
+    // tab preview
+    QWeakPointer<TabPreviewPopup> m_previewPopup;
+    int m_currentTabPreviewIndex;
+    bool m_isFirstTimeOnTab;
 };
 
 #endif // TAB_BAR

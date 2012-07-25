@@ -9,6 +9,7 @@ set(rekonq_KDEINIT_SRCS
     #----------------------------------------
     tabwindow/tabbar.cpp
     tabwindow/tabhighlighteffect.cpp
+    tabwindow/tabpreviewpopup.cpp
     tabwindow/tabwindow.cpp
     #----------------------------------------
     webwindow/webpage.cpp

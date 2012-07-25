@@ -32,37 +32,14 @@
 
 WebWindow::WebWindow(QWidget *parent)
     : QWidget(parent)
+    , _progress(0)
     , _view(new QWebView(this))
     , _edit(new QLineEdit(this))
 {
     WebPage *p = new WebPage(_view);
     _view->setPage(p);
 
-    // layout
-    QVBoxLayout *l = new QVBoxLayout;
-    l->addWidget(_edit);
-    l->addWidget(_view);
-    l->setContentsMargins(0, 0, 0, 0);
-    setLayout(l);
-
-    setContentsMargins(0, 0, 0, 0);
-
-    // line edit signals
-    connect(_edit, SIGNAL(returnPressed()), this, SLOT(checkLoadUrl()));
-
-    // url signal
-    connect(_view, SIGNAL(urlChanged(QUrl)), this, SLOT(setUrlText(QUrl)));
-
-    // things changed signals
-    connect(_view, SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
-
-    // load signals
-    connect(_view, SIGNAL(loadStarted()), this, SIGNAL(loadStarted()));
-    connect(_view, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
-    connect(_view, SIGNAL(loadFinished(bool)), this, SIGNAL(loadFinished(bool)));
-
-    // page signals
-    connect(p, SIGNAL(pageCreated(WebPage *)), this, SIGNAL(pageCreated(WebPage *)));
+    init();
 }
 
 
@@ -74,6 +51,12 @@ WebWindow::WebWindow(WebPage *page, QWidget *parent)
     _view->setPage(page);
     page->setParent(_view);
 
+    init();
+}
+
+
+void WebWindow::init()
+{
     // layout
     QVBoxLayout *l = new QVBoxLayout;
     l->addWidget(_edit);
@@ -94,12 +77,12 @@ WebWindow::WebWindow(WebPage *page, QWidget *parent)
 
     // load signals
     connect(_view, SIGNAL(loadStarted()), this, SIGNAL(loadStarted()));
-    connect(_view, SIGNAL(loadProgress(int)), this, SIGNAL(loadProgress(int)));
     connect(_view, SIGNAL(loadFinished(bool)), this, SIGNAL(loadFinished(bool)));
 
-    // page signals
-    connect(page, SIGNAL(pageCreated(WebPage *)), this, SIGNAL(pageCreated(WebPage *)));
+    connect(_view, SIGNAL(loadProgress(int)), this, SLOT(checkLoadProgress(int)));
 
+    // page signals
+    connect(page(), SIGNAL(pageCreated(WebPage *)), this, SIGNAL(pageCreated(WebPage *)));
 }
 
 
@@ -133,6 +116,13 @@ void WebWindow::setUrlText(const QUrl &u)
 }
 
 
+void WebWindow::checkLoadProgress(int p)
+{
+    _progress = p;
+    emit loadProgress(p);
+}
+
+
 QUrl WebWindow::url() const
 {
     return _view->url();
@@ -154,4 +144,10 @@ QIcon WebWindow::icon() const
 QPixmap WebWindow::tabPreview(int width, int height)
 {
     return WebSnap::renderPagePreview(*page(), width, height);
+}
+
+
+bool WebWindow::isLoading()
+{
+    return _progress != 0 && _progress != 100;
 }
