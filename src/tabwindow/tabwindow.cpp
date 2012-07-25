@@ -139,7 +139,6 @@ WebWindow *TabWindow::prepareNewTab(WebPage *page)
     connect(tab, SIGNAL(titleChanged(QString)), this, SLOT(tabTitleChanged(QString)));
 
     connect(tab, SIGNAL(loadStarted()), this, SLOT(tabLoadStarted()));
-    connect(tab, SIGNAL(loadProgress(int)), this, SLOT(tabLoadProgress(int)));
     connect(tab, SIGNAL(loadFinished(bool)), this, SLOT(tabLoadFinished(bool)));
 
     connect(tab, SIGNAL(pageCreated(WebPage *)), this, SLOT(pageCreated(WebPage *)));
@@ -192,6 +191,14 @@ void TabWindow::currentChanged(int newIndex)
     _openedTabsCounter = 0;
     
     tabBar()->setTabHighlighted(newIndex, false);
+
+    // update window title & icon
+    WebWindow* tab = webWindow(newIndex);
+    if (!tab)
+        return;
+
+    setWindowTitle(tab->title() + QLatin1String(" - rekonq"));
+    setWindowIcon(tab->icon());
 }
 
 
@@ -251,8 +258,12 @@ void TabWindow::tabTitleChanged(const QString &title)
         if (tabTitle != i18n("(Untitled)"))
             tabBar()->setTabHighlighted(index, true);
     }
+    else
+    {
+        setWindowTitle(title + QLatin1String(" - rekonq"));
+    }
 
-    // TODO: What about window title?
+    // TODO: What about window title? Is this enough?
 }
 
 
@@ -286,18 +297,6 @@ void TabWindow::tabLoadStarted()
 }
 
 
-void TabWindow::tabLoadProgress(int p)
-{
-    // FIXME: is this needed?
-    WebWindow *tab = qobject_cast<WebWindow *>(sender());
-    if (!tab)
-        return;
-
-    int index = indexOf(tab);
-    kDebug() << "LOADING TAB: " << index << ", PROGRESS: " << p;
-}
-
-
 void TabWindow::tabLoadFinished(bool ok)
 {
     Q_UNUSED(ok);
@@ -319,6 +318,12 @@ void TabWindow::tabLoadFinished(bool ok)
         label->setMovie(0);
         label->setPixmap(tab->icon().pixmap(16, 16));
     }
+
+    if (currentIndex() == index)
+    {
+        setWindowIcon(tab->icon());
+    }
+
 }
 
 

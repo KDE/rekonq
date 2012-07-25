@@ -70,7 +70,6 @@ private Q_SLOTS:
     void tabTitleChanged(const QString &);
 
     void tabLoadStarted();
-    void tabLoadProgress(int);
     void tabLoadFinished(bool);
 
     void pageCreated(WebPage *);
