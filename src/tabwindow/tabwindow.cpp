@@ -189,9 +189,9 @@ void TabWindow::pageCreated(WebPage *page)
 
 void TabWindow::currentChanged(int newIndex)
 {
-    Q_UNUSED(newIndex);
-
     _openedTabsCounter = 0;
+    
+    tabBar()->setTabHighlighted(newIndex, false);
 }
 
 
@@ -244,6 +244,12 @@ void TabWindow::tabTitleChanged(const QString &title)
     if (-1 != index)
     {
         setTabText(index, tabTitle);
+    }
+
+    if (currentIndex() != index)
+    {
+        if (tabTitle != i18n("(Untitled)"))
+            tabBar()->setTabHighlighted(index, true);
     }
 
     // TODO: What about window title?

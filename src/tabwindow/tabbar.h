@@ -25,6 +25,13 @@
 // KDE Includes
 #include <KTabBar>
 
+#include <QPropertyAnimation>
+
+// Forward Declarations
+class TabHighlightEffect;
+
+class QSignalMapper;
+    
 
 class TabBar : public KTabBar
 {
@@ -32,6 +39,9 @@ class TabBar : public KTabBar
 
 public:
     TabBar(QWidget *parent);
+
+    void setTabHighlighted(int index, bool b);
+    QRect tabTextRect(int index);
 
     static const int genericTabNumber = 6;
 
@@ -56,6 +66,14 @@ private Q_SLOTS:
 
     void contextMenu(int, const QPoint &);
     void emptyAreaContextMenu(const QPoint &);
+
+    void removeAnimation(int index);
+
+private:
+    // highlightAnimation
+    TabHighlightEffect *m_tabHighlightEffect;
+    QHash<QByteArray, QPropertyAnimation*> m_highlightAnimation;
+    QSignalMapper *m_animationMapper;
 };
 
 #endif // TAB_BAR

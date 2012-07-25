@@ -22,16 +22,33 @@
 #include "tabbar.moc"
 
 #include "tabwindow.h"
+#include "tabhighlighteffect.h"
 
 #include <KDebug>
 #include <KAcceleratorManager>
 #include <KAction>
+#include <KColorScheme>
 #include <KLocalizedString>
 #include <KMenu>
+
+#include <QPropertyAnimation>
+#include <QSignalMapper>
+#include <QStyleOptionFrameV3>
+
+
+static inline QByteArray highlightPropertyName(int index)
+{
+    return QByteArray("hAnim").append(QByteArray::number(index));
+}
+
+
+// ------------------------------------------------------------------------------------
 
 
 TabBar::TabBar(QWidget *parent)
     : KTabBar(parent)
+    , m_tabHighlightEffect(new TabHighlightEffect(this))
+    , m_animationMapper(new QSignalMapper(this))
 {
     setElideMode(Qt::ElideRight);
 
@@ -47,6 +64,11 @@ TabBar::TabBar(QWidget *parent)
 
     connect(this, SIGNAL(contextMenu(int, QPoint)), this, SLOT(contextMenu(int, QPoint)));
     connect(this, SIGNAL(emptyAreaContextMenu(QPoint)), this, SLOT(emptyAreaContextMenu(QPoint)));
+
+    // Highlight effect
+    connect(m_animationMapper, SIGNAL(mapped(int)), this, SLOT(removeAnimation(int)));
+    setGraphicsEffect(m_tabHighlightEffect);
+    m_tabHighlightEffect->setEnabled(true);
 }
 
 
@@ -239,4 +261,61 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
     }
 
     menu.exec(pos);
+}
+
+
+void TabBar::setTabHighlighted(int index, bool b)
+{
+    if (!b)
+    {
+        removeAnimation(index);
+        setTabTextColor(index, KColorScheme(QPalette::Active, KColorScheme::Window).foreground(KColorScheme::NormalText).color());
+
+        return;
+    }
+
+    const QByteArray propertyName = highlightPropertyName(index);
+    const QColor highlightColor = KColorScheme(QPalette::Active, KColorScheme::Window).foreground(KColorScheme::PositiveText).color();
+
+    if (tabTextColor(index) != highlightColor)
+    {
+        m_tabHighlightEffect->setEnabled(true);
+        m_tabHighlightEffect->setProperty(propertyName, qreal(0.9));
+        QPropertyAnimation *anim = new QPropertyAnimation(m_tabHighlightEffect, propertyName);
+        m_highlightAnimation.insert(propertyName, anim);
+
+        //setup the animation
+        anim->setStartValue(0.9);
+        anim->setEndValue(0.0);
+        anim->setDuration(500);
+        anim->setLoopCount(2);
+        anim->start(QAbstractAnimation::DeleteWhenStopped);
+
+        m_animationMapper->setMapping(anim, index);
+        connect(anim, SIGNAL(finished()), m_animationMapper, SLOT(map()));
+
+        setTabTextColor(index, highlightColor);
+    }    
+}
+
+
+QRect TabBar::tabTextRect(int index)
+{
+    QStyleOptionTabV3 option;
+    initStyleOption(&option, index);
+    return style()->subElementRect(QStyle::SE_TabBarTabText, &option, this);
+}
+
+
+void TabBar::removeAnimation(int index)
+{
+    const QByteArray propertyName = highlightPropertyName(index);
+    m_tabHighlightEffect->setProperty(propertyName, QVariant()); //destroy the property
+
+    QPropertyAnimation *anim = m_highlightAnimation.take(propertyName);
+    m_animationMapper->removeMappings(anim);
+    delete anim;
+
+    if (m_highlightAnimation.isEmpty())
+        m_tabHighlightEffect->setEnabled(false);
 }

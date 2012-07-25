@@ -8,6 +8,7 @@ ADD_SUBDIRECTORY( data )
 set(rekonq_KDEINIT_SRCS
     #----------------------------------------
     tabwindow/tabbar.cpp
+    tabwindow/tabhighlighteffect.cpp
     tabwindow/tabwindow.cpp
     #----------------------------------------
     webwindow/webpage.cpp
