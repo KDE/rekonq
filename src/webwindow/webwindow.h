@@ -29,6 +29,7 @@ class WebPage;
 
 class QWebView;
 class QLineEdit;
+class QPixmap;
 class QUrl;
 
 
@@ -47,6 +48,8 @@ public:
     QUrl url() const;
     QString title() const;
     QIcon icon() const;
+    
+    QPixmap tabPreview(int width, int height);
 
 private Q_SLOTS:
     void checkLoadUrl();

@@ -22,6 +22,7 @@
 #include "webwindow.moc"
 
 #include "webpage.h"
+#include "websnap.h"
 
 #include <QUrl>
 #include <QLineEdit>
@@ -147,4 +148,10 @@ QString WebWindow::title() const
 QIcon WebWindow::icon() const
 {
     return _view->icon();
+}
+
+
+QPixmap WebWindow::tabPreview(int width, int height)
+{
+    return WebSnap::renderPagePreview(*page(), width, height);
 }

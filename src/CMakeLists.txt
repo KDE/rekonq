@@ -13,6 +13,8 @@ set(rekonq_KDEINIT_SRCS
     #----------------------------------------
     webwindow/webpage.cpp
     webwindow/webwindow.cpp
+    #----------------------------------------
+    websnap.cpp
 )
 
 
