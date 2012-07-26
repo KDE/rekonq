@@ -35,6 +35,8 @@
 #include <KAboutData>
 #include <KCmdLineArgs>
 
+// Qt Includes
+#include <QDir>
 
 static const char description[] =
     I18N_NOOP("A lightweight Web Browser for KDE based on WebKit");
@@ -211,6 +213,8 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     // set application data
     QCoreApplication::setApplicationName(QL1S("rekonq"));
     QCoreApplication::setApplicationVersion(REKONQ_VERSION);
+
+    KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
 
     if (app.isSessionRestored())
         for (int i = 1; MainWindow::canBeRestored(i); i++)

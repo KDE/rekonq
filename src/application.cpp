@@ -72,7 +72,6 @@
 
 // Qt Includes
 #include <QVBoxLayout>
-#include <QDir>
 #include <QTimer>
 
 
@@ -175,7 +174,6 @@ Application::~Application()
 
 int Application::newInstance()
 {
-    KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
     // not that easy, indeed
