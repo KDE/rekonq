@@ -7,6 +7,10 @@ ADD_SUBDIRECTORY( data )
 
 set(rekonq_KDEINIT_SRCS
     #----------------------------------------
+    searchengine.cpp
+    urlresolver.cpp
+    websnap.cpp
+    #----------------------------------------
     tabwindow/tabbar.cpp
     tabwindow/tabhighlighteffect.cpp
     tabwindow/tabpreviewpopup.cpp
@@ -15,7 +19,6 @@ set(rekonq_KDEINIT_SRCS
     webwindow/webpage.cpp
     webwindow/webwindow.cpp
     #----------------------------------------
-    websnap.cpp
 )
 
 
@@ -42,7 +45,9 @@ KDE4_ADD_APP_ICON( rekonq_KDEINIT_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../icons/hi*-
 ### --------------- ADDING EXECUTABLE...
 
 # NOTE: This is the simple main used to test the tabwindow :)
-KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} tabmain.cpp )
+# KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} tabmain.cpp )
+
+KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
 
 
 ### --------------- TARGETTING LINK LIBRARIES...
