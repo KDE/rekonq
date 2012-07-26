@@ -7,35 +7,36 @@
     <x>0</x>
     <y>0</y>
     <width>461</width>
-    <height>196</height>
+    <height>143</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="iconLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>ICON</string>
+        <string>Name:</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QLabel" name="titleLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="nameLineEdit"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>TITLE</string>
+        <string>Description:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="descriptionLineEdit">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="placeholderText">
+        <string>(optional)</string>
        </property>
       </widget>
      </item>

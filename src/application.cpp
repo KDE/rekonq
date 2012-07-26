@@ -806,14 +806,14 @@ void Application::createWebAppShortcut()
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
     dialog->button(KDialog::Ok)->setText(i18n("Create"));
     dialog->setMinimumSize(400, 50);
+    dialog->setWindowIcon(QIcon(iconManager()->iconForUrl(u).pixmap(16)));
 
     Ui::webAppCreation wAppWidget;
     QWidget widget;
     wAppWidget.setupUi(&widget);
 
     const QString title = mainWindow()->currentTab()->view()->title().remove('&');
-    wAppWidget.iconLabel->setPixmap(iconManager()->iconForUrl(u).pixmap(32));
-    wAppWidget.titleLabel->setText(title);
+    wAppWidget.nameLineEdit->setText(title);
     wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());
     wAppWidget.kcfg_createMenuAppShortcut->setChecked(ReKonfig::createMenuAppShortcut());
 
@@ -830,7 +830,8 @@ void Application::createWebAppShortcut()
 
         QString shortcutString = QL1S("#!/usr/bin/env xdg-open\n")
                                  + QL1S("[Desktop Entry]\n")
-                                 + QL1S("name=kwebapp\n")
+                                 + QL1S("Name=") + (wAppWidget.nameLineEdit->text().isEmpty() ? QL1S("kwebapp") : wAppWidget.nameLineEdit->text()) + QL1S("\n")
+                                 + QL1S("GenericName=") + (wAppWidget.descriptionLineEdit->text().isEmpty() ? QL1S("") : wAppWidget.descriptionLineEdit->text()) + QL1S("\n")
                                  + QL1S("Icon=") + iconPath + QL1S("\n")
                                  + QL1S("Exec=kwebapp ") + u.url() + QL1S("\n")
                                  + QL1S("Type=Application\n")
