@@ -30,6 +30,7 @@
 
 // Qt Includes
 #include <QObject>
+#include <QWeakPointer>
 
 // Forward Declarations
 class WebTab;
@@ -56,7 +57,7 @@ Q_SIGNALS:
 
 private:
     KAction *m_uaSettingsAction;
-    WebTab *m_uaTab;
+    QWeakPointer<WebTab> m_uaTab;
 };
 
 #endif  // USER_AGENT_MANAGER_H

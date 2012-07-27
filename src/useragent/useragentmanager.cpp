@@ -43,7 +43,6 @@
 UserAgentManager::UserAgentManager(QObject *parent)
     : QObject(parent)
     , m_uaSettingsAction(0)
-    , m_uaTab(0)
 {
     m_uaSettingsAction = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
     connect(m_uaSettingsAction, SIGNAL(triggered(bool)), this, SLOT(showSettings()));
@@ -52,7 +51,7 @@ UserAgentManager::UserAgentManager(QObject *parent)
 
 void UserAgentManager::showSettings()
 {
-    QPointer<KDialog> dialog = new KDialog(m_uaTab);
+    QPointer<KDialog> dialog = new KDialog(m_uaTab.data());
     dialog->setCaption(i18nc("@title:window", "User Agent Settings"));
     dialog->setButtons(KDialog::Ok);
 
@@ -66,11 +65,14 @@ void UserAgentManager::showSettings()
 
 void UserAgentManager::populateUAMenuForTabUrl(KMenu *uaMenu, WebTab *uaTab)
 {
-    if (m_uaTab)
-        disconnect(this, SIGNAL(reloadTab()), m_uaTab->view(), SLOT(reload()));
+    if (!m_uaTab.isNull())
+    {
+        disconnect(this, SIGNAL(reloadTab()), m_uaTab.data()->view(), SLOT(reload()));
+        m_uaTab.clear();
+    }
 
     m_uaTab = uaTab;
-    connect(this, SIGNAL(reloadTab()), m_uaTab->view(), SLOT(reload()));
+    connect(this, SIGNAL(reloadTab()), m_uaTab.data()->view(), SLOT(reload()));
 
     bool defaultUA = true;
 
@@ -109,7 +111,7 @@ void UserAgentManager::populateUAMenuForTabUrl(KMenu *uaMenu, WebTab *uaTab)
     UserAgentInfo uaInfo;
     QStringList UAlist = uaInfo.availableUserAgents();
     const KService::List providers = uaInfo.availableProviders();
-    int uaIndex = uaInfo.uaIndexForHost(m_uaTab->url().host());
+    int uaIndex = uaInfo.uaIndexForHost(m_uaTab.data()->url().host());
 
     for (int i = 0; i < UAlist.count(); ++i)
     {
@@ -166,6 +168,6 @@ void UserAgentManager::setUserAgent()
     int uaIndex = sender->data().toInt();
 
     UserAgentInfo uaInfo;
-    uaInfo.setUserAgentForHost(uaIndex, m_uaTab->url().host());
+    uaInfo.setUserAgentForHost(uaIndex, m_uaTab.data()->url().host());
     emit reloadTab();
 }

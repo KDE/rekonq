@@ -1598,7 +1598,19 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::populateUserAgentMenu()
 {
     KMenu *uaMenu = static_cast<KMenu *>(QObject::sender());
-    rApp->userAgentManager()->populateUAMenuForTabUrl(uaMenu, currentTab());
+    if (!uaMenu)
+    {
+        kDebug() << "oops... NO user agent menu";
+        return;
+    }
+    WebTab *w = currentTab();
+    if (!w)
+    {
+        kDebug() << "oh oh... NO current tab. What is it happening here???";
+        return;
+    }
+
+    rApp->userAgentManager()->populateUAMenuForTabUrl(uaMenu, w);
 }
 
 
