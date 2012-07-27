@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
 *
 *
@@ -53,15 +53,20 @@ K_GLOBAL_STATIC(SearchEnginePrivate, d)
 
 void SearchEngine::reload()
 {
-    KConfig config("kuriikwsfilterrc"); //Shared with konqueror
+    KConfig config("kuriikwsfilterrc");
     KConfigGroup cg = config.group("General");
 
-    //load delimiter
+    // load delimiter
     d->delimiter = cg.readEntry("KeywordDelimiter", ":");
 
-    //load favorite engines
+    // load favorite engines
     QStringList favoriteEngines;
+#if KDE_IS_VERSION(4,9,0)
+    favoriteEngines = cg.readEntry("PreferredWebShortcuts", favoriteEngines);
+#else
     favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
+#endif
+
     KService::List favorites;
     KService::Ptr service;
     Q_FOREACH(const QString & engine, favoriteEngines)
@@ -77,8 +82,13 @@ void SearchEngine::reload()
     }
     d->favorites = favorites;
 
-    //load default engine
-    QString dse = cg.readEntry("DefaultSearchEngine");
+    // load default engine
+    QString dse;
+#if KDE_IS_VERSION(4,9,0)
+    dse = cg.readEntry("DefaultWebShortcut");
+#else
+    dse = cg.readEntry("DefaultSearchEngine");
+#endif
     d->defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(dse));
 
     d->isLoaded = true;
