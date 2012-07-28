@@ -85,6 +85,11 @@ TabWindow::TabWindow(QWidget *parent)
 
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
 
+    // NOTE: NEVER create a tabwindow without AT LEAST one tab...
+    WebWindow *tab = prepareNewTab();
+    addTab(tab, i18n("new tab"));
+    setCurrentWidget(tab);
+
     // FIXME: Manage sizes...
     kDebug() << "SIZE: " << size();
     kDebug() << "SIZE HINT: " << sizeHint();
@@ -147,15 +152,35 @@ WebWindow *TabWindow::prepareNewTab(WebPage *page)
 }
 
 
-void TabWindow::loadUrlInNewTab(const QUrl &url, TabHistory *history)
+void TabWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *history)
 {
-    WebWindow *tab = prepareNewTab();
+    WebWindow *tab = 0;
+    switch (type)
+    {
+    case Rekonq::NewTab:
+    case Rekonq::NewBackGroundTab:
+        tab = prepareNewTab();
+        addTab(tab, i18n("new tab"));
+        break;
+        
+    case Rekonq::NewFocusedTab:
+        tab = prepareNewTab();
+        addTab(tab, i18n("new tab"));
+        setCurrentWidget(tab);
+        break;
 
-    // Now, the dirty jobs...
-    addTab(tab, i18n("new tab"));
+    case Rekonq::NewWindow:
+        // TODO
+//         emit loadUrlInNewWindow(url);
+        return;
+
+    case Rekonq::CurrentTab:
+    default:
+        tab = currentWebWindow();
+        break;
+    };
+
     tab->load(url);
-
-    setCurrentWidget(tab);
 
     if (history)
     {
@@ -169,7 +194,7 @@ void TabWindow::loadUrlInNewTab(const QUrl &url, TabHistory *history)
 void TabWindow::newCleanTab()
 {
     QUrl u = QUrl::fromUserInput("/DATI/WEBPAGES/HomePage/index.htm");
-    loadUrlInNewTab(u);
+    loadUrl(u, Rekonq::NewTab);
 }
 
 
@@ -338,7 +363,7 @@ void TabWindow::cloneTab(int index)
     QWebHistory* history = webWindow(index)->page()->history();
     TabHistory tHistory(history);
 
-    loadUrlInNewTab(u, &tHistory);
+    loadUrl(u, Rekonq::NewTab, &tHistory);
 }
 
 
@@ -440,7 +465,7 @@ void TabWindow::restoreClosedTab(int i)
 
     QUrl u = QUrl(history.url);
 
-    loadUrlInNewTab(u, &history);
+    loadUrl(u, Rekonq::NewTab, &history);
 
     // just to get sure...
     m_recentlyClosedTabs.removeAll(history);

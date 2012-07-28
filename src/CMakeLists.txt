@@ -7,6 +7,7 @@ ADD_SUBDIRECTORY( data )
 
 set(rekonq_KDEINIT_SRCS
     #----------------------------------------
+    application.cpp
     searchengine.cpp
     urlresolver.cpp
     websnap.cpp
@@ -40,6 +41,11 @@ ADD_DEFINITIONS ( ${KDE4_DEFINITIONS} )
 ### -------------- ADDING APPLICATION ICON...
 
 KDE4_ADD_APP_ICON( rekonq_KDEINIT_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../icons/hi*-app-rekonq.png )
+
+
+### -------------- ADDING APPLICATION KCFG FILES...
+
+KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
 
 
 ### --------------- ADDING EXECUTABLE...

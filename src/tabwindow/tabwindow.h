@@ -25,8 +25,9 @@
 
 #include <KTabWidget>
 
+class KUrl;
+
 class QLabel;
-class QUrl;
 class QToolButton;
 class QWebHistory;
 
@@ -35,6 +36,32 @@ class TabHistory;
 class TabBar;
 class WebPage;
 class WebWindow;
+
+
+// --------------------------------------------------------------------------------------
+
+
+namespace Rekonq
+{
+
+/**
+* @short Open link options
+* Different modes of opening new tab
+*/
+enum OpenType
+{
+    CurrentTab,         ///< open url in current tab
+    NewTab,             ///< open url according to users settings
+    NewFocusedTab,      ///< open url in new tab and focus it
+    NewBackGroundTab,   ///< open url in new background tab
+    NewWindow           ///< open url in new window
+};
+
+    
+}
+
+
+// --------------------------------------------------------------------------------------
 
 
 class TabWindow : public KTabWidget
@@ -52,7 +79,7 @@ public:
     TabBar* tabBar() const;
 
 public Q_SLOTS:
-    void loadUrlInNewTab(const QUrl &, TabHistory *history = 0);
+    void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
     void newCleanTab();
 
 private:

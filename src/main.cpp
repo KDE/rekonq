@@ -21,12 +21,14 @@
 // version include
 #include "config-version.h"
 
+#include "application.h"
 #include "tabwindow.h"
 #include "urlresolver.h"
 
 #include <KDE/KAboutData>
-#include <KDE/KApplication>
+#include <KDE/KUniqueApplication>
 #include <KDE/KCmdLineArgs>
+#include <KDebug>
 
 #include <QDir>
 #include <QUrl>
@@ -62,18 +64,18 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     // Register the supported options
     KCmdLineArgs::addCmdLineOptions(options);
 
-//     if (!Application::start())
-//     {
-//         kWarning() << "rekonq is already running!";
-//         return 0;
-//     }
+    if (!Application::start())
+    {
+        kWarning() << "rekonq is already running!";
+        return 0;
+    }
 
 #if defined(Q_WS_X11)
     // On X11, the raster engine gives better performance than native.
     QApplication::setGraphicsSystem(QLatin1String("raster"));
 #endif
 
-    KApplication app;
+    Application app;
 
     QWebSettings::setIconDatabasePath("/tmp/iconcache");
 
@@ -82,26 +84,6 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     QCoreApplication::setApplicationVersion(REKONQ_VERSION);
 
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
-
-    TabWindow *w = new TabWindow;
-
-    // no session.. just start up normally
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-    if (args->count() == 0)
-    {
-        w->newCleanTab();
-        w->show();
-    }
-    else
-    {
-        int i = 0;
-        for (; i < args->count(); i++)
-        {
-            w->loadUrlInNewTab( UrlResolver::urlFromTextTyped(args->arg(i)) );
-        }
-        w->show();
-    }
-    args->clear();
 
 //     if (app.isSessionRestored())
 //         for (int i = 1; MainWindow::canBeRestored(i); i++)
