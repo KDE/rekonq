@@ -8,9 +8,13 @@ ADD_SUBDIRECTORY( data )
 set(rekonq_KDEINIT_SRCS
     #----------------------------------------
     application.cpp
+    autosaver.cpp
     searchengine.cpp
     urlresolver.cpp
     websnap.cpp
+    #----------------------------------------
+    history/historymanager.cpp
+    history/historymodels.cpp
     #----------------------------------------
     tabwindow/tabbar.cpp
     tabwindow/tabhighlighteffect.cpp
@@ -26,6 +30,7 @@ set(rekonq_KDEINIT_SRCS
 ### ------------- INCLUDING DIRECTORIES...
 
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
+                        ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/tabwindow
                         ${CMAKE_CURRENT_SOURCE_DIR}/webwindow
                         ${CMAKE_CURRENT_BINARY_DIR}

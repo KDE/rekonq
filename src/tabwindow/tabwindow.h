@@ -23,8 +23,13 @@
 #define TAB_WINDOW
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
+// KDE Includes
 #include <KTabWidget>
 
+// Forward Declarations
 class KUrl;
 
 class QLabel;

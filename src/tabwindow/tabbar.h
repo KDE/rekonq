@@ -22,6 +22,9 @@
 #define TAB_BAR
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // KDE Includes
 #include <KTabBar>
 

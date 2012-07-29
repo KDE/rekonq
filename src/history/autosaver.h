@@ -2,8 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2009-2011 by Lionel Chauvin <megabigbug@yahoo.fr>
+* Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
+* Copyright (C) 2008-2011 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,35 +25,53 @@
 * ============================================================ */
 
 
-#ifndef SEARCHENGINE_H
-#define SEARCHENGINE_H
+#ifndef AUTOSAVER_H
+#define AUTOSAVER_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KService>
+// Qt Includes
+#include <QObject>
 
-//Qt Includes
-#include <QString>
+// Forward Declarations
+class QBasicTimer;
+class QTime;
 
 
-namespace SearchEngine
+/**
+ * This class emits the saveNeeded() signal.
+ * It will wait several seconds after changeOccurred() to combine
+ * multiple changes preventing continuous writing to disk.
+ */
+class AutoSaver : public QObject
 {
-void reload();
+    Q_OBJECT
 
-QString delimiter();
+public:
+    explicit AutoSaver(QObject *parent);
+    virtual ~AutoSaver();
 
-KService::Ptr defaultEngine();
+    /**
+     * Emits the saveNeeded() signal if there's been any change since we last saved.
+     */
+    void saveIfNeccessary();
 
-KService::List favorites();
+Q_SIGNALS:
+    void saveNeeded();
 
-KService::Ptr fromString(const QString &text);
+public Q_SLOTS:
+    void changeOccurred();
 
-QString buildQuery(KService::Ptr engine, const QString &text);
+protected:
+    virtual void timerEvent(QTimerEvent *event);
 
-QString extractQuery(const QString &text);
-}
+private:
+    void save();
 
-#endif
+    QBasicTimer *m_timer;
+    QTime *m_firstChange;
+};
+
+#endif // AUTOSAVER_H

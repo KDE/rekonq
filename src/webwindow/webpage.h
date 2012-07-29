@@ -32,6 +32,10 @@
 #ifndef WEBPAGE_H
 #define WEBPAGE_H
 
+
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // KDE Includes
 #include <KWebPage>
 

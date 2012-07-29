@@ -34,8 +34,6 @@
 #include "webpage.h"
 #include "webpage.moc"
 
-#include <KDebug>
-
 
 WebPage::WebPage(QWidget *parent)
     : KWebPage(parent)

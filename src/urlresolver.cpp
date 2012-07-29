@@ -33,12 +33,6 @@
 // KDE Includes
 #include <KService>
 #include <KProtocolInfo>
-#include <KDebug>
-
-// Qt Includes
-#include <QLatin1String>
-
-#define QL1S(x) QLatin1String(x)
 
 
 // NOTE

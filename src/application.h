@@ -28,6 +28,9 @@
 #define APPLICATION_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Local Includes
 #include "tabwindow.h"
 

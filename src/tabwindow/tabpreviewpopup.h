@@ -28,6 +28,10 @@
 #ifndef TABPREVIEWPOPUP_H
 #define TABPREVIEWPOPUP_H
 
+
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // KDE Includes
 #include <KPassivePopup>
 
@@ -35,6 +39,7 @@
 class QLabel;
 class QPixmap;
 class QString;
+
 
 class TabPreviewPopup : public KPassivePopup
 {

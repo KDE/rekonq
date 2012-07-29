@@ -29,6 +29,9 @@
 #define WEB_SNAP_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Qt Includes
 #include <QObject>
 #include <QWebPage>

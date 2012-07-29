@@ -22,9 +22,13 @@
 #define WEB_WINDOW
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
+// Qt Includes
 #include <QWidget>
 
-
+// Forward Declarations
 class WebPage;
 
 class QWebView;

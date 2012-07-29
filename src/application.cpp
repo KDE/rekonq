@@ -36,6 +36,9 @@
 #include "webwindow.h"
 #include "urlresolver.h"
 
+// Local Manager(s) Includes
+#include "historymanager.h"
+
 // // KDE Includes
 #include <KCmdLineArgs>
 
@@ -225,7 +228,8 @@ int Application::newInstance()
 
         setWindowIcon(KIcon("rekonq"));
 
-// FIXME        historyManager();
+        // just create History Manager...
+        HistoryManager::self();
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();
@@ -440,8 +444,8 @@ void Application::updateConfiguration()
 //     // Applies user defined CSS to all open webpages.
 //     defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
 // 
-//     // ====== load Settings on main classes
-//     historyManager()->loadSettings();
+    // ====== load Settings on main classes
+    HistoryManager::self()->loadSettings();
 // 
 //     defaultSettings = 0;
 // 

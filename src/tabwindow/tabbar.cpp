@@ -26,7 +26,6 @@
 #include "tabpreviewpopup.h"
 #include "webwindow.h"
 
-#include <KDebug>
 #include <KAcceleratorManager>
 #include <KAction>
 #include <KColorScheme>

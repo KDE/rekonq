@@ -28,6 +28,9 @@
 #define TABHIGHLIGHTEFFECT_H
 
 
+// Rekonq Includes
+#include "rekonq_defines.h"
+
 // Qt Includes
 #include <QGraphicsEffect>
 #include <QColor>

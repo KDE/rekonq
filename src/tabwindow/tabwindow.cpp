@@ -18,21 +18,24 @@
  ***************************************************************************/
 
 
+// Self Includes
 #include "tabwindow.h"
 #include "tabwindow.moc"
 
+// Local Includes
 #include "webpage.h"
 #include "webwindow.h"
 #include "tabbar.h"
 
 #include "tabhistory.h"
 
+// KDE Includes
 #include <KAction>
-#include <KDebug>
 #include <KLocalizedString>
 #include <KStandardDirs>
 #include <KUrl>
 
+// Qt Includes
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QLabel>
@@ -222,7 +225,7 @@ void TabWindow::currentChanged(int newIndex)
     if (!tab)
         return;
 
-    setWindowTitle(tab->title() + QLatin1String(" - rekonq"));
+    setWindowTitle(tab->title() + QL1S(" - rekonq"));
     setWindowIcon(tab->icon());
 }
 
@@ -285,7 +288,7 @@ void TabWindow::tabTitleChanged(const QString &title)
     }
     else
     {
-        setWindowTitle(title + QLatin1String(" - rekonq"));
+        setWindowTitle(title + QL1S(" - rekonq"));
     }
 
     // TODO: What about window title? Is this enough?
@@ -388,7 +391,7 @@ void TabWindow::closeTab(int index, bool del)
     }
 
     if (!tabToClose->url().isEmpty()
-            && tabToClose->url().scheme() != QLatin1String("about")
+            && tabToClose->url().scheme() != QL1S("about")
             && !tabToClose->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
        )
     {
