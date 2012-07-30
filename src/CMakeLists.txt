@@ -28,6 +28,15 @@ set(rekonq_KDEINIT_SRCS
     #----------------------------------------
     session/sessionmanager.cpp
     #----------------------------------------
+    settings/settingsdialog.cpp
+    settings/appearancewidget.cpp
+    settings/advancedwidget.cpp
+    settings/generalwidget.cpp
+    settings/privacywidget.cpp
+    settings/tabswidget.cpp
+    settings/webkitwidget.cpp
+    settings/passexceptionswidget.cpp
+    #----------------------------------------
     tabwindow/tabbar.cpp
     tabwindow/tabhighlighteffect.cpp
     tabwindow/tabpreviewpopup.cpp
@@ -40,12 +49,25 @@ set(rekonq_KDEINIT_SRCS
 )
 
 
+KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
+    #----------------------------------------
+    settings/settings_general.ui
+    settings/settings_tabs.ui
+    settings/settings_appearance.ui
+    settings/settings_webkit.ui
+    settings/settings_advanced.ui
+    settings/settings_privacy.ui
+    settings/password_exceptions.ui
+ )
+
+
 ### ------------- INCLUDING DIRECTORIES...
 
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/adblock
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/session
+                        ${CMAKE_CURRENT_SOURCE_DIR}/settings
                         ${CMAKE_CURRENT_SOURCE_DIR}/tabwindow
                         ${CMAKE_CURRENT_SOURCE_DIR}/webwindow
                         ${CMAKE_CURRENT_BINARY_DIR}
