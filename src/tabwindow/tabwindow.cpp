@@ -225,8 +225,10 @@ void TabWindow::currentChanged(int newIndex)
     if (!tab)
         return;
 
-    setWindowTitle(tab->title() + QL1S(" - rekonq"));
-    setWindowIcon(tab->icon());
+    QString t = tab->title();
+    (t.isEmpty())
+        ? setWindowTitle(QL1S("rekonq"))
+        : setWindowTitle(t + QL1S(" - rekonq"));
 }
 
 
@@ -272,7 +274,9 @@ void TabWindow::tabTitleChanged(const QString &title)
     if (!tab)
         return;
 
-    QString tabTitle = title.isEmpty() ? i18n("(Untitled)") : title;
+    bool emptyTitle = title.isEmpty();
+    
+    QString tabTitle = emptyTitle ? tab->url().toString() : title;
     tabTitle.replace('&', "&&");
 
     int index = indexOf(tab);
@@ -283,15 +287,15 @@ void TabWindow::tabTitleChanged(const QString &title)
 
     if (currentIndex() != index)
     {
-        if (tabTitle != i18n("(Untitled)"))
+        if (!emptyTitle)
             tabBar()->setTabHighlighted(index, true);
     }
     else
     {
-        setWindowTitle(title + QL1S(" - rekonq"));
+        emptyTitle
+            ? setWindowTitle(QL1S("rekonq"))
+            : setWindowTitle(tabTitle + QL1S(" - rekonq"));
     }
-
-    // TODO: What about window title? Is this enough?
 }
 
 
@@ -346,12 +350,6 @@ void TabWindow::tabLoadFinished(bool ok)
         label->setMovie(0);
         label->setPixmap(tab->icon().pixmap(16, 16));
     }
-
-    if (currentIndex() == index)
-    {
-        setWindowIcon(tab->icon());
-    }
-
 }
 
 
