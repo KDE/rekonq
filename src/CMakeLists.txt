@@ -13,6 +13,16 @@ set(rekonq_KDEINIT_SRCS
     urlresolver.cpp
     websnap.cpp
     #----------------------------------------
+    adblock/adblockhostmatcher.cpp
+    adblock/adblockmanager.cpp
+    adblock/adblockrule.cpp
+    adblock/adblockrulefallbackimpl.cpp
+    adblock/adblockrulenullimpl.cpp
+    adblock/adblockruletextmatchimpl.cpp
+    adblock/adblockwidget.cpp
+    adblock/blockedelementswidget.cpp
+
+    #----------------------------------------
     history/historymanager.cpp
     history/historymodels.cpp
     #----------------------------------------
@@ -23,6 +33,7 @@ set(rekonq_KDEINIT_SRCS
     tabwindow/tabpreviewpopup.cpp
     tabwindow/tabwindow.cpp
     #----------------------------------------
+    webwindow/networkaccessmanager.cpp
     webwindow/webpage.cpp
     webwindow/webwindow.cpp
     #----------------------------------------
@@ -32,6 +43,7 @@ set(rekonq_KDEINIT_SRCS
 ### ------------- INCLUDING DIRECTORIES...
 
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
+                        ${CMAKE_CURRENT_SOURCE_DIR}/adblock
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/session
                         ${CMAKE_CURRENT_SOURCE_DIR}/tabwindow

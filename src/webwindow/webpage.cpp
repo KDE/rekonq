@@ -34,10 +34,26 @@
 #include "webpage.h"
 #include "webpage.moc"
 
+#include "networkaccessmanager.h"
+
 
 WebPage::WebPage(QWidget *parent)
-    : KWebPage(parent)
+    : KWebPage(parent, KWalletIntegration)
 {
+    // rekonq Network Manager
+    NetworkAccessManager *manager = new NetworkAccessManager(this);
+
+    // set network reply object to emit readyRead when it receives meta data
+    manager->setEmitReadyReadOnMetaDataChange(true);
+
+    // disable QtWebKit cache to just use KIO one..
+    manager->setCache(0);
+
+    // set cookieJar window..
+    if (parent && parent->window())
+        manager->setWindow(parent->window());
+
+    setNetworkAccessManager(manager);
 }
 
 

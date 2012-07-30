@@ -106,16 +106,16 @@ int loadTabs(TabWindow *tw, QDomElement & window, bool useFirstTab)
 // -------------------------------------------------------------------------------------------------
 
 
-QWeakPointer<SessionManager> SessionManager::s_sessionyManager;
+QWeakPointer<SessionManager> SessionManager::s_sessionManager;
 
 
 SessionManager *SessionManager::self()
 {
-    if (s_sessionyManager.isNull())
+    if (s_sessionManager.isNull())
     {
-        s_sessionyManager = new SessionManager(qApp);
+        s_sessionManager = new SessionManager(qApp);
     }
-    return s_sessionyManager.data();
+    return s_sessionManager.data();
 }
 
 

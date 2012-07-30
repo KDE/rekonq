@@ -38,6 +38,7 @@
 #include "urlresolver.h"
 
 // Local Manager(s) Includes
+#include "adblockmanager.h"
 #include "historymanager.h"
 #include "sessionmanager.h"
 
@@ -231,6 +232,9 @@ int Application::newInstance()
 
         // just create History Manager...
         HistoryManager::self();
+
+        // FIXME: should this be removed?
+        AdBlockManager::self();
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();

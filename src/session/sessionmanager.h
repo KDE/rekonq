@@ -56,7 +56,7 @@ public:
     /**
      * Entry point.
      * Access to SessionManager class by using
-     * SessionyManager::self()->thePublicMethodYouNeed()
+     * SessionManager::self()->thePublicMethodYouNeed()
      */
     static SessionManager *self();
 
@@ -97,7 +97,7 @@ private:
     bool m_isSessionEnabled;
     AutoSaver *m_saveTimer;
 
-    static QWeakPointer<SessionManager> s_sessionyManager;
+    static QWeakPointer<SessionManager> s_sessionManager;
 };
 
 
