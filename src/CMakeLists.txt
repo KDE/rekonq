@@ -16,6 +16,8 @@ set(rekonq_KDEINIT_SRCS
     history/historymanager.cpp
     history/historymodels.cpp
     #----------------------------------------
+    session/sessionmanager.cpp
+    #----------------------------------------
     tabwindow/tabbar.cpp
     tabwindow/tabhighlighteffect.cpp
     tabwindow/tabpreviewpopup.cpp
@@ -31,6 +33,7 @@ set(rekonq_KDEINIT_SRCS
 
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
+                        ${CMAKE_CURRENT_SOURCE_DIR}/session
                         ${CMAKE_CURRENT_SOURCE_DIR}/tabwindow
                         ${CMAKE_CURRENT_SOURCE_DIR}/webwindow
                         ${CMAKE_CURRENT_BINARY_DIR}

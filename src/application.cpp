@@ -32,12 +32,14 @@
 #include "rekonq.h"
 
 // Local Includes
+#include "searchengine.h"
 #include "tabwindow.h"
 #include "webwindow.h"
 #include "urlresolver.h"
 
 // Local Manager(s) Includes
 #include "historymanager.h"
+#include "sessionmanager.h"
 
 // // KDE Includes
 #include <KCmdLineArgs>
@@ -120,10 +122,10 @@ int Application::newInstance()
                 }
             }
 
-//             if (isFirstLoad && (ReKonfig::startupBehaviour() == 2)) // && sessionManager()->restoreSessionFromScratch())
-//             {
-//                 isFirstLoad = false;
-//             }
+            if (isFirstLoad && (ReKonfig::startupBehaviour() == 2) && SessionManager::self()->restoreSessionFromScratch())
+            {
+                isFirstLoad = false;
+            }
 
             // first argument: 99% of the time we have just that...
             if (isFirstLoad)
@@ -178,11 +180,11 @@ int Application::newInstance()
                     case 1: // open new tab page
                         loadUrl(KUrl("about:home"), Rekonq::NewWindow);
                         break;
-                    case 2: // restore session FIXME
-//                         if (sessionManager()->restoreSessionFromScratch())
-//                         {
-//                             break;
-//                         }
+                    case 2: // restore session
+                        if (SessionManager::self()->restoreSessionFromScratch())
+                        {
+                            break;
+                        }
                     default:
                         newTabWindow()->newCleanTab();
                         break;
@@ -208,20 +210,19 @@ int Application::newInstance()
         }
     }   // !isSessionRestored()
 
-//     if (isFirstLoad)
-//     {
-//         FIXME
-//         if (hasToBeRecovered)
-//         {
-//             QTimer::singleShot(1000, tabWindow()->currentTab(), SLOT(showMessageBar()));
-//         }
-//         else
-//         {
-//             sessionManager()->setSessionManagementEnabled(true);
-//         }
-// 
-//         if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecovered && SearchEngine::defaultEngine().isNull())
-//             QTimer::singleShot(2000, tabWindow()->currentTab(), SLOT(showSearchEngineBar()));
+    if (isFirstLoad)
+    {
+        if (hasToBeRecovered)
+        {
+            QTimer::singleShot(1000, tabWindow()->currentWebWindow(), SLOT(showMessageBar()));
+        }
+        else
+        {
+            SessionManager::self()->setSessionManagementEnabled(true);
+        }
+
+        if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecovered && SearchEngine::defaultEngine().isNull())
+            QTimer::singleShot(2000, tabWindow()->currentWebWindow(), SLOT(showSearchEngineBar()));
 
         // updating rekonq configuration
         updateConfiguration();
@@ -233,7 +234,7 @@ int Application::newInstance()
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();
-//     }
+    }
 
     KStartupInfo::appStarted();
     isFirstLoad = false;

@@ -75,6 +75,8 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     QApplication::setGraphicsSystem(QLatin1String("raster"));
 #endif
 
+    KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
+
     Application app;
 
     QWebSettings::setIconDatabasePath("/tmp/iconcache");
@@ -82,12 +84,6 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     // set application data
     QCoreApplication::setApplicationName(QLatin1String("rekonq"));
     QCoreApplication::setApplicationVersion(REKONQ_VERSION);
-
-    KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
-
-//     if (app.isSessionRestored())
-//         for (int i = 1; MainWindow::canBeRestored(i); i++)
-//             app.newMainWindow(false)->restore(i);
 
     return app.exec();
 }
