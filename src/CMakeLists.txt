@@ -92,9 +92,6 @@ KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
 
 ### --------------- ADDING EXECUTABLE...
 
-# NOTE: This is the simple main used to test the tabwindow :)
-# KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} tabmain.cpp )
-
 KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
 
 
