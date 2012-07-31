@@ -12,6 +12,7 @@ set(rekonq_KDEINIT_SRCS
     application.cpp
     autosaver.cpp
     searchengine.cpp
+    sessionmanager.cpp
     urlresolver.cpp
     websnap.cpp
     #----------------------------------------
@@ -32,7 +33,9 @@ set(rekonq_KDEINIT_SRCS
     history/historymanager.cpp
     history/historymodels.cpp
     #----------------------------------------
-    session/sessionmanager.cpp
+    icons/icondownloader.cpp
+    icons/iconmanager.cpp
+    icons/webicon.cpp
     #----------------------------------------
     settings/settingsdialog.cpp
     settings/appearancewidget.cpp
@@ -67,6 +70,9 @@ ENDIF(HAVE_NEPOMUK)
 
 # ui files
 KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
+    # ----------------------------------------
+    adblock/blocked_elements.ui
+    adblock/settings_adblock.ui
     #----------------------------------------
     settings/settings_general.ui
     settings/settings_tabs.ui
@@ -84,7 +90,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/adblock
                         ${CMAKE_CURRENT_SOURCE_DIR}/bookmarks
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
-                        ${CMAKE_CURRENT_SOURCE_DIR}/session
+                        ${CMAKE_CURRENT_SOURCE_DIR}/icons
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
                         ${CMAKE_CURRENT_SOURCE_DIR}/urlbar
                         ${CMAKE_CURRENT_SOURCE_DIR}/tabwindow
