@@ -46,6 +46,19 @@ set(rekonq_KDEINIT_SRCS
     settings/webkitwidget.cpp
     settings/passexceptionswidget.cpp
     #----------------------------------------
+    sync/ftpsynchandler.cpp
+    sync/googlesynchandler.cpp
+    sync/syncassistant.cpp
+    sync/synchandler.cpp
+    sync/syncmanager.cpp
+    #
+    sync/synccheckwidget.cpp
+    sync/syncdatawidget.cpp
+    sync/synchosttypewidget.cpp
+    sync/syncftpsettingswidget.cpp
+    sync/syncgooglesettingswidget.cpp
+    sync/syncoperasettingswidget.cpp
+    #----------------------------------------
     tabwindow/tabbar.cpp
     tabwindow/tabhighlighteffect.cpp
     tabwindow/tabpreviewpopup.cpp
@@ -68,6 +81,15 @@ IF(HAVE_NEPOMUK)
 ENDIF(HAVE_NEPOMUK)
 
 
+# Opera sync optional src files
+IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+    SET( rekonq_KDEINIT_SRCS
+            ${rekonq_KDEINIT_SRCS}
+            sync/operasynchandler.cpp
+    )
+ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
+
+
 # ui files
 KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     # ----------------------------------------
@@ -81,6 +103,13 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     settings/settings_advanced.ui
     settings/settings_privacy.ui
     settings/password_exceptions.ui
+    # ----------------------------------------
+    sync/sync_check.ui
+    sync/sync_data.ui
+    sync/sync_ftp_settings.ui
+    sync/sync_google_settings.ui
+    sync/sync_opera_settings.ui
+    sync/sync_host_type.ui
  )
 
 
@@ -92,6 +121,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/icons
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
+                        ${CMAKE_CURRENT_SOURCE_DIR}/sync
                         ${CMAKE_CURRENT_SOURCE_DIR}/urlbar
                         ${CMAKE_CURRENT_SOURCE_DIR}/tabwindow
                         ${CMAKE_CURRENT_SOURCE_DIR}/webwindow
@@ -108,6 +138,13 @@ IF(HAVE_NEPOMUK)
 
     INCLUDE(SopranoAddOntology)
 ENDIF(HAVE_NEPOMUK)
+
+# Opera sync optional include directories
+IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+    INCLUDE_DIRECTORIES(${QCA2_INCLUDE_DIR}
+                        ${QTOAUTH_INCLUDE_DIR}
+    )
+ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 
 
 ### -------------- ADDING DEFINITIONS...
@@ -151,6 +188,14 @@ IF(HAVE_NEPOMUK)
                             ${SOPRANO_LIBRARIES}
     )
 ENDIF(HAVE_NEPOMUK)
+
+# Opera sync optional link libraries
+IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+    TARGET_LINK_LIBRARIES(  kdeinit_rekonq
+                            ${QCA2_LIBRARY}
+                            ${QTOAUTH_LIBRARY}
+    )
+ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 
 
 ### ------------ INSTALL FILES...
