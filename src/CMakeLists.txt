@@ -5,6 +5,8 @@ ADD_SUBDIRECTORY( data )
 
 ### ------- SETTING REKONQ FILES..
 
+
+# src files
 set(rekonq_KDEINIT_SRCS
     #----------------------------------------
     application.cpp
@@ -21,7 +23,11 @@ set(rekonq_KDEINIT_SRCS
     adblock/adblockruletextmatchimpl.cpp
     adblock/adblockwidget.cpp
     adblock/blockedelementswidget.cpp
-
+    #----------------------------------------
+    bookmarks/bookmarkmanager.cpp
+    bookmarks/bookmarkscontextmenu.cpp
+    bookmarks/bookmarkstoolbar.cpp
+    bookmarks/bookmarkowner.cpp
     #----------------------------------------
     history/historymanager.cpp
     history/historymodels.cpp
@@ -49,6 +55,17 @@ set(rekonq_KDEINIT_SRCS
 )
 
 
+# Nepomuk OPTIONAL src files
+IF(HAVE_NEPOMUK)
+    SET( rekonq_KDEINIT_SRCS
+            ${rekonq_KDEINIT_SRCS}
+            urlbar/resourcelinkdialog.cpp
+            urlbar/newresourcedialog.cpp
+    )
+ENDIF(HAVE_NEPOMUK)
+
+
+# ui files
 KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     #----------------------------------------
     settings/settings_general.ui
@@ -65,15 +82,27 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
 
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/adblock
+                        ${CMAKE_CURRENT_SOURCE_DIR}/bookmarks
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/session
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
+                        ${CMAKE_CURRENT_SOURCE_DIR}/urlbar
                         ${CMAKE_CURRENT_SOURCE_DIR}/tabwindow
                         ${CMAKE_CURRENT_SOURCE_DIR}/webwindow
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}
 )
+
+# Nepomuk optional include directories
+IF(HAVE_NEPOMUK)
+    INCLUDE_DIRECTORIES(${SOPRANO_INCLUDE_DIR}
+                        ${NEPOMUK_INCLUDE_DIR}
+    )
+
+    INCLUDE(SopranoAddOntology)
+ENDIF(HAVE_NEPOMUK)
+
 
 ### -------------- ADDING DEFINITIONS...
 
@@ -107,6 +136,15 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             ${KDE4_KIO_LIBS}
                             ${KDE4_KPARTS_LIBS}
 )
+
+# Nepomuk optional target link libraries
+IF(HAVE_NEPOMUK)
+    TARGET_LINK_LIBRARIES(  kdeinit_rekonq
+                            ${NEPOMUK_LIBRARIES}
+                            ${NEPOMUK_QUERY_LIBRARIES}
+                            ${SOPRANO_LIBRARIES}
+    )
+ENDIF(HAVE_NEPOMUK)
 
 
 ### ------------ INSTALL FILES...

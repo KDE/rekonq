@@ -31,9 +31,6 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "tabwindow.h"
-
 // KDE Includes
 #include <KUniqueApplication>
 #include <KUrl>
@@ -42,6 +39,7 @@
 #include <QWeakPointer>
 
 // Forward Declarations
+class TabWindow;
 class WebWindow;
 
 
