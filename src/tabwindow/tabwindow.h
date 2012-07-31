@@ -79,7 +79,7 @@ class TabWindow : public KTabWidget
     Q_OBJECT
 
 public:
-    TabWindow(QWidget *parent = 0);
+    TabWindow(bool withTab = true, QWidget *parent = 0);
 
     virtual QSize sizeHint() const;
 
@@ -117,6 +117,7 @@ private Q_SLOTS:
     void cloneTab(int index = -1);
     void closeTab(int index = -1, bool del = true);
     void closeOtherTabs(int index = -1);
+    void detachTab(int index = -1, TabWindow *toWindow = 0);
     void reloadTab(int index = -1);
     void reloadAllTabs();
     void restoreClosedTab(int i);

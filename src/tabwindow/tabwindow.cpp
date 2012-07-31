@@ -53,7 +53,7 @@
 #include <QWebSettings>
 
 
-TabWindow::TabWindow(QWidget *parent)
+TabWindow::TabWindow(bool withTab, QWidget *parent)
     : KTabWidget(parent)
     , _addTabButton(new QToolButton(this))
     , _openedTabsCounter(0)
@@ -95,10 +95,13 @@ TabWindow::TabWindow(QWidget *parent)
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
 
     // NOTE: NEVER create a tabwindow without AT LEAST one tab...
-    WebWindow *tab = prepareNewTab();
-    addTab(tab, i18n("new tab"));
-    setCurrentWidget(tab);
-
+    if (withTab)
+    {
+        WebWindow *tab = prepareNewTab();
+        addTab(tab, i18n("new tab"));
+        setCurrentWidget(tab);
+    }
+    
     // FIXME: Manage sizes...
     kDebug() << "SIZE: " << size();
     kDebug() << "SIZE HINT: " << sizeHint();
@@ -436,6 +439,53 @@ void TabWindow::closeOtherTabs(int index)
     {
         closeTab(i);
     }
+}
+
+
+void TabWindow::detachTab(int index, TabWindow *toWindow)
+{
+    if (index < 0)
+        index = currentIndex();
+    if (index < 0 || index >= count())
+        return;
+
+    WebWindow *tab = webWindow(index);
+    KUrl u = tab->url();
+    if (u.scheme() == QL1S("about"))
+    {
+        closeTab(index);
+        loadUrl(u, Rekonq::NewWindow);
+        return;
+    }
+    // else
+
+    closeTab(index, false);
+    
+    TabWindow *w = 0;
+    w = (toWindow == 0)
+        ? new TabWindow(false)
+        : toWindow;
+
+    w->addTab(tab, tab->title());
+    w->setCurrentWidget(tab);
+
+    w->show();
+    
+    // disconnect signals from old tabwindow
+    // WARNING: Code copied from prepareNewTab method.
+    // Any new changes there should be applied here...
+    disconnect(tab, SIGNAL(titleChanged(QString)), this, SLOT(tabTitleChanged(QString)));
+    disconnect(tab, SIGNAL(loadStarted()), this, SLOT(tabLoadStarted()));
+    disconnect(tab, SIGNAL(loadFinished(bool)), this, SLOT(tabLoadFinished(bool)));
+    disconnect(tab, SIGNAL(pageCreated(WebPage *)), this, SLOT(pageCreated(WebPage *)));
+
+    // reconnect signals to new tabwindow
+    // WARNING: Code copied from prepareNewTab method.
+    // Any new changes there should be applied here...
+    connect(tab, SIGNAL(titleChanged(QString)), w, SLOT(tabTitleChanged(QString)));
+    connect(tab, SIGNAL(loadStarted()), w, SLOT(tabLoadStarted()));
+    connect(tab, SIGNAL(loadFinished(bool)), w, SLOT(tabLoadFinished(bool)));
+    connect(tab, SIGNAL(pageCreated(WebPage *)), w, SLOT(pageCreated(WebPage *)));
 }
 
 
