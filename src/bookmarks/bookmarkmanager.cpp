@@ -35,9 +35,7 @@
 #include "application.h"
 #include "bookmarkstoolbar.h"
 #include "bookmarkowner.h"
-// #include "iconmanager.h"
-// #include "mainwindow.h"
-// #include "webtab.h"
+#include "iconmanager.h"
 
 // KDE Includes
 #include <KActionCollection>
@@ -201,7 +199,7 @@ void BookmarkManager::fillBookmarkBar(BookmarkToolBar *toolBar)
         else
         {
             KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, this);
-// FIXME            action->setIcon(rApp->iconManager()->iconForUrl(KUrl(bookmark.url())));
+            action->setIcon(IconManager::self()->iconForUrl(KUrl(bookmark.url())));
             connect(action, SIGNAL(hovered()), toolBar, SLOT(actionHovered()));
             toolBar->toolBar()->addAction(action);
             toolBar->toolBar()->widgetForAction(action)->installEventFilter(toolBar);

@@ -34,6 +34,7 @@
 #include "bookmarkmanager.h"
 #include "bookmarkowner.h"
 
+#include "iconmanager.h"
 #include "webwindow.h"
 
 // Qt Includes
@@ -92,7 +93,7 @@ QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
     else
     {
         KBookmarkAction *action = new KBookmarkAction(bookmark, owner(), this);
-//  FIXME       action->setIcon(rApp->iconManager()->iconForUrl(KUrl(bookmark.url())));
+        action->setIcon(IconManager::self()->iconForUrl(KUrl(bookmark.url())));
         connect(action, SIGNAL(hovered()), this, SLOT(actionHovered()));
         return action;
     }
