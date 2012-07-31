@@ -30,6 +30,9 @@ set(rekonq_KDEINIT_SRCS
     bookmarks/bookmarkstoolbar.cpp
     bookmarks/bookmarkowner.cpp
     #----------------------------------------
+    download/downloaditem.cpp
+    download/downloadmanager.cpp
+    #----------------------------------------
     history/historymanager.cpp
     history/historymodels.cpp
     #----------------------------------------
@@ -124,6 +127,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/adblock
                         ${CMAKE_CURRENT_SOURCE_DIR}/bookmarks
+                        ${CMAKE_CURRENT_SOURCE_DIR}/download
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/icons
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
