@@ -64,6 +64,10 @@ set(rekonq_KDEINIT_SRCS
     tabwindow/tabpreviewpopup.cpp
     tabwindow/tabwindow.cpp
     #----------------------------------------
+    useragent/useragentinfo.cpp
+    useragent/useragentmanager.cpp
+    useragent/useragentwidget.cpp
+    #----------------------------------------
     webwindow/networkaccessmanager.cpp
     webwindow/webpage.cpp
     webwindow/webwindow.cpp
@@ -110,6 +114,8 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     sync/sync_google_settings.ui
     sync/sync_opera_settings.ui
     sync/sync_host_type.ui
+    # ----------------------------------------
+    useragent/useragentsettings.ui
  )
 
 
@@ -124,6 +130,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/sync
                         ${CMAKE_CURRENT_SOURCE_DIR}/urlbar
                         ${CMAKE_CURRENT_SOURCE_DIR}/tabwindow
+                        ${CMAKE_CURRENT_SOURCE_DIR}/useragent
                         ${CMAKE_CURRENT_SOURCE_DIR}/webwindow
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
