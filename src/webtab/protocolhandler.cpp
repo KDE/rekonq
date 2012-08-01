@@ -35,7 +35,7 @@
 #include "webwindow.h"
 #include "webpage.h"
 #include "webtab.h"
-#include <KLineEdit> // this has to be substituted with #include "urlbar.h"
+#include "urlbar.h"
 // #include "newtabpage.h"
 
 // KDE Includes
@@ -274,7 +274,7 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         _frame->setHtml(html);
         qobject_cast<WebPage *>(_frame->page())->setIsOnRekonqPage(true);
 
-        _webwin->urlBar()->setUrl(_url);
+        _webwin->urlBar()->setQUrl(_url);
         _webwin->view()->setFocus();
         
         HistoryManager::self()->addHistoryEntry(_url, _url.prettyUrl());

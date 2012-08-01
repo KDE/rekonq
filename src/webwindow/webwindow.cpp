@@ -30,10 +30,11 @@
 #include "webpage.h"
 #include "webtab.h"
 
+#include "urlbar.h"
+
 #include "websnap.h"
 
 #include <KUrl>
-#include <KLineEdit>
 
 #include <QWebView>
 #include <QVBoxLayout>
@@ -43,7 +44,7 @@ WebWindow::WebWindow(QWidget *parent)
     : QWidget(parent)
     , _progress(0)
     , _tab(new WebTab(this))
-    , _edit(new KLineEdit(this))
+    , _bar(new UrlBar(_tab))
 {
     init();
 }
@@ -52,7 +53,7 @@ WebWindow::WebWindow(QWidget *parent)
 WebWindow::WebWindow(WebPage *page, QWidget *parent)
     : QWidget(parent)
     , _tab(new WebTab(this))
-    , _edit(new KLineEdit(this))
+    , _bar(new UrlBar(_tab))
 {
     _tab->view()->setPage(page);
     page->setParent(_tab->view());
@@ -65,18 +66,12 @@ void WebWindow::init()
 {
     // layout
     QVBoxLayout *l = new QVBoxLayout;
-    l->addWidget(_edit);
+    l->addWidget(_bar);
     l->addWidget(_tab);
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
 
     setContentsMargins(0, 0, 0, 0);
-
-    // line edit signals
-    connect(_edit, SIGNAL(returnPressed()), this, SLOT(checkLoadUrl()));
-
-    // url signal
-    connect(_tab->view(), SIGNAL(urlChanged(QUrl)), this, SLOT(setUrlText(QUrl)));
 
     // things changed signals
     connect(_tab->view(), SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
@@ -104,24 +99,12 @@ WebPage *WebWindow::page()
 }
 
 
-void WebWindow::checkLoadUrl()
-{
-    QString urlString = _edit->text();
-    QUrl u = QUrl::fromUserInput(urlString);
-    load(u);
-}
-
-
 void WebWindow::checkLoadProgress(int p)
 {
     _progress = p;
     emit loadProgress(p);
 }
 
-void WebWindow::setUrlText(const QUrl &u)
-{
-    _edit->setText(u.toString());
-}
 
 KUrl WebWindow::url() const
 {
@@ -141,9 +124,9 @@ QIcon WebWindow::icon() const
 }
 
 
-KLineEdit *WebWindow::urlBar()
+UrlBar *WebWindow::urlBar()
 {
-    return _edit;
+    return _bar;
 }
 
 

@@ -43,7 +43,7 @@ class WebPage;
 class WebTab;
 class WebView;
 
-class KLineEdit;
+class UrlBar;
 
 class QPixmap;
 class QUrl;
@@ -65,7 +65,7 @@ public:
     QString title() const;
     QIcon icon() const;
 
-    KLineEdit *urlBar();
+    UrlBar *urlBar();
     WebTab *view();
     
     QPixmap tabPreview(int width, int height);
@@ -82,9 +82,6 @@ private:
     void init();
     
 private Q_SLOTS:
-    void checkLoadUrl();
-    void setUrlText(const QUrl &);
-
     void checkLoadProgress(int);
 
 Q_SIGNALS:
@@ -100,7 +97,7 @@ private:
     int _progress;
 
     WebTab *_tab;
-    KLineEdit *_edit;
+    UrlBar *_bar;
 };
 
 #endif // WEB_WINDOW
