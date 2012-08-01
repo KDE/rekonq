@@ -62,6 +62,7 @@
 #include <KProtocolInfo>
 #include <KRun>
 
+#include <KIO/Job>
 #include <KIO/JobUiDelegate>
 
 #include <kparts/browseropenorsavequestion.h>
@@ -402,9 +403,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         tempFile.open();
         KUrl destUrl;
         destUrl.setPath(tempFile.fileName());
-//         KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
-//         job->ui()->setWindow(view());
-//         connect(job, SIGNAL(result(KJob*)), this, SLOT(copyToTempFileResult(KJob*)));
+        KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
+        job->ui()->setWindow(view());
+        connect(job, SIGNAL(result(KJob*)), this, SLOT(copyToTempFileResult(KJob*)));
         return;
     }
 
@@ -417,11 +418,8 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         WebView *view = qobject_cast<WebView *>(parent());
         WebTab *tab = qobject_cast<WebTab *>(view->parent());
         tab->setPart(pa, replyUrl);
-
-//         UrlBar *bar = tab->urlBar();
-//         bar->setQUrl(replyUrl);
-// 
-//         rApp->mainWindow()->updateHistoryActions();
+        
+        // FIXME: Is this enough?
     }
     else
     {
@@ -532,13 +530,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
             if (isMainFrameRequest)
             {
                 _isOnRekonqPage = true;
-
-                WebView *view = qobject_cast<WebView *>(parent());
-                WebTab *tab = qobject_cast<WebTab *>(view->parent());
-// FIXME                UrlBar *bar = tab->urlBar();
-//                 bar->setQUrl(_loadingUrl);
-// 
-//                 rApp->mainWindow()->updateHistoryActions();
+                // FIXME: is this enough?
             }
         }
         break;

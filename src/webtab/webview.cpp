@@ -70,7 +70,6 @@
 
 WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
-    , m_page(0)
     , m_autoScrollTimer(new QTimer(this))
     , m_verticalAutoScrollSpeed(0)
     , m_horizontalAutoScrollSpeed(0)
@@ -132,12 +131,13 @@ void WebView::loadStarted()
 
 WebPage *WebView::page()
 {
-    if (!m_page)
+    WebPage *p = qobject_cast<WebPage *>(KWebView::page());
+    if (!p)
     {
-        m_page = new WebPage(this);
-        setPage(m_page);
+        p = new WebPage(this);
+        setPage(p);
     }
-    return m_page;
+    return p;
 }
 
 

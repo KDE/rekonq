@@ -129,7 +129,6 @@ private:
     void makeAccessKeyLabel(const QChar &accessKey, const QWebElement &element);
 
 private:
-    WebPage *m_page;
     QPoint m_clickPos;
 
     // Auto Scroll

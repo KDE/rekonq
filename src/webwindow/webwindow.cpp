@@ -55,6 +55,7 @@ WebWindow::WebWindow(WebPage *page, QWidget *parent)
     , _edit(new KLineEdit(this))
 {
     _tab->view()->setPage(page);
+    page->setParent(_tab->view());
     
     init();
 }
