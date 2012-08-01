@@ -45,6 +45,9 @@
 #include "completionwidget.h"
 #include "bookmarkwidget.h"
 #include "favoritewidget.h"
+#include "rsswidget.h"
+#include "webshortcutwidget.h"
+
 #include "urlsuggester.h"
 
 #include "webtab.h"
@@ -106,6 +109,24 @@ QString guessUrlWithCustomFirstLevel(const QString &str1, const QString &str2)
     }
     return url.toString();
 }
+
+
+KUrl extractOpensearchUrl(const KUrl &tabUrl, QWebElement e)
+{
+    QString href = e.attribute(QL1S("href"));
+    KUrl url = KUrl(href);
+    if (!href.contains(":"))
+    {
+        QString host = tabUrl.scheme() + "://" + tabUrl.host();
+        if (tabUrl.port() != -1)
+        {
+            host += QL1C(':') + QString::number(tabUrl.port());
+        }
+        url = KUrl(tabUrl, href);
+    }
+    return url;
+}
+
 
 // -----------------------------------------------------------------------------------------------------------
 
@@ -773,4 +794,59 @@ void UrlBar::updateRightIconPosition(IconButton *icon, int iconsCount)
     int iconHeight = (height() - iconSize) / 2;
 
     icon->move(iconWidth, iconHeight);
+}
+
+
+void UrlBar::showRSSInfo(const QPoint &pos)
+{
+    QWebElementCollection col = _tab->page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
+    col.append(_tab->page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
+
+    QMap<KUrl, QString> map;
+
+    Q_FOREACH(const QWebElement & el, col)
+    {
+        QString urlString;
+        if (el.attribute("href").startsWith(QL1S("http")))
+            urlString = el.attribute("href");
+        else
+        {
+            KUrl u = _tab->url();
+            // NOTE
+            // cd() is probably better than setPath() here,
+            // for all those url sites just having a path
+            if (u.cd(el.attribute("href")))
+                urlString = u.toMimeDataString();
+        }
+
+        QString title = el.attribute("title");
+        if (title.isEmpty())
+            title = el.attribute("href");
+
+        map.insert(KUrl(urlString), title);
+    }
+
+    RSSWidget *widget = new RSSWidget(map, window());
+    widget->showAt(pos);
+}
+
+
+void UrlBar::showSearchEngine(const QPoint &pos)
+{
+    QWebElement e = _tab->page()->mainFrame()->findFirstElement(
+        QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
+    QString title = e.attribute(QL1S("title"));
+    if (!title.isEmpty())
+    {
+        WebShortcutWidget *widget = new WebShortcutWidget(window());
+        widget->setWindowFlags(Qt::Popup);
+
+//  FIXME       connect(widget, SIGNAL(webShortcutSet(KUrl, QString, QString)),
+//                 rApp->opensearchManager(), SLOT(addOpenSearchEngine(KUrl, QString, QString)));
+//         connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString)),
+//                 this, SLOT(openSearchEngineAdded()));
+
+        KUrl u = extractOpensearchUrl(_tab->url(), e);
+        widget->show(u, title, pos);
+    }
 }
