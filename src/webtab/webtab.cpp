@@ -39,13 +39,10 @@
 
 #include "messagebar.h"
 #include "previewselectorbar.h"
-// #include "rsswidget.h"
 #include "searchenginebar.h"
-// #include "urlbar.h"
 #include "walletbar.h"
 #include "webpage.h"
 #include "websnap.h"
-// #include "webshortcutwidget.h"
 
 #include "webwindow.h"
 
@@ -54,9 +51,6 @@
 #include <KStandardShortcut>
 #include <KMenu>
 #include <KActionMenu>
-#include <KWebView>
-#include <KDebug>
-#include <KBuildSycocaProgressDialog>
 #include <kdeprintdialog.h>
 #include <KLocalizedString>
 
@@ -237,54 +231,15 @@ void WebTab::createPreviewSelectorBar(int index)
 }
 
 
-bool WebTab::hasRSSInfo()
-{
-    QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
-    col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
-    if (col.count() != 0)
-        return true;
-
-    return false;
-}
-
-
-void WebTab::showRSSInfo(const QPoint &pos)
-{
-    QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
-    col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
-
-    QMap<KUrl, QString> map;
-
-    Q_FOREACH(const QWebElement & el, col)
-    {
-        QString urlString;
-        if (el.attribute("href").startsWith(QL1S("http")))
-            urlString = el.attribute("href");
-        else
-        {
-            KUrl u = url();
-            // NOTE
-            // cd() is probably better than setPath() here,
-            // for all those url sites just having a path
-            if (u.cd(el.attribute("href")))
-                urlString = u.toMimeDataString();
-        }
-
-        QString title = el.attribute("title");
-        if (title.isEmpty())
-            title = el.attribute("href");
-
-        map.insert(KUrl(urlString), title);
-    }
-
-// FIXME    RSSWidget *widget = new RSSWidget(map, window());
-//     widget->showAt(pos);
-}
-
-
 void WebTab::hideSelectorBar()
 {
     m_previewSelectorBar.data()->animatedHide();
+}
+
+
+KParts::ReadOnlyPart *WebTab::part()
+{
+    return m_part;
 }
 
 
@@ -310,62 +265,6 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
     qobject_cast<QVBoxLayout *>(layout())->removeWidget(m_part->widget());
     delete m_part;
     m_part = 0;
-}
-
-
-KUrl WebTab::extractOpensearchUrl(QWebElement e)
-{
-    QString href = e.attribute(QL1S("href"));
-    KUrl url = KUrl(href);
-    if (!href.contains(":"))
-    {
-        KUrl docUrl = m_webView->url();
-        QString host = docUrl.scheme() + "://" + docUrl.host();
-        if (docUrl.port() != -1)
-        {
-            host += QL1C(':') + QString::number(docUrl.port());
-        }
-        url = KUrl(docUrl, href);
-    }
-    return url;
-}
-
-
-bool WebTab::hasNewSearchEngine()
-{
-//     QWebElement e = page()->mainFrame()->findFirstElement(QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
-//     return !e.isNull() && !rApp->opensearchManager()->engineExists(extractOpensearchUrl(e));
-    return false; // FIXME
-}
-
-
-void WebTab::showSearchEngine(const QPoint &pos)
-{
-    QWebElement e = page()->mainFrame()->findFirstElement(QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
-    QString title = e.attribute(QL1S("title"));
-    if (!title.isEmpty())
-    {
-        // FIXME
-//         WebShortcutWidget *widget = new WebShortcutWidget(window());
-//         widget->setWindowFlags(Qt::Popup);
-// 
-//         connect(widget, SIGNAL(webShortcutSet(KUrl, QString, QString)),
-//                 rApp->opensearchManager(), SLOT(addOpenSearchEngine(KUrl, QString, QString)));
-//         connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString)),
-//                 this, SLOT(openSearchEngineAdded()));
-// 
-//         widget->show(extractOpensearchUrl(e), title, pos);
-    }
-}
-
-
-void WebTab::openSearchEngineAdded()
-{
-//     // If the providers changed, tell sycoca to rebuild its database...
-//     KBuildSycocaProgressDialog::rebuildKSycoca(this);
-// 
-//     disconnect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString, QString, QString)),
-//                this, SLOT(openSearchEngineAdded()));
 }
 
 

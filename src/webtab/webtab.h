@@ -71,20 +71,11 @@ public:
     KUrl url();
 
     void createPreviewSelectorBar(int index);
-
     void hideSelectorBar();
-
-    bool hasRSSInfo();
 
     bool isPageLoading();
 
-    bool hasNewSearchEngine();
-
-    KParts::ReadOnlyPart *part()
-    {
-        return m_part;
-    }
-
+    KParts::ReadOnlyPart *part();
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
 
 private Q_SLOTS:
@@ -92,9 +83,6 @@ private Q_SLOTS:
     void resetProgress();
 
     void createWalletBar(const QString &, const QUrl &);
-    void showRSSInfo(const QPoint &pos);
-    void showSearchEngine(const QPoint &pos);
-    void openSearchEngineAdded();
 
     void showMessageBar();
     void loadFinished();
@@ -102,9 +90,6 @@ private Q_SLOTS:
     void showSearchEngineBar();
 
     void printFrame();
-
-private:
-    KUrl extractOpensearchUrl(QWebElement e);
 
 Q_SIGNALS:
     void loadProgressing();
