@@ -141,6 +141,18 @@ QIcon WebWindow::icon() const
 }
 
 
+KLineEdit *WebWindow::urlBar()
+{
+    return _edit;
+}
+
+
+WebTab *WebWindow::view()
+{
+    return _tab;
+}
+
+
 QPixmap WebWindow::tabPreview(int width, int height)
 {
     return WebSnap::renderPagePreview(*page(), width, height);

@@ -41,14 +41,15 @@
 #include "downloadmanager.h"
 #include "historymanager.h"
 #include "iconmanager.h"
-#include "tabwindow.h"
+
 #include "networkaccessmanager.h"
 #include "webpluginfactory.h"
 #include "websnap.h"
 #include "webtab.h"
-#include "searchengine.h"
-// #include "sslwidget.h"
 #include "sslinfodialog.h"
+
+#include "searchengine.h"
+#include "webwindow.h"
 
 // KDE Includes
 #include <KTemporaryFile>
@@ -125,6 +126,11 @@ WebPage::WebPage(QWidget *parent)
     , _networkAnalyzer(false)
     , _isOnRekonqPage(false)
 {
+    WebView *view = qobject_cast<WebView *>(parent);
+    WebTab *tab = qobject_cast<WebTab *>(view->parent());
+    WebWindow *w = tab->webWindow();
+    _protHandler.setWindow(w);
+    
     // handling unsupported content...
     setForwardUnsupportedContent(true);
     connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(handleUnsupportedContent(QNetworkReply*)));
@@ -688,23 +694,6 @@ void WebPage::downloadAllContentsWithKGet()
     }
 
     DownloadManager::self()->downloadLinksWithKGet(QVariant(contents.toList()));
-}
-
-
-void WebPage::showSSLInfo(QPoint pos)
-{
-    if (mainFrame()->url().scheme() == QL1S("https"))
-    {
-//         SSLWidget *widget = new SSLWidget(mainFrame()->url(), _sslInfo, view());
-//         widget->showAt(pos);
-    }
-    else
-    {
-        KMessageBox::information(view(),
-                                 i18n("This site does not contain SSL information."),
-                                 i18nc("Secure Sockets Layer", "SSL")
-                                );
-    }
 }
 
 

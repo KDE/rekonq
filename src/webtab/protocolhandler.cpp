@@ -31,12 +31,12 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "application.h"
 #include "historymanager.h"
-#include "tabwindow.h"
 #include "webwindow.h"
-// #include "newtabpage.h"
 #include "webpage.h"
+#include "webtab.h"
+#include <KLineEdit> // this has to be substituted with #include "urlbar.h"
+// #include "newtabpage.h"
 
 // KDE Includes
 #include <KIO/Job>
@@ -91,8 +91,15 @@ ProtocolHandler::ProtocolHandler(QObject *parent)
     : QObject(parent)
     , _lister(new KDirLister(this))
     , _frame(0)
+    , _webwin(0)
 {
-    _lister->setMainWindow(rApp->tabWindow());
+}
+
+
+void ProtocolHandler::setWindow(WebWindow *w)
+{
+    _webwin = w;
+    _lister->setMainWindow(_webwin);    
 }
 
 
@@ -181,7 +188,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     if (_url.protocol() == QL1S("apt"))
     {
         kDebug() << "APT URL: " << _url;
-        (void)new KRun(_url, rApp->tabWindow(), 0, _url.isLocalFile());
+        (void)new KRun(_url, _webwin, 0, _url.isLocalFile());
         return true;
     }
 
@@ -190,7 +197,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         return false;
 
     // Error Message, for those protocols we cannot handle
-    KMessageBox::error(rApp->tabWindow(), i18nc("@info", "rekonq does not know how to handle this protocol: %1", _url.protocol()));
+    KMessageBox::error(_webwin, i18nc("@info", "rekonq does not know how to handle this protocol: %1", _url.protocol()));
 
     return true;
 }
@@ -244,7 +251,7 @@ bool ProtocolHandler::postHandling(const QNetworkRequest &request, QWebFrame *fr
     // Try KRunning it...
     if (KProtocolInfo::isKnownProtocol(_url))
     {
-        (void)new KRun(_url, rApp->tabWindow(), 0, _url.isLocalFile());
+        (void)new KRun(_url, _webwin, 0, _url.isLocalFile());
         return true;
     }
 
@@ -267,8 +274,9 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         _frame->setHtml(html);
         qobject_cast<WebPage *>(_frame->page())->setIsOnRekonqPage(true);
 
-// FIXME        rApp->mainWindow()->mainView()->currentUrlBar()->setQUrl(_url);
-//         rApp->mainWindow()->currentTab()->setFocus();
+        _webwin->urlBar()->setUrl(_url);
+        _webwin->view()->setFocus();
+        
         HistoryManager::self()->addHistoryEntry(_url, _url.prettyUrl());
     }
 }

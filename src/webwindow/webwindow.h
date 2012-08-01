@@ -64,6 +64,9 @@ public:
     KUrl url() const;
     QString title() const;
     QIcon icon() const;
+
+    KLineEdit *urlBar();
+    WebTab *view();
     
     QPixmap tabPreview(int width, int height);
 

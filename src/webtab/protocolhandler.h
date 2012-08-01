@@ -38,6 +38,8 @@
 #include <QObject>
 
 // Forward Declarations
+class WebWindow;
+
 class KDirLister;
 class KFileItemList;
 class KJob;
@@ -65,6 +67,8 @@ public:
      */
     bool postHandling(const QNetworkRequest &request, QWebFrame *frame);
 
+    void setWindow(WebWindow *);
+    
 Q_SIGNALS:
     void downloadUrl(const KUrl &);
 
@@ -78,6 +82,8 @@ private:
     KDirLister *_lister;
     QWebFrame *_frame;
     KUrl _url;
+
+    WebWindow *_webwin;
 };
 
 #endif  // PROTOCOL_HANDLER_H

@@ -81,7 +81,6 @@ private Q_SLOTS:
     void manageNetworkErrors(QNetworkReply *reply);
     void loadStarted();
     void loadFinished(bool);
-    void showSSLInfo(QPoint);
 
     void copyToTempFileResult(KJob*);
 
