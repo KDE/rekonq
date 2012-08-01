@@ -71,6 +71,20 @@ set(rekonq_KDEINIT_SRCS
     useragent/useragentmanager.cpp
     useragent/useragentwidget.cpp
     #----------------------------------------
+    webtab/clicktoflash.cpp
+#     webtab/messagebar.cpp
+    webtab/networkaccessmanager.cpp
+#     webtab/previewselectorbar.cpp
+    webtab/protocolhandler.cpp
+#     webtab/searchenginebar.cpp
+    webtab/sslinfodialog.cpp
+    webtab/walletbar.cpp
+    webtab/webpage.cpp
+    webtab/webpluginfactory.cpp
+    webtab/websslinfo.cpp
+    webtab/webview.cpp
+#     webtab/webtab.cpp
+    #----------------------------------------
     webwindow/networkaccessmanager.cpp
     webwindow/webpage.cpp
     webwindow/webwindow.cpp
@@ -119,6 +133,8 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     sync/sync_host_type.ui
     # ----------------------------------------
     useragent/useragentsettings.ui
+    # ----------------------------------------
+    webtab/sslinfo.ui
  )
 
 
@@ -135,6 +151,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/urlbar
                         ${CMAKE_CURRENT_SOURCE_DIR}/tabwindow
                         ${CMAKE_CURRENT_SOURCE_DIR}/useragent
+                        ${CMAKE_CURRENT_SOURCE_DIR}/webtab
                         ${CMAKE_CURRENT_SOURCE_DIR}/webwindow
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}

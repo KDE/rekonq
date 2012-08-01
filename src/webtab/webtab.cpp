@@ -56,6 +56,10 @@
 #include <KWebView>
 #include <KDebug>
 #include <KBuildSycocaProgressDialog>
+#include <kdeprintdialog.h>
+
+#include <KParts/Part>
+#include <KParts/BrowserExtension>
 
 // Qt Includes
 #include <QVBoxLayout>
@@ -133,6 +137,12 @@ WebPage *WebTab::page()
 }
 
 
+WebWindow *WebTab::webWindow()
+{
+    WebWindow *w = qobject_cast<WebWindow *>(parent());
+    return w;
+}
+    
 KUrl WebTab::url()
 {
     if (page() && page()->isOnRekonqPage())
@@ -416,4 +426,49 @@ void WebTab::showSearchEngineBar()
 
     qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, seBar);
     seBar->animatedShow();
+}
+
+
+void WebTab::printFrame()
+{
+    if (page()->isOnRekonqPage())
+    {
+        // trigger print part action instead of ours..
+        KParts::ReadOnlyPart *p = part();
+        if (p)
+        {
+            KParts::BrowserExtension *ext = p->browserExtension();
+            if (ext)
+            {
+                KParts::BrowserExtension::ActionSlotMap *actionSlotMap = KParts::BrowserExtension::actionSlotMapPtr();
+
+                connect(this, SIGNAL(triggerPartPrint()), ext, actionSlotMap->value("print"));
+                emit triggerPartPrint();
+
+                return;
+            }
+        }
+    }
+
+    QWebFrame *printFrame = 0;
+    if (frame == 0)
+    {
+        printFrame = page()->mainFrame();
+    }
+    else
+    {
+        printFrame = frame;
+    }
+
+    QPrinter printer;
+    printer.setDocName(printFrame->title());
+    QPrintDialog *printDialog = KdePrint::createPrintDialog(&printer, this);
+
+    if (printDialog) //check if the Dialog was created
+    {
+        if (printDialog->exec())
+            printFrame->print(&printer);
+
+        delete printDialog;
+    }
 }

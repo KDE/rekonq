@@ -92,8 +92,6 @@ protected:
 private Q_SLOTS:
     void search();
 
-    void printFrame();
-
     void openLinkInNewWindow();
     void openLinkInNewTab();
     void bookmarkLink();
@@ -109,7 +107,6 @@ private Q_SLOTS:
     void setupSmoothScrolling(int posY);
 
     void stopSmoothScrolling();
-    void changeWindowIcon();
 
     void accessKeyShortcut();
     void hideAccessKeys();
@@ -121,6 +118,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
+
     void zoomChanged(int);
     void openPreviousInHistory();
     void openNextInHistory();

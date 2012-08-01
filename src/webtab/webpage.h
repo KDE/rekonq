@@ -52,25 +52,12 @@ public:
     explicit WebPage(QWidget *parent = 0);
     ~WebPage();
 
-    bool hasNetworkAnalyzerEnabled() const;
-    void enableNetworkAnalyzer(bool b);
-
     bool isOnRekonqPage() const;
     void setIsOnRekonqPage(bool b);
 
     KUrl loadingUrl();
 
     QString suggestedFileName();
-
-    inline bool hasAdBlockedElements() const
-    {
-        return _hasAdBlockedElements;
-    };
-
-    inline void setHasAdBlockedElements(bool b)
-    {
-        _hasAdBlockedElements = b;
-    };
 
     bool hasSslValid() const;
 
@@ -86,6 +73,8 @@ protected:
     virtual bool acceptNavigationRequest(QWebFrame *frame,
                                          const QNetworkRequest &request,
                                          NavigationType type);
+Q_SIGNALS:
+    void pageCreated(WebPage *);
 
 private Q_SLOTS:
     void handleUnsupportedContent(QNetworkReply *reply);

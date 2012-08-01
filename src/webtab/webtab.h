@@ -60,7 +60,8 @@ public:
 
     WebView *view();
     WebPage *page();
-
+    WebWindow *webWindow();
+    
     inline UrlBar *urlBar() const
     {
         return m_urlBar;
@@ -107,6 +108,8 @@ private Q_SLOTS:
     void loadFinished();
 
     void showSearchEngineBar();
+
+    void printFrame();
 
 private:
     KUrl extractOpensearchUrl(QWebElement e);

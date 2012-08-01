@@ -32,15 +32,16 @@
 // Auto Includes
 #include "rekonq.h"
 
-// Local Includes
+// App Includes
 #include "application.h"
+
+// Local Includes
 #include "adblockmanager.h"
 #include "bookmarkmanager.h"
 #include "iconmanager.h"
-#include "mainview.h"
-#include "mainwindow.h"
+
+#include "webwindow.h"
 #include "searchengine.h"
-#include "urlbar.h"
 #include "webpage.h"
 #include "webtab.h"
 
@@ -57,6 +58,7 @@
 #include <QFile>
 #include <QTimer>
 
+#include <QApplication>
 #include <QClipboard>
 #include <QContextMenuEvent>
 #include <QLabel>
@@ -92,7 +94,6 @@ WebView::WebView(QWidget* parent)
     connect(m_smoothScrollTimer, SIGNAL(timeout()), this, SLOT(scrollTick()));
     m_smoothScrollTimer->setInterval(16);
 
-    connect(this, SIGNAL(iconChanged()), this, SLOT(changeWindowIcon()));
     connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
 }
 
@@ -129,20 +130,6 @@ void WebView::loadStarted()
 }
 
 
-void WebView::changeWindowIcon()
-{
-    if (ReKonfig::useFavicon())
-    {
-        MainWindow *const mainWindow = rApp->mainWindow();
-        if (url() == mainWindow->currentTab()->url())
-        {
-            const int index = mainWindow->mainView()->currentIndex();
-            mainWindow->changeWindowIcon(index);
-        }
-    }
-}
-
-
 WebPage *WebView::page()
 {
     if (!m_page)
@@ -157,7 +144,8 @@ WebPage *WebView::page()
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
-    MainWindow *mainwindow = rApp->mainWindow();
+    WebTab *tab = qobject_cast<WebTab *>(parent());
+    WebWindow *webwin = tab->webWindow();
 
     KMenu menu(this);
     QAction *a;
@@ -211,7 +199,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             menu.addAction(pageAction(KWebPage::Forward));
         }
 
-        menu.addAction(mainwindow->actionByName("view_redisplay"));
+        menu.addAction(webwin->actionByName("view_redisplay"));
 
         menu.addSeparator();
 
@@ -220,7 +208,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
 
         a = new KAction(KIcon("document-print-frame"), i18n("Print Frame"), this);
-        connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
+        connect(a, SIGNAL(triggered()), tab, SLOT(printFrame()));
         frameMenu->addAction(a);
 
         menu.addAction(frameMenu);
@@ -230,7 +218,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         // Page Actions
         menu.addAction(pageAction(KWebPage::SelectAll));
 
-        menu.addAction(mainwindow->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
+        menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
 
         if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
         {
@@ -239,13 +227,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             menu.addAction(a);
         }
 
-        menu.addAction(mainwindow->actionByName("page_source"));
+        menu.addAction(webwin->actionByName("page_source"));
         menu.addAction(inspectAction);
 
-        if (mainwindow->isFullScreen())
+        if (isFullScreen())
         {
             menu.addSeparator();
-            menu.addAction(mainwindow->actionByName("fullscreen"));
+            menu.addAction(webwin->actionByName("fullscreen"));
         }
     }
 
@@ -301,7 +289,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
         menu.addAction(a);
 
-        if (rApp->adblockManager()->isEnabled())
+        if (AdBlockManager::self()->isEnabled())
         {
             a = new KAction(KIcon("preferences-web-browser-adblock"), i18n("Block image"), this);
             a->setData(result.imageUrl());
@@ -330,8 +318,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             a->setText(i18n("Copy"));
         menu.addAction(a);
 
-        if (selectedText().contains('.') && selectedText().indexOf('.') < selectedText().length()
-                && !selectedText().trimmed().contains(" ")
+        if (selectedText().contains('.')
+            && selectedText().indexOf('.') < selectedText().length()
+            && !selectedText().trimmed().contains(" ")
            )
         {
             QString text = selectedText();
@@ -366,7 +355,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         if (defaultEngine) // check if a default engine is set
         {
             a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1", defaultEngine->name()), this);
-            a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
+            a->setIcon(IconManager::self()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
             a->setData(defaultEngine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
             menu.addAction(a);
@@ -378,14 +367,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
         {
             a = new KAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), this);
-            a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(engine, "")));
+            a->setIcon(IconManager::self()->iconForUrl(SearchEngine::buildQuery(engine, "")));
             a->setData(engine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
             searchMenu->addAction(a);
         }
 
         a = new KAction(KIcon("edit-find"), i18n("On Current Page"), this);
-        connect(a, SIGNAL(triggered()), rApp->mainWindow(), SLOT(findSelectedText()));
+        connect(a, SIGNAL(triggered()), webwin, SLOT(findSelectedText()));
         searchMenu->addAction(a);
 
         if (!searchMenu->menu()->isEmpty())
@@ -405,7 +394,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
     else
     {
-        a = mainwindow->actionByName(KStandardAction::name(KStandardAction::AddBookmark));
+        a = webwin->actionByName(KStandardAction::name(KStandardAction::AddBookmark));
         menu.addAction(a);
     }
     menu.addAction(sendByMailAction);
@@ -463,18 +452,18 @@ void WebView::mousePressEvent(QMouseEvent *event)
         case 1: // Load Clipboard URL
             if (weCanDoMiddleClickActions)
             {
-                const QString clipboardContent = rApp->clipboard()->text();
+                const QString clipboardContent = QApplication::clipboard()->text();
 
                 if (clipboardContent.isEmpty())
                     break;
 
                 if (QUrl::fromUserInput(clipboardContent).isValid())
-                    loadUrl(clipboardContent, Rekonq::CurrentTab);
+                    load(KUrl(clipboardContent));
                 else // Search with default Engine
                 {
                     KService::Ptr defaultEngine = SearchEngine::defaultEngine();
                     if (defaultEngine) // check if a default engine is set
-                        loadUrl(KUrl(SearchEngine::buildQuery(defaultEngine, clipboardContent)), Rekonq::CurrentTab);
+                        load(KUrl(SearchEngine::buildQuery(defaultEngine, clipboardContent)));
                 }
             }
             break;
@@ -507,18 +496,20 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    MainWindow *w = rApp->mainWindow();
-    if (w->isFullScreen())
+    WebTab *tab = qobject_cast<WebTab *>(parent());
+    WebWindow *webwin = tab->webWindow();
+    if (webwin->isFullScreen())
     {
-        if (event->pos().y() >= 0 && event->pos().y() <= 4)
-        {
-            w->setWidgetsVisible(true);
-        }
-        else
-        {
-            if (!w->mainView()->currentUrlBar()->hasFocus())
-                w->setWidgetsVisible(false);
-        }
+        // FIXME
+//         if (event->pos().y() >= 0 && event->pos().y() <= 4)
+//         {
+//             webwin->setWidgetsVisible(true);
+//         }
+//         else
+//         {
+//             if (!webwin->urlBar()->hasFocus())
+//                 webwin->setWidgetsVisible(false);
+//         }
     }
     KWebView::mouseMoveEvent(event);
 }
@@ -530,14 +521,14 @@ void WebView::dropEvent(QDropEvent *event)
     if (event->mimeData()->hasFormat(BookmarkManager::bookmark_mime_type()))
     {
         QByteArray addresses = event->mimeData()->data(BookmarkManager::bookmark_mime_type());
-        KBookmark bookmark =  rApp->bookmarkManager()->findByAddress(QString::fromLatin1(addresses.data()));
+        KBookmark bookmark =  BookmarkManager::self()->findByAddress(QString::fromLatin1(addresses.data()));
         if (bookmark.isGroup())
         {
-            rApp->bookmarkManager()->openFolderinTabs(bookmark.toGroup());
+            BookmarkManager::self()->openFolderinTabs(bookmark.toGroup());
         }
         else
         {
-            emit loadUrl(bookmark.url(), Rekonq::CurrentTab);
+            load(bookmark.url());
         }
     }
     else if (event->mimeData()->hasUrls() && event->source() != this && !isEditable) //dropped links
@@ -588,12 +579,6 @@ void WebView::search()
 }
 
 
-void WebView::printFrame()
-{
-    rApp->mainWindow()->printRequested(page()->currentFrame());
-}
-
-
 void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
     KAction *a = qobject_cast<KAction*>(sender());
@@ -605,7 +590,7 @@ void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifier
     }
     else
     {
-        emit loadUrl(url, Rekonq::CurrentTab);
+        load(url);
     }
 }
 
@@ -651,8 +636,8 @@ void WebView::bookmarkLink()
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
 
-    rApp->bookmarkManager()->rootGroup().addBookmark(url.prettyUrl(), url);
-    rApp->bookmarkManager()->emitChanged();
+    BookmarkManager::self()->rootGroup().addBookmark(url.prettyUrl(), url);
+    BookmarkManager::self()->emitChanged();
 }
 
 
@@ -912,7 +897,9 @@ void WebView::wheelEvent(QWheelEvent *event)
 
 void WebView::inspect()
 {
-    QAction *a = rApp->mainWindow()->actionByName("web_inspector");
+    WebTab *tab = qobject_cast<WebTab *>(parent());
+    WebWindow *webwin = tab->webWindow();
+    QAction *a = webwin->actionByName("web_inspector");
     if (a && !a->isChecked())
         a->trigger();
     pageAction(QWebPage::InspectElement)->trigger();
@@ -1181,9 +1168,9 @@ bool WebView::checkForAccessKey(QKeyEvent *event)
         }
         while (frame && frame != page()->mainFrame());
         QMouseEvent pevent(QEvent::MouseButtonPress, p, Qt::LeftButton, 0, 0);
-        rApp->sendEvent(this, &pevent);
+        QApplication::sendEvent(this, &pevent);
         QMouseEvent revent(QEvent::MouseButtonRelease, p, Qt::LeftButton, 0, 0);
-        rApp->sendEvent(this, &revent);
+        QApplication::sendEvent(this, &revent);
         handled = true;
     }
 
@@ -1226,7 +1213,7 @@ void WebView::blockImage()
         return;
 
     QString imageUrl = action->data().toString();
-    rApp->adblockManager()->addCustomRule(imageUrl);
+    AdBlockManager::self()->addCustomRule(imageUrl);
 }
 
 

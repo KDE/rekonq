@@ -31,8 +31,12 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// KDE Includes
+// #include <KActionCollection>
+
 // Qt Includes
 #include <QWidget>
+#include <QAction>
 
 // Forward Declarations
 class WebPage;
@@ -63,6 +67,12 @@ public:
 
     bool isLoading();
 
+    inline QAction *actionByName(const QString &name)
+    {
+        return new QAction(this);
+//         FIXME return actionCollection()->action(name);
+    }
+    
 private:
     void init();
     

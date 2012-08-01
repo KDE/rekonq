@@ -38,6 +38,9 @@
 // Qt Includes
 #include <QByteArray>
 
+// Forward Declarations
+class QWebFrame;
+
 
 class REKONQ_TESTS_EXPORT NetworkAccessManager : public KIO::Integration::AccessManager
 {
@@ -49,10 +52,11 @@ public:
 protected:
     virtual QNetworkReply *createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData = 0);
 
-Q_SIGNALS:
-    void networkData(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QNetworkReply *reply);
+private Q_SLOTS:
+    void slotFinished(bool);
 
 private:
+    QMultiHash<QWebFrame*, QUrl> m_blockedRequests;
     QByteArray _acceptLanguage;
 };
 

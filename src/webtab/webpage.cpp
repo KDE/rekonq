@@ -38,20 +38,16 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "adblockmanager.h"
-#include "application.h"
 #include "downloadmanager.h"
 #include "historymanager.h"
 #include "iconmanager.h"
-#include "mainview.h"
-#include "mainwindow.h"
+#include "tabwindow.h"
 #include "networkaccessmanager.h"
-#include "urlbar.h"
 #include "webpluginfactory.h"
 #include "websnap.h"
 #include "webtab.h"
 #include "searchengine.h"
-#include "sslwidget.h"
+// #include "sslwidget.h"
 #include "sslinfodialog.h"
 
 // KDE Includes
@@ -163,7 +159,7 @@ WebPage::WebPage(QWidget *parent)
     // protocol handler signals
     connect(&_protHandler, SIGNAL(downloadUrl(KUrl)), this, SLOT(downloadUrl(KUrl)));
 
-    connect(rApp->iconManager(), SIGNAL(iconChanged()), mainFrame(), SIGNAL(iconChanged()));
+    connect(IconManager::self(), SIGNAL(iconChanged()), mainFrame(), SIGNAL(iconChanged()));
 }
 
 
@@ -176,18 +172,6 @@ WebPage::~WebPage()
     QFile::remove(path);
     preview.save(path);
 }
-
-
-bool WebPage::hasNetworkAnalyzerEnabled() const
-{
-    return _networkAnalyzer;
-};
-
-
-void WebPage::enableNetworkAnalyzer(bool b)
-{
-    _networkAnalyzer = b;
-};
 
 
 bool WebPage::isOnRekonqPage() const
@@ -308,16 +292,9 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     if (type == QWebPage::WebModalDialog)
         kDebug() << "Modal Dialog";
 
-    WebTab *w = 0;
-    if (ReKonfig::openLinksInNewWindow())
-    {
-        w = rApp->newMainWindow()->mainView()->currentWebTab();
-    }
-    else
-    {
-        w = rApp->mainWindow()->mainView()->newWebTab(!ReKonfig::openNewTabsInBackground());
-    }
-    return w->page();
+    WebPage* p = new WebPage;
+    emit pageCreated(p);
+    return p;
 }
 
 
@@ -388,7 +365,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     }
     else
     {
-        KParts::BrowserOpenOrSaveQuestion dlg(rApp->mainWindow(), replyUrl, _mimeType);
+        KParts::BrowserOpenOrSaveQuestion dlg(view(), replyUrl, _mimeType);
 
         if (!_suggestedFileName.isEmpty())
             dlg.setSuggestedFileName(_suggestedFileName);
@@ -403,7 +380,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         switch (dlg.askEmbedOrSave())
         {
         case KParts::BrowserOpenOrSaveQuestion::Save:
-            rApp->downloadManager()->downloadResource(reply->url(), KIO::MetaData(), view(), !hideDialog, _suggestedFileName);
+            DownloadManager::self()->downloadResource(reply->url(), KIO::MetaData(), view(), !hideDialog, _suggestedFileName);
             return;
 
         case KParts::BrowserOpenOrSaveQuestion::Cancel:
@@ -425,9 +402,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         tempFile.open();
         KUrl destUrl;
         destUrl.setPath(tempFile.fileName());
-        KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
-        job->ui()->setWindow(rApp->mainWindow());
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(copyToTempFileResult(KJob*)));
+//         KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
+//         job->ui()->setWindow(view());
+//         connect(job, SIGNAL(result(KJob*)), this, SLOT(copyToTempFileResult(KJob*)));
         return;
     }
 
@@ -441,10 +418,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         WebTab *tab = qobject_cast<WebTab *>(view->parent());
         tab->setPart(pa, replyUrl);
 
-        UrlBar *bar = tab->urlBar();
-        bar->setQUrl(replyUrl);
-
-        rApp->mainWindow()->updateHistoryActions();
+//         UrlBar *bar = tab->urlBar();
+//         bar->setQUrl(replyUrl);
+// 
+//         rApp->mainWindow()->updateHistoryActions();
     }
     else
     {
@@ -460,9 +437,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
 void WebPage::loadStarted()
 {
-    _hasAdBlockedElements = false;
-    rApp->adblockManager()->clearElementsLists();
-
     // set zoom factor
     QString val;
     KSharedConfig::Ptr config = KGlobal::config();
@@ -480,10 +454,7 @@ void WebPage::loadFinished(bool ok)
     Q_UNUSED(ok);
 
     // Provide site icon. Can this be moved to loadStarted??
-    rApp->iconManager()->provideIcon(mainFrame(), _loadingUrl);
-
-    // Apply adblock manager hiding rules
-    rApp->adblockManager()->applyHidingRules(this);
+    IconManager::self()->provideIcon(mainFrame(), _loadingUrl);
 
     // KWallet Integration
     QStringList list = ReKonfig::walletBlackList();
@@ -564,10 +535,10 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
 
                 WebView *view = qobject_cast<WebView *>(parent());
                 WebTab *tab = qobject_cast<WebTab *>(view->parent());
-                UrlBar *bar = tab->urlBar();
-                bar->setQUrl(_loadingUrl);
-
-                rApp->mainWindow()->updateHistoryActions();
+// FIXME                UrlBar *bar = tab->urlBar();
+//                 bar->setQUrl(_loadingUrl);
+// 
+//                 rApp->mainWindow()->updateHistoryActions();
             }
         }
         break;
@@ -692,7 +663,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
 
 void WebPage::downloadRequest(const QNetworkRequest &request)
 {
-    rApp->downloadManager()->downloadResource(request.url(),
+    DownloadManager::self()->downloadResource(request.url(),
             request.attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap(),
             view());
 }
@@ -700,7 +671,7 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
 
 void WebPage::downloadUrl(const KUrl &url)
 {
-    rApp->downloadManager()->downloadResource(url, KIO::MetaData(), view());
+    DownloadManager::self()->downloadResource(url, KIO::MetaData(), view());
 }
 
 
@@ -724,7 +695,7 @@ void WebPage::downloadAllContentsWithKGet()
         contents << baseUrl.resolved(relativeUrl).toString();
     }
 
-    rApp->downloadManager()->downloadLinksWithKGet(QVariant(contents.toList()));
+    DownloadManager::self()->downloadLinksWithKGet(QVariant(contents.toList()));
 }
 
 
@@ -732,8 +703,8 @@ void WebPage::showSSLInfo(QPoint pos)
 {
     if (mainFrame()->url().scheme() == QL1S("https"))
     {
-        SSLWidget *widget = new SSLWidget(mainFrame()->url(), _sslInfo, view());
-        widget->showAt(pos);
+//         SSLWidget *widget = new SSLWidget(mainFrame()->url(), _sslInfo, view());
+//         widget->showAt(pos);
     }
     else
     {
@@ -750,7 +721,7 @@ void WebPage::copyToTempFileResult(KJob* job)
     if (job->error())
         job->uiDelegate()->showErrorMessage();
     else
-        (void)KRun::runUrl(static_cast<KIO::FileCopyJob *>(job)->destUrl(), _mimeType, rApp->mainWindow());
+        (void)KRun::runUrl(static_cast<KIO::FileCopyJob *>(job)->destUrl(), _mimeType, view());
 }
 
 
