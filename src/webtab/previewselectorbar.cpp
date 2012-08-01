@@ -33,8 +33,6 @@
 #include "rekonq.h"
 
 // Local Include
-#include "application.h"
-#include "mainwindow.h"
 #include "webpage.h"
 #include "webtab.h"
 #include "websnap.h"
@@ -70,8 +68,8 @@ PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
 
 void PreviewSelectorBar::verifyUrl()
 {
-
-    if (rApp->mainWindow()->currentTab()->page()->mainFrame()->url().scheme() != "about")
+    WebTab *tab = qobject_cast<WebTab *>(parent());
+    if (tab->url().scheme() != "about")
     {
         m_insertAction->setEnabled(true);
         m_insertAction->setToolTip("");
@@ -102,21 +100,21 @@ void PreviewSelectorBar::loadFinished()
 
 void PreviewSelectorBar::clicked()
 {
-    WebPage *page = rApp->mainWindow()->currentTab()->page();
-
-    if (page)
+    WebTab *tab = qobject_cast<WebTab *>(parent());
+    
+    if (tab->page())
     {
-        KUrl url = page->mainFrame()->url();
+        KUrl url = tab->url();
         QStringList names = ReKonfig::previewNames();
         QStringList urls = ReKonfig::previewUrls();
 
         //cleanup the previous image from the cache (useful to refresh the snapshot)
         QFile::remove(WebSnap::imagePathFromUrl(urls.at(m_previewIndex)));
-        QPixmap preview = WebSnap::renderPagePreview(*page);
+        QPixmap preview = WebSnap::renderPagePreview(*tab->page());
         preview.save(WebSnap::imagePathFromUrl(url));
 
         urls.replace(m_previewIndex, url.toMimeDataString());
-        names.replace(m_previewIndex, page->mainFrame()->title());
+        names.replace(m_previewIndex, tab->page()->mainFrame()->title());
 
         ReKonfig::setPreviewNames(names);
         ReKonfig::setPreviewUrls(urls);
@@ -124,7 +122,7 @@ void PreviewSelectorBar::clicked()
         ReKonfig::self()->writeConfig();
 
 
-        page->mainFrame()->load(KUrl("about:favorites"));
+        tab->page()->mainFrame()->load(KUrl("about:favorites"));
     }
 
     animatedHide();

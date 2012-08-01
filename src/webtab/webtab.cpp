@@ -33,20 +33,21 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "application.h"
 #include "historymanager.h"
-#include "messagebar.h"
-#include "opensearchmanager.h"
-#include "previewselectorbar.h"
-#include "rsswidget.h"
-#include "searchenginebar.h"
 #include "sessionmanager.h"
 #include "syncmanager.h"
-#include "urlbar.h"
+
+#include "messagebar.h"
+#include "previewselectorbar.h"
+// #include "rsswidget.h"
+#include "searchenginebar.h"
+// #include "urlbar.h"
 #include "walletbar.h"
 #include "webpage.h"
 #include "websnap.h"
-#include "webshortcutwidget.h"
+// #include "webshortcutwidget.h"
+
+#include "webwindow.h"
 
 // KDE Includes
 #include <KWebWallet>
@@ -57,18 +58,20 @@
 #include <KDebug>
 #include <KBuildSycocaProgressDialog>
 #include <kdeprintdialog.h>
+#include <KLocalizedString>
 
 #include <KParts/Part>
 #include <KParts/BrowserExtension>
 
 // Qt Includes
 #include <QVBoxLayout>
+#include <QPrintDialog>
+#include <QPrinter>
 
 
 WebTab::WebTab(QWidget *parent)
     : QWidget(parent)
     , m_webView(0)
-    , m_urlBar(new UrlBar(this))
     , m_progress(0)
     , m_part(0)
 {
@@ -98,7 +101,7 @@ WebTab::WebTab(QWidget *parent)
     connect(view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
 
     // Session Manager
-    connect(view(), SIGNAL(loadFinished(bool)), rApp->sessionManager(), SLOT(saveSession()));
+    connect(view(), SIGNAL(loadFinished(bool)), SessionManager::self(), SLOT(saveSession()));
 }
 
 
@@ -106,12 +109,6 @@ WebTab::~WebTab()
 {
     m_walletBar.clear();
     m_previewSelectorBar.clear();
-
-    // NOTE:
-    // Urlbar is reparented when inserted in StackedUrlBar, so we need
-    // to get sure it will be deleted. Deleting it later to ensure everything
-    // will be finished before ;)
-    m_urlBar->deleteLater();
 
     // Get sure m_part will be deleted
     delete m_part;
@@ -214,7 +211,7 @@ void WebTab::createWalletBar(const QString &key, const QUrl &url)
 
     // sync passwords
     connect(m_walletBar.data(), SIGNAL(saveFormDataAccepted(QString)),
-            rApp->syncManager(), SLOT(syncPasswords()), Qt::UniqueConnection);
+            SyncManager::self(), SLOT(syncPasswords()), Qt::UniqueConnection);
 }
 
 
@@ -280,8 +277,8 @@ void WebTab::showRSSInfo(const QPoint &pos)
         map.insert(KUrl(urlString), title);
     }
 
-    RSSWidget *widget = new RSSWidget(map, window());
-    widget->showAt(pos);
+// FIXME    RSSWidget *widget = new RSSWidget(map, window());
+//     widget->showAt(pos);
 }
 
 
@@ -336,8 +333,9 @@ KUrl WebTab::extractOpensearchUrl(QWebElement e)
 
 bool WebTab::hasNewSearchEngine()
 {
-    QWebElement e = page()->mainFrame()->findFirstElement(QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
-    return !e.isNull() && !rApp->opensearchManager()->engineExists(extractOpensearchUrl(e));
+//     QWebElement e = page()->mainFrame()->findFirstElement(QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
+//     return !e.isNull() && !rApp->opensearchManager()->engineExists(extractOpensearchUrl(e));
+    return false; // FIXME
 }
 
 
@@ -347,26 +345,27 @@ void WebTab::showSearchEngine(const QPoint &pos)
     QString title = e.attribute(QL1S("title"));
     if (!title.isEmpty())
     {
-        WebShortcutWidget *widget = new WebShortcutWidget(window());
-        widget->setWindowFlags(Qt::Popup);
-
-        connect(widget, SIGNAL(webShortcutSet(KUrl, QString, QString)),
-                rApp->opensearchManager(), SLOT(addOpenSearchEngine(KUrl, QString, QString)));
-        connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString)),
-                this, SLOT(openSearchEngineAdded()));
-
-        widget->show(extractOpensearchUrl(e), title, pos);
+        // FIXME
+//         WebShortcutWidget *widget = new WebShortcutWidget(window());
+//         widget->setWindowFlags(Qt::Popup);
+// 
+//         connect(widget, SIGNAL(webShortcutSet(KUrl, QString, QString)),
+//                 rApp->opensearchManager(), SLOT(addOpenSearchEngine(KUrl, QString, QString)));
+//         connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString)),
+//                 this, SLOT(openSearchEngineAdded()));
+// 
+//         widget->show(extractOpensearchUrl(e), title, pos);
     }
 }
 
 
 void WebTab::openSearchEngineAdded()
 {
-    // If the providers changed, tell sycoca to rebuild its database...
-    KBuildSycocaProgressDialog::rebuildKSycoca(this);
-
-    disconnect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString, QString, QString)),
-               this, SLOT(openSearchEngineAdded()));
+//     // If the providers changed, tell sycoca to rebuild its database...
+//     KBuildSycocaProgressDialog::rebuildKSycoca(this);
+// 
+//     disconnect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString, QString, QString)),
+//                this, SLOT(openSearchEngineAdded()));
 }
 
 
@@ -378,37 +377,7 @@ void WebTab::showMessageBar()
     qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, msgBar);
     msgBar->animatedShow();
 
-    connect(msgBar, SIGNAL(accepted()), rApp->sessionManager(), SLOT(restoreCrashedSession()));
-}
-
-
-bool WebTab::hasAdBlockedElements()
-{
-    return page()->hasAdBlockedElements();
-}
-
-
-QPixmap WebTab::tabPreview(int width, int height)
-{
-    if (isPageLoading())
-    {
-        // no previews during load
-        return QPixmap();
-    }
-
-    if (!part())
-    {
-        return WebSnap::renderPagePreview(*page(), width, height);
-    }
-    else
-    {
-        QWidget *partWidget = part()->widget();
-        QPixmap partThumb(partWidget->size());
-
-        partWidget->render(&partThumb);
-
-        return partThumb.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    }
+    connect(msgBar, SIGNAL(accepted()), SessionManager::self(), SLOT(restoreCrashedSession()));
 }
 
 
@@ -416,7 +385,7 @@ void WebTab::loadFinished()
 {
     // add page to history
     QString pageTitle = (page() && page()->isOnRekonqPage()) ? url().url() : m_webView->title();
-    rApp->historyManager()->addHistoryEntry(url(), pageTitle);
+    HistoryManager::self()->addHistoryEntry(url(), pageTitle);
 }
 
 
@@ -450,14 +419,10 @@ void WebTab::printFrame()
         }
     }
 
-    QWebFrame *printFrame = 0;
-    if (frame == 0)
+    QWebFrame *printFrame = page()->currentFrame();
+    if (printFrame == 0)
     {
         printFrame = page()->mainFrame();
-    }
-    else
-    {
-        printFrame = frame;
     }
 
     QPrinter printer;

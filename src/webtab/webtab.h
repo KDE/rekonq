@@ -45,9 +45,10 @@
 class NotificationBar;
 class PreviewSelectorBar;
 class QPoint;
-class UrlBar;
 class WalletBar;
 class WebPage;
+
+class WebWindow;
 
 
 class REKONQ_TESTS_EXPORT WebTab : public QWidget
@@ -62,11 +63,6 @@ public:
     WebPage *page();
     WebWindow *webWindow();
     
-    inline UrlBar *urlBar() const
-    {
-        return m_urlBar;
-    }
-
     inline int progress() const
     {
         return m_progress;
@@ -91,10 +87,6 @@ public:
 
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
 
-    bool hasAdBlockedElements();
-
-    QPixmap tabPreview(int width, int height);
-
 private Q_SLOTS:
     void updateProgress(int progress);
     void resetProgress();
@@ -118,10 +110,10 @@ Q_SIGNALS:
     void loadProgressing();
     void titleChanged(const QString &);
 
+    void triggerPartPrint();
+
 private:
     WebView *m_webView;
-
-    UrlBar *m_urlBar;
 
     int m_progress;
 
