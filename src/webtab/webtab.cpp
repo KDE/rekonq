@@ -168,6 +168,24 @@ bool WebTab::isPageLoading()
 }
 
 
+bool WebTab::hasRSSInfo()
+{
+    QWebElementCollection col = page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
+    col.append(page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
+    if (col.count() != 0)
+        return true;
+
+    return false;
+}
+
+
+bool WebTab::hasNewSearchEngine()
+{
+    QWebElement e = page()->mainFrame()->findFirstElement(QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
+    return !e.isNull(); // FIXME && !rApp->opensearchManager()->engineExists(extractOpensearchUrl(e));
+}
+
+
 void WebTab::createWalletBar(const QString &key, const QUrl &url)
 {
     // check if the url is in the wallet blacklist

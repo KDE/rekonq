@@ -70,6 +70,9 @@ public:
 
     KUrl url();
 
+    bool hasRSSInfo();
+    bool hasNewSearchEngine();
+
     void createPreviewSelectorBar(int index);
     void hideSelectorBar();
 

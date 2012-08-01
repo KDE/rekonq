@@ -67,6 +67,16 @@ set(rekonq_KDEINIT_SRCS
     tabwindow/tabpreviewpopup.cpp
     tabwindow/tabwindow.cpp
     #----------------------------------------
+    urlbar/urlbar.cpp
+    urlbar/completionwidget.cpp
+    urlbar/listitem.cpp
+    urlbar/rsswidget.cpp
+    urlbar/sslwidget.cpp
+    urlbar/bookmarkwidget.cpp
+    urlbar/webshortcutwidget.cpp
+    urlbar/favoritewidget.cpp
+    urlbar/urlsuggester.cpp
+    #----------------------------------------
     useragent/useragentinfo.cpp
     useragent/useragentmanager.cpp
     useragent/useragentwidget.cpp
