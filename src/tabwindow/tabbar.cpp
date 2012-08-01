@@ -38,13 +38,13 @@
 #include <KColorScheme>
 #include <KLocalizedString>
 #include <KMenu>
+#include <KUrl>
 
 #include <QPropertyAnimation>
 #include <QSignalMapper>
 #include <QStyleOptionFrameV3>
 #include <QMouseEvent>
 #include <QTimer>
-#include <QUrl>
 
 
 static inline QByteArray highlightPropertyName(int index)
@@ -419,7 +419,7 @@ void TabBar::showTabPreview()
     int w = tabSizeHint(0).width();
     int h = w * tabW->size().height() / tabW->size().width();
     
-    m_previewPopup = new TabPreviewPopup(indexedTab->tabPreview(w,h), indexedTab->url().toString() , this);
+    m_previewPopup = new TabPreviewPopup(indexedTab->tabPreview(w,h), indexedTab->url().url() , this);
 
     int tabBarWidth = tabW->size().width();
     int leftIndex = tabRect(m_currentTabPreviewIndex).x() + (tabRect(m_currentTabPreviewIndex).width() - w) / 2;

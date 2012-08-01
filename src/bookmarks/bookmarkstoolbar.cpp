@@ -404,7 +404,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             // DROP is URL
             QString url = dropEvent->mimeData()->urls().at(0).toString();
             WebWindow *w = qobject_cast<WebWindow *>(parent());
-            QString title = url.contains(w->url().toString())
+            QString title = url.contains(w->url().url())
                             ? w->title()
                             : url;
             bookmark = root.addBookmark(title, url);
@@ -417,7 +417,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             if (u.isValid())
             {
                 WebWindow *w = qobject_cast<WebWindow *>(parent());
-                QString title = url.contains(w->url().toString())
+                QString title = url.contains(w->url().url())
                             ? w->title()
                             : url;
                 bookmark = root.addBookmark(title, url);

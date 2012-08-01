@@ -127,7 +127,7 @@ QString BookmarkOwner::currentTitle() const
 
 QString BookmarkOwner::currentUrl() const
 {
-    return rApp->tabWindow()->currentWebWindow()->url().toString();
+    return rApp->tabWindow()->currentWebWindow()->url().url();
 }
 
 
@@ -141,7 +141,7 @@ QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
     {
         QPair<QString, QString> item;
         item.first = view->webWindow(i)->title();
-        item.second = view->webWindow(i)->url().toString();
+        item.second = view->webWindow(i)->url().url();
         bkList << item;
     }
 

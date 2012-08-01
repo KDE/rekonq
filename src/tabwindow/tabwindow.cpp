@@ -285,7 +285,7 @@ void TabWindow::tabTitleChanged(const QString &title)
 
     bool emptyTitle = title.isEmpty();
     
-    QString tabTitle = emptyTitle ? tab->url().toString() : title;
+    QString tabTitle = emptyTitle ? tab->url().url() : title;
     tabTitle.replace('&', "&&");
 
     int index = indexOf(tab);
@@ -405,7 +405,7 @@ void TabWindow::closeTab(int index, bool del)
         const int recentlyClosedTabsLimit = 8;
         TabHistory history(tabToClose->page()->history());
         history.title = tabToClose->title();
-        history.url = tabToClose->url().toString();
+        history.url = tabToClose->url().url();
 
         m_recentlyClosedTabs.removeAll(history);
         if (m_recentlyClosedTabs.count() == recentlyClosedTabsLimit)

@@ -95,7 +95,7 @@ void GeneralWidget::setHomeToCurrentPage()
     WebWindow *tab = tw->currentWebWindow();
     if (tab)
     {
-        kcfg_homePage->setText(tab->url().toString());
+        kcfg_homePage->setText(tab->url().url());
     }
 }
 

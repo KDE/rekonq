@@ -40,9 +40,11 @@
 
 // Forward Declarations
 class WebPage;
+class WebTab;
+class WebView;
 
-class QWebView;
-class QLineEdit;
+class KLineEdit;
+
 class QPixmap;
 class QUrl;
 
@@ -59,7 +61,7 @@ public:
 
     WebPage *page();
 
-    QUrl url() const;
+    KUrl url() const;
     QString title() const;
     QIcon icon() const;
     
@@ -94,8 +96,8 @@ Q_SIGNALS:
 private:
     int _progress;
 
-    QWebView *_view;
-    QLineEdit *_edit;
+    WebTab *_tab;
+    KLineEdit *_edit;
 };
 
 #endif // WEB_WINDOW
