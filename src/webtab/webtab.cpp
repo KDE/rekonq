@@ -179,13 +179,6 @@ bool WebTab::hasRSSInfo()
 }
 
 
-bool WebTab::hasNewSearchEngine()
-{
-    QWebElement e = page()->mainFrame()->findFirstElement(QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
-    return !e.isNull(); // FIXME && !rApp->opensearchManager()->engineExists(extractOpensearchUrl(e));
-}
-
-
 void WebTab::createWalletBar(const QString &key, const QUrl &url)
 {
     // check if the url is in the wallet blacklist

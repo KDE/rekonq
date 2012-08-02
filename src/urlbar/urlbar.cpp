@@ -46,7 +46,6 @@
 #include "bookmarkwidget.h"
 #include "favoritewidget.h"
 #include "rsswidget.h"
-#include "webshortcutwidget.h"
 
 #include "urlsuggester.h"
 
@@ -108,23 +107,6 @@ QString guessUrlWithCustomFirstLevel(const QString &str1, const QString &str2)
         url.setHost(host);
     }
     return url.toString();
-}
-
-
-KUrl extractOpensearchUrl(const KUrl &tabUrl, QWebElement e)
-{
-    QString href = e.attribute(QL1S("href"));
-    KUrl url = KUrl(href);
-    if (!href.contains(":"))
-    {
-        QString host = tabUrl.scheme() + "://" + tabUrl.host();
-        if (tabUrl.port() != -1)
-        {
-            host += QL1C(':') + QString::number(tabUrl.port());
-        }
-        url = KUrl(tabUrl, href);
-    }
-    return url;
 }
 
 
@@ -421,13 +403,6 @@ void UrlBar::loadFinished()
         // NOTE: the choice for the right SSL icon is done in the addRightIcon method
         IconButton *bt = addRightIcon(UrlBar::SSL);
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo(QPoint)));
-    }
-
-    // show add search engine
-    if (_tab->hasNewSearchEngine())
-    {
-        IconButton *bt = addRightIcon(UrlBar::SearchEngine);
-        connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(showSearchEngine(QPoint)));
     }
 
 // FIXME Reimplement    if (_tab->hasAdBlockedElements())
@@ -828,25 +803,4 @@ void UrlBar::showRSSInfo(const QPoint &pos)
 
     RSSWidget *widget = new RSSWidget(map, window());
     widget->showAt(pos);
-}
-
-
-void UrlBar::showSearchEngine(const QPoint &pos)
-{
-    QWebElement e = _tab->page()->mainFrame()->findFirstElement(
-        QL1S("head >link[rel=\"search\"][ type=\"application/opensearchdescription+xml\"]"));
-    QString title = e.attribute(QL1S("title"));
-    if (!title.isEmpty())
-    {
-        WebShortcutWidget *widget = new WebShortcutWidget(window());
-        widget->setWindowFlags(Qt::Popup);
-
-//  FIXME       connect(widget, SIGNAL(webShortcutSet(KUrl, QString, QString)),
-//                 rApp->opensearchManager(), SLOT(addOpenSearchEngine(KUrl, QString, QString)));
-//         connect(rApp->opensearchManager(), SIGNAL(openSearchEngineAdded(QString)),
-//                 this, SLOT(openSearchEngineAdded()));
-
-        KUrl u = extractOpensearchUrl(_tab->url(), e);
-        widget->show(u, title, pos);
-    }
 }

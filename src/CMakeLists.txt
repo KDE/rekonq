@@ -70,11 +70,10 @@ set(rekonq_KDEINIT_SRCS
     urlbar/urlbar.cpp
     urlbar/completionwidget.cpp
     urlbar/listitem.cpp
+    urlbar/bookmarkwidget.cpp
+    urlbar/favoritewidget.cpp
     urlbar/rsswidget.cpp
     urlbar/sslwidget.cpp
-    urlbar/bookmarkwidget.cpp
-    urlbar/webshortcutwidget.cpp
-    urlbar/favoritewidget.cpp
     urlbar/urlsuggester.cpp
     #----------------------------------------
     useragent/useragentinfo.cpp

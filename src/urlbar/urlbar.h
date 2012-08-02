@@ -127,7 +127,6 @@ private Q_SLOTS:
     void loadDigitedUrl();
 
     void showRSSInfo(const QPoint &);
-    void showSearchEngine(const QPoint &);
 
 protected:
     void paintEvent(QPaintEvent *event);
