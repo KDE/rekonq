@@ -73,6 +73,7 @@ QRegExp UrlSuggester::_searchEnginesRegexp;
 UrlSuggester::UrlSuggester(const QString &typedUrl)
     : QObject()
     , _typedString(typedUrl.trimmed())
+    , _webSearchFirst(false)
 {
     if (_browseRegexp.isEmpty())
     {
@@ -178,13 +179,12 @@ UrlSuggestionList UrlSuggester::orderLists()
     // You have to add here the "browse & search" options, always available.
     const int availableEntries = 8;
 
-    bool webSearchFirst = false;
     // Browse & Search results
     UrlSuggestionList browseSearch;
     QString lowerTypedString = _typedString.toLower();
-    if (_browseRegexp.indexIn(lowerTypedString) != -1)
+    if (_webSearchFirst || _browseRegexp.indexIn(lowerTypedString) != -1)
     {
-        webSearchFirst = true;
+        _webSearchFirst = true;
         browseSearch << _webSearches;
     }
     else
@@ -256,8 +256,8 @@ UrlSuggestionList UrlSuggester::orderLists()
     // and finally, results
     UrlSuggestionList list;
 
-    if (webSearchFirst)
-        list << _qurlFromUserInput;
+//     if (_webSearchFirst)
+//         list << _qurlFromUserInput;
     list += relevant + browseSearch + _history + _bookmarks;
     return list;
 }
@@ -293,16 +293,23 @@ void UrlSuggester::computeQurlFromUserInput()
 void UrlSuggester::computeWebSearches()
 {
     QString query = _typedString;
+
+    // this result is generated when an user types something like gg:kde 
     KService::Ptr engine = SearchEngine::fromString(_typedString);
     if (engine)
     {
+        _webSearchFirst = true;
         query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
-
-        UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(engine, query), query);
-        UrlSuggestionList list;
-        list << item;
-        _webSearches = list;
     }
+    else
+    {
+        engine = SearchEngine::defaultEngine();
+    }
+    
+    UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(engine, query), query, engine->name());
+    UrlSuggestionList list;
+    list << item;
+    _webSearches = list;
 }
 
 

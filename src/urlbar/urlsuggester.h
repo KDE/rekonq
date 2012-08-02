@@ -146,6 +146,8 @@ private:
     UrlSuggestionList _bookmarks;
     UrlSuggestionList _suggestions;
 
+    bool _webSearchFirst;
+    
     static QRegExp _browseRegexp;
     static QRegExp _searchEnginesRegexp;
 };

@@ -47,7 +47,7 @@
 #include "favoritewidget.h"
 #include "rsswidget.h"
 
-#include "urlsuggester.h"
+#include "urlresolver.h"
 
 #include "webtab.h"
 #include "webpage.h"
@@ -202,16 +202,8 @@ void UrlBar::loadRequestedUrl(const KUrl& url, Rekonq::OpenType type)
 
 void UrlBar::loadDigitedUrl()
 {
-    UrlSuggester res(text());
-    UrlSuggestionList list = res.orderedSearchItems();
-    if (list.isEmpty())
-    {
-        loadRequestedUrl(KUrl(text()));
-    }
-    else
-    {
-        loadRequestedUrl(list.first().url);
-    }
+    KUrl u = UrlResolver::urlFromTextTyped(text());
+    loadRequestedUrl(u);
 }
 
 
@@ -651,6 +643,7 @@ void UrlBar::detectTypedString(const QString &typed)
 
 void UrlBar::suggest()
 {
+    kDebug() << "SUGGEST ABOUT DIGITED: " << text(); 
     if (!_box.isNull())
         _box.data()->suggestUrls(text());
 }

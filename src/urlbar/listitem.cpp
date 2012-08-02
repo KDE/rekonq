@@ -425,11 +425,15 @@ SearchListItem::SearchListItem(const UrlSuggestionItem &item, const QString &tex
     : ListItem(item, parent)
     , m_text(text)
 {
-    // FIXME
-//     m_iconLabel = new IconLabel(SearchEngine::buildQuery(UrlResolver::searchEngine(), ""), this);
-//     m_titleLabel = new TextLabel(this);
-//     m_titleLabel->setEngineText(UrlResolver::searchEngine()->name(), item.title);
-//     m_engineBar = new EngineBar(UrlResolver::searchEngine(), parent);
+    m_iconLabel = new IconLabel(item.url, this);
+    m_titleLabel = new TextLabel(this);
+    m_titleLabel->setEngineText(item.description, item.title);
+
+    KService::Ptr engine = SearchEngine::fromString(text);
+    if (!engine)
+        engine = SearchEngine::defaultEngine();
+
+    m_engineBar = new EngineBar(engine, parent);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
@@ -482,6 +486,7 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
 
     if (SearchEngine::defaultEngine().isNull())
         return;
+    
     m_engineGroup->addAction(newEngineAction(SearchEngine::defaultEngine(), selectedEngine));
     Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
     {

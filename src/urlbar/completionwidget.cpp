@@ -33,6 +33,7 @@
 
 // Local Includes
 #include "searchengine.h"
+#include "urlresolver.h"
 
 #include "listitem.h"
 #include "urlbar.h"
@@ -299,7 +300,6 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                     }
                 }
 
-                kDebug() << "Suggestion INDEX chosen: " << _currentIndex;
                 if (_currentIndex == -1)
                     _currentIndex = 0;
                 child = findChild<ListItem *>(QString::number(_currentIndex));
@@ -311,16 +311,8 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 }
                 else //the user type too fast (completionwidget not visible or suggestion not downloaded)
                 {
-                    UrlSuggester res(w->text());
-                    UrlSuggestionList list = res.orderedSearchItems();
-                    if (list.isEmpty())
-                    {
-                        emit chosenUrl(KUrl(_typedString), Rekonq::CurrentTab);
-                    }
-                    else
-                    {
-                        emit chosenUrl(list.first().url, Rekonq::CurrentTab);
-                    }
+                    KUrl u = UrlResolver::urlFromTextTyped(w->text());
+                    emit chosenUrl(u, Rekonq::CurrentTab);
                 }
                 kev->accept();
                 hide();
@@ -385,11 +377,6 @@ void CompletionWidget::suggestUrls(const QString &text)
     {
         hide();
         return;
-    }
-
-    if (!isVisible())
-    {
-// FIXME        UrlResolver::setSearchEngine(SearchEngine::defaultEngine());
     }
 
     UrlSuggester *res = new UrlSuggester(text);

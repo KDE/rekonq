@@ -131,6 +131,7 @@ KService::Ptr SearchEngine::fromString(const QString &text)
             {
                 service = providers.at(i);
                 found = true;
+                break;
             }
         }
         i++;
