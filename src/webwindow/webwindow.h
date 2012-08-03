@@ -50,7 +50,9 @@ class RekonqMenu;
 class KMenu;
 class KToolBar;
 
+class QLabel;
 class QPixmap;
+class QTimer;
 class QUrl;
 
 
@@ -100,6 +102,11 @@ private Q_SLOTS:
     void openNext(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
     void updateHistoryActions();
 
+    /**
+     * Notifies a message in a popup
+    */
+    void notifyMessage(const QString &msg);
+
 Q_SIGNALS:
     void titleChanged(QString);
 
@@ -124,6 +131,9 @@ private:
     KMenu *m_historyForwardMenu;
 
     RekonqMenu *m_rekonqMenu;
+
+    QLabel *m_popup;
+    QTimer *m_hidePopupTimer;
 
     KActionCollection *_ac;
 };

@@ -42,6 +42,11 @@
 #include <KUrl>
 #include <KToolBar>
 
+#include <QLabel>
+#include <QStyle>
+#include <QTextDocument>
+#include <QTimer>
+#include <QWebFrame>
 #include <QWebView>
 #include <QWebHistory>
 #include <QVBoxLayout>
@@ -56,6 +61,8 @@ WebWindow::WebWindow(QWidget *parent)
     , _bookmarksBar(0)
     , m_loadStopReloadAction(0)
     , m_rekonqMenu(0)
+    , m_popup(new QLabel(this))
+    , m_hidePopupTimer(new QTimer(this))
     , _ac(new KActionCollection(this))
 {
     init();
@@ -70,6 +77,8 @@ WebWindow::WebWindow(WebPage *page, QWidget *parent)
     , _bookmarksBar(0)
     , m_loadStopReloadAction(0)
     , m_rekonqMenu(0)
+    , m_popup(new QLabel(this))
+    , m_hidePopupTimer(new QTimer(this))
     , _ac(new KActionCollection(this))
 {
     _tab->view()->setPage(page);
@@ -124,6 +133,14 @@ void WebWindow::init()
 
     // page signals
     connect(page(), SIGNAL(pageCreated(WebPage *)), this, SIGNAL(pageCreated(WebPage *)));
+
+    // message popup
+    m_popup->setAutoFillBackground(true);
+    m_popup->setMargin(4);
+    m_popup->raise();
+    m_popup->hide();
+    connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
+    connect(_tab->page(), SIGNAL(linkHovered(QString,QString,QString)), this, SLOT(notifyMessage(QString)));
 }
 
 void WebWindow::setupActions()
@@ -162,6 +179,8 @@ void WebWindow::setupActions()
     m_loadStopReloadAction->setIcon(KIcon("go-jump-locationbar"));
     m_loadStopReloadAction->setToolTip(i18n("Go"));
     m_loadStopReloadAction->setText(i18n("Go"));
+
+    updateHistoryActions();
 }
 
 
@@ -395,6 +414,63 @@ void WebWindow::updateHistoryActions()
 
     QAction *historyForwardAction = actionByName(KStandardAction::name(KStandardAction::Forward));
     historyForwardAction->setEnabled(history->canGoForward());
+}
+
+
+void WebWindow::notifyMessage(const QString &msg)
+{
+    // deleting popus if empty msgs
+    if (msg.isEmpty())
+    {
+        m_hidePopupTimer->start(250);
+        return;
+    }
+
+    m_hidePopupTimer->stop();
+    m_hidePopupTimer->start(3000);
+
+    QString msgToShow = Qt::escape(msg);
+
+    // fix crash on window close
+    if (!_tab || !_tab->page())
+        return;
+
+    const int margin = 4;
+    const int halfWidth = width() / 2;
+
+    // Set Popup size
+    QFontMetrics fm = m_popup->fontMetrics();
+    QSize labelSize(fm.width(msgToShow) + 2 * margin, fm.height() + 2 * margin);
+
+    if (labelSize.width() > halfWidth)
+        labelSize.setWidth(halfWidth);
+
+    m_popup->setFixedSize(labelSize);
+    m_popup->setText(fm.elidedText(msgToShow, Qt::ElideMiddle, labelSize.width() - 2 * margin));
+
+    // NOTE: while currentFrame should NEVER be null
+    // we are checking here its existence cause of bug:264187
+    if (!_tab->page()->currentFrame())
+        return;
+
+    const bool horizontalScrollbarIsVisible = _tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
+    const bool verticalScrollbarIsVisible = _tab->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
+    const bool actionBarsVisible = false; //m_findBar->isVisible() || m_zoomBar->isVisible();
+
+    const int scrollbarExtent = style()->pixelMetric(QStyle::PM_ScrollBarExtent);
+    const int hScrollbarSize = horizontalScrollbarIsVisible ? scrollbarExtent : 0;
+    const int vScrollbarSize = verticalScrollbarIsVisible ? scrollbarExtent : 0;
+
+    const QPoint mousePos = mapFromGlobal(QCursor::pos());
+    const QPoint bottomPoint = mapTo(this, geometry().bottomLeft());
+
+    int y = bottomPoint.y() + 1 - m_popup->height() - hScrollbarSize;   // +1 because bottom() returns top() + height() - 1, see QRect doku
+    int x = QRect(QPoint(0, y), labelSize).contains(mousePos) || actionBarsVisible
+            ? width() - labelSize.width() - vScrollbarSize
+            : 0;
+
+    m_popup->move(x, y);
+    m_popup->show();
 }
 
 
