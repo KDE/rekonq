@@ -32,7 +32,7 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-// #include <KActionCollection>
+#include <KActionCollection>
 
 // Qt Includes
 #include <QWidget>
@@ -43,7 +43,12 @@ class WebPage;
 class WebTab;
 class WebView;
 
+class BookmarkToolBar;
 class UrlBar;
+class RekonqMenu;
+
+class KMenu;
+class KToolBar;
 
 class QPixmap;
 class QUrl;
@@ -74,15 +79,26 @@ public:
 
     inline QAction *actionByName(const QString &name)
     {
-        return new QAction(this);
-//         FIXME return actionCollection()->action(name);
+        return _ac->action(name);
     }
     
 private:
     void init();
+    void setupActions();
+    void setupTools();
     
 private Q_SLOTS:
-    void checkLoadProgress(int);
+    void webLoadProgress(int);
+    void webLoadStarted();
+    void webLoadFinished(bool);
+
+    // history related
+    void aboutToShowBackMenu();
+    void aboutToShowForwardMenu();
+    void openActionUrl(QAction *action);
+    void openPrevious(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
+    void openNext(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
+    void updateHistoryActions();
 
 Q_SIGNALS:
     void titleChanged(QString);
@@ -98,6 +114,18 @@ private:
 
     WebTab *_tab;
     UrlBar *_bar;
+
+    KToolBar *_mainToolBar;
+    BookmarkToolBar *_bookmarksBar;
+
+    KAction *m_loadStopReloadAction;
+
+    KMenu *m_historyBackMenu;
+    KMenu *m_historyForwardMenu;
+
+    RekonqMenu *m_rekonqMenu;
+
+    KActionCollection *_ac;
 };
 
 #endif // WEB_WINDOW

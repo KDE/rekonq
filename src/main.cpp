@@ -38,7 +38,6 @@
 
 #include <QDir>
 #include <QUrl>
-#include <QWebSettings>
 
 
 static const char description[] =
@@ -84,8 +83,6 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
 
     Application app;
-
-    QWebSettings::setIconDatabasePath("/tmp/iconcache");
 
     // set application data
     QCoreApplication::setApplicationName(QLatin1String("rekonq"));
