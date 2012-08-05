@@ -51,20 +51,24 @@ void RekonqMenu::showEvent(QShowEvent* event)
 {
     KMenu::showEvent(event);
 
-    if (!m_button)
+    if (m_button.isNull())
         return;
 
+    kDebug() << "but: " << m_button.data();
+    kDebug() << "but w: " << m_button.data()->width();
+    kDebug() << "but h: " << m_button.data()->height();
+    
     // Adjust the position of the menu to be shown within the
     // rekonq window to reduce the cases that sub-menus might overlap
     // the right screen border.
     QPoint pos;
     if (layoutDirection() == Qt::RightToLeft)
     {
-        pos = m_button->mapToGlobal(QPoint(0, m_button->height()));
+        pos = m_button.data()->mapToGlobal(QPoint(0, m_button.data()->height()));
     }
     else
     {
-        pos = m_button->mapToGlobal(QPoint(m_button->width(), m_button->height()));
+        pos = m_button.data()->mapToGlobal(QPoint(m_button.data()->width(), m_button.data()->height()));
         pos.rx() -= width();
     }
 
@@ -91,7 +95,7 @@ void RekonqMenu::showEvent(QShowEvent* event)
     {
         if (pos.y() + height() > screen.y() + screen.height())
         {
-            pos.ry() = m_button->mapToGlobal(QPoint(0, 0)).y() + height();
+            pos.ry() = m_button.data()->mapToGlobal(QPoint(0, 0)).y() + height();
         }
     }
 
