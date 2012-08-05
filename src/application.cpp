@@ -316,6 +316,11 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 TabWindow *Application::newTabWindow()
 {
     TabWindow *w = new TabWindow;
+
+    // set object name
+    int n = m_tabWindows.count() + 1;
+    w->setObjectName( QL1S("win") + QString::number(n) );
+    
     // This is used to track which window was activated most recently
     w->installEventFilter(this);
 
