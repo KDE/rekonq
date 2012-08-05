@@ -29,9 +29,6 @@
 #include "tabpreviewpopup.h"
 
 // Rekonq Includes
-#include "application.h"
-#include "mainwindow.h"
-#include "tabbar.h"
 #include "webtab.h"
 
 //Qt Includes
@@ -96,10 +93,26 @@ TabPreviewPopup::~TabPreviewPopup()
 }
 
 
+QSize TabPreviewPopup::thumbnailSize() const
+{
+    return m_thumbnail->pixmap()->size();
+}
+
+
 void TabPreviewPopup::setWebTab(WebTab* tab)
 {
-    int w = (tab->parentWidget()->sizeHint().width() / TabBar::baseWidthDivisor);
-    int h = w * tab->size().height() / tab->size().width();
+    // The ratio of the tab
+    double ratio = (double) tab->size().height() / tab->size().width();
+
+    int w = previewBaseSize;
+    int h = previewBaseSize;
+
+    // Apply the ratio to the width or the weight to not exceed previewBaseSize
+    if (ratio < 1)
+        h *= ratio;
+    else if (ratio > 1)
+        w *= (1 / ratio);
+
     const QPixmap preview = tab->tabPreview(w, h);
 
     if (!preview.isNull())

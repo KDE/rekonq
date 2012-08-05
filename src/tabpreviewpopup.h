@@ -52,6 +52,10 @@ public:
     explicit TabPreviewPopup(WebTab *tab, QWidget *parent = 0);
     virtual ~TabPreviewPopup();
 
+    QSize thumbnailSize() const;
+
+    static const int previewBaseSize = 200;
+
 private:
     void setWebTab(WebTab *tab = 0);
     void setUrl(const QString& text);
