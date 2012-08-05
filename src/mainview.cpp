@@ -90,6 +90,9 @@ MainView::MainView(QWidget *parent)
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)));
     connect(tabBar, SIGNAL(tabMoved(int, int)),     m_widgetBar, SLOT(moveBar(int, int)));
 
+    // Update the add tab button for each tabbar layout change
+    connect(tabBar, SIGNAL(tabLayoutChanged()), this, SLOT(updateAddTabButton()));
+
     // current page index changing
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
     connect(this, SIGNAL(currentChanged(int)), rApp->sessionManager(), SLOT(saveSession()));
@@ -155,7 +158,7 @@ QList<TabHistory> MainView::recentlyClosedTabs()
 }
 
 
-void MainView::updateTabBar()
+void MainView::updateTabBarVisibility()
 {
     if (ReKonfig::alwaysShowTabBar() || count() > 1)
     {
@@ -184,30 +187,29 @@ void MainView::updateTabBar()
         m_addTabButton->hide();
         return;
     }
+}
 
+
+void MainView::updateAddTabButton()
+{
     // update tab button position
-    static bool ButtonInCorner = false;
 
     int tabWidgetWidth = frameSize().width();
-    int tabBarWidth = tabBar()->tabSizeHint(0).width() * tabBar()->count();
+    int tabBarWidth = tabBar()->sizeHint().width();
 
     if (tabBarWidth + m_addTabButton->width() > tabWidgetWidth)
     {
-        if (ButtonInCorner)
-            return;
         setCornerWidget(m_addTabButton);
-        ButtonInCorner = true;
     }
     else
     {
-        if (ButtonInCorner)
-        {
-            setCornerWidget(0);
-            ButtonInCorner = false;
-        }
-
+        setCornerWidget(0);
         m_addTabButton->move(tabBarWidth, 0);
     }
+
+    // Make sure the add tab button is correctly shown
+    // For some reason, it's being hidden during a "fixed pos to corner" change
+    m_addTabButton->show();
 }
 
 
@@ -336,7 +338,6 @@ WebTab *MainView::newWebTab(bool focused)
         addTab(tab, i18n("(Untitled)"));
         m_widgetBar->addWidget(tab->urlBar());
     }
-    updateTabBar();
 
     if (focused)
     {
@@ -509,7 +510,6 @@ void MainView::closeTab(int index, bool del)
     // else...
 
     removeTab(index);
-    updateTabBar();        // UI operation: do it ASAP!!
 
     m_widgetBar->removeWidget(tabToClose->urlBar());
     m_widgetBar->setCurrentIndex(m_currentTabIndex);
@@ -746,13 +746,6 @@ QLabel *MainView::animatedLoading(int index, bool addMovie)
 }
 
 
-void MainView::resizeEvent(QResizeEvent *event)
-{
-    updateTabBar();
-    KTabWidget::resizeEvent(event);
-}
-
-
 void MainView::detachTab(int index, MainWindow *toWindow)
 {
     if (index < 0)
@@ -781,7 +774,6 @@ void MainView::detachTab(int index, MainWindow *toWindow)
 
         w->mainView()->addTab(tab, label);
         w->mainView()->widgetBar()->insertWidget(0, bar);
-        w->mainView()->updateTabBar();
 
         // reconnect signals to the new mainview
         // Code copied from newWebTab(), any new changes there should be applied here

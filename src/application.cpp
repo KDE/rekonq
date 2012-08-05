@@ -571,7 +571,7 @@ void Application::updateConfiguration()
     Q_FOREACH(const QWeakPointer<MainWindow> &w, m_mainWindows)
     {
         MainView *mv = w.data()->mainView();
-        mv->updateTabBar();
+        mv->updateTabBarVisibility();
 
         mv->tabBar()->setAnimatedTabHighlighting(ReKonfig::animatedTabHighlighting());
 

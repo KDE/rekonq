@@ -131,7 +131,7 @@ QSize TabBar::tabSizeHint(int index) const
         }
     }
 
-    int h = view->addTabButton()->height() + 6;
+    int h = KTabBar::tabSizeHint(index).height();
 
     QSize ts = QSize(w, h);
     return ts;
@@ -551,4 +551,11 @@ bool TabBar::isURLValid(const QString &url)
             && QUrl::fromUserInput(editedURL).isValid())
         isValid = true;
     return isValid;
+}
+
+
+void TabBar::tabLayoutChange()
+{
+    KTabBar::tabLayoutChange();
+    emit tabLayoutChanged();
 }

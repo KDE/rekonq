@@ -74,6 +74,7 @@ Q_SIGNALS:
     void reloadTab(int index);
     void reloadAllTabs();
     void detachTab(int index);
+    void tabLayoutChanged();
 
 protected:
     /**
@@ -87,6 +88,7 @@ protected:
     virtual void leaveEvent(QEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
 
+    virtual void tabLayoutChange();
     virtual void tabRemoved(int index);
     void dropEvent(QDropEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);

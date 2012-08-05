@@ -79,12 +79,7 @@ public:
 
     void addNewTabButton(QAction *);
 
-    /**
-     * show and hide TabBar if user doesn't choose
-     * "Always Show TabBar" option
-     *
-     */
-    void updateTabBar();
+    void updateTabBarVisibility();
 
     inline QToolButton *addTabButton() const
     {
@@ -158,6 +153,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void currentChanged(int index);
+    void updateAddTabButton();
 
     void webViewLoadStarted();
     void webViewLoadFinished(bool ok);
@@ -168,9 +164,6 @@ private Q_SLOTS:
     void windowCloseRequested();
 
     void openClosedTab();
-
-protected:
-    virtual void resizeEvent(QResizeEvent *event);
 
 private:
     /**
