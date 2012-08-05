@@ -99,7 +99,7 @@ TabPreviewPopup::~TabPreviewPopup()
 void TabPreviewPopup::setWebTab(WebTab* tab)
 {
     int w = (tab->parentWidget()->sizeHint().width() / TabBar::baseWidthDivisor);
-    int h = w * rApp->mainWindow()->size().height() / rApp->mainWindow()->size().width();
+    int h = w * tab->size().height() / tab->size().width();
     const QPixmap preview = tab->tabPreview(w, h);
 
     if (!preview.isNull())

@@ -195,10 +195,13 @@ void TabBar::showTabPreview()
     if (indexedTab->isPageLoading())
         return;
 
-    int w = (mv->sizeHint().width() / baseWidthDivisor);
+    // Make sure the hovered webtab match the current size
+    // Only the active one is updated by window resize events
+    indexedTab->resize(currentTab->size());
 
     m_previewPopup = new TabPreviewPopup(indexedTab , this);
 
+    int w = (mv->sizeHint().width() / baseWidthDivisor);
     int tabBarWidth = mv->size().width();
     int leftIndex = tabRect(m_currentTabPreviewIndex).x() + (tabRect(m_currentTabPreviewIndex).width() - w) / 2;
 
