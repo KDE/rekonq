@@ -201,9 +201,13 @@ void TabBar::showTabPreview()
 
     m_previewPopup = new TabPreviewPopup(indexedTab , this);
 
-    int w = (mv->sizeHint().width() / baseWidthDivisor);
+    int w = tabSizeHint(m_currentTabPreviewIndex).width();
     int tabBarWidth = mv->size().width();
     int leftIndex = tabRect(m_currentTabPreviewIndex).x() + (tabRect(m_currentTabPreviewIndex).width() - w) / 2;
+    int popupWidth = m_previewPopup.data()->thumbnailSize().width();
+
+    // Center the popup if the tab width is bigger or smaller
+    leftIndex += (w - popupWidth) / 2;
 
     if (leftIndex < 0)
     {
