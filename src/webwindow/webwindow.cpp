@@ -52,24 +52,7 @@
 #include <QVBoxLayout>
 
 
-WebWindow::WebWindow(QWidget *parent)
-    : QWidget(parent)
-    , _progress(0)
-    , _tab(new WebTab(this))
-    , _bar(new UrlBar(_tab))
-    , _mainToolBar(new KToolBar(this, false, false))
-    , _bookmarksBar(0)
-    , m_loadStopReloadAction(0)
-    , m_rekonqMenu(0)
-    , m_popup(new QLabel(this))
-    , m_hidePopupTimer(new QTimer(this))
-    , _ac(new KActionCollection(this))
-{
-    init();
-}
-
-
-WebWindow::WebWindow(WebPage *page, QWidget *parent)
+WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     : QWidget(parent)
     , _tab(new WebTab(this))
     , _bar(new UrlBar(_tab))
@@ -81,16 +64,12 @@ WebWindow::WebWindow(WebPage *page, QWidget *parent)
     , m_hidePopupTimer(new QTimer(this))
     , _ac(new KActionCollection(this))
 {
-    _tab->view()->setPage(page);
-    page->setParent(_tab->view());
+    if (pg)
+    {
+        _tab->view()->setPage(pg);
+        pg->setParent(_tab->view());
+    }
     
-    init();
-}
-
-// ---------------------------------------------------------------------------------------------------
-
-void WebWindow::init()
-{
     // then, setup our actions
     setupActions();
 
@@ -143,12 +122,13 @@ void WebWindow::init()
     connect(_tab->page(), SIGNAL(linkHovered(QString,QString,QString)), this, SLOT(notifyMessage(QString)));
 }
 
+
 void WebWindow::setupActions()
 {
     KAction *a;
     
     // ========================= History related actions ==============================
-    a = _ac->addAction(KStandardAction::Back);
+    a = actionCollection()->addAction(KStandardAction::Back);
     connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
             this, SLOT(openPrevious(Qt::MouseButtons, Qt::KeyboardModifiers)));
 
@@ -157,7 +137,7 @@ void WebWindow::setupActions()
     connect(m_historyBackMenu, SIGNAL(aboutToShow()), this, SLOT(aboutToShowBackMenu()));
     connect(m_historyBackMenu, SIGNAL(triggered(QAction*)), this, SLOT(openActionUrl(QAction*)));
 
-    a = _ac->addAction(KStandardAction::Forward);
+    a = actionCollection()->addAction(KStandardAction::Forward);
     connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
             this, SLOT(openNext(Qt::MouseButtons, Qt::KeyboardModifiers)));
 
@@ -169,11 +149,11 @@ void WebWindow::setupActions()
     // urlbar
     a = new KAction(i18n("Location Bar"), this);
     a->setDefaultWidget(_bar);
-    _ac->addAction(QL1S("url_bar"), a);
+    actionCollection()->addAction(QL1S("url_bar"), a);
 
     // load stop reload Action
     m_loadStopReloadAction = new KAction(this);
-    _ac->addAction(QL1S("load_stop_reload") , m_loadStopReloadAction);
+    actionCollection()->addAction(QL1S("load_stop_reload") , m_loadStopReloadAction);
     m_loadStopReloadAction->setShortcutConfigurable(false);
 
     m_loadStopReloadAction->setIcon(KIcon("go-jump-locationbar"));
@@ -194,11 +174,23 @@ void WebWindow::setupTools()
     toolsAction->setMenu(m_rekonqMenu); // dummy menu to have the dropdown arrow
 
     // adding rekonq_tools to rekonq actionCollection
-    _ac->addAction(QL1S("rekonq_tools"), toolsAction);
+    actionCollection()->addAction(QL1S("rekonq_tools"), toolsAction);
 }
 
 // ---------------------------------------------------------------------------------------------------
 
+KActionCollection *WebWindow::actionCollection() const
+{
+    return _ac;
+}
+
+
+QAction *WebWindow::actionByName(const QString &name)
+{
+    return actionCollection()->action(name);
+}
+
+    
 void WebWindow::load(const QUrl &url)
 {
     _tab->view()->load(url);

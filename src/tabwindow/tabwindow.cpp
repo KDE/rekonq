@@ -147,11 +147,7 @@ WebWindow *TabWindow::webWindow(int index) const
 
 WebWindow *TabWindow::prepareNewTab(WebPage *page)
 {
-    WebWindow *tab;
-    if (page)
-        tab = new WebWindow(page, this);
-    else
-        tab = new WebWindow(this);
+    WebWindow *tab = new WebWindow(this, page);
 
     connect(tab, SIGNAL(titleChanged(QString)), this, SLOT(tabTitleChanged(QString)));
 

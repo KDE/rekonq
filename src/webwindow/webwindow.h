@@ -61,8 +61,7 @@ class WebWindow : public QWidget
     Q_OBJECT
 
 public:
-    WebWindow(QWidget *parent = 0);
-    WebWindow(WebPage *page, QWidget *parent = 0);
+    WebWindow(QWidget *parent = 0, WebPage *pg = 0);
 
     void load(const QUrl &);
 
@@ -79,10 +78,8 @@ public:
 
     bool isLoading();
 
-    inline QAction *actionByName(const QString &name)
-    {
-        return _ac->action(name);
-    }
+    virtual KActionCollection *actionCollection () const;
+    QAction *actionByName(const QString &name);
     
 private:
     void init();
