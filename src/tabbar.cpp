@@ -201,21 +201,21 @@ void TabBar::showTabPreview()
 
     m_previewPopup = new TabPreviewPopup(indexedTab , this);
 
-    int w = tabSizeHint(m_currentTabPreviewIndex).width();
+    int tabWidth = tabSizeHint(m_currentTabPreviewIndex).width();
     int tabBarWidth = mv->size().width();
-    int leftIndex = tabRect(m_currentTabPreviewIndex).x() + (tabRect(m_currentTabPreviewIndex).width() - w) / 2;
+    int leftIndex = tabRect(m_currentTabPreviewIndex).x() + (tabRect(m_currentTabPreviewIndex).width() - tabWidth) / 2;
     int popupWidth = m_previewPopup.data()->thumbnailSize().width();
 
     // Center the popup if the tab width is bigger or smaller
-    leftIndex += (w - popupWidth) / 2;
+    leftIndex += (tabWidth - popupWidth) / 2;
 
     if (leftIndex < 0)
     {
         leftIndex = 0;
     }
-    else if (leftIndex + w > tabBarWidth)
+    else if (leftIndex + tabWidth > tabBarWidth)
     {
-        leftIndex = tabBarWidth - w;
+        leftIndex = tabBarWidth - tabWidth;
     }
 
     QPoint pos(leftIndex, tabRect(m_currentTabPreviewIndex).y() + tabRect(m_currentTabPreviewIndex).height());
