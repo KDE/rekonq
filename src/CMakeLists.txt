@@ -94,6 +94,7 @@ set(rekonq_KDEINIT_SRCS
     webtab/webview.cpp
     webtab/webtab.cpp
     #----------------------------------------
+    webwindow/rekonqfactory.cpp
     webwindow/rekonqmenu.cpp
     webwindow/webwindow.cpp
     #----------------------------------------

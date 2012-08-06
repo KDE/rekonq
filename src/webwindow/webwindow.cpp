@@ -27,6 +27,8 @@
 #include "webwindow.h"
 #include "webwindow.moc"
 
+#include "application.h"
+
 #include "bookmarkmanager.h"
 #include "iconmanager.h"
 
@@ -34,12 +36,18 @@
 #include "webtab.h"
 
 #include "bookmarkstoolbar.h"
+#include "rekonqfactory.h"
 #include "rekonqmenu.h"
 #include "urlbar.h"
 
 #include "websnap.h"
 
+// KDE Includes
+#include <KIO/Job>
+#include <KFileDialog>
+#include <KJobUiDelegate>
 #include <KUrl>
+#include <KToggleFullScreenAction>
 #include <KToolBar>
 
 #include <QLabel>
@@ -56,7 +64,7 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     : QWidget(parent)
     , _tab(new WebTab(this))
     , _bar(new UrlBar(_tab))
-    , _mainToolBar(new KToolBar(this, false, false))
+    , _mainToolBar(0)
     , _bookmarksBar(0)
     , m_loadStopReloadAction(0)
     , m_rekonqMenu(0)
@@ -77,12 +85,8 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     setupTools();
 
     // main toolbar
-    _mainToolBar->addAction(actionByName(QL1S("go_back")));
-    _mainToolBar->addAction(actionByName(QL1S("go_forward")));
-    _mainToolBar->addAction(actionByName(QL1S("url_bar")));
-    _mainToolBar->addAction(actionByName(QL1S("load_stop_reload")));
-    _mainToolBar->addAction(actionByName(QL1S("rekonq_tools")));
-
+    _mainToolBar = qobject_cast<KToolBar *>(RekonqFactory::createWidget(QL1S("mainToolBar"), this, actionCollection()));
+    
     // bookmarks toolbar
     if (_bookmarksBar)
     {
@@ -120,6 +124,8 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     m_popup->hide();
     connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
     connect(_tab->page(), SIGNAL(linkHovered(QString,QString,QString)), this, SLOT(notifyMessage(QString)));
+
+    updateHistoryActions();                                                                                                                             
 }
 
 
@@ -160,7 +166,108 @@ void WebWindow::setupActions()
     m_loadStopReloadAction->setToolTip(i18n("Go"));
     m_loadStopReloadAction->setText(i18n("Go"));
 
-    updateHistoryActions();
+    // new window action
+    a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
+    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
+    actionCollection()->addAction(QL1S("new_window"), a);
+    connect(a, SIGNAL(triggered(bool)), rApp, SLOT(newTabWindow()));
+
+    // Standard Actions
+    KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
+    KStandardAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
+    KStandardAction::print(this, SLOT(printRequested()), actionCollection());
+    KStandardAction::quit(rApp, SLOT(queryQuit()), actionCollection());
+
+    a = KStandardAction::fullScreen(this, SLOT(viewFullScreen(bool)), this, actionCollection());
+    KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
+    fullScreenShortcut.setAlternate(Qt::Key_F11);
+    a->setShortcut(fullScreenShortcut);
+
+    a = KStandardAction::redisplay(_tab->view(), SLOT(reload()), actionCollection());
+    a->setText(i18n("Reload"));
+    KShortcut reloadShortcut = KStandardShortcut::reload();
+    reloadShortcut.setAlternate(Qt::CTRL + Qt::Key_R);
+    a->setShortcut(reloadShortcut);
+
+    a = new KAction(KIcon("process-stop"), i18n("&Stop"), this);
+    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_Period));
+    actionCollection()->addAction(QL1S("stop"), a);
+    connect(a, SIGNAL(triggered(bool)), _tab->view(), SLOT(stop()));
+
+    // Open location action
+    a = new KAction(i18n("Open Location"), this);
+    KShortcut openLocationShortcut(Qt::CTRL + Qt::Key_L);
+    openLocationShortcut.setAlternate(Qt::ALT + Qt::Key_D);
+    a->setShortcut(openLocationShortcut);
+    actionCollection()->addAction(QL1S("open_location"), a);
+    connect(a, SIGNAL(triggered(bool)) , this, SLOT(openLocation()));
+
+    // ===== Tools Actions =================================
+    a = new KAction(i18n("View Page S&ource"), this);
+    a->setIcon(KIcon("application-xhtml+xml"));
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_U));
+    actionCollection()->addAction(QL1S("page_source"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(viewPageSource()));
+
+    a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
+    a->setCheckable(true);
+// FIXME    connect(a, SIGNAL(triggered(bool)), this, SLOT(setPrivateBrowsingMode(bool)));
+    a->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_P);
+    actionCollection()->addAction(QL1S("private_browsing"), a);
+
+    a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
+    a->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_Delete);
+    actionCollection()->addAction(QL1S("clear_private_data"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
+
+//     <Menu name="rekonqMenu" noMerge="1">
+//     <Action name="new_tab" />
+//     <Action name="new_window" />             +
+//     <Action name="private_browsing" />       +
+//     <Separator/>
+//     <Action name="file_open" />              +
+//     <Action name="file_save_as" />           +
+//     <Action name="file_print" />             +
+//     <Action name="edit_find" />
+//     <Action name="view_zoom" />
+//     <Separator/>
+// 
+//     <Menu name="toolsMenu" icon="preferences-other" noMerge="1">
+//         <text>&amp;Tools</text>
+//         <Action name="clear_private_data" /> +
+//         <Separator/>
+//         <Action name="webapp_shortcut" />
+//         <Action name="web_inspector" />
+//         <Action name="page_source" />        +
+//         <Action name="net_analyzer" />
+//         <Action name="set_editable" />       +
+//         <Separator/>
+//         <Action name="useragent" />
+//         <Action name="sync" />
+//         <Action name="adblock" />
+//     </Menu>
+// 
+//     <Separator/>
+//     <Action name="show_bookmarks_toolbar" />
+//     <Action name="fullscreen" />              +
+//     <Separator/>
+// 
+//     <Menu name="help" icon="help-browser">
+//         <text>&amp;Help</text>
+//         <Action name="help_contents"/>
+//         <Action name="help_whats_this"/>
+//         <Separator weakSeparator="1"/>
+//         <Action name="help_report_bug"/>
+//         <Separator weakSeparator="1"/>
+//         <Action name="switch_application_language"/>
+//         <Separator weakSeparator="1"/>
+//         <Action name="help_about_app"/>
+//         <Action name="help_about_kde"/>
+//     </Menu>
+// 
+//     <Action name="options_configure" />
+// </Menu>
+
 }
 
 
@@ -170,7 +277,7 @@ void WebWindow::setupTools()
     toolsAction->setDelayed(false);
     toolsAction->setShortcutConfigurable(true);
     toolsAction->setShortcut(KShortcut(Qt::ALT + Qt::Key_T));
-    m_rekonqMenu = new RekonqMenu(this);
+    m_rekonqMenu = qobject_cast<RekonqMenu *>(RekonqFactory::createWidget(QL1S("rekonqMenu"), this, actionCollection()));
     toolsAction->setMenu(m_rekonqMenu); // dummy menu to have the dropdown arrow
 
     // adding rekonq_tools to rekonq actionCollection
@@ -505,4 +612,84 @@ QPixmap WebWindow::tabPreview(int width, int height)
 bool WebWindow::isLoading()
 {
     return _progress != 0 && _progress != 100;
+}
+
+
+void WebWindow::fileOpen()
+{
+    QString filePath = KFileDialog::getOpenFileName(KUrl(),
+                       i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n"
+                            "*.*|All files (*.*)"),
+                       this,
+                       i18n("Open Web Resource"));
+
+    if (filePath.isEmpty())
+        return;
+
+    load(KUrl(filePath));
+}
+
+
+void WebWindow::fileSaveAs()
+{
+    KUrl srcUrl = url();
+
+    if (page()->isOnRekonqPage())
+    {
+        KParts::ReadOnlyPart *p = _tab->part();
+        if (p)
+        {
+            // if this is a KParts document then the w->url() will be empty and the srcUrl
+            // must be set to the document url
+            srcUrl = p->url();
+        }
+    }
+
+    // First, try with suggested file name...
+    QString name = page()->suggestedFileName();
+
+    // Second, with KUrl fileName...
+    if (name.isEmpty())
+    {
+        name = srcUrl.fileName();
+    }
+
+    // Last chance...
+    if (name.isEmpty())
+    {
+        name = srcUrl.host() + QString(".html");
+    }
+
+    const KUrl destUrl = KFileDialog::getSaveUrl(name, QString(), this);
+    if (destUrl.isEmpty())
+        return;
+
+    if (page()->isContentEditable())
+    {
+        QString code = page()->mainFrame()->toHtml();
+        QFile file(destUrl.url());
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+            return;
+
+        QTextStream out(&file);
+        out << code;
+
+        return;
+    }
+
+    KIO::Job *job = KIO::file_copy(srcUrl, destUrl, -1, KIO::Overwrite);
+    job->addMetaData("MaxCacheSize", "0");  // Don't store in http cache.
+    job->addMetaData("cache", "cache");     // Use entry from cache if available.
+    job->uiDelegate()->setAutoErrorHandlingEnabled(true);
+}
+
+
+void WebWindow::openLocation()
+{
+    if (isFullScreen())
+    {
+        _mainToolBar->show();
+    }
+    _bar->selectAll();
+    _bar->setFocus();
 }

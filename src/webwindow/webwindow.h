@@ -82,7 +82,6 @@ public:
     QAction *actionByName(const QString &name);
     
 private:
-    void init();
     void setupActions();
     void setupTools();
     
@@ -103,6 +102,11 @@ private Q_SLOTS:
      * Notifies a message in a popup
     */
     void notifyMessage(const QString &msg);
+
+    // File Menu slots
+    void openLocation();
+    void fileOpen();
+    void fileSaveAs();
 
 Q_SIGNALS:
     void titleChanged(QString);
