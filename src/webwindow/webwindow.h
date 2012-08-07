@@ -108,6 +108,9 @@ private Q_SLOTS:
     void fileOpen();
     void fileSaveAs();
 
+    void viewPageSource();
+    void viewFullScreen(bool enable);
+
 Q_SIGNALS:
     void titleChanged(QString);
 

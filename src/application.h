@@ -66,7 +66,6 @@ public:
     static Application *instance();
 
     TabWindow *tabWindow();
-    TabWindow *newTabWindow();
     TabWindowList tabWindowList();
 
 public Q_SLOTS:
@@ -87,6 +86,8 @@ public Q_SLOTS:
                  const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );
 
+    TabWindow *newTabWindow();
+
     void removeTabWindow(TabWindow *window);
 
 protected:
@@ -95,6 +96,9 @@ protected:
 
 private Q_SLOTS:
     void updateConfiguration();
+
+    // clear private data
+    void clearPrivateData();
 
     void queryQuit();
 

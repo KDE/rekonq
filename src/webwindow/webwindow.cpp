@@ -46,6 +46,8 @@
 #include <KIO/Job>
 #include <KFileDialog>
 #include <KJobUiDelegate>
+#include <KMimeTypeTrader>
+#include <KTemporaryFile>
 #include <KUrl>
 #include <KToggleFullScreenAction>
 #include <KToolBar>
@@ -175,7 +177,7 @@ void WebWindow::setupActions()
     // Standard Actions
     KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
     KStandardAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
-    KStandardAction::print(this, SLOT(printRequested()), actionCollection());
+    KStandardAction::print(_tab, SLOT(printFrame()), actionCollection());
     KStandardAction::quit(rApp, SLOT(queryQuit()), actionCollection());
 
     a = KStandardAction::fullScreen(this, SLOT(viewFullScreen(bool)), this, actionCollection());
@@ -218,10 +220,15 @@ void WebWindow::setupActions()
     a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
     a->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_Delete);
     actionCollection()->addAction(QL1S("clear_private_data"), a);
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(clearPrivateData()));
+    connect(a, SIGNAL(triggered(bool)), rApp, SLOT(clearPrivateData()));
+
+    // Bookmark ==========
+    a = KStandardAction::addBookmark(_bar, SLOT(manageBookmarks()), actionCollection());
+    KShortcut bkShortcut(Qt::CTRL + Qt::Key_D);
+    a->setShortcut(bkShortcut);
 
 //     <Menu name="rekonqMenu" noMerge="1">
-//     <Action name="new_tab" />
+//     <Action name="new_tab" />                  ---
 //     <Action name="new_window" />             +
 //     <Action name="private_browsing" />       +
 //     <Separator/>
@@ -236,11 +243,11 @@ void WebWindow::setupActions()
 //         <text>&amp;Tools</text>
 //         <Action name="clear_private_data" /> +
 //         <Separator/>
-//         <Action name="webapp_shortcut" />
-//         <Action name="web_inspector" />
+//         <Action name="webapp_shortcut" />   -------
+//         <Action name="web_inspector" />       ---------
 //         <Action name="page_source" />        +
-//         <Action name="net_analyzer" />
-//         <Action name="set_editable" />       +
+//         <Action name="net_analyzer" />     xxxxxxxxxxx
+//         <Action name="set_editable" />       -------
 //         <Separator/>
 //         <Action name="useragent" />
 //         <Action name="sync" />
@@ -692,4 +699,41 @@ void WebWindow::openLocation()
     }
     _bar->selectAll();
     _bar->setFocus();
+}
+
+
+void WebWindow::viewPageSource()
+{
+    QString code = _tab->page()->mainFrame()->toHtml();
+
+    KTemporaryFile tmpFile;
+    tmpFile.setAutoRemove(false);
+    if (!tmpFile.open())
+        return;
+
+    QTextStream out(&tmpFile);
+    out << code;
+    tmpFile.close();
+    KUrl tmpUrl(tmpFile.fileName());
+
+    KParts::ReadOnlyPart *pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(QL1S("text/plain"), _tab, this, QString());
+    if (pa)
+    {
+        // FIXME DO SOMETHING...
+//         WebTab *srcTab = m_view->newWebTab(true);
+//         srcTab->page()->setIsOnRekonqPage(true);
+//         srcTab->setPart(pa, tmpUrl);
+//         srcTab->urlBar()->setQUrl(url.pathOrUrl());
+//         m_view->setTabText(m_view->currentIndex(), i18n("Source of: ") + url.prettyUrl());
+//         updateHistoryActions();
+    }
+    else
+        KRun::runUrl(tmpUrl, QL1S("text/plain"), this, false);
+}
+
+
+void WebWindow::viewFullScreen(bool makeFullScreen)
+{
+//  FIXME   setWidgetsVisible(!makeFullScreen);
+    KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
 }

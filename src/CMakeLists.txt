@@ -144,6 +144,8 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     useragent/useragentsettings.ui
     # ----------------------------------------
     webtab/sslinfo.ui
+    # ----------------------------------------
+    cleardata.ui
  )
 
 
