@@ -108,10 +108,12 @@ private Q_SLOTS:
     void fileOpen();
     void fileSaveAs();
 
+    // Tools Menu slots
     void viewPageSource();
     void viewFullScreen(bool enable);
 
     void populateUserAgentMenu();
+    void setEditable(bool);
 
 Q_SIGNALS:
     void titleChanged(QString);

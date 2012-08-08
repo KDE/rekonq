@@ -29,8 +29,10 @@
 
 #include "application.h"
 
+#include "adblockmanager.h"
 #include "bookmarkmanager.h"
 #include "iconmanager.h"
+#include "syncmanager.h"
 #include "useragentmanager.h"
 
 #include "webpage.h"
@@ -179,6 +181,7 @@ void WebWindow::setupActions()
     KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
     KStandardAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
     KStandardAction::print(_tab, SLOT(printFrame()), actionCollection());
+    KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
     KStandardAction::quit(rApp, SLOT(queryQuit()), actionCollection());
 
     a = KStandardAction::fullScreen(this, SLOT(viewFullScreen(bool)), this, actionCollection());
@@ -235,6 +238,26 @@ void WebWindow::setupActions()
     a->setMenu(uaMenu);
     connect(uaMenu, SIGNAL(aboutToShow()), this, SLOT(populateUserAgentMenu()));
 
+    // Editable Page
+    a = new KAction(KIcon("document-edit"), i18n("Set Editable"), this);
+    a->setCheckable(true);
+    actionCollection()->addAction(QL1S("set_editable"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(setEditable(bool)));
+
+    // Adblock
+    a = new KAction(KIcon("preferences-web-browser-adblock"), i18n("Ad Block"), this);
+    actionCollection()->addAction(QL1S("adblock"), a);
+    connect(a, SIGNAL(triggered(bool)), AdBlockManager::self(), SLOT(showSettings()));
+
+    // Web Applications
+    a = new KAction(KIcon("applications-internet"), i18n("Create application shortcut"), this);
+    actionCollection()->addAction(QL1S("webapp_shortcut"), a);
+    connect(a, SIGNAL(triggered(bool)), rApp, SLOT(createWebAppShortcut()));
+
+    // Sync action
+    a = new KAction(KIcon("tools-wizard"), i18n("Sync"), this); // FIXME sync icon!!
+    actionCollection()->addAction(QL1S("sync"), a);
+    connect(a, SIGNAL(triggered(bool)), SyncManager::self(), SLOT(showSettings()));
 
 //     <Menu name="rekonqMenu" noMerge="1">
 //     <Action name="new_tab" />                  ---
@@ -252,15 +275,15 @@ void WebWindow::setupActions()
 //         <text>&amp;Tools</text>
 //         <Action name="clear_private_data" /> +
 //         <Separator/>
-//         <Action name="webapp_shortcut" />   -------
+//         <Action name="webapp_shortcut" />    +
 //         <Action name="web_inspector" />       ---------
 //         <Action name="page_source" />        +
 //         <Action name="net_analyzer" />     xxxxxxxxxxx
-//         <Action name="set_editable" />       -------
+//         <Action name="set_editable" />       +
 //         <Separator/>
-//         <Action name="useragent" />
-//         <Action name="sync" />
-//         <Action name="adblock" />
+//         <Action name="useragent" />          +
+//         <Action name="sync" />               +
+//         <Action name="adblock" />            +
 //     </Menu>
 // 
 //     <Separator/>
@@ -758,4 +781,10 @@ void WebWindow::populateUserAgentMenu()
     }
 
     UserAgentManager::self()->populateUAMenuForTabUrl(uaMenu, this);
+}
+
+
+void WebWindow::setEditable(bool on)
+{
+    page()->setContentEditable(on);
 }

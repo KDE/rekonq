@@ -31,6 +31,9 @@
 // Auto Includes
 #include "rekonq.h"
 
+// Ui Includes
+#include "ui_webappcreation.h"
+
 // Local Includes
 #include "searchengine.h"
 #include "tabwindow.h"
@@ -616,6 +619,99 @@ void Application::clearPrivateData()
                 file.remove();
             }
         }
+    }
+
+    dialog->deleteLater();
+}
+
+
+void Application::createWebAppShortcut()
+{
+    KUrl u = tabWindow()->currentWebWindow()->url();
+    QString h = u.host();
+
+    QPointer<KDialog> dialog = new KDialog(tabWindow());
+    dialog->setCaption(i18nc("@title:window", "Create Application Shortcut"));
+    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
+    dialog->button(KDialog::Ok)->setText(i18n("Create"));
+    dialog->setMinimumSize(400, 50);
+    dialog->setWindowIcon( QIcon(IconManager::self()->iconForUrl(u).pixmap(16)) );
+
+    Ui::webAppCreation wAppWidget;
+    QWidget widget;
+    wAppWidget.setupUi(&widget);
+
+    const QString title = tabWindow()->currentWebWindow()->title().remove('&');
+    wAppWidget.nameLineEdit->setText(title);
+    wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());
+    wAppWidget.kcfg_createMenuAppShortcut->setChecked(ReKonfig::createMenuAppShortcut());
+
+    dialog->setMainWidget(&widget);
+    dialog->exec();
+
+    if (dialog->result() == QDialog::Accepted)
+    {
+        ReKonfig::setCreateDesktopAppShortcut(wAppWidget.kcfg_createDesktopAppShortcut->isChecked());
+        ReKonfig::setCreateMenuAppShortcut(wAppWidget.kcfg_createMenuAppShortcut->isChecked());
+
+        IconManager::self()->saveDesktopIconForUrl(u);
+        QString iconPath = KStandardDirs::locateLocal("cache" , "favicons/" , true) + h + QL1S("_WEBAPPICON.png");
+
+        QString shortcutString = QL1S("#!/usr/bin/env xdg-open\n")
+                                 + QL1S("[Desktop Entry]\n")
+                                 + QL1S("Name=")
+                                 + (wAppWidget.nameLineEdit->text().isEmpty()
+                                    ? QL1S("kwebapp")
+                                    : wAppWidget.nameLineEdit->text())
+                                 + QL1S("\n")
+                                 + QL1S("GenericName=")
+                                 + (wAppWidget.descriptionLineEdit->text().isEmpty()
+                                    ? QL1S("")
+                                    : wAppWidget.descriptionLineEdit->text())
+                                 + QL1S("\n")
+                                 + QL1S("Icon=") + iconPath + QL1S("\n")
+                                 + QL1S("Exec=kwebapp ") + u.url() + QL1S("\n")
+                                 + QL1S("Type=Application\n")
+                                 + QL1S("Categories=Application;Network\n")
+                                 ;
+
+        if (ReKonfig::createDesktopAppShortcut())
+        {
+            QString desktop = KGlobalSettings::desktopPath();
+            QFile wAppFile(desktop + QL1C('/') + title);
+
+            if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                kDebug() << "Unable to open file: " << wAppFile.errorString();
+                return;
+            }
+
+            QTextStream out(&wAppFile);
+            out.setCodec("UTF-8");
+            out << shortcutString;
+
+            wAppFile.setPermissions(QFile::ReadUser | QFile::WriteUser | QFile::ExeUser | QFile::ReadGroup | QFile::ReadOther);
+            wAppFile.close();
+        }
+
+        if (ReKonfig::createMenuAppShortcut())
+        {
+            QString appMenuDir = KStandardDirs::locateLocal("xdgdata-apps", QString());
+            QFile wAppFile(appMenuDir + QL1C('/') + title + QL1S(".desktop"));
+
+            if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                kDebug() << "Unable to open file: " << wAppFile.errorString();
+                return;
+            }
+
+            QTextStream out(&wAppFile);
+            out.setCodec("UTF-8");
+            out << shortcutString;
+
+            wAppFile.close();
+        }
+        
     }
 
     dialog->deleteLater();

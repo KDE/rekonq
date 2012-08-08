@@ -102,6 +102,8 @@ private Q_SLOTS:
 
     void queryQuit();
 
+    void createWebAppShortcut();
+
 private:
     TabWindowList m_tabWindows;
 };
