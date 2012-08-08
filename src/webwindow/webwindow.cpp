@@ -31,6 +31,7 @@
 
 #include "bookmarkmanager.h"
 #include "iconmanager.h"
+#include "useragentmanager.h"
 
 #include "webpage.h"
 #include "webtab.h"
@@ -226,6 +227,14 @@ void WebWindow::setupActions()
     a = KStandardAction::addBookmark(_bar, SLOT(manageBookmarks()), actionCollection());
     KShortcut bkShortcut(Qt::CTRL + Qt::Key_D);
     a->setShortcut(bkShortcut);
+
+    // User Agent
+    a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
+    actionCollection()->addAction(QL1S("useragent"), a);
+    KMenu *uaMenu = new KMenu(this);
+    a->setMenu(uaMenu);
+    connect(uaMenu, SIGNAL(aboutToShow()), this, SLOT(populateUserAgentMenu()));
+
 
 //     <Menu name="rekonqMenu" noMerge="1">
 //     <Action name="new_tab" />                  ---
@@ -736,4 +745,17 @@ void WebWindow::viewFullScreen(bool makeFullScreen)
 {
 //  FIXME   setWidgetsVisible(!makeFullScreen);
     KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
+}
+
+
+void WebWindow::populateUserAgentMenu()
+{
+    KMenu *uaMenu = static_cast<KMenu *>(QObject::sender());
+    if (!uaMenu)
+    {
+        kDebug() << "oops... NO user agent menu";
+        return;
+    }
+
+    UserAgentManager::self()->populateUAMenuForTabUrl(uaMenu, this);
 }

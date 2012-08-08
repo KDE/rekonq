@@ -111,6 +111,8 @@ private Q_SLOTS:
     void viewPageSource();
     void viewFullScreen(bool enable);
 
+    void populateUserAgentMenu();
+
 Q_SIGNALS:
     void titleChanged(QString);
 
