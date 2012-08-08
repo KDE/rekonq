@@ -1226,12 +1226,10 @@ void WebView::mouseReleaseEvent(QMouseEvent *event)
     {
         if (event->button() & Qt::MidButton)
         {
+            // open tab as focused
             if (event->modifiers() & Qt::ShiftModifier)
             {
-                if (ReKonfig::openNewTabsInBackground())
-                    emit loadUrl(url, Rekonq::NewFocusedTab);
-                else
-                    emit loadUrl(url, Rekonq::NewBackGroundTab);
+                emit loadUrl(url, Rekonq::NewFocusedTab);
                 event->accept();
                 return;
             }

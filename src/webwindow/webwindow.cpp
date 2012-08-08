@@ -41,6 +41,7 @@
 #include "bookmarkstoolbar.h"
 #include "rekonqfactory.h"
 #include "rekonqmenu.h"
+#include "settingsdialog.h"
 #include "urlbar.h"
 
 #include "websnap.h"
@@ -304,7 +305,7 @@ void WebWindow::setupActions()
 //         <Action name="help_about_kde"/>
 //     </Menu>
 // 
-//     <Action name="options_configure" />
+//     <Action name="options_configure" />      +
 // </Menu>
 
 }
@@ -787,4 +788,22 @@ void WebWindow::populateUserAgentMenu()
 void WebWindow::setEditable(bool on)
 {
     page()->setContentEditable(on);
+}
+
+
+void WebWindow::preferences()
+{
+    // an instance the dialog could be already created and could be cached,
+    // in which case you want to display the cached dialog
+    if (SettingsDialog::showDialog("rekonfig"))
+        return;
+
+    // we didn't find an instance of this dialog, so lets create it
+    QPointer<SettingsDialog> s = new SettingsDialog(this);
+
+    // keep us informed when the user changes settings
+    connect(s, SIGNAL(settingsChanged(QString)), rApp, SLOT(updateConfiguration()));
+    connect(s, SIGNAL(finished(int)), s, SLOT(deleteLater()));
+
+    s->show();
 }

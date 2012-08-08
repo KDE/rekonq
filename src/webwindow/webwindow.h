@@ -115,6 +115,9 @@ private Q_SLOTS:
     void populateUserAgentMenu();
     void setEditable(bool);
 
+    // Settings Menu slot
+    void preferences();
+
 Q_SIGNALS:
     void titleChanged(QString);
 

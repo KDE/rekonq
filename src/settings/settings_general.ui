@@ -151,7 +151,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_4">
      <property name="title">
-      <string>Download Manager</string>
+      <string>Downloads Management</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>

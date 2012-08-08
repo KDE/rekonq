@@ -47,7 +47,6 @@
 #include <KConfig>
 #include <KStandardDirs>
 #include <KPageWidgetItem>
-#include <KShortcutsEditor>
 #include <KCModuleInfo>
 #include <KCModuleProxy>
 
@@ -69,8 +68,6 @@ private:
     AdvancedWidget *advancedWidg;
 
     KCModuleProxy *ebrowsingModule;
-
-    KShortcutsEditor *shortcutsEditor;
 
     friend class SettingsDialog;
 };
@@ -118,12 +115,7 @@ Private::Private(SettingsDialog *parent)
     pageItem = parent->addPage(advancedWidg, i18n("Advanced"));
     pageItem->setIcon(KIcon("applications-system"));
 
-//     // -- 7
-//     shortcutsEditor = new KShortcutsEditor(rApp->mainWindow()->actionCollection(), parent);
-//     pageItem = parent->addPage(shortcutsEditor , i18n("Shortcuts"));
-//     pageItem->setIcon(KIcon("configure-shortcuts"));
-
-    // -- 8
+    // -- 7
     KCModuleInfo ebrowsingInfo("ebrowsing.desktop");
     ebrowsingModule = new KCModuleProxy(ebrowsingInfo, parent);
     pageItem = parent->addPage(ebrowsingModule, i18n("Search Engines"));
@@ -160,8 +152,6 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     connect(d->advancedWidg,    SIGNAL(changed(bool)), this, SLOT(updateButtons()));
     connect(d->privacyWidg,     SIGNAL(changed(bool)), this, SLOT(updateButtons()));
 
-    connect(d->shortcutsEditor, SIGNAL(keyChange()),   this, SLOT(updateButtons()));
-
     // save settings
     connect(this, SIGNAL(applyClicked()), this, SLOT(saveSettings()));
     connect(this, SIGNAL(okClicked()),    this, SLOT(saveSettings()));
@@ -187,7 +177,6 @@ void SettingsDialog::saveSettings()
     d->webkitWidg->save();
     d->advancedWidg->save();
     d->privacyWidg->save();
-    d->shortcutsEditor->save();
     d->ebrowsingModule->save();
 
     d->privacyWidg->reload();
@@ -209,7 +198,6 @@ bool SettingsDialog::hasChanged()
            || d->advancedWidg->changed()
            || d->privacyWidg->changed()
            || d->ebrowsingModule->changed()
-           || d->shortcutsEditor->isModified();
     ;
 }
 

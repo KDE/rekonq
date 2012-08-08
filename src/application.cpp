@@ -36,6 +36,7 @@
 
 // Local Includes
 #include "searchengine.h"
+#include "tabbar.h"
 #include "tabwindow.h"
 #include "webwindow.h"
 #include "urlresolver.h"
@@ -384,132 +385,128 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
 
 void Application::updateConfiguration()
 {
-    kDebug() << "Updating... NOTHING!!!";
-//     // ============== Tabs ==================
-//     bool b = ReKonfig::closeTabSelectPrevious();
-//     Q_FOREACH(const QWeakPointer<TabWindow> &w, m_tabWindows)
-//     {
-//         MainView *mv = w.data()->mainView();
-//         mv->updateTabBar();
-// 
-//         mv->tabBar()->setAnimatedTabHighlighting(ReKonfig::animatedTabHighlighting());
-// 
-//         if (b)
-//             mv->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
-//         else
-//             mv->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
-//     }
-// 
-//     QWebSettings *defaultSettings = QWebSettings::globalSettings();
-// 
-//     // =========== Fonts ==============
-//     defaultSettings->setFontFamily(QWebSettings::StandardFont, ReKonfig::standardFontFamily());
-//     defaultSettings->setFontFamily(QWebSettings::FixedFont, ReKonfig::fixedFontFamily());
-//     defaultSettings->setFontFamily(QWebSettings::SerifFont, ReKonfig::serifFontFamily());
-//     defaultSettings->setFontFamily(QWebSettings::SansSerifFont, ReKonfig::sansSerifFontFamily());
-//     defaultSettings->setFontFamily(QWebSettings::CursiveFont, ReKonfig::cursiveFontFamily());
-//     defaultSettings->setFontFamily(QWebSettings::FantasyFont, ReKonfig::fantasyFontFamily());
-// 
-//     // compute font size
-//     // (I have to admit I know nothing about these DPI questions..: copied from kwebkitpart, as someone suggested)
-//     // font size in pixels =  font size in inches × screen dpi
-//     if (tabWindow() && tabWindow()->currentTab())
-//     {
-//         int logDpiY = tabWindow()->currentTab()->view()->logicalDpiY();
-//         float toPix = (logDpiY < 96.0)
-//                       ? 96.0 / 72.0
-//                       : logDpiY / 72.0 ;
-// 
-//         int defaultFontSize = ReKonfig::defaultFontSize();
-//         int minimumFontSize = ReKonfig::minFontSize();
-// 
-//         defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix));
-//         defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix));
-//     }
-// 
-//     // encodings
-//     QString enc = ReKonfig::defaultEncoding();
-//     defaultSettings->setDefaultTextEncoding(enc);
-// 
-//     // ================ WebKit ============================
-//     defaultSettings->setAttribute(QWebSettings::DnsPrefetchEnabled, ReKonfig::dnsPrefetch());
-//     defaultSettings->setAttribute(QWebSettings::PrintElementBackgrounds, ReKonfig::printElementBackgrounds());
-// 
-//     defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, ReKonfig::javascriptEnabled());
-//     defaultSettings->setAttribute(QWebSettings::JavascriptCanOpenWindows, ReKonfig::javascriptCanOpenWindows());
-//     defaultSettings->setAttribute(QWebSettings::JavascriptCanAccessClipboard, ReKonfig::javascriptCanAccessClipboard());
-// 
-//     defaultSettings->setAttribute(QWebSettings::JavaEnabled, ReKonfig::javaEnabled());
-// 
-//     if (ReKonfig::pluginsEnabled() == 2)
-//         defaultSettings->setAttribute(QWebSettings::PluginsEnabled, false);
-//     else
-//         defaultSettings->setAttribute(QWebSettings::PluginsEnabled, true);
-// 
-//     // Enabling WebKit "Page Cache" feature: http://webkit.org/blog/427/webkit-page-cache-i-the-basics/
-//     defaultSettings->setMaximumPagesInCache(3);
-// 
-//     // ===== HTML 5 features WebKit support ======
-//     defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
-//     defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
-//     defaultSettings->setAttribute(QWebSettings::LocalStorageEnabled, ReKonfig::localStorageEnabled());
-//     if (ReKonfig::localStorageEnabled())
-//     {
-//         QString path = KStandardDirs::locateLocal("cache", QString("WebkitLocalStorage/rekonq"), true);
-//         path.remove("rekonq");
-//         QWebSettings::setOfflineStoragePath(path);
-//         QWebSettings::setOfflineStorageDefaultQuota(50000);
-//     }
-// 
-//     // ================= WebGl ===================
-//     defaultSettings->setAttribute(QWebSettings::WebGLEnabled, ReKonfig::webGL());
-//     defaultSettings->setAttribute(QWebSettings::AcceleratedCompositingEnabled, ReKonfig::webGL());
-// 
-//     // Applies user defined CSS to all open webpages.
-//     defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
-// 
+    // ============== Tabs ==================
+    bool b = ReKonfig::closeTabSelectPrevious();
+    Q_FOREACH(const QWeakPointer<TabWindow> &w, m_tabWindows)
+    {
+        if (b)
+            w.data()->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
+        else
+            w.data()->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
+    }
+
+
+    QWebSettings *defaultSettings = QWebSettings::globalSettings();
+
+    // =========== Fonts ==============
+    defaultSettings->setFontFamily(QWebSettings::StandardFont, ReKonfig::standardFontFamily());
+    defaultSettings->setFontFamily(QWebSettings::FixedFont, ReKonfig::fixedFontFamily());
+    defaultSettings->setFontFamily(QWebSettings::SerifFont, ReKonfig::serifFontFamily());
+    defaultSettings->setFontFamily(QWebSettings::SansSerifFont, ReKonfig::sansSerifFontFamily());
+    defaultSettings->setFontFamily(QWebSettings::CursiveFont, ReKonfig::cursiveFontFamily());
+    defaultSettings->setFontFamily(QWebSettings::FantasyFont, ReKonfig::fantasyFontFamily());
+
+    // compute font size
+    // (I have to admit I know nothing about these DPI questions..: copied from kwebkitpart, as someone suggested)
+    // font size in pixels =  font size in inches × screen dpi
+    if (tabWindow() && tabWindow()->currentWebWindow())
+    {
+        int logDpiY = tabWindow()->currentWebWindow()->logicalDpiY();
+        float toPix = (logDpiY < 96.0)
+                      ? 96.0 / 72.0
+                      : logDpiY / 72.0 ;
+
+        int defaultFontSize = ReKonfig::defaultFontSize();
+        int minimumFontSize = ReKonfig::minFontSize();
+
+        defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix));
+        defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix));
+    }
+
+    // encodings
+    QString enc = ReKonfig::defaultEncoding();
+    defaultSettings->setDefaultTextEncoding(enc);
+
+    // ================ WebKit ============================
+    defaultSettings->setAttribute(QWebSettings::DnsPrefetchEnabled, ReKonfig::dnsPrefetch());
+    defaultSettings->setAttribute(QWebSettings::PrintElementBackgrounds, ReKonfig::printElementBackgrounds());
+
+    defaultSettings->setAttribute(QWebSettings::JavascriptEnabled, ReKonfig::javascriptEnabled());
+    defaultSettings->setAttribute(QWebSettings::JavascriptCanOpenWindows, ReKonfig::javascriptCanOpenWindows());
+    defaultSettings->setAttribute(QWebSettings::JavascriptCanAccessClipboard, ReKonfig::javascriptCanAccessClipboard());
+
+    defaultSettings->setAttribute(QWebSettings::JavaEnabled, ReKonfig::javaEnabled());
+
+    if (ReKonfig::pluginsEnabled() == 2)
+        defaultSettings->setAttribute(QWebSettings::PluginsEnabled, false);
+    else
+        defaultSettings->setAttribute(QWebSettings::PluginsEnabled, true);
+
+    // Enabling WebKit "Page Cache" feature: http://webkit.org/blog/427/webkit-page-cache-i-the-basics/
+    defaultSettings->setMaximumPagesInCache(3);
+
+    // ===== HTML 5 features WebKit support ======
+    defaultSettings->setAttribute(QWebSettings::OfflineStorageDatabaseEnabled, ReKonfig::offlineStorageDatabaseEnabled());
+    defaultSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, ReKonfig::offlineWebApplicationCacheEnabled());
+    defaultSettings->setAttribute(QWebSettings::LocalStorageEnabled, ReKonfig::localStorageEnabled());
+    if (ReKonfig::localStorageEnabled())
+    {
+        QString path = KStandardDirs::locateLocal("cache", QString("WebkitLocalStorage/rekonq"), true);
+        path.remove("rekonq");
+        QWebSettings::setOfflineStoragePath(path);
+        QWebSettings::setOfflineStorageDefaultQuota(50000);
+    }
+
+    // ================= WebGl ===================
+    defaultSettings->setAttribute(QWebSettings::WebGLEnabled, ReKonfig::webGL());
+    defaultSettings->setAttribute(QWebSettings::AcceleratedCompositingEnabled, ReKonfig::webGL());
+
+    // Applies user defined CSS to all open webpages.
+    defaultSettings->setUserStyleSheetUrl(ReKonfig::userCSS());
+
     // ====== load Settings on main classes
     HistoryManager::self()->loadSettings();
-// 
-//     defaultSettings = 0;
-// 
-//     if (!tabWindow())
-//         return;
-// 
+
+    defaultSettings = 0;
+
+    if (!tabWindow())
+        return;
+
+    // FIXME What about this?
 //     ReKonfig::useFavicon()
 //     ? tabWindow()->changeWindowIcon(tabWindow()->mainView()->currentIndex())
 //     : tabWindow()->setWindowIcon(KIcon("rekonq"))
 //     ;
 // 
-//     // hovering unfocused tabs options
-//     switch (ReKonfig::hoveringTabOption())
-//     {
-//     case 0: // tab previews
-//     case 3: // nothing
-//         for (int i = 0; i < tabWindow()->mainView()->tabBar()->count(); i++)
-//         {
-//             tabWindow()->mainView()->tabBar()->setTabToolTip(i, QL1S(""));
-//         }
-//         break;
-// 
-//     case 1: // title previews
-//         for (int i = 0; i < tabWindow()->mainView()->tabBar()->count(); i++)
-//         {
-//             tabWindow()->mainView()->tabBar()->setTabToolTip(i, tabWindow()->mainView()->tabText(i).remove('&'));
-//         }
-//         break;
-// 
-//     case 2: // url previews
-//         for (int i = 0; i < tabWindow()->mainView()->tabBar()->count(); i++)
-//         {
-//             tabWindow()->mainView()->tabBar()->setTabToolTip(i, tabWindow()->mainView()->webTab(i)->url().toMimeDataString());
-//         }
-//         break;
-// 
-//     default: // non extant case
-//         ASSERT_NOT_REACHED(unknown hoveringTabOption);
-//         break;
-//     }
+    // hovering unfocused tabs options
+    switch (ReKonfig::hoveringTabOption())
+    {
+    case 0: // tab previews
+    case 3: // nothing
+        for (int i = 0; i < tabWindow()->tabBar()->count(); i++)
+        {
+            tabWindow()->tabBar()->setTabToolTip(i, QL1S(""));
+        }
+        break;
+
+    case 1: // title previews
+        for (int i = 0; i < tabWindow()->tabBar()->count(); i++)
+        {
+            tabWindow()->tabBar()->setTabToolTip(i, tabWindow()->tabText(i).remove('&'));
+        }
+        break;
+
+    case 2: // url previews
+        for (int i = 0; i < tabWindow()->tabBar()->count(); i++)
+        {
+            tabWindow()->tabBar()->setTabToolTip(i, tabWindow()->webWindow(i)->url().toMimeDataString());
+        }
+        break;
+
+    default: // non extant case
+        ASSERT_NOT_REACHED(unknown hoveringTabOption);
+        break;
+    }
 
 }
 

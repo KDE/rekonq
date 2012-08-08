@@ -120,12 +120,6 @@
     <entry name="lastTabClosesWindow" type="Bool">
         <default>false</default>
     </entry>
-    <entry name="openNewTabsInBackground" type="Bool">
-        <default>true</default>
-    </entry>
-    <entry name="openNewTabsNearCurrent" type="Bool">
-        <default>false</default>
-    </entry>
     <entry name="closeTabSelectPrevious" type="Bool">
         <default>false</default>
     </entry>
