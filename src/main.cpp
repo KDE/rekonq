@@ -63,7 +63,10 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     // Define the command line options using KCmdLineOptions
     KCmdLineOptions options;
 
-    // adding URL option
+    // adding options
+    options.add("incognito" , ki18n("Open in incognito mode"));
+    options.add("webapp=URL" , ki18n("Open URL as web app (in a simple window, as separate process)"));
+    options.add("window" , ki18n("Open a standalone window (i.e. WITHOUT the tabbar)"));
     options.add("+[URL]" , ki18n("Location to open"));
 
     // Register the supported options
