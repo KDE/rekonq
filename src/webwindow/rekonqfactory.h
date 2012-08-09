@@ -32,6 +32,7 @@
 
 class KActionCollection;
 class KMenu;
+class KToolBar;
 
 class QDomNode;
 class QString;
@@ -42,6 +43,7 @@ namespace RekonqFactory
 {
     QWidget *createWidget(const QString &name, QWidget *parent, KActionCollection *);
 
+    void fillToolbar(KToolBar *, QDomNode, KActionCollection *);
     void fillMenu(KMenu *, QDomNode, KActionCollection *);
 };
 

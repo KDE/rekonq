@@ -92,21 +92,14 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
 
     // main toolbar
     _mainToolBar = qobject_cast<KToolBar *>(RekonqFactory::createWidget(QL1S("mainToolBar"), this, actionCollection()));
-    
-    // bookmarks toolbar
-    if (_bookmarksBar)
-    {
-        BookmarkManager::self()->removeBookmarkBar(_bookmarksBar);
-        delete _bookmarksBar;
-    }
-    KToolBar *XMLGUIBkBar = new KToolBar(this);
-    _bookmarksBar = new BookmarkToolBar(XMLGUIBkBar, this);
+
+    _bookmarksBar = qobject_cast<BookmarkToolBar *>(RekonqFactory::createWidget(QL1S("bookmarkToolBar"), this, actionCollection()));
     BookmarkManager::self()->registerBookmarkBar(_bookmarksBar);
 
     // layout
     QVBoxLayout *l = new QVBoxLayout(this);
     l->addWidget(_mainToolBar);
-    l->addWidget(XMLGUIBkBar);
+    l->addWidget(_bookmarksBar);
     l->addWidget(_tab);
     l->setContentsMargins(0, 0, 0, 0);
 

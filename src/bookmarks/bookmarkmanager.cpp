@@ -161,7 +161,7 @@ void BookmarkManager::slotBookmarksChanged()
     {
         if (bookmarkToolBar)
         {
-            bookmarkToolBar->toolBar()->clear();
+            bookmarkToolBar->clear();
             fillBookmarkBar(bookmarkToolBar);
         }
     }
@@ -189,19 +189,19 @@ void BookmarkManager::fillBookmarkBar(BookmarkToolBar *toolBar)
             connect(menuAction->menu(), SIGNAL(aboutToShow()), toolBar, SLOT(menuDisplayed()));
             connect(menuAction->menu(), SIGNAL(aboutToHide()), toolBar, SLOT(menuHidden()));
 
-            toolBar->toolBar()->addAction(menuAction);
-            toolBar->toolBar()->widgetForAction(menuAction)->installEventFilter(toolBar);
+            toolBar->addAction(menuAction);
+            toolBar->widgetForAction(menuAction)->installEventFilter(toolBar);
         }
         else if (bookmark.isSeparator())
         {
-            toolBar->toolBar()->addSeparator();
+            toolBar->addSeparator();
         }
         else
         {
             KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, this);
             action->setIcon(IconManager::self()->iconForUrl(KUrl(bookmark.url())));
-            toolBar->toolBar()->addAction(action);
-            toolBar->toolBar()->widgetForAction(action)->installEventFilter(toolBar);
+            toolBar->addAction(action);
+            toolBar->widgetForAction(action)->installEventFilter(toolBar);
         }
     }
 }

@@ -77,14 +77,12 @@ private:
  * Some events from the toolbar are handled to allow the drag and drop
  */
 
-class BookmarkToolBar : public QObject
+class BookmarkToolBar : public KToolBar
 {
     Q_OBJECT
 
 public:
-    BookmarkToolBar(KToolBar *toolBar, QObject *parent);
-
-    KToolBar* toolBar();
+    BookmarkToolBar(QWidget *parent);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event);
@@ -99,7 +97,6 @@ private Q_SLOTS:
 private:
     void startDrag();
 
-    KToolBar *m_toolBar;
     KMenu *m_currentMenu;
     QPoint m_startDragPos;
     QAction *m_dragAction;

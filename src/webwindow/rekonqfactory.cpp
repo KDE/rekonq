@@ -26,6 +26,7 @@
 
 #include "rekonqfactory.h"
 
+#include "bookmarkstoolbar.h"
 #include "rekonqmenu.h"
 
 #include <KActionCollection>
@@ -45,7 +46,6 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
 {
     QString xmlFilePath;
     xmlFilePath = KStandardDirs::locateLocal( "data", "rekonq/rekonqui.rc");
-    kDebug() << "local xmlfile: " << xmlFilePath;
     if (!QFile::exists(xmlFilePath))
     {
         xmlFilePath = KStandardDirs::locate( "data", "rekonq/rekonqui.rc");
@@ -58,42 +58,46 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
     document.setContent(&xmlFile, false);
 
     // Toolbars ----------------------------------------------------------------------
-    QDomNodeList elementList = document.elementsByTagName(QL1S("ToolBar"));
-    if (elementList.isEmpty())
+    QDomNodeList elementToolbarList = document.elementsByTagName(QL1S("ToolBar"));
+    if (elementToolbarList.isEmpty())
     {
+        kDebug() << "ELEMENT TOOLBAR LIST EMPTY. RETURNING NULL";
         return 0;
     }
 
-    for(unsigned int i = 0; i < elementList.length(); ++i)
+    for(unsigned int i = 0; i < elementToolbarList.length(); ++i)
     {
-        QDomElement element = elementList.at(i).toElement();
+        QDomNode node = elementToolbarList.at(i);
+        QDomElement element = node.toElement();
 
         if (element.attribute("name") != name)
             continue;
 
         if (element.attribute("deleted").toLower() == "true")
         {
+            kDebug() << "ELEMENT DELETED. RETURNING NULL";
             return 0;
         }
-        KToolBar *bar = new KToolBar(parent, false, false);
-        QDomNodeList actionList = element.elementsByTagName(QL1S("Action"));
-        
-        for(unsigned int j = 0; j < actionList.length(); ++j)
-        {
-            QDomElement actionElement = actionList.at(j).toElement();
-            const QString actionName = actionElement.attribute("name");
-            QAction *a = ac->action(actionName);
-            if (a)
-                bar->addAction(a);
-        }
 
-        return bar;
+        if (name == QL1S("bookmarkToolBar"))
+        {
+            BookmarkToolBar *b = new BookmarkToolBar(parent);
+            fillToolbar(b, node, ac);
+            return b;
+        }
+        else
+        {
+            KToolBar *b = new KToolBar(parent, false , false);
+            fillToolbar(b, node, ac);
+            return b;
+        }
     }
 
     // Rekonq Menu ----------------------------------------------------------------------
     QDomNodeList elementMenuList = document.elementsByTagName(QL1S("Menu"));
     if (elementMenuList.isEmpty())
     {
+        kDebug() << "ELEMENT MENU LIST EMPTY. RETURNING NULL";
         return 0;
     }
 
@@ -106,13 +110,13 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
 
         if (element.attribute("deleted").toLower() == "true")
         {
+            kDebug() << "ELEMENT DELETED. RETURNING NULL";
             return 0;
         }
 
         if (name == QL1S("rekonqMenu"))
         {
             RekonqMenu *m = new RekonqMenu(parent);
-            kDebug() << "filling menu...";
             fillMenu(m, node, ac);
             return m;
         }
@@ -130,6 +134,70 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
 }
 
 
+void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node, KActionCollection *ac)
+{
+    QDomElement element = node.toElement();
+    
+    if (element.hasAttribute("iconSize"))
+    {
+        int iconSize = element.attribute("iconSize").toInt();
+        b->setIconDimensions(iconSize);
+    }
+
+    if (element.hasAttribute("iconText"))
+    {
+        if(element.attribute("iconText").toLower() == QL1S("icononly"))
+        {
+            b->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        }
+
+        if(element.attribute("iconText").toLower() == QL1S("textonly"))
+        {
+            b->setToolButtonStyle(Qt::ToolButtonTextOnly);
+        }
+
+        if(element.attribute("iconText").toLower() == QL1S("icontextright"))
+        {
+            b->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        }
+
+        if(element.attribute("iconText").toLower() == QL1S("textundericon"))
+        {
+            b->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        }
+
+        if(element.attribute("iconText").toLower() == QL1S("followstyle"))
+        {
+            b->setToolButtonStyle(Qt::ToolButtonFollowStyle);
+        }
+    }
+
+    QDomNodeList childrenList = node.childNodes();
+
+    for(unsigned int i = 0; i < childrenList.length(); ++i)
+    {
+        QDomElement el = childrenList.at(i).toElement();
+
+        if (el.tagName() == QL1S("Action"))
+        {
+            const QString actionName = el.attribute("name");
+            QAction *a = ac->action(actionName);
+            if (a)
+            {
+                b->addAction(a);
+            }
+            
+        }
+
+        if (el.tagName() == QL1S("Separator"))
+        {
+            b->addSeparator();
+        }
+
+    }
+}
+
+
 void RekonqFactory::fillMenu(KMenu *m, QDomNode node, KActionCollection *ac)
 {
     QDomNodeList childrenList = node.childNodes();
@@ -144,10 +212,9 @@ void RekonqFactory::fillMenu(KMenu *m, QDomNode node, KActionCollection *ac)
             QAction *a = ac->action(actionName);
             if (a)
             {
-                kDebug() << "ADDING ACTION " << actionName << " to menu " << m;
                 m->addAction(a);
             }
-            
+
         }
 
         if (el.tagName() == QL1S("Separator"))
