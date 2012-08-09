@@ -30,7 +30,9 @@
 #include "rekonqmenu.h"
 
 #include <KActionCollection>
+#include <KCmdLineArgs>
 #include <KMenu>
+#include <KHelpMenu>
 #include <KStandardDirs>
 #include <KToolBar>
 
@@ -120,7 +122,12 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
             fillMenu(m, node, ac);
             return m;
         }
-        else
+        else if (name == QL1S("help"))
+        {
+            KHelpMenu *m = new KHelpMenu(parent, KCmdLineArgs::aboutData());
+            return m->menu();
+        }
+        else 
         {
             KMenu *m = new KMenu(parent);
             fillMenu(m, node, ac);
