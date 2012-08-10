@@ -237,28 +237,29 @@ void BookmarkWidget::accept()
 
 void BookmarkWidget::setupFolderComboBox()
 {
-    KBookmarkGroup root = rApp->bookmarkManager()->manager()->toolbar();
+    KBookmarkGroup toolBarRoot = rApp->bookmarkManager()->manager()->toolbar();
+    KBookmarkGroup root = rApp->bookmarkManager()->rootGroup();
 
-    if (rApp->bookmarkManager()->manager()->toolbar().address() == rApp->bookmarkManager()->manager()->root().address())
+    if (toolBarRoot.address() == root.address())
     {
         m_folder->addItem(i18n("Bookmark Toolbar"),
-                          rApp->bookmarkManager()->manager()->toolbar().address());
+                          toolBarRoot.address());
     }
     else
     {
-        m_folder->addItem(rApp->bookmarkManager()->manager()->toolbar().text(),
-                          rApp->bookmarkManager()->manager()->toolbar().address());
+        m_folder->addItem(toolBarRoot.text(),
+                          toolBarRoot.address());
     }
     m_folder->insertSeparator(1);
 
-    if (m_bookmark->parentGroup().address() != rApp->bookmarkManager()->manager()->toolbar().address())
+    if (m_bookmark->parentGroup().address() != toolBarRoot.address())
     {
         m_folder->addItem(m_bookmark->parentGroup().text(),
                           m_bookmark->parentGroup().address());
         m_folder->insertSeparator(3);
     }
 
-    for (KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
+    for (KBookmark bookmark = toolBarRoot.first(); !bookmark.isNull(); bookmark = toolBarRoot.next(bookmark))
     {
         if (bookmark.isGroup())
         {
@@ -266,7 +267,7 @@ void BookmarkWidget::setupFolderComboBox()
         }
     }
 
-    if (m_bookmark->parentGroup().address() == root.address())
+    if (m_bookmark->parentGroup().address() == toolBarRoot.address())
     {
         m_folder->setCurrentIndex(0);
     }
