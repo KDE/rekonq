@@ -242,12 +242,14 @@ void BookmarkWidget::setupFolderComboBox()
 
     if (toolBarRoot.address() == root.address())
     {
-        m_folder->addItem(i18n("Bookmark Toolbar"),
+        m_folder->addItem(KIcon("bookmark-toolbar"),
+                          i18n("Bookmark Toolbar"),
                           toolBarRoot.address());
     }
     else
     {
-        m_folder->addItem(toolBarRoot.text(),
+        m_folder->addItem(KIcon("bookmark-toolbar"),
+                          toolBarRoot.text(),
                           toolBarRoot.address());
     }
     m_folder->insertSeparator(1);
@@ -261,7 +263,7 @@ void BookmarkWidget::setupFolderComboBox()
 
     for (KBookmark bookmark = toolBarRoot.first(); !bookmark.isNull(); bookmark = toolBarRoot.next(bookmark))
     {
-        if (bookmark.isGroup())
+        if (bookmark.isGroup() && bookmark.address() != m_bookmark->parentGroup().address())
         {
             m_folder->addItem(bookmark.text(), bookmark.address());
         }
