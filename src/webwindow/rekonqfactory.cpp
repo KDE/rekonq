@@ -44,20 +44,40 @@
 #include <QDomElement>
 
 
-QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActionCollection *ac)
+// Only used internally
+bool readDocument(QDomDocument & document, const QString & filePath)
 {
-    QString xmlFilePath;
-    xmlFilePath = KStandardDirs::locateLocal( "data", "rekonq/rekonqui.rc");
-    if (!QFile::exists(xmlFilePath))
+    QFile sessionFile(filePath);
+
+    if (!sessionFile.exists())
+        return false;
+
+    if (!sessionFile.open(QFile::ReadOnly))
     {
-        xmlFilePath = KStandardDirs::locate( "data", "rekonq/rekonqui.rc");
-        kDebug() << "general xmlfile: " << xmlFilePath;
+        kDebug() << "Unable to open xml file" << sessionFile.fileName();
+        return false;
     }
 
-    QFile xmlFile(xmlFilePath);
+    if (!document.setContent(&sessionFile, false))
+    {
+        kDebug() << "Unable to parse xml file" << sessionFile.fileName();
+        return false;
+    }
 
+    return true;
+}
+
+
+// ---------------------------------------------------------------------------------------------------------
+
+
+QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActionCollection *ac)
+{
     QDomDocument document("rekonqui.rc");
-    document.setContent(&xmlFile, false);
+    QString xmlFilePath = KStandardDirs::locate( "data", "rekonq/rekonqui.rc");
+
+    if (!readDocument(document, xmlFilePath))
+        return 0;
 
     // Toolbars ----------------------------------------------------------------------
     QDomNodeList elementToolbarList = document.elementsByTagName(QL1S("ToolBar"));

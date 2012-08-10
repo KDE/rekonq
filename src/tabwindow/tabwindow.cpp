@@ -94,7 +94,8 @@ TabWindow::TabWindow(bool withTab, QWidget *parent)
 
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
 
-    // NOTE: NEVER create a tabwindow without AT LEAST one tab...
+    // NOTE: we usually create TabWindow with AT LEAST one tab, but
+    // in one important case...
     if (withTab)
     {
         WebWindow *tab = prepareNewTab();
@@ -465,8 +466,6 @@ void TabWindow::detachTab(int index, TabWindow *toWindow)
     w->addTab(tab, tab->title());
     w->setCurrentWidget(tab);
 
-    w->show();
-    
     // disconnect signals from old tabwindow
     // WARNING: Code copied from prepareNewTab method.
     // Any new changes there should be applied here...
@@ -482,6 +481,8 @@ void TabWindow::detachTab(int index, TabWindow *toWindow)
     connect(tab, SIGNAL(loadStarted()), w, SLOT(tabLoadStarted()));
     connect(tab, SIGNAL(loadFinished(bool)), w, SLOT(tabLoadFinished(bool)));
     connect(tab, SIGNAL(pageCreated(WebPage *)), w, SLOT(pageCreated(WebPage *)));
+
+    w->show();
 }
 
 

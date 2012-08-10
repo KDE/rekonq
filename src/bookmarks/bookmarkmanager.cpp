@@ -181,7 +181,7 @@ void BookmarkManager::fillBookmarkBar(BookmarkToolBar *toolBar)
     {
         if (bookmark.isGroup())
         {
-            KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), this);
+            KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), toolBar);
             menuAction->setDelayed(false);
             BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menuAction->menu(), bookmark.address());
             bMenu->setParent(menuAction->menu());
@@ -198,7 +198,7 @@ void BookmarkManager::fillBookmarkBar(BookmarkToolBar *toolBar)
         }
         else
         {
-            KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, this);
+            KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, toolBar);
             action->setIcon(IconManager::self()->iconForUrl(KUrl(bookmark.url())));
             toolBar->addAction(action);
             toolBar->widgetForAction(action)->installEventFilter(toolBar);

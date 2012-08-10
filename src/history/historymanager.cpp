@@ -85,7 +85,6 @@ HistoryManager::HistoryManager(QObject *parent)
     , m_historyLimit(0)
     , m_historyTreeModel(0)
 {
-    kDebug() << "loading history";
     connect(this, SIGNAL(entryAdded(HistoryItem)), m_saveTimer, SLOT(changeOccurred()));
     connect(this, SIGNAL(entryRemoved(HistoryItem)), m_saveTimer, SLOT(changeOccurred()));
     connect(m_saveTimer, SIGNAL(saveNeeded()), this, SLOT(save()));

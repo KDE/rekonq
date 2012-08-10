@@ -68,6 +68,8 @@ public:
     TabWindow *tabWindow();
     TabWindowList tabWindowList();
 
+    void bookmarksToolbarToggled(bool);
+
 public Q_SLOTS:
     /**
      * Save application's configuration
@@ -92,6 +94,9 @@ protected:
     // This is used to track which window was activated most recently
     bool eventFilter(QObject *watched, QEvent *event);
 
+Q_SIGNALS:
+    void toggleBookmarksToolbar(bool);
+    
 private Q_SLOTS:
     void updateConfiguration();
 

@@ -27,6 +27,9 @@
 #include "webwindow.h"
 #include "webwindow.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 #include "application.h"
 
 #include "adblockmanager.h"
@@ -72,7 +75,6 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     , _tab(new WebTab(this))
     , _bar(new UrlBar(_tab))
     , _mainToolBar(0)
-    , _bookmarksBar(0)
     , m_findBar(new FindBar(this))
     , m_loadStopReloadAction(0)
     , m_rekonqMenu(0)
@@ -92,22 +94,30 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     // setting up rekonq tools
     setupTools();
 
-    // main toolbar
-    _mainToolBar = qobject_cast<KToolBar *>(RekonqFactory::createWidget(QL1S("mainToolBar"), this, actionCollection()));
-
-    _bookmarksBar = qobject_cast<BookmarkToolBar *>(RekonqFactory::createWidget(QL1S("bookmarkToolBar"), this, actionCollection()));
-    BookmarkManager::self()->registerBookmarkBar(_bookmarksBar);
-
     // layout
     QVBoxLayout *l = new QVBoxLayout(this);
+
+    // main toolbar
+    _mainToolBar = qobject_cast<KToolBar *>(RekonqFactory::createWidget(QL1S("mainToolBar"), this, actionCollection()));
     l->addWidget(_mainToolBar);
-    l->addWidget(_bookmarksBar);
+
+    if (ReKonfig::showBookmarksToolbar())
+    {
+        _bookmarksBar = qobject_cast<BookmarkToolBar *>(RekonqFactory::createWidget(QL1S("bookmarkToolBar"), this, actionCollection()));
+        BookmarkManager::self()->registerBookmarkBar(_bookmarksBar.data());
+
+        l->addWidget(_bookmarksBar.data());
+    }
+    
     l->addWidget(_tab);
     l->addWidget(m_findBar);
     l->setContentsMargins(0, 0, 0, 0);
 
     setContentsMargins(0, 0, 0, 0);
 
+    // bookmarks toolbar
+    connect(rApp, SIGNAL(toggleBookmarksToolbar(bool)), this, SLOT(toggleBookmarksToolbar(bool)));
+    
     // things changed signals
     connect(_tab->view(), SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
 
@@ -135,7 +145,11 @@ WebWindow::~WebWindow()
 {
     m_hidePopupTimer->stop();
 
-    BookmarkManager::self()->removeBookmarkBar(_bookmarksBar);
+    if (!_bookmarksBar.isNull())
+    {
+        BookmarkManager::self()->removeBookmarkBar(_bookmarksBar.data());
+        _bookmarksBar.clear();
+    }
 }
 
 
@@ -188,6 +202,13 @@ void WebWindow::setupActions()
     KStandardAction::print(_tab, SLOT(printFrame()), actionCollection());
     KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
     KStandardAction::quit(rApp, SLOT(queryQuit()), actionCollection());
+
+    // Bookmark Toolbar
+    a = new KAction(KIcon("bookmarks-bar"), i18n("Bookmarks Toolbar"), this);
+    a->setCheckable(true);
+    a->setChecked(ReKonfig::showBookmarksToolbar());
+    actionCollection()->addAction(QL1S("show_bookmarks_toolbar"), a);
+    connect(a, SIGNAL(toggled(bool)), this, SLOT(toggleBookmarksToolbar(bool)));
 
     // find action
     a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
@@ -815,4 +836,33 @@ void WebWindow::preferences()
     connect(s, SIGNAL(finished(int)), s, SLOT(deleteLater()));
 
     s->show();
+}
+
+
+void WebWindow::toggleBookmarksToolbar(bool b)
+{
+    bool actual = !_bookmarksBar.isNull();
+    if (actual == b)
+        return;
+
+    if (b)
+    {
+        _bookmarksBar = qobject_cast<BookmarkToolBar *>(RekonqFactory::createWidget(QL1S("bookmarkToolBar"), this, actionCollection()));
+        BookmarkManager::self()->registerBookmarkBar(_bookmarksBar.data());
+
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(1, _bookmarksBar.data());
+    }
+    else
+    {
+        qobject_cast<QVBoxLayout *>(layout())->removeWidget(_bookmarksBar.data());
+
+        BookmarkManager::self()->removeBookmarkBar(_bookmarksBar.data());
+        delete _bookmarksBar.data();
+        _bookmarksBar.clear();
+    }
+
+    ReKonfig::setShowBookmarksToolbar(b);
+    QAction *a = actionByName(QL1S("show_bookmarks_toolbar"));
+    a->setChecked(b);
+    rApp->bookmarksToolbarToggled(b);
 }

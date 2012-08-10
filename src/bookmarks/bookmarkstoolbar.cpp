@@ -170,6 +170,12 @@ BookmarkToolBar::BookmarkToolBar(QWidget *parent)
 }
 
 
+BookmarkToolBar::~BookmarkToolBar()
+{
+    clear();
+}
+
+
 void BookmarkToolBar::contextMenu(const QPoint &point)
 {
     KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface*>(actionAt(point));

@@ -83,6 +83,7 @@ class BookmarkToolBar : public KToolBar
 
 public:
     BookmarkToolBar(QWidget *parent);
+    ~BookmarkToolBar();
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event);

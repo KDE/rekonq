@@ -110,6 +110,9 @@ private Q_SLOTS:
     void fileOpen();
     void fileSaveAs();
 
+    // bookmarks bar
+    void toggleBookmarksToolbar(bool);
+
     // Tools Menu slots
     void viewPageSource();
     void viewFullScreen(bool enable);
@@ -136,7 +139,7 @@ private:
     UrlBar *_bar;
 
     KToolBar *_mainToolBar;
-    BookmarkToolBar *_bookmarksBar;
+    QWeakPointer<BookmarkToolBar> _bookmarksBar;
 
     FindBar *m_findBar;
 

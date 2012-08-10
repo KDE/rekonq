@@ -713,3 +713,9 @@ void Application::createWebAppShortcut()
 
     dialog->deleteLater();
 }
+
+
+void Application::bookmarksToolbarToggled(bool b)
+{
+    emit toggleBookmarksToolbar(b);
+}
