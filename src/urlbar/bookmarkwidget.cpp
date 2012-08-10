@@ -256,7 +256,14 @@ void BookmarkWidget::setupFolderComboBox()
 
     if (m_bookmark->parentGroup().address() != toolBarRoot.address())
     {
-        m_folder->addItem(m_bookmark->parentGroup().text(),
+        QString parentText = m_bookmark->parentGroup().text();
+
+        if (m_bookmark->parentGroup().address() == root.address())
+        {
+            parentText = i18n("Root folder");
+        }
+
+        m_folder->addItem(parentText,
                           m_bookmark->parentGroup().address());
         m_folder->insertSeparator(3);
     }
@@ -269,15 +276,8 @@ void BookmarkWidget::setupFolderComboBox()
         }
     }
 
-    if (m_bookmark->parentGroup().address() == toolBarRoot.address())
-    {
-        m_folder->setCurrentIndex(0);
-    }
-    else
-    {
-        int index = m_folder->findText(m_bookmark->parentGroup().text());
-        m_folder->setCurrentIndex(index);
-    }
+    int index =  m_folder->findData(m_bookmark->parentGroup().address());
+    m_folder->setCurrentIndex(index);
 }
 
 
