@@ -39,6 +39,7 @@
 #include "webtab.h"
 
 #include "bookmarkstoolbar.h"
+#include "findbar.h"
 #include "rekonqfactory.h"
 #include "rekonqmenu.h"
 #include "settingsdialog.h"
@@ -72,6 +73,7 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     , _bar(new UrlBar(_tab))
     , _mainToolBar(0)
     , _bookmarksBar(0)
+    , m_findBar(new FindBar(this))
     , m_loadStopReloadAction(0)
     , m_rekonqMenu(0)
     , m_popup(new QLabel(this))
@@ -101,6 +103,7 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     l->addWidget(_mainToolBar);
     l->addWidget(_bookmarksBar);
     l->addWidget(_tab);
+    l->addWidget(m_findBar);
     l->setContentsMargins(0, 0, 0, 0);
 
     setContentsMargins(0, 0, 0, 0);
@@ -125,6 +128,14 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     connect(_tab->page(), SIGNAL(linkHovered(QString,QString,QString)), this, SLOT(notifyMessage(QString)));
 
     updateHistoryActions();                                                                                                                             
+}
+
+
+WebWindow::~WebWindow()
+{
+    m_hidePopupTimer->stop();
+
+    BookmarkManager::self()->removeBookmarkBar(_bookmarksBar);
 }
 
 
@@ -177,6 +188,11 @@ void WebWindow::setupActions()
     KStandardAction::print(_tab, SLOT(printFrame()), actionCollection());
     KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
     KStandardAction::quit(rApp, SLOT(queryQuit()), actionCollection());
+
+    // find action
+    a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
+    KShortcut findShortcut = KStandardShortcut::find();
+    a->setShortcut(findShortcut);
 
     a = KStandardAction::fullScreen(this, SLOT(viewFullScreen(bool)), this, actionCollection());
     KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();

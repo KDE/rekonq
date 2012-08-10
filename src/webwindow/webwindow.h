@@ -44,6 +44,7 @@ class WebTab;
 class WebView;
 
 class BookmarkToolBar;
+class FindBar;
 class UrlBar;
 class RekonqMenu;
 
@@ -62,7 +63,8 @@ class WebWindow : public QWidget
 
 public:
     WebWindow(QWidget *parent = 0, WebPage *pg = 0);
-
+    ~WebWindow();
+    
     void load(const QUrl &);
 
     WebPage *page();
@@ -80,7 +82,7 @@ public:
 
     virtual KActionCollection *actionCollection () const;
     QAction *actionByName(const QString &name);
-    
+
 private:
     void setupActions();
     void setupTools();
@@ -135,6 +137,8 @@ private:
 
     KToolBar *_mainToolBar;
     BookmarkToolBar *_bookmarksBar;
+
+    FindBar *m_findBar;
 
     KAction *m_loadStopReloadAction;
 
