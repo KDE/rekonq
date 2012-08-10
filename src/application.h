@@ -88,8 +88,6 @@ public Q_SLOTS:
 
     TabWindow *newTabWindow();
 
-    void removeTabWindow(TabWindow *window);
-
 protected:
     // This is used to track which window was activated most recently
     bool eventFilter(QObject *watched, QEvent *event);

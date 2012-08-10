@@ -333,7 +333,7 @@ TabWindow *Application::newTabWindow()
     // set object name
     int n = m_tabWindows.count() + 1;
     w->setObjectName( QL1S("win") + QString::number(n) );
-    
+
     // This is used to track which window was activated most recently
     w->installEventFilter(this);
 
@@ -341,17 +341,6 @@ TabWindow *Application::newTabWindow()
     w->show();
 
     return w;
-}
-
-
-void Application::removeTabWindow(TabWindow *window)
-{
-    m_tabWindows.removeOne(window);
-    kDebug() << "Removing Window from app window list...";
-
-    // bye bye...
-    if (m_tabWindows.count() == 0)
-        quit();
 }
 
 
@@ -377,6 +366,17 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
                 m_tabWindows.prepend(m_tabWindows.takeAt(index));
             }
         }
+    }
+
+    // As we are filtering the events occurred to the tabwindows, check also
+    // when we close one of them, remove from tab window list and check if it was last...
+    if (event->type() == QEvent::Close)
+    {
+        TabWindow *window = qobject_cast<TabWindow*>(watched);
+        m_tabWindows.removeOne(window);
+
+        if (m_tabWindows.count() == 0)
+            quit();
     }
 
     return QObject::eventFilter(watched, event);
