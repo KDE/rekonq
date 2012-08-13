@@ -63,6 +63,7 @@ UrlResolver::UrlResolver(const QString &typedUrl)
     : QObject()
     , _typedString(typedUrl.trimmed())
     , _typedQuery()
+    , _isKDEUrl(false)
 {
     if (!_searchEngine)
         setSearchEngine(SearchEngine::defaultEngine());
@@ -175,7 +176,8 @@ UrlSearchList UrlResolver::orderLists()
     // Browse & Search results
     UrlSearchList browseSearch;
     QString lowerTypedString = _typedString.toLower();
-    if (_browseRegexp.indexIn(lowerTypedString) != -1)
+    if (!_isKDEUrl
+            && (_browseRegexp.indexIn(lowerTypedString) != -1))
     {
         webSearchFirst = true;
         browseSearch << _webSearches;
@@ -291,6 +293,7 @@ void UrlResolver::computeWebSearches()
     {
         query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
         setSearchEngine(engine);
+        _isKDEUrl = true;
     }
 
     if (_searchEngine)

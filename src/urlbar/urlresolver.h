@@ -170,6 +170,8 @@ private:
     static QRegExp _searchEnginesRegexp;
 
     static KService::Ptr _searchEngine;
+
+    bool _isKDEUrl;
 };
 
 // ------------------------------------------------------------------------------
