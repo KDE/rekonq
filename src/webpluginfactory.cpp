@@ -50,12 +50,24 @@ void WebPluginFactory::setLoadClickToFlash(bool load)
 }
 
 
-QObject *WebPluginFactory::create(const QString &mimeType,
+QObject *WebPluginFactory::create(const QString &_mimeType,
                                   const QUrl &url,
                                   const QStringList &argumentNames,
                                   const QStringList &argumentValues) const
 {
+    QString mimeType(_mimeType.trimmed());
+    // If no mimetype is provided, follow kwebpluginfactory road to determine/guess it
+    if (mimeType.isEmpty())
+    {
+        extractGuessedMimeType(url, &mimeType);
+    }
+
     kDebug() << "loading mimeType: " << mimeType;
+
+    // we'd like to use djvu plugin if possible. If not available, rekonq protocol handler
+    // will provide a part to load it. See BUG:304562 about
+    if (mimeType == QL1S("image/vnd.djvu") || mimeType == QL1S("image/x.djvu"))
+        return 0;
 
     switch (ReKonfig::pluginsEnabled())
     {
