@@ -864,17 +864,8 @@ void WebView::wheelEvent(QWheelEvent *event)
         // Sync with the zoom slider
         if (event->modifiers() == Qt::ControlModifier)
         {
-            // Limits of the slider
-            if (zoomFactor() > 1.9)
-                setZoomFactor(1.9);
-            else if (zoomFactor() < 0.1)
-                setZoomFactor(0.1);
-
             // Round the factor (Fix slider's end value)
-            int newFactor = zoomFactor() * 10;
-            if ((zoomFactor() * 10 - newFactor) > 0.5)
-                newFactor++;
-
+            int newFactor = round(zoomFactor() * 10);
             emit zoomChanged(newFactor);
         }
         else if (ReKonfig::smoothScrolling() && prevPos != newPos)

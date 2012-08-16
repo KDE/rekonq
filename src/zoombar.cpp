@@ -159,8 +159,10 @@ void ZoomBar::zoomNormal()
 void ZoomBar::updateSlider(int webview)
 {
     WebTab *tab = 0;
-    if (!rApp->mainWindowList().isEmpty())
-        tab = rApp->mainWindow()->mainView()->webTab(webview);
+    MainView *mainView = static_cast<MainView *>(sender());
+
+    if (mainView)
+        tab = mainView->webTab(webview);
 
     if (!tab)
         return;
@@ -172,12 +174,24 @@ void ZoomBar::updateSlider(int webview)
 
 void ZoomBar::setValue(int value)
 {
-    m_zoomSlider->setValue(value);
-    m_percentage->setText(i18nc("percentage of the website zoom", "%1%", QString::number(value * 10)));
+    int boundedValue = value;
+
+    // Don't exceed the slider min/max value
+    if (value < 1)
+    {
+        boundedValue = 1;
+    }
+    else if (value > 19)
+    {
+        boundedValue = 19;
+    }
+
+    m_zoomSlider->setValue(boundedValue);
+    m_percentage->setText(i18nc("percentage of the website zoom", "%1%", QString::number(boundedValue * 10)));
 
     WebTab *tab = rApp->mainWindow()->currentTab();
-    saveZoomValue(tab->url().host(), value);
-    tab->view()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values
+    saveZoomValue(tab->url().host(), boundedValue);
+    tab->view()->setZoomFactor(QVariant(boundedValue).toReal() / 10);  // Don't allox max +1 values
 }
 
 
