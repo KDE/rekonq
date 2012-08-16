@@ -77,6 +77,7 @@ private:
 private Q_SLOTS:
     void accept();
     void removeBookmark();
+    void onFolderIndexChanged(int index);
 
 #ifdef HAVE_NEPOMUK
     void setRatingSlot(int rate);

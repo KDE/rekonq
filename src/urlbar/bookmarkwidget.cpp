@@ -41,6 +41,7 @@
 #include <KIcon>
 #include <KLineEdit>
 #include <KRatingWidget>
+#include <KBookmarkDialog>
 
 // Qt Includes
 #include <QDialogButtonBox>
@@ -106,6 +107,7 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     m_folder = new KComboBox(this);
     layout->addRow(folderLabel, m_folder);
     setupFolderComboBox();
+    connect(m_folder, SIGNAL(currentIndexChanged(int)), this, SLOT(onFolderIndexChanged(int)));
 
     // Bookmark name
     QLabel *nameLabel = new QLabel(this);
@@ -276,8 +278,28 @@ void BookmarkWidget::setupFolderComboBox()
         }
     }
 
+    m_folder->insertSeparator(m_folder->count());
+    m_folder->addItem(KIcon("folder"), i18n("Choose..."));
+
     int index =  m_folder->findData(m_bookmark->parentGroup().address());
     m_folder->setCurrentIndex(index);
+}
+
+
+void BookmarkWidget::onFolderIndexChanged(int index)
+{
+    if (index == m_folder->count() - 1)
+    {
+        KBookmarkDialog dialog(rApp->bookmarkManager()->manager());
+        KBookmarkGroup selectedGroup = dialog.selectFolder(m_bookmark->parentGroup());
+
+        if (selectedGroup.address() != m_bookmark->parentGroup().address() && !selectedGroup.isNull() )
+        {
+            m_bookmark->parentGroup().deleteBookmark(*m_bookmark);
+            selectedGroup.addBookmark(*m_bookmark);
+            rApp->bookmarkManager()->manager()->emitChanged();
+        }
+    }
 }
 
 
