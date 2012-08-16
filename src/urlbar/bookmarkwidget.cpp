@@ -68,13 +68,13 @@
 
 BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     : QMenu(parent)
-    , m_bookmark(new KBookmark(bookmark))
+    , m_bookmark(bookmark)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setFixedWidth(320);
 
 #ifdef HAVE_NEPOMUK
-    m_nfoResource = (QUrl)m_bookmark->url();
+    m_nfoResource = (QUrl)m_bookmark.url();
     m_isNepomukEnabled = QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.NepomukServer");
     kDebug() << "IS NEPOMUK ACTUALLY RUNNING? " << m_isNepomukEnabled;
 #endif
@@ -113,13 +113,13 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     QLabel *nameLabel = new QLabel(this);
     nameLabel->setText(i18n("Name:"));
     m_name = new KLineEdit(this);
-    if (m_bookmark->isNull())
+    if (m_bookmark.isNull())
     {
         m_name->setEnabled(false);
     }
     else
     {
-        m_name->setText(m_bookmark->text());
+        m_name->setText(m_bookmark.text());
         m_name->setFocus();
     }
     layout->addRow(nameLabel, m_name);
@@ -195,12 +195,6 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
 }
 
 
-BookmarkWidget::~BookmarkWidget()
-{
-    delete m_bookmark;
-}
-
-
 void BookmarkWidget::showAt(const QPoint &pos)
 {
     adjustSize();
@@ -213,17 +207,17 @@ void BookmarkWidget::showAt(const QPoint &pos)
 
 void BookmarkWidget::accept()
 {
-    if (!m_bookmark->isNull() && m_name->text() != m_bookmark->fullText())
+    if (!m_bookmark.isNull() && m_name->text() != m_bookmark.fullText())
     {
-        m_bookmark->setFullText(m_name->text());
+        m_bookmark.setFullText(m_name->text());
         rApp->bookmarkManager()->emitChanged();
     }
     QString folderAddress = m_folder->itemData(m_folder->currentIndex()).toString();
     KBookmarkGroup a = rApp->bookmarkManager()->manager()->findByAddress(folderAddress).toGroup();
 
-    KBookmarkGroup parent = m_bookmark->parentGroup();
-    parent.deleteBookmark(*m_bookmark);
-    a.addBookmark(*m_bookmark);
+    KBookmarkGroup parent = m_bookmark.parentGroup();
+    parent.deleteBookmark(m_bookmark);
+    a.addBookmark(m_bookmark);
     rApp->bookmarkManager()->manager()->emitChanged(a);
 
 #ifdef HAVE_NEPOMUK
@@ -256,23 +250,23 @@ void BookmarkWidget::setupFolderComboBox()
     }
     m_folder->insertSeparator(1);
 
-    if (m_bookmark->parentGroup().address() != toolBarRoot.address())
+    if (m_bookmark.parentGroup().address() != toolBarRoot.address())
     {
-        QString parentText = m_bookmark->parentGroup().text();
+        QString parentText = m_bookmark.parentGroup().text();
 
-        if (m_bookmark->parentGroup().address() == root.address())
+        if (m_bookmark.parentGroup().address() == root.address())
         {
             parentText = i18n("Root folder");
         }
 
         m_folder->addItem(parentText,
-                          m_bookmark->parentGroup().address());
+                          m_bookmark.parentGroup().address());
         m_folder->insertSeparator(3);
     }
 
     for (KBookmark bookmark = toolBarRoot.first(); !bookmark.isNull(); bookmark = toolBarRoot.next(bookmark))
     {
-        if (bookmark.isGroup() && bookmark.address() != m_bookmark->parentGroup().address())
+        if (bookmark.isGroup() && bookmark.address() != m_bookmark.parentGroup().address())
         {
             m_folder->addItem(bookmark.text(), bookmark.address());
         }
@@ -281,7 +275,7 @@ void BookmarkWidget::setupFolderComboBox()
     m_folder->insertSeparator(m_folder->count());
     m_folder->addItem(KIcon("folder"), i18n("Choose..."));
 
-    int index =  m_folder->findData(m_bookmark->parentGroup().address());
+    int index =  m_folder->findData(m_bookmark.parentGroup().address());
     m_folder->setCurrentIndex(index);
 }
 
@@ -291,12 +285,12 @@ void BookmarkWidget::onFolderIndexChanged(int index)
     if (index == m_folder->count() - 1)
     {
         KBookmarkDialog dialog(rApp->bookmarkManager()->manager());
-        KBookmarkGroup selectedGroup = dialog.selectFolder(m_bookmark->parentGroup());
+        KBookmarkGroup selectedGroup = dialog.selectFolder(m_bookmark.parentGroup());
 
-        if (selectedGroup.address() != m_bookmark->parentGroup().address() && !selectedGroup.isNull() )
+        if (selectedGroup.address() != m_bookmark.parentGroup().address() && !selectedGroup.isNull() )
         {
-            m_bookmark->parentGroup().deleteBookmark(*m_bookmark);
-            selectedGroup.addBookmark(*m_bookmark);
+            m_bookmark.parentGroup().deleteBookmark(m_bookmark);
+            selectedGroup.addBookmark(m_bookmark);
             rApp->bookmarkManager()->manager()->emitChanged();
         }
     }
@@ -305,7 +299,7 @@ void BookmarkWidget::onFolderIndexChanged(int index)
 
 void BookmarkWidget::removeBookmark()
 {
-    rApp->bookmarkManager()->owner()->deleteBookmark(*m_bookmark);
+    rApp->bookmarkManager()->owner()->deleteBookmark(m_bookmark);
     close();
 
     emit updateIcon();

@@ -34,6 +34,9 @@
 #include <QGridLayout>
 #include <QPlainTextEdit>
 
+// KDE Includes
+#include <KBookmark>
+
 // Nepomuk config include
 #include "config-nepomuk.h"
 
@@ -58,7 +61,6 @@ class BookmarkWidget : public QMenu
 
 public:
     explicit BookmarkWidget(const KBookmark &bookmark, QWidget *parent = 0);
-    virtual ~BookmarkWidget();
 
     void showAt(const QPoint &pos);
 
@@ -86,7 +88,7 @@ private Q_SLOTS:
 #endif
 
 private:
-    KBookmark *m_bookmark;
+    KBookmark m_bookmark;
     KLineEdit *m_name;
     KComboBox *m_folder;
     KLineEdit *m_tagLine;
