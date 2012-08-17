@@ -236,44 +236,47 @@ void BookmarkWidget::accept()
 
 void BookmarkWidget::setupFolderComboBox()
 {
-    KBookmarkGroup root = BookmarkManager::self()->manager()->toolbar();
+    KBookmarkGroup toolBarRoot = BookmarkManager::self()->manager()->toolbar();
+    KBookmarkGroup root = BookmarkManager::self()->rootGroup();
 
-    if (BookmarkManager::self()->manager()->toolbar().address() == BookmarkManager::self()->manager()->root().address())
+    if (toolBarRoot.address() == root.address())
     {
-        m_folder->addItem(i18n("Bookmark Toolbar"),
-                          BookmarkManager::self()->manager()->toolbar().address());
+        m_folder->addItem(KIcon("bookmark-toolbar"),
+                          i18n("Bookmark Toolbar"),
+                          toolBarRoot.address());
     }
     else
     {
-        m_folder->addItem(BookmarkManager::self()->manager()->toolbar().text(),
-                          BookmarkManager::self()->manager()->toolbar().address());
+        m_folder->addItem(KIcon("bookmark-toolbar"),
+                          toolBarRoot.text(),
+                          toolBarRoot.address());
     }
     m_folder->insertSeparator(1);
 
-    if (m_bookmark->parentGroup().address() != BookmarkManager::self()->manager()->toolbar().address())
+    if (m_bookmark->parentGroup().address() != toolBarRoot.address())
     {
-        m_folder->addItem(m_bookmark->parentGroup().text(),
+        QString parentText = m_bookmark->parentGroup().text();
+
+        if (m_bookmark->parentGroup().address() == root.address())
+        {
+            parentText = i18n("Root folder");
+        }
+
+        m_folder->addItem(parentText,
                           m_bookmark->parentGroup().address());
         m_folder->insertSeparator(3);
     }
 
-    for (KBookmark bookmark = root.first(); !bookmark.isNull(); bookmark = root.next(bookmark))
+    for (KBookmark bookmark = toolBarRoot.first(); !bookmark.isNull(); bookmark = toolBarRoot.next(bookmark))
     {
-        if (bookmark.isGroup())
+        if (bookmark.isGroup() && bookmark.address() != m_bookmark->parentGroup().address())
         {
             m_folder->addItem(bookmark.text(), bookmark.address());
         }
     }
 
-    if (m_bookmark->parentGroup().address() == root.address())
-    {
-        m_folder->setCurrentIndex(0);
-    }
-    else
-    {
-        int index = m_folder->findText(m_bookmark->parentGroup().text());
-        m_folder->setCurrentIndex(index);
-    }
+    int index =  m_folder->findData(m_bookmark->parentGroup().address());
+    m_folder->setCurrentIndex(index);
 }
 
 
