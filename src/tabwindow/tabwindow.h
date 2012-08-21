@@ -71,16 +71,16 @@ public Q_SLOTS:
 
 private:
     /**
-     * Updates tabbar and add new tab button position
-     */
-    void updateTabBar();
-
-    /**
      * Prepares the new WebWindow to be open
      */
     WebWindow *prepareNewTab(WebPage *page = 0);
 
 private Q_SLOTS:
+    /**
+     * Updates new tab button position
+     */
+    void updateNewTabButtonPosition();
+
     void tabTitleChanged(const QString &);
 
     void tabLoadStarted();
@@ -98,9 +98,6 @@ private Q_SLOTS:
     void reloadTab(int index = -1);
     void reloadAllTabs();
     void restoreClosedTab(int i);
-
-protected:
-    virtual void resizeEvent(QResizeEvent *);
 
 private:
     // the new tab button

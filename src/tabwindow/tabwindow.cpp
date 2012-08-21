@@ -85,6 +85,8 @@ TabWindow::TabWindow(bool withTab, QWidget *parent)
     connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int)));
     connect(tabBar, SIGNAL(restoreClosedTab(int)),  this,   SLOT(restoreClosedTab(int)));
 
+    connect(tabBar, SIGNAL(tabLayoutChanged()),     this,   SLOT(updateNewTabButtonPosition()));
+    
     // new tab button
     KAction* a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     _addTabButton->setDefaultAction(a);
@@ -195,8 +197,6 @@ void TabWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *hist
     {
         history->applyHistory(tab->page()->history());
     }
-
-    updateTabBar();
 }
 
 
@@ -214,9 +214,6 @@ void TabWindow::pageCreated(WebPage *page)
     // Now, the dirty jobs...
     _openedTabsCounter++;
     insertTab(currentIndex() + _openedTabsCounter, tab, i18n("new tab"));
-
-    // Finally, update tab bar...
-    updateTabBar();
 }
 
 
@@ -238,39 +235,22 @@ void TabWindow::currentChanged(int newIndex)
 }
 
 
-void TabWindow::resizeEvent(QResizeEvent *event)
+void TabWindow::updateNewTabButtonPosition()
 {
-    QTabWidget::resizeEvent(event);
-    updateTabBar();
-}
-
-
-void TabWindow::updateTabBar()
-{
-    // update tab button position
-    static bool ButtonInCorner = false;
-
     int tabWidgetWidth = frameSize().width();
     int tabBarWidth = tabBar()->sizeHint().width();
 
     if (tabBarWidth + _addTabButton->width() > tabWidgetWidth)
     {
-        if (ButtonInCorner)
-            return;
         setCornerWidget(_addTabButton);
-        ButtonInCorner = true;
     }
     else
     {
-        if (ButtonInCorner)
-        {
-            setCornerWidget(0);
-            ButtonInCorner = false;
-        }
-
+        setCornerWidget(0);
         _addTabButton->move(tabBarWidth, 0);
-        _addTabButton->show();
     }
+
+    _addTabButton->show();
 }
 
 
@@ -411,7 +391,6 @@ void TabWindow::closeTab(int index, bool del)
     }
 
     removeTab(index);
-    updateTabBar();        // UI operation: do it ASAP!!
 
     if (del)
     {

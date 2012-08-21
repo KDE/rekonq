@@ -89,16 +89,15 @@ QSize TabBar::tabSizeHint(int index) const
 
     QWidget* p = qobject_cast<QWidget *>(parent());
 
-    int maxTabBarWidth = p->size().width();
-
-    int baseTabWidth = maxTabBarWidth / genericTabNumber;
-
-    int minTabWidth =  p->sizeHint().width() / genericTabNumber;
-
-    int w = baseTabWidth;
-    if (count() > genericTabNumber)
+    int tabWidgetWidth = p->size().width();
+    int w = c_baseTabWidth;
+    if (w * count() > tabWidgetWidth)
     {
-        w = minTabWidth;
+        w = tabWidgetWidth / count();
+        if (w < c_minTabWidth)
+        {
+            w = c_minTabWidth;
+        }
     }
 
     int h = size().height();
@@ -394,6 +393,13 @@ void TabBar::mousePressEvent(QMouseEvent *event)
 }
 
 
+void TabBar::tabLayoutChange()
+{
+    KTabBar::tabLayoutChange();
+    emit tabLayoutChanged();
+}
+
+
 void TabBar::showTabPreview()
 {
     if (m_isFirstTimeOnTab)
@@ -416,7 +422,7 @@ void TabBar::showTabPreview()
     if (indexedTab->isLoading())
         return;
 
-    int w = tabSizeHint(0).width();
+    int w = c_baseTabWidth;
     int h = w * tabW->size().height() / tabW->size().width();
     
     m_previewPopup = new TabPreviewPopup(indexedTab->tabPreview(w,h), indexedTab->url().url() , this);

@@ -54,8 +54,6 @@ public:
     void setTabHighlighted(int index, bool b);
     QRect tabTextRect(int index);
 
-    static const int genericTabNumber = 6;
-
 protected:
     virtual QSize tabSizeHint(int index) const;
 
@@ -64,7 +62,8 @@ protected:
     virtual void mousePressEvent(QMouseEvent *event);
 
     virtual void tabRemoved(int index);
-
+    virtual void tabLayoutChange();
+    
 Q_SIGNALS:
     void cloneTab(int);
     void closeTab(int);
@@ -72,7 +71,8 @@ Q_SIGNALS:
     void reloadTab(int);
     void detachTab(int);
     void restoreClosedTab(int);
-
+    void tabLayoutChanged();
+    
 private Q_SLOTS:
     void cloneTab();
     void closeTab();
@@ -99,6 +99,9 @@ private:
     QWeakPointer<TabPreviewPopup> m_previewPopup;
     int m_currentTabPreviewIndex;
     bool m_isFirstTimeOnTab;
+
+    static const int c_baseTabWidth = 200;
+    static const int c_minTabWidth =  100;
 };
 
 #endif // TAB_BAR
