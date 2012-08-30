@@ -91,5 +91,11 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     QCoreApplication::setApplicationName(QLatin1String("rekonq"));
     QCoreApplication::setApplicationVersion(REKONQ_VERSION);
 
+    if (app.isSessionRestored())
+    {
+        for (int i = 1; TabWindow::canBeRestored(i); i++)
+            app.newTabWindow()->restore(i);
+    }
+    
     return app.exec();
 }

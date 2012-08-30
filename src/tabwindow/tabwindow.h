@@ -31,6 +31,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Local Includes
+#include "rekonqwindow.h"
+
 // KDE Includes
 #include <KTabWidget>
 
@@ -51,13 +54,12 @@ class WebWindow;
 // --------------------------------------------------------------------------------------
 
 
-class TabWindow : public KTabWidget
+class TabWindow : public RekonqWindow
 {
     Q_OBJECT
 
 public:
     TabWindow(bool withTab = true, QWidget *parent = 0);
-    virtual ~TabWindow();
     
     WebWindow* currentWebWindow() const;
     WebWindow* webWindow(int index) const;
@@ -73,10 +75,6 @@ private:
      * Prepares the new WebWindow to be open
      */
     WebWindow *prepareNewTab(WebPage *page = 0);
-
-    // internal
-    void loadWindowSettings();
-    void saveWindowSettings();
 
 private Q_SLOTS:
     /**

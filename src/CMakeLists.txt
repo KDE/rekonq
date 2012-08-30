@@ -62,6 +62,7 @@ set(rekonq_KDEINIT_SRCS
     sync/syncgooglesettingswidget.cpp
     sync/syncoperasettingswidget.cpp
     #----------------------------------------
+    tabwindow/rekonqwindow.cpp
     tabwindow/tabbar.cpp
     tabwindow/tabhighlighteffect.cpp
     tabwindow/tabpreviewpopup.cpp

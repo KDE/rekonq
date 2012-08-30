@@ -59,17 +59,10 @@
 
 
 TabWindow::TabWindow(bool withTab, QWidget *parent)
-    : KTabWidget(parent)
+    : RekonqWindow(parent)
     , _addTabButton(new QToolButton(this))
     , _openedTabsCounter(0)
 {
-    // This has to be a window...
-    setWindowFlags(Qt::Window);
-
-    // Setting attributes (just to be sure...)
-    setAttribute(Qt::WA_DeleteOnClose, true);
-    setAttribute(Qt::WA_QuitOnClose, true);
-
     setContentsMargins(0, 0, 0, 0);
 
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -113,73 +106,6 @@ TabWindow::TabWindow(bool withTab, QWidget *parent)
         addTab(tab, i18n("new tab"));
         setCurrentWidget(tab);
     }
-    
-    loadWindowSettings();
-}
-
-
-TabWindow::~TabWindow()
-{
-    saveWindowSettings();
-}
-
-
-void TabWindow::loadWindowSettings()
-{
-    KSharedConfig::Ptr config = KGlobal::config();
-    KConfigGroup cg = KConfigGroup(config.data(), QL1S("TabWindow"));
-
-    int scnum = QApplication::desktop()->screenNumber(window());
-    QRect desktopRect = QApplication::desktop()->screenGeometry(scnum);
-
-    QSize defaultSize = desktopRect.size() * 0.8;
-
-    QString widthString = QString::fromLatin1("Width %1").arg(desktopRect.width());
-    int w = cg.readEntry(widthString, defaultSize.width() );
-
-    QString heightString = QString::fromLatin1("Height %1").arg(desktopRect.height());
-    int h = cg.readEntry(heightString, defaultSize.height() );
-
-    resize(w, h);
-
-    QString geometryKey = QString::fromLatin1("geometry-%1-%2").arg(desktopRect.width()).arg(desktopRect.height());
-    QByteArray geometry = cg.readEntry( geometryKey, QByteArray() );
-    // if first time run, center window
-    if (!restoreGeometry( QByteArray::fromBase64(geometry) ))
-        move( (desktopRect.width()-width())/2, (desktopRect.height()-height())/2 );
-}
-
-
-void TabWindow::saveWindowSettings()
-{
-    KSharedConfig::Ptr config = KGlobal::config();
-    KConfigGroup cg = KConfigGroup(config.data(), QL1S("TabWindow"));
-
-    int scnum = QApplication::desktop()->screenNumber(window());
-    QRect desktopRect = QApplication::desktop()->screenGeometry(scnum);
-
-    int w, h;
-    if (isMaximized())
-    {
-        w = desktopRect.width() + 1;
-        h = desktopRect.height() + 1;
-    }
-    else
-    {
-        w = width();
-        h = height();
-    }
-
-    QString widthString = QString::fromLatin1("Width %1").arg(desktopRect.width());
-    cg.writeEntry(widthString, w );
-
-    QString heightString = QString::fromLatin1("Height %1").arg(desktopRect.height());
-    cg.writeEntry(heightString, h );
-
-    // geometry is saved separately for each resolution
-    QString geometryKey = QString::fromLatin1("geometry-%1-%2").arg(desktopRect.width()).arg(desktopRect.height());
-    QByteArray geometry = saveGeometry();
-    cg.writeEntry( geometryKey, geometry.toBase64() );
 }
 
 
