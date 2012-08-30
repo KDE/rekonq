@@ -57,9 +57,8 @@ class TabWindow : public KTabWidget
 
 public:
     TabWindow(bool withTab = true, QWidget *parent = 0);
-
-    virtual QSize sizeHint() const;
-
+    virtual ~TabWindow();
+    
     WebWindow* currentWebWindow() const;
     WebWindow* webWindow(int index) const;
 
@@ -74,6 +73,10 @@ private:
      * Prepares the new WebWindow to be open
      */
     WebWindow *prepareNewTab(WebPage *page = 0);
+
+    // internal
+    void loadWindowSettings();
+    void saveWindowSettings();
 
 private Q_SLOTS:
     /**
