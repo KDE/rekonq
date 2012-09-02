@@ -7,7 +7,7 @@ To build, rekonq needs at least:
 
 - Qt 4.8.x:
 - QtWebkit 2.2.x
-- kdelibs 4.7.x
+- kdelibs 4.8.3
 
 This software should be prepackaged for all major Linux distributions.
 Please see http://techbase.kde.org/Getting_Started#Building_and_Running_KDE_Software_From_Source
