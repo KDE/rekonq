@@ -287,7 +287,7 @@ void BookmarkWidget::onFolderIndexChanged(int index)
         KBookmarkDialog dialog(rApp->bookmarkManager()->manager());
         KBookmarkGroup selectedGroup = dialog.selectFolder(m_bookmark.parentGroup());
 
-        if (selectedGroup.address() != m_bookmark.parentGroup().address() && !selectedGroup.isNull() )
+        if (selectedGroup.address() != m_bookmark.parentGroup().address() && !selectedGroup.isNull())
         {
             m_bookmark.parentGroup().deleteBookmark(m_bookmark);
             selectedGroup.addBookmark(m_bookmark);

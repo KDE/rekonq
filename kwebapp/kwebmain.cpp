@@ -61,6 +61,10 @@ int main(int argc, char **argv)
 
     QWebSettings::setIconDatabasePath(KStandardDirs::locateLocal("cache", "kwebapp.favicons/"));
 
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::DnsPrefetchEnabled, true);
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
+
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
     if (args->count() != 1)
     {
