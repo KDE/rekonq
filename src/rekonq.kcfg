@@ -231,7 +231,6 @@
     </entry>
 </group>
 
-
 <!-- Advanced Settings -->
 <group name="Advanced">
     <entry name="hScrollWheelHistory" type="Bool">
@@ -251,6 +250,9 @@
     </entry>
     <entry name="middleClickAction" type="Int">
         <default>2</default>
+    </entry>
+    <entry name="automaticSpellChecking" type="Bool">
+        <default>true</default>
     </entry>
 </group>
 

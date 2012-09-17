@@ -39,6 +39,7 @@
 #include <QTime>
 #include <QPoint>
 #include <QPixmap>
+#include <QWebHitTestResult>
 
 // Forward Declarations
 class WebPage;
@@ -72,6 +73,7 @@ public:
               const QByteArray & body = QByteArray());
 
 protected:
+    bool popupSpellMenu(QContextMenuEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
 
     void mouseMoveEvent(QMouseEvent *event);
@@ -97,6 +99,10 @@ private Q_SLOTS:
     void openLinkInNewWindow();
     void openLinkInNewTab();
     void bookmarkLink();
+    void spellCheck();
+    void spellCheckerCorrected(const QString& original, int pos, const QString& replacement);
+    void spellCheckerMisspelling(const QString& text, int pos);
+    void slotSpellCheckDone(const QString&);
     void sendByMail();
 
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
@@ -133,6 +139,12 @@ private:
 private:
     WebPage *m_page;
     QPoint m_clickPos;
+    QWebHitTestResult m_ContextMenuResult;
+
+    // Spell Checking
+    int m_spellTextSelectionStart;
+    int m_spellTextSelectionEnd;
+
 
     // Auto Scroll
     QTimer *const m_autoScrollTimer;

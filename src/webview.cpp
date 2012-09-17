@@ -64,7 +64,9 @@
 #include <QWebFrame>
 #include <QWebHistory>
 #include <QNetworkRequest>
-
+#include <sonnet/speller.h>
+#include <Sonnet/Dialog>
+#include <sonnet/backgroundchecker.h>
 
 WebView::WebView(QWidget* parent)
     : KWebView(parent, false)
@@ -153,10 +155,102 @@ WebPage *WebView::page()
     return m_page;
 }
 
+bool WebView::popupSpellMenu(QContextMenuEvent *event)
+{
+    // return false if not handled
+    if (! ReKonfig::automaticSpellChecking())
+        return false;
+
+    QWebElement element(m_ContextMenuResult.element());
+    if (element.isNull())
+        return false;
+
+    int selStart = element.evaluateJavaScript("this.selectionStart").toInt();
+    int selEnd = element.evaluateJavaScript("this.selectionEnd").toInt();
+    if (selEnd != selStart)
+        return false; // selection, handle normally
+
+    // No selection - Spell Checking only
+    // Get word
+    QString text = element.evaluateJavaScript("this.value").toString();
+    QRegExp ws("\\b");
+    int s1 = text.lastIndexOf(ws, selStart);
+    int s2 = text.indexOf(ws, selStart);
+    QString word = text.mid(s1, s2 - s1).trimmed();
+
+    // sanity check
+    if (word.isEmpty())
+        return false;
+
+    kDebug() << s1 << ":" << s2 << ":" << word << ":";
+    Sonnet::Speller spellor;
+    if (spellor.isCorrect(word))
+        return false; // no need to popup spell menu
+
+
+    // find alternates
+    QStringList words = spellor.suggest(word);
+
+    // Construct popup menu
+    QMenu mnu(this);
+
+    // Add alternates
+    if (words.isEmpty())
+    {
+        QAction *a = mnu.addAction(i18n("No suggestions for ") + word);
+        a->setEnabled(false);
+    }
+    else
+    {
+        QStringListIterator it(words);
+        while (it.hasNext())
+        {
+            QString w = it.next();
+            QAction *aWord = mnu.addAction(w);
+            aWord->setData(w);
+        }
+    }
+    // Add dictionary options
+    mnu.addSeparator();
+    QAction *aIgnore = mnu.addAction(i18n("Ignore"));
+    QAction *aAddToDict = mnu.addAction(i18n("Add to Dictionary"));
+
+    QAction *aSpellChoice = mnu.exec(event->globalPos());
+    if (aSpellChoice)
+    {
+        if (aSpellChoice == aAddToDict)
+            spellor.addToPersonal(word);
+        else if (aSpellChoice == aIgnore)
+        {
+            // Ignore :)
+        }
+        else
+        {
+            // Choose a replacement word
+            QString w = aSpellChoice->data().toString();
+            if (! w.isEmpty())
+            {
+                // replace word
+                QString script(QL1S("this.value=this.value.substring(0,"));
+                script += QString::number(s1);
+                script += QL1S(") + \"");
+                script +=  w;
+                script += QL1S("\" + this.value.substring(");
+                script += QString::number(s2);
+                script += QL1S(")");
+                element.evaluateJavaScript(script);
+                // reposition cursor
+                element.evaluateJavaScript("this.selectionEnd=this.selectionStart=" + QString::number(selStart) + ";");
+            }
+        }
+    }
+
+    return true;
+}
 
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
-    QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
+    m_ContextMenuResult = page()->mainFrame()->hitTestContent(event->pos());
     MainWindow *mainwindow = rApp->mainWindow();
 
     KMenu menu(this);
@@ -171,23 +265,27 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     // Choose right context
     int resultHit = 0;
-    if (result.linkUrl().isEmpty())
+    if (m_ContextMenuResult.linkUrl().isEmpty())
         resultHit = WebView::EmptySelection;
     else
         resultHit = WebView::LinkSelection;
 
-    if (!result.pixmap().isNull())
+    if (!m_ContextMenuResult.pixmap().isNull())
         resultHit |= WebView::ImageSelection;
 
-    if (result.isContentSelected())
+    if (m_ContextMenuResult.isContentSelected())
         resultHit = WebView::TextSelection;
 
     // --------------------------------------------------------------------------------
     // Ok, let's start filling up the menu...
 
     // is content editable? Add PASTE
-    if (result.isContentEditable())
+    if (m_ContextMenuResult.isContentEditable())
     {
+        // Check to see if handled by speller
+        if (popupSpellMenu(event))
+            return;
+
         menu.addAction(pageAction(KWebPage::Paste));
         menu.addSeparator();
     }
@@ -253,16 +351,16 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if (resultHit & WebView::LinkSelection)
     {
         // send by mail: link url
-        sendByMailAction->setData(result.linkUrl());
+        sendByMailAction->setData(m_ContextMenuResult.linkUrl());
         sendByMailAction->setText(i18n("Share link"));
 
         a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
-        a->setData(result.linkUrl());
+        a->setData(m_ContextMenuResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
         menu.addAction(a);
 
         a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), this);
-        a->setData(result.linkUrl());
+        a->setData(m_ContextMenuResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
@@ -283,13 +381,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if (resultHit & WebView::ImageSelection)
     {
         // send by mail: image url
-        sendByMailAction->setData(result.imageUrl());
+        sendByMailAction->setData(m_ContextMenuResult.imageUrl());
         sendByMailAction->setText(i18n("Share image link"));
 
         menu.addSeparator();
 
         a = new KAction(KIcon("view-preview"), i18n("&View Image"), this);
-        a->setData(result.imageUrl());
+        a->setData(m_ContextMenuResult.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
                 this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
         menu.addAction(a);
@@ -297,14 +395,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
 
         a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), this);
-        a->setData(result.imageUrl());
+        a->setData(m_ContextMenuResult.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
         menu.addAction(a);
 
         if (rApp->adblockManager()->isEnabled())
         {
             a = new KAction(KIcon("preferences-web-browser-adblock"), i18n("Block image"), this);
-            a->setData(result.imageUrl());
+            a->setData(m_ContextMenuResult.imageUrl());
             connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(blockImage()));
             menu.addAction(a);
         }
@@ -317,14 +415,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         sendByMailAction->setData(selectedText());
         sendByMailAction->setText(i18n("Share selected text"));
 
-        if (result.isContentEditable())
+        if (m_ContextMenuResult.isContentEditable())
         {
             // actions for text selected in field
             menu.addAction(pageAction(KWebPage::Cut));
         }
 
         a = pageAction(KWebPage::Copy);
-        if (!result.linkUrl().isEmpty())
+        if (!m_ContextMenuResult.linkUrl().isEmpty())
             a->setText(i18n("Copy Text")); //for link
         else
             a->setText(i18n("Copy"));
@@ -399,7 +497,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if (resultHit & WebView::LinkSelection)
     {
         a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark link"), this);
-        a->setData(result.linkUrl());
+        a->setData(m_ContextMenuResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
         menu.addAction(a);
     }
@@ -410,6 +508,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
     menu.addAction(sendByMailAction);
     menu.addAction(inspectAction);
+
+    // SPELL CHECK Actions
+    if (m_ContextMenuResult.isContentEditable())
+    {
+        menu.addSeparator();
+        a = KStandardAction::spelling(this, SLOT(spellCheck()), this);
+        menu.addAction(a);
+    }
 
     // finally launch the menu...
     menu.exec(mapToGlobal(event->pos()));
@@ -653,6 +759,93 @@ void WebView::bookmarkLink()
 
     rApp->bookmarkManager()->rootGroup().addBookmark(url.prettyUrl(), url);
     rApp->bookmarkManager()->emitChanged();
+}
+
+static QVariant execJScript(QWebHitTestResult result, const QString& script)
+{
+    QWebElement element(result.element());
+    if (element.isNull())
+        return QVariant();
+    return element.evaluateJavaScript(script);
+}
+
+void WebView::spellCheck()
+{
+    QString text(execJScript(m_ContextMenuResult, QL1S("this.value")).toString());
+
+    if (m_ContextMenuResult.isContentSelected())
+    {
+        m_spellTextSelectionStart = qMax(0, execJScript(m_ContextMenuResult, QL1S("this.selectionStart")).toInt());
+        m_spellTextSelectionEnd = qMax(0, execJScript(m_ContextMenuResult, QL1S("this.selectionEnd")).toInt());
+        text = text.mid(m_spellTextSelectionStart, (m_spellTextSelectionEnd - m_spellTextSelectionStart));
+    }
+    else
+    {
+        m_spellTextSelectionStart = 0;
+        m_spellTextSelectionEnd = 0;
+    }
+
+    if (text.isEmpty())
+    {
+        return;
+    }
+
+    Sonnet::Dialog* spellDialog = new Sonnet::Dialog(new Sonnet::BackgroundChecker(this), this);
+
+    spellDialog->showSpellCheckCompletionMessage(true);
+    connect(spellDialog, SIGNAL(replace(QString, int, QString)), this, SLOT(spellCheckerCorrected(QString, int, QString)));
+    connect(spellDialog, SIGNAL(misspelling(QString, int)), this, SLOT(spellCheckerMisspelling(QString, int)));
+    if (m_ContextMenuResult.isContentSelected())
+        connect(spellDialog, SIGNAL(done(QString)), this, SLOT(slotSpellCheckDone(QString)));
+    spellDialog->setBuffer(text);
+    spellDialog->show();
+}
+
+void WebView::spellCheckerCorrected(const QString& original, int pos, const QString& replacement)
+{
+    // Adjust the selection end...
+    if (m_spellTextSelectionEnd > 0)
+    {
+        m_spellTextSelectionEnd += qMax(0, (replacement.length() - original.length()));
+    }
+
+    const int index = pos + m_spellTextSelectionStart;
+    QString script(QL1S("this.value=this.value.substring(0,"));
+    script += QString::number(index);
+    script += QL1S(") + \"");
+    script +=  replacement;
+    script += QL1S("\" + this.value.substring(");
+    script += QString::number(index + original.length());
+    script += QL1S(")");
+
+    //kDebug() << "**** script:" << script;
+    execJScript(m_ContextMenuResult, script);
+}
+
+void WebView::spellCheckerMisspelling(const QString& text, int pos)
+{
+    // kDebug() << text << pos;
+    QString selectionScript(QL1S("this.setSelectionRange("));
+    selectionScript += QString::number(pos + m_spellTextSelectionStart);
+    selectionScript += QL1C(',');
+    selectionScript += QString::number(pos + text.length() + m_spellTextSelectionStart);
+    selectionScript += QL1C(')');
+    execJScript(m_ContextMenuResult, selectionScript);
+}
+
+void WebView::slotSpellCheckDone(const QString&)
+{
+    // Restore the text selection if one was present before we started the
+    // spell check.
+    if (m_spellTextSelectionStart > 0 || m_spellTextSelectionEnd > 0)
+    {
+        QString script(QL1S("; this.setSelectionRange("));
+        script += QString::number(m_spellTextSelectionStart);
+        script += QL1C(',');
+        script += QString::number(m_spellTextSelectionEnd);
+        script += QL1C(')');
+        execJScript(m_ContextMenuResult, script);
+    }
 }
 
 

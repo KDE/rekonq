@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
+    <width>555</width>
     <height>440</height>
    </rect>
   </property>
@@ -43,7 +43,9 @@
          <string>Change them!</string>
         </property>
         <property name="icon">
-         <iconset theme="preferences-system-network"/>
+         <iconset theme="preferences-system-network">
+          <normaloff/>
+         </iconset>
         </property>
        </widget>
       </item>
@@ -130,6 +132,13 @@
         </item>
        </layout>
       </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_automaticSpellChecking">
+        <property name="text">
+         <string>Automatic Spell Check</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -148,6 +157,16 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>proxyButton</tabstop>
+  <tabstop>kcfg_hScrollWheelHistory</tabstop>
+  <tabstop>kcfg_useFavicon</tabstop>
+  <tabstop>kcfg_smoothScrolling</tabstop>
+  <tabstop>kcfg_enableViShortcuts</tabstop>
+  <tabstop>kcfg_accessKeysEnabled</tabstop>
+  <tabstop>kcfg_middleClickAction</tabstop>
+  <tabstop>kcfg_automaticSpellChecking</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

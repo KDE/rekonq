@@ -5,6 +5,9 @@ ADD_SUBDIRECTORY( tests )
 
 
 ### ------- SETTING REKONQ FILES..
+add_definitions(-DQT_STATICPLUGIN)
+QT4_WRAP_CPP(wk_HEADERS_MOC qwebkitplatformplugin.h)
+
 
 SET( rekonq_KDEINIT_SRCS
     application.cpp
@@ -111,6 +114,9 @@ SET( rekonq_KDEINIT_SRCS
     sync/syncftpsettingswidget.cpp
     sync/syncgooglesettingswidget.cpp
     sync/syncoperasettingswidget.cpp
+    #----------------------------
+    kspellplugin.cpp
+    ${wk_HEADERS_MOC}
 )
 
 # Nepomuk OPTIONAL src files
