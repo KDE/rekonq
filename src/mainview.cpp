@@ -206,10 +206,6 @@ void MainView::updateAddTabButton()
         setCornerWidget(0);
         m_addTabButton->move(tabBarWidth, 0);
     }
-
-    // Make sure the add tab button is correctly shown
-    // For some reason, it's being hidden during a "fixed pos to corner" change
-    m_addTabButton->show();
 }
 
 
