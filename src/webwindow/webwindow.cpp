@@ -87,7 +87,7 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
         _tab->view()->setPage(pg);
         pg->setParent(_tab->view());
     }
-    
+
     // then, setup our actions
     setupActions();
 
@@ -108,7 +108,7 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
 
         l->addWidget(_bookmarksBar.data());
     }
-    
+
     l->addWidget(_tab);
     l->addWidget(m_findBar);
     l->setContentsMargins(0, 0, 0, 0);
@@ -117,7 +117,7 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
 
     // bookmarks toolbar
     connect(rApp, SIGNAL(toggleBookmarksToolbar(bool)), this, SLOT(toggleBookmarksToolbar(bool)));
-    
+
     // things changed signals
     connect(_tab->view(), SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
 
@@ -135,9 +135,9 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     m_popup->raise();
     m_popup->hide();
     connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
-    connect(_tab->page(), SIGNAL(linkHovered(QString,QString,QString)), this, SLOT(notifyMessage(QString)));
+    connect(_tab->page(), SIGNAL(linkHovered(QString, QString, QString)), this, SLOT(notifyMessage(QString)));
 
-    updateHistoryActions();                                                                                                                             
+    updateHistoryActions();
 }
 
 
@@ -156,7 +156,7 @@ WebWindow::~WebWindow()
 void WebWindow::setupActions()
 {
     KAction *a;
-    
+
     // ========================= History related actions ==============================
     a = actionCollection()->addAction(KStandardAction::Back);
     connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
@@ -301,7 +301,7 @@ void WebWindow::setupActions()
 //     <Action name="edit_find" />
 //     <Action name="view_zoom" />
 //     <Separator/>
-// 
+//
 //     <Menu name="toolsMenu" icon="preferences-other" noMerge="1">
 //         <text>&amp;Tools</text>
 //         <Action name="clear_private_data" /> +
@@ -316,12 +316,12 @@ void WebWindow::setupActions()
 //         <Action name="sync" />               +
 //         <Action name="adblock" />            +
 //     </Menu>
-// 
+//
 //     <Separator/>
 //     <Action name="show_bookmarks_toolbar" />
 //     <Action name="fullscreen" />              +
 //     <Separator/>
-// 
+//
 //     <Menu name="help" icon="help-browser">
 //         <text>&amp;Help</text>
 //         <Action name="help_contents"/>
@@ -334,7 +334,7 @@ void WebWindow::setupActions()
 //         <Action name="help_about_app"/>
 //         <Action name="help_about_kde"/>
 //     </Menu>
-// 
+//
 //     <Action name="options_configure" />      +
 // </Menu>
 
@@ -367,7 +367,7 @@ QAction *WebWindow::actionByName(const QString &name)
     return actionCollection()->action(name);
 }
 
-    
+
 void WebWindow::load(const QUrl &url)
 {
     _tab->view()->load(url);
@@ -572,7 +572,7 @@ void WebWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers ke
 void WebWindow::updateHistoryActions()
 {
     QWebHistory *history = _tab->view()->history();
-    
+
     bool rekonqPage = _tab->page()->isOnRekonqPage();
 
     QAction *historyBackAction = actionByName(KStandardAction::name(KStandardAction::Back));

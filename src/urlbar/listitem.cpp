@@ -486,7 +486,7 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
 
     if (SearchEngine::defaultEngine().isNull())
         return;
-    
+
     m_engineGroup->addAction(newEngineAction(SearchEngine::defaultEngine(), selectedEngine));
     Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
     {

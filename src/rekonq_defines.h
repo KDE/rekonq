@@ -67,29 +67,29 @@
 namespace Rekonq
 {
 
-    /**
-    * @short Open link options
-    * Different modes of opening new tab
-    */
-    enum OpenType
-    {
-        CurrentTab,         ///< open url in current tab
-        NewTab,             ///< open url according to users settings
-        NewFocusedTab,      ///< open url in new tab and focus it
-        NewBackGroundTab,   ///< open url in new background tab
-        NewWindow           ///< open url in new window
-    };
+/**
+* @short Open link options
+* Different modes of opening new tab
+*/
+enum OpenType
+{
+    CurrentTab,         ///< open url in current tab
+    NewTab,             ///< open url according to users settings
+    NewFocusedTab,      ///< open url in new tab and focus it
+    NewBackGroundTab,   ///< open url in new background tab
+    NewWindow           ///< open url in new window
+};
 
-    /**
-    * @short data to be synced
-    * Different data we can sync
-    */
-    enum SyncData
-    {
-        Bookmarks,
-        History,
-        Passwords
-    };
+/**
+* @short data to be synced
+* Different data we can sync
+*/
+enum SyncData
+{
+    Bookmarks,
+    History,
+    Passwords
+};
 
 }
 

@@ -61,6 +61,6 @@ void WebIcon::saveIcon(bool b)
     {
         IconManager::self()->provideIcon(m_page.mainFrame(), m_url, false);
     }
-    
+
     this->deleteLater();
 }

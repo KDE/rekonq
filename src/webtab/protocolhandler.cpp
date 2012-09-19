@@ -99,7 +99,7 @@ ProtocolHandler::ProtocolHandler(QObject *parent)
 void ProtocolHandler::setWindow(WebWindow *w)
 {
     _webwin = w;
-    _lister->setMainWindow(_webwin);    
+    _lister->setMainWindow(_webwin);
 }
 
 
@@ -276,7 +276,7 @@ void ProtocolHandler::showResults(const KFileItemList &list)
 
         _webwin->urlBar()->setQUrl(_url);
         _webwin->view()->setFocus();
-        
+
         HistoryManager::self()->addHistoryEntry(_url, _url.prettyUrl());
     }
 }

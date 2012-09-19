@@ -46,7 +46,7 @@ class TabWindow;
 
 /**
   * Session Management: Needs clean up :)
-  * 
+  *
   */
 class REKONQ_TESTS_EXPORT SessionManager : public QObject
 {
@@ -85,7 +85,7 @@ public Q_SLOTS:
 private Q_SLOTS:
     void saveSession();
     void save();
-    
+
     // This method restores session
     // after a crash
     void restoreCrashedSession();

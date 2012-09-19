@@ -44,7 +44,7 @@ class QString;
 class TabPreviewPopup : public KPassivePopup
 {
     Q_OBJECT
-    
+
 public:
     TabPreviewPopup(const QPixmap &pixmap, const QString &urlText, QWidget *parent = 0);
     virtual ~TabPreviewPopup();

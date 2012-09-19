@@ -293,12 +293,12 @@ void OperaSyncHandler::getBookmarks()
 
     QByteArray fetchBookmarksUrl = "https://link.api.opera.com/rest/bookmark/descendants/";
     QByteArray urlParams = _qoauth.createParametersString(fetchBookmarksUrl,
-                                                          QOAuth::GET,
-                                                          _authToken,
-                                                          _authTokenSecret,
-                                                          QOAuth::HMAC_SHA1,
-                                                          requestMap,
-                                                          QOAuth::ParseForInlineQuery);
+                           QOAuth::GET,
+                           _authToken,
+                           _authTokenSecret,
+                           QOAuth::HMAC_SHA1,
+                           requestMap,
+                           QOAuth::ParseForInlineQuery);
 
     QNetworkRequest request;
 

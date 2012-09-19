@@ -74,7 +74,7 @@ bool readDocument(QDomDocument & document, const QString & filePath)
 QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActionCollection *ac)
 {
     QDomDocument document("rekonqui.rc");
-    QString xmlFilePath = KStandardDirs::locate( "data", "rekonq/rekonqui.rc");
+    QString xmlFilePath = KStandardDirs::locate("data", "rekonq/rekonqui.rc");
 
     if (!readDocument(document, xmlFilePath))
         return 0;
@@ -87,7 +87,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
         return 0;
     }
 
-    for(unsigned int i = 0; i < elementToolbarList.length(); ++i)
+    for (unsigned int i = 0; i < elementToolbarList.length(); ++i)
     {
         QDomNode node = elementToolbarList.at(i);
         QDomElement element = node.toElement();
@@ -123,7 +123,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
         return 0;
     }
 
-    for(unsigned int i = 0; i < elementMenuList.length(); ++i)
+    for (unsigned int i = 0; i < elementMenuList.length(); ++i)
     {
         QDomNode node = elementMenuList.at(i);
         QDomElement element = node.toElement();
@@ -147,15 +147,15 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
             KHelpMenu *m = new KHelpMenu(parent, KCmdLineArgs::aboutData());
             return m->menu();
         }
-        else 
+        else
         {
             KMenu *m = new KMenu(parent);
             fillMenu(m, node, ac);
             return m;
         }
-        
+
     }
-    
+
     kDebug() << "NO WIDGET RETURNED";
     return 0;
 }
@@ -164,7 +164,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
 void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node, KActionCollection *ac)
 {
     QDomElement element = node.toElement();
-    
+
     if (element.hasAttribute("iconSize"))
     {
         int iconSize = element.attribute("iconSize").toInt();
@@ -173,27 +173,27 @@ void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node, KActionCollection *a
 
     if (element.hasAttribute("iconText"))
     {
-        if(element.attribute("iconText").toLower() == QL1S("icononly"))
+        if (element.attribute("iconText").toLower() == QL1S("icononly"))
         {
             b->setToolButtonStyle(Qt::ToolButtonIconOnly);
         }
 
-        if(element.attribute("iconText").toLower() == QL1S("textonly"))
+        if (element.attribute("iconText").toLower() == QL1S("textonly"))
         {
             b->setToolButtonStyle(Qt::ToolButtonTextOnly);
         }
 
-        if(element.attribute("iconText").toLower() == QL1S("icontextright"))
+        if (element.attribute("iconText").toLower() == QL1S("icontextright"))
         {
             b->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         }
 
-        if(element.attribute("iconText").toLower() == QL1S("textundericon"))
+        if (element.attribute("iconText").toLower() == QL1S("textundericon"))
         {
             b->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         }
 
-        if(element.attribute("iconText").toLower() == QL1S("followstyle"))
+        if (element.attribute("iconText").toLower() == QL1S("followstyle"))
         {
             b->setToolButtonStyle(Qt::ToolButtonFollowStyle);
         }
@@ -201,7 +201,7 @@ void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node, KActionCollection *a
 
     QDomNodeList childrenList = node.childNodes();
 
-    for(unsigned int i = 0; i < childrenList.length(); ++i)
+    for (unsigned int i = 0; i < childrenList.length(); ++i)
     {
         QDomElement el = childrenList.at(i).toElement();
 
@@ -213,7 +213,7 @@ void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node, KActionCollection *a
             {
                 b->addAction(a);
             }
-            
+
         }
 
         if (el.tagName() == QL1S("Separator"))
@@ -229,7 +229,7 @@ void RekonqFactory::fillMenu(KMenu *m, QDomNode node, KActionCollection *ac)
 {
     QDomNodeList childrenList = node.childNodes();
 
-    for(unsigned int i = 0; i < childrenList.length(); ++i)
+    for (unsigned int i = 0; i < childrenList.length(); ++i)
     {
         QDomElement el = childrenList.at(i).toElement();
 

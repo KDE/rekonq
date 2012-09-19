@@ -43,6 +43,7 @@
 #include <KCompletion>
 
 // Qt Includes
+#include <QApplication>
 #include <QList>
 #include <QUrl>
 #include <QDate>
@@ -106,7 +107,7 @@ HistoryManager::~HistoryManager()
         return;
     }
     m_saveTimer->saveIfNeccessary();
-    
+
     kDebug() << "bye bye history...";
 }
 

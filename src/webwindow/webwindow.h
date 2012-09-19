@@ -64,7 +64,7 @@ class WebWindow : public QWidget
 public:
     WebWindow(QWidget *parent = 0, WebPage *pg = 0);
     ~WebWindow();
-    
+
     void load(const QUrl &);
 
     WebPage *page();
@@ -75,18 +75,18 @@ public:
 
     UrlBar *urlBar();
     WebTab *view();
-    
+
     QPixmap tabPreview(int width, int height);
 
     bool isLoading();
 
-    virtual KActionCollection *actionCollection () const;
+    virtual KActionCollection *actionCollection() const;
     QAction *actionByName(const QString &name);
 
 private:
     void setupActions();
     void setupTools();
-    
+
 private Q_SLOTS:
     void webLoadProgress(int);
     void webLoadStarted();

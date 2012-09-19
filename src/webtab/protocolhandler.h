@@ -68,7 +68,7 @@ public:
     bool postHandling(const QNetworkRequest &request, QWebFrame *frame);
 
     void setWindow(WebWindow *);
-    
+
 Q_SIGNALS:
     void downloadUrl(const KUrl &);
 

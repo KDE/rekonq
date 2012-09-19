@@ -53,33 +53,40 @@ public:
     {
     }
 
-    bool dummyInit() { return true; }
+    bool dummyInit()
+    {
+        return true;
+    }
 
-    bool saveState( QSessionManager& )
+    bool saveState(QSessionManager&)
     {
         KConfig* config = KApplication::kApplication()->sessionConfig();
         int n = 0;
-        Q_FOREACH (RekonqWindow* rw, RekonqWindow::windowList()) {
+        Q_FOREACH(RekonqWindow * rw, RekonqWindow::windowList())
+        {
             n++;
             rw->savePropertiesInternal(config, n);
         }
 
-        KConfigGroup group( config, "Number" );
-        group.writeEntry("NumberOfWindows", n );
+        KConfigGroup group(config, "Number");
+        group.writeEntry("NumberOfWindows", n);
         return true;
     }
 
-    bool commitData( QSessionManager& sm )
+    bool commitData(QSessionManager& sm)
     {
         // not really a fast method but the only compatible one
-        if ( sm.allowsInteraction() ) {
+        if (sm.allowsInteraction())
+        {
             bool canceled = false;
             ::s_no_query_exit = true;
 
-            Q_FOREACH (RekonqWindow *window, RekonqWindow::windowList()) {
-                if ( !window->testAttribute( Qt::WA_WState_Hidden ) ) {
+            Q_FOREACH(RekonqWindow * window, RekonqWindow::windowList())
+            {
+                if (!window->testAttribute(Qt::WA_WState_Hidden))
+                {
                     QCloseEvent e;
-                    QApplication::sendEvent( window, &e );
+                    QApplication::sendEvent(window, &e);
                     canceled = !e.isAccepted();
                     if (canceled)
                         break;
@@ -87,7 +94,7 @@ public:
             }
             ::s_no_query_exit = false;
             if (canceled)
-               return false;
+                return false;
 
             return true;
         }
@@ -123,7 +130,7 @@ RekonqWindow::RekonqWindow(QWidget* parent)
     if (args && args->isSet("geometry"))
         geometry = args->getOption("geometry");
 
-    if ( geometry.isNull() )  // if there is no geometry, it doesn't matter
+    if (geometry.isNull())    // if there is no geometry, it doesn't matter
     {
         KSharedConfig::Ptr cf = KGlobal::config();
         KConfigGroup cg(cf, QL1S("TabWindow"));
@@ -133,14 +140,14 @@ RekonqWindow::RekonqWindow(QWidget* parent)
     {
         parseGeometry();
     }
-    
-    setWindowTitle( KGlobal::caption() );
+
+    setWindowTitle(KGlobal::caption());
 }
 
 
 RekonqWindow::~RekonqWindow()
 {
-    sWindowList->removeAll( this );
+    sWindowList->removeAll(this);
 
     KSharedConfig::Ptr cf = KGlobal::config();
     KConfigGroup cg(cf, QL1S("TabWindow"));
@@ -150,11 +157,11 @@ RekonqWindow::~RekonqWindow()
 
 QList<RekonqWindow*> RekonqWindow::windowList()
 {
-    return *sWindowList;    
+    return *sWindowList;
 }
 
 
-void RekonqWindow::savePropertiesInternal( KConfig *config, int number )
+void RekonqWindow::savePropertiesInternal(KConfig *config, int number)
 {
     QString s;
     s.setNum(number);
@@ -174,7 +181,7 @@ void RekonqWindow::savePropertiesInternal( KConfig *config, int number )
 }
 
 
-bool RekonqWindow::readPropertiesInternal( KConfig *config, int number )
+bool RekonqWindow::readPropertiesInternal(KConfig *config, int number)
 {
     // in order they are in toolbar list
     QString s;
@@ -184,8 +191,8 @@ bool RekonqWindow::readPropertiesInternal( KConfig *config, int number )
     KConfigGroup cg(config, s);
 
     // restore the object name (window role)
-    if ( cg.hasKey(QL1S("ObjectName" )) )
-        setObjectName( cg.readEntry("ObjectName").toLatin1()); // latin1 is right here
+    if (cg.hasKey(QL1S("ObjectName")))
+        setObjectName(cg.readEntry("ObjectName").toLatin1());  // latin1 is right here
 
     restoreWindowSize(cg);
 
@@ -197,7 +204,7 @@ bool RekonqWindow::readPropertiesInternal( KConfig *config, int number )
 }
 
 
-void RekonqWindow::restoreWindowSize( const KConfigGroup & _cg )
+void RekonqWindow::restoreWindowSize(const KConfigGroup & _cg)
 {
     int scnum = QApplication::desktop()->screenNumber(window());
     QRect desktopRect = QApplication::desktop()->screenGeometry(scnum);
@@ -207,22 +214,22 @@ void RekonqWindow::restoreWindowSize( const KConfigGroup & _cg )
     KConfigGroup cg(_cg);
 
     QString widthString = QString::fromLatin1("Width %1").arg(desktopRect.width());
-    int w = cg.readEntry(widthString, defaultSize.width() );
+    int w = cg.readEntry(widthString, defaultSize.width());
 
     QString heightString = QString::fromLatin1("Height %1").arg(desktopRect.height());
-    int h = cg.readEntry(heightString, defaultSize.height() );
+    int h = cg.readEntry(heightString, defaultSize.height());
 
     resize(w, h);
 
     QString geometryKey = QString::fromLatin1("geometry-%1-%2").arg(desktopRect.width()).arg(desktopRect.height());
-    QByteArray geometry = cg.readEntry( geometryKey, QByteArray() );
+    QByteArray geometry = cg.readEntry(geometryKey, QByteArray());
     // if first time run, center window
-    if (!restoreGeometry( QByteArray::fromBase64(geometry) ))
-        move( (desktopRect.width()-width())/2, (desktopRect.height()-height())/2 );
+    if (!restoreGeometry(QByteArray::fromBase64(geometry)))
+        move((desktopRect.width() - width()) / 2, (desktopRect.height() - height()) / 2);
 }
 
 
-void RekonqWindow::saveWindowSize( const KConfigGroup & _cg ) const
+void RekonqWindow::saveWindowSize(const KConfigGroup & _cg) const
 {
     int scnum = QApplication::desktop()->screenNumber(window());
     QRect desktopRect = QApplication::desktop()->screenGeometry(scnum);
@@ -242,15 +249,15 @@ void RekonqWindow::saveWindowSize( const KConfigGroup & _cg ) const
     KConfigGroup cg(_cg);
 
     QString widthString = QString::fromLatin1("Width %1").arg(desktopRect.width());
-    cg.writeEntry(widthString, w );
+    cg.writeEntry(widthString, w);
 
     QString heightString = QString::fromLatin1("Height %1").arg(desktopRect.height());
-    cg.writeEntry(heightString, h );
+    cg.writeEntry(heightString, h);
 
     // geometry is saved separately for each resolution
     QString geometryKey = QString::fromLatin1("geometry-%1-%2").arg(desktopRect.width()).arg(desktopRect.height());
     QByteArray geometry = saveGeometry();
-    cg.writeEntry( geometryKey, geometry.toBase64() );
+    cg.writeEntry(geometryKey, geometry.toBase64());
 }
 
 
@@ -261,7 +268,7 @@ void RekonqWindow::parseGeometry()
     if (args->isSet("geometry"))
         cmdlineGeometry = args->getOption("geometry");
 
-    Q_ASSERT ( !cmdlineGeometry.isNull() );
+    Q_ASSERT(!cmdlineGeometry.isNull());
 
 // #if defined Q_WS_X11
 //     int x, y;
@@ -288,7 +295,7 @@ void RekonqWindow::parseGeometry()
 //             y = KApplication::desktop()->height() + y - h;
 //         else if ( (m & YValue) )
 //             y = geometry().y();
-// 
+//
 //         move(x, y);
 //     }
 // #endif
@@ -312,27 +319,28 @@ void RekonqWindow::saveAutoSaveSettings()
 }
 
 
-bool RekonqWindow::canBeRestored( int number )
+bool RekonqWindow::canBeRestored(int number)
 {
-    if ( !qApp->isSessionRestored() )
+    if (!qApp->isSessionRestored())
         return false;
     KConfig *config = kapp->sessionConfig();
-    if ( !config )
+    if (!config)
         return false;
 
-    KConfigGroup group( config, "Number" );
-    const int n = group.readEntry( "NumberOfWindows", 1 );
+    KConfigGroup group(config, "Number");
+    const int n = group.readEntry("NumberOfWindows", 1);
     return number >= 1 && number <= n;
 }
 
 
-bool RekonqWindow::restore( int number, bool show )
+bool RekonqWindow::restore(int number, bool show)
 {
-    if ( !canBeRestored( number ) )
+    if (!canBeRestored(number))
         return false;
     KConfig *config = kapp->sessionConfig();
-    if ( readPropertiesInternal( config, number ) ){
-        if ( show )
+    if (readPropertiesInternal(config, number))
+    {
+        if (show)
             RekonqWindow::show();
         return false;
     }

@@ -643,7 +643,7 @@ void UrlBar::detectTypedString(const QString &typed)
 
 void UrlBar::suggest()
 {
-    kDebug() << "SUGGEST ABOUT DIGITED: " << text(); 
+    kDebug() << "SUGGEST ABOUT DIGITED: " << text();
     if (!_box.isNull())
         _box.data()->suggestUrls(text());
 }
@@ -663,7 +663,7 @@ void UrlBar::refreshFavicon()
         _icon->setIcon(KIcon("arrow-right"));
         return;
     }
-    
+
     _icon->setIcon(IconManager::self()->iconForUrl(u));
 }
 
@@ -746,7 +746,7 @@ void UrlBar::manageFavorites(QPoint pos)
     // also, save a site snapshot
     WebSnap *snap = new WebSnap(_tab->url(), this);
     Q_UNUSED(snap);
-    
+
     updateRightIcons();
 }
 

@@ -80,7 +80,7 @@ public:
     */
     void registerBookmarkBar(BookmarkToolBar *toolbar);
     void removeBookmarkBar(BookmarkToolBar *toolbar);
-    
+
     /**
      * @short Get action by name
      * This method returns poiner bookmark action of given name.

@@ -41,10 +41,10 @@ class QWidget;
 
 namespace RekonqFactory
 {
-    QWidget *createWidget(const QString &name, QWidget *parent, KActionCollection *);
+QWidget *createWidget(const QString &name, QWidget *parent, KActionCollection *);
 
-    void fillToolbar(KToolBar *, QDomNode, KActionCollection *);
-    void fillMenu(KMenu *, QDomNode, KActionCollection *);
+void fillToolbar(KToolBar *, QDomNode, KActionCollection *);
+void fillMenu(KMenu *, QDomNode, KActionCollection *);
 };
 
 #endif

@@ -84,13 +84,13 @@ public:
     {};
 
     UrlSuggestionItem(const int &_type,
-                  const QString &_url,
-                  const QString &_title = QString(),
-                  const QString &_description = QString(),
-                  const QString &_image = QString(),
-                  const int &_image_width = 0,
-                  const int &_image_height = 0
-                 )
+                      const QString &_url,
+                      const QString &_title = QString(),
+                      const QString &_description = QString(),
+                      const QString &_image = QString(),
+                      const int &_image_width = 0,
+                      const int &_image_height = 0
+                     )
         : type(_type)
         , url(_url)
         , title(_title)
@@ -147,7 +147,7 @@ private:
     UrlSuggestionList _suggestions;
 
     bool _webSearchFirst;
-    
+
     static QRegExp _browseRegexp;
     static QRegExp _searchEnginesRegexp;
 };

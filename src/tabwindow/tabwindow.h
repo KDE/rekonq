@@ -60,7 +60,7 @@ class TabWindow : public RekonqWindow
 
 public:
     TabWindow(bool withTab = true, QWidget *parent = 0);
-    
+
     WebWindow* currentWebWindow() const;
     WebWindow* webWindow(int index) const;
 

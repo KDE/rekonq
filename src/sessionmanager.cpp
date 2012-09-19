@@ -139,7 +139,7 @@ void SessionManager::saveSession()
 {
     if (!m_isSessionEnabled)
         return;
-    
+
     m_saveTimer->changeOccurred();
 }
 
@@ -239,8 +239,8 @@ void SessionManager::restoreCrashedSession()
         QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
 
         TabWindow *tw = (winNo == 0)
-            ? rApp->tabWindow()
-            : rApp->newTabWindow();
+                        ? rApp->tabWindow()
+                        : rApp->newTabWindow();
 
         KUrl u = tw->currentWebWindow()->url();
         bool useCurrentTab = (u.isEmpty() || u.protocol() == QL1S("about"));

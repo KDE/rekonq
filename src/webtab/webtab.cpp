@@ -133,7 +133,7 @@ WebWindow *WebTab::webWindow()
     WebWindow *w = qobject_cast<WebWindow *>(parent());
     return w;
 }
-    
+
 KUrl WebTab::url()
 {
     if (page() && page()->isOnRekonqPage())

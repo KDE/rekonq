@@ -131,7 +131,7 @@ WebPage::WebPage(QWidget *parent)
     WebTab *tab = qobject_cast<WebTab *>(view->parent());
     WebWindow *w = tab->webWindow();
     _protHandler.setWindow(w);
-    
+
     // handling unsupported content...
     setForwardUnsupportedContent(true);
     connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(handleUnsupportedContent(QNetworkReply*)));
@@ -425,7 +425,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         WebView *view = qobject_cast<WebView *>(parent());
         WebTab *tab = qobject_cast<WebTab *>(view->parent());
         tab->setPart(pa, replyUrl);
-        
+
         // FIXME: Is this enough?
     }
     else

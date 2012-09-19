@@ -96,7 +96,7 @@ protected:
 
 Q_SIGNALS:
     void toggleBookmarksToolbar(bool);
-    
+
 private Q_SLOTS:
     void updateConfiguration();
 

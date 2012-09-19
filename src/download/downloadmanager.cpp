@@ -44,6 +44,7 @@
 #include <KIO/JobUiDelegate>
 
 // Qt Includes
+#include <QApplication>
 #include <QDataStream>
 #include <QDateTime>
 #include <QFile>

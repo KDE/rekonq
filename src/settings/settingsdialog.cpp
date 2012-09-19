@@ -198,7 +198,7 @@ bool SettingsDialog::hasChanged()
            || d->advancedWidg->changed()
            || d->privacyWidg->changed()
            || d->ebrowsingModule->changed()
-    ;
+           ;
 }
 
 

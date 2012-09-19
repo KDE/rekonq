@@ -88,7 +88,7 @@ TabWindow::TabWindow(bool withTab, QWidget *parent)
     connect(tabBar, SIGNAL(restoreClosedTab(int)),  this,   SLOT(restoreClosedTab(int)));
 
     connect(tabBar, SIGNAL(tabLayoutChanged()),     this,   SLOT(updateNewTabButtonPosition()));
-    
+
     // new tab button
     KAction* a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     _addTabButton->setDefaultAction(a);
@@ -160,7 +160,7 @@ void TabWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *hist
         tab = prepareNewTab();
         addTab(tab, i18n("new tab"));
         break;
-        
+
     case Rekonq::NewFocusedTab:
         tab = prepareNewTab();
         addTab(tab, i18n("new tab"));
@@ -207,7 +207,7 @@ void TabWindow::pageCreated(WebPage *page)
 void TabWindow::currentChanged(int newIndex)
 {
     _openedTabsCounter = 0;
-    
+
     tabBar()->setTabHighlighted(newIndex, false);
 
     // update window title & icon
@@ -217,8 +217,8 @@ void TabWindow::currentChanged(int newIndex)
 
     QString t = tab->title();
     (t.isEmpty())
-        ? setWindowTitle(QL1S("rekonq"))
-        : setWindowTitle(t + QL1S(" - rekonq"));
+    ? setWindowTitle(QL1S("rekonq"))
+    : setWindowTitle(t + QL1S(" - rekonq"));
 }
 
 
@@ -248,7 +248,7 @@ void TabWindow::tabTitleChanged(const QString &title)
         return;
 
     bool emptyTitle = title.isEmpty();
-    
+
     QString tabTitle = emptyTitle ? tab->url().url() : title;
     tabTitle.replace('&', "&&");
 
@@ -266,8 +266,8 @@ void TabWindow::tabTitleChanged(const QString &title)
     else
     {
         emptyTitle
-            ? setWindowTitle(QL1S("rekonq"))
-            : setWindowTitle(tabTitle + QL1S(" - rekonq"));
+        ? setWindowTitle(QL1S("rekonq"))
+        : setWindowTitle(tabTitle + QL1S(" - rekonq"));
     }
 }
 
@@ -423,7 +423,7 @@ void TabWindow::detachTab(int index, TabWindow *toWindow)
     // else
 
     closeTab(index, false);
-    
+
     TabWindow *w = 0;
     w = (toWindow == 0)
         ? new TabWindow(false)

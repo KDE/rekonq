@@ -192,7 +192,7 @@ void BookmarkToolBar::contextMenu(const QPoint &point)
                               BookmarkManager::self()->owner(),
                               nullAction);
 
-    menu.exec( mapToGlobal(point) );
+    menu.exec(mapToGlobal(point));
 }
 
 
@@ -420,8 +420,8 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             {
                 WebWindow *w = qobject_cast<WebWindow *>(parent());
                 QString title = url.contains(w->url().url())
-                            ? w->title()
-                            : url;
+                                ? w->title()
+                                : url;
                 bookmark = root.addBookmark(title, url);
             }
         }

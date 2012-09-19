@@ -101,7 +101,7 @@ void PreviewSelectorBar::loadFinished()
 void PreviewSelectorBar::clicked()
 {
     WebTab *tab = qobject_cast<WebTab *>(parent());
-    
+
     if (tab->page())
     {
         KUrl url = tab->url();

@@ -133,7 +133,7 @@ void FindBar::keyPressEvent(QKeyEvent *event)
             findNext();
         }
     }
-    
+
     QWidget::keyPressEvent(event);
 }
 
@@ -156,8 +156,8 @@ void FindBar::setVisible(bool visible)
     WebWindow *w = qobject_cast<WebWindow *>(parent());
 
     if (visible
-        && w->page()->isOnRekonqPage()
-        && w->view()->part() != 0)
+            && w->page()->isOnRekonqPage()
+            && w->view()->part() != 0)
     {
         // findNext is the slot containing part integration code
         findNext();

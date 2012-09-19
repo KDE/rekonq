@@ -76,6 +76,7 @@
 // Qt Includes
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QDir>
 
 
 Application::Application()
@@ -184,7 +185,7 @@ int Application::newInstance()
             }
             else
             {
-                 // NOTE: just load new tabs/windows without arguments
+                // NOTE: just load new tabs/windows without arguments
                 // if NOT is Session restored...
                 if (!isSessionRestored())
                 {
@@ -332,7 +333,7 @@ TabWindow *Application::newTabWindow()
 
     // set object name
     int n = m_tabWindows.count() + 1;
-    w->setObjectName( QL1S("win") + QString::number(n) );
+    w->setObjectName(QL1S("win") + QString::number(n));
 
     // This is used to track which window was activated most recently
     w->installEventFilter(this);
@@ -477,7 +478,7 @@ void Application::updateConfiguration()
 //     ? tabWindow()->changeWindowIcon(tabWindow()->mainView()->currentIndex())
 //     : tabWindow()->setWindowIcon(KIcon("rekonq"))
 //     ;
-// 
+//
     // hovering unfocused tabs options
     switch (ReKonfig::hoveringTabOption())
     {
@@ -632,7 +633,7 @@ void Application::createWebAppShortcut()
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
     dialog->button(KDialog::Ok)->setText(i18n("Create"));
     dialog->setMinimumSize(400, 50);
-    dialog->setWindowIcon( QIcon(IconManager::self()->iconForUrl(u).pixmap(16)) );
+    dialog->setWindowIcon(QIcon(IconManager::self()->iconForUrl(u).pixmap(16)));
 
     Ui::webAppCreation wAppWidget;
     QWidget widget;
@@ -708,7 +709,7 @@ void Application::createWebAppShortcut()
 
             wAppFile.close();
         }
-        
+
     }
 
     dialog->deleteLater();

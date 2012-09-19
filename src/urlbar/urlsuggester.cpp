@@ -294,7 +294,7 @@ void UrlSuggester::computeWebSearches()
 {
     QString query = _typedString;
 
-    // this result is generated when an user types something like gg:kde 
+    // this result is generated when an user types something like gg:kde
     KService::Ptr engine = SearchEngine::fromString(_typedString);
     if (engine)
     {
@@ -305,7 +305,7 @@ void UrlSuggester::computeWebSearches()
     {
         engine = SearchEngine::defaultEngine();
     }
-    
+
     UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(engine, query), query, engine->name());
     UrlSuggestionList list;
     list << item;
@@ -382,20 +382,20 @@ void UrlSuggester::computeSuggestions()
 // {
 //     if (text != _typedString)
 //         return;
-// 
+//
 //     UrlSuggestionList sugList;
 //     QString urlString;
 //     Q_FOREACH(const Response & i, suggestions)
 //     {
 //         if (text == i.title)
 //             continue;
-// 
+//
 //         urlString = i.url;
 //         if (urlString.isEmpty())
 //         {
 //             urlString = SearchEngine::buildQuery(UrlSuggester::searchEngine(), i.title);
 //         }
-// 
+//
 //         UrlSuggestionItem gItem(UrlSuggestionItem::Suggestion, urlString, i.title, i.description, i.image, i.image_width, i.image_height);
 //         sugList << gItem;
 //     }

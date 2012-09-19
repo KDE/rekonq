@@ -40,10 +40,10 @@
 
 
 BookmarksContextMenu::BookmarksContextMenu(const KBookmark &bookmark,
-                                            KBookmarkManager *manager,
-                                            BookmarkOwner *owner,
-                                            bool nullForced,
-                                            QWidget *parent)
+        KBookmarkManager *manager,
+        BookmarkOwner *owner,
+        bool nullForced,
+        QWidget *parent)
     : KBookmarkContextMenu(bookmark, manager, owner, parent)
     , m_bmOwner(owner)
     , m_nullForced(nullForced)

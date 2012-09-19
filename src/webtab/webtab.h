@@ -62,7 +62,7 @@ public:
     WebView *view();
     WebPage *page();
     WebWindow *webWindow();
-    
+
     inline int progress() const
     {
         return m_progress;

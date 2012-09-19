@@ -42,7 +42,7 @@ class TabPreviewPopup;
 class TabHighlightEffect;
 
 class QSignalMapper;
-    
+
 
 class TabBar : public KTabBar
 {
@@ -63,7 +63,7 @@ protected:
 
     virtual void tabRemoved(int index);
     virtual void tabLayoutChange();
-    
+
 Q_SIGNALS:
     void cloneTab(int);
     void closeTab(int);
@@ -72,7 +72,7 @@ Q_SIGNALS:
     void detachTab(int);
     void restoreClosedTab(int);
     void tabLayoutChanged();
-    
+
 private Q_SLOTS:
     void cloneTab();
     void closeTab();

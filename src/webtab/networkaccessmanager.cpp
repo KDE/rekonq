@@ -85,15 +85,15 @@ static void hideBlockedElements(const QUrl& url, QWebElementCollection& collecti
 {
     for (QWebElementCollection::iterator it = collection.begin(); it != collection.end(); ++it)
     {
-        const QUrl baseUrl ((*it).webFrame()->baseUrl());
+        const QUrl baseUrl((*it).webFrame()->baseUrl());
         QString src = (*it).attribute(QL1S("src"));
-        
+
         if (src.isEmpty())
             src = (*it).evaluateJavaScript(QL1S("this.src")).toString();
 
         if (src.isEmpty())
             continue;
-        const QUrl resolvedUrl (baseUrl.resolved(src));
+        const QUrl resolvedUrl(baseUrl.resolved(src));
         if (url == resolvedUrl)
         {
             //kDebug() << "*** HIDING ELEMENT: " << (*it).tagName() << resolvedUrl;
@@ -125,11 +125,11 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent)
 QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
 {
     bool blocked = false;
-    
+
     // Handle GET operations with AdBlock
     if (op == QNetworkAccessManager::GetOperation)
         blocked = AdBlockManager::self()->blockRequest(req);
-    
+
     if (!blocked)
     {
         if (KProtocolInfo::isHelperProtocol(req.url()))
@@ -162,10 +162,10 @@ void NetworkAccessManager::slotFinished(bool ok)
     if (!ok)
         return;
 
-    if(!AdBlockManager::self()->isEnabled())
+    if (!AdBlockManager::self()->isEnabled())
         return;
 
-    if(!AdBlockManager::self()->isHidingElements())
+    if (!AdBlockManager::self()->isHidingElements())
         return;
 
     QWebFrame* frame = qobject_cast<QWebFrame*>(sender());
@@ -176,10 +176,10 @@ void NetworkAccessManager::slotFinished(bool ok)
     if (urls.isEmpty())
         return;
 
-   QWebElementCollection collection = frame->findAllElements(HIDABLE_ELEMENTS);
-   if (frame->parentFrame())
+    QWebElementCollection collection = frame->findAllElements(HIDABLE_ELEMENTS);
+    if (frame->parentFrame())
         collection += frame->parentFrame()->findAllElements(HIDABLE_ELEMENTS);
 
-    Q_FOREACH(const QUrl& url, urls)
-        hideBlockedElements(url, collection);
+    Q_FOREACH(const QUrl & url, urls)
+    hideBlockedElements(url, collection);
 }

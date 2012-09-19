@@ -52,11 +52,11 @@
 class RekonqWindow : public KTabWidget
 {
     friend class KRWSessionManager;
-    
+
     Q_OBJECT
 
 public:
-    explicit RekonqWindow( QWidget* parent = 0 );
+    explicit RekonqWindow(QWidget* parent = 0);
 
     virtual ~RekonqWindow();
 
@@ -70,16 +70,16 @@ public:
      * else @p false.
      * @see restore()
      **/
-    static bool canBeRestored( int number );
+    static bool canBeRestored(int number);
 
     /**
      * Try to restore the toplevel widget as defined by @p number (1..X).
      *
      * You should call canBeRestored() first.
-     * 
+     *
      **/
-    bool restore( int number, bool show = true );
-    
+    bool restore(int number, bool show = true);
+
 protected:
     /**
      * Save your instance-specific properties. The function is
@@ -92,33 +92,33 @@ protected:
      * in this function!
      *
      */
-    virtual void saveProperties( KConfigGroup & ) {}
+    virtual void saveProperties(KConfigGroup &) {}
 
     /**
     * Read your instance-specific properties.
     *
     * Is called indirectly by restore().
     */
-    virtual void readProperties( const KConfigGroup & ) {}
+    virtual void readProperties(const KConfigGroup &) {}
 
-    void savePropertiesInternal( KConfig*, int );
-    bool readPropertiesInternal( KConfig*, int );
+    void savePropertiesInternal(KConfig*, int);
+    bool readPropertiesInternal(KConfig*, int);
 
     /**
      * For inherited classes
      */
-    void saveWindowSize( const KConfigGroup &config ) const;
+    void saveWindowSize(const KConfigGroup &config) const;
     /**
      * For inherited classes
      * Note that a -geometry on the command line has priority.
      */
-    void restoreWindowSize( const KConfigGroup & config );
+    void restoreWindowSize(const KConfigGroup & config);
 
     /// parse the geometry from the geometry command line argument
     void parseGeometry();
 
     virtual void resizeEvent(QResizeEvent *);
-    
+
 private Q_SLOTS:
     void saveAutoSaveSettings();
 

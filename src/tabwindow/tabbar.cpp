@@ -304,7 +304,7 @@ void TabBar::setTabHighlighted(int index, bool b)
         connect(anim, SIGNAL(finished()), m_animationMapper, SLOT(map()));
 
         setTabTextColor(index, highlightColor);
-    }    
+    }
 }
 
 
@@ -354,7 +354,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
             && tabIndex != currentIndex()
             && m_currentTabPreviewIndex != tabIndex
             && event->buttons() == Qt::NoButton
-        )
+       )
     {
         m_currentTabPreviewIndex = tabIndex;
 
@@ -384,7 +384,7 @@ void TabBar::leaveEvent(QEvent *event)
 void TabBar::mousePressEvent(QMouseEvent *event)
 {
     hideTabPreview();
-    
+
     // just close tab on middle mouse click
     if (event->button() == Qt::MidButton)
         return;
@@ -424,8 +424,8 @@ void TabBar::showTabPreview()
 
     int w = c_baseTabWidth;
     int h = w * tabW->size().height() / tabW->size().width();
-    
-    m_previewPopup = new TabPreviewPopup(indexedTab->tabPreview(w,h), indexedTab->url().url() , this);
+
+    m_previewPopup = new TabPreviewPopup(indexedTab->tabPreview(w, h), indexedTab->url().url() , this);
 
     int tabBarWidth = tabW->size().width();
     int leftIndex = tabRect(m_currentTabPreviewIndex).x() + (tabRect(m_currentTabPreviewIndex).width() - w) / 2;

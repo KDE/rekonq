@@ -96,6 +96,6 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
         for (int i = 1; TabWindow::canBeRestored(i); i++)
             app.newTabWindow()->restore(i);
     }
-    
+
     return app.exec();
 }
