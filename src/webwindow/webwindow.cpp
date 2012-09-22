@@ -57,8 +57,8 @@
 #include <KMimeTypeTrader>
 #include <KTemporaryFile>
 #include <KUrl>
-#include <KToggleFullScreenAction>
 #include <KToolBar>
+#include <KToggleFullScreenAction>
 
 #include <QLabel>
 #include <QStyle>
@@ -103,7 +103,8 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
 
     if (ReKonfig::showBookmarksToolbar())
     {
-        _bookmarksBar = qobject_cast<BookmarkToolBar *>(RekonqFactory::createWidget(QL1S("bookmarkToolBar"), this, actionCollection()));
+        _bookmarksBar = qobject_cast<BookmarkToolBar *>(RekonqFactory::createWidget(QL1S("bookmarkToolBar"),
+                                                                                    this, actionCollection()));
         BookmarkManager::self()->registerBookmarkBar(_bookmarksBar.data());
 
         l->addWidget(_bookmarksBar.data());
@@ -215,11 +216,12 @@ void WebWindow::setupActions()
     KShortcut findShortcut = KStandardShortcut::find();
     a->setShortcut(findShortcut);
 
-    a = KStandardAction::fullScreen(this, SLOT(viewFullScreen(bool)), this, actionCollection());
+    a = KStandardAction::fullScreen(this, SLOT(setWidgetsHidden(bool)), this, actionCollection());
     KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
     fullScreenShortcut.setAlternate(Qt::Key_F11);
     a->setShortcut(fullScreenShortcut);
-
+    connect(a, SIGNAL(toggled(bool)), this, SIGNAL(setFullScreen(bool)));
+    
     a = KStandardAction::redisplay(_tab->view(), SLOT(reload()), actionCollection());
     a->setText(i18n("Reload"));
     KShortcut reloadShortcut = KStandardShortcut::reload();
@@ -756,10 +758,6 @@ void WebWindow::fileSaveAs()
 
 void WebWindow::openLocation()
 {
-    if (isFullScreen())
-    {
-        _mainToolBar->show();
-    }
     _bar->selectAll();
     _bar->setFocus();
 }
@@ -795,10 +793,34 @@ void WebWindow::viewPageSource()
 }
 
 
-void WebWindow::viewFullScreen(bool makeFullScreen)
+void WebWindow::setWidgetsHidden(bool hide)
 {
-//  FIXME   setWidgetsVisible(!makeFullScreen);
-    KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
+    // state flags
+    static bool bookmarksToolBarFlag = false;
+
+    if (hide)
+    {
+        // save current state, if in windowed mode
+        if (!_bookmarksBar.isNull())
+        {
+            bookmarksToolBarFlag = true;
+            _bookmarksBar.data()->hide();
+        }
+
+        // hide main toolbar
+        _mainToolBar->hide();
+    }
+    else
+    {
+        // show main toolbar
+        _mainToolBar->show();
+
+        // restore state of windowed mode
+        if (!_bookmarksBar.isNull() && bookmarksToolBarFlag)
+            _bookmarksBar.data()->show();
+    }
+
+    emit setFullScreen(hide);
 }
 
 

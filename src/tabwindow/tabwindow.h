@@ -100,6 +100,8 @@ private Q_SLOTS:
     void reloadAllTabs();
     void restoreClosedTab(int i);
 
+    void setFullScreen(bool);
+    
 private:
     // the new tab button
     QToolButton *_addTabButton;

@@ -43,6 +43,7 @@
 #include <KLocalizedString>
 #include <KStandardDirs>
 #include <KUrl>
+#include <KToggleFullScreenAction>
 
 #include <KWindowInfo>
 #include <KWindowSystem>
@@ -146,6 +147,8 @@ WebWindow *TabWindow::prepareNewTab(WebPage *page)
 
     connect(tab, SIGNAL(pageCreated(WebPage *)), this, SLOT(pageCreated(WebPage *)));
 
+    connect(tab, SIGNAL(setFullScreen(bool)), this, SLOT(setFullScreen(bool)));
+    
     return tab;
 }
 
@@ -489,4 +492,12 @@ void TabWindow::restoreClosedTab(int i)
 
     // just to get sure...
     m_recentlyClosedTabs.removeAll(history);
+}
+
+
+void TabWindow::setFullScreen(bool makeFullScreen)
+{
+    tabBar()->setVisible(!makeFullScreen);
+    _addTabButton->setVisible(!makeFullScreen);
+    KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
 }

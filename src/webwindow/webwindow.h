@@ -87,6 +87,9 @@ private:
     void setupActions();
     void setupTools();
 
+public Q_SLOTS:
+    void setWidgetsHidden(bool hide);
+    
 private Q_SLOTS:
     void webLoadProgress(int);
     void webLoadStarted();
@@ -115,7 +118,6 @@ private Q_SLOTS:
 
     // Tools Menu slots
     void viewPageSource();
-    void viewFullScreen(bool enable);
 
     void populateUserAgentMenu();
     void setEditable(bool);
@@ -132,6 +134,8 @@ Q_SIGNALS:
 
     void pageCreated(WebPage *);
 
+    void setFullScreen(bool);
+    
 private:
     int _progress;
 

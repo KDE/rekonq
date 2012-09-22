@@ -345,11 +345,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(webwin->actionByName("page_source"));
         menu.addAction(inspectAction);
 
-        if (isFullScreen())
-        {
-            menu.addSeparator();
-            menu.addAction(webwin->actionByName("fullscreen"));
-        }
+        // we need to show everytime this because we cannot communicate with the tabwindow.
+        // We are NOT sure it exists..
+        menu.addSeparator();
+        menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::FullScreen)));
     }
 
     // LINK ACTIONS -------------------------------------------------------------------
@@ -472,7 +471,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         KService::Ptr defaultEngine = SearchEngine::defaultEngine();
         if (defaultEngine) // check if a default engine is set
         {
-            a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1", defaultEngine->name()), this);
+            a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1",
+                                  defaultEngine->name()), this);
             a->setIcon(IconManager::self()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
             a->setData(defaultEngine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
@@ -622,21 +622,6 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    WebTab *tab = qobject_cast<WebTab *>(parent());
-    WebWindow *webwin = tab->webWindow();
-    if (webwin->isFullScreen())
-    {
-        // FIXME
-//         if (event->pos().y() >= 0 && event->pos().y() <= 4)
-//         {
-//             webwin->setWidgetsVisible(true);
-//         }
-//         else
-//         {
-//             if (!webwin->urlBar()->hasFocus())
-//                 webwin->setWidgetsVisible(false);
-//         }
-    }
     KWebView::mouseMoveEvent(event);
 }
 

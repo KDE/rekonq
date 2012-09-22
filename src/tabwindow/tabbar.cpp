@@ -102,6 +102,11 @@ QSize TabBar::tabSizeHint(int index) const
 
     int h = size().height();
 
+    // this because it may happen sometimes (eg: exiting fullscreen)
+    // that tabbar height is set to ZERO. And this is NOT good...
+    if (h == 0)
+        h = 30;
+    
     QSize ts = QSize(w, h);
     return ts;
 }
