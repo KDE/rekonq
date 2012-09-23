@@ -197,7 +197,7 @@ bool WebView::popupSpellMenu(QContextMenuEvent *event)
     // Add alternates
     if (words.isEmpty())
     {
-        QAction *a = mnu.addAction(i18n("No suggestions for ") + word);
+        QAction *a = mnu.addAction(i18n("No suggestions for %1", word));
         a->setEnabled(false);
     }
     else
