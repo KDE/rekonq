@@ -193,7 +193,7 @@ void TabWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *hist
 void TabWindow::newCleanTab()
 {
     QUrl u = QUrl::fromUserInput("/DATI/WEBPAGES/HomePage/index.htm");
-    loadUrl(u, Rekonq::NewTab);
+    loadUrl(u, Rekonq::NewFocusedTab);
 }
 
 

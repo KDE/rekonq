@@ -292,54 +292,11 @@ void WebWindow::setupActions()
     actionCollection()->addAction(QL1S("sync"), a);
     connect(a, SIGNAL(triggered(bool)), SyncManager::self(), SLOT(showSettings()));
 
-//     <Menu name="rekonqMenu" noMerge="1">
-//     <Action name="new_tab" />                  ---
-//     <Action name="new_window" />             +
-//     <Action name="private_browsing" />       +
-//     <Separator/>
-//     <Action name="file_open" />              +
-//     <Action name="file_save_as" />           +
-//     <Action name="file_print" />             +
-//     <Action name="edit_find" />
-//     <Action name="view_zoom" />
-//     <Separator/>
-//
-//     <Menu name="toolsMenu" icon="preferences-other" noMerge="1">
-//         <text>&amp;Tools</text>
-//         <Action name="clear_private_data" /> +
-//         <Separator/>
-//         <Action name="webapp_shortcut" />    +
-//         <Action name="web_inspector" />       ---------
-//         <Action name="page_source" />        +
-//         <Action name="net_analyzer" />     xxxxxxxxxxx
-//         <Action name="set_editable" />       +
-//         <Separator/>
-//         <Action name="useragent" />          +
-//         <Action name="sync" />               +
-//         <Action name="adblock" />            +
-//     </Menu>
-//
-//     <Separator/>
-//     <Action name="show_bookmarks_toolbar" />
-//     <Action name="fullscreen" />              +
-//     <Separator/>
-//
-//     <Menu name="help" icon="help-browser">
-//         <text>&amp;Help</text>
-//         <Action name="help_contents"/>
-//         <Action name="help_whats_this"/>
-//         <Separator weakSeparator="1"/>
-//         <Action name="help_report_bug"/>
-//         <Separator weakSeparator="1"/>
-//         <Action name="switch_application_language"/>
-//         <Separator weakSeparator="1"/>
-//         <Action name="help_about_app"/>
-//         <Action name="help_about_kde"/>
-//     </Menu>
-//
-//     <Action name="options_configure" />      +
-// </Menu>
-
+    // ============================== General Tab Actions ====================================
+    a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
+    actionCollection()->addAction(QL1S("new_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), rApp, SLOT(newTab()));
 }
 
 

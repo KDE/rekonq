@@ -720,3 +720,9 @@ void Application::bookmarksToolbarToggled(bool b)
 {
     emit toggleBookmarksToolbar(b);
 }
+
+
+void Application::newTab()
+{
+    tabWindow()->newCleanTab();
+}
