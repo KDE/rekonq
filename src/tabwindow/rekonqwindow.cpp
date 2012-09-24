@@ -125,6 +125,9 @@ RekonqWindow::RekonqWindow(QWidget* parent)
     ktwsm->dummyInit();
     sWindowList->append(this);
 
+    // a decent minimum size...
+    setMinimumSize(100,40);
+    
     QString geometry;
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs("kde");
     if (args && args->isSet("geometry"))
@@ -311,7 +314,7 @@ void RekonqWindow::resizeEvent(QResizeEvent *event)
 
 void RekonqWindow::saveAutoSaveSettings()
 {
-    kDebug() << "CIAOLA CIAOLA";
+    kDebug() << "AUTO SAVING SETTINGS...";
 
     KSharedConfig::Ptr cf = KGlobal::config();
     KConfigGroup cg(cf, QL1S("TabWindow"));
