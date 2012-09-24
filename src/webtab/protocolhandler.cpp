@@ -36,7 +36,8 @@
 #include "webpage.h"
 #include "webtab.h"
 #include "urlbar.h"
-// #include "newtabpage.h"
+
+#include "newtabpage.h"
 
 // KDE Includes
 #include <KIO/Job>
@@ -169,8 +170,8 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         WebPage *page = qobject_cast<WebPage *>(frame->page());
         page->setIsOnRekonqPage(true);
 
-// FIXME        NewTabPage p(frame);
-//         p.generate(_url);
+        NewTabPage p(frame);
+        p.generate(_url);
 
         return true;
     }

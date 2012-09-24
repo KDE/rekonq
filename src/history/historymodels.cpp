@@ -741,3 +741,35 @@ void HistoryTreeModel::sourceRowsRemoved(const QModelIndex &parent, int start, i
         endRemoveRows();
     }
 }
+
+
+// ----------------------------------------------------------------------------------------------------------
+
+
+UrlFilterProxyModel::UrlFilterProxyModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+{
+    setFilterCaseSensitivity(Qt::CaseInsensitive);
+}
+
+
+bool UrlFilterProxyModel::filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const
+{
+    return recursiveMatch(sourceModel()->index(source_row, 0, source_parent));
+}
+
+
+bool UrlFilterProxyModel::recursiveMatch(const QModelIndex &index) const
+{
+    if (index.data().toString().contains(filterRegExp()))
+        return true;
+
+    int numChildren = sourceModel()->rowCount(index);
+    for (int childRow = 0; childRow < numChildren; ++childRow)
+    {
+        if (recursiveMatch(sourceModel()->index(childRow, 0, index)))
+            return true;
+    }
+
+    return false;
+}

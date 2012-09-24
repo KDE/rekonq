@@ -41,6 +41,9 @@ set(rekonq_KDEINIT_SRCS
     icons/iconmanager.cpp
     icons/webicon.cpp
     #----------------------------------------
+    rekonqpage/newtabpage.cpp
+    rekonqpage/thumbupdater.cpp
+    #----------------------------------------
     settings/settingsdialog.cpp
     settings/appearancewidget.cpp
     settings/advancedwidget.cpp
@@ -163,6 +166,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/download
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/icons
+                        ${CMAKE_CURRENT_SOURCE_DIR}/rekonqpage
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
                         ${CMAKE_CURRENT_SOURCE_DIR}/sync
                         ${CMAKE_CURRENT_SOURCE_DIR}/urlbar

@@ -179,33 +179,26 @@ int Application::newInstance()
     {
         if (isFirstLoad)
         {
-            if (hasToBeRecoveredFromCrash)
+            // NOTE: just load new tabs/windows without arguments
+            // if NOT is Session restored...
+            if (!isSessionRestored())
             {
-                loadUrl(KUrl("about:closedTabs"), Rekonq::NewWindow);
-            }
-            else
-            {
-                // NOTE: just load new tabs/windows without arguments
-                // if NOT is Session restored...
-                if (!isSessionRestored())
+                switch (ReKonfig::startupBehaviour())
                 {
-                    switch (ReKonfig::startupBehaviour())
+                case 0: // open home page
+                    loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
+                    break;
+                case 1: // open new tab page
+                    loadUrl(KUrl("about:home"), Rekonq::NewWindow);
+                    break;
+                case 2: // restore session
+                    if (SessionManager::self()->restoreSessionFromScratch())
                     {
-                    case 0: // open home page
-                        newTabWindow()->newCleanTab();
-                        break;
-                    case 1: // open new tab page
-                        loadUrl(KUrl("about:home"), Rekonq::NewWindow);
-                        break;
-                    case 2: // restore session
-                        if (SessionManager::self()->restoreSessionFromScratch())
-                        {
-                            break;
-                        }
-                    default:
-                        newTabWindow()->newCleanTab();
                         break;
                     }
+                default:
+                    newTabWindow()->newCleanTab();
+                    break;
                 }
             }
         }
