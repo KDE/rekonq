@@ -263,14 +263,15 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
         return true;
     }
 
-    KIO::CopyJob *job = KIO::copy(srcUrl, destUrl, KIO::Overwrite);
+    KIO::CopyJob *job = KIO::copy(srcUrl, destUrl);
 
     if (!metaData.isEmpty())
         job->setMetaData(metaData);
 
     job->addMetaData(QL1S("MaxCacheSize"), QL1S("0"));      // Don't store in http cache.
     job->addMetaData(QL1S("cache"), QL1S("cache"));         // Use entry from cache if available.
-    job->uiDelegate()->setAutoErrorHandlingEnabled(true);
+    job->ui()->setWindow((parent ? parent->window() : 0));
+    job->ui()->setAutoErrorHandlingEnabled(true);
 
     addDownload(job);
     return true;
