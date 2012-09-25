@@ -59,17 +59,19 @@ class TabWindow : public RekonqWindow
     Q_OBJECT
 
 public:
-    TabWindow(bool withTab = true, QWidget *parent = 0);
+    TabWindow(bool withTab = true, bool PrivateBrowsingMode = false, QWidget *parent = 0);
 
     WebWindow* currentWebWindow() const;
     WebWindow* webWindow(int index) const;
 
     TabBar* tabBar() const;
 
+    bool isPrivateBrowsingWindowMode();
+
 public Q_SLOTS:
     void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
     void newCleanTab();
-
+    
 private:
     /**
      * Prepares the new WebWindow to be open
@@ -109,6 +111,8 @@ private:
     int _openedTabsCounter;
 
     QList<TabHistory> m_recentlyClosedTabs;
+
+    bool _isPrivateBrowsing;
 };
 
 #endif // TAB_WINDOW

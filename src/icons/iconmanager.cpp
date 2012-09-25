@@ -122,7 +122,7 @@ void IconManager::provideIcon(QWebFrame *mFrame, const KUrl &url, bool notify)
     }
 
     // do not load new icons in private browsing..
-    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (mFrame->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         if (notify)
             emit iconChanged();

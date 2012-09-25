@@ -88,7 +88,7 @@ public Q_SLOTS:
                  const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );
 
-    TabWindow *newTabWindow();
+    TabWindow *newTabWindow(bool withTab = true, bool PrivateBrowsingMode = false);
 
 protected:
     // This is used to track which window was activated most recently
@@ -108,6 +108,8 @@ private Q_SLOTS:
     void createWebAppShortcut();
 
     void newTab();
+
+    void newPrivateBrowsingWindow();
     
 private:
     TabWindowList m_tabWindows;

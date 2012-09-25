@@ -305,7 +305,12 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         newType = Rekonq::CurrentTab;
 
     TabWindow *w = 0;
-    if (newType == Rekonq::NewWindow
+    if (newType == Rekonq::NewPrivateWindow)
+    {
+        w = newTabWindow(true, true);
+        newType = Rekonq::CurrentTab;
+    }
+    else if (newType == Rekonq::NewWindow
             || (newType == Rekonq::NewTab && ReKonfig::openLinksInNewWindow()))
     {
         w = newTabWindow();
@@ -320,9 +325,9 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 }
 
 
-TabWindow *Application::newTabWindow()
+TabWindow *Application::newTabWindow(bool withTab, bool PrivateBrowsingMode)
 {
-    TabWindow *w = new TabWindow;
+    TabWindow *w = new TabWindow(withTab, PrivateBrowsingMode);
 
     // set object name
     int n = m_tabWindows.count() + 1;
@@ -718,4 +723,10 @@ void Application::bookmarksToolbarToggled(bool b)
 void Application::newTab()
 {
     tabWindow()->newCleanTab();
+}
+
+
+void Application::newPrivateBrowsingWindow()
+{
+    loadUrl(KUrl("about:incognito"), Rekonq::NewPrivateWindow);
 }

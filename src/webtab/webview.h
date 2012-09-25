@@ -94,8 +94,10 @@ protected:
 private Q_SLOTS:
     void search();
 
-    void openLinkInNewWindow();
     void openLinkInNewTab();
+    void openLinkInNewWindow();
+    void openLinkInPrivateWindow();
+
     void bookmarkLink();
     void spellCheck();
     void spellCheckerCorrected(const QString& original, int pos, const QString& replacement);

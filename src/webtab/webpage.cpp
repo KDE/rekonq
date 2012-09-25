@@ -290,6 +290,29 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         setRequestMetaData(QL1S("main_frame_request"), QL1S("FALSE"));
     }
 
+
+    // Make sure nothing is cached when private browsing mode is enabled...
+    if (settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    {
+        if (manager) {
+            KIO::Integration::CookieJar *cookieJar = manager ? qobject_cast<KIO::Integration::CookieJar*>(manager->cookieJar()) : 0;
+            if (cookieJar) {
+                cookieJar->setDisableCookieStorage(true);
+                kDebug() << "COOKIE DISABLED -------------------------------------------------------------";
+            }
+        }
+        setSessionMetaData(QL1S("no-cache"), QL1S("true"));
+    }
+    else
+    {
+        if (manager) {
+            KIO::Integration::CookieJar *cookieJar = manager ? qobject_cast<KIO::Integration::CookieJar*>(manager->cookieJar()) : 0;
+            if (cookieJar) {
+                cookieJar->setDisableCookieStorage(false);
+            }
+        }
+        removeSessionMetaData(QL1S("no-cache"));
+    }
     return KWebPage::acceptNavigationRequest(frame, request, type);
 }
 
@@ -388,7 +411,12 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         switch (dlg.askEmbedOrSave())
         {
         case KParts::BrowserOpenOrSaveQuestion::Save:
-            DownloadManager::self()->downloadResource(reply->url(), KIO::MetaData(), view(), !hideDialog, _suggestedFileName);
+            DownloadManager::self()->downloadResource(reply->url(),
+                                                      KIO::MetaData(),
+                                                      view(),
+                                                      !hideDialog,
+                                                      _suggestedFileName,
+                                                      settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
             return;
 
         case KParts::BrowserOpenOrSaveQuestion::Cancel:
@@ -664,13 +692,14 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
 {
     DownloadManager::self()->downloadResource(request.url(),
             request.attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap(),
-            view());
+            view(), false, QString(), settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
 }
 
 
 void WebPage::downloadUrl(const KUrl &url)
 {
-    DownloadManager::self()->downloadResource(url, KIO::MetaData(), view());
+    DownloadManager::self()->downloadResource(url, KIO::MetaData(), view(), false, QString(),
+                                              settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
 }
 
 

@@ -83,12 +83,15 @@ public:
     virtual KActionCollection *actionCollection() const;
     QAction *actionByName(const QString &name);
 
+    bool isPrivateBrowsing();
+    
 private:
     void setupActions();
     void setupTools();
 
 public Q_SLOTS:
     void setWidgetsHidden(bool hide);
+    void setPrivateBrowsing(bool);
     
 private Q_SLOTS:
     void webLoadProgress(int);
@@ -158,6 +161,8 @@ private:
     QTimer *m_hidePopupTimer;
 
     KActionCollection *_ac;
+
+    bool _isPrivateBrowsing;
 };
 
 #endif // WEB_WINDOW

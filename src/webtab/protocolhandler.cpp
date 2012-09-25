@@ -278,6 +278,9 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         _webwin->urlBar()->setQUrl(_url);
         _webwin->view()->setFocus();
 
+        if (_frame->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+            return;
+
         HistoryManager::self()->addHistoryEntry(_url, _url.prettyUrl());
     }
 }

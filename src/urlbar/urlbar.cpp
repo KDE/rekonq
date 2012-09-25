@@ -213,7 +213,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
     QColor backgroundColor;
     QColor foregroundColor;
 
-    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (_tab->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         backgroundColor = QColor(220, 220, 220);  // light gray
         foregroundColor = Qt::black;
@@ -651,7 +651,7 @@ void UrlBar::suggest()
 
 void UrlBar::refreshFavicon()
 {
-    if (QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (_tab->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         _icon->setIcon(KIcon("view-media-artist"));
         return;

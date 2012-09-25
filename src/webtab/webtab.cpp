@@ -293,7 +293,10 @@ void WebTab::showMessageBar()
 
 void WebTab::loadFinished()
 {
-    // add page to history
+    // add page to history, if not in private browsing mode
+    if (page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+        return;
+
     QString pageTitle = (page() && page()->isOnRekonqPage()) ? url().url() : m_webView->title();
     HistoryManager::self()->addHistoryEntry(url(), pageTitle);
 }

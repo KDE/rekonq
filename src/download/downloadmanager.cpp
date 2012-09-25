@@ -135,10 +135,6 @@ void DownloadManager::init()
 
 DownloadItem* DownloadManager::addDownload(KIO::CopyJob *job)
 {
-    QWebSettings *globalSettings = QWebSettings::globalSettings();
-    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-        return 0;
-
     KIO::CopyJob *cJob = qobject_cast<KIO::CopyJob *>(job);
 
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
@@ -162,10 +158,6 @@ DownloadItem* DownloadManager::addDownload(KIO::CopyJob *job)
 
 DownloadItem* DownloadManager::addKGetDownload(const QString &srcUrl, const QString &destUrl)
 {
-    QWebSettings *globalSettings = QWebSettings::globalSettings();
-    if (globalSettings->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-        return 0;
-
     QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
     QFile downloadFile(downloadFilePath);
     if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
@@ -224,7 +216,7 @@ void DownloadManager::removeDownloadItem(int index)
 // 1. KGet Integration
 // 2. Save downloads history
 bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &metaData,
-                                       QWidget *parent, bool forceDirRequest, const QString &suggestedName)
+                                       QWidget *parent, bool forceDirRequest, const QString &suggestedName, bool registerDownload)
 {
     KUrl destUrl;
 
@@ -259,7 +251,8 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
 
         QDBusMessage transfer = kget.call(QL1S("addTransfer"), srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
 
-        addKGetDownload(srcUrl.pathOrUrl(), destUrl.pathOrUrl());
+        if (registerDownload)
+            addKGetDownload(srcUrl.pathOrUrl(), destUrl.pathOrUrl());
         return true;
     }
 
@@ -273,6 +266,8 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
     job->ui()->setWindow((parent ? parent->window() : 0));
     job->ui()->setAutoErrorHandlingEnabled(true);
 
-    addDownload(job);
+    if (registerDownload)
+        addDownload(job);
+
     return true;
 }

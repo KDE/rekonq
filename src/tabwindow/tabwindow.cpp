@@ -29,6 +29,7 @@
 #include "tabwindow.moc"
 
 // Local Includes
+#include "application.h"
 #include "webpage.h"
 #include "webwindow.h"
 #include "tabbar.h"
@@ -59,10 +60,11 @@
 #include <QWebSettings>
 
 
-TabWindow::TabWindow(bool withTab, QWidget *parent)
+TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     : RekonqWindow(parent)
     , _addTabButton(new QToolButton(this))
     , _openedTabsCounter(0)
+    , _isPrivateBrowsing(PrivateBrowsingMode)
 {
     setContentsMargins(0, 0, 0, 0);
 
@@ -140,6 +142,9 @@ WebWindow *TabWindow::prepareNewTab(WebPage *page)
 {
     WebWindow *tab = new WebWindow(this, page);
 
+    if (_isPrivateBrowsing)
+        tab->setPrivateBrowsing(true);
+
     connect(tab, SIGNAL(titleChanged(QString)), this, SLOT(tabTitleChanged(QString)));
 
     connect(tab, SIGNAL(loadStarted()), this, SLOT(tabLoadStarted()));
@@ -171,8 +176,8 @@ void TabWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *hist
         break;
 
     case Rekonq::NewWindow:
-        // TODO
-//         emit loadUrlInNewWindow(url);
+    case Rekonq::NewPrivateWindow:
+        rApp->loadUrl(url, type);
         return;
 
     case Rekonq::CurrentTab:
@@ -499,4 +504,10 @@ void TabWindow::setFullScreen(bool makeFullScreen)
     tabBar()->setVisible(!makeFullScreen);
     _addTabButton->setVisible(!makeFullScreen);
     KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
+}
+
+
+bool TabWindow::isPrivateBrowsingWindowMode()
+{
+    return _isPrivateBrowsing;
 }

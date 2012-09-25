@@ -368,6 +368,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
+        a = new KAction(KIcon("view-media-artist"), i18n("Open in Private &Window"), this);
+        a->setData(m_contextMenuHitResult.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInPrivateWindow()));
+        menu.addAction(a);
+
         menu.addSeparator();
 
         // Don't show dots if we are NOT going to ask for download path
@@ -741,6 +746,13 @@ void WebView::openLinkInNewTab()
     emit loadUrl(url, Rekonq::NewTab);
 }
 
+void WebView::openLinkInPrivateWindow()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl url(a->data().toUrl());
+
+    emit loadUrl(url, Rekonq::NewPrivateWindow);
+}
 
 void WebView::bookmarkLink()
 {

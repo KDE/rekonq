@@ -81,6 +81,7 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     , m_popup(new QLabel(this))
     , m_hidePopupTimer(new QTimer(this))
     , _ac(new KActionCollection(this))
+    , _isPrivateBrowsing(false)
 {
     if (pg)
     {
@@ -248,10 +249,8 @@ void WebWindow::setupActions()
     actionCollection()->addAction(QL1S("page_source"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(viewPageSource()));
 
-    a = new KAction(KIcon("view-media-artist"), i18n("Private &Browsing"), this);
-    a->setCheckable(true);
-// FIXME    connect(a, SIGNAL(triggered(bool)), this, SLOT(setPrivateBrowsingMode(bool)));
-    a->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_P);
+    a = new KAction(KIcon("view-media-artist"), i18n("New Private Window"), this);
+    connect(a, SIGNAL(triggered(bool)), rApp, SLOT(newPrivateBrowsingWindow()));
     actionCollection()->addAction(QL1S("private_browsing"), a);
 
     a = new KAction(KIcon("edit-clear"), i18n("Clear Private Data..."), this);
@@ -844,4 +843,17 @@ void WebWindow::toggleBookmarksToolbar(bool b)
     QAction *a = actionByName(QL1S("show_bookmarks_toolbar"));
     a->setChecked(b);
     rApp->bookmarksToolbarToggled(b);
+}
+
+
+bool WebWindow::isPrivateBrowsing()
+{
+    return _isPrivateBrowsing;
+}
+
+
+void WebWindow::setPrivateBrowsing(bool on)
+{
+    _tab->page()->settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, on);
+    _isPrivateBrowsing = on;
 }
