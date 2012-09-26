@@ -208,7 +208,7 @@ void SessionManager::restoreCrashedSession()
 
         MainView *mv = (winNo == 0) ? rApp->mainWindow()->mainView() : rApp->newMainWindow()->mainView();
 
-        bool useCurrentTab = (mv->currentWebTab()->url().protocol() == QL1S("about"));
+        bool useCurrentTab = (!mv->currentWebTab()->url().isValid() || (mv->currentWebTab()->url().protocol() == QL1S("about")));
         int currentTab = loadViewTabs(mv, window, useCurrentTab);
 
         mv->setCurrentIndex(currentTab);
