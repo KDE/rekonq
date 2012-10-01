@@ -95,7 +95,10 @@ TabPreviewPopup::~TabPreviewPopup()
 
 QSize TabPreviewPopup::thumbnailSize() const
 {
-    return m_thumbnail->pixmap()->size();
+    if (m_thumbnail->pixmap())
+        return m_thumbnail->pixmap()->size();
+
+    return QSize();
 }
 
 
