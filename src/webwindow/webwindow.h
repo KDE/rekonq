@@ -71,7 +71,6 @@ public:
 
     KUrl url() const;
     QString title() const;
-    QIcon icon() const;
 
     UrlBar *urlBar();
     WebTab *view();

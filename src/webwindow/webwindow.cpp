@@ -613,12 +613,6 @@ QString WebWindow::title() const
 }
 
 
-QIcon WebWindow::icon() const
-{
-    return _tab->view()->icon();
-}
-
-
 UrlBar *WebWindow::urlBar()
 {
     return _bar;

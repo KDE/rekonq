@@ -36,6 +36,8 @@
 
 #include "tabhistory.h"
 
+#include "iconmanager.h"
+
 // KDE Includes
 #include <KAction>
 #include <KApplication>
@@ -305,6 +307,8 @@ void TabWindow::tabLoadStarted()
         }
         tabBar()->setTabButton(index, QTabBar::LeftSide, 0);
         tabBar()->setTabButton(index, QTabBar::LeftSide, label);
+
+        tabBar()->setTabText(index, i18n("Loading..."));
     }
 }
 
@@ -328,7 +332,9 @@ void TabWindow::tabLoadFinished(bool ok)
         delete movie;
 
         label->setMovie(0);
-        label->setPixmap(tab->icon().pixmap(16, 16));
+
+        KIcon ic = IconManager::self()->iconForUrl(tab->url());
+        label->setPixmap(ic.pixmap(16, 16));
     }
 }
 

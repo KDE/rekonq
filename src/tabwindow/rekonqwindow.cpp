@@ -125,9 +125,6 @@ RekonqWindow::RekonqWindow(QWidget* parent)
     ktwsm->dummyInit();
     sWindowList->append(this);
 
-    // a decent minimum size...
-    setMinimumSize(100,40);
-    
     QString geometry;
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs("kde");
     if (args && args->isSet("geometry"))
@@ -157,6 +154,13 @@ RekonqWindow::~RekonqWindow()
     saveWindowSize(cg);
 }
 
+
+QSize RekonqWindow::sizeHint() const
+{
+    QRect desktopRect = QApplication::desktop()->screenGeometry();
+    QSize size = desktopRect.size() * 0.8;
+    return size;
+}
 
 QList<RekonqWindow*> RekonqWindow::windowList()
 {

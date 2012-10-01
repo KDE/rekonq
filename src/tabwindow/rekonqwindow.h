@@ -60,6 +60,8 @@ public:
 
     virtual ~RekonqWindow();
 
+    QSize sizeHint() const;
+
     /**
      * List of members of RekonqWindow class.
      */
