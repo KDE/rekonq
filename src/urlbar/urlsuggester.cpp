@@ -73,7 +73,7 @@ QRegExp UrlSuggester::_searchEnginesRegexp;
 UrlSuggester::UrlSuggester(const QString &typedUrl)
     : QObject()
     , _typedString(typedUrl.trimmed())
-    , _webSearchFirst(false)
+    , _isKDEShortUrl(false)
 {
     if (_browseRegexp.isEmpty())
     {
@@ -132,13 +132,14 @@ UrlSuggestionList UrlSuggester::orderedSearchItems()
         aboutUrlList
                 << QL1S("about:home")
                 << QL1S("about:favorites")
-                << QL1S("about:closedTabs")
+//                 << QL1S("about:closedTabs")
                 << QL1S("about:bookmarks")
                 << QL1S("about:history")
                 << QL1S("about:downloads")
-                << QL1S("about:tabs")
-                << QL1S("about:info");
-
+//                 << QL1S("about:tabs")
+//                 << QL1S("about:info")
+                ;
+                
         QStringList aboutUrlResults = aboutUrlList.filter(_typedString, Qt::CaseInsensitive);
 
         UrlSuggestionList list;
@@ -182,13 +183,21 @@ UrlSuggestionList UrlSuggester::orderLists()
     // Browse & Search results
     UrlSuggestionList browseSearch;
     QString lowerTypedString = _typedString.toLower();
-    if (_webSearchFirst || _browseRegexp.indexIn(lowerTypedString) != -1)
+
+    if (_isKDEShortUrl)
     {
-        _webSearchFirst = true;
+        // KDE short url case (typed gg:kde): we need just the web search
+        browseSearch << _webSearches;
+    }
+    else if (_browseRegexp.indexIn(lowerTypedString) != -1)
+    {
+        // browse url case (typed kde.org): show resolved url before
+        browseSearch << _qurlFromUserInput;
         browseSearch << _webSearches;
     }
     else
     {
+        // NON url case: propose web search before
         browseSearch << _webSearches;
         browseSearch << _qurlFromUserInput;
     }
@@ -255,9 +264,6 @@ UrlSuggestionList UrlSuggester::orderLists()
 
     // and finally, results
     UrlSuggestionList list;
-
-//     if (_webSearchFirst)
-//         list << _qurlFromUserInput;
     list += relevant + browseSearch + _history + _bookmarks;
     return list;
 }
@@ -298,18 +304,21 @@ void UrlSuggester::computeWebSearches()
     KService::Ptr engine = SearchEngine::fromString(_typedString);
     if (engine)
     {
-        _webSearchFirst = true;
         query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
+        _isKDEShortUrl = true;
     }
     else
     {
         engine = SearchEngine::defaultEngine();
     }
-
-    UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(engine, query), query, engine->name());
-    UrlSuggestionList list;
-    list << item;
-    _webSearches = list;
+    
+    if (engine)
+    {
+        UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(engine, query), query, engine->name());
+        UrlSuggestionList list;
+        list << item;
+        _webSearches = list;
+    }
 }
 
 

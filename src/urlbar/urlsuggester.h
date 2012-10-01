@@ -146,7 +146,7 @@ private:
     UrlSuggestionList _bookmarks;
     UrlSuggestionList _suggestions;
 
-    bool _webSearchFirst;
+    bool _isKDEShortUrl;
 
     static QRegExp _browseRegexp;
     static QRegExp _searchEnginesRegexp;
