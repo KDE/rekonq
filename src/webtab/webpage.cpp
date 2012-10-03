@@ -69,6 +69,8 @@
 
 #include <kparts/browseropenorsavequestion.h>
 
+#include <solid/networking.h>
+
 // Qt Includes
 #include <QTextDocument>
 #include <QFileInfo>
@@ -313,6 +315,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         }
         removeSessionMetaData(QL1S("no-cache"));
     }
+    
     return KWebPage::acceptNavigationRequest(frame, request, type);
 }
 
@@ -583,7 +586,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     bool isOpened = file.open(QIODevice::ReadOnly);
     if (!isOpened)
     {
-        return QString("Couldn't open the rekonqinfo.html file");
+        return QString("Couldn't open the rekonqinfo.html file! This probably means you installed rekonq in a bad way.");
     }
 
     // NOTE:
@@ -597,33 +600,39 @@ QString WebPage::errorPage(QNetworkReply *reply)
     // 2. title
     QString title = i18n("There was a problem while loading the page");
 
-    // 3. main content
     QString msg;
 
-    msg += i18n("<h1>Oops! Rekonq cannot load <em>%1</em></h1>", urlString);
+    // test to see if networking is enabled on the system
+    if(Solid::Networking::status() != Solid::Networking::Connected)
+    {
+        msg += QL1S("<h2>") + i18n("Network is NOT available") + QL1S("</h2>");
+
+        QString faceIconPath = QString("file://") + KIconLoader::global()->iconPath("face-surprise" , -KIconLoader::SizeHuge, false);
+        msg += QL1S("<table>");
+        msg += QL1S("<tr><td width=\"100px\">");
+        msg += QL1S("<img style=\"margin: 0 auto;\" src=\"") + faceIconPath + QL1S("\" />");
+        msg += QL1S("</td><td>");
+
+        msg += QL1S("<p>");
+
+        msg += i18n("Maybe you are having problems with your network settings.<br />Try checking your <a href=\"%1\">network connections</a>, your <a href=\"%2\">proxy settings</a> and your <a href=\"%3\">firewall</a>.<br /><br />Then <a href=\"%4\">try again</a>.<br />",QL1S("about:settings/network"), QL1S("about:settings/proxy"),QL1S("about:settings/firewall"), urlString );
+        
+        msg += QL1S("</p>");
+
+        msg += QL1S("</td></tr></table>");
+
+        // done. Replace variables and show it
+        QString html = QL1S(file.readAll());
+
+        html.replace(QL1S("$DEFAULT_PATH"), dataPath);
+        html.replace(QL1S("$PAGE_TITLE"), title);
+        html.replace(QL1S("$MAIN_CONTENT"), msg);
+
+        return html;
+    }
 
 
-    msg += i18n("<h2>Wrongly typed?</h2>");
-
-    msg += QL1S("<table>");
-    msg += QL1S("<tr><td>");
-
-    msg += QL1S("<p>");
-
-    msg += i18n("We tried to load url: %1.<br />", urlString);
-    msg += i18n("Check your address for errors like <em>ww.kde.org</em> instead of <em>www.kde.org</em>.<br />");
-    msg += i18n("If you spelled right, just try to <a href=\"%1\">reload it</a>.<br />", urlString);
-    msg += i18n("Otherwise, just be careful the next time around.");
-
-    msg += QL1S("</p>");
-
-    QString laughIconPath = QString("file://") + KIconLoader::global()->iconPath("face-laugh" , -KIconLoader::SizeHuge, false);
-    msg += QL1S("</td><td>");
-    msg += QL1S("<img src=\"") + laughIconPath + QL1S("\" />");
-    msg += QL1S("</td></tr></table>");
-
-
-    msg += i18n("<h2>Network problems?</h2>");
+    msg += QL1S("<h2>") + i18n("Oops! Rekonq cannot load <em>%1</em>", urlString) + QL1S("</h1>");
 
     QString faceIconPath = QString("file://") + KIconLoader::global()->iconPath("face-surprise" , -KIconLoader::SizeHuge, false);
     msg += QL1S("<table>");
@@ -631,32 +640,15 @@ QString WebPage::errorPage(QNetworkReply *reply)
     msg += QL1S("<img src=\"") + faceIconPath + QL1S("\" />");
     msg += QL1S("</td><td>");
 
-    msg += QL1S("<p>");
-
-    msg += i18n("Maybe you are having problems with your network.<br />");
-    msg += i18n("Try checking your <a href=\"%1\">network connections</a>", QL1S("about:settings/network"));
-    msg += i18n(", your <a href=\"%1\">proxy settings</a> ", QL1S("about:settings/proxy"));
-    msg += i18n("and your <a href=\"%1\">firewall</a>.<br />", QL1S("about:settings/firewall"));
-    msg += i18n("Then try again.<br />");
-
-    msg += QL1S("</p>");
-
-    msg += QL1S("</td></tr></table>");
-
-
-    msg += i18n("<h2>Suggestions</h2>");
-
-    msg += QL1S("<table>");
-    msg += QL1S("<tr><td>");
-
-    msg += QL1S("<p>");
+    msg += QL1S("<p><em>") + reply->errorString() + QL1S("</em></p>");
 
     // Default SearchEngine
     KService::Ptr defaultEngine = SearchEngine::defaultEngine();
 
+    msg += QL1S("<p>");
     if (defaultEngine)
     {
-        msg += i18n("Consult your default search engine about:");
+        msg += i18n("Ask your default search engine about:");
         msg += QL1S(" <a href=\"") + SearchEngine::buildQuery(defaultEngine, urlString) + QL1S("\">");
         msg += i18n("search with %1", defaultEngine->name());
         msg += QL1S("</a>!<br />");
@@ -665,16 +657,14 @@ QString WebPage::errorPage(QNetworkReply *reply)
     {
         msg += i18n("You don't have a default search engine set. We won't suggest you one.");
     }
-
-    msg += i18n("At least, you can consult a cached snapshot of the site: <br />");
-    msg += i18n("Try checking the <a href=\"%1\">Wayback Machine</a>", QL1S("http://wayback.archive.org/web/*/") + urlString);
-    msg += i18n(" or the <a href=\"%1\">Google Cache</a>.", QL1S("http://google.com/search?q=cache:") + urlString);
-
     msg += QL1S("</p>");
 
-    QString winkIconPath = QString("file://") + KIconLoader::global()->iconPath("face-wink" , -KIconLoader::SizeHuge, false);
-    msg += QL1S("</td><td>");
-    msg += QL1S("<img src=\"") + winkIconPath + QL1S("\" />");
+    msg += QL1S("<p>");
+    msg += i18n("Consult a cached snapshot of the site: ");
+    msg += i18n("try checking the <a href=\"%1\">Wayback Machine</a>", QL1S("http://wayback.archive.org/web/*/") + urlString);
+    msg += i18n(" or the <a href=\"%1\">Google Cache</a>.", QL1S("http://google.com/search?q=cache:") + urlString);
+    msg += QL1S("</p>");
+
     msg += QL1S("</td></tr></table>");
 
     // done. Replace variables and show it

@@ -227,6 +227,7 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             ${KDE4_KDEUI_LIBS}
                             ${KDE4_KIO_LIBS}
                             ${KDE4_KPARTS_LIBS}
+                            ${KDE4_SOLID_LIBS}
 )
 
 # Nepomuk optional target link libraries
