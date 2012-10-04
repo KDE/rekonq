@@ -33,6 +33,8 @@
 #include "tabpreviewpopup.h"
 #include "webwindow.h"
 
+#include "iconmanager.h"
+
 #include <KAcceleratorManager>
 #include <KAction>
 #include <KColorScheme>
@@ -85,21 +87,27 @@ TabBar::TabBar(QWidget *parent)
 
 QSize TabBar::tabSizeHint(int index) const
 {
-    Q_UNUSED(index);
-
     QWidget* p = qobject_cast<QWidget *>(parent());
 
-    int tabWidgetWidth = p->size().width();
-    int w = c_baseTabWidth;
-    if (w * count() > tabWidgetWidth)
+    int w;
+    if (tabData(index).toBool())
     {
-        w = tabWidgetWidth / count();
-        if (w < c_minTabWidth)
+        w = 36;
+    }
+    else
+    {
+        int tabWidgetWidth = p->size().width();
+        w = c_baseTabWidth;
+        if (w * count() > tabWidgetWidth)
         {
-            w = c_minTabWidth;
+            w = tabWidgetWidth / count();
+            if (w < c_minTabWidth)
+            {
+                w = c_minTabWidth;
+            }
         }
     }
-
+    
     int h = size().height();
 
     // this because it may happen sometimes (eg: exiting fullscreen)
@@ -210,6 +218,20 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
         menu.addAction(a);
     }
 
+    if (tabData(tab).toBool())
+    {
+        a = new KAction(i18n("Unpin Tab"), this);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(unpinTab()));
+        a->setData(tab);
+        menu.addAction(a);
+    }
+    else
+    {
+        a = new KAction(i18n("Pin Tab"), this);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(pinTab()));
+        a->setData(tab);
+        menu.addAction(a);
+    }
     menu.addSeparator();    // ----------------------------------------------------------------
 
     a = new KAction(KIcon("tab-close"), i18n("&Close"), this);
@@ -456,5 +478,68 @@ void TabBar::hideTabPreview()
         m_previewPopup.data()->hide();
     }
     m_currentTabPreviewIndex = -1;
+}
 
+
+void TabBar::pinTab()
+{
+    KAction *a = qobject_cast<KAction *>(sender());
+    if (!a)
+        return;
+    
+    int index = a->data().toInt();
+
+    // Find the available index to move
+    int availableIndex = 0;
+    for (int i = 0; i < count(); i++)
+    {
+        if (!tabData(i).toBool())
+        {
+            availableIndex = i;
+            break;
+        }
+    }
+
+    TabWindow *w = qobject_cast<TabWindow *>(parent());
+    w->moveTab(index, availableIndex);
+    index = availableIndex;
+    
+    // set this tab data true to know this has been pinned
+    setTabData(index, true);
+
+    tabButton(index, QTabBar::RightSide)->hide();
+    setTabText(index, QString());
+    setTabIcon(index, IconManager::self()->iconForUrl(w->webWindow(index)->url()));
+}
+
+
+void TabBar::unpinTab()
+{
+    KAction *a = qobject_cast<KAction *>(sender());
+    if (!a)
+        return;
+
+    int index = a->data().toInt();
+
+    // set the tab data false to forget this pinned tab
+    setTabData(index, false);
+
+    // Find the available index to move
+    int availableIndex = 0;
+    for (int i = 1; i < count(); i++)
+    {
+        if (!tabData(i).toBool())
+        {
+            availableIndex = i - 1;
+            break;
+        }
+    }
+
+    TabWindow *w = qobject_cast<TabWindow *>(parent());
+    w->moveTab(index, availableIndex);
+    index = availableIndex;
+    
+    tabButton(index, QTabBar::RightSide)->show();
+    setTabText(index, w->webWindow(index)->title());
+    setTabIcon(index, IconManager::self()->iconForUrl(w->webWindow(index)->url()));
 }

@@ -81,6 +81,9 @@ private Q_SLOTS:
     void detachTab();
     void reopenLastClosedTab();
 
+    void pinTab();
+    void unpinTab();
+    
     void contextMenu(int, const QPoint &);
     void emptyAreaContextMenu(const QPoint &);
 
