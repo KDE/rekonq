@@ -42,6 +42,7 @@
 #include <KMenu>
 #include <KUrl>
 
+#include <QLabel>
 #include <QPropertyAnimation>
 #include <QSignalMapper>
 #include <QStyleOptionFrameV3>
@@ -509,7 +510,18 @@ void TabBar::pinTab()
 
     tabButton(index, QTabBar::RightSide)->hide();
     setTabText(index, QString());
-    setTabIcon(index, IconManager::self()->iconForUrl(w->webWindow(index)->url()));
+
+    // workaround: "fix" the icon
+    QLabel *label = qobject_cast<QLabel* >(tabButton(index, QTabBar::LeftSide));
+    if (!label)
+        label = new QLabel(this);
+    
+    setTabButton(index, QTabBar::LeftSide, 0);
+    setTabButton(index, QTabBar::LeftSide, label);
+
+    KIcon ic = IconManager::self()->iconForUrl(w->webWindow(index)->url());
+    label->setPixmap(ic.pixmap(16, 16));
+
 }
 
 
@@ -541,5 +553,15 @@ void TabBar::unpinTab()
     
     tabButton(index, QTabBar::RightSide)->show();
     setTabText(index, w->webWindow(index)->title());
-    setTabIcon(index, IconManager::self()->iconForUrl(w->webWindow(index)->url()));
+
+    // workaround: "fix" the icon
+    QLabel *label = qobject_cast<QLabel* >(tabButton(index, QTabBar::LeftSide));
+    if (!label)
+        label = new QLabel(this);
+
+    setTabButton(index, QTabBar::LeftSide, 0);
+    setTabButton(index, QTabBar::LeftSide, label);
+
+    KIcon ic = IconManager::self()->iconForUrl(w->webWindow(index)->url());
+    label->setPixmap(ic.pixmap(16, 16));
 }

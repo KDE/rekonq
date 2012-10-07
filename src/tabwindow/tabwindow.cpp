@@ -262,7 +262,7 @@ void TabWindow::tabTitleChanged(const QString &title)
     tabTitle.replace('&', "&&");
 
     int index = indexOf(tab);
-    if (-1 != index)
+    if (-1 != index && !tabBar()->tabData(index).toBool())
     {
         setTabText(index, tabTitle);
     }
@@ -305,10 +305,12 @@ void TabWindow::tabLoadStarted()
             label->setMovie(movie);
             movie->start();
         }
+
         tabBar()->setTabButton(index, QTabBar::LeftSide, 0);
         tabBar()->setTabButton(index, QTabBar::LeftSide, label);
 
-        tabBar()->setTabText(index, i18n("Loading..."));
+        if (!tabBar()->tabData(index).toBool())
+            tabBar()->setTabText(index, i18n("Loading..."));
     }
 }
 
@@ -323,19 +325,22 @@ void TabWindow::tabLoadFinished(bool ok)
 
     int index = indexOf(tab);
 
-    if (-1 != index)
-    {
-        QLabel *label = qobject_cast<QLabel* >(tabBar()->tabButton(index, QTabBar::LeftSide));
+    if (-1 == index)
+        return;
 
-        QMovie *movie = label->movie();
-        movie->stop();
-        delete movie;
+    QLabel *label = qobject_cast<QLabel* >(tabBar()->tabButton(index, QTabBar::LeftSide));
 
-        label->setMovie(0);
+    QMovie *movie = label->movie();
+    movie->stop();
+    delete movie;
 
-        KIcon ic = IconManager::self()->iconForUrl(tab->url());
-        label->setPixmap(ic.pixmap(16, 16));
-    }
+    label->setMovie(0);
+
+    KIcon ic = IconManager::self()->iconForUrl(tab->url());
+    label->setPixmap(ic.pixmap(16, 16));
+
+    if (!tabBar()->tabData(index).toBool())
+        setTabText(index, tab->title());
 }
 
 

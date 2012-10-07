@@ -34,7 +34,10 @@
 #include "application.h"
 #include "autosaver.h"
 #include "tabhistory.h"
+
 #include "tabwindow.h"
+#include "tabbar.h"
+
 #include "webwindow.h"
 #include "webpage.h"
 
@@ -96,6 +99,11 @@ int loadTabs(TabWindow *tw, QDomElement & window, bool useFirstTab)
         else
         {
             tw->loadUrl(u, Rekonq::NewTab, &tabHistory);
+        }
+
+        if (tab.hasAttribute("pinned"))
+        {
+            tw->tabBar()->setTabData(tabNo, true);
         }
     }
 
@@ -183,6 +191,10 @@ void SessionManager::save()
             if (w.data()->currentIndex() == tabNo)
             {
                 tab.setAttribute("currentTab", 1);
+            }
+            if (w.data()->tabBar()->tabData(tabNo).toBool()) // pinned tab info
+            {
+                tab.setAttribute("pinned", 1);
             }
             QByteArray history;
             QDataStream historyStream(&history, QIODevice::ReadWrite);
