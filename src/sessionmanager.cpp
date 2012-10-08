@@ -74,36 +74,43 @@ bool readSessionDocument(QDomDocument & document, const QString & sessionFilePat
 }
 
 
-int loadTabs(TabWindow *tw, QDomElement & window, bool useFirstTab)
+int loadTabs(TabWindow *tw, QDomElement & window, bool useFirstTab, bool justThePinnedOnes = false)
 {
     int currentTab = 0;
 
     for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
     {
         QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
-        if (tab.hasAttribute("currentTab"))
-            currentTab = tabNo;
+        bool tabIsPinned = tab.hasAttribute("pinned");
+        kDebug() << "Tab # " << tabNo <<  " is pinned? " << tabIsPinned;
 
-        KUrl u = KUrl(tab.attribute("url"));
-
-        TabHistory tabHistory;
-        tabHistory.title = tab.attribute("title");
-        tabHistory.url = tab.attribute("url");
-        QDomCDATASection historySection = tab.firstChild().toCDATASection();
-        tabHistory.history = QByteArray::fromBase64(historySection.data().toAscii());
-
-        if (tabNo == 0 && useFirstTab)
+        if (!justThePinnedOnes || tabIsPinned)
         {
-            tw->loadUrl(u, Rekonq::CurrentTab, &tabHistory);
-        }
-        else
-        {
-            tw->loadUrl(u, Rekonq::NewTab, &tabHistory);
-        }
+            if (tab.hasAttribute("currentTab"))
+                currentTab = tabNo;
 
-        if (tab.hasAttribute("pinned"))
-        {
-            tw->tabBar()->setTabData(tabNo, true);
+            KUrl u = KUrl(tab.attribute("url"));
+
+            TabHistory tabHistory;
+            tabHistory.title = tab.attribute("title");
+            tabHistory.url = tab.attribute("url");
+            QDomCDATASection historySection = tab.firstChild().toCDATASection();
+            tabHistory.history = QByteArray::fromBase64(historySection.data().toAscii());
+
+            if (tabNo == 0 && useFirstTab)
+            {
+                tw->loadUrl(u, Rekonq::CurrentTab, &tabHistory);
+            }
+            else
+            {
+                tw->loadUrl(u, Rekonq::NewTab, &tabHistory);
+            }
+
+            if (tabIsPinned)
+            {
+                tw->tabBar()->setTabData(tabNo, true);
+                tw->tabBar()->tabButton(tabNo, QTabBar::RightSide)->hide(); // NOTE: this is not good here: where is its proper place?
+            }
         }
     }
 
@@ -230,12 +237,36 @@ bool SessionManager::restoreSessionFromScratch()
 
         TabWindow *tw = rApp->newTabWindow();
 
-        int currentTab = loadTabs(tw, window, false);
+        int currentTab = loadTabs(tw, window, true, false);
 
         tw->setCurrentIndex(currentTab);
     }
 
     return true;
+}
+
+
+bool SessionManager::restoreJustThePinnedTabs()
+{
+    QDomDocument document("session");
+
+    if (!readSessionDocument(document, m_sessionFilePath))
+        return false;
+
+    bool done = false;
+    for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
+    {
+        done = true;
+        QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
+
+        TabWindow *tw = rApp->newTabWindow();
+
+        int currentTab = loadTabs(tw, window, true, true);
+
+        tw->setCurrentIndex(currentTab);
+    }
+
+    return done;
 }
 
 
@@ -262,30 +293,6 @@ void SessionManager::restoreCrashedSession()
     }
 
     setSessionManagementEnabled(true);
-}
-
-
-int SessionManager::restoreSavedSession()
-{
-    QDomDocument document("session");
-
-    if (!readSessionDocument(document, m_sessionFilePath))
-        return 0;
-
-    unsigned int winNo;
-
-    for (winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
-    {
-        QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
-
-        TabWindow *tw = rApp->newTabWindow();
-
-        int currentTab = loadTabs(tw, window, true);
-
-        tw->setCurrentIndex(currentTab);
-    }
-
-    return winNo;
 }
 
 

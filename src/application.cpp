@@ -135,9 +135,19 @@ int Application::newInstance()
             }
         }
 
-        if (isFirstLoad && (ReKonfig::startupBehaviour() == 2) && SessionManager::self()->restoreSessionFromScratch())
+        if (isFirstLoad)
         {
-            isFirstLoad = false;
+            bool restoreOk = false;
+            if (ReKonfig::startupBehaviour() == 2)
+            {
+                restoreOk = SessionManager::self()->restoreSessionFromScratch();
+            }
+            else
+            {
+                restoreOk = SessionManager::self()->restoreJustThePinnedTabs();
+            }
+            
+            isFirstLoad = restoreOk;
         }
 
         // first argument: 99% of the time we have just that...
@@ -183,13 +193,22 @@ int Application::newInstance()
             // if NOT is Session restored...
             if (!isSessionRestored())
             {
+                bool restoreOk = false;
                 switch (ReKonfig::startupBehaviour())
                 {
                 case 0: // open home page
-                    loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
+                    restoreOk = SessionManager::self()->restoreJustThePinnedTabs();
+                    if (restoreOk)
+                        loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewTab);
+                    else
+                        loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
                     break;
                 case 1: // open new tab page
-                    loadUrl(KUrl("about:home"), Rekonq::NewWindow);
+                    restoreOk = SessionManager::self()->restoreJustThePinnedTabs();
+                    if (restoreOk)
+                        loadUrl(KUrl("about:home"), Rekonq::NewTab);
+                    else
+                        loadUrl(KUrl("about:home"), Rekonq::NewWindow);
                     break;
                 case 2: // restore session
                     if (SessionManager::self()->restoreSessionFromScratch())

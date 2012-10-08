@@ -67,10 +67,6 @@ public:
 
     QList<TabHistory> closedSites();
 
-    // This method restores session
-    // while turning back from Private mode
-    int restoreSavedSession();
-
     // This method restores a single TabWindow
     bool restoreTabWindow(TabWindow * window);
 
@@ -82,8 +78,13 @@ public Q_SLOTS:
     // on restart when restore at startup is chosen
     bool restoreSessionFromScratch();
 
-private Q_SLOTS:
+    // This method restores (eventually) the tabs present
+    // if there are NO pinned tabs to restore, it returns FALSE...
+    bool restoreJustThePinnedTabs();
+
     void saveSession();
+
+private Q_SLOTS:
     void save();
 
     // This method restores session

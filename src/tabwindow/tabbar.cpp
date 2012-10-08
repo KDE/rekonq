@@ -34,6 +34,7 @@
 #include "webwindow.h"
 
 #include "iconmanager.h"
+#include "sessionmanager.h"
 
 #include <KAcceleratorManager>
 #include <KAction>
@@ -511,7 +512,7 @@ void TabBar::pinTab()
     tabButton(index, QTabBar::RightSide)->hide();
     setTabText(index, QString());
 
-    // workaround: "fix" the icon
+    // workaround: "fix" the icon (or at least, try to...)
     QLabel *label = qobject_cast<QLabel* >(tabButton(index, QTabBar::LeftSide));
     if (!label)
         label = new QLabel(this);
@@ -522,6 +523,7 @@ void TabBar::pinTab()
     KIcon ic = IconManager::self()->iconForUrl(w->webWindow(index)->url());
     label->setPixmap(ic.pixmap(16, 16));
 
+    SessionManager::self()->saveSession();
 }
 
 
@@ -554,7 +556,7 @@ void TabBar::unpinTab()
     tabButton(index, QTabBar::RightSide)->show();
     setTabText(index, w->webWindow(index)->title());
 
-    // workaround: "fix" the icon
+    // workaround: "fix" the icon (or at least, try to...)
     QLabel *label = qobject_cast<QLabel* >(tabButton(index, QTabBar::LeftSide));
     if (!label)
         label = new QLabel(this);
@@ -564,4 +566,6 @@ void TabBar::unpinTab()
 
     KIcon ic = IconManager::self()->iconForUrl(w->webWindow(index)->url());
     label->setPixmap(ic.pixmap(16, 16));
+
+    SessionManager::self()->saveSession();
 }

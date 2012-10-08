@@ -331,9 +331,12 @@ void TabWindow::tabLoadFinished(bool ok)
     QLabel *label = qobject_cast<QLabel* >(tabBar()->tabButton(index, QTabBar::LeftSide));
 
     QMovie *movie = label->movie();
-    movie->stop();
-    delete movie;
-
+    if (movie)
+    {
+        movie->stop();
+        delete movie;
+    }
+    
     label->setMovie(0);
 
     KIcon ic = IconManager::self()->iconForUrl(tab->url());
