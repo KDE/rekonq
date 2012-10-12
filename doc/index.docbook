@@ -31,8 +31,8 @@
   <!ENTITY % English "INCLUDE">
 ]>
 
-<book lang="&language;">
-<bookinfo>
+<book id="rekonq" lang="&language;">
+<book id="rekonq"info>
 <title>The &rekonq; Handbook</title>
 <authorgroup>
 <author>&Andrea.Diamantini; &Andrea.Diamantini.mail;</author>
