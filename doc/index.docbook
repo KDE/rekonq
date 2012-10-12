@@ -32,7 +32,7 @@
 ]>
 
 <book id="rekonq" lang="&language;">
-<book id="rekonq"info>
+<bookinfo>
 <title>The &rekonq; Handbook</title>
 <authorgroup>
 <author>&Andrea.Diamantini; &Andrea.Diamantini.mail;</author>
