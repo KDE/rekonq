@@ -78,6 +78,9 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     // setting tabbar
     TabBar *tabBar = new TabBar(this);
     setTabBar(tabBar);
+    
+    // sets document mode; this removes the frame around the tabs
+    setDocumentMode(true);
 
     // connecting tabbar signals
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)));
@@ -98,6 +101,7 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     KAction* a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
     _addTabButton->setDefaultAction(a);
     _addTabButton->setAutoRaise(true);
+    _addTabButton->raise();
     _addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     connect(_addTabButton, SIGNAL(triggered(QAction *)), this, SLOT(newCleanTab()));
 
