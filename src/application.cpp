@@ -146,8 +146,8 @@ int Application::newInstance()
             {
                 restoreOk = SessionManager::self()->restoreJustThePinnedTabs();
             }
-            
-            isFirstLoad = restoreOk;
+
+            isFirstLoad = !restoreOk;
         }
 
         // first argument: 99% of the time we have just that...

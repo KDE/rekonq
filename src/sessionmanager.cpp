@@ -82,7 +82,7 @@ int loadTabs(TabWindow *tw, QDomElement & window, bool useFirstTab, bool justThe
     {
         QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
         bool tabIsPinned = tab.hasAttribute("pinned");
-        kDebug() << "Tab # " << tabNo <<  " is pinned? " << tabIsPinned;
+        kDebug() << "Tab #" << tabNo <<  " is pinned? " << tabIsPinned;
 
         if (!justThePinnedOnes || tabIsPinned)
         {
@@ -115,6 +115,20 @@ int loadTabs(TabWindow *tw, QDomElement & window, bool useFirstTab, bool justThe
     }
 
     return currentTab;
+}
+
+
+bool areTherePinnedTabs(QDomElement & window)
+{
+    bool b = false;
+    
+    for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
+    {
+        QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
+        b = tab.hasAttribute("pinned");
+    }
+
+    return b;
 }
 
 
@@ -256,9 +270,12 @@ bool SessionManager::restoreJustThePinnedTabs()
     bool done = false;
     for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
     {
-        done = true;
         QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
 
+        if (!areTherePinnedTabs(window))
+            continue;
+
+        done = true;
         TabWindow *tw = rApp->newTabWindow();
 
         int currentTab = loadTabs(tw, window, true, true);
