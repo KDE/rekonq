@@ -272,15 +272,14 @@ QNetworkReply *AdBlockManager::block(const QNetworkRequest &request, WebPage *pa
             kDebug() << "ADBLOCK: BLACK RULE Matched by string: " << urlString;
 
             QWebElement document = page->mainFrame()->documentElement();
-            QWebElementCollection elements = document.findAll("*");
+            QWebElementCollection elements = document.findAll("[src]");
             Q_FOREACH(QWebElement el, elements)
             {
                 QString srcAttribute = el.attribute("src");
                 if (srcAttribute.isEmpty())
                     continue;
 
-                if (!srcAttribute.startsWith(QL1S("http")))
-                    srcAttribute = host + srcAttribute;
+                srcAttribute = page->mainFrame()->baseUrl().resolved(srcAttribute).toString();
 
                 if (filter.match(request, srcAttribute, srcAttribute.toLower()))
                 {
