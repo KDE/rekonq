@@ -159,8 +159,6 @@ UrlBar::UrlBar(QWidget *parent)
 
     _suggestionTimer->setSingleShot(true);
     connect(_suggestionTimer, SIGNAL(timeout()), this, SLOT(suggest()));
-
-    activateSuggestions(true);
 }
 
 
@@ -200,10 +198,22 @@ void UrlBar::loadRequestedUrl(const KUrl& url, Rekonq::OpenType type)
 }
 
 
-void UrlBar::loadDigitedUrl()
+void UrlBar::loadTypedUrl()
 {
-    KUrl u = UrlResolver::urlFromTextTyped(text());
-    loadRequestedUrl(u);
+    KUrl urlToLoad;
+    if (!_box.isNull())
+    {
+        urlToLoad = _box.data()->activeSuggestion();
+        if (!urlToLoad.isEmpty())
+        {
+            loadRequestedUrl(urlToLoad);
+            return;
+        }
+    }
+
+    // fallback here
+    urlToLoad = UrlResolver::urlFromTextTyped(text());
+    loadRequestedUrl(urlToLoad);    
 }
 
 
@@ -333,8 +343,16 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 
 void UrlBar::focusInEvent(QFocusEvent *event)
 {
+    emit focusIn();
     activateSuggestions(true);
     KLineEdit::focusInEvent(event);
+}
+
+
+void UrlBar::focusOutEvent(QFocusEvent *event)
+{
+    activateSuggestions(false);
+    KLineEdit::focusOutEvent(event);
 }
 
 
@@ -429,7 +447,6 @@ void UrlBar::activateSuggestions(bool b)
         if (_box.isNull())
         {
             _box = new CompletionWidget(this);
-            installEventFilter(_box.data());
             connect(_box.data(), SIGNAL(chosenUrl(KUrl, Rekonq::OpenType)), this, SLOT(loadRequestedUrl(KUrl, Rekonq::OpenType)));
 
             // activate suggestions on edit text
@@ -439,9 +456,13 @@ void UrlBar::activateSuggestions(bool b)
     else
     {
         disconnect(this, SIGNAL(textChanged(QString)), this, SLOT(detectTypedString(QString)));
-        removeEventFilter(_box.data());
+
         if (!_box.isNull())
-            _box.data()->deleteLater();
+        {
+            // This was just deleted later because of a crash in completionwidget...
+            delete _box.data();
+            _box.clear();
+        }
     }
 }
 
@@ -637,15 +658,16 @@ void UrlBar::detectTypedString(const QString &typed)
 
     if (_suggestionTimer->isActive())
         _suggestionTimer->stop();
-    _suggestionTimer->start(50);
+    _suggestionTimer->start(100);
 }
 
 
 void UrlBar::suggest()
 {
-    kDebug() << "SUGGEST ABOUT DIGITED: " << text();
     if (!_box.isNull())
+    {
         _box.data()->suggestUrls(text());
+    }
 }
 
 

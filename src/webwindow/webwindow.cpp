@@ -128,6 +128,8 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(webLoadFinished(bool)));
     connect(_tab->view(), SIGNAL(loadProgress(int)), this, SLOT(webLoadProgress(int)));
 
+    connect(_bar, SIGNAL(focusIn()), this, SLOT(urlbarFocused()));
+    
     // page signals
     connect(page(), SIGNAL(pageCreated(WebPage *)), this, SIGNAL(pageCreated(WebPage *)));
 
@@ -187,10 +189,7 @@ void WebWindow::setupActions()
     m_loadStopReloadAction = new KAction(this);
     actionCollection()->addAction(QL1S("load_stop_reload") , m_loadStopReloadAction);
     m_loadStopReloadAction->setShortcutConfigurable(false);
-
-    m_loadStopReloadAction->setIcon(KIcon("go-jump-locationbar"));
-    m_loadStopReloadAction->setToolTip(i18n("Go"));
-    m_loadStopReloadAction->setText(i18n("Go"));
+    urlbarFocused();
 
     // new window action
     a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
@@ -362,12 +361,28 @@ void WebWindow::webLoadFinished(bool b)
 {
     emit loadFinished(b);
 
-    m_loadStopReloadAction->setIcon(KIcon("view-refresh"));
-    m_loadStopReloadAction->setToolTip(i18n("Reload the current page"));
-    m_loadStopReloadAction->setText(i18n("Reload"));
-    connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), _tab->view(), SLOT(reload()));
-
+    if (_bar->hasFocus())
+    {
+        urlbarFocused();
+    }
+    else
+    {
+        m_loadStopReloadAction->setIcon(KIcon("view-refresh"));
+        m_loadStopReloadAction->setToolTip(i18n("Reload the current page"));
+        m_loadStopReloadAction->setText(i18n("Reload"));
+        connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), _tab->view(), SLOT(reload()));
+    }
+    
     updateHistoryActions();
+}
+
+
+void WebWindow::urlbarFocused()
+{
+    m_loadStopReloadAction->setIcon(KIcon("go-jump-locationbar"));
+    m_loadStopReloadAction->setToolTip(i18n("Go"));
+    m_loadStopReloadAction->setText(i18n("Go"));    
+    connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), _bar, SLOT(loadTypedUrl()));
 }
 
 

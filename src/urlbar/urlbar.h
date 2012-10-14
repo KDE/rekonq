@@ -122,9 +122,9 @@ private Q_SLOTS:
     bool isValidURL(QString url);
 
     /**
-     * Load digited url
+     * Load typed url
      */
-    void loadDigitedUrl();
+    void loadTypedUrl();
 
     void showRSSInfo(const QPoint &);
 
@@ -132,11 +132,15 @@ protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void focusInEvent(QFocusEvent *event);
+    void focusOutEvent(QFocusEvent *event);
     void dropEvent(QDropEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *);
     void contextMenuEvent(QContextMenuEvent *event);
     void resizeEvent(QResizeEvent *);
 
+Q_SIGNALS:
+    void focusIn();
+    
 private:
     /**
      * Updates right icon position, given its number in the right icons list

@@ -97,6 +97,8 @@ private Q_SLOTS:
     void webLoadStarted();
     void webLoadFinished(bool);
 
+    void urlbarFocused();
+
     // history related
     void aboutToShowBackMenu();
     void aboutToShowForwardMenu();

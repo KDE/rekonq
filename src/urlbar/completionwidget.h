@@ -56,6 +56,8 @@ public:
 
     void suggestUrls(const QString &text);
 
+    KUrl activeSuggestion();
+    
 private Q_SLOTS:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
     void updateSuggestionList(const UrlSuggestionList &list, const QString& text);

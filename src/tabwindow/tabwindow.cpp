@@ -381,8 +381,7 @@ void TabWindow::closeTab(int index, bool del)
     if (count() == 1)
     {
         kDebug() << "CANNOT CLOSE WINDOW FROM HERE...";
-        QUrl u = QUrl::fromUserInput("/DATI/WEBPAGES/HomePage/index.htm");
-        currentWebWindow()->load(u);
+        currentWebWindow()->load(KUrl("about:home"));
         return;
     }
 

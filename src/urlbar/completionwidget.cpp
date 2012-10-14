@@ -261,63 +261,68 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
 
             case Qt::Key_Enter:
             case Qt::Key_Return:
+            {
                 w = qobject_cast<UrlBar *>(parent());
-                if (kev->modifiers() == Qt::AltModifier)
-                {
-                    if (kev->key() == Qt::Key_Return || kev->key() == Qt::Key_Enter)
-                    {
-                        emit chosenUrl(w->text(), Rekonq::NewFocusedTab);
-                    }
-                }
 
-                if (!w->text().startsWith(QL1S("http://"), Qt::CaseInsensitive))
-                {
-                    QString append;
-                    if (kev->modifiers() == Qt::ControlModifier)
-                    {
-                        append = QL1S(".com");
-                    }
-                    else if (kev->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
-                    {
-                        append = QL1S(".org");
-                    }
-                    else if (kev->modifiers() == Qt::ShiftModifier)
-                    {
-                        append = QL1S(".net");
-                    }
+//                 if (!w->text().startsWith(QL1S("http://"), Qt::CaseInsensitive))
+//                 {
+//                     QString append;
+//                     if (kev->modifiers() == Qt::ControlModifier)
+//                     {
+//                         append = QL1S(".com");
+//                     }
+//                     else if (kev->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
+//                     {
+//                         append = QL1S(".org");
+//                     }
+//                     else if (kev->modifiers() == Qt::ShiftModifier)
+//                     {
+//                         append = QL1S(".net");
+//                     }
+// 
+//                     if (!append.isEmpty())
+//                     {
+//                         QUrl url(QL1S("http://") + w->text());
+//                         QString host = url.host();
+//                         if (!host.endsWith(append, Qt::CaseInsensitive))
+//                         {
+//                             host += append;
+//                             url.setHost(host);
+//                         }
+// 
+//                         emit chosenUrl(url, Rekonq::CurrentTab);
+//                     }
+//                 }
 
-                    if (!append.isEmpty())
-                    {
-                        QUrl url(QL1S("http://") + w->text());
-                        QString host = url.host();
-                        if (!host.endsWith(append, Qt::CaseInsensitive))
-                        {
-                            host += append;
-                            url.setHost(host);
-                        }
-
-                        emit chosenUrl(url, Rekonq::CurrentTab);
-                    }
-                }
-
+                KUrl urlToLoad;
+                Rekonq::OpenType type = Rekonq::CurrentTab;
+                
                 if (_currentIndex == -1)
                     _currentIndex = 0;
                 child = findChild<ListItem *>(QString::number(_currentIndex));
 
                 if (child) //the completionwidget is visible and the user had press down
                 {
-                    //we can use the url of the listitem
-                    emit chosenUrl(child->url(), Rekonq::CurrentTab);
+                    urlToLoad = child->url();
                 }
                 else //the user type too fast (completionwidget not visible or suggestion not downloaded)
                 {
-                    KUrl u = UrlResolver::urlFromTextTyped(w->text());
-                    emit chosenUrl(u, Rekonq::CurrentTab);
+                    urlToLoad = UrlResolver::urlFromTextTyped(w->text());
                 }
-                kev->accept();
-                hide();
-                return true;
 
+                if (kev->modifiers() == Qt::AltModifier)
+                {
+                    if (kev->key() == Qt::Key_Return || kev->key() == Qt::Key_Enter)
+                    {
+                        type = Rekonq::NewFocusedTab;
+                    }
+                }
+
+                hide();
+                emit chosenUrl(urlToLoad, type);
+                kev->accept();
+                return true;
+            }
             case Qt::Key_Escape:
                 hide();
                 return true;
@@ -386,4 +391,19 @@ void CompletionWidget::suggestUrls(const QString &text)
 
     // NOTE: It's important to call this AFTER orderedSearchItems() to let everything work
     res->computeSuggestions();
+}
+
+
+KUrl CompletionWidget::activeSuggestion()
+{
+    int index = _currentIndex;
+    if (_currentIndex == -1)
+        index = 0;
+
+    ListItem *child = findChild<ListItem *>(QString::number(index));
+    if (child)
+        return child->url();
+
+    kDebug() << "WARNING: NO URL to LOAD...";
+    return KUrl();
 }
