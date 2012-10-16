@@ -68,6 +68,7 @@ WebTab::WebTab(QWidget *parent)
     , m_webView(0)
     , m_progress(0)
     , m_part(0)
+    , m_zoomFactor(10)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -349,4 +350,47 @@ void WebTab::printFrame()
 
         delete printDialog;
     }
+}
+
+
+void WebTab::zoomIn()
+{
+    if (m_zoomFactor == 50)
+    {
+        emit infoToShow(i18n("Max zoom reached: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
+        return;
+    }
+    
+    if (m_zoomFactor >= 20)
+        m_zoomFactor+=5;
+    else
+        m_zoomFactor++;
+
+    m_webView->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
+
+    emit infoToShow(i18n("Zooming: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
+}
+
+
+void WebTab::zoomOut()
+{
+    if (m_zoomFactor == 1)
+    {
+        emit infoToShow(i18n("Min zoom reached: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
+        return;
+    }
+
+    m_zoomFactor--;
+    m_webView->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
+
+    emit infoToShow(i18n("Zooming: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
+}
+
+
+void WebTab::zoomDefault()
+{
+    m_zoomFactor = 10;
+    m_webView->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
+
+    emit infoToShow(i18n("Default zoom: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
 }

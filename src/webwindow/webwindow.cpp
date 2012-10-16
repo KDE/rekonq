@@ -140,7 +140,8 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     m_popup->hide();
     connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
     connect(_tab->page(), SIGNAL(linkHovered(QString, QString, QString)), this, SLOT(notifyMessage(QString)));
-
+    connect(_tab, SIGNAL(infoToShow(QString)), this, SLOT(notifyMessage(QString)));
+    
     updateHistoryActions();
 }
 
@@ -256,6 +257,11 @@ void WebWindow::setupActions()
     a->setShortcut(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_Delete);
     actionCollection()->addAction(QL1S("clear_private_data"), a);
     connect(a, SIGNAL(triggered(bool)), rApp, SLOT(clearPrivateData()));
+
+    // Zoom ==============
+    KStandardAction::zoomIn(_tab, SLOT(zoomIn()), actionCollection());
+    KStandardAction::zoomOut(_tab, SLOT(zoomOut()), actionCollection());
+    KStandardAction::zoom(_tab, SLOT(zoomDefault()), actionCollection());
 
     // Bookmark ==========
     a = KStandardAction::addBookmark(_bar, SLOT(manageBookmarks()), actionCollection());

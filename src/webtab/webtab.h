@@ -94,12 +94,18 @@ private Q_SLOTS:
 
     void printFrame();
 
+    void zoomIn();
+    void zoomOut();
+    void zoomDefault();
+
 Q_SIGNALS:
     void loadProgressing();
     void titleChanged(const QString &);
 
     void triggerPartPrint();
 
+    void infoToShow(QString);
+    
 private:
     WebView *m_webView;
 
@@ -109,6 +115,8 @@ private:
     QWeakPointer<PreviewSelectorBar> m_previewSelectorBar;
 
     KParts::ReadOnlyPart *m_part;
+
+    int m_zoomFactor;
 };
 
 #endif
