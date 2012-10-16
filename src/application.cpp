@@ -63,15 +63,6 @@
 #include <KStartupInfo>
 
 #include <KMessageBox>
-// #include <KIcon>
-// #include <KStandardDirs>
-// #include <KAction>
-
-// #include <KGlobal>
-// #include <KCharsets>
-// #include <KPushButton>
-// #include <KMimeType>
-//
 
 // Qt Includes
 #include <QDBusInterface>
@@ -243,7 +234,7 @@ int Application::newInstance()
     {
         if (hasToBeRecoveredFromCrash)
         {
-            QTimer::singleShot(1000, tabWindow()->currentWebWindow(), SLOT(showMessageBar()));
+            QTimer::singleShot(1000, tabWindow()->currentWebWindow(), SLOT(showCrashMessageBar()));
         }
         else
         {

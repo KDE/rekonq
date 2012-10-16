@@ -75,6 +75,8 @@ public:
     void createPreviewSelectorBar(int index);
     void hideSelectorBar();
 
+    void showCrashMessageBar();
+
     bool isPageLoading();
 
     KParts::ReadOnlyPart *part();
@@ -86,7 +88,6 @@ private Q_SLOTS:
 
     void createWalletBar(const QString &, const QUrl &);
 
-    void showMessageBar();
     void loadFinished();
 
     void showSearchEngineBar();

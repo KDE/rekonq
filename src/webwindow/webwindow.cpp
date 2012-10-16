@@ -866,3 +866,9 @@ void WebWindow::setPrivateBrowsing(bool on)
     _tab->page()->settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, on);
     _isPrivateBrowsing = on;
 }
+
+
+void WebWindow::showCrashMessageBar()
+{
+    _tab->showCrashMessageBar();
+}

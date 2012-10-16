@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010-2011 by Pierre Rossi <pierre dot rossi at gmail dot com>
-* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -25,8 +25,8 @@
 * ============================================================ */
 
 
-#ifndef MESSAGEBAR_H
-#define MESSAGEBAR_H
+#ifndef CRASH_MESSAGE_BAR_H
+#define CRASH_MESSAGE_BAR_H
 
 // Rekonq Includes
 #include "rekonq_defines.h"
@@ -35,12 +35,12 @@
 #include <KMessageWidget>
 
 
-class REKONQ_TESTS_EXPORT MessageBar : public KMessageWidget
+class REKONQ_TESTS_EXPORT CrashMessageBar : public KMessageWidget
 {
     Q_OBJECT
 
 public:
-    explicit MessageBar(const QString & message, QWidget *parent);
+    explicit CrashMessageBar(const QString & message, QWidget *parent);
 
 private Q_SLOTS:
     void hideAndDelete();
@@ -51,4 +51,4 @@ Q_SIGNALS:
 };
 
 
-#endif // MESSAGEBAR_H
+#endif // CRASH_MESSAGE_BAR_H

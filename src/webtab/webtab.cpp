@@ -37,7 +37,7 @@
 #include "sessionmanager.h"
 #include "syncmanager.h"
 
-#include "messagebar.h"
+#include "crashmessagebar.h"
 #include "previewselectorbar.h"
 #include "searchenginebar.h"
 #include "walletbar.h"
@@ -279,9 +279,9 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
 }
 
 
-void WebTab::showMessageBar()
+void WebTab::showCrashMessageBar()
 {
-    MessageBar *msgBar = new MessageBar(i18n("It seems rekonq was not closed properly. Do you want "
+    CrashMessageBar *msgBar = new CrashMessageBar(i18n("It seems rekonq was not closed properly. Do you want "
                                         "to restore the last saved session?"), this);
 
     qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, msgBar);

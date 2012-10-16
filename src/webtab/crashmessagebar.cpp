@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010-2011 by Pierre Rossi <pierre dot rossi at gmail dot com>
-* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -26,8 +26,8 @@
 
 
 // Self Includes
-#include "messagebar.h"
-#include "messagebar.moc"
+#include "crashmessagebar.h"
+#include "crashmessagebar.moc"
 
 // KDE Includes
 #include <KIcon>
@@ -38,7 +38,7 @@
 #include <QAction>
 
 
-MessageBar::MessageBar(const QString &message, QWidget *parent)
+CrashMessageBar::CrashMessageBar(const QString &message, QWidget *parent)
     : KMessageWidget(parent)
 {
     connect(this, SIGNAL(accepted()), this, SLOT(hideAndDelete()));
@@ -64,7 +64,7 @@ MessageBar::MessageBar(const QString &message, QWidget *parent)
 }
 
 
-void MessageBar::hideAndDelete()
+void CrashMessageBar::hideAndDelete()
 {
     animatedHide();
     deleteLater();

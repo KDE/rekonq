@@ -86,7 +86,7 @@ set(rekonq_KDEINIT_SRCS
     useragent/useragentwidget.cpp
     #----------------------------------------
     webtab/clicktoflash.cpp
-    webtab/messagebar.cpp
+    webtab/crashmessagebar.cpp
     webtab/networkaccessmanager.cpp
     webtab/previewselectorbar.cpp
     webtab/protocolhandler.cpp
