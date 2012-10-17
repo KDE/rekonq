@@ -160,40 +160,40 @@ QList<TabHistory> MainView::recentlyClosedTabs()
 
 void MainView::updateTabBarVisibility()
 {
-    if (ReKonfig::alwaysShowTabBar() || count() > 1)
+    // Get sure tabbar is well shown (and hided) during fullscreen navigation
+    // NOTE: don't ask me why, but it seems that using code like:
+    // MainWindow *w = qobject_cast<MainWindow *>(parent());
+    // does NOT work here. So, I'm asking you: WHY???
+    MainWindow *w = rApp->mainWindow();
+    if (w && !w->isFullScreen())
     {
-        // Get sure tabbar is well shown (and hided) during fullscreen navigation
-        // NOTE: don't ask me why, but it seems that using code like:
-        // MainWindow *w = qobject_cast<MainWindow *>(parent());
-        // does NOT work here. So, I'm asking you: WHY???
-        MainWindow *w = rApp->mainWindow();
-        if (w && !w->isFullScreen())
+        if (tabBar()->isHidden())
         {
-            if (tabBar()->isHidden())
-            {
-                tabBar()->show();
-            }
-
-            // this to ensure tab button visibility also on new window creation
-            if (m_addTabButton->isHidden())
-            {
-                m_addTabButton->show();
-            }
+            tabBar()->show();
         }
-    }
-    else
-    {
-        tabBar()->hide();
-        m_addTabButton->hide();
-        return;
+
+        // this to ensure tab button visibility also on new window creation
+        if (m_addTabButton->isHidden())
+        {
+            m_addTabButton->show();
+        }
     }
 }
 
 
 void MainView::updateAddTabButton()
 {
-    // update tab button position
+    if (!ReKonfig::alwaysShowTabBar())
+    {
+        bool b = (count() == 1);
 
+        tabBar()->setVisible(!b);
+        m_addTabButton->setVisible(!b);
+        if (b)
+            return;
+    }
+
+    // update tab button position
     int tabWidgetWidth = frameSize().width();
     int tabBarWidth = tabBar()->sizeHint().width();
 
