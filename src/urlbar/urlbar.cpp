@@ -349,13 +349,6 @@ void UrlBar::focusInEvent(QFocusEvent *event)
 }
 
 
-void UrlBar::focusOutEvent(QFocusEvent *event)
-{
-    activateSuggestions(false);
-    KLineEdit::focusOutEvent(event);
-}
-
-
 void UrlBar::dropEvent(QDropEvent *event)
 {
     // handles only plain-text with url format

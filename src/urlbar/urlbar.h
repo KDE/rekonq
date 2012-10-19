@@ -132,7 +132,6 @@ protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void focusInEvent(QFocusEvent *event);
-    void focusOutEvent(QFocusEvent *event);
     void dropEvent(QDropEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *);
     void contextMenuEvent(QContextMenuEvent *event);
