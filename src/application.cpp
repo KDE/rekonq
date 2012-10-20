@@ -107,6 +107,12 @@ int Application::newInstance()
     kDebug() << "are there arguments? " << areThereArguments;
     kDebug() << "is rekonq crashed? " << hasToBeRecoveredFromCrash;
 
+    bool incognito = args->isSet("incognito");
+    bool webapp = args->isSet("webapp");
+
+    kDebug() << "INCOGNITO: " << incognito;
+    kDebug() << "WEBAPPS: " << webapp;
+
     if (areThereArguments)
     {
         // prepare URLS to load
@@ -146,18 +152,24 @@ int Application::newInstance()
         {
             // No windows in the current desktop? No windows at all?
             // Create a new one and load there sites...
-            loadUrl(urlList.at(0), Rekonq::NewWindow);
+            if (incognito)
+                loadUrl(urlList.at(0), Rekonq::NewPrivateWindow);
+            else
+                loadUrl(urlList.at(0), Rekonq::NewWindow);
         }
         else
         {
-            if (!ReKonfig::openExternalLinksInNewWindow())
-            {
-                loadUrl(urlList.at(0), Rekonq::NewFocusedTab);
-            }
+            if (incognito)
+                loadUrl(urlList.at(0), Rekonq::NewPrivateWindow);
             else
-            {
-                loadUrl(urlList.at(0), Rekonq::NewWindow);
-            }
+                if (!ReKonfig::openExternalLinksInNewWindow())
+                {
+                    loadUrl(urlList.at(0), Rekonq::NewFocusedTab);
+                }
+                else
+                {
+                    loadUrl(urlList.at(0), Rekonq::NewWindow);
+                }
 
             if (!tabWindow()->isActiveWindow())
                 KWindowSystem::demandAttention(tabWindow()->winId(), true);
@@ -173,10 +185,13 @@ int Application::newInstance()
         else
         {
             for (int i = 1; i < urlList.count(); ++i)
-                loadUrl(urlList.at(i), Rekonq::NewWindow);
+                if (incognito)
+                    loadUrl(urlList.at(i), Rekonq::NewPrivateWindow);
+                else
+                    loadUrl(urlList.at(i), Rekonq::NewWindow);
         }
     }
-    else
+    else    // ok, NO arguments
     {
         if (isFirstLoad)
         {
@@ -188,6 +203,11 @@ int Application::newInstance()
                 switch (ReKonfig::startupBehaviour())
                 {
                 case 0: // open home page
+                    if (incognito)
+                    {
+                        loadUrl(KUrl(ReKonfig::homePage()), Rekonq::NewPrivateWindow);
+                        break;
+                    }
                     restoreOk = SessionManager::self()->restoreJustThePinnedTabs();
                     if (restoreOk)
                         loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewTab);
@@ -195,6 +215,11 @@ int Application::newInstance()
                         loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
                     break;
                 case 1: // open new tab page
+                    if (incognito)
+                    {
+                        loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
+                        break;
+                    }
                     restoreOk = SessionManager::self()->restoreJustThePinnedTabs();
                     if (restoreOk)
                         loadUrl(KUrl("about:home"), Rekonq::NewTab);
@@ -202,6 +227,11 @@ int Application::newInstance()
                         loadUrl(KUrl("about:home"), Rekonq::NewWindow);
                     break;
                 case 2: // restore session
+                    if (incognito)
+                    {
+                        loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
+                        break;
+                    }
                     if (SessionManager::self()->restoreSessionFromScratch())
                     {
                         break;
@@ -214,25 +244,28 @@ int Application::newInstance()
         }
         else
         {
+            Rekonq::OpenType type = incognito ? Rekonq::NewPrivateWindow : Rekonq::NewWindow;
+            
             switch (ReKonfig::newTabsBehaviour())
             {
             case 0: // new tab page
-                loadUrl(KUrl("about:home") , Rekonq::NewWindow);
+                loadUrl(KUrl("about:home") , type);
                 break;
             case 2: // homepage
-                loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
+                loadUrl(KUrl(ReKonfig::homePage()) , type);
                 break;
             case 1: // blank page
             default:
-                loadUrl(KUrl("about:blank") , Rekonq::NewWindow);
+                loadUrl(KUrl("about:blank") , type);
                 break;
             }
         }
     }
 
+    // ok, now last stuffs...
     if (isFirstLoad)
     {
-        if (hasToBeRecoveredFromCrash)
+        if (hasToBeRecoveredFromCrash && !incognito)
         {
             QTimer::singleShot(1000, tabWindow()->currentWebWindow(), SLOT(showCrashMessageBar()));
         }
