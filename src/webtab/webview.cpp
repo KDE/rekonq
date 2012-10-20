@@ -314,7 +314,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             menu.addAction(pageAction(KWebPage::Forward));
         }
 
-        menu.addAction(webwin->actionByName("view_redisplay"));
+        menu.addAction(pageAction(KWebPage::Reload));
 
         menu.addSeparator();
 
@@ -333,7 +333,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         // Page Actions
         menu.addAction(pageAction(KWebPage::SelectAll));
 
-        menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
+        if (webwin)
+            menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
 
         if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
         {
@@ -342,13 +343,19 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             menu.addAction(a);
         }
 
-        menu.addAction(webwin->actionByName("page_source"));
-        menu.addAction(inspectAction);
-
+        if (webwin)
+        {
+            menu.addAction(webwin->actionByName("page_source"));
+            menu.addAction(inspectAction);
+        }
+        
         // we need to show everytime this because we cannot communicate with the tabwindow.
         // We are NOT sure it exists..
-        menu.addSeparator();
-        menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::FullScreen)));
+        if (webwin)
+        {
+            menu.addSeparator();
+            menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::FullScreen)));
+        }
     }
 
     // LINK ACTIONS -------------------------------------------------------------------
@@ -358,21 +365,27 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         sendByMailAction->setData(m_contextMenuHitResult.linkUrl());
         sendByMailAction->setText(i18n("Share link"));
 
-        a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
-        a->setData(m_contextMenuHitResult.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
-        menu.addAction(a);
-
+        if (webwin)
+        {
+            a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
+            a->setData(m_contextMenuHitResult.linkUrl());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
+            menu.addAction(a);
+        }
+        
         a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), this);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
 
-        a = new KAction(KIcon("view-media-artist"), i18n("Open in Private &Window"), this);
-        a->setData(m_contextMenuHitResult.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInPrivateWindow()));
-        menu.addAction(a);
-
+        if (webwin)
+        {
+            a = new KAction(KIcon("view-media-artist"), i18n("Open in Private &Window"), this);
+            a->setData(m_contextMenuHitResult.linkUrl());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInPrivateWindow()));
+            menu.addAction(a);
+        }
+        
         menu.addSeparator();
 
         // Don't show dots if we are NOT going to ask for download path
@@ -517,11 +530,17 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
     else
     {
-        a = webwin->actionByName(KStandardAction::name(KStandardAction::AddBookmark));
-        menu.addAction(a);
+        if (webwin)
+        {
+            a = webwin->actionByName(KStandardAction::name(KStandardAction::AddBookmark));
+            menu.addAction(a);
+        }
     }
+    
     menu.addAction(sendByMailAction);
-    menu.addAction(inspectAction);
+
+    if (webwin)
+        menu.addAction(inspectAction);
 
     // SPELL CHECK Actions
     if (m_contextMenuHitResult.isContentEditable())

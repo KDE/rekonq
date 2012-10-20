@@ -34,6 +34,7 @@
 
 // Local Includes
 #include "historymanager.h"
+#include "iconmanager.h"
 #include "sessionmanager.h"
 #include "syncmanager.h"
 
@@ -92,9 +93,18 @@ WebTab::WebTab(QWidget *parent)
 
     connect(view(), SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(view(), SIGNAL(loadStarted()), this, SLOT(resetProgress()));
-    connect(view(), SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
     connect(view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
 
+    if (parent)
+    {
+        connect(view(), SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
+    }
+    else
+    {
+        connect(view(), SIGNAL(titleChanged(QString)), this, SLOT(webAppTitleChanged(QString)));
+        connect(view(), SIGNAL(iconChanged()), this, SLOT(webAppIconChanged()));
+    }
+    
     // Session Manager
     connect(view(), SIGNAL(loadFinished(bool)), SessionManager::self(), SLOT(saveSession()));
 }
@@ -393,4 +403,20 @@ void WebTab::zoomDefault()
     m_webView->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
 
     emit infoToShow(i18n("Default zoom: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
+}
+
+
+void WebTab::webAppTitleChanged(QString title)
+{
+    
+    if (title.isEmpty())
+        setWindowTitle(i18n("rekonq"));
+    else
+        setWindowTitle(title);
+}
+
+
+void WebTab::webAppIconChanged()
+{
+    setWindowIcon(IconManager::self()->iconForUrl(url()));
 }

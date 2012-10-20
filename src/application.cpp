@@ -39,6 +39,7 @@
 #include "tabbar.h"
 #include "tabwindow.h"
 #include "webwindow.h"
+#include "webtab.h"
 #include "urlresolver.h"
 
 // Local Manager(s) Includes
@@ -112,7 +113,54 @@ int Application::newInstance()
 
     kDebug() << "INCOGNITO: " << incognito;
     kDebug() << "WEBAPPS: " << webapp;
+    kDebug() << "ARGS COUNT: " << args->count();
+    
+    if (webapp)
+    {
+        if (args->count() == 0)
+        {
+            KMessageBox::error(0, i18n("Error"), i18n("Cannot launch webapp mode without an URL to load"));
+            return 1;
+        }
+        
+        if (args->count() > 1)
+        {
+            KMessageBox::error(0, i18n("Error"), i18n("Cannot load more than one URL in webapp mode"));
+            return 1;
+        }
+        
+        KUrl u = args->url(0);
+        if (!u.isLocalFile() || !QFile::exists(u.toLocalFile()))
+        {
+            u = UrlResolver::urlFromTextTyped(args->arg(0));
+        }
+        kDebug() << "URL: " << u;
+        WebTab *tab = new WebTab;
+        tab->view()->load(u);
 
+        tab->installEventFilter(this);
+        m_webApps.prepend(tab);
+        tab->show();
+        
+        if (isFirstLoad)
+        {
+            // updating rekonq configuration
+            updateConfiguration();
+
+            setWindowIcon(KIcon("rekonq"));
+
+            // just create History Manager...
+            HistoryManager::self();
+
+            // FIXME: should this be removed?
+            AdBlockManager::self();
+        }
+
+        KStartupInfo::appStarted();
+        isFirstLoad = false;
+        return 0;
+    }
+    
     if (areThereArguments)
     {
         // prepare URLS to load
@@ -148,7 +196,7 @@ int Application::newInstance()
         }
 
         // first argument: 99% of the time we have just that...
-        if (isFirstLoad)
+        if (isFirstLoad || m_tabWindows.count() == 0)
         {
             // No windows in the current desktop? No windows at all?
             // Create a new one and load there sites...
@@ -160,7 +208,9 @@ int Application::newInstance()
         else
         {
             if (incognito)
+            {
                 loadUrl(urlList.at(0), Rekonq::NewPrivateWindow);
+            }
             else
                 if (!ReKonfig::openExternalLinksInNewWindow())
                 {
@@ -415,9 +465,13 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
     if (event->type() == QEvent::Close)
     {
         TabWindow *window = qobject_cast<TabWindow*>(watched);
-        m_tabWindows.removeOne(window);
+        if (window)
+            m_tabWindows.removeOne(window);
 
-        if (m_tabWindows.count() == 0)
+        WebTab *webApp = qobject_cast<WebTab*>(watched);
+        m_webApps.removeOne(webApp);
+        
+        if (m_tabWindows.count() == 0 && m_webApps.count() == 0)
             quit();
     }
 

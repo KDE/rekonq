@@ -42,9 +42,11 @@
 class TabWindow;
 class WebWindow;
 
+class WebTab;
+
 
 typedef QList< QWeakPointer<TabWindow> > TabWindowList;
-
+typedef QList<WebTab *> WebAppList;
 
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -113,6 +115,7 @@ private Q_SLOTS:
     
 private:
     TabWindowList m_tabWindows;
+    WebAppList m_webApps;
 };
 
 #endif // APPLICATION_H

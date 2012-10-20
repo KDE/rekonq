@@ -98,6 +98,10 @@ private Q_SLOTS:
     void zoomOut();
     void zoomDefault();
 
+    // webapp slots per title & icon
+    void webAppTitleChanged(QString);
+    void webAppIconChanged();
+
 Q_SIGNALS:
     void loadProgressing();
     void titleChanged(const QString &);
