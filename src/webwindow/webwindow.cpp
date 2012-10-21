@@ -85,8 +85,8 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
 {
     if (pg)
     {
-        _tab->view()->setPage(pg);
         pg->setParent(_tab->view());
+        _tab->view()->setPage(pg);
     }
 
     // then, setup our actions

@@ -129,11 +129,6 @@ WebPage::WebPage(QWidget *parent)
     , _networkAnalyzer(false)
     , _isOnRekonqPage(false)
 {
-    WebView *view = qobject_cast<WebView *>(parent);
-    WebTab *tab = qobject_cast<WebTab *>(view->parent());
-    WebWindow *w = tab->webWindow();
-    _protHandler.setWindow(w);
-
     // handling unsupported content...
     setForwardUnsupportedContent(true);
     connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(handleUnsupportedContent(QNetworkReply*)));
@@ -146,10 +141,6 @@ WebPage::WebPage(QWidget *parent)
 
     // disable QtWebKit cache to just use KIO one..
     manager->setCache(0);
-
-    // set cookieJar window..
-    if (parent && parent->window())
-        manager->setWindow(parent->window());
 
     setNetworkAccessManager(manager);
 
@@ -181,6 +172,16 @@ WebPage::~WebPage()
     QString path = WebSnap::imagePathFromUrl(mainFrame()->url().toString());
     QFile::remove(path);
     preview.save(path);
+}
+
+
+void WebPage::setWindow(QWidget *w)
+{
+    // set cookieJar window..
+    NetworkAccessManager *manager = qobject_cast<NetworkAccessManager *>(networkAccessManager());
+    manager->setWindow(w);
+
+    _protHandler.setWindow(w);
 }
 
 

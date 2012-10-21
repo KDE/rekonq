@@ -158,6 +158,19 @@ WebPage *WebView::page()
 }
 
 
+void WebView::setPage(WebPage *pg)
+{
+    KWebView::setPage(pg);
+
+    WebTab *tab = qobject_cast<WebTab *>(parent());
+    if (!tab)
+        return;
+    WebWindow *w = tab->webWindow();
+    if (w && w->window())
+        pg->setWindow(w->window());
+}    
+
+
 bool WebView::popupSpellMenu(QContextMenuEvent *event)
 {
     // return false if not handled

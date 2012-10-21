@@ -32,7 +32,6 @@
 
 // Local Includes
 #include "historymanager.h"
-#include "webwindow.h"
 #include "webpage.h"
 #include "webtab.h"
 #include "urlbar.h"
@@ -97,7 +96,7 @@ ProtocolHandler::ProtocolHandler(QObject *parent)
 }
 
 
-void ProtocolHandler::setWindow(WebWindow *w)
+void ProtocolHandler::setWindow(QWidget *w)
 {
     _webwin = w;
     _lister->setMainWindow(_webwin);
@@ -275,8 +274,9 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         _frame->setHtml(html);
         qobject_cast<WebPage *>(_frame->page())->setIsOnRekonqPage(true);
 
-        _webwin->urlBar()->setQUrl(_url);
-        _webwin->view()->setFocus();
+        // FIXME: how can we handle this?
+//         _webwin->urlBar()->setQUrl(_url);
+//         _webwin->view()->setFocus();
 
         if (_frame->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
             return;

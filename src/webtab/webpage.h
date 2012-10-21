@@ -52,6 +52,8 @@ public:
     explicit WebPage(QWidget *parent = 0);
     ~WebPage();
 
+    void setWindow(QWidget *);
+    
     bool isOnRekonqPage() const;
     void setIsOnRekonqPage(bool b);
 

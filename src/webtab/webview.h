@@ -66,7 +66,8 @@ public:
     ~WebView();
 
     WebPage *page();
-
+    void setPage(WebPage *);
+    
     void load(const QUrl &url);
     void load(const QNetworkRequest &req,
               QNetworkAccessManager::Operation op = QNetworkAccessManager::GetOperation,
