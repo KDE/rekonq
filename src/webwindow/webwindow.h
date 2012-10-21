@@ -109,6 +109,8 @@ private Q_SLOTS:
     void openNext(Qt::MouseButtons = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
     void updateHistoryActions();
 
+    void openNewWindow();
+    
     /**
      * Notifies a message in a popup
     */

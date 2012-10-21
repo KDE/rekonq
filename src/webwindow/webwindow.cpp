@@ -196,7 +196,7 @@ void WebWindow::setupActions()
     a = new KAction(KIcon("window-new"), i18n("&New Window"), this);
     a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_N));
     actionCollection()->addAction(QL1S("new_window"), a);
-    connect(a, SIGNAL(triggered(bool)), rApp, SLOT(newTabWindow()));
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(openNewWindow()));
 
     // Standard Actions
     KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
@@ -878,3 +878,10 @@ void WebWindow::showCrashMessageBar()
 {
     _tab->showCrashMessageBar();
 }
+
+
+void WebWindow::openNewWindow()
+{
+    rApp->loadUrl(QUrl("about:home"), Rekonq::NewWindow);
+}
+
