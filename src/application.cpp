@@ -825,5 +825,6 @@ void Application::newTab()
 
 void Application::newPrivateBrowsingWindow()
 {
-    loadUrl(KUrl("about:incognito"), Rekonq::NewPrivateWindow);
+    // FIXME: what about an "about:incognito" page?
+    loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
 }
