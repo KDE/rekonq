@@ -126,6 +126,8 @@ bool areTherePinnedTabs(QDomElement & window)
     {
         QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
         b = tab.hasAttribute("pinned");
+        if (b)
+            return true;
     }
 
     return b;
@@ -276,9 +278,9 @@ bool SessionManager::restoreJustThePinnedTabs()
             continue;
 
         done = true;
-        TabWindow *tw = rApp->newTabWindow();
+        TabWindow *tw = rApp->newTabWindow(false);
 
-        int currentTab = loadTabs(tw, window, true, true);
+        int currentTab = loadTabs(tw, window, false, true);
 
         tw->setCurrentIndex(currentTab);
     }

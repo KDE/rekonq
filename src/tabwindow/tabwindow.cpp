@@ -349,7 +349,13 @@ void TabWindow::tabLoadFinished(bool ok)
     label->setPixmap(ic.pixmap(16, 16));
 
     if (!tabBar()->tabData(index).toBool())
+    {
         setTabText(index, tab->title());
+    }
+    else
+    {
+        setTabText(index, QString());
+    }
 }
 
 

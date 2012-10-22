@@ -111,12 +111,9 @@ int Application::newInstance()
     bool incognito = args->isSet("incognito");
     bool webapp = args->isSet("webapp");
 
-    kDebug() << "INCOGNITO: " << incognito;
-    kDebug() << "WEBAPPS: " << webapp;
-    kDebug() << "ARGS COUNT: " << args->count();
-    
     if (webapp)
     {
+        kDebug() << "WEBAPP MODE...";
         if (args->count() == 0)
         {
             KMessageBox::error(0, i18n("Error"), i18n("Cannot launch webapp mode without an URL to load"));
@@ -152,7 +149,7 @@ int Application::newInstance()
             // just create History Manager...
             HistoryManager::self();
 
-            // FIXME: should this be removed?
+            // WARNING: should this be removed?
             AdBlockManager::self();
         }
 
@@ -163,6 +160,8 @@ int Application::newInstance()
     
     if (areThereArguments)
     {
+        kDebug() << "DEFAULT MODE, WITH ARGUMENTS...";
+
         // prepare URLS to load
         KUrl::List urlList;
         for (int i = 0; i < args->count(); ++i)
@@ -243,13 +242,13 @@ int Application::newInstance()
     }
     else    // ok, NO arguments
     {
+        kDebug() << "DEFAULT MODE, NO ARGUMENTS...";
         if (isFirstLoad)
         {
             // NOTE: just load new tabs/windows without arguments
             // if NOT is Session restored...
             if (!isSessionRestored())
             {
-                bool restoreOk = false;
                 switch (ReKonfig::startupBehaviour())
                 {
                 case 0: // open home page
@@ -258,10 +257,7 @@ int Application::newInstance()
                         loadUrl(KUrl(ReKonfig::homePage()), Rekonq::NewPrivateWindow);
                         break;
                     }
-                    restoreOk = SessionManager::self()->restoreJustThePinnedTabs();
-                    if (restoreOk)
-                        loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewTab);
-                    else
+                    if (!SessionManager::self()->restoreJustThePinnedTabs())
                         loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
                     break;
                 case 1: // open new tab page
@@ -270,11 +266,8 @@ int Application::newInstance()
                         loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
                         break;
                     }
-                    restoreOk = SessionManager::self()->restoreJustThePinnedTabs();
-                    if (restoreOk)
-                        loadUrl(KUrl("about:home"), Rekonq::NewTab);
-                    else
-                        loadUrl(KUrl("about:home"), Rekonq::NewWindow);
+                    if (!SessionManager::self()->restoreJustThePinnedTabs())
+                        loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
                     break;
                 case 2: // restore session
                     if (incognito)
