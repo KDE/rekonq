@@ -52,6 +52,11 @@
 #include <KMessageBox>
 #include <KStandardDirs>
 
+#include <config-kactivities.h>
+#ifdef HAVE_KACTIVITIES
+#include <KActivities/ResourceInstance>
+#endif
+
 // Qt Includes
 #include <QtGui/QLabel>
 #include <QtGui/QMovie>
@@ -255,6 +260,23 @@ void MainView::currentChanged(int index)
     // retrieve the old webview (that where we move from)
     WebTab *oldTab = this->webTab(m_currentTabIndex);
 
+    WebView *view = tab->view();
+
+#ifdef HAVE_KACTIVITIES
+    if (!QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)) {
+        if (oldTab) {
+            WebView *oldView = oldTab->view();
+            if (activityResourceInstance(oldView)) {
+                activityResourceInstance(oldView)->notifyFocusedOut();
+            }
+        }
+
+        if (activityResourceInstance(view)) {
+            activityResourceInstance(view)->notifyFocusedIn();
+        }
+    }
+#endif
+
     // set current index
     m_currentTabIndex = index;
 
@@ -272,7 +294,7 @@ void MainView::currentChanged(int index)
     connect(tab->page(), SIGNAL(linkHovered(QString, QString, QString)),
             this, SIGNAL(linkHovered(QString)));
 
-    emit currentTitle(tab->view()->title());
+    emit currentTitle(view->title());
     m_widgetBar->setCurrentIndex(index);
 
     // clean up "status bar"
@@ -285,7 +307,7 @@ void MainView::currentChanged(int index)
     if (tab->url().scheme() == QL1S("about"))
         m_widgetBar->currentWidget()->setFocus();
     else
-        tab->view()->setFocus();
+        view->setFocus();
 
     tabBar()->resetTabHighlighted(index);
 }
@@ -641,6 +663,21 @@ void MainView::webViewUrlChanged(const QUrl &url)
     if (!tab)
         return;
 
+#ifdef HAVE_KACTIVITIES
+    if (
+            !QWebSettings::globalSettings()->testAttribute(QWebSettings::PrivateBrowsingEnabled) &&
+            !url.isEmpty() &&
+            url.scheme() != "about"
+        )
+    {
+        if (!activityResourceInstance(view)) {
+            new KActivities::ResourceInstance(window()->winId(), view);
+        }
+
+        activityResourceInstance(view)->setUri(url);
+    }
+#endif
+
     int index = indexOf(tab);
     if (ReKonfig::hoveringTabOption() == 2)
         tabBar()->setTabToolTip(index, url.toString());
@@ -801,3 +838,11 @@ void MainView::detachTab(int index, MainWindow *toWindow)
         connect(tab->page(), SIGNAL(printRequested(QWebFrame*)), w->mainView(), SIGNAL(printRequested(QWebFrame*)));
     }
 }
+
+#ifdef HAVE_KACTIVITIES
+KActivities::ResourceInstance * MainView::activityResourceInstance(WebView * view)
+{
+    return view->findChild<KActivities::ResourceInstance*> ();
+}
+#endif
+

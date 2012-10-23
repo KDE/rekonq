@@ -3,6 +3,7 @@
 SET( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
 INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_BINARY_DIR}
+                        ${CMAKE_CURRENT_BINARY_DIR}/..
                         ${CMAKE_CURRENT_SOURCE_DIR}/..
                         ${CMAKE_CURRENT_SOURCE_DIR}/../adblock
                         ${CMAKE_CURRENT_SOURCE_DIR}/../analyzer
@@ -30,7 +31,7 @@ target_link_libraries( findbar_test
 ##### ------------- mainwindow test
 
 kde4_add_unit_test( mainwindow_test mainwindow_test.cpp )
- 
+
 target_link_libraries( mainwindow_test
     kdeinit_rekonq
     ${KDE4_KDECORE_LIBS}
@@ -41,7 +42,7 @@ target_link_libraries( mainwindow_test
 ##### ------------- mainview test
 
 kde4_add_unit_test( mainview_test mainview_test.cpp )
- 
+
 target_link_libraries( mainview_test
     kdeinit_rekonq
     ${KDE4_KDECORE_LIBS}
@@ -52,7 +53,7 @@ target_link_libraries( mainview_test
 ##### ------------- networkaccessmanager test
 
 kde4_add_unit_test( networkaccessmanager_test networkaccessmanager_test.cpp )
- 
+
 target_link_libraries( networkaccessmanager_test
     kdeinit_rekonq
     ${KDE4_KDECORE_LIBS}
@@ -63,7 +64,7 @@ target_link_libraries( networkaccessmanager_test
 ##### ------------- protocolhandler test
 
 kde4_add_unit_test( protocolhandler_test protocolhandler_test.cpp )
- 
+
 target_link_libraries( protocolhandler_test
     kdeinit_rekonq
     ${KDE4_KDECORE_LIBS}
@@ -76,7 +77,7 @@ target_link_libraries( protocolhandler_test
 ##### ------------- sessionmanager test
 
 kde4_add_unit_test( sessionmanager_test sessionmanager_test.cpp )
- 
+
 target_link_libraries( sessionmanager_test
     kdeinit_rekonq
     ${KDE4_KDECORE_LIBS}

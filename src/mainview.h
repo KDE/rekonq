@@ -38,17 +38,25 @@
 // KDE Includes
 #include <KTabWidget>
 
+// Config
+#include <config-kactivities.h>
+
 // Forward Declarations
 class MainWindow;
 class StackedUrlBar;
 class TabBar;
 class UrlBar;
 class WebTab;
+class WebView;
 
 class QLabel;
 class QToolButton;
 class QUrl;
 class QWebFrame;
+
+#ifdef HAVE_KACTIVITIES
+namespace KActivities { class ResourceInstance; }
+#endif
 
 
 /**
@@ -194,6 +202,10 @@ private:
     int m_currentTabIndex;
 
     QList<TabHistory> m_recentlyClosedTabs;
+
+#ifdef HAVE_KACTIVITIES
+    KActivities::ResourceInstance * activityResourceInstance(WebView * view);
+#endif
 };
 
 #endif // MAINVIEW_H

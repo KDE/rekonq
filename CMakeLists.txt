@@ -56,6 +56,15 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-nepomuk.h.cmake ${CMAKE_CURREN
 
 
 # ==================================================================================
+# optional KActivities requirements
+
+MACRO_OPTIONAL_FIND_PACKAGE(KActivities 6.1.0)
+MACRO_BOOL_TO_01(KActivities_FOUND HAVE_KACTIVITIES)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-kactivities.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-kactivities.h )
+
+
+# ==================================================================================
 # optional QCA2 & QtOAuth requirements
 
 MACRO_OPTIONAL_FIND_PACKAGE(QCA2)
@@ -145,6 +154,16 @@ IF(REKONQ_CAN_BE_COMPILED)
         MESSAGE(STATUS " Nepomuk Libraries..................... NO")
         MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for bookmarks tagging")
     ENDIF(HAVE_NEPOMUK)
+
+    # KActivities
+
+    IF(HAVE_KACTIVITIES)
+        MESSAGE(STATUS " KActivities Libraries................. YES")
+        MESSAGE(STATUS " Rekonq will be compiled with support for document event reporting")
+    ELSE(HAVE_KACTIVITIES)
+        MESSAGE(STATUS " KActivities Libraries................. NO")
+        MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for document event reporting")
+    ENDIF(HAVE_KACTIVITIES)
 
     MESSAGE(STATUS "")
 
