@@ -267,7 +267,7 @@ int Application::newInstance()
                         break;
                     }
                     if (!SessionManager::self()->restoreJustThePinnedTabs())
-                        loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
+                        loadUrl(KUrl("about:home"), Rekonq::NewWindow);
                     break;
                 case 2: // restore session
                     if (incognito)
