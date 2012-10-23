@@ -895,3 +895,11 @@ void WebWindow::openNewWindow()
     rApp->loadUrl(QUrl("about:home"), Rekonq::NewWindow);
 }
 
+
+void WebWindow::checkFocus()
+{
+    if (url().scheme() == QL1S("about"))
+        _bar->setFocus();
+    else
+        _tab->view()->setFocus();
+}

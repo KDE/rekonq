@@ -83,7 +83,9 @@ public:
     QAction *actionByName(const QString &name);
 
     bool isPrivateBrowsing();
-    
+
+    void checkFocus();
+
 private:
     void setupActions();
     void setupTools();

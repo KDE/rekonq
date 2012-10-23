@@ -234,6 +234,8 @@ void TabWindow::currentChanged(int newIndex)
     (t.isEmpty())
     ? setWindowTitle(QL1S("rekonq"))
     : setWindowTitle(t + QL1S(" - rekonq"));
+
+    tab->checkFocus();
 }
 
 
@@ -351,6 +353,8 @@ void TabWindow::tabLoadFinished(bool ok)
     {
         setTabText(index, QString());
     }
+
+    tab->checkFocus();
 }
 
 
