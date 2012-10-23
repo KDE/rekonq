@@ -630,7 +630,16 @@ KUrl WebWindow::url() const
 
 QString WebWindow::title() const
 {
-    return _tab->view()->title();
+    QString t = _tab->view()->title();
+    if (t.isEmpty())
+    {
+        if (url().isLocalFile())
+            return url().fileName();
+        else
+            return QL1S("rekonq");
+    }
+
+    return t;
 }
 
 

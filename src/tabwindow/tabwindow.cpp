@@ -262,9 +262,7 @@ void TabWindow::tabTitleChanged(const QString &title)
     if (!tab)
         return;
 
-    bool emptyTitle = title.isEmpty();
-
-    QString tabTitle = emptyTitle ? tab->url().url() : title;
+    QString tabTitle = title.isEmpty() ? tab->title() : title;
     tabTitle.replace('&', "&&");
 
     int index = indexOf(tab);
@@ -275,14 +273,11 @@ void TabWindow::tabTitleChanged(const QString &title)
 
     if (currentIndex() != index)
     {
-        if (!emptyTitle)
-            tabBar()->setTabHighlighted(index, true);
+        tabBar()->setTabHighlighted(index, true);
     }
     else
     {
-        emptyTitle
-        ? setWindowTitle(QL1S("rekonq"))
-        : setWindowTitle(tabTitle + QL1S(" - rekonq"));
+        setWindowTitle(tabTitle + QL1S(" - rekonq"));
     }
 }
 
