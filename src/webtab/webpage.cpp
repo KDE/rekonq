@@ -458,7 +458,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         WebTab *tab = qobject_cast<WebTab *>(view->parent());
         tab->setPart(pa, replyUrl);
 
-        // FIXME: Is this enough?
+        // WARNING: Is this enough?
     }
     else
     {
@@ -569,7 +569,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
             if (isMainFrameRequest)
             {
                 _isOnRekonqPage = true;
-                // FIXME: is this enough?
+                // WARNING: is this enough?
             }
         }
         break;

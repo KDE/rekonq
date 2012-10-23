@@ -148,9 +148,6 @@ int Application::newInstance()
 
             // just create History Manager...
             HistoryManager::self();
-
-            // WARNING: should this be removed?
-            AdBlockManager::self();
         }
 
         KStartupInfo::appStarted();
@@ -327,9 +324,6 @@ int Application::newInstance()
 
         // just create History Manager...
         HistoryManager::self();
-
-        // FIXME: should this be removed?
-        AdBlockManager::self();
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();
@@ -818,6 +812,6 @@ void Application::newTab()
 
 void Application::newPrivateBrowsingWindow()
 {
-    // FIXME: what about an "about:incognito" page?
+    // NOTE: what about an "about:incognito" page?
     loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
 }

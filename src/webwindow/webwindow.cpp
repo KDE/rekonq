@@ -504,7 +504,7 @@ void WebWindow::openPrevious(Qt::MouseButtons mouseButtons, Qt::KeyboardModifier
 
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
     {
-// FIXME        rApp->loadUrl(item->url(), Rekonq::NewTab);
+        rApp->loadUrl(item->url(), Rekonq::NewTab);
     }
     else
     {
@@ -537,7 +537,7 @@ void WebWindow::openNext(Qt::MouseButtons mouseButtons, Qt::KeyboardModifiers ke
 
     if (mouseButtons == Qt::MidButton || keyboardModifiers == Qt::ControlModifier)
     {
-// FIXME        rApp->loadUrl(item->url(), Rekonq::NewTab);
+        rApp->loadUrl(item->url(), Rekonq::NewTab);
     }
     else
     {
@@ -757,19 +757,20 @@ void WebWindow::viewPageSource()
     tmpFile.close();
     KUrl tmpUrl(tmpFile.fileName());
 
-    KParts::ReadOnlyPart *pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(QL1S("text/plain"), _tab, this, QString());
-    if (pa)
-    {
-        // FIXME DO SOMETHING...
+    KRun::runUrl(tmpUrl, QL1S("text/plain"), this, false);
+
+//     FIXME: Implement "view-source" scheme
+//     KParts::ReadOnlyPart *pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(QL1S("text/plain"), _tab, this, QString());
+//     if (pa)
+//     {
 //         WebTab *srcTab = m_view->newWebTab(true);
 //         srcTab->page()->setIsOnRekonqPage(true);
 //         srcTab->setPart(pa, tmpUrl);
 //         srcTab->urlBar()->setQUrl(url.pathOrUrl());
 //         m_view->setTabText(m_view->currentIndex(), i18n("Source of: ") + url.prettyUrl());
 //         updateHistoryActions();
-    }
-    else
-        KRun::runUrl(tmpUrl, QL1S("text/plain"), this, false);
+//     }
+
 }
 
 
