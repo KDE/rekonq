@@ -40,8 +40,6 @@
 KWebSpellChecker::KWebSpellChecker()
 {
     m_speller = new Sonnet::Speller();
-    kDebug() << "!!! Client = " << m_speller->defaultClient() << endl;
-    kDebug() << "!!! Language = " << m_speller->defaultLanguage() << endl;
 }
 
 KWebSpellChecker::~KWebSpellChecker()
@@ -187,9 +185,12 @@ bool KWebKitPlatformPlugin::supportsExtension(Extension ext) const
     return ext == SpellChecker;
 }
 
-QObject* KWebKitPlatformPlugin::createExtension(Extension) const
+QObject* KWebKitPlatformPlugin::createExtension(Extension ext) const
 {
-    return new KWebSpellChecker();
+    if (ext == SpellChecker)
+        return new KWebSpellChecker();
+    else
+        return NULL;
 }
 
 Q_EXPORT_PLUGIN2(kwebspellchecker, KWebKitPlatformPlugin);
