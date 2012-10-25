@@ -160,6 +160,9 @@ WebWindow::~WebWindow()
 
 void WebWindow::setupActions()
 {
+    // this let shortcuts work..
+    actionCollection()->addAssociatedWidget(this);
+
     KAction *a;
 
     // ========================= History related actions ==============================
@@ -211,6 +214,16 @@ void WebWindow::setupActions()
     a->setChecked(ReKonfig::showBookmarksToolbar());
     actionCollection()->addAction(QL1S("show_bookmarks_toolbar"), a);
     connect(a, SIGNAL(toggled(bool)), this, SLOT(toggleBookmarksToolbar(bool)));
+
+    // Open Downloads page
+    a = new KAction(KIcon("download"), i18n("Downloads"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_J));
+    actionCollection()->addAction(QL1S("open_downloads_page"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(openDownloadsPage()));
+
+    // Open Home Page
+    a = actionCollection()->addAction(KStandardAction::Home);
+    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(openHomePage(Qt::MouseButtons, Qt::KeyboardModifiers)));
 
     // find action
     a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
@@ -902,4 +915,23 @@ void WebWindow::checkFocus()
         _bar->setFocus();
     else
         _tab->view()->setFocus();
+}
+
+
+void WebWindow::openDownloadsPage()
+{
+    rApp->loadUrl( QUrl("about:downloads"), Rekonq::NewTab );
+}
+
+
+void WebWindow::openHomePage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+{
+    KUrl homeUrl = ReKonfig::useNewTabPage()
+                   ? KUrl(QL1S("about:home"))
+                   : KUrl(ReKonfig::homePage());
+
+    if (buttons == Qt::MidButton || modifiers == Qt::ControlModifier)
+        rApp->loadUrl(homeUrl, Rekonq::NewTab);
+    else
+        load(homeUrl);
 }

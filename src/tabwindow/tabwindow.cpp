@@ -93,7 +93,8 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     connect(tabBar, SIGNAL(closeOtherTabs(int)),    this,   SLOT(closeOtherTabs(int)));
     connect(tabBar, SIGNAL(reloadTab(int)),         this,   SLOT(reloadTab(int)));
     connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int)));
-    connect(tabBar, SIGNAL(restoreClosedTab(int)),  this,   SLOT(restoreClosedTab(int)));
+    
+    connect(tabBar, SIGNAL(restoreLastClosedTab()), this,   SLOT(restoreLastClosedTab()));
 
     connect(tabBar, SIGNAL(tabLayoutChanged()),     this,   SLOT(updateNewTabButtonPosition()));
 
@@ -107,6 +108,20 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
 
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
 
+    // ----------------------------------------------------------------------------------------------
+    KActionCollection *tabActionColl = new KActionCollection(this);
+    tabActionColl->addAssociatedWidget(this);
+
+    a = new KAction(KIcon("tab-new"), i18n("Open Last Closed Tab"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
+    tabActionColl->addAction(QL1S("open_last_closed_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(restoreLastClosedTab()));
+
+    a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
+    a->setShortcuts(KStandardShortcut::close());
+    tabActionColl->addAction(QL1S("close_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(closeTab()));
+    
     // NOTE: we usually create TabWindow with AT LEAST one tab, but
     // in one important case...
     if (withTab)
@@ -332,6 +347,12 @@ void TabWindow::tabLoadFinished(bool ok)
         return;
 
     QLabel *label = qobject_cast<QLabel* >(tabBar()->tabButton(index, QTabBar::LeftSide));
+    if (!label)
+    {
+        label = new QLabel(this);
+        tabBar()->setTabButton(index, QTabBar::LeftSide, 0);
+        tabBar()->setTabButton(index, QTabBar::LeftSide, label);
+    }
 
     QMovie *movie = label->movie();
     if (movie)
@@ -507,16 +528,16 @@ void TabWindow::reloadAllTabs()
 }
 
 
-void TabWindow::restoreClosedTab(int i)
+void TabWindow::restoreLastClosedTab()
 {
     if (m_recentlyClosedTabs.isEmpty())
         return;
 
-    TabHistory history = m_recentlyClosedTabs.takeAt(i);
+    TabHistory history = m_recentlyClosedTabs.takeAt(0);
 
     QUrl u = QUrl(history.url);
 
-    loadUrl(u, Rekonq::NewTab, &history);
+    loadUrl(u, Rekonq::NewFocusedTab, &history);
 
     // just to get sure...
     m_recentlyClosedTabs.removeAll(history);

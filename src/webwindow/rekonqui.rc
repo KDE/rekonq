@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="64">
+<gui name="rekonq" version="65">
 
 <!--- =========== Rekonq Menu ============= -->
 <Menu name="rekonqMenu" noMerge="1">
@@ -29,7 +29,6 @@
         <Action name="webapp_shortcut" />
         <Action name="web_inspector" />
         <Action name="page_source" />
-        <Action name="net_analyzer" />
         <Action name="set_editable" />
         <Separator/>
         <Action name="useragent" />
@@ -38,9 +37,9 @@
     </Menu>
 
     <Separator/>
-    <Action name="show_history_panel" />
     <Action name="show_bookmarks_toolbar" />
-    <Action name="show_bookmarks_panel" />
+    <Action name="open_downloads_page" />
+    <Separator/>
     <Action name="fullscreen" />
     <Separator/>
 
@@ -69,11 +68,10 @@
         <Action name="open_location" />
         <Separator/>
         <Action name="new_tab" />
-        <Action name="close_tab" />
+        <Action name="new_window" />
         <Separator/>
         <Action name="file_save_as" />
         <Separator/>
-        <Action name="file_print_preview" />
         <Action name="file_print" />
         <Separator/>
         <Action name="file_quit" />
@@ -123,7 +121,6 @@
         <Action name="private_browsing" />
         <Action name="clear_private_data" />
         <Action name="page_source" />
-        <Action name="net_analyzer" />
         <Action name="set_editable" />
         <Separator/>
         <Action name="useragent" />
@@ -132,7 +129,6 @@
 
     <!--  ============ SETTINGS menu =========== -->
     <Menu name="settings" noMerge="1"><text>&amp;Settings</text>
-        <Action name="options_show_menubar" />
         <Merge name="StandardToolBarMenuHandler" />
         <Merge/>
         <Separator/>

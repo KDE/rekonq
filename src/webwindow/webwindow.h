@@ -126,6 +126,10 @@ private Q_SLOTS:
     // bookmarks bar
     void toggleBookmarksToolbar(bool);
 
+    // special pages
+    void openDownloadsPage();
+    void openHomePage(Qt::MouseButtons, Qt::KeyboardModifiers);
+    
     // Tools Menu slots
     void viewPageSource();
 

@@ -177,17 +177,6 @@ void TabBar::detachTab()
 }
 
 
-void TabBar::reopenLastClosedTab()
-{
-    KAction *a = qobject_cast<KAction *>(sender());
-    if (a)
-    {
-        int index = a->data().toInt();
-        emit restoreClosedTab(index);
-    }
-}
-
-
 void TabBar::contextMenu(int tab, const QPoint &pos)
 {
     TabWindow *w = qobject_cast<TabWindow *>(parent());
@@ -254,7 +243,7 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
 
     a = new KAction(KIcon("tab-new"), i18n("Open Last Closed Tab"), this);
     a->setData(0);  // last closed tab has index 0!
-    connect(a, SIGNAL(triggered(bool)), this, SLOT(reopenLastClosedTab()));
+    connect(a, SIGNAL(triggered(bool)), this, SIGNAL(restoreLastClosedTab()));
     menu.addAction(a);
 
     if (count() > 1)

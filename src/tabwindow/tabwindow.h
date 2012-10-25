@@ -100,7 +100,8 @@ private Q_SLOTS:
     void detachTab(int index = -1, TabWindow *toWindow = 0);
     void reloadTab(int index = -1);
     void reloadAllTabs();
-    void restoreClosedTab(int i);
+
+    void restoreLastClosedTab();
 
     void setFullScreen(bool);
     
