@@ -375,7 +375,8 @@ void TabWindow::tabLoadFinished(bool ok)
         setTabText(index, QString());
     }
 
-    tab->checkFocus();
+    if (index == currentIndex())
+        tab->checkFocus();
 }
 
 
