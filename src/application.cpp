@@ -132,12 +132,9 @@ int Application::newInstance()
             u = UrlResolver::urlFromTextTyped(args->arg(0));
         }
         kDebug() << "URL: " << u;
-        WebTab *tab = new WebTab;
-        tab->view()->load(u);
 
-        tab->installEventFilter(this);
-        m_webApps.prepend(tab);
-        tab->show();
+        WebTab *tab = newWebApp();
+        tab->view()->load(u);
         
         if (isFirstLoad)
         {
@@ -420,6 +417,19 @@ TabWindow *Application::newTabWindow(bool withTab, bool PrivateBrowsingMode)
     w->show();
 
     return w;
+}
+
+
+WebTab *Application::newWebApp()
+{
+    WebTab *tab = new WebTab;
+
+    tab->installEventFilter(this);
+    m_webApps.prepend(tab);
+
+    tab->show();
+
+    return tab;
 }
 
 
@@ -721,8 +731,8 @@ void Application::createWebAppShortcut()
     QWidget widget;
     wAppWidget.setupUi(&widget);
 
-    const QString title = tabWindow()->currentWebWindow()->title().remove('&');
-    wAppWidget.nameLineEdit->setText(title);
+    QString webAppTitle = tabWindow()->currentWebWindow()->title().remove('&');
+    wAppWidget.nameLineEdit->setText(webAppTitle);
     wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());
     wAppWidget.kcfg_createMenuAppShortcut->setChecked(ReKonfig::createMenuAppShortcut());
 
@@ -737,17 +747,18 @@ void Application::createWebAppShortcut()
         IconManager::self()->saveDesktopIconForUrl(u);
         QString iconPath = KStandardDirs::locateLocal("cache" , "favicons/" , true) + h + QL1S("_WEBAPPICON.png");
 
+        if (!wAppWidget.nameLineEdit->text().isEmpty())
+            webAppTitle = wAppWidget.nameLineEdit->text();
+
+        QString webAppDescription;
+        if (!wAppWidget.descriptionLineEdit->text().isEmpty())
+            webAppDescription = wAppWidget.descriptionLineEdit->text();
+        
         QString shortcutString = QL1S("#!/usr/bin/env xdg-open\n")
                                  + QL1S("[Desktop Entry]\n")
-                                 + QL1S("Name=")
-                                 + (wAppWidget.nameLineEdit->text().isEmpty()
-                                    ? QL1S("rekonq")
-                                    : wAppWidget.nameLineEdit->text())
+                                 + QL1S("Name=") + webAppTitle
                                  + QL1S("\n")
-                                 + QL1S("GenericName=")
-                                 + (wAppWidget.descriptionLineEdit->text().isEmpty()
-                                    ? QL1S("")
-                                    : wAppWidget.descriptionLineEdit->text())
+                                 + QL1S("GenericName=") + webAppDescription
                                  + QL1S("\n")
                                  + QL1S("Icon=") + iconPath + QL1S("\n")
                                  + QL1S("Exec=rekonq --webapp ") + u.url() + QL1S("\n")
@@ -758,7 +769,7 @@ void Application::createWebAppShortcut()
         if (ReKonfig::createDesktopAppShortcut())
         {
             QString desktop = KGlobalSettings::desktopPath();
-            QFile wAppFile(desktop + QL1C('/') + title);
+            QFile wAppFile(desktop + QL1C('/') + webAppTitle);
 
             if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
             {
@@ -777,7 +788,7 @@ void Application::createWebAppShortcut()
         if (ReKonfig::createMenuAppShortcut())
         {
             QString appMenuDir = KStandardDirs::locateLocal("xdgdata-apps", QString());
-            QFile wAppFile(appMenuDir + QL1C('/') + title + QL1S(".desktop"));
+            QFile wAppFile(appMenuDir + QL1C('/') + webAppTitle + QL1S(".desktop"));
 
             if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
             {

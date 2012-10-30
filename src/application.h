@@ -92,6 +92,8 @@ public Q_SLOTS:
 
     TabWindow *newTabWindow(bool withTab = true, bool PrivateBrowsingMode = false);
 
+    WebTab *newWebApp();
+    
 protected:
     // This is used to track which window was activated most recently
     bool eventFilter(QObject *watched, QEvent *event);
