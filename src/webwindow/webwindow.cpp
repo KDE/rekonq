@@ -274,7 +274,8 @@ void WebWindow::setupActions()
     // Zoom ==============
     KStandardAction::zoomIn(_tab, SLOT(zoomIn()), actionCollection());
     KStandardAction::zoomOut(_tab, SLOT(zoomOut()), actionCollection());
-    KStandardAction::zoom(_tab, SLOT(zoomDefault()), actionCollection());
+    a = KStandardAction::zoom(_tab, SLOT(zoomDefault()), actionCollection());
+    a->setShortcut(KShortcut(Qt::CTRL | Qt::Key_0));
 
     // Bookmark ==========
     a = KStandardAction::addBookmark(_bar, SLOT(manageBookmarks()), actionCollection());
