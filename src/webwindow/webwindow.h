@@ -149,7 +149,10 @@ Q_SIGNALS:
     void pageCreated(WebPage *);
 
     void setFullScreen(bool);
-    
+
+protected:
+    void keyPressEvent(QKeyEvent *);
+
 private:
     int _progress;
 

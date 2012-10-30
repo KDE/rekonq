@@ -230,6 +230,9 @@ void WebWindow::setupActions()
     KShortcut findShortcut = KStandardShortcut::find();
     a->setShortcut(findShortcut);
 
+    KStandardAction::findNext(m_findBar, SLOT(findNext()), actionCollection());
+    KStandardAction::findPrev(m_findBar, SLOT(findPrevious()), actionCollection());
+    
     a = KStandardAction::fullScreen(this, SLOT(setWidgetsHidden(bool)), this, actionCollection());
     KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
     fullScreenShortcut.setAlternate(Qt::Key_F11);
@@ -617,7 +620,7 @@ void WebWindow::notifyMessage(const QString &msg)
 
     const bool horizontalScrollbarIsVisible = _tab->page()->currentFrame()->scrollBarMaximum(Qt::Horizontal);
     const bool verticalScrollbarIsVisible = _tab->page()->currentFrame()->scrollBarMaximum(Qt::Vertical);
-    const bool actionBarsVisible = false; //m_findBar->isVisible() || m_zoomBar->isVisible();
+    const bool actionBarsVisible = m_findBar->isVisible(); // NOTE: actually we have just the finbar down there...
 
     const int scrollbarExtent = style()->pixelMetric(QStyle::PM_ScrollBarExtent);
     const int hScrollbarSize = horizontalScrollbarIsVisible ? scrollbarExtent : 0;
@@ -935,4 +938,22 @@ void WebWindow::openHomePage(Qt::MouseButtons buttons, Qt::KeyboardModifiers mod
         rApp->loadUrl(homeUrl, Rekonq::NewTab);
     else
         load(homeUrl);
+}
+
+
+void WebWindow::keyPressEvent(QKeyEvent *kev)
+{
+    if (kev->key() == Qt::Key_Escape)
+    {
+        // if findbar is visible, hide it
+        if (m_findBar->isVisible())
+        {
+            m_findBar->hide();
+            kev->accept();
+            checkFocus();
+            return;
+        }
+    }
+
+    return QWidget::keyPressEvent(kev);
 }

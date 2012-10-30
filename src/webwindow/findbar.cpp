@@ -184,7 +184,7 @@ void FindBar::setVisible(bool visible)
             emit searchString(m_lineEdit->text());
         }
 
-        m_hideTimer->start(60000);
+        m_hideTimer->start(20000);
 
         m_lineEdit->setFocus();
         m_lineEdit->selectAll();
