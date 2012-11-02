@@ -128,6 +128,8 @@ private Q_SLOTS:
 
     // special pages
     void openDownloadsPage();
+    void openHistoryPage();
+    void openBookmarksPage();
     void openHomePage(Qt::MouseButtons, Qt::KeyboardModifiers);
     
     // Tools Menu slots

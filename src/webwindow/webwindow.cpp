@@ -209,21 +209,34 @@ void WebWindow::setupActions()
     KStandardAction::quit(rApp, SLOT(queryQuit()), actionCollection());
 
     // Bookmark Toolbar
-    a = new KAction(KIcon("bookmarks-bar"), i18n("Bookmarks Toolbar"), this);
+    a = new KAction(KIcon("bookmark-toolbar"), i18n("Bookmarks Toolbar"), this);
     a->setCheckable(true);
     a->setChecked(ReKonfig::showBookmarksToolbar());
     actionCollection()->addAction(QL1S("show_bookmarks_toolbar"), a);
     connect(a, SIGNAL(toggled(bool)), this, SLOT(toggleBookmarksToolbar(bool)));
 
-    // Open Downloads page
-    a = new KAction(KIcon("download"), i18n("Downloads"), this);
+    // Open special pages
+    // Home
+    a = actionCollection()->addAction(KStandardAction::Home);
+    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(openHomePage(Qt::MouseButtons, Qt::KeyboardModifiers)));
+
+    // Downloads
+    a = new KAction(KIcon("download"), i18n("Downloads page"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_J));
     actionCollection()->addAction(QL1S("open_downloads_page"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(openDownloadsPage()));
 
-    // Open Home Page
-    a = actionCollection()->addAction(KStandardAction::Home);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(openHomePage(Qt::MouseButtons, Qt::KeyboardModifiers)));
+    // History
+    a = new KAction(KIcon("view-history"), i18n("History page"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
+    actionCollection()->addAction(QL1S("open_history_page"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(openHistoryPage()));
+
+    // Bookmarks
+    a = new KAction(KIcon("bookmarks"), i18n("Bookmarks page"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
+    actionCollection()->addAction(QL1S("open_bookmarks_page"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(openBookmarksPage()));
 
     // find action
     a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
@@ -284,6 +297,9 @@ void WebWindow::setupActions()
     a = KStandardAction::addBookmark(_bar, SLOT(manageBookmarks()), actionCollection());
     KShortcut bkShortcut(Qt::CTRL + Qt::Key_D);
     a->setShortcut(bkShortcut);
+
+    // Edit bookmarks
+    a = KStandardAction::editBookmarks(BookmarkManager::self(), SLOT(slotEditBookmarks()), actionCollection());
 
     // User Agent
     a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
@@ -924,7 +940,19 @@ void WebWindow::checkFocus()
 
 void WebWindow::openDownloadsPage()
 {
-    rApp->loadUrl( QUrl("about:downloads"), Rekonq::NewTab );
+    rApp->loadUrl( QUrl("about:downloads"), Rekonq::NewFocusedTab );
+}
+
+
+void WebWindow::openHistoryPage()
+{
+    rApp->loadUrl( QUrl("about:history"), Rekonq::NewFocusedTab );
+}
+
+
+void WebWindow::openBookmarksPage()
+{
+    rApp->loadUrl( QUrl("about:bookmarks"), Rekonq::NewFocusedTab );
 }
 
 
