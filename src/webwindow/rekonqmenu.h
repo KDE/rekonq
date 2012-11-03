@@ -36,9 +36,6 @@
 // KDE Includes
 #include <KMenu>
 
-// Qt Includes
-#include <QWeakPointer>
-
 // Forward Declarations
 class QWidget;
 
@@ -55,13 +52,8 @@ class REKONQ_TESTS_EXPORT RekonqMenu : public KMenu
 public:
     RekonqMenu(QWidget *parent);
 
-    void setButtonWidget(QWidget *);
-
 protected:
     virtual void showEvent(QShowEvent* event);
-
-private:
-    QWeakPointer<QWidget> m_button;
 };
 
 #endif // REKONQ_MENU_H
