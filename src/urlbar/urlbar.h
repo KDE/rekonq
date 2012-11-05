@@ -112,6 +112,7 @@ private Q_SLOTS:
     void detectTypedString(const QString &);
     void suggest();
 
+    void manageAdBlock(QPoint);
     void manageFavorites(QPoint);
 
     void refreshFavicon();

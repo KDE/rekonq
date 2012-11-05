@@ -32,10 +32,7 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "adblockwidget.h"
-#include "blockedelementswidget.h"
-
-#include "webpage.h"
+#include "adblocksettingwidget.h"
 
 // KDE Includes
 #include <KIO/FileCopyJob>
@@ -207,10 +204,10 @@ void AdBlockManager::loadRuleString(const QString &stringRule)
     // white rules
     if (stringRule.startsWith(QL1S("@@")))
     {
-        const QString filter = stringRule.mid(2);
-        if (_hostWhiteList.tryAddFilter(filter))
+        if (_hostWhiteList.tryAddFilter(stringRule))
             return;
 
+        const QString filter = stringRule.mid(2);
         AdBlockRule rule(filter);
         _whiteList << rule;
         return;
@@ -335,7 +332,7 @@ void AdBlockManager::showSettings()
     dialog->setCaption(i18nc("@title:window", "Ad Block Settings"));
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
 
-    AdBlockWidget widget(_adblockConfig);
+    AdBlockSettingWidget widget(_adblockConfig);
     dialog->setMainWidget(&widget);
     connect(dialog, SIGNAL(okClicked()), &widget, SLOT(save()));
     connect(dialog, SIGNAL(okClicked()), this, SLOT(loadSettings()));
@@ -371,33 +368,52 @@ void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
 }
 
 
-void AdBlockManager::showBlockedItemDialog()
+void AdBlockManager::removeCustomHostRule(const QString &stringRule, bool reloadPage)
 {
-    QPointer<KDialog> dialog = new KDialog();
-    dialog->setCaption(i18nc("@title:window", "Blocked elements"));
-    dialog->setButtons(KDialog::Ok);
+    // save rule in local filters
+    QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
 
-    BlockedElementsWidget widget(this);
-    widget.setBlockedElements(_blockedElements);
-    widget.setHidedElements(_hidedElements);
-
-    dialog->setMainWidget(&widget);
-    dialog->exec();
-
-    Q_FOREACH(const QString & r, widget.rulesToAdd())
+    QFile ruleFile(localRulesFilePath);
+    if (!ruleFile.open(QFile::ReadOnly))
     {
-        addCustomRule(r);
+        kDebug() << "Unable to open rule file" << localRulesFilePath;
+        return;
     }
 
-    if (widget.pageNeedsReload())
-        emit reloadCurrentPage();
+    QTextStream in(&ruleFile);
+    QStringList localRules;
+    QString r;
+    do
+    {
+        r = in.readLine();
+        if (r != stringRule)
+            localRules << r;
+    }
+    while (!r.isNull());
+    ruleFile.close();
 
-    dialog->deleteLater();
+    if (!ruleFile.open(QFile::WriteOnly))
+    {
+        kDebug() << "Unable to open rule file" << localRulesFilePath;
+        return;
+    }
+
+    QTextStream out(&ruleFile);
+    Q_FOREACH(const QString &r, localRules)
+    {
+        out << r << '\n';
+    }
+    
+    // (un)load it
+    _hostWhiteList.remove(stringRule);
+
+    // eventually reload page
+    if (reloadPage)
+        emit reloadCurrentPage();
 }
 
 
-void AdBlockManager::clearElementsLists()
+bool AdBlockManager::isAdblockEnabledForHost(const QString &host)
 {
-    _blockedElements.clear();
-    _hidedElements = 0;
+    return ! _hostWhiteList.match(host);
 }

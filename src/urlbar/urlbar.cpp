@@ -38,15 +38,17 @@
 #include "application.h"
 
 // Local Includes
+#include "adblockmanager.h"
 #include "bookmarkmanager.h"
 #include "bookmarkowner.h"  // FIXME: Why is this needed? Why everything interesting in BookmarkManager is in its owner?
 #include "iconmanager.h"
 
-#include "completionwidget.h"
+#include "adblockwidget.h"
 #include "bookmarkwidget.h"
 #include "favoritewidget.h"
 #include "rsswidget.h"
 
+#include "completionwidget.h"
 #include "urlresolver.h"
 
 #include "webtab.h"
@@ -408,11 +410,12 @@ void UrlBar::loadFinished()
         connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo(QPoint)));
     }
 
-// FIXME Reimplement    if (_tab->hasAdBlockedElements())
-//     {
-//         IconButton *bt = addRightIcon(UrlBar::AdBlock);
-//         connect(bt, SIGNAL(clicked(QPoint)), (QObject *) AdBlockManager::self(), SLOT(showBlockedItemDialog()));
-//     }
+    // Show adblock
+    if (AdBlockManager::self()->isEnabled())
+    {
+        IconButton *bt = addRightIcon(UrlBar::AdBlock);
+        connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(manageAdBlock(QPoint)));
+    }
 
     // we need to update urlbar after the right icon settings
     // removing this code (where setStyleSheet automatically calls update) needs adding again
@@ -597,8 +600,16 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         }
         break;
     case UrlBar::AdBlock:
-        rightIcon->setIcon(KIcon("preferences-web-browser-adblock"));
-        rightIcon->setToolTip(i18n("There are elements blocked by AdBlock"));
+        if (AdBlockManager::self()->isAdblockEnabledForHost(_tab->url().host()))
+        {
+            rightIcon->setIcon(KIcon("preferences-web-browser-adblock"));
+            rightIcon->setToolTip(i18n("AdBlock is enabled on this site"));
+        }
+        else
+        {
+            rightIcon->setIcon(KIcon("preferences-web-browser-adblock").pixmap(32, 32, QIcon::Disabled));
+            rightIcon->setToolTip(i18n("AdBlock is NOT enabled on this site"));
+        }
         break;
     default:
         ASSERT_NOT_REACHED("ERROR.. default non extant case!!");
@@ -763,6 +774,21 @@ void UrlBar::manageFavorites(QPoint pos)
     Q_UNUSED(snap);
 
     updateRightIcons();
+}
+
+
+void UrlBar::manageAdBlock(QPoint pos)
+{
+    IconButton *bt = qobject_cast<IconButton *>(this->sender());
+    if (!bt)
+        return;
+
+    if (_tab->url().scheme() == QL1S("about"))
+        return;
+
+    AdBlockWidget *widget = new AdBlockWidget(_tab->url(), this);
+    connect(widget, SIGNAL(updateIcon()), this, SLOT(updateRightIcons()));
+    widget->showAt(pos);
 }
 
 

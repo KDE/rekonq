@@ -25,8 +25,8 @@
 
 
 // Self Includes
-#include "adblockwidget.h"
-#include "adblockwidget.moc"
+#include "adblocksettingwidget.h"
+#include "adblocksettingwidget.moc"
 
 // Auto Includes
 #include "rekonq.h"
@@ -42,7 +42,7 @@
 #include <QListWidgetItem>
 
 
-AdBlockWidget::AdBlockWidget(KSharedConfig::Ptr config, QWidget *parent)
+AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *parent)
     : QWidget(parent)
     , _changed(false)
     , _adblockConfig(config)
@@ -78,7 +78,7 @@ AdBlockWidget::AdBlockWidget(KSharedConfig::Ptr config, QWidget *parent)
 }
 
 
-void AdBlockWidget::slotInfoLinkActivated(const QString &url)
+void AdBlockSettingWidget::slotInfoLinkActivated(const QString &url)
 {
     Q_UNUSED(url)
 
@@ -94,7 +94,7 @@ void AdBlockWidget::slotInfoLinkActivated(const QString &url)
 }
 
 
-void AdBlockWidget::insertRule()
+void AdBlockSettingWidget::insertRule()
 {
     QString rule = addFilterLineEdit->text();
     if (rule.isEmpty())
@@ -105,13 +105,13 @@ void AdBlockWidget::insertRule()
 }
 
 
-void AdBlockWidget::removeRule()
+void AdBlockSettingWidget::removeRule()
 {
     manualFiltersListWidget->takeItem(manualFiltersListWidget->currentRow());
 }
 
 
-void AdBlockWidget::load()
+void AdBlockSettingWidget::load()
 {
     // General settings
     KConfigGroup settingsGroup(_adblockConfig, "Settings");
@@ -177,7 +177,7 @@ void AdBlockWidget::load()
 }
 
 
-void AdBlockWidget::save()
+void AdBlockSettingWidget::save()
 {
     if (!_changed)
         return;
@@ -226,7 +226,7 @@ void AdBlockWidget::save()
 }
 
 
-void AdBlockWidget::hasChanged()
+void AdBlockSettingWidget::hasChanged()
 {
     // update enabled status
     checkHideAds->setEnabled(checkEnableAdblock->isChecked());
@@ -236,7 +236,7 @@ void AdBlockWidget::hasChanged()
 }
 
 
-bool AdBlockWidget::changed()
+bool AdBlockSettingWidget::changed()
 {
     return _changed;
 }

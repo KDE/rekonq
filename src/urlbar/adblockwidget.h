@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -27,47 +27,33 @@
 #ifndef ADBLOCK_WIDGET_H
 #define ADBLOCK_WIDGET_H
 
-
-// Rekonq Includes
-#include "rekonq_defines.h"
-
-// Ui Includes
-#include "ui_settings_adblock.h"
-
-// KDE Includes
-#include <KSharedConfig>
-
 // Qt Includes
-#include <QWidget>
+#include <QCheckBox>
+#include <QMenu>
+#include <QUrl>
 
 
-class AdBlockWidget : public QWidget, private Ui::adblock
+class AdBlockWidget : public QMenu
 {
     Q_OBJECT
 
 public:
-    explicit AdBlockWidget(KSharedConfig::Ptr config, QWidget *parent = 0);
+    explicit AdBlockWidget(const QUrl &url, QWidget *parent = 0);
+    virtual ~AdBlockWidget();
 
-    bool changed();
+    void showAt(const QPoint &pos);
 
 Q_SIGNALS:
-    void changed(bool);
-
-public Q_SLOTS:
-    void save();
+    void updateIcon();
 
 private Q_SLOTS:
-    void hasChanged();
-
-    void slotInfoLinkActivated(const QString &);
-    void insertRule();
-    void removeRule();
+    void accept();
 
 private:
-    void load();
+    QUrl _pageUrl;
 
-    bool _changed;
-    KSharedConfig::Ptr _adblockConfig;
+    QCheckBox *_chBox;
+    bool _isAdblockEnabledHere;
 };
 
-#endif // ADBLOCK_WIDGET_H
+#endif

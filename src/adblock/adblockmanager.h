@@ -165,8 +165,10 @@ public:
     bool blockRequest(const QNetworkRequest &request);
 
     void addCustomRule(const QString &, bool reloadPage = true);
-    void clearElementsLists();
+    void removeCustomHostRule(const QString &, bool reloadPage = true);
 
+    bool isAdblockEnabledForHost(const QString &host);
+    
 private:
     AdBlockManager(QObject *parent = 0);
 
@@ -182,7 +184,6 @@ private:
 private Q_SLOTS:
     void loadSettings();
     void showSettings();
-    void showBlockedItemDialog();
 
     void slotFinished(KJob *);
 
@@ -198,9 +199,6 @@ private:
     AdBlockRuleList _blackList;
     AdBlockRuleList _whiteList;
     QStringList _hideList;
-
-    QStringList _blockedElements;
-    int _hidedElements;
 
     KSharedConfig::Ptr _adblockConfig;
 

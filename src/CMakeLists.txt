@@ -23,8 +23,7 @@ set(rekonq_KDEINIT_SRCS
     adblock/adblockrulefallbackimpl.cpp
     adblock/adblockrulenullimpl.cpp
     adblock/adblockruletextmatchimpl.cpp
-    adblock/adblockwidget.cpp
-    adblock/blockedelementswidget.cpp
+    adblock/adblocksettingwidget.cpp
     #----------------------------------------
     bookmarks/bookmarkmanager.cpp
     bookmarks/bookmarkscontextmenu.cpp
@@ -75,6 +74,7 @@ set(rekonq_KDEINIT_SRCS
     urlbar/urlbar.cpp
     urlbar/completionwidget.cpp
     urlbar/listitem.cpp
+    urlbar/adblockwidget.cpp
     urlbar/bookmarkwidget.cpp
     urlbar/favoritewidget.cpp
     urlbar/rsswidget.cpp

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,48 +24,50 @@
 * ============================================================ */
 
 
-#ifndef BLOCKED_ELEMENTS_WIDGET_H
-#define BLOCKED_ELEMENTS_WIDGET_H
+#ifndef ADBLOCK_SETTINGS_WIDGET_H
+#define ADBLOCK_SETTINGS_WIDGET_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
 // Ui Includes
-#include "ui_blocked_elements.h"
+#include "ui_settings_adblock.h"
+
+// KDE Includes
+#include <KSharedConfig>
 
 // Qt Includes
 #include <QWidget>
 
 
-class BlockedElementsWidget : public QWidget, private Ui::BlockedElements
+class AdBlockSettingWidget : public QWidget, private Ui::adblock
 {
     Q_OBJECT
 
 public:
-    explicit BlockedElementsWidget(QObject *manager, QWidget *parent = 0);
+    explicit AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *parent = 0);
 
-    void setBlockedElements(const QStringList &);
-    void setHidedElements(int);
+    bool changed();
 
-    bool pageNeedsReload()
-    {
-        return _reloadPage;
-    };
+Q_SIGNALS:
+    void changed(bool);
 
-    QStringList rulesToAdd()
-    {
-        return _rulesToAdd;
-    };
+public Q_SLOTS:
+    void save();
 
 private Q_SLOTS:
-    void unblockElement();
+    void hasChanged();
+
+    void slotInfoLinkActivated(const QString &);
+    void insertRule();
+    void removeRule();
 
 private:
-    QObject *_manager;
+    void load();
 
-    bool _reloadPage;
-    QStringList _rulesToAdd;
+    bool _changed;
+    KSharedConfig::Ptr _adblockConfig;
 };
 
-#endif // BLOCKED_ELEMENTS_WIDGET_H
+#endif // ADBLOCK_SETTINGS_WIDGET_H

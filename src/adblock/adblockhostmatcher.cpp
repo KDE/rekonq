@@ -29,11 +29,11 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+
 bool AdBlockHostMatcher::tryAddFilter(const QString &filter)
 {
     if (filter.startsWith(QL1S("||")))
     {
-
         QString domain = filter.mid(2);
 
         if (!domain.endsWith(QL1C('^')))
@@ -49,8 +49,41 @@ bool AdBlockHostMatcher::tryAddFilter(const QString &filter)
 
         domain = domain.toLower();
         m_hostList.insert(domain);
-        m_hostList.insert(QL1S("www.") + domain);
         return true;
     }
+
+    if (filter.startsWith(QL1S("@@")))
+    {
+        QString domain = filter.mid(2);
+        
+        if (domain.contains(QL1C('^')))
+            return false;
+
+        if (domain.contains(QL1C('$')))
+            return false;
+        
+        if (domain.contains(QL1C('*')))
+            return false;
+
+        if (domain.contains(QL1C('|')))
+            return false;
+
+        if (domain.contains(QL1C('/')))
+        {
+            if (!domain.endsWith(QL1C('/')))
+                return false;
+        }
+        domain = domain.toLower();
+        m_hostList.insert(domain);
+        return true;
+    }
+    
     return false;
+}
+
+
+void AdBlockHostMatcher::remove(const QString &hostRule)
+{
+    bool on = m_hostList.remove(hostRule);
+    kDebug() << "REMOVED? " << on;
 }
