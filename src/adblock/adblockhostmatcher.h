@@ -48,8 +48,6 @@ public:
     {
         m_hostList.clear();
     }
-
-    void remove(const QString &hostRule);
     
 private:
     QSet<QString> m_hostList;

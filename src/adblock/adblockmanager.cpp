@@ -241,6 +241,14 @@ bool AdBlockManager::blockRequest(const QNetworkRequest &request)
     if (request.url().scheme() != QL1S("http"))
         return false;
 
+    QStringList whiteRefererList = ReKonfig::whiteReferer();
+    const QString referer = request.rawHeader("referer");
+    Q_FOREACH(const QString &host, whiteRefererList)
+    {
+        if (referer.contains(host))
+            return false;
+    }
+
     QString urlString = request.url().toString();
     // We compute a lowercase version of the URL so each rule does not
     // have to do it.
@@ -361,51 +369,6 @@ void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
 
     // load it
     loadRuleString(stringRule);
-
-    // eventually reload page
-    if (reloadPage)
-        emit reloadCurrentPage();
-}
-
-
-void AdBlockManager::removeCustomHostRule(const QString &stringRule, bool reloadPage)
-{
-    // save rule in local filters
-    QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
-
-    QFile ruleFile(localRulesFilePath);
-    if (!ruleFile.open(QFile::ReadOnly))
-    {
-        kDebug() << "Unable to open rule file" << localRulesFilePath;
-        return;
-    }
-
-    QTextStream in(&ruleFile);
-    QStringList localRules;
-    QString r;
-    do
-    {
-        r = in.readLine();
-        if (r != stringRule)
-            localRules << r;
-    }
-    while (!r.isNull());
-    ruleFile.close();
-
-    if (!ruleFile.open(QFile::WriteOnly))
-    {
-        kDebug() << "Unable to open rule file" << localRulesFilePath;
-        return;
-    }
-
-    QTextStream out(&ruleFile);
-    Q_FOREACH(const QString &r, localRules)
-    {
-        out << r << '\n';
-    }
-    
-    // (un)load it
-    _hostWhiteList.remove(stringRule);
 
     // eventually reload page
     if (reloadPage)

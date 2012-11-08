@@ -54,6 +54,9 @@
     <entry name="clearHomePageThumbs" type="Bool">
         <default>true</default>
     </entry>
+    <entry name="whiteReferer" type="StringList">
+        <default></default>
+    </entry>
 </group>
 
 

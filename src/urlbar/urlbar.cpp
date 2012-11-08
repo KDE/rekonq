@@ -600,7 +600,9 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         }
         break;
     case UrlBar::AdBlock:
-        if (AdBlockManager::self()->isAdblockEnabledForHost(_tab->url().host()))
+    {
+        QStringList hosts = ReKonfig::whiteReferer();
+        if (!hosts.contains(_tab->url().host()))
         {
             rightIcon->setIcon(KIcon("preferences-web-browser-adblock"));
             rightIcon->setToolTip(i18n("AdBlock is enabled on this site"));
@@ -611,6 +613,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
             rightIcon->setToolTip(i18n("AdBlock is NOT enabled on this site"));
         }
         break;
+    }
     default:
         ASSERT_NOT_REACHED("ERROR.. default non extant case!!");
         break;

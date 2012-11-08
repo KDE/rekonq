@@ -165,7 +165,6 @@ public:
     bool blockRequest(const QNetworkRequest &request);
 
     void addCustomRule(const QString &, bool reloadPage = true);
-    void removeCustomHostRule(const QString &, bool reloadPage = true);
 
     bool isAdblockEnabledForHost(const QString &host);
     

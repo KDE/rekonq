@@ -24,20 +24,21 @@
 * ============================================================ */
 
 
-// Auto Includes
+// Self Includes
 #include "adblockwidget.h"
 #include "adblockwidget.moc"
 
-// Local includes
-#include "adblockmanager.h"
+// Auto Includes
+#include "rekonq.h"
 
 // KDE Includes
+#include <KDialogButtonBox>
 #include <KIcon>
 #include <KLocalizedString>
+#include <KStandardGuiItem>
 
 // Qt Includes
 #include <QCheckBox>
-#include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
@@ -47,7 +48,7 @@ AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)
     : QMenu(parent)
     , _pageUrl(url)
     , _chBox(new QCheckBox(this))
-    , _isAdblockEnabledHere(AdBlockManager::self()->isAdblockEnabledForHost(_pageUrl.host()))
+    , _isAdblockEnabledHere(true)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setFixedWidth(320);
@@ -62,6 +63,17 @@ AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)
     f.setBold(true);
     title->setFont(f);
 
+    QStringList hList = ReKonfig::whiteReferer();
+    const QString urlHost = _pageUrl.host();
+    Q_FOREACH(const QString &host, hList)
+    {
+        if (host.contains(urlHost))
+        {
+            _isAdblockEnabledHere = false;
+            break;
+        }
+    }
+    
     // Checkbox
     _chBox->setText(i18n("Enable adblock for this site"));
     _chBox->setChecked(_isAdblockEnabledHere);
@@ -70,9 +82,9 @@ AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)
     layout->addWidget(_chBox);
 
     // Ok & Cancel buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+    KDialogButtonBox *buttonBox = new KDialogButtonBox(this, Qt::Horizontal);
+    buttonBox->addButton(KStandardGuiItem::ok(), QDialogButtonBox::AcceptRole, this, SLOT(accept()));
+    buttonBox->addButton(KStandardGuiItem::cancel(), QDialogButtonBox::RejectRole, this, SLOT(close()));
     layout->addWidget(buttonBox);
 }
 
@@ -97,15 +109,19 @@ void AdBlockWidget::accept()
     bool on = _chBox->isChecked();
     if (on != _isAdblockEnabledHere)
     {
+        QStringList hosts = ReKonfig::whiteReferer();
+        
         if (on)
         {
             kDebug() << "REMOVING IT...";
-            AdBlockManager::self()->removeCustomHostRule(_pageUrl.host());
+            hosts.removeOne(_pageUrl.host());
         }
         else
         {
-            AdBlockManager::self()->addCustomRule(QL1S("@@") + _pageUrl.host());            
+            hosts << _pageUrl.host();
         }
+
+        ReKonfig::setWhiteReferer(hosts);
         
         emit updateIcon();
     }

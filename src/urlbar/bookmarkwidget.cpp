@@ -26,7 +26,7 @@
 * ============================================================ */
 
 
-// Auto Includes
+// Self Includes
 #include "bookmarkwidget.h"
 #include "bookmarkwidget.moc"
 

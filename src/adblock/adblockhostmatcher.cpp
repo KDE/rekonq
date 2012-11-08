@@ -80,10 +80,3 @@ bool AdBlockHostMatcher::tryAddFilter(const QString &filter)
     
     return false;
 }
-
-
-void AdBlockHostMatcher::remove(const QString &hostRule)
-{
-    bool on = m_hostList.remove(hostRule);
-    kDebug() << "REMOVED? " << on;
-}
