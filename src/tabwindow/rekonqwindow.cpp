@@ -354,3 +354,49 @@ bool RekonqWindow::restore(int number, bool show)
     }
     return false;
 }
+
+
+// NOTE: For internal purpose only ------------------------------------------------------
+
+
+int RekonqWindow::addTab(QWidget *page, const QString &label)
+{
+    setUpdatesEnabled(false);
+    int i = KTabWidget::addTab(page, label);
+    setUpdatesEnabled(true);
+
+    return i;
+}
+
+
+int RekonqWindow::addTab(QWidget *page, const QIcon &icon, const QString &label)
+{
+    setUpdatesEnabled(false);
+    int i = KTabWidget::addTab(page, icon, label);
+    setUpdatesEnabled(true);
+
+    return i;
+}
+
+
+int RekonqWindow::insertTab(int index, QWidget *page, const QString &label)
+{
+    setUpdatesEnabled(false);
+    int i = KTabWidget::insertTab(index, page, label);
+    setUpdatesEnabled(true);
+
+    return i;
+}
+
+
+int RekonqWindow::insertTab(int index, QWidget *page, const QIcon &icon, const QString &label)
+{
+    setUpdatesEnabled(false);
+    int i = KTabWidget::insertTab(index, page, icon, label);
+    setUpdatesEnabled(true);
+
+    return i;
+}
+
+
+// --------------------------------------------------------------------------------------
