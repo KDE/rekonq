@@ -108,7 +108,7 @@ public Q_SLOTS:
     void openBookmarkFolder(const KBookmark &bookmark);
 
     KBookmark bookmarkCurrentPage(const KBookmark &bookmark = KBookmark());
-    KBookmarkGroup newBookmarkFolder(const KBookmark &bookmark = KBookmark());
+    KBookmarkGroup newBookmarkFolder(const KBookmark &bookmark = KBookmark(), const QString &name = QString());
     KBookmark newSeparator(const KBookmark &bookmark = KBookmark());
 
     void copyLink(const KBookmark &bookmark);

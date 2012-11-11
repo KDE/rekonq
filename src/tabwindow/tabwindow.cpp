@@ -36,6 +36,7 @@
 
 #include "tabhistory.h"
 
+#include "bookmarkmanager.h"
 #include "iconmanager.h"
 
 // KDE Includes
@@ -47,6 +48,9 @@
 #include <KStandardDirs>
 #include <KUrl>
 #include <KToggleFullScreenAction>
+
+#include <KBookmark>
+#include <KBookmarkGroup>
 
 #include <KWindowInfo>
 #include <KWindowSystem>
@@ -67,6 +71,7 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     , _addTabButton(new QToolButton(this))
     , _openedTabsCounter(0)
     , _isPrivateBrowsing(PrivateBrowsingMode)
+    , _ac(new KActionCollection(this))
 {
     setContentsMargins(0, 0, 0, 0);
 
@@ -86,7 +91,7 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this,   SLOT(closeTab(int)));
     connect(tabBar, SIGNAL(mouseMiddleClick(int)),  this,   SLOT(closeTab(int)));
 
-    connect(tabBar, SIGNAL(newTabRequest()),        this,   SLOT(newCleanTab()));
+    connect(tabBar, SIGNAL(newTabRequest()),        this,   SLOT(newTab()));
 
     connect(tabBar, SIGNAL(cloneTab(int)),          this,   SLOT(cloneTab(int)));
     connect(tabBar, SIGNAL(closeTab(int)),          this,   SLOT(closeTab(int)));
@@ -94,34 +99,47 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     connect(tabBar, SIGNAL(reloadTab(int)),         this,   SLOT(reloadTab(int)));
     connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int)));
     
-    connect(tabBar, SIGNAL(restoreLastClosedTab()), this,   SLOT(restoreLastClosedTab()));
-
     connect(tabBar, SIGNAL(tabLayoutChanged()),     this,   SLOT(updateNewTabButtonPosition()));
 
-    // new tab button
-    KAction* a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
-    _addTabButton->setDefaultAction(a);
-    _addTabButton->setAutoRaise(true);
-    _addTabButton->raise();
-    _addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    connect(_addTabButton, SIGNAL(triggered(QAction *)), this, SLOT(newCleanTab()));
+    // ============================== Tab Window Actions ====================================
+    _ac->addAssociatedWidget(this);
+    
+    KAction* a;
 
-    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
-
-    // ----------------------------------------------------------------------------------------------
-    KActionCollection *tabActionColl = new KActionCollection(this);
-    tabActionColl->addAssociatedWidget(this);
+    a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
+    actionCollection()->addAction(QL1S("new_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(newTab()));
 
     a = new KAction(KIcon("tab-new"), i18n("Open Last Closed Tab"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
-    tabActionColl->addAction(QL1S("open_last_closed_tab"), a);
+    actionCollection()->addAction(QL1S("open_last_closed_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(restoreLastClosedTab()));
 
     a = new KAction(KIcon("tab-close"), i18n("&Close Tab"), this);
     a->setShortcuts(KStandardShortcut::close());
-    tabActionColl->addAction(QL1S("close_tab"), a);
+    actionCollection()->addAction(QL1S("close_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(closeTab()));
+
+    a = KStandardAction::fullScreen(this, SLOT(setFullScreen(bool)), this, actionCollection());
+    KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
+    fullScreenShortcut.setAlternate(Qt::Key_F11);
+    a->setShortcut(fullScreenShortcut);
     
+    a = new KAction(KIcon("bookmarks"), i18n("Bookmark all tabs"), this);
+    actionCollection()->addAction(QL1S("bookmark_all_tabs"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkAllTabs()));
+
+    // ----------------------------------------------------------------------------------------------
+    // Add Tab Button
+    _addTabButton->setDefaultAction(actionByName(QL1S("new_tab")));
+    _addTabButton->setAutoRaise(true);
+    _addTabButton->raise();
+    _addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
+
+
     // NOTE: we usually create TabWindow with AT LEAST one tab, but
     // in one important case...
     if (withTab)
@@ -130,6 +148,18 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
         addTab(tab, i18n("new tab"));
         setCurrentWidget(tab);
     }
+}
+
+
+KActionCollection *TabWindow::actionCollection() const
+{
+    return _ac;
+}
+
+
+QAction *TabWindow::actionByName(const QString &name)
+{
+    return actionCollection()->action(name);    
 }
 
 
@@ -218,9 +248,13 @@ void TabWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *hist
 }
 
 
-void TabWindow::newCleanTab()
+void TabWindow::newTab()
 {
-    loadUrl(QUrl("about:home"), Rekonq::NewFocusedTab);
+    WebWindow *tab = prepareNewTab();
+    addTab(tab, i18n("new tab"));
+    setCurrentWidget(tab);
+
+    tab->load(KUrl("about:home"));
 }
 
 
@@ -256,6 +290,9 @@ void TabWindow::currentChanged(int newIndex)
 
 void TabWindow::updateNewTabButtonPosition()
 {
+    if (isFullScreen())
+        return;
+
     int tabWidgetWidth = frameSize().width();
     int tabBarWidth = tabBar()->sizeHint().width();
 
@@ -529,6 +566,18 @@ void TabWindow::reloadAllTabs()
 }
 
 
+void TabWindow::bookmarkAllTabs()
+{
+    KBookmarkGroup rGroup = BookmarkManager::self()->rootGroup();
+    KBookmarkGroup folderGroup = rGroup.createNewFolder( i18n("Bookmarked tabs: ") + QDate::currentDate().toString());
+    for (int i = 0; i < count(); ++i)
+    {
+        WebWindow *tab = webWindow(i);
+        KBookmark bk = folderGroup.addBookmark(tab->title(), tab->url());
+    }
+}
+
+
 void TabWindow::restoreLastClosedTab()
 {
     if (m_recentlyClosedTabs.isEmpty())
@@ -549,7 +598,11 @@ void TabWindow::setFullScreen(bool makeFullScreen)
 {
     tabBar()->setVisible(!makeFullScreen);
     _addTabButton->setVisible(!makeFullScreen);
+    
     KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
+
+    for(int i = 0; i < count(); i++)
+        webWindow(i)->setWidgetsHidden(makeFullScreen);
 }
 
 

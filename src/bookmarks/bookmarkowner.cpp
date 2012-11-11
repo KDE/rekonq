@@ -239,12 +239,17 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
 }
 
 
-KBookmarkGroup BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark)
+KBookmarkGroup BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark, const QString &name)
 {
     KBookmarkGroup newBk;
     KBookmarkDialog *dialog = bookmarkDialog(m_manager, 0);
-    QString folderName = i18n("New folder");
 
+    QString folderName;
+    if (name.isEmpty())
+        folderName = i18n("New folder");
+    else
+        folderName = name;
+    
     if (!bookmark.isNull())
     {
         if (bookmark.isGroup())

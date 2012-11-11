@@ -177,56 +177,55 @@ void TabBar::detachTab()
 }
 
 
-void TabBar::contextMenu(int tab, const QPoint &pos)
+void TabBar::contextMenu(int tabIndex, const QPoint &pos)
 {
     TabWindow *w = qobject_cast<TabWindow *>(parent());
 
-    KAction *a;
+    QAction *a;
 
     KMenu menu;
 
-    a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
-    connect(a, SIGNAL(triggered(bool)), w, SLOT(newCleanTab()));
+    a = w->actionByName(QL1S("new_tab"));
     menu.addAction(a);
 
     menu.addSeparator();    // ----------------------------------------------------------------
 
     a = new KAction(KIcon("tab-duplicate"), i18n("Clone"), this);
-    a->setData(tab);
+    a->setData(tabIndex);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(cloneTab()));
     menu.addAction(a);
 
     a = new KAction(KIcon("view-refresh"), i18n("Reload"), this);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(reloadTab()));
-    a->setData(tab);
+    a->setData(tabIndex);
     menu.addAction(a);
 
     if (count() > 1)
     {
         a = new KAction(KIcon("tab-detach"), i18n("Detach"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(detachTab()));
-        a->setData(tab);
+        a->setData(tabIndex);
         menu.addAction(a);
     }
 
-    if (tabData(tab).toBool())
+    if (tabData(tabIndex).toBool())
     {
         a = new KAction(i18n("Unpin Tab"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(unpinTab()));
-        a->setData(tab);
+        a->setData(tabIndex);
         menu.addAction(a);
     }
     else
     {
         a = new KAction(i18n("Pin Tab"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(pinTab()));
-        a->setData(tab);
+        a->setData(tabIndex);
         menu.addAction(a);
     }
     menu.addSeparator();    // ----------------------------------------------------------------
 
     a = new KAction(KIcon("tab-close"), i18n("&Close"), this);
-    a->setData(tab);
+    a->setData(tabIndex);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(closeTab()));
     menu.addAction(a);
 
@@ -234,26 +233,19 @@ void TabBar::contextMenu(int tab, const QPoint &pos)
     {
         a = new KAction(KIcon("tab-close-other"), i18n("Close &Other Tabs"), this);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(closeOtherTabs()));
-        a->setData(tab);
+        a->setData(tabIndex);
         menu.addAction(a);
     }
 
     menu.addSeparator();
 
 
-    a = new KAction(KIcon("tab-new"), i18n("Open Last Closed Tab"), this);
-    a->setData(0);  // last closed tab has index 0!
-    connect(a, SIGNAL(triggered(bool)), this, SIGNAL(restoreLastClosedTab()));
+    a = w->actionByName(QL1S("open_last_closed_tab"));
     menu.addAction(a);
 
     if (count() > 1)
     {
-        a = new KAction(KIcon("bookmark-new"), i18n("Bookmarks all tabs"), this);
-        menu.addAction(a);
-    }
-    else
-    {
-        a = new KAction(KIcon("bookmark-new"), i18n("Bookmark"), this);
+        a = w->actionByName(QL1S("bookmark_all_tabs"));
         menu.addAction(a);
     }
 
@@ -265,26 +257,19 @@ void TabBar::emptyAreaContextMenu(const QPoint &pos)
 {
     TabWindow *w = qobject_cast<TabWindow *>(parent());
 
-    KAction *a;
+    QAction *a;
 
     KMenu menu;
 
-    a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
-    connect(a, SIGNAL(triggered(bool)), w, SLOT(newCleanTab()));
+    a = w->actionByName(QL1S("new_tab"));
     menu.addAction(a);
 
-    a = new KAction(KIcon("tab-new"), i18n("Open Last Closed Tab"), this);
-    a->setData(0);  // last closed tab has index 0!
+    a = w->actionByName(QL1S("open_last_closed_tab"));
     menu.addAction(a);
 
     if (count() > 1)
     {
-        a = new KAction(KIcon("bookmark-new"), i18n("Bookmarks all tabs"), this);
-        menu.addAction(a);
-    }
-    else
-    {
-        a = new KAction(KIcon("bookmark-new"), i18n("Bookmark"), this);
+        a = w->actionByName(QL1S("bookmark_all_tabs"));
         menu.addAction(a);
     }
 

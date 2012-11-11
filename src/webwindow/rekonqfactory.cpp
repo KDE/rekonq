@@ -68,10 +68,30 @@ bool readDocument(QDomDocument & document, const QString & filePath)
 }
 
 
+// Only used internally
+QAction *actionByName(const QString &name)
+{
+    QList<KActionCollection *> lac = KActionCollection::allCollections();
+
+    // NOTE: last action collection created is surely the one interests us more!
+    // So let's start from the end...
+    int lac_count = lac.count();
+    for(int i = lac_count - 1; i>=0; i--)
+    {
+        KActionCollection *ac = lac.at(i);
+        QAction *a = ac->action(name);
+        if (a)
+            return a;
+    }
+
+    kDebug() << "NO ACTION FOUND: " << name;
+    return 0;
+}
+
 // ---------------------------------------------------------------------------------------------------------
 
 
-QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActionCollection *ac)
+QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
 {
     QDomDocument document("rekonqui.rc");
     QString xmlFilePath = KStandardDirs::locate("data", "rekonq/rekonqui.rc");
@@ -104,13 +124,13 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
         if (name == QL1S("bookmarkToolBar"))
         {
             BookmarkToolBar *b = new BookmarkToolBar(parent);
-            fillToolbar(b, node, ac);
+            fillToolbar(b, node);
             return b;
         }
         else
         {
             KToolBar *b = new KToolBar(parent, false , false);
-            fillToolbar(b, node, ac);
+            fillToolbar(b, node);
             return b;
         }
     }
@@ -139,7 +159,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
         if (name == QL1S("rekonqMenu"))
         {
             RekonqMenu *m = new RekonqMenu(parent);
-            fillMenu(m, node, ac);
+            fillMenu(m, node);
             return m;
         }
         else if (name == QL1S("help"))
@@ -150,7 +170,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
         else
         {
             KMenu *m = new KMenu(parent);
-            fillMenu(m, node, ac);
+            fillMenu(m, node);
             return m;
         }
 
@@ -161,7 +181,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent, KActi
 }
 
 
-void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node, KActionCollection *ac)
+void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node)
 {
     QDomElement element = node.toElement();
 
@@ -208,7 +228,7 @@ void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node, KActionCollection *a
         if (el.tagName() == QL1S("Action"))
         {
             const QString actionName = el.attribute("name");
-            QAction *a = ac->action(actionName);
+            QAction *a = actionByName(actionName);
             if (a)
             {
                 b->addAction(a);
@@ -225,7 +245,7 @@ void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node, KActionCollection *a
 }
 
 
-void RekonqFactory::fillMenu(KMenu *m, QDomNode node, KActionCollection *ac)
+void RekonqFactory::fillMenu(KMenu *m, QDomNode node)
 {
     QDomNodeList childrenList = node.childNodes();
 
@@ -236,7 +256,7 @@ void RekonqFactory::fillMenu(KMenu *m, QDomNode node, KActionCollection *ac)
         if (el.tagName() == QL1S("Action"))
         {
             const QString actionName = el.attribute("name");
-            QAction *a = ac->action(actionName);
+            QAction *a = actionByName(actionName);
             if (a)
             {
                 m->addAction(a);
@@ -252,7 +272,7 @@ void RekonqFactory::fillMenu(KMenu *m, QDomNode node, KActionCollection *ac)
         if (el.tagName() == QL1S("Menu"))
         {
             const QString menuName = el.attribute("name");
-            KMenu *subm = qobject_cast<KMenu *>(createWidget(menuName, m, ac));
+            KMenu *subm = qobject_cast<KMenu *>(createWidget(menuName, m));
             m->addMenu(subm);
         }
 
@@ -264,4 +284,3 @@ void RekonqFactory::fillMenu(KMenu *m, QDomNode node, KActionCollection *ac)
 
     }
 }
-

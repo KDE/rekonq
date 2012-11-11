@@ -171,6 +171,12 @@ void BookmarkManager::slotBookmarksChanged()
 }
 
 
+KBookmark BookmarkManager::bookmarkCurrentPage(const KBookmark &bookmark)
+{
+    return m_owner->bookmarkCurrentPage(bookmark);
+}
+
+
 void BookmarkManager::fillBookmarkBar(BookmarkToolBar *toolBar)
 {
     KBookmarkGroup root = m_manager->toolbar();

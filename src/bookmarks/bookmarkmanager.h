@@ -145,6 +145,8 @@ public Q_SLOTS:
 
     void slotEditBookmarks();
 
+    KBookmark bookmarkCurrentPage(const KBookmark &bookmark = KBookmark());
+
 Q_SIGNALS:
     /**
     * @short This signal is emitted when an url has to be loaded

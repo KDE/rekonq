@@ -40,7 +40,6 @@
 // Local Includes
 #include "adblockmanager.h"
 #include "bookmarkmanager.h"
-#include "bookmarkowner.h"  // FIXME: Why is this needed? Why everything interesting in BookmarkManager is in its owner?
 #include "iconmanager.h"
 
 #include "adblockwidget.h"
@@ -726,7 +725,7 @@ void UrlBar::manageBookmarks()
 
     if (bookmark.isNull())
     {
-        bookmark = BookmarkManager::self()->owner()->bookmarkCurrentPage();
+        bookmark = BookmarkManager::self()->bookmarkCurrentPage();
     }
 
     // calculate position

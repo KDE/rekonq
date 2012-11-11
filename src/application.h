@@ -111,8 +111,6 @@ private Q_SLOTS:
 
     void createWebAppShortcut();
 
-    void newTab();
-
     void newPrivateBrowsingWindow();
     
 private:

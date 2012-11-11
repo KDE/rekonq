@@ -311,7 +311,8 @@ void RekonqWindow::parseGeometry()
 
 void RekonqWindow::resizeEvent(QResizeEvent *event)
 {
-    saveAutoSaveSettings();
+    if (!isFullScreen())
+        saveAutoSaveSettings();
     KTabWidget::resizeEvent(event);
 }
 

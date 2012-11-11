@@ -70,7 +70,6 @@ Q_SIGNALS:
     void closeOtherTabs(int);
     void reloadTab(int);
     void detachTab(int);
-    void restoreLastClosedTab();
     void tabLayoutChanged();
 
 private Q_SLOTS:

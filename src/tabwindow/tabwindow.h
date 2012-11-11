@@ -36,6 +36,7 @@
 
 // KDE Includes
 #include <KTabWidget>
+#include <KActionCollection>
 
 // Forward Declarations
 class KUrl;
@@ -68,9 +69,12 @@ public:
 
     bool isPrivateBrowsingWindowMode();
 
+    virtual KActionCollection *actionCollection() const;
+    QAction *actionByName(const QString &name);
+
 public Q_SLOTS:
     void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
-    void newCleanTab();
+    void newTab();
     
 private:
     /**
@@ -99,7 +103,9 @@ private Q_SLOTS:
     void closeOtherTabs(int index = -1);
     void detachTab(int index = -1, TabWindow *toWindow = 0);
     void reloadTab(int index = -1);
+
     void reloadAllTabs();
+    void bookmarkAllTabs();
 
     void restoreLastClosedTab();
 
@@ -114,6 +120,8 @@ private:
     QList<TabHistory> m_recentlyClosedTabs;
 
     bool _isPrivateBrowsing;
+
+    KActionCollection *_ac;
 };
 
 #endif // TAB_WINDOW

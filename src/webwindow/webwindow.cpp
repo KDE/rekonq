@@ -99,13 +99,12 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     QVBoxLayout *l = new QVBoxLayout(this);
 
     // main toolbar
-    _mainToolBar = qobject_cast<KToolBar *>(RekonqFactory::createWidget(QL1S("mainToolBar"), this, actionCollection()));
+    _mainToolBar = qobject_cast<KToolBar *>(RekonqFactory::createWidget(QL1S("mainToolBar"), this));
     l->addWidget(_mainToolBar);
 
     if (ReKonfig::showBookmarksToolbar())
     {
-        _bookmarksBar = qobject_cast<BookmarkToolBar *>(RekonqFactory::createWidget(QL1S("bookmarkToolBar"),
-                                                                                    this, actionCollection()));
+        _bookmarksBar = qobject_cast<BookmarkToolBar *>(RekonqFactory::createWidget(QL1S("bookmarkToolBar"), this));
         BookmarkManager::self()->registerBookmarkBar(_bookmarksBar.data());
 
         l->addWidget(_bookmarksBar.data());
@@ -143,6 +142,9 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     connect(_tab, SIGNAL(infoToShow(QString)), this, SLOT(notifyMessage(QString)));
     
     updateHistoryActions();
+
+    if (parent && parent->isFullScreen())
+        setWidgetsHidden(true);
 }
 
 
@@ -215,24 +217,23 @@ void WebWindow::setupActions()
     actionCollection()->addAction(QL1S("show_bookmarks_toolbar"), a);
     connect(a, SIGNAL(toggled(bool)), this, SLOT(toggleBookmarksToolbar(bool)));
 
-    // Open special pages
-    // Home
+    // Open Home page
     a = actionCollection()->addAction(KStandardAction::Home);
     connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(openHomePage(Qt::MouseButtons, Qt::KeyboardModifiers)));
 
-    // Downloads
+    // Open Downloads page
     a = new KAction(KIcon("download"), i18n("Downloads page"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_J));
     actionCollection()->addAction(QL1S("open_downloads_page"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(openDownloadsPage()));
 
-    // History
+    // Open History page
     a = new KAction(KIcon("view-history"), i18n("History page"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
     actionCollection()->addAction(QL1S("open_history_page"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(openHistoryPage()));
 
-    // Bookmarks
+    // Open Bookmarks page
     a = new KAction(KIcon("bookmarks"), i18n("Bookmarks page"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
     actionCollection()->addAction(QL1S("open_bookmarks_page"), a);
@@ -246,11 +247,10 @@ void WebWindow::setupActions()
     KStandardAction::findNext(m_findBar, SLOT(findNext()), actionCollection());
     KStandardAction::findPrev(m_findBar, SLOT(findPrevious()), actionCollection());
     
-    a = KStandardAction::fullScreen(this, SLOT(setWidgetsHidden(bool)), this, actionCollection());
+    a = KStandardAction::fullScreen(this, SIGNAL(setFullScreen(bool)), this, actionCollection());
     KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
     fullScreenShortcut.setAlternate(Qt::Key_F11);
     a->setShortcut(fullScreenShortcut);
-    connect(a, SIGNAL(toggled(bool)), this, SIGNAL(setFullScreen(bool)));
     
     a = KStandardAction::redisplay(_tab->view(), SLOT(reload()), actionCollection());
     a->setText(i18n("Reload"));
@@ -328,12 +328,6 @@ void WebWindow::setupActions()
     a = new KAction(KIcon("tools-wizard"), i18n("Sync"), this); // FIXME sync icon!!
     actionCollection()->addAction(QL1S("sync"), a);
     connect(a, SIGNAL(triggered(bool)), SyncManager::self(), SLOT(showSettings()));
-
-    // ============================== General Tab Actions ====================================
-    a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
-    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_T));
-    actionCollection()->addAction(QL1S("new_tab"), a);
-    connect(a, SIGNAL(triggered(bool)), rApp, SLOT(newTab()));
 }
 
 
@@ -343,7 +337,7 @@ void WebWindow::setupTools()
     toolsAction->setDelayed(false);
     toolsAction->setShortcutConfigurable(true);
     toolsAction->setShortcut(KShortcut(Qt::ALT + Qt::Key_T));
-    m_rekonqMenu = qobject_cast<RekonqMenu *>(RekonqFactory::createWidget(QL1S("rekonqMenu"), this, actionCollection()));
+    m_rekonqMenu = qobject_cast<RekonqMenu *>(RekonqFactory::createWidget(QL1S("rekonqMenu"), this));
     toolsAction->setMenu(m_rekonqMenu); // dummy menu to have the dropdown arrow
 
     // adding rekonq_tools to rekonq actionCollection
@@ -412,7 +406,7 @@ void WebWindow::webLoadFinished(bool b)
         connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), _tab->view(), SLOT(reload()));
     }
     
-    updateHistoryActions();
+    updateHistoryActions();    
 }
 
 
@@ -833,8 +827,6 @@ void WebWindow::setWidgetsHidden(bool hide)
         if (!_bookmarksBar.isNull() && bookmarksToolBarFlag)
             _bookmarksBar.data()->show();
     }
-
-    emit setFullScreen(hide);
 }
 
 
@@ -883,7 +875,7 @@ void WebWindow::toggleBookmarksToolbar(bool b)
 
     if (b)
     {
-        _bookmarksBar = qobject_cast<BookmarkToolBar *>(RekonqFactory::createWidget(QL1S("bookmarkToolBar"), this, actionCollection()));
+        _bookmarksBar = qobject_cast<BookmarkToolBar *>(RekonqFactory::createWidget(QL1S("bookmarkToolBar"), this));
         BookmarkManager::self()->registerBookmarkBar(_bookmarksBar.data());
 
         qobject_cast<QVBoxLayout *>(layout())->insertWidget(1, _bookmarksBar.data());
