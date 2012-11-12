@@ -351,6 +351,7 @@ void CompletionWidget::setVisible(bool visible)
 
 void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::KeyboardModifiers modifier)
 {
+    hide();
     if (button == Qt::MidButton
             || modifier == Qt::ControlModifier)
     {
@@ -360,7 +361,6 @@ void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::Ke
     {
         emit chosenUrl(item->url(), Rekonq::CurrentTab);
     }
-    hide();
 }
 
 
