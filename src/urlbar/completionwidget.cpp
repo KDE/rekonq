@@ -321,6 +321,9 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 hide();
                 emit chosenUrl(urlToLoad, type);
                 kev->accept();
+
+                if (type != Rekonq::CurrentTab)
+                    w->clear();
                 return true;
             }
             case Qt::Key_Escape:
