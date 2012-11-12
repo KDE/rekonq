@@ -90,8 +90,6 @@ public:
     explicit UrlBar(QWidget *parent = 0);
     ~UrlBar();
 
-    void activateSuggestions(bool);
-
 public Q_SLOTS:
     void setQUrl(const QUrl &url);
 

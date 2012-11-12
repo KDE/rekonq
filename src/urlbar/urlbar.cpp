@@ -116,6 +116,7 @@ QString guessUrlWithCustomFirstLevel(const QString &str1, const QString &str2)
 
 UrlBar::UrlBar(QWidget *parent)
     : KLineEdit(parent)
+    , _box(new CompletionWidget(this))
     , _tab(0)
     , _icon(new IconButton(this))
     , _suggestionTimer(new QTimer(this))
@@ -158,6 +159,10 @@ UrlBar::UrlBar(QWidget *parent)
     // bookmark icon
     connect(BookmarkManager::self(), SIGNAL(bookmarksUpdated()), this, SLOT(updateRightIcons()));
 
+    // suggestions
+    connect(_box.data(), SIGNAL(chosenUrl(KUrl, Rekonq::OpenType)), this, SLOT(loadRequestedUrl(KUrl, Rekonq::OpenType)));
+    connect(this, SIGNAL(textEdited(QString)), this, SLOT(detectTypedString(QString)));
+
     _suggestionTimer->setSingleShot(true);
     connect(_suggestionTimer, SIGNAL(timeout()), this, SLOT(suggest()));
 }
@@ -166,7 +171,6 @@ UrlBar::UrlBar(QWidget *parent)
 UrlBar::~UrlBar()
 {
     _suggestionTimer->stop();
-    activateSuggestions(false);
     _box.clear();
 
     disconnect();
@@ -192,7 +196,6 @@ void UrlBar::setQUrl(const QUrl& url)
 
 void UrlBar::loadRequestedUrl(const KUrl& url, Rekonq::OpenType type)
 {
-    activateSuggestions(false);
     clearFocus();
     setUrl(url);
     rApp->loadUrl(url, type);
@@ -345,7 +348,6 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
 void UrlBar::focusInEvent(QFocusEvent *event)
 {
     emit focusIn();
-    activateSuggestions(true);
     KLineEdit::focusInEvent(event);
 }
 
@@ -431,33 +433,6 @@ void UrlBar::updateRightIcons()
     {
         clearRightIcons();
         loadFinished();
-    }
-}
-
-
-void UrlBar::activateSuggestions(bool b)
-{
-    if (b)
-    {
-        if (_box.isNull())
-        {
-            _box = new CompletionWidget(this);
-            connect(_box.data(), SIGNAL(chosenUrl(KUrl, Rekonq::OpenType)), this, SLOT(loadRequestedUrl(KUrl, Rekonq::OpenType)));
-
-            // activate suggestions on edit text
-            connect(this, SIGNAL(textChanged(QString)), this, SLOT(detectTypedString(QString)));
-        }
-    }
-    else
-    {
-        disconnect(this, SIGNAL(textChanged(QString)), this, SLOT(detectTypedString(QString)));
-
-        if (!_box.isNull())
-        {
-            // This was just deleted later because of a crash in completionwidget...
-            delete _box.data();
-            _box.clear();
-        }
     }
 }
 
