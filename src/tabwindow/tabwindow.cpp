@@ -265,6 +265,8 @@ void TabWindow::pageCreated(WebPage *page)
     // Now, the dirty jobs...
     _openedTabsCounter++;
     insertTab(currentIndex() + _openedTabsCounter, tab, i18n("new tab"));
+
+    setCurrentWidget(tab);
 }
 
 
