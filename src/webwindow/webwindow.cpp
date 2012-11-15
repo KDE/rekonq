@@ -246,12 +246,7 @@ void WebWindow::setupActions()
 
     KStandardAction::findNext(m_findBar, SLOT(findNext()), actionCollection());
     KStandardAction::findPrev(m_findBar, SLOT(findPrevious()), actionCollection());
-    
-    a = KStandardAction::fullScreen(this, SIGNAL(setFullScreen(bool)), this, actionCollection());
-    KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
-    fullScreenShortcut.setAlternate(Qt::Key_F11);
-    a->setShortcut(fullScreenShortcut);
-    
+        
     a = KStandardAction::redisplay(_tab->view(), SLOT(reload()), actionCollection());
     a->setText(i18n("Reload"));
     KShortcut reloadShortcut = KStandardShortcut::reload();

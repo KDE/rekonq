@@ -40,10 +40,10 @@
 #include "bookmarkmanager.h"
 #include "iconmanager.h"
 
-#include "webwindow.h"
 #include "searchengine.h"
 #include "webpage.h"
 #include "webtab.h"
+#include "webwindow.h"
 
 // KDE Includes
 #include <KAction>
@@ -360,14 +360,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         {
             menu.addAction(webwin->actionByName("page_source"));
             menu.addAction(inspectAction);
-        }
-        
-        // we need to show everytime this because we cannot communicate with the tabwindow.
-        // We are NOT sure it exists..
-        if (webwin)
-        {
-            menu.addSeparator();
-            menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::FullScreen)));
         }
     }
 
