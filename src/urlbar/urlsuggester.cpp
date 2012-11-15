@@ -326,7 +326,10 @@ void UrlSuggester::computeWebSearches()
 void UrlSuggester::computeHistory()
 {
     QList<HistoryItem> found = HistoryManager::self()->find(_typedString);
-    qSort(found.begin(), found.end(), isHistoryItemRelevant);
+
+    // FIXME: profiling computeHistory, this seems too much expensive (around 1 second for)
+    // Can we live without (q)sort results???
+    // qSort(found.begin(), found.end(), isHistoryItemRelevant);
 
     Q_FOREACH(const HistoryItem & i, found)
     {
