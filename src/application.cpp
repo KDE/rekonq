@@ -606,6 +606,12 @@ void Application::updateConfiguration()
 
 void Application::queryQuit()
 {
+    if (m_webApps.count() > 0)
+    {
+        tabWindow()->close();
+        return;        
+    }
+    
     if (tabWindowList().count() > 1)
     {
         int answer = KMessageBox::questionYesNoCancel(
