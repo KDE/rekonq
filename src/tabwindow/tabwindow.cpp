@@ -282,7 +282,8 @@ void TabWindow::currentChanged(int newIndex)
         return;
 
     QString t = tab->title();
-    (t.isEmpty())
+
+    (t.isEmpty() || t == QL1S("rekonq"))
     ? setWindowTitle(QL1S("rekonq"))
     : setWindowTitle(t + QL1S(" - rekonq"));
 

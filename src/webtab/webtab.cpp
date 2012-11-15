@@ -145,6 +145,7 @@ WebWindow *WebTab::webWindow()
     return w;
 }
 
+
 KUrl WebTab::url()
 {
     if (page() && page()->isOnRekonqPage())
@@ -408,7 +409,6 @@ void WebTab::zoomDefault()
 
 void WebTab::webAppTitleChanged(QString title)
 {
-    
     if (title.isEmpty())
         setWindowTitle(i18n("rekonq"));
     else
