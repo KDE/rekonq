@@ -251,7 +251,9 @@ int Application::newInstance()
                         loadUrl(KUrl(ReKonfig::homePage()), Rekonq::NewPrivateWindow);
                         break;
                     }
-                    if (!SessionManager::self()->restoreJustThePinnedTabs())
+                    if (SessionManager::self()->restoreJustThePinnedTabs())
+                        loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewTab);
+                    else
                         loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
                     break;
                 case 1: // open new tab page
@@ -260,7 +262,9 @@ int Application::newInstance()
                         loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
                         break;
                     }
-                    if (!SessionManager::self()->restoreJustThePinnedTabs())
+                    if (SessionManager::self()->restoreJustThePinnedTabs())
+                        loadUrl(KUrl("about:home") , Rekonq::NewTab);
+                    else
                         loadUrl(KUrl("about:home"), Rekonq::NewWindow);
                     break;
                 case 2: // restore session
