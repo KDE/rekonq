@@ -163,10 +163,18 @@ UrlSuggestionList UrlSuggester::orderedSearchItems()
         return list;
     }
 
+    // NOTE: this sets _isKDEShortUrl.
+    // IF it is true we can just suggest it
+    computeWebSearches();
+
+    if (_isKDEShortUrl)
+    {
+        return _webSearches;
+    }
+
     //compute lists
     computeHistory();
     computeQurlFromUserInput();
-    computeWebSearches();
     computeBookmarks();
 
     return orderLists();
@@ -184,12 +192,9 @@ UrlSuggestionList UrlSuggester::orderLists()
     UrlSuggestionList browseSearch;
     QString lowerTypedString = _typedString.toLower();
 
-    if (_isKDEShortUrl)
-    {
-        // KDE short url case (typed gg:kde): we need just the web search
-        browseSearch << _webSearches;
-    }
-    else if (_browseRegexp.indexIn(lowerTypedString) != -1)
+    bool textIsUrl = (_browseRegexp.indexIn(lowerTypedString) != -1);
+
+    if (textIsUrl)
     {
         // browse url case (typed kde.org): show resolved url before
         browseSearch << _qurlFromUserInput;
@@ -264,7 +269,11 @@ UrlSuggestionList UrlSuggester::orderLists()
 
     // and finally, results
     UrlSuggestionList list;
-    list += relevant + browseSearch + _history + _bookmarks;
+    if (textIsUrl)
+        list += browseSearch + relevant + _history + _bookmarks;
+    else
+        list += relevant + browseSearch + _history + _bookmarks;
+    
     return list;
 }
 
