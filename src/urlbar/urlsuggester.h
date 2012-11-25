@@ -136,6 +136,8 @@ private:
     void computeQurlFromUserInput();
     void computeBookmarks();
 
+    void removeBookmarksDuplicates();
+    
     UrlSuggestionList orderLists();
 
     QString _typedString;

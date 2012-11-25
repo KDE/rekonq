@@ -225,17 +225,22 @@ UrlSuggestionList UrlSuggester::orderLists()
         }
     }
 
-    // bookmarks
-    Q_FOREACH(const UrlSuggestionItem & item, _bookmarks)
+    // just add this is relevant is Null
+
+    if (relevant.count() == 0)
     {
-        QString hst = KUrl(item.url).host();
-        if (item.url.startsWith(_typedString)
-                || hst.startsWith(_typedString)
-                || hst.remove("www.").startsWith(_typedString))
+        // bookmarks
+        Q_FOREACH(const UrlSuggestionItem & item, _bookmarks)
         {
-            relevant << item;
-            _bookmarks.removeOne(item);
-            break;
+            QString hst = KUrl(item.url).host();
+            if (item.url.startsWith(_typedString)
+                    || hst.startsWith(_typedString)
+                    || hst.remove("www.").startsWith(_typedString))
+            {
+                relevant << item;
+                _bookmarks.removeOne(item);
+                break;
+            }
         }
     }
 
@@ -266,6 +271,9 @@ UrlSuggestionList UrlSuggester::orderLists()
             _history = _history.mid(0, availableEntries - bookmarksCount);
         }
     }
+
+    if (_typedString.count() > 1)
+        removeBookmarksDuplicates();
 
     // and finally, results
     UrlSuggestionList list;
@@ -337,8 +345,9 @@ void UrlSuggester::computeHistory()
     QList<HistoryItem> found = HistoryManager::self()->find(_typedString);
 
     // FIXME: profiling computeHistory, this seems too much expensive (around 1 second for)
-    // Can we live without (q)sort results???
-    // qSort(found.begin(), found.end(), isHistoryItemRelevant);
+    // doing it just from second time...
+    if (_typedString.count() > 1)
+        qSort(found.begin(), found.end(), isHistoryItemRelevant);
 
     Q_FOREACH(const HistoryItem & i, found)
     {
@@ -423,3 +432,25 @@ void UrlSuggester::computeSuggestions()
 //     emit suggestionsReady(sugList, _typedString);
 //     this->deleteLater();
 // }
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
+// WARNING: this seems  A LOT expensive and has to be done just
+// when the two groups (history & bookmarks) have just been "restricted"..
+void UrlSuggester::removeBookmarksDuplicates()
+{
+    Q_FOREACH(const UrlSuggestionItem & item, _history)
+    {
+        QString hu = item.url;
+        Q_FOREACH(const UrlSuggestionItem & item, _bookmarks)
+        {
+            if (hu == item.url)
+            {
+                _bookmarks.removeOne(item);
+                break;
+            }
+        }        
+    }
+}

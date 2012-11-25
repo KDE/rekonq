@@ -86,7 +86,8 @@ public:
     // history is sorted in reverse
     inline bool operator <(const HistoryItem &other) const
     {
-        return lastDateTimeVisit > other.lastDateTimeVisit;
+        return visitCount > other.visitCount;
+//         return lastDateTimeVisit > other.lastDateTimeVisit;
     }
 
     QString title;
