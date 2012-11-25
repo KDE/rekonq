@@ -388,7 +388,8 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         newType = Rekonq::CurrentTab;
     }
     else if (newType == Rekonq::NewWindow
-            || (newType == Rekonq::NewTab && ReKonfig::openLinksInNewWindow()))
+            || (newType == Rekonq::NewTab && ReKonfig::openLinksInNewWindow())
+            || (newType == Rekonq::NewTab && tabWindowList().count() == 0))
     {
         w = newTabWindow();
         newType = Rekonq::CurrentTab;

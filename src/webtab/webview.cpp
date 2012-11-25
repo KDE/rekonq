@@ -370,13 +370,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         sendByMailAction->setData(m_contextMenuHitResult.linkUrl());
         sendByMailAction->setText(i18n("Share link"));
 
-        if (webwin)
-        {
-            a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
-            a->setData(m_contextMenuHitResult.linkUrl());
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
-            menu.addAction(a);
-        }
+        a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
+        a->setData(m_contextMenuHitResult.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
+        menu.addAction(a);
         
         a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), this);
         a->setData(m_contextMenuHitResult.linkUrl());
