@@ -710,7 +710,7 @@ void NewTabPage::downloadsPage(const QString & filter)
             }
             else
             {
-                div.appendInside(QL1S("<em>") + QL1S("Removed") +  QL1S("</em>"));
+                div.appendInside(QL1S("<em>") + i18n("Removed") +  QL1S("</em>"));
             }
 
             div.appendInside(QL1S(" - "));
