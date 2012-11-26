@@ -764,7 +764,13 @@ void WebView::openLinkInNewTab()
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
 
-    emit loadUrl(url, Rekonq::NewTab);
+    WebTab *tab = qobject_cast<WebTab *>(parent());
+    WebWindow *webwin = tab->webWindow();
+
+    if (webwin)
+        emit loadUrl(url, Rekonq::NewTab);
+    else
+        emit loadUrl(url, Rekonq::NewFocusedTab);
 }
 
 void WebView::openLinkInPrivateWindow()
