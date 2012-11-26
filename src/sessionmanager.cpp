@@ -109,7 +109,8 @@ int loadTabs(TabWindow *tw, QDomElement & window, bool useFirstTab, bool justThe
             if (tabIsPinned)
             {
                 tw->tabBar()->setTabData(tabNo, true);
-                tw->tabBar()->tabButton(tabNo, QTabBar::RightSide)->hide(); // NOTE: this is not good here: where is its proper place?
+                if (tw->tabBar()->tabButton(tabNo, QTabBar::RightSide))
+                    tw->tabBar()->tabButton(tabNo, QTabBar::RightSide)->hide(); // NOTE: this is not good here: where is its proper place?
             }
         }
     }

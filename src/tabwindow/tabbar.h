@@ -60,8 +60,11 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
 
+    virtual void tabInserted(int index);
     virtual void tabRemoved(int index);
+    
     virtual void tabLayoutChange();
 
 Q_SIGNALS:
@@ -89,7 +92,7 @@ private Q_SLOTS:
 
     void showTabPreview();
     void hideTabPreview();
-
+    
 private:
     // highlightAnimation
     TabHighlightEffect *m_tabHighlightEffect;

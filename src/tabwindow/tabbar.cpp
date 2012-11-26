@@ -333,10 +333,35 @@ void TabBar::removeAnimation(int index)
 }
 
 
+void TabBar::tabInserted(int index)
+{
+    // Find the available index to move
+    int availableIndex = index;
+    for (int i = index; i < count(); i++)
+    {
+        if (tabData(i).toBool())
+        {
+            availableIndex++;
+            break;
+        }
+    }
+
+    if (index < availableIndex)
+    {
+        TabWindow *w = qobject_cast<TabWindow *>(parent());
+        w->moveTab(index, availableIndex);
+    }
+    
+    KTabBar::tabInserted(index);
+}
+
+
 void TabBar::tabRemoved(int index)
 {
     hideTabPreview();
     removeAnimation(index);
+
+    KTabBar::tabRemoved(index);
 }
 
 
@@ -393,6 +418,41 @@ void TabBar::mousePressEvent(QMouseEvent *event)
         return;
 
     KTabBar::mousePressEvent(event);
+}
+
+
+void TabBar::mouseReleaseEvent(QMouseEvent *event)
+{
+    // count pinned tabs
+    int pinnedTabs = 0;
+    for(int i = 0; i < count(); i++)
+    {
+        if (tabData(i).toBool())
+            pinnedTabs++;        
+    }
+
+    // fix unpinned ones
+    for(int i = 0; i < pinnedTabs; i++)
+    {
+        if (!tabData(i).toBool())
+        {
+            TabWindow *w = qobject_cast<TabWindow *>(parent());
+            w->moveTab(i, pinnedTabs);
+            w->setCurrentIndex(pinnedTabs);
+        }
+    }
+
+    // fix pinned ones
+    for (int i = pinnedTabs; i < count(); i++)
+    {
+        if (tabData(i).toBool())
+        {
+            TabWindow *w = qobject_cast<TabWindow *>(parent());
+            w->moveTab(i, pinnedTabs - 1);            
+            w->setCurrentIndex(pinnedTabs - 1);
+        }
+    }
+    KTabBar::mouseReleaseEvent(event);
 }
 
 

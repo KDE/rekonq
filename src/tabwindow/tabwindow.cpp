@@ -369,6 +369,10 @@ void TabWindow::tabLoadStarted()
 
         if (!tabBar()->tabData(index).toBool())
             tabBar()->setTabText(index, i18n("Loading..."));
+        else
+        {
+            tabBar()->tabButton(index, QTabBar::RightSide)->hide(); // NOTE: not really good this, but..."Repetita iuvant"!!!
+        }
     }
 }
 
