@@ -323,6 +323,12 @@ void WebWindow::setupActions()
     a = new KAction(KIcon("tools-wizard"), i18n("Sync"), this); // FIXME sync icon!!
     actionCollection()->addAction(QL1S("sync"), a);
     connect(a, SIGNAL(triggered(bool)), SyncManager::self(), SLOT(showSettings()));
+
+    // web inspector
+    a = new KAction(KIcon("layer-visible-on"), i18n("&Inspect"), this);
+    a->setCheckable(true);
+    actionCollection()->addAction(QL1S("web_inspector"), a);
+    connect(a, SIGNAL(triggered(bool)), _tab, SLOT(toggleInspector(bool)));
 }
 
 

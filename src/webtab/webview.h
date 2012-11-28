@@ -108,7 +108,6 @@ private Q_SLOTS:
 
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
     void slotCopyImageLocation();
-    void inspect();
 
     void scrollFrameChanged();
     void scrollTick();

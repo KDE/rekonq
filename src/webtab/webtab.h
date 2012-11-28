@@ -102,6 +102,8 @@ private Q_SLOTS:
     void webAppTitleChanged(QString);
     void webAppIconChanged();
 
+    void toggleInspector(bool);
+    
 Q_SIGNALS:
     void loadProgressing();
     void titleChanged(const QString &);

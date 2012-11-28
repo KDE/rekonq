@@ -63,6 +63,8 @@
 #include <QPrintDialog>
 #include <QPrinter>
 
+#include <QWebSettings>
+
 
 WebTab::WebTab(QWidget *parent)
     : QWidget(parent)
@@ -419,4 +421,11 @@ void WebTab::webAppTitleChanged(QString title)
 void WebTab::webAppIconChanged()
 {
     setWindowIcon(IconManager::self()->iconForUrl(url()));
+}
+
+
+void WebTab::toggleInspector(bool on)
+{
+    page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, on);
+    kDebug() << "TOGGLED: " << on;
 }

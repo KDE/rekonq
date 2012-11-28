@@ -112,7 +112,7 @@ private Q_SLOTS:
     void updateHistoryActions();
 
     void openNewWindow();
-    
+
     /**
      * Notifies a message in a popup
     */

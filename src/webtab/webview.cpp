@@ -274,9 +274,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     KMenu menu(this);
     QAction *a;
 
-    KAction *inspectAction = new KAction(KIcon("layer-visible-on"), i18n("Inspect Element"), this);
-    connect(inspectAction, SIGNAL(triggered(bool)), this, SLOT(inspect()));
-
     KAction *sendByMailAction = new KAction(this);
     sendByMailAction->setIcon(KIcon("mail-send"));
     connect(sendByMailAction, SIGNAL(triggered(bool)), this, SLOT(sendByMail()));
@@ -359,7 +356,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         if (webwin)
         {
             menu.addAction(webwin->actionByName("page_source"));
-            menu.addAction(inspectAction);
+            menu.addAction(webwin->actionByName("web_inspector"));
         }
     }
 
@@ -542,7 +539,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(sendByMailAction);
 
     if (webwin)
-        menu.addAction(inspectAction);
+        menu.addAction(webwin->actionByName("web_inspector"));
 
     // SPELL CHECK Actions
     if (m_contextMenuHitResult.isContentEditable())
@@ -1042,17 +1039,6 @@ void WebView::wheelEvent(QWheelEvent *event)
             emit openNextInHistory();
         }
     }
-}
-
-
-void WebView::inspect()
-{
-    WebTab *tab = qobject_cast<WebTab *>(parent());
-    WebWindow *webwin = tab->webWindow();
-    QAction *a = webwin->actionByName("web_inspector");
-    if (a && !a->isChecked())
-        a->trigger();
-    pageAction(QWebPage::InspectElement)->trigger();
 }
 
 
