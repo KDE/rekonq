@@ -57,6 +57,136 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                      "http://rekonq.kde.org"
                     );
 
+    
+    // --------------- about authors -----------------------------
+    about.addAuthor(ki18n("Andrea Diamantini"),
+                    ki18n("Project Lead, Developer, Maintainer"),
+                    "adjam7@gmail.com",
+                    "http://www.adjam.org");
+
+    about.addAuthor(ki18n("Johannes Tröscher"),
+                    ki18n("QGraphicsEffect expert. Tabbar highlight animation"),
+                    "fritz_van_tom@hotmail.com",
+                    "");
+
+    about.addAuthor(ki18n("Furkan Uzumcu"),
+                    ki18n("A lot of improvements, especially on usability"),
+                    "furkanuzumcu@gmail.com",
+                    "");
+
+    about.addAuthor(ki18n("Yoann Laissus"),
+                    ki18n("Developer, History & Bookmarks Improvements"),
+                    "yoann.laissus@gmail.com",
+                    "");
+
+    about.addAuthor(ki18n("Cédric Bellegarde"),
+                    ki18n("Patched code quite everywhere :)"),
+                    "gnumdk@adishatz.1s.fr",
+                    "");
+
+    about.addAuthor(ki18n("Jon Ander Peñalba"),
+                    ki18n("Bookmarks code peer reviewer. A fantastic help"),
+                    "jonan88@gmail.com",
+                    "http://identi.ca/jonan");
+
+    about.addAuthor(ki18n("Pierre Rossi"),
+                    ki18n("Urlbar, tests, new tab page, bars... and more"),
+                    "pierre.rossi@gmail.com",
+                    "");
+
+    about.addAuthor(ki18n("Lionel Chauvin"),
+                    ki18n("Development, Ideas, Mockups, rekonq Icon"),
+                    "megabigbug@yahoo.fr",
+                    "");
+
+    about.addAuthor(ki18n("Siteshwar Vashisht"),
+                    ki18n("Code, Ideas, sync... and IRC chats!"),
+                    "siteshwar@gmail.com",
+                    "");
+
+    about.addAuthor(ki18n("Tirtha Chatterjee"),
+                    ki18n("A lot of nice work, here and there in the code :)"),
+                    "tirtha.p.chatterjee@gmail.com",
+                    "");
+
+    about.addAuthor(ki18n("Lindsay Mathieson"),
+                    ki18n("Implemented inline spellcheck, provided hints, discovered bugs"),
+                    "lindsay.mathieson@gmail.com",
+                    "");
+
+    
+    // --------------- about credits -----------------------------
+    about.addCredit(ki18n("Dawit Alemayehu"),
+                    ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
+                    "adawit@kde.org",
+                    "");
+
+    about.addCredit(ki18n("Jekyll Wu"),
+                    ki18n("Bug triaging. Impressive job about..."),
+                    "adaptee@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Panagiotis Papadopoulos"),
+                    ki18n("Quite everything but code"),
+                    "pano_90@gmx.net",
+                    "");
+
+    about.addCredit(ki18n("Phaneendra Hedge"),
+                    ki18n("Nepomuk fancy bookmarking"),
+                    "pnh.pes@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Jonathan Raphael Joachim Kolberg"),
+                    ki18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages"),
+                    "bulldog98@freenet.de",
+                    "");
+
+    about.addCredit(ki18n("Benjamin Poulain"),
+                    ki18n("The \"QtWebKit guy\". Adblock (new) implementation. Code quality improvements"),
+                    "ikipou@gmail.com",
+                    "http://www.openyourcode.org/");
+
+    about.addCredit(ki18n("Rohan Garg"),
+                    ki18n("Handbook, Maintains a Kubuntu PPA with rekonq git packages."),
+                    "rohan16garg@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Anton Kreuzkamp"),
+                    ki18n("Session Management, patches"),
+                    "akreuzkamp@web.de",
+                    "");
+
+    about.addCredit(ki18n("David E. Narváez"),
+                    ki18n("Implemented User Session Management and cleaned up SessionManager code"),
+                    "david.narvaez@computer.org",
+                    "");
+
+    about.addCredit(ki18n("Marc Deop"),
+                    ki18n("Access Keys Navigation"),
+                    "damnshock@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Yuri Chornoivan"),
+                    ki18n("Checking rekonq strings, helping with docs"),
+                    "yurchor@ukr.net",
+                    "");
+
+    about.addCredit(ki18n("Burkhard Lück"),
+                    ki18n("Checking rekonq strings, helping with docs"),
+                    "lueck@hube-lueck.de",
+                    "");
+
+    about.addCredit(ki18n("Andrius da Costa Ribas"),
+                    ki18n("Helped letting rekonq compile on Windows/MSVC and Mac OS X"),
+                    "andriusmao@gmail.com",
+                    "");
+
+    about.addCredit(ki18n("Pino Toscano"),
+                    ki18n("fixuifiles ;)"),
+                    "pino@kde.org",
+                    "");
+
+    
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
 
