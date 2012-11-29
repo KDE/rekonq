@@ -68,6 +68,8 @@ public:
 
     WebPage *page();
     void setPage(WebPage *);
+
+    WebTab *parentTab();
     
     void load(const QUrl &url);
     void load(const QNetworkRequest &req,

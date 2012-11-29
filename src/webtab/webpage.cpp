@@ -214,7 +214,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     if (_isOnRekonqPage)
     {
         WebView *view = qobject_cast<WebView *>(parent());
-        WebTab *tab = qobject_cast<WebTab *>(view->parent());
+        WebTab *tab = view->parentTab();
         _isOnRekonqPage = false;
         tab->setPart(0, KUrl());     // re-enable the view page
     }
@@ -455,7 +455,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         _isOnRekonqPage = true;
 
         WebView *view = qobject_cast<WebView *>(parent());
-        WebTab *tab = qobject_cast<WebTab *>(view->parent());
+        WebTab *tab = view->parentTab();
         tab->setPart(pa, replyUrl);
 
         // WARNING: Is this enough?

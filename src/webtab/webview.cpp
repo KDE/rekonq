@@ -1472,3 +1472,9 @@ void WebView::slotSpellCheckDone(const QString&)
         execJScript(m_contextMenuHitResult, script);
     }
 }
+
+
+WebTab *WebView::parentTab()
+{
+    return m_parentTab;
+}
