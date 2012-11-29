@@ -1,6 +1,17 @@
 Please, refer to http://techbase.kde.org/Projects/rekonq/Roadmap page
 to track all features available on new rekonq releases.
 
+2.0
+- Completely new UI
+- tabs up
+- inline spellcheck (against QtWebkit 2.3)
+- new incognito mode (similar to the chrome one)
+- new startup option: rekonq --incognito URL
+- new startup option: rekonq --webapp URL
+- pinning tabs
+- improved error page
+- simplified rekonq pages 
+
 1.0
 - sync: sync bookmarks (just them for now) with google and with opera services.
 - Fancy bookmarking: store (and share) infos about bookmarks via nepomuk.
