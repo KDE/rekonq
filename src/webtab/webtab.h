@@ -41,6 +41,7 @@
 // Qt Includes
 #include <QWidget>
 #include <QWebInspector>
+#include <QSplitter>
 
 // Forward Declarations
 class NotificationBar;
@@ -125,6 +126,8 @@ private:
     KParts::ReadOnlyPart *m_part;
 
     int m_zoomFactor;
+
+    QSplitter *m_splitter;
 };
 
 #endif

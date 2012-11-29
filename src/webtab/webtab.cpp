@@ -73,6 +73,7 @@ WebTab::WebTab(QWidget *parent)
     , m_progress(0)
     , m_part(0)
     , m_zoomFactor(10)
+    , m_splitter(new QSplitter(this))
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -80,12 +81,20 @@ WebTab::WebTab(QWidget *parent)
     l->setMargin(0);
     l->setSpacing(0);
 
-    l->addWidget(view());
+    m_splitter->addWidget(view());
     view()->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // NOTE: this line of code moves the web inspector in the usual position,
+    // BUT my wife prefers it on the right part. Following hint about.
+    // Let's hear people comments about... 
+//    m_splitter->setOrientation(Qt::Vertical);
+    
+    l->addWidget(m_splitter);
 
     // fix focus handling
     setFocusProxy(view());
 
+    
     KWebWallet *wallet = page()->wallet();
 
     if (wallet)
@@ -435,17 +444,16 @@ void WebTab::toggleInspector(bool on)
         {
             m_inspector = new QWebInspector(this);
             m_inspector.data()->setPage(page());
+
+            m_splitter->addWidget(m_inspector.data());
         }
 
-        qobject_cast<QVBoxLayout *>(layout())->insertWidget(-1, m_inspector.data());
         m_inspector.data()->show();
 
         return;
     }    
     // else
  
-    qobject_cast<QVBoxLayout *>(layout())->removeWidget(m_inspector.data());
-
     m_inspector.data()->hide();
 
     page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, on);
