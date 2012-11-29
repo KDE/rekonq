@@ -192,13 +192,6 @@
        </spacer>
       </item>
       <item>
-       <widget class="QCheckBox" name="kcfg_openLinksInNewWindow">
-        <property name="text">
-         <string>Don't use tabs: open links in new windows</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QCheckBox" name="kcfg_openExternalLinksInNewWindow">
         <property name="text">
          <string>Open as new window when URL is called externally</string>
