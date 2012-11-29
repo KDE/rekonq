@@ -216,23 +216,21 @@ void RekonqWindow::restoreWindowSize(const KConfigGroup & _cg)
     int scnum = QApplication::desktop()->screenNumber(window());
     QRect desktopRect = QApplication::desktop()->screenGeometry(scnum);
 
-    QSize defaultSize = desktopRect.size() * 0.8;
-
     KConfigGroup cg(_cg);
-
-    QString widthString = QString::fromLatin1("Width %1").arg(desktopRect.width());
-    int w = cg.readEntry(widthString, defaultSize.width());
-
-    QString heightString = QString::fromLatin1("Height %1").arg(desktopRect.height());
-    int h = cg.readEntry(heightString, defaultSize.height());
-
-    resize(w, h);
 
     QString geometryKey = QString::fromLatin1("geometry-%1-%2").arg(desktopRect.width()).arg(desktopRect.height());
     QByteArray geometry = cg.readEntry(geometryKey, QByteArray());
-    // if first time run, center window
+
+    // if first time run, center window: resize && move..
     if (!restoreGeometry(QByteArray::fromBase64(geometry)))
+    {
+        QSize defaultSize = desktopRect.size() * 0.8;
+        resize(defaultSize);
+        
         move((desktopRect.width() - width()) / 2, (desktopRect.height() - height()) / 2);
+    }
+
+    checkPosition();
 }
 
 
@@ -400,3 +398,46 @@ int RekonqWindow::insertTab(int index, QWidget *page, const QIcon &icon, const Q
 
 
 // --------------------------------------------------------------------------------------
+
+
+void RekonqWindow::checkPosition()
+{
+    // no need to check trivial positions...
+    if (isMaximized())
+        return;
+    
+    QList<RekonqWindow*> wList = RekonqWindow::windowList();
+    int wNumber = wList.count();
+
+    // no need to check first window...
+    if (wNumber <= 1)
+        return;
+
+    int div = wNumber % 4;
+
+    int scnum = QApplication::desktop()->screenNumber(window());
+    QRect desktopRect = QApplication::desktop()->screenGeometry(scnum);
+
+    switch (div)
+    {
+    case 2:
+        // left down
+        move(desktopRect.width() - width(),  desktopRect.height() - height());
+        break;
+    case 3:
+        // right down
+        move(0, desktopRect.height() - height());
+        break;
+    case 0:
+        // left top
+        move(desktopRect.width() - width(), 0);
+        break;
+    case 1:
+        // right top
+        move(0,0);
+        break;
+    default:
+        kDebug() << "OOPS...THIS SHOULD NEVER HAPPEN!!";
+        break;
+    }
+}

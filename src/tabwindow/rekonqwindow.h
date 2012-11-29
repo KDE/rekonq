@@ -132,6 +132,9 @@ protected:
 private Q_SLOTS:
     void saveAutoSaveSettings();
 
+private:
+    /// This has been added to just fix window position && not let them be overlying
+    void checkPosition();
 };
 
 #endif // REKONQ_WINDOW_H
