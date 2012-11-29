@@ -134,6 +134,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     if (_url.protocol() == QL1S("about"))
     {
         QByteArray encodedUrl = _url.toEncoded();
+
         // let webkit manage the about:blank url...
         if (encodedUrl.startsWith(QByteArray("about:blank")))
         {
@@ -147,21 +148,18 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             case 0: // favorites
                 _url = KUrl("about:favorites");
                 break;
-            case 1: // closed tabs
-                _url = KUrl("about:closedTabs");
-                break;
-            case 2: // bookmarks
+            case 1: // bookmarks
                 _url = KUrl("about:bookmarks");
                 break;
-            case 3: // history
+            case 2: // history
                 _url = KUrl("about:history");
                 break;
-            case 4: // downloads
+            case 3: // downloads
                 _url = KUrl("about:downloads");
                 break;
-            case 5: // tabs
-                _url = KUrl("about:tabs");
             default: // unuseful
+                kDebug() << "oops... this should NOT happen...";
+                _url = KUrl("about:favorites");
                 break;
             }
         }

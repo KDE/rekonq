@@ -28,6 +28,9 @@
 #include "tabwindow.h"
 #include "tabwindow.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
 // Local Includes
 #include "application.h"
 #include "webpage.h"
@@ -254,7 +257,20 @@ void TabWindow::newTab()
     addTab(tab, i18n("new tab"));
     setCurrentWidget(tab);
 
-    tab->load(KUrl("about:home"));
+    switch (ReKonfig::newTabsBehaviour())
+    {
+    case 0: // new tab page
+        tab->load(KUrl("about:home"));
+        break;
+    case 2: // homepage
+        tab->load(KUrl(ReKonfig::homePage()));
+        break;
+    case 1: // blank page
+    default:
+        tab->load(KUrl("about:blank"));
+        break;
+    }
+
 }
 
 

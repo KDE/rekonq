@@ -101,11 +101,6 @@
         </item>
         <item>
          <property name="text">
-          <string>Closed Tabs</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>Bookmarks</string>
          </property>
         </item>
@@ -117,11 +112,6 @@
         <item>
          <property name="text">
           <string>Downloads</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Tabs</string>
          </property>
         </item>
        </widget>
