@@ -43,6 +43,7 @@
 
 // Forward Declarations
 class WebPage;
+class WebTab;
 
 class QLabel;
 class QTimer;
@@ -164,6 +165,8 @@ private:
     QHash<QChar, QWebElement> m_accessKeyNodes;
     bool m_accessKeysPressed;
     bool m_accessKeysActive;
+
+    WebTab *m_parentTab;
 };
 
 #endif

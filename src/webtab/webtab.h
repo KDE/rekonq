@@ -40,6 +40,7 @@
 
 // Qt Includes
 #include <QWidget>
+#include <QWebInspector>
 
 // Forward Declarations
 class NotificationBar;
@@ -119,7 +120,8 @@ private:
 
     QWeakPointer<WalletBar> m_walletBar;
     QWeakPointer<PreviewSelectorBar> m_previewSelectorBar;
-
+    QWeakPointer<QWebInspector> m_inspector;
+    
     KParts::ReadOnlyPart *m_part;
 
     int m_zoomFactor;

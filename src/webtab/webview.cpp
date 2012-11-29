@@ -98,6 +98,7 @@ WebView::WebView(QWidget* parent)
     , m_isViewSmoothScrolling(false)
     , m_accessKeysPressed(false)
     , m_accessKeysActive(false)
+    , m_parentTab(qobject_cast<WebTab *>(parent))
 {
     // loadUrl signal
     connect(this, SIGNAL(loadUrl(KUrl, Rekonq::OpenType)), rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
@@ -162,10 +163,7 @@ void WebView::setPage(WebPage *pg)
 {
     KWebView::setPage(pg);
 
-    WebTab *tab = qobject_cast<WebTab *>(parent());
-    if (!tab)
-        return;
-    WebWindow *w = tab->webWindow();
+    WebWindow *w = m_parentTab->webWindow();
     if (w && w->window())
         pg->setWindow(w->window());
 }    
@@ -268,8 +266,8 @@ bool WebView::popupSpellMenu(QContextMenuEvent *event)
 void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     m_contextMenuHitResult = page()->mainFrame()->hitTestContent(event->pos());
-    WebTab *tab = qobject_cast<WebTab *>(parent());
-    WebWindow *webwin = tab->webWindow();
+
+    WebWindow *webwin = m_parentTab->webWindow();
 
     KMenu menu(this);
     QAction *a;
@@ -333,7 +331,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
 
         a = new KAction(KIcon("document-print-frame"), i18n("Print Frame"), this);
-        connect(a, SIGNAL(triggered()), tab, SLOT(printFrame()));
+        connect(a, SIGNAL(triggered()), m_parentTab, SLOT(printFrame()));
         frameMenu->addAction(a);
 
         menu.addAction(frameMenu);
@@ -761,8 +759,7 @@ void WebView::openLinkInNewTab()
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
 
-    WebTab *tab = qobject_cast<WebTab *>(parent());
-    WebWindow *webwin = tab->webWindow();
+    WebWindow *webwin = m_parentTab->webWindow();
 
     if (webwin)
         emit loadUrl(url, Rekonq::NewTab);

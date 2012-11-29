@@ -62,6 +62,7 @@
 #include <QVBoxLayout>
 #include <QPrintDialog>
 #include <QPrinter>
+#include <QSplitter>
 
 #include <QWebSettings>
 
@@ -276,7 +277,7 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
         m_part = p;
         qobject_cast<QVBoxLayout *>(layout())->insertWidget(1, p->widget());
         p->openUrl(u);
-        m_webView->hide();
+        view()->hide();
 
         emit titleChanged(u.url());
         return;
@@ -286,7 +287,7 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
         return;
 
     // Part NO more exists. Let's clean up from webtab
-    m_webView->show();
+    view()->show();
     qobject_cast<QVBoxLayout *>(layout())->removeWidget(m_part->widget());
     delete m_part;
     m_part = 0;
@@ -311,7 +312,7 @@ void WebTab::loadFinished()
     if (page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return;
 
-    QString pageTitle = (page() && page()->isOnRekonqPage()) ? url().url() : m_webView->title();
+    QString pageTitle = (page() && page()->isOnRekonqPage()) ? url().url() : view()->title();
     HistoryManager::self()->addHistoryEntry(url(), pageTitle);
 }
 
@@ -379,7 +380,7 @@ void WebTab::zoomIn()
     else
         m_zoomFactor++;
 
-    m_webView->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
+    view()->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
 
     emit infoToShow(i18n("Zooming: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
 }
@@ -394,7 +395,7 @@ void WebTab::zoomOut()
     }
 
     m_zoomFactor--;
-    m_webView->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
+    view()->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
 
     emit infoToShow(i18n("Zooming: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
 }
@@ -403,7 +404,7 @@ void WebTab::zoomOut()
 void WebTab::zoomDefault()
 {
     m_zoomFactor = 10;
-    m_webView->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
+    view()->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
 
     emit infoToShow(i18n("Default zoom: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
 }
@@ -426,6 +427,26 @@ void WebTab::webAppIconChanged()
 
 void WebTab::toggleInspector(bool on)
 {
+    if (on)
+    {
+        page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, on);
+
+        if (m_inspector.isNull())
+        {
+            m_inspector = new QWebInspector(this);
+            m_inspector.data()->setPage(page());
+        }
+
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(-1, m_inspector.data());
+        m_inspector.data()->show();
+
+        return;
+    }    
+    // else
+ 
+    qobject_cast<QVBoxLayout *>(layout())->removeWidget(m_inspector.data());
+
+    m_inspector.data()->hide();
+
     page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, on);
-    kDebug() << "TOGGLED: " << on;
 }
