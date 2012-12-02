@@ -449,9 +449,9 @@ void TabWindow::cloneTab(int index)
 
     QUrl u = webWindow(index)->url();
     QWebHistory* history = webWindow(index)->page()->history();
-    TabHistory tHistory(history);
+    TabHistory clonedHistory(history);
 
-    loadUrl(u, Rekonq::NewTab, &tHistory);
+    loadUrl(u, Rekonq::NewTab, &clonedHistory);
 }
 
 
@@ -483,7 +483,8 @@ void TabWindow::closeTab(int index, bool del)
         TabHistory history(tabToClose->page()->history());
         history.title = tabToClose->title();
         history.url = tabToClose->url().url();
-
+        history.position = index;
+        
         m_recentlyClosedTabs.removeAll(history);
         if (m_recentlyClosedTabs.count() == recentlyClosedTabsLimit)
             m_recentlyClosedTabs.removeLast();
@@ -610,7 +611,18 @@ void TabWindow::restoreLastClosedTab()
 
     QUrl u = QUrl(history.url);
 
-    loadUrl(u, Rekonq::NewFocusedTab, &history);
+    int restorePosition = history.position;
+    
+    WebWindow *tab = prepareNewTab();
+
+    if (restorePosition < count())
+        insertTab(restorePosition, tab, i18n("restored tab"));
+    else
+        addTab(tab, i18n("restored tab"));
+
+    setCurrentWidget(tab);
+
+    tab->load(u);
 
     // just to get sure...
     m_recentlyClosedTabs.removeAll(history);

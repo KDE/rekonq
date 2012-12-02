@@ -65,6 +65,7 @@ public:
     QString title;
     QString url;
     QByteArray history;
+    int position;
 };
 
 #endif // TAB_HISTORY
