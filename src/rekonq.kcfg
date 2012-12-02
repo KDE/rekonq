@@ -83,7 +83,7 @@
         <default>http://www.kde.org/</default>
     </entry>
     <entry name="downloadPath" type="Url">
-        <default code="true">KGlobalSettings::downloadPath()</default>
+        <default code="true">KUrl(KGlobalSettings::downloadPath())</default>
     </entry>
     <entry name="askDownloadPath" type="Bool">
         <default>false</default>
