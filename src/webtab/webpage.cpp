@@ -633,7 +633,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     }
 
 
-    msg += QL1S("<h2>") + i18n("Oops! Rekonq cannot load <em>%1</em>", urlString) + QL1S("</h1>");
+    msg += QL1S("<h2>") + i18n("Oops! Cannot load <em>%1</em>", urlString) + QL1S("</h1>");
 
     QString faceIconPath = QString("file://") + KIconLoader::global()->iconPath("face-surprise" , -KIconLoader::SizeHuge, false);
     msg += QL1S("<table>");
