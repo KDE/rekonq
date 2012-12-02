@@ -69,8 +69,12 @@ public:
 
     bool clearDownloadsHistory();
 
-    bool downloadResource(const KUrl &url, const KIO::MetaData &metaData = KIO::MetaData(),
-                          QWidget *parent = 0, bool forceDirRequest = false, const QString &suggestedName = QString(), bool registerDownload = true);
+    bool downloadResource(const KUrl &url,
+                          const KIO::MetaData &metaData = KIO::MetaData(),
+                          QWidget *parent = 0,
+                          bool forceDirRequest = false,
+                          const QString &suggestedName = QString(),
+                          bool registerDownload = true);
 
     void downloadLinksWithKGet(const QVariant &contentList);
 

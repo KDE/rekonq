@@ -415,12 +415,12 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         switch (dlg.askEmbedOrSave())
         {
         case KParts::BrowserOpenOrSaveQuestion::Save:
-            DownloadManager::self()->downloadResource(reply->url(),
-                                                      KIO::MetaData(),
-                                                      view(),
-                                                      !hideDialog,
-                                                      _suggestedFileName,
-                                                      settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
+            DownloadManager::self()->downloadResource( reply->url(),
+                                                       KIO::MetaData(),
+                                                       view(),
+                                                       !hideDialog,
+                                                       _suggestedFileName,
+                                                       !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
             return;
 
         case KParts::BrowserOpenOrSaveQuestion::Cancel:
@@ -681,16 +681,23 @@ QString WebPage::errorPage(QNetworkReply *reply)
 
 void WebPage::downloadRequest(const QNetworkRequest &request)
 {
-    DownloadManager::self()->downloadResource(request.url(),
-            request.attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap(),
-            view(), false, QString(), settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
+    DownloadManager::self()->downloadResource(  request.url(),
+                                                request.attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap(),
+                                                view(),
+                                                false,
+                                                QString(),
+                                                !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
 }
 
 
 void WebPage::downloadUrl(const KUrl &url)
 {
-    DownloadManager::self()->downloadResource(url, KIO::MetaData(), view(), false, QString(),
-                                              settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
+    DownloadManager::self()->downloadResource(  url,
+                                                KIO::MetaData(),
+                                                view(),
+                                                false,
+                                                QString(),
+                                                !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
 }
 
 
