@@ -316,7 +316,7 @@ int Application::newInstance()
         }
 
         if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash && SearchEngine::defaultEngine().isNull())
-            QTimer::singleShot(2000, tabWindow()->currentWebWindow(), SLOT(showSearchEngineBar()));
+            QTimer::singleShot(2000, tabWindow()->currentWebWindow()->view(), SLOT(showSearchEngineBar()));
 
         // updating rekonq configuration
         updateConfiguration();
