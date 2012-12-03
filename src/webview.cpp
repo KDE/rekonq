@@ -253,8 +253,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     m_ContextMenuResult = page()->mainFrame()->hitTestContent(event->pos());
     MainWindow *mainwindow = rApp->mainWindow();
 
+    if (m_ContextMenuResult.isContentEditable())
+    {
+        // Check to see if handled by speller
+        if (popupSpellMenu(event))
+            return;
+    }
+
     KMenu menu(this);
-    QAction *a;
 
     KAction *inspectAction = new KAction(KIcon("layer-visible-on"), i18n("Inspect Element"), this);
     connect(inspectAction, SIGNAL(triggered(bool)), this, SLOT(inspect()));
@@ -282,14 +288,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // is content editable? Add PASTE
     if (m_ContextMenuResult.isContentEditable())
     {
-        // Check to see if handled by speller
-        if (popupSpellMenu(event))
-            return;
-
         menu.addAction(pageAction(KWebPage::Paste));
         menu.addSeparator();
     }
 
+    QAction *a;
     // EMPTY PAGE ACTIONS -------------------------------------------------------------
     if (resultHit == WebView::EmptySelection)
     {
