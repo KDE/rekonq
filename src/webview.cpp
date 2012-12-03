@@ -262,10 +262,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     KMenu menu(this);
 
-    KAction *inspectAction = new KAction(KIcon("layer-visible-on"), i18n("Inspect Element"), this);
+    KAction *inspectAction = new KAction(KIcon("layer-visible-on"), i18n("Inspect Element"), &menu);
     connect(inspectAction, SIGNAL(triggered(bool)), this, SLOT(inspect()));
 
-    KAction *sendByMailAction = new KAction(this);
+    KAction *sendByMailAction = new KAction(&menu);
     sendByMailAction->setIcon(KIcon("mail-send"));
     connect(sendByMailAction, SIGNAL(triggered(bool)), this, SLOT(sendByMail()));
 
