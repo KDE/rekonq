@@ -38,6 +38,7 @@
 // Local Includes
 #include "adblockmanager.h"
 #include "bookmarkmanager.h"
+#include "downloadmanager.h"
 #include "iconmanager.h"
 
 #include "searchengine.h"
@@ -411,7 +412,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                 this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
         menu.addAction(a);
 
-        menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
+        a = new KAction(KIcon("document-save"), i18n("Save image as..."), this);
+        a->setData(m_contextMenuHitResult.imageUrl());
+        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(saveImage()));
+        menu.addAction(a);
 
         a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), this);
         a->setData(m_contextMenuHitResult.imageUrl());
@@ -767,6 +771,7 @@ void WebView::openLinkInNewTab()
         emit loadUrl(url, Rekonq::NewFocusedTab);
 }
 
+
 void WebView::openLinkInPrivateWindow()
 {
     KAction *a = qobject_cast<KAction*>(sender());
@@ -774,6 +779,7 @@ void WebView::openLinkInPrivateWindow()
 
     emit loadUrl(url, Rekonq::NewPrivateWindow);
 }
+
 
 void WebView::bookmarkLink()
 {
@@ -1477,4 +1483,18 @@ void WebView::slotSpellCheckDone(const QString&)
 WebTab *WebView::parentTab()
 {
     return m_parentTab;
+}
+
+
+void WebView::saveImage()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl imageUrl(a->data().toUrl());
+
+    DownloadManager::self()->downloadResource(  imageUrl,
+                                                KIO::MetaData(),
+                                                this,
+                                                true,
+                                                QString(),
+                                                !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
 }

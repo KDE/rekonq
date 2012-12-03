@@ -109,6 +109,7 @@ private Q_SLOTS:
     void slotSpellCheckDone(const QString&);
     void sendByMail();
 
+    void saveImage();
     void viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
     void slotCopyImageLocation();
 
