@@ -317,10 +317,10 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
 
         //Frame
-        KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), this);
+        KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), &menu);
         frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
 
-        a = new KAction(KIcon("document-print-frame"), i18n("Print Frame"), this);
+        a = new KAction(KIcon("document-print-frame"), i18n("Print Frame"), &menu);
         connect(a, SIGNAL(triggered()), this, SLOT(printFrame()));
         frameMenu->addAction(a);
 
@@ -335,7 +335,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
         {
-            a = new KAction(KIcon("kget"), i18n("List All Links"), this);
+            a = new KAction(KIcon("kget"), i18n("List All Links"), &menu);
             connect(a, SIGNAL(triggered(bool)), page(), SLOT(downloadAllContentsWithKGet()));
             menu.addAction(a);
         }
@@ -357,12 +357,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         sendByMailAction->setData(m_ContextMenuResult.linkUrl());
         sendByMailAction->setText(i18n("Share link"));
 
-        a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), this);
+        a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), &menu);
         a->setData(m_ContextMenuResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
         menu.addAction(a);
 
-        a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), this);
+        a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), &menu);
         a->setData(m_ContextMenuResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
         menu.addAction(a);
@@ -389,7 +389,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addSeparator();
 
-        a = new KAction(KIcon("view-preview"), i18n("&View Image"), this);
+        a = new KAction(KIcon("view-preview"), i18n("&View Image"), &menu);
         a->setData(m_ContextMenuResult.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
                 this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
@@ -397,14 +397,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addAction(pageAction(KWebPage::DownloadImageToDisk));
 
-        a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), this);
+        a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), &menu);
         a->setData(m_ContextMenuResult.imageUrl());
         connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
         menu.addAction(a);
 
         if (rApp->adblockManager()->isEnabled())
         {
-            a = new KAction(KIcon("preferences-web-browser-adblock"), i18n("Block image"), this);
+            a = new KAction(KIcon("preferences-web-browser-adblock"), i18n("Block image"), &menu);
             a->setData(m_ContextMenuResult.imageUrl());
             connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(blockImage()));
             menu.addAction(a);
@@ -449,12 +449,12 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                     truncatedUrl += QL1S("...");
                 }
                 //open selected text url in a new tab
-                QAction * const openInNewTabAction = new KAction(KIcon("tab-new"), i18n("Open '%1' in New Tab", truncatedUrl), this);
+                QAction * const openInNewTabAction = new KAction(KIcon("tab-new"), i18n("Open '%1' in New Tab", truncatedUrl), &menu);
                 openInNewTabAction->setData(QUrl(urlLikeText));
                 connect(openInNewTabAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
                 menu.addAction(openInNewTabAction);
                 //open selected text url in a new window
-                QAction * const openInNewWindowAction = new KAction(KIcon("window-new"), i18n("Open '%1' in New Window", truncatedUrl), this);
+                QAction * const openInNewWindowAction = new KAction(KIcon("window-new"), i18n("Open '%1' in New Window", truncatedUrl), &menu);
                 openInNewWindowAction->setData(QUrl(urlLikeText));
                 connect(openInNewWindowAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
                 menu.addAction(openInNewWindowAction);
@@ -466,7 +466,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         KService::Ptr defaultEngine = SearchEngine::defaultEngine();
         if (defaultEngine) // check if a default engine is set
         {
-            a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1", defaultEngine->name()), this);
+            a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1", defaultEngine->name()), &menu);
             a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
             a->setData(defaultEngine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
@@ -474,18 +474,18 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         }
 
         //All favourite ones
-        KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18nc("@title:menu", "Search"), this);
+        KActionMenu *searchMenu = new KActionMenu(KIcon("edit-find"), i18nc("@title:menu", "Search"), &menu);
 
         Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
         {
-            a = new KAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), this);
+            a = new KAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), &menu);
             a->setIcon(rApp->iconManager()->iconForUrl(SearchEngine::buildQuery(engine, "")));
             a->setData(engine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
             searchMenu->addAction(a);
         }
 
-        a = new KAction(KIcon("edit-find"), i18n("On Current Page"), this);
+        a = new KAction(KIcon("edit-find"), i18n("On Current Page"), &menu);
         connect(a, SIGNAL(triggered()), rApp->mainWindow(), SLOT(findSelectedText()));
         searchMenu->addAction(a);
 
@@ -499,7 +499,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     menu.addSeparator();
     if (resultHit & WebView::LinkSelection)
     {
-        a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark link"), this);
+        a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark link"), &menu);
         a->setData(m_ContextMenuResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
         menu.addAction(a);
@@ -516,7 +516,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if (m_ContextMenuResult.isContentEditable())
     {
         menu.addSeparator();
-        a = KStandardAction::spelling(this, SLOT(spellCheck()), this);
+        a = KStandardAction::spelling(this, SLOT(spellCheck()), &menu);
         menu.addAction(a);
     }
 
