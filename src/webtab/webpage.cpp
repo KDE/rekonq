@@ -337,8 +337,10 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     Q_ASSERT(reply);
 
-    if (!reply)
+    if (reply->error() != QNetworkReply::NoError)
         return;
+
+    KIO::Integration::AccessManager::putReplyOnHold(reply);
 
     // handle protocols WebKit cannot handle...
     if (_protHandler.postHandling(reply->request(), mainFrame()))
@@ -346,10 +348,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         return;
     }
 
-    if (reply->error() != QNetworkReply::NoError)
-        return;
-
-    KIO::Integration::AccessManager::putReplyOnHold(reply);
+    // Get suggested file name...
+    const KIO::MetaData& data = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
+    _suggestedFileName = data.value(QL1S("content-disposition-filename"));
 
     // Get mimeType...
     extractMimeType(reply, _mimeType);
@@ -357,10 +358,6 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     // Convert executable text files to plain text...
     if (KParts::BrowserRun::isTextExecutable(_mimeType))
         _mimeType = QL1S("text/plain");
-
-    // Get suggested file name...
-    const KIO::MetaData& data = reply->attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap();
-    _suggestedFileName = data.value(QL1S("content-disposition-filename"));
 
     kDebug() << "Detected MimeType = " << _mimeType;
     kDebug() << "Suggested File Name = " << _suggestedFileName;
@@ -373,10 +370,18 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     if (appService.isNull())  // no service can handle this. We can just download it..
     {
-        isLocal
-        ? KMessageBox::sorry(view(), i18n("No service can handle this file."))
-        : downloadUrl(reply->url());
+        if (isLocal)
+        {
+            KMessageBox::sorry(view(), i18n("No service can handle this file."));
+            return;
+        }
 
+        DownloadManager::self()->downloadResource( reply->url(),
+                                    KIO::MetaData(),
+                                    view(),
+                                    false,
+                                    _suggestedFileName,
+                                    !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
         return;
     }
 
@@ -386,10 +391,18 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     // "recall" loop.
     if (appService->exec().trimmed().startsWith(QL1S("rekonq")))
     {
-        isLocal
-        ? KMessageBox::sorry(view(), i18n("rekonq cannot properly handle this, sorry"))
-        : downloadUrl(reply->url());
+        if (isLocal)
+        {
+            KMessageBox::sorry(view(), i18n("rekonq cannot properly handle this, sorry"));
+            return;
+        }
 
+        DownloadManager::self()->downloadResource( reply->url(),
+                                            KIO::MetaData(),
+                                            view(),
+                                            false,
+                                            _suggestedFileName,
+                                            !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
         return;
     }
 
@@ -685,7 +698,7 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
                                                 request.attribute(static_cast<QNetworkRequest::Attribute>(KIO::AccessManager::MetaData)).toMap(),
                                                 view(),
                                                 false,
-                                                QString(),
+                                                _suggestedFileName,
                                                 !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
 }
 
