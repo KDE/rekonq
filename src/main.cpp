@@ -106,6 +106,11 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "tirtha.p.chatterjee@gmail.com",
                     "");
 
+    about.addAuthor(ki18n("Lindsay Mathieson"),
+                    ki18n("Implemented inline spellcheck, provided hints, discovered bugs"),
+                    "lindsay.mathieson@gmail.com",
+                    "");
+
     // --------------- about credits -----------------------------
     about.addCredit(ki18n("Dawit Alemayehu"),
                     ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
@@ -115,11 +120,6 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     about.addCredit(ki18n("Jekyll Wu"),
                     ki18n("Bug triaging. Impressive job about..."),
                     "adaptee@gmail.com",
-                    "");
-
-    about.addCredit(ki18n("Lindsay Mathieson"),
-                    ki18n("Provided Patches & Hints, Discovered Bugs"),
-                    "lindsay.mathieson@gmail.com",
                     "");
 
     about.addCredit(ki18n("Panagiotis Papadopoulos"),
