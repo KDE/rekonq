@@ -268,10 +268,16 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 {
     m_contextMenuHitResult = page()->mainFrame()->hitTestContent(event->pos());
 
+    if (m_contextMenuHitResult.isContentEditable())
+    {
+        // Check to see if handled by speller
+        if (popupSpellMenu(event))
+            return;
+    }
+    
     WebWindow *webwin = m_parentTab->webWindow();
 
     KMenu menu(this);
-    QAction *a;
 
     KAction *sendByMailAction = new KAction(this);
     sendByMailAction->setIcon(KIcon("mail-send"));
@@ -296,13 +302,11 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // is content editable? Add PASTE
     if (m_contextMenuHitResult.isContentEditable())
     {
-        // Check to see if handled by speller
-        if (popupSpellMenu(event))
-            return;
-
         menu.addAction(pageAction(KWebPage::Paste));
         menu.addSeparator();
     }
+
+    QAction *a;
 
     // EMPTY PAGE ACTIONS -------------------------------------------------------------
     if (resultHit == WebView::EmptySelection)
