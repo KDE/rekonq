@@ -43,7 +43,7 @@ class TabWindow;
 class WebWindow;
 
 class WebTab;
-
+class WebPage;
 
 typedef QList< QWeakPointer<TabWindow> > TabWindowList;
 typedef QList<WebTab *> WebAppList;
@@ -112,6 +112,8 @@ private Q_SLOTS:
     void createWebAppShortcut();
 
     void newPrivateBrowsingWindow();
+
+    void pageCreated(WebPage *);
     
 private:
     TabWindowList m_tabWindows;

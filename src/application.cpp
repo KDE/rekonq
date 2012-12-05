@@ -36,10 +36,14 @@
 
 // Local Includes
 #include "searchengine.h"
+
 #include "tabbar.h"
 #include "tabwindow.h"
+
 #include "webwindow.h"
 #include "webtab.h"
+#include "webpage.h"
+
 #include "urlresolver.h"
 
 // Local Manager(s) Includes
@@ -134,6 +138,7 @@ int Application::newInstance()
         kDebug() << "URL: " << u;
 
         WebTab *tab = newWebApp();
+        connect(tab->page(), SIGNAL(pageCreated(WebPage *)), this, SLOT(pageCreated(WebPage *)));
         tab->view()->load(u);
         
         if (isFirstLoad)
@@ -829,4 +834,32 @@ void Application::newPrivateBrowsingWindow()
 {
     // NOTE: what about an "about:incognito" page?
     loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
+}
+
+
+void Application::pageCreated(WebPage *pg)
+{
+    if (m_tabWindows.isEmpty())
+    {
+        // NOTE: This is "adjusted" from newTabWindow() code...
+        TabWindow *w = new TabWindow(pg);
+
+        // set object name
+        int n = m_tabWindows.count() + 1;
+        w->setObjectName(QL1S("win") + QString::number(n));
+
+        // This is used to track which window was activated most recently
+        w->installEventFilter(this);
+
+        m_tabWindows.prepend(w);
+        w->show();
+
+        return;
+    }
+
+    TabWindow *tw = tabWindow();
+    tw->newTab(pg);
+
+    tw->activateWindow();
+    tw->raise();
 }

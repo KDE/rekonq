@@ -61,6 +61,7 @@ class TabWindow : public RekonqWindow
 
 public:
     TabWindow(bool withTab = true, bool PrivateBrowsingMode = false, QWidget *parent = 0);
+    TabWindow(WebPage *pg, QWidget *parent = 0);
 
     WebWindow* currentWebWindow() const;
     WebWindow* webWindow(int index) const;
@@ -74,7 +75,7 @@ public:
 
 public Q_SLOTS:
     void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
-    void newTab();
+    void newTab(WebPage *page = 0);
     
 private:
     /**
@@ -82,6 +83,8 @@ private:
      */
     WebWindow *prepareNewTab(WebPage *page = 0);
 
+    void init();
+    
 private Q_SLOTS:
     /**
      * Updates new tab button position

@@ -76,6 +76,36 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     , _isPrivateBrowsing(PrivateBrowsingMode)
     , _ac(new KActionCollection(this))
 {
+    init();
+
+    // NOTE: we usually create TabWindow with AT LEAST one tab, but
+    // in one important case...
+    if (withTab)
+    {
+        WebWindow *tab = prepareNewTab();
+        addTab(tab, i18n("new tab"));
+        setCurrentWidget(tab);
+    }
+}
+
+
+TabWindow::TabWindow(WebPage *pg, QWidget *parent)
+    : RekonqWindow(parent)
+    , _addTabButton(new QToolButton(this))
+    , _openedTabsCounter(0)
+    , _isPrivateBrowsing(false)
+    , _ac(new KActionCollection(this))
+{
+    init();
+    
+    WebWindow *tab = prepareNewTab(pg);
+    addTab(tab, i18n("new tab"));
+    setCurrentWidget(tab);
+}
+
+
+void TabWindow::init()
+{
     setContentsMargins(0, 0, 0, 0);
 
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -86,7 +116,7 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     // setting tabbar
     TabBar *tabBar = new TabBar(this);
     setTabBar(tabBar);
-    
+
     // sets document mode; this removes the frame around the tabs
     setDocumentMode(true);
 
@@ -101,12 +131,12 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     connect(tabBar, SIGNAL(closeOtherTabs(int)),    this,   SLOT(closeOtherTabs(int)));
     connect(tabBar, SIGNAL(reloadTab(int)),         this,   SLOT(reloadTab(int)));
     connect(tabBar, SIGNAL(detachTab(int)),         this,   SLOT(detachTab(int)));
-    
+
     connect(tabBar, SIGNAL(tabLayoutChanged()),     this,   SLOT(updateNewTabButtonPosition()));
 
     // ============================== Tab Window Actions ====================================
     _ac->addAssociatedWidget(this);
-    
+
     KAction* a;
 
     a = new KAction(KIcon("tab-new"), i18n("New &Tab"), this);
@@ -128,7 +158,7 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
     fullScreenShortcut.setAlternate(Qt::Key_F11);
     a->setShortcut(fullScreenShortcut);
-    
+
     a = new KAction(KIcon("bookmarks"), i18n("Bookmark all tabs"), this);
     actionCollection()->addAction(QL1S("bookmark_all_tabs"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkAllTabs()));
@@ -140,18 +170,11 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     _addTabButton->raise();
     _addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
-    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
-
-
-    // NOTE: we usually create TabWindow with AT LEAST one tab, but
-    // in one important case...
-    if (withTab)
-    {
-        WebWindow *tab = prepareNewTab();
-        addTab(tab, i18n("new tab"));
-        setCurrentWidget(tab);
-    }
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));    
 }
+
+
+// ----------------------------------------------------------------------------------------------------
 
 
 KActionCollection *TabWindow::actionCollection() const
@@ -251,12 +274,16 @@ void TabWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *hist
 }
 
 
-void TabWindow::newTab()
+void TabWindow::newTab(WebPage *page)
 {
-    WebWindow *tab = prepareNewTab();
+    WebWindow *tab = prepareNewTab(page);
     addTab(tab, i18n("new tab"));
     setCurrentWidget(tab);
 
+    // no need to load an url if we already have a page...
+    if (page)
+        return;
+    
     switch (ReKonfig::newTabsBehaviour())
     {
     case 0: // new tab page
