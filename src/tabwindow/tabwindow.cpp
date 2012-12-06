@@ -339,6 +339,8 @@ void TabWindow::updateNewTabButtonPosition()
     if (isFullScreen())
         return;
 
+    setUpdatesEnabled(false);
+
     int tabWidgetWidth = frameSize().width();
     int tabBarWidth = tabBar()->sizeHint().width();
 
@@ -353,6 +355,7 @@ void TabWindow::updateNewTabButtonPosition()
     }
 
     _addTabButton->show();
+    setUpdatesEnabled(true);
 }
 
 
