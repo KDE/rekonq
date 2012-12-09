@@ -225,7 +225,7 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
     if (forceDirRequest || ReKonfig::askDownloadPath())
     {
         // follow bug:184202 fixes
-        destUrl = KFileDialog::getSaveFileName(KUrl::fromPath(fileName), QString(), parent);
+        destUrl = KFileDialog::getSaveUrl(KUrl::fromPath(fileName), QString(), parent);
     }
     else
     {
