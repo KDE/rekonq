@@ -7,7 +7,7 @@ PROJECT( rekonq )
 # Information to update before to release this package.
 
 # rekonq info
-SET(REKONQ_VERSION "1.3" )
+SET(REKONQ_VERSION "1.0" )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-version.h )
 
@@ -35,7 +35,7 @@ FIND_PACKAGE(Qt4 4.8.0 COMPONENTS QtCore QtGui QtNetwork QtWebKit REQUIRED)
 #  MESSAGE(STATUS "Found QtWebKit ${PC_QTWEBKIT_VERSION}")
 #ENDIF()
 
-FIND_PACKAGE(KDE4 4.8.3 REQUIRED)
+FIND_PACKAGE(KDE4 4.7.0 REQUIRED)
 
 
 INCLUDE(MacroOptionalFindPackage)
@@ -53,15 +53,6 @@ MACRO_OPTIONAL_FIND_PACKAGE(Nepomuk)
 MACRO_BOOL_TO_01(Nepomuk_FOUND HAVE_NEPOMUK)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-nepomuk.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-nepomuk.h )
-
-
-# ==================================================================================
-# optional KActivities requirements
-
-MACRO_OPTIONAL_FIND_PACKAGE(KActivities 6.1.0)
-MACRO_BOOL_TO_01(KActivities_FOUND HAVE_KACTIVITIES)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-kactivities.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-kactivities.h )
 
 
 # ==================================================================================
@@ -154,16 +145,6 @@ IF(REKONQ_CAN_BE_COMPILED)
         MESSAGE(STATUS " Nepomuk Libraries..................... NO")
         MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for bookmarks tagging")
     ENDIF(HAVE_NEPOMUK)
-
-    # KActivities
-
-    IF(HAVE_KACTIVITIES)
-        MESSAGE(STATUS " KActivities Libraries................. YES")
-        MESSAGE(STATUS " Rekonq will be compiled with support for document event reporting")
-    ELSE(HAVE_KACTIVITIES)
-        MESSAGE(STATUS " KActivities Libraries................. NO")
-        MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for document event reporting")
-    ENDIF(HAVE_KACTIVITIES)
 
     MESSAGE(STATUS "")
 

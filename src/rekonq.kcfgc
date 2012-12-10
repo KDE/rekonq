@@ -1,5 +1,0 @@
-File=rekonq.kcfg
-ClassName=ReKonfig
-Singleton=true
-Mutators=true
-UseEnumTypes=true

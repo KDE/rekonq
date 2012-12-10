@@ -31,7 +31,7 @@
   <!ENTITY % English "INCLUDE">
 ]>
 
-<book id="rekonq" lang="&language;">
+<book lang="&language;">
 <bookinfo>
 <title>The &rekonq; Handbook</title>
 <authorgroup>
