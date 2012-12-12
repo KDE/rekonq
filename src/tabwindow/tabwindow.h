@@ -76,7 +76,7 @@ public:
 public Q_SLOTS:
     void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
     void newTab(WebPage *page = 0);
-    
+
 private:
     /**
      * Prepares the new WebWindow to be open
@@ -84,7 +84,7 @@ private:
     WebWindow *prepareNewTab(WebPage *page = 0);
 
     void init();
-    
+
 private Q_SLOTS:
     /**
      * Updates new tab button position
@@ -113,7 +113,7 @@ private Q_SLOTS:
     void restoreLastClosedTab();
 
     void setFullScreen(bool);
-    
+
 private:
     // the new tab button
     QToolButton *_addTabButton;

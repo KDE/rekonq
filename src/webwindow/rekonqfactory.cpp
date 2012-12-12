@@ -76,7 +76,7 @@ QAction *actionByName(const QString &name)
     // NOTE: last action collection created is surely the one interests us more!
     // So let's start from the end...
     int lac_count = lac.count();
-    for(int i = lac_count - 1; i>=0; i--)
+    for (int i = lac_count - 1; i >= 0; i--)
     {
         KActionCollection *ac = lac.at(i);
         QAction *a = ac->action(name);

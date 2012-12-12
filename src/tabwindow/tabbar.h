@@ -64,7 +64,7 @@ protected:
 
     virtual void tabInserted(int index);
     virtual void tabRemoved(int index);
-    
+
     virtual void tabLayoutChange();
 
 Q_SIGNALS:
@@ -84,7 +84,7 @@ private Q_SLOTS:
 
     void pinTab();
     void unpinTab();
-    
+
     void contextMenu(int, const QPoint &);
     void emptyAreaContextMenu(const QPoint &);
 
@@ -92,7 +92,7 @@ private Q_SLOTS:
 
     void showTabPreview();
     void hideTabPreview();
-    
+
 private:
     // highlightAnimation
     TabHighlightEffect *m_tabHighlightEffect;

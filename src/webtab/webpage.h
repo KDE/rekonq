@@ -53,7 +53,7 @@ public:
     ~WebPage();
 
     void setWindow(QWidget *);
-    
+
     bool isOnRekonqPage() const;
     void setIsOnRekonqPage(bool b);
 

@@ -54,10 +54,10 @@ void RekonqMenu::showEvent(QShowEvent* event)
     int w = width();
 
     QWidget *parentWidget = qobject_cast<QWidget *>(parent());
-    QPoint widgetGlobalPos = parentWidget->mapToGlobal(QPoint(0,0));
+    QPoint widgetGlobalPos = parentWidget->mapToGlobal(QPoint(0, 0));
     int pw = parentWidget->width();
     int px = widgetGlobalPos.x();
-    
+
     QPoint newPosition = QPoint(px + pw - w, y);
 
     // Finally, move it there...

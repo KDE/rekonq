@@ -139,7 +139,7 @@ UrlSuggestionList UrlSuggester::orderedSearchItems()
 //                 << QL1S("about:tabs")
 //                 << QL1S("about:info")
                 ;
-                
+
         QStringList aboutUrlResults = aboutUrlList.filter(_typedString, Qt::CaseInsensitive);
 
         UrlSuggestionList list;
@@ -281,7 +281,7 @@ UrlSuggestionList UrlSuggester::orderLists()
         list += browseSearch + relevant + _history + _bookmarks;
     else
         list += relevant + browseSearch + _history + _bookmarks;
-    
+
     return list;
 }
 
@@ -328,7 +328,7 @@ void UrlSuggester::computeWebSearches()
     {
         engine = SearchEngine::defaultEngine();
     }
-    
+
     if (engine)
     {
         UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(engine, query), query, engine->name());
@@ -451,6 +451,6 @@ void UrlSuggester::removeBookmarksDuplicates()
                 _bookmarks.removeOne(item);
                 break;
             }
-        }        
+        }
     }
 }

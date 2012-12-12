@@ -65,7 +65,7 @@ AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)
 
     QStringList hList = ReKonfig::whiteReferer();
     const QString urlHost = _pageUrl.host();
-    Q_FOREACH(const QString &host, hList)
+    Q_FOREACH(const QString & host, hList)
     {
         if (host.contains(urlHost))
         {
@@ -73,11 +73,11 @@ AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)
             break;
         }
     }
-    
+
     // Checkbox
     _chBox->setText(i18n("Enable adblock for this site"));
     _chBox->setChecked(_isAdblockEnabledHere);
-    
+
     layout->addWidget(title);
     layout->addWidget(_chBox);
 
@@ -110,7 +110,7 @@ void AdBlockWidget::accept()
     if (on != _isAdblockEnabledHere)
     {
         QStringList hosts = ReKonfig::whiteReferer();
-        
+
         if (on)
         {
             kDebug() << "REMOVING IT...";
@@ -122,7 +122,7 @@ void AdBlockWidget::accept()
         }
 
         ReKonfig::setWhiteReferer(hosts);
-        
+
         emit updateIcon();
     }
     close();

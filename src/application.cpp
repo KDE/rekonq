@@ -123,13 +123,13 @@ int Application::newInstance()
             KMessageBox::error(0, i18n("Error"), i18n("Cannot launch webapp mode without an URL to load"));
             return 1;
         }
-        
+
         if (args->count() > 1)
         {
             KMessageBox::error(0, i18n("Error"), i18n("Cannot load more than one URL in webapp mode"));
             return 1;
         }
-        
+
         KUrl u = args->url(0);
         if (!u.isLocalFile() || !QFile::exists(u.toLocalFile()))
         {
@@ -140,7 +140,7 @@ int Application::newInstance()
         WebTab *tab = newWebApp();
         connect(tab->page(), SIGNAL(pageCreated(WebPage *)), this, SLOT(pageCreated(WebPage *)));
         tab->view()->load(u);
-        
+
         if (isFirstLoad)
         {
             // updating rekonq configuration
@@ -156,7 +156,7 @@ int Application::newInstance()
         isFirstLoad = false;
         return 0;
     }
-    
+
     if (areThereArguments)
     {
         kDebug() << "DEFAULT MODE, WITH ARGUMENTS...";
@@ -209,15 +209,14 @@ int Application::newInstance()
             {
                 loadUrl(urlList.at(0), Rekonq::NewPrivateWindow);
             }
+            else if (!ReKonfig::openExternalLinksInNewWindow())
+            {
+                loadUrl(urlList.at(0), Rekonq::NewFocusedTab);
+            }
             else
-                if (!ReKonfig::openExternalLinksInNewWindow())
-                {
-                    loadUrl(urlList.at(0), Rekonq::NewFocusedTab);
-                }
-                else
-                {
-                    loadUrl(urlList.at(0), Rekonq::NewWindow);
-                }
+            {
+                loadUrl(urlList.at(0), Rekonq::NewWindow);
+            }
 
             if (!tabWindow()->isActiveWindow())
                 KWindowSystem::demandAttention(tabWindow()->winId(), true);
@@ -291,7 +290,7 @@ int Application::newInstance()
         else
         {
             Rekonq::OpenType type = incognito ? Rekonq::NewPrivateWindow : Rekonq::NewWindow;
-            
+
             switch (ReKonfig::newTabsBehaviour())
             {
             case 0: // new tab page
@@ -397,7 +396,7 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         newType = Rekonq::CurrentTab;
     }
     else if (newType == Rekonq::NewWindow
-            || ((newType == Rekonq::NewTab || newType == Rekonq::NewFocusedTab) && tabWindowList().count() == 0))
+             || ((newType == Rekonq::NewTab || newType == Rekonq::NewFocusedTab) && tabWindowList().count() == 0))
     {
         w = newTabWindow();
         newType = Rekonq::CurrentTab;
@@ -476,7 +475,7 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
 
         WebTab *webApp = qobject_cast<WebTab*>(watched);
         m_webApps.removeOne(webApp);
-        
+
         if (m_tabWindows.count() == 0 && m_webApps.count() == 0)
             quit();
     }
@@ -618,9 +617,9 @@ void Application::queryQuit()
     if (m_webApps.count() > 0)
     {
         tabWindow()->close();
-        return;        
+        return;
     }
-    
+
     if (tabWindowList().count() > 1)
     {
         int answer = KMessageBox::questionYesNoCancel(
@@ -768,7 +767,7 @@ void Application::createWebAppShortcut()
         QString webAppDescription;
         if (!wAppWidget.descriptionLineEdit->text().isEmpty())
             webAppDescription = wAppWidget.descriptionLineEdit->text();
-        
+
         QString shortcutString = QL1S("#!/usr/bin/env xdg-open\n")
                                  + QL1S("[Desktop Entry]\n")
                                  + QL1S("Name=") + webAppTitle

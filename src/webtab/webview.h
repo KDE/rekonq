@@ -70,7 +70,7 @@ public:
     void setPage(WebPage *);
 
     WebTab *parentTab();
-    
+
     void load(const QUrl &url);
     void load(const QNetworkRequest &req,
               QNetworkAccessManager::Operation op = QNetworkAccessManager::GetOperation,

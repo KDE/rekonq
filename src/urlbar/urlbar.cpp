@@ -217,7 +217,7 @@ void UrlBar::loadTypedUrl()
 
     // fallback here
     urlToLoad = UrlResolver::urlFromTextTyped(text());
-    loadRequestedUrl(urlToLoad);    
+    loadRequestedUrl(urlToLoad);
 }
 
 

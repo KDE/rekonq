@@ -226,7 +226,7 @@ void RekonqWindow::restoreWindowSize(const KConfigGroup & _cg)
     {
         QSize defaultSize = desktopRect.size() * 0.8;
         resize(defaultSize);
-        
+
         move((desktopRect.width() - width()) / 2, (desktopRect.height() - height()) / 2);
     }
 
@@ -405,7 +405,7 @@ void RekonqWindow::checkPosition()
     // no need to check trivial positions...
     if (isMaximized())
         return;
-    
+
     QList<RekonqWindow*> wList = RekonqWindow::windowList();
     int wNumber = wList.count();
 
@@ -434,7 +434,7 @@ void RekonqWindow::checkPosition()
         break;
     case 1:
         // right top
-        move(0,0);
+        move(0, 0);
         break;
     default:
         kDebug() << "OOPS...THIS SHOULD NEVER HAPPEN!!";

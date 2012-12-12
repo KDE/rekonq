@@ -105,7 +105,7 @@ private Q_SLOTS:
     void webAppIconChanged();
 
     void toggleInspector(bool);
-    
+
 Q_SIGNALS:
     void loadProgressing();
     void titleChanged(const QString &);
@@ -113,7 +113,7 @@ Q_SIGNALS:
     void triggerPartPrint();
 
     void infoToShow(QString);
-    
+
 private:
     WebView *m_webView;
 
@@ -122,7 +122,7 @@ private:
     QWeakPointer<WalletBar> m_walletBar;
     QWeakPointer<PreviewSelectorBar> m_previewSelectorBar;
     QWeakPointer<QWebInspector> m_inspector;
-    
+
     KParts::ReadOnlyPart *m_part;
 
     int m_zoomFactor;

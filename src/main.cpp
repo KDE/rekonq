@@ -57,7 +57,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                      "http://rekonq.kde.org"
                     );
 
-    
+
     // --------------- about authors -----------------------------
     about.addAuthor(ki18n("Andrea Diamantini"),
                     ki18n("Project Lead, Developer, Maintainer"),
@@ -114,7 +114,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "lindsay.mathieson@gmail.com",
                     "");
 
-    
+
     // --------------- about credits -----------------------------
     about.addCredit(ki18n("Dawit Alemayehu"),
                     ki18n("KDEWebKit (main) developer. And KIO. And KUriFilter. And more.."),
@@ -186,7 +186,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
                     "pino@kde.org",
                     "");
 
-    
+
     // Initialize command line args
     KCmdLineArgs::init(argc, argv, &about);
 

@@ -122,7 +122,7 @@ int loadTabs(TabWindow *tw, QDomElement & window, bool useFirstTab, bool justThe
 bool areTherePinnedTabs(QDomElement & window)
 {
     bool b = false;
-    
+
     for (unsigned int tabNo = 0; tabNo < window.elementsByTagName("tab").length(); tabNo++)
     {
         QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();

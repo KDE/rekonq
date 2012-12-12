@@ -93,7 +93,7 @@ private:
 public Q_SLOTS:
     void setWidgetsHidden(bool hide);
     void setPrivateBrowsing(bool);
-    
+
 private Q_SLOTS:
     void webLoadProgress(int);
     void webLoadStarted();
@@ -131,7 +131,7 @@ private Q_SLOTS:
     void openHistoryPage();
     void openBookmarksPage();
     void openHomePage(Qt::MouseButtons, Qt::KeyboardModifiers);
-    
+
     // Tools Menu slots
     void viewPageSource();
 

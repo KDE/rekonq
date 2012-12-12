@@ -243,7 +243,7 @@ bool AdBlockManager::blockRequest(const QNetworkRequest &request)
 
     QStringList whiteRefererList = ReKonfig::whiteReferer();
     const QString referer = request.rawHeader("referer");
-    Q_FOREACH(const QString &host, whiteRefererList)
+    Q_FOREACH(const QString & host, whiteRefererList)
     {
         if (referer.contains(host))
             return false;

@@ -138,7 +138,7 @@ protected:
 
 Q_SIGNALS:
     void focusIn();
-    
+
 private:
     /**
      * Updates right icon position, given its number in the right icons list

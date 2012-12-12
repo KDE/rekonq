@@ -92,7 +92,7 @@ void NewTabPage::generate(const KUrl &url)
     QWebPage *pg = parentFrame->page();
     WebView *view = qobject_cast<WebView *>(pg->parent());
     WebTab *tab = qobject_cast<WebTab *>(view->parent());
-    
+
     // about:preview links
     if (KUrl("about:settings").isParentOf(url))
     {
@@ -178,38 +178,38 @@ void NewTabPage::generate(const KUrl &url)
 //         {
 //             const int winIndex = url.queryItem(QL1S("win")).toInt();
 //             const int tabIndex = url.queryItem(QL1S("tab")).toInt();
-// 
+//
 //             MainWindow *w = rApp->mainWindowList().at(winIndex).data();
-// 
+//
 //             // close about:tabs tab
 //             rApp->mainWindow()->mainView()->closeTab(rApp->mainWindow()->mainView()->currentIndex());
-// 
+//
 //             // show requested tab
 //             w->mainView()->setCurrentIndex(tabIndex);
 //             if (w != rApp->mainWindow())
 //                 w->raise();
 //             return;
 //         }
-// 
+//
 //         if (url.fileName() == QL1S("remove"))
 //         {
 //             const int winIndex = url.queryItem(QL1S("win")).toInt();
 //             const int tabIndex = url.queryItem(QL1S("tab")).toInt();
-// 
+//
 //             MainWindow *w = rApp->mainWindowList().at(winIndex).data();
 //             w->mainView()->closeTab(tabIndex);
 //             loadPageForUrl(KUrl("about:tabs"));
 //             return;
 //         }
 //     }
-// 
+//
 //     // about:closedTabs links
 //     if (KUrl("about:closedTabs").isParentOf(url))
 //     {
 //         if (url.fileName() == QL1S("restore"))
 //         {
 //             const int tabIndex = url.queryItem(QL1S("tab")).toInt();
-// 
+//
 //             rApp->mainWindow()->mainView()->restoreClosedTab(tabIndex, false);
 //             return;
 //         }
@@ -579,32 +579,32 @@ void NewTabPage::bookmarksPage()
 // void NewTabPage::closedTabsPage()
 // {
 //     m_root.addClass(QL1S("closedTabs"));
-// 
+//
 //     QList<TabHistory> links = rApp->mainWindow()->mainView()->recentlyClosedTabs();
-// 
+//
 //     if (links.isEmpty())
 //     {
 //         m_root.addClass(QL1S("empty"));
 //         m_root.setPlainText(i18n("There are no recently closed tabs"));
 //         return;
 //     }
-// 
+//
 //     for (int i = 0; i < links.count(); ++i)
 //     {
 //         TabHistory item = links.at(i);
 //         QWebElement prev;
-// 
+//
 //         if (item.url.isEmpty())
 //             continue;
-// 
+//
 //         prev = closedTabPreview(i, item.url, item.title);
-// 
+//
 //         prev.setAttribute(QL1S("id"),  QL1S("preview") + QVariant(i).toString());
-// 
+//
 //         // hide controls
 //         prev.findFirst(QL1S(".right")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
 //         prev.findFirst(QL1S(".left")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
-// 
+//
 //         m_root.appendInside(prev);
 //     }
 // }
@@ -737,20 +737,20 @@ void NewTabPage::downloadsPage(const QString & filter)
 // void NewTabPage::tabsPage()
 // {
 //     m_root.addClass(QL1S("tabs"));
-// 
+//
 //     int wins = 0;
 //     Q_FOREACH(const QWeakPointer<MainWindow> &wPointer, rApp->mainWindowList())
 //     {
 //         m_root.appendInside(markup(QL1S("h3")));
 //         m_root.lastChild().setPlainText(i18n("Window"));
-// 
+//
 //         MainWindow *w = wPointer.data();
-// 
+//
 //         const int tabCount = w->mainView()->count();
 //         for (int i = 0; i < tabCount; ++i)
 //         {
 //             KUrl url = w->mainView()->webTab(i)->url();
-// 
+//
 //             if (!WebSnap::existsImage(url))
 //             {
 //                 kDebug() << "image doesn't exist for url: " << url;
@@ -760,12 +760,12 @@ void NewTabPage::downloadsPage(const QString & filter)
 //             }
 //             QString name = w->mainView()->webTab(i)->view()->title();
 //             QWebElement prev;
-// 
+//
 //             prev = tabPreview(wins, i, url, name);
-// 
+//
 //             m_root.appendInside(prev);
 //         }
-// 
+//
 //         wins++;
 //     }
 // }

@@ -249,7 +249,7 @@ KBookmarkGroup BookmarkOwner::newBookmarkFolder(const KBookmark &bookmark, const
         folderName = i18n("New folder");
     else
         folderName = name;
-    
+
     if (!bookmark.isNull())
     {
         if (bookmark.isGroup())

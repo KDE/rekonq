@@ -167,7 +167,7 @@ public:
     void addCustomRule(const QString &, bool reloadPage = true);
 
     bool isAdblockEnabledForHost(const QString &host);
-    
+
 private:
     AdBlockManager(QObject *parent = 0);
 

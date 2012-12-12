@@ -264,39 +264,42 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
             {
                 w = qobject_cast<UrlBar *>(parent());
 
-//                 if (!w->text().startsWith(QL1S("http://"), Qt::CaseInsensitive))
-//                 {
-//                     QString append;
-//                     if (kev->modifiers() == Qt::ControlModifier)
-//                     {
-//                         append = QL1S(".com");
-//                     }
-//                     else if (kev->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
-//                     {
-//                         append = QL1S(".org");
-//                     }
-//                     else if (kev->modifiers() == Qt::ShiftModifier)
-//                     {
-//                         append = QL1S(".net");
-//                     }
-// 
-//                     if (!append.isEmpty())
-//                     {
-//                         QUrl url(QL1S("http://") + w->text());
-//                         QString host = url.host();
-//                         if (!host.endsWith(append, Qt::CaseInsensitive))
-//                         {
-//                             host += append;
-//                             url.setHost(host);
-//                         }
-// 
-//                         emit chosenUrl(url, Rekonq::CurrentTab);
-//                     }
-//                 }
+                if (!w->text().startsWith(QL1S("http://"), Qt::CaseInsensitive))
+                {
+                    QString append;
+                    if (kev->modifiers() == Qt::ControlModifier)
+                    {
+                        append = QL1S(".com");
+                    }
+                    else if (kev->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
+                    {
+                        append = QL1S(".org");
+                    }
+                    else if (kev->modifiers() == Qt::ShiftModifier)
+                    {
+                        append = QL1S(".net");
+                    }
+
+                    if (!append.isEmpty())
+                    {
+                        QUrl url(QL1S("http://") + w->text());
+                        QString host = url.host();
+                        if (!host.endsWith(append, Qt::CaseInsensitive))
+                        {
+                            host += append;
+                            url.setHost(host);
+                        }
+
+                        emit chosenUrl(url, Rekonq::CurrentTab);
+                        kev->accept();
+                        hide();
+                        return true;
+                    }
+                }
 
                 KUrl urlToLoad;
                 Rekonq::OpenType type = Rekonq::CurrentTab;
-                
+
                 if (_currentIndex == -1)
                     _currentIndex = 0;
                 child = findChild<ListItem *>(QString::number(_currentIndex));

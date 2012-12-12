@@ -97,7 +97,7 @@ TabWindow::TabWindow(WebPage *pg, QWidget *parent)
     , _ac(new KActionCollection(this))
 {
     init();
-    
+
     WebWindow *tab = prepareNewTab(pg);
     addTab(tab, i18n("new tab"));
     setCurrentWidget(tab);
@@ -170,7 +170,7 @@ void TabWindow::init()
     _addTabButton->raise();
     _addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
-    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));    
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
 }
 
 
@@ -185,7 +185,7 @@ KActionCollection *TabWindow::actionCollection() const
 
 QAction *TabWindow::actionByName(const QString &name)
 {
-    return actionCollection()->action(name);    
+    return actionCollection()->action(name);
 }
 
 
@@ -230,7 +230,7 @@ WebWindow *TabWindow::prepareNewTab(WebPage *page)
     connect(tab, SIGNAL(pageCreated(WebPage *)), this, SLOT(pageCreated(WebPage *)));
 
     connect(tab, SIGNAL(setFullScreen(bool)), this, SLOT(setFullScreen(bool)));
-    
+
     return tab;
 }
 
@@ -283,7 +283,7 @@ void TabWindow::newTab(WebPage *page)
     // no need to load an url if we already have a page...
     if (page)
         return;
-    
+
     switch (ReKonfig::newTabsBehaviour())
     {
     case 0: // new tab page
@@ -450,7 +450,7 @@ void TabWindow::tabLoadFinished(bool ok)
         movie->stop();
         delete movie;
     }
-    
+
     label->setMovie(0);
 
     KIcon ic = IconManager::self()->iconForUrl(tab->url());
@@ -514,7 +514,7 @@ void TabWindow::closeTab(int index, bool del)
         history.title = tabToClose->title();
         history.url = tabToClose->url().url();
         history.position = index;
-        
+
         m_recentlyClosedTabs.removeAll(history);
         if (m_recentlyClosedTabs.count() == recentlyClosedTabsLimit)
             m_recentlyClosedTabs.removeLast();
@@ -623,7 +623,7 @@ void TabWindow::reloadAllTabs()
 void TabWindow::bookmarkAllTabs()
 {
     KBookmarkGroup rGroup = BookmarkManager::self()->rootGroup();
-    KBookmarkGroup folderGroup = rGroup.createNewFolder( i18n("Bookmarked tabs: ") + QDate::currentDate().toString());
+    KBookmarkGroup folderGroup = rGroup.createNewFolder(i18n("Bookmarked tabs: ") + QDate::currentDate().toString());
     for (int i = 0; i < count(); ++i)
     {
         WebWindow *tab = webWindow(i);
@@ -642,7 +642,7 @@ void TabWindow::restoreLastClosedTab()
     QUrl u = QUrl(history.url);
 
     int restorePosition = history.position;
-    
+
     WebWindow *tab = prepareNewTab();
 
     if (restorePosition < count())
@@ -663,10 +663,10 @@ void TabWindow::setFullScreen(bool makeFullScreen)
 {
     tabBar()->setVisible(!makeFullScreen);
     _addTabButton->setVisible(!makeFullScreen);
-    
+
     KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
 
-    for(int i = 0; i < count(); i++)
+    for (int i = 0; i < count(); i++)
         webWindow(i)->setWidgetsHidden(makeFullScreen);
 }
 

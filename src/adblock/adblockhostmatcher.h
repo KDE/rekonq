@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010-2011 by Benjamin Poulain <ikipou at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -48,7 +49,7 @@ public:
     {
         m_hostList.clear();
     }
-    
+
 private:
     QSet<QString> m_hostList;
 };

@@ -128,7 +128,7 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     connect(_tab->view(), SIGNAL(loadProgress(int)), this, SLOT(webLoadProgress(int)));
 
     connect(_bar, SIGNAL(focusIn()), this, SLOT(urlbarFocused()));
-    
+
     // page signals
     connect(page(), SIGNAL(pageCreated(WebPage *)), this, SIGNAL(pageCreated(WebPage *)));
 
@@ -140,7 +140,7 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
     connect(_tab->page(), SIGNAL(linkHovered(QString, QString, QString)), this, SLOT(notifyMessage(QString)));
     connect(_tab, SIGNAL(infoToShow(QString)), this, SLOT(notifyMessage(QString)));
-    
+
     updateHistoryActions();
 
     if (parent && parent->isFullScreen())
@@ -246,7 +246,7 @@ void WebWindow::setupActions()
 
     KStandardAction::findNext(m_findBar, SLOT(findNext()), actionCollection());
     KStandardAction::findPrev(m_findBar, SLOT(findPrevious()), actionCollection());
-        
+
     a = KStandardAction::redisplay(_tab->view(), SLOT(reload()), actionCollection());
     a->setText(i18n("Reload"));
     KShortcut reloadShortcut = KStandardShortcut::reload();
@@ -406,8 +406,8 @@ void WebWindow::webLoadFinished(bool b)
         m_loadStopReloadAction->setText(i18n("Reload"));
         connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), _tab->view(), SLOT(reload()));
     }
-    
-    updateHistoryActions();    
+
+    updateHistoryActions();
 }
 
 
@@ -415,7 +415,7 @@ void WebWindow::urlbarFocused()
 {
     m_loadStopReloadAction->setIcon(KIcon("go-jump-locationbar"));
     m_loadStopReloadAction->setToolTip(i18n("Go"));
-    m_loadStopReloadAction->setText(i18n("Go"));    
+    m_loadStopReloadAction->setText(i18n("Go"));
     connect(m_loadStopReloadAction, SIGNAL(triggered(bool)), _bar, SLOT(loadTypedUrl()));
 }
 
@@ -933,19 +933,19 @@ void WebWindow::checkFocus()
 
 void WebWindow::openDownloadsPage()
 {
-    rApp->loadUrl( QUrl("about:downloads"), Rekonq::NewFocusedTab );
+    rApp->loadUrl(QUrl("about:downloads"), Rekonq::NewFocusedTab);
 }
 
 
 void WebWindow::openHistoryPage()
 {
-    rApp->loadUrl( QUrl("about:history"), Rekonq::NewFocusedTab );
+    rApp->loadUrl(QUrl("about:history"), Rekonq::NewFocusedTab);
 }
 
 
 void WebWindow::openBookmarksPage()
 {
-    rApp->loadUrl( QUrl("about:bookmarks"), Rekonq::NewFocusedTab );
+    rApp->loadUrl(QUrl("about:bookmarks"), Rekonq::NewFocusedTab);
 }
 
 

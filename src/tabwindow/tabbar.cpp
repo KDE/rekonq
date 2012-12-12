@@ -109,14 +109,14 @@ QSize TabBar::tabSizeHint(int index) const
             }
         }
     }
-    
+
     int h = size().height();
 
     // this because it may happen sometimes (eg: exiting fullscreen)
     // that tabbar height is set to ZERO. And this is NOT good...
     if (h == 0)
         h = 30;
-    
+
     QSize ts = QSize(w, h);
     return ts;
 }
@@ -351,7 +351,7 @@ void TabBar::tabInserted(int index)
         TabWindow *w = qobject_cast<TabWindow *>(parent());
         w->moveTab(index, availableIndex);
     }
-    
+
     KTabBar::tabInserted(index);
 }
 
@@ -425,14 +425,14 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
 {
     // count pinned tabs
     int pinnedTabs = 0;
-    for(int i = 0; i < count(); i++)
+    for (int i = 0; i < count(); i++)
     {
         if (tabData(i).toBool())
-            pinnedTabs++;        
+            pinnedTabs++;
     }
 
     // fix unpinned ones
-    for(int i = 0; i < pinnedTabs; i++)
+    for (int i = 0; i < pinnedTabs; i++)
     {
         if (!tabData(i).toBool())
         {
@@ -448,7 +448,7 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
         if (tabData(i).toBool())
         {
             TabWindow *w = qobject_cast<TabWindow *>(parent());
-            w->moveTab(i, pinnedTabs - 1);            
+            w->moveTab(i, pinnedTabs - 1);
             w->setCurrentIndex(pinnedTabs - 1);
         }
     }
@@ -522,7 +522,7 @@ void TabBar::pinTab()
     KAction *a = qobject_cast<KAction *>(sender());
     if (!a)
         return;
-    
+
     int index = a->data().toInt();
 
     // Find the available index to move
@@ -539,7 +539,7 @@ void TabBar::pinTab()
     TabWindow *w = qobject_cast<TabWindow *>(parent());
     w->moveTab(index, availableIndex);
     index = availableIndex;
-    
+
     // set this tab data true to know this has been pinned
     setTabData(index, true);
 
@@ -550,7 +550,7 @@ void TabBar::pinTab()
     QLabel *label = qobject_cast<QLabel* >(tabButton(index, QTabBar::LeftSide));
     if (!label)
         label = new QLabel(this);
-    
+
     setTabButton(index, QTabBar::LeftSide, 0);
     setTabButton(index, QTabBar::LeftSide, label);
 
@@ -586,7 +586,7 @@ void TabBar::unpinTab()
     TabWindow *w = qobject_cast<TabWindow *>(parent());
     w->moveTab(index, availableIndex);
     index = availableIndex;
-    
+
     tabButton(index, QTabBar::RightSide)->show();
     setTabText(index, w->webWindow(index)->title());
 

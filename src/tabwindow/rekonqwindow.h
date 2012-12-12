@@ -89,7 +89,7 @@ public:
     int insertTab(int index, QWidget *page, const QString &label);
     int insertTab(int index, QWidget *page, const QIcon &icon, const QString &label);
     // --------------------------------------------------------------------------------------
-    
+
 protected:
     /**
      * Save your instance-specific properties. The function is

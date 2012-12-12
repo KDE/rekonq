@@ -86,15 +86,15 @@ WebTab::WebTab(QWidget *parent)
 
     // NOTE: this line of code moves the web inspector in the usual position,
     // BUT my wife prefers it on the right part. Following hint about.
-    // Let's hear people comments about... 
+    // Let's hear people comments about...
 //    m_splitter->setOrientation(Qt::Vertical);
-    
+
     l->addWidget(m_splitter);
 
     // fix focus handling
     setFocusProxy(view());
 
-    
+
     KWebWallet *wallet = page()->wallet();
 
     if (wallet)
@@ -116,7 +116,7 @@ WebTab::WebTab(QWidget *parent)
         connect(view(), SIGNAL(titleChanged(QString)), this, SLOT(webAppTitleChanged(QString)));
         connect(view(), SIGNAL(iconChanged()), this, SLOT(webAppIconChanged()));
     }
-    
+
     // Session Manager
     connect(view(), SIGNAL(loadFinished(bool)), SessionManager::self(), SLOT(saveSession()));
 }
@@ -306,7 +306,7 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
 void WebTab::showCrashMessageBar()
 {
     CrashMessageBar *msgBar = new CrashMessageBar(i18n("It seems rekonq was not closed properly. Do you want "
-                                        "to restore the last saved session?"), this);
+            "to restore the last saved session?"), this);
 
     qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, msgBar);
     msgBar->animatedShow();
@@ -383,9 +383,9 @@ void WebTab::zoomIn()
         emit infoToShow(i18n("Max zoom reached: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
         return;
     }
-    
+
     if (m_zoomFactor >= 20)
-        m_zoomFactor+=5;
+        m_zoomFactor += 5;
     else
         m_zoomFactor++;
 
@@ -451,9 +451,9 @@ void WebTab::toggleInspector(bool on)
         m_inspector.data()->show();
 
         return;
-    }    
+    }
     // else
- 
+
     m_inspector.data()->hide();
 
     page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, on);

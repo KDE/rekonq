@@ -167,7 +167,7 @@ void WebView::setPage(WebPage *pg)
     WebWindow *w = m_parentTab->webWindow();
     if (w && w->window())
         pg->setWindow(w->window());
-}    
+}
 
 
 bool WebView::popupSpellMenu(QContextMenuEvent *event)
@@ -274,7 +274,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         if (popupSpellMenu(event))
             return;
     }
-    
+
     WebWindow *webwin = m_parentTab->webWindow();
 
     KMenu menu(this);
@@ -374,7 +374,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
         menu.addAction(a);
-        
+
         a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), &menu);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
@@ -387,7 +387,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInPrivateWindow()));
             menu.addAction(a);
         }
-        
+
         menu.addSeparator();
 
         // Don't show dots if we are NOT going to ask for download path
@@ -541,7 +541,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             menu.addAction(a);
         }
     }
-    
+
     menu.addAction(sendByMailAction);
 
     if (webwin)
@@ -1495,10 +1495,10 @@ void WebView::saveImage()
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl imageUrl(a->data().toUrl());
 
-    DownloadManager::self()->downloadResource(  imageUrl,
-                                                KIO::MetaData(),
-                                                this,
-                                                true,
-                                                QString(),
-                                                !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
+    DownloadManager::self()->downloadResource(imageUrl,
+            KIO::MetaData(),
+            this,
+            true,
+            QString(),
+            !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
 }
