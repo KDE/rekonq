@@ -1422,7 +1422,10 @@ void WebView::spellCheck()
         return;
     }
 
-    Sonnet::Dialog* spellDialog = new Sonnet::Dialog(new Sonnet::BackgroundChecker(this), this);
+    Sonnet::BackgroundChecker *backgroundSpellCheck = new Sonnet::BackgroundChecker;
+    Sonnet::Dialog* spellDialog = new Sonnet::Dialog(backgroundSpellCheck, this);
+    backgroundSpellCheck->setParent(spellDialog);
+    spellDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
     spellDialog->showSpellCheckCompletionMessage(true);
     connect(spellDialog, SIGNAL(replace(QString, int, QString)), this, SLOT(spellCheckerCorrected(QString, int, QString)));
