@@ -451,17 +451,17 @@ void UrlBar::contextMenuEvent(QContextMenuEvent* event)
     const bool clipboardFilled = !rApp->clipboard()->text().isEmpty();
 
     // Cut
-    KAction *a = KStandardAction::cut(this, SLOT(cut()), this);
+    KAction *a = KStandardAction::cut(this, SLOT(cut()), &menu);
     a->setEnabled(hasSelectedText());
     menu.addAction(a);
 
     // Copy
-    a = KStandardAction::copy(this, SLOT(copy()), this);
+    a = KStandardAction::copy(this, SLOT(copy()), &menu);
     a->setEnabled(hasSelectedText());
     menu.addAction(a);
 
     // Paste
-    a = KStandardAction::paste(this, SLOT(paste()), this);
+    a = KStandardAction::paste(this, SLOT(paste()), &menu);
     a->setEnabled(clipboardFilled);
     menu.addAction(a);
 
@@ -469,19 +469,19 @@ void UrlBar::contextMenuEvent(QContextMenuEvent* event)
     const QString clipboardText = rApp->clipboard()->text();
     if (isValidURL(clipboardText) || clipboardText.isEmpty())
     {
-        a = new KAction(i18n("Paste && Go"), this);
+        a = new KAction(i18n("Paste && Go"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(pasteAndGo()));
     }
     else
     {
-        a = new KAction(i18n("Paste && Search"), this);
+        a = new KAction(i18n("Paste && Search"), &menu);
         connect(a, SIGNAL(triggered(bool)), this, SLOT(pasteAndSearch()));
     }
     a->setEnabled(clipboardFilled);
     menu.addAction(a);
 
     // Delete
-    a = new KAction(KIcon("edit-delete"), i18n("Delete"), this);
+    a = new KAction(KIcon("edit-delete"), i18n("Delete"), &menu);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(delSlot()));
     a->setEnabled(hasSelectedText());
     menu.addAction(a);
@@ -489,7 +489,7 @@ void UrlBar::contextMenuEvent(QContextMenuEvent* event)
     menu.addSeparator();
 
     // Select All
-    a = KStandardAction::selectAll(this, SLOT(selectAll()), this);
+    a = KStandardAction::selectAll(this, SLOT(selectAll()), &menu);
     a->setEnabled(!text().isEmpty());
     menu.addAction(a);
 

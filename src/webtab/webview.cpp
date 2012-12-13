@@ -551,7 +551,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     if (m_contextMenuHitResult.isContentEditable())
     {
         menu.addSeparator();
-        a = KStandardAction::spelling(this, SLOT(spellCheck()), this);
+        a = KStandardAction::spelling(this, SLOT(spellCheck()), &menu);
         menu.addAction(a);
     }
 
