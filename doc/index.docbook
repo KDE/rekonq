@@ -123,7 +123,7 @@
 </para>
 <para>By default, the &rekonq; window uses only one toolbar. This main toolbar consists of four navigation buttons (<guilabel>back</guilabel>, <guilabel>forward</guilabel>, <guilabel>reload/stop</guilabel>), the URL bar and a menu/button <guilabel>Tools</guilabel>. This minimalist approach to the main toolbar marks the most significant user-interface departure from the traditional multi-toolbar paradigm followed by most other browsers like &konqueror;.
 </para>
-<para>Further, the main toolbar offers only limited customization &ndash; <guilabel>orientation</guilabel> (locked at the top of the window, by default), <guilabel>icon size</guilabel> (medium, by default) and <guilabel>icon labels</guilabel> (not shown, by default). This helps keep the &rekonq; UI simple and puts the focus on the webpage on display.
+<para>Further, the main toolbar offers only limited customization &ndash; <guilabel>orientation</guilabel> (locked at the top of the window, by default), <guilabel>icon size</guilabel> (medium, by default) and <guilabel>icon labels</guilabel> (not shown, by default). This helps keep the &rekonq; UI simple and puts the focus on the web page on display.
 </para>
 <para>
 <screenshot>
@@ -285,7 +285,7 @@
 </para>
 </sect2>
 <sect2 id="dialogs"><title>Dialogs</title>
-<para>In addition to all this, &rekonq; uses &kde;'s own file dialog for opening/saving documents. This means, you have access to the <emphasis>Places</emphasis> sidebar from &dolphin; while you open or save documents.
+<para>In addition to all this, &rekonq; uses &kde;'s own file dialog for opening/saving documents. This means, you have access to the <emphasis>Places</emphasis> navigation panel from &dolphin; while you open or save documents.
 </para>
 <para>Thus, &rekonq; looks, feels and behaves like a part of your &kde; desktop.
 </para>
@@ -333,7 +333,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>&rekonq; comes with an automatic subscription to the Easylist filter, which is updated every week. Additionally, you can set up manual filters to block loading of elements from webpages that match your criteria. You can even download and import additional published filterlists or export your list for backup.
+<para>&rekonq; comes with an automatic subscription to the Easylist filter, which is updated every week. Additionally, you can set up manual filters to block loading of elements from web pages that match your criteria. You can even download and import additional published filterlists or export your list for backup.
 </para>
 </chapter>
 <chapter id="web-shortcuts-support"><title>Web shortcuts support</title>
@@ -375,7 +375,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>When viewing webpages over a secure connection, you can also view SSL information straight from the URL bar by clicking on the <guiicon>yellow lock</guiicon> icon.
+<para>When viewing web pages over a secure connection, you can also view SSL information straight from the URL bar by clicking on the <guiicon>yellow lock</guiicon> icon.
 </para>
 </chapter>
 <chapter id="advanced-tab-handling"><title>Advanced tab handling</title>
@@ -395,7 +395,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<para>&rekonq; allows you to rearrange your tabs on the fly. Just drag a tab to the left or to the right and the other tabs will move out of your way. You can also hover over a tab to see a live preview of the webpage being displayed there.
+<para>&rekonq; allows you to rearrange your tabs on the fly. Just drag a tab to the left or to the right and the other tabs will move out of your way. You can also hover over a tab to see a live preview of the web page being displayed there.
 </para>
 <para>A <emphasis>context menu</emphasis> (right-click menu) gives access to more tab-related functions such as the ability to detach, clone, reload the tab.
 </para>
@@ -405,7 +405,7 @@
 </para>
 </chapter>
 <chapter id="full-screen-mode"><title>Full screen mode</title>
-<para>&rekonq; supports full-screening the webpage straight from the configuration menu button or through a keyboard shortcut (<keycombo>&Ctrl;&Shift;<keycap>F</keycap></keycombo>, by default). In the full screen view, the main toolbar will auto-hide and the webpage will be displayed over your entire screen.
+<para>&rekonq; supports full-screening the webpage straight from the configuration menu button or through a keyboard shortcut (<keycombo>&Ctrl;&Shift;<keycap>F</keycap></keycombo>, by default). In the full screen view, the main toolbar will auto-hide and the web page will be displayed over your entire screen.
 </para>
 </chapter>
 <chapter id="zoom-slider"><title>Zoom slider</title>
@@ -792,7 +792,7 @@ Here a list of configurable points and explanation for it:
 </para>
 </sect1>
 <sect1 id="how-do-i-make-rekonq-behave-like-chrome-chromium"><title>How do I make &rekonq; behave like chrome/chromium?</title>
-<para>Using <ulink url="help:/kwin/index.html">KWin</ulink>'s window tabbing feature, we can make &rekonq; emulate the behavior of <guilabel>chromium</guilabel> by opening new windows instead of tabs within the same window. This will not however allow each window of &rekonq; to crash independently &ndash; all windows of &rekonq; crash as a single process. It merely emulates the look of <application>Chromium</application>, giving individual controls for each webpage you load.
+<para>Using <ulink url="help:/kwin/index.html">KWin</ulink>'s window tabbing feature, we can make &rekonq; emulate the behavior of <guilabel>chromium</guilabel> by opening new windows instead of tabs within the same window. This will not however allow each window of &rekonq; to crash independently &ndash; all windows of &rekonq; crash as a single process. It merely emulates the look of <application>Chromium</application>, giving individual controls for each web page you load.
 </para>
 <para>Click on the <guilabel>Tools</guilabel> menu button and open the <guilabel>Configure rekonq</guilabel> dialog. Click on <guilabel>Tabs</guilabel>. Unselect all options to disable all tab handling in &rekonq;. Now, &rekonq; will always open new windows instead of tabs.
 </para>
@@ -974,7 +974,7 @@ List of the UserBase contributors can be found on
 </para>
 
 <para>
-We will be using git, as the most recent code is available on the git repository. The &kde; Projects webpage for &rekonq; can be found <ulink url="https://projects.kde.org/projects/extragear/network/rekonq">here</ulink>. Stable releases, can also be downloaded <ulink url="http://sourceforge.net/projects/rekonq/files/">here</ulink> in form of tarballs.
+We will be using git, as the most recent code is available on the git repository. The &kde; Projects web page for &rekonq; can be found <ulink url="https://projects.kde.org/projects/extragear/network/rekonq">here</ulink>. Stable releases, can also be downloaded <ulink url="http://sourceforge.net/projects/rekonq/files/">here</ulink> in form of tarballs.
 </para>
 
 <para>
