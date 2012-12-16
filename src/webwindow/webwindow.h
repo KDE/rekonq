@@ -62,7 +62,7 @@ class WebWindow : public QWidget
     Q_OBJECT
 
 public:
-    WebWindow(QWidget *parent = 0, WebPage *pg = 0);
+    WebWindow(QWidget *parent = 0, bool isPrivateBrowsing = false, WebPage *pg = 0);
     ~WebWindow();
 
     void load(const QUrl &);
@@ -82,8 +82,6 @@ public:
     virtual KActionCollection *actionCollection() const;
     QAction *actionByName(const QString &name);
 
-    bool isPrivateBrowsing();
-
     void checkFocus();
 
 private:
@@ -92,7 +90,6 @@ private:
 
 public Q_SLOTS:
     void setWidgetsHidden(bool hide);
-    void setPrivateBrowsing(bool);
 
 private Q_SLOTS:
     void webLoadProgress(int);
@@ -177,8 +174,6 @@ private:
     QTimer *m_hidePopupTimer;
 
     KActionCollection *_ac;
-
-    bool _isPrivateBrowsing;
 };
 
 #endif // WEB_WINDOW

@@ -67,12 +67,13 @@
 #include <QWebSettings>
 
 
-WebTab::WebTab(QWidget *parent)
+WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
     : QWidget(parent)
     , m_webView(0)
     , m_progress(0)
     , m_part(0)
     , m_zoomFactor(10)
+    , m_isPrivateBrowsing(isPrivateBrowsing)
     , m_splitter(new QSplitter(this))
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -136,7 +137,7 @@ WebView *WebTab::view()
 {
     if (!m_webView)
     {
-        m_webView = new WebView(this);
+        m_webView = new WebView(this, m_isPrivateBrowsing);
     }
     return m_webView;
 }

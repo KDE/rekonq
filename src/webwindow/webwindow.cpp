@@ -70,9 +70,9 @@
 #include <QVBoxLayout>
 
 
-WebWindow::WebWindow(QWidget *parent, WebPage *pg)
+WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
     : QWidget(parent)
-    , _tab(new WebTab(this))
+    , _tab(new WebTab(this, isPrivateBrowsing))
     , _bar(new UrlBar(_tab))
     , _mainToolBar(0)
     , m_findBar(new FindBar(this))
@@ -81,7 +81,6 @@ WebWindow::WebWindow(QWidget *parent, WebPage *pg)
     , m_popup(new QLabel(this))
     , m_hidePopupTimer(new QTimer(this))
     , _ac(new KActionCollection(this))
-    , _isPrivateBrowsing(false)
 {
     if (pg)
     {
@@ -894,19 +893,6 @@ void WebWindow::toggleBookmarksToolbar(bool b)
     QAction *a = actionByName(QL1S("show_bookmarks_toolbar"));
     a->setChecked(b);
     rApp->bookmarksToolbarToggled(b);
-}
-
-
-bool WebWindow::isPrivateBrowsing()
-{
-    return _isPrivateBrowsing;
-}
-
-
-void WebWindow::setPrivateBrowsing(bool on)
-{
-    _tab->page()->settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, on);
-    _isPrivateBrowsing = on;
 }
 
 

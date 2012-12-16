@@ -86,7 +86,7 @@ static QVariant execJScript(QWebHitTestResult result, const QString& script)
 // --------------------------------------------------------------------------------------------------
 
 
-WebView::WebView(QWidget* parent)
+WebView::WebView(QWidget* parent, bool isPrivateBrowsing)
     : KWebView(parent, false)
     , m_autoScrollTimer(new QTimer(this))
     , m_verticalAutoScrollSpeed(0)
@@ -100,6 +100,7 @@ WebView::WebView(QWidget* parent)
     , m_accessKeysPressed(false)
     , m_accessKeysActive(false)
     , m_parentTab(qobject_cast<WebTab *>(parent))
+    , m_isPrivateBrowsing(isPrivateBrowsing)
 {
     // loadUrl signal
     connect(this, SIGNAL(loadUrl(KUrl, Rekonq::OpenType)), rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
@@ -153,7 +154,7 @@ WebPage *WebView::page()
     WebPage *p = qobject_cast<WebPage *>(KWebView::page());
     if (!p)
     {
-        p = new WebPage(this);
+        p = new WebPage(this, m_isPrivateBrowsing);
         setPage(p);
     }
     return p;

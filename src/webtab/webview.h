@@ -63,7 +63,7 @@ public:
         TextSelection   = 0x00000100
     };
 
-    explicit WebView(QWidget *parent);
+    explicit WebView(QWidget *parent, bool isPrivateBrowsing);
     ~WebView();
 
     WebPage *page();
@@ -170,6 +170,8 @@ private:
     bool m_accessKeysActive;
 
     WebTab *m_parentTab;
+
+    bool m_isPrivateBrowsing;
 };
 
 #endif

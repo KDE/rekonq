@@ -58,7 +58,7 @@ class REKONQ_TESTS_EXPORT WebTab : public QWidget
     Q_OBJECT
 
 public:
-    explicit WebTab(QWidget *parent = 0);
+    explicit WebTab(QWidget *parent = 0, bool isPrivateBrowsing = false);
     ~WebTab();
 
     WebView *view();
@@ -127,6 +127,8 @@ private:
 
     int m_zoomFactor;
 
+    bool m_isPrivateBrowsing;
+    
     QSplitter *m_splitter;
 };
 

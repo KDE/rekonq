@@ -217,10 +217,7 @@ WebWindow *TabWindow::webWindow(int index) const
 
 WebWindow *TabWindow::prepareNewTab(WebPage *page)
 {
-    WebWindow *tab = new WebWindow(this, page);
-
-    if (_isPrivateBrowsing)
-        tab->setPrivateBrowsing(true);
+    WebWindow *tab = new WebWindow(this, _isPrivateBrowsing, page);
 
     connect(tab, SIGNAL(titleChanged(QString)), this, SLOT(tabTitleChanged(QString)));
 

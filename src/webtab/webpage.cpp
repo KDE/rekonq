@@ -124,7 +124,7 @@ static void extractMimeType(const QNetworkReply* reply, QString& mimeType)
 // ---------------------------------------------------------------------------------
 
 
-WebPage::WebPage(QWidget *parent)
+WebPage::WebPage(QWidget *parent, bool isPrivateBrowsing)
     : KWebPage(parent, KWalletIntegration)
     , _networkAnalyzer(false)
     , _isOnRekonqPage(false)
@@ -133,25 +133,43 @@ WebPage::WebPage(QWidget *parent)
     setForwardUnsupportedContent(true);
     connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(handleUnsupportedContent(QNetworkReply*)));
 
-    // rekonq Network Manager
-    NetworkAccessManager *manager = new NetworkAccessManager(this);
+    if (isPrivateBrowsing)
+    {
+        // NOTE:
+        // I'm sorry I really cannot let KIO work as needed in private browsing mode.
+        // The problem is basically cookie related. This way we lose some features in private
+        // browsing mode, but we ensure PRIVACY! This change cannot be reverted until a proper
+        // fix for KIO (or the right workaround for rekonq) will be found.
+        QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+        setNetworkAccessManager(manager);
 
-    // set network reply object to emit readyRead when it receives meta data
-    manager->setEmitReadyReadOnMetaDataChange(true);
+        // ----- last stuffs
+        connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
 
-    // disable QtWebKit cache to just use KIO one..
-    manager->setCache(0);
+        settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
+    }
+    else
+    {
+        // rekonq Network Manager
+        NetworkAccessManager *manager = new NetworkAccessManager(this);
 
-    setNetworkAccessManager(manager);
+        // set network reply object to emit readyRead when it receives meta data
+        manager->setEmitReadyReadOnMetaDataChange(true);
 
-    // activate ssl warnings
-    setSessionMetaData(QL1S("ssl_activate_warnings"), QL1S("TRUE"));
+        // disable QtWebKit cache to just use KIO one..
+        manager->setCache(0);
 
+        setNetworkAccessManager(manager);
+
+        // activate ssl warnings
+        setSessionMetaData(QL1S("ssl_activate_warnings"), QL1S("TRUE"));
+
+        // ----- last stuffs
+        connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
+    }
+    
     // ----- Web Plugin Factory
     setPluginFactory(new WebPluginFactory(this));
-
-    // ----- last stuffs
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(manageNetworkErrors(QNetworkReply*)));
 
     connect(this, SIGNAL(downloadRequested(QNetworkRequest)), this, SLOT(downloadRequest(QNetworkRequest)));
     connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
@@ -177,10 +195,13 @@ WebPage::~WebPage()
 
 void WebPage::setWindow(QWidget *w)
 {
-    // set cookieJar window..
-    NetworkAccessManager *manager = qobject_cast<NetworkAccessManager *>(networkAccessManager());
-    manager->setWindow(w);
-
+    if (!settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    {
+        // set cookieJar window..
+        NetworkAccessManager *manager = qobject_cast<NetworkAccessManager *>(networkAccessManager());
+        manager->setWindow(w);
+    }
+    
     _protHandler.setWindow(w);
 }
 
@@ -269,56 +290,32 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         }
     }
 
-    // Get the SSL information sent, if any...
-    KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
-    KIO::MetaData metaData = manager->requestMetaData();
-    if (metaData.contains(QL1S("ssl_in_use")))
-    {
-        WebSslInfo info;
-        info.restoreFrom(metaData.toVariant(), request.url());
-        info.setUrl(request.url());
-        _sslInfo = info;
-    }
-
-    if (isMainFrameRequest)
-    {
-        setRequestMetaData(QL1S("main_frame_request"), QL1S("TRUE"));
-        if (_sslInfo.isValid() && !domainSchemeMatch(request.url(), _sslInfo.url()))
-        {
-            _sslInfo = WebSslInfo();
-        }
-    }
-    else
-    {
-        setRequestMetaData(QL1S("main_frame_request"), QL1S("FALSE"));
-    }
-
-
     // Make sure nothing is cached when private browsing mode is enabled...
-    if (settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
+    if (!settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
-        if (manager)
+        // Get the SSL information sent, if any...
+        KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
+        KIO::MetaData metaData = manager->requestMetaData();
+        if (metaData.contains(QL1S("ssl_in_use")))
         {
-            KIO::Integration::CookieJar *cookieJar = manager ? qobject_cast<KIO::Integration::CookieJar*>(manager->cookieJar()) : 0;
-            if (cookieJar)
+            WebSslInfo info;
+            info.restoreFrom(metaData.toVariant(), request.url());
+            info.setUrl(request.url());
+            _sslInfo = info;
+        }
+
+        if (isMainFrameRequest)
+        {
+            setRequestMetaData(QL1S("main_frame_request"), QL1S("TRUE"));
+            if (_sslInfo.isValid() && !domainSchemeMatch(request.url(), _sslInfo.url()))
             {
-                cookieJar->setDisableCookieStorage(true);
-                kDebug() << "COOKIE DISABLED -------------------------------------------------------------";
+                _sslInfo = WebSslInfo();
             }
         }
-        setSessionMetaData(QL1S("no-cache"), QL1S("true"));
-    }
-    else
-    {
-        if (manager)
+        else
         {
-            KIO::Integration::CookieJar *cookieJar = manager ? qobject_cast<KIO::Integration::CookieJar*>(manager->cookieJar()) : 0;
-            if (cookieJar)
-            {
-                cookieJar->setDisableCookieStorage(false);
-            }
+            setRequestMetaData(QL1S("main_frame_request"), QL1S("FALSE"));
         }
-        removeSessionMetaData(QL1S("no-cache"));
     }
 
     return KWebPage::acceptNavigationRequest(frame, request, type);
