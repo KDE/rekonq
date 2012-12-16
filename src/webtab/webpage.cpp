@@ -406,43 +406,43 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
                 !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
         return;
     }
-
+    
     if (isLocal)
     {
         // Load outside local files
         KRun::run(*appService, replyUrl, 0, false, _suggestedFileName);
+        return;
     }
-    else
+
+    // else
+    KParts::BrowserOpenOrSaveQuestion dlg(view(), replyUrl, _mimeType);
+
+    if (!_suggestedFileName.isEmpty())
+        dlg.setSuggestedFileName(_suggestedFileName);
+
+    // read askEmbedOrSave preferences. If we don't have to show dialog and rekonq settings are
+    // to automatically choose download dir, we won't show local dir choose dialog
+    KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("filetypesrc", KConfig::NoGlobals), QL1S("Notification Messages"));
+    bool hideDialog = cg.readEntry(QL1S("askEmbedOrSave") + _mimeType, false);
+
+    kDebug() << "Hide dialog for " << _mimeType << "? " << hideDialog;
+
+    switch (dlg.askEmbedOrSave())
     {
-        KParts::BrowserOpenOrSaveQuestion dlg(view(), replyUrl, _mimeType);
+    case KParts::BrowserOpenOrSaveQuestion::Save:
+        DownloadManager::self()->downloadResource(reply->url(),
+                KIO::MetaData(),
+                view(),
+                !hideDialog,
+                _suggestedFileName,
+                !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
+        return;
 
-        if (!_suggestedFileName.isEmpty())
-            dlg.setSuggestedFileName(_suggestedFileName);
+    case KParts::BrowserOpenOrSaveQuestion::Cancel:
+        return;
 
-        // read askEmbedOrSave preferences. If we don't have to show dialog and rekonq settings are
-        // to automatically choose download dir, we won't show local dir choose dialog
-        KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("filetypesrc", KConfig::NoGlobals), QL1S("Notification Messages"));
-        bool hideDialog = cg.readEntry(QL1S("askEmbedOrSave") + _mimeType, false);
-
-        kDebug() << "Hide dialog for " << _mimeType << "? " << hideDialog;
-
-        switch (dlg.askEmbedOrSave())
-        {
-        case KParts::BrowserOpenOrSaveQuestion::Save:
-            DownloadManager::self()->downloadResource(reply->url(),
-                    KIO::MetaData(),
-                    view(),
-                    !hideDialog,
-                    _suggestedFileName,
-                    !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
-            return;
-
-        case KParts::BrowserOpenOrSaveQuestion::Cancel:
-            return;
-
-        default: // Can happen when "Open with.." is set and "don't ask again" is checked
-            break;
-        }
+    default: // Can happen when "Open with.." is set and "don't ask again" is checked
+        break;
     }
 
     // Handle Post operations that return content...
@@ -462,9 +462,17 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         return;
     }
 
+    bool webAppMode;
+    WebView *v = qobject_cast<WebView *>(view());
+    WebWindow *webwin = v->parentTab()->webWindow();
+    if (webwin)
+        webAppMode = false;
+    else
+        webAppMode = true;
+
     // case KParts::BrowserRun::Embed
     KParts::ReadOnlyPart *pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(_mimeType, view(), this, QString());
-    if (pa)
+    if (pa && !webAppMode)
     {
         _isOnRekonqPage = true;
 
