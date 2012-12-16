@@ -290,10 +290,13 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                             url.setHost(host);
                         }
 
-                        emit chosenUrl(url, Rekonq::CurrentTab);
-                        kev->accept();
-                        hide();
-                        return true;
+                        if (url.isValid())
+                        {
+                            emit chosenUrl(url, Rekonq::CurrentTab);
+                            kev->accept();
+                            hide();
+                            return true;
+                        }
                     }
                 }
 
