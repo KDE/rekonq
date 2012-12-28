@@ -40,7 +40,7 @@ class WebKitWidget : public QWidget, private Ui::webkit
     Q_OBJECT
 
 public:
-    WebKitWidget(QWidget *parent = 0);
+    explicit WebKitWidget(QWidget *parent = 0);
 
     void save();
     bool changed();

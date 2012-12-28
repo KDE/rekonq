@@ -51,7 +51,7 @@ enum RuleTypes
 class AdBlockRule
 {
 public:
-    AdBlockRule(const QString &filter);
+    explicit AdBlockRule(const QString &filter);
 
     bool match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const
     {

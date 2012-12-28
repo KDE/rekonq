@@ -47,7 +47,7 @@ class REKONQ_TESTS_EXPORT NetworkAccessManager : public KIO::Integration::Access
     Q_OBJECT
 
 public:
-    NetworkAccessManager(QObject *parent);
+    explicit NetworkAccessManager(QObject *parent);
 
 protected:
     virtual QNetworkReply *createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData = 0);

@@ -81,7 +81,8 @@ public:
     void removeDownloadItem(int index);
 
 private:
-    DownloadManager(QObject *parent = 0);
+    explicit DownloadManager(QObject *parent = 0);
+    
     void init();
 
     DownloadItem* addDownload(KIO::CopyJob *job);

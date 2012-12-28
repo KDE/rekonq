@@ -129,7 +129,7 @@ private:
     * (actually konqueror's bookmarks).
     * @param parent The WebWindow to provide bookmarks objects.
     */
-    BookmarkManager(QObject *parent = 0);
+    explicit BookmarkManager(QObject *parent = 0);
 
 public Q_SLOTS:
     /**

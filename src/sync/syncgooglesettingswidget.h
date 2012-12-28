@@ -44,7 +44,7 @@ class SyncGoogleSettingsWidget : public QWizardPage, private Ui::SyncGoogleSetti
     Q_OBJECT
 
 public:
-    SyncGoogleSettingsWidget(QWidget *parent = 0);
+    explicit SyncGoogleSettingsWidget(QWidget *parent = 0);
 
     int nextId() const;
 };

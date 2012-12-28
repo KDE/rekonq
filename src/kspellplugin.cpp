@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2012 by Lindsay Mathieson <lindsay dot mathieson at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,48 +25,24 @@
 * ============================================================ */
 
 
-#include <stdio.h>
-#include <KDebug>
+// Self Includes
 #include "kspellplugin.h"
+
+// KDE Includes
+#include <KDebug>
+
+// Qt Includes
 #include <QTextBoundaryFinder>
 
+// Auto Includes
 #include "rekonq.h"
 
+// Defines
 #define methodDebug() kDebug("KWebSpellChecker: %s", __FUNCTION__)
 
-/////////////////////////////
-// KWebSpellChecker
 
+// ---------------------------------------------------------------------------------------------
 
-KWebSpellChecker::KWebSpellChecker()
-{
-    m_speller = new Sonnet::Speller();
-}
-
-KWebSpellChecker::~KWebSpellChecker()
-{
-    delete m_speller;
-}
-
-bool KWebSpellChecker::isContinousSpellCheckingEnabled() const
-{
-    return ReKonfig::automaticSpellChecking();
-}
-
-void KWebSpellChecker::toggleContinousSpellChecking()
-{
-    ReKonfig::setAutomaticSpellChecking(! ReKonfig::automaticSpellChecking());
-}
-
-void KWebSpellChecker::learnWord(const QString& word)
-{
-    Q_UNUSED(word);
-}
-
-void KWebSpellChecker::ignoreWordInSpellDocument(const QString& word)
-{
-    Q_UNUSED(word);
-}
 
 static bool isValidWord(const QString &str)
 {
@@ -84,6 +61,47 @@ static bool isValidWord(const QString &str)
     // 'str' only contains numbers
     return false;
 }
+
+
+// ---------------------------------------------------------------------------------------------
+// KWebSpellChecker
+
+
+KWebSpellChecker::KWebSpellChecker()
+{
+    m_speller = new Sonnet::Speller();
+}
+
+
+KWebSpellChecker::~KWebSpellChecker()
+{
+    delete m_speller;
+}
+
+
+bool KWebSpellChecker::isContinousSpellCheckingEnabled() const
+{
+    return ReKonfig::automaticSpellChecking();
+}
+
+
+void KWebSpellChecker::toggleContinousSpellChecking()
+{
+    ReKonfig::setAutomaticSpellChecking(! ReKonfig::automaticSpellChecking());
+}
+
+
+void KWebSpellChecker::learnWord(const QString& word)
+{
+    Q_UNUSED(word);
+}
+
+
+void KWebSpellChecker::ignoreWordInSpellDocument(const QString& word)
+{
+    Q_UNUSED(word);
+}
+
 
 void KWebSpellChecker::checkSpellingOfString(const QString& word, int* misspellingLocation, int* misspellingLength)
 {
@@ -131,8 +149,10 @@ void KWebSpellChecker::checkSpellingOfString(const QString& word, int* misspelli
     }
 }
 
+
 QString KWebSpellChecker::autoCorrectSuggestionForMisspelledWord(const QString& word)
 {
+    Q_UNUSED(word);
     /*
     QStringList words = m_speller->suggest(word);
     if (words.size() > 0)
@@ -141,9 +161,9 @@ QString KWebSpellChecker::autoCorrectSuggestionForMisspelledWord(const QString& 
         return QString("");
     */
 
-
-    return QString("");
+    return QString();
 }
+
 
 void KWebSpellChecker::guessesForWord(const QString& word, const QString& context, QStringList& guesses)
 {
@@ -153,14 +173,17 @@ void KWebSpellChecker::guessesForWord(const QString& word, const QString& contex
     guesses = words;
 }
 
+
 bool KWebSpellChecker::isGrammarCheckingEnabled()
 {
     return false;
 }
 
+
 void KWebSpellChecker::toggleGrammarChecking()
 {
 }
+
 
 void KWebSpellChecker::checkGrammarOfString(const QString&, QList<GrammarDetail>&, int* badGrammarLocation, int* badGrammarLength)
 {
@@ -169,11 +192,14 @@ void KWebSpellChecker::checkGrammarOfString(const QString&, QList<GrammarDetail>
 }
 
 
-////////////////////////////////////////////
+// ----------------------------------------------------------------------------------------------------------------
 // KWebKitPlatformPlugin
+
+
 KWebKitPlatformPlugin::KWebKitPlatformPlugin()
 {
 }
+
 
 KWebKitPlatformPlugin::~KWebKitPlatformPlugin()
 {
@@ -185,6 +211,7 @@ bool KWebKitPlatformPlugin::supportsExtension(Extension ext) const
     return ext == SpellChecker;
 }
 
+
 QObject* KWebKitPlatformPlugin::createExtension(Extension ext) const
 {
     if (ext == SpellChecker)
@@ -193,6 +220,7 @@ QObject* KWebKitPlatformPlugin::createExtension(Extension ext) const
     return NULL;
 }
 
+
+// ----------------------------------------------------------------------------------------------------------------
 Q_EXPORT_PLUGIN2(kwebspellchecker, KWebKitPlatformPlugin);
 Q_IMPORT_PLUGIN(kwebspellchecker)
-

@@ -43,7 +43,7 @@ class PassExWidget : public QWidget, private Ui::PassExceptions
     Q_OBJECT
 
 public:
-    PassExWidget(QWidget *parent = 0);
+    explicit PassExWidget(QWidget *parent = 0);
 
 private Q_SLOTS:
     void removeOne();

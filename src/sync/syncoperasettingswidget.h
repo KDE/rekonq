@@ -44,7 +44,7 @@ class SyncOperaSettingsWidget : public QWizardPage, private Ui::SyncOperaSetting
     Q_OBJECT
 
 public:
-    SyncOperaSettingsWidget(QWidget *parent = 0);
+    explicit SyncOperaSettingsWidget(QWidget *parent = 0);
 
     int nextId() const;
 };

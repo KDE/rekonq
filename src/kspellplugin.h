@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2012 by Lindsay Mathieson <lindsay dot mathieson at gmail dot com>
+* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,16 +25,16 @@
 * ============================================================ */
 
 
-#ifndef TESTQWEBSPELLCHECKER_H
-#define TESTQWEBSPELLCHECKER_H
+#ifndef KWEBSPELLCHECKER_H
+#define KWEBSPELLCHECKER_H
 
 
 #include <QtGlobal>
 #include <QtPlugin>
+
 #include <sonnet/speller.h>
+
 #include "qwebkitplatformplugin.h"
-
-
 
 
 class KWebSpellChecker : public QWebSpellChecker
@@ -59,6 +60,9 @@ public:
 };
 
 
+// ----------------------------------------------------------------------------------
+
+
 class KWebKitPlatformPlugin : public QObject, public QWebKitPlatformPlugin
 {
     Q_OBJECT
@@ -73,4 +77,4 @@ public:
 
 };
 
-#endif
+#endif // KWEBSPELLCHECKER_H

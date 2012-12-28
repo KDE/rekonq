@@ -40,7 +40,7 @@ class TabsWidget : public QWidget, private Ui::tabs
     Q_OBJECT
 
 public:
-    TabsWidget(QWidget *parent = 0);
+    explicit TabsWidget(QWidget *parent = 0);
 
     void save();
     bool changed();

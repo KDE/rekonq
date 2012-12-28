@@ -40,7 +40,7 @@ class GeneralWidget : public QWidget, private Ui::general
     Q_OBJECT
 
 public:
-    GeneralWidget(QWidget *parent = 0);
+    explicit GeneralWidget(QWidget *parent = 0);
 
     void save();
     bool changed();

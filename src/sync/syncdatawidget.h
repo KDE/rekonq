@@ -43,7 +43,7 @@ class SyncDataWidget : public QWizardPage, private Ui::SyncData
     Q_OBJECT
 
 public:
-    SyncDataWidget(QWidget *parent = 0);
+    explicit SyncDataWidget(QWidget *parent = 0);
 
     int nextId() const;
 

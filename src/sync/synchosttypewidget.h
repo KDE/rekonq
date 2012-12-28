@@ -43,7 +43,7 @@ class SyncHostTypeWidget : public QWizardPage, private Ui::SyncHostType
     Q_OBJECT
 
 public:
-    SyncHostTypeWidget(QWidget *parent = 0);
+    explicit SyncHostTypeWidget(QWidget *parent = 0);
 
     int nextId() const;
     bool changed();

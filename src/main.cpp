@@ -25,17 +25,20 @@
 
 
 // version include
-#include "config-version.h"
+#include <config-version.h>
 
+// Local Includes
 #include "application.h"
 #include "tabwindow.h"
 #include "urlresolver.h"
 
+// KDE Includes
 #include <KDE/KAboutData>
 #include <KDE/KUniqueApplication>
 #include <KDE/KCmdLineArgs>
 #include <KDebug>
 
+// Qt Includes
 #include <QDir>
 #include <QUrl>
 

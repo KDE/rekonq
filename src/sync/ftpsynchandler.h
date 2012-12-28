@@ -43,7 +43,7 @@ class FTPSyncHandler : public SyncHandler
     Q_OBJECT
 
 public:
-    FTPSyncHandler(QObject *parent = 0);
+    explicit FTPSyncHandler(QObject *parent = 0);
 
     void syncHistory();
     void syncBookmarks();

@@ -47,7 +47,7 @@ class REKONQ_TESTS_EXPORT FindBar : public QWidget
     Q_OBJECT
 
 public:
-    FindBar(QWidget *parent);
+    explicit FindBar(QWidget *parent);
 
     bool matchCase() const;
     void notifyMatch(bool match);

@@ -29,7 +29,7 @@
 #include "bookmarkscontextmenu.h"
 
 // Nepomuk config include
-#include "config-nepomuk.h"
+#include <config-nepomuk.h>
 
 // Local Includes
 #include "bookmarkowner.h"

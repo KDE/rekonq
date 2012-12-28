@@ -121,7 +121,7 @@ class UrlSuggester : public QObject
     Q_OBJECT
 
 public:
-    UrlSuggester(const QString &typedUrl);
+    explicit UrlSuggester(const QString &typedUrl);
 
     UrlSuggestionList orderedSearchItems();
 

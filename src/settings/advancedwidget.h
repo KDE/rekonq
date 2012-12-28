@@ -43,7 +43,7 @@ class AdvancedWidget : public QWidget, private Ui::advanced
     Q_OBJECT
 
 public:
-    AdvancedWidget(QWidget *parent = 0);
+    explicit AdvancedWidget(QWidget *parent = 0);
 
     void save();
     bool changed();

@@ -45,7 +45,7 @@ class REKONQ_TESTS_EXPORT SettingsDialog : public KConfigDialog
     Q_OBJECT
 
 public:
-    SettingsDialog(QWidget *parent = 0);
+    explicit SettingsDialog(QWidget *parent = 0);
     ~SettingsDialog();
 
     virtual bool hasChanged();

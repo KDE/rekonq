@@ -62,7 +62,7 @@ class WebWindow : public QWidget
     Q_OBJECT
 
 public:
-    WebWindow(QWidget *parent = 0, bool isPrivateBrowsing = false, WebPage *pg = 0);
+    explicit WebWindow(QWidget *parent = 0, bool isPrivateBrowsing = false, WebPage *pg = 0);
     ~WebWindow();
 
     void load(const QUrl &);

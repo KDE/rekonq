@@ -24,8 +24,8 @@
 * ============================================================ */
 
 
-#ifndef ADBLOCK_SETTINGS_WIDGET_H
-#define ADBLOCK_SETTINGS_WIDGET_H
+#ifndef AD_BLOCK_SETTINGS_WIDGET_H
+#define AD_BLOCK_SETTINGS_WIDGET_H
 
 
 // Rekonq Includes
@@ -70,4 +70,4 @@ private:
     KSharedConfig::Ptr _adblockConfig;
 };
 
-#endif // ADBLOCK_SETTINGS_WIDGET_H
+#endif // AD_BLOCK_SETTINGS_WIDGET_H

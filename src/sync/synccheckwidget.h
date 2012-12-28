@@ -43,7 +43,8 @@ class SyncCheckWidget : public QWizardPage, private Ui::SyncCheck
     Q_OBJECT
 
 public:
-    SyncCheckWidget(QWidget *parent = 0);
+    explicit SyncCheckWidget(QWidget *parent = 0);
+    
     void initializePage();
 
 private Q_SLOTS:

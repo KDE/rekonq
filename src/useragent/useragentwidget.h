@@ -43,7 +43,7 @@ class UserAgentWidget : public QWidget, private Ui::UserAgent
     Q_OBJECT
 
 public:
-    UserAgentWidget(QWidget *parent = 0);
+    explicit UserAgentWidget(QWidget *parent = 0);
 
 private Q_SLOTS:
     void deleteUserAgent();

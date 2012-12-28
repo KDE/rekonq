@@ -35,15 +35,13 @@
 #include <QPlainTextEdit>
 
 // Nepomuk config include
-#include "config-nepomuk.h"
-
-#ifdef HAVE_NEPOMUK
+#include <config-nepomuk.h>
 
 // Nepomuk Includes
+#ifdef HAVE_NEPOMUK
 #include <Nepomuk/Resource>
 #include <Nepomuk/Tag>
 #include <Nepomuk/Vocabulary/NFO>
-
 #endif
 
 // Forward Declarations

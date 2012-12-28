@@ -52,7 +52,7 @@ class OperaSyncHandler : public SyncHandler
     Q_OBJECT
 
 public:
-    OperaSyncHandler(QObject *parent = 0);
+    explicit OperaSyncHandler(QObject *parent = 0);
 
     void syncHistory();
     void syncBookmarks();

@@ -49,7 +49,7 @@ class CompletionWidget : public QFrame
     Q_OBJECT
 
 public:
-    CompletionWidget(QWidget *parent);
+    explicit CompletionWidget(QWidget *parent);
 
     virtual bool eventFilter(QObject *obj, QEvent *ev);
     void setVisible(bool visible);

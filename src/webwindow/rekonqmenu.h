@@ -50,7 +50,7 @@ class REKONQ_TESTS_EXPORT RekonqMenu : public KMenu
     Q_OBJECT
 
 public:
-    RekonqMenu(QWidget *parent);
+    explicit RekonqMenu(QWidget *parent);
 
 protected:
     virtual void showEvent(QShowEvent* event);

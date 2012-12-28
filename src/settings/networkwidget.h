@@ -40,7 +40,7 @@ class NetworkWidget : public QWidget
     Q_OBJECT
 
 public:
-    NetworkWidget(QWidget *parent = 0);
+    explicit NetworkWidget(QWidget *parent = 0);
     ~NetworkWidget();
 
     void save();

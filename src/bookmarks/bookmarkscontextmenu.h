@@ -27,6 +27,7 @@
 #ifndef BOOKMARKS_CONTEXT_MENU_H
 #define BOOKMARKS_CONTEXT_MENU_H
 
+
 // KDE Includes
 #include <KBookmarkMenu>
 

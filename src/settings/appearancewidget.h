@@ -43,7 +43,7 @@ class AppearanceWidget : public QWidget, private Ui::appearance
     Q_OBJECT
 
 public:
-    AppearanceWidget(QWidget *parent = 0);
+    explicit AppearanceWidget(QWidget *parent = 0);
 
     void save();
     bool changed();

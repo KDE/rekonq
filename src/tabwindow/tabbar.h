@@ -49,7 +49,7 @@ class TabBar : public KTabBar
     Q_OBJECT
 
 public:
-    TabBar(QWidget *parent);
+    explicit TabBar(QWidget *parent);
 
     void setTabHighlighted(int index, bool b);
     QRect tabTextRect(int index);

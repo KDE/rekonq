@@ -54,7 +54,7 @@ public:
     void populateUAMenuForTabUrl(KMenu *, WebWindow *);
 
 private:
-    UserAgentManager(QObject *parent = 0);
+    explicit UserAgentManager(QObject *parent = 0);
 
 private Q_SLOTS:
     void showSettings();

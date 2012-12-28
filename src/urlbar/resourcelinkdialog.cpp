@@ -234,10 +234,12 @@ void Nepomuk::ResourceLinkDialog::showContextMenu(const QPoint &pos)
 
 void Nepomuk::ResourceLinkDialog::createNewResourceSlot()
 {
-    Nepomuk::NewResourceDialog newResource(d->m_resourceSelect->currentIndex(), d->m_nfoResource);
-    //close();
-    newResource.exec();
+    QPointer<Nepomuk::NewResourceDialog> r = new Nepomuk::NewResourceDialog(d->m_resourceSelect->currentIndex(), d->m_nfoResource);
+    r->exec();
+
     setRelatedResources();
+
+    r->deleteLater();
 }
 
 

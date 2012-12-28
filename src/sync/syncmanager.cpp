@@ -32,8 +32,8 @@
 #include "rekonq.h"
 
 // Config Includes
-#include "config-qca2.h"
-#include "config-qtoauth.h"
+#include <config-qca2.h>
+#include <config-qtoauth.h>
 
 // Local Includes
 #include "application.h"

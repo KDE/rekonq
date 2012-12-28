@@ -168,7 +168,7 @@ void OperaSyncHandler::startLogin()
 
         if (_qoauth.error() != QOAuth::NoError)
         {
-            kDebug() << "Error occured while fetching request tokens. Error code is : " << _qoauth.error();
+            kDebug() << "Error occurred while fetching request tokens. Error code is : " << _qoauth.error();
             emit syncStatus(Rekonq::Bookmarks, false, i18n("OAuth : Error fetching request token."));
             _isSyncing = false;
             return;
@@ -460,7 +460,7 @@ void OperaSyncHandler::createBookmarkFolderResultSlot(KJob* job)
 
     if (job->error() != 0)
     {
-        kDebug() << "Error occured while creating bookmark folder on server. Error code : " << job->error();
+        kDebug() << "Error occurred while creating bookmark folder on server. Error code : " << job->error();
         decreaseRequestCount();
         return;
     }

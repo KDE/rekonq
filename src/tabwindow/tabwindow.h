@@ -60,7 +60,7 @@ class TabWindow : public RekonqWindow
     Q_OBJECT
 
 public:
-    TabWindow(bool withTab = true, bool PrivateBrowsingMode = false, QWidget *parent = 0);
+    explicit TabWindow(bool withTab = true, bool PrivateBrowsingMode = false, QWidget *parent = 0);
     TabWindow(WebPage *pg, QWidget *parent = 0);
 
     WebWindow* currentWebWindow() const;

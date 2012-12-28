@@ -43,7 +43,7 @@ class SyncFTPSettingsWidget : public QWizardPage, private Ui::SyncFTPSettings
     Q_OBJECT
 
 public:
-    SyncFTPSettingsWidget(QWidget *parent = 0);
+    explicit SyncFTPSettingsWidget(QWidget *parent = 0);
 
     int nextId() const;
 };

@@ -46,7 +46,7 @@ class GoogleSyncHandler : public SyncHandler
     Q_OBJECT
 
 public:
-    GoogleSyncHandler(QObject *parent = 0);
+    explicit GoogleSyncHandler(QObject *parent = 0);
 
     void syncHistory();
     void syncBookmarks();

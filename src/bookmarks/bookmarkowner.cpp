@@ -46,9 +46,7 @@
 // Qt Includes
 #include <QClipboard>
 
-// Nepomuk config include
-#include "config-nepomuk.h"
-
+// Nepomuk Includes
 #ifdef HAVE_NEPOMUK
 // Local Nepomuk Includes
 #include "resourcelinkdialog.h"
@@ -330,9 +328,11 @@ void BookmarkOwner::editBookmark(KBookmark bookmark)
 void BookmarkOwner::fancyBookmark(KBookmark bookmark)
 {
     Nepomuk::Resource nfoResource = (KUrl)bookmark.url();
-    Nepomuk::ResourceLinkDialog r(nfoResource);
-    r.exec();
 
+    QPointer<Nepomuk::ResourceLinkDialog> r = new Nepomuk::ResourceLinkDialog(nfoResource);
+    r->exec();
+
+    r->deleteLater();
 }
 #endif
 

@@ -40,7 +40,7 @@ class SyncHandler : public QObject
     Q_OBJECT
 
 public:
-    SyncHandler(QObject *parent = 0);
+    explicit SyncHandler(QObject *parent = 0);
     virtual ~SyncHandler();
 
     virtual void syncHistory() = 0;

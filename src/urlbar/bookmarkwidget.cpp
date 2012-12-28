@@ -51,9 +51,6 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 
-// Nepomuk config include
-#include "config-nepomuk.h"
-
 #ifdef HAVE_NEPOMUK
 // Local Nepomuk Includes
 #include "resourcelinkdialog.h"
@@ -360,7 +357,9 @@ void BookmarkWidget::addCommentSlot()
 
 void BookmarkWidget::linkToResourceSlot()
 {
-    Nepomuk::ResourceLinkDialog r(m_nfoResource);
-    r.exec();
+    QPointer<Nepomuk::ResourceLinkDialog> r = new Nepomuk::ResourceLinkDialog(m_nfoResource);
+    r->exec();
+    
+    r->deleteLater();
 }
 #endif

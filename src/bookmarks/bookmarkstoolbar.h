@@ -82,7 +82,7 @@ class BookmarkToolBar : public KToolBar
     Q_OBJECT
 
 public:
-    BookmarkToolBar(QWidget *parent);
+    explicit BookmarkToolBar(QWidget *parent);
     ~BookmarkToolBar();
 
 protected:

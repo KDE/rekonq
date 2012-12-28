@@ -37,7 +37,8 @@
 class AdBlockRuleFallbackImpl : public AdBlockRuleImpl
 {
 public:
-    AdBlockRuleFallbackImpl(const QString &filter);
+    explicit AdBlockRuleFallbackImpl(const QString &filter);
+    
     bool match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const;
 
     QString ruleString() const;

@@ -71,7 +71,7 @@ public:
     bool restoreTabWindow(TabWindow * window);
 
 private:
-    SessionManager(QObject *parent = 0);
+    explicit SessionManager(QObject *parent = 0);
 
 public Q_SLOTS:
     // This method restores session

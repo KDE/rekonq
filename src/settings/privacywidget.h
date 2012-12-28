@@ -43,7 +43,7 @@ class PrivacyWidget : public QWidget, private Ui::privacy
     Q_OBJECT
 
 public:
-    PrivacyWidget(QWidget *parent = 0);
+    explicit PrivacyWidget(QWidget *parent = 0);
 
     void save();
     void reload();

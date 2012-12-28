@@ -32,8 +32,9 @@ class QNetworkRequest;
 class AdBlockRuleImpl
 {
 public:
-    AdBlockRuleImpl(const QString &) {}
+    explicit AdBlockRuleImpl(const QString &) {}
     virtual ~AdBlockRuleImpl() {}
+    
     virtual bool match(const QNetworkRequest &request, const QString &encodedUrl, const QString &encodedUrlLowerCase) const = 0;
 
     // This are added just for debugging purposes

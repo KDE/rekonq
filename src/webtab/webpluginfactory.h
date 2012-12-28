@@ -41,7 +41,7 @@ class REKONQ_TESTS_EXPORT WebPluginFactory : public KWebPluginFactory
     Q_OBJECT
 
 public:
-    WebPluginFactory(QObject *parent);
+    explicit WebPluginFactory(QObject *parent);
 
     virtual QObject *create(const QString &_mimeType,
                             const QUrl &url,
