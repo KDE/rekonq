@@ -166,9 +166,9 @@ Nepomuk::ResourceLinkDialog::ResourceLinkDialog(Nepomuk::Resource &nfoResource, 
 
     d->m_linkedResources->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(d->m_resourceView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
+    connect(d->m_resourceView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(_k_selectionChanged()));
-    connect(d->m_linkedResources->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
+    connect(d->m_linkedResources->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(_k_selectionChanged()));
     connect(this, SIGNAL(user1Clicked()), this, SLOT(linkResourceSlot()));
     connect(this, SIGNAL(user2Clicked()), this, SLOT(unlinkResourceSlot()));

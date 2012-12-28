@@ -103,7 +103,7 @@ void SyncCheckWidget::initializePage()
         return;
     }
 
-    connect(h, SIGNAL(syncStatus(Rekonq::SyncData, bool, QString)), this, SLOT(updateWidget(Rekonq::SyncData, bool, QString)));
+    connect(h, SIGNAL(syncStatus(Rekonq::SyncData,bool,QString)), this, SLOT(updateWidget(Rekonq::SyncData,bool,QString)));
 
 
     // bookmarks

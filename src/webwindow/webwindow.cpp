@@ -129,7 +129,7 @@ WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
     connect(_bar, SIGNAL(focusIn()), this, SLOT(urlbarFocused()));
 
     // page signals
-    connect(page(), SIGNAL(pageCreated(WebPage *)), this, SIGNAL(pageCreated(WebPage *)));
+    connect(page(), SIGNAL(pageCreated(WebPage*)), this, SIGNAL(pageCreated(WebPage*)));
 
     // message popup
     m_popup->setAutoFillBackground(true);
@@ -137,7 +137,7 @@ WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
     m_popup->raise();
     m_popup->hide();
     connect(m_hidePopupTimer, SIGNAL(timeout()), m_popup, SLOT(hide()));
-    connect(_tab->page(), SIGNAL(linkHovered(QString, QString, QString)), this, SLOT(notifyMessage(QString)));
+    connect(_tab->page(), SIGNAL(linkHovered(QString,QString,QString)), this, SLOT(notifyMessage(QString)));
     connect(_tab, SIGNAL(infoToShow(QString)), this, SLOT(notifyMessage(QString)));
 
     updateHistoryActions();
@@ -168,8 +168,8 @@ void WebWindow::setupActions()
 
     // ========================= History related actions ==============================
     a = actionCollection()->addAction(KStandardAction::Back);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
-            this, SLOT(openPrevious(Qt::MouseButtons, Qt::KeyboardModifiers)));
+    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+            this, SLOT(openPrevious(Qt::MouseButtons,Qt::KeyboardModifiers)));
 
     m_historyBackMenu = new KMenu(this);
     a->setMenu(m_historyBackMenu);
@@ -177,8 +177,8 @@ void WebWindow::setupActions()
     connect(m_historyBackMenu, SIGNAL(triggered(QAction*)), this, SLOT(openActionUrl(QAction*)));
 
     a = actionCollection()->addAction(KStandardAction::Forward);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
-            this, SLOT(openNext(Qt::MouseButtons, Qt::KeyboardModifiers)));
+    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+            this, SLOT(openNext(Qt::MouseButtons,Qt::KeyboardModifiers)));
 
     m_historyForwardMenu = new KMenu(this);
     a->setMenu(m_historyForwardMenu);
@@ -218,7 +218,7 @@ void WebWindow::setupActions()
 
     // Open Home page
     a = actionCollection()->addAction(KStandardAction::Home);
-    connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(openHomePage(Qt::MouseButtons, Qt::KeyboardModifiers)));
+    connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(openHomePage(Qt::MouseButtons,Qt::KeyboardModifiers)));
 
     // Open Downloads page
     a = new KAction(KIcon("download"), i18n("Downloads page"), this);

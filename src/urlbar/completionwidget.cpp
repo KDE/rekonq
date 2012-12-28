@@ -75,9 +75,9 @@ void CompletionWidget::insertItems(const UrlSuggestionList &list, const QString&
         ListItem *suggestion = ListItemFactory::create(item, text, this);
         suggestion->setBackgroundRole(offset % 2 ? QPalette::AlternateBase : QPalette::Base);
         connect(suggestion,
-                SIGNAL(itemClicked(ListItem*, Qt::MouseButton, Qt::KeyboardModifiers)),
+                SIGNAL(itemClicked(ListItem*,Qt::MouseButton,Qt::KeyboardModifiers)),
                 this,
-                SLOT(itemChosen(ListItem*, Qt::MouseButton, Qt::KeyboardModifiers)));
+                SLOT(itemChosen(ListItem*,Qt::MouseButton,Qt::KeyboardModifiers)));
         connect(suggestion, SIGNAL(updateList()), this, SLOT(updateList()));
         connect(this, SIGNAL(nextItemSubChoice()), suggestion, SLOT(nextItemSubChoice()));
 
@@ -394,8 +394,8 @@ void CompletionWidget::suggestUrls(const QString &text)
     }
 
     UrlSuggester *res = new UrlSuggester(text);
-    connect(res, SIGNAL(suggestionsReady(UrlSuggestionList, QString)),
-            this, SLOT(updateSuggestionList(UrlSuggestionList, QString)));
+    connect(res, SIGNAL(suggestionsReady(UrlSuggestionList,QString)),
+            this, SLOT(updateSuggestionList(UrlSuggestionList,QString)));
     _resList = res->orderedSearchItems();
 
     // NOTE: It's important to call this AFTER orderedSearchItems() to let everything work

@@ -309,7 +309,7 @@ void AdBlockManager::updateSubscription(int i)
     job->metaData().insert("cookies", "none");
     job->metaData().insert("no-auth", "true");
 
-    connect(job, SIGNAL(finished(KJob *)), this, SLOT(slotFinished(KJob *)));
+    connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotFinished(KJob*)));
 }
 
 

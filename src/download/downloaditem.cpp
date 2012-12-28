@@ -59,7 +59,7 @@ DownloadItem::DownloadItem(KIO::CopyJob *job, const QDateTime &d, QObject *paren
     , m_job(job)
     , m_state(0)
 {
-    QObject::connect(job, SIGNAL(percent(KJob*, ulong)), this, SLOT(updateProgress(KJob*, ulong)));
+    QObject::connect(job, SIGNAL(percent(KJob*,ulong)), this, SLOT(updateProgress(KJob*,ulong)));
     QObject::connect(job, SIGNAL(finished(KJob*)), this, SLOT(onFinished(KJob*)));
     QObject::connect(job, SIGNAL(suspended(KJob*)), this, SLOT(onSuspended(KJob*)));
 }

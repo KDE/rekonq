@@ -160,7 +160,7 @@ UrlBar::UrlBar(QWidget *parent)
     connect(BookmarkManager::self(), SIGNAL(bookmarksUpdated()), this, SLOT(updateRightIcons()));
 
     // suggestions
-    connect(_box.data(), SIGNAL(chosenUrl(KUrl, Rekonq::OpenType)), this, SLOT(loadRequestedUrl(KUrl, Rekonq::OpenType)));
+    connect(_box.data(), SIGNAL(chosenUrl(KUrl,Rekonq::OpenType)), this, SLOT(loadRequestedUrl(KUrl,Rekonq::OpenType)));
     connect(this, SIGNAL(textEdited(QString)), this, SLOT(detectTypedString(QString)));
 
     _suggestionTimer->setSingleShot(true);

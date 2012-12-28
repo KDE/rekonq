@@ -85,14 +85,14 @@ BookmarkManager::BookmarkManager(QObject *parent)
         delete tempManager;
     }
 
-    connect(m_manager, SIGNAL(changed(QString, QString)), this, SLOT(slotBookmarksChanged()));
+    connect(m_manager, SIGNAL(changed(QString,QString)), this, SLOT(slotBookmarksChanged()));
 
     // setup menu
     m_owner = new BookmarkOwner(m_manager, this);
-    connect(m_owner, SIGNAL(openUrl(KUrl, Rekonq::OpenType)), this, SIGNAL(openUrl(KUrl, Rekonq::OpenType)));
+    connect(m_owner, SIGNAL(openUrl(KUrl,Rekonq::OpenType)), this, SIGNAL(openUrl(KUrl,Rekonq::OpenType)));
 
     // bookmarks loading
-    connect(this, SIGNAL(openUrl(KUrl, Rekonq::OpenType)), rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
+    connect(this, SIGNAL(openUrl(KUrl,Rekonq::OpenType)), rApp, SLOT(loadUrl(KUrl,Rekonq::OpenType)));
 }
 
 

@@ -100,8 +100,8 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
 
     if (wallet)
     {
-        connect(wallet, SIGNAL(saveFormDataRequested(QString, QUrl)),
-                this, SLOT(createWalletBar(QString, QUrl)));
+        connect(wallet, SIGNAL(saveFormDataRequested(QString,QUrl)),
+                this, SLOT(createWalletBar(QString,QUrl)));
     }
 
     connect(view(), SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));

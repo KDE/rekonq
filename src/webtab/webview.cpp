@@ -103,7 +103,7 @@ WebView::WebView(QWidget* parent, bool isPrivateBrowsing)
     , m_isPrivateBrowsing(isPrivateBrowsing)
 {
     // loadUrl signal
-    connect(this, SIGNAL(loadUrl(KUrl, Rekonq::OpenType)), rApp, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
+    connect(this, SIGNAL(loadUrl(KUrl,Rekonq::OpenType)), rApp, SLOT(loadUrl(KUrl,Rekonq::OpenType)));
 
     // Auto scroll timer
     connect(m_autoScrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
@@ -413,25 +413,25 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         a = new KAction(KIcon("view-preview"), i18n("&View Image"), &menu);
         a->setData(m_contextMenuHitResult.imageUrl());
-        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)),
-                this, SLOT(viewImage(Qt::MouseButtons, Qt::KeyboardModifiers)));
+        connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                this, SLOT(viewImage(Qt::MouseButtons,Qt::KeyboardModifiers)));
         menu.addAction(a);
 
         a = new KAction(KIcon("document-save"), i18n("Save image as..."), &menu);
         a->setData(m_contextMenuHitResult.imageUrl());
-        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(saveImage()));
+        connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(saveImage()));
         menu.addAction(a);
 
         a = new KAction(KIcon("view-media-visualization"), i18n("&Copy Image Location"), &menu);
         a->setData(m_contextMenuHitResult.imageUrl());
-        connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
+        connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(slotCopyImageLocation()));
         menu.addAction(a);
 
         if (AdBlockManager::self()->isEnabled())
         {
             a = new KAction(KIcon("preferences-web-browser-adblock"), i18n("Block image"), &menu);
             a->setData(m_contextMenuHitResult.imageUrl());
-            connect(a, SIGNAL(triggered(Qt::MouseButtons, Qt::KeyboardModifiers)), this, SLOT(blockImage()));
+            connect(a, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)), this, SLOT(blockImage()));
             menu.addAction(a);
         }
     }
@@ -1429,8 +1429,8 @@ void WebView::spellCheck()
     spellDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
     spellDialog->showSpellCheckCompletionMessage(true);
-    connect(spellDialog, SIGNAL(replace(QString, int, QString)), this, SLOT(spellCheckerCorrected(QString, int, QString)));
-    connect(spellDialog, SIGNAL(misspelling(QString, int)), this, SLOT(spellCheckerMisspelling(QString, int)));
+    connect(spellDialog, SIGNAL(replace(QString,int,QString)), this, SLOT(spellCheckerCorrected(QString,int,QString)));
+    connect(spellDialog, SIGNAL(misspelling(QString,int)), this, SLOT(spellCheckerMisspelling(QString,int)));
     if (m_contextMenuHitResult.isContentSelected())
         connect(spellDialog, SIGNAL(done(QString)), this, SLOT(slotSpellCheckDone(QString)));
     spellDialog->setBuffer(text);

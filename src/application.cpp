@@ -138,7 +138,7 @@ int Application::newInstance()
         kDebug() << "URL: " << u;
 
         WebTab *tab = newWebApp();
-        connect(tab->page(), SIGNAL(pageCreated(WebPage *)), this, SLOT(pageCreated(WebPage *)));
+        connect(tab->page(), SIGNAL(pageCreated(WebPage*)), this, SLOT(pageCreated(WebPage*)));
         tab->view()->load(u);
 
         if (isFirstLoad)

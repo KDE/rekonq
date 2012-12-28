@@ -307,7 +307,7 @@ void OperaSyncHandler::getBookmarks()
     KIO::TransferJob *job = KIO::get(KUrl(fetchBookmarksUrl), KIO::Reload, KIO::HideProgressInfo);
 
     connect(job, SIGNAL(result(KJob*)), this, SLOT(fetchBookmarksResultSlot(KJob*)));
-    connect(job, SIGNAL(data(KIO::Job*, QByteArray)), this, SLOT(fetchBookmarksDataSlot(KIO::Job*, QByteArray)));
+    connect(job, SIGNAL(data(KIO::Job*,QByteArray)), this, SLOT(fetchBookmarksDataSlot(KIO::Job*,QByteArray)));
 }
 
 void OperaSyncHandler::fetchBookmarksDataSlot(KIO::Job* job, QByteArray data)
@@ -689,7 +689,7 @@ void OperaSyncHandler::addBookmarkOnServer(QString title, QString url, QString p
     job->addMetaData("Content-Type", "application/x-www-form-urlencoded");
 
     connect(job, SIGNAL(result(KJob*)), this, SLOT(createBookmarkResultSlot(KJob*)));
-    connect(job, SIGNAL(data(KIO::Job*, QByteArray)), this, SLOT(createBookmarkDataSlot(KIO::Job*, QByteArray)));
+    connect(job, SIGNAL(data(KIO::Job*,QByteArray)), this, SLOT(createBookmarkDataSlot(KIO::Job*,QByteArray)));
 
     ++_requestCount;
 }
@@ -716,7 +716,7 @@ KJob *OperaSyncHandler::addBookmarkFolderOnServer(QString title, QString parent)
     _jobToResponseMap.insert(job, "");
 
     connect(job, SIGNAL(result(KJob*)), this, SLOT(createBookmarkFolderResultSlot(KJob*)));
-    connect(job, SIGNAL(data(KIO::Job*, QByteArray)), this, SLOT(createBookmarkFolderDataSlot(KIO::Job*, QByteArray)));
+    connect(job, SIGNAL(data(KIO::Job*,QByteArray)), this, SLOT(createBookmarkFolderDataSlot(KIO::Job*,QByteArray)));
 
     ++_requestCount;
     return job;
@@ -745,7 +745,7 @@ void OperaSyncHandler::deleteResourceOnServer(QString id)
     job->addMetaData("Content-Type", "application/x-www-form-urlencoded");
 
     connect(job, SIGNAL(result(KJob*)), this, SLOT(deleteResourceResultSlot(KJob*)));
-    connect(job, SIGNAL(data(KIO::Job*, QByteArray)), this, SLOT(deleteResourceDataSlot(KIO::Job*, QByteArray)));
+    connect(job, SIGNAL(data(KIO::Job*,QByteArray)), this, SLOT(deleteResourceDataSlot(KIO::Job*,QByteArray)));
 
     ++_requestCount;
 }

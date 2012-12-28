@@ -393,8 +393,8 @@ ImageLabel::ImageLabel(const QString &url, int width, int height, QWidget *paren
     else
     {
         KIO::TransferJob *job = KIO::get(KUrl(url), KIO::NoReload, KIO::HideProgressInfo);
-        connect(job,  SIGNAL(data(KIO::Job*, QByteArray)),
-                this, SLOT(slotData(KJob*, QByteArray)));
+        connect(job,  SIGNAL(data(KIO::Job*,QByteArray)),
+                this, SLOT(slotData(KJob*,QByteArray)));
         connect(job,  SIGNAL(result(KJob*)),
                 this, SLOT(slotResult(KJob*)));
     }

@@ -156,7 +156,7 @@ BookmarkToolBar::BookmarkToolBar(QWidget *parent)
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenu(QPoint)));
-    connect(BookmarkManager::self()->manager(), SIGNAL(changed(QString, QString)), this, SLOT(hideMenu()));
+    connect(BookmarkManager::self()->manager(), SIGNAL(changed(QString,QString)), this, SLOT(hideMenu()));
 
     setAcceptDrops(true);
     installEventFilter(this);

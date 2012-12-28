@@ -77,7 +77,7 @@ TabBar::TabBar(QWidget *parent)
     // context menu(s)
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(this, SIGNAL(contextMenu(int, QPoint)), this, SLOT(contextMenu(int, QPoint)));
+    connect(this, SIGNAL(contextMenu(int,QPoint)), this, SLOT(contextMenu(int,QPoint)));
     connect(this, SIGNAL(emptyAreaContextMenu(QPoint)), this, SLOT(emptyAreaContextMenu(QPoint)));
 
     // Highlight effect

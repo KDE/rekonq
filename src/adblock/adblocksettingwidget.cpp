@@ -74,7 +74,7 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
     connect(checkHideAds,       SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
     connect(spinBox,            SIGNAL(valueChanged(int)),   this, SLOT(hasChanged()));
 
-    connect(automaticFiltersListWidget, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(hasChanged()));
+    connect(automaticFiltersListWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(hasChanged()));
 }
 
 

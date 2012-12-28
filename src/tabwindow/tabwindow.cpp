@@ -224,7 +224,7 @@ WebWindow *TabWindow::prepareNewTab(WebPage *page)
     connect(tab, SIGNAL(loadStarted()), this, SLOT(tabLoadStarted()));
     connect(tab, SIGNAL(loadFinished(bool)), this, SLOT(tabLoadFinished(bool)));
 
-    connect(tab, SIGNAL(pageCreated(WebPage *)), this, SLOT(pageCreated(WebPage *)));
+    connect(tab, SIGNAL(pageCreated(WebPage*)), this, SLOT(pageCreated(WebPage*)));
 
     connect(tab, SIGNAL(setFullScreen(bool)), this, SLOT(setFullScreen(bool)));
 
@@ -579,7 +579,7 @@ void TabWindow::detachTab(int index, TabWindow *toWindow)
     disconnect(tab, SIGNAL(titleChanged(QString)), this, SLOT(tabTitleChanged(QString)));
     disconnect(tab, SIGNAL(loadStarted()), this, SLOT(tabLoadStarted()));
     disconnect(tab, SIGNAL(loadFinished(bool)), this, SLOT(tabLoadFinished(bool)));
-    disconnect(tab, SIGNAL(pageCreated(WebPage *)), this, SLOT(pageCreated(WebPage *)));
+    disconnect(tab, SIGNAL(pageCreated(WebPage*)), this, SLOT(pageCreated(WebPage*)));
 
     // reconnect signals to new tabwindow
     // WARNING: Code copied from prepareNewTab method.
@@ -587,7 +587,7 @@ void TabWindow::detachTab(int index, TabWindow *toWindow)
     connect(tab, SIGNAL(titleChanged(QString)), w, SLOT(tabTitleChanged(QString)));
     connect(tab, SIGNAL(loadStarted()), w, SLOT(tabLoadStarted()));
     connect(tab, SIGNAL(loadFinished(bool)), w, SLOT(tabLoadFinished(bool)));
-    connect(tab, SIGNAL(pageCreated(WebPage *)), w, SLOT(pageCreated(WebPage *)));
+    connect(tab, SIGNAL(pageCreated(WebPage*)), w, SLOT(pageCreated(WebPage*)));
 
     w->show();
 }
