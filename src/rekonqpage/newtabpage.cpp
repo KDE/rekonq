@@ -91,7 +91,7 @@ void NewTabPage::generate(const KUrl &url)
     QWebFrame *parentFrame = qobject_cast<QWebFrame *>(parent());
     QWebPage *pg = parentFrame->page();
     WebView *view = qobject_cast<WebView *>(pg->parent());
-    WebTab *tab = qobject_cast<WebTab *>(view->parent());
+    WebTab *tab = view->parentTab();
 
     // about:preview links
     if (KUrl("about:settings").isParentOf(url))
