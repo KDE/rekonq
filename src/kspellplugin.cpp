@@ -27,6 +27,7 @@
 
 // Self Includes
 #include "kspellplugin.h"
+#include "kspellplugin.moc"
 
 // KDE Includes
 #include <KDebug>

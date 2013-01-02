@@ -114,6 +114,8 @@ private Q_SLOTS:
 
     void setFullScreen(bool);
 
+    void loadFavorite(const int);
+    
 private:
     // the new tab button
     QToolButton *_addTabButton;

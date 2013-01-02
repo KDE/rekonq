@@ -171,6 +171,31 @@ void TabWindow::init()
     _addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
+
+    // ----------------------------------------------------------------------------------------------
+    // shortcuts for quickly switching to a tab
+    QSignalMapper *tabSignalMapper = new QSignalMapper(this);
+    for (int i = 0; i < 9; i++)
+    {
+        a = new KAction(i18n("Switch to Tab %1", i+1), this);
+        a->setShortcut(KShortcut(QString("Alt+%1").arg(i+1)));
+        actionCollection()->addAction(QL1S(QString("switch_tab_" + QString::number(i+1)).toAscii()), a);
+        connect(a, SIGNAL(triggered(bool)), tabSignalMapper, SLOT(map()));
+        tabSignalMapper->setMapping(a, i);
+    }
+    connect(tabSignalMapper, SIGNAL(mapped(int)), this, SLOT(setCurrentIndex(int)));
+
+    // shortcuts for loading favorite pages
+    QSignalMapper *favoritesSignalMapper = new QSignalMapper(this);
+    for (int i = 1; i <= 9; ++i)
+    {
+        a = new KAction(i18n("Switch to Favorite Page %1", i), this);
+        a->setShortcut(KShortcut(QString("Ctrl+%1").arg(i)));
+        actionCollection()->addAction(QL1S(QString("switch_favorite_" + QString::number(i)).toAscii()), a);
+        connect(a, SIGNAL(triggered(bool)), favoritesSignalMapper, SLOT(map()));
+        favoritesSignalMapper->setMapping(a, i);
+    }
+    connect(favoritesSignalMapper, SIGNAL(mapped(int)), this, SLOT(loadFavorite(int)));
 }
 
 
@@ -671,4 +696,16 @@ void TabWindow::setFullScreen(bool makeFullScreen)
 bool TabWindow::isPrivateBrowsingWindowMode()
 {
     return _isPrivateBrowsing;
+}
+
+
+void TabWindow::loadFavorite(const int index)
+{
+    QStringList urls = ReKonfig::previewUrls();
+    if (index < 0 || index > urls.length())
+        return;
+
+    KUrl url = KUrl(urls.at(index - 1));
+    loadUrl(url);
+    currentWebWindow()->setFocus();
 }
