@@ -92,7 +92,7 @@ ELSE(QT4_FOUND)
     MESSAGE(STATUS " Qt library found...................... NO")
     MESSAGE(STATUS "")
     MESSAGE(SEND_ERROR " rekonq needs at least Qt ${QT_MIN_VERSION}. Please install it and try compiling again.")
-    MESSAGE(STATUS " Qt website is at http://qt.nokia.com")
+    MESSAGE(STATUS " Qt website is at http://qt-project.org")
     MESSAGE(STATUS "")
 ENDIF(QT4_FOUND)
 
