@@ -154,7 +154,7 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
 
 
         QList<Nepomuk::Tag> tagList = Nepomuk::Tag::allTags();
-        Q_FOREACH(Nepomuk::Tag t, tagList)
+        Q_FOREACH(const Nepomuk::Tag &t, tagList)
         {
             m_tList.append(t.label());
         }
@@ -296,6 +296,7 @@ void BookmarkWidget::addTags(QList<Nepomuk::Tag> tagList)
             m_nfoResource.addTag(tag);
         }
     }
+
     Q_FOREACH(Nepomuk::Tag tag, m_nfoResource.tags())
     {
         if (!tagList.contains(tag))
