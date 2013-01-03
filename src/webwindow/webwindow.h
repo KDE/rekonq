@@ -137,6 +137,7 @@ private Q_SLOTS:
 
     // Settings Menu slot
     void preferences();
+    void keyBindings();
 
 Q_SIGNALS:
     void titleChanged(QString);

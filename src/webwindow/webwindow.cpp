@@ -31,6 +31,7 @@
 #include "rekonq.h"
 
 #include "application.h"
+#include "tabwindow.h"
 
 #include "adblockmanager.h"
 #include "bookmarkmanager.h"
@@ -59,6 +60,7 @@
 #include <KUrl>
 #include <KToolBar>
 #include <KToggleFullScreenAction>
+#include <KShortcutsEditor>
 
 #include <QLabel>
 #include <QStyle>
@@ -207,6 +209,7 @@ void WebWindow::setupActions()
     KStandardAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
     KStandardAction::print(_tab, SLOT(printFrame()), actionCollection());
     KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
+    KStandardAction::keyBindings(this, SLOT(keyBindings()), actionCollection());
     KStandardAction::quit(rApp, SLOT(queryQuit()), actionCollection());
 
     // Bookmark Toolbar
@@ -328,6 +331,8 @@ void WebWindow::setupActions()
     a->setCheckable(true);
     actionCollection()->addAction(QL1S("web_inspector"), a);
     connect(a, SIGNAL(triggered(bool)), _tab, SLOT(toggleInspector(bool)));
+
+    _ac->readSettings();
 }
 
 
@@ -963,4 +968,35 @@ void WebWindow::keyPressEvent(QKeyEvent *kev)
     }
 
     return QWidget::keyPressEvent(kev);
+}
+
+
+void WebWindow::keyBindings()
+{
+    QPointer<KDialog> dialog = new KDialog(this);
+
+    KShortcutsEditor widget(this);
+
+    widget.addCollection(actionCollection(), i18n("web window"));
+    TabWindow *tw = rApp->tabWindow();
+    if (tw)
+    {
+        widget.addCollection(tw->actionCollection(), i18n("tab window"));
+    }
+    
+    dialog->setMainWidget(&widget);
+
+    dialog->setCaption(i18nc("@title:window", "Configure Shortcuts"));
+    dialog->setButtons(KDialog::Ok | KDialog::Cancel | KDialog::Reset);
+    dialog->setMinimumSize(700, 525);
+
+    connect(dialog, SIGNAL(resetClicked()), &widget, SLOT(allDefault()));
+    
+    if (dialog->exec() == QDialog::Accepted)
+    {
+        kDebug() << "OK";
+        widget.save();
+    }
+
+    dialog->deleteLater();
 }

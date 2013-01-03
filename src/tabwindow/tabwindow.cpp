@@ -196,6 +196,8 @@ void TabWindow::init()
         favoritesSignalMapper->setMapping(a, i);
     }
     connect(favoritesSignalMapper, SIGNAL(mapped(int)), this, SLOT(loadFavorite(int)));
+
+    _ac->readSettings();
 }
 
 
