@@ -64,7 +64,7 @@
 #include <QMovie>
 #include <QTabBar>
 #include <QToolButton>
-
+#include <QSignalMapper>
 #include <QWebHistory>
 #include <QWebSettings>
 
