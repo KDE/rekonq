@@ -36,7 +36,7 @@
 #include <KConfigDialog>
 
 
-namespace Nepomuk
+namespace Nepomuk2
 {
 class Resource;
 
@@ -50,7 +50,7 @@ class ResourceLinkDialog : public KDialog
     Q_OBJECT
 
 public:
-    explicit ResourceLinkDialog(Nepomuk::Resource& nfoResource, QWidget* parent = 0);
+    explicit ResourceLinkDialog(Nepomuk2::Resource& nfoResource, QWidget* parent = 0);
     virtual ~ResourceLinkDialog();
     void setRelatedResources();
 

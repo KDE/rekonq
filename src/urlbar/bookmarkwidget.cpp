@@ -153,8 +153,8 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
         m_tagLine->setPlaceholderText(i18n("add tags(comma separated)"));
 
 
-        QList<Nepomuk::Tag> tagList = Nepomuk::Tag::allTags();
-        Q_FOREACH(const Nepomuk::Tag &t, tagList)
+        QList<Nepomuk2::Tag> tagList = Nepomuk2::Tag::allTags();
+        Q_FOREACH(const Nepomuk2::Tag &t, tagList)
         {
             m_tList.append(t.label());
         }
@@ -287,9 +287,9 @@ void BookmarkWidget::removeBookmark()
 
 
 #ifdef HAVE_NEPOMUK
-void BookmarkWidget::addTags(QList<Nepomuk::Tag> tagList)
+void BookmarkWidget::addTags(QList<Nepomuk2::Tag> tagList)
 {
-    Q_FOREACH(const Nepomuk::Tag & tag, tagList)
+    Q_FOREACH(const Nepomuk2::Tag & tag, tagList)
     {
         if (!m_nfoResource.tags().contains(tag))
         {
@@ -297,7 +297,7 @@ void BookmarkWidget::addTags(QList<Nepomuk::Tag> tagList)
         }
     }
 
-    Q_FOREACH(Nepomuk::Tag tag, m_nfoResource.tags())
+    Q_FOREACH(Nepomuk2::Tag tag, m_nfoResource.tags())
     {
         if (!tagList.contains(tag))
         {
@@ -308,7 +308,7 @@ void BookmarkWidget::addTags(QList<Nepomuk::Tag> tagList)
 
 void BookmarkWidget::parseTags()
 {
-    QList<Nepomuk::Tag> tagList;
+    QList<Nepomuk2::Tag> tagList;
     if (m_tagLine->text().contains(','))
     {
         QString text = m_tagLine->text();
@@ -334,7 +334,7 @@ void BookmarkWidget::loadTags()
     QString list;
     if (!m_nfoResource.tags().isEmpty())
     {
-        Q_FOREACH(const Nepomuk::Tag & tag, m_nfoResource.tags())
+        Q_FOREACH(const Nepomuk2::Tag & tag, m_nfoResource.tags())
         {
             list.append(tag.genericLabel());
             list.append(",");
@@ -358,7 +358,7 @@ void BookmarkWidget::addCommentSlot()
 
 void BookmarkWidget::linkToResourceSlot()
 {
-    QPointer<Nepomuk::ResourceLinkDialog> r = new Nepomuk::ResourceLinkDialog(m_nfoResource);
+    QPointer<Nepomuk2::ResourceLinkDialog> r = new Nepomuk2::ResourceLinkDialog(m_nfoResource);
     r->exec();
     
     r->deleteLater();

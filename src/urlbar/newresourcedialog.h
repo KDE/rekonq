@@ -32,17 +32,17 @@
 #include <KDialog>
 #include <KLineEdit>
 
-#include <Nepomuk/Resource>
+#include <Nepomuk2/Resource>
 
 
-namespace Nepomuk
+namespace Nepomuk2
 {
 class NewResourceDialog : public KDialog
 {
     Q_OBJECT
 
 public:
-    explicit NewResourceDialog(int index, Nepomuk::Resource& nfoResource, QWidget* parent = 0);
+    explicit NewResourceDialog(int index, Nepomuk2::Resource& nfoResource, QWidget* parent = 0);
     virtual ~NewResourceDialog();
 
 private Q_SLOTS:
