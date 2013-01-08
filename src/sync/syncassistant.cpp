@@ -41,7 +41,7 @@
 SyncAssistant::SyncAssistant(QWidget *parent)
     : QWizard(parent)
 {
-    setWindowTitle(i18n("sync assistant"));
+    setWindowTitle(i18n("Sync Assistant"));
 
     setPage(Page_Type, new SyncHostTypeWidget(this));
     setPage(Page_FTP_Settings, new SyncFTPSettingsWidget(this));

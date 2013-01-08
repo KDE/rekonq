@@ -21,7 +21,7 @@
    <item>
     <widget class="QGroupBox" name="hostGroupBox">
      <property name="title">
-      <string>sync host type</string>
+      <string>Sync Host Type</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>

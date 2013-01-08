@@ -20,7 +20,7 @@
    <item>
     <widget class="QGroupBox" name="syncGroupBox">
      <property name="title">
-      <string>sync</string>
+      <string>Sync</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -29,7 +29,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>bookmarks</string>
+         <string>Bookmarks</string>
         </property>
        </widget>
       </item>
@@ -39,7 +39,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>history</string>
+         <string>History</string>
         </property>
        </widget>
       </item>
@@ -49,7 +49,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>passwords</string>
+         <string>Passwords</string>
         </property>
        </widget>
       </item>

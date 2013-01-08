@@ -14,7 +14,7 @@
    <item>
     <widget class="QGroupBox" name="ftpGroupBox">
      <property name="title">
-      <string>remote FTP host settings</string>
+      <string>Remote FTP Host Settings</string>
      </property>
      <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
