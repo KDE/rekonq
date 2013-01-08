@@ -34,6 +34,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// Nepomuk config include
+#include <config-nepomuk.h>
+
 // KDE Includes
 #include <KAction>
 #include <KBookmarkOwner>

@@ -49,11 +49,11 @@ ADD_DEFINITIONS(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 # ==================================================================================
 # optional nepomuk requirements
 
-FIND_PACKAGE(NepomukCore)
+MACRO_OPTIONAL_FIND_PACKAGE(Nepomuk)
+MACRO_BOOL_TO_01(Nepomuk_FOUND HAVE_NEPOMUK)
 
-IF(NepomukCore_FOUND)
-    ADD_DEFINITIONS(-DHAVE_NEPOMUK)
-ENDIF(NepomukCore_FOUND)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-nepomuk.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-nepomuk.h )
+
 
 # ==================================================================================
 # optional QCA2 & QtOAuth requirements
@@ -138,13 +138,13 @@ IF(REKONQ_CAN_BE_COMPILED)
 
     # Nepomuk
 
-    IF(NepomukCore_FOUND)
+    IF(HAVE_NEPOMUK)
         MESSAGE(STATUS " Nepomuk Libraries..................... YES")
         MESSAGE(STATUS " Rekonq will be compiled with support for bookmarks nepomuk tagging")
-    ELSE(NepomukCore_FOUND)
+    ELSE(HAVE_NEPOMUK)
         MESSAGE(STATUS " Nepomuk Libraries..................... NO")
         MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for bookmarks tagging")
-    ENDIF(NepomukCore_FOUND)
+    ENDIF(HAVE_NEPOMUK)
 
     MESSAGE(STATUS "")
 

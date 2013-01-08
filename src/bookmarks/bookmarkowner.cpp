@@ -52,8 +52,8 @@
 #include "resourcelinkdialog.h"
 
 // Nepomuk Includes
-#include <Nepomuk2/Resource>
-#include <Nepomuk2/Vocabulary/NFO>
+#include <Nepomuk/Resource>
+#include <Nepomuk/Vocabulary/NFO>
 #endif
 
 
@@ -221,9 +221,9 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
     {
         parent = BookmarkManager::self()->rootGroup();
 #ifdef HAVE_NEPOMUK
-        Nepomuk2::Resource nfoResource;
+        Nepomuk::Resource nfoResource;
         nfoResource = ((QUrl)currentUrl());
-        nfoResource.addType(Nepomuk2::Vocabulary::NFO::Website());
+        nfoResource.addType(Nepomuk::Vocabulary::NFO::Website());
         nfoResource.setLabel(currentTitle());
 #endif
     }
@@ -327,9 +327,9 @@ void BookmarkOwner::editBookmark(KBookmark bookmark)
 #ifdef HAVE_NEPOMUK
 void BookmarkOwner::fancyBookmark(KBookmark bookmark)
 {
-    Nepomuk2::Resource nfoResource = (KUrl)bookmark.url();
+    Nepomuk::Resource nfoResource = (KUrl)bookmark.url();
 
-    QPointer<Nepomuk2::ResourceLinkDialog> r = new Nepomuk2::ResourceLinkDialog(nfoResource);
+    QPointer<Nepomuk::ResourceLinkDialog> r = new Nepomuk::ResourceLinkDialog(nfoResource);
     r->exec();
 
     r->deleteLater();
@@ -373,7 +373,7 @@ bool BookmarkOwner::deleteBookmark(const KBookmark &bookmark)
 
     bmg.deleteBookmark(bookmark);
 #ifdef HAVE_NEPOMUK
-    Nepomuk2::Resource nfoResource(bookmark.url());
+    Nepomuk::Resource nfoResource(bookmark.url());
     nfoResource.remove();
 #endif
     m_manager->emitChanged(bmg);

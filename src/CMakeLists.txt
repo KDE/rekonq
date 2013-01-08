@@ -110,15 +110,13 @@ set(rekonq_KDEINIT_SRCS
 
 
 # Nepomuk OPTIONAL src files
-IF(NepomukCore_FOUND)
+IF(HAVE_NEPOMUK)
     SET( rekonq_KDEINIT_SRCS
             ${rekonq_KDEINIT_SRCS}
             urlbar/resourcelinkdialog.cpp
             urlbar/newresourcedialog.cpp
-            nepomuk/utils/simpleresourcemodel.cpp
-            nepomuk/utils/resourcemodel.cpp
     )
-ENDIF(NepomukCore_FOUND)
+ENDIF(HAVE_NEPOMUK)
 
 
 # Opera sync optional src files
@@ -182,14 +180,13 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # Nepomuk optional include directories
-IF(NepomukCore_FOUND)
+IF(HAVE_NEPOMUK)
     INCLUDE_DIRECTORIES(${SOPRANO_INCLUDE_DIR}
-                        ${NEPOMUK_CORE_INCLUDE_DIR}
+                        ${NEPOMUK_INCLUDE_DIR}
     )
 
-    FIND_PACKAGE(Soprano REQUIRED)
     INCLUDE(SopranoAddOntology)
-ENDIF(NepomukCore_FOUND)
+ENDIF(HAVE_NEPOMUK)
 
 # Opera sync optional include directories
 IF(HAVE_QCA2 AND HAVE_QTOAUTH)
@@ -234,12 +231,13 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
 )
 
 # Nepomuk optional target link libraries
-IF(NepomukCore_FOUND)
+IF(HAVE_NEPOMUK)
     TARGET_LINK_LIBRARIES(  kdeinit_rekonq
-                            ${NEPOMUK_CORE_LIBRARY}
+                            ${NEPOMUK_LIBRARIES}
+                            ${NEPOMUK_QUERY_LIBRARIES}
                             ${SOPRANO_LIBRARIES}
     )
-ENDIF(NepomukCore_FOUND)
+ENDIF(HAVE_NEPOMUK)
 
 # Opera sync optional link libraries
 IF(HAVE_QCA2 AND HAVE_QTOAUTH)
