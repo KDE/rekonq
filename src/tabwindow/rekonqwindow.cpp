@@ -348,7 +348,7 @@ bool RekonqWindow::restore(int number, bool show)
     {
         if (show)
             RekonqWindow::show();
-        return false;
+        return true;
     }
     return false;
 }
