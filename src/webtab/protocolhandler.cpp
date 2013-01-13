@@ -37,6 +37,7 @@
 #include "urlbar.h"
 
 #include "newtabpage.h"
+#include "webwindow.h"
 
 // KDE Includes
 #include <KIO/Job>
@@ -170,6 +171,12 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         NewTabPage p(frame);
         p.generate(_url);
 
+        WebWindow *ww = qobject_cast<WebWindow *>(_webwin);
+        if (ww)
+        {
+            ww->urlBar()->clear();
+            ww->urlBar()->setFocus();
+        }
         return true;
     }
 
@@ -272,9 +279,12 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         _frame->setHtml(html);
         qobject_cast<WebPage *>(_frame->page())->setIsOnRekonqPage(true);
 
-        // FIXME: how can we handle this?
-//         _webwin->urlBar()->setQUrl(_url);
-//         _webwin->view()->setFocus();
+        WebWindow *ww = qobject_cast<WebWindow *>(_webwin);
+        if (ww)
+        {
+            ww->urlBar()->setQUrl(_url);
+            ww->view()->setFocus();
+        }
 
         if (_frame->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
             return;

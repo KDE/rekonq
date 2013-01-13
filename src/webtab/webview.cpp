@@ -166,8 +166,8 @@ void WebView::setPage(WebPage *pg)
     KWebView::setPage(pg);
 
     WebWindow *w = m_parentTab->webWindow();
-    if (w && w->window())
-        pg->setWindow(w->window());
+    if (w)
+        pg->setWindow(w);
 }
 
 

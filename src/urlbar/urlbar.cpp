@@ -180,17 +180,12 @@ UrlBar::~UrlBar()
 void UrlBar::setQUrl(const QUrl& url)
 {
     if (url.scheme() == QL1S("about"))
-    {
-        clear();
-        setFocus();
-    }
-    else
-    {
-        clearFocus();
-        KLineEdit::setUrl(url);
-        setCursorPosition(0);
-        refreshFavicon();
-    }
+        return;
+
+    clearFocus();
+    KLineEdit::setUrl(url);
+    setCursorPosition(0);
+    refreshFavicon();
 }
 
 
