@@ -107,7 +107,7 @@ Nepomuk::ResourceLinkDialog::ResourceLinkDialog(Nepomuk::Resource &nfoResource, 
     enableButton(User1, false);
     setButtonText(Ok, i18n("Done"));
     setButtonText(User1, i18n("Link"));
-    setButtonText(User2, "Unlink");
+    setButtonText(User2, i18n("Unlink"));
     setMinimumSize(400, 350);
 //    d->m_resourceView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     QGridLayout *mainLayout = new QGridLayout(mainWidget());
