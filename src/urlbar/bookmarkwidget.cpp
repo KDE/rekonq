@@ -64,6 +64,8 @@
 BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
     : QMenu(parent)
     , m_bookmark(new KBookmark(bookmark))
+    , m_tagLine(new KLineEdit(this))
+    , m_commentEdit(new QPlainTextEdit(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setFixedWidth(320);
@@ -137,7 +139,6 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
         QLabel *commentLabel = new QLabel(this);
         commentLabel->setText(i18n("Describe:"));
         commentLabel->setAlignment(Qt::AlignCenter);
-        m_commentEdit = new QPlainTextEdit(this);
         if (!m_nfoResource.description().isEmpty())
         {
             m_commentEdit->setPlainText(m_nfoResource.description());
@@ -149,7 +150,6 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
         QLabel *tagLabel = new QLabel(this);
         tagLabel->setText(i18n("Tags:"));
         tagLabel->setAlignment(Qt::AlignLeft);
-        m_tagLine = new KLineEdit(this);
         m_tagLine->setPlaceholderText(i18n("add tags(comma separated)"));
 
 

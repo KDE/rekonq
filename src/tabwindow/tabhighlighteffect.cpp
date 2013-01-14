@@ -89,7 +89,7 @@ bool TabHighlightEffect::event(QEvent* event)
     {
         QDynamicPropertyChangeEvent *pChangeEv = dynamic_cast<QDynamicPropertyChangeEvent*>(event);
 
-        if (pChangeEv->propertyName().startsWith(prep))
+        if (pChangeEv && pChangeEv->propertyName().startsWith(prep))
         {
             update();
             return true;
