@@ -332,7 +332,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     {
         clearFocus();
         if (!(_tab->url().protocol() == QL1S("about")))
-            setText(_tab->url().url());
+            setText(_tab->url().prettyUrl());
         event->accept();
     }
 
