@@ -322,7 +322,7 @@ void WebTab::loadFinished()
     if (page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return;
 
-    QString pageTitle = (page() && page()->isOnRekonqPage()) ? url().url() : view()->title();
+    QString pageTitle = (page() && page()->isOnRekonqPage()) ? url().prettyUrl() : view()->title();
     HistoryManager::self()->addHistoryEntry(url(), pageTitle);
 }
 

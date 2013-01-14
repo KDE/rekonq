@@ -146,7 +146,7 @@ KUrl ListItem::url()
 
 QString ListItem::text()
 {
-    return m_url.url();
+    return m_url.prettyUrl();
 }
 
 
