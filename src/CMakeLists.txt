@@ -100,6 +100,7 @@ set(rekonq_KDEINIT_SRCS
     webtab/webtab.cpp
     #----------------------------------------
     webwindow/findbar.cpp
+    webwindow/maintoolbar.cpp
     webwindow/rekonqfactory.cpp
     webwindow/rekonqmenu.cpp
     webwindow/webwindow.cpp

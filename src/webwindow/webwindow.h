@@ -139,6 +139,10 @@ private Q_SLOTS:
     void preferences();
     void keyBindings();
 
+    // Main ToolBar Settings slots
+    void setupMainToolBar();
+    void showToolbarEditor();
+
 Q_SIGNALS:
     void titleChanged(QString);
 
@@ -159,7 +163,7 @@ private:
     WebTab *_tab;
     UrlBar *_bar;
 
-    KToolBar *_mainToolBar;
+    QWeakPointer<KToolBar> _mainToolBar;
     QWeakPointer<BookmarkToolBar> _bookmarksBar;
 
     FindBar *m_findBar;

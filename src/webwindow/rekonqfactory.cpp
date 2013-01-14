@@ -27,6 +27,7 @@
 #include "rekonqfactory.h"
 
 #include "bookmarkstoolbar.h"
+#include "maintoolbar.h"
 #include "rekonqmenu.h"
 
 #include <KActionCollection>
@@ -129,7 +130,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
         }
         else
         {
-            KToolBar *b = new KToolBar(parent, false , false);
+            MainToolBar *b = new MainToolBar(parent);
             fillToolbar(b, node);
             return b;
         }
@@ -181,8 +182,51 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
 }
 
 
+void RekonqFactory::updateWidget(QWidget *widg, const QString &name)
+{
+    QDomDocument document("rekonqui.rc");
+    QString xmlFilePath = KStandardDirs::locate("data", "rekonq/rekonqui.rc");
+
+    if (!readDocument(document, xmlFilePath))
+        return;
+
+    // Toolbars ----------------------------------------------------------------------
+    QDomNodeList elementToolbarList = document.elementsByTagName(QL1S("ToolBar"));
+    if (elementToolbarList.isEmpty())
+    {
+        kDebug() << "ELEMENT TOOLBAR LIST EMPTY. RETURNING NULL";
+        return;
+    }
+
+    for (unsigned int i = 0; i < elementToolbarList.length(); ++i)
+    {
+        QDomNode node = elementToolbarList.at(i);
+        QDomElement element = node.toElement();
+
+        if (element.attribute("name") != name)
+            continue;
+
+        if (element.attribute("deleted").toLower() == "true")
+        {
+            return;
+        }
+
+        if (name == QL1S("mainToolBar"))
+        {
+            fillToolbar(qobject_cast<MainToolBar *>(widg), node);
+            return;
+        }
+    }
+
+    kDebug() << "NO WIDGET RETURNED";
+    return;
+}
+
+
 void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node)
 {
+    b->clear();
+    
     QDomElement element = node.toElement();
 
     if (element.hasAttribute("iconSize"))

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2003 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,29 +24,30 @@
 * ============================================================ */
 
 
-#ifndef REKONQ_FACTORY_H
-#define REKONQ_FACTORY_H
+#ifndef MAIN_TOOLBAR_H
+#define MAIN_TOOLBAR_H
+
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-class KMenu;
-class KToolBar;
+// KDE Includes
+#include <KToolBar>
 
-class QDomNode;
-class QString;
-class QWidget;
+// Forward Declarations
+class QPoint;
 
 
-namespace RekonqFactory
+class MainToolBar : public KToolBar
 {
-QWidget *createWidget(const QString &name, QWidget *parent);
+    Q_OBJECT
 
-void updateWidget(QWidget *widg, const QString &name);
+public:
+    explicit MainToolBar(QWidget *parent = 0);
 
-void fillToolbar(KToolBar *, QDomNode);
-void fillMenu(KMenu *, QDomNode);
+private Q_SLOTS:
+    void showCustomContextMenu(QPoint);
 
 };
 
-#endif
+#endif // MAIN_TOOLBAR_H

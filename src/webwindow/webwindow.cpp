@@ -53,6 +53,7 @@
 
 // KDE Includes
 #include <KIO/Job>
+#include <KEditToolBar>
 #include <KFileDialog>
 #include <KJobUiDelegate>
 #include <KMimeTypeTrader>
@@ -76,7 +77,6 @@ WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
     : QWidget(parent)
     , _tab(new WebTab(this, isPrivateBrowsing))
     , _bar(new UrlBar(_tab))
-    , _mainToolBar(0)
     , m_findBar(new FindBar(this))
     , m_loadStopReloadAction(0)
     , m_rekonqMenu(0)
@@ -101,7 +101,7 @@ WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
 
     // main toolbar
     _mainToolBar = qobject_cast<KToolBar *>(RekonqFactory::createWidget(QL1S("mainToolBar"), this));
-    l->addWidget(_mainToolBar);
+    l->addWidget(_mainToolBar.data());
 
     if (ReKonfig::showBookmarksToolbar())
     {
@@ -211,6 +211,11 @@ void WebWindow::setupActions()
     KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
     KStandardAction::keyBindings(this, SLOT(keyBindings()), actionCollection());
     KStandardAction::quit(rApp, SLOT(queryQuit()), actionCollection());
+
+    // Configure Main Toolbar
+    a = new KAction(KIcon("configure-toolbars"), i18n("Configure Main ToolBar"), this);
+    actionCollection()->addAction(QL1S("configure_main_toolbar"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(showToolbarEditor()));
 
     // Bookmark Toolbar
     a = new KAction(KIcon("bookmark-toolbar"), i18n("Bookmarks Toolbar"), this);
@@ -821,12 +826,12 @@ void WebWindow::setWidgetsHidden(bool hide)
         }
 
         // hide main toolbar
-        _mainToolBar->hide();
+        _mainToolBar.data()->hide();
     }
     else
     {
         // show main toolbar
-        _mainToolBar->show();
+        _mainToolBar.data()->show();
 
         // restore state of windowed mode
         if (!_bookmarksBar.isNull() && bookmarksToolBarFlag)
@@ -999,4 +1004,24 @@ void WebWindow::keyBindings()
     }
 
     dialog->deleteLater();
+}
+
+
+// Main Toolbar methods ----------
+
+
+void WebWindow::setupMainToolBar()
+{
+    RekonqFactory::updateWidget(_mainToolBar.data(), QL1S("mainToolBar"));
+}
+
+
+void WebWindow::showToolbarEditor()
+{
+    QPointer<KEditToolBar> ed = new KEditToolBar(actionCollection(), this);
+    ed->setResourceFile( "rekonqui.rc" );
+    connect(ed, SIGNAL(newToolBarConfig()),this, SLOT(setupMainToolBar()));
+
+    ed->exec();
+    ed->deleteLater();
 }
