@@ -587,10 +587,10 @@ void BookmarkToolBar::startDrag()
         {
             drag->setPixmap(KIcon(bookmark.icon()).pixmap(24, 24));
         }
-//         else
-//         {
-//             drag->setPixmap(rApp->iconManager()->iconForUrl(action->bookmark().url()).pixmap(24, 24));
-//         }
+        else
+        {
+            drag->setPixmap(IconManager::self()->iconForUrl(action->bookmark().url()).pixmap(24, 24));
+        }
 
         drag->start(Qt::MoveAction);
         connect(drag, SIGNAL(destroyed()), this, SLOT(dragDestroyed()));
