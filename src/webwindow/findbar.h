@@ -70,7 +70,6 @@ Q_SIGNALS:
 
 private:
     KLineEdit *m_lineEdit;
-    QTimer *m_hideTimer;
     QCheckBox *m_matchCase;
     QCheckBox *m_highlightAll;
 

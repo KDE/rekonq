@@ -43,8 +43,6 @@
 #include <KColorScheme>
 
 // Qt Includes
-#include <QTimer>
-
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QKeyEvent>
@@ -56,7 +54,6 @@
 FindBar::FindBar(QWidget *parent)
     : QWidget(parent)
     , m_lineEdit(new KLineEdit(this))
-    , m_hideTimer(new QTimer(this))
     , m_matchCase(new QCheckBox(i18n("&Match case"), this))
     , m_highlightAll(new QCheckBox(i18n("&Highlight all"), this))
 {
@@ -72,10 +69,6 @@ FindBar::FindBar(QWidget *parent)
     connect(hideButton, SIGNAL(clicked()), this, SLOT(hide()));
     layout->addWidget(hideButton);
     layout->setAlignment(hideButton, Qt::AlignLeft | Qt::AlignTop);
-
-    // hide timer
-    connect(m_hideTimer, SIGNAL(timeout()), this, SLOT(hide()));
-    m_hideTimer->setSingleShot(true);
 
     // label
     QLabel *label = new QLabel(i18n("Find:"));
@@ -184,15 +177,12 @@ void FindBar::setVisible(bool visible)
             emit searchString(m_lineEdit->text());
         }
 
-        m_hideTimer->start(20000);
-
         m_lineEdit->setFocus();
         m_lineEdit->selectAll();
     }
     else
     {
         updateHighlight();
-        m_hideTimer->stop();
     }
 }
 
@@ -218,7 +208,6 @@ void FindBar::notifyMatch(bool match)
         }
     }
     m_lineEdit->setPalette(p);
-    m_hideTimer->start(60000);
 }
 
 
