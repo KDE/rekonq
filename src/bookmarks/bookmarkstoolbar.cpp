@@ -543,17 +543,30 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
             int distance = (destPos - m_startDragPos).manhattanLength();
             KBookmarkActionInterface *action = dynamic_cast<KBookmarkActionInterface *>(actionAt(destPos));
 
-            if (action && action->bookmark().isGroup())
+            if (action)
             {
-                if (mouseEvent->button() == Qt::MidButton)
+                if (action->bookmark().isGroup())
                 {
-                    BookmarkManager::self()->owner()->openBookmarkFolder(action->bookmark());
+                    if (mouseEvent->button() == Qt::MidButton)
+                    {
+                        BookmarkManager::self()->owner()->loadBookmarkFolder(action->bookmark());
+                    }
+                    else if (distance < QApplication::startDragDistance())
+                    {
+                        KBookmarkActionMenu *menu = dynamic_cast<KBookmarkActionMenu *>(actionAt(m_startDragPos));
+                        QPoint actionPos = mapToGlobal(widgetForAction(menu)->pos());
+                        menu->menu()->popup(QPoint(actionPos.x(), actionPos.y() + widgetForAction(menu)->height()));
+                    }
                 }
-                else if (distance < QApplication::startDragDistance())
+                else
                 {
-                    KBookmarkActionMenu *menu = dynamic_cast<KBookmarkActionMenu *>(actionAt(m_startDragPos));
-                    QPoint actionPos = mapToGlobal(widgetForAction(menu)->pos());
-                    menu->menu()->popup(QPoint(actionPos.x(), actionPos.y() + widgetForAction(menu)->height()));
+                    if (!action->bookmark().isNull() && !action->bookmark().isSeparator())
+                    {
+                        if (mouseEvent->button() == Qt::MidButton)
+                        {
+                            BookmarkManager::self()->owner()->loadBookmarkInNewTab(action->bookmark());
+                        }
+                    }
                 }
             }
         }

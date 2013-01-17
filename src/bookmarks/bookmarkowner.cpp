@@ -71,16 +71,16 @@ KAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAc
     {
     case OPEN:
         return createAction(i18n("Open"), "tab-new",
-                            i18n("Open bookmark in current tab"), SLOT(openBookmark(KBookmark)), bookmark);
+                            i18n("Open bookmark in current tab"), SLOT(loadBookmark(KBookmark)), bookmark);
     case OPEN_IN_TAB:
         return createAction(i18n("Open in New Tab"), "tab-new",
-                            i18n("Open bookmark in new tab"), SLOT(openBookmarkInNewTab(KBookmark)), bookmark);
+                            i18n("Open bookmark in new tab"), SLOT(loadBookmarkInNewTab(KBookmark)), bookmark);
     case OPEN_IN_WINDOW:
         return createAction(i18n("Open in New Window"), "window-new",
-                            i18n("Open bookmark in new window"), SLOT(openBookmarkInNewWindow(KBookmark)), bookmark);
+                            i18n("Open bookmark in new window"), SLOT(loadBookmarkInNewWindow(KBookmark)), bookmark);
     case OPEN_FOLDER:
         return createAction(i18n("Open Folder in Tabs"), "tab-new",
-                            i18n("Open all the bookmarks in folder in tabs"), SLOT(openBookmarkFolder(KBookmark)), bookmark);
+                            i18n("Open all the bookmarks in folder in tabs"), SLOT(loadBookmarkFolder(KBookmark)), bookmark);
     case BOOKMARK_PAGE:
         return createAction(i18n("Add Bookmark"), "bookmark-new",
                             i18n("Bookmark current page"), SLOT(bookmarkCurrentPage(KBookmark)), bookmark);
@@ -152,9 +152,9 @@ void BookmarkOwner::openBookmark(const KBookmark &bookmark,
                                  Qt::KeyboardModifiers keyboardModifiers)
 {
     if (keyboardModifiers & Qt::ControlModifier || mouseButtons & Qt::MidButton)
-        openBookmarkInNewTab(bookmark);
+        loadBookmarkInNewTab(bookmark);
     else
-        openBookmark(bookmark);
+        loadBookmark(bookmark);
 }
 
 
@@ -181,25 +181,25 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bkGoup)
 }
 
 
-void BookmarkOwner::openBookmark(const KBookmark &bookmark)
+void BookmarkOwner::loadBookmark(const KBookmark &bookmark)
 {
     emit openUrl(bookmark.url(), Rekonq::CurrentTab);
 }
 
 
-void BookmarkOwner::openBookmarkInNewTab(const KBookmark &bookmark)
+void BookmarkOwner::loadBookmarkInNewTab(const KBookmark &bookmark)
 {
     emit openUrl(bookmark.url(), Rekonq::NewTab);
 }
 
 
-void BookmarkOwner::openBookmarkInNewWindow(const KBookmark &bookmark)
+void BookmarkOwner::loadBookmarkInNewWindow(const KBookmark &bookmark)
 {
     emit openUrl(bookmark.url(), Rekonq::NewWindow);
 }
 
 
-void BookmarkOwner::openBookmarkFolder(const KBookmark &bookmark)
+void BookmarkOwner::loadBookmarkFolder(const KBookmark &bookmark)
 {
     Q_ASSERT(bookmark.isGroup());
     openFolderinTabs(bookmark.toGroup());

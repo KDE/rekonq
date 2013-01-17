@@ -102,10 +102,10 @@ public:
     // @}
 
 public Q_SLOTS:
-    void openBookmark(const KBookmark &bookmark);
-    void openBookmarkInNewTab(const KBookmark &bookmark);
-    void openBookmarkInNewWindow(const KBookmark &bookmark);
-    void openBookmarkFolder(const KBookmark &bookmark);
+    void loadBookmark(const KBookmark &bookmark);
+    void loadBookmarkInNewTab(const KBookmark &bookmark);
+    void loadBookmarkInNewWindow(const KBookmark &bookmark);
+    void loadBookmarkFolder(const KBookmark &bookmark);
 
     KBookmark bookmarkCurrentPage(const KBookmark &bookmark = KBookmark());
     KBookmarkGroup newBookmarkFolder(const KBookmark &bookmark = KBookmark(), const QString &name = QString());
