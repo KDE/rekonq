@@ -453,7 +453,7 @@ QVariant HistoryTreeModel::data(const QModelIndex &index, int role) const
                 QDate date = idx.data(HistoryModel::DateRole).toDate();
                 if (date == QDate::currentDate())
                     return i18n("Earlier Today");
-                return date.toString(QL1S("dddd, MMMM d, yyyy"));
+                return date.toString(Qt::DefaultLocaleLongDate);
             }
             if (index.column() == 1)
             {
