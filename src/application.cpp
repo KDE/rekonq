@@ -447,6 +447,12 @@ TabWindowList Application::tabWindowList()
 }
 
 
+WebAppList Application::webAppList()
+{
+    return m_webApps;
+}
+
+
 bool Application::eventFilter(QObject* watched, QEvent* event)
 {
     // Track which window was activated most recently to prefer it on window choosing

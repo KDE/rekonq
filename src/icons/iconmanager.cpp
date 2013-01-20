@@ -74,7 +74,7 @@ IconManager::IconManager(QObject *parent)
 KIcon IconManager::iconForUrl(const KUrl &url)
 {
     // first things first.. avoid infinite loop at startup
-    if (url.isEmpty() || rApp->tabWindowList().isEmpty())
+    if (url.isEmpty() || (rApp->tabWindowList().isEmpty() && rApp->webAppList().isEmpty()))
         return KIcon("text-html");
 
     QByteArray encodedUrl = url.toEncoded();

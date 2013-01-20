@@ -70,6 +70,8 @@ public:
     TabWindow *tabWindow();
     TabWindowList tabWindowList();
 
+    WebAppList webAppList();
+    
     void bookmarksToolbarToggled(bool);
 
 public Q_SLOTS:
