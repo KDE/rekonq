@@ -123,6 +123,7 @@ public:
     bool historyContains(const QString &url) const;
     void addHistoryEntry(const KUrl &url, const QString &title);
     void removeHistoryEntry(const KUrl &url, const QString &title = QString());
+    void removeHistoryLocationEntry(int value);
 
     QList<HistoryItem> find(const QString &text);
 

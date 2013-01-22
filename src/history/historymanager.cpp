@@ -244,6 +244,18 @@ void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
 }
 
 
+void HistoryManager::removeHistoryLocationEntry(int value)
+{
+    if (value < 0)
+        return;
+    
+    HistoryItem item = m_history.at(value);
+    m_lastSavedUrl.clear();
+    m_history.removeOne(item);
+    emit entryRemoved(item);
+}
+
+
 QList<HistoryItem> HistoryManager::find(const QString &text)
 {
     QList<HistoryItem> list;

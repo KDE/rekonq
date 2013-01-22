@@ -191,7 +191,7 @@ input {
 }
 
 .button img {
-    display: inline-block;
+    display: inline;
     width: 16px;
     height: 16px;
     opacity: 0;
@@ -277,9 +277,36 @@ input {
     padding: 5px 10px;
 }
 
+
+.greytext {
+    color: gray;
+    display: inline;
+}
+
 .historyfolder {
     margin-left: 4em;
     margin-bottom: 1em;
+}
+
+.historyitem {
+    display: inline;
+}
+
+.historyitem .button img:hover {
+    opacity: 1;
+}
+
+.historyitem:hover .preview {
+    opacity: 0.6;
+}
+
+.historyitem:hover .button img {
+    opacity: 0.4;
+    -webkit-transition: opacity 0.8s ease-out;
+}
+
+.historyitem .button img:hover {
+    opacity: 1;
 }
 
 
@@ -319,6 +346,8 @@ elements creation, cloning one of these.
             <span></span>
         </a>
     </div>
+
+<!-- The thumbnail class, used in the favorites page -->
     <div class="thumbnail">
         <div class ="thumb-inner">
             <a>
@@ -333,6 +362,16 @@ elements creation, cloning one of these.
             </div>
         </div>
     </div>
+
+<!-- An history item -->
+    <div class="historyitem">
+        <div class="greytext"></div>
+        &nbsp;&nbsp;<img />
+        &nbsp;&nbsp;<a></a>
+        <a class="button"><img /></a>
+    </div>
+
+<!-- some spare elements -->
     <h3></h3>
     <h4></h4>
     <a></a>

@@ -239,6 +239,13 @@ void NewTabPage::generate(const KUrl &url)
             return;
         }
 
+        if (url.fileName() == QL1S("remove"))
+        {
+            int value = url.queryItemValue(QL1S("location")).toInt();
+            HistoryManager::self()->removeHistoryLocationEntry(value);
+            loadPageForUrl(KUrl("about:history"));
+            return;
+        }
     }
 
     // about:downloads links
@@ -499,31 +506,42 @@ void NewTabPage::historyPage(const QString & filter)
             m_root.lastChild().setPlainText(index.data().toString());
 
             m_root.appendInside(markup(QL1S(".historyfolder")));
-            QWebElement little = m_root.lastChild();
+            QWebElement historyFolderElement = m_root.lastChild();
             for (int j = 0; j < proxy->rowCount(index); ++j)
             {
                 QModelIndex son = proxy->index(j, 0, index);
                 KUrl u = son.data(HistoryModel::UrlStringRole).toUrl();
 
-                little.appendInside(son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm"));
-                little.appendInside(QL1S("&nbsp;&nbsp;"));
-                little.appendInside(markup(QL1S("img")));
-                little.lastChild().setAttribute(QL1S("src"), IconManager::self()->iconPathForUrl(u));
-                little.lastChild().setAttribute(QL1S("width"), QL1S("16"));
-                little.lastChild().setAttribute(QL1S("height"), QL1S("16"));
-                little.appendInside(QL1S("&nbsp;&nbsp;"));
-                little.appendInside(markup(QL1S("a")));
-                little.lastChild().setAttribute(QL1S("href") , u.url());
+                historyFolderElement.appendInside(markup(QL1S(".historyitem")));
+                QWebElement item = historyFolderElement.lastChild();
 
+                item.findFirst(QL1S(".greytext")).setPlainText( son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm") );
+
+                QWebElement iconElement = item.findFirst(QL1S("img"));
+                iconElement.setAttribute(QL1S("src"), IconManager::self()->iconPathForUrl(u));
+                iconElement.setAttribute(QL1S("width"), QL1S("16"));
+                iconElement.setAttribute(QL1S("height"), QL1S("16"));
+
+                QWebElement linkElement = item.findFirst(QL1S("a"));
+                linkElement.setAttribute(QL1S("href") , u.url());
                 QString shownUrl = son.data().toString();
                 if (shownUrl.length() > maxTextSize)
                 {
                     shownUrl.truncate(truncateSize);
                     shownUrl += QL1S("...");
                 }
-                little.lastChild().appendInside(shownUrl);
+                linkElement.appendInside(shownUrl);
 
-                little.appendInside(QL1S("<br />"));
+                QWebElement removeElement = item.findFirst(QL1S(".button img"));
+                removeElement.setAttribute(QL1S("src"), QL1S("file:///") +
+                                                        KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
+
+                QWebElement removeLinkElement = item.findFirst(QL1S(".button"));
+
+                int histLoc = HistoryManager::self()->historyFilterModel()->historyLocation(u.url());
+                removeLinkElement.setAttribute(QL1S("href"), QL1S("about:history/remove?location=") + QString::number(histLoc));
+
+                historyFolderElement.appendInside(QL1S("<br />"));
             }
         }
         i++;
