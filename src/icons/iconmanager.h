@@ -64,9 +64,6 @@ public:
 
     void saveDesktopIconForUrl(const KUrl &u);
 
-Q_SIGNALS:
-    void iconChanged();
-
 private:
     IconManager(QObject *parent = 0);
 

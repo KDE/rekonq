@@ -177,9 +177,6 @@ WebPage::WebPage(QWidget *parent, bool isPrivateBrowsing)
 
     // protocol handler signals
     connect(&_protHandler, SIGNAL(downloadUrl(KUrl)), this, SLOT(downloadUrl(KUrl)));
-
-    // TODO: Remove me and implement an icon retriever for each tab
-    connect(IconManager::self(), SIGNAL(iconChanged()), mainFrame(), SIGNAL(iconChanged()));
 }
 
 
