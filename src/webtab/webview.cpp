@@ -249,11 +249,12 @@ bool WebView::popupSpellMenu(QContextMenuEvent *event)
                 // replace word
                 QString script(QL1S("this.value=this.value.substring(0,"));
                 script += QString::number(s1);
-                script += QL1S(") + \"");
+                script += QL1S(") + \'");
                 script +=  w;
-                script += QL1C('\\') + QL1S("this.value.substring(");
+                script += QL1C('\'') + QL1S("+this.value.substring(");
                 script += QString::number(s2);
                 script += QL1C(')');
+                
                 element.evaluateJavaScript(script);
                 // reposition cursor
                 element.evaluateJavaScript("this.selectionEnd=this.selectionStart=" + QString::number(selStart) + QL1C(';'));
