@@ -673,7 +673,7 @@ QString WebWindow::title() const
         if (url().isLocalFile())
             return url().fileName();
         else
-            return QL1S("rekonq");
+            return url().prettyUrl();
     }
 
     return t;
