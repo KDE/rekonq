@@ -27,6 +27,7 @@
 // Self Includes
 #include "rekonqwindow.h"
 #include "rekonqwindow.moc"
+#include <rekonq.h>
 
 // KDE Includes
 #include <KApplication>
@@ -379,6 +380,8 @@ int RekonqWindow::addTab(QWidget *page, const QIcon &icon, const QString &label)
 
 int RekonqWindow::insertTab(int index, QWidget *page, const QString &label)
 {
+    if (! ReKonfig::openNewTabsNextToCurrent())
+        index = -1;
     setUpdatesEnabled(false);
     int i = KTabWidget::insertTab(index, page, label);
     setUpdatesEnabled(true);
@@ -389,6 +392,8 @@ int RekonqWindow::insertTab(int index, QWidget *page, const QString &label)
 
 int RekonqWindow::insertTab(int index, QWidget *page, const QIcon &icon, const QString &label)
 {
+    if (! ReKonfig::openNewTabsNextToCurrent())
+        index = -1;
     setUpdatesEnabled(false);
     int i = KTabWidget::insertTab(index, page, icon, label);
     setUpdatesEnabled(true);

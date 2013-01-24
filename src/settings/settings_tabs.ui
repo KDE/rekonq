@@ -215,6 +215,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_openNewTabsNextToCurrent">
+        <property name="text">
+         <string>Open new tabs next to current tab</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
