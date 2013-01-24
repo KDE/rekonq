@@ -247,6 +247,7 @@ WebWindow *TabWindow::prepareNewTab(WebPage *page)
     WebWindow *tab = new WebWindow(this, _isPrivateBrowsing, page);
 
     connect(tab, SIGNAL(titleChanged(QString)), this, SLOT(tabTitleChanged(QString)));
+    connect(tab, SIGNAL(iconChanged()), this, SLOT(tabIconChanged()));
 
     connect(tab, SIGNAL(loadStarted()), this, SLOT(tabLoadStarted()));
     connect(tab, SIGNAL(loadFinished(bool)), this, SLOT(tabLoadFinished(bool)));
@@ -406,6 +407,33 @@ void TabWindow::tabTitleChanged(const QString &title)
     {
         setWindowTitle(tabTitle + QL1S(" - rekonq"));
     }
+}
+
+
+void TabWindow::tabIconChanged()
+{
+    WebWindow *tab = qobject_cast<WebWindow *>(sender());
+    if (!tab)
+        return;
+
+    if (tab->isLoading())
+        return;
+
+    int index = indexOf(tab);
+
+    if (-1 == index)
+        return;
+
+    QLabel *label = qobject_cast<QLabel* >(tabBar()->tabButton(index, QTabBar::LeftSide));
+    if (!label)
+    {
+        label = new QLabel(this);
+        tabBar()->setTabButton(index, QTabBar::LeftSide, 0);
+        tabBar()->setTabButton(index, QTabBar::LeftSide, label);
+    }
+
+    KIcon ic = IconManager::self()->iconForUrl(tab->url());
+    label->setPixmap(ic.pixmap(16, 16));
 }
 
 
@@ -604,6 +632,7 @@ void TabWindow::detachTab(int index, TabWindow *toWindow)
     // WARNING: Code copied from prepareNewTab method.
     // Any new changes there should be applied here...
     disconnect(tab, SIGNAL(titleChanged(QString)), this, SLOT(tabTitleChanged(QString)));
+    disconnect(tab, SIGNAL(iconChanged()), this, SLOT(tabIconChanged()));
     disconnect(tab, SIGNAL(loadStarted()), this, SLOT(tabLoadStarted()));
     disconnect(tab, SIGNAL(loadFinished(bool)), this, SLOT(tabLoadFinished(bool)));
     disconnect(tab, SIGNAL(pageCreated(WebPage*)), this, SLOT(pageCreated(WebPage*)));
@@ -612,6 +641,7 @@ void TabWindow::detachTab(int index, TabWindow *toWindow)
     // WARNING: Code copied from prepareNewTab method.
     // Any new changes there should be applied here...
     connect(tab, SIGNAL(titleChanged(QString)), w, SLOT(tabTitleChanged(QString)));
+    connect(tab, SIGNAL(iconChanged()), w, SLOT(tabIconChanged()));
     connect(tab, SIGNAL(loadStarted()), w, SLOT(tabLoadStarted()));
     connect(tab, SIGNAL(loadFinished(bool)), w, SLOT(tabLoadFinished(bool)));
     connect(tab, SIGNAL(pageCreated(WebPage*)), w, SLOT(pageCreated(WebPage*)));

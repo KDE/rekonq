@@ -115,27 +115,15 @@ void IconManager::provideIcon(QWebFrame *mFrame, const KUrl &url, bool notify)
 {
     // provide icons just for http/https sites
     if (!url.scheme().startsWith(QL1S("http")))
-    {
-        if (notify)
-            emit iconChanged();
         return;
-    }
 
     // do not load new icons in private browsing..
     if (mFrame->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-    {
-        if (notify)
-            emit iconChanged();
         return;
-    }
 
     // check if icon exists
     if (!favIconForUrl(url).isEmpty())
-    {
-        if (notify)
-            emit iconChanged();
         return;
-    }
 
     // the simplest way..
     const QString rootUrlString = url.scheme() + QL1S("://") + url.host();
@@ -165,7 +153,7 @@ void IconManager::provideIcon(QWebFrame *mFrame, const KUrl &url, bool notify)
 
     IconDownloader *id = new IconDownloader(faviconUrl, destUrl, this);
     if (notify)
-        connect(id, SIGNAL(iconReady()), this, SIGNAL(iconChanged()));
+        connect(id, SIGNAL(iconReady()), mFrame, SIGNAL(iconChanged()));
 }
 
 

@@ -122,6 +122,7 @@ WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
 
     // things changed signals
     connect(_tab->view(), SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
+    connect(_tab->view(), SIGNAL(iconChanged()), this, SIGNAL(iconChanged()));
 
     // check view signals
     connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(webLoadStarted()));
@@ -673,7 +674,7 @@ QString WebWindow::title() const
         if (url().isLocalFile())
             return url().fileName();
         else
-            return QL1S("rekonq");
+            return url().prettyUrl();
     }
 
     return t;

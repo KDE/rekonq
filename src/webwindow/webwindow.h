@@ -145,7 +145,8 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void titleChanged(QString);
-
+    void iconChanged();
+    
     void loadStarted();
     void loadProgress(int);
     void loadFinished(bool);
