@@ -85,10 +85,8 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
     m_splitter->addWidget(view());
     view()->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    // NOTE: this line of code moves the web inspector in the usual position,
-    // BUT my wife prefers it on the right part. Following hint about.
-    // Let's hear people comments about...
-//    m_splitter->setOrientation(Qt::Vertical);
+    // NOTE: setting web inspector vertical/horizontal
+    m_splitter->setOrientation(Qt::Vertical);
 
     l->addWidget(m_splitter);
 
