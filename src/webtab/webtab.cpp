@@ -283,10 +283,10 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
     {
         // Ok, part exists. Insert & show it..
         m_part = p;
-        qobject_cast<QVBoxLayout *>(layout())->insertWidget(1, p->widget());
+        qobject_cast<QVBoxLayout *>(layout())->insertWidget(0, p->widget());
         p->openUrl(u);
         view()->hide();
-
+        m_splitter->hide();
         emit titleChanged(u.url());
         return;
     }
@@ -296,6 +296,7 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
 
     // Part NO more exists. Let's clean up from webtab
     view()->show();
+    m_splitter->show();
     qobject_cast<QVBoxLayout *>(layout())->removeWidget(m_part->widget());
     delete m_part;
     m_part = 0;
