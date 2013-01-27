@@ -71,7 +71,8 @@ public:
     }
 
     KUrl url();
-
+    QString title();
+    
     bool hasRSSInfo();
 
     void createPreviewSelectorBar(int index);
@@ -107,8 +108,17 @@ private Q_SLOTS:
     void toggleInspector(bool);
 
 Q_SIGNALS:
-    void loadProgressing();
+    // NOTE: These signals are here to NOT expose webview directly and let
+    // others use webtab instead. This will give us the ability to generate
+    // our own signals when needed.
+    void iconChanged();
+    void loadFinished(bool);
+    void loadProgress (int);
+    void loadStarted();
+    void urlChanged(const QUrl &);
     void titleChanged(const QString &);
+
+    void loadProgressing();
 
     void triggerPartPrint();
 

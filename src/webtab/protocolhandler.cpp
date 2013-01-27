@@ -283,7 +283,7 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         if (ww)
         {
             ww->urlBar()->setQUrl(_url);
-            ww->view()->setFocus();
+            ww->tabView()->setFocus();
         }
 
         if (_frame->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))

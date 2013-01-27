@@ -73,7 +73,7 @@ public:
     QString title() const;
 
     UrlBar *urlBar();
-    WebTab *view();
+    WebTab *tabView();
 
     QPixmap tabPreview(int width, int height);
 

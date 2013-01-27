@@ -121,13 +121,13 @@ WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
     connect(rApp, SIGNAL(toggleBookmarksToolbar(bool)), this, SLOT(toggleBookmarksToolbar(bool)));
 
     // things changed signals
-    connect(_tab->view(), SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
-    connect(_tab->view(), SIGNAL(iconChanged()), this, SIGNAL(iconChanged()));
+    connect(_tab, SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
+    connect(_tab, SIGNAL(iconChanged()), this, SIGNAL(iconChanged()));
 
     // check view signals
-    connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(webLoadStarted()));
-    connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(webLoadFinished(bool)));
-    connect(_tab->view(), SIGNAL(loadProgress(int)), this, SLOT(webLoadProgress(int)));
+    connect(_tab, SIGNAL(loadStarted()), this, SLOT(webLoadStarted()));
+    connect(_tab, SIGNAL(loadFinished(bool)), this, SLOT(webLoadFinished(bool)));
+    connect(_tab, SIGNAL(loadProgress(int)), this, SLOT(webLoadProgress(int)));
 
     connect(_bar, SIGNAL(focusIn()), this, SLOT(urlbarFocused()));
 
@@ -668,7 +668,7 @@ KUrl WebWindow::url() const
 
 QString WebWindow::title() const
 {
-    QString t = _tab->view()->title();
+    QString t = _tab->title();
     if (t.isEmpty())
     {
         if (url().isLocalFile())
@@ -687,7 +687,7 @@ UrlBar *WebWindow::urlBar()
 }
 
 
-WebTab *WebWindow::view()
+WebTab *WebWindow::tabView()
 {
     return _tab;
 }

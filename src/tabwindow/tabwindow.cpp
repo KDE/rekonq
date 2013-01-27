@@ -394,6 +394,7 @@ void TabWindow::tabTitleChanged(const QString &title)
     tabTitle.replace('&', "&&");
 
     int index = indexOf(tab);
+
     if (-1 != index && !tabBar()->tabData(index).toBool())
     {
         setTabText(index, tabTitle);

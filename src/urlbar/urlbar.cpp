@@ -52,7 +52,6 @@
 
 #include "webtab.h"
 #include "webpage.h"
-#include "webview.h"
 #include "searchengine.h"
 #include "websnap.h"
 
@@ -151,10 +150,10 @@ UrlBar::UrlBar(QWidget *parent)
 
     connect(_tab, SIGNAL(loadProgressing()), this, SLOT(update()));
 
-    connect(_tab->view(), SIGNAL(urlChanged(QUrl)), this, SLOT(setQUrl(QUrl)));
-    connect(_tab->view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
-    connect(_tab->view(), SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
-    connect(_tab->view(), SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
+    connect(_tab, SIGNAL(urlChanged(QUrl)), this, SLOT(setQUrl(QUrl)));
+    connect(_tab, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
+    connect(_tab, SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
+    connect(_tab, SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
 
     // bookmark icon
     connect(BookmarkManager::self(), SIGNAL(bookmarksUpdated()), this, SLOT(updateRightIcons()));

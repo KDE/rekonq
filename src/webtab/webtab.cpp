@@ -102,19 +102,23 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
                 this, SLOT(createWalletBar(QString,QUrl)));
     }
 
+    // Connect webview signals with related webtab ones
+    connect(view(), SIGNAL(loadFinished(bool)),     this, SIGNAL(loadFinished(bool)));
+    connect(view(), SIGNAL(loadProgress(int)),      this, SIGNAL(loadProgress (int)));
+    connect(view(), SIGNAL(loadStarted()),          this, SIGNAL(loadStarted()));
+    connect(view(), SIGNAL(urlChanged(QUrl)),       this, SIGNAL(urlChanged(QUrl)));
+    connect(view(), SIGNAL(titleChanged(QString)),  this, SIGNAL(titleChanged(QString)));
+    connect(view(), SIGNAL(iconChanged()),          this, SIGNAL(iconChanged()));
+
+    if (!parent)
+    {
+        connect(this, SIGNAL(titleChanged(QString)), this, SLOT(webAppTitleChanged(QString)));
+        connect(this, SIGNAL(iconChanged()), this, SLOT(webAppIconChanged()));
+    }
+
     connect(view(), SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
     connect(view(), SIGNAL(loadStarted()), this, SLOT(resetProgress()));
     connect(view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
-
-    if (parent)
-    {
-        connect(view(), SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
-    }
-    else
-    {
-        connect(view(), SIGNAL(titleChanged(QString)), this, SLOT(webAppTitleChanged(QString)));
-        connect(view(), SIGNAL(iconChanged()), this, SLOT(webAppIconChanged()));
-    }
 
     // Session Manager
     connect(view(), SIGNAL(loadFinished(bool)), SessionManager::self(), SLOT(saveSession()));
@@ -169,6 +173,22 @@ KUrl WebTab::url()
 
     kDebug() << "OOPS... NO web classes survived! Returning an empty url...";
     return KUrl();
+}
+
+
+QString WebTab::title()
+{
+    if (page() && page()->isOnRekonqPage())
+    {
+        return url().url();
+    }
+
+    if (view())
+        return view()->title();
+
+    kDebug() << "OOPS... NO web classes survived! Returning an empty title...";
+    return QString();
+
 }
 
 
@@ -258,10 +278,10 @@ void WebTab::createPreviewSelectorBar(int index)
         m_previewSelectorBar.data()->animatedHide();
     }
 
-    connect(page(),             SIGNAL(loadStarted()),      m_previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
-    connect(page(),             SIGNAL(loadProgress(int)),  m_previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
-    connect(page(),             SIGNAL(loadFinished(bool)), m_previewSelectorBar.data(), SLOT(loadFinished()), Qt::UniqueConnection);
-    connect(page()->mainFrame(), SIGNAL(urlChanged(QUrl)),  m_previewSelectorBar.data(), SLOT(verifyUrl()),    Qt::UniqueConnection);
+    connect(this, SIGNAL(loadStarted()),      m_previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
+    connect(this, SIGNAL(loadProgress(int)),  m_previewSelectorBar.data(), SLOT(loadProgress()), Qt::UniqueConnection);
+    connect(this, SIGNAL(loadFinished(bool)), m_previewSelectorBar.data(), SLOT(loadFinished()), Qt::UniqueConnection);
+    connect(this, SIGNAL(urlChanged(QUrl)),   m_previewSelectorBar.data(), SLOT(verifyUrl()),    Qt::UniqueConnection);
 }
 
 
@@ -288,6 +308,7 @@ void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
         view()->hide();
         m_splitter->hide();
         emit titleChanged(u.url());
+        emit urlChanged(u.url());
         return;
     }
 

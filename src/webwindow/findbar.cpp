@@ -150,7 +150,7 @@ void FindBar::setVisible(bool visible)
 
     if (visible
             && w->page()->isOnRekonqPage()
-            && w->view()->part() != 0)
+            && w->tabView()->part() != 0)
     {
         // findNext is the slot containing part integration code
         findNext();
@@ -230,7 +230,7 @@ void FindBar::findNext()
     if (w->page()->isOnRekonqPage())
     {
         // trigger part find action
-        KParts::ReadOnlyPart *p = w->view()->part();
+        KParts::ReadOnlyPart *p = w->tabView()->part();
         if (p)
         {
 //             connect(this, SIGNAL(triggerPartFind()), p, SLOT(slotFind()));
