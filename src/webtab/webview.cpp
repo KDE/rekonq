@@ -250,7 +250,7 @@ bool WebView::popupSpellMenu(QContextMenuEvent *event)
                 QString script(QL1S("this.value=this.value.substring(0,"));
                 script += QString::number(s1);
                 script += QL1S(") + \'");
-                script +=  w;
+                script +=  w.replace('\'', "\\\'"); // Escape any Quote marks in replacement word
                 script += QL1C('\'') + QL1S("+this.value.substring(");
                 script += QString::number(s2);
                 script += QL1C(')');
@@ -1429,7 +1429,6 @@ void WebView::spellCheck()
     backgroundSpellCheck->setParent(spellDialog);
     spellDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
-    spellDialog->showSpellCheckCompletionMessage(true);
     connect(spellDialog, SIGNAL(replace(QString,int,QString)), this, SLOT(spellCheckerCorrected(QString,int,QString)));
     connect(spellDialog, SIGNAL(misspelling(QString,int)), this, SLOT(spellCheckerMisspelling(QString,int)));
     if (m_contextMenuHitResult.isContentSelected())
@@ -1451,7 +1450,8 @@ void WebView::spellCheckerCorrected(const QString& original, int pos, const QStr
     QString script(QL1S("this.value=this.value.substring(0,"));
     script += QString::number(index);
     script += QL1S(") + \"");
-    script +=  replacement;
+    QString w(replacement);
+    script +=  w.replace('\'', "\\\'"); // Escape any Quote marks in replacement word
     script += QL1S("\" + this.value.substring(");
     script += QString::number(index + original.length());
     script += QL1S(")");
