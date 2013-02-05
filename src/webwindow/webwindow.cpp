@@ -61,7 +61,7 @@
 #include <KUrl>
 #include <KToolBar>
 #include <KToggleFullScreenAction>
-#include <KShortcutsEditor>
+#include <KShortcutsDialog>
 
 #include <QLabel>
 #include <QStyle>
@@ -979,31 +979,16 @@ void WebWindow::keyPressEvent(QKeyEvent *kev)
 
 void WebWindow::keyBindings()
 {
-    QPointer<KDialog> dialog = new KDialog(this);
+    QPointer<KShortcutsDialog> dialog = new KShortcutsDialog(KShortcutsEditor::AllActions, KShortcutsEditor::LetterShortcutsAllowed, this);
 
-    KShortcutsEditor widget(this);
-
-    widget.addCollection(actionCollection(), i18n("web window"));
+    dialog->addCollection(actionCollection(), i18n("web window"));
     TabWindow *tw = rApp->tabWindow();
     if (tw)
     {
-        widget.addCollection(tw->actionCollection(), i18n("tab window"));
-    }
-    
-    dialog->setMainWidget(&widget);
-
-    dialog->setCaption(i18nc("@title:window", "Configure Shortcuts"));
-    dialog->setButtons(KDialog::Ok | KDialog::Cancel | KDialog::Reset);
-    dialog->setMinimumSize(700, 525);
-
-    connect(dialog, SIGNAL(resetClicked()), &widget, SLOT(allDefault()));
-    
-    if (dialog->exec() == QDialog::Accepted)
-    {
-        kDebug() << "OK";
-        widget.save();
+        dialog->addCollection(tw->actionCollection(), i18n("tab window"));
     }
 
+    dialog->configure();
     dialog->deleteLater();
 }
 
