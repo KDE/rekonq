@@ -54,18 +54,22 @@
 #include <KIcon>
 
 // Nepomuk Includes
-#include <Nepomuk/Utils/SimpleResourceModel>
-#include <Nepomuk/Query/Term>
-#include <Nepomuk/Query/Result>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Vocabulary/PIMO>
-#include <Nepomuk/Vocabulary/NCO>
-#include <Nepomuk/Query/QueryParser>
-#include <Nepomuk/Variant>
+#include <Nepomuk2/Query/Term>
+#include <Nepomuk2/Query/Result>
+#include <Nepomuk2/Query/ResourceTypeTerm>
+#include <Nepomuk2/Query/QueryServiceClient>
+#include <Nepomuk2/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/NCO>
+#include <Nepomuk2/Query/QueryParser>
+#include <Nepomuk2/Variant>
 
+// Nepomuk Ported Classes
+#include "nepomuk/utils/simpleresourcemodel.h"
 
-class Nepomuk::ResourceLinkDialog::Private
+// Soprano Includes
+#include <Soprano/Vocabulary/NAO>
+
+class Nepomuk2::ResourceLinkDialog::Private
 {
 public:
     void _k_selectionChanged();
@@ -82,20 +86,20 @@ public:
     QPushButton *m_newResourceButton;
     Utils::SimpleResourceModel *m_resourceModel;
     Utils::SimpleResourceModel *m_linkedResourceModel;
-    Nepomuk::ResourceLinkDialog *q;
+    Nepomuk2::ResourceLinkDialog *q;
 
-    Nepomuk::Resource m_nfoResource;
+    Nepomuk2::Resource m_nfoResource;
 
 };
 
 
-void Nepomuk::ResourceLinkDialog::Private::_k_selectionChanged()
+void Nepomuk2::ResourceLinkDialog::Private::_k_selectionChanged()
 {
     q->enableButton(KDialog::User1, !m_resourceView->selectionModel()->selectedRows().isEmpty());
 }
 
 
-Nepomuk::ResourceLinkDialog::ResourceLinkDialog(Nepomuk::Resource &nfoResource, QWidget* parent):
+Nepomuk2::ResourceLinkDialog::ResourceLinkDialog(Nepomuk2::Resource &nfoResource, QWidget* parent):
     KDialog(parent),
     d(new Private())
 {
@@ -182,21 +186,21 @@ Nepomuk::ResourceLinkDialog::ResourceLinkDialog(Nepomuk::Resource &nfoResource, 
 }
 
 
-Nepomuk::ResourceLinkDialog::~ResourceLinkDialog()
+Nepomuk2::ResourceLinkDialog::~ResourceLinkDialog()
 {
     delete d;
 }
 
 
-void Nepomuk::ResourceLinkDialog::setRelatedResources()
+void Nepomuk2::ResourceLinkDialog::setRelatedResources()
 {
-    QList<Nepomuk::Resource> relatedResourceList = d->m_nfoResource.isRelateds();
+    QList<Nepomuk2::Resource> relatedResourceList = d->m_nfoResource.isRelateds();
     d->m_linkedResourceModel->setResources(relatedResourceList);
 
 }
 
 
-void Nepomuk::ResourceLinkDialog::linkResourceSlot()
+void Nepomuk2::ResourceLinkDialog::linkResourceSlot()
 {
     QModelIndexList selectedResourceList;
     selectedResourceList << d->m_resourceView->selectionModel()->selectedIndexes();
@@ -209,16 +213,16 @@ void Nepomuk::ResourceLinkDialog::linkResourceSlot()
 }
 
 
-void Nepomuk::ResourceLinkDialog::unlinkResourceSlot()
+void Nepomuk2::ResourceLinkDialog::unlinkResourceSlot()
 {
-    d->m_nfoResource.removeProperty(Nepomuk::Resource::isRelatedUri(),
+    d->m_nfoResource.removeProperty(Soprano::Vocabulary::NAO::isRelated().toString(),
                                     d->m_linkedResourceModel->resourceForIndex(
                                         d->m_linkedResources->selectionModel()->currentIndex()));
     setRelatedResources();
 }
 
 
-void Nepomuk::ResourceLinkDialog::showContextMenu(const QPoint &pos)
+void Nepomuk2::ResourceLinkDialog::showContextMenu(const QPoint &pos)
 {
     d->m_removeResourceAction = new KAction(this);
     d->m_removeResourceAction->setText(i18n("&Unlink "));
@@ -232,9 +236,9 @@ void Nepomuk::ResourceLinkDialog::showContextMenu(const QPoint &pos)
 }
 
 
-void Nepomuk::ResourceLinkDialog::createNewResourceSlot()
+void Nepomuk2::ResourceLinkDialog::createNewResourceSlot()
 {
-    QPointer<Nepomuk::NewResourceDialog> r = new Nepomuk::NewResourceDialog(d->m_resourceSelect->currentIndex(), d->m_nfoResource);
+    QPointer<Nepomuk2::NewResourceDialog> r = new Nepomuk2::NewResourceDialog(d->m_resourceSelect->currentIndex(), d->m_nfoResource);
     r->exec();
 
     setRelatedResources();
@@ -243,60 +247,60 @@ void Nepomuk::ResourceLinkDialog::createNewResourceSlot()
 }
 
 
-void Nepomuk::ResourceLinkDialog::dynamicSearchingSlot()
+void Nepomuk2::ResourceLinkDialog::dynamicSearchingSlot()
 {
-    Nepomuk::Query::Query query;
-    Nepomuk::Query::QueryServiceClient *test;
+    Nepomuk2::Query::Query query;
+    Nepomuk2::Query::QueryServiceClient *test;
     switch (d->m_resourceSelect->currentIndex())
     {
     case 1:
-        query =  Nepomuk::Query::QueryParser::parseQuery(d->m_searchBox->text());
-        query = query && Nepomuk::Query::ResourceTypeTerm(Nepomuk::Vocabulary::PIMO::Person());
-        test = new Nepomuk::Query::QueryServiceClient(this);
+        query =  Nepomuk2::Query::QueryParser::parseQuery(d->m_searchBox->text());
+        query = query && Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Vocabulary::PIMO::Person());
+        test = new Nepomuk2::Query::QueryServiceClient(this);
         test->query(query);
         d->m_resourceModel->clear();
-        connect(test, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-                d->m_resourceModel, SLOT(addResults(QList<Nepomuk::Query::Result>)));
+        connect(test, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)),
+                d->m_resourceModel, SLOT(addResults(QList<Nepomuk2::Query::Result>)));
         break;
 
     case 2:
-        query =  Nepomuk::Query::QueryParser::parseQuery(d->m_searchBox->text());
-        query = query && Nepomuk::Query::ResourceTypeTerm(Nepomuk::Vocabulary::PIMO::Project());
-        test = new Nepomuk::Query::QueryServiceClient(this);
+        query =  Nepomuk2::Query::QueryParser::parseQuery(d->m_searchBox->text());
+        query = query && Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Vocabulary::PIMO::Project());
+        test = new Nepomuk2::Query::QueryServiceClient(this);
         test->query(query);
         d->m_resourceModel->clear();
-        connect(test, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-                d->m_resourceModel, SLOT(addResults(QList<Nepomuk::Query::Result>)));
+        connect(test, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)),
+                d->m_resourceModel, SLOT(addResults(QList<Nepomuk2::Query::Result>)));
         break;
 
     case 3:
-        query = Nepomuk::Query::QueryParser::parseQuery(d->m_searchBox->text());
-        query = query && Nepomuk::Query::ResourceTypeTerm(Nepomuk::Vocabulary::PIMO::Task());
-        test = new Nepomuk::Query::QueryServiceClient(this);
+        query = Nepomuk2::Query::QueryParser::parseQuery(d->m_searchBox->text());
+        query = query && Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Vocabulary::PIMO::Task());
+        test = new Nepomuk2::Query::QueryServiceClient(this);
         test->query(query);
         d->m_resourceModel->clear();
-        connect(test, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-                d->m_resourceModel, SLOT(addResults(QList<Nepomuk::Query::Result>)));
+        connect(test, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)),
+                d->m_resourceModel, SLOT(addResults(QList<Nepomuk2::Query::Result>)));
         break;
 
     case 4:
-        query = Nepomuk::Query::QueryParser::parseQuery(d->m_searchBox->text());
-        query = query && Nepomuk::Query::ResourceTypeTerm(Nepomuk::Vocabulary::PIMO::Location());
-        test = new Nepomuk::Query::QueryServiceClient(this);
+        query = Nepomuk2::Query::QueryParser::parseQuery(d->m_searchBox->text());
+        query = query && Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Vocabulary::PIMO::Location());
+        test = new Nepomuk2::Query::QueryServiceClient(this);
         test->query(query);
         d->m_resourceModel->clear();
-        connect(test, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-                d->m_resourceModel, SLOT(addResults(QList<Nepomuk::Query::Result>)));
+        connect(test, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)),
+                d->m_resourceModel, SLOT(addResults(QList<Nepomuk2::Query::Result>)));
         break;
 
     case 5:
-        query =  Nepomuk::Query::QueryParser::parseQuery(d->m_searchBox->text());
-        query = query && Nepomuk::Query::ResourceTypeTerm(Nepomuk::Vocabulary::PIMO::Note());
-        test = new Nepomuk::Query::QueryServiceClient(this);
+        query =  Nepomuk2::Query::QueryParser::parseQuery(d->m_searchBox->text());
+        query = query && Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Vocabulary::PIMO::Note());
+        test = new Nepomuk2::Query::QueryServiceClient(this);
         test->query(query);
         d->m_resourceModel->clear();
-        connect(test, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-                d->m_resourceModel, SLOT(addResults(QList<Nepomuk::Query::Result>)));
+        connect(test, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)),
+                d->m_resourceModel, SLOT(addResults(QList<Nepomuk2::Query::Result>)));
         break;
 
     default:
@@ -305,7 +309,7 @@ void Nepomuk::ResourceLinkDialog::dynamicSearchingSlot()
 }
 
 
-void Nepomuk::ResourceLinkDialog::resourceSelectedSlot(int index)
+void Nepomuk2::ResourceLinkDialog::resourceSelectedSlot(int index)
 {
     enableButton(User1, true);
     d->m_newResourceButton->setEnabled(true);
@@ -317,12 +321,12 @@ void Nepomuk::ResourceLinkDialog::resourceSelectedSlot(int index)
     //List Personal Contacts
     if (index == 1)
     {
-        Nepomuk::Query::Term term = Nepomuk::Query::ResourceTypeTerm(Nepomuk::Vocabulary::PIMO::Person());
-        Nepomuk::Query::Query query(term);
+        Nepomuk2::Query::Term term = Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Vocabulary::PIMO::Person());
+        Nepomuk2::Query::Query query(term);
         query.setLimit(20);
-        QList<Nepomuk::Query::Result>results = Nepomuk::Query::QueryServiceClient::syncQuery(query);
-        QList <Nepomuk::Resource> resource;
-        Q_FOREACH(const Nepomuk::Query::Result & result, results)
+        QList<Nepomuk2::Query::Result>results = Nepomuk2::Query::QueryServiceClient::syncQuery(query);
+        QList <Nepomuk2::Resource> resource;
+        Q_FOREACH(const Nepomuk2::Query::Result & result, results)
         {
             resource.append(result.resource());
         }
@@ -331,12 +335,12 @@ void Nepomuk::ResourceLinkDialog::resourceSelectedSlot(int index)
     //List Projects
     else if (index == 2)
     {
-        Nepomuk::Query::Term term = Nepomuk::Query::ResourceTypeTerm(Nepomuk::Vocabulary::PIMO::Project());
-        Nepomuk::Query::Query query(term);
+        Nepomuk2::Query::Term term = Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Vocabulary::PIMO::Project());
+        Nepomuk2::Query::Query query(term);
         query.setLimit(20);
-        QList<Nepomuk::Query::Result>results = Nepomuk::Query::QueryServiceClient::syncQuery(query);
-        QList <Nepomuk::Resource> resource;
-        Q_FOREACH(const Nepomuk::Query::Result & result, results)
+        QList<Nepomuk2::Query::Result>results = Nepomuk2::Query::QueryServiceClient::syncQuery(query);
+        QList <Nepomuk2::Resource> resource;
+        Q_FOREACH(const Nepomuk2::Query::Result & result, results)
         {
             resource.append(result.resource());
         }
@@ -345,12 +349,12 @@ void Nepomuk::ResourceLinkDialog::resourceSelectedSlot(int index)
     //List Tasks
     else if (index == 3)
     {
-        Nepomuk::Query::Term term = Nepomuk::Query::ResourceTypeTerm(Nepomuk::Vocabulary::PIMO::Task());
-        Nepomuk::Query::Query query(term);
+        Nepomuk2::Query::Term term = Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Vocabulary::PIMO::Task());
+        Nepomuk2::Query::Query query(term);
         query.setLimit(20);
-        QList<Nepomuk::Query::Result>results = Nepomuk::Query::QueryServiceClient::syncQuery(query);
-        QList <Nepomuk::Resource> resource;
-        Q_FOREACH(const Nepomuk::Query::Result & result, results)
+        QList<Nepomuk2::Query::Result>results = Nepomuk2::Query::QueryServiceClient::syncQuery(query);
+        QList <Nepomuk2::Resource> resource;
+        Q_FOREACH(const Nepomuk2::Query::Result & result, results)
         {
             resource.append(result.resource());
         }
@@ -359,12 +363,12 @@ void Nepomuk::ResourceLinkDialog::resourceSelectedSlot(int index)
     //List Places
     else if (index == 4)
     {
-        Nepomuk::Query::Term term = Nepomuk::Query::ResourceTypeTerm(Nepomuk::Vocabulary::PIMO::Location());
-        Nepomuk::Query::Query query(term);
+        Nepomuk2::Query::Term term = Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Vocabulary::PIMO::Location());
+        Nepomuk2::Query::Query query(term);
         query.setLimit(20);
-        QList<Nepomuk::Query::Result>results = Nepomuk::Query::QueryServiceClient::syncQuery(query);
-        QList <Nepomuk::Resource> resource;
-        Q_FOREACH(const Nepomuk::Query::Result & result, results)
+        QList<Nepomuk2::Query::Result>results = Nepomuk2::Query::QueryServiceClient::syncQuery(query);
+        QList <Nepomuk2::Resource> resource;
+        Q_FOREACH(const Nepomuk2::Query::Result & result, results)
         {
             resource.append(result.resource());
         }
@@ -373,12 +377,12 @@ void Nepomuk::ResourceLinkDialog::resourceSelectedSlot(int index)
     //List Notes
     else if (index == 5)
     {
-        Nepomuk::Query::Term term = Nepomuk::Query::ResourceTypeTerm(Nepomuk::Vocabulary::PIMO::Note());
-        Nepomuk::Query::Query query(term);
+        Nepomuk2::Query::Term term = Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Vocabulary::PIMO::Note());
+        Nepomuk2::Query::Query query(term);
         query.setLimit(20);
-        QList<Nepomuk::Query::Result>results = Nepomuk::Query::QueryServiceClient::syncQuery(query);
-        QList <Nepomuk::Resource> resource;
-        Q_FOREACH(const Nepomuk::Query::Result & result, results)
+        QList<Nepomuk2::Query::Result>results = Nepomuk2::Query::QueryServiceClient::syncQuery(query);
+        QList <Nepomuk2::Resource> resource;
+        Q_FOREACH(const Nepomuk2::Query::Result & result, results)
         {
             resource.append(result.resource());
         }

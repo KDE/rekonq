@@ -29,10 +29,10 @@
 #include "newresourcedialog.moc"
 
 // Nepomuk Includes
-#include <Nepomuk/Vocabulary/NCO>
-#include <Nepomuk/Vocabulary/PIMO>
-#include <Nepomuk/Resource>
-#include <Nepomuk/Tag>
+#include <Nepomuk2/Vocabulary/NCO>
+#include <Nepomuk2/Vocabulary/PIMO>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Tag>
 
 // Qt Includes
 #include <QPlainTextEdit>
@@ -40,20 +40,20 @@
 #include <QLabel>
 
 
-class Nepomuk::NewResourceDialog::Private
+class Nepomuk2::NewResourceDialog::Private
 {
 public:
     KLineEdit *m_resourceName;
     QPlainTextEdit *m_description;
     QLabel *m_titleResource;
     QLabel *m_desResource;
-    Nepomuk::NewResourceDialog *q;
-    Nepomuk::Resource m_nofResource;
+    Nepomuk2::NewResourceDialog *q;
+    Nepomuk2::Resource m_nofResource;
     int m_index;
 };
 
 
-Nepomuk::NewResourceDialog::NewResourceDialog(int index, Nepomuk::Resource& nfoResource, QWidget* parent):
+Nepomuk2::NewResourceDialog::NewResourceDialog(int index, Nepomuk2::Resource& nfoResource, QWidget* parent):
     KDialog(parent),
     d(new Private())
 {
@@ -80,41 +80,41 @@ Nepomuk::NewResourceDialog::NewResourceDialog(int index, Nepomuk::Resource& nfoR
 }
 
 
-Nepomuk::NewResourceDialog::~NewResourceDialog()
+Nepomuk2::NewResourceDialog::~NewResourceDialog()
 {
     delete d;
 }
 
 
-void Nepomuk::NewResourceDialog::newResourceSlot()
+void Nepomuk2::NewResourceDialog::newResourceSlot()
 {
     if (d->m_index == 1)
     {
-        Nepomuk::Resource newResource(d->m_resourceName->text(), Nepomuk::Vocabulary::PIMO::Person());
+        Nepomuk2::Resource newResource(d->m_resourceName->text(), Nepomuk2::Vocabulary::PIMO::Person());
         newResource.addSymbol("user-identity");
         d->m_nofResource.addIsRelated(newResource);
     }
     else if (d->m_index == 2)
     {
-        Nepomuk::Resource newResource(d->m_resourceName->text(), Nepomuk::Vocabulary::PIMO::Project());
+        Nepomuk2::Resource newResource(d->m_resourceName->text(), Nepomuk2::Vocabulary::PIMO::Project());
         newResource.addSymbol("project-development");
         d->m_nofResource.addIsRelated(newResource);
     }
     else if (d->m_index == 3)
     {
-        Nepomuk::Resource newResource(d->m_resourceName->text(), Nepomuk::Vocabulary::PIMO::Task());
+        Nepomuk2::Resource newResource(d->m_resourceName->text(), Nepomuk2::Vocabulary::PIMO::Task());
         newResource.addSymbol("view-pim-tasks");
         d->m_nofResource.addIsRelated(newResource);
     }
     else if (d->m_index == 4)
     {
-        Nepomuk::Resource newResource(d->m_resourceName->text(), Nepomuk::Vocabulary::PIMO::Location());
+        Nepomuk2::Resource newResource(d->m_resourceName->text(), Nepomuk2::Vocabulary::PIMO::Location());
         newResource.addSymbol("user-location");
         d->m_nofResource.addIsRelated(newResource);
     }
     else if (d->m_index == 5)
     {
-        Nepomuk::Resource newResource(d->m_resourceName->text(), Nepomuk::Vocabulary::PIMO::Note());
+        Nepomuk2::Resource newResource(d->m_resourceName->text(), Nepomuk2::Vocabulary::PIMO::Note());
         newResource.addSymbol("knotes");
         d->m_nofResource.addIsRelated(newResource);
     }

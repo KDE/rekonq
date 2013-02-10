@@ -34,14 +34,11 @@
 #include <QGridLayout>
 #include <QPlainTextEdit>
 
-// Nepomuk config include
-#include <config-nepomuk.h>
-
 // Nepomuk Includes
 #ifdef HAVE_NEPOMUK
-#include <Nepomuk/Resource>
-#include <Nepomuk/Tag>
-#include <Nepomuk/Vocabulary/NFO>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Tag>
+#include <Nepomuk2/Vocabulary/NFO>
 #endif
 
 // Forward Declarations
@@ -61,7 +58,7 @@ public:
     void showAt(const QPoint &pos);
 
 #ifdef HAVE_NEPOMUK
-    void addTags(QList<Nepomuk::Tag>);
+    void addTags(QList<Nepomuk2::Tag>);
     void parseTags();
     void loadTags();
 #endif
@@ -91,7 +88,7 @@ private:
     QStringList m_tList;
 
 #ifdef HAVE_NEPOMUK
-    Nepomuk::Resource m_nfoResource;
+    Nepomuk2::Resource m_nfoResource;
     bool m_isNepomukEnabled;
 #endif
 };
