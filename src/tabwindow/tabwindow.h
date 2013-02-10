@@ -111,6 +111,9 @@ private Q_SLOTS:
     void reloadAllTabs();
     void bookmarkAllTabs();
 
+    void nextTab();
+    void previousTab();
+
     void restoreLastClosedTab();
 
     void setFullScreen(bool);

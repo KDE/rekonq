@@ -154,6 +154,16 @@ void TabWindow::init()
     actionCollection()->addAction(QL1S("close_tab"), a);
     connect(a, SIGNAL(triggered(bool)), this, SLOT(closeTab()));
 
+    a = new KAction(i18n("Show Next Tab"), this);
+    a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabPrev() : KStandardShortcut::tabNext());
+    actionCollection()->addAction(QL1S("show_next_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(nextTab()));
+
+    a = new KAction(i18n("Show Previous Tab"), this);
+    a->setShortcuts(QApplication::isRightToLeft() ? KStandardShortcut::tabNext() : KStandardShortcut::tabPrev());
+    actionCollection()->addAction(QL1S("show_prev_tab"), a);
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(previousTab()));
+
     a = KStandardAction::fullScreen(this, SLOT(setFullScreen(bool)), this, actionCollection());
     KShortcut fullScreenShortcut = KStandardShortcut::fullScreen();
     fullScreenShortcut.setAlternate(Qt::Key_F11);
@@ -719,6 +729,24 @@ void TabWindow::restoreLastClosedTab()
 
     // just to get sure...
     m_recentlyClosedTabs.removeAll(history);
+}
+
+
+void TabWindow::nextTab()
+{
+    int next = currentIndex() + 1;
+    if (next == count())
+        next = 0;
+    setCurrentIndex(next);
+}
+
+
+void TabWindow::previousTab()
+{
+    int next = currentIndex() - 1;
+    if (next < 0)
+        next = count() - 1;
+    setCurrentIndex(next);
 }
 
 
