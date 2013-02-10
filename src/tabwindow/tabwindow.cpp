@@ -266,6 +266,14 @@ void TabWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *hist
     switch (type)
     {
     case Rekonq::NewTab:
+        tab = prepareNewTab();
+        _openedTabsCounter++;
+        insertTab(currentIndex() + _openedTabsCounter, tab, i18n("new tab"));
+        if (ReKonfig::openNewTabsInForeground())
+        {
+            setCurrentWidget(tab);
+        }
+        break;
     case Rekonq::NewBackGroundTab:
         tab = prepareNewTab();
         _openedTabsCounter++;
