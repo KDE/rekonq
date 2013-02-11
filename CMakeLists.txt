@@ -49,7 +49,7 @@ ADD_DEFINITIONS(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 # ==================================================================================
 # optional nepomuk requirements
 
-FIND_PACKAGE(NepomukCore)
+FIND_PACKAGE(NepomukCore 4.10)
 
 IF(NepomukCore_FOUND)
     ADD_DEFINITIONS(-DHAVE_NEPOMUK)
