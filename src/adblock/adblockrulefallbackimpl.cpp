@@ -46,47 +46,66 @@ static inline bool isRegExpFilter(const QString &filter)
 
 AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
     : AdBlockRuleImpl(filter)
+    , m_unsupported(false)
     , m_thirdPartyOption(false)
+    , m_thirdPartyOptionReversed(false)
 {
     m_regExp.setCaseSensitivity(Qt::CaseInsensitive);
     m_regExp.setPatternSyntax(QRegExp::RegExp2);
 
     QString parsedLine = filter;
 
-    const int optionsNumber = parsedLine.lastIndexOf(QL1C('$'));
-    if (optionsNumber >= 0 && !isRegExpFilter(parsedLine))
+    if (isRegExpFilter(parsedLine))
     {
-        const QStringList options(parsedLine.mid(optionsNumber + 1).split(QL1C(',')));
-        parsedLine = parsedLine.left(optionsNumber);
-
-        if (options.contains(QL1S("match-case")))
-            m_regExp.setCaseSensitivity(Qt::CaseSensitive);
-
-        if (options.contains(QL1S("third-party")))
-            m_thirdPartyOption = true;
-
-        Q_FOREACH(const QString & option, options)
+        parsedLine = parsedLine.mid(1, parsedLine.length() - 2);        
+    }
+    else
+    {
+        const int optionsNumber = parsedLine.lastIndexOf(QL1C('$'));
+    
+        if (optionsNumber >= 0)
         {
-            // Domain restricted filter
-            const QString domainKeyword(QL1S("domain="));
-            if (option.startsWith(domainKeyword))
+            QStringList options(parsedLine.mid(optionsNumber + 1).split(QL1C(',')));
+            parsedLine = parsedLine.left(optionsNumber);
+
+            if (options.removeOne(QL1S("match-case")))
+                m_regExp.setCaseSensitivity(Qt::CaseSensitive);
+
+            if (options.removeOne(QL1S("third-party")))
+                m_thirdPartyOption = true;
+
+            if (options.removeOne(QL1S("~third-party")))
             {
-                QStringList domainList = option.mid(domainKeyword.length()).split(QL1C('|'));
-                Q_FOREACH(const QString & domain, domainList)
+                m_thirdPartyOption = true;
+                m_thirdPartyOptionReversed = true;
+            }
+            
+            Q_FOREACH(const QString & option, options)
+            {
+                // Domain restricted filter
+                const QString domainKeyword(QL1S("domain="));
+                if (option.startsWith(domainKeyword))
                 {
-                    if (domain.startsWith(QL1C('~')))
-                        m_whiteDomains.insert(domain.toLower());
-                    else
-                        m_blackDomains.insert(domain.toLower());
+                    options.removeOne(option);
+                    QStringList domainList = option.mid(domainKeyword.length()).split(QL1C('|'));
+                    Q_FOREACH(const QString & domain, domainList)
+                    {
+                        if (domain.startsWith(QL1C('~')))
+                            m_whiteDomains.insert(domain.toLower());
+                        else
+                            m_blackDomains.insert(domain.toLower());
+                    }
+                    break;
                 }
             }
+            
+            // if there are yet options available we have to whitelist the rule
+            // to not be too much restrictive on adblocking
+            m_unsupported = (!options.isEmpty());
         }
-    }
-
-    if (isRegExpFilter(parsedLine))
-        parsedLine = parsedLine.mid(1, parsedLine.length() - 2);
-    else
+        
         parsedLine = convertPatternToRegExp(parsedLine);
+    }
 
     m_regExp.setPattern(parsedLine);
 }
@@ -94,12 +113,20 @@ AdBlockRuleFallbackImpl::AdBlockRuleFallbackImpl(const QString &filter)
 
 bool AdBlockRuleFallbackImpl::match(const QNetworkRequest &request, const QString &encodedUrl, const QString &) const
 {
+    if (m_unsupported)
+        return false;
+    
     if (m_thirdPartyOption)
     {
         const QString referer = request.rawHeader("referer");
         const QString host = request.url().host();
 
-        if (referer.contains(host)) // is NOT third party
+        bool isThirdParty = !referer.contains(host);
+        
+        if (!m_thirdPartyOptionReversed && !isThirdParty)
+            return false;
+        
+        if (m_thirdPartyOptionReversed && isThirdParty)
             return false;
     }
 

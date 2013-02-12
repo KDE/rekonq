@@ -51,7 +51,9 @@ private:
     QSet<QString> m_whiteDomains;
     QSet<QString> m_blackDomains;
 
+    bool m_unsupported;
     bool m_thirdPartyOption;
+    bool m_thirdPartyOptionReversed;
 };
 
 #endif // ADBLOCKRULEFALLBACKIMPL_H
