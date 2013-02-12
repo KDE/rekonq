@@ -462,7 +462,9 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
         TabWindow *window = qobject_cast<TabWindow*>(watched);
         if (window)
         {
-            if (m_tabWindows.at(0).data() != window)
+            if (!m_tabWindows.isEmpty() 
+                && m_tabWindows.at(0) 
+                && m_tabWindows.at(0).data() != window)
             {
                 int index = m_tabWindows.indexOf(QWeakPointer<TabWindow>(window));
                 Q_ASSERT(index != -1);
