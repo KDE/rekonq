@@ -28,6 +28,8 @@
 #include "maintoolbar.moc"
 
 
+#include "webwindow.h"
+
 #include <KAction>
 #include <KActionCollection>
 #include <KMenu>
@@ -48,24 +50,18 @@ void MainToolBar::showCustomContextMenu(QPoint p)
 {
     KMenu menu(this);
 
-    QList<KActionCollection *> lac = KActionCollection::allCollections();
-
-    int lac_count = lac.count();
-    for (int i = lac_count - 1; i >= 0; i--)
+    WebWindow *w = qobject_cast<WebWindow *>(parent());
+    QAction *a;
+    a = w->actionByName("show_bookmarks_toolbar");
+    if (a)
     {
-        KActionCollection *ac = lac.at(i);
+        menu.addAction(a);
+    }
 
-        QAction *a = ac->action("show_bookmarks_toolbar");
-        if (a)
-        {
-            menu.addAction(a);
-        }
-
-        QAction *b = ac->action("configure_main_toolbar");
-        if (b)
-        {
-            menu.addAction(b);
-        }
+    a = w->actionByName("configure_main_toolbar");
+    if (a)
+    {
+        menu.addAction(a);
     }
 
     // finally launch the menu...
