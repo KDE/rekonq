@@ -146,7 +146,7 @@ QVariant Nepomuk2::Utils::ResourceModel::data( const QModelIndex& index, int rol
             cat = c.name();
         }
         if ( c.uri() == Soprano::Vocabulary::RDFS::Resource() || cat.isEmpty() ) {
-            cat = i18nc( "@title KCategorizedSortFilterProxyModel grouping for all Nepomukj resources that are of type rdfs:Resource", "Miscellaneous" );
+            cat = i18nc( "@title KCategorizedSortFilterProxyModel grouping all Nepomuk resources whose type is rdfs:Resource", "Miscellaneous" );
         }
 
         return cat;
