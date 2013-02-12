@@ -115,7 +115,7 @@ FindBar::FindBar(QWidget *parent)
 
 void FindBar::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Return)
+    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
     {
         if (event->modifiers() == Qt::ShiftModifier)
         {
