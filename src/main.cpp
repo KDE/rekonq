@@ -132,7 +132,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
 
     about.addCredit(ki18n("Dimitrios Christidis"),
                     ki18n("Provides patches, fixes and good testing"),
-                    "dchristidis@ceid.upatras.ggr",
+                    "dchristidis@ceid.upatras.gr",
                     "");
 
     about.addCredit(ki18n("Panagiotis Papadopoulos"),
