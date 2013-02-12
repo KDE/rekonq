@@ -37,6 +37,8 @@ struct SearchEnginePrivate
 {
     SearchEnginePrivate() : isLoaded(false) {}
     bool isLoaded;
+    bool isEnabled;
+    bool usePreferredOnly;
     QString delimiter;
     KService::List favorites;
     KService::Ptr defaultEngine;
@@ -51,16 +53,15 @@ void SearchEngine::reload()
     KConfig config("kuriikwsfilterrc"); //Shared with konqueror
     KConfigGroup cg = config.group("General");
 
+    d->isEnabled = cg.readEntry("EnableWebShortcuts", true);
+    d->usePreferredOnly = cg.readEntry("UsePreferredWebShortcutsOnly", false);
+
     //load delimiter
     d->delimiter = cg.readEntry("KeywordDelimiter", ":");
 
     // load favorite engines
     QStringList favoriteEngines;
-#if KDE_IS_VERSION(4,9,0)
     favoriteEngines = cg.readEntry("PreferredWebShortcuts", favoriteEngines);
-#else
-    favoriteEngines = cg.readEntry("FavoriteSearchEngines", favoriteEngines);
-#endif
 
     KService::List favorites;
     KService::Ptr service;
@@ -76,11 +77,7 @@ void SearchEngine::reload()
 
     // load default engine
     QString dse;
-#if KDE_IS_VERSION(4,9,0)
     dse = cg.readEntry("DefaultWebShortcut");
-#else
-    dse = cg.readEntry("DefaultSearchEngine");
-#endif
 
     d->defaultEngine = KService::serviceByDesktopPath(QString("searchproviders/%1.desktop").arg(dse));
 
@@ -117,10 +114,18 @@ KService::Ptr SearchEngine::defaultEngine()
 
 KService::Ptr SearchEngine::fromString(const QString &text)
 {
-    KService::List providers = KServiceTypeTrader::self()->query("SearchProvider");
+    KService::Ptr service;
+
+    // first, the easy part...
+    if (!d->isEnabled)
+        return service;
+
+    KService::List providers = (d->usePreferredOnly)
+        ? SearchEngine::favorites()
+        : KServiceTypeTrader::self()->query("SearchProvider");
+
     int i = 0;
     bool found = false;
-    KService::Ptr service;
     while (!found && i < providers.size())
     {
         QStringList list = providers.at(i)->property("Keys").toStringList();
