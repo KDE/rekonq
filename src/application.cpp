@@ -312,7 +312,8 @@ int Application::newInstance()
     {
         if (hasToBeRecoveredFromCrash && !incognito)
         {
-            QTimer::singleShot(1000, tabWindow()->currentWebWindow(), SLOT(showCrashMessageBar()));
+            if (tabWindow() && tabWindow()->currentWebWindow())
+                QTimer::singleShot(1000, tabWindow()->currentWebWindow(), SLOT(showCrashMessageBar()));
         }
         else
         {
