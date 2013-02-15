@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2008-2013 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2010 by Yoann Laissus <yoann dot laissus at gmail dot com>
 *
 *
@@ -37,112 +37,13 @@
 #include "iconmanager.h"
 #include "webwindow.h"
 
+// KDE Includes
+#include <KMenu>
+
 // Qt Includes
 #include <QFrame>
 #include <QActionEvent>
 #include <QApplication>
-
-
-BookmarkMenu::BookmarkMenu(KBookmarkManager *manager,
-                           KBookmarkOwner *owner,
-                           KMenu *menu,
-                           KActionCollection* actionCollection)
-    : KBookmarkMenu(manager, owner, menu, actionCollection)
-{
-}
-
-
-BookmarkMenu::BookmarkMenu(KBookmarkManager  *manager,
-                           KBookmarkOwner  *owner,
-                           KMenu  *parentMenu,
-                           const QString &parentAddress)
-    : KBookmarkMenu(manager, owner, parentMenu, parentAddress)
-{
-}
-
-
-BookmarkMenu::~BookmarkMenu()
-{
-    kDebug() << "Deleting BookmarkMenu.. See http://svn.reviewboard.kde.org/r/5606/ about.";
-}
-
-
-KMenu * BookmarkMenu::contextMenu(QAction *act)
-{
-    KBookmarkActionInterface* action = dynamic_cast<KBookmarkActionInterface *>(act);
-    if (!action)
-        return 0;
-    return new BookmarksContextMenu(action->bookmark(), manager(), static_cast<BookmarkOwner*>(owner()));
-}
-
-
-QAction * BookmarkMenu::actionForBookmark(const KBookmark &bookmark)
-{
-    if (bookmark.isGroup())
-    {
-        KBookmarkActionMenu *actionMenu = new KBookmarkActionMenu(bookmark, this);
-        BookmarkMenu *menu = new BookmarkMenu(manager(), owner(), actionMenu->menu(), bookmark.address());
-        // An hack to get rid of bug 219274
-        connect(actionMenu, SIGNAL(hovered()), menu, SLOT(slotAboutToShow()));
-        return actionMenu;
-    }
-    else if (bookmark.isSeparator())
-    {
-        return KBookmarkMenu::actionForBookmark(bookmark);
-    }
-    else
-    {
-        KBookmarkAction *action = new KBookmarkAction(bookmark, owner(), this);
-        action->setIcon(IconManager::self()->iconForUrl(KUrl(bookmark.url())));
-        connect(action, SIGNAL(hovered()), this, SLOT(actionHovered()));
-        return action;
-    }
-}
-
-
-void BookmarkMenu::refill()
-{
-    clear();
-    fillBookmarks();
-
-    if (parentMenu()->actions().count() > 0)
-        parentMenu()->addSeparator();
-
-    if (isRoot())
-    {
-        addAddBookmarksList();
-        addEditBookmarks();
-    }
-    else
-    {
-        addOpenFolderInTabs();
-        addAddBookmarksList();
-    }
-}
-
-
-void BookmarkMenu::addOpenFolderInTabs()
-{
-    KBookmarkGroup group = manager()->findByAddress(parentAddress()).toGroup();
-
-    if (!group.first().isNull())
-    {
-        KBookmark bookmark = group.first();
-
-        while (bookmark.isGroup() || bookmark.isSeparator())
-        {
-            bookmark = group.next(bookmark);
-        }
-
-        if (!bookmark.isNull())
-        {
-            parentMenu()->addAction(BookmarkManager::self()->owner()->createAction(group, BookmarkOwner::OPEN_FOLDER));
-        }
-    }
-}
-
-
-// ------------------------------------------------------------------------------------------------------
 
 
 BookmarkToolBar::BookmarkToolBar(QWidget *parent)

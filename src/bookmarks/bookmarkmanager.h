@@ -36,6 +36,7 @@
 
 // KDE Includes
 #include <KBookmark>
+#include <KActionMenu>
 
 // Qt Includes
 #include <QObject>
@@ -44,7 +45,6 @@
 // Forward Declarations
 class BookmarkToolBar;
 class BookmarkOwner;
-class BookmarkMenu;
 
 class KAction;
 class KActionCollection;
@@ -121,6 +121,8 @@ public:
     {
         return QL1S("application/x-rekonq-bookmark");
     }
+    
+    KActionMenu* bookmarkActionMenu(QWidget *parent);
 
 private:
     /**

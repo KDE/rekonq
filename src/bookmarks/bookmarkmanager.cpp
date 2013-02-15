@@ -33,8 +33,11 @@
 
 // Local Includes
 #include "application.h"
+
+#include "bookmarksmenu.h"
 #include "bookmarkstoolbar.h"
 #include "bookmarkowner.h"
+
 #include "iconmanager.h"
 
 // KDE Includes
@@ -189,8 +192,8 @@ void BookmarkManager::fillBookmarkBar(BookmarkToolBar *toolBar)
         {
             KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), toolBar);
             menuAction->setDelayed(false);
-            BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menuAction->menu(), bookmark.address());
-            bMenu->setParent(menuAction->menu());
+//             BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menuAction->menu(), bookmark.address());
+//             bMenu->setParent(menuAction->menu());
 
             connect(menuAction->menu(), SIGNAL(aboutToShow()), toolBar, SLOT(menuDisplayed()));
             connect(menuAction->menu(), SIGNAL(aboutToHide()), toolBar, SLOT(menuHidden()));
@@ -314,3 +317,16 @@ void BookmarkManager::emitChanged()
 {
     m_manager->emitChanged();
 }
+
+KActionMenu* BookmarkManager::bookmarkActionMenu(QWidget *parent)
+{
+    KMenu *menu = new KMenu(parent);
+    KActionMenu *bookmarkActionMenu = new KActionMenu(menu);
+    bookmarkActionMenu->setMenu(menu);
+    bookmarkActionMenu->setText(i18n("&Bookmarks"));
+    BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menu, m_actionCollection);
+    bMenu->setParent(menu);
+
+    return bookmarkActionMenu;
+}
+

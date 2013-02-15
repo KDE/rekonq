@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="67">
+<gui name="rekonq" version="68">
 
 <!--- =========== Rekonq Menu ============= -->
 <Menu name="rekonqMenu" noMerge="1">
@@ -41,15 +41,8 @@
     </Menu>
 
     <Separator/>
-    <Menu name="bookmarksMenu" icon="bookmarks" noMerge="1">
-        <text>&amp;Bookmarks</text>
-        <Action name="bookmark_add" />
-        <Separator/>
-        <Action name="open_bookmarks_page" />
-        <Action name="show_bookmarks_toolbar" />
-        <Action name="bookmark_edit" />
-        <!-- TODO: would we list all bookmarks, after a separator, here?? -->
-    </Menu>
+    <Action name="bookmarksActionMenu" />
+
     <Action name="open_history_page" />
     <Action name="open_downloads_page" />
     <Separator/>

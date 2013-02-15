@@ -27,6 +27,7 @@ set(rekonq_KDEINIT_SRCS
     #----------------------------------------
     bookmarks/bookmarkmanager.cpp
     bookmarks/bookmarkscontextmenu.cpp
+    bookmarks/bookmarksmenu.cpp
     bookmarks/bookmarkstoolbar.cpp
     bookmarks/bookmarkowner.cpp
     #----------------------------------------

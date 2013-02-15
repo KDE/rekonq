@@ -25,52 +25,46 @@
 * ============================================================ */
 
 
-#ifndef BOOKMARKSTOOLBAR_H
-#define BOOKMARKSTOOLBAR_H
+#ifndef BOOKMARKS_MENU_H
+#define BOOKMARKS_MENU_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KToolBar>
-
-// Forward Declarations
-class KMenu;
+#include <KBookmarkMenu>
 
 
 /**
- * This class manage the bookmark toolbar.
- * Some events from the toolbar are handled to allow the drag and drop
+ * This class represent the rekonq bookmarks menu.
+ * It's just a simple class inherited from KBookmarkMenu
+ *
  */
-
-class BookmarkToolBar : public KToolBar
+class BookmarkMenu : public KBookmarkMenu
 {
     Q_OBJECT
 
 public:
-    explicit BookmarkToolBar(QWidget *parent);
-    ~BookmarkToolBar();
+    BookmarkMenu(KBookmarkManager* manager,
+                 KBookmarkOwner* owner,
+                 KMenu* menu,
+                 KActionCollection* actionCollection);
+    
+    BookmarkMenu(KBookmarkManager  *manager,
+                 KBookmarkOwner  *owner,
+                 KMenu  *parentMenu,
+                 const QString &parentAddress);
+    
+    ~BookmarkMenu();
 
 protected:
-    bool eventFilter(QObject *watched, QEvent *event);
-
-private Q_SLOTS:
-    void contextMenu(const QPoint &);
-    void menuDisplayed();
-    void menuHidden();
-    void hideMenu();
-    void dragDestroyed();
+    virtual KMenu * contextMenu(QAction * act);
+    virtual void refill();
+    virtual QAction* actionForBookmark(const KBookmark &bookmark);
 
 private:
-    void startDrag();
-
-    KMenu *m_currentMenu;
-    QPoint m_startDragPos;
-    QAction *m_dragAction;
-    QAction *m_dropAction;
-    QAction *m_checkedAction;
-    bool m_filled;
+    void addOpenFolderInTabs();
 };
 
-#endif // BOOKMARKSTOOLBAR_H
+#endif // BOOKMARKS_MENU_H

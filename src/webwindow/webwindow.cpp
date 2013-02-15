@@ -62,7 +62,9 @@
 #include <KToolBar>
 #include <KToggleFullScreenAction>
 #include <KShortcutsDialog>
+#include <KRun>
 
+// Qt Includes
 #include <QLabel>
 #include <QStyle>
 #include <QTextDocument>
@@ -303,6 +305,14 @@ void WebWindow::setupActions()
 
     // Edit bookmarks
     a = KStandardAction::editBookmarks(BookmarkManager::self(), SLOT(slotEditBookmarks()), actionCollection());
+    
+    // Bookmark Menu
+    KActionMenu *bmMenu = BookmarkManager::self()->bookmarkActionMenu(this);
+    bmMenu->setIcon(KIcon("bookmarks"));
+    bmMenu->setDelayed(false);
+    bmMenu->setShortcutConfigurable(true);
+    bmMenu->setShortcut(KShortcut(Qt::ALT + Qt::Key_B));
+    actionCollection()->addAction(QL1S("bookmarksActionMenu"), bmMenu);
 
     // User Agent
     a = new KAction(KIcon("preferences-web-browser-identification"), i18n("Browser Identification"), this);
