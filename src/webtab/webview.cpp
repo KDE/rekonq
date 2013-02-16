@@ -634,6 +634,10 @@ void WebView::mousePressEvent(QMouseEvent *event)
         break;
     };
 
+    // If Control was pressed, do not display Access Keys upon release.
+    if (ReKonfig::accessKeysEnabled() && event->modifiers() == Qt::ControlModifier)
+        m_accessKeysPressed = false;
+
     KWebView::mousePressEvent(event);
 }
 
