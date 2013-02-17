@@ -178,6 +178,9 @@ KUrl WebTab::url()
 
 QString WebTab::title()
 {
+    if (view() && url().protocol() == QL1S("about"))
+        return view()->title();
+    
     if (page() && page()->isOnRekonqPage())
     {
         return url().url();
