@@ -114,6 +114,11 @@
           <string>Downloads</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Closed Tabs</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>

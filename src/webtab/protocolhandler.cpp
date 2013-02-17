@@ -158,6 +158,9 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             case 3: // downloads
                 _url = KUrl("about:downloads");
                 break;
+            case 4: // closed tabs
+                _url = KUrl("about:closedTabs");
+                break;
             default: // unuseful
                 kDebug() << "oops... this should NOT happen...";
                 _url = KUrl("about:favorites");

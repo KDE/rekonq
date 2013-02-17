@@ -252,6 +252,12 @@ WebWindow *TabWindow::webWindow(int index) const
 }
 
 
+QList<TabHistory> TabWindow::recentlyClosedTabs()
+{
+    return m_recentlyClosedTabs;
+}
+
+
 WebWindow *TabWindow::prepareNewTab(WebPage *page)
 {
     WebWindow *tab = new WebWindow(this, _isPrivateBrowsing, page);
@@ -707,28 +713,45 @@ void TabWindow::bookmarkAllTabs()
 
 void TabWindow::restoreLastClosedTab()
 {
+    restoreClosedTab(0);
+}
+
+
+void TabWindow::restoreClosedTab(int index, bool inNewTab)
+{
     if (m_recentlyClosedTabs.isEmpty())
         return;
-
-    TabHistory history = m_recentlyClosedTabs.takeAt(0);
+    
+    if (index >= m_recentlyClosedTabs.count())
+        return;
+    
+    TabHistory history = m_recentlyClosedTabs.takeAt(index);
 
     QUrl u = QUrl(history.url);
 
     int restorePosition = history.position;
 
-    WebWindow *tab = prepareNewTab();
+    WebWindow *tab;
 
-    if (restorePosition < count())
-        insertTab(restorePosition, tab, i18n("restored tab"));
+    if (inNewTab)
+    {
+        tab = prepareNewTab();
+        if (restorePosition < count())
+            insertTab(restorePosition, tab, i18n("restored tab"));
+        else
+            addTab(tab, i18n("restored tab"));
+
+        setCurrentWidget(tab);
+    }
     else
-        addTab(tab, i18n("restored tab"));
-
-    setCurrentWidget(tab);
-
+    {
+        tab = currentWebWindow();
+    }
+    
     tab->load(u);
 
     // just to get sure...
-    m_recentlyClosedTabs.removeAll(history);
+    m_recentlyClosedTabs.removeAll(history);    
 }
 
 

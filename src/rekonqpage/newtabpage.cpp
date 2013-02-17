@@ -32,21 +32,24 @@
 // Auto Includes
 #include "rekonq.h"
 
-// Manager Includes
+// Local Includes
+#include "application.h"
+#include "tabwindow.h"
+
+#include "previewselectorbar.h"
+#include "thumbupdater.h"
+#include "websnap.h"
+#include "webpage.h"
+#include "webtab.h"
+
+#include "tabhistory.h"
+
 #include "bookmarkmanager.h"
 #include "downloadmanager.h"
 #include "iconmanager.h"
 
 #include "historymanager.h"
 #include "historymodels.h"
-
-// Local Includes
-#include "application.h"
-#include "previewselectorbar.h"
-#include "thumbupdater.h"
-#include "websnap.h"
-#include "webpage.h"
-#include "webtab.h"
 
 // KDE Includes
 #include <KBookmarkManager>
@@ -171,49 +174,17 @@ void NewTabPage::generate(const KUrl &url)
         }
     }
 
-//     // about:tabs links
-//     if (KUrl("about:tabs").isParentOf(url))
-//     {
-//         if (url.fileName() == QL1S("show"))
-//         {
-//             const int winIndex = url.queryItem(QL1S("win")).toInt();
-//             const int tabIndex = url.queryItem(QL1S("tab")).toInt();
-//
-//             MainWindow *w = rApp->mainWindowList().at(winIndex).data();
-//
-//             // close about:tabs tab
-//             rApp->mainWindow()->mainView()->closeTab(rApp->mainWindow()->mainView()->currentIndex());
-//
-//             // show requested tab
-//             w->mainView()->setCurrentIndex(tabIndex);
-//             if (w != rApp->mainWindow())
-//                 w->raise();
-//             return;
-//         }
-//
-//         if (url.fileName() == QL1S("remove"))
-//         {
-//             const int winIndex = url.queryItem(QL1S("win")).toInt();
-//             const int tabIndex = url.queryItem(QL1S("tab")).toInt();
-//
-//             MainWindow *w = rApp->mainWindowList().at(winIndex).data();
-//             w->mainView()->closeTab(tabIndex);
-//             loadPageForUrl(KUrl("about:tabs"));
-//             return;
-//         }
-//     }
-//
-//     // about:closedTabs links
-//     if (KUrl("about:closedTabs").isParentOf(url))
-//     {
-//         if (url.fileName() == QL1S("restore"))
-//         {
-//             const int tabIndex = url.queryItem(QL1S("tab")).toInt();
-//
-//             rApp->mainWindow()->mainView()->restoreClosedTab(tabIndex, false);
-//             return;
-//         }
-//     }
+    // about:closedTabs links
+    if (KUrl("about:closedTabs").isParentOf(url))
+    {
+        if (url.fileName() == QL1S("restore"))
+        {
+            const int tabIndex = url.queryItem(QL1S("tab")).toInt();
+
+            rApp->tabWindow()->restoreClosedTab(tabIndex, false);
+            return;
+        }
+    }
 
     // about:history links
     if (KUrl("about:history").isParentOf(url))
@@ -327,12 +298,6 @@ void NewTabPage::loadPageForUrl(const KUrl &url, const QString & filter)
         initJS();
         return;
     }
-//     else if (encodedUrl == QByteArray("about:closedTabs"))
-//     {
-//         closedTabsPage();
-//         updateWindowIcon();
-//         title = i18n("Closed Tabs");
-//     }
     else if (encodedUrl == QByteArray("about:history"))
     {
         historyPage(filter);
@@ -351,12 +316,12 @@ void NewTabPage::loadPageForUrl(const KUrl &url, const QString & filter)
 //         updateWindowIcon();
         title = i18n("Downloads");
     }
-//     else if (encodedUrl == QByteArray("about:tabs"))
-//     {
-//         tabsPage();
+    else if (encodedUrl == QByteArray("about:closedTabs"))
+    {
+        closedTabsPage();
 //         updateWindowIcon();
-//         title = i18n("Tabs");
-//     }
+        title = i18n("Closed Tabs");
+    }
 
     m_root.document().findFirst(QL1S("title")).setPlainText(title);
 }
@@ -376,12 +341,6 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
                                    QL1S("emblem-favorite"),
                                    KIconLoader::Toolbar));
 
-//     // Closed Tabs
-//     navItems.append(createLinkItem(i18n("Closed Tabs"),
-//                                    QL1S("about:closedTabs"),
-//                                    QL1S("tab-close"),
-//                                    KIconLoader::Toolbar));
-
     // Bookmarks
     navItems.append(createLinkItem(i18n("Bookmarks"),
                                    QL1S("about:bookmarks"),
@@ -400,11 +359,11 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
                                    QL1S("download"),
                                    KIconLoader::Toolbar));
 
-//     // Tabs
-//     navItems.append(createLinkItem(i18n("Tabs"),
-//                                    QL1S("about:tabs"),
-//                                    QL1S("tab-duplicate"),
-//                                    KIconLoader::Toolbar));
+    // Closed Tabs
+    navItems.append(createLinkItem(i18n("Closed Tabs"),
+                                   QL1S("about:closedTabs"),
+                                   QL1S("tab-close"),
+                                   KIconLoader::Toolbar));
 
     Q_FOREACH(QWebElement it, navItems)
     {
@@ -594,38 +553,38 @@ void NewTabPage::bookmarksPage()
 }
 
 
-// void NewTabPage::closedTabsPage()
-// {
-//     m_root.addClass(QL1S("closedTabs"));
-//
-//     QList<TabHistory> links = rApp->mainWindow()->mainView()->recentlyClosedTabs();
-//
-//     if (links.isEmpty())
-//     {
-//         m_root.addClass(QL1S("empty"));
-//         m_root.setPlainText(i18n("There are no recently closed tabs"));
-//         return;
-//     }
-//
-//     for (int i = 0; i < links.count(); ++i)
-//     {
-//         TabHistory item = links.at(i);
-//         QWebElement prev;
-//
-//         if (item.url.isEmpty())
-//             continue;
-//
-//         prev = closedTabPreview(i, item.url, item.title);
-//
-//         prev.setAttribute(QL1S("id"),  QL1S("preview") + QVariant(i).toString());
-//
-//         // hide controls
-//         prev.findFirst(QL1S(".right")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
-//         prev.findFirst(QL1S(".left")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
-//
-//         m_root.appendInside(prev);
-//     }
-// }
+void NewTabPage::closedTabsPage()
+{
+    m_root.addClass(QL1S("closedTabs"));
+
+    QList<TabHistory> links = rApp->tabWindow()->recentlyClosedTabs();
+
+    if (links.isEmpty())
+    {
+        m_root.addClass(QL1S("empty"));
+        m_root.setPlainText(i18n("There are no recently closed tabs"));
+        return;
+    }
+
+    for (int i = 0; i < links.count(); ++i)
+    {
+        TabHistory item = links.at(i);
+        QWebElement prev;
+
+        if (item.url.isEmpty())
+            continue;
+
+        prev = closedTabPreview(i, item.url, item.title);
+
+        prev.setAttribute(QL1S("id"),  QL1S("preview") + QVariant(i).toString());
+
+        // hide controls
+        prev.findFirst(QL1S(".right")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+        prev.findFirst(QL1S(".left")).setStyleProperty(QL1S("visibility"), QL1S("hidden"));
+
+        m_root.appendInside(prev);
+    }
+}
 
 
 void NewTabPage::downloadsPage(const QString & filter)

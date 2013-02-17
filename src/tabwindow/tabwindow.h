@@ -73,6 +73,9 @@ public:
     virtual KActionCollection *actionCollection() const;
     QAction *actionByName(const QString &name);
 
+    QList<TabHistory> recentlyClosedTabs();
+    void restoreClosedTab(int index, bool inNewTab = true);
+    
 public Q_SLOTS:
     void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
     void newTab(WebPage *page = 0);
@@ -115,7 +118,7 @@ private Q_SLOTS:
     void previousTab();
 
     void restoreLastClosedTab();
-
+    
     void setFullScreen(bool);
 
     void loadFavorite(const int);
