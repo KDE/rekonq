@@ -65,7 +65,7 @@ public:
         m_isSessionEnabled = on;
     }
 
-    QList<TabHistory> closedSites();
+    QList<TabHistory> closedSitesForWindow(const QString &);
 
     // This method restores a single TabWindow
     bool restoreTabWindow(TabWindow * window);

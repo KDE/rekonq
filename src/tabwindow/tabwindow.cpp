@@ -41,6 +41,7 @@
 
 #include "bookmarkmanager.h"
 #include "iconmanager.h"
+#include "sessionmanager.h"
 
 // KDE Includes
 #include <KAction>
@@ -208,6 +209,17 @@ void TabWindow::init()
     connect(favoritesSignalMapper, SIGNAL(mapped(int)), this, SLOT(loadFavorite(int)));
 
     _ac->readSettings();
+    
+    // ----------------------------------------------------------------------------------------------
+    int n = rApp->tabWindowList().count() + 1;
+    QList<TabHistory> list = SessionManager::self()->closedSitesForWindow( QL1S("win") + QString::number(n) );
+    Q_FOREACH(const TabHistory & tab, list)
+    {
+        if (tab.url.startsWith(QL1S("about")))
+            continue;
+        m_recentlyClosedTabs.removeAll(tab);
+        m_recentlyClosedTabs.prepend(tab);
+    }
 }
 
 

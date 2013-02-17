@@ -343,7 +343,7 @@ bool SessionManager::restoreTabWindow(TabWindow* window)
 }
 
 
-QList<TabHistory> SessionManager::closedSites()
+QList<TabHistory> SessionManager::closedSitesForWindow(const QString &windowName)
 {
     QList<TabHistory> list;
     QDomDocument document("session");
@@ -351,19 +351,29 @@ QList<TabHistory> SessionManager::closedSites()
     if (!readSessionDocument(document, m_sessionFilePath))
         return list;
 
-    for (unsigned int tabNo = 0; tabNo < document.elementsByTagName("tab").length(); tabNo++)
+    for (unsigned int winNo = 0; winNo < document.elementsByTagName("tab").length(); winNo++)
     {
-        QDomElement tab = document.elementsByTagName("tab").at(tabNo).toElement();
+        QDomElement windowElement = document.elementsByTagName("window").at(winNo).toElement();
 
-        TabHistory tabHistory;
+        if (windowName != windowElement.attribute("name", ""))
+            continue;
+        
+        for (unsigned int tabNo = 0; tabNo < windowElement.elementsByTagName("tab").length(); tabNo++)
+        {
+            QDomElement tab = windowElement.elementsByTagName("tab").at(tabNo).toElement();
 
-        tabHistory.title = tab.attribute("title");
-        tabHistory.url = tab.attribute("url");
+            TabHistory tabHistory;
 
-        QDomCDATASection historySection = tab.firstChild().toCDATASection();
-        tabHistory.history = QByteArray::fromBase64(historySection.data().toAscii());
+            tabHistory.title = tab.attribute("title");
+            tabHistory.url = tab.attribute("url");
 
-        list << tabHistory;
+            QDomCDATASection historySection = tab.firstChild().toCDATASection();
+            tabHistory.history = QByteArray::fromBase64(historySection.data().toAscii());
+
+            list << tabHistory;
+        }
+        
+        return list;
     }
 
     return list;
