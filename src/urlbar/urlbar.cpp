@@ -641,7 +641,7 @@ void UrlBar::suggest()
 {
     if (!_box.isNull())
     {
-        _box.data()->suggestUrls(text());
+        _box.data()->suggestUrls(text().trimmed());
     }
 }
 
@@ -667,7 +667,7 @@ void UrlBar::refreshFavicon()
 
 void UrlBar::pasteAndGo()
 {
-    loadRequestedUrl(rApp->clipboard()->text());
+    loadRequestedUrl(rApp->clipboard()->text().trimmed());
 }
 
 
@@ -675,7 +675,7 @@ void UrlBar::pasteAndSearch()
 {
     KService::Ptr defaultEngine = SearchEngine::defaultEngine();
     if (defaultEngine)
-        loadRequestedUrl(KUrl(SearchEngine::buildQuery(defaultEngine, QApplication::clipboard()->text())));
+        loadRequestedUrl(KUrl(SearchEngine::buildQuery(defaultEngine, QApplication::clipboard()->text().trimmed())));
 }
 
 
