@@ -302,7 +302,7 @@ void AdBlockManager::updateSubscription(int i)
     QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
     KUrl destUrl = KUrl(rulesFilePath);
 
-    KIO::FileCopyJob* job = KIO::file_copy(subUrl , destUrl, -1, KIO::HideProgressInfo);
+    KIO::FileCopyJob* job = KIO::file_copy(subUrl , destUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
     job->metaData().insert("ssl_no_client_cert", "TRUE");
     job->metaData().insert("ssl_no_ui", "TRUE");
     job->metaData().insert("UseCache", "false");
