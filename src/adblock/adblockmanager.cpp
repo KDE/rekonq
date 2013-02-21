@@ -40,6 +40,7 @@
 
 // Qt Includes
 #include <QUrl>
+#include <QTimer>
 #include <QWebElement>
 #include <QNetworkReply>
 #include <QNetworkRequest>
@@ -66,7 +67,8 @@ AdBlockManager::AdBlockManager(QObject *parent)
     , _isAdblockEnabled(false)
     , _isHideAdsEnabled(false)
 {
-    loadSettings();
+    // NOTE: launch this with 1 sec delay to get sure we can start up fast...
+    QTimer::singleShot(1000, this, SLOT(loadSettings()));
 }
 
 
