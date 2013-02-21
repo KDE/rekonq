@@ -59,7 +59,7 @@ RuleTypes AdBlockRule::ruleType(const QString &filter)
 {
     if (AdBlockRuleTextMatchImpl::isTextMatchFilter(filter))
         return TextRule;
-
+    
     if (AdBlockRuleNullImpl::isNullFilter(filter))
         return NullRule;
 

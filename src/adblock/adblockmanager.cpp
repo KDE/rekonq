@@ -208,6 +208,9 @@ void AdBlockManager::loadRuleString(const QString &stringRule)
             return;
 
         const QString filter = stringRule.mid(2);
+        if (filter.isEmpty())
+            return;
+        
         AdBlockRule rule(filter);
         _whiteList << rule;
         return;
@@ -216,7 +219,11 @@ void AdBlockManager::loadRuleString(const QString &stringRule)
     // hide (CSS) rules
     if (stringRule.startsWith(QL1S("##")))
     {
-        _hideList << stringRule.mid(2);
+        const QString filter = stringRule.mid(2);
+        if (filter.isEmpty())
+            return;
+
+        _hideList << filter;
         return;
     }
 

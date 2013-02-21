@@ -3,6 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010-2011 by Benjamin Poulain <ikipou at gmail dot com>
+* Copyright (C) 2010-2013 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -48,6 +49,9 @@ bool AdBlockRuleTextMatchImpl::match(const QNetworkRequest &request, const QStri
 {
     Q_UNUSED(request);
     Q_UNUSED(encodedUrl);
+    if (m_textToMatch.isEmpty())
+        return false;
+    
     // Case sensitive compare is faster, but would be incorrect with encodedUrl since
     // we do want case insensitive.
     // What we do is work on a lowercase version of m_textToMatch, and compare to the lowercase
