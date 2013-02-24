@@ -38,6 +38,7 @@
 #include "rekonq.h"
 
 // Local Includes
+#include "adblockmanager.h"
 #include "downloadmanager.h"
 #include "historymanager.h"
 #include "iconmanager.h"
@@ -175,6 +176,8 @@ WebPage::WebPage(QWidget *parent, bool isPrivateBrowsing)
     connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 
+    connect(this, SIGNAL(frameCreated(QWebFrame *)), AdBlockManager::self(), SLOT(applyHidingRules(QWebFrame *)));
+    
     // protocol handler signals
     connect(&_protHandler, SIGNAL(downloadUrl(KUrl)), this, SLOT(downloadUrl(KUrl)));
 }
@@ -292,7 +295,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     if (!settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         // Get the SSL information sent, if any...
-        KIO::AccessManager *manager = qobject_cast<KIO::AccessManager*>(networkAccessManager());
+        NetworkAccessManager *manager = qobject_cast<NetworkAccessManager *>(networkAccessManager());
         KIO::MetaData metaData = manager->requestMetaData();
         if (metaData.contains(QL1S("ssl_in_use")))
         {
@@ -502,7 +505,7 @@ void WebPage::loadStarted()
 
     int value = val.toInt();
     if (value != 10)
-        mainFrame()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values
+        mainFrame()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values    
 }
 
 

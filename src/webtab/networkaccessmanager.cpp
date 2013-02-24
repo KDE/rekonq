@@ -149,7 +149,7 @@ QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkR
     if (frame)
     {
         if (!m_blockedRequests.contains(frame))
-            connect(frame, SIGNAL(loadFinished(bool)), this, SLOT(slotFinished(bool)));
+            connect(frame, SIGNAL(loadFinished(bool)), this, SLOT(applyHidingBlockedElements(bool)));
         m_blockedRequests.insert(frame, req.url());
     }
 
@@ -157,7 +157,7 @@ QNetworkReply *NetworkAccessManager::createRequest(Operation op, const QNetworkR
 }
 
 
-void NetworkAccessManager::slotFinished(bool ok)
+void NetworkAccessManager::applyHidingBlockedElements(bool ok)
 {
     if (!ok)
         return;
@@ -181,5 +181,5 @@ void NetworkAccessManager::slotFinished(bool ok)
         collection += frame->parentFrame()->findAllElements(HIDABLE_ELEMENTS);
 
     Q_FOREACH(const QUrl & url, urls)
-    hideBlockedElements(url, collection);
+        hideBlockedElements(url, collection);
 }

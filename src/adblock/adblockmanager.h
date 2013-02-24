@@ -139,7 +139,7 @@
 
 // Forward Includes
 class QNetworkRequest;
-class WebPage;
+class QWebFrame;
 
 // Definitions
 typedef QList<AdBlockRule> AdBlockRuleList;
@@ -186,6 +186,9 @@ private Q_SLOTS:
 
     void slotFinished(KJob *);
 
+    void applyHidingRules(QWebFrame *);
+    void applyHidingRules(bool);
+    
 Q_SIGNALS:
     void reloadCurrentPage();
 
@@ -197,6 +200,7 @@ private:
     AdBlockHostMatcher _hostWhiteList;
     AdBlockRuleList _blackList;
     AdBlockRuleList _whiteList;
+    
     QStringList _hideList;
 
     KSharedConfig::Ptr _adblockConfig;

@@ -53,8 +53,8 @@ protected:
     virtual QNetworkReply *createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData = 0);
 
 private Q_SLOTS:
-    void slotFinished(bool);
-
+    void applyHidingBlockedElements(bool);
+    
 private:
     QMultiHash<QWebFrame*, QUrl> m_blockedRequests;
     QByteArray _acceptLanguage;

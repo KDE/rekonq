@@ -34,6 +34,8 @@
 // Local Includes
 #include "adblocksettingwidget.h"
 
+#include "webpage.h"
+
 // KDE Includes
 #include <KIO/FileCopyJob>
 #include <KStandardDirs>
@@ -115,6 +117,7 @@ void AdBlockManager::loadSettings()
 
     _whiteList.clear();
     _blackList.clear();
+
     _hideList.clear();
 
     KConfigGroup settingsGroup(_adblockConfig, "Settings");
@@ -224,7 +227,7 @@ void AdBlockManager::loadRuleString(const QString &stringRule)
         const QString filter = stringRule.mid(2);
         if (filter.isEmpty())
             return;
-
+        
         _hideList << filter;
         return;
     }
@@ -388,4 +391,52 @@ void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
 bool AdBlockManager::isAdblockEnabledForHost(const QString &host)
 {
     return ! _hostWhiteList.match(host);
+}
+
+
+void AdBlockManager::applyHidingRules(QWebFrame *frame)
+{
+    if (!frame)
+        return;
+
+    if (!_isAdblockEnabled)
+        return;
+
+    connect(frame, SIGNAL(loadFinished(bool)), this, SLOT(applyHidingRules(bool)));
+}
+
+
+void AdBlockManager::applyHidingRules(bool ok)
+{
+    if (!ok)
+        return;
+    
+    QWebFrame *frame = qobject_cast<QWebFrame *>(sender());
+    if (!frame)
+        return;
+
+    WebPage *page = qobject_cast<WebPage *>(frame->page());
+    if (!page)
+        return;
+    
+    QString mainPageHost = page->loadingUrl().host();
+    QStringList hosts = ReKonfig::whiteReferer();
+    if (hosts.contains(mainPageHost))
+        return;
+    
+    QWebElement document = frame->documentElement();
+
+    // HIDE RULES
+    Q_FOREACH(const QString & filter, _hideList)
+    {
+        QWebElementCollection elements = document.findAll(filter);
+
+        Q_FOREACH(QWebElement el, elements)
+        {
+            if (el.isNull())
+                continue;
+            kDebug() << "Hide element: " << el.localName();
+            el.removeFromDocument();
+        }
+    }
 }
