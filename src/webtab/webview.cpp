@@ -609,7 +609,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
         case 1: // Load Clipboard URL
             if (weCanDoMiddleClickActions)
             {
-                const QString clipboardContent = QApplication::clipboard()->text();
+                const QString clipboardContent = QApplication::clipboard()->text(QClipboard::Selection);
 
                 if (clipboardContent.isEmpty())
                     break;
