@@ -67,6 +67,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void searchString(const QString &);
+    void triggerPartFind();
 
 private:
     KLineEdit *m_lineEdit;

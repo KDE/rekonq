@@ -233,8 +233,8 @@ void FindBar::findNext()
         KParts::ReadOnlyPart *p = w->tabView()->part();
         if (p)
         {
-//             connect(this, SIGNAL(triggerPartFind()), p, SLOT(slotFind()));
-//             emit triggerPartFind();
+            connect(this, SIGNAL(triggerPartFind()), p, SLOT(slotFind()));
+            emit triggerPartFind();
             return;
         }
     }
