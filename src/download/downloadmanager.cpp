@@ -156,28 +156,6 @@ DownloadItem* DownloadManager::addDownload(KIO::CopyJob *job)
 }
 
 
-DownloadItem* DownloadManager::addKGetDownload(const QString &srcUrl, const QString &destUrl)
-{
-    QString downloadFilePath = KStandardDirs::locateLocal("appdata" , "downloads");
-    QFile downloadFile(downloadFilePath);
-    if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
-    {
-        kDebug() << "Unable to open download file (WRITE mode)..";
-        return 0;
-    }
-    QDataStream out(&downloadFile);
-    out << srcUrl;
-    out << destUrl;
-    out << QDateTime::currentDateTime();
-    downloadFile.close();
-    DownloadItem *item = new DownloadItem(srcUrl, destUrl, QDateTime::currentDateTime(), this);
-    item->setIsKGetDownload();
-    m_downloadList.append(item);
-    emit newDownloadAdded(item);
-    return item;
-}
-
-
 bool DownloadManager::clearDownloadsHistory()
 {
     m_downloadList.clear();
@@ -218,6 +196,23 @@ void DownloadManager::removeDownloadItem(int index)
 bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &metaData,
                                        QWidget *parent, bool forceDirRequest, const QString &suggestedName, bool registerDownload)
 {
+    // manage downloads with KGet if found
+    if (ReKonfig::kgetDownload() && !KStandardDirs::findExe("kget").isNull())
+    {
+        //KGet integration:
+        if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
+        {
+            KToolInvocation::kdeinitExecWait("kget");
+        }
+        QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
+        if (!kget.isValid())
+            return false;
+
+        QDBusMessage transfer = kget.call(QL1S("addTransfer"), srcUrl.prettyUrl(), QString(), true);
+
+        return true;
+    }
+
     KUrl destUrl;
 
     const QString fileName((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
@@ -236,25 +231,6 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
 
     if (!destUrl.isValid())
         return false;
-
-    // manage downloads with KGet if found
-    if (ReKonfig::kgetDownload() && !KStandardDirs::findExe("kget").isNull())
-    {
-        //KGet integration:
-        if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.kget"))
-        {
-            KToolInvocation::kdeinitExecWait("kget");
-        }
-        QDBusInterface kget("org.kde.kget", "/KGet", "org.kde.kget.main");
-        if (!kget.isValid())
-            return false;
-
-        QDBusMessage transfer = kget.call(QL1S("addTransfer"), srcUrl.prettyUrl(), destUrl.prettyUrl(), true);
-
-        if (registerDownload)
-            addKGetDownload(srcUrl.pathOrUrl(), destUrl.pathOrUrl());
-        return true;
-    }
 
     KIO::CopyJob *job = KIO::copy(srcUrl, destUrl);
 

@@ -86,7 +86,6 @@ private:
     void init();
 
     DownloadItem* addDownload(KIO::CopyJob *job);
-    DownloadItem* addKGetDownload(const QString &srcUrl, const QString &destUrl);
 
 Q_SIGNALS:
     void newDownloadAdded(QObject *item);
