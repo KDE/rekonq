@@ -284,6 +284,7 @@ void WebWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)), this, SLOT(viewPageSource()));
 
     a = new KAction(KIcon("view-media-artist"), i18n("New Private Window"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
     connect(a, SIGNAL(triggered(bool)), rApp, SLOT(newPrivateBrowsingWindow()));
     actionCollection()->addAction(QL1S("private_browsing"), a);
 
