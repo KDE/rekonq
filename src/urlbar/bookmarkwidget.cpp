@@ -129,7 +129,7 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
         KRatingWidget *ratingWidget = new KRatingWidget(this);
         if (m_nfoResource.rating() != 0)
         {
-            ratingWidget->setRating(m_nfoResource.rating());
+            ratingWidget->setRating((int)m_nfoResource.rating());
         }
         connect(ratingWidget, SIGNAL(ratingChanged(int)), this, SLOT(setRatingSlot(int)));
         ratingWidget->setToolTip(i18n("Rate this page"));
