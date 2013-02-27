@@ -115,6 +115,8 @@ private Q_SLOTS:
     */
     void notifyMessage(const QString &msg);
 
+    void findSelectedText();
+    
     // File Menu slots
     void openLocation();
     void fileOpen();

@@ -1004,6 +1004,14 @@ void WebWindow::keyBindings()
 }
 
 
+
+void WebWindow::findSelectedText()
+{
+    // Just done everything! Just show findbar... ;)
+    m_findBar->show();
+}
+
+
 // Main Toolbar methods ----------
 
 
