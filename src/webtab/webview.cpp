@@ -479,13 +479,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                 // open selected text url in a new tab
                 QAction * const openInNewTabAction = new KAction(KIcon("tab-new"),
                         i18n("Open '%1' in New Tab", truncatedUrl), &menu);
-                openInNewTabAction->setData(QUrl(urlLikeText));
+                openInNewTabAction->setData( QUrl::fromUserInput(selectedText()) );
                 connect(openInNewTabAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
                 menu.addAction(openInNewTabAction);
                 //open selected text url in a new window
                 QAction * const openInNewWindowAction = new KAction(KIcon("window-new"),
                         i18n("Open '%1' in New Window", truncatedUrl), &menu);
-                openInNewWindowAction->setData(QUrl(urlLikeText));
+                openInNewWindowAction->setData( QUrl::fromUserInput(selectedText()) );
                 connect(openInNewWindowAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
                 menu.addAction(openInNewWindowAction);
                 menu.addSeparator();
