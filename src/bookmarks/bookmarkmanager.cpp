@@ -192,8 +192,8 @@ void BookmarkManager::fillBookmarkBar(BookmarkToolBar *toolBar)
         {
             KBookmarkActionMenu *menuAction = new KBookmarkActionMenu(bookmark.toGroup(), toolBar);
             menuAction->setDelayed(false);
-//             BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menuAction->menu(), bookmark.address());
-//             bMenu->setParent(menuAction->menu());
+            BookmarkMenu *bMenu = new BookmarkMenu(m_manager, m_owner, menuAction->menu(), bookmark.address());
+            bMenu->setParent(menuAction->menu());
 
             connect(menuAction->menu(), SIGNAL(aboutToShow()), toolBar, SLOT(menuDisplayed()));
             connect(menuAction->menu(), SIGNAL(aboutToHide()), toolBar, SLOT(menuHidden()));
