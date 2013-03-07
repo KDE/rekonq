@@ -95,6 +95,7 @@ private Q_SLOTS:
     void updateNewTabButtonPosition();
 
     void tabTitleChanged(const QString &);
+    void tabUrlChanged(const QUrl &);
     void tabIconChanged();
 
     void tabLoadStarted();

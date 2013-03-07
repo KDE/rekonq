@@ -275,6 +275,7 @@ WebWindow *TabWindow::prepareNewTab(WebPage *page)
     WebWindow *tab = new WebWindow(this, _isPrivateBrowsing, page);
 
     connect(tab, SIGNAL(titleChanged(QString)), this, SLOT(tabTitleChanged(QString)));
+    connect(tab, SIGNAL(urlChanged(QUrl)), this, SLOT(tabUrlChanged(QUrl)));
     connect(tab, SIGNAL(iconChanged()), this, SLOT(tabIconChanged()));
 
     connect(tab, SIGNAL(loadStarted()), this, SLOT(tabLoadStarted()));
@@ -444,6 +445,21 @@ void TabWindow::tabTitleChanged(const QString &title)
     {
         setWindowTitle(tabTitle + QL1S(" - rekonq"));
     }
+    
+    if (ReKonfig::hoveringTabOption() == 1)
+        tabBar()->setTabToolTip(index, tabTitle.remove('&'));
+}
+
+
+void TabWindow::tabUrlChanged(const QUrl &url)
+{
+    WebWindow *tab = qobject_cast<WebWindow *>(sender());
+    if (!tab)
+        return;
+
+    int index = indexOf(tab);
+    if (ReKonfig::hoveringTabOption() == 2)
+        tabBar()->setTabToolTip(index, url.toString());
 }
 
 

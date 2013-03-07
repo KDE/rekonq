@@ -25,9 +25,14 @@
 * ============================================================ */
 
 
+// Self Includes
 #include "tabbar.h"
 #include "tabbar.moc"
 
+// Auto Includes
+#include "rekonq.h"
+
+// Local Includes
 #include "tabwindow.h"
 #include "tabhighlighteffect.h"
 #include "tabpreviewpopup.h"
@@ -36,6 +41,7 @@
 #include "iconmanager.h"
 #include "sessionmanager.h"
 
+// KDE Includes
 #include <KAcceleratorManager>
 #include <KAction>
 #include <KColorScheme>
@@ -43,6 +49,7 @@
 #include <KMenu>
 #include <KUrl>
 
+// Qt Includes
 #include <QLabel>
 #include <QPropertyAnimation>
 #include <QSignalMapper>
@@ -374,6 +381,9 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
+    if (ReKonfig::hoveringTabOption() != 0)
+        return;
+    
     // Find the tab under the mouse
     const int tabIndex = tabAt(event->pos());
 

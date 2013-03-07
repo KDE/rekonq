@@ -37,6 +37,7 @@
 // Qt Includes
 #include <QWidget>
 #include <QAction>
+#include <QUrl>
 
 // Forward Declarations
 class WebPage;
@@ -54,7 +55,6 @@ class KToolBar;
 class QLabel;
 class QPixmap;
 class QTimer;
-class QUrl;
 
 
 class WebWindow : public QWidget
@@ -147,6 +147,7 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void titleChanged(QString);
+    void urlChanged(QUrl);
     void iconChanged();
     
     void loadStarted();

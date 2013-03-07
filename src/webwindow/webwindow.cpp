@@ -124,6 +124,7 @@ WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
 
     // things changed signals
     connect(_tab, SIGNAL(titleChanged(QString)), this, SIGNAL(titleChanged(QString)));
+    connect(_tab, SIGNAL(urlChanged(QUrl)), this, SIGNAL(urlChanged(QUrl)));
     connect(_tab, SIGNAL(iconChanged()), this, SIGNAL(iconChanged()));
 
     // check view signals
