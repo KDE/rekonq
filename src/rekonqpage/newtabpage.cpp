@@ -542,12 +542,18 @@ void NewTabPage::bookmarksPage()
 
     m_root.appendInside(markup(QL1S(".bookmarkfolder")));
     QWebElement rootFolder = m_root.lastChild();
-    rootFolder.appendInside(markup(QL1S("h4")));
-    rootFolder.lastChild().setPlainText(i18n("Unsorted"));
+    rootFolder.appendInside(markup(QL1S("a")));
+    rootFolder.lastChild().setAttribute(QL1S("href"), QL1S("javascript: toggleChildren(\'Unsorted\')"));
+    QWebElement titleElement = rootFolder.lastChild();
+    titleElement.appendInside(markup(QL1S("h4")));    
+    titleElement.lastChild().setPlainText(i18n("Unsorted"));
+
+    rootFolder.appendInside(markup(QL1S("div")));
+    rootFolder.lastChild().setAttribute(QL1S("id"), QL1S("Unsorted"));
 
     while (!bookmark.isNull())
     {
-        createBookmarkItem(bookmark, rootFolder);
+        createBookmarkItem(bookmark, rootFolder.lastChild());
         bookmark = bookGroup.next(bookmark);
     }
 }
@@ -906,12 +912,18 @@ void NewTabPage::createBookmarkGroup(const KBookmark &bookmark, QWebElement pare
 
     parent.appendInside(markup(QL1S(".bookmarkfolder")));
     QWebElement folder = parent.lastChild();
-    folder.appendInside(markup(QL1S("h4")));
-    folder.lastChild().setPlainText(group.fullText());
+    folder.appendInside(markup(QL1S("a")));
+    folder.lastChild().setAttribute(QL1S("href"), QL1S("javascript: toggleChildren(\'") + group.fullText() + QL1S("\')"));
+    QWebElement titleElement = folder.lastChild();
+    titleElement.appendInside(markup(QL1S("h4")));
+    titleElement.lastChild().setPlainText(group.fullText());
+
+    folder.appendInside(markup(QL1S("div")));
+    folder.lastChild().setAttribute(QL1S("id"), group.fullText());
 
     while (!bm.isNull())
     {
-        createBookmarkItem(bm, folder);
+        createBookmarkItem(bm, folder.lastChild());
         bm = group.next(bm);
     }
 }
