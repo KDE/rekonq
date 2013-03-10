@@ -41,7 +41,8 @@
 // Forward Declarations
 class AutoSaver;
 class TabHistory;
-class TabWindow;
+
+class RekonqWindow;
 
 
 /**
@@ -67,8 +68,8 @@ public:
 
     QList<TabHistory> closedSitesForWindow(const QString &);
 
-    // This method restores a single TabWindow
-    bool restoreTabWindow(TabWindow * window);
+    // This method restores a single Window
+    bool restoreWindow(RekonqWindow * window);
 
 private:
     explicit SessionManager(QObject *parent = 0);

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2013 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -27,422 +27,163 @@
 // Self Includes
 #include "rekonqwindow.h"
 #include "rekonqwindow.moc"
-#include <rekonq.h>
+
+// Auto Includes
+#include "rekonq.h"
+
+// Local Includes
+#include "application.h"
+
+#include "tabwidget.h"
+#include "tabbar.h"
+
+#include "webpage.h"
+#include "webwindow.h"
 
 // KDE Includes
-#include <KApplication>
-#include <KCmdLineArgs>
-#include <KSessionManager>
+#include <KUrl>
+#include <KLocalizedString>
 
 // Qt Includes
-#include <QCloseEvent>
-#include <QDesktopWidget>
+#include <QVBoxLayout>
+#include <QSizePolicy>
 
 
-static bool s_no_query_exit = false;
-
-
-class KRWSessionManager : public KSessionManager
+RekonqWindow::RekonqWindow(bool withTab, bool privateBrowsingMode, QWidget *parent)
+    : RWindow(parent)
+    , _tabWidget(new TabWidget(withTab, privateBrowsingMode, this))
+    , _splitter(new QSplitter(this))
 {
-
-public:
-    KRWSessionManager()
-    {
-    }
-
-    ~KRWSessionManager()
-    {
-    }
-
-    bool dummyInit()
-    {
-        return true;
-    }
-
-    bool saveState(QSessionManager&)
-    {
-        KConfig* config = KApplication::kApplication()->sessionConfig();
-        int n = 0;
-        Q_FOREACH(RekonqWindow * rw, RekonqWindow::windowList())
-        {
-            n++;
-            rw->savePropertiesInternal(config, n);
-        }
-
-        KConfigGroup group(config, "Number");
-        group.writeEntry("NumberOfWindows", n);
-        return true;
-    }
-
-    bool commitData(QSessionManager& sm)
-    {
-        // not really a fast method but the only compatible one
-        if (sm.allowsInteraction())
-        {
-            bool canceled = false;
-            ::s_no_query_exit = true;
-
-            Q_FOREACH(RekonqWindow * window, RekonqWindow::windowList())
-            {
-                if (!window->testAttribute(Qt::WA_WState_Hidden))
-                {
-                    QCloseEvent e;
-                    QApplication::sendEvent(window, &e);
-                    canceled = !e.isAccepted();
-                    if (canceled)
-                        break;
-                }
-            }
-            ::s_no_query_exit = false;
-            if (canceled)
-                return false;
-
-            return true;
-        }
-
-        // the user wants it, the user gets it
-        return true;
-    }
-};
+    init();
+}
 
 
-K_GLOBAL_STATIC(KRWSessionManager, ktwsm)
-K_GLOBAL_STATIC(QList<RekonqWindow*>, sWindowList)
-
-
-// ----------------------------------------------------------------------------------------------------
-
-
-RekonqWindow::RekonqWindow(QWidget* parent)
-    : KTabWidget(parent)
+RekonqWindow::RekonqWindow(WebPage *pg, QWidget *parent)
+    : RWindow(parent)
+    , _tabWidget(new TabWidget(pg, this))
+    , _splitter(new QSplitter(this))
 {
-    // This has to be a window...
-    setWindowFlags(Qt::Window);
-
-    // Setting attributes (just to be sure...)
-    setAttribute(Qt::WA_DeleteOnClose, true);
-    setAttribute(Qt::WA_QuitOnClose, true);
-
-    ktwsm->dummyInit();
-    sWindowList->append(this);
-
-    QString geometry;
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs("kde");
-    if (args && args->isSet("geometry"))
-        geometry = args->getOption("geometry");
-
-    if (geometry.isNull())    // if there is no geometry, it doesn't matter
-    {
-        KSharedConfig::Ptr cf = KGlobal::config();
-        KConfigGroup cg(cf, QL1S("TabWindow"));
-        restoreWindowSize(cg);
-    }
-    else
-    {
-        parseGeometry();
-    }
-
-    setWindowTitle(KGlobal::caption());
+    init();
 }
 
 
 RekonqWindow::~RekonqWindow()
 {
-    sWindowList->removeAll(this);
-
-    KSharedConfig::Ptr cf = KGlobal::config();
-    KConfigGroup cg(cf, QL1S("TabWindow"));
-    saveWindowSize(cg);
 }
 
 
-QSize RekonqWindow::sizeHint() const
+void RekonqWindow::init()
 {
-    QRect desktopRect = QApplication::desktop()->screenGeometry();
-    QSize size = desktopRect.size() * 0.8;
-    return size;
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QVBoxLayout *l = new QVBoxLayout(this);
+    l->setMargin(0);
+    l->setSpacing(0);
+
+    if (ReKonfig::showBookmarksPanel())
+        showBookmarksPanel(true);
+    
+    if (ReKonfig::showHistoryPanel())
+        showHistoryPanel(true);
+
+    _splitter->addWidget(_tabWidget);
+    _tabWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    l->addWidget(_splitter);
+
+    
+    // fix focus handling
+    setFocusProxy(_tabWidget);
 }
 
-QList<RekonqWindow*> RekonqWindow::windowList()
+// --------------------------------------------------------------------------------------------------
+
+
+TabWidget *RekonqWindow::tabWidget()
 {
-    return *sWindowList;
-}
-
-
-void RekonqWindow::savePropertiesInternal(KConfig *config, int number)
-{
-    QString s;
-    s.setNum(number);
-    s.prepend(QL1S("WindowProperties"));
-    KConfigGroup cg(config, s);
-
-    // store objectName, className, Width and Height  for later restoring
-    // (Only useful for session management)
-    cg.writeEntry(QL1S("ObjectName"), objectName());
-    cg.writeEntry(QL1S("ClassName"), metaObject()->className());
-
-    saveWindowSize(cg);
-
-    s.setNum(number);
-    cg = KConfigGroup(config, s);
-    saveProperties(cg);
-}
-
-
-bool RekonqWindow::readPropertiesInternal(KConfig *config, int number)
-{
-    // in order they are in toolbar list
-    QString s;
-    s.setNum(number);
-    s.prepend(QL1S("WindowProperties"));
-
-    KConfigGroup cg(config, s);
-
-    // restore the object name (window role)
-    if (cg.hasKey(QL1S("ObjectName")))
-        setObjectName(cg.readEntry("ObjectName").toLatin1());  // latin1 is right here
-
-    restoreWindowSize(cg);
-
-    s.setNum(number);
-    KConfigGroup grp(config, s);
-    readProperties(grp);
-
-    return true;
+    return _tabWidget;
 }
 
 
-void RekonqWindow::restoreWindowSize(const KConfigGroup & _cg)
+TabBar *RekonqWindow::tabBar()
 {
-    int scnum = QApplication::desktop()->screenNumber(window());
-    QRect desktopRect = QApplication::desktop()->screenGeometry(scnum);
+    return _tabWidget->tabBar();
+}
 
-    KConfigGroup cg(_cg);
 
-    QString geometryKey = QString::fromLatin1("geometry-%1-%2").arg(desktopRect.width()).arg(desktopRect.height());
-    QByteArray geometry = cg.readEntry(geometryKey, QByteArray());
+WebWindow *RekonqWindow::currentWebWindow() const
+{
+    return _tabWidget->currentWebWindow();
+}
 
-    // if first time run, center window: resize && move..
-    if (!restoreGeometry(QByteArray::fromBase64(geometry)))
+
+// --------------------------------------------------------------------------------------------------
+
+
+void RekonqWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *history)
+{
+    switch (type)
     {
-        QSize defaultSize = desktopRect.size() * 0.8;
-        resize(defaultSize);
+    case Rekonq::NewWindow:
+    case Rekonq::NewPrivateWindow:
+        rApp->loadUrl(url, type);
+        return;
 
-        move((desktopRect.width() - width()) / 2, (desktopRect.height() - height()) / 2);
-    }
-
-    checkPosition();
+    case Rekonq::NewTab:
+    case Rekonq::NewBackGroundTab:
+    case Rekonq::NewFocusedTab:
+    case Rekonq::CurrentTab:
+    default:
+        _tabWidget->loadUrl(url, type, history);
+        break;
+    };
 }
 
 
-void RekonqWindow::saveWindowSize(const KConfigGroup & _cg) const
+void RekonqWindow::showBookmarksPanel(bool on)
 {
-    int scnum = QApplication::desktop()->screenNumber(window());
-    QRect desktopRect = QApplication::desktop()->screenGeometry(scnum);
-
-    int w, h;
-    if (isMaximized())
+    if (on)
     {
-        w = desktopRect.width() + 1;
-        h = desktopRect.height() + 1;
+        if (_bookmarksPanel.isNull())
+        {
+            _bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
+            connect(_bookmarksPanel.data(), SIGNAL(openUrl(KUrl, Rekonq::OpenType)), this, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
+
+            QAction *a = _tabWidget->actionByName(QL1S("show_bookmarks_panel"));
+            connect(_bookmarksPanel.data(), SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));
+        }
+        _splitter->insertWidget(0, _bookmarksPanel.data());
+        _bookmarksPanel.data()->show();
     }
     else
     {
-        w = width();
-        h = height();
+        _bookmarksPanel.data()->hide();
+        delete _bookmarksPanel.data();
+        _bookmarksPanel.clear();
     }
-
-    KConfigGroup cg(_cg);
-
-    QString widthString = QString::fromLatin1("Width %1").arg(desktopRect.width());
-    cg.writeEntry(widthString, w);
-
-    QString heightString = QString::fromLatin1("Height %1").arg(desktopRect.height());
-    cg.writeEntry(heightString, h);
-
-    // geometry is saved separately for each resolution
-    QString geometryKey = QString::fromLatin1("geometry-%1-%2").arg(desktopRect.width()).arg(desktopRect.height());
-    QByteArray geometry = saveGeometry();
-    cg.writeEntry(geometryKey, geometry.toBase64());
 }
 
 
-void RekonqWindow::parseGeometry()
+void RekonqWindow::showHistoryPanel(bool on)
 {
-    QString cmdlineGeometry;
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs("kde");
-    if (args->isSet("geometry"))
-        cmdlineGeometry = args->getOption("geometry");
-
-    Q_ASSERT(!cmdlineGeometry.isNull());
-
-// #if defined Q_WS_X11
-//     int x, y;
-//     int w, h;
-//     int m = XParseGeometry( cmdlineGeometry.toLatin1(), &x, &y, (unsigned int*)&w, (unsigned int*)&h);
-//     if (parsewidth) {
-//         const QSize minSize = minimumSize();
-//         const QSize maxSize = maximumSize();
-//         if ( !(m & WidthValue) )
-//             w = width();
-//         if ( !(m & HeightValue) )
-//             h = height();
-//          w = qMin(w,maxSize.width());
-//          h = qMin(h,maxSize.height());
-//          w = qMax(w,minSize.width());
-//          h = qMax(h,minSize.height());
-//          resize(w, h);
-//     } else {
-//         if ( (m & XNegative) )
-//             x = KApplication::desktop()->width()  + x - w;
-//         else if ( (m & XValue) )
-//             x = geometry().x();
-//         if ( (m & YNegative) )
-//             y = KApplication::desktop()->height() + y - h;
-//         else if ( (m & YValue) )
-//             y = geometry().y();
-//
-//         move(x, y);
-//     }
-// #endif
-}
-
-
-void RekonqWindow::resizeEvent(QResizeEvent *event)
-{
-    if (!isFullScreen())
-        saveAutoSaveSettings();
-    KTabWidget::resizeEvent(event);
-}
-
-
-void RekonqWindow::saveAutoSaveSettings()
-{
-    kDebug() << "AUTO SAVING SETTINGS...";
-
-    KSharedConfig::Ptr cf = KGlobal::config();
-    KConfigGroup cg(cf, QL1S("TabWindow"));
-    saveWindowSize(cg);
-}
-
-
-bool RekonqWindow::canBeRestored(int number)
-{
-    if (!qApp->isSessionRestored())
-        return false;
-    KConfig *config = kapp->sessionConfig();
-    if (!config)
-        return false;
-
-    KConfigGroup group(config, "Number");
-    const int n = group.readEntry("NumberOfWindows", 1);
-    return number >= 1 && number <= n;
-}
-
-
-bool RekonqWindow::restore(int number, bool show)
-{
-    if (!canBeRestored(number))
-        return false;
-    KConfig *config = kapp->sessionConfig();
-    if (readPropertiesInternal(config, number))
+    if (on)
     {
-        if (show)
-            RekonqWindow::show();
-        return true;
+        if (_historyPanel.isNull())
+        {
+            _historyPanel = new HistoryPanel(i18n("History Panel"), this);
+            connect(_historyPanel.data(), SIGNAL(openUrl(KUrl, Rekonq::OpenType)), this, SLOT(loadUrl(KUrl, Rekonq::OpenType)));
+            
+            QAction *a = _tabWidget->actionByName(QL1S("show_history_panel"));
+            connect(_historyPanel.data(), SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));
+
+        }
+        _splitter->insertWidget(0, _historyPanel.data());
+        _historyPanel.data()->show();
     }
-    return false;
-}
-
-
-// NOTE: For internal purpose only ------------------------------------------------------
-
-
-int RekonqWindow::addTab(QWidget *page, const QString &label)
-{
-    setUpdatesEnabled(false);
-    int i = KTabWidget::addTab(page, label);
-    setUpdatesEnabled(true);
-
-    return i;
-}
-
-
-int RekonqWindow::addTab(QWidget *page, const QIcon &icon, const QString &label)
-{
-    setUpdatesEnabled(false);
-    int i = KTabWidget::addTab(page, icon, label);
-    setUpdatesEnabled(true);
-
-    return i;
-}
-
-
-int RekonqWindow::insertTab(int index, QWidget *page, const QString &label)
-{
-    if (! ReKonfig::openNewTabsNextToCurrent())
-        index = -1;
-    setUpdatesEnabled(false);
-    int i = KTabWidget::insertTab(index, page, label);
-    setUpdatesEnabled(true);
-
-    return i;
-}
-
-
-int RekonqWindow::insertTab(int index, QWidget *page, const QIcon &icon, const QString &label)
-{
-    if (! ReKonfig::openNewTabsNextToCurrent())
-        index = -1;
-    setUpdatesEnabled(false);
-    int i = KTabWidget::insertTab(index, page, icon, label);
-    setUpdatesEnabled(true);
-
-    return i;
-}
-
-
-// --------------------------------------------------------------------------------------
-
-
-void RekonqWindow::checkPosition()
-{
-    // no need to check trivial positions...
-    if (isMaximized())
-        return;
-
-    QList<RekonqWindow*> wList = RekonqWindow::windowList();
-    int wNumber = wList.count();
-
-    // no need to check first window...
-    if (wNumber <= 1)
-        return;
-
-    int div = wNumber % 4;
-
-    int scnum = QApplication::desktop()->screenNumber(window());
-    QRect desktopRect = QApplication::desktop()->screenGeometry(scnum);
-
-    switch (div)
+    else
     {
-    case 2:
-        // left down
-        move(desktopRect.width() - width(),  desktopRect.height() - height());
-        break;
-    case 3:
-        // right down
-        move(0, desktopRect.height() - height());
-        break;
-    case 0:
-        // left top
-        move(desktopRect.width() - width(), 0);
-        break;
-    case 1:
-        // right top
-        move(0, 0);
-        break;
-    default:
-        kDebug() << "OOPS...THIS SHOULD NEVER HAPPEN!!";
-        break;
+        _historyPanel.data()->hide();
+        delete _historyPanel.data();
+        _historyPanel.clear();
     }
 }

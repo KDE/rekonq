@@ -25,14 +25,16 @@
 
 
 // Self Includes
-#include "tabwindow.h"
-#include "tabwindow.moc"
+#include "tabwidget.h"
+#include "tabwidget.moc"
 
 // Auto Includes
 #include "rekonq.h"
 
 // Local Includes
 #include "application.h"
+#include "rekonqwindow.h"
+
 #include "webpage.h"
 #include "webwindow.h"
 #include "tabbar.h"
@@ -70,8 +72,8 @@
 #include <QWebSettings>
 
 
-TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
-    : RekonqWindow(parent)
+TabWidget::TabWidget(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
+    : KTabWidget(parent)
     , _addTabButton(new QToolButton(this))
     , _openedTabsCounter(0)
     , _isPrivateBrowsing(PrivateBrowsingMode)
@@ -79,7 +81,7 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
 {
     init();
 
-    // NOTE: we usually create TabWindow with AT LEAST one tab, but
+    // NOTE: we usually create TabWidget with AT LEAST one tab, but
     // in one important case...
     if (withTab)
     {
@@ -90,8 +92,8 @@ TabWindow::TabWindow(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
 }
 
 
-TabWindow::TabWindow(WebPage *pg, QWidget *parent)
-    : RekonqWindow(parent)
+TabWidget::TabWidget(WebPage *pg, QWidget *parent)
+    : KTabWidget(parent)
     , _addTabButton(new QToolButton(this))
     , _openedTabsCounter(0)
     , _isPrivateBrowsing(false)
@@ -105,7 +107,7 @@ TabWindow::TabWindow(WebPage *pg, QWidget *parent)
 }
 
 
-void TabWindow::init()
+void TabWidget::init()
 {
     setContentsMargins(0, 0, 0, 0);
 
@@ -184,6 +186,22 @@ void TabWindow::init()
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
 
     // ----------------------------------------------------------------------------------------------
+    RekonqWindow *rw = qobject_cast<RekonqWindow *>(parent());
+    // setup bookmarks panel action
+    a = new KAction(KIcon("bookmarks-organize"), i18n("Bookmarks Panel"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
+    actionCollection()->addAction(QL1S("show_bookmarks_panel"), a);
+    a->setCheckable(true);
+    connect(a, SIGNAL(triggered(bool)), rw, SLOT(showBookmarksPanel(bool)));
+
+    // setup history panel action
+    a = new KAction(KIcon("view-history"), i18n("History Panel"), this);
+    a->setShortcut(KShortcut(Qt::CTRL + Qt::Key_H));
+    actionCollection()->addAction(QL1S("show_history_panel"), a);
+    a->setCheckable(true);
+    connect(a, SIGNAL(triggered(bool)), rw, SLOT(showHistoryPanel(bool)));
+
+    // ----------------------------------------------------------------------------------------------
     // shortcuts for quickly switching to a tab
     QSignalMapper *tabSignalMapper = new QSignalMapper(this);
     for (int i = 0; i < 9; i++)
@@ -211,7 +229,7 @@ void TabWindow::init()
     _ac->readSettings();
     
     // ----------------------------------------------------------------------------------------------
-    int n = rApp->tabWindowList().count() + 1;
+    int n = rApp->rekonqWindowList().count() + 1;
     QList<TabHistory> list = SessionManager::self()->closedSitesForWindow( QL1S("win") + QString::number(n) );
     Q_FOREACH(const TabHistory & tab, list)
     {
@@ -226,32 +244,32 @@ void TabWindow::init()
 // ----------------------------------------------------------------------------------------------------
 
 
-KActionCollection *TabWindow::actionCollection() const
+KActionCollection *TabWidget::actionCollection() const
 {
     return _ac;
 }
 
 
-QAction *TabWindow::actionByName(const QString &name)
+QAction *TabWidget::actionByName(const QString &name)
 {
     return actionCollection()->action(name);
 }
 
 
-TabBar *TabWindow::tabBar() const
+TabBar *TabWidget::tabBar() const
 {
     TabBar *tabBar = qobject_cast<TabBar *>(QTabWidget::tabBar());
     return tabBar;
 }
 
 
-WebWindow *TabWindow::currentWebWindow() const
+WebWindow *TabWidget::currentWebWindow() const
 {
     return webWindow(currentIndex());
 }
 
 
-WebWindow *TabWindow::webWindow(int index) const
+WebWindow *TabWidget::webWindow(int index) const
 {
     WebWindow *tab = qobject_cast<WebWindow *>(this->widget(index));
     if (tab)
@@ -264,13 +282,39 @@ WebWindow *TabWindow::webWindow(int index) const
 }
 
 
-QList<TabHistory> TabWindow::recentlyClosedTabs()
+QList<TabHistory> TabWidget::recentlyClosedTabs()
 {
     return m_recentlyClosedTabs;
 }
 
 
-WebWindow *TabWindow::prepareNewTab(WebPage *page)
+void TabWidget::newTab(WebPage *page)
+{    
+    WebWindow *tab = prepareNewTab(page);
+    addTab(tab, i18n("new tab"));
+    setCurrentWidget(tab);
+
+    // no need to load an url if we already have a page...
+    if (page)
+        return;
+
+    switch (ReKonfig::newTabsBehaviour())
+    {
+    case 0: // new tab page
+        tab->load(KUrl("about:home"));
+        break;
+    case 2: // homepage
+        tab->load(KUrl(ReKonfig::homePage()));
+        break;
+    case 1: // blank page
+    default:
+        tab->load(KUrl("about:blank"));
+        break;
+    }
+}
+
+
+WebWindow *TabWidget::prepareNewTab(WebPage *page)
 {
     WebWindow *tab = new WebWindow(this, _isPrivateBrowsing, page);
 
@@ -289,7 +333,7 @@ WebWindow *TabWindow::prepareNewTab(WebPage *page)
 }
 
 
-void TabWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *history)
+void TabWidget::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *history)
 {
     WebWindow *tab = 0;
     switch (type)
@@ -336,34 +380,7 @@ void TabWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *hist
 }
 
 
-void TabWindow::newTab(WebPage *page)
-{
-    WebWindow *tab = prepareNewTab(page);
-    addTab(tab, i18n("new tab"));
-    setCurrentWidget(tab);
-
-    // no need to load an url if we already have a page...
-    if (page)
-        return;
-
-    switch (ReKonfig::newTabsBehaviour())
-    {
-    case 0: // new tab page
-        tab->load(KUrl("about:home"));
-        break;
-    case 2: // homepage
-        tab->load(KUrl(ReKonfig::homePage()));
-        break;
-    case 1: // blank page
-    default:
-        tab->load(KUrl("about:blank"));
-        break;
-    }
-
-}
-
-
-void TabWindow::pageCreated(WebPage *page)
+void TabWidget::pageCreated(WebPage *page)
 {
     WebWindow *tab = prepareNewTab(page);
 
@@ -375,7 +392,7 @@ void TabWindow::pageCreated(WebPage *page)
 }
 
 
-void TabWindow::currentChanged(int newIndex)
+void TabWidget::currentChanged(int newIndex)
 {
     _openedTabsCounter = 0;
 
@@ -396,7 +413,7 @@ void TabWindow::currentChanged(int newIndex)
 }
 
 
-void TabWindow::updateNewTabButtonPosition()
+void TabWidget::updateNewTabButtonPosition()
 {
     if (isFullScreen())
         return;
@@ -421,7 +438,7 @@ void TabWindow::updateNewTabButtonPosition()
 }
 
 
-void TabWindow::tabTitleChanged(const QString &title)
+void TabWidget::tabTitleChanged(const QString &title)
 {
     WebWindow *tab = qobject_cast<WebWindow *>(sender());
     if (!tab)
@@ -451,7 +468,7 @@ void TabWindow::tabTitleChanged(const QString &title)
 }
 
 
-void TabWindow::tabUrlChanged(const QUrl &url)
+void TabWidget::tabUrlChanged(const QUrl &url)
 {
     WebWindow *tab = qobject_cast<WebWindow *>(sender());
     if (!tab)
@@ -463,7 +480,7 @@ void TabWindow::tabUrlChanged(const QUrl &url)
 }
 
 
-void TabWindow::tabIconChanged()
+void TabWidget::tabIconChanged()
 {
     WebWindow *tab = qobject_cast<WebWindow *>(sender());
     if (!tab)
@@ -490,7 +507,7 @@ void TabWindow::tabIconChanged()
 }
 
 
-void TabWindow::tabLoadStarted()
+void TabWidget::tabLoadStarted()
 {
     WebWindow *tab = qobject_cast<WebWindow *>(sender());
     if (!tab)
@@ -528,7 +545,7 @@ void TabWindow::tabLoadStarted()
 }
 
 
-void TabWindow::tabLoadFinished(bool ok)
+void TabWidget::tabLoadFinished(bool ok)
 {
     Q_UNUSED(ok);
 
@@ -575,7 +592,7 @@ void TabWindow::tabLoadFinished(bool ok)
 }
 
 
-void TabWindow::cloneTab(int index)
+void TabWidget::cloneTab(int index)
 {
     if (index < 0)
         index = currentIndex();
@@ -590,7 +607,7 @@ void TabWindow::cloneTab(int index)
 }
 
 
-void TabWindow::closeTab(int index, bool del)
+void TabWidget::closeTab(int index, bool del)
 {
     if (index < 0)
         index = currentIndex();
@@ -635,7 +652,7 @@ void TabWindow::closeTab(int index, bool del)
 }
 
 
-void TabWindow::closeOtherTabs(int index)
+void TabWidget::closeOtherTabs(int index)
 {
     if (index < 0)
         index = currentIndex();
@@ -654,7 +671,7 @@ void TabWindow::closeOtherTabs(int index)
 }
 
 
-void TabWindow::detachTab(int index, TabWindow *toWindow)
+void TabWidget::detachTab(int index, RekonqWindow *toWindow)
 {
     if (index < 0)
         index = currentIndex();
@@ -673,13 +690,15 @@ void TabWindow::detachTab(int index, TabWindow *toWindow)
 
     closeTab(index, false);
 
-    TabWindow *w = 0;
+    RekonqWindow *w = 0;
     w = (toWindow == 0)
-        ? new TabWindow(false)
+        ? new RekonqWindow(false)
         : toWindow;
 
-    w->addTab(tab, tab->title());
-    w->setCurrentWidget(tab);
+    TabWidget *hostTabWidget = w->tabWidget();
+    
+    hostTabWidget->addTab(tab, tab->title());
+    hostTabWidget->setCurrentWidget(tab);
 
     // disconnect signals from old tabwindow
     // WARNING: Code copied from prepareNewTab method.
@@ -693,17 +712,17 @@ void TabWindow::detachTab(int index, TabWindow *toWindow)
     // reconnect signals to new tabwindow
     // WARNING: Code copied from prepareNewTab method.
     // Any new changes there should be applied here...
-    connect(tab, SIGNAL(titleChanged(QString)), w, SLOT(tabTitleChanged(QString)));
-    connect(tab, SIGNAL(iconChanged()), w, SLOT(tabIconChanged()));
-    connect(tab, SIGNAL(loadStarted()), w, SLOT(tabLoadStarted()));
-    connect(tab, SIGNAL(loadFinished(bool)), w, SLOT(tabLoadFinished(bool)));
-    connect(tab, SIGNAL(pageCreated(WebPage*)), w, SLOT(pageCreated(WebPage*)));
+    connect(tab, SIGNAL(titleChanged(QString)), hostTabWidget, SLOT(tabTitleChanged(QString)));
+    connect(tab, SIGNAL(iconChanged()), hostTabWidget, SLOT(tabIconChanged()));
+    connect(tab, SIGNAL(loadStarted()), hostTabWidget, SLOT(tabLoadStarted()));
+    connect(tab, SIGNAL(loadFinished(bool)), hostTabWidget, SLOT(tabLoadFinished(bool)));
+    connect(tab, SIGNAL(pageCreated(WebPage*)), hostTabWidget, SLOT(pageCreated(WebPage*)));
 
     w->show();
 }
 
 
-void TabWindow::reloadTab(int index)
+void TabWidget::reloadTab(int index)
 {
     // When index is -1 index chooses the current tab
     if (index < 0)
@@ -718,7 +737,7 @@ void TabWindow::reloadTab(int index)
 }
 
 
-void TabWindow::reloadAllTabs()
+void TabWidget::reloadAllTabs()
 {
     for (int i = 0; i < count(); ++i)
     {
@@ -727,7 +746,7 @@ void TabWindow::reloadAllTabs()
 }
 
 
-void TabWindow::bookmarkAllTabs()
+void TabWidget::bookmarkAllTabs()
 {
     KBookmarkGroup rGroup = BookmarkManager::self()->rootGroup();
     KBookmarkGroup folderGroup = rGroup.createNewFolder(i18n("Bookmarked tabs: ") + QDate::currentDate().toString());
@@ -739,13 +758,13 @@ void TabWindow::bookmarkAllTabs()
 }
 
 
-void TabWindow::restoreLastClosedTab()
+void TabWidget::restoreLastClosedTab()
 {
     restoreClosedTab(0);
 }
 
 
-void TabWindow::restoreClosedTab(int index, bool inNewTab)
+void TabWidget::restoreClosedTab(int index, bool inNewTab)
 {
     if (m_recentlyClosedTabs.isEmpty())
         return;
@@ -783,7 +802,7 @@ void TabWindow::restoreClosedTab(int index, bool inNewTab)
 }
 
 
-void TabWindow::nextTab()
+void TabWidget::nextTab()
 {
     int next = currentIndex() + 1;
     if (next == count())
@@ -792,7 +811,7 @@ void TabWindow::nextTab()
 }
 
 
-void TabWindow::previousTab()
+void TabWidget::previousTab()
 {
     int next = currentIndex() - 1;
     if (next < 0)
@@ -801,7 +820,7 @@ void TabWindow::previousTab()
 }
 
 
-void TabWindow::setFullScreen(bool makeFullScreen)
+void TabWidget::setFullScreen(bool makeFullScreen)
 {
     tabBar()->setVisible(!makeFullScreen);
     _addTabButton->setVisible(!makeFullScreen);
@@ -813,13 +832,13 @@ void TabWindow::setFullScreen(bool makeFullScreen)
 }
 
 
-bool TabWindow::isPrivateBrowsingWindowMode()
+bool TabWidget::isPrivateBrowsingWindowMode()
 {
     return _isPrivateBrowsing;
 }
 
 
-void TabWindow::loadFavorite(const int index)
+void TabWidget::loadFavorite(const int index)
 {
     QStringList urls = ReKonfig::previewUrls();
     if (index < 0 || index > urls.length())
@@ -829,3 +848,53 @@ void TabWindow::loadFavorite(const int index)
     loadUrl(url);
     currentWebWindow()->setFocus();
 }
+
+
+// NOTE: For internal purpose only ------------------------------------------------------
+
+
+int TabWidget::addTab(QWidget *page, const QString &label)
+{
+    setUpdatesEnabled(false);
+    int i = KTabWidget::addTab(page, label);
+    setUpdatesEnabled(true);
+
+    return i;
+}
+
+
+int TabWidget::addTab(QWidget *page, const QIcon &icon, const QString &label)
+{
+    setUpdatesEnabled(false);
+    int i = KTabWidget::addTab(page, icon, label);
+    setUpdatesEnabled(true);
+
+    return i;
+}
+
+
+int TabWidget::insertTab(int index, QWidget *page, const QString &label)
+{
+    if (! ReKonfig::openNewTabsNextToCurrent())
+        index = -1;
+    setUpdatesEnabled(false);
+    int i = KTabWidget::insertTab(index, page, label);
+    setUpdatesEnabled(true);
+
+    return i;
+}
+
+
+int TabWidget::insertTab(int index, QWidget *page, const QIcon &icon, const QString &label)
+{
+    if (! ReKonfig::openNewTabsNextToCurrent())
+        index = -1;
+    setUpdatesEnabled(false);
+    int i = KTabWidget::insertTab(index, page, icon, label);
+    setUpdatesEnabled(true);
+
+    return i;
+}
+
+
+// --------------------------------------------------------------------------------------

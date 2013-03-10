@@ -34,7 +34,8 @@
 
 // Local Includes
 #include "application.h"
-#include "tabwindow.h"
+#include "rekonqwindow.h"
+#include "tabwidget.h"
 
 #include "previewselectorbar.h"
 #include "thumbupdater.h"
@@ -181,7 +182,7 @@ void NewTabPage::generate(const KUrl &url)
         {
             const int tabIndex = url.queryItem(QL1S("tab")).toInt();
 
-            rApp->tabWindow()->restoreClosedTab(tabIndex, false);
+            rApp->rekonqWindow()->tabWidget()->restoreClosedTab(tabIndex, false);
             return;
         }
     }
@@ -430,7 +431,7 @@ void NewTabPage::historyPage(const QString & filter)
     m_root.document().findFirst(QL1S("#actions")).appendInside(clearHistory);
 
     HistoryTreeModel *model = HistoryManager::self()->historyTreeModel();
-    UrlFilterProxyModel *proxy = new UrlFilterProxyModel(this);
+    SortFilterProxyModel *proxy = new SortFilterProxyModel(this);
     proxy->setSourceModel(model);
 
     bool filterIsEmpty = filter.isEmpty();
@@ -563,7 +564,7 @@ void NewTabPage::closedTabsPage()
 {
     m_root.addClass(QL1S("closedTabs"));
 
-    QList<TabHistory> links = rApp->tabWindow()->recentlyClosedTabs();
+    QList<TabHistory> links = rApp->rekonqWindow()->tabWidget()->recentlyClosedTabs();
 
     if (links.isEmpty())
     {

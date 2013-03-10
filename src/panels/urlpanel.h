@@ -2,7 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2013 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009 by Domrachev Alexandr <alexandr.domrachev@gmail.com>
+* Copyright (C) 2009-2013 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,63 +25,57 @@
 * ============================================================ */
 
 
-
-#ifndef REKONQ_WINDOW_H
-#define REKONQ_WINDOW_H
+#ifndef URLPANEL_H
+#define URLPANEL_H
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "rwindow.h"
-#include "tabwidget.h"
-
-#include "bookmarkspanel.h"
-#include "historypanel.h"
-
 // Qt Includes
-#include <QSplitter>
-#include <QWeakPointer>
+#include <QDockWidget>
 
 // Forward Declarations
-class TabBar;
+class PanelTreeView;
 
-class WebPage;
-class WebWindow;
+class QAbstractItemModel;
 
 
-class RekonqWindow : public RWindow
+class REKONQ_TESTS_EXPORT UrlPanel : public QDockWidget
 {
     Q_OBJECT
 
 public:
-    explicit RekonqWindow(bool withTab = true, bool PrivateBrowsingMode = false, QWidget *parent = 0);
-    explicit RekonqWindow(WebPage *pg, QWidget *parent = 0);
+    explicit UrlPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
-    virtual ~RekonqWindow();
+Q_SIGNALS:
+    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void itemHovered(const QString &);
 
-    TabWidget *tabWidget();
-    TabBar *tabBar();
-    WebWindow *currentWebWindow() const;
-
-private:
-    void init();
-        
 public Q_SLOTS:
-    void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
+    void showing(bool);
+
+protected:
+    virtual void setup();
+    virtual QAbstractItemModel* model() = 0;
+
+    PanelTreeView* panelTreeView() const
+    {
+        return _treeView;
+    }
+
+protected Q_SLOTS:
+    virtual void contextMenuItem(const QPoint &pos) = 0;
+    virtual void contextMenuGroup(const QPoint &pos) = 0;
+    virtual void contextMenuEmpty(const QPoint &pos) = 0;
 
 private Q_SLOTS:
-    void showBookmarksPanel(bool);
-    void showHistoryPanel(bool);
-    
+    void expandTreeView();
+
 private:
-    TabWidget *_tabWidget;
-    
-    QSplitter *_splitter;
-    
-    QWeakPointer<HistoryPanel> _historyPanel;
-    QWeakPointer<BookmarksPanel> _bookmarksPanel;
+    PanelTreeView *_treeView;
+    bool _loaded;
 };
 
-#endif // REKONQ_WINDOW_H
+
+#endif // URLPANEL_H

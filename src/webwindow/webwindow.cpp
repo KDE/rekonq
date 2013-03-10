@@ -31,7 +31,9 @@
 #include "rekonq.h"
 
 #include "application.h"
-#include "tabwindow.h"
+#include "rekonqwindow.h"
+
+#include "tabwidget.h"
 
 #include "adblockmanager.h"
 #include "bookmarkmanager.h"
@@ -994,7 +996,7 @@ void WebWindow::keyBindings()
     QPointer<KShortcutsDialog> dialog = new KShortcutsDialog(KShortcutsEditor::AllActions, KShortcutsEditor::LetterShortcutsAllowed, this);
 
     dialog->addCollection(actionCollection(), i18n("web window"));
-    TabWindow *tw = rApp->tabWindow();
+    TabWidget *tw = rApp->rekonqWindow()->tabWidget();
     if (tw)
     {
         dialog->addCollection(tw->actionCollection(), i18n("tab window"));

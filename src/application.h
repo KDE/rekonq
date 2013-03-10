@@ -39,13 +39,13 @@
 #include <QWeakPointer>
 
 // Forward Declarations
-class TabWindow;
+class RekonqWindow;
 class WebWindow;
 
 class WebTab;
 class WebPage;
 
-typedef QList< QWeakPointer<TabWindow> > TabWindowList;
+typedef QList< QWeakPointer<RekonqWindow> > RekonqWindowList;
 typedef QList<WebTab *> WebAppList;
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -67,8 +67,8 @@ public:
     int newInstance();
     static Application *instance();
 
-    TabWindow *tabWindow();
-    TabWindowList tabWindowList();
+    RekonqWindow *rekonqWindow();
+    RekonqWindowList rekonqWindowList();
 
     WebAppList webAppList();
     
@@ -92,7 +92,7 @@ public Q_SLOTS:
                  const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );
 
-    TabWindow *newTabWindow(bool withTab = true, bool PrivateBrowsingMode = false);
+    RekonqWindow *newWindow(bool withTab = true, bool PrivateBrowsingMode = false);
 
     WebTab *newWebApp();
 
@@ -118,7 +118,7 @@ private Q_SLOTS:
     void pageCreated(WebPage *);
 
 private:
-    TabWindowList m_tabWindows;
+    RekonqWindowList m_rekonqWindows;
     WebAppList m_webApps;
 };
 

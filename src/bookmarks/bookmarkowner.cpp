@@ -35,7 +35,8 @@
 #include "bookmarkmanager.h"
 
 #include "application.h"
-#include "tabwindow.h"
+#include "rekonqwindow.h"
+#include "tabwidget.h"
 #include "webwindow.h"
 
 // KDE Includes
@@ -119,20 +120,20 @@ KAction* BookmarkOwner::createAction(const KBookmark &bookmark, const BookmarkAc
 
 QString BookmarkOwner::currentTitle() const
 {
-    return rApp->tabWindow()->currentWebWindow()->title();
+    return rApp->rekonqWindow()->currentWebWindow()->title();
 }
 
 
 QString BookmarkOwner::currentUrl() const
 {
-    return rApp->tabWindow()->currentWebWindow()->url().url();
+    return rApp->rekonqWindow()->currentWebWindow()->url().url();
 }
 
 
 QList< QPair<QString, QString> > BookmarkOwner::currentBookmarkList() const
 {
     QList< QPair<QString, QString> > bkList;
-    TabWindow *view = rApp->tabWindow();
+    TabWidget *view = rApp->rekonqWindow()->tabWidget();
     int tabNumber = view->count();
 
     for (int i = 0; i < tabNumber; ++i)
@@ -165,7 +166,7 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bkGoup)
     if (urlList.length() > 8)
     {
         if (KMessageBox::warningContinueCancel(
-                    rApp->tabWindow(),
+                    rApp->rekonqWindow(),
                     i18ncp("%1=Number of tabs. Value is always >=8",
                            "You are about to open %1 tabs.\nAre you sure?",
                            "You are about to open %1 tabs.\nAre you sure?", urlList.length()))

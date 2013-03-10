@@ -748,20 +748,20 @@ void HistoryTreeModel::sourceRowsRemoved(const QModelIndex &parent, int start, i
 // ----------------------------------------------------------------------------------------------------------
 
 
-UrlFilterProxyModel::UrlFilterProxyModel(QObject *parent)
+SortFilterProxyModel::SortFilterProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
     setFilterCaseSensitivity(Qt::CaseInsensitive);
 }
 
 
-bool UrlFilterProxyModel::filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const
+bool SortFilterProxyModel::filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const
 {
     return recursiveMatch(sourceModel()->index(source_row, 0, source_parent));
 }
 
 
-bool UrlFilterProxyModel::recursiveMatch(const QModelIndex &index) const
+bool SortFilterProxyModel::recursiveMatch(const QModelIndex &index) const
 {
     if (index.data().toString().contains(filterRegExp()))
         return true;

@@ -186,12 +186,12 @@ private:
  * If a url matches the filter it'll be shown,
  * even if it's parent doesn't match it.
  */
-class UrlFilterProxyModel : public QSortFilterProxyModel
+class SortFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
 public:
-    explicit UrlFilterProxyModel(QObject *parent = 0);
+    explicit SortFilterProxyModel(QObject *parent = 0);
 
 protected:
     virtual bool filterAcceptsRow(const int source_row, const QModelIndex &source_parent) const;

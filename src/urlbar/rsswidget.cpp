@@ -30,7 +30,8 @@
 
 // Local includes
 #include "application.h"
-#include "tabwindow.h"
+#include "rekonqwindow.h"
+
 #include "iconmanager.h"
 
 // KDE Includes
@@ -132,7 +133,7 @@ void RSSWidget::accept()
 void RSSWidget::addWithGoogleReader(const QString &url)
 {
     KUrl toLoad = KUrl("http://www.google.com/ig/add?feedurl=" + url);
-    rApp->tabWindow()->loadUrl(toLoad);
+    rApp->rekonqWindow()->loadUrl(toLoad);
 }
 
 

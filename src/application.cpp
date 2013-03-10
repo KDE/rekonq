@@ -38,7 +38,7 @@
 #include "searchengine.h"
 
 #include "tabbar.h"
-#include "tabwindow.h"
+#include "rekonqwindow.h"
 
 #include "webwindow.h"
 #include "webtab.h"
@@ -73,6 +73,7 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDir>
+#include <QTimer>
 
 
 Application::Application()
@@ -194,7 +195,7 @@ int Application::newInstance()
         }
 
         // first argument: 99% of the time we have just that...
-        if (isFirstLoad || m_tabWindows.count() == 0)
+        if (isFirstLoad || m_rekonqWindows.count() == 0)
         {
             // No windows in the current desktop? No windows at all?
             // Create a new one and load there sites...
@@ -218,8 +219,8 @@ int Application::newInstance()
                 loadUrl(urlList.at(0), Rekonq::NewWindow);
             }
 
-            if (!tabWindow()->isActiveWindow())
-                KWindowSystem::demandAttention(tabWindow()->winId(), true);
+            if (!rekonqWindow()->isActiveWindow())
+                KWindowSystem::demandAttention(rekonqWindow()->winId(), true);
         }
 
         // following arguments: what's best behavior here?
@@ -282,7 +283,7 @@ int Application::newInstance()
                         break;
                     }
                 default:
-                    newTabWindow()->newTab();
+                    newWindow()->tabWidget()->newTab();
                     break;
                 }
             }
@@ -312,8 +313,8 @@ int Application::newInstance()
     {
         if (hasToBeRecoveredFromCrash && !incognito)
         {
-            if (tabWindow() && tabWindow()->currentWebWindow())
-                QTimer::singleShot(1000, tabWindow()->currentWebWindow(), SLOT(showCrashMessageBar()));
+            if (rekonqWindow() && rekonqWindow()->currentWebWindow())
+                QTimer::singleShot(1000, rekonqWindow()->currentWebWindow(), SLOT(showCrashMessageBar()));
         }
         else
         {
@@ -321,7 +322,7 @@ int Application::newInstance()
         }
 
         if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash && SearchEngine::defaultEngine().isNull())
-            QTimer::singleShot(2000, tabWindow()->currentWebWindow()->tabView(), SLOT(showSearchEngineBar()));
+            QTimer::singleShot(2000, rekonqWindow()->currentWebWindow()->tabView(), SLOT(showSearchEngineBar()));
 
         // updating rekonq configuration
         updateConfiguration();
@@ -354,21 +355,21 @@ void Application::saveConfiguration() const
 }
 
 
-TabWindow *Application::tabWindow()
+RekonqWindow *Application::rekonqWindow()
 {
-    TabWindow *active = qobject_cast<TabWindow*>(QApplication::activeWindow());
+    RekonqWindow *active = qobject_cast<RekonqWindow*>(QApplication::activeWindow());
 
     if (!active)
     {
-        if (m_tabWindows.isEmpty())
+        if (m_rekonqWindows.isEmpty())
             return 0;
 
-        Q_FOREACH(const QWeakPointer<TabWindow> &pointer, m_tabWindows)
+        Q_FOREACH(const QWeakPointer<RekonqWindow> &pointer, m_rekonqWindows)
         {
             if (KWindowInfo(pointer.data()->effectiveWinId(), NET::WMDesktop, 0).isOnCurrentDesktop())
                 return pointer.data();
         }
-        return m_tabWindows.at(0).data();
+        return m_rekonqWindows.at(0).data();
     }
     return active;
 }
@@ -390,39 +391,39 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     if (url.url().contains("about:") && url.url().contains("/"))
         newType = Rekonq::CurrentTab;
 
-    TabWindow *w = 0;
+    RekonqWindow *w = 0;
     if (newType == Rekonq::NewPrivateWindow)
     {
-        w = newTabWindow(true, true);
+        w = newWindow(true, true);
         newType = Rekonq::CurrentTab;
     }
     else if (newType == Rekonq::NewWindow
-             || ((newType == Rekonq::NewTab || newType == Rekonq::NewFocusedTab) && tabWindowList().count() == 0))
+             || ((newType == Rekonq::NewTab || newType == Rekonq::NewFocusedTab) && rekonqWindowList().count() == 0))
     {
-        w = newTabWindow();
+        w = newWindow();
         newType = Rekonq::CurrentTab;
     }
     else
     {
-        w = tabWindow();
+        w = rekonqWindow();
     }
 
     w->loadUrl(url, newType);
 }
 
 
-TabWindow *Application::newTabWindow(bool withTab, bool PrivateBrowsingMode)
+RekonqWindow *Application::newWindow(bool withTab, bool PrivateBrowsingMode)
 {
-    TabWindow *w = new TabWindow(withTab, PrivateBrowsingMode);
+    RekonqWindow *w = new RekonqWindow(withTab, PrivateBrowsingMode);
 
     // set object name
-    int n = m_tabWindows.count() + 1;
+    int n = m_rekonqWindows.count() + 1;
     w->setObjectName(QL1S("win") + QString::number(n));
 
     // This is used to track which window was activated most recently
     w->installEventFilter(this);
 
-    m_tabWindows.prepend(w);
+    m_rekonqWindows.prepend(w);
     w->show();
 
     return w;
@@ -442,9 +443,9 @@ WebTab *Application::newWebApp()
 }
 
 
-TabWindowList Application::tabWindowList()
+RekonqWindowList Application::rekonqWindowList()
 {
-    return m_tabWindows;
+    return m_rekonqWindows;
 }
 
 
@@ -460,16 +461,16 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
     // (e.g. when another application opens a link)
     if (event->type() == QEvent::WindowActivate)
     {
-        TabWindow *window = qobject_cast<TabWindow*>(watched);
+        RekonqWindow *window = qobject_cast<RekonqWindow*>(watched);
         if (window)
         {
-            if (!m_tabWindows.isEmpty() 
-                && m_tabWindows.at(0) 
-                && m_tabWindows.at(0).data() != window)
+            if (!m_rekonqWindows.isEmpty() 
+                && m_rekonqWindows.at(0) 
+                && m_rekonqWindows.at(0).data() != window)
             {
-                int index = m_tabWindows.indexOf(QWeakPointer<TabWindow>(window));
+                int index = m_rekonqWindows.indexOf(QWeakPointer<RekonqWindow>(window));
                 Q_ASSERT(index != -1);
-                m_tabWindows.prepend(m_tabWindows.takeAt(index));
+                m_rekonqWindows.prepend(m_rekonqWindows.takeAt(index));
             }
         }
     }
@@ -478,14 +479,14 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
     // when we close one of them, remove from tab window list and check if it was last...
     if (event->type() == QEvent::Close)
     {
-        TabWindow *window = qobject_cast<TabWindow*>(watched);
+        RekonqWindow *window = qobject_cast<RekonqWindow*>(watched);
         if (window)
-            m_tabWindows.removeOne(window);
+            m_rekonqWindows.removeOne(window);
 
         WebTab *webApp = qobject_cast<WebTab*>(watched);
         m_webApps.removeOne(webApp);
 
-        if (m_tabWindows.count() == 0 && m_webApps.count() == 0)
+        if (m_rekonqWindows.count() == 0 && m_webApps.count() == 0)
             quit();
     }
 
@@ -497,7 +498,7 @@ void Application::updateConfiguration()
 {
     // ============== Tabs ==================
     bool b = ReKonfig::closeTabSelectPrevious();
-    Q_FOREACH(const QWeakPointer<TabWindow> &w, m_tabWindows)
+    Q_FOREACH(const QWeakPointer<RekonqWindow> &w, m_rekonqWindows)
     {
         if (b)
             w.data()->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
@@ -519,9 +520,9 @@ void Application::updateConfiguration()
     // compute font size
     // (I have to admit I know nothing about these DPI questions..: copied from kwebkitpart, as someone suggested)
     // font size in pixels =  font size in inches × screen dpi
-    if (tabWindow() && tabWindow()->currentWebWindow())
+    if (rekonqWindow() && rekonqWindow()->currentWebWindow())
     {
-        int logDpiY = tabWindow()->currentWebWindow()->logicalDpiY();
+        int logDpiY = rekonqWindow()->currentWebWindow()->logicalDpiY();
         float toPix = (logDpiY < 96.0)
                       ? 96.0 / 72.0
                       : logDpiY / 72.0 ;
@@ -580,13 +581,13 @@ void Application::updateConfiguration()
 
     defaultSettings = 0;
 
-    if (!tabWindow())
+    if (!rekonqWindow())
         return;
 
     // FIXME What about this?
 //     ReKonfig::useFavicon()
-//     ? tabWindow()->changeWindowIcon(tabWindow()->mainView()->currentIndex())
-//     : tabWindow()->setWindowIcon(KIcon("rekonq"))
+//     ? rekonqWindow()->changeWindowIcon(rekonqWindow()->mainView()->currentIndex())
+//     : rekonqWindow()->setWindowIcon(KIcon("rekonq"))
 //     ;
 //
     // hovering unfocused tabs options
@@ -594,23 +595,23 @@ void Application::updateConfiguration()
     {
     case 0: // tab previews
     case 3: // nothing
-        for (int i = 0; i < tabWindow()->tabBar()->count(); i++)
+        for (int i = 0; i < rekonqWindow()->tabBar()->count(); i++)
         {
-            tabWindow()->tabBar()->setTabToolTip(i, QL1S(""));
+            rekonqWindow()->tabBar()->setTabToolTip(i, QL1S(""));
         }
         break;
 
     case 1: // title previews
-        for (int i = 0; i < tabWindow()->tabBar()->count(); i++)
+        for (int i = 0; i < rekonqWindow()->tabBar()->count(); i++)
         {
-            tabWindow()->tabBar()->setTabToolTip(i, tabWindow()->tabText(i).remove('&'));
+            rekonqWindow()->tabBar()->setTabToolTip(i, rekonqWindow()->tabWidget()->tabText(i).remove('&'));
         }
         break;
 
     case 2: // url previews
-        for (int i = 0; i < tabWindow()->tabBar()->count(); i++)
+        for (int i = 0; i < rekonqWindow()->tabBar()->count(); i++)
         {
-            tabWindow()->tabBar()->setTabToolTip(i, tabWindow()->webWindow(i)->url().toMimeDataString());
+            rekonqWindow()->tabBar()->setTabToolTip(i, rekonqWindow()->tabWidget()->webWindow(i)->url().toMimeDataString());
         }
         break;
 
@@ -626,14 +627,14 @@ void Application::queryQuit()
 {
     if (m_webApps.count() > 0)
     {
-        tabWindow()->close();
+        rekonqWindow()->close();
         return;
     }
 
-    if (tabWindowList().count() > 1)
+    if (rekonqWindowList().count() > 1)
     {
         int answer = KMessageBox::questionYesNoCancel(
-                         tabWindow(),
+                         rekonqWindow(),
                          i18n("Do you want to close the window or the whole application?"),
                          i18n("Application/Window closing..."),
                          KGuiItem(i18n("C&lose Current Window"),
@@ -646,7 +647,7 @@ void Application::queryQuit()
         switch (answer)
         {
         case KMessageBox::Yes:
-            tabWindow()->close();
+            rekonqWindow()->close();
             return;
 
         case KMessageBox::No:
@@ -664,7 +665,7 @@ void Application::queryQuit()
 
 void Application::clearPrivateData()
 {
-    QPointer<KDialog> dialog = new KDialog(tabWindow());
+    QPointer<KDialog> dialog = new KDialog(rekonqWindow());
     dialog->setCaption(i18nc("@title:window", "Clear Private Data"));
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
 
@@ -741,10 +742,10 @@ void Application::clearPrivateData()
 
 void Application::createWebAppShortcut()
 {
-    KUrl u = tabWindow()->currentWebWindow()->url();
+    KUrl u = rekonqWindow()->currentWebWindow()->url();
     QString h = u.host();
 
-    QPointer<KDialog> dialog = new KDialog(tabWindow());
+    QPointer<KDialog> dialog = new KDialog(rekonqWindow());
     dialog->setCaption(i18nc("@title:window", "Create Application Shortcut"));
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
     dialog->button(KDialog::Ok)->setText(i18n("Create"));
@@ -755,7 +756,7 @@ void Application::createWebAppShortcut()
     QWidget widget;
     wAppWidget.setupUi(&widget);
 
-    QString webAppTitle = tabWindow()->currentWebWindow()->title().remove('&');
+    QString webAppTitle = rekonqWindow()->currentWebWindow()->title().remove('&');
     wAppWidget.nameLineEdit->setText(webAppTitle);
     wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());
     wAppWidget.kcfg_createMenuAppShortcut->setChecked(ReKonfig::createMenuAppShortcut());
@@ -848,26 +849,26 @@ void Application::newPrivateBrowsingWindow()
 
 void Application::pageCreated(WebPage *pg)
 {
-    if (m_tabWindows.isEmpty())
+    if (m_rekonqWindows.isEmpty())
     {
-        // NOTE: This is "adjusted" from newTabWindow() code...
-        TabWindow *w = new TabWindow(pg);
+        // NOTE: This is "adjusted" from newRekonqWindow() code...
+        RekonqWindow *w = new RekonqWindow(pg);
 
         // set object name
-        int n = m_tabWindows.count() + 1;
+        int n = m_rekonqWindows.count() + 1;
         w->setObjectName(QL1S("win") + QString::number(n));
 
         // This is used to track which window was activated most recently
         w->installEventFilter(this);
 
-        m_tabWindows.prepend(w);
+        m_rekonqWindows.prepend(w);
         w->show();
 
         return;
     }
 
-    TabWindow *tw = tabWindow();
-    tw->newTab(pg);
+    RekonqWindow *tw = rekonqWindow();
+    tw->tabWidget()->newTab(pg);
 
     tw->activateWindow();
     tw->raise();

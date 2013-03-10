@@ -33,7 +33,8 @@
 #include "rekonq.h"
 
 // Local Includes
-#include "tabwindow.h"
+#include "tabwidget.h"
+
 #include "tabhighlighteffect.h"
 #include "tabpreviewpopup.h"
 #include "webwindow.h"
@@ -186,7 +187,7 @@ void TabBar::detachTab()
 
 void TabBar::contextMenu(int tabIndex, const QPoint &pos)
 {
-    TabWindow *w = qobject_cast<TabWindow *>(parent());
+    TabWidget *w = qobject_cast<TabWidget *>(parent());
 
     QAction *a;
 
@@ -262,7 +263,7 @@ void TabBar::contextMenu(int tabIndex, const QPoint &pos)
 
 void TabBar::emptyAreaContextMenu(const QPoint &pos)
 {
-    TabWindow *w = qobject_cast<TabWindow *>(parent());
+    TabWidget *w = qobject_cast<TabWidget *>(parent());
 
     QAction *a;
 
@@ -355,7 +356,7 @@ void TabBar::tabInserted(int index)
 
     if (index < availableIndex)
     {
-        TabWindow *w = qobject_cast<TabWindow *>(parent());
+        TabWidget *w = qobject_cast<TabWidget *>(parent());
         w->moveTab(index, availableIndex);
     }
 
@@ -446,7 +447,7 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
     {
         if (!tabData(i).toBool())
         {
-            TabWindow *w = qobject_cast<TabWindow *>(parent());
+            TabWidget *w = qobject_cast<TabWidget *>(parent());
             w->moveTab(i, pinnedTabs);
             w->setCurrentIndex(pinnedTabs);
         }
@@ -457,7 +458,7 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
     {
         if (tabData(i).toBool())
         {
-            TabWindow *w = qobject_cast<TabWindow *>(parent());
+            TabWidget *w = qobject_cast<TabWidget *>(parent());
             w->moveTab(i, pinnedTabs - 1);
             w->setCurrentIndex(pinnedTabs - 1);
         }
@@ -482,7 +483,7 @@ void TabBar::showTabPreview()
     delete m_previewPopup.data();
     m_previewPopup.clear();
 
-    TabWindow *tabW = qobject_cast<TabWindow *>(parent());
+    TabWidget *tabW = qobject_cast<TabWidget *>(parent());
 
     WebWindow *indexedTab = tabW->webWindow(m_currentTabPreviewIndex);
     WebWindow *currentTab = tabW->webWindow(currentIndex());
@@ -546,7 +547,7 @@ void TabBar::pinTab()
         }
     }
 
-    TabWindow *w = qobject_cast<TabWindow *>(parent());
+    TabWidget *w = qobject_cast<TabWidget *>(parent());
     w->moveTab(index, availableIndex);
     index = availableIndex;
 
@@ -593,7 +594,7 @@ void TabBar::unpinTab()
         }
     }
 
-    TabWindow *w = qobject_cast<TabWindow *>(parent());
+    TabWidget *w = qobject_cast<TabWidget *>(parent());
     w->moveTab(index, availableIndex);
     index = availableIndex;
 

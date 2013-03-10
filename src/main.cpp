@@ -30,7 +30,7 @@
 // Local Includes
 #include "application.h"
 #include "sessionmanager.h"
-#include "tabwindow.h"
+#include "rekonqwindow.h"
 #include "urlresolver.h"
 
 // KDE Includes
@@ -230,12 +230,14 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     QCoreApplication::setApplicationVersion(REKONQ_VERSION);
 
     if (app.isSessionRestored())
-        for (int i = 1; TabWindow::canBeRestored(i); i++)
+    {
+        for (int i = 1; RekonqWindow::canBeRestored(i); i++)
         {
-            TabWindow * newTabWindow = app.newTabWindow(false);
-            if (newTabWindow->restore(i))
-                SessionManager::self()->restoreTabWindow(newTabWindow);
+            RekonqWindow * newRekonqWindow = app.newWindow(false);
+            if (newRekonqWindow->restore(i))
+                SessionManager::self()->restoreWindow(newRekonqWindow);
         }
-
+    }
+    
     return app.exec();
 }

@@ -24,15 +24,12 @@
 * ============================================================ */
 
 
-#ifndef TAB_WINDOW
-#define TAB_WINDOW
+#ifndef TAB_WIDGET
+#define TAB_WIDGET
 
 
 // Rekonq Includes
 #include "rekonq_defines.h"
-
-// Local Includes
-#include "rekonqwindow.h"
 
 // KDE Includes
 #include <KTabWidget>
@@ -51,17 +48,18 @@ class TabBar;
 class WebPage;
 class WebWindow;
 
+class RekonqWindow;
 
 // --------------------------------------------------------------------------------------
 
 
-class TabWindow : public RekonqWindow
+class TabWidget : public KTabWidget
 {
     Q_OBJECT
 
 public:
-    explicit TabWindow(bool withTab = true, bool PrivateBrowsingMode = false, QWidget *parent = 0);
-    explicit TabWindow(WebPage *pg, QWidget *parent = 0);
+    explicit TabWidget(bool withTab = true, bool PrivateBrowsingMode = false, QWidget *parent = 0);
+    explicit TabWidget(WebPage *pg, QWidget *parent = 0);
 
     WebWindow* currentWebWindow() const;
     WebWindow* webWindow(int index) const;
@@ -76,6 +74,14 @@ public:
     QList<TabHistory> recentlyClosedTabs();
     void restoreClosedTab(int index, bool inNewTab = true);
     
+    // NOTE: For internal purpose only ------------------------------------------------------
+    int addTab(QWidget *page, const QString &label);
+    int addTab(QWidget *page, const QIcon &icon, const QString &label);
+
+    int insertTab(int index, QWidget *page, const QString &label);
+    int insertTab(int index, QWidget *page, const QIcon &icon, const QString &label);
+    // --------------------------------------------------------------------------------------
+
 public Q_SLOTS:
     void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
     void newTab(WebPage *page = 0);
@@ -109,7 +115,7 @@ private Q_SLOTS:
     void cloneTab(int index = -1);
     void closeTab(int index = -1, bool del = true);
     void closeOtherTabs(int index = -1);
-    void detachTab(int index = -1, TabWindow *toWindow = 0);
+    void detachTab(int index = -1, RekonqWindow *toWindow = 0);
     void reloadTab(int index = -1);
 
     void reloadAllTabs();
@@ -137,4 +143,4 @@ private:
     KActionCollection *_ac;
 };
 
-#endif // TAB_WINDOW
+#endif // TAB_WIDGET

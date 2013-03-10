@@ -74,7 +74,7 @@ IconManager::IconManager(QObject *parent)
 KIcon IconManager::iconForUrl(const KUrl &url)
 {
     // first things first.. avoid infinite loop at startup
-    if (url.isEmpty() || (rApp->tabWindowList().isEmpty() && rApp->webAppList().isEmpty()))
+    if (url.isEmpty() || (rApp->rekonqWindowList().isEmpty() && rApp->webAppList().isEmpty()))
         return KIcon("text-html");
 
     QByteArray encodedUrl = url.toEncoded();
@@ -192,7 +192,7 @@ void IconManager::saveDesktopIconForUrl(const KUrl &u)
 QString IconManager::iconPathForUrl(const KUrl &url)
 {
     // first things first.. avoid infinite loop at startup
-    if (url.isEmpty() || rApp->tabWindowList().isEmpty())
+    if (url.isEmpty() || rApp->rekonqWindowList().isEmpty())
     {
         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/mimetypes/text-html.png");
         return icon;

@@ -29,6 +29,7 @@ set(rekonq_KDEINIT_SRCS
     bookmarks/bookmarkscontextmenu.cpp
     bookmarks/bookmarksmenu.cpp
     bookmarks/bookmarkstoolbar.cpp
+    bookmarks/bookmarkstreemodel.cpp
     bookmarks/bookmarkowner.cpp
     #----------------------------------------
     download/downloaditem.cpp
@@ -40,6 +41,12 @@ set(rekonq_KDEINIT_SRCS
     icons/icondownloader.cpp
     icons/iconmanager.cpp
     icons/webicon.cpp
+    #----------------------------------------
+    panels/bookmarkspanel.cpp
+    panels/historypanel.cpp
+    panels/paneltreeview.cpp
+    panels/urlfilterproxymodel.cpp
+    panels/urlpanel.cpp
     #----------------------------------------
     rekonqpage/newtabpage.cpp
     rekonqpage/thumbupdater.cpp
@@ -66,11 +73,12 @@ set(rekonq_KDEINIT_SRCS
     sync/syncgooglesettingswidget.cpp
     sync/syncoperasettingswidget.cpp
     #----------------------------------------
+    tabwindow/rwindow.cpp
     tabwindow/rekonqwindow.cpp
     tabwindow/tabbar.cpp
     tabwindow/tabhighlighteffect.cpp
     tabwindow/tabpreviewpopup.cpp
-    tabwindow/tabwindow.cpp
+    tabwindow/tabwidget.cpp
     #----------------------------------------
     urlbar/urlbar.cpp
     urlbar/completionwidget.cpp
@@ -170,6 +178,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/download
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/icons
+                        ${CMAKE_CURRENT_SOURCE_DIR}/panels
                         ${CMAKE_CURRENT_SOURCE_DIR}/rekonqpage
                         ${CMAKE_CURRENT_SOURCE_DIR}/settings
                         ${CMAKE_CURRENT_SOURCE_DIR}/sync

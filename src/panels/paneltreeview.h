@@ -2,7 +2,8 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2013 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2010-2011 by Yoann Laissus <yoann dot laissus at gmail dot com>
+* Copyright (C) 2012-2013 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,63 +25,45 @@
 * ============================================================ */
 
 
-
-#ifndef REKONQ_WINDOW_H
-#define REKONQ_WINDOW_H
-
+#ifndef PANELTREEVIEW_H
+#define PANELTREEVIEW_H
 
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// Local Includes
-#include "rwindow.h"
-#include "tabwidget.h"
-
-#include "bookmarkspanel.h"
-#include "historypanel.h"
-
 // Qt Includes
-#include <QSplitter>
-#include <QWeakPointer>
+#include <QTreeView>
 
 // Forward Declarations
-class TabBar;
-
-class WebPage;
-class WebWindow;
+class KUrl;
 
 
-class RekonqWindow : public RWindow
+class REKONQ_TESTS_EXPORT PanelTreeView : public QTreeView
 {
     Q_OBJECT
 
 public:
-    explicit RekonqWindow(bool withTab = true, bool PrivateBrowsingMode = false, QWidget *parent = 0);
-    explicit RekonqWindow(WebPage *pg, QWidget *parent = 0);
+    PanelTreeView(QWidget *parent = 0);
 
-    virtual ~RekonqWindow();
+Q_SIGNALS:
+    void openUrl(const KUrl &, const Rekonq::OpenType & = Rekonq::CurrentTab);
+    void itemHovered(const QString &);
+    void delKeyPressed();
+    void contextMenuItemRequested(const QPoint &pos);
+    void contextMenuGroupRequested(const QPoint &pos);
+    void contextMenuEmptyRequested(const QPoint &pos);
 
-    TabWidget *tabWidget();
-    TabBar *tabBar();
-    WebWindow *currentWebWindow() const;
-
-private:
-    void init();
-        
 public Q_SLOTS:
-    void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
+    void copyToClipboard();
+    void openInCurrentTab();
+    void openInNewTab();
+    void openInNewWindow();
 
-private Q_SLOTS:
-    void showBookmarksPanel(bool);
-    void showHistoryPanel(bool);
-    
-private:
-    TabWidget *_tabWidget;
-    
-    QSplitter *_splitter;
-    
-    QWeakPointer<HistoryPanel> _historyPanel;
-    QWeakPointer<BookmarksPanel> _bookmarksPanel;
+protected:
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 };
 
-#endif // REKONQ_WINDOW_H
+#endif // PANELTREEVIEW_H

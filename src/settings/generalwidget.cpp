@@ -33,7 +33,7 @@
 
 // Local Includes
 #include "application.h"
-#include "tabwindow.h"
+#include "rekonqwindow.h"
 #include "webwindow.h"
 
 //KDE Includes
@@ -91,8 +91,7 @@ void GeneralWidget::hasChanged()
 
 void GeneralWidget::setHomeToCurrentPage()
 {
-    TabWindow *tw = rApp->tabWindow();
-    WebWindow *tab = tw->currentWebWindow();
+    WebWindow *tab = rApp->rekonqWindow()->currentWebWindow();
     if (tab)
     {
         kcfg_homePage->setText(tab->url().url());
