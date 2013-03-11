@@ -64,6 +64,7 @@
 #include <QTimer>
 
 #include <QApplication>
+#include <QBitmap>
 #include <QClipboard>
 #include <QContextMenuEvent>
 #include <QLabel>
@@ -71,6 +72,11 @@
 #include <QWebFrame>
 #include <QWebHistory>
 #include <QNetworkRequest>
+
+#ifdef Q_WS_X11
+#include <X11/Xlib.h>
+#include <fixx11h.h>
+#endif
 
 
 // needed for the spellCheck
@@ -99,6 +105,7 @@ WebView::WebView(QWidget* parent, bool isPrivateBrowsing)
     , m_isViewSmoothScrolling(false)
     , m_accessKeysPressed(false)
     , m_accessKeysActive(false)
+    , m_isExternalLinkHovered(false)
     , m_parentTab(qobject_cast<WebTab *>(parent))
     , m_isPrivateBrowsing(isPrivateBrowsing)
 {
@@ -372,15 +379,26 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         sendByMailAction->setData(m_contextMenuHitResult.linkUrl());
         sendByMailAction->setText(i18n("Share link"));
 
-        a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), &menu);
-        a->setData(m_contextMenuHitResult.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
-        menu.addAction(a);
 
-        a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), &menu);
-        a->setData(m_contextMenuHitResult.linkUrl());
-        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
-        menu.addAction(a);
+        if (m_isExternalLinkHovered)
+        {
+            a = new KAction(KIcon("view-close"), i18n("Open &Here"), this);
+            a->setData(m_contextMenuHitResult.linkUrl());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkHere()));
+            menu.addAction(a);
+        }
+        else
+        {
+            a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), &menu);
+            a->setData(m_contextMenuHitResult.linkUrl());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
+            menu.addAction(a);
+ 
+            a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), &menu);
+            a->setData(m_contextMenuHitResult.linkUrl());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
+            menu.addAction(a);
+        }
 
         if (webwin)
         {
@@ -482,7 +500,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
                 openInNewTabAction->setData( QUrl::fromUserInput(selectedText()) );
                 connect(openInNewTabAction, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
                 menu.addAction(openInNewTabAction);
-                //open selected text url in a new window
+                
+                // open selected text url in a new window
                 QAction * const openInNewWindowAction = new KAction(KIcon("window-new"),
                         i18n("Open '%1' in New Window", truncatedUrl), &menu);
                 openInNewWindowAction->setData( QUrl::fromUserInput(selectedText()) );
@@ -646,6 +665,8 @@ void WebView::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint mousePos = event->pos();
 
+    guessHoveredLink(mousePos);
+
     if (m_isViewAutoScrolling)
     {
         QPoint r = mousePos - m_clickPos;
@@ -756,6 +777,15 @@ void WebView::slotCopyImageLocation()
 #else
     QApplication::clipboard()->setText(imageUrl.url());
 #endif
+}
+
+
+void WebView::openLinkHere()
+{
+    KAction *a = qobject_cast<KAction*>(sender());
+    KUrl url(a->data().toUrl());
+
+    emit loadUrl(url, Rekonq::CurrentTab);
 }
 
 
@@ -1510,4 +1540,34 @@ void WebView::saveImage()
             true,
             QString(),
             !settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled));
+}
+
+
+void WebView::guessHoveredLink(QPoint p)
+{
+    QWebHitTestResult hitTest = page()->mainFrame()->hitTestContent(p);
+    const QUrl url = hitTest.linkUrl();
+    bool emptyUrl = url.isEmpty();
+
+    if (!m_isExternalLinkHovered && emptyUrl)
+        return;
+
+    // if url is empty, reset
+    if (emptyUrl)
+    {
+        kDebug() << "EMPTY LINK";
+        m_isExternalLinkHovered = false;
+        return;
+    }
+
+    QWebFrame *frame = hitTest.linkTargetFrame();
+    if (!frame && m_isExternalLinkHovered)
+        return;
+
+    if (!frame)
+    {
+        kDebug() << "EXTERNAL LINK";
+        m_isExternalLinkHovered = true;
+        return;
+    }
 }

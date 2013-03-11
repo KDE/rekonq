@@ -98,6 +98,7 @@ protected:
 private Q_SLOTS:
     void search();
 
+    void openLinkHere();
     void openLinkInNewTab();
     void openLinkInNewWindow();
     void openLinkInPrivateWindow();
@@ -127,6 +128,7 @@ private Q_SLOTS:
 
     void blockImage();
 
+    void guessHoveredLink(QPoint);
 
 Q_SIGNALS:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
@@ -168,6 +170,8 @@ private:
     QHash<QChar, QWebElement> m_accessKeyNodes;
     bool m_accessKeysPressed;
     bool m_accessKeysActive;
+
+    bool m_isExternalLinkHovered;
 
     WebTab *m_parentTab;
 
