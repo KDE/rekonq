@@ -150,7 +150,7 @@ WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
 
     updateHistoryActions();
 
-    if (parent && parent->isFullScreen())
+    if (window()->isFullScreen())
         setWidgetsHidden(true);
 }
 

@@ -415,7 +415,7 @@ void TabWidget::currentChanged(int newIndex)
 
 void TabWidget::updateNewTabButtonPosition()
 {
-    if (isFullScreen())
+    if (window()->isFullScreen())
         return;
 
     setUpdatesEnabled(false);
@@ -825,7 +825,7 @@ void TabWidget::setFullScreen(bool makeFullScreen)
     tabBar()->setVisible(!makeFullScreen);
     _addTabButton->setVisible(!makeFullScreen);
 
-    KToggleFullScreenAction::setFullScreen(this, makeFullScreen);
+    KToggleFullScreenAction::setFullScreen(window(), makeFullScreen);
 
     for (int i = 0; i < count(); i++)
         webWindow(i)->setWidgetsHidden(makeFullScreen);
