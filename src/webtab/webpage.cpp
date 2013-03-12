@@ -688,7 +688,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     msg += i18n("try checking the <a href=\"%1\">Wayback Machine</a>", QL1S("http://wayback.archive.org/web/*/") + urlString);
     msg += i18n(" or the <a href=\"%1\">Google Cache</a>.", QL1S("http://google.com/search?q=cache:") + urlString);
     msg += QL1S("</p>");
-
+    msg += QL1S("<h5>") + i18n("<a href='%1'>Try Again</a>", urlString) + QL1S("</h5>");
     msg += QL1S("</td></tr></table>");
 
     // done. Replace variables and show it
