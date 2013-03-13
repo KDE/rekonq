@@ -252,6 +252,13 @@ IF(NepomukCore_FOUND)
     )
 ENDIF(NepomukCore_FOUND)
 
+# KActivities optional target link libraries
+IF(HAVE_KACTIVITIES)
+    TARGET_LINK_LIBRARIES(  kdeinit_rekonq
+                            ${KACTIVITIES_LIBRARY}
+    )
+ENDIF(HAVE_KACTIVITIES)
+
 # Opera sync optional link libraries
 IF(HAVE_QCA2 AND HAVE_QTOAUTH)
     TARGET_LINK_LIBRARIES(  kdeinit_rekonq

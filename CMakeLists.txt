@@ -71,6 +71,14 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-qtoauth.h.cmake ${CMAKE_CURREN
 
 
 # ==================================================================================
+# optional KActivities requirements
+
+MACRO_OPTIONAL_FIND_PACKAGE(KActivities 6.1.0)
+MACRO_BOOL_TO_01(KActivities_FOUND HAVE_KACTIVITIES)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-kactivities.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-kactivities.h )
+
+# ==================================================================================
 # Log messages
 
 MESSAGE(STATUS "")
@@ -171,6 +179,15 @@ IF(REKONQ_CAN_BE_COMPILED)
         MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for opera sync handler")
     ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 
+    # KActivities
+    
+    IF(HAVE_KACTIVITIES)
+        MESSAGE(STATUS " KActivities Libraries................. YES")
+        MESSAGE(STATUS " Rekonq will be compiled with support for activities")
+    ELSE(HAVE_KACTIVITIES)
+        MESSAGE(STATUS " KActivities Libraries................. NO")
+        MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for activities")
+    ENDIF(HAVE_KACTIVITIES)
 
     MESSAGE(STATUS "")
     MESSAGE(STATUS "-----------------------------------------------------------------------")

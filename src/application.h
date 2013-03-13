@@ -45,8 +45,21 @@ class WebWindow;
 class WebTab;
 class WebPage;
 
+#include <config-kactivities.h>
+
+#ifdef HAVE_KACTIVITIES
+namespace KActivities {
+    class Consumer;
+}
+#endif
+
 typedef QList< QWeakPointer<RekonqWindow> > RekonqWindowList;
 typedef QList<WebTab *> WebAppList;
+
+#ifdef HAVE_KACTIVITIES
+typedef QHash< QString, RekonqWindowList > ActivityTabsMap;
+#endif
+
 
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -67,8 +80,22 @@ public:
     int newInstance();
     static Application *instance();
 
-    RekonqWindow *rekonqWindow();
+    RekonqWindow *rekonqWindow(const QString & activityID = QString());
     RekonqWindowList rekonqWindowList();
+
+    /**
+     * @returns the list of windows associated with activity whose id is @param activityID
+     * @param activityID the ID of the activity  (if empty, it is interpreted as the current activity)
+     * @note If activities are disabled, returns the function returns the list of all tabs.
+     */
+    RekonqWindowList tabsForActivity(const QString & activityID = QString());
+    
+    /**
+     * @returns the true if there are windows associated with activity whose id is @param activityID
+     * @param activityID the ID of the activity  (if empty, it is interpreted as the current activity)
+     * @note If activities are disabled, returns true if there are any tabs.
+     */
+    bool haveWindowsForActivity(const QString & activityID = QString());
 
     WebAppList webAppList();
     
@@ -120,6 +147,12 @@ private Q_SLOTS:
 private:
     RekonqWindowList m_rekonqWindows;
     WebAppList m_webApps;
+    
+#ifdef HAVE_KACTIVITIES
+    ActivityTabsMap m_activityRekonqWindowsMap;
+    KActivities::Consumer *m_activityConsumer;
+#endif
+
 };
 
 #endif // APPLICATION_H

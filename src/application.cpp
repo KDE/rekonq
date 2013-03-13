@@ -69,6 +69,11 @@
 
 #include <KMessageBox>
 
+#include <config-kactivities.h>
+#ifdef HAVE_KACTIVITIES
+#include <KActivities/Consumer>
+#endif
+
 // Qt Includes
 #include <QDBusInterface>
 #include <QDBusReply>
@@ -79,6 +84,9 @@
 Application::Application()
     : KUniqueApplication()
 {
+#ifdef HAVE_KACTIVITIES
+    m_activityConsumer = new KActivities::Consumer();
+#endif
 }
 
 
@@ -88,6 +96,10 @@ Application::~Application()
     // Don't recover on next load..
     ReKonfig::setRecoverOnCrash(0);
     saveConfiguration();
+
+#ifdef HAVE_KACTIVITIES    
+    delete m_activityConsumer;
+#endif
 
     kDebug() << "Bye bye (k)baby...";
 }
@@ -355,61 +367,53 @@ void Application::saveConfiguration() const
 }
 
 
-RekonqWindow *Application::rekonqWindow()
+// --------------------------------------------------------------------------------------------------------------------
+
+
+RekonqWindow *Application::rekonqWindow(const QString & activityID)
 {
     RekonqWindow *active = qobject_cast<RekonqWindow*>(QApplication::activeWindow());
 
     if (!active)
     {
-        if (m_rekonqWindows.isEmpty())
-            return 0;
+        RekonqWindowList wList = m_rekonqWindows;
 
-        Q_FOREACH(const QWeakPointer<RekonqWindow> &pointer, m_rekonqWindows)
+#ifdef HAVE_KACTIVITIES
+        wList = tabsForActivity(activityID);
+#endif
+        
+        if (wList.isEmpty())
+            return 0;
+        
+        Q_FOREACH(const QWeakPointer<RekonqWindow> &pointer, wList)
         {
             if (KWindowInfo(pointer.data()->effectiveWinId(), NET::WMDesktop, 0).isOnCurrentDesktop())
                 return pointer.data();
         }
-        return m_rekonqWindows.at(0).data();
+        return wList.at(0).data();
     }
     return active;
 }
 
 
-void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
+RekonqWindowList Application::tabsForActivity(const QString & activityID)
 {
-    if (url.isEmpty())
-        return;
-
-    if (!url.isValid())
-    {
-        KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url(KUrl::RemoveTrailingSlash)));
-        return;
-    }
-
-    Rekonq::OpenType newType = type;
-    // Don't open useless tabs or windows for actions in about: pages
-    if (url.url().contains("about:") && url.url().contains("/"))
-        newType = Rekonq::CurrentTab;
-
-    RekonqWindow *w = 0;
-    if (newType == Rekonq::NewPrivateWindow)
-    {
-        w = newWindow(true, true);
-        newType = Rekonq::CurrentTab;
-    }
-    else if (newType == Rekonq::NewWindow
-             || ((newType == Rekonq::NewTab || newType == Rekonq::NewFocusedTab) && rekonqWindowList().count() == 0))
-    {
-        w = newWindow();
-        newType = Rekonq::CurrentTab;
-    }
-    else
-    {
-        w = rekonqWindow();
-    }
-
-    w->loadUrl(url, newType);
+#ifdef HAVE_KACTIVITIES
+    QString id = activityID;
+    if ( id.isEmpty() )
+        id = m_activityConsumer->currentActivity();
+    return m_activityRekonqWindowsMap[id];
+#else
+    return m_rekonqWindows;
+#endif
 }
+
+
+bool Application::haveWindowsForActivity(const QString & activityID)
+{
+    return (!tabsForActivity(activityID).isEmpty());
+}
+
 
 
 RekonqWindow *Application::newWindow(bool withTab, bool PrivateBrowsingMode)
@@ -424,6 +428,12 @@ RekonqWindow *Application::newWindow(bool withTab, bool PrivateBrowsingMode)
     w->installEventFilter(this);
 
     m_rekonqWindows.prepend(w);
+    
+#ifdef HAVE_KACTIVITIES
+    QString currentActivity = m_activityConsumer->currentActivity();
+    m_activityRekonqWindowsMap[currentActivity].prepend(w);
+#endif
+
     w->show();
 
     return w;
@@ -455,6 +465,9 @@ WebAppList Application::webAppList()
 }
 
 
+// ------------------------------------------------------------------------------------------------------------------
+
+
 bool Application::eventFilter(QObject* watched, QEvent* event)
 {
     // Track which window was activated most recently to prefer it on window choosing
@@ -481,8 +494,14 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
     {
         RekonqWindow *window = qobject_cast<RekonqWindow*>(watched);
         if (window)
+        {
             m_rekonqWindows.removeOne(window);
-
+#ifdef HAVE_KACTIVITIES
+            QString currentActivity = m_activityConsumer->currentActivity();
+            m_activityRekonqWindowsMap[currentActivity].removeOne(window);
+#endif
+        }
+        
         WebTab *webApp = qobject_cast<WebTab*>(watched);
         m_webApps.removeOne(webApp);
 
@@ -491,6 +510,43 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
     }
 
     return QObject::eventFilter(watched, event);
+}
+
+
+void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
+{
+    if (url.isEmpty())
+        return;
+
+    if (!url.isValid())
+    {
+        KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url(KUrl::RemoveTrailingSlash)));
+        return;
+    }
+
+    Rekonq::OpenType newType = type;
+    // Don't open useless tabs or windows for actions in about: pages
+    if (url.url().contains("about:") && url.url().contains("/"))
+        newType = Rekonq::CurrentTab;
+
+    RekonqWindow *w = 0;
+    if (newType == Rekonq::NewPrivateWindow)
+    {
+        w = newWindow(true, true);
+        newType = Rekonq::CurrentTab;
+    }
+    else if (newType == Rekonq::NewWindow
+             || ((newType == Rekonq::NewTab || newType == Rekonq::NewFocusedTab) && !haveWindowsForActivity()))
+    {
+        w = newWindow();
+        newType = Rekonq::CurrentTab;
+    }
+    else
+    {
+        w = rekonqWindow();
+    }
+
+    w->loadUrl(url, newType);
 }
 
 
