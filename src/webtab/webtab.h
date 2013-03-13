@@ -43,6 +43,9 @@
 #include <QWebInspector>
 #include <QSplitter>
 
+// Config
+#include <config-kactivities.h>
+
 // Forward Declarations
 class NotificationBar;
 class PreviewSelectorBar;
@@ -51,6 +54,10 @@ class WalletBar;
 class WebPage;
 
 class WebWindow;
+
+#ifdef HAVE_KACTIVITIES
+namespace KActivities { class ResourceInstance; }
+#endif
 
 
 class REKONQ_TESTS_EXPORT WebTab : public QWidget
@@ -84,6 +91,9 @@ public:
 
     KParts::ReadOnlyPart *part();
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
+    
+    void focusIn();
+    void focusOut();
 
 private Q_SLOTS:
     void updateProgress(int progress);
@@ -140,6 +150,10 @@ private:
     bool m_isPrivateBrowsing;
     
     QSplitter *m_splitter;
+    
+#ifdef HAVE_KACTIVITIES
+    KActivities::ResourceInstance *m_activityResourceInstance;
+#endif
 };
 
 #endif

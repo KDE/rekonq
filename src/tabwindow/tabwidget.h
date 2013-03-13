@@ -144,6 +144,8 @@ private:
     bool _isPrivateBrowsing;
 
     KActionCollection *_ac;
+
+    int _lastCurrentTabIndex;
 };
 
 #endif // TAB_WIDGET

@@ -35,9 +35,11 @@
 #include "application.h"
 #include "rekonqwindow.h"
 
-#include "webpage.h"
-#include "webwindow.h"
 #include "tabbar.h"
+
+#include "webpage.h"
+#include "webtab.h"
+#include "webwindow.h"
 
 #include "tabhistory.h"
 
@@ -78,6 +80,7 @@ TabWidget::TabWidget(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
     , _openedTabsCounter(0)
     , _isPrivateBrowsing(PrivateBrowsingMode)
     , _ac(new KActionCollection(this))
+    , _lastCurrentTabIndex(-1)
 {
     init();
 
@@ -98,6 +101,7 @@ TabWidget::TabWidget(WebPage *pg, QWidget *parent)
     , _openedTabsCounter(0)
     , _isPrivateBrowsing(false)
     , _ac(new KActionCollection(this))
+    , _lastCurrentTabIndex(-1)
 {
     init();
 
@@ -394,6 +398,8 @@ void TabWidget::pageCreated(WebPage *page)
 
 void TabWidget::currentChanged(int newIndex)
 {
+    _lastCurrentTabIndex = newIndex;
+    
     _openedTabsCounter = 0;
 
     tabBar()->setTabHighlighted(newIndex, false);
@@ -403,6 +409,8 @@ void TabWidget::currentChanged(int newIndex)
     if (!tab)
         return;
 
+    tab->tabView()->focusIn();
+    
     QString t = tab->title();
 
     (t.isEmpty() || t == QL1S("rekonq"))
@@ -410,6 +418,16 @@ void TabWidget::currentChanged(int newIndex)
     : setWindowTitle(t + QL1S(" - rekonq"));
 
     tab->checkFocus();
+    
+    // ----------------------------------------------------
+    
+    WebWindow *oldTab = webWindow(_lastCurrentTabIndex);
+    if (!oldTab)
+        return;
+    
+    oldTab->tabView()->focusOut();
+    
+    _lastCurrentTabIndex = newIndex;
 }
 
 
