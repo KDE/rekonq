@@ -621,7 +621,12 @@ void TabWidget::closeTab(int index, bool del)
     // what to do if there is just one tab...
     if (count() == 1)
     {
-        kDebug() << "CANNOT CLOSE WINDOW FROM HERE...";
+        if (ReKonfig::lastTabClosesWindow())
+        {
+            emit closeWindow();
+            return;
+        }
+
         currentWebWindow()->load(KUrl("about:home"));
         return;
     }

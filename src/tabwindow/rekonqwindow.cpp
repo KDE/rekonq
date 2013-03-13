@@ -91,9 +91,11 @@ void RekonqWindow::init()
 
     l->addWidget(_splitter);
 
-    
     // fix focus handling
     setFocusProxy(_tabWidget);
+    
+    // signals
+    connect(_tabWidget, SIGNAL(closeWindow()), this, SLOT(close()));
 }
 
 // --------------------------------------------------------------------------------------------------
