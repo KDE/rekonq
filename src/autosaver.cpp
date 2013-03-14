@@ -36,8 +36,8 @@
 #include <QTime>
 
 
-const int AUTOSAVE_TIME  = 1000 * 3;  // seconds
-const int MAX_TIME_LIMIT = 1000 * 15; // seconds
+const int AUTOSAVE_TIME  = 1000 * 2;  // seconds
+const int MAX_TIME_LIMIT = 1000 * 5; // seconds
 
 
 AutoSaver::AutoSaver(QObject *parent)

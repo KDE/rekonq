@@ -188,6 +188,7 @@ void TabWidget::init()
     _addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
+    connect(this, SIGNAL(currentChanged(int)), SessionManager::self(), SLOT(saveSession()));
 
     // ----------------------------------------------------------------------------------------------
     RekonqWindow *rw = qobject_cast<RekonqWindow *>(parent());
@@ -398,8 +399,6 @@ void TabWidget::pageCreated(WebPage *page)
 
 void TabWidget::currentChanged(int newIndex)
 {
-    _lastCurrentTabIndex = newIndex;
-    
     _openedTabsCounter = 0;
 
     tabBar()->setTabHighlighted(newIndex, false);
