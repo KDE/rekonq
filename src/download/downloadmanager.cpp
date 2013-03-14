@@ -220,7 +220,9 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
     if (forceDirRequest || ReKonfig::askDownloadPath())
     {
         // follow bug:184202 fixes
-        destUrl = KFileDialog::getSaveFileName(fileName, QString(), parent);
+        // NOTE: Please, NO MORE use here getSaveFileName as it seems it cannot properly
+        // handle remote urls
+        destUrl = KFileDialog::getSaveUrl(fileName, QString(), parent);
     }
     else
     {
