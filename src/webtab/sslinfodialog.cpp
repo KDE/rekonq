@@ -139,11 +139,9 @@ void SslInfoDialog::exportCert()
 
     QString name = m_host + QL1S(".pem");
 
-    // NOTE: Please, no more use here getSaveFileName as it seems it cannot properly
-    // handle remote URLs
-    KUrl certPath = KFileDialog::getSaveUrl(name, QString(), this);
-
-    QFile file(certPath.pathOrUrl());
+    QString certPath = KFileDialog::getSaveFileName(name, QString(), this);
+ 
+    QFile file(certPath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
 
