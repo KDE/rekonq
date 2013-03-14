@@ -198,6 +198,9 @@ void SessionManager::save()
 
     Q_FOREACH(const QWeakPointer<RekonqWindow> &w, wl)
     {
+        if (w.data()->isPrivateBrowsingMode())
+            continue;
+        
         QDomElement window = document.createElement("window");
         int tabInserted = 0;
 
@@ -229,6 +232,7 @@ void SessionManager::save()
             tab.appendChild(historySection);
             window.appendChild(tab);
         }
+        
         if (tabInserted > 0)
             session.appendChild(window);
     }

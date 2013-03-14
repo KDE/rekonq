@@ -64,6 +64,8 @@ public:
     TabBar *tabBar();
     WebWindow *currentWebWindow() const;
 
+    bool isPrivateBrowsingMode();
+
 private:
     void init();
         

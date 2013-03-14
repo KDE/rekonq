@@ -119,6 +119,12 @@ WebWindow *RekonqWindow::currentWebWindow() const
 }
 
 
+bool RekonqWindow::isPrivateBrowsingMode()
+{
+    return _tabWidget->isPrivateBrowsingWindowMode();
+}
+
+
 // --------------------------------------------------------------------------------------------------
 
 
