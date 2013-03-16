@@ -193,14 +193,14 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # Nepomuk optional include directories
-IF(NepomukCore_FOUND)
+IF(SOPRANO_FOUND AND NepomukCore_FOUND)
     INCLUDE_DIRECTORIES(${SOPRANO_INCLUDE_DIR}
                         ${NEPOMUK_CORE_INCLUDE_DIR}
     )
 
     FIND_PACKAGE(Soprano REQUIRED)
     INCLUDE(SopranoAddOntology)
-ENDIF(NepomukCore_FOUND)
+ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
 
 # Opera sync optional include directories
 IF(HAVE_QCA2 AND HAVE_QTOAUTH)
@@ -251,12 +251,12 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
 )
 
 # Nepomuk optional target link libraries
-IF(NepomukCore_FOUND)
+IF(SOPRANO_FOUND AND NepomukCore_FOUND)
     TARGET_LINK_LIBRARIES(  kdeinit_rekonq
                             ${NEPOMUK_CORE_LIBRARY}
                             ${SOPRANO_LIBRARIES}
     )
-ENDIF(NepomukCore_FOUND)
+ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
 
 # KActivities optional target link libraries
 IF(HAVE_KACTIVITIES)

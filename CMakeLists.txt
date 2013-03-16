@@ -49,11 +49,13 @@ ADD_DEFINITIONS(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 # ==================================================================================
 # optional nepomuk requirements
 
+FIND_PACKAGE(Soprano)
+
 FIND_PACKAGE(NepomukCore 0.1.0)
 
-IF(NepomukCore_FOUND)
+IF(SOPRANO_FOUND AND NepomukCore_FOUND)
     ADD_DEFINITIONS(-DHAVE_NEPOMUK)
-ENDIF(NepomukCore_FOUND)
+ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
 
 # ==================================================================================
 # optional QCA2 & QtOAuth requirements
@@ -146,13 +148,13 @@ IF(REKONQ_CAN_BE_COMPILED)
 
     # Nepomuk
 
-    IF(NepomukCore_FOUND)
+    IF(SOPRANO_FOUND AND NepomukCore_FOUND)
         MESSAGE(STATUS " Nepomuk Libraries..................... YES")
         MESSAGE(STATUS " Rekonq will be compiled with support for bookmarks nepomuk tagging")
-    ELSE(NepomukCore_FOUND)
+    ELSE(SOPRANO_FOUND AND NepomukCore_FOUND)
         MESSAGE(STATUS " Nepomuk Libraries..................... NO")
         MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for bookmarks tagging")
-    ENDIF(NepomukCore_FOUND)
+    ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
 
     MESSAGE(STATUS "")
 
