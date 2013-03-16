@@ -803,9 +803,17 @@ void Application::clearPrivateData()
 }
 
 
-void Application::createWebAppShortcut()
+void Application::createWebAppShortcut(const QString & urlString, const QString & titleString)
 {
-    KUrl u = rekonqWindow()->currentWebWindow()->url();
+    KUrl u;
+    if (urlString.isEmpty())
+    {
+        u = rekonqWindow()->currentWebWindow()->url();
+    }
+    else
+    {
+        u = KUrl(urlString);
+    }
     QString h = u.host();
 
     QPointer<KDialog> dialog = new KDialog(rekonqWindow());
@@ -819,7 +827,17 @@ void Application::createWebAppShortcut()
     QWidget widget;
     wAppWidget.setupUi(&widget);
 
-    QString webAppTitle = rekonqWindow()->currentWebWindow()->title().remove('&');
+    QString webAppTitle;
+    if (titleString.isEmpty())
+    {
+        webAppTitle = rekonqWindow()->currentWebWindow()->title();
+    }
+    else
+    {
+        webAppTitle = titleString;
+    }
+    webAppTitle = webAppTitle.remove('&');
+    
     wAppWidget.nameLineEdit->setText(webAppTitle);
     wAppWidget.kcfg_createDesktopAppShortcut->setChecked(ReKonfig::createDesktopAppShortcut());
     wAppWidget.kcfg_createMenuAppShortcut->setChecked(ReKonfig::createMenuAppShortcut());

@@ -31,7 +31,10 @@
 #include "rekonq.h"
 
 // Local Includes
+#include "application.h"
+
 #include "historymanager.h"
+
 #include "webpage.h"
 #include "webtab.h"
 #include "urlbar.h"
@@ -142,6 +145,26 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             return false;
         }
 
+        kDebug() << "FN: " << _url.fileName();
+        kDebug() << "DIR: " << _url.directory();
+        
+        if (_url.directory() == QL1S("webapp"))
+        {
+            if (_url.fileName() == QL1S("launch"))
+            {
+                QString value = _url.queryItemValue(QL1S("url"));
+                rApp->loadUrl(KUrl(value), Rekonq::WebApp);            
+                return true;
+            }
+            if (_url.fileName() == QL1S("install"))
+            {
+                QString urlValue = _url.queryItemValue(QL1S("url"));
+                QString titleValue = _url.queryItemValue(QL1S("title"));
+                rApp->createWebAppShortcut(urlValue, titleValue);
+                return true;
+            }
+        }
+        
         if (encodedUrl == QByteArray("about:home"))
         {
             switch (ReKonfig::newTabStartPage())

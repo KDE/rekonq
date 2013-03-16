@@ -123,6 +123,8 @@ public Q_SLOTS:
 
     WebTab *newWebApp();
 
+    void createWebAppShortcut(const QString & urlString = QString(), const QString & titleString = QString());
+
 protected:
     // This is used to track which window was activated most recently
     bool eventFilter(QObject *watched, QEvent *event);
@@ -137,8 +139,6 @@ private Q_SLOTS:
     void clearPrivateData();
 
     void queryQuit();
-
-    void createWebAppShortcut();
 
     void newPrivateBrowsingWindow();
 
