@@ -13,6 +13,9 @@ This software should be prepackaged for all major Linux distributions.
 Please see http://techbase.kde.org/Getting_Started#Building_and_Running_KDE_Software_From_Source
 for instructions on how to build and setup a KDE4 environment to work in.
 
+The build system, as every KDE4 software is based on cmake. Actual minimum dependency about is:
+
+- cmake 2.8.9
 
 === Optional dependencies ===
 

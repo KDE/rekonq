@@ -16,8 +16,7 @@ SET(REKONQ_SITE "http://rekonq.kde.org")
 # ==================================================================================
 # minimum cmake required
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.4)
-
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9 FATAL_ERROR)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
