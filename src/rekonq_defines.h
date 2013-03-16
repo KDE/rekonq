@@ -78,7 +78,8 @@ enum OpenType
     NewFocusedTab,      ///< open url in new tab and focus it
     NewBackGroundTab,   ///< open url in new background tab
     NewWindow,          ///< open url in new window
-    NewPrivateWindow    ///< open url in new private window
+    NewPrivateWindow,   ///< open url in new private window
+    WebApp              ///< open url in a web app window
 };
 
 /**

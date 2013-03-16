@@ -150,9 +150,7 @@ int Application::newInstance()
         }
         kDebug() << "URL: " << u;
 
-        WebTab *tab = newWebApp();
-        connect(tab->page(), SIGNAL(pageCreated(WebPage*)), this, SLOT(pageCreated(WebPage*)));
-        tab->view()->load(u);
+        loadUrl(u, Rekonq::WebApp);
 
         if (isFirstLoad)
         {
@@ -525,6 +523,14 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
         return;
     }
 
+    if (type == Rekonq::WebApp)
+    {
+        WebTab *tab = newWebApp();
+        connect(tab->page(), SIGNAL(pageCreated(WebPage*)), this, SLOT(pageCreated(WebPage*)));
+        tab->view()->load(url);
+        return;
+    }
+    
     Rekonq::OpenType newType = type;
     // Don't open useless tabs or windows for actions in about: pages
     if (url.url().contains("about:") && url.url().contains("/"))

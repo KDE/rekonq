@@ -134,6 +134,7 @@ void RekonqWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *h
     {
     case Rekonq::NewWindow:
     case Rekonq::NewPrivateWindow:
+    case Rekonq::WebApp:
         rApp->loadUrl(url, type);
         return;
 
