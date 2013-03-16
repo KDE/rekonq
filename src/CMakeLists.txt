@@ -209,6 +209,12 @@ IF(HAVE_QCA2 AND HAVE_QTOAUTH)
     )
 ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 
+# KActivities optional include directories
+IF(KActivities_FOUND)
+    INCLUDE_DIRECTORIES(${KACTIVITIES_INCLUDE_DIRS}
+    )
+ENDIF(KActivities_FOUND)
+
 
 ### -------------- ADDING DEFINITIONS...
 
