@@ -229,7 +229,6 @@ static QString highlightWordsInText(const QString &text, const QStringList &word
         }
     }
 
-
     if (boldSections.isEmpty())
         return ret;
 
@@ -463,7 +462,10 @@ void SearchListItem::changeSearchEngine(KService::Ptr engine)
 
     // remove the xx: part...
     QString separator = SearchEngine::delimiter();
-    QString text = m_text.section(separator, 1, 1);
+    
+    QString text = m_text.contains(separator)
+        ? m_text.section(separator, 1, 1)
+        : m_text;
 
     // create a new item && load it...
     UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(engine, text), text);
