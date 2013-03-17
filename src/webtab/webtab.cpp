@@ -503,17 +503,21 @@ void WebTab::toggleInspector(bool on)
 
 void WebTab::focusIn()
 {
+#ifdef HAVE_KACTIVITIES
     if (m_isPrivateBrowsing || !m_activityResourceInstance)
         return;
     
     m_activityResourceInstance->notifyFocusedIn();
+#endif
 }
 
 
 void WebTab::focusOut()
 {
+#ifdef HAVE_KACTIVITIES
     if (m_isPrivateBrowsing || !m_activityResourceInstance)
         return;
     
     m_activityResourceInstance->notifyFocusedOut();    
+#endif
 }
