@@ -194,7 +194,10 @@ int Application::newInstance()
             bool restoreOk = false;
             if (ReKonfig::startupBehaviour() == 2)
             {
-                restoreOk = SessionManager::self()->restoreSessionFromScratch();
+                if (hasToBeRecoveredFromCrash)
+                    restoreOk = false;
+                else
+                    restoreOk = SessionManager::self()->restoreSessionFromScratch();
             }
             else
             {
@@ -288,13 +291,13 @@ int Application::newInstance()
                         loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
                         break;
                     }
-                    if (!SessionManager::self()->restoreSessionFromScratch())
+                    if (hasToBeRecoveredFromCrash || !SessionManager::self()->restoreSessionFromScratch())
                     {
                         loadUrl(KUrl("about:home") , Rekonq::NewTab);
                     }
                     break;
                 default:
-                    newWindow()->tabWidget()->newTab();
+                    ASSERT_NOT_REACHED(unknown startup behavior);
                     break;
                 }
             }
