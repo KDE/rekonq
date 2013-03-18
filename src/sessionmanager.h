@@ -39,7 +39,6 @@
 #include <QWeakPointer>
 
 // Forward Declarations
-class AutoSaver;
 class TabHistory;
 
 class RekonqWindow;
@@ -86,8 +85,6 @@ public Q_SLOTS:
     void saveSession();
 
 private Q_SLOTS:
-    void save();
-
     // This method restores session
     // after a crash
     void restoreCrashedSession();
@@ -97,7 +94,6 @@ private:
 
     bool m_safe;
     bool m_isSessionEnabled;
-    AutoSaver *m_saveTimer;
 
     static QWeakPointer<SessionManager> s_sessionManager;
 };

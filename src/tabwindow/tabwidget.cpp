@@ -376,12 +376,12 @@ void TabWidget::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *hist
         break;
     };
 
-    tab->load(url);
-
     if (history)
     {
         history->applyHistory(tab->page()->history());
     }
+    
+    tab->load(url);
 }
 
 

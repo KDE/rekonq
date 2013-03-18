@@ -32,7 +32,6 @@
 
 // Local Includes
 #include "application.h"
-#include "autosaver.h"
 #include "tabhistory.h"
 
 #include "rekonqwindow.h"
@@ -158,25 +157,12 @@ SessionManager::SessionManager(QObject *parent)
     : QObject(parent)
     , m_safe(true)
     , m_isSessionEnabled(false)
-    , m_saveTimer(new AutoSaver(this))
 {
-    // AutoSaver. Save your hd from frying...
-    connect(m_saveTimer, SIGNAL(saveNeeded()), this, SLOT(save()));
-
     m_sessionFilePath = KStandardDirs::locateLocal("appdata" , "session");
 }
 
 
 void SessionManager::saveSession()
-{
-    if (!m_isSessionEnabled)
-        return;
-
-    m_saveTimer->changeOccurred();
-}
-
-
-void SessionManager::save()
 {
     if (!m_isSessionEnabled || !m_safe)
         return;
