@@ -288,10 +288,11 @@ int Application::newInstance()
                         loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
                         break;
                     }
-                    if (SessionManager::self()->restoreSessionFromScratch())
+                    if (!SessionManager::self()->restoreSessionFromScratch())
                     {
-                        break;
+                        loadUrl(KUrl("about:home") , Rekonq::NewTab);
                     }
+                    break;
                 default:
                     newWindow()->tabWidget()->newTab();
                     break;
