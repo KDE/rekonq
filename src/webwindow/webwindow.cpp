@@ -40,6 +40,7 @@
 #include "iconmanager.h"
 #include "syncmanager.h"
 #include "useragentmanager.h"
+#include "sessionmanager.h"
 
 #include "webpage.h"
 #include "webtab.h"
@@ -278,6 +279,15 @@ void WebWindow::setupActions()
     a->setShortcut(openLocationShortcut);
     actionCollection()->addAction(QL1S("open_location"), a);
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(openLocation()));
+
+     // User sessions management
+    a = new KAction(KIcon("document-save"), i18n("&Save Session"), this);
+    actionCollection()->addAction(QL1S("session_save"), a);
+    connect(a, SIGNAL(triggered(bool)), SessionManager::self(), SLOT(saveYourSession()));
+
+    a = new KAction(KIcon("view-choose"), i18n("&Manage Session"), this);
+    actionCollection()->addAction(QL1S("session_manage"), a);
+    connect(a, SIGNAL(triggered(bool)), SessionManager::self(), SLOT(restoreYourSession()));
 
     // ===== Tools Actions =================================
     a = new KAction(i18n("View Page S&ource"), this);

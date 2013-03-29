@@ -77,11 +77,9 @@ public Q_SLOTS:
     // This method restores session
     // on restart when restore at startup is chosen
     bool restoreSessionFromScratch();
-
     // This method restores (eventually) the tabs present
     // if there are NO pinned tabs to restore, it returns FALSE...
     bool restoreJustThePinnedTabs();
-
     void saveSession();
 
 private Q_SLOTS:
@@ -89,9 +87,11 @@ private Q_SLOTS:
     // after a crash
     void restoreCrashedSession();
 
+    bool saveYourSession();
+    bool restoreYourSession();
+    
 private:
     QString m_sessionFilePath;
-
     bool m_safe;
     bool m_isSessionEnabled;
 

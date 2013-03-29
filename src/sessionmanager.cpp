@@ -369,3 +369,96 @@ QList<TabHistory> SessionManager::closedSitesForWindow(const QString &windowName
 
     return list;
 }
+
+
+// -------------------------------------------------------------------------------------------------------
+
+
+bool SessionManager::saveYourSession()
+{
+    kDebug() << "SAVING YOUR OWN SESSION...";
+    
+    const QString & sessionName = KStandardDirs::locateLocal("appdata" , QL1S("usersessions/"));
+    
+    QFile sessionFile(sessionName + QL1S("prova")); // FIXME
+    if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
+    {
+        kDebug() << "Unable to open session file" << sessionFile.fileName();
+        return true;
+    }
+    RekonqWindowList wl = rApp->rekonqWindowList();
+    QDomDocument document("session");
+    QDomElement session = document.createElement("session");
+    document.appendChild(session);
+
+    Q_FOREACH(const QWeakPointer<RekonqWindow> &w, wl)
+    {
+        if (w.data()->isPrivateBrowsingMode())
+            continue;
+        
+        QDomElement window = document.createElement("window");
+        int tabInserted = 0;
+
+        window.setAttribute("name", w.data()->objectName());
+        
+        TabWidget *tw = w.data()->tabWidget();
+        for (signed int tabNo = 0; tabNo < tw->count(); tabNo++)
+        {
+            KUrl u = tw->webWindow(tabNo)->url();
+
+            tabInserted++;
+            QDomElement tab = document.createElement("tab");
+            tab.setAttribute("title", tw->webWindow(tabNo)->title()); // redundant, but needed for closedSites()
+            // as there's not way to read out the historyData
+            tab.setAttribute("url", u.url());
+            if (tw->currentIndex() == tabNo)
+            {
+                tab.setAttribute("currentTab", 1);
+            }
+            if (tw->tabBar()->tabData(tabNo).toBool()) // pinned tab info
+            {
+                tab.setAttribute("pinned", 1);
+            }
+            QByteArray history;
+            QDataStream historyStream(&history, QIODevice::ReadWrite);
+            historyStream << *(tw->webWindow(tabNo)->page()->history());
+            QDomCDATASection historySection = document.createCDATASection(history.toBase64());
+
+            tab.appendChild(historySection);
+            window.appendChild(tab);
+        }
+        
+        if (tabInserted > 0)
+            session.appendChild(window);
+    }
+
+    QTextStream TextStream(&sessionFile);
+    document.save(TextStream, 2);
+    sessionFile.close();
+
+    return true;
+
+}
+
+    
+bool SessionManager::restoreYourSession()
+{
+    const QString & sessionName = KStandardDirs::locateLocal("appdata" , QL1S("usersessions/"));
+    QDomDocument document("session");
+
+    if (!readSessionDocument(document,sessionName + QL1S("prova"))) // FIXME
+        return false;
+
+    for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
+    {
+        QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
+
+        RekonqWindow *tw = rApp->newWindow();
+
+        int currentTab = loadTabs(tw, window, true, false);
+
+        tw->tabWidget()->setCurrentIndex(currentTab);
+    }
+
+    return true;
+}

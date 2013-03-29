@@ -30,6 +30,13 @@
         <text>&amp;Tools</text>
         <Action name="clear_private_data" />
         <Separator/>
+        
+        <Menu name="sessionMenu" noMerge="1">
+            <text>&amp;Sessions</text>
+            <Action name="session_save" />
+            <Action name="session_manage" />
+        </Menu>
+
         <Action name="webapp_shortcut" />
         <Action name="web_inspector" />
         <Action name="page_source" />
