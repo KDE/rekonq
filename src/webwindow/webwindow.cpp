@@ -281,13 +281,9 @@ void WebWindow::setupActions()
     connect(a, SIGNAL(triggered(bool)) , this, SLOT(openLocation()));
 
      // User sessions management
-    a = new KAction(KIcon("document-save"), i18n("&Save Session"), this);
-    actionCollection()->addAction(QL1S("session_save"), a);
-    connect(a, SIGNAL(triggered(bool)), SessionManager::self(), SLOT(saveYourSession()));
-
-    a = new KAction(KIcon("view-choose"), i18n("&Manage Session"), this);
+    a = new KAction(KIcon("view-choose"), i18n("&Manage Sessions"), this);
     actionCollection()->addAction(QL1S("session_manage"), a);
-    connect(a, SIGNAL(triggered(bool)), SessionManager::self(), SLOT(restoreYourSession()));
+    connect(a, SIGNAL(triggered(bool)), SessionManager::self(), SLOT(manageSession()));
 
     // ===== Tools Actions =================================
     a = new KAction(i18n("View Page S&ource"), this);

@@ -14,6 +14,7 @@ set(rekonq_KDEINIT_SRCS
     autosaver.cpp
     searchengine.cpp
     sessionmanager.cpp
+    sessionwidget.cpp
     urlresolver.cpp
     websnap.cpp
     #----------------------------------------
@@ -166,6 +167,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     webtab/sslinfo.ui
     # ----------------------------------------
     cleardata.ui
+    session.ui
     webappcreation.ui
  )
 

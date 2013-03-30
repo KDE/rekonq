@@ -33,6 +33,7 @@
 // Local Includes
 #include "application.h"
 #include "tabhistory.h"
+#include "sessionwidget.h"
 
 #include "rekonqwindow.h"
 #include "tabbar.h"
@@ -41,12 +42,15 @@
 #include "webpage.h"
 
 // KDE Includes
+#include <KDialog>
+#include <KPushButton>
 #include <KStandardDirs>
 #include <KUrl>
 
 // Qt Includes
 #include <QFile>
 #include <QDomDocument>
+#include <QPointer>
 
 
 // Only used internally
@@ -374,18 +378,20 @@ QList<TabHistory> SessionManager::closedSitesForWindow(const QString &windowName
 // -------------------------------------------------------------------------------------------------------
 
 
-bool SessionManager::saveYourSession()
+bool SessionManager::saveYourSession(int index)
 {
     kDebug() << "SAVING YOUR OWN SESSION...";
     
-    const QString & sessionName = KStandardDirs::locateLocal("appdata" , QL1S("usersessions/"));
+    const QString & sessionPath = KStandardDirs::locateLocal("appdata" , QL1S("usersessions/"));
+    const QString & sessionName = QL1S("ses") + QString::number(index);
     
-    QFile sessionFile(sessionName + QL1S("prova")); // FIXME
+    QFile sessionFile(sessionPath + sessionName);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
     {
         kDebug() << "Unable to open session file" << sessionFile.fileName();
-        return true;
+        return false;
     }
+    
     RekonqWindowList wl = rApp->rekonqWindowList();
     QDomDocument document("session");
     QDomElement session = document.createElement("session");
@@ -437,16 +443,17 @@ bool SessionManager::saveYourSession()
     sessionFile.close();
 
     return true;
-
 }
 
     
-bool SessionManager::restoreYourSession()
+bool SessionManager::restoreYourSession(int index)
 {
-    const QString & sessionName = KStandardDirs::locateLocal("appdata" , QL1S("usersessions/"));
+    const QString & sessionPath = KStandardDirs::locateLocal("appdata" , QL1S("usersessions/"));
+    const QString & sessionName = QL1S("ses") + QString::number(index);
+    
     QDomDocument document("session");
 
-    if (!readSessionDocument(document,sessionName + QL1S("prova"))) // FIXME
+    if (!readSessionDocument(document,sessionPath + sessionName))
         return false;
 
     for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
@@ -461,4 +468,21 @@ bool SessionManager::restoreYourSession()
     }
 
     return true;
+}
+
+
+void SessionManager::manageSession()
+{
+    kDebug() << "OK ,manage session..";
+    
+    QPointer<KDialog> dialog = new KDialog(rApp->rekonqWindow());
+    dialog->setCaption(i18nc("@title:window", "Manage Session"));
+    dialog->setButtons(KDialog::Ok);
+
+    dialog->button(KDialog::Ok)->setText(i18n("Done"));
+
+    SessionWidget widg;
+    widg.show();
+    dialog->setMainWidget(&widg);
+    dialog->exec();
 }

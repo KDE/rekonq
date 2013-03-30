@@ -70,6 +70,9 @@ public:
     // This method restores a single Window
     bool restoreWindow(RekonqWindow * window);
 
+    bool saveYourSession(int);
+    bool restoreYourSession(int);
+
 private:
     explicit SessionManager(QObject *parent = 0);
 
@@ -87,8 +90,7 @@ private Q_SLOTS:
     // after a crash
     void restoreCrashedSession();
 
-    bool saveYourSession();
-    bool restoreYourSession();
+    void manageSession();
     
 private:
     QString m_sessionFilePath;
