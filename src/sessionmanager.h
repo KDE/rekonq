@@ -85,13 +85,13 @@ public Q_SLOTS:
     bool restoreJustThePinnedTabs();
     void saveSession();
 
+    void manageSessions();
+    
 private Q_SLOTS:
     // This method restores session
     // after a crash
     void restoreCrashedSession();
 
-    void manageSession();
-    
 private:
     QString m_sessionFilePath;
     bool m_safe;

@@ -192,16 +192,23 @@ int Application::newInstance()
         if (isFirstLoad)
         {
             bool restoreOk = false;
-            if (ReKonfig::startupBehaviour() == 2)
+            
+            switch(ReKonfig::startupBehaviour())
             {
+            case 2:
                 if (hasToBeRecoveredFromCrash)
                     restoreOk = false;
                 else
                     restoreOk = SessionManager::self()->restoreSessionFromScratch();
-            }
-            else
-            {
+                break;
+                
+            case 3:
+                SessionManager::self()->manageSessions();
+                break;
+                
+            default:
                 restoreOk = SessionManager::self()->restoreJustThePinnedTabs();
+                break;
             }
 
             isFirstLoad = !restoreOk;
@@ -295,6 +302,9 @@ int Application::newInstance()
                     {
                         loadUrl(KUrl("about:home") , Rekonq::NewTab);
                     }
+                    break;
+                case 3:
+                    SessionManager::self()->manageSessions();
                     break;
                 default:
                     ASSERT_NOT_REACHED(unknown startup behavior);

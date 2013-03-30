@@ -480,7 +480,7 @@ bool SessionManager::restoreYourSession(int index)
 }
 
 
-void SessionManager::manageSession()
+void SessionManager::manageSessions()
 {
     kDebug() << "OK ,manage session..";
     

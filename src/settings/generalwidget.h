@@ -52,7 +52,6 @@ Q_SIGNALS:
 private Q_SLOTS:
     void hasChanged();
     void setHomeToCurrentPage();
-    void disableHomeSettings(bool);
     void fixHomePageURL();
 
 private:

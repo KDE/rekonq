@@ -49,10 +49,6 @@ GeneralWidget::GeneralWidget(QWidget *parent)
 
     connect(setHomeToCurrentPageButton, SIGNAL(clicked()), this, SLOT(setHomeToCurrentPage()));
 
-    disableHomeSettings(ReKonfig::useNewTabPage());
-
-    connect(kcfg_useNewTabPage, SIGNAL(toggled(bool)), this, SLOT(disableHomeSettings(bool)));
-
     checkKGetPresence();
 
     connect(kcfg_homePage, SIGNAL(editingFinished()), this, SLOT(fixHomePageURL()));
@@ -96,13 +92,6 @@ void GeneralWidget::setHomeToCurrentPage()
     {
         kcfg_homePage->setText(tab->url().url());
     }
-}
-
-
-void GeneralWidget::disableHomeSettings(bool b)
-{
-    kcfg_homePage->setEnabled(!b);
-    setHomeToCurrentPageButton->setEnabled(!b);
 }
 
 

@@ -283,7 +283,7 @@ void WebWindow::setupActions()
      // User sessions management
     a = new KAction(KIcon("view-choose"), i18n("&Manage Sessions"), this);
     actionCollection()->addAction(QL1S("session_manage"), a);
-    connect(a, SIGNAL(triggered(bool)), SessionManager::self(), SLOT(manageSession()));
+    connect(a, SIGNAL(triggered(bool)), SessionManager::self(), SLOT(manageSessions()));
 
     // ===== Tools Actions =================================
     a = new KAction(i18n("View Page S&ource"), this);
@@ -968,9 +968,7 @@ void WebWindow::openBookmarksPage()
 
 void WebWindow::openHomePage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
-    KUrl homeUrl = ReKonfig::useNewTabPage()
-                   ? KUrl(QL1S("about:home"))
-                   : KUrl(ReKonfig::homePage());
+    KUrl homeUrl = KUrl(ReKonfig::homePage());
 
     if (buttons == Qt::MidButton || modifiers == Qt::ControlModifier)
         rApp->loadUrl(homeUrl, Rekonq::NewTab);
