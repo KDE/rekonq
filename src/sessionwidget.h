@@ -56,6 +56,9 @@ private Q_SLOTS:
     void deleteSession();
     
     void updateButtons(int);
+    
+Q_SIGNALS:
+    void closeDialog();
 };
 
 

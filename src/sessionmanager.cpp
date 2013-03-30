@@ -456,6 +456,9 @@ bool SessionManager::restoreYourSession(int index)
     if (!readSessionDocument(document,sessionPath + sessionName))
         return false;
 
+    // trace the windows to delete
+    RekonqWindowList wList = rApp->rekonqWindowList();
+    
     for (unsigned int winNo = 0; winNo < document.elementsByTagName("window").length(); winNo++)
     {
         QDomElement window = document.elementsByTagName("window").at(winNo).toElement();
@@ -466,7 +469,13 @@ bool SessionManager::restoreYourSession(int index)
 
         tw->tabWidget()->setCurrentIndex(currentTab);
     }
-
+    
+    Q_FOREACH(const QWeakPointer<RekonqWindow> &w, wList)
+    {
+        if (!w.isNull())
+            w.data()->close();
+    }
+    
     return true;
 }
 
@@ -475,14 +484,15 @@ void SessionManager::manageSession()
 {
     kDebug() << "OK ,manage session..";
     
-    QPointer<KDialog> dialog = new KDialog(rApp->rekonqWindow());
+    QPointer<KDialog> dialog = new KDialog();
     dialog->setCaption(i18nc("@title:window", "Manage Session"));
     dialog->setButtons(KDialog::Ok);
 
     dialog->button(KDialog::Ok)->setText(i18n("Done"));
 
     SessionWidget widg;
-    widg.show();
+    connect(&widg,SIGNAL(closeDialog()),dialog, SLOT(accept()));
+    
     dialog->setMainWidget(&widg);
     dialog->exec();
 }

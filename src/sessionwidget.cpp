@@ -75,7 +75,8 @@ void SessionWidget::loadSession()
 {
     int cc = listWidget->currentRow();
     SessionManager::self()->restoreYourSession(cc);
-    // close();
+    
+    emit closeDialog();
 }
 
 
