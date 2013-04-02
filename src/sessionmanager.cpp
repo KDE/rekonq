@@ -486,13 +486,14 @@ void SessionManager::manageSessions()
     
     QPointer<KDialog> dialog = new KDialog();
     dialog->setCaption(i18nc("@title:window", "Manage Session"));
-    dialog->setButtons(KDialog::Ok);
+    dialog->setButtons(KDialog::Ok | KDialog::Close);
 
-    dialog->button(KDialog::Ok)->setText(i18n("Done"));
+    dialog->button(KDialog::Ok)->setIcon(KIcon("system-run"));
+    dialog->button(KDialog::Ok)->setText(i18n("Load"));
 
     SessionWidget widg;
-    connect(&widg,SIGNAL(closeDialog()),dialog, SLOT(accept()));
-    
     dialog->setMainWidget(&widg);
+    
+    connect(dialog, SIGNAL(okClicked()), &widg, SLOT(loadSession()));
     dialog->exec();
 }

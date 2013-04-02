@@ -33,6 +33,8 @@
 
 // Local Includes
 #include "sessionmanager.h"
+#include "application.h"
+#include "rekonqwindow.h"
 
 // KDE Includes
 #include <KIcon>
@@ -55,9 +57,6 @@ SessionWidget::SessionWidget(QWidget *parent)
         listWidget->addItem(item);
     }
     
-    loadButton->setIcon(KIcon("system-run"));
-    connect(loadButton, SIGNAL(clicked()), this, SLOT(loadSession()));
-    
     saveButton->setIcon(KIcon("document-save"));
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveSession()));
         
@@ -68,6 +67,9 @@ SessionWidget::SessionWidget(QWidget *parent)
     connect(listWidget, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(save()));
     
     updateButtons(-1);
+    
+    if (rApp->rekonqWindowList().isEmpty())
+        saveButton->setEnabled(false);
 }
 
 
@@ -75,8 +77,6 @@ void SessionWidget::loadSession()
 {
     int cc = listWidget->currentRow();
     SessionManager::self()->restoreYourSession(cc);
-    
-    emit closeDialog();
 }
 
 
@@ -103,12 +103,10 @@ void SessionWidget::updateButtons(int index)
     kDebug() << "UPDATE INDEX: " << index;
     if (index < 0)
     {
-        loadButton->setEnabled(false);
         deleteButton->setEnabled(false);
         return;
     }
     
-    loadButton->setEnabled(true);
     deleteButton->setEnabled(true);
 }
 
