@@ -152,8 +152,7 @@ UrlBar::UrlBar(QWidget *parent)
 
     connect(_tab, SIGNAL(urlChanged(QUrl)), this, SLOT(setQUrl(QUrl)));
     connect(_tab, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
-    connect(_tab, SIGNAL(loadStarted()), this, SLOT(clearRightIcons()));
-    connect(_tab, SIGNAL(iconChanged()), this, SLOT(refreshFavicon()));
+    connect(_tab, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
 
     // bookmark icon
     connect(BookmarkManager::self(), SIGNAL(bookmarksUpdated()), this, SLOT(updateRightIcons()));
@@ -184,7 +183,6 @@ void UrlBar::setQUrl(const QUrl& url)
     clearFocus();
     KLineEdit::setUrl(url);
     setCursorPosition(0);
-    refreshFavicon();
 }
 
 
@@ -238,14 +236,6 @@ void UrlBar::paintEvent(QPaintEvent *event)
     int progr = _tab->progress();
     if (progr == 0 || progr == 100)
     {
-        if (_tab->url().scheme() == QL1S("https"))
-        {
-            backgroundColor = _tab->page()->hasSslValid()
-                              ? colorScheme.background(KColorScheme::PositiveBackground).color()
-                              : colorScheme.background(KColorScheme::NegativeBackground).color();
-
-            foregroundColor = colorScheme.foreground(KColorScheme::NormalText).color();
-        }
         p.setBrush(QPalette::Base, backgroundColor);
         p.setBrush(QPalette::Text, foregroundColor);
     }
@@ -298,8 +288,12 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     QString currentText = text().trimmed();
 
     if (currentText.isEmpty())
+    {
+        disconnect(_icon);
+        _icon->setIcon(KIcon("arrow-right"));
         return KLineEdit::keyPressEvent(event);
-
+    }
+    
     // this handles the Modifiers + Return key combinations
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
     {
@@ -367,14 +361,23 @@ void UrlBar::dropEvent(QDropEvent *event)
 }
 
 
+void UrlBar::loadStarted()
+{
+    _icon->setIcon(KIcon("text-html"));
+    clearRightIcons();
+}
+
+
 void UrlBar::loadFinished()
 {
+    refreshFavicon();
+
     if (_tab->url().scheme() == QL1S("about"))
     {
         update();
         return;
     }
-
+    
     // show bookmark info
     IconButton *bt = addRightIcon(UrlBar::BK);
     connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(manageBookmarks()));
@@ -395,14 +398,6 @@ void UrlBar::loadFinished()
     {
         IconButton *bt = addRightIcon(UrlBar::RSS);
         connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(showRSSInfo(QPoint)));
-    }
-
-    // show SSL
-    if (_tab->url().scheme() == QL1S("https"))
-    {
-        // NOTE: the choice for the right SSL icon is done in the addRightIcon method
-        IconButton *bt = addRightIcon(UrlBar::SSL);
-        connect(bt, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo(QPoint)));
     }
 
     // Show adblock
@@ -526,12 +521,6 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         rightIcon->setIcon(KIcon("application-rss+xml"));
         rightIcon->setToolTip(i18n("List all available RSS feeds"));
         break;
-    case UrlBar::SSL:
-        _tab->page()->hasSslValid()
-        ? rightIcon->setIcon(KIcon("object-locked"))
-        : rightIcon->setIcon(KIcon("object-unlocked"));
-        rightIcon->setToolTip(i18n("Show SSL Info"));
-        break;
     case UrlBar::BK:
         if (BookmarkManager::self()->bookmarkForUrl(_tab->url()).isNull())
         {
@@ -627,6 +616,7 @@ void UrlBar::detectTypedString(const QString &typed)
 {
     if (typed.count() == 1)
     {
+        _icon->setIcon(KIcon("arrow-right"));
         QTimer::singleShot(0, this, SLOT(suggest()));
         return;
     }
@@ -648,20 +638,38 @@ void UrlBar::suggest()
 
 void UrlBar::refreshFavicon()
 {
+    disconnect(_icon);
+    
+    const QString scheme = _tab->url().protocol();
+    
     if (_tab->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
     {
         _icon->setIcon(KIcon("view-media-artist"));
         return;
     }
+    
+    if (scheme == QL1S("https"))
+    {
+        if (_tab->page()->hasSslValid())
+        {
+            _icon->setIcon(KIcon("security-high"));
+        }
+        else
+        {
+            _icon->setIcon(KIcon("security-low"));
+        }
+        
+        connect(_icon, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo(QPoint)));
+        return;
+    }
 
-    KUrl u = _tab->url();
-    if (u.scheme() == QL1S("about"))
+    if (scheme == QL1S("about"))
     {
         _icon->setIcon(KIcon("arrow-right"));
         return;
     }
 
-    _icon->setIcon(IconManager::self()->iconForUrl(u));
+    _icon->setIcon(KIcon("text-html"));
 }
 
 

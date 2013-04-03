@@ -80,7 +80,6 @@ public:
     {
         KGet         = 0x00000001,
         RSS          = 0x00000010,
-        SSL          = 0x00000100,
         BK           = 0x00001000,
         SearchEngine = 0x00010000,
         Favorite     = 0x00100000,
@@ -102,6 +101,7 @@ public Q_SLOTS:
 private Q_SLOTS:
     void loadRequestedUrl(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
 
+    void loadStarted();
     void loadFinished();
 
     void clearRightIcons();

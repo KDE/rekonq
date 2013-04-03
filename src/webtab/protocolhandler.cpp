@@ -145,9 +145,6 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             return false;
         }
 
-        kDebug() << "FN: " << _url.fileName();
-        kDebug() << "DIR: " << _url.directory();
-        
         if (_url.directory() == QL1S("webapp"))
         {
             if (_url.fileName() == QL1S("launch"))
