@@ -106,6 +106,23 @@ static void hideBlockedElements(const QUrl& url, QWebElementCollection& collecti
 // ----------------------------------------------------------------------------------------------
 
 
+QNetworkAccessManager *NetworkAccessManager::s_privateAccessManager = 0;
+
+    
+QNetworkAccessManager *NetworkAccessManager::privateAccessManager()
+{
+    if (s_privateAccessManager == 0)
+    {
+        s_privateAccessManager = new QNetworkAccessManager();
+    }
+    
+    return s_privateAccessManager;
+}
+
+
+// ----------------------------------------------------------------------------------------------
+
+
 NetworkAccessManager::NetworkAccessManager(QObject *parent)
     : AccessManager(parent)
 {
@@ -183,3 +200,5 @@ void NetworkAccessManager::applyHidingBlockedElements(bool ok)
     Q_FOREACH(const QUrl & url, urls)
         hideBlockedElements(url, collection);
 }
+
+

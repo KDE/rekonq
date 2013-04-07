@@ -49,6 +49,8 @@ class REKONQ_TESTS_EXPORT NetworkAccessManager : public KIO::Integration::Access
 public:
     explicit NetworkAccessManager(QObject *parent);
 
+    static QNetworkAccessManager *privateAccessManager();
+    
 protected:
     virtual QNetworkReply *createRequest(QNetworkAccessManager::Operation op, const QNetworkRequest &request, QIODevice *outgoingData = 0);
 
@@ -58,6 +60,8 @@ private Q_SLOTS:
 private:
     QMultiHash<QWebFrame*, QUrl> m_blockedRequests;
     QByteArray _acceptLanguage;
+    
+    static QNetworkAccessManager *s_privateAccessManager;
 };
 
 #endif // NETWORKACCESSMANAGER_H

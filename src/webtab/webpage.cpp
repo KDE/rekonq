@@ -141,7 +141,7 @@ WebPage::WebPage(QWidget *parent, bool isPrivateBrowsing)
         // The problem is basically cookie related. This way we lose some features in private
         // browsing mode, but we ensure PRIVACY! This change cannot be reverted until a proper
         // fix for KIO (or the right workaround for rekonq) will be found.
-        QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+        QNetworkAccessManager *manager = NetworkAccessManager::privateAccessManager();
         setNetworkAccessManager(manager);
 
         // ----- last stuffs
