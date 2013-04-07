@@ -387,18 +387,16 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkHere()));
             menu.addAction(a);
         }
-        else
-        {
-            a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), &menu);
-            a->setData(m_contextMenuHitResult.linkUrl());
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
-            menu.addAction(a);
- 
-            a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), &menu);
-            a->setData(m_contextMenuHitResult.linkUrl());
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
-            menu.addAction(a);
-        }
+
+        a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), &menu);
+        a->setData(m_contextMenuHitResult.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
+        menu.addAction(a);
+
+        a = new KAction(KIcon("window-new"), i18n("Open in New &Window"), &menu);
+        a->setData(m_contextMenuHitResult.linkUrl());
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewWindow()));
+        menu.addAction(a);
 
         if (!m_parentTab->isWebApp())
         {
