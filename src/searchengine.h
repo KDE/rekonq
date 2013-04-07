@@ -51,6 +51,8 @@ KService::List favorites();
 
 KService::Ptr fromString(const QString &text);
 
+QString buildQuery(const QString &text);
+
 QString buildQuery(KService::Ptr engine, const QString &text);
 
 QString extractQuery(const QString &text);

@@ -675,7 +675,7 @@ void UrlBar::pasteAndSearch()
 {
     KService::Ptr defaultEngine = SearchEngine::defaultEngine();
     if (defaultEngine)
-        loadRequestedUrl(KUrl(SearchEngine::buildQuery(defaultEngine, QApplication::clipboard()->text().trimmed())));
+        loadRequestedUrl(KUrl(SearchEngine::buildQuery(QApplication::clipboard()->text().trimmed())));
 }
 
 

@@ -52,10 +52,7 @@ KUrl UrlResolver::urlFromTextTyped(const QString &typedText)
     KService::Ptr engine = SearchEngine::fromString(typedString);
     if (engine)
     {
-        QString query = typedString;
-        query = query.remove(0, typedString.indexOf(SearchEngine::delimiter()) + 1);
-
-        QString url = SearchEngine::buildQuery(engine, query);
+        QString url = SearchEngine::buildQuery(typedString);
 
         kDebug() << "Url from service: " << url;
         return KUrl(url);

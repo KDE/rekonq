@@ -460,12 +460,7 @@ void SearchListItem::changeSearchEngine(KService::Ptr engine)
     // NOTE: This to let rekonq loading text typed in the requested engine on click.
     // There probably is a better way to do it. I just cannot see it now...
 
-    // remove the xx: part...
-    QString separator = SearchEngine::delimiter();
-    
-    QString text = m_text.contains(separator)
-        ? m_text.section(separator, 1, 1)
-        : m_text;
+    QString text = m_text;
 
     // create a new item && load it...
     UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(engine, text), text);

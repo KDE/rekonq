@@ -31,6 +31,7 @@
 //KDE includes
 #include <KConfigGroup>
 #include <KServiceTypeTrader>
+#include <KUriFilter>
 
 
 struct SearchEnginePrivate
@@ -146,11 +147,22 @@ KService::Ptr SearchEngine::fromString(const QString &text)
 }
 
 
+QString SearchEngine::buildQuery(const QString &text)
+{
+    QString query = text;
+    KUriFilter::self()->filterUri(query, QStringList("kurisearchfilter"));
+
+    //If the query did not change, use the default searchengine
+    if(query == text)
+        KUriFilter::self()->filterUri(query, QStringList("kuriikwsfilter"));
+
+    return query;
+}
 QString SearchEngine::buildQuery(KService::Ptr engine, const QString &text)
 {
     if (!engine)
         return QString();
-    QString query = engine->property("Query").toString();
-    query = query.replace("\\{@}", KUrl::toPercentEncoding(text));
-    return query;
+
+    QString query = engine->property("Keys").toStringList().at(0) + SearchEngine::delimiter() + text;
+    return buildQuery(query);
 }
