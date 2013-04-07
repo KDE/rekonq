@@ -78,6 +78,7 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
     , m_part(0)
     , m_zoomFactor(10)
     , m_isPrivateBrowsing(isPrivateBrowsing)
+    , m_isWebApp(false)
     , m_splitter(new QSplitter(this))
 #ifdef HAVE_KACTIVITIES
     , m_activityResourceInstance(0)
@@ -119,6 +120,7 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
 
     if (!parent)
     {
+        m_isWebApp = true;
         connect(this, SIGNAL(titleChanged(QString)), this, SLOT(webAppTitleChanged(QString)));
         connect(this, SIGNAL(iconChanged()), this, SLOT(webAppIconChanged()));
     }
@@ -520,4 +522,10 @@ void WebTab::focusOut()
     
     m_activityResourceInstance->notifyFocusedOut();    
 #endif
+}
+
+
+bool WebTab::isWebApp()
+{
+    return m_isWebApp;
 }

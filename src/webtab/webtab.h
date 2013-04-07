@@ -94,6 +94,8 @@ public:
     
     void focusIn();
     void focusOut();
+    
+    bool isWebApp();
 
 private Q_SLOTS:
     void updateProgress(int progress);
@@ -148,6 +150,7 @@ private:
     int m_zoomFactor;
 
     bool m_isPrivateBrowsing;
+    bool m_isWebApp;
     
     QSplitter *m_splitter;
     
