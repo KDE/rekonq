@@ -49,14 +49,11 @@ KUrl UrlResolver::urlFromTextTyped(const QString &typedText)
     QString typedString = typedText.trimmed();
 
     // Url from KService
-    KService::Ptr engine = SearchEngine::fromString(typedString);
-    if (engine)
-    {
-        QString url = SearchEngine::buildQuery(typedString);
-
-        kDebug() << "Url from service: " << url;
-        return KUrl(url);
-    }
+    QString urlString = SearchEngine::buildQuery(typedString);
+    kDebug() << "Url from service: " << urlString;
+    KUrl u(urlString);
+    if (u.isValid())
+        return u;
 
     // Url from User Input
     QUrl urlFromUserInput = QUrl::fromUserInput(typedString);

@@ -158,6 +158,8 @@ QString SearchEngine::buildQuery(const QString &text)
 
     return query;
 }
+
+
 QString SearchEngine::buildQuery(KService::Ptr engine, const QString &text)
 {
     if (!engine)

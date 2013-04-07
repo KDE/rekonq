@@ -285,7 +285,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
 
     WebWindow *webwin = m_parentTab->webWindow();
-
+    
     KMenu menu(this);
 
     KAction *sendByMailAction = new KAction(&menu);
@@ -400,7 +400,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             menu.addAction(a);
         }
 
-        if (webwin)
+        if (!m_parentTab->isWebApp())
         {
             a = new KAction(KIcon("view-media-artist"), i18n("Open in Private &Window"), &menu);
             a->setData(m_contextMenuHitResult.linkUrl());
@@ -535,10 +535,13 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             searchMenu->addAction(a);
         }
 
-        a = new KAction(KIcon("edit-find"), i18n("On Current Page"), &menu);
-        connect(a, SIGNAL(triggered()), webwin, SLOT(findSelectedText()));
-        searchMenu->addAction(a);
-
+        if (webwin)
+        {
+            a = new KAction(KIcon("edit-find"), i18n("On Current Page"), &menu);
+            connect(a, SIGNAL(triggered()), webwin, SLOT(findSelectedText()));
+            searchMenu->addAction(a);
+        }
+        
         if (!searchMenu->menu()->isEmpty())
         {
             menu.addAction(searchMenu);
@@ -556,7 +559,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
     else
     {
-        if (webwin)
+        if (!m_parentTab->isWebApp() && webwin)
         {
             a = webwin->actionByName(KStandardAction::name(KStandardAction::AddBookmark));
             menu.addAction(a);
@@ -803,12 +806,10 @@ void WebView::openLinkInNewTab()
     KAction *a = qobject_cast<KAction*>(sender());
     KUrl url(a->data().toUrl());
 
-    WebWindow *webwin = m_parentTab->webWindow();
-
-    if (webwin)
-        emit loadUrl(url, Rekonq::NewTab);
-    else
+    if (m_parentTab->isWebApp())
         emit loadUrl(url, Rekonq::NewFocusedTab);
+    else
+        emit loadUrl(url, Rekonq::NewTab);
 }
 
 

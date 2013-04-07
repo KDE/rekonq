@@ -565,6 +565,11 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     else
     {
         w = rekonqWindow();
+        if (!w)
+        {
+            w = newWindow();
+            newType = Rekonq::CurrentTab;
+        }
     }
 
     w->loadUrl(url, newType);
