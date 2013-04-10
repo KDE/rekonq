@@ -36,6 +36,8 @@
 #include <KStandardDirs>
 #include <KToolInvocation>
 #include <KFileDialog>
+#include <krecentdirs.h>
+
 
 #include <kio/scheduler.h>
 
@@ -220,9 +222,29 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
     if (forceDirRequest || ReKonfig::askDownloadPath())
     {
         // follow bug:184202 fixes
-        // NOTE: Please, NO MORE use here getSaveFileName as it seems it cannot properly
-        // handle remote urls
-        destUrl = KFileDialog::getSaveUrl(fileName, QString(), parent);
+
+        // Downloads should default to the default download directory. At the
+        // same time when the user has been using a different directory
+        // previously, it should be used instead.
+        // To enable this behavior we inject the default download path into
+        // KRecentDirs (which is internally used by KFileDialog to get the
+        // most recently used directory of a fileclass).
+        // If a user then uses a different directory it will replace the
+        // downloads directory in KRecentDirs and become the new default when
+        // trying to save a file. Also see KFileDialog, KFileWidget and
+        // KRecentDirs documentation.
+
+        // If this is the first invocation insert the defaults downloads directory.
+        static const QString fileClass = QL1S(":download");
+        if (KRecentDirs::list(fileClass).count() <= 1) // Always has one entry by default.
+            KRecentDirs::add(fileClass, KGlobalSettings::downloadPath());
+
+        const KUrl startDir(QString("kfiledialog:///download/%1").arg(fileName));
+
+        // NOTE: We used to use getSaveFileName here but it proved unable to
+        // handle remote URLs, which we need to handle here, making the use of
+        // getSaveUrl deliberate.
+        destUrl = KFileDialog::getSaveUrl(startDir, QString(), parent);
     }
     else
     {
