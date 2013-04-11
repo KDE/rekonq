@@ -64,6 +64,8 @@
 #include <KWebWallet>
 #include <KProtocolInfo>
 #include <KRun>
+#include <KMimeType>
+#include <KProtocolManager>
 
 #include <KIO/Job>
 #include <KIO/JobUiDelegate>
@@ -335,6 +337,72 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 }
 
 
+// From Konqueror's konqsettings.cpp
+static bool alwaysEmbedMimeTypeGroup(const QString &mimeType)
+{
+    if (mimeType.startsWith("inode") || mimeType.startsWith("Browser"))
+        return true;
+    return false;
+}
+
+
+// From Konqueror's konqsettings.cpp.
+// config and m_embedMap were manually added to make the function static.
+// TODO: Probably should be moved into some library for KDE Frameworks...
+static bool shouldEmbed(const QString &_mimeType)
+{
+    KSharedConfig::Ptr config = KSharedConfig::openConfig("filetypesrc", KConfig::NoGlobals);
+    QMap<QString, QString> m_embedMap = config->entryMap("EmbedSettings");
+
+    KMimeType::Ptr mime = KMimeType::mimeType(_mimeType, KMimeType::ResolveAliases);
+    if (!mime) {
+        kWarning() << "Unknown mimetype" << _mimeType;
+        return false; // unknown mimetype!
+    }
+    const QString mimeType = mime->name();
+
+    // First check in user's settings whether to embed or not
+    // 1 - in the filetypesrc config file (written by the configuration module)
+    QMap<QString, QString>::const_iterator it = m_embedMap.find( QString::fromLatin1("embed-")+mimeType );
+    if ( it != m_embedMap.end() ) {
+        kDebug() << mimeType << it.value();
+        return it.value() == QLatin1String("true");
+    }
+    // 2 - in the configuration for the group if nothing was found in the mimetype
+    if (alwaysEmbedMimeTypeGroup(mimeType))
+        return true; //always embed mimetype inode/*, Browser/* and Konqueror/*
+    const QString mimeTypeGroup = mimeType.left(mimeType.indexOf('/'));
+    it = m_embedMap.find( QString::fromLatin1("embed-")+mimeTypeGroup );
+    if ( it != m_embedMap.end() ) {
+        kDebug() << mimeType << "group setting:" << it.value();
+        return it.value() == QLatin1String("true");
+    }
+    // 2 bis - configuration for group of parent mimetype, if different
+    if (mimeType[0].isLower()) {
+        QStringList parents;
+        parents.append(mimeType);
+        while (!parents.isEmpty()) {
+            const QString parent = parents.takeFirst();
+            if (alwaysEmbedMimeTypeGroup(parent)) {
+                return true;
+            }
+            KMimeType::Ptr mime = KMimeType::mimeType(parent);
+            Q_ASSERT(mime); // how could the -parent- be null?
+            if (mime)
+                parents += mime->parentMimeTypes();
+        }
+    }
+
+    // 3 - if no config found, use default.
+    // Note: if you change those defaults, also change keditfiletype/mimetypedata.cpp !
+    // Embedding is false by default except for image/* and for zip, tar etc.
+    const bool hasLocalProtocolRedirect = !KProtocolManager::protocolForArchiveMimetype(mimeType).isEmpty();
+    if (mimeTypeGroup == "image" || mimeTypeGroup == "multipart" || hasLocalProtocolRedirect)
+        return true;
+    return false;
+}
+
+
 void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 {
     Q_ASSERT(reply);
@@ -472,7 +540,9 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         webAppMode = true;
 
     // case KParts::BrowserRun::Embed
-    KParts::ReadOnlyPart *pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(_mimeType, view(), this, QString());
+    KParts::ReadOnlyPart *pa = 0;
+    if (shouldEmbed(_mimeType)) // Only create the KPart if we are actually supposed to embed.
+        pa = KMimeTypeTrader::createPartInstanceFromQuery<KParts::ReadOnlyPart>(_mimeType, view(), this, QString());
     if (pa && !webAppMode)
     {
         _isOnRekonqPage = true;
