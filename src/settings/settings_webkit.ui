@@ -155,7 +155,7 @@
      <property name="title">
       <string>HTML 5</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QCheckBox" name="kcfg_offlineStorageDatabaseEnabled">
         <property name="text">
@@ -176,6 +176,27 @@
          <string>Local Storage</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Offline web application quota</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="KIntNumInput" name="kcfg_offlineWebApplicationCacheQuota">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="suffix">
+           <string> Kb</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -200,6 +221,11 @@
    <class>KComboBox</class>
    <extends>QComboBox</extends>
    <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KIntNumInput</class>
+   <extends>QWidget</extends>
+   <header>knuminput.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -206,6 +206,9 @@
     <entry name="localStorageEnabled" type="Bool">
         <default>false</default>
     </entry>
+    <entry name="offlineWebApplicationCacheQuota" type="Int">
+        <default>50</default>
+    </entry>
     <!-- xxx -->
     <entry name="javaEnabled" type="Bool">
         <default>true</default>

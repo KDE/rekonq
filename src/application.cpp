@@ -648,7 +648,7 @@ void Application::updateConfiguration()
         QString path = KStandardDirs::locateLocal("cache", QString("WebkitLocalStorage/rekonq"), true);
         path.remove("rekonq");
         QWebSettings::setOfflineStoragePath(path);
-        QWebSettings::setOfflineStorageDefaultQuota(50000);
+        QWebSettings::setOfflineStorageDefaultQuota(ReKonfig::offlineWebApplicationCacheQuota() * 1024);
     }
 
     // ================= WebGl ===================
