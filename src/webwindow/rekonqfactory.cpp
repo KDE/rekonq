@@ -322,7 +322,7 @@ void RekonqFactory::fillMenu(KMenu *m, QDomNode node)
 
         if (el.tagName() == QL1S("text"))
         {
-            const QString menuTitle = el.text();
+            const QString menuTitle = i18n(qPrintable(el.text()));
             m->setTitle(menuTitle);
         }
 
