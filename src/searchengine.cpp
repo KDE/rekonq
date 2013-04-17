@@ -33,6 +33,8 @@
 #include <KServiceTypeTrader>
 #include <KUriFilter>
 
+#include <QStringList>
+
 
 struct SearchEnginePrivate
 {
@@ -47,6 +49,7 @@ struct SearchEnginePrivate
 
 
 K_GLOBAL_STATIC(SearchEnginePrivate, d)
+
 
 
 void SearchEngine::reload()
@@ -150,11 +153,7 @@ KService::Ptr SearchEngine::fromString(const QString &text)
 QString SearchEngine::buildQuery(const QString &text)
 {
     QString query = text;
-    KUriFilter::self()->filterUri(query, QStringList("kurisearchfilter"));
-
-    //If the query did not change, use the default searchengine
-    if(query == text)
-        KUriFilter::self()->filterUri(query, QStringList("kuriikwsfilter"));
+    KUriFilter::self()->filterUri(query, QStringList());
 
     return query;
 }
