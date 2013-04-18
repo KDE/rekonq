@@ -167,6 +167,16 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
             sslVersion = QL1S("TLS 1.0");
             imageLabel->setPixmap(KIcon("security-high").pixmap(c_dim));
         }
+        else if (vers == QL1S("TLSv1.1"))
+        {
+            sslVersion = QL1S("TLS 1.1");
+            imageLabel->setPixmap(KIcon("security-high").pixmap(c_dim));
+        }
+        else if (vers == QL1S("TLSv1.2"))
+        {
+            sslVersion = QL1S("TLS 1.2");
+            imageLabel->setPixmap(KIcon("security-high").pixmap(c_dim));
+        }
         else
         {
             sslVersion = i18n("Unknown");
@@ -178,7 +188,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
         label->setText(i18n("It uses protocol: %1.\n", sslVersion));
         layout->addWidget(label, rows++, 1);
 
-        const QStringList cipherInfo = m_info.ciphers().split('\n', QString::SkipEmptyParts);
+        const QStringList cipherInfo = m_info.ciphers().split('\n', QString::KeepEmptyParts);
         label = new QLabel(this);
         label->setWordWrap(true);
         label->setText(
