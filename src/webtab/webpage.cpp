@@ -363,8 +363,8 @@ static bool shouldEmbed(const QString &_mimeType)
 
     // First check in user's settings whether to embed or not
     // 1 - in the filetypesrc config file (written by the configuration module)
-    QMap<QString, QString>::const_iterator it = m_embedMap.find( QString::fromLatin1("embed-")+mimeType );
-    if ( it != m_embedMap.end() ) {
+    QMap<QString, QString>::const_iterator it = m_embedMap.constFind( QString::fromLatin1("embed-")+mimeType );
+    if ( it != m_embedMap.constEnd() ) {
         kDebug() << mimeType << it.value();
         return it.value() == QLatin1String("true");
     }
@@ -372,8 +372,8 @@ static bool shouldEmbed(const QString &_mimeType)
     if (alwaysEmbedMimeTypeGroup(mimeType))
         return true; //always embed mimetype inode/*, Browser/* and Konqueror/*
     const QString mimeTypeGroup = mimeType.left(mimeType.indexOf('/'));
-    it = m_embedMap.find( QString::fromLatin1("embed-")+mimeTypeGroup );
-    if ( it != m_embedMap.end() ) {
+    it = m_embedMap.constFind( QString::fromLatin1("embed-")+mimeTypeGroup );
+    if ( it != m_embedMap.constEnd() ) {
         kDebug() << mimeType << "group setting:" << it.value();
         return it.value() == QLatin1String("true");
     }
