@@ -86,7 +86,6 @@ set(rekonq_KDEINIT_SRCS
     urlbar/listitem.cpp
     urlbar/adblockwidget.cpp
     urlbar/bookmarkwidget.cpp
-    urlbar/favoritewidget.cpp
     urlbar/rsswidget.cpp
     urlbar/sslwidget.cpp
     urlbar/urlsuggester.cpp

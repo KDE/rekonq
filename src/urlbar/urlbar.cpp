@@ -44,7 +44,6 @@
 
 #include "adblockwidget.h"
 #include "bookmarkwidget.h"
-#include "favoritewidget.h"
 #include "rsswidget.h"
 
 #include "completionwidget.h"
@@ -380,11 +379,7 @@ void UrlBar::loadFinished()
     
     // show bookmark info
     IconButton *bt = addRightIcon(UrlBar::BK);
-    connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(manageBookmarks()));
-
-    // show favorite icon
-    IconButton *fbt = addRightIcon(UrlBar::Favorite);
-    connect(fbt, SIGNAL(clicked(QPoint)), this, SLOT(manageFavorites(QPoint)));
+    connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(manageStarred(QPoint)));
 
     // show KGet downloads??
     if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
@@ -522,15 +517,14 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         rightIcon->setToolTip(i18n("List all available RSS feeds"));
         break;
     case UrlBar::BK:
-        if (BookmarkManager::self()->bookmarkForUrl(_tab->url()).isNull())
+        if (BookmarkManager::self()->bookmarkForUrl(_tab->url()).isNull() && 
+            !ReKonfig::previewUrls().contains(_tab->url().url()))
         {
             rightIcon->setIcon(KIcon("bookmarks").pixmap(32, 32, QIcon::Disabled));
-            rightIcon->setToolTip(i18n("Bookmark this page"));
         }
         else
         {
             rightIcon->setIcon(KIcon("bookmarks"));
-            rightIcon->setToolTip(i18n("Edit this bookmark"));
         }
         break;
     case UrlBar::SearchEngine:
@@ -544,18 +538,6 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         rightIcon->setToolTip(i18n("Add search engine"));
         break;
     }
-    case UrlBar::Favorite:
-        if (ReKonfig::previewUrls().contains(_tab->url().url()))
-        {
-            rightIcon->setIcon(KIcon("emblem-favorite"));
-            rightIcon->setToolTip(i18n("Remove from favorite"));
-        }
-        else
-        {
-            rightIcon->setIcon(KIcon("emblem-favorite").pixmap(32, 32, QIcon::Disabled));
-            rightIcon->setToolTip(i18n("Add to favorites"));
-        }
-        break;
     case UrlBar::AdBlock:
     {
         QStringList hosts = ReKonfig::whiteReferer();
@@ -721,41 +703,6 @@ void UrlBar::manageBookmarks()
 }
 
 
-void UrlBar::manageFavorites(QPoint pos)
-{
-    IconButton *bt = qobject_cast<IconButton *>(this->sender());
-    if (!bt)
-        return;
-
-    if (_tab->url().scheme() == QL1S("about"))
-        return;
-
-    if (ReKonfig::previewUrls().contains(_tab->url().url()))
-    {
-        // remove site from favorites
-        FavoriteWidget *widget = new FavoriteWidget(_tab, window());
-        connect(widget, SIGNAL(updateIcon()), this, SLOT(updateRightIcons()));
-        widget->showAt(pos);
-        return;
-    }
-
-    // else, add as favorite
-    QStringList urls = ReKonfig::previewUrls();
-    urls << _tab->url().url();
-    ReKonfig::setPreviewUrls(urls);
-
-    QStringList titles = ReKonfig::previewNames();
-    titles << _tab->view()->title();
-    ReKonfig::setPreviewNames(titles);
-
-    // also, save a site snapshot
-    WebSnap *snap = new WebSnap(_tab->url(), this);
-    Q_UNUSED(snap);
-
-    updateRightIcons();
-}
-
-
 void UrlBar::manageAdBlock(QPoint pos)
 {
     IconButton *bt = qobject_cast<IconButton *>(this->sender());
@@ -816,4 +763,80 @@ void UrlBar::showRSSInfo(const QPoint &pos)
 
     RSSWidget *widget = new RSSWidget(map, window());
     widget->showAt(pos);
+}
+
+
+void UrlBar::manageStarred(QPoint pos)
+{
+    KMenu menu;
+    KAction *a;
+
+    // Bookmarks
+    if (BookmarkManager::self()->bookmarkForUrl(_tab->url()).isNull())
+    {
+        a = new KAction(KIcon(KIcon("bookmarks").pixmap(32, 32, QIcon::Disabled)), i18n("Add Bookmark"), &menu);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(manageBookmarks()));
+    }
+    else
+    {
+        a = new KAction(KIcon("bookmarks"), i18n("Edit Bookmark"), &menu);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(manageBookmarks()));        
+    }
+    menu.addAction(a);
+    
+    // Favorites
+    if (ReKonfig::previewUrls().contains(_tab->url().url()))
+    {
+        a = new KAction(KIcon("emblem-favorite"), i18n("Remove from Favorites"), &menu);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(removeFromFavorites()));        
+    }
+    else
+    {
+        a = new KAction(KIcon(KIcon("emblem-favorite").pixmap(32, 32, QIcon::Disabled)), i18n("Add to Favorites"), &menu);
+        connect(a, SIGNAL(triggered(bool)), this, SLOT(addToFavorites()));
+    }
+    menu.addAction(a);
+    
+    QPoint p(pos.x() - menu.sizeHint().width() + 15, pos.y() + 15);
+    menu.exec(p);
+}
+
+
+void UrlBar::addToFavorites()
+{
+    if (_tab->url().scheme() == QL1S("about"))
+        return;
+
+    // else, add as favorite
+    QStringList urls = ReKonfig::previewUrls();
+    urls << _tab->url().url();
+    ReKonfig::setPreviewUrls(urls);
+
+    QStringList titles = ReKonfig::previewNames();
+    titles << _tab->view()->title();
+    ReKonfig::setPreviewNames(titles);
+
+    // also, save a site snapshot
+    WebSnap *snap = new WebSnap(_tab->url(), this);
+    Q_UNUSED(snap);
+
+    updateRightIcons();
+}
+
+
+void UrlBar::removeFromFavorites()
+{
+    if (_tab->url().scheme() == QL1S("about"))
+        return;
+
+    QStringList urls = ReKonfig::previewUrls();
+    if (urls.removeOne(_tab->url().url()))
+    {
+        ReKonfig::setPreviewUrls(urls);
+        QStringList titles = ReKonfig::previewNames();
+        titles.removeOne(_tab->view()->title());
+        ReKonfig::setPreviewNames(titles);
+
+        updateRightIcons();
+    }    
 }

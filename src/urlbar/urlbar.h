@@ -82,7 +82,6 @@ public:
         RSS          = 0x00000010,
         BK           = 0x00001000,
         SearchEngine = 0x00010000,
-        Favorite     = 0x00100000,
         AdBlock      = 0x01000000
     };
 
@@ -110,8 +109,11 @@ private Q_SLOTS:
     void detectTypedString(const QString &);
     void suggest();
 
+    void manageStarred(QPoint);
     void manageAdBlock(QPoint);
-    void manageFavorites(QPoint);
+
+    void addToFavorites();
+    void removeFromFavorites();
 
     void refreshFavicon();
 
