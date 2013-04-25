@@ -89,6 +89,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void closeWindow();
     void windowTitleChanged(QString);
+    void actionsReady();
     
 private:
     /**

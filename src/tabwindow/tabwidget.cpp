@@ -334,6 +334,9 @@ WebWindow *TabWidget::prepareNewTab(WebPage *page)
 
     connect(tab, SIGNAL(setFullScreen(bool)), this, SLOT(setFullScreen(bool)));
 
+    if (count() == 0)
+        emit actionsReady();
+    
     return tab;
 }
 

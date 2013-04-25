@@ -75,6 +75,7 @@ public Q_SLOTS:
 private Q_SLOTS:
     void showBookmarksPanel(bool);
     void showHistoryPanel(bool);
+    void registerWindow();
     
 private:
     TabWidget *_tabWidget;

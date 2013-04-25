@@ -99,11 +99,17 @@ void RekonqWindow::init()
     // signals
     connect(_tabWidget, SIGNAL(closeWindow()), this, SLOT(close()));
     connect(_tabWidget, SIGNAL(windowTitleChanged(QString)), this, SLOT(setWindowTitle(QString)));
-    
+    connect(_tabWidget, SIGNAL(actionsReady()), this, SLOT(registerWindow()));
+}
+
+
+void RekonqWindow::registerWindow()
+{
     // This is needed to properly support appmenu-qt feature
     RekonqFactory::createWidget(QL1S("menuBar"), this);
     QDBusConnection::sessionBus().registerObject(QL1S("rekonq"), this);
 }
+
 
 // --------------------------------------------------------------------------------------------------
 
