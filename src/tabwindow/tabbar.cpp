@@ -562,6 +562,8 @@ void TabBar::pinTab()
     if (!label)
         label = new QLabel(this);
 
+    label->resize(QSize(16,16));
+
     setTabButton(index, QTabBar::LeftSide, 0);
     setTabButton(index, QTabBar::LeftSide, label);
 
@@ -606,6 +608,8 @@ void TabBar::unpinTab()
     QLabel *label = qobject_cast<QLabel* >(tabButton(index, QTabBar::LeftSide));
     if (!label)
         label = new QLabel(this);
+
+    label->resize(QSize(16,16));
 
     setTabButton(index, QTabBar::LeftSide, 0);
     setTabButton(index, QTabBar::LeftSide, label);
