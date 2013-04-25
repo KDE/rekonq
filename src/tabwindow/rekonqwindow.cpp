@@ -36,6 +36,7 @@
 
 #include "tabwidget.h"
 #include "tabbar.h"
+#include "rekonqfactory.h"
 
 #include "webpage.h"
 #include "webwindow.h"
@@ -47,6 +48,7 @@
 // Qt Includes
 #include <QVBoxLayout>
 #include <QSizePolicy>
+#include <QDBusConnection>
 
 
 RekonqWindow::RekonqWindow(bool withTab, bool privateBrowsingMode, QWidget *parent)
@@ -97,6 +99,10 @@ void RekonqWindow::init()
     // signals
     connect(_tabWidget, SIGNAL(closeWindow()), this, SLOT(close()));
     connect(_tabWidget, SIGNAL(windowTitleChanged(QString)), this, SLOT(setWindowTitle(QString)));
+    
+    // This is needed to properly support appmenu-qt feature
+    RekonqFactory::createWidget(QL1S("menuBar"), this);
+    QDBusConnection::sessionBus().registerObject(QL1S("rekonq"), this);
 }
 
 // --------------------------------------------------------------------------------------------------

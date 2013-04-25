@@ -38,6 +38,7 @@
 #include <KToolBar>
 
 #include <QFile>
+#include <QMenuBar>
 #include <QString>
 #include <QWidget>
 
@@ -175,6 +176,47 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
             return m;
         }
 
+    }
+
+    // MenuBar ----------------------------------------------------------------------
+    QDomNodeList elementMenuBarList = document.elementsByTagName(QL1S("MenuBar"));
+    if (elementMenuBarList.isEmpty())
+    {
+        kDebug() << "ELEMENT MENUBAR LIST EMPTY. RETURNING NULL";
+        return 0;
+    }
+    
+    if (name == QL1S("menuBar"))
+    {
+        QDomNode node = elementMenuBarList.at(0);
+        QDomNodeList menuNodes = node.childNodes();
+
+        QMenuBar *menuBar = new QMenuBar(parent);
+        for (unsigned int i = 0; i < menuNodes.length(); ++i)
+        {
+            QDomNode node = menuNodes.at(i);
+            if (node.isComment())
+                continue;
+            
+            QDomElement element = node.toElement();
+            
+            if (element.attribute("deleted").toLower() == "true")
+                continue;
+            
+            if (element.attribute("name") == QL1S("help"))
+            {
+                KHelpMenu *m = new KHelpMenu(parent, KCmdLineArgs::aboutData());
+                menuBar->addMenu(m->menu());
+                continue;
+            }
+            
+            KMenu *m = new KMenu(parent);
+            fillMenu(m, node);
+            menuBar->addMenu(m);
+        }
+        
+        menuBar->hide();
+        return menuBar;
     }
 
     kDebug() << "NO WIDGET RETURNED";

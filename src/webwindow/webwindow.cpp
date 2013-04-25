@@ -219,6 +219,20 @@ void WebWindow::setupActions()
     KStandardAction::keyBindings(this, SLOT(keyBindings()), actionCollection());
     KStandardAction::quit(rApp, SLOT(queryQuit()), actionCollection());
 
+    // WebPage Actions
+    QAction *qa;
+    
+    qa = _tab->page()->action(QWebPage::Undo);
+    actionCollection()->addAction(QL1S("edit_undo"), qa);
+    qa = _tab->page()->action(QWebPage::Redo);
+    actionCollection()->addAction(QL1S("edit_redo"), qa);
+    qa = _tab->page()->action(QWebPage::Cut);
+    actionCollection()->addAction(QL1S("edit_cut"), qa);
+    qa = _tab->page()->action(QWebPage::Copy);
+    actionCollection()->addAction(QL1S("edit_copy"), qa);
+    qa = _tab->page()->action(QWebPage::Paste);
+    actionCollection()->addAction(QL1S("edit_paste"), qa);
+    
     // Configure Main Toolbar
     a = new KAction(KIcon("configure-toolbars"), i18n("Configure Main ToolBar"), this);
     actionCollection()->addAction(QL1S("configure_main_toolbar"), a);
