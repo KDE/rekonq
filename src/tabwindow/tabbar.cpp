@@ -579,10 +579,7 @@ void TabBar::unpinTab()
         return;
 
     int index = a->data().toInt();
-
-    // set the tab data false to forget this pinned tab
-    setTabData(index, false);
-
+    
     // Find the available index to move
     int availableIndex = 0;
     for (int i = 1; i < count(); i++)
@@ -592,14 +589,18 @@ void TabBar::unpinTab()
             availableIndex = i - 1;
             break;
         }
+        availableIndex++;
     }
-
+    
     TabWidget *w = qobject_cast<TabWidget *>(parent());
     w->moveTab(index, availableIndex);
     index = availableIndex;
 
     tabButton(index, QTabBar::RightSide)->show();
     setTabText(index, w->webWindow(index)->title());
+
+    // set the tab data false to forget this pinned tab
+    setTabData(index, false);
 
     // workaround: "fix" the icon (or at least, try to...)
     QLabel *label = qobject_cast<QLabel* >(tabButton(index, QTabBar::LeftSide));
