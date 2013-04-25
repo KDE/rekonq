@@ -99,7 +99,6 @@ void RekonqWindow::init()
     // signals
     connect(_tabWidget, SIGNAL(closeWindow()), this, SLOT(close()));
     connect(_tabWidget, SIGNAL(windowTitleChanged(QString)), this, SLOT(setWindowTitle(QString)));
-    connect(_tabWidget, SIGNAL(actionsReady()), this, SLOT(registerWindow()));
 }
 
 

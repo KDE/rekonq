@@ -192,6 +192,9 @@ void TabWidget::init()
 
     // ----------------------------------------------------------------------------------------------
     RekonqWindow *rw = qobject_cast<RekonqWindow *>(parent());
+  
+    connect(this, SIGNAL(actionsReady()), rw, SLOT(registerWindow()));
+
     // setup bookmarks panel action
     a = new KAction(KIcon("bookmarks-organize"), i18n("Bookmarks Panel"), this);
     a->setShortcut(KShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
@@ -336,7 +339,7 @@ WebWindow *TabWidget::prepareNewTab(WebPage *page)
 
     if (count() == 0)
         emit actionsReady();
-    
+        
     return tab;
 }
 
