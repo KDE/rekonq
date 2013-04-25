@@ -380,14 +380,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         sendByMailAction->setText(i18n("Share link"));
 
 
-        if (m_isExternalLinkHovered)
-        {
-            a = new KAction(KIcon("view-close"), i18n("Open &Here"), this);
-            a->setData(m_contextMenuHitResult.linkUrl());
-            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkHere()));
-            menu.addAction(a);
-        }
-
         a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), &menu);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
@@ -403,6 +395,14 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             a = new KAction(KIcon("view-media-artist"), i18n("Open in Private &Window"), &menu);
             a->setData(m_contextMenuHitResult.linkUrl());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInPrivateWindow()));
+            menu.addAction(a);
+        }
+
+        if (m_isExternalLinkHovered)
+        {
+            a = new KAction(KIcon("view-close"), i18n("Open &Here"), this);
+            a->setData(m_contextMenuHitResult.linkUrl());
+            connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkHere()));
             menu.addAction(a);
         }
 
