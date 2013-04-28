@@ -389,7 +389,6 @@ RekonqWindow *Application::rekonqWindow(const QString & activityID)
     if (!active)
     {
         RekonqWindowList wList = m_rekonqWindows;
-
 #ifdef HAVE_KACTIVITIES
         wList = tabsForActivity(activityID);
 #endif
@@ -414,6 +413,7 @@ RekonqWindowList Application::tabsForActivity(const QString & activityID)
     QString id = activityID;
     if ( id.isEmpty() )
         id = m_activityConsumer->currentActivity();
+    
     return m_activityRekonqWindowsMap[id];
 #else
     return m_rekonqWindows;
@@ -427,11 +427,31 @@ bool Application::haveWindowsForActivity(const QString & activityID)
 }
 
 
+// -----------------------------------------------------------------------------------------------------------
+
 
 RekonqWindow *Application::newWindow(bool withTab, bool PrivateBrowsingMode)
 {
     RekonqWindow *w = new RekonqWindow(withTab, PrivateBrowsingMode);
+    setWindowInfo(w);
+    w->show();
 
+    return w;
+}
+
+
+RekonqWindow *Application::newWindow(WebPage *pg)
+{
+    RekonqWindow *w = new RekonqWindow(pg);
+    setWindowInfo(w);
+    w->show();
+
+    return w;    
+}
+
+
+void Application::setWindowInfo(RekonqWindow *w)
+{
     // set object name
     int n = m_rekonqWindows.count() + 1;
     w->setObjectName(QL1S("win") + QString::number(n));
@@ -444,12 +464,11 @@ RekonqWindow *Application::newWindow(bool withTab, bool PrivateBrowsingMode)
 #ifdef HAVE_KACTIVITIES
     QString currentActivity = m_activityConsumer->currentActivity();
     m_activityRekonqWindowsMap[currentActivity].prepend(w);
-#endif
-
-    w->show();
-
-    return w;
+#endif    
 }
+
+
+// -----------------------------------------------------------------------------------------------------------
 
 
 WebTab *Application::newWebApp()
@@ -951,19 +970,7 @@ void Application::pageCreated(WebPage *pg)
 {
     if (m_rekonqWindows.isEmpty())
     {
-        // NOTE: This is "adjusted" from newRekonqWindow() code...
-        RekonqWindow *w = new RekonqWindow(pg);
-
-        // set object name
-        int n = m_rekonqWindows.count() + 1;
-        w->setObjectName(QL1S("win") + QString::number(n));
-
-        // This is used to track which window was activated most recently
-        w->installEventFilter(this);
-
-        m_rekonqWindows.prepend(w);
-        w->show();
-
+        newWindow(pg);
         return;
     }
 

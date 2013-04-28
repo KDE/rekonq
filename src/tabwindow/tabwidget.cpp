@@ -720,7 +720,7 @@ void TabWidget::detachTab(int index, RekonqWindow *toWindow)
 
     RekonqWindow *w = 0;
     w = (toWindow == 0)
-        ? new RekonqWindow(false)
+        ? rApp->newWindow(false)
         : toWindow;
 
     TabWidget *hostTabWidget = w->tabWidget();

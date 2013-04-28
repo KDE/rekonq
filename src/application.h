@@ -120,6 +120,7 @@ public Q_SLOTS:
                 );
 
     RekonqWindow *newWindow(bool withTab = true, bool PrivateBrowsingMode = false);
+    RekonqWindow *newWindow(WebPage *pg);
 
     WebTab *newWebApp();
 
@@ -132,6 +133,9 @@ protected:
 Q_SIGNALS:
     void toggleBookmarksToolbar(bool);
 
+private:
+    void setWindowInfo(RekonqWindow *);
+    
 private Q_SLOTS:
     void updateConfiguration();
 
