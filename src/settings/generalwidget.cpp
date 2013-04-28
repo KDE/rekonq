@@ -87,11 +87,14 @@ void GeneralWidget::hasChanged()
 
 void GeneralWidget::setHomeToCurrentPage()
 {
+    if (!rApp->rekonqWindow())
+        return;
+
     WebWindow *tab = rApp->rekonqWindow()->currentWebWindow();
-    if (tab)
-    {
-        kcfg_homePage->setText(tab->url().url());
-    }
+    if (!tab)
+        return;
+
+    kcfg_homePage->setText(tab->url().url());
 }
 
 
