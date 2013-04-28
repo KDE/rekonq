@@ -515,7 +515,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         {
             a = new KAction(i18nc("Search selected text with the default search engine", "Search with %1",
                                   defaultEngine->name()), &menu);
-            a->setIcon(IconManager::self()->iconForUrl(defaultEngine->property("Query").toUrl()));
+            a->setIcon(IconManager::self()->iconForUrl(SearchEngine::buildQuery(defaultEngine, "")));
             a->setData(defaultEngine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
             menu.addAction(a);
@@ -527,7 +527,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
         {
             a = new KAction(i18nc("@item:inmenu Search, %1 = search engine", "With %1", engine->name()), &menu);
-            a->setIcon(IconManager::self()->iconForUrl(engine->property("Query").toUrl()));
+            a->setIcon(IconManager::self()->iconForUrl(SearchEngine::buildQuery(engine, "")));
             a->setData(engine->entryPath());
             connect(a, SIGNAL(triggered(bool)), this, SLOT(search()));
             searchMenu->addAction(a);
@@ -640,7 +640,7 @@ void WebView::mousePressEvent(QMouseEvent *event)
                 {
                     KService::Ptr defaultEngine = SearchEngine::defaultEngine();
                     if (defaultEngine) // check if a default engine is set
-                        load(KUrl(SearchEngine::buildQuery(clipboardContent)));
+                        load(KUrl(SearchEngine::buildQuery(defaultEngine, clipboardContent)));
                 }
             }
             break;

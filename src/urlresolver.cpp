@@ -49,11 +49,17 @@ KUrl UrlResolver::urlFromTextTyped(const QString &typedText)
     QString typedString = typedText.trimmed();
 
     // Url from KService
-    QString urlString = SearchEngine::buildQuery(typedString);
-    kDebug() << "Url from service: " << urlString;
-    KUrl u(urlString);
-    if (u.isValid())
-        return u;
+    KService::Ptr engine = SearchEngine::fromString(typedString);
+    if (engine)
+    {
+        QString query = typedString;
+        query = query.remove(0, typedString.indexOf(SearchEngine::delimiter()) + 1);
+
+        QString url = SearchEngine::buildQuery(engine, query);
+
+        kDebug() << "Url from service: " << url;
+        return KUrl(url);
+    }
 
     // Url from User Input
     QUrl urlFromUserInput = QUrl::fromUserInput(typedString);

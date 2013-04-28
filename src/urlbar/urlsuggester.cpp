@@ -321,6 +321,7 @@ void UrlSuggester::computeWebSearches()
     KService::Ptr engine = SearchEngine::fromString(_typedString);
     if (engine)
     {
+        query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
         _isKDEShortUrl = true;
     }
     else
@@ -330,7 +331,7 @@ void UrlSuggester::computeWebSearches()
 
     if (engine)
     {
-        UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(query), query, engine->name());
+        UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(engine, query), query, engine->name());
         UrlSuggestionList list;
         list << item;
         _webSearches = list;
