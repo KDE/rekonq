@@ -31,6 +31,7 @@
 //KDE includes
 #include <KConfigGroup>
 #include <KServiceTypeTrader>
+#include <KUriFilter>
 
 #include <QStringList>
 
@@ -153,7 +154,13 @@ QString SearchEngine::buildQuery(KService::Ptr engine, const QString &text)
 {
     if (!engine)
         return QString();
-    QString query = engine->property("Query").toString();
-    query = query.replace("\\{@}", KUrl::toPercentEncoding(text));
+    
+    QString shortcut = engine->property("Keys").toStringList().at(0);
+    QString query = shortcut + delimiter() + text;
+
+    QStringList filters;
+    filters << QL1S("kurisearchfilter");
+    KUriFilter::self()->filterUri(query, filters);
+    
     return query;
 }
