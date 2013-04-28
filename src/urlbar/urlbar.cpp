@@ -284,9 +284,9 @@ void UrlBar::paintEvent(QPaintEvent *event)
 
 void UrlBar::keyPressEvent(QKeyEvent *event)
 {
-    QString currentText = text().trimmed();
+    QString trimmedText = text().trimmed();
 
-    if (currentText.isEmpty())
+    if (trimmedText.isEmpty())
     {
         disconnect(_icon);
         _icon->setIcon(KIcon("arrow-right"));
@@ -296,26 +296,29 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     // this handles the Modifiers + Return key combinations
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
     {
+        KUrl urlToLoad;
         switch (event->modifiers())
         {
         case Qt::AltModifier:
-            loadRequestedUrl(currentText, Rekonq::NewFocusedTab);
+            urlToLoad = UrlResolver::urlFromTextTyped(text());
+            loadRequestedUrl(urlToLoad, Rekonq::NewFocusedTab);
             break;
 
         case Qt::ControlModifier:
-            loadRequestedUrl(guessUrlWithCustomFirstLevel(currentText, QL1S(".com")));
+            loadRequestedUrl(guessUrlWithCustomFirstLevel(trimmedText, QL1S(".com")));
             break;
 
         case 0x06000000: // Qt::ControlModifier | Qt::ShiftModifier:
-            loadRequestedUrl(guessUrlWithCustomFirstLevel(currentText, QL1S(".org")));
+            loadRequestedUrl(guessUrlWithCustomFirstLevel(trimmedText, QL1S(".org")));
             break;
 
         case Qt::ShiftModifier:
-            loadRequestedUrl(guessUrlWithCustomFirstLevel(currentText, QL1S(".net")));
+            loadRequestedUrl(guessUrlWithCustomFirstLevel(trimmedText, QL1S(".net")));
             break;
 
         default:
-            loadRequestedUrl(currentText);
+            urlToLoad = UrlResolver::urlFromTextTyped(text());
+            loadRequestedUrl(urlToLoad);
             break;
         }
     }
