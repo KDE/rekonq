@@ -180,7 +180,16 @@ void UrlBar::setQUrl(const QUrl& url)
         return;
 
     clearFocus();
-    KLineEdit::setUrl(url);
+    
+    // Workaround for KLineEdit bug: incorrectly displaying
+    // unicode symbols at query parameter
+    const QByteArray urlTextData = url.toString().toUtf8();
+    const QString humanReadableUrl = QString::fromUtf8(
+        QByteArray::fromPercentEncoding(urlTextData).constData()
+    );
+    // End workaround
+    setText(humanReadableUrl);
+
     setCursorPosition(0);
 }
 
@@ -188,7 +197,16 @@ void UrlBar::setQUrl(const QUrl& url)
 void UrlBar::loadRequestedUrl(const KUrl& url, Rekonq::OpenType type)
 {
     clearFocus();
-    setUrl(url);
+    
+    // Workaround for KLineEdit bug: incorrectly displaying
+    // unicode symbols at query parameter
+    const QByteArray urlTextData = url.prettyUrl().toUtf8();
+    const QString humanReadableUrl = QString::fromUtf8(
+        QByteArray::fromPercentEncoding(urlTextData).constData()
+    );
+    // End workaround
+    setText(humanReadableUrl);
+    
     rApp->loadUrl(url, type);
 }
 
