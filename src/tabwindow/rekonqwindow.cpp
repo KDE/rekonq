@@ -51,10 +51,14 @@
 #include <QDBusConnection>
 
 
+quint32 RekonqWindow::s_nextId = 0;
+
+
 RekonqWindow::RekonqWindow(bool withTab, bool privateBrowsingMode, QWidget *parent)
     : RWindow(parent)
     , _tabWidget(new TabWidget(withTab, privateBrowsingMode, this))
     , _splitter(new QSplitter(this))
+    , _id(s_nextId++)
 {
     init();
 }

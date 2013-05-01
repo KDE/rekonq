@@ -37,6 +37,16 @@ set(rekonq_KDEINIT_SRCS
     download/downloaditem.cpp
     download/downloadmanager.cpp
     #----------------------------------------
+    extensions/api_bookmarks.cpp
+    extensions/api_cookies.cpp
+    extensions/api_history.cpp
+    extensions/api_management.cpp
+    extensions/api_tabs.cpp
+    extensions/api_windows.cpp
+    extensions/extension.cpp
+    extensions/extensionmanager.cpp
+    extensions/jsapi.cpp
+    #----------------------------------------
     history/historymanager.cpp
     history/historymodels.cpp
     #----------------------------------------
@@ -181,6 +191,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/adblock
                         ${CMAKE_CURRENT_SOURCE_DIR}/bookmarks
                         ${CMAKE_CURRENT_SOURCE_DIR}/download
+                        ${CMAKE_CURRENT_SOURCE_DIR}/extensions
                         ${CMAKE_CURRENT_SOURCE_DIR}/history
                         ${CMAKE_CURRENT_SOURCE_DIR}/icons
                         ${CMAKE_CURRENT_SOURCE_DIR}/panels
@@ -195,6 +206,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_BINARY_DIR}
                         ${KDE4_INCLUDES}
                         ${QT4_INCLUDES}
+                        ${QJSON_INCLUDES_DIR}
 )
 
 # Nepomuk optional include directories
@@ -253,6 +265,7 @@ TARGET_LINK_LIBRARIES (     kdeinit_rekonq
                             ${KDE4_KIO_LIBS}
                             ${KDE4_KPARTS_LIBS}
                             ${KDE4_SOLID_LIBS}
+                            qjson
 )
 
 # Nepomuk optional target link libraries

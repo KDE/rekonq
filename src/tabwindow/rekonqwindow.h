@@ -66,6 +66,8 @@ public:
 
     bool isPrivateBrowsingMode();
 
+    inline quint32 id() { return _id; }
+
 private:
     void init();
         
@@ -84,6 +86,9 @@ private:
     
     QWeakPointer<HistoryPanel> _historyPanel;
     QWeakPointer<BookmarksPanel> _bookmarksPanel;
+    
+    quint32 _id;
+    static quint32 s_nextId;
 };
 
 #endif // REKONQ_WINDOW_H

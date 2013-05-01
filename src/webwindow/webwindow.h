@@ -83,6 +83,8 @@ public:
 
     void checkFocus();
 
+    inline quint32 id() { return _id; }
+
 private:
     void setupActions();
     void setupTools();
@@ -182,6 +184,9 @@ private:
     QTimer *m_hidePopupTimer;
 
     KActionCollection *_ac;
+    
+    quint32 _id;
+    static quint32 s_nextId;
 };
 
 #endif // WEB_WINDOW

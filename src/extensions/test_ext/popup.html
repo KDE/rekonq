@@ -1,0 +1,18 @@
+<html>
+<head>
+<script>
+    function executeShowInfo(url, title) 
+    {
+        var url="http://rekonq.kde.org/test?title="+title+"&url="+url;
+        chrome.windows.create({url:url,width:600,height:550,type:"popup"},function(){});
+    }
+
+    chrome.tabs.getSelected(null,function (tab) 
+    {
+        executeShowInfo(encodeURI(tab.url), encodeURI(tab.title));
+    });
+</script>
+</head>
+<body>
+</body>
+</html>

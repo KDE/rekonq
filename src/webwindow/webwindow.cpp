@@ -78,6 +78,9 @@
 #include <QVBoxLayout>
 
 
+quint32 WebWindow::s_nextId = 0;
+
+
 WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
     : QWidget(parent)
     , _tab(new WebTab(this, isPrivateBrowsing))
@@ -88,6 +91,7 @@ WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
     , m_popup(new QLabel(this))
     , m_hidePopupTimer(new QTimer(this))
     , _ac(new KActionCollection(this))
+    , _id(s_nextId++)
 {
     if (pg)
     {
