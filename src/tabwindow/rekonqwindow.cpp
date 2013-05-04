@@ -106,7 +106,7 @@ void RekonqWindow::registerWindow()
 {
     // This is needed to properly support appmenu-qt feature
     RekonqFactory::createWidget(QL1S("menuBar"), this);
-    QDBusConnection::sessionBus().registerObject(QL1S("rekonq"), this);
+    QDBusConnection::sessionBus().registerObject(QL1S("/rekonq"), this);
 }
 
 
