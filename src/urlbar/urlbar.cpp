@@ -391,7 +391,17 @@ void UrlBar::loadStarted()
 void UrlBar::loadFinished()
 {
     refreshFavicon();
+    updateRightIcons();
+}
 
+
+void UrlBar::updateRightIcons()
+{
+    if (_tab->isPageLoading())
+        return;
+
+    clearRightIcons();
+    
     if (_tab->url().scheme() == QL1S("about"))
     {
         update();
@@ -429,16 +439,6 @@ void UrlBar::loadFinished()
     int oneIconWidth = _icon->sizeHint().width();
     int rightIconWidth = (oneIconWidth + c_iconMargin) * (_rightIconsList.count());
     setStyleSheet(QString("UrlBar { padding: 2px %2px 2px %1px; height: %1px } ").arg(oneIconWidth).arg(rightIconWidth));
-}
-
-
-void UrlBar::updateRightIcons()
-{
-    if (!_tab->isPageLoading())
-    {
-        clearRightIcons();
-        loadFinished();
-    }
 }
 
 
