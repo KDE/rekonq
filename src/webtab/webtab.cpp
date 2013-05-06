@@ -112,7 +112,7 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
 
     // Connect webview signals with related webtab ones
     connect(view(), SIGNAL(loadFinished(bool)),     this, SIGNAL(loadFinished(bool)));
-    connect(view(), SIGNAL(loadProgress(int)),      this, SIGNAL(loadProgress (int)));
+    connect(view(), SIGNAL(loadProgress(int)),      this, SIGNAL(loadProgress(int)));
     connect(view(), SIGNAL(loadStarted()),          this, SIGNAL(loadStarted()));
     connect(view(), SIGNAL(urlChanged(QUrl)),       this, SIGNAL(urlChanged(QUrl)));
     connect(view(), SIGNAL(titleChanged(QString)),  this, SIGNAL(titleChanged(QString)));
@@ -138,8 +138,8 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
     
     m_activityResourceInstance = new KActivities::ResourceInstance(window()->winId(), this);
     
-    connect(this, SIGNAL(urlChanged(const QUrl &)), m_activityResourceInstance, SLOT(setUri(const QUrl &)));
-    connect(this, SIGNAL(titleChanged(const QString &)), m_activityResourceInstance, SLOT(setTitle(const QString &)));
+    connect(this, SIGNAL(urlChanged(QUrl)), m_activityResourceInstance, SLOT(setUri(QUrl)));
+    connect(this, SIGNAL(titleChanged(QString)), m_activityResourceInstance, SLOT(setTitle(QString)));
 #endif
 }
 

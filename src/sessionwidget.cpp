@@ -64,7 +64,7 @@ SessionWidget::SessionWidget(QWidget *parent)
     connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteSession()));
     
     connect(listWidget, SIGNAL(currentRowChanged(int)), this, SLOT(updateButtons(int)));
-    connect(listWidget, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(save()));
+    connect(listWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(save()));
     
     updateButtons(-1);
     

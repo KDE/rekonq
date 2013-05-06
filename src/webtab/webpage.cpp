@@ -178,7 +178,7 @@ WebPage::WebPage(QWidget *parent, bool isPrivateBrowsing)
     connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
     connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 
-    connect(this, SIGNAL(frameCreated(QWebFrame *)), AdBlockManager::self(), SLOT(applyHidingRules(QWebFrame *)));
+    connect(this, SIGNAL(frameCreated(QWebFrame*)), AdBlockManager::self(), SLOT(applyHidingRules(QWebFrame*)));
     
     // protocol handler signals
     connect(&_protHandler, SIGNAL(downloadUrl(KUrl)), this, SLOT(downloadUrl(KUrl)));

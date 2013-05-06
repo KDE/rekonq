@@ -166,7 +166,7 @@ BookmarksTreeModel::BookmarksTreeModel(QObject *parent)
     , m_root(0)
 {
     resetModel();
-    connect(BookmarkManager::self()->manager(), SIGNAL(changed(QString, QString)),
+    connect(BookmarkManager::self()->manager(), SIGNAL(changed(QString,QString)),
             this, SLOT(bookmarksChanged(QString)));
 }
 
