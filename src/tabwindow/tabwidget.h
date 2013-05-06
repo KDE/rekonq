@@ -38,9 +38,7 @@
 // Forward Declarations
 class KUrl;
 
-class QLabel;
 class QToolButton;
-class QWebHistory;
 
 class TabHistory;
 

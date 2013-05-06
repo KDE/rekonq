@@ -42,7 +42,6 @@
 // Forward Declarations
 class WebPage;
 class WebTab;
-class WebView;
 
 class BookmarkToolBar;
 class FindBar;

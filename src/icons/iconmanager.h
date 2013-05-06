@@ -38,7 +38,6 @@
 // Forward Declarations
 class KIcon;
 class QWebFrame;
-class KJob;
 
 
 class REKONQ_TESTS_EXPORT IconManager : public QObject

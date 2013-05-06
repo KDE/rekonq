@@ -38,7 +38,6 @@
 #include <QWidget>
 
 // Forward Includes
-class QListWidgetItem;
 
 
 class SessionWidget : public QWidget , private Ui::Session

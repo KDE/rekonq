@@ -45,7 +45,6 @@
 
 // Forward Includes
 class KUrl;
-class QNetworkReply;
 
 
 class REKONQ_TESTS_EXPORT DownloadManager : public QObject

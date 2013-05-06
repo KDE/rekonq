@@ -113,7 +113,6 @@ typedef QList <UrlSuggestionItem> UrlSuggestionList;
 // ----------------------------------------------------------------------
 
 
-class HistoryItem;
 
 
 class UrlSuggester : public QObject

@@ -47,9 +47,7 @@
 #include <config-kactivities.h>
 
 // Forward Declarations
-class NotificationBar;
 class PreviewSelectorBar;
-class QPoint;
 class WalletBar;
 class WebPage;
 

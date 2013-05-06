@@ -40,7 +40,6 @@
 
 // Forward Declarations
 class RekonqWindow;
-class WebWindow;
 
 class WebTab;
 class WebPage;
