@@ -526,7 +526,11 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
         RekonqWindow *window = qobject_cast<RekonqWindow*>(watched);
         if (window)
         {
-            SessionManager::self()->saveSession();
+            if(!rApp->sessionSaving())
+            {
+                SessionManager::self()->saveSession();
+            }
+
             m_rekonqWindows.removeOne(window);
 #ifdef HAVE_KACTIVITIES
             QString currentActivity = m_activityConsumer->currentActivity();
