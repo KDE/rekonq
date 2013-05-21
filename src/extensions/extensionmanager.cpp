@@ -30,12 +30,39 @@
 
 // Local Includes
 #include "extension.h"
+#include "extensionwidget.h"
+
+#include "application.h"
+#include "rekonqwindow.h"
 
 // KDE Includes
+#include <KDialog>
+#include <KLocalizedString>
 #include <KStandardDirs>
 
 // Qt Includes
 #include <QDir>
+#include <QPointer>
+
+
+// ----------------------------------------------------------------------------------------------
+
+
+QWeakPointer<ExtensionManager> ExtensionManager::s_extensionManager;
+
+
+ExtensionManager *ExtensionManager::self()
+{
+    if (s_extensionManager.isNull())
+    {
+        s_extensionManager = new ExtensionManager(qApp);
+    }
+    return s_extensionManager.data();
+}
+
+
+// ----------------------------------------------------------------------------------------------
+
 
 
 ExtensionManager::ExtensionManager(QObject *parent)
@@ -47,13 +74,30 @@ ExtensionManager::ExtensionManager(QObject *parent)
 
 void ExtensionManager::initExtensions()
 {
-    QString extensionPath = KStandardDirs::locate("appdata" , "extensions/");
+    // FIXME: Just for the first tests...
+//     QString extensionPath = KStandardDirs::locate("appdata" , "extensions/");
+    QString extensionPath = QL1S("/home/adjam/TestExtensions/");
     QDir extDir(extensionPath);
     QStringList extDirList = extDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     Q_FOREACH(const QString &id, extDirList)
     {
-        loadExtension(id);
+        kDebug() << "ID: " << id;
+        loadExtension(extensionPath, id);
     }
+}
+
+
+void ExtensionManager::showSettings()
+{
+    QPointer<KDialog> dialog = new KDialog(rApp->rekonqWindow());
+    dialog->setCaption(i18nc("@title:window", "Extension Manager"));
+    dialog->setButtons(KDialog::Ok | KDialog::Cancel);
+
+    ExtensionWidget widget;
+
+    dialog->setMainWidget(&widget);
+    dialog->exec();
+    dialog->deleteLater();
 }
 
 
@@ -71,9 +115,9 @@ ExtensionList ExtensionManager::extensionList()
 }
 
 
-Extension* ExtensionManager::loadExtension(const QString& id)
+Extension* ExtensionManager::loadExtension(const QString& extPath, const QString& id)
 {
-    Extension* ext = new Extension(id, this);
+    Extension* ext = new Extension(extPath, id, this);
     if (ext->load())
     {
         kDebug() << "Loaded extension with id: " << id;

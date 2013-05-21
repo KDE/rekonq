@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="71">
+<gui name="rekonq" version="72">
 
 <!--- =========== Rekonq Menu ============= -->
 <Menu name="rekonqMenu" noMerge="1">
@@ -30,7 +30,8 @@
         <text>&amp;Tools</text>
         <Action name="clear_private_data" />
         <Separator/>
-        <Action name="session_manage" />
+        <Action name="extensions" />
+        <Action name="session_manager" />
         <Action name="webapp_shortcut" />
         <Action name="web_inspector" />
         <Action name="page_source" />
@@ -136,7 +137,7 @@
     <Menu name="tools" noMerge="1"><text>&amp;Tools</text>
         <Action name="clear_private_data" />
         <Separator/>
-        <Action name="session_manage" />
+        <Action name="session_manager" />
         <Action name="webapp_shortcut" />
         <Action name="web_inspector" />
         <Action name="page_source" />
@@ -169,6 +170,7 @@
     <Action name="go_back" />
     <Action name="go_forward" />
     <Action name="url_bar" />
+    <Action name="browserActionList" />
     <Action name="load_stop_reload" />
     <Action name="rekonq_tools" />
 </ToolBar>

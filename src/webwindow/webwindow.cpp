@@ -37,6 +37,7 @@
 
 #include "adblockmanager.h"
 #include "bookmarkmanager.h"
+#include "extensionmanager.h"
 #include "iconmanager.h"
 #include "syncmanager.h"
 #include "useragentmanager.h"
@@ -305,7 +306,7 @@ void WebWindow::setupActions()
 
      // User sessions management
     a = new KAction(KIcon("view-choose"), i18n("&Manage Sessions"), this);
-    actionCollection()->addAction(QL1S("session_manage"), a);
+    actionCollection()->addAction(QL1S("session_manager"), a);
     connect(a, SIGNAL(triggered(bool)), SessionManager::self(), SLOT(manageSessions()));
 
     // ===== Tools Actions =================================
@@ -380,6 +381,11 @@ void WebWindow::setupActions()
     a->setCheckable(true);
     actionCollection()->addAction(QL1S("web_inspector"), a);
     connect(a, SIGNAL(triggered(bool)), _tab, SLOT(toggleInspector(bool)));
+
+    // Extension management
+    a = new KAction(i18n("Extensions"), this);
+    actionCollection()->addAction(QL1S("extensions"), a);
+    connect(a, SIGNAL(triggered(bool)), ExtensionManager::self(), SLOT(showSettings()));
 
     _ac->readSettings();
 }

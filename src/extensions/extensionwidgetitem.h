@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2013 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,60 +24,34 @@
 * ============================================================ */
 
 
-#ifndef EXTENSION_H
-#define EXTENSION_H
 
-// Rekonq Includes
-#include "rekonq_defines.h"
+#ifndef EXTENSION_WIDGET_ITEM
+#define EXTENSION_WIDGET_ITEM
 
-// KDE Includes
-#include <KAction>
+
+// Local Includes
+#include "extension.h"
 
 // Qt Includes
-#include <QObject>
+#include <QWidget>
 
 
-class REKONQ_TESTS_EXPORT Extension : public QObject
+class ExtensionWidgetItem : public QWidget
 {
     Q_OBJECT
-
+    
 public:
-    explicit Extension(const QString &extPath, const QString &id, QObject *parent = 0);
-
-    bool load();
-    
-    bool isEnabled() { return _enabled; };
-    void setEnabled(bool b) { _enabled = b; };
-
-    QString extensionPath() { return _extensionPath; };
-    QString id() { return _id; };
-    
-    QString name() const;
-    QString version() const;
-    QString description() const;
-    QString icon() const;
-    
-    KAction *browserAction() { return _browserAction; };
-    KAction *pageAction() { return _pageAction; };
-
-private:
-    void init();
+    ExtensionWidgetItem(Extension *ext, QWidget *parent = 0);
 
 private Q_SLOTS:
-    void triggerExtension();
-    void triggerPopup();
-    
-private:
-    QVariantMap _manifest;
-    
-    QString _extensionPath;
-    QString _id;
-    
-    KAction *_browserAction;
-    KAction *_pageAction;
+    void toogleExtensionState(bool);
 
-    bool _enabled;
+private:
+    Extension *_extension;
+    
+    QString _extPath;
+    QString _extId;
 };
 
 
-#endif // EXTENSION_MANAGER_H
+#endif  // EXTENSION_WIDGET_ITEM

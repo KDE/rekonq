@@ -35,6 +35,7 @@
 
 // Qt Includes
 #include <QObject>
+#include <QWeakPointer>
 #include <QAction>
 #include <QWebFrame>
 
@@ -52,7 +53,12 @@ class REKONQ_TESTS_EXPORT ExtensionManager : public QObject
     Q_OBJECT
 
 public:
-    ExtensionManager(QObject *parent = 0);
+    /**
+     * Entry point.
+     * Access to ExtensionManager class by using
+     * ExtensionManager::self()->thePublicMethodYouNeed()
+     */
+    static ExtensionManager *self();
 
     void initExtensions();
 
@@ -65,13 +71,12 @@ public:
     QList<QAction *> pageActionList();
 
     void addExtensionCapabilitiesToFrame(QWebFrame *);
-    
-private:
+
     /**
      * Create an Extension object pointer, load the
      * extension identified by id and add it into ExtensionMap
      */
-    Extension* loadExtension(const QString& id);
+    Extension* loadExtension(const QString& extPath, const QString& id);
 
     /**
      * unload the extension identified by id
@@ -80,7 +85,15 @@ private:
     bool unloadExtension(const QString& id);
 
 private:
+    explicit ExtensionManager(QObject *parent = 0);    
+
+private Q_SLOTS:
+    void showSettings();
+    
+private:
     ExtensionMap _extensionMap;
+    
+    static QWeakPointer<ExtensionManager> s_extensionManager;
 };
 
 

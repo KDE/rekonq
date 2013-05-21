@@ -30,6 +30,8 @@
 #include "maintoolbar.h"
 #include "rekonqmenu.h"
 
+#include "extensionmanager.h"
+
 #include <KActionCollection>
 #include <KCmdLineArgs>
 #include <KMenu>
@@ -314,6 +316,16 @@ void RekonqFactory::fillToolbar(KToolBar *b, QDomNode node)
         if (el.tagName() == QL1S("Action"))
         {
             const QString actionName = el.attribute("name");
+            
+            if (actionName == QL1S("browserActionList"))
+            {
+                QList<QAction *> bal = ExtensionManager::self()->browserActionList();
+                Q_FOREACH(QAction *ac, bal)
+                {
+                    b->addAction(ac);
+                }
+                
+            }
             QAction *a = actionByName(actionName);
             if (a)
             {

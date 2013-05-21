@@ -49,6 +49,7 @@
 // Local Manager(s) Includes
 #include "adblockmanager.h"
 #include "downloadmanager.h"
+#include "extensionmanager.h"
 #include "historymanager.h"
 #include "iconmanager.h"
 #include "sessionmanager.h"
@@ -171,6 +172,18 @@ int Application::newInstance()
         kDebug() << "URL: " << u;
 
         loadUrl(u, Rekonq::WebApp);
+
+        if (isFirstLoad)
+        {
+            // updating rekonq configuration
+            updateConfiguration();
+
+            setWindowIcon(KIcon("rekonq"));
+
+            // just create History Manager...
+            HistoryManager::self();
+            ExtensionManager::self();
+        }
 
         KStartupInfo::appStarted();
         isFirstLoad = false;
@@ -357,6 +370,15 @@ int Application::newInstance()
         if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash && SearchEngine::defaultEngine().isNull())
             QTimer::singleShot(2000, rekonqWindow()->currentWebWindow()->tabView(), SLOT(showSearchEngineBar()));
 
+        // updating rekonq configuration
+        updateConfiguration();
+
+        setWindowIcon(KIcon("rekonq"));
+
+        // just create History Manager...
+        HistoryManager::self();
+        ExtensionManager::self();
+        
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();
     }

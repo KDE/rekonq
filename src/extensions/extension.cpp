@@ -29,12 +29,14 @@
 #include "extension.moc"
 
 // Local Includes
-#include "application.h"
+#include "extensionpopup.h"
 
 // KDE Includes
 #include <KStandardDirs>
+#include <KUrl>
 
 // Qt Includes
+#include <QCursor>
 #include <QFile>
 #include <QTextStream>
 
@@ -43,8 +45,9 @@
 #include <qjson/serializer.h>
 
 
-Extension::Extension(const QString &id, QObject *parent)
+Extension::Extension(const QString &extPath, const QString &id, QObject *parent)
     : QObject(parent)
+    , _extensionPath(extPath)
     , _id(id)
     , _browserAction(0)
     , _pageAction(0)
@@ -55,10 +58,8 @@ Extension::Extension(const QString &id, QObject *parent)
 
 bool Extension::load()
 {
-    QString extensionPath = KStandardDirs::locate("appdata" , "extensions/");
-
     // parse manifest.json
-    QFile manjson(extensionPath + _id + QL1S("/manifest.json"));
+    QFile manjson(_extensionPath + _id + QL1S("/manifest.json"));
     if (!manjson.open(QFile::ReadOnly))
     {
         kDebug() << "CANNOT LOAD EXT WITH ID: " << _id;
@@ -93,8 +94,6 @@ bool Extension::load()
 
 void Extension::init()
 {
-    QString extensionPath = KStandardDirs::locate("appdata" , "extensions/");
-        
     // Browser Actions
     QVariant browserActionVar = _manifest["browser_action"];
     if (!browserActionVar.isNull())
@@ -102,17 +101,19 @@ void Extension::init()
         QVariantMap browserActionMap = browserActionVar.toMap();
         
         QString defIcon = browserActionMap["default_icon"].toString();
-        QString iconPath = extensionPath + _id + QL1C('/') + defIcon;
-        kDebug() << "BROWSER ICON PATH: " << iconPath;
+        QString iconPath = _extensionPath + _id + QL1C('/') + defIcon;
         KIcon icon = KIcon(QIcon(iconPath));
         
         QString title = browserActionMap["default_title"].toString();
 
         _browserAction = new KAction(icon, title, this);
         
-        QVariant popupAction = browserActionMap["popup"];
+        QVariant popupAction = browserActionMap["default_popup"];
         if (popupAction.isNull())
+        {
             connect(_browserAction, SIGNAL(triggered()), this, SLOT(triggerExtension()));
+            kDebug() << "--------------------";
+        }
         else
             connect(_browserAction, SIGNAL(triggered()), this, SLOT(triggerPopup()));
     }
@@ -124,7 +125,7 @@ void Extension::init()
         QVariantMap pageActionMap = pageActionVar.toMap();
 
         QString defIcon = pageActionMap["default_icon"].toString();
-        QString iconPath = extensionPath + _id + QL1C('/') + defIcon;
+        QString iconPath = _extensionPath + _id + QL1C('/') + defIcon;
         kDebug() << "PAGE ICON PATH: " << iconPath;
         KIcon icon = KIcon(QIcon(iconPath));
 
@@ -168,7 +169,7 @@ QString Extension::icon() const
     if (icon.isEmpty())
         icon = iconMap["32"].toString();
     
-    return _id + QL1C('/') + icon;
+    return icon;
 }
 
 
@@ -182,10 +183,11 @@ void Extension::triggerPopup()
 {
     QVariant browserActionVar = _manifest["browser_action"];
     QVariantMap browserActionMap = browserActionVar.toMap();
-    QVariant popupFile = browserActionMap["popup"];
+    QVariant popupFile = browserActionMap["default_popup"];
 
-    QString extensionPath = KStandardDirs::locate("appdata" , "extensions/");
-    KUrl u = KUrl(extensionPath + _id + '/' + popupFile.toString());
+    KUrl u = KUrl(_extensionPath + _id + '/' + popupFile.toString());
     kDebug() << "Url: " << u;
-    rApp->loadUrl(u, Rekonq::NewWindow);
+
+    ExtensionPopup *popup = new ExtensionPopup(u);
+    popup->showAt(QCursor::pos());
 }

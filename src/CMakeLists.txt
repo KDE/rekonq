@@ -44,7 +44,10 @@ set(rekonq_KDEINIT_SRCS
     extensions/api_tabs.cpp
     extensions/api_windows.cpp
     extensions/extension.cpp
+    extensions/extensionpopup.cpp
     extensions/extensionmanager.cpp
+    extensions/extensionwidget.cpp
+    extensions/extensionwidgetitem.cpp
     extensions/jsapi.cpp
     #----------------------------------------
     history/historymanager.cpp
@@ -158,6 +161,8 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     # ----------------------------------------
     adblock/blocked_elements.ui
     adblock/settings_adblock.ui
+    #----------------------------------------
+    extensions/extensionsettingwidget.ui
     #----------------------------------------
     settings/settings_general.ui
     settings/settings_tabs.ui
