@@ -301,7 +301,7 @@ void SessionManager::restoreCrashedSession()
                         : rApp->newWindow();
 
         KUrl u = tw->currentWebWindow()->url();
-        bool useCurrentTab = (u.isEmpty() || u.protocol() == QL1S("about"));
+        bool useCurrentTab = (u.isEmpty() || u.protocol() == QL1S("rekonq"));
         int currentTab = loadTabs(tw, window, useCurrentTab);
 
         tw->tabWidget()->setCurrentIndex(currentTab);

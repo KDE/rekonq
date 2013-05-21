@@ -127,31 +127,21 @@ UrlSuggester::UrlSuggester(const QString &typedUrl)
 
 UrlSuggestionList UrlSuggester::orderedSearchItems()
 {
-    if (_typedString.startsWith(QL1S("about:")))
+    if (_typedString.startsWith(QL1S("rekonq:")))
     {
         QStringList aboutUrlList;
         aboutUrlList
-                << QL1S("about:home")
-                << QL1S("about:favorites")
-//                 << QL1S("about:closedTabs")
-                << QL1S("about:bookmarks")
-                << QL1S("about:history")
-                << QL1S("about:downloads")
-//                 << QL1S("about:tabs")
-//                 << QL1S("about:info")
+                << QL1S("rekonq:home")
+                << QL1S("rekonq:favorites")
+                << QL1S("rekonq:bookmarks")
+                << QL1S("rekonq:history")
+                << QL1S("rekonq:downloads")
+                << QL1S("rekonq:closedtabs")
                 ;
 
         QStringList aboutUrlResults = aboutUrlList.filter(_typedString, Qt::CaseInsensitive);
 
         UrlSuggestionList list;
-
-        if (aboutUrlResults.isEmpty())
-        {
-            UrlSuggestionItem info(UrlSuggestionItem::Browse, QL1S("about:info"),  QL1S("info"));
-            list << info;
-
-            return list;
-        }
 
         Q_FOREACH(const QString & urlResult, aboutUrlResults)
         {

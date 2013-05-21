@@ -98,8 +98,8 @@ void NewTabPage::generate(const KUrl &url)
     WebView *view = qobject_cast<WebView *>(pg->parent());
     WebTab *tab = view->parentTab();
 
-    // about:preview links
-    if (KUrl("about:settings").isParentOf(url))
+    // rekonq:preview links
+    if (KUrl("rekonq:settings").isParentOf(url))
     {
         if (url.fileName() == QL1S("network"))
         {
@@ -132,8 +132,8 @@ void NewTabPage::generate(const KUrl &url)
         }
     }
 
-    // about:preview links
-    if (KUrl("about:preview").isParentOf(url))
+    // rekonq:preview links
+    if (KUrl("rekonq:preview").isParentOf(url))
     {
         if (url.fileName() == QL1S("add"))
         {
@@ -148,7 +148,7 @@ void NewTabPage::generate(const KUrl &url)
             ReKonfig::setPreviewNames(names);
             ReKonfig::setPreviewUrls(urls);
 
-            loadPageForUrl(KUrl("about:favorites"));
+            loadPageForUrl(KUrl("rekonq:favorites"));
 
             tab->createPreviewSelectorBar(index);
             return;
@@ -176,8 +176,8 @@ void NewTabPage::generate(const KUrl &url)
         }
     }
 
-    // about:closedTabs links
-    if (KUrl("about:closedTabs").isParentOf(url))
+    // rekonq:closedtabs links
+    if (KUrl("rekonq:closedtabs").isParentOf(url))
     {
         if (url.fileName() == QL1S("restore"))
         {
@@ -188,27 +188,27 @@ void NewTabPage::generate(const KUrl &url)
         }
     }
 
-    // about:history links
-    if (KUrl("about:history").isParentOf(url))
+    // rekonq:history links
+    if (KUrl("rekonq:history").isParentOf(url))
     {
         if (url.fileName() == QL1S("clear"))
         {
             HistoryManager::self()->clear();
-            loadPageForUrl(KUrl("about:history"));
+            loadPageForUrl(KUrl("rekonq:history"));
             return;
         }
 
         if (url.fileName() == QL1S("showAllItems"))
         {
             m_showFullHistory = true;
-            loadPageForUrl(KUrl("about:history"));
+            loadPageForUrl(KUrl("rekonq:history"));
             return;
         }
 
         if (url.fileName() == QL1S("search"))
         {
             QString value = url.queryItemValue(QL1S("q"));
-            loadPageForUrl(KUrl("about:history"), value);
+            loadPageForUrl(KUrl("rekonq:history"), value);
             return;
         }
 
@@ -216,25 +216,25 @@ void NewTabPage::generate(const KUrl &url)
         {
             int value = url.queryItemValue(QL1S("location")).toInt();
             HistoryManager::self()->removeHistoryLocationEntry(value);
-            loadPageForUrl(KUrl("about:history"));
+            loadPageForUrl(KUrl("rekonq:history"));
             return;
         }
     }
 
-    // about:downloads links
-    if (KUrl("about:downloads").isParentOf(url))
+    // rekonq:downloads links
+    if (KUrl("rekonq:downloads").isParentOf(url))
     {
         if (url.fileName() == QL1S("clear"))
         {
             DownloadManager::self()->clearDownloadsHistory();
-            loadPageForUrl(KUrl("about:downloads"));
+            loadPageForUrl(KUrl("rekonq:downloads"));
             return;
         }
 
         if (url.fileName() == QL1S("search"))
         {
             QString value = url.queryItemValue(QL1S("q"));
-            loadPageForUrl(KUrl("about:downloads"), value);
+            loadPageForUrl(KUrl("rekonq:downloads"), value);
             return;
         }
 
@@ -250,25 +250,25 @@ void NewTabPage::generate(const KUrl &url)
         {
             int value = url.queryItemValue(QL1S("item")).toInt();
             DownloadManager::self()->removeDownloadItem(value);
-            loadPageForUrl(KUrl("about:downloads"));
+            loadPageForUrl(KUrl("rekonq:downloads"));
             return;
         }
     }
 
-    if (url == KUrl("about:bookmarks/edit"))
+    if (url == KUrl("rekonq:bookmarks/edit"))
     {
         BookmarkManager::self()->slotEditBookmarks();
         return;
     }
 
 
-    if (url == KUrl("about:favorites/save"))
+    if (url == KUrl("rekonq:favorites/save"))
     {
         saveFavorites();
         return;
     }
 
-
+    kDebug() << "URL: " << url;
     loadPageForUrl(url);
 }
 
@@ -291,7 +291,7 @@ void NewTabPage::loadPageForUrl(const KUrl &url, const QString & filter)
 
     QString title;
     QByteArray encodedUrl = url.toEncoded();
-    if (encodedUrl == QByteArray("about:favorites"))
+    if (encodedUrl == QByteArray("rekonq:favorites"))
     {
         favoritesPage();
 //         updateWindowIcon();
@@ -300,25 +300,25 @@ void NewTabPage::loadPageForUrl(const KUrl &url, const QString & filter)
         initJS();
         return;
     }
-    else if (encodedUrl == QByteArray("about:history"))
+    else if (encodedUrl == QByteArray("rekonq:history"))
     {
         historyPage(filter);
 //         updateWindowIcon();
         title = i18n("History");
     }
-    else if (encodedUrl == QByteArray("about:bookmarks"))
+    else if (encodedUrl == QByteArray("rekonq:bookmarks"))
     {
         bookmarksPage();
 //         updateWindowIcon();
         title = i18n("Bookmarks");
     }
-    else if (encodedUrl == QByteArray("about:downloads"))
+    else if (encodedUrl == QByteArray("rekonq:downloads"))
     {
         downloadsPage(filter);
 //         updateWindowIcon();
         title = i18n("Downloads");
     }
-    else if (encodedUrl == QByteArray("about:closedTabs"))
+    else if (encodedUrl == QByteArray("rekonq:closedtabs"))
     {
         closedTabsPage();
 //         updateWindowIcon();
@@ -339,31 +339,31 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
 
     // Favorites
     navItems.append(createLinkItem(i18n("Favorites"),
-                                   QL1S("about:favorites"),
+                                   QL1S("rekonq:favorites"),
                                    QL1S("emblem-favorite"),
                                    KIconLoader::Toolbar));
 
     // Bookmarks
     navItems.append(createLinkItem(i18n("Bookmarks"),
-                                   QL1S("about:bookmarks"),
+                                   QL1S("rekonq:bookmarks"),
                                    QL1S("bookmarks"),
                                    KIconLoader::Toolbar));
 
     // History
     navItems.append(createLinkItem(i18n("History"),
-                                   QL1S("about:history"),
+                                   QL1S("rekonq:history"),
                                    QL1S("view-history"),
                                    KIconLoader::Toolbar));
 
     // Downloads
     navItems.append(createLinkItem(i18n("Downloads"),
-                                   QL1S("about:downloads"),
+                                   QL1S("rekonq:downloads"),
                                    QL1S("download"),
                                    KIconLoader::Toolbar));
 
     // Closed Tabs
     navItems.append(createLinkItem(i18n("Closed Tabs"),
-                                   QL1S("about:closedTabs"),
+                                   QL1S("rekonq:closedtabs"),
                                    QL1S("tab-close"),
                                    KIconLoader::Toolbar));
 
@@ -374,7 +374,7 @@ void NewTabPage::browsingMenu(const KUrl &currentUrl)
 
         if (it.findFirst(aTagString).attribute(hrefAttributeString) == currentUrl.toMimeDataString())
             it.addClass(QL1S("current"));
-        else if (currentUrl == QL1S("about:home") && it.findFirst(aTagString).attribute(hrefAttributeString) == QL1S("about:favorites"))
+        else if (currentUrl == QL1S("rekonq:home") && it.findFirst(aTagString).attribute(hrefAttributeString) == QL1S("rekonq:favorites"))
             it.addClass(QL1S("current"));
         m_root.document().findFirst(QL1S("#navigation")).appendInside(it);
     }
@@ -386,7 +386,7 @@ void NewTabPage::favoritesPage()
     m_root.addClass(QL1S("favorites"));
 
     QWebElement add = createLinkItem(i18n("Add Favorite"),
-                                     QL1S("about:preview/add"),
+                                     QL1S("rekonq:preview/add"),
                                      QL1S("list-add"),
                                      KIconLoader::Toolbar);
     add.setAttribute(QL1S("class"), QL1S("right"));
@@ -419,13 +419,13 @@ void NewTabPage::historyPage(const QString & filter)
 {
     m_root.addClass(QL1S("history"));
 
-    QWebElement searchForm = createFormItem(i18n("Search History"), QL1S("about:history/search"));
+    QWebElement searchForm = createFormItem(i18n("Search History"), QL1S("rekonq:history/search"));
     searchForm.setAttribute(QL1S("class"), QL1S("left"));
 
     m_root.document().findFirst(QL1S("#actions")).appendInside(searchForm);
 
     QWebElement clearHistory = createLinkItem(i18n("Clear History"),
-                               QL1S("about:history/clear"),
+                               QL1S("rekonq:history/clear"),
                                QL1S("edit-clear"),
                                KIconLoader::Toolbar);
     clearHistory.setAttribute(QL1S("class"), QL1S("right"));
@@ -500,7 +500,7 @@ void NewTabPage::historyPage(const QString & filter)
                 QWebElement removeLinkElement = item.findFirst(QL1S(".button"));
 
                 int histLoc = HistoryManager::self()->historyFilterModel()->historyLocation(u.url());
-                removeLinkElement.setAttribute(QL1S("href"), QL1S("about:history/remove?location=") + QString::number(histLoc));
+                removeLinkElement.setAttribute(QL1S("href"), QL1S("rekonq:history/remove?location=") + QString::number(histLoc));
 
                 historyFolderElement.appendInside(QL1S("<br />"));
             }
@@ -510,7 +510,7 @@ void NewTabPage::historyPage(const QString & filter)
         {
             m_root.appendInside(markup(QL1S("a")));
             m_root.lastChild().setAttribute(QL1S("class") , QL1S("greybox"));
-            m_root.lastChild().setAttribute(QL1S("href") , QL1S("about:history/showAllItems"));
+            m_root.lastChild().setAttribute(QL1S("href") , QL1S("rekonq:history/showAllItems"));
             m_root.lastChild().setPlainText(i18n("Show full History"));
             return;
         }
@@ -526,7 +526,7 @@ void NewTabPage::bookmarksPage()
     m_root.addClass(QL1S("bookmarks"));
 
     QWebElement editBookmarks = createLinkItem(i18n("Edit Bookmarks"),
-                                QL1S("about:bookmarks/edit"),
+                                QL1S("rekonq:bookmarks/edit"),
                                 QL1S("bookmarks-organize"),
                                 KIconLoader::Toolbar);
     editBookmarks.setAttribute(QL1S("class"), QL1S("right"));
@@ -563,7 +563,7 @@ void NewTabPage::bookmarksPage()
 
 void NewTabPage::closedTabsPage()
 {
-    m_root.addClass(QL1S("closedTabs"));
+    m_root.addClass(QL1S("closedtabs"));
 
     QList<TabHistory> links = rApp->rekonqWindow()->tabWidget()->recentlyClosedTabs();
 
@@ -599,12 +599,12 @@ void NewTabPage::downloadsPage(const QString & filter)
 {
     m_root.addClass(QL1S("downloads"));
 
-    QWebElement searchForm = createFormItem(i18n("Search Downloads"), QL1S("about:downloads/search"));
+    QWebElement searchForm = createFormItem(i18n("Search Downloads"), QL1S("rekonq:downloads/search"));
     searchForm.setAttribute(QL1S("class"), QL1S("left"));
     m_root.document().findFirst(QL1S("#actions")).appendInside(searchForm);
 
     QWebElement clearDownloads = createLinkItem(i18n("Clear Downloads"),
-                                 QL1S("about:downloads/clear"),
+                                 QL1S("rekonq:downloads/clear"),
                                  QL1S("edit-clear"),
                                  KIconLoader::Toolbar);
     clearDownloads.setAttribute(QL1S("class"), QL1S("right"));
@@ -683,7 +683,7 @@ void NewTabPage::downloadsPage(const QString & filter)
             {
                 div.appendInside(markup(QL1S("a")));
                 div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
-                div.lastChild().setAttribute(QL1S("href"), QL1S("about:downloads/opendir?q=") + QL1S("file://") + dir);
+                div.lastChild().setAttribute(QL1S("href"), QL1S("rekonq:downloads/opendir?q=") + QL1S("file://") + dir);
                 div.lastChild().setPlainText(i18n("Open directory"));
 
                 div.appendInside(QL1S(" - "));
@@ -702,7 +702,7 @@ void NewTabPage::downloadsPage(const QString & filter)
 
             div.appendInside(markup(QL1S("a")));
             div.lastChild().setAttribute(QL1S("class"), QL1S("greylink"));
-            div.lastChild().setAttribute(QL1S("href"), QL1S("about:downloads/removeItem?item=") + QString::number(i));
+            div.lastChild().setAttribute(QL1S("href"), QL1S("rekonq:downloads/removeItem?item=") + QString::number(i));
             div.lastChild().setPlainText(i18n("Remove from list"));
 
             break;
@@ -768,7 +768,7 @@ QWebElement NewTabPage::emptyPreview(int index)
             QL1S("file:///") + KIconLoader::global()->iconPath("insert-image", KIconLoader::Desktop));
     prev.findFirst(QL1S("span a")).setPlainText(i18n("Set a Preview..."));
     prev.findFirst(QL1S("a")).setAttribute(QL1S("href"),
-                                           QL1S("about:preview/modify/") + QVariant(index).toString());
+                                           QL1S("rekonq:preview/modify/") + QVariant(index).toString());
 
     setupPreview(prev, index, false);
 
@@ -815,7 +815,7 @@ QWebElement NewTabPage::tabPreview(int winIndex, int tabIndex, const KUrl &url, 
     QWebElement prev = markup(QL1S(".thumbnail"));
     QString previewPath = QL1S("file://") + WebSnap::imagePathFromUrl(url);
 
-    QString href = QL1S("about:tabs/show?win=") + QString::number(winIndex) + QL1S("&tab=") + QString::number(tabIndex);
+    QString href = QL1S("rekonq:tabs/show?win=") + QString::number(winIndex) + QL1S("&tab=") + QString::number(tabIndex);
 
     prev.findFirst(QL1S(".preview img")).setAttribute(QL1S("src") , previewPath);
     prev.findFirst(QL1S("a")).setAttribute(QL1S("href"), href);
@@ -840,7 +840,7 @@ QWebElement NewTabPage::closedTabPreview(int index, const KUrl &url, const QStri
                           : IconManager::self()->iconPathForUrl(url)
                           ;
 
-    QString href = QL1S("about:closedTabs/restore?tab=") + QString::number(index);
+    QString href = QL1S("rekonq:closedtabs/restore?tab=") + QString::number(index);
 
     prev.findFirst(QL1S(".preview img")).setAttribute(QL1S("src") , previewPath);
     prev.findFirst(QL1S("a")).setAttribute(QL1S("href"), href);
@@ -864,8 +864,8 @@ void NewTabPage::setupPreview(QWebElement e, int index, bool showControls)
 
     e.findFirst(QL1S(".left")).setAttribute(QL1S("title"), i18n("Reload thumbnail"));
 
-    e.findFirst(QL1S(".left")).setAttribute(QL1S("href"), QL1S("about:preview/reload/") + QVariant(index).toString());
-    e.findFirst(QL1S(".right")).setAttribute(QL1S("href"), QL1S("about:preview/remove/") + QVariant(index).toString());
+    e.findFirst(QL1S(".left")).setAttribute(QL1S("href"), QL1S("rekonq:preview/reload/") + QVariant(index).toString());
+    e.findFirst(QL1S(".right")).setAttribute(QL1S("href"), QL1S("rekonq:preview/remove/") + QVariant(index).toString());
 
     e.setAttribute(QL1S("id"), QL1S("preview") + QVariant(index).toString());
 
@@ -883,7 +883,7 @@ void NewTabPage::setupTabPreview(QWebElement e, int winIndex, int tabIndex)
             QL1S("file:///") + KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
     e.findFirst(QL1S(".right")).setAttribute(QL1S("title"), QL1S("Close Tab"));
 
-    QString href = QL1S("about:tabs/remove?win=") + QString::number(winIndex) + QL1S("&tab=") + QString::number(tabIndex);
+    QString href = QL1S("rekonq:tabs/remove?win=") + QString::number(winIndex) + QL1S("&tab=") + QString::number(tabIndex);
     e.findFirst(QL1S(".right")).setAttribute(QL1S("href"), href);
 
     e.setAttribute(QL1S("id"), QL1S("win") + QString::number(winIndex) + QL1S("tab") + QString::number(tabIndex));
@@ -901,7 +901,7 @@ void NewTabPage::removePreview(int index)
     ReKonfig::setPreviewNames(names);
     ReKonfig::setPreviewUrls(urls);
 
-    loadPageForUrl(KUrl("about:favorites"));
+    loadPageForUrl(KUrl("rekonq:favorites"));
 
     ReKonfig::self()->writeConfig();
 }
@@ -1037,7 +1037,7 @@ void NewTabPage::initJS()
     javascript += QL1S("        revert: true,");
     javascript += QL1S("        cursor: \"move\",");
     javascript += QL1S("        distance: 30,");
-    javascript += QL1S("        update: function(event, ui) { window.location.href = \"about:favorites/save\"; }");
+    javascript += QL1S("        update: function(event, ui) { window.location.href = \"rekonq:favorites/save\"; }");
     javascript += QL1S("    });");
     javascript += QL1S("    $( \".thumbnail\" ).disableSelection();");
     javascript += QL1S("});");
@@ -1080,5 +1080,5 @@ void NewTabPage::saveFavorites()
     ReKonfig::setPreviewNames(newNames);
     ReKonfig::setPreviewUrls(newUrls);
 
-    loadPageForUrl(KUrl("about:favorites"));
+    loadPageForUrl(KUrl("rekonq:favorites"));
 }

@@ -69,7 +69,7 @@ PreviewSelectorBar::PreviewSelectorBar(int index, QWidget* parent)
 void PreviewSelectorBar::verifyUrl()
 {
     WebTab *tab = qobject_cast<WebTab *>(parent());
-    if (tab->url().scheme() != "about")
+    if (tab->url().scheme() != QL1S("rekonq"))
     {
         m_insertAction->setEnabled(true);
         m_insertAction->setToolTip("");
@@ -122,7 +122,7 @@ void PreviewSelectorBar::clicked()
         ReKonfig::self()->writeConfig();
 
 
-        tab->page()->mainFrame()->load(KUrl("about:favorites"));
+        tab->page()->mainFrame()->load(KUrl("rekonq:favorites"));
     }
 
     animatedHide();

@@ -949,13 +949,13 @@ void WebWindow::showCrashMessageBar()
 
 void WebWindow::openNewWindow()
 {
-    rApp->loadUrl(QUrl("about:home"), Rekonq::NewWindow);
+    rApp->loadUrl(QUrl("rekonq:home"), Rekonq::NewWindow);
 }
 
 
 void WebWindow::checkFocus()
 {
-    if (url().scheme() == QL1S("about"))
+    if (url().scheme() == QL1S("rekonq"))
         _bar->setFocus();
     else
         _tab->view()->setFocus();
@@ -964,19 +964,19 @@ void WebWindow::checkFocus()
 
 void WebWindow::openDownloadsPage()
 {
-    rApp->loadUrl(QUrl("about:downloads"), Rekonq::NewFocusedTab);
+    rApp->loadUrl(QUrl("rekonq:downloads"), Rekonq::NewFocusedTab);
 }
 
 
 void WebWindow::openHistoryPage()
 {
-    rApp->loadUrl(QUrl("about:history"), Rekonq::NewFocusedTab);
+    rApp->loadUrl(QUrl("rekonq:history"), Rekonq::NewFocusedTab);
 }
 
 
 void WebWindow::openBookmarksPage()
 {
-    rApp->loadUrl(QUrl("about:bookmarks"), Rekonq::NewFocusedTab);
+    rApp->loadUrl(QUrl("rekonq:bookmarks"), Rekonq::NewFocusedTab);
 }
 
 

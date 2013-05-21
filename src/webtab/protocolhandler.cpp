@@ -134,16 +134,10 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         return true;
     }
 
-    // "about" handling
-    if (_url.protocol() == QL1S("about"))
+    // "rekonq" handling
+    if (_url.protocol() == QL1S("rekonq"))
     {
         QByteArray encodedUrl = _url.toEncoded();
-
-        // let webkit manage the about:blank url...
-        if (encodedUrl.startsWith(QByteArray("about:blank")))
-        {
-            return false;
-        }
 
         if (_url.directory() == QL1S("webapp"))
         {
@@ -162,28 +156,28 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             }
         }
         
-        if (encodedUrl == QByteArray("about:home"))
+        if (encodedUrl == QByteArray("rekonq:home"))
         {
             switch (ReKonfig::newTabStartPage())
             {
             case 0: // favorites
-                _url = KUrl("about:favorites");
+                _url = KUrl("rekonq:favorites");
                 break;
             case 1: // bookmarks
-                _url = KUrl("about:bookmarks");
+                _url = KUrl("rekonq:bookmarks");
                 break;
             case 2: // history
-                _url = KUrl("about:history");
+                _url = KUrl("rekonq:history");
                 break;
             case 3: // downloads
-                _url = KUrl("about:downloads");
+                _url = KUrl("rekonq:downloads");
                 break;
             case 4: // closed tabs
-                _url = KUrl("about:closedTabs");
+                _url = KUrl("rekonq:closedtabs");
                 break;
             default: // unuseful
                 kDebug() << "oops... this should NOT happen...";
-                _url = KUrl("about:favorites");
+                _url = KUrl("rekonq:favorites");
                 break;
             }
         }

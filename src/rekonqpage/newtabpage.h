@@ -53,10 +53,10 @@ public:
     explicit NewTabPage(QWebFrame *frame);
 
     /**
-     * This method takes an about: url and loads
+     * This method takes an rekonq: url and loads
      * the corresponding part of the new tab page
      */
-    void generate(const KUrl &url = KUrl("about:home"));
+    void generate(const KUrl &url = KUrl("rekonq:home"));
 
 private:
     // these are the "high-level" functions to build the new tab page.

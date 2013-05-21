@@ -284,23 +284,23 @@ int Application::newInstance()
                 case 1: // open new tab page
                     if (incognito)
                     {
-                        loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
+                        loadUrl(KUrl("rekonq:home"), Rekonq::NewPrivateWindow);
                         break;
                     }
                     if (SessionManager::self()->restoreJustThePinnedTabs())
-                        loadUrl(KUrl("about:home") , Rekonq::NewTab);
+                        loadUrl(KUrl("rekonq:home") , Rekonq::NewTab);
                     else
-                        loadUrl(KUrl("about:home"), Rekonq::NewWindow);
+                        loadUrl(KUrl("rekonq:home"), Rekonq::NewWindow);
                     break;
                 case 2: // restore session
                     if (incognito)
                     {
-                        loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
+                        loadUrl(KUrl("rekonq:home"), Rekonq::NewPrivateWindow);
                         break;
                     }
                     if (hasToBeRecoveredFromCrash || !SessionManager::self()->restoreSessionFromScratch())
                     {
-                        loadUrl(KUrl("about:home") , Rekonq::NewTab);
+                        loadUrl(KUrl("rekonq:home") , Rekonq::NewTab);
                     }
                     break;
                 case 3:
@@ -319,7 +319,7 @@ int Application::newInstance()
             switch (ReKonfig::newTabsBehaviour())
             {
             case 0: // new tab page
-                loadUrl(KUrl("about:home") , type);
+                loadUrl(KUrl("rekonq:home") , type);
                 break;
             case 2: // homepage
                 loadUrl(KUrl(ReKonfig::homePage()) , type);
@@ -569,8 +569,8 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
     }
     
     Rekonq::OpenType newType = type;
-    // Don't open useless tabs or windows for actions in about: pages
-    if (url.url().contains("about:") && url.url().contains("/"))
+    // Don't open useless tabs or windows for actions in rekonq: pages
+    if (url.url().contains("rekonq:") && url.url().contains("/"))
         newType = Rekonq::CurrentTab;
 
     RekonqWindow *w = 0;
@@ -965,8 +965,8 @@ void Application::bookmarksToolbarToggled(bool b)
 
 void Application::newPrivateBrowsingWindow()
 {
-    // NOTE: what about an "about:incognito" page?
-    loadUrl(KUrl("about:home"), Rekonq::NewPrivateWindow);
+    // NOTE: what about a "rekonq:incognito" page?
+    loadUrl(KUrl("rekonq:home"), Rekonq::NewPrivateWindow);
 }
 
 

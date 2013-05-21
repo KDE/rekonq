@@ -79,19 +79,19 @@ KIcon IconManager::iconForUrl(const KUrl &url)
 
     QByteArray encodedUrl = url.toEncoded();
     // rekonq icons..
-    if (encodedUrl == QByteArray("about:home"))
+    if (encodedUrl == QByteArray("rekonq:home"))
         return KIcon("go-home");
-    if (encodedUrl == QByteArray("about:closedTabs"))
+    if (encodedUrl == QByteArray("rekonq:closedtabs"))
         return KIcon("tab-close");
-    if (encodedUrl == QByteArray("about:history"))
+    if (encodedUrl == QByteArray("rekonq:history"))
         return KIcon("view-history");
-    if (encodedUrl == QByteArray("about:bookmarks"))
+    if (encodedUrl == QByteArray("rekonq:bookmarks"))
         return KIcon("bookmarks");
-    if (encodedUrl == QByteArray("about:favorites"))
+    if (encodedUrl == QByteArray("rekonq:favorites"))
         return KIcon("emblem-favorite");
-    if (encodedUrl == QByteArray("about:downloads"))
+    if (encodedUrl == QByteArray("rekonq:downloads"))
         return KIcon("download");
-    if (encodedUrl == QByteArray("about:tabs"))
+    if (encodedUrl == QByteArray("rekonq:tabs"))
         return KIcon("tab-duplicate");
 
     // TODO: return other mimetype icons
@@ -200,39 +200,34 @@ QString IconManager::iconPathForUrl(const KUrl &url)
 
     QByteArray encodedUrl = url.toEncoded();
     // rekonq icons..
-    if (encodedUrl == QByteArray("about:home"))
+    if (encodedUrl == QByteArray("rekonq:home"))
     {
         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/go-home.png");
         return icon;
     }
-    if (encodedUrl == QByteArray("about:closedTabs"))
+    if (encodedUrl == QByteArray("rekonq:closedtabs"))
     {
         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/tab-close.png");
         return icon;
     }
-    if (encodedUrl == QByteArray("about:history"))
+    if (encodedUrl == QByteArray("rekonq:history"))
     {
         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/view-history.png");
         return icon;
     }
-    if (encodedUrl == QByteArray("about:bookmarks"))
+    if (encodedUrl == QByteArray("rekonq:bookmarks"))
     {
         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/places/bookmarks.png");
         return icon;
     }
-    if (encodedUrl == QByteArray("about:favorites"))
+    if (encodedUrl == QByteArray("rekonq:favorites"))
     {
         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/emblems/emblem-favorite.png");
         return icon;
     }
-    if (encodedUrl == QByteArray("about:downloads"))
+    if (encodedUrl == QByteArray("rekonq:downloads"))
     {
         QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/download.png");
-        return icon;
-    }
-    if (encodedUrl == QByteArray("about:tabs"))
-    {
-        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/actions/tab-duplicate.png");
         return icon;
     }
 

@@ -176,7 +176,7 @@ UrlBar::~UrlBar()
 
 void UrlBar::setQUrl(const QUrl& url)
 {
-    if (url.scheme() == QL1S("about"))
+    if (url.scheme() == QL1S("rekonq"))
         return;
 
     clearFocus();
@@ -344,7 +344,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Escape)
     {
         clearFocus();
-        if (!(_tab->url().protocol() == QL1S("about")))
+        if (!(_tab->url().protocol() == QL1S("rekonq")))
             setText(_tab->url().prettyUrl());
         event->accept();
     }
@@ -402,7 +402,7 @@ void UrlBar::updateRightIcons()
 
     clearRightIcons();
     
-    if (_tab->url().scheme() == QL1S("about"))
+    if (_tab->url().scheme() == QL1S("rekonq"))
     {
         update();
         return;
@@ -666,7 +666,7 @@ void UrlBar::refreshFavicon()
         return;
     }
 
-    if (scheme == QL1S("about"))
+    if (scheme == QL1S("rekonq"))
     {
         _icon->setIcon(KIcon("arrow-right"));
         return;
@@ -698,7 +698,7 @@ void UrlBar::delSlot()
 
 void UrlBar::manageBookmarks()
 {
-    if (_tab->url().scheme() == QL1S("about"))
+    if (_tab->url().scheme() == QL1S("rekonq"))
         return;
 
     KBookmark bookmark = BookmarkManager::self()->bookmarkForUrl(_tab->url());
@@ -730,7 +730,7 @@ void UrlBar::manageAdBlock(QPoint pos)
     if (!bt)
         return;
 
-    if (_tab->url().scheme() == QL1S("about"))
+    if (_tab->url().scheme() == QL1S("rekonq"))
         return;
 
     AdBlockWidget *widget = new AdBlockWidget(_tab->url(), this);
@@ -825,7 +825,7 @@ void UrlBar::manageStarred(QPoint pos)
 
 void UrlBar::addToFavorites()
 {
-    if (_tab->url().scheme() == QL1S("about"))
+    if (_tab->url().scheme() == QL1S("rekonq"))
         return;
 
     // else, add as favorite
@@ -847,7 +847,7 @@ void UrlBar::addToFavorites()
 
 void UrlBar::removeFromFavorites()
 {
-    if (_tab->url().scheme() == QL1S("about"))
+    if (_tab->url().scheme() == QL1S("rekonq"))
         return;
 
     QStringList urls = ReKonfig::previewUrls();

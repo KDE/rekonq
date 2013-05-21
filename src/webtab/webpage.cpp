@@ -709,7 +709,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
 
         msg += QL1S("<p>");
 
-        msg += i18n("Maybe you are having problems with your network settings.<br />Try checking your <a href=\"%1\">network connections</a>, your <a href=\"%2\">proxy settings</a> and your <a href=\"%3\">firewall</a>.<br /><br />Then <a href=\"%4\">try again</a>.<br />", QL1S("about:settings/network"), QL1S("about:settings/proxy"), QL1S("about:settings/firewall"), urlString);
+        msg += i18n("Maybe you are having problems with your network settings.<br />Try checking your <a href=\"%1\">network connections</a>, your <a href=\"%2\">proxy settings</a> and your <a href=\"%3\">firewall</a>.<br /><br />Then <a href=\"%4\">try again</a>.<br />", QL1S("rekonq:settings/network"), QL1S("rekonq:settings/proxy"), QL1S("rekonq:settings/firewall"), urlString);
 
         msg += QL1S("</p>");
 

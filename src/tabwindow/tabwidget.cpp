@@ -241,7 +241,7 @@ void TabWidget::init()
     QList<TabHistory> list = SessionManager::self()->closedSitesForWindow( QL1S("win") + QString::number(n) );
     Q_FOREACH(const TabHistory & tab, list)
     {
-        if (tab.url.startsWith(QL1S("about")))
+        if (tab.url.startsWith(QL1S("rekonq")))
             continue;
         m_recentlyClosedTabs.removeAll(tab);
         m_recentlyClosedTabs.prepend(tab);
@@ -309,7 +309,7 @@ void TabWidget::newTab(WebPage *page)
     switch (ReKonfig::newTabsBehaviour())
     {
     case 0: // new tab page
-        tab->load(KUrl("about:home"));
+        tab->load(KUrl("rekonq:home"));
         break;
     case 2: // homepage
         tab->load(KUrl(ReKonfig::homePage()));
@@ -650,12 +650,12 @@ void TabWidget::closeTab(int index, bool del)
             return;
         }
 
-        currentWebWindow()->load(KUrl("about:home"));
+        currentWebWindow()->load(KUrl("rekonq:home"));
         return;
     }
 
     if (!tabToClose->url().isEmpty()
-            && tabToClose->url().scheme() != QL1S("about")
+            && tabToClose->url().scheme() != QL1S("rekonq")
             && !tabToClose->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
        )
     {
@@ -708,7 +708,7 @@ void TabWidget::detachTab(int index, RekonqWindow *toWindow)
 
     WebWindow *tab = webWindow(index);
     KUrl u = tab->url();
-    if (u.scheme() == QL1S("about"))
+    if (u.scheme() == QL1S("rekonq"))
     {
         closeTab(index);
         loadUrl(u, Rekonq::NewWindow);
