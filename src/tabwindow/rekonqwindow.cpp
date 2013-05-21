@@ -212,3 +212,12 @@ void RekonqWindow::showHistoryPanel(bool on)
         _historyPanel.clear();
     }
 }
+
+
+void RekonqWindow::updateToolBars()
+{
+    for(int i = 0; i < _tabWidget->count(); i++)
+    {
+        tabWidget()->webWindow(i)->setupMainToolBar();
+    }
+}

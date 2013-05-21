@@ -31,6 +31,10 @@
 // Local Includes
 #include "extensionmanager.h"
 
+// KDE Includes
+#include <KConfig>
+#include <KConfigGroup>
+
 // Qt Includes
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -85,12 +89,9 @@ void ExtensionWidgetItem::toogleExtensionState(bool on)
 {
     kDebug() << "Toogle: " << on;
     _extension->setEnabled(on);
-    if (on)
-    {
-        ExtensionManager::self()->loadExtension(_extension->extensionPath(), _extension->id());
-    }
-    else
-    {
-        ExtensionManager::self()->unloadExtension(_extension->id());
-    }
+    
+    KSharedConfig::Ptr extensionConfig = KSharedConfig::openConfig("extensions", KConfig::SimpleConfig, "appdata");
+    KConfigGroup extGroup(extensionConfig, _extension->id());
+
+    extGroup.writeEntry("enabled", on);
 }

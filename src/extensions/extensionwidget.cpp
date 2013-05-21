@@ -38,6 +38,7 @@
 
 // KDE Includes
 #include <KFileDialog>
+#include <KMessageBox>
 #include <KStandardDirs>
 #include <KIcon>
 
@@ -71,10 +72,16 @@ ExtensionWidget::ExtensionWidget(QWidget *parent)
 
 void ExtensionWidget::load()
 {
-    ExtensionList extList = ExtensionManager::self()->extensionList();
+    KSharedConfig::Ptr extensionConfig = KSharedConfig::openConfig("extensions", KConfig::SimpleConfig, "appdata");
 
-    Q_FOREACH(Extension *ext, extList)
+    QStringList extIdList = extensionConfig->groupList();
+    
+    Q_FOREACH(const QString &idString, extIdList)
     {
+        Extension *ext = ExtensionManager::self()->extension(idString);
+        if (!ext)
+            continue;
+        
         QListWidgetItem *item = new QListWidgetItem();       
         listWidget->addItem(item);
         item->setSizeHint(QSize(0,48));
@@ -87,7 +94,33 @@ void ExtensionWidget::load()
 void ExtensionWidget::loadUnpackedExtension()
 {
     QString extPath = KFileDialog::getExistingDirectory();
+    QString actualDir = extPath.section( QL1C('/'), -1 );
+    int n = extPath.count() - actualDir.count();
+    extPath.truncate(n);
+    
     kDebug() << extPath;
+    kDebug() << actualDir;
+    
+    Extension* ext = ExtensionManager::self()->addExtension(extPath, actualDir, true);
+
+    if (ext)
+    {
+        QListWidgetItem *item = new QListWidgetItem();       
+        listWidget->addItem(item);
+        item->setSizeHint(QSize(0,48));
+        ExtensionWidgetItem *wItem = new ExtensionWidgetItem(ext, listWidget);
+        listWidget->setItemWidget(item, wItem);
+        
+        KSharedConfig::Ptr extensionConfig = KSharedConfig::openConfig("extensions", KConfig::SimpleConfig, "appdata");
+        KConfigGroup extGroup(extensionConfig, actualDir);
+
+        extGroup.writeEntry("path", extPath);
+        extGroup.writeEntry("enabled", ext->isEnabled());
+
+        return;
+    }
+    
+    KMessageBox::error( this,  i18n("Problems loading extension %1 from dir %2", actualDir, extPath) );
 }
 
 

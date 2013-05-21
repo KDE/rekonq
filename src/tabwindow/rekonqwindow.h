@@ -74,6 +74,8 @@ private:
 public Q_SLOTS:
     void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
 
+    void updateToolBars();
+
 private Q_SLOTS:
     void showBookmarksPanel(bool);
     void showHistoryPanel(bool);

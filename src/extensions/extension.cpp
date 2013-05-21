@@ -45,13 +45,13 @@
 #include <qjson/serializer.h>
 
 
-Extension::Extension(const QString &extPath, const QString &id, QObject *parent)
+Extension::Extension(const QString &extPath, const QString &id,  bool enabled, QObject *parent)
     : QObject(parent)
     , _extensionPath(extPath)
     , _id(id)
     , _browserAction(0)
     , _pageAction(0)
-    , _enabled(false)
+    , _enabled(enabled)
 {
 }
 
@@ -100,9 +100,17 @@ void Extension::init()
     {
         QVariantMap browserActionMap = browserActionVar.toMap();
         
+        KIcon icon;
         QString defIcon = browserActionMap["default_icon"].toString();
-        QString iconPath = _extensionPath + _id + QL1C('/') + defIcon;
-        KIcon icon = KIcon(QIcon(iconPath));
+        if (defIcon.isEmpty())
+        {
+            icon = KIcon("edit-bomb");
+        }
+        else
+        {      
+            QString iconPath = _extensionPath + _id + QL1C('/') + defIcon;
+            icon = KIcon(QIcon(iconPath));
+        }
         
         QString title = browserActionMap["default_title"].toString();
 
@@ -110,10 +118,7 @@ void Extension::init()
         
         QVariant popupAction = browserActionMap["default_popup"];
         if (popupAction.isNull())
-        {
             connect(_browserAction, SIGNAL(triggered()), this, SLOT(triggerExtension()));
-            kDebug() << "--------------------";
-        }
         else
             connect(_browserAction, SIGNAL(triggered()), this, SLOT(triggerPopup()));
     }
@@ -124,19 +129,23 @@ void Extension::init()
     {
         QVariantMap pageActionMap = pageActionVar.toMap();
 
+        KIcon icon;
         QString defIcon = pageActionMap["default_icon"].toString();
-        QString iconPath = _extensionPath + _id + QL1C('/') + defIcon;
-        kDebug() << "PAGE ICON PATH: " << iconPath;
-        KIcon icon = KIcon(QIcon(iconPath));
+        if (defIcon.isEmpty())
+        {
+            icon = KIcon("edit-bomb");
+        }
+        else
+        {      
+            QString iconPath = _extensionPath + _id + QL1C('/') + defIcon;
+            icon = KIcon(QIcon(iconPath));
+        }
 
         QString title = pageActionMap["default_title"].toString();
 
         _pageAction = new KAction(icon, title, this);
         connect(_pageAction, SIGNAL(triggered()), this, SLOT(triggerExtension()));
     }
-    
-    // Enabling it
-    _enabled = true;
 }
     
 
@@ -175,12 +184,18 @@ QString Extension::icon() const
 
 void Extension::triggerExtension()
 {
+    if (!isEnabled())
+        return;
+
     kDebug() << "CIAO CIAO";    
 }
 
 
 void Extension::triggerPopup()
 {
+    if (!isEnabled())
+        return;
+    
     QVariant browserActionVar = _manifest["browser_action"];
     QVariantMap browserActionMap = browserActionVar.toMap();
     QVariant popupFile = browserActionMap["default_popup"];

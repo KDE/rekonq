@@ -33,6 +33,9 @@
 // Local Includes
 #include "jsapi.h"
 
+// KDE Includes
+#include <KSharedConfig>
+
 // Qt Includes
 #include <QObject>
 #include <QWeakPointer>
@@ -67,6 +70,8 @@ public:
      */
     ExtensionList extensionList();
 
+    Extension *extension(const QString &id);
+    
     QList<QAction *> browserActionList();
     QList<QAction *> pageActionList();
 
@@ -76,13 +81,7 @@ public:
      * Create an Extension object pointer, load the
      * extension identified by id and add it into ExtensionMap
      */
-    Extension* loadExtension(const QString& extPath, const QString& id);
-
-    /**
-     * unload the extension identified by id
-     * and remove it from the ExtensionMap
-     */
-    bool unloadExtension(const QString& id);
+    Extension* addExtension(const QString& extPath, const QString& id, bool enabled);
 
 private:
     explicit ExtensionManager(QObject *parent = 0);    
@@ -92,6 +91,8 @@ private Q_SLOTS:
     
 private:
     ExtensionMap _extensionMap;
+    
+    KSharedConfig::Ptr _extensionConfig;
     
     static QWeakPointer<ExtensionManager> s_extensionManager;
 };

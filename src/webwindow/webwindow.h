@@ -91,6 +91,7 @@ private:
 
 public Q_SLOTS:
     void setWidgetsHidden(bool hide);
+    void setupMainToolBar();
 
 private Q_SLOTS:
     void webLoadProgress(int);
@@ -143,7 +144,6 @@ private Q_SLOTS:
     void keyBindings();
 
     // Main ToolBar Settings slots
-    void setupMainToolBar();
     void showToolbarEditor();
 
 Q_SIGNALS:

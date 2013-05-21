@@ -75,14 +75,20 @@ ExtensionManager::ExtensionManager(QObject *parent)
 void ExtensionManager::initExtensions()
 {
     // FIXME: Just for the first tests...
-//     QString extensionPath = KStandardDirs::locate("appdata" , "extensions/");
-    QString extensionPath = QL1S("/home/adjam/TestExtensions/");
-    QDir extDir(extensionPath);
-    QStringList extDirList = extDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    Q_FOREACH(const QString &id, extDirList)
+    QString extensionPath = KStandardDirs::locateLocal("appdata" , "extensions");
+    if (!QFile::exists(extensionPath))
+        return;
+           
+    _extensionConfig = KSharedConfig::openConfig("extensions", KConfig::SimpleConfig, "appdata");
+    
+    QStringList extIdList = _extensionConfig->groupList();
+    
+    Q_FOREACH(const QString &idString, extIdList)
     {
-        kDebug() << "ID: " << id;
-        loadExtension(extensionPath, id);
+        KConfigGroup extGroup(_extensionConfig, idString);
+        QString extPath = extGroup.readEntry("path", QString());
+        bool enabled = extGroup.readEntry("enabled", false);
+        Extension *ext = addExtension(extPath, idString, enabled);
     }
 }
 
@@ -98,6 +104,8 @@ void ExtensionManager::showSettings()
     dialog->setMainWidget(&widget);
     dialog->exec();
     dialog->deleteLater();
+   
+    rApp->rekonqWindow()->updateToolBars();
 }
 
 
@@ -115,9 +123,16 @@ ExtensionList ExtensionManager::extensionList()
 }
 
 
-Extension* ExtensionManager::loadExtension(const QString& extPath, const QString& id)
+Extension *ExtensionManager::extension(const QString &id)
 {
-    Extension* ext = new Extension(extPath, id, this);
+    Extension *ext = _extensionMap[id];
+    return ext;
+}
+
+
+Extension* ExtensionManager::addExtension(const QString& extPath, const QString& id, bool enabled)
+{
+    Extension* ext = new Extension(extPath, id, enabled, this);
     if (ext->load())
     {
         kDebug() << "Loaded extension with id: " << id;
@@ -129,24 +144,14 @@ Extension* ExtensionManager::loadExtension(const QString& extPath, const QString
 }
 
 
-bool ExtensionManager::unloadExtension(const QString& id)
-{
-    Extension *ext = _extensionMap.take(id);
-    if (ext)
-    {
-        delete ext;
-        return true;
-    }
-
-    return false;
-}
-
-
 QList<QAction *> ExtensionManager::browserActionList()
 {
     QList<QAction *> actionList;
     Q_FOREACH(Extension *ext, _extensionMap)
     {
+        if (!ext->isEnabled())
+            continue;
+        
         KAction *a = ext->browserAction();
         if (a)
             actionList << a;
@@ -161,6 +166,9 @@ QList<QAction *> ExtensionManager::pageActionList()
     QList<QAction *> actionList;
     Q_FOREACH(Extension *ext, _extensionMap)
     {
+        if (!ext->isEnabled())
+            continue;
+        
         KAction *a = ext->pageAction();
         if (a)
             actionList << a;

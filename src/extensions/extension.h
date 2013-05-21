@@ -42,7 +42,7 @@ class REKONQ_TESTS_EXPORT Extension : public QObject
     Q_OBJECT
 
 public:
-    explicit Extension(const QString &extPath, const QString &id, QObject *parent = 0);
+    explicit Extension(const QString &extPath, const QString &id, bool enabled, QObject *parent = 0);
 
     bool load();
     
