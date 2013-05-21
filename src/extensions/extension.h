@@ -63,10 +63,14 @@ public:
 private:
     void init();
 
+    void launchPopup(const KUrl &u);
+
 private Q_SLOTS:
     void triggerExtension();
-    void triggerPopup();
     
+    void triggerBrowserActionPopup();
+    void triggerPageActionPopup();
+
 private:
     QVariantMap _manifest;
     

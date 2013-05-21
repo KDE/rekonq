@@ -40,6 +40,7 @@
 // Local Includes
 #include "adblockmanager.h"
 #include "bookmarkmanager.h"
+#include "extensionmanager.h"
 #include "iconmanager.h"
 
 #include "adblockwidget.h"
@@ -86,6 +87,21 @@ IconButton::IconButton(QWidget *parent)
     setCursor(Qt::ArrowCursor);
 
     setContextMenuPolicy(Qt::PreventContextMenu);
+}
+
+
+IconButton::IconButton(QAction *defaultAction, QWidget *parent)
+    : QToolButton(parent)
+{
+    setToolButtonStyle(Qt::ToolButtonIconOnly);
+    setStyleSheet("IconButton { background-color:transparent; border: none; padding: 0px}");
+    setCursor(Qt::ArrowCursor);
+
+    setContextMenuPolicy(Qt::PreventContextMenu);
+    
+    setDefaultAction(defaultAction);
+    connect(this, SIGNAL(clicked(QPoint)), defaultAction, SIGNAL(triggered()));
+
 }
 
 
@@ -439,6 +455,19 @@ void UrlBar::updateRightIcons()
     {
         IconButton *bt = addRightIcon(UrlBar::AdBlock);
         connect(bt, SIGNAL(clicked(QPoint)), this, SLOT(manageAdBlock(QPoint)));
+    }
+    
+    QList<QAction *> pal = ExtensionManager::self()->pageActionList();
+    Q_FOREACH(QAction *ac, pal)
+    {
+        IconButton *b = new IconButton(ac, this);
+        
+        _rightIconsList << b;
+
+        int iconsCount = _rightIconsList.count();
+        updateRightIconPosition(b, iconsCount);
+
+        b->show();
     }
 
     // we need to update urlbar after the right icon settings

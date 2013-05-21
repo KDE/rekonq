@@ -120,7 +120,7 @@ void Extension::init()
         if (popupAction.isNull())
             connect(_browserAction, SIGNAL(triggered()), this, SLOT(triggerExtension()));
         else
-            connect(_browserAction, SIGNAL(triggered()), this, SLOT(triggerPopup()));
+            connect(_browserAction, SIGNAL(triggered()), this, SLOT(triggerBrowserActionPopup()));
     }
 
     // Page Actions
@@ -144,7 +144,11 @@ void Extension::init()
         QString title = pageActionMap["default_title"].toString();
 
         _pageAction = new KAction(icon, title, this);
-        connect(_pageAction, SIGNAL(triggered()), this, SLOT(triggerExtension()));
+        QVariant popupAction = pageActionMap["default_popup"];
+        if (popupAction.isNull())
+            connect(_pageAction, SIGNAL(triggered()), this, SLOT(triggerExtension()));
+        else
+            connect(_pageAction, SIGNAL(triggered()), this, SLOT(triggerPageActionPopup()));
     }
 }
     
@@ -191,7 +195,7 @@ void Extension::triggerExtension()
 }
 
 
-void Extension::triggerPopup()
+void Extension::triggerBrowserActionPopup()
 {
     if (!isEnabled())
         return;
@@ -202,7 +206,27 @@ void Extension::triggerPopup()
 
     KUrl u = KUrl(_extensionPath + _id + '/' + popupFile.toString());
     kDebug() << "Url: " << u;
+    launchPopup(u);
+}
 
+
+void Extension::triggerPageActionPopup()
+{
+    if (!isEnabled())
+        return;
+    
+    QVariant pageActionVar = _manifest["page_action"];
+    QVariantMap pageActionMap = pageActionVar.toMap();
+    QVariant popupFile = pageActionMap["default_popup"];
+
+    KUrl u = KUrl(_extensionPath + _id + '/' + popupFile.toString());
+    kDebug() << "Url: " << u;
+    launchPopup(u);    
+}
+
+
+void Extension::launchPopup(const KUrl &u)
+{
     ExtensionPopup *popup = new ExtensionPopup(u);
-    popup->showAt(QCursor::pos());
+    popup->showAt(QCursor::pos());    
 }
