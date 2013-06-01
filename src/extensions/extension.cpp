@@ -191,7 +191,13 @@ void Extension::triggerExtension()
     if (!isEnabled())
         return;
 
-    kDebug() << "CIAO CIAO";    
+    QVariant backgroundVar = _manifest["background"];
+    QVariantMap backgroundMap = backgroundVar.toMap();
+    
+    bool isPersistent = backgroundMap["persistent"].toBool();
+    QStringList scripts = backgroundMap["scripts"].toStringList();
+    kDebug() << "isPersistent: " << isPersistent;
+    kDebug() << "scripts: " << scripts;
 }
 
 

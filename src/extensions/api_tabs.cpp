@@ -98,7 +98,9 @@ void Tabs::captureVisibleTab(int windowId /* default is current */, const QVaria
 QVariantMap Tabs::create(QVariantMap createProperties)
 {
     RekonqWindow *window = Application::instance()->rekonqWindow();
-
+    KUrl urlToLoad;
+    Rekonq::OpenType openType = Rekonq::NewTab;
+    
     if (createProperties.contains("windowId")) 
     {
         window = windowFor(createProperties["windowId"].toInt());
@@ -106,9 +108,9 @@ QVariantMap Tabs::create(QVariantMap createProperties)
             return QVariantMap();
     }
 
-//     bool focused = !ReKonfig::openNewTabsInBackground();
-//     if (createProperties.contains("selected"))
-//         focused = createProperties["selected"].toBool();
+    if (createProperties.contains("selected") && createProperties["selected"].toBool())
+        openType = Rekonq::NewFocusedTab;
+    
 // 
 //     WebWindow *tab = window->tabWidget()->newWebWindow(focused);
 // 
@@ -119,13 +121,13 @@ QVariantMap Tabs::create(QVariantMap createProperties)
 //         window->tabWidget()->moveTab(original, index);
 //     }
 // 
-//     if (createProperties.contains("url")) 
-//     {
-//         KUrl url = createProperties["url"].toString();
-//         
-//         // TODO what's the best way to do this?
-//     }
-// 
+    if (createProperties.contains("url")) 
+    {
+        urlToLoad = KUrl( createProperties["url"].toString() );
+    }
+    
+    window->loadUrl(urlToLoad, openType);
+
 //     return get(tab->id());
 
     return QVariantMap();

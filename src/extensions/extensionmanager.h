@@ -75,13 +75,14 @@ public:
     QList<QAction *> browserActionList();
     QList<QAction *> pageActionList();
 
-    void addExtensionCapabilitiesToFrame(QWebFrame *);
-
     /**
      * Create an Extension object pointer, load the
      * extension identified by id and add it into ExtensionMap
      */
     Extension* addExtension(const QString& extPath, const QString& id, bool enabled);
+
+public Q_SLOTS:
+    void addExtensionCapabilitiesToFrame(QWebFrame *);
 
 private:
     explicit ExtensionManager(QObject *parent = 0);    

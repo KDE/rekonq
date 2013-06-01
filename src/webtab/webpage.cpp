@@ -40,6 +40,7 @@
 // Local Includes
 #include "adblockmanager.h"
 #include "downloadmanager.h"
+#include "extensionmanager.h"
 #include "historymanager.h"
 #include "iconmanager.h"
 
@@ -135,6 +136,9 @@ WebPage::WebPage(bool isPrivateBrowsing, QWidget *parent)
     setForwardUnsupportedContent(true);
     connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(handleUnsupportedContent(QNetworkReply*)));
 
+    // extension manager
+    connect(this, SIGNAL(frameCreated(QWebFrame *)), ExtensionManager::self(), SLOT(addExtensionCapabilitiesToFrame(QWebFrame *)));
+    
     if (isPrivateBrowsing)
     {
         // NOTE:
@@ -180,7 +184,7 @@ WebPage::WebPage(bool isPrivateBrowsing, QWidget *parent)
     connect(this, SIGNAL(frameCreated(QWebFrame*)), AdBlockManager::self(), SLOT(applyHidingRules(QWebFrame*)));
     
     // protocol handler signals
-    connect(&_protHandler, SIGNAL(downloadUrl(KUrl)), this, SLOT(downloadUrl(KUrl)));
+    connect(&_protHandler, SIGNAL(downloadUrl(KUrl)), this, SLOT(downloadUrl(KUrl)));    
 }
 
 
@@ -595,12 +599,17 @@ void WebPage::loadFinished(bool ok)
 
     // KWallet Integration
     QStringList list = ReKonfig::walletBlackList();
-    if (wallet()
+    if ( wallet()
+            && mainFrame()
             && !list.contains(mainFrame()->url().toString())
        )
     {
         wallet()->fillFormData(mainFrame());
     }
+    
+    // NOTE: Is this really needed? To let it actually work, yes.
+    // But I'm not sure we cannot achieve this in a more automatic way...
+    ExtensionManager::self()->addExtensionCapabilitiesToFrame(mainFrame());
 }
 
 

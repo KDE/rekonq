@@ -88,7 +88,7 @@ void ExtensionManager::initExtensions()
         KConfigGroup extGroup(_extensionConfig, idString);
         QString extPath = extGroup.readEntry("path", QString());
         bool enabled = extGroup.readEntry("enabled", false);
-        Extension *ext = addExtension(extPath, idString, enabled);
+        /* Extension *ext = */ addExtension(extPath, idString, enabled);
     }
 }
 
@@ -180,6 +180,8 @@ QList<QAction *> ExtensionManager::pageActionList()
 
 void ExtensionManager::addExtensionCapabilitiesToFrame(QWebFrame *frame)
 {
+    kDebug() << "ADDING EXTENSION CAPABILITIES TO: " << frame;
+    
     JSApi *apiObj = new JSApi;
     frame->addToJavaScriptWindowObject("chrome", apiObj);
 }
