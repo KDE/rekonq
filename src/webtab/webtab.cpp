@@ -434,6 +434,11 @@ void WebTab::zoomIn()
 
     view()->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
 
+    // set zoom factor
+    KSharedConfig::Ptr config = KGlobal::config();
+    KConfigGroup group(config, "Zoom");
+    group.writeEntry(url().host(), m_zoomFactor);
+
     emit infoToShow(i18n("Zooming: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
 }
 
@@ -449,6 +454,11 @@ void WebTab::zoomOut()
     m_zoomFactor--;
     view()->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
 
+    // set zoom factor
+    KSharedConfig::Ptr config = KGlobal::config();
+    KConfigGroup group(config, "Zoom");
+    group.writeEntry(url().host(), m_zoomFactor);
+
     emit infoToShow(i18n("Zooming: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
 }
 
@@ -457,6 +467,11 @@ void WebTab::zoomDefault()
 {
     m_zoomFactor = 10;
     view()->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
+
+    // set zoom factor
+    KSharedConfig::Ptr config = KGlobal::config();
+    KConfigGroup group(config, "Zoom");
+    group.writeEntry(url().host(), m_zoomFactor);
 
     emit infoToShow(i18n("Default zoom: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
 }
