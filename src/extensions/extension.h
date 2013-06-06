@@ -36,6 +36,9 @@
 // Qt Includes
 #include <QObject>
 
+// Forward Declarations
+class ExtensionPage;
+
 
 class REKONQ_TESTS_EXPORT Extension : public QObject
 {
@@ -76,11 +79,15 @@ private:
     
     QString _extensionPath;
     QString _id;
+
+    QStringList _backgroundScriptList;
     
     KAction *_browserAction;
     KAction *_pageAction;
 
     bool _enabled;
+    
+    ExtensionPage *_page;
 };
 
 

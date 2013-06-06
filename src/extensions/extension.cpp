@@ -30,6 +30,7 @@
 
 // Local Includes
 #include "extensionpopup.h"
+#include "extensionpage.h"
 
 // KDE Includes
 #include <KStandardDirs>
@@ -52,6 +53,7 @@ Extension::Extension(const QString &extPath, const QString &id,  bool enabled, Q
     , _browserAction(0)
     , _pageAction(0)
     , _enabled(enabled)
+    , _page(0)
 {
 }
 
@@ -94,6 +96,8 @@ bool Extension::load()
 
 void Extension::init()
 {
+    _page = new ExtensionPage(this);
+    
     // Browser Actions
     QVariant browserActionVar = _manifest["browser_action"];
     if (!browserActionVar.isNull())
@@ -150,6 +154,24 @@ void Extension::init()
         else
             connect(_pageAction, SIGNAL(triggered()), this, SLOT(triggerPageActionPopup()));
     }
+    
+    // Background Actions
+    QVariant backgroundVar = _manifest["background"];
+    QVariantMap backgroundMap = backgroundVar.toMap();
+    
+    bool isPersistent = backgroundMap["persistent"].toBool();
+    _backgroundScriptList = backgroundMap["scripts"].toStringList();
+    kDebug() << "isPersistent: " << isPersistent;
+    kDebug() << "scripts: " << _backgroundScriptList;
+    if (isPersistent)
+    {
+        Q_FOREACH(const QString & script, _backgroundScriptList)
+        {
+            QString scriptPath = _extensionPath + script;
+            kDebug() << "scriptPath: " << scriptPath;
+            _page->load( KUrl(scriptPath) );
+        }
+    }
 }
     
 
@@ -191,13 +213,7 @@ void Extension::triggerExtension()
     if (!isEnabled())
         return;
 
-    QVariant backgroundVar = _manifest["background"];
-    QVariantMap backgroundMap = backgroundVar.toMap();
-    
-    bool isPersistent = backgroundMap["persistent"].toBool();
-    QStringList scripts = backgroundMap["scripts"].toStringList();
-    kDebug() << "isPersistent: " << isPersistent;
-    kDebug() << "scripts: " << scripts;
+
 }
 
 

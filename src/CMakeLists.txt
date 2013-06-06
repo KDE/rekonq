@@ -44,6 +44,7 @@ set(rekonq_KDEINIT_SRCS
     extensions/api_tabs.cpp
     extensions/api_windows.cpp
     extensions/extension.cpp
+    extensions/extensionpage.cpp
     extensions/extensionpopup.cpp
     extensions/extensionmanager.cpp
     extensions/extensionwidget.cpp
