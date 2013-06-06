@@ -721,7 +721,8 @@ QString WebPage::errorPage(QNetworkReply *reply)
         html.replace(QL1S("$DEFAULT_PATH"), dataPath);
         html.replace(QL1S("$PAGE_TITLE"), title);
         html.replace(QL1S("$MAIN_CONTENT"), msg);
-
+        html.replace(QL1S("$GENERAL_FONT"), QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont));
+        
         return html;
     }
 
@@ -767,7 +768,8 @@ QString WebPage::errorPage(QNetworkReply *reply)
     html.replace(QL1S("$DEFAULT_PATH"), dataPath);
     html.replace(QL1S("$PAGE_TITLE"), title);
     html.replace(QL1S("$MAIN_CONTENT"), msg);
-
+    html.replace(QL1S("$GENERAL_FONT"), QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont));
+        
     return html;
 }
 

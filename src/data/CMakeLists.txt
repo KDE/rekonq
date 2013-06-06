@@ -13,13 +13,6 @@ INSTALL(
     DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
 )
 
-# fonts files
-INSTALL(
-    FILES
-    Nunito-Regular.ttf
-    DESTINATION ${DATA_INSTALL_DIR}/rekonq/fonts
-)
-
 # default bookmarks
 INSTALL(
     FILES

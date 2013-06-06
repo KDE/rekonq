@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2013 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2010 by Matthieu Gicquel <matgic78 at gmail dot com>
 *
 *
@@ -86,6 +86,7 @@ NewTabPage::NewTabPage(QWebFrame *frame)
     {
         m_html = file.readAll();
         m_html.replace(QL1S("$DEFAULT_PATH"), dataPath);
+        m_html.replace(QL1S("$GENERAL_FONT"), QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont));
     }
 }
 
@@ -1024,7 +1025,8 @@ void NewTabPage::initJS()
     dataPath.remove(QL1S("/htmls/home.html"));
 
     includes.replace(QL1S("$DEFAULT_PATH"), dataPath);
-
+    includes.replace(QL1S("$GENERAL_FONT"), QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont));
+        
     oldHTML.replace(QL1S("<head>"), includes);
 
     QString javascript;

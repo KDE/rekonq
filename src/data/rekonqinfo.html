@@ -10,6 +10,7 @@ about (prepend a $ to actually use them):
 DEFAULT_PATH = rekonq default installation files path
 PAGE_TITLE = page title
 MAIN_CONTENT = page main content
+GENERAL_FONT = general font family
 ...
 
 -->
@@ -27,18 +28,12 @@ html{
     padding:0;
 }
 
-@font-face {
-    font-family: 'Nunito';
-    src: url($DEFAULT_PATH/fonts/Nunito-Regular.ttf);
-    font-weight: normal;
-    font-style: normal;
-}
-
 body{
     background: url($DEFAULT_PATH/pics/background.png) repeat-y center #bbb;
     margin:0;
     padding:0;
-    font-family: 'Nunito', sans-serif;
+    font-family: $GENERAL_FONT;
+    font-weight: 500;
     font-size: 0.9em;
 }
 

@@ -8,6 +8,7 @@ To let it work you need to set also some variables
 about (prepend a $ to actually use them):
 
 DEFAULT_PATH = rekonq default installation files path
+GENERAL_FONT = general font family
 ...
 
 -->
@@ -23,20 +24,14 @@ DEFAULT_PATH = rekonq default installation files path
 /* -------------------------------------------------------- */
 /* generic styles */
 
-@font-face {
-    font-family: 'Nunito';
-    src: url($DEFAULT_PATH/fonts/Nunito-Regular.ttf);
-    font-weight: normal;
-    font-style: normal;
-}
-
 html {
     height:100%;
 }
 
 body {
     background: url($DEFAULT_PATH/pics/background.png) repeat-y center #fff;
-    font-family: 'Nunito', sans-serif;
+    font-family: $GENERAL_FONT;
+    font-weight: 500;
     font-size: 0.9em;
 }
 
@@ -65,7 +60,7 @@ a:hover {
 
 input {
     min-width: 180px;
-    font-family: 'Nunito', sans-serif;
+    font-family: $GENERAL_FONT;
     font-size: 0.8em;
 }
 
