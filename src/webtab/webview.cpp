@@ -151,6 +151,20 @@ void WebView::load(const QNetworkRequest &req, QNetworkAccessManager::Operation 
 }
 
 
+void WebView::reload()
+{
+    // This is needed to reload empty url, eg when network is down and you
+    // tried to load an URL.
+    if (url().isEmpty())
+    {
+        load(page()->loadingUrl());
+        return;
+    }
+
+    KWebView::reload();
+}
+
+
 void WebView::loadStarted()
 {
     hideAccessKeys();

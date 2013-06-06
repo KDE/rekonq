@@ -76,6 +76,9 @@ public:
               QNetworkAccessManager::Operation op = QNetworkAccessManager::GetOperation,
               const QByteArray & body = QByteArray());
 
+public Q_SLOTS:
+    void reload();
+    
 protected:
     bool popupSpellMenu(QContextMenuEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
@@ -130,17 +133,17 @@ private Q_SLOTS:
 
     void guessHoveredLink(QPoint);
 
+private:
+    bool checkForAccessKey(QKeyEvent *event);
+    void showAccessKeys();
+    void makeAccessKeyLabel(const QChar &accessKey, const QWebElement &element);
+
 Q_SIGNALS:
     void loadUrl(const KUrl &, const Rekonq::OpenType &);
 
     void zoomChanged(int);
     void openPreviousInHistory();
     void openNextInHistory();
-
-private:
-    bool checkForAccessKey(QKeyEvent *event);
-    void showAccessKeys();
-    void makeAccessKeyLabel(const QChar &accessKey, const QWebElement &element);
 
 private:
     QPoint m_clickPos;

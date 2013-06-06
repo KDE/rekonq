@@ -179,6 +179,10 @@ void UrlBar::setQUrl(const QUrl& url)
     if (url.scheme() == QL1S("rekonq"))
         return;
 
+    // we don't set empty url
+    if (url.isEmpty())
+        return;
+    
     clearFocus();
     
     // Workaround for KLineEdit bug: incorrectly displaying
@@ -187,6 +191,7 @@ void UrlBar::setQUrl(const QUrl& url)
     const QString humanReadableUrl = QString::fromUtf8(
         QByteArray::fromPercentEncoding(urlTextData).constData()
     );
+    
     // End workaround
     setText(humanReadableUrl);
 
@@ -204,6 +209,7 @@ void UrlBar::loadRequestedUrl(const KUrl& url, Rekonq::OpenType type)
     const QString humanReadableUrl = QString::fromUtf8(
         QByteArray::fromPercentEncoding(urlTextData).constData()
     );
+    
     // End workaround
     setText(humanReadableUrl);
     
