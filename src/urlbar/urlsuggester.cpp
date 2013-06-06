@@ -78,7 +78,8 @@ UrlSuggester::UrlSuggester(const QString &typedUrl)
     if (_browseRegexp.isEmpty())
     {
         QString protocol = QString("^(%1)").arg(KProtocolInfo::protocols().join("|"));
-
+        protocol += QL1S("|javascript");
+        
         QString localhost = QL1S("^localhost");
 
         QString local = QL1S("^/");

@@ -125,7 +125,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             // 11 is length of 'javascript:'
             // fromPercentEncoding() is used to decode all the % encoded
             // characters to normal, so that it is treated as valid javascript
-            scriptSource = QUrl::fromPercentEncoding(_url.url().mid(11).toAscii());
+            scriptSource = QUrl::fromPercentEncoding(_url.url().mid(11).toUtf8());
             if (scriptSource.isEmpty())
                 return false;
         }

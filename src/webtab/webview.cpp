@@ -141,6 +141,7 @@ void WebView::load(const QNetworkRequest &req, QNetworkAccessManager::Operation 
 {
     QNetworkRequest request = req;
     const QUrl &reqUrl = request.url();
+
     if (reqUrl.host() == url().host())
     {
         request.setRawHeader(QByteArray("Referer"), url().toEncoded());
