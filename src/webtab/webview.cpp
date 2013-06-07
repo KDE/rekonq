@@ -337,7 +337,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     {
         // send by mail: page url
         sendByMailAction->setData(page()->currentFrame()->url());
-        sendByMailAction->setText(i18n("Share page url"));
+        sendByMailAction->setText(i18n("Share page URL"));
 
         // navigation
         QWebHistory *history = page()->history();

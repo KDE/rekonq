@@ -75,7 +75,7 @@ AdBlockWidget::AdBlockWidget(const QUrl &url, QWidget *parent)
     }
 
     // Checkbox
-    _chBox->setText(i18n("Enable adblock for this site"));
+    _chBox->setText(i18n("Enable AdBlock for this site"));
     _chBox->setChecked(_isAdblockEnabledHere);
 
     layout->addWidget(title);

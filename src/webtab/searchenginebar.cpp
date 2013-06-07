@@ -58,7 +58,7 @@ SearchEngineBar::SearchEngineBar(QWidget *parent)
 
     setCloseButtonVisible(false);
 
-    setText(i18n("You don't have a default search engine set. Without it, rekonq will not show proper url suggestions."));
+    setText(i18n("You do not have a default search engine set. Without it, rekonq will not show proper URL suggestions."));
 
     KAction *acceptAction = new KAction(i18n("Set it"), this);
     connect(acceptAction, SIGNAL(triggered(bool)), this, SIGNAL(accepted()));

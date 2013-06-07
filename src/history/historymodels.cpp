@@ -155,9 +155,9 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
         int visitCount = item.visitCount;
         tooltip += QL1S("<center> <b>") + item.url + QL1S("</b> </center>");
         tooltip += QL1S("<hr/>");
-        tooltip += i18n("First Visit: ") + firstVisit + QL1S("<br/>");
-        tooltip += i18n("Last Visit: ") + lastVisit + QL1S("<br/>");
-        tooltip += i18n("Number of Visits: ") + QString::number(visitCount);
+        tooltip += i18n("First Visit: %1", firstVisit) + QL1S("<br/>");
+        tooltip += i18n("Last Visit: %1", lastVisit) + QL1S("<br/>");
+        tooltip += i18n("Number of Visits: %1", QString::number(visitCount));
 
         return tooltip;
     }

@@ -88,7 +88,7 @@ void PrivacyWidget::reload()
     }
     else
     {
-        QString str = i18n("Javascript is NOT enabled, cannot change these settings");
+        QString str = i18n("Javascript is not enabled, cannot change these settings");
         kcfg_javascriptCanOpenWindows->setToolTip(str);
         kcfg_javascriptCanAccessClipboard->setToolTip(str);
     }

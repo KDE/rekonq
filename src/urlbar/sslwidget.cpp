@@ -85,7 +85,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     label->setWordWrap(true);
     if (cert.isNull())
     {
-        label->setText(i18n("Warning: this site is NOT carrying a certificate."));
+        label->setText(i18n("Warning: this site is not carrying a certificate."));
         imageLabel->setPixmap(KIcon("security-low").pixmap(c_dim));
         layout->addWidget(label, rows++, 1);
     }
@@ -138,7 +138,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
     {
         label = new QLabel(this);
         label->setWordWrap(true);
-        label->setText(i18n("Your connection to %1 is NOT encrypted.\n", m_url.host()));
+        label->setText(i18n("Your connection to %1 is not encrypted.\n", m_url.host()));
         layout->addWidget(label, rows++ , 1);
 
         imageLabel->setPixmap(KIcon("security-low").pixmap(c_dim));

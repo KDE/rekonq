@@ -150,7 +150,7 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
         QLabel *tagLabel = new QLabel(this);
         tagLabel->setText(i18n("Tags:"));
         tagLabel->setAlignment(Qt::AlignLeft);
-        m_tagLine->setPlaceholderText(i18n("add tags(comma separated)"));
+        m_tagLine->setPlaceholderText(i18n("add tags (comma separated)"));
 
 
         QList<Nepomuk2::Tag> tagList = Nepomuk2::Tag::allTags();

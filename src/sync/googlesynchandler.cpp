@@ -83,12 +83,12 @@ void GoogleSyncHandler::initialLoadAndCheck()
 
     if (ReKonfig::syncHistory())
     {
-        emit syncStatus(Rekonq::History, false, i18n("Not supported!"));
+        emit syncStatus(Rekonq::History, false, i18n("Not supported"));
     }
 
     if (ReKonfig::syncHistory())
     {
-        emit syncStatus(Rekonq::Passwords, false, i18n("Not supported!"));
+        emit syncStatus(Rekonq::Passwords, false, i18n("Not supported"));
     }
 }
 
@@ -111,7 +111,7 @@ bool GoogleSyncHandler::syncRelativeEnabled(bool check)
 void GoogleSyncHandler::syncHistory()
 {
     kDebug() << "Syncing history not supported!";
-    emit syncStatus(Rekonq::History, false, i18n("Syncing history not supported!"));
+    emit syncStatus(Rekonq::History, false, i18n("Syncing history not supported"));
     emit syncHistoryFinished(false);
 }
 
@@ -119,7 +119,7 @@ void GoogleSyncHandler::syncHistory()
 void GoogleSyncHandler::syncPasswords()
 {
     kDebug() << "Syncing passwords not supported!";
-    emit syncStatus(Rekonq::Passwords, false, i18n("Syncing passwords not supported!"));
+    emit syncStatus(Rekonq::Passwords, false, i18n("Syncing passwords not supported"));
     emit syncPasswordsFinished(false);
 }
 
@@ -141,7 +141,7 @@ void GoogleSyncHandler::startLogin()
     if (ReKonfig::syncUser().isEmpty() || ReKonfig::syncPass().isEmpty())
     {
         kDebug() << "No username or password!";
-        emit syncStatus(Rekonq::Bookmarks, false, i18n("No username or password!"));
+        emit syncStatus(Rekonq::Bookmarks, false, i18n("No username or password"));
         emit syncBookmarksFinished(false);
         return;
     }
@@ -161,7 +161,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
     if (!ok)
     {
         kDebug() << "Error loading: " << _webPage.mainFrame()->url();
-        emit syncStatus(Rekonq::Bookmarks, false, i18n("Error loading: " + _webPage.mainFrame()->url().toEncoded()));
+        emit syncStatus(Rekonq::Bookmarks, false, i18n("Error loading: %1", _webPage.mainFrame()->url().toEncoded()));
 
         _isSyncing = false;
         return;
@@ -201,7 +201,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
     }
     else if (path == QL1S("/ServiceLoginAuth") )
     {
-        emit syncStatus(Rekonq::Bookmarks, false, i18n("Login failed!"));
+        emit syncStatus(Rekonq::Bookmarks, false, i18n("Login failed"));
         _isSyncing = false;
     }
     else if (path == QL1S("/bookmarks/mark") )
@@ -260,7 +260,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
     else if (path == QL1S("/Logout") )
     {
         //Session finished
-        emit syncStatus(Rekonq::Bookmarks, true, i18n("Done!"));
+        emit syncStatus(Rekonq::Bookmarks, true, i18n("Done"));
         emit syncBookmarksFinished(true);
         _isSyncing = false;
     }
@@ -299,7 +299,7 @@ void GoogleSyncHandler::fetchingBookmarksFinished()
             {
                 //Add bookmark
                 kDebug() << "Add bookmark";
-                emit syncStatus(Rekonq::Bookmarks, true, i18n("Adding bookmark "));
+                emit syncStatus(Rekonq::Bookmarks, true, i18n("Adding bookmark"));
                 root.addBookmark(title.isEmpty() ? url : title, KUrl(url));
                 manager->manager()->emitChanged(root);
             }

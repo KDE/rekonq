@@ -576,7 +576,7 @@ IconButton *UrlBar::addRightIcon(UrlBar::icon ic)
         else
         {
             rightIcon->setIcon(KIcon("preferences-web-browser-adblock").pixmap(32, 32, QIcon::Disabled));
-            rightIcon->setToolTip(i18n("AdBlock is NOT enabled on this site"));
+            rightIcon->setToolTip(i18n("AdBlock is not enabled on this site"));
         }
         break;
     }

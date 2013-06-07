@@ -699,7 +699,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
     // test to see if networking is enabled on the system
     if (Solid::Networking::status() != Solid::Networking::Connected)
     {
-        msg += QL1S("<h2>") + i18n("Network is NOT available") + QL1S("</h2>");
+        msg += QL1S("<h2>") + i18n("Network is not available") + QL1S("</h2>");
 
         QString faceIconPath = QString("file://") + KIconLoader::global()->iconPath("face-surprise" , -KIconLoader::SizeHuge, false);
         msg += QL1S("<table>");
@@ -743,21 +743,23 @@ QString WebPage::errorPage(QNetworkReply *reply)
     msg += QL1S("<p>");
     if (defaultEngine)
     {
-        msg += i18n("Ask your default search engine about:");
-        msg += QL1S(" <a href=\"") + SearchEngine::buildQuery(defaultEngine, urlString) + QL1S("\">");
-        msg += i18n("search with %1", defaultEngine->name());
-        msg += QL1S("</a>!<br />");
+        msg += i18n("Ask your default search engine about: "
+                    "<a href=\"%1\">search with %2</a>.<br />",
+                    SearchEngine::buildQuery(defaultEngine, urlString),
+                    defaultEngine->name());
     }
     else
     {
-        msg += i18n("You don't have a default search engine set. We won't suggest you one.");
+        msg += i18n("You do not have a default search engine set. We will not suggest you one.");
     }
     msg += QL1S("</p>");
 
     msg += QL1S("<p>");
-    msg += i18n("Consult a cached snapshot of the site: ");
-    msg += i18n("try checking the <a href=\"%1\">Wayback Machine</a>", QL1S("http://wayback.archive.org/web/*/") + urlString);
-    msg += i18n(" or the <a href=\"%1\">Google Cache</a>.", QL1S("http://google.com/search?q=cache:") + urlString);
+    msg += i18n("Consult a cached snapshot of the site: "
+                "try checking the <a href=\"%1\">Wayback Machine</a>"
+                " or the <a href=\"%2\">Google Cache</a>.",
+                QL1S("http://wayback.archive.org/web/*/") + urlString,
+                QL1S("http://google.com/search?q=cache:") + urlString);
     msg += QL1S("</p>");
     msg += QL1S("<h5>") + i18n("<a href='%1'>Try Again</a>", urlString) + QL1S("</h5>");
     msg += QL1S("</td></tr></table>");

@@ -777,7 +777,7 @@ void TabWidget::reloadAllTabs()
 void TabWidget::bookmarkAllTabs()
 {
     KBookmarkGroup rGroup = BookmarkManager::self()->rootGroup();
-    KBookmarkGroup folderGroup = rGroup.createNewFolder(i18n("Bookmarked tabs: ") + QDate::currentDate().toString());
+    KBookmarkGroup folderGroup = rGroup.createNewFolder(i18n("Bookmarked tabs: %1", QDate::currentDate().toString()));
     for (int i = 0; i < count(); ++i)
     {
         WebWindow *tab = webWindow(i);

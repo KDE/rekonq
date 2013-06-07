@@ -839,7 +839,7 @@ void WebWindow::viewPageSource()
 //         srcTab->page()->setIsOnRekonqPage(true);
 //         srcTab->setPart(pa, tmpUrl);
 //         srcTab->urlBar()->setQUrl(url.pathOrUrl());
-//         m_view->setTabText(m_view->currentIndex(), i18n("Source of: ") + url.prettyUrl());
+//         m_view->setTabText(m_view->currentIndex(), i18n("Source of: %1", url.prettyUrl()));
 //         updateHistoryActions();
 //     }
 

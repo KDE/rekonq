@@ -128,7 +128,7 @@ Nepomuk2::ResourceLinkDialog::ResourceLinkDialog(Nepomuk2::Resource &nfoResource
     connect(d->m_searchBox, SIGNAL(textChanged(QString)), this, SLOT(dynamicSearchingSlot()));
 
     d->m_resourceView = new QListView(mainWidget());
-    d->m_resourceView->setToolTip(i18n(" Double click to link resource "));
+    d->m_resourceView->setToolTip(i18n("Double click to link resource"));
     d->m_resourceModel = new Utils::SimpleResourceModel(this);
     d->m_resourceView->setModel(d->m_resourceModel);
 

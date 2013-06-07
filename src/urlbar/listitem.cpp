@@ -439,7 +439,7 @@ SearchListItem::SearchListItem(const UrlSuggestionItem &item, const QString &tex
 
     hLayout->addWidget(m_iconLabel);
     hLayout->addWidget(m_titleLabel);
-    hLayout->addWidget(new QLabel(i18n("Engines: "), this));
+    hLayout->addWidget(new QLabel(i18n("Engines:"), this));
     hLayout->addWidget(m_engineBar);
     hLayout->addWidget(new TypeIconLabel(item.type, this));
 

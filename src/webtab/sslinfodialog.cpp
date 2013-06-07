@@ -119,12 +119,12 @@ void SslInfoDialog::displayFromChain(int i)
     if (cert.isValid() && errors.isEmpty())
     {
         QStringList certInfo;
-        certInfo << i18n("The Certificate is Valid!");
+        certInfo << i18n("The certificate is valid");
         showCertificateInfo(cert, certInfo);
     }
     else
     {
-        errors.prepend(i18n("The certificate for this site is NOT valid for the following reasons:"));
+        errors.prepend(i18n("The certificate for this site is not valid for the following reasons:"));
         showCertificateInfo(cert, errors);
     }
 }

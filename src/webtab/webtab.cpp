@@ -423,7 +423,7 @@ void WebTab::zoomIn()
 {
     if (m_zoomFactor == 50)
     {
-        emit infoToShow(i18n("Max zoom reached: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
+        emit infoToShow(i18n("Max zoom reached: %1%", QString::number(m_zoomFactor * 10)));
         return;
     }
 
@@ -439,7 +439,7 @@ void WebTab::zoomIn()
     KConfigGroup group(config, "Zoom");
     group.writeEntry(url().host(), m_zoomFactor);
 
-    emit infoToShow(i18n("Zooming: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
+    emit infoToShow(i18n("Zooming: %1%", QString::number(m_zoomFactor * 10)));
 }
 
 
@@ -447,7 +447,7 @@ void WebTab::zoomOut()
 {
     if (m_zoomFactor == 1)
     {
-        emit infoToShow(i18n("Min zoom reached: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
+        emit infoToShow(i18n("Min zoom reached: %1%", QString::number(m_zoomFactor * 10)));
         return;
     }
 
@@ -459,7 +459,7 @@ void WebTab::zoomOut()
     KConfigGroup group(config, "Zoom");
     group.writeEntry(url().host(), m_zoomFactor);
 
-    emit infoToShow(i18n("Zooming: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
+    emit infoToShow(i18n("Zooming: %1%", QString::number(m_zoomFactor * 10)));
 }
 
 
@@ -473,7 +473,7 @@ void WebTab::zoomDefault()
     KConfigGroup group(config, "Zoom");
     group.writeEntry(url().host(), m_zoomFactor);
 
-    emit infoToShow(i18n("Default zoom: ") + QString::number(m_zoomFactor * 10) + QL1S("%"));
+    emit infoToShow(i18n("Default zoom: %1%", QString::number(m_zoomFactor * 10)));
 }
 
 

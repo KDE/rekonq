@@ -86,12 +86,12 @@ void OperaSyncHandler::initialLoadAndCheck()
 
     if (ReKonfig::syncHistory())
     {
-        emit syncStatus(Rekonq::History, false, i18n("Not supported!"));
+        emit syncStatus(Rekonq::History, false, i18n("Not supported"));
     }
 
     if (ReKonfig::syncHistory())
     {
-        emit syncStatus(Rekonq::Passwords, false, i18n("Not supported!"));
+        emit syncStatus(Rekonq::Passwords, false, i18n("Not supported"));
     }
 }
 
@@ -114,7 +114,7 @@ bool OperaSyncHandler::syncRelativeEnabled(bool check)
 void OperaSyncHandler::syncHistory()
 {
     kDebug() << "Syncing history not supported!";
-    emit syncStatus(Rekonq::History, false, i18n("Syncing history not supported!"));
+    emit syncStatus(Rekonq::History, false, i18n("Syncing history not supported"));
     emit syncHistoryFinished(false);
 }
 
@@ -122,7 +122,7 @@ void OperaSyncHandler::syncHistory()
 void OperaSyncHandler::syncPasswords()
 {
     kDebug() << "Syncing passwords not supported!";
-    emit syncStatus(Rekonq::Passwords, false, i18n("Syncing passwords not supported!"));
+    emit syncStatus(Rekonq::Passwords, false, i18n("Syncing passwords not supported"));
     emit syncPasswordsFinished(false);
 }
 
@@ -144,7 +144,7 @@ void OperaSyncHandler::startLogin()
     if (ReKonfig::syncUser().isEmpty() || ReKonfig::syncPass().isEmpty())
     {
         kDebug() << "No username or password!";
-        emit syncStatus(Rekonq::Bookmarks, false, i18n("No username or password!"));
+        emit syncStatus(Rekonq::Bookmarks, false, i18n("No username or password"));
         emit syncBookmarksFinished(false);
         return;
     }
@@ -169,7 +169,7 @@ void OperaSyncHandler::startLogin()
         if (_qoauth.error() != QOAuth::NoError)
         {
             kDebug() << "Error occurred while fetching request tokens. Error code is : " << _qoauth.error();
-            emit syncStatus(Rekonq::Bookmarks, false, i18n("OAuth : Error fetching request token."));
+            emit syncStatus(Rekonq::Bookmarks, false, i18n("OAuth: Error fetching request token"));
             _isSyncing = false;
             return;
         }
@@ -199,7 +199,7 @@ void OperaSyncHandler::loadFinished(bool ok)
     if (!ok)
     {
         kDebug() << "Error loading: " << _webPage.mainFrame()->url();
-        emit syncStatus(Rekonq::Bookmarks, false, i18n("Error loading: " + _webPage.mainFrame()->url().toEncoded()));
+        emit syncStatus(Rekonq::Bookmarks, false, i18n("Error loading: %1", _webPage.mainFrame()->url().toEncoded()));
 
         _isSyncing = false;
         return;
@@ -242,14 +242,14 @@ void OperaSyncHandler::loadFinished(bool ok)
             kDebug() << "OAuth verifier code is : " << verifier;
             authParams.insert("oauth_verifier", verifier);
 
-            emit syncStatus(Rekonq::Bookmarks, true, i18n("OAuth : Sending verification code."));
+            emit syncStatus(Rekonq::Bookmarks, true, i18n("OAuth: Sending verification code"));
             QOAuth::ParamMap resultParam = _qoauth.accessToken("https://auth.opera.com/service/oauth/access_token", QOAuth::POST,
                                            _requestToken, _requestTokenSecret, QOAuth::HMAC_SHA1, authParams);
 
             if (_qoauth.error() != QOAuth::NoError)
             {
                 kDebug() << "Error occurred while fetching access tokens. Error code is : " << _qoauth.error();
-                emit syncStatus(Rekonq::Bookmarks, false, i18n("OAuth : Error fetching access token."));
+                emit syncStatus(Rekonq::Bookmarks, false, i18n("OAuth: Error fetching access token"));
                 _isSyncing = false;
                 return;
             }
@@ -268,7 +268,7 @@ void OperaSyncHandler::loadFinished(bool ok)
         else if (_doLogin == false)
         {
             //Login failed
-            emit syncStatus(Rekonq::Bookmarks, false, i18n("Login failed!"));
+            emit syncStatus(Rekonq::Bookmarks, false, i18n("Login failed"));
             kDebug() << "Login failed!";
             _isSyncing = false;
         }
@@ -345,7 +345,7 @@ void OperaSyncHandler::fetchBookmarksResultSlot(KJob* job)
     if (_mode == RECEIVE_CHANGES)
     {
         handleResponse(responseList, root);
-        emit syncStatus(Rekonq::Bookmarks, true, i18n("Done!"));
+        emit syncStatus(Rekonq::Bookmarks, true, i18n("Done"));
 //        _isSyncing = false;
         _mode = SEND_CHANGES;
     }
@@ -910,7 +910,7 @@ void OperaSyncHandler::decreaseRequestCount()
 
     if (_requestCount <= 0)
     {
-        emit syncStatus(Rekonq::Bookmarks, true, i18n("Done!"));
+        emit syncStatus(Rekonq::Bookmarks, true, i18n("Done"));
         _isSyncing = false;
     }
 }
