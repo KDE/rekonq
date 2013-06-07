@@ -161,7 +161,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
     if (!ok)
     {
         kDebug() << "Error loading: " << _webPage.mainFrame()->url();
-        emit syncStatus(Rekonq::Bookmarks, false, i18n("Error loading: %1", _webPage.mainFrame()->url().toEncoded()));
+        emit syncStatus(Rekonq::Bookmarks, false, i18n("Error loading: %1", _webPage.mainFrame()->url().toString()));
 
         _isSyncing = false;
         return;
