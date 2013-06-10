@@ -33,7 +33,7 @@
       <item>
        <widget class="QCheckBox" name="kcfg_javaEnabled">
         <property name="text">
-         <string>Load java applets</string>
+         <string>Load Java applets</string>
         </property>
        </widget>
       </item>

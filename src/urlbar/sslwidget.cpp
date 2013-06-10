@@ -107,7 +107,7 @@ SSLWidget::SSLWidget(const QUrl &url, const WebSslInfo &info, QWidget *parent)
             }
             c += QL1S("</ul>");
 
-            label->setText(i18n("The certificate for this site is NOT valid, for the following reasons:\n%1.", c));
+            label->setText(i18n("The certificate for this site is not valid, for the following reasons:\n%1.", c));
             label->setTextFormat(Qt::RichText);
             imageLabel->setPixmap(KIcon("security-low").pixmap(c_dim));
         }

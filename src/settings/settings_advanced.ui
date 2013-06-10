@@ -40,7 +40,7 @@
       <item>
        <widget class="QPushButton" name="proxyButton">
         <property name="text">
-         <string>Change them!</string>
+         <string>Change them</string>
         </property>
         <property name="icon">
          <iconset theme="preferences-system-network">

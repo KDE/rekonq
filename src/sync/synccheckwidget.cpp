@@ -71,7 +71,7 @@ void SyncCheckWidget::initializePage()
     else
     {
         syncLabel->setText(i18n("No sync"));
-        hostLabel->setText(i18n("none"));
+        hostLabel->setText(i18nc("no host", "None"));
     }
 
     bkMsgLabel->setText(QString());

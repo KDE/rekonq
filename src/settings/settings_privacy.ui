@@ -14,20 +14,20 @@
    <item>
     <widget class="QGroupBox" name="groupBox_4">
      <property name="title">
-      <string>Javascript</string>
+      <string>JavaScript</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
        <widget class="QCheckBox" name="kcfg_javascriptCanOpenWindows">
         <property name="text">
-         <string>Let Javascript open new windows</string>
+         <string>Let JavaScript open new windows</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="kcfg_javascriptCanAccessClipboard">
         <property name="text">
-         <string>Let Javascript access clipboard</string>
+         <string>Let JavaScript access clipboard</string>
         </property>
        </widget>
       </item>
@@ -69,32 +69,32 @@
          <widget class="QComboBox" name="kcfg_expireHistory">
           <item>
            <property name="text">
-            <string>never</string>
+            <string>Never</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>every 3 months</string>
+            <string>Every 3 months</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>every month</string>
+            <string>Every month</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>every day</string>
+            <string>Every day</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>at application exit</string>
+            <string>At application exit</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>don't even store them</string>
+            <string>Do not even store them</string>
            </property>
           </item>
          </widget>

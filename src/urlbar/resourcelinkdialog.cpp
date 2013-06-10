@@ -225,7 +225,7 @@ void Nepomuk2::ResourceLinkDialog::unlinkResourceSlot()
 void Nepomuk2::ResourceLinkDialog::showContextMenu(const QPoint &pos)
 {
     d->m_removeResourceAction = new KAction(this);
-    d->m_removeResourceAction->setText(i18n("&Unlink "));
+    d->m_removeResourceAction->setText(i18n("&Unlink"));
     d->m_removeResourceAction->setIcon(KIcon("edit-delete"));
     connect(d->m_removeResourceAction, SIGNAL(triggered(bool)), this, SLOT(unlinkResourceSlot()));
 

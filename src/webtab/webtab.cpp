@@ -423,7 +423,7 @@ void WebTab::zoomIn()
 {
     if (m_zoomFactor == 50)
     {
-        emit infoToShow(i18n("Max zoom reached: %1%", QString::number(m_zoomFactor * 10)));
+        emit infoToShow(i18n("Maximum zoom reached: %1%", QString::number(m_zoomFactor * 10)));
         return;
     }
 
@@ -447,7 +447,7 @@ void WebTab::zoomOut()
 {
     if (m_zoomFactor == 1)
     {
-        emit infoToShow(i18n("Min zoom reached: %1%", QString::number(m_zoomFactor * 10)));
+        emit infoToShow(i18n("Minimum zoom reached: %1%", QString::number(m_zoomFactor * 10)));
         return;
     }
 
