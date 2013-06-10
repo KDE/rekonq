@@ -726,7 +726,39 @@ QString WebPage::errorPage(QNetworkReply *reply)
         return html;
     }
 
+    QString errString = reply->errorString().toLower();
+    if (errString.contains(QL1S("proxy")))
+    {
+        msg += QL1S("<h2>") + i18n("Oops... Proxy problems!") + QL1S("</h2>");
 
+        QString faceIconPath = QString("file://") + KIconLoader::global()->iconPath("face-surprise" , -KIconLoader::SizeHuge, false);
+        msg += QL1S("<table>");
+        msg += QL1S("<tr><td width=\"100px\">");
+        msg += QL1S("<img style=\"margin: 0 auto;\" src=\"") + faceIconPath + QL1S("\" />");
+        msg += QL1S("</td><td>");
+
+        msg += QL1S("<p><em>") + reply->errorString() + QL1S("</em></p>");
+        
+        msg += QL1S("<p>");
+
+        msg += i18n("It seems you are having problems with your <a href=\"%1\">proxy settings</a>. Try checking them, <br /><br />then <a href=\"%4\">try again</a>.<br />", QL1S("rekonq:settings/proxy"), urlString);
+
+        msg += QL1S("</p>");
+
+        msg += QL1S("</td></tr></table>");
+
+        // done. Replace variables and show it
+        QString html = QL1S(file.readAll());
+
+        html.replace(QL1S("$DEFAULT_PATH"), dataPath);
+        html.replace(QL1S("$PAGE_TITLE"), title);
+        html.replace(QL1S("$MAIN_CONTENT"), msg);
+        html.replace(QL1S("$GENERAL_FONT"), QWebSettings::globalSettings()->fontFamily(QWebSettings::StandardFont));
+        
+        return html;
+    }
+    
+    // general error page
     msg += QL1S("<h2>") + i18n("Oops! Cannot load <em>%1</em>", urlString) + QL1S("</h1>");
 
     QString faceIconPath = QString("file://") + KIconLoader::global()->iconPath("face-surprise" , -KIconLoader::SizeHuge, false);

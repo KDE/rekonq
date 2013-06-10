@@ -32,6 +32,7 @@
 
 // Local Includes
 #include "adblockmanager.h"
+#include "knetworkaccessmanager.h"
 
 // KDE Includes
 #include <KLocale>
@@ -113,7 +114,7 @@ QNetworkAccessManager *NetworkAccessManager::privateAccessManager()
 {
     if (s_privateAccessManager == 0)
     {
-        s_privateAccessManager = new QNetworkAccessManager();
+        s_privateAccessManager = new KNetworkAccessManager();
     }
     
     return s_privateAccessManager;

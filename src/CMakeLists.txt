@@ -99,6 +99,7 @@ set(rekonq_KDEINIT_SRCS
     webtab/networkaccessmanager.cpp
     webtab/previewselectorbar.cpp
     webtab/protocolhandler.cpp
+    webtab/knetworkaccessmanager.cpp
     webtab/searchenginebar.cpp
     webtab/sslinfodialog.cpp
     webtab/walletbar.cpp

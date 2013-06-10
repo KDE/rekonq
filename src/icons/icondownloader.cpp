@@ -28,8 +28,10 @@
 #include "icondownloader.h"
 #include "icondownloader.moc"
 
+// Local Includes
+#include "knetworkaccessmanager.h"
+
 // Qt Includes
-#include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QFile>
@@ -41,7 +43,7 @@ IconDownloader::IconDownloader(const KUrl &srcUrl, const KUrl &destUrl, QObject 
     , m_srcUrl(srcUrl)
     , m_destUrl(destUrl)
 {
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    KNetworkAccessManager *manager = new KNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
     manager->get(QNetworkRequest(srcUrl));
 }
