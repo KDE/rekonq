@@ -408,6 +408,12 @@
 <para>&rekonq; supports full-screening the webpage straight from the configuration menu button or through a keyboard shortcut (<keycombo>&Ctrl;&Shift;<keycap>F</keycap></keycombo>, by default). In the full screen view, the main toolbar will auto-hide and the web page will be displayed over your entire screen.
 </para>
 </chapter>
+<!--FIXME no slider any more
+Git commit 288ace1df39dbea40cae66d0b04bfdefcd6cec70 by Andrea Diamantini.
+Committed on 10/12/2012 at 02:09
+D  +0    -210  src/zoombar.cpp
+D  +0    -79   src/zoombar.h
+Zoom... sets 100% now
 <chapter id="zoom-slider"><title>Zoom slider</title>
 <para>
 <screenshot>
@@ -430,6 +436,7 @@
 <para>The zoom slider can be enabled (or disabled) with <keycombo>&Ctrl;<keycap>Y</keycap></keycombo> or with <guimenuitem>Zoom...</guimenuitem> from <guilabel>Tools</guilabel> menu.
 </para>
 </chapter>
+-->
 <chapter id="Config-rekonq">
 <title>Detailed &rekonq; configuration</title>
 
