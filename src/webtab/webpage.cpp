@@ -741,7 +741,7 @@ QString WebPage::errorPage(QNetworkReply *reply)
         
         msg += QL1S("<p>");
 
-        msg += i18n("It seems you are having problems with your <a href=\"%1\">proxy settings</a>. Try checking them, <br /><br />then <a href=\"%4\">try again</a>.<br />", QL1S("rekonq:settings/proxy"), urlString);
+        msg += i18n("It seems you are having problems with your <a href=\"%1\">proxy settings</a>. Try checking them, <br /><br />then <a href=\"%2\">try again</a>.<br />", QL1S("rekonq:settings/proxy"), urlString);
 
         msg += QL1S("</p>");
 
