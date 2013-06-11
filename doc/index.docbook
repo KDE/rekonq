@@ -895,7 +895,6 @@ Here a list of configurable points and explanation for it:
 </para>
 </sect1>
 <sect1 id="i-have-more-questions"><title>I have more questions!</title>
-<para>If you have &rekonq; installed, you can load up the <guilabel>Help</guilabel> document (just press <keycap>F1</keycap>) for more information.</para>
 
 <!--A user-generated manual is also available <ulink url="http://userbase.kde.org/Special:myLanguage/Rekonq/Manual">here</ulink>.-->
 <para><ulink url="http://forum.kde.org">&kde; Forums</ulink> is always a good place to ask user-specific questions.</para>
