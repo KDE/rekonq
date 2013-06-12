@@ -176,7 +176,7 @@ WebPage *WebView::page()
     WebPage *p = qobject_cast<WebPage *>(KWebView::page());
     if (!p)
     {
-        p = new WebPage(this, m_isPrivateBrowsing);
+        p = new WebPage(m_isPrivateBrowsing, this);
         setPage(p);
     }
     return p;

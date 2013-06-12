@@ -49,7 +49,7 @@ class REKONQ_TESTS_EXPORT WebPage : public KWebPage
     Q_OBJECT
 
 public:
-    explicit WebPage(QWidget *parent = 0, bool isPrivateBrowsing = false);
+    explicit WebPage(bool isPrivateBrowsing = false, QWidget *parent = 0);
     ~WebPage();
 
     void setWindow(QWidget *);

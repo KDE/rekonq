@@ -44,6 +44,7 @@
 // Qt includes
 #include <QStringBuilder>
 
+
 UserAgentInfo::UserAgentInfo()
 {
     m_providers = KServiceTypeTrader::self()->query("UserAgentStrings");

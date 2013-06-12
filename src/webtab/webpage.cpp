@@ -127,7 +127,7 @@ static void extractMimeType(const QNetworkReply* reply, QString& mimeType)
 // ---------------------------------------------------------------------------------
 
 
-WebPage::WebPage(QWidget *parent, bool isPrivateBrowsing)
+WebPage::WebPage(bool isPrivateBrowsing, QWidget *parent)
     : KWebPage(parent, KWalletIntegration)
     , _networkAnalyzer(false)
     , _isOnRekonqPage(false)
@@ -331,7 +331,10 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
     if (type == QWebPage::WebModalDialog)
         kDebug() << "Modal Dialog";
 
-    WebPage* p = new WebPage;
+    bool isPrivateBrowsing = settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled);
+
+    // private page links open private pages. See BUG: 320218
+    WebPage* p = new WebPage(isPrivateBrowsing);
     emit pageCreated(p);
     return p;
 }
