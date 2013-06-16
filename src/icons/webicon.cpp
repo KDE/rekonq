@@ -30,16 +30,25 @@
 
 // Local Includes
 #include "iconmanager.h"
+#include "icondownloader.h"
+
+#include "knetworkaccessmanager.h"
+
+// KDE Includes
+#include <KStandardDirs>
 
 // Qt Includes
 #include <QTimer>
 #include <QWebFrame>
+#include <QWebElement>
 
 
 WebIcon::WebIcon(const KUrl& url, QObject *parent)
     : QObject(parent)
     , m_url(url)
 {
+    m_page.setNetworkAccessManager(new KNetworkAccessManager);
+    
     m_page.settings()->setAttribute(QWebSettings::PluginsEnabled, false);
     m_page.settings()->setAttribute(QWebSettings::JavascriptEnabled, false);
     m_page.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
@@ -57,10 +66,50 @@ void WebIcon::load()
 
 void WebIcon::saveIcon(bool b)
 {
-    if (b)
+    if (!b)
     {
-        IconManager::self()->provideIcon(m_page.mainFrame(), m_url, false);
+        this->deleteLater();
+        return;
     }
 
-    this->deleteLater();
+    // the simplest way..
+    const QString rootUrlString = m_url.scheme() + QL1S("://") + m_url.host();
+
+    // find favicon url
+    KUrl faviconUrl(rootUrlString + QL1S("/favicon.ico"));
+
+
+    QWebElement root = m_page.mainFrame()->documentElement();
+    QWebElement e = root.findFirst(QL1S("link[rel~=\"icon\"]"));
+    QString relUrlString = e.attribute(QL1S("href"));
+    if (relUrlString.isEmpty())
+    {
+        e = root.findFirst(QL1S("link[rel~=\"shortcut icon\"]"));
+        relUrlString = e.attribute(QL1S("href"));
+    }
+
+    // remove eventual initial //
+    if (relUrlString.startsWith(QL1S("//")))
+    {
+        relUrlString.remove(0, 2);
+        relUrlString.prepend(QL1S("http://"));
+    }
+    
+    if (!relUrlString.isEmpty())
+    {
+        faviconUrl = KUrl(relUrlString);
+        
+        if (!faviconUrl.isValid())
+        {
+            
+            faviconUrl = KUrl(rootUrlString + QL1C('/') + relUrlString);
+        }
+    }
+    QString faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
+
+    // dest url
+    KUrl destUrl(faviconsDir + m_url.host());
+
+    // will autodelete itself when done
+    new IconDownloader(faviconUrl, destUrl, this);
 }

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2013 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -53,7 +53,7 @@ class KJob;
 class QActionGroup;
 
 
-class ListItem : public QWidget
+class REKONQ_TESTS_EXPORT ListItem : public QWidget
 {
     Q_OBJECT
 
@@ -91,7 +91,7 @@ protected:
 // -------------------------------------------------------------------------
 
 
-class TypeIconLabel : public QLabel
+class REKONQ_TESTS_EXPORT TypeIconLabel : public QLabel
 {
     Q_OBJECT
 
@@ -106,7 +106,7 @@ private:
 // -------------------------------------------------------------------------
 
 
-class IconLabel : public QLabel
+class REKONQ_TESTS_EXPORT IconLabel : public QLabel
 {
     Q_OBJECT
 
@@ -133,7 +133,7 @@ public:
 // -------------------------------------------------------------------------
 
 
-class DescriptionLabel : public QLabel
+class REKONQ_TESTS_EXPORT DescriptionLabel : public QLabel
 {
     Q_OBJECT
 
@@ -145,7 +145,7 @@ public:
 // -------------------------------------------------------------------------
 
 
-class EngineBar : public KToolBar
+class REKONQ_TESTS_EXPORT EngineBar : public KToolBar
 {
     Q_OBJECT
 
@@ -162,13 +162,14 @@ private Q_SLOTS:
 private:
     KAction *newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine);
     QActionGroup *m_engineGroup;
+    
 };
 
 
 // -------------------------------------------------------------------------
 
 
-class SearchListItem : public ListItem
+class REKONQ_TESTS_EXPORT SearchListItem : public ListItem
 {
     Q_OBJECT
 
@@ -194,7 +195,7 @@ private:
 // -------------------------------------------------------------------------
 
 
-class SuggestionListItem : public ListItem
+class REKONQ_TESTS_EXPORT SuggestionListItem : public ListItem
 {
     Q_OBJECT
 
@@ -210,7 +211,7 @@ private:
 // -------------------------------------------------------------------------
 
 
-class VisualSuggestionListItem : public ListItem
+class REKONQ_TESTS_EXPORT VisualSuggestionListItem : public ListItem
 {
     Q_OBJECT
 
@@ -226,7 +227,7 @@ private:
 // -------------------------------------------------------------------------
 
 
-class PreviewListItem : public ListItem
+class REKONQ_TESTS_EXPORT PreviewListItem : public ListItem
 {
     Q_OBJECT
 
@@ -238,7 +239,7 @@ public:
 // -------------------------------------------------------------------------
 
 
-class PreviewLabel : public QLabel
+class REKONQ_TESTS_EXPORT PreviewLabel : public QLabel
 {
     Q_OBJECT
 
@@ -249,7 +250,8 @@ public:
 
 // -------------------------------------------------------------------------
 
-class ImageLabel : public QLabel
+
+class REKONQ_TESTS_EXPORT ImageLabel : public QLabel
 {
     Q_OBJECT
 
@@ -269,7 +271,7 @@ private Q_SLOTS:
 // -------------------------------------------------------------------------
 
 
-class BrowseListItem : public ListItem
+class REKONQ_TESTS_EXPORT BrowseListItem : public ListItem
 {
     Q_OBJECT
 
@@ -281,7 +283,7 @@ public:
 //-------------------------------------------------------------------------------------------------
 
 
-class ListItemFactory
+class REKONQ_TESTS_EXPORT ListItemFactory
 {
 public:
     static ListItem *create(const UrlSuggestionItem &item, const QString &text, QWidget *parent);

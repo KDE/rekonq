@@ -53,20 +53,20 @@ public:
     static IconManager *self();
 
     KIcon iconForUrl(const KUrl &url);
+    
     QString iconPathForUrl(const KUrl &url);
-
-    void provideIcon(QWebFrame *mFrame, const KUrl &url, bool notify = true);
-
-    void downloadIconFromUrl(const KUrl &url);
 
     void clearIconCache();
 
     void saveDesktopIconForUrl(const KUrl &u);
 
+    // Engine ToolBar needed methods
+    void provideEngineFavicon(const KUrl &);
+    KIcon engineFavicon(const KUrl &);
+    
 private:
     IconManager(QObject *parent = 0);
 
-    bool existsIconForUrl(const KUrl &url);
     QString favIconForUrl(const KUrl &url);
 
     QString _faviconsDir;

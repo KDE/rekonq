@@ -30,7 +30,6 @@
 
 // Local Includes
 #include "application.h"
-#include "icondownloader.h"
 #include "webicon.h"
 
 // KDE Includes
@@ -42,9 +41,6 @@
 
 // Qt Includes
 #include <QDir>
-
-#include <QWebElement>
-#include <QWebFrame>
 #include <QWebSettings>
 
 
@@ -68,6 +64,9 @@ IconManager::IconManager(QObject *parent)
     : QObject(parent)
 {
     _faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
+    
+    // Use webkit icon database path
+    QWebSettings::setIconDatabasePath(_faviconsDir);
 }
 
 
@@ -100,66 +99,12 @@ KIcon IconManager::iconForUrl(const KUrl &url)
         return KIcon("folder");
     }
 
-    QString i = favIconForUrl(url);
-    if (!i.isEmpty())
-    {
-        return KIcon(QIcon(_faviconsDir + i));
-    }
+    QIcon icon = QWebSettings::iconForUrl(url);
+    if (!icon.isNull())
+        return KIcon(icon);
 
     // Not found icon. Return default one.
     return KIcon("text-html");
-}
-
-
-void IconManager::provideIcon(QWebFrame *mFrame, const KUrl &url, bool notify)
-{
-    // provide icons just for http/https sites
-    if (!url.scheme().startsWith(QL1S("http")))
-        return;
-
-    // do not load new icons in private browsing..
-    if (mFrame->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
-        return;
-
-    // check if icon exists
-    if (!favIconForUrl(url).isEmpty())
-        return;
-
-    // the simplest way..
-    const QString rootUrlString = url.scheme() + QL1S("://") + url.host();
-
-    // find favicon url
-    KUrl faviconUrl(rootUrlString + QL1S("/favicon.ico"));
-
-
-    QWebElement root = mFrame->documentElement();
-    QWebElement e = root.findFirst(QL1S("link[rel~=\"icon\"]"));
-    QString relUrlString = e.attribute(QL1S("href"));
-    if (relUrlString.isEmpty())
-    {
-        e = root.findFirst(QL1S("link[rel~=\"shortcut icon\"]"));
-        relUrlString = e.attribute(QL1S("href"));
-    }
-
-    if (!relUrlString.isEmpty())
-    {
-        faviconUrl = relUrlString.startsWith(QL1S("http"))
-                     ? KUrl(relUrlString)
-                     : KUrl(rootUrlString + QL1C('/') + relUrlString);
-    }
-
-    // dest url
-    KUrl destUrl(_faviconsDir + url.host());
-
-    IconDownloader *id = new IconDownloader(faviconUrl, destUrl, this);
-    if (notify)
-        connect(id, SIGNAL(iconReady()), mFrame, SIGNAL(iconChanged()));
-}
-
-
-void IconManager::downloadIconFromUrl(const KUrl &url)
-{
-    new WebIcon(url, this);
 }
 
 
@@ -171,6 +116,9 @@ void IconManager::clearIconCache()
     {
         d.remove(fav);
     }
+
+    // delete webkit icon cache
+    QWebSettings::clearIconDatabase();
 }
 
 
@@ -260,4 +208,21 @@ QString IconManager::favIconForUrl(const KUrl &url)
         return url.host() + QL1S(".png");
     else
         return QString();
+}
+
+
+void IconManager::provideEngineFavicon(const KUrl &url)
+{
+    // will autodelete itself when done
+    new WebIcon(url, this);
+}
+
+
+KIcon IconManager::engineFavicon(const KUrl &url)
+{
+    if (QFile::exists(_faviconsDir + url.host() + QL1S(".png")))
+        return KIcon(QIcon(_faviconsDir + url.host() + QL1S(".png")));
+
+    kDebug() << "NO ENGINE FAVICON";
+    return KIcon("text-html");
 }

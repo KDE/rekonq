@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2013 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -424,7 +424,6 @@ SearchListItem::SearchListItem(const UrlSuggestionItem &item, const QString &tex
     : ListItem(item, parent)
     , m_text(text)
 {
-    m_iconLabel = new IconLabel(item.url, this);
     m_titleLabel = new TextLabel(this);
     m_titleLabel->setEngineText(item.description, item.title);
 
@@ -437,11 +436,10 @@ SearchListItem::SearchListItem(const UrlSuggestionItem &item, const QString &tex
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
 
-    hLayout->addWidget(m_iconLabel);
+    hLayout->addWidget(new TypeIconLabel(item.type, this));
     hLayout->addWidget(m_titleLabel);
     hLayout->addWidget(new QLabel(i18n("Engines:"), this));
     hLayout->addWidget(m_engineBar);
-    hLayout->addWidget(new TypeIconLabel(item.type, this));
 
     setLayout(hLayout);
 
@@ -496,6 +494,19 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
     if (SearchEngine::defaultEngine().isNull())
         return;
 
+    static bool isFirstExecution = true;
+    if (isFirstExecution)
+    {
+        Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
+        {
+            QUrl u = engine->property("Query").toUrl();
+            KUrl url = KUrl(u.toString(QUrl::RemovePath | QUrl::RemoveQuery));
+            IconManager::self()->provideEngineFavicon(url);
+        }
+        
+        isFirstExecution = false;
+    }
+    
     m_engineGroup->addAction(newEngineAction(SearchEngine::defaultEngine(), selectedEngine));
     Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
     {
@@ -514,7 +525,7 @@ KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selected
     QUrl u = engine->property("Query").toUrl();
     KUrl url = KUrl(u.toString(QUrl::RemovePath | QUrl::RemoveQuery));
 
-    KAction *a = new KAction(IconManager::self()->iconForUrl(url), engine->name(), this);
+    KAction *a = new KAction(IconManager::self()->engineFavicon(url), engine->name(), this);
     a->setCheckable(true);
     if (engine->desktopEntryName() == selectedEngine->desktopEntryName()) a->setChecked(true);
     a->setData(engine->entryPath());
@@ -631,9 +642,8 @@ BrowseListItem::BrowseListItem(const UrlSuggestionItem &item, const QString &tex
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setSpacing(4);
 
-    hLayout->addWidget(new IconLabel(item.url, this));
-    hLayout->addWidget(new TextLabel(item.url, text, this));
     hLayout->addWidget(new TypeIconLabel(item.type, this));
+    hLayout->addWidget(new TextLabel(item.url, text, this));
 
     setLayout(hLayout);
 }

@@ -586,9 +586,6 @@ void WebPage::loadFinished(bool ok)
 {
     Q_UNUSED(ok);
 
-    // Provide site icon. Can this be moved to loadStarted??
-    IconManager::self()->provideIcon(mainFrame(), _loadingUrl);
-
     // KWallet Integration
     QStringList list = ReKonfig::walletBlackList();
     if (wallet()
