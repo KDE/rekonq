@@ -67,10 +67,9 @@ public:
 private:
     IconManager(QObject *parent = 0);
 
-    QString favIconForUrl(const KUrl &url);
-
     QString _faviconsDir;
-
+    QString _tempIconsDir;
+    
     static QWeakPointer<IconManager> s_iconManager;
 };
 

@@ -65,6 +65,7 @@ IconManager::IconManager(QObject *parent)
     : QObject(parent)
 {
     _faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
+    _tempIconsDir = KStandardDirs::locateLocal("tmp", "favicons/", true);
     
     // Use webkit icon database path
     QWebSettings::setIconDatabasePath(_faviconsDir);
@@ -190,28 +191,19 @@ QString IconManager::iconPathForUrl(const KUrl &url)
         return icon;
     }
 
-    QString i = favIconForUrl(url);
-    if (!i.isEmpty())
+    QIcon ic = QWebSettings::iconForUrl(url);
+    if (!ic.isNull())
     {
-        return QL1S("file://") + _faviconsDir + i;
+        QPixmap px = ic.pixmap(16, 16);
+        QString tempIconPath = _tempIconsDir + url.host() + QL1S(".png");
+        bool b = px.save(tempIconPath);
+        if (b)
+            return QL1S("file://") + tempIconPath;
     }
 
     // Not found icon. Return default one.
     QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/mimetypes/text-html.png");
     return icon;
-}
-
-
-QString IconManager::favIconForUrl(const KUrl &url)
-{
-    if (url.isLocalFile()
-            || !url.protocol().startsWith(QL1S("http")))
-        return QString();
-
-    if (QFile::exists(_faviconsDir + url.host() + QL1S(".png")))
-        return url.host() + QL1S(".png");
-    else
-        return QString();
 }
 
 

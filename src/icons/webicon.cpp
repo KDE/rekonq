@@ -100,11 +100,18 @@ void WebIcon::saveIcon(bool b)
         faviconUrl = KUrl(relUrlString);
         
         if (!faviconUrl.isValid())
-        {
-            
+        {            
             faviconUrl = KUrl(rootUrlString + QL1C('/') + relUrlString);
         }
+        
+        if (faviconUrl.host().isEmpty())
+        {
+            faviconUrl = KUrl(rootUrlString + relUrlString);           
+        }
     }
+    
+    kDebug() << "FAVICON RETRIEVING URL: " << faviconUrl;
+       
     QString faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
 
     // dest url
