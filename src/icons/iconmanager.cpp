@@ -36,6 +36,7 @@
 #include <KIO/Job>
 
 #include <KIcon>
+#include <KFileItem>
 #include <KStandardDirs>
 #include <KUrl>
 
@@ -96,7 +97,9 @@ KIcon IconManager::iconForUrl(const KUrl &url)
     // TODO: return other mimetype icons
     if (url.isLocalFile())
     {
-        return KIcon("folder");
+        KFileItem item(KFileItem::Unknown, KFileItem::Unknown, url);
+        QString iconName = item.iconName();
+        return KIcon(iconName);
     }
 
     QIcon icon = QWebSettings::iconForUrl(url);
@@ -179,10 +182,11 @@ QString IconManager::iconPathForUrl(const KUrl &url)
         return icon;
     }
 
-    // TODO: return other mimetype icons
     if (url.isLocalFile())
     {
-        QString icon = QL1S("file://") + KGlobal::dirs()->findResource("icon", "oxygen/16x16/places/folder.png");
+        KFileItem item(KFileItem::Unknown, KFileItem::Unknown, url);
+        QString iconName = item.iconName();
+        QString icon = QString("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);    
         return icon;
     }
 
