@@ -458,6 +458,8 @@ void NewTabPage::historyPage(const QString & filter)
     int i = 0;
     const int maxTextSize = 103;
     const int truncateSize = 100;
+    const QString removeIconPath = QL1S("file:///") + KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState);
+    QWebElement historyItemElement = markup(QL1S(".historyitem"));
     do
     {
         QModelIndex index = proxy->index(i, 0, QModelIndex());
@@ -473,7 +475,7 @@ void NewTabPage::historyPage(const QString & filter)
                 QModelIndex son = proxy->index(j, 0, index);
                 KUrl u = son.data(HistoryModel::UrlStringRole).toUrl();
 
-                historyFolderElement.appendInside(markup(QL1S(".historyitem")));
+                historyFolderElement.appendInside(historyItemElement.clone());
                 QWebElement item = historyFolderElement.lastChild();
 
                 item.findFirst(QL1S(".greytext")).setPlainText( son.data(HistoryModel::DateTimeRole).toDateTime().toString("hh:mm") );
@@ -494,8 +496,7 @@ void NewTabPage::historyPage(const QString & filter)
                 linkElement.appendInside(shownUrl);
 
                 QWebElement removeElement = item.findFirst(QL1S(".button img"));
-                removeElement.setAttribute(QL1S("src"), QL1S("file:///") +
-                                                        KIconLoader::global()->iconPath("edit-delete", KIconLoader::DefaultState));
+                removeElement.setAttribute(QL1S("src"), removeIconPath);
 
                 QWebElement removeLinkElement = item.findFirst(QL1S(".button"));
 
