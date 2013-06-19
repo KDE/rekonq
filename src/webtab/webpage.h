@@ -77,7 +77,8 @@ protected:
                                          NavigationType type);
 Q_SIGNALS:
     void pageCreated(WebPage *);
-
+    void initialUrl(const QUrl &);
+    
 private Q_SLOTS:
     void handleUnsupportedContent(QNetworkReply *reply);
     void manageNetworkErrors(QNetworkReply *reply);

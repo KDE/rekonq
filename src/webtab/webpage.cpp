@@ -321,6 +321,11 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         }
     }
 
+    // Set Page URL: This is needed for 2 reasons.
+    // 1) WebKit is slot setting url in some case. Having an initial URL set seems snappier ;)
+    // 2) When WebKit cannot set URL (eg: network down), urlbar URL is NOT set
+    emit initialUrl(_loadingUrl);
+    
     return KWebPage::acceptNavigationRequest(frame, request, type);
 }
 

@@ -118,6 +118,8 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
     connect(view(), SIGNAL(titleChanged(QString)),  this, SIGNAL(titleChanged(QString)));
     connect(view(), SIGNAL(iconChanged()),          this, SIGNAL(iconChanged()));
 
+    connect(page(), SIGNAL(initialUrl(QUrl)),       this, SIGNAL(urlChanged(QUrl)));
+
     if (!parent)
     {
         m_isWebApp = true;
