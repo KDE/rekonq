@@ -30,6 +30,12 @@ needed to provide Opera Link sync handler
 NOTE: to let Opera sync handler work, you need also qca2-ossl package as runtime dep.
 
 
+=== WebKit ===
+
+Actual minimum required version is 2.2.0 depending on (at least) Qt 4.7. But actually quite all distros
+have Qt 4.8.x + QtWebKit 2.3.x. Recommended release for the 2.3.x QtWebKit release is the LAST ONE
+(2.3.1 at the time of writing this).
+
 
 === Building rekonq ===
 
