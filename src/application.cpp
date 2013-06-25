@@ -521,16 +521,13 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
 
     // As we are filtering the events occurred to the tabwindows, check also
     // when we close one of them, remove from tab window list and check if it was last...
-    if (event->type() == QEvent::Close)
+    if ((event->type() == QEvent::Close) && !rApp->sessionSaving())
     {
         RekonqWindow *window = qobject_cast<RekonqWindow*>(watched);
+
         if (window)
         {
-            if(!rApp->sessionSaving())
-            {
-                SessionManager::self()->saveSession();
-            }
-
+            SessionManager::self()->saveSession();
             m_rekonqWindows.removeOne(window);
 #ifdef HAVE_KACTIVITIES
             QString currentActivity = m_activityConsumer->currentActivity();
