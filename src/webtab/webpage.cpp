@@ -243,12 +243,19 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         tab->setPart(0, KUrl());     // re-enable the view page
     }
 
-    // reset webpage values
-    _suggestedFileName.clear();
-    _loadingUrl = request.url();
-
     const bool isMainFrameRequest = (frame == mainFrame());
+    if (isMainFrameRequest)
+    {
+        // reset webpage values
+        _suggestedFileName.clear();
+        _loadingUrl = request.url();
 
+        // Set Page URL: This is needed for 2 reasons.
+        // 1) WebKit is slot setting url in some case. Having an initial URL set seems snappier ;)
+        // 2) When WebKit cannot set URL (eg: network down), urlbar URL is NOT set
+        emit initialUrl(_loadingUrl);        
+    }
+    
     if (frame)
     {
         if (_protHandler.preHandling(request, frame))
@@ -321,11 +328,6 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         }
     }
 
-    // Set Page URL: This is needed for 2 reasons.
-    // 1) WebKit is slot setting url in some case. Having an initial URL set seems snappier ;)
-    // 2) When WebKit cannot set URL (eg: network down), urlbar URL is NOT set
-    emit initialUrl(_loadingUrl);
-    
     return KWebPage::acceptNavigationRequest(frame, request, type);
 }
 
