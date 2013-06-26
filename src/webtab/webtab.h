@@ -110,7 +110,8 @@ private Q_SLOTS:
     void zoomIn();
     void zoomOut();
     void zoomDefault();
-
+    void setZoom(int);
+    
     // webapp slots per title & icon
     void webAppTitleChanged(QString);
     void webAppIconChanged();
