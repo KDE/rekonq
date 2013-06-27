@@ -117,7 +117,6 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
     connect(view(), SIGNAL(urlChanged(QUrl)),       this, SIGNAL(urlChanged(QUrl)));
     connect(view(), SIGNAL(titleChanged(QString)),  this, SIGNAL(titleChanged(QString)));
     connect(view(), SIGNAL(iconChanged()),          this, SIGNAL(iconChanged()));
-    connect(view(), SIGNAL(zoomChanged(int)),       this, SIGNAL(setZoom(int)));
     
     connect(page(), SIGNAL(initialUrl(QUrl)),       this, SIGNAL(urlChanged(QUrl)));
 
@@ -128,10 +127,11 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
         connect(this, SIGNAL(iconChanged()), this, SLOT(webAppIconChanged()));
     }
 
-    connect(view(), SIGNAL(loadProgress(int)), this, SLOT(updateProgress(int)));
-    connect(view(), SIGNAL(loadStarted()), this, SLOT(resetProgress()));
+    connect(view(), SIGNAL(loadProgress(int)),  this, SLOT(updateProgress(int)));
+    connect(view(), SIGNAL(loadStarted()),      this, SLOT(resetProgress()));
     connect(view(), SIGNAL(loadFinished(bool)), this, SLOT(loadFinished()));
-
+    connect(view(), SIGNAL(zoomChanged(int)),   this, SLOT(setZoom(int)));
+    
     // Session Manager
     connect(view(), SIGNAL(loadFinished(bool)), SessionManager::self(), SLOT(saveSession()));
     
