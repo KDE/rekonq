@@ -296,7 +296,7 @@ QList<TabHistory> TabWidget::recentlyClosedTabs()
 }
 
 
-void TabWidget::newTab(WebPage *page)
+WebWindow* TabWidget::newTab(WebPage *page)
 {    
     WebWindow *tab = prepareNewTab(page);
     addTab(tab, i18n("new tab"));
@@ -304,7 +304,7 @@ void TabWidget::newTab(WebPage *page)
 
     // no need to load an url if we already have a page...
     if (page)
-        return;
+        return tab;
 
     switch (ReKonfig::newTabsBehaviour())
     {
@@ -319,6 +319,8 @@ void TabWidget::newTab(WebPage *page)
         tab->load(KUrl("about:blank"));
         break;
     }
+    
+    return tab;
 }
 
 

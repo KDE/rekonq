@@ -46,7 +46,7 @@ Tabs::Tabs(QObject *parent)
 }
 
 
-WebWindow *Tabs::tabFor(int tabId)
+WebWindow *Tabs::tabFor(TabId tabId)
 {
     RekonqWindowList wList = rApp->rekonqWindowList();
     Q_FOREACH(const QWeakPointer<RekonqWindow> ptr, wList)
@@ -72,12 +72,14 @@ RekonqWindow *Tabs::windowFor(int winId)
     {
         return Application::instance()->rekonqWindow();
     }
+ 
+    WindowId wId = qAbs(winId);
     
     RekonqWindowList wList = rApp->rekonqWindowList();
     Q_FOREACH(const QWeakPointer<RekonqWindow> ptr, wList)
     {
         RekonqWindow *w = ptr.data();
-        if (w->id() == winId)
+        if (w->id() == wId)
             return w;
     }
     
@@ -88,53 +90,7 @@ RekonqWindow *Tabs::windowFor(int winId)
 // -------------------------- CHROME.TABS API ----------------------------
 
 
-void Tabs::captureVisibleTab(int windowId /* default is current */, const QVariantMap options)
-{
-    Q_UNUSED(windowId);
-    Q_UNUSED(options);
-}
-
-
-QVariantMap Tabs::create(QVariantMap createProperties)
-{
-    RekonqWindow *window = Application::instance()->rekonqWindow();
-    KUrl urlToLoad;
-    Rekonq::OpenType openType = Rekonq::NewTab;
-    
-    if (createProperties.contains("windowId")) 
-    {
-        window = windowFor(createProperties["windowId"].toInt());
-        if (!window)
-            return QVariantMap();
-    }
-
-    if (createProperties.contains("selected") && createProperties["selected"].toBool())
-        openType = Rekonq::NewFocusedTab;
-    
-// 
-//     WebWindow *tab = window->tabWidget()->newWebWindow(focused);
-// 
-//     if (createProperties.contains("index")) 
-//     {
-//         int index = qBound(0, createProperties["index"].toInt(), window->tabWidget()->count());
-//         int original = window->tabWidget()->indexOf(tab);
-//         window->tabWidget()->moveTab(original, index);
-//     }
-// 
-    if (createProperties.contains("url")) 
-    {
-        urlToLoad = KUrl( createProperties["url"].toString() );
-    }
-    
-    window->loadUrl(urlToLoad, openType);
-
-//     return get(tab->id());
-
-    return QVariantMap();
-}
-
-
-QVariantMap Tabs::get(int tabId)
+QVariantMap Tabs::get(TabId tabId /*, function callback */ )
 {
     WebWindow *theTab = tabFor(tabId);
     
@@ -164,36 +120,15 @@ QVariantMap Tabs::get(int tabId)
 
     map["status"] = theTab->isLoading() ? "loading" : "complete";
 
-    // FIXME NOT SUPPORTED for now
-    map["incognito"] = false;
+    map["incognito"] = theTab->isPrivateBrowsing();
 
     return map;
 }
 
 
-QVariantList Tabs::getAllInWindow(int windowId)
+QVariantMap Tabs::getCurrent(/* function callback */ )
 {
-    RekonqWindow *window = windowFor(windowId);
-    if (!window)
-        return QVariantList();
-    TabWidget *view = window->tabWidget();
-    Q_ASSERT(view);
-    QVariantList tabs;
-    for(int i = 0; i < view->count(); ++i) 
-    {
-        WebWindow *tab = view->webWindow(i);
-        if (!tab)
-            continue;
-        tabs << get(tab->id());
-    }
-
-    return tabs;
-}
-
-
-QVariantMap Tabs::getSelected(int windowId)
-{
-    RekonqWindow *window = windowFor(windowId);
+    RekonqWindow *window = rApp->rekonqWindow();
     if (!window)
         return QVariantMap();
     
@@ -201,7 +136,113 @@ QVariantMap Tabs::getSelected(int windowId)
 }
 
 
-QVariantMap Tabs::move(int tabId, QVariantMap moveProperties)
+// Chrome return value type is "Runtime.Port"
+void Tabs::connect(TabId tabId, QVariantMap connectInfo)
+{
+    kDebug() << "UNIMPLEMENTED";
+    Q_UNUSED(tabId);
+    Q_UNUSED(connectInfo);
+}
+
+
+QVariantMap Tabs::sendMessage(TabId tabId, QVariant message /*, function responseCallback */)
+{
+    kDebug() << "UNIMPLEMENTED";
+    Q_UNUSED(tabId);
+    Q_UNUSED(message);
+    
+    return QVariantMap();
+}
+
+
+QVariantMap Tabs::create(QVariantMap createProperties /*, function callback */ )
+{
+    RekonqWindow *window = Application::instance()->rekonqWindow();
+    QUrl urlToLoad;
+    
+    if (createProperties.contains("windowId")) 
+    {
+        window = windowFor(createProperties["windowId"].toInt());
+        if (!window)
+            return QVariantMap();
+    }
+
+    WebWindow *tab = window->tabWidget()->newTab();
+
+    if (createProperties.contains("index")) 
+    {
+        int index = qBound(0, createProperties["index"].toInt(), window->tabWidget()->count());
+        int original = window->tabWidget()->indexOf(tab);
+        window->tabWidget()->moveTab(original, index);
+    }
+
+    if (createProperties.contains("selected") && createProperties["selected"].toBool())
+    {
+        window->tabWidget()->setCurrentWidget(tab);    
+    }
+    
+    if (createProperties.contains("url")) 
+    {
+        QUrl urlToLoad = QUrl::fromUserInput( createProperties["url"].toString() );
+        tab->load(urlToLoad);
+    }
+
+    return get(tab->id());
+}
+
+
+QVariantMap Tabs::duplicate(TabId tabId /*, function callback */ )
+{
+    kDebug() << "UNIMPLEMENTED";
+    Q_UNUSED(tabId);
+
+    return QVariantMap();
+}
+
+
+QVariantMap Tabs::query(QVariantMap queryInfo /*, function callback */)
+{
+    kDebug() << "UNIMPLEMENTED";
+    Q_UNUSED(queryInfo);
+
+    return QVariantMap();
+}
+
+
+QVariantMap Tabs::highlight(QVariantMap highlightInfo /*, function callback */)
+{
+    kDebug() << "UNIMPLEMENTED";
+    Q_UNUSED(highlightInfo);
+
+    return QVariantMap();
+}
+
+
+QVariantMap Tabs::update(TabId tabId, QVariantMap updateProperties /*, function callback */)
+{
+    WebWindow *tab = tabFor(tabId);
+    if (!tab)
+        return QVariantMap();
+
+    if (updateProperties.contains("url")) 
+    {
+        KUrl url = updateProperties["url"].toString();
+        
+        // TODO what's the best way to do this?
+    }
+
+    if (updateProperties.contains("selected") && updateProperties["selected"].toBool()) 
+    {
+        TabWidget *view = qobject_cast<TabWidget*>(tab->parent()->parent());
+        if (view)
+            view->setCurrentWidget(tab);
+    }
+
+    return get(tabId);
+}
+
+
+QVariantMap Tabs::move(TabId tabId, QVariantMap moveProperties /*, function callback */)
 {
     WebWindow *tab = tabFor(tabId);
     if (!tab)
@@ -235,12 +276,20 @@ QVariantMap Tabs::move(int tabId, QVariantMap moveProperties)
 //     QVariantMap jstab = get(tabId);
 //     return jstab;
     
-        return QVariantMap();
-
+    return QVariantMap();
 }
 
 
-void Tabs::remove(int tabId)
+QVariantMap Tabs::reload(TabId tabId, QVariantMap reloadProperties /*, function callback */)
+{
+    kDebug() << "UNIMPLEMENTED";
+    Q_UNUSED(tabId);
+    Q_UNUSED(reloadProperties);
+
+    return QVariantMap();
+}
+
+void Tabs::remove(TabId tabId /*, function callback */)
 {
     WebWindow *tab = tabFor(tabId);
     if (!tab)
@@ -252,64 +301,35 @@ void Tabs::remove(int tabId)
 }
 
 
-QVariantMap Tabs::update(int tabId, QVariantMap updateProperties)
+void Tabs::detectLanguage(TabId tabId /*, function callback */)
 {
-    WebWindow *tab = tabFor(tabId);
-    if (!tab)
-        return QVariantMap();
-
-    if (updateProperties.contains("url")) 
-    {
-        KUrl url = updateProperties["url"].toString();
-        
-        // TODO what's the best way to do this?
-    }
-
-    if (updateProperties.contains("selected") && updateProperties["selected"].toBool()) 
-    {
-        TabWidget *view = qobject_cast<TabWidget*>(tab->parent()->parent());
-        if (view)
-            view->setCurrentWidget(tab);
-    }
-
-    return get(tabId);
-}
-
-
-void Tabs::connect(int tabId, QVariantMap connectInfo)
-{
-    Q_UNUSED(tabId);
-    Q_UNUSED(connectInfo);
-
-}
-
-
-void Tabs::detectLanguage(int tabId)
-{
+    kDebug() << "UNIMPLEMENTED";
     Q_UNUSED(tabId);
 
 }
 
 
-void Tabs::executeScript(int tabId, QVariantMap details)
+void Tabs::captureVisibleTab(TabId windowId, QVariantMap options /*, function callback */)
 {
+    kDebug() << "UNIMPLEMENTED";
+    Q_UNUSED(windowId);
+    Q_UNUSED(options);
+}
+
+
+void Tabs::executeScript(TabId tabId, QVariantMap details /*, function callback */)
+{
+    kDebug() << "UNIMPLEMENTED";
     Q_UNUSED(tabId);
     Q_UNUSED(details);
     
 }
 
 
-void Tabs::insertCSS(int tabId, QVariantMap details)
+void Tabs::insertCSS(TabId tabId, QVariantMap details /*, function callback*/)
 {
+    kDebug() << "UNIMPLEMENTED";
     Q_UNUSED(tabId);
     Q_UNUSED(details);
-
-}
-
-
-void Tabs::sendRequest(int tabId, QVariant anything)
-{
-    Q_UNUSED(tabId);
-    Q_UNUSED(anything);
 
 }

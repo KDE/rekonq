@@ -554,3 +554,9 @@ bool WebTab::isWebApp()
 {
     return m_isWebApp;
 }
+
+
+bool WebTab::isPrivateBrowsing()
+{
+    return m_isPrivateBrowsing;
+}

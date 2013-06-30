@@ -977,6 +977,12 @@ void WebWindow::checkFocus()
 }
 
 
+bool WebWindow::isPrivateBrowsing()
+{
+    return _tab->isPrivateBrowsing();
+}
+
+
 void WebWindow::openDownloadsPage()
 {
     rApp->loadUrl(QUrl("rekonq:downloads"), Rekonq::NewFocusedTab);

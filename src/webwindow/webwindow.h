@@ -83,6 +83,8 @@ public:
 
     void checkFocus();
 
+    bool isPrivateBrowsing();
+    
     inline quint32 id() { return _id; }
 
 private:

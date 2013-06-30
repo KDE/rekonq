@@ -38,6 +38,10 @@
 class WebWindow;
 class RekonqWindow;
 
+// typedefs
+typedef quint32 TabId;
+typedef quint32 WindowId;
+
 
 class REKONQ_TESTS_EXPORT Tabs : public QObject
 {
@@ -51,7 +55,7 @@ private:
      * Searches and eventually returns a pointer
      * to the tab with id tabId
      */
-    WebWindow *tabFor(int tabId);
+    WebWindow *tabFor(TabId tabId);
     
     /**
      * Searches and eventually returns a pointer
@@ -60,71 +64,53 @@ private:
     RekonqWindow *windowFor(int winId);
     
 public Q_SLOTS:
-     /**
-     * chrome.tabs.captureVisibleTab()
-     */
-    void captureVisibleTab(int windowId /* default is current */, const QVariantMap options);
+    // For the public API implemented here
+    // see: http://developer.chrome.com/extensions/tabs.html
 
-    /**
-     * chrome.tabs.create()
-     */
-    QVariantMap create(QVariantMap createProperties);
+    QVariantMap get(TabId tabId /*, function callback */ );
+    
+    QVariantMap getCurrent(/* function callback */ );
+    
+    // Chrome return value type is "Runtime.Port"
+    void connect(TabId tabId, QVariantMap connectInfo);
+    
+    QVariantMap sendMessage(TabId tabId, QVariant message /*, function responseCallback */);
+    
+    QVariantMap create(QVariantMap createProperties /*, function callback */ );
 
-    /**
-     * chrome.tabs.get()
-     */
-    QVariantMap get(int tabId);
+    QVariantMap duplicate(TabId tabId /*, function callback */ );
+    
+    QVariantMap query(QVariantMap queryInfo /*, function callback */);
+    
+    QVariantMap highlight(QVariantMap highlightInfo /*, function callback */);
+    
+    QVariantMap update(TabId tabId, QVariantMap updateProperties /*, function callback */);
 
-    /**
-     * chrome.tabs.getAllInWindow()
-     */
-    QVariantList getAllInWindow(int windowId);
+    QVariantMap move(TabId tabId, QVariantMap moveProperties /*, function callback */);
 
-    /**
-     * chrome.tabs.getSelected()
-     */
-    QVariantMap getSelected(int windowId);
-
-    /**
-     * chrome.tabs.move()
-     */
-    QVariantMap move(int tabId, QVariantMap moveProperties);
-
-    /**
-     * chrome.tabs.remove()
-     */
-    void remove(int tabId);
+    QVariantMap reload(TabId tabId, QVariantMap reloadProperties /*, function callback */);
+    
+    void remove(TabId tabId /*, function callback */);
  
-    /**
-     * chrome.tabs.update()
-     */
-    QVariantMap update(int tabId, QVariantMap updateProperties);
-
-    /**
-     * chrome.tabs.connect()
-     */
-    void connect(int tabId, QVariantMap connectInfo);
+    void detectLanguage(TabId tabId /*, function callback */);
     
-    /**
-     * chrome.tabs.detectLanguage()
-     */
-    void detectLanguage(int tabId);
+    void captureVisibleTab(WindowId windowId, QVariantMap options /*, function callback */);
     
-    /**
-     * chrome.tabs.executeScript()
-     */
-    void executeScript(int tabId, QVariantMap details);
+    void executeScript(TabId tabId, QVariantMap details /*, function callback */);
     
-    /**
-     * chrome.tabs.insertCSS()
-     */
-    void insertCSS(int tabId, QVariantMap details);
-
-    /**
-     * chrome.tabs.sendRequest()
-     */
-    void sendRequest(int tabId, QVariant anything);
+    void insertCSS(TabId tabId, QVariantMap details /*, function callback*/);
     
+    
+Q_SIGNALS:
+    void onCreated(QVariantMap tab);
+    void onUpdated(TabId tabId, QObject *changeInfo, QObject *tab);
+    void onMoved(TabId tabId, QObject *moveInfo);
+    void onActivated(TabId tabId, QObject *moveInfo);
+    void onHighlighted(TabId tabId, QObject *moveInfo);
+    void onDetached(TabId tabId, QObject *detachInfo);
+    void onAttached(TabId tabId, QObject *attachInfo);
+    void onRemoved(TabId tabId);
+    void onReplaced(TabId tabId, QObject *selectInfo);
 };
 
 #endif // API_TABS_H

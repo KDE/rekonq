@@ -94,7 +94,8 @@ public:
     void focusOut();
     
     bool isWebApp();
-
+    bool isPrivateBrowsing();
+    
 private Q_SLOTS:
     void updateProgress(int progress);
     void resetProgress();

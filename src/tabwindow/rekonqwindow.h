@@ -66,6 +66,9 @@ public:
 
     bool isPrivateBrowsingMode();
 
+    /**
+     * Needed for extensions to identify window
+     */
     inline quint32 id() { return _id; }
 
 private:
@@ -89,6 +92,7 @@ private:
     QWeakPointer<HistoryPanel> _historyPanel;
     QWeakPointer<BookmarksPanel> _bookmarksPanel;
     
+    // tab identifier (needed for extensions support)
     quint32 _id;
     static quint32 s_nextId;
 };

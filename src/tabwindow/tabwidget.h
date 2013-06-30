@@ -82,8 +82,7 @@ public:
 
 public Q_SLOTS:
     void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
-    void newTab(WebPage *page = 0);
-    void reloadAllTabs();
+    WebWindow* newTab(WebPage *page = 0);
 
 Q_SIGNALS:
     void closeWindow();
