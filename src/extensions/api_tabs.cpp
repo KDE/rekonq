@@ -34,9 +34,12 @@
 
 // Local Includes
 #include "application.h"
+
 #include "rekonqwindow.h"
 #include "tabwidget.h"
 #include "webwindow.h"
+
+#include "webview.h"
 
 
 Tabs::Tabs(QObject *parent)
@@ -90,6 +93,7 @@ RekonqWindow *Tabs::windowFor(int winId)
 // -------------------------- CHROME.TABS API ----------------------------
 
 
+// Retrieves details about the specified tab.
 QVariantMap Tabs::get(TabId tabId /*, function callback */ )
 {
     WebWindow *theTab = tabFor(tabId);
@@ -126,6 +130,8 @@ QVariantMap Tabs::get(TabId tabId /*, function callback */ )
 }
 
 
+// Gets the tab that this script call is being made from. 
+// May be undefined if called from a non-tab context (for example: a background page or popup view).
 QVariantMap Tabs::getCurrent(/* function callback */ )
 {
     RekonqWindow *window = rApp->rekonqWindow();
@@ -136,6 +142,9 @@ QVariantMap Tabs::getCurrent(/* function callback */ )
 }
 
 
+// Connects to the content script(s) in the specified tab. 
+// The runtime.onConnect event is fired in each content script running in the specified tab for the current extension. 
+// For more details, see Content Script Messaging.
 // Chrome return value type is "Runtime.Port"
 void Tabs::connect(TabId tabId, QVariantMap connectInfo)
 {
@@ -145,6 +154,9 @@ void Tabs::connect(TabId tabId, QVariantMap connectInfo)
 }
 
 
+// Sends a single message to the content script(s) in the specified tab, 
+// with an optional callback to run when a response is sent back. 
+// The runtime.onMessage event is fired in each content script running in the specified tab for the current extension.
 QVariantMap Tabs::sendMessage(TabId tabId, QVariant message /*, function responseCallback */)
 {
     kDebug() << "UNIMPLEMENTED";
@@ -155,6 +167,8 @@ QVariantMap Tabs::sendMessage(TabId tabId, QVariant message /*, function respons
 }
 
 
+// Creates a new tab. 
+// NOTE: This function can be used without requesting the 'tabs' permission in the manifest.
 QVariantMap Tabs::create(QVariantMap createProperties /*, function callback */ )
 {
     RekonqWindow *window = Application::instance()->rekonqWindow();
@@ -191,15 +205,25 @@ QVariantMap Tabs::create(QVariantMap createProperties /*, function callback */ )
 }
 
 
+// Duplicates a tab. 
+// NOTE: This function can be used without requesting the 'tabs' permission in the manifest.
 QVariantMap Tabs::duplicate(TabId tabId /*, function callback */ )
 {
-    kDebug() << "UNIMPLEMENTED";
-    Q_UNUSED(tabId);
+    WebWindow *tab = tabFor(tabId);
+    if (!tab)
+        return QVariantMap();
 
-    return QVariantMap();
+    RekonqWindow *window = Application::instance()->rekonqWindow();
+    int index = window->tabWidget()->indexOf(tab);
+    kDebug() << "INDEX: " << index;
+    
+    window->tabWidget()->cloneTab(index);
+    
+    return get(tab->id());
 }
 
 
+// Gets all tabs that have the specified properties, or all tabs if no properties are specified.
 QVariantMap Tabs::query(QVariantMap queryInfo /*, function callback */)
 {
     kDebug() << "UNIMPLEMENTED";
@@ -209,6 +233,7 @@ QVariantMap Tabs::query(QVariantMap queryInfo /*, function callback */)
 }
 
 
+// Highlights the given tabs.
 QVariantMap Tabs::highlight(QVariantMap highlightInfo /*, function callback */)
 {
     kDebug() << "UNIMPLEMENTED";
@@ -218,6 +243,9 @@ QVariantMap Tabs::highlight(QVariantMap highlightInfo /*, function callback */)
 }
 
 
+// Modifies the properties of a tab. 
+// Properties that are not specified in updateProperties are not modified. 
+// NOTE: This function can be used without requesting the 'tabs' permission in the manifest.
 QVariantMap Tabs::update(TabId tabId, QVariantMap updateProperties /*, function callback */)
 {
     WebWindow *tab = tabFor(tabId);
@@ -242,6 +270,8 @@ QVariantMap Tabs::update(TabId tabId, QVariantMap updateProperties /*, function 
 }
 
 
+// Moves one or more tabs to a new position within its window, or to a new window. 
+// Note that tabs can only be moved to and from normal (window.type === "normal") windows.
 QVariantMap Tabs::move(TabId tabId, QVariantMap moveProperties /*, function callback */)
 {
     WebWindow *tab = tabFor(tabId);
@@ -264,51 +294,60 @@ QVariantMap Tabs::move(TabId tabId, QVariantMap moveProperties /*, function call
 
     index = qBound(0, index, destWindow->tabWidget()->count());
 
-//     TabWidget *view = qobject_cast<TabWidget*>(tab->parent()->parent());
-//     Q_ASSERT(view);
-// 
-//     view->detachTab(view->indexOf(tab), destWindow);
-// 
-//     TabWidget *newView = qobject_cast<TabWidget*>(tab->parent()->parent());
-//     newView->moveTab(newView->indexOf(tab), index);
-//     newView->setCurrentIndex(index);
-//     
-//     QVariantMap jstab = get(tabId);
-//     return jstab;
+    RekonqWindow *window = Application::instance()->rekonqWindow();
+    window->tabWidget()->detachTab(index, destWindow);
     
-    return QVariantMap();
+    return get(tab->id());
 }
 
 
+// Reload a tab.
 QVariantMap Tabs::reload(TabId tabId, QVariantMap reloadProperties /*, function callback */)
 {
-    kDebug() << "UNIMPLEMENTED";
-    Q_UNUSED(tabId);
     Q_UNUSED(reloadProperties);
 
-    return QVariantMap();
+    WebWindow *tab = tabFor(tabId);
+    if (!tab)
+        return QVariantMap();
+
+    RekonqWindow *window = Application::instance()->rekonqWindow();
+    int index = window->tabWidget()->indexOf(tab);
+    kDebug() << "INDEX: " << index;
+    
+    window->tabWidget()->reloadTab(index);
+    
+    return get(tab->id());
 }
 
+
+// Closes one or more tabs. 
+// NOTE: This function can be used without requesting the 'tabs' permission in the manifest.
 void Tabs::remove(TabId tabId /*, function callback */)
 {
     WebWindow *tab = tabFor(tabId);
     if (!tab)
         return;
 
-//     TabWidget *view = qobject_cast<TabWidget*>(tab->parent()->parent());
-//     Q_ASSERT(view);
-//     view->closeTab(view->indexOf(tab));
+    RekonqWindow *window = Application::instance()->rekonqWindow();
+    int index = window->tabWidget()->indexOf(tab);
+    kDebug() << "INDEX: " << index;
+    
+    window->tabWidget()->closeTab(index);
+    
+    return;
 }
 
 
+// Detects the primary language of the content in a tab.
 void Tabs::detectLanguage(TabId tabId /*, function callback */)
 {
     kDebug() << "UNIMPLEMENTED";
     Q_UNUSED(tabId);
-
 }
 
 
+// Captures the visible area of the currently active tab in the specified window. 
+// You must have host permission for the URL displayed by the tab.
 void Tabs::captureVisibleTab(TabId windowId, QVariantMap options /*, function callback */)
 {
     kDebug() << "UNIMPLEMENTED";
@@ -317,19 +356,21 @@ void Tabs::captureVisibleTab(TabId windowId, QVariantMap options /*, function ca
 }
 
 
+// Injects JavaScript code into a page. 
+// For details, see the programmatic injection section of the content scripts doc.
 void Tabs::executeScript(TabId tabId, QVariantMap details /*, function callback */)
 {
     kDebug() << "UNIMPLEMENTED";
     Q_UNUSED(tabId);
     Q_UNUSED(details);
-    
 }
 
 
+// Injects CSS into a page. 
+// For details, see the programmatic injection section of the content scripts doc.
 void Tabs::insertCSS(TabId tabId, QVariantMap details /*, function callback*/)
 {
     kDebug() << "UNIMPLEMENTED";
     Q_UNUSED(tabId);
     Q_UNUSED(details);
-
 }

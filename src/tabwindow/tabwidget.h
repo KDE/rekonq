@@ -84,6 +84,13 @@ public Q_SLOTS:
     void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
     WebWindow* newTab(WebPage *page = 0);
 
+    // Indexed slots
+    void cloneTab(int index = -1);
+    void closeTab(int index = -1, bool del = true);
+    void closeOtherTabs(int index = -1);
+    void detachTab(int index = -1, RekonqWindow *toWindow = 0);
+    void reloadTab(int index = -1);
+
 Q_SIGNALS:
     void closeWindow();
     void windowTitleChanged(QString);

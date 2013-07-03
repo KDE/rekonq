@@ -42,6 +42,7 @@
 // Forward Declarations
 class WebPage;
 class WebTab;
+class WebView;
 
 class BookmarkToolBar;
 class FindBar;
@@ -67,7 +68,8 @@ public:
     void load(const QUrl &);
 
     WebPage *page();
-
+    WebView *view();
+    
     KUrl url() const;
     QString title() const;
 

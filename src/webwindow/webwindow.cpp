@@ -430,6 +430,12 @@ WebPage *WebWindow::page()
 }
 
 
+WebView *WebWindow::view()
+{
+    return _tab->view();    
+}    
+
+
 void WebWindow::webLoadProgress(int p)
 {
     _progress = p;
