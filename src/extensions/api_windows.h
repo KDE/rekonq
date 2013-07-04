@@ -34,6 +34,12 @@
 // Qt Includes
 #include <QObject>
 
+// Forward Declarations
+class RekonqWindow;
+
+// typedefs
+typedef quint32 WindowId;
+
 
 class REKONQ_TESTS_EXPORT Windows : public QObject
 {
@@ -42,8 +48,35 @@ class REKONQ_TESTS_EXPORT Windows : public QObject
 public:
     Windows(QObject *parent = 0);
 
+    /**
+     * Searches and eventually returns a pointer
+     * to the window with id winId
+     */
+    RekonqWindow *windowFor(int windowId);
+    
 public Q_SLOTS:
-    void create();
+    // For the public API implemented here
+    // see: http://developer.chrome.com/extensions/windows.html
+
+    QVariantMap get(WindowId windowId, QVariantMap getInfo = QVariantMap() /*, function callback */ );
+    
+    QVariantMap getCurrent(QVariantMap getInfo /*, function callback */ );
+
+    QVariantMap getLastFocused(QVariantMap getInfo /*, function callback */ );
+    
+    QVariantMap getAll(QVariantMap getInfo /*, function callback */ );
+
+    void create(QVariantMap createData /*, function callback */ );
+
+    QVariantMap update(WindowId windowId, QVariantMap updateInfo /*, function callback */);
+
+    QVariantMap remove(WindowId windowId /*, function callback */);
+    
+    
+Q_SIGNALS:
+    void onCreated(QVariantMap window);
+    void onRemoved(WindowId windowId);
+    void onFocusChanged(WindowId windowId);    
 };
 
 #endif // API_WINDOWS_H
