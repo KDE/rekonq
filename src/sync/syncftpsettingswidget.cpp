@@ -41,8 +41,9 @@ SyncFTPSettingsWidget::SyncFTPSettingsWidget(QWidget *parent)
     setupUi(this);
     
     int port = ReKonfig::syncPort();
-    if(port == -1){
-      port=21;
+    if (port == -1)
+    {
+        port = 21;
     }
     
     kcfg_syncHost->setText(ReKonfig::syncHost());

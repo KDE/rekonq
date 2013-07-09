@@ -152,8 +152,6 @@ void SyncCheckWidget::initializePage()
 }
 
 
-
-
 void SyncCheckWidget::updateWidget(Rekonq::SyncData type, bool done, QString msg)
 {
     KIcon doneIcon(QL1S("dialog-ok-apply"));

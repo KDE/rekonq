@@ -43,7 +43,7 @@ public:
         Page_FTP_Settings,
         Page_Google_Settings,
         Page_Opera_Settings,
-	Page_SSH_Settings,
+        Page_SSH_Settings,
         Page_Data,
         Page_Check
     };

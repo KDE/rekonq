@@ -42,33 +42,37 @@ SyncDataWidget::SyncDataWidget(QWidget *parent)
     setupUi(this);
 }
 
+
 void SyncDataWidget::initializePage()
 {
-
     kcfg_syncBookmarks->setDisabled(true);
     kcfg_syncHistory->setDisabled(true);
     kcfg_syncPasswords->setDisabled(true);
 
     switch (ReKonfig::syncType())
     {
-        //Ftp Sync Handler
+    // Ftp Sync Handler
     case 0:
         kcfg_syncBookmarks->setEnabled(true);
         kcfg_syncHistory->setEnabled(true);
         kcfg_syncPasswords->setEnabled(true);
         break;
-        //Google Sync Handler
+    
+    // Google Sync Handler
     case 1:
-        //Opera Sync Handler
+    
+    // Opera Sync Handler
     case 2:
         kcfg_syncBookmarks->setEnabled(true);
         break;
+    
+    // SSH sync handler
     case 3:
-	//SSH sync handler
-	kcfg_syncBookmarks->setEnabled(true);
+        kcfg_syncBookmarks->setEnabled(true);
         kcfg_syncHistory->setEnabled(true);
         kcfg_syncPasswords->setEnabled(true);
-	break;
+        break;
+    
     default:
         kDebug() << "Unknown sync type!";
     }
@@ -76,14 +80,12 @@ void SyncDataWidget::initializePage()
     kcfg_syncBookmarks->setChecked(ReKonfig::syncBookmarks());
     kcfg_syncHistory->setChecked(ReKonfig::syncHistory());
     kcfg_syncPasswords->setChecked(ReKonfig::syncPasswords());
-
 }
 
 
 int SyncDataWidget::nextId() const
 {
     // save
-
     ReKonfig::setSyncBookmarks(kcfg_syncBookmarks->isChecked());
     ReKonfig::setSyncHistory(kcfg_syncHistory->isChecked());
     ReKonfig::setSyncPasswords(kcfg_syncPasswords->isChecked());

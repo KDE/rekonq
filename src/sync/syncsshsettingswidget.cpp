@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2013 by Radu Andries      <admiral0 at tuxfamily dot org>
+* Copyright (C) 2013 by Radu Andries <admiral0 at tuxfamily dot org>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -23,7 +23,10 @@
 *
 * ============================================================ */
 
+
+// Self Includes
 #include "syncsshsettingswidget.h"
+#include "syncsshsettingswidget.moc"
 
 // Auto Includes
 #include "rekonq.h"
@@ -32,6 +35,7 @@
 
 // Local Includes
 #include "syncassistant.h"
+
 
 int SyncSSHSettingsWidget::nextId() const
 {
@@ -45,13 +49,15 @@ int SyncSSHSettingsWidget::nextId() const
     return SyncAssistant::Page_Data;
 }
 
+
 SyncSSHSettingsWidget::SyncSSHSettingsWidget(QWidget* parent): QWizardPage(parent)
 {
     setupUi(this);
     
     int port = ReKonfig::syncPort();
-    if(port == -1){
-      port=22;
+    if (port == -1)
+    {
+        port = 22;
     }
     
     kcfg_syncHost->setText(ReKonfig::syncHost());
@@ -60,9 +66,10 @@ SyncSSHSettingsWidget::SyncSSHSettingsWidget(QWidget* parent): QWizardPage(paren
     kcfg_syncPath->setText(ReKonfig::syncPath());
     kcfg_syncPort->setValue(port);
 
-    if(kcfg_syncPass->text().isEmpty()){
-      syncWithSSHKeys->setChecked(true);
-      toggleUserPass(true);
+    if (kcfg_syncPass->text().isEmpty())
+    {
+        syncWithSSHKeys->setChecked(true);
+        toggleUserPass(true);
     }
 
     kcfg_syncPass->setPasswordMode(true);
@@ -70,14 +77,16 @@ SyncSSHSettingsWidget::SyncSSHSettingsWidget(QWidget* parent): QWizardPage(paren
     connect(syncWithSSHKeys,SIGNAL(toggled(bool)),SLOT(toggleUserPass(bool)));
 }
 
+
 void SyncSSHSettingsWidget::toggleUserPass(bool enabled)
 {
-  if(enabled){
-    kcfg_syncPass->setText("");
-    kcfg_syncPass->setEnabled(false); 
-  }else{
-    kcfg_syncPass->setEnabled(true); 
-  }
+    if (enabled)
+    {
+        kcfg_syncPass->setText(QL1S(""));
+        kcfg_syncPass->setEnabled(false); 
+    }
+    else
+    {
+        kcfg_syncPass->setEnabled(true); 
+    }
 }
-
-

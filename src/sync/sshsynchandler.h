@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
-* Copyright (C) 2013 by Radu Andries      <admiral0 at tuxfamily dot org>
+* Copyright (C) 2013 by Radu Andries <admiral0 at tuxfamily dot org>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@
 *
 * ============================================================ */
 
+
 #ifndef SSHSYNCHANDLER_H
 #define SSHSYNCHANDLER_H
 
@@ -36,21 +37,20 @@
 // Forward Declarations
 class KJob;
 
-class KJob;
 
 class SSHSyncHandler : public SyncHandler
 {
   Q_OBJECT
   
 public:
-  explicit SSHSyncHandler(QObject *parent = 0);
-  
-  void syncHistory();
-  void syncBookmarks();
-  void syncPasswords();
+    explicit SSHSyncHandler(QObject *parent = 0);
 
-  void initialLoadAndCheck();
-  
+    void syncHistory();
+    void syncBookmarks();
+    void syncPasswords();
+
+    void initialLoadAndCheck();
+
 private Q_SLOTS:
     void onBookmarksSyncFinished(KJob *);
     void onBookmarksStatFinished(KJob *);

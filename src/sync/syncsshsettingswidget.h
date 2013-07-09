@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2013 by Radu Andries      <admiral0 at tuxfamily dot org>
+* Copyright (C) 2013 by Radu Andries <admiral0 at tuxfamily dot org>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -22,24 +22,29 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 * ============================================================ */
+
+
 #ifndef SYNCSSHSETTINGSWIDGET_H
 #define SYNCSSHSETTINGSWIDGET_H
 
+// Qt Includes
 #include <QWizardPage>
 
+// Ui Includes
 #include "ui_sync_ssh_settings.h"
+
 
 class SyncSSHSettingsWidget : public QWizardPage, private Ui::SyncSSHSettings
 {
     Q_OBJECT
-public:
-  
-  explicit SyncSSHSettingsWidget(QWidget *parent = 0);
 
-  int nextId() const;
-  
-private slots:
-  void toggleUserPass(bool enabled);
+public:
+    explicit SyncSSHSettingsWidget(QWidget *parent = 0);
+
+    int nextId() const;
+
+private Q_SLOTS:
+    void toggleUserPass(bool enabled);
 };
 
 #endif // SYNCSSHSETTINGSWIDGET_H
