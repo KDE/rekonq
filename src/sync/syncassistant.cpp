@@ -36,6 +36,7 @@
 #include "syncftpsettingswidget.h"
 #include "syncgooglesettingswidget.h"
 #include "syncoperasettingswidget.h"
+#include "syncsshsettingswidget.h"
 
 
 SyncAssistant::SyncAssistant(QWidget *parent)
@@ -47,6 +48,7 @@ SyncAssistant::SyncAssistant(QWidget *parent)
     setPage(Page_FTP_Settings, new SyncFTPSettingsWidget(this));
     setPage(Page_Google_Settings, new SyncGoogleSettingsWidget(this));
     setPage(Page_Opera_Settings, new SyncOperaSettingsWidget(this));
+    setPage(Page_SSH_Settings, new SyncSSHSettingsWidget(this));
     setPage(Page_Data, new SyncDataWidget(this));
     setPage(Page_Check, new SyncCheckWidget(this));
 }

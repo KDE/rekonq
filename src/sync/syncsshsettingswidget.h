@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2013 by Radu Andries      <admiral0 at tuxfamily dot org>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -22,33 +22,24 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 * ============================================================ */
+#ifndef SYNCSSHSETTINGSWIDGET_H
+#define SYNCSSHSETTINGSWIDGET_H
 
+#include <QWizardPage>
 
-#ifndef SYNC_ASSISTANT_H
-#define SYNC_ASSISTANT_H
+#include "ui_sync_ssh_settings.h"
 
-
-// KDE Includes
-#include <QWizard>
-
-
-class SyncAssistant : public QWizard
+class SyncSSHSettingsWidget : public QWizardPage, private Ui::SyncSSHSettings
 {
     Q_OBJECT
-
 public:
-    enum
-    {
-        Page_Type,
-        Page_FTP_Settings,
-        Page_Google_Settings,
-        Page_Opera_Settings,
-	Page_SSH_Settings,
-        Page_Data,
-        Page_Check
-    };
+  
+  explicit SyncSSHSettingsWidget(QWidget *parent = 0);
 
-    SyncAssistant(QWidget *parent = 0);
+  int nextId() const;
+  
+private slots:
+  void toggleUserPass(bool enabled);
 };
 
-#endif
+#endif // SYNCSSHSETTINGSWIDGET_H

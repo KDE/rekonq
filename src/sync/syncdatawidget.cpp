@@ -63,6 +63,12 @@ void SyncDataWidget::initializePage()
     case 2:
         kcfg_syncBookmarks->setEnabled(true);
         break;
+    case 3:
+	//SSH sync handler
+	kcfg_syncBookmarks->setEnabled(true);
+        kcfg_syncHistory->setEnabled(true);
+        kcfg_syncPasswords->setEnabled(true);
+	break;
     default:
         kDebug() << "Unknown sync type!";
     }

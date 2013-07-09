@@ -71,8 +71,10 @@ set(rekonq_KDEINIT_SRCS
     sync/syncdatawidget.cpp
     sync/synchosttypewidget.cpp
     sync/syncftpsettingswidget.cpp
+    sync/sshsynchandler.cpp
     sync/syncgooglesettingswidget.cpp
     sync/syncoperasettingswidget.cpp
+    sync/syncsshsettingswidget.cpp 
     #----------------------------------------
     tabwindow/rwindow.cpp
     tabwindow/rekonqwindow.cpp
@@ -140,7 +142,6 @@ IF(HAVE_QCA2 AND HAVE_QTOAUTH)
     )
 ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 
-
 # ui files
 KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     # ----------------------------------------
@@ -160,6 +161,7 @@ KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
     sync/sync_ftp_settings.ui
     sync/sync_google_settings.ui
     sync/sync_opera_settings.ui
+    sync/sync_ssh_settings.ui
     sync/sync_host_type.ui
     # ----------------------------------------
     useragent/useragentsettings.ui

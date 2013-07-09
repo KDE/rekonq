@@ -68,6 +68,11 @@ void SyncCheckWidget::initializePage()
         syncLabel->setText(i18n("Opera"));
         hostLabel->setText(ReKonfig::syncHost());
     }
+    else if (ReKonfig::syncType() == 3)
+    {
+        syncLabel->setText(i18n("SSH"));
+        hostLabel->setText(ReKonfig::syncHost());
+    }
     else
     {
         syncLabel->setText(i18n("No sync"));

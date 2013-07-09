@@ -290,7 +290,7 @@
         <default></default>
     </entry>
     <entry name="syncPort" type="Int">
-        <default>21</default>
+        <default>-1</default>
     </entry>
 </group>
 

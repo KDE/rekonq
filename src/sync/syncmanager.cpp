@@ -43,6 +43,7 @@
 #include "syncassistant.h"
 #include "ftpsynchandler.h"
 #include "googlesynchandler.h"
+#include "sshsynchandler.h"
 
 #if (defined HAVE_QCA2 && defined HAVE_QTOAUTH)
 #include "operasynchandler.h"
@@ -112,6 +113,9 @@ void SyncManager::loadSettings()
             _syncImplementation = new OperaSyncHandler(this);
             break;
 #endif
+        case 3:
+            _syncImplementation = new SSHSyncHandler(this);
+            break;
         default:
             kDebug() << "/dev/null";
             return;

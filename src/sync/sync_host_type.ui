@@ -32,6 +32,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QRadioButton" name="sshRadioButton">
+        <property name="text">
+         <string>SSH</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QRadioButton" name="googleRadioButton">
         <property name="text">
          <string>Google Sync</string>
