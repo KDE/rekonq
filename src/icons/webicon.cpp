@@ -119,4 +119,6 @@ void WebIcon::saveIcon(bool b)
 
     // will autodelete itself when done
     new IconDownloader(faviconUrl, destUrl, this);
+    
+    this->deleteLater();
 }

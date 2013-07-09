@@ -210,7 +210,7 @@ QString IconManager::iconPathForUrl(const KUrl &url)
 void IconManager::provideEngineFavicon(const KUrl &url)
 {
     // will autodelete itself when done
-    new WebIcon(url, this);
+    new WebIcon(url);
 }
 
 
