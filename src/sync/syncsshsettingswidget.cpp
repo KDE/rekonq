@@ -30,6 +30,7 @@
 
 // Auto Includes
 #include "rekonq.h"
+#include "rekonq_defines.h"
 
 #include <config-qca2.h>
 
