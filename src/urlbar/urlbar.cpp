@@ -45,6 +45,7 @@
 #include "adblockwidget.h"
 #include "bookmarkwidget.h"
 #include "rsswidget.h"
+#include "sslwidget.h"
 
 #include "completionwidget.h"
 #include "urlresolver.h"
@@ -61,6 +62,7 @@
 #include <KMenu>
 #include <KIcon>
 #include <KIconLoader>
+#include <KMessageBox>
 #include <KStandardAction>
 #include <KAction>
 
@@ -647,7 +649,7 @@ void UrlBar::suggest()
 
 void UrlBar::refreshFavicon()
 {
-    disconnect(_icon);
+    _icon->disconnect();
     
     const QString scheme = _tab->url().protocol();
     
@@ -668,7 +670,7 @@ void UrlBar::refreshFavicon()
             _icon->setIcon(KIcon("security-low"));
         }
         
-        connect(_icon, SIGNAL(clicked(QPoint)), _tab->page(), SLOT(showSSLInfo(QPoint)));
+        connect(_icon, SIGNAL(clicked(QPoint)), this, SLOT(showSSLInfo(QPoint)), Qt::UniqueConnection);
         return;
     }
 
@@ -759,7 +761,7 @@ void UrlBar::updateRightIconPosition(IconButton *icon, int iconsCount)
 }
 
 
-void UrlBar::showRSSInfo(const QPoint &pos)
+void UrlBar::showRSSInfo(QPoint pos)
 {
     QWebElementCollection col = _tab->page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
     col.append(_tab->page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
@@ -790,6 +792,23 @@ void UrlBar::showRSSInfo(const QPoint &pos)
 
     RSSWidget *widget = new RSSWidget(map, window());
     widget->showAt(pos);
+}
+
+
+void UrlBar::showSSLInfo(QPoint pos)
+{
+    if (_tab->url().scheme() == QL1S("https"))
+    {
+        SSLWidget *widget = new SSLWidget(_tab->url(), _tab->page()->sslInfo(), this);
+        widget->showAt(pos);
+    }
+    else
+    {
+        KMessageBox::information(this,
+                                 i18n("This site does not contain SSL information."),
+                                 i18nc("Secure Sockets Layer", "SSL")
+                                );
+    }
 }
 
 

@@ -127,7 +127,8 @@ private Q_SLOTS:
      */
     void loadTypedUrl();
 
-    void showRSSInfo(const QPoint &);
+    void showRSSInfo(QPoint);
+    void showSSLInfo(QPoint);
 
 protected:
     void paintEvent(QPaintEvent *event);

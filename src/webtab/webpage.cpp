@@ -48,7 +48,6 @@
 #include "websnap.h"
 #include "webtab.h"
 #include "sslinfodialog.h"
-#include "sslwidget.h"
 
 #include "searchengine.h"
 #include "webwindow.h"
@@ -893,18 +892,7 @@ bool WebPage::hasSslValid() const
 }
 
 
-void WebPage::showSSLInfo(QPoint pos)
+WebSslInfo WebPage::sslInfo()
 {
-    if (mainFrame()->url().scheme() == QL1S("https"))
-    {
-        SSLWidget *widget = new SSLWidget(mainFrame()->url(), _sslInfo, view());
-        widget->showAt(pos);
-    }
-    else
-    {
-        KMessageBox::information(view(),
-                                 i18n("This site does not contain SSL information."),
-                                 i18nc("Secure Sockets Layer", "SSL")
-                                );
-    }
+    return _sslInfo;
 }

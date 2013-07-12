@@ -63,6 +63,8 @@ public:
 
     bool hasSslValid() const;
 
+    WebSslInfo sslInfo();
+    
 public Q_SLOTS:
     void downloadAllContentsWithKGet();
 
@@ -84,8 +86,7 @@ private Q_SLOTS:
     void manageNetworkErrors(QNetworkReply *reply);
     void loadStarted();
     void loadFinished(bool);
-    void showSSLInfo(QPoint);
-
+    
     void copyToTempFileResult(KJob*);
 
 private:
@@ -94,7 +95,7 @@ private:
 
     ProtocolHandler _protHandler;
     WebSslInfo _sslInfo;
-
+    
     QString _mimeType;
     QString _suggestedFileName;
 
