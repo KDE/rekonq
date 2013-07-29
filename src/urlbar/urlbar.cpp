@@ -686,7 +686,9 @@ void UrlBar::refreshFavicon()
 
 void UrlBar::pasteAndGo()
 {
-    loadRequestedUrl(rApp->clipboard()->text().trimmed());
+    KUrl urlToLoad = UrlResolver::urlFromTextTyped(rApp->clipboard()->text().trimmed());
+    kDebug() << "Url to load: " << urlToLoad;
+    loadRequestedUrl(urlToLoad);
 }
 
 
