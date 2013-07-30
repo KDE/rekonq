@@ -114,7 +114,7 @@ WebView::WebView(QWidget* parent, bool isPrivateBrowsing)
 
     // Auto scroll timer
     connect(m_autoScrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
-    m_autoScrollTimer->setInterval(100);
+    m_autoScrollTimer->setInterval(16);
 
     // Smooth scroll timer
     connect(m_smoothScrollTimer, SIGNAL(timeout()), this, SLOT(scrollTick()));
