@@ -78,7 +78,6 @@ AdBlockManager::~AdBlockManager()
 {
     _whiteList.clear();
     _blackList.clear();
-    _hideList.clear();
 }
 
 
@@ -118,7 +117,7 @@ void AdBlockManager::loadSettings()
     _whiteList.clear();
     _blackList.clear();
 
-    _hideList.clear();
+    _elementHiding.clear();
 
     KConfigGroup settingsGroup(_adblockConfig, "Settings");
     _isAdblockEnabled = settingsGroup.readEntry("adBlockEnabled", false);
@@ -215,26 +214,18 @@ void AdBlockManager::loadRuleString(const QString &stringRule)
         const QString filter = stringRule.mid(2);
         if (filter.isEmpty())
             return;
-        
+
         AdBlockRule rule(filter);
         _whiteList << rule;
         return;
     }
 
     // hide (CSS) rules
-    if (stringRule.startsWith(QL1S("##")))
+    if (stringRule.contains(QL1S("##")))
     {
-        const QString filter = stringRule.mid(2);
-        if (filter.isEmpty())
-            return;
-        
-        _hideList << filter;
+        _elementHiding.addRule(stringRule);
         return;
     }
-
-    // TODO implement domain-specific hiding
-    if (stringRule.contains(QL1S("##")))
-        return;
 
     if (_hostBlackList.tryAddFilter(stringRule))
         return;
@@ -249,8 +240,9 @@ bool AdBlockManager::blockRequest(const QNetworkRequest &request)
     if (!_isAdblockEnabled)
         return false;
 
-    // we (ad)block just http traffic
-    if (request.url().scheme() != QL1S("http"))
+    // we (ad)block just http & https traffic
+    if (request.url().scheme() != QL1S("http")
+            && request.url().scheme() != QL1S("https"))
         return false;
 
     QStringList whiteRefererList = ReKonfig::whiteReferer();
@@ -298,6 +290,7 @@ bool AdBlockManager::blockRequest(const QNetworkRequest &request)
             return true;
         }
     }
+
     // no match
     return false;
 }
@@ -410,7 +403,7 @@ void AdBlockManager::applyHidingRules(bool ok)
 {
     if (!ok)
         return;
-    
+
     QWebFrame *frame = qobject_cast<QWebFrame *>(sender());
     if (!frame)
         return;
@@ -418,25 +411,13 @@ void AdBlockManager::applyHidingRules(bool ok)
     WebPage *page = qobject_cast<WebPage *>(frame->page());
     if (!page)
         return;
-    
+
     QString mainPageHost = page->loadingUrl().host();
     QStringList hosts = ReKonfig::whiteReferer();
     if (hosts.contains(mainPageHost))
         return;
-    
+
     QWebElement document = frame->documentElement();
 
-    // HIDE RULES
-    Q_FOREACH(const QString & filter, _hideList)
-    {
-        QWebElementCollection elements = document.findAll(filter);
-
-        Q_FOREACH(QWebElement el, elements)
-        {
-            if (el.isNull())
-                continue;
-            kDebug() << "Hide element: " << el.localName();
-            el.removeFromDocument();
-        }
-    }
+    _elementHiding.apply(document, mainPageHost);
 }

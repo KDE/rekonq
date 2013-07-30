@@ -125,6 +125,7 @@
 #include "rekonq_defines.h"
 
 // Local Includes
+#include "adblockelementhiding.h"
 #include "adblockhostmatcher.h"
 #include "adblockrule.h"
 
@@ -188,7 +189,7 @@ private Q_SLOTS:
 
     void applyHidingRules(QWebFrame *);
     void applyHidingRules(bool);
-    
+
 Q_SIGNALS:
     void reloadCurrentPage();
 
@@ -200,8 +201,8 @@ private:
     AdBlockHostMatcher _hostWhiteList;
     AdBlockRuleList _blackList;
     AdBlockRuleList _whiteList;
-    
-    QStringList _hideList;
+
+    AdBlockElementHiding _elementHiding;
 
     KSharedConfig::Ptr _adblockConfig;
 

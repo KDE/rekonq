@@ -18,6 +18,7 @@ set(rekonq_KDEINIT_SRCS
     urlresolver.cpp
     websnap.cpp
     #----------------------------------------
+    adblock/adblockelementhiding.cpp
     adblock/adblockhostmatcher.cpp
     adblock/adblockmanager.cpp
     adblock/adblockrule.cpp
@@ -74,7 +75,7 @@ set(rekonq_KDEINIT_SRCS
     sync/sshsynchandler.cpp
     sync/syncgooglesettingswidget.cpp
     sync/syncoperasettingswidget.cpp
-    sync/syncsshsettingswidget.cpp 
+    sync/syncsshsettingswidget.cpp
     #----------------------------------------
     tabwindow/rwindow.cpp
     tabwindow/rekonqwindow.cpp
