@@ -46,6 +46,7 @@
 #include <QWebElement>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QtConcurrentRun>
 
 
 QWeakPointer<AdBlockManager> AdBlockManager::s_adBlockManager;
@@ -69,8 +70,8 @@ AdBlockManager::AdBlockManager(QObject *parent)
     , _isAdblockEnabled(false)
     , _isHideAdsEnabled(false)
 {
-    // NOTE: launch this with 1 sec delay to get sure we can start up fast...
-    QTimer::singleShot(1000, this, SLOT(loadSettings()));
+    // NOTE: launch this in a second thread so that it does not delay startup
+    _settingsLoaded = QtConcurrent::run(this, &AdBlockManager::loadSettings);
 }
 
 
@@ -120,11 +121,13 @@ void AdBlockManager::loadSettings()
     _elementHiding.clear();
 
     KConfigGroup settingsGroup(_adblockConfig, "Settings");
-    _isAdblockEnabled = settingsGroup.readEntry("adBlockEnabled", false);
 
     // no need to load filters if adblock is not enabled :)
-    if (!_isAdblockEnabled)
+    if (!settingsGroup.readEntry("adBlockEnabled", false))
+    {
+        _isAdblockEnabled = false;
         return;
+    }
 
     // just to be sure..
     _isHideAdsEnabled = settingsGroup.readEntry("hideAdsEnabled", false);
@@ -169,6 +172,8 @@ void AdBlockManager::loadSettings()
     // load local rules
     QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
     loadRules(localRulesFilePath);
+
+    _isAdblockEnabled = true;
 }
 
 
@@ -341,6 +346,9 @@ bool AdBlockManager::subscriptionFileExists(int i)
 
 void AdBlockManager::showSettings()
 {
+    // at this point, the settings should be loaded
+    _settingsLoaded.waitForFinished();
+
     QPointer<KDialog> dialog = new KDialog();
     dialog->setCaption(i18nc("@title:window", "Ad Block Settings"));
     dialog->setButtons(KDialog::Ok | KDialog::Cancel);
@@ -357,6 +365,9 @@ void AdBlockManager::showSettings()
 
 void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
 {
+    // at this point, the settings should be loaded
+    _settingsLoaded.waitForFinished();
+
     // save rule in local filters
     QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
 
@@ -383,6 +394,9 @@ void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
 
 bool AdBlockManager::isAdblockEnabledForHost(const QString &host)
 {
+    if (!_isAdblockEnabled)
+        return false;
+
     return ! _hostWhiteList.match(host);
 }
 

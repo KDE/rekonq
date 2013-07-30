@@ -137,6 +137,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QByteArray>
+#include <QFuture>
 
 // Forward Includes
 class QNetworkRequest;
@@ -205,6 +206,7 @@ private:
     AdBlockElementHiding _elementHiding;
 
     KSharedConfig::Ptr _adblockConfig;
+    QFuture<void> _settingsLoaded;
 
     static QWeakPointer<AdBlockManager> s_adBlockManager;
 };
