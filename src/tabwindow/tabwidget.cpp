@@ -655,7 +655,7 @@ void TabWidget::closeTab(int index, bool del)
     }
 
     if (!tabToClose->url().isEmpty()
-            && tabToClose->url().scheme() != QL1S("rekonq")
+//             && tabToClose->url().scheme() != QL1S("rekonq")
             && !tabToClose->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled)
        )
     {
@@ -823,8 +823,12 @@ void TabWidget::restoreClosedTab(int index, bool inNewTab)
         tab = currentWebWindow();
     }
     
-    tab->load(u);
+    // apply history again
+    history.applyHistory(tab->page()->history());
 
+    if (u.scheme() == QL1S("rekonq"))
+        tab->load(u);
+    
     // just to get sure...
     m_recentlyClosedTabs.removeAll(history);    
 }
