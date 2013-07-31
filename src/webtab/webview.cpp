@@ -591,7 +591,16 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         a = KStandardAction::spelling(this, SLOT(spellCheck()), &menu);
         menu.addAction(a);
     }
-
+    
+    if (webwin && window()->isFullScreen())
+    {
+        a = new KAction(KIcon("view-fullscreen"), i18n("Exit FullScreen Mode"), &menu);
+        a->setCheckable(true);
+        a->setChecked(true);
+        connect(a, SIGNAL(triggered(bool)), webwin, SIGNAL(setFullScreen(bool)));
+        menu.addAction(a);
+    }
+    
     // finally launch the menu...
     menu.exec(mapToGlobal(event->pos()));
 }
