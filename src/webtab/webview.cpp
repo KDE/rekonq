@@ -355,7 +355,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
         menu.addSeparator();
 
-        //Frame
+        // Frame
         KActionMenu *frameMenu = new KActionMenu(i18n("Current Frame"), &menu);
         frameMenu->addAction(pageAction(KWebPage::OpenFrameInNewWindow));
 
@@ -394,7 +394,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         sendByMailAction->setData(m_contextMenuHitResult.linkUrl());
         sendByMailAction->setText(i18n("Share link"));
 
-
         a = new KAction(KIcon("tab-new"), i18n("Open in New &Tab"), &menu);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(openLinkInNewTab()));
@@ -431,7 +430,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             a->setText(i18n("Save Link"));
 
         menu.addAction(a);
-        menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
     }
 
     // IMAGE ACTIONS ------------------------------------------------------------------
@@ -564,7 +562,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     // DEFAULT ACTIONs (on the bottom) ------------------------------------------------
     menu.addSeparator();
     if (resultHit & WebView::LinkSelection)
-    {
+    {      
+        menu.addAction(pageAction(KWebPage::CopyLinkToClipboard));
+        
         a = new KAction(KIcon("bookmark-new"), i18n("&Bookmark link"), &menu);
         a->setData(m_contextMenuHitResult.linkUrl());
         connect(a, SIGNAL(triggered(bool)), this, SLOT(bookmarkLink()));
@@ -580,6 +580,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
 
     menu.addAction(sendByMailAction);
+    menu.addSeparator();
 
     if (webwin)
         menu.addAction(webwin->actionByName("web_inspector"));
