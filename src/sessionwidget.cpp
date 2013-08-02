@@ -76,6 +76,11 @@ SessionWidget::SessionWidget(QWidget *parent)
 void SessionWidget::loadSession()
 {
     int cc = listWidget->currentRow();
+    if (cc < 0)
+    {
+        rApp->loadUrl(KUrl("rekonq:home"));
+        return;
+    }
     SessionManager::self()->restoreYourSession(cc);
 }
 
