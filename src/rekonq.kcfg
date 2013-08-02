@@ -155,7 +155,7 @@
         <default code="true">QWebSettings::globalSettings()->fontFamily(QWebSettings::FantasyFont)</default>
     </entry>
     <entry name="defaultFontSize" type="Int">
-        <default>12</default>
+        <default>16</default>
     </entry>
     <entry name="minFontSize" type="Int">
         <default>7</default>

@@ -87,13 +87,20 @@ Application::Application()
 #ifdef HAVE_KACTIVITIES
     m_activityConsumer = new KActivities::Consumer();
 #endif
+    
+    // updating rekonq configuration
+    updateConfiguration();
+
+    setWindowIcon(KIcon("rekonq"));
+
+    // just create History Manager...
+    HistoryManager::self();
 }
 
 
 Application::~Application()
 {
-    // ok, we are closing well.
-    // Don't recover on next load..
+    // ok, we are closing well: don't recover on next load..
     ReKonfig::setRecoverOnCrash(0);
     saveConfiguration();
 
@@ -151,17 +158,6 @@ int Application::newInstance()
         kDebug() << "URL: " << u;
 
         loadUrl(u, Rekonq::WebApp);
-
-        if (isFirstLoad)
-        {
-            // updating rekonq configuration
-            updateConfiguration();
-
-            setWindowIcon(KIcon("rekonq"));
-
-            // just create History Manager...
-            HistoryManager::self();
-        }
 
         KStartupInfo::appStarted();
         isFirstLoad = false;
@@ -347,14 +343,6 @@ int Application::newInstance()
 
         if (ReKonfig::checkDefaultSearchEngine() && !hasToBeRecoveredFromCrash && SearchEngine::defaultEngine().isNull())
             QTimer::singleShot(2000, rekonqWindow()->currentWebWindow()->tabView(), SLOT(showSearchEngineBar()));
-
-        // updating rekonq configuration
-        updateConfiguration();
-
-        setWindowIcon(KIcon("rekonq"));
-
-        // just create History Manager...
-        HistoryManager::self();
 
         ReKonfig::setRecoverOnCrash(ReKonfig::recoverOnCrash() + 1);
         saveConfiguration();
@@ -598,17 +586,6 @@ void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
 
 void Application::updateConfiguration()
 {
-    // ============== Tabs ==================
-    bool b = ReKonfig::closeTabSelectPrevious();
-    Q_FOREACH(const QWeakPointer<RekonqWindow> &w, m_rekonqWindows)
-    {
-        if (b)
-            w.data()->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
-        else
-            w.data()->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
-    }
-
-
     QWebSettings *defaultSettings = QWebSettings::globalSettings();
 
     // =========== Fonts ==============
@@ -619,23 +596,9 @@ void Application::updateConfiguration()
     defaultSettings->setFontFamily(QWebSettings::CursiveFont, ReKonfig::cursiveFontFamily());
     defaultSettings->setFontFamily(QWebSettings::FantasyFont, ReKonfig::fantasyFontFamily());
 
-    // compute font size
-    // (I have to admit I know nothing about these DPI questions..: copied from kwebkitpart, as someone suggested)
-    // font size in pixels =  font size in inches × screen dpi
-    if (rekonqWindow() && rekonqWindow()->currentWebWindow())
-    {
-        int logDpiY = rekonqWindow()->currentWebWindow()->logicalDpiY();
-        float toPix = (logDpiY < 96.0)
-                      ? 96.0 / 72.0
-                      : logDpiY / 72.0 ;
-
-        int defaultFontSize = ReKonfig::defaultFontSize();
-        int minimumFontSize = ReKonfig::minFontSize();
-
-        defaultSettings->setFontSize(QWebSettings::DefaultFontSize, qRound(defaultFontSize * toPix));
-        defaultSettings->setFontSize(QWebSettings::MinimumFontSize, qRound(minimumFontSize * toPix));
-    }
-
+    defaultSettings->setFontSize(QWebSettings::DefaultFontSize, ReKonfig::defaultFontSize());
+    defaultSettings->setFontSize(QWebSettings::MinimumFontSize, ReKonfig::minFontSize());
+    
     // encodings
     QString enc = ReKonfig::defaultEncoding();
     defaultSettings->setDefaultTextEncoding(enc);
@@ -682,9 +645,19 @@ void Application::updateConfiguration()
     HistoryManager::self()->loadSettings();
 
     defaultSettings = 0;
-
+    
     if (!rekonqWindow())
         return;
+    
+    // ============== Tabs ==================
+    bool b = ReKonfig::closeTabSelectPrevious();
+    Q_FOREACH(const QWeakPointer<RekonqWindow> &w, m_rekonqWindows)
+    {
+        if (b)
+            w.data()->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
+        else
+            w.data()->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectRightTab);
+    }
 
     // FIXME What about this?
 //     ReKonfig::useFavicon()
@@ -721,7 +694,6 @@ void Application::updateConfiguration()
         ASSERT_NOT_REACHED(unknown hoveringTabOption);
         break;
     }
-
 }
 
 
