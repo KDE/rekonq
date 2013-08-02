@@ -270,6 +270,7 @@ void WebWindow::setupActions()
     // find action
     a = KStandardAction::find(m_findBar, SLOT(show()), actionCollection());
     KShortcut findShortcut = KStandardShortcut::find();
+    findShortcut.setAlternate(Qt::Key_Slash);
     a->setShortcut(findShortcut);
 
     KStandardAction::findNext(m_findBar, SLOT(findNext()), actionCollection());
