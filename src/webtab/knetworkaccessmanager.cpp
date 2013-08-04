@@ -51,21 +51,45 @@ KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
     kDebug() << "PROXY TYPE: " << proxyType;
 
     if (proxyType == 0)
-        proxy.setType(QNetworkProxy::NoProxy);
-    else
-        proxy.setType(QNetworkProxy::Socks5Proxy);
+        return;
 
-    QString proxyHost = proxyGroup.readEntry( QL1S("socksProxy"), QString("") );
-    QStringList proxyInfoList = proxyHost.split(QL1C(' '));
-    kDebug() << proxyInfoList;
+    QStringList httpProxy = proxyGroup.readEntry( QL1S("httpProxy"), QString("") ).split(QL1C(' '));
+    QStringList socksProxy = proxyGroup.readEntry( QL1S("socksProxy"), QString("") ).split(QL1C(' '));
+    
+    QStringList proxyInfoList;
+
+    if (!httpProxy.isEmpty()) 
+    {
+        proxy.setType(QNetworkProxy::HttpProxy);
+        proxyInfoList = httpProxy;
+    } 
+    else 
+    {
+        if (!socksProxy.isEmpty()) 
+        {
+            proxy.setType(QNetworkProxy::Socks5Proxy);
+            proxyInfoList = socksProxy;
+        }
+    }
+    
     if (proxyInfoList.isEmpty())
         return;
     
-    proxy.setHostName(proxyInfoList.at(0));
+    // else
+    proxyInfoList.first().remove("http://");
+
+    // set host
+    QString proxyHost = proxyInfoList.at(0);
+    kDebug() << "PROXY HOST: " << proxyHost;
+    proxy.setHostName(proxyHost);
     
+    // set port
     if (proxyInfoList.count() == 2)
-        proxy.setPort(proxyInfoList.at(1).toInt());
-    
+    {
+        int proxyPort = proxyInfoList.at(1).toInt();
+        kDebug() << "PROXY PORT: " << proxyPort;
+        proxy.setPort(proxyPort);
+    }
 //     proxy.setUser("username");
 //     proxy.setPassword("password");
 //     
