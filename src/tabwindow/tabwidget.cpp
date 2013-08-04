@@ -783,6 +783,9 @@ void TabWidget::bookmarkAllTabs()
         WebWindow *tab = webWindow(i);
         KBookmark bk = folderGroup.addBookmark(tab->title(), tab->url());
     }
+    
+    // force bookmarks saving
+    BookmarkManager::self()->emitChanged();
 }
 
 
