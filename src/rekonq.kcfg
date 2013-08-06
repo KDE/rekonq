@@ -198,13 +198,13 @@
     </entry>
     <!-- xxx -->
     <entry name="offlineStorageDatabaseEnabled" type="Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
     <entry name="offlineWebApplicationCacheEnabled" type="Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
     <entry name="localStorageEnabled" type="Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
     <entry name="offlineWebApplicationCacheQuota" type="Int">
         <default>50</default>
