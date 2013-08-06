@@ -28,12 +28,6 @@
 #include "rsswidget.h"
 #include "rsswidget.moc"
 
-// Local includes
-#include "application.h"
-#include "rekonqwindow.h"
-
-#include "iconmanager.h"
-
 // KDE Includes
 #include <KComboBox>
 #include <KLocalizedString>
@@ -76,7 +70,7 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     m_agregators->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     m_agregators->addItem(KIcon("akregator"), QString("Akregator"));
-    m_agregators->addItem(IconManager::self()->iconForUrl(KUrl("http://google.com/reader")), i18n("Google Reader"));
+//     m_agregators->addItem(IconManager::self()->iconForUrl(KUrl("http://google.com/reader")), i18n("Google Reader"));
 
     layout->addRow(agregator, m_agregators);
 
@@ -123,18 +117,18 @@ void RSSWidget::accept()
 
     if (m_agregators->currentIndex() == 0)
         addWithAkregator(url);
-    else
-        addWithGoogleReader(url);
+//     else
+//         addWithGoogleReader(url);
 
     close();
 }
 
 
-void RSSWidget::addWithGoogleReader(const QString &url)
-{
-    KUrl toLoad = KUrl("http://www.google.com/ig/add?feedurl=" + url);
-    rApp->rekonqWindow()->loadUrl(toLoad);
-}
+// void RSSWidget::addWithGoogleReader(const QString &url)
+// {
+//     KUrl toLoad = KUrl("http://www.google.com/ig/add?feedurl=" + url);
+//     rApp->rekonqWindow()->loadUrl(toLoad);
+// }
 
 
 void RSSWidget::addWithAkregator(const QString &url)

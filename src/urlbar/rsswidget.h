@@ -50,7 +50,7 @@ private Q_SLOTS:
 
 private:
     void addWithAkregator(const QString &url);
-    void addWithGoogleReader(const QString &url);
+//     void addWithGoogleReader(const QString &url);
 
     QMap<KUrl, QString> m_map;
 
