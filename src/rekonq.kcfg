@@ -214,7 +214,7 @@
         <default>true</default>
     </entry>
     <entry name="webGL" type="Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
     <entry name="spatialNavigation" type="Bool">
         <default>false</default>
