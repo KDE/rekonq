@@ -116,9 +116,10 @@ void WebIcon::saveIcon(bool b)
 
     // dest url
     KUrl destUrl(faviconsDir + m_url.host());
-
+    kDebug() << "DEST URL: " << destUrl;
+    
     // will autodelete itself when done
-    new IconDownloader(faviconUrl, destUrl, this);
+    new IconDownloader(faviconUrl, destUrl);
     
     this->deleteLater();
 }
