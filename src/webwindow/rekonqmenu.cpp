@@ -49,7 +49,6 @@ void RekonqMenu::showEvent(QShowEvent* event)
     // rekonq window to reduce the cases that sub-menus might overlap
     // the right screen border.
     QPoint position = pos();
-    int y = position.y();
 
     int w = width();
 
@@ -58,7 +57,13 @@ void RekonqMenu::showEvent(QShowEvent* event)
     int pw = parentWidget->width();
     int px = widgetGlobalPos.x();
 
-    QPoint newPosition = QPoint(px + pw - w, y);
+    // if menu does not overlays right border, do NOT move it
+    int xw = position.x() + w;
+    int pxw = px + pw;
+    if (xw < pxw)
+        return;
+    
+    QPoint newPosition = QPoint(px + pw - w, position.y());
 
     // Finally, move it there...
     move(newPosition);
