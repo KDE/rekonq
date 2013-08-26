@@ -664,7 +664,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
         kDebug() << "ERROR " << reply->error() << ": " << reply->errorString();
         if (reply->url() == _loadingUrl)
         {
-            frame->setHtml(errorPage(reply));
+            frame->setHtml(errorPage(reply), reply->url());
             if (isMainFrameRequest)
             {
                 _isOnRekonqPage = true;
