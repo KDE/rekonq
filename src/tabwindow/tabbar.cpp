@@ -208,6 +208,10 @@ void TabBar::contextMenu(int tabIndex, const QPoint &pos)
     a->setData(tabIndex);
     menu.addAction(a);
 
+    a = new KAction(KIcon("view-refresh"), i18n("Reload All"), this);
+    connect(a, SIGNAL(triggered(bool)), w, SLOT(reloadAllTabs()));
+    menu.addAction(a);
+
     if (count() > 1)
     {
         a = new KAction(KIcon("tab-detach"), i18n("Detach"), this);
