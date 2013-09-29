@@ -49,7 +49,7 @@ SyncHostTypeWidget::SyncHostTypeWidget(QWidget *parent)
         googleRadioButton->setChecked(true);
     else if (ReKonfig::syncType() == 2)
         operaRadioButton->setChecked(true);
-    if (ReKonfig::syncType() == 3)
+    else if (ReKonfig::syncType() == 3)
         sshRadioButton->setChecked(true);
     else
         nullRadioButton->setChecked(true);
