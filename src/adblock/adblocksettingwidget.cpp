@@ -107,7 +107,7 @@ void AdBlockSettingWidget::insertRule()
 
 void AdBlockSettingWidget::removeRule()
 {
-    manualFiltersListWidget->takeItem(manualFiltersListWidget->currentRow());
+    delete manualFiltersListWidget->takeItem(manualFiltersListWidget->currentRow());
 }
 
 
