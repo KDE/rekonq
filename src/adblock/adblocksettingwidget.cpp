@@ -158,7 +158,7 @@ void AdBlockSettingWidget::load()
     // ------------------------------------------------------------------------------
 
     // local filters
-    QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
+    const QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
 
     QFile ruleFile(localRulesFilePath);
     if (!ruleFile.open(QFile::ReadOnly | QFile::Text))
@@ -170,7 +170,7 @@ void AdBlockSettingWidget::load()
     QTextStream in(&ruleFile);
     while (!in.atEnd())
     {
-        QString stringRule = in.readLine();
+        const QString stringRule = in.readLine();
         QListWidgetItem *subItem = new QListWidgetItem(manualFiltersListWidget);
         subItem->setText(stringRule);
     }
@@ -236,7 +236,7 @@ void AdBlockSettingWidget::hasChanged()
 }
 
 
-bool AdBlockSettingWidget::changed()
+bool AdBlockSettingWidget::changed() const
 {
     return _changed;
 }

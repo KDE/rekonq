@@ -97,12 +97,12 @@ bool AdBlockManager::isHidingElements()
 void AdBlockManager::loadSettings()
 {
     // first, check this...
-    QString adblockFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrc"));
+    const QString adblockFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrc"));
     if (!QFile::exists(adblockFilePath))
     {
-        QString generalAdblockFilePath = KStandardDirs::locate("appdata" , QL1S("adblockrc"));
+        const QString generalAdblockFilePath = KStandardDirs::locate("appdata" , QL1S("adblockrc"));
         QFile adblockFile(generalAdblockFilePath);
-        bool copied = adblockFile.copy(adblockFilePath);
+        const bool copied = adblockFile.copy(adblockFilePath);
         if (!copied)
         {
             kDebug() << "oh oh... Problems copying default adblock file";
@@ -134,7 +134,7 @@ void AdBlockManager::loadSettings()
 
     // ----------------------------------------------------------
 
-    QDateTime today = QDateTime::currentDateTime();
+    const QDateTime today = QDateTime::currentDateTime();
     QDateTime lastUpdate = QDateTime::fromString(settingsGroup.readEntry("lastUpdate", QString()));
     int days = settingsGroup.readEntry("updateInterval", 7);
 
@@ -306,7 +306,7 @@ void AdBlockManager::updateSubscription(int i)
     KConfigGroup filtersGroup(_adblockConfig, "FiltersList");
     QString n = QString::number(i + 1);
 
-    QString fUrl = filtersGroup.readEntry("FilterURL-" + n, QString());
+    const QString fUrl = filtersGroup.readEntry("FilterURL-" + n, QString());
     KUrl subUrl = KUrl(fUrl);
 
     QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
@@ -337,9 +337,9 @@ void AdBlockManager::slotFinished(KJob *job)
 
 bool AdBlockManager::subscriptionFileExists(int i)
 {
-    QString n = QString::number(i + 1);
+    const QString n = QString::number(i + 1);
 
-    QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
+    const QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
     return QFile::exists(rulesFilePath);
 }
 
@@ -369,7 +369,7 @@ void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
     _settingsLoaded.waitForFinished();
 
     // save rule in local filters
-    QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
+    const QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
 
     QFile ruleFile(localRulesFilePath);
     if (!ruleFile.open(QFile::WriteOnly | QFile::Append))
