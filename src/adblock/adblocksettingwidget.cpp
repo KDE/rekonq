@@ -52,7 +52,6 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
     hintLabel->setText(i18n("<qt>Filter expression (e.g. <tt>http://www.example.com/ad/*</tt>, <a href=\"filterhelp\">more information</a>):"));
     connect(hintLabel, SIGNAL(linkActivated(QString)), this, SLOT(slotInfoLinkActivated(QString)));
 
-    manualFiltersListWidget->setSortingEnabled(true);
     manualFiltersListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
     searchLine->setListWidget(manualFiltersListWidget);

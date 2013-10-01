@@ -103,7 +103,14 @@
         </layout>
        </item>
        <item>
-        <widget class="KListWidget" name="manualFiltersListWidget"/>
+        <widget class="KListWidget" name="manualFiltersListWidget">
+         <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::InternalMove</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="hintLabel">
@@ -147,11 +154,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KListWidgetSearchLine</class>
-   <extends>KLineEdit</extends>
-   <header>klistwidgetsearchline.h</header>
-  </customwidget>
-  <customwidget>
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
@@ -171,6 +173,11 @@
    <extends>QTabWidget</extends>
    <header>ktabwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KListWidgetSearchLine</class>
+   <extends>KLineEdit</extends>
+   <header>klistwidgetsearchline.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
