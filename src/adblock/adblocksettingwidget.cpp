@@ -52,7 +52,7 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
     hintLabel->setText(i18n("<qt>Filter expression (e.g. <tt>http://www.example.com/ad/*</tt>, <a href=\"filterhelp\">more information</a>):"));
     connect(hintLabel, SIGNAL(linkActivated(QString)), this, SLOT(slotInfoLinkActivated(QString)));
 
-    manualFiltersListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    manualFiltersListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
 
     searchLine->setListWidget(manualFiltersListWidget);
 
@@ -68,7 +68,6 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
 
     // emit changed signal
     connect(insertButton,       SIGNAL(clicked()),           this, SLOT(hasChanged()));
-    connect(removeButton,       SIGNAL(clicked()),           this, SLOT(hasChanged()));
     connect(checkEnableAdblock, SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
     connect(checkHideAds,       SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
     connect(spinBox,            SIGNAL(valueChanged(int)),   this, SLOT(hasChanged()));
@@ -106,7 +105,14 @@ void AdBlockSettingWidget::insertRule()
 
 void AdBlockSettingWidget::removeRule()
 {
-    delete manualFiltersListWidget->takeItem(manualFiltersListWidget->currentRow());
+    QList<QListWidgetItem *> select = manualFiltersListWidget->selectedItems();
+    if (select.isEmpty()) {
+        return;
+    }
+    Q_FOREACH (QListWidgetItem *item, select) {
+        delete item;
+    }
+    hasChanged();
 }
 
 
