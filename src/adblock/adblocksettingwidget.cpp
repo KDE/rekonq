@@ -79,7 +79,7 @@ void AdBlockSettingWidget::slotInfoLinkActivated(const QString &url)
 {
     Q_UNUSED(url)
 
-    QString hintHelpString = i18n("<qt><p>Enter an expression to filter. Filters can be defined as either:"
+    const QString hintHelpString = i18n("<qt><p>Enter an expression to filter. Filters can be defined as either:"
                                   "<ul><li>a shell-style wildcard, e.g. <tt>http://www.example.com/ads*</tt>, "
                                   "the wildcards <tt>*?[]</tt> may be used</li>"
                                   "<li>a full regular expression by surrounding the string with '<tt>/</tt>', "
@@ -203,19 +203,19 @@ void AdBlockSettingWidget::save()
 
     // automatic filters
     KConfigGroup autoFiltersGroup(_adblockConfig, "FiltersList");
-    for (int i = 0; i < automaticFiltersListWidget->count(); i++)
+    for (int i = 0; i < automaticFiltersListWidget->count(); ++i)
     {
         QListWidgetItem *subItem = automaticFiltersListWidget->item(i);
         bool active = true;
         if (subItem->checkState() == Qt::Unchecked)
             active = false;
 
-        QString n = QString::number(i + 1);
+        const QString n = QString::number(i + 1);
         autoFiltersGroup.writeEntry("FilterEnabled-" + n, active);
     }
 
     // local filters
-    QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
+    const QString localRulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_local"));
 
     QFile ruleFile(localRulesFilePath);
     if (!ruleFile.open(QFile::WriteOnly | QFile::Text))
@@ -225,11 +225,12 @@ void AdBlockSettingWidget::save()
     }
 
     QTextStream out(&ruleFile);
-    for (int i = 0; i < manualFiltersListWidget->count(); i++)
+    for (int i = 0; i < manualFiltersListWidget->count(); ++i)
     {
         QListWidgetItem *subItem = manualFiltersListWidget->item(i);
-        QString stringRule = subItem->text();
-        out << stringRule << '\n';
+        const QString stringRule = subItem->text();
+        if (!stringRule.trimmed().isEmpty())
+            out << stringRule << '\n';
     }
 
     // -------------------------------------------------------------------------------
