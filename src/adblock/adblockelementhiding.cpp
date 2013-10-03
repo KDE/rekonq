@@ -65,7 +65,7 @@ bool AdBlockElementHiding::addRule(const QString &rule)
     return true;
 }
 
-void AdBlockElementHiding::apply(QWebElement &document, QString domain) const
+void AdBlockElementHiding::apply(QWebElement &document, const QString &domain) const
 {
 
     //first apply generic rules

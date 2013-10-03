@@ -67,7 +67,6 @@ AdBlockSettingWidget::AdBlockSettingWidget(KSharedConfig::Ptr config, QWidget *p
     spinBox->setSuffix(ki18np(" day", " days"));
 
     // emit changed signal
-    connect(insertButton,       SIGNAL(clicked()),           this, SLOT(hasChanged()));
     connect(checkEnableAdblock, SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
     connect(checkHideAds,       SIGNAL(stateChanged(int)),   this, SLOT(hasChanged()));
     connect(spinBox,            SIGNAL(valueChanged(int)),   this, SLOT(hasChanged()));
@@ -94,12 +93,20 @@ void AdBlockSettingWidget::slotInfoLinkActivated(const QString &url)
 
 void AdBlockSettingWidget::insertRule()
 {
-    QString rule = addFilterLineEdit->text();
+    const QString rule = addFilterLineEdit->text();
     if (rule.isEmpty())
         return;
 
+    const int numberItem(manualFiltersListWidget->count());
+    for (int i = 0; i < numberItem; ++i) {
+        if (manualFiltersListWidget->item(i)->text() == rule) {
+            addFilterLineEdit->clear();
+            return;
+        }
+    }
     manualFiltersListWidget->addItem(rule);
     addFilterLineEdit->clear();
+    hasChanged();
 }
 
 

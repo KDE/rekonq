@@ -36,7 +36,7 @@ public:
     AdBlockElementHiding();
 
     bool addRule(const QString &rule);
-    void apply(QWebElement &document, QString domain) const;
+    void apply(QWebElement &document, const QString &domain) const;
 
     void clear();
 
