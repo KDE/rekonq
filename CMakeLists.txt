@@ -7,7 +7,7 @@ PROJECT( rekonq )
 # Information to update before to release this package.
 
 # rekonq info
-SET(REKONQ_VERSION "2.3.2" )
+SET(REKONQ_VERSION "2.4.0" )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-version.h )
 
