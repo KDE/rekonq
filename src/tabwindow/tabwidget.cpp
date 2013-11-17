@@ -547,7 +547,7 @@ void TabWidget::tabLoadStarted()
 
         if (!label->movie())
         {
-            static QString loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.mng");
+            static QString loadingGitPath = KStandardDirs::locate("appdata" , "pics/loading.gif");
 
             QMovie *movie = new QMovie(loadingGitPath, QByteArray(), label);
             movie->setSpeed(50);
@@ -559,7 +559,9 @@ void TabWidget::tabLoadStarted()
         tabBar()->setTabButton(index, QTabBar::LeftSide, label);
 
         if (!tabBar()->tabData(index).toBool())
+        {
             tabBar()->setTabText(index, i18n("Loading..."));
+        }
         else
         {
             tabBar()->tabButton(index, QTabBar::RightSide)->hide(); // NOTE: not really good this, but..."Repetita iuvant"!!!
@@ -910,8 +912,9 @@ int TabWidget::addTab(QWidget *page, const QIcon &icon, const QString &label)
 
 int TabWidget::insertTab(int index, QWidget *page, const QString &label)
 {
-    if (! ReKonfig::openNewTabsNextToCurrent())
+    if (!ReKonfig::openNewTabsNextToCurrent())
         index = -1;
+
     setUpdatesEnabled(false);
     int i = KTabWidget::insertTab(index, page, label);
     setUpdatesEnabled(true);
@@ -922,8 +925,9 @@ int TabWidget::insertTab(int index, QWidget *page, const QString &label)
 
 int TabWidget::insertTab(int index, QWidget *page, const QIcon &icon, const QString &label)
 {
-    if (! ReKonfig::openNewTabsNextToCurrent())
+    if (!ReKonfig::openNewTabsNextToCurrent())
         index = -1;
+
     setUpdatesEnabled(false);
     int i = KTabWidget::insertTab(index, page, icon, label);
     setUpdatesEnabled(true);

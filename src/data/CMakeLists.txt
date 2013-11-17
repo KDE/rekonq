@@ -6,7 +6,7 @@ INSTALL(
     category.png
     button.png
     busywidget.gif
-    loading.mng
+    loading.gif
     webkit-icon.png
     autoscroll.png
     background.png
