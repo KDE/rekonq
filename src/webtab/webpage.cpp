@@ -192,6 +192,8 @@ WebPage::~WebPage()
     QString path = WebSnap::imagePathFromUrl(mainFrame()->url().toString());
     QFile::remove(path);
     preview.save(path);
+    
+    kDebug() << "BYE BYE WEBPAGE";
 }
 
 

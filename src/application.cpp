@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2012-2013 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -107,6 +107,19 @@ Application::~Application()
 #ifdef HAVE_KACTIVITIES    
     delete m_activityConsumer;
 #endif
+
+    // Destroy all windows...
+    Q_FOREACH(QWeakPointer<RekonqWindow> pointer, m_rekonqWindows)
+    {
+        delete pointer.data();
+        pointer.clear();
+    }
+
+    // Destroy all web apps
+    Q_FOREACH(WebTab *tab, m_webApps)
+    {
+        delete tab;
+    }
 
     kDebug() << "Bye bye (k)baby...";
 }

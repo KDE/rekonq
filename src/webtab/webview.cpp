@@ -128,6 +128,8 @@ WebView::~WebView()
 {
     if (m_isViewSmoothScrolling)
         stopSmoothScrolling();
+    
+    kDebug() << "BYE BYE WEBVIEW";
 }
 
 
