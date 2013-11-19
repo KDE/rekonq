@@ -43,24 +43,3 @@ INSTALL(
     DESTINATION ${DATA_INSTALL_DIR}/rekonq
 )
 
-# opensearch engines
-INSTALL(
-    FILES
-    beolingus.xml
-    bing.xml
-    yahoo.xml
-    de2en.xml
-    dictfr.xml
-    facebook.xml
-    google.xml
-    kde_techbase.xml
-    kde_userbase.xml
-    youtube.xml
-    voila.xml
-    wikia.xml
-    wikipedia.xml
-    wiktionary.xml
-    wr_english.xml
-    db_opensearch.json
-    DESTINATION ${DATA_INSTALL_DIR}/rekonq/opensearch
-)

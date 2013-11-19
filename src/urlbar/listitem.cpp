@@ -344,76 +344,7 @@ PreviewListItem::PreviewListItem(const UrlSuggestionItem &item, const QString &t
     vLayout->addWidget(new TextLabel("<i>" + item.url + "</i>", text, this));
     hLayout->addLayout(vLayout);
 
-    // preview label icon
-    QLabel *previewLabelIcon = new QLabel(this);
-    previewLabelIcon->setFixedSize(45, 33);
-    new PreviewLabel(item.url, 38, 29, previewLabelIcon);
-    IconLabel* icon = new IconLabel(item.url, previewLabelIcon);
-    icon->move(27, 16);
-    hLayout->addWidget(previewLabelIcon);
-
     setLayout(hLayout);
-}
-
-
-// ---------------------------------------------------------------
-
-
-PreviewLabel::PreviewLabel(const QString &url, int width, int height, QWidget *parent)
-    : QLabel(parent)
-{
-    setFixedSize(width, height);
-    setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
-
-    KUrl u = KUrl(url);
-    if (WebSnap::existsImage(KUrl(u)))
-    {
-        QPixmap preview;
-        preview.load(WebSnap::imagePathFromUrl(u));
-        setPixmap(preview.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-    }
-}
-
-
-// ---------------------------------------------------------------
-
-
-ImageLabel::ImageLabel(const QString &url, int width, int height, QWidget *parent)
-    : QLabel(parent),
-      m_url(url)
-{
-    setFixedSize(width, height);
-    if (WebSnap::existsImage(KUrl(url)))
-    {
-        QPixmap pix;
-        pix.load(WebSnap::imagePathFromUrl(url));
-        setPixmap(pix);
-    }
-    else
-    {
-        KIO::TransferJob *job = KIO::get(KUrl(url), KIO::NoReload, KIO::HideProgressInfo);
-        connect(job,  SIGNAL(data(KIO::Job*,QByteArray)),
-                this, SLOT(slotData(KJob*,QByteArray)));
-        connect(job,  SIGNAL(result(KJob*)),
-                this, SLOT(slotResult(KJob*)));
-    }
-}
-
-
-void ImageLabel::slotData(KJob *job, const QByteArray &data)
-{
-    Q_UNUSED(job);
-    m_data.append(data);
-}
-
-
-void ImageLabel::slotResult(KJob *)
-{
-    QPixmap pix;
-    if (!pix.loadFromData(m_data))
-        kDebug() << "error while loading image: ";
-    setPixmap(pix);
-    pix.save(WebSnap::imagePathFromUrl(m_url), "PNG");
 }
 
 
@@ -590,52 +521,6 @@ QString SuggestionListItem::text()
 // ---------------------------------------------------------------
 
 
-VisualSuggestionListItem::VisualSuggestionListItem(const UrlSuggestionItem &item, const QString &text, QWidget *parent)
-    : ListItem(item, parent)
-    , m_text(item.title)
-{
-
-    QHBoxLayout *hLayout = new QHBoxLayout;
-    hLayout->setSpacing(4);
-    QLabel *previewLabelIcon = new QLabel(this);
-
-    if (!item.image.isEmpty())
-    {
-        previewLabelIcon->setFixedSize(item.image_width + 10, item.image_height + 10);
-        new ImageLabel(item.image, item.image_width, item.image_height, previewLabelIcon);
-        IconLabel* icon = new IconLabel(item.url, previewLabelIcon);
-        icon->move(item.image_width - 10,  item.image_height - 10);
-    }
-    else
-    {
-        previewLabelIcon->setFixedSize(18, 18);
-        new IconLabel(item.url, previewLabelIcon);
-    }
-
-    hLayout->addWidget(previewLabelIcon);
-    QVBoxLayout *vLayout = new QVBoxLayout;
-    vLayout->setMargin(0);
-    vLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
-    vLayout->addWidget(new TextLabel(item.title, text, this));
-    DescriptionLabel *d = new DescriptionLabel("", this);
-    vLayout->addWidget(d);
-    vLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
-    hLayout->addLayout(vLayout);
-    hLayout->addWidget(new TypeIconLabel(item.type, this));
-    setLayout(hLayout);
-    d->setText("<i>" + item.description + "</i>");
-}
-
-
-QString VisualSuggestionListItem::text()
-{
-    return m_text;
-}
-
-
-// ---------------------------------------------------------------
-
-
 BrowseListItem::BrowseListItem(const UrlSuggestionItem &item, const QString &text, QWidget *parent)
     : ListItem(item, parent)
 {
@@ -676,12 +561,7 @@ ListItem *ListItemFactory::create(const UrlSuggestionItem &item, const QString &
 
     if (item.type & UrlSuggestionItem::Suggestion)
     {
-        if (item.description.isEmpty())
-        {
-            return new SuggestionListItem(item, text, parent);
-        }
-
-        return new VisualSuggestionListItem(item, text, parent);
+        return new SuggestionListItem(item, text, parent);
     }
 
     return new PreviewListItem(item, text, parent);

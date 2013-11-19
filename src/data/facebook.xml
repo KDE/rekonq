@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-    <ShortName>Facebook</ShortName>
-    <Description>Search Facebook</Description>
-    <Url method="get" template="http://www.facebook.com/search/?src=os&amp;q={searchTerms}"/>
-    <Url method="get" type="application/x-suggestions+xml" template="http://www.facebook.com/search/opensearch_typeahead.php?format=xml&amp;q={searchTerms}"/>
-    <Image>http://www.facebook.com/favicon.ico</Image>
-</OpenSearchDescription>

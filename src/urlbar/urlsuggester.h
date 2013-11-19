@@ -58,9 +58,6 @@ public:
     QString url;
     QString title;
     QString description;
-    QString image;
-    int image_width;
-    int image_height;
     QString bookmarkPath;
 
     UrlSuggestionItem(const UrlSuggestionItem &item)
@@ -68,9 +65,6 @@ public:
         , url(item.url)
         , title(item.title)
         , description(item.description)
-        , image(item.image)
-        , image_width(item.image_width)
-        , image_height(item.image_height)
     {};
 
     UrlSuggestionItem()
@@ -78,26 +72,17 @@ public:
         , url(QString())
         , title(QString())
         , description(QString())
-        , image(QString())
-        , image_width(0)
-        , image_height(0)
     {};
 
     UrlSuggestionItem(const int &_type,
                       const QString &_url,
                       const QString &_title = QString(),
-                      const QString &_description = QString(),
-                      const QString &_image = QString(),
-                      const int &_image_width = 0,
-                      const int &_image_height = 0
+                      const QString &_description = QString()
                      )
         : type(_type)
         , url(_url)
         , title(_title)
         , description(_description)
-        , image(_image)
-        , image_width(_image_width)
-        , image_height(_image_height)
     {};
 
     inline bool operator==(const UrlSuggestionItem &i) const
@@ -111,8 +96,6 @@ typedef QList <UrlSuggestionItem> UrlSuggestionList;
 
 
 // ----------------------------------------------------------------------
-
-
 
 
 class UrlSuggester : public QObject

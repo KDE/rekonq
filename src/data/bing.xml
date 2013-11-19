@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-    <ShortName>Bing</ShortName>
-    <Description>Use the Bing Decision Engine to search the Web.</Description>
-    <Url method="get" type="text/html" template="http://www.bing.com/search?q={searchTerms}&amp;FORM=MO0001"/>
-    <Url method="get" type="application/x-suggestions+xml" template="http://api.search.live.com/qsml.aspx?query={searchTerms}"/>
-    <Image width="16" height="16">http://www.bing.com/s/wlflag.ico</Image>
-</OpenSearchDescription>

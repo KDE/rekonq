@@ -97,7 +97,7 @@ class REKONQ_TESTS_EXPORT TypeIconLabel : public QLabel
 
 public:
     explicit TypeIconLabel(int type, QWidget *parent = 0);
-
+    
 private:
     QLabel *getIcon(QString icon);
 };
@@ -126,9 +126,10 @@ class REKONQ_TESTS_EXPORT TextLabel : public QLabel
 public:
     explicit TextLabel(const QString &text, const QString &textToPointOut = QString(), QWidget *parent = 0);
     explicit TextLabel(QWidget *parent = 0);
-
+    
     void setEngineText(const QString &engine, const QString &text);
 };
+
 
 // -------------------------------------------------------------------------
 
@@ -151,6 +152,7 @@ class REKONQ_TESTS_EXPORT EngineBar : public KToolBar
 
 public:
     explicit EngineBar(KService::Ptr selectedEngine, QWidget *parent = 0);
+    
     void selectNextEngine();
 
 Q_SIGNALS:
@@ -175,6 +177,7 @@ class REKONQ_TESTS_EXPORT SearchListItem : public ListItem
 
 public:
     explicit SearchListItem(const UrlSuggestionItem &item, const QString &text, QWidget *parent = 0);
+    
     QString text();
 
 public Q_SLOTS:
@@ -201,22 +204,7 @@ class REKONQ_TESTS_EXPORT SuggestionListItem : public ListItem
 
 public:
     SuggestionListItem(const UrlSuggestionItem &item, const QString &text, QWidget *parent = 0);
-    QString text();
-
-private:
-    QString m_text;
-};
-
-
-// -------------------------------------------------------------------------
-
-
-class REKONQ_TESTS_EXPORT VisualSuggestionListItem : public ListItem
-{
-    Q_OBJECT
-
-public:
-    VisualSuggestionListItem(const UrlSuggestionItem &item, const QString &text, QWidget *parent = 0);
+    
     QString text();
 
 private:
@@ -233,38 +221,6 @@ class REKONQ_TESTS_EXPORT PreviewListItem : public ListItem
 
 public:
     PreviewListItem(const UrlSuggestionItem &item, const QString &text, QWidget *parent = 0);
-};
-
-
-// -------------------------------------------------------------------------
-
-
-class REKONQ_TESTS_EXPORT PreviewLabel : public QLabel
-{
-    Q_OBJECT
-
-public:
-    PreviewLabel(const QString &url, int width, int height, QWidget *parent = 0);
-};
-
-
-// -------------------------------------------------------------------------
-
-
-class REKONQ_TESTS_EXPORT ImageLabel : public QLabel
-{
-    Q_OBJECT
-
-public:
-    ImageLabel(const QString &url, int width, int height, QWidget *parent);
-
-private:
-    QString m_url;
-    QByteArray m_data;
-
-private Q_SLOTS:
-    void slotData(KJob* job, const QByteArray& data);
-    void slotResult(KJob* job);
 };
 
 

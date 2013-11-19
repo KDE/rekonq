@@ -334,6 +334,10 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
             }
             case Qt::Key_Escape:
                 hide();
+
+                w = qobject_cast<UrlBar *>(parent());
+                w->setText(_typedString);
+
                 return true;
             }
         }
@@ -400,6 +404,8 @@ void CompletionWidget::suggestUrls(const QString &text)
 
     // NOTE: It's important to call this AFTER orderedSearchItems() to let everything work
     res->computeSuggestions();
+
+    delete res;
 }
 
 

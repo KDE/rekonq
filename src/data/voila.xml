@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-    <ShortName>Voila</ShortName>
-    <Description>Moteur de recherche Voila</Description>
-    <Url method="get" template="http://rws.search.ke.voila.fr/RW/S/opensearch_voila?rdata={searchTerms}"/>
-    <Url method="get" type="application/x-suggestions+json" template="http://search.ke.voila.fr/fr/cmplopensearch/xml/fullxml?rdata={searchTerms}&amp;amp;id=1&amp;amp;dtd=2.0"/>
-    <Image>http://www.voila.fr/favicon.ico</Image>
-</OpenSearchDescription>

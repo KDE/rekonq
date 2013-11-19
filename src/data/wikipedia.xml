@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-    <ShortName>Wikipedia</ShortName>
-    <Description>Wikipedia</Description>
-    <Url method="get" template="http://{country}.wikipedia.org/w/index.php?title=Sp%C3%A9cial:Recherche&amp;search={searchTerms}"/>
-    <Url method="get" type="application/x-suggestions+xml" template="http://{country}.wikipedia.org/w/api.php?action=opensearch&amp;format=xml&amp;search={searchTerms}&amp;namespace=0"/>
-    <Image>http://en.wikipedia.org/favicon.ico</Image>
-</OpenSearchDescription>
