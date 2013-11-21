@@ -38,6 +38,7 @@
 #include <KStandardDirs>
 
 // Qt Includes
+#include <QFile>
 #include <QTimer>
 #include <QWebFrame>
 #include <QWebElement>
@@ -72,6 +73,19 @@ void WebIcon::saveIcon(bool b)
         return;
     }
 
+    QString faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
+    QString faviconPath = faviconsDir + m_url.host();
+
+    if ( QFile::exists(faviconPath + QL1S(".png")) )
+    {
+        this->deleteLater();
+        return;
+    }
+    
+    // dest url
+    KUrl destUrl(faviconPath);
+    kDebug() << "DEST URL: " << destUrl;
+    
     // the simplest way..
     const QString rootUrlString = m_url.scheme() + QL1S("://") + m_url.host();
 
@@ -111,12 +125,6 @@ void WebIcon::saveIcon(bool b)
     }
     
     kDebug() << "FAVICON RETRIEVING URL: " << faviconUrl;
-       
-    QString faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
-
-    // dest url
-    KUrl destUrl(faviconsDir + m_url.host());
-    kDebug() << "DEST URL: " << destUrl;
     
     // will autodelete itself when done
     new IconDownloader(faviconUrl, destUrl);
