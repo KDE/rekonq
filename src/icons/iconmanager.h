@@ -60,8 +60,7 @@ public:
 
     void saveDesktopIconForUrl(const KUrl &u);
 
-    // Engine ToolBar needed methods
-    void provideEngineFavicon(const KUrl &);
+    // Engine ToolBar needed method
     KIcon engineFavicon(const KUrl &);
     
 private:

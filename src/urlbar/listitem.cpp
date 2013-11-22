@@ -176,8 +176,6 @@ TypeIconLabel::TypeIconLabel(int type, QWidget *parent)
         hLayout->addWidget(getIcon("rating"));
     if (type & UrlSuggestionItem::History)
         hLayout->addWidget(getIcon("view-history"));
-    if (type & UrlSuggestionItem::Suggestion)
-        hLayout->addWidget(getIcon("help-hint"));
 }
 
 
@@ -188,27 +186,6 @@ QLabel *TypeIconLabel::getIcon(QString icon)
     QPixmap pixmap = KIcon(icon).pixmap(16);
     iconLabel->setPixmap(pixmap);
     return iconLabel;
-}
-
-
-// ---------------------------------------------------------------
-
-
-IconLabel::IconLabel(const QString &icon, QWidget *parent)
-    : QLabel(parent)
-{
-    QPixmap pixmapIcon = IconManager::self()->iconForUrl(KUrl(icon)).pixmap(16);
-    setFixedSize(16, 16);
-    setPixmap(pixmapIcon);
-}
-
-
-IconLabel::IconLabel(const KIcon &icon, QWidget *parent)
-    : QLabel(parent)
-{
-    QPixmap pixmapIcon = icon.pixmap(16);
-    setFixedSize(16, 16);
-    setPixmap(pixmapIcon);
 }
 
 
@@ -275,7 +252,7 @@ TextLabel::TextLabel(const QString &text, const QString &textToPointOut, QWidget
     QStringList words = Qt::escape(textToPointOut.simplified()).split(QL1C(' '));
     t = highlightWordsInText(t, words);
     if (wasItalic)
-        t = QL1S("<i>") + t + QL1S("</i>");
+        t = QL1S("<i style=color:\"#555\">") + t + QL1S("</i>");
     setText(t);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 }
@@ -297,26 +274,6 @@ void TextLabel::setEngineText(const QString &engine, const QString &text)
 
 
 // ---------------------------------------------------------------
-
-
-DescriptionLabel::DescriptionLabel(const QString &text, QWidget *parent)
-    : QLabel(parent)
-{
-    QString t = text;
-    const bool wasItalic = t.startsWith(QL1S("<i>"));
-    if (wasItalic)
-        t.remove(QRegExp("<[/ib]*>"));
-
-    if (wasItalic)
-        t = QL1S("<i>") + t + QL1S("</i>");
-
-    setWordWrap(false); //NOTE: why setWordWrap(true) make items have a strange behavior ?
-    setText(t);
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
-}
-
-
-//--------------------------------------------------------------------------------------------
 
 
 PreviewListItem::PreviewListItem(const UrlSuggestionItem &item, const QString &text, QWidget *parent)
@@ -424,19 +381,6 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
 
     if (SearchEngine::defaultEngine().isNull())
         return;
-
-    static bool isFirstExecution = true;
-    if (isFirstExecution)
-    {
-        Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
-        {
-            QUrl u = engine->property("Query").toUrl();
-            KUrl url = KUrl(u.toString(QUrl::RemovePath | QUrl::RemoveQuery));
-            IconManager::self()->provideEngineFavicon(url);
-        }
-        
-        isFirstExecution = false;
-    }
     
     m_engineGroup->addAction(newEngineAction(SearchEngine::defaultEngine(), selectedEngine));
     Q_FOREACH(const KService::Ptr & engine, SearchEngine::favorites())
@@ -497,30 +441,6 @@ void EngineBar::selectNextEngine()
 // ---------------------------------------------------------------
 
 
-SuggestionListItem::SuggestionListItem(const UrlSuggestionItem &item, const QString &text, QWidget *parent)
-    : ListItem(item, parent)
-    , m_text(item.title)
-{
-    QHBoxLayout *hLayout = new QHBoxLayout;
-    hLayout->setSpacing(4);
-
-    hLayout->addWidget(new IconLabel(item.url, this));
-    hLayout->addWidget(new TextLabel(item.title, text, this));
-    hLayout->addWidget(new TypeIconLabel(item.type, this));
-
-    setLayout(hLayout);
-}
-
-
-QString SuggestionListItem::text()
-{
-    return m_text;
-}
-
-
-// ---------------------------------------------------------------
-
-
 BrowseListItem::BrowseListItem(const UrlSuggestionItem &item, const QString &text, QWidget *parent)
     : ListItem(item, parent)
 {
@@ -557,11 +477,6 @@ ListItem *ListItemFactory::create(const UrlSuggestionItem &item, const QString &
     if (item.type & UrlSuggestionItem::Bookmark)
     {
         return new PreviewListItem(item, text, parent);
-    }
-
-    if (item.type & UrlSuggestionItem::Suggestion)
-    {
-        return new SuggestionListItem(item, text, parent);
     }
 
     return new PreviewListItem(item, text, parent);

@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2013 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -61,7 +61,6 @@ public:
 private Q_SLOTS:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
     void updateSuggestionList(const UrlSuggestionList &list, const QString& text);
-    void updateList();
 
 Q_SIGNALS:
     void chosenUrl(const KUrl &, Rekonq::OpenType);
@@ -88,8 +87,6 @@ private:
 
     QString _typedString;
     bool _hasSuggestions;
-
-    UrlSuggestionList _resList;
 };
 
 #endif // COMPLETION_WIDGET_H

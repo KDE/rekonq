@@ -76,12 +76,6 @@ void WebIcon::saveIcon(bool b)
     QString faviconsDir = KStandardDirs::locateLocal("cache" , "favicons/" , true);
     QString faviconPath = faviconsDir + m_url.host();
 
-    if ( QFile::exists(faviconPath + QL1S(".png")) )
-    {
-        this->deleteLater();
-        return;
-    }
-    
     // dest url
     KUrl destUrl(faviconPath);
     kDebug() << "DEST URL: " << destUrl;

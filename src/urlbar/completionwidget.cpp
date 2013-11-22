@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2009-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2009-2013 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or
@@ -74,11 +74,12 @@ void CompletionWidget::insertItems(const UrlSuggestionList &list, const QString&
     {
         ListItem *suggestion = ListItemFactory::create(item, text, this);
         suggestion->setBackgroundRole(offset % 2 ? QPalette::AlternateBase : QPalette::Base);
+
         connect(suggestion,
                 SIGNAL(itemClicked(ListItem*,Qt::MouseButton,Qt::KeyboardModifiers)),
                 this,
                 SLOT(itemChosen(ListItem*,Qt::MouseButton,Qt::KeyboardModifiers)));
-        connect(suggestion, SIGNAL(updateList()), this, SLOT(updateList()));
+
         connect(this, SIGNAL(nextItemSubChoice()), suggestion, SLOT(nextItemSubChoice()));
 
         suggestion->setObjectName(QString::number(offset++));
@@ -88,21 +89,18 @@ void CompletionWidget::insertItems(const UrlSuggestionList &list, const QString&
 
 
 void CompletionWidget::updateSuggestionList(const UrlSuggestionList &list, const QString& text)
-{
+{    
     if (_hasSuggestions || _typedString != text)
         return;
     _hasSuggestions = true;
 
-    if (_resList.count() > 0)
+    if (list.count() > 0)
     {
         clear();
 
-        insertItems(_resList, text);
-        _list = _resList;
+        insertItems(list, text);
+        _list = list;
 
-        UrlSuggestionList sugList = list.mid(0, 4);
-        insertItems(sugList, text, _list.count());
-        _list.append(sugList);
         popup();
     }
 }
@@ -264,39 +262,23 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
             {
                 w = qobject_cast<UrlBar *>(parent());
 
-                if (!w->text().startsWith(QL1S("http://"), Qt::CaseInsensitive))
+                if (kev->modifiers() == Qt::ControlModifier)
                 {
-                    QString append;
-                    if (kev->modifiers() == Qt::ControlModifier)
+                    QString append = QL1S(".com");
+                    QUrl url(QL1S("http://") + w->text());
+                    QString host = url.host();
+                    if (!host.endsWith(append, Qt::CaseInsensitive))
                     {
-                        append = QL1S(".com");
-                    }
-                    else if (kev->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier))
-                    {
-                        append = QL1S(".org");
-                    }
-                    else if (kev->modifiers() == Qt::ShiftModifier)
-                    {
-                        append = QL1S(".net");
+                        host += append;
+                        url.setHost(host);
                     }
 
-                    if (!append.isEmpty())
+                    if (url.isValid())
                     {
-                        QUrl url(QL1S("http://") + w->text());
-                        QString host = url.host();
-                        if (!host.endsWith(append, Qt::CaseInsensitive))
-                        {
-                            host += append;
-                            url.setHost(host);
-                        }
-
-                        if (url.isValid())
-                        {
-                            emit chosenUrl(url, Rekonq::CurrentTab);
-                            kev->accept();
-                            hide();
-                            return true;
-                        }
+                        emit chosenUrl(url, Rekonq::CurrentTab);
+                        kev->accept();
+                        hide();
+                        return true;
                     }
                 }
 
@@ -314,6 +296,7 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 else //the user type too fast (completionwidget not visible or suggestion not downloaded)
                 {
                     urlToLoad = UrlResolver::urlFromTextTyped(w->text());
+                    kDebug() << "Fast typer for text: " << w->text();
                 }
 
                 if (kev->modifiers() == Qt::AltModifier)
@@ -356,6 +339,7 @@ void CompletionWidget::setVisible(bool visible)
     else
     {
         qApp->removeEventFilter(this);
+        clear();
     }
 
     QFrame::setVisible(visible);
@@ -364,7 +348,6 @@ void CompletionWidget::setVisible(bool visible)
 
 void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::KeyboardModifiers modifier)
 {
-    hide();
     if (button == Qt::MidButton
             || modifier == Qt::ControlModifier)
     {
@@ -374,12 +357,9 @@ void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::Ke
     {
         emit chosenUrl(item->url(), Rekonq::CurrentTab);
     }
-}
-
-
-void CompletionWidget::updateList()
-{
-    suggestUrls(_typedString);
+    
+    // do it AFTER launching chosenUrl to get sure item exists
+    hide();
 }
 
 
@@ -398,12 +378,9 @@ void CompletionWidget::suggestUrls(const QString &text)
     }
 
     UrlSuggester *res = new UrlSuggester(text);
-    connect(res, SIGNAL(suggestionsReady(UrlSuggestionList,QString)),
-            this, SLOT(updateSuggestionList(UrlSuggestionList,QString)));
-    _resList = res->orderedSearchItems();
+    UrlSuggestionList list = res->computeSuggestions();
 
-    // NOTE: It's important to call this AFTER orderedSearchItems() to let everything work
-    res->computeSuggestions();
+    updateSuggestionList(list, text);
 
     delete res;
 }

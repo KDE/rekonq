@@ -72,7 +72,6 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void itemClicked(ListItem *item, Qt::MouseButton, Qt::KeyboardModifiers);
-    void updateList();
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
@@ -106,19 +105,6 @@ private:
 // -------------------------------------------------------------------------
 
 
-class REKONQ_TESTS_EXPORT IconLabel : public QLabel
-{
-    Q_OBJECT
-
-public:
-    explicit IconLabel(const QString &icon, QWidget *parent = 0);
-    explicit IconLabel(const KIcon &icon, QWidget *parent = 0);
-};
-
-
-// -------------------------------------------------------------------------
-
-
 class REKONQ_TESTS_EXPORT TextLabel : public QLabel
 {
     Q_OBJECT
@@ -128,18 +114,6 @@ public:
     explicit TextLabel(QWidget *parent = 0);
     
     void setEngineText(const QString &engine, const QString &text);
-};
-
-
-// -------------------------------------------------------------------------
-
-
-class REKONQ_TESTS_EXPORT DescriptionLabel : public QLabel
-{
-    Q_OBJECT
-
-public:
-    explicit DescriptionLabel(const QString &text, QWidget *parent = 0);
 };
 
 
@@ -188,27 +162,9 @@ private Q_SLOTS:
 
 private:
     TextLabel* m_titleLabel;
-    IconLabel* m_iconLabel;
     EngineBar* m_engineBar;
     QString m_text;
     KService::Ptr m_currentEngine;
-};
-
-
-// -------------------------------------------------------------------------
-
-
-class REKONQ_TESTS_EXPORT SuggestionListItem : public ListItem
-{
-    Q_OBJECT
-
-public:
-    SuggestionListItem(const UrlSuggestionItem &item, const QString &text, QWidget *parent = 0);
-    
-    QString text();
-
-private:
-    QString m_text;
 };
 
 

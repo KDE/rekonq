@@ -50,8 +50,7 @@ public:
         Search          = 0x00000001,
         Browse          = 0x00000010,
         History         = 0x00000100,
-        Bookmark        = 0x00001000,
-        Suggestion      = 0x00010000
+        Bookmark        = 0x00001000
     };
 
     int type;
@@ -105,12 +104,7 @@ class UrlSuggester : public QObject
 public:
     explicit UrlSuggester(const QString &typedUrl);
 
-    UrlSuggestionList orderedSearchItems();
-
-    void computeSuggestions();
-
-Q_SIGNALS:
-    void suggestionsReady(const UrlSuggestionList &, const QString &);
+    UrlSuggestionList computeSuggestions();
 
 private:
     void computeWebSearches();

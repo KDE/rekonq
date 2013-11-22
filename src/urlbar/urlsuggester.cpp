@@ -125,7 +125,8 @@ UrlSuggester::UrlSuggester(const QString &typedUrl)
 }
 
 
-UrlSuggestionList UrlSuggester::orderedSearchItems()
+// UrlSuggestionList UrlSuggester::orderedSearchItems()
+UrlSuggestionList UrlSuggester::computeSuggestions()
 {
     if (_typedString.startsWith(QL1S("rekonq:")))
     {
@@ -361,68 +362,6 @@ void UrlSuggester::computeBookmarks()
         _bookmarks << gItem;
     }
 }
-
-
-// opensearch suggestion
-void UrlSuggester::computeSuggestions()
-{
-    // NOTE
-    // This attempt basically cuts out open search suggestions.
-    UrlSuggestionList list;
-    emit suggestionsReady(list, _typedString);
-    return;
-
-//     // if a string startsWith /, it is probably a local path
-//     // so, no need for suggestions...
-//     if (_typedString.startsWith('/') || !rApp->opensearchManager()->isSuggestionAvailable())
-//     {
-//         UrlSuggestionList list;
-//         emit suggestionsReady(list, _typedString);
-//         return;
-//     }
-//
-//     QString query = _typedString;
-//     KService::Ptr engine = SearchEngine::fromString(_typedString);
-//     if (engine)
-//     {
-//         query = query.remove(0, _typedString.indexOf(SearchEngine::delimiter()) + 1);
-//         setSearchEngine(engine);
-//     }
-//
-//     connect(rApp->opensearchManager(),
-//             SIGNAL(suggestionsReceived(QString,ResponseList)),
-//             this,
-//             SLOT(suggestionsReceived(QString,ResponseList)));
-//
-//     _typedQuery = query;
-//     rApp->opensearchManager()->requestSuggestion(query);
-}
-
-
-// void UrlSuggester::suggestionsReceived(const QString &text, const ResponseList &suggestions)
-// {
-//     if (text != _typedString)
-//         return;
-//
-//     UrlSuggestionList sugList;
-//     QString urlString;
-//     Q_FOREACH(const Response & i, suggestions)
-//     {
-//         if (text == i.title)
-//             continue;
-//
-//         urlString = i.url;
-//         if (urlString.isEmpty())
-//         {
-//             urlString = SearchEngine::buildQuery(UrlSuggester::searchEngine(), i.title);
-//         }
-//
-//         UrlSuggestionItem gItem(UrlSuggestionItem::Suggestion, urlString, i.title, i.description, i.image, i.image_width, i.image_height);
-//         sugList << gItem;
-//     }
-//     emit suggestionsReady(sugList, _typedString);
-//     this->deleteLater();
-// }
 
 
 //////////////////////////////////////////////////////////////////////////
