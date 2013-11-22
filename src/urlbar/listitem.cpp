@@ -355,7 +355,6 @@ void SearchListItem::changeSearchEngine(KService::Ptr engine)
 
     // create a new item && load it...
     UrlSuggestionItem item = UrlSuggestionItem(UrlSuggestionItem::Search, SearchEngine::buildQuery(engine, text), text);
-
     SearchListItem sItem(item, text, this);
     emit itemClicked(&sItem, Qt::LeftButton, Qt::NoModifier);
 }
@@ -402,7 +401,10 @@ KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selected
 
     KAction *a = new KAction(IconManager::self()->engineFavicon(url), engine->name(), this);
     a->setCheckable(true);
-    if (engine->desktopEntryName() == selectedEngine->desktopEntryName()) a->setChecked(true);
+    if (engine->desktopEntryName() == selectedEngine->desktopEntryName())
+    {
+        a->setChecked(true);
+    }
     a->setData(engine->entryPath());
     connect(a, SIGNAL(triggered(bool)), this, SLOT(changeSearchEngine()));
     return a;
@@ -412,6 +414,8 @@ KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selected
 void EngineBar::changeSearchEngine()
 {
     KAction *a = qobject_cast<KAction*>(sender());
+    if (!a)
+        return;
     emit searchEngineChanged(KService::serviceByDesktopPath(a->data().toString()));
 }
 

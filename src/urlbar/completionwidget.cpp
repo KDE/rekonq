@@ -190,7 +190,7 @@ void CompletionWidget::clear()
     QLayoutItem *child;
     while ((child = layout()->takeAt(0)) != 0)
     {
-        delete child->widget();
+        child->widget()->deleteLater();
         delete child;
     }
     _currentIndex = 0;
@@ -307,14 +307,16 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                     }
                 }
 
-                hide();
                 emit chosenUrl(urlToLoad, type);
                 kev->accept();
+                hide();
 
                 if (type != Rekonq::CurrentTab)
                     w->clear();
+
                 return true;
             }
+
             case Qt::Key_Escape:
                 hide();
 
@@ -348,14 +350,15 @@ void CompletionWidget::setVisible(bool visible)
 
 void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::KeyboardModifiers modifier)
 {
-    if (button == Qt::MidButton
-            || modifier == Qt::ControlModifier)
+    KUrl u = item->url();
+
+    if (button == Qt::MidButton || modifier == Qt::ControlModifier)
     {
-        emit chosenUrl(item->url(), Rekonq::NewFocusedTab);
+        emit chosenUrl(u, Rekonq::NewFocusedTab);
     }
     else
     {
-        emit chosenUrl(item->url(), Rekonq::CurrentTab);
+        emit chosenUrl(u, Rekonq::CurrentTab);
     }
     
     // do it AFTER launching chosenUrl to get sure item exists
