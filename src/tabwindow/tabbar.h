@@ -104,8 +104,8 @@ private:
     int m_currentTabPreviewIndex;
     bool m_isFirstTimeOnTab;
 
-    static const int c_baseTabWidth = 200;
-    static const int c_minTabWidth =  100;
+    static const int c_baseTabWidth = 250;
+    static const int c_minTabWidth =  50;
 };
 
 #endif // TAB_BAR

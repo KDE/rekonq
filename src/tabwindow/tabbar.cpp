@@ -100,13 +100,15 @@ QSize TabBar::tabSizeHint(int index) const
     QWidget* p = qobject_cast<QWidget *>(parent());
 
     int w;
+    // if tab is pinned...
     if (tabData(index).toBool())
     {
         w = 36;
     }
     else
     {
-        int tabWidgetWidth = p->size().width();
+        // available width is tab widget width minus addTabButton width
+        int tabWidgetWidth = p->size().width() - 24;
         w = c_baseTabWidth;
         if (w * count() > tabWidgetWidth)
         {
