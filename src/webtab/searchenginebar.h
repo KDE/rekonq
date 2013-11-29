@@ -33,6 +33,9 @@
 // KDE Includes
 #include <KMessageWidget>
 
+// Qt Includes
+#include <QProcess>
+
 
 class REKONQ_TESTS_EXPORT SearchEngineBar : public KMessageWidget
 {
@@ -42,13 +45,18 @@ public:
     explicit SearchEngineBar(QWidget *parent);
 
 private Q_SLOTS:
-    void hideAndDelete();
     void slotAccepted();
     void slotRejected();
+
+    void reloadSearchEngineSettingsAndDelete();
+    void hideAndDelete();
 
 Q_SIGNALS:
     void accepted();
     void rejected();
+
+private:
+    QProcess *_proc;
 };
 
 

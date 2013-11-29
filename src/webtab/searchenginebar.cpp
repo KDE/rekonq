@@ -31,20 +31,20 @@
 // Auto Includes
 #include "rekonq.h"
 
+// Local Includes
+#include "searchengine.h"
+
 // KDE Includes
 #include <KIcon>
 #include <KIconLoader>
 #include <KAction>
 #include <KLocalizedString>
 
-// Qt Includes
-#include <QProcess>
-
 
 SearchEngineBar::SearchEngineBar(QWidget *parent)
     : KMessageWidget(parent)
+    , _proc(0)
 {
-    connect(this, SIGNAL(accepted()), this, SLOT(hideAndDelete()));
     connect(this, SIGNAL(accepted()), this, SLOT(slotAccepted()));
 
     connect(this, SIGNAL(rejected()), this, SLOT(hideAndDelete()));
@@ -70,19 +70,15 @@ SearchEngineBar::SearchEngineBar(QWidget *parent)
 }
 
 
-void SearchEngineBar::hideAndDelete()
-{
-    animatedHide();
-    deleteLater();
-}
-
-
 void SearchEngineBar::slotAccepted()
 {
-    QProcess *proc = new QProcess(parent());
+    _proc = new QProcess(parent());
     QStringList args;
     args << QL1S("ebrowsing");
-    proc->start(QL1S("kcmshell4"), args);
+    _proc->start(QL1S("kcmshell4"), args);
+    connect(_proc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(reloadSearchEngineSettingsAndDelete()));
+
+    animatedHide();
 }
 
 
@@ -90,4 +86,19 @@ void SearchEngineBar::slotRejected()
 {
     // Remember users choice
     ReKonfig::setCheckDefaultSearchEngine(false);
+}
+
+
+void SearchEngineBar::reloadSearchEngineSettingsAndDelete()
+{
+    SearchEngine::reload();
+
+    deleteLater();
+}
+
+
+void SearchEngineBar::hideAndDelete()
+{
+    animatedHide();
+    deleteLater();
 }
