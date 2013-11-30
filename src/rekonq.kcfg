@@ -166,6 +166,9 @@
     <entry name="userCSS" type="Url">
         <default></default>
     </entry>
+    <entry name="defaultZoom" type="Int">
+        <default>10</default>
+    </entry>
 </group>
 
 

@@ -76,7 +76,7 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
     , m_webView(0)
     , m_progress(0)
     , m_part(0)
-    , m_zoomFactor(10)
+    , m_zoomFactor(ReKonfig::defaultZoom())
     , m_isPrivateBrowsing(isPrivateBrowsing)
     , m_isWebApp(false)
     , m_splitter(new QSplitter(this))
@@ -435,7 +435,7 @@ void WebTab::zoomIn()
     else
         m_zoomFactor++;
 
-    view()->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
+    view()->setZoomFactor(m_zoomFactor / 10.0);
 
     setZoom(m_zoomFactor);
 }
@@ -449,8 +449,12 @@ void WebTab::zoomOut()
         return;
     }
 
-    m_zoomFactor--;
-    view()->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
+    if (m_zoomFactor > 20)
+        m_zoomFactor -= 5;
+    else
+        m_zoomFactor--;
+
+    view()->setZoomFactor(m_zoomFactor / 10.0);
 
     setZoom(m_zoomFactor);
 }
@@ -458,8 +462,8 @@ void WebTab::zoomOut()
 
 void WebTab::zoomDefault()
 {
-    m_zoomFactor = 10;
-    view()->setZoomFactor(QVariant(m_zoomFactor).toReal() / 10);
+    m_zoomFactor = ReKonfig::defaultZoom();
+    view()->setZoomFactor(m_zoomFactor / 10.0);
     
     setZoom(m_zoomFactor);
 }
@@ -475,7 +479,7 @@ void WebTab::setZoom(int zoomFactor)
     KConfigGroup group(config, "Zoom");
     group.writeEntry(url().host(), m_zoomFactor);
 
-    if (m_zoomFactor == 10)
+    if (m_zoomFactor == ReKonfig::defaultZoom())
         emit infoToShow(i18n("Default zoom: %1%", QString::number(m_zoomFactor * 10)));
     else
         emit infoToShow(i18n("Zooming: %1%", QString::number(m_zoomFactor * 10)));

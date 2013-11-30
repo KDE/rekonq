@@ -579,14 +579,13 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 void WebPage::loadStarted()
 {
     // set zoom factor
-    QString val;
     KSharedConfig::Ptr config = KGlobal::config();
     KConfigGroup group(config, "Zoom");
-    val = group.readEntry(_loadingUrl.host(), QString("10"));
+    QString stringValue = group.readEntry(_loadingUrl.host(), QString::number(ReKonfig::defaultZoom()));
 
-    int value = val.toInt();
+    int value = stringValue.toInt();
     if (value != 10)
-        mainFrame()->setZoomFactor(QVariant(value).toReal() / 10);  // Don't allox max +1 values    
+        mainFrame()->setZoomFactor(value / 10.0);  // Don't allox max +1 values
 }
 
 

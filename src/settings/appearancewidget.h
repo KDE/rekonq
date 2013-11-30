@@ -58,6 +58,7 @@ private Q_SLOTS:
 
 private:
     void populateEncodingMenu();
+    void populateZoomMenu();
 
     bool _changed;
 };
