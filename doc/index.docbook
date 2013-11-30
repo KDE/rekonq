@@ -548,7 +548,7 @@ Here a list of configurable points and explanation for it:
   </varlistentry>
   <varlistentry>
     <term><guilabel>When hovering a tab show</guilabel></term>
-    <listitem><para>Here you can choose to shoe a preview, the title, the &URL; or nothing.</para></listitem>
+    <listitem><para>Here you can choose to show a preview, the title, the &URL; or nothing.</para></listitem>
   </varlistentry>
   <varlistentry>
     <term><guilabel>Open as new window when &URL; is called externally</guilabel></term>
@@ -556,7 +556,7 @@ Here a list of configurable points and explanation for it:
   </varlistentry>
   <varlistentry>
     <term><guilabel>Closing last tab closes window</guilabel></term>
-    <listitem> <para>This forces &i18n-rekonq; to quit, when you close the last tab. If disabled the view will switch to the New Tab content.</para></listitem>
+    <listitem> <para>This forces &i18n-rekonq; to quit, when you close the last tab. If disabled, the view will switch to the New Tab content.</para></listitem>
   </varlistentry>
   <varlistentry>
     <term><guilabel>Activate previously used tab when closing the current one</guilabel></term>
@@ -568,7 +568,7 @@ Here a list of configurable points and explanation for it:
   </varlistentry>
   <varlistentry>
     <term><guilabel>Open new tabs in the foreground</guilabel></term>
-    <listitem> <para>This makes &i18n-rekonq; switching to new tabs when you open a link on a page from the contact menu in a new tab.</para> </listitem>
+    <listitem> <para>This makes &i18n-rekonq; switching to new tabs when you open a link on a page from the context menu in a new tab.</para> </listitem>
   </varlistentry>
 </variablelist>
 </para>
