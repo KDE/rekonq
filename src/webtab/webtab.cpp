@@ -473,6 +473,7 @@ void WebTab::setZoom(int zoomFactor)
 {
     // This is needed because of the WebView zoomChanged signal...
     m_zoomFactor = zoomFactor;
+    // kDebug() << "NEW ZOOM FACTOR: " << zoomFactor;
     
     // set zoom factor
     KSharedConfig::Ptr config = KGlobal::config();

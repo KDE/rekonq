@@ -584,8 +584,8 @@ void WebPage::loadStarted()
     QString stringValue = group.readEntry(_loadingUrl.host(), QString::number(ReKonfig::defaultZoom()));
 
     int value = stringValue.toInt();
-    if (value != 10)
-        mainFrame()->setZoomFactor(value / 10.0);  // Don't allox max +1 values
+    // kDebug() << "ZOOM VALUE: " << value;
+    mainFrame()->setZoomFactor(value / 10.0);  // Don't allox max +1 values
 }
 
 
