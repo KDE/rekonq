@@ -34,6 +34,7 @@
 #include <QObject>
 #include <QWeakPointer>
 #include <QString>
+#include <QStringList>
 
 // Forward Declarations
 class KIcon;
@@ -68,7 +69,9 @@ private:
 
     QString _faviconsDir;
     QString _tempIconsDir;
-    
+
+    QStringList _engineFaviconHosts;
+
     static QWeakPointer<IconManager> s_iconManager;
 };
 

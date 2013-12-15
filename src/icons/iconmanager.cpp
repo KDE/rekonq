@@ -209,12 +209,20 @@ QString IconManager::iconPathForUrl(const KUrl &url)
 
 KIcon IconManager::engineFavicon(const KUrl &url)
 {
-    if (QFile::exists(_faviconsDir + url.host() + QL1S(".png")))
-        return KIcon(QIcon(_faviconsDir + url.host() + QL1S(".png")));
+    QString h = url.host();
+    if (QFile::exists(_faviconsDir + h + QL1S(".png")))
+    {
+        _engineFaviconHosts.removeAll(h);
+        return KIcon(QIcon(_faviconsDir + h + QL1S(".png")));
+    }
 
     // if engine favicon is NOT found, download it
     // will autodelete itself when done
-    new WebIcon(url);
+    if (!_engineFaviconHosts.contains(h))
+    {
+        _engineFaviconHosts << h;
+        new WebIcon(url);
+    }
 
     kDebug() << "NO ENGINE FAVICON";
     return KIcon("text-html");
