@@ -24,8 +24,6 @@
 
 #include <QtCore/QAbstractItemModel>
 
-#include "nepomukutils_export.h"
-
 namespace Nepomuk2 {
 
     class Resource;
@@ -54,7 +52,7 @@ namespace Nepomuk2 {
          *
          * \since 4.6
          */
-        class NEPOMUKUTILS_EXPORT ResourceModel : public QAbstractItemModel
+        class ResourceModel : public QAbstractItemModel
         {
             Q_OBJECT
 

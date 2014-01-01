@@ -24,8 +24,6 @@
 
 #include "resourcemodel.h"
 
-#include "nepomukutils_export.h"
-
 #include <Nepomuk2/Resource>
 #include <Nepomuk2/Query/Result>
 
@@ -44,7 +42,7 @@ namespace Nepomuk2 {
          *
          * \since 4.6
          */
-        class NEPOMUKUTILS_EXPORT SimpleResourceModel : public ResourceModel
+        class SimpleResourceModel : public ResourceModel
         {
             Q_OBJECT
 
