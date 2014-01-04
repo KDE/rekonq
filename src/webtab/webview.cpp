@@ -373,7 +373,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(pageAction(KWebPage::SelectAll));
 
         if (webwin)
-            menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::SaveAs)));
+            menu.addAction(webwin->actionByName(KStandardAction::name(KStandardAction::Save)));
 
         if (!KStandardDirs::findExe("kget").isNull() && ReKonfig::kgetList())
         {

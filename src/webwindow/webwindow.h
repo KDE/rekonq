@@ -119,7 +119,7 @@ private Q_SLOTS:
     // File Menu slots
     void openLocation();
     void fileOpen();
-    void fileSaveAs();
+    void fileSave();
 
     // bookmarks bar
     void toggleBookmarksToolbar(bool);

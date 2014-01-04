@@ -213,7 +213,7 @@ void WebWindow::setupActions()
 
     // Standard Actions
     KStandardAction::open(this, SLOT(fileOpen()), actionCollection());
-    KStandardAction::saveAs(this, SLOT(fileSaveAs()), actionCollection());
+    KStandardAction::save(this, SLOT(fileSave()), actionCollection());
     KStandardAction::print(_tab, SLOT(printFrame()), actionCollection());
     KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
     KStandardAction::keyBindings(this, SLOT(keyBindings()), actionCollection());
@@ -755,7 +755,7 @@ void WebWindow::fileOpen()
 }
 
 
-void WebWindow::fileSaveAs()
+void WebWindow::fileSave()
 {
     KUrl srcUrl = url();
 
