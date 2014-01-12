@@ -199,6 +199,10 @@ void WebWindow::setupActions()
     a->setDefaultWidget(_bar);
     actionCollection()->addAction(QL1S("url_bar"), a);
 
+    a = new KAction(KIcon("edit-clear-locationbar-rtl"), i18n("Clear Urlbar"), this);
+    connect(a, SIGNAL(triggered()), _bar, SLOT(clearUrlbar()));
+    actionCollection()->addAction(QL1S("clear_url_bar"), a);
+
     // load stop reload Action
     m_loadStopReloadAction = new KAction(this);
     actionCollection()->addAction(QL1S("load_stop_reload") , m_loadStopReloadAction);
@@ -293,7 +297,7 @@ void WebWindow::setupActions()
     openLocationShortcut.setAlternate(Qt::ALT + Qt::Key_D);
     a->setShortcut(openLocationShortcut);
     actionCollection()->addAction(QL1S("open_location"), a);
-    connect(a, SIGNAL(triggered(bool)) , this, SLOT(openLocation()));
+    connect(a, SIGNAL(triggered(bool)), this, SLOT(openLocation()));
 
      // User sessions management
     a = new KAction(KIcon("view-choose"), i18n("&Manage Sessions"), this);

@@ -888,3 +888,11 @@ void UrlBar::removeFromFavorites()
         updateRightIcons();
     }    
 }
+
+
+void UrlBar::clearUrlbar()
+{
+    clear();
+    clearRightIcons();
+    setFocus();
+}

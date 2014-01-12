@@ -97,6 +97,8 @@ public Q_SLOTS:
      */
     void manageBookmarks();
 
+    void clearUrlbar();
+
 private Q_SLOTS:
     void loadRequestedUrl(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
 
