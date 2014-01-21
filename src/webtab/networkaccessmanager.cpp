@@ -3,7 +3,8 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved
-* Copyright (C) 2008-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* 
+* Copyright (C) 2008-2014 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or

@@ -4,7 +4,7 @@
  *
  * Copyright (c) 2009 by Zsombor Gegesy <gzsombor@gmail.com>
  * Copyright (c) 2009 by Benjamin C. Meyer <ben@meyerhome.net>
- * Copyright (C) 2010-2012 by Andrea Diamantini <adjam7 at gmail dot com>
+ * Copyright (C) 2010-2014 by Andrea Diamantini <adjam7 at gmail dot com>
  *
  *
  * This program is free software; you can redistribute it and/or

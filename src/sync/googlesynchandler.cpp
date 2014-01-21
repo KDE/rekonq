@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2012 by Siteshwar Vashisht <siteshwar at gmail dot com>
-* Copyright (C) 2011-2013 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011-2014 by Andrea Diamantini <adjam7 at gmail dot com>
 *
 *
 * This program is free software; you can redistribute it and/or

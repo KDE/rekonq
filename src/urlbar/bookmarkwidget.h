@@ -3,7 +3,7 @@
 * This file is a part of the rekonq project
 *
 * Copyright (C) 2010-2011 by Yoann Laissus <yoann dot laissus at gmail dot com>
-* Copyright (C) 2012 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2012-2014 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (c) 2011-2012 by Phaneendra Hegde <pnh.pes@gmail.com>
 *
 *

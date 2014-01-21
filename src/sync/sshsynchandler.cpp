@@ -2,7 +2,7 @@
 *
 * This file is a part of the rekonq project
 *
-* Copyright (C) 2011 by Andrea Diamantini <adjam7 at gmail dot com>
+* Copyright (C) 2011-2014 by Andrea Diamantini <adjam7 at gmail dot com>
 * Copyright (C) 2013 by Radu Andries <admiral0 at tuxfamily dot org>
 *
 *
