@@ -63,7 +63,7 @@ BookmarkMenu::BookmarkMenu(KBookmarkManager  *manager,
 
 BookmarkMenu::~BookmarkMenu()
 {
-    kDebug() << "Deleting BookmarkMenu.. See http://svn.reviewboard.kde.org/r/5606/ about.";
+    qDebug() << "Deleting BookmarkMenu.. See http://svn.reviewboard.kde.org/r/5606/ about.";
 }
 
 

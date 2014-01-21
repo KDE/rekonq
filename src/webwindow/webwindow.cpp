@@ -551,7 +551,7 @@ void WebWindow::openActionUrl(QAction *action)
     QWebHistory *history = _tab->view()->history();
     if (!history->itemAt(index).isValid())
     {
-        kDebug() << "Invalid Index!: " << index;
+        qDebug() << "Invalid Index!: " << index;
         return;
     }
 
@@ -885,7 +885,7 @@ void WebWindow::populateUserAgentMenu()
     KMenu *uaMenu = static_cast<KMenu *>(QObject::sender());
     if (!uaMenu)
     {
-        kDebug() << "oops... NO user agent menu";
+        qDebug() << "oops... NO user agent menu";
         return;
     }
 

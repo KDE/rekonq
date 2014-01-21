@@ -57,7 +57,7 @@ KUrl UrlResolver::urlFromTextTyped(const QString &typedText)
 
         QString url = SearchEngine::buildQuery(engine, query);
 
-        kDebug() << "Url from service: " << url;
+        qDebug() << "Url from service: " << url;
         return KUrl(url);
     }
 
@@ -72,12 +72,12 @@ KUrl UrlResolver::urlFromTextTyped(const QString &typedText)
             urlFromUserInput.setHost(hst.toLower());
         }
 
-        kDebug() << "(Q)Url from user input: " << urlFromUserInput;
+        qDebug() << "(Q)Url from user input: " << urlFromUserInput;
         return urlFromUserInput;
     }
 
     // failed...
-    kDebug() << "KUrl fallback: " << typedText;
+    qDebug() << "KUrl fallback: " << typedText;
     return KUrl(typedText);
 }
 

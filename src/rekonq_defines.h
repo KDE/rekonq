@@ -33,7 +33,8 @@
 // UNIT TESTS NEED
 
 /* needed for KDE_EXPORT and KDE_IMPORT macros */
-#include <kdemacros.h>
+// FIXME is this needed yet?
+// #include <kdemacros.h>
 
 /* Classes from the rekonq application, which are exported only for unit tests */
 #ifndef REKONQ_TESTS_EXPORT
@@ -53,9 +54,9 @@
 
 #ifndef ASSERT_NOT_REACHED
 #  ifndef QT_NO_DEBUG
-#    define ASSERT_NOT_REACHED(msg) qt_assert(#msg,__FILE__,__LINE__); kDebug() << #msg
+#    define ASSERT_NOT_REACHED(msg) qt_assert(#msg,__FILE__,__LINE__); qDebug() << #msg
 #  else
-#    define ASSERT_NOT_REACHED(msg) kDebug() << #msg
+#    define ASSERT_NOT_REACHED(msg) qDebug() << #msg
 #  endif
 #endif //ASSERT_NOT_REACHED
 
@@ -99,7 +100,8 @@ enum SyncData
 // ----------------------------------------------------------------------------------------------------
 // INCLUDES
 
-#include <KDebug>
+// FIXME What about this?
+//#include <KDebug>
 
 
 

@@ -65,7 +65,7 @@ void ThumbUpdater::updateThumb()
 
 ThumbUpdater::~ThumbUpdater()
 {
-    kDebug() << "bye bye";
+    qDebug() << "bye bye";
 }
 
 

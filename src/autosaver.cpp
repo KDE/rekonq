@@ -51,7 +51,7 @@ AutoSaver::AutoSaver(QObject *parent)
 AutoSaver::~AutoSaver()
 {
     if (m_timer->isActive())
-        kDebug() << "AutoSaver: still active when destroyed, changes not saved.";
+        qDebug() << "AutoSaver: still active when destroyed, changes not saved.";
 
     delete m_firstChange;
     delete m_timer;

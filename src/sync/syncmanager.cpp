@@ -117,7 +117,7 @@ void SyncManager::loadSettings()
             _syncImplementation = new SSHSyncHandler(this);
             break;
         default:
-            kDebug() << "/dev/null";
+            qDebug() << "/dev/null";
             return;
         }
 

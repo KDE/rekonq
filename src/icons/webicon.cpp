@@ -78,7 +78,7 @@ void WebIcon::saveIcon(bool b)
 
     // dest url
     KUrl destUrl(faviconPath);
-    kDebug() << "DEST URL: " << destUrl;
+    qDebug() << "DEST URL: " << destUrl;
     
     // the simplest way..
     const QString rootUrlString = m_url.scheme() + QL1S("://") + m_url.host();
@@ -118,7 +118,7 @@ void WebIcon::saveIcon(bool b)
         }
     }
     
-    kDebug() << "FAVICON RETRIEVING URL: " << faviconUrl;
+    qDebug() << "FAVICON RETRIEVING URL: " << faviconUrl;
     
     // will autodelete itself when done
     new IconDownloader(faviconUrl, destUrl);

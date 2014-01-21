@@ -94,7 +94,7 @@ DownloadManager::~DownloadManager()
 
     if (!downloadFile.open(QFile::WriteOnly))
     {
-        kDebug() << "Unable to open download file (WRITE mode)..";
+        qDebug() << "Unable to open download file (WRITE mode)..";
         return;
     }
 
@@ -116,7 +116,7 @@ void DownloadManager::init()
     QFile downloadFile(downloadFilePath);
     if (!downloadFile.open(QFile::ReadOnly))
     {
-        kDebug() << "Unable to open download file (READ mode)..";
+        qDebug() << "Unable to open download file (READ mode)..";
         return;
     }
 
@@ -143,7 +143,7 @@ DownloadItem* DownloadManager::addDownload(KIO::CopyJob *job)
     QFile downloadFile(downloadFilePath);
     if (!downloadFile.open(QFile::WriteOnly | QFile::Append))
     {
-        kDebug() << "Unable to open download file (WRITE mode)..";
+        qDebug() << "Unable to open download file (WRITE mode)..";
         return 0;
     }
     QDataStream out(&downloadFile);
@@ -251,7 +251,7 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
         destUrl = KUrl(ReKonfig::downloadPath().path() + QL1C('/') + fileName);
     }
 
-    kDebug() << "DEST URL: " << destUrl;
+    qDebug() << "DEST URL: " << destUrl;
 
     if (!destUrl.isValid())
         return false;

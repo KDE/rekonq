@@ -73,7 +73,7 @@ BookmarkWidget::BookmarkWidget(const KBookmark &bookmark, QWidget *parent)
 #ifdef HAVE_NEPOMUK
     m_nfoResource = (QUrl)m_bookmark->url();
     m_isNepomukEnabled = QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.NepomukServer");
-    kDebug() << "IS NEPOMUK ACTUALLY RUNNING? " << m_isNepomukEnabled;
+    qDebug() << "IS NEPOMUK ACTUALLY RUNNING? " << m_isNepomukEnabled;
 #endif
 
     QFormLayout *layout = new QFormLayout(this);

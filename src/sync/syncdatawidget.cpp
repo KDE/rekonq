@@ -74,7 +74,7 @@ void SyncDataWidget::initializePage()
         break;
     
     default:
-        kDebug() << "Unknown sync type!";
+        qDebug() << "Unknown sync type!";
     }
 
     kcfg_syncBookmarks->setChecked(ReKonfig::syncBookmarks());

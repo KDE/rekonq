@@ -105,7 +105,7 @@ void SessionWidget::deleteSession()
 
 void SessionWidget::updateButtons(int index)
 {
-    kDebug() << "UPDATE INDEX: " << index;
+    qDebug() << "UPDATE INDEX: " << index;
     if (index < 0)
     {
         deleteButton->setEnabled(false);
@@ -118,7 +118,7 @@ void SessionWidget::updateButtons(int index)
 
 void SessionWidget::save()
 {
-    kDebug() << " ------------------------ SAVE --------------------------";
+    qDebug() << " ------------------------ SAVE --------------------------";
     
     QStringList ses;
     

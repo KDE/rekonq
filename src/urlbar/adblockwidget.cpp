@@ -113,7 +113,7 @@ void AdBlockWidget::accept()
 
         if (on)
         {
-            kDebug() << "REMOVING IT...";
+            qDebug() << "REMOVING IT...";
             hosts.removeOne(_pageUrl.host());
         }
         else

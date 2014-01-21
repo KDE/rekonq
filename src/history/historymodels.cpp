@@ -365,7 +365,7 @@ void HistoryFilterModel::sourceRowsInserted(const QModelIndex &parent, int start
 
     if (start != 0)
     {
-        kDebug() << "STARTING from a NON zero position...";
+        qDebug() << "STARTING from a NON zero position...";
         return;
     }
 

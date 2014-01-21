@@ -296,7 +296,7 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                 else //the user type too fast (completionwidget not visible or suggestion not downloaded)
                 {
                     urlToLoad = UrlResolver::urlFromTextTyped(w->text());
-                    kDebug() << "Fast typer for text: " << w->text();
+                    qDebug() << "Fast typer for text: " << w->text();
                 }
 
                 if (kev->modifiers() == Qt::AltModifier)
@@ -399,6 +399,6 @@ KUrl CompletionWidget::activeSuggestion()
     if (child)
         return child->url();
 
-    kDebug() << "WARNING: NO URL to LOAD...";
+    qDebug() << "WARNING: NO URL to LOAD...";
     return KUrl();
 }

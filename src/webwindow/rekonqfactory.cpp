@@ -56,13 +56,13 @@ bool readDocument(QDomDocument & document, const QString & filePath)
 
     if (!sessionFile.open(QFile::ReadOnly))
     {
-        kDebug() << "Unable to open xml file" << sessionFile.fileName();
+        qDebug() << "Unable to open xml file" << sessionFile.fileName();
         return false;
     }
 
     if (!document.setContent(&sessionFile, false))
     {
-        kDebug() << "Unable to parse xml file" << sessionFile.fileName();
+        qDebug() << "Unable to parse xml file" << sessionFile.fileName();
         return false;
     }
 
@@ -86,7 +86,7 @@ QAction *actionByName(const QString &name)
             return a;
     }
 
-    kDebug() << "NO ACTION FOUND: " << name;
+    qDebug() << "NO ACTION FOUND: " << name;
     return 0;
 }
 
@@ -105,7 +105,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
     QDomNodeList elementToolbarList = document.elementsByTagName(QL1S("ToolBar"));
     if (elementToolbarList.isEmpty())
     {
-        kDebug() << "ELEMENT TOOLBAR LIST EMPTY. RETURNING NULL";
+        qDebug() << "ELEMENT TOOLBAR LIST EMPTY. RETURNING NULL";
         return 0;
     }
 
@@ -119,7 +119,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
 
         if (element.attribute("deleted").toLower() == "true")
         {
-            kDebug() << "ELEMENT DELETED. RETURNING NULL";
+            qDebug() << "ELEMENT DELETED. RETURNING NULL";
             return 0;
         }
 
@@ -141,7 +141,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
     QDomNodeList elementMenuList = document.elementsByTagName(QL1S("Menu"));
     if (elementMenuList.isEmpty())
     {
-        kDebug() << "ELEMENT MENU LIST EMPTY. RETURNING NULL";
+        qDebug() << "ELEMENT MENU LIST EMPTY. RETURNING NULL";
         return 0;
     }
 
@@ -154,7 +154,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
 
         if (element.attribute("deleted").toLower() == "true")
         {
-            kDebug() << "ELEMENT DELETED. RETURNING NULL";
+            qDebug() << "ELEMENT DELETED. RETURNING NULL";
             return 0;
         }
 
@@ -182,7 +182,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
     QDomNodeList elementMenuBarList = document.elementsByTagName(QL1S("MenuBar"));
     if (elementMenuBarList.isEmpty())
     {
-        kDebug() << "ELEMENT MENUBAR LIST EMPTY. RETURNING NULL";
+        qDebug() << "ELEMENT MENUBAR LIST EMPTY. RETURNING NULL";
         return 0;
     }
     
@@ -219,7 +219,7 @@ QWidget *RekonqFactory::createWidget(const QString &name, QWidget *parent)
         return menuBar;
     }
 
-    kDebug() << "NO WIDGET RETURNED";
+    qDebug() << "NO WIDGET RETURNED";
     return 0;
 }
 
@@ -236,7 +236,7 @@ void RekonqFactory::updateWidget(QWidget *widg, const QString &name)
     QDomNodeList elementToolbarList = document.elementsByTagName(QL1S("ToolBar"));
     if (elementToolbarList.isEmpty())
     {
-        kDebug() << "ELEMENT TOOLBAR LIST EMPTY. RETURNING NULL";
+        qDebug() << "ELEMENT TOOLBAR LIST EMPTY. RETURNING NULL";
         return;
     }
 
@@ -260,7 +260,7 @@ void RekonqFactory::updateWidget(QWidget *widg, const QString &name)
         }
     }
 
-    kDebug() << "NO WIDGET RETURNED";
+    qDebug() << "NO WIDGET RETURNED";
     return;
 }
 

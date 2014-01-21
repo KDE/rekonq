@@ -59,7 +59,7 @@ OperaSyncHandler::OperaSyncHandler(QObject *parent)
     , _requestCount(0)
     , _isSyncing(false)
 {
-    kDebug() << "Creating Opera Bookmarks handler...";
+    qDebug() << "Creating Opera Bookmarks handler...";
     _webPage.settings()->setAttribute(QWebSettings::AutoLoadImages, false);
     _webPage.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
     connect(&_webPage, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
@@ -113,7 +113,7 @@ bool OperaSyncHandler::syncRelativeEnabled(bool check)
 
 void OperaSyncHandler::syncHistory()
 {
-    kDebug() << "Syncing history not supported!";
+    qDebug() << "Syncing history not supported!";
     emit syncStatus(Rekonq::History, false, i18n("Syncing history not supported"));
     emit syncHistoryFinished(false);
 }
@@ -121,7 +121,7 @@ void OperaSyncHandler::syncHistory()
 
 void OperaSyncHandler::syncPasswords()
 {
-    kDebug() << "Syncing passwords not supported!";
+    qDebug() << "Syncing passwords not supported!";
     emit syncStatus(Rekonq::Passwords, false, i18n("Syncing passwords not supported"));
     emit syncPasswordsFinished(false);
 }
@@ -132,7 +132,7 @@ void OperaSyncHandler::syncBookmarks()
 
     if (_isSyncing)
     {
-        kDebug() << "Sync already in progress!";
+        qDebug() << "Sync already in progress!";
         return;
     }
     _mode = SEND_CHANGES;
@@ -143,7 +143,7 @@ void OperaSyncHandler::startLogin()
 {
     if (ReKonfig::syncUser().isEmpty() || ReKonfig::syncPass().isEmpty())
     {
-        kDebug() << "No username or password!";
+        qDebug() << "No username or password!";
         emit syncStatus(Rekonq::Bookmarks, false, i18n("No username or password"));
         emit syncBookmarksFinished(false);
         return;
@@ -159,7 +159,7 @@ void OperaSyncHandler::startLogin()
     if (_authToken.isEmpty() || _authTokenSecret.isEmpty())
     {
         // If we have not yet logged into server, we need to fetch OAuth access token and secret from server.
-        kDebug() << "Loading login page...";
+        qDebug() << "Loading login page...";
         QOAuth::ParamMap requestMap;
         requestMap.insert("oauth_callback", "oob");
 
@@ -168,7 +168,7 @@ void OperaSyncHandler::startLogin()
 
         if (_qoauth.error() != QOAuth::NoError)
         {
-            kDebug() << "Error occurred while fetching request tokens. Error code is : " << _qoauth.error();
+            qDebug() << "Error occurred while fetching request tokens. Error code is : " << _qoauth.error();
             emit syncStatus(Rekonq::Bookmarks, false, i18n("OAuth: Error fetching request token"));
             _isSyncing = false;
             return;
@@ -177,9 +177,9 @@ void OperaSyncHandler::startLogin()
         _requestToken = requestParam.value("oauth_token");
         _requestTokenSecret = requestParam.value("oauth_token_secret");
 
-        kDebug() << "OAuth Request Token : " << _requestToken;
-        kDebug() << "OAuth Request Token Secret : " << _requestTokenSecret;
-        kDebug() << QUrl("https://auth.opera.com/service/oauth/authorize?oauth_token=" + QString(_requestToken) + "&oauth_callback=oob");
+        qDebug() << "OAuth Request Token : " << _requestToken;
+        qDebug() << "OAuth Request Token Secret : " << _requestTokenSecret;
+        qDebug() << QUrl("https://auth.opera.com/service/oauth/authorize?oauth_token=" + QString(_requestToken) + "&oauth_callback=oob");
 
         QString u = QL1S("https://auth.opera.com/service/oauth/authorize?oauth_token=") + QString(_requestToken) + QL1S("&oauth_callback=oob");
         _webPage.mainFrame()->load(QUrl(u));
@@ -195,10 +195,10 @@ void OperaSyncHandler::startLogin()
 // Loading a webpage finished, what action to take is decided based on url we have loaded.
 void OperaSyncHandler::loadFinished(bool ok)
 {
-    kDebug() << "Load Finished" << ok;
+    qDebug() << "Load Finished" << ok;
     if (!ok)
     {
-        kDebug() << "Error loading: " << _webPage.mainFrame()->url();
+        qDebug() << "Error loading: " << _webPage.mainFrame()->url();
         emit syncStatus(Rekonq::Bookmarks, false, i18n("Error loading: %1", _webPage.mainFrame()->url().toString()));
 
         _isSyncing = false;
@@ -214,11 +214,11 @@ void OperaSyncHandler::loadFinished(bool ok)
 
         if (_doLogin == true && html.contains("login-form"))
         {
-            kDebug() << "Login page";
+            qDebug() << "Login page";
             QWebElement form = mainFrame->findFirstElement("#login-form");
             if (form.isNull())
             {
-                kDebug() << "form is null";
+                qDebug() << "form is null";
             }
 
             QWebElement username = form.findFirst("#username");
@@ -239,7 +239,7 @@ void OperaSyncHandler::loadFinished(bool ok)
             QWebElement authkey = mainFrame->findFirstElement("#verifier");
             QByteArray verifier = authkey.toPlainText().toUtf8();
 
-            kDebug() << "OAuth verifier code is : " << verifier;
+            qDebug() << "OAuth verifier code is : " << verifier;
             authParams.insert("oauth_verifier", verifier);
 
             emit syncStatus(Rekonq::Bookmarks, true, i18n("OAuth: Sending verification code"));
@@ -248,7 +248,7 @@ void OperaSyncHandler::loadFinished(bool ok)
 
             if (_qoauth.error() != QOAuth::NoError)
             {
-                kDebug() << "Error occurred while fetching access tokens. Error code is : " << _qoauth.error();
+                qDebug() << "Error occurred while fetching access tokens. Error code is : " << _qoauth.error();
                 emit syncStatus(Rekonq::Bookmarks, false, i18n("OAuth: Error fetching access token"));
                 _isSyncing = false;
                 return;
@@ -257,8 +257,8 @@ void OperaSyncHandler::loadFinished(bool ok)
             _authToken = resultParam.value("oauth_token");
             _authTokenSecret = resultParam.value("oauth_token_secret");
 
-            kDebug() << "OAuth Token : " << _authToken;
-            kDebug() << "OAuth Token Secret : " << _authTokenSecret;
+            qDebug() << "OAuth Token : " << _authToken;
+            qDebug() << "OAuth Token Secret : " << _authTokenSecret;
 
             _requestToken.clear();
             _requestTokenSecret.clear();
@@ -269,12 +269,12 @@ void OperaSyncHandler::loadFinished(bool ok)
         {
             //Login failed
             emit syncStatus(Rekonq::Bookmarks, false, i18n("Login failed"));
-            kDebug() << "Login failed!";
+            qDebug() << "Login failed!";
             _isSyncing = false;
         }
         else
         {
-            kDebug() << "Unknown page : " << _webPage.mainFrame()->url();
+            qDebug() << "Unknown page : " << _webPage.mainFrame()->url();
             _isSyncing = false;
         }
     }
@@ -288,8 +288,8 @@ void OperaSyncHandler::getBookmarks()
     QOAuth::ParamMap requestMap;
 
     requestMap.insert("api_output", "xml");
-    kDebug() << "Auth Token : " << _authToken;
-    kDebug() << "Auth Token Secret : " << _authTokenSecret;
+    qDebug() << "Auth Token : " << _authToken;
+    qDebug() << "Auth Token Secret : " << _authTokenSecret;
 
     QByteArray fetchBookmarksUrl = "https://link.api.opera.com/rest/bookmark/descendants/";
     QByteArray urlParams = _qoauth.createParametersString(fetchBookmarksUrl,
@@ -303,7 +303,7 @@ void OperaSyncHandler::getBookmarks()
     QNetworkRequest request;
 
     fetchBookmarksUrl.append(urlParams);
-    //kDebug() << urlstr;
+    //qDebug() << urlstr;
     KIO::TransferJob *job = KIO::get(KUrl(fetchBookmarksUrl), KIO::Reload, KIO::HideProgressInfo);
 
     connect(job, SIGNAL(result(KJob*)), this, SLOT(fetchBookmarksResultSlot(KJob*)));
@@ -330,11 +330,11 @@ void OperaSyncHandler::fetchBookmarksResultSlot(KJob* job)
 
         //Reset _xmlData for next request
         _xmlData = "";
-        kDebug() << "Some error!" << job->error();
+        qDebug() << "Some error!" << job->error();
         return;
     }
 
-//    kDebug() << _xmlData;
+//    qDebug() << _xmlData;
 
     QDomDocument doc("bookmarks");
     doc.setContent(_xmlData);
@@ -367,7 +367,7 @@ void OperaSyncHandler::fetchBookmarksResultSlot(KJob* job)
             if (child.isNull())
             {
                 //Add Opera group here
-                kDebug() << "Add group " << groupName;
+                qDebug() << "Add group " << groupName;
                 KJob *job = addBookmarkFolderOnServer(current.fullText());
                 _jobToGroupMap.insert(job, current.toGroup());
             }
@@ -377,11 +377,11 @@ void OperaSyncHandler::fetchBookmarksResultSlot(KJob* job)
 
                 QString id = getChildString(child, "id");
 
-                kDebug() << grandChild.tagName() << id;
+                qDebug() << grandChild.tagName() << id;
 
                 if (grandChild.isNull())
                 {
-                    kDebug() << "Grand child is null";
+                    qDebug() << "Grand child is null";
                     handleLocalGroup(current.toGroup(), grandChild, id);
                 }
                 else
@@ -400,12 +400,12 @@ void OperaSyncHandler::fetchBookmarksResultSlot(KJob* job)
             if (child.isNull())
             {
                 //Add bookmark on server
-                kDebug() << "Add bookmark :" << url;
+                qDebug() << "Add bookmark :" << url;
                 addBookmarkOnServer(current.fullText(), current.url().url());
             }
             /*            else
                         {
-                            kDebug() << "Bookmark exists :" << url;
+                            qDebug() << "Bookmark exists :" << url;
                         }
             */
         }
@@ -423,7 +423,7 @@ void OperaSyncHandler::createBookmarkDataSlot(KIO::Job* job, QByteArray data)
     Q_UNUSED(job);
     Q_UNUSED(data);
 
-    // kDebug() << data;
+    // qDebug() << data;
     // _xmlData += data;
 }
 
@@ -435,7 +435,7 @@ void OperaSyncHandler::createBookmarkResultSlot(KJob* job)
 
     if (job->error() != 0)
     {
-        kDebug() << "Some error!" << job->error();
+        qDebug() << "Some error!" << job->error();
         return;
     }
 }
@@ -460,7 +460,7 @@ void OperaSyncHandler::createBookmarkFolderResultSlot(KJob* job)
 
     if (job->error() != 0)
     {
-        kDebug() << "Error occurred while creating bookmark folder on server. Error code : " << job->error();
+        qDebug() << "Error occurred while creating bookmark folder on server. Error code : " << job->error();
         decreaseRequestCount();
         return;
     }
@@ -490,7 +490,7 @@ void OperaSyncHandler::deleteResourceResultSlot(KJob* job)
 
     if (job->error() != 160)
     {
-        kDebug() << "Error occurred while deleting resource on server. Error code : " << job->error();
+        qDebug() << "Error occurred while deleting resource on server. Error code : " << job->error();
         return;
     }
 }
@@ -500,7 +500,7 @@ void OperaSyncHandler::deleteResourceResultSlot(KJob* job)
 void OperaSyncHandler::deleteResourceDataSlot(KIO::Job* job, QByteArray data)
 {
     Q_UNUSED(job);
-    kDebug() << data;
+    qDebug() << data;
 }
 
 
@@ -523,7 +523,7 @@ void OperaSyncHandler::handleBookmark(const QDomElement &item, KBookmarkGroup ro
         else
         {
             //Delete bookmark from server
-            kDebug() << "Deleting bookmark from server : " << title;
+            qDebug() << "Deleting bookmark from server : " << title;
             deleteResourceOnServer(id);
         }
     }
@@ -581,7 +581,7 @@ void OperaSyncHandler::handleResource(const QDomNode &item, KBookmarkGroup &root
             if (childGroup.isNull())
             {
                 //Delete bookmark folder on server
-                kDebug() << "Deleting bookmark folder from server : " << title;
+                qDebug() << "Deleting bookmark folder from server : " << title;
                 deleteResourceOnServer(id);
             }
             else
@@ -657,7 +657,7 @@ void OperaSyncHandler::handleLocalGroup(const KBookmarkGroup &root, const QDomEl
             }
             /*            else
                         {
-                            kDebug() << "Bookmark exists :" << url;
+                            qDebug() << "Bookmark exists :" << url;
                         }
             */
         }
@@ -732,14 +732,14 @@ void OperaSyncHandler::deleteResourceOnServer(QString id)
 
     if (id.isEmpty())
     {
-        kDebug() << "Id is empty!";
+        qDebug() << "Id is empty!";
         return;
     }
 
     requestUrl.append(id.toUtf8());
     QByteArray postData = _qoauth.createParametersString(requestUrl, QOAuth::POST, _authToken, _authTokenSecret, QOAuth::HMAC_SHA1, requestMap, QOAuth::ParseForRequestContent);
 
-    kDebug() << "Deleting Resource : " << id;
+    qDebug() << "Deleting Resource : " << id;
 
     KIO::TransferJob *job = KIO::http_post(KUrl(requestUrl), postData, KIO::HideProgressInfo);
     job->addMetaData("Content-Type", "application/x-www-form-urlencoded");

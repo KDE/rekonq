@@ -194,7 +194,7 @@ WebPage::~WebPage()
     QFile::remove(path);
     preview.save(path);
     
-    kDebug() << "BYE BYE WEBPAGE";
+    qDebug() << "BYE BYE WEBPAGE";
 }
 
 
@@ -338,7 +338,7 @@ WebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
     // added to manage web modal dialogs
     if (type == QWebPage::WebModalDialog)
-        kDebug() << "Modal Dialog";
+        qDebug() << "Modal Dialog";
 
     bool isPrivateBrowsing = settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled);
 
@@ -377,7 +377,7 @@ static bool shouldEmbed(const QString &_mimeType)
     // 1 - in the filetypesrc config file (written by the configuration module)
     QMap<QString, QString>::const_iterator it = m_embedMap.constFind( QString::fromLatin1("embed-")+mimeType );
     if ( it != m_embedMap.constEnd() ) {
-        kDebug() << mimeType << it.value();
+        qDebug() << mimeType << it.value();
         return it.value() == QLatin1String("true");
     }
     // 2 - in the configuration for the group if nothing was found in the mimetype
@@ -386,7 +386,7 @@ static bool shouldEmbed(const QString &_mimeType)
     const QString mimeTypeGroup = mimeType.left(mimeType.indexOf('/'));
     it = m_embedMap.constFind( QString::fromLatin1("embed-")+mimeTypeGroup );
     if ( it != m_embedMap.constEnd() ) {
-        kDebug() << mimeType << "group setting:" << it.value();
+        qDebug() << mimeType << "group setting:" << it.value();
         return it.value() == QLatin1String("true");
     }
     // 2 bis - configuration for group of parent mimetype, if different
@@ -441,8 +441,8 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     if (KParts::BrowserRun::isTextExecutable(_mimeType))
         _mimeType = QL1S("text/plain");
 
-    kDebug() << "Detected MimeType = " << _mimeType;
-    kDebug() << "Suggested File Name = " << _suggestedFileName;
+    qDebug() << "Detected MimeType = " << _mimeType;
+    qDebug() << "Suggested File Name = " << _suggestedFileName;
     // ------------------------------------------------
 
     KService::Ptr appService = KMimeTypeTrader::self()->preferredService(_mimeType);
@@ -506,7 +506,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     KConfigGroup cg = KConfigGroup(KSharedConfig::openConfig("filetypesrc", KConfig::NoGlobals), QL1S("Notification Messages"));
     bool hideDialog = cg.readEntry(QL1S("askEmbedOrSave") + _mimeType, false);
 
-    kDebug() << "Hide dialog for " << _mimeType << "? " << hideDialog;
+    qDebug() << "Hide dialog for " << _mimeType << "? " << hideDialog;
 
     switch (dlg.askEmbedOrSave())
     {
@@ -529,7 +529,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
     // Handle Post operations that return content...
     if (reply->operation() == QNetworkAccessManager::PostOperation)
     {
-        kDebug() << "POST OPERATION: downloading file...";
+        qDebug() << "POST OPERATION: downloading file...";
         QFileInfo finfo(_suggestedFileName.isEmpty() ? _loadingUrl.fileName() : _suggestedFileName);
         KTemporaryFile tempFile;
         tempFile.setSuffix(QL1C('.') + finfo.suffix());
@@ -585,7 +585,7 @@ void WebPage::loadStarted()
     QString stringValue = group.readEntry(_loadingUrl.host(), QString::number(ReKonfig::defaultZoom()));
 
     int value = stringValue.toInt();
-    // kDebug() << "ZOOM VALUE: " << value;
+    // qDebug() << "ZOOM VALUE: " << value;
     mainFrame()->setZoomFactor(value / 10.0);  // Don't allox max +1 values
 }
 
@@ -663,7 +663,7 @@ void WebPage::manageNetworkErrors(QNetworkReply *reply)
     case QNetworkReply::ProtocolUnknownError:                // Unknown protocol
     case QNetworkReply::ProtocolInvalidOperationError:       // requested operation is invalid for this protocol
     default:
-        kDebug() << "ERROR " << reply->error() << ": " << reply->errorString();
+        qDebug() << "ERROR " << reply->error() << ": " << reply->errorString();
         if (reply->url() == _loadingUrl)
         {
             frame->setHtml(errorPage(reply), reply->url());

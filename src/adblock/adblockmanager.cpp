@@ -105,7 +105,7 @@ void AdBlockManager::loadSettings()
         const bool copied = adblockFile.copy(adblockFilePath);
         if (!copied)
         {
-            kDebug() << "oh oh... Problems copying default adblock file";
+            qDebug() << "oh oh... Problems copying default adblock file";
             return;
         }
     }
@@ -159,7 +159,7 @@ void AdBlockManager::loadSettings()
         bool fileExists = subscriptionFileExists(i);
         if (allSubscriptionsNeedUpdate || !fileExists)
         {
-            kDebug() << "FILE SHOULDN'T EXIST. updating subscription";
+            qDebug() << "FILE SHOULDN'T EXIST. updating subscription";
             updateSubscription(i);
         }
         else
@@ -182,7 +182,7 @@ void AdBlockManager::loadRules(const QString &rulesFilePath)
     QFile ruleFile(rulesFilePath);
     if (!ruleFile.open(QFile::ReadOnly | QFile::Text))
     {
-        kDebug() << "Unable to open rule file" << rulesFilePath;
+        qDebug() << "Unable to open rule file" << rulesFilePath;
         return;
     }
 
@@ -267,7 +267,7 @@ bool AdBlockManager::blockRequest(const QNetworkRequest &request)
     // check white rules before :)
     if (_hostWhiteList.match(host))
     {
-        kDebug() << "ADBLOCK: WHITE RULE (@@) Matched by string: " << urlString;
+        qDebug() << "ADBLOCK: WHITE RULE (@@) Matched by string: " << urlString;
         return false;
     }
 
@@ -275,7 +275,7 @@ bool AdBlockManager::blockRequest(const QNetworkRequest &request)
     {
         if (filter.match(request, urlString, urlStringLowerCase))
         {
-            kDebug() << "ADBLOCK: WHITE RULE (@@) Matched by string: " << urlString;
+            qDebug() << "ADBLOCK: WHITE RULE (@@) Matched by string: " << urlString;
             return false;
         }
     }
@@ -283,7 +283,7 @@ bool AdBlockManager::blockRequest(const QNetworkRequest &request)
     // then check the black ones :(
     if (_hostBlackList.match(host))
     {
-        kDebug() << "ADBLOCK: BLACK RULE Matched by string: " << urlString;
+        qDebug() << "ADBLOCK: BLACK RULE Matched by string: " << urlString;
         return true;
     }
 
@@ -291,7 +291,7 @@ bool AdBlockManager::blockRequest(const QNetworkRequest &request)
     {
         if (filter.match(request, urlString, urlStringLowerCase))
         {
-            kDebug() << "ADBLOCK: BLACK RULE Matched by string: " << urlString;
+            qDebug() << "ADBLOCK: BLACK RULE Matched by string: " << urlString;
             return true;
         }
     }
@@ -374,7 +374,7 @@ void AdBlockManager::addCustomRule(const QString &stringRule, bool reloadPage)
     QFile ruleFile(localRulesFilePath);
     if (!ruleFile.open(QFile::WriteOnly | QFile::Append))
     {
-        kDebug() << "Unable to open rule file" << localRulesFilePath;
+        qDebug() << "Unable to open rule file" << localRulesFilePath;
         return;
     }
 

@@ -59,7 +59,7 @@ GoogleSyncHandler::GoogleSyncHandler(QObject *parent)
     , _reply(0)
     , _requestCount(0)
 {
-    kDebug() << "Creating Google Bookmarks handler...";
+    qDebug() << "Creating Google Bookmarks handler...";
     _webPage.settings()->setAttribute(QWebSettings::AutoLoadImages, false);
     _webPage.settings()->setAttribute(QWebSettings::PrivateBrowsingEnabled, true);
     connect(&_webPage, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
@@ -110,7 +110,7 @@ bool GoogleSyncHandler::syncRelativeEnabled(bool check)
 
 void GoogleSyncHandler::syncHistory()
 {
-    kDebug() << "Syncing history not supported!";
+    qDebug() << "Syncing history not supported!";
     emit syncStatus(Rekonq::History, false, i18n("Syncing history not supported"));
     emit syncHistoryFinished(false);
 }
@@ -118,7 +118,7 @@ void GoogleSyncHandler::syncHistory()
 
 void GoogleSyncHandler::syncPasswords()
 {
-    kDebug() << "Syncing passwords not supported!";
+    qDebug() << "Syncing passwords not supported!";
     emit syncStatus(Rekonq::Passwords, false, i18n("Syncing passwords not supported"));
     emit syncPasswordsFinished(false);
 }
@@ -129,7 +129,7 @@ void GoogleSyncHandler::syncBookmarks()
 
     if (_isSyncing)
     {
-        kDebug() << "Sync already in progress!";
+        qDebug() << "Sync already in progress!";
         return;
     }
     _mode = SEND_CHANGES;
@@ -140,7 +140,7 @@ void GoogleSyncHandler::startLogin()
 {
     if (ReKonfig::syncUser().isEmpty() || ReKonfig::syncPass().isEmpty())
     {
-        kDebug() << "No username or password!";
+        qDebug() << "No username or password!";
         emit syncStatus(Rekonq::Bookmarks, false, i18n("No username or password"));
         emit syncBookmarksFinished(false);
         return;
@@ -150,25 +150,25 @@ void GoogleSyncHandler::startLogin()
 
     _doLogin = true;
 
-    kDebug() << "Loading login page...";
+    qDebug() << "Loading login page...";
     _webPage.mainFrame()->load(QUrl("http://bookmarks.google.com/"));
 }
 
 //Loading a webpage finished, what action to take is decided based on url we have loaded.
 void GoogleSyncHandler::loadFinished(bool ok)
 {
-    kDebug() << "Load Finished" << ok;
+    qDebug() << "Load Finished" << ok;
     if (!ok)
     {
-        kDebug() << "Error loading: " << _webPage.mainFrame()->url();
+        qDebug() << "Error loading: " << _webPage.mainFrame()->url();
         emit syncStatus(Rekonq::Bookmarks, false, i18n("Error loading: %1", _webPage.mainFrame()->url().toString()));
 
         _isSyncing = false;
         return;
     }
 
-    kDebug() << _webPage.mainFrame()->url();
-    kDebug() << "Path : " << _webPage.mainFrame()->url().path();
+    qDebug() << _webPage.mainFrame()->url();
+    qDebug() << "Path : " << _webPage.mainFrame()->url().path();
 
     QString path = _webPage.mainFrame()->url().path();
 
@@ -209,7 +209,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
         QWebFrame *frame = _webPage.mainFrame();
 
         QString sigKey = frame->findFirstElement( QL1S("input[name=sig]") ).attribute( QL1S("value") );
-        kDebug() << "Signature Key is : " << sigKey;
+        qDebug() << "Signature Key is : " << sigKey;
 
         QNetworkAccessManager *qnam = _webPage.networkAccessManager();
 
@@ -221,7 +221,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
                 QNetworkRequest request;
                 request.setUrl(QUrl( QL1S("https://www.google.com/bookmarks/mark?dlq=") + *iter + QL1S("&sig=") + sigKey));
 
-                kDebug() << "Delete url is : " << request.url();
+                qDebug() << "Delete url is : " << request.url();
                 QNetworkReply *r = qnam->get(request);
                 connect(r, SIGNAL(finished()), this, SLOT(updateBookmarkFinished()));
                 ++_requestCount;
@@ -245,8 +245,8 @@ void GoogleSyncHandler::loadFinished(bool ok)
                 QNetworkRequest request;
                 request.setUrl(QUrl("https://www.google.com/bookmarks/mark?sig=" + sigKey + QL1S("&btnA") ));
                 request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-                kDebug() << "Url: " << request.url();
-                kDebug() << "Post data is :" << postData;
+                qDebug() << "Url: " << request.url();
+                qDebug() << "Post data is :" << postData;
                 QNetworkReply *r = qnam->post(request, postData);
                 connect(r, SIGNAL(finished()), this, SLOT(updateBookmarkFinished()));
                 ++_requestCount;
@@ -266,7 +266,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
     }
     else
     {
-        kDebug() << "Unknown Response!";
+        qDebug() << "Unknown Response!";
         _isSyncing = false;
     }
 
@@ -298,7 +298,7 @@ void GoogleSyncHandler::fetchingBookmarksFinished()
             if (bookmark.isNull())
             {
                 //Add bookmark
-                kDebug() << "Add bookmark";
+                qDebug() << "Add bookmark";
                 emit syncStatus(Rekonq::Bookmarks, true, i18n("Adding bookmark"));
                 root.addBookmark(title.isEmpty() ? url : title, KUrl(url));
                 manager->manager()->emitChanged(root);
@@ -311,7 +311,7 @@ void GoogleSyncHandler::fetchingBookmarksFinished()
 
         if (!_bookmarksToAdd.isEmpty())
         {
-            kDebug() << "Getting sigkey";
+            qDebug() << "Getting sigkey";
             _webPage.mainFrame()->load(QUrl("https://www.google.com/bookmarks/mark?op=add&hl=en"));
         }
         else
@@ -327,7 +327,7 @@ void GoogleSyncHandler::fetchingBookmarksFinished()
 
         if (!_bookmarksToAdd.isEmpty() || !_bookmarksToDelete.isEmpty())
         {
-            kDebug() << "Getting sigkey";
+            qDebug() << "Getting sigkey";
             _webPage.mainFrame()->load(QUrl("https://www.google.com/bookmarks/mark?op=add&hl=en"));
         }
         else
@@ -351,7 +351,7 @@ QString GoogleSyncHandler::getChildElement(const QDomNode &node, QString name)
 
         if (nodes.at(j).nodeName() == name)
         {
-            //kDebug() << "Url : " << element.text();
+            //qDebug() << "Url : " << element.text();
             return element.text();
         }
     }
@@ -365,13 +365,13 @@ void GoogleSyncHandler::checkToAddGB(const KBookmarkGroup &root, const QDomNodeL
 
     while (!current.isNull())
     {
-        kDebug() << "Checking Url to add on Google Bookmarks: " << current.url();
+        qDebug() << "Checking Url to add on Google Bookmarks: " << current.url();
         bool found = false;
         for (int i = 0; i < bookmarksOnServer.count(); ++i)
         {
             if (current.isGroup())
             {
-                kDebug() << "Checking group" << current.text();
+                qDebug() << "Checking group" << current.text();
                 checkToAddGB(current.toGroup(), bookmarksOnServer);
                 //skip adding a blank in _bookmarksToAdd
                 found = true;
@@ -385,7 +385,7 @@ void GoogleSyncHandler::checkToAddGB(const KBookmarkGroup &root, const QDomNodeL
 
         if (!found)
         {
-            kDebug() <<  "Adding to Google Bookmarks: " << current.url().url();
+            qDebug() <<  "Adding to Google Bookmarks: " << current.url().url();
             _bookmarksToAdd.insert(current.url());
         }
         current = root.next(current);
@@ -403,7 +403,7 @@ void GoogleSyncHandler::checkToDeleteGB(BookmarkManager *manager, const QDomNode
         KBookmark result = manager->bookmarkForUrl(KUrl(url));
         if (result.isNull())
         {
-            kDebug() <<  "Deleting from Google Bookmarks: " << url;
+            qDebug() <<  "Deleting from Google Bookmarks: " << url;
             _bookmarksToDelete.insert(getChildElement(bookmarksOnServer.at(i), QL1S("id") ));
         }
     }
@@ -417,11 +417,11 @@ void GoogleSyncHandler::updateBookmarkFinished()
     --_requestCount;
     QNetworkReply *reply = dynamic_cast<QNetworkReply*>(sender());
     if (reply->error() != QNetworkReply::NoError)
-        kDebug() << "Network Error while adding bookmark to server, code is: " << reply->error();
+        qDebug() << "Network Error while adding bookmark to server, code is: " << reply->error();
     else if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute) != 302)
-        kDebug() << "Unexpected reply : " << reply->readAll();
+        qDebug() << "Unexpected reply : " << reply->readAll();
     else
-        kDebug() << "Success!";
+        qDebug() << "Success!";
 
     if (_requestCount <= 0)
     {

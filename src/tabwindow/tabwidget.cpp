@@ -285,7 +285,7 @@ WebWindow *TabWidget::webWindow(int index) const
         return tab;
     }
 
-    kDebug() << "WebWindow with index " << index << "not found. Returning NULL." ;
+    qDebug() << "WebWindow with index " << index << "not found. Returning NULL." ;
     return 0;
 }
 

@@ -39,7 +39,7 @@
 #include "rekonq.h"
 
 // Defines
-#define methodDebug() kDebug("KWebSpellChecker: %s", __FUNCTION__)
+#define methodDebug() qDebug("KWebSpellChecker: %s", __FUNCTION__)
 
 
 // ---------------------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ void KWebSpellChecker::checkSpellingOfString(const QString& word, int* misspelli
     *misspellingLocation = -1;
     *misspellingLength = 0;
 
-    kDebug() << word << endl;
+    qDebug() << word << endl;
 
     QTextBoundaryFinder finder =  QTextBoundaryFinder(QTextBoundaryFinder::Word, word);
 

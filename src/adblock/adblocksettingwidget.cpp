@@ -175,7 +175,7 @@ void AdBlockSettingWidget::load()
     QFile ruleFile(localRulesFilePath);
     if (!ruleFile.open(QFile::ReadOnly | QFile::Text))
     {
-        kDebug() << "Unable to open rule file" << localRulesFilePath;
+        qDebug() << "Unable to open rule file" << localRulesFilePath;
         return;
     }
 
@@ -220,7 +220,7 @@ void AdBlockSettingWidget::save()
     QFile ruleFile(localRulesFilePath);
     if (!ruleFile.open(QFile::WriteOnly | QFile::Text))
     {
-        kDebug() << "Unable to open rule file" << localRulesFilePath;
+        qDebug() << "Unable to open rule file" << localRulesFilePath;
         return;
     }
 

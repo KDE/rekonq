@@ -317,7 +317,7 @@ void RWindow::resizeEvent(QResizeEvent *event)
 
 void RWindow::saveAutoSaveSettings()
 {
-    kDebug() << "AUTO SAVING SETTINGS...";
+    qDebug() << "AUTO SAVING SETTINGS...";
 
     KSharedConfig::Ptr cf = KGlobal::config();
     KConfigGroup cg(cf, QL1S("RekonqWindow"));
@@ -391,7 +391,7 @@ void RWindow::checkPosition()
         move(0, 0);
         break;
     default:
-        kDebug() << "OOPS...THIS SHOULD NEVER HAPPEN!!";
+        qDebug() << "OOPS...THIS SHOULD NEVER HAPPEN!!";
         break;
     }
 }

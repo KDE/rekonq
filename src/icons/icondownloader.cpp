@@ -53,7 +53,7 @@ void IconDownloader::replyFinished(QNetworkReply *reply)
 {
     if (reply->error())
     {
-        kDebug() << "FAVICON JOB ERROR";
+        qDebug() << "FAVICON JOB ERROR";
         emit iconReady();
         this->deleteLater();
         return;
@@ -63,7 +63,7 @@ void IconDownloader::replyFinished(QNetworkReply *reply)
     QFile favicon(s);
     if (!favicon.open(QIODevice::WriteOnly))
     {
-        kDebug() << "FAVICON FILE NOT OPENED";
+        qDebug() << "FAVICON FILE NOT OPENED";
         emit iconReady();
         this->deleteLater();
         return;
@@ -74,7 +74,7 @@ void IconDownloader::replyFinished(QNetworkReply *reply)
 
     if (favicon.size() == 0)
     {
-        kDebug() << "SIZE ZERO FAVICON";
+        qDebug() << "SIZE ZERO FAVICON";
         favicon.remove();
         emit iconReady();
         this->deleteLater();
@@ -84,7 +84,7 @@ void IconDownloader::replyFinished(QNetworkReply *reply)
     QPixmap px;
     if (!px.load(s))
     {
-        kDebug() << "PIXMAP NOT LOADED";
+        qDebug() << "PIXMAP NOT LOADED";
         emit iconReady();
         this->deleteLater();
         return;
@@ -92,7 +92,7 @@ void IconDownloader::replyFinished(QNetworkReply *reply)
 
     if (px.isNull())
     {
-        kDebug() << "PIXMAP IS NULL";
+        qDebug() << "PIXMAP IS NULL";
         favicon.remove();
         emit iconReady();
         this->deleteLater();
@@ -102,7 +102,7 @@ void IconDownloader::replyFinished(QNetworkReply *reply)
     px = px.scaled(16, 16);
     if (!px.save(s + QL1S(".png"), "PNG"))
     {
-        kDebug() << "PIXMAP NOT SAVED";
+        qDebug() << "PIXMAP NOT SAVED";
         emit iconReady();
         this->deleteLater();
         return;

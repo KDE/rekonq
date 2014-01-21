@@ -161,7 +161,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 
 SettingsDialog::~SettingsDialog()
 {
-    kDebug() << "bye bye settings...";
+    qDebug() << "bye bye settings...";
     delete d;
 }
 

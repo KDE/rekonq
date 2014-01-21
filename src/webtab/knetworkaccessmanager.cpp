@@ -48,7 +48,7 @@ KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
     KConfigGroup proxyGroup(&config, QL1S("Proxy Settings"));
     
     int proxyType = proxyGroup.readEntry( QL1S("ProxyType"), 0);
-    kDebug() << "PROXY TYPE: " << proxyType;
+    qDebug() << "PROXY TYPE: " << proxyType;
 
     if (proxyType == 0)
         return;
@@ -80,14 +80,14 @@ KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
 
     // set host
     QString proxyHost = proxyInfoList.at(0);
-    kDebug() << "PROXY HOST: " << proxyHost;
+    qDebug() << "PROXY HOST: " << proxyHost;
     proxy.setHostName(proxyHost);
     
     // set port
     if (proxyInfoList.count() == 2)
     {
         int proxyPort = proxyInfoList.at(1).toInt();
-        kDebug() << "PROXY PORT: " << proxyPort;
+        qDebug() << "PROXY PORT: " << proxyPort;
         proxy.setPort(proxyPort);
     }
 //     proxy.setUser("username");

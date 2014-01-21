@@ -98,7 +98,7 @@ static void hideBlockedElements(const QUrl& url, QWebElementCollection& collecti
         const QUrl resolvedUrl(baseUrl.resolved(src));
         if (url == resolvedUrl)
         {
-            //kDebug() << "*** HIDING ELEMENT: " << (*it).tagName() << resolvedUrl;
+            //qDebug() << "*** HIDING ELEMENT: " << (*it).tagName() << resolvedUrl;
             (*it).removeFromDocument();
         }
     }

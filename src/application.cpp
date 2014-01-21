@@ -108,7 +108,7 @@ Application::~Application()
         delete tab;
     }
 
-    kDebug() << "Bye bye (k)baby...";
+    qDebug() << "Bye bye (k)baby...";
 }
 
 
@@ -128,16 +128,16 @@ int Application::newInstance()
     // note that hasToBeRecoveredFromCrash is always true if it is not the first load
     // !isFirstLoad -> hasToBeRecoveredFromCrash
 
-    kDebug() << "is first load? " << isFirstLoad;
-    kDebug() << "are there arguments? " << areThereArguments;
-    kDebug() << "is rekonq crashed? " << hasToBeRecoveredFromCrash;
+    qDebug() << "is first load? " << isFirstLoad;
+    qDebug() << "are there arguments? " << areThereArguments;
+    qDebug() << "is rekonq crashed? " << hasToBeRecoveredFromCrash;
 
     bool incognito = args->isSet("incognito");
     bool webapp = args->isSet("webapp");
 
     if (webapp)
     {
-        kDebug() << "WEBAPP MODE...";
+        qDebug() << "WEBAPP MODE...";
         if (args->count() == 0)
         {
             KMessageBox::error(0, i18n("Error"), i18n("Cannot launch webapp mode without an URL to load"));
@@ -155,7 +155,7 @@ int Application::newInstance()
         {
             u = UrlResolver::urlFromTextTyped(args->arg(0));
         }
-        kDebug() << "URL: " << u;
+        qDebug() << "URL: " << u;
 
         loadUrl(u, Rekonq::WebApp);
 
@@ -166,7 +166,7 @@ int Application::newInstance()
 
     if (areThereArguments)
     {
-        kDebug() << "DEFAULT MODE, WITH ARGUMENTS...";
+        qDebug() << "DEFAULT MODE, WITH ARGUMENTS...";
 
         // prepare URLS to load
         KUrl::List urlList;
@@ -257,7 +257,7 @@ int Application::newInstance()
     }
     else    // ok, NO arguments
     {
-        kDebug() << "DEFAULT MODE, NO ARGUMENTS...";
+        qDebug() << "DEFAULT MODE, NO ARGUMENTS...";
         if (isFirstLoad)
         {
             // NOTE: just load new tabs/windows without arguments
@@ -870,7 +870,7 @@ void Application::createWebAppShortcut(const QString & urlString, const QString 
 
             if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                kDebug() << "Unable to open file: " << wAppFile.errorString();
+                qDebug() << "Unable to open file: " << wAppFile.errorString();
                 return;
             }
 
@@ -889,7 +889,7 @@ void Application::createWebAppShortcut(const QString & urlString, const QString 
 
             if (!wAppFile.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                kDebug() << "Unable to open file: " << wAppFile.errorString();
+                qDebug() << "Unable to open file: " << wAppFile.errorString();
                 return;
             }
 

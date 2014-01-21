@@ -78,7 +78,7 @@ BookmarkManager::BookmarkManager(QObject *parent)
 
     if (!QFile::exists(bookmarksFile))
     {
-        kDebug() << "copying of defaultbookmarks.xbel ...";
+        qDebug() << "copying of defaultbookmarks.xbel ...";
 
         QString bookmarksDefaultPath = KStandardDirs::locate("appdata" , "defaultbookmarks.xbel");
         KBookmarkManager *tempManager = KBookmarkManager::managerForExternalFile(bookmarksDefaultPath);

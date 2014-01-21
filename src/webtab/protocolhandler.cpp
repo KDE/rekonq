@@ -176,7 +176,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
                 _url = KUrl("rekonq:closedtabs");
                 break;
             default: // unuseful
-                kDebug() << "oops... this should NOT happen...";
+                qDebug() << "oops... this should NOT happen...";
                 _url = KUrl("rekonq:favorites");
                 break;
             }
@@ -209,7 +209,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
     // NOTE: this is a stupid workaround to ensure apt protocol works
     if (_url.protocol() == QL1S("apt"))
     {
-        kDebug() << "APT URL: " << _url;
+        qDebug() << "APT URL: " << _url;
         (void)new KRun(_url, _webwin, 0, _url.isLocalFile());
         return true;
     }
@@ -402,7 +402,7 @@ void ProtocolHandler::slotMostLocalUrlResult(KJob *job)
 {
     if (job->error())
     {
-        kDebug() << "JOB ERROR: " << job->errorString();
+        qDebug() << "JOB ERROR: " << job->errorString();
         // TODO
     }
     else

@@ -129,7 +129,7 @@ WebView::~WebView()
     if (m_isViewSmoothScrolling)
         stopSmoothScrolling();
     
-    kDebug() << "BYE BYE WEBVIEW";
+    qDebug() << "BYE BYE WEBVIEW";
 }
 
 
@@ -222,7 +222,7 @@ bool WebView::popupSpellMenu(QContextMenuEvent *event)
     if (word.isEmpty())
         return false;
 
-    kDebug() << s1 << ":" << s2 << ":" << word << ":";
+    qDebug() << s1 << ":" << s2 << ":" << word << ":";
     Sonnet::Speller spellor;
     if (spellor.isCorrect(word))
         return false; // no need to popup spell menu
@@ -1034,7 +1034,7 @@ void WebView::keyReleaseEvent(QKeyEvent *event)
 
         if (m_accessKeysPressed && !(event->modifiers() & Qt::ControlModifier))
         {
-            kDebug() << "Shotting access keys";
+            qDebug() << "Shotting access keys";
             QTimer::singleShot(200, this, SLOT(accessKeyShortcut()));
             event->accept();
             return;
@@ -1042,7 +1042,7 @@ void WebView::keyReleaseEvent(QKeyEvent *event)
         else
         {
             checkForAccessKey(event);
-            kDebug() << "Hiding access keys";
+            qDebug() << "Hiding access keys";
             hideAccessKeys();
             event->accept();
             return;
@@ -1379,7 +1379,7 @@ bool WebView::checkForAccessKey(QKeyEvent *event)
         handled = true;
     }
 
-    kDebug() << "checking for access keys: " << handled;
+    qDebug() << "checking for access keys: " << handled;
     return handled;
 }
 
@@ -1516,14 +1516,14 @@ void WebView::spellCheckerCorrected(const QString& original, int pos, const QStr
     script += QString::number(index + original.length());
     script += QL1S(")");
 
-    //kDebug() << "**** script:" << script;
+    //qDebug() << "**** script:" << script;
     execJScript(m_contextMenuHitResult, script);
 }
 
 
 void WebView::spellCheckerMisspelling(const QString& text, int pos)
 {
-    // kDebug() << text << pos;
+    // qDebug() << text << pos;
     QString selectionScript(QL1S("this.setSelectionRange("));
     selectionScript += QString::number(pos + m_spellTextSelectionStart);
     selectionScript += QL1C(',');
@@ -1581,7 +1581,7 @@ void WebView::guessHoveredLink(QPoint p)
     // if url is empty, reset
     if (emptyUrl)
     {
-        kDebug() << "EMPTY LINK";
+        qDebug() << "EMPTY LINK";
         m_isExternalLinkHovered = false;
         return;
     }
@@ -1592,7 +1592,7 @@ void WebView::guessHoveredLink(QPoint p)
 
     if (!frame)
     {
-        kDebug() << "EXTERNAL LINK";
+        qDebug() << "EXTERNAL LINK";
         m_isExternalLinkHovered = true;
         return;
     }

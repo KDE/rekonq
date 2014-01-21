@@ -41,7 +41,7 @@
 FTPSyncHandler::FTPSyncHandler(QObject *parent)
     : SyncHandler(parent)
 {
-    kDebug() << "creating FTP handler...";
+    qDebug() << "creating FTP handler...";
 }
 
 
@@ -126,7 +126,7 @@ bool FTPSyncHandler::syncRelativeEnabled(bool check)
 
 void FTPSyncHandler::syncBookmarks()
 {
-    kDebug() << "syncing now...";
+    qDebug() << "syncing now...";
 
     if (!syncRelativeEnabled(ReKonfig::syncBookmarks()))
         return;
@@ -182,7 +182,7 @@ void FTPSyncHandler::onBookmarksSyncFinished(KJob *job)
 
 void FTPSyncHandler::syncHistory()
 {
-    kDebug() << "syncing now...";
+    qDebug() << "syncing now...";
 
     if (!syncRelativeEnabled(ReKonfig::syncHistory()))
         return;
@@ -238,7 +238,7 @@ void FTPSyncHandler::onHistorySyncFinished(KJob *job)
 
 void FTPSyncHandler::syncPasswords()
 {
-    kDebug() << "syncing now...";
+    qDebug() << "syncing now...";
 
     if (!syncRelativeEnabled(ReKonfig::syncPasswords()))
         return;

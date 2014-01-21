@@ -59,7 +59,7 @@ public:
         bool b = m_implementation->match(request, encodedUrl, encodedUrlLowerCase);
         if (b)
         {
-            kDebug() << m_implementation->ruleType() << ": rule string = " << m_implementation->ruleString();
+            qDebug() << m_implementation->ruleType() << ": rule string = " << m_implementation->ruleString();
         }
         return b;
     }

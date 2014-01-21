@@ -61,7 +61,7 @@ QString UserAgentInfo::userAgentString(int i)
 {
     if (i < 0 || !providerExists(i))
     {
-        kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
+        qDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
     }
 
@@ -98,7 +98,7 @@ QString UserAgentInfo::userAgentName(int i)
 {
     if (i < 0 || !providerExists(i))
     {
-        kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
+        qDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
     }
 
@@ -110,7 +110,7 @@ QString UserAgentInfo::userAgentVersion(int i)
 {
     if (i < 0 || !providerExists(i))
     {
-        kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
+        qDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
     }
 
@@ -122,7 +122,7 @@ QString UserAgentInfo::userAgentDescription(int i)
 {
     if (i < 0 || !providerExists(i))
     {
-        kDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
+        qDebug() << "oh oh... wrong index on the user agent choice! INDEX = " << i;
         return QL1S("Default");
     }
 
@@ -162,7 +162,7 @@ bool UserAgentInfo::setUserAgentForHost(int uaIndex, const QString &host)
     {
         if (!hostGroup.exists())
         {
-            kDebug() << "Host does NOT exists!";
+            qDebug() << "Host does NOT exists!";
             return false;
         }
         hostGroup.deleteGroup();

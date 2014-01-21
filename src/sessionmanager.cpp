@@ -63,13 +63,13 @@ bool readSessionDocument(QDomDocument & document, const QString & sessionFilePat
 
     if (!sessionFile.open(QFile::ReadOnly))
     {
-        kDebug() << "Unable to open session file" << sessionFile.fileName();
+        qDebug() << "Unable to open session file" << sessionFile.fileName();
         return false;
     }
 
     if (!document.setContent(&sessionFile, false))
     {
-        kDebug() << "Unable to parse session file" << sessionFile.fileName();
+        qDebug() << "Unable to parse session file" << sessionFile.fileName();
         return false;
     }
 
@@ -85,7 +85,7 @@ int loadTabs(RekonqWindow *tw, QDomElement & window, bool useFirstTab, bool just
     {
         QDomElement tab = window.elementsByTagName("tab").at(tabNo).toElement();
         bool tabIsPinned = tab.hasAttribute("pinned");
-        kDebug() << "Tab #" << tabNo <<  " is pinned? " << tabIsPinned;
+        qDebug() << "Tab #" << tabNo <<  " is pinned? " << tabIsPinned;
 
         if (!justThePinnedOnes || tabIsPinned)
         {
@@ -173,12 +173,12 @@ void SessionManager::saveSession()
 
     m_safe = false;
 
-    kDebug() << "SAVING SESSION...";
+    qDebug() << "SAVING SESSION...";
 
     QFile sessionFile(m_sessionFilePath);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
     {
-        kDebug() << "Unable to open session file" << sessionFile.fileName();
+        qDebug() << "Unable to open session file" << sessionFile.fileName();
         return;
     }
     RekonqWindowList wl = rApp->rekonqWindowList();
@@ -380,7 +380,7 @@ QList<TabHistory> SessionManager::closedSitesForWindow(const QString &windowName
 
 bool SessionManager::saveYourSession(int index)
 {
-    kDebug() << "SAVING YOUR OWN SESSION...";
+    qDebug() << "SAVING YOUR OWN SESSION...";
     
     const QString & sessionPath = KStandardDirs::locateLocal("appdata" , QL1S("usersessions/"));
     const QString & sessionName = QL1S("ses") + QString::number(index);
@@ -388,7 +388,7 @@ bool SessionManager::saveYourSession(int index)
     QFile sessionFile(sessionPath + sessionName);
     if (!sessionFile.open(QFile::WriteOnly | QFile::Truncate))
     {
-        kDebug() << "Unable to open session file" << sessionFile.fileName();
+        qDebug() << "Unable to open session file" << sessionFile.fileName();
         return false;
     }
     
@@ -482,7 +482,7 @@ bool SessionManager::restoreYourSession(int index)
 
 void SessionManager::manageSessions()
 {
-    kDebug() << "OK ,manage session..";
+    qDebug() << "OK ,manage session..";
     
     QPointer<KDialog> dialog = new KDialog();
     dialog->setCaption(i18nc("@title:window", "Manage Session"));

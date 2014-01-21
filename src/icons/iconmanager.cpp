@@ -224,6 +224,6 @@ KIcon IconManager::engineFavicon(const KUrl &url)
         new WebIcon(url);
     }
 
-    kDebug() << "NO ENGINE FAVICON";
+    qDebug() << "NO ENGINE FAVICON";
     return KIcon("text-html");
 }

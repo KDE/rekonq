@@ -80,7 +80,7 @@ NewTabPage::NewTabPage(QWebFrame *frame)
     bool isOpened = file.open(QIODevice::ReadOnly);
     if (!isOpened)
     {
-        kDebug() << "Couldn't open the home.html file";
+        qDebug() << "Couldn't open the home.html file";
     }
     else
     {
@@ -268,7 +268,7 @@ void NewTabPage::generate(const KUrl &url)
         return;
     }
 
-    kDebug() << "URL: " << url;
+    qDebug() << "URL: " << url;
     loadPageForUrl(url);
 }
 
@@ -279,7 +279,7 @@ void NewTabPage::loadPageForUrl(const KUrl &url, const QString & filter)
     QWebFrame *parentFrame = qobject_cast<QWebFrame *>(parent());
     if (!parentFrame)
     {
-        kDebug() << "NULL PARENT FRAME: PAGE NOT LOADED";
+        qDebug() << "NULL PARENT FRAME: PAGE NOT LOADED";
         return;
     }
 
@@ -739,7 +739,7 @@ void NewTabPage::downloadsPage(const QString & filter)
 //
 //             if (!WebSnap::existsImage(url))
 //             {
-//                 kDebug() << "image doesn't exist for url: " << url;
+//                 qDebug() << "image doesn't exist for url: " << url;
 //                 QPixmap preview = WebSnap::renderPagePreview(*w->mainView()->webTab(i)->page());
 //                 QString path = WebSnap::imagePathFromUrl(url.url());
 //                 preview.save(path);
@@ -944,7 +944,7 @@ void NewTabPage::createBookmarkItem(const KBookmark &bookmark, QWebElement paren
     }
     else if (bookmark.isSeparator())
     {
-        kDebug() << "SEPARATOR";
+        qDebug() << "SEPARATOR";
         parent.appendInside(QL1S("<hr />"));
     }
     else
@@ -1071,9 +1071,9 @@ void NewTabPage::saveFavorites()
             continue;
 
         QString id = e.attribute(QL1S("id"));
-        kDebug() << "id: " << id;
+        qDebug() << "id: " << id;
         int index = id.remove(QL1S("preview")).toInt();
-        kDebug() << "INDEX: " << index;
+        qDebug() << "INDEX: " << index;
 
         newNames.replace(i, names.at(index));
         newUrls.replace(i, urls.at(index));

@@ -62,7 +62,7 @@ QObject *WebPluginFactory::create(const QString &_mimeType,
         extractGuessedMimeType(url, &mimeType);
     }
 
-    kDebug() << "loading mimeType: " << mimeType;
+    qDebug() << "loading mimeType: " << mimeType;
 
     // we'd like to use djvu plugin if possible. If not available, rekonq protocol handler
     // will provide a part to load it. See BUG:304562 about
@@ -73,7 +73,7 @@ QObject *WebPluginFactory::create(const QString &_mimeType,
     switch (ReKonfig::pluginsEnabled())
     {
     case 0:
-        kDebug() << "No plugins found for" << mimeType << ". Falling back to KDEWebKit ones...";
+        qDebug() << "No plugins found for" << mimeType << ". Falling back to KDEWebKit ones...";
         return KWebPluginFactory::create(mimeType, url, argumentNames, argumentValues);
 
     case 1:

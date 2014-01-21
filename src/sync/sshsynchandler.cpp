@@ -42,7 +42,7 @@
 SSHSyncHandler::SSHSyncHandler(QObject *parent)
     : SyncHandler(parent)
 {
-    kDebug() << "creating SSH handler...";
+    qDebug() << "creating SSH handler...";
 }
 
 
@@ -127,7 +127,7 @@ bool SSHSyncHandler::syncRelativeEnabled(bool check)
 
 void SSHSyncHandler::syncBookmarks()
 {
-    kDebug() << "syncing now...";
+    qDebug() << "syncing now...";
 
     if (!syncRelativeEnabled(ReKonfig::syncBookmarks()))
         return;
@@ -183,7 +183,7 @@ void SSHSyncHandler::onBookmarksSyncFinished(KJob *job)
 
 void SSHSyncHandler::syncHistory()
 {
-    kDebug() << "syncing now...";
+    qDebug() << "syncing now...";
 
     if (!syncRelativeEnabled(ReKonfig::syncHistory()))
         return;
@@ -239,7 +239,7 @@ void SSHSyncHandler::onHistorySyncFinished(KJob *job)
 
 void SSHSyncHandler::syncPasswords()
 {
-    kDebug() << "syncing now...";
+    qDebug() << "syncing now...";
 
     if (!syncRelativeEnabled(ReKonfig::syncPasswords()))
         return;

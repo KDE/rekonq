@@ -176,7 +176,7 @@ KUrl WebTab::url()
     if (view())
         return view()->url();
 
-    kDebug() << "OOPS... NO web classes survived! Returning an empty url...";
+    qDebug() << "OOPS... NO web classes survived! Returning an empty url...";
     return KUrl();
 }
 
@@ -194,7 +194,7 @@ QString WebTab::title()
     if (view())
         return view()->title();
 
-    kDebug() << "OOPS... NO web classes survived! Returning an empty title...";
+    qDebug() << "OOPS... NO web classes survived! Returning an empty title...";
     return QString();
 
 }
@@ -456,7 +456,7 @@ void WebTab::setZoom(int zoomFactor)
 {
     // This is needed because of the WebView zoomChanged signal...
     m_zoomFactor = zoomFactor;
-    // kDebug() << "NEW ZOOM FACTOR: " << zoomFactor;
+    // qDebug() << "NEW ZOOM FACTOR: " << zoomFactor;
     
     // set zoom factor
     KSharedConfig::Ptr config = KGlobal::config();
