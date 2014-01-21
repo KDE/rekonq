@@ -414,8 +414,6 @@ void TabWidget::currentChanged(int newIndex)
     if (!tab)
         return;
 
-    tab->tabView()->focusIn();
-    
     QString t = tab->title();
 
     (t.isEmpty() || t == QL1S("rekonq"))
@@ -429,8 +427,6 @@ void TabWidget::currentChanged(int newIndex)
     WebWindow *oldTab = webWindow(_lastCurrentTabIndex);
     if (!oldTab)
         return;
-    
-    oldTab->tabView()->focusOut();
     
     _lastCurrentTabIndex = newIndex;
 }

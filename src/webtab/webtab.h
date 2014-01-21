@@ -43,8 +43,6 @@
 #include <QWebInspector>
 #include <QSplitter>
 
-// Config
-#include <config-kactivities.h>
 
 // Forward Declarations
 class PreviewSelectorBar;
@@ -52,10 +50,6 @@ class WalletBar;
 class WebPage;
 
 class WebWindow;
-
-#ifdef HAVE_KACTIVITIES
-namespace KActivities { class ResourceInstance; }
-#endif
 
 
 class REKONQ_TESTS_EXPORT WebTab : public QWidget
@@ -89,9 +83,6 @@ public:
 
     KParts::ReadOnlyPart *part();
     void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
-    
-    void focusIn();
-    void focusOut();
     
     bool isWebApp();
 
@@ -152,10 +143,6 @@ private:
     bool m_isWebApp;
     
     QSplitter *m_splitter;
-    
-#ifdef HAVE_KACTIVITIES
-    KActivities::ResourceInstance *m_activityResourceInstance;
-#endif
 };
 
 #endif

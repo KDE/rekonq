@@ -44,20 +44,8 @@ class RekonqWindow;
 class WebTab;
 class WebPage;
 
-#include <config-kactivities.h>
-
-#ifdef HAVE_KACTIVITIES
-namespace KActivities {
-    class Consumer;
-}
-#endif
-
 typedef QList< QWeakPointer<RekonqWindow> > RekonqWindowList;
 typedef QList<WebTab *> WebAppList;
-
-#ifdef HAVE_KACTIVITIES
-typedef QHash< QString, RekonqWindowList > ActivityTabsMap;
-#endif
 
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -150,12 +138,6 @@ private Q_SLOTS:
 private:
     RekonqWindowList m_rekonqWindows;
     WebAppList m_webApps;
-    
-#ifdef HAVE_KACTIVITIES
-    ActivityTabsMap m_activityRekonqWindowsMap;
-    KActivities::Consumer *m_activityConsumer;
-#endif
-
 };
 
 #endif // APPLICATION_H

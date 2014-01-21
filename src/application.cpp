@@ -69,11 +69,6 @@
 
 #include <KMessageBox>
 
-#include <config-kactivities.h>
-#ifdef HAVE_KACTIVITIES
-#include <KActivities/Consumer>
-#endif
-
 // Qt Includes
 #include <QDBusInterface>
 #include <QDBusReply>
@@ -84,10 +79,6 @@
 Application::Application()
     : KUniqueApplication()
 {
-#ifdef HAVE_KACTIVITIES
-    m_activityConsumer = new KActivities::Consumer();
-#endif
-    
     // updating rekonq configuration
     updateConfiguration();
 
@@ -103,10 +94,6 @@ Application::~Application()
     // ok, we are closing well: don't recover on next load..
     ReKonfig::setRecoverOnCrash(0);
     saveConfiguration();
-
-#ifdef HAVE_KACTIVITIES    
-    delete m_activityConsumer;
-#endif
 
     // Destroy all windows...
     Q_FOREACH(QWeakPointer<RekonqWindow> pointer, m_rekonqWindows)
@@ -390,9 +377,6 @@ RekonqWindow *Application::rekonqWindow(const QString & activityID)
     if (!active)
     {
         RekonqWindowList wList = m_rekonqWindows;
-#ifdef HAVE_KACTIVITIES
-        wList = tabsForActivity(activityID);
-#endif
         
         if (wList.isEmpty())
             return 0;
@@ -410,15 +394,7 @@ RekonqWindow *Application::rekonqWindow(const QString & activityID)
 
 RekonqWindowList Application::tabsForActivity(const QString & activityID)
 {
-#ifdef HAVE_KACTIVITIES
-    QString id = activityID;
-    if ( id.isEmpty() )
-        id = m_activityConsumer->currentActivity();
-    
-    return m_activityRekonqWindowsMap[id];
-#else
     return m_rekonqWindows;
-#endif
 }
 
 
@@ -461,11 +437,6 @@ void Application::setWindowInfo(RekonqWindow *w)
     w->installEventFilter(this);
 
     m_rekonqWindows.prepend(w);
-    
-#ifdef HAVE_KACTIVITIES
-    QString currentActivity = m_activityConsumer->currentActivity();
-    m_activityRekonqWindowsMap[currentActivity].prepend(w);
-#endif    
 }
 
 
@@ -530,10 +501,6 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
         {
             SessionManager::self()->saveSession();
             m_rekonqWindows.removeOne(window);
-#ifdef HAVE_KACTIVITIES
-            QString currentActivity = m_activityConsumer->currentActivity();
-            m_activityRekonqWindowsMap[currentActivity].removeOne(window);
-#endif
         }
         
         WebTab *webApp = qobject_cast<WebTab*>(watched);

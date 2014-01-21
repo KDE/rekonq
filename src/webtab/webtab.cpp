@@ -58,10 +58,6 @@
 #include <KParts/Part>
 #include <KParts/BrowserExtension>
 
-#ifdef HAVE_KACTIVITIES
-#include <KActivities/ResourceInstance>
-#endif
-
 // Qt Includes
 #include <QVBoxLayout>
 #include <QPrintDialog>
@@ -80,9 +76,6 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
     , m_isPrivateBrowsing(isPrivateBrowsing)
     , m_isWebApp(false)
     , m_splitter(new QSplitter(this))
-#ifdef HAVE_KACTIVITIES
-    , m_activityResourceInstance(0)
-#endif
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -134,16 +127,6 @@ WebTab::WebTab(QWidget *parent, bool isPrivateBrowsing)
     
     // Session Manager
     connect(view(), SIGNAL(loadFinished(bool)), SessionManager::self(), SLOT(saveSession()));
-    
-#ifdef HAVE_KACTIVITIES
-    if (m_isPrivateBrowsing)
-        return;
-    
-    m_activityResourceInstance = new KActivities::ResourceInstance(window()->winId(), this);
-    
-    connect(this, SIGNAL(urlChanged(QUrl)), m_activityResourceInstance, SLOT(setUri(QUrl)));
-    connect(this, SIGNAL(titleChanged(QString)), m_activityResourceInstance, SLOT(setTitle(QString)));
-#endif
 }
 
 
@@ -525,28 +508,6 @@ void WebTab::toggleInspector(bool on)
     m_inspector.data()->hide();
 
     page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, on);
-}
-
-
-void WebTab::focusIn()
-{
-#ifdef HAVE_KACTIVITIES
-    if (m_isPrivateBrowsing || !m_activityResourceInstance)
-        return;
-    
-    m_activityResourceInstance->notifyFocusedIn();
-#endif
-}
-
-
-void WebTab::focusOut()
-{
-#ifdef HAVE_KACTIVITIES
-    if (m_isPrivateBrowsing || !m_activityResourceInstance)
-        return;
-    
-    m_activityResourceInstance->notifyFocusedOut();    
-#endif
 }
 
 
