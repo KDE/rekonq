@@ -1,85 +1,119 @@
 # Andrea Diamantini - adjam7 at gmail dot com
 # rekonq project
 
-PROJECT( rekonq )
+# ==================================================================================
+# minimum cmake required
+
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8.12 FATAL_ERROR)
+
+# ==================================================================================
+# project name
+
+PROJECT (rekonq)
 
 # ==================================================================================
 # Information to update before to release this package.
 
 # rekonq info
-SET(REKONQ_VERSION "2.4.2" )
+SET (REKONQ_VERSION "3.X.Y")
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-version.h )
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/config-version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-version.h)
 
-SET(REKONQ_SITE "http://rekonq.kde.org")
-
-# ==================================================================================
-# minimum cmake required
-
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9 FATAL_ERROR)
-
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+SET (REKONQ_SITE "http://rekonq.kde.org")
 
 # ==================================================================================
+# Extra CMake Modules
+
+FIND_PACKAGE (ECM 0.0.9 REQUIRED NO_MODULE)
+
+SET (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 
-FIND_PACKAGE(Qt4 4.8.0 COMPONENTS QtCore QtGui QtNetwork QtWebKit REQUIRED)
+INCLUDE (ECMOptionalAddSubdirectory) 
+INCLUDE (ECMInstallIcons)
+INCLUDE (ECMSetupVersion)
+INCLUDE (ECMGenerateHeaders)
+INCLUDE (GenerateExportHeader)
 
-## Ensure we have QtWebKit >= 2.2.0
-#FIND_PACKAGE(PkgConfig REQUIRED)
-#PKG_CHECK_MODULES(PC_QTWEBKIT REQUIRED QtWebKit>=4.8.0)
-#IF(NOT PC_QTWEBKIT_FOUND)
-#  MESSAGE(FATAL_ERROR "QtWebkit 2.2.0 is required for this version of Rekonq")
-#ELSE()
-#  MESSAGE(STATUS "Found QtWebKit ${PC_QTWEBKIT_VERSION}")
-#ENDIF()
+INCLUDE (CMakePackageConfigHelpers)
+INCLUDE (FeatureSummary)
+INCLUDE (WriteBasicConfigVersionFile)
+INCLUDE (CheckFunctionExists)
 
-FIND_PACKAGE(KDE4 4.8.4 REQUIRED)
+INCLUDE (KDEInstallDirs)
+INCLUDE (KDECMakeSettings)
+INCLUDE (KDECompilerSettings)
+INCLUDE (KDEFrameworkCompilerSettings)
+>>>>>>> KF5 rekonq, first commit!!!!!!!
 
 
-INCLUDE(MacroOptionalFindPackage)
-INCLUDE(FindPackageHandleStandardArgs)
-INCLUDE(KDE4Defaults)
-INCLUDE(MacroLibrary)
+# ==================================================================================
+# Qt 5
+    
+SET (QT_MIN_VERSION "5.2.0")
 
-ADD_DEFINITIONS(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
+FIND_PACKAGE(Qt5 REQUIRED NO_MODULE COMPONENTS Core Quick Qml Widgets Declarative Script WebKit)
+
+# ==================================================================================
+# KDE Frameworks
+
+SET (KF5_MIN_VERSION "5.0.0")
+
+FIND_PACKAGE (KF5 CONFIG REQUIRED COMPONENTS
+    Init
+    WidgetsAddons 
+    CoreAddons 
+    Solid  
+    GlobalAccel
+    Config 
+    Auth 
+    Wallet 
+    DBusAddons 
+    I18n 
+    GuiAddons 
+    ConfigWidgets
+    JobWidgets
+    TextWidgets 
+    XmlGui
+    Bookmarks 
+    Declarative 
+    Parts
+    KIO
+)
+
+SET(KF5_VERSION_STRING
+    "${KF5_VERSION_MAJOR}.${KF5_VERSION_MINOR}.${KF5_VERSION_PATCH}"
+   )
 
 
 # ==================================================================================
 # optional nepomuk requirements
 
-if(WITH_NEPOMUK)
-  FIND_PACKAGE(Soprano)
-
-  FIND_PACKAGE(NepomukCore 0.1.0)
-endif()
-
-IF(SOPRANO_FOUND AND NepomukCore_FOUND)
-    ADD_DEFINITIONS(-DHAVE_NEPOMUK)
-ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
+# we HAVE TO move to Baloo here...
+#if(WITH_NEPOMUK)
+#  FIND_PACKAGE(Soprano)
+#
+#  FIND_PACKAGE(NepomukCore 0.1.0)
+#endif()
+#
+#IF(SOPRANO_FOUND AND NepomukCore_FOUND)
+#    ADD_DEFINITIONS(-DHAVE_NEPOMUK)
+# ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
 
 # ==================================================================================
 # optional QCA2 & QtOAuth requirements
 
-MACRO_OPTIONAL_FIND_PACKAGE(QCA2)
-MACRO_BOOL_TO_01(QCA2_FOUND HAVE_QCA2)
+# MACRO_OPTIONAL_FIND_PACKAGE(QCA2)
+# MACRO_BOOL_TO_01(QCA2_FOUND HAVE_QCA2)
+# 
+# configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-qca2.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-qca2.h )
+# 
+# 
+# MACRO_OPTIONAL_FIND_PACKAGE(QtOAuth)
+# MACRO_BOOL_TO_01(QTOAUTH_FOUND HAVE_QTOAUTH)
+# 
+# configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-qtoauth.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-qtoauth.h )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-qca2.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-qca2.h )
-
-
-MACRO_OPTIONAL_FIND_PACKAGE(QtOAuth)
-MACRO_BOOL_TO_01(QTOAUTH_FOUND HAVE_QTOAUTH)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-qtoauth.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-qtoauth.h )
-
-
-# ==================================================================================
-# optional KActivities requirements
-
-MACRO_OPTIONAL_FIND_PACKAGE(KActivities 6.1.0)
-MACRO_BOOL_TO_01(KActivities_FOUND HAVE_KACTIVITIES)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config-kactivities.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config-kactivities.h )
 
 # ==================================================================================
 # Log messages
@@ -92,38 +126,32 @@ MESSAGE(STATUS "")
 # Require shared libraries results.
 
 # ----------------------------------- Qt -------------------------------------
-SET(QT_VERS_STR
-    "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
-   )
 
-IF(QT4_FOUND)
+IF(Qt5Core_FOUND)
     MESSAGE(STATUS " Qt library found...................... YES")
-    MESSAGE(STATUS " Qt version ${QT_VERS_STR} found! ")
-ELSE(QT4_FOUND)
+    MESSAGE(STATUS " Qt version ${Qt5Core_VERSION_STRING} found! ")
+ELSE(Qt5Core_FOUND)
     MESSAGE(STATUS " Qt library found...................... NO")
     MESSAGE(STATUS "")
-    MESSAGE(SEND_ERROR " rekonq needs at least Qt ${QT_MIN_VERSION}. Please install it and try compiling again.")
+    MESSAGE(SEND_ERROR " rekonq ${REKONQ_VERSION} needs at least Qt ${QT_MIN_VERSION}. Please install it and try compiling again.")
     MESSAGE(STATUS " Qt website is at http://qt-project.org")
     MESSAGE(STATUS "")
-ENDIF(QT4_FOUND)
+ENDIF(Qt5Core_FOUND)
 
 MESSAGE(STATUS "")
 
 # ---------------------------------- KDE -------------------------------------
-SET(KDE_VERS_STR
-    "${KDE_VERSION_MAJOR}.${KDE_VERSION_MINOR}.${KDE_VERSION_RELEASE}"
-   )
 
-IF(KDE4_FOUND)
+IF(KF5_FOUND)
     MESSAGE(STATUS " KDE Desktop Environment............... YES")
-    MESSAGE(STATUS " KDE version ${KDE_VERS_STR} found! ")
-ELSE(KDE4_FOUND)
+    MESSAGE(STATUS " KDE version ${KF5_VERSION_STRING} found! ")
+ELSE(KF5_FOUND)
     MESSAGE(STATUS " KDE Desktop Environment............... NO")
     MESSAGE(STATUS "")
-    MESSAGE(SEND_ERROR " rekonq needs at least KDE ${KDE_MIN_VERSION}. Please install it and try compiling again.")
+    MESSAGE(SEND_ERROR " rekonq ${REKONQ_VERSION} needs at least KDE ${KF5_MIN_VERSION}. Please install it and try compiling again.")
     MESSAGE(STATUS " KDE website is at http://www.kde.org")
     MESSAGE(STATUS "")
-ENDIF(KDE4_FOUND)
+ENDIF(KF5_FOUND)
 
 ##### FINAL RESULTS #####
 
@@ -131,13 +159,13 @@ ENDIF(KDE4_FOUND)
 MESSAGE(STATUS "")
 MESSAGE(STATUS "")
 
-IF(QT4_FOUND AND KDE4_FOUND)
+IF(Qt5Core_FOUND AND KF5_FOUND)
     MESSAGE(STATUS " rekonq will be compiled............... YES")
     SET(REKONQ_CAN_BE_COMPILED true)
-ELSE(QT4_FOUND AND KDE4_FOUND)
+ELSE(Qt5Core_FOUND AND KF5_FOUND)
     MESSAGE(FATAL_ERROR " rekonq will NOT be compiled!")
     SET(REKONQ_CAN_BE_COMPILED false)
-ENDIF(QT4_FOUND AND KDE4_FOUND)
+ENDIF(Qt5Core_FOUND AND KF5_FOUND)
 
 # ----------------------- Optional Deps --------------------------------------
 
@@ -149,48 +177,38 @@ IF(REKONQ_CAN_BE_COMPILED)
 
     # Nepomuk
 
-    IF(SOPRANO_FOUND AND NepomukCore_FOUND)
-        MESSAGE(STATUS " Nepomuk Libraries..................... YES")
-        MESSAGE(STATUS " Rekonq will be compiled with support for bookmarks nepomuk tagging")
-    ELSE(SOPRANO_FOUND AND NepomukCore_FOUND)
-        MESSAGE(STATUS " Nepomuk Libraries..................... NO")
-        MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for bookmarks tagging")
-    ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
+#    IF(SOPRANO_FOUND AND NepomukCore_FOUND)
+#        MESSAGE(STATUS " Nepomuk Libraries..................... YES")
+#        MESSAGE(STATUS " Rekonq will be compiled with support for bookmarks nepomuk tagging")
+#    ELSE(SOPRANO_FOUND AND NepomukCore_FOUND)
+#        MESSAGE(STATUS " Nepomuk Libraries..................... NO")
+#        MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for bookmarks tagging")
+#    ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
 
     MESSAGE(STATUS "")
 
-    # QCA2
-
-    IF(HAVE_QCA2)
-        MESSAGE(STATUS " QCA2 Libraries........................ YES")
-    ELSE(HAVE_QCA2)
-        MESSAGE(STATUS " QCA2 Libraries........................ NO")
-    ENDIF(HAVE_QCA2)
-
-    # QTOAUTH
-
-    IF(HAVE_QTOAUTH)
-        MESSAGE(STATUS " QtOAuth Libraries..................... YES")
-    ELSE(HAVE_QTOAUTH)
-        MESSAGE(STATUS " QtOAuth Libraries..................... NO")
-    ENDIF(HAVE_QTOAUTH)
-
-
-    IF(HAVE_QCA2 AND HAVE_QTOAUTH)
-        MESSAGE(STATUS " Rekonq will be compiled with support for opera sync handler")
-    ELSE(HAVE_QCA2 AND HAVE_QTOAUTH)
-        MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for opera sync handler")
-    ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
-
-    # KActivities
-    
-    IF(HAVE_KACTIVITIES)
-        MESSAGE(STATUS " KActivities Libraries................. YES")
-        MESSAGE(STATUS " Rekonq will be compiled with support for activities")
-    ELSE(HAVE_KACTIVITIES)
-        MESSAGE(STATUS " KActivities Libraries................. NO")
-        MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for activities")
-    ENDIF(HAVE_KACTIVITIES)
+#     # QCA2
+# 
+#     IF(HAVE_QCA2)
+#         MESSAGE(STATUS " QCA2 Libraries........................ YES")
+#     ELSE(HAVE_QCA2)
+#         MESSAGE(STATUS " QCA2 Libraries........................ NO")
+#     ENDIF(HAVE_QCA2)
+# 
+#     # QTOAUTH
+# 
+#     IF(HAVE_QTOAUTH)
+#         MESSAGE(STATUS " QtOAuth Libraries..................... YES")
+#     ELSE(HAVE_QTOAUTH)
+#         MESSAGE(STATUS " QtOAuth Libraries..................... NO")
+#     ENDIF(HAVE_QTOAUTH)
+# 
+# 
+#     IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+#         MESSAGE(STATUS " Rekonq will be compiled with support for opera sync handler")
+#     ELSE(HAVE_QCA2 AND HAVE_QTOAUTH)
+#         MESSAGE(STATUS " Rekonq will be compiled WITHOUT support for opera sync handler")
+#     ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 
     MESSAGE(STATUS "")
     MESSAGE(STATUS "-----------------------------------------------------------------------")
@@ -202,15 +220,15 @@ ENDIF(REKONQ_CAN_BE_COMPILED)
 
 IF(REKONQ_CAN_BE_COMPILED)
 
-    ADD_SUBDIRECTORY( src )
-    ADD_SUBDIRECTORY( icons )
+    ADD_SUBDIRECTORY (src)
+    ADD_SUBDIRECTORY (icons)
 
 ENDIF(REKONQ_CAN_BE_COMPILED)
 
 # ================================================================================
 
 # doc & translations
-set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS 1)
+SET_PROPERTY (GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS 1)
 
 # Do not remove or modify these.
 # The release script substitutes in for these comments with appropriate doc and translation directories.

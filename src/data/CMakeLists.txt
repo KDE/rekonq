@@ -10,20 +10,20 @@ INSTALL(
     webkit-icon.png
     autoscroll.png
     background.png
-    DESTINATION ${DATA_INSTALL_DIR}/rekonq/pics
+    DESTINATION ${XDG_DATA_INSTALL_DIR}/rekonq/pics
 )
 
 # default bookmarks
 INSTALL(
     FILES
     defaultbookmarks.xbel
-    DESTINATION ${DATA_INSTALL_DIR}/rekonq
+    DESTINATION ${XDG_DATA_INSTALL_DIR}/rekonq
 )
 
 # .desktop file
 INSTALL(
     PROGRAMS rekonq.desktop
-    DESTINATION ${XDG_APPS_INSTALL_DIR}
+    DESTINATION ${XDG_APPS_INSTALL_DIR}/nient
 )
 
 # htmls
@@ -33,13 +33,13 @@ INSTALL(
     home.html
     jquery-1.7.2.min.js
     jquery-ui-1.8.20.custom.min.js
-    DESTINATION ${DATA_INSTALL_DIR}/rekonq/htmls
+    DESTINATION ${XDG_DATA_INSTALL_DIR}/rekonq/htmls
 )
 
 # adblock default settings
 INSTALL(
     FILES
     adblockrc
-    DESTINATION ${DATA_INSTALL_DIR}/rekonq
+    DESTINATION ${XDG_DATA_INSTALL_DIR}/rekonq
 )
 

@@ -1,14 +1,14 @@
 ### ------- sub dirs -------
 
-ADD_SUBDIRECTORY( data )
+ADD_SUBDIRECTORY (data)
 
 
-### ------- SETTING REKONQ FILES..
-add_definitions(-DQT_STATICPLUGIN)
-QT4_WRAP_CPP(wk_HEADERS_MOC qwebkitplatformplugin.h)
+### ------- SETTING REKONQ FILES...
+ADD_DEFINITIONS (-DQT_STATICPLUGIN)
+# QT4_WRAP_CPP(wk_HEADERS_MOC qwebkitplatformplugin.h)
 
 # src files
-set(rekonq_KDEINIT_SRCS
+SET (rekonq_KDEINIT_SRCS
     #----------------------------------------
     application.cpp
     autosaver.cpp
@@ -123,28 +123,28 @@ set(rekonq_KDEINIT_SRCS
 )
 
 
-# Nepomuk OPTIONAL src files
-IF(NepomukCore_FOUND)
-    SET( rekonq_KDEINIT_SRCS
-            ${rekonq_KDEINIT_SRCS}
-            urlbar/resourcelinkdialog.cpp
-            urlbar/newresourcedialog.cpp
-            nepomuk/utils/simpleresourcemodel.cpp
-            nepomuk/utils/resourcemodel.cpp
-    )
-ENDIF(NepomukCore_FOUND)
+# # Nepomuk OPTIONAL src files
+# IF(NepomukCore_FOUND)
+#     SET( rekonq_KDEINIT_SRCS
+#             ${rekonq_KDEINIT_SRCS}
+#             urlbar/resourcelinkdialog.cpp
+#             urlbar/newresourcedialog.cpp
+#             nepomuk/utils/simpleresourcemodel.cpp
+#             nepomuk/utils/resourcemodel.cpp
+#     )
+# ENDIF(NepomukCore_FOUND)
 
 
-# Opera sync optional src files
-IF(HAVE_QCA2 AND HAVE_QTOAUTH)
-    SET( rekonq_KDEINIT_SRCS
-            ${rekonq_KDEINIT_SRCS}
-            sync/operasynchandler.cpp
-    )
-ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
+# # Opera sync optional src files
+# IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+#     SET( rekonq_KDEINIT_SRCS
+#             ${rekonq_KDEINIT_SRCS}
+#             sync/operasynchandler.cpp
+#     )
+# ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 
 # ui files
-KDE4_ADD_UI_FILES( rekonq_KDEINIT_SRCS
+QT5_WRAP_UI (rekonq_KDEINIT_SRCS
     # ----------------------------------------
     adblock/blocked_elements.ui
     adblock/settings_adblock.ui
@@ -193,90 +193,80 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/webtab
                         ${CMAKE_CURRENT_SOURCE_DIR}/webwindow
                         ${CMAKE_CURRENT_BINARY_DIR}
-                        ${KDE4_INCLUDES}
-                        ${QT4_INCLUDES}
+#                         ${KDE4_INCLUDES}
+#                         ${QT4_INCLUDES}
 )
 
-# Nepomuk optional include directories
-IF(SOPRANO_FOUND AND NepomukCore_FOUND)
-    INCLUDE_DIRECTORIES(${SOPRANO_INCLUDE_DIR}
-                        ${NEPOMUK_CORE_INCLUDE_DIR}
-    )
+# # Nepomuk optional include directories
+# IF(SOPRANO_FOUND AND NepomukCore_FOUND)
+#     INCLUDE_DIRECTORIES(${SOPRANO_INCLUDE_DIR}
+#                         ${NEPOMUK_CORE_INCLUDE_DIR}
+#     )
+# 
+#     FIND_PACKAGE(Soprano REQUIRED)
+#     INCLUDE(SopranoAddOntology)
+# ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
 
-    FIND_PACKAGE(Soprano REQUIRED)
-    INCLUDE(SopranoAddOntology)
-ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
-
-# Opera sync optional include directories
-IF(HAVE_QCA2 AND HAVE_QTOAUTH)
-    INCLUDE_DIRECTORIES(${QCA2_INCLUDE_DIR}
-                        ${QTOAUTH_INCLUDE_DIR}
-    )
-ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
-
-# KActivities optional include directories
-IF(KActivities_FOUND)
-    INCLUDE_DIRECTORIES(${KACTIVITIES_INCLUDE_DIRS}
-    )
-ENDIF(KActivities_FOUND)
+# # Opera sync optional include directories
+# IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+#     INCLUDE_DIRECTORIES(${QCA2_INCLUDE_DIR}
+#                         ${QTOAUTH_INCLUDE_DIR}
+#     )
+# ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 
 
 ### -------------- ADDING DEFINITIONS...
 
-ADD_DEFINITIONS ( ${KDE4_DEFINITIONS} )
+#ADD_DEFINITIONS ( ${KDE4_DEFINITIONS} )
 
 
 ### -------------- ADDING APPLICATION ICON...
 
-KDE4_ADD_APP_ICON( rekonq_KDEINIT_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../icons/hi*-app-rekonq.png )
+# TODO restore this...
+# KDE4_ADD_APP_ICON( rekonq_KDEINIT_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../icons/hi*-app-rekonq.png )
 
 
 ### -------------- ADDING APPLICATION KCFG FILES...
 
-KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
+# TODO what about this?
+#KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
 
 
 ### --------------- ADDING EXECUTABLE...
 
-KDE4_ADD_KDEINIT_EXECUTABLE( rekonq ${rekonq_KDEINIT_SRCS} main.cpp )
+KF5_ADD_KDEINIT_EXECUTABLE (rekonq ${rekonq_KDEINIT_SRCS} main.cpp)
 
 
 ### --------------- TARGETTING LINK LIBRARIES...
 
 TARGET_LINK_LIBRARIES (     kdeinit_rekonq
-                            ${QT_LIBRARIES}
-                            ${QT_QTSCRIPT_LIBRARY}
-                            ${QT_QTWEBKIT_LIBRARY}
-                            ${KDE4_KDEWEBKIT_LIBS}
-                            ${KDE4_KUTILS_LIBS}
-                            ${KDE4_KDEUI_LIBS}
-                            ${KDE4_KIO_LIBS}
-                            ${KDE4_KPARTS_LIBS}
-                            ${KDE4_SOLID_LIBS}
+#                             ${QT_LIBRARIES}
+#                             ${QT_QTSCRIPT_LIBRARY}
+#                             ${QT_QTWEBKIT_LIBRARY}
+#                             ${KDE4_KDEWEBKIT_LIBS}
+#                             ${KDE4_KUTILS_LIBS}
+#                             ${KDE4_KDEUI_LIBS}
+#                             ${KDE4_KIO_LIBS}
+#                             ${KDE4_KPARTS_LIBS}
+#                             ${KDE4_SOLID_LIBS}
 )
 
-# Nepomuk optional target link libraries
-IF(SOPRANO_FOUND AND NepomukCore_FOUND)
-    TARGET_LINK_LIBRARIES(  kdeinit_rekonq
-                            ${NEPOMUK_CORE_LIBRARY}
-                            ${SOPRANO_LIBRARIES}
-    )
-ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
+# # Nepomuk optional target link libraries
+# IF(SOPRANO_FOUND AND NepomukCore_FOUND)
+#     TARGET_LINK_LIBRARIES(  kdeinit_rekonq
+#                             ${NEPOMUK_CORE_LIBRARY}
+#                             ${SOPRANO_LIBRARIES}
+#     )
+# ENDIF(SOPRANO_FOUND AND NepomukCore_FOUND)
 
-# KActivities optional target link libraries
-IF(HAVE_KACTIVITIES)
-    TARGET_LINK_LIBRARIES(  kdeinit_rekonq
-                            ${KACTIVITIES_LIBRARY}
-    )
-ENDIF(HAVE_KACTIVITIES)
 
-# Opera sync optional link libraries
-IF(HAVE_QCA2 AND HAVE_QTOAUTH)
-    TARGET_LINK_LIBRARIES(  kdeinit_rekonq
-                            ${QCA2_LIBRARY}
-                            ${QTOAUTH_LIBRARY}
-    )
-ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
+# # Opera sync optional link libraries
+# IF(HAVE_QCA2 AND HAVE_QTOAUTH)
+#     TARGET_LINK_LIBRARIES(  kdeinit_rekonq
+#                             ${QCA2_LIBRARY}
+#                             ${QTOAUTH_LIBRARY}
+#     )
+# ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 
 
 ### ------------ INSTALL FILES...
@@ -284,10 +274,6 @@ ENDIF(HAVE_QCA2 AND HAVE_QTOAUTH)
 INSTALL( TARGETS rekonq ${INSTALL_TARGETS_DEFAULT_ARGS} )
 INSTALL( TARGETS kdeinit_rekonq  ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
-# kwebapp script install (provided for retro-compatibility...)
-#FILE( COPY data/kwebapp DESTINATION ${BIN_INSTALL_DIR}
-#        FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )
-
 INSTALL( FILES rekonq.kcfg  DESTINATION  ${KCFG_INSTALL_DIR} )
-INSTALL( FILES webwindow/rekonqui.rc  DESTINATION  ${DATA_INSTALL_DIR}/rekonq )
+INSTALL( FILES webwindow/rekonqui.rc  DESTINATION  ${XDG_DATA_INSTALL_DIR}/rekonq )
 
