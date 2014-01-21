@@ -34,7 +34,6 @@
 // KDE Includes
 #include <KToolBar>
 #include <KService>
-#include <KUrl>
 
 // Qt Includes
 #include <QWidget>
@@ -42,6 +41,7 @@
 #include <QStyleOptionViewItemV4>
 #include <QString>
 #include <QByteArray>
+#include <QUrl>
 
 // Forward Declarations
 class UrlSuggestionItem;
@@ -64,7 +64,7 @@ public:
     void activate();
     void deactivate();
 
-    KUrl url();
+    QUrl url();
     virtual QString text();
 
 public Q_SLOTS:
@@ -83,7 +83,7 @@ private:
     QStyleOptionViewItemV4 m_option;
 
 protected:
-    KUrl m_url;
+    QUrl m_url;
 };
 
 

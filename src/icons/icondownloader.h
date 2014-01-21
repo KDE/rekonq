@@ -32,9 +32,7 @@
 
 // Qt Includes
 #include <QObject>
-
-// KDE Includes
-#include <KUrl>
+#include <QUrl>
 
 // Forward Declarations
 class QNetworkReply;
@@ -45,7 +43,7 @@ class IconDownloader : public QObject
     Q_OBJECT
 
 public:
-    IconDownloader(const KUrl &srcUrl, const KUrl &destUrl, QObject *parent = 0);
+    IconDownloader(const QUrl &srcUrl, const QUrl &destUrl, QObject *parent = 0);
 
 private Q_SLOTS:
     void replyFinished(QNetworkReply *);
@@ -54,8 +52,8 @@ Q_SIGNALS:
     void iconReady();
 
 private:
-    KUrl m_srcUrl;
-    KUrl m_destUrl;
+    QUrl m_srcUrl;
+    QUrl m_destUrl;
 };
 
 #endif // ICON_DOWNLOADER_H

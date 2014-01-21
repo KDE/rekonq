@@ -70,7 +70,7 @@ private:
     void init();
         
 public Q_SLOTS:
-    void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
+    void loadUrl(const QUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
 
 private Q_SLOTS:
     void showBookmarksPanel(bool);

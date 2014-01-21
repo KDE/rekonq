@@ -91,7 +91,7 @@ NewTabPage::NewTabPage(QWebFrame *frame)
 }
 
 
-void NewTabPage::generate(const KUrl &url)
+void NewTabPage::generate(const QUrl &url)
 {
     QWebFrame *parentFrame = qobject_cast<QWebFrame *>(parent());
     QWebPage *pg = parentFrame->page();
@@ -99,7 +99,7 @@ void NewTabPage::generate(const KUrl &url)
     WebTab *tab = view->parentTab();
 
     // rekonq:preview links
-    if (KUrl("rekonq:settings").isParentOf(url))
+    if (QUrl("rekonq:settings").isParentOf(url))
     {
         if (url.fileName() == QL1S("network"))
         {
@@ -133,7 +133,7 @@ void NewTabPage::generate(const KUrl &url)
     }
 
     // rekonq:preview links
-    if (KUrl("rekonq:preview").isParentOf(url))
+    if (QUrl("rekonq:preview").isParentOf(url))
     {
         if (url.fileName() == QL1S("add"))
         {
@@ -148,7 +148,7 @@ void NewTabPage::generate(const KUrl &url)
             ReKonfig::setPreviewNames(names);
             ReKonfig::setPreviewUrls(urls);
 
-            loadPageForUrl(KUrl("rekonq:favorites"));
+            loadPageForUrl(QUrl("rekonq:favorites"));
 
             tab->createPreviewSelectorBar(index);
             return;
@@ -177,7 +177,7 @@ void NewTabPage::generate(const KUrl &url)
     }
 
     // rekonq:closedtabs links
-    if (KUrl("rekonq:closedtabs").isParentOf(url))
+    if (QUrl("rekonq:closedtabs").isParentOf(url))
     {
         if (url.fileName() == QL1S("restore"))
         {
@@ -189,26 +189,26 @@ void NewTabPage::generate(const KUrl &url)
     }
 
     // rekonq:history links
-    if (KUrl("rekonq:history").isParentOf(url))
+    if (QUrl("rekonq:history").isParentOf(url))
     {
         if (url.fileName() == QL1S("clear"))
         {
             HistoryManager::self()->clear();
-            loadPageForUrl(KUrl("rekonq:history"));
+            loadPageForUrl(QUrl("rekonq:history"));
             return;
         }
 
         if (url.fileName() == QL1S("showAllItems"))
         {
             m_showFullHistory = true;
-            loadPageForUrl(KUrl("rekonq:history"));
+            loadPageForUrl(QUrl("rekonq:history"));
             return;
         }
 
         if (url.fileName() == QL1S("search"))
         {
             QString value = url.queryItemValue(QL1S("q"));
-            loadPageForUrl(KUrl("rekonq:history"), value);
+            loadPageForUrl(QUrl("rekonq:history"), value);
             return;
         }
 
@@ -216,32 +216,32 @@ void NewTabPage::generate(const KUrl &url)
         {
             int value = url.queryItemValue(QL1S("location")).toInt();
             HistoryManager::self()->removeHistoryLocationEntry(value);
-            loadPageForUrl(KUrl("rekonq:history"));
+            loadPageForUrl(QUrl("rekonq:history"));
             return;
         }
     }
 
     // rekonq:downloads links
-    if (KUrl("rekonq:downloads").isParentOf(url))
+    if (QUrl("rekonq:downloads").isParentOf(url))
     {
         if (url.fileName() == QL1S("clear"))
         {
             DownloadManager::self()->clearDownloadsHistory();
-            loadPageForUrl(KUrl("rekonq:downloads"));
+            loadPageForUrl(QUrl("rekonq:downloads"));
             return;
         }
 
         if (url.fileName() == QL1S("search"))
         {
             QString value = url.queryItemValue(QL1S("q"));
-            loadPageForUrl(KUrl("rekonq:downloads"), value);
+            loadPageForUrl(QUrl("rekonq:downloads"), value);
             return;
         }
 
         if (url.fileName() == QL1S("opendir"))
         {
             QString value = url.queryItemValue(QL1S("q"));
-            KUrl dirUrl = KUrl(value);
+            QUrl dirUrl = QUrl(value);
             (void)new KRun(dirUrl, tab, 0, dirUrl.isLocalFile());
             return;
         }
@@ -250,19 +250,19 @@ void NewTabPage::generate(const KUrl &url)
         {
             int value = url.queryItemValue(QL1S("item")).toInt();
             DownloadManager::self()->removeDownloadItem(value);
-            loadPageForUrl(KUrl("rekonq:downloads"));
+            loadPageForUrl(QUrl("rekonq:downloads"));
             return;
         }
     }
 
-    if (url == KUrl("rekonq:bookmarks/edit"))
+    if (url == QUrl("rekonq:bookmarks/edit"))
     {
         BookmarkManager::self()->slotEditBookmarks();
         return;
     }
 
 
-    if (url == KUrl("rekonq:favorites/save"))
+    if (url == QUrl("rekonq:favorites/save"))
     {
         saveFavorites();
         return;
@@ -273,7 +273,7 @@ void NewTabPage::generate(const KUrl &url)
 }
 
 
-void NewTabPage::loadPageForUrl(const KUrl &url, const QString & filter)
+void NewTabPage::loadPageForUrl(const QUrl &url, const QString & filter)
 {
     // webFrame can be null. See bug:282092
     QWebFrame *parentFrame = qobject_cast<QWebFrame *>(parent());
@@ -333,7 +333,7 @@ void NewTabPage::loadPageForUrl(const KUrl &url, const QString & filter)
 // HIGH-LEVEL FUNCTIONS
 
 
-void NewTabPage::browsingMenu(const KUrl &currentUrl)
+void NewTabPage::browsingMenu(const QUrl &currentUrl)
 {
     QList<QWebElement> navItems;
 
@@ -404,7 +404,7 @@ void NewTabPage::favoritesPage()
 
     for (int i = 0; i < urls.count() ; ++i)
     {
-        KUrl url = KUrl(urls.at(i));
+        QUrl url = QUrl(urls.at(i));
 
         QWebElement prev = url.isEmpty()
                            ? emptyPreview(i)
@@ -473,7 +473,7 @@ void NewTabPage::historyPage(const QString & filter)
             for (int j = 0; j < proxy->rowCount(index); ++j)
             {
                 QModelIndex son = proxy->index(j, 0, index);
-                KUrl u = son.data(HistoryModel::UrlStringRole).toUrl();
+                QUrl u = son.data(HistoryModel::UrlStringRole).toUrl();
 
                 historyFolderElement.appendInside(historyItemElement.clone());
                 QWebElement item = historyFolderElement.lastChild();
@@ -626,7 +626,7 @@ void NewTabPage::downloadsPage(const QString & filter)
 
     Q_FOREACH(DownloadItem * item, list)
     {
-        KUrl u = item->destUrl();
+        QUrl u = item->destUrl();
         QString fName = u.fileName();
 
         QString srcUrl = item->originUrl();
@@ -735,7 +735,7 @@ void NewTabPage::downloadsPage(const QString & filter)
 //         const int tabCount = w->mainView()->count();
 //         for (int i = 0; i < tabCount; ++i)
 //         {
-//             KUrl url = w->mainView()->webTab(i)->url();
+//             QUrl url = w->mainView()->webTab(i)->url();
 //
 //             if (!WebSnap::existsImage(url))
 //             {
@@ -792,7 +792,7 @@ void NewTabPage::reloadPreview(int index)
 }
 
 
-QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &title)
+QWebElement NewTabPage::validPreview(int index, const QUrl &url, const QString &title)
 {
     QWebElement prev = markup(QL1S(".thumbnail"));
 
@@ -811,7 +811,7 @@ QWebElement NewTabPage::validPreview(int index, const KUrl &url, const QString &
 }
 
 
-QWebElement NewTabPage::tabPreview(int winIndex, int tabIndex, const KUrl &url, const QString &title)
+QWebElement NewTabPage::tabPreview(int winIndex, int tabIndex, const QUrl &url, const QString &title)
 {
     QWebElement prev = markup(QL1S(".thumbnail"));
     QString previewPath = QL1S("file://") + WebSnap::imagePathFromUrl(url);
@@ -832,7 +832,7 @@ QWebElement NewTabPage::tabPreview(int winIndex, int tabIndex, const KUrl &url, 
 }
 
 
-QWebElement NewTabPage::closedTabPreview(int index, const KUrl &url, const QString &title)
+QWebElement NewTabPage::closedTabPreview(int index, const QUrl &url, const QString &title)
 {
     QWebElement prev = markup(QL1S(".thumbnail"));
 
@@ -902,7 +902,7 @@ void NewTabPage::removePreview(int index)
     ReKonfig::setPreviewNames(names);
     ReKonfig::setPreviewUrls(urls);
 
-    loadPageForUrl(KUrl("rekonq:favorites"));
+    loadPageForUrl(QUrl("rekonq:favorites"));
 
     ReKonfig::self()->writeConfig();
 }
@@ -957,7 +957,7 @@ void NewTabPage::createBookmarkItem(const KBookmark &bookmark, QWebElement paren
         
         parent.appendInside(markup(QL1S("a")));
         QWebElement bookmarkElement = parent.lastChild();
-        bookmarkElement.setAttribute(QL1S("href") , bookmark.url().prettyUrl());
+        bookmarkElement.setAttribute(QL1S("href") , bookmark.url().url());
         bookmarkElement.addClass("bookmark");
 
         bookmarkElement.appendInside(markup(QL1S("img")));
@@ -1083,5 +1083,5 @@ void NewTabPage::saveFavorites()
     ReKonfig::setPreviewNames(newNames);
     ReKonfig::setPreviewUrls(newUrls);
 
-    loadPageForUrl(KUrl("rekonq:favorites"));
+    loadPageForUrl(QUrl("rekonq:favorites"));
 }

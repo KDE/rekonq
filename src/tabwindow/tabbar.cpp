@@ -48,7 +48,6 @@
 #include <KColorScheme>
 #include <KLocalizedString>
 #include <KMenu>
-#include <KUrl>
 
 // Qt Includes
 #include <QLabel>
@@ -57,6 +56,7 @@
 #include <QStyleOptionFrameV3>
 #include <QMouseEvent>
 #include <QTimer>
+#include <QUrl>
 
 
 static inline QByteArray highlightPropertyName(int index)

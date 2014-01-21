@@ -166,7 +166,7 @@ WebWindow *WebTab::webWindow()
 }
 
 
-KUrl WebTab::url()
+QUrl WebTab::url()
 {
     if (page() && page()->isOnRekonqPage())
     {
@@ -177,7 +177,7 @@ KUrl WebTab::url()
         return view()->url();
 
     qDebug() << "OOPS... NO web classes survived! Returning an empty url...";
-    return KUrl();
+    return QUrl();
 }
 
 
@@ -305,7 +305,7 @@ KParts::ReadOnlyPart *WebTab::part()
 }
 
 
-void WebTab::setPart(KParts::ReadOnlyPart *p, const KUrl &u)
+void WebTab::setPart(KParts::ReadOnlyPart *p, const QUrl &u)
 {
     if (p)
     {
@@ -350,7 +350,7 @@ void WebTab::loadFinished()
     if (page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
         return;
 
-    QString pageTitle = (page() && page()->isOnRekonqPage()) ? url().prettyUrl() : view()->title();
+    QString pageTitle = (page() && page()->isOnRekonqPage()) ? url().url() : view()->title();
     HistoryManager::self()->addHistoryEntry(url(), pageTitle);
 }
 

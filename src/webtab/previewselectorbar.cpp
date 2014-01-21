@@ -104,7 +104,7 @@ void PreviewSelectorBar::clicked()
 
     if (tab->page())
     {
-        KUrl url = tab->url();
+        QUrl url = tab->url();
         QStringList names = ReKonfig::previewNames();
         QStringList urls = ReKonfig::previewUrls();
 
@@ -122,7 +122,7 @@ void PreviewSelectorBar::clicked()
         ReKonfig::self()->writeConfig();
 
 
-        tab->page()->mainFrame()->load(KUrl("rekonq:favorites"));
+        tab->page()->mainFrame()->load(QUrl("rekonq:favorites"));
     }
 
     animatedHide();

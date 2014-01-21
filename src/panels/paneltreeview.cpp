@@ -32,19 +32,17 @@
 // Local Includes
 #include "application.h"
 
-// KDE Includes
-#include <KUrl>
-
 // Qt Includes
 #include <QClipboard>
 #include <QMouseEvent>
+#include <QUrl>
 
 
 PanelTreeView::PanelTreeView(QWidget *parent)
     : QTreeView(parent)
 {
     connect(this, SIGNAL(itemHovered(QString)), parent, SIGNAL(itemHovered(QString)));
-    connect(this, SIGNAL(openUrl(KUrl,Rekonq::OpenType)), parent, SIGNAL(openUrl(KUrl,Rekonq::OpenType)));
+    connect(this, SIGNAL(openUrl(QUrl,Rekonq::OpenType)), parent, SIGNAL(openUrl(QUrl,Rekonq::OpenType)));
     
     setMouseTracking(true);
     setExpandsOnDoubleClick(false);
@@ -97,12 +95,12 @@ void PanelTreeView::mouseReleaseEvent(QMouseEvent *event)
         return;
 
     if (event->button() == Qt::MidButton || event->modifiers() == Qt::ControlModifier)
-        emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
+        emit openUrl(qVariantValue< QUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
 
     else if (event->button() == Qt::LeftButton)
     {
         if (model()->rowCount(index) == 0)
-            emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
+            emit openUrl(qVariantValue< QUrl >(index.data(Qt::UserRole)));
         else
             setExpanded(index, !isExpanded(index));
     }
@@ -120,7 +118,7 @@ void PanelTreeView::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Return)
     {
         if (model()->rowCount(index) == 0)
-            openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
+            openUrl(qVariantValue< QUrl >(index.data(Qt::UserRole)));
         else
             setExpanded(index, !isExpanded(index));
     }
@@ -141,7 +139,7 @@ void PanelTreeView::mouseMoveEvent(QMouseEvent *event)
         emit itemHovered("");
         return;
     }
-    emit itemHovered(qVariantValue< KUrl >(index.data(Qt::UserRole)).url());
+    emit itemHovered(qVariantValue< QUrl >(index.data(Qt::UserRole)).url());
 }
 
 
@@ -151,7 +149,7 @@ void PanelTreeView::openInCurrentTab()
     if (!index.isValid())
         return;
 
-    emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)));
+    emit openUrl(qVariantValue< QUrl >(index.data(Qt::UserRole)));
 }
 
 
@@ -162,7 +160,7 @@ void PanelTreeView::copyToClipboard()
         return;
 
     QClipboard *cb = QApplication::clipboard();
-    cb->setText(qVariantValue< KUrl >(index.data(Qt::UserRole)).url());
+    cb->setText(qVariantValue< QUrl >(index.data(Qt::UserRole)).url());
 }
 
 
@@ -172,7 +170,7 @@ void PanelTreeView::openInNewTab()
     if (!index.isValid())
         return;
 
-    emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
+    emit openUrl(qVariantValue< QUrl >(index.data(Qt::UserRole)), Rekonq::NewTab);
 }
 
 
@@ -182,5 +180,5 @@ void PanelTreeView::openInNewWindow()
     if (!index.isValid())
         return;
 
-    emit openUrl(qVariantValue< KUrl >(index.data(Qt::UserRole)), Rekonq::NewWindow);
+    emit openUrl(qVariantValue< QUrl >(index.data(Qt::UserRole)), Rekonq::NewWindow);
 }

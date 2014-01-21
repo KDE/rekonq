@@ -42,13 +42,13 @@
 #include "webwindow.h"
 
 // KDE Includes
-#include <KUrl>
 #include <KLocalizedString>
 
 // Qt Includes
 #include <QVBoxLayout>
 #include <QSizePolicy>
 #include <QDBusConnection>
+#include <QUrl>
 
 
 RekonqWindow::RekonqWindow(bool withTab, bool privateBrowsingMode, QWidget *parent)
@@ -140,7 +140,7 @@ bool RekonqWindow::isPrivateBrowsingMode()
 // --------------------------------------------------------------------------------------------------
 
 
-void RekonqWindow::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *history)
+void RekonqWindow::loadUrl(const QUrl &url, Rekonq::OpenType type, TabHistory *history)
 {
     switch (type)
     {
@@ -168,7 +168,7 @@ void RekonqWindow::showBookmarksPanel(bool on)
         if (_bookmarksPanel.isNull())
         {
             _bookmarksPanel = new BookmarksPanel(i18n("Bookmarks Panel"), this);
-            connect(_bookmarksPanel.data(), SIGNAL(openUrl(KUrl,Rekonq::OpenType)), this, SLOT(loadUrl(KUrl,Rekonq::OpenType)));
+            connect(_bookmarksPanel.data(), SIGNAL(openUrl(QUrl,Rekonq::OpenType)), this, SLOT(loadUrl(QUrl,Rekonq::OpenType)));
 
             QAction *a = _tabWidget->actionByName(QL1S("show_bookmarks_panel"));
             connect(_bookmarksPanel.data(), SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));
@@ -192,7 +192,7 @@ void RekonqWindow::showHistoryPanel(bool on)
         if (_historyPanel.isNull())
         {
             _historyPanel = new HistoryPanel(i18n("History Panel"), this);
-            connect(_historyPanel.data(), SIGNAL(openUrl(KUrl,Rekonq::OpenType)), this, SLOT(loadUrl(KUrl,Rekonq::OpenType)));
+            connect(_historyPanel.data(), SIGNAL(openUrl(QUrl,Rekonq::OpenType)), this, SLOT(loadUrl(QUrl,Rekonq::OpenType)));
             
             QAction *a = _tabWidget->actionByName(QL1S("show_history_panel"));
             connect(_historyPanel.data(), SIGNAL(visibilityChanged(bool)), a, SLOT(setChecked(bool)));

@@ -69,7 +69,7 @@ public:
         return m_progress;
     }
 
-    KUrl url();
+    QUrl url();
     QString title();
     
     bool hasRSSInfo();
@@ -82,7 +82,7 @@ public:
     bool isPageLoading();
 
     KParts::ReadOnlyPart *part();
-    void setPart(KParts::ReadOnlyPart *p, const KUrl &u);
+    void setPart(KParts::ReadOnlyPart *p, const QUrl &u);
     
     bool isWebApp();
 

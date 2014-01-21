@@ -53,16 +53,16 @@ public:
      */
     static IconManager *self();
 
-    KIcon iconForUrl(const KUrl &url);
+    KIcon iconForUrl(const QUrl &url);
     
-    QString iconPathForUrl(const KUrl &url);
+    QString iconPathForUrl(const QUrl &url);
 
     void clearIconCache();
 
-    void saveDesktopIconForUrl(const KUrl &u);
+    void saveDesktopIconForUrl(const QUrl &u);
 
     // Engine ToolBar needed method
-    KIcon engineFavicon(const KUrl &);
+    KIcon engineFavicon(const QUrl &);
     
 private:
     IconManager(QObject *parent = 0);

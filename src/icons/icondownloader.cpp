@@ -38,7 +38,7 @@
 #include <QPixmap>
 
 
-IconDownloader::IconDownloader(const KUrl &srcUrl, const KUrl &destUrl, QObject *parent)
+IconDownloader::IconDownloader(const QUrl &srcUrl, const QUrl &destUrl, QObject *parent)
     : QObject(parent)
     , m_srcUrl(srcUrl)
     , m_destUrl(destUrl)

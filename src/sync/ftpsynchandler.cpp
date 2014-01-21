@@ -65,7 +65,7 @@ void FTPSyncHandler::initialLoadAndCheck()
         _remoteBookmarksUrl.setPath(ReKonfig::syncPath() + QL1S("/bookmarks.xml"));
 
         const QString bookmarksFilePath = KStandardDirs::locateLocal("data", QL1S("konqueror/bookmarks.xml"));
-        _localBookmarksUrl = KUrl(bookmarksFilePath);
+        _localBookmarksUrl = QUrl(bookmarksFilePath);
 
         KIO::StatJob *job = KIO::stat(_remoteBookmarksUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(onBookmarksStatFinished(KJob*)));
@@ -83,7 +83,7 @@ void FTPSyncHandler::initialLoadAndCheck()
         _remoteHistoryUrl.setPath(ReKonfig::syncPath() + QL1S("/history"));
 
         const QString historyFilePath = KStandardDirs::locateLocal("appdata", "history");
-        _localHistoryUrl = KUrl(historyFilePath);
+        _localHistoryUrl = QUrl(historyFilePath);
 
         KIO::StatJob *job = KIO::stat(_remoteHistoryUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(onHistoryStatFinished(KJob*)));
@@ -101,7 +101,7 @@ void FTPSyncHandler::initialLoadAndCheck()
         _remotePasswordsUrl.setPath(ReKonfig::syncPath() + QL1S("/kdewallet.kwl"));
 
         const QString passwordsFilePath = KStandardDirs::locateLocal("data", QL1S("kwallet/kdewallet.kwl"));
-        _localPasswordsUrl = KUrl(passwordsFilePath);
+        _localPasswordsUrl = QUrl(passwordsFilePath);
 
         KIO::StatJob *job = KIO::stat(_remotePasswordsUrl, KIO::StatJob::DestinationSide, 0, KIO::HideProgressInfo);
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(onPasswordsStatFinished(KJob*)));

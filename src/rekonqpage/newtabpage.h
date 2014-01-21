@@ -32,13 +32,11 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KUrl>
-
 // Qt Includes
 #include <QObject>
 #include <QString>
 #include <QWebElement>
+#include <QUrl>
 
 // Forward Declarations
 class KBookmark;
@@ -56,13 +54,13 @@ public:
      * This method takes an rekonq: url and loads
      * the corresponding part of the new tab page
      */
-    void generate(const KUrl &url = KUrl("rekonq:home"));
+    void generate(const QUrl &url = QUrl("rekonq:home"));
 
 private:
     // these are the "high-level" functions to build the new tab page.
     // Basically, you call browsingMenu + one of the *Page methods
     // to load a page
-    void browsingMenu(const KUrl &currentUrl);
+    void browsingMenu(const QUrl &currentUrl);
 
     void favoritesPage();
     void historyPage(const QString & filter = QString());
@@ -71,7 +69,7 @@ private:
     void downloadsPage(const QString & filter = QString());
     void tabsPage();
 
-    void loadPageForUrl(const KUrl &url, const QString & filter = QString());
+    void loadPageForUrl(const QUrl &url, const QString & filter = QString());
 
     // --------------------------------------------------------------------------
     // "low-level" functions
@@ -79,9 +77,9 @@ private:
 
     // Previews handling
     QWebElement emptyPreview(int index);
-    QWebElement validPreview(int index, const KUrl &url, const QString &title);
-    QWebElement tabPreview(int winIndex, int tabIndex, const KUrl &url, const QString &title);
-    QWebElement closedTabPreview(int index, const KUrl &url, const QString &title);
+    QWebElement validPreview(int index, const QUrl &url, const QString &title);
+    QWebElement tabPreview(int winIndex, int tabIndex, const QUrl &url, const QString &title);
+    QWebElement closedTabPreview(int index, const QUrl &url, const QString &title);
 
     void reloadPreview(int index);
     void removePreview(int index);

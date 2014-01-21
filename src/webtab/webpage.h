@@ -58,7 +58,7 @@ public:
     bool isOnRekonqPage() const;
     void setIsOnRekonqPage(bool b);
 
-    KUrl loadingUrl();
+    QUrl loadingUrl();
 
     QString suggestedFileName();
 
@@ -70,7 +70,7 @@ public Q_SLOTS:
     void downloadAllContentsWithKGet();
 
     virtual void downloadRequest(const QNetworkRequest &request);
-    virtual void downloadUrl(const KUrl &url);
+    virtual void downloadUrl(const QUrl &url);
 
 protected:
     WebPage *createWindow(WebWindowType type);
@@ -92,7 +92,7 @@ private Q_SLOTS:
 
 private:
     QString errorPage(QNetworkReply *reply);
-    KUrl _loadingUrl;
+    QUrl _loadingUrl;
 
     ProtocolHandler _protHandler;
     WebSslInfo _sslInfo;

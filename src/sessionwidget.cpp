@@ -78,7 +78,7 @@ void SessionWidget::loadSession()
     int cc = listWidget->currentRow();
     if (cc < 0)
     {
-        rApp->loadUrl(KUrl("rekonq:home"));
+        rApp->loadUrl(QUrl("rekonq:home"));
         return;
     }
     SessionManager::self()->restoreYourSession(cc);

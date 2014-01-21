@@ -44,7 +44,7 @@
 // 5. "fixhosturifilter"
 
 
-KUrl UrlResolver::urlFromTextTyped(const QString &typedText)
+QUrl UrlResolver::urlFromTextTyped(const QString &typedText)
 {
     QString typedString = typedText.trimmed();
 
@@ -58,7 +58,7 @@ KUrl UrlResolver::urlFromTextTyped(const QString &typedText)
         QString url = SearchEngine::buildQuery(engine, query);
 
         qDebug() << "Url from service: " << url;
-        return KUrl(url);
+        return QUrl(url);
     }
 
     // Url from User Input
@@ -77,8 +77,8 @@ KUrl UrlResolver::urlFromTextTyped(const QString &typedText)
     }
 
     // failed...
-    qDebug() << "KUrl fallback: " << typedText;
-    return KUrl(typedText);
+    qDebug() << "QUrl fallback: " << typedText;
+    return QUrl(typedText);
 }
 
 

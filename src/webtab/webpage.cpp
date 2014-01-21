@@ -181,7 +181,7 @@ WebPage::WebPage(bool isPrivateBrowsing, QWidget *parent)
     connect(this, SIGNAL(frameCreated(QWebFrame*)), AdBlockManager::self(), SLOT(applyHidingRules(QWebFrame*)));
     
     // protocol handler signals
-    connect(&_protHandler, SIGNAL(downloadUrl(KUrl)), this, SLOT(downloadUrl(KUrl)));
+    connect(&_protHandler, SIGNAL(downloadUrl(QUrl)), this, SLOT(downloadUrl(QUrl)));
 }
 
 
@@ -223,7 +223,7 @@ void WebPage::setIsOnRekonqPage(bool b)
 };
 
 
-KUrl WebPage::loadingUrl()
+QUrl WebPage::loadingUrl()
 {
     return _loadingUrl;
 };
@@ -242,7 +242,7 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         WebView *view = qobject_cast<WebView *>(parent());
         WebTab *tab = view->parentTab();
         _isOnRekonqPage = false;
-        tab->setPart(0, KUrl());     // re-enable the view page
+        tab->setPart(0, QUrl());     // re-enable the view page
     }
 
     const bool isMainFrameRequest = (frame == mainFrame());
@@ -447,7 +447,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
 
     KService::Ptr appService = KMimeTypeTrader::self()->preferredService(_mimeType);
 
-    KUrl replyUrl = reply->url();
+    QUrl replyUrl = reply->url();
     bool isLocal = replyUrl.isLocalFile();
 
     if (appService.isNull())  // no service can handle this. We can just download it..
@@ -535,7 +535,7 @@ void WebPage::handleUnsupportedContent(QNetworkReply *reply)
         tempFile.setSuffix(QL1C('.') + finfo.suffix());
         tempFile.setAutoRemove(false);
         tempFile.open();
-        KUrl destUrl;
+        QUrl destUrl;
         destUrl.setPath(tempFile.fileName());
         KIO::Job *job = KIO::file_copy(_loadingUrl, destUrl, 0600, KIO::Overwrite);
         job->ui()->setWindow(view());
@@ -827,7 +827,7 @@ void WebPage::downloadRequest(const QNetworkRequest &request)
 }
 
 
-void WebPage::downloadUrl(const KUrl &url)
+void WebPage::downloadUrl(const QUrl &url)
 {
     DownloadManager::self()->downloadResource(url,
             KIO::MetaData(),
@@ -841,20 +841,20 @@ void WebPage::downloadUrl(const KUrl &url)
 void WebPage::downloadAllContentsWithKGet()
 {
     QSet<QString> contents;
-    KUrl baseUrl(currentFrame()->url());
-    KUrl relativeUrl;
+    QUrl baseUrl(currentFrame()->url());
+    QUrl relativeUrl;
 
     QWebElementCollection images = mainFrame()->documentElement().findAll("img");
     Q_FOREACH(const QWebElement & img, images)
     {
-        relativeUrl.setEncodedUrl(img.attribute("src").toUtf8(), KUrl::TolerantMode);
+        relativeUrl = QUrl::fromEncoded(img.attribute("src").toUtf8());
         contents << baseUrl.resolved(relativeUrl).toString();
     }
 
     QWebElementCollection links = mainFrame()->documentElement().findAll("a");
     Q_FOREACH(const QWebElement & link, links)
     {
-        relativeUrl.setEncodedUrl(link.attribute("href").toUtf8(), KUrl::TolerantMode);
+        relativeUrl = QUrl::fromEncoded(link.attribute("href").toUtf8());
         contents << baseUrl.resolved(relativeUrl).toString();
     }
 

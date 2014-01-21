@@ -56,14 +56,14 @@ public:
 
     void suggestUrls(const QString &text);
 
-    KUrl activeSuggestion();
+    QUrl activeSuggestion();
 
 private Q_SLOTS:
     void itemChosen(ListItem *item, Qt::MouseButton = Qt::LeftButton, Qt::KeyboardModifiers = Qt::NoModifier);
     void updateSuggestionList(const UrlSuggestionList &list, const QString& text);
 
 Q_SIGNALS:
-    void chosenUrl(const KUrl &, Rekonq::OpenType);
+    void chosenUrl(const QUrl &, Rekonq::OpenType);
     void nextItemSubChoice();
 
 private:

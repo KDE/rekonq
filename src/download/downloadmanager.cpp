@@ -195,7 +195,7 @@ void DownloadManager::removeDownloadItem(int index)
 // In this way, we can easily provide the extra functionality we need:
 // 1. KGet Integration
 // 2. Save downloads history
-bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &metaData,
+bool DownloadManager::downloadResource(const QUrl &srcUrl, const KIO::MetaData &metaData,
                                        QWidget *parent, bool forceDirRequest, const QString &suggestedName, bool registerDownload)
 {
     // manage downloads with KGet if found
@@ -210,12 +210,12 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
         if (!kget.isValid())
             return false;
 
-        QDBusMessage transfer = kget.call(QL1S("addTransfer"), srcUrl.prettyUrl(), QString(), true);
+        QDBusMessage transfer = kget.call(QL1S("addTransfer"), srcUrl.url(), QString(), true);
 
         return true;
     }
 
-    KUrl destUrl;
+    QUrl destUrl;
 
     const QString fileName((suggestedName.isEmpty() ? srcUrl.fileName() : suggestedName));
 
@@ -239,7 +239,7 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
         if (KRecentDirs::list(fileClass).count() <= 1) // Always has one entry by default.
             KRecentDirs::add(fileClass, KGlobalSettings::downloadPath());
 
-        const KUrl startDir(QString("kfiledialog:///download/%1").arg(fileName));
+        const QUrl startDir(QString("kfiledialog:///download/%1").arg(fileName));
 
         // NOTE: We used to use getSaveFileName here but it proved unable to
         // handle remote URLs, which we need to handle here, making the use of
@@ -248,7 +248,7 @@ bool DownloadManager::downloadResource(const KUrl &srcUrl, const KIO::MetaData &
     }
     else
     {
-        destUrl = KUrl(ReKonfig::downloadPath().path() + QL1C('/') + fileName);
+        destUrl = QUrl(ReKonfig::downloadPath().path() + QL1C('/') + fileName);
     }
 
     qDebug() << "DEST URL: " << destUrl;

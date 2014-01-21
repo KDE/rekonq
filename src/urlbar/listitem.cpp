@@ -138,7 +138,7 @@ void ListItem::mousePressEvent(QMouseEvent *e)
 }
 
 
-KUrl ListItem::url()
+QUrl ListItem::url()
 {
     return m_url;
 }
@@ -146,7 +146,7 @@ KUrl ListItem::url()
 
 QString ListItem::text()
 {
-    return m_url.prettyUrl();
+    return m_url.url();
 }
 
 
@@ -397,7 +397,7 @@ EngineBar::EngineBar(KService::Ptr selectedEngine, QWidget *parent)
 KAction *EngineBar::newEngineAction(KService::Ptr engine, KService::Ptr selectedEngine)
 {
     QUrl u = engine->property("Query").toUrl();
-    KUrl url = KUrl(u.toString(QUrl::RemovePath | QUrl::RemoveQuery));
+    QUrl url = QUrl(u.toString(QUrl::RemovePath | QUrl::RemoveQuery));
 
     KAction *a = new KAction(IconManager::self()->engineFavicon(url), engine->name(), this);
     a->setCheckable(true);

@@ -34,14 +34,12 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KUrl>
-
 // Qt Includes
 #include <QHash>
 #include <QAbstractTableModel>
 #include <QAbstractProxyModel>
 #include <QSortFilterProxyModel>
+#include <QUrl>
 
 // Forward Declarations
 class HistoryManager;

@@ -150,7 +150,7 @@ int Application::newInstance()
             return 1;
         }
 
-        KUrl u = args->url(0);
+        QUrl u = args->url(0);
         if (!u.isLocalFile() || !QFile::exists(u.toLocalFile()))
         {
             u = UrlResolver::urlFromTextTyped(args->arg(0));
@@ -169,19 +169,19 @@ int Application::newInstance()
         qDebug() << "DEFAULT MODE, WITH ARGUMENTS...";
 
         // prepare URLS to load
-        KUrl::List urlList;
+        QList<QUrl> urlList;
         for (int i = 0; i < args->count(); ++i)
         {
-            const KUrl u = args->url(i);
+            const QUrl u = args->url(i);
 
             if (u.isLocalFile() && QFile::exists(u.toLocalFile())) // "rekonq somefile.html" case
             {
-                urlList += u;
+                urlList << u;
             }
             else
             {
                 // "rekonq kde.org" || "rekonq kde:kdialog" cases
-                urlList += UrlResolver::urlFromTextTyped(args->arg(i));
+                urlList << UrlResolver::urlFromTextTyped(args->arg(i));
             }
         }
 
@@ -269,34 +269,34 @@ int Application::newInstance()
                 case 0: // open home page
                     if (incognito)
                     {
-                        loadUrl(KUrl(ReKonfig::homePage()), Rekonq::NewPrivateWindow);
+                        loadUrl(QUrl(ReKonfig::homePage()), Rekonq::NewPrivateWindow);
                         break;
                     }
                     if (SessionManager::self()->restoreJustThePinnedTabs())
-                        loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewTab);
+                        loadUrl(QUrl(ReKonfig::homePage()) , Rekonq::NewTab);
                     else
-                        loadUrl(KUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
+                        loadUrl(QUrl(ReKonfig::homePage()) , Rekonq::NewWindow);
                     break;
                 case 1: // open new tab page
                     if (incognito)
                     {
-                        loadUrl(KUrl("rekonq:home"), Rekonq::NewPrivateWindow);
+                        loadUrl(QUrl("rekonq:home"), Rekonq::NewPrivateWindow);
                         break;
                     }
                     if (SessionManager::self()->restoreJustThePinnedTabs())
-                        loadUrl(KUrl("rekonq:home") , Rekonq::NewTab);
+                        loadUrl(QUrl("rekonq:home") , Rekonq::NewTab);
                     else
-                        loadUrl(KUrl("rekonq:home"), Rekonq::NewWindow);
+                        loadUrl(QUrl("rekonq:home"), Rekonq::NewWindow);
                     break;
                 case 2: // restore session
                     if (incognito)
                     {
-                        loadUrl(KUrl("rekonq:home"), Rekonq::NewPrivateWindow);
+                        loadUrl(QUrl("rekonq:home"), Rekonq::NewPrivateWindow);
                         break;
                     }
                     if (hasToBeRecoveredFromCrash || !SessionManager::self()->restoreSessionFromScratch())
                     {
-                        loadUrl(KUrl("rekonq:home") , Rekonq::NewTab);
+                        loadUrl(QUrl("rekonq:home") , Rekonq::NewTab);
                     }
                     break;
                 case 3:
@@ -315,14 +315,14 @@ int Application::newInstance()
             switch (ReKonfig::newTabsBehaviour())
             {
             case 0: // new tab page
-                loadUrl(KUrl("rekonq:home") , type);
+                loadUrl(QUrl("rekonq:home") , type);
                 break;
             case 2: // homepage
-                loadUrl(KUrl(ReKonfig::homePage()) , type);
+                loadUrl(QUrl(ReKonfig::homePage()) , type);
                 break;
             case 1: // blank page
             default:
-                loadUrl(KUrl("about:blank") , type);
+                loadUrl(QUrl("about:blank") , type);
                 break;
             }
         }
@@ -514,14 +514,14 @@ bool Application::eventFilter(QObject* watched, QEvent* event)
 }
 
 
-void Application::loadUrl(const KUrl& url, const Rekonq::OpenType& type)
+void Application::loadUrl(const QUrl& url, const Rekonq::OpenType& type)
 {
     if (url.isEmpty())
         return;
 
     if (!url.isValid())
     {
-        KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url(KUrl::RemoveTrailingSlash)));
+        KMessageBox::error(0, i18n("Malformed URL:\n%1", url.url(QUrl::StripTrailingSlash)));
         return;
     }
 
@@ -796,14 +796,14 @@ void Application::clearPrivateData()
 
 void Application::createWebAppShortcut(const QString & urlString, const QString & titleString)
 {
-    KUrl u;
+    QUrl u;
     if (urlString.isEmpty())
     {
         u = rekonqWindow()->currentWebWindow()->url();
     }
     else
     {
-        u = KUrl(urlString);
+        u = QUrl(urlString);
     }
     QString h = u.host();
 
@@ -915,7 +915,7 @@ void Application::bookmarksToolbarToggled(bool b)
 void Application::newPrivateBrowsingWindow()
 {
     // NOTE: what about a "rekonq:incognito" page?
-    loadUrl(KUrl("rekonq:home"), Rekonq::NewPrivateWindow);
+    loadUrl(QUrl("rekonq:home"), Rekonq::NewPrivateWindow);
 }
 
 

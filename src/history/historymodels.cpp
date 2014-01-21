@@ -117,7 +117,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     case UrlRole:
         return QUrl(item.url);
     case Qt::UserRole:
-        return KUrl(item.url);
+        return QUrl(item.url);
     case UrlStringRole:
         return item.url;
     case Qt::DisplayRole:

@@ -161,7 +161,7 @@ void BookmarkOwner::openBookmark(const KBookmark &bookmark,
 
 void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bkGoup)
 {
-    QList<KUrl> urlList = bkGoup.groupUrlList();
+    QList<QUrl> urlList = bkGoup.groupUrlList();
 
     if (urlList.length() > 8)
     {
@@ -175,7 +175,7 @@ void BookmarkOwner::openFolderinTabs(const KBookmarkGroup &bkGoup)
             return;
     }
 
-    Q_FOREACH(const KUrl & url, urlList)
+    Q_FOREACH(const QUrl & url, urlList)
     {
         emit openUrl(url, Rekonq::NewFocusedTab);
     }
@@ -229,7 +229,7 @@ KBookmark BookmarkOwner::bookmarkCurrentPage(const KBookmark &bookmark)
 #endif
     }
 
-    KBookmark newBk = parent.addBookmark(currentTitle(), KUrl(currentUrl()));
+    KBookmark newBk = parent.addBookmark(currentTitle(), QUrl(currentUrl()));
     if (!bookmark.isNull())
         parent.moveBookmark(newBk, bookmark);
 
@@ -328,7 +328,7 @@ void BookmarkOwner::editBookmark(KBookmark bookmark)
 #ifdef HAVE_NEPOMUK
 void BookmarkOwner::fancyBookmark(KBookmark bookmark)
 {
-    Nepomuk2::Resource nfoResource = (KUrl)bookmark.url();
+    Nepomuk2::Resource nfoResource = (QUrl)bookmark.url();
 
     QPointer<Nepomuk2::ResourceLinkDialog> r = new Nepomuk2::ResourceLinkDialog(nfoResource);
     r->exec();

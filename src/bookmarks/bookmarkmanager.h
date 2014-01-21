@@ -50,7 +50,7 @@ class KAction;
 class KActionCollection;
 class KBookmarkGroup;
 class KBookmarkManager;
-class KUrl;
+class QUrl;
 
 class QAction;
 
@@ -109,7 +109,7 @@ public:
 
     QList<KBookmark> find(const QString &text);
 
-    KBookmark bookmarkForUrl(const KUrl &url);
+    KBookmark bookmarkForUrl(const QUrl &url);
 
     KBookmark findByAddress(const QString &);
 
@@ -153,13 +153,13 @@ Q_SIGNALS:
     /**
     * @short This signal is emitted when an url has to be loaded
     */
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void openUrl(const QUrl &, const Rekonq::OpenType &);
 
     void bookmarksUpdated();
 
 private:
     void find(QList<KBookmark> *list, const KBookmark &bookmark, const QString &text);
-    KBookmark bookmarkForUrl(const KBookmark &bookmark, const KUrl &url);
+    KBookmark bookmarkForUrl(const KBookmark &bookmark, const QUrl &url);
     void copyBookmarkGroup(const KBookmarkGroup &groupToCopy, KBookmarkGroup destGroup);
 
     KBookmarkManager *m_manager;

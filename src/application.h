@@ -33,9 +33,9 @@
 
 // KDE Includes
 #include <KUniqueApplication>
-#include <KUrl>
 
 // Qt Includes
+#include <QUrl>
 #include <QWeakPointer>
 
 // Forward Declarations
@@ -102,7 +102,7 @@ public Q_SLOTS:
      * @param url The url to load
      * @param type the type where loading the url. @see Rekonq::OpenType
      */
-    void loadUrl(const KUrl& url,
+    void loadUrl(const QUrl& url,
                  const Rekonq::OpenType& type = Rekonq::CurrentTab
                 );
 

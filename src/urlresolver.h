@@ -31,16 +31,14 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KUrl>
-
 // Qt Includes
 #include <QString>
+#include <QUrl>
 
 
 namespace UrlResolver
 {
-KUrl urlFromTextTyped(const QString &);
+QUrl urlFromTextTyped(const QString &);
 
 bool isKDEUrl(const QString &);
 }

@@ -44,7 +44,7 @@
 #include <QWidget>
 
 // Forward Includes
-class KUrl;
+class QUrl;
 
 
 class REKONQ_TESTS_EXPORT DownloadManager : public QObject
@@ -68,7 +68,7 @@ public:
 
     bool clearDownloadsHistory();
 
-    bool downloadResource(const KUrl &url,
+    bool downloadResource(const QUrl &url,
                           const KIO::MetaData &metaData = KIO::MetaData(),
                           QWidget *parent = 0,
                           bool forceDirRequest = false,

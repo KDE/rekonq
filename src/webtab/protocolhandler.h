@@ -31,11 +31,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KUrl>
-
 // Qt Includes
 #include <QObject>
+#include <QUrl>
 
 // Forward Declarations
 class KDirLister;
@@ -68,7 +66,7 @@ public:
     void setWindow(QWidget *);
 
 Q_SIGNALS:
-    void downloadUrl(const KUrl &);
+    void downloadUrl(const QUrl &);
 
 private Q_SLOTS:
     void showResults(const KFileItemList &);
@@ -79,7 +77,7 @@ private:
 
     KDirLister *_lister;
     QWebFrame *_frame;
-    KUrl _url;
+    QUrl _url;
 
     QWidget *_webwin;
 };

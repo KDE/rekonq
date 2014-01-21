@@ -32,12 +32,12 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KUrl>
 #include <KService>
 
 // Qt Includes
 #include <QString>
 #include <QList>
+#include <QUrl>
 
 
 class UrlSuggestionItem

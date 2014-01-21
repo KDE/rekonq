@@ -206,7 +206,7 @@ UrlSuggestionList UrlSuggester::orderLists()
     // history
     Q_FOREACH(const UrlSuggestionItem & item, _history)
     {
-        QString hst = KUrl(item.url).host();
+        QString hst = QUrl(item.url).host();
         if (item.url.startsWith(_typedString)
                 || hst.startsWith(_typedString)
                 || hst.remove("www.").startsWith(_typedString))
@@ -224,7 +224,7 @@ UrlSuggestionList UrlSuggester::orderLists()
         // bookmarks
         Q_FOREACH(const UrlSuggestionItem & item, _bookmarks)
         {
-            QString hst = KUrl(item.url).host();
+            QString hst = QUrl(item.url).host();
             if (item.url.startsWith(_typedString)
                     || hst.startsWith(_typedString)
                     || hst.remove("www.").startsWith(_typedString))

@@ -68,7 +68,7 @@ public:
 
     WebPage *page();
 
-    KUrl url() const;
+    QUrl url() const;
     QString title() const;
 
     UrlBar *urlBar();

@@ -34,8 +34,10 @@
 #include "synchandler.h"
 
 // KDE Includes
-#include <KUrl>
 #include <KBookmarkGroup>
+
+// Qt Includes
+#include <QUrl>
 
 // Forward Declarations
 class QNetworkReply;
@@ -78,7 +80,7 @@ private:
     bool _isSyncing;
     QWebPage _webPage;
     QNetworkReply *_reply;
-    QSet<KUrl> _bookmarksToAdd;
+    QSet<QUrl> _bookmarksToAdd;
     QSet<QString> _bookmarksToDelete;
     int _requestCount;
 };

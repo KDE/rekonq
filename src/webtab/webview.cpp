@@ -110,7 +110,7 @@ WebView::WebView(QWidget* parent, bool isPrivateBrowsing)
     , m_isPrivateBrowsing(isPrivateBrowsing)
 {
     // loadUrl signal
-    connect(this, SIGNAL(loadUrl(KUrl,Rekonq::OpenType)), rApp, SLOT(loadUrl(KUrl,Rekonq::OpenType)));
+    connect(this, SIGNAL(loadUrl(QUrl,Rekonq::OpenType)), rApp, SLOT(loadUrl(QUrl,Rekonq::OpenType)));
 
     // Auto scroll timer
     connect(m_autoScrollTimer, SIGNAL(timeout()), this, SLOT(scrollFrameChanged()));
@@ -495,7 +495,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         {
             QString text = selectedText();
             text = text.trimmed();
-            KUrl urlLikeText(text);
+            QUrl urlLikeText(text);
             if (urlLikeText.isValid())
             {
                 QString truncatedUrl = text;
@@ -662,12 +662,12 @@ void WebView::mousePressEvent(QMouseEvent *event)
                     break;
 
                 if (QUrl::fromUserInput(clipboardContent).isValid())
-                    load(KUrl(clipboardContent));
+                    load(QUrl(clipboardContent));
                 else // Search with default Engine
                 {
                     KService::Ptr defaultEngine = SearchEngine::defaultEngine();
                     if (defaultEngine) // check if a default engine is set
-                        load(KUrl(SearchEngine::buildQuery(defaultEngine, clipboardContent)));
+                        load(QUrl(SearchEngine::buildQuery(defaultEngine, clipboardContent)));
                 }
             }
             break;
@@ -768,7 +768,7 @@ void WebView::search()
 {
     KAction *a = qobject_cast<KAction*>(sender());
     KService::Ptr engine = KService::serviceByDesktopPath(a->data().toString());
-    KUrl urlSearch = KUrl(SearchEngine::buildQuery(engine, selectedText()));
+    QUrl urlSearch = QUrl(SearchEngine::buildQuery(engine, selectedText()));
 
     emit loadUrl(urlSearch, Rekonq::NewFocusedTab);
 }
@@ -777,7 +777,7 @@ void WebView::search()
 void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    KUrl url(a->data().toUrl());
+    QUrl url(a->data().toUrl());
 
     if (modifiers & Qt::ControlModifier || buttons == Qt::MidButton)
     {
@@ -793,7 +793,7 @@ void WebView::viewImage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifier
 void WebView::slotCopyImageLocation()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    KUrl imageUrl(a->data().toUrl());
+    QUrl imageUrl(a->data().toUrl());
 #ifndef QT_NO_MIMECLIPBOARD
     // Set it in both the mouse selection and in the clipboard
     QMimeData* mimeData = new QMimeData;
@@ -811,7 +811,7 @@ void WebView::slotCopyImageLocation()
 void WebView::openLinkHere()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    KUrl url(a->data().toUrl());
+    QUrl url(a->data().toUrl());
 
     emit loadUrl(url, Rekonq::CurrentTab);
 }
@@ -820,7 +820,7 @@ void WebView::openLinkHere()
 void WebView::openLinkInNewWindow()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    KUrl url(a->data().toUrl());
+    QUrl url(a->data().toUrl());
 
     emit loadUrl(url, Rekonq::NewWindow);
 }
@@ -829,7 +829,7 @@ void WebView::openLinkInNewWindow()
 void WebView::openLinkInNewTab()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    KUrl url(a->data().toUrl());
+    QUrl url(a->data().toUrl());
 
     if (m_parentTab->isWebApp())
         emit loadUrl(url, Rekonq::NewFocusedTab);
@@ -841,7 +841,7 @@ void WebView::openLinkInNewTab()
 void WebView::openLinkInPrivateWindow()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    KUrl url(a->data().toUrl());
+    QUrl url(a->data().toUrl());
 
     emit loadUrl(url, Rekonq::NewPrivateWindow);
 }
@@ -850,9 +850,9 @@ void WebView::openLinkInPrivateWindow()
 void WebView::bookmarkLink()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    KUrl url(a->data().toUrl());
+    QUrl url(a->data().toUrl());
 
-    BookmarkManager::self()->rootGroup().addBookmark(url.prettyUrl(), url);
+    BookmarkManager::self()->rootGroup().addBookmark(url.url(), url);
     BookmarkManager::self()->emitChanged();
 }
 
@@ -892,7 +892,7 @@ void WebView::keyPressEvent(QKeyEvent *event)
         // CTRL + RETURN: open link into another tab
         if (event->key() == Qt::Key_Return && tagName == QL1S("A"))
         {
-            KUrl u = KUrl(page()->mainFrame()->evaluateJavaScript("document.activeElement.attributes[\"href\"].value").toString());
+            QUrl u = QUrl(page()->mainFrame()->evaluateJavaScript("document.activeElement.attributes[\"href\"].value").toString());
             emit loadUrl(u, Rekonq::NewTab);
             event->accept();
             return;
@@ -1558,7 +1558,7 @@ WebTab *WebView::parentTab()
 void WebView::saveImage()
 {
     KAction *a = qobject_cast<KAction*>(sender());
-    KUrl imageUrl(a->data().toUrl());
+    QUrl imageUrl(a->data().toUrl());
 
     DownloadManager::self()->downloadResource(imageUrl,
             KIO::MetaData(),

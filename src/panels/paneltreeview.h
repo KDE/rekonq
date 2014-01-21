@@ -35,7 +35,7 @@
 #include <QTreeView>
 
 // Forward Declarations
-class KUrl;
+class QUrl;
 
 
 class REKONQ_TESTS_EXPORT PanelTreeView : public QTreeView
@@ -46,7 +46,7 @@ public:
     PanelTreeView(QWidget *parent = 0);
 
 Q_SIGNALS:
-    void openUrl(const KUrl &, const Rekonq::OpenType & = Rekonq::CurrentTab);
+    void openUrl(const QUrl &, const Rekonq::OpenType & = Rekonq::CurrentTab);
     void itemHovered(const QString &);
     void delKeyPressed();
     void contextMenuItemRequested(const QPoint &pos);

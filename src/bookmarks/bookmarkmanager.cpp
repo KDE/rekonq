@@ -92,10 +92,10 @@ BookmarkManager::BookmarkManager(QObject *parent)
 
     // setup menu
     m_owner = new BookmarkOwner(m_manager, this);
-    connect(m_owner, SIGNAL(openUrl(KUrl,Rekonq::OpenType)), this, SIGNAL(openUrl(KUrl,Rekonq::OpenType)));
+    connect(m_owner, SIGNAL(openUrl(QUrl,Rekonq::OpenType)), this, SIGNAL(openUrl(QUrl,Rekonq::OpenType)));
 
     // bookmarks loading
-    connect(this, SIGNAL(openUrl(KUrl,Rekonq::OpenType)), rApp, SLOT(loadUrl(KUrl,Rekonq::OpenType)));
+    connect(this, SIGNAL(openUrl(QUrl,Rekonq::OpenType)), rApp, SLOT(loadUrl(QUrl,Rekonq::OpenType)));
 }
 
 
@@ -148,7 +148,7 @@ QList<KBookmark> BookmarkManager::find(const QString &text)
 }
 
 
-KBookmark BookmarkManager::bookmarkForUrl(const KUrl &url)
+KBookmark BookmarkManager::bookmarkForUrl(const QUrl &url)
 {
     KBookmarkGroup root = rootGroup();
     if (root.isNull())
@@ -208,7 +208,7 @@ void BookmarkManager::fillBookmarkBar(BookmarkToolBar *toolBar)
         else
         {
             KBookmarkAction *action = new KBookmarkAction(bookmark, m_owner, toolBar);
-            action->setIcon(IconManager::self()->iconForUrl(KUrl(bookmark.url())));
+            action->setIcon(IconManager::self()->iconForUrl(QUrl(bookmark.url())));
             toolBar->addAction(action);
             toolBar->widgetForAction(action)->installEventFilter(toolBar);
         }
@@ -243,7 +243,7 @@ void BookmarkManager::find(QList<KBookmark> *list, const KBookmark &bookmark, co
 }
 
 
-KBookmark BookmarkManager::bookmarkForUrl(const KBookmark &bookmark, const KUrl &url)
+KBookmark BookmarkManager::bookmarkForUrl(const KBookmark &bookmark, const QUrl &url)
 {
     KBookmark found;
 

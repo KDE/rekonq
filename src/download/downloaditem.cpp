@@ -37,13 +37,13 @@
 #include <KIconLoader>
 #include <KJob>
 #include <KMimeType>
-#include <KUrl>
+#include <QUrl>
 
 
 DownloadItem::DownloadItem(const QString &srcUrl, const QString &destUrl, const QDateTime &d, QObject *parent)
     : QObject(parent)
     , m_srcUrlString(srcUrl)
-    , m_destUrl(KUrl(destUrl))
+    , m_destUrl(QUrl(destUrl))
     , m_dateTime(d)
     , m_job(0)
     , m_state(0)
@@ -65,7 +65,7 @@ DownloadItem::DownloadItem(KIO::CopyJob *job, const QDateTime &d, QObject *paren
 }
 
 
-KUrl DownloadItem::destUrl() const
+QUrl DownloadItem::destUrl() const
 {
     return m_destUrl;
 }
@@ -79,7 +79,7 @@ QString DownloadItem::originUrl() const
 
 QString DownloadItem::fileDirectory() const
 {
-    KUrl u = destUrl();
+    QUrl u = destUrl();
     return (QL1S("file://") + u.directory());
 }
 
@@ -92,7 +92,7 @@ QString DownloadItem::fileName() const
 
 QString DownloadItem::destinationUrlString() const
 {
-    return destUrl().url(KUrl::RemoveTrailingSlash);
+    return destUrl().url(QUrl::StripTrailingSlash);
 }
 
 

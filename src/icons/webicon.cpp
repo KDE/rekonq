@@ -44,7 +44,7 @@
 #include <QWebElement>
 
 
-WebIcon::WebIcon(const KUrl& url, QObject *parent)
+WebIcon::WebIcon(const QUrl& url, QObject *parent)
     : QObject(parent)
     , m_url(url)
 {
@@ -77,14 +77,14 @@ void WebIcon::saveIcon(bool b)
     QString faviconPath = faviconsDir + m_url.host();
 
     // dest url
-    KUrl destUrl(faviconPath);
+    QUrl destUrl(faviconPath);
     qDebug() << "DEST URL: " << destUrl;
     
     // the simplest way..
     const QString rootUrlString = m_url.scheme() + QL1S("://") + m_url.host();
 
     // find favicon url
-    KUrl faviconUrl(rootUrlString + QL1S("/favicon.ico"));
+    QUrl faviconUrl(rootUrlString + QL1S("/favicon.ico"));
 
 
     QWebElement root = m_page.mainFrame()->documentElement();
@@ -105,16 +105,16 @@ void WebIcon::saveIcon(bool b)
     
     if (!relUrlString.isEmpty())
     {
-        faviconUrl = KUrl(relUrlString);
+        faviconUrl = QUrl(relUrlString);
         
         if (!faviconUrl.isValid())
         {            
-            faviconUrl = KUrl(rootUrlString + QL1C('/') + relUrlString);
+            faviconUrl = QUrl(rootUrlString + QL1C('/') + relUrlString);
         }
         
         if (faviconUrl.host().isEmpty())
         {
-            faviconUrl = KUrl(rootUrlString + relUrlString);           
+            faviconUrl = QUrl(rootUrlString + relUrlString);
         }
     }
     

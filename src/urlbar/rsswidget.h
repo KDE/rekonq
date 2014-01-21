@@ -32,7 +32,7 @@
 
 // Forward Declarations
 class KComboBox;
-class KUrl;
+class QUrl;
 
 
 class RSSWidget : public QMenu
@@ -41,7 +41,7 @@ class RSSWidget : public QMenu
 
 public:
     // QMap< feedUrl, feedTitle>
-    RSSWidget(const QMap<KUrl, QString> &map, QWidget *parent = 0);
+    RSSWidget(const QMap<QUrl, QString> &map, QWidget *parent = 0);
 
     void showAt(const QPoint &pos);
 
@@ -52,7 +52,7 @@ private:
     void addWithAkregator(const QString &url);
 //     void addWithGoogleReader(const QString &url);
 
-    QMap<KUrl, QString> m_map;
+    QMap<QUrl, QString> m_map;
 
     KComboBox *m_agregators;
     KComboBox *m_feeds;

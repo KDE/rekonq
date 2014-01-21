@@ -34,12 +34,12 @@
 #include "rekonq_defines.h"
 
 // KDE Includes
-#include <KUrl>
 #include <KLineEdit>
 
 // Qt Includes
 #include <QWeakPointer>
 #include <QToolButton>
+#include <QUrl>
 
 // Forward Declarations
 class QWidget;
@@ -100,7 +100,7 @@ public Q_SLOTS:
     void clearUrlbar();
 
 private Q_SLOTS:
-    void loadRequestedUrl(const KUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
+    void loadRequestedUrl(const QUrl& url, Rekonq::OpenType = Rekonq::CurrentTab);
 
     void loadStarted();
     void loadFinished();

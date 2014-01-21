@@ -40,13 +40,13 @@
 
 // KDE Includes
 #include <KGlobalSettings>
-#include <KUrl>
 
 // Qt Includes
 #include <QApplication>
 #include <QPoint>
 #include <QSize>
 #include <QEvent>
+#include <QUrl>
 
 #include <QVBoxLayout>
 #include <QKeyEvent>
@@ -282,7 +282,7 @@ bool CompletionWidget::eventFilter(QObject *obj, QEvent *ev)
                     }
                 }
 
-                KUrl urlToLoad;
+                QUrl urlToLoad;
                 Rekonq::OpenType type = Rekonq::CurrentTab;
 
                 if (_currentIndex == -1)
@@ -350,7 +350,7 @@ void CompletionWidget::setVisible(bool visible)
 
 void CompletionWidget::itemChosen(ListItem *item, Qt::MouseButton button, Qt::KeyboardModifiers modifier)
 {
-    KUrl u = item->url();
+    QUrl u = item->url();
 
     if (button == Qt::MidButton || modifier == Qt::ControlModifier)
     {
@@ -389,7 +389,7 @@ void CompletionWidget::suggestUrls(const QString &text)
 }
 
 
-KUrl CompletionWidget::activeSuggestion()
+QUrl CompletionWidget::activeSuggestion()
 {
     int index = _currentIndex;
     if (_currentIndex == -1)
@@ -400,5 +400,5 @@ KUrl CompletionWidget::activeSuggestion()
         return child->url();
 
     qDebug() << "WARNING: NO URL to LOAD...";
-    return KUrl();
+    return QUrl();
 }

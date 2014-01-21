@@ -316,7 +316,7 @@ bool BookmarkToolBar::eventFilter(QObject *watched, QEvent *event)
         {
             // DROP is TEXT
             QString url = dropEvent->mimeData()->text();
-            KUrl u(url);
+            QUrl u(url);
             if (u.isValid())
             {
                 WebWindow *w = qobject_cast<WebWindow *>(parent());

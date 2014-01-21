@@ -58,7 +58,7 @@ void ThumbUpdater::updateThumb()
 
     // Load URL
     QWebFrame *frame = qobject_cast<QWebFrame *>(parent());
-    WebSnap *snap = new WebSnap(KUrl(_url), frame);
+    WebSnap *snap = new WebSnap(QUrl(_url), frame);
     connect(snap, SIGNAL(snapDone(bool)), this, SLOT(updateImage(bool)), Qt::UniqueConnection);
 }
 
@@ -71,7 +71,7 @@ ThumbUpdater::~ThumbUpdater()
 
 void ThumbUpdater::updateImage(bool ok)
 {
-    KUrl u(_url);
+    QUrl u(_url);
 
     QString previewPath = ok
                           ? QL1S("file://") + WebSnap::imagePathFromUrl(u)

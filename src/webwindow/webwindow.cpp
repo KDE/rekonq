@@ -61,7 +61,6 @@
 #include <KJobUiDelegate>
 #include <KMimeTypeTrader>
 #include <KTemporaryFile>
-#include <KUrl>
 #include <KToolBar>
 #include <KToggleFullScreenAction>
 #include <KShortcutsDialog>
@@ -76,6 +75,7 @@
 #include <QWebView>
 #include <QWebHistory>
 #include <QVBoxLayout>
+#include <QUrl>
 
 
 WebWindow::WebWindow(QWidget *parent, bool isPrivateBrowsing, WebPage *pg)
@@ -699,7 +699,7 @@ void WebWindow::notifyMessage(const QString &msg)
 }
 
 
-KUrl WebWindow::url() const
+QUrl WebWindow::url() const
 {
     return _tab->url();
 }
@@ -713,7 +713,7 @@ QString WebWindow::title() const
         if (url().isLocalFile())
             return url().fileName();
         else
-            return url().prettyUrl();
+            return url().url();
     }
 
     return t;
@@ -746,7 +746,7 @@ bool WebWindow::isLoading()
 
 void WebWindow::fileOpen()
 {
-    QString filePath = KFileDialog::getOpenFileName(KUrl(),
+    QString filePath = KFileDialog::getOpenFileName(QUrl(),
                        i18n("*.html *.htm *.svg *.png *.gif *.svgz|Web Resources (*.html *.htm *.svg *.png *.gif *.svgz)\n"
                             "*.*|All files (*.*)"),
                        this,
@@ -755,13 +755,13 @@ void WebWindow::fileOpen()
     if (filePath.isEmpty())
         return;
 
-    load(KUrl(filePath));
+    load(QUrl(filePath));
 }
 
 
 void WebWindow::fileSave()
 {
-    KUrl srcUrl = url();
+    QUrl srcUrl = url();
 
     if (page()->isOnRekonqPage())
     {
@@ -777,7 +777,7 @@ void WebWindow::fileSave()
     // First, try with suggested file name...
     QString name = page()->suggestedFileName();
 
-    // Second, with KUrl fileName...
+    // Second, with QUrl fileName...
     if (name.isEmpty())
     {
         name = srcUrl.fileName();
@@ -789,7 +789,7 @@ void WebWindow::fileSave()
         name = srcUrl.host() + QString(".html");
     }
 
-    const KUrl destUrl = KFileDialog::getSaveUrl(name, QString(), this);
+    const QUrl destUrl = KFileDialog::getSaveUrl(name, QString(), this);
     if (destUrl.isEmpty())
         return;
 
@@ -832,7 +832,7 @@ void WebWindow::viewPageSource()
     QTextStream out(&tmpFile);
     out << code;
     tmpFile.close();
-    KUrl tmpUrl(tmpFile.fileName());
+    QUrl tmpUrl(tmpFile.fileName());
 
     KRun::runUrl(tmpUrl, QL1S("text/plain"), this, false);
 
@@ -844,7 +844,7 @@ void WebWindow::viewPageSource()
 //         srcTab->page()->setIsOnRekonqPage(true);
 //         srcTab->setPart(pa, tmpUrl);
 //         srcTab->urlBar()->setQUrl(url.pathOrUrl());
-//         m_view->setTabText(m_view->currentIndex(), i18n("Source of: %1", url.prettyUrl()));
+//         m_view->setTabText(m_view->currentIndex(), i18n("Source of: %1", url.url()));
 //         updateHistoryActions();
 //     }
 
@@ -987,7 +987,7 @@ void WebWindow::openBookmarksPage()
 
 void WebWindow::openHomePage(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
-    KUrl homeUrl = KUrl(ReKonfig::homePage());
+    QUrl homeUrl = QUrl(ReKonfig::homePage());
 
     if (buttons == Qt::MidButton || modifiers == Qt::ControlModifier)
         rApp->loadUrl(homeUrl, Rekonq::NewTab);

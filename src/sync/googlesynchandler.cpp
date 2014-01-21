@@ -231,7 +231,7 @@ void GoogleSyncHandler::loadFinished(bool ok)
         if (!_bookmarksToAdd.isEmpty())
         {
             emit syncStatus(Rekonq::Bookmarks, true, i18n("Adding bookmarks on server..."));
-            for (QSet<KUrl>::const_iterator iter = _bookmarksToAdd.constBegin(); iter != _bookmarksToAdd.end(); ++iter)
+            for (QSet<QUrl>::const_iterator iter = _bookmarksToAdd.constBegin(); iter != _bookmarksToAdd.end(); ++iter)
             {
                 KBookmark bookmark = BookmarkManager::self()->bookmarkForUrl(*iter);
                 QByteArray postData;
@@ -294,13 +294,13 @@ void GoogleSyncHandler::fetchingBookmarksFinished()
             QString title = getChildElement(bookmarksOnServer.at(i), QL1S("title") );
             QString url = getChildElement(bookmarksOnServer.at(i), QL1S("url") );
 
-            KBookmark bookmark = manager->bookmarkForUrl(KUrl(url));
+            KBookmark bookmark = manager->bookmarkForUrl(QUrl(url));
             if (bookmark.isNull())
             {
                 //Add bookmark
                 qDebug() << "Add bookmark";
                 emit syncStatus(Rekonq::Bookmarks, true, i18n("Adding bookmark"));
-                root.addBookmark(title.isEmpty() ? url : title, KUrl(url));
+                root.addBookmark(title.isEmpty() ? url : title, QUrl(url));
                 manager->manager()->emitChanged(root);
             }
 
@@ -400,7 +400,7 @@ void GoogleSyncHandler::checkToDeleteGB(BookmarkManager *manager, const QDomNode
     {
         QString url = getChildElement(bookmarksOnServer.at(i), QL1S("url") );
 
-        KBookmark result = manager->bookmarkForUrl(KUrl(url));
+        KBookmark result = manager->bookmarkForUrl(QUrl(url));
         if (result.isNull())
         {
             qDebug() <<  "Deleting from Google Bookmarks: " << url;

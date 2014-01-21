@@ -124,10 +124,10 @@ void HistoryPanel::openAll()
     if (!index.isValid())
         return;
 
-    QList<KUrl> allChild;
+    QList<QUrl> allChild;
 
     for (int i = 0; i < index.model()->rowCount(index); i++)
-        allChild << qVariantValue<KUrl>(index.child(i, 0).data(Qt::UserRole));
+        allChild << qVariantValue<QUrl>(index.child(i, 0).data(Qt::UserRole));
 
     if (allChild.length() > 8)
     {
@@ -152,9 +152,9 @@ void HistoryPanel::deleteGroup()
         return;
 
     //Getting all URLs of sub items.
-    QList<KUrl> allChild;
+    QList<QUrl> allChild;
     for (int i = 0; i < index.model()->rowCount(index); i++)
-        allChild << qVariantValue<KUrl>(index.child(i, 0).data(Qt::UserRole));
+        allChild << qVariantValue<QUrl>(index.child(i, 0).data(Qt::UserRole));
 
     for (int i = 0; i < allChild.length(); i++)
         HistoryManager::self()->removeHistoryEntry(allChild.at(i));
@@ -180,7 +180,7 @@ void HistoryPanel::deleteEntry()
         return;
     removedFolderIndex = index.parent().row();
 
-    HistoryManager::self()->removeHistoryEntry(qVariantValue< KUrl >(index.data(Qt::UserRole)));
+    HistoryManager::self()->removeHistoryEntry(qVariantValue< QUrl >(index.data(Qt::UserRole)));
 
     QModelIndex expandItem = panelTreeView()->model()->index(removedFolderIndex, 0);
     if (expandItem.isValid())
@@ -195,11 +195,11 @@ void HistoryPanel::forgetSite()
         return;
     removedFolderIndex = index.row();
 
-    QString site = qVariantValue< KUrl >(index.data(Qt::UserRole)).host();
+    QString site = qVariantValue< QUrl >(index.data(Qt::UserRole)).host();
     QList<HistoryItem> toRemove = HistoryManager::self()->find(site);
     for (int i = 0; i < toRemove.length(); i++)
     {
-        HistoryManager::self()->removeHistoryEntry(KUrl(toRemove.at(i).url));
+        HistoryManager::self()->removeHistoryEntry(QUrl(toRemove.at(i).url));
     }
 
     QModelIndex expandItem = panelTreeView()->model()->index(removedFolderIndex, 0);

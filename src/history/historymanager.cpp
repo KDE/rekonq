@@ -119,7 +119,7 @@ bool HistoryManager::historyContains(const QString &url) const
 }
 
 
-void HistoryManager::addHistoryEntry(const KUrl &url, const QString &title)
+void HistoryManager::addHistoryEntry(const QUrl &url, const QString &title)
 {
     if (ReKonfig::expireHistory() == 5)  // DON'T STORE HISTORY!
         return;
@@ -227,7 +227,7 @@ void HistoryManager::checkForExpired()
 }
 
 
-void HistoryManager::removeHistoryEntry(const KUrl &url, const QString &title)
+void HistoryManager::removeHistoryEntry(const QUrl &url, const QString &title)
 {
     HistoryItem item;
     for (int i = 0; i < m_history.count(); ++i)

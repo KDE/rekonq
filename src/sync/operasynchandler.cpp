@@ -304,7 +304,7 @@ void OperaSyncHandler::getBookmarks()
 
     fetchBookmarksUrl.append(urlParams);
     //qDebug() << urlstr;
-    KIO::TransferJob *job = KIO::get(KUrl(fetchBookmarksUrl), KIO::Reload, KIO::HideProgressInfo);
+    KIO::TransferJob *job = KIO::get(QUrl(fetchBookmarksUrl), KIO::Reload, KIO::HideProgressInfo);
 
     connect(job, SIGNAL(result(KJob*)), this, SLOT(fetchBookmarksResultSlot(KJob*)));
     connect(job, SIGNAL(data(KIO::Job*,QByteArray)), this, SLOT(fetchBookmarksDataSlot(KIO::Job*,QByteArray)));
@@ -393,7 +393,7 @@ void OperaSyncHandler::fetchBookmarksResultSlot(KJob* job)
 
         else
         {
-            KUrl url = current.url();
+            QUrl url = current.url();
 
             QDomElement child = findOperaBookmark(item, url);
 
@@ -511,13 +511,13 @@ void OperaSyncHandler::handleBookmark(const QDomElement &item, KBookmarkGroup ro
     QString title = getTitleFromResourceProperties(item);
     QString id = getChildString(item, "id");
 
-    KBookmark bookmark = findLocalBookmark(root, KUrl(url));
+    KBookmark bookmark = findLocalBookmark(root, QUrl(url));
 
     if (bookmark.isNull())
     {
         if (_mode == RECEIVE_CHANGES)
         {
-            root.addBookmark(title, KUrl(url));
+            root.addBookmark(title, QUrl(url));
             BookmarkManager::self()->manager()->emitChanged(root);
         }
         else
@@ -645,7 +645,7 @@ void OperaSyncHandler::handleLocalGroup(const KBookmarkGroup &root, const QDomEl
         }
         else
         {
-            KUrl url = current.url();
+            QUrl url = current.url();
 
             QDomElement child = findOperaBookmark(item, url);
 
@@ -685,7 +685,7 @@ void OperaSyncHandler::addBookmarkOnServer(QString title, QString url, QString p
 
     QByteArray postData = _qoauth.createParametersString(requestUrl, QOAuth::POST, _authToken, _authTokenSecret, QOAuth::HMAC_SHA1, requestMap, QOAuth::ParseForRequestContent);
 
-    KIO::TransferJob *job = KIO::http_post(KUrl(requestUrl), postData, KIO::HideProgressInfo);
+    KIO::TransferJob *job = KIO::http_post(QUrl(requestUrl), postData, KIO::HideProgressInfo);
     job->addMetaData("Content-Type", "application/x-www-form-urlencoded");
 
     connect(job, SIGNAL(result(KJob*)), this, SLOT(createBookmarkResultSlot(KJob*)));
@@ -711,7 +711,7 @@ KJob *OperaSyncHandler::addBookmarkFolderOnServer(QString title, QString parent)
 
     QByteArray postData = _qoauth.createParametersString(requestUrl, QOAuth::POST, _authToken, _authTokenSecret, QOAuth::HMAC_SHA1, requestMap, QOAuth::ParseForRequestContent);
 
-    KIO::TransferJob *job = KIO::http_post(KUrl(requestUrl), postData, KIO::HideProgressInfo);
+    KIO::TransferJob *job = KIO::http_post(QUrl(requestUrl), postData, KIO::HideProgressInfo);
     job->addMetaData("Content-Type", "application/x-www-form-urlencoded");
     _jobToResponseMap.insert(job, "");
 
@@ -741,7 +741,7 @@ void OperaSyncHandler::deleteResourceOnServer(QString id)
 
     qDebug() << "Deleting Resource : " << id;
 
-    KIO::TransferJob *job = KIO::http_post(KUrl(requestUrl), postData, KIO::HideProgressInfo);
+    KIO::TransferJob *job = KIO::http_post(QUrl(requestUrl), postData, KIO::HideProgressInfo);
     job->addMetaData("Content-Type", "application/x-www-form-urlencoded");
 
     connect(job, SIGNAL(result(KJob*)), this, SLOT(deleteResourceResultSlot(KJob*)));
@@ -852,7 +852,7 @@ KBookmarkGroup OperaSyncHandler::findLocalGroup(const KBookmarkGroup &root, cons
 }
 
 //Find a bookmark in a specifiec bookmark group of client
-KBookmark OperaSyncHandler::findLocalBookmark(const KBookmarkGroup &root, const KUrl &url)
+KBookmark OperaSyncHandler::findLocalBookmark(const KBookmarkGroup &root, const QUrl &url)
 {
     KBookmark child = root.first();
 
@@ -884,13 +884,13 @@ QDomElement OperaSyncHandler::findOperaFolder(const QDomElement &root, const QSt
 }
 
 //Find bookmark in xml returned by server
-QDomElement OperaSyncHandler::findOperaBookmark(const QDomElement &root, const KUrl &url)
+QDomElement OperaSyncHandler::findOperaBookmark(const QDomElement &root, const QUrl &url)
 {
     QDomElement current = root.firstChild().toElement();
 
     while (!current.isNull())
     {
-        if ((getChildString(current, "item_type") == "bookmark") && KUrl(getUrlFromResourceProperties(current)) == url)
+        if ((getChildString(current, "item_type") == "bookmark") && QUrl(getUrlFromResourceProperties(current)) == url)
             break;
         current = current.nextSibling().toElement();
     }

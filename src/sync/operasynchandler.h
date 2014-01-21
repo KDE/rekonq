@@ -34,12 +34,12 @@
 #include "synchandler.h"
 
 // KDE Includes
-#include <KUrl>
 #include <KBookmarkGroup>
 #include <KIO/Job>
 
 // Qt Includes
 #include <QtOAuth/QtOAuth>
+#include <QUrl>
 
 // Forward Declarations
 
@@ -102,10 +102,10 @@ private:
     static QDomElement getChildElement(const QDomNode &node, const QString &name);
 
     static KBookmarkGroup findLocalGroup(const KBookmarkGroup &root, const QString &name);
-    static KBookmark findLocalBookmark(const KBookmarkGroup &root, const KUrl &url);
+    static KBookmark findLocalBookmark(const KBookmarkGroup &root, const QUrl &url);
 
     static QDomElement findOperaFolder(const QDomElement &root, const QString &name);
-    static QDomElement findOperaBookmark(const QDomElement &root, const KUrl &url);
+    static QDomElement findOperaBookmark(const QDomElement &root, const QUrl &url);
 
     void decreaseRequestCount();
 

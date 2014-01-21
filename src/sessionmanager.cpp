@@ -45,12 +45,12 @@
 #include <KDialog>
 #include <KPushButton>
 #include <KStandardDirs>
-#include <KUrl>
 
 // Qt Includes
 #include <QFile>
 #include <QDomDocument>
 #include <QPointer>
+#include <QUrl>
 
 
 // Only used internally
@@ -92,7 +92,7 @@ int loadTabs(RekonqWindow *tw, QDomElement & window, bool useFirstTab, bool just
             if (tab.hasAttribute("currentTab"))
                 currentTab = tabNo;
 
-            KUrl u = KUrl(tab.attribute("url"));
+            QUrl u = QUrl(tab.attribute("url"));
 
             TabHistory tabHistory;
             tabHistory.title = tab.attribute("title");
@@ -199,7 +199,7 @@ void SessionManager::saveSession()
         TabWidget *tw = w.data()->tabWidget();
         for (signed int tabNo = 0; tabNo < tw->count(); tabNo++)
         {
-            KUrl u = tw->webWindow(tabNo)->url();
+            QUrl u = tw->webWindow(tabNo)->url();
 
             tabInserted++;
             QDomElement tab = document.createElement("tab");
@@ -300,7 +300,7 @@ void SessionManager::restoreCrashedSession()
                         ? rApp->rekonqWindow()
                         : rApp->newWindow();
 
-        KUrl u = tw->currentWebWindow()->url();
+        QUrl u = tw->currentWebWindow()->url();
         bool useCurrentTab = (u.isEmpty() || u.protocol() == QL1S("rekonq"));
         int currentTab = loadTabs(tw, window, useCurrentTab);
 
@@ -410,7 +410,7 @@ bool SessionManager::saveYourSession(int index)
         TabWidget *tw = w.data()->tabWidget();
         for (signed int tabNo = 0; tabNo < tw->count(); tabNo++)
         {
-            KUrl u = tw->webWindow(tabNo)->url();
+            QUrl u = tw->webWindow(tabNo)->url();
 
             tabInserted++;
             QDomElement tab = document.createElement("tab");

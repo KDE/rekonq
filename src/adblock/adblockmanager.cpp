@@ -307,10 +307,10 @@ void AdBlockManager::updateSubscription(int i)
     QString n = QString::number(i + 1);
 
     const QString fUrl = filtersGroup.readEntry("FilterURL-" + n, QString());
-    KUrl subUrl = KUrl(fUrl);
+    QUrl subUrl = QUrl(fUrl);
 
     QString rulesFilePath = KStandardDirs::locateLocal("appdata" , QL1S("adblockrules_") + n);
-    KUrl destUrl = KUrl(rulesFilePath);
+    QUrl destUrl = QUrl(rulesFilePath);
 
     KIO::FileCopyJob* job = KIO::file_copy(subUrl , destUrl, -1, KIO::HideProgressInfo | KIO::Overwrite);
     job->metaData().insert("ssl_no_client_cert", "TRUE");
@@ -329,7 +329,7 @@ void AdBlockManager::slotFinished(KJob *job)
         return;
 
     KIO::FileCopyJob *fJob = qobject_cast<KIO::FileCopyJob *>(job);
-    KUrl url = fJob->destUrl();
+    QUrl url = fJob->destUrl();
     url.setProtocol(QString()); // this is needed to load local url well :(
     loadRules(url.url());
 }

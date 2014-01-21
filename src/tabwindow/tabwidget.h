@@ -36,7 +36,7 @@
 #include <KActionCollection>
 
 // Forward Declarations
-class KUrl;
+class QUrl;
 
 class QToolButton;
 
@@ -81,7 +81,7 @@ public:
     // --------------------------------------------------------------------------------------
 
 public Q_SLOTS:
-    void loadUrl(const KUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
+    void loadUrl(const QUrl &, Rekonq::OpenType type = Rekonq::CurrentTab, TabHistory *history = 0);
     void newTab(WebPage *page = 0);
     void reloadAllTabs();
 

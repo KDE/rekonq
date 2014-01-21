@@ -54,7 +54,6 @@
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KStandardDirs>
-#include <KUrl>
 #include <KToggleFullScreenAction>
 
 #include <KBookmark>
@@ -72,6 +71,7 @@
 #include <QSignalMapper>
 #include <QWebHistory>
 #include <QWebSettings>
+#include <QUrl>
 
 
 TabWidget::TabWidget(bool withTab, bool PrivateBrowsingMode, QWidget *parent)
@@ -309,14 +309,14 @@ void TabWidget::newTab(WebPage *page)
     switch (ReKonfig::newTabsBehaviour())
     {
     case 0: // new tab page
-        tab->load(KUrl("rekonq:home"));
+        tab->load(QUrl("rekonq:home"));
         break;
     case 2: // homepage
-        tab->load(KUrl(ReKonfig::homePage()));
+        tab->load(QUrl(ReKonfig::homePage()));
         break;
     case 1: // blank page
     default:
-        tab->load(KUrl("about:blank"));
+        tab->load(QUrl("about:blank"));
         break;
     }
 }
@@ -344,7 +344,7 @@ WebWindow *TabWidget::prepareNewTab(WebPage *page)
 }
 
 
-void TabWidget::loadUrl(const KUrl &url, Rekonq::OpenType type, TabHistory *history)
+void TabWidget::loadUrl(const QUrl &url, Rekonq::OpenType type, TabHistory *history)
 {
     WebWindow *tab = 0;
     switch (type)
@@ -648,7 +648,7 @@ void TabWidget::closeTab(int index, bool del)
             return;
         }
 
-        currentWebWindow()->load(KUrl("rekonq:home"));
+        currentWebWindow()->load(QUrl("rekonq:home"));
         return;
     }
 
@@ -705,7 +705,7 @@ void TabWidget::detachTab(int index, RekonqWindow *toWindow)
         return;
 
     WebWindow *tab = webWindow(index);
-    KUrl u = tab->url();
+    QUrl u = tab->url();
     if (u.scheme() == QL1S("rekonq"))
     {
         closeTab(index);
@@ -877,7 +877,7 @@ void TabWidget::loadFavorite(const int index)
     if (index < 0 || index > urls.length())
         return;
 
-    KUrl url = KUrl(urls.at(index - 1));
+    QUrl url = QUrl(urls.at(index - 1));
     loadUrl(url);
     currentWebWindow()->setFocus();
 }

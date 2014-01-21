@@ -139,7 +139,7 @@ private:
     void makeAccessKeyLabel(const QChar &accessKey, const QWebElement &element);
 
 Q_SIGNALS:
-    void loadUrl(const KUrl &, const Rekonq::OpenType &);
+    void loadUrl(const QUrl &, const Rekonq::OpenType &);
 
     void zoomChanged(int);
     void openPreviousInHistory();

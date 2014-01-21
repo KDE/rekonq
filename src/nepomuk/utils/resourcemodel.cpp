@@ -107,7 +107,7 @@ QVariant Nepomuk2::Utils::ResourceModel::data( const QModelIndex& index, int rol
         }
 
         case Qt::ToolTipRole:
-            return KUrl( res.uri() ).prettyUrl();
+            return QUrl( res.uri() ).url();
 
         }
 
@@ -126,7 +126,7 @@ QVariant Nepomuk2::Utils::ResourceModel::data( const QModelIndex& index, int rol
         }
 
         case Qt::ToolTipRole:
-            return KUrl(res.type()).prettyUrl();
+            return QUrl(res.type()).url();
         }
     }
 
@@ -195,7 +195,7 @@ Qt::ItemFlags Nepomuk2::Utils::ResourceModel::flags( const QModelIndex& index ) 
 
 QMimeData* Nepomuk2::Utils::ResourceModel::mimeData( const QModelIndexList& indexes ) const
 {
-    KUrl::List uris;
+    QList<QUrl> uris;
     foreach ( const QModelIndex& index, indexes ) {
         if (index.isValid()) {
             uris << index.data( ResourceRole ).value<Resource>().uri();
@@ -218,7 +218,8 @@ QStringList Nepomuk2::Utils::ResourceModel::mimeTypes() const
 {
     return( QStringList()
             << QLatin1String( "application/x-nepomuk-resource-uri" )
-           << KUrl::List::mimeDataTypes() );
+           // PORT ME KF5<< QUrl::List::mimeDataTypes() )
+		;
 }
 
 

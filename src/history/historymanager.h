@@ -32,7 +32,7 @@
 
 
 // KDE Includes
-#include <KUrl>
+#include <QUrl>
 
 // Qt Includes
 #include <QDateTime>
@@ -122,8 +122,8 @@ public:
     ~HistoryManager();
 
     bool historyContains(const QString &url) const;
-    void addHistoryEntry(const KUrl &url, const QString &title);
-    void removeHistoryEntry(const KUrl &url, const QString &title = QString());
+    void addHistoryEntry(const QUrl &url, const QString &title);
+    void removeHistoryEntry(const QUrl &url, const QString &title = QString());
     void removeHistoryLocationEntry(int value);
 
     QList<HistoryItem> find(const QString &text);

@@ -31,8 +31,8 @@
 // Local Includes
 #include "synchandler.h"
 
-// KDE Includes
-#include <KUrl>
+// Qt Includes
+#include <QUrl>
 
 // Forward Declarations
 class KJob;
@@ -70,13 +70,13 @@ private:
     bool syncRelativeEnabled(bool);
 
     QUrl _remoteBookmarksUrl;
-    KUrl _localBookmarksUrl;
+    QUrl _localBookmarksUrl;
 
     QUrl _remoteHistoryUrl;
-    KUrl _localHistoryUrl;
+    QUrl _localHistoryUrl;
 
     QUrl _remotePasswordsUrl;
-    KUrl _localPasswordsUrl;
+    QUrl _localPasswordsUrl;
 };
 
 #endif // FTP_SYNC_HANDLER_H

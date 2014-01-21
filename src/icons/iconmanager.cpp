@@ -38,11 +38,11 @@
 #include <KIcon>
 #include <KFileItem>
 #include <KStandardDirs>
-#include <KUrl>
 
 // Qt Includes
 #include <QDir>
 #include <QWebSettings>
+#include <QUrl>
 
 
 QWeakPointer<IconManager> IconManager::s_iconManager;
@@ -72,7 +72,7 @@ IconManager::IconManager(QObject *parent)
 }
 
 
-KIcon IconManager::iconForUrl(const KUrl &url)
+KIcon IconManager::iconForUrl(const QUrl &url)
 {
     // first things first.. avoid infinite loop at startup
     if (url.isEmpty() || (rApp->rekonqWindowList().isEmpty() && rApp->webAppList().isEmpty()))
@@ -126,7 +126,7 @@ void IconManager::clearIconCache()
 }
 
 
-void IconManager::saveDesktopIconForUrl(const KUrl &u)
+void IconManager::saveDesktopIconForUrl(const QUrl &u)
 {
     KIcon icon = iconForUrl(u);
     QString destPath = _faviconsDir + u.host() + QL1S("_WEBAPPICON.png");
@@ -141,7 +141,7 @@ void IconManager::saveDesktopIconForUrl(const KUrl &u)
 
 // NOTE: this function is builded "around" the iconForurl one. It basically returns the same things
 // with an important difference: this one returns paths while the other one returns KIcons
-QString IconManager::iconPathForUrl(const KUrl &url)
+QString IconManager::iconPathForUrl(const QUrl &url)
 {
     // first things first.. avoid infinite loop at startup
     if (url.isEmpty() || rApp->rekonqWindowList().isEmpty())
@@ -207,7 +207,7 @@ QString IconManager::iconPathForUrl(const KUrl &url)
 }
 
 
-KIcon IconManager::engineFavicon(const KUrl &url)
+KIcon IconManager::engineFavicon(const QUrl &url)
 {
     QString h = url.host();
     if (QFile::exists(_faviconsDir + h + QL1S(".png")))

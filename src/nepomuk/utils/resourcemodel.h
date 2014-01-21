@@ -149,14 +149,14 @@ namespace Nepomuk2 {
             virtual Qt::ItemFlags flags( const QModelIndex& index ) const;
 
             /**
-             * Stores the resource URIs via KUrl::List::populateMimeData() and as a specific
+             * Stores the resource URIs via QUrl::List::populateMimeData() and as a specific
              * "application/x-nepomuk-resource-uri" mime type to indicate that these are URIs
              * corresponding to actual %Nepomuk resources.
              */
             virtual QMimeData* mimeData( const QModelIndexList& indexes ) const;
 
             /**
-             * \return The KUrl mime types and "application/x-nepomuk-resource-uri".
+             * \return The QUrl mime types and "application/x-nepomuk-resource-uri".
              */
             virtual QStringList mimeTypes() const;
 

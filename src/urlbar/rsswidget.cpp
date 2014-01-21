@@ -33,7 +33,6 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KProcess>
-#include <KUrl>
 
 // Qt Includes
 #include <QDBusConnectionInterface>
@@ -44,8 +43,10 @@
 #include <QLabel>
 #include <QPushButton>
 
+#include <QUrl>
 
-RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
+
+RSSWidget::RSSWidget(const QMap< QUrl, QString > &map, QWidget *parent)
     : QMenu(parent)
     , m_map(map)
 {
@@ -70,7 +71,7 @@ RSSWidget::RSSWidget(const QMap< KUrl, QString > &map, QWidget *parent)
     m_agregators->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     m_agregators->addItem(KIcon("akregator"), QString("Akregator"));
-//     m_agregators->addItem(IconManager::self()->iconForUrl(KUrl("http://google.com/reader")), i18n("Google Reader"));
+//     m_agregators->addItem(IconManager::self()->iconForUrl(QUrl("http://google.com/reader")), i18n("Google Reader"));
 
     layout->addRow(agregator, m_agregators);
 
@@ -126,7 +127,7 @@ void RSSWidget::accept()
 
 // void RSSWidget::addWithGoogleReader(const QString &url)
 // {
-//     KUrl toLoad = KUrl("http://www.google.com/ig/add?feedurl=" + url);
+//     QUrl toLoad = QUrl("http://www.google.com/ig/add?feedurl=" + url);
 //     rApp->rekonqWindow()->loadUrl(toLoad);
 // }
 

@@ -30,11 +30,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KUrl>
-
 // Qt Includes
 #include <QWebPage>
+#include <QUrl>
 
 
 class REKONQ_TESTS_EXPORT WebIcon : public QObject
@@ -42,7 +40,7 @@ class REKONQ_TESTS_EXPORT WebIcon : public QObject
     Q_OBJECT
 
 public:
-    explicit WebIcon(const KUrl &url, QObject *parent = 0);
+    explicit WebIcon(const QUrl &url, QObject *parent = 0);
 
 private Q_SLOTS:
     void load();
@@ -50,7 +48,7 @@ private Q_SLOTS:
 
 private:
     QWebPage m_page;
-    KUrl m_url;
+    QUrl m_url;
 };
 
 #endif //WEB_ICON_H

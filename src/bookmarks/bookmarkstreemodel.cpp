@@ -73,7 +73,7 @@ QVariant BtmItem::data(int role) const
         if (m_kbm.isGroup() || m_kbm.isSeparator())
             return KIcon(m_kbm.icon());
         else
-            return IconManager::self()->iconForUrl(KUrl(m_kbm.url()));
+            return IconManager::self()->iconForUrl(QUrl(m_kbm.url()));
     }
 
     if (role == Qt::UserRole)

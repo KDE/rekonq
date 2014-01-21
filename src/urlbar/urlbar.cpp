@@ -159,7 +159,7 @@ UrlBar::UrlBar(QWidget *parent)
     connect(BookmarkManager::self(), SIGNAL(bookmarksUpdated()), this, SLOT(updateRightIcons()));
 
     // suggestions
-    connect(_box.data(), SIGNAL(chosenUrl(KUrl,Rekonq::OpenType)), this, SLOT(loadRequestedUrl(KUrl,Rekonq::OpenType)));
+    connect(_box.data(), SIGNAL(chosenUrl(QUrl,Rekonq::OpenType)), this, SLOT(loadRequestedUrl(QUrl,Rekonq::OpenType)));
     connect(this, SIGNAL(textEdited(QString)), this, SLOT(detectTypedString(QString)));
 
     _suggestionTimer->setSingleShot(true);
@@ -201,13 +201,13 @@ void UrlBar::setQUrl(const QUrl& url)
 }
 
 
-void UrlBar::loadRequestedUrl(const KUrl& url, Rekonq::OpenType type)
+void UrlBar::loadRequestedUrl(const QUrl& url, Rekonq::OpenType type)
 {
     clearFocus();
     
     // Workaround for KLineEdit bug: incorrectly displaying
     // unicode symbols at query parameter
-    const QByteArray urlTextData = url.prettyUrl().toUtf8();
+    const QByteArray urlTextData = url.url().toUtf8();
     const QString humanReadableUrl = QString::fromUtf8(
         QByteArray::fromPercentEncoding(urlTextData).constData()
     );
@@ -221,7 +221,7 @@ void UrlBar::loadRequestedUrl(const KUrl& url, Rekonq::OpenType type)
 
 void UrlBar::loadTypedUrl()
 {
-    KUrl urlToLoad;
+    QUrl urlToLoad;
     if (!_box.isNull())
     {
         urlToLoad = _box.data()->activeSuggestion();
@@ -322,7 +322,7 @@ void UrlBar::keyReleaseEvent(QKeyEvent *event)
     // this handles the Modifiers + Return key combinations
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
     {
-        KUrl urlToLoad;
+        QUrl urlToLoad;
         switch (event->modifiers())
         {
         case Qt::AltModifier:
@@ -353,7 +353,7 @@ void UrlBar::keyReleaseEvent(QKeyEvent *event)
     {
         clearFocus();
         if (!(_tab->url().protocol() == QL1S("rekonq")))
-            setText(_tab->url().prettyUrl());
+            setText(_tab->url().url());
         event->accept();
     }
 
@@ -686,7 +686,7 @@ void UrlBar::refreshFavicon()
 
 void UrlBar::pasteAndGo()
 {
-    KUrl urlToLoad = UrlResolver::urlFromTextTyped(rApp->clipboard()->text().trimmed());
+    QUrl urlToLoad = UrlResolver::urlFromTextTyped(rApp->clipboard()->text().trimmed());
     qDebug() << "Url to load: " << urlToLoad;
     loadRequestedUrl(urlToLoad);
 }
@@ -696,7 +696,7 @@ void UrlBar::pasteAndSearch()
 {
     KService::Ptr defaultEngine = SearchEngine::defaultEngine();
     if (defaultEngine)
-        loadRequestedUrl(KUrl(SearchEngine::buildQuery(defaultEngine, QApplication::clipboard()->text().trimmed())));
+        loadRequestedUrl(QUrl(SearchEngine::buildQuery(defaultEngine, QApplication::clipboard()->text().trimmed())));
 }
 
 
@@ -768,7 +768,7 @@ void UrlBar::showRSSInfo(QPoint pos)
     QWebElementCollection col = _tab->page()->mainFrame()->findAllElements("link[type=\"application/rss+xml\"]");
     col.append(_tab->page()->mainFrame()->findAllElements("link[type=\"application/atom+xml\"]"));
 
-    QMap<KUrl, QString> map;
+    QMap<QUrl, QString> map;
 
     Q_FOREACH(const QWebElement & el, col)
     {
@@ -777,7 +777,7 @@ void UrlBar::showRSSInfo(QPoint pos)
             urlString = el.attribute("href");
         else
         {
-            KUrl u = _tab->url();
+            QUrl u = _tab->url();
             // NOTE
             // cd() is probably better than setPath() here,
             // for all those url sites just having a path
@@ -789,7 +789,7 @@ void UrlBar::showRSSInfo(QPoint pos)
         if (title.isEmpty())
             title = el.attribute("href");
 
-        map.insert(KUrl(urlString), title);
+        map.insert(QUrl(urlString), title);
     }
 
     RSSWidget *widget = new RSSWidget(map, window());

@@ -49,7 +49,7 @@ public:
     explicit UrlPanel(const QString &title, QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
 Q_SIGNALS:
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void openUrl(const QUrl &, const Rekonq::OpenType &);
     void itemHovered(const QString &);
 
 public Q_SLOTS:

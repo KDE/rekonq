@@ -122,7 +122,7 @@ Q_SIGNALS:
      * This signal is emitted when an url has to be loaded
      * @param url the URL to load
      */
-    void openUrl(const KUrl &, const Rekonq::OpenType &);
+    void openUrl(const QUrl &, const Rekonq::OpenType &);
 
 private:
     KAction* createAction(const QString &text, const QString &icon,

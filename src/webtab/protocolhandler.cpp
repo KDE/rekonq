@@ -120,7 +120,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
         {
             // if javascript:<code here> then authority() returns
             // an empty string. Extract the source manually
-            // Use the prettyUrl() since that is unencoded
+            // Use the url() since that is unencoded
 
             // 11 is length of 'javascript:'
             // fromPercentEncoding() is used to decode all the % encoded
@@ -144,7 +144,7 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             if (_url.fileName() == QL1S("launch"))
             {
                 QString value = _url.queryItemValue(QL1S("url"));
-                rApp->loadUrl(KUrl(value), Rekonq::WebApp);            
+                rApp->loadUrl(QUrl(value), Rekonq::WebApp);
                 return true;
             }
             if (_url.fileName() == QL1S("install"))
@@ -161,23 +161,23 @@ bool ProtocolHandler::preHandling(const QNetworkRequest &request, QWebFrame *fra
             switch (ReKonfig::newTabStartPage())
             {
             case 0: // favorites
-                _url = KUrl("rekonq:favorites");
+                _url = QUrl("rekonq:favorites");
                 break;
             case 1: // bookmarks
-                _url = KUrl("rekonq:bookmarks");
+                _url = QUrl("rekonq:bookmarks");
                 break;
             case 2: // history
-                _url = KUrl("rekonq:history");
+                _url = QUrl("rekonq:history");
                 break;
             case 3: // downloads
-                _url = KUrl("rekonq:downloads");
+                _url = QUrl("rekonq:downloads");
                 break;
             case 4: // closed tabs
-                _url = KUrl("rekonq:closedtabs");
+                _url = QUrl("rekonq:closedtabs");
                 break;
             default: // unuseful
                 qDebug() << "oops... this should NOT happen...";
-                _url = KUrl("rekonq:favorites");
+                _url = QUrl("rekonq:favorites");
                 break;
             }
         }
@@ -306,7 +306,7 @@ void ProtocolHandler::showResults(const KFileItemList &list)
         if (_frame->page()->settings()->testAttribute(QWebSettings::PrivateBrowsingEnabled))
             return;
 
-        HistoryManager::self()->addHistoryEntry(_url, _url.prettyUrl());
+        HistoryManager::self()->addHistoryEntry(_url, _url.url());
     }
 }
 
@@ -319,7 +319,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     }
 
     // let me modify it..
-    KUrl rootUrl = _url;
+    QUrl rootUrl = _url;
 
     // display "rekonq info" page
     QString infoFilePath =  KStandardDirs::locate("data", "rekonq/htmls/rekonqinfo.html");
@@ -336,15 +336,15 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     dataPath.remove(QL1S("/htmls/rekonqinfo.html"));
 
     // 2. title
-    QString title = _url.prettyUrl();
+    QString title = _url.url();
 
     // 3. main content
-    QString msg = i18nc("%1=an URL", "<h2>Index of %1</h2>", _url.prettyUrl());
+    QString msg = i18nc("%1=an URL", "<h2>Index of %1</h2>", _url.url());
 
 
     if (rootUrl.cd(".."))
     {
-        QString path = rootUrl.prettyUrl();
+        QString path = rootUrl.url();
         QString uparrow = KIconLoader::global()->iconPath("arrow-up", KIconLoader::Small);
         msg += "<img src=\"file://" + uparrow + "\" alt=\"up-arrow\" />";
         msg += "<a href=\"" + path + "\">" + i18n("Up to higher level directory") + "</a><br /><br />";
@@ -361,7 +361,7 @@ QString ProtocolHandler::dirHandling(const KFileItemList &list)
     Q_FOREACH(const KFileItem & item, orderedList)
     {
         msg += QL1S("<tr>");
-        QString fullPath = Qt::escape(item.url().prettyUrl());
+        QString fullPath = Qt::escape(item.url().url());
 
         QString iconName = item.iconName();
         QString icon = QString("file://") + KIconLoader::global()->iconPath(iconName, KIconLoader::Small);

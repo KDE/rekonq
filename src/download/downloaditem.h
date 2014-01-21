@@ -32,15 +32,15 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
+// KDE Includes
+#include <KLocalizedString>
+#include <KIO/CopyJob>
+
 // Qt Includes
 #include <QDateTime>
 #include <QObject>
 #include <QString>
-
-// KDE Includes
-#include <KLocalizedString>
-#include <KUrl>
-#include <KIO/CopyJob>
+#include <QUrl>
 
 
 class DownloadItem : public QObject
@@ -69,7 +69,7 @@ public:
         return m_dateTime;
     }
 
-    KUrl destUrl() const;
+    QUrl destUrl() const;
 
     QString originUrl() const;
     QString destinationUrlString() const;
@@ -97,7 +97,7 @@ public Q_SLOTS:
 
 private:
     QString m_srcUrlString;
-    KUrl m_destUrl;
+    QUrl m_destUrl;
 
     QDateTime m_dateTime;
 
