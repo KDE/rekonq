@@ -134,7 +134,7 @@ private Q_SLOTS:
 
 protected:
     void paintEvent(QPaintEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
     void focusInEvent(QFocusEvent *event);
     void dropEvent(QDropEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *);

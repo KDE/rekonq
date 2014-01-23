@@ -308,7 +308,7 @@ void UrlBar::paintEvent(QPaintEvent *event)
 }
 
 
-void UrlBar::keyPressEvent(QKeyEvent *event)
+void UrlBar::keyReleaseEvent(QKeyEvent *event)
 {
     QString trimmedText = text().trimmed();
 
@@ -316,7 +316,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
     {
         disconnect(_icon);
         _icon->setIcon(KIcon("arrow-right"));
-        return KLineEdit::keyPressEvent(event);
+        return KLineEdit::keyReleaseEvent(event);
     }
     
     // this handles the Modifiers + Return key combinations
@@ -357,7 +357,7 @@ void UrlBar::keyPressEvent(QKeyEvent *event)
         event->accept();
     }
 
-    KLineEdit::keyPressEvent(event);
+    KLineEdit::keyReleaseEvent(event);
 }
 
 
