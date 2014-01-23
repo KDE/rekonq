@@ -31,10 +31,9 @@
 // Rekonq Includes
 #include "rekonq_defines.h"
 
-// KDE Includes
-#include <KUniqueApplication>
-
 // Qt Includes
+#include <QGuiApplication>
+
 #include <QUrl>
 #include <QWeakPointer>
 
@@ -56,7 +55,7 @@ typedef QList<WebTab *> WebAppList;
 /**
   * Rekonq Application class
   */
-class Application : public KUniqueApplication
+class Application : public QGuiApplication
 {
     Q_OBJECT
 

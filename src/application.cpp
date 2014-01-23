@@ -77,7 +77,7 @@
 
 
 Application::Application()
-    : KUniqueApplication()
+    : QGuiApplication()
 {
     // updating rekonq configuration
     updateConfiguration();

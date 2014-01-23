@@ -193,8 +193,6 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/webtab
                         ${CMAKE_CURRENT_SOURCE_DIR}/webwindow
                         ${CMAKE_CURRENT_BINARY_DIR}
-#                         ${KDE4_INCLUDES}
-#                         ${QT4_INCLUDES}
 )
 
 # # Nepomuk optional include directories
@@ -228,8 +226,7 @@ INCLUDE_DIRECTORIES (   ${CMAKE_CURRENT_SOURCE_DIR}
 
 ### -------------- ADDING APPLICATION KCFG FILES...
 
-# TODO what about this?
-#KDE4_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
+KCONFIG_ADD_KCFG_FILES( rekonq_KDEINIT_SRCS rekonq.kcfgc )
 
 
 ### --------------- ADDING EXECUTABLE...
@@ -240,15 +237,35 @@ KF5_ADD_KDEINIT_EXECUTABLE (rekonq ${rekonq_KDEINIT_SRCS} main.cpp)
 ### --------------- TARGETTING LINK LIBRARIES...
 
 TARGET_LINK_LIBRARIES (     kdeinit_rekonq
-#                             ${QT_LIBRARIES}
-#                             ${QT_QTSCRIPT_LIBRARY}
-#                             ${QT_QTWEBKIT_LIBRARY}
-#                             ${KDE4_KDEWEBKIT_LIBS}
-#                             ${KDE4_KUTILS_LIBS}
-#                             ${KDE4_KDEUI_LIBS}
-#                             ${KDE4_KIO_LIBS}
-#                             ${KDE4_KPARTS_LIBS}
-#                             ${KDE4_SOLID_LIBS}
+                            # ---------------------------------------
+                            Qt5::Core
+                            Qt5::Gui
+                            Qt5::Widgets
+                            Qt5::Network
+                            Qt5::Script
+                            Qt5::WebKit
+                            # ---------------------------------------
+                            KF5::Init
+                            KF5::WidgetsAddons
+                            KF5::KCMUtils
+                            KF5::CoreAddons
+                            KF5::Solid
+                            KF5::GlobalAccel
+                            KF5::Config
+                            KF5::Auth
+                            KF5::Wallet
+                            KF5::DBusAddons
+                            KF5::I18n
+                            KF5::GuiAddons
+                            KF5::ConfigWidgets
+                            KF5::JobWidgets
+                            KF5::TextWidgets
+                            KF5::XmlGui
+                            KF5::Bookmarks
+                            KF5::Declarative
+                            KF5::Parts
+                            KF5::KIO
+                            KF5::Service
 )
 
 # # Nepomuk optional target link libraries

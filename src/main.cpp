@@ -228,6 +228,7 @@ extern "C" KDE_EXPORT int kdemain(int argc, char **argv)
     // set application data
     QCoreApplication::setApplicationName(QLatin1String("rekonq"));
     QCoreApplication::setApplicationVersion(REKONQ_VERSION);
+    QCoreApplication::setOrganizationDomain("kde.org");
 
     if (app.isSessionRestored())
     {
