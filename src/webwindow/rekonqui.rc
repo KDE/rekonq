@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-<gui name="rekonq" version="70">
+<gui name="rekonq" version="71">
 
 <!--- =========== Rekonq Menu ============= -->
 <Menu name="rekonqMenu" noMerge="1">
@@ -13,7 +13,7 @@
         <Action name="file_open" />
     </Menu>
     <Separator/>
-    <Action name="file_save_as" />
+    <Action name="file_save" />
     <Action name="file_print" />
     <Action name="edit_find" />
 
@@ -89,7 +89,7 @@
         <Action name="new_window" />
         <Action name="private_browsing" />
         <Separator/>
-        <Action name="file_save_as" />
+        <Action name="file_save" />
         <Separator/>
         <Action name="file_print" />
         <Separator/>
