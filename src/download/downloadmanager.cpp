@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "downloadmanager.h"
-#include "downloadmanager.moc"
 
 // Auto Includes
 #include "rekonq.h"

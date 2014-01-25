@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "crashmessagebar.h"
-#include "crashmessagebar.moc"
 
 // KDE Includes
 #include <KIcon>

@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "useragentmanager.h"
-#include "useragentmanager.moc"
 
 // Local Includes
 #include "useragentinfo.h"

@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "icondownloader.h"
-#include "icondownloader.moc"
 
 // Local Includes
 #include "knetworkaccessmanager.h"

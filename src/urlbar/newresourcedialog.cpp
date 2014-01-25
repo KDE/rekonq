@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "newresourcedialog.h"
-#include "newresourcedialog.moc"
 
 // Nepomuk Includes
 #include <Nepomuk2/Vocabulary/NCO>

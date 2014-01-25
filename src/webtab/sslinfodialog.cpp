@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "sslinfodialog.h"
-#include "sslinfodialog.moc"
 
 // KDE Includes
 #include <KFileDialog>

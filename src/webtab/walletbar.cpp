@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "walletbar.h"
-#include "walletbar.moc"
 
 // Auto Includes
 #include "rekonq.h"

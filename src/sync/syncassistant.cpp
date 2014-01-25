@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "syncassistant.h"
-#include "syncassistant.moc"
 
 // Local Includes
 #include "synccheckwidget.h"

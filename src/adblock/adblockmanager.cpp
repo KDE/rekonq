@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "adblockmanager.h"
-#include "adblockmanager.moc"
 
 // Auto Includes
 #include "rekonq.h"

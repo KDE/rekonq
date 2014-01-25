@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "urlpanel.h"
-#include "urlpanel.moc"
 
 // Local Includes
 #include "paneltreeview.h"

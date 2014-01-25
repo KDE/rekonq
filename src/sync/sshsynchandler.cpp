@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "sshsynchandler.h"
-#include "sshsynchandler.moc"
 
 // Auto Includes
 #include "rekonq.h"

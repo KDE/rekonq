@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "findbar.h"
-#include "findbar.moc"
 
 // Local Includes
 #include "webtab.h"

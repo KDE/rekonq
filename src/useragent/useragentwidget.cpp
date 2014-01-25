@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "useragentwidget.h"
-#include "useragentwidget.moc"
 
 // KDE Includes
 #include <KProtocolManager>

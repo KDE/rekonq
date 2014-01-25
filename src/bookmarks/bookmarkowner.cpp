@@ -29,7 +29,6 @@
 
 // Self Includes
 #include "bookmarkowner.h"
-#include "bookmarkowner.moc"
 
 // Local Includes
 #include "bookmarkmanager.h"

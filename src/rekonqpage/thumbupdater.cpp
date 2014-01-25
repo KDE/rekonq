@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "thumbupdater.h"
-#include "thumbupdater.moc"
 
 // Local Includes
 #include "application.h"

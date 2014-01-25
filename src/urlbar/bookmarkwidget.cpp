@@ -28,7 +28,6 @@
 
 // Self Includes
 #include "bookmarkwidget.h"
-#include "bookmarkwidget.moc"
 
 // Local includes
 #include "bookmarkmanager.h"

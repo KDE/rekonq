@@ -27,7 +27,6 @@
 
 // Self includes
 #include "downloaditem.h"
-#include "downloaditem.moc"
 
 // Qt Includes
 #include <QDBusInterface>

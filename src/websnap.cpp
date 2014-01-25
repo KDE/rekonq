@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "websnap.h"
-#include "websnap.moc"
 
 // KDE Includes
 #include <KStandardDirs>

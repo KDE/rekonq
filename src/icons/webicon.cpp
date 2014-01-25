@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "webicon.h"
-#include "webicon.moc"
 
 // Local Includes
 #include "iconmanager.h"

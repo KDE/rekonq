@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "networkwidget.h"
-#include "networkwidget.moc"
 
 // KDE Includes
 #include <KTabWidget>

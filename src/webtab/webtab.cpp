@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "webtab.h"
-#include "webtab.moc"
 
 // Auto Includes
 #include "rekonq.h"

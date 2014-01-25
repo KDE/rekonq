@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "rwindow.h"
-#include "rwindow.moc"
 
 // KDE Includes
 #include <KApplication>

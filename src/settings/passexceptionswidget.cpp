@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "passexceptionswidget.h"
-#include "passexceptionswidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

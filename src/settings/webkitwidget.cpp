@@ -26,7 +26,6 @@
 
 // Local Includes
 #include "webkitwidget.h"
-#include "webkitwidget.moc"
 
 
 WebKitWidget::WebKitWidget(QWidget *parent)

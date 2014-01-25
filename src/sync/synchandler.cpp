@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "synchandler.h"
-#include "synchandler.moc"
 
 
 SyncHandler::SyncHandler(QObject *parent)

@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "historypanel.h"
-#include "historypanel.moc"
 
 // Auto Includes
 #include "rekonq.h"

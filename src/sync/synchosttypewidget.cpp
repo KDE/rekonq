@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "synchosttypewidget.h"
-#include "synchosttypewidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

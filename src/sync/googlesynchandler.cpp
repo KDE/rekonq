@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "googlesynchandler.h"
-#include "googlesynchandler.moc"
 
 // Auto Includes
 #include "rekonq.h"

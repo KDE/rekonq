@@ -29,7 +29,6 @@
 
 // Self Includes
 #include "urlbar.h"
-#include "urlbar.moc"
 
 // Auto Includes
 #include "rekonq.h"

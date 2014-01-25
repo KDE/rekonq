@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "knetworkaccessmanager.h"
-#include "knetworkaccessmanager.moc"
 
 // KDE Includes
 #include <KConfig>

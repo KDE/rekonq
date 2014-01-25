@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "paneltreeview.h"
-#include "paneltreeview.moc"
 
 // Local Includes
 #include "application.h"

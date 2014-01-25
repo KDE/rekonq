@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "application.h"
-#include "application.moc"
 
 // Auto Includes
 #include "rekonq.h"

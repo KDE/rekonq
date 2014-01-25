@@ -26,7 +26,6 @@
 
 // Auto Includes
 #include "rsswidget.h"
-#include "rsswidget.moc"
 
 // KDE Includes
 #include <KComboBox>

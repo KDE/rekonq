@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "listitem.h"
-#include "listitem.moc"
 
 // Auto Includes
 #include "rekonq.h"

@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "autosaver.h"
-#include "autosaver.moc"
 
 // Qt Includes
 #include <QMetaObject>

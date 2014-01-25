@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "webview.h"
-#include "webview.moc"
 
 // Auto Includes
 #include "rekonq.h"

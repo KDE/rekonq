@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "searchenginebar.h"
-#include "searchenginebar.moc"
 
 // Auto Includes
 #include "rekonq.h"

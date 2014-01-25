@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "syncgooglesettingswidget.h"
-#include "syncgooglesettingswidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

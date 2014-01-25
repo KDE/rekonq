@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "webpluginfactory.h"
-#include "webpluginfactory.moc"
 
 // Auto Includes
 #include "rekonq.h"

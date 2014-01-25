@@ -25,7 +25,6 @@
 
 
 #include "webwindow.h"
-#include "webwindow.moc"
 
 // Auto Includes
 #include "rekonq.h"

@@ -29,7 +29,6 @@
 
 // Self Includes
 #include "historymanager.h"
-#include "historymanager.moc"
 
 // Auto Includes
 #include "rekonq.h"

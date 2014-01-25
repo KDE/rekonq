@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "adblockwidget.h"
-#include "adblockwidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

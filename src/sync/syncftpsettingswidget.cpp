@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "syncftpsettingswidget.h"
-#include "syncftpsettingswidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

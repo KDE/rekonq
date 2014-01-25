@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "tabwidget.h"
-#include "tabwidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

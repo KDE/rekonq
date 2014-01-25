@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "sessionwidget.h"
-#include "sessionwidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

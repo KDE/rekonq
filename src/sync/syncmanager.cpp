@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "syncmanager.h"
-#include "syncmanager.moc"
 
 // Auto Includes
 #include "rekonq.h"

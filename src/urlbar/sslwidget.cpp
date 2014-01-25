@@ -26,7 +26,6 @@
 
 // Auto Includes
 #include "sslwidget.h"
-#include "sslwidget.moc"
 
 // Local includes
 #include "historymanager.h"

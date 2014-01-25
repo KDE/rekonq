@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "completionwidget.h"
-#include "completionwidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

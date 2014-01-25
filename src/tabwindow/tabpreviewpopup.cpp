@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "tabpreviewpopup.h"
-#include "tabpreviewpopup.moc"
 
 // Rekonq Includes
 #include "tabbar.h"

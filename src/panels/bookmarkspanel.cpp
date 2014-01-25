@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "bookmarkspanel.h"
-#include "bookmarkspanel.moc"
 
 // Auto Includes
 #include "rekonq.h"

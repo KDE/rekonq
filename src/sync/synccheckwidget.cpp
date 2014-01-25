@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "synccheckwidget.h"
-#include "synccheckwidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "rekonqmenu.h"
-#include "rekonqmenu.moc"
 
 // Qt Includes
 #include <QApplication>

@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "ftpsynchandler.h"
-#include "ftpsynchandler.moc"
 
 // Auto Includes
 #include "rekonq.h"

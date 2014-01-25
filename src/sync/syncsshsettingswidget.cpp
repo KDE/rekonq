@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "syncsshsettingswidget.h"
-#include "syncsshsettingswidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

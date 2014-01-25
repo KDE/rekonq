@@ -25,7 +25,6 @@
 
 
 #include "maintoolbar.h"
-#include "maintoolbar.moc"
 
 
 #include "webwindow.h"

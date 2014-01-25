@@ -29,7 +29,6 @@
 
 // Self Includes
 #include "historymodels.h"
-#include "historymodels.moc"
 
 // Auto Includes
 #include "rekonq.h"

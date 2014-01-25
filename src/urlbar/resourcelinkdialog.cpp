@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "resourcelinkdialog.h"
-#include "resourcelinkdialog.moc"
 
 // Local Includes
 #include "newresourcedialog.h"

@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "operasynchandler.h"
-#include "operasynchandler.moc"
 
 // Auto Includes
 #include "rekonq.h"

@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "privacywidget.h"
-#include "privacywidget.moc"
 
 // Local Includes
 #include "passexceptionswidget.h"

@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "bookmarksmenu.h"
-#include "bookmarksmenu.moc"
 
 // Local Includes
 #include "bookmarkscontextmenu.h"

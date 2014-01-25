@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "generalwidget.h"
-#include "generalwidget.moc"
 
 // Auto Includes
 #include "rekonq.h"

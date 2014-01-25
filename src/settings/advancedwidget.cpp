@@ -26,7 +26,6 @@
 
 // Local Includes
 #include "advancedwidget.h"
-#include "advancedwidget.moc"
 
 // Qt Includes
 #include <QProcess>

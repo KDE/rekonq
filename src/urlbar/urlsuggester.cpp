@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "urlsuggester.h"
-#include "urlsuggester.moc"
 
 // Local Includes
 #include "historymanager.h"

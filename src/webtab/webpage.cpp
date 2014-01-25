@@ -33,7 +33,6 @@
 
 // Self Includes
 #include "webpage.h"
-#include "webpage.moc"
 
 // Auto Includes
 #include "rekonq.h"

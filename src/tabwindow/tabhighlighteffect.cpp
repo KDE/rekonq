@@ -26,7 +26,6 @@
 
 // Self Includes
 #include "tabhighlighteffect.h"
-#include "tabhighlighteffect.moc"
 
 // Local Includes
 #include "tabbar.h"

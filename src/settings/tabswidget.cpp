@@ -26,7 +26,6 @@
 
 // Local Includes
 #include "tabswidget.h"
-#include "tabswidget.moc"
 
 
 TabsWidget::TabsWidget(QWidget *parent)

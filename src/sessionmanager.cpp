@@ -28,7 +28,6 @@
 
 // Self Includes
 #include "sessionmanager.h"
-#include "sessionmanager.moc"
 
 // Local Includes
 #include "application.h"

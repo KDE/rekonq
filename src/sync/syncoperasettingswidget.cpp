@@ -27,7 +27,6 @@
 
 // Self Includes
 #include "syncoperasettingswidget.h"
-#include "syncoperasettingswidget.moc"
 
 // Auto Includes
 #include "rekonq.h"
